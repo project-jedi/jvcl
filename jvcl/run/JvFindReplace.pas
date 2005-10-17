@@ -47,7 +47,7 @@ type
     var Terminate: Boolean) of object;
   TJvReplaceAllEvent = procedure(Sender: TObject; ReplaceCount: Integer) of object;
 
-  TJvFindReplace = class(TJvComponent)
+  TJvFindReplaceBase = class(TJvComponent)
   private
     FOnFind: TNotifyEvent;
     FOnReplace: TNotifyEvent;
@@ -57,7 +57,6 @@ type
     FOnClose: TNotifyEvent;
     FOnNotFound: TNotifyEvent;
     FOnProgress: TJvReplaceProgressEvent;
-    FEditControl: TCustomEdit;
     FOwner: TComponent;
     FFindDialog: TFindDialog;
     FReplaceDialog: TReplaceDialog;
@@ -73,7 +72,6 @@ type
     procedure SetDialogTop(Value: Integer);
     procedure SetDialogLeft(Value: Integer);
     procedure SetOptions(Value: TFindOptions);
-    procedure SetEditControl(Value: TCustomEdit);
     procedure SetHelpContext(Value: THelpContext);
     procedure SetFindText(const Value: string);
     procedure SetReplaceText(const Value: string);
@@ -82,11 +80,20 @@ type
     function GetLeft: Integer;
     function ReplaceOne(Sender: TObject): Boolean;
     procedure UpdateDialogs;
-    procedure UpdateProperties(sender: TObject);
+    procedure UpdateProperties(Sender: TObject);
     procedure NeedDialogs;
-    procedure TestEditAssigned;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function GetEditText: string; virtual; abstract;
+    function GetEditSelText: string; virtual; abstract;
+    function GetEditSelStart: Integer; virtual; abstract;
+    function GetEditSelLength: Integer; virtual; abstract;
+    function GetEditHandle: HWND; virtual; abstract;
+    procedure TestEditAssigned; virtual; abstract;
+    procedure SetEditText(const Text: string); virtual; abstract;
+    procedure SetEditSelText(const Text: string); virtual; abstract;
+    procedure SetEditSelStart(Start: Integer); virtual; abstract;
+    procedure SetEditSelLength(Length: Integer); virtual; abstract;
+    procedure SetEditFocus; virtual; abstract;
     procedure DoOnFind(Sender: TObject); virtual;
     procedure DoOnReplace(Sender: TObject); virtual;
     procedure DoOnShow(Sender: TObject); virtual;
@@ -96,6 +103,12 @@ type
     procedure DoReplacedAll(Sender: TObject); virtual;
     procedure DoProgress(Position: Integer; var Terminate: Boolean); virtual;
     procedure Loaded; override;
+    property Fast: Boolean read FFast write FFast default False;
+    property Options: TFindOptions read FOptions write SetOptions;
+    property FindText: string read FFindText write SetFindText;
+    property ReplaceText: string read FReplaceText write SetReplaceText;
+    property ShowDialogs: Boolean read FShowDialogs write SetShowDialogs default True;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext default 0;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Find; virtual;
@@ -106,19 +119,39 @@ type
     property Top: Integer read GetTop write SetDialogTop default -1;
     property Left: Integer read GetLeft write SetDialogLeft default -1;
   published
-    property Fast: Boolean read FFast write FFast default False;
-    property Options: TFindOptions read FOptions write SetOptions;
-    property EditControl: TCustomEdit read FEditControl write SetEditControl;
-    property FindText: string read FFindText write SetFindText;
-    property ReplaceText: string read FReplaceText write SetReplaceText;
-    property ShowDialogs: Boolean read FShowDialogs write SetShowDialogs default True;
-    property HelpContext: THelpContext read FHelpContext write SetHelpContext default 0;
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
     property OnReplacingAll: TNotifyEvent read FOnReplacingAll write FOnReplacingAll;
     property OnReplacedAll: TJvReplaceAllEvent read FOnReplacedAll write FOnReplacedAll;
     property OnNotFound: TNotifyEvent read FOnNotFound write FOnNotFound;
     property OnProgress: TJvReplaceProgressEvent read FOnProgress write FOnProgress;
+  end;
+
+  TJvFindReplace = class(TJvFindReplaceBase)
+  private
+    FEditControl: TCustomEdit;
+    procedure SetEditControl(Value: TCustomEdit);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function GetEditText: string; override;
+    function GetEditSelText: string; override;
+    function GetEditSelStart: Integer; override;
+    function GetEditSelLength: Integer; override;
+    function GetEditHandle: HWND; override;
+    procedure TestEditAssigned; override;
+    procedure SetEditText(const Text: string); override;
+    procedure SetEditSelText(const Text: string); override;
+    procedure SetEditSelStart(Start: Integer); override;
+    procedure SetEditSelLength(Length: Integer); override;
+    procedure SetEditFocus; override;
+  published
+    property EditControl: TCustomEdit read FEditControl write SetEditControl;
+    property Fast;
+    property Options;
+    property FindText;
+    property ReplaceText;
+    property ShowDialogs;
+    property HelpContext;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -292,13 +325,18 @@ end;
 
 //=== { TJvFindReplace } =====================================================
 
-constructor TJvFindReplace.Create(AOwner: TComponent);
+procedure TJvFindReplace.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited Create(AOwner);
-  FOwner := AOwner;
-  FHelpContext := 0;
-  FShowDialogs := True;
-  FPosition := Point(-1, -1);
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FEditControl) then
+    FEditControl := nil;
+end;
+
+procedure TJvFindReplace.SetEditControl(Value: TCustomEdit);
+begin
+  FEditControl := Value;
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvFindReplace.TestEditAssigned;
@@ -307,7 +345,68 @@ begin
     raise EJVCLException.CreateRes(@RsENoEditAssigned);
 end;
 
-procedure TJvFindReplace.Find;
+function TJvFindReplace.GetEditText: string;
+begin
+  Result := FEditControl.Text;
+end;
+
+function TJvFindReplace.GetEditSelText: string;
+begin
+  Result := FEditControl.SelText;
+end;
+
+function TJvFindReplace.GetEditSelStart: Integer;
+begin
+  Result := FEditControl.SelStart;
+end;
+
+function TJvFindReplace.GetEditSelLength: Integer;
+begin
+  Result := FEditControl.SelLength;
+end;
+
+function TJvFindReplace.GetEditHandle: HWND;
+begin
+  Result := FEditControl.Handle;
+end;
+
+procedure TJvFindReplace.SetEditText(const Text: string);
+begin
+  FEditControl.Text := Text;
+end;
+
+procedure TJvFindReplace.SetEditSelText(const Text: string);
+begin
+  FEditControl.SelText := Text;
+end;
+
+procedure TJvFindReplace.SetEditSelStart(Start: Integer);
+begin
+  FEditControl.SelStart := Start;
+end;
+
+procedure TJvFindReplace.SetEditSelLength(Length: Integer);
+begin
+  FEditControl.SelLength := Length;
+end;
+
+procedure TJvFindReplace.SetEditFocus;
+begin
+  FEditControl.SetFocus;
+end;
+
+//=== { TJvFindReplaceBase } =================================================
+
+constructor TJvFindReplaceBase.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOwner := AOwner;
+  FHelpContext := 0;
+  FShowDialogs := True;
+  FPosition := Point(-1, -1);
+end;
+
+procedure TJvFindReplaceBase.Find;
 begin
   TestEditAssigned;
   UpdateDialogs;
@@ -317,14 +416,14 @@ begin
     DoOnFind(FFindDialog);
 end;
 
-procedure TJvFindReplace.FindAgain;
+procedure TJvFindReplaceBase.FindAgain;
 begin
   TestEditAssigned;
   UpdateDialogs;
   DoOnFind(FFindDialog);
 end;
 
-procedure TJvFindReplace.Replace;
+procedure TJvFindReplaceBase.Replace;
 begin
   TestEditAssigned;
   UpdateDialogs;
@@ -335,7 +434,7 @@ begin
     DoOnReplace(FReplaceDialog);
 end;
 
-procedure TJvFindReplace.ReplaceAll(const SearchText, ReplaceText: string);
+procedure TJvFindReplaceBase.ReplaceAll(const SearchText, ReplaceText: string);
 var
   Txt: string;
   FoundPos: longint;
@@ -348,11 +447,11 @@ begin
   UpdateDialogs;
   WholeWord := frWholeWord in FOptions;
   MatchCase := frMatchCase in FOptions;
-  Txt := FEditControl.Text;
+  Txt := GetEditText;
   SLen := Length(SearchText);
   RLen := Length(ReplaceText);
   TLen := Length(Txt);
-  FoundPos := FindInText(Txt, SearchText, EditControl.SelStart + EditControl.SelLength,
+  FoundPos := FindInText(Txt, SearchText, GetEditSelStart + GetEditSelLength,
     TLen, FFast, WholeWord, MatchCase);
 
   if FoundPos > -1 then
@@ -371,14 +470,14 @@ begin
       if Terminate then
         Exit;
     end;
-    FEditControl.Text := Txt;
+    SetEditText(Txt);
     DoReplacedAll(FReplaceDialog);
   end
   else
     DoFailed(FReplaceDialog);
 end;
 
-function TJvFindReplace.ReplaceOne(Sender: TObject): Boolean;
+function TJvFindReplaceBase.ReplaceOne(Sender: TObject): Boolean;
 var
   Equal: Integer;
   S, R: string;
@@ -397,26 +496,19 @@ begin
   end;
 
   if frMatchCase in TFindDialog(Sender).Options then
-    Equal := AnsiCompareStr(FEditControl.SelText, S)
+    Equal := AnsiCompareStr(GetEditSelText, S)
   else
-    Equal := AnsiCompareText(FEditControl.SelText, S);
+    Equal := AnsiCompareText(GetEditSelText, S);
 
   if Equal = 0 then
   begin
     Result := True;
-    FEditControl.SelText := R;
-    FEditControl.SetFocus;
+    SetEditSelText(R);
+    SetEditFocus;
   end;
 end;
 
-procedure TJvFindReplace.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FEditControl) then
-    FEditControl := nil;
-end;
-
-procedure TJvFindReplace.NeedDialogs;
+procedure TJvFindReplaceBase.NeedDialogs;
 begin
   if not Assigned(FFindDialog) then
   begin
@@ -436,7 +528,7 @@ begin
   end;
 end;
 
-procedure TJvFindReplace.UpdateDialogs;
+procedure TJvFindReplaceBase.UpdateDialogs;
 begin
   if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
   begin
@@ -455,7 +547,7 @@ begin
   end;
 end;
 
-procedure TJvFindReplace.UpdateProperties(sender: TObject);
+procedure TJvFindReplaceBase.UpdateProperties(Sender: TObject);
 begin
   if Sender is TFindDialog then
   begin
@@ -468,7 +560,7 @@ begin
     FReplaceText := TReplaceDialog(Sender).ReplaceText;
 end;
 
-procedure TJvFindReplace.DoOnFind(Sender: TObject);
+procedure TJvFindReplaceBase.DoOnFind(Sender: TObject);
 var
   FoundPos: longint;
   Offset: Integer;
@@ -482,28 +574,29 @@ begin
 
   if not (frDown in FOptions) then
   begin
-    Offset := FEditControl.SelStart;
+    Offset := GetEditSelStart;
     if Offset = 0 then
       Offset := 1;
-    FoundPos := FindInTextRev(FEditControl.Text, FFindText,
-      Length(FEditControl.Text) - Offset, Length(FEditControl.Text), FFast,
+    FoundPos := FindInTextRev(GetEditText, FFindText,
+      Length(GetEditText) - Offset, Length(GetEditText), FFast,
       WholeWord, MatchCase)
   end else
   begin
-    Offset := FEditControl.SelStart + FEditControl.SelLength;
+    Offset := GetEditSelStart + GetEditSelLength;
     if Offset = 0 then
       Offset := 1;
-    FoundPos := FindInText(FEditControl.Text, FFindText, Offset,
-      Length(FEditControl.Text), FFast, WholeWord, MatchCase);
+    FoundPos := FindInText(GetEditText, FFindText, Offset,
+      Length(GetEditText), FFast, WholeWord, MatchCase);
   end;
 
   if FoundPos > -1 then
   begin
-    FEditControl.SetFocus;
-    FEditControl.SelStart := FoundPos - 1;
-    FEditControl.SelLength := Length(FFindText);
+    SetEditFocus;
+    SetEditSelStart(FoundPos - 1);
+    SetEditSelLength(Length(FFindText));
     {$IFDEF VCL}
-    SendMessage(FEditControl.Handle, EM_SCROLLCARET, 0, 0);
+    if GetEditHandle <> 0 then
+      SendMessage(GetEditHandle, EM_SCROLLCARET, 0, 0);
     {$ENDIF VCL}
     if Assigned(FOnFind) then
       FOnFind(Self);
@@ -512,7 +605,7 @@ begin
     DoFailed(Sender);
 end;
 
-procedure TJvFindReplace.DoOnReplace(Sender: TObject);
+procedure TJvFindReplaceBase.DoOnReplace(Sender: TObject);
 begin
   UpdateProperties(Sender);
 
@@ -524,9 +617,9 @@ begin
   end
   else
   begin
-    if FEditControl.SelLength < 1 then
+    if GetEditSelLength < 1 then
       DoOnFind(Sender);
-    if FEditControl.SelLength < 1 then
+    if GetEditSelLength < 1 then
       Exit;
     ReplaceOne(Sender);
     if Assigned(FOnReplace) then
@@ -535,7 +628,7 @@ begin
   end;
 end;
 
-procedure TJvFindReplace.DoOnShow(Sender: TObject);
+procedure TJvFindReplaceBase.DoOnShow(Sender: TObject);
 begin
   TestEditAssigned;
   UpdateDialogs;
@@ -543,7 +636,7 @@ begin
     FOnShow(Self);
 end;
 
-procedure TJvFindReplace.DoOnClose(Sender: TObject);
+procedure TJvFindReplaceBase.DoOnClose(Sender: TObject);
 begin
   TestEditAssigned;
   UpdateProperties(Sender);
@@ -552,7 +645,7 @@ begin
     FOnClose(Self);
 end;
 
-procedure TJvFindReplace.DoFailed(Sender: TObject);
+procedure TJvFindReplaceBase.DoFailed(Sender: TObject);
 var
   FCaption: string;
 begin
@@ -579,13 +672,13 @@ begin
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
 
-procedure TJvFindReplace.DoReplacingAll;
+procedure TJvFindReplaceBase.DoReplacingAll;
 begin
   if Assigned(FOnReplacingAll) then
     FOnReplacingAll(Self);
 end;
 
-procedure TJvFindReplace.DoReplacedAll(Sender: TObject);
+procedure TJvFindReplaceBase.DoReplacedAll(Sender: TObject);
 begin
   UpdateProperties(Sender);
   if FShowDialogs then
@@ -605,50 +698,43 @@ begin
     FOnReplacedAll(Self, FNumberReplaced);
 end;
 
-procedure TJvFindReplace.DoProgress(Position: Integer; var Terminate: Boolean);
+procedure TJvFindReplaceBase.DoProgress(Position: Integer; var Terminate: Boolean);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Position, Terminate);
 end;
 
-procedure TJvFindReplace.SetPosition(Value: TPoint);
+procedure TJvFindReplaceBase.SetPosition(Value: TPoint);
 begin
   FPosition := Value;
   UpdateDialogs;
 end;
 
-procedure TJvFindReplace.SetDialogTop(Value: Integer);
+procedure TJvFindReplaceBase.SetDialogTop(Value: Integer);
 begin
   FPosition.Y := Value;
   UpdateDialogs;
 end;
 
-procedure TJvFindReplace.SetDialogLeft(Value: Integer);
+procedure TJvFindReplaceBase.SetDialogLeft(Value: Integer);
 begin
   FPosition.X := Value;
   UpdateDialogs;
 end;
 
-procedure TJvFindReplace.SetOptions(Value: TFindOptions);
+procedure TJvFindReplaceBase.SetOptions(Value: TFindOptions);
 begin
   FOptions := Value;
   UpdateDialogs;
 end;
 
-procedure TJvFindReplace.SetEditControl(Value: TCustomEdit);
-begin
-  FEditControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
-end;
-
-procedure TJvFindReplace.SetFindText(const Value: string);
+procedure TJvFindReplaceBase.SetFindText(const Value: string);
 begin
   FFindText := Value;
   UpdateDialogs;
 end;
 
-procedure TJvFindReplace.SetShowDialogs(Value: Boolean);
+procedure TJvFindReplaceBase.SetShowDialogs(Value: Boolean);
 begin
   if FShowDialogs <> Value then
     FShowDialogs := Value;
@@ -666,29 +752,29 @@ begin
   end;
 end;
 
-procedure TJvFindReplace.SetReplaceText(const Value: string);
+procedure TJvFindReplaceBase.SetReplaceText(const Value: string);
 begin
   FReplaceText := Value;
   UpdateDialogs;
 end;
 
-procedure TJvFindReplace.SetHelpContext(Value: THelpContext);
+procedure TJvFindReplaceBase.SetHelpContext(Value: THelpContext);
 begin
   FHelpContext := Value;
   UpdateDialogs;
 end;
 
-function TJvFindReplace.GetTop: Integer;
+function TJvFindReplaceBase.GetTop: Integer;
 begin
   Result := FPosition.Y;
 end;
 
-function TJvFindReplace.GetLeft: Integer;
+function TJvFindReplaceBase.GetLeft: Integer;
 begin
   Result := FPosition.X;
 end;
 
-procedure TJvFindReplace.Loaded;
+procedure TJvFindReplaceBase.Loaded;
 begin
   inherited Loaded;
   UpdateDialogs;
