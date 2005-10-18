@@ -52,6 +52,10 @@ type
     procedure SetActivePageIndex(AIndex: Integer);
     function GetPageCount: Integer;
     function GetPageCaption(AIndex: Integer): string;
+    procedure AddPage(const ACaption: string);
+    procedure DeletePage(Index: Integer);
+    procedure MovePage(CurIndex, NewIndex: Integer);
+    procedure PageCaptionChanged(Index: Integer; const NewCaption: string);
   end;
 
   TJvCustomPageList = class;
@@ -117,7 +121,7 @@ type
     It works like TPageControl but does not have any tabs
    }
   TJvShowDesignCaption = (sdcNone, sdcTopLeft, sdcTopCenter, sdcTopRight, sdcLeftCenter, sdcCenter, sdcRightCenter, sdcBottomLeft, sdcBottomCenter, sdcBottomRight, sdcRunTime);
-  
+
   TJvCustomPageList = class(TJvCustomControl, IUnknown, IPageList)
   private
     FPages: TList;
@@ -137,13 +141,17 @@ type
   protected
     procedure EnabledChanged; override;
     { IPageList }
-    function CanChange(AIndex: Integer): Boolean;virtual;
-    function GetActivePageIndex: Integer;virtual;
-    procedure SetActivePageIndex(AIndex: Integer);virtual;
-    function GetPageFromIndex(AIndex: Integer): TJvCustomPage;virtual;
+    procedure AddPage(const ACaption: string);
+    procedure DeletePage(Index: Integer);
+    procedure MovePage(CurIndex, NewIndex: Integer);
+    function CanChange(AIndex: Integer): Boolean; virtual;
+    function GetActivePageIndex: Integer; virtual;
+    procedure SetActivePageIndex(AIndex: Integer); virtual;
+    function GetPageFromIndex(AIndex: Integer): TJvCustomPage; virtual;
     function GetPageCount: Integer;virtual;
-    function GetPageCaption(AIndex: Integer): string;virtual;
+    function GetPageCaption(AIndex: Integer): string; virtual;
     procedure Paint; override;
+    procedure PageCaptionChanged(Index: Integer; const NewCaption: string); virtual;
 
     procedure Change; dynamic;
     procedure Loaded; override;
@@ -151,9 +159,9 @@ type
     procedure ShowControl(AControl: TControl); override;
     function InternalGetPageClass: TJvCustomPageClass; virtual;
 
-    procedure SetActivePage(Page: TJvCustomPage);virtual;
-    procedure InsertPage(APage: TJvCustomPage);virtual;
-    procedure RemovePage(APage: TJvCustomPage);virtual;
+    procedure SetActivePage(Page: TJvCustomPage); virtual;
+    procedure InsertPage(APage: TJvCustomPage); virtual;
+    procedure RemovePage(APage: TJvCustomPage); virtual;
     property PageList: TList read FPages;
     property HiddenPageList: TList read FHiddenPages;
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable;
@@ -300,6 +308,25 @@ uses
   {$ELSE}
   Forms;
   {$ENDIF COMPILER5}
+
+function GetUniqueName(AOwner: TComponent; const AClassName: string): string;
+var
+  i: Integer;
+begin
+  i := 0;
+  if AOwner = nil then
+  begin
+    repeat
+      Inc(i);
+      Result := AClassName + IntToStr(i);
+    until FindGlobalComponent(Result) = nil;
+  end
+  else
+    repeat
+      Inc(i);
+      Result := AClassName + IntToStr(i);
+    until AOwner.FindComponent(Result) = nil;
+end;
 
 //=== { TJvCustomPage } ======================================================
 
@@ -647,8 +674,8 @@ begin
   APage.FPageList := nil;
   FPages.Remove(APage);
   SetActivePage(NextPage);
- // (ahuser) In some cases SetActivePage does not change FActivePage
- //          so we force FActivePage not to be "APage"
+  // (ahuser) In some cases SetActivePage does not change FActivePage
+  //          so we force FActivePage not to be "APage"
   if (FActivePage = APage) or (FActivePage = nil) then
   begin
     FActivePage := nil;
@@ -914,6 +941,34 @@ end;
 function TJvPageList.InternalGetPageClass: TJvCustomPageClass;
 begin
   Result := TJvStandardPage;
+end;
+
+procedure TJvCustomPageList.DeletePage(Index: Integer);
+begin
+  if (Index >= 0) and (Index < PageCount) then
+    Pages[Index].Free;
+end;
+
+procedure TJvCustomPageList.AddPage(const ACaption: string);
+var
+  Page: TJvCustomPage;
+begin
+  Page := GetPageClass.Create(Owner);
+  Page.Caption := ACaption;
+  Page.Name := GetUniqueName(Owner, Copy(Page.ClassName, 2, MaxInt));
+  Page.PageList := Self;
+end;
+
+procedure TJvCustomPageList.MovePage(CurIndex, NewIndex: Integer);
+begin
+  FPages.Move(CurIndex, NewIndex);
+end;
+
+procedure TJvCustomPageList.PageCaptionChanged(Index: Integer;
+  const NewCaption: string);
+begin
+  if (Index >= 0) and (Index < PageCount) then
+    Pages[Index].Caption := NewCaption;
 end;
 
 {$IFDEF UNITVERSIONING}

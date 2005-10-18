@@ -83,6 +83,10 @@ type
     procedure SetActivePageIndex(AIndex: Integer);
     function GetPageCount: Integer;
     function GetPageCaption(AIndex: Integer): string;
+    procedure AddPage(const ACaption: string);
+    procedure DeletePage(Index: Integer);
+    procedure MovePage(CurIndex, NewIndex: Integer);
+    procedure PageCaptionChanged(Index: Integer; const NewCaption: string);
   end;
 
   TJvTabBarItem = class(TCollectionItem)
@@ -302,6 +306,7 @@ type
     FOnTabSelected: TJvTabBarItemEvent;
     FOnTabSelecting: TJvTabBarSelectingEvent;
     FOnTabClosed: TJvTabBarItemEvent;
+    FOnTabMoved: TJvTabBarItemEvent;
     FOnChange: TNotifyEvent;
 
     // scrolling
@@ -321,6 +326,7 @@ type
     FAllowTabMoving: Boolean;
     FOrientation: TJvTabBarOrientation;
     FOnScrollButtonClick: TJvTabBarScrollButtonClickEvent;
+    FPageListTabLink: Boolean;
 
     function GetLeftTab: TJvTabBarItem;
     procedure SetLeftTab(Value: TJvTabBarItem);
@@ -357,6 +363,7 @@ type
     procedure TabClosed(Tab: TJvTabBarItem); virtual;
     function TabSelecting(Tab: TJvTabBarItem): Boolean; virtual;
     procedure TabSelected(Tab: TJvTabBarItem); virtual;
+    procedure TabMoved(Tab: TJvTabBarItem); virtual;
     procedure Changed; virtual;
     procedure ImagesChanged(Sender: TObject); virtual;
     procedure ScrollButtonClick(Button: TJvTabBarScrollButtonKind); virtual;
@@ -393,10 +400,11 @@ type
 
     procedure DragDrop(Source: TObject; X: Integer; Y: Integer); override;
 
-    property Tabs: TJvTabBarItems read FTabs write SetTabs;
+    property PageListTabLink: Boolean read FPageListTabLink write FPageListTabLink default False; // if true the PageList's Pages[] are kept in sync with the Tabs
+    property PageList: TCustomControl read FPageList write SetPageList;
     property Painter: TJvTabBarPainter read FPainter write SetPainter;
     property Images: TImageList read FImages write SetImages;
-    property PageList: TCustomControl read FPageList write SetPageList;
+    property Tabs: TJvTabBarItems read FTabs write SetTabs;
 
     // Status
     property SelectedTab: TJvTabBarItem read FSelectedTab write SetSelectedTab;
@@ -422,6 +430,7 @@ type
     property OnTabClosed: TJvTabBarItemEvent read FOnTabClosed write FOnTabClosed;
     property OnTabSelecting: TJvTabBarSelectingEvent read FOnTabSelecting write FOnTabSelecting;
     property OnTabSelected: TJvTabBarItemEvent read FOnTabSelected write FOnTabSelected;
+    property OnTabMoved: TJvTabBarItemEvent read FOnTabMoved write FOnTabMoved;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnScrollButtonClick: TJvTabBarScrollButtonClickEvent read FOnScrollButtonClick write FOnScrollButtonClick;
   end;
@@ -446,15 +455,17 @@ type
     property FlatScrollButtons;
     property AllowTabMoving;
 
-    property Tabs;
+    property PageListTabLink;
+    property PageList;
     property Painter;
     property Images;
-    property PageList;
+    property Tabs;
 
     property OnTabClosing;
     property OnTabClosed;
     property OnTabSelecting;
     property OnTabSelected;
+    property OnTabMoved;
     property OnChange;
 
     property OnMouseDown;
@@ -861,6 +872,12 @@ begin
     Invalidate;
 end;
 
+procedure TJvCustomTabBar.TabMoved(Tab: TJvTabBarItem);
+begin
+  if Assigned(FOnTabMoved) then
+    FOnTabMoved(Self, Tab);
+end;
+
 procedure TJvCustomTabBar.DragOver(Source: TObject; X: Integer; Y: Integer;
   State: TDragState; var Accept: Boolean);
 var
@@ -912,7 +929,10 @@ begin
   begin
     InsertTab := TabAt(X, Y);
     if Assigned(InsertTab) then
+    begin
       SelectedTab.Index := InsertTab.Index;
+      TabMoved(SelectedTab);
+    end;
   end
   else
   if Assigned(FLastInsertTab) then
@@ -1651,10 +1671,16 @@ begin
 end;
 
 procedure TJvTabBarItem.SetCaption(const Value: TCaption);
+var
+  PageListIntf: IPageList;
 begin
   if Value <> FCaption then
   begin
     FCaption := Value;
+    if TabBar.PageListTabLink and Assigned(TabBar.PageList) and
+       not (csLoading in TabBar.ComponentState) and
+       Supports(TabBar.PageList, IPageList, PageListIntf) then
+      PageListIntf.PageCaptionChanged(Index, FCaption);
     Changed;
   end;
 end;
@@ -1776,8 +1802,16 @@ begin
 end;
 
 procedure TJvTabBarItem.SetIndex(Value: Integer);
+var
+  PageListIntf: IPageList;
+  LastIndex: Integer;
 begin
+  LastIndex := Index;
   inherited SetIndex(Value);
+  if TabBar.PageListTabLink and (LastIndex <> Index) and Assigned(TabBar.PageList) and
+     not (csLoading in TabBar.ComponentState) and
+     Supports(TabBar.PageList, IPageList, PageListIntf) then
+    PageListIntf.MovePage(LastIndex, Index);
   Changed;
 end;
 
@@ -1813,6 +1847,8 @@ begin
 end;
 
 procedure TJvTabBarItems.Notify(Item: TCollectionItem; Action: TCollectionNotification);
+var
+  PageListIntf: IPageList;
 begin
   inherited Notify(Item, Action);
   if Action in [cnExtracting, cnDeleting] then
@@ -1828,6 +1864,17 @@ begin
       TabBar.FClosingTab := nil;
     if TabBar.FLastInsertTab = Item then
       TabBar.FLastInsertTab := nil;
+  end;
+  if TabBar.PageListTabLink and Assigned(TabBar.PageList) and
+     not (csLoading in TabBar.ComponentState) and
+     Supports(TabBar.PageList, IPageList, PageListIntf) then
+  begin
+    case Action of
+      cnAdded:
+        PageListIntf.AddPage(TJvTabBarItem(Item).Caption);
+      cnExtracting, cnDeleting:
+        PageListIntf.DeletePage(TJvTabBarItem(Item).Index);
+    end;
   end;
   TabBar.Changed;
 end;
@@ -2317,7 +2364,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
