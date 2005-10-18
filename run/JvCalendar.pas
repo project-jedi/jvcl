@@ -544,7 +544,12 @@ type
 {$ENDIF COMPILER5}
   public
     constructor Create;
+{$IFDEF COMPILER5}
+    // Delphi 5's .AddObject calls .Add and then PutObject
+    function Add(const S: string): Integer; override;
+{$ELSE}
     function AddObject(const S: string; AObject: TObject): Integer; override;
+{$ENDIF COMPILER5}
     function IsBold(Year, Month, Day: Word): Boolean;
     procedure SetBold(Year, Month, Day: Word; Value: Boolean);
     function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
@@ -614,6 +619,33 @@ end;
   This must be fully qualified, i.e. '199801=1,2,3,4,5' or '000012=25,31' etc
 }
 
+{$IFDEF COMPILER5}
+function TMonthCalStrings.Add(const S: string): Integer;
+begin
+  if AnsiPos('=', S) <> 7 then
+    {$IFDEF CLR}
+    raise EMonthCalError.CreateFmt(RsEInvalidDateStr, [S]);
+    {$ELSE}
+    raise EMonthCalError.CreateResFmt(@RsEInvalidDateStr, [S]);
+    {$ENDIF CLR}
+
+  BeginUpdate;
+  try
+    Result := IndexOfName(Copy(S, 1, 6));
+    if Result >= 0 then
+    begin
+      { We can only set items when Sorted = False }
+      Sorted := False;
+      Strings[Result] := S;
+      Sorted := True;
+    end
+    else
+      Result := inherited Add(S);
+  finally
+    EndUpdate;
+  end;
+end;
+{$ELSE}
 function TMonthCalStrings.AddObject(const S: string; AObject: TObject): Integer;
 begin
   if AnsiPos('=', S) <> 7 then
@@ -626,7 +658,7 @@ begin
   BeginUpdate;
   try
     Result := IndexOfName(Copy(S, 1, 6));
-    if Result > -1 then
+    if Result >= 0 then
     begin
       { We can only set items when Sorted = False }
       Sorted := False;
@@ -640,6 +672,7 @@ begin
     EndUpdate;
   end;
 end;
+{$ENDIF COMPILER5}
 
 function TMonthCalStrings.GetDateIndex(Year, Month: Word): Integer;
 var
@@ -677,11 +710,11 @@ end;
 {$IFDEF COMPILER5}
 procedure TMonthCalStrings.SetUpdateState(Updating: Boolean);
 begin
-  inherited SetUpdateState(Updating);
   if Updating then
     FUpdateCount := 1
   else
     FUpdateCount := 0;
+  inherited SetUpdateState(Updating);
 end;
 {$ENDIF COMPILER5}
 
@@ -962,7 +995,7 @@ var
   Y, M: Word;
 begin
   {$IFDEF CLR}
-  for I := 0 to Length(StateArray) do
+  for I := 0 to Hígh(StateArray) do
     StateArray[I] := 0;
   {$ELSE}
   FillChar(StateArray, SizeOf(TMonthDayStateArray), #0);
@@ -1352,7 +1385,8 @@ begin
   FEntering := True;
   try
     inherited FocusSet(PrevWnd);
-    DoFocusSet(FindControl(PrevWnd));
+    if Screen.ActiveControl = Self then
+      DoFocusSet(FindControl(PrevWnd));
   finally
     FEntering := False;
   end;
@@ -1426,8 +1460,7 @@ begin
   FColors.Assign(AValue);
 end;
 
-procedure TJvMonthCalAppearance.SetFirstDoW(
-  const AValue: TJvMonthCalWeekDay);
+procedure TJvMonthCalAppearance.SetFirstDoW(const AValue: TJvMonthCalWeekDay);
 begin
   if FFirstDoW <> AValue then
   begin
