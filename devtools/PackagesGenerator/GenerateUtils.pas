@@ -631,7 +631,7 @@ begin
   Ver := TargetList[GetNonPersoTarget(target)].Ver;
   Typ := Copy(Name, Length(Name), 1);
 
-  if ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (Ver < '6') then
+  if ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (StrToInt(Ver) < 6) then
   begin
     Result := GNoLibSuffixFormat;
     Prefix := GNoLibSuffixPrefix;
@@ -688,7 +688,7 @@ begin
   if (TargetList[GetNonPersoTarget(target)].IsCLX) then
     Result := StartsWith(GClxPrefix, Name);
 
-  if not Result and ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (Ver < '6') then
+  if not Result and ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (StrToInt(Ver) < 6) then
     Result := StartsWith(GNoLibSuffixPrefix, Name);
 
   if not Result then
@@ -1358,8 +1358,10 @@ begin
              'DESCRIPTION%', GetDescription(xml, target),
              'C5PFLAGS%', EnsurePFlagsCondition(xml.C5PFlags, target),
              'C6PFLAGS%', EnsurePFlagsCondition(xml.C6PFlags, target),
+             'C10PFLAGS%', EnsurePFlagsCondition(xml.C10PFlags, target),
              'C5LIBS%', StringsToStr(xml.C5Libs, ' ', False),
              'C6LIBS%', StringsToStr(xml.C6Libs, ' ', False),
+             'C10LIBS%', StringsToStr(xml.C10Libs, ' ', False),
              'GUID%', xml.GUID,
              'IMAGE_BASE%', xml.ImageBase,
              'VERSION_MAJOR_NUMBER%', xml.VersionMajorNumber,
