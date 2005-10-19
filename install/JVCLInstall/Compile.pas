@@ -464,8 +464,13 @@ begin
         if not Target.IsBCB then
         begin
           // Delphi requires .bpl files
-          if not FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version])) and
-             not FileExists(Format('%s\JclD%d0.bpl', [Target.BplDir, Target.Version])) then
+          if ((Target.Version >= 7) and 
+              not FileExists(Format('%s\Jcl%d0.bpl', [BplDir, Target.Version])) and
+              not FileExists(Format('%s\Jcl%d0.bpl', [Target.BplDir, Target.Version])))
+             or
+             ((Target.Version < 7) and
+              not FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version])) and
+              not FileExists(Format('%s\JclD%d0.bpl', [Target.BplDir, Target.Version]))) then
             Continue; // do not install JVCL when no JCL is installed
         end;
       end;
