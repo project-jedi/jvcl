@@ -87,7 +87,7 @@ begin
     begin
       if InstallJVCL then
       begin
-        if not Target.IsBCB or (Target.IsBCB and Target.IsDelphi) then
+        if not Target.IsBCB then
         begin
           // Delphi requires .bpl files
           if ((Target.Version >= 7) and 

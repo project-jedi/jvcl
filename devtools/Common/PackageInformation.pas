@@ -106,10 +106,8 @@ type
     FIsXPlatform: Boolean;
     FC5PFlags: string;
     FC6PFlags: string;
-    FC10PFlags: string;
     FC5Libs: TStrings;
     FC6Libs: TStrings;
-    FC10Libs: TStrings;
     FGUID: string;
     FReleaseNumber: string;
     FVersionMinorNumber: string;
@@ -147,10 +145,8 @@ type
 
     property C5PFlags: string read FC5PFlags;
     property C6PFlags: string read FC6PFlags;
-    property C10PFlags: string read FC10PFlags;
     property C5Libs: TStrings read FC5Libs;
     property C6Libs: TStrings read FC6Libs;
-    property C10Libs: TStrings read FC10Libs;
 
     property GUID: string read FGUID;  // D9 support
   end;
@@ -591,8 +587,7 @@ begin
     // IsDesign is updated in LoadFromFile
   FC5Libs := TStringList.Create;
   FC6Libs := TStringList.Create;
-  FC10Libs := TStringList.Create;
-
+  
   LoadFromFile(FFilename);
 end;
 
@@ -600,7 +595,6 @@ destructor TPackageXmlInfo.Destroy;
 begin
   FC5Libs.Free;
   FC6Libs.Free;
-  FC10Libs.Free;
   FRequires.Free;
   FContains.Free;
   inherited Destroy;
@@ -650,10 +644,8 @@ begin
     FGUID := RootNode.Items.Value('GUID');
     FC5PFlags := RootNode.Items.Value('C5PFlags');
     FC6PFlags := RootNode.Items.Value('C6PFlags');
-    FC10PFlags := RootNode.Items.Value('C10PFlags');
     StrToStrings(RootNode.Items.Value('C5Libs'), ' ', C5Libs, False);
     StrToStrings(RootNode.Items.Value('C6Libs'), ' ', C6Libs, False);
-    StrToStrings(RootNode.Items.Value('C10Libs'), ' ', C10Libs, False);
 
     RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
