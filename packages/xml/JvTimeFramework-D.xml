@@ -2,8 +2,8 @@
 <Package Name="JvTimeFramework" Design="-1">
   <Description>JVCL Time Framework</Description>
   <GUID>{D6D9B4EE-4AC3-4971-8178-DC1EA29EC16F}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50(USEJVCL)</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>

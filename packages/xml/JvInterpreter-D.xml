@@ -2,8 +2,8 @@
 <Package Name="JvInterpreter" Design="-1">
   <Description>JVCL Interpreter Components</Description>
   <GUID>{9F0A300E-7B7A-4B5A-A5F9-B2A6D3D81A1C}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
@@ -13,7 +13,8 @@
     <Package Name="JvCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JCLC50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JCL" Targets="C6,C6p" Condition=""/>
     <Package Name="dclstd50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcldb50" Targets="C5" Condition=""/>
@@ -21,7 +22,6 @@
     <Package Name="qrpt50" Targets="C5" Condition="JVCL_UseQuickReport"/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
-    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>

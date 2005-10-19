@@ -3,8 +3,8 @@
   <Description>JVCL Database Components Runtime Package</Description>
   <ClxDescription>JVCLX Database Components Runtime Package</ClxDescription>
   <GUID>{E63D1285-7625-4EFA-9DD7-632D72CF633C}</GUID>
-  <C5PFlags>-LUvcl50 -LUvcldb50 -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUvcldb50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
@@ -13,7 +13,9 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p,D7,D7p,D9,D9p" Condition=""/>
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
-    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
+    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcldb50" Targets="C5,C5s,D5,D5s" Condition=""/>
@@ -23,8 +25,6 @@
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="dbrtl" Targets="C6,C6p,D6,D6p,D7,D7p,D7clx,D9,D9p" Condition=""/>
     <Package Name="vcldb" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
-    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>

@@ -3,22 +3,22 @@
   <Description>JVCL Application and Form Components</Description>
   <ClxDescription>JVCLX Application and Form Components</ClxDescription>
   <GUID>{9617AB3F-D9AD-4B56-B59F-5322F5B751ED}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUCJcl -LUCJclVcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvAppFrm-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p,D7,D7p,D9,D9p" Condition=""/>
-    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
+    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9,d9p" Condition=""/>
-    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="JvCore-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="allbutclx" Formname="GradCaptionsEditor" Condition=""/>

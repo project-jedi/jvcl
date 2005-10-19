@@ -3,21 +3,20 @@
   <Description>JVCL Core Runtime Package</Description>
   <ClxDescription>JVCLX Core Runtime Package</ClxDescription>
   <GUID>{CCA5391F-35F6-43D1-AB48-187085D1EF5B}</GUID>
-  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
+    <Package Name="Jv3rd-R" Targets="all" Condition="USE_DXGETTEXT"/>
+    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JclD50" Targets="D5,D5s" Condition=""/>
+    <Package Name="JclVcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
+    <Package Name="Jcl" Targets="C6,C6p,allclx" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerD5" Targets="D5,D5s" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC5" Targets="C5,C5s" Condition="JVCLThemesEnabled"/>
-    <Package Name="Jv3rd-R" Targets="all" Condition="USE_DXGETTEXT"/>
-    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
-    <Package Name="CJcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="CJclVcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJclVcl" Targets="D6,D6p,D7,D7p,D9,D9p" Condition=""/>
     <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p,D9,D9p" Condition=""/>
     <Package Name="vcl" Targets="D7,D7p,C6,C6p,D9,D9p" Condition=""/>
     <Package Name="rtl" Targets="D7,D7p,C6,C6p,D9,D9p" Condition=""/>
@@ -27,7 +26,6 @@
     <Package Name="vcljpg50" Targets="C5,C5s" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s,C5,C5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
-    <Package Name="DJcl" Targets="allclx" Condition=""/>
     <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>

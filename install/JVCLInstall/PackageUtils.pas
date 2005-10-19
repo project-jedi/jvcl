@@ -304,8 +304,9 @@ begin
     end
     else
     // is it a JCL dependency
-    if StartsWith(Info.Requires[i].Name, 'DJcl', True) or // do not localize
-       StartsWith(Info.Requires[i].Name, 'CJcl', True) then // do not localize
+    if StartsWith(Info.Requires[i].Name, 'Jcl', True) or // do not localize
+       StartsWith(Info.Requires[i].Name, 'JclD', True) or // do not localize
+       StartsWith(Info.Requires[i].Name, 'JclC', True) then // do not localize
     begin
       if Info.Requires[i].IsRequiredByTarget(Owner.TargetSymbol) then
         FJclDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);

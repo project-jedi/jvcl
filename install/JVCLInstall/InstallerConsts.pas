@@ -144,7 +144,7 @@ resourcestring
 
   RsMissingJCLForDelphi =
     'JCL is not installed for %s. Please install the JCL before installing the JVCL.'#10 +
-    'DJCL%d0.bpl not found in %s';
+    'JCLD%d0.bpl not found in %s';
 
 const
   // sJVCLMacroXxx are displayed in the Summary page. They are not used by code.
