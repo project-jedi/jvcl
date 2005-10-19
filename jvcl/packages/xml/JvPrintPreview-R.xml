@@ -2,21 +2,21 @@
 <Package Name="JvPrintPreview" Design="0">
   <Description>JVCL Print Preview Components</Description>
   <GUID>{08661E45-2C90-4301-A95E-77C50EE00CAF}</GUID>
-  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUCJcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
+    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
-    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>

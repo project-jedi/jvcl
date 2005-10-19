@@ -260,8 +260,8 @@ end;
 procedure TIDESelectionPage.JCLDirChanged(Sender: TObject; UserData: TObject;
   var Dir: string);
 begin
-{  if (FileExists(Dir + '\CJcl.dcp') and FileExists(Dir + '\CJclVcl.dcp')) or
-     (FileExists(Dir + '\DJcl.dcp') and FileExists(Dir + '\DJclVcl.dcp')) then
+{  if (FileExists(Dir + '\Jcl.dcp') and FileExists(Dir + '\JclVcl.dcp')) or
+     (FileExists(Dir + '\Jcl.dcp') and FileExists(Dir + '\JclVcl.dcp')) then
   begin
    // are D/CJcl.dcp and D/CJclVcl.dcp are available that we could use
    // Delphi 5 / BCB 5 are not supported here

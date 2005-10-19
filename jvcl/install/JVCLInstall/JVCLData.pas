@@ -734,9 +734,9 @@ begin
   // JCL directory in their browsing and/or search paths, especially
   // BCB users.
   if (Target.IsBCB and
-      FileExists(Format('%s\CJcl%d0.bpl', [BplDir, Target.Version]))) or
+      FileExists(Format('%s\JclC%d0.bpl', [BplDir, Target.Version]))) or
      (not Target.IsBCB and
-      FileExists(Format('%s\DJcl%d0.bpl', [BplDir, Target.Version]))) then
+      FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version]))) then
     FMissingJCL := False;
 
 
@@ -744,12 +744,12 @@ begin
   if Target.Version = 5 then S := '50' else S := '';
 
   if (Target.IsBCB and
-      FileExists(Format('%s\CJcl%s.dcp', [BplDir, S])) and
-      FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S])))
+      FileExists(Format('%s\JclC%s.dcp', [BplDir, S])) and
+      FileExists(Format('%s\JclVclC%s.dcp', [BplDir, S])))
      or
      (not Target.IsBCB and
-      FileExists(Format('%s\DJcl%s.dcp', [BplDir, S])) and
-      FileExists(Format('%s\DJclVcl%s.dcp', [BplDir, S])))
+      FileExists(Format('%s\JclD%s.dcp', [BplDir, S])) and
+      FileExists(Format('%s\JclVclD%s.dcp', [BplDir, S])))
      then
   begin
     FCompiledJCL := True;
@@ -766,8 +766,8 @@ begin
     else
     begin
       // Delphi requires .bpl files
-      if FileExists(Format('%s\DJcl%s.bpl', [BplDir, S])) and
-         FileExists(Format('%s\DJclVcl%s.bpl', [BplDir, S])) then
+      if FileExists(Format('%s\JclD%s.bpl', [BplDir, S])) and
+         FileExists(Format('%s\JclVclD%s.bpl', [BplDir, S])) then
         FMissingJCL := False;
     end;}
   end;

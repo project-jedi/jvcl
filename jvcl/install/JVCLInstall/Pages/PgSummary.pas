@@ -90,8 +90,8 @@ begin
         if not Target.IsBCB then
         begin
           // Delphi requires .bpl files
-          if not FileExists(Format('%s\DJcl%d0.bpl', [BplDir, Target.Version])) and
-             not FileExists(Format('%s\DJcl%d0.bpl', [Target.BplDir, Target.Version])) then
+          if not FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version])) and
+             not FileExists(Format('%s\JclD%d0.bpl', [Target.BplDir, Target.Version])) then
           begin
             MessageDlg(Format(RsMissingJCLForDelphi, [Target.DisplayName, Target.Version, BplDir]), mtError, [mbOk], 0);
             Continue; // do not install because the JCL is missing.

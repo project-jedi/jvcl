@@ -3,8 +3,8 @@
   <Description>JVCL Unified Interbase Components</Description>
   <ClxDescription>JVCLX Unified Interbase Components</ClxDescription>
   <GUID>{966F0F19-43EC-4A2B-AACD-9E43BFF11FF0}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50(USEJVCL)</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
