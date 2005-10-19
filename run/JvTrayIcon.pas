@@ -699,24 +699,34 @@ procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
         ((Button = mbLeft) and (Assigned(FDropDownMenu) or
           ([tvRestoreClick, tvMinimizeClick] * Visibility <> [])));
   end;
-
+  function HasDoubleClickFunctionality: Boolean;
+  begin
+    Result :=
+        Assigned(FOnDblClick) or
+        ([tvRestoreDbClick, tvMinimizeDbClick] * Visibility <> []);
+  end;
 begin
   if tisClicked in FState then
   begin
     Exclude(FState, tisClicked);
     if HasSingleClickFunctionality then
     begin
-      // Delay DoClick
-      FClickedButton := Button;
-      FClickedShift := Shift;
-      FClickedX := X;
-      FClickedY := Y;
-
-      if not (tisWaitingForDoubleClick in FState) then
+      if HasDoubleClickFunctionality then
       begin
-        Include(FState, tisWaitingForDoubleClick);
-        SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
-      end;
+        // Delay DoClick
+        FClickedButton := Button;
+        FClickedShift := Shift;
+        FClickedX := X;
+        FClickedY := Y;
+
+        if not (tisWaitingForDoubleClick in FState) then
+        begin
+          Include(FState, tisWaitingForDoubleClick);
+          SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
+        end;
+      end
+      else
+        DoClick(Button, Shift, X, Y);
     end;
     //else
     //  DoClick(Button, Shift, X, Y);
