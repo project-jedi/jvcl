@@ -1134,6 +1134,8 @@ var
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
   AddedLines: Integer;
   IgnoreNextSemicolon: Boolean;
+  UnitFileName, UnitFilePath, UnitFileExtension: string;
+  PathPAS, PathCPP, PathRC, PathASM, PathLIB: string;
 begin
   outFile := TStringList.Create;
   Result := '';
@@ -1143,6 +1145,39 @@ begin
   repeatLines := TStringList.Create;
   tmpLines := TStringList.Create;
   try
+    // generate list of pathes
+    PathPAS := '.;';
+    PathCPP := '.;';
+    PathRC := '.;';
+    PathASM := '.;';
+    PATHLIB := '';
+    for I := 0 to xml.ContainCount-1 do
+      if xml.Contains[I].IsIncluded(Target) then
+    begin
+      UnitFileName := xml.Contains[I].Name;
+      UnitFilePath := ExcludeTrailingPathDelimiter(ExtractFilePath(UnitFileName))+';';
+      UnitFileExtension := ExtractFileExt(UnitFileName);
+      if Pos(';'+UnitFilePath,PathLIB) = 0 then
+        PathLIB := Format('%s%s',[PathLIB,UnitFilePath]);
+      if CompareText(UnitFileExtension,'.pas') = 0 then
+      begin
+        if Pos(';'+UnitFilePath,PathPAS) = 0 then
+          PathPAS := Format('%s%s',[PathPAS,UnitFilePath]);
+      end
+      else if CompareText(UnitFileExtension,'.asm') = 0 then
+      begin
+        if Pos(';'+UnitFilePath,PathASM) = 0 then
+          PathASM := Format('%s%s',[PathASM,UnitFilePath]);
+      end
+      else if CompareText(UnitFileExtension,'.cpp') = 0 then
+      begin
+        if Pos(';'+UnitFilePath,PathCPP) = 0 then
+          PathCPP := Format('%s%s',[PathCPP,UnitFilePath]);
+      end
+      else if CompareText(UnitFileExtension,'.rc') = 0 then
+        if Pos(';'+UnitFilePath,PathRC) = 0 then
+          PathRC := Format('%s%s',[PathRC,UnitFilePath]);
+    end;
     // read the xml file
     OutFileName := xml.Name;
     if xml.IsDesign then
@@ -1368,7 +1403,12 @@ begin
              'BUILD_NUMBER%', xml.BuildNumber,
              'TYPE%', Iff(xml.IsDesign, 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
-             'type%', OneLetterType]) then
+             'type%', OneLetterType,
+             'PATHPAS%', PathPAS,
+             'PATHCPP%', PathCPP,
+             'PATHASM%', PathASM,
+             'PATHRC%', PathRC,
+             'PATHLIB%', PathLIB]) then
            begin
              if Pos('%DATETIME%', tmpStr) > 0 then
                TimeStampLine := I;
