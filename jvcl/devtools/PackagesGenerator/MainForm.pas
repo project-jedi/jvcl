@@ -191,9 +191,9 @@ implementation
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
   GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedOptionsForm,
-  GenerationMessagesForm,
+  GenerationMessagesForm, ActiveX,
   {$IFNDEF COMPILER6_UP}
-  ActiveX, ComObj,  // For GUID related functions under D5
+  ComObj,  // For GUID related functions under D5
   {$ENDIF COMPILER6_UP}
   ModelsForm;
 {$R *.dfm}
@@ -1009,7 +1009,7 @@ var
   GeneratedGUID : TGUID;
 begin
   // Generate a GUID for the package
-  CoCreateGUID(GeneratedGUID);
+  CoCreateGUID(GeneratedGUID);      
   edtGUID.Text := GUIDToString(GeneratedGUID);
 end;
 
