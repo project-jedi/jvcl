@@ -194,8 +194,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property CurrentIcon: TIcon read FCurrentIcon write SetCurrentIcon;
-    procedure HideApplication;
-    procedure ShowApplication;
+    procedure HideApplication; virtual;
+    procedure ShowApplication; virtual;
     procedure BalloonHint(Title, Value: string; BalloonType:
       TBalloonType = btNone; ADelay: Cardinal = 5000; CancelPrevious: Boolean = False);
     function AcceptBalloons: Boolean;
