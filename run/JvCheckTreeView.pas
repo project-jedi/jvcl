@@ -119,7 +119,7 @@ type
     procedure SetCheckBoxOptions(const Value: TJvTreeViewCheckBoxOptions);
     procedure InternalSetChecked(Node: TTreeNode; const Value: Boolean; Levels: Integer);
   protected
-    procedure ToggleNode(Node: TTreeNode); virtual;
+    function ToggleNode(Node: TTreeNode) : Boolean; virtual;
     procedure Click; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure DoToggled(Node: TTreeNode); dynamic;
@@ -361,10 +361,13 @@ end;
 procedure TJvCheckTreeView.InternalSetChecked(Node: TTreeNode; const Value: Boolean; Levels: Integer);
 var
   Tmp: TTreeNode;
+  toggled : Boolean;
 begin
+  toggled := False;
   if Checked[Node] <> Value then
-    ToggleNode(Node);
-  if (Levels <> 0) and CheckBox[Node] and
+    toggled := ToggleNode(Node);
+  // Only cascade if the node has been toggled.
+  if toggled and (Levels <> 0) and CheckBox[Node] and
     ((Value and (poOnCheck in CheckBoxOptions.CascadeOptions)) or (not Value and (poOnUnCheck in
     CheckBoxOptions.CascadeOptions))) then
   begin
@@ -407,14 +410,16 @@ begin
     end;
 end;
 
-procedure TJvCheckTreeView.ToggleNode(Node: TTreeNode);
+function TJvCheckTreeView.ToggleNode(Node: TTreeNode) : Boolean;
 begin
+  Result := False;
   if DoToggling(Node) then
   begin
     with CheckBoxOptions do
       ToggleTreeViewCheckBoxes(Node,
         CheckBoxUncheckedIndex, CheckBoxCheckedIndex, RadioUncheckedIndex, RadioCheckedIndex);
     DoToggled(Node);
+    Result := True;
   end;
 end;
 
