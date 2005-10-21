@@ -47,7 +47,7 @@ type
     dfCheckChars, dfCurrency, dfCustom, dfFloat, dfHex, dfInteger,
     dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear);
 
-  TJvValidateEditCriticalPointsCheck = (cpNone, cpMaxValue, cpBoth);
+  TJvValidateEditCriticalPointsCheck = (cpNone, cpMinValue, cpMaxValue, cpBoth);
 
   TJvValidateEditCriticalPoints = class(TPersistent)
   private
@@ -57,20 +57,28 @@ type
     FMaxValue: Double;
     FMinValue: Double;
     FOnChange: TNotifyEvent;
+    FDefCheckPoints: TJvValidateEditCriticalPointsCheck;
+    FDefColorAbove: TColor;
+    FDefColorBelow: TColor;
     procedure DoChanged;
     procedure SetMinValue(NewValue: Double);
     procedure SetMaxValue(NewValue: Double);
     procedure SetColorAbove(NewValue: TColor);
     procedure SetColorBelow(NewValue: TColor);
     procedure SetCheckPoints(NewValue: TJvValidateEditCriticalPointsCheck);
+    function IsCheckPointsStored: Boolean;
+    function IsColorAboveStored: Boolean;
+    function IsColorBelowStored: Boolean;
   public
     procedure Assign(Source: TPersistent); override;
+    procedure SetDefaults(ACheckPoints: TJvValidateEditCriticalPointsCheck;
+      AColorAbove, AColorBelow: TColor);
     constructor Create;
   published
     property CheckPoints: TJvValidateEditCriticalPointsCheck read FCheckPoints
-      write SetCheckPoints;
-    property ColorAbove: TColor read FColorAbove write SetColorAbove;
-    property ColorBelow: TColor read FColorBelow write SetColorBelow;
+      write SetCheckPoints stored IsCheckPointsStored;
+    property ColorAbove: TColor read FColorAbove write SetColorAbove stored IsColorAboveStored;
+    property ColorBelow: TColor read FColorBelow write SetColorBelow stored IsColorBelowStored;
     property MaxValue: Double read FMaxValue write SetMaxValue;
     property MinValue: Double read FMinValue write SetMinValue;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -122,6 +130,7 @@ type
     function GetValue: Variant;
     procedure SetValue(NewValue: Variant);
     procedure SetCheckChars(const NewValue: string);
+    function IsCheckCharsStored: Boolean;
     function CurrRangeValue(CheckValue: Currency): Currency; overload;
     function FloatRangeValue(CheckValue: Double): Double; overload;
     function IntRangeValue(CheckValue: Integer): Integer; overload;
@@ -147,7 +156,8 @@ type
     procedure FocusSet(PrevWnd: THandle); override;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetText(const NewValue: TCaption); override;
-    property CheckChars: string read FCheckChars write SetCheckChars;
+    property CheckChars: string read FCheckChars write SetCheckChars
+      stored IsCheckCharsStored;
     property TrimDecimals: Boolean read FTrimDecimals write SetTrimDecimals;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
     property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat
@@ -241,7 +251,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property Text;
+    property Text stored False;
     property Value;
     property Visible;
     property ZeroEmpty default False;
@@ -671,6 +681,11 @@ begin
   end;
 end;
 
+function TJvCustomValidateEdit.IsCheckCharsStored: Boolean;
+begin
+  Result := (FDisplayFormat in [dfNone, dfCheckChars, dfNonCheckChars]);
+end;
+
 procedure TJvCustomValidateEdit.KeyPress(var Key: Char);
 begin
   if not IsValidChar(Text, Key, SelStart + 1) and (Key >= #32) then
@@ -940,69 +955,17 @@ begin
 end;
 
 function TJvCustomValidateEdit.BaseToInt(const BaseValue: string; Base: Byte): Integer;
-var
-  I: Integer;
-
-  function BaseCharToInt(BaseChar: Char): Integer;
-  begin
-    case Ord(BaseChar) of
-      Ord('0')..Ord('9'):
-        Result := Ord(BaseChar) - Ord('0');
-    else
-      Result := Ord(BaseChar) - Ord('A') + 10;
-    end;
-  end;
-
 begin
   Assert(Base <= 36, RsEBaseTooBig);
   Assert(Base > 1, RsEBaseTooSmall);
-
-  Result := 0;
-  for I := 1 to Length(BaseValue) do
-    Inc(Result, Trunc(BaseCharToInt(BaseValue[I]) * Power(Base, Length(BaseValue) - I)));
+  Result := Numb2Dec(BaseValue, Base);
 end;
 
 function TJvCustomValidateEdit.IntToBase(NewValue:Integer; Base: Byte): string;
-var
-  iDivisor, iRemainder, I: Cardinal;
-  iBaseIterations: Integer;
-
-  function IntToBaseChar(IntValue: Integer): Char;
-  begin
-    case IntValue of
-      Low(Integer)..-1:
-        Result := '0';
-      0..9:
-        Result := Chr(Ord('0') + IntValue);
-      else
-        Result := Chr(Ord('A') + IntValue - 10);
-    end;
-  end;
-
 begin
   Assert(Base <= 36, RsEBaseTooBig);
   Assert(Base > 1, RsEBaseTooSmall);
-
-  Result := '';
-  iRemainder := NewValue;
-  if NewValue >= Base then
-  begin
-    iDivisor := 1;
-    iBaseIterations := -1;
-    while (Int64(NewValue) div iDivisor) > 0 do  // Int64 to remove warning about size of operands
-    begin
-      iDivisor := iDivisor * Base;
-      Inc(iBaseIterations);
-    end;
-    iDivisor := iDivisor div Base;
-    for I := 1 to iBaseIterations do
-    begin
-      Result := Result + IntToBaseChar(iRemainder div iDivisor);
-      iRemainder := iRemainder mod iDivisor;
-      iDivisor := iDivisor div Base;
-    end;
-  end;
-  Result := Result + IntToBaseChar(iRemainder);
+  Result := Dec2Numb(NewValue, 0, Base);
 end;
 
 procedure TJvCustomValidateEdit.DoValueChanged;
@@ -1068,6 +1031,11 @@ begin
   case FCriticalPoints.CheckPoints of
     cpNone:
       Font.Color := FStandardFontColor;
+    cpMinValue:
+      if AsFloat < FCriticalPoints.MinValue then
+        Font.Color := FCriticalPoints.ColorBelow
+      else
+        Font.Color := FStandardFontColor;
     cpMaxValue:
       if AsFloat > FCriticalPoints.MaxValue then
         Font.Color := FCriticalPoints.ColorAbove
@@ -1116,9 +1084,7 @@ end;
 constructor TJvValidateEditCriticalPoints.Create;
 begin
   inherited Create;
-  FCheckPoints := cpNone;
-  FColorAbove := clBlue;
-  FColorBelow := clRed;
+  SetDefaults(cpNone, clBlue, clRed);
 end;
 
 procedure TJvValidateEditCriticalPoints.SetCheckPoints(NewValue: TJvValidateEditCriticalPointsCheck);
@@ -1187,6 +1153,33 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+function TJvValidateEditCriticalPoints.IsCheckPointsStored: Boolean;
+begin
+  Result := (FCheckPoints <> FDefCheckPoints);
+end;
+
+function TJvValidateEditCriticalPoints.IsColorAboveStored: Boolean;
+begin
+  Result := (FColorAbove <> FDefColorAbove);
+end;
+
+function TJvValidateEditCriticalPoints.IsColorBelowStored: Boolean;
+begin
+  Result := (FColorBelow <> FDefColorBelow);
+end;
+
+procedure TJvValidateEditCriticalPoints.SetDefaults(
+  ACheckPoints: TJvValidateEditCriticalPointsCheck; AColorAbove,
+  AColorBelow: TColor);
+begin
+  FDefCheckPoints := ACheckPoints;
+  FCheckPoints := ACheckPoints;
+  FDefColorAbove := AColorAbove;
+  FColorAbove := AColorAbove;
+  FDefColorBelow := AColorBelow;
+  FColorBelow := AColorBelow;
 end;
 
 {$IFDEF UNITVERSIONING}
