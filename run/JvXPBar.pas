@@ -492,6 +492,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
+    function GetItemAt(X, Y: Integer): Integer;
     procedure Click; override;
     property Height default 46;
     property VisibleItems: TJvXPBarVisibleItems read FVisibleItems;
@@ -1765,13 +1766,25 @@ begin
     DoDrawItem(FHoverIndex, []);
 end;
 
+
+function TJvXPCustomWinXPBar.GetItemAt(X, Y: Integer): Integer;
+var
+  Header: Integer;
+begin
+  Header := FC_HEADER_MARGIN div 2 + HeaderHeight + FC_ITEM_MARGIN div 2 + FTopSpace;
+  if (Y < Header) or (Y > Height - FC_ITEM_MARGIN div 2) then
+    Result := -1
+  else
+    Result := (Y - Header) div ItemHeight;
+end;
+
 procedure TJvXPCustomWinXPBar.HookMouseMove(X, Y: Integer);
 const
   cPipe = '|';
 var
   Rect: TRect;
   OldHitTest: TJvXPBarHitTest;
-  NewIndex, Header: Integer;
+  NewIndex: Integer;
 begin
   OldHitTest := FHitTest;
   FHitTest := GetHitTestAt(X, Y);
@@ -1786,11 +1799,8 @@ begin
         Cursor := crDefault;
   end;
 
-  Header := FC_HEADER_MARGIN div 2 + HeaderHeight + FC_ITEM_MARGIN div 2 + FTopSpace;
-  if (Y < Header) or (Y > Height - FC_ITEM_MARGIN div 2) then
-    NewIndex := -1
-  else
-    NewIndex := (Y - Header) div ItemHeight;
+  NewIndex := GetItemAt(X, Y);
+
   if (NewIndex >= 0) and (NewIndex < VisibleItems.Count) then
   begin
     if FStoredHint = cPipe then
