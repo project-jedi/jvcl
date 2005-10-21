@@ -1009,7 +1009,7 @@ var
   GeneratedGUID : TGUID;
 begin
   // Generate a GUID for the package
-  CreateGUID(GeneratedGUID);
+  CoCreateGUID(GeneratedGUID);
   edtGUID.Text := GUIDToString(GeneratedGUID);
 end;
 

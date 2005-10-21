@@ -1155,7 +1155,7 @@ begin
       if xml.Contains[I].IsIncluded(Target) then
     begin
       UnitFileName := xml.Contains[I].Name;
-      UnitFilePath := ExcludeTrailingPathDelimiter(ExtractFilePath(UnitFileName))+';';
+      UnitFilePath := PathRemoveSeparator(ExtractFilePath(UnitFileName))+';';
       UnitFileExtension := ExtractFileExt(UnitFileName);
       if Pos(';'+UnitFilePath,PathLIB) = 0 then
         PathLIB := Format('%s%s',[PathLIB,UnitFilePath]);
