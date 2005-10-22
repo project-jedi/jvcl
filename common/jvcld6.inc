@@ -28,7 +28,7 @@ Known Issues:
 
 { Enable this define if you want to register property and component editors included in
 JVCL for non-JVCL components as well. }
-{$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+{.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
 installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
