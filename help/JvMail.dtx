@@ -34,9 +34,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.Address
 Summary
-  Displays a standard address-list dialog box to show an initial set of zero or more recipients.
+  Displays a standard address list dialog box to show an initial set of zero or more recipients.
 Description
-  Call Address to display a standard address-list dialog box to show an initial set of zero or more
+  Call Address to display a standard address list dialog box to show an initial set of zero or more
   recipients. The user can choose new entries to add to the set or make changes to existing entries.
   This dialog box cannot be suppressed, but the caller can set dialog box characteristics. The changed
   set of recipients is returned to the caller.
@@ -148,7 +148,7 @@ See Also
 Summary
   Retrieves the message identifier of the first incoming message.
 Description
-  Call FindFirstMail to start enumerating messages. It wil retrieve the first message identifier of an
+  Call FindFirstMail to start enumerating messages. It will retrieve the first message identifier of an
   incoming message. The retrieved message identifier is returned in property SeedMessageID.
 
   When property SeedMessageID is set to a valid message identifier, you can call ReadMail to read the
@@ -221,9 +221,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.LogonOptions
 Summary
-  Determines the \logon behaviour.
+  Determines the \logon behavior.
 Description
-  Use the LogonOptions property to customize the \logon behaviour of MAPI sessions. Use these flags to
+  Use the LogonOptions property to customize the \logon behavior of MAPI sessions. Use these flags to
 
   * Specify whether to make an attempt to create a new session or acquire the environment's shared
     session. A shared session is a session used by multiple client applications on a given computer.
@@ -252,7 +252,7 @@ Description
   errors, after a Simple MAPI function failed.
 Parameters
   Sender    - The component that encounters the exception.
-  ErrorCode - The error code for the problem that was encounted.
+  ErrorCode - The error code for the problem that was encountered.
 See Also
   TJvMail.ErrorCheck
 
@@ -303,7 +303,7 @@ Description
   * ReadedMail, with the delivery time and the sender.
   * Recipient, CarbonCopy and BlindCopy, with the recipients of this message.
 
-  Use ReadOptions to customize the message retrieving behaviour. For example you can specify that only
+  Use ReadOptions to customize the message retrieving behavior. For example you can specify that only
   envelope information is to be returned from the call or specify whether the message is marked as sent
   or unsent.
 
@@ -320,9 +320,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.ReadOptions
 Summary
-  Determines behaviour of mail reading.
+  Determines behavior of mail reading.
 Description
-  Use the ReadOptions property to customize the behaviour of the FindFirstMail, FindNextMail and
+  Use the ReadOptions property to customize the behavior of the FindFirstMail, FindNextMail and
   ReadMail methods. You can use ReadOptions to specify
 
   * Whether only unread messages should be enumerated.
@@ -358,7 +358,7 @@ Summary
   Transforms a message recipient's name as entered by a user to an unambiguous address list entry.
 Description
   Call ResolveName to resolve a message recipient's name (as entered by a user) to an unambiguous
-  ddress list entry, by prompting the user to choose between possible entries. The dialog box is
+  address list entry, by prompting the user to choose between possible entries. The dialog box is
   read-only, prohibiting changes.
 Parameters
   Name - Specifies the name to be resolved.

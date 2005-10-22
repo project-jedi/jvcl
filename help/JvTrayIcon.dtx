@@ -62,9 +62,9 @@ Description
   right-clicking displays a shortcut menu, and double-clicking executes the default shortcut menu
   command.
 
-  The default behaviour of TJvTrayIcon is to automatically hide the application's button on the
-  taskbar, if the user minimizes the application and not to react on mouse clicks on the tray icon. Use
-  property Visibility to alter this behaviour. For example, include tvRestoreClick in Visibility, to
+  The default behavior of TJvTrayIcon is to automatically hide the application's button on the taskbar,
+  if the user minimizes the application and not to react on mouse clicks on the tray icon. Use property
+  Visibility to alter this behavior. For example, include tvRestoreClick in Visibility, to
   automatically restore the minimized application when the user clicks the tray icon with the left
   button. Use DropDownMenu or PopupMenu to display a shortcut menu, when the user clicks the icon.
 
@@ -169,7 +169,7 @@ Description
   a balloon ToolTip with \Delay set to 30 seconds has been visible for seven seconds when another
   application attempts to display a balloon ToolTip. If the system minimum timeout is ten seconds, the
   first ToolTip displays for an additional three seconds before being replaced by the second ToolTip.
-  You can override this behaviour by setting parameter CancelPrevious to true, which will cancel the
+  You can override this behavior by setting parameter CancelPrevious to true, which will cancel the
   currently visible - if any - balloon.
 
   The ToolTip will disappear when clicked, but you can also specify a time-out value. Use the
@@ -386,7 +386,7 @@ Description
   Use IconIndex to get or set the index of the icon displayed in the Windows taskbar notification area.
   The index identifies an icon in the control's Icons property.
 Note
-  Setting IcnIndex = -1, restores the icon selected fror the Icon property.
+  Setting IconIndex = -1, restores the icon selected for the Icon property.
 See Also
   TJvTrayIcon.CurrentIcon, TJvTrayIcon.Icon, TJvTrayIcon.Icons
 
@@ -575,7 +575,7 @@ Description
   the user minimizes the application.
 
   \Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the minimized
-  application and the vis bility of the application button when the user clicks the tray icon with the
+  application and the visibility of the application button when the user clicks the tray icon with the
   left button, or double-clicks the tray icon, respectively.
 
   \Include tvMinimizeClick or tvMinimizeDbClick in Visibility to automatically hide the application and
@@ -729,7 +729,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibility.tvVisibleTaskList
   (Windows 95, 98 and me.) Shows the application in the windows task manager application. This is
-  default behaviour. If this flag is not set, <LINK TJvTrayIcon> removes the application from the task
+  default behavior. If this flag is not set, <LINK TJvTrayIcon> removes the application from the task
   manager: the application prevent itself from being closed when the user logs off. The application
   close only when the system is shut down.
 
@@ -755,7 +755,7 @@ Description
 @@TTrayVisibility.tvRestoreDbClick
   Automatically restores the application and the visibility of the application button on the taskbar,
   when the user double-clicks the tray icon. Assigning an <LINK TJvTrayIcon.OnDblClick, OnDblClick>
-  event handler overrides this behaviour.
+  event handler overrides this behavior.
 
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibility.tvMinimizeClick
@@ -766,7 +766,7 @@ Description
 @@TTrayVisibility.tvMinimizeDbClick
   Automatically hides the application and removes the application button from the taskbar, when the
   user double-clicks the tray icon. Assigning an <LINK TJvTrayIcon.OnDblClick, OnDblClick> event
-  handler overrides this behaviour.
+  handler overrides this behavior.
 
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibility.tvAnimateToTray

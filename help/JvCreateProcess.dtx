@@ -335,7 +335,7 @@ See Also
 Summary
   Represents different operating modes of a TJvCreateProcess component.
 Description
-  The TJvCPSState type represents diffent operating modes of a JvCreateProcess component.
+  The TJvCPSState type represents different operating modes of a JvCreateProcess component.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSState.psReady
@@ -619,12 +619,12 @@ Summary
   Occurs when a console process created with TJvCreateProcess outputs some data.
 Description
   \Write an OnRawRead event handler to respond when a console process outputs some data. The data isn't
-  pre-processed; thus, it may contain back space (#8), tab (#9), line feed (#10) or cariage return
+  pre-processed; thus, it may contain back space (#8), tab (#9), line feed (#10) or carriage return
   (#13) chars.
 
-  It may be necessairy to respond to OnRawRead events, when the console process updates the current
-  line only and doesn't output a line feed char; for instance to indicate the progress of a process. In
-  this case no OnRead event will be fired.
+  It may be necessary to respond to OnRawRead events, when the console process updates the current line
+  only and doesn't output a line feed char; for instance to indicate the progress of a process. In this
+  case no OnRead event will be fired.
 Note
   coRedirect must be included in ConsoleOptions, otherwise no OnRawRead event will be fired.
 Parameters
@@ -639,7 +639,7 @@ Summary
   Occurs when a console process created with TJvCreateProcess outputs a line feed (#10) char.
 Description
   \Write an OnRead event handler to respond when a console process outputs a new line. The data is
-  pre-processed; thus, it won't contain back space (#8), tab (#9), line feed (#10) or cariage return
+  pre-processed; thus, it won't contain back space (#8), tab (#9), line feed (#10) or carriage return
   (#13) chars.
 
   If the console process updates the current line only and doesn't output a line feed char, no OnRead
@@ -831,8 +831,8 @@ Summary
   Writes to the input of a console process and adds an end-of-line marker
 Description
   Call WriteLn to write to the input of a console process, created with TJvCreateProcess. The component
-  will append an end-of-line arker (carriage return/line feed) to the data. If parameter S is an empty
-  string, Writeln an end-of-line marker to the input of a console process.
+  will append an end-of-line marker (carriage return/line feed) to the data. If parameter S is an empty
+  string, WriteLn an end-of-line marker to the input of a console process.
 Note
   coRedirect must be included in ConsoleOptions otherwise WriteLn will have no effect.
 Parameters
@@ -906,7 +906,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessEntry.Priority
 Summary
-  Indicates the priority of the proces associated with the TJvProcessEntry object.
+  Indicates the priority of the process associated with the TJvProcessEntry object.
 Description
   \Read Priority to determine the priority of the process associated with the TJvProcessEntry object.
 See Also

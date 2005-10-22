@@ -20,6 +20,18 @@ See Also
   TJvTabBar.PageList, TJvTabBar.OnTabSelected
 
 ----------------------------------------------------------------------------------------------------
+@@IPageList.AddPage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@IPageList.CanChange
 Summary
   Write here a summary (1 line)
@@ -29,6 +41,18 @@ Parameters
   AIndex - Description for this parameter
 Return value
   Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.DeletePage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -55,6 +79,32 @@ Description
   Write here a description
 Return value
   Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.MovePage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  CurIndex - Description for this parameter
+  NewIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.PageCaptionChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index      - Description for this parameter
+  NewCaption - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -211,9 +261,9 @@ Description
   automatically freed when its' close button is clicked.
 
   AutoFreeClosed is used following a mouse up event on the close button. When AutoFreeClosed contains
-  True, the affected tab is hidden prior to signalling the OnTabClosed event handler and freeing the
+  True, the affected tab is hidden prior to signaling the OnTabClosed event handler and freeing the
   TJvTabBarItem instance. When AutoFreeClosed contains False, the affected tab is neither hidden nor
-  freed but the OnTabClosed event handler is still signalled.
+  freed but the OnTabClosed event handler is still signaled.
 
   The default value for AutoFreeClosed is True, as assigned in the constructor for the control.
 See Also
@@ -440,9 +490,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnChange
 Summary
-  Event signalled when control properties or tab definitions have been changed.
+  Event signaled when control properties or tab definitions have been changed.
 Description
-  OnChange is a TNotifyEvent property that represents the event handler signalled when tabbed-bar
+  OnChange is a TNotifyEvent property that represents the event handler signaled when tabbed-bar
   control has been changed. OnChange is triggered when properties in the control are updated, and when
   values in Tabs collection have been modified.
 
@@ -462,12 +512,12 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabClosed
 Summary
-  Event signalled when a tab on the control has been closed.
+  Event signaled when a tab on the control has been closed.
 Description
-  OnTabClosed is a TJvTabBarItemEvent property that represents the event handler signalled when an item
+  OnTabClosed is a TJvTabBarItemEvent property that represents the event handler signaled when an item
   in the Tabs collection has been marked as the ClosingTab.
 
-  OnTabClosed is signalled after the TJvTabBarItem instance has updated its' Visible property, and
+  OnTabClosed is signaled after the TJvTabBarItem instance has updated its' Visible property, and
   before it is freed when AutoFreeClosed contains True.
 
   Use OnTabClosing to perform processing required before the tab is assigned as the ClosingTab for the
@@ -478,9 +528,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabClosing
 Summary
-  Event handler signalled when a tab on the control is about to be closed.
+  Event handler signaled when a tab on the control is about to be closed.
 Description
-  OnTabClosing is a TJvTabBarClosingEvent property that represents the event handler signalled when the
+  OnTabClosing is a TJvTabBarClosingEvent property that represents the event handler signaled when the
   Item in the Tabs collection is about to be closed.
 
   OnTabClosing is normally triggered when CloseButton contains True and a mouse click occurs on the
@@ -498,12 +548,22 @@ See Also
   TJvTabBarClosingEvent, CloseButton, Tabs, ClosingTab, OnTabClosed
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomTabBar.OnTabMoved
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabSelected
 Summary
-  Event handler signalled after a tab becomes the selected tab.
+  Event handler signaled after a tab becomes the selected tab.
 Description
-  OnTabSelected is a TJvTabBarItemEvent property that represents the event handler signalled after a
-  tab has been assigned as the selected tab for the control.
+  OnTabSelected is a TJvTabBarItemEvent property that represents the event handler signaled after a tab
+  has been assigned as the selected tab for the control.
 
   OnTabSelected is triggered during processing that occurs after a new value has been assigned for the
   SelectedTab property as a result of a mouse click event or through assignment in code. OnTabSelected
@@ -523,9 +583,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabSelecting
 Summary
-  Event handler signalled before a tab becomes the selected tab.
+  Event handler signaled before a tab becomes the selected tab.
 Description
-  OnTabSelecting is a TJvTabBarSelectingEvent property that represents the event handler signalled
+  OnTabSelecting is a TJvTabBarSelectingEvent property that represents the event handler signaled
   before a tab becomes the selected tab on the control.
 
   OnTabSelecting is triggered during processing that occurs when a new value has been assigned for the
@@ -557,6 +617,16 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.PageList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomTabBar.PageListTabLink
 Summary
   Write here a summary (1 line)
 Description
@@ -648,8 +718,8 @@ Description
   as the current tab is selected. If a page cannot be located for the TJvTabBarItem.Index value, no
   page is selected.
 
-  The OnTabSelected event handler is signalled after setting the selected tab and the optional page
-  from the Pagelist using the newly selected tab item.
+  The OnTabSelected event handler is signaled after setting the selected tab and the optional page from
+  the PageList using the newly selected tab item.
 See Also
   TJvTabBarItem, TJvTabBarItem.Index, PageList, OnTabSelected
 
@@ -790,8 +860,8 @@ Description
   the ControlDivideColor.
 
   The default value for BorderColor is clSilver, as assigned in the constructor for the object
-  instance. Changing the value in BorderColor causes the OnChange event handler to be signalled, and
-  the control is redrawn.
+  instance. Changing the value in BorderColor causes the OnChange event handler to be signaled, and the
+  control is redrawn.
 
   Use Color to specify the color for unselected tabs on the tabbed-bar control.
 
@@ -813,8 +883,8 @@ Description
   CloseColor is used in the protected DrawTab method to set the color when drawing the tab.
 
   The default value for CloseColor is clWhite, as assigned in the constructor for the object instance.
-  Changing the value in CloseColor causes the OnChange event handler to be signalled, and the control
-  is redrawn.
+  Changing the value in CloseColor causes the OnChange event handler to be signaled, and the control is
+  redrawn.
 
   Use CloseColorDisabled to specify the color used to draw a disabled tab that is closing.
 
@@ -839,7 +909,7 @@ Description
   CloseColorSelected is used in the protected DrawTab method to set the color when drawing the tab.
 
   The default value for CloseColorSelected is $F4F4F4, as assigned in the constructor for the object
-  instance. Changing the value in CloseColorSelected causes the OnChange event handler to be signalled,
+  instance. Changing the value in CloseColorSelected causes the OnChange event handler to be signaled,
   and the control is redrawn.
 
   Use CloseColor to specify the color used to draw enabled but unselected tabs.
@@ -862,8 +932,8 @@ Description
   when drawing the symbol on the close button.
 
   The default value for CloseCrossColor is $5D5D5D, as assigned in the constructor for the object
-  instance. Changing the value in CloseCrossColor causes the OnChange event handler to be signalled,
-  and the control is redrawn.
+  instance. Changing the value in CloseCrossColor causes the OnChange event handler to be signaled, and
+  the control is redrawn.
 
   Use CloseCrossColorSelected to specify the color for the close symbol on the select tab.
 
@@ -893,7 +963,7 @@ Description
 
   The default value for CloseCrossColorDisabled is $ADADAD, as assigned in the constructor for the
   object instance. Changing the value in CloseCrossColorDisabled causes the OnChange event handler to
-  be signalled, and the control is redrawn.
+  be signaled, and the control is redrawn.
 
   Use CloseCrossColor to specify the color for the close symbol on unselected tabs.
 
@@ -920,7 +990,7 @@ Description
 
   The default value for CloseCrossColorSelected is clBlack, as assigned in the constructor for the
   object instance. Changing the value in CloseCrossColorSelected causes the OnChange event handler to
-  be signalled, and the control is redrawn.
+  be signaled, and the control is redrawn.
 
   Use CloseCrossColor to specify the color for the close symbol on unselected tabs.
 
@@ -949,7 +1019,7 @@ Description
   CloseRectColor is used in the protected DrawTab method to set the color when drawing the tab.
 
   The default value for CloseRectColor is $868686, as assigned in the constructor for the object
-  instance. Changing the value in CloseRectColor causes the OnChange event handler to be signalled, and
+  instance. Changing the value in CloseRectColor causes the OnChange event handler to be signaled, and
   the control is redrawn.
 
   Use CloseRectColorDisabled to specify the focus rectangle color for disabled tabs.
@@ -971,7 +1041,7 @@ Description
 
   The default value for CloseRectColorDisabled is $D6D6D6, as assigned in the constructor for the
   object instance. Changing the value in CloseRectColorDisabled causes the OnChange event handler to be
-  signalled, and the control is redrawn.
+  signaled, and the control is redrawn.
 
   Use CloseRectColor to specify the focus rectangle color for an enabled but unselected tab.
 See Also
@@ -989,7 +1059,7 @@ Description
   changing the active tab in program code.
 
   The default value for Color is clWindow, as assigned in the constructor for the object instance.
-  Changing the value in Color causes the OnChange event handler to be signalled, and the control is
+  Changing the value in Color causes the OnChange event handler to be signaled, and the control is
   redrawn.
 
   Use TabColor to specify the color for the selected tab on the tabbed-bar control.
@@ -1021,7 +1091,7 @@ Description
   mouse or by changing the active tab in program code.
 
   The default value for ControlDivideColor is clBlack, as assigned in the constructor for the object
-  instance. Changing the value in ControlDivideColor causes the OnChange event handler to be signalled,
+  instance. Changing the value in ControlDivideColor causes the OnChange event handler to be signaled,
   and the control is redrawn.
 
   Use Color to specify the color for unselected tabs on the tabbed-bar control.
@@ -1063,7 +1133,7 @@ Description
   tab with the mouse or by changing the active tab in program code.
 
   The default value for DividerColor is $99A8AC, as assigned in the constructor for the object
-  instance. Changing the value in DividerColor causes the OnChange event handler to be signalled, and
+  instance. Changing the value in DividerColor causes the OnChange event handler to be signaled, and
   the control is redrawn.
 
   Use Color to specify the color for unselected tabs on the tabbed-bar control.
@@ -1105,7 +1175,7 @@ Description
   symbol on the close button.
 
   The default value for ModifiedCrossColor is clRed, as assigned in the constructor for the object
-  instance. Changing the value in ModifiedCrossColor causes the OnChange event handler to be signalled,
+  instance. Changing the value in ModifiedCrossColor causes the OnChange event handler to be signaled,
   and the control is redrawn.
 
   Use CloseCrossColor to specify the color for the close symbol on unselected tabs.
@@ -1134,7 +1204,7 @@ Description
   operation is performed for an unselected tab in the tabbed-bar control.
 
   The default value for MoveDividerColor is clBlack, as assigned in the constructor for the object
-  instance. Changing the value in MoveDividerColor causes the OnChange event handler to be signalled,
+  instance. Changing the value in MoveDividerColor causes the OnChange event handler to be signaled,
   and the control is redrawn.
 See Also
   OnChange, TJvCustomTabBar.
@@ -1167,7 +1237,7 @@ Description
   selecting a tab with the mouse or by changing the value program code.
 
   The default value for TabColor is clBtnFace, as assigned in the constructor for the object instance.
-  Changing the value in TabColor causes the OnChange event handler to be signalled, and the control is
+  Changing the value in TabColor causes the OnChange event handler to be signaled, and the control is
   redrawn.
 
   Use Color to specify the color for unselected tabs on the tabbed-bar control.
@@ -1280,7 +1350,7 @@ Description
   Use Enabled, Visible, Closing, Modified, Hot, and Selected to provide state information when drawing
   the tab on the TJvTabBar control.
 
-  Use PopUpMenu to provide a pop-up context menu for the tab.
+  Use PopupMenu to provide a pop-up context menu for the tab.
 
   Use TabBar to access properties and methods in the TJvCustomTabBar control that owns the items in the
   collection.
@@ -1648,10 +1718,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.OnGetEnabled
 Summary
-  Event handler signalled when reading the value of the Enabled property.
+  Event handler signaled when reading the value of the Enabled property.
 Description
-  OnGetEnabled is a TJvGetEnabledEvent property that represents the event handler signalled when
-  reading the value for the Enabled property.
+  OnGetEnabled is a TJvGetEnabledEvent property that represents the event handler signaled when reading
+  the value for the Enabled property.
 
   OnGetEnabled allows the application to implement code that is executed each time a value is read for
   the Enabled property. Applications must assign a procedure to the event handler to allow responding
@@ -1670,9 +1740,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.OnGetModified
 Summary
-  Event handler signalled when reading the value of the Modified property.
+  Event handler signaled when reading the value of the Modified property.
 Description
-  OnGetModified is a TJvGetModifiedEvent property that represents the event handler signalled when
+  OnGetModified is a TJvGetModifiedEvent property that represents the event handler signaled when
   reading the value for the Modified property.
 
   OnGetModified allows the application to implement code that is executed each time a value is read for
@@ -1797,7 +1867,7 @@ Description
 
   The default value for Visible is True. When Visible contains False, the tab will not be drawn on the
   TJvTabBar control. Changing the value in Visible causes the OnChanged event handler for the TJvTabBar
-  control to be signalled.
+  control to be signaled.
 
   Enabled and Visible are used to determine if the tab can be selected at run-time using the TJvTabBar
   control.
@@ -1810,8 +1880,8 @@ See Also
 Summary
   Implements an event type for selected or closing tabs.
 Description
-  TJvTabBarItemEvent is an object procedure that implements an event handler signalled when a tab on
-  the tabbed-bar control is Selected or Closed.
+  TJvTabBarItemEvent is an object procedure that implements an event handler signaled when a tab on the
+  tabbed-bar control is Selected or Closed.
 
   Sender is the TJvCustomTabBar control generating the event notification.
 

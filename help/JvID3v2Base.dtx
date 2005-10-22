@@ -138,7 +138,7 @@ Description
   This frame indicates if the actual audio stream is encrypted, and by whom.
 
   The frame contains a URL containing an email address, or a link to a location where an email address
-  can be found, that belongs to the organisation responsible for this specific encrypted audio file.
+  can be found, that belongs to the organization responsible for this specific encrypted audio file.
 
   PreviewStart and PreviewLength are described in frames, and are pointers to an unencrypted part of
   the audio. If no part is unencrypted, these fields should be left zeroed.
@@ -192,7 +192,7 @@ Summary
   Identifies who is responsible for this specific encrypted audio file.
 Description
   Use OwnerID to specify a \URL containing an email address, or a link to a location where an email
-  address can be found, that belongs to the organisation responsible for this specific encrypted audio
+  address can be found, that belongs to the organization responsible for this specific encrypted audio
   file. Questions regarding the encrypted audio should be sent to the email address specified.
 
 ----------------------------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3AudioEncryptionFrame.PreviewStart
 Summary
-  Specifies the frame that marks the start of an unecrypted part of the audio.
+  Specifies the frame that marks the start of an unencrypted part of the audio.
 Description
   Use PreviewLength and PreviewStart to specify an unencrypted part of the audio.
 
@@ -502,7 +502,7 @@ Description
   <TABLE>
     Frame ID, name                    \Description
     --------------------------------  --------------------------------------------------------
-    fiComment - <C> COMM </C>         The 'content' frame is indended for any kind of full
+    fiComment - <C> COMM </C>         The 'content' frame is intended for any kind of full
                                         text information that does not fit in any other frame.
     fiUnsyncedLyrics - <C> USLT </C>  The 'Unsynchronized lyric/text transcription' frame
                                         contains the lyrics of the song or a text
@@ -710,7 +710,7 @@ Description
   Call Commit to write a modified tag to the file specified by property FileName.
 
   You can use WriteEncodingAs and WriteVersionAs to enforce that the frames in the tag will be written
-  with a specific encoding, and enforce the tag to be writen as a specific version, resp. It is
+  with a specific encoding, and enforce the tag to be written as a specific version, resp. It is
   recommended to use Version instead of WriteVersionAs.
 
   When you call <LINK TJvID3Controller.Commit, Commit> the tag controller checks whether all frames in
@@ -729,7 +729,7 @@ Summary
   Copies the ID3 v1 tag of the file to the relevant frames of the ID3 v2 tag.
 Description
   Call CopyFromID3v1 to copy the ID3 v1 tag of the file specified by the FileName property to the ID3
-  v2 tag. The new tag isn't actually writtten to the file until you call Commit.
+  v2 tag. The new tag isn't actually written to the file until you call Commit.
 
   The ID3 v2 frames that correspond to ID3 v1 fields are:
 
@@ -760,7 +760,7 @@ Summary
   Copies the properties of the ID3 v1 component to the relevant frames of the ID3 v2 tag.
 Description
   Call CopyFromID3v1Ctrl to copy the properties of the ID3 v1 component to the ID3 v2 tag. The new tag
-  isn't actually writtten to the file until you call Commit.
+  isn't actually written to the file until you call Commit.
 
   See <LINK CopyFromID3v1> for a list of ID3 v2 frames that correspond to ID3 v1 fields.
 
@@ -1089,7 +1089,7 @@ See Also
 Summary
   Indicates the size of the ID3 v2 tag.
 Description
-  Use TagSize to determine the the size of the complete ID3 v2 tag after unsychronisation, including
+  Use TagSize to determine the the size of the complete ID3 v2 tag after unsynchronization, including
   padding, excluding the header but not excluding the extended header.
 
   The tag controller must be <LINK TJvID3Controller.Active, active>, otherwise TagSize returns 0.
@@ -1534,7 +1534,7 @@ Summary
   Specifies the emphasis of the MP3 file.
 Description
   The emphasis tells the decoder that the file must be de-emphasized, i.e., the decoder must
-  're-equalize' the sound after a Dolby-like noise supression. It is rarely used.
+  're-equalize' the sound after a Dolby-like noise suppression. It is rarely used.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FileInfo.FileSize
@@ -1809,7 +1809,7 @@ Description
   encoding of a frame. Frames that do not have fields that allow different types of text encoding,
   ignore the value of Encoding.
 
-  Fields that allow different types of text encoding are typically accessable via two properties. One
+  Fields that allow different types of text encoding are typically accessible via two properties. One
   that has the name of the field as name, and can be used to access the ISO-8859-1 encoding of the
   field. The other has the name of the field postfixed with 'W' as name, and can be used to access the
   unicode encoding of the field. Examples are <LINK TJvID3PictureFrame.Description, Description> and
@@ -2461,7 +2461,7 @@ See Also
 Summary
   Indicates the size of the complete tag.
 Description
-  Read Size the determine the size of the complete tag after unsychronisation, including padding,
+  Read Size the determine the size of the complete tag after unsynchronization, including padding,
   excluding the header but not excluding the extended header
 
 ----------------------------------------------------------------------------------------------------
@@ -2490,7 +2490,7 @@ Description
                                        The value zero indicates that this is a part of a
                                        multifile audio track that should be played
                                        continuously.
-    fiSize - <c> TSIZ </c>           The 'Size' frame contains the size of the audiofile in
+    fiSize - <c> TSIZ </c>           The 'Size' frame contains the size of the audio file in
                                        bytes, excluding the ID3 v2 tag. <B>(Not in v2.4.0
                                        tags)</B>
     fiSongLen - <c> TLEN </c>        The '\Length' frame contains the length of the audio
@@ -2846,7 +2846,7 @@ Description
   TJvID3Frame.FrameID, frame identifier> fiPopularimeter ("POPM").
 
   The purpose of this frame is to specify how good an audio file is. Many interesting applications
-  could be found to this frame such as a playlist that features better audiofiles more often than
+  could be found to this frame such as a playlist that features better audio files more often than
   others or it could be used to profile a person's taste and find other 'good' files by comparing
   people's profiles.
 
@@ -2930,8 +2930,8 @@ See Also
 Summary
   Specifies how good an audio file is.
 Description
-  Use Rating to speciy how good an audio file is. The rating is 1-255 where 1 is worst and 255 is best.
-  0 is unknown.
+  Use Rating to specify how good an audio file is. The rating is 1-255 where 1 is worst and 255 is
+  best. 0 is unknown.
 See Also
   TJvID3PopularimeterFrame.Counter, TJvID3PopularimeterFrame.EMailAddress
 
@@ -3047,7 +3047,7 @@ Summary
   Indicates the Separator used to separate items in the list.
 Description
   The items in the list frame are stored in the tag as one string with the items separated by the
-  seperator specified by Separator or SeperatorW.
+  separator specified by Separator or SeperatorW.
 
   Frames that contains items with a fixed character length, do not use a separator. Separator returns
   #0 in these cases. (SeparatorW returns #0#0).
@@ -3193,7 +3193,7 @@ Description
     fiDate - <C> TDAT </C>                The 'Date' frame contains the the date for the
                                             recording. <B>(Not in v2.4.0 tags)</B>
     fiEncodedBy - <C> TENC </C>           The 'Encoded by' frame contains the name of the
-                                            person or organisation that encoded the audio
+                                            person or organization that encoded the audio
                                             file.
     fiEncoderSettings - <C> TSSE </C>     The 'Software/Hardware and settings used for
                                             encoding' frame includes the used audio encoder
@@ -3271,7 +3271,7 @@ Description
                                             sorting purposes. <B>(Only in v2.4.0 tags)</B>
     fiTrackNum - <C> TRCK </C>            The 'Track number/Position in set' frame is a
                                             numeric string containing the order number of the
-                                            audio-file on its original recording. This MAY be
+                                            audio file on its original recording. This MAY be
                                             extended with a "/" character and a numeric
                                             string containing the total number of
                                             tracks/elements on the original recording. E.g.
@@ -3523,7 +3523,7 @@ Description
   Use TJvID3URLUserFrame to represent a user defined \URL link frame in a tag. Such a frame has <LINK
   TJvID3Frame.FrameID, frame identifier> fiWWWUser ("WXXX").
 
-  This frame is intended for \URL links concerning the audiofile in a similar way to the other
+  This frame is intended for \URL links concerning the audio file in a similar way to the other
   "W"-frames. The frame consists of a <LINK TJvID3URLUserFrame.Description, description> of the string
   and the actual URL.
 
@@ -3607,7 +3607,7 @@ Description
   Use TJvID3UserFrame to represent a user defined text information frame in a tag. Such a frame has
   <LINK TJvID3Frame.FrameID, frame identifier> fiUserText ("TXXX").
 
-  This frame is intended for one-string text information concerning the audiofile in a similar way to
+  This frame is intended for one-string text information concerning the audio file in a similar way to
   the other text frames.
 
   There may be more than one fiUserText frame in each tag, but only one with the same description.

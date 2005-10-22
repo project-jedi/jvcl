@@ -35,7 +35,7 @@ Author
 Summary
   Base class for navigation pane controls.
 Description
-  TJvCustomNavigationPane is the base class for navigationpane style components. Do not create
+  TJvCustomNavigationPane is the base class for navigation pane style components. Do not create
   instances of TJvCustomNavigationPane. Instead, drop a component, like TJvNavigationPane, on the
   form.
 
@@ -46,11 +46,11 @@ Description
 
   Buttons can be either maximized or minimized (iconic). When a button is iconic, it appears on an icon
   panel at the bottom of the control. This panel is always visible. The icon panel can also have a
-  dropdown menu. If it does, the dropdown menu button appears at the far right of the icon panel.
+  drop-down menu. If it does, the drop-down menu button appears at the far right of the icon panel.
 
   To minimize and maximize the page buttons, the user can drag a splitter located above the topmost
   button. You can programmatically control the number of maximized buttons with the MaximizedCount
-  propery or, if yoou need more detailed control, with each page's Iconic property.
+  property or, if you need more detailed control, with each page's Iconic property.
 
   The navigation pane (and all other Nav Pane related visual controls), has a StyleManager property.
   You can assign a TJvNavPaneStyleManager to this property and then control the color themes used from
@@ -69,7 +69,7 @@ Description
 Summary
   Specifies whether headers are added to pages automatically.
 Description
-  Use AutoHeaders to sepcify whether headers (TJvNavPanelHeader instances) are automatically added to
+  Use AutoHeaders to specify whether headers (TJvNavPanelHeader instances) are automatically added to
   the nav pages.
 
 ----------------------------------------------------------------------------------------------------
@@ -488,7 +488,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavPaneToolPanel.DrawPartialMenuFrame
 Summary
-  Specifies how the dropdown button is drawn.
+  Specifies how the drop-down button is drawn.
 Description
   DrawPartialMenuFrame determines how the <LINK DropDownMenu> button is drawn when the drop down is
   displayed. When DrawPartialMenuFrame is true, only the top,left and right edge of the button is
@@ -501,7 +501,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavPaneToolPanel.DropDownMenu
 Summary
-  Specifies the menu to display when the user clicks the dropdown button.
+  Specifies the menu to display when the user clicks the drop-down button.
 Description
   Assign a TPopupMenu to the DropDownMenu property to show a menu button on the panel (at the top of
   the control) that, when clicked by the user, shows the menu. If no menu is assigned, the menu button
@@ -542,7 +542,7 @@ Summary
   Specifies the height of the header area of the panel.
 Description
   Use HeaderHeight to set and retrieve the height of the header area of the panel (where the grabber,
-  dropdown button and close button are displayed).
+  drop-down button and close button are displayed).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavPaneToolPanel.HeaderVisible
@@ -589,9 +589,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavPaneToolPanel.OnDropDownMenu
 Summary
-  Occurs when the user clicks the dropdown button.
+  Occurs when the user clicks the drop-down button.
 Description
-  \Write a handler for this event to take specific action when the user clicks the dropdown button.
+  \Write a handler for this event to take specific action when the user clicks the drop-down button.
 See Also
   TJvCustomNavPaneToolPanel.DropDownMenu
 
@@ -784,7 +784,7 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneBackgroundImage.HasImage
 Summary
-  Indicates whether the Picture property contains a useable image.
+  Indicates whether the Picture property contains a usable image.
 Description
   Use HasImage to determine whether the picture property contains a valid image. A valid image is an
   image that has a height and width larger than 0.
@@ -859,7 +859,7 @@ Description
   Set Tile to True to have the image in the Picture property completely fill the control. The image is
   drawn vertically and horizontally across the control until its client area is completely filled.
 Note
-  When Tile is True, Center, Proportional and Strecth has no effect.
+  When Tile is True, Center, Proportional and Stretch has no effect.
 See Also
   Propoportional
 
@@ -1154,7 +1154,7 @@ JVCLInfo
 Summary
   Panel used as a group splitter in a TJvCustomNavigationPane.
 Description
-  Use a TJvNavPanelDivider when you need a divider in the styl eof the Nav Pane components that can
+  Use a TJvNavPanelDivider when you need a divider in the style of the Nav Pane components that can
   also act as a splitter.
 
 ----------------------------------------------------------------------------------------------------
@@ -1402,7 +1402,7 @@ See Also
 Summary
   Reference to the button used as the iconic button for the control.
 Description
-  This propery is for internal use only.
+  This property is for internal use only.
 See Also
   TJvNavPanelPage.Iconic, TJvNavPanelPage.IconPanel, TJvNavPanelPage.NavPanel
 
@@ -1411,7 +1411,7 @@ See Also
 Summary
   Indicates whether the page is currently displaying a maximized or iconic button.
 Description
-  Use Iconic to specify whether the page's button is displayed mazimized or minimized.
+  Use Iconic to specify whether the page's button is displayed maximized or minimized.
 See Also
   TJvNavPanelPage.IconButton
 
@@ -1420,7 +1420,7 @@ See Also
 Summary
   Reference to the icon panel containing the IconButton.
 Description
-  This propery is for internal use only.
+  This property is for internal use only.
 See Also
   TJvNavPanelPage.IconButton, TJvNavPanelPage.NavPanel
 
@@ -1439,9 +1439,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.NavPanel
 Summary
-  Refrerence to the maximzed button of the page.
+  Reference to the maximized button of the page.
 Description
-  This propery is for internal use only.
+  This property is for internal use only.
 See Also
   TJvNavPanelPage.IconButton
 
@@ -1693,7 +1693,7 @@ Summary
   Specifies whether a close button is shown in the caption are or not.
 Description
   Set CloseButton to true to display a close button in the caption area of the tool panel. If
-  CloseButton is true and the user clicks on it, the OnCLose event is triggered.
+  CloseButton is true and the user clicks on it, the OnClose event is triggered.
 See Also
   TJvNavPaneToolPanel.DropDownMenu, TJvNavPaneToolPanel.OnClose
 
@@ -1704,22 +1704,23 @@ Summary
 Description
   Use DrawPartialMenuFrame to specify how the drop-down button is drawn when the drop-down menu is
   displayed. If DrawPartialMenuFrame is true, the bottom line of the frame is not drawn when the
-  drop-down is visible. If DrawPartialMenuFrame is false, the bottom ine of the frame is always drawn.
+  drop-down is visible. If DrawPartialMenuFrame is false, the bottom line of the frame is always
+  drawn.
 See Also
   TJvNavPaneToolPanel.DropDownMenu
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.DropDownMenu
 Summary
-  Specifies the popup menu to show when the user clicks on the dropdown button.
+  Specifies the popup menu to show when the user clicks on the drop-down button.
 Description
-  Assign a TPopupMenu to this property to display a dropdown button in the caption area of the panel.
+  Assign a TPopupMenu to this property to display a drop-down button in the caption area of the panel.
   When the user clicks the button, the popup menu is displayed below the button. If no popup menu is
-  assigned, the dropdown button is hidden.
+  assigned, the drop-down button is hidden.
 Note
-  To display the dropdown button without displaying the popup menu, assign a TPopupMenu to the property
-  and handle the OnDropDownMenu event. You should set Handled to true to supress the display of the
-  default menu.
+  To display the drop-down button without displaying the popup menu, assign a TPopupMenu to the
+  property and handle the OnDropDownMenu event. You should set Handled to true to suppress the display
+  of the default menu.
 
   You can adjust the location of the menu with the TPopupMenu.Alignment property.
 See Also
@@ -1738,8 +1739,8 @@ Summary
   Specifies the images used for the button images in the toolbar.
 Description
   Assign a TCustomImageList or descendant to this property to specify the images used by the buttons on
-  the toolbar of the panel. Each button aos has an ImageIndex property that specifies which image in
-  Images to display for that button.
+  the toolbar of the panel. Each button has an ImageIndex property that specifies which image in Images
+  to display for that button.
 See Also
   TJvNavPaneToolPanel.Buttons
 
@@ -1748,12 +1749,12 @@ See Also
 Summary
   Occurs when the user clicks one of the buttons in the toolbar.
 Description
-  Write a handler for this event to take appropriate action when the user clicks one of thebuttons in
-  the toolbar. This event isnot triggered when the user clicks the dropdown button or the close
+  Write a handler for this event to take appropriate action when the user clicks one of the buttons in
+  the toolbar. This event is not triggered when the user clicks the drop-down button or the close
   button.
 Parameters
   Sender - The control that triggered the event
-  Index  - The index of te clicked button in the Buttons array
+  Index  - The index of the clicked button in the Buttons array
 See Also
   TJvNavPaneToolPanel.OnClose, TJvNavPaneToolPanel.OnDropDownMenu
 
@@ -1762,7 +1763,7 @@ See Also
 Summary
   Occurs when the user clicks the close button.
 Description
-  Write a handler for this event to take specific action whwen the user clicks the close button. For
+  Write a handler for this event to take specific action when the user clicks the close button. For
   example, hide the tool panel when this happens.
 See Also
   TJvNavPaneToolPanel.CloseButton
@@ -1892,7 +1893,7 @@ See Also
 @@TJvToolPanelHitTestInfo
 <TITLE TJvToolPanelHitTestInfo type>
 Summary
-  Enumeration that specifies the posssible return values from a call to GetHitTestInfoAt of a
+  Enumeration that specifies the possible return values from a call to GetHitTestInfoAt of a
   TJvNavPaneToolPanel.
 Description
   TJvToolPanelHitTestInfo describes the possible return values from

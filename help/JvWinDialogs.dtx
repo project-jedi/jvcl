@@ -566,7 +566,7 @@ Description
   another format type. Use Capacity to specify the formatted capacity of the drive.
 
   Some values of FormatType and Capacity are ignored on Windows NT, 2000 and XP systems. For example,
-  if you set Capacity to dcSize360kb, under Windows XP this value is ignored and the system uses the
+  if you set Capacity to dcSize360kB, under Windows XP this value is ignored and the system uses the
   drives default capacity.
 
   Call Execute to display the format dialog.
@@ -770,7 +770,7 @@ Description
     S_OK           If the MIME content type is associated with the extension. The extension
                      is associated as the default extension for the content type.
     S_FALSE        If nothing is registered.
-    E_ABORT        The user cancelled the operation.
+    E_ABORT        The user canceled the operation.
     E_FLAGS        The options specified by Options are invalid.
     E_OUTOFMEMORY  Not enough memory to complete the operation.
     E_POINTER      One of the values of the properties is invalid.

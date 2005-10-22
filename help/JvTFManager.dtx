@@ -1212,7 +1212,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint
 Summary
-  Class that rovides hints for JTF controls.
+  Class that provides hints for JTF controls.
 Description
   The TJvTFHint component provides hint functionality to JvTFControls. It is used internally and under
   normal circumstances you should never have to work with this component.
@@ -1246,7 +1246,7 @@ Summary
 Description
   This method will cause a specially formatted hint to show. The hint will display the appointment's
   description and start/end info according to the values of the ShowDatesTimes and ShowDesc properties.
-  If FormattedDesc is True, CRs and LFs (linebreaks) will be preserved, otherwise they will be removed
+  If FormattedDesc is True, CRs and LFs (line breaks) will be preserved, otherwise they will be removed
   to minimize the size of the hint window.
 
   The hint will appear at location (X, Y) (relative to the control).
@@ -1791,7 +1791,7 @@ Parameters
 @@TJvTFPrinterMeasure
 <TITLE TJvTFPrinterMeasure type>
 Summary
-  Specifies the available units of measure: pixels, inches, or millimetres.
+  Specifies the available units of measure: pixels, inches, or millimeters.
 Description
   TJvTFPrinterMeasure is used by the TJvTFPrinter.Measure property to determine the current
   measurements used when printing.
@@ -1806,7 +1806,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterMeasure.pmMM
-  Measurements are in millimetres.
+  Measurements are in millimeters.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout
@@ -2339,7 +2339,7 @@ Description
   The TJvTFScheduleManager component is the heart of the JTF suite. It provides a centralized source of
   data for multiple JTF Controls. It stores schedule and appointment objects and manages all
   relationships between them. The server provides many methods and events to its connected controls,
-  embedded schedule and appointment objects, and you that allow objec s, relationships, and
+  embedded schedule and appointment objects, and you that allow objects, relationships, and
   communication to take place without the caller needing to worry about the low-level details and
   implications of the action.
 
@@ -2432,7 +2432,7 @@ Summary
   Returns the number of JTF controls connected to the server.
 Description
   Use the ConControlCount to get the number of TJvTFControls that are connected to the server. To get
-  the number of TJvTFComponents isntead, use the ConComponentCount.
+  the number of TJvTFComponents instead, use the ConComponentCount.
 Note
   This method supersedes ConnectionCount as of version 1.1 of the server.
 See Also
@@ -2617,7 +2617,7 @@ Description
   be flushed from memory. If All is False, cached objects are flushed according to the rules of the
   Cache.CacheType property.
 Parameters
-  All - Indicitates whether to flush all cached objects.
+  All - Indicates whether to flush all cached objects.
 See Also
   TJvTFScheduleManager.Cache
 
@@ -2788,7 +2788,7 @@ Description
 Parameters
   Sender   - The object that has fired the event and most likely will be a TJvTFScheduleManager.
   FlushObj - The object that is about to be removed from memory (either a TJvTFSched or a TJvTFAppt).
-  FlushIt  - Specifiy whether to remove the FlushObj object from memory.
+  FlushIt  - Specify whether to remove the FlushObj object from memory.
 See Also
   TJvTFFlushEvent, TJvTFScheduleManager.Flush, TJvTFScheduleManager.Flushing
 
@@ -3060,7 +3060,7 @@ Parameters
   Comp      - The component in question.
   ApptCtrl  - The control in question.
   SchedName - Name of the schedule.
-  SchedDate - Date of the schedulr.
+  SchedDate - Date of the schedule.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ReleaseSchedule@TJvTFControl@string@TDate

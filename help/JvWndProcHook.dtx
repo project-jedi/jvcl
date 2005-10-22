@@ -9,11 +9,6 @@ Author
   Peter Thörnqvist, Remko Bonte
 
 ----------------------------------------------------------------------------------------------------
-@@RegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
-<TITLE RegisterWndProcHook function>
-<COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
-
-----------------------------------------------------------------------------------------------------
 @@RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE RegisterWndProcHook function>
 Summary
@@ -37,6 +32,11 @@ Parameters
   Order    - Specifies whether to receive messages before or after the control handles them.
 See Also
   UnRegisterWndProcHook
+
+----------------------------------------------------------------------------------------------------
+@@RegisterWndProcHook@THandle@TJvControlHook@TJvHookOrder
+<TITLE RegisterWndProcHook function>
+<COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 
 ----------------------------------------------------------------------------------------------------
 @@ReleaseObj
@@ -142,7 +142,7 @@ Description
   will be fired.
 
   At design time, set Active to true to make the control hooked when the application starts running
-  (the default value is false). At run-time, use the HookControl or UnhookControl method to hook the
+  (the default value is false). At run-time, use the HookControl or UnHookControl method to hook the
   control or remove the hook.
 See Also
   TJvWindowHook.Control, TJvWindowHook.HookControl, TJvWindowHook.UnHookControl
@@ -212,11 +212,6 @@ See Also
   TJvWindowHook.Active, TJvWindowHook.Control
 
 ----------------------------------------------------------------------------------------------------
-@@UnRegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
-<TITLE UnRegisterWndProcHook function>
-<COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
-
-----------------------------------------------------------------------------------------------------
 @@UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE UnRegisterWndProcHook function>
 Summary
@@ -235,4 +230,9 @@ Parameters
               RegisterWndProcHook.
 See Also
   RegisterWndProcHook
+
+----------------------------------------------------------------------------------------------------
+@@UnRegisterWndProcHook@THandle@TJvControlHook@TJvHookOrder
+<TITLE UnRegisterWndProcHook function>
+<COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 

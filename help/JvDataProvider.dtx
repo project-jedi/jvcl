@@ -343,7 +343,7 @@ See Also
 Summary
   Transforms a buffer into a hexadecimal string representation.
 Description
-  HexBytes transforms the specified buffer into a hexadecimal string repesentation.
+  HexBytes transforms the specified buffer into a hexadecimal string representation.
 
   Each byte in the buffer will be represented by two hexadecimal digits in the resulting string, making
   the result string exactly twice the specified length.
@@ -448,8 +448,8 @@ Description
   default implementation for the IInterface methods.
 
   Furthermore, TExtensibleInterfacedPersistent allows itself to be extended through aggregators, where
-  the interfaced supported by those aggregators are directly accesible from the main object, as well as
-  from eachother. The aggregators must be derived from TAggregatedPersistentEx for this behavior to
+  the interfaced supported by those aggregators are directly accessible from the main object, as well
+  as from each other. The aggregators must be derived from TAggregatedPersistentEx for this behavior to
   work correctly. In addition, TExtensibleInterfacedPersistent automatically provides semi properties
   that allow the extensions to be read and written from and to a stream.
 
@@ -566,7 +566,7 @@ Description
 
   The base class returns True if the class reference of the extension is registered with the filing
   system (i.e. the class is, directly or indirectly, handed to a call to RegisterClass or
-  RegisterClasses) and False in all other cases. Descedants can override this method to deny specific
+  RegisterClasses) and False in all other cases. Descendants can override this method to deny specific
   extensions being written to the form file, in addition to the check done by the base class.
 
   The method returns True if the specified extension should be written to the form file, False if it
@@ -825,7 +825,7 @@ Description
   IJvDataContextsManager.Clear.
 
   DoClearContexts should only delete <LINK IJvDataContext.IsDeletable, deletable contexts>, which
-  implies that after a call to DoClearContexts the list isn't neccessarily empty. For each context that
+  implies that after a call to DoClearContexts the list isn't necessarily empty. For each context that
   is removed, the client needs to be notified (both before the deletion as well as after).
 
   The best way to implement this is to iterate the list from the last to the first context and call
@@ -913,7 +913,7 @@ Summary
 Description
   The TJvBaseDataContextsManager class is the base implementation of the IJvDataContextsManager
   interface. The class itself provides in the basic implementation for all of the interface's methods,
-  except for <LINK IJvDataContextsManager.New, New>, which is declared abstract, to be overriden by
+  except for <LINK IJvDataContextsManager.New, New>, which is declared abstract, to be overridden by
   descendants in order to create a new context and add it to the list.
 
   In addition the class provides 2 additional methods that give access to the list (both as an
@@ -1019,6 +1019,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.GetItems
 <ALIAS IJvDataItem.GetItems>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ID
 Summary
@@ -1130,7 +1131,7 @@ Description
   class itself provides no implementation for interface's methods but rather declares them as abstract
   virtual methods.
 
-  As a descendant of TJvDataItemAggregatedObject it also provides acces to the item object this
+  As a descendant of TJvDataItemAggregatedObject it also provides access to the item object this
   extension belongs to (both as interface as well as the implementing object).
 
   You should not instantiate an object of this class but rather one of it's descendants that override
@@ -1169,7 +1170,7 @@ Description
   The class itself provides no implementation for interface's methods but rather declares them as
   abstract virtual methods.
 
-  As a descendant of TJvDataItemAggregatedObject it also provides acces to the item object this
+  As a descendant of TJvDataItemAggregatedObject it also provides access to the item object this
   extension belongs to (both as interface as well as the implementing object).
 
   You should not instantiate an object of this class but rather one of it's descendants that override

@@ -29,7 +29,7 @@ Description
 Summary
   Inspector data exception class.
 Description
-  Exception class for exceptions occuring in the TJvCustomInspectorData class or one of its
+  Exception class for exceptions occurring in the TJvCustomInspectorData class or one of its
   descendants.
 
 ----------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ Description
 Summary
   Inspector item exception class.
 Description
-  Exception class for exceptions occuring in the TJvCustomInspectorItem class or one of its
+  Exception class for exceptions occurring in the TJvCustomInspectorItem class or one of its
   descendants.
 
 ----------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ Description
 Summary
   Inspector registration exception class.
 Description
-  Exception class for exception occuring in the TJvInspectorRegister class or in the
+  Exception class for exception occurring in the TJvInspectorRegister class or in the
   TJvCustomInspectorRegItem class or one of its descendants.
 
 ----------------------------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlag.iifAutoUpdate
-  Any change to the edit control is immediately applied to the underlaying data object.
+  Any change to the edit control is immediately applied to the underlying data object.
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlag.iifMultiLine
@@ -220,7 +220,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlag.iifValueList
-  Indicates wheter or not the item uses a value list to edit the item (ie. uses a combobox to edit the
+  Indicates whether or not the item uses a value list to edit the item (ie. uses a combobox to edit the
   value).
 
 ----------------------------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemSortKind.iskCustom
-  Items are sorted using an OnCompare event to dermine the order.
+  Items are sorted using an OnCompare event to determine the order.
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorPaintRect
@@ -346,7 +346,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorPaintRect.iprEditButton
-  The rectangle for the dropdown or ellipses button. This rectangle will be at the right margin of the
+  The rectangle for the drop-down or ellipses button. This rectangle will be at the right margin of the
   iprValueArea. The rectangle will be empty if the item is not in edit mode or if the item doesn't
   require a button.
 
@@ -419,7 +419,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorTMethodFlag.imfSortMethods
-  Indicates whether event handlerss are sorted alphabetically within their owner.
+  Indicates whether event handlers are sorted alphabetically within their owner.
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorTMethodFlag.imfSortInstances
@@ -829,7 +829,7 @@ Summary
   Retrieves the expand/collapse button rectangle.
 Description
   GetButtonRect retrieves the items expand/collapse button rectangle. If the item has no
-  expand/collapse button, an empty rectange will be returned.
+  expand/collapse button, an empty rectangle will be returned.
 Parameters
   ItemIndex - Index into the VisibleItems list of the item to retrieve the button rectangle for.
 
@@ -869,7 +869,7 @@ Summary
   Current image height.
 Description
   ImageHeight returns the total height of all visible inspector items. This is the height that would be
-  neccessary to render all currently displayable items in a single band, even if the Inspector is in
+  necessary to render all currently displayable items in a single band, even if the Inspector is in
   bands mode.
 
 ----------------------------------------------------------------------------------------------------
@@ -927,7 +927,7 @@ Summary
   Signals that the list of visible items should be redetermined.
 Description
   InvalidateList will make sure that the list of visible items will be rebuild before a new redraw will
-  take place. If LockCount is non-zero, Needrebuild will be set, otherwise RebuildVisible will be
+  take place. If LockCount is non-zero, NeedRebuild will be set, otherwise RebuildVisible will be
   called.
 
   InvalidateList is called whenever an item is made visible or invisible (either through the items
@@ -1185,7 +1185,7 @@ Summary
   Refreshes the items of the inspector.
 Description
   RefreshValues will refresh all items of the inspector. If any item is being edited, the edit
-  operation is canceled (losing any change not yet committed) and reinitialised.
+  operation is canceled (losing any change not yet committed) and reinitialized.
 
   Use RefreshValues if you know one or more of the items in the inspector have been modified outside
   the inspector (e.g. you changed a property from code and this property is displayed in the
@@ -1272,9 +1272,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.ScrollFactorV
 Summary
-  Determines the multiply/devision factor for vertical scrollbar settings.
+  Determines the multiply/division factor for vertical scrollbar settings.
 Description
-  ScrollfactorV determines the multiplication/devision factor for setting the vertical scrollbar.
+  ScrollfactorV determines the multiplication/division factor for setting the vertical scrollbar.
 
   Because the windows scrollbar can only handle 16 bit values for thumbtracking messages, all values
   should be within -32768 .. 32767. The ImageHeight could be larger than that. To circumvent that, a
@@ -1433,7 +1433,7 @@ See Also
 Summary
   Indicates if TABs are wanted as alternative navigation keys.
 Description
-  WantTabs indicates wheter the TAB and Shift-TAB keys will function as a "Next" and "Prior" item
+  WantTabs indicates whether the TAB and Shift-TAB keys will function as a "Next" and "Prior" item
   respectively. If WantTabs is True, TAB and Shift-TAB will function as navigation keys in addition to
   the standard up and down keys.
 
@@ -1582,7 +1582,7 @@ See Also
 Summary
   Retrieve the data as a set value.
 Description
-  GetAsSet will try to retrieve the underlaying data as a set value. If the data can not be accessed as
+  GetAsSet will try to retrieve the underlying data as a set value. If the data can not be accessed as
   a set, an exception will be raised. Before the data is read CheckReadAccess is called to check read
   access.
 Parameters
@@ -1593,7 +1593,7 @@ Parameters
 Summary
   Determines if the data object actually represents a value.
 Description
-  HasValue determines if the data object reperesents a value. This is dependant on the data the object
+  HasValue determines if the data object represents a value. This is dependent on the data the object
   is representing and therefor changes for each data class. If the data object represents a value,
   HasValue returns True, otherwise False is returned. If HasValue is False, data can not be read or
   written and the inspector will show <B>(no value)</B>.
@@ -1634,7 +1634,7 @@ Description
 Summary
   Determines if the data object has been assigned a value.
 Description
-  IsAssigned determines if the data object has a value assigned to it. This is dependant on the data
+  IsAssigned determines if the data object has a value assigned to it. This is dependent on the data
   the object is representing and therefor changes for each data class. If a value is assigned,
   IsAssigned returns True, otherwise False is returned. If IsAssigned is False, data can not be read
   and the inspector will show <B>(unassigned)</B>.
@@ -1661,7 +1661,7 @@ See Also
 Summary
   Determines if the data object is properly initialized.
 Description
-  IsInitialized determines if the data object has been properly initialized. This is dependant on the
+  IsInitialized determines if the data object has been properly initialized. This is dependent on the
   data the object is representing and therefor changes for each data class. If the data is properly
   initialized, IsIntialized returns True, otherwise False is returned. If IsInitialized is False, the
   data object can not be used and the inspector will show <B>(uninitialized)</B>
@@ -1697,7 +1697,7 @@ Summary
 Description
   ItemRegister returns the item registration database. Each data class can have its own database but is
   not required to. The function will return the first registration database it finds within the data
-  class hierarchie.
+  class hierarchy.
 
   The root database is located in TJvCustomInspectorData and usually contains items to map specific
   RTTI pointers or type kinds to an inspector item.
@@ -1779,11 +1779,11 @@ Summary
   Cancels and reactivates all attached inspector items.
 Description
   RefreshEdits will iterate over all inspector items and if the item is in edit mode will call its
-  <LINK TJvCustomInspectorItem.DoneEdit, DoneEdit> method, cancelling the edit, and <LINK
+  <LINK TJvCustomInspectorItem.DoneEdit, DoneEdit> method, canceling the edit, and <LINK
   TJvCustomInspectorItem.InitEdit, InitEdit> method, to set the item back in edit mode.
 
   This will effectively refresh all items to any changes in the value, regardless where the change
-  occured and whether ot not an item is being edited.
+  occurred and whether or not an item is being edited.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.RegisterInstance
@@ -1818,7 +1818,7 @@ Parameters
 Summary
   Set the data as a set value.
 Description
-  SetAsSet will try to change the underlaying data as a set value. If the data can not be accessed as a
+  SetAsSet will try to change the underlying data as a set value. If the data can not be accessed as a
   set, an exception will be raised. Before the data is set CheckWriteAccess is called to check write
   access.
 Parameters
@@ -1853,13 +1853,13 @@ Summary
   Base inspector item.
 Description
   TJvCustomInspectorItem is the base inspector item. An item is responsible for drawing and editing the
-  underlaying data object, as well as managing the sub items. The base class introduces methods and
+  underlying data object, as well as managing the sub items. The base class introduces methods and
   properties to:
 
   * display and edit the data object
   * manage child items
 
-  The base class itself can be used as a read only item with no underlaying data object. An instance of
+  The base class itself can be used as a read only item with no underlying data object. An instance of
   this class is used as the root item for the inspector. The standard package provides various item
   classes to edit the different types of data:
 
@@ -1913,7 +1913,7 @@ Description
   ApplyDisplayIndices will iterate over all items in the specified list and sets the DisplayIndex of
   these items to their index in the list.
 
-  ApplyDisplayIndices is used by all sorting mechanisme to change/update the sort order of sub items
+  ApplyDisplayIndices is used by all sorting mechanism to change/update the sort order of sub items
   (eg. AlphaSort calls BuildDisplayableList to retrieve a list of displayable items, sort the list
   alphabetically by name and calls ApplyDisplayIndices to save that order).
 Parameters
@@ -1954,8 +1954,8 @@ Description
   BuildDisplayableList will fill the specified list with sub items that have this items as their
   DisplayParent. On entry the list is not cleared.
 
-  BuildDisplayableList is used by all sorting mechanisme to retrieve the list of items to be sorted
-  (eg. AlphaSort calls BuildDisplayableList to retrieve a list of displayable items, sort the list
+  BuildDisplayableList is used by all sorting mechanism to retrieve the list of items to be sorted (eg.
+  AlphaSort calls BuildDisplayableList to retrieve a list of displayable items, sort the list
   alphabetically by name and calls ApplyDisplayIndices to save that order).
 Parameters
   ItemList - The list to retrieve the items in.
@@ -2069,7 +2069,7 @@ See Also
 Summary
   Called whenever the application is deactivated.
 Description
-  Deactivate is called when the user switches to another application. This gives you the oppertunity to
+  Deactivate is called when the user switches to another application. This gives you the opportunity to
   remove any additional windows that might be open.
 
   The implementation of TJvCustomInspectorItem will close the drop down box if it's still open.
@@ -2097,7 +2097,7 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DisplayIndex
 Summary
-  Sorted index in the dsiplay parent.
+  Sorted index in the display parent.
 Description
   DisplayIndex indicates the index after sorting this item is at in its display parent. Read
   DisplayIndex to determine the position at which the item is displayed or set it to a new index.
@@ -2217,7 +2217,7 @@ Description
 Parameters
   Control - The control in which the item is to be drawn. Use the specified controls \Canvas to base
              the calculations on.
-  Index   - Index of the list item to calculate the widht for.
+  Index   - Index of the list item to calculate the width for.
   Width   - The width of the specified item. On entry this parameter is set to the TextWidth of the
              items text.
 
@@ -2239,7 +2239,7 @@ Summary
 Description
   DrawEditor draws the editor. The implementation of TJvCustomInspectorItem will check if an edit
   control has been generated and paint the edit's image onto the inspector's canvas, including any edit
-  buttons (dropdown or ellipses). This will reduce the flickering when dragging the divider bar.
+  buttons (drop-down or ellipses). This will reduce the flickering when dragging the divider bar.
 
   Descendants can override this method to paint a state / value to be used while editing. For example,
   TJvInspectorBooleanItem overrides DrawEditor to draw the image of a checkbox (no actual checkbox is
@@ -2282,7 +2282,7 @@ Summary
   Drops down the value list.
 Description
   DropDown will drop down the value list. This involves in creating a drop down list box, retrieving
-  the list values, determining the maximum widht of the items, determining the correct position and
+  the list values, determining the maximum width of the items, determining the correct position and
   size of the list box and finally showing it on screen.
 See Also
   TInspectorItemFlag.iifValueList, TJvCustomInspectorItem.CloseUp,
@@ -2374,7 +2374,7 @@ Summary
 Description
   EditKeyDown is the OnKeyDown handler for the edit control. On entry to the method the Sender property
   is checked. If it is not set to the inspector, the method was indeed called from the edit control.
-  Execution is transfered to the inspector.
+  Execution is transferred to the inspector.
 
   If the call originated from the inspector (Sender is set to Inspector), the item editor keys are
   processed. This means the keys for Apply, Undo, select prior value, select next value and to invoke
@@ -2496,7 +2496,7 @@ Description
   Parent property.
 
   If the parent item, however, has its Hidden property set to True, GetDisplayParent will go up the
-  parent hierarchie until it reaches the root, or an item is found who's Hidden property is set to
+  parent hierarchy until it reaches the root, or an item is found who's Hidden property is set to
   False.
 
   GetDisplayParent is used when items are added/deleted to request a resort of the display parent.
@@ -2508,7 +2508,7 @@ Summary
 Description
   GetEditorText retrieves the text of the editor (provided the item is currently being edited). The
   resulting string represents the display representation of the value before it is applied to the
-  underlaying data object.
+  underlying data object.
 See Also
   TJvCustomInspectorItem.Editing
 
@@ -2553,7 +2553,7 @@ Description
 Summary
   Item's height.
 Description
-  Height holds the actual item height in pixels. The inspector uses this property to detemine the
+  Height holds the actual item height in pixels. The inspector uses this property to determine the
   current height or set it to a new value. Because the height depends on various other properties, the
   value will be adjusted if it's not exactly the value it should be.
 See Also
@@ -2654,7 +2654,7 @@ Description
 
   Because as far the inspector is concerned, there is no difference between a data change and meta data
   change, the current implementation will call InvalidateItem. However, this might change in the future
-  and descendants can override this method to take appropiate action when meta data has changed.
+  and descendants can override this method to take appropriate action when meta data has changed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InvalidateSort
@@ -2685,7 +2685,7 @@ Summary
   Determines if the item a column of a compound row item.
 Description
   IsCompountColumn determines if the item is a column of a compound row item. If the item is a column,
-  the funtion returns True, otherwise it returns False.
+  the function returns True, otherwise it returns False.
 See Also
   TJvInspectorCustomCompoundItem
 
@@ -2764,7 +2764,7 @@ Summary
 Description
   MouseMove handles mouse movements over the item.
 
-  The base implementation handles tracking the edit button as well as transfering control to the
+  The base implementation handles tracking the edit button as well as transferring control to the
   dropped down value list. Descendants can override this method to provide additional functionality.
 Parameters
   Shift - Indicates the shift state at the time the mouse was moved.
@@ -2795,7 +2795,7 @@ Description
 
   Read Multiline to determine if the item uses a multiline edit or set Multiline to a new state.
 Note
-  Multiline maps onto the iifMultiline flag in the Flags property.
+  Multiline maps onto the iifMultiLine flag in the Flags property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Name
@@ -2879,8 +2879,8 @@ Description
   where <B>hidden name</B> is the name of the hidden item and <B>child name</B> is the name of the
   child item.
 
-  Read QualifiedNames to determine if the child items'names will be qualified or set QualifiedNames to
-  a new state.
+  Read QualifiedNames to determine if the names of the child items will be qualified or set
+  QualifiedNames to a new state.
 Note
   QualifiedNames maps onto the iifQualifiedNames flag in the Flags property.
 
@@ -2890,7 +2890,7 @@ Summary
   Indicates if item is read only.
 Description
   ReadOnly indicates if the item is read only. When an item is read only, it cannot be put in edit mode
-  and therfor not be changed from the inspector.
+  and therefor not be changed from the inspector.
 
   Read ReadOnly to determine if the item is read-only or set ReadOnly to a new state.
 Note
@@ -3162,9 +3162,9 @@ Summary
   Determines the match percentage for the given data instance.
 Description
   MatchPercent determines the percentage of matching the registration item to the given data instance.
-  MatchPercent in TJvCustomInspectorRegItem is an abstract method and should be overriden in descendant
-  classes to provide a meaningfull value (this usually involves in translating the MatchValue to a
-  percentage).
+  MatchPercent in TJvCustomInspectorRegItem is an abstract method and should be overridden in
+  descendant classes to provide a meaningful value (this usually involves in translating the MatchValue
+  to a percentage).
 Parameters
   ADataObj - Data layer instance use for comparison
 
@@ -3174,8 +3174,8 @@ Summary
   Determines the match value for the given data instance.
 Description
   MatchValue determines if and how good the registration item matches for the given data instance.
-  MatchValue in TJvCustomInspectorRegItem is an abstract method and should be overriden in descendant
-  classes to provide a meaningfull value.
+  MatchValue in TJvCustomInspectorRegItem is an abstract method and should be overridden in descendant
+  classes to provide a meaningful value.
 Parameters
   ADataObj - Data layer instance use for comparison
 
@@ -3268,9 +3268,9 @@ Summary
   Inspector control.
 Description
   TJvInspector is an inspector control. The inspector control is responsible of displaying and
-  navigating the data tree. The control is completely seperated from the editing layer and the editing
-  layer is completely seperated from the data layer. This means the control is able to "inspect" a wide
-  variaty of data types, without the need of creating a new descendant of the inspector control. It
+  navigating the data tree. The control is completely separated from the editing layer and the editing
+  layer is completely separated from the data layer. This means the control is able to "inspect" a wide
+  variety of data types, without the need of creating a new descendant of the inspector control. It
   also means you can mix various data sources in one view.
 
   The control does not handle the painting itself. This is left to a painter object.
@@ -3454,7 +3454,7 @@ Description
   TJvInspectorComponentItem is an inspector item that allows component values to be edited. The item is
   derived from TJvInspectorClassItem and as such allows published properties of an assigned component
   to be viewed. The iifValueList flag, however will be fixed to allow components to be picked and the
-  icfShowClassName flag will be supressed (<LINK TJvInspectorClassItem.ShowClassName, ShowClassName>
+  icfShowClassName flag will be suppressed (<LINK TJvInspectorClassItem.ShowClassName, ShowClassName>
   property will be False).
 
   In addition the item provides properties that control the way the component names are added. You can
@@ -3690,7 +3690,7 @@ See Also
 Summary
   The set width of the column.
 Description
-  WidthSet indicates the width the columm has been set to. The width is represented as a percentage.
+  WidthSet indicates the width the column has been set to. The width is represented as a percentage.
   Note that the width of the column might not be this value. WidthSet indicates what the ideal width
   should be.
 
@@ -3714,7 +3714,7 @@ Summary
 Description
   AddColumn will add the specified child in the Items list to the Columns list. This will remove the
   specified item from the Items list (a column item can't be shown as a child item as well). The column
-  is intialized to a width of 0 (see Width and WidthSet for more information).
+  is initialized to a width of 0 (see Width and WidthSet for more information).
 
   AddColumn comes in two overloaded versions: one to add an Item instance and one to add the item at an
   index in the Items property.
@@ -3776,7 +3776,7 @@ Summary
 Description
   InsertColumn will insert the specified child in the Items list to the Columns list at the specified
   index. This will remove the specified item from the Items list (a column item can't be shown as a
-  child item as well). The column is intialized to a width of 0 (see Width and WidthSet for more
+  child item as well). The column is initialized to a width of 0 (see Width and WidthSet for more
   information).
 
   InsertColumn comes in two overloaded versions: one to insert an Item instance and one to insert the
@@ -3829,7 +3829,7 @@ Summary
   Compound row inspector item.
 Description
   TJvInspectorCustomCompoundItem is an inspector item that allows some of its child items to be shown
-  as sub columns of itself. It's primarly intended as a base class for multicolumn items.
+  as sub columns of itself. It's primarily intended as a base class for multicolumn items.
 
   Use a TJvInspectorCompoundItem to define a multicolumn item you can manage yourself.
 
@@ -3848,14 +3848,14 @@ Summary
 Description
   AddColumnPrim will add the specified child in the Items list to the Columns list. This will remove
   the specified item from the Items list (a column item can't be shown as a child item as well). The
-  column is intialized to a width of 0 (see Width and WidthSet for more information).
+  column is initialized to a width of 0 (see Width and WidthSet for more information).
 
   AddColumnPrim comes in two overloaded versions: one to add an Item instance and one to add the item
   at an index in the Items property.
 
   This method primarily intended as an internal method to add columns. Some descendants will surface
-  this behaviour through publicly declared methods, others don't but add the columns automatically
-  (such as TJvInspectorDateTimeItem).
+  this behavior through publicly declared methods, others don't but add the columns automatically (such
+  as TJvInspectorDateTimeItem).
 Parameters
   Item      - Item to add as a column. Item is checked to be a child of the compound item.
   ItemIndex - Index into the Items item list of the item to add.
@@ -3908,7 +3908,7 @@ Description
   the column at an index and one to delete an item instance.
 
   This method primarily intended as an internal method to delete columns. Some descendants will surface
-  this behaviour through publicly declared methods, others don't but delete the columns automatically
+  this behavior through publicly declared methods, others don't but delete the columns automatically
   (such as TJvInspectorDateTimeItem).
 Parameters
   Column - Column to delete.
@@ -3928,7 +3928,7 @@ Parameters
 Summary
   Divides the specified rectangle over the columns.
 Description
-  Dividerect divides the specified rectangle over the columns (taking into account the columns Width
+  DivideRect divides the specified rectangle over the columns (taking into account the columns Width
   property) and set's the associated item's rectangle accordingly.
 
   If DivideRect divides the iprValue rectangle, the Painter will be requested to calculate the edit
@@ -3951,7 +3951,7 @@ Description
   an item instance.
 
   This method primarily intended as an internal method to locate columns. Some descendants will surface
-  this behaviour through publicly declared methods, others don't (such as TJvInspectorDateTimeItem).
+  this behavior through publicly declared methods, others don't (such as TJvInspectorDateTimeItem).
 Parameters
   Col  - Column instance to locate.
   Item - Item instance to locate.
@@ -3967,14 +3967,14 @@ Summary
 Description
   InsertColumnPrim will insert the specified child in the Items list to the Columns list at the
   specified index. This will remove the specified item from the Items list (a column item can't be
-  shown as a child item as well). The column is intialized to a width of 0 (see Width and WidthSet for
+  shown as a child item as well). The column is initialized to a width of 0 (see Width and WidthSet for
   more information).
 
   InsertColumnPrim comes in two overloaded versions: one to insert an Item instance and one to insert
   the item at an index in the Items property.
 
   This method primarily intended as an internal method to insert columns. Some descendants will surface
-  this behaviour through publicly declared methods, others don't but insert the columns automatically
+  this behavior through publicly declared methods, others don't but insert the columns automatically
   (such as TJvInspectorDateTimeItem).
 Parameters
   Index     - Index at which the item is to be inserted into the column list. This is a 0-based index.
@@ -3995,16 +3995,16 @@ Summary
   Update column widths
 Description
   RecalcColumnWidths will recalculate all column widths such that the total width will be 100. If the
-  SetColumn property is set to a column, that column is guarenteed to be the width it was set to.
+  SetColumn property is set to a column, that column is guaranteed to be the width it was set to.
 
-  RecalcColumnWidths will loop over all colums and adjust there widths if needed. If a columns width
+  RecalcColumnWidths will loop over all columns and adjust there widths if needed. If a columns width
   would make the total > 100, it is resized to a smaller value. If a columns width was set to 0, it
   will be added to a list of columns to be set after the main loop.
 
   After the main loop has ended and the total width < 100, a second loop will start to loop over all
   item for which the width was set to 0. The remaining space will be equally divided over the columns.
 Parameters
-  SetColumn - Column which has to be set to the width that is specified. This column is guarenteed to
+  SetColumn - Column which has to be set to the width that is specified. This column is guaranteed to
                be set to that width, unless its width is 0, which means it will be set to whatever
                width remains after the main loop.
 
@@ -4082,7 +4082,7 @@ Description
   ExistingValue determines whether or not the section/key pair is an actual value within the
   configuration file/settings database.
 
-  Descendants must override this method to provide a meaningfull result. The implementation of <LINK
+  Descendants must override this method to provide a meaningful result. The implementation of <LINK
   TJvCustomInspectorData.IsAssigned, IsAssigned> uses the result of this method.
 See Also
   TJvCustomInspectorData.IsAssigned
@@ -4374,7 +4374,7 @@ Description
   DoSetAsSet is a call wrapper for the OnSetAsSet event. If an event has not been assigned, an
   exception is raised.
 Parameters
-  Buf     - Teh new value to assign.
+  Buf     - The new value to assign.
   BufSize - The number of bytes the buffer contains.
 See Also
   TJvInspectorEventData.OnSetAsSet
@@ -4631,7 +4631,7 @@ Description
   data instance.
 
   Depending on which overloaded method is called, the ini file will be scanned for sections and/or keys
-  to instantiate. For each sec ion/key combination a check is made to see if the instance is unique. If
+  to instantiate. For each section/key combination a check is made to see if the instance is unique. If
   it already exists, the pre-existing data instance is used and a new item is added to it.
 
   Using the events you can prevent certain keys being created or even prevent whole sections being
@@ -5001,10 +5001,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.HideEditor
 Summary
-  Hides the editor. Descripion Hide editor will hide the edit control and/or the value list box for the
-  selected item. It does so by setting the item's iprEditValue rectange to an empty rectangle.
+  Hides the editor.
 Description
-  Write here a description
+  Hide editor will hide the edit control and/or the value list box for the selected item. It does so by
+  setting the item's iprEditValue rectangle to an empty rectangle.
 See Also
   TJvCustomInspector.Selected
 
@@ -5194,7 +5194,7 @@ Summary
   Rectangle available to paint the item in.
 Description
   PaintRect is the rectangle available to the item. SetupRects will use this rectangle to calculate the
-  item's rectangle and TeardownItem will modify this rectangle to exlude to last rendered item.
+  item's rectangle and TeardownItem will modify this rectangle to exclude to last rendered item.
 
   The Paint method will initialize PaintRect to the <LINK TJvCustomInspector.ViewRect, inspector's
   ViewRect>.
@@ -5269,7 +5269,7 @@ Description
   actions will be taken:
 
   * If ItemIndex is set, the corresponding item will be retrieved and stored in the Item property.
-  * If an item is available, the BUttonImage will be set to either <B>nil</B>, the bitmap returned by
+  * If an item is available, the ButtonImage will be set to either <B>nil</B>, the bitmap returned by
     GetCollapseImage or the bitmap returned by GetExpandImage.
   * If an item index was specified, SetupRects is called to calculate the item rectangles.
 
@@ -5485,7 +5485,7 @@ Description
     Type info typekind matches    divide by 2
   </TABLE>
 
-  When the match value = 0, the percentage will ofcourse also be 0.
+  When the match value = 0, the percentage will off course also be 0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPropRegItem.Create
@@ -5591,7 +5591,7 @@ Summary
   Data class the database is for
 Description
   DataClass indicates for which data layer class the registration database is. This is used in
-  FindMatch to search for other registration databases up the data layer hierarchie.
+  FindMatch to search for other registration databases up the data layer hierarchy.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorRegister.Delete@Integer
@@ -5626,7 +5626,7 @@ Summary
 Description
   FindMatch tries to find a match for the given data instance. It will start in its own database from
   the last added item back to the first added item. If no perfect match is found, it will try to locate
-  a registration database in one of the parent data classes and will delagate the search to that
+  a registration database in one of the parent data classes and will delegate the search to that
   database if found. The result will be either <B>nil</B> if no match was found or the registration
   item that matched best.
 Parameters
@@ -5669,7 +5669,7 @@ Description
   TJvInspectorSetItem is an inspector item that allows set values to be edited. This can be done either
   by typing the set value as a string and/or by changing the Boolean value of the members.
 
-  TJvInspectorSetItem provides extra flags to control the exact behaviour (editing the string value
+  TJvInspectorSetItem provides extra flags to control the exact behavior (editing the string value
   and/or creating member items).
 
   TJvCustomInspectorData registers this item for all set types.
@@ -5717,7 +5717,7 @@ Description
   EditString determines if the item can be edited by typing its value as a string. When set to True,
   the string value can be edited directly, otherwise the string value can not be edited.
 
-  If EditString is True, a set value can be specified by using individual members seperated by commas,
+  If EditString is True, a set value can be specified by using individual members separated by commas,
   using member ranges using ".." or a combination. The brackets are optional, but if you specify one
   you need to specify both.
 
@@ -5787,7 +5787,7 @@ Summary
   Bit offset in the set for this member.
 Description
   BitOffset holds the bit offset within the set value for this particular member. This value is
-  calculcated upon creation of the member data layer.
+  calculated upon creation of the member data layer.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetMemberData.DataParent
@@ -5831,7 +5831,7 @@ Summary
   Registration item for the TCaption type.
 Description
   TJvInspectorTCaptionRegItem is the registration item that specifically matches TCaption types. For
-  these types, ApplyDefaults will set the item's iifMultiline flag.
+  these types, ApplyDefaults will set the item's iifMultiLine flag.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTimeItem
@@ -5882,7 +5882,7 @@ Summary
 Description
   TJvInspectorTMethodItem is an inspector item that allows editing of event types. The item provides
   methods to specify the list of allowed event handlers and instances. You are not limited to published
-  methods, you can provide any accessable method, even protected methods if you use the class cracking
+  methods, you can provide any accessible method, even protected methods if you use the class cracking
   technique.
 
   In addition the item provides properties that control the way the events are displayed. You can
@@ -5911,7 +5911,7 @@ Summary
 Description
   AddInstance adds an event instance to the list of instances, providing it with a name. Before you can
   add any method you should add and name the instance to which the method belongs. After you have added
-  the instance you can add methods to the instance using anyone of the AddMethod methods.
+  the instance you can add methods to the instance using any one of the AddMethod methods.
 Parameters
   Instance     - TObject instance to add.
   InstanceName - Name of the instance. AddInstance will not check if the specified object is a
@@ -6127,7 +6127,7 @@ Summary
   Array of names of added instances.
 Description
   InstanceNames is 0-based array of names of added instances. You can specify an index in the range
-  from 0 upto InstanceCount-1 to retrieve the name of an added instance.
+  from 0 up to InstanceCount-1 to retrieve the name of an added instance.
 
   The array will remain in the order in which items are added, regardless of the state of SortInstances
   and related properties.
@@ -6141,7 +6141,7 @@ See Also
 Summary
   Array of added instances.
 Description
-  Instances is 0-based array of instances added. You can specify an index in the range from 0 upto
+  Instances is 0-based array of instances added. You can specify an index in the range from 0 up to
   InstanceCount-1 to retrieve a reference to an added instance.
 
   The array will remain in the order in which items are added, regardless of the state of SortInstances
@@ -6169,7 +6169,7 @@ See Also
 Summary
   Indicates whether the handlers of the first instance should appear before other instance handlers.
 Description
-  KeepFirstInstanceAsFirst indicates whether the handlerss of the first instance should appear before
+  KeepFirstInstanceAsFirst indicates whether the handlers of the first instance should appear before
   the handlers of the other instances, regardless of any sorting option.
 
   KeepFirstInstanceAsFirst maps to the imfKeepFirstInstanceAsFirst flag in the ItemTMethodFlags
@@ -6195,7 +6195,7 @@ Summary
   Array of names of added event handlers.
 Description
   MethodNames is 0-based array of names of added event handlers. You can specify a TObject instance and
-  an index in the range from 0 upto MethodCount[<I>\<TObject instance></I>]-1 to retrieve the name of
+  an index in the range from 0 up to MethodCount[<I>\<TObject instance></I>]-1 to retrieve the name of
   an added event handler.
 
   The array will remain in the order in which items are added, regardless of the state of SortMethods
@@ -6212,8 +6212,8 @@ Summary
   Array of added event handlers.
 Description
   Methods is 0-based array of added event handlers. You can specify a TObject instance and an index in
-  the range from 0 upto MethodCount[<I>\<TObject instance></I>]-1 to retrieve the TMethod pointer of an
-  added event handler.
+  the range from 0 up to MethodCount[<I>\<TObject instance></I>]-1 to retrieve the TMethod pointer of
+  an added event handler.
 
   The array will remain in the order in which items are added, regardless of the state of SortMethods
   and related properties.
@@ -6297,7 +6297,7 @@ Description
   The distinction between inline editable and stringlist editable is determine by the Flags property.
 
   If iifEditButton is set, the string list editor is used and the item can not be edited inline (in
-  addition, the iifMultiline flag will be removed).
+  addition, the iifMultiLine flag will be removed).
 
   If iifMultiLine is set, you can edit the item inline and it can not be edited through the string list
   editor (in addition, the iifEditButton flag will be removed).

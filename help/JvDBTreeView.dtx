@@ -65,7 +65,7 @@ Description
   tree structure is derived by using the field names specified in the MasterField and DetailField
   properties.
 
-  MasterField provides a unique identifer for a node in the treeview. ParentField is provided as a
+  MasterField provides a unique identifier for a node in the treeview. ParentField is provided as a
   simple alias for the MasterField property.
 
   Values in DetailField are used to indicate the relationship to the master (or parent) node.
@@ -108,7 +108,7 @@ Description
   DataLink is a TJvDBTreeViewDataLink property used to help the data-aware treeview manage its link to
   the data source and respond to data events.
 
-  DataLink helps TJVCustomDBTreeView to:
+  DataLink helps TJvCustomDBTreeView to:
 
   * Resolve field bindings for the treeview with fields in the dataset.
   * Respond to changes in the values of fields.
@@ -276,7 +276,7 @@ Description
   The values in the field specified by IconField is used in the ImageIndex property, and incremented by
   an existing SelectIndex value for use when a tree node is selected.
 
-  RefreshChild calls UpdateUnlock to signal that the update is complete prior to exiting from the
+  RefreshChild calls UpdateUnLock to signal that the update is complete prior to exiting from the
   method.
 
   RefreshChild is called in the implementation of other methods in TJvDBTreeView, including:
@@ -374,7 +374,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.UpdateLock
 Summary
-  Counts the number of times the treeview has been asked to update itsself since the inital update
+  Counts the number of times the treeview has been asked to update itself since the initial update
   request.
 Description
   UpdateLock is a procedure used to increment the internal byte member that reflects the number of
@@ -407,7 +407,7 @@ Summary
 Description
   UpdateTree is the method used to force the content in the treeview to be updated following changes to
   node(s) or the dataset for the data-aware treeview component. UpdateTree is called from the
-  UpdateUnlock method when UpdateLock reaches the value zero (0).
+  UpdateUnLock method when UpdateLock reaches the value zero (0).
 
   UpdateTree calls CheckDataset to ensure that a valid dataset is available for access values used in
   building and rendering the tree in the data-aware treeview component.
@@ -422,7 +422,7 @@ Description
   When data is located that does not exist in the Items for the tree structure, the node (or child
   node) is added using the values indicated by the MasterField, DetailField, and ItemField properties.
 
-  Applications do not normally call UpdateTree; it is called automatically in UpdateUnlock and when the
+  Applications do not normally call UpdateTree; it is called automatically in UpdateUnLock and when the
   dataset performs event notifications for scroll, browse, or data changed events.
 
 ----------------------------------------------------------------------------------------------------
@@ -450,7 +450,7 @@ Description
   UseFilter is a Boolean property that indicates if a filter on the underlying dataset for the
   DataSource can be used when building the tree structure in the data-aware treeview.
 
-  Setting UseFilter to True indicates that the underlying TDataset should use a filter when building
+  Setting UseFilter to True indicates that the underlying TDataSet should use a filter when building
   child nodes for the current node in the treeview. The filter will consist of a statement that
   compares the current value in MasterField to values found in DetailField. An existing filter
   expression for the dataset is retained, and any new content for the expression is appended using a

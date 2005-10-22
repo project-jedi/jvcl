@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 @@JvFindReplace.pas
 Summary
-  Contains the TJvFindReplace component.
+  Contains the TJvFindReplaceBase component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -29,7 +29,14 @@ Description
   Use EditControl to specify the control that contains the text to search and \replace in.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Fast
+@@TJvFindReplaceBase
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFindReplaceBase.Fast
 Summary
   Specifies the search method used.
 Description
@@ -40,63 +47,63 @@ Description
   internal fields and variables before starting the search, Pos can be faster for shorter texts.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Find
+@@TJvFindReplaceBase.Find
 Summary
   Displays the built-in Find dialog or starts a new search.
 Description
   Call Find to start a new search or to display the built-in dialog to start a new search. The built-in
   find dialog will be displayed if ShowDialogs is true.
 See Also
-  TJvFindReplace.FindAgain, TJvFindReplace.ShowDialogs
+  TJvFindReplaceBase.FindAgain, TJvFindReplaceBase.ShowDialogs
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.FindAgain
+@@TJvFindReplaceBase.FindAgain
 Summary
   Continues a search.
 Description
   Call FindAgain to continue a search previously started with Find. If no search is in progress,
   FindAgain calls Find.
 See Also
-  TJvFindReplace.Find, TJvFindReplace.Replace, TJvFindReplace.ShowDialogs
+  TJvFindReplaceBase.Find, TJvFindReplaceBase.Replace, TJvFindReplaceBase.ShowDialogs
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.FindText
+@@TJvFindReplaceBase.FindText
 Summary
   Specifies the text to search for.
 Description
   Set FindText to the string to search for in EditControl.
 See Also
-  TJvFindReplace.Options, TJvFindReplace.ReplaceText
+  TJvFindReplaceBase.Options, TJvFindReplaceBase.ReplaceText
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.HelpContext
+@@TJvFindReplaceBase.HelpContext
 Summary
   Sets the help context value for the built-in dialogs.
 Description
   Use HelpContext to set the help context of the built-in search and \replace dialogs.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Left
+@@TJvFindReplaceBase.Left
 Summary
   Specifies the horizontal coordinate of the left edge of the built-in dialogs relative to the screen.
 Description
   Use the Left property to determine where the left side of the built-in dialogs begins or to
   reposition the left side of the dialogs. Left is in screen coordinates.
 See Also
-  TJvFindReplace.Position, TJvFindReplace.Top
+  TJvFindReplaceBase.Position, TJvFindReplaceBase.Top
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.OnFind
+@@TJvFindReplaceBase.OnFind
 Summary
   Occurs when FindText has been found in EditControl
 Description
   Write a handler for the OnFind event to take specific action when FindText has been found in the text
   of EditControl.
 See Also
-  TJvFindReplace.OnNotFound
+  TJvFindReplaceBase.OnNotFound
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.OnNotFound
+@@TJvFindReplaceBase.OnNotFound
 Summary
   Occurs if FindText could not be found in EditControl
 Description
@@ -104,10 +111,10 @@ Description
   the text of EditControl. For example, you can display a dialog to the user that explains that the
   searched text couldn't be found.
 See Also
-  TJvFindReplace.OnFind
+  TJvFindReplaceBase.OnFind
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.OnProgress
+@@TJvFindReplaceBase.OnProgress
 Summary
   Occurs when the component is searching for the text.
 Description
@@ -119,7 +126,7 @@ Parameters
   Terminate - Set to true to stop the search.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.OnReplace
+@@TJvFindReplaceBase.OnReplace
 Summary
   Occurs when the user clicks the \Replace or \Replace All button.
 Description
@@ -128,10 +135,10 @@ Description
   user clicks \Replace All, the frReplaceAll flag is set (and the frReplace flag is turned off) in
   Options.
 See Also
-  TJvFindReplace.OnReplacedAll
+  TJvFindReplaceBase.OnReplacedAll
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.OnReplacedAll
+@@TJvFindReplaceBase.OnReplacedAll
 Summary
   Occurs when the component has replaced all occurrences of FindText with ReplaceText in EditControl.
 Description
@@ -141,20 +148,20 @@ Parameters
   Sender       - The object whose event handler has been called.
   ReplaceCount - Indicates the number of occurrence of FindText that has been replaced.
 See Also
-  TJvFindReplace.OnReplace, TJvFindReplace.OnReplacingAll
+  TJvFindReplaceBase.OnReplace, TJvFindReplaceBase.OnReplacingAll
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.OnReplacingAll
+@@TJvFindReplaceBase.OnReplacingAll
 Summary
-  Occurs just before the component starts replacing all FindText occurences with ReplaceText.
+  Occurs just before the component starts replacing all FindText occurrences with ReplaceText.
 Description
   Write a handler for OnReplacingAll to take specific actions just before a search and \replace
   operation is started. To stop the search and \replace, call Abort in the event handler.
 See Also
-  TJvFindReplace.OnReplace, TJvFindReplace.OnReplacedAll
+  TJvFindReplaceBase.OnReplace, TJvFindReplaceBase.OnReplacedAll
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Options
+@@TJvFindReplaceBase.Options
 Summary
   Determines the appearance and behavior of the component and the built-in dialogs.
 Description
@@ -168,16 +175,16 @@ Description
   By default, all options except frDown are off.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Position
+@@TJvFindReplaceBase.Position
 Summary
   Determines the position of the built-in dialogs on the screen.
 Description
   Position gives the pixel coordinates of the dialog’s upper left corner.
 See Also
-  TJvFindReplace.Left, TJvFindReplace.Top
+  TJvFindReplaceBase.Left, TJvFindReplaceBase.Top
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Replace
+@@TJvFindReplaceBase.Replace
 Summary
   Displays the built-in \replace dialog or starts the \replace process.
 Description
@@ -187,7 +194,7 @@ See Also
   <LINK ReplaceAll>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.ReplaceAll
+@@TJvFindReplaceBase.ReplaceAll
 Summary
   Replaces all text in EditControl.
 Description
@@ -197,41 +204,41 @@ Parameters
   ReplaceText - The text to \replace with.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.ReplaceText
+@@TJvFindReplaceBase.ReplaceText
 Summary
   Specifies the text to use as a substitute for FindText when a \replace process is running.
 Description
   Use ReplaceText to specify the text to \replace with.
 See Also
-  TJvFindReplace.FindText, TJvFindReplace.Replace
+  TJvFindReplaceBase.FindText, TJvFindReplaceBase.Replace
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.ShowDialogs
+@@TJvFindReplaceBase.ShowDialogs
 Summary
   Specifies if the built-in dialogs are used.
 Description
   Use ShowDialogs to specify if you want to use the built-in search and \replace dialogs or if you want
   to use your own dialogs when prompting the user for options and input.
 See Also
-  TJvFindReplace.Find, TJvFindReplace.Options, TJvFindReplace.Replace
+  TJvFindReplaceBase.Find, TJvFindReplaceBase.Options, TJvFindReplaceBase.Replace
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFindReplace.Top
+@@TJvFindReplaceBase.Top
 Summary
   Specifies the Y coordinate of the top left corner of a built-in dialog, relative to the screen
 Description
   Use Top to locate the top of a built-in dialog or reposition the dialog to a different Y coordinate.
   Top is in screen coordinates.
 See Also
-  TJvFindReplace.Left, TJvFindReplace.Position
+  TJvFindReplaceBase.Left, TJvFindReplaceBase.Position
 
 ----------------------------------------------------------------------------------------------------
 @@TJvReplaceAllEvent
 <TITLE TJvReplaceAllEvent type>
-<COMBINE TJvFindReplace.OnReplacedAll>
+<COMBINE TJvFindReplaceBase.OnReplacedAll>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvReplaceProgressEvent
 <TITLE TJvReplaceProgressEvent type>
-<COMBINE TJvFindReplace.OnProgress>
+<COMBINE TJvFindReplaceBase.OnProgress>
 

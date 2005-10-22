@@ -25,7 +25,7 @@ See Also
 @@GetLabelBehaviorOptionsClass
 <TITLE GetLabelBehaviorOptionsClass function>
 Summary
-  Retrieves the class type of a behaviour.
+  Retrieves the class type of a behavior.
 Description
   Call GetLabelBehaviorOptionsClass to get the class type of a behavior based on its registered name.
 Parameters
@@ -44,7 +44,7 @@ Description
   and each Objects[] is a pointer to the corresponding class
 Parameters
   Strings - A TStrings instance that is filled with the returned names. This instance must be created
-             and maintianed by the caller.
+             and maintained by the caller.
 See Also
   GetLabelBehaviorName, GetLabelBehaviorOptionsClass, RegisterLabelBehaviorOptions
 
@@ -52,7 +52,7 @@ See Also
 @@RegisterLabelBehaviorOptions
 <TITLE RegisterLabelBehaviorOptions procedure>
 Summary
-  Registers a new behaviour.
+  Registers a new behavior.
 Description
   Use RegisterLabelBehaviorOptions to register a new behavior class for use with the TJvBehaiorLabel
   component.
@@ -349,7 +349,7 @@ Summary
   Specifies how often the label is moved.
 Description
   Use Interval to set the number of milliseconds between moves of the label. Interval works in
-  conjuction with Pixels to define how fast and smoothly the label moves.
+  conjunction with Pixels to define how fast and smoothly the label moves.
 See Also
   Pixels
 
@@ -369,7 +369,7 @@ Summary
   A behavior that simulates breaking a code.
 Description
   Use the TJvLabelCodeBreaker behavior when you want to simulate breaking a code in the label. To
-  enable this behavior, do the follwing:
+  enable this behavior, do the following:
 
   * Drop a TJvBehaviorLabel on a form.
   * Set <LINK TJvCustomBehaviorLabel.Behavior, Behavior> to 'CodeBreaker'.
@@ -391,7 +391,7 @@ Description
   Use DecodedText to specify the text that the label should contain when the decoding is finished. The
   behavior will examine each character in the labels \Caption one by one and simulate an attempt to
   find the decoded value. When the character "found" by the behavior matches the character at the
-  corresponding position in decodedText, the character in the label's \Caption is replaced with the
+  corresponding position in DecodedText, the character in the label's \Caption is replaced with the
   decoded character and the behavior moves on to the next character.
 
   The speed of the decoding is controlled by the Interval property.
@@ -551,6 +551,6 @@ Description
 Summary
   Specifies if the behavior should make random errors.
 Description
-  Use MakeErrors to specify whether the behavior shuld make occasional errors while typing or not.
+  Use MakeErrors to specify whether the behavior should make occasional errors while typing or not.
   Setting MakeErrors to true makes the behavior more "human-like".
 

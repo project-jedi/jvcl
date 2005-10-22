@@ -22,7 +22,7 @@ Description
   TJvPageIndexNode has a PageIndex property that specifies which page in the PageList to active when
   the node is selected.
 
-  Since the nodes in the treeview is surfaced as normal TTreenodes, you must typecast the TTreeNode to
+  Since the nodes in the treeview is surfaced as normal TTreeNodes, you must typecast the TTreeNode to
   TJvPageIndexNode in code to access the PageIndex property.
 
   To put a PageList enabled treeview on a form, don't create instances of TJvCustomPageListTreeView.
@@ -69,7 +69,7 @@ Summary
   Specifies the index of the default page.
 Description
   Use DefaultPage to specify the value of the PageIndex property for new nodes. For example, settings
-  this property to 0 will set the PageIndex of new nodes to 0, setting it to 1 will set the Pageindex
+  this property to 0 will set the PageIndex of new nodes to 0, setting it to 1 will set the PageIndex
   to 1, etc.
 See Also
   TJvCustomPageListTreeView.PageLinks, TJvCustomPageListTreeView.PageList
@@ -117,8 +117,8 @@ Description
 
   * The normal ImageIndex/SelectedIndex is ignored for nodes - use PageNodeImages instead. You still
     need to assign a TImageList to the Images property
-  * When a node is expanded, it is assigned the expanded image until it is colapsed, regardless whether
-    it's selected or not
+  * When a node is expanded, it is assigned the expanded image until it is collapsed, regardless
+    whether it's selected or not
   * When a parent folder is selected, the first non-folder child has its normal image set as the
     selected image
   * By default, AutoExpand and ReadOnly is true, ShowButtons and ShowLines are false

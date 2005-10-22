@@ -145,10 +145,10 @@ Description
   TJvFileDirEdit.OnBeforeDialog, OnBeforeDialog> event handler, you will prevent the dialog from being
   shown.
 Parameters
-  Sender - The object that represents the combo edit control.
-  Name   - The name of the file or directory that will initally be selected in the dialog or the name
-            of the file or directory that is selected by the user in the dialog.
-  Action - The result of the initialization or file selection process.
+  Sender  - The object that represents the combo edit control.
+  AName   - The name of the file or directory that will initially be selected in the dialog or the
+             name of the file or directory that is selected by the user in the dialog.
+  AAction - The result of the initialization or file selection process.
 See Also
   TJvFileDirEdit.OnAfterDialog, TJvFileDirEdit.OnBeforeDialog
 
@@ -207,7 +207,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphKind.gkDropDown
-  A dropdown button.
+  A drop-down button.
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphKind.gkEllipsis
@@ -264,8 +264,8 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoSearch
-  Adds a search item to the dropdown list of completed strings. If this is item is selected, you should
-  launch a search engine to assist the user.
+  Adds a search item to the drop-down list of completed strings. If this is item is selected, you
+  should launch a search engine to assist the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoFilterPrefixes
@@ -392,7 +392,7 @@ See Also
 Summary
   Gives access to the button object of the combo edit control.
 Description
-  Use Button to access the combo edit control's button. Some properties of the button are accessable
+  Use Button to access the combo edit control's button. Some properties of the button are accessible
   via the combo edit control's properties, such as ButtonFlat, ButtonWidth etc. But you may want to
   access property Button to get full access to the button object.
 See Also
@@ -425,7 +425,7 @@ Summary
 Description
   Use ButtonWidth to specify the width of the combo edit control's button. Note that changing property
   ImageKind can change the ButtonWidth. For example, ButtonWidth is set to the default width of a
-  dropdown button if ImageKind is set to ikDropDown.
+  drop-down button if ImageKind is set to ikDropDown.
 See Also
   <LINK TJvCustomComboEdit.Button, Button>
 
@@ -752,7 +752,7 @@ See Also
 Summary
   Specifies whether to check the control's text when the user attempts to leave the control.
 Description
-  Use CheckOnExit to specify whether to validate the control's text when the user attemps to leave the
+  Use CheckOnExit to specify whether to validate the control's text when the user attempts to leave the
   combo control. If set to true, the control calls <LINK TJvCustomDateEdit.CheckValidDate,
   CheckValidDate> on exit of the control.
 See Also
@@ -798,10 +798,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.DefaultToday
 Summary
-  Specifies whether to use todays day as default.
+  Specifies whether to use today's day as default.
 Description
-  Set DefaultToday to true to use todays date as default. For example, if the Text of the control is
-  empty then <LINK TJvCustomDateEdit.Date, Date> will return todays date. Set DefaultToday to false to
+  Set DefaultToday to true to use today's date as default. For example, if the Text of the control is
+  empty then <LINK TJvCustomDateEdit.Date, Date> will return today's date. Set DefaultToday to false to
   use the null value (12/30/1899 12:00 am) as default.
 See Also
   <LINK TJvCustomDateEdit.Date, Date>
@@ -868,7 +868,7 @@ Description
   Write an OnAcceptDate event handler to conditionally prevent the user from selecting specific dates
   from the calendar.
 
-  Set Action to false (Action is initially true) to make the control act as if the user cancelled the
+  Set Action to false (Action is initially true) to make the control act as if the user canceled the
   date selection from the calendar.
 
   Alter ADate to make the control act as if the user selected that new value.
@@ -1055,7 +1055,7 @@ Summary
   Allows users to enter more than one directory in the edit box.
 Description
   Set MultipleDirs to true to allow the user to enter more than one directory in the edit box.
-  Directories are seperated by the ';' character. If the user selects a directory from the dialog, or
+  Directories are separated by the ';' character. If the user selects a directory from the dialog, or
   drops directories on the edit box, than those directories are added to the already entered directory
   names.
 
@@ -1114,7 +1114,7 @@ Summary
 Description
   Write an OnAfterDialog event handler to do something after the dialog has been shown. Action holds
   the result of the file or directory selection process (i.e, whether the user selected a file or
-  directory and pressed OK or cancelled it by pressing Cancel).
+  directory and pressed OK or canceled it by pressing Cancel).
 
   By altering Action you can alter the result of the file or directory selection (i.e., if the user
   pressed the Cancel button then Action will be initially false. By setting it to true, the combo edit
@@ -1209,7 +1209,7 @@ Summary
   Gives access to the combo edit control's dialog.
 Description
   Use Dialog to access the combo edit control's dialog, but most properties of the dialog are
-  accessable via properties of the combo edit control, such as DefaultExt, DialogOptions etc.
+  accessible via properties of the combo edit control, such as DefaultExt, DialogOptions etc.
 
   The class type of the combo edit control's dialog depends on the value of DialogKind.
 See Also
@@ -1359,7 +1359,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageKind.ikDropDown
-  A dropdown button.
+  A drop-down button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageKind.ikEllipsis

@@ -184,9 +184,9 @@ Parameters
   ACanvas     - The Canvas to draw on
   ARect       - The area to draw in.
   AStage      - The current draw stage.
-  AIndex      - Depends on the stage. If AStage is odsPage or odsPageButton, AIndex referes to the
-                 page index. If AStage is odsButton or odsButtonFrame, AIndex refers to the button's
-                 index on the active page.
+  AIndex      - Depends on the stage. If AStage is odsPage or odsPageButton, AIndex refers to the page
+                 index. If AStage is odsButton or odsButtonFrame, AIndex refers to the button's index
+                 on the active page.
   ADown       - Depends on the stage. For pages, indicates whether the page button is pressed, For
                  buttons, indicates whether the button is down.
   AInside     - Only used with button stages. Specifies whether the mouse is inside the button.
@@ -275,17 +275,17 @@ Summary
 Description
   Read PopUpObject to determine which control is currently using the popup menu. Since the pages and
   button in the outlook bar are no real components, reading PopupMenu.PopupComponent always returns the
-  outlook bar control. To access the real object that activated the popup menu, use PopupObject
+  outlook bar control. To access the real object that activated the popup menu, use PopUpObject
   instead.
 
   To determine what object displayed the popup, you should check it against the three possible values:
   <AUTOLINK OFF>
   <CODE>
-    if (JvOutlookBar1.PopupObject is TJvOutlookBar) then
+    if (JvOutlookBar1.PopUpObject is TJvOutlookBar) then
       HandleBarPopup
-    else if (JvOutlookBar1.PopupObject is TJvOutlookBarPage) then
+    else if (JvOutlookBar1.PopUpObject is TJvOutlookBarPage) then
       HandlePagePopup
-    else if (JvOutlookBar1.PopupObject is TJvOutlookBarButton) then
+    else if (JvOutlookBar1.PopUpObject is TJvOutlookBarButton) then
       HandleBarButton;
   </CODE>
   <AUTOLINK ON>
@@ -365,7 +365,7 @@ Description
   Use AutoToggle to specify whether the Down property of the button is toggled on and off when the user
   clicks the button.
 Note
-  Even if AutoToggle is false and Down is true, an OnButtonClick event is generated everytime the user
+  Even if AutoToggle is false and Down is true, an OnButtonClick event is generated every time the user
   clicks the button.
 See Also
   TJvCustomOutlookBar.OnButtonClick, TJvOutlookBarButton.Down
@@ -622,9 +622,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.DownFont
 Summary
-  Specifies the font to use when the button's Dowen poroperty is true.
+  Specifies the font to use when the button's Down property is true.
 Description
-  Use the properties of DownFont to specify the visual appearance of the buttonäs text when the Down
+  Use the properties of DownFont to specify the visual appearance of the buttons text when the Down
   property is true.
 See Also
   AutoToggle, Down

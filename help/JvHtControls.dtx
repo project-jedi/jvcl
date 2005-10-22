@@ -27,7 +27,7 @@ Description
   ItemHTDraw calls the HTMLDrawText procedure to perform the low-level operations required for the
   procedure.
 
-  Use ItemHtDrawEx to render HTML-tagged values that include links (HTML Anchors) and mouse position
+  Use ItemHTDrawEx to render HTML-tagged values that include links (HTML Anchors) and mouse position
   information.
 Parameters
   Canvas - Canvas used to render the HTML content.
@@ -60,7 +60,7 @@ Description
   ItemHTDrawEx calls the HTMLDrawTextEx procedure to perform the low-level operations required for the
   procedure.
 
-  Use ItemHtDraw to render HTML-tagged values that do not include links (HTML Anchors) or mouse
+  Use ItemHTDraw to render HTML-tagged values that do not include links (HTML Anchors) or mouse
   position information.
 Parameters
   Canvas      - Canvas used to render the HTML content.
@@ -146,7 +146,7 @@ Summary
   Normalizes HTML tags from an HTML-enabled control prior to rendering.
 Description
   PrepareText is a String function used to normalize HTML tags from an HTML-enabled control prior to
-  rendering. Normalization inlcudes the following operations:
+  rendering. Normalization includes the following operations:
 
   * Converts HTML entities to characters or symbols
   * Removes line-end sequences
@@ -168,7 +168,7 @@ Description
   TJvCustomHTListBox, TJvHTLabel, and TJvHTListBox. THyperLinkClick allows the HTML-enabled controls to
   respond to mouse clicks on HTML anchors in the control.
 Parameters
-  Sender   - Object signalling the event notification.
+  Sender   - Object signaling the event notification.
   LinkName - URL for the HTML anchor clicked in the HTML-enabled control.
 See Also
   TJvCustomHTLabel.OnHyperLinkClick, TJvCustomHTListBox.OnHyperLinkClick, TJvHTLabel.OnHyperLinkClick,
@@ -304,6 +304,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox.HideSel
@@ -338,6 +343,9 @@ Description
   Write here a description
 Parameters
   Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTLabel
@@ -405,9 +413,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTLabel.OnHyperLinkClick
 Summary
-  Event handler signalled when an HTML anchor in the control is clicked.
+  Event handler signaled when an HTML anchor in the control is clicked.
 Description
-  OnHyperLinkClick is a THyperLinkClick property that represents the event handler signalled when the
+  OnHyperLinkClick is a THyperLinkClick property that represents the event handler signaled when the
   user clicks on an HTML \<A\> tag found in the caption for the control.
 
   OnHyperLinkClick is used during execution of the MouseUp event when the Item has been rendered using
@@ -545,9 +553,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox.OnHyperLinkClick
 Summary
-  Event handler signalled when an anchor in the list is clicked.
+  Event handler signaled when an anchor in the list is clicked.
 Description
-  OnHyperLinkClick is a THyperLinkClick property that represents the event handler signalled when the
+  OnHyperLinkClick is a THyperLinkClick property that represents the event handler signaled when the
   user clicks on an HTML \<A\> tag found in the Items for the control.
 
   OnHyperLinkClick is used during execution of the MouseUp event when the Item has been rendered using

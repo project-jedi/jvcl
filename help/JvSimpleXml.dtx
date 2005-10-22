@@ -168,7 +168,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Sender   - The TJvSimpleXml object that has done some progress
+  Sender   - The TJvSimpleXML object that has done some progress
   Position - The position of the progress
   Total    - The total possible steps
 See Also
@@ -256,7 +256,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Instance - The handle of the processus where the resource is stored
+  Instance - The handle of the processes where the resource is stored
   ResName  - The name of the resource to load
 
 ----------------------------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ Summary
 Description
   Write a handler for this event to do special processing to the XML data of tag and attribute values.
   The normal processing of JvSimpleXML (if sxoAutoEncodeValue is set in Options) is to encode all tag
-  and attribute value susing the SimpleXMLEnocde function but you can handle all encoding/decoding
+  and attribute values using the SimpleXMLEnocde function but you can handle all encoding/decoding
   yourself using any of the events OnEncodeValue, OnDecodeValue, OnEncodeStream and OnDecodeStream.
 
   Note that if you assign a handler to this event, the default decoding is not performed, regardless of
@@ -354,7 +354,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Sender - The TJvSimpleXml object that has parsed the tag
+  Sender - The TJvSimpleXML object that has parsed the tag
   Name   - The name of the parsed tag
 
 ----------------------------------------------------------------------------------------------------
@@ -514,7 +514,7 @@ Description
 Summary
   Fills the given stream with the binary value
 Description
-  A binary value is a series of numbers and letters characters that can be intepreted as hexadecimal
+  A binary value is a series of numbers and letters characters that can be interpreted as hexadecimal
   numbers when put in pairs. For instance, the following is a binary value: F302004D
 Parameters
   Stream - The stream to fill, must be created before the call
@@ -556,7 +556,7 @@ Description
   Write here a description
 Parameters
   Stream - The stream containing the data
-  Parent - The parent TJvSimpleXml component, if any
+  Parent - The parent TJvSimpleXML component, if any
 See Also
   TJvSimpleXMLElem.LoadFromString
 
@@ -610,7 +610,7 @@ Description
 Parameters
   Stream - The stream to write to
   Level  - The level of indentation
-  Parent - The TJvSimpleXml parent, if any
+  Parent - The TJvSimpleXML parent, if any
 See Also
   TJvSimpleXMLElem.SaveToString
 
@@ -628,7 +628,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.SimpleXML
 Summary
-  The TJvSimpleXml component containing this element
+  The TJvSimpleXML component containing this element
 Description
   This is set through calls to SaveToStream and LoadToStream
 See Also
@@ -1246,15 +1246,15 @@ Parameters
 @@TJvSimpleXMLOptions
 <TITLE TJvSimpleXMLOptions type>
 Summary
-  The options to apply when using the TJvSimpleXml component
+  The options to apply when using the TJvSimpleXML component
 Description
   <TABLE>
     Value                Meaning
     -------------------  ---------------------------------------------------------------------
     sxoAutoCreate        If an element is accessed by name and it doesn't exist, it will be
                            created
-    sxoAutoIndent        Automatically adds indentation string when outputing the xml data in
-                           character form
+    sxoAutoIndent        Automatically adds indentation string when outputting the xml data
+                           in character form
     sxoAutoEncodeValue   Automatically encode and decode tag and attribute values when they
                            are read from and written to persistent storage.
     sxoAutoEncodeEntity  Automatically encode and decode XML built-in entities when they are

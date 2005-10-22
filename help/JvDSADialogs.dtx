@@ -290,8 +290,8 @@ See Also
 Summary
   Used to identify default button mapping.
 Description
-  mbDefault is used to indentify that the default button mapping is to be used to determine the default
-  and/or cancel button. It's primary use is for the DefaultButton and CancelButton parameters for the
+  mbDefault is used to identify that the default button mapping is to be used to determine the default
+  and/or cancel button. Its primary use is for the DefaultButton and CancelButton parameters for the
   various \MessageDlg routines.
 See Also
   mbNone
@@ -301,7 +301,7 @@ See Also
 Summary
   Used to identify no button.
 Description
-  mbNone is used to indentify that no button is to be used as a default, cancel or help button. It's
+  mbNone is used to identify that no button is to be used as a default, cancel or help button. Its
   primary use is for the DefaultButton, CancelButton and HelpButton parameters for the various
   MessageDlg routines.
 See Also
@@ -433,7 +433,7 @@ Parameters
   DlgID         - ID of the dialog in the DSA system.
   Name          - Reference name of the dialog. Might be used by the storage device as an
                    identification.
-  Description   - Description of the dialog. Could be used by a UI for DSA managment (re-enabling
+  Description   - Description of the dialog. Could be used by a UI for DSA management (re-enabling
                    disabled dialogs).
   Storage       - Reference to the storage device that will maintain the DSA state.
   CheckTextKind - The kind of text to display next to the check box. See RegisterDSACheckMarkText and
@@ -879,7 +879,7 @@ Description
   SetState will set the state and result code of the specified DSA dialog in the storage device.
 Parameters
   DSAInfo       - Registration info of the DSA dialog in question.
-  DontShowAgain - Flag to indicate if teh dialog should be suppressed. Some storage devices may elect
+  DontShowAgain - Flag to indicate if the dialog should be suppressed. Some storage devices may elect
                    to remove the reference of this dialog when this parameter is set to False, others
                    may leave the reference and just update the DSA state.
   LastResult    - The result code of the dialog when to store along with the DSA state. By convention,
@@ -1011,8 +1011,8 @@ Description
   TJvDSADialog will hook the ShowModal virtual method of the form it is on. This allows the component
   to check the DSA state and either call the original ShowModal method or just return its result. Note
   that because the ShowModal method of the form the component is on is being hooked, it doesn't matter
-  if a custom form is used that happens to override the ShowModal method. This overriden method will be
-  called if the dialog is to be displayed.
+  if a custom form is used that happens to override the ShowModal method. This overridden method will
+  be called if the dialog is to be displayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.ApplySavedState
@@ -1021,7 +1021,7 @@ Summary
 Description
   ApplySavedState retrieves all info of the dialog from the DSA storage and applies it to the form. By
   default this will result in the saved ModalResult being applied to the form's ModalResult property.
-  In addition, if an OnApplyKeys event is assigned, the event will be called with all neccessary
+  In addition, if an OnApplyKeys event is assigned, the event will be called with all necessary
   information to retrieve custom stored data from the DSA storage.
 See Also
   TJvDSADialog.OnApplyKeys, TJvDSADialog.UpdateDSAState
@@ -1045,7 +1045,7 @@ Description
 
   The control has to have both a "Checked" as well as a "Caption" property. Usually you will use a
   TCheckBox control, but for TJvDSADialog it doesn't matter what kind of control is used (eg. it is
-  possible to use a third party's check box equivalent control, even if it's not descending from
+  possible to use a third party's check box equivalent control, even if it is not descending from
   TCustomCheckBox).
 
 ----------------------------------------------------------------------------------------------------
@@ -1059,7 +1059,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.FormPatch
 Summary
-  Pathes the form for DSA usage.
+  Patches the form for DSA usage.
 Description
   FormPatch will patch the form so that it can be used as a DSA dialog. The patch involves the
   following:
@@ -1073,7 +1073,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.FormUnPatch
 Summary
-  Unpathes the form for DSA usage.
+  Unpatches the form for DSA usage.
 Description
   FormUnPatch will unpatch the form so that it can no longer be used as a DSA dialog. Unpatch involves
   the following:

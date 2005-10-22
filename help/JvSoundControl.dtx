@@ -81,10 +81,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.LastError
 Summary
-  \Read LastError to determine if the last operation was successfull.
+  \Read LastError to determine if the last operation was successful.
 Description
   \Read LastError after getting or setting a value to property Balance or Volume, to determine if the
-  operation was successfull. LastError returns MMSYSERR_NOERROR if the last operation was successful or
+  operation was successful. LastError returns MMSYSERR_NOERROR if the last operation was successful or
   an error otherwise. Possible error values include the following:
   <TABLE>
     Value                  Description
@@ -135,7 +135,7 @@ Description
   Use Balance to find or set the balance between the left and right volume. The value for this property
   must be a number from 0 (only right) to 100 (only left).
 
-  Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
+  Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successful.
 See Also
   TJvSoundValue.Volume
 
@@ -159,23 +159,23 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.Handle
 Summary
-  Identifies the output device descriped by TJvSoundValue.
+  Identifies the output device described by TJvSoundValue.
 Description
-  Applications can’t use Handle. It's used internally by TJvSoundValue and TJvSoundControl.
+  Applications can’t use Handle. It is used internally by TJvSoundValue and TJvSoundControl.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.OnRefresh
 Summary
   Occurs when the values of Balance or Volume needs to be refreshed.
 Description
-  Applications can’t use OnRefresh. It's used internally by TJvSoundValue and TJvSoundControl.
+  Applications can’t use OnRefresh. It is used internally by TJvSoundValue and TJvSoundControl.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.OnUpdate
 Summary
   Occurs when the user changes the values of Balance or Volume.
 Description
-  Applications can’t use OnUpdate. It's used internally by TJvSoundValue and TJvSoundControl.
+  Applications can’t use OnUpdate. It is used internally by TJvSoundValue and TJvSoundControl.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.SetValue
@@ -198,7 +198,7 @@ Description
   Volume settings are interpreted logarithmically. This means the perceived volume increase is the same
   when increasing the volume level from 50 to 60 as it is from 40 to 50.
 
-  Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
+  Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successful.
 See Also
   TJvSoundValue.Balance
 

@@ -22,7 +22,7 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@EJvColorSpaceError
 Summary
-  Exception raised if an error occurs durring a full color conversion
+  Exception raised if an error occurs during a full color conversion
 Description
   This is the class of exceptions which are raised if an error happens during a full color space
   conversion.
@@ -33,7 +33,7 @@ Description
 Summary
   Return the value of an indexed axis.
 Description
-  A TJvFullColor is an agregation of 3 axis values and one color space identifier. This function
+  A TJvFullColor is an aggregation of 3 axis values and one color space identifier. This function
   returns one of the axis values. To get all axis values, use SplitColorParts, to change one axis value
   use SetAxisValue.
 Parameters
@@ -82,7 +82,7 @@ Description
   This function splits a TJvFullColor and return its axis values. To join 3 axis values and create a
   TJvFullColor, use JoinColorParts. To set one axis value, use SetAxisValue.
 Parameters
-  AColor - TJvFullColor to be splitted.
+  AColor - TJvFullColor to be split.
   Part1  - Value of the first axis.
   Part2  - Value of the second axis.
   Part3  - Value of the third axis.
@@ -150,7 +150,7 @@ Summary
   Base class for all TJv*ColorSpace classes.
 Description
   This is the ancestor of all TJv*FullColorSpace. It defines all functions needed to convert a color
-  and get the color space caracteristics.
+  and get the color space characteristics.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.AxisDefault
@@ -214,7 +214,7 @@ Return value
 Summary
   Identifier of this color space.
 Description
-  This is the identifier of this color space. Identifier are staticly allocated to avoid conflicts
+  This is the identifier of this color space. Identifier are statically allocated to avoid conflicts
   depending of the registration order of color spaces.
 
 ----------------------------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ Description
 Summary
   Short name of this color space.
 Description
-  This read-only property returns the short name of this color space. A short name is typicaly 3
+  This read-only property returns the short name of this color space. A short name is typically 3
   characters like RGB for Red-Green-Blue.
 
 ----------------------------------------------------------------------------------------------------
@@ -244,14 +244,14 @@ Description
 Summary
   Class of the manager of color spaces.
 Description
-  This class provides basic operations : - registeration and unregistration of colorspaces. -
+  This class provides basic operations : - registration and unregistration of colorspaces. -
   conversions from one color space to an other. - conversion from one full color to RGB. - conversion
   from RGB to one full color. - enumeration of all registered color spaces.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.ColorSpace
 Summary
-  Retreive a color space using its identifier.
+  Retrieve a color space using its identifier.
 Description
   This indexed and read-only property returns a color space given its identifier. The color space must
   have been registered using the RegisterColorSpace procedure.
@@ -269,7 +269,7 @@ Summary
   Convert an RGB value to a full color value.
 Description
   If the RGB value is a system color (like clBtnFace), the result is the same color in the csDEF
-  colorspace, otherwize the result is the same color in the csRGB color space.
+  colorspace, otherwise the result is the same color in the csRGB color space.
 Parameters
   AColor - RGB value to be converted.
 Return value
@@ -281,7 +281,7 @@ Summary
   Convert a full color to an RGB value.
 Description
   This function converts a TJvFullColor to a TColor value. If the AColor argument belongs to the csDEF
-  color space, then the result if a system color, otherwize the result is a standard RGB value.
+  color space, then the result if a system color, otherwise the result is a standard RGB value.
 Parameters
   AColor - TJvFullColor to be converted.
 Return value

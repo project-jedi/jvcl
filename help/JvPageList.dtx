@@ -17,7 +17,7 @@ Summary
 Description
   EPageListError is raised by the components TJvPageListTreeView, TJvPageList and the
   TJvSettingsTreeView when an error occurs. For example, when you try to assign a component to the
-  PageList property of the TJvPageListTreeview that doesn't implement the IPageList interface.
+  PageList property of the TJvPageListTreeView that doesn't implement the IPageList interface.
 
 ----------------------------------------------------------------------------------------------------
 @@IPageList
@@ -27,11 +27,23 @@ Summary
 Description
   IPageList should be implemented by controls that should be assignment compatible with the PageList
   property of other controls. For example, the TJvPageList control implements this interface making it
-  possible to use it in combination with the TJvSettingsTreeview and TJvPageListTreeView controls.
+  possible to use it in combination with the TJvSettingsTreeView and TJvPageListTreeView controls.
 
   The methods of IPageList is called by the IPageList consumer (any component that have a writeable
   IPageList property). For example, TJvPageListTreeView calls the methods of the IPageList assigned to
   its PageList property when the selected node is changed.
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.AddPage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@IPageList.CanChange
@@ -47,6 +59,18 @@ Return value
   the allowable range for the page list, return false.
 
 ----------------------------------------------------------------------------------------------------
+@@IPageList.DeletePage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@IPageList.GetPageCaption
 Summary
   Returns the caption for a page.
@@ -55,8 +79,8 @@ Description
   allowable range, this function should return an empty string or the value "unknown" or similar and
   not raise an exception or generate an error.
 
-  getPageCaption is called by the IPageList user to retrieve the display name of a specific page. The
-  getPageCaption is only called at design-time when the IPageList consumer needs to display the pages
+  GetPageCaption is called by the IPageList user to retrieve the display name of a specific page. The
+  GetPageCaption is only called at design-time when the IPageList consumer needs to display the pages
   in the IPageList implementation in its own design editor(s).
 Parameters
   AIndex - The 0-based index of the page whose caption is to be returned.
@@ -72,6 +96,32 @@ Description
   list.
 Return value
   Returns the number of pages in the IPageList implementation or 0 if it is empty.
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.MovePage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  CurIndex - Description for this parameter
+  NewIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.PageCaptionChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index      - Description for this parameter
+  NewCaption - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@IPageList.SetActivePageIndex
@@ -303,7 +353,7 @@ Summary
   Write here a summary (1 line)
 Description
   HiddenPageList is a protected read-only TList property that stores pages in the list that are
-  currently visibile or accessible using page navigation methods.
+  currently visible or accessible using page navigation methods.
 
   HiddenPageList is maintained during calls to the HidePage and ShowPage methods. TJvCustomPage
   instances are added to HiddenPageList in HidePage. The page instances are removed from the hidden

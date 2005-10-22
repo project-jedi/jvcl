@@ -333,7 +333,7 @@ Description
   can reduce the chances of running out of timers by using a TJvTimerList rather than multiple timers.
 
   TJvTimerList uses the concept of a timer events to perform the same function as the TTimer's OnTimer
-  event. After adding a TJvTimerList compone t to your form, use the component editor to create events
+  event. After adding a TJvTimerList component to your form, use the component editor to create events
   at design-time, or call Add method at run-time to create timer events dynamically. \Events can repeat
   until they are canceled or they can be fired only a specific number of times and then be
   automatically removed (accordingly Cycled property value).
@@ -373,7 +373,7 @@ Description
   to the TJvTimerEvent properties of the same names. Finally the timer is added to the timer list.
 Parameters
   AOnTimer  - A TNotifyEvent procedure that will be called when the timer executes.
-  AInterval - The interval in milli-seconds between two executions for the added timer.
+  AInterval - The interval in milliseconds between two executions for the added timer.
   ACycled   - Indicates whether the timer executes indefinitely or a specific number of times.
 Return value
   \Returns the <LINK TJvTimerEvent.Handle, handle> of the added timer. This is not a windows handle.

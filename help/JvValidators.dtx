@@ -183,10 +183,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCompareValidator.ValueToCompare
 Summary
-  The value to compare the property value agains.
+  The value to compare the property value against.
 Description
   Specify a value for ValueToCompare that <LINK TJvBaseValidator.PropertyToValidate,
-  PropertyToValidate> should be compared against. The value of Operator determines how the comparision
+  PropertyToValidate> should be compared against. The value of Operator determines how the comparison
   is performed. If ValueToCompare isn't set, it is assigned the default value NULL.
 See Also
   TJvBaseValidator.PropertyToValidate, TJvCompareValidator.Operator
@@ -310,7 +310,7 @@ See Also
 Summary
   Can perform validation based on regular expressions.
 Description
-  Use TJvRegularExpressionValidator when you need to validate comlex strings containing regular
+  Use TJvRegularExpressionValidator when you need to validate complex strings containing regular
   expression strings.
 See Also
   TJvCompareValidator, TJvCustomValidator, TJvRangeValidator, TJvRequiredFieldValidator
@@ -343,27 +343,27 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoLessThan
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
-  less than <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
+  The comparison returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is less
+  than <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoLessOrEqual
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
-  less than or equal to <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
+  The comparison returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is less
+  than or equal to <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoEqual
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
+  The comparison returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
   equal to <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoGreaterOrEqual
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
+  The comparison returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
   greater than or equal to <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoGreaterThan
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
+  The comparison returns true if <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
   greater than <LINK TJvCompareValidator.ValueToCompare, ValueToCompare>.
 
 ----------------------------------------------------------------------------------------------------
@@ -453,7 +453,7 @@ Description
     display all active errors in a label on the form.
   * Use the OnValidateFailed event. With the OnValidateFailed event, you can do any custom error
     handling of your choice.
-  * \Create a custom method of retrieveing failed validations.
+  * \Create a custom method of retrieving failed validations.
 
   You can even use all of the options at the same time or in different combinations.
 See Also
@@ -511,11 +511,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Items
 Summary
-  Provides indexed access to the validators maintainded by this component.
+  Provides indexed access to the validators maintained by this component.
 Description
   Use Items to access individual validators in this component. The valid range of Index ís between 0
   and Count - 1. The order of the validators can have impact on how effective validations are. For
-  example, a validation for a control that can potentionally take a long time should be placed later in
+  example, a validation for a control that can potentially take a long time should be placed later in
   the list than a validation for the same control that takes less time since validations are performed
   in order starting with the first validator. If the faster validation fails, no time is wasted
   performing the slower validation.

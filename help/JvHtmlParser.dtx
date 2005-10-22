@@ -26,7 +26,7 @@ Description
   using a string value or loaded from a specified file.
 
   TJvHTMLParser contains properties and methods needed to define HTML tags and conditional parsing
-  performed when analysing the HTML Content passed to the parser.
+  performed when analyzing the HTML Content passed to the parser.
 
   Use AddCondition, ClearConditions, and RemoveCondition to maintain HTML tag definitions at run-time.
 
@@ -45,7 +45,7 @@ See Also
 Summary
   Adds an HTML tag definition with conditional parsing information to the HTML parser.
 Description
-  AddCondition is a procedure used to define an HTML tag recoginized by the parser component during
+  AddCondition is a procedure used to define an HTML tag recognized by the parser component during
   parsing operations in the AnalyseString method. AddCondition ensures that values passed in the
   Keyword, StartTag, EndTag, and TextSelection arguments are used in the internal TJvParserInfo
   instance created for the tag definition.
@@ -82,7 +82,7 @@ See Also
 Summary
   Parses the specified HTML content.
 Description
-  AnalyseString is a procedure used to specifiy the HTML Content to be parsed, and to generate a list
+  AnalyseString is a procedure used to specify the HTML Content to be parsed, and to generate a list
   with information about tags detected during the method. The value in the Str argument is stored for
   subsequent use in the Content property.
 
@@ -111,7 +111,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.ClearConditions
 Summary
-  Clears all HTML tag defintions.
+  Clears all HTML tag definitions.
 Description
   ClearConditions is a procedure used to remove HTML tags defined using the Parser property or the
   AddCondition method. ClearConditions removes all lines in the Parser property and clears the internal
@@ -205,19 +205,19 @@ Parameters
   Keyword       - Name associated with the HTML tag definition.
   StartTag      - HTML that marks the start of the defined tag.
   EndTag        - HTML that marls the end of the defined tag.
-  TextSelection - Position of the text matching the selected tag defintion.
+  TextSelection - Position of the text matching the selected tag definition.
 See Also
   TJvParserInfo, TJvHTMLParser.ConditionCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.OnKeyFound
 Summary
-  Event handler signalled when a defined HTML tag is encountered during parsing.
+  Event handler signaled when a defined HTML tag is encountered during parsing.
 Description
-  OnKeyFound is a TJvKeyFoundEvent property that represents the event handler signalled when a defined
+  OnKeyFound is a TJvKeyFoundEvent property that represents the event handler signaled when a defined
   HTML tag is encountered during parsing.
 
-  OnKeyFound is signalled in the AnalyseString method after HTML tags have been parsed from the HTML
+  OnKeyFound is signaled in the AnalyseString method after HTML tags have been parsed from the HTML
   Content for the parser component. OnKeyFound is fired for each value stored in list of parsed tags in
   TagList, and includes the arguments described in the list of Parameters.
 
@@ -242,12 +242,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.OnKeyFoundEx
 Summary
-  Event handler signalled when a defined HTML tag is encountered during parsing.
+  Event handler signaled when a defined HTML tag is encountered during parsing.
 Description
-  OnKeyFoundEx is a TJvKeyFoundExEvent property that represents the event handler signalled when a
+  OnKeyFoundEx is a TJvKeyFoundExEvent property that represents the event handler signaled when a
   defined HTML tag is encountered during parsing.
 
-  OnKeyFoundEx is signalled in the AnalyseString method after HTML tags have been parsed from the HTML
+  OnKeyFoundEx is signaled in the AnalyseString method after HTML tags have been parsed from the HTML
   Content for the parser component. OnKeyFoundEx is fired for each value stored in list of parsed tags
   in TagList, and includes the arguments described in the list of Parameters.
 
@@ -265,7 +265,7 @@ Parameters
   Key          - Name associated with the HTML tag.
   Results      - Textual context for the HTL tag.
   OriginalLine - Line of text containing the HTML tag.
-  TagInfo      - Storage allocated for the HTML tag defintion.
+  TagInfo      - Storage allocated for the HTML tag definition.
   Attributes   - Attribute names and values found in the HTML start tag.
 See Also
   TJvKeyFoundEvent, TJvKeyFoundExEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList,

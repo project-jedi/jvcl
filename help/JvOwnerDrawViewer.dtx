@@ -25,7 +25,7 @@ Description
 Summary
   Event that is called when the items in the grid needs to be painted.
 Description
-  Write a handelr for the OnDrawItem event to draw the items in an owner drawn viewer. If you don't
+  Write a handler for the OnDrawItem event to draw the items in an owner drawn viewer. If you don't
   assign an event handler, only the background will be drawn by the control.
 
 ----------------------------------------------------------------------------------------------------
@@ -133,8 +133,8 @@ Summary
   Specifies whether items are read into the control as needed or all at once.
 Description
   If LazyRead is true, only items that are currently visible are passed to the OnDrawItem event. When
-  LazyRead is false, all items are pased to onDrawItem regardless of whether they are currently visible
-  or not.
+  LazyRead is false, all items are passed to OnDrawItem regardless of whether they are currently
+  visible or not.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.MultiSelect
@@ -157,7 +157,7 @@ Description
 Summary
   Determines whether right-clicks changes the SelectedIndex property.
 Description
-  Use RightClickSelect to allow the SelectedINdex property to indicate items the user clicks with the
+  Use RightClickSelect to allow the SelectedIndex property to indicate items the user clicks with the
   right mouse button. If RightClickSelect is True, the value of SelectedIndex is the value of the item
   last clicked with either the right or left mouse button. If RightClickSelect is False, the value of
   SelectedIndex is the item last clicked using the left mouse button.
@@ -169,7 +169,7 @@ Summary
 Description
   Use ScrollBar to determine how items are arranged in the control and which scroll bar is shown when
   the items don't fit in the current ClientRect. When ScrollBar is tvHorizontal, the control displays
-  as many rows as possible and determines the number of columns based on the numberof rows. If all
+  as many rows as possible and determines the number of columns based on the number of rows. If all
   items can't fit into the current ClientRect, a horizontal scrollbar is displayed.
 
   When ScrollBar is tvVertical, the control displays as many columns as possible and determines the
@@ -179,7 +179,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.ShowCaptions
 Summary
-  Sepcifies whether captions should be shown or not.
+  Specifies whether captions should be shown or not.
 Description
   Set ShowCaptions to true to adjust the TRects passed to OnDrawItem to make room for a caption.
 

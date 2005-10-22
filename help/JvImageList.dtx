@@ -41,13 +41,13 @@ Description
 Summary
   Loads the bitmaps for the ImageList from a bitmap.
 Description
-  The given bitmap is splitted into smaller bitmaps which are added to the image list. The mask bitmap
-  is used as mask. Or the mask color is used if AutoMaskColor is false. Otherwise bottom left pixel's
+  The given bitmap is split into smaller bitmaps which are added to the image list. The mask bitmap is
+  used as mask. Or the mask color is used if AutoMaskColor is false. Otherwise bottom left pixel's
   color is used as mask color.
 
   The return value is the number of added bitmaps.
 Parameters
-  ImgList       - The image list to which the splitted bitmap should be added
+  ImgList       - The image list to which the split bitmap should be added
   Bitmap        - The bitmap that should be added to the image list
   MaskBitmap    - The bitmap mask that is used for the bitmap
   MaskColor     - Mask color (default: clFuchsia)
@@ -221,7 +221,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.ResourceIds
 Summary
-  Specifies the resource identifieres for the bitmaps.
+  Specifies the resource identifiers for the bitmaps.
 Description
   ResourceIds contains the resource ids of the bitmaps to load. Allowed are RCDATA (a bitmap file) and
   BITMAP. ResourceIds property is only loaded into the image list if Mode is imResourceIds.

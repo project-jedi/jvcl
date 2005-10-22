@@ -14,7 +14,7 @@ Summary
   Base class for the TJvScheduleEvents component.
 Description
   TJvCustomScheduledEvents is the base class for the TJvScheduledEvents component. It provides the base
-  functionalitiy but does not publish anything.
+  functionality but does not publish anything.
 
   You should not create an instance of this class. Use one of the descendants instead.
 See Also
@@ -228,13 +228,14 @@ Summary
   Specifies if events missed since the start of the schedule or since the last saved state should be
   counted.
 Description
-  CountMissedEvents determines if events that should have occured since the start of the schedule or
-  since the last saved state should be counted. This could potentionally influence the ending of the
+  CountMissedEvents determines if events that should have occurred since the start of the schedule or
+  since the last saved state should be counted. This could potentially influence the ending of the
   schedule if its end type is set to a specific day count and/or trigger count.
 
-  If set to True events that should have occured are counted when determining the end of the schedule.
+  If set to True events that should have occurred are counted when determining the end of the
+  schedule.
 
-  If set to False events that should have occured are not counted when determining the end of the
+  If set to False events that should have occurred are not counted when determining the end of the
   schedule.
 
 ----------------------------------------------------------------------------------------------------
@@ -346,7 +347,7 @@ Summary
   Determines the date and time at which the event was supposed to be triggered.
 Description
   RequestedTriggerTime will report the date and time at which the event was scheduled to be triggered
-  (either throught the schedule or because of a Snooze request).
+  (either through the schedule or because of a Snooze request).
 
   If your application is busy, there might be difference between actual trigger time and requested
   trigger time. To find out what date and time the event should was triggered you can check the value
@@ -393,7 +394,7 @@ Description
   Snooze will schedule a reminder event, separate from the set schedule by the Schedule property. Call
   this method from the OnExecute event to schedule a reminder to go off after a specified interval.
 
-  The parameter order allows you to specify the interval in as less paramters as needed. All specified
+  The parameter order allows you to specify the interval in as less parameters as needed. All specified
   parameters will be combined, with no range check on any of them (eg. you could specify an interval of
   3750 milliseconds, 75 seconds, 62 minutes, 28 hours and 3 days which would result in an interval of 4
   days, 5 hours, 3 minutes, 18 seconds and 750 milliseconds. Alternatively you could have specified the
@@ -449,7 +450,7 @@ Description
   Microsoft® SQL Server.
 
   The component uses the JclSchedule unit and its interface to generate the execution times. For more
-  information on scheduling posibilities, check out the help for JclSchedule.
+  information on scheduling possibilities, check out the help for JclSchedule.
 
   Components usage:
 

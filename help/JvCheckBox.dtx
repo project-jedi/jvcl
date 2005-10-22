@@ -16,13 +16,13 @@ JVCLInfo
   GROUP=JVCL.Buttons.Check
   FLAG=Component
 Summary
-  A checkBox descendant with added functionality.
+  A checkbox descendant with added functionality.
 Description
-  TJvCheckBox is a direct descendant and enhancement for Delphi's CheckBox.
+  TJvCheckBox is a direct descendant and enhancement for Delphi's TCheckBox.
 
   There are 3 main added functionalities:
 
-  * The CheckBox can be Associated with another component and control its enabled property.
+  * The checkbox can be Associated with another component and control its enabled property.
   * Mouse movements can be tracked through 2 added events OnMouseEnter/OnMouseLeave and change the Font
     automatically (HotTrack, HotTrackFont).
   * The state of the control can automatically be saved to the registry.
@@ -58,7 +58,7 @@ Summary
   Determines whether control automatically resizes to accommodate the Caption.
 Description
   Use AutoSize to make the control adjust its size automatically so the client area accommodates the
-  height and width of the captionj. When AutoSize is False, the check box is fixed in size. When
+  height and width of the caption. When AutoSize is False, the check box is fixed in size. When
   AutoSize is True, the client size readjusts whenever the caption changes. The client size of the
   control is also readjusted when the Font property changes. By default, AutoSize is False.
 
@@ -88,7 +88,7 @@ Summary
   Determines whether control automatically tracks the mouse hovering over the control.
 Description
   Use HotTrack to specify that the font defined in HotTrackFont will be used instead of the normal font
-  (ParentFont/Control FOnt) when the mouse cursor is hovering over the control.
+  (ParentFont/Control Font) when the mouse cursor is hovering over the control.
 See Also
   OnMouseEnter, OnMouseLeave
 
@@ -147,10 +147,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.LinkedControls
 Summary
-  TControl descendant whose Enabled property will be controlled by the CheckBox.
+  TControl descendant whose Enabled property will be controlled by the checkbox.
 Description
   Associated is the Control which will be Enabled/Disabled according to the value of the Checked
-  property of the CheckBox.
+  property of the checkbox.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.OnParentColorChange

@@ -41,7 +41,7 @@ Summary
   Translates an unlit color literal into a \TUnlitColor value.
 Description
   IdentToUnlitColor translates an unlit color literal into a TUnlitColor. Because TUnlitColor allows
-  for two additional values which should be accesible from the Object Inspector this method is needed
+  for two additional values which should be accessible from the Object Inspector this method is needed
   to perform the translation from the string literal into the actual value.
 
   If the string literal does not represent one of the two additional values, the IdentToColor function
@@ -95,7 +95,7 @@ See Also
 Summary
   Translates a string to a \TUnlitColor value.
 Description
-  StringToUnlitColor translates a string into it's TUnLitColor representation. The string may consist
+  StringToUnlitColor translates a string into it's TUnlitColor representation. The string may consist
   of a color constant (as defined for TColor or TUnlitColor) or a color's ordinal (RGB) value (in
   decimal or hexadecimal representation; see StrToInt).
 Parameters
@@ -261,7 +261,7 @@ Description
   markings above the main digit segments. Those classes will set BaseTop to a value > 0 to have it line
   up properly.
 
-  The default behaviour of BaseTop is to always return 0. Classes that require a different BaseTop will
+  The default behavior of BaseTop is to always return 0. Classes that require a different BaseTop will
   override GetBaseTop to return another value.
 See Also
   TJvCustomSegmentedLEDDigit.Height, TJvCustomSegmentedLEDDigit.VertAdjust
@@ -362,13 +362,13 @@ See Also
 Summary
   Determines the height of the digit.
 Description
-  Height is the height of the digit, exluding anything above BaseTop.
+  Height is the height of the digit, excluding anything above BaseTop.
 
   Height is used to help auto sizing the display control vertically. Some digit types may require
   additional markings below the main digit segments. Those classes will set Height to a value larger
   than the default value (<LINK TJvCustomSegmentedLEDDisplay.DigitHeight, Display.DigitHeight>).
 
-  The default behaviour for Height is to return <LINK TJvCustomSegmentedLEDDisplay.DigitHeight,
+  The default behavior for Height is to return <LINK TJvCustomSegmentedLEDDisplay.DigitHeight,
   Display.DigitHeight>. Classes that require a different Height will override GetHeight to return
   another value.
 See Also
@@ -479,7 +479,7 @@ Description
   a value larger than the default value (<LINK TJvCustomSegmentedLEDDisplay.DigitWidth,
   Display.DigitDigitWidth>).
 
-  The default behaviour for Width is to return <LINK TJvCustomSegmentedLEDDisplay.DigitWidth,
+  The default behavior for Width is to return <LINK TJvCustomSegmentedLEDDisplay.DigitWidth,
   Display.DigitWidth>. Classes that require a different Width will override GetWidth to return another
   value.
 See Also
@@ -502,7 +502,7 @@ Description
   The control simulates this by rendering the bars. It allows to use any color for the segments and
   allows to render both lit and unlit segments in two different colors (conventional LED displays often
   show unlit segments due to a backlight is being used (as sometimes used with LCD displays) or because
-  a neighbouring segment is lit and the optical separation is not good enough). The unlit segments are
+  a neighboring segment is lit and the optical separation is not good enough). The unlit segments are
   generally the same color as the lit segment but a lot darker.
 
   The control allows to use any layout by specifying a digit class. Each digit class can provide it's
@@ -617,7 +617,7 @@ Description
   far apart two adjacent digits are or set it to a new value.
 
   A DigitSpacing of 0 means each digit is placed directly next to it's predecessor with no spacing
-  between them. Depending on the digit style this is usually to close to eachother.
+  between them. Depending on the digit style this is usually to close to each other.
 See Also
   TJvCustomSegmentedLEDDisplay.DigitClass, TJvCustomSegmentedLEDDisplay.DigitHeight,
   TJvCustomSegmentedLEDDisplay.DigitWidth, TJvCustomSegmentedLEDDisplay.Slant
@@ -631,7 +631,7 @@ Description
   currently used width or set it to a new value.
 
   DigitWidth only refers to the main segments of a digit (the ones that make up the characters), not
-  it's actual width. Some digit styles may add additional markings to the left ot right of the main
+  it's actual width. Some digit styles may add additional markings to the left or right of the main
   character segments. The width needed for these markings are added to this width to determine the
   actual width.
 See Also
@@ -748,7 +748,7 @@ Description
   which color is used for segments that are not lit or set it to a new value.
 
   SegmentUnlitColor can be set to any color value. In addition two extra color constants are added and
-  the meaning of one predefined constance has changed:
+  the meaning of one predefined constant has changed:
 
   <TABLE>
     Constant             Value      Meaning
@@ -1057,7 +1057,7 @@ Summary
   Segmented LED display control.
 Description
   TJvSegmentedLEDDisplay is a control that mimics a segmented LED display (as used in classic
-  calculators, VCR displays, car radio displays, etcetera).
+  calculators, VCR displays, car radio displays, etc.).
 
   A segmented LED display allows to display numbers, characters and/or symbols. It does so by
   controlling a number of individual leds. Each LED is covered by a glass bar or dot to give it a
@@ -1067,8 +1067,8 @@ Description
   The control simulates this by rendering the bars and dots. It allows to use any color for the
   segments and allows to render both lit and unlit segments in two different colors (conventional LED
   displays often show unlit segments due to either a backlight is being used (as sometimes used with
-  LCD displays) or because a neighbouring segment is lit and the optical separation is not good
-  enough). The unlit segments are generally the same color as the lit segment but a lot darker.
+  LCD displays) or because a neighboring segment is lit and the optical separation is not good enough).
+  The unlit segments are generally the same color as the lit segment but a lot darker.
 
   The control allows to use any layout by specifying a digit class. Each digit class can provide it's
   own layout and number of segments as well as specifying how to map characters to these segments.
@@ -1220,7 +1220,7 @@ Summary
   Translates a \TUnlitColor value into an unlit color literal.
 Description
   UnlitColorToIdent translates a TUnlitColor value into an unlit color literal. Because TUnlitColor
-  allows for two additional values which should be accesible from the Object Inspector this method is
+  allows for two additional values which should be accessible from the Object Inspector this method is
   needed to perform the translation from the actual value into the string literal.
 
   If the value does not correspond to one of the two additional values, the ColorToIdent function is
@@ -1237,8 +1237,8 @@ See Also
 Summary
   Translates a \TUnlitColor value into it's string representation.
 Description
-  UnlitColorToString translates a TUnLitColor value into it's string representation. UnlitColorToString
-  behaves exactly the same as ColorToString but will also recognise and translate the additional color
+  UnlitColorToString translates a TUnlitColor value into it's string representation. UnlitColorToString
+  behaves exactly the same as ColorToString but will also recognize and translate the additional color
   values defined for TUnlitColor.
 Parameters
   Color - Color value to be translated into a string.
@@ -1273,7 +1273,7 @@ Description
 
   If the class is not registered this function has no effect.
 
-  The class will not be unregistered from the streaming system (UnRegisterClass is <B>not</B> called).
+  The class will not be unregistered from the streaming system (UnregisterClass is <B>not</B> called).
 Parameters
   DigitClass - Digit class to be unregistered.
 See Also

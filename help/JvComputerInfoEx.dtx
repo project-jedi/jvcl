@@ -163,7 +163,7 @@ See Also
 Summary
   Encapsulates APM information.
 Description
-  Encapsulates APM (Advanced Power Managment) information. This is a read-only class.
+  Encapsulates APM (Advanced Power Management) information. This is a read-only class.
 Note
   The system is only capable of estimating BatteryFullLifeTime based on calculations on BatteryLifeTime
   and BatteryLifePercent. Without smart battery subsystems, this value may not be accurate enough to be
@@ -357,7 +357,7 @@ Description
   the help for the TJvComputerInfoEx events for more information.
 
   The subclasses can be divided into read-only and read-write classes. Read-write classes can be
-  subdivided into partial and fully writeable. Partial read-write classes o ly provide write access to
+  subdivided into partial and fully writeable. Partial read-write classes only provide write access to
   some of its properties. If you try to change a read-only property at run-time, an EJVCLComputerInfoEx
   exception is raised.
 
@@ -388,7 +388,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.APM
 Summary
-  Provides access to the Advanced Power Managment properties.
+  Provides access to the Advanced Power Management properties.
 Description
   Use the subproperties of the APM property to access APM information. APM is read-only.
 
@@ -441,7 +441,7 @@ Summary
 Description
   Use the subproperties of Identification to access information about computer and user identification.
   Among other things, this class provides information about computer name, user name, workgroup,
-  domain, IP adress as well as information about the volumes installed.
+  domain, IP address as well as information about the volumes installed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Keyboard
@@ -450,9 +450,9 @@ Summary
 Description
   Use the subproperties of Keyboard to access information about the state of the users keyboard, like
   the state of the NumLock, ScrollLock and CapsLock keys. Use the public <LINK TJvKeyInfo.KeyState>
-  property to interogate the state of arbitrary keys.
+  property to interrogate the state of arbitrary keys.
 
-  This is a read-write class and you can write to all of its properties, inlcuding KeyState.
+  This is a read-write class and you can write to all of its properties, including KeyState.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Memory
@@ -572,7 +572,7 @@ See Also
 Summary
   Occurs when the user changes display settings.
 Description
-  \Write a handler for this event to take specifi actions when the user changes his display settings.
+  \Write a handler for this event to take specific actions when the user changes his display settings.
 
   This event is triggered in response to a WM_DISPLAYCHANGE message.
 Parameters
@@ -720,7 +720,7 @@ Summary
 Description
   \Write a handler for this event to take specific actions when a user logs on or off.
 
-  Note that most GUI applications do not recieve this message since they are either started after the
+  Note that most GUI applications do not receive this message since they are either started after the
   user has logged in or closed before the user logs out. This message is mainly intended for
   applications running as background tasks and/or services.
 
@@ -742,7 +742,7 @@ Summary
   Specifies whether the class is read-only.
 Description
   Use ReadOnly to specify whether assigning to a property at run-time raises an exception or not. Set
-  ReadOnly to true to avoid inadverently changing properties on the end-users computer. When you set
+  ReadOnly to true to avoid inadvertently changing properties on the end-users computer. When you set
   ReadOnly to true, all subclasses of TJvComputerInfoEx that are derived from TJvWriteableInfo will
   have their ReadOnly property changed as well. Thus, you do not have to change each subclass
   individually.
@@ -2973,7 +2973,7 @@ Summary
   Provides access to the location of the screensaver.
 Description
   \Read ScreenSaver to access the location of the current screen saver file. Change ScreenSaver to set
-  a new ScreenSaver. Setting ScreenSaver to an emtpy string, disables the screen saver completely.
+  a new ScreenSaver. Setting ScreenSaver to an empty string, disables the screen saver completely.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMiscInfo.TimeRunning
@@ -3395,9 +3395,8 @@ Summary
 Description
   Use BitsPerPixel to set and retrieve the screen resolution as bits per pixel.
 
-  IMPORTANT! Do not try to set an invalid or unavailable BitsPerPixel as this could potentionally
-  damage your screen! Use ScreenModes to find the available screen resolutions before changing this
-  value
+  IMPORTANT! Do not try to set an invalid or unavailable BitsPerPixel as this could potentially damage
+  your screen! Use ScreenModes to find the available screen resolutions before changing this value
 See Also
   TJvScreenInfo.ScreenModes
 
@@ -3923,7 +3922,7 @@ Description
 Summary
   Encapsulates the available system colors as a class.
 Description
-  TJvSystemColorsInfo is the type of the TJvCOmputerInfoEx.Colors property and encapsulates the
+  TJvSystemColorsInfo is the type of the TJvComputerInfoEx.Colors property and encapsulates the
   available system colors on the computer. Not all colors in TJvSystemColorsInfo are available on all
   platforms.
 

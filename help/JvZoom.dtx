@@ -54,9 +54,9 @@ Summary
 Description
   Set Crosshair to true to display a crosshair image in the control when it is Active. The crosshair
   serves as a visual indicator of where the cursor is currently located. The actual appearance of the
-  crosshair is controlled by CrosshairColor, CrosshairSize and CrosshairPicture.
+  crosshair is controlled by CrosshairColor, CrosshairSize and CrossHairPicture.
 See Also
-  CrosshairPicture, CrosshairColor, CrosshairSize
+  CrossHairPicture, CrosshairColor, CrosshairSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvZoom.CrosshairColor
@@ -64,19 +64,19 @@ Summary
   Sets the color of the crosshair.
 Description
   Change the value of CrosshairColor to change the color of the crosshair. CrosshairColor is not used
-  if Crosshair is false or CrosshairPicture contains an image.
+  if Crosshair is false or CrossHairPicture contains an image.
 See Also
-  Crosshair, CrosshairSize, CrosshairPicture
+  Crosshair, CrosshairSize, CrossHairPicture
 
 ----------------------------------------------------------------------------------------------------
 @@TJvZoom.CrossHairPicture
 Summary
   Determines whether an image is used as the crosshair
 Description
-  Assign an image to the CrosshairPicture property to use an arbitrary image as the crosshair in the
+  Assign an image to the CrossHairPicture property to use an arbitrary image as the crosshair in the
   control. Note that Crosshair must be true for the image to be shown.
 
-  If CrosshairPicture is empty and Crosshair is true, the values of CrosshairColor and CrosshairSize is
+  If CrossHairPicture is empty and Crosshair is true, the values of CrosshairColor and CrosshairSize is
   used to draw the crosshair.
 See Also
   Crosshair, CrosshairColor, CrosshairSize
@@ -87,9 +87,9 @@ Summary
   Sets the size of the crosshair.
 Description
   Use CrosshairSize to set the size (in pixels) of the crosshair lines. CrosshairSize is only used if
-  Crosshair is true and CrosshairPicture is empty.
+  Crosshair is true and CrossHairPicture is empty.
 See Also
-  Crosshair, CrosshairColor, CrosshairPicture.
+  Crosshair, CrosshairColor, CrossHairPicture.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvZoom.Delay
@@ -109,7 +109,7 @@ Description
   Enabled works the same in this control as it does in most other with one additional feature: you can
   set Enabled to false to manually control the zoom action. When Enabled is false, you can take
   screenshots without moving the mouse by calling the ZoomInAt method. When Enabled is true,
-  screenshots are taken automatically based on thecurrent location of the mouse cursor.
+  screenshots are taken automatically based on the current location of the mouse cursor.
 See Also
   ZoomInAt
 
@@ -139,7 +139,7 @@ Description
   and left edges of the area to zoom.
 
   Note that this method works differently depending on the state of the Enabled property: if Enabled is
-  true, the mouse cursor is moved to the specified location to create the zzomed image. If Enabled is
+  true, the mouse cursor is moved to the specified location to create the zoomed image. If Enabled is
   false, the mouse cursor is not moved.
 Parameters
   X - The horizontal screen coordinate

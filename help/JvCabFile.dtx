@@ -181,7 +181,7 @@ Description
   and re-populated using the SetupIterateCabinet API function and the internal callback function.
 
   After successful completion of the file listing using the callback function, the OnFilesListed event
-  is signalled. Event notification is not performed if a procedure has not been assigned to the
+  is signaled. Event notification is not performed if a procedure has not been assigned to the
   OnFilesListed event handler.
 
   FileName is used in <LINK ExtractFile> and <LINK ExtractAll> when calling the SetupIterateCabinet API
@@ -199,7 +199,7 @@ Description
   relies on the SetupIterateCabinet API function and the internal callback function.
 
   After successful completion of the file listing using the callback function, the OnFilesListed event
-  is signalled. Event notification is not performed if a procedure has not been assigned to the
+  is signaled. Event notification is not performed if a procedure has not been assigned to the
   OnFilesListed event handler.
 See Also
   FileName, OnFilesListed
@@ -207,20 +207,20 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnCABInfo
 Summary
-  Event handler signalled for cabinet file information.
+  Event handler signaled for cabinet file information.
 Description
-  OnCABInfo is a TOnCABInfo property that represents the event handler signalled when cabinet file
+  OnCABInfo is a TOnCABInfo property that represents the event handler signaled when cabinet file
   information is returned to the internal callback function for the Setup API.
 
-  OnCABInfo is signalled in the listing callback function when the SPFILENOTIFY_CABINETINFO
-  notification is received, and provides access to the updated values in the TCABInfo argument to the
-  event handler.
+  OnCABInfo is signaled in the listing callback function when the SPFILENOTIFY_CABINETINFO notification
+  is received, and provides access to the updated values in the TCABInfo argument to the event
+  handler.
 
   Applications must assign a procedure to the event handler to allow responding to the event
   notification.
 Parameters
   Sender  - Object context for the event notification. Generally contains the TJvCABFile instance to
-             be signalled from the callback function.
+             be signaled from the callback function.
   CABInfo - Structure used to store cabinet file information from the Setup API.
 See Also
   <LINK ExtractAll>, <LINK ExtractFile>
@@ -230,8 +230,8 @@ See Also
 Summary
   Occurs after a file has been extracted from the cabinet file.
 Description
-  OnFileExtracted is a TOnExtracted property that represents the event handler signalled when a file
-  has been extracted from the cabinet file using the Setup API. OnFileExtracted is signalled when the
+  OnFileExtracted is a TOnExtracted property that represents the event handler signaled when a file has
+  been extracted from the cabinet file using the Setup API. OnFileExtracted is signaled when the
   SPFILENOTIFY_FILEEXTRACTED notification is received in the internal extraction callback function
   after a call to <LINK ExtractFile> or <LINK ExtractAll>.
 
@@ -252,7 +252,7 @@ Description
   notification.
 Parameters
   Sender    - Object context for the event notification. Generally contains the TJvCABFile instance to
-               be signalled from the callback function.
+               be signaled from the callback function.
   Successed - Indicates whether the file was successfully extracted.
   Cont      - Indicates whether file extraction can be continued.
   Source    - Source file name extracted from the Cabinet file.
@@ -265,7 +265,7 @@ See Also
 Summary
   Occurs after completion of a file listing for the cabinet file.
 Description
-  OnFilesListed is a TNotifyEvent property that represents the event handler signalled when the file
+  OnFilesListed is a TNotifyEvent property that represents the event handler signaled when the file
   listing in Files has been completed using the Setup API. OnFilesListed can be used to perform updates
   needed when the Files property has been populated after changing the value in FileName.
 
@@ -279,8 +279,8 @@ See Also
 Summary
   Occurs when a specific file continues in another cabinet.
 Description
-  OnNeedNewCabinet is a TOnNeedNewCabinet property that represents the event handler signalled when a
-  specific file continues in another cabinet file. OnNeedNewCabinet is signalled in the internal
+  OnNeedNewCabinet is a TOnNeedNewCabinet property that represents the event handler signaled when a
+  specific file continues in another cabinet file. OnNeedNewCabinet is signaled in the internal
   callback function for the Setup API when the SPFILENOTIFY_NEEDNEWCABINET notification is sent during
   iteration over file members in a .CAB file.
 
@@ -296,7 +296,7 @@ Description
   notification.
 Parameters
   Sender  - Object context for the event notification. Generally contains the TJvCABFile instance to
-             be signalled from the callback function.
+             be signaled from the callback function.
   Cont    - Indicates whether file extraction can be continued.
   CABInfo - Structure used to store cabinet file information from the Setup API.
   NewPath - Path to use for files extracted from the new .CAB file.
@@ -308,8 +308,8 @@ See Also
 Summary
   Occurs before extracting a file from the cabinet file.
 Description
-  OnStartFileExtraction is a TOnExtractFile property that represents the event handler signalled prior
-  to extracting a specified file from the cabinet file. OnStartFileExtraction is signalled in the
+  OnStartFileExtraction is a TOnExtractFile property that represents the event handler signaled prior
+  to extracting a specified file from the cabinet file. OnStartFileExtraction is signaled in the
   internal extract callback function when the SPFILENOTIFY_FILEINCABINET notification is received, and
   the output file name has been constructed using the destination path and file name in the cabinet
   file.
@@ -321,7 +321,7 @@ Description
   notification.
 Parameters
   Sender   - Object context for the event notification. Generally contains the TJvCABFile instance to
-              be signalled from the callback function.
+              be signaled from the callback function.
   FileName - The full path and file name for the member to be extracted from the cabinet file.
   DestPath - Represents the full path and file name where extracted file information will be stored.
 See Also

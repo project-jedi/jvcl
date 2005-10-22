@@ -220,8 +220,8 @@ Summary
 Description
   Use TJvDesktopAlert when you need to display information to your users in an unobtrusive way. The
   TJvDesktopAlert component displays a window with a message that fades away after a predefined amount
-  of time. The window can, apart from the message, also display a dropdown menu, an icon and any number
-  of custom buttons.
+  of time. The window can, apart from the message, also display a drop-down menu, an icon and any
+  number of custom buttons.
 Note
   TJvDesktopAlert uses alpha blending to perform the fade in and fade out effect. Alpha blending is
   only available on Windows 2000 and Windows XP and above. For earlier versions of Windows, the window
@@ -249,7 +249,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.AutoFocus
 Summary
-  Specifies whether the alert window automatically recieves focus when shown
+  Specifies whether the alert window automatically receives focus when shown
 Description
   Set AutoFocus to true to move focus to the alert window when it is displayed. Set it to false to not
   change the focus.
@@ -320,10 +320,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.DropDownMenu
 Summary
-  Defines a menu to display for the dropdown button in the window.
+  Defines a menu to display for the drop-down button in the window.
 Description
-  Assign a popup menu to the DropDownMenu property to display a dropdown button on the desktop alert.
-  If no DropDownMenu is assiged, the dropdown button is not shown.
+  Assign a popup menu to the DropDownMenu property to display a drop-down button on the desktop alert.
+  If no DropDownMenu is assigned, the drop-down button is not shown.
 See Also
   TJvDesktopAlert.PopupMenu
 
@@ -484,9 +484,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Options
 Summary
-  Controls the behvaior of the desktop alert.
+  Controls the behavior of the desktop alert.
 Description
-  Change the settings of Options to modify the behacior of the desktop alert.
+  Change the settings of Options to modify the behavior of the desktop alert.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.ParentFont
@@ -532,7 +532,7 @@ Summary
   Specifies the currently assigned style handler class.
 Description
   Use StyleHandler to access the currently assigned style handler class. To find out which style is
-  currently used, interogate the AlertStyle property instead.
+  currently used, interrogate the AlertStyle property instead.
 
   This property is equivalent to StyleOptions.
 See Also
@@ -544,7 +544,7 @@ Summary
   Specifies the currently assigned style handler class.
 Description
   Use StyleOptions to access the currently assigned style handler class. To find out which style is
-  currently used, interogate the AlertStyle property instead.
+  currently used, interrogate the AlertStyle property instead.
 
   This property is equivalent to StyleHandler.
 See Also
@@ -616,7 +616,7 @@ See Also
 Summary
   Base class for TPersistent classes that can report changes through an event
 Description
-  This class is used internally by the tJvDesktopAlert component. It is not for general use.
+  This class is used internally by the TJvDesktopAlert component. It is not for general use.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertChangePersistent.OnChange
@@ -866,7 +866,7 @@ Description
   a TJvDesktopAlertStack on the form and assign it to the AlertStack property of each of the
   TJvDesktopAlert components you want to be managed by the TJvDesktopAlertStack instance.
 
-  When a TJvDesktopAlert is managed by an explicitly assiged TJvDesktopAlertStack component, the
+  When a TJvDesktopAlert is managed by an explicitly assigned TJvDesktopAlertStack component, the
   Position property of TJvDesktopAlertStack is used for all the TJvDesktopAlert components.
 
 ----------------------------------------------------------------------------------------------------
@@ -894,7 +894,7 @@ Description
   Use Items to access the forms managed by the component using its index.
 
   Warning: The list of managed forms is highly dynamic and can change while you iterate over them.
-  Accessing a non-existent form or a non-existent index will lead to acess violation errors.
+  Accessing a non-existent form or a non-existent index will lead to access violation errors.
 Parameters
   Index - The index of the form in the list.
 See Also

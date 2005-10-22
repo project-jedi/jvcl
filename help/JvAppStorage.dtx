@@ -73,7 +73,7 @@ Summary
   JvAppStorages.Read/WritePersistent
 Description
   If a class implements this interface all published properties of the class will be handled by
-  JvAppStorages.Read/WritePersistent. This is usefull in combination with IJvAppStorageHandler
+  JvAppStorages.Read/WritePersistent. This is useful in combination with IJvAppStorageHandler
 
   If a class doesn't implement the IJvAppStorageHandler interface or if it also implements the
   IJvAppStoragePublishedProps interface, all published properties are written (as it currently does)
@@ -400,7 +400,7 @@ Summary
   Write here a summary (1 line)
 Description
   Check if the given root path is unique, optionally ignoring a specific sub storage (eg. when
-  modifying the root path of a storage, that storage's RootPath is irrelavant in determining if the new
+  modifying the root path of a storage, that storage's RootPath is irrelevant in determining if the new
   name will be unique).
 Parameters
   APath       - Description for this parameter
@@ -481,7 +481,7 @@ See Also
 Summary
   Base class for all in memory file storage classes.
 Description
-  Base class for all in memory file storage classes. All descendents implement a file storage, but all
+  Base class for all in memory file storage classes. All descendants implement a file storage, but all
   changes are left in memory until the Flush method is called. Flush is automatically called by the
   destructor, but you can override Flush to write the file on a support different from a disk, such as
   database record. Please note that in the derived class, if you use an object to represent the file in
@@ -791,7 +791,7 @@ Description
   If the specified path refers to a folder IsFolder returns True, otherwise False is returned.
 Parameters
   Path        - Path (relative to the current path) to check.
-  ListIsValue - Flag to interprete a list as value or not.
+  ListIsValue - Flag to interpret a list as value or not.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsPropertyValueCryptEnabled
@@ -847,8 +847,8 @@ See Also
 Summary
   Event to translate the names under which the values were stored with the backend engine.
 Description
-  THis event can be used to translate the names ounder which the values were stored in the backend
-  engine. For example : Storing a published property object property "Custo" can be translated to
+  This event can be used to translate the names under which the values were stored in the backend
+  engine. For example: Storing a published property object property "Custo" can be translated to
   "Customer Number", which is more readable.
 
   Sample:
@@ -910,9 +910,9 @@ See Also
 Summary
   Reads a binary value.
 Description
-  ReadBinary reads a value from the storage in a binary form. The method will read atmost BufSize bytes
-  and put it in the location pointed to by Buf. The result value indicates the number of bytes actually
-  read.
+  ReadBinary reads a value from the storage in a binary form. The method will read at most BufSize
+  bytes and put it in the location pointed to by Buf. The result value indicates the number of bytes
+  actually read.
 Parameters
   Path    - Path (relative to the current path) of the value to read.
   Buf     - Buffer in which to put the data read.
@@ -1065,7 +1065,7 @@ Summary
   Write here a summary (1 line)
 Description
   Defines if the Storage-Component is readonly or not. If Readonly is true all Calls to an
-  Write*-Procedure will be ignored. The property is calulated by a combination of setting the property
+  Write*-Procedure will be ignored. The property is calculated by a combination of setting the property
   ReadOnly and Result of the function GetPhysicalReadOnly
 
 ----------------------------------------------------------------------------------------------------
@@ -1133,7 +1133,7 @@ Summary
   Reads a list of strings.
 Description
   ReadStringList reads a list of strings from the storage. ReadStringList uses the ReadList method in
-  combination with a specialised OnReadItem handler that will read the individual items in from the
+  combination with a specialized OnReadItem handler that will read the individual items in from the
   list. Items are expected to be stored in the <B>Item<I>x</I></B> format where <I>x</I> is the 0-based
   index of the item.
 
@@ -1476,7 +1476,7 @@ Summary
   Stores a list of strings.
 Description
   WriteStringList stores a list of strings in the storage. WriteStringList uses the WriteList method in
-  combination with specialised OnWriteItem and OnDeleteItems handlers that will write the individual
+  combination with specialized OnWriteItem and OnDeleteItems handlers that will write the individual
   items from the list in the storage and remove excessive items. Items are stored in the
   <B>Item<I>x</I></B> format where <I>x</I> is the 0-based index of the item.
 Parameters

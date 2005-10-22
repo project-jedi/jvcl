@@ -203,7 +203,7 @@ Parameters
 Summary
   Pad a string out to a fixed length.
 Description
-  Adds padchar until buffer 's' is of length 'len'
+  Adds PadChar until buffer 's' is of length 'len'
 Parameters
   S       - The buffer.
   Len     - The length desired.
@@ -213,7 +213,7 @@ Parameters
 @@PCharEatWhiteChars
 <TITLE PCharEatWhiteChars procedure>
 Summary
-  Eat whitespace from a pchar buffer.
+  Eat whitespace from a PChar buffer.
 Description
   Deletes the leading whitespace by eating one character at a time from the buffer, until a non
   whitespace character is reached. Whitespace is either a Space or a Tab. Does NOT disturb any trailing
@@ -264,7 +264,7 @@ Summary
   Strips quotes from a string if it has quotes around it. Will de-escape embedded quotes if they are
   properly escaped.
 Description
-  Modifies a pchar buffer containing a string which may or may not have leading and trailing quotes.
+  Modifies a PChar buffer containing a string which may or may not have leading and trailing quotes.
   Result after call is that the buffer contains only the data that was previously inside the quotes,
   all leading and trailing whitespace, and the quote characters themselves, are gone. Escaped quote
   characters (\\") within the string have been replaced with their literal equivalents (").
@@ -306,9 +306,9 @@ See Also
 @@StrStrip
 <TITLE StrStrip function>
 Summary
-  Strip leading and trailing whitespace, carriage returns and linefeeds from a string.
+  Strip leading and trailing whitespace, carriage returns and line feeds from a string.
 Description
-  Strip leading and trailing whitespace, carriage returns and linefeeds from a string.
+  Strip leading and trailing whitespace, carriage returns and line feeds from a string.
 Parameters
   S - The string to strip.
 See Also

@@ -61,7 +61,7 @@ Summary
   change more specific values of the item about to be drawn
 Description
   If you don't supply a handler for this event, no change will be done to the menu item and the Item
-  Painter will follow its default behaviour
+  Painter will follow its default behavior
 Parameters
   Sender    - The menu to which the item belongs
   Item      - The item to be modified
@@ -102,7 +102,7 @@ Description
   JvPopupMenu is assigned an internal item painter according to the Style property. It can also use a
   separate painter by setting the ItemPainter property and setting Style to msItemPainter. When a menu
   item is about to be painted, the painter is called and does the painting job. Do not instantiate a
-  TJvCustomMenuItemPainter but use one of its descendents.
+  TJvCustomMenuItemPainter but use one of its descendants.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Canvas
@@ -118,7 +118,7 @@ See Also
 Summary
   The height of a check mark.
 Description
-  Returns the system size for a check mark if ShowCheckMarks is true. Returns 0 otherwize. Some
+  Returns the system size for a check mark if ShowCheckMarks is true. Returns 0 otherwise. Some
   descendants may change the values returned by this method.
 See Also
   TJvCustomMenuItemPainter.CheckMarkWidth
@@ -128,7 +128,7 @@ See Also
 Summary
   The width of a check mark.
 Description
-  Returns the system size for a check mark if ShowCheckMarks is true. Returns 0 otherwize. Some
+  Returns the system size for a check mark if ShowCheckMarks is true. Returns 0 otherwise. Some
   descendants may change the values returned by this method.
 See Also
   TJvCustomMenuItemPainter.CheckMarkHeight
@@ -187,7 +187,7 @@ Summary
 Description
   When a menu item has an image associated with it, the area of the image may be filled with this color
   before actually rendering the image, this creating a background of that color. By default, this value
-  isn't used, but it can be used by descendents.
+  isn't used, but it can be used by descendants.
 See Also
   DrawImageBackground
 
@@ -366,7 +366,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin
 Summary
-  The margins around an image, as a TPersistent descendent
+  The margins around an image, as a TPersistent descendant
 Description
   This class is being used instead of TRect so that it can be shown in the property editor and properly
   streamed in and out of DFMs files. It basically contains the values of the margins to put around an
@@ -530,7 +530,7 @@ See Also
 Summary
   The event triggered when an item needs painting
 Description
-  This event is only triggered is the sytle is msOwnerDraw.
+  This event is only triggered is the style is msOwnerDraw.
 See Also
   TJvMainMenu.OnMeasureItem, TJvMainMenu.Style
 
@@ -629,7 +629,7 @@ Description
     msOwnerDraw    The rendering is done by the owner of the component (you)
     msBtnLowered   The item is drawn as a lowered button
     msBtnRaised    The item is drawn as a raised button
-    msOffice       The item is drawn as in MsOffice 97, with raising frames around the images
+    msOffice       The item is drawn as in MS Office 97, with raising frames around the images
     msXP           The item is drawn as in Windows XP, white background, shadow below
                      selected images, flat menu borders
     msItemPainter  The ItemPainter property indicates the painter to use. ItemPainter should
@@ -690,7 +690,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuChangeLink.OnChange
 Summary
-  This event is triggered whenever a change occured in the menu.
+  This event is triggered whenever a change occurred in the menu.
 Description
   Unfortunately, the rebuild parameter cannot be trusted because it is always False, even when adding
   or removing elements in the menu. You then must devise your own method to discover a suitable value
@@ -705,7 +705,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuImageSize
 Summary
-  A TPersistent descendent to store the image size.
+  A TPersistent descendant to store the image size.
 Description
   Please see TJvMainMenu.ImageSize or TJvPopupMenu.ImageSize
 
@@ -753,7 +753,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msOffice
-  The item is drawn as in MsOffice 97, with raising frames around the images
+  The item is drawn as in MS Office 97, with raising frames around the images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msXP
@@ -992,7 +992,7 @@ See Also
 Summary
   This is the type of the OnMeasureItem event
 Description
-  This event is triggered when an item neads measuring
+  This event is triggered when an item needs measuring
 Parameters
   Sender - The menu containing the item
   Item   - The item to measure

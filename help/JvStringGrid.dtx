@@ -102,7 +102,7 @@ Description
   respectively.
 
   Call ActivateCell to set the input focus to a specific cell. \Write an OnExitCell event handler to
-  respend when the input focus shifts away from a cell.
+  respond when the input focus shifts away from a cell.
 
   \Write an OnCaptionClick event handler to respond when the user clicks a fixed cell.
 
@@ -415,17 +415,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromCSV
 Summary
-  Reads the comma seperated file specified in FileName and loads the data into the \string grid.
+  Reads the comma separated file specified in FileName and loads the data into the \string grid.
 Description
-  Use the LoadFromCSV method to retrieve a \string grid from a comma seperated file. LoadFromCSV can
-  read files that list the cell strings - seperated with the character specified by Seperator - one row
+  Use the LoadFromCSV method to retrieve a \string grid from a comma separated file. LoadFromCSV can
+  read files that list the cell strings - separated with the character specified by Separator - one row
   per line.
 Note
   String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName    - Name of a CSV file from which to read the \string grid.
-  Separator   - Character used in the CSV file to seperate cell strings.
+  Separator   - Character used in the CSV file to separate cell strings.
   QuoteChar   - Specifies the quote char.
   StripQuotes - Description for this parameter
 See Also
@@ -531,9 +531,9 @@ Summary
   Occurs when the grid request the alignment of a cell.
 Description
   \Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific cell.
-  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow
-  parameters. cellAlignment is set to the value of property Alignment, so if you don't alter
-  cellAlignment, the cell is aligned as specified by Alignment.
+  Set the CellAlignment parameter to the alignment for the cell specified by the ACol and ARow
+  parameters. CellAlignment is set to the value of property Alignment, so if you don't alter
+  CellAlignment, the cell is aligned as specified by Alignment.
 
   OnGetCellAlignment is fired just before the cell is drawn, or if the user calls GetCellAlignment.
 Parameters
@@ -542,8 +542,8 @@ Parameters
   ARow          - Indicates the row index of the cell that loses the input focus.
   State         - Indicates whether the cell has input focus, whether the cell is selected, and
                    whether the cell is a fixed (nonscrolling) cell.
-  CellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If
-                   you don't alter cellAlignment the cell is aligned as specified by Alignment.
+  CellAlignment - Specifies the alignment for the cell specified by the ACol and ARow parameters. If
+                   you don't alter CellAlignment the cell is aligned as specified by Alignment.
 See Also
   TJvStringGrid.Alignment, TJvStringGrid.GetCellAlignment
 
@@ -680,13 +680,13 @@ Summary
 Description
   Use the SaveToFile method to store \string grid cells to a text file. The cells can later be reloaded
   from the file into a new \string grid object using the LoadFromCSV method. SaveToCSV writes the cell
-  strings to the file, seperated with the character specified by Seperator, and one row per line.
+  strings to the file, separated with the character specified by Separator, and one row per line.
 
   \Note: String grid files contain only the text of the \string grid cells. They do not contain any
   data associated with a cell.
 Parameters
   FileName  - Name of the CSV file where to write the \string grid to.
-  Separator - Character to be used in the CSV file to seperate cell strings.
+  Separator - Character to be used in the CSV file to separate cell strings.
   QuoteChar - Specifies the quote char.
 See Also
   TJvStringGrid.LoadFromCSV, TJvStringGrid.OnSaveProgress, TJvStringGrid.SaveToFile,
@@ -759,7 +759,7 @@ See Also
 Summary
   Shows a previously hidden row and column.
 Description
-  Call ShowCell to show a previoulsy hidden row and column.
+  Call ShowCell to show a previously hidden row and column.
 Parameters
   ACol    - Specifies the column to show.
   ARow    - Specifies the row to show.

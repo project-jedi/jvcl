@@ -137,7 +137,7 @@ Summary
 Description
   LinkRemoved is called when the specified server consumer has removed the client from its list of
   clients. This usually happens when the server consumer selects another provider or is being disposed.
-  The provided reference to the server consumer should be removed from whereever it was stored during
+  The provided reference to the server consumer should be removed from wherever it was stored during
   the LinkAdded call.
 Parameters
   Server - Reference to the server notification interface of the server consumer.
@@ -253,13 +253,13 @@ Description
   IJvDataConsumerItemState is a consumer support interface to retrieve Enabled, CHecked and/or Visible
   state of an item at the consumers side.
 
-  When a provider or consumer support interface needs one of the afformentioned states, it will first
+  When a provider or consumer support interface needs one of the aforementioned states, it will first
   request the state from the consumer (if it supports the IJvDataConsumerItemState interface). If this
   interface is not supported or if the returned state equals disNotUsed, the state is requested from
   the IJvDataItemStates interface of the item.
 
   Each of the states can be one of "False", "True", "Indetermined" or "Not used". The consumer is
-  responsible of setting the appropiate rendering options based on these settings but is not required
+  responsible of setting the appropriate rendering options based on these settings but is not required
   to handle them. In addition a consumer may override the setting of the item at its discretion.
 See Also
   IJvDataConsumer, IJvDataItem, IJvDataItemStates
@@ -506,8 +506,8 @@ Description
   Set ExpandOnNewItem to True if the sub tree the new item belongs to should be expanded to make the
   new item visible.
 
-  Set ExpandOnNewItem to False if adding items should not neccessarily make them visible when one of
-  its parents is still collapsed.
+  Set ExpandOnNewItem to False if adding items should not necessarily make them visible when one of its
+  parents is still collapsed.
 See Also
   IJvDataConsumerViewList.ExpandTreeTo, IJvDataConsumerViewList.ToggleItem
 
@@ -693,7 +693,7 @@ Summary
 Description
   ItemSibling retrieves a reference to the next sibling item of the specified item.
 
-  If the specified item doesn;t have a next sibling the method will return nil.
+  If the specified item doesn't have a next sibling the method will return nil.
 Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to Count-1
 See Also
@@ -706,7 +706,7 @@ Summary
 Description
   ItemSiblingIndex determines the index in the view list for the next sibling of the specified item.
 
-  If the specified item doesn;t have a next sibling the method will return -1, otherwise a 0-based
+  If the specified item doesn't have a next sibling the method will return -1, otherwise a 0-based
   index in the view list for the sibling item is returned.
 Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to Count-1
@@ -732,9 +732,9 @@ Description
   RebuildView rebuilds the view list from scratch. The resulting tree will be complete refreshed to the
   current provider state.
 
-  You'll rarely need to call RebuildView (although that depends largly on the implementation). As items
-  are added to or removed from the provider tree the view list is updated automatically. Selecting a
-  different provider or context also automatically refreshes the view.
+  You'll rarely need to call RebuildView (although that depends largely on the implementation). As
+  items are added to or removed from the provider tree the view list is updated automatically.
+  Selecting a different provider or context also automatically refreshes the view.
 See Also
   IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.ExpandOnNewItem
 
@@ -861,7 +861,7 @@ Description
 
   Contexts allow for inheriting the properties (or tree structure) of the parent context if such
   properties is not explicitly set for that context (this is at the discretion of the provider and some
-  providers will not allow this behaviour or even allow contexts at a deeper level than the root). This
+  providers will not allow this behavior or even allow contexts at a deeper level than the root). This
   also contributes to reducing memory usage. The IJvDataContextSensitive interface manages the
   inherited state of the properties.
 See Also
@@ -879,7 +879,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContext.GetImplementer
 Summary
-  Retrive the TObject implementing object.
+  Retrieves the TObject implementing object.
 Description
   GetImplementer retrieves the TObject implementation that implements this interface.
 
@@ -1162,7 +1162,7 @@ Description
   whenever an item is requested from the item list.
 
   IJvDataItem only provides in some basic 'administrative' tasks and information. For Data Items to be
-  generally usable they will usally also support and implement IJvDataItemText and optionally
+  generally usable they will usually also support and implement IJvDataItemText and optionally
   IJvDataItemImage, IJvDataItemBasicAction.
 
   In addition some implementations may support implementation specific interface (e.g. an item
@@ -1241,7 +1241,7 @@ Description
   item is allowed to be removed the function will return True, False otherwise.
 
   IsDeletable is used in those cases where the provider generates a number of fixed items that should
-  never be deleted. In most cases IsDeletable will be context-depend nt, i.e. the item can't be deleted
+  never be deleted. In most cases IsDeletable will be context-dependent, i.e. the item can't be deleted
   from the context-less item tree, but is deletable from a context-specific tree.
 
 ----------------------------------------------------------------------------------------------------
@@ -1272,7 +1272,7 @@ Summary
 Description
   Items is a reference to the IJvDataItems owner of this item.
 
-  Every item belongs to an item list. Which item list might be dependant on which context is currently
+  Every item belongs to an item list. Which item list might be dependent on which context is currently
   active.
 
   The Items property is also the only way to determine the parent item of this item. This can be done
@@ -1374,7 +1374,7 @@ Description
   this interface to be useful, some things have to be taken care of:
 
   * The IJvDataItems owner of the item (or any of the IJvDataItems owners in the parent chain) must
-    support the IJvDataItemsImages interface and atleast have a valid image list assigned to its <LINK
+    support the IJvDataItemsImages interface and at least have a valid image list assigned to its <LINK
     IJvDataItemsImages.Images, Images> property.
   * The rendering code must be able to handle images. Rendering may be handled at the item itself
     (IJvDataItemRenderer supported by this item), by the item list owner of this item of any item in
@@ -1522,7 +1522,7 @@ Description
     the lists in its parent chain). If it finds one use it to perform the rendering/measuring.
   * Handle the rendering at the consumer side. This means all items are considered equal and usually
     only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages) are
-    used. The entire rendering/measuing is then consumer (control) dependant and the provider tree may
+    used. The entire rendering/measuring is then consumer (control) dependent and the provider tree may
     no longer look uniform in different consumers/clients.
 See Also
   IJvDataItem, IJvDataItemsRenderer
@@ -1535,7 +1535,7 @@ Description
   Draw renders the associated item.
 
   The caller is responsible for initializing the canvas to the brush, pen and font color and providing
-  an appropiate rectangle (including any indentation for sub items).
+  an appropriate rectangle (including any indentation for sub items).
 Parameters
   ACanvas - Canvas to render to. On entry to this method it is assumed the canvas brush, pen and font
              are initialized to the proper values.
@@ -1646,7 +1646,7 @@ Description
   this method allows to retrieve an item given that ID.
 
   The path is always considered relative to this list. If the ID string starts with a backslash (or
-  forwardslash; both are allowed), the path is considered from the root of the provider
+  forward slash; both are allowed), the path is considered from the root of the provider
   (GetProvider.GetItems).
 
   Each '..' is considered as '1 level up the tree'.
@@ -1774,7 +1774,7 @@ Description
 
   If an invalid index is specified, the function returns False (Caption is undefined in this case).
 Parameters
-  Index   - Index of the item kind for which to retrieve the catpion. Index is a 0-based value. If the
+  Index   - Index of the item kind for which to retrieve the caption. Index is a 0-based value. If the
              specified index is invalid the function will return nil.
   Caption - If the function returns True, this parameter will return the caption for the menu item to
              generate.
@@ -2054,7 +2054,7 @@ Description
     the lists in its parent chain). If it finds one use it to perform the rendering/measuring.
   * Handle the rendering at the consumer side. This means all items are considered equal and usually
     only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages) are
-    used. The entire rendering/measuing is then consumer (control) dependant and the provider tree may
+    used. The entire rendering/measuring is then consumer (control) dependent and the provider tree may
     no longer look uniform in different consumers/clients.
 See Also
   IJvDataItemRenderer, IJvDataItems
@@ -2088,7 +2088,7 @@ Description
   drawing is handled by that interface instead.
 
   The caller is responsible for initializing the canvas to the brush, pen and font color and providing
-  an appropiate rectangle (including any indentation for sub items).
+  an appropriate rectangle (including any indentation for sub items).
 Parameters
   ACanvas - Canvas to render to. On entry to this method it is assumed the canvas brush, pen and font
              are initialized to the proper values.
@@ -2111,7 +2111,7 @@ Description
   the drawing is handled by that interface instead.
 
   The caller is responsible for initializing the canvas to the brush, pen and font color and providing
-  an appropiate rectangle (including any indentation for sub items).
+  an appropriate rectangle (including any indentation for sub items).
 Parameters
   ACanvas - Canvas to render to. On entry to this method it is assumed the canvas brush, pen and font
              are initialized to the proper values.
@@ -2168,13 +2168,13 @@ Description
   IJvDataItemStates is a supporting interface for IJvDataItem that adds the capability of keeping the
   Enabled, Checked and Visible states for an item at the provider side.
 
-  When a provider or consumer support interface needs one of the afformentioned states, it will first
+  When a provider or consumer support interface needs one of the aforementioned states, it will first
   request the state from the consumer (if it supports the IJvDataConsumerItemState interface). If this
   interface is not supported or if the returned state equals disNotUsed, the state is requested from
   the IJvDataItemStates interface of the item.
 
   Each of the states can be one of "False", "True", "Indetermined" or "Not used". The consumer is
-  responsible of setting the appropiate rendering options based on these settings but is not required
+  responsible of setting the appropriate rendering options based on these settings but is not required
   to handle them. In addition a consumer may override the setting of the item at its discretion.
 See Also
   IJvDataConsumerItemState, IJvDataItem
@@ -2317,9 +2317,9 @@ Description
   control). If the caption should be editable from the user interface the method returns True,
   otherwise False is returned.
 
-  Note that the return value of Editable does not neccessarily mean the caption can or can't be
-  changed. It only enables/disables the editing from the user interface, but consumers may ignore this
-  method if they wish.
+  Note that the return value of Editable does not necessarily mean the caption can or can't be changed.
+  It only enables/disables the editing from the user interface, but consumers may ignore this method if
+  they wish.
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.GetCaption
@@ -2385,10 +2385,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.Changed
 Summary
-  Will notify all registered notifiers a change has occured.
+  Will notify all registered notifiers a change has occurred.
 Description
   Call Changed to notify all registered change notifiers (IvDataProviderNotify instances registered by
-  a call to RegisterChangeNotify) a change has occured.
+  a call to RegisterChangeNotify) a change has occurred.
 Parameters
   ChangeReason - Reason why the change notification is used.
   Source       - Reference to an interface instance linked to the change. See the description of
@@ -2603,8 +2603,8 @@ Description
   IJvDataProviderNotify is a callback interface who's methods are called in response to changes at the
   provider.
 
-  An object that wishes to be notified of changes occuring at the provider will register this reference
-  at the provider by calling the provider's <LINK IJvDataProvider.RegisterChangeNotify,
+  An object that wishes to be notified of changes occurring at the provider will register this
+  reference at the provider by calling the provider's <LINK IJvDataProvider.RegisterChangeNotify,
   RegisterChangeNotify> method. If the object is no longer interested in changes at a provider (i.e.
   another provider is selected or the object is destroying), the <LINK
   IJvDataProvider.UnregisterChangeNotify, UnregisterChangeNotify> method should be called.
@@ -2629,9 +2629,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProviderNotify.DataProviderChanged
 Summary
-  Called when a change has occured at the provider.
+  Called when a change has occurred at the provider.
 Description
-  DataProviderChanged is called whenever a change has occured at the provider (i.e. the provider's
+  DataProviderChanged is called whenever a change has occurred at the provider (i.e. the provider's
   <LINK IJvDataProvider.Changed, Changed> method is called).
 Parameters
   ADataProvider - The provider that is issuing the notification.

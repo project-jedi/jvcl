@@ -18,7 +18,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@ENoGrabberForUrl
 Summary
-  Exception trigerred when a TJvUrlListGrabber can't find a grabber for the given URL
+  Exception triggered when a TJvUrlListGrabber can't find a grabber for the given URL
 Description
   Write here a description
 
@@ -69,7 +69,7 @@ Summary
   Returns true if the given Url is supported by the grabber
 Description
   This function must return True if the given URL can be grabbed by the class being asked. It returns
-  False otherwise. It MUST be overriden in the derived classes but cannot be abstract because of C++
+  False otherwise. It MUST be overridden in the derived classes but cannot be abstract because of C++
   Builder compatibility issues
 Parameters
   Url - The Url to test
@@ -91,7 +91,7 @@ Summary
   This function returns the class of a property holder to be displayed in the object inspector.
 Description
   This property holder will be used by TJvUrlListGrabber to let the user specify default properties and
-  will be passed to this class when created to handle a specific URL. It MUST be overriden in the
+  will be passed to this class when created to handle a specific URL. It MUST be overridden in the
   derived classes but cannot be abstract because of C++ Builder compatibility issues
 Return value
   A class derived from TJvCustomUrlGrabberDefaultProperties
@@ -101,7 +101,7 @@ Return value
 Summary
   This function returns the marker that indicates the protocol in a URL.
 Description
-  For instance, for an HTTP grabber, this would return 'http://'. This function MUST be overriden in
+  For instance, for an HTTP grabber, this would return 'http://'. This function MUST be overridden in
   the derived classes but cannot be abstract because of C++ Builder compatibility issues
 Return value
   A string indicating the marker for protocol supported by the class.
@@ -115,7 +115,7 @@ Summary
   a URL, but a user displayable string.
 Description
   This function returns a user displayable name that indicates the type of URL supported by the class.
-  For instance, a HTTP grabber class would return 'HTTP'. This function MUST be overriden in the
+  For instance, a HTTP grabber class would return 'HTTP'. This function MUST be overridden in the
   derived classes but cannot be abstract because of C++ Builder compatibility issues
 Return value
   A string indicating the type of URL supported by the class.
@@ -187,7 +187,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnError
 Summary
-  This event is triggered when an error has occured
+  This event is triggered when an error has occurred
 Description
   Write here a description
 
@@ -464,8 +464,8 @@ Summary
   Returns the name of the supported URL for the associated grabber class. This is not the protocol part
   of a URL, but a user displayable string.
 Description
-  The descendents of this class must implement this function and usually do so by calling the
-  GetSupportedUrlName function in the associated grabber class.
+  The descendants of this class must implement this function and usually do so by calling the
+  GetSupportedURLName function in the associated grabber class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.UserName
@@ -974,7 +974,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnError
 Summary
-  This event is triggered when an error has occured in a grabber
+  This event is triggered when an error has occurred in a grabber
 Description
   Write here a description
 

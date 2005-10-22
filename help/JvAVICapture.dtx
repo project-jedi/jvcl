@@ -141,7 +141,7 @@ Summary
   The tag identifying the audio format used.
 Description
   This value identifies the audio format used. If set to WAVE_FORMAT_PCM it will provoke a different
-  behaviour in FillWaveFormatEx.
+  behavior in FillWaveFormatEx.
 See Also
   TJvAudioFormat.FillWaveFormatEx
 
@@ -349,7 +349,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.EnumDrivers
 Summary
-  Enumarates the list of drivers and populates it in Drivers.
+  Enumerates the list of drivers and populates it in Drivers.
 Description
   You shouldn't have to call this function unless you want to update the list of available drivers.
 See Also
@@ -416,7 +416,7 @@ See Also
 Summary
   The event triggered when you want to use precise capture control.
 Description
-  Please refer to the WiN32 API for details on using the precise capture control Will only be triggered
+  Please refer to the WIN32 API for details on using the precise capture control. Will only be triggered
   if ueCapControl is in UsedEvents.
 Parameters
   Sender - The TJvAVICapture component triggering the event.
@@ -650,7 +650,7 @@ Summary
 Description
   If the driver supports it, this is the preferred method for doing live previewing.
 Return value
-  True if the overaly rendering started successfully.
+  True if the overlay rendering started successfully.
 See Also
   TJvAVICapture.DriverCaps, TJvAVICapture.Overlaying, TJvAVICapture.Previewing,
   TJvAVICapture.StartPreview, TJvAVICapture.StopOverlay
@@ -660,7 +660,7 @@ See Also
 Summary
   Starts live preview.
 Description
-  Starts previewing the video stream using GDI calls. This is higly CPU intensive but is sure to work
+  Starts previewing the video stream using GDI calls. This is highly CPU intensive but is sure to work
   on any system. You should first try to use Overlaying and if that doesn't work, fallback to this
   method.
 Return value
@@ -775,7 +775,7 @@ See Also
 Summary
   The capture settings for the capture session.
 Description
-  The TJvCaptureSettings class contains all the properties you can set to modify the behaviour of the
+  The TJvCaptureSettings class contains all the properties you can set to modify the behavior of the
   TJvAVICapture object to which the TJvCaptureSettings is linked to.
 
 ----------------------------------------------------------------------------------------------------
@@ -962,7 +962,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.StepCapture2x
 Summary
-  Controls whether or not to capture at twice the size of the orignal stream.
+  Controls whether or not to capture at twice the size of the original stream.
 Description
   If set to true, the resulting stream will have its width and height doubled at the expense of
   processing power.
@@ -1129,7 +1129,7 @@ See Also
 Summary
   The number of colors in a palette.
 Description
-  This type has been created to enforce the system limitation of at most 256 colours in a palette.
+  This type has been created to enforce the system limitation of at most 256 colors in a palette.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPercent

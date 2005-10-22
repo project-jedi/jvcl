@@ -29,7 +29,7 @@ Summary
   Converts a bitmap to rich text format.
 Description
   Use the BitmapToRTF or BitmapToRTF2 procedures to insert bitmaps in a rich edit control. BitmapToRTF2
-  returns true if the bitmap is written to stream as RTF, or false if an error occured.
+  returns true if the bitmap is written to stream as RTF, or false if an error occurred.
 
   For example, to replace the selected text with a bitmap, do the following:
   <AUTOLINK OFF>
@@ -74,7 +74,7 @@ Description
   system.
 
   The following list describes which versions of Rich Edit are included in which releases of Microsoft
-  indows:
+  windows:
   <TABLE>
     Windows XP SP1  Includes Rich Edit 4.1, Rich Edit 3.0, and a Rich Edit 1.0 emulator.
     Windows XP      Includes Rich Edit 3.0 with a Rich Edit 1.0 emulator.
@@ -206,7 +206,7 @@ Description
   * Open
   * Multiple <LINK TJvConversion.ConvertRead, ConvertRead> or <LINK TJvConversion.ConvertWrite,
     ConvertWrite> calls.
-  * Retry, if an error occured, followed again by multiple ConvertRead or ConvertWrite calls.
+  * Retry, if an error occurred, followed again by multiple ConvertRead or ConvertWrite calls.
   * Done, to finalize the converter.
 
   The following objects are descendants of TJvConversion:
@@ -250,7 +250,7 @@ See Also
 Summary
   Reads BufSize bytes from the import source into the memory buffer pointed to by Buffer.
 Description
-  A TJvRichEdit control calls ConvertRead multiple times during an import operaration. Each time this
+  A TJvRichEdit control calls ConvertRead multiple times during an import operation. Each time this
   method is called the converter should read a chunk of the source file or stream, convert it, and put
   the converted data in Buffer.
 Parameters
@@ -267,7 +267,7 @@ See Also
 Summary
   Writes BufSize bytes to the export destination from the memory buffer pointed to by Buffer.
 Description
-  A TJvRichEdit control calls ConvertWrite multiple times during an export operaration. Each time this
+  A TJvRichEdit control calls ConvertWrite multiple times during an export operation. Each time this
   method is called the converter should read the data in Buffer, convert it, and write it to the
   destination file or stream.
 Parameters
@@ -289,7 +289,7 @@ Description
   TJvRichEdit calls Done after a conversion operation is finished, to permit the converter to perform
   any necessary finalization.
 
-  A TJvRichEdit control garantees that method Done is called after procedure Init is called.
+  A TJvRichEdit control guarantees that method Done is called after procedure Init is called.
 See Also
   TJvConversion.Init
 
@@ -349,7 +349,7 @@ Description
   TJvRichEdit calls the Init method of a converter before any other method to permit the converter to
   perform any necessary global initialization.
 
-  A TJvRichEdit control garantees that method Done is called after procedure Init is called.
+  A TJvRichEdit control guarantees that method Done is called after procedure Init is called.
 Parameters
   AParentWindow - A handle to the top-level client window of the application to be used as a parent
                    window for the converter. For example, after displaying and closing a dialog box, a
@@ -471,11 +471,11 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.UserCancel
 Summary
-  Returns whether the user has cancelled the conversion.
+  Returns whether the user has canceled the conversion.
 Description
-  TJvRichEdit will call UserCancel to determine whether the user has cancelled the conversion.
+  TJvRichEdit will call UserCancel to determine whether the user has canceled the conversion.
 Return value
-  Returns true if the user cancelled the conversion, false otherwise.
+  Returns true if the user canceled the conversion, false otherwise.
 See Also
   Error, TJvConversion.ErrorStr
 
@@ -584,8 +584,8 @@ Description
   Set AllowInPlace to true to support in-place activation of objects.
 
   In-place activation allows an object within a container application to be edited without leaving the
-  application. For instance, in a rich edit control's document you might w nt to open a spreadsheet and
-  a little window opens up allowing you to edit the numberical cells. In-Place Activation bring editing
+  application. For instance, in a rich edit control's document you might want to open a spreadsheet and
+  a little window opens up allowing you to edit the numerical cells. In-Place Activation bring editing
   tools into the container instead of having to return to the editor to modify the object.
 See Also
   TJvCustomRichEdit.AllowObjects
@@ -886,9 +886,9 @@ Description
   Alternatively, call GetLineIndex to retrieve a character index for a given line number.
 
   If you set parameter CharIndex to -1, GetLineLength returns the number of unselected characters on
-  lines containg selected characters. For example, if the selection extended from the fourth character
-  of one line through the eighth character from the end of the next line, the return value would be 10
-  (three characters on the first line and seven on the next).
+  lines containing selected characters. For example, if the selection extended from the fourth
+  character of one line through the eighth character from the end of the next line, the return value
+  would be 10 (three characters on the first line and seven on the next).
 
   Retrieve the length of the current line:
   <AUTOLINK OFF>
@@ -993,7 +993,7 @@ Description
   Call InsertGraphic to insert a graphic at the current cursor position.
 
   If parameter Sizeable is set to false, but property OLEDragDrop is true, then the user can drag and
-  drop the image, and then resize the image. Set OLEDragDrop to false to completly prevent the user
+  drop the image, and then resize the image. Set OLEDragDrop to false to completely prevent the user
   from resizing the image. Another way is to set ReadOnly to true.
 
   Code example:
@@ -2019,7 +2019,7 @@ Description
     lsMultiple         Specifies the spacing, in lines, from one line to the next; thus,
                          setting LineSpacing to 1 produces single-spaced text, 2 is double
                          spaced, 3 is triple spaced, and so on.
-    Other              Vaule of LineSpacing is ignored.
+    Other              Value of LineSpacing is ignored.
   </TABLE>
 See Also
   TJvParaAttributes.LineSpacingRule

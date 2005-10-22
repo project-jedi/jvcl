@@ -7,7 +7,7 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCsvData.pas
 Summary
-  The unit JvCsvData contains TJvCSVDataSet (and its ancestor TJvCustomCsvDataSet), an in-memory
+  The unit JvCsvData contains TJvCsvDataSet (and its ancestor TJvCustomCsvDataSet), an in-memory
   TDataSet component similar to TTable.
 <INCLUDE JVCL.UnitText.dtx>
 Author
@@ -297,7 +297,7 @@ Description
 Parameters
   PItem       - Pointer to the row record
   ColumnIndex - which column to write
-  NewValue    - new value (pchar)
+  NewValue    - new value (PChar)
 See Also
   GetCsvRowItem
 
@@ -475,7 +475,7 @@ Description
 
   This component inherits from TJvCustomCsvDataSet. See TJvCustomCsvDataSet for more internal details.
 
-  To Use TJvCSVDataSet, and any other component that you create that inherits from TJvCustomCsvDataSet
+  To Use TJvCsvDataSet, and any other component that you create that inherits from TJvCustomCsvDataSet
   you *must* first set up the important Property called CsvFieldDef.
 
   \Note that rather than editing the CsvFieldDef yourself, you should click on the property editor
@@ -495,7 +495,7 @@ Description
   FieldDefs.
 
   Standard DataSet Field Definitions. The same field definitions as you would find in any other
-  TDataSet descendant, such as TTable.FieldDefs, or TCLientDataSet.FieldDefs.
+  TDataSet descendant, such as TTable.FieldDefs, or TClientDataSet.FieldDefs.
 See Also
   TJvCsvDataSet.CsvFieldDef,TClientDataSet.FieldDefs,TTable.FieldDefs
 
@@ -602,7 +602,7 @@ Summary
   Specifies whether the component supports enquoting using backslashes.
 Description
   Advanced. A design time property which specifies whether the component supports enquoting using
-  backslashes. This is NOT the default behaviour. Most programs use doubling of quotes ("") instead of
+  backslashes. This is NOT the default behavior. Most programs use doubling of quotes ("") instead of
   backslashes. Only set this to true if you know what you are doing.
 
   If quotes appear inside a string, enquote them using backslash-quote sequence instead of quote-quote
@@ -657,7 +657,7 @@ Parameters
 Summary
   Write a new value to a column in an existing row.
 Description
-  Store a new value to a single colun in a single row, and update the dirty bit for that row.
+  Store a new value to a single column in a single row, and update the dirty bit for that row.
 Parameters
   RowIndex    - What row to get.
   ColumnIndex - which column to modify.
@@ -804,9 +804,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AssignToStrings
 Summary
-  Gets the contents of the CSV table and addes them to a TStrings string list, which you provide.
+  Gets the contents of the CSV table and adds them to a TStrings string list, which you provide.
 Description
-  Gets the contents of the CSV table and addes them to a TStrings string list, which you provide. The
+  Gets the contents of the CSV table and adds them to a TStrings string list, which you provide. The
   string list you pass in will be cleared, and all rows from the table will be added.
 Parameters
   Strings - The results in a string list (the string list you pass in will be cleared, and all rows
@@ -820,7 +820,7 @@ Summary
   If greater than zero, automatically numbered backups of the CSV file are kept. Backups go in the
   Backup subdirectory, below wherever the CSV file itself is located.
 Description
-  The automatic backup feature of the TJvCsvDataset is similar to the way the old VMS operating system
+  The automatic backup feature of the TJvCsvDataSet is similar to the way the old VMS operating system
   used to work. Every time you saved a file, numbered backups are kept.
 
   The reason for this feature is that disk space is cheap, and lost or even partially corrupt data is
@@ -906,10 +906,10 @@ See Also
 Summary
   Comma separated list of field names.
 Description
-  The CSVFieldDef property is the most important property in the CSVDataSet. You MUST set it up (using
-  the property editor or by typing a valid CSVFieldDef string) before you can use the CSV Data Set.
+  The CsvFieldDef property is the most important property in the CSVDataSet. You MUST set it up (using
+  the property editor or by typing a valid CsvFieldDef string) before you can use the CSV Data Set.
 
-  A CSVFieldDef string is a comma separated list of field names. After each field name, an optional
+  A CsvFieldDef string is a comma separated list of field names. After each field name, an optional
   colon may be used to separate the field name from field options, which are described below.
 
   * Fieldname must start with a Letter (A-Z) and can contain Letters, Numbers and Underscores.
@@ -1018,7 +1018,7 @@ Summary
   Specifies whether the component supports enquoting using backslashes.
 Description
   A design time property which specifies whether the component supports enquoting using backslashes.
-  This is NOT the default behaviour. Most programs use doubling of quotes ("") instead of backslashes.
+  This is NOT the default behavior. Most programs use doubling of quotes ("") instead of backslashes.
   Only set this to true if you know what you are doing.
 
   If quotes appear inside a string, enquote them using backslash-quote sequence instead of quote-quote
@@ -1428,10 +1428,10 @@ See Also
 Summary
   Make only certain rows in a dataset visible.
 Description
-  This allows simple master-detail or category-by-category behaviour to be emulated, where changing
-  rows in one dataset (scrolling) could be used to set filtering on a second dataset. To filter on more
-  than one field, you first ClearFilter, then you call SetFilter several times, each time, the dataset
-  is scanned once, and non-matching rows are marked hidden. When the user views the dataset, only the
+  This allows simple master-detail or category-by-category behavior to be emulated, where changing rows
+  in one dataset (scrolling) could be used to set filtering on a second dataset. To filter on more than
+  one field, you first ClearFilter, then you call SetFilter several times, each time, the dataset is
+  scanned once, and non-matching rows are marked hidden. When the user views the dataset, only the
   matching rows are viewed. The patterns can contain wildcards, such as '%' for AnyString, or '?' for
   matching any Single Character. These wildcards were chosen because they are similar to the wildcards
   used in SQL Databases.

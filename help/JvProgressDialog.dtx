@@ -65,11 +65,11 @@ Note
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressDialog.Cancelled
 Summary
-  Determines if the user cancelled the dialog before the process completed.
+  Determines if the user canceled the dialog before the process completed.
 Description
   After the dialog is closed, Cancelled is set to true if the user closed the dialog before the process
   completed. A user can only close the dialog if the ShowCancel property is true. When showing the
-  dialog modally, you can use the return value of ShowModal to determine if the user cancelled the
+  dialog modally, you can use the return value of ShowModal to determine if the user canceled the
   dialog but when you use Show, Cancelled is the only way to determine what the user did.
 See Also
   TJvProgressDialog.Show, TJvProgressDialog.ShowCancel, TJvProgressDialog.ShowModal
@@ -185,7 +185,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressDialog.OnCancel
 Summary
-  Occurs when the user cancelled the dialog.
+  Occurs when the user canceled the dialog.
 Description
   Write a handler for the OnCancel event to take specific actions when the user cancels the progress
   dialog. The user can only cancel the dialog if the ShowCancel property is true.
@@ -198,7 +198,7 @@ Summary
   Occurs when the dialog closes.
 Description
   Write a handler for the OnClose event to take specific actions when the dialog is closed. OnClose is
-  called even if the user cancelled the dialog (which triggers the OnCancel event).
+  called even if the user canceled the dialog (which triggers the OnCancel event).
 See Also
   TJvProgressDialog.OnCancel, TJvProgressDialog.OnShow
 
@@ -301,7 +301,7 @@ Description
   performed in short intervals (like attempting to connect to a service). If the process is
   time-intensive and executed within the main thread, consider using Show instead.
 Return value
-  Returns false if the user cancelled the dialog, true otherwise. Users can only cancel the dialog if
+  Returns false if the user canceled the dialog, true otherwise. Users can only cancel the dialog if
   the ShowCancel property is true.
 See Also
   TJvProgressDialog.Caption, TJvProgressDialog.Image, TJvProgressDialog.Max, TJvProgressDialog.Min,
