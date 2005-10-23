@@ -228,12 +228,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.EditControls
 Summary
-  Write here a summary (1 line)
+  Allows field editing using in-place external controls like combo boxes or check boxes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  In the property inspector, clicking on the ellipsis a dialog showing the columns of the grid opens.
+  There you can select fields requiring special editing capabilities, and bind them to external
+  controls. You must add those controls previously to the form, and set all their properties as if they
+  would be used stand alone. In run time, those controls will be invisible until the associated field
+  in the grid get focus, then the control will appear into the grid.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.FixedCols

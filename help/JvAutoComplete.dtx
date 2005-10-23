@@ -300,7 +300,9 @@ JVCLInfo
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This non-visual component is used along with TEdit or TListBox components. It provides a list of
+  strings which are automatically completed in associated component. You may control a list of the
+  autocompletion strings.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupAutoComplete.Active
@@ -405,12 +407,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupAutoComplete.Strings
 Summary
-  Write here a summary (1 line)
+  Contains a list of all strings that will be used for autocompletion.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Each element should be one string for autocompletion. When user types in the letter, the first string
+  is then copied to appropriate TEdit or TListBox component.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupAutoCompleteKind

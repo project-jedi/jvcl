@@ -642,15 +642,33 @@ Description
   pre-processed; thus, it won't contain back space (#8), tab (#9), line feed (#10) or carriage return
   (#13) chars.
 
-  If the console process updates the current line only and doesn't output a line feed char, no OnRead
-  event will be fired. In this case respond to OnRawRead events, which will be fired whenever the
-  console process outputs some data.
+  Example:
+  <AUTOLINK OFF>
+  <CODE>
+  procedure TForm1.JvCreateProcess1Read(Sender: TObject; const S: string;
+    const StartsOnNewLine: Boolean);
+  begin
+    // C is the Form Feed char.
+    if S = #$C then
+      // Clear screen
+      ListBox1.Clear;
+    else
+    if StartsOnNewLine then
+      // Add new line
+      ListBox1.Items.Add(S);
+    else
+      // Change last line
+      ListBox1.Items[ListBox1.Count - 1] := S
+  end;
+  </CODE>
+  <AUTOLINK ON>
 Note
   coRedirect must be included in ConsoleOptions, otherwise no OnRead event will be fired.
 Parameters
   Sender          - The object that triggered this event.
   S               - The data received from the console process.
-  StartsOnNewLine - Description for this parameter
+  StartsOnNewLine - Indicates whether parameter S starts on a new line or is on the same line as the
+                     last line read.
 See Also
   TJvCreateProcess.ConsoleOptions, TJvCreateProcess.ConsoleOutput, TJvCreateProcess.OnRawRead
 

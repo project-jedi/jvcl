@@ -1,5 +1,6 @@
 ##Package: DB
 ##Status: Generated
+##Skip: TJvSearchComboBoxLink
 ----------------------------------------------------------------------------------------------------
 @@JvDBSearchComboBox.pas
 Summary
@@ -18,44 +19,57 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCustomSearchComboBox.DataField
 Summary
-  Write here a summary (1 line)
+  Identifies the field from which the combo box displays data.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCustomSearchComboBox.DataResult
 Summary
-  Write here a summary (1 line)
+  Contains the names of the field or fields from which to return values when calling GetResult.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Contains the names of the field or fields from which to return values when calling GetResult. If
+  values are to be returned from more than one field, DataResult is a list of field names delimited
+  with semicolons.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCustomSearchComboBox.DataSource
 Summary
-  Write here a summary (1 line)
+  Links the combo box to a dataset.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Specify the data source component that identifies the dataset in which the target field is found. To
+  allow the combo box to represent the data for a field, both the DataSource and the DataField
+  properties must be set.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCustomSearchComboBox.GetResult
 Summary
-  Write here a summary (1 line)
+  Retrieves field values from a record that matches the search value.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Call GetResult to search for a record in the dataset in which the DataField field contains the value
+  of the combo box text and return other field values from the found record.
+
+  <AUTOLINK OFF>
+  <CODE>
+  procedure TForm1.Button1Click(Sender: TObject);
+  var
+    V: Variant;
+    C: Integer;
+    A: String;
+  begin
+    JvDBSearchComboBox.DataResult := 'CustNo;Addr1';
+    V := JvDBSearchComboBox.GetResult;
+    if not (VarType(V) in [varNull]) then
+    begin
+      C := V[0];
+      A := V[1];
+      ShowMessage(IntToStr(C) + #10 + A);
+    end
+    else
+      ShowMessage('Search unsuccessful!');
+  end;
+  </CODE>
+  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCustomSearchComboBox.Refresh
@@ -74,34 +88,11 @@ JVCLInfo
   GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos,JVCL.EditsMemosAndCombos
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Combo box for navigating in a dataset.
 Description
-  Write here a description
+  TJvDBSearchComboBox is useful for navigation in dataset. It displays one field value of the current
+  record and contains list of all values of that field in the dataset. Selecting a value from the drop
+  down list causes the dataset to move to the corresponding record.
 
-----------------------------------------------------------------------------------------------------
-@@TJvSearchComboBoxLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvSearchComboBoxLink.DataField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvSearchComboBoxLink.DataFieldName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  To use this control just drop it on the form and set the DataSource and DataField properties.
 
