@@ -43,14 +43,14 @@ translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}
 
 { Enable this define if you use/have QuickReport }
-{$DEFINE JVCL_UseQuickReport}
+{.$DEFINE JVCL_UseQuickReport}
 
 { Enable this define if you have QReport 4 installed. This will require qr4rund7 instead
 of qrpt. NB! JVCL_UseQuickReport must also be defined}
 {.$DEFINE QREPORT4}
 
 { Enable this define if you have installed the Internet Components with the Delphi installer }
-{$DEFINE INTERNET_COMPONENTS}
+{.$DEFINE INTERNET_COMPONENTS}
 
 { Activate this define if you have Mike Lischke's Theme Manager
 (http://www.lischke-online.de) installed and available and
