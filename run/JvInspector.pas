@@ -374,6 +374,7 @@ type
     FOnEditorKeyPress: TKeyPressEvent;
     FOnEditorKeyUp: TKeyEvent;
     FOnEditorMouseDown: TOnJvInspectorMouseDown;
+    FOnItemDoubleClicked: TInspectorItemEvent;
     FOnItemEdit: TOnJvInspectorItemEdit; // User clicks Ellipsis button.
     FOnItemValueError: TInspectorValueErrorEvent;
     FOnItemValueChanging: TInspectorValueChangingEvent;
@@ -560,6 +561,7 @@ type
     property OnEditorKeyPress: TKeyPressEvent read FOnEditorKeyPress write FOnEditorKeyPress;
     property OnEditorKeyUp: TKeyEvent read FOnEditorKeyUp write FOnEditorKeyUp;
     property OnEditorMouseDown: TOnJvInspectorMouseDown read FOnEditorMouseDown write FOnEditorMouseDown;
+    property OnItemDoubleClicked: TInspectorItemEvent read FOnItemDoubleClicked write FOnItemDoubleClicked;
     property OnItemEdit: TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit; // User clicks Ellipsis button.
     property OnItemValueError: TInspectorValueErrorEvent read FOnItemValueError write FOnItemValueError;
   public
@@ -619,6 +621,7 @@ type
     property OnItemValueChanged;
     property OnItemValueChanging;
     property OnItemValueError;
+    property OnItemDoubleClicked;
     property OnItemEdit; // User clicks Ellipsis button.
     property BeforeEdit; // Low level hook for customizing TEdit/TMemo after objects are created, just before editing.
 
@@ -2060,6 +2063,40 @@ function TypeInfoFromName(TypeName: string): PTypeInfo;
 // Register the given class as a TypeInfo helper
 procedure RegisterTypeInfoHelper(AClass: TJvTypeInfoHelperClass);
 
+//Inspector Data Register
+type
+  TJvInspDataReg = class(TPersistent)
+  private
+    FInstanceList: TJvInspectorDataInstances;
+    FClearing: Boolean;
+  protected
+    function GetCount: Integer;
+    function GetItems(I: Integer): TJvCustomInspectorData;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    // Adds a new data instance. If an instance pointing to the same data exists the given instance is destroyed and the registered instance returned
+    function Add(Instance: TJvCustomInspectorData): TJvCustomInspectorData;
+    // Deletes a data instance and all items referencing it. All other data instances are notified.
+//    procedure Delete(Instance: TJvCustomInspectorData); make Delphi 5 compiler happy // andreas
+    // Deletes all data instances and items referencing them. No notification is issued to the data instances as they will be removed also.
+    procedure Clear;
+    // Locates a data instance that references the same data as the given instance. The index is returned or -1 if no instance was found.
+    function Locate(Instance: TJvCustomInspectorData): Integer;
+    // Removes a data instance from the list. All other data instances are notified.
+    procedure Remove(Instance: TJvCustomInspectorData);
+    property Count: Integer read GetCount;
+    property Items[I: Integer]: TJvCustomInspectorData read GetItems;
+  end;
+
+// Access to the GlobalDataRegister
+function DataRegister: TJvInspDataReg;
+
+// Canvas State functions used by TJvInspectorPainter & its descendents
+function SaveCanvasState(const Canvas: TCanvas): Integer;
+procedure ApplyCanvasState(const Canvas: TCanvas; const SavedIdx: Integer);
+procedure RestoreCanvasState(const Canvas: TCanvas; const SavedIdx: Integer);
+
 // We define here a set of macros to help C++ Builder programmers
 // gather Type Info by typing code very similar to Delphi code where
 // one only has to type TypeInfo(typename) to get the correct result
@@ -2515,31 +2552,6 @@ begin
 end;
 
 //=== { TJvInspDataReg } =====================================================
-
-type
-  TJvInspDataReg = class(TPersistent)
-  private
-    FInstanceList: TJvInspectorDataInstances;
-    FClearing: Boolean;
-  protected
-    function GetCount: Integer;
-    function GetItems(I: Integer): TJvCustomInspectorData;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    // Adds a new data instance. If an instance pointing to the same data exists the given instance is destroyed and the registered instance returned
-    function Add(Instance: TJvCustomInspectorData): TJvCustomInspectorData;
-    // Deletes a data instance and all items referencing it. All other data instances are notified.
-//    procedure Delete(Instance: TJvCustomInspectorData); make Delphi 5 compiler happy // andreas
-    // Deletes all data instances and items referencing them. No notification is issued to the data instances as they will be removed also.
-    procedure Clear;
-    // Locates a data instance that references the same data as the given instance. The index is returned or -1 if no instance was found.
-    function Locate(Instance: TJvCustomInspectorData): Integer;
-    // Removes a data instance from the list. All other data instances are notified.
-    procedure Remove(Instance: TJvCustomInspectorData);
-    property Count: Integer read GetCount;
-    property Items[I: Integer]: TJvCustomInspectorData read GetItems;
-  end;
 
 constructor TJvInspDataReg.Create;
 begin
@@ -4782,7 +4794,7 @@ begin
   if Value <> BackgroundColor then
   begin
     FBackgroundColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4792,7 +4804,7 @@ begin
   if Value <> CategoryColor then
   begin
     FCategoryColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4802,7 +4814,7 @@ begin
   if Value <> CategoryTextColor then
   begin
     FCategoryTextColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4812,7 +4824,7 @@ begin
   if DividerColor <> Value then
   begin
     FDividerColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4830,7 +4842,7 @@ begin
   if Value <> NameColor then
   begin
     FNameColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4847,7 +4859,7 @@ begin
   if Value <> SelectedColor then
   begin
     FSelectedColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4857,7 +4869,7 @@ begin
   if Value <> SelectedTextColor then
   begin
     FSelectedTextColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4904,7 +4916,7 @@ begin
   if Value <> ValueColor then
   begin
     FValueColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -4914,7 +4926,7 @@ begin
   if Value <> DrawNameEndEllipsis then
   begin
     FDrawNameEndEllipsis := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -5213,7 +5225,7 @@ begin
   if DividerLightColor <> Value then
   begin
     FDividerLightColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -5380,7 +5392,7 @@ begin
   if Value <> HideSelectColor then
   begin
     FHideSelectColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -5390,7 +5402,7 @@ begin
   if Value <> HideSelectTextColor then
   begin
     FHideSelectTextColor := Value;
-    if not Initializing and not Loading then
+    if not Initializing and not Loading and Assigned(Inspector) then
       Inspector.Invalidate;
   end;
 end;
@@ -6183,6 +6195,8 @@ begin
   end;
   if Msg.Msg = WM_MOUSEWHEEL then
   begin
+    if not DroppedDown then
+      PostMessage(Inspector.Handle, Msg.Msg, Msg.WParam, Msg.LParam);
     Msg.Result := 1;
     ExecInherited := False;
   end;
@@ -6638,10 +6652,13 @@ begin
     end;
   end
   else
-  if (Button = mbLeft) and (ssDouble in Shift) and
-    (iifValueList in Flags) and
-    (PtInRect(Rects[iprValueArea], Point(X, Y))) then
-    SelectValue(1);
+  if (Button = mbLeft) and (ssDouble in Shift) then
+    if (iifValueList in Flags) and
+       (PtInRect(Rects[iprValueArea], Point(X, Y))) then
+      SelectValue(1)
+    else if not Editing and Self.InheritsFrom(TJvInspectorClassItem)
+        and Assigned(Inspector.FOnItemDoubleClicked) then
+      Inspector.FOnItemDoubleClicked(Inspector, Self);
 end;
 
 procedure TJvCustomInspectorItem.MouseMove(Shift: TShiftState; X, Y: Integer);
