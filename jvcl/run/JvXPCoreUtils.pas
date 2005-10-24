@@ -138,6 +138,11 @@ var
   end;
 
 begin
+  // Exit if Height or Width are not positive. If not, the calls would lead to
+  // GDI errors about "Invalid parameter" and/or "Out Of Resources".
+  if (AHeight <= 0) or (AWidth <= 0) then
+    Exit;
+    
   Bitmap.Height := AHeight;
   Bitmap.Width := AWidth;
 
