@@ -88,11 +88,10 @@ const
   AllFilesMask = '*';
   {$ENDIF UNIX}
 
-  {$IFDEF VCL}
-  NullHandle = 0;
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   NullHandle = nil;
+  {$ELSE}   // Note: the else is on purpose, VCL is not defined for a console application
+  NullHandle = 0;
   {$ENDIF VisualCLX}
 
 {$IFDEF UNIX}
@@ -492,11 +491,11 @@ function PointL(const X, Y: Longint): TPointL; {$IFDEF SUPPORTS_INLINE} inline; 
 // (rom) from JvBandUtils to make it obsolete
 function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
+{$IFDEF VCL}
 {$IFNDEF CLR}
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 function CreateIconFromClipboard: TIcon;
 {$ENDIF !CLR}
-{$IFDEF VCL}
 { begin JvIconClipboardUtils }
 { Icon clipboard routines }
 function CF_ICON: Word;
@@ -1064,9 +1063,11 @@ function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 function BrowseForFolderNative(const Handle: THandle; const Title: string; var Folder: string): Boolean;
 {$ENDIF MSWINDOWS}
 
+{$IFDEF VCL}
 procedure AntiAlias(Clip: TBitmap);
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
+{$ENDIF VCL}
 {$ENDIF !CLR}
 
 {$IFDEF VCL}
@@ -3920,7 +3921,13 @@ procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
 var
   Data: THandle;
   DataPtr: Pointer;
+{$ENDIF}
+{$IFDEF VisualCLX}
+var
+  Position: Integer;
+{$ENDIF VisualCLX}
 begin
+  {$IFDEF VCL}
   Clipboard.Open;
   try
     Data := GlobalAlloc(GMEM_MOVEABLE, MemStream.Size);
@@ -3940,12 +3947,8 @@ begin
   finally
     Clipboard.Close;
   end;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  Position: Integer;
-begin
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Position := MemStream.Position;
   try
     MemStream.Position := 0;
@@ -3953,15 +3956,17 @@ begin
   finally
     MemStream.Position := Position;
   end;
+  {$ENDIF VisualCLX}
 end;
-{$ENDIF VisualCLX}
 
 procedure ClipBoardToMemStream(MemStream: TMemoryStream; const Format: Word);
 {$IFDEF VCL}
 var
   Data: THandle;
   DataPtr: Pointer;
+{$ENDIF VCL}
 begin
+  {$IFDEF VCL}
   Clipboard.Open;
   try
     Data := GetClipboardData(Format);
@@ -3979,17 +3984,15 @@ begin
   finally
     Clipboard.Close;
   end;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-begin
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   if Clipboard.Provides(SysUtils.Format('Stream#%d', [Format])) then
   begin
     Clipboard.GetFormat(SysUtils.Format('Stream#%d', [Format]), MemStream);
     MemStream.Position := 0;
   end;
+  {$ENDIF VisualCLX}
 end;
-{$ENDIF VisualCLX}
 {$ENDIF !CLR}
 
 function GetPropTypeKind(PropInf: PPropInfo): TTypeKind;
@@ -7239,7 +7242,7 @@ begin
   Result := PtInRect(R, Pt);
 end;
 
-function OpenObject(const Value: string): Boolean;
+function OpenObject(const Value: string): Boolean; overload;
 begin
   {$IFNDEF CLR}
   Result := OpenObject(PChar(Value));
@@ -7250,7 +7253,7 @@ end;
 
 { (rb) Duplicate of JvFunctions.Exec }
 {$IFNDEF CLR}
-function OpenObject(Value: PChar): Boolean;
+function OpenObject(Value: PChar): Boolean; overload;
 begin
   Result := ShellExecute(0, 'open', Value, nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
@@ -7365,7 +7368,7 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
-    St := Format({$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
+    St := SysUtils.Format({$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
       [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
@@ -8245,7 +8248,7 @@ begin
   {$IFNDEF CLR}
   UniqueString(Result);
   {$ENDIF CLR}
-  if DrawText(Canvas, Result, Length(Result), R,
+  if DrawText(Canvas.Handle, PChar(Result), Length(Result), R,
        DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
        DT_NOPREFIX) <= 0 then
     Result := FileName;
@@ -8278,7 +8281,7 @@ begin
   SI.cb := SizeOf(SI);
   GetStartupInfo(SI);
   SI.wShowWindow := CmdShow;
-  S := Format('rundll32.exe %s,%s %s', [ModuleName, FuncName, CmdLine]);
+  S := SysUtils.Format('rundll32.exe %s,%s %s', [ModuleName, FuncName, CmdLine]);
   Result := CreateProcess(nil, PChar(S), nil, nil, False, 0, nil, nil, SI, PI);
   try
     if WaitForCompletion then
@@ -8428,7 +8431,7 @@ begin
         end;
       VER_PLATFORM_WIN32_NT: Platfrm := 'NT';
     end;
-    Result := Trim(Format(sWindowsVersion, [Platfrm, dwMajorVersion,
+    Result := Trim(SysUtils.Format(sWindowsVersion, [Platfrm, dwMajorVersion,
       dwMinorVersion, dwBuildNumber, szCSDVersion]));
   end;
 end;
@@ -9071,7 +9074,7 @@ begin
   Result := '';
   for I := 0 to MaxInt do
   begin
-    CurrentName := Format(FileNameMask, [I]);
+    CurrentName := SysUtils.Format(FileNameMask, [I]);
     if not FileExists(NormalDir(Path) + CurrentName) then
     begin
       Result := CurrentName;
@@ -9081,14 +9084,16 @@ begin
 end;
 
 {$IFNDEF CLR}
+{$IFDEF VCL}
 procedure AntiAlias(Clip: TBitmap);
 begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
+{$ENDIF VCL}
 
-type
   // (p3) duplicated from JvTypes to avoid JVCL dependencies
   {$IFDEF VCL}
+type
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
@@ -9096,12 +9101,17 @@ type
   end;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+type
   TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
   {$ENDIF VisualCLX}
 
+  {$IFDEF VCL}
+type
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..32766] of TJvRGBTriple;
+  {$ENDIF VCL}
 
+{$IFDEF VCL}
 procedure AntiAliasRect(Clip: TBitmap;
   XOrigin, YOrigin, XFinal, YFinal: Integer);
 var
@@ -9143,6 +9153,7 @@ begin
   end;
   Clip.PixelFormat := OPF;
 end;
+{$ENDIF VCL}
 {$ENDIF !CLR}
 
 {$IFDEF VCL}
@@ -9586,8 +9597,13 @@ var
       I := K;
     Result := I;
   end;
-
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+var
+  QC: QColorH;
+{$ENDIF VisualCLX}
 begin
+  {$IFDEF VCL}
   Min := GetMin(R, G, B);
   Max := GetMax(R, G, B);
   V := Max;
@@ -9610,17 +9626,13 @@ begin
     if H < 0 then
       H := H + 360;
   end;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  QC: QColorH;
-begin
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QC := QColor_create(R, G, B);
   QColor_getHsv(QC, @H, @S, @V);
   QColor_destroy(QC);
+  {$ENDIF VisualCLX}
 end;
-{$ENDIF VisualCLX}
 
 function RGBToBGR(Value: Cardinal): Cardinal;
 begin
@@ -9646,12 +9658,14 @@ begin
       Result := StandardColorValues[Index].Description;
       Exit;
     end;
+  {$IFDEF VCL}
   for Index := Low(SysColorValues) to High(SysColorValues) do
     if Value = SysColorValues[Index].Value then
     begin
       Result := SysColorValues[Index].Description;
       Exit;
     end;
+  {$ENDIF VCL}
   Result := ColorToString(Value);
 end;
 
@@ -9661,23 +9675,31 @@ var
   ColorResult: Integer;
 begin
   for Index := Low(ColorValues) to High(ColorValues) do
+  begin
     if CompareText(Value, ColorValues[Index].Description) = 0 then
     begin
       Result := ColorValues[Index].Value;
       Exit;
     end;
+  end;
   for Index := Low(StandardColorValues) to High(StandardColorValues) do
+  begin
     if CompareText(Value, StandardColorValues[Index].Description) = 0 then
     begin
       Result := StandardColorValues[Index].Value;
       Exit;
     end;
+  end;
+  {$IFDEF VCL}
   for Index := Low(SysColorValues) to High(SysColorValues) do
+  begin
     if CompareText(Value, SysColorValues[Index].Description) = 0 then
     begin
       Result := SysColorValues[Index].Value;
       Exit;
     end;
+  end;
+  {$ENDIF VCL}
   if IdentToColor(Value, ColorResult) then
     Result := ColorResult
   else
@@ -9885,4 +9907,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 
