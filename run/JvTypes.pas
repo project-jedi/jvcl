@@ -100,12 +100,13 @@ type
     rgbRed: Byte;
   end;
 
-  TTimerProc = procedure(hwnd: THandle; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
-
 const
   NullHandle = 0;
   // (rom) deleted fbs constants. They are already in JvConsts.pas.
 {$ENDIF VCL}
+
+type
+  TTimerProc = procedure(hwnd: THandle; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
 
 {$IFDEF VisualCLX}
 type
@@ -214,12 +215,14 @@ type
     Result: Longint;
   end;
 
+  {$IFDEF VCL}
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..MaxPixelCount] of TJvRGBTriple;
   PRGBQuadArray = ^TRGBQuadArray;
   TRGBQuadArray = array [0..MaxPixelCount] of TRGBQuad;
   PRGBPalette = ^TRGBPalette;
   TRGBPalette = array [Byte] of TRGBQuad;
+  {$ENDIF VCL}
 
   { (rom) unused
   TJvPoint = class(TPersistent)
@@ -497,8 +500,8 @@ const
     (Value: $00FFFFFF;    Constant: 'clWhite';          Description: RsClWhite)
   );
 
+  {$IFDEF VCL}
   SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
-    {$IFDEF VCL}
     (Value: clScrollBar;           Constant: 'clScrollBar';           Description: RsClScrollBar),
     (Value: clBackground;          Constant: 'clBackground';          Description: RsClBackground),
     (Value: clActiveCaption;       Constant: 'clActiveCaption';       Description: RsClActiveCaption),
@@ -530,9 +533,11 @@ const
     (Value: clHotLight;                Constant: 'clHotLight';               Description: RsHotLight),
     (Value: clMenuBar;                 Constant: 'clMenuBar';                Description: RsMenuBar),
     (Value: clMenuHighlight;           Constant: 'clMenuHighlight';          Description: RsMenuHighlight)
+  );
 
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
     (Value: clNormalForeground;        Constant: 'clNormalForeground';        Description: RsClNormalForeground),
     (Value: clNormalButton;            Constant: 'clNormalButton';            Description: RsClNormalButton),
     (Value: clNormalLight;             Constant: 'clNormalLight';             Description: RsClNormalLight),
@@ -577,8 +582,8 @@ const
     (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
     (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
     (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText)
-    {$ENDIF VisualCLX}
   );
+  {$ENDIF VisualCLX}
 
 type
   TJvSizeRect = packed record
