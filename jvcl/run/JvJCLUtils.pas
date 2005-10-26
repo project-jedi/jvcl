@@ -556,10 +556,13 @@ function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
 { end JvDateUtil }
-{$IFNDEF CLR}
+{$IFDEF CLR}
+function BufToBinStr(const Buf: TBytes; BufSize: Integer): string;
+function BinStrToBuf(Value: string; Buf: TBytes; BufSize: Integer): Integer;
+{$ELSE}
 function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
-{$ENDIF !CLR}
+{$ENDIF CLR}
 
 
 { begin JvStrUtils }
@@ -5385,7 +5388,35 @@ begin
 end;
 { end JvDateUtil }
 
-{$IFNDEF CLR}
+{$IFDEF CLR}
+
+function BufToBinStr(const Buf: TBytes; BufSize: Integer): string;
+var
+  I: Integer;
+  P: TBytes;
+begin
+  P := Buf;
+  for I := 0 to Pred(BufSize) do
+    Result := Result + IntToHex(P[I] , 2);
+end;
+
+function BinStrToBuf(Value: string; Buf: TBytes; BufSize: Integer): Integer;
+var
+  I: Integer;
+  P: TBytes;
+begin
+  if Odd(Length(Value)) then
+    Value := '0' + Value;      // should not occur, might indicate corrupted Value
+  if (Length(Value) div 2) < BufSize then
+    BufSize := Length(Value) div 2;
+  P := Buf;
+  for I := 0 to Pred(BufSize) do
+    P[I] := StrToInt('$' + Value[2 * I + 1] + Value[2 * I + 2]);
+  Result := BufSize;
+end;
+
+{$ELSE}
+
 function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 var
   I: Integer;
@@ -5410,7 +5441,8 @@ begin
     P[I] := StrToInt('$' + Value[2 * I + 1] + Value[2 * I + 2]);
   Result := BufSize;
 end;
-{$ENDIF !CLR}
+
+{$ENDIF CLR}
 
 { begin JvStrUtils }
 {$IFDEF UNIX}

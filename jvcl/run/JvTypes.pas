@@ -66,6 +66,11 @@ type
 {$ENDIF VisualCLX}
 {$HPPEMIT '#endif'}
 
+{$IFNDEF CLR}
+type
+  TBytes = Pointer;
+{$ENDIF !CLR}
+
 {$IFDEF VCL}
 type
   PCaptionChar = PChar;

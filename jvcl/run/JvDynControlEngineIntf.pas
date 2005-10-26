@@ -38,10 +38,17 @@ uses
   {$IFDEF UNIX}
   QActnList, QGraphics, QComCtrls, QImgList,
   {$ENDIF UNIX}
+  {$IFDEF CLR}
+  Variants,
+  {$ENDIF CLR}
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Dialogs,
   FileCtrl, SysUtils;
 
 type
+  {$IFDEF CLR}
+  IUnknown = IInterface;
+  {$ENDIF CLR}
+
   IJvDynControl = interface
     ['{E5A52F18-A7B2-4BE8-BAB6-D4F70A0999B3}']
     procedure ControlSetDefaultProperties;
@@ -62,9 +69,9 @@ type
   IJvDynControlData = interface
     ['{569BFBFD-DFFF-44CF-AAD9-C67A0E48EE15}']
     procedure ControlSetOnChange(Value: TNotifyEvent);
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
-    property ControlValue: variant Read ControlGetValue Write ControlSetValue;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+    property ControlValue: Variant Read ControlGetValue Write ControlSetValue;
   end;
 
   IJvDynControlReadOnly = interface

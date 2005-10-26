@@ -64,8 +64,6 @@ type
   TUIEffects = set of TUIEffect;
 {$ENDIF VisualCLX}
 
-
-
 type
   TJvAppEvents = class(TJvComponent)
   private
@@ -269,7 +267,7 @@ type
     procedure DoMinimize(Sender: TObject);
     procedure DoRestore(Sender: TObject);
     {$IFDEF VCL}
-    function DoHelp(Command: Word; Data: Longint;
+    function DoHelp(Command: Word; Data: {$IFDEF CLR} TObject {$ELSE} Longint {$ENDIF};
       var CallHelp: Boolean): Boolean;
     procedure DoMessage(var Msg: TMsg; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
@@ -489,7 +487,7 @@ begin
 end;
 
 {$IFDEF VCL}
-function TJvAppEventList.DoHelp(Command: Word; Data: Longint;
+function TJvAppEventList.DoHelp(Command: Word; Data: {$IFDEF CLR} TObject {$ELSE} Longint {$ENDIF};
   var CallHelp: Boolean): Boolean;
 var
   I: Integer;
@@ -671,7 +669,6 @@ begin
   if Assigned(FOnActiveFormChange) then
     FOnActiveFormChange(Sender);
 end;
-
 
 procedure TJvAppEventList.DoActionExecute(Action: TBasicAction;
   var Handled: Boolean);
