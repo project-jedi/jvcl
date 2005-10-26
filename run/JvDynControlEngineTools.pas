@@ -31,6 +31,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   Classes, Controls, StdCtrls, Forms, ExtCtrls,
   JvDynControlEngine;
 
@@ -54,9 +57,6 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils;
 
 function CreateDynControlDialog(const AFormCaption, AButton1Caption, AButton2Caption: string;

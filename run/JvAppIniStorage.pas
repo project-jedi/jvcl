@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, IniFiles,
-  JvAppStorage, JvPropertyStore;
+  JvAppStorage, JvPropertyStore, JvTypes;
 
 type
   TJvAppIniStorageOptions = class(TJvAppStorageOptions)
@@ -102,8 +102,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer); override;
     property DefaultSection: string read FDefaultSection write FDefaultSection;
     property IniFile: TMemIniFile read FIniFile;
   public
@@ -156,7 +156,7 @@ uses
   {$IFDEF BCB5}
   JvVCL5Utils,
   {$ENDIF BCB5}
-  JvTypes, JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
+  JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
 
 const
   cNullDigit = '0';
@@ -379,12 +379,22 @@ var
   Section: string;
   Key: string;
   Value: string;
+  {$IFDEF CLR}
+  Buf: TBytes;
+  {$ENDIF CLR}
 begin
   SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
+    {$IFDEF CLR}
+    Buf := DoubleToExtendedAsBytes(Default); // calculate BufSize
+    if BinStrToBuf(Value, Buf, Length(Buf)) = Length(Buf) then
+      Result := ExtendedAsBytesToDouble(Buf)
+    else
+    {$ELSE}
     if BinStrToBuf(Value, @Result, SizeOf(Result)) <> SizeOf(Result) then
+    {$ENDIF CLR}
       Result := Default;
   end
   else
@@ -395,9 +405,17 @@ procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extende
 var
   Section: string;
   Key: string;
+  {$IFDEF CLR}
+  Buf: TBytes;
+  {$ENDIF CLR}
 begin
   SplitKeyPath(Path, Section, Key);
+  {$IFDEF CLR}
+  Buf := DoubleToExtendedAsBytes(Value);
+  WriteValue(Section, Key, BufToBinStr(Buf, Length(Buf)));
+  {$ELSE}
   WriteValue(Section, Key, BufToBinStr(@Value, SizeOf(Value)));
+  {$ENDIF CLR}
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
@@ -421,7 +439,7 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-function TJvCustomAppIniStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
+function TJvCustomAppIniStorage.DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -437,7 +455,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
+procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer);
 var
   Section: string;
   Key: string;
@@ -514,7 +532,11 @@ begin
   else
     Result := Section;
   if (Result = '') or (Result[1] = '.') then
+    {$IFDEF CLR}
+    raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+    {$ELSE}
     raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
+    {$ENDIF CLR}
 end;
 
 function TJvCustomAppIniStorage.GetStorageOptions: TJvAppIniStorageOptions;

@@ -70,6 +70,8 @@ type
     procedure DialogOnListBoxChange(Sender: TObject);
     procedure SelectFormDestroying(Sender: TObject);
 
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
     procedure LoadSelectList;
     procedure StoreSelectList;
     property SelectDialog: TForm read FSelectDialog write FSelectDialog;
@@ -84,7 +86,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetSelectListPath(AOperation: TJvAppStorageSelectListOperation; ACaption: string = ''): string;
     procedure ManageSelectList(ACaption: string = '');
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
@@ -108,6 +109,9 @@ implementation
 
 uses
   SysUtils,
+  {$IFDEF CLR}
+  Variants,
+  {$ENDIF CLR}
   JvConsts, JvResources;
 
 constructor TJvAppStorageSelectList.Create(AOwner: TComponent);
@@ -222,7 +226,11 @@ var
   ITmpComboBox: IJvDynControlComboBox;
 begin
   if not Assigned(DynControlEngine) then
+    {$IFDEF CLR}
+    raise EJVCLException.Create(RsEDynControlEngineNotDefined);
+    {$ELSE}
     raise EJVCLException.CreateRes(@RsEDynControlEngineNotDefined);
+    {$ENDIF CLR}
 
   Operation := AOperation;
   FreeAndNil(FSelectDialog);
@@ -271,21 +279,17 @@ begin
   OkButton.Anchors := [akTop, akRight];
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
-  if not Supports(ComboBoxPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  IntfCast(ComboBoxPanel, IJvDynControlPanel, ITmpPanel);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
   ListBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ListPanel', '', alClient);
-  if not Supports(ListBoxPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  IntfCast(ListBoxPanel, IJvDynControlPanel, ITmpPanel);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
   ComboBox := DynControlEngine.CreateComboBoxControl(Self, ComboBoxPanel, 'ComboBox', SelectList);
-  if not Supports(ComboBox, IJvDynControlItems, FIComboBoxItems) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  if not Supports(ComboBox, IJvDynControlData, FIComboBoxData) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  IntfCast(ComboBox, IJvDynControlItems, FIComboBoxItems);
+  IntfCast(ComboBox, IJvDynControlData, FIComboBoxData);
 
   IComboBoxItems.ControlSetSorted(True);
   if Supports(ComboBox, IJvDynControlComboBox, ITmpComboBox) then
@@ -315,8 +319,7 @@ begin
   ListBox.Align := alClient;
   ComboBox.Align := alClient;
 
-  if not Supports(OkButton, IJvDynControl, ITmpControl) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  IntfCast(OkButton, IJvDynControl, ITmpControl);
   with ITmpControl do
     case AOperation of
       sloLoad:
@@ -332,7 +335,11 @@ function TJvAppStorageSelectList.GetSelectListPath(AOperation: TJvAppStorageSele
   ACaption: string = ''): string;
 begin
   if not Assigned(AppStorage) then
+    {$IFDEF CLR}
+    raise EJVCLException.Create(RsEDynAppStorageNotDefined);
+    {$ELSE}
     raise EJVCLException.CreateRes(@RsEDynAppStorageNotDefined);
+    {$ENDIF CLR}
   try
     LoadSelectList;
     {$IFDEF BCB}

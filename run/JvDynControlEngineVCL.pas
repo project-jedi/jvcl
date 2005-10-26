@@ -38,8 +38,10 @@ uses
   {$IFDEF UNIX}
   QActnList, QGraphics, QComCtrls, QImgList,
   {$ENDIF UNIX}
-  Classes,
-  Controls, StdCtrls, ExtCtrls, Mask, Forms,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  Classes, Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl, ExtDlgs, CheckLst,
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -729,9 +731,6 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
   JvDynControlEngineTools, JvConsts, JvJCLUtils;
 
@@ -1380,8 +1379,13 @@ end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlSetValue(Value: Variant);
 begin
+  {$IFDEF CLR}
+  FDatePicker.Date := VarToDateTime(Value).Date;
+  FTimePicker.Time := VarToDateTime(Value).Time;
+  {$ELSE}
   FDatePicker.Date := Value;
   FTimePicker.Time := Value;
+  {$ENDIF CLR}
 end;
 
 function TJvDynControlVCLDateTimeEdit.ControlGetValue: Variant;
@@ -1458,12 +1462,20 @@ end;
 
 procedure TJvDynControlVCLDateEdit.ControlSetValue(Value: Variant);
 begin
+  {$IFDEF CLR}
+  Date := VarToDateTime(Value).Date;
+  {$ELSE}
   Date := Value;
+  {$ENDIF CLR}
 end;
 
 function TJvDynControlVCLDateEdit.ControlGetValue: Variant;
 begin
+  {$IFDEF CLR}
+  Result := TDateTime(Date)
+  {$ELSE}
   Result := Date;
+  {$ENDIF CLR}
 end;
 
 // IJvDynControlDate
@@ -1533,12 +1545,20 @@ end;
 
 procedure TJvDynControlVCLTimeEdit.ControlSetValue(Value: Variant);
 begin
+  {$IFDEF CLR}
+  Time := VarToDateTime(Value).Time;
+  {$ELSE}
   Time := Value;
+  {$ENDIF CLR}
 end;
 
 function TJvDynControlVCLTimeEdit.ControlGetValue: Variant;
 begin
+  {$IFDEF CLR}
+  Result := TDateTime(Time);
+  {$ELSE}
   Result := Time;
+  {$ENDIF CLR}
 end;
 
 procedure TJvDynControlVCLTimeEdit.ControlSetFormat(const Value: string);
