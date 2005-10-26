@@ -39,9 +39,15 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF VisualCLX}
   Qt, Types, QWindows,
   {$ENDIF VisualCLX}
+  {$IFDEF CLR}
+  System.Globalization, Borland.Vcl.WinUtils,
+  {$ENDIF CLR}
   Classes, Graphics, Controls, Grids,
   JvComponent, JvExControls, JvExGrids;
 
@@ -479,6 +485,20 @@ type
 procedure WideDrawText(Canvas: TCanvas; const Text: WideString; ARect: TRect;
   uFormat: Cardinal);
 begin
+  {$IFDEF CLR}
+  with Canvas do
+  begin
+    if Assigned(Canvas.OnChanging) then
+      Canvas.OnChanging(Canvas);
+    {$IFDEF VCL}
+    if CanvasOrientation = coRightToLeft then
+      Inc(uFormat, DT_RTLREADING);
+    {$ENDIF VCL}
+    DrawText(Handle, Text, Length(Text), ARect, uFormat);
+    if Assigned(Canvas.OnChange) then
+      Canvas.OnChange(Canvas);
+  end;
+  {$ELSE}
   // (p3) TCanvasAccessProtected bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
   with TCanvasAccessProtected(Canvas) do
   begin
@@ -491,6 +511,7 @@ begin
     DrawTextW(Handle, PWideChar(Text), Length(Text), ARect, uFormat);
     Changed;
   end;
+  {$ENDIF CLR}
 end;
 
 {$IFDEF MSWINDOWS}
@@ -498,7 +519,7 @@ end;
 //=== { TShadowWindow } ======================================================
 
 type
-  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
+  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; {$IFNDEF CLR}stdcall;{$ENDIF}
 
 {$IFNDEF COMPILER6_UP}
 const
@@ -535,6 +556,15 @@ var
   {$ENDIF NeedSetLayer}
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
 
+  {$IFDEF CLR}
+  procedure InitProcs;
+  begin
+    if System.Environment.OSVersion.Platform = PlatformID.Win32NT then
+      DynamicSetLayeredWindowAttributes := SetLayeredWindowAttributes
+    else
+      DynamicSetLayeredWindowAttributes := nil;
+  end;
+  {$ELSE}
   procedure InitProcs;
   const
     sUser32 = 'User32.dll';
@@ -543,10 +573,11 @@ var
   begin
     ModH := GetModuleHandle(sUser32);
     if ModH <> 0 then
-       @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes')
+      DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes')
     else
-      @DynamicSetLayeredWindowAttributes := nil;
+      DynamicSetLayeredWindowAttributes := nil;
   end;
+  {$ENDIF CLR}
 
 begin
   {$IFDEF VCL}
@@ -807,31 +838,34 @@ begin
   Result := GetCharInfo(GetChar(ACol, ARow), InfoType);
 end;
 
-function TJvCustomCharMap.GetCharInfo(AChar: WideChar;
-  InfoType: Cardinal): Cardinal;
+function TJvCustomCharMap.GetCharInfo(AChar: WideChar; InfoType: Cardinal): Cardinal;
 var
-  LCharInfo: Cardinal;
+  {$IFDEF VCL}
+  LLoc: Cardinal;
+  {$ENDIF VCL}
+  LCharInfo: {$IFDEF CLR} array [0..1] of Word {$ELSE} Cardinal {$ENDIF};
 begin
-  LCharInfo := 0;
   {$IFDEF VCL}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
+    LLoc := 0
+  else
+    LLoc := Locale;
+
+  // Locale is ignored on NT platforms
+  if GetStringTypeExW(LLoc, InfoType, {$IFNDEF CLR}@{$ENDIF}AChar, 1, LCharInfo) then
   begin
-    // Locale is ignored on NT platforms
-    if GetStringTypeExW(0, InfoType, @AChar, 1, LCharInfo) then
-      Result := LCharInfo
-    else
-      Result := 0;
+    {$IFDEF CLR}
+    Result := Cardinal(LCharInfo[0] shl 16) or LCharInfo[1];
+    {$ELSE}
+    Result := LCharInfo;
+    {$ENDIF CLR}
   end
   else
-  begin
-    if GetStringTypeEx(Locale, InfoType, @AChar, 1, LCharInfo) then
-      Result := LCharInfo
-    else
-      Result := 0;
-  end;
+    Result := 0;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   {TODO : implement this if possible}
+  LCharInfo := 0;
   Result := LCharInfo;
   {$ENDIF VisualCLX}
 end;

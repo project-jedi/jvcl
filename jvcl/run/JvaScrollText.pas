@@ -98,6 +98,10 @@ implementation
 
 uses
   SysUtils, Forms,
+  JvVCL5Utils,
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
   JvJCLUtils, JvDsgnIntf, JvThemes;
 
 const
@@ -220,22 +224,19 @@ var
     msec: string[10];
   begin
     Result := True;
-    if StrLComp('$Font:', PChar(S), 6) = 0 then
+    if AnsiStartsStr('$Font:', S) then
       with FFontImage.Canvas.Font do
       begin
-        S := PChar(S) + 6;
+        S := Copy(S, 7, MaxInt);
         Name := SubStrBySeparator(S, 0, ';');
         Size := StrToInt(SubStrBySeparator(S, 1, ';'));
         Style := cIntToStyle[StrToInt(SubStrBySeparator(S, 2, ';'))];
       end
     else
-    if StrLComp('$Pause', PChar(S), 6) = 0 then
+    if AnsiStartsStr('$Pause', S) then
     begin
       msec := Copy(S, 7, 16);
-      try
-        Delay(StrToInt(msec));
-      except
-      end;
+      Delay(StrToIntDef(msec, 0));
     end
     else
       Result := False;

@@ -41,8 +41,8 @@ type
     function GetAppStorage: TJvCustomAppStorage; override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); override;
     function GetStoragePath: string; override;
-  public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  public
     function RestoreFormStorage(const ACaption: string = ''): Boolean;
     function SaveFormStorage(const ACaption: string = ''): Boolean;
   published

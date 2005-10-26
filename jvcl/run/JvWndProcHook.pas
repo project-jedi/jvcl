@@ -154,6 +154,10 @@ type
     FControl: TControl;
     FControlDestroyed: Boolean;
     FOldWndProc: TWndMethod;
+    FOldWndProcHandle: TFarProc;
+    {$IFDEF CLR}
+    FOldWndProcHandleInst: TFNWndProc;
+    {$ENDIF CLR}
     FHooked: Boolean;
     FController: TJvWndProcHook;
     procedure SetController(const Value: TJvWndProcHook);
@@ -207,9 +211,9 @@ type
     FReleasing: TList;
     function GetHandle: THandle;
     procedure CMRelease(var Msg: TMessage); message CM_RELEASE;
-    procedure WndProc(var Msg: TMessage);
+    procedure WndProc(var Msg: TMessage); {$IFDEF CLR}reintroduce;{$ENDIF}
   public
-    constructor Create; virtual;
+    constructor Create; {$IFDEF CLR}reintroduce;{$ENDIF} virtual;
     destructor Destroy; override;
     procedure DefaultHandler(var Msg); override;
     class function Instance: TJvReleaser;
@@ -510,6 +514,7 @@ begin
 
   FControlDestroyed := True;
   FOldWndProc := nil;
+  FOldWndProcHandle := nil;
 
   { Remove this TJvHookInfos object from the HookInfo list of Controller }
   Controller := nil;
@@ -641,14 +646,20 @@ begin
   if FControl <> nil then
   begin
     FOldWndProc := FControl.WindowProc;
+    FOldWndProcHandle := nil;
     FControl.WindowProc := WindowProc;
     FHooked := True;
   end
   else
   begin
-    TMethod(FOldWndProc).Data := nil;
-    TMethod(FOldWndProc).Code := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
+    FOldWndProc := nil;
+    FOldWndProcHandle := TFarProc(GetWindowLong(FHandle, GWL_WNDPROC));
+    {$IFDEF CLR}
+    FOldWndProcHandleInst := MakeObjectInstance(WindowProc);
+    SetWindowLong(FHandle, GWL_WNDPROC, FOldWndProcHandleInst);
+    {$ELSE}
     SetWindowLong(FHandle, GWL_WNDPROC, Integer(MakeObjectInstance(WindowProc)));
+    {$ENDIF CLR}
     FHooked := True;
   end;
 end;
@@ -684,8 +695,10 @@ begin
 end;
 
 procedure TJvHookInfos.UnHookControl;
+{$IFNDEF CLR}
 var
-  Ptr: Pointer;
+  Ptr: TFarProc;
+{$ENDIF !CLR}
 begin
   if not FHooked or FControlDestroyed then
     Exit;
@@ -696,10 +709,16 @@ begin
   end
   else
   begin
-    Ptr := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
-    SetWindowLong(FHandle, GWL_WNDPROC, Integer(TMethod(FOldWndProc).Code));
-    FHooked := False;
+    {$IFDEF CLR}
+    SetWindowLong(FHandle, GWL_WNDPROC, Integer(FOldWndProcHandle));
+    FreeObjectInstance(FOldWndProcHandleInst);
+    FOldWndProcHandleInst := nil;
+    {$ELSE}
+    Ptr := TFarProc(GetWindowLong(FHandle, GWL_WNDPROC));
+    SetWindowLong(FHandle, GWL_WNDPROC, Integer(FOldWndProcHandle));
     FreeObjectInstance(Ptr);
+    {$ENDIF CLR}
+    FHooked := False;
   end;
 end;
 
@@ -744,11 +763,11 @@ begin
       have 2 components of the same class, that hook a control, then only 1 will
       get the message }
 
-    if TMethod(FOldWndProc).Data <> nil then
+    if Assigned(FOldWndProc) then
       FOldWndProc(Msg)
     else
-    if TMethod(FOldWndProc).Code <> nil then
-      Msg.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Msg.Msg,
+    if FOldWndProcHandle <> nil then
+      Msg.Result := CallWindowProc(FOldWndProcHandle, Handle, Msg.Msg,
         Msg.WParam, Msg.LParam);
 
     if FControlDestroyed then
@@ -964,17 +983,16 @@ var
   Obj: TObject;
   Index: Integer;
 begin
-  Index := FReleasing.IndexOf(Pointer(Msg.WParam));
+  Obj := TObject(Msg.WParam);
+  Index := FReleasing.IndexOf(Obj);
   if Index >= 0 then
     FReleasing.Delete(Index);
-
-  Obj := TObject(Msg.WParam);
   Obj.Free;
 end;
 
 constructor TJvReleaser.Create;
 begin
-  inherited Create;
+  inherited Create{$IFDEF CLR}(nil){$ENDIF};
   FReleasing := TList.Create;
 end;
 

@@ -995,7 +995,7 @@ var
   Y, M: Word;
 begin
   {$IFDEF CLR}
-  for I := 0 to Hígh(StateArray) do
+  for I := 0 to High(StateArray) do
     StateArray[I] := 0;
   {$ELSE}
   FillChar(StateArray, SizeOf(TMonthDayStateArray), #0);

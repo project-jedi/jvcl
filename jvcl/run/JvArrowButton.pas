@@ -39,6 +39,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Windows, Messages, Controls, Graphics, Buttons, Menus,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF VCL}
   CommCtrl,
   {$ENDIF VCL}
@@ -51,7 +54,7 @@ type
   TJvArrowButton = class(TJvGraphicControl)
   private
     FGroupIndex: Integer;
-    FGlyph: Pointer;
+    FGlyph: TObject;
     FDown: Boolean;
     FArrowClick: Boolean;
     FPressBoth: Boolean;
@@ -310,7 +313,7 @@ var
 begin
   for I := FGlyphLists.Count - 1 downto 0 do
   begin
-    Result := FGlyphLists[I];
+    Result := TGlyphList(FGlyphLists[I]);
     if (AWidth = Result.Width) and (AHeight = Result.Height) then
       Exit;
   end;

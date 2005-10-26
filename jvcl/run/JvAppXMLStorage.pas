@@ -43,10 +43,9 @@ uses
   Classes,
   JvAppStorage, JvPropertyStore, JvSimpleXml, JvTypes;
 
-
 type
-
   TJvCustomAppXMLStorage = class;
+
   TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
   private
     FInvalidCharReplacement: string;
@@ -249,7 +248,11 @@ begin
   begin
     for I := 1 to Length(Value) do
       if not (Value[I] in AllowedNodeNameChars) then
+        {$IFDEF CLR}
+        raise EJVCLException.CreateFmt(RsENotAllowedCharacterForProperty, [Value[I], 'InvalidCharReplacement']);
+        {$ELSE}
         raise EJVCLException.CreateResFmt(@RsENotAllowedCharacterForProperty, [Value[I], 'InvalidCharReplacement']);
+        {$ENDIF CLR}
     FInvalidCharReplacement := Value;
   end;
 end;
@@ -260,12 +263,20 @@ var
 begin
   if Value <> FWhiteSpaceReplacement then
     if StrContainsChars(Value, AnsiWhiteSpace, True) then
+      {$IFDEF CLR}
+      raise EJVCLException.Create(RsEWhiteSpaceReplacementCannotContainSpaces)
+      {$ELSE}
       raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
+      {$ENDIF CLR}
     else
     begin
       for I := 1 to Length(Value) do
         if not (Value[I] in AllowedNodeNameChars) then
+          {$IFDEF CLR}
+          raise EJVCLException.CreateFmt(RsENotAllowedCharacterForProperty, [Value[I], 'WhiteSpaceReplacement']);
+          {$ELSE}
           raise EJVCLException.CreateResFmt(@RsENotAllowedCharacterForProperty, [Value[I], 'WhiteSpaceReplacement']);
+          {$ENDIF CLR}
       FWhiteSpaceReplacement := Value;
     end;
 end;
@@ -320,7 +331,11 @@ begin
     if NodeName[J] in AnsiWhiteSpace then
       case WSRLength of
         0:
+          {$IFDEF CLR}
+          raise EJVCLException.Create(RsENodeNameCannotContainSpaces);
+          {$ELSE}
           raise EJVCLException.CreateRes(@RsENodeNameCannotContainSpaces);
+          {$ENDIF CLR}
         1:
           FixedNodeName[InsertIndex] := WhiteSpaceReplacement[1];
         else
@@ -336,7 +351,11 @@ begin
     if not (NodeName[J] in AllowedNodeNameChars) then
       case ICRLength of
         0:
+          {$IFDEF CLR}
+          raise EJVCLException.CreateFmt(RsENodeNameCannotInvalidChars, [NodeName[J]]);
+          {$ELSE}
           raise EJVCLException.CreateResFmt(@RsENodeNameCannotInvalidChars, [NodeName[J]]);
+          {$ENDIF CLR}
         1:
           FixedNodeName[InsertIndex] := InvalidCharReplacement[1];
         else
@@ -357,7 +376,11 @@ end;
 procedure TJvCustomAppXMLStorage.SetRootNodeName(const Value: string);
 begin
   if Value = '' then
+    {$IFDEF CLR}
+    raise EPropertyError.Create(RsENodeCannotBeEmpty)
+    {$ELSE}
     raise EPropertyError.CreateRes(@RsENodeCannotBeEmpty)
+    {$ENDIF CLR}
   else
   begin
     Xml.Root.Name := CheckNodeNameCharacters(Value);
@@ -454,7 +477,11 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
+    {$ENDIF CLR}
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteInteger(const Path: string; Value: Integer);
@@ -478,6 +505,9 @@ var
   ValueName: string;
   StrValue: string;
   Node: TJvSimpleXmlElem;
+  {$IFDEF CLR}
+  Buf: array [0..10 - 1] of Byte;
+  {$ENDIF CLR}
 begin
   ReloadIfNeeded;
   SplitKeyPath(Path, ParentPath, ValueName);
@@ -489,7 +519,13 @@ begin
     try
       StrValue := Node.Items.ItemNamed[ValueName].Value;
       // Result := StrToFloat(StrValue);
+      {$IFDEF CLR}
+      if BinStrToBuf(StrValue, Buf, Length(Buf)) = Length(Buf) then
+        Result := ExtendedAsBytesToDouble(Buf)
+      else
+      {$ELSE}
       if BinStrToBuf(StrValue, @Result, SizeOf(Result)) <> SizeOf(Result) then
+      {$ENDIF CLR}
         Result := Default;
     except
       if StorageOptions.DefaultIfReadConvertError then
@@ -502,7 +538,11 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
+    {$ENDIF CLR}
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteFloat(const Path: string; Value: Extended);
@@ -510,14 +550,21 @@ var
   ParentPath: string;
   ValueName: string;
   ANode: TJvSimpleXmlElem;
-  //Buffer: Extended;
+  {$IFDEF CLR}
+  Buf: array [0..10 - 1] of Byte;
+  {$ENDIF CLR}
 begin
   ReloadIfNeeded;
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
   Xml.Options := Xml.Options + [sxoAutoCreate];
 //  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
-  ANode.Items.ItemNamed[ValueName].Value := BufToBinStr(@Value, SizeOf(Value));
+  ANode.Items.ItemNamed[ValueName].Value :=
+    {$IFDEF CLR}
+    BufToBinStr(DoubleToExtendedAsBytes(Value), 10);
+    {$ELSE}
+    BufToBinStr(@Value, SizeOf(Value));
+    {$ENDIF CLR}
   Xml.Options := Xml.Options - [sxoAutoCreate];
   FlushIfNeeded;
 end;
@@ -546,7 +593,11 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
+    {$ENDIF CLR}
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteString(const Path: string; const Value: string);
@@ -606,7 +657,11 @@ begin
     end;
   end
   else
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
+    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
+    {$ENDIF CLR}
 end;
 
 procedure TJvCustomAppXMLStorage.EnumValues(const Path: string;
@@ -643,7 +698,11 @@ begin
     end;
   end
   else
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
+    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
+    {$ENDIF CLR}
 end;
 
 function TJvCustomAppXMLStorage.IsFolderInt(const Path: string;
@@ -776,7 +835,11 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
+    {$ENDIF IF}
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteBoolean(const Path: string;

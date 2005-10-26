@@ -51,7 +51,9 @@ type
     function Get(Index: Integer): PPropInfo;
   public
     constructor Create(AObject: TObject; Filter: TTypeKinds);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF !CLR}
     function Contains(P: PPropInfo): Boolean;
     function Find(const AName: string): PPropInfo;
     procedure Delete(Index: Integer);
@@ -123,10 +125,16 @@ begin
   inherited Create;
   if AObject <> nil then
   begin
+    {$IFDEF CLR}
+    FList := GetPropList(AObject.ClassInfo, Filter);
+    FCount := Length(FList);
+    FSize := FCount * SizeOf(IntPtr);
+    {$ELSE}
     FCount := GetPropList(AObject.ClassInfo, Filter, nil);
     FSize := FCount * SizeOf(Pointer);
     GetMem(FList, FSize);
     GetPropList(AObject.ClassInfo, Filter, FList);
+    {$ENDIF CLR}
   end
   else
   begin
@@ -135,20 +143,22 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 destructor TJvPropInfoList.Destroy;
 begin
   if FList <> nil then
     FreeMem(FList, FSize);
   inherited Destroy;
 end;
+{$ENDIF !CLR}
 
 function TJvPropInfoList.Contains(P: PPropInfo): Boolean;
 var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    with FList^[I]^ do
-      if (PropType = P^.PropType) and (CompareText(Name, P^.Name) = 0) then
+    with FList[I]{$IFNDEF CLR}^{$ENDIF} do
+      if (PropType = P.PropType) and (CompareText(Name, P.Name) = 0) then
       begin
         Result := True;
         Exit;
@@ -161,25 +171,34 @@ var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    with FList^[I]^ do
+    with FList[I]{$IFNDEF CLR}^{$ENDIF} do
       if CompareText(Name, AName) = 0 then
       begin
-        Result := FList^[I];
+        Result := FList[I];
         Exit;
       end;
   Result := nil;
 end;
 
 procedure TJvPropInfoList.Delete(Index: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+{$ENDIF CLR}
 begin
   Dec(FCount);
   if Index < FCount then
-    Move(FList^[Index + 1], FList^[Index], (FCount - Index) * SizeOf(Pointer));
+    {$IFDEF CLR}
+    for I := 0 to (FCount - Index) - 1 do
+      FList[Index + I] := FList[Index + 1 + I];
+    {$ELSE}
+    Move(FList[Index + 1], FList[Index], (FCount - Index) * SizeOf(Pointer));
+    {$ENDIF CLR}
 end;
 
 function TJvPropInfoList.Get(Index: Integer): PPropInfo;
 begin
-  Result := FList^[Index];
+  Result := FList[Index];
 end;
 
 procedure TJvPropInfoList.Intersect(List: TJvPropInfoList);
@@ -187,7 +206,7 @@ var
   I: Integer;
 begin
   for I := FCount - 1 downto 0 do
-    if not List.Contains(FList^[I]) then
+    if not List.Contains(FList[I]) then
       Delete(I);
 end;
 
@@ -205,14 +224,14 @@ var
   I: Integer;
 begin
   Result := False;
-  if Length(Item) = 0 then
+  if Item = '' then
     Exit;
   I := Pos('.', Item);
   if I > 0 then
   begin
     CompName := Trim(Copy(Item, 1, I - 1));
     PropName := Trim(Copy(Item, I + 1, MaxInt));
-    Result := (Length(CompName) > 0) and (Length(PropName) > 0);
+    Result := (CompName <> '') and (PropName <> '');
   end;
 end;
 
@@ -270,7 +289,7 @@ procedure TJvPropertyStorage.LoadAnyProperty(PropInfo: PPropInfo);
 begin
   try
     if PropInfo <> nil then
-      ReadProperty (AppStoragePath, GetItemName(PropInfo^.Name), TPersistent(FObject), PropInfo^.Name);
+      ReadProperty (AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
   except
     { ignore any exception }
   end;
@@ -279,7 +298,7 @@ end;
 procedure TJvPropertyStorage.StoreAnyProperty(PropInfo: PPropInfo);
 begin
   if PropInfo <> nil then
-    WriteProperty (AppStoragePath, GetItemName(PropInfo^.Name), TPersistent(FObject), PropInfo^.Name);
+    WriteProperty (AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
 end;
 
 

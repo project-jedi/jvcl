@@ -32,6 +32,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER6_UP}
+  Types, Variants,
+  {$ENDIF COMPILE6_UP}
   Windows, Classes, Controls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
@@ -180,7 +183,7 @@ begin
     Result := TJvxCustomListBox(List).ItemRect(Index)
   {$ENDIF VCL}
   else
-    FillChar(Result, SizeOf(Result), 0);
+    Result := Rect(0, 0, 0, 0);
 end;
 
 procedure BoxMoveSelected(List: TWinControl; Items: TStrings);
