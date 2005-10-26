@@ -41,7 +41,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
-  JvAppStorage, JvPropertyStore, JvSimpleXml;
+  JvAppStorage, JvPropertyStore, JvSimpleXml, JvTypes;
 
 
 type
@@ -125,8 +125,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer); override;
 
     property Xml: TJvSimpleXML read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
@@ -184,7 +184,7 @@ uses
   {$IFDEF BCB5}
   JvVCL5Utils,
   {$ENDIF BCB5}
-  JvJCLUtils, JvTypes, JvConsts, JvResources;
+  JvJCLUtils, JvConsts, JvResources;
 
 const
   cNullDigit = '0';
@@ -564,7 +564,7 @@ begin
   FlushIfNeeded;
 end;
 
-function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
+function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
 var
   Value: string;
 begin
@@ -573,7 +573,7 @@ begin
   Result := BinStrToBuf(Value, Buf, BufSize);
 end;
 
-procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
+procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer);
 begin
   ReloadIfNeeded;
   DoWriteString(Path, BufToBinStr(Buf, BufSize));
