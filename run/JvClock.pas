@@ -253,7 +253,11 @@ const
   TailShift = (HandPositions div 2); { ...180 degrees of clock }
 
 var
+  {$IFDEF CLR}
+  CircleTab: array of TSmallPoint;
+  {$ELSE}
   CircleTab: PPointArray;
+  {$ENDIF CLR}
   HRes: Integer; { width of the display (in pixels)                    }
   VRes: Integer; { height of the display (in raster lines)             }
   AspectH: Longint; { number of pixels per decimeter on the display       }
@@ -267,7 +271,7 @@ var
 begin
   sTime := IntToStr(Hour) + TimeSeparator + IntToStr(Min) +
     TimeSeparator + IntToStr(Sec);
-  raise EConvertError.CreateResFmt(@SInvalidTime, [sTime]);
+  raise EConvertError.CreateFmt(SInvalidTime, [sTime]);
 end;
 
 function VertEquiv(L: Integer): Integer;
@@ -311,6 +315,9 @@ var
   Pos: Integer; { hand position Index into the circle table }
   vSize: Integer; { height of the display in millimeters      }
   hSize: Integer; { width of the display in millimeters       }
+  {$IFDEF CLR}
+  I: Integer;
+  {$ENDIF CLR}
   DC: HDC;
 begin
   DC := GetDC(HWND_DESKTOP);
@@ -324,9 +331,18 @@ begin
   end;
   AspectV := (Longint(VRes) * MmPerDm) div Longint(vSize);
   AspectH := (Longint(HRes) * MmPerDm) div Longint(hSize);
+  {$IFDEF CLR}
+  SetLength(CircleTab, Length(ClockData) div 2);
+  for I := 0 to High(CircleTab) do
+  begin
+    CircleTab[I].X := ClockData[I * 2];
+    CircleTab[I].Y := ClockData[I * 2 + 1];
+  end;
+  {$ELSE}
   CircleTab := PPointArray(@ClockData);
+  {$ENDIF CLR}
   for Pos := 0 to HandPositions - 1 do
-    CircleTab^[Pos].Y := VertEquiv(CircleTab^[Pos].Y);
+    CircleTab[Pos].Y := VertEquiv(CircleTab[Pos].Y);
 end;
 
 function HourHandPos(T: TJvClockTime): Integer;
@@ -766,8 +782,8 @@ begin
     MinDots := ((DotWidth > MinDotWidth) and (DotHeight > MinDotHeight));
     for Pos := 0 to HandPositions - 1 do
     begin
-      R.Top := (CircleTab^[Pos].Y * FClockRadius) div CirTabScale + FClockCenter.Y;
-      R.Left := (CircleTab^[Pos].X * FClockRadius) div CirTabScale + FClockCenter.X;
+      R.Top := (CircleTab[Pos].Y * FClockRadius) div CirTabScale + FClockCenter.Y;
+      R.Left := (CircleTab[Pos].X * FClockRadius) div CirTabScale + FClockCenter.X;
       if (Pos mod 5) <> 0 then
       begin
         if MinDots then
@@ -848,8 +864,8 @@ begin
   Canvas.Pen.Mode := pmNot;
   try
     Canvas.MoveTo(FClockCenter.X, FClockCenter.Y);
-    Canvas.LineTo(FClockCenter.X + ((CircleTab^[Pos].X * Radius) div
-      CirTabScale), FClockCenter.Y + ((CircleTab^[Pos].Y * Radius) div
+    Canvas.LineTo(FClockCenter.X + ((CircleTab[Pos].X * Radius) div
+      CirTabScale), FClockCenter.Y + ((CircleTab[Pos].Y * Radius) div
       CirTabScale));
   finally
     Canvas.Pen.Mode := SaveMode;
@@ -869,23 +885,23 @@ begin
     Hand := MinuteSide;
   Scale := (FClockRadius * Hand) div 100;
   Index := (Pos + SideShift) mod HandPositions;
-  ptSide.Y := (CircleTab^[Index].Y * Scale) div CirTabScale;
-  ptSide.X := (CircleTab^[Index].X * Scale) div CirTabScale;
+  ptSide.Y := (CircleTab[Index].Y * Scale) div CirTabScale;
+  ptSide.X := (CircleTab[Index].X * Scale) div CirTabScale;
   if HourHand then
     Hand := HourTip
   else
     Hand := MinuteTip;
   Scale := (FClockRadius * Hand) div 100;
-  ptTip.Y := (CircleTab^[Pos].Y * Scale) div CirTabScale;
-  ptTip.X := (CircleTab^[Pos].X * Scale) div CirTabScale;
+  ptTip.Y := (CircleTab[Pos].Y * Scale) div CirTabScale;
+  ptTip.X := (CircleTab[Pos].X * Scale) div CirTabScale;
   if HourHand then
     Hand := HourTail
   else
     Hand := MinuteTail;
   Scale := (FClockRadius * Hand) div 100;
   Index := (Pos + TailShift) mod HandPositions;
-  ptTail.Y := (CircleTab^[Index].Y * Scale) div CirTabScale;
-  ptTail.X := (CircleTab^[Index].X * Scale) div CirTabScale;
+  ptTail.Y := (CircleTab[Index].Y * Scale) div CirTabScale;
+  ptTail.X := (CircleTab[Index].X * Scale) div CirTabScale;
   with Canvas do
   begin
     SaveMode := Pen.Mode;
@@ -1062,8 +1078,13 @@ begin
     if FullTime or (NewTime.Hour <> FDisplayTime.Hour) then
     begin
       Rect.Right := Rect.Left + TextWidth(SAmPm);
+      {$IFDEF CLR}
+      DrawText(Canvas, SAmPm, Length(SAmPm), Rect,
+        DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
+      {$ELSE}
       DrawText(Canvas, @SAmPm[1], Length(SAmPm), Rect,    // DO NOT CHANGE @SAmPm[1], it is used to get a PChar to the string
         DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
+      {$ENDIF CLR}
     end;
   end;
   FDisplayTime := NewTime;

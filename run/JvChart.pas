@@ -243,7 +243,9 @@ type
     procedure SetTimestamp(ValueIndex: Integer; AValue: TDateTime);
   public
     constructor Create;
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF !CLR}
 
     procedure PreGrow(Pen, ValueIndex: Integer); // Advanced users. Allocate a large batch of memory in advance.
 
@@ -846,6 +848,7 @@ const
 
 constructor TJvChartFloatingMarker.Create(Owner: TJvChart);
 begin
+  inherited Create;
   FOwner := Owner;
   FVisible := False; // NOT visible by default.
   FIndex := -1; // not yet set.
@@ -928,6 +931,7 @@ begin
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 end;
 
+{$IFNDEF CLR}
 destructor TJvChartData.Destroy;
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
@@ -941,6 +945,7 @@ begin
   Finalize(FData); // Free array.
   inherited Destroy;
 end;
+{$ENDIF !CLR}
 
 function TJvChartData.GetValue(Pen, ValueIndex: Integer): Double;
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
@@ -951,23 +956,26 @@ begin
 end;
 {$ELSE}
 var
-  idx:Integer;
+  idx: Integer;
 begin
   // Grow base array
+  if (Pen < 0)or(Pen >= FPenCount) then
+    Result := NaN
+  else
+  begin
+    Assert(FPenCount>0);
+    idx := (ValueIndex * FPenCount) + Pen;
 
-  if (Pen<0)or(Pen>=FPenCount) then
-      result := NaN
-  else begin
+    if (idx < 0) or (idx > CHART_SANITY_LIMIT) then // Sanity check!
+      {$IFDEF CLR}
+      raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
+      {$ELSE}
+      raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
+      {$ENDIF CLR}
 
-  Assert(FPenCount>0);
-  idx := (ValueIndex*FPenCount)+Pen;
-
-  if (idx<0) or (idx>CHART_SANITY_LIMIT) then // Sanity check!
-    raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
-
-  if idx>=Length(FData) then
-      Grow(Pen,ValueIndex);
-  Result := FData[ idx ];
+    if idx >= Length(FData) then
+      Grow(Pen, ValueIndex);
+    Result := FData[idx];
   end;
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
@@ -988,27 +996,33 @@ begin
 end;
 {$ELSE}
 var
-  idx:Integer;
+  idx: Integer;
 begin
   Assert(FPenCount>0);
 
   // Grow base array
-  if (Pen<0)or(Pen>=FPenCount) then
-      raise ERangeError.CreateRes(@RsEPenIndexInvalid);
+  if (Pen < 0)or(Pen >= FPenCount) then
+    {$IFDEF CLR}
+    raise ERangeError.Create(RsEPenIndexInvalid);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEPenIndexInvalid);
+    {$ENDIF CLR}
 
+  idx := (ValueIndex * FPenCount) + Pen;
 
-
-  idx := (ValueIndex*FPenCount)+Pen;
-
-  if (idx<0) or (idx>CHART_SANITY_LIMIT) then // Sanity check!
+  if (idx < 0) or (idx > CHART_SANITY_LIMIT) then // Sanity check!
+    {$IFDEF CLR}
+    raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
+    {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
+    {$ENDIF CLR}
 
-  if idx>=Length(FData) then
-      Grow(Pen,ValueIndex);
-  FData[ idx ] := NewValue;
+  if idx >= Length(FData) then
+      Grow(Pen, ValueIndex);
+  FData[idx] := NewValue;
 
   if ValueIndex >= FValueCount then
-      FValueCount := ValueIndex + 1;
+    FValueCount := ValueIndex + 1;
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
@@ -1595,7 +1609,7 @@ end;
 procedure TJvChartOptions.SetPenColor(Index: Integer; AColor: TColor);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenColors) then
     SetLength(FPenColors, Index + 1);
@@ -1605,7 +1619,7 @@ end;
 procedure TJvChartOptions.SetPenStyle(Index: Integer; APenStyle: TPenStyle);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenStyles) then
     SetLength(FPenStyles, Index + 1);
@@ -1623,7 +1637,7 @@ end;
 function TJvChartOptions.GetAverageValue(Index: Integer): Double;
 begin
   if Index < 0 then
-    raise ERangeError.CreateRes(@RsEGetAverageValueIndexNegative);
+    raise ERangeError.Create(RsEGetAverageValueIndexNegative);
   if Index >= Length(FAverageValue) then
     Result := 0.0
   else
@@ -1633,7 +1647,7 @@ end;
 procedure TJvChartOptions.SetAverageValue(Index: Integer; AValue: Double);
 begin
   if Index < 0 then
-    raise ERangeError.CreateRes(@RsESetAverageValueIndexNegative);
+    raise ERangeError.Create(RsESetAverageValueIndexNegative);
   if Index >= Length(FAverageValue) then
     SetLength(FAverageValue, Index + 1);
   FAverageValue[Index] := AValue;
@@ -1650,7 +1664,7 @@ end;
 procedure TJvChartOptions.SetPenSecondaryAxisFlag(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenSecondaryAxisFlag) then
     SetLength(FPenSecondaryAxisFlag, Index + 1);
@@ -1668,7 +1682,7 @@ end;
 procedure TJvChartOptions.SetPenValueLabels(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenValueLabels) then
     SetLength(FPenValueLabels, Index + 1);
@@ -1678,7 +1692,7 @@ end;
 procedure TJvChartOptions.SetPenCount(Count: Integer);
 begin
   if (Count < 0) or (Count >= MAX_PEN) then
-    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
   FPenCount := Count;
   SetLength(FPenSecondaryAxisFlag, FPenCount + 1);
   // notify data object:
@@ -3083,80 +3097,82 @@ var
   TimestampStr: string;
   XOverlap: Integer;
   VisiblePenCount: Integer;
-  YTempOrigin: Integer;
+  //YTempOrigin: Integer;
   ACanvas: TCanvas;
   { draw x axis text at various alignments:}
   function leftXAxisText:Boolean;
   begin
-      result := true;
-        // Don't exceed right margin - causes some undesirable clipping. removed. -wpostma.
-      {if I < Options.XLegends.Count then
-        if ACanvas.TextWidth(Options.XLegends[I]) + Options.FXLegendHoriz > (Width XEnd+10) then begin
-          result := false;
-          exit;
-        end;}
-
-      // Label X axis above or below?
-      if FContainsNegative then
-      begin
-        if I < Options.XLegends.Count then begin // fix exception. June 23, 2004- WPostma.
-          if Options.FXLegendHoriz<XOverlap then
-              exit; // would overlap, don't draw it.
-          MyLeftTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I]);
-          XOverlap := Options.FXLegendHoriz+ ACanvas.TextWidth(Options.XLegends[I]);
-        end;
-      end
-      else
-      if I < Options.XLegends.Count then begin
-        if Options.FXLegendHoriz<XOverlap then
-              exit; // would overlap, don't draw it.
-        MyLeftTextOut(ACanvas, Options.FXLegendHoriz,
-          {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
-          Options.XLegends[I]);
-          XOverlap := Options.FXLegendHoriz+ ACanvas.TextWidth(Options.XLegends[I]);
-      end else begin
+    Result := True;
+      // Don't exceed right margin - causes some undesirable clipping. removed. -wpostma.
+    {if I < Options.XLegends.Count then
+      if ACanvas.TextWidth(Options.XLegends[I]) + Options.FXLegendHoriz > (Width XEnd+10) then begin
         result := false;
         exit;
+      end;}
+
+    // Label X axis above or below?
+    if FContainsNegative then
+    begin
+      if I < Options.XLegends.Count then begin // fix exception. June 23, 2004- WPostma.
+        if Options.FXLegendHoriz<XOverlap then
+            exit; // would overlap, don't draw it.
+        MyLeftTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I]);
+        XOverlap := Options.FXLegendHoriz+ ACanvas.TextWidth(Options.XLegends[I]);
       end;
+    end
+    else
+    if I < Options.XLegends.Count then begin
+      if Options.FXLegendHoriz<XOverlap then
+            exit; // would overlap, don't draw it.
+      MyLeftTextOut(ACanvas, Options.FXLegendHoriz,
+        {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
+        Options.XLegends[I]);
+        XOverlap := Options.FXLegendHoriz+ ACanvas.TextWidth(Options.XLegends[I]);
+    end else begin
+      Result := false;
+      Exit;
+    end;
   end;
+
   function rightXAxisText:Boolean;
   begin
-      result := true;
-      // Label X axis above or below?
-      if FContainsNegative then
-      begin
-        if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
-          MyRightTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
-      end
-      else
-      if I < Options.XLegends.Count then
-        MyRightTextOut(ACanvas, Options.FXLegendHoriz,
-          {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
-          Options.XLegends[I])
-      else begin
-        result := false;
-        exit;
-      end;
+    Result := true;
+    // Label X axis above or below?
+    if FContainsNegative then
+    begin
+      if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
+        MyRightTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
+    end
+    else
+    if I < Options.XLegends.Count then
+      MyRightTextOut(ACanvas, Options.FXLegendHoriz,
+        {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
+        Options.XLegends[I])
+    else begin
+      Result := false;
+      Exit;
+    end;
   end;
+
   function centerXAxisText:Boolean;
   begin
-      result := true;
-      // Label X axis above or below?
-      if FContainsNegative then
-      begin
-        if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
-          MyCenterTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
-      end
-      else
-      if I < Options.XLegends.Count then
-        MyCenterTextOut(ACanvas, Options.FXLegendHoriz,
-          {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
-          Options.XLegends[I])
-      else begin
-        result := false;
-        exit;
-      end;
-  end;  
+    Result := True;
+    // Label X axis above or below?
+    if FContainsNegative then
+    begin
+      if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
+        MyCenterTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
+    end
+    else
+    if I < Options.XLegends.Count then
+      MyCenterTextOut(ACanvas, Options.FXLegendHoriz,
+        {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
+        Options.XLegends[I])
+    else begin
+      Result := False;
+      Exit;
+    end;
+  end;
 
 begin
   {X-LEGEND: ...}
@@ -3178,8 +3194,8 @@ begin
     if Options.XAxisValuesPerDivision <= 0 then
       Exit;
 
-    YTempOrigin := Options.YStartOffset +
-      Round(Options.PrimaryYAxis.YPixelGap * Options.PrimaryYAxis.YDivisions);
+    {YTempOrigin := Options.YStartOffset +
+      Round(Options.PrimaryYAxis.YPixelGap * Options.PrimaryYAxis.YDivisions);}
 
 
     for I := 1 to Options.XValueCount div Options.XAxisValuesPerDivision - 1 do
@@ -3511,8 +3527,13 @@ begin
     Result := TBitmap(FPicture.Graphic).Canvas;
     Assert(Assigned(Result));
     Assert(Assigned(Result.Brush));
-  end else
+  end
+  else
+    {$IFDEF CLR}
+    raise EInvalidOperation.Create(RsEUnableToGetCanvas);
+    {$ELSE}
     raise EInvalidOperation.CreateRes(@RsEUnableToGetCanvas);
+    {$ENDIF CLR}
 end;
 
 procedure TJvChart.CalcYEnd;
@@ -4007,7 +4028,11 @@ begin
 
     FMouseDownHintStrs.Add(Str);
     {$IFDEF DEBUGINFO_ON}
+    {$IFDEF CLR}
+    OutputDebugString('TJvChart.AutoHint: ' + Str);
+    {$ELSE}
     OutputDebugString(PChar('TJvChart.AutoHint: ' + Str));
+    {$ENDIF CLR}
     {$ENDIF DEBUGINFO_ON}
   end;
 end;
@@ -4446,7 +4471,9 @@ begin
   if Ord(FYFontHandle) <> 0 then
     DeleteObject(FYFontHandle); // delete old object
   // Clear the contents of FLogFont
+  {$IFNDEF CLR}
   FillChar(FYLogFont, SizeOf(TLogFont), 0);
+  {$ENDIF !CLR}
   // Set the TLOGFONT's fields - Win32 Logical Font Details.
   with FYLogFont do
   begin
@@ -4468,7 +4495,11 @@ begin
     lfClipPrecision := CLIP_DEFAULT_PRECIS;
     lfQuality := DEFAULT_QUALITY;
     lfPitchAndFamily := DEFAULT_PITCH or FF_DONTCARE;
+    {$IFDEF CLR}
+    lfFaceName := Font.Name;
+    {$ELSE}
     StrPCopy(lfFaceName, Font.Name);
+    {$ENDIF CLR}
   end;
 
   // Retrieve the requested font

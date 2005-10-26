@@ -48,6 +48,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, StdCtrls, Forms,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
@@ -328,6 +331,9 @@ implementation
 {$R JvxCheckListBox.res}
 
 uses
+  {$IFDEF CLR}
+  Borland.Vcl.WinUtils,
+  {$ENDIF CLR}
   SysUtils, Consts, Math,
   JvConsts, JvJVCLUtils, JvThemes;
 
@@ -358,12 +364,17 @@ end;
 function TJvListBoxStrings.Get(Index: Integer): string;
 var
   Len: Integer;
-  Text: array [0..4095] of Char;
+  Text: string;
 begin
-  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, LPARAM(@Text));
+  SetLength(Text, 4096);
+  {$IFDEF CLR}
+  Len := SendGetTextMessage(ListBox.Handle, LB_GETTEXT, Index, Text, Length(Text));
+  {$ELSE}
+  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, LPARAM(PChar(Text)));
+  {$ENDIF CLR}
   if Len < 0 then
     Error(SListIndexError, Index);
-  SetString(Result, Text, Len);
+  SetLength(Text, Len);
 end;
 
 function TJvListBoxStrings.GetObject(Index: Integer): TObject;
@@ -380,15 +391,28 @@ end;
 
 function TJvListBoxStrings.Add(const S: string): Integer;
 begin
+  {$IFDEF CLR}
+  Result := SendTextMessage(ListBox.Handle, LB_ADDSTRING, 0, S);
+  {$ELSE}
   Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, LPARAM(PChar(S)));
+  {$ENDIF CLR}
   if Result < 0 then
+    {$IFDEF CLR}
+    raise EOutOfResources.Create(SInsertLineError);
+    {$ELSE}
     raise EOutOfResources.CreateRes(@SInsertLineError);
+    {$ENDIF CLR}
 end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
 begin
+  {$IFDEF CLR}
+  if SendTextMessage(ListBox.Handle, LB_INSERTSTRING, Index, S) < 0 then
+    raise EOutOfResources.Create(SInsertLineError);
+  {$ELSE}
   if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, LPARAM(PChar(S))) < 0 then
     raise EOutOfResources.CreateRes(@SInsertLineError);
+  {$ENDIF CLR}
 end;
 
 procedure TJvListBoxStrings.Delete(Index: Integer);
@@ -412,6 +436,12 @@ end;
 
 { TJvxCustomListBox implementation copied from STDCTRLS.PAS and modified }
 
+{$IFDEF CLR}
+procedure ListIndexError(Index: Integer);
+begin
+  raise EStringListError.CreateFmt(SListIndexError, [Index]);
+end;
+{$ELSE}
 procedure ListIndexError(Index: Integer);
 
   function ReturnAddr: Pointer;
@@ -422,6 +452,7 @@ procedure ListIndexError(Index: Integer);
 begin
   raise EStringListError.CreateResFmt(@SListIndexError, [Index]) at ReturnAddr;
 end;
+{$ENDIF CLR}
 
 constructor TJvxCustomListBox.Create(AOwner: TComponent);
 const
@@ -486,7 +517,7 @@ end;
 
 function TJvxCustomListBox.GetItemWidth(Index: Integer): Integer;
 var
-  ATabWidth: Longint;
+  ATabWidth: array [0..0] of Integer;
   S: string;
 begin
   Result := 0;
@@ -503,9 +534,13 @@ begin
       {if (FTabChar > #0) then
         for I := 1 to Length(S) do
           if S[I] = FTabChar then S[I] := #9;}
-      ATabWidth := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
+      ATabWidth[0] := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
       Result :=
-        LoWord(GetTabbedTextExtent(FCanvas.Handle, @S[1], Length(S), 1, ATabWidth));
+        {$IFDEF CLR}
+        LoWord(GetTabbedTextExtent(FCanvas.Handle, S, Length(S), 1, ATabWidth));
+        {$ELSE}
+        LoWord(GetTabbedTextExtent(FCanvas.Handle, PChar(S), Length(S), 1, ATabWidth));
+        {$ENDIF CLR}
     end
     else
       Result := FCanvas.TextWidth(S);
@@ -646,7 +681,11 @@ begin
   Result := FItemHeight;
   if HandleAllocated and (FStyle = lbStandard) then
   begin
+    {$IFDEF CLR}
+    Perform(LB_GETITEMRECT, 0, R);
+    {$ELSE}
     Perform(LB_GETITEMRECT, 0, Longint(@R));
+    {$ENDIF CLR}
     Result := R.Bottom - R.Top;
   end;
 end;
@@ -776,7 +815,11 @@ begin
     Count := Items.Count;
     while Result < Count do
     begin
+      {$IFDEF CLR}
+      Perform(LB_GETITEMRECT, Result, ItemRect);
+      {$ELSE}
       Perform(LB_GETITEMRECT, Result, Longint(@ItemRect));
+      {$ENDIF CLR}
       if PtInRect(ItemRect, Pos) then
         Exit;
       Inc(Result);
@@ -793,20 +836,30 @@ var
 begin
   Count := Items.Count;
   if (Index = 0) or (Index < Count) then
+    {$IFDEF CLR}
+    Perform(LB_GETITEMRECT, Index, Result)
+    {$ELSE}
     Perform(LB_GETITEMRECT, Index, Longint(@Result))
+    {$ENDIF CLR}
   else
   if Index = Count then
   begin
+    {$IFDEF CLR}
+    Perform(LB_GETITEMRECT, Index - 1, Result);
+    {$ELSE}
     Perform(LB_GETITEMRECT, Index - 1, Longint(@Result));
+    {$ENDIF CLR}
     OffsetRect(Result, 0, Result.Bottom - Result.Top);
   end
   else
-    FillChar(Result, SizeOf(Result), 0);
+    Result := Rect(0, 0, 0, 0);
 end;
 
 procedure TJvxCustomListBox.CreateParams(var Params: TCreateParams);
 type
+  {$IFNDEF CLR}
   PSelects = ^TSelects;
+  {$ENDIF !CLR}
   TSelects = array [Boolean] of Longword;
 const
   BorderStyles: array [TBorderStyle] of Longword = (0, WS_BORDER);
@@ -820,17 +873,21 @@ const
   MultiColumns: TSelects = (0, LBS_MULTICOLUMN);
   TabStops: TSelects = (0, LBS_USETABSTOPS);
 var
+  {$IFDEF CLR}
+  Selects: TSelects;
+  {$ELSE}
   Selects: PSelects;
+  {$ENDIF CLR}
 begin
   inherited CreateParams(Params);
   CreateSubClass(Params, 'LISTBOX');
   with Params do
   begin
-    Selects := @MultiSelects;
+    Selects := {$IFNDEF CLR}@{$ENDIF} MultiSelects;
     if FExtendedSelect then
-      Selects := @ExtendSelects;
+      Selects := {$IFNDEF CLR}@{$ENDIF} ExtendSelects;
     Style := Style or (WS_HSCROLL or WS_VSCROLL or LBS_HASSTRINGS or LBS_NOTIFY) or
-      Styles[FStyle] or Sorteds[FSorted] or Selects^[FMultiSelect] or
+      Styles[FStyle] or Sorteds[FSorted] or Selects[FMultiSelect] or
       IntegralHeights[FIntegralHeight] or MultiColumns[FColumns <> 0] or
       BorderStyles[FBorderStyle] or TabStops[FTabWidth <> 0];
     if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
@@ -845,13 +902,26 @@ end;
 procedure TJvxCustomListBox.CreateWnd;
 var
   W, H: Integer;
+  {$IFDEF CLR}
+  Buf: record
+    TabWidth: Integer;
+  end;
+  {$ENDIF CLR}
 begin
   W := Width;
   H := Height;
   inherited CreateWnd;
   SetWindowPos(Handle, 0, Left, Top, W, H, SWP_NOZORDER or SWP_NOACTIVATE);
   if FTabWidth <> 0 then
+  begin
+    {$IFDEF CLR}
+    Buf.TabWidth := FTabWidth;
+    SendGetStructMessage(Handle, LB_SETTABSTOPS, 1, Buf);
+    FTabWidth := Buf.TabWidth;
+    {$ELSE}
     SendMessage(Handle, LB_SETTABSTOPS, 1, LPARAM(@FTabWidth));
+    {$ENDIF CLR}
+  end;
   SetColumnWidth;
   if FSaveItems <> nil then
   begin
@@ -876,6 +946,10 @@ begin
 end;
 
 procedure TJvxCustomListBox.WndProc(var Msg: TMessage);
+{$IFDEF CLR}
+var
+  MouseMsg: TWMMouse;
+{$ENDIF CLR}
 begin
   if AutoScroll then
   begin
@@ -925,8 +999,14 @@ begin
   begin
     if DragMode = dmAutomatic then
     begin
+      {$IFDEF CLR}
+      MouseMsg := TWMMouse.Create(Msg);
+      if IsControlMouseMsg(MouseMsg) then
+        Exit;
+      {$ELSE}
       if IsControlMouseMsg(TWMMouse(Msg)) then
         Exit;
+      {$ENDIF CLR}
       ControlState := ControlState + [csLButtonDown];
       Dispatch(Msg); {overrides TControl's BeginDrag}
       Exit;
@@ -993,7 +1073,7 @@ procedure TJvxCustomListBox.WMPaint(var Msg: TWMPaint);
   begin
     { Initialize drawing records }
     DrawItemMsg.Msg := CN_DRAWITEM;
-    DrawItemMsg.DrawItemStruct := @DrawItemStruct;
+    DrawItemMsg.DrawItemStruct := {$IFNDEF CLR}@{$ENDIF} DrawItemStruct;
     DrawItemMsg.Ctl := Handle;
     DrawItemStruct.CtlType := ODT_LISTBOX;
     DrawItemStruct.itemAction := ODA_DRAWENTIRE;
@@ -1004,7 +1084,7 @@ procedure TJvxCustomListBox.WMPaint(var Msg: TWMPaint);
     { Intialize measure records }
     MeasureItemMsg.Msg := CN_MEASUREITEM;
     MeasureItemMsg.IDCtl := Handle;
-    MeasureItemMsg.MeasureItemStruct := @MeasureItemStruct;
+    MeasureItemMsg.MeasureItemStruct := {$IFNDEF CLR}@{$ENDIF}MeasureItemStruct;
     MeasureItemStruct.CtlType := ODT_LISTBOX;
     MeasureItemStruct.CtlID := Handle;
     { Draw the listbox }
@@ -1017,7 +1097,7 @@ procedure TJvxCustomListBox.WMPaint(var Msg: TWMPaint);
     begin
       MeasureItemStruct.itemID := I;
       if I < Items.Count then
-        MeasureItemStruct.itemData := Longint(Pointer(Items.Objects[I]));
+        MeasureItemStruct.itemData := Longint(Items.Objects[I]);
       MeasureItemStruct.itemWidth := W;
       MeasureItemStruct.itemHeight := FItemHeight;
       DrawItemStruct.itemData := MeasureItemStruct.itemData;
@@ -1066,7 +1146,7 @@ end;
 
 procedure TJvxCustomListBox.DefaultDrawText(X, Y: Integer; const S: string);
 var
-  ATabWidth: Longint;
+  ATabWidth: array [0..0] of Longint;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1075,8 +1155,12 @@ begin
     FCanvas.TextOut(X, Y, S)
   else
   begin
-    ATabWidth := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
-    TabbedTextOut(FCanvas.Handle, X, Y, @S[1], Length(S), 1, ATabWidth, X);
+    ATabWidth[0] := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
+    {$IFDEF CLR}
+    TabbedTextOut(FCanvas.Handle, X, Y, S, Length(S), 1, ATabWidth, X);
+    {$ELSE}
+    TabbedTextOut(FCanvas.Handle, X, Y, PChar(S), Length(S), 1, ATabWidth, X);
+    {$ENDIF CLR}
   end;
 end;
 
@@ -1115,9 +1199,9 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  with Msg.DrawItemStruct^ do
+  with Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF} do
   begin
-    State := TOwnerDrawState(LongRec(itemState).Lo);
+    State := TOwnerDrawState(LoWord(itemState));
     FCanvas.Handle := HDC;
     FCanvas.Font := Font;
     FCanvas.Brush := Brush;
@@ -1148,13 +1232,27 @@ begin
 end;
 
 procedure TJvxCustomListBox.CNMeasureItem(var Msg: TWMMeasureItem);
+var
+  LItemHeight: Integer;
+{$IFDEF CLR}
+  MeasureItemStruct: TMeasureItemStruct;
+{$ENDIF CLR}
 begin
+  {$IFDEF CLR}
+  MeasureItemStruct := Msg.MeasureItemStruct;
+  with MeasureItemStruct do
+  {$ELSE}
   with Msg.MeasureItemStruct^ do
+  {$ENDIF CLR}
   begin
-    itemHeight := FItemHeight;
+    LItemHeight := FItemHeight;
     if FStyle = lbOwnerDrawVariable then
-      MeasureItem(itemID, Integer(itemHeight));
+      MeasureItem(itemID, LItemHeight);
+    itemHeight := UINT(LItemHeight);
   end;
+  {$IFDEF CLR}
+  Msg.MeasureItemStruct := MeasureItemStruct;
+  {$ENDIF CLR}
 end;
 
 procedure TJvxCustomListBox.FocusKilled(NextWnd: THandle);
@@ -1567,7 +1665,11 @@ begin
   if HandleAllocated and ((FStyle = lbStandard) or
     ((FStyle = lbOwnerDrawFixed) and not Assigned(FOnDrawItem))) then
   begin
+    {$IFDEF CLR}
+    Perform(LB_GETITEMRECT, 0, R);
+    {$ELSE}
     Perform(LB_GETITEMRECT, 0, Longint(@R));
+    {$ENDIF CLR}
     Result := R.Bottom - R.Top;
   end;
 end;
@@ -1634,12 +1736,24 @@ begin
 end;
 
 procedure TJvxCheckListBox.CNDrawItem(var Msg: TWMDrawItem);
+{$IFDEF CLR}
+var
+  DrawItemStruct: TDrawItemStruct;
+{$ENDIF CLR}
 begin
+  {$IFDEF CLR}
+  DrawItemStruct := Msg.DrawItemStruct;
+  with DrawItemStruct do
+  {$ELSE}
   with Msg.DrawItemStruct^ do
+  {$ENDIF CLR}
     if not UseRightToLeftAlignment then
       rcItem.Left := rcItem.Left + GetCheckWidth
     else
       rcItem.Right := rcItem.Right - GetCheckWidth;
+  {$IFDEF CLR}
+  Msg.DrawItemStruct := DrawItemStruct;
+  {$ENDIF CLR}
   inherited;
 end;
 
@@ -1801,7 +1915,7 @@ begin
     R.Right := R.Left + GetCheckWidth
   else
     R.Left := R.Right - GetCheckWidth;
-  InvalidateRect(Handle, @R, not (csOpaque in ControlStyle));
+  InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF} R, not (csOpaque in ControlStyle));
   UpdateWindow(Handle);
 end;
 
@@ -1810,7 +1924,7 @@ var
   R: TRect;
 begin
   R := ItemRect(Index);
-  InvalidateRect(Handle, @R, not (csOpaque in ControlStyle));
+  InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF} R, not (csOpaque in ControlStyle));
   UpdateWindow(Handle);
 end;
 
@@ -1953,7 +2067,7 @@ begin
     ListIndexError(Index)
   else
   begin
-    Result := TJvCheckListBoxItem(ItemData);
+    Result := TJvCheckListBoxItem(TObject(ItemData));
     if not (Result is TJvCheckListBoxItem) then
       Result := nil;
   end;
@@ -1979,9 +2093,9 @@ begin
   Item.FData := AData;
   if (FSaveStates <> nil) and (FSaveStates.Count > 0) then
   begin
-    L := Longint(Pointer(FSaveStates[0]));
-    Item.FState := TCheckBoxState(LongRec(L).Hi);
-    Item.FEnabled := LongRec(L).Lo <> 0;
+    L := Longint(FSaveStates[0]);
+    Item.FState := TCheckBoxState(HiWord(L));
+    Item.FEnabled := LoWord(L) <> 0;
     FSaveStates.Delete(0);
   end;
 end;

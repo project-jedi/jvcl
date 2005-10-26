@@ -38,6 +38,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  System.Runtime.InteropServices,
+  {$ENDIF CLR}
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
   JvExCheckLst;
 
@@ -130,7 +133,7 @@ const
 implementation
 
 uses
-  JvItemsSearchs;
+  JvItemsSearchs, JvJCLUtils;
 
 type
   // Used for the load/save methods
@@ -308,10 +311,10 @@ end;
 
 procedure TJvCheckListBox.CNDrawItem(var Msg: TWMDrawItem);
 begin
-  if (Items.Count = 0) or (Msg.DrawItemStruct^.itemID >= UINT(Items.Count)) then
+  if (Items.Count = 0) or (Msg.DrawItemStruct.itemID >= UINT(Items.Count)) then
     Exit;
   {$IFDEF COMPILER5}
-  with Msg.DrawItemStruct^ do
+  with Msg.DrawItemStruct {$IFNDEF CLR}^{$ENDIF} do
     if Header[itemID] then
       if not UseRightToLeftAlignment then
         rcItem.Left := rcItem.Left - GetCheckWidth
@@ -327,22 +330,31 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  LoadFromStream(Stream);
-  Stream.Free;
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TJvCheckListBox.LoadFromStream(Stream: TStream);
 var
   CheckLst: TCheckListRecord;
-  Buf: array [0..1023] of AnsiChar;
+  Buf: array [0..1023] of Char;
 begin
   Items.Clear;
   while Stream.Position + SizeOf(TCheckListRecord) <= Stream.Size do
   begin
+    {$IFDEF CLR}
+    Stream.Read(CheckLst.Checked);
+    Stream.Read(CheckLst.StringSize);
+    {$ELSE}
     Stream.Read(CheckLst, SizeOf(TCheckListRecord));
-    if Stream.Position + CheckLst.StringSize <= Stream.Size then
+    {$ENDIF CLR}
+    if (Stream.Position + CheckLst.StringSize <= Stream.Size) and
+       (CheckLst.StringSize < High(Buf)) then
     begin
-      Stream.Read(Buf, CheckLst.StringSize);
+      ReadCharsFromStream(Stream, Buf, CheckLst.StringSize);
       Buf[CheckLst.StringSize] := #0;
       Checked[Items.Add(Buf)] := CheckLst.Checked;
     end;
@@ -395,8 +407,11 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
-  SaveToStream(Stream);
-  Stream.Free;
+  try
+    SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TJvCheckListBox.SaveToStream(Stream: TStream);
@@ -409,10 +424,15 @@ begin
   begin
     CheckLst.Checked := Checked[I];
     CheckLst.StringSize := Length(Items[I]);
+    {$IFDEF CLR}
+    Stream.Write(CheckLst.Checked);
+    Stream.Write(CheckLst.StringSize);
+    {$ELSE}
     Stream.Write(CheckLst, SizeOf(TCheckListRecord));
+    {$ENDIF CLR}
     for J := 1 to Length(Items[I]) do
       Buf[J] := Items[I][J];
-    Stream.Write(Buf, CheckLst.StringSize);
+    WriteStringToStream(Stream, Buf, CheckLst.StringSize)
   end;
 end;
 
@@ -514,7 +534,14 @@ begin
   case Msg.Msg of
     LB_ADDSTRING, LB_INSERTSTRING:
       begin
+        {$IFDEF CLR}
+        if Msg.LParam <> 0 then
+          ItemWidth := Canvas.TextWidth(Marshal.PtrToStringAuto(IntPtr(Msg.lParam)) + ' ')
+        else
+          ItemWidth := Canvas.TextWidth(' ');
+        {$ELSE}
         ItemWidth := Canvas.TextWidth(StrPas(PChar(Msg.lParam)) + ' ');
+        {$ENDIF CLR}
         if FMaxWidth < ItemWidth then
           FMaxWidth := ItemWidth;
         SetHScroll(FScroll);

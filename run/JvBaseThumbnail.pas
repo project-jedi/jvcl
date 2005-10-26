@@ -42,6 +42,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   {$ENDIF VCL}
   Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JclBase,
   JvExForms, JvExExtCtrls;
 
 // (rom) TFileName is already declared in SysUtils
@@ -194,6 +195,7 @@ implementation
 
 uses
   SysUtils,
+  JvJCLUtils,
   JvThemes;
 
 function ReplaceAllStr(const Str, SearchFor, ReplaceWith: string;
@@ -299,8 +301,8 @@ end;
 procedure InsertStr(var Str: string; const NewStr: string; Pos: Longint);
 begin
   SetLength(Str, Length(Str) + Length(NewStr));
-  Move(Str[Pos + 1], Str[Pos + Length(NewStr) + 1], Length(Str) - Pos - Length(NewStr));
-  Move(NewStr[1], Str[Pos + 1], Length(NewStr));
+  MoveChar(Str, Pos, Str, Pos + Length(NewStr), Length(Str) - Pos - Length(NewStr));
+  MoveChar(NewStr, 0, Str, Pos, Length(NewStr));
 end;
 
 function BoundByte(Min, Max, Value: Integer): Byte;
@@ -633,10 +635,8 @@ end;
 
 procedure TFileName.Init;
 var
-  {$IFDEF MSWINDOWS}
   Dft: DWORD;
   Lft: TFileTime;
-  {$ENDIF MSWINDOWS}
   sr: TSearchRec;
 begin
   if FindFirst(FFileName, faAnyFile or faDirectory, sr) = 0 then
@@ -651,15 +651,15 @@ begin
       FShortName := FLongName;
     //fdFileAccessed
     FileTimeToLocalFileTime(sr.FindData.ftLastAccessTime, Lft);
-    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    FileTimeToDosDateTimeDWord(Lft, Dft);
     FAccessed := Dft;
     //fdFilechanged
     FileTimeToLocalFileTime(sr.FindData.ftLastwriteTime, Lft);
-    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    FileTimeToDosDateTimeDWord(Lft, Dft);
     FModified := Dft;
     //fdFilecreated
     FileTimeToLocalFileTime(sr.FindData.ftCreationTime, Lft);
-    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    FileTimeToDosDateTimeDWord(Lft, Dft);
     FCreated := Dft;
     FFileSize := (sr.FindData.nFileSizeHigh * MAXDWORD) + sr.FindData.nFileSizeLow;
     //FFileName:=NewName;
@@ -678,12 +678,12 @@ end;
 
 function TFileName.GetLength: Integer;
 begin
-  Result := System.Length(FFileName);
+  Result := {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Length(FFileName);
 end;
 
 procedure TFileName.SetLength(NewLength: Integer);
 begin
-  System.SetLength(FFileName, NewLength);
+  {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.SetLength(FFileName, NewLength);
 end;
 
 {$IFDEF UNITVERSIONING}

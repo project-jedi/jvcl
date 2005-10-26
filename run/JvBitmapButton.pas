@@ -34,12 +34,25 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
+  {$IFDEF CLR}
+  System.Runtime.InteropServices,
+  {$ENDIF CLR}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   Classes, Graphics, Controls,
   JvComponent, JvTypes;
 
 type
+  {$IFNDEF CLR}
   PJvRGBTriple = ^TJvRGBTriple;
+  {$ENDIF !CLR}
+
+  {$IFDEF CLR}
+  TPixelTransform = procedure(var Dest: TJvRGBTriple; const Source: TJvRGBTriple);
+  {$ELSE}
   TPixelTransform = procedure(Dest, Source: PJvRGBTriple);
+  {$ENDIF CLR}
 
   TJvBitmapButton = class(TJvGraphicControl)
   private
@@ -82,11 +95,11 @@ type
     procedure Click; override;
     procedure Loaded; override;
     procedure Resize; override;
+    procedure Paint; override;
     procedure DoBitmapChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint; override;
   published
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property Caption: string read FCaption write SetCaption;
@@ -120,12 +133,6 @@ const
 
 implementation
 
-
-{ (ahuser) make Delphi 5 compiler happy
-function NonPaletteColor(Color: TColor): TColor;
-begin
-  Result := Color and not $02000000;
-end; }
 
 constructor TJvBitmapButton.Create(AOwner: TComponent);
 begin
@@ -222,18 +229,26 @@ begin
   Repaint;
 end;
 
+{$IFDEF CLR}
+procedure LighterTransform(var Dest: TJvRGBTriple; const Source: TJvRGBTriple);
+{$ELSE}
 procedure LighterTransform(Dest, Source: PJvRGBTriple);
+{$ENDIF CLR}
 begin
-  Dest^.rgbBlue  := $FF - Round(0.8 * Abs($FF - Source^.rgbBlue));
-  Dest^.rgbGreen := $FF - Round(0.8 * Abs($FF - Source^.rgbGreen));
-  Dest^.rgbRed   := $FF - Round(0.8 * Abs($FF - Source^.rgbRed));
+  Dest.rgbBlue  := $FF - Round(0.8 * Abs($FF - Source.rgbBlue));
+  Dest.rgbGreen := $FF - Round(0.8 * Abs($FF - Source.rgbGreen));
+  Dest.rgbRed   := $FF - Round(0.8 * Abs($FF - Source.rgbRed));
 end;
 
+{$IFDEF CLR}
+procedure DarkerTransform(var Dest: TJvRGBTriple; const Source: TJvRGBTriple);
+{$ELSE}
 procedure DarkerTransform(Dest, Source: PJvRGBTriple);
+{$ENDIF CLR}
 begin
-  Dest^.rgbBlue  := Round(0.7 * Source^.rgbBlue);
-  Dest^.rgbGreen := Round(0.7 * Source^.rgbGreen);
-  Dest^.rgbRed   := Round(0.7 * Source^.rgbRed);
+  Dest.rgbBlue  := Round(0.7 * Source.rgbBlue);
+  Dest.rgbGreen := Round(0.7 * Source.rgbGreen);
+  Dest.rgbRed   := Round(0.7 * Source.rgbRed);
 end;
 
 procedure TJvBitmapButton.MakeLighter;
@@ -415,7 +430,12 @@ end;
 
 procedure TJvBitmapButton.MakeHelperBitmap(Target: TBitmap; Transform: TPixelTransform);
 var
+  {$IFDEF CLR}
+  P1, P2: TJvRGBTriple;
+  PP1, PP2: IntPtr;
+  {$ELSE}
   P1, P2: PJvRGBTriple;
+  {$ENDIF CLR}
   X, Y: Integer;
   RT, GT, BT: Byte;
   LColor: TColor;
@@ -437,6 +457,25 @@ begin
   Assert(FBitmap.PixelFormat = pf24bit);
   for Y := 0 to FBitmap.Height - 1 do
   begin
+    {$IFDEF CLR}
+    PP1 := FBitmap.ScanLine[Y];
+    PP2 := Target.ScanLine[Y];
+    for X := 1 to FBitmap.Width do
+    begin
+      Marshal.PtrToStructure(PP1, P1);
+      Marshal.PtrToStructure(PP2, P2);
+      if (LColor <> clNone) and
+        (P1.rgbBlue = BT) and (P1.rgbGreen = GT) and (P1.rgbRed = RT) then
+        Marshal.StructureToPtr(P1, PP2, False)
+      else
+      begin
+        Transform(P2, P1);
+        Marshal.StructureToPtr(P2, PP2, False);
+      end;
+      PP1 := IntPtr(Longint(PP1) + 3);
+      PP2 := IntPtr(Longint(PP2) + 3);
+    end;
+    {$ELSE}
     P1 := FBitmap.ScanLine[Y];
     P2 := Target.ScanLine[Y];
     for X := 1 to FBitmap.Width do
@@ -449,6 +488,7 @@ begin
       Inc(P1);
       Inc(P2);
     end;
+    {$ENDIF CLR}
   end;
 end;
 

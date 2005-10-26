@@ -31,14 +31,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
   Windows,
   {$IFDEF VCL}
   Messages,
   {$ENDIF VCL}
-  SysUtils, Classes, Controls, StdCtrls;
+  {$IFDEF CLR}
+  System.Reflection,
+  {$ENDIF CLR}
+  SysUtils, Classes, Controls, StdCtrls,
+  JvVCL5Utils;
 
 type
   TJvGetSearchItemPrefixEvent = procedure(Sender: TObject; var Prefix: string) of object;
@@ -259,6 +260,9 @@ uses
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
+  {$IFDEF CLR}
+  JvJCLUtils,
+  {$ENDIF CLR}
   JvConsts;
 
 //=== { TJvControlAutoComplete } =============================================
@@ -521,7 +525,11 @@ var
 {$ENDIF VisualCLX}
 begin
   {$IFDEF VCL}
+  {$IFDEF CLR}
+  EditCtrl.GetType.GetMethod('SendGetSel').Invoke(EditCtrl, [TObject(StartPos), TObject(EndPos)]);
+  {$ELSE}
   SendMessage(EditCtrl.Handle, EM_GETSEL, WPARAM(@StartPos), LPARAM(@EndPos));
+  {$ENDIF CLR}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   StartPos := EditCtrl.SelStart;
@@ -683,7 +691,11 @@ function TJvComboBoxAutoComplete.GetActive: Boolean;
 begin
   Result := inherited GetActive and (ComboBox <> nil);
   if ComboBox <> nil then
+    {$IFDEF CLR}
+    FListSearch := not (TComboBoxStyle(ComboBox.GetType.GetProperty('Style').GetValue(ComboBox, [])) in [csDropDown, csSimple]);
+    {$ELSE}
     FListSearch := not (TCustomComboBoxAccess(ComboBox).Style in [csDropDown {$IFDEF VCL}, csSimple {$ENDIF}]);
+    {$ENDIF CLR}
 end;
 
 {$IFDEF VCL}
@@ -700,7 +712,11 @@ var
 {$ENDIF VisualCLX}
 begin
   {$IFDEF VCL}
+  {$IFDEF CLR}
+  ComboBox.GetType.GetMethod('SendGetEditSel').Invoke(ComboBox, [TObject(StartPos), TObject(EndPos)]);
+  {$ELSE}
   SendMessage(ComboBox.Handle, CB_GETEDITSEL, WPARAM(@StartPos), LPARAM(@EndPos));
+  {$ENDIF CLR}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   StartPos := ComboBox.SelStart;
@@ -750,19 +766,27 @@ end;
 
 function TJvComboBoxAutoComplete.GetText: TCaption;
 begin
+  {$IFDEF CLR}
+  Result := TCaption(ComboBox.GetType.GetProperty('Text').GetValue(ComboBox, []));
+  {$ELSE}
   Result := TCustomComboBoxAccess(ComboBox).Text;
+  {$ENDIF CLR}
 end;
 
 procedure TJvComboBoxAutoComplete.SetText(const Value: TCaption);
 begin
+  {$IFDEF CLR}
+  ComboBox.GetType.GetProperty('Text').SetValue(ComboBox, Value, []);
+  {$ELSE}
   TCustomComboBoxAccess(ComboBox).Text := Value;
+  {$ENDIF CLR}
 end;
 
 procedure TJvComboBoxAutoComplete.SetComboBox(Value: TCustomComboBox);
 begin
   FComboBox := Value;
   if FComboBox <> nil then
-    SetFilter(TCustomComboBoxAccess(FComboBox).Text)
+    SetFilter(GetText)
   else
     SetFilter('');
 end;
@@ -880,20 +904,34 @@ begin
 end;
 
 procedure TJvLookupAutoComplete.SetEdit(Value: TCustomEdit);
+{$IFDEF CLR}
+var
+  KeyPressProc: TKeyPressEvent;
+{$ENDIF CLR}
 begin
   if Value <> Edit then
   begin
     if Edit <> nil then
     begin
+      {$IFDEF CLR}
+      SetProtectedObjectEvent(Edit, 'OnKeyPress', @FOrgKeyPress);
+      {$ELSE}
       TCustomEditAccess(Edit).OnKeyPress := FOrgKeyPress;
+      {$ENDIF CLR}
       Edit.RemoveFreeNotification(Self);
     end;
     FAutoComplete.EditCtrl := Value;
     if Edit <> nil then
     begin
       Edit.FreeNotification(Self);
+      {$IFDEF CLR}
+      FOrgKeyPress := TKeyPressEvent(GetProtectedObjectEvent(Edit, 'OnKeyPress'));
+      KeyPressProc := EvKeyPress;
+      SetProtectedObjectEvent(Edit, 'OnKeyPress', @KeyPressProc);
+      {$ELSE}
       FOrgKeyPress := TCustomEditAccess(Edit).OnKeyPress;
       TCustomEditAccess(Edit).OnKeyPress := EvKeyPress;
+      {$ENDIF CLR}
     end;
   end;
 end;

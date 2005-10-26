@@ -111,11 +111,18 @@ function SucceededCom(out Intf; Value: TObject): Boolean;
 
 function GetPrivateField(Instance: TObject; const FieldName: string): TObject;
 procedure SetPrivateField(Instance: TObject; const FieldName: string; Value: TObject);
+procedure SetProtectedObjectEvent(Instance: TObject; const EventName: string; Ev: Delegate);
+function GetProtectedObjectEvent(Instance: TObject; const EventName: string): Delegate;
 
 [SuppressUnmanagedCodeSecurity, DllImport(user32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'SystemParametersInfo')]
 function SystemParametersInfo(uiAction, uiParam: UINT;
   var pvParam: TNonClientMetrics; fWinIni: UINT): BOOL; overload; external;
+
+function AnsiLastChar(const S: string): Char;
 {$ENDIF CLR}
+
+function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer; // ANSI-Stream
+function WriteStringToStream(Stream: TStream; const Buf: string; BufSize: Integer): Integer; // ANSI-Stream
 
 // (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
 type
@@ -316,6 +323,7 @@ function Switch(const Param: string): string;
 function ExePath: TFileName; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function CopyDir(const SourceDir, DestDir: TFileName): Boolean;
 //function FileTimeToDateTime(const FT: TFileTime): TDateTime;
+procedure FileTimeToDosDateTimeDWord(const FT: TFileTime; out Dft: DWORD);
 function MakeValidFileName(const FileName: TFileName; ReplaceBadChar: Char): TFileName;
 
 {**** Graphic routines }
@@ -1387,7 +1395,66 @@ begin
       Info.SetValue(Instance, Value);
   end;
 end;
+
+procedure SetProtectedObjectEvent(Instance: TObject; const EventName: string; Ev: Delegate);
+var
+  Info: EventInfo;
+begin
+  if Instance <> nil then
+  begin
+    Info := Instance.GetType.GetEvent(EventName, BindingFlags.NonPublic or BindingFlags.Instance);
+    if Info <> nil then
+    { TODO : Implement }
+      //Info.RemoveEventHandler();
+  end;
+end;
+
+function GetProtectedObjectEvent(Instance: TObject; const EventName: string): Delegate;
+var
+  Info: EventInfo;
+begin
+  Result := nil;
+  if Instance <> nil then
+  begin
+    Info := Instance.GetType.GetEvent(EventName, BindingFlags.NonPublic or BindingFlags.Instance);
+    if Info <> nil then
+    { TODO : Implement }
+      //Info.RemoveEventHandler();
+  end;
+end;
+
+function AnsiLastChar(const S: string): Char;
+begin
+  if (S <> nil) and (S <> '') then
+    Result := S[Length(S)]
+  else
+    Result := #0;
+end;
 {$ENDIF CLR}
+
+function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer;
+{$IFDEF CLR}
+var
+  Bytes: TBytes;
+{$ENDIF CLR}
+begin
+  {$IFDEF CLR}
+  SetLength(Bytes, BufSize);
+  Result := Stream.Read(Bytes, 0, BufSize);
+  System.Array.Copy(AnsiEncoding.GetChars(Bytes), 0, Buf, 0, BufSize);
+  {$ELSE}
+  Result := Stream.Read(Buf, BufSize);
+  {$ENDIF CLR}
+end;
+
+function WriteStringToStream(Stream: TStream; const Buf: string; BufSize: Integer): Integer;
+begin
+  {$IFDEF CLR}
+  Result := Stream.Write(BytesOf(Buf), BufSize);
+  {$ELSE}
+  Result := Stream.Write(Buf[1], BufSize);
+  {$ENDIF CLR}
+end;
 
 
 // StrToFloatUS uses US '.' as decimal separator and ',' as thousand separator
@@ -2833,7 +2900,7 @@ end;
         as it does not behave like the JCL version it is supposed to mimick.
         See Mantis 2452 for details.
 }
-{const  
+{const
   FileTimeBase      = -109205.0;
   FileTimeStep: Extended = 24.0 * 60.0 * 60.0 * 1000.0 * 1000.0 * 10.0; // 100 nSek per Day
 function FileTimeToDateTime(const FT: TFileTime): TDateTime;
@@ -2858,6 +2925,20 @@ end;}
 end;}
 //{$ENDIF UNIX}
 // ------------------------- old version --------------------------------
+
+procedure FileTimeToDosDateTimeDWord(const FT: TFileTime; out Dft: DWORD);
+{$IFDEF CLR}
+var
+  wHi, wLo: Word;
+{$ENDIF CLR}
+begin
+  {$IFDEF CLR}
+  FileTimeToDosDateTime(FT, wHi, wLo);
+  Dft := (wHi shl 16) or wLo; 
+  {$ELSE}
+  FileTimeToDosDateTime(FT, LongRec(Dft).Hi, LongRec(Dft).Lo);
+  {$ENDIF CLR}
+end;
 
 function MakeValidFileName(const FileName: TFileName;
   ReplaceBadChar: Char): TFileName;

@@ -34,6 +34,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   JvComponent, JvTypes;
 
 type
@@ -73,10 +76,10 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     {$ENDIF JVCLThemesEnabled}
+    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint; override;
     procedure DoShowHint(var HintStr: THintString;
       var CanShow: Boolean; var HintInfo: THintInfo);
 

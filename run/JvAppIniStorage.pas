@@ -380,7 +380,7 @@ var
   Key: string;
   Value: string;
   {$IFDEF CLR}
-  Buf: TBytes;
+  Buf: array [0..10 - 1] of Byte;
   {$ENDIF CLR}
 begin
   SplitKeyPath(Path, Section, Key);
@@ -388,7 +388,6 @@ begin
   begin
     Value := ReadValue(Section, Key);
     {$IFDEF CLR}
-    Buf := DoubleToExtendedAsBytes(Default); // calculate BufSize
     if BinStrToBuf(Value, Buf, Length(Buf)) = Length(Buf) then
       Result := ExtendedAsBytesToDouble(Buf)
     else
@@ -405,14 +404,10 @@ procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extende
 var
   Section: string;
   Key: string;
-  {$IFDEF CLR}
-  Buf: TBytes;
-  {$ENDIF CLR}
 begin
   SplitKeyPath(Path, Section, Key);
   {$IFDEF CLR}
-  Buf := DoubleToExtendedAsBytes(Value);
-  WriteValue(Section, Key, BufToBinStr(Buf, Length(Buf)));
+  WriteValue(Section, Key, BufToBinStr(DoubleToExtendedAsBytes(Value), 10));
   {$ELSE}
   WriteValue(Section, Key, BufToBinStr(@Value, SizeOf(Value)));
   {$ENDIF CLR}

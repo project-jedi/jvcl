@@ -34,6 +34,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Menus,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   JvTypes, JvExButtons;
 
 type
@@ -192,7 +195,7 @@ end;
 procedure TJvBitBtn.CNDrawItem(var Msg: TWMDrawItem);
 begin
   inherited;
-  DrawItem(Msg.DrawItemStruct^);
+  DrawItem(Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF});
 end;
 
 procedure TJvBitBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);
