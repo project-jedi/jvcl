@@ -38,6 +38,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
   Graphics, Controls,
   {$IFDEF VisualCLX}
   Qt, QWindows,
@@ -207,6 +210,9 @@ const
 implementation
 
 uses
+  {$IFDEF CLR}
+  System.Threading,
+  {$ENDIF CLR}
   Forms,
   //JclSysUtils,
   JvConsts, JvJVCLUtils;
@@ -352,7 +358,11 @@ var
   OrgDC: QPainterH;
   {$ENDIF VisualCLX}
 begin
+  {$IFDEF CLR}
+  if System.Threading.Thread.CurrentThread = MainThread then
+  {$ELSE}
   if GetCurrentThreadID = MainThreadID then
+  {$ENDIF CLR}
   begin
     Repaint;
     Exit;

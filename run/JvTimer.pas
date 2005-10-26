@@ -102,6 +102,10 @@ type
     procedure Execute; override;
   public
     constructor Create(Timer: TJvTimer; Enabled: Boolean);
+    {$IFDEF CLR}
+    procedure Synchronize(Method: TThreadMethod);
+    {$ENDIF CLR}
+    property Terminated;
   end;
 
 constructor TJvTimerThread.Create(Timer: TJvTimer; Enabled: Boolean);
@@ -117,6 +121,13 @@ begin
   if not (FException is EAbort) then
     Application.HandleException(Self);
 end;
+
+{$IFDEF CLR}
+procedure TJvTimerThread.Synchronize(Method: TThreadMethod);
+begin
+  inherited Synchronize(Method);
+end;
+{$ENDIF CLR}
 
 procedure TJvTimerThread.Execute;
 
@@ -135,8 +146,8 @@ procedure TJvTimerThread.Execute;
 
 begin
   repeat
-    if (not ThreadClosed) and (SleepEx(FInterval, False) = 0) and
-      (not ThreadClosed) and FOwner.FEnabled then
+    if not ThreadClosed and (SleepEx(FInterval, False) = 0) and
+      not ThreadClosed and FOwner.FEnabled then
       with FOwner do
         if SyncEvent then
           Synchronize(Timer)

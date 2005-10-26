@@ -3416,7 +3416,7 @@ var
   CheckTaskInfo: PCheckTaskInfo;
 {$ENDIF CLR}
 
-function CheckTaskWindow(Window: THandle; Data: Longint): LongBool; {$IFNDEF CLR}stdcall;{$ENDIF}
+function CheckTaskWindow(Window: HWND; Data: Longint): LongBool; {$IFNDEF CLR}stdcall;{$ENDIF}
 begin
   Result := True;
   {$IFDEF CLR}

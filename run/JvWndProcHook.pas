@@ -102,8 +102,24 @@ const
 
 implementation
 
+{$IFDEF CLR}
+uses
+  Borland.Vcl.WinUtils;
+{$ENDIF CLR}
 
 type
+  {$IFDEF CLR}
+  TJvHookInfo = class(TObject)
+    Hook: TJvControlHook;
+    Next: TJvHookInfo;
+  end;
+  PJvHookInfo = TJvHookInfo;
+
+  THookInfoList = array of TJvHookInfo;
+  PHookInfoList = THookInfoList;
+
+  {$ELSE}
+
   PJvHookInfo = ^TJvHookInfo;
   TJvHookInfo = record
     Hook: TJvControlHook;
@@ -112,6 +128,7 @@ type
 
   PHookInfoList = ^THookInfoList;
   THookInfoList = array [0..MaxInt div 4 - 1] of PJvHookInfo;
+  {$ENDIF CLR}
 
   TJvWndProcHook = class;
 
@@ -184,7 +201,7 @@ type
       const Order: TJvHookOrder): Boolean; overload;
   end;
 
-  TJvReleaser = class(TObject)
+  TJvReleaser = class({$IFDEF CLR} TControl {$ELSE} TObject {$ENDIF CLR})
   private
     FHandle: THandle;
     FReleasing: TList;
@@ -443,7 +460,11 @@ var
   HookInfo: PJvHookInfo;
   I: Integer;
 begin
+  {$IFDEF CLR}
+  HookInfo := TJvHookInfo.Create;
+  {$ELSE}
   New(HookInfo);
+  {$ENDIF CLR}
   HookInfo.Hook := Hook;
   HookInfo.Next := nil;
 
@@ -499,22 +520,26 @@ constructor TJvHookInfos.Create(AControl: TControl);
 begin
   inherited Create;
   FControl := AControl;
+  {$IFNDEF CLR}
   FillChar(FFirst, SizeOf(FFirst), 0);
   FillChar(FLast, SizeOf(FLast), 0);
   //FillChar(FStack, SizeOf(FStack), 0);
   //FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
   //FillChar(FStackCount, SizeOf(FStackCount), 0);
+  {$ENDIF !CLR}
 end;
 
 constructor TJvHookInfos.Create(AHandle: THandle);
 begin
   inherited Create;
   FHandle := AHandle;
+  {$IFNDEF CLR}
   FillChar(FFirst, SizeOf(FFirst), 0);
   FillChar(FLast, SizeOf(FLast), 0);
   //FillChar(FStack, SizeOf(FStack), 0);
   //FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
   //FillChar(FStackCount, SizeOf(FStackCount), 0);
+  {$ENDIF !CLR}
 end;
 
 procedure TJvHookInfos.DecDepth;
@@ -532,8 +557,12 @@ begin
   HookInfo := FFirst[Order];
   PrevHookInfo := nil;
   while (HookInfo <> nil) and
+    {$IFDEF CLR}
+    (@HookInfo.Hook <> @Hook) do
+    {$ELSE}
     ((TMethod(HookInfo.Hook).Code <> TMethod(Hook).Code) or
     (TMethod(HookInfo.Hook).Data <> TMethod(Hook).Data)) do
+    {$ENDIF CLR}
     {  This is unique: Code = the object whereto the method belongs
                        Data = identifies the method in the object }
   begin
@@ -566,12 +595,13 @@ begin
     Inc(I, 2);
   end;
 
+  {$IFNDEF CLR} // in .NET TJvHookInfo does not implement IDisposible
   Dispose(HookInfo);
+  {$ENDIF !CLR}
 
   if (FFirst[hoBeforeMsg] = nil) and (FFirst[hoAfterMsg] = nil) then
     { Could also call ReleaseObj(Self). Now this object stays in memory until
       the Control it was hooking will be destroyed. }
-
     UnHookControl;
 end;
 
@@ -591,9 +621,15 @@ begin
     begin
       HookInfo := FFirst[Order];
       FFirst[Order] := HookInfo.Next;
+      {$IFNDEF CLR} // in .NET TJvHookInfo does not implement IDisposible
       Dispose(HookInfo);
+      {$ENDIF !CLR}
     end;
+  {$IFDEF CLR}
+  FStack := nil;
+  {$ELSE}
   FreeMem(FStack);
+  {$ENDIF CLR}
 
   inherited Destroy;
 end;
@@ -624,7 +660,11 @@ begin
     { Upsize the stack }
     Inc(FStackCapacity);
     FStackCapacity := FStackCapacity * 2;
+    {$IFDEF CLR}
+    SetLength(FStack, 2 * FStackCapacity);
+    {$ELSE}
     ReallocMem(FStack, 2 * FStackCapacity * SizeOf(Pointer));
+    {$ENDIF CLR}
   end;
   Inc(FStackCount);
 end;
