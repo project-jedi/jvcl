@@ -164,6 +164,20 @@ resourcestring
 resourcestring
   RsEMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
 
+//=== JvColorProviderEditors.pas =============================================
+resourcestring
+  RsENoSplashServices = 'Unable to get Borland Splash Services';
+  RsENoAboutServices = 'Unable to get Borland About Services';
+
+  RsAboutDialogTitle = 'JEDI Visual Component Library';
+  RsAboutCopyright = 'Copyright the JVCL development team';
+  RsAboutTitle = 'JEDI Visual Component Library';
+  RsAboutDescription = 'JEDI Visual Component Library http://jvcl.sf.net' + sLineBreak +
+                       'The JVCL is a member of the JEDI Project http://www.delphi-jedi.org' + sLineBreak +
+                       'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + sLineBreak +
+                       'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
+  RsAboutLicenceStatus = 'MPL 1.1';
+
 //=== JvCsvDataEditor.pas ====================================================
 resourcestring
   RsJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
