@@ -36,6 +36,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
   JvButton;
 
@@ -334,7 +337,11 @@ var
 begin
   SetRect(RectText, 0, 0, 0, 0);
   //  RectText.Right := ButtonRect.Right - ButtonRect.Left;
+  {$IFDEF CLR}
+  DrawText(Canvas, GetRealCaption, -1, RectText, DT_CALCRECT or Alignments[FAlignment]);
+  {$ELSE}
   DrawText(Canvas, PChar(GetRealCaption), -1, RectText, DT_CALCRECT or Alignments[FAlignment]);
+  {$ENDIF CLR}
   if IsImageVisible then
   begin
     with GetImageList do
@@ -462,25 +469,36 @@ procedure TJvCustomImageButton.CNDrawItem(var Msg: TWMDrawItem);
 begin
   if csDestroying in ComponentState then
     Exit;
-  FCanvas.Handle := Msg.DrawItemStruct^.hDC;
+  FCanvas.Handle := Msg.DrawItemStruct.hDC;
   try
     FCanvas.Font := Font;
     if FOwnerDraw and Assigned(FOnButtonDraw) then
-      FOnButtonDraw(Self, Msg.DrawItemStruct^)
+      FOnButtonDraw(Self, Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF})
     else
-      DrawItem(Msg.DrawItemStruct^);
+      DrawItem(Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF});
   finally
     FCanvas.Handle := 0;
   end;
 end;
 
 procedure TJvCustomImageButton.CNMeasureItem(var Msg: TWMMeasureItem);
+{$IFDEF CLR}
+var
+  MeasureItemStruct: TMeasureItemStruct;
+{$ENDIF CLR}
 begin
+  {$IFDEF CLR}
+  MeasureItemStruct := Msg.MeasureItemStruct;
+  MeasureItemStruct.itemWidth := Width;
+  MeasureItemStruct.itemHeight := Height;
+  Msg.MeasureItemStruct := MeasureItemStruct;
+  {$ELSE}
   with Msg.MeasureItemStruct^ do
   begin
     itemWidth := Width;
     itemHeight := Height;
   end;
+  {$ENDIF CLR}
 end;
 
 {$ENDIF VCL}
@@ -1035,7 +1053,11 @@ end;
 
 procedure TJvCustomImageButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
+  {$IFDEF CLR}
+  Perform(WM_LBUTTONDOWN, Msg.OriginalMessage.WParam, Msg.OriginalMessage.LParam);
+  {$ELSE}
   Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
+  {$ENDIF CLR}
 end;
 
 {$ENDIF VCL}

@@ -53,6 +53,7 @@ uses
   {$IFDEF CLR}
   Types, System.Text, System.Security, System.IO, System.Threading,
   System.Reflection, System.Diagnostics, System.Runtime.InteropServices,
+  System.Collections,
   {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
@@ -99,7 +100,6 @@ type
   TFileTime = Integer;
 {$ENDIF UNIX}
 
-
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
 {$IFDEF CLR}
@@ -117,7 +117,31 @@ function GetProtectedObjectEvent(Instance: TObject; const EventName: string): De
 function SystemParametersInfo(uiAction, uiParam: UINT;
   var pvParam: TNonClientMetrics; fWinIni: UINT): BOOL; overload; external;
 
+type
+  TFNFontEnumObjProc = function ([in] var logfont: TLogFont;
+    [in] var textmetric: TTextMetric; dword: DWORD; lparam: TObject): Integer;
+  TFNFontEnum2ObjProc = function ([in] var logfont: TEnumLogFont;
+    [in] var textmetric: TNewTextMetric; FontType: DWORD; lParam: TObject): Integer;
+
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies(DC: HDC; p2: string; p3: TFNFontEnumObjProc; p4: TObject): BOOL; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies(DC: HDC; p2: IntPtr; p3: TFNFontEnumObjProc; p4: TObject): BOOL; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies2(DC: HDC; p2: string; p3: TFNFontEnum2ObjProc; p4: TObject): BOOL; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies2(DC: HDC; p2: IntPtr; p3: TFNFontEnum2ObjProc; p4: TObject): BOOL; overload; external;
+
+
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFonts')]
+function EnumFonts(DC: HDC; lpszFace: string; fntenmprc: TFNFontEnumObjProc;
+  LParam: TObject): Integer; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFonts')]
+function EnumFonts(DC: HDC; lpszFace: IntPtr; fntenmprc: TFNFontEnumObjProc;
+  LParam: TObject): Integer; overload; external;
+
 function AnsiLastChar(const S: string): Char;
+
 {$ENDIF CLR}
 
 function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer; // ANSI-Stream
