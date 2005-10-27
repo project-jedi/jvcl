@@ -8241,16 +8241,25 @@ end;
 
 function MinimizeFileName(const FileName: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
+  {$IFDEF CLR}
+  sb: StringBuilder;
+  {$ENDIF CLR}
   R: TRect;
 begin
   Result := FileName;
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  {$IFNDEF CLR}
+  {$IFDEF CLR}
+  sb := StringBuilder.Create(Result);
+  // DrawText() doesn't exist with StringBuilder parameter (2005)
+  if DrawTextEx(Canvas.Handle, sb, sb.Length, R,
+       DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
+       DT_NOPREFIX, nil) <= 0 then
+  {$ELSE}
   UniqueString(Result);
-  {$ENDIF CLR}
   if DrawText(Canvas.Handle, PChar(Result), Length(Result), R,
        DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
        DT_NOPREFIX) <= 0 then
+  {$ENDIF CLR}
     Result := FileName;
 end;
 
