@@ -15,6 +15,7 @@ Portions created by John Doe are Copyright (C) 2003 John Doe.
 All Rights Reserved.
 
 Contributor(s):
+  Florent Ouchet (outchy)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,11 +39,15 @@ procedure Register;
 implementation
 
 uses
+{$IFDEF RTL170_UP}
+  Windows, SysUtils, 
+{$ENDIF RTL170_UP}
   Classes,
   Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
   {$IFDEF VisualCLX}
   QTypes,
   {$ENDIF VisualCLX}
+  ToolsAPI,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -165,5 +170,54 @@ begin
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
+
+{$IFDEF RTL170_UP}
+
+var
+  AboutBoxServices: IOTAAboutBoxServices = nil;
+  AboutBoxIndex: Integer = 0;
+
+procedure RegisterAboutBox;
+var
+  ProductImage: HBITMAP;
+begin
+  Supports(BorlandIDEServices,IOTAAboutBoxServices,AboutBoxServices);
+  Assert(Assigned(AboutBoxServices), RsENoAboutServices);
+  ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JVCLSPLASH');
+  AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
+    RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
+    ProductImage, False, RsAboutLicenceStatus);
+end;
+
+procedure UnregisterAboutBox;
+begin
+  if (AboutBoxIndex <> 0) and Assigned(AboutBoxServices) then
+  begin
+    AboutBoxServices.RemoveProductInfo(AboutBoxIndex);
+    AboutBoxIndex := 0;
+    AboutBoxServices := nil;
+  end;
+end;
+
+procedure RegisterSplashScreen;
+var
+  ProductImage: HBITMAP;
+begin
+  Assert(Assigned(SplashScreenServices), RsENoSplashServices);
+  ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JVCLSPLASH');
+  SplashScreenServices.AddProductBitmap(RsAboutDialogTitle,ProductImage,
+    False,RsAboutLicenceStatus);
+end;
+
+initialization
+
+RegisterSplashScreen;
+RegisterAboutBox;
+
+finalization
+
+UnRegisterAboutBox;
+
+{$ENDIF RTL170_UP}
 
 end.
