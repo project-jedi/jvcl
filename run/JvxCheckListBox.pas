@@ -364,17 +364,20 @@ end;
 function TJvListBoxStrings.Get(Index: Integer): string;
 var
   Len: Integer;
-  Text: string;
+  {$IFNDEF CLR}
+  Text: array [0..4095] of Char;
+  {$ENDIF !CLR}
 begin
-  SetLength(Text, 4096);
   {$IFDEF CLR}
-  Len := SendGetTextMessage(ListBox.Handle, LB_GETTEXT, Index, Text, Length(Text));
-  {$ELSE}
-  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, LPARAM(PChar(Text)));
-  {$ENDIF CLR}
+  Len := SendGetTextMessage(ListBox.Handle, LB_GETTEXT, Index, Result, 4096);
   if Len < 0 then
     Error(SListIndexError, Index);
-  SetLength(Text, Len);
+  {$ELSE}
+  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, LPARAM(@Text));
+  if Len < 0 then
+    Error(SListIndexError, Index);
+  SetString(Result, Text, Len);
+  {$ENDIF CLR}
 end;
 
 function TJvListBoxStrings.GetObject(Index: Integer): TObject;

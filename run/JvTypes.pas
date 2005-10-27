@@ -139,6 +139,10 @@ type
   {$M-}
   {$ENDIF COMPILER5}
 
+  {$IFDEF CLR}
+  IUnknown = IInterface;
+  {$ENDIF CLR}
+
   // Base class for persistent properties that can show events.
   // By default, Delphi and BCB don't show the events of a class
   // derived from TPersistent unless it also derives from
