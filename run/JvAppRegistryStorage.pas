@@ -65,6 +65,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Forms,
+  {$IFNDEF CLR}
+  JclBase,
+  {$ENDIF !CLR}
   JvAppStorage, JvTypes, JvJVCLUtils;
 
 type
