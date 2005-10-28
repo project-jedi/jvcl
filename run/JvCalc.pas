@@ -143,7 +143,7 @@ uses
   JvToolEdit, JvSpeedButton, JvExExtCtrls,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
-{$R JvCalc.Res}
+{$R JvCalc.Res} // (ahuser) the filename should be fixed
 
 type
   TCalcBtnKind =
