@@ -92,13 +92,7 @@ type
     {$ENDIF VisualCLX}
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
-
-    procedure SetText(const AValue: string);
-      {$IFDEF CLR}reintroduce;{$ELSE}
-        {$IFDEF VisualCLX} reintroduce; {$ENDIF}
-      {$ENDIF CLR}
-      virtual;
-
+    procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF} virtual;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -228,7 +222,6 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-  { (rb) why no ButtonFlat property? }
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
     {$IFDEF VCL}
@@ -250,6 +243,7 @@ type
     property AutoSize;
     property BeepOnError;
     property BorderStyle;
+    property ButtonFlat;
     property ButtonHint;
     property CheckOnExit;
     property ClickKey;
