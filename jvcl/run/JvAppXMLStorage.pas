@@ -41,6 +41,9 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
+  {$IFNDEF CLR}
+  JclBase,
+  {$ENDIF !CLR}
   JvAppStorage, JvPropertyStore, JvSimpleXml, JvTypes;
 
 type
