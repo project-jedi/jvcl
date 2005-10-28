@@ -354,7 +354,11 @@ begin
     if (Stream.Position + CheckLst.StringSize <= Stream.Size) and
        (CheckLst.StringSize < High(Buf)) then
     begin
+      {$IFDEF CLR}
       ReadCharsFromStream(Stream, Buf, CheckLst.StringSize);
+      {$ELSE}
+      Stream.Read(Buf, CheckLst.StringSize);
+      {$ENDIF CLR}
       Buf[CheckLst.StringSize] := #0;
       Checked[Items.Add(Buf)] := CheckLst.Checked;
     end;
@@ -432,7 +436,11 @@ begin
     {$ENDIF CLR}
     for J := 1 to Length(Items[I]) do
       Buf[J] := Items[I][J];
+    {$IFDEF CLR}
     WriteStringToStream(Stream, Buf, CheckLst.StringSize)
+    {$ELSE}
+    Stream.Write(Buf, CheckLst.StringSize);
+    {$ENDIF CLR}
   end;
 end;
 
