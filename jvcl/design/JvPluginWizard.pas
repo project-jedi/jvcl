@@ -211,17 +211,17 @@ begin
   try
     {$IFDEF BCB}
     Repository := Installations.BCBInstallationFromVersion[
-      {$IFDEF BCB6}6{$ENDIF BCB6}
-      {$IFDEF BCB5}5{$ENDIF BCB5}
-                         ].Repository;
+      {$IFDEF BCB6} 6 {$ENDIF}
+      {$IFDEF BCB5} 5 {$ENDIF}
+      ].Repository;
     {$ENDIF BCB}
     {$IFDEF DELPHI}
     Repository := Installations.DelphiInstallationFromVersion[
-      {$IFDEF DELPHI9}9{$ENDIF DELPHI9}
-      {$IFDEF DELPHI7}7{$ENDIF DELPHI7}
-      {$IFDEF DELPHI6}6{$ENDIF DELPHI6}
-      {$IFDEF DELPHI5}5{$ENDIF DELPHI5}
-                         ].Repository;
+      {$IFDEF DELPHI9} 9 {$ENDIF}
+      {$IFDEF DELPHI7} 7 {$ENDIF}
+      {$IFDEF DELPHI6} 6 {$ENDIF}
+      {$IFDEF DELPHI5} 5 {$ENDIF}
+      ].Repository;
     {$ENDIF DELPHI}
     
     Result := Repository.FindPage(RsProjects, 2);

@@ -35,9 +35,6 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
@@ -51,14 +48,14 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils, 
+  SysUtils,
   {$IFDEF VisualCLX}
   Qt, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, IniFiles,
   Classes, // must be after "Forms"
-  JvJCLUtils, JvAppStorage, JvTypes;
+  JvVCL5Utils, JvJCLUtils, JvAppStorage, JvTypes;
 
 {$IFDEF VisualCLX}
 function Icon2Bitmap(Ico: TIcon): TBitmap;
@@ -368,7 +365,7 @@ procedure MsgAbout(Handle: Integer; const Msg, Caption: string; const IcoName: s
 
 { LoadIcoToImage loads two icons from resource named NameRes,
   into two image lists ALarge and ASmall}
-procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
+procedure LoadIcoToImage(ALarge, ASmall: ImgList.TCustomImageList;
   const NameRes: string);
 
 { Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
@@ -3734,7 +3731,7 @@ begin
 end;
 {$ENDIF CLR}
 
-procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
+procedure LoadIcoToImage(ALarge, ASmall: ImgList.TCustomImageList; const NameRes: string);
 var
   Ico: TIcon;
 begin

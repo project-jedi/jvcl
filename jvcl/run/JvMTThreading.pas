@@ -45,10 +45,7 @@ uses
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
-  JvMTConsts, JvMTSync;
+  JvMTConsts, JvMTSync, JvVCL5Utils;
 
 type
   TMTManager = class;

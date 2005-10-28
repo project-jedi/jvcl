@@ -166,7 +166,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, TypInfo,
-  JvResources, JvTypes, JvDynControlEngineIntf, JvDynControlEngineVCLDB;
+  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineIntf, JvDynControlEngineVCLDB;
 
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;

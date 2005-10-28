@@ -98,10 +98,7 @@ uses
   {$IFDEF UNIX}
   JvQJCLUtils,
   {$ENDIF UNIX}
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
-  JvComponentBase, JvTypes;
+  JvVCL5Utils, JvComponentBase, JvTypes;
 
 const
   // (rom) this name is shared in several units and should be made global

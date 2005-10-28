@@ -100,10 +100,7 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils;
+  JvVCL5Utils, JvJCLUtils;
 {$ENDIF USEJVCL}
 
 constructor TJvgFileIterator.Create;

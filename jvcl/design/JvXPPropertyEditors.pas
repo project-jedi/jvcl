@@ -59,11 +59,11 @@ type
     function GetImageListAt(Index: Integer): TCustomImageList; virtual;
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      var AHeight: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      var AWidth: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER5} override; {$ENDIF}
   end;
   {$ENDIF VCL} 
 

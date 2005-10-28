@@ -156,10 +156,7 @@ implementation
 uses
   SysUtils,
   JvJCLUtils, // BinStrToBuf & BufToBinStr
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
+  JvVCL5Utils, JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
 
 const
   cNullDigit = '0';

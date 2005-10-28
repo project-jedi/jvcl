@@ -121,12 +121,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  {$IFDEF BCB5}
   JvVCL5Utils,
-  {$ENDIF BCB5}
   JvJCLUtils,   // for TryStrToInt
-  {$ENDIF COMPILER5}
   JvResources;
 
 {$R *.dfm}

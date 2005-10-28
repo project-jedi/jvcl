@@ -268,7 +268,7 @@ begin
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 //=== { TJvInterfaceProperty } ===============================================
 
@@ -321,6 +321,6 @@ begin
   Result := 'IPageList';
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 end.

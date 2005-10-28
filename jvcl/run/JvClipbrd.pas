@@ -224,12 +224,12 @@ type
     // the handle to the underlying window handling the delayed
     // rendering messages
     property Handle: THandle read GetHandle;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   private
     function GetOpenRefCount: Integer;
   protected
     property OpenRefCount: Integer read GetOpenRefCount;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   published
     // the event fired when a format has been added with delayed
     // rendering and needs rendering because an application (or the
@@ -258,7 +258,7 @@ uses
   SysUtils, Consts,
   JvTypes, JvJVCLUtils, JvResources;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 // Delphi 5 implementation
 type
@@ -271,7 +271,7 @@ var
   Clipboard_SetBuffer: procedure(Instance: TClipboard; Format: Word; var Buffer;
     Size: Integer);
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 constructor TJvClipboard.Create;
 begin
@@ -298,7 +298,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 procedure TJvClipboard.SetBufferVCL5(Format: Word; var Buffer; Size: Integer);
 var
@@ -324,7 +324,7 @@ begin
   Result := TPrivateClipboard(Self).FOpenRefCount;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvClipboard.Clear;
 begin
@@ -537,7 +537,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvClipboard.MainWndProc(var Message: TMessage);
 begin
   try
@@ -546,7 +546,7 @@ begin
     ShowException(ExceptObject, ExceptAddr);
   end;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvClipboard.DestroyHandle;
 var

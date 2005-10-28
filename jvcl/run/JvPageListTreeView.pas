@@ -427,12 +427,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  Forms,
-  JvResources;
-  {$ELSE}
+  JvResources,
   Forms;
-  {$ENDIF COMPILER5}
 
 (* (ahuser) make Delphi 5 compiler happy
 procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);

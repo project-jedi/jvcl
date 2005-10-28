@@ -325,11 +325,9 @@ const
 implementation
 
 uses
-  SysUtils, Consts, Math, Graphics,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils, JvCalc, JvConsts, JvResources;
+  SysUtils, Math, Consts, Graphics,
+//  JclLogic,
+  JvVCL5Utils, JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$R JvBaseEdits.Res}
 

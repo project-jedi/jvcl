@@ -50,10 +50,7 @@ uses
   {$IFDEF VCL}
   JvJCLUtils, JvComboBox,
   {$ENDIF VCL}
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
-  JvComponent, JvExControls, JvExStdCtrls;
+  JvVCL5Utils, JvComponent, JvExControls, JvExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);

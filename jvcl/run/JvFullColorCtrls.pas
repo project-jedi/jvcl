@@ -744,10 +744,8 @@ uses
   {$ELSE}
   Consts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, TypInfo, Forms,
-  {$IFDEF COMPILER5}
-  JclMath, // For EnsureRange
-  {$ENDIF COMPILER5}
+  TypInfo, Forms,
+  JclMath, JclLogic, // For EnsureRange and Min/Max
   JvResources, JvConsts, JvJVCLUtils;
 
 type

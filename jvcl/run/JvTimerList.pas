@@ -54,7 +54,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes;
+  Windows, Messages, SysUtils, Classes, JvVCL5Utils;
 
 const
   DefaultInterval = 1000;
@@ -64,9 +64,6 @@ type
 
   TJvTimerEvent = class;
   TJvTimerList = class;
-  {$IFDEF COMPILER5}
-  TCollectionNotification = (cnAdded, cnDeleted);
-  {$ENDIF COMPILER5}
 
   // (rom) used THandle where needed
   TJvTimerEvents = class(TOwnedCollection)
@@ -82,11 +79,7 @@ type
     procedure CalculateInterval(StartTicks: Longint);
     procedure UpdateEvents(StartTicks: Longint);
     function ProcessEvents: Boolean;
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);
-      {$IFDEF COMPILER6_UP} override; {$ENDIF}
-    {$IFDEF COMPILER5}
-    function Owner: TPersistent;
-    {$ENDIF COMPILER5}
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
     constructor Create(AOwner: TPersistent);
     procedure Activate;
@@ -124,7 +117,7 @@ type
   protected
     function GetDisplayName: string; override;
   public
-    constructor Create(ACollection: TCollection); override;
+    constructor Create(ACollection: Classes.TCollection); override;
     destructor Destroy; override;
 
     property AsSeconds: Cardinal read GetAsSeconds write SetAsSeconds;
@@ -194,13 +187,10 @@ const
 
 //=== { TJvTimerEvent } ======================================================
 
-constructor TJvTimerEvent.Create(ACollection: TCollection);
+constructor TJvTimerEvent.Create(ACollection: Classes.TCollection);
 begin
   FHandle := INVALID_HANDLE_VALUE;
   inherited Create(ACollection);
-  {$IFDEF COMPILER5}
-  (GetOwner as TJvTimerEvents).Notify(Self, cnAdded); // invoke missing Notify
-  {$ENDIF COMPILER5}
   FCycled := True;
   FRepeatCount := 0;
   FEnabled := True;
@@ -219,9 +209,6 @@ end;
 destructor TJvTimerEvent.Destroy;
 begin
   FOnTimer := nil;
-  {$IFDEF COMPILER5}
-  (GetOwner as TJvTimerEvents).Notify(Self, cnDeleted); // invoke missing Notify
-  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
 
@@ -469,13 +456,6 @@ begin
   FParent := TJvTimerList(AOwner);
 end;
 
-{$IFDEF COMPILER5}
-function TJvTimerEvents.Owner: TPersistent;
-begin
-  Result := GetOwner;
-end;
-{$ENDIF COMPILER5}
-
 procedure TJvTimerEvents.Activate;
 begin
   FParent.Active := True;
@@ -484,10 +464,6 @@ end;
 function TJvTimerEvents.Add: TJvTimerEvent;
 begin
   Result := TJvTimerEvent(inherited Add);
-  {$IFDEF COMPILER5}
-  // (p3) yuk! some hack...
-  Notify(Result, cnAdded);
-  {$ENDIF COMPILER5}
 end;
 
 procedure TJvTimerEvents.Assign(Source: TPersistent);

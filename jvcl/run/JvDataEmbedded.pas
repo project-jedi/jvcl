@@ -47,12 +47,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JVCLVer;
+  JVCLVer, JvVCL5Utils;
 
 type
-  {$IFDEF COMPILER5}
-  TInterfacedPersistent = class(TPersistent);
-  {$ENDIF COMPILER5}
   TJvPersistentEmbedded = class(TInterfacedPersistent)
   private
     FFiler: TFiler;

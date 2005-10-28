@@ -314,17 +314,13 @@ implementation
 
 uses
   WinInet,
+  JvVCL5Utils,
   JvResources;
 
 const
   cFilePrefix = 'file://';
   cHTTPPrefix = 'http://';
   cFTPPrefix = 'ftp://';
-
-{$IFDEF COMPILER5}
-function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
-  external 'wininet.dll' name 'FtpGetFileSize';
-{$ENDIF COMPILER5}
 
 // global download callback
 

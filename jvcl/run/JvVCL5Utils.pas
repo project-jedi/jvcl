@@ -32,29 +32,17 @@ interface
 {$IFDEF COMPILER5}
 
 uses
-  Windows, SysUtils, Classes, TypInfo, ActiveX;
+  Windows, SysUtils, Classes, TypInfo, ActiveX, MultiMon, Forms, Controls,
+  Graphics, ImgList, WinInet;
 
 // Classes
 type
+  TInterfacedPersistent = class(TPersistent);
+  
   TCollectionNotification = (cnAdded, cnExtracting, cnDeleting);
 
   TCollection = class(Classes.TCollection)
-  private
-    function GetNextID: Integer;
-  protected
-    procedure Added(var Item: TCollectionItem); virtual; {deprecated;}
-    procedure Deleting(Item: TCollectionItem); virtual; {deprecated;}
-    property NextID: Integer read GetNextID;
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); virtual;
-    procedure SetItemName(Item: Classes.TCollectionItem); override;
-  public
-    constructor Create(ItemClass: TCollectionItemClass);
-
-    function Owner: TPersistent;
-    procedure Delete(Index: Integer);
-  end;
-
-  TOwnedCollection = class(Classes.TOwnedCollection)
+  // warning: DO NOT ADD FIELDS !!!
   private
     function GetNextID: Integer;
   protected
@@ -63,6 +51,23 @@ type
     property NextID: Integer read GetNextID;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); virtual;
     procedure SetItemName(Item: TCollectionItem); override;
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(ItemClass: TCollectionItemClass);
+    function Owner: TPersistent;
+    procedure Delete(Index: Integer);
+  end;
+
+  TOwnedCollection = class(Classes.TOwnedCollection)
+  // warning: DO NOT ADD FIELDS !!!
+  private
+    function GetNextID: Integer;
+  protected
+    procedure Added(var Item: TCollectionItem); virtual; {deprecated;}
+    procedure Deleting(Item: TCollectionItem); virtual; {deprecated;}
+    property NextID: Integer read GetNextID;
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); virtual;
+    procedure SetItemName(Item: Classes.TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent; ItemClass: TCollectionItemClass);
 
@@ -73,6 +78,9 @@ type
 function GetRelocAddress(ProcAddress: Pointer): Pointer;
 function InstallProcHook(ProcAddress, HookProc, OrgCallProc: Pointer): Boolean;
 function UninstallProcHook(OrgCallProc: Pointer): Boolean;
+
+function AllocateHWnd(Method: TWndMethod): HWND;
+procedure DeallocateHWnd(Wnd: HWND);
 
 // SysUtils
 
@@ -127,11 +135,96 @@ function FindVarData(const V: Variant): PVarData;
 function VarIsStr(const V: Variant): Boolean;
 function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
 
+// Misc
+function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
+
+type
+  UTF8String = type string;
+
+
+// System
+type
+  TVarType = Word;
+  PPointer = ^Pointer;
+
+// Controls
+type
+  TTime = type TDateTime;
+  {$EXTERNALSYM TTime}
+  TDate = type TDateTime;
+  {$EXTERNALSYM TDate}
+
+// Controls
+type
+  TCustomImageList = class(ImgList.TCustomImageList)
+  // warning: DO NOT ADD FIELDS !!!
+  public
+    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer;
+      ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+      Enabled: Boolean); overload;
+  end;
+
+// Grid
+type
+  TEditStyle = (esSimple, esEllipsis, esPickList);
+
+// DateUtils
+function IncYear(const AValue: TDateTime; const ANumberOfYears: Integer): TDateTime;
+
+// Graphics
+const
+  clCream = TColor($F0FBFF);
+
+// WinInet
+function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
+
+// Windows
+const
+  {$EXTERNALSYM SPI_GETMENUSHOWDELAY}
+  SPI_GETMENUSHOWDELAY = 106;
+  {$EXTERNALSYM SPI_SETMENUSHOWDELAY}
+  SPI_SETMENUSHOWDELAY = 107;
+  {$EXTERNALSYM SPI_GETMENUFADE}
+  SPI_GETMENUFADE = $1012;
+  {$EXTERNALSYM SPI_SETMENUFADE}
+  SPI_SETMENUFADE = $1013;
+  {$EXTERNALSYM SPI_GETSELECTIONFADE}
+  SPI_GETSELECTIONFADE = $1014;
+  {$EXTERNALSYM SPI_SETSELECTIONFADE}
+  SPI_SETSELECTIONFADE = $1015;
+  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
+  SPI_GETTOOLTIPANIMATION = $1016;
+  {$EXTERNALSYM SPI_SETTOOLTIPANIMATION}
+  SPI_SETTOOLTIPANIMATION = $1017;
+  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
+  SPI_GETTOOLTIPFADE = $1018;
+  {$EXTERNALSYM SPI_SETTOOLTIPFADE}
+  SPI_SETTOOLTIPFADE = $1019;
+  {$EXTERNALSYM SPI_GETCURSORSHADOW}
+  SPI_GETCURSORSHADOW = $101A;
+  {$EXTERNALSYM SPI_SETCURSORSHADOW}
+  SPI_SETCURSORSHADOW = $101B;
+  {$EXTERNALSYM SPI_GETUIEFFECTS}
+  SPI_GETUIEFFECTS = $103E;
+  {$EXTERNALSYM SPI_SETUIEFFECTS}
+  SPI_SETUIEFFECTS = $103F;
+  {$EXTERNALSYM COLOR_MENUHILIGHT}
+  COLOR_MENUHILIGHT = 29;
+  {$EXTERNALSYM COLOR_MENUBAR}
+  COLOR_MENUBAR = 30;
+  {$EXTERNALSYM SPI_GETKEYBOARDCUES}
+  SPI_GETKEYBOARDCUES = $100A;
+  {$EXTERNALSYM SPI_SETKEYBOARDCUES}
+  SPI_SETKEYBOARDCUES = $100B;
+
 {$ENDIF COMPILER5}
 
 implementation
 
 {$IFDEF COMPILER5}
+
+uses
+  CommCtrl;
 
 var
   GlobalCollectionHooked: Boolean = False;
@@ -220,14 +313,14 @@ end;
 
 //=== { TCollection } ========================================================
 
-constructor TCollection.Create(ItemClass: TCollectionItemClass);
+constructor TCollection.Create(ItemClass: Classes.TCollectionItemClass);
 begin
   inherited Create(ItemClass);
   if not GlobalCollectionHooked then
     HookCollection;
 end;
 
-procedure TCollection.Added(var Item: TCollectionItem);
+procedure TCollection.Added(var Item: Classes.TCollectionItem);
 begin
 end;
 
@@ -237,7 +330,7 @@ begin
   inherited Delete(Index);
 end;
 
-procedure TCollection.Deleting(Item: TCollectionItem);
+procedure TCollection.Deleting(Item: Classes.TCollectionItem);
 begin
 end;
 
@@ -246,7 +339,7 @@ begin
   Result := TPrivateCollection(Self).FNextID;
 end;
 
-procedure TCollection.Notify(Item: TCollectionItem; Action: TCollectionNotification);
+procedure TCollection.Notify(Item: Classes.TCollectionItem; Action: TCollectionNotification);
 begin
   case Action of
     cnAdded:
@@ -282,11 +375,11 @@ begin
   inherited Delete(Index);
 end;
 
-procedure TOwnedCollection.Added(var Item: TCollectionItem);
+procedure TOwnedCollection.Added(var Item: Classes.TCollectionItem);
 begin
 end;
 
-procedure TOwnedCollection.Deleting(Item: TCollectionItem);
+procedure TOwnedCollection.Deleting(Item: Classes.TCollectionItem);
 begin
 end;
 
@@ -295,7 +388,7 @@ begin
   Result := TPrivateCollection(Self).FNextID;
 end;
 
-procedure TOwnedCollection.Notify(Item: TCollectionItem; Action: TCollectionNotification);
+procedure TOwnedCollection.Notify(Item: Classes.TCollectionItem; Action: TCollectionNotification);
 begin
   case Action of
     cnAdded:
@@ -303,6 +396,12 @@ begin
     cnDeleting:
       Deleting(Item);
   end;
+end;
+
+procedure TCollection.Update(Item: TCollectionItem);
+begin
+  inherited Update(Item);
+  Notify(Item, cnAdded);
 end;
 
 function TOwnedCollection.Owner: TPersistent;
@@ -315,11 +414,6 @@ begin
   inherited SetItemName(Item);
   Notify(TCollectionItem(Item), cnAdded);
 end;
-
-
-{ This code installs a JUMP-Hook into a function. }
-type
-  PPointer = ^Pointer;
 
 function ReadProtectedMemory(Address: Pointer; var Buffer; Count: Cardinal): Boolean;
 var
@@ -366,6 +460,16 @@ begin
     if Data = $FF then // ProcAddress is in a DLL or package
       if ReadProtectedMemory(ProcAddress, Relocation, SizeOf(Relocation)) then
         Result := Relocation.Address^;
+end;
+
+function AllocateHWnd(Method: TWndMethod): HWND;
+begin
+  Result := Forms.AllocateHWnd(Method);
+end;
+
+procedure DeallocateHWnd(Wnd: HWND);
+begin
+  Forms.DeallocateHWnd(Wnd);
 end;
 
 type
@@ -756,6 +860,39 @@ function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
 begin
   Result := FindVarData(V)^.VType = AVarType;
 end;
+
+function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
+var
+  MonInfo: TMonitorInfo;
+begin
+  MonInfo.cbSize := SizeOf(MonInfo);
+  GetMonitorInfo(Monitor.Handle, @MonInfo);
+  Result := MonInfo.rcWork;
+end;
+
+//=== { TCustomImageList } ===================================================
+
+procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
+  ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
+const
+  DrawingStyles: array[TDrawingStyle] of Longint =
+  (ILD_FOCUS, ILD_SELECTED, ILD_NORMAL, ILD_TRANSPARENT);
+  Images: array[TImageType] of Longint =
+  (0, ILD_MASK);
+begin
+  if HandleAllocated then
+    DoDraw(Index, Canvas, X, Y, DrawingStyles[ADrawingStyle] or
+      Images[AImageType], Enabled);
+end;
+
+function IncYear(const AValue: TDateTime;
+  const ANumberOfYears: Integer): TDateTime;
+begin
+  Result := IncMonth(AValue, ANumberOfYears * 12);
+end;
+
+function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
+  external 'wininet.dll' name 'FtpGetFileSize';
 
 initialization
 

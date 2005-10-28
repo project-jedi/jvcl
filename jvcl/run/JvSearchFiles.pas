@@ -314,10 +314,8 @@ const
 implementation
 
 uses
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JclStrings, JclDateTime;
+  JclStrings, JclDateTime,
+  JvVCL5Utils;
 
 { Maybe TJvSearchFiles should be implemented with FindFirst, FindNext.
   There isn't a good reason to use FindFirstFile, FindNextFile instead of

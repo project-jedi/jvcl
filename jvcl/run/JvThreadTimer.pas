@@ -104,14 +104,12 @@ implementation
 
 uses
   {$IFDEF VCL}
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
   Messages,
   {$ENDIF VCL}
-  {$IFDEF BCB5}
+  {$IFDEF COMPILER5}
+  Forms, // Application.HandleException
+  {$ENDIF COMPILER5}
   JvVCL5Utils,
-  {$ENDIF BCB5}
   JvJCLUtils;
 
 type

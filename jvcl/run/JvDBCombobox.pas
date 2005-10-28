@@ -59,9 +59,9 @@ type
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetEditReadOnly;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure SetItems(const Value: TStrings);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     function GetComboText: string; virtual;

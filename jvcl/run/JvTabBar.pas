@@ -51,7 +51,8 @@ uses
   {$IFDEF VisualCLX}
   Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, Contnrs;
+  SysUtils, Classes, Contnrs,
+  JvVCL5Utils;
   {$ENDIF WINFORMS}
 
 type
@@ -64,18 +65,6 @@ type
 
   TJvGetModifiedEvent = procedure(Sender: TJvTabBarItem; var Modified: Boolean) of object;
   TJvGetEnabledEvent = procedure(Sender: TJvTabBarItem; var Enabled: Boolean) of object;
-
-  {$IFDEF COMPILER5}
-
-  TCollectionNotification = (cnAdded, cnExtracting, cnDeleting);
-
-  TOwnedCollection = class(Classes.TOwnedCollection)
-  protected
-    procedure Update(Item: TCollectionItem); override;
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); virtual;
-  end;
-
-  {$ENDIF COMPILER5}
 
   IPageList = interface
     ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
@@ -130,7 +119,7 @@ type
     procedure Notification(Component: TComponent; Operation: TOperation); virtual;
     property Name: string read FName write SetName;
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     function GetImages: TCustomImageList;
@@ -289,7 +278,7 @@ type
     FChangeLink: TChangeLink;
     FCloseButton: Boolean;
     FRightClickSelect: Boolean;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     FHotTracking: Boolean;
     FHotTab: TJvTabBarItem;
     FSelectedTab: TJvTabBarItem;
@@ -333,7 +322,7 @@ type
     procedure SetSelectedTab(Value: TJvTabBarItem);
     procedure SetTabs(Value: TJvTabBarItems);
     procedure SetPainter(Value: TJvTabBarPainter);
-    procedure SetImages(Value: TImageList);
+    procedure SetImages(Value: TCustomImageList);
     procedure SetCloseButton(Value: Boolean);
     procedure SetMargin(Value: Integer);
 
@@ -403,7 +392,7 @@ type
     property PageListTabLink: Boolean read FPageListTabLink write FPageListTabLink default False; // if true the PageList's Pages[] are kept in sync with the Tabs
     property PageList: TCustomControl read FPageList write SetPageList;
     property Painter: TJvTabBarPainter read FPainter write SetPainter;
-    property Images: TImageList read FImages write SetImages;
+    property Images: TCustomImageList read FImages write SetImages;
     property Tabs: TJvTabBarItems read FTabs write SetTabs;
 
     // Status
@@ -525,21 +514,6 @@ begin
 end;
 
 {$ENDIF VisualCLX}
-
-//=== { TOwnedCollection } ===================================================
-
-{$IFDEF COMPILER5}
-
-procedure TOwnedCollection.Update(Item: TCollectionItem);
-begin
-  Notify(Item, cnAdded);
-end;
-
-procedure TOwnedCollection.Notify(Item: TCollectionItem; Action: TCollectionNotification);
-begin
-end;
-
-{$ENDIF COMPILER5}
 
 //=== { TJvCustomTabBar } ====================================================
 
@@ -695,7 +669,7 @@ begin
   end;
 end;
 
-procedure TJvCustomTabBar.SetImages(Value: TImageList);
+procedure TJvCustomTabBar.SetImages(Value: TCustomImageList);
 begin
   if Value <> FImages then
   begin
@@ -1573,7 +1547,7 @@ end;
 
 //=== { TJvTabBarItem } ======================================================
 
-constructor TJvTabBarItem.Create(Collection: TCollection);
+constructor TJvTabBarItem.Create(Collection: Classes.TCollection);
 begin
   inherited Create(Collection);
   FImageIndex := -1;
@@ -1586,9 +1560,6 @@ destructor TJvTabBarItem.Destroy;
 begin
   PopupMenu := nil;
   Visible := False; // CanSelect returns false 
-  {$IFDEF COMPILER5}
-  TOwnedCollection(GetOwner).Notify(Self, cnDeleting);
-  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
 

@@ -1485,10 +1485,8 @@ begin
           Exit;
     end;
     UnhookClient;
-    {$IFDEF COMPILER5_UP}
     if Assigned(FClient) then
       FBackground.RemoveFreeNotification(FClient);
-    {$ENDIF COMPILER5_UP}
     FClient := Value;
     if Assigned(Value) then
     begin

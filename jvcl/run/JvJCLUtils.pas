@@ -53,7 +53,6 @@ uses
   {$IFDEF CLR}
   Types, System.Text, System.Security, System.IO, System.Threading,
   System.Reflection, System.Diagnostics, System.Runtime.InteropServices,
-  System.Collections,
   {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
@@ -64,9 +63,6 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
   SysUtils, Classes, Contnrs, Graphics, Clipbrd, Controls,
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
@@ -75,7 +71,7 @@ uses
   Qt, QWindows, QStdCtrls,
   {$ENDIF VisualCLX}
   TypInfo,
-  JvTypes;
+  JvVCL5Utils, JvTypes;
 
 const
   {$IFDEF MSWINDOWS}
@@ -100,6 +96,7 @@ type
   TFileTime = Integer;
 {$ENDIF UNIX}
 
+
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
 {$IFDEF CLR}
@@ -117,31 +114,7 @@ function GetProtectedObjectEvent(Instance: TObject; const EventName: string): De
 function SystemParametersInfo(uiAction, uiParam: UINT;
   var pvParam: TNonClientMetrics; fWinIni: UINT): BOOL; overload; external;
 
-type
-  TFNFontEnumObjProc = function ([in] var logfont: TLogFont;
-    [in] var textmetric: TTextMetric; dword: DWORD; lparam: TObject): Integer;
-  TFNFontEnum2ObjProc = function ([in] var logfont: TEnumLogFont;
-    [in] var textmetric: TNewTextMetric; FontType: DWORD; lParam: TObject): Integer;
-
-[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
-function EnumFontFamilies(DC: HDC; p2: string; p3: TFNFontEnumObjProc; p4: TObject): BOOL; overload; external;
-[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
-function EnumFontFamilies(DC: HDC; p2: IntPtr; p3: TFNFontEnumObjProc; p4: TObject): BOOL; overload; external;
-[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
-function EnumFontFamilies2(DC: HDC; p2: string; p3: TFNFontEnum2ObjProc; p4: TObject): BOOL; overload; external;
-[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
-function EnumFontFamilies2(DC: HDC; p2: IntPtr; p3: TFNFontEnum2ObjProc; p4: TObject): BOOL; overload; external;
-
-
-[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFonts')]
-function EnumFonts(DC: HDC; lpszFace: string; fntenmprc: TFNFontEnumObjProc;
-  LParam: TObject): Integer; overload; external;
-[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFonts')]
-function EnumFonts(DC: HDC; lpszFace: IntPtr; fntenmprc: TFNFontEnumObjProc;
-  LParam: TObject): Integer; overload; external;
-
 function AnsiLastChar(const S: string): Char;
-
 {$ENDIF CLR}
 
 function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer; // ANSI-Stream
@@ -925,14 +898,6 @@ function SafeStrToTime(const Ps: string): TDateTime;
 
 function StrDelete(const psSub, psMain: string): string;
 
-{$IFNDEF COMPILER5_UP}
-type
-  TTime = type TDateTime;
-  {$EXTERNALSYM TTime}
-  TDate = type TDateTime;
-  {$EXTERNALSYM TDate}
-{$ENDIF !COMPILER5_UP}
-
   { returns the fractional value of pcValue}
 function TimeOnly(pcValue: TDateTime): TTime;
 { returns the integral value of pcValue }
@@ -1223,10 +1188,6 @@ const
   ZeroValue = 0;
   PositiveValue = High(TValueSign);
 
-function Sign(const AValue: Integer): TValueSign; overload;
-function Sign(const AValue: Int64): TValueSign; overload;
-function Sign(const AValue: Double): TValueSign; overload;
-
 // Variants
 function VarIsStr(const V: Variant): Boolean;
 {$ENDIF COMPILER5}
@@ -1235,7 +1196,11 @@ function VarIsStr(const V: Variant): Boolean;
 type
   TCollectionSortProc = function(Item1, Item2: TCollectionItem): Integer;
 
-procedure CollectionSort(Collection: TCollection; SortProc: TCollectionSortProc);
+procedure CollectionSort(Collection: Classes.TCollection; SortProc: TCollectionSortProc);
+
+{$IFDEF COMPILER5}
+function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
+{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -9855,22 +9820,6 @@ begin
   Result := JvVCL5Utils.AnsiEndsStr(SubStr, Str);
 end;
 
-// Math
-function Sign(const AValue: Integer): TValueSign;
-begin
-  Result := JvVCL5Utils.Sign(AValue)
-end;
-
-function Sign(const AValue: Int64): TValueSign;
-begin
-  Result := JvVCL5Utils.Sign(AValue);
-end;
-
-function Sign(const AValue: Double): TValueSign;
-begin
-  Result := JvVCL5Utils.Sign(AValue);
-end;
-
 // Variants
 function VarIsStr(const V: Variant): Boolean;
 begin
@@ -9880,7 +9829,7 @@ end;
 {$ENDIF COMPILER5}
 {$ENDIF !BCB}
 
-procedure CollectionQuickSort(List: TCollection; L, R: Integer; SortProc: TCollectionSortProc);
+procedure CollectionQuickSort(List: Classes.TCollection; L, R: Integer; SortProc: TCollectionSortProc);
 var
  I, J, pix: Integer;
  P, t1, t2: TCollectionItem;
@@ -9925,11 +9874,18 @@ begin
   List.EndUpdate;
 end;
 
-procedure CollectionSort(Collection: TCollection; SortProc: TCollectionSortProc);
+procedure CollectionSort(Collection: Classes.TCollection; SortProc: TCollectionSortProc);
 begin
   if Assigned(Collection) and Assigned(SortProc) and (Collection.Count >= 2) then
     CollectionQuickSort(Collection, 0, Collection.Count - 1, SortProc);
 end;
+
+{$IFDEF COMPILER5}
+function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
+begin
+  Result := Trunc(86400 * (FTime - Now));
+end;
+{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 initialization

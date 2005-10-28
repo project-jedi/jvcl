@@ -107,11 +107,11 @@ begin
 end;
 
 procedure TJvSelectDataSetForm.FillDataSetList(ExcludeDataSet: TDataSet);
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 var
   I: Integer;
   Component: TComponent;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 begin
   DataSetList.Items.BeginUpdate;
   try
@@ -119,16 +119,16 @@ begin
     FExclude := '';
     if ExcludeDataSet <> nil then
       FExclude := ExcludeDataSet.Name;
-    {$IFDEF COMPILER6_UP}
-    FDesigner.GetComponentNames(GetTypeData(TypeInfo(TDataSet)), AddDataSet);
-    {$ELSE}
+    {$IFDEF COMPILER5}
     for I := 0 to FDesigner.Form.ComponentCount - 1 do
     begin
       Component := FDesigner.Form.Components[I];
       if (Component is TDataSet) and (Component <> ExcludeDataSet) then
         AddDataSet(Component.Name);
     end;
-    {$ENDIF COMPILER6_UP}
+    {$ELSE}
+    FDesigner.GetComponentNames(GetTypeData(TypeInfo(TDataSet)), AddDataSet);
+    {$ENDIF COMPILER5}
     with DataSetList do
     begin
       if Items.Count > 0 then

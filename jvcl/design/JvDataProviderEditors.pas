@@ -191,10 +191,10 @@ end;
 procedure TJvDataConsumerProperty.SetProviderIntfAt(Index: Integer; Value: IJvDataProvider);
 var
   Svc: TJvDataConsumer;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   CompRef: IInterfaceComponentReference;
   ProvComp: TComponent;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
@@ -287,14 +287,14 @@ var
   Comp: TComponent;
   ProvIntf: IJvDataProvider;
   Ref: IUnknown;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   List: IDesignerSelections;
   Dsgnr: IFormDesigner;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 begin
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   Dsgnr := Self.Designer;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   if Value = '' then
     Comp := nil
   else
@@ -309,7 +309,7 @@ begin
   else
     ProvIntf := nil;
   SetProviderIntf(ProvIntf);
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   { Force the object inspector to discard its property editors. Code copied from post from
     Constantine Yannakopoulos in borland.public.delphi.vcl.components.writing }
   List := CreateSelectionList;
@@ -317,7 +317,7 @@ begin
   Dsgnr.NoSelection; // Self will be gone here
   Dsgnr.SetSelections(List);
   Dsgnr.Modified;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 procedure TJvDataConsumerProperty.GetValues(Proc: TGetStrProc);

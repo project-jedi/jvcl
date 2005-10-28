@@ -86,10 +86,8 @@ type
     property AxisBlue: TJvAxisDelta read FAxisBlue write SetAxisBlue;
   end;
 
-function RotateColor(AColor: TJvFullColor;
-  AColorDelta: TJvColorDelta): TJvFullColor;
-procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
-  AColorDelta: TJvColorDelta);
+function RotateColor(AColor: TJvFullColor; AColorDelta: TJvColorDelta): TJvFullColor;
+procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap; AColorDelta: TJvColorDelta);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -103,8 +101,9 @@ const
 
 implementation
 
+uses
+  JvTypes;
 
-// (rom) reworked for loops
 function RotateColor(AColor: TJvFullColor; AColorDelta: TJvColorDelta): TJvFullColor;
 var
   I: TJvAxisIndex;
@@ -189,9 +188,6 @@ procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap; AColorDelta: TJvColorD
 type
   TFullColorValue = array [TJvAxisIndex] of SmallInt;
   PFullColorValue = ^TFullColorValue;
-  {$IFDEF COMPILER5}
-  PCardinal = ^Cardinal;
-  {$ENDIF COMPILER5}
 var
   OriginalPixelFormat: TPixelFormat;
   Colors: array [TJvAxisIndex,Byte] of TFullColorValue;

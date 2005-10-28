@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvTypes, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
+  JvTypes, JvVCL5Utils, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
 
 const
   CM_PARENTSTYLEMANAGERCHANGE = CM_BASE + 1;
@@ -740,7 +740,7 @@ type
     function GetImageIndex: TImageIndex;
   public
     procedure Assign(Source: TPersistent); override;
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     property Button: TJvNavPanelToolButton read FRealButton;
   published
@@ -1195,18 +1195,6 @@ type
     property OnThemeChange: TNotifyEvent read FOnThemeChange write FOnThemeChange;
   end;
 
-type
-  {$IFDEF COMPILER5}
-  TCustomImageListEx = class(TCustomImageList)
-  public
-    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer;
-      ADrawingStyle: TDrawingStyle; AImageType: TImageType;
-      Enabled: Boolean); overload;
-  end;
-  {$ELSE}
-  TCustomImageListEx = TCustomImageList;
-  {$ENDIF COMPILER5}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1221,9 +1209,6 @@ implementation
 
 uses
   Math,
-  {$IFDEF COMPILER5}
-  CommCtrl,
-  {$ENDIF COMPILER5}
   Forms, ActnList,
   JvJVCLUtils, JvJCLUtils, JvResources;
 
@@ -1252,23 +1237,6 @@ begin
         Exit;
   {$ENDIF VisualCLX}
 end;
-
-//=== { TCustomImageListEx } =================================================
-
-{$IFDEF COMPILER5}
-procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
-  ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
-const
-  DrawingStyles: array[TDrawingStyle] of Longint =
-  (ILD_FOCUS, ILD_SELECTED, ILD_NORMAL, ILD_TRANSPARENT);
-  Images: array[TImageType] of Longint =
-  (0, ILD_MASK);
-begin
-  if HandleAllocated then
-    DoDraw(Index, Canvas, X, Y, DrawingStyles[ADrawingStyle] or
-      Images[AImageType], Enabled);
-end;
-{$ENDIF COMPILER5}
 
 //=== { TJvIconPanel } =======================================================
 
@@ -2285,7 +2253,7 @@ begin
         begin
           if (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
             // draw image only
-            TCustomImageListEx(Images).Draw(Canvas,
+            Images.Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
               ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
@@ -3760,7 +3728,7 @@ begin
     end;
     if Y > Height - Images.Height - 4 then
       Y := Height - Images.Height - 4;
-    TCustomImageListEx(Images).Draw(Canvas, X, Y, ImageIndex,
+    Images.Draw(Canvas, X, Y, ImageIndex,
       {$IFDEF VisualCLX} itImage, {$ENDIF} True);
   end;
 end;
@@ -4999,7 +4967,7 @@ begin
     inherited Assign(Source);
 end;
 
-constructor TJvNavPaneToolButton.Create(Collection: TCollection);
+constructor TJvNavPaneToolButton.Create(Collection: Classes.TCollection);
 begin
   FRealButton := TJvNavPanelToolButton.Create(nil);
   FRealButton.ButtonType := nibImage;
@@ -5228,8 +5196,8 @@ DrawButton:
       end;
     nibImage:
       if Assigned(Images) then
-        TCustomImageListEx(Images).Draw(
-          Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
+        Images.Draw(Canvas,
+          (Width - Images.Width) div 2, (Height - Images.Height) div 2,
           ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
   else
     raise EJVCLException.CreateRes(@RsEUnsupportedButtonType);

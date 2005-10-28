@@ -100,9 +100,7 @@ implementation
 
 uses
   Consts,
-  {$IFDEF COMPILER5}
   JvTypes,
-  {$ENDIF COMPILER5}
   JvJCLUtils, JvConsts, JvResources;
 
 {$R *.dfm}

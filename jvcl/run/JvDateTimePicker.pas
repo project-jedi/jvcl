@@ -111,12 +111,8 @@ implementation
 
 uses
   CommCtrl,
-  {$IFDEF COMPILER5}
-  {$IFDEF BCB5}
   JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils,
-  {$ENDIF COMPILER5}
+//  JvJCLUtils,
   JvResources;
 
 procedure SetCalendarStyle(AHandle: THandle; Value: Integer; UseStyle: Boolean);

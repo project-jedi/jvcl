@@ -58,6 +58,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QComboEdits, JvQExComboEdits, QWindows,
   {$ENDIF VisualCLX}
+  JvVCL5Utils,
   JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
 
 const
@@ -1122,9 +1123,6 @@ uses
   JvBrowseFolder,
   {$ENDIF !CLR}
   {$ENDIF VCL}
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts;
 
@@ -2103,7 +2101,7 @@ begin
     with TCustomAction(Sender) do
     begin
       if not CheckDefaults or not Assigned(Self.Images) then
-        Self.Images := ActionList.Images;
+        Self.Images := TCustomImageList(ActionList.Images);
       if not CheckDefaults or Self.Enabled then
         Self.Enabled := Enabled;
       if not CheckDefaults or (Self.HelpContext = 0) then
@@ -2340,7 +2338,7 @@ class function TJvCustomComboEdit.DefaultImages: TCustomImageList;
 begin
   if GDefaultComboEditImagesList = nil then
     GDefaultComboEditImagesList := TImageList.CreateSize(14, 12);
-  Result := GDefaultComboEditImagesList;
+  Result := TCustomImageList(GDefaultComboEditImagesList);
 end;
 
 procedure TJvCustomComboEdit.DefineProperties(Filer: TFiler);

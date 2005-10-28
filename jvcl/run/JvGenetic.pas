@@ -33,13 +33,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
+  SysUtils, Classes, Windows,
   JvTypes, JvComponentBase;
 
 type
-  {$IFDEF COMPILER5}
-  PByte = ^Byte;
-  {$ENDIF COMPILER5}
   TJvTestMember = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
 
   TJvGenetic = class(TJvComponent)

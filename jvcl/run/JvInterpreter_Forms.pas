@@ -1372,9 +1372,7 @@ begin
     {$IFDEF VCL}
     AddConst(cForms, 'fsCreatedMDIChild', Ord(fsCreatedMDIChild));
     {$ENDIF VCL}
-    {$IFDEF COMPILER5_UP}
     AddConst(cForms, 'fsActivated', Ord(fsActivated));
-    {$ENDIF COMPILER5_UP}
     { TCustomForm }
     AddClass(cForms, TCustomForm, 'TCustomForm');
     AddGet(TCustomForm, 'Close', TCustomForm_Close, 0, [varEmpty], varEmpty);

@@ -140,11 +140,6 @@ function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
 {$ENDIF glDEBUG}
 
-{$IFDEF COMPILER5}
-// JVCL4: Use the JvJCLUtils.pas implementation
-function SameFileName(const Fn1, Fn2: string): Boolean;
-{$ENDIF COMPILER5}
-
 {$IFNDEF USEJVCL}
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
@@ -169,12 +164,14 @@ const
 implementation
 
 uses
+  JvJCLUtils,
   {$IFDEF USEJVCL}
   ShlObj, Math,
-  JvResources, JvConsts;
+  JvResources, JvConsts,
   {$ELSE}
-  ShlObj, Math;
+  ShlObj, Math,
   {$ENDIF USEJVCL}
+  JvVCL5Utils;
 
 {$IFNDEF USEJVCL}
 
@@ -1941,22 +1938,9 @@ end;
 
 // JVCL4: Should go to JvJCLUtils.pas as "GetComputerName: string"
 function ComputerName: string;
-var
-  Name: array [0..127] of Char;
-  Len: DWORD;
 begin
-  Len := SizeOf(Name);
-  GetComputerName(Name, Len);
-  Result := Name;
+  Result := JvJCLUtils.GetComputerName;
 end;
-
-{$IFDEF COMPILER5}
-// JVCL4: Use the JvJCLUtils.pas implementation
-function SameFileName(const Fn1, Fn2: string): Boolean;
-begin
-  Result := CompareText(Fn1, Fn2) <> 0;
-end;
-{$ENDIF COMPILER5}
 
 { Creates ini-file with the same name to project's file - use ChangeFileExt }
 

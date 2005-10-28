@@ -56,6 +56,7 @@ uses
   {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Windows, Messages,
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
+  JvVCL5Utils,
   JvExControls, JvComponent, JvButton, JvConsts, JvTypes,
   JvThemes;
 
@@ -451,7 +452,7 @@ type
     destructor Destroy; override;
     procedure Invalidate;
     procedure DrawEx(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
-      Layout: TButtonLayout; AFont: TFont; Images: TImageList;
+      Layout: TButtonLayout; AFont: TFont; Images: TCustomImageList;
       ImageIndex: Integer; Flags: Word);
     procedure Draw(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
       Layout: TButtonLayout; AFont: TFont; Flags: Word);
@@ -467,7 +468,7 @@ type
   TJvxButtonGlyph = class(TObject)
   private
     FAlignment: TAlignment;
-    FGlyphList: TImageList;
+    FGlyphList: TCustomImageList;
     FGrayNewStyle: Boolean;
     FIndexs: array [TJvButtonState] of Integer;
     FNumGlyphs: TJvNumGlyphs;
@@ -550,7 +551,7 @@ type
     function Empty: Boolean;
   end;
 
-  TJvGlyphList = class(TImageList)
+  TJvGlyphList = class(TCustomImageList)
   private
     FUsed: TBits;
     FCount: Integer;
@@ -722,7 +723,7 @@ begin
 end;
 
 procedure TJvButtonImage.DrawEx(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
-  Layout: TButtonLayout; AFont: TFont; Images: TImageList; ImageIndex: Integer;
+  Layout: TButtonLayout; AFont: TFont; Images: TCustomImageList; ImageIndex: Integer;
   Flags: Word);
 var
   Target: TRect;
@@ -1905,7 +1906,7 @@ begin
     with TCustomAction(Sender) do
     begin
       if (not CheckDefaults or (Self.Images = nil)) and (ActionList <> nil) then
-        Self.Images := ActionList.Images;
+        Self.Images := TCustomImageList(ActionList.Images);
       if not CheckDefaults or (Self.ImageIndex = -1) then
         Self.ImageIndex := ImageIndex;
     end;
@@ -2074,7 +2075,7 @@ begin
       { Copy image from action's imagelist }
       if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
         (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        CopyImage(ActionList.Images, ImageIndex);
+        CopyImage(TCustomImageList(ActionList.Images), ImageIndex);
     end;
 end;
 

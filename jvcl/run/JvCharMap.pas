@@ -306,9 +306,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CellSize: TSize;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure SetBounds(ALeft: Integer; ATop: Integer;
       AWidth: Integer; AHeight: Integer); override;
   end;
@@ -519,15 +519,16 @@ end;
 //=== { TShadowWindow } ======================================================
 
 type
-  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; {$IFNDEF CLR}stdcall;{$ENDIF}
+  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF;
+    bAlpha: Byte; dwFlags: DWORD): Boolean; {$IFNDEF CLR} stdcall; {$ENDIF}
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 const
   {$EXTERNALSYM WS_EX_LAYERED}
   WS_EX_LAYERED = $00080000;
   {$EXTERNALSYM LWA_ALPHA}
   LWA_ALPHA = $00000002;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 constructor TShadowWindow.Create(AOwner: TComponent);
 begin
@@ -540,9 +541,9 @@ end;
 {$IFDEF VisualCLX}
 {$DEFINE NeedSetLayer}
 {$ENDIF VisualCLX}
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 {$DEFINE NeedSetLayer}
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 {$IFDEF VCL}
 procedure TShadowWindow.CreateHandle;
@@ -992,7 +993,7 @@ begin
     end;}
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvCustomCharMap.MouseToCell(X, Y: Integer;
   var ACol, ARow: Integer);
 var
@@ -1002,7 +1003,7 @@ begin
   ACol := Coord.X;
   ARow := Coord.Y;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvCustomCharMap.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);

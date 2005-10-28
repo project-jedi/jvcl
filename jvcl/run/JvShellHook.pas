@@ -263,10 +263,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
-  JvJVCLUtils;
+  JvJVCLUtils,
+  JvVCL5Utils;
 
 const
   cUser32 = 'user32.dll';

@@ -67,24 +67,24 @@ const
 
 //=== { TJvAnimatedEditor } ==================================================
   
-{$IFDEF COMPILER6_UP}
-procedure TJvAnimatedEditor.CheckEdit(const PropertyEditor: IProperty);
-begin
-{$ELSE}
+{$IFDEF COMPILER5}
 procedure TJvAnimatedEditor.CheckEdit(PropertyEditor: TPropertyEditor);
 begin
   try
-{$ENDIF COMPILER6_UP}
+{$ELSE}
+procedure TJvAnimatedEditor.CheckEdit(const PropertyEditor: IProperty);
+begin
+{$ENDIF COMPILER5}
     if FContinue and (CompareText(PropertyEditor.GetName, cGlyphName) = 0) then
     begin
       PropertyEditor.Edit;
       FContinue := False;
     end;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   finally
     PropertyEditor.Free;
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -96,22 +96,22 @@ procedure TJvAnimatedEditor.EditImage(Image: TJvAnimatedImage);
 var
   Components: TDesignerSelectionList;
 begin
-  {$IFDEF COMPILER6_UP}
-  Components := TDesignerSelections.Create;
-  {$ELSE}
+  {$IFDEF COMPILER5}
   Components := TDesignerSelectionList.Create;
-  {$ENDIF COMPILER6_UP}
-  {$IFNDEF COMPILER6_UP}
+  {$ELSE}
+  Components := TDesignerSelections.Create;
+  {$ENDIF COMPILER5}
+  {$IFDEF COMPILER5}
   try
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
     FContinue := True;
     Components.Add(Component);
     GetComponentProperties(Components, tkAny, Designer, CheckEdit);
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   finally
     Components.Free;
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);

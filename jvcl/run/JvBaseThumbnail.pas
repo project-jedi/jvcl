@@ -68,7 +68,7 @@ type
   TProgressNotify = procedure(Sender: TObject; Position: Integer; var Stop: Boolean) of object;
   TInvalidImageEvent = procedure(Sender: TObject; const AFileName: string) of object;
   // (rom) renamed
-  TGRFKind = (grBMP, grJPG, grWMF, grEMF, grICO, {$IFNDEF COMPILER6_UP} grGIF, {$ENDIF} grPNG); //,grPCX,grTGA);
+  TGRFKind = (grBMP, grJPG, grWMF, grEMF, grICO, {$IFDEF COMPILER5} grGIF, {$ENDIF} grPNG); //,grPCX,grTGA);
   TPercent = -100..100;
 
   TFileName = class(TObject)

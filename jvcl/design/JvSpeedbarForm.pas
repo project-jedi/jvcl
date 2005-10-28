@@ -631,14 +631,14 @@ var
   CompList: TDesignerSelectionList;
   Item: TJvSpeedItem;
 begin
-  {$IFDEF COMPILER6_UP}
-  CompList := TDesignerSelections.Create;
-  {$ELSE}
+  {$IFDEF COMPILER5}
   CompList := TDesignerSelectionList.Create;
-  {$ENDIF COMPILER6_UP}
-  {$IFNDEF COMPILER6_UP}
+  {$ELSE}
+  CompList := TDesignerSelections.Create;
+  {$ENDIF COMPILER5}
+  {$IFDEF COMPILER5}
   try
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
     Item := ItemByRow(ButtonsList.Row);
     if Item <> nil then
     begin
@@ -647,11 +647,11 @@ begin
       CopyComponents(OwnerForm, CompList);
       Item.UpdateSection;
     end;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   finally
     CompList.Free;
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 procedure TJvSpeedbarEditorMain.Paste;
@@ -660,14 +660,14 @@ var
 begin
   if CheckSpeedBar then
   begin
-    {$IFDEF COMPILER6_UP}
-    CompList := TDesignerSelections.Create;
-    {$ELSE}
+    {$IFDEF COMPILER5}
     CompList := TDesignerSelectionList.Create;
-    {$ENDIF COMPILER6_UP}
-    {$IFNDEF COMPILER6_UP}
+    {$ELSE}
+    CompList := TDesignerSelections.Create;
+    {$ENDIF COMPILER5}
+    {$IFDEF COMPILER5}
     try
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
       FBar.OnAddItem := OnPasteItem;
       try
         PasteComponents(OwnerForm, FBar, CompList);
@@ -675,11 +675,11 @@ begin
         FBar.OnAddItem := nil;
       end;
       UpdateData;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     finally
       CompList.Free;
     end;
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
   end;
 end;
 

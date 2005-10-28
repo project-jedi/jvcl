@@ -330,9 +330,7 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Menus,
   JclStrings,
-  {$IFDEF COMPILER5}
   JvVcl5Utils, // StrToXxxDef
-  {$ENDIF COMPILER5}
   JvConsts, JvTypes, JvResources;
 
 const

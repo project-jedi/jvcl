@@ -139,10 +139,6 @@ type
   {$M-}
   {$ENDIF COMPILER5}
 
-  {$IFDEF CLR}
-  IUnknown = IInterface;
-  {$ENDIF CLR}
-
   // Base class for persistent properties that can show events.
   // By default, Delphi and BCB don't show the events of a class
   // derived from TPersistent unless it also derives from
@@ -256,9 +252,31 @@ type
   //  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
 
   {$IFDEF COMPILER5}
+
   { TStream seek origins }
-  TSeekOrigin = (soBeginning, soCurrent, soEnd);
-  {$ENDIF COMPILER5}
+//  TSeekOrigin = (soFromBeginning, soFromCurrent, soFromEnd);
+// (outchy)
+// TStream.Seek can not be used with TSeekOrigin
+// soFromBeginning, soFromCurrent and soFromEnd are defined in Classes.pas
+
+  TWMNCPaint = packed record
+    Msg: Cardinal;
+    RGN: HRGN;
+    Unused: Longint;
+    Result: Longint;
+  end;
+
+// (outchy) defined in Windows.pas
+//  PInteger = ^Integer;
+//  PDouble = ^Double;
+  PBoolean = ^Boolean;
+  PWordBool = ^WordBool;
+  PCardinal = ^Cardinal;
+//  PByte = ^Byte;
+
+  TVarType = Word;
+
+ {$ENDIF COMPILER5}
 
   TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
@@ -420,14 +438,14 @@ const
   StandardColCount = 40;
   {$IFDEF VCL}
   SysColCount = 30;
-    {$IFNDEF COMPILER6_UP}
-    clSystemColor = TColor($80000000);
-    clHotLight = TColor(clSystemColor or COLOR_HOTLIGHT);
-    clGradientActiveCaption = TColor(clSystemColor or COLOR_GRADIENTACTIVECAPTION);
-    clGradientInactiveCaption = TColor(clSystemColor or COLOR_GRADIENTINACTIVECAPTION);
-    clMenuHighlight = TColor(clSystemColor or COLOR_MENUHILIGHT);
-    clMenuBar = TColor(clSystemColor or COLOR_MENUBAR);
-    {$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER5}
+  clSystemColor = TColor($80000000);
+  clHotLight = TColor(clSystemColor or COLOR_HOTLIGHT);
+  clGradientActiveCaption = TColor(clSystemColor or COLOR_GRADIENTACTIVECAPTION);
+  clGradientInactiveCaption = TColor(clSystemColor or COLOR_GRADIENTINACTIVECAPTION);
+  clMenuHighlight = TColor(clSystemColor or COLOR_MENUHILIGHT);
+  clMenuBar = TColor(clSystemColor or COLOR_MENUBAR);
+  {$ENDIF COMPILER5}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   SysColCount = 42;

@@ -52,7 +52,7 @@ uses
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF VCL}
-  JvJCLUtils, JvThemes, JvComponent, JvExButtons;
+  JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -111,7 +111,7 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
   public
     procedure Click; dynamic;
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
@@ -131,9 +131,6 @@ type
     function GetItem(Index: Integer): TJvOutlookBarButton;
     procedure SetItem(Index: Integer; const Value: TJvOutlookBarButton);
   protected
-    {$IFDEF COMPILER5}
-    function Owner: TPersistent;
-    {$ENDIF COMPILER5}
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
@@ -184,7 +181,7 @@ type
     function GetDisplayName: string; override;
     function GetOutlookBar: TJvCustomOutlookBar;
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
@@ -213,9 +210,6 @@ type
     procedure SetItem(Index: Integer; const Value: TJvOutlookBarPage);
   protected
     procedure Update(Item: TCollectionItem); override;
-    {$IFDEF COMPILER5}
-    function Owner: TPersistent;
-    {$ENDIF COMPILER5}
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvOutlookBarPage;
@@ -757,7 +751,7 @@ end;
 
 //=== { TJvOutlookBarButton } ================================================
 
-constructor TJvOutlookBarButton.Create(Collection: TCollection);
+constructor TJvOutlookBarButton.Create(Collection: Classes.TCollection);
 begin
   inherited Create(Collection);
   FEnabled := True;
@@ -969,13 +963,6 @@ begin
   Result := TJvOutlookBarButton(inherited Items[Index]);
 end;
 
-{$IFDEF COMPILER5}
-function TJvOutlookBarButtons.Owner: TPersistent;
-begin
-  Result := GetOwner;
-end;
-{$ENDIF COMPILER5}
-
 function TJvOutlookBarButtons.Insert(Index: Integer): TJvOutlookBarButton;
 begin
   Result := TJvOutlookBarButton(inherited Insert(Index));
@@ -996,7 +983,7 @@ end;
 
 //=== { TJvOutlookBarPage } ==================================================
 
-constructor TJvOutlookBarPage.Create(Collection: TCollection);
+constructor TJvOutlookBarPage.Create(Collection: Classes.TCollection);
 begin
   inherited Create(Collection);
   FFont := TFont.Create;
@@ -1256,13 +1243,6 @@ constructor TJvOutlookBarPages.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvOutlookBarPage);
 end;
-
-{$IFDEF COMPILER5}
-function TJvOutlookBarPages.Owner: TPersistent;
-begin
-  Result := GetOwner;
-end;
-{$ENDIF COMPILER5}
 
 function TJvOutlookBarPages.Add: TJvOutlookBarPage;
 begin

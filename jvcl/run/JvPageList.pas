@@ -302,12 +302,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  Forms,
-  JvResources;
-  {$ELSE}
+  JvResources,
   Forms;
-  {$ENDIF COMPILER5}
 
 function GetUniqueName(AOwner: TComponent; const AClassName: string): string;
 var

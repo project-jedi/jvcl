@@ -334,10 +334,7 @@ uses
   Controls, StdCtrls, ExtCtrls,
   {$ENDIF COMPILER6_UP}
   JvResources, TypInfo, JvJCLUtils ,JvJVCLUtils,
-  {$IFDEF COMPILER5}
-  JclMath,   // For EnsureRange
-  {$ENDIF COMPILER5}
-  Math;
+  JclMath;
 
 var
   GlobalColorSpaceManager: TJvColorSpaceManager = nil;

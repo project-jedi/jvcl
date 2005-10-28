@@ -38,6 +38,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  JvVCL5Utils,
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvThemes, JvExControls;
 
@@ -94,10 +95,10 @@ type
     FOnPosChanged: TNotifyEvent;
     FOnVisibleChanged: TNotifyEvent;
     FOnCustomize: TNotifyEvent;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     procedure ImageListChange(Sender: TObject);
-    procedure SetImages(Value: TImageList);
+    procedure SetImages(Value: TCustomImageList);
     procedure InvalidateItem(Item: TJvSpeedItem; Data: Longint);
     function GetOrientation: TBarOrientation;
     procedure SetOrientation(Value: TBarOrientation);
@@ -228,7 +229,7 @@ type
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
     property Version: Integer read FVersion write FVersion default 0;
     property Wallpaper: TPicture read FWallpaper write SetWallpaper;
-    property Images: TImageList read FImages write SetImages;
+    property Images: TCustomImageList read FImages write SetImages;
     {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
@@ -458,7 +459,7 @@ type
     FMargin: Integer;
     FLayout: TButtonLayout;
     FImageIndex: Integer;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     function GetCaption: TCaption;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
@@ -487,7 +488,7 @@ type
     property NumGlyphs: TJvNumGlyphs read GetNumGlyphs write SetNumGlyphs;
     property Spacing: Integer read FSpacing write FSpacing;
     property ImageIndex: Integer read FImageIndex write FImageIndex;
-    property Images: TImageList read FImages write FImages;
+    property Images: TCustomImageList read FImages write FImages;
     property Margin: Integer read FMargin write FMargin;
     property Layout: TButtonLayout read FLayout write FLayout;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
@@ -2526,7 +2527,7 @@ begin
   ForEachItem(InvalidateItem, 0);
 end;
 
-procedure TJvSpeedBar.SetImages(Value: TImageList);
+procedure TJvSpeedBar.SetImages(Value: TCustomImageList);
 begin
   if Images <> nil then
     Images.UnRegisterChanges(FImageChangeLink);
@@ -3218,7 +3219,7 @@ procedure DrawCellButton(Grid: TDrawGrid; R: TRect; Item: TJvSpeedItem;
 var
   FBar: TJvSpeedBar;
   AFont: TFont;
-  ImageList: TImageList;
+  ImageList: TCustomImageList;
 begin
   if Item <> nil then
   begin

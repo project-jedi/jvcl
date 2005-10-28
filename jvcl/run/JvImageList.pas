@@ -40,7 +40,8 @@ uses
   {$IFDEF MSWINDOWS}
   CommCtrl,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes, Graphics, Controls, ImgList;
+  SysUtils, Classes, Graphics, Controls, ImgList,
+  JvVCL5Utils;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -68,7 +69,7 @@ type
     function GetDisplayName: string; override;
     procedure SetIndex(Value: Integer); override;
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure UpdateImageList;
   published
@@ -84,9 +85,6 @@ type
     function GetItem(AIndex: Integer): TJvImageListItem;
     procedure SetItem(AIndex: Integer; Value: TJvImageListItem);
   protected
-    {$IFDEF COMPILER5}
-    function Owner: TPersistent;
-    {$ENDIF COMPILER5}
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TComponent);
@@ -94,7 +92,7 @@ type
     property Items[AIndex: Integer]: TJvImageListItem read GetItem write SetItem; default;
   end;
 
-  TJvImageList = class(TImageList)
+  TJvImageList = class(TCustomImageList)
   private
     FUpdateLock: Integer;
     FModified: Boolean;
@@ -152,7 +150,7 @@ type
     procedure DrawIndirect(ImageListDrawParams: TImageListDrawParams);
       // DrawIndirect fills the .cbSize and .himl field.
     function Merge(Index1: Integer; ImageList: TImageList; Index2: Integer;
-      dx, dy: Integer): TImageList;
+      dx, dy: Integer): TCustomImageList;
       // Merge creates a new TJvImageList and returns it. It is up to the user
       // to release this new image list.
     {$ENDIF VCL}
@@ -228,6 +226,16 @@ type
       // are RCDATA (a bitmap file) and BITMAP. ResourceIds property is only
       // loaded into the image list if Mode is imResourceIds.
     property Items: TJvImageListItems read FItems write SetItems;
+    property BlendColor;
+    property BkColor;
+    property AllocBy;
+    property DrawingStyle;
+    property Height;
+    property ImageType;
+    property Masked;
+    property OnChange;
+    property ShareImages;
+    property Width;
   end;
 
 {$IFDEF VCL}
@@ -257,12 +265,7 @@ uses
   {$IFDEF VCL}
   ActiveX,
   {$ENDIF VCL}
-  {$IFDEF COMPILER5}
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
   JvJclUtils, // SameFileName() for Delphi 5
-  {$ENDIF COMPILER5}
   JvJVCLUtils, JvResources;
 
 resourcestring
@@ -303,7 +306,7 @@ var
   HandleNeededHookInstalled: Boolean = False;
   SavedNeededHookCode: TJumpCode;
 
-procedure HandleNeededHook(Self: TImageList);
+procedure HandleNeededHook(Self: TCustomImageList);
 begin
   if Self is TJvImageList then
     TJvImageList(Self).HandleNeeded
@@ -568,13 +571,6 @@ function TJvImageListItems.GetItem(AIndex: Integer): TJvImageListItem;
 begin
   Result := TJvImageListItem(inherited GetItem(AIndex));
 end;
-
-{$IFDEF COMPILER5}
-function TJvImageListItems.Owner: TPersistent;
-begin
-  Result := GetOwner;
-end;
-{$ENDIF COMPILER5}
 
 procedure TJvImageListItems.SetItem(AIndex: Integer; Value: TJvImageListItem);
 begin
@@ -1144,7 +1140,7 @@ begin
 end;
 
 function TJvImageList.Merge(Index1: Integer; ImageList: TImageList;
-  Index2, dx, dy: Integer): TImageList;
+  Index2, dx, dy: Integer): TCustomImageList;
 var
   h: THandle;
 begin
