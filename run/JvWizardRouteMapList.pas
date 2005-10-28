@@ -47,14 +47,7 @@ uses
   {$IFDEF USEJVCL}
   JvTypes, JvConsts, JvJVCLUtils,
   {$ENDIF USEJVCL}
-  JvWizard;
-
-{$IFNDEF USEJVCL}
-{$IFDEF COMPILER5}
-const
-  clCream = TColor($F0FBFF);
-{$ENDIF COMPILER5}
-{$ENDIF !USEJVCL}
+  JvWizard, JvVCL5Utils;
 
 type
   TJvWizardDrawRouteMapListItem = procedure(Sender: TObject; ACanvas: TCanvas;

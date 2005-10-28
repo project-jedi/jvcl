@@ -136,7 +136,7 @@ implementation
 
 uses
   StdCtrls, SysUtils,
-  JvDBActions, JvDynControlEngineIntf, JvResources;
+  JvDBActions, JvDynControlEngineIntf, JvResources, JvVCL5Utils;
 
 procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value: TComponent);
 begin

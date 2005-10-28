@@ -441,10 +441,10 @@ type
   private
     function GetColorProviderIntf: IJvColorProvider;
     procedure SetColorProviderIntf(Value: IJvColorProvider);
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     function GetProviderComp: TComponent;
     procedure SetProviderComp(Value: TComponent);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
   protected
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
@@ -1185,7 +1185,7 @@ begin
   TJvColorMapItems(DataItemsImpl).ClientProvider := (Value as IJvDataProvider);
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 function TJvColorMappingProvider.GetProviderComp: TComponent;
 var
@@ -1213,7 +1213,7 @@ begin
     raise EJVCLException.CreateRes(@RsENoColProv);
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 class function TJvColorMappingProvider.ItemsClass: TJvDataItemsClass;
 begin

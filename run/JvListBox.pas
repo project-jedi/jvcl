@@ -283,7 +283,7 @@ type
     procedure InvertSelection;
     procedure MoveSelectedUp; virtual;
     procedure MoveSelectedDown; virtual;
-    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ELSE} virtual; {$ENDIF}
     procedure DeleteAllButSelected;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;

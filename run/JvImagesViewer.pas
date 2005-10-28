@@ -218,10 +218,7 @@ const
 implementation
 
 uses
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils;
+  JvVCL5Utils, JvJCLUtils;
   
 //=== { TJvImageViewerOptions } ==============================================
 

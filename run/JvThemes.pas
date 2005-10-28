@@ -62,9 +62,6 @@ const
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
 
 type
-  {$IFDEF COMPILER5}
-  PPointer = ^Pointer;
-  {$ENDIF COMPILER5}
   {$IFDEF VCL}
   TCMDenySubClassing = TMessage;
   {$ENDIF VCL}

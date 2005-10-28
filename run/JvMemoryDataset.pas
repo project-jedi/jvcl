@@ -353,7 +353,7 @@ const
 
   STATUSNAME = 'C67F70Z90'; (* Magic *)
 
-{$IFNDEF COMPILER6_UP} // Added 2005/01/05
+{$IFDEF COMPILER5} // Added 2005/01/05
 
 type
   TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
@@ -393,7 +393,7 @@ begin
     Result := vrGreaterThan;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
 begin

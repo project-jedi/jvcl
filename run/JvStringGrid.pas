@@ -267,10 +267,7 @@ implementation
 
 uses
   Math,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJVCLUtils;
+  JvVCL5Utils, JvJVCLUtils;
 
 const
   BufSize = 1024;

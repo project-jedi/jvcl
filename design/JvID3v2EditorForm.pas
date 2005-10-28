@@ -88,17 +88,17 @@ type
   public
     function ForEachSelection(Proc: TSelectionProc): Boolean;
     function DoNewFrame: TJvID3Frame;
-    {$IFDEF COMPILER6_UP}
-    function EditAction(Action: TEditAction): Boolean; override;
-    procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
-    procedure SelectionChanged(const ADesigner: IDesigner; const ASelection: IDesignerSelections); override;
-    procedure ItemsModified(const Designer: IDesigner); override;
-    {$ELSE}
+    {$IFDEF COMPILER5}
     procedure SelectionChanged(ASelection: TDesignerSelectionList); override;
     procedure EditAction(Action: TEditAction); override;
     procedure ComponentDeleted(Component: IPersistent); override;
     procedure FormModified; override;
-    {$ENDIF COMPILER6_UP}
+    {$ELSE}
+    function EditAction(Action: TEditAction): Boolean; override;
+    procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
+    procedure SelectionChanged(const ADesigner: IDesigner; const ASelection: IDesignerSelections); override;
+    procedure ItemsModified(const Designer: IDesigner); override;
+    {$ENDIF COMPILER5}
     property Controller: TJvID3Controller read FController write SetController;
   end;
 
@@ -356,7 +356,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvID3FramesEditor.ComponentDeleted(Component: IPersistent);
 var
   P: TPersistent;
@@ -368,7 +368,7 @@ begin
   if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
     UpdateDisplay;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function TJvID3FramesEditor.DoNewFrame: TJvID3Frame;
 var
@@ -726,17 +726,17 @@ begin
       if ComponentList.Count = 0 then
         ComponentList.Add(Controller);
     except
-      {$IFNDEF COMPILER6_UP}
+      {$IFDEF COMPILER5}
       // In D6 up it's an interface, so no need to free up
       ComponentList.Free;
-      {$ENDIF !COMPILER6_UP}
+      {$ENDIF COMPILER5}
       raise;
     end;
-    {$IFDEF COMPILER6_UP}
-    Designer.SetSelections(ComponentList);
-    {$ELSE}
+    {$IFDEF COMPILER5}
     SetSelection(ComponentList);
-    {$ENDIF COMPILER6_UP}
+    {$ELSE}
+    Designer.SetSelections(ComponentList);
+    {$ENDIF COMPILER5}
   end;
 end;
 

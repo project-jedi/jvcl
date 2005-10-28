@@ -806,11 +806,9 @@ const
 implementation
 
 uses
-  SysUtils, Math, Forms, Dialogs, Printers, Clipbrd,
-  {$IFDEF COMPILER5}
+  SysUtils, Forms, Dialogs, Printers, Clipbrd,
   JclMath, // function IsNaN for Delphi 5  (ahuser)
   JvJCLUtils, // StrToFloatDef
-  {$ENDIF COMPILER5}
   JvJVCLUtils, JvConsts, JvResources;
 
 const

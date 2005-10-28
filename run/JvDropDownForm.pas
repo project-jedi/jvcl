@@ -95,22 +95,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  MultiMon,
-  {$ENDIF COMPILER5}
   SysUtils,
-  JvConsts, JvResources;
-
-{$IFDEF COMPILER5}
-function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
-var
-  MonInfo: TMonitorInfo;
-begin
-  MonInfo.cbSize := SizeOf(MonInfo);
-  GetMonitorInfo(Monitor.Handle, @MonInfo);
-  Result := MonInfo.rcWork;
-end;
-{$ENDIF COMPILER5}
+  JvConsts, JvResources, JvVCL5Utils;
 
 function IsChildWindow(const AChild, AParent: THandle): Boolean;
 var

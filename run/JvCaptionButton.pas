@@ -66,24 +66,15 @@ uses
   Types,
   {$ENDIF HAS_UNIT_TYPES}
   ActnList, ImgList,
-  JvComponentBase;
+  JvComponentBase, JvTypes;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 const
   {$EXTERNALSYM AC_SRC_ALPHA}
   AC_SRC_ALPHA = $01;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 type
-  {$IFDEF COMPILER5}
-  TWMNCPaint = packed record
-    Msg: Cardinal;
-    RGN: HRGN;
-    Unused: Longint;
-    Result: Longint;
-  end;
-  {$ENDIF COMPILER5}
-
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
     tsbMinimizeToTray); // a la e-Mule
   TJvCaptionButtonLayout = (cbImageLeft, cbImageRight);
@@ -329,7 +320,7 @@ uses
   {$ENDIF !COMPILER7_UP}
   JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf, JvConsts, JvTypes, JvJCLUtils, JvResources, JvWndProcHook;
+  JvDsgnIntf, JvConsts, JvJCLUtils, JvResources, JvWndProcHook;
 
 const
   { Msimg32.dll is included in Windows 98 and later }

@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
-  JvTypes, JvWndProcHook, JVCLVer;
+  JvTypes, JvWndProcHook, JVCLVer, JvVCL5Utils;
 
 const
   // custom painter constants
@@ -2023,7 +2023,7 @@ begin
     Item := Item.Parent;
 
   if Assigned(Item) and Assigned(Item.SubMenuImages) then
-    Result := Item.SubMenuImages
+    Result := TCustomImageList(Item.SubMenuImages)
   else
   if Assigned(FMainMenu) then
     Result := FMainMenu.Images

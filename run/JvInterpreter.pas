@@ -188,7 +188,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvInterpreterParser, JvComponentBase;
+  JvInterpreterParser, JvComponentBase, JvVCL5Utils;
 
 const
   // (rom) renamed to longer names
@@ -212,10 +212,6 @@ type
   TTypeArray = array [0..cJvInterpreterMaxArgs] of Word;
   PNameArray = ^TNameArray;
   TNameArray = array [0..cJvInterpreterMaxArgs] of string;
-
-  {$IFDEF COMPILER5}
-  TVarType = Word;
-  {$ENDIF COMPILER5}
 
   TJvInterpreterArgs = class;
   IJvInterpreterDataType = interface;

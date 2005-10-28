@@ -360,7 +360,7 @@ begin
                  GetSystemMetrics(SM_CYVIRTUALSCREEN));
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 const
   SPI_GETTOOLTIPANIMATION = $1016;
@@ -386,7 +386,7 @@ begin
   end;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function IsWinXP_UP: Boolean;
 begin
@@ -436,9 +436,9 @@ end;
 
 constructor TJvBalloonWindow.Create(AOwner: TComponent);
 begin
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   InitD5Controls;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
@@ -1876,9 +1876,9 @@ begin
     thus ShowWindow/SetWindowPos isn't called. We do it ourselfs: }
   if ParentWindow = 0 then
     ShowWindow(Handle, SW_SHOWNOACTIVATE);
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   Invalidate;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 procedure TJvBalloonWindowEx.MoveWindow(NewPos: TPoint);

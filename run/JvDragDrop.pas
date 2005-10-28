@@ -152,13 +152,8 @@ implementation
 
 uses
   ShlObj, SysUtils, Forms,
-  {$IFDEF COMPILER5}
-  {$IFDEF BCB5}
   JvVCL5Utils,
-  {$ELSE}
   JvJCLUtils,
-  {$ENDIF BCB5}
-  {$ENDIF COMPILER5}
   JvWndProcHook;
 
 var

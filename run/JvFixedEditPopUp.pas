@@ -139,13 +139,10 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
   {$IFDEF CLR}
   JclBase,
   {$ENDIF CLR}
-  JvResources;
+  JvVCL5Utils, JvResources;
 
 type
   THiddenPopupObject = class(TComponent)

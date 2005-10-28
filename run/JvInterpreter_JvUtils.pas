@@ -53,7 +53,7 @@ implementation
 
 uses
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  Dialogs, Menus, Math,
+  Dialogs, Menus, Math, ImgList,
   {$IFDEF COMPILER5}
   FileCtrl,
   {$ENDIF COMPILER5}
@@ -168,7 +168,7 @@ end;
 
 procedure JvInterpreter_LoadIcoToImage(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  LoadIcoToImage(V2O(Args.Values[0]) as TImageList, V2O(Args.Values[1]) as TImageList, Args.Values[2]);
+  LoadIcoToImage(V2O(Args.Values[0]) as TCustomImageList, V2O(Args.Values[1]) as TCustomImageList, Args.Values[2]);
 end;
 
 { procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string); }

@@ -513,9 +513,9 @@ const
 type
   TControlAccessProtected = class(TControl);
 
-{$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   PBoolean = ^Boolean;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
 { TJvOfficePanelDividerLine }
 

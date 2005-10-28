@@ -50,9 +50,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
-  {$IFDEF BCB}
-  JvTypes, // TDate / TTime macros
-  {$ENDIF BCB}
+  JvVCL5Utils,
   JvComponent;
 
 const
@@ -100,7 +98,7 @@ type
     procedure Update; virtual;
     function GetDisplayName: string; override;
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Remove; virtual;
     procedure Assign(Source: TPersistent); override;
@@ -579,19 +577,9 @@ begin
   Result := IntersectRect(R, Rect1, Rect2);
 end;
 
-//PRY 2002.06.04
-{$IFDEF COMPILER5}
-function IncYear(const AValue: TDateTime;
-  const ANumberOfYears: Integer): TDateTime;
-begin
-  Result := IncMonth(AValue, ANumberOfYears * 12);
-end;
-{$ENDIF COMPILER5}
-// PRY END
-
 //=== { TJvTimeItem } ========================================================
 
-constructor TJvTimeItem.Create(Collection: TCollection);
+constructor TJvTimeItem.Create(Collection: Classes.TCollection);
 begin
   inherited Create(Collection);
   FParent := TJvTimeItems(Collection);
@@ -1115,7 +1103,7 @@ begin
   FCanvas.Pen.Style := psDot;
 
   Bmp := TBitmap.Create;
-  FItemHintImageList := TImageList.CreateSize(14, 6);
+  FItemHintImageList := TCustomImageList.CreateSize(14, 6);
   try
     Bmp.LoadFromResourceName(HInstance, 'JvCustomTimeLineITEMLEFT');
     FItemHintImageList.Add(Bmp, nil);

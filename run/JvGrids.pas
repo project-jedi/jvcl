@@ -36,7 +36,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvConsts, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
+  JvConsts, JvVCL5Utils, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;

@@ -158,7 +158,7 @@ const
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF COMPILER7_UP}
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   { Standard Windows colors that are not defined in Delphi 5}
   COLOR_MENUHILIGHT = 29;
   {$EXTERNALSYM COLOR_MENUHILIGHT}
@@ -175,16 +175,16 @@ const
   clHotLight = TColor(COLOR_HOTLIGHT or DEFAULT_SYSCOLOR_MASK);
   clMenuHighlight = TColor(COLOR_MENUHILIGHT or DEFAULT_SYSCOLOR_MASK);
   clMenuBar = TColor(COLOR_MENUBAR or DEFAULT_SYSCOLOR_MASK);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   {$IFDEF MSWINDOWS}
   sLineBreak = #13#10;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   sLineBreak = #10;
   {$ENDIF UNIX}
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
   sLineBreakLen = Length(sLineBreak);
 
   CrLf = #13#10;

@@ -56,9 +56,9 @@ type
     procedure SetColor(AFullColor: TJvFullColor);
     // ICustomPropertyDrawing
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-      {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      {$IFDEF COMPILER5} override; {$ENDIF}
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-      {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      {$IFDEF COMPILER5} override; {$ENDIF}
     property IsColorProperty: Boolean read GetIsColorProperty;
   end;
 
@@ -94,9 +94,9 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      var AHeight: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      var AWidth: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER6_UP} virtual; {$ELSE} override; {$ENDIF}
     property Parent: TJvFullColorSpaceProperty read FParent;
@@ -122,11 +122,11 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      var AHeight: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      var AWidth: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER6_UP} virtual; {$ELSE} override; {$ENDIF}
+      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER5} override; {$ELSE} virtual; {$ENDIF}
     property Parent: TJvDEFColorSpaceProperty read FParent;
     property PredefinedFamily: TJvDEFFamily read FPredefinedFamily;
   end;

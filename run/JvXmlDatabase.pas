@@ -220,10 +220,7 @@ const
 implementation
 
 uses
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils, JvResources;
+  JvVCL5Utils, JvJCLUtils, JvResources;
 
 //=== { TJvXMLDatabase } =====================================================
 

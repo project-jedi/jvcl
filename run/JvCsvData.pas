@@ -170,12 +170,6 @@ const
   Bookmark_Eql = 0; // b1 = b2
 
 type
-  PInteger = ^Integer;
-  PDouble = ^Double;
-  PBoolean = ^Boolean;
-  {$IFDEF COMPILER5}
-  PWordBool = ^WordBool;
-  {$ENDIF COMPILER5}
   EJvCsvDataSetError = class(EDatabaseError);
   // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
@@ -734,14 +728,10 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Controls, Forms, 
-  {$IFDEF COMPILER5}
-  {$IFDEF BCB5}
+  SysUtils, Controls, Forms,
   JvVCL5Utils,
-  {$ENDIF BCB5}
   JvJVCLUtils,
-  {$ENDIF COMPILER5}
-  JvJCLUtils, JvCsvParse, JvConsts, JvResources;
+  JvJCLUtils, JvCsvParse, JvConsts, JvResources, JvTypes;
 
 const
   // These characters cannot be used for separator for various reasons:

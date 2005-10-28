@@ -132,13 +132,7 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER5}
-  FileCtrl,
-  {$ENDIF COMPILER5}
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils;
+  JvVCL5Utils, JvJCLUtils;
 
 {*******************************************************}
 {  Format of the File:                                  }

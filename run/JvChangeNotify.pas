@@ -163,10 +163,7 @@ implementation
 
 uses
   SysUtils, 
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils, JvResources, JvTypes;
+  JvVCL5Utils, JvJCLUtils, JvResources, JvTypes;
   // JvJCLUtils for DirectoryExists
 
 function ActionsToString(Actions: TJvChangeActions): string;

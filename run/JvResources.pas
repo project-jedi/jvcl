@@ -1789,9 +1789,6 @@ resourcestring
 
 //=== JvSimpleXml.pas ========================================================
 resourcestring
-  {$IFDEF COMPILER5}
-  // RsEInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
-  {$ENDIF COMPILER5}
   RsEInvalidXMLElementUnexpectedCharacte =
     'Invalid XML Element: Unexpected character in property declaration ("%s" found)';
   RsEInvalidXMLElementUnexpectedCharacte_ =

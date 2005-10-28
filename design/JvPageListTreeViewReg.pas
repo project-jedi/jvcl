@@ -82,9 +82,9 @@ begin
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   RegisterPropertyEditor(TypeInfo(TComponent), TJvCustomPageListTreeView, cPageList, TJvPageListProperty);
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   RegisterComponentEditor(TCustomTreeView, TJvTreeViewEditor);
   RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewEditor);
   // register for the standard TTreeView as well

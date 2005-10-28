@@ -68,7 +68,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList, 
-  JvTypes, JvComponent, JvDataProvider, JvExControls;
+  JvTypes, JvComponent, JvDataProvider, JvExControls, JvVCL5Utils;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -332,9 +332,6 @@ implementation
 
 uses
   SysUtils, Math, Forms,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
   JvDataProviderIntf, JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const

@@ -195,11 +195,6 @@ type
     property DistanceBetweenLabelAndControlVert: Integer read FDistanceBetweenLabelAndControlVert write FDistanceBetweenLabelAndControlVert default 1;
   end;
 
-{$IFDEF COMPILER5}
-function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
-function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
-{$ENDIF COMPILER5}
-
 function IntfCast(Instance: TObject; const Intf: {$IFDEF CLR} TInterfaceRef {$ELSE} TGUID {$ENDIF}): IUnknown; overload;
 procedure IntfCast(Instance: TObject; const IID: {$IFDEF CLR} TInterfaceRef {$ELSE} TGUID {$ENDIF}; out Intf); overload;
 
@@ -220,24 +215,10 @@ implementation
 
 uses
   TypInfo,
-  JvResources, JvTypes, JvDynControlEngineVCL;
+  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineVCL;
 
 var
   GlobalDefaultDynControlEngine: TJvDynControlEngine = nil;
-
-{$IFDEF COMPILER5}
-
-function Supports(Instance: TObject; const Intf: TGUID): Boolean;
-begin
-  Result := Instance.GetInterfaceEntry(Intf) <> nil;
-end;
-
-function Supports(AClass: TClass; const Intf: TGUID): Boolean;
-begin
-  Result := AClass.GetInterfaceEntry(Intf) <> nil;
-end;
-
-{$ENDIF COMPILER5}
 
 function IntfCast(Instance: TObject; const Intf: {$IFDEF CLR} TInterfaceRef {$ELSE} TGUID {$ENDIF}): IUnknown;
 begin

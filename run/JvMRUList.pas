@@ -185,10 +185,7 @@ implementation
 
 uses
   Registry,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
-  JvJCLUtils, JvResources;
+  JvVCL5Utils, JvJCLUtils, JvResources;
 
 var
   hComCtlDll: HMODULE = 0;

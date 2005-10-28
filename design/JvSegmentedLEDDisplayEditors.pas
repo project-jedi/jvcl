@@ -81,7 +81,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
+      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER5} override; {$ENDIF}
     {$IFDEF COMPILER6_UP}
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
     {$ENDIF COMPILER6_UP}

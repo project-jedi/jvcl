@@ -37,8 +37,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, Controls, Menus,
-  JvTypes, JvButton, JvComputerInfoEx;
+  Windows, Classes, Controls, Menus, ImgList,
+  JvTypes, JvVCL5Utils, JvButton, JvComputerInfoEx;
 
 type
   TJvControlPanelButton = class(TJvCustomButton)
@@ -46,9 +46,9 @@ type
     FPopup: TPopupMenu;
     FDirs: TJvSystemFolders;
     FOnLinkClick: TJvLinkClickEvent;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     procedure AddToPopup(Item: TMenuItem; Path: string);
-    procedure SetImages(const Value: TImageList);
+    procedure SetImages(const Value: TCustomImageList);
   protected
     procedure DoLinkClick(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -59,7 +59,7 @@ type
     procedure Click; override;
     procedure Refresh;
   published
-    property Images: TImageList read FImages write SetImages;
+    property Images: TCustomImageList read FImages write SetImages;
     property OnLinkClick: TJvLinkClickEvent read FOnLinkClick write FOnLinkClick;
   end;
 
@@ -175,7 +175,7 @@ begin
   PopupMenu := FPopup;
 end;
 
-procedure TJvControlPanelButton.SetImages(const Value: TImageList);
+procedure TJvControlPanelButton.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin

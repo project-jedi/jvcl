@@ -38,9 +38,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   Forms,
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   ShellAPI, SyncObjs,
   JvComponentBase, JvTypes;
 
@@ -241,11 +241,8 @@ implementation
 
 uses
   Math,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
   JclStrings,
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
+  JvVCL5Utils, JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const
   CM_READ = WM_USER + 1;
