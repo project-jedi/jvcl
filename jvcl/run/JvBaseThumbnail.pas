@@ -651,15 +651,27 @@ begin
       FShortName := FLongName;
     //fdFileAccessed
     FileTimeToLocalFileTime(sr.FindData.ftLastAccessTime, Lft);
+    {$IFDEF CLR}
     FileTimeToDosDateTimeDWord(Lft, Dft);
+    {$ELSE}
+    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    {$ENDIF CLR}
     FAccessed := Dft;
     //fdFilechanged
     FileTimeToLocalFileTime(sr.FindData.ftLastwriteTime, Lft);
+    {$IFDEF CLR}
     FileTimeToDosDateTimeDWord(Lft, Dft);
+    {$ELSE}
+    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    {$ENDIF CLR}
     FModified := Dft;
     //fdFilecreated
     FileTimeToLocalFileTime(sr.FindData.ftCreationTime, Lft);
+    {$IFDEF CLR}
     FileTimeToDosDateTimeDWord(Lft, Dft);
+    {$ELSE}
+    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    {$ENDIF CLR}
     FCreated := Dft;
     FFileSize := (sr.FindData.nFileSizeHigh * MAXDWORD) + sr.FindData.nFileSizeLow;
     //FFileName:=NewName;
