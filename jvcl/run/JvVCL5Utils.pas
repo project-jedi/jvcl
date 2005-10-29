@@ -154,14 +154,18 @@ type
   {$EXTERNALSYM TDate}
 
 // Controls
-type
+// obones 2005/10/30: Commented out as it clashes in C++ Builder 5 at least.
+// Symptoms are a message saying "Cannot load JvStdCtrlsC5D, a class named 
+// 'TCustomImageList' is already registered.".
+// As it seems no one is using the new Draw method, there is no harm done.
+{type
   TCustomImageList = class(ImgList.TCustomImageList)
   // warning: DO NOT ADD FIELDS !!!
   public
     procedure Draw(Canvas: TCanvas; X, Y, Index: Integer;
       ADrawingStyle: TDrawingStyle; AImageType: TImageType;
       Enabled: Boolean); overload;
-  end;
+  end;}
 
 // Grid
 type
@@ -871,7 +875,7 @@ end;
 
 //=== { TCustomImageList } ===================================================
 
-procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
+{procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
   ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
 const
   DrawingStyles: array[TDrawingStyle] of Longint =
@@ -882,7 +886,7 @@ begin
   if HandleAllocated then
     DoDraw(Index, Canvas, X, Y, DrawingStyles[ADrawingStyle] or
       Images[AImageType], Enabled);
-end;
+end;}
 
 function IncYear(const AValue: TDateTime;
   const ANumberOfYears: Integer): TDateTime;
