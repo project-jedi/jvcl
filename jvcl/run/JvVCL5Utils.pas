@@ -141,7 +141,6 @@ function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
 type
   UTF8String = type string;
 
-
 // System
 type
   TVarType = Word;

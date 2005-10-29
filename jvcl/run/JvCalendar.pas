@@ -532,31 +532,31 @@ type
   TMonthCalStrings = class(TStringList)
   private
     FCalendar: TJvCustomMonthCalendar;
-{$IFDEF COMPILER5}
+    {$IFDEF COMPILER5}
     FUpdateCount: Integer;
-{$ENDIF COMPILER5}
+    {$ENDIF COMPILER5}
   protected
     function GetDateIndex(Year, Month: Word): Integer; virtual;
     function GetBoldDays(Y, M: Word): string; virtual;
     procedure Changed; override;
-{$IFDEF COMPILER5}
+    {$IFDEF COMPILER5}
     procedure SetUpdateState(Updating: Boolean); override;
-{$ENDIF COMPILER5}
+    {$ENDIF COMPILER5}
   public
     constructor Create;
-{$IFDEF COMPILER5}
+    {$IFDEF COMPILER5}
     // Delphi 5's .AddObject calls .Add and then PutObject
     function Add(const S: string): Integer; override;
-{$ELSE}
+    {$ELSE}
     function AddObject(const S: string; AObject: TObject): Integer; override;
-{$ENDIF COMPILER5}
+    {$ENDIF COMPILER5}
     function IsBold(Year, Month, Day: Word): Boolean;
     procedure SetBold(Year, Month, Day: Word; Value: Boolean);
     function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
     property Calendar: TJvCustomMonthCalendar read FCalendar;
-{$IFDEF COMPILER5}
+    {$IFDEF COMPILER5}
     property UpdateCount: Integer read FUpdateCount;
-{$ENDIF COMPILER5}
+    {$ENDIF COMPILER5}
   end;
 
 constructor TMonthCalStrings.Create;
@@ -564,9 +564,9 @@ begin
   inherited Create;
   Sorted := True;
   Duplicates := dupIgnore;
-{$IFDEF COMPILER5}
+  {$IFDEF COMPILER5}
   FUpdateCount := 0;
-{$ENDIF COMPILER5}
+  {$ENDIF COMPILER5}
 end;
 
 { Days is a comma separated list of days to set as bold. If Days is empty, the
@@ -763,7 +763,7 @@ end;
 
 destructor TJvCustomMonthCalendar.Destroy;
 begin
-  if (FOwnsAppearance) then
+  if FOwnsAppearance then
     FreeAndNil(FAppearance);
   inherited Destroy;
 end;
@@ -833,7 +833,7 @@ end;
 
 function TJvCustomMonthCalendar.FirstVisibleDate(Partial: Boolean): TDateTime;
 var
-  rgst: array [0..1] of TSystemTime;
+  RGST: array [0..1] of TSystemTime;
   Flag: Integer;
 begin
   Result := 0;
@@ -841,8 +841,8 @@ begin
     Flag := GMR_DAYSTATE
   else
     Flag := GMR_VISIBLE;
-  if SendStructMessage(Handle, MCM_GETMONTHRANGE, Flag, rgst) <> 0 then
-    with rgst[0] do
+  if SendStructMessage(Handle, MCM_GETMONTHRANGE, Flag, RGST) <> 0 then
+    with RGST[0] do
       Result := Trunc(EncodeDate(wYear, wMonth, wDay));
 end;
 
@@ -852,13 +852,13 @@ function TJvCustomMonthCalendar.LastVisibleDate(Partial: Boolean): TDateTime;
 const
   IsPartial: array [Boolean] of Integer = (GMR_VISIBLE, GMR_DAYSTATE);
 var
-  rgst: array[0..1] of TSystemTime;
+  RGST: array[0..1] of TSystemTime;
   Flag: Integer;
 begin
   Result := 0;
   Flag := IsPartial[Partial];
-  if SendStructMessage(Handle, MCM_GETMONTHRANGE, Flag, rgst) <> 0 then
-    with rgst[1] do
+  if SendStructMessage(Handle, MCM_GETMONTHRANGE, Flag, RGST) <> 0 then
+    with RGST[1] do
       Result := Trunc(EncodeDate(wYear, wMonth, wDay));
 end;
 
@@ -867,9 +867,9 @@ end;
 procedure TJvCustomMonthCalendar.Change;
 var
   {$IFDEF CLR}
-  rgst: TSystemTimeRangeArray;
+  RGST: TSystemTimeRangeArray;
   {$ELSE}
-  rgst: array [0..1] of TSystemTime;
+  RGST: array [0..1] of TSystemTime;
   {$ENDIF CLR}
   Y, M, D: Word;
 begin
@@ -883,39 +883,39 @@ begin
   if (FMinDate <> 0) and (FMaxDate <> 0) then
   begin
     DecodeDate(FMinDate, Y, M, D);
-    with rgst[0] do
+    with RGST[0] do
     begin
       wYear := Y;
       wMonth := M;
       wDay := D;
     end;
     DecodeDate(FMaxDate, Y, M, D);
-    with rgst[1] do
+    with RGST[1] do
     begin
       wYear := Y;
       wMonth := M;
       wDay := D;
     end;
     {$IFDEF CLR}
-    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, rgst);
+    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, RGST);
     {$ELSE}
-    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, @rgst[0]);
+    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, @RGST[0]);
     {$ENDIF CLR}
   end
   else
     {$IFDEF CLR}
-    MonthCal_SetRange(Handle, 0, rgst); // rgst is empty
+    MonthCal_SetRange(Handle, 0, RGST); // RGST is empty
     {$ELSE}
     MonthCal_SetRange(Handle, 0, nil);
     {$ENDIF CLR}
   DecodeDate(FToday, Y, M, D);
-  with rgst[0] do
+  with RGST[0] do
   begin
     wYear := Y;
     wMonth := M;
     wDay := D;
   end;
-  MonthCal_SetToday(Handle, rgst[0]);
+  MonthCal_SetToday(Handle, RGST[0]);
 end;
 
 procedure TJvCustomMonthCalendar.DoBoldDays;
@@ -984,13 +984,13 @@ end;
 procedure TJvCustomMonthCalendar.CheckDayState(Year, Month: Word; var DayState: TMonthDayState);
 begin
   DayState := StringToDayStates(
-                    TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(Year, Month)+','+
-                    TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(0, Month));
+    TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(Year, Month) + ',' +
+    TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(0, Month));
 end;
 
 procedure TJvCustomMonthCalendar.DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray);
 var
-  aDate: TDateTime;
+  LDate: TDateTime;
   I: Integer;
   Y, M: Word;
 begin
@@ -1018,11 +1018,11 @@ begin
     end;
 
   with DayState.stStart do
-    aDate := Trunc(EncodeDate(wYear, wMonth, 1));
+    LDate := Trunc(EncodeDate(wYear, wMonth, 1));
 
   if Assigned(FOnGetState) then
     with DayState do
-      FOnGetState(Self, aDate, cDayState, StateArray);
+      FOnGetState(Self, LDate, cDayState, StateArray);
   DayState.prgDayState := PMonthDayState(@StateArray);
 end;
 
@@ -1111,16 +1111,16 @@ end;
 
 function TJvCustomMonthCalendar.GetFirstSelDate: TDateTime;
 var
-  rgst: array [0..1] of TSystemTime;
+  RGST: array [0..1] of TSystemTime;
 begin
   Result := FFirstSelDate;
   if not HandleAllocated then
     Exit;
   if FMultiSelect then
-    MonthCal_GetSelRange(Handle, @rgst[0])
+    MonthCal_GetSelRange(Handle, @RGST[0])
   else
-    MonthCal_GetCurSel(Handle, rgst[0]);
-  with rgst[0] do
+    MonthCal_GetCurSel(Handle, RGST[0]);
+  with RGST[0] do
     FFirstSelDate := EncodeDate(wYear, wMonth, wDay);
   Result := FFirstSelDate;
 end;
@@ -1136,7 +1136,7 @@ end;
 
 function TJvCustomMonthCalendar.GetLastSelDate: TDateTime;
 var
-  rgst: array [0..1] of TSystemTime;
+  RGST: array [0..1] of TSystemTime;
 begin
   Result := FLastSelDate;
   if not HandleAllocated then
@@ -1146,14 +1146,14 @@ begin
     Result := FLastSelDate;
     Exit;
   end;
-  if MonthCal_GetSelRange(Handle, @rgst[0]) then
-    with rgst[1] do
+  if MonthCal_GetSelRange(Handle, @RGST[0]) then
+    with RGST[1] do
       FLastSelDate := Trunc(EncodeDate(wYear, wMonth, wDay));
 end;
 
 procedure TJvCustomMonthCalendar.SetSelectedDays(dFrom, dTo: TDateTime);
 var
-  rgst: array [0..1] of TSystemTime;
+  RGST: array [0..1] of TSystemTime;
 begin
   if not HandleAllocated then
     Exit;
@@ -1161,20 +1161,20 @@ begin
   begin
     if (dFrom <> 0) and (dTo <> 0) then
     begin
-      with rgst[0] do
+      with RGST[0] do
         DecodeDate(dFrom, wYear, wMonth, wDay);
-      with rgst[1] do
+      with RGST[1] do
         DecodeDate(dTo, wYear, wMonth, wDay);
-      MonthCal_SetSelRange(Handle, @rgst[0]);
+      MonthCal_SetSelRange(Handle, @RGST[0]);
     end
     else
       MonthCal_SetSelRange(Handle, nil);
   end
   else
   begin
-    with rgst[0] do
+    with RGST[0] do
       DecodeDate(dFrom, wYear, wMonth, wDay);
-    MonthCal_SetCurSel(Handle, rgst[0]);
+    MonthCal_SetCurSel(Handle, RGST[0]);
   end;
 end;
 

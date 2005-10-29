@@ -285,7 +285,7 @@ uses
   SysUtils, Math,
   Registry, CommCtrl, MMSystem,
   ComCtrls, // needed for GetComCtlVersion
-  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
+  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -294,7 +294,7 @@ const
   CTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
-  DefaultTextFlags:Longint = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
+  DefaultTextFlags: Longint = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
 
 type
   TGlobalCtrl = class(TComponent)
@@ -346,13 +346,6 @@ begin
 end;
 
 function DesktopRect: TRect;
-{$IFNDEF COMPILER7_UP}
-const
-  SM_XVIRTUALSCREEN = 76;
-  SM_YVIRTUALSCREEN = 77;
-  SM_CXVIRTUALSCREEN = 78;
-  SM_CYVIRTUALSCREEN = 79;
-{$ENDIF !COMPILER7_UP}
 begin
   Result := Rect(GetSystemMetrics(SM_XVIRTUALSCREEN),
                  GetSystemMetrics(SM_YVIRTUALSCREEN),
@@ -361,12 +354,6 @@ begin
 end;
 
 {$IFDEF COMPILER5}
-
-const
-  SPI_GETTOOLTIPANIMATION = $1016;
-  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
-  SPI_GETTOOLTIPFADE = $1018;
-  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
 
 type
   TAnimateWindowProc = function(hWnd: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
@@ -750,8 +737,6 @@ begin
 end;
 
 procedure TJvBalloonWindow.CreateParams(var Params: TCreateParams);
-const
-  CS_DROPSHADOW = $00020000;
 begin
   inherited CreateParams(Params);
   { Drop shadow in combination with custom animation may cause blurry effect,
@@ -1489,11 +1474,12 @@ const
   }
 
   { ikApplication, ikError, ikInformation, ikQuestion, ikWarning }
-  CIcons: array [TPictureType, ikApplication..ikWarning] of Integer = (
+  CIcons: array [TPictureType, ikApplication..ikWarning] of Integer =
+   (
     (100, 103, 104, 102, 101),                             // XP
     (OIC_SAMPLE, 20480, 20481, OIC_QUES, 20482),           // Normal
     (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG)   // Paranoid
-    );
+   );
   CFlags: array [Boolean] of UINT = (0, LR_SHARED);
 var
   IconKind: TJvIconKind;
@@ -1810,7 +1796,8 @@ procedure TJvBalloonWindowEx.InternalActivateHint(var Rect: TRect;
 const
   {TJvAnimationStyle = (atNone, atSlide, atRoll, atRollHorNeg, atRollHorPos, atRollVerNeg,
     atRollVerPos, atSlideHorNeg, atSlideHorPos, atSlideVerNeg, atSlideVerPos, atCenter, atBlend);}
-  CAnimationStyle: array [TJvAnimationStyle] of Integer = (0, AW_SLIDE, 0, AW_HOR_NEGATIVE,
+  CAnimationStyle: array [TJvAnimationStyle] of Integer =
+   (0, AW_SLIDE, 0, AW_HOR_NEGATIVE,
     AW_HOR_POSITIVE, AW_VER_NEGATIVE, AW_VER_POSITIVE, AW_HOR_NEGATIVE or AW_SLIDE,
     AW_HOR_POSITIVE or AW_SLIDE, AW_VER_NEGATIVE or AW_SLIDE, AW_VER_POSITIVE or AW_SLIDE,
     AW_CENTER, AW_BLEND);

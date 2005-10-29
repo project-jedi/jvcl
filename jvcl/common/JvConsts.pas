@@ -32,7 +32,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Forms, Controls, Graphics, Windows;
+  SysUtils, Classes, Forms, Controls, Graphics, Windows,
+  JvWin32;
 
 {$IFDEF VisualCLX}
 const
@@ -159,12 +160,7 @@ const
   {$ENDIF COMPILER7_UP}
 
   {$IFDEF COMPILER5}
-  { Standard Windows colors that are not defined in Delphi 5}
-  COLOR_MENUHILIGHT = 29;
-  {$EXTERNALSYM COLOR_MENUHILIGHT}
-  COLOR_MENUBAR = 30;
-  {$EXTERNALSYM COLOR_MENUBAR}
-
+  // Delphi colors not defined in Delphi 5
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
@@ -249,9 +245,6 @@ const
 
   AF_ICON     = $00000001;
   AF_SEQUENCE = $00000002;
-
-const
-  SC_DRAGMOVE = $F012;
 
 const
   KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];

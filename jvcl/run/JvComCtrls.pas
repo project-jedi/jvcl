@@ -58,18 +58,10 @@ uses
   {$IFDEF VisualCLX}
   Qt, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls;
+  JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32;
 
 const
   JvDefPageControlBorder = 4;
-  {$IFDEF VCL}
-
-  TVM_SETLINECOLOR = TV_FIRST + 40;
-  {$EXTERNALSYM TVM_SETLINECOLOR}
-
-  TVM_GETLINECOLOR = TV_FIRST + 41;
-  {$EXTERNALSYM TVM_GETLINECOLOR}
-  {$ENDIF VCL}
   JvDefaultInactiveColorFrom = TColor($D7D7D7);
   JvDefaultInactiveColorTo= TColor($ADADAD);
 

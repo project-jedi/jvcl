@@ -216,7 +216,7 @@ const
 implementation
 
 uses
-  JvJCLUtils;
+  JvJCLUtils, JclWin32;
 
 //=== { TJvCapBtn } ==========================================================
 
