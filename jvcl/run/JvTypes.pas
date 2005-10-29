@@ -45,6 +45,9 @@ uses
   {$IFDEF VisualCLX}
   Qt, JclWideStrings,
   {$ENDIF VisualCLX}
+  {$IFDEF COMPILER5}
+  JvWin32,
+  {$ENDIF COMPILER5}
   JvConsts, JvResources;
 
 const
