@@ -92,7 +92,7 @@ implementation
 
 uses
   Dialogs,
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvWin32;
 
 //=== { TJvStickSizer } ======================================================
 

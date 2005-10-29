@@ -1715,10 +1715,10 @@ begin
   if (ReadOnly) and (Key = Chr(VK_BACK)) then
     Key := #0;
   inherited KeyPress(Key);
-{$IFDEF COMPILER5}
+  {$IFDEF COMPILER5}
   if AutoComplete then
     FAutoCompleteCode.AutoComplete(Key);
-{$ENDIF COMPILER5}
+  {$ENDIF COMPILER5}
 end;
 
 {$IFDEF COMPILER5}

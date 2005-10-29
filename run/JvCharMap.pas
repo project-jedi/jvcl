@@ -401,6 +401,9 @@ implementation
 
 uses
   SysUtils, Math, Forms,
+  {$IFDEF MSWINDOWS}
+  JvWin32,
+  {$ENDIF MSWINDOWS}
   JvConsts;
 
 const
@@ -521,14 +524,6 @@ end;
 type
   TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF;
     bAlpha: Byte; dwFlags: DWORD): Boolean; {$IFNDEF CLR} stdcall; {$ENDIF}
-
-{$IFDEF COMPILER5}
-const
-  {$EXTERNALSYM WS_EX_LAYERED}
-  WS_EX_LAYERED = $00080000;
-  {$EXTERNALSYM LWA_ALPHA}
-  LWA_ALPHA = $00000002;
-{$ENDIF COMPILER5}
 
 constructor TShadowWindow.Create(AOwner: TComponent);
 begin

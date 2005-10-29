@@ -66,13 +66,7 @@ uses
   Types,
   {$ENDIF HAS_UNIT_TYPES}
   ActnList, ImgList,
-  JvComponentBase, JvTypes;
-
-{$IFDEF COMPILER5}
-const
-  {$EXTERNALSYM AC_SRC_ALPHA}
-  AC_SRC_ALPHA = $01;
-{$ENDIF COMPILER5}
+  JvComponentBase, JvTypes, JvWin32;
 
 type
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
