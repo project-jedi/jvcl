@@ -114,7 +114,7 @@ unit JvAMGIFImage;
 
 {$IFDEF BCB}
 {$ObjExportAll On}
-{$ENDIF}
+{$ENDIF BCB}
 
 interface
 
