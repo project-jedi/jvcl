@@ -130,19 +130,7 @@ interface
                                 optimized and overflow- and range checks will be
                                 enabled.
 
-  DEBUG_HASHPERFORMANCE         Calculates hash table performance data.
-  DEBUG_HASHFILLFACTOR          Calculates fill factor of hash table -
-                                Interferes with DEBUG_HASHPERFORMANCE.
-  DEBUG_COMPRESSPERFORMANCE     Calculates LZW compressor performance data.
-  DEBUG_DECOMPRESSPERFORMANCE   Calculates LZW decompressor performance data.
-  DEBUG_DITHERPERFORMANCE       Calculates color reduction performance data.
-  DEBUG_DRAWPERFORMANCE         Calculates low level drawing performance data.
-                                The performance data for DEBUG_DRAWPERFORMANCE
-                                will be displayed when you press the Ctrl key.
-  DEBUG_RENDERPERFORMANCE       Calculates performance data for the GIF to
-                                bitmap converter.
-                                The performance data for DEBUG_DRAWPERFORMANCE
-                                will be displayed when you press the Ctrl key.
+  DEBUG_                        (rom) removed
 
   GIF_NOSAFETY                  Define this symbol to disable overflow- and
                                 range checks.
@@ -221,108 +209,24 @@ interface
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Delphi 1.X
 {$IFDEF DELPHI1}
-  'Error: TGIFImage does not support Delphi 1.X'
+  'Error: TGIFImage does not support Delphi 1.x'
 {$ENDIF DELPHI1}
 
-// C++ Builder 1.X
+// C++ Builder 1.x
 // Good luck...
 
-// Delphi 3.X
-{$IFDEF VER100}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE D3_BCB3}
-{$ENDIF}
+// C++ Builder 3.x and later
+{$IFDEF COMPILER35_UP}
+{$DEFINE BAD_STACK_ALIGNMENT}
+{$ENDIF COMPILER35_UP}
 
-// C++ Builder 3.X
-{$IFDEF VER110}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE D3_BCB3}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
-
-// Delphi 4.X
-{$IFDEF VER120}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE VER12_PLUS}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
-
-// C++ Builder 4.X
-{$IFDEF VER125}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE VER12_PLUS}
-  {$DEFINE VER125_PLUS}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
-
-// Delphi 5.X
-{$IFDEF VER130}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE VER12_PLUS}
-  {$DEFINE VER125_PLUS}
-  {$DEFINE VER13_PLUS}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
-
-// Delphi 6.X
-{$IFDEF VER140}
+// Delphi 6.x and later
+{$IFDEF COMPILER6_UP}
 {$WARN SYMBOL_PLATFORM OFF}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE VER12_PLUS}
-  {$DEFINE VER125_PLUS}
-  {$DEFINE VER13_PLUS}
-  {$DEFINE VER14_PLUS}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
-// Delphi 7.X
-{$IFDEF VER150}
-{$WARN SYMBOL_PLATFORM OFF}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE VER12_PLUS}
-  {$DEFINE VER125_PLUS}
-  {$DEFINE VER13_PLUS}
-  {$DEFINE VER14_PLUS}
-  {$DEFINE VER15_PLUS}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
-
-// 2003.03.09 ->
-// Unknown compiler version - assume D4 compatible
-//{$IFNDEF COMPILER2}
-//  {$IFNDEF VER10_PLUS}
-//    {$DEFINE VER10_PLUS}
-//    {$DEFINE VER11_PLUS}
-//    {$DEFINE VER12_PLUS}
-//    {$DEFINE BAD_STACK_ALIGNMENT}
-//  {$ENDIF}
-//{$ENDIF}
-// 2003.03.09 <-
-
-// 2003.03.09 ->
-// Unknown compiler version - assume D7 compatible
-{$IFNDEF COMPILER2}
-{$IFNDEF VER10_PLUS}
-{$WARN SYMBOL_PLATFORM OFF}
-  {$DEFINE VER10_PLUS}
-  {$DEFINE VER11_PLUS}
-  {$DEFINE VER12_PLUS}
-  {$DEFINE VER125_PLUS}
-  {$DEFINE VER13_PLUS}
-  {$DEFINE VER14_PLUS}
-  {$DEFINE VER15_PLUS}
-  {$DEFINE BAD_STACK_ALIGNMENT}
-{$ENDIF}
-{$ENDIF}
-// 2003.03.09 <-
+// (rom) no default anymore if unknown compiler
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -342,19 +246,14 @@ interface
   {$IFDEF GIF_NOSAFETY}
     {$Q-}// OVERFLOWCHECKS
     {$R-}// RANGECHECKS
-  {$ENDIF}
-{$ENDIF}
+  {$ENDIF GIF_NOSAFETY}
+{$ENDIF DEBUG}
 
 // Special options for Time2Help parser
 {$IFDEF TIME2HELP}
 {$UNDEF PIXELFORMAT_TOO_SLOW}
-{$ENDIF}
+{$ENDIF TIME2HELP}
 
-////////////////////////////////////////////////////////////////////////////////
-//
-//                      External dependecies
-//
-////////////////////////////////////////////////////////////////////////////////
 uses
   Windows, Classes, SysUtils, Graphics;
 
@@ -470,13 +369,13 @@ type
     procedure UnlockList;
   end;
 
-  // From Delphi 3 sysutils.pas
+  // From Delphi 3 SysUtils.pas
   EOutOfMemory = class(Exception);
 
-  // From Delphi 3 classes.pas
+  // From Delphi 3 Classes.pas
   EOutOfResources = class(EOutOfMemory);
 
-  // From Delphi 3 windows.pas
+  // From Delphi 3 Windows.pas
   PMaxLogPalette = ^TMaxLogPalette;
   TMaxLogPalette = packed record
     palVersion: Word;
@@ -484,12 +383,12 @@ type
     palPalEntry: array [Byte] of TPaletteEntry;
   end;
 
-  // From Delphi 3 graphics.pas. Used by the D3 TGraphic class.
+  // From Delphi 3 Graphics.pas. Used by the D3 TGraphic class.
   TProgressStage = (psStarting, psRunning, psEnding);
   TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
     PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string) of object;
 
-  // From Delphi 3 windows.pas
+  // From Delphi 3 Windows.pas
   PRGBTriple = ^TRGBTriple;
 {$ENDIF COMPILER2}
 
@@ -512,7 +411,7 @@ type
     FGIFImage: TGIFImage;
   protected
     function GetVersion: TGIFVersion; virtual;
-    procedure Warning(Severity: TGIFSeverity; Message: string); virtual;
+    procedure Warning(Severity: TGIFSeverity; Msg: string); virtual;
   public
     constructor Create(GIFImage: TGIFImage); virtual;
 
@@ -537,7 +436,7 @@ type
     function GetItem(Index: Integer): TGIFItem;
     procedure SetItem(Index: Integer; Item: TGIFItem);
     function GetCount: Integer;
-    procedure Warning(Severity: TGIFSeverity; Message: string); virtual;
+    procedure Warning(Severity: TGIFSeverity; Msg: string); virtual;
   public
     constructor Create(Image: TGIFImage);
     destructor Destroy; override;
@@ -598,7 +497,7 @@ type
     function GetBitsPerPixel: Integer;
     function DoOptimize: Boolean;
     procedure SetCapacity(Size: Integer);
-    procedure Warning(Severity: TGIFSeverity; Message: string); virtual; abstract;
+    procedure Warning(Severity: TGIFSeverity; Msg: string); virtual; abstract;
     procedure BuildHistogram(var Histogram: TColormapHistogram); virtual; abstract;
     procedure MapImages(var Map: TColormapReverse); virtual; abstract;
 
@@ -697,7 +596,7 @@ type
     class function FindSubExtension(Stream: TStream): TGIFExtensionClass; virtual;
   public
      // Ignore compiler warning about hiding base class constructor
-    constructor Create(ASubImage: TGIFSubImage); {$IFDEF VER12_PLUS} reintroduce; {$ENDIF} virtual;
+    constructor Create(ASubImage: TGIFSubImage); {$IFDEF COMPILER4_UP} reintroduce; {$ENDIF} virtual;
     destructor Destroy; override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -1048,7 +947,8 @@ type
 
   // Color reduction methods
   TColorReduction =
-    (rmNone,                    // Do not perform color reduction
+    (
+     rmNone,                    // Do not perform color reduction
      rmWindows20,               // Reduce to the Windows 20 color system palette
      rmWindows256,              // Reduce to the Windows 256 color halftone palette (Only works in 256 color display mode)
      rmWindowsGray,             // Reduce to the Windows 4 grayscale colors
@@ -1059,8 +959,10 @@ type
      rmQuantizeWindows,         // Reduce to optimal 256 color windows palette
      rmPalette                  // Reduce to custom palette
     );
+
   TDitherMode =
-    (dmNearest,                 // Nearest color matching w/o error correction
+    (
+     dmNearest,                 // Nearest color matching w/o error correction
      dmFloydSteinberg,          // Floyd Steinberg Error Diffusion dithering
      dmStucki,                  // Stucki Error Diffusion dithering
      dmSierra,                  // Sierra Error Diffusion dithering
@@ -1072,7 +974,8 @@ type
 
   // Optimization options
   TGIFOptimizeOption =
-    (ooCrop,                    // Crop animated GIF frames
+    (
+     ooCrop,                    // Crop animated GIF frames
      ooMerge,                   // Merge pixels of same color
      ooCleanup,                 // Remove comments and application extensions
      ooColorMap,                // Sort color map by usage and remove unused entries
@@ -1081,7 +984,8 @@ type
   TGIFOptimizeOptions = set of TGIFOptimizeOption;
 
   TGIFDrawOption =
-    (goAsync,                   // Asyncronous draws (paint in thread)
+    (
+     goAsync,                   // Asyncronous draws (paint in thread)
      goTransparent,             // Transparent draws
      goAnimate,                 // Animate draws
      goLoop,                    // Loop animations
@@ -1093,6 +997,7 @@ type
      goDither,                  // Dither to Netscape palette
      goAutoDither               // Only dither on 256 color systems
     );
+
   TGIFDrawOptions = set of TGIFDrawOption;
   // Note: if goAsync is not set then goDirectDraw should be set. Otherwise
   // the image will not be displayed.
@@ -1160,7 +1065,7 @@ type
     property EventHandle: THandle read FEventHandle;
   end;
 
-  TGIFWarning = procedure(Sender: TObject; Severity: TGIFSeverity; Message: string) of object;
+  TGIFWarning = procedure(Sender: TObject; Severity: TGIFSeverity; Msg: string) of object;
 
   TGIFImage = class(TGraphic)
   private
@@ -1252,7 +1157,7 @@ type
     procedure PaintStop;
     procedure PaintResume;
     procedure PaintRestart;
-    procedure Warning(Sender: TObject; Severity: TGIFSeverity; Message: string); virtual;
+    procedure Warning(Sender: TObject; Severity: TGIFSeverity; Msg: string); virtual;
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
@@ -1317,7 +1222,7 @@ function CreateOptimizedPaletteFromManyBitmaps(Bitmaps: TList;
   Colors, ColorBits: Integer; Windows: Boolean): HPALETTE;
 
 {$IFDEF COMPILER2}
-  // From Delphi 3 graphics.pas
+  // From Delphi 3 Graphics.pas
 type
   TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit, pf32bit, pfCustom);
 {$ENDIF COMPILER2}
@@ -1432,13 +1337,13 @@ resourcestring
   sInvalidData          = 'Invalid GIF data';
   sBadHeight            = 'Image height too small for contained frames';
   sBadWidth             = 'Image width too small for contained frames';
-  {$IFNDEF REGISTER_TGIFIMAGE}
-  sGIFToClipboard       = 'Clipboard operations not supported for GIF objects';
-  {$ELSE}
+  {$IFDEF REGISTER_TGIFIMAGE}
   sFailedPaste          = 'Failed to store GIF on clipboard';
   {$IFDEF COMPILER2}
   sUnknownClipboardFormat= 'Unsupported clipboard format';
   {$ENDIF COMPILER2}
+  {$ELSE}
+  sGIFToClipboard       = 'Clipboard operations not supported for GIF objects';
   {$ENDIF REGISTER_TGIFIMAGE}
   sScreenSizeExceeded   = 'Image exceeds Logical Screen size';
   sNoColorTable         = 'No global or local color table defined';
@@ -1477,7 +1382,6 @@ resourcestring
   sProgressCopying      = 'Copying...';
   sProgressOptimizing   = 'Optimizing...';
 
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -1485,39 +1389,10 @@ resourcestring
 //
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
 implementation
 
-{ This makes me long for the C preprocessor... }
-{$IFDEF DEBUG}
-  {$IFDEF DEBUG_COMPRESSPERFORMANCE}
-    {$DEFINE DEBUG_PERFORMANCE}
-  {$ELSE}
-    {$IFDEF DEBUG_DECOMPRESSPERFORMANCE}
-      {$DEFINE DEBUG_PERFORMANCE}
-    {$ELSE}
-      {$IFDEF DEBUG_DITHERPERFORMANCE}
-        {$DEFINE DEBUG_PERFORMANCE}
-      {$ELSE}
-        {$IFDEF DEBUG_DITHERPERFORMANCE}
-          {$DEFINE DEBUG_PERFORMANCE}
-        {$ELSE}
-          {$IFDEF DEBUG_DRAWPERFORMANCE}
-            {$DEFINE DEBUG_PERFORMANCE}
-          {$ELSE}
-            {$IFDEF DEBUG_RENDERPERFORMANCE}
-              {$DEFINE DEBUG_PERFORMANCE}
-            {$ENDIF}
-          {$ENDIF}
-        {$ENDIF}
-      {$ENDIF}
-    {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
-
 uses
-  {$IFDEF DEBUG}
-  Dialogs,
-  {$ENDIF DEBUG}
   MMSystem, // timeGetTime()
   Messages, Consts;
 
@@ -1602,11 +1477,12 @@ end;
 *)
 {$RANGECHECKS OFF}
 
-{$IFDEF D3_BCB3}
+// (rom) this needs to be tested for BCB
+{$IFDEF COMPILER3}
 function GDICheck(Value: Integer): Integer;
 {$ELSE}
 function GDICheck(Value: Cardinal): Cardinal;
-{$ENDIF}
+{$ENDIF COMPILER3}
 var
   ErrorCode: Integer;
   Buf: array [Byte] of Char;
@@ -2143,10 +2019,10 @@ begin
 end;
 {$ENDIF COMPILER2}
 
-{$IFDEF VER100}
+{$IFDEF COMPILER3}
 var
   pf8BitBitmap: TBitmap = nil;
-{$ENDIF}
+{$ENDIF COMPILER3}
 
 // ------------------
 // SafeSetPixelFormat
@@ -2171,32 +2047,9 @@ begin
   SetPixelFormat(Bitmap, PixelFormat);
 end;
 {$ELSE}
-{$IFNDEF VER100}
+{$IFDEF COMPILER3}
 var
-  Palette: HPALETTE;
-begin
-  Bitmap.PixelFormat := PixelFormat;
-
-  // Work around a bug in TBitmap:
-  // When converting to pf8bit format, the palette assigned to TBitmap.Palette
-  // will be a half tone palette (which only contains the 20 system colors).
-  // Unfortunately this is not the palette used to render the bitmap and it
-  // is also not the palette saved with the bitmap.
-  if PixelFormat = pf8bit then
-  begin
-    // Disassociate the wrong palette from the bitmap (without affecting
-    // the DIB color table)
-    Palette := Bitmap.ReleasePalette;
-    if Palette <> 0 then
-      DeleteObject(Palette);
-    // Recreate the palette from the DIB color table
-    Bitmap.Palette;
-  end;
-end;
-{$ELSE}
-var
-  Width,
-    Height: Integer;
+  Width, Height: Integer;
 begin
   if PixelFormat = pf8bit then
   begin
@@ -2224,7 +2077,29 @@ begin
     // This is safe since only pf8bit leaks
     Bitmap.PixelFormat := PixelFormat;
 end;
-{$ENDIF}
+{$ELSE}
+var
+  Palette: HPALETTE;
+begin
+  Bitmap.PixelFormat := PixelFormat;
+
+  // Work around a bug in TBitmap:
+  // When converting to pf8bit format, the palette assigned to TBitmap.Palette
+  // will be a half tone palette (which only contains the 20 system colors).
+  // Unfortunately this is not the palette used to render the bitmap and it
+  // is also not the palette saved with the bitmap.
+  if PixelFormat = pf8bit then
+  begin
+    // Disassociate the wrong palette from the bitmap (without affecting
+    // the DIB color table)
+    Palette := Bitmap.ReleasePalette;
+    if Palette <> 0 then
+      DeleteObject(Palette);
+    // Recreate the palette from the DIB color table
+    Bitmap.Palette;
+  end;
+end;
+{$ENDIF COMPILER3}
 {$ENDIF COMPILER2}
 
 {$IFDEF COMPILER2}
@@ -2359,7 +2234,7 @@ end;
 
 // Dummy Assert procedure since Assert does not exist in Delphi 2.X
 
-procedure Assert(Condition: Boolean; Message: string);
+procedure Assert(Condition: Boolean; Msg: string);
 begin
 end;
 
@@ -2517,21 +2392,21 @@ begin
 
   FHeight := AHeight;
   FWidth := AWidth;
-  {$IFNDEF PIXELFORMAT_TOO_SLOW}
+  {$IFDEF PIXELFORMAT_TOO_SLOW}
+  FPalette := APalette;
+  FDIBInfo := nil;
+  FDIBBits := nil;
+  {$IFNDEF CREATEDIBSECTION_SLOW}
+  FDIB := 0;
+  {$ENDIF !CREATEDIBSECTION_SLOW}
+  {$ELSE}
   FBitmap.Palette := 0;
   FBitmap.Height := FHeight;
   FBitmap.Width := FWidth;
   SafeSetPixelFormat(FBitmap, FPixelFormat);
   FPalette := CopyPalette(APalette);
   FBitmap.Palette := FPalette;
-  {$ELSE}
-  FPalette := APalette;
-  FDIBInfo := nil;
-  FDIBBits := nil;
-  {$IFNDEF CREATEDIBSECTION_SLOW}
-  FDIB := 0;
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF PIXELFORMAT_TOO_SLOW}
 end;
 
 destructor TDIBWriter.Destroy;
@@ -2560,7 +2435,7 @@ begin
   end;
   {$ELSE}
   Result := FBitmap.ScanLine[Row];
-  {$ENDIF}
+  {$ENDIF PIXELFORMAT_TOO_SLOW}
 end;
 
 procedure TDIBWriter.CreateDIB;
@@ -2608,7 +2483,7 @@ var
       @@END:
     end;
   end;
-  {$ENDIF}
+{$ENDIF PIXELFORMAT_TOO_SLOW}
 begin
   {$IFDEF PIXELFORMAT_TOO_SLOW}
   FreeDIB;
@@ -2676,12 +2551,12 @@ begin
     finally
 //      ReleaseDC(0, ScreenDC);
     end;
-    {$ENDIF}
+    {$ENDIF CREATEDIBSECTION_SLOW}
   except
     FreeDIB;
     raise;
   end;
-  {$ENDIF}
+  {$ENDIF PIXELFORMAT_TOO_SLOW}
 end;
 
 procedure TDIBWriter.FreeDIB;
@@ -2696,10 +2571,10 @@ begin
   if FDIB <> 0 then
     DeleteObject(FDIB);
   FDIB := 0;
-  {$ENDIF}
+  {$ENDIF CREATEDIBSECTION_SLOW}
   FDIBInfo := nil;
   FDIBBits := nil;
-  {$ENDIF}
+  {$ENDIF PIXELFORMAT_TOO_SLOW}
 end;
 
 procedure TDIBWriter.NeedDIB;
@@ -2709,9 +2584,9 @@ begin
   if FDIBBits = nil then
   {$ELSE}
   if FDIB = 0 then
-  {$ENDIF}
+  {$ENDIF CREATEDIBSECTION_SLOW}
     CreateDIB;
-  {$ENDIF}
+  {$ENDIF PIXELFORMAT_TOO_SLOW}
 end;
 
 // Convert the DIB created by CreateDIB back to a TBitmap
@@ -2722,7 +2597,7 @@ var
   Stream: TMemoryStream;
   FileSize: Longint;
   BitmapFileHeader: TBitmapFileHeader;
-{$ENDIF}
+{$ENDIF PIXELFORMAT_TOO_SLOW}
 begin
   {$IFDEF PIXELFORMAT_TOO_SLOW}
 
@@ -2730,12 +2605,12 @@ begin
   if FDIBBits = nil then
   {$ELSE}
   if FDIB = 0 then
-  {$ENDIF}
+  {$ENDIF CREATEDIBSECTION_SLOW}
     Exit;
 
   // Win95 and NT differs in what solution performs best
   {$IFNDEF CREATEDIBSECTION_SLOW}
-  {$IFDEF VER10_PLUS}
+  {$IFDEF COMPILER3_UP}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
     // Assign DIB to bitmap
@@ -2744,8 +2619,8 @@ begin
     FBitmap.Palette := CopyPalette(Palette);
   end
   else
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF COMPILER3_UP}
+  {$ENDIF !CREATEDIBSECTION_SLOW}
   begin
     // Write DIB to a stream in the BMP file format
     Stream := TMemoryStream.Create;
@@ -2775,7 +2650,7 @@ begin
       Stream.Free;
     end;
   end;
-  {$ENDIF}
+  {$ENDIF PIXELFORMAT_TOO_SLOW}
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2885,7 +2760,7 @@ begin
     FInverseLookup^[I] := -1;
 
   // Premap palette colors
-  if (FColors > 0) then
+  if FColors > 0 then
     for I := 0 to FColors - 1 do
       with FPaletteEntries^[I] do
       begin
@@ -3242,7 +3117,7 @@ end;
 procedure TDitherEngine.NextLine;
 begin
   FDirection := -FDirection;
-  if (FDirection = 1) then
+  if FDirection = 1 then
     FColumn := 0
   else
     FColumn := Width - 1;
@@ -4651,9 +4526,6 @@ var
   SrcScanLine, Src: PRGBTriple;
   DstScanLine, Dst: PChar;
   BGR: TRGBTriple;
-  {$IFDEF DEBUG_DITHERPERFORMANCE}
-  TimeStart, TimeStop: DWORD;
-  {$ENDIF DEBUG_DITHERPERFORMANCE}
 
   function GrayScalePalette: HPALETTE;
   var
@@ -4732,11 +4604,6 @@ var
   end;
 
 begin
-  {$IFDEF DEBUG_DITHERPERFORMANCE}
-  timeBeginPeriod(5);
-  TimeStart := timeGetTime;
-  {$ENDIF DEBUG_DITHERPERFORMANCE}
-
   Result := TBitmap.Create;
   try
     if ColorReduction = rmNone then
@@ -4749,7 +4616,7 @@ begin
     end;
 
     {$IFNDEF COMPILER2}
-    if (Bitmap.Width * Bitmap.Height > BitmapAllocationThreshold) then
+    if Bitmap.Width * Bitmap.Height > BitmapAllocationThreshold then
       SetPixelFormat(Result, pf1bit); // To reduce resource consumption of resize
     {$ENDIF !COMPILER2}
 
@@ -4812,7 +4679,7 @@ begin
       end;
 
       // Nothing to do if palette doesn't contain any colors
-      if (ColorLookup.Colors = 0) then
+      if ColorLookup.Colors = 0 then
         Exit;
 
       // Create a ditherer based on current options
@@ -4878,15 +4745,6 @@ begin
     Result.Free;
     raise;
   end;
-
-  {$IFDEF DEBUG_DITHERPERFORMANCE}
-  TimeStop := timeGetTime;
-  ShowMessage(Format('Dithered %d pixels in %d mS, Rate %d pixels/mS (%d pixels/S)',
-    [Bitmap.Height * Bitmap.Width, TimeStop - TimeStart,
-     MulDiv(Bitmap.Height, Bitmap.Width, TimeStop - TimeStart + 1),
-     MulDiv(Bitmap.Height, Bitmap.Width * 1000, TimeStop - TimeStart + 1)]));
-  timeEndPeriod(5);
-  {$ENDIF DEBUG_DITHERPERFORMANCE}
 end;
 
 {$IFDEF RANGECHECKS_ON}
@@ -5330,9 +5188,9 @@ begin
   FGIFImage := GIFImage;
 end;
 
-procedure TGIFItem.Warning(Severity: TGIFSeverity; Message: string);
+procedure TGIFItem.Warning(Severity: TGIFSeverity; Msg: string);
 begin
-  FGIFImage.Warning(Self, Severity, Message);
+  FGIFImage.Warning(Self, Severity, Msg);
 end;
 
 function TGIFItem.GetVersion: TGIFVersion;
@@ -5464,9 +5322,9 @@ begin
     TGIFItem(FItems[I]).SaveToStream(Stream);
 end;
 
-procedure TGIFList.Warning(Severity: TGIFSeverity; Message: string);
+procedure TGIFList.Warning(Severity: TGIFSeverity; Msg: string);
 begin
-  Image.Warning(Self, Severity, Message);
+  Image.Warning(Self, Severity, Msg);
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -5479,7 +5337,7 @@ type
   private
     FHeader: TGIFHeader;
   protected
-    procedure Warning(Severity: TGIFSeverity; Message: string); override;
+    procedure Warning(Severity: TGIFSeverity; Msg: string); override;
     procedure BuildHistogram(var Histogram: TColormapHistogram); override;
     procedure MapImages(var Map: TColormapReverse); override;
   public
@@ -5494,9 +5352,9 @@ begin
   FHeader := HeaderItem;
 end;
 
-procedure TGIFGlobalColorMap.Warning(Severity: TGIFSeverity; Message: string);
+procedure TGIFGlobalColorMap.Warning(Severity: TGIFSeverity; Msg: string);
 begin
-  FHeader.Image.Warning(Self, Severity, Message);
+  FHeader.Image.Warning(Self, Severity, Msg);
 end;
 
 procedure TGIFGlobalColorMap.BuildHistogram(var Histogram: TColormapHistogram);
@@ -5751,7 +5609,7 @@ type
   private
     FSubImage: TGIFSubImage;
   protected
-    procedure Warning(Severity: TGIFSeverity; Message: string); override;
+    procedure Warning(Severity: TGIFSeverity; Msg: string); override;
     procedure BuildHistogram(var Histogram: TColormapHistogram); override;
     procedure MapImages(var Map: TColormapReverse); override;
   public
@@ -5766,9 +5624,9 @@ begin
   FSubImage := SubImage;
 end;
 
-procedure TGIFLocalColorMap.Warning(Severity: TGIFSeverity; Message: string);
+procedure TGIFLocalColorMap.Warning(Severity: TGIFSeverity; Msg: string);
 begin
-  FSubImage.Image.Warning(Self, Severity, Message);
+  FSubImage.Image.Warning(Self, Severity, Msg);
 end;
 
 procedure TGIFLocalColorMap.BuildHistogram(var Histogram: TColormapHistogram);
@@ -5871,10 +5729,6 @@ var
   LastByte: Integer;    // Index of last Byte in buffer
   GetDone, ReturnClear, ZeroBlock: Boolean;
   ClearValue: Byte;
-  {$IFDEF DEBUG_DECOMPRESSPERFORMANCE}
-  TimeStartDecompress: DWORD;
-  TimeStopDecompress: DWORD;
-  {$ENDIF DEBUG_DECOMPRESSPERFORMANCE}
 
   function NextCode(BitsPerCode: Integer): Integer;
   const
@@ -6083,10 +5937,6 @@ begin
 
   FillChar(FData^, FDataSize, ClearValue);
 
-  {$IFDEF DEBUG_DECOMPRESSPERFORMANCE}
-  TimeStartDecompress := timeGetTime;
-  {$ENDIF DEBUG_DECOMPRESSPERFORMANCE}
-
   (*
   ** Read initial code size in bits from stream
   *)
@@ -6157,12 +6007,6 @@ begin
       ;
 //      raise EGIFException.Create('Too much input data, ignoring extra...');
   end;
-  {$IFDEF DEBUG_DECOMPRESSPERFORMANCE}
-  TimeStopDecompress := timeGetTime;
-  ShowMessage(format('Decompressed %d pixels in %d mS, Rate %d pixels/mS',
-    [Height * Width, TimeStopDecompress - TimeStartDecompress,
-    (Height * Width) div (TimeStopDecompress - TimeStartDecompress + 1)]));
-  {$ENDIF DEBUG_DECOMPRESSPERFORMANCE}
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -6202,12 +6046,6 @@ type
   PHashArray = ^THashArray;
 
   THashTable = class
-    {$IFDEF DEBUG_HASHPERFORMANCE}
-    CountLookupFound: Longint;
-    CountMissFound: Longint;
-    CountLookupNotFound: Longint;
-    CountMissNotFound: Longint;
-    {$ENDIF DEBUG_HASHPERFORMANCE}
     FHashTable: PHashArray;
   public
     constructor Create;
@@ -6247,23 +6085,10 @@ begin
   inherited Create;
   GetMem(FHashTable, SizeOf(THashArray));
   Clear;
-  {$IFDEF DEBUG_HASHPERFORMANCE}
-  CountLookupFound := 0;
-  CountMissFound := 0;
-  CountLookupNotFound := 0;
-  CountMissNotFound := 0;
-  {$ENDIF DEBUG_HASHPERFORMANCE}
 end;
 
 destructor THashTable.Destroy;
 begin
-  {$IFDEF DEBUG_HASHPERFORMANCE}
-  ShowMessage(
-    Format('Found: %d  HitRate: %.2f',
-    [CountLookupFound, (CountLookupFound + 1) / (CountMissFound + 1)]) + #13 +
-    Format('Not found: %d  HitRate: %.2f',
-    [CountLookupNotFound, (CountLookupNotFound + 1) / (CountMissNotFound + 1)]));
-  {$ENDIF DEBUG_HASHPERFORMANCE}
   FreeMem(FHashTable);
   inherited Destroy;
 end;
@@ -6271,21 +6096,7 @@ end;
 // Clear hash table and fill with empty slots (doh!)
 
 procedure THashTable.Clear;
-{$IFDEF DEBUG_HASHFILLFACTOR}
-var
-  I,
-    Count: Longint;
-{$ENDIF DEBUG_HASHPERFORMANCE}
 begin
-  {$IFDEF DEBUG_HASHFILLFACTOR}
-  Count := 0;
-  for I := 0 to HashSize - 1 do
-    if (FHashTable[I] shr GIFCodeBits <> HashEmpty) then
-      Inc(Count);
-  ShowMessage(format('Size: %d, Filled: %d, Rate %.4f',
-    [HashSize, Count, Count / HashSize]));
-  {$ENDIF DEBUG_HASHPERFORMANCE}
-
   FillChar(FHashTable^, SizeOf(THashArray), $FF);
 end;
 
@@ -6313,16 +6124,10 @@ function THashTable.Lookup(Key: KeyInt): CodeInt;
 var
   HKey: CodeInt;
   HTKey: KeyInt;
-  {$IFDEF DEBUG_HASHPERFORMANCE}
-  N: Longint;
-  {$ENDIF DEBUG_HASHPERFORMANCE}
 begin
   // Create hash key from prefix string
   HKey := HashKey(Key);
 
-  {$IFDEF DEBUG_HASHPERFORMANCE}
-  N := 0;
-  {$ENDIF DEBUG_HASHPERFORMANCE}
   // Scan table for key
   // HTKey := FHashTable[HKey] shr GIFCodeBits; { Unoptimized }
   Key := Key shl GIFCodeBits; { Optimized }
@@ -6334,15 +6139,8 @@ begin
     begin
       // Extract and return value
       Result := FHashTable[HKey] and GIFCodeMask;
-      {$IFDEF DEBUG_HASHPERFORMANCE}
-      Inc(CountLookupFound);
-      Inc(CountMissFound, N);
-      {$ENDIF DEBUG_HASHPERFORMANCE}
       Exit;
     end;
-    {$IFDEF DEBUG_HASHPERFORMANCE}
-    Inc(N);
-    {$ENDIF DEBUG_HASHPERFORMANCE}
     // Try next slot
     HKey := NextHashKey(HKey);
     // HTKey := FHashTable[HKey] shr GIFCodeBits; { Unoptimized }
@@ -6350,10 +6148,6 @@ begin
   end;
   // Found empty slot - key doesn't exist
   Result := -1;
-  {$IFDEF DEBUG_HASHPERFORMANCE}
-  Inc(CountLookupNotFound);
-  Inc(CountMissNotFound, N);
-  {$ENDIF DEBUG_HASHPERFORMANCE}
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -6720,10 +6514,6 @@ procedure TGIFEncoder.Compress(AStream: TStream; ABitsPerPixel: Integer;
   AWidth, AHeight: Integer; AInterlace: Boolean; AData: PChar; AMaxColor: Integer);
 const
   EndBlockByte = $00; // End of block marker
-{$IFDEF DEBUG_COMPRESSPERFORMANCE}
-var
-  TimeStartCompress, TimeStopCompress: DWORD;
-{$ENDIF DEBUG_COMPRESSPERFORMANCE}
 begin
   MaxColor := AMaxColor;
   Stream := AStream;
@@ -6765,19 +6555,8 @@ begin
     GIFStream.Warning := Warning;
     if (Data <> nil) and (Height > 0) and (Width > 0) then
     begin
-      {$IFDEF DEBUG_COMPRESSPERFORMANCE}
-      TimeStartCompress := timeGetTime;
-      {$ENDIF DEBUG_COMPRESSPERFORMANCE}
-
       // Call compress implementation
       DoCompress;
-
-      {$IFDEF DEBUG_COMPRESSPERFORMANCE}
-      TimeStopCompress := timeGetTime;
-      ShowMessage(format('Compressed %d pixels in %d mS, Rate %d pixels/mS',
-        [Height * Width, TimeStopCompress - TimeStartCompress,
-        DWORD(Height * Width) div (TimeStopCompress - TimeStartCompress + 1)]));
-      {$ENDIF DEBUG_COMPRESSPERFORMANCE}
       // Output the final code.
       Output(EOFCode);
     end
@@ -7799,7 +7578,7 @@ begin
             for Col := 0 to Width - 1 do
             begin
               // Set a bit in the mask if the pixel is transparent
-              if (Src^ = Char(TransparentIndex)) then
+              if Src^ = Char(TransparentIndex) then
                 MaskByte := MaskByte or Bit;
 
               Bit := Bit shr 1;
@@ -7843,36 +7622,13 @@ begin
   end;
 end;
 
-{$IFDEF DEBUG_RENDERPERFORMANCE}
-var
-  ImageCount: DWORD = 0;
-  RenderTime: DWORD = 0;
-{$ENDIF DEBUG_RENDERPERFORMANCE}
-
 function TGIFSubImage.GetBitmap: TBitmap;
 var
   N: Integer;
-  {$IFDEF DEBUG_RENDERPERFORMANCE}
-  RenderStartTime: DWORD;
-  {$ENDIF DEBUG_RENDERPERFORMANCE}
 begin
-  {$IFDEF DEBUG_RENDERPERFORMANCE}
-  if GetAsyncKeyState(VK_CONTROL) <> 0 then
-  begin
-    ShowMessage(Format('Render %d images in %d mS, Rate %d mS/image (%d images/S)',
-      [ImageCount, RenderTime,
-       RenderTime div (ImageCount + 1),
-       MulDiv(ImageCount, 1000, RenderTime + 1)]));
-  end;
-  {$ENDIF DEBUG_RENDERPERFORMANCE}
   Result := FBitmap;
   if (Result <> nil) or Empty then
     Exit;
-
-  {$IFDEF DEBUG_RENDERPERFORMANCE}
-  Inc(ImageCount);
-  RenderStartTime := timeGetTime;
-  {$ENDIF DEBUG_RENDERPERFORMANCE}
   try
     Image.Progress(Self, psStarting, 0, False, Rect(0, 0, 0, 0), sProgressRendering);
     try
@@ -7898,9 +7654,6 @@ begin
     on EAbort do
       ; // OnProgress can raise EAbort to cancel image load
   end;
-  {$IFDEF DEBUG_RENDERPERFORMANCE}
-  Inc(RenderTime, timeGetTime - RenderStartTime);
-  {$ENDIF DEBUG_RENDERPERFORMANCE}
 end;
 
 procedure TGIFSubImage.SetBitmap(Value: TBitmap);
@@ -8060,7 +7813,7 @@ begin
   if ColorMap.Count > 0 then
   begin
     Pack := idLocalColorTable;
-    if (ColorMap.Optimized) then
+    if ColorMap.Optimized then
       Pack := Pack or idSort;
     Pack := (Pack and not (idColorTableSize)) or (ColorResolution and idColorTableSize);
   end
@@ -8144,11 +7897,11 @@ var
     Y: Integer;
   begin
     // Copy colormap
-    {$IFDEF VER10_PLUS}
+    {$IFDEF COMPILER3_UP}
     if FBitmap.HandleType = bmDIB then
       FColorMap.ImportDIBColors(FBitmap.Canvas.Handle)
     else
-    {$ENDIF}
+    {$ENDIF COMPILER3_UP}
       FColorMap.ImportPalette(FBitmap.Palette);
     // Copy pixels
     for Y := 0 to Height - 1 do
@@ -8560,11 +8313,11 @@ begin
         DIBSource.Free;
       end;
 
-      {$IFDEF VER10_PLUS}
+      {$IFDEF COMPILER3_UP}
       // Add mask for transparent bitmaps
       if TBitmap(Source).Transparent then
         AddMaskOnly(TBitmap(Source).MaskHandle);
-      {$ENDIF}
+      {$ENDIF COMPILER3_UP}
 
     finally
       if ExceptObject = nil then
@@ -8702,13 +8455,13 @@ begin
               // Mem := OrMask
               BitBlt(MemDC, SrcX, SrcY, SrcW, SrcH, OrMaskDC, SrcX, SrcY, SrcCopy);
               // Mem := Mem and Src
-              {$IFNDEF GIF_TESTMASK} // Define GIF_TESTMASK if you want to know what it does...
-              BitBlt(MemDC, SrcX, SrcY, SrcW, SrcH, SrcDC, SrcX, SrcY, SrcAnd);
-              {$ELSE}
+              {$IFDEF GIF_TESTMASK} // Define GIF_TESTMASK if you want to know what it does...
               StretchBlt(DstDC, DstX, DstY, DstW div 2, DstH, MemDC, SrcX, SrcY, SrcW, SrcH, SrcCopy);
               StretchBlt(DstDC, DstX + DstW div 2, DstY, DstW div 2, DstH, SrcDC, SrcX, SrcY, SrcW, SrcH, SrcCopy);
+              {$ELSE}
+              BitBlt(MemDC, SrcX, SrcY, SrcW, SrcH, SrcDC, SrcX, SrcY, SrcAnd);
               Exit;
-              {$ENDIF}
+              {$ENDIF GIF_TESTMASK}
             finally
               if OrMaskSave <> 0 then
                 SelectObject(OrMaskDC, OrMaskSave);
@@ -8767,14 +8520,7 @@ var
   MaskDC: HDC;
   Save: THandle;
   Tile: TRect;
-  {$IFDEF DEBUG_DRAWPERFORMANCE}
-  ImageCount, TimeStart, TimeStop: DWORD;
-  {$ENDIF DEBUG_DRAWPERFORMANCE}
 begin
-  {$IFDEF DEBUG_DRAWPERFORMANCE}
-  TimeStart := timeGetTime;
-  ImageCount := 0;
-  {$ENDIF DEBUG_DRAWPERFORMANCE}
   if DoTransparent and Transparent and HasMask then
   begin
     // Draw transparent using mask
@@ -8798,9 +8544,6 @@ begin
               Bitmap.Canvas.Handle, 0, 0, Width, Height, MaskDC, 0, 0);
             Tile.Top := Tile.Top + Image.Height;
             Tile.Bottom := Tile.Bottom + Image.Height;
-            {$IFDEF DEBUG_DRAWPERFORMANCE}
-            Inc(ImageCount);
-            {$ENDIF DEBUG_DRAWPERFORMANCE}
           end;
           Tile.Left := Tile.Left + Image.Width;
           Tile.Right := Tile.Right + Image.Width;
@@ -8836,9 +8579,6 @@ begin
           ACanvas.StretchDraw(Tile, Bitmap);
           Tile.Top := Tile.Top + Image.Height;
           Tile.Bottom := Tile.Bottom + Image.Height;
-          {$IFDEF DEBUG_DRAWPERFORMANCE}
-          Inc(ImageCount);
-          {$ENDIF DEBUG_DRAWPERFORMANCE}
         end;
         Tile.Left := Tile.Left + Image.Width;
         Tile.Right := Tile.Right + Image.Width;
@@ -8847,16 +8587,6 @@ begin
     else
       ACanvas.StretchDraw(Rect, Bitmap);
   end;
-  {$IFDEF DEBUG_DRAWPERFORMANCE}
-  if GetAsyncKeyState(VK_CONTROL) <> 0 then
-  begin
-    TimeStop := timeGetTime;
-    ShowMessage(Format('Draw %d images in %d mS, Rate %d images/mS (%d images/S)',
-      [ImageCount, TimeStop - TimeStart,
-       ImageCount div (TimeStop - TimeStart + 1),
-       MulDiv(ImageCount, 1000, TimeStop - TimeStart + 1)]));
-  end;
-  {$ENDIF DEBUG_DRAWPERFORMANCE}
 end;
 
 // Given a destination rect (DestRect) calculates the
@@ -9801,7 +9531,7 @@ end;
 
 procedure TGIFApplicationExtension.SetAuthentication(const Value: string);
 begin
-  if (Length(Value) < SizeOf(TGIFAuthenticationCode)) then
+  if Length(Value) < SizeOf(TGIFAuthenticationCode) then
     FillChar(FIdent.Authentication, SizeOf(TGIFAuthenticationCode), 32);
   StrLCopy(@(FIdent.Authentication[0]), PChar(Value), SizeOf(TGIFAuthenticationCode));
 end;
@@ -10250,7 +9980,7 @@ begin
       if (PainterRef <> nil) and (PainterRef^ = Self) then
         PainterRef^ := nil;
     finally
-      Image.Painters.UnLockList;
+      Image.Painters.UnlockList;
     end;
     Image.Painters.Remove(Self);
     FImage := nil;
@@ -10702,7 +10432,7 @@ begin
                 // Loop from this image and on
                 // Note: This is not standard behavior
                 LoopPoint := ActiveImage;
-                {$ENDIF STRICT_MOZILLA}
+                {$ENDIF !STRICT_MOZILLA}
               end
               else
               if Ext is TGIFGraphicControlExtension then
@@ -10751,7 +10481,7 @@ begin
 
           if LoopCount > 0 then
             Dec(LoopCount);
-          if ([goAnimate, goLoop] * DrawOptions <> [goAnimate, goLoop]) then
+          if [goAnimate, goLoop] * DrawOptions <> [goAnimate, goLoop] then
             Break;
         end;
         if Terminated then // 2001.07.23
@@ -11380,7 +11110,7 @@ begin
     for I := Count - 1 downto 0 do
       TGIFPainter(Items[I]).FImage := nil;
   finally
-    FPainters.UnLockList;
+    FPainters.UnlockList;
   end;
 
   Clear;
@@ -11524,7 +11254,7 @@ begin
         FDrawPainter.AnimationSpeed := FAnimationSpeed;
     finally
       // Release the lock on FPainters to let paint thread kill itself
-      FPainters.UnLockList;
+      FPainters.UnlockList;
     end;
   end;
 end;
@@ -11723,8 +11453,7 @@ begin
             // * No prompt
             // * No disposal or only one image
             if ((GCE.Delay = 0) or (Images.Count = 1)) and
-              (not GCE.Transparent) and
-              (not GCE.UserInput) and
+              (not GCE.Transparent) and (not GCE.UserInput) and
               ((GCE.Disposal in [dmNone, dmNoDisposal]) or (Images.Count = 1)) then
             begin
               GCE.Free;
@@ -12306,11 +12035,11 @@ end;
 {$ENDIF COMPILER2}
 
 procedure TGIFImage.StopDraw;
-{$IFNDEF VER14_PLUS} // 2001.07.23
+{$IFNDEF COMPILER6_UP} // 2001.07.23
 var
   Msg: TMsg;
   ThreadWindow: HWND;
-{$ENDIF} // 2001.07.23
+{$ENDIF !COMPILER6_UP} // 2001.07.23
 begin
   repeat
     // Use the FPainters threadlist to protect FDrawPainter from being modified
@@ -12329,10 +12058,10 @@ begin
 
     finally
       // Release the lock on FPainters to let paint thread kill itself
-      FPainters.UnLockList;
+      FPainters.UnlockList;
     end;
 
-    {$IFDEF VER14_PLUS}
+    {$IFDEF COMPILER6_UP}
     // 2002.07.07
     if GetCurrentThreadID = MainThreadID then
       while CheckSynchronize do {loop}
@@ -12340,7 +12069,7 @@ begin
     {$ELSE}
     // Process Messages to make Synchronize work
     // (Instead of Application.ProcessMessages)
-    //{$IFDEF VER14_PLUS}  // 2001.07.23
+    //{$IFDEF COMPILER6_UP}  // 2001.07.23
     //    Break;  // 2001.07.23
     //    Sleep(0); // Yield  // 2001.07.23
     //{$ELSE}  // 2001.07.23
@@ -12358,7 +12087,7 @@ begin
         Exit;
       end;
     end;
-    {$ENDIF} // 2001.07.23
+    {$ENDIF !COMPILER6_UP} // 2001.07.23
     Sleep(0); // Yield
   until False;
   FreeBitmap;
@@ -12368,10 +12097,10 @@ procedure TGIFImage.Draw(ACanvas: TCanvas; const Rect: TRect);
 var
   Canvas: TCanvas;
   DestRect: TRect;
-  {$IFNDEF VER14_PLUS} // 2001.07.23
+  {$IFNDEF COMPILER6_UP} // 2001.07.23
   Msg: TMsg;
   ThreadWindow: HWND;
-  {$ENDIF} // 2001.07.23
+  {$ENDIF !COMPILER6_UP} // 2001.07.23
 
   procedure DrawTile(Rect: TRect; Bitmap: TBitmap);
   var
@@ -12466,7 +12195,7 @@ begin
 
         if not (goDirectDraw in FDrawOptions) then
         begin
-          {$IFDEF VER14_PLUS}
+          {$IFDEF COMPILER6_UP}
           // 2002.07.07
           while (FDrawPainter <> nil) and (not FDrawPainter.Terminated) and
             not FDrawPainter.Started do
@@ -12475,7 +12204,7 @@ begin
               Sleep(0); // Yield
           end;
           {$ELSE}
-          //{$IFNDEF VER14_PLUS}  // 2001.07.23
+          //{$IFNDEF COMPILER6_UP}  // 2001.07.23
           ThreadWindow := FindWindow('TThreadWindow', nil);
           // Wait for thread to render first frame
           while (FDrawPainter <> nil) and (not FDrawPainter.Terminated) and
@@ -12497,13 +12226,13 @@ begin
             end
             else
               Sleep(0); // Yield
-          {$ENDIF} // 2001.07.23
+          {$ENDIF !COMPILER6_UP} // 2001.07.23
           // Draw frame to destination
           DrawTile(Rect, Bitmap);
         end;
       end;
     finally
-      FPainters.UnLockList;
+      FPainters.UnlockList;
     end;
   finally
     FIsDrawing := False;
@@ -12567,7 +12296,7 @@ begin
     for I := 0 to Count - 1 do
       TGIFPainter(Items[I]).Start;
   finally
-    FPainters.UnLockList;
+    FPainters.UnlockList;
   end;
 end;
 
@@ -12575,12 +12304,12 @@ procedure TGIFImage.PaintStop;
 var
   Ghosts: Integer;
   I: Integer;
-  {$IFNDEF VER14_PLUS} // 2001.07.23
+  {$IFNDEF COMPILER6_UP} // 2001.07.23
   Msg: TMsg;
   ThreadWindow: HWND;
-  {$ENDIF} // 2001.07.23
+  {$ENDIF !COMPILER6_UP} // 2001.07.23
 
-  {$IFNDEF VER14_PLUS} // 2001.07.23
+  {$IFNDEF COMPILER6_UP} // 2001.07.23
   procedure KillThreads;
   var
     I: Integer;
@@ -12594,10 +12323,10 @@ var
           Delete(I);
         end;
     finally
-      FPainters.UnLockList;
+      FPainters.UnlockList;
     end;
   end;
-  {$ENDIF} // 2001.07.23
+  {$ENDIF !COMPILER6_UP} // 2001.07.23
 
 begin
   try
@@ -12619,22 +12348,22 @@ begin
           TGIFPainter(Items[I]).Stop;
         end;
       finally
-        FPainters.UnLockList;
+        FPainters.UnlockList;
       end;
 
       // If all painters were synchronous, there's no purpose waiting for them
       // to terminate, because they are running in the main thread.
       if Ghosts = 0 then
         Exit;
-      {$IFDEF VER14_PLUS}
+      {$IFDEF COMPILER6_UP}
       // 2002.07.07
-      if (GetCurrentThreadID = MainThreadID) then
+      if GetCurrentThreadID = MainThreadID then
         while CheckSynchronize do {loop}
           ;
       {$ELSE}
       // Process Messages to make TThread.Synchronize work
       // (Instead of Application.ProcessMessages)
-      //{$IFDEF VER14_PLUS}  // 2001.07.23
+      //{$IFDEF COMPILER6_UP}  // 2001.07.23
       //      Exit;  // 2001.07.23
       //{$ELSE}  // 2001.07.23
       ThreadWindow := FindWindow('TThreadWindow', nil);
@@ -12656,7 +12385,7 @@ begin
           Exit;
         end;
       end;
-      {$ENDIF} // 2001.07.23
+      {$ENDIF !COMPILER6_UP} // 2001.07.23
       Sleep(0);
     until False;
   finally
@@ -12673,7 +12402,7 @@ begin
     for I := 0 to Count - 1 do
       TGIFPainter(Items[I]).Suspend;
   finally
-    FPainters.UnLockList;
+    FPainters.UnlockList;
   end;
 end;
 
@@ -12688,7 +12417,7 @@ begin
     for I := 0 to Count - 1 do
       TGIFPainter(Items[I]).Start;
   finally
-    FPainters.UnLockList;
+    FPainters.UnlockList;
   end;
 end;
 
@@ -12701,18 +12430,19 @@ begin
     for I := 0 to Count - 1 do
       TGIFPainter(Items[I]).Restart;
   finally
-    FPainters.UnLockList;
+    FPainters.UnlockList;
   end;
 end;
 
-procedure TGIFImage.Warning(Sender: TObject; Severity: TGIFSeverity; Message: string);
+procedure TGIFImage.Warning(Sender: TObject; Severity: TGIFSeverity; Msg: string);
 begin
   if Assigned(FOnWarning) then
-    FOnWarning(Sender, Severity, Message);
+    FOnWarning(Sender, Severity, Msg);
 end;
 
-{$IFDEF VER12_PLUS}
-{$IFNDEF VER14_PLUS} // not anymore need for Delphi 6 and up  // 2001.07.23
+{$IFDEF COMPILER4_UP}
+{$IFNDEF COMPILER6_UP} // not anymore need for Delphi 6 and up  // 2001.07.23
+
 type
   TDummyThread = class(TThread)
   protected
@@ -12722,29 +12452,25 @@ type
 procedure TDummyThread.Execute;
 begin
 end;
-{$ENDIF} // 2001.07.23
-{$ENDIF}
+
+{$ENDIF !COMPILER6_UP} // 2001.07.23
+{$ENDIF COMPILER4_UP}
 
 var
   DesktopDC: HDC;
-  {$IFDEF VER12_PLUS}
-  {$IFNDEF VER14_PLUS} // not anymore need for Delphi 6 and up  // 2001.07.23
+  {$IFDEF COMPILER4_UP}
+  {$IFNDEF COMPILER6_UP} // not anymore need for Delphi 6 and up  // 2001.07.23
   DummyThread: TThread;
-  {$ENDIF} // 2001.07.23
-  {$ENDIF}
+  {$ENDIF !COMPILER6_UP} // 2001.07.23
+  {$ENDIF COMPILER4_UP}
 
-////////////////////////////////////////////////////////////////////////////////
-//
-//                      Initialization
-//
-////////////////////////////////////////////////////////////////////////////////
-
-initialization
+procedure Init;
+begin
   {$IFDEF REGISTER_TGIFIMAGE}
   TPicture.RegisterFileFormat('GIF', sGIFImageFile, TGIFImage);
   CF_GIF := RegisterClipboardFormat(PChar(sGIFImageFile));
   TPicture.RegisterClipboardFormat(CF_GIF, TGIFImage);
-  {$ENDIF}
+  {$ENDIF REGISTER_TGIFIMAGE}
   DesktopDC := GetDC(0);
   try
     PaletteDevice := (GetDeviceCaps(DesktopDC, BITSPIXEL) * GetDeviceCaps(DesktopDC, PLANES) <= 8);
@@ -12762,39 +12488,44 @@ initialization
   // Stock objects doesn't have to be deleted.
   SystemPalette16 := GetStockObject(DEFAULT_PALETTE);
   {$ENDIF COMPILER2}
-  {$IFDEF VER12_PLUS}
+  {$IFDEF COMPILER4_UP}
   // Make sure that at least one thread always exist.
   // This is done to circumvent a race condition bug in Delphi 4.X and later:
   // When threads are deleted and created in rapid succesion, a situation might
   // arise where the thread window is deleted *after* the threads it controls
   // has been created. See the Delphi Bug Lists for more information.
-  {$IFNDEF VER14_PLUS} // not anymore need for Delphi 6 and up  // 2001.07.23
+  {$IFNDEF COMPILER6_UP} // not anymore need for Delphi 6 and up  // 2001.07.23
   DummyThread := TDummyThread.Create(True);
-  {$ENDIF} // 2001.07.23
-  {$ENDIF}
+  {$ENDIF !COMPILER6_UP} // 2001.07.23
+  {$ENDIF COMPILER4_UP}
+end;
 
-////////////////////////////////////////////////////////////////////////////////
-//
-//                      Finalization
-//
-////////////////////////////////////////////////////////////////////////////////
-finalization
+procedure Finit;
+begin
   ExtensionList.Free;
   AppExtensionList.Free;
   {$IFNDEF COMPILER2}
   {$IFDEF REGISTER_TGIFIMAGE}
   TPicture.UnregisterGraphicClass(TGIFImage);
-  {$ENDIF}
-  {$IFDEF VER100}
+  {$ENDIF REGISTER_TGIFIMAGE}
+  {$IFDEF COMPILER3}
   if pf8BitBitmap <> nil then
     pf8BitBitmap.Free;
-  {$ENDIF}
+  {$ENDIF COMPILER3}
   {$ENDIF !COMPILER2}
-  {$IFDEF VER12_PLUS}
-  {$IFNDEF VER14_PLUS} // not anymore need for Delphi 6 and up  // 2001.07.23
+  {$IFDEF COMPILER4_UP}
+  {$IFNDEF COMPILER6_UP} // not anymore need for Delphi 6 and up  // 2001.07.23
   if DummyThread <> nil then
     DummyThread.Free;
-  {$ENDIF} // 2001.07.23
-  {$ENDIF}
+  {$ENDIF !COMPILER6_UP} // 2001.07.23
+  {$ENDIF COMPILER4_UP}
+end;
+
+initialization
+  Init;
+
+finalization
+  Finit;
+
 end.
 
