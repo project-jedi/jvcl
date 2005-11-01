@@ -1,6 +1,6 @@
 object SimpleMainForm: TSimpleMainForm
-  Left = 313
-  Top = 145
+  Left = 293
+  Top = 93
   Width = 545
   Height = 542
   HorzScrollBar.Range = 185
@@ -25,17 +25,18 @@ object SimpleMainForm: TSimpleMainForm
     Top = 0
     Width = 360
     Height = 542
-    DoubleBuffered = True
     Align = alClient
-    BandWidth = 150
     BevelOuter = bvLowered
     RelativeDivider = True
     Divider = 50
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
     ItemHeight = 16
     Painter = JvInspectorBorlandPainter1
-    ReadOnly = False
-    UseBands = False
-    WantTabs = False
   end
   object Panel1: TPanel
     Left = 360
@@ -43,6 +44,7 @@ object SimpleMainForm: TSimpleMainForm
     Width = 185
     Height = 542
     Align = alRight
+    ParentColor = True
     TabOrder = 1
     object Label1: TLabel
       Left = 4

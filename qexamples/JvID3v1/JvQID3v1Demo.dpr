@@ -3,18 +3,16 @@
 {*           Manual modifications will be lost on next release.               *}
 {******************************************************************************}
 
-program InspectorSimpleExample;
+program JvQID3v1Demo;
 
 uses
   QForms,
-  InspectorSimpleExampleMain in 'InspectorSimpleExampleMain.pas' {SimpleMainForm},
-  JvQDoubleBuffering in 'JvQDoubleBuffering.pas',
-  JvQEventFilter in 'JvQEventFilter.pas';
+  JvQID3v1MainFormU in 'JvQID3v1MainFormU.pas' {JvQID3v1MainForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TSimpleMainForm, SimpleMainForm);
+  Application.CreateForm(TJvID3v1MainForm, JvID3v1MainForm);
   Application.Run;
 end.

@@ -55,7 +55,6 @@ type
     N2: TMenuItem;
     Exit2: TMenuItem;
     Label3: TLabel;
-    JvTransparentButton21: TJvTransparentButton2;
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -74,13 +73,6 @@ type
     TransparentButton13: TJvTransparentButton;
     TransparentButton14: TJvTransparentButton;
     Button1: TButton;
-    JvTransparentButton22: TJvTransparentButton2;
-    JvTransparentButton23: TJvTransparentButton2;
-    JvTransparentButton24: TJvTransparentButton2;
-    JvTransparentButton25: TJvTransparentButton2;
-    JvTransparentButton26: TJvTransparentButton2;
-    JvTransparentButton27: TJvTransparentButton2;
-    JvTransparentButton28: TJvTransparentButton2;
     ImageList1: TImageList;
     Image2: TImage;
     Image3: TImage;
@@ -255,13 +247,13 @@ end;
 
 procedure TTransBtnFormMain.JvTransparentButton26Click(Sender: TObject);
 begin
-  JvTransparentButton26.Down := not JvTransparentButton26.Down;
+//  JvTransparentButton26.Down := not JvTransparentButton26.Down;
 
 end;
 
 procedure TTransBtnFormMain.JvTransparentButton28Click(Sender: TObject);
 begin
-  JvTransparentButton27.Enabled := not JvTransparentButton27.Enabled;
+//  JvTransparentButton27.Enabled := not JvTransparentButton27.Enabled;
 end;
 
 procedure TTransBtnFormMain.FormActivate(Sender: TObject);

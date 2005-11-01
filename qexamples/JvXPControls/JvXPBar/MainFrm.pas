@@ -11,7 +11,7 @@ uses
   QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms,
   QDialogs, JvQXPCore, JvQXPBar, JvQXPContainer, QImgList, QActnList, QExtCtrls,
   QStdCtrls, QComCtrls, JvQExControls, JvQComponent, JvQXPCheckCtrls,
-  JvQXPButtons;
+  JvQXPButtons, JvQControlComponent, JvQEventFilter, JvQDoubleBuffering;
 
 resourcestring
   SClickEvent =
@@ -60,6 +60,12 @@ type
     ilMSN: TImageList;
     ilMSN2: TImageList;
     ilFB: TImageList;
+    JvDoubleBuffering1: TJvDoubleBuffering;
+    JvDoubleBuffering2: TJvDoubleBuffering;
+    JvDoubleBuffering3: TJvDoubleBuffering;
+    JvDoubleBuffering4: TJvDoubleBuffering;
+    JvDoubleBuffering5: TJvDoubleBuffering;
+    JvDoubleBuffering6: TJvDoubleBuffering;
     procedure acConnectRemoteServerExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnCollapseAllClick(Sender: TObject);

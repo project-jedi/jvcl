@@ -3,18 +3,16 @@
 {*           Manual modifications will be lost on next release.               *}
 {******************************************************************************}
 
-program InspectorSimpleExample;
+program FullColorCircleDialog;
 
 uses
   QForms,
-  InspectorSimpleExampleMain in 'InspectorSimpleExampleMain.pas' {SimpleMainForm},
-  JvQDoubleBuffering in 'JvQDoubleBuffering.pas',
-  JvQEventFilter in 'JvQEventFilter.pas';
+  JvQFullColorCircleDialogMainForm in 'JvQFullColorCircleDialogMainForm.pas' {FormMain};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TSimpleMainForm, SimpleMainForm);
+  Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.

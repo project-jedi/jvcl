@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 320
-  Top = 226
+  Left = 454
+  Top = 124
   Width = 500
   Height = 370
   VertScrollBar.Range = 19
@@ -45,12 +45,18 @@ object frmMain: TfrmMain
     Top = 0
     Width = 206
     Height = 351
-    DoubleBuffered = False
     BoundLines = [blLeft, blTop, blRight, blBottom]
     Caption = 'cntWinXPBar'
     Color = 14985086
     ParentColor = False
     Align = alLeft
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'Tahoma'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
     object sbxWinXPBar: TScrollBox
       Left = 1
       Top = 1
@@ -65,16 +71,22 @@ object frmMain: TfrmMain
         Width = 204
         Height = 349
         Cursor = crCross
-        DoubleBuffered = True
-        BorderWidth = 4
+        BorderWidth = 8
+        BoundLines = [blLeft]
         Caption = 'JvXPContainer1'
         Align = alClient
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'Tahoma'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
         object dxWinXPBar4: TJvXPBar
-          Left = 4
-          Top = 222
-          Width = 196
+          Left = 9
+          Top = 226
+          Width = 187
           Height = 40
-          DoubleBuffered = True
           Caption = 'Structure'
           Collapsed = True
           Colors.BorderColor = 9845
@@ -119,6 +131,7 @@ object frmMain: TfrmMain
           HeaderFont.Pitch = fpVariable
           HeaderFont.Style = [fsBold]
           HotTrackColor = 4227327
+          OwnerDraw = False
           Icon.Data = {
             0000010001002020040000000000E80200001600000028000000200000004000
             0000010004000000000000020000000000000000000000000000000000000000
@@ -154,7 +167,7 @@ object frmMain: TfrmMain
           object tvSelfView: TTreeView
             Left = 4
             Top = 36
-            Width = 188
+            Width = 179
             Height = 1
             Align = alClient
             BorderStyle = bsNone
@@ -165,12 +178,11 @@ object frmMain: TfrmMain
           end
         end
         object JvXPBar1: TJvXPBar
-          Left = 4
-          Top = 142
-          Width = 196
+          Left = 9
+          Top = 146
+          Width = 187
           Height = 40
           Hint = 'This bar doesn'#39't use actions'
-          DoubleBuffered = True
           Caption = 'Synchronize'
           Collapsed = True
           Colors.BorderColor = clMaroon
@@ -202,6 +214,7 @@ object frmMain: TfrmMain
           HeaderFont.Pitch = fpVariable
           HeaderFont.Style = [fsBold]
           HotTrackColor = clMaroon
+          OwnerDraw = False
           Icon.Data = {
             0000010001002020000000000000A80800001600000028000000200000004000
             0000010008000000000000040000000000000000000000010000000100000000
@@ -282,12 +295,11 @@ object frmMain: TfrmMain
           ParentFont = False
         end
         object dxWinXPBar3: TJvXPBar
-          Left = 4
-          Top = 182
-          Width = 196
+          Left = 9
+          Top = 186
+          Width = 187
           Height = 40
           Hint = 'This is a hint'
-          DoubleBuffered = True
           Caption = 'Information'
           Collapsed = True
           Colors.BorderColor = clGray
@@ -321,6 +333,7 @@ object frmMain: TfrmMain
           HeaderFont.Pitch = fpVariable
           HeaderFont.Style = [fsBold]
           HotTrackColor = clNone
+          OwnerDraw = False
           Icon.Data = {
             0000010001002020040000000000E80200001600000028000000200000004000
             0000010004000000000000020000000000000000000000000000000000000000
@@ -355,11 +368,10 @@ object frmMain: TfrmMain
           ParentFont = False
         end
         object dxWinXPBar2: TJvXPBar
-          Left = 4
-          Top = 107
-          Width = 196
+          Left = 9
+          Top = 111
+          Width = 187
           Height = 35
-          DoubleBuffered = True
           Caption = 'Settings'
           Collapsed = True
           Colors.BorderColor = clDark
@@ -377,19 +389,31 @@ object frmMain: TfrmMain
               Action = acSettingsDownloads
             end>
           RollImages = ilMSN2
+          Font.Color = 15159552
+          Font.Height = 11
+          Font.Name = 'Tahoma'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Font.Weight = 40
+          HeaderFont.Color = 15159552
+          HeaderFont.Height = 11
+          HeaderFont.Name = 'Tahoma'
+          HeaderFont.Pitch = fpVariable
+          HeaderFont.Style = [fsBold]
+          OwnerDraw = False
           RollDelay = 50
           RollStep = 10
           ShowItemFrame = False
           RoundedItemFrame = 0
           Align = alTop
+          ParentFont = False
         end
         object dxWinXPBar1: TJvXPBar
-          Left = 4
-          Top = 4
-          Width = 196
+          Left = 9
+          Top = 8
+          Width = 187
           Height = 103
           Hint = 'Click to see connection options'
-          DoubleBuffered = True
           Caption = 'Connect'
           Colors.GradientTo = 16244694
           Items = <
@@ -406,12 +430,25 @@ object frmMain: TfrmMain
               GroupIndex = 1
             end>
           RollImages = ilMSN
+          Font.Color = 15159552
+          Font.Height = 11
+          Font.Name = 'Tahoma'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Font.Weight = 40
+          HeaderFont.Color = 15159552
+          HeaderFont.Height = 11
+          HeaderFont.Name = 'Tahoma'
+          HeaderFont.Pitch = fpVariable
+          HeaderFont.Style = [fsBold]
           HeaderRounded = False
+          OwnerDraw = False
           RollDelay = 50
           RollStep = 5
           ShowItemFrame = True
           RoundedItemFrame = 0
           Align = alTop
+          ParentFont = False
         end
       end
     end
@@ -421,12 +458,18 @@ object frmMain: TfrmMain
     Top = 0
     Width = 290
     Height = 351
-    DoubleBuffered = False
     BoundLines = [blLeft, blTop, blRight, blBottom]
     Caption = 'cntDetails'
     Color = clInfoBk
     ParentColor = False
     Align = alClient
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'Tahoma'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
     object lbWelcome: TLabel
       Left = 8
       Top = 16
@@ -446,9 +489,15 @@ object frmMain: TfrmMain
       Top = 48
       Width = 75
       Height = 25
-      DoubleBuffered = True
       Caption = 'Collapse All'
       TabOrder = 0
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'Tahoma'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       Style.Theme = OfficeXP
       Style.UseStyleManager = False
       OnClick = btnCollapseAllClick
@@ -458,9 +507,15 @@ object frmMain: TfrmMain
       Top = 48
       Width = 75
       Height = 25
-      DoubleBuffered = True
       Caption = 'Expand All'
       TabOrder = 1
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'Tahoma'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       Style.Theme = OfficeXP
       Style.UseStyleManager = False
       OnClick = btnExpandAllClick
@@ -470,9 +525,15 @@ object frmMain: TfrmMain
       Top = 80
       Width = 153
       Height = 25
-      DoubleBuffered = True
       Caption = 'Toggle Enable Mode'
       TabOrder = 2
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'Tahoma'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       Style.Theme = OfficeXP
       Style.UseStyleManager = False
       OnClick = btnToogleEnableModeClick
@@ -482,9 +543,15 @@ object frmMain: TfrmMain
       Top = 112
       Width = 153
       Height = 25
-      DoubleBuffered = True
       Caption = 'Toggle Visible Mode'
       TabOrder = 3
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'Tahoma'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       OnClick = btnToggleVisibleModeClick
     end
     object chkGrouped: TJvXPCheckbox
@@ -492,9 +559,15 @@ object frmMain: TfrmMain
       Top = 152
       Width = 97
       Height = 17
-      DoubleBuffered = True
       Caption = 'Grouped'
       TabOrder = 4
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'Tahoma'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       OnClick = chkGroupedClick
     end
   end
@@ -1974,5 +2047,41 @@ object frmMain: TfrmMain
       02000000FFFFFF00000000000FE01FC318303063200840134104800BC38798CF
       86C30D878C63070781030207838318C786C30D87CC67870B4004820B20084013
       183030630FE01F83}
+  end
+  object JvDoubleBuffering1: TJvDoubleBuffering
+    Active = True
+    Parent = chkGrouped
+    Left = 410
+    Top = 104
+  end
+  object JvDoubleBuffering2: TJvDoubleBuffering
+    Active = False
+    Parent = dxWinXPBar1
+    Left = 110
+    Top = 29
+  end
+  object JvDoubleBuffering3: TJvDoubleBuffering
+    Active = False
+    Parent = dxWinXPBar2
+    Left = 110
+    Top = 124
+  end
+  object JvDoubleBuffering4: TJvDoubleBuffering
+    Active = False
+    Parent = JvXPBar1
+    Left = 94
+    Top = 175
+  end
+  object JvDoubleBuffering5: TJvDoubleBuffering
+    Active = False
+    Parent = dxWinXPBar3
+    Left = 142
+    Top = 207
+  end
+  object JvDoubleBuffering6: TJvDoubleBuffering
+    Active = True
+    Parent = dxWinXPBar4
+    Left = 118
+    Top = 247
   end
 end

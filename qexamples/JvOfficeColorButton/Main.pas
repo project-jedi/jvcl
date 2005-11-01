@@ -42,7 +42,7 @@ uses
   Types, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
 
   JvQNetscapeSplitter, JvQOfficeColorButton, JvQOfficeColorPanel,
-  JvQColorButton, JvQComponent, JvQExExtCtrls
+  JvQColorButton, JvQComponent, JvQExExtCtrls, JvQPanel
   ;
 
 type
@@ -90,8 +90,8 @@ begin
   with JvOfficeColorButton1 do
   begin
     Flat := chkButtonFlat.Checked;
-    Properties.ShowAutoButton := chkButtonAuto.Checked;
-    Properties.ShowOtherButton := chkButtonOther.Checked;
+    Properties.ShowDefaultColor := chkButtonAuto.Checked;
+    Properties.ShowCustomColor := chkButtonOther.Checked;
     Properties.ShowDragBar := chkButtonDrag.Checked;
     if chkButtonGlyph.Checked then
 
@@ -107,8 +107,8 @@ procedure TColorDemoMainForm.JvOfficeColorPanel1ColorChange(
   Sender: TObject);
 begin
   if not JvOfficeColorButton1.Enabled then
-    JvOfficeColorButton1.Color := JvOfficeColorPanel1.Color;
-  Panel3.Color := JvOfficeColorPanel1.Color;
+    JvOfficeColorButton1.SelectedColor := JvOfficeColorPanel1.SelectedColor;
+  Panel3.Color := JvOfficeColorPanel1.SelectedColor;
   Panel3.Font.Color := ColorToRGB(Panel3.Color) xor $FFFFFF;
   Panel3.Caption := ColorToString(Panel3.Color);
 end;
@@ -116,7 +116,7 @@ end;
 procedure TColorDemoMainForm.JvOfficeColorButton1ColorChange(
   Sender: TObject);
 begin
-  Panel1.Color := JvOfficeColorButton1.Color;
+  Panel1.Color := JvOfficeColorButton1.SelectedColor;
   Panel1.Font.Color := ColorToRGB(Panel1.Color) xor $FFFFFF;
   Panel1.Caption := ColorToString(Panel1.Color);
 
@@ -126,9 +126,9 @@ procedure TColorDemoMainForm.PanelOptionsClick(Sender: TObject);
 begin
   with JvOfficeColorPanel1 do
   begin
-    Flat := chkPanelFlat.Checked;
-    Properties.ShowAutoButton := chkPanelAuto.Checked;
-    Properties.ShowOtherButton := chkPanelOther.Checked;
+    FlatBorder := chkPanelFlat.Checked;
+    Properties.ShowDefaultColor := chkPanelAuto.Checked;
+    Properties.ShowCustomColor := chkPanelOther.Checked;
   end;
 end;
 
