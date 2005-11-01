@@ -55,22 +55,19 @@ uses
 
 function TJvPatcherProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paSortList];
+  Result := [paMultiSelect, paDialog];
 end;
 
 procedure TJvPatcherProperty.Edit;
 var
   Dlg: TPatchFrm;
-  Res: TStringList;
 begin
-  Res := TStringList(GetOrdValue);
   Dlg := TPatchFrm.Create(Application);
-  Dlg.LoadFromStr(Res);
+  Dlg.LoadFromStr(TStrings(GetOrdValue));
   try
     if Dlg.ShowModal = mrOk then
     begin
-      Res.Assign(Dlg.SetFromStr);
-      SetOrdValue(Integer(Res));
+      SetOrdValue(Integer(Dlg.SetFromStr));
     end;
   finally
     Dlg.Free;
@@ -85,11 +82,14 @@ begin
 end;
 
 function TJvPatcherProperty.GetValue: string;
+var
+  Res: TStrings;
 begin
-  if TStrings(GetOrdValue).Count = 0 then
+  Res := TStrings(GetOrdValue);
+  if Res.Count = 0 then
     Result := RsNone
   else
-  if TStrings(GetOrdValue).Count > 4 then // first four items are filenames and file sizes
+  if Res.Count > 4 then // first four items are filenames and file sizes
     Result := RsDiff
   else
     Result := RsEqual;

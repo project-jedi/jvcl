@@ -284,8 +284,8 @@ begin
       begin
         Bmp := CreateBitmapFromIcon(FPicDlg.Pic.Icon, FPicDlg.IconColor);
         try
-          if FPicDlg.DecreaseColors then
-            SetBitmapPixelFormat(Bmp, pf4bit, DefaultMappingMethod);
+        //  if FPicDlg.DecreaseColors then
+        //    SetBitmapPixelFormat(Bmp, pf8bit, DefaultMappingMethod);
           FPicture.Assign(Bmp);
         finally
           Bmp.Free;

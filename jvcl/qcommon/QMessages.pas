@@ -375,21 +375,33 @@ type
       pt: TPoint
     );
   end;
-  
-procedure BroadCastMsg(AControl: TWidgetControl; var Mesg);
+
+procedure BroadcastMsg(AControl: TWidgetControl; var Mesg);
 
 implementation
 
-procedure BroadCastMsg(AControl: TWidgetControl; var Mesg);
+//
+// Broadcast (windows style-) messages
+//
+procedure BroadcastMsg(AControl: TWidgetControl; var Mesg);
 var
   I: integer;
 begin
-  with AControl do
-    for I := 0 to ControlCount - 1 do
-    begin
-      Controls[I].Dispatch(Mesg);
-    end;
+  if AControl <> nil then
+    with AControl do
+      for I := 0 to ControlCount - 1 do
+      begin
+        Controls[I].Dispatch(Mesg);
+        if TMessage(Mesg).Result <> 0 then
+          exit;
+        if Controls[I] is TWidgetControl then
+          BroadcastMsg(TWidgetControl(Controls[I]), Mesg);
+        if TMessage(Mesg).Result <> 0 then
+          exit;
+      end;
 end;
+
+
 
 
 end.

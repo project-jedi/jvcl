@@ -2952,15 +2952,17 @@ end;
 
 function StretchBlt(DestCanvas: TCanvas; dx, dy, dw, dh: Integer;
   SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
-var
-  d,s :TPoint;
+//var
+//  d,s :TPoint;
 begin
   DestCanvas.Start;
   SrcCanvas.Start;
-  d := PainterOffset(DestCanvas);
-  s := PainterOffset(SrcCanvas);
-  Result := StretchBlt(DestCanvas.Handle, dx + d.x, dy + d.y, dw, dh, SrcCanvas.Handle,
-    sx + s.x, sy + s.y, sw, sh, WinRop,  IgnoreMask);
+//  d := PainterOffset(DestCanvas);
+//  s := PainterOffset(SrcCanvas);
+//  Result := StretchBlt(DestCanvas.Handle, dx + d.x, dy + d.y, dw, dh, SrcCanvas.Handle,
+//    sx + s.x, sy + s.y, sw, sh, WinRop,  IgnoreMask);
+  Result := StretchBlt(DestCanvas.Handle, dx, dy, dw, dh, SrcCanvas.Handle,
+    sx, sy, sw, sh, WinRop,  IgnoreMask);
   SrcCanvas.Stop;
   DestCanvas.Stop;
 end;
@@ -4902,9 +4904,22 @@ function DrawTextW(Handle :QPainterH; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer;
 var
   WText: WideString;
+  R2: TRect;
 begin
   WText := Text;
-  Result := DrawText2(Handle, WText, Len, R, WinFlags);
+
+  R2:= R;
+  OffsetRect(R2, -R.Left, -R.Top);
+  try
+    QPainter_save(Handle);
+    QPainter_translate(Handle, R.Left, R.Top);
+    QPainter_rotate(Handle, -Angle);
+  Result := DrawText2(Handle, WText, Len, R2, WinFlags);
+  finally
+    QPainter_restore(Handle);
+  end;
+  OffsetRect(R2, R.Left, R.Top);
+  R := R2;
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
     Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
@@ -8857,3 +8872,6 @@ finalization
   GlobalCaret.Free;
   //OutputDebugString('Unloaded QWindows.pas');
 end.
+
+
+

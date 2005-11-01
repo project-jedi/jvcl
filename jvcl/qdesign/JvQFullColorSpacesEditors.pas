@@ -42,7 +42,7 @@ uses
 type
   TJvDEFFamily = (pfConstant, pfSystem);
 
-  TJvFullColorProperty = class(TPropertyEditor)
+  TJvFullColorProperty = class(TPropertyEditor)// , ICustomPropertyDrawing )
   private
     function GetIsColorProperty: Boolean;
     procedure DialogApply(Sender: TObject; AFullColor: TJvFullColor);
@@ -56,6 +56,8 @@ type
     procedure EditSpace(AColorID: TJvFullColorSpaceID);
     procedure SetColor(AFullColor: TJvFullColor);
     // ICustomPropertyDrawing
+   // procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+    //procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); 
     property IsColorProperty: Boolean read GetIsColorProperty;
   end;
 
@@ -77,7 +79,7 @@ type
 
   TJvFullColorSpacePropertyClass = class of TJvFullColorSpaceProperty;
 
-  TJvFullColorAxisProperty = class(TNestedProperty)
+  TJvFullColorAxisProperty = class(TNestedProperty ) //, ICustomPropertyListDrawing )
   private
     FAxisIndex: TJvAxisIndex;
     FParent:TJvFullColorSpaceProperty;
@@ -89,6 +91,15 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
     procedure GetValues(Proc: TGetStrProc); override;
+    (*
+    // ICustomPropertyListDrawing
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer);
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer);
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean);  virtual;
+    *)
     property Parent: TJvFullColorSpaceProperty read FParent;
     property AxisIndex: TJvAxisIndex read FAxisIndex;
   end;
@@ -98,7 +109,7 @@ type
     procedure GetProperties(Proc:  TGetPropProc ); override;
   end;
 
-  TJvDEFColorSpaceIndentProperty = class(TNestedProperty)
+  TJvDEFColorSpaceIndentProperty = class(TNestedProperty )//, ICustomPropertyListDrawing )
   private
     FPredefinedFamily: TJvDEFFamily;
     FParent: TJvDEFColorSpaceProperty;
@@ -110,6 +121,15 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
     procedure GetValues(Proc: TGetStrProc); override;
+    (*
+    // ICustomPropertyListDrawing
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer);
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer);
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean);  virtual;
+      *)
     property Parent: TJvDEFColorSpaceProperty read FParent;
     property PredefinedFamily: TJvDEFFamily read FPredefinedFamily;
   end;
@@ -146,7 +166,7 @@ implementation
 
 uses
   Math, SysUtils, DesignConst, TypInfo, QForms,
-  JvQFullColorDialogs, JvQFullColorCtrls, JvQFullColorListForm;
+  JvQFullColorDialogs, JvQFullColorCtrls, JvQFullColorListForm, JvQJCLUtils;
 
 const
   COLOR_PREVIEW_RECT = 16;
@@ -288,7 +308,41 @@ begin
     for I := 0 to Count - 1 do
       Proc(ColorSpaceByIndex[I].ShortName);
 end;
+(*
+procedure TJvFullColorProperty.PropDrawName(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
+begin
+  DefaultPropertyDrawName(Self, ACanvas, ARect);
+end;
 
+procedure TJvFullColorProperty.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
+var
+  OldPenColor, OldBrushColor: TColor;
+  Right: Integer;
+begin
+  with ACanvas do
+  begin
+    Rectangle(ARect);
+
+    OldBrushColor := Brush.Color;
+    if IsColorProperty then
+      Brush.Color := GetOrdValue
+    else
+      Brush.Color := ColorSpaceManager.ConvertToColor(TJvFullColor(GetOrdValue));
+    OldPenColor := Pen.Color;
+    Pen.Color := clBlack;
+
+    Right := (ARect.Bottom - ARect.Top) + ARect.Left;
+
+    Rectangle(ARect.Left + 1, ARect.Top + 1, Right - 1, ARect.Bottom - 1);
+
+    Pen.Color := OldPenColor;
+    Brush.Color := OldBrushColor;
+  end;
+  DefaultPropertyDrawValue(Self, ACanvas, Rect(Right, ARect.Top, ARect.Right, ARect.Bottom));
+end;
+*)
 procedure TJvFullColorProperty.SetColor(AFullColor: TJvFullColor);
 begin
   with ColorSpaceManager do
@@ -393,6 +447,31 @@ begin
       Proc(Format('$%.2x', [I]));
 end;
 
+(*
+procedure TJvFullColorAxisProperty.ListDrawValue(const Value: string;
+  ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+var
+  FullColor: TJvFullColor;
+  LColor: TColor;
+begin
+  FullColor := ColorSpaceManager.ConvertToID(GetOrdValue, Parent.ColorSpace.ID);
+  FullColor := SetAxisValue(FullColor, AxisIndex, HexToInt(Value));
+  LColor := Parent.ColorSpace.ConvertToColor(FullColor);
+  ColorPropertyListDrawValue(LColor, Value, ACanvas, ARect, ASelected);
+end;
+
+procedure TJvFullColorAxisProperty.ListMeasureHeight(const Value: string;
+  ACanvas: TCanvas; var AHeight: Integer);
+begin
+  AHeight := Max(ACanvas.TextHeight(Value), COLOR_PREVIEW_SIZE);
+end;
+
+procedure TJvFullColorAxisProperty.ListMeasureWidth(const Value: string;
+  ACanvas: TCanvas; var AWidth: Integer);
+begin
+  AWidth := ACanvas.TextWidth(Value) + COLOR_PREVIEW_SIZE;
+end;
+*)
 
 procedure TJvFullColorAxisProperty.SetValue(const Value: string);
 var
@@ -468,7 +547,25 @@ begin
       Proc(CS.ColorPrettyName[I]);
   end;
 end;
+(*
+procedure TJvDEFColorSpaceIndentProperty.ListDrawValue(const Value: string;
+  ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+begin
+  ColorPropertyListDrawValue(PrettyNameToColor(Value), Value, ACanvas, ARect, ASelected);
+end;
 
+procedure TJvDEFColorSpaceIndentProperty.ListMeasureHeight(const Value: string;
+  ACanvas: TCanvas; var AHeight: Integer);
+begin
+  AHeight := Max(ACanvas.TextHeight(Value), COLOR_PREVIEW_SIZE);
+end;
+
+procedure TJvDEFColorSpaceIndentProperty.ListMeasureWidth(const Value: string;
+  ACanvas: TCanvas; var AWidth: Integer);
+begin
+  AWidth := ACanvas.TextWidth(Value) + COLOR_PREVIEW_SIZE;
+end;
+*)
 
 procedure TJvDEFColorSpaceIndentProperty.SetValue(const Value: string);
 var
@@ -604,7 +701,7 @@ end;
 
 function TJvFullColorListEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog,  paVCL,  paMultiSelect];
+  Result := [paDialog,  paMultiSelect];
 end;
 
 var

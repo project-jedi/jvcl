@@ -51,8 +51,8 @@ procedure Register;
 
 implementation
 
-uses  
-  QComCtrls, 
+uses
+  QControls, QComCtrls,
   JvQDsgnConsts,
   JvQNavigationPane, JvQPageList, JvQPageListTreeView, JvQPageListEditors,
   JvQNavPaneEditors, JvQTreeItemsEditorForm, JvQPageLinkEditorForm, JvQPageListEditorForm;
@@ -64,6 +64,9 @@ const
   cActivePage = 'ActivePage';
   cImageIndex = 'ImageIndex';
 begin
+  {$IFDEF COMPILER7_UP}
+//  GroupDescendentsWith(TJvPageLinksProperty, TControl);
+  {$ENDIF COMPILER7_UP}
   RegisterComponents(RsPaletteNavPane, [TJvNavigationPane, TJvNavIconButton, TJvNavPanelButton,
     TJvNavPanelHeader, TJvNavPanelDivider, TJvOutlookSplitter, TJvNavPaneStyleManager, TJvNavPaneToolPanel]);
 
@@ -79,8 +82,7 @@ begin
   RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewEditor);
   // register for the standard TTreeView as well
   //  RegisterComponentEditor(TTreeView, TJvTreeViewEditor);
-  RegisterPropertyEditor(TypeInfo(TJvPageLinks),
-    TJvCustomPageListTreeView, '', TJvPageLinksProperty);
+  RegisterPropertyEditor(TypeInfo(TJvPageLinks), TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(TypeInfo(TJvCustomPage),
     TJvCustomPageList, cActivePage, TJvActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvSettingsTreeImages, '', TJvSettingsTreeImagesProperty);

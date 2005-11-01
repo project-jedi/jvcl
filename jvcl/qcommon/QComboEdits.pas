@@ -42,13 +42,13 @@ const
   EM_SETRECT = $00B3;  { 179 }
 
 type
-  TComboEditBorder = class(TPanel)
+  TComboEditBorder = class(TFrameControl)
   private
     FEdit: TCustomEdit;
   protected
     procedure BoundsChanged; override;
-    procedure AdjustClientRect(var Rect: TRect); override;
-    procedure Paint; override;
+//    procedure AdjustClientRect(var Rect: TRect); override;
+//    procedure Paint; override;
   end;
 
   TComboEditClientArea = class(TWidgetControl)
@@ -73,16 +73,20 @@ type
     FUseEditRect: Boolean;
     FEditRect: TRect;
     FEditClientColor: Boolean;
-    FFlat: Boolean;
-    function GetBorderStyle: TControlBorderStyle;
-    procedure SetBorderStyle(Value: TControlBorderStyle);
+//    FFlat: Boolean;
+    function GetBorderStyle: TBorderStyle;
+    procedure SetBorderStyle(Value: TBorderStyle);
+(*
     function GetBevelInner: TPanelBevel;
     function GetBevelOuter: TPanelBevel;
     function GetBevelWidth: TBevelWidth;
+*)
     function GetBorderHandle: QWidgetH;
+(*
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
+*)
     function GetClientColor: TColor;
     procedure SetClientColor(const Value: TColor);
     procedure SetEditClientColor(const Value: Boolean);
@@ -109,10 +113,12 @@ type
 
     property ClientColor: TColor read GetClientColor write SetClientColor;
     property EditClientColor: Boolean read FEditClientColor write SetEditClientColor;
+(*
     property BevelInner: TPanelBevel read GetBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read GetBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read GetBevelWidth write SetBevelWidth default 1;
-    property BorderStyle: TControlBorderStyle read GetBorderStyle write SetBorderStyle stored False default bsSingle;
+*)
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsSunken3D;
     property Flat: Boolean read GetFlat write SetFlat;
     property BorderHandle: QWidgetH read GetBorderHandle;
   public
@@ -128,9 +134,11 @@ type
   TComboEdit = class(TCustomComboEdit)
   published
     property Flat default False;
+    (*
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
+    *)
     property ClientColor default clBase;
     property EditClientColor default True;
   public
@@ -189,16 +197,17 @@ type
     FUseEditRect: Boolean;
     FEditRect: TRect;
     FEditClientColor: Boolean;
-    FFlat: Boolean;
-    function GetBorderStyle: TControlBorderStyle;
-    procedure SetBorderStyle(Value: TControlBorderStyle);
-    function GetBevelInner: TPanelBevel;
+//    FFlat: Boolean;
+    function GetBorderStyle: TBorderStyle;
+    procedure SetBorderStyle(Value: TBorderStyle);
+(*    function GetBevelInner: TPanelBevel;
     function GetBevelOuter: TPanelBevel;
     function GetBevelWidth: TBevelWidth;
-    function GetBorderHandle: QWidgetH;
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
+*)
+    function GetBorderHandle: QWidgetH;
     function GetClientColor: TColor;
     procedure SetClientColor(const Value: TColor);
     procedure SetEditClientColor(const Value: Boolean);
@@ -225,10 +234,12 @@ type
 
     property ClientColor: TColor read GetClientColor write SetClientColor;
     property EditClientColor: Boolean read FEditClientColor write SetEditClientColor;
+(*
     property BevelInner: TPanelBevel read GetBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read GetBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read GetBevelWidth write SetBevelWidth default 1;
-    property BorderStyle: TControlBorderStyle read GetBorderStyle write SetBorderStyle stored False default bsSingle;
+*)
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsSunken3D;
     property Flat: Boolean read GetFlat write SetFlat;
     property BorderHandle: QWidgetH read GetBorderHandle;
   public
@@ -244,9 +255,9 @@ type
   TComboMaskEdit = class(TCustomComboMaskEdit)
   published
     property Flat default False;
-    property BevelInner;
-    property BevelOuter;
-    property BevelWidth;
+//    property BevelInner;
+//    property BevelOuter;
+//    property BevelWidth;
     property ClientColor default clBase;
     property EditClientColor default True;
   published
@@ -308,9 +319,9 @@ type
 
 constructor TCustomComboEdit.Create(AOwner: TComponent);
 begin
-  FBorder := TComboEditBorder.Create(nil);
+  FBorder := TComboEditBorder.Create(self);
   FBorder.FEdit := Self;
-  FClientArea := TComboEditClientArea.Create(nil);
+  FClientArea := TComboEditClientArea.Create(self);
   FClientArea.FEdit := Self;
   inherited Create(AOwner); // needs FBorder and FClientArea
   FWidth := 101;
@@ -318,7 +329,7 @@ begin
   FBorder.Color := Color;
   FClientArea.Color := Color;
   FEditClientColor := True;
-  BorderStyle := bsSingle;
+  BorderStyle := bsSunken3d;
   SetEditorRect(nil);
 end;
 
@@ -381,7 +392,7 @@ begin
   if FEditClientColor then
     ColorChanged;
 end;
-
+(*
 function TCustomComboEdit.GetBevelInner: TPanelBevel;
 begin
   Result := FBorder.BevelInner;
@@ -396,14 +407,16 @@ function TCustomComboEdit.GetBevelWidth: TBevelWidth;
 begin
   Result := FBorder.BevelWidth;
 end;
-
+*)
 function TCustomComboEdit.GetBorderHandle: QWidgetH;
 begin
   Result := FBorder.Handle;
 end;
 
-function TCustomComboEdit.GetBorderStyle: TControlBorderStyle;
+function TCustomComboEdit.GetBorderStyle: TBorderStyle;
 begin
+  Result := FBorder.BorderStyle;
+  (*
   Result := bsSingle;
   if FBorder.BevelInner = FBorder.BevelOuter then
   begin
@@ -414,8 +427,10 @@ begin
   end;
   if FBorder.BorderWidth < 2 then
     Result := bsNone;
+  *)
 end;
 
+(*
 procedure TCustomComboEdit.SetBevelInner(const Value: TPanelBevel);
 begin
   FBorder.BevelInner := Value;
@@ -433,10 +448,12 @@ begin
   FBorder.BevelWidth := Value;
   AdjustClientArea;
 end;
+*)
 
-procedure TCustomComboEdit.SetBorderStyle(Value: TControlBorderStyle);
+procedure TCustomComboEdit.SetBorderStyle(Value: TBorderStyle);
 begin
   FBorder.BorderStyle := Value;
+(*
   if Value = bsNone then
     FBorder.BorderWidth := 0
   else
@@ -444,27 +461,31 @@ begin
     FBorder.BorderWidth := 1
   else
     FBorder.BorderWidth := 2;
+*)
   AdjustClientArea;
 end;
 
 function TCustomComboEdit.GetFlat: Boolean;
 begin
-  Result := FFlat;
+  Result := FBorder.Borderstyle = bsSingle ;
 end;
 
 procedure TCustomComboEdit.SetFlat(const Value: Boolean);
 begin
-  if Value <> FFlat then
+  if Value <> Flat then
   begin
-    FFlat := Value;
-    if FBorder.BorderStyle = bsSingle then
-    begin
+    if Value then
+      FBorder.BorderStyle := bsSingle
+    else
+      FBorder.BorderStyle := bsSunken3d;
+(*    begin
       if FFlat then
         FBorder.BorderWidth := 1
       else
         FBorder.BorderWidth := 2;
     end;
     FBorder.Invalidate;
+*)
     DoFlatChanged;
   end;
 end;
@@ -646,17 +667,17 @@ end;
 
 constructor TCustomComboMaskEdit.Create(AOwner: TComponent);
 begin
-  FBorder := TComboEditBorder.Create(nil);
+  FBorder := TComboEditBorder.Create(self);
   FBorder.FEdit := Self;
-  FClientArea := TComboEditClientArea.Create(nil);
+  FClientArea := TComboEditClientArea.Create(self);
   FClientArea.FEdit := Self;
   inherited Create(AOwner); // needs FBorder and FClientArea
   FWidth := 101;
   FHeight := 21;
-  FBorder.Color := Color;
-  FClientArea.Color := Color;
+  FBorder.Color := clButton; // Color;
+  FClientArea.Color := clButton;
   FEditClientColor := True;
-  BorderStyle := bsSingle;
+  BorderStyle := bsSunken3D;
   SetEditorRect(nil);
 end;
 
@@ -719,7 +740,7 @@ begin
   if FEditClientColor then
     ColorChanged;
 end;
-
+(*
 function TCustomComboMaskEdit.GetBevelInner: TPanelBevel;
 begin
   Result := FBorder.BevelInner;
@@ -734,14 +755,17 @@ function TCustomComboMaskEdit.GetBevelWidth: TBevelWidth;
 begin
   Result := FBorder.BevelWidth;
 end;
+*)
 
 function TCustomComboMaskEdit.GetBorderHandle: QWidgetH;
 begin
   Result := FBorder.Handle;
 end;
 
-function TCustomComboMaskEdit.GetBorderStyle: TControlBorderStyle;
+function TCustomComboMaskEdit.GetBorderStyle: TBorderStyle;
 begin
+  Result := FBorder.BorderStyle;
+(*
   Result := bsSingle;
   if FBorder.BevelInner = FBorder.BevelOuter then
   begin
@@ -752,8 +776,9 @@ begin
   end;
   if FBorder.BorderWidth < 2 then
     Result := bsNone;
+*)
 end;
-
+(*
 procedure TCustomComboMaskEdit.SetBevelInner(const Value: TPanelBevel);
 begin
   FBorder.BevelInner := Value;
@@ -771,10 +796,11 @@ begin
   FBorder.BevelWidth := Value;
   AdjustClientArea;
 end;
-
-procedure TCustomComboMaskEdit.SetBorderStyle(Value: TControlBorderStyle);
+*)
+procedure TCustomComboMaskEdit.SetBorderStyle(Value: TBorderStyle);
 begin
   FBorder.BorderStyle := Value;
+  (*
   if Value = bsNone then
     FBorder.BorderWidth := 0
   else
@@ -782,27 +808,23 @@ begin
     FBorder.BorderWidth := 1
   else
     FBorder.BorderWidth := 2;
+  *)
   AdjustClientArea;
 end;
 
 function TCustomComboMaskEdit.GetFlat: Boolean;
 begin
-  Result := FFlat;
+  Result := FBorder.BorderStyle = bsSingle;
 end;
 
 procedure TCustomComboMaskEdit.SetFlat(const Value: Boolean);
 begin
-  if Value <> FFlat then
+  if Value <> Flat then
   begin
-    FFlat := Value;
-    if FBorder.BorderStyle = bsSingle then
-    begin
-      if FFlat then
-        FBorder.BorderWidth := 1
-      else
-        FBorder.BorderWidth := 2;
-    end;
-    FBorder.Invalidate;
+    if Value then
+      FBorder.BorderStyle := bsSingle
+    else
+      FBorder.BorderStyle := bsSunken3D;
     DoFlatChanged;
   end;
 end;
@@ -981,7 +1003,7 @@ begin
 end;
 
 { TEditBorder }
-
+(*
 procedure TComboEditBorder.AdjustClientRect(var Rect: TRect);
 var
   BevelSize: Integer;
@@ -990,20 +1012,22 @@ begin
 
  // undo TCustomPanel changes
   InflateRect(Rect, BorderWidth, BorderWidth);
+
   BevelSize := 0;
   if BevelOuter <> bvNone then
     Inc(BevelSize, BevelWidth);
   if BevelInner <> bvNone then
-    Inc(BevelSize, BevelWidth);
+  2  Inc(BevelSize, BevelWidth);
   InflateRect(Rect, BevelSize, BevelSize);
 
  // do out changes
   if BorderStyle = bsSingle then
-    InflateRect(Rect, -BorderWidth, -BorderWidth)
+   2 InflateRect(Rect, -BorderWidth, -BorderWidth)
   else
     InflateRect(Rect, -BevelSize, -BevelSize);
-end;
 
+end;
+*)
 procedure TComboEditBorder.BoundsChanged;
 begin
   inherited BoundsChanged;
@@ -1013,6 +1037,7 @@ begin
       FEdit.SetBounds(Left, Top, Width, Height);
 end;
 
+(*
 procedure TComboEditBorder.Paint;
 var
   Rect: TRect;
@@ -1035,6 +1060,7 @@ begin
   else
     inherited Paint;
 end;
+*)
 
 { TComboEditClient }
 

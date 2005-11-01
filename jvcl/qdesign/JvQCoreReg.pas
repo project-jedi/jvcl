@@ -55,7 +55,7 @@ uses
   {$IFDEF USEWINDOWS}
   JvQAppRegistryStorage,
   {$ENDIF USEWINDOWS}
-  JvQAppIniStorage, JvQAppStorage, JvQAppStorageSelectList,
+  JvQAppIniStorage, JvQAppStorage, JvQAppStorageSelectList, JvQExStdCtrls,
   JvQAutoComplete;
 
 {$IFDEF MSWINDOWS}
@@ -74,7 +74,7 @@ begin
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
     TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
-  RegisterComponents(RsPaletteVisual, [TJvPoweredByJCL, TJvPoweredByJVCL]);
+  RegisterComponents(RsPaletteVisual, [TJvPoweredByJCL, TJvPoweredByJVCL, TJvExLabel]);
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
@@ -99,7 +99,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(WideString), BaseClass, 'Hint', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
 
   RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
