@@ -49,6 +49,23 @@ ALERT_jedi_inc_incompatible
  {$DEFINE VisualCLX}
 {$ENDIF}
 
+// jedi.inc does not define VCL nor VisualCLX if the application is a console
+// But the JVCL code requires that VCL or VisualCLX be defined (but not both,
+// of course). So we define those symbols ourselves as it is not a matter
+// for all JEDI projects. 
+{$IFDEF CONSOLE}
+  {$IFNDEF VCL}
+    {$IFNDEF VisualCLX}
+      {$IFDEF LINUX}
+        {$DEFINE VisualCLX}
+      {$ENDIF LINUX}
+      {$IFNDEF VisualCLX}
+        {$DEFINE VCL}
+      {$ENDIF !VisualCLX}
+    {$ENDIF !VisualCLX}
+  {$ENDIF !VCL}
+{$ENDIF CONSOLE}
+
 {$IFNDEF DEFAULT_JVCL_INC}
 {-----------------------------------------------------------------------------}
 { Delphi                                                                      }
