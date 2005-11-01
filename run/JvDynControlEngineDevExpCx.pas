@@ -804,10 +804,9 @@ type
   end;
 
 procedure SetDynControlEngineDevExpCxDefault;
+function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-
-function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -3315,16 +3314,12 @@ begin
   SetDefaultDynControlEngine(IntDynControlEngineDevExpCx);
 end;
 
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 begin
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   Result := IntDynControlEngineDevExpCx;
-  {$ELSE}
-  Result := nil;
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 end;
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 initialization
   {$IFDEF UNITVERSIONING}
