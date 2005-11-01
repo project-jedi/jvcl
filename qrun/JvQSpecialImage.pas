@@ -52,6 +52,7 @@ type
     FOriginal: TPicture;
     FMirrored: Boolean;
     FWorking: Boolean;
+    FChangingLocalProperty: Boolean;
     procedure SetBright(Value: TJvBright);
     procedure SetFlipped(const Value: Boolean);
     procedure SetInverted(const Value: Boolean);
@@ -98,6 +99,7 @@ begin
   FFlipped := False;
   FMirrored := False;
   FWorking := False;
+  FChangingLocalProperty := False;
   Picture.OnChange := PictureChanged;
 end;
 
@@ -232,7 +234,29 @@ begin
         end;
       end;
     end;
-    inherited Picture.Assign(Dest);
+    // We only need to assign the new picture if it occured after having
+    // changed one of the local properties: Mirrored, Brightness, Inverted,
+    // Flipped. This way we prevent freeing the graphic used by the inherited
+    // procedures with the following assignment.
+    // The most common example is when setting Transparent:
+    //
+    // In ExtCtrls.pas, you have this code:
+    //
+    // G.Transparent := FTransparent;
+    //
+    // This changes the picture, leading to this call stack: 
+    // TJvSpecialImage.PictureChanged -> calls ApplyChanges then
+    // TJvSpecialImage.ApplyChanges -> calls inherited Picture.Assign(Dest) then
+    // TPicture.Assign -> calls TPicture.SetGraphic then
+    // FGraphic is freed, which is Picture.Graphic which is G.
+    //
+    // Hence, to prevent the freeing of G, we don't call the inherited
+    // Picture.Assign, and it does not event prevent the image from being
+    // updated with the correct values for the local properties as thoses were
+    // already applied at a previous time when their calls were made.
+    // This was Mantis 2693.
+    if FChangingLocalProperty then
+      inherited Picture.Assign(Dest);
   finally
     Dest.Free;
     FWorking := False;
@@ -291,16 +315,26 @@ end;
 
 procedure TJvSpecialImage.SetBright(Value: TJvBright);
 begin
-  FBrightness := Value;
-  ApplyChanges;
+  FChangingLocalProperty := True;
+  try
+    FBrightness := Value;
+    ApplyChanges;
+  finally
+    FChangingLocalProperty := False;
+  end;
 end;
 
 procedure TJvSpecialImage.SetFlipped(const Value: Boolean);
 begin
   if Value <> FFlipped then
   begin
-    FFlipped := Value;
-    ApplyChanges;
+    FChangingLocalProperty := True;
+    try
+      FFlipped := Value;
+      ApplyChanges;
+    finally
+      FChangingLocalProperty := False;
+    end;
   end;
 end;
 
@@ -308,8 +342,13 @@ procedure TJvSpecialImage.SetInverted(const Value: Boolean);
 begin
   if Value <> FInverted then
   begin
-    FInverted := Value;
-    ApplyChanges;
+    FChangingLocalProperty := True;
+    try
+      FInverted := Value;
+      ApplyChanges;
+    finally
+      FChangingLocalProperty := False;
+    end;
   end;
 end;
 
@@ -317,8 +356,13 @@ procedure TJvSpecialImage.SetMirrored(const Value: Boolean);
 begin
   if Value <> FMirrored then
   begin
-    FMirrored := Value;
-    ApplyChanges;
+    FChangingLocalProperty := True;
+    try
+      FMirrored := Value;
+      ApplyChanges;
+    finally
+      FChangingLocalProperty := False;
+    end;
   end;
 end;
 

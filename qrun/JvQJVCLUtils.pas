@@ -39,20 +39,21 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  {$ENDIF HAS_UNIT_VARIANTS} 
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
-  Windows, Messages, ShellAPI, Registry,
+  Windows, Messages, ShellAPI, Registry, 
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils, Classes, 
+  SysUtils,  
   Qt, QWinCursors, QWindows, 
   QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
   QDialogs, QComCtrls, QImgList, QGrids, IniFiles,
+  Classes, // must be after "Forms"
   JvQJCLUtils, JvQAppStorage, JvQTypes;
 
 
@@ -87,7 +88,9 @@ type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
 // set the background wallpaper (two versions)
+
 procedure SetWallpaper(const Path: string); overload;
+
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
 
 (* (rom) to be deleted. Use ScreenShot from JCL
@@ -113,19 +116,18 @@ procedure DrawBitmapRectTransparent(Dest: TCanvas; DstX, DstY: Integer;
   SrcRect: TRect; Bitmap: TBitmap; TransparentColor: TColor);
 procedure StretchBitmapRectTransparent(Dest: TCanvas; DstX, DstY, DstW,
   DstH: Integer; SrcRect: TRect; Bitmap: TBitmap; TransparentColor: TColor);
+
 function MakeBitmap(ResID: PChar): TBitmap;
 function MakeBitmapID(ResID: Word): TBitmap;
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
+
 function CreateTwoColorsBrushPattern(Color1, Color2: TColor): TBitmap;
 function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor):
   TBitmap;
 function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighLightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
-  TBitmap; overload;
-function CreateDisabledBitmap(FOriginal: TBitmap): TBitmap; overload;
-
-function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor): TBitmap;
+  TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
@@ -133,21 +135,21 @@ procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighLightColor, GrayColor: TColor;
   DrawHighlight: Boolean);
 
+
 function MakeIcon(ResID: PChar): TIcon;
 function MakeIconID(ResID: Word): TIcon;
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
+
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 
 
-{ Execute executes other program and waiting for it
-  terminating, then return its Exit Code }
-function Execute(const CommandLine, WorkingDirectory: string): Integer;
 
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
 // where @n = zero-based index of the applet to start (if there is more than one
 // m is the zero-based index of the tab to display
+
 
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
@@ -173,7 +175,9 @@ procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
 
 procedure StartWait;
 procedure StopWait;
+
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
+
 function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean):
   Integer;
 function WaitCursor: IInterface;
@@ -263,6 +267,7 @@ type
 
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 
+
 {$IFDEF MSWINDOWS}
 { TargetFileName - if FileName is ShortCut returns filename ShortCut linked to }
 function TargetFileName(const FileName: TFileName): TFileName;
@@ -275,6 +280,7 @@ type
   TProcObj = procedure of object;
 
 procedure ExecAfterPause(Proc: TProcObj; Pause: Integer);
+
 
 { end JvUtils }
 
@@ -465,14 +471,14 @@ procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar;
 // ListView functions
 //------------------------------------------------------------------------------
 
-type
+type 
   PJvLVItemStateData = ^TJvLVItemStateData;
   TJvLVItemStateData = record
     Caption: string;
     Data: Pointer;
     Focused: Boolean;
     Selected: Boolean;
-  end;
+  end; 
 
 { listview functions }
 function ConvertStates(const State: Integer): TItemStates;
@@ -736,10 +742,12 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+
 procedure SetWallpaper(const Path: string);
 begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
 end;
+
 
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle);
 begin
@@ -771,67 +779,85 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
+type
+  TGetXBitmapMode =(gxRed, gxGreen, gxBlue, gxHue, gxSaturation, gxValue);
+
+procedure GetXBitmap(var Dest: TBitmap; const Source: TBitmap; Mode: TGetXBitmapMode);
 var
-  I, J: Integer;
-  Line: PJvRGBArray;
+  I, J, H, S, V: Integer; 
+  Line: PJvRGBArray; 
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
   Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
-  begin
-    Line := Dest.ScanLine[J];
-    for I := Dest.Width - 1 downto 0 do
-    begin
-      Line[I].rgbGreen := 0;
-      Line[I].rgbBlue := 0;
+  begin 
+    Line := Dest.ScanLine[J]; 
+    case Mode of
+      gxRed:
+        for I := Dest.Width - 1 downto 0 do
+        begin
+          Line[I].rgbGreen := 0;
+          Line[I].rgbBlue := 0;
+        end;
+      gxGreen:
+        for I := Dest.Width - 1 downto 0 do
+        begin
+          Line[I].rgbRed := 0;
+          Line[I].rgbBlue := 0;
+        end;
+      gxBlue:
+        for I := Dest.Width - 1 downto 0 do
+        begin
+          Line[I].rgbRed := 0;
+          Line[I].rgbGreen := 0;
+        end;
+      gxHue:
+        for I := Dest.Width - 1 downto 0 do
+          with Line[I] do
+          begin
+            RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
+            rgbRed := H;
+            rgbGreen := H;
+            rgbBlue := H;
+          end;
+      gxSaturation:
+        for I := Dest.Width - 1 downto 0 do
+          with Line[I] do
+          begin
+            RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
+            rgbRed := S;
+            rgbGreen := S;
+            rgbBlue := S;
+          end;
+      gxValue:
+        for I := Dest.Width - 1 downto 0 do
+          with Line[I] do
+          begin
+            RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
+            rgbRed := V;
+            rgbGreen := V;
+            rgbBlue := V;
+          end;
     end;
   end;
   Dest.PixelFormat := Source.PixelFormat;
+end;
+
+procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
+begin
+  GetXBitmap(Dest, Source, gxRed);
 end;
 
 procedure GetBBitmap(var Dest: TBitmap; const Source: TBitmap);
-var
-  I, J: Integer;
-  Line: PJvRGBArray;
 begin
-  if not Assigned(Dest) then
-    Dest := TBitmap.Create;
-  Dest.Assign(Source);
-  Dest.PixelFormat := pf24bit;
-  for J := Dest.Height - 1 downto 0 do
-  begin
-    Line := Dest.ScanLine[J];
-    for I := Dest.Width - 1 downto 0 do
-    begin
-      Line[I].rgbRed := 0;
-      Line[I].rgbGreen := 0;
-    end;
-  end;
-  Dest.PixelFormat := Source.PixelFormat;
+  GetXBitmap(Dest, Source, gxBlue);
 end;
 
 procedure GetGBitmap(var Dest: TBitmap; const Source: TBitmap);
-var
-  I, J: Integer;
-  Line: PJvRGBArray;
 begin
-  if not Assigned(Dest) then
-    Dest := TBitmap.Create;
-  Dest.Assign(Source);
-  Dest.PixelFormat := pf24bit;
-  for J := Dest.Height - 1 downto 0 do
-  begin
-    Line := Dest.ScanLine[J];
-    for I := Dest.Width - 1 downto 0 do
-    begin
-      Line[I].rgbRed := 0;
-      Line[I].rgbBlue := 0;
-    end;
-  end;
-  Dest.PixelFormat := Source.PixelFormat;
+  GetXBitmap(Dest, Source, gxGreen);
 end;
 
 procedure GetMonochromeBitmap(var Dest: TBitmap; const Source: TBitmap);
@@ -843,126 +869,23 @@ begin
 end;
 
 procedure GetHueBitmap(var Dest: TBitmap; const Source: TBitmap);
-var
-  I, J, H, S, V: Integer;
-  Line: PJvRGBArray;
 begin
-  if not Assigned(Dest) then
-    Dest := TBitmap.Create;
-  Dest.Assign(Source);
-  Dest.PixelFormat := pf24bit;
-  for J := Dest.Height - 1 downto 0 do
-  begin
-    Line := Dest.ScanLine[J];
-    for I := Dest.Width - 1 downto 0 do
-      with Line[I] do
-      begin
-        RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
-        rgbRed := H;
-        rgbGreen := H;
-        rgbBlue := H;
-      end;
-  end;
-  Dest.PixelFormat := Source.PixelFormat;
+  GetXBitmap(Dest, Source, gxHue);
 end;
 
 procedure GetSaturationBitmap(var Dest: TBitmap; const Source: TBitmap);
-var
-  I, J, H, S, V: Integer;
-  Line: PJvRGBArray;
 begin
-  if not Assigned(Dest) then
-    Dest := TBitmap.Create;
-  Dest.Assign(Source);
-  Dest.PixelFormat := pf24bit;
-  for J := Dest.Height - 1 downto 0 do
-  begin
-    Line := Dest.ScanLine[J];
-    for I := Dest.Width - 1 downto 0 do
-      with Line[I] do
-      begin
-        RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
-        rgbRed := S;
-        rgbGreen := S;
-        rgbBlue := S;
-      end;
-  end;
-  Dest.PixelFormat := Source.PixelFormat;
+  GetXBitmap(Dest, Source, gxSaturation);
 end;
 
 procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
-var
-  I, J, H, S, V: Integer;
-  Line: PJvRGBArray;
 begin
-  if not Assigned(Dest) then
-    Dest := TBitmap.Create;
-  Dest.Assign(Source);
-  Dest.PixelFormat := pf24bit;
-  for J := Dest.Height - 1 downto 0 do
-  begin
-    Line := Dest.ScanLine[J];
-    for I := Dest.Width - 1 downto 0 do
-      with Line[I] do
-      begin
-        RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
-        rgbRed := V;
-        rgbGreen := V;
-        rgbBlue := V;
-      end;
-  end;
-  Dest.PixelFormat := Source.PixelFormat;
+  GetXBitmap(Dest, Source, gxValue);
 end;
 
 
 
-// (rom) a thread to wait would be more elegant, also JCL function available
 
-function Execute(const CommandLine, WorkingDirectory: string): Integer;
-{$IFDEF MSWINDOWS}
-var
-  R: Boolean;
-  ProcessInformation: TProcessInformation;
-  StartupInfo: TStartupInfo;
-  ExCode: Cardinal;
-begin
-  Result := 0;
-  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-  with StartupInfo do
-  begin
-    cb := SizeOf(TStartupInfo);
-    dwFlags := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_SHOW;
-  end;
-  R := CreateProcess(
-    nil, // Pointer to name of executable module
-    PChar(CommandLine), // Pointer to command line string
-    nil, // Pointer to process security attributes
-    nil, // Pointer to thread security attributes
-    False, // handle inheritance flag
-    0, // creation flags
-    nil, // Pointer to new environment block
-    PChar(WorkingDirectory), // Pointer to current directory name
-    StartupInfo, // Pointer to STARTUPINFO
-    ProcessInformation); // Pointer to PROCESS_INFORMATION
-  if R then
-    while (GetExitCodeProcess(ProcessInformation.hProcess, ExCode) and
-      (ExCode = STILL_ACTIVE)) do
-      Application.ProcessMessages
-  else
-    Result := GetLastError;
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-begin
-  if WorkingDirectory = '' then
-    Result := Libc.system(PChar(Format('cd "%s" ; %s',
-      [GetCurrentDir, CommandLine])))
-  else
-    Result := Libc.system(PChar(Format('cd "%s" ; %s',
-      [WorkingDirectory, CommandLine])));
-end;
-{$ENDIF UNIX}
 
 
 
@@ -1091,6 +1014,7 @@ end;
 
 
 
+
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
 begin
   Result := TBitmap.Create;
@@ -1121,6 +1045,7 @@ function MakeBitmapID(ResID: Word): TBitmap;
 begin
   Result := MakeModuleBitmap(HInstance, MakeIntResource(ResID));
 end;
+
 
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap;
   Cols, Rows, Index: Integer);
@@ -1244,8 +1169,8 @@ procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 var
   BM: tagBITMAP;
-begin
-  GetObject(Bitmap, SizeOf(BM), @BM);
+begin 
+  GetObject(Bitmap, SizeOf(BM), @BM); 
   DrawTransparentBitmapRect(DC, Bitmap, DstX, DstY, BM.bmWidth, BM.bmHeight,
     Rect(0, 0, BM.bmWidth, BM.bmHeight), TransparentColor);
 end;
@@ -1323,81 +1248,6 @@ procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
 begin
   StretchBitmapTransparent(Dest, Bitmap, TransparentColor, DstX, DstY,
     Bitmap.Width, Bitmap.Height, 0, 0, Bitmap.Width, Bitmap.Height);
-end;
-
-function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor): TBitmap;
-var
-  Img: QImageH;
-  tmp: TBitmap;
-begin
-  Img := QImage_create;
-  tmp := TBitmap.Create;
-  if BackColor = clNone then
-    tmp.Assign(FOriginal)
-  else
-    with tmp do
-    begin
-      Width := FOriginal.width;
-      Height := FOriginal.Height;
-      if BackColor = clDefault then
-        BackColor := FOriginal.Canvas.Pixels[0, Height-1];
-      with Canvas do
-      begin
-        Start;
-        Brush.Color := clWhite;
-        FillRect(Rect(0,0, Width, Height));
-        DrawBitmapTransparent(Canvas, 0, 0, FOriginal, BackColor);
-        Stop;
-      end;
-    end;
-  QPixmap_convertToImage(tmp.Handle, Img);
-  try
-    Result := TBitmap.Create;
-    try
-      Result.Handle := QPixmap_create(FOriginal.Width, FOriginal.Width, -1, QPixmapOptimization_NoOptim);
-      QPixmap_convertFromImage(Result.Handle, Img,  Integer(ImageConversionFlags_MonoOnly) +
-        Integer(ImageConversionFlags_ThresholdDither) + Integer(ImageConversionFlags_AvoidDither));
-      Result.TransparentColor := clWhite;
-      Result.Transparent := True;
-    except
-      Result.Free;
-      Result := nil;
-    end;
-  finally
-    tmp.Free;
-    QImage_destroy(Img);
-  end;
-end;
-
-procedure MakeBitmapMonochrome(Bmp: TBitmap);
-var
-  Tmp: TBitmap;
-begin
-  Tmp := CreateMonoBitmap(Bmp, clBlack);
-  Bmp.Assign(Tmp);
-  Tmp.Free;
-end;
-
-function CreateDisabledBitmap(FOriginal: TBitmap): TBitmap;
-var
-  IconSet: QIconSetH;
-  MonoBmp: TBitmap;
-begin
-  Result := TBitmap.Create;
-  MonoBmp := CreateMonoBitmap(FOriginal, clDefault);
-  try
-    IconSet := QIconSet_create(MonoBmp.Handle, QIconSetSize_Small);
-    try
-      Result.Handle := QPixmap_create;
-      QIconSet_pixmap(IconSet, Result.Handle, QIconSetSize_Small, False);
-    finally
-      QIconSet_destroy(IconSet);
-    end;
-  except
-    Result.Free;
-    Result := nil;
-  end;
-  MonoBmp.Free;
 end;
 
 { CreateDisabledBitmap. Creating TBitmap object with disable button glyph
@@ -1607,6 +1457,7 @@ end;
 
 { Icons }
 
+
 function MakeIcon(ResID: PChar): TIcon;
 begin
   Result := MakeModuleIcon(HInstance, ResID);
@@ -1627,6 +1478,7 @@ begin
     Result := nil;
   end; 
 end;
+
 
 { Create TBitmap object from TIcon }
 
@@ -1736,13 +1588,15 @@ end;
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
+
 type
   PPoints = ^TPoints;
   TPoints = array [0..0] of TPoint;
+
 var
   Rgn: HRGN;
-begin
-  Rgn := CreatePolygonRgn(PPoints(@Points)^, High(Points) + 1, WINDING);
+begin 
+  Rgn := CreatePolygonRgn(PPoints(@Points)^, High(Points) + 1, WINDING); 
   try
     Result := PtInRegion(Rgn, P.X, P.Y);
   finally
@@ -1830,8 +1684,8 @@ var
   AutoScroll: Boolean;
 begin
   AutoScroll := AForm.AutoScroll;
-  AForm.Hide;
-  TCustomControlAccessProtected(AForm).DestroyHandle;
+  AForm.Hide; 
+  TCustomControlAccessProtected(AForm).DestroyHandle; 
   with AForm do
   begin
     BorderStyle := fbsNone;
@@ -1963,6 +1817,17 @@ begin
 end;
 
 
+(*
+function MsgBox(Handle: HWND; const Caption, Text: string; Flags: Integer): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := Windows.MessageBox(Handle, PChar(Text), PChar(Caption), Flags);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := MsgBox(Caption, Text, Flags);
+  {$ENDIF UNIX}
+end;
+*)
 
 { Gradient fill procedure - displays a gradient beginning with a chosen        }
 { color and ending with another chosen color. Based on TGradientFill           }
@@ -2087,19 +1952,20 @@ end;
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
   I: Integer;
-  Buffer: array [0..51] of Char;
+  Buffer: array [0..51] of Char; 
 begin
   for I := 0 to 25 do
     Buffer[I] := Chr(I + Ord('A'));
   for I := 0 to 25 do
     Buffer[I + 26] := Chr(I + Ord('a')); 
-  Canvas.Start; 
-  GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result)); 
+  Canvas.Start;  
+  GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result));  
   Canvas.Stop; 
   Result.X := Result.X div 52;
 end;
 
 { Cursor routines }
+
 
 {$IFDEF MSWINDOWS}
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
@@ -2145,6 +2011,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+
 function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean):
   Integer;
 begin
@@ -2162,10 +2029,11 @@ begin
       Dec(Result)
     else
       Inc(Result);
-    if (Result < Low(TCursor)) or (Result > High(TCursor)) then
-      raise EOutOfResources.CreateRes(@SOutOfResources);
+    if (Result < Low(TCursor)) or (Result > High(TCursor)) then 
+      raise EOutOfResources.CreateRes(@SOutOfResources); 
   end;
 end;
+
 
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
 var
@@ -2182,7 +2050,7 @@ begin
   end;
 end;
 
-// (rom) changed to var
+
 var
   WaitCount: Integer = 0;
   SaveCursor: TCursor = crDefault;
@@ -2226,8 +2094,9 @@ var
   OLEDragCursorsLoaded: Boolean = False;
 
 function LoadOLEDragCursors: Boolean;
+
 const
-  cOle32DLL: PChar = 'ole32.dll';
+  cOle32DLL = 'ole32.dll';
 var
   Handle: Cardinal;
 begin
@@ -2492,20 +2361,21 @@ end;
 
 { Check if this is the active Windows task }
 { Copied from implementation of FORMS.PAS  }
-type
-  PCheckTaskInfo = ^TCheckTaskInfo;
+type 
+  PCheckTaskInfo = ^TCheckTaskInfo; 
   TCheckTaskInfo = record
     FocusWnd: Windows.HWND;
     Found: Boolean;
   end;
 
-function CheckTaskWindow(Window: Windows.HWND; Data: Longint): WordBool; stdcall;
+
+function CheckTaskWindow(Window: Windows.HWND; Data: Longint): LongBool; stdcall;
 begin
-  Result := True;
-  if PCheckTaskInfo(Data)^.FocusWnd = Window then
+  Result := True; 
+  if PCheckTaskInfo(Data).FocusWnd = Window then
   begin
+    PCheckTaskInfo(Data).Found := True; 
     Result := False;
-    PCheckTaskInfo(Data)^.Found := True;
   end;
 end;
 
@@ -2515,7 +2385,8 @@ var
 begin
   Info.FocusWnd := Windows.GetActiveWindow;
   Info.Found := False;
-  Windows.EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
+ 
+  EnumThreadWindows(GetCurrentThreadId, @CheckTaskWindow, Longint(@Info)); 
   Result := Info.Found;
 end;
 
@@ -2624,14 +2495,15 @@ begin
   end;
 end;
 
+
 {$IFDEF MSWINDOWS}
 
 function TargetFileName(const FileName: TFileName): TFileName;
 begin
   Result := FileName;
   if SameFileName(ExtractFileExt(FileName), '.lnk') then
-    if ResolveLink(GetAppHandle, FileName, Result) <> 0 then
-      raise EJVCLException.CreateResFmt(@RsECantGetShortCut, [FileName]);
+    if ResolveLink(GetAppHandle, FileName, Result) <> 0 then 
+      raise EJVCLException.CreateResFmt(@RsECantGetShortCut, [FileName]); 
 end;
 
 function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
@@ -2750,6 +2622,7 @@ begin
     Num := ProcList.Add(TJvProcItem.Create(Proc));
   SetTimer(GetAppHandle, Num, Pause, @TmrProc);
 end;
+
 
 { end JvUtils }
 
@@ -3101,8 +2974,8 @@ procedure InternalSaveMDIChildren(MainForm: TForm;
 var
   I: Integer;
 begin
-  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.CreateRes(@SNoMDIForm);
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then 
+    raise EInvalidOperation.CreateRes(@SNoMDIForm); 
   AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
   if MainForm.MDIChildCount > 0 then
   begin
@@ -3121,8 +2994,8 @@ var
   Count: Integer;
   FormClass: TFormClass;
 begin
-  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.CreateRes(@SNoMDIForm);
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then 
+    raise EInvalidOperation.CreateRes(@SNoMDIForm); 
   StartWait;
   try
     Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
@@ -3159,9 +3032,9 @@ var
   Placement: TWindowPlacement;
 begin
   if Options = [fpActiveControl] then
-    Exit;
+    Exit; 
   Placement.Length := SizeOf(TWindowPlacement);
-  GetWindowPlacement(Form.Handle, @Placement);
+  GetWindowPlacement(Form.Handle, @Placement); 
   with Placement, TForm(Form) do
   begin
     if (Form = Application.MainForm) and AppMinimized then
@@ -3184,16 +3057,15 @@ end;
 procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
 
-    procedure ChangePosition (APosition : TPosition);
-    begin
+    procedure ChangePosition(APosition : TPosition);
+    begin 
       TComponentAccessProtected(Form).SetDesigning(True);
       try
         Form.Position := APosition;
       finally
         TComponentAccessProtected(Form).SetDesigning(False);
-      end;
+      end; 
     end;
-
 
 const
   Delims = [',', ' '];
@@ -3204,9 +3076,9 @@ var
   DataFound: Boolean;
 begin
   if Options = [fpActiveControl] then
-    Exit;
+    Exit; 
   Placement.Length := SizeOf(TWindowPlacement);
-  GetWindowPlacement(Form.Handle, @Placement);
+  GetWindowPlacement(Form.Handle, @Placement); 
   with Placement, TForm(Form) do
   begin
     if not IsWindowVisible(Form.Handle) then
@@ -3372,7 +3244,7 @@ end;
 
 procedure InvalidBitmap;
 begin
-  raise EInvalidGraphic.CreateRes(@SInvalidBitmap);
+  raise EInvalidGraphic.Create(SInvalidBitmap);
 end;
 
 function WidthBytes(I: Longint): Longint;
@@ -3403,7 +3275,7 @@ const
 
 type
   TTriple = array [0..2] of Byte;
-
+ 
   PQColor = ^TQColor;
   TQColor = record
     RGB: TTriple;
@@ -3428,9 +3300,10 @@ type
   end;
 
   PNewColorArray = ^TNewColorArray;
-  TNewColorArray = array [Byte] of TNewColor;
+  TNewColorArray = array [Byte] of TNewColor; 
 
-procedure PInsert(ColorList: PQColorList; Number: Integer; SortRGBAxis: Integer);
+procedure PInsert(ColorList: PQColorList; 
+  Number: Integer; SortRGBAxis: Integer);
 var
   Q1, Q2: PQColor;
   I, J: Integer;
@@ -3438,22 +3311,23 @@ var
 begin
   for I := 1 to Number - 1 do
   begin
-    Temp := ColorList^[I];
+    Temp := ColorList[I];
     J := I - 1;
     while J >= 0 do
     begin
       Q1 := Temp;
-      Q2 := ColorList^[J];
-      if Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis] > 0 then
+      Q2 := ColorList[J];
+      if Q1.RGB[SortRGBAxis] - Q2.RGB[SortRGBAxis] > 0 then
         Break;
-      ColorList^[J + 1] := ColorList^[J];
+      ColorList[J + 1] := ColorList[J];
       Dec(J);
     end;
-    ColorList^[J + 1] := Temp;
+    ColorList[J + 1] := Temp;
   end;
 end;
 
-procedure PSort(ColorList: PQColorList; Number: Integer; SortRGBAxis: Integer);
+procedure PSort(ColorList: PQColorList; 
+  Number: Integer; SortRGBAxis: Integer);
 var
   Q1, Q2: PQColor;
   I, J, N, Nr: Integer;
@@ -3461,46 +3335,48 @@ var
 begin
   if Number < 8 then
   begin
-    PInsert(ColorList, Number, SortRGBAxis);
+    PInsert(ColorList,  Number, SortRGBAxis);
     Exit;
   end;
-  Part := ColorList^[Number div 2];
+  Part := ColorList[ Number div 2];
   I := -1;
   J := Number;
   repeat
     repeat
       Inc(I);
-      Q1 := ColorList^[I];
+      Q1 := ColorList[ I];
       Q2 := Part;
-      N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
+      N := Q1.RGB[SortRGBAxis] - Q2.RGB[SortRGBAxis];
     until N >= 0;
     repeat
       Dec(J);
-      Q1 := ColorList^[J];
+      Q1 := ColorList[ J];
       Q2 := Part;
-      N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
+      N := Q1.RGB[SortRGBAxis] - Q2.RGB[SortRGBAxis];
     until N <= 0;
     if I >= J then
       Break;
-    Temp := ColorList^[I];
-    ColorList^[I] := ColorList^[J];
-    ColorList^[J] := Temp;
+    Temp := ColorList[ I];
+    ColorList[ I] := ColorList[ J];
+    ColorList[ J] := Temp;
   until False;
   Nr := Number - I;
   if I < Number div 2 then
-  begin
+  begin 
     PSort(ColorList, I, SortRGBAxis);
-    PSort(PQColorList(@ColorList^[I]), Nr, SortRGBAxis);
+    PSort(PQColorList(@ColorList[I]), Nr, SortRGBAxis); 
   end
   else
-  begin
-    PSort(PQColorList(@ColorList^[I]), Nr, SortRGBAxis);
-    PSort(ColorList, I, SortRGBAxis);
+  begin 
+    PSort(PQColorList(@ColorList[I]), Nr, SortRGBAxis);
+    PSort(ColorList, I, SortRGBAxis); 
   end;
 end;
 
+
 function DivideMap(NewColorSubdiv: PNewColorArray; ColorMapSize: Integer;
   var NewColormapSize: Integer; LPSTR: Pointer): Integer;
+
 var
   I, J: Integer;
   MaxSize, Index: Integer;
@@ -3519,10 +3395,10 @@ begin
     begin
       for J := 0 to 2 do
       begin
-        if (NewColorSubdiv^[I].RGBWidth[J] > MaxSize) and
-          (NewColorSubdiv^[I].NumEntries > 1) then
+        if (NewColorSubdiv[I].RGBWidth[J] > MaxSize) and
+          (NewColorSubdiv[I].NumEntries > 1) then
         begin
-          MaxSize := NewColorSubdiv^[I].RGBWidth[J];
+          MaxSize := NewColorSubdiv[I].RGBWidth[J];
           Index := I;
           SortRGBAxis := J;
         end;
@@ -3535,59 +3411,58 @@ begin
     end;
     SortArray := PQColorList(LPSTR);
     J := 0;
-    QuantizedColor := NewColorSubdiv^[Index].QuantizedColors;
-    while (J < NewColorSubdiv^[Index].NumEntries) and
+    QuantizedColor := NewColorSubdiv[Index].QuantizedColors;
+    while (J < NewColorSubdiv[Index].NumEntries) and
       (QuantizedColor <> nil) do
     begin
-      SortArray^[J] := QuantizedColor;
+      SortArray[ J] := QuantizedColor;
       Inc(J);
-      QuantizedColor := QuantizedColor^.PNext;
+      QuantizedColor := QuantizedColor.PNext;
     end;
-    PSort(SortArray, NewColorSubdiv^[Index].NumEntries, SortRGBAxis);
-    for J := 0 to NewColorSubdiv^[Index].NumEntries - 2 do
-      SortArray^[J]^.PNext := SortArray^[J + 1];
-    SortArray^[NewColorSubdiv^[Index].NumEntries - 1]^.PNext := nil;
-    NewColorSubdiv^[Index].QuantizedColors := SortArray^[0];
-    QuantizedColor := SortArray^[0];
-    Sum := NewColorSubdiv^[Index].Count div 2 - QuantizedColor^.Count;
+    PSort(SortArray,  NewColorSubdiv[Index].NumEntries, SortRGBAxis);
+    for J := 0 to NewColorSubdiv[Index].NumEntries - 2 do
+      SortArray[ J].PNext := SortArray[ J + 1];
+    SortArray[ NewColorSubdiv[Index].NumEntries - 1].PNext := nil;
+    NewColorSubdiv[Index].QuantizedColors := SortArray[ 0];
+    QuantizedColor := SortArray[ 0];
+    Sum := NewColorSubdiv[Index].Count div 2 - QuantizedColor.Count;
     NumEntries := 1;
-    Count := QuantizedColor^.Count;
-    Dec(Sum, QuantizedColor^.PNext^.Count);
-    while (Sum >= 0) and (QuantizedColor^.PNext <> nil) and
-      (QuantizedColor^.PNext^.PNext <> nil) do
+    Count := QuantizedColor.Count;
+    Dec(Sum, QuantizedColor.PNext.Count);
+    while (Sum >= 0) and (QuantizedColor.PNext <> nil) and
+      (QuantizedColor.PNext.PNext <> nil) do
     begin
-      QuantizedColor := QuantizedColor^.PNext;
+      QuantizedColor := QuantizedColor.PNext;
       Inc(NumEntries);
-      Inc(Count, QuantizedColor^.Count);
-      Dec(Sum, QuantizedColor^.PNext^.Count);
+      Inc(Count, QuantizedColor.Count);
+      Dec(Sum, QuantizedColor.PNext.Count);
     end;
-    MaxColor := (QuantizedColor^.RGB[SortRGBAxis]) shl 4;
-    MinColor := (QuantizedColor^.PNext^.RGB[SortRGBAxis]) shl 4;
-    NewColorSubdiv^[NewColormapSize].QuantizedColors := QuantizedColor^.PNext;
-    QuantizedColor^.PNext := nil;
-    NewColorSubdiv^[NewColormapSize].Count := Count;
-    Dec(NewColorSubdiv^[Index].Count, Count);
-    NewColorSubdiv^[NewColormapSize].NumEntries :=
-      NewColorSubdiv^[Index].NumEntries - NumEntries;
-    NewColorSubdiv^[Index].NumEntries := NumEntries;
+    MaxColor := (QuantizedColor.RGB[SortRGBAxis]) shl 4;
+    MinColor := (QuantizedColor.PNext.RGB[SortRGBAxis]) shl 4;
+    NewColorSubdiv[NewColormapSize].QuantizedColors := QuantizedColor.PNext;
+    QuantizedColor.PNext := nil;
+    NewColorSubdiv[NewColormapSize].Count := Count;
+    Dec(NewColorSubdiv[Index].Count, Count);
+    NewColorSubdiv[NewColormapSize].NumEntries := NewColorSubdiv[Index].NumEntries - NumEntries;
+    NewColorSubdiv[Index].NumEntries := NumEntries;
     for J := 0 to 2 do
     begin
-      NewColorSubdiv^[NewColormapSize].RGBMin[J] :=
-        NewColorSubdiv^[Index].RGBMin[J];
-      NewColorSubdiv^[NewColormapSize].RGBWidth[J] :=
-        NewColorSubdiv^[Index].RGBWidth[J];
+      NewColorSubdiv[NewColormapSize].RGBMin[J] :=
+        NewColorSubdiv[Index].RGBMin[J];
+      NewColorSubdiv[NewColormapSize].RGBWidth[J] :=
+        NewColorSubdiv[Index].RGBWidth[J];
     end;
-    NewColorSubdiv^[NewColormapSize].RGBWidth[SortRGBAxis] :=
-      NewColorSubdiv^[NewColormapSize].RGBMin[SortRGBAxis] +
-      NewColorSubdiv^[NewColormapSize].RGBWidth[SortRGBAxis] -
+    NewColorSubdiv[NewColormapSize].RGBWidth[SortRGBAxis] :=
+      NewColorSubdiv[NewColormapSize].RGBMin[SortRGBAxis] +
+      NewColorSubdiv[NewColormapSize].RGBWidth[SortRGBAxis] -
       MinColor;
-    NewColorSubdiv^[NewColormapSize].RGBMin[SortRGBAxis] := MinColor;
-    NewColorSubdiv^[Index].RGBWidth[SortRGBAxis] :=
-      MaxColor - NewColorSubdiv^[Index].RGBMin[SortRGBAxis];
+    NewColorSubdiv[NewColormapSize].RGBMin[SortRGBAxis] := MinColor;
+    NewColorSubdiv[Index].RGBWidth[SortRGBAxis] := MaxColor - NewColorSubdiv[Index].RGBMin[SortRGBAxis];
     Inc(NewColormapSize);
   end;
   Result := 1;
 end;
+
 
 function Quantize(const Bmp: TBitmapInfoHeader; gptr, Data8: Pointer;
   var ColorCount: Integer; var OutputColormap: TRGBPalette): Integer;
@@ -4382,6 +4257,7 @@ end;
 
 
 
+
 function GetBitmapPixelFormat(Bitmap: TBitmap): TPixelFormat;
 begin
   Result := Bitmap.PixelFormat;
@@ -4394,6 +4270,8 @@ begin
   Result := ((PixelsPerScanline * BitsPerPixel) + Alignment) and not Alignment;
   Result := Result div 8;
 end;
+
+
 
 
 
@@ -4543,8 +4421,8 @@ var
   I, TotalWidth: Integer;
   Button: TToolButton;
 begin
-  if AForm.FormStyle = fsMDIForm then
-    raise EJVCLException.CreateRes(@RsENotForMdi);
+  if AForm.FormStyle = fsMDIForm then 
+    raise EJVCLException.CreateRes(@RsENotForMdi); 
   if AMenu = nil then
     AMenu := AForm.Menu;
   if AMenu = nil then
@@ -4712,11 +4590,10 @@ begin
     ColIndex := Tag and $FF - 1;
     if Columns[ColIndex + 1].Alignment = taLeftJustify then
     begin
-      if ColIndex = -1 then
+      if ColIndex = -1 then 
         Compare := AnsiCompareText(Item1.Caption, Item2.Caption)
       else
-        Compare := AnsiCompareText(Item1.SubItems[ColIndex],
-          Item2.SubItems[ColIndex]);
+        Compare := AnsiCompareText(Item1.SubItems[ColIndex], Item2.SubItems[ColIndex]); 
     end
     else
     begin
@@ -4863,6 +4740,7 @@ end;
 
 //=== AllocateHWndEx =========================================================
 
+
 const
   cUtilWindowExClass: TWndClass = (
     style: 0;
@@ -4897,7 +4775,9 @@ begin
     Result := DefWindowProc(Window, Message, WParam, LParam);
 end;
 
+
 function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
+
 var
   TempClass: TWndClass;
   UtilWindowExClass: TWndClass;
@@ -4928,20 +4808,21 @@ begin
   end;
 end;
 
+
 procedure DeallocateHWndEx(Wnd: Windows.HWND);
-begin
-  Windows.DestroyWindow(Wnd);
+begin 
+  Windows.DestroyWindow(Wnd); 
 end;
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
-begin 
-  Result := Classes.MakeObjectInstance(Method); 
+begin
+  Result := MakeObjectInstance(Method);
 end;
 
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
-  if ObjectInstance <> nil then 
-    Classes.FreeObjectInstance(ObjectInstance); 
+  if Assigned(ObjectInstance) then
+    FreeObjectInstance(ObjectInstance);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -5068,6 +4949,10 @@ begin
     Dec(Size);
     Dec(Rect.Right);
   end;
+  // set to center  by dejoy
+  if RectHeight(Rect) > Size then
+    Rect.Top := Rect.Top + (RectHeight(Rect) - (Size div 2)) div 2;
+
   Rect.Bottom := Rect.Top + Size;
   Canvas.Pen.Color := Color;
   case Direction of
@@ -5300,7 +5185,7 @@ const
 function HTMLPrepareText(const Text: string): string;
 type
   THtmlCode = packed record
-    Html: PChar;
+    Html: string[10];
     Text: Char;
   end;
 const
@@ -5377,6 +5262,7 @@ var
   OldFontStyles: TFontStyles;
   OldFontColor: TColor;
   OldBrushColor: TColor;
+  OldBrushStyle: TBrushStyle;
   OldAlignment: TAlignment;
   OldFont: TFont;
   OldWidth: Integer;
@@ -5453,8 +5339,9 @@ var
       Width  := Canvas.TextWidth(M);
       Height := CanvasMaxTextHeight(Canvas);
       if IsLink and not MouseOnLink then
-        if (MouseY in [R.Top..R.Top + Height]) and
-          (MouseX in [R.Left..R.Left + Width]) then
+        if (MouseY >= R.Top) and (MouseY <= R.Top + Height) and
+           (MouseX >= R.Left) and (MouseX <= R.Left + Width) and
+           ((MouseY > 0) or (MouseX > 0)) then
         begin
           MouseOnLink := True;
           Canvas.Font.Color := clRed; // hover link
@@ -5485,6 +5372,7 @@ begin
   // (p3) remove warnings
   OldFontColor := 0;
   OldBrushColor := 0;
+  OldBrushStyle := bsClear;
   RemFontSize := 0;
   RemFontColor := 0;
   RemBrushColor := 0;
@@ -5496,6 +5384,7 @@ begin
     OldFontStyles := Canvas.Font.Style;
     OldFontColor  := Canvas.Font.Color;
     OldBrushColor := Canvas.Brush.Color;
+    OldBrushStyle := Canvas.Brush.Style;
     OldAlignment  := Alignment;
     RemFontColor  := Canvas.Font.Color;
     RemBrushColor := Canvas.Brush.Color;
@@ -5672,6 +5561,7 @@ begin
       Canvas.Font.Style := OldFontStyles;
       Canvas.Font.Color := OldFontColor;
       Canvas.Brush.Color := OldBrushColor;
+      Canvas.Brush.Style := OldBrushStyle;
       Alignment := OldAlignment;
   {    Canvas.Font.Color := RemFontColor;
       Canvas.Brush.Color:= RemBrushColor;}

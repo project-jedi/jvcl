@@ -70,19 +70,19 @@ uses
 
 type
   TProgressProp = (ppMax, ppMin, ppProgress);
-
-  PProgressData = ^TProgressData;
+ 
+  PProgressData = ^TProgressData; 
   TProgressData = record
     ControlClass: TControlClass;
     MaxProperty: string[63];
     MinProperty: string[63];
     ProgressProperty: string[63];
-  end;
+  end; 
 
   TJvProgressList = class(TList)
   public
-    constructor Create;
-    destructor Destroy; override;
+    constructor Create; 
+    destructor Destroy; override; 
     procedure Add(AClass: TControlClass;
       const MaxPropName, MinPropName, ProgressPropName: string);
     function FindClass(AClass: TControlClass): Integer;
@@ -97,6 +97,7 @@ begin
   Add(TProgressBar, 'Max', 'Min', 'Position');
 end;
 
+
 destructor TJvProgressList.Destroy;
 var
   I: Integer;
@@ -106,13 +107,14 @@ begin
   inherited Destroy;
 end;
 
+
 procedure TJvProgressList.Add(AClass: TControlClass;
   const MaxPropName, MinPropName, ProgressPropName: string);
 var
   NewRec: PProgressData;
-begin
+begin 
   New(NewRec);
-  with NewRec^ do
+  with NewRec^ do 
   begin
     ControlClass := AClass;
     MaxProperty := MaxPropName;
@@ -129,7 +131,7 @@ begin
   for Result := Count - 1 downto 0 do
   begin
     P := PProgressData(Items[Result]);
-    if AClass.InheritsFrom(P^.ControlClass) then
+    if AClass.InheritsFrom(P.ControlClass) then
       Exit;
   end;
   Result := -1;
@@ -143,9 +145,9 @@ begin
   for I := Count - 1 downto 0 do
   begin
     P := PProgressData(Items[I]);
-    if P^.ControlClass.InheritsFrom(AClass) then
-    begin
-      Dispose(P);
+    if P.ControlClass.InheritsFrom(AClass) then
+    begin 
+      Dispose(P); 
       Delete(I);
     end;
   end;
@@ -166,15 +168,16 @@ begin
     begin
       case Prop of
         ppMax:
-          PropName := PProgressData(Items[I])^.MaxProperty;
+          PropName := PProgressData(Items[I]).MaxProperty;
         ppMin:
-          PropName := PProgressData(Items[I])^.MinProperty;
+          PropName := PProgressData(Items[I]).MinProperty;
       else {ppProgress}
-        PropName := PProgressData(Items[I])^.ProgressProperty;
+        PropName := PProgressData(Items[I]).ProgressProperty;
       end;
       PropInfo := GetPropInfo(Control.ClassInfo, PropName);
-      if (PropInfo <> nil) and
-        (PropInfo^.PropType^.Kind in [tkInteger, tkFloat, tkVariant]) then
+      if (PropInfo <> nil) and 
+        (PropInfo^.PropType^.Kind 
+          in [tkInteger, tkFloat, tkVariant]) then
       begin
         SetOrdProp(Control, PropInfo, Value);
         Result := True;
@@ -183,7 +186,6 @@ begin
   end;
 end;
 
-// (rom) changed to var
 var
   ProgressList: TJvProgressList = nil;
 

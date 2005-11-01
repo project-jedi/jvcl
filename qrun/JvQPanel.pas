@@ -24,6 +24,14 @@ Michael Beck [mbeck att bigfoot dott com].
 pongtawat
 Peter Thornqvist [peter3 at sourceforge dot net]
 Jens Fudickar [jens dott fudickar att oratool dott de]
+dejoy den [dejoy att ynl dott gov dott cn]
+
+Changes:
+
+>> dejoy --2005-04-28
+  - Change TJvArrangeSettings to inherited from TJvPersistentProperty.
+  - TJvCustomArrangePanel implemented interface of IJvHotTrack.
+  - Renamed HotColor property to HotTrackOptions.Color.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -45,18 +53,15 @@ uses
   QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls, 
   Qt, 
-  JvQThemes, JvQComponent, JvQExControls, JvQJCLUtils;
+  JvQTypes, JvQThemes, JvQComponent, JvQExControls;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
   TJvPanelChangedSizeEvent = procedure(Sender: TObject; ChangedSize : Integer) of object;
   TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
 
-  TJvPanel = class;
-
-  TJvArrangeSettings = class(TPersistent)
+  TJvArrangeSettings = class(TJvPersistentProperty)
   private
-    FPanel: TJvPanel;
     FAutoArrange: Boolean;
     FAutoSize: TJvAutoSizePanel;
     FWrapControls: Boolean;
@@ -74,9 +79,8 @@ type
     procedure SetDistanceVertical(Value: Integer);
     procedure SetDistanceHorizontal(Value: Integer);
     procedure SetMaxWidth(Value: Integer);
-    procedure Rearrange;
   public
-    constructor Create(APanel: TJvPanel);
+    constructor Create; virtual;
     procedure Assign(Source: TPersistent); override;
   published
     property WrapControls: Boolean read FWrapControls write SetWrapControls default True;
@@ -90,16 +94,21 @@ type
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 0;
   end;
 
+  TJvPanelHotTrackOptions = class(TJvHotTrackOptions)
+  public
+    constructor Create; override;
+  published
+    property Color default clBtnFace;
+  end;
+
   TJvPanelMoveEvent = procedure(Sender: TObject; X, Y: Integer; var Allow: Boolean) of object;
 
-  TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
+  TJvCustomArrangePanel = class(TJvCustomPanel, IJvDenySubClassing, IJvHotTrack)
   private
     FTransparent: Boolean;
     FFlatBorder: Boolean;
     FFlatBorderColor: TColor;
     FMultiLine: Boolean;
-    FOldColor: TColor;
-    FHotColor: TColor;
     FSizeable: Boolean;
     FDragging: Boolean;
     FLastPos: TPoint;
@@ -115,7 +124,11 @@ type
     FMovable: Boolean;
     FWasMoved: Boolean;
     FOnAfterMove: TNotifyEvent;
-    FOnBeforeMove: TJvPanelMoveEvent; 
+    FOnBeforeMove: TJvPanelMoveEvent;
+    FHotTrack: Boolean;
+    FHotTrackFont: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
+    FHotTrackOptions: TJvHotTrackOptions; 
     FMoving: Boolean;
     FGripBmp: TBitmap;
     procedure CreateSizeGrip;
@@ -129,13 +142,23 @@ type
     procedure SetTransparent(const Value: Boolean);
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
-    procedure DrawCaption;
-    procedure DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False );
-    procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
-    procedure SetHotColor(const Value: TColor);
     procedure SetSizeable(const Value: Boolean);
+
+    {IJvHotTrack}   //added by dejoy 2005-04-28
+    function GetHotTrack: Boolean;
+    function GetHotTrackFont: TFont;
+    function GetHotTrackFontOptions: TJvTrackFontOptions;
+    function GetHotTrackOptions: TJvHotTrackOptions;
+    procedure SetHotTrack(Value: Boolean);
+    procedure SetHotTrackFont(Value: TFont);
+    procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
+    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
   protected
+    procedure DrawCaption; dynamic;
+    procedure DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False ); dynamic;
+    procedure DrawBorders; dynamic;
+
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -144,12 +167,14 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
     procedure DoAfterMove; dynamic; 
     procedure DrawMask(ACanvas: TCanvas); override; 
     procedure Loaded; override;
     procedure Resize; override;
+    procedure Rearrange;
+    procedure DoArrangeSettingsPropertyChanged(Sender: TObject; const PropName: string); virtual;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
   public
@@ -164,20 +189,22 @@ type
     property ArrangeWidth: Integer read FArrangeWidth;
     property ArrangeHeight: Integer read FArrangeHeight; 
     property Canvas;
-  published
+
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
+      DefaultTrackFontOptions;
+    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
+
     property Movable: Boolean read FMovable write FMovable default False;
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
-    property HintColor;
-    property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property MultiLine: Boolean read FMultiLine write SetMultiLine;
+    property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
+    //FlatBorder used the BorderWidth to draw the border
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
-    property OnMouseEnter;
-    property OnMouseLeave;
     property OnBeforeMove: TJvPanelMoveEvent read FOnBeforeMove write FOnBeforeMove;
     property OnAfterMove: TNotifyEvent Read FOnAfterMove write FOnAfterMove;
-    property OnParentColorChange;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
@@ -186,6 +213,40 @@ type
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
     property OnChangedWidth: TJvPanelChangedSizeEvent read FOnChangedWidth write FOnChangedWidth;
     property OnChangedHeight: TJvPanelChangedSizeEvent read FOnChangedHeight write FOnChangedHeight;
+  end;
+
+  TJvPanel = class(TJvCustomArrangePanel)
+  private
+    FFilerTag: string;
+    procedure ReadData(Reader: TReader);
+  protected
+    procedure DefineProperties(Filer: TFiler); override;
+  published
+    property HotTrack;
+    property HotTrackFont;
+    property HotTrackFontOptions;
+    property HotTrackOptions;
+
+    property Movable;
+    property Sizeable;
+    property HintColor;
+    property Transparent;
+    property MultiLine;
+    property FlatBorder;
+    property FlatBorderColor;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnBeforeMove;
+    property OnAfterMove;
+    property OnParentColorChange;
+    property OnPaint;
+
+    property ArrangeSettings;
+    property Width;
+    property Height;
+    property OnResizeParent;
+    property OnChangedWidth;
+    property OnChangedHeight;
 
     property Align;
     property Alignment;
@@ -241,7 +302,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvQMouseTimer;
+  JvQJCLUtils, JvQJVCLUtils;
 
 const
   BkModeTransparent = TRANSPARENT;
@@ -253,10 +314,9 @@ end;
 
 //=== { TJvArrangeSettings } =================================================
 
-constructor TJvArrangeSettings.Create(APanel: TJvPanel);
+constructor TJvArrangeSettings.Create();
 begin
   inherited Create;
-  FPanel := APanel;
   FMaxWidth := 0;
   FBorderLeft := 0;
   FBorderTop := 0;
@@ -272,8 +332,11 @@ procedure TJvArrangeSettings.SetWrapControls(Value: Boolean);
 begin
   if Value <> FWrapControls then
   begin
+    Changing;
+    ChangingProperty('WrapControls');
     FWrapControls := Value;
-    Rearrange;
+    ChangedProperty('WrapControls');
+    Changed;
   end;
 end;
 
@@ -281,9 +344,11 @@ procedure TJvArrangeSettings.SetAutoArrange(Value: Boolean);
 begin
   if Value <> FAutoArrange then
   begin
+    Changing;
+    ChangingProperty('AutoArrange');
     FAutoArrange := Value;
-    if Value then
-      Rearrange;
+    ChangedProperty('AutoArrange');
+    Changed;
   end;
 end;
 
@@ -291,9 +356,11 @@ procedure TJvArrangeSettings.SetAutoSize(Value: TJvAutoSizePanel);
 begin
   if Value <> FAutoSize then
   begin
+    Changing;
+    ChangingProperty('AutoSize');
     FAutoSize := Value;
-    if AutoSize <> asNone then
-      Rearrange;
+    ChangedProperty('AutoSize');
+    Changed;
   end;
 end;
 
@@ -301,8 +368,11 @@ procedure TJvArrangeSettings.SetBorderLeft(Value: Integer);
 begin
   if Value <> FBorderLeft then
   begin
+    Changing;
+    ChangingProperty('BorderLeft');
     FBorderLeft := Value;
-    Rearrange;
+    ChangedProperty('BorderLeft');
+    Changed;
   end;
 end;
 
@@ -310,8 +380,11 @@ procedure TJvArrangeSettings.SetBorderTop(Value: Integer);
 begin
   if Value <> FBorderTop then
   begin
+    Changing;
+    ChangingProperty('BorderTop');
     FBorderTop := Value;
-    Rearrange;
+    ChangedProperty('BorderTop');
+    Changed;
   end;
 end;
 
@@ -319,8 +392,11 @@ procedure TJvArrangeSettings.SetDistanceVertical(Value: Integer);
 begin
   if Value <> FDistanceVertical then
   begin
+    Changing;
+    ChangingProperty('DistanceVertical');
     FDistanceVertical := Value;
-    Rearrange;
+    ChangedProperty('DistanceVertical');
+    Changed;
   end;
 end;
 
@@ -328,8 +404,11 @@ procedure TJvArrangeSettings.SetDistanceHorizontal(Value: Integer);
 begin
   if Value <> FDistanceHorizontal then
   begin
+    Changing;
+    ChangingProperty('DistanceHorizontal');
     FDistanceHorizontal := Value;
-    Rearrange;
+    ChangedProperty('DistanceHorizontal');
+    Changed;
   end;
 end;
 
@@ -337,8 +416,11 @@ procedure TJvArrangeSettings.SetMaxWidth(Value: Integer);
 begin
   if Value <> FMaxWidth then
   begin
+    Changing;
+    ChangingProperty('MaxWidth');
     FMaxWidth := Value;
-    Rearrange;
+    ChangedProperty('MaxWidth');
+    Changed;
   end;
 end;
 
@@ -348,60 +430,71 @@ var
 begin
   if Source is TJvArrangeSettings then
   begin
-    A := TJvArrangeSettings(Source);
-    FAutoArrange := A.AutoArrange;
-    FAutoSize := A.AutoSize;
-    FWrapControls := A.WrapControls;
-    FBorderLeft := A.BorderLeft;
-    FBorderTop := A.BorderTop;
-    FDistanceVertical := A.DistanceVertical;
-    FDistanceHorizontal := A.DistanceHorizontal;
-    FShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
-    FMaxWidth := A.MaxWidth;
-
-    Rearrange;
+    BeginUpdate;
+    try
+      A := TJvArrangeSettings(Source);
+      AutoArrange := A.AutoArrange;
+      AutoSize := A.AutoSize;
+      WrapControls := A.WrapControls;
+      BorderLeft := A.BorderLeft;
+      BorderTop := A.BorderTop;
+      DistanceVertical := A.DistanceVertical;
+      DistanceHorizontal := A.DistanceHorizontal;
+      ShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
+      MaxWidth := A.MaxWidth;
+    finally
+      EndUpdate;
+    end;
   end
   else
     inherited Assign(Source);
 end;
 
-procedure TJvArrangeSettings.Rearrange;
+//=== { TJvPanelHotTrackOptions } ===========================================================
+
+constructor TJvPanelHotTrackOptions.Create;
 begin
-  if (FPanel <> nil) and AutoArrange and
-    not (csLoading in FPanel.ComponentState) then
-    FPanel.ArrangeControls;
+  inherited;
+  Color := clBtnFace;
 end;
 
-//=== { TJvPanel } ===========================================================
+//=== { TJvCustomArrangePanel } ===========================================================
 
-constructor TJvPanel.Create(AOwner: TComponent);
+constructor TJvCustomArrangePanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner); 
+  FMultiLine := False;
   FTransparent := False;
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
-  FHotColor := clBtnFace;
+  FHotTrack := False;
+  FHotTrackFont := TFont.Create;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
+  FHotTrackOptions := TJvPanelHotTrackOptions.Create;
 
-  FArrangeSettings := TJvArrangeSettings.Create(Self);
+  FArrangeSettings := TJvArrangeSettings.Create;
+  FArrangeSettings.OnChangeProperty := DoArrangeSettingsPropertyChanged;
 end;
 
-destructor TJvPanel.Destroy;
+destructor TJvCustomArrangePanel.Destroy;
 begin
-  FArrangeSettings.Free; 
+  FreeAndNil(FHotTrackFont);
+  FreeAndNil(FHotTrackOptions);
+  FreeAndNil(FArrangeSettings); 
   FreeAndNil(FGripBmp); 
   inherited Destroy;
 end;
 
 
 
-function TJvPanel.DoBeforeMove(X,Y: Integer): Boolean;
+function TJvCustomArrangePanel.DoBeforeMove(X,Y: Integer): Boolean;
 begin
   Result := True;
   if Assigned(FOnBeforeMove) then
     FOnBeforeMove(Self, X, Y, Result);
 end;
 
-procedure TJvPanel.DoAfterMove;
+procedure TJvCustomArrangePanel.DoAfterMove;
 begin
   if Assigned(FOnAfterMove) then
     FOnAfterMove(Self);
@@ -409,8 +502,7 @@ end;
 
 
 
-
-function TJvPanel.GetFrameWidth: Integer;
+function TJvCustomArrangePanel.GetFrameWidth: Integer;
 begin
   if FFlatBorder then
     Result := 1
@@ -424,7 +516,7 @@ begin
   end;
 end;
 
-function TJvPanel.IsInsideGrip(X, Y: Integer): Boolean;
+function TJvCustomArrangePanel.IsInsideGrip(X, Y: Integer): Boolean;
 var
   R: TRect;
   I: Integer;
@@ -434,7 +526,7 @@ begin
   Result := QWindows.PtInRect(R, X, Y);
 end;
 
-procedure TJvPanel.DrawMask(ACanvas: TCanvas);
+procedure TJvCustomArrangePanel.DrawMask(ACanvas: TCanvas);
 var
   R: TRect;
   I, J, X, Y: Integer;
@@ -465,31 +557,85 @@ end;
 
 
 
-procedure TJvPanel.Paint;
+procedure TJvCustomArrangePanel.Paint;
 var
   X, Y: Integer; 
   I: Integer; 
+  R: TRect;
+  OldPenColor:TColor;
+  OldPenWidth: Integer;
 begin
   if Assigned(FOnPaint) then
   begin
     FOnPaint(Self);
     Exit;
   end;
-  Canvas.Brush.Color := Color;
-  if not Transparent or IsThemed then
-    DrawThemedBackground(Self, Canvas, ClientRect)
-  else
-    Canvas.Brush.Style := bsClear;
-  if FFlatBorder then
+
+  if MouseOver and HotTrack then
   begin
-    Canvas.Brush.Color := FFlatBorderColor;  
-    FrameRect(Canvas, ClientRect); 
-    Canvas.Brush.Color := Color;
+    Canvas.Font := Self.HotTrackFont;
+    if HotTrackOptions.Enabled then
+    begin
+      Canvas.Brush.Color := HotTrackOptions.Color;
+      if HotTrackOptions.FrameVisible then
+      begin
+        Canvas.Brush.Style := bsSolid;
+        OldPenColor := Canvas.Pen.Color;
+        Canvas.Pen.Color := HotTrackOptions.FrameColor;
+        Canvas.Rectangle(0, 0, Width, Height);
+        Canvas.Pen.Color := OldPenColor;
+      end
+      else
+      begin
+        R := ClientRect;
+        InflateRect(R,-BevelWidth,-BevelWidth);
+        Canvas.FillRect(R);
+      end;
+    end;
   end
   else
-    DrawBorders;
-  Self.DrawCaption;
-  if Sizeable then 
+  begin
+    Canvas.Font := Self.Font;
+    Canvas.Brush.Color := Color;
+    if not Transparent or IsThemed then
+      DrawThemedBackground(Self, Canvas, ClientRect)
+    else
+      Canvas.Brush.Style := bsClear;
+    if FFlatBorder then
+    begin
+      if BorderWidth > 0 then
+      begin
+        OldPenWidth:= Canvas.Pen.Width;
+        OldPenColor := Canvas.Pen.Color;
+        Canvas.Pen.Width := BorderWidth;
+        Canvas.Pen.Color := FFlatBorderColor;
+        Canvas.Brush.Style := bsClear;
+
+        R := ClientRect;
+        X := (BorderWidth div 2);
+        if Odd(BorderWidth) then
+          Y := X
+        else
+          Y := X -1;
+
+        Inc(R.Left,X);
+        Inc(R.Top,X);
+        Dec(R.Bottom,Y);
+        Dec(R.Right,Y);
+
+        Canvas.Rectangle(R);
+
+        Canvas.Pen.Width := OldPenWidth;
+        Canvas.Pen.Color := OldPenColor;
+     end;
+    end
+    else
+      DrawBorders;
+  end;
+
+  DrawCaption;
+  if Sizeable then
+  begin 
       with Canvas do
       begin 
         I := GetFrameWidth;
@@ -497,11 +643,12 @@ begin
         Y := ClientHeight - FGripBmp.Height - I;
         Draw(X, Y, FGripBmp);  
       end;
+  end;
 end;
 
 
 
-procedure TJvPanel.DrawBorders;
+procedure TJvCustomArrangePanel.DrawBorders;
 var
   Rect: TRect;
   TopColor, BottomColor: TColor;
@@ -531,12 +678,12 @@ begin
   end;
 end;
 
-procedure TJvPanel.DrawCaption;
+procedure TJvCustomArrangePanel.DrawCaption;
 begin
   DrawCaptionTo(Self.Canvas);
 end;
 
-procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False );
+procedure TJvCustomArrangePanel.DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False );
 const
   Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
@@ -547,8 +694,14 @@ var
 begin
   with ACanvas do
   begin
+
     if Caption <> '' then
     begin
+      if (MouseOver or FDragging) and HotTrack then
+        ACanvas.Font := Self.HotTrackFont
+      else
+        ACanvas.Font := Self.Font;
+
       SetBkMode(Handle, BkModeTransparent);
       Font := Self.Font;
       ATextRect := GetClientRect;
@@ -571,13 +724,14 @@ begin
             BevelSize), 0);
         taCenter:
           OffsetRect(ATextRect, -ATextRect.Left + (Width - (ATextRect.Right - ATextRect.Left)) div 2, 0);
-      end; 
+      end;
       if DrawingMask then
         Font.Color := clDontMask
-      else 
-        if not Enabled then
-          Font.Color := clGrayText;
+      else
+      if not Enabled then
+        Font.Color := clGrayText;
       //draw text
+      RequiredState(ACanvas, [csHandleValid, csFontValid, csPenValid]);
       if Transparent and not IsThemed then
         SetBkMode(ACanvas.Handle, BkModeTransparent);
       DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags);
@@ -585,44 +739,56 @@ begin
   end;
 end;
 
-procedure TJvPanel.ParentColorChanged;
+procedure TJvCustomArrangePanel.ParentColorChanged;
 begin
   Invalidate;
   inherited ParentColorChanged;
 end;
 
-procedure TJvPanel.MouseEnter(Control: TControl);
+procedure TJvCustomArrangePanel.MouseEnter(Control: TControl);
+var
+  NeedRepaint: Boolean;
+  OtherDragging:Boolean;
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not MouseOver and (Control = nil) then
+
+  if not MouseOver and Enabled  and (Control = nil) then
   begin
-    FOldColor := Color;
-    if not Transparent or IsThemed then
-    begin
-      Color := HotColor;
-      MouseTimer.Attach(Self);
-    end;
-  end;
-  inherited MouseEnter(Control);
+    OtherDragging :=  
+      DragActivated; 
+    NeedRepaint := not Transparent and
+     (IsThemed or (FHotTrack and Enabled and not FDragging and not OtherDragging));
+    inherited MouseEnter(Control); // set MouseOver
+    if NeedRepaint then
+      Repaint;
+  end
+  else
+    inherited MouseEnter(Control);
 end;
 
-procedure TJvPanel.MouseLeave(Control: TControl);
+procedure TJvCustomArrangePanel.MouseLeave(Control: TControl);
+var
+  NeedRepaint: Boolean;
+  OtherDragging:Boolean;
 begin
   if csDesigning in ComponentState then
     Exit;
-  if MouseOver and (Control = nil) then
+  OtherDragging :=  
+    DragActivated; 
+  if MouseOver and Enabled and (Control = nil) then
   begin
-    if not Transparent or IsThemed then
-    begin
-      Color := FOldColor;
-      MouseTimer.Detach(Self);
-    end;
-  end;
-  inherited MouseLeave(Control);
+    NeedRepaint := not Transparent and
+     (IsThemed or (FHotTrack and (FDragging or (Enabled and not OtherDragging))));
+    inherited MouseLeave(Control); // set MouseOver
+    if NeedRepaint then
+      Repaint;
+  end
+  else
+    inherited MouseLeave(Control);
 end;
 
-procedure TJvPanel.SetTransparent(const Value: Boolean);
+procedure TJvCustomArrangePanel.SetTransparent(const Value: Boolean);
 begin
   if Value <> FTransparent then
   begin
@@ -638,7 +804,7 @@ begin
   end;
 end;
 
-procedure TJvPanel.SetFlatBorder(const Value: Boolean);
+procedure TJvCustomArrangePanel.SetFlatBorder(const Value: Boolean);
 begin
   if Value <> FFlatBorder then
   begin
@@ -647,7 +813,7 @@ begin
   end;
 end;
 
-procedure TJvPanel.SetFlatBorderColor(const Value: TColor);
+procedure TJvCustomArrangePanel.SetFlatBorderColor(const Value: TColor);
 begin
   if Value <> FFlatBorderColor then
   begin
@@ -656,17 +822,15 @@ begin
   end;
 end;
 
-(*
-function TJvPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomArrangePanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Transparent and not IsThemed then
     Result := True
   else
     Result := inherited DoEraseBackground(Canvas, Param);
 end;
-*)
 
-procedure TJvPanel.SetMultiLine(const Value: Boolean);
+procedure TJvCustomArrangePanel.SetMultiLine(const Value: Boolean);
 begin
   if FMultiLine <> Value then
   begin
@@ -675,13 +839,13 @@ begin
   end;
 end;
 
-procedure TJvPanel.TextChanged;
+procedure TJvCustomArrangePanel.TextChanged;
 begin
   inherited TextChanged;
   Invalidate;
 end;
 
-procedure TJvPanel.Invalidate;
+procedure TJvCustomArrangePanel.Invalidate;
 begin
 {  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
     RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or
@@ -689,17 +853,7 @@ begin
   inherited Invalidate;
 end;
 
-procedure TJvPanel.SetHotColor(const Value: TColor);
-begin
-  if FHotColor <> Value then
-  begin
-    FHotColor := Value;
-    if not Transparent or IsThemed then
-      Invalidate;
-  end;
-end;
-
-procedure TJvPanel.SetSizeable(const Value: Boolean);
+procedure TJvCustomArrangePanel.SetSizeable(const Value: Boolean);
 begin
   if FSizeable <> Value then
   begin
@@ -712,7 +866,7 @@ begin
   end;
 end;
 
-procedure TJvPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+procedure TJvCustomArrangePanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin  
   if Sizeable and (Button = mbLeft) and IsInsideGrip(X, Y) then
@@ -734,7 +888,7 @@ begin
       inherited MouseDown(Button, Shift, X, Y); 
 end;
 
-procedure TJvPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomArrangePanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
   X1, Y1: Integer;
@@ -772,7 +926,7 @@ begin
   end;
 end;
 
-procedure TJvPanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TJvCustomArrangePanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   if FDragging and Sizeable then
@@ -797,54 +951,54 @@ begin
     inherited MouseUp(Button, Shift, X, Y);
 end;
 
-procedure TJvPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+procedure TJvCustomArrangePanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if Transparent and not IsThemed then
     Invalidate;
 end;
 
-procedure TJvPanel.Resize;
+procedure TJvCustomArrangePanel.Resize;
 begin
-  if Assigned(FArrangeSettings) then // (asn) 
+  if Assigned(FArrangeSettings) then // (asn)
     if FArrangeSettings.AutoArrange then
       ArrangeControls;
   inherited Resize;
 end;
 
-procedure TJvPanel.EnableArrange;
+procedure TJvCustomArrangePanel.EnableArrange;
 begin
   EnableAlign;
   if FEnableArrangeCount > 0 then
     Dec(FEnableArrangeCount);
 end;
 
-procedure TJvPanel.DisableArrange;
+procedure TJvCustomArrangePanel.DisableArrange;
 begin
   Inc(FEnableArrangeCount);
   DisableAlign;
 end;
 
-function TJvPanel.ArrangeEnabled: Boolean;
+function TJvCustomArrangePanel.ArrangeEnabled: Boolean;
 begin
   Result := FEnableArrangeCount <= 0;
 end;
 
-procedure TJvPanel.Loaded;
+procedure TJvCustomArrangePanel.Loaded;
 begin
   inherited Loaded;
   if FArrangeSettings.AutoArrange then
     ArrangeControls;
 end;
 
-procedure TJvPanel.AlignControls(AControl: TControl; var Rect: TRect);
+procedure TJvCustomArrangePanel.AlignControls(AControl: TControl; var Rect: TRect);
 begin
   inherited AlignControls(AControl, Rect);
   if FArrangeSettings.AutoArrange then
     ArrangeControls;
 end;
 
-function TJvPanel.GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
+function TJvCustomArrangePanel.GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
 var
   I: Integer;
 begin
@@ -858,7 +1012,7 @@ begin
       end;
 end;
 
-procedure TJvPanel.ArrangeControls;
+procedure TJvCustomArrangePanel.ArrangeControls;
 var
   AktX, AktY, NewX, NewY, MaxY, NewMaxX: Integer;
   ControlMaxX, ControlMaxY: Integer;
@@ -896,8 +1050,8 @@ begin
     for I := 0 to ControlCount - 1 do
       if Controls[I] is TWinControl then
       begin
-        if Controls[I] is TJvPanel then
-          TJvPanel(Controls[I]).ArrangeSettings.Rearrange;
+        if Controls[I] is TJvCustomArrangePanel then
+          TJvCustomArrangePanel(Controls[I]).Rearrange;
         if (Controls[I].Width + 2 * FArrangeSettings.BorderLeft > TmpWidth) then
           TmpWidth := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
       end;
@@ -969,7 +1123,7 @@ begin
   end;
 end;
 
-procedure TJvPanel.SetWidth(Value: Integer);
+procedure TJvCustomArrangePanel.SetWidth(Value: Integer);
 var
   Changed: Boolean;
 begin
@@ -982,17 +1136,17 @@ begin
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Value, Height)
     else
-    if Parent is TJvPanel then
-      TJvPanel(Parent).ArrangeSettings.Rearrange;
+    if Parent is TJvCustomArrangePanel then
+      TJvCustomArrangePanel(Parent).Rearrange;
   end;
 end;
 
-function TJvPanel.GetWidth: Integer;
+function TJvCustomArrangePanel.GetWidth: Integer;
 begin
   Result := inherited Width;
 end;
 
-procedure TJvPanel.SetHeight(Value: Integer);
+procedure TJvCustomArrangePanel.SetHeight(Value: Integer);
 var
   Changed: Boolean;
 begin
@@ -1005,24 +1159,93 @@ begin
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Width, Value)
     else
-    if Parent is TJvPanel then
-      TJvPanel(Parent).ArrangeSettings.Rearrange;
+    if Parent is TJvCustomArrangePanel then
+      TJvCustomArrangePanel(Parent).Rearrange;
   end;
 end;
 
-function TJvPanel.GetHeight: Integer;
+function TJvCustomArrangePanel.GetHeight: Integer;
 begin
   Result := inherited Height;
 end;
 
-procedure TJvPanel.SetArrangeSettings(Value: TJvArrangeSettings);
+procedure TJvCustomArrangePanel.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
 end;
 
+function TJvCustomArrangePanel.GetHotTrack: Boolean;
+begin
+  Result := FHotTrack;
+end;
 
-procedure TJvPanel.CreateSizeGrip;
+function TJvCustomArrangePanel.GetHotTrackFont: TFont;
+begin
+  Result := FHotTrackFont;
+end;
+
+function TJvCustomArrangePanel.GetHotTrackFontOptions: TJvTrackFontOptions;
+begin
+  Result := FHotTrackFontOptions;
+end;
+
+function TJvCustomArrangePanel.GetHotTrackOptions: TJvHotTrackOptions;
+begin
+  Result := FHotTrackOptions;
+end;
+
+procedure TJvCustomArrangePanel.SetHotTrack(Value: Boolean);
+begin
+  FHotTrack := Value;
+end;
+
+procedure TJvCustomArrangePanel.SetHotTrackFont(Value: TFont);
+begin
+  if (FHotTrackFont<>Value) and (Value <> nil) then
+    FHotTrackFont.Assign(Value);
+end;
+
+procedure TJvCustomArrangePanel.SetHotTrackFontOptions(Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
+  end;
+end;
+
+procedure TJvCustomArrangePanel.SetHotTrackOptions(Value: TJvHotTrackOptions);
+begin
+  if (FHotTrackOptions <> Value) and (Value <> nil) then
+    FHotTrackOptions.Assign(Value);
+end;
+
+procedure TJvCustomArrangePanel.Rearrange;
+begin
+  if FArrangeSettings.AutoArrange and not (csLoading in ComponentState) then
+    ArrangeControls;
+end;
+
+procedure TJvCustomArrangePanel.DoArrangeSettingsPropertyChanged(Sender: TObject;
+  const PropName: string);
+begin
+  if SameText(PropName,'AutoArrange') then
+  begin
+    if ArrangeSettings.AutoArrange then
+      Rearrange;
+  end
+  else if SameText(PropName,'AutoSize') then
+  begin
+    if ArrangeSettings.AutoSize <> asNone then
+      Rearrange;
+  end
+  else //otherwise call Rearrange
+    Rearrange;
+end;
+
+
+procedure TJvCustomArrangePanel.CreateSizeGrip;
 var
   I: Integer;
 begin
@@ -1052,6 +1275,32 @@ begin
   FGripBmp.Transparent := True;
 end;
 
+
+{ TJvPanel }
+
+procedure TJvPanel.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  { For backward compatibility }
+  FFilerTag := 'HotColor';
+  Filer.DefineProperty(FFilerTag, ReadData, nil, False);
+end;
+
+procedure TJvPanel.ReadData(Reader: TReader);
+var
+  C: Integer;
+begin
+  if SameText(FFilerTag, 'HotColor') then
+  begin
+    if Reader.NextValue = vaIdent then
+    begin
+      if IdentToColor(Reader.ReadIdent, C) then
+        HotTrackOptions.Color := C;
+    end
+    else
+      HotTrackOptions.Color := Reader.ReadInteger;
+  end;
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization

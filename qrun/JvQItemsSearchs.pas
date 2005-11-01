@@ -103,36 +103,36 @@ begin
   if CaseSensitive then
   begin
     while not HasLooped or (I <= StartIndex) do
-    begin
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end
+      else
       if AnsiCompareStr(Value, Items[I]) = 0 then
       begin
         Result := I;
         Exit;
-      end;
-      Inc(I);
-      if I >= Items.Count then
-      begin
-        I := 0;
-        HasLooped := True;
-      end;
-    end;
+      end
+      else
+        Inc(I);
   end
   else
   begin
     while not HasLooped or (I <= StartIndex) do
-    begin
-      if AnsiSameText(Value, Items[I]) then
-      begin
-        Result := I;
-        Exit;
-      end;
-      Inc(I);
       if I >= Items.Count then
       begin
         I := 0;
         HasLooped := True;
-      end;
-    end;
+      end
+      else
+      if AnsiSameText(Value, Items[I]) then
+      begin
+        Result := I;
+        Exit;
+      end
+      else
+        Inc(I);
   end;
 end;
 
@@ -148,37 +148,37 @@ begin
   if CaseSensitive then
   begin
     while not HasLooped or (I <= StartIndex) do
-    begin
-      if Pos(Value, Items[I]) = 1 then
-      begin
-        Result := I;
-        Exit;
-      end;
-      Inc(I);
       if I >= Items.Count then
       begin
         I := 0;
         HasLooped := True;
-      end;
-    end;
+      end
+      else
+      if Pos(Value, Items[I]) = 1 then
+      begin
+        Result := I;
+        Exit;
+      end
+      else
+        Inc(I);
   end
   else
   begin
     Value := AnsiUpperCase(Value);
     while not HasLooped or (I <= StartIndex) do
-    begin
-      if Pos(Value, AnsiUpperCase(Items[I])) = 1 then
-      begin
-        Result := I;
-        Exit;
-      end;
-      Inc(I);
       if I >= Items.Count then
       begin
         I := 0;
         HasLooped := True;
-      end;
-    end;
+      end
+      else
+      if Pos(Value, AnsiUpperCase(Items[I])) = 1 then
+      begin
+        Result := I;
+        Exit;
+      end
+      else
+        Inc(I);
   end;
 end;
 
@@ -188,43 +188,43 @@ var
   I: Integer;
   HasLooped: Boolean;
 begin
-  Result := 0;
-  I := 0;
+  Result := -1;
+  I := StartIndex + 1;
   HasLooped := False;
   if CaseSensitive then
   begin
     while not HasLooped or (I <= StartIndex) do
-    begin
-      if Pos(Value, Items[I]) <> 0 then
-      begin
-        Result := I;
-        Exit;
-      end;
-      Inc(I);
       if I >= Items.Count then
       begin
         I := 0;
         HasLooped := True;
-      end;
-    end;
+      end
+      else
+      if Pos(Value, Items[I]) <> 0 then
+      begin
+        Result := I;
+        Exit;
+      end
+      else
+        Inc(I);
   end
   else
   begin
     Value := AnsiUpperCase(Value);
     while not HasLooped or (I <= StartIndex) do
-    begin
-      if Pos(Value, AnsiUpperCase(Items[I])) <> 0 then
-      begin
-        Result := I;
-        Exit;
-      end;
-      Inc(I);
       if I >= Items.Count then
       begin
         I := 0;
         HasLooped := True;
-      end;
-    end;
+      end
+      else
+      if Pos(Value, AnsiUpperCase(Items[I])) <> 0 then
+      begin
+        Result := I;
+        Exit;
+      end
+      else
+        Inc(I);
   end;
 end;
 

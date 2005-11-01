@@ -182,7 +182,8 @@ begin
     Canvas.Rectangle(ClientRect);
   end;
   SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);  
-  DestRect := Bounds(Left, Top, Width, Height); 
+//  DestRect := Bounds(Left, Top, Width, Height);
+  DestRect := Bounds(0, 0, Width, Height);
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
   with Canvas do

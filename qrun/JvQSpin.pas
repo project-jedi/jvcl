@@ -186,7 +186,7 @@ type
     procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
   protected
     FButtonKind: TSpinButtonKind;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  const  MousePos: TPoint): Boolean; override;
     procedure BoundsChanged; override;
     procedure EnabledChanged; override;
@@ -768,12 +768,12 @@ begin
   inherited DoExit;
 end;
 
-procedure TJvCustomSpinEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomSpinEdit.FocusKilled(FocusedWnd: HWND);
 begin
   if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
     not (csDesigning in ComponentState) then
     SetValue(CheckValue(Value));
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(FocusedWnd);
 end;
 
 function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  const  MousePos: TPoint): Boolean;
@@ -2081,8 +2081,8 @@ begin
       Draw(X, Y, AUpArrow)
     else
     begin
-//      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
-      DisabledBitmap := CreateMonoBitmap(AUpArrow, clWhite);
+      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+//      DisabledBitmap := CreateMonoBitmap(AUpArrow, clWhite);
       try
         Draw(X, Y, DisabledBitmap);
       finally
@@ -2103,7 +2103,8 @@ begin
       Draw(X, Y, ADownArrow)
     else
     begin
-      DisabledBitmap := CreateMonoBitmap(ADownArrow, clWhite);
+//      DisabledBitmap := CreateMonoBitmap(ADownArrow, clWhite);
+      DisabledBitmap := CreateDisabledBitmap(ADownArrow, clWhite);
       try
         Draw(X, Y, DisabledBitmap);
       finally

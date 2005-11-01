@@ -43,8 +43,8 @@ uses
 type 
   TJvListBox = TListBox; 
   TJvDualListForm = class(TJvForm)
-    SrcList: TJvListBox;
-    DstList: TJvListBox;
+    SrcList: TListBox;
+    DstList: TListBox;
     SrcLabel: TLabel;
     DstLabel: TLabel;
     IncBtn: TButton;

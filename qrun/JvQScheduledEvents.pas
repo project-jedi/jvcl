@@ -16,7 +16,7 @@
  the specific language governing rights and limitations under the License.
 
  The Initial Developer of the Original Code is Marcel Bestebroer
-  <marcelb@zeelandnet.nl>.
+  <marcelb att zeelandnet dott nl>.
  Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2002 mbeSoft.
  All Rights Reserved.
 
@@ -30,18 +30,23 @@
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQScheduledEvents;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes, Contnrs, SyncObjs, 
-  Qt, Types, 
-  QWindows, QMessages, QForms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  SysUtils, Classes, Contnrs, SyncObjs,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}  
+  Qt, QForms, Types, QWindows, 
   JclSchedule,
-  JvQAppStorage, JvQFinalize;
+  JvQAppStorage;
 
 const
   CM_EXECEVENT = WM_USER + $1000;
@@ -63,7 +68,7 @@ type
     FEvents: TJvEventCollection;
     FOnStartEvent: TNotifyEvent;
     FOnEndEvent: TNotifyEvent;
-    FWnd: HWND;
+    FWnd: THandle;
   protected
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
@@ -73,11 +78,11 @@ type
     procedure InitEvents;
     procedure Loaded; override;
     procedure LoadSingleEvent(Sender: TJvCustomAppStorage;
-      const Path: string; const List: TObject; const Index: Integer);
+      const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
     procedure SaveSingleEvent(Sender: TJvCustomAppStorage;
-      const Path: string; const List: TObject; const Index: Integer);
+      const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
     procedure DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
-      const List: TObject; const First, Last: Integer);
+      const List: TObject; const First, Last: Integer; const ItemName: string);
     procedure SetEvents(Value: TJvEventCollection); 
     procedure CMExecEvent(var Msg: TMessage); message CM_EXECEVENT;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
@@ -88,9 +93,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Handle: HWND read FWnd;
+    property Handle: THandle read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
-    procedure LoadEventStates (const ClearBefore : Boolean = True);
+    procedure LoadEventStates(const ClearBefore: Boolean = True);
     procedure SaveEventStates;
     procedure StartAll;
     procedure StopAll;
@@ -218,6 +223,16 @@ type
     property OnExecute: TScheduledEventExecute read FOnExecute write FOnExecute;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -226,9 +241,9 @@ uses
   JvQJVCLUtils, JvQResources, JvQTypes;
 
 const
-  sUnitName = 'JvScheduledEvents';
+  cEventPrefix = 'Event ';
 
-//=== TScheduleThread ========================================================
+//=== { TScheduleThread } ====================================================
 
 type
   TScheduleThread = class(TThread)
@@ -374,11 +389,22 @@ begin
   if GScheduleThread <> nil then
   begin
     if GScheduleThread.Suspended then
+    begin
       GScheduleThread.Resume;
+      // In order for the thread to actually start (and respond to Terminate)
+      // we must indicate to the system that we want to be paused. This way
+      // the thread can start and will start working.
+      // If we don't do this, the threadproc in classes.pas will directly see
+      // that Terminated is set to True and never call Execute
+      Sleep(10);
+    end;
     GScheduleThread.FreeOnTerminate := False;
     GScheduleThread.Terminate;
     while not GScheduleThread.Ended do
+    begin
+      Sleep(10);
       Application.ProcessMessages;
+    end;
     FreeAndNil(GScheduleThread);
   end;
 end;
@@ -386,27 +412,24 @@ end;
 function ScheduleThread: TScheduleThread;
 begin
   if GScheduleThread = nil then
-  begin
     GScheduleThread := TScheduleThread.Create;
-    AddFinalizeProc(sUnitName, FinalizeScheduleThread);
-  end;
   Result := GScheduleThread;
 end;
 
-//=== TOpenWriter ============================================================
+//=== { THackWriter } ========================================================
 
 type
-  TOpenReader = class(TReader);
+  TReaderAccessProtected = class(TReader);
 
 type
-  TOpenWriter = class(TWriter)
+  THackWriter = class(TWriter)
   protected
     procedure WriteSet(SetType: Pointer; Value: Integer);
   end;
 
 // Copied from D5 Classes.pas and modified a bit.
 
-procedure TOpenWriter.WriteSet(SetType: Pointer; Value: Integer);
+procedure THackWriter.WriteSet(SetType: Pointer; Value: Integer);
 var
   I: Integer;
   BaseType: PTypeInfo;
@@ -419,7 +442,7 @@ begin
   WriteStr('');
 end;
 
-//=== TJvCustomScheduledEvents ===============================================
+//=== { TJvCustomScheduledEvents } ===========================================
 
 constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
@@ -490,7 +513,7 @@ begin
 end;
 
 procedure TJvCustomScheduledEvents.LoadSingleEvent(Sender: TJvCustomAppStorage;
-  const Path: string; const List: TObject; const Index: Integer);
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 var
   Stamp: TTimeStamp;
   TriggerCount: Integer;
@@ -500,39 +523,39 @@ var
   EventName: string;
   Event: TJvEventCollectionItem;
 begin
-  EventName := Sender.ReadString(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Eventname']));
+  EventName := Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'Eventname']));
   if EventName <> '' then
   begin
-    Stamp.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Date']));
-    Stamp.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Time']));
-    TriggerCount := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'TriggerCount']));
-    DayCount := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'DayCount']));
-    Snooze.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Date']));
-    Snooze.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Time']));
-    SnoozeInterval.wYear := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wYear']));
-    SnoozeInterval.wMonth := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMonth']));
-    SnoozeInterval.wDay := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wDay']));
-    SnoozeInterval.wHour := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wHour']));
-    SnoozeInterval.wMinute := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMinute']));
-    SnoozeInterval.wSecond := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wSecond']));
-    SnoozeInterval.wMilliseconds := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMilliseconds']));
+    Stamp.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'Stamp.Date']));
+    Stamp.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'Stamp.Time']));
+    TriggerCount := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'TriggerCount']));
+    DayCount := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayCount']));
+    Snooze.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'Snooze.Date']));
+    Snooze.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'Snooze.Time']));
+    SnoozeInterval.wYear := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wYear']));
+    SnoozeInterval.wMonth := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMonth']));
+    SnoozeInterval.wDay := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wDay']));
+    SnoozeInterval.wHour := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wHour']));
+    SnoozeInterval.wMinute := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMinute']));
+    SnoozeInterval.wSecond := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wSecond']));
+    SnoozeInterval.wMilliseconds := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMilliseconds']));
     Event := TJvEventCollection(List).Add;
     Event.Name := EventName;
     Event.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
   end;
 end;
 
-procedure TJvCustomScheduledEvents.LoadEventStates (const ClearBefore : Boolean = True);
+procedure TJvCustomScheduledEvents.LoadEventStates(const ClearBefore: Boolean = True);
 begin
   if ClearBefore then
     FEvents.Clear;
   if Assigned(AppStorage) then
     if AppStorage.PathExists(AppStoragePath) then
-      AppStorage.ReadList(AppStoragePath, FEvents, LoadSingleEvent);
+      AppStorage.ReadList(AppStoragePath, FEvents, LoadSingleEvent, cEventPrefix);
 end;
 
 procedure TJvCustomScheduledEvents.SaveSingleEvent(Sender: TJvCustomAppStorage;
-  const Path: string; const List: TObject; const Index: Integer);
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 var
   Stamp: TTimeStamp;
   TriggerCount: Integer;
@@ -543,42 +566,41 @@ var
   SnoozeInterval: TSystemTime;
   SnoozeDate: Integer;
   SnoozeTime: Integer;
-
 begin
   TJvEventCollection(List)[Index].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
   StampDate := Stamp.Date;
   StampTime := Stamp.Time;
   SnoozeDate := SnoozeStamp.Date;
   SnoozeTime := SnoozeStamp.Time;
-  AppStorage.WriteString(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Eventname']), FEvents[Index].Name);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Date']), StampDate);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Time']), StampTime);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'TriggerCount']), TriggerCount);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'DayCount']), DayCount);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Date']), SnoozeDate);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Time']), SnoozeTime);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wYear']), SnoozeInterval.wYear);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMonth']), SnoozeInterval.wMonth);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wDay']), SnoozeInterval.wDay);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wHour']), SnoozeInterval.wHour);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMinute']), SnoozeInterval.wMinute);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wSecond']), SnoozeInterval.wSecond);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMilliseconds']), SnoozeInterval.wMilliseconds);
+  AppStorage.WriteString(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'Eventname']), FEvents[Index].Name);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'Stamp.Date']), StampDate);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'Stamp.Time']), StampTime);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'TriggerCount']), TriggerCount);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayCount']), DayCount);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'Snooze.Date']), SnoozeDate);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'Snooze.Time']), SnoozeTime);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wYear']), SnoozeInterval.wYear);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMonth']), SnoozeInterval.wMonth);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wDay']), SnoozeInterval.wDay);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wHour']), SnoozeInterval.wHour);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMinute']), SnoozeInterval.wMinute);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wSecond']), SnoozeInterval.wSecond);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMilliseconds']), SnoozeInterval.wMilliseconds);
 end;
 
 procedure TJvCustomScheduledEvents.DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
-  const List: TObject; const First, Last: Integer);
+  const List: TObject; const First, Last: Integer; const ItemName: string);
 var
   I: Integer;
 begin
   for I := First to Last do
-    Sender.DeleteSubTree(Sender.ConcatPaths([Path, 'Event ' + IntToStr(I)]));
+    Sender.DeleteSubTree(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
 end;
 
 procedure TJvCustomScheduledEvents.SaveEventStates;
 begin
   if Assigned(AppStorage) then
-    AppStorage.WriteList(AppStoragePath, FEvents, FEvents.Count, SaveSingleEvent, DeleteSingleEvent);
+    AppStorage.WriteList(AppStoragePath, FEvents, FEvents.Count, SaveSingleEvent, DeleteSingleEvent, cEventPrefix);
 end;
 
 procedure TJvCustomScheduledEvents.StartAll;
@@ -627,7 +649,7 @@ begin
     end
 end;
 
-//=== TJvEventCollection =====================================================
+//=== { TJvEventCollection } =================================================
 
 function TJvEventCollection.GetItem(Index: Integer): TJvEventCollectionItem;
 begin
@@ -654,7 +676,7 @@ begin
   Result := TJvEventCollectionItem(inherited Insert(Index));
 end;
 
-//=== TJvEventCollectionItem =================================================
+//=== { TJvEventCollectionItem } =============================================
 
 constructor TJvEventCollectionItem.Create(Collection: TCollection);
 var
@@ -858,7 +880,7 @@ begin
   MSecs := StrToInt(Copy(Str, 18, 2)) * 1000 + StrToInt(Copy(Str, 21, 3));
 
   Stamp := DateTimeToTimeStamp(EncodeDate(Y, M, D));
-  Stamp.Time := H * 3600000 + MIn * 60000 + MSecs;
+  Stamp.Time := H * 3600000 + Min * 60000 + MSecs;
 end;
 
 procedure TJvEventCollectionItem.PropDateWrite(Writer: TWriter; const Stamp: TTimeStamp);
@@ -1031,7 +1053,7 @@ var
   TempVal: TScheduleWeekDays;
 begin
   JclIntToSet(TypeInfo(TScheduleWeekDays), TempVal,
-    TOpenReader(Reader).ReadSet(TypeInfo(TScheduleWeekDays)));
+    TReaderAccessProtected(Reader).ReadSet(TypeInfo(TScheduleWeekDays)));
   (Schedule as IJclWeeklySchedule).DaysOfWeek := TempVal;
 end;
 
@@ -1040,7 +1062,7 @@ var
   TempVar: TScheduleWeekDays;
 begin
   TempVar := (Schedule as IJclWeeklySchedule).DaysOfWeek;
-  TOpenWriter(Writer).WriteSet(TypeInfo(TScheduleWeekDays),
+  THackWriter(Writer).WriteSet(TypeInfo(TScheduleWeekDays),
     JclSetToInt(TypeInfo(TScheduleWeekDays), TempVar));
 end;
 
@@ -1215,9 +1237,15 @@ end;
 *)
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
-  FinalizeUnit(sUnitName);
+  FinalizeScheduleThread;
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

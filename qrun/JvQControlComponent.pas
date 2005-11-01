@@ -108,6 +108,7 @@ begin
       To access a component with the Object Inspector
       Owner property should remain unchanged.
     }
+
     if Assigned(Owner) then
       Owner.RemoveComponent(Self);
     Parent.InsertComponent(Self); { owner := parent }

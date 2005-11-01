@@ -38,34 +38,53 @@ unit JvQMaskEdit;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages,
-  SysUtils, Classes, QGraphics, QControls, QMask, QForms,
-  JvQComponent, JvQTypes, 
-  JvQToolEdit, JvQExMask;
+  SysUtils, Classes, QGraphics, QControls, QMask, QForms, QStdCtrls,
+  JvQComponent, JvQTypes, JvQCaret, JvQToolEdit, JvQExMask;
 
 type
   TJvCustomMaskEdit = class(TJvCustomComboEdit)
   private
     FHotTrack: Boolean;
+    FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
     FProtectPassword: Boolean;
     FLastNotifiedText: string;
     FHasLastNotifiedText: Boolean;
     FOnSetFocus: TJvFocusChangeEvent;
-    FOnKillFocus: TJvFocusChangeEvent; 
+    FOnKillFocus: TJvFocusChangeEvent;
+    FWordWrap: Boolean;
+    FMultiLine: Boolean;
+    FAlignment: TAlignment;
+    FOnAfterPaint: TNotifyEvent;
+    FScrollBars: TScrollStyle;
+    FCanvas: TControlCanvas;
     procedure SetHotTrack(Value: Boolean);
+    procedure SetAlignment(const Value: TAlignment);
+    procedure SetMultiLine(const Value: Boolean);
+    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetWordWrap(const Value: Boolean);
+    function GetCanvas: TCanvas; 
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
-    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual; 
+//    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CaretChanged(Sender: TObject); dynamic;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
+    procedure DoSetFocus(const APreviousControl: TWinControl); virtual; 
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override; 
     procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override; 
+    procedure MouseLeave(Control: TControl); override;
+    procedure SetCaret(const Value: TJvCaret);
     procedure NotifyIfChanged;
     procedure Change; override;
+    // (rom) not CLX compatible
+    procedure Paint; override; //WMPaint(var Msg: TWMPaint); message WM_PAINT;
   public 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,15 +96,25 @@ type
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property Caret: TJvCaret read FCaret write SetCaret;
     property ShowButton default False;
 
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
+
+    // From Globus
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    property OnAfterPaint: TNotifyEvent read FOnAfterPaint write FOnAfterPaint;
+  public
+    property Canvas: TCanvas read GetCanvas;
   end;
 
   TJvMaskEdit = class(TJvCustomMaskEdit)
   published
-//    property Caret;
+    property Caret;
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
@@ -138,14 +167,23 @@ type
     property OnStartDrag;
   end;
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
+implementation
 
+
+procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
+begin
+  FCaret.CreateCaret;
+end;
 
 procedure TJvCustomMaskEdit.Change;
 begin
@@ -157,9 +195,20 @@ end;
 constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHotTrack := False; 
+
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self; //...i can draw now! :)
+
+  FHotTrack := False;
+  FCaret := TJvCaret.Create(Self);
+  FCaret.OnChanged := CaretChanged;
   FEntering := False;
   FLeaving := False;
+
+  FScrollBars := ssNone;
+  FAlignment := taLeftJustify;
+  FMultiLine := False;
+  FWordWrap := False;
 
   ControlState := ControlState + [csCreating];
   try
@@ -172,40 +221,45 @@ end;
 
 
 destructor TJvCustomMaskEdit.Destroy;
-begin 
+begin
+  FCaret.OnChanged := nil;
+  FreeAndNil(FCaret);
+  FCanvas.Free;
   inherited Destroy;
 end;
 
-procedure TJvCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomMaskEdit.FocusKilled(NextWnd: HWND);
 begin
   FLeaving := True;
-  try 
-    inherited DoKillFocus(FocusedWnd);
-    DoKillFocusEvent(FindControl(FocusedWnd));
+  try
+    FCaret.DestroyCaret;
+    inherited FocusKilled(NextWnd);
+    DoKillFocus(FindControl(NextWnd));
   finally
     FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomMaskEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
   NotifyIfChanged;
   if Assigned(FOnKillFocus) then
     FOnKillFocus(Self, ANextControl);
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomMaskEdit.FocusSet(PrevWnd: HWND);
 begin
   FEntering := True;
   try
-    inherited DoSetFocus(FocusedWnd); 
-    DoSetFocusEvent(FindControl(FocusedWnd));
+    inherited FocusSet(PrevWnd);
+    FCaret.CreateCaret;
+    DoSetFocus(FindControl(PrevWnd));
   finally
     FEntering := False;
   end;
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocusEvent(const APreviousControl: TWinControl);
+procedure TJvCustomMaskEdit.DoSetFocus(const APreviousControl: TWinControl);
 begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);
@@ -254,7 +308,10 @@ begin
     Change;
 end;
 
-
+procedure TJvCustomMaskEdit.SetCaret(const Value: TJvCaret);
+begin
+  FCaret.Assign(Value);
+end;
 
 procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
 begin
@@ -276,15 +333,89 @@ begin
   inherited SetText(Value); 
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
+procedure TJvCustomMaskEdit.SetAlignment(const Value: TAlignment);
+begin
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    RecreateWnd;
+  end;
+end;
 
+procedure TJvCustomMaskEdit.SetMultiLine(const Value: Boolean);
+begin
+  if FMultiLine <> Value then
+  begin
+    FMultiLine := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.SetScrollBars(const Value: TScrollStyle);
+begin
+  if FScrollBars <> Value then
+  begin
+    FScrollBars := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.SetWordWrap(const Value: Boolean);
+begin
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    RecreateWnd;
+  end;
+end;
+
+function TJvCustomMaskEdit.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
+end;
+
+(*
+procedure TJvCustomMaskEdit.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  Params.Style := Params.Style or WS_CLIPCHILDREN;
+
+  if FMultiline then
+    Params.Style := Params.Style or ES_MULTILINE;
+
+  case FAlignment of
+    taLeftJustify:
+      Params.Style := Params.Style or ES_LEFT;
+    taRightJustify:
+      Params.Style := Params.Style or ES_RIGHT;
+    taCenter:
+      Params.Style := Params.Style or ES_CENTER;
+  end;
+
+  case FScrollBars of
+    ssHorizontal:
+      Params.Style := Params.Style or WS_HSCROLL;
+    ssVertical:
+      Params.Style := Params.Style or WS_VSCROLL;
+    ssBoth:
+      Params.Style := Params.Style or WS_HSCROLL or WS_VSCROLL;
+  end;
+
+  if FWordWrap then
+    Params.Style := Params.Style or ES_AUTOHSCROLL;
+end;
+*)
+
+procedure TJvCustomMaskEdit.Paint; //WMPaint(var Msg: TWMPaint);
+begin
+  inherited;
+  if Assigned(FOnAfterPaint) then
+    FOnAfterPaint(Self);
+end;
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

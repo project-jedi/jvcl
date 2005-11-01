@@ -34,6 +34,9 @@ unit JvQSpeedbar;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, IniFiles,
   QWindows, QMessages, QMenus, QButtons, QControls,
   QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids,
@@ -272,8 +275,8 @@ type
     FParent: TJvSpeedBar;
     FSection: Integer;
     FSectionName: string;
-    FImageIndex: Integer;
-    procedure SetImageIndex(Value: Integer);
+    FImageIndex: TImageIndex;
+    procedure SetImageIndex(Value: TImageIndex);
     function GetAction: TBasicAction;
     procedure SetAction(Value: TBasicAction);
     function GetAllowAllUp: Boolean;
@@ -381,7 +384,7 @@ type
     property Cursor: TCursor read GetCursor write SetCursor default crDefault;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property Hint: string read GetHint write SetHint;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Layout: TButtonLayout read GetLayout write SetLayout default blGlyphTop;
     property Margin: Integer read GetMargin write SetMargin default -1;
     property MarkDropDown: Boolean read GetMarkDropDown write SetMarkDropDown default True;
@@ -486,12 +489,19 @@ function NewSpeedSection(ASpeedBar: TJvSpeedBar; const ACaption: string): Intege
 function NewSpeedItem(AOwner: TComponent; ASpeedBar: TJvSpeedBar; Section: Integer;
   const AName: string): TJvSpeedItem;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math, QConsts,
   JvQJVCLUtils, JvQJCLUtils, JvQSpeedbarSetupForm, JvQResources;
 
@@ -997,7 +1007,7 @@ begin
   end;
 end;
 
-procedure TJvSpeedItem.SetImageIndex(Value: Integer);
+procedure TJvSpeedItem.SetImageIndex(Value: TImageIndex);
 begin
   if Value <> FImageIndex then
   begin
@@ -3137,14 +3147,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

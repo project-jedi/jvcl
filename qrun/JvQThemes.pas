@@ -39,6 +39,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, 
+  Types,  
   QControls, QStdCtrls, QGraphics, 
   QWindows, QForms, // Mouse 
   QButtons;

@@ -89,7 +89,7 @@ type
 
     { Create the registry key path if it doesn't exist yet. Any key in the path that doesn't exist
       is created. }
-    procedure CreateKey(Key: string);
+    procedure CreateKey(const Key: string);
 
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
@@ -294,7 +294,7 @@ begin
     FRegHKEY := HKEY_CLASSES_ROOT + Longword(Ord(Value));
 end;
 
-procedure TJvAppRegistryStorage.CreateKey(Key: string);
+procedure TJvAppRegistryStorage.CreateKey(const Key: string);
 var
   ResKey: HKEY;
 begin

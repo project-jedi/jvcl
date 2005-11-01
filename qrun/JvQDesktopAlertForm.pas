@@ -44,7 +44,7 @@ uses
   {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   QImgList, QActnList,
-  JvQButton, JvQLabel, JvQComponent, JvQConsts;
+  JvQButton, JvQLabel, JvQComponent, JvQConsts, JvQExForms;
 
 const
   cDefaultAlertFormWidth = 329;
@@ -85,7 +85,7 @@ type
     property OnClick;
   end;
 
-  TJvFormDesktopAlert = class(TJvForm)
+  TJvFormDesktopAlert = class(TJvExCustomForm)
   private
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
@@ -95,9 +95,10 @@ type
     FEndInterval:Cardinal; 
     procedure JvDeskTopAlertAutoFree(var Msg: TMessage); message JVDESKTOPALERT_AUTOFREE;
     procedure DoMouseTimer(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
+//    procedure FormPaint(Sender: TObject);
   protected
     procedure DoShow; override;
+    procedure BoundsChanged; override;
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -130,6 +131,10 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
+    property ParentFont;
+    property PopupMenu;
+    property OnClose;
+    property OnShow;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -228,7 +233,7 @@ begin
   Scaled := False;
   Height := cDefaultAlertFormHeight;
   Width := cDefaultAlertFormWidth;
-  OnPaint := FormPaint;
+//  OnPaint := FormPaint;
 
   imIcon := TImage.Create(Self);
   imIcon.Parent := Self;
@@ -271,9 +276,26 @@ begin
   tbDropDown.OnDropDownClose := DoDropDownClose;
 end;
 
+(*
 procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
 begin
   DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+end;
+*)
+procedure TJvFormDesktopAlert.BoundsChanged;
+var
+  Bmp: TBitmap;
+begin
+  HandleNeeded;
+  Bmp := TBitmap.Create;
+  Bmp.Width := Width;
+  Bmp.Height := Height;
+  Bmp.PixelFormat := pf32bit;
+  Bmp.Canvas.Start;
+  DrawDesktopAlertWindow(Bmp.Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+  Bmp.Canvas.Stop;
+  Bitmap.Assign(Bmp);
+  Bmp.Destroy;
 end;
 
 
@@ -611,7 +633,7 @@ end;
 
 procedure TJvFormDesktopAlert.JvDeskTopAlertAutoFree(var Msg: TMessage);
 begin
-  // WPAram is us, LParam is the TJvDesktopAlert
+  // WParam is us, LParam is the TJvDesktopAlert
   if Msg.WParam = WPARAM(Self) then
   begin
     Release;

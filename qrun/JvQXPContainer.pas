@@ -50,7 +50,7 @@ type
 
   TJvXPEnabledMode = (emAffectChilds, emNormal);
 
-  TJvXPCustomContainer = class(TJvXPCustomControl)
+  TJvXPCustomContainer = class(TJvXPScrollBox)
   private
     FAlignment: TAlignment;
     FBorderWidth: TBorderWidth;
@@ -376,7 +376,7 @@ begin
   end;
 end;
 
-procedure DxDrawText(AParent: TJvXPCustomControl; ACaption: TCaption; AFont: TFont;
+procedure DxDrawText(AParent: TJvXPScrollBox; ACaption: TCaption; AFont: TFont;
   AAlignment: TAlignment; ALayout: TTextLayout; AWordWrap: Boolean; var ARect: TRect);
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

@@ -78,7 +78,6 @@ const
 
 implementation
 
-
 constructor TJvMaxPixel.Create(AOwner: TControl);
 begin
   inherited Create;

@@ -56,8 +56,11 @@ unit JvQRollOut;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Qt, QWindows, QMessages, QControls, QGraphics, QImgList, QExtCtrls, QActnList,
+  QWindows, QMessages, QControls, QGraphics, QImgList, QExtCtrls, QActnList,
   JvQComponent, JvQThemes;
 
 const
@@ -186,8 +189,9 @@ type
     // Normally, you don't need to call this method.
     procedure ClearChildTabStops;
 
-    procedure DoExit; override;
-    procedure DoEnter; override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -286,6 +290,16 @@ type
     property OnExpand;
     property OnCollapse;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -527,7 +541,6 @@ begin
   FCWidth := 22;
   FCHeight := 22;
   FShowFocus := True;
-  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 destructor TJvCustomRollOut.Destroy;
@@ -805,9 +818,14 @@ begin
     FButtonHeight := Value;
     FCHeight := Value + 2;
     if FPlacement = plTop then
-      FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
+      FButtonRect := Rect(1, 1, Width - 1, FButtonHeight - 1)
     else
-      FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight + BevelWidth, Height - BevelWidth);
+      FButtonRect := Rect(1, 1, FButtonHeight - 1, Height - 1);
+
+//    if FPlacement = plTop then
+//      FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight - BevelWidth)
+//    else
+//      FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight - BevelWidth, Height - BevelWidth);
     Realign;
     RedrawControl(True);
   end;
@@ -845,18 +863,23 @@ begin
   RedrawControl(False);
 end;
 
+function TJvCustomRollOut.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  //  inherited DoEraseBackground(Canvas, Param);
+  Result := False;
+end;
 
 procedure TJvCustomRollOut.DrawButtonFrame;
 var
   R: TRect;
   TopC, BottomC: TColor;
-  FIndex: Integer; 
-  WS: WideString; 
+  FIndex: Integer;
+  WS: WideString;
 begin
   if FPlacement = plTop then
-    FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
+    FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight)
   else
-    FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight + BevelWidth, Height - BevelWidth);
+    FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight, Height - BevelWidth);
 
   R := FButtonRect;
   Canvas.Brush.Color := Colors.ButtonColor;
@@ -903,7 +926,7 @@ begin
     end
     else
       R.Left := ImageOptions.Offset * 2 + BevelWidth;
-    R.Top := R.Top - (Canvas.TextHeight(Caption) - (FButtonRect.Bottom - FButtonRect.Top)) div 2 + BevelWidth div 2;
+    // R.Top := R.Top - (Canvas.TextHeight(Caption) - (FButtonRect.Bottom - FButtonRect.Top)) div 2 + BevelWidth div 2;
   end
   else
   begin
@@ -915,7 +938,8 @@ begin
     end
     else
       R.Top := ImageOptions.Offset * 2 + BevelWidth;
-    R.Left := R.Left + (Canvas.TextHeight(Caption) + (FButtonRect.Right - FButtonRect.Left)) div 2 + BevelWidth div 2;
+
+    R := Bounds(FButtonRect.Right, R.Top , Height, FButtonHeight);
   end;
   Canvas.Font := Font;
   if FInsideButton then
@@ -925,11 +949,11 @@ begin
   begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
-      OffsetRect(R, 1, 1);  
+      OffsetRect(R, 1, 1);
     WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas, WS, -1, R, DT_VCENTER, 270)
+      DrawText(Canvas, WS, -1, R, DT_VCENTER + DT_CENTER, 270)
     else
       DrawText(Canvas, WS, -1, R, DT_VCENTER, 0)
   end;
@@ -984,8 +1008,8 @@ begin
     Msg.Msg := CM_EXPANDED;
     Msg.WParam := FGroupIndex;
     Msg.LParam := Longint(Self);
-    Msg.Result := 0;  
-    BroadcastMsg(Parent, Msg); 
+    Msg.Result := 0;
+    Parent.Broadcast(Msg);
   end;
 end;
 
@@ -1067,17 +1091,17 @@ begin
   Result := PtInRect(R, P);
 end;
 
-procedure TJvCustomRollOut.DoExit;
+procedure TJvCustomRollOut.FocusKilled(NextWnd: HWND);
 begin
   CheckChildTabStops;
-  inherited DoExit;
+  inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.DoEnter;
+procedure TJvCustomRollOut.FocusSet(PrevWnd: HWND);
 begin
   CheckChildTabStops;
-  inherited DoEnter;
+  inherited FocusSet(PrevWnd);
   Invalidate;
 end;
 
@@ -1237,14 +1261,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -39,6 +39,9 @@ unit JvQDialButton;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Classes, QGraphics, QControls, QForms, QExtCtrls, QComCtrls,
   JvQComponent;
 
@@ -120,8 +123,8 @@ type
     procedure Change; dynamic;
     procedure ClearTicks;
     procedure Click; override; 
-    procedure DoEnter; override;
-    procedure DoExit; override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
     procedure ColorChanged; override;
     procedure ParentColorChanged; override;
     procedure DrawBorder; dynamic;
@@ -235,12 +238,19 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   QConsts, Math,
   JvQThemes;
 
@@ -271,7 +281,7 @@ end;
 constructor TJvCustomDialButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse]; 
+  ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse] - [csSetCaption]; 
   FTicks := TList.Create;
   FBorderStyle := bsNone;
   FButtonEdge := 5;
@@ -494,7 +504,8 @@ begin
   if Value <> FFrequency then
   begin
     FFrequency := Value;
-    if FFrequency < 1 then FFrequency := 1; 
+    if FFrequency < 1 then
+      FFrequency := 1; 
     if FTickStyle = tsAuto then
     begin
       ClearTicks;
@@ -1007,16 +1018,16 @@ begin
   end;
 end;
 
-procedure TJvCustomDialButton.DoExit;
+procedure TJvCustomDialButton.FocusKilled(NextWnd: HWND);
 begin
-  inherited DoExit;
+  inherited FocusKilled(NextWnd);
   if HandleAllocated then
     DrawBorder;
 end;
 
-procedure TJvCustomDialButton.DoEnter;
+procedure TJvCustomDialButton.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoEnter;
+  inherited FocusSet(PrevWnd);
   if HandleAllocated then
     DrawBorder;
 end;
@@ -1218,14 +1229,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -708,7 +708,7 @@ end;
 
 procedure TJvColorComboBox.ResetItemHeight;
 begin
-  if not (csRecreating in ControlState) then
+  if not (csRecreating in ControlState) and not (csDestroying in ComponentState) then
     ItemHeight := GetItemHeight(Font);
 end;
 
@@ -1144,7 +1144,7 @@ end;
 
 procedure TJvFontComboBox.ResetItemHeight;
 begin
-  if not (csRecreating in ControlState) then
+  if not (csRecreating in ControlState) and not (csDestroying in ComponentState) then
     ItemHeight := Max(GetItemHeight(Font), FTrueTypeBmp.Height + 2);
 end;
 

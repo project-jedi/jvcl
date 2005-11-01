@@ -41,7 +41,8 @@ uses
   QWindows, QMessages, SysUtils, Classes, QControls, QForms, QGraphics,
   QDialogs, QStdCtrls, QExtCtrls, QMask,
   JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorDialogs, JvQExMask,
-  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo;
+  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo, JvQExControls,
+  QComboEdits, JvQExComboEdits;
 
 type
   TJvFullColorFrm = class(TForm)
@@ -70,9 +71,9 @@ type
     LabelAxis: TLabel;
     ButtonApply: TButton;
     JvColorAxisConfigCombo: TJvFullColorAxisCombo;
-    JvColorSpaceCombo: TJvFullColorSpaceCombo;
     ColorBox: TJvColorComboBox;
     JvFullColorGroup: TJvFullColorGroup;
+    JvColorSpaceCombo: TJvFullColorSpaceCombo;
     procedure ButtonGraphicsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure JvComboBoxColorSpaceSelect(Sender: TObject);
@@ -84,6 +85,7 @@ type
     procedure ButtonApplyClick(Sender: TObject);
     procedure LabelDrawOldClick(Sender: TObject);
     procedure JvFullColorGroupChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FUpdating: Boolean;
     FExpanded: Boolean;
@@ -490,7 +492,15 @@ begin
                              GetColorSpaceID(FullColor));
 end;
 
+procedure TJvFullColorFrm.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+
+end;
+
+
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 finalization

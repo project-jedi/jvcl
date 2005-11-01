@@ -20,6 +20,7 @@ Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
 All Rights Reserved.
 
 Contributor(s): Robert Love [rlove att slcdug dott org].
+                Martin Cetkovsky [martin att alikuvkoutek dott cz]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,11 +36,14 @@ unit JvQCSVBaseControls;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, QControls, QStdCtrls, QButtons,
   JvQComponent;
 
 type
-  // (ahuser) changed NameValues: TStringList to TStrings
+  // NameValues: TStringList has changed to TStrings
   TCursorChangedEvent = procedure(Sender: TObject; NameValues: TStrings;
     FieldCount: Integer) of object;
 
@@ -63,13 +67,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DataBaseCreate(const AFile: string; FieldNames: TStrings);
+    procedure DataBaseCreate(const AFile: string; FieldNames: TStrings;
+      AChangeExt: Boolean = True; AAskIfExists: Boolean = True);
     procedure DataBaseOpen(const AFile: string);
     procedure DataBaseClose;
     procedure DataBaseRestructure(const AFile: string; FieldNames: TStrings);
     procedure RecordNew;
-    procedure RecordGet(NameValues: TStrings);
-    procedure RecordSet(NameValues: TStrings);
+    procedure RecordGet(NameValues: TStrings; UseNames: Boolean = True);
+    procedure RecordSet(NameValues: TStrings; UseNames: Boolean = True);
     procedure RecordDelete;
     function RecordNext: Boolean;
     function RecordPrevious: Boolean;
@@ -155,12 +160,19 @@ type
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, QForms, QDialogs,
   JvQThemes, JvQResources;
 
@@ -200,20 +212,23 @@ begin
   DoCursorChange;
 end;
 
-procedure TJvCSVBase.DataBaseCreate(const AFile: string; FieldNames: TStrings);
+procedure TJvCSVBase.DataBaseCreate(const AFile: string; FieldNames: TStrings;
+  AChangeExt: Boolean = True; AAskIfExists: Boolean = True);
 var
-  newfile: string;
+  NewFile: string;
   AList: TStrings;
 begin
-  newfile := ChangeFileExt(AFile, '.csv');
-  if FileExists(newfile) then
+  if AChangeExt then
+    NewFile := ChangeFileExt(AFile, '.csv') // do not localize
+  else
+    NewFile := AFile;
+  if AAskIfExists and FileExists(newfile) then
     if MessageDlg(RsReplaceExistingDatabase, mtConfirmation, [mbYes, mbNo], 0) = mrNo then
       Exit;
   AList := TStringList.Create;
   try
-    if (FieldNames <> nil) then
-      if FieldNames.Count > 0 then
-        AList.Text := FieldNames.CommaText;
+    if (FieldNames <> nil) and (FieldNames.Count > 0) then
+      AList.Text := FieldNames.CommaText;
     AList.SaveToFile(newfile);
   finally
     AList.Free;
@@ -372,7 +387,7 @@ begin
     end;
 end;
 
-procedure TJvCSVBase.RecordGet(NameValues: TStrings);
+procedure TJvCSVBase.RecordGet(NameValues: TStrings; UseNames: Boolean = True);
 var
   I: Integer;
 begin
@@ -380,7 +395,10 @@ begin
   if FDBCursor < 1 then
     Exit;
   for I := 0 to FDBFields.Count - 1 do
-    NameValues.Append(FDBFields[I] + '=' + FDBRecord[I]);
+    if UseNames then
+      NameValues.Append(FDBFields[I] + '=' + FDBRecord[I]) // do not localize
+    else
+      NameValues.Append(FDBRecord[I]);
 end;
 
 function TJvCSVBase.RecordLast: Boolean;
@@ -426,7 +444,7 @@ begin
   end;
 end;
 
-procedure TJvCSVBase.RecordSet(NameValues: TStrings);
+procedure TJvCSVBase.RecordSet(NameValues: TStrings; UseNames: Boolean = True);
 var
   I, Index: Integer;
   FieldName: string;
@@ -435,10 +453,15 @@ begin
   begin
     for I := 0 to NameValues.Count - 1 do
     begin
-      FieldName := NameValues.names[I];
-      Index := FDBFields.IndexOf(FieldName);
-      if Index <> -1 then
-        FDBRecord[Index] := NameValues.Values[FieldName];
+      if UseNames then
+      begin
+        FieldName := NameValues.Names[I];
+        Index := FDBFields.IndexOf(FieldName);
+        if Index <> -1 then
+          FDBRecord[Index] := NameValues.Values[FieldName];
+      end
+      else
+        FDBRecord[I] := NameValues[I];
     end;
     FDB[FDBCursor] := FDBRecord.CommaText;
     FDB.SaveToFile(CSVFileName);
@@ -475,51 +498,54 @@ var
   AField: string;
 begin
   AForm := TForm(Self.Owner);
-  for I := 0 to AForm.ComponentCount - 1 do
-    if AForm.Components[I].ClassName = 'TJvCSVEdit' then
-    begin
-      ed := TJvCSVEdit(AForm.Components[I]);
-      if ed.CSVDataBase = Self then
+  if AForm is TComponent then
+  begin
+    for I := 0 to AForm.ComponentCount - 1 do
+      if AForm.Components[I] is TJvCSVEdit then
       begin
-        AField := ed.CSVField;
-        Index := CSVFieldNames.IndexOf(AField);
-        if Index <> -1 then
-          if FDBCursor > 0 then
-            ed.Text := FDBRecord[Index]
-          else
-            ed.Text := '[' + AField + ']';
-      end;
-    end
-    else
-    if AForm.Components[I].ClassName = 'TJvCSVComboBox' then
-    begin
-      cbo := TJvCSVComboBox(AForm.Components[I]);
-      if cbo.CSVDataBase = Self then
+        ed := TJvCSVEdit(AForm.Components[I]);
+        if ed.CSVDataBase = Self then
+        begin
+          AField := ed.CSVField;
+          Index := CSVFieldNames.IndexOf(AField);
+          if Index <> -1 then
+            if FDBCursor > 0 then
+              ed.Text := FDBRecord[Index]
+            else
+              ed.Text := '[' + AField + ']'; // do not localize
+        end;
+      end
+      else
+      if AForm.Components[I] is TJvCSVComboBox then
       begin
-        AField := cbo.CSVField;
-        Index := CSVFieldNames.IndexOf(AField);
-        if Index <> -1 then
-          if FDBCursor > 0 then
-            cbo.Text := FDBRecord[Index]
-          else
-            cbo.Text := '[' + AField + ']';
-      end;
-    end
-    else
-    if AForm.Components[I].ClassName = 'TJvCSVCheckBox' then
-    begin
-      ck := TJvCSVCheckBox(AForm.Components[I]);
-      if ck.CSVDataBase = Self then
+        cbo := TJvCSVComboBox(AForm.Components[I]);
+        if cbo.CSVDataBase = Self then
+        begin
+          AField := cbo.CSVField;
+          Index := CSVFieldNames.IndexOf(AField);
+          if Index <> -1 then
+            if FDBCursor > 0 then
+              cbo.Text := FDBRecord[Index]
+            else
+              cbo.Text := '[' + AField + ']'; // do not localize
+        end;
+      end
+      else
+      if AForm.Components[I] is TJvCSVCheckBox then
       begin
-        AField := ck.CSVField;
-        Index := CSVFieldNames.IndexOf(AField);
-        if Index <> -1 then
-          if FDBCursor > 0 then
-            ck.Checked := FDBRecord[Index] = 'True'
-          else
-            ck.Checked := False;
+        ck := TJvCSVCheckBox(AForm.Components[I]);
+        if ck.CSVDataBase = Self then
+        begin
+          AField := ck.CSVField;
+          Index := CSVFieldNames.IndexOf(AField);
+          if Index <> -1 then
+            if FDBCursor > 0 then
+              ck.Checked := FDBRecord[Index] = 'True' // do not localize
+            else
+              ck.Checked := False;
+        end;
       end;
-    end;
+  end;
 end;
 
 procedure TJvCSVBase.SetCSVFileName(const Value: string);
@@ -552,45 +578,48 @@ begin
   if FDBCursor < 1 then
     Exit;
   AForm := TForm(Self.Owner);
-  for I := 0 to AForm.ComponentCount - 1 do
-    if AForm.Components[I].ClassName = 'TJvCSVEdit' then
-    begin
-      ed := TJvCSVEdit(AForm.Components[I]);
-      if ed.CSVDataBase = Self then
+  if AForm is TComponent then
+  begin
+    for I := 0 to AForm.ComponentCount - 1 do
+      if AForm.Components[I] is TJvCSVEdit then
       begin
-        AField := ed.CSVField;
-        Index := CSVFieldNames.IndexOf(AField);
-        if Index <> -1 then
-          FDBRecord[Index] := ed.Text;
-      end;
-    end
-    else
-    if AForm.Components[I].ClassName = 'TJvCSVComboBox' then
-    begin
-      cbo := TJvCSVComboBox(AForm.Components[I]);
-      if cbo.CSVDataBase = Self then
+        ed := TJvCSVEdit(AForm.Components[I]);
+        if ed.CSVDataBase = Self then
+        begin
+          AField := ed.CSVField;
+          Index := CSVFieldNames.IndexOf(AField);
+          if Index <> -1 then
+            FDBRecord[Index] := ed.Text;
+        end;
+      end
+      else
+      if AForm.Components[I] is TJvCSVComboBox then
       begin
-        AField := cbo.CSVField;
-        Index := CSVFieldNames.IndexOf(AField);
-        if Index <> -1 then
-          FDBRecord[Index] := cbo.Text;
-      end;
-    end
-    else
-    if AForm.Components[I].ClassName = 'TJvCSVCheckBox' then
-    begin
-      ck := TJvCSVCheckBox(AForm.Components[I]);
-      if ck.CSVDataBase = Self then
+        cbo := TJvCSVComboBox(AForm.Components[I]);
+        if cbo.CSVDataBase = Self then
+        begin
+          AField := cbo.CSVField;
+          Index := CSVFieldNames.IndexOf(AField);
+          if Index <> -1 then
+            FDBRecord[Index] := cbo.Text;
+        end;
+      end
+      else
+      if AForm.Components[I] is TJvCSVCheckBox then
       begin
-        AField := ck.CSVField;
-        Index := CSVFieldNames.IndexOf(AField);
-        if Index <> -1 then
-          if ck.Checked then
-            FDBRecord[Index] := 'True'
-          else
-            FDBRecord[Index] := 'False';
+        ck := TJvCSVCheckBox(AForm.Components[I]);
+        if ck.CSVDataBase = Self then
+        begin
+          AField := ck.CSVField;
+          Index := CSVFieldNames.IndexOf(AField);
+          if Index <> -1 then
+            if ck.Checked then
+              FDBRecord[Index] := 'True' // do not localize
+            else
+              FDBRecord[Index] := 'False'; // do not localize
+        end;
       end;
-    end;
+  end;
 
   FDB[FDBCursor] := FDBRecord.CommaText;
   FDB.SaveToFile(CSVFileName);
@@ -733,15 +762,15 @@ procedure TJvCSVNavigator.CreateButtons;
 
 begin
   ShowHint := True;
-  InitButton(FBtnFirst, 1, 'JVCSVFIRST', BtnFirstClick, RsFirstHint);
-  InitButton(FBtnPrevious, 25, 'JVCSVPREVIOUS', BtnPreviousClick, RsPreviousHint);
-  InitButton(FBtnFind, 49, 'JVCSVFIND', BtnFindClick, RsFindHint);
-  InitButton(FBtnNext, 73, 'JVCSVNEXT', BtnNextClick, RsNextHint);
-  InitButton(FBtnLast, 97, 'JVCSVLAST', BtnLastClick, RsLastHint);
-  InitButton(FBtnAdd, 121, 'JVCSVADD', BtnAddClick, RsAddHint);
-  InitButton(FBtnDelete, 145, 'JVCSVDELETE', BtnDeleteClick, RsDeleteHint);
-  InitButton(FBtnPost, 169, 'JVCSVPOST', BtnPostClick, RsPostHint);
-  InitButton(FBtnRefresh, 193, 'JVCSVREFRESH', BtnRefreshClick, RsRefreshHint);
+  InitButton(FBtnFirst, 1, 'JVCSVFIRST', BtnFirstClick, RsFirstHint); // do not localize
+  InitButton(FBtnPrevious, 25, 'JVCSVPREVIOUS', BtnPreviousClick, RsPreviousHint); // do not localize
+  InitButton(FBtnFind, 49, 'JVCSVFIND', BtnFindClick, RsFindHint); // do not localize
+  InitButton(FBtnNext, 73, 'JVCSVNEXT', BtnNextClick, RsNextHint); // do not localize
+  InitButton(FBtnLast, 97, 'JVCSVLAST', BtnLastClick, RsLastHint); // do not localize
+  InitButton(FBtnAdd, 121, 'JVCSVADD', BtnAddClick, RsAddHint); // do not localize
+  InitButton(FBtnDelete, 145, 'JVCSVDELETE', BtnDeleteClick, RsDeleteHint); // do not localize
+  InitButton(FBtnPost, 169, 'JVCSVPOST', BtnPostClick, RsPostHint); // do not localize
+  InitButton(FBtnRefresh, 193, 'JVCSVREFRESH', BtnRefreshClick, RsRefreshHint); // do not localize
 end;
 
 
@@ -824,14 +853,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

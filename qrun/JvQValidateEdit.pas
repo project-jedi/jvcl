@@ -40,7 +40,10 @@ unit JvQValidateEdit;
 interface
 
 uses
-  QWindows, QMessages, QControls, QGraphics, 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QWindows, QMessages, QControls, QGraphics,
   SysUtils, Classes,
   JvQEdit;
 
@@ -80,6 +83,7 @@ type
 
   TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char;
     const AText: string; const Pos: Integer; var IsValid: Boolean) of object;
+  TJvCustomIsValidEvent = procedure(Sender: TObject; var IsValid: Boolean) of object;
 
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private
@@ -103,6 +107,7 @@ type
     FAutoAlignment: Boolean;
     FTrimDecimals: Boolean;
     FOldFontChange: TNotifyEvent;
+    FOnIsValid: TJvCustomIsValidEvent;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
@@ -138,13 +143,13 @@ type
     procedure EnforceMaxValue;
     procedure EnforceMinValue;
     procedure SetTrimDecimals(const Value: Boolean);
-    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
   protected
     function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
-    function MakeValid(ParseString: string): string;virtual;
+    function MakeValid(const ParseString: string): string;virtual;
     procedure Change; override;
-    procedure DoEnter; override;
-    procedure DoExit; override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetText(const NewValue: TCaption); override;
     property CheckChars: string read FCheckChars write SetCheckChars;
     property TrimDecimals: Boolean read FTrimDecimals write SetTrimDecimals;
@@ -171,9 +176,13 @@ type
     function DoValidate(const Key: Char; const AText: string;
       const Posn: Integer): Boolean;
     procedure Loaded; override;
+
+    property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function IsValid: Boolean; virtual; // fires OnIsValid if assigned
 
     procedure Assign(Source: TPersistent); override;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
@@ -190,6 +199,7 @@ type
     property AutoSelect;
     property AutoSize; 
     property BorderStyle;
+    property Caret;
     property CheckChars;
     property CharCase;
     property ClipboardCommands;
@@ -244,14 +254,22 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnValueChanged;
+    property OnIsValid;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvQJCLUtils, JvQResources;
 
@@ -260,7 +278,7 @@ uses
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
+  ControlStyle :=  ControlStyle - [ csSetCaption ];
   FSelfChange := False;
   FAutoAlignment := True;
   FCriticalPoints := TJvValidateEditCriticalPoints.Create;
@@ -291,11 +309,9 @@ procedure TJvCustomValidateEdit.Assign(Source: TPersistent);
 var
   lcSource: TJvCustomValidateEdit;
 begin
-  inherited Assign(Source);
-
   if Source is TJvCustomValidateEdit then
   begin
-    lcSource := Source as TJvCustomValidateEdit;
+    lcSource := TJvCustomValidateEdit(Source);
     CriticalPoints.Assign(lcSource.CriticalPoints);
     DisplayFormat := lcSource.DisplayFormat;
     DecimalPlaces := lcSource.DecimalPlaces;
@@ -304,15 +320,18 @@ begin
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
     ZeroEmpty := lcSource.ZeroEmpty;
-  end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvCustomValidateEdit.Loaded;
 begin
   inherited Loaded;
-  if DisplayFormat = dfCurrency then
+  // (obones) Why is this necessary? It overrides DecimalPlaces set to 0 by the user
+{  if DisplayFormat = dfCurrency then
     if FDecimalPlaces = 0 then
-      FDecimalPlaces := CurrencyDecimals;
+      FDecimalPlaces := CurrencyDecimals;}
   EditText := FEditText;
 end;
 
@@ -411,7 +430,8 @@ begin
             Alignment := taRightJustify;
         end;
       dfCheckChars, dfNonCheckChars:
-        Alignment := taLeftJustify;
+        if FAutoAlignment then
+          Alignment := taLeftJustify;
       dfCustom, dfNone:
         begin
           FCheckChars := '';
@@ -644,18 +664,18 @@ end;
 
 procedure TJvCustomValidateEdit.KeyPress(var Key: Char);
 begin
-  if not IsValidChar(Text, Key, SelStart) and (Key >= #32) then
+  if not IsValidChar(Text, Key, SelStart + 1) and (Key >= #32) then
     Key := #0;
   inherited KeyPress(Key);
 end;
 
-procedure TJvCustomValidateEdit.WMPaste(var Mesg: TMessage);
+procedure TJvCustomValidateEdit.WMPaste(var Msg: TMessage);
 begin
   inherited;
   EditText := MakeValid(inherited Text);
 end;
 
-function TJvCustomValidateEdit.MakeValid(ParseString: string): string;
+function TJvCustomValidateEdit.MakeValid(const ParseString: string): string;
 var
   S: string;
   I: Integer;
@@ -683,13 +703,13 @@ begin
       Result := DoValidate(Key, S, Posn);
     dfInteger:
       Result := (Pos(Key, FCheckChars) > 0) or
-        ((Key = '+') and (Pos('+', S) = 0)) or
-        ((Key = '-') and (Pos('-', S) = 0));
+        ((Key = '+') and (Posn = 1) and (Pos('+', S) = 0)) or
+        ((Key = '-') and (Posn = 1) and (Pos('-', S) = 0));
     dfFloat, dfCurrency, dfPercent:
       Result := (Pos(Key, FCheckChars) > 0) or
         ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
-        ((Key = '+') and (Pos('+', S) = 0)) or
-        ((Key = '-') and (Pos('-', S) = 0));
+        ((Key = '+') and (Posn = 1) and (Pos('+', S) = 0)) or
+        ((Key = '-') and (Posn = 1) and (Pos('-', S) = 0));
     dfNonCheckChars:
       Result := Pos(Key, FCheckChars) = 0;
     dfNone:
@@ -705,18 +725,19 @@ begin
             if iPosE = 0 then
               Result := (Pos(DecimalSeparator, S) = 0)
             else
-              Result := ((Posn < iPosE) and (Pos(DecimalSeparator, Copy(S, 1, iPosE - 1)) = 0)) or
-                ((Posn > iPosE) and (Pos(DecimalSeparator, Copy(S, iPosE + 1, 99)) = 0));
+              Result := ((Posn <= iPosE) and (Pos(DecimalSeparator, Copy(S, 1, iPosE - 1)) = 0));
+               //or ((Posn > iPosE) and (Pos(DecimalSeparator, Copy(S, iPosE + 1, Length(S))) = 0));
+               // (outchy) XXXeY,YY are not valid scientific numbers, Y must be an integer value
           end
           else
           if Key in ['E', 'e'] then
             Result := (iPosE = 0) and (Posn > 1)
           else
           if Key = '+' then
-            Result := (Posn = 0) or (Posn = iPosE)
+            Result := (Posn = 1) or (Posn = iPosE + 1)
           else
           if Key = '-' then
-            Result := (Posn = 0) or (Posn = iPosE);
+            Result := (Posn = 1) or (Posn = iPosE + 1);
         end;
       end;
   else
@@ -798,22 +819,22 @@ begin
   DoValueChanged;
 end;
 
-procedure TJvCustomValidateEdit.DoEnter;
+procedure TJvCustomValidateEdit.FocusSet(PrevWnd: HWND);
 begin
   DisplayText;
-  inherited DoEnter;
+  inherited FocusSet(PrevWnd);
 end;
 
-procedure TJvCustomValidateEdit.DoExit;
+procedure TJvCustomValidateEdit.FocusKilled(NextWnd: HWND);
 begin
   if not (csDestroying in ComponentState) then
     EditText := inherited Text;
-  DoExit;
+  inherited FocusKilled(NextWnd);
 end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
 var
-  S: string;
+  S, Exponent: string;
   Ps, I: Integer;
 begin
   FSelfChange := True;
@@ -821,15 +842,24 @@ begin
     Ps := 0;
     if TrimDecimals then
     begin
+      I := Pos('e',LowerCase(NewValue));
+      if (DisplayFormat = dfScientific) and (I <> 0) then
+      begin
+        Exponent := Copy(NewValue,I,Length(NewValue));
+        Dec(I);
+      end else
+      begin
+        Exponent := '';
+        I := Length(NewValue);
+      end;
       Ps := Pos(DecimalSeparator, NewValue);
       if Ps > 0 then
       begin
-        I := Length(NewValue);
         while (I > Ps) and (NewValue[I] = '0') do
           Dec(I);
         if Ps = I then
           Dec(I); // skip decimal separator (Ivo Bauer)
-        S := FDisplayPrefix + Copy(NewValue, 1, I) + FDisplaySuffix;
+        S := FDisplayPrefix + Copy(NewValue, 1, I) + Exponent + FDisplaySuffix;
       end;
     end;
     if Ps = 0 then
@@ -929,10 +959,12 @@ var
   function IntToBaseChar(IntValue: Integer): Char;
   begin
     case IntValue of
+      Low(Integer)..-1:
+        Result := '0';
       0..9:
         Result := Chr(Ord('0') + IntValue);
-    else
-      Result := Chr(Ord('A') + IntValue - 10);
+      else
+        Result := Chr(Ord('A') + IntValue - 10);
     end;
   end;
 
@@ -1005,6 +1037,20 @@ begin
   Invalidate;
 end;
 
+function TJvCustomValidateEdit.IsValid: Boolean;
+begin
+  Result := True;
+  case FCriticalPoints.CheckPoints of
+    cpMaxValue:
+      Result := AsFloat <= FCriticalPoints.MaxValue;
+    cpBoth:
+      Result := (AsFloat <= FCriticalPoints.MaxValue) and
+                (AsFloat >= FCriticalPoints.MinValue);
+  end;
+  if Assigned(FOnIsValid) then
+    FOnIsValid(Self, Result);
+end;
+
 procedure TJvCustomValidateEdit.SetFontColor;
 begin
   Font.OnChange := nil;
@@ -1024,8 +1070,7 @@ begin
         Font.Color := FCriticalPoints.ColorBelow
       else
         Font.Color := FStandardFontColor;
-  end; 
-  Palette.TextColor := Font.Color; 
+  end;
   Font.OnChange := FontChange;
   Invalidate;
 end;
@@ -1120,27 +1165,20 @@ procedure TJvValidateEditCriticalPoints.Assign(Source: TPersistent);
 var
   LocalSource: TJvValidateEditCriticalPoints;
 begin
-  inherited Assign(Source);
   if Source is TJvValidateEditCriticalPoints then
   begin
-    LocalSource := Source as TJvValidateEditCriticalPoints;
+    LocalSource := TJvValidateEditCriticalPoints(Source);
     CheckPoints := LocalSource.CheckPoints;
     ColorAbove := LocalSource.ColorAbove;
     ColorBelow := LocalSource.ColorBelow;
     MaxValue := LocalSource.MaxValue;
     MinValue := LocalSource.MinValue;
-  end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

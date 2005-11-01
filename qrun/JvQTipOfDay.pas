@@ -46,7 +46,7 @@ uses
   
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
-  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown);
+  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown, toHideStartupCheckbox);
   TJvTipOfDayOptions = set of TJvTipOfDayOption;
 
   TJvTipOfDayStyle = (tsVC, tsStandard);
@@ -316,10 +316,11 @@ procedure TJvTipOfDay.FormHide(Sender: TObject);
 begin
   with Sender as TForm do
   begin
-    if TButtonControlAccessProtected(FCheckBox).Checked then
-      Include(FOptions, toShowOnStartUp)
-    else
-      Exclude(FOptions, toShowOnStartUp);
+    if toHideStartupCheckbox in Options then
+      if TButtonControlAccessProtected(FCheckBox).Checked then
+        Include(FOptions, toShowOnStartUp)
+      else
+        Exclude(FOptions, toShowOnStartUp);
     Release;   // destroy it
     FRunning := False;
   end;
@@ -415,13 +416,16 @@ begin
     end;
 
     { CheckBox: 'Show Tips on StartUp' }
-    FCheckBox := TCheckBox.Create(AForm);
-    with TCheckBox(FCheckBox) do
+    if not (toHideStartupCheckbox in Options) then
     begin
-      Parent := AForm;
-      SetBounds(20, 236, 144, 17);
-      Caption := Self.CheckBoxText;
-      Checked := toShowOnStartUp in Options;
+      FCheckBox := TCheckBox.Create(AForm);
+      with TCheckBox(FCheckBox) do
+      begin
+        Parent := AForm;
+        SetBounds(20, 236, 144, 17);
+        Caption := Self.CheckBoxText;
+        Checked := toShowOnStartUp in Options;
+      end;
     end;
 
     { ButtonNext }
@@ -517,13 +521,16 @@ begin
     end;
 
     { CheckBox: 'Show Tips on StartUp' }
-    FCheckBox := TCheckBox.Create(AForm);
-    with TCheckBox(FCheckBox) do
+    if not (toHideStartupCheckbox in Options) then
     begin
-      Parent := AForm;
-      SetBounds(8, 225, 200, 17);
-      Caption := Self.CheckBoxText;
-      Checked := toShowOnStartUp in Options;
+      FCheckBox := TCheckBox.Create(AForm);
+      with TCheckBox(FCheckBox) do
+      begin
+        Parent := AForm;
+        SetBounds(8, 225, 200, 17);
+        Caption := Self.CheckBoxText;
+        Checked := toShowOnStartUp in Options;
+      end;
     end;
 
     { ButtonNext }
@@ -699,14 +706,14 @@ begin
   }
   SavedDefaultFonts := FDefaultFonts;
 
-  FTipFont.Charset := fcsDefaultCharSet;
+  FTipFont.Charset := QGraphics.DEFAULT_CHARSET;
   FTipFont.Color := clWindowText;
   FTipFont.Name := 'MS Sans Serif';
   FTipFont.Pitch := fpDefault;
   FTipFont.Size := 8;
   FTipFont.Style := [];
 
-  FHeaderFont.Charset := fcsDefaultCharSet;
+  FHeaderFont.Charset := QGraphics.DEFAULT_CHARSET;
   FHeaderFont.Color := clWindowText;
   FHeaderFont.Pitch := fpDefault;
   FHeaderFont.Style := [fsBold];

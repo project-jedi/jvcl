@@ -40,7 +40,10 @@ unit JvQArrowButton;
 interface
 
 uses
-  Classes, QWindows, QMessages, QControls, QGraphics, QButtons, QMenus,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  Classes, QWindows, QMessages, QControls, QGraphics, QButtons, QMenus,  
   QImgList, 
   JvQComponent, JvQTypes;
 
@@ -78,7 +81,7 @@ type
     procedure SetArrowWidth(Value: Integer);
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
-    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED; 
   protected
     FState: TButtonState; 
     procedure Loaded; override;
@@ -100,6 +103,7 @@ type
     destructor Destroy; override;
   published
     property Align;
+    property Action;
     property Anchors;
     property Constraints;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
@@ -130,12 +134,19 @@ type
     property OnMouseUp;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, QConsts, QForms,
   JvQConsts, JvQThemes, JvQJCLUtils;
 
@@ -1037,12 +1048,7 @@ begin
     Msg.Index := GroupIndex;
     Msg.Control := Self;
     Msg.Result := 0;
-    {$IFDEF VCL}
     Parent.Broadcast(Msg);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BroadcastMsg(Parent, Msg);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1221,14 +1227,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   QActnList, QGraphics, QComCtrls, QImgList,
-  Classes,
+  Classes, QTypes,
   QControls, QStdCtrls, QExtCtrls, QMask, QForms,
   QButtons, QDialogs, QFileCtrls, QExtDlgs, QCheckLst,
   JvQDynControlEngine, JvQDynControlEngineIntf;
@@ -54,14 +54,14 @@ type
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -83,14 +83,14 @@ type
 
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -132,14 +132,14 @@ type
 
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -170,14 +170,14 @@ type
 
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -192,14 +192,14 @@ type
     IJvDynControl, IJvDynControlData, IJvDynControlCheckBox)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -216,14 +216,14 @@ type
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -244,14 +244,14 @@ type
     IJvDynControlRadioGroup)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -267,14 +267,14 @@ type
     IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -291,14 +291,14 @@ type
     IJvDynControlCheckListBox)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -325,14 +325,14 @@ type
     IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -348,26 +348,26 @@ type
     IJvDynControl)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
   end;
 
   TJvDynControlVCLPanel = class(TPanel, IUnknown,
     IJvDynControl, IJvDynControlPanel)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel;
       ABevelWidth: Integer; ABorderStyle: TBorderStyle; ABorderWidth: Integer);
@@ -377,13 +377,13 @@ type
     IJvDynControl, IJvDynControlImage)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
@@ -399,26 +399,26 @@ type
     IJvDynControl)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
   end;
 
   TJvDynControlVCLLabel = class(TLabel, IUnknown,
     IJvDynControl, IJvDynControlLabel)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetFocusControl(Value: TWinControl);
     procedure ControlSetWordWrap(Value: Boolean);
@@ -429,13 +429,13 @@ type
     IJvDynControl, IJvDynControlButton, IJvDynControlAction)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
@@ -451,13 +451,13 @@ type
     IJvDynControl, IJvDynControlData)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     // IJvDynControlData
     procedure ControlSetOnChange(Value: TNotifyEvent);
@@ -469,13 +469,13 @@ type
     IJvDynControl, IJvDynControlTreeView, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
 
     // IJvDynControlReadOnly
     procedure ControlSetReadOnly(Value: Boolean);
@@ -531,7 +531,7 @@ begin
   ReadOnly := Value;
 end;
 
-procedure TJvDynControlVCLMaskEdit.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLMaskEdit.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -559,7 +559,7 @@ procedure TJvDynControlVCLMaskEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLMaskEdit.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLMaskEdit.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -622,7 +622,7 @@ begin
   FEditControl.ReadOnly := Value;
 end;
 
-procedure TJvDynControlVCLButtonEdit.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLButtonEdit.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -651,7 +651,7 @@ begin
   FEditControl.OnClick := Value;
 end;
 
-procedure TJvDynControlVCLButtonEdit.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLButtonEdit.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -826,7 +826,7 @@ begin
   FButton.Enabled := not Value;
 end;
 
-procedure TJvDynControlVCLFileNameEdit.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLFileNameEdit.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -854,7 +854,7 @@ procedure TJvDynControlVCLFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLFileNameEdit.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLFileNameEdit.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -965,7 +965,7 @@ begin
   FButton.Enabled := not Value;
 end;
 
-procedure TJvDynControlVCLDirectoryEdit.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLDirectoryEdit.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -994,7 +994,7 @@ begin
 
 end;
 
-procedure TJvDynControlVCLDirectoryEdit.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLDirectoryEdit.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1029,7 +1029,7 @@ procedure TJvDynControlVCLCheckBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLCheckBox.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLCheckBox.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1059,7 +1059,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLCheckBox.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLCheckBox.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1101,7 +1101,7 @@ begin
   ReadOnly := Value;
 end;
 
-procedure TJvDynControlVCLMemo.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLMemo.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -1131,7 +1131,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLMemo.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLMemo.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1187,7 +1187,7 @@ procedure TJvDynControlVCLRadioGroup.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLRadioGroup.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLRadioGroup.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1217,7 +1217,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLRadioGroup.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLRadioGroup.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1260,7 +1260,7 @@ procedure TJvDynControlVCLListBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLListBox.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLListBox.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -1289,7 +1289,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLListBox.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLListBox.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1333,7 +1333,7 @@ procedure TJvDynControlVCLCheckListBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLCheckListBox.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLCheckListBox.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -1362,7 +1362,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLCheckListBox.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLCheckListBox.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1452,7 +1452,7 @@ procedure TJvDynControlVCLComboBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLComboBox.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLComboBox.ControlSetCaption(const Value: TCaption);
 begin
 end;
 
@@ -1481,7 +1481,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLComboBox.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLComboBox.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1528,7 +1528,7 @@ procedure TJvDynControlVCLGroupBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLGroupBox.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLGroupBox.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1552,7 +1552,7 @@ procedure TJvDynControlVCLGroupBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLGroupBox.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLGroupBox.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1565,7 +1565,7 @@ begin
   BevelOuter := bvNone;
 end;
 
-procedure TJvDynControlVCLPanel.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLPanel.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1589,7 +1589,7 @@ procedure TJvDynControlVCLPanel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLPanel.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLPanel.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1609,7 +1609,7 @@ procedure TJvDynControlVCLImage.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLImage.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLImage.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1634,7 +1634,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLImage.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLImage.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1687,7 +1687,7 @@ procedure TJvDynControlVCLScrollBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLScrollBox.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLScrollBox.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1711,7 +1711,7 @@ procedure TJvDynControlVCLScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLScrollBox.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLScrollBox.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1722,7 +1722,7 @@ procedure TJvDynControlVCLLabel.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLLabel.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLLabel.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1743,7 +1743,7 @@ procedure TJvDynControlVCLLabel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLLabel.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLLabel.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1768,7 +1768,7 @@ procedure TJvDynControlVCLButton.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLButton.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLButton.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1790,7 +1790,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLButton.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLButton.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1831,7 +1831,7 @@ procedure TJvDynControlVCLRadioButton.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLRadioButton.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLRadioButton.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1856,7 +1856,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLRadioButton.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLRadioButton.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;
@@ -1883,7 +1883,7 @@ procedure TJvDynControlVCLTreeView.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLTreeView.ControlSetCaption(const Value: string);
+procedure TJvDynControlVCLTreeView.ControlSetCaption(const Value: TCaption);
 begin
   Caption := Value;
 end;
@@ -1908,7 +1908,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLTreeView.ControlSetHint(const Value: string);
+procedure TJvDynControlVCLTreeView.ControlSetHint(const Value: WideString);
 begin
   Hint := Value;
 end;

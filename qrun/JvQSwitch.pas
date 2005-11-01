@@ -68,7 +68,7 @@ type
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
   protected
-    procedure FocusChanged; override;
+    procedure FocusChanged(Control: TWidgetControl); override;
 //    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -258,18 +258,18 @@ begin
   end;
 end;
 
-procedure TJvSwitch.FocusChanged;
+procedure TJvSwitch.FocusChanged(Control: TWidgetControl);
 var
   Active: Boolean;
 begin
-  Active := (GetFocusedControl(Self) = Self);
+  Active := (Control = Self);
   if Active <> FActive then
   begin
     FActive := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited FocusChanged;
+  inherited FocusChanged(Control);
 end;
 
 procedure TJvSwitch.EnabledChanged;

@@ -43,11 +43,14 @@ unit JvQListComb;
 
 interface
 
-uses 
-  Qt, 
-  QWindows, QMessages,
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  Qt, QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QExtCtrls, QStdCtrls, QImgList,
-  JvQJCLUtils, JvQComboBox, JvQComponent, JvQExControls, JvQExStdCtrls;
+  JvQJCLUtils,
+  JvQComponent, JvQExControls, JvQExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
@@ -100,7 +103,7 @@ type
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property LinkedObject: TObject read FLinkedObject write FLinkedObject;
@@ -108,9 +111,12 @@ type
     // ListPropertiesUsed must come before properties named the same
     // as in the list or the component will not be created
     // correctly when restored from a DFM stream.
-    property ListPropertiesUsed: TJvListPropertiesUsed read FListPropertiesUsed write FListPropertiesUsed default AllListPropertiesUsed;
-    property ColorHighlight: TColor read GetColorHighlight write SetColorHighlight stored IsColorHighlightStored default clHighlight ;
-    property ColorHighlightText: TColor read GetColorHighlightText write SetColorHighlightText stored IsColorHighlightTextStored default clHighlightText;
+    property ListPropertiesUsed: TJvListPropertiesUsed read FListPropertiesUsed
+      write FListPropertiesUsed default AllListPropertiesUsed;
+    property ColorHighlight: TColor read GetColorHighlight
+      write SetColorHighlight stored IsColorHighlightStored default clHighlight;
+    property ColorHighlightText: TColor read GetColorHighlightText
+      write SetColorHighlightText stored IsColorHighlightTextStored default clHighlightText;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored True;
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
@@ -127,24 +133,33 @@ type
     procedure SetObjects(Index: Integer; const Value: TObject);
   protected
     procedure Update(Item: TCollectionItem); override;
+    procedure FillItems;
   public
-    function Add: TJvImageItem; overload;
-    function Add(const Text: string): Integer; overload;
-    function Insert(Index: Integer): TJvImageItem; overload;
-    procedure Insert(Index: Integer; const Text: string); overload;
-    procedure Move(CurIndex, NewIndex: Integer);
-    procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TPersistent);
+    procedure Assign(Source: TPersistent); override;
+    function Add: TJvImageItem;
+    function AddText(const Text: string): Integer;
+    function AddObject(const Text: string; ALinkedObject: TObject): Integer;
+    function Insert(Index: Integer): TJvImageItem;
+    procedure InsertText(Index: Integer; const Text: string);
+    procedure InsertObject(Index: Integer; const Text: string; ALinkedObject: TObject);
+    procedure Move(CurIndex, NewIndex: Integer);
+    procedure Sort(SortProc: TCollectionSortProc);
+
+    function IndexOfLinkedObject(ALinkedObject: TObject): Integer;
+
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
-
-  TJvImageComboBox = class(TJvCustomComboBox, IUnknown, IJvResetItemHeight)
+  
+  TJvImageComboBoxBase = TCustomComboBox; 
+  TJvImageComboBox = class(TJvImageComboBoxBase, IUnknown, IJvResetItemHeight)
   private
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
     FDefaultIndent: Integer;
     FChangeLink: TChangeLink;
+    FMouseInControl: Boolean;
     FImageWidth: Integer;
     FImageHeight: Integer;
     FColorHighlight: TColor;
@@ -167,14 +182,16 @@ type
     { IJvResetItemHeight }
     procedure ResetItemHeight;
   protected
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
     procedure EnabledChanged; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure RecreateWnd;
-    procedure CreateWnd; override;  
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;  
+    procedure RecreateWidget;
+    procedure CreateWidget; override;
     function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean; override;
     procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
-                          var Height, Width: Integer); override;
+      var Height, Width: Integer); override;
     procedure SetParent(const AParent: TWidgetControl); override; 
 
     procedure Change; override;
@@ -236,7 +253,8 @@ type
     FImageWidth: Integer;
     FImageHeight: Integer;
     FAlignment: TAlignment;
-    FColorHighlight, FColorHighlightText: TColor;
+    FColorHighlight: TColor;
+    FColorHighlightText: TColor;
     FButtonFrame: Boolean;
     FButtonStyle: TJvButtonColors; 
     procedure SetColorHighlight(Value: TColor);
@@ -256,7 +274,7 @@ type
 //    procedure CreateWidget; override;
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState):Boolean ; override;
     procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
-                          var Height, Width: Integer); override;
+      var Height, Width: Integer); override;
     procedure SetParent(const AParent: TWidgetControl); override; 
     procedure Resize; override;
 
@@ -310,12 +328,19 @@ type
     property Tag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math;
 
 type
@@ -344,8 +369,6 @@ begin
   ReleaseDC(HWND_DESKTOP, DC);
   Result := Metrics.tmHeight;
 end;
-
-// (rom) completely rewritten
 
 procedure DrawBtnFrame(Canvas: TCanvas; ButtonStyle: TJvButtonColors; DefColor: TColor; Default: Boolean; R: TRect);
 const
@@ -385,7 +408,7 @@ end;
 
 //=== { TJvImageItem } =======================================================
 
-constructor TJvImageItem.Create(Collection: TCollection);
+constructor TJvImageItem.Create(Collection: Classes.TCollection);
 begin
   // FGlyph MUST be created before calling inherited or the
   // creation of the item from a stream (DFM for instance)
@@ -393,6 +416,7 @@ begin
   FGlyph := TBitmap.Create;
 
   inherited Create(Collection);
+  FImageIndex := -1;
   FOwner := Collection as TJvImageItems;
   FListPropertiesUsed := AllListPropertiesUsed;
   FFont := nil;
@@ -403,13 +427,18 @@ end;
 destructor TJvImageItem.Destroy;
 var
   S: TStrings;
+  i: Integer;
 begin
   S := GetOwnerStrings;
+  FOwner := nil; // indicate that the item is in the destructor
   // PRY 2002.06.04
   //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
   if (S <> nil) and not (csDestroying in GetWinControl.ComponentState) then
+  begin
     S.Delete(Index);
-
+    for i := 0 to S.Count - 1 do
+      TJvImageItem(S.Objects[i]).Index := i;
+  end;
   FFont.Free;
   FGlyph.Free;
   inherited Destroy;
@@ -457,15 +486,29 @@ end;
 procedure TJvImageItem.SetText(const Value: string);
 var
   S: TStrings;
+  SavedOwner: TJvImageItems;
 begin
   S := GetOwnerStrings;
+  if Assigned(FOwner) and (FOwner.FStrings.Count <> FOwner.Count) then
+    FOwner.FillItems;
   if S <> nil then
   begin
-    while S.Count <= Index do
-      S.Add('');
     if S[Index] <> Value then
     begin
-      S[Index] := Value;
+      // do not add the item in FillItems which might be called by the draw message handler while deleting the string
+      SavedOwner := FOwner;
+      try
+        FOwner := nil;
+        S.Delete(Index);
+        // Use FOwner.GetOwner to keep D5/C5 compatibility
+        if (SavedOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(SavedOwner.GetOwner).Sorted) then
+          S.AddObject(Value, Self)
+        else
+          S.InsertObject(Index, Value, Self);
+      finally
+        FOwner := SavedOwner;
+      end;
+      Index := S.IndexOfObject(Self);
       Change;
     end;
   end;
@@ -476,28 +519,26 @@ var
   S: TStrings;
 begin
   Result := '';
+  if Assigned(FOwner) and (FOwner.FStrings.Count <> FOwner.Count) then
+    FOwner.FillItems;
   S := GetOwnerStrings;
   if S <> nil then
-  begin
-    while S.Count <= Index do
-      S.Add('');
     Result := S[Index];
-  end;
 end;
 
 procedure TJvImageItem.SetIndex(Value: Integer);
 var
-  I: Integer;
+  OldIndex, TmpIndex: Integer;
   S: TStrings;
 begin
-  I := Index;
-  inherited SetIndex(Value);
-  S := GetOwnerStrings;
-  if (S <> nil) and (I >= 0) and (Value >= 0) and (I <> Value) then
+  if Value <> Index then
   begin
-    while I >= S.Count do
-      S.Add('');
-    S.Move(I, Value);
+    OldIndex := Index;
+    inherited SetIndex(Value);
+    S := GetOwnerStrings;
+    TmpIndex := S.IndexOfObject(Self);
+    if (TmpIndex > -1) and (TmpIndex <> Value) then
+      S.Move(OldIndex,Value);
   end;
 end;
 
@@ -512,10 +553,10 @@ function TJvImageItems.Add: TJvImageItem;
 begin
   Result := TJvImageItem(inherited Add);
   while FStrings.Count < Count do
-    FStrings.Add('');
+    Result.Index := FStrings.AddObject('', Result);
 end;
 
-function TJvImageItems.Add(const Text: string): Integer;
+function TJvImageItems.AddText(const Text: string): Integer;
 var
   Item: TJvImageItem;
 begin
@@ -526,19 +567,20 @@ end;
 
 function TJvImageItems.Insert(Index: Integer): TJvImageItem;
 begin
-  Result := TJvImageItem(inherited Insert(Index));;
+  Result := TJvImageItem(inherited Insert(Index));
+  FStrings.InsertObject(Index, '', Result);
+  Result.Index := FStrings.IndexOfObject(Result);
 end;
 
-procedure TJvImageItems.Insert(Index: Integer; const Text: string);
+procedure TJvImageItems.InsertText(Index: Integer; const Text: string);
 begin
   Insert(Index).Text := Text;
 end;
 
 procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
 var
-  Item, NewItem: TJvImageItem;
+  Item: TJvImageItem;
   ItemText: string;
-  ItemObject: TObject;
 begin
   if NewIndex < 0 then
     NewIndex := 0;
@@ -549,44 +591,24 @@ begin
   begin
     BeginUpdate;
     try
-      while FStrings.Count < Count do
-        FStrings.Add('');
-      { Save object data }
-      ItemText := FStrings.Strings[CurIndex];
-      ItemObject := FStrings.Objects[CurIndex];
-      Item := TJvImageItem.Create(nil);
-      try
-        Item.FNoTextAssign := True;
-        Item.Assign(Items[CurIndex]);
-        { Delete item }
-        Delete(CurIndex);
-
-        { Add new item on NewIndex }
-        if NewIndex < Count then
-          NewItem := Insert(NewIndex)
-        else
-          NewItem := Add;
-        { restore data except property Text which is linked to FStrings[] }
-        NewItem.FNoTextAssign := True;
-        try
-          NewItem.Assign(Item);
-        finally
-          NewItem.FNoTextAssign := False;
-        end;
-
-        { restore property Text } 
-        NewItem.Text := ItemText;
-        while FStrings.Count < Count do
-          FStrings.Add('');
-        FStrings.Objects[NewIndex] := ItemObject;
-      finally
-        Item.Free;
-      end;
+      Item := TJvImageItem(FStrings.Objects[CurIndex]);
+      ItemText := Item.Text;
+      FStrings.Delete(CurIndex);
+      FStrings.InsertObject(NewIndex,ItemText,Item);
+      Item.Index := FStrings.IndexOfObject(Item);
     finally
       EndUpdate;
     end;
     Changed;
   end;
+end;
+
+function TJvImageItems.IndexOfLinkedObject(ALinkedObject: TObject): Integer;
+begin
+  for Result := 0 to Count - 1 do
+    if Items[Result].LinkedObject = ALinkedObject then
+      Exit;
+  Result := -1;
 end;
 
 procedure TJvImageItems.Assign(Source: TPersistent);
@@ -612,8 +634,6 @@ begin
       Clear;
       for I := 0 to TStrings(Source).Count - 1 do
         Add.Text := TStrings(Source)[I];
-      if FStrings <> nil then
-        FStrings.Assign(Source);
     finally
       EndUpdate;
     end;
@@ -624,7 +644,7 @@ end;
 
 function TJvImageItems.GetItems(Index: Integer): TJvImageItem;
 begin
-  Result := TJvImageItem(inherited Items[Index])
+  Result := TJvImageItem(inherited Items[Index]);
 end;
 
 procedure TJvImageItems.SetItems(Index: Integer; const Value: TJvImageItem);
@@ -646,6 +666,42 @@ begin
   else
   if W is TWinControl then
     TWinControl(W).Invalidate;
+end;
+
+procedure TJvImageItems.FillItems;
+var
+  Index: Integer;
+begin
+  for Index := 0 to Count - 1 do
+    if Items[Index].FOwner = Self then // not in destructor
+      if FStrings.IndexOfObject(Items[Index]) = -1 then
+        FStrings.InsertObject(Index, '', Items[Index]);
+  for Index := 0 to FStrings.Count - 1 do
+    TJvImageItem(FStrings.Objects[Index]).Index := Index;
+end;
+
+function TJvImageItems.AddObject(const Text: string; ALinkedObject: TObject): Integer;
+var
+  Item: TJvImageItem;
+begin
+  Item := Add;
+  Item.Text := Text;
+  Item.LinkedObject := ALinkedObject;
+  Result := Item.Index;
+end;
+
+procedure TJvImageItems.InsertObject(Index: Integer; const Text: string; ALinkedObject: TObject);
+var
+  Item: TJvImageItem;
+begin
+  Item := Insert(Index);
+  Item.Text := Text;
+  Item.LinkedObject := ALinkedObject;
+end;
+
+procedure TJvImageItems.Sort(SortProc: TCollectionSortProc);
+begin
+  CollectionSort(Self, SortProc);
 end;
 
 //=== { TJvImageComboBox } ===================================================
@@ -702,23 +758,28 @@ begin
     begin
       FWidth := 0;
       FHeight := 0;
-    end; }
-    ResetItemHeight;
-    RecreateWnd;
+    end; }  
+    RecreateWidget; 
   end;
 end;
 
-procedure TJvImageComboBox.CreateWnd;
+
+
+
+
+procedure TJvImageComboBox.CreateWidget;
 begin
-  inherited CreateWnd;
+  inherited CreateWidget;
   SetDroppedWidth(FDroppedWidth);
 end;
 
-procedure TJvImageComboBox.RecreateWnd;
+procedure TJvImageComboBox.RecreateWidget;
 begin
-  inherited RecreateWnd;
-  SetDroppedWidth(FDroppedWidth);
+  inherited RecreateWidget;
+ // SetDroppedWidth(FDroppedWidth);
 end;
+
+
 
 procedure TJvImageComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -726,6 +787,8 @@ begin
   if (Operation = opRemove) and (AComponent = FImageList) then
     FImageList := nil;
 end;
+
+
 
 
 
@@ -764,7 +827,8 @@ begin
     FillRect(R);
     Brush.Color := TmpCol;
 
-    if not (odComboBoxEdit in State) or IndentSelected then // (p3) don't draw indentation for edit item unless explicitly told to do so
+    // (p3) don't draw indentation for edit item unless explicitly told to do so
+    if not (odComboBoxEdit in State) or IndentSelected then
       R.Left := R.Left + Items[Index].Indent;
 
     if not Items[Index].Glyph.Empty then
@@ -776,8 +840,8 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((odFocused in State) and
-          not (odComboBoxEdit in State)), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color,
+          not ((odFocused in State) and not (odComboBoxEdit in State)), TmpR);
       end;
 
       Inc(R.Left, GetImageWidth(Index) + 8);
@@ -793,8 +857,9 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odFocused in State) and
-          not (odComboBoxEdit in State)), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color,
+          not ((Tmp in [0..FImageList.Count - 1]) and
+          (odFocused in State) and not (odComboBoxEdit in State)), TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
       OrigR.Left := R.Left;
@@ -825,17 +890,25 @@ end;
 
 
 
+
 procedure TJvImageComboBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
-                          var Height, Width: Integer);
+  var Height, Width: Integer);
 begin
-  Height := Max(GetItemHeight(Font) + 4, FImageList.Height + (Ord(ButtonFrame) * 4));
+//  Height := Max(GetItemHeight(Font) + 4, FImageList.Height + (Ord(ButtonFrame) * 4));
+
+//  Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + (Ord(ButtonFrame) * 4));
+  Height := GetItemHeight(Font) + 4 ;
+  if Assigned(FImageList) then
+    Height := Max(Height, FImageList.Height + (Ord(ButtonFrame) * 4));
 end;
 
 procedure TJvImageComboBox.SetParent(const AParent: TWidgetControl);
 begin
   inherited SetParent(AParent);
-  ResetItemHeight;
+  if not (csRecreating in ControlState) then
+    ResetItemHeight;
 end;
+
 
 
 procedure TJvImageComboBox.SetColorHighlight(Value: TColor);
@@ -859,6 +932,7 @@ end;
 
 
 
+
 function TJvImageComboBox.GetDroppedWidth: Integer;
 begin
   HandleNeeded;
@@ -873,9 +947,10 @@ begin
 end;
 
 
+
 procedure TJvImageComboBox.FontChanged;
 begin
-  inherited FontChanged;  
+  inherited FontChanged;
   if not (csRecreating in ControlState) then
     ResetItemHeight; 
 end;
@@ -908,6 +983,18 @@ const
 begin
   inherited EnabledChanged;
   Color := EnableColors[Enabled];
+end;
+
+procedure TJvImageComboBox.MouseEnter(AControl: TControl);
+begin
+  inherited MouseEnter(AControl);
+  FMouseInControl := True;
+end;
+
+procedure TJvImageComboBox.MouseLeave(AControl: TControl);
+begin
+  FMouseInControl := False;
+  inherited MouseLeave(AControl);
 end;
 
 procedure TJvImageComboBox.SetDefaultIndent(const Value: Integer);
@@ -1013,7 +1100,9 @@ begin
       FWidth := 0;
       FHeight := 0;
     end;}
-    ResetItemHeight; 
+    if not (csRecreating in ControlState) then
+      ResetItemHeight;
+    //RecreateWidget;
   end;
 end;
 
@@ -1052,6 +1141,8 @@ begin
     Invalidate;
   end;
 end;
+
+
 
 
 
@@ -1106,7 +1197,8 @@ begin
 
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
+        TmpR := Rect(R.Left + Tmp - 2, R.Top + 2,
+          R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
         DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
       InflateRect(R, 1, -4);
@@ -1119,8 +1211,10 @@ begin
       FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2); 
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
+        TmpR := Rect(R.Left + Tmp - 2, R.Top + 2,
+          R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
+        DrawBtnFrame(Canvas, FButtonStyle, Color,
+          not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       InflateRect(R, 1, -4);
     end;
@@ -1184,7 +1278,8 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color,
+          not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
       OrigR.Left := R.Left;
@@ -1236,7 +1331,8 @@ begin
 
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
+        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2,
+          R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
         DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
 
@@ -1252,8 +1348,10 @@ begin
       FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp); 
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
+        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2,
+          R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
+        DrawBtnFrame(Canvas, FButtonStyle, Color,
+          not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       Dec(R.Right, FImageList.Width + 4);
       OrigR.Right := R.Right;
@@ -1284,32 +1382,36 @@ end;
 
 
 
+
 procedure TJvImageListBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
-                          var Height, Width: Integer);
+  var Height, Width: Integer);
 begin
+//  Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + Ord(ButtonFrame) * 4);
   Height := Max(GetItemHeight(Font) + 4, FImageList.Height + Ord(ButtonFrame) * 4);
 end;
 
 procedure TJvImageListBox.SetParent(const AParent: TWidgetControl);
 begin
   inherited SetParent(AParent);
-  ResetItemHeight;
+  if not (csRecreating in ControlState) then
+    ResetItemHeight;
 end;
+
 
 
 procedure TJvImageListBox.FontChanged;
 begin
   inherited FontChanged;
-  ResetItemHeight; 
+  if not (csRecreating in ControlState) then
+    ResetItemHeight;
+  //RecreateWidget;
 end;
 
 procedure TJvImageListBox.ResetItemHeight;
 var
   MaxImageHeight: Integer;
   I: Integer;
-begin 
-  if (csRecreating in ControlState) then
-    Exit; 
+begin
   MaxImageHeight := GetImageHeight(-1);
   for I := 0 to FItems.Count - 1 do
   begin
@@ -1324,8 +1426,6 @@ begin
   end;
   Invalidate;
 end;
-
-
 
 procedure TJvImageListBox.Resize;
 begin
@@ -1487,14 +1587,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

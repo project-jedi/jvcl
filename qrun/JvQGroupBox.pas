@@ -96,20 +96,21 @@ begin
         Brush.Color := clBtnHighlight;  
         QWindows.FrameRect(Canvas, R); 
         OffsetRect(R, -1, -1);
-        Brush.Color := clBtnShadow;  
-      QWindows.FrameRect(Canvas, R); 
+        Brush.Color := clBtnShadow;
+      QWindows.FrameRect(Canvas, R);
 
       if Text <> '' then
       begin
-        if not UseRightToLeftAlignment then
+//        if not UseRightToLeftAlignment then
           R := Rect(8, 0, 0, H)
-        else
-          R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
-        Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
+//        else
+//          R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
+//        Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
         // calculate text rect
         SetBkMode(Handle, OPAQUE);
-
-        DrawText(Handle, Text, Length(Text), R, Flags or DT_CALCRECT); 
+        Flags := DT_SINGLELINE;
+        DrawText(Handle, Text, Length(Text), R, Flags or DT_CALCRECT);
+        OffsetRect(R, 8);
         Brush.Color := Color;
         if not Enabled then
         begin
@@ -125,8 +126,8 @@ begin
           DrawText(Canvas, Text, Length(Text), R, Flags);
       end;
     finally
-      SetBkMode(Handle, LastBkMode); 
-      Stop; 
+      SetBkMode(Handle, LastBkMode);
+      Stop;
     end;
   end;
 end;

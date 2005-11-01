@@ -784,8 +784,11 @@ begin
   begin
 //    Col := ACol;
 //    Row := ARow;
-    EditorMode := True;
-    InplaceEditor.SelectAll;
+    if goEditing in Options then
+    begin
+      EditorMode := True;
+      InplaceEditor.SelectAll;
+    end;
   end;
 end;
 

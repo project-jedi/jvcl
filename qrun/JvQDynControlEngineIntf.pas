@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  QActnList, QGraphics, QComCtrls, QImgList,
+  QActnList, QGraphics, QComCtrls, QImgList, QTypes,
   Classes, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QDialogs,
   QFileCtrls, SysUtils;
 
@@ -45,12 +45,12 @@ type
   IJvDynControl = interface
     ['{E5A52F18-A7B2-4BE8-BAB6-D4F70A0999B3}']
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+    procedure ControlSetHint(const Value: WideString);
   end;
 
   IJvDynControlAction = interface
@@ -107,7 +107,7 @@ type
   IJvDynControlDirectory = interface
     ['{1EAC8D4D-F839-43FD-B859-627874E41874}']
     procedure ControlSetInitialDir(const Value: string);
-    procedure ControlSetDialogTitle(const Value: string); 
+    procedure ControlSetDialogTitle(const Value: string);
   end;
 
   IJvDynControlComboBox = interface

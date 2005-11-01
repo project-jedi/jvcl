@@ -46,12 +46,16 @@ uses
 
 type
   TJvXPCustomButtonActionLink = class(TWinControlActionLink)
+  private
+    FImageIndex: integer;
   protected
     function IsImageIndexLinked: Boolean; override;
     procedure AssignClient(AClient: TObject); override;
     procedure SetImageIndex(Value: Integer); override;
   public
     destructor Destroy; override;
+  published
+    property ImageIndex: Integer read FImageIndex write SetImageIndex;
   end;
 
   TJvXPLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
@@ -91,6 +95,7 @@ type
     procedure SetSmoothEdges(Value: Boolean); virtual;
     procedure SetSpacing(Value: Byte); virtual;
     procedure SetWordWrap(Value: Boolean); virtual;
+    procedure Loaded; override;
     procedure Paint; override;
     procedure HookResized; override;
     // advanced properties.
@@ -312,6 +317,7 @@ end;
 procedure TJvXPCustomButtonActionLink.SetImageIndex(Value: Integer);
 begin
   inherited SetImageIndex(Value);
+  FImageIndex := Value;
   (FClient as TJvXPCustomButton).FImageIndex := Value;
   (FClient as TJvXPCustomButton).Invalidate;
 end;
@@ -567,6 +573,13 @@ begin
     dxColor_Btn_Enb_HlTo_WXP, ColSteps, gsTop, Dithering, FHlGradient);
 
   LockedInvalidate;
+end;
+
+procedure TJvXPCustomButton.Loaded;
+begin
+  inherited;
+  if self.Action <> nil then
+    ActionChange(Action, True);
 end;
 
 procedure TJvXPCustomButton.Paint;

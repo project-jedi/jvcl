@@ -261,7 +261,7 @@ type
     procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -996,7 +996,7 @@ begin
     PanelVisible := True;
 end;
 
-function TJvCustomCharMap.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomCharMap.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
 end;

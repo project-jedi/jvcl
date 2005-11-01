@@ -8,7 +8,7 @@ The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
 http://www.mozilla.org/MPL/MPL-1.1.html
-
+                        
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
@@ -256,7 +256,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-
 implementation
 
 uses
@@ -673,11 +672,13 @@ begin
               FValidationSummary.AddError(Items[I].ErrorMessage);
             if ErrorIndicator <> nil then
               FErrorIndicator.SetError(Items[I].ControlToValidate, Items[I].ErrorMessage);
-          end;
+          end;                   
           Result := False;
           if not DoValidateFailed(Items[I]) then
             Exit;
-        end;
+        end
+        else if (Items[I].ControlToValidate <> nil) and (FErrorIndicator <> nil) then
+          FErrorIndicator.SetError(Items[I].ControlToValidate, ''); // clear error indicator
       end;
     end;
   finally
@@ -835,15 +836,18 @@ begin
   TJvBaseValidator.RegisterBaseValidator('Controls Compare Validator', TJvControlsCompareValidator);
 end;
 
+
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+
   // (p3) do NOT touch! This is required to make the registration work!!!
   RegisterBaseValidators;
 
 finalization
   FreeAndNil(GlobalValidatorsList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

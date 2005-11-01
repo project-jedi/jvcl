@@ -301,7 +301,7 @@ end;
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
-  IgnorePropertyList: array [1..16] of PChar =
+  IgnorePropertyList: array [1..16] of string =
    (
     'AboutJVCL',
     'AppStorage',
@@ -370,7 +370,7 @@ var
   Data: PTypeData;
 begin
   Data := GetTypeData(Instance.ClassInfo);
-  Result := Data^.PropCount;
+  Result := Data.PropCount;
 end;
 
 function TJvCustomPropertyStore.GetPropName(Instance: TPersistent; Index: Integer): string;
@@ -380,7 +380,7 @@ var
   Data: PTypeData;
 begin
   Result := '';
-  Data := GetTypeData(Instance.ClassInfo);
+  Data := GetTypeData(Instance.ClassInfo); 
   GetMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   try
     GetPropInfos(Instance.ClassInfo, PropList);
@@ -388,10 +388,16 @@ begin
     Result := PropInfo^.Name;
   finally
     FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
-  end;
+  end; 
 end;
 
 procedure TJvCustomPropertyStore.CloneClass(Src, Dest: TPersistent);
+
+  function GetPropKind(PropInfo: PPropInfo): TTypeKind;
+  begin 
+    Result := PropInfo.PropType^.Kind; 
+  end;
+
 var
   Index: Integer;
   SrcPropInfo: PPropInfo;
@@ -402,8 +408,8 @@ begin
     begin
       SrcPropInfo  := GetPropInfo(Src.ClassInfo, GetPropName(Src, Index));
       DestPropInfo := GetPropInfo(Dest.ClassInfo, GetPropName(Src, Index));
-      if (DestPropInfo <> nil) and (DestPropInfo^.PropType^.Kind = SrcPropInfo^.PropType^.Kind) then
-        case DestPropInfo^.PropType^.Kind of
+      if (DestPropInfo <> nil) and (GetPropKind(DestPropInfo) = GetPropKind(SrcPropInfo)) then
+        case GetPropKind(DestPropInfo) of
           tkLString, tkString:
             SetStrProp(Dest, DestPropInfo, GetStrProp(Src, SrcPropInfo));
           tkInteger, tkChar, tkEnumeration, tkSet:
@@ -413,7 +419,7 @@ begin
           tkVariant:
             SetVariantProp(Dest, DestPropInfo, GetVariantProp(Src, SrcPropInfo));
           tkClass:
-            TPersistent(GetOrdProp(Dest, DestPropInfo)).Assign(TPersistent(GetOrdProp(Src, SrcPropInfo)));
+            TPersistent(GetObjectProp(Dest, DestPropInfo)).Assign(TPersistent(GetObjectProp(Src, SrcPropInfo)));
           tkMethod:
             SetMethodProp(Dest, DestPropInfo, GetMethodProp(Src, SrcPropInfo));
         end;
@@ -467,8 +473,8 @@ begin
     if IgnoreProperties.IndexOf(PropName) < 0 then
       if FIntIgnoreProperties.IndexOf(PropName) < 0 then
         if PropType(Self, GetPropName(Self, Index)) = tkClass then
-          if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
-            TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AutoLoad := False;
+          if (TPersistent(GetObjectProp(Self, PropName)) is TJvCustomPropertyStore) then
+            TJvCustomPropertyStore(TPersistent(GetObjectProp(Self, PropName))).AutoLoad := False;
   end;
 end;
 
@@ -492,9 +498,9 @@ begin
       if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
         Continue;
       if PropType(Self, PropName) = tkClass then
-        if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
+        if (TPersistent(GetObjectProp(Self, PropName)) is TJvCustomPropertyStore) then
         begin
-          PropertyStore := TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName)));
+          PropertyStore := TJvCustomPropertyStore(TPersistent(GetObjectProp(Self, PropName)));
           if (PropertyStore.AppStoragePath = AppStorage.ConcatPaths([OldPath, VisPropName])) or
             (PropertyStore.AppStoragePath = '') then
             PropertyStore.AppStoragePath := AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
@@ -528,8 +534,8 @@ begin
       if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
         Continue;
       if PropType(Self, PropName) = tkClass then
-        if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
-          TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStorage := Value;
+        if (TPersistent(GetObjectProp(Self, PropName)) is TJvCustomPropertyStore) then
+          TJvCustomPropertyStore(TPersistent(GetObjectProp(Self, PropName))).AppStorage := Value;
     end;
     FAppStorage := Value;
     UpdateChildPaths;

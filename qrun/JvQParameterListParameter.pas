@@ -1040,7 +1040,7 @@ end;
 constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  FArrangeSettings := TJvArrangeSettings.Create(nil);
+  FArrangeSettings := TJvArrangeSettings.Create;
   FArrangeSettings.BorderLeft := 2;
   FArrangeSettings.BorderTop := 2;
   FArrangeSettings.DistanceVertical := 2;

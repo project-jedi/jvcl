@@ -304,13 +304,13 @@ var
   AYear, AMonth, ADay: Word;
 begin
   inherited Create(AOwner);
- 
+
   FCellMargins := TJvRect.Create;
   FCellMargins.Top    := 1;
   FCellMargins.Left   := 1;
   FCellMargins.Bottom := 1;
   FCellMargins.Right  := 1;
-  FCellMargins.OnChange := CellMarginsChange; // Must be set last 
+  FCellMargins.OnChange := CellMarginsChange; // Must be set last
 
   FOrientation := yoHorizontal;
 
@@ -329,7 +329,7 @@ begin
   // Those two must be set before setting DefaultColWidth and DefaultRowHeight
   FirstRowHeight := 18;
   FirstColWidth := 70;
-  
+
   DefaultColWidth := 16;
   DefaultRowHeight := 18;//FFirstRowHeight;
 
@@ -352,14 +352,15 @@ begin
 
   FAutoSize := True;
   FSavedScrollBars := ScrollBars;
+  ScrollBars := ssNone;
   Invalidate;
 end;
 
 destructor TJvYearGrid.Destroy;
 begin
 //  SaveYear;
-  FGridPop.Free; 
-  FCellMargins.Free; 
+  FGridPop.Free;
+  FCellMargins.Free;
   inherited Destroy;
 end;
 

@@ -44,12 +44,14 @@ unit JvQStaticText;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QStdCtrls, QForms,
-  JvQTypes, JvQComponent, JvQExControls;
+  JvQTypes, JvQComponent;
 
-type
-//  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
-
+type 
+  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken); 
   TJvTextMargins = class(TPersistent)
   private
     FX: Word;
@@ -65,7 +67,7 @@ type
     property Y: Word read FY write SetY;
   end;
 
-  TJvCustomStaticText = class(TJvExFrameControl)
+  TJvCustomStaticText = class(TJvWinControl)
   private
     FFontSave: TFont;
     FHotTrack: Boolean;
@@ -73,16 +75,18 @@ type
     FLayout: TTextLayout;
     FAlignment: TAlignment;
     FAutoSize: Boolean;
+    FBorderStyle: TStaticBorderStyle;
     FFocusControl: TWinControl;
     FShowAccelChar: Boolean;
     FTextMargins: TJvTextMargins;
     FWordWrap: Boolean;
     FHotTrackFontOptions: TJvTrackFOntOptions;
     procedure SetAlignment(Value: TAlignment);
+    procedure SetBorderStyle(Value: TStaticBorderStyle);
     procedure SetFocusControl(Value: TWinControl);
     procedure SetShowAccelChar(Value: Boolean);
     procedure SetHotTrackFont(const Value: TFont);
-    procedure SetLayout(const Value: TTextLayout);
+    procedure SetLayout(const Value: TTextLayout); 
     procedure SetTextMargins(const Value: TJvTextMargins);
     procedure SetWordWrap(const Value: Boolean);
     procedure DoMarginsChange(Sender: TObject);
@@ -97,12 +101,13 @@ type
     procedure TextChanged; override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetAutoSize(Value: Boolean); //override;
+    procedure SetAutoSize(Value: Boolean); // override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
-    function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
-    procedure Paint; override;
+    function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;  
+    procedure Paint; override; 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property BorderStyle: TStaticBorderStyle read FBorderStyle write SetBorderStyle default sbsNone;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -124,10 +129,10 @@ type
     property AutoSize;
 //    property BevelEdges;
 //    property BevelInner;
-//    property BevelKind;
+//    property BevelKind default bkNone;
 //    property BevelOuter;
     property BorderStyle;
-    property Caption: TCaption read GetText write SetText;
+    property Caption;
     property Color;
     property Constraints;
     property DragMode;
@@ -165,10 +170,20 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  JvQJVCLUtils, JvQThemes;
+  JvQJCLUtils, JvQJVCLUtils, JvQThemes;
 
 //=== { TJvCustomStaticText } ================================================
 
@@ -242,9 +257,11 @@ begin
   end;
 end;
 
+
+
 procedure TJvCustomStaticText.DrawItem(const DrawItemStruct: TDrawItemStruct);
-//const
-//  cBorders: array [TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);
+const
+  cBorders: array [TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);
 var
   R: TRect;
   DrawStyle: Cardinal;
@@ -254,10 +271,9 @@ begin
   try
     with DrawItemStruct do
     begin
-      R := rcItem;
-//      if BorderStyle <> sbsNone then
-//        QWindows.
-//        DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
+      R := rcItem; 
+      if BorderStyle <> sbsNone then
+        DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
       DrawStyle := GetTextDisplayInfo(hDC, R);
       case Layout of
         tlTop:
@@ -276,7 +292,7 @@ begin
           OffsetRect(R, (Width - R.Right) div 2, 0);
       end;
       SetBkMode(hDC, QWindows.TRANSPARENT);
-      DrawTextW(hDC, PWideChar(Caption), Length(Caption), R, DrawStyle);
+      DrawText(hDC, Caption, Length(Caption), R, DrawStyle);
 //      DrawText(hDC, Caption, Length(Caption), R, DrawStyle);
     end;
   finally
@@ -303,7 +319,7 @@ var
 begin
   if not (csReading in ComponentState) and AutoSize and HandleAllocated then
   begin
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     if not WordWrap then
     begin
       SaveFont := SelectObject(DC, Font.Handle);  
@@ -319,7 +335,7 @@ begin
       GetTextDisplayInfo(DC, R);
       SetBounds(Left, Top, R.Right, R.Bottom);
     end;
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 
@@ -365,6 +381,15 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomStaticText.SetBorderStyle(Value: TStaticBorderStyle);
+begin
+  if FBorderStyle <> Value then
+  begin
+    FBorderStyle := Value;
     Invalidate;
   end;
 end;
@@ -423,8 +448,8 @@ const
   cWordWrap: array [Boolean] of DWORD = (0{DT_SINGLELINE}, DT_WORDBREAK);
 begin
   Result := DT_EXPANDTABS or cAlignment[UseRightToLeftAlignment, Alignment] or
-    cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];  
-  DrawTextW(ADC, PWideChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
+    cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];
+  DrawText(ADC, Caption, Length(Caption), ARect, Result or DT_CALCRECT);
 end;
 
 procedure TJvCustomStaticText.Resize;
@@ -483,6 +508,14 @@ begin
     Change;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
