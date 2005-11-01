@@ -1,0 +1,141 @@
+object frmMessageDlgEditorSelectIcon: TfrmMessageDlgEditorSelectIcon
+  Left = 276
+  Top = 402
+  Width = 340
+  Height = 240
+  VertScrollBar.Range = 235
+  HorzScrollBar.Range = 335
+  ActiveControl = rbWarning
+  BorderStyle = fbsDialog
+  Caption = 'Select picture...'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  ParentFont = False
+  Position = poMainFormCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  TextWidth = 6
+  object rbWarning: TRadioButton
+    Left = 5
+    Top = 35
+    Width = 130
+    Height = 13
+    Caption = 'Use mtWarning'
+    TabOrder = 0
+  end
+  object rbError: TRadioButton
+    Left = 5
+    Top = 60
+    Width = 130
+    Height = 13
+    Caption = 'Use mtError'
+    TabOrder = 1
+  end
+  object rbInformation: TRadioButton
+    Left = 5
+    Top = 85
+    Width = 130
+    Height = 13
+    Caption = 'Use mtInformation'
+    TabOrder = 2
+  end
+  object rbConfirmation: TRadioButton
+    Left = 5
+    Top = 110
+    Width = 130
+    Height = 13
+    Caption = 'Use mtConfirmation'
+    TabOrder = 3
+  end
+  object rbNone: TRadioButton
+    Left = 5
+    Top = 10
+    Width = 130
+    Height = 13
+    Caption = 'None'
+    TabOrder = 4
+  end
+  object rbIconRes: TRadioButton
+    Left = 5
+    Top = 135
+    Width = 130
+    Height = 13
+    Caption = 'Load icon resource'
+    TabOrder = 5
+  end
+  object rbBMPRes: TRadioButton
+    Left = 5
+    Top = 160
+    Width = 130
+    Height = 13
+    Caption = 'Load bitmap resource'
+    TabOrder = 6
+  end
+  object rbLoadFile: TRadioButton
+    Left = 5
+    Top = 185
+    Width = 130
+    Height = 13
+    Caption = 'Load from file'
+    TabOrder = 7
+  end
+  object edIconRes: TEdit
+    Left = 140
+    Top = 130
+    Width = 195
+    Height = 21
+    TabOrder = 8
+    OnChange = ResNameChanged
+  end
+  object edBMPRes: TEdit
+    Left = 140
+    Top = 155
+    Width = 195
+    Height = 21
+    TabOrder = 9
+    OnChange = ResNameChanged
+  end
+  object btnOK: TButton
+    Left = 180
+    Top = 210
+    Width = 75
+    Height = 25
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 11
+  end
+  object btnCancel: TButton
+    Left = 260
+    Top = 210
+    Width = 75
+    Height = 25
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 10
+  end
+  object edFileName: TJvFilenameEdit
+    Left = 140
+    Top = 181
+    Width = 195
+    Height = 21
+    ClipboardCommands = [caCopy, caCut, caPaste, caUndo]
+    FilterIndex = 0
+    InitialDir = '.'
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
+    TabOrder = 13
+  end
+end
