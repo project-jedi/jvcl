@@ -47,7 +47,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS} 
   DesignEditors, DesignIntf, 
-  JvQPageList, JvQPageListTreeView, JvQComponent;
+  JvQPageList, JvQPageListTreeView, JvQComponent, QTypes;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}

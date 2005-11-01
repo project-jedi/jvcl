@@ -66,6 +66,8 @@ type
     Paths: TButton;
     PathsBtn: TSpeedButton;
     PathsMenu: TPopupMenu;
+    FormStorage: TJvFormStorage;
+    AppStorage: TJvAppRegistryStorage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LoadClick(Sender: TObject);
@@ -78,8 +80,8 @@ type
     procedure FormStorageSavePlacement(Sender: TObject);
     procedure ImagePaintBoxPaint(Sender: TObject);
     procedure PathsClick(Sender: TObject);
-    procedure PathsMRUClick(Sender: TObject; const RecentName,
-      Caption: string; UserData: Longint);
+//    procedure PathsMRUClick(Sender: TObject; const RecentName,
+//      Caption: string; UserData: Longint);
     procedure PathsMenuPopup(Sender: TObject);
     procedure PathsMRUChange(Sender: TObject);
     procedure PathsBtnClick(Sender: TObject);
@@ -92,7 +94,7 @@ type
     function GetDecreaseColors: Boolean;
     procedure LoadFile(const FileName: string);
     procedure UpdatePathsMenu;
-    procedure UpdateClipboard(Sender: TObject);
+//    procedure UpdateClipboard(Sender: TObject);
     (*)
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure WMDestroy(var Msg: TMessage); message WM_DESTROY;
@@ -217,10 +219,10 @@ begin
   Copy.Enabled := Enable;
 end;
 
-procedure TPictureEditDialog.UpdateClipboard(Sender: TObject);
-begin
-  CheckEnablePaste;
-end;
+//procedure TPictureEditDialog.UpdateClipboard(Sender: TObject);
+//begin
+  // CheckEnablePaste;
+//end;
 
 procedure TPictureEditDialog.FormCreate(Sender: TObject);
 begin
@@ -232,7 +234,7 @@ begin
   Bevel.Visible := False;
   Font.Style := [];
   AppStorage.Root := SDelphiKey;
-  PathsMRU.RecentMenu := PathsMenu.Items;
+//  PathsMRU.RecentMenu := PathsMenu.Items;
   IconColor := clBtnFace;
   HelpContext := hcDPictureEditor;
   Save.Enabled := False;
@@ -322,7 +324,7 @@ procedure TPictureEditDialog.ImagePaintBoxPaint(Sender: TObject);
 var
   DrawRect: TRect;
   None: string;
-  Ico: HICON;
+//  Ico: HICON;
   W, H: Integer;
 begin
   with TPaintBox(Sender) do
@@ -344,6 +346,7 @@ begin
         begin
           with DrawRect do
           begin
+          (*
             if Pic.Graphic is TIcon then
             begin
               Ico := CreateRealSizeIcon(Pic.Icon);
@@ -356,6 +359,7 @@ begin
               end;
             end
             else
+            *)
               Canvas.Draw((Right + Left - Pic.Width) div 2,
                 (Bottom + Top - Pic.Height) div 2, Pic.Graphic);
           end;
@@ -425,7 +429,7 @@ end;
 
 procedure TPictureEditDialog.HelpBtnClick(Sender: TObject);
 begin
-  Application.HelpContext(HelpContext);
+  Application.ContextHelp(HelpContext);
 end;
 
 const
@@ -447,20 +451,22 @@ end;
 
 procedure TPictureEditDialog.PathsClick(Sender: TObject);
 begin
-  if EditFolderList(PathsMRU.Strings) then
-    UpdatePathsMenu;
+//  if EditFolderList(PathsMRU.Strings) then
+//    UpdatePathsMenu;
 end;
 
+(*
 procedure TPictureEditDialog.PathsMRUClick(Sender: TObject;
   const RecentName, Caption: string; UserData: Longint);
 begin
-  if DirExists(RecentName) then
+  if DirectoryExists(RecentName) then
     {SetCurrentDir(RecentName);}
     FileDialog.InitialDir := RecentName
   else
     PathsMRU.Remove(RecentName);
   UpdatePathsMenu;
 end;
+*)
 
 procedure TPictureEditDialog.PathsMenuPopup(Sender: TObject);
 begin
@@ -469,7 +475,7 @@ end;
 
 procedure TPictureEditDialog.PathsMRUChange(Sender: TObject);
 begin
-  PathsBtn.Enabled := PathsMRU.Strings.Count > 0;
+  // PathsBtn.Enabled := PathsMRU.Strings.Count > 0;
 end;
 
 procedure TPictureEditDialog.PathsBtnClick(Sender: TObject);

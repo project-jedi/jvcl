@@ -3,7 +3,7 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   Top = 361
   Width = 254
   Height = 144
-  VertScrollBar.Range = 78
+  VertScrollBar.Range = 70
   HorzScrollBar.Range = 149
   ActiveControl = btnOK
   BorderIcons = [biSystemMenu]
@@ -73,23 +73,16 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
     Top = 5
     Width = 101
     Height = 22
-    DoubleBuffered = False
-    ButtonFlat = False
-    Color = clBase
+    ClipboardCommands = [caCopy, caCut, caPaste, caUndo]
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'Helvetica'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
     PopupColor = clBase
     TabOrder = 5
-  end
-  object dtpTime: TJvTimeSpin
-    Left = 48
-    Top = 56
-    Width = 101
-    Height = 22
-    DoubleBuffered = False
-    BorderStyle = bsSingle
-    FlatButtons = False
-    Color = clBase
-    TabOrder = 6
-    Time = 0.500000000000000000
   end
   object PopupMenu1: TPopupMenu
     Left = 184

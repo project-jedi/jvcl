@@ -58,7 +58,6 @@ type
     mnuDate: TMenuItem;
     mnuTime: TMenuItem;
     dtpDate: TJvDateEdit;
-    dtpTime: TJvTimeSpin;
     procedure FormCreate(Sender: TObject);
     procedure mnuNowClick(Sender: TObject);
     procedure mnuDateClick(Sender: TObject);

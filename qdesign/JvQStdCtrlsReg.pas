@@ -44,7 +44,7 @@ uses
   QImgList, 
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, JvQTypes,  
-  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx, 
+  JvQGauges, {JvQStdDsgnEditors,} QComCtrlsEx, 
   JvQCombobox, JvQColorCombo, JvQComCtrls,
   JvQSpin, JvQEdit, JvQProgressBar, JvQMaskEdit, JvQBaseEdits, JvQCalc,
   JvQToolEdit, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQSecretPanel,
@@ -85,11 +85,11 @@ begin
     TJvProgressBar, TJvGradientProgressBar, TJvStatusBar, 
     TJvControlBar, TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel]);
-  RegisterComponents(RsPaletteLabel, [ 
+  RegisterComponents(RsPaletteLabel, [ TJvStaticText,
     TJvLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox, 
     TJvCheckListBox, 
-    TJvColorComboBox, 
+    TJvColorComboBox, TJvFontComboBox,
     TJvDrawGrid, TJvStringGrid]);
   RegisterComponents(RsPaletteScrollerTracker, [ 
     TJvScrollBar]);

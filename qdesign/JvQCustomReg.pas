@@ -40,7 +40,7 @@ implementation
 uses
   Classes,
 
-  QImgList,
+  QImgList, QControls,
   DesignEditors, DesignIntf,
   ToolsAPI,
   JvQDsgnConsts,
@@ -65,6 +65,8 @@ const
   cSchedule = 'Schedule';
   cFilter = 'Filter';
 begin
+  GroupDescendentsWith(TJvModernTabBarPainter, TControl);
+  GroupDescendentsWith(TJvTabBarPainter, TControl);
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,

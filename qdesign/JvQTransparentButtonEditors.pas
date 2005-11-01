@@ -51,16 +51,19 @@ implementation
 function TJvTBImagesProperty.ImageList: TCustomImageList;
 begin
   if AnsiSameText(GetName,'ActiveIndex') then
-    Result := (GetComponent(0) as TJvTransparentButton2).ActiveImage
+    Result := (GetComponent(0) as TJvTransparentButtonImages).ActiveImage
   else
   if AnsiSameText(GetName,'DisabledIndex') then
-    Result := (GetComponent(0) as TJvTransparentButton2).DisabledImage
+    Result := (GetComponent(0) as TJvTransparentButtonImages).DisabledImage
   else
   if AnsiSameText(GetName,'DownIndex') then
-    Result := (GetComponent(0) as TJvTransparentButton2).DownImage
+    Result := (GetComponent(0) as TJvTransparentButtonImages).DownImage
   else
   if AnsiSameText(GetName,'GrayIndex') then
-    Result := (GetComponent(0) as TJvTransparentButton2).GrayImage
+    Result := (GetComponent(0) as TJvTransparentButtonImages).GrayImage
+  else
+  if AnsiSameText(GetName,'HotIndex') then
+    Result := (GetComponent(0) as TJvTransparentButtonImages).HotImage
   else
     Result := nil;
 end;

@@ -48,14 +48,14 @@ uses
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, 
   {$IFDEF USEWINDOWS}
-  JvQUninstallControls,
+  JvQUninstallControls, JvQCharMap,
   {$ENDIF USEWINDOWS}
   JvQDsgnIntf, 
   QTypes, 
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
-  JvQRollOut, JvQScrollPanel, {JvQScrollText,} JvQSpacer, JvQSpeedBar,
+  JvQRollOut, JvQScrollPanel, JvQScrollText, JvQSpacer, JvQSpeedBar,
   JvQSpeedbarSetupForm, JvQSwitch, JvQSplit, JvQSplitter, JvQSyncSplitter,
   JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
   JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
@@ -75,8 +75,7 @@ procedure Register;
 begin 
   GroupDescendentsWith(TJvHint, TControl); 
 
-  RegisterComponents(RsPaletteButton, [TJvTransparentButton,
-    TJvTransparentButton2, TJvArrowButton,
+  RegisterComponents(RsPaletteButton, [TJvTransparentButton, TJvArrowButton, 
     TJvColorButton,  TJvOfficeColorButton, TJvOfficeColorPanel,
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
@@ -88,14 +87,18 @@ begin
     TJvComboListBox, TJvHTListBox, TJvHTComboBox]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF USEWINDOWS}
+  {$ENDIF USEWINDOWS} 
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller,
-    TJvScrollingWindow{, TJvScrollText}]);
+    TJvContentScroller, 
+    TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice]);
+  RegisterComponents(RsPaletteVisual, [TJvClock,
+    {$IFDEF USEWINDOWS}
+    TJvCharMap,
+    {$ENDIF USEWINDOWS}
+    TJvZoom, TJvDice]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
@@ -105,10 +108,7 @@ begin
   // RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
 
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvTransparentButtonImages, '', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
 
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
