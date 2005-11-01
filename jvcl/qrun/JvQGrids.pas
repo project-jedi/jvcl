@@ -34,10 +34,12 @@ unit JvQGrids;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, QWindows, QMessages, QControls, QGraphics, QStdCtrls, QForms, QGrids, 
   Qt, 
-  JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids,
-  JvQTypes;
+  JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -100,7 +102,9 @@ type
     procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure FocusChanged; override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
     function GetEditLimit: Integer; override;
@@ -178,12 +182,19 @@ type
     property OnParentColorChange; 
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Math,
   JvQJCLUtils, JvQJVCLUtils;
 
@@ -215,7 +226,7 @@ type
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer); 
   protected
-    procedure DoExit; override;
+    procedure FocusKilled(NextWnd: HWND); override; 
     procedure BoundsChanged; override;
     procedure CloseUp(Accept: Boolean);
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState);
@@ -548,8 +559,14 @@ end;
 
 
 
-procedure TJvInplaceEdit.DoExit;
+procedure TJvInplaceEdit.FocusKilled(NextWnd: HWND);
 begin
+  if not SysLocale.FarEast then
+    inherited FocusKilled(NextWnd)
+  else
+  begin 
+    inherited FocusKilled(NextWnd); 
+  end;
   CloseUp(False);
 end;
 
@@ -1026,12 +1043,12 @@ begin
     TempRect := ARect;
     if not (gdFixed in AState) then
     begin
-      Canvas.Brush.Color := clButton;
-      Canvas.Font.Color := clButtonText;
+      Canvas.Brush.Color := clBtnFace;
+      Canvas.Font.Color := clBtnText;
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = ACol) and (FCellDown.Y = ARow) then
-        Style := Style or DFCS_PUSHED;
-      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+        Style := Style or DFCS_PUSHED; 
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
       DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
@@ -1052,7 +1069,7 @@ begin
         ([goDrawFocusSelected, goRowSelect] * Options <> [])) then
       begin
         Brush.Color := clHighlight;
-        Font.Color := clHighlightedText;
+        Font.Color := clHighlightText;
       end
       else
       begin
@@ -1063,7 +1080,7 @@ begin
       end;
       FillRect(ARect);
     end;
-  Down := FFixedCellsButtons and (gdFixed in AState) and
+  Down := FFixedCellsButtons and (gdFixed in AState) and 
     not (csLoading in ComponentState) and FPressed and FDefaultDrawing and
     (FPressedCell.X = ACol) and (FPressedCell.Y = ARow);
   inherited DefaultDrawing := FDefaultDrawing;
@@ -1082,7 +1099,7 @@ begin
       Dec(ARect.Top, GridLineWidth);
     end;
   end;
-  if FDefaultDrawing and
+  if FDefaultDrawing and 
      (gdFixed in AState) then
   begin
     FrameFlags1 := 0;
@@ -1106,8 +1123,8 @@ begin
       else
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
-        Inc(TempRect.Bottom, GridLineWidth);
-      //RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+        Inc(TempRect.Bottom, GridLineWidth); 
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;
@@ -1121,9 +1138,16 @@ end;
 
 
 
-procedure TJvDrawGrid.FocusChanged;
+procedure TJvDrawGrid.FocusKilled(NextWnd: HWND);
 begin
-  inherited FocusChanged;
+  inherited FocusKilled(NextWnd);
+  if Assigned(FOnChangeFocus) then
+    FOnChangeFocus(Self);
+end;
+
+procedure TJvDrawGrid.FocusSet(PrevWnd: HWND);
+begin
+  inherited FocusSet(PrevWnd);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;
@@ -1182,14 +1206,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -51,7 +51,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, QWindows, QMessages, QControls, QExtCtrls,
+  Classes, Qt, QWindows, QMessages, QControls, QExtCtrls, QStdCtrls,
   JvQExStdCtrls;
 
 type
@@ -309,17 +309,20 @@ type
     FOnStop: TNotifyEvent;
     FUseEffectText: Boolean;
     FEffectText: TCaption;
+    FCaption: TCaption;
     function GetOptions: TJvLabelBehavior;
     function BehaviorStored: Boolean;
     procedure UpdateDesigner;
     procedure SetBehavior(const Value: TJvLabelBehaviorName);
     procedure SetOptions(const Value: TJvLabelBehavior);
     procedure SetUseEffectText(const Value: Boolean);
+    procedure SetEffectText(Value: TCaption);
   protected
     procedure Resize; override;
     procedure DoStart; dynamic;
-    procedure DoStop; dynamic;  
-    function GetText: TCaption; override; 
+    procedure DoStop; dynamic;
+    procedure SetText(const Value: TCaption); override;
+    function GetText: TCaption; override;
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
@@ -329,19 +332,22 @@ type
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
     // do not make these published
-    property EffectText: TCaption read FEffectText write FEffectText;
+    property EffectText: TCaption read FEffectText write SetEffectText;
     property UseEffectText: Boolean read FUseEffectText write SetUseEffectText;
   end;
 
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
-  published 
+  published
+
     property Behavior;
     property BehaviorOptions;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange;
+//    property OnParentColorChange;
     property OnStart;
     property OnStop;
+
+    property BorderStyle;
 
     property Align;
     property Alignment;
@@ -452,13 +458,23 @@ begin
   AllBehaviorOptions.AddObject(Name, TObject(BehaviorOptionsClass));
 end;
 
+procedure NeedBehaviorLabel(const ClassName: string);
+begin
+  raise EJVCLException.CreateFmt(RsENeedBehaviorLabel, [ClassName]);
+end;
+
+procedure NoOwnerLabelParent(const ClassName: string);
+begin
+  raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
+end;
+
 //=== { TJvLabelBehavior } ===================================================
 
 constructor TJvLabelBehavior.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  if ALabel = nil then
-    raise EJVCLException.CreateResFmt(@RsENeedBehaviorLabel, [ClassName]);
   inherited Create;
+  if ALabel = nil then
+    NeedBehaviorLabel(ClassName);
   FLabel := ALabel;
   FActive := False;
 end;
@@ -558,12 +574,22 @@ end;
 
 function TJvCustomBehaviorLabel.GetText: TCaption;
 begin
+  Result := FCaption;
+{
   if UseEffectText then
     Result := EffectText
   else
     Result := inherited GetText;
+}
 end;
 
+
+procedure TJvCustomBehaviorLabel.SetText(const Value: TCaption);
+begin
+  QLabel_setText(Handle, PWideString(@Value));
+  FCaption:= Value;
+  TextChanged; //invalidate;
+end;
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
 begin
@@ -624,7 +650,23 @@ begin
   begin
     FUseEffectText := Value;
     if ComponentState * [csLoading, csDestroying] = [] then
-      Repaint;
+    begin
+    if Value then
+      QLabel_setText(Handle, PWideString(@EffectText))
+    else
+      QLabel_setText(Handle, PWideString(@FCaption))
+    end;
+    Repaint;
+  end;
+end;
+
+procedure TJvCustomBehaviorLabel.SetEffectText(Value: TCaption);
+begin
+  FEffectText := Value;
+  if FUseEffectText then
+  begin
+    QLabel_setText(Handle, PWideString(@Value));
+    TextChanged;
   end;
 end;
 
@@ -634,7 +676,7 @@ var
 begin
   if csDesigning in ComponentState then
   begin
-    F := GetParentForm(Self);  
+    F := GetParentForm(Self);
     if (F <> nil) and (F.DesignerHook <> nil) then
       F.DesignerHook.Modified; 
   end;
@@ -802,7 +844,7 @@ begin
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
+    NoOwnerLabelParent(ClassName);
   inherited Start;
   FOriginalRect := OwnerLabel.BoundsRect;
   Randomize;
@@ -1035,7 +1077,7 @@ begin
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
+    NoOwnerLabelParent(ClassName);
   inherited Start;
   if FTimer = nil then
   begin
@@ -1158,7 +1200,8 @@ begin
       FCharValue := 32;
     end;
     OwnerLabel.EffectText := Copy(OwnerLabel.Caption, 1, FTextPos) + Char(FCharValue);
-    OwnerLabel.Repaint;
+    //OwnerLabel.Repaint;
+    OwnerLabel.Invalidate;
     Inc(FCharValue);
     FTimer.Enabled := True;
   end

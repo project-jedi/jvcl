@@ -50,23 +50,27 @@ unit JvQEdit;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   QWindows, QMessages, 
   Qt, 
-  QForms, Classes, QGraphics, QControls, QMenus, 
-  JvQMaxPixel, JvQTypes, JvQExStdCtrls;
+  Classes, QGraphics, QControls, QMenus,
+  JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls, JvQExComboEdits;
 
 
 const
-  clGrayText = clDisabledText;
+  clGrayText = clDisabledText; // Since when is clGrayText = clLight = clWhite?
 
 
 type
-  TJvCustomEdit = class(TJvExCustomEdit)
-  private
-    FFlat: Boolean;
+  TJvCustomEdit = class(TJvExCustomComboEdit)
+  private 
+    FFlat: Boolean; 
     FMaxPixel: TJvMaxPixel;
     FGroupIndex: Integer;
-    FAlignment: TAlignment; 
+    FAlignment: TAlignment;
+    FCaret: TJvCaret;
     FHotTrack: Boolean;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
@@ -75,7 +79,8 @@ type
     FStreamedSelStart: Integer;
     FUseFixedPopup: Boolean;
     FAutoHint: Boolean; 
-    FPasswordChar: Char; 
+    FPasswordChar: Char;
+    FNullPixmap: QPixmapH; 
     FEmptyValue: string;
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
@@ -84,6 +89,7 @@ type
     function GetPasswordChar: Char;
     function IsPasswordCharStored: Boolean;
     procedure SetAlignment(Value: TAlignment);
+    procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetPasswordChar(Value: Char);
@@ -91,12 +97,16 @@ type
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean; 
-    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
-    procedure WMUndo(var Mesg: TMessage); message WM_UNDO;
   protected
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMClear(var Msg: TMessage); message WM_CLEAR;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
+
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; virtual;
-//    procedure CaretChanged(Sender: TObject); dynamic;
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
+    procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure MaxPixelChanged(Sender: TObject);
@@ -114,9 +124,9 @@ type
 //    procedure TextChanged; override;
 //    procedure KeyPress(var Key: Char); override;
     function HintShow(var HintInfo: THintInfo): Boolean; override; 
-//    procedure DoSetFocus(FocusedWnd: HWND); override;
-//    procedure DoKillFocus(FocusedWnd: HWND); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure MouseEnter(AControl: TControl); override;
@@ -129,7 +139,8 @@ type
     destructor Destroy; override; 
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AutoHint: Boolean read FAutoHint write FAutoHint default False; 
+    property AutoHint: Boolean read FAutoHint write FAutoHint default False;
+    property Caret: TJvCaret read FCaret write SetCaret;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -148,20 +159,25 @@ type
 
   TJvEdit = class(TJvCustomEdit)
   published 
-//    property Caret;
+    property Caret;
     property DisabledTextColor;
     property DisabledColor;
     property HotTrack;
     property PasswordChar;
     property PopupMenu;
     property ProtectPassword; 
-    property EchoMode; 
+    property EchoMode;
+    property InputKeys; 
     property Align;
     property Alignment;
     property ClipboardCommands;
     property HintColor;
     property GroupIndex;
-    property MaxPixel; 
+    property MaxPixel;
+    property Modified; { (rb) why published/stored? } 
+    // property SelStart; (p3) why published?
+    // property SelText;
+    // property SelLength; (p3) why published?
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -206,13 +222,20 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  SysUtils, Math, 
+  SysUtils, Math, QForms, 
   JvQToolEdit;
 
 //=== Local procedures =======================================================
@@ -228,8 +251,8 @@ begin
   try
     C.Control := Control; 
     C.StartPaint; 
-    Result :=
-      not GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) or
+    Result := 
+      not GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) or 
       { (rb) ClientWidth is too big, should be EM_GETRECT, don't know the Clx variant }
       (Control.ClientWidth > Size.cx); 
     C.StopPaint; 
@@ -242,13 +265,16 @@ end;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(AOwner); 
+  FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim); 
   FAlignment := taLeftJustify;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FHotTrack := False; 
+  FHotTrack := False;
+  FCaret := TJvCaret.Create(Self);
+  FCaret.OnChanged := CaretChanged;
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
   FUseFixedPopup := True; // asn: clx not implemented yet
@@ -260,12 +286,16 @@ end;
 
 destructor TJvCustomEdit.Destroy;
 begin
-  FMaxPixel.Free;   
-//  QPixmap_destroy(FNullPixmap); 
+  FMaxPixel.Free;
+  FCaret.Free;  
+  QPixmap_destroy(FNullPixmap); 
   inherited Destroy;
 end;
 
-
+procedure TJvCustomEdit.CaretChanged(Sender: TObject);
+begin
+  FCaret.CreateCaret;
+end;
 
 procedure TJvCustomEdit.Change;
 var
@@ -285,20 +315,7 @@ begin
   end;
 end;
 
-(*
-procedure TJvCustomEdit.CMHintShow(var Msg: TMessage);
-begin
-  if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
-    with TCMHintShow(Msg) do
-    begin
-      HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
-      HintInfo.HintStr := Self.Text;
-      Result := 0;
-    end
-  else
-    inherited;
-end;
-*)
+
 
 
 function TJvCustomEdit.HintShow(var HintInfo: THintInfo): Boolean;
@@ -310,7 +327,6 @@ begin
   end;
   Result := inherited HintShow(HintInfo);
 end;
-
 
 
 
@@ -328,11 +344,25 @@ end;
 
 
 
-
-procedure TJvCustomEdit.WMPaste(var Mesg: TMessage);
+procedure TJvCustomEdit.WMClear(var Msg: TMessage);
 begin
-  inherited;
-  UpdateGroup;
+  if not ReadOnly then
+    inherited;
+end;
+
+procedure TJvCustomEdit.WMCut(var Msg: TMessage);
+begin
+  if not ReadOnly then
+    inherited;
+end;
+
+procedure TJvCustomEdit.WMPaste(var Msg: TMessage);
+begin
+  if not ReadOnly then
+  begin
+    inherited;
+    UpdateGroup;
+  end;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueEnter;
@@ -384,15 +414,22 @@ end;
 
 procedure TJvCustomEdit.DoExit;
 begin
-  inherited DoExit; 
+  inherited DoExit;
+  DoEmptyValueExit;
 end;
 
-function TJvCustomEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+procedure TJvCustomEdit.FocusKilled(NextWnd: HWND);
+begin
+  FCaret.DestroyCaret;
+  inherited FocusKilled(NextWnd);
+end;
+
+function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 var
   R: TRect;
 begin
   if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -406,7 +443,13 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.WMUndo(var Mesg: TMessage);
+procedure TJvCustomEdit.FocusSet(PrevWnd: HWND);
+begin
+  inherited FocusSet(PrevWnd);
+  FCaret.CreateCaret;
+end;
+
+procedure TJvCustomEdit.WMUndo(var Msg: TMessage);
 begin
   if not ReadOnly then
     inherited;
@@ -419,8 +462,8 @@ begin
 end;
 
 function TJvCustomEdit.GetFlat: Boolean;
-begin 
-  Result := FFlat;
+begin  
+  Result := FFlat; 
 end;
 
 function TJvCustomEdit.GetPasswordChar: Char;
@@ -456,6 +499,8 @@ function TJvCustomEdit.IsEmpty: Boolean;
 begin
   Result := (Length(Text) = 0);
 end;
+
+
 
 function TJvCustomEdit.IsPasswordCharStored: Boolean;
 begin
@@ -548,9 +593,12 @@ begin
       S := Text
     else
       S := StringOfChar(PasswordChar, Length(Text));
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
     if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
       Focused, Flat, Canvas) then
-      inherited Paint;
+      ; //inherited Paint;
   end;
 end;
 
@@ -565,7 +613,19 @@ begin
   end;
 end;
 
+procedure TJvCustomEdit.SetCaret(const Value: TJvCaret);
+begin
+  FCaret.Assign(Value);
+end;
 
+procedure TJvCustomEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  if ClipboardCommands <> Value then
+  begin
+    inherited SetClipboardCommands(Value);
+    ReadOnly := ClipboardCommands <= [caCopy];
+  end;
+end;
 
 procedure TJvCustomEdit.SetDisabledColor(const Value: TColor);
 begin
@@ -598,16 +658,16 @@ begin
 end;
 
 procedure TJvCustomEdit.SetFlat(Value: Boolean);
-begin
+begin  
   if Value <> FFlat then
   begin
-    FFlat := Value;  
+    FFlat := Value;
     if FFlat then
       BorderStyle := bsNone
     else
       BorderStyle := bsSingle;
-    Invalidate; 
-  end;
+    Invalidate;
+  end; 
 end;
 
 procedure TJvCustomEdit.SetGroupIndex(Value: Integer);
@@ -675,14 +735,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

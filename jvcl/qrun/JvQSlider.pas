@@ -345,6 +345,8 @@ procedure TJvSlider.ThumbChanged(Sender: TObject);
 var
   Src, Dest: TRect;
 begin
+  if csLoading in ComponentState then
+    exit;
   Dest.Left := 0;
   Dest.Top := 0;
   Dest.Right := FImageThumb.Width div 2;

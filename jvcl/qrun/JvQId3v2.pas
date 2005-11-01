@@ -35,6 +35,9 @@ unit JvQID3v2;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, QGraphics, QControls,
   JvQID3v2Types, JvQID3v2Base;
 
@@ -68,7 +71,7 @@ type
     property BPM: Cardinal index fiBPM read GetNumber write SetNumber stored False;
     property Composer: TStrings index fiComposer read GetList write SetList stored False;
     property Conductor: string index fiConductor read GetText write SetText stored False;
-    property ContentType: string index fiContentType read GetText write SetText stored False;
+    property ContentType: TStrings index fiContentType read GetList write SetList stored False;
     property ContentGroup: string index fiContentGroup read GetText write SetText stored False;
     property Copyright: string index fiCopyright read GetText write SetText stored False;
     property Date: string index fiDate read GetText write SetText stored False;
@@ -332,12 +335,19 @@ type
     property FileInfo;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Math,
   JvQResources;
 
@@ -1027,14 +1037,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

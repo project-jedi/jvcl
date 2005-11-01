@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING} 
   QWindows, QControls, QGraphics, QForms, QMessages, // asn: messages after controls for clx 
-  JvQComponent, 
+  JvQComponent, JvQExForms,
   Classes;
 
 const
@@ -138,7 +138,7 @@ type
   end;
   { baseclass for focusable control descendants. }
  
-  TJvXPCustomControl = class(TJvCustomControl) 
+  TJvXPCustomControl = class(TJvCustomControl)
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -146,8 +146,8 @@ type
     FIsSibling: Boolean;
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent; 
-    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED; 
+    FOnMouseEnter: TNotifyEvent;
+    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -166,7 +166,7 @@ type
     procedure HookTextChanged; dynamic;
     procedure BeginUpdate; dynamic;
     procedure EndUpdate; dynamic;
-    procedure LockedInvalidate; dynamic; 
+    procedure LockedInvalidate; dynamic;
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
@@ -177,7 +177,7 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    procedure Loaded; override; 
+    procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
@@ -190,7 +190,7 @@ type
     property DrawState: TJvXPDrawState read FDrawState write FDrawState;
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
-  published 
+  published
   end;
 
   TJvXPUnlimitedControl = class(TJvXPCustomControl)
@@ -209,7 +209,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
-    property Constraints; 
+    property Constraints;
     property DragMode;
     //property Enabled;
     property Font;
@@ -225,8 +225,8 @@ type
     //property OnStartDock;
     //property OnUnDock;
     property OnClick;
-    property OnConstrainedResize; 
-    property OnContextPopup; 
+    property OnConstrainedResize;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -242,6 +242,62 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
+
+  TJvXPScrollBox = class(TJvExScrollingWidget)
+  private
+    FClicking: Boolean;
+    FDrawState: TJvXPDrawState;
+    FIsLocked: Boolean;
+    FIsSibling: Boolean;
+    FModalResult: TModalResult;
+    FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
+  protected
+    ExControlStyle: TJvXPControlStyle;
+    procedure InternalRedraw; dynamic;
+    procedure HookBorderChanged; dynamic;
+    procedure HookEnabledChanged; dynamic;
+    procedure HookFocusedChanged; dynamic;
+    procedure HookMouseDown; dynamic;
+    procedure HookMouseEnter; dynamic;
+    procedure HookMouseLeave; dynamic;
+    procedure HookMouseMove(X: Integer = 0; Y: Integer = 0); dynamic;
+    procedure HookMouseUp; dynamic;
+    procedure HookParentColorChanged; dynamic;
+    procedure HookParentFontChanged; dynamic;
+    procedure HookPosChanged; dynamic;
+    procedure HookResized; dynamic;
+    procedure HookTextChanged; dynamic;
+    procedure BeginUpdate; dynamic;
+    procedure EndUpdate; dynamic;
+    procedure LockedInvalidate; dynamic;
+    procedure AdjustSize; override;
+    procedure BorderChanged; dynamic;
+    procedure EnabledChanged; override;
+    procedure TextChanged; override;
+    procedure ParentColorChanged; override;
+    procedure ParentFontChanged; override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
+    procedure Loaded; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Click; override;
+    property ModalResult: TModalResult read FModalResult write FModalResult default 0;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property Canvas;
+    property DrawState: TJvXPDrawState read FDrawState write FDrawState;
+    property IsLocked: Boolean read FIsLocked write FIsLocked;
+    property IsSibling: Boolean read FIsSibling write FIsSibling;
+  published
+  end;
+
 
   TJvXPStyle = class(TPersistent)
   private
@@ -678,6 +734,326 @@ begin
   if csRedrawCaptionChanged in ExControlStyle then
     InternalRedraw;
 end;
+//=== { TJvXPScrollBox } =================================================
+
+constructor TJvXPScrollBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+//  DoubleBuffered := True;
+  ExControlStyle := [csRedrawEnabledChanged, csRedrawFocusedChanged,
+    csRedrawMouseDown, csRedrawMouseEnter, csRedrawMouseLeave, csRedrawMouseUp,
+    csRedrawParentColorChanged, csRedrawCaptionChanged];
+  FClicking := False;
+  FDrawState := [dsDefault];
+  FIsLocked := False;
+  FIsSibling := False;
+  FModalResult := 0;
+  AutoScroll := true;
+  BorderStyle := bsNone;
+end;
+
+
+
+procedure TJvXPScrollBox.BeginUpdate;
+begin
+  FIsLocked := True;
+end;
+
+procedure TJvXPScrollBox.EndUpdate;
+begin
+  FIsLocked := False;
+  InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.LockedInvalidate;
+begin
+  if not IsLocked then
+    Invalidate;
+end;
+
+procedure TJvXPScrollBox.InternalRedraw;
+begin
+  if not FIsLocked then
+    Invalidate;
+end;
+
+
+
+procedure TJvXPScrollBox.CMFocusChanged(var Msg: TMessage);
+begin
+  // delegate message "FocusChanged" to hook.
+  inherited;
+  HookFocusedChanged;
+end;
+
+
+
+
+
+function TJvXPScrollBox.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := IsAccel(Key, Caption) and Enabled and not (ssCtrl in Shift);
+  if Result then
+    Click
+  else
+    Result := inherited WantKey(Key, Shift, KeyText);
+end;
+
+procedure TJvXPScrollBox.Loaded;
+begin
+  inherited Loaded;
+  AdjustSize;
+end;
+
+procedure TJvXPScrollBox.BorderChanged;
+begin
+  // delegate message "BorderChanged" to hook.
+//  inherited BorderChanged;
+  HookBorderChanged;
+end;
+
+procedure TJvXPScrollBox.EnabledChanged;
+begin
+  // delegate message "EnabledChanged" to hook.
+  inherited EnabledChanged;
+  HookEnabledChanged;
+end;
+
+procedure TJvXPScrollBox.MouseEnter(AControl: TControl);
+begin
+  // delegate message "MouseEnter" to hook.
+  inherited MouseEnter(AControl);
+  HookMouseEnter;
+end;
+
+procedure TJvXPScrollBox.MouseLeave(AControl: TControl);
+begin
+  // delegate message "MouseLeave" to hook.
+  inherited MouseLeave(AControl);
+  HookMouseLeave;
+end;
+
+procedure TJvXPScrollBox.ParentColorChanged;
+begin
+  // delegate message "ParentColorChanged" to hook.
+  inherited ParentColorChanged;
+  HookParentColorChanged;
+end;
+
+procedure TJvXPScrollBox.ParentFontChanged;
+begin
+  // delegate message "ParentFontChanged" to hook.
+  inherited ParentFontChanged;
+  HookParentFontChanged;
+end;
+
+procedure TJvXPScrollBox.TextChanged;
+begin
+  // delegate message "TextChanged" to hook.
+  inherited TextChanged;
+  HookTextChanged;
+end;
+
+procedure TJvXPScrollBox.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  // delegate message "MouseMove" to hook.
+  inherited MouseMove(Shift, X, Y);
+  HookMouseMove(X, Y);
+end;
+
+procedure TJvXPScrollBox.AdjustSize;
+begin
+  // delegate message "Size" to hook.
+  inherited AdjustSize;
+  HookResized;
+end;
+
+(*
+procedure TJvXPScrollBox.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
+begin
+  // delegate message "WindowPosChanged" to hook.
+  inherited;
+  HookPosChanged;
+end;
+*)
+
+
+
+procedure TJvXPScrollBox.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  // delegate message "MouseDown" to hook.
+  inherited MouseDown(Button, Shift, X, Y);
+  if Button = mbLeft then
+  begin
+    FClicking := True;
+    HookMouseDown;
+  end;
+end;
+
+procedure TJvXPScrollBox.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  // delegate message "MouseUp" to hook.
+  inherited MouseUp(Button, Shift, X, Y);
+  if FClicking then
+  begin
+    FClicking := False;
+    HookMouseUp;
+  end;
+end;
+
+procedure TJvXPScrollBox.Click;
+var
+  Form: TCustomForm;
+begin
+  Form := GetParentForm(Self);
+  if Form <> nil then
+    Form.ModalResult := ModalResult;
+  inherited Click;
+end;
+
+//
+// hooks are used to interrupt default windows messages in an easier
+// way - it's possible to override them in descendant classes.
+// Beware of multiple redraw calls - if you know that the calling
+// hooks always redraws the component, use the lock i.e. unlock methods
+// (rom) or LockedInvalidate.
+
+procedure TJvXPScrollBox.HookBorderChanged;
+begin
+  // this hook is called, if the border property was changed.
+  // in that case we normaly have to redraw the control.
+  if csRedrawBorderChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookEnabledChanged;
+begin
+  // this hook is called, if the enabled property was switched.
+  // in that case we normaly have to redraw the control.
+  if csRedrawEnabledChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookFocusedChanged;
+begin
+  // this hook is called, if the currently focused control was changed.
+  if Focused then
+    Include(FDrawState, dsFocused)
+  else
+  begin
+    Exclude(FDrawState, dsFocused);
+    Exclude(FDrawState, dsClicked);
+  end;
+  FIsSibling := GetParentForm(Self).ActiveControl is TJvXPScrollBox;
+  if csRedrawFocusedChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookMouseEnter;
+begin
+  // this hook is called, if the user moves (hover) the mouse over the control.
+  if not (csDesigning in ComponentState) then
+  begin
+    Include(FDrawState, dsHighlight);
+    if csRedrawMouseEnter in ExControlStyle then
+      InternalRedraw;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvXPScrollBox.HookMouseLeave;
+begin
+  // this hook is called, if the user moves the mouse away (unhover) from
+  // the control.
+  if not (csDesigning in ComponentState) then
+  begin
+    Exclude(FDrawState, dsHighlight);
+    if csRedrawMouseLeave in ExControlStyle then
+      InternalRedraw;
+  end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+procedure TJvXPScrollBox.HookMouseMove(X: Integer = 0; Y: Integer = 0);
+begin
+  // this hook is called if the user moves the mouse inside the control.
+  if not (csDesigning in ComponentState) then
+    if csRedrawMouseMove in ExControlStyle then
+      InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookMouseDown;
+begin
+  // this hook is called, if the user presses the left mouse button over the
+  // controls.
+  if not Focused and CanFocus then
+    SetFocus;
+  Include(FDrawState, dsClicked);
+  if csRedrawMouseDown in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookMouseUp;
+var
+  CurrentPos: TPoint;
+  NewControl: TWinControl;
+begin
+  // this hook is called, if the user releases the left mouse button.
+  begin
+    Exclude(FDrawState, dsClicked);
+    if csRedrawMouseUp in ExControlStyle then
+      InternalRedraw;
+
+    // does the cursor is over another supported control?
+    GetCursorPos(CurrentPos);
+    NewControl := FindVCLWindow(CurrentPos);
+    if (NewControl <> nil) and (NewControl <> Self) and
+      (NewControl.InheritsFrom(TJvXPScrollBox)) then
+      TJvXPScrollBox(NewControl).HookMouseEnter;
+  end;
+end;
+
+procedure TJvXPScrollBox.HookParentColorChanged;
+begin
+  // this hook is called if, the parent color was changed.
+  if csRedrawParentColorChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookParentFontChanged;
+begin
+  // this hook is called if, the parent font was changed.
+  if csRedrawParentFontChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookPosChanged;
+begin
+  // this hook is called, if the window position was changed.
+  if csRedrawPosChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookResized;
+begin
+  // this hook is called, if the control was resized.
+  if csRedrawResized in ExControlStyle then
+    InternalRedraw;
+end;
+
+procedure TJvXPScrollBox.HookTextChanged;
+begin
+  // this hook is called, if the caption was changed.
+  if csRedrawCaptionChanged in ExControlStyle then
+    InternalRedraw;
+end;
+
 
 //=== { TJvXPStyle } =========================================================
 

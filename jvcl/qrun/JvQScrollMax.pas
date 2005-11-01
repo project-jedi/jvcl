@@ -153,7 +153,7 @@ type
   private
     FScrolling: Boolean;
   protected
-    procedure FocusChanged; override;
+    procedure FocusChanged(Control: TWidgetControl); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure ScrollControls(const DeltaY: Integer);
     procedure Paint; override;
@@ -996,12 +996,12 @@ begin
   end;
 end;
 
-procedure TJvScrollMaxBands.FocusChanged;
-var
-  Control: TWinControl;
+procedure TJvScrollMaxBands.FocusChanged(Control: TWidgetControl);
+//var
+//  Control: TWinControl;
 begin
-  inherited FocusChanged;
-  Control := GetFocusedControl(self);
+  inherited FocusChanged(Control);
+//  Control := GetFocusedControl(self);
   if (Control <> nil) and
     ContainsControl(Control) and
     (Parent <> nil) then

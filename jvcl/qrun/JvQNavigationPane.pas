@@ -39,13 +39,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  QWindows, QMessages, QControls, QGraphics, QMenus, QExtCtrls, QImgList, 
+  QWindows, QMessages, QControls, QGraphics, QMenus, QExtCtrls, QImgList,  
   Qt, 
   JvQTypes, JvQButton, JvQPageList, JvQComponent, JvQExExtCtrls;
 
 const
-  CM_PARENTSTYLEMANAGERCHANGE = CM_BASE + 1;
-  CM_PARENTSTYLEMANAGERCHANGED = CM_BASE + 2;
+  CM_PARENTSTYLEMANAGERCHANGE = CM_BASE + 203;
+  CM_PARENTSTYLEMANAGERCHANGED = CM_BASE + 204;
 
 type
   TJvCustomNavigationPane = class;
@@ -181,18 +181,26 @@ type
     FColorFrom: TColor;
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
-    FParentStyleManager: Boolean; 
+    FParentStyleManager: Boolean;
+    FDragZone: Integer;
+    FOldCursor: TCursor;
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean); 
+    procedure SetCursor(const Value: TCursor);
+    function GetDragZoneRect: TRect;
+    function MouseInDragZone(X, Y: Integer): Boolean;
   protected
     procedure Paint; override;
     procedure EnabledChanged; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override; 
+    procedure BoundsChanged; override;    // temp
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RequestAlign; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -200,7 +208,8 @@ type
     // NB! Color is published but not used
     property Align default alBottom;
     property AutoSnap default False;
-    property Cursor  default crSizeNS; 
+    property Cursor write SetCursor default crSizeNS;
+    property DragZone: Integer read FDragZone write FDragZone default 0;
     property ResizeStyle default rsUpdate;
     property ColorFrom: TColor read FColorFrom write SetColorFrom default TColor($B78676);
     property ColorTo: TColor read FColorTo write SetColorTo default TColor($A03D09);
@@ -1110,17 +1119,16 @@ const
 procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvNavPaneStyleManager);
 var
   Msg: TMsgStyleManagerChange; 
-  I: Integer; 
+  I: Integer;
 begin
   Msg.Msg := CM_PARENTSTYLEMANAGERCHANGED;
   Msg.Sender := AControl;
   Msg.StyleManager := AStyleManager;
   Msg.Result := 0;
-  AControl.Broadcast(Msg); 
   with Msg do
     for I := 0 to AControl.ControlCount - 1 do
       if QWindows.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
-        Exit; 
+        Exit;
 end;
 
 //=== { TCustomImageListEx } =================================================
@@ -1323,8 +1331,8 @@ begin
   FIconPanel.OnDropDownMenu := DoDropDownMenu;
 
   FNavPanelFont := TFont.Create;
-  FNavPanelHotTrackFont := TFont.Create;  
-  FNavPanelFont.Assign(Application.Font); 
+  FNavPanelHotTrackFont := TFont.Create;
+  FNavPanelFont.Assign(Application.Font);
   FNavPanelFont.Style := [fsBold];
   FNavPanelFont.OnChange := DoNavPanelFontChange;
   FNavPanelHotTrackFont.Assign(FNavPanelFont);
@@ -1506,6 +1514,7 @@ begin
   finally
     EnableAlign;
     FIconPanel.EnableAlign;
+    ReAlign;
   end;
   Invalidate;
 end;
@@ -2808,9 +2817,16 @@ begin
   inherited Destroy;
 end;
 
+type
+  TJvCustomGraphicButtonAccess = class(TJvCustomGraphicButton)
+  public
+    property Down;
+  end;
+
 procedure TJvNavPanelPage.DoButtonClick(Sender: TObject);
 begin
-  if not NavPanel.Down then
+  { We cannot test for NavPanel.Down if the Sender is a icon button }
+  if (Sender is TJvCustomGraphicButton) and TJvCustomGraphicButtonAccess(Sender).Down then
   begin
     if Parent <> nil then
       TJvCustomNavigationPane(Parent).ActivePage := Self; // this sets "Down" as well
@@ -3179,6 +3195,12 @@ begin
   Invalidate;
 end;
 
+procedure TJvOutlookSplitter.BoundsChanged;
+begin
+  inherited BoundsChanged;
+end;
+
+
 procedure TJvOutlookSplitter.DoStyleChange(Sender: TObject);
 begin
   with (Sender as TJvNavPaneStyleManager).Colors do
@@ -3300,6 +3322,66 @@ begin
     if FParentStyleManager and (Parent <> nil) then  
       QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
+end;
+
+function TJvOutlookSplitter.GetDragZoneRect: TRect;
+begin
+  Result := ClientRect;
+  if DragZone <> 0 then
+  begin
+    if Align in [alLeft, alRight] then
+    begin
+      if DragZone < RectHeight(Result) then
+      begin
+        Result.Top := (RectHeight(Result) - DragZone) div 2;
+        Result.Bottom := Result.Top + DragZone;
+      end;
+    end
+    else
+    if Align in [alTop, alBottom] then
+    begin
+      if DragZone < RectWidth(Result) then
+      begin
+        Result.Left := (RectWidth(Result) - DragZone) div 2;
+        Result.Right := Result.Left + DragZone;
+      end;
+    end;
+  end;
+end;
+
+function TJvOutlookSplitter.MouseInDragZone(X, Y: Integer): Boolean;
+begin
+  Result := (DragZone <= 0) or PtInRect(GetDragZoneRect, Point(X, Y));
+end;
+
+procedure TJvOutlookSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if MouseInDragZone(X, Y) then
+    inherited;
+end;
+
+procedure TJvOutlookSplitter.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  if MouseInDragZone(X, Y) then
+  begin
+    if Cursor <> FOldCursor then
+      inherited Cursor := FOldCursor;
+  end
+  else
+  begin
+    if Cursor <> crDefault then
+    begin
+      FOldCursor := Cursor;
+      inherited Cursor := crDefault;
+    end;
+  end;
+end;
+
+procedure TJvOutlookSplitter.SetCursor(const Value: TCursor);
+begin
+  inherited Cursor := Value;
+  FOldCursor := Value;
 end;
 
 

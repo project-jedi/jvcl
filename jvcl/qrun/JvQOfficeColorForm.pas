@@ -19,7 +19,7 @@ The Initial Developer of the Original Code is dejoy [dejoy att ynl dott gov dott
 Portions created by Peter Thörnqvist are Copyright (C) 2004 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s):dejoy.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -44,7 +44,7 @@ uses
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
   Qt, 
-  JvQConsts, JvQComponent, JvQLabel, JvQOfficeColorPanel;
+  JvQConsts, JvQComponent, JvQOfficeColorPanel;
 
 {------------------------------------------------------------------------------}
 const
@@ -57,8 +57,8 @@ const
   JvDefaultSubDragBarActiveColor = TColor($999999);
   JvDefaultSubDragBarInactiveColor = TColor($996666); 
 
-type  
-  TJvSubDragBar = class(TLabel) 
+type
+  TJvOfficeColorPanelDragBar = class(TJvWinControl)
   private
     FOwnerForm: TControl; 
     FPos: TPoint; 
@@ -77,9 +77,8 @@ type
     FBusy: Boolean;
     FInited: Boolean;
     FWordStyle: Boolean;
-    FColorPanel: TJvOfficeColorPanel;
-    FDragBar: TJvSubDragBar;
-    FOwner: TControl;
+    FColorPanel: TJvCustomOfficeColorPanel;
+    FDragBar: TJvOfficeColorPanelDragBar;
     FDragBarSpace: Integer;
     FDragBarHeight: Integer;
     FFlat: Boolean;
@@ -103,19 +102,18 @@ type
     MoveEnd: Boolean;
     MoveStart: Boolean;
     procedure Resize; override;
-    procedure VisibleChanged; override;
-    procedure AdjustColorForm;  
-    function WidgetFlags: Integer; override;
-    procedure Paint; override; 
-//    procedure FocusKilled(NextWnd: HWND); override;
+    procedure VisibleChanged; override;  
+    function WidgetFlags: Integer; override; 
+    procedure Paint; override;
+    procedure FocusKilled(NextWnd: HWND); override;
     procedure ShowingChanged; override;
     property OnShowingChanged: TNotifyEvent read FOnShowingChanged write FOnShowingChanged;
     property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
     property OnWindowStyleChanged: TNotifyEvent read FOnWindowStyleChanged write FOnWindowStyleChanged;
   public
-    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
-    procedure SetButton(Button: TControl);
-    property ColorPanel: TJvOfficeColorPanel read FColorPanel;
+    constructor Create(AOwner: TComponent;AOfficeColorPanelClass: TJvOfficeColorPanelClass); reintroduce; virtual;
+    procedure AdjustColorForm;
+    property ColorPanel: TJvCustomOfficeColorPanel read FColorPanel;
     property ShowDragBar: Boolean read FShowDragBar write SetShowDragBar default True;
     property DragBarHeight: Integer index Tag_DragBarHeight read FDragBarHeight write SetMeasure;
     property DragBarHint: string read FDragBarHint write SetDragBarHint;
@@ -138,14 +136,17 @@ implementation
 
 uses
   JvQResources;
+type
+  TJvOfficeColorPanelAccessProtected = class(TJvOfficeColorPanel);
 
 //=== { TJvOfficeColorForm } =================================================
 
-constructor TJvOfficeColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+constructor TJvOfficeColorForm.Create(AOwner: TComponent;
+  AOfficeColorPanelClass: TJvOfficeColorPanelClass);
 var
   ParentControl: TWinControl;
 begin
-  inherited CreateNew(AOwner, Dummy);
+  inherited CreateNew(AOwner);
   HintColor := Application.HintColor;
   FInited := False;
   FShowDragBar := True;
@@ -154,29 +155,29 @@ begin
   BorderIcons := [];
   BorderStyle := fbsDialog; 
   FormStyle := fsStayOnTop;
-  Caption := RsColorWindow;
 
   FToolWindowStyle := False;
-  FDragBarHint := RsDragToFloat;
-
   ParentControl := Self;
 
-  FDragBar := TJvSubDragBar.Create(Self);
+  FDragBar := TJvOfficeColorPanelDragBar.Create(Self);
   with FDragBar do
   begin
     Parent := ParentControl;
     FOwnerForm := Self;
-    AutoSize := False;
+    //AutoSize := False;
     Caption := '';
     Color := JvDefaultSubDragBarActiveColor;
     Height := MinDragBarHeight;
     ShowHint := True;
-    Hint := FDragBarHint;
   end;
 
-  FColorPanel := TJvOfficeColorPanel.Create(Self);
-  with FColorPanel do
+  FColorPanel := AOfficeColorPanelClass.Create(Self);
+  with TJvOfficeColorPanelAccessProtected(FColorPanel) do
+  begin
     Parent := ParentControl;
+    FlatBorder := True;
+    BorderWidth := 0;
+  end;
 
   SetWordStyle(True);
   KeyPreview := True;
@@ -184,11 +185,6 @@ begin
   OnKeyUp := FormKeyUp;
 
   FInited := True;
-end;
-
-procedure TJvOfficeColorForm.SetButton(Button: TControl);
-begin
-  FOwner := Button;
 end;
 
 
@@ -201,6 +197,23 @@ begin
     Integer(WidgetFlags_WType_Popup);
 end;
 
+
+procedure TJvOfficeColorForm.Paint;
+
+var
+  Rec: TRect;
+
+begin
+  inherited Paint;
+
+  //in Clx Form have no border, paint it
+  if not ToolWindowStyle then
+  begin
+    Rec := ClientRect;
+    Frame3D(Canvas, Rec, clActiveCaption, cl3DDkShadow, 1)
+  end;
+
+end;
 
 procedure TJvOfficeColorForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -335,14 +348,12 @@ begin
     FOnShowingChanged(ActiveControl);
 end;
 
-(*
 procedure TJvOfficeColorForm.FocusKilled(NextWnd: HWND);
 begin
   inherited FocusKilled(NextWnd);
   if Assigned(FOnKillFocus) and not DropDownMoving then
     FOnKillFocus(ActiveControl);
 end;
-*)
 
 procedure TJvOfficeColorForm.FormDeactivate(Sender: TObject);
 begin
@@ -373,9 +384,9 @@ begin
   end;
 end;
 
-//=== { TJvSubDragBar } ======================================================
+//=== { TJvOfficeColorPanelDragBar } =========================================
 
-procedure TJvSubDragBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
+procedure TJvOfficeColorPanelDragBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
@@ -386,14 +397,14 @@ begin
   end;
 end;
 
-procedure TJvSubDragBar.MouseEnter(Control: TControl);
+procedure TJvOfficeColorPanelDragBar.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
   Color := JvDefaultSubDragBarActiveColor;
   Cursor := crSizeAll;
 end;
 
-procedure TJvSubDragBar.MouseLeave(Control: TControl);
+procedure TJvOfficeColorPanelDragBar.MouseLeave(Control: TControl);
 begin
   inherited MouseLeave(Control);
   Color := JvDefaultSubDragBarInactiveColor;
@@ -422,7 +433,7 @@ end;
 
 
 
-procedure TJvSubDragBar.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvOfficeColorPanelDragBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   lOwnerForm: TJvOfficeColorForm; 
   P, Q: TPoint; 
@@ -449,7 +460,7 @@ begin
   end;
 end;
 
-procedure TJvSubDragBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TJvOfficeColorPanelDragBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 
 var
@@ -487,21 +498,6 @@ begin
   end;
   AdjustColorForm;
 end;
-
-
-procedure TJvOfficeColorForm.Paint;
-var
-  Rec: TRect;
-begin
-  inherited Paint;
-  //in Clx Form have no border, paint it
-  if not ToolWindowStyle then
-  begin
-    Rec := ClientRect;
-    Frame3D(Canvas, Rec, clActiveCaption, cl3DDkShadow, 1)
-  end;
-end;
-
 
 {$IFDEF UNITVERSIONING}
 initialization

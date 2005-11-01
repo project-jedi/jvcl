@@ -226,9 +226,9 @@ var
       with FFontImage.Canvas.Font do
       begin
         S := PChar(S) + 6;
-        Name := SubStr(S, 0, ';');
-        Size := StrToInt(SubStr(S, 1, ';'));
-        Style := cIntToStyle[StrToInt(SubStr(S, 2, ';'))];
+        Name := SubStrBySeparator(S, 0, ';');
+        Size := StrToInt(SubStrBySeparator(S, 1, ';'));
+        Style := cIntToStyle[StrToInt(SubStrBySeparator(S, 2, ';'))];
       end
     else
     if StrLComp('$Pause', PChar(S), 6) = 0 then

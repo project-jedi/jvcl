@@ -39,7 +39,7 @@ interface
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -94,7 +94,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure BoundsChanged; override;
+    procedure BoundsChanged; override; 
   public
     constructor Create(AOwner: TComponent); override;
     procedure NextMonth;
@@ -103,7 +103,7 @@ type
     procedure PrevYear;
     procedure UpdateCalendar; virtual;
     property CellText[ACol, ARow: Integer]: string read GetCellText;
-  published
+published
     property CalendarDate: TDateTime read FDate write SetCalendarDate
       stored StoreCalendarDate;
     property Day: Integer index 3 read GetDateElement write SetDateElement stored False;
@@ -168,7 +168,7 @@ uses
   JvQThemes, JvQConsts, JvQResources, JvQJCLUtils, JvQToolEdit, JvQSpeedButton;
 
 procedure FontSetDefault(AFont: TFont);
-  
+
 begin 
     with AFont do
     begin

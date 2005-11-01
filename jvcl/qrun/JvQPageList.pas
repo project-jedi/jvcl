@@ -74,6 +74,7 @@ type
     FOnShow: TNotifyEvent;
   protected  
     function WidgetFlags: Integer; override; 
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
     procedure SetPageList(Value: TJvCustomPageList);virtual;
@@ -264,7 +265,7 @@ const
 implementation
 
 uses 
-  QForms;
+  QForms; 
 
 //=== { TJvCustomPage } ======================================================
 
@@ -275,8 +276,7 @@ begin
   Align := alClient;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
 //  IncludeThemeStyle(Self, [csParentBackground]);
-  Visible := False;
-  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
+  Visible := False; 
 end;
 
 
@@ -419,6 +419,11 @@ begin
       FPageList.PageList.Move(OldIndex, Value);
     FPageIndex := Value;
   end;
+end;
+
+function TJvCustomPage.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin 
+  Result := True;
 end;
 
 procedure TJvCustomPage.TextChanged;
@@ -665,7 +670,8 @@ end;
 
 procedure TJvCustomPageList.SetActivePage(Page: TJvCustomPage);
 var
-  ParentForm: TCustomForm;
+  ParentForm: TCustomForm; 
+  I: Integer; 
 begin
   if GetPageCount = 0 then
     FActivePage := nil;
@@ -684,7 +690,10 @@ begin
         Exit;
       end;
     end;
-    Page.BringToFront;
+ 
+    for I := 0 to GetPageCount - 1 do
+      if Pages[i] <> Page then
+        Pages[i].Hide; 
     Page.Visible := True;
     if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
     begin

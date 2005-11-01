@@ -38,7 +38,7 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS} 
+  {$ENDIF MSWINDOWS}
   QWindows, QClipbrd, Qt,
   SysUtils, Classes, Contnrs, QGraphics, QControls, QForms, QStdCtrls, QDialogs,
   QExtCtrls,
@@ -68,6 +68,11 @@ type
     property Timeout: Integer read FTimeout write FTimeout;
   end;
 
+  TMessageForm = class(TDSAMessageForm)
+  private
+    Message: TLabel;
+  end;
+
 //----------------------------------------------------------------------------
 // DSA storage and registration classes, types, constants and exceptions
 //----------------------------------------------------------------------------
@@ -79,6 +84,10 @@ const
   ctkShow = 0;
   ctkAsk = 1;
   ctkWarn = 2;
+  IDI_EXCLAMATION = QMessageBoxIcon_Warning;
+  IDI_HAND = QMessageBoxIcon_Critical;
+  IDI_ASTERISK = QMessageBoxIcon_Information;
+  IDI_QUESTION = QMessageBoxIcon_Information;
 
 type
   TDSAStorage = class;
@@ -315,6 +324,10 @@ function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGrap
   const ATimeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   HelpButton: Integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
 
+function CreateMessageDialog(const Msg: TCaption; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons): TForm;
+
+
 //----------------------------------------------------------------------------
 // DSA registration
 //----------------------------------------------------------------------------
@@ -357,8 +370,13 @@ function DSARegStore: TDSARegStorage;
 {$ENDIF MSWINDOWS}
 function DSAQueueStore: TDSAQueueStorage;
 
+
+function DlgPic(const DlgType: TMsgDlgType): TGraphic;
+function DlgCaption(const DlgType: TMsgDlgType): string;
+function DlgModalResult(const DlgBtn: TMsgDlgBtn): integer;
+
 //----------------------------------------------------------------------------
-// VCL component
+// CLX component
 //----------------------------------------------------------------------------
 
 type
@@ -445,6 +463,9 @@ const
 type
   PBoolean = ^Boolean;
 
+var
+  ButtonWidths : array[TMsgDlgBtn] of integer;  // initialized to zero
+
 //=== CheckMarkTexts =========================================================
 
 var
@@ -473,7 +494,8 @@ end;
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 
 begin
-  inherited CreateNew(AOwner, Dummy); 
+  inherited CreateNew(AOwner, Dummy);
+  Height:= 240;
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 1000;
@@ -516,8 +538,8 @@ end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
-  CancelAutoClose;  
-  Application.ContextHelp(HelpContext); 
+  CancelAutoClose;
+  Application.ContextHelp(HelpContext);
 end;
 
 procedure TDSAMessageForm.TimerEvent(Sender: TObject);
@@ -609,7 +631,9 @@ begin
     Buffer[I] := Chr(I + Ord('A'));
   for I := 0 to 25 do
     Buffer[I + 26] := Chr(I + Ord('a'));
+  canvas.start;
   GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result));
+  canvas.stop;
   Result.X := Result.X div 52;
 end;
 
@@ -685,8 +709,8 @@ begin
   try
     with Result do
     begin
-      Position := poDesigned; // Delphi 2005 has a new default  
-      BorderStyle := fbsDialog; 
+      Position := poDesigned; // Delphi 2005 has a new default
+      BorderStyle := fbsDialog;
       Canvas.Font := Font;
       KeyPreview := True;
       OnKeyDown := CustomKeyDown;
@@ -702,7 +726,7 @@ begin
       for I := Low(Buttons) to High(Buttons) do
       begin
         TextRect := Rect(0, 0, 0, 0);
-        {Windows.}DrawText(Canvas.Handle, PChar(Buttons[I]), -1, TextRect,
+        {Windows.}DrawText(Canvas, Buttons[I], -1, TextRect,
           DT_CALCRECT or DT_LEFT or DT_SINGLELINE or DrawTextBiDiModeFlagsReadingOnly);
         with TextRect do
           if (Right - Left + 8) > ButtonWidth then
@@ -713,27 +737,27 @@ begin
       if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
         SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
       else
-        SetRect(TextRect, 0, 0, Screen.Width div 2, 0);  
+        SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
       DrawText(Canvas, Msg, Length(Msg) + 1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK); 
+        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK);
 
       IconTextWidth := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
       if CheckCaption <> '' then
       begin
-        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);  
+        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
         DrawText(Canvas, CheckCaption, Length(CheckCaption) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK); 
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK);
         ChkTextWidth := TempRect.Right;
       end
       else
         ChkTextWidth := 0;
       if ATimeout > 0 then
       begin
-        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);  
+        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
         DrawText(Canvas, Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]),
           Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK); 
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK);
         TimeoutTextWidth := TempRect.Right;
       end
       else
@@ -777,7 +801,7 @@ begin
         DynControlLabel.ControlSetWordWrap(True);
       with MessageLabel do
       begin
-        BoundsRect := TextRect; 
+        BoundsRect := TextRect;
         ALeft := IconTextWidth - TextRect.Right + HorzMargin;
         if UseRightToLeftAlignment then
           ALeft := Result.ClientWidth - ALeft - Width;
@@ -802,7 +826,7 @@ begin
       end;
       if CheckCaption <> '' then
         with DynControlEngine.CreateCheckboxControl(Result, Panel, 'DontShowAgain', CheckCaption) do
-        begin 
+        begin
           SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
             Result.ClientWidth - 2 * HorzMargin, Height);
         end;
@@ -811,7 +835,7 @@ begin
         CountDownlabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Countdown', Format(RsCntdownText,
           [Timeout, TimeoutUnit(Timeout)]), nil);
         with CountDownlabel do
-        begin 
+        begin
           if CheckCaption = '' then
             SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
               Result.ClientWidth - 2 * HorzMargin, Height)
@@ -826,6 +850,7 @@ begin
     raise;
   end;
 end;
+
 
 //=== { TDSARegister } =======================================================
 
@@ -1508,10 +1533,10 @@ end;
 
 const
   Captions: array [TMsgDlgType] of string =
-    (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
+    ('', SMsgDlgInformation, SMsgDlgWarning, SMsgDlgError, SMsgDlgConfirm);
   IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
-    (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
-     QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
+    (QMessageBoxIcon_NoIcon, QMessageBoxIcon_Information, QMessageBoxIcon_Warning,
+    QMessageBoxIcon_Critical, QMessageBoxIcon_NoIcon);
 
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
   ButtonCaptions: array [TMsgDlgBtn] of string =
@@ -1527,16 +1552,37 @@ begin
   Result := Captions[DlgType];
 end;
 
+function DlgBtnCaption(const DlgBtn: TMsgDlgBtn): string;
+begin
+  Result := ButtonCaptions[DlgBtn];
+end;
+
+function DlgModalResult(const DlgBtn: TMsgDlgBtn): integer;
+begin
+  Result := ModalResults[DlgBtn];
+end;
+
 function DlgPic(const DlgType: TMsgDlgType): TGraphic;
+var
+  Pixmap: QPixmapH;
+  Bitmap:TBitmap;
 begin
   if IconIDs[DlgType] <> QMessageBoxIcon_NoIcon then
   begin
     Result := TIcon.Create;
-    try  
-      // TODO 
+    Pixmap := QPixmap_create;
+    Bitmap := TBitmap.Create;;
+    try
+      QMessageBox_standardIcon(Pixmap,
+         IconIDs[DlgType],  QStyle_guiStyle(Application.Style.Handle));
+      Bitmap.Handle := Pixmap;
+      Result.Assign(Bitmap);
+//      QPixmap_destroy( Pixmap );
+      Bitmap.Free;
     except
       Result.Free;
       raise;
+      Result := nil;
     end;
   end
   else
@@ -1587,9 +1633,157 @@ begin
   Result := ButtonIndex(Results, ModalResults[Button]);
 end;
 
+
 //----------------------------------------------------------------------------
 // MessageDlg replacements and extensions
 //----------------------------------------------------------------------------
+
+function CreateMessageDialog(const Msg: TCaption; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons): TForm;
+const
+  mcHorzMargin = 8;
+  mcVertMargin = 8;
+  mcHorzSpacing = 10;
+  mcVertSpacing = 10;
+  mcButtonWidth = 50;
+  mcButtonHeight = 14;
+  mcButtonSpacing = 4;
+var
+  DialogUnits: TPoint;
+  HorzMargin, VertMargin, HorzSpacing, VertSpacing, ButtonWidth,
+  ButtonHeight, ButtonSpacing, ButtonCount, ButtonGroupWidth,
+  IconTextWidth, IconTextHeight, X, ALeft: Integer;
+  Btn, DefaultButton, CancelButton: TMsgDlgBtn;
+  Icon: TGraphic;
+  TextRect: TRect;
+begin
+  Result := TMessageForm.CreateNew(Application);
+  with Result do
+  begin
+    TMessageForm(Result).Timeout := 0;
+    BorderStyle := fbsDialog;
+    Canvas.Font := Font;
+    KeyPreview := True;
+    OnKeyDown := TDSAMessageForm(Result).CustomKeyDown;
+    DialogUnits := GetAveCharSize(Canvas);
+    HorzMargin := MulDiv(mcHorzMargin, DialogUnits.X, 4);
+    VertMargin := MulDiv(mcVertMargin, DialogUnits.Y, 8);
+    HorzSpacing := MulDiv(mcHorzSpacing, DialogUnits.X, 4);
+    VertSpacing := MulDiv(mcVertSpacing, DialogUnits.Y, 8);
+    ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
+    for Btn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+    begin
+      if Btn in Buttons then
+      begin
+        if ButtonWidths[Btn] = 0 then
+        begin
+          TextRect := Rect(0,0,0,0);
+          DrawText( canvas, ButtonCaptions[Btn], -1, TextRect,
+            DT_CALCRECT or DT_LEFT or DT_SINGLELINE);
+          with TextRect do
+            ButtonWidths[Btn] := Right - Left + 8;
+        end;
+        if ButtonWidths[Btn] > ButtonWidth then
+          ButtonWidth := ButtonWidths[Btn];
+      end;
+    end;
+    ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
+    ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
+    SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
+    DrawText(Canvas, Msg, Length(Msg)+1, TextRect,
+      DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK);
+    Icon := TIcon( DlgPic(DlgType));
+    IconTextWidth := TextRect.Right;
+    IconTextHeight := TextRect.Bottom;
+    if Icon <> nil then
+    begin
+      Inc(IconTextWidth, 32 + HorzSpacing);
+      if IconTextHeight < 32 then IconTextHeight := 32;
+    end;
+    ButtonCount := 0;
+    for Btn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+      if Btn in Buttons
+      then
+        Inc(ButtonCount);
+    ButtonGroupWidth := 0;
+    if ButtonCount <> 0
+    then
+      ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
+    ClientWidth := Max(IconTextWidth, ButtonGroupWidth) + HorzMargin * 2;
+    ClientHeight := IconTextHeight + ButtonHeight + VertSpacing +
+      VertMargin * 2;
+    Left := (Screen.Width div 2) - (Width div 2);
+    Top := (Screen.Height div 2) - (Height div 2);
+    if DlgType <> mtCustom
+    then
+      Caption := DlgCaption(DlgType)
+    else
+      Caption := Application.Title;
+    if Icon <> nil
+    then
+      with TImage.Create(Result) do
+      begin
+        Name := 'Image';
+        Parent := Result;
+        Picture.Assign(Icon);
+        SetBounds(HorzMargin, VertMargin, 32, 32);
+      end;
+    TMessageForm(Result).Message := TLabel.Create(Result);
+    with TMessageForm(Result).Message do
+    begin
+      Name := 'Message';
+      Parent := Result;
+      WordWrap := True;
+      Caption := Msg;
+      BoundsRect := TextRect;
+      ALeft := IconTextWidth - TextRect.Right + HorzMargin;
+      SetBounds(ALeft, VertMargin, TextRect.Right, TextRect.Bottom);
+    end;
+    if mbOk in Buttons
+    then
+      DefaultButton := mbOk
+    else if mbYes in Buttons
+    then
+      DefaultButton := mbYes
+    else
+      DefaultButton := mbRetry;
+
+    if mbCancel in Buttons
+    then
+      CancelButton := mbCancel
+    else if mbNo in Buttons
+    then
+      CancelButton := mbNo
+    else
+      CancelButton := mbOk;
+
+    X := (ClientWidth - ButtonGroupWidth) div 2;
+    for Btn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+      if Btn in Buttons
+      then
+        with TButton.Create(Result) do
+        begin
+//          Name := ButtonNames[Btn];
+          Parent := Result;
+          Caption := ButtonCaptions[Btn];
+          ModalResult := DlgModalResult(Btn);
+          if Btn = DefaultButton
+          then
+            Default := True;
+          if Btn = CancelButton
+          then
+            Cancel := True;
+          SetBounds(X, IconTextHeight + VertMargin + VertSpacing,
+            ButtonWidth, ButtonHeight);
+          Inc(X, ButtonWidth + ButtonSpacing);
+          if Btn = mbHelp
+          then
+            OnClick := TMessageForm(Result).HelpButtonClick;
+        end;
+  end;
+end;
+
+
 
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind; const Timeout: Integer;
   const ADynControlEngine: TJvDynControlEngine);
@@ -2035,7 +2229,8 @@ begin
   end
   else
   begin
-    Inc(Integer(Ptr), 4);
+//    Inc(Integer(Ptr), 4);
+    Inc(Integer(Ptr), 8);
     Result := PInteger(Ptr)^ div 4;
   end;
 end;
@@ -2099,7 +2294,6 @@ begin
         CheckCaption := CheckCaption + '.';
       SetStrProp(JvDSADialog.CheckControl, 'Caption', CheckCaption);
     end;
-
     { Notify the JvDSADialog component that we are about to show the form (may initialize the
       auto-close timer) }
     JvDSADialog.BeforeShow;

@@ -52,13 +52,15 @@ type
   end;
 
   TJvCommonDialogP = class(TJvComponent)
-  public
+  public 
+
     procedure Execute; virtual; abstract;
   end;
 
   // (rom) alternative to TJvCommonDialogP
   TJvCommonDialogF = class(TJvComponent)
-  public
+  public 
+
     function Execute: Boolean; virtual; abstract;
   end;
 
@@ -73,6 +75,8 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+
 
 
 {$IFDEF UNITVERSIONING}

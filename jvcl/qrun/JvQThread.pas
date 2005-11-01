@@ -45,7 +45,7 @@ uses
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
-  QDialogs,
+  QForms, QDialogs,
   JvQTypes, JvQComponent, JvQThreadDialog;
 
 type
@@ -66,7 +66,8 @@ type
     procedure InternalMessageDlg;
   public
     constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
-    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
     procedure Execute; override;
   end;
 
@@ -96,6 +97,8 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     procedure Synchronize (Method: TThreadMethod);
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
@@ -141,7 +144,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 var
   SyncMtx: THandle = 0;
@@ -203,10 +205,19 @@ begin
       FThreadDialogForm := nil
 end;
 
-procedure TJvThread.Synchronize (Method: TThreadMethod);
+procedure TJvThread.Synchronize(Method: TThreadMethod);
 begin
   if Assigned(LastThread) then
     LastThread.Synchronize(Method);
+end;
+
+function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+begin
+  if Assigned(LastThread) then
+    Result := LastThread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
+  else
+    Result := 0;
 end;
 
 function TJvThread.Execute(P: Pointer): THandle;
@@ -243,7 +254,8 @@ procedure TJvThread.ExecuteAndWait(P: Pointer);
 begin
   Execute(P);
   while OneThreadIsRunning do
-    Sleep(1);
+    //Sleep(25);
+    Application.HandleMessage; 
 end;
 
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
@@ -299,7 +311,7 @@ end;
 procedure TJvThread.DoCreate;
 begin
   if Assigned(FOnBegin) then
-    FOnBegin(nil);
+    FOnBegin(Self);
 end;
 
 procedure TJvThread.DoTerminate(Sender: TObject);
@@ -308,14 +320,14 @@ begin
   FThreads.Remove(Sender);
   try
     if Assigned(FOnFinish) then
-      FOnFinish(nil);
+      FOnFinish(Self);
   finally
     if FThreadCount = 0 then
     begin
       if Assigned(ThreadDialog) then
         ThreadDialog.CloseThreadDialogForm;
       if Assigned(FOnFinishAll) then
-        FOnFinishAll(nil);
+        FOnFinishAll(Self);
     end;
   end;
 end;
@@ -419,7 +431,8 @@ begin
   FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
-function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
   FSynchMsg := Msg;
   FSynchAType := AType;

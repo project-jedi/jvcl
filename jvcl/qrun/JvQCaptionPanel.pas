@@ -52,9 +52,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  QWindows, QMessages, 
+  QWindows, QMessages,  
   Qt, 
-  Classes, QGraphics, QControls, QForms,
+  SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls,
   JvQComponent, JvQExControls;
 
 type
@@ -132,7 +132,7 @@ type
     procedure Paint; override;
     procedure Resize; override;
 
-    procedure AlignControls(AControl: TControl; var Rect: TRect); override; 
+    procedure AlignControls(AControl: TControl; var R: TRect); override; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -198,7 +198,7 @@ const
 implementation
 
 uses
-  SysUtils, QExtCtrls;
+  JvQJCLUtils;
 
 //=== { TJvCapBtn } ==========================================================
 
@@ -485,19 +485,19 @@ begin
   Invalidate;
 end;
 
-procedure TJvCaptionPanel.AlignControls(AControl: TControl; var Rect: TRect);
+procedure TJvCaptionPanel.AlignControls(AControl: TControl; var R: TRect);
 begin
   case FCaptionPosition of
     dpLeft:
-      Rect := Classes.Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
+      R := Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
     dpTop:
-      Rect := Classes.Rect(0, FCaptionWidth + FCaptionOffsetSmall, ClientWidth, ClientHeight);
+      R := Rect(0, FCaptionWidth + FCaptionOffsetSmall, ClientWidth, ClientHeight);
     dpRight:
-      Rect := Classes.Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
+      R := Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
     dpBottom:
-      Rect := Classes.Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
+      R := Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
   end;
-  inherited AlignControls(AControl, Rect);
+  inherited AlignControls(AControl, R);
 end;
 
 

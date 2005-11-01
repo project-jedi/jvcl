@@ -34,7 +34,10 @@ unit JvQButton;
 
 interface
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   Qt, 
   QWindows, QMessages, Classes, QGraphics, QControls, QMenus, QButtons,
   JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls;
@@ -63,9 +66,8 @@ type
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
 
-    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
-    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
-    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
+    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE; 
     procedure SetForceSameSize(const Value: Boolean);
     procedure SetAllowAllUp(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
@@ -115,6 +117,7 @@ type
     property OnDropDownClose: TNotifyEvent read FOnDropDownClose write FOnDropDownClose;
   public
     procedure Click; override;
+
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -177,14 +180,22 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  SysUtils, QForms,
-  JvQJVCLUtils, JvQThemes, Math;
+  SysUtils, QForms, 
+  Types, 
+  JvQJVCLUtils, JvQThemes;
 
 const
   JvBtnLineSeparator = '|';
@@ -320,15 +331,16 @@ begin
   if DropArrow and Assigned(DropDownMenu) then
   begin
     ArrowRect := Rect(Width - 16, Height div 2, Width - 9, Height div 2 + 9);
-    if bsMouseDown in FStates then OffsetRect(ArrowRect, 1, 1); 
+    if bsMouseDown in FStates then
+      OffsetRect(ArrowRect, 1, 1);
     DrawDropArrow(Canvas, ArrowRect);
   end;
-//  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
+//  BitBlt(Canvas.Handle, 0, 0, Width,Height, FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
 end;
 
 procedure TJvCustomGraphicButton.PaintFrame(Canvas: TCanvas);
 begin
-// do nothing
+  // do nothing
 end;
 
 procedure TJvCustomGraphicButton.PaintButton(Canvas: TCanvas);
@@ -371,13 +383,19 @@ begin
   begin
     if not InsideBtn(X, Y) then
     begin
-      Exclude(FStates, bsMouseInside);
-      RepaintBackground;
+      if bsMouseInside in FStates then
+      begin
+        Exclude(FStates, bsMouseInside);
+        RepaintBackground;
+      end;
     end
     else
     begin
-      Include(FStates, bsMouseInside);
-      RepaintBackground;
+      if not (bsMouseInside in FStates) then
+      begin
+        Include(FStates, bsMouseInside);
+        RepaintBackground;
+      end;
     end;
   end;
 end;
@@ -482,7 +500,8 @@ begin
       Msg.Msg := CM_FORCESIZE;
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
-      Msg.NewSize.Y := AHeight;  
+      Msg.NewSize.Y := AHeight;
+      Form.Broadcast(Msg); 
       for I := 0 to Form.ControlCount - 1 do
         if Form.Controls[I] is TJvCustomGraphicButton then
           TJvCustomGraphicButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
@@ -526,13 +545,14 @@ var
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
-    Msg.Msg := CM_BUTTONPRESSED;
+    Msg.Msg := CM_JVBUTTONPRESSED;
     Msg.Index := GroupIndex;
     Msg.Control := Self;
-    Msg.Result := 0;  
+    Msg.Result := 0;
+    Parent.Broadcast(Msg); 
     for I := 0 to Parent.ControlCount - 1 do
       if Parent.Controls[I] is TJvCustomGraphicButton then
-        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex);
+        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
   end;
 end;
 
@@ -569,15 +589,12 @@ begin
   if FDropDownMenu <> Value then
   begin
     FDropDownMenu := Value;
-    if DropArrow then Invalidate;
+    if DropArrow then
+      Invalidate;
   end;
 end;
 
-procedure TJvCustomGraphicButton.CMSysColorChange(var Msg: TMessage);
-begin
-  inherited;
-  RepaintBackground;
-end;
+
 
 procedure TJvCustomGraphicButton.FontChanged;
 begin
@@ -593,13 +610,22 @@ end;
 
 procedure TJvCustomGraphicButton.Click;
 begin
-  inherited Click;
   if GroupIndex <> 0 then
   begin
     if AllowAllUp then
       Down := not Down
     else
       Down := True;
+  end;
+  try
+    inherited Click;
+  except
+    // Mantis 3097: In case there is an exception, we ensure here that the
+    // button is not left "down", and we reraise the exception as we can't
+    // handle it and don't want to ignore it.
+    Exclude(FStates, bsMouseDown);
+    RepaintBackground;
+    raise;
   end;
 end;
 
@@ -770,7 +796,7 @@ procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize; 
-//  I: Integer; 
+  I: Integer; 
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -781,11 +807,11 @@ begin
       Msg.Msg := CM_FORCESIZE;
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
-      Msg.NewSize.Y := AHeight;  
-      BroadcastMsg(Form, Msg);
-//      for I := 0 to Form.ControlCount - 1 do
-//        if Form.Controls[I] is TJvCustomButton then
-//          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
+      Msg.NewSize.Y := AHeight;
+      Form.Broadcast(Msg); 
+      for I := 0 to Form.ControlCount - 1 do
+        if Form.Controls[I] is TJvCustomButton then
+          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
     end;
   end;
 end;
@@ -900,16 +926,6 @@ begin
   if Assigned(FOnDropDownClose) then
     FOnDropDownClose(Self);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

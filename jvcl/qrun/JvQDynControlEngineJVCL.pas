@@ -36,8 +36,8 @@ uses
   Classes, QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
   QButtons, QDialogs, QFileCtrlS,
   JvQMaskEdit, JvQBitBtn, JvQCheckBox, JvQBaseEdits,
-  JvQLabel, JvQListBox, JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
-  JvQScrollBox, JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
+  JvQLabel, JvQPanel, JvQRadioGroup, JvQToolEdit,
+  JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
 type
@@ -46,7 +46,7 @@ type
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
-    procedure ControlSetCaption(Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
@@ -58,8 +58,8 @@ type
     function ControlGetValue: Variant;
 
     //IJvDynControlEdit
-    procedure ControlSetPasswordChar(Value: Char);
-    procedure ControlSetEditMask(Value: string);
+//    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(const Value: string);
   end;
 
   TJvDynControlJVCLButtonEdit = class (TJvPanel, IUnknown, IJvDynControl, IJvDynControlData,
@@ -86,7 +86,7 @@ type
     function ControlGetValue: variant;
 
     //IJvDynControlEdit
-    procedure ControlSetPasswordChar(Value: Char);
+//    procedure ControlSetPasswordChar(Value: Char);
     procedure ControlSetEditMask(Value: string);
 
     //IJvDynControlButtonEdit
@@ -215,7 +215,7 @@ type
     procedure ControlSetMaxDate(Value: TDateTime);
     procedure ControlSetFormat(Value: string);
   end;
-
+  (*
   TJvDynControlJVCLDateEdit = class(TJvDateTimePicker, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlDate)
   public
@@ -256,6 +256,7 @@ type
 
     procedure ControlSetFormat(Value: string);
   end;
+  *)
 
   TJvDynControlJVCLCheckBox = class(TJvCheckBox, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlReadOnly)
@@ -273,33 +274,7 @@ type
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
   end;
-  {$IFDEF VCL}
-  TJvDynControlJVCLMemo = class(TJvMemo, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
-  public
-    procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetReadonly(Value: Boolean);
 
-    procedure ControlSetOnEnter(Value: TNotifyEvent);
-    procedure ControlSetOnExit(Value: TNotifyEvent);
-    procedure ControlSetOnChange(Value: TNotifyEvent);
-    procedure ControlSetOnClick(Value: TNotifyEvent);
-
-    procedure ControlSetValue(Value: Variant);
-    function ControlGetValue: Variant;
-
-    procedure ControlSetSorted(Value: Boolean);
-    procedure ControlSetItems(Value: TStrings);
-    function ControlGetItems: TStrings;
-
-    procedure ControlSetWantTabs(Value: Boolean);
-    procedure ControlSetWantReturns(Value: Boolean);
-    procedure ControlSetWordWrap(Value: Boolean);
-    procedure ControlSetScrollBars(Value: TScrollStyle);
-  end;
-  {$ENDIF VCL}
   TJvDynControlJVCLRadioGroup = class(TJvRadioGroup, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup, IJvDynControlReadOnly)
   public
@@ -421,7 +396,7 @@ type
     IJvDynControlLabel)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value: string);
+    procedure ControlSetCaption(const Value: TCaption);
     procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
@@ -523,10 +498,10 @@ begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetPasswordChar(Value: Char);
-begin
-  PasswordChar := Value;
-end;
+//procedure TJvDynControlJVCLMaskEdit.ControlSetPasswordChar(Value: Char);
+//begin
+  //PasswordChar := Value;
+//end;
 
 procedure TJvDynControlJVCLMaskEdit.ControlSetEditMask(Value: string);
 begin
@@ -606,12 +581,12 @@ begin
   Result := FEditControl.Text;
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetPasswordChar(Value: Char);
-begin
-  FEditControl.PasswordChar := Value;
-end;
+//procedure TJvDynControlJVCLButtonEdit.ControlSetPasswordChar(Value: Char);
+//begin
+//  FEditControl.PasswordChar := Value;
+//end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetEditMask(Value: string);
+procedure TJvDynControlJVCLButtonEdit.ControlSetEditMask(const Value: string);
 begin
   FEditControl.EditMask := Value;
 end;
@@ -932,6 +907,7 @@ begin
   DialogOptions := Value;
 end;
 
+(*
 //=== TJvDynControlJVCLDateTimeEdit ==========================================
 
 constructor TJvDynControlJVCLDateTimeEdit.Create(AOwner: TComponent);
@@ -1039,12 +1015,13 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetFormat(Value: string);
 begin
-  
+
   FDatePicker.Format := Value;
   FTimePicker.Format := Value;
-  
+
 end;
 
+*)
 
 //=== TJvDynControlJVCLDateEdit ==============================================
 
@@ -1109,8 +1086,9 @@ procedure TJvDynControlJVCLDateEdit.ControlSetFormat(Value: string);
 begin
   
   Format := Value;
-  
+
 end;
+(*
 
 //=== TJvDynControlJVCLTimeEdit ==============================================
 
@@ -1161,11 +1139,11 @@ end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetFormat(Value: string);
 begin
-  
-  Format := Value;
-  
-end;
 
+  Format := Value;
+
+end;
+*)
 //=== TJvDynControlJVCLCheckBox ==============================================
 
 procedure TJvDynControlJVCLCheckBox.ControlSetDefaultProperties;
@@ -1220,6 +1198,7 @@ begin
   Result := Checked;
 end;
 
+(*
 //=== TJvDynControlJVCLMemo ==================================================
 
 procedure TJvDynControlJVCLMemo.ControlSetDefaultProperties;
@@ -1303,6 +1282,8 @@ procedure TJvDynControlJVCLMemo.ControlSetScrollBars(Value: TScrollStyle);
 begin
   ScrollBars := Value;
 end;
+*)
+
 
 //=== TJvDynControlJVCLRadioGroup ============================================
 
@@ -1380,6 +1361,7 @@ begin
   Columns := Value;
 end;
 
+(*
 //=== TJvDynControlJVCLListBox ===============================================
 
 procedure TJvDynControlJVCLListBox.ControlSetDefaultProperties;
@@ -1451,7 +1433,7 @@ procedure TJvDynControlJVCLListBox.ControlSetOnDblClick(Value: TNotifyEvent);
 begin
   OnDblClick := Value;
 end;
-
+*)
 //=== TJvDynControlJVCLComboBox ==============================================
 
 procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;

@@ -37,6 +37,9 @@ unit JvQCalc;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   QWindows, QMessages, Classes, QControls, QForms, QStdCtrls, QMenus, QExtCtrls, 
   QImgList, 
   JvQBaseDlg;
@@ -110,12 +113,19 @@ function CreatePopupCalculator(AOwner: TComponent ): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -286,7 +296,7 @@ end;
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
-  BtnCaptions: array [cbSgn..cbMC] of PChar =
+  BtnCaptions: array [cbSgn..cbMC] of string[4] =
     ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
      'MP', 'MS', 'MR', 'MC');
 begin
@@ -300,7 +310,7 @@ begin
       Caption := DecimalSeparator
     else
     if Kind in [cbSgn..cbMC] then
-      Caption := StrPas(BtnCaptions[Kind]);
+      Caption := BtnCaptions[Kind];
     Left := BtnPos[ALayout, Kind].X;
     Top := BtnPos[ALayout, Kind].Y;
     if ALayout = clDialog then
@@ -810,7 +820,7 @@ begin
     Key := #0;
   if Assigned(FOnCalcKey) then
     FOnCalcKey(Self, Key);
-  if Key in [DecimalSeparator, '.', ','] then
+  if Key in [AnsiChar(DecimalSeparator), '.', ','] then
   begin
     CheckFirst;
     if Pos(DecimalSeparator, Text) = 0 then
@@ -948,7 +958,7 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if Key in [DecimalSeparator, '.', ','] then
+  if Key in [AnsiChar(DecimalSeparator), '.', ','] then
     Key := '.'
   else
   if Key = Cr then
@@ -1017,10 +1027,10 @@ begin
   begin
     if FControl is TCustomLabel then
       TCustomLabelAccessProtected(FControl).Caption := Text
-//    else
-//    { (rb) Fix to update the text of a TJvCalcEdit }
-//    if FControl is TCustomEdit then
-//      TCustomEdit(FControl).Text := Text;
+    else
+    // Note that JvDBCalcEdit will not set its text if it is readonly
+    if FControl is TCustomEdit then
+      TCustomEdit(FControl).Text := Text;
   end;
   if Assigned(FOnTextChange) then
     FOnTextChange(Self);
@@ -1150,14 +1160,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

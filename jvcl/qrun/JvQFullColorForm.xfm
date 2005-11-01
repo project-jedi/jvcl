@@ -1,24 +1,29 @@
 object JvFullColorFrm: TJvFullColorFrm
   Left = 350
   Top = 319
+  Width = 712
+  Height = 380
+  VertScrollBar.Range = 369
+  HorzScrollBar.Range = 705
   ActiveControl = ColorBox
   BorderIcons = [biSystemMenu]
   BorderStyle = fbsDialog
   Caption = 'Color Spaces Editor, Choose your color'
-  ClientHeight = 380
-  ClientWidth = 712
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
   Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
   Font.Style = []
+  Font.Weight = 40
   KeyPreview = True
-  OldCreateOrder = False
+  ParentFont = False
   Position = poDesktopCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  TextWidth = 6
   object LabelColorSpace: TLabel
     Left = 8
     Top = 10
@@ -106,7 +111,6 @@ object JvFullColorFrm: TJvFullColorFrm
       Height = 20
       LargeChange = 16
       Max = 255
-      PageSize = 0
       TabOrder = 0
       OnChange = ScrollBarChange
     end
@@ -118,7 +122,6 @@ object JvFullColorFrm: TJvFullColorFrm
       Height = 20
       LargeChange = 16
       Max = 255
-      PageSize = 0
       TabOrder = 2
       OnChange = ScrollBarChange
     end
@@ -130,7 +133,6 @@ object JvFullColorFrm: TJvFullColorFrm
       Height = 20
       LargeChange = 16
       Max = 255
-      PageSize = 0
       TabOrder = 4
       OnChange = ScrollBarChange
     end
@@ -138,8 +140,16 @@ object JvFullColorFrm: TJvFullColorFrm
       Left = 312
       Top = 40
       Width = 65
-      Height = 22
+      Height = 21
+      ClipboardCommands = [caCopy, caCut, caPaste, caUndo]
       MaxValue = 255.000000000000000000
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'MS Sans Serif'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       TabOrder = 1
       OnChange = SpinEditChange
     end
@@ -148,8 +158,16 @@ object JvFullColorFrm: TJvFullColorFrm
       Left = 312
       Top = 96
       Width = 65
-      Height = 22
+      Height = 21
+      ClipboardCommands = [caCopy, caCut, caPaste, caUndo]
       MaxValue = 255.000000000000000000
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'MS Sans Serif'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       TabOrder = 3
       OnChange = SpinEditChange
     end
@@ -158,8 +176,16 @@ object JvFullColorFrm: TJvFullColorFrm
       Left = 312
       Top = 152
       Width = 65
-      Height = 22
+      Height = 21
+      ClipboardCommands = [caCopy, caCut, caPaste, caUndo]
       MaxValue = 255.000000000000000000
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'MS Sans Serif'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       TabOrder = 5
       OnChange = SpinEditChange
     end
@@ -167,11 +193,18 @@ object JvFullColorFrm: TJvFullColorFrm
       Left = 88
       Top = 200
       Width = 201
-      Height = 22
+      Height = 19
       ColorDialogText = 'Custom...'
-      DroppedDownWidth = 201
+      HexPrefix = '$'
       NewColorText = 'Custom'
       Options = [coText, coSysColors]
+      Font.Color = clText
+      Font.Height = 11
+      Font.Name = 'MS Sans Serif'
+      Font.Pitch = fpVariable
+      Font.Style = []
+      Font.Weight = 40
+      ParentFont = False
       TabOrder = 6
       OnClick = ComboBoxPredefinedSelect
     end
@@ -232,7 +265,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Width = 225
       Height = 21
       Selected = acXYZ
-      ItemHeight = 13
+      ItemHeight = 15
       TabOrder = 0
       OnChange = ComboBoxAxisChange
     end
@@ -275,12 +308,19 @@ object JvFullColorFrm: TJvFullColorFrm
     OnClick = ButtonApplyClick
   end
   object JvColorSpaceCombo: TJvFullColorSpaceCombo
-    Left = 8
-    Top = 32
-    Width = 209
+    Left = 9
+    Top = 28
+    Width = 164
     Height = 21
-    ItemHeight = 13
-    TabOrder = 0
-    OnClick = JvComboBoxColorSpaceSelect
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ItemHeight = 15
+    ParentFont = False
+    TabOrder = 12
+    OnSelect = JvComboBoxColorSpaceSelect
   end
 end

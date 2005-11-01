@@ -177,12 +177,13 @@ begin
     Canvas.Rectangle(ClientRect);
   end;
   SrcRect := Rect(0, 0, FImage.Width, FImage.Height);  
-  DestRect := Bounds(Left, Top, Width, Height); 
+  DestRect := Bounds(Left, Top, Width, Height);
   OffsetRect(DestRect, (ClientWidth - FImage.Width) div 2, (ClientHeight - FImage.Height) div 2);
   with Canvas do
   begin
     CopyMode := cmSrcCopy;
-    QWindows.CopyRect( Canvas,  DestRect, FImage.Canvas, SrcRect);
+//    QWindows.CopyRect( Canvas,  DestRect, FImage.Canvas, SrcRect);
+    CopyRect( DestRect, FImage.Canvas, SrcRect)
   end;
 end;
 

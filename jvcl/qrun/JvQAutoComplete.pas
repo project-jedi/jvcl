@@ -35,17 +35,18 @@ interface
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
   QWindows, 
   SysUtils, Classes, QControls, QStdCtrls;
 
 type
+  TJvGetSearchItemPrefixEvent = procedure(Sender: TObject; var Prefix: string) of object;
+
   { TControlAutoComplete implements a autocomplete code for a controls it is a
     abstract base class. After you have created an instance of a derived class
     you must either assign the AutoCompleteEvent to the OnKeyPress event of the
     control or you must call the AutoComplete method from in a KeyPress event
     handler.
-
 
     (ahuser) 2005-01-31: changed from TObject to TComponent due to Notification()
     Do not register this component it is more a "TObject" than a TComponent. }
@@ -60,6 +61,7 @@ type
     FOnValidateItems: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FOnValueChange: TNotifyEvent;
+    FOnGetSearchItemPrefix: TJvGetSearchItemPrefixEvent;
   protected
     function GetText: TCaption; virtual; abstract;
     procedure SetText(const Value: TCaption); virtual; abstract;
@@ -77,6 +79,7 @@ type
     procedure DoValidateItems; dynamic;
     procedure DoChange; dynamic;
     procedure DoValueChange; dynamic;
+    procedure GetSearchItemPrefix(var Prefix: string); dynamic;
   public
     constructor Create; reintroduce;
     procedure AutoCompleteEvent(Sender: TObject; var Key: Char);
@@ -90,6 +93,7 @@ type
     property OnValidateItems: TNotifyEvent read FOnValidateItems write FOnValidateItems;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnValueChange: TNotifyEvent read FOnValueChange write FOnValueChange;
+    property OnGetSearchItemPrefix: TJvGetSearchItemPrefixEvent read FOnGetSearchItemPrefix write FOnGetSearchItemPrefix;
   end;
 
   TJvBaseEditListAutoComplete = class(TJvControlAutoComplete)
@@ -245,7 +249,7 @@ uses
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
-  JvQConsts, JvQJCLUtils;
+  JvQConsts;
 
 //=== { TJvControlAutoComplete } =============================================
 
@@ -290,6 +294,12 @@ begin
     FOnValueChange(Self);
 end;
 
+procedure TJvControlAutoComplete.GetSearchItemPrefix(var Prefix: string);
+begin
+  if Assigned(FOnGetSearchItemPrefix) then
+    FOnGetSearchItemPrefix(Self, Prefix);
+end;
+
 procedure TJvControlAutoComplete.AutoCompleteEvent(Sender: TObject; var Key: Char);
 begin
   AutoComplete(Key);
@@ -325,28 +335,31 @@ var
   var
     Idx: Integer;
     ValueChange: Boolean;
+    PartToFind: string;
   begin
-    if AnItem = '' then
+    Result := False;
+    PartToFind := AnItem;
+    GetSearchItemPrefix(PartToFind);
+    if PartToFind = '' then
     begin
-      Result := False;
       SetItemIndex(-1);
       DoChange;
       Exit;
     end;
-    Idx := FindItemPrefix(-1, AnItem);
-    Result := (Idx <> -1);
-    if not Result then
+    Idx := FindItemPrefix(-1, PartToFind);
+    if Idx < 0 then
       Exit;
+    Result := True;
     ValueChange := Idx <> GetItemIndex;
     SetItemIndex(Idx);
     if ListSearch then
     begin
       SetItemIndex(Idx);
-      FFilter := AnItem;
+      FFilter := PartToFind;
     end
     else
     begin
-      SetText(AnItem + Copy(GetItemAt(Idx), Length(AnItem) + 1, MaxInt));
+      SetText(AnItem + Copy(GetItemAt(Idx), Length(PartToFind) + 1, MaxInt));
       SetEditSel(Length(AnItem), Length(GetText));
     end;
     if ValueChange then

@@ -56,8 +56,10 @@ type
   TJvSimpleXMLElemComment = class;
   TJvSimpleXMLElemClassic = class;
   TJvSimpleXMLElemCData = class;
+  TJvSimpleXMLElemDocType = class;
   TJvSimpleXMLElemText = class;
   TJvSimpleXMLElemHeader = class;
+  TJvSimpleXMLElemSheet = class;
   TJvOnSimpleXMLParsed = procedure(Sender: TObject; Name: string) of object;
   TJvOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
   TJvOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
@@ -171,7 +173,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function AddComment(const AValue: string): TJvSimpleXMLElemComment;
+    function AddDocType(const AValue: string): TJvSimpleXMLElemDocType;
     procedure Clear;
+    function AddStyleSheet(AType, AHRef: string): TJvSimpleXMLElemSheet;
     function LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil): string;
     procedure SaveToStream(const Stream: TStream; Parent: TJvSimpleXML = nil);
     property Item[const Index: Integer]: TJvSimpleXMLElem read GetItem; default;
@@ -263,7 +268,7 @@ type
   public
     constructor Create(const AOwner: TJvSimpleXMLElem); virtual;
     destructor Destroy; override;
-    procedure Assign(Value: TJvSimpleXMLElem);
+    procedure Assign(Value: TJvSimpleXMLElem); virtual;
     procedure Clear; virtual;
     function SaveToString: string;
     procedure LoadFromString(const Value: string);
@@ -277,7 +282,7 @@ type
     property SimpleXML: TJvSimpleXML read GetSimpleXML;
     property Container: TJvSimpleXMLElems read FContainer write FContainer;
   published
-    function FullName:string;
+    function FullName: string;virtual;
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
     property NameSpace: string read FNameSpace write FNameSpace;
@@ -289,6 +294,7 @@ type
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Value: string read FValue write FValue;
   end;
+  TJvSimpleXMLElemClass = class of TJvSimpleXMLElem;
 
   TJvSimpleXMLElemComment = class(TJvSimpleXMLElem)
   public
@@ -320,6 +326,8 @@ type
     FEncoding: string;
     FVersion: string;
   public
+    procedure Assign(Value: TJvSimpleXMLElem); override;
+    
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
     property Version: string read FVersion write FVersion;
@@ -340,7 +348,7 @@ type
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
   end;
 
-  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity);
+  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity, sxoDoNotSaveProlog);
   TJvSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJvSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
   TJvSimpleXML = class(TComponent)
@@ -483,6 +491,7 @@ begin
     GlobalSorts := TList.Create;
   Result := GlobalSorts;
 end;
+
 
 
 function XMLVariant: TXMLVariant;
@@ -979,13 +988,15 @@ begin
       FSaveCount := lCount;
       FSaveCurrent := 0;
       FOnSaveProg(Self, 0, lCount);
-      Prolog.SaveToStream(AOutStream, Self);
+      if not (sxoDoNotSaveProlog in FOptions) then
+        Prolog.SaveToStream(AOutStream, Self);
       Root.SaveToStream(AOutStream, '', Self);
       FOnSaveProg(Self, lCount, lCount);
     end
     else
     begin
-      Prolog.SaveToStream(AOutStream);
+      if not (sxoDoNotSaveProlog in FOptions) then
+        Prolog.SaveToStream(AOutStream);
       Root.SaveToStream(AOutStream);
     end;
     if Assigned(FOnEncodeStream) then
@@ -1037,8 +1048,11 @@ begin
 
   for I := 0 to Elems.Items.Count - 1 do
   begin
-    Elem := Items.Add(Elems.Items[I].Name, Elems.Items[I].Value);
-    Elem.Assign(TJvSimpleXMLElem(Elems.Items[I]));
+    // Create from the class type, so that the virtual constructor is called
+    // creating an element of the correct class type.
+    Elem := TJvSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Elems.Items[I].Parent);
+    Elem.Assign(Elems.Items[I]);
+    Items.Add(Elem);
   end;
 end;
 
@@ -2414,13 +2428,12 @@ end;
 
 procedure TJvSimpleXMLElemText.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 var
-  I, lStreamPos, Count, lPos: Integer;
+  I, lStreamPos, Count: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
 begin
   lStreamPos := Stream.Position;
   St := '';
-  lPos := 0;
 
   repeat
     Count := Stream.Read(lBuf, SizeOf(lBuf));
@@ -2439,15 +2452,8 @@ begin
             Count := 0;
             Break;
           end;
-        ' ':
-          if lPos = 0 then
-          begin
-            Inc(lPos);
-            St := St + ' ';
-          end;
       else
         begin
-          lPos := 0;
           St := St + lBuf[I];
         end;
       end;
@@ -2481,6 +2487,17 @@ begin
 end;
 
 //=== { TJvSimpleXMLElemHeader } =============================================
+
+procedure TJvSimpleXMLElemHeader.Assign(Value: TJvSimpleXMLElem);
+begin
+  inherited Assign(Value);
+  if Value is TJvSimpleXMLElemHeader then
+  begin
+    FStandAlone := TJvSimpleXMLElemHeader(Value).FStandalone;
+    FEncoding := TJvSimpleXMLElemHeader(Value).FEncoding;
+    FVersion := TJvSimpleXMLElemHeader(Value).FVersion;
+  end;
+end;
 
 constructor TJvSimpleXMLElemHeader.Create(const AOwner: TJvSimpleXMLElem);
 begin
@@ -3117,7 +3134,7 @@ var
   I: Integer;
 begin
   // test if the new value is only made of spaces or tabs
-  for I := 0 to Length(Value) do
+  for I := 1 to Length(Value) do
     if not (Value[I] in [Tab, ' ']) then
       Exit;
   FIndentString := Value;
@@ -3197,21 +3214,45 @@ function TJvSimpleXMLElemsProlog.FindHeader: TJvSimpleXMLElem;
 var
   I: Integer;
 begin
-  if Count = 0 then
-  begin
-    Result := TJvSimpleXMLElemHeader.Create(nil);
-    FElems.AddObject('', Result);
-  end
-  else
-  begin
-    for I := 0 to Count - 1 do
-      if Item[I] is TJvSimpleXMLElemHeader then
-      begin
-        Result := Item[I];
-        Exit;
-      end;
-    Result := nil;
-  end;
+  for I := 0 to Count - 1 do
+    if Item[I] is TJvSimpleXMLElemHeader then
+    begin
+      Result := Item[I];
+      Exit;
+    end;
+  // (p3) if we get here, an xml header was not found
+  Result := TJvSimpleXMLElemHeader.Create(nil);
+  Result.Name := 'xml';
+  FElems.AddObject('', Result);
+end;
+
+function TJvSimpleXMLElemsProlog.AddStyleSheet(AType, AHRef: string): TJvSimpleXMLElemSheet;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJvSimpleXMLElemSheet.Create(nil);
+  Result.Name := 'xml-stylesheet';
+  Result.Properties.Add('type',AType);
+  Result.Properties.Add('href',AHRef);
+  FElems.AddObject('xml-stylesheet', Result);
+end;
+
+function TJvSimpleXMLElemsProlog.AddComment(const AValue: string): TJvSimpleXMLElemComment;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJvSimpleXMLElemComment.Create(nil);
+  Result.Value := AValue;
+  FElems.AddObject('', Result);
+end;
+
+function TJvSimpleXMLElemsProlog.AddDocType(const AValue: string): TJvSimpleXMLElemDocType;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJvSimpleXMLElemDocType.Create(nil);
+  Result.Value := AValue;
+  FElems.AddObject('', Result);
 end;
 
 initialization

@@ -696,7 +696,7 @@ type
     { YW - called after the page shows up. }
     procedure Done; virtual;
     { YW - called just before the page is hidden. Page: To page }
-    procedure Exit(const ToPage: TJvWizardCustomPage); virtual;
+    procedure ExitPage(const ToPage: TJvWizardCustomPage); virtual; // renamed from Exit() to ExitPage
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -765,7 +765,7 @@ type
     FWizard: TJvWizard;
     function GetItems(Index: Integer): TJvWizardCustomPage;
   protected
-    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    procedure Notify(Ptr:  Pointer ; Action: TListNotification); override;
     property Wizard: TJvWizard read FWizard write FWizard;
   public
     destructor Destroy; override;
@@ -813,10 +813,12 @@ type
     procedure SetAutoHideButtonBar(const Value: Boolean);
     function GetWizardPages(Index: Integer): TJvWizardCustomPage;
     procedure SetDefaultButtons(const Value: Boolean);
+    function GetNavigateButtons(Index: Integer): TJvWizardNavigateButton;
+    procedure SetNavigateButtons(Index: Integer; Value: TJvWizardNavigateButton);
   protected
     procedure Loaded; override;
-    procedure AdjustClientRect(var Rect: TRect); override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure AdjustClientRect(var Rect: TRect); override; 
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override; 
     procedure ShowControl(AControl: TControl); override;
     procedure Paint; override;
     procedure Resize; override;
@@ -828,7 +830,7 @@ type
     procedure DoActivePageChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    destructor Destroy; override; 
     procedure SelectPriorPage;
     procedure SelectNextPage;
     procedure SelectFirstPage;
@@ -848,13 +850,13 @@ type
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
     property AutoHideButtonBar: Boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
-    property ButtonStart: TJvWizardNavigateButton read FNavigateButtons[bkStart] write FNavigateButtons[bkStart];
-    property ButtonLast: TJvWizardNavigateButton read FNavigateButtons[bkLast] write FNavigateButtons[bkLast];
-    property ButtonBack: TJvWizardNavigateButton read FNavigateButtons[bkBack] write FNavigateButtons[bkBack];
-    property ButtonNext: TJvWizardNavigateButton read FNavigateButtons[bkNext] write FNavigateButtons[bkNext];
-    property ButtonFinish: TJvWizardNavigateButton read FNavigateButtons[bkFinish] write FNavigateButtons[bkFinish];
-    property ButtonCancel: TJvWizardNavigateButton read FNavigateButtons[bkCancel] write FNavigateButtons[bkCancel];
-    property ButtonHelp: TJvWizardNavigateButton read FNavigateButtons[bkHelp] write FNavigateButtons[bkHelp];
+    property ButtonStart: TJvWizardNavigateButton index Integer(bkStart) read GetNavigateButtons write SetNavigateButtons;
+    property ButtonLast: TJvWizardNavigateButton index Integer(bkLast) read GetNavigateButtons write SetNavigateButtons;
+    property ButtonBack: TJvWizardNavigateButton index Integer(bkBack) read GetNavigateButtons write SetNavigateButtons;
+    property ButtonNext: TJvWizardNavigateButton index Integer(bkNext) read GetNavigateButtons write SetNavigateButtons;
+    property ButtonFinish: TJvWizardNavigateButton index Integer(bkFinish) read GetNavigateButtons write SetNavigateButtons;
+    property ButtonCancel: TJvWizardNavigateButton index Integer(bkCancel) read GetNavigateButtons write SetNavigateButtons;
+    property ButtonHelp: TJvWizardNavigateButton index Integer(bkHelp) read GetNavigateButtons write SetNavigateButtons;
     property DefaultButtons: Boolean read FDefaultButtons write SetDefaultButtons default True;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property ShowRouteMap: Boolean read GetShowRouteMap write SetShowRouteMap;
@@ -1480,8 +1482,8 @@ begin
 
   if Assigned(AParent) then
   begin
-    if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
-      raise EJvWizardError.CreateRes(@RsEInvalidParentControl);
+    if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then 
+      raise EJvWizardError.CreateRes(@RsEInvalidParentControl); 
     if AParent is TJvWizardCustomPage then
       AParent := TJvWizardCustomPage(AParent).Wizard;
   end;
@@ -1548,6 +1550,7 @@ end;
 
 constructor TJvWizardImage.Create;
 begin
+  inherited Create;
   FPicture := TPicture.Create;
   FPicture.OnChange := DoPictureChange;
   FAlignment := iaStretch;
@@ -1742,9 +1745,8 @@ begin
     end;
     with ACanvas do
     begin
-      Brush.Style := bsClear;
-      DrawText(ACanvas.Handle, PChar(FText), -1, ATextRect,
-        DT_WORDBREAK + Alignments[FAlignment]);
+      Brush.Style := bsClear; 
+      DrawText(ACanvas.Handle, PChar(FText), -1, ATextRect, DT_WORDBREAK or Alignments[FAlignment]); 
       { YW - Draw outline at design time. }
       if csDesigning in FWizardPageHeader.WizardPage.ComponentState then
       begin
@@ -2242,13 +2244,13 @@ var
 begin
   tmpSet := [AButton];
   IsEnabled := (tmpSet * EnabledButtons) <> [];
-  if AEnabled = IsEnabled then
-    System.Exit;
-
-  if AEnabled then
-    EnabledButtons := EnabledButtons + tmpSet
-  else
-    EnabledButtons := EnabledButtons - tmpSet;
+  if AEnabled <> IsEnabled then
+  begin
+    if AEnabled then
+      EnabledButtons := EnabledButtons + tmpSet
+    else
+      EnabledButtons := EnabledButtons - tmpSet;
+  end;
 end;
 
 
@@ -2341,7 +2343,7 @@ var
   ARect: TRect;
 begin
   if FDrawing then
-    System.Exit;
+    Exit;
   FDrawing := True;
   try
     ARect := ClientRect;
@@ -2365,9 +2367,9 @@ begin
     if csDesigning in ComponentState then
     begin
       Canvas.Brush.Style := bsClear;
-      Canvas.Font.Assign(Font);  
+      Canvas.Font.Assign(Font);   
       DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ARect,
-        DT_SINGLELINE + DT_CENTER + DT_VCENTER); 
+        DT_SINGLELINE + DT_CENTER + DT_VCENTER);  
     end;
   finally
     FDrawing := False;
@@ -2396,7 +2398,7 @@ begin
   end;
 end;
 
-procedure TJvWizardCustomPage.Exit(const ToPage: TJvWizardCustomPage);
+procedure TJvWizardCustomPage.ExitPage(const ToPage: TJvWizardCustomPage);
 begin
   if Assigned(FOnExitPage) and Enabled and
     not (csDesigning in ComponentState) then
@@ -2518,7 +2520,7 @@ begin
   Result := TJvWizardCustomPage(inherited Items[Index]);
 end;
 
-procedure TJvWizardPageList.Notify(Ptr: Pointer; Action: TListNotification);
+procedure TJvWizardPageList.Notify(Ptr:  Pointer ; Action: TListNotification);
 begin
   case Action of
     lnAdded:
@@ -2773,7 +2775,7 @@ begin
     if Assigned(FActivePage) then
     begin
       { YW - FActivePage.Exit, called just before the page is hidden. }
-      FActivePage.Exit(Page);
+      FActivePage.ExitPage(Page);
       FActivePage.Visible := False;
     end;
 
@@ -3139,8 +3141,8 @@ end;
 function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boolean;
 begin
   if Assigned(FromPage) and Assigned(ToPage) and
-    (FromPage.Wizard <> ToPage.Wizard) then
-    raise EJvWizardError.CreateRes(@RsEInvalidWizardPage);
+    (FromPage.Wizard <> ToPage.Wizard) then 
+    raise EJvWizardError.CreateRes(@RsEInvalidWizardPage); 
   Result := not Assigned(FromPage) or (Assigned(ToPage) and
     (FromPage.PageIndex < ToPage.PageIndex));
 end;
@@ -3179,6 +3181,16 @@ begin
     FDefaultButtons := Value;
     UpdateButtonsStatus;
   end;
+end;
+
+function TJvWizard.GetNavigateButtons(Index: Integer): TJvWizardNavigateButton;
+begin
+  Result := FNavigateButtons[TJvWizardButtonKind(Index)];
+end;
+
+procedure TJvWizard.SetNavigateButtons(Index: Integer; Value: TJvWizardNavigateButton);
+begin
+  FNavigateButtons[TJvWizardButtonKind(Index)] := Value;
 end;
 
 

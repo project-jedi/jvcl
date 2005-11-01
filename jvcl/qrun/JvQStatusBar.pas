@@ -35,6 +35,9 @@ unit JvQStatusBar;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, 
   SysUtils, Classes, Contnrs, QGraphics, QControls, QForms, QComCtrls, QStdActns,
   JVCLXVer, JvQExComCtrls;
@@ -70,11 +73,13 @@ type
     procedure Paint; override;   
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
-    function GetPanelClass: TStatusPanelClass;  
+    function GetPanelClass: TStatusPanelClass; 
+//    procedure SBSetParts(var msg: TMessage); message SB_SETPARTS;
   public
     constructor Create(AOwner: TComponent); override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     property AutoHintShown: Boolean read FAutoHintShown;
+    procedure Update; override;
   published
     property Color;
     property Font;
@@ -84,12 +89,19 @@ type
     property OnParentColorChange;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvQThemes, JvQResources, JvQTypes;
 
@@ -104,11 +116,8 @@ end;
 procedure TJvStatusBar.BoundsChanged;
 begin
   inherited BoundsChanged;
-  if Assigned(Parent) then
-  begin
-    Realign;
-    MovePanelControls;
-  end;   
+  Realign; 
+  MovePanelControls; 
 end;
 
 
@@ -200,6 +209,8 @@ var
   I, ALeft: Integer;
   TmpPanel: TJvStatusPanel;
 begin
+  if Parent = nil then
+    exit;
   ALeft := 0;
   for I := 0 to Panels.Count - 1 do
   begin
@@ -214,6 +225,13 @@ end;
 function TJvStatusBar.GetPanelClass: TStatusPanelClass;
 begin
   Result := TJvStatusPanel;
+end;
+
+//procedure TJvStatusBar.SBSetParts(var msg: TMessage);
+procedure TJvStatusBar.Update;
+begin
+  inherited;
+  MovePanelControls;
 end;
 
 
@@ -287,14 +305,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -174,8 +174,8 @@ begin
   begin
     if (FOwnerControl = nil) and (Collection is TJvLinkedControls) then
       FOwnerControl := TJvLinkedControls(Collection).FControl;
-    if (Value = FOwnerControl) and (FOwnerControl <> nil) then
-      raise Exception.CreateRes(@RsEOwnerLinkError);
+    if (Value = FOwnerControl) and (FOwnerControl <> nil) then 
+      raise Exception.CreateRes(@RsEOwnerLinkError); 
     if Assigned(FControl) then
     begin
       if Assigned(FOwnerControl) then

@@ -45,10 +45,49 @@ uses
   JvQUrlListGrabber, JvQTypes;
 
 type
+  // A grabber than can use a proxy. Note that this class is not registered,
+  // it is just a base class for other grabbers
+  // see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
+  // for details on the values to give to the proxy properties (address and ignorelist)
+  TJvProxyMode = (pmNoProxy, pmSysConfig, pmManual);
+
+  TJvProxyingUrlGrabber = class (TJvCustomUrlGrabber)
+  protected
+    FProxyAddresses: string;
+    FProxyMode: TJvProxyMode;
+    FProxyIgnoreList: string;
+    FProxyUserName: string;
+    FProxyPassword: string;
+    property ProxyMode: TJvProxyMode read FProxyMode write FProxyMode default pmSysConfig;
+    property ProxyAddresses: string read FProxyAddresses write FProxyAddresses;
+    property ProxyIgnoreList: string read FProxyIgnoreList write FProxyIgnoreList;
+    property ProxyUserName: string read FProxyUserName write FProxyUserName;
+    property ProxyPassword: string read FProxyPassword write FProxyPassword;
+  public
+    constructor Create(AOwner: TComponent); overload; override;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload;
+  end;
+
+  TJvProxyingUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
+  protected
+    FProxyAddresses: string;
+    FProxyMode: TJvProxyMode;
+    FProxyIgnoreList: string;
+    FProxyUserName: string;
+    FProxyPassword: string;
+    property ProxyMode: TJvProxyMode read FProxyMode write FProxyMode default pmSysConfig;
+    property ProxyAddresses: string read FProxyAddresses write FProxyAddresses;
+    property ProxyIgnoreList: string read FProxyIgnoreList write FProxyIgnoreList;
+    property ProxyUserName: string read FProxyUserName write FProxyUserName;
+    property ProxyPassword: string read FProxyPassword write FProxyPassword;
+  public
+    constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); override;
+  end;
+
   // A grabber for FTP URLs
   TJvFtpDownloadMode = (hmBinary, hmAscii);
 
-  TJvFtpUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
+  TJvFtpUrlGrabberDefaultProperties = class(TJvProxyingUrlGrabberDefaultProperties)
   protected
     FPassive: Boolean;
     FMode: TJvFtpDownloadMode;
@@ -60,12 +99,17 @@ type
     property Agent;
     property UserName;
     property Password;
+    property ProxyMode;
+    property ProxyAddresses;
+    property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
     property Port default 21;
     property Passive: Boolean read FPassive write FPassive default True;
     property Mode: TJvFtpDownloadMode read FMode write FMode default hmBinary;
   end;
 
-  TJvFtpUrlGrabber = class(TJvCustomUrlGrabber)
+  TJvFtpUrlGrabber = class(TJvProxyingUrlGrabber)
   protected
     FPassive: Boolean;
     FMode: TJvFtpDownloadMode;
@@ -87,6 +131,11 @@ type
     property OutputMode;
     property Agent;
     property Url;
+    property ProxyMode;
+    property ProxyAddresses;
+    property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
     property Port default 21;
     property OnDoneFile;
     property OnDoneStream;
@@ -117,14 +166,14 @@ type
   end;
 
   // A grabber for HTTP URLs
-  TJvHttpUrlGrabber = class(TJvCustomUrlGrabber)
+  TJvHttpUrlGrabber = class(TJvProxyingUrlGrabber)
   private
     FReferer: string;
   protected
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
     procedure DoStatus; override;
   public
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); 
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedProtocolMarker: string; override;
@@ -138,6 +187,11 @@ type
     property Agent;
     property Url;
     property Port default 80;
+    property ProxyMode;
+    property ProxyAddresses;
+    property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -157,7 +211,7 @@ type
     property OnStatusChange;
   end;
 
-  TJvHttpUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
+  TJvHttpUrlGrabberDefaultProperties = class(TJvProxyingUrlGrabberDefaultProperties)
   private
     FReferer: string;
   protected
@@ -170,6 +224,11 @@ type
     property UserName;
     property Password;
     property Port default 80;
+    property ProxyMode;
+    property ProxyAddresses;
+    property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
   end;
 
   TJvHttpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
@@ -355,6 +414,43 @@ begin
    end;
 end;
 
+//=== { TJvProxyingUrlGrabber } ==============================================
+
+constructor TJvProxyingUrlGrabber.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FProxyMode := pmSysConfig;
+  FProxyAddresses := 'proxyserver';
+  FProxyIgnoreList := '<local>';
+end;
+
+constructor TJvProxyingUrlGrabber.Create(AOwner: TComponent; AUrl: string;
+  DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
+begin
+  inherited Create(AOwner, AUrl, DefaultProperties);
+
+  // TODO add else (probably exception).
+  if DefaultProperties is TJvFtpUrlGrabberDefaultProperties then
+  begin
+    ProxyMode := TJvProxyingUrlGrabberDefaultProperties(DefaultProperties).ProxyMode;
+    ProxyAddresses := TJvProxyingUrlGrabberDefaultProperties(DefaultProperties).ProxyAddresses;
+    ProxyIgnoreList := TJvProxyingUrlGrabberDefaultProperties(DefaultProperties).ProxyIgnoreList;
+  end;
+end;
+
+//=== { TJvProxyingUrlGrabberDefaultProperties } =============================
+
+constructor TJvProxyingUrlGrabberDefaultProperties.Create(
+  AOwner: TJvUrlGrabberDefaultPropertiesList);
+begin
+  inherited Create(AOwner);
+  
+  FProxyMode := pmSysConfig;
+  FProxyAddresses := 'proxyserver';
+  FProxyIgnoreList := '<local>';
+end;
+
 //=== { TJvHttpUrlGrabber } ==================================================
 
 constructor TJvHttpUrlGrabber.Create(AOwner: TComponent; AUrl: string;
@@ -522,13 +618,27 @@ begin
 
       // Connect to the web
       SetGrabberStatus(gsConnecting);
-      hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+      case Grabber.ProxyMode of
+        pmNoProxy:
+          hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_DIRECT, nil, nil, 0);
+        pmSysConfig:
+          hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+        pmManual:
+          hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PROXY, PChar(Grabber.ProxyAddresses), PChar(Grabber.ProxyIgnoreList), 0);
+      end;
       if hSession = nil then
       begin
         ErrorText := GetLastInternetError;
         Synchronize(Error);
         Exit;
       end;
+      if Grabber.ProxyMode = pmManual then
+      begin
+        // if manual mode and valid session, we set proxy user name and password
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
+      end;
+      
 //      InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
       // Connect to the hostname
@@ -676,7 +786,14 @@ begin
 
       //Connect to the web
       SetGrabberStatus(gsConnecting);
-      hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+      case Grabber.ProxyMode of
+        pmNoProxy:
+          hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_DIRECT, nil, nil, 0);
+        pmSysConfig:
+          hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+        pmManual:
+          hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PROXY, PChar(Grabber.ProxyAddresses), PChar(Grabber.ProxyIgnoreList), 0);
+      end;
       if hSession = nil then
       begin
         ErrorText := SysErrorMessage(GetLastError);
@@ -684,6 +801,13 @@ begin
         Exit;
       end;
       InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
+
+      if Grabber.ProxyMode = pmManual then
+      begin
+        // if manual mode and valid session, we set proxy user name and password
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
+      end;
 
 
       // Connect to the host

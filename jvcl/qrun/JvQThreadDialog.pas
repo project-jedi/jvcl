@@ -34,13 +34,16 @@ unit JvQThreadDialog;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, QForms, QExtCtrls, QButtons, QStdCtrls,
   QWindows, QControls, QComCtrls,
   JvQTypes, JvQComponent;
 
-type 
-  TStaticText = TLabel; 
+type
   TJvCustomThreadDialog = class;
+  TStaticText = TLabel ;
 
   TJvThreadBaseDialogOptions = class(TPersistent)
   private
@@ -89,10 +92,12 @@ type
   private
     FDialogOptions: TJvThreadBaseDialogOptions;
     FThreadStatusDialog: TJvCustomThreadDialogForm;
+    FOnPressCancel: TNotifyEvent;
   protected
     function CreateDialogOptions: TJvThreadBaseDialogOptions; virtual; abstract;
     procedure TransferThreadDialogOptions; virtual;
-    property  ThreadStatusDialog: TJvCustomThreadDialogForm read FThreadStatusDialog write FThreadStatusDialog;
+    property ThreadStatusDialog: TJvCustomThreadDialogForm read FThreadStatusDialog write FThreadStatusDialog;
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -101,6 +106,7 @@ type
     function CreateThreadDialogForm(ConnectedThread: TComponent): TJvCustomThreadDialogForm; virtual; abstract;
   published
     property DialogOptions: TJvThreadBaseDialogOptions read FDialogOptions write FDialogOptions;
+    property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
   end;
 
   TJvThreadSimpleDialog = class(TJvCustomThreadDialog)
@@ -113,7 +119,7 @@ type
     FTimeText: TStaticText;
     FMainTimer: TTimer;
     FCounter: Integer;
-    FStartTime: tDateTime;
+    FStartTime: TDateTime;
   protected
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -128,9 +134,11 @@ type
   end;
 
   TJvThreadAnimateDialogOptions = class(TJvThreadBaseDialogOptions)
-  private 
+  private
+//    FCommonAVI: TCommonAVI;
     FFileName: string;
-  published 
+  published
+//    property CommonAVI: TCommonAVI read FCommonAVI write FCommonAVI;
     property FileName: string read FFileName write FFileName;
   end;
 
@@ -146,7 +154,7 @@ type
     FTimeText: TStaticText;
     FMainTimer: TTimer;
     FCounter: Integer;
-    FStartTime: tDateTime;
+    FStartTime: TDateTime;
   protected
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -163,14 +171,21 @@ type
     //property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  JvQThread, JvQResources;
+  QDialogs,
+  JvQThread, JvQResources, QGraphics;
 
 function JvThreadComp(AComp: TComponent): TJvThread;
 begin
@@ -197,8 +212,8 @@ end;
 procedure TJvThreadBaseDialogOptions.SetEnableCancelButton(Value: Boolean);
 begin
   FEnableCancelButton := Value;
-  if Assigned(FOwner) then
-    FOwner.TransferThreadDialogOptions;
+//  if Assigned(FOwner) then
+//    FOwner.TransferThreadDialogOptions;
 end;
 
 procedure TJvThreadBaseDialogOptions.SetShowDialog(Value: Boolean);
@@ -214,36 +229,36 @@ end;
 procedure TJvThreadBaseDialogOptions.SetShowCancelButton(Value: Boolean);
 begin
   FShowCancelButton := Value;
-  if Assigned(FOwner) then
-    FOwner.TransferThreadDialogOptions;
+//  if Assigned(FOwner) then
+//    FOwner.TransferThreadDialogOptions;
 end;
 
 procedure TJvThreadBaseDialogOptions.SetShowElapsedTime(Value: Boolean);
 begin
   FShowElapsedTime := Value;
-  if Assigned(FOwner) then
-    FOwner.TransferThreadDialogOptions;
+//  if Assigned(FOwner) then
+//    FOwner.TransferThreadDialogOptions;
 end;
 
 procedure TJvThreadBaseDialogOptions.SetInfoText(Value: string);
 begin
   FInfoText := Value;
-  if Assigned(FOwner) then
-    FOwner.TransferThreadDialogOptions;
+//  if Assigned(FOwner) then
+//    FOwner.TransferThreadDialogOptions;
 end;
 
 procedure TJvThreadBaseDialogOptions.SetCaption(Value: string);
 begin
   FCaption := Value;
-  if Assigned(FOwner) then
-    FOwner.TransferThreadDialogOptions;
+//  if Assigned(FOwner) then
+//    FOwner.TransferThreadDialogOptions;
 end;
 
 procedure TJvThreadBaseDialogOptions.SetCancelButtonCaption(Value: string);
 begin
   FCancelButtonCaption := Value;
-  if Assigned(FOwner) then
-    FOwner.TransferThreadDialogOptions;
+//  if Assigned(FOwner) then
+//    FOwner.TransferThreadDialogOptions;
 end;
 
 //=== { TJvCustomThreadDialog } ==============================================
@@ -303,6 +318,7 @@ begin
 end;
 
 function TJvThreadSimpleDialog.CreateThreadDialogForm(ConnectedThread: TComponent): TJvCustomThreadDialogForm;
+var MainPanel: TPanel;
 begin
   Result := nil;
   if DialogOptions.ShowDialog then
@@ -312,6 +328,7 @@ begin
     Result := ThreadStatusDialog;
     FCancelButtonPanel := TPanel.Create(ThreadStatusDialog);
     FCancelBtn := TBitBtn.Create(ThreadStatusDialog);
+    MainPanel := TPanel.Create(ThreadStatusDialog);
     FInfoTextPanel := TPanel.Create(ThreadStatusDialog);
     FInfoText := TStaticText.Create(ThreadStatusDialog);
     FTimeTextPanel := TPanel.Create(ThreadStatusDialog);
@@ -319,23 +336,33 @@ begin
     FMainTimer := TTimer.Create(ThreadStatusDialog);
     with ThreadStatusDialog do
     begin
-      BorderIcons := [];  
-      BorderStyle := fbsDialog; 
+      BorderIcons := [];
+      BorderStyle := fbsDialog;
       Caption := ' ';
       ClientHeight := 88;
       ClientWidth := 268;
-      FormStyle := fsStayOnTop; 
+      FormStyle := fsStayOnTop;
+//      OldCreateOrder := False;
       Position := poScreenCenter;
       OnClose := FormClose;
       OnCloseQuery := FormCloseQuery;
       OnShow := FormShow;
       PixelsPerInch := 96;
     end;
-    with FInfoTextPanel do
+    with MainPanel do
     begin
       Top := 0;
       Caption := '';
       Parent := FThreadStatusDialog;
+      Align := alClient;
+      BevelOuter := bvNone;
+      BorderWidth := 5;
+    end;
+    with FInfoTextPanel do
+    begin
+      Top := 0;
+      Caption := '';
+      Parent := MainPanel;
       Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
@@ -344,15 +371,19 @@ begin
     begin
       Parent := FInfoTextPanel;
       Height := 22;
-      FInfoTextPanel.Height := FInfoText.Height + 6;
+      Alignment := taCenter;
+      FInfoTextPanel.Height := Height + 6;
       Align := alClient;
       AutoSize := False; 
+      //BevelInner := bvNone;
+      //BevelOuter := bvNone;
       ParentFont := False;
+      Font.Style := [fsBold];
     end;
     with FTimeTextPanel do
     begin
       Top := FInfoTextPanel.Top + FInfoTextPanel.Height + 1;
-      Parent := ThreadStatusDialog;
+      Parent := MainPanel;
       Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
@@ -365,15 +396,16 @@ begin
       Parent := FTimeTextPanel;
       Align := alClient;
       Alignment := taCenter;
-      AutoSize := False;  
-      BorderStyle := bsSunken3D; 
+      AutoSize := False;
+//      BevelInner := bvLowered;
+      BorderStyle := bsSunken3D;
       ParentFont := False;
     end;
     with FCancelButtonPanel do
     begin
       Top := FTimeTextPanel.Top + FTimeTextPanel.Height + 1;
       Caption := '';
-      Parent := ThreadStatusDialog;
+      Parent := MainPanel;
       Align := alTop;
       BevelOuter := bvNone;
     end;
@@ -385,17 +417,20 @@ begin
       OnClick := CancelBtnClick;
       Top := 0;
       FCancelButtonPanel.Height := FCancelBtn.Height + 3;
+      OnClick := OnPressCancel;
     end;
     SetFormData;
     with FMainTimer do
     begin
       Interval := 500;
       OnTimer := MainTimerTimer;
+      Enabled := True;
     end;
-    if DialogOptions.ShowModal then
-      ThreadStatusDialog.ShowModal
-    else
-      ThreadStatusDialog.Show;
+    if Assigned(ThreadStatusDialog) then
+      if DialogOptions.ShowModal then
+        ThreadStatusDialog.ShowModal
+      else
+        ThreadStatusDialog.Show;
   end;
 end;
 
@@ -423,25 +458,24 @@ end;
 procedure TJvThreadSimpleDialog.MainTimerTimer(Sender: TObject);
 begin
   if not (csDestroying in ComponentState) and Assigned(ThreadStatusDialog) then
-    if Assigned(ThreadStatusDialog.ConnectedThread) and
-      Assigned(DialogOptions) then
+    if Assigned(ThreadStatusDialog.ConnectedThread) and Assigned(DialogOptions) then
       if JvThreadComp(ThreadStatusDialog.ConnectedThread).Terminated then
         ThreadStatusDialog.Close
       else
       begin
         SetFormData;
         FCounter := FCounter + 1;
+        FInfoText.Caption := DialogOptions.FInfoText;
         case FCounter mod 4 of
           0:
-            FInfoText.Caption := DialogOptions.FInfoText + ' | ';
+            FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime) + ' | ';
           1:
-            FInfoText.Caption := DialogOptions.FInfoText + ' / ';
+            FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime) + ' / ';
           2:
-            FInfoText.Caption := DialogOptions.FInfoText + ' --';
+            FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime) + ' --';
           3:
-            FInfoText.Caption := DialogOptions.FInfoText + ' \ ';
+            FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime) + ' \ ';
         end;
-        FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime);
       end
     else
       ThreadStatusDialog.Close;
@@ -468,6 +502,7 @@ begin
       H := H + FTimeTextPanel.Height;
     if FCancelButtonPanel.Visible then
       H := H + FCancelButtonPanel.Height;
+    H := H + 10;
     if ThreadStatusDialog.ClientHeight <> H then
       ThreadStatusDialog.ClientHeight := H;
   end;
@@ -516,12 +551,13 @@ begin
     FMainTimer := TTimer.Create(ThreadStatusDialog);
     with ThreadStatusDialog do
     begin
-      BorderIcons := [];  
-      BorderStyle := fbsDialog; 
+      BorderIcons := [];
+      BorderStyle := fbsDialog;
       Caption := ' ';
       ClientHeight := 88;
       ClientWidth := 268;
-      FormStyle := fsStayOnTop; 
+      FormStyle := fsStayOnTop;
+      //OldCreateOrder := False;
       Position := poScreenCenter;
       OnClose := FormClose;
       OnCloseQuery := FormCloseQuery;
@@ -543,6 +579,8 @@ begin
       FInfoTextPanel.Height := FInfoText.Height + 6;
       Align := alClient;
       AutoSize := False; 
+//      BevelInner := bvNone;
+//      BevelOuter := bvNone;
       ParentFont := False;
     end;
     with FAnimatePanel do
@@ -560,7 +598,7 @@ begin
       Top := 0;
       Left := 0;
       AutoSize := True;
-//      CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
+      //CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
       FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
       FAnimatePanel.Height := Height + 6;
     end;
@@ -580,8 +618,9 @@ begin
       Parent := FTimeTextPanel;
       Align := alClient;
       Alignment := taCenter;
-      AutoSize := False;  
-      BorderStyle := bsSunken3D; 
+      AutoSize := False; 
+      //BevelInner := bvLowered;
+      BorderStyle := bsSunken3d;
       ParentFont := False;
     end;
     with FCancelButtonPanel do
@@ -591,6 +630,7 @@ begin
       Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
+      OnClick := OnPressCancel;
     end;
     with FCancelBtn do
     begin
@@ -645,7 +685,7 @@ begin
       else
       begin
         SetFormData;
-        FTimeText.Caption := FormatDateTime('hh:nn:ss',Now-FStartTime);
+        FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime);
       end
     else
       ThreadStatusDialog.Close
@@ -697,7 +737,7 @@ begin
     FInfoText.Caption := DialogOptions.FInfoText;
     ThreadStatusDialog.Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
-    FAnimatePanel.Visible := FileExists(FAnimate.Filename) ;
+    FAnimatePanel.Visible := FileExists(FAnimate.FileName) ; //or (FAnimate.CommonAVI <> aviNone);
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
     FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
     FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
@@ -706,14 +746,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
@@ -722,5 +754,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
 

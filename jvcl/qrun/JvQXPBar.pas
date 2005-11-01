@@ -62,7 +62,7 @@ unit JvQXPBar;
 //  bug in Windows XP and 2003 and once all machines
 //  "OUT THERE" have been updated, this should be removed
 //  from the code.
-//{ $ define XP_TRANSPARENCY_FIX}
+//{ $ DEFINE XP_TRANSPARENCY_FIX}
 
 interface
 
@@ -103,7 +103,8 @@ const
 //        dxColor_CheckedColorXP :=  TColor($00e8ccae);
 
   dxColor_FocusedColorXP = TColor($00D8ACB0);
-  dxColor_CheckedColorXP = TColor($00D9C1BB); 
+  dxColor_CheckedColorXP = TColor($00D9C1BB);
+  dxColor_BodyColorXP = TColor($00F7DFD6); 
   clHotLight = clActiveHighlight;  
 
   dxColor_FocusedFrameColorXP = clHotLight;
@@ -281,6 +282,7 @@ type
     FCheckedColor: TColor;
     FFocusedColor: TColor;
     FBodyColor: TColor;
+    FBodyBorderColor: TColor;
     FGradientTo: TColor;
     FGradientFrom: TColor;
     FSeparatorColor: TColor;
@@ -295,6 +297,7 @@ type
     procedure SetFocusedColor(const Value: TColor);
     procedure SetCheckedFrameColor(const Value: TColor);
     procedure SetFocusedFrameColor(const Value: TColor);
+    procedure SetBodyBorderColor(const Value: TColor);
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
@@ -303,9 +306,12 @@ type
     property BorderColor: TColor read FBorderColor write SetBorderColor  default clWhite;
     property CheckedColor: TColor read FCheckedColor write SetCheckedColor default dxColor_CheckedColorXP;
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
-    property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
-    property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
-    property BodyColor: TColor read FBodyColor write SetBodyColor default TColor($00F7DFD6);
+    property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor
+      default dxColor_CheckedFrameColorXP;
+    property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor
+      default dxColor_FocusedFrameColorXP;
+    property BodyColor: TColor read FBodyColor write SetBodyColor default dxColor_BodyColorXP;
+    property BodyBorderColor: TColor read FBodyBorderColor write SetBodyBorderColor default dxColor_BodyColorXP;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
     property GradientTo: TColor read FGradientTo write SetGradientTo default TColor($00F7D7C6);
     property SeparatorColor: TColor read FSeparatorColor write SetSeparatorColor default TColor($00F7D7C6);
@@ -385,8 +391,7 @@ type
     procedure SetTopSpace(const Value: Integer);
     procedure SetOwnerDraw(const Value: Boolean);
   protected  
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override; 
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override; 
     class function GetBarItemsClass: TJvXPBarItemsClass; virtual;
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
@@ -430,11 +435,10 @@ type
     property ShowItemFrame: Boolean read FShowItemFrame write FShowItemFrame;
     property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
     property TopSpace: Integer read FTopSpace write SetTopSpace default 5;
-    // (rom) this name is not acceptable. Prefix with "On"
-    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
-      FAfterCollapsedChange;
-    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange write
-      FBeforeCollapsedChange;
+    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange
+      write FAfterCollapsedChange;
+    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange
+      write FBeforeCollapsedChange;
     property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange write FOnCollapsedChange;
     property OnCanChange: TJvXPBarOnCanChangeEvent read FOnCanChange write FOnCanChange;
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
@@ -449,6 +453,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
+    function GetItemAt(X, Y: Integer): Integer;
     procedure Click; override;
     property Height default 46;
     property VisibleItems: TJvXPBarVisibleItems read FVisibleItems;
@@ -588,7 +593,7 @@ begin
     Result := 1;
 end;
 
-{$ifdef XP_TRANSPARENCY_FIX}
+{$IFDEF XP_TRANSPARENCY_FIX}
 { BitmapBgPaint:
 
   This fixes a bug in the Delphi 7 VCL on systems
@@ -598,21 +603,18 @@ end;
 
   -WPostma. }
 
-procedure BitmapBgPaint( Bitmap:TBitmap;bgColor:TColor);
+procedure BitmapBgPaint(Bitmap: TBitmap; BgColor: TColor);
 var
- r:TRect;
+ R: TRect;
 begin
-  r.Left := 0;
-  r.Top := 0;
-  r.Right := Bitmap.Width;
-  r.Bottom := Bitmap.Height;
-  Bitmap.Canvas.Brush.Color := bgColor;
-  Bitmap.Canvas.FillRect( r );
+  R.Left := 0;
+  R.Top := 0;
+  R.Right := Bitmap.Width;
+  R.Bottom := Bitmap.Height;
+  Bitmap.Canvas.Brush.Color := BgColor;
+  Bitmap.Canvas.FillRect(R);
 end;
-
-{$endif}
-
-
+{$ENDIF XP_TRANSPARENCY_FIX}
 
 //=== { TJvXPBarItemActionLink } =============================================
 
@@ -892,13 +894,13 @@ begin
   if Source is TJvXPBarItem then
     with TJvXPBarItem(Source) do
     begin
-      Self.Action.Assign(Action);
+      Self.Action := Action;
       Self.Caption := Caption;
       Self.Data := Data;
       Self.DataObject := DataObject;
       Self.Enabled := Enabled;
       Self.Hint := Hint;
-      Self.ImageList.Assign(ImageList);
+      Self.ImageList := ImageList;
       Self.ImageIndex := ImageIndex;
       Self.Name := Name;
       Self.Tag := Tag;
@@ -1267,7 +1269,9 @@ begin
 
     { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
-      ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
+      ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) or
+      (csDestroying in FWinXPBar.ComponentState)
+      then
       Terminate; 
     WakeUpGUIThread; 
 
@@ -1298,7 +1302,8 @@ constructor TJvXPBarColors.Create;
 begin
   inherited Create;
   // (rom) needs local color constants
-  FBodyColor := TColor($00F7DFD6);
+  FBodyColor := dxColor_BodyColorXP;
+  FBodyBorderColor := dxColor_BodyColorXP;
   FBorderColor := clWhite;
   FGradientFrom := clWhite;
   FGradientTo := TColor($00F7D7C6);
@@ -1410,6 +1415,15 @@ begin
   if FFocusedFrameColor <> Value then
   begin
     FFocusedFrameColor := Value;
+    Change;
+  end;
+end;
+
+procedure TJvXPBarColors.SetBodyBorderColor(const Value: TColor);
+begin
+  if FBodyBorderColor <> Value then
+  begin
+    FBodyBorderColor := Value;
     Change;
   end;
 end;
@@ -1571,9 +1585,9 @@ function TJvXPCustomWinXPBar.GetHitTestRect(const HitTest: TJvXPBarHitTest): TRe
 begin
   case HitTest of
     htHeader:
-      Result := Bounds(0, 5, Width, FHeaderHeight);
+      Result := Bounds(0, FTopSpace, Width, FHeaderHeight);
     htRollButton:
-      Result := Bounds(Width - 24, (FHeaderHeight - GetRollHeight) div 2, GetRollWidth, GetRollHeight);
+      Result := Bounds(Width - 24, FTopSpace + (FHeaderHeight - GetRollHeight) div 2, GetRollWidth, GetRollHeight);
   end;
 end;
 
@@ -1622,19 +1636,30 @@ begin
     DoDrawItem(FHoverIndex, []);
 end;
 
+function TJvXPCustomWinXPBar.GetItemAt(X, Y: Integer): Integer;
+var
+  Header: Integer;
+begin
+  Header := FC_HEADER_MARGIN div 2 + HeaderHeight + FC_ITEM_MARGIN div 2 + FTopSpace;
+  if (Y < Header) or (Y > Height - FC_ITEM_MARGIN div 2) then
+    Result := -1
+  else
+    Result := (Y - Header) div ItemHeight;
+end;
+
 procedure TJvXPCustomWinXPBar.HookMouseMove(X, Y: Integer);
 const
   cPipe = '|';
 var
   Rect: TRect;
   OldHitTest: TJvXPBarHitTest;
-  NewIndex, Header: Integer;
+  NewIndex: Integer;
 begin
   OldHitTest := FHitTest;
   FHitTest := GetHitTestAt(X, Y);
   if FHitTest <> OldHitTest then
   begin
-    Rect := Bounds(0, 5, Width, FHeaderHeight); // header
+    Rect := Bounds(0, FTopSpace, Width, FHeaderHeight); // header
     QWindows.InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
       if FHitTest <> htNone then
@@ -1643,11 +1668,7 @@ begin
         Cursor := crDefault;
   end;
 
-  Header := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN;
-  if (Y < Header) or (Y > Height - FC_ITEM_MARGIN) then
-    NewIndex := -1
-  else
-    NewIndex := (Y - Header) div ((Height - Header + 4 - FTopSpace) div FVisibleItems.Count);
+  NewIndex := GetItemAt(X, Y);
   if (NewIndex >= 0) and (NewIndex < VisibleItems.Count) then
   begin
     if FStoredHint = cPipe then
@@ -1659,6 +1680,7 @@ begin
   end
   else
   begin
+    NewIndex := -1;
     if FStoredHint <> cPipe then
       inherited Hint := FStoredHint;
     FStoredHint := cPipe;
@@ -1908,10 +1930,11 @@ begin
     Bitmap.Assign(nil);
     ItemRect := GetItemRect(Index);
     HasImages := FVisibleItems[Index].Images <> nil;
-    if HasImages then begin
-{$ifdef XP_TRANSPARENCY_FIX}
-      BitmapBgPaint( Bitmap, {WinXPBar.}Colors.BodyColor);
-{$endif}
+    if HasImages then
+    begin
+      {$IFDEF XP_TRANSPARENCY_FIX}
+      BitmapBgPaint(Bitmap, {WinXPBar.}Colors.BodyColor);
+      {$ENDIF XP_TRANSPARENCY_FIX}
       FVisibleItems[Index].Images.GetBitmap(FVisibleItems[Index].ImageIndex, Bitmap);
     end;
     Bitmap.Transparent := True;
@@ -1950,7 +1973,15 @@ var
         FOnDrawBackground(Self, ACanvas, R);
     end
     else
-      ACanvas.FillRect(R);
+    begin
+      if not FCollapsed and (FColors.FBodyColor <> FColors.FBodyBorderColor) then
+      begin
+        ACanvas.Pen.Color := FColors.FBodyBorderColor;
+        ACanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom - 1);
+      end
+      else
+        ACanvas.FillRect(R);
+    end;
   end;
 
   procedure DoDrawHeader(ACanvas: TCanvas; var R: TRect);
@@ -2071,6 +2102,8 @@ var
   end;
 begin
   { get client rect }
+  if csDestroying in ComponentState then
+    Exit;
   ARect := GetClientRect;
   DoDrawBackground(Canvas, ARect);
   { draw header }
@@ -2278,7 +2311,8 @@ begin
     Pen.Color := AColor;
     Dec(Right);
     Dec(Bottom);
-    Polygon([Point(Left + R, Top),
+    Polygon(
+     [Point(Left + R, Top),
       Point(Right - R, Top),
       Point(Right, Top + R),
       Point(Right, Bottom - R),
@@ -2324,6 +2358,7 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -64,7 +64,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -73,8 +73,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -97,10 +97,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -119,6 +119,8 @@ type
     procedure WMCut(var Mesg: TMessage); message WM_CUT;
     procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
     procedure WMUndo(var Mesg: TMessage); message WM_UNDO;
+  protected
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
   public
     procedure PasteFromClipboard; override;
     procedure CopyToClipboard; override;
@@ -127,11 +129,12 @@ type
     procedure Undo; override;
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write FClipboardCommands default [caCopy..caUndo];
+      write SetClipboardCommands default [caCopy..caUndo];
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -139,7 +142,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
+  { QWinControl }
+  TJvExPubCustomComboEdit = class(TJvExCustomComboEdit)
   end;
   
   { QEditControl Begin }
@@ -161,7 +168,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -170,8 +177,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -194,10 +201,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -216,6 +223,8 @@ type
     procedure WMCut(var Mesg: TMessage); message WM_CUT;
     procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
     procedure WMUndo(var Mesg: TMessage); message WM_UNDO;
+  protected
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
   public
     procedure PasteFromClipboard; override;
     procedure CopyToClipboard; override;
@@ -224,11 +233,12 @@ type
     procedure Undo; override;
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write FClipboardCommands default [caCopy..caUndo];
+      write SetClipboardCommands default [caCopy..caUndo];
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -236,7 +246,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
+  { QWinControl }
+  TJvExPubComboEdit = class(TJvExComboEdit)
   end;
   
 
@@ -259,7 +273,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -268,8 +282,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -292,10 +306,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -314,6 +328,8 @@ type
     procedure WMCut(var Mesg: TMessage); message WM_CUT;
     procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
     procedure WMUndo(var Mesg: TMessage); message WM_UNDO;
+  protected
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
   public
     procedure PasteFromClipboard; override;
     procedure CopyToClipboard; override;
@@ -322,7 +338,7 @@ type
     procedure Undo; override;
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write FClipboardCommands default [caCopy..caUndo];
+      write SetClipboardCommands default [caCopy..caUndo];
   private
     FBeepOnError: Boolean;
   protected
@@ -331,8 +347,9 @@ type
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -340,7 +357,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
+  { QWinControl }
+  TJvExPubCustomComboMaskEdit = class(TJvExCustomComboMaskEdit)
   end;
   
 
@@ -363,7 +384,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -372,8 +393,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -396,10 +417,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -418,6 +439,8 @@ type
     procedure WMCut(var Mesg: TMessage); message WM_CUT;
     procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
     procedure WMUndo(var Mesg: TMessage); message WM_UNDO;
+  protected
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
   public
     procedure PasteFromClipboard; override;
     procedure CopyToClipboard; override;
@@ -426,7 +449,7 @@ type
     procedure Undo; override;
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write FClipboardCommands default [caCopy..caUndo];
+      write SetClipboardCommands default [caCopy..caUndo];
   private
     FBeepOnError: Boolean;
   protected
@@ -435,8 +458,9 @@ type
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -444,7 +468,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
+  { QWinControl }
+  TJvExPubComboMaskEdit = class(TJvExComboMaskEdit)
   end;
   
 
@@ -458,9 +486,8 @@ begin
   FInternalFontChanged := Font.OnChange;
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
+  FDoubleBuffered := True;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TQtCanvas.Create;
-  TQtCanvas(FCanvas).QtHandle := Handle;
   
 end;
 
@@ -500,6 +527,7 @@ end;
 
 procedure TJvExCustomComboEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -512,27 +540,27 @@ begin
 
       EM_UNDO:  Result := Perform(WM_UNDO, 0, 0);
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
     else
@@ -544,6 +572,11 @@ end;
 procedure TJvExCustomComboEdit.Undo;
 begin
   SendMessage(Handle, WM_UNDO, 0, 0);
+end;
+
+procedure TJvExCustomComboEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  FClipboardCommands := Value;
 end;
 
 procedure TJvExCustomComboEdit.CopyToClipboard;
@@ -571,6 +604,16 @@ end;
  
 { WinControl Paint }
 
+function TJvExCustomComboEdit.GetCanvas: TCanvas;
+begin
+  if not Assigned(FCanvas) then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := self;
+  end;
+  Result := FCanvas;
+end;
+
 
 procedure TJvExCustomComboEdit.Paint;
 begin
@@ -581,16 +624,15 @@ end;
 
 procedure TJvExCustomComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
+    QPainter_setClipping(Canvas.Handle, False);
   finally
     TControlCanvas(Canvas).StopPaint;
   end;
@@ -622,7 +664,7 @@ begin
   end;
 end;
 
-function TJvExCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -645,16 +687,6 @@ begin
   inherited;
 end;
 
-procedure TJvExCustomComboEdit.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExCustomComboEdit.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExCustomComboEdit.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -673,12 +705,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExCustomComboEdit.FocusChanged;
+procedure TJvExCustomComboEdit.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExCustomComboEdit.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExCustomComboEdit.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExCustomComboEdit.DoOnFontChanged(Sender: TObject);
@@ -699,8 +741,7 @@ end;
 
 procedure TJvExCustomComboEdit.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExCustomComboEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -716,7 +757,6 @@ end;
 function TJvExCustomComboEdit.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -805,7 +845,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExCustomComboEdit.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -833,9 +873,8 @@ begin
   FInternalFontChanged := Font.OnChange;
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
+  FDoubleBuffered := True;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TQtCanvas.Create;
-  TQtCanvas(FCanvas).QtHandle := Handle;
   
 end;
 
@@ -875,6 +914,7 @@ end;
 
 procedure TJvExComboEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -887,27 +927,27 @@ begin
 
       EM_UNDO:  Result := Perform(WM_UNDO, 0, 0);
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
     else
@@ -919,6 +959,11 @@ end;
 procedure TJvExComboEdit.Undo;
 begin
   SendMessage(Handle, WM_UNDO, 0, 0);
+end;
+
+procedure TJvExComboEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  FClipboardCommands := Value;
 end;
 
 procedure TJvExComboEdit.CopyToClipboard;
@@ -946,6 +991,16 @@ end;
  
 { WinControl Paint }
 
+function TJvExComboEdit.GetCanvas: TCanvas;
+begin
+  if not Assigned(FCanvas) then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := self;
+  end;
+  Result := FCanvas;
+end;
+
 
 procedure TJvExComboEdit.Paint;
 begin
@@ -956,16 +1011,15 @@ end;
 
 procedure TJvExComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
+    QPainter_setClipping(Canvas.Handle, False);
   finally
     TControlCanvas(Canvas).StopPaint;
   end;
@@ -997,7 +1051,7 @@ begin
   end;
 end;
 
-function TJvExComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1020,16 +1074,6 @@ begin
   inherited;
 end;
 
-procedure TJvExComboEdit.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExComboEdit.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExComboEdit.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -1048,12 +1092,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExComboEdit.FocusChanged;
+procedure TJvExComboEdit.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExComboEdit.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExComboEdit.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExComboEdit.DoOnFontChanged(Sender: TObject);
@@ -1074,8 +1128,7 @@ end;
 
 procedure TJvExComboEdit.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExComboEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -1091,7 +1144,6 @@ end;
 function TJvExComboEdit.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -1180,7 +1232,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExComboEdit.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1226,9 +1278,8 @@ begin
   FInternalFontChanged := Font.OnChange;
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
+  FDoubleBuffered := True;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TQtCanvas.Create;
-  TQtCanvas(FCanvas).QtHandle := Handle;
   FBeepOnError := True;
 end;
 
@@ -1268,6 +1319,7 @@ end;
 
 procedure TJvExCustomComboMaskEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1280,27 +1332,27 @@ begin
 
       EM_UNDO:  Result := Perform(WM_UNDO, 0, 0);
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
     else
@@ -1312,6 +1364,11 @@ end;
 procedure TJvExCustomComboMaskEdit.Undo;
 begin
   SendMessage(Handle, WM_UNDO, 0, 0);
+end;
+
+procedure TJvExCustomComboMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  FClipboardCommands := Value;
 end;
 
 procedure TJvExCustomComboMaskEdit.CopyToClipboard;
@@ -1339,6 +1396,16 @@ end;
  
 { WinControl Paint }
 
+function TJvExCustomComboMaskEdit.GetCanvas: TCanvas;
+begin
+  if not Assigned(FCanvas) then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := self;
+  end;
+  Result := FCanvas;
+end;
+
 
 procedure TJvExCustomComboMaskEdit.Paint;
 begin
@@ -1349,16 +1416,15 @@ end;
 
 procedure TJvExCustomComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
+    QPainter_setClipping(Canvas.Handle, False);
   finally
     TControlCanvas(Canvas).StopPaint;
   end;
@@ -1390,7 +1456,7 @@ begin
   end;
 end;
 
-function TJvExCustomComboMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomComboMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1413,16 +1479,6 @@ begin
   inherited;
 end;
 
-procedure TJvExCustomComboMaskEdit.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExCustomComboMaskEdit.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExCustomComboMaskEdit.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -1441,12 +1497,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExCustomComboMaskEdit.FocusChanged;
+procedure TJvExCustomComboMaskEdit.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExCustomComboMaskEdit.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExCustomComboMaskEdit.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExCustomComboMaskEdit.DoOnFontChanged(Sender: TObject);
@@ -1467,8 +1533,7 @@ end;
 
 procedure TJvExCustomComboMaskEdit.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExCustomComboMaskEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -1484,7 +1549,6 @@ end;
 function TJvExCustomComboMaskEdit.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -1573,7 +1637,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExCustomComboMaskEdit.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1613,9 +1677,8 @@ begin
   FInternalFontChanged := Font.OnChange;
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
+  FDoubleBuffered := True;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TQtCanvas.Create;
-  TQtCanvas(FCanvas).QtHandle := Handle;
   FBeepOnError := True;
 end;
 
@@ -1655,6 +1718,7 @@ end;
 
 procedure TJvExComboMaskEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1667,27 +1731,27 @@ begin
 
       EM_UNDO:  Result := Perform(WM_UNDO, 0, 0);
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
     else
@@ -1699,6 +1763,11 @@ end;
 procedure TJvExComboMaskEdit.Undo;
 begin
   SendMessage(Handle, WM_UNDO, 0, 0);
+end;
+
+procedure TJvExComboMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  FClipboardCommands := Value;
 end;
 
 procedure TJvExComboMaskEdit.CopyToClipboard;
@@ -1726,6 +1795,16 @@ end;
  
 { WinControl Paint }
 
+function TJvExComboMaskEdit.GetCanvas: TCanvas;
+begin
+  if not Assigned(FCanvas) then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := self;
+  end;
+  Result := FCanvas;
+end;
+
 
 procedure TJvExComboMaskEdit.Paint;
 begin
@@ -1736,16 +1815,15 @@ end;
 
 procedure TJvExComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
+    QPainter_setClipping(Canvas.Handle, False);
   finally
     TControlCanvas(Canvas).StopPaint;
   end;
@@ -1777,7 +1855,7 @@ begin
   end;
 end;
 
-function TJvExComboMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExComboMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1800,16 +1878,6 @@ begin
   inherited;
 end;
 
-procedure TJvExComboMaskEdit.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExComboMaskEdit.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExComboMaskEdit.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -1828,12 +1896,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExComboMaskEdit.FocusChanged;
+procedure TJvExComboMaskEdit.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExComboMaskEdit.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExComboMaskEdit.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExComboMaskEdit.DoOnFontChanged(Sender: TObject);
@@ -1854,8 +1932,7 @@ end;
 
 procedure TJvExComboMaskEdit.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExComboMaskEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -1871,7 +1948,6 @@ end;
 function TJvExComboMaskEdit.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -1960,7 +2036,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExComboMaskEdit.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1982,21 +2058,4 @@ end;
   
 
 {$UNDEF CREATE_CUSTOMCODE} // undefine at file end
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\qrun'
-  );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
-
 end.

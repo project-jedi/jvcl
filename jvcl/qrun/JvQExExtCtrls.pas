@@ -63,7 +63,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -72,8 +72,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -91,6 +91,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QControl }
+  TJvExPubShape = class(TJvExShape);
   
   { QControl begin }
   TJvExPaintBox = class(TPaintBox)
@@ -111,7 +114,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -120,8 +123,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -139,6 +142,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QControl }
+  TJvExPubPaintBox = class(TJvExPaintBox);
   
   { QControl begin }
   TJvExImage = class(TImage)
@@ -159,7 +165,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -168,8 +174,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -187,6 +193,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QControl }
+  TJvExPubImage = class(TJvExImage);
   
   { QControl begin }
   TJvExBevel = class(TBevel)
@@ -207,7 +216,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -216,8 +225,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -235,6 +244,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QControl }
+  TJvExPubBevel = class(TJvExBevel);
   
 
   {$UNDEF HITTEST_DECL}
@@ -258,7 +270,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; reintroduce;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -267,8 +279,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -291,10 +303,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -313,6 +325,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QCustomControl }
+  TJvExPubCustomControlBar = class(TJvExCustomControlBar);
   
   { QWinControl Begin }
   TJvExControlBar = class(TControlBar)
@@ -333,7 +348,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; reintroduce;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -342,8 +357,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -366,10 +381,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -388,6 +403,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QCustomControl }
+  TJvExPubControlBar = class(TJvExControlBar);
   
   {$UNDEF HITTEST_DECL}
   {$DEFINE HITTEST_DECL override}
@@ -410,7 +428,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -419,8 +437,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -443,10 +461,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -465,6 +483,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QCustomControl }
+  TJvExPubCustomPanel = class(TJvExCustomPanel);
   
   { QWinControl Begin }
   TJvExPanel = class(TPanel)
@@ -485,7 +506,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -494,8 +515,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -518,10 +539,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -540,6 +561,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QCustomControl }
+  TJvExPubPanel = class(TJvExPanel);
   
   { QWinControl Begin }
   TJvExCustomRadioGroup = class(TCustomRadioGroup)
@@ -560,7 +584,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -569,8 +593,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -593,10 +617,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -609,8 +633,9 @@ type
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -618,7 +643,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
+  { QWinControl }
+  TJvExPubCustomRadioGroup = class(TJvExCustomRadioGroup)
   end;
   
   { QWinControl Begin }
@@ -640,7 +669,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -649,8 +678,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -673,10 +702,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -689,8 +718,9 @@ type
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -698,7 +728,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
+  { QWinControl }
+  TJvExPubRadioGroup = class(TJvExRadioGroup)
   end;
   
   { QWinControl Begin }
@@ -720,7 +754,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -729,8 +763,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -753,10 +787,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -775,6 +809,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QCustomControl }
+  TJvExPubPage = class(TJvExPage);
   
   { QWinControl Begin }
   TJvExNotebook = class(TNotebook)
@@ -795,7 +832,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -804,8 +841,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -828,10 +865,10 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    procedure FocusKilled(NextWnd: QWidgetH); dynamic;
+    procedure FocusSet(PrevWnd: QWidgetH); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
@@ -850,6 +887,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QCustomControl }
+  TJvExPubNotebook = class(TJvExNotebook);
   
 
   { QControl begin }
@@ -871,7 +911,7 @@ type
   protected
     procedure ColorChanged; override;
     procedure EnabledChanged; override;
-    procedure FocusChanged; dynamic;
+    procedure FocusChanged(FocusedControl: TWidgetControl); dynamic;
     function HitTest(X, Y: integer): Boolean; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -880,8 +920,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -904,14 +944,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { QControl }
+  TJvExPubSplitter = class(TJvExSplitter);
   
 
 implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 { QControl Create }
 constructor TJvExShape.Create(AOwner: TComponent);
@@ -935,20 +973,23 @@ begin
   begin
     case Msg of
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
+      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-
+        inherited Dispatch(Mesg);
+      end;
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExShape.CMHitTest(var Mesg: TJvMessage);
@@ -973,7 +1014,7 @@ begin
   inherited FontChanged;
 end;
 
-procedure TJvExShape.FocusChanged;
+procedure TJvExShape.FocusChanged(FocusedControl: TWidgetControl);
 begin
   { notification }
 end;
@@ -1058,7 +1099,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExShape.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1100,20 +1141,23 @@ begin
   begin
     case Msg of
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
+      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-
+        inherited Dispatch(Mesg);
+      end;
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExPaintBox.CMHitTest(var Mesg: TJvMessage);
@@ -1138,7 +1182,7 @@ begin
   inherited FontChanged;
 end;
 
-procedure TJvExPaintBox.FocusChanged;
+procedure TJvExPaintBox.FocusChanged(FocusedControl: TWidgetControl);
 begin
   { notification }
 end;
@@ -1223,7 +1267,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExPaintBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1265,20 +1309,23 @@ begin
   begin
     case Msg of
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
+      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-
+        inherited Dispatch(Mesg);
+      end;
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExImage.CMHitTest(var Mesg: TJvMessage);
@@ -1303,7 +1350,7 @@ begin
   inherited FontChanged;
 end;
 
-procedure TJvExImage.FocusChanged;
+procedure TJvExImage.FocusChanged(FocusedControl: TWidgetControl);
 begin
   { notification }
 end;
@@ -1388,7 +1435,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExImage.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1430,20 +1477,23 @@ begin
   begin
     case Msg of
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
+      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-
+        inherited Dispatch(Mesg);
+      end;
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExBevel.CMHitTest(var Mesg: TJvMessage);
@@ -1468,7 +1518,7 @@ begin
   inherited FontChanged;
 end;
 
-procedure TJvExBevel.FocusChanged;
+procedure TJvExBevel.FocusChanged(FocusedControl: TWidgetControl);
 begin
   { notification }
 end;
@@ -1553,7 +1603,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExBevel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1601,32 +1651,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExCustomControlBar.CMDesignHitTest(var Mesg: TJvMessage);
@@ -1654,7 +1706,7 @@ begin
   end;
 end;
 
-function TJvExCustomControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1677,16 +1729,6 @@ begin
   inherited;
 end;
 
-procedure TJvExCustomControlBar.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExCustomControlBar.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExCustomControlBar.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -1705,12 +1747,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExCustomControlBar.FocusChanged;
+procedure TJvExCustomControlBar.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExCustomControlBar.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExCustomControlBar.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExCustomControlBar.DoOnFontChanged(Sender: TObject);
@@ -1731,8 +1783,7 @@ end;
 
 procedure TJvExCustomControlBar.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExCustomControlBar.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -1748,7 +1799,6 @@ end;
 function TJvExCustomControlBar.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -1837,7 +1887,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExCustomControlBar.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1884,32 +1934,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExControlBar.CMDesignHitTest(var Mesg: TJvMessage);
@@ -1937,7 +1989,7 @@ begin
   end;
 end;
 
-function TJvExControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1960,16 +2012,6 @@ begin
   inherited;
 end;
 
-procedure TJvExControlBar.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExControlBar.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExControlBar.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -1988,12 +2030,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExControlBar.FocusChanged;
+procedure TJvExControlBar.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExControlBar.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExControlBar.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExControlBar.DoOnFontChanged(Sender: TObject);
@@ -2014,8 +2066,7 @@ end;
 
 procedure TJvExControlBar.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExControlBar.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -2031,7 +2082,6 @@ end;
 function TJvExControlBar.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -2120,7 +2170,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExControlBar.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -2169,32 +2219,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExNotebook.CMDesignHitTest(var Mesg: TJvMessage);
@@ -2222,7 +2274,7 @@ begin
   end;
 end;
 
-function TJvExNotebook.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExNotebook.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2245,16 +2297,6 @@ begin
   inherited;
 end;
 
-procedure TJvExNotebook.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExNotebook.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExNotebook.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -2273,12 +2315,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExNotebook.FocusChanged;
+procedure TJvExNotebook.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExNotebook.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExNotebook.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExNotebook.DoOnFontChanged(Sender: TObject);
@@ -2299,8 +2351,7 @@ end;
 
 procedure TJvExNotebook.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExNotebook.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -2316,7 +2367,6 @@ end;
 function TJvExNotebook.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -2405,7 +2455,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExNotebook.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -2452,32 +2502,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExCustomPanel.CMDesignHitTest(var Mesg: TJvMessage);
@@ -2505,7 +2557,7 @@ begin
   end;
 end;
 
-function TJvExCustomPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2528,16 +2580,6 @@ begin
   inherited;
 end;
 
-procedure TJvExCustomPanel.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExCustomPanel.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExCustomPanel.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -2556,12 +2598,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExCustomPanel.FocusChanged;
+procedure TJvExCustomPanel.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExCustomPanel.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExCustomPanel.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExCustomPanel.DoOnFontChanged(Sender: TObject);
@@ -2582,8 +2634,7 @@ end;
 
 procedure TJvExCustomPanel.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExCustomPanel.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -2599,7 +2650,6 @@ end;
 function TJvExCustomPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -2688,7 +2738,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExCustomPanel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -2735,32 +2785,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExPanel.CMDesignHitTest(var Mesg: TJvMessage);
@@ -2788,7 +2840,7 @@ begin
   end;
 end;
 
-function TJvExPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2811,16 +2863,6 @@ begin
   inherited;
 end;
 
-procedure TJvExPanel.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExPanel.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExPanel.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -2839,12 +2881,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExPanel.FocusChanged;
+procedure TJvExPanel.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExPanel.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExPanel.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExPanel.DoOnFontChanged(Sender: TObject);
@@ -2865,8 +2917,7 @@ end;
 
 procedure TJvExPanel.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExPanel.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -2882,7 +2933,6 @@ end;
 function TJvExPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -2971,7 +3021,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExPanel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -3018,32 +3068,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExPage.CMDesignHitTest(var Mesg: TJvMessage);
@@ -3071,7 +3123,7 @@ begin
   end;
 end;
 
-function TJvExPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExPage.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3094,16 +3146,6 @@ begin
   inherited;
 end;
 
-procedure TJvExPage.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExPage.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExPage.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -3122,12 +3164,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExPage.FocusChanged;
+procedure TJvExPage.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExPage.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExPage.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExPage.DoOnFontChanged(Sender: TObject);
@@ -3148,8 +3200,7 @@ end;
 
 procedure TJvExPage.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExPage.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -3165,7 +3216,6 @@ end;
 function TJvExPage.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -3254,7 +3304,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExPage.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -3285,8 +3335,6 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FDoubleBuffered := True;
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
   
 end;
 
@@ -3299,6 +3347,16 @@ end;
   
 { WinControl Paint }
 
+function TJvExCustomRadioGroup.GetCanvas: TCanvas;
+begin
+  if not Assigned(FCanvas) then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := self;
+  end;
+  Result := FCanvas;
+end;
+
 
 procedure TJvExCustomRadioGroup.Paint;
 begin
@@ -3309,16 +3367,15 @@ end;
 
 procedure TJvExCustomRadioGroup.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
+    QPainter_setClipping(Canvas.Handle, False);
   finally
     TControlCanvas(Canvas).StopPaint;
   end;
@@ -3331,32 +3388,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExCustomRadioGroup.CMDesignHitTest(var Mesg: TJvMessage);
@@ -3384,7 +3443,7 @@ begin
   end;
 end;
 
-function TJvExCustomRadioGroup.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomRadioGroup.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3407,16 +3466,6 @@ begin
   inherited;
 end;
 
-procedure TJvExCustomRadioGroup.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExCustomRadioGroup.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExCustomRadioGroup.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -3435,12 +3484,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExCustomRadioGroup.FocusChanged;
+procedure TJvExCustomRadioGroup.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExCustomRadioGroup.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExCustomRadioGroup.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExCustomRadioGroup.DoOnFontChanged(Sender: TObject);
@@ -3461,8 +3520,7 @@ end;
 
 procedure TJvExCustomRadioGroup.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExCustomRadioGroup.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -3478,7 +3536,6 @@ end;
 function TJvExCustomRadioGroup.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -3567,7 +3624,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExCustomRadioGroup.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -3598,8 +3655,6 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FDoubleBuffered := True;
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
   
 end;
 
@@ -3612,6 +3667,16 @@ end;
   
 { WinControl Paint }
 
+function TJvExRadioGroup.GetCanvas: TCanvas;
+begin
+  if not Assigned(FCanvas) then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := self;
+  end;
+  Result := FCanvas;
+end;
+
 
 procedure TJvExRadioGroup.Paint;
 begin
@@ -3622,16 +3687,15 @@ end;
 
 procedure TJvExRadioGroup.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
+    QPainter_setClipping(Canvas.Handle, False);
   finally
     TControlCanvas(Canvas).StopPaint;
   end;
@@ -3644,32 +3708,34 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
+      WM_SETFOCUS     : FocusSet(QWidgetH(LParam));
+      WM_KILLFOCUS    : FocusKilled(QWidgetH(LParam));
+      CM_HINTSHOW:
       begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
+        HintInfo^.HintColor := GetHintcolor(Self);
+        inherited Dispatch(Mesg);
       end;
+
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoPaintBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
-        Exit;
       end;
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
+
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExRadioGroup.CMDesignHitTest(var Mesg: TJvMessage);
@@ -3697,7 +3763,7 @@ begin
   end;
 end;
 
-function TJvExRadioGroup.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExRadioGroup.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3720,16 +3786,6 @@ begin
   inherited;
 end;
 
-procedure TJvExRadioGroup.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExRadioGroup.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
 procedure TJvExRadioGroup.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
@@ -3748,12 +3804,22 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Result);
   if not Result then
-    Result := inherited EventFilter(Sender, Event); 
+    Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TJvExRadioGroup.FocusChanged;
+procedure TJvExRadioGroup.FocusKilled(NextWnd: QWidgetH);
 begin
-  NotifyControls(CM_FOCUSCHANGED);
+
+end;
+
+procedure TJvExRadioGroup.FocusSet(PrevWnd: QWidgetH);
+begin
+
+end;
+
+procedure TJvExRadioGroup.FocusChanged(FocusedControl: TWidgetControl);
+begin
+
 end;
 
 procedure TJvExRadioGroup.DoOnFontChanged(Sender: TObject);
@@ -3774,8 +3840,7 @@ end;
 
 procedure TJvExRadioGroup.RecreateWnd;
 begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
+  RecreateWidget;
 end;
 
 procedure TJvExRadioGroup.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -3791,7 +3856,6 @@ end;
 function TJvExRadioGroup.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
@@ -3880,7 +3944,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExRadioGroup.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -3942,20 +4006,23 @@ begin
   begin
     case Msg of
       { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
+      CM_FOCUSCHANGED: FocusChanged(TWidgetControl(Mesg.LParam));
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
+      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-
+        inherited Dispatch(Mesg);
+      end;
+    else
+      inherited Dispatch(Mesg);
     end;
   end;
-  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExSplitter.CMHitTest(var Mesg: TJvMessage);
@@ -3980,7 +4047,7 @@ begin
   inherited FontChanged;
 end;
 
-procedure TJvExSplitter.FocusChanged;
+procedure TJvExSplitter.FocusChanged(FocusedControl: TWidgetControl);
 begin
   { notification }
 end;
@@ -4065,7 +4132,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    inherited Dispatch(Mesg);
+    WndProc(TMessage(Mesg))
 end;
 
 function TJvExSplitter.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -4193,21 +4260,17 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 *)
+{$DEFINE UnitName 'JvQExExtCtrls.pas'}
 
-{$IFDEF UNITVERSIONING}
 const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\qrun'
-  );
+  UnitVersion = 'JvQExExtCtrls.pas';
 
 initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
+  OutputDebugString(PChar('JvExCLX Loaded: ' + UnitVersion));
 
 finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  OutputDebugString(PChar('JvExCLX Unloaded: ' + UnitVersion));
+
+
 
 end.

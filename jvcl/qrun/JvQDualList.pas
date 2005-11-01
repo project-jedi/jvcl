@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING} 
   QTypes, 
-  Classes, QControls,
+  Classes, QControls, QStdCtrls,
   JvQComponent;
 
 type
@@ -55,6 +55,7 @@ type
     FList1: TStringList;
     FList2: TStringList;
     FShowHelp: Boolean;
+    FScrollBars: TScrollStyle;
     function GetTitle: string;
     function GetList1: TStrings;
     function GetList2: TStrings;
@@ -73,20 +74,16 @@ type
   published
     property Sorted: Boolean read FSorted write FSorted;
     property Title: string read GetTitle write SetTitle;
-    property Label1Caption: TCaption read FLabel1Caption write FLabel1Caption
-      stored IsLabel1Custom;
-    property Label2Caption: TCaption read FLabel2Caption write FLabel2Caption
-      stored IsLabel2Custom;
-    property OkBtnCaption: TCaption read FOkBtnCaption write FOkBtnCaption
-      stored IsOkBtnCustom;
-    property CancelBtnCaption: TCaption read FCancelBtnCaption write FCancelBtnCaption
-      stored IsCancelBtnCustom;
-    property HelpBtnCaption: TCaption read FHelpBtnCaption write FHelpBtnCaption
-      stored IsHelpBtnCustom;
+    property Label1Caption: TCaption read FLabel1Caption write FLabel1Caption stored IsLabel1Custom;
+    property Label2Caption: TCaption read FLabel2Caption write FLabel2Caption stored IsLabel2Custom;
+    property OkBtnCaption: TCaption read FOkBtnCaption write FOkBtnCaption stored IsOkBtnCustom;
+    property CancelBtnCaption: TCaption read FCancelBtnCaption write FCancelBtnCaption stored IsCancelBtnCustom;
+    property HelpBtnCaption: TCaption read FHelpBtnCaption write FHelpBtnCaption stored IsHelpBtnCustom;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
     property List1: TStrings read GetList1 write SetList1;
     property List2: TStrings read GetList2 write SetList2;
     property ShowHelp: Boolean read FShowHelp write FShowHelp default True;
+    property ScrollBars: TScrollStyle read FScrollBars write FScrollBars default ssBoth;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -110,6 +107,7 @@ begin
   inherited Create(AOwner);
   FShowHelp := True;
   FTitle := '';
+  FScrollBars := ssBoth;
   FList1 := TStringList.Create;
   FList2 := TStringList.Create;
   FLabel1Caption := RsDualListSrcCaption;
@@ -188,7 +186,9 @@ begin
   Form := TJvDualListForm.Create(Application);
   try
     with Form do
-    begin   
+    begin
+//      SrcList.ScrollBars := FScrollBars;
+//      DstList.ScrollBars := FScrollBars;
       ShowHelp := Self.ShowHelp;
       SrcList.Sorted := Sorted;
       DstList.Sorted := Sorted;
@@ -218,6 +218,7 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

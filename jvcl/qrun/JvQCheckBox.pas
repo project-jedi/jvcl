@@ -39,6 +39,9 @@ unit JvQCheckBox;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls,
   JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
@@ -109,12 +112,19 @@ type
     property OnParentColorChange;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JvQJCLUtils, JvQJVCLUtils;
 
@@ -157,8 +167,8 @@ end;
 
 
 procedure TJvCheckBox.UpdateProperties;
-begin
-  RecreateWnd;
+begin  
+  RecreateWidget; 
 end;
 
 
@@ -236,8 +246,8 @@ begin
     (csLoading in ComponentState) then
     Exit;
   ASize := GetDefaultCheckBoxSize;
-  // add some spacing
-  Inc(ASize.cy, 4);
+  // add some spacing 
+  Inc(ASize.cy, 4); 
   FCanvas.Font := Font;
   R := Rect(0, 0, ClientWidth, ClientHeight);
   // This is slower than GetTextExtentPoint but it does consider hotkeys
@@ -411,14 +421,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

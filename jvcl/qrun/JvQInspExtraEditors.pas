@@ -39,6 +39,9 @@ unit JvQInspExtraEditors;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QGraphics, QControls, QStdCtrls, QImgList,
   JvQInspector;
@@ -123,8 +126,8 @@ type
     function NameForColor(const Color: TColor): string;
     procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
       const ARect: TRect);  
-    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override; 
+    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState{; var Handled: Boolean}); override;
 
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
@@ -150,8 +153,8 @@ type
   protected
     procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
       const ARect: TRect);  
-    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override; 
+    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState{; var Handled: Boolean}); override;
 
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
@@ -167,12 +170,19 @@ type
     property Images: TCustomImageList read FImageList write FImageList;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo,
   JclRTTI,
   JvQResources;
@@ -471,8 +481,8 @@ end;
 
 
 
-procedure TJvInspectorColorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean);
+procedure TJvInspectorColorItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState{; var Handled: Boolean});
 
 begin
   with TListBox(Control) do
@@ -483,8 +493,8 @@ begin
     Rect.Top := Rect.Top + 1;
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(TColor(Items.Objects[Index]), Items[Index], Canvas, Rect);
-  end; 
-  Handled := True; 
+  end;
+//  Handled := True;
 end;
 
 procedure TJvInspectorColorItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -707,7 +717,7 @@ var
   end;
 
 begin
-  if Editing and (Shift = [ssLeft]) then
+  if Editing and (Shift <> [ssRight]) then
   begin
     if Data.IsAssigned then
       Data.GetAsSet(NewAnchors)
@@ -854,8 +864,8 @@ end;
 
 
 
-procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean);
+procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState{; var Handled: Boolean});
 
 begin
   with TListBox(Control) do
@@ -867,7 +877,7 @@ begin
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(Integer(Items.Objects[Index]), Items[Index], Canvas, Rect);
   end; 
-  Handled := True; 
+//  Handled := True;
 end;
 
 procedure TJvInspectorTImageIndexItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -985,24 +995,12 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   // Register our Extra TypeInfo helper class for BCB
   RegisterTypeInfoHelper(TJvTypeInfoExtraHelper);
-
 
 {$IFDEF UNITVERSIONING}
 finalization

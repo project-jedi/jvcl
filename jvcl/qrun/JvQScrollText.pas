@@ -386,11 +386,13 @@ var
   Canvas: TCanvas;
 begin
   // calculate the Size of the memo (vertically)
+  if csloading in ComponentState then exit;
   Canvas := TCanvas.Create;
   with Canvas do
   begin
     Handle := GetDC(HWND_DESKTOP);
     Font.Assign(FText.Font);
+    Start;
     J := 0;
     Ts := TStringList.Create;
     Ts.Text := FText.Caption;
@@ -405,6 +407,7 @@ begin
     if J <= 0 then
       J := Height;
     FText.Height := J;
+    Stop;
     ReleaseDC(HWND_DESKTOP, Handle);
     Ts.Free;
     Free;

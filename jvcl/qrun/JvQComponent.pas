@@ -36,6 +36,9 @@ unit JvQComponent;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF USE_DXGETTEXT}
   JvQGnugettext,
@@ -43,7 +46,7 @@ uses
   QWindows, QMessages, QControls, 
   Qt, QGraphics, QStdCtrls, // TOwnerDrawState  
   JvQConsts,
-  JVCLXVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+  JVCLXVer, JvQExControls, JvQExExtCtrls, JvQExForms, JvQExStdCtrls, JvQExComCtrls;
 
 
 
@@ -60,34 +63,28 @@ type
   {$NODEFINE TMsg}
   TOwnerDrawState = QStdCtrls.TOwnerDrawState;
   {$NODEFINE TOwnerDrawState}
-  TBevelKind = JvQExControls.TBevelKind;
-  {$NODEFINE TBevelKind}
+  //TBevelKind = JvQExControls.TBevelKind;
+  //{$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
   function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
     Flags: Cardinal): LongBool;
-
-type
-  TJvToolWindow = class(TJvExToolWindow);
-
 
 
 type
   TJvComponent = class(TComponent)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  published  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False; 
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);
-
-  TJvCustomTreeView = class(TJvExCustomTreeView);
-
+  TJvPubGraphicControl = class(TJvExGraphicControl);
   TJvCustomPanel = class(TJvExCustomPanel);
-
   TJvCustomControl = class(TJvExCustomControl);
-
   TJvWinControl = class(TJvExWinControl);
+  TJvPubCustomPanel = class(TJvExCustomPanel);
+  TJvCustomTreeView = class(TJvExCustomTreeView);
 
   TJvForm = class(TJvExForm)
   {$IFDEF USE_DXGETTEXT}
@@ -108,14 +105,22 @@ type
     procedure CreateWnd; override; 
     function WidgetFlags: Integer; override; 
     procedure KeyPress(var Key: Char); override;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF USE_DXGETTEXT}
 const
@@ -157,10 +162,18 @@ end;
 
 
 
+constructor TJvPopupListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+//  visible := false;
+  BorderStyle := bsSingle;
+
+end;
+
 procedure TJvPopupListBox.CreateWnd;
 begin
-  inherited CreateWnd;  
-  QWidget_setFocus(Handle); 
+  inherited CreateWnd;
+  // QWidget_setFocus(Handle); 
 end;
 
 
@@ -168,11 +181,23 @@ end;
 
 function TJvPopupListBox.WidgetFlags: Integer;
 begin
+{
   Result :=
     Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW
     Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
-    Integer(WidgetFlags_WStyle_Tool) or         // WS_EX_TOOLWINDOW
-    Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
+    Integer(WidgetFlags_WStyle_Tool) ; //or         // WS_EX_TOOLWINDOW
+//    Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
+}
+  Result :=
+    Integer(WidgetFlags_WStyle_Customize) or
+    Integer(WidgetFlags_WStyle_Tool) or
+    Integer(WidgetFlags_WType_TopLevel) or
+    Integer(WidgetFlags_WStyle_StaysOnTop) or
+    {$IFDEF LINUX}
+    Integer(WidgetFlags_WX11BypassWM) or
+    {$ENDIF LINUX}
+    Integer(WidgetFlags_WStyle_NoBorder);
+
 end;
 
 
@@ -193,32 +218,20 @@ begin
           FSearchText := '';
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
-          FSearchText := FSearchText + Key; 
+          FSearchText := FSearchText + Key;   
         Key := #0;
       end;
   end;
   inherited KeyPress(Key);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   {$IFDEF USE_DXGETTEXT}
   AddDomainForResourceString(cDomainName);
   {$ENDIF USE_DXGETTEXT}
-
 
 {$IFDEF UNITVERSIONING}
 finalization

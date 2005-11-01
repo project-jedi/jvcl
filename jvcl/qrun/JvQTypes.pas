@@ -23,6 +23,7 @@ Contributor(s): Michael Beck [mbeck att bigfoot dott com].
                 Peter Thornqvist
                 Oliver Giesen
                 Gustavo Bianconi
+                dejoy
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,7 +41,7 @@ interface
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
   SysUtils, Classes,
   QWindows, QMessages, QControls, QForms, QGraphics, 
   Qt, JclWideStrings, 
@@ -99,6 +100,35 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   end; 
+
+  // Added by dejoy (2005-04-20)
+  // A lot of TJVxxx control persistent properties used TPersistent,
+  // So and a TJvPersistentProperty to do this job. make to support batch-update mode
+  // and property change notify.
+  TJvPropertyChangeEvent = procedure(Sender: TObject; const PropName: string) of object;
+
+  TJvPersistentProperty = class(TPersistent)//?? TJvPersistent
+  private
+    FUpdateCount: Integer;
+    FOnChanging: TNotifyEvent;
+    FOnChange: TNotifyEvent;
+    FOnChangingProperty: TJvPropertyChangeEvent;
+    FOnChangeProperty: TJvPropertyChangeEvent;
+  protected
+    procedure Changed; virtual;
+    procedure Changing; virtual;
+    procedure ChangedProperty(const PropName: string); virtual;
+    procedure ChangingProperty(const PropName: string); virtual;
+    procedure SetUpdateState(Updating: Boolean); virtual;
+    property UpdateCount: Integer read FUpdateCount;
+  public
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
+    property OnChangeProperty: TJvPropertyChangeEvent read FOnChangeProperty write FOnChangeProperty;
+    property OnChangingProperty: TJvPropertyChangeEvent read FOnChangingProperty write FOnChangingProperty;
+  end;
 
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
     hkPerformanceData, hkCurrentConfig, hkDynData);
@@ -282,11 +312,23 @@ type
 const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
-
 type
   // from JvListView.pas
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod: TJvSortMethod) of object;
+
+  // from JvOfficeColorPanel.pas
+  TJvAddInControlSiteInfo = record
+    AddInControl: TControl;
+    BoundsRect: TRect;
+    SiteInfoData: TObject;
+  end;
+
+  TJvClickColorType =
+    (cctColors, cctNoneColor, cctDefaultColor, cctCustomColor, cctAddInControl, cctNone);
+  TJvHoldCustomColorEvent = procedure(Sender: TObject; AColor: TColor) of object;
+  TJvColorQuadLayOut = (cqlNone, cqlLeft, cqlRight, cqlClient);
+  TJvGetAddInControlSiteInfoEvent = procedure(Sender: TControl; var ASiteInfo: TJvAddInControlSiteInfo) of object;
 
   // from JvColorProvider.pas
   TColorType = (ctStandard, ctSystem, ctCustom);
@@ -298,8 +340,10 @@ type
   end;
 
 const
-  ColCount = 20;  
+  ColCount = 20;
+  StandardColCount = 40;  
   SysColCount = 42; 
+
   ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
     (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
     (Value: clMaroon;     Constant: 'clMaroon';     Description: RsClMaroon),
@@ -321,6 +365,54 @@ const
     (Value: clSkyBlue;    Constant: 'clSkyBlue';    Description: RsClSkyBlue),
     (Value: clCream;      Constant: 'clCream';      Description: RsClCream),
     (Value: clMedGray;    Constant: 'clMedGray';    Description: RsClMedGray)
+  );
+
+  //added by dejoy (2005-04-20)
+  StandardColorValues: array [0 .. StandardColCount - 1] of TDefColorItem = (
+    (Value: $00000000;    Constant: 'clBlack';          Description: RsClBlack),
+    (Value: $00003399;    Constant: 'clBrown';          Description: RsClBrown),
+    (Value: $00003333;    Constant: 'clOliveGreen';     Description: RsClOliveGreen),
+    (Value: $00003300;    Constant: 'clDarkGreen';      Description: RsClDarkGreen),
+    (Value: $00663300;    Constant: 'clDarkTeal';       Description: RsClDarkTeal),
+    (Value: $00800000;    Constant: 'clDarkBlue';       Description: RsClDarkBlue),
+    (Value: $00993333;    Constant: 'clIndigo';         Description: RsClIndigo),
+    (Value: $00333333;    Constant: 'clGray80';         Description: RsClGray80),
+
+    (Value: $00000080;    Constant: 'clDarkRed';        Description: RsClDarkRed),
+    (Value: $000066FF;    Constant: 'clOrange';         Description: RsClOrange),
+    (Value: $00008080;    Constant: 'clDarkYellow';     Description: RsClDarkYellow),
+    (Value: $00008000;    Constant: 'clGreen';          Description: RsClGreen),
+    (Value: $00808000;    Constant: 'clTeal';           Description: RsClTeal),
+    (Value: $00FF0000;    Constant: 'clBlue';           Description: RsClBlue),
+    (Value: $00996666;    Constant: 'clBlueGray';       Description: RsClBlueGray),
+    (Value: $00808080;    Constant: 'clGray50';         Description: RsClGray50),
+
+    (Value: $000000FF;    Constant: 'clRed';            Description: RsClRed),
+    (Value: $000099FF;    Constant: 'clLightOrange';    Description: RsClLightOrange),
+    (Value: $0000CC99;    Constant: 'clLime';           Description: RsClLime),
+    (Value: $00669933;    Constant: 'clSeaGreen';       Description: RsClSeaGreen),
+    (Value: $00999933;    Constant: 'clAqua';           Description: RsClAqua),
+    (Value: $00FF6633;    Constant: 'clLightBlue';      Description: RsClLightBlue),
+    (Value: $00800080;    Constant: 'clViolet';         Description: RsClViolet),
+    (Value: $00999999;    Constant: 'clGray40';         Description: RsClGray40),
+
+    (Value: $00FF00FF;    Constant: 'clPink';           Description: RsClPink),
+    (Value: $0000CCFF;    Constant: 'clGold';           Description: RsClGold),
+    (Value: $0000FFFF;    Constant: 'clYellow';         Description: RsClYellow),
+    (Value: $0000FF00;    Constant: 'clBrightGreen';    Description: RsClBrightGreen),
+    (Value: $00FFFF00;    Constant: 'clTurquoise';      Description: RsClTurquoise),
+    (Value: $00FFCC00;    Constant: 'clSkyBlue';        Description: RsClSkyBlue),
+    (Value: $00663399;    Constant: 'clPlum';           Description: RsClPlum),
+    (Value: $00C0C0C0;    Constant: 'clGray25';         Description: RsClGray25),
+
+    (Value: $00CC99FF;    Constant: 'clRose';           Description: RsClRose),
+    (Value: $0099CCFF;    Constant: 'clTan';            Description: RsClTan),
+    (Value: $0099FFFF;    Constant: 'clLightYellow';    Description: RsClLightYellow),
+    (Value: $00CCFFCC;    Constant: 'clLightGreen';     Description: RsClLightGreen),
+    (Value: $00FFFFCC;    Constant: 'clLightTurquoise'; Description: RsClLightTurquoise),
+    (Value: $00FFCC99;    Constant: 'clPaleBlue';       Description: RsClPaleBlue),
+    (Value: $00FF99CC;    Constant: 'clLavender';       Description: RsClLavender),
+    (Value: $00FFFFFF;    Constant: 'clWhite';          Description: RsClWhite)
   );
 
   SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (  
@@ -377,6 +469,7 @@ type
     Width: Integer;
     Height: Integer;
   end;
+
 
   TJvMessage = packed record
     Msg: Integer;
@@ -517,6 +610,7 @@ type
      ); 
   end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -538,6 +632,54 @@ begin
   Name := 'SubComponent';
 end;
 
+
+{ TJvPersistentProperty }
+
+procedure TJvPersistentProperty.BeginUpdate;
+begin
+  if FUpdateCount = 0 then
+    SetUpdateState(True);
+  Inc(FUpdateCount);
+end;
+
+procedure TJvPersistentProperty.Changed;
+begin
+  if (FUpdateCount = 0) and Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TJvPersistentProperty.ChangedProperty(const PropName: string);
+begin
+  if Assigned(FOnChangeProperty) then
+    FOnChangeProperty(Self, PropName);
+end;
+
+procedure TJvPersistentProperty.Changing;
+begin
+  if (FUpdateCount = 0) and Assigned(FOnChanging) then
+    FOnChanging(Self);
+end;
+
+procedure TJvPersistentProperty.ChangingProperty(const PropName: string);
+begin
+  if Assigned(FOnChangingProperty) then
+    FOnChangingProperty(Self, PropName);
+end;
+
+procedure TJvPersistentProperty.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    SetUpdateState(False);
+end;
+
+procedure TJvPersistentProperty.SetUpdateState(Updating: Boolean);
+begin
+  if Updating then
+    Changing
+  else
+    Changed;
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization

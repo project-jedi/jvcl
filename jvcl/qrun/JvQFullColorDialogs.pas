@@ -19,7 +19,7 @@ The Initial Developer of the Original Code is Florent Ouchet [ouchet dott floren
 Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
 All Rights Reserved.
 
-Contributor(s): -                                               
+Contributor(s): -
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,7 +35,7 @@ unit JvQFullColorDialogs;
 interface
 
 uses
-  Classes, QGraphics, QForms,
+  Classes, QGraphics, QForms, JvQComponent,
   JvQFullColorSpaces, JvQFullColorRotate;
 
 type
@@ -77,7 +77,7 @@ type
   TJvFullColorDialog = class;
   TJvFullColorCircleDialog = class;
 
-  TJvFullColorDialog = class(TComponent)
+  TJvFullColorDialog = class(TJvComponent)
   private
     FOptions: TJvFullColorDialogOptions;
     FTitle: string;
@@ -114,7 +114,7 @@ type
     property OnCloseQuery: TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery;
   end;
 
-  TJvFullColorCircleDialog = class(TComponent)
+  TJvFullColorCircleDialog = class(TJvComponent)
   private
     FTitle: string;
     FForm: TForm;
@@ -186,21 +186,24 @@ begin
   FOldColorSpace := ColorSpaceManager.GetColorSpaceID(FullColor);
 
   FForm := TJvFullColorFrm.Create(Application, FFullColor, FOptions);
-  with TJvFullColorFrm(Form) do
-  begin
-    if Title <> '' then
-      Caption := FTitle;
-    OnApply := FormApply;
-    OnClose := FormClose;
-    OnShow := FormShow;
-    HelpContext := Self.HelpContext;
+  try
+    with TJvFullColorFrm(Form) do
+    begin
+      if Title <> '' then
+        Caption := FTitle;
+      OnApply := FormApply;
+      OnClose := FormClose;
+      OnShow := FormShow;
+      HelpContext := Self.HelpContext;
 
-    Result := (ShowModal = mrOk);
+      Result := (ShowModal = mrOk);
 
-    NewColor := FullColor;
-  end;  
-  FForm := nil; 
-
+      NewColor := FullColor;
+    end;
+  finally
+    FForm.Free;
+    FForm := nil;
+  end;
   with ColorSpaceManager do
     if foConvertToOriginalSpace in Options then
       NewColor := ConvertToID(NewColor, OldColorSpace);
@@ -231,7 +234,7 @@ begin
     FOnCloseQuery(Self, Allow);
 
   if Allow then
-    Action := caFree
+    Action := caHide //caFree
   else
     Action := caNone;
 end;
@@ -325,25 +328,29 @@ end;
 function TJvFullColorCircleDialog.Execute: Boolean;
 begin
   FForm := TJvFullColorCircleFrm.Create(Application);
-  with TJvFullColorCircleFrm(Form) do
-  begin
-    if Title <> '' then
-      Caption := Title;
-    Options := Self.Options;
-    Delta := Self.Delta;
-    OnApply := FormApply;
-    OnClose := FormClose;
-    OnShow := FormShow;
-    HelpContext := Self.HelpContext;
+  try
+    with TJvFullColorCircleFrm(Form) do
+    begin
+      if Title <> '' then
+        Caption := Title;
+      Options := Self.Options;
+      Delta := Self.Delta;
+      OnApply := FormApply;
+      OnClose := FormClose;
+      OnShow := FormShow;
+      HelpContext  := Self.HelpContext;
 
-    Result := (ShowModal = mrOk);
+      Result := (ShowModal = mrOk);
 
-    Self.FDelta.AxisRed.Assign(RedDelta);
-    Self.FDelta.AxisGreen.Assign(GreenDelta);
-    Self.FDelta.AxisBlue.Assign(BlueDelta);
-    Self.FDelta.ColorID := ColorID;
-  end;  
-  FForm := nil; 
+      Self.FDelta.AxisRed.Assign(RedDelta);
+      Self.FDelta.AxisGreen.Assign(GreenDelta);
+      Self.FDelta.AxisBlue.Assign(BlueDelta);
+      Self.FDelta.ColorID := ColorID;
+    end;
+  finally
+    FForm.Free;
+    FForm := nil;
+  end;
 end;
 
 procedure TJvFullColorCircleDialog.FormApply(Sender: TObject);
@@ -373,7 +380,7 @@ begin
     if Assigned(FOnCloseQuery) then
       FOnCloseQuery(Self, Allow);
     if Allow then
-      Action := caFree
+      Action := caHide //caFree
     else
       Action := caNone;
   end;

@@ -37,6 +37,9 @@ unit JvQAlarms;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QExtCtrls,
   SysUtils, Classes,
   JvQTypes, JvQComponent;
@@ -97,12 +100,18 @@ type
     property OnAlarm: TJvAlarmEvent read FOnAlarm write FOnAlarm;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 //=== { TJvAlarms } ==========================================================
 
@@ -320,14 +329,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

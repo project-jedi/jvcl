@@ -89,7 +89,7 @@ type
   TJvXMLQueryCondition = class(TObject)
   public
     Condition: string;
-    Operator: TJvXMLSQLOperator;
+    SQLOperator: TJvXMLSQLOperator;
     constructor Create(AOperator: TJvXMLSQLOperator; const ACondition: string = '');
   end;
 
@@ -101,7 +101,7 @@ type
     Column: string;
     ValueKind: TJvXMLSetKind;
     SecondKind: TJvXMLSetKind;
-    Operator: TJvXMLSetOperator;
+    SetOperator: TJvXMLSetOperator;
     Value: string;
     SecondValue: string;
     constructor Create(AValue: string);
@@ -464,7 +464,7 @@ var
     while AIndex < FConditions.Count do
     begin
       with TJvXMLQueryCondition(FConditions[AIndex]) do
-        case Operator of
+        case SQLOperator of
           opLeftParenthesis:
             begin
               Inc(AIndex);
@@ -479,7 +479,7 @@ var
             end;
           opColumn, opConstant:
             begin
-              if Operator = opConstant then
+              if SQLOperator = opConstant then
                 LValue := Condition
               else
               begin
@@ -502,19 +502,19 @@ var
                 Result := False;
                 Exit;
               end;
-              LComp := TJvXMLQueryCondition(FConditions[AIndex-1]).Operator;
+              LComp := TJvXMLQueryCondition(FConditions[AIndex-1]).SQLOperator;
 
-              if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opConstant then
+              if TJvXMLQueryCondition(FConditions[AIndex]).SQLOperator = opConstant then
                 LValue2 := TJvXMLQueryCondition(FConditions[AIndex]).Condition
               else
-              if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opColumn then
+              if TJvXMLQueryCondition(FConditions[AIndex]).SQLOperator = opColumn then
               begin
                 LValue2 := TJvXMLQueryCondition(FConditions[AIndex]).Condition;
                 if AXMLElem.Properties.ItemNamed[LValue2] <> nil then
                   LValue2 := AXMLElem.Properties.Value(LValue2);
               end
               else
-              if (TJvXMLQueryCondition(FConditions[AIndex]).Operator = opNull) and (LComp = opEquals) then
+              if (TJvXMLQueryCondition(FConditions[AIndex]).SQLOperator = opNull) and (LComp = opEquals) then
               begin
                 Result := Result and (LValue = '');
                 LComp := opNone;
@@ -1188,7 +1188,7 @@ constructor TJvXMLQueryCondition.Create(AOperator: TJvXMLSQLOperator;
   const ACondition: string);
 begin
   inherited Create;
-  Self.Operator := AOperator;
+  Self.SQLOperator := AOperator;
   Self.Condition := ACondition;
 end;
 
@@ -1290,18 +1290,18 @@ begin
 
     //Second kind and second value?
     if AValue = '' then
-      Operator := soNone
+      SetOperator := soNone
     else
     begin
       case AValue[1] of
         '+':
-          Operator := soAdd;
+          SetOperator := soAdd;
         '-':
-          Operator := soSubstract;
+          SetOperator := soSubstract;
         '*':
-          Operator := soMultiply;
+          SetOperator := soMultiply;
         '/':
-          Operator := soDivide;
+          SetOperator := soDivide;
         else
           raise Exception.Create('');
       end;
@@ -1336,13 +1336,13 @@ begin
   else
     LValue := AElement.Properties.Value(Value, ParseValue(Value));
 
-  if Operator <> soNone then
+  if SetOperator <> soNone then
   begin
     if SecondKind = skConstant then
-      LValue2 := SecondValue
+      LValue2 := SecondValue             
     else
       LValue2 := AElement.Properties.Value(SecondValue, ParseValue(SecondValue));
-    case Operator of
+    case SetOperator of
       soAdd:
         LValue := FloatToStr(StrToFloatDef(LValue,0) + StrToFloatDef(LValue2,0));
       soMultiply:

@@ -215,8 +215,8 @@ var
   Bmp: QGraphics.TBitmap; 
 begin
 
-  if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then
-    raise EJvWizardError.CreateRes(@RsETilingError);
+  if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then 
+    raise EJvWizardError.CreateRes(@RsETilingError); 
   // Create a temporary bitmap to draw into. This is both to speed things up a bit
   // and also to clip the image to the ARect param (using Draw doesn't clip the image,
   // but it does support auto-detecting transparency)

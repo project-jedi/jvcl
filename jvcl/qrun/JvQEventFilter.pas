@@ -37,9 +37,9 @@ uses
 type
   TJvEventFilter = class(TJvCustomControlComponent)
   private
-    FHook: QObject_hookH;
     FOnEvent: TEventEvent;
   protected
+    FHook: QObject_hookH;
     procedure SetParent(const Value: TWinControl); override;
     function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
   public

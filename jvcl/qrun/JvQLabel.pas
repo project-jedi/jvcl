@@ -15,8 +15,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvLabel.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
+Portions created by S?stien Buysse are Copyright (C) 2001 S?stien Buysse.
 All Rights Reserved.
 
 Contributor(s):
@@ -27,6 +27,8 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Changes:
+2005-07-20:(dejoy)
+  * TJvCustomLabel implemented interface of IJvHotTrack.
 2005-04-02:
   * Fixed (Added) support for Alignment when used with Angle. (Layout still to do)
   * Fixed Shadow (was not visible when JvLabel not Transparent).
@@ -53,7 +55,8 @@ Changes:
   Contributor(s):
     Dierk schmid
     Stephane Bischoff (Tief)
-
+    Dejoy Den
+    
 Known Issues:
 * AutoSize calculations aren't correct when RoundedFrame and/or Shadow are active
 -----------------------------------------------------------------------------}
@@ -78,13 +81,17 @@ type
   TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
 
   TAngleInfo = record
-    TextWidth, TextHeight : Integer;
-    TextGapWidth, TextGapHeight : Integer;
-    TotalWidth, TotalHeight : Integer;
-    PosX, PosY : Integer
+    TextWidth: Integer;
+    TextHeight: Integer;
+    TextGapWidth: Integer;
+    TextGapHeight: Integer;
+    TotalWidth: Integer;
+    TotalHeight: Integer;
+    PosX: Integer;
+    PosY: Integer;
   end;
 
-  TJvCustomLabel = class(TJvGraphicControl)
+  TJvCustomLabel = class(TJvGraphicControl, IJvHotTrack)
   private
     FFocusControl: TWinControl;
     FAlignment: TAlignment;
@@ -103,11 +110,13 @@ type
     FChangeLink: TChangeLink;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
+    FHotTrackOptions: TJvHotTrackOptions;
+
     FAutoOpenURL: Boolean;
     FURL: string;
     FAngle: TJvLabelRotateAngle;
     FSpacing: Integer;
-    FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
     FNeedsResize: Boolean;
     FTextEllipsis: TJvTextEllipsis;
@@ -136,27 +145,34 @@ type
     procedure DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
       ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
     procedure SetAngle(Value: TJvLabelRotateAngle);
-    procedure SetHotTrackFont(Value: TFont);
     procedure SetSpacing(Value: Integer);
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetTextEllipsis(Value: TJvTextEllipsis);
     procedure SetFrameColor(const Value: TColor);
     procedure SetRoundedFrame(const Value: Integer);
     function GetMargin: Integer;
     procedure HotFontChanged(Sender: TObject);
+
+    {IJvHotTrack}  //added by dejoy 2005-07-20
+    function GetHotTrack: Boolean;
+    function GetHotTrackFont: TFont;
+    function GetHotTrackFontOptions: TJvTrackFontOptions;
+    function GetHotTrackOptions: TJvHotTrackOptions;
+    procedure SetHotTrack(Value: Boolean);
+    procedure SetHotTrackFont(Value: TFont);
+    procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
+    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
   protected
-    procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
-    procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
-//    procedure FocusChanged(AControl: TWinControl); override;
+    procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
+    procedure DoProviderDraw(var Rect: TRect; Flags: Integer); virtual;
+    procedure FocusChanged(AControl: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
-    procedure VisibleChanged; override;
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
-    procedure AdjustBounds;virtual;  
+    procedure AdjustBounds; virtual;  
     procedure SetAutoSize(Value: Boolean); virtual; 
 
     // MarginXxx do not update the control.
@@ -186,9 +202,13 @@ type
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL default True;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
+
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
+      DefaultTrackFontOptions;
+    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
+
     property NeedsResize: Boolean read FNeedsResize write FNeedsResize;
 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -217,8 +237,7 @@ type
     destructor Destroy; override;
     property Canvas;
     property MouseOver;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer; AHeight: Integer); override;
   end;
 
   TJvLabel = class(TJvCustomLabel)
@@ -271,6 +290,7 @@ type
     property HotTrack;
     property HotTrackFont;
     property HotTrackFontOptions;
+    property HotTrackOptions;
     property Images;
     property ImageIndex;
     property Provider;
@@ -286,10 +306,10 @@ function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: T
 
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
-function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real;
+function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real;
   Info: TAngleInfo): TPoint;
 procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
-  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: Boolean = True;
   Alignment: TAlignment = taLeftJustify);
 
 {$IFDEF UNITVERSIONING}
@@ -314,76 +334,86 @@ const
 
 //=== { TJvCustomLabel } =====================================================
 
-function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real; Info: TAngleInfo) : TPoint;
+function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real; Info: TAngleInfo) : TPoint;
 begin
-  with Info do begin
+  with Info do
     case Angle of
       0..89:
-        begin
-          case Alignment of
-            taLeftJustify : Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
-            taCenter      : Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
-            taRightJustify: Result := Point(Round(X * 2 - TotalWidth), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
-          end;
+        case Alignment of
+          taLeftJustify :
+            Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+          taCenter:
+            Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2 - TotalWidth), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
         end;
       90..179:
-        begin
-          case Alignment of
-            taLeftJustify : Result := Point(TextWidth, Round(Y + TotalHeight / 2));
-            taCenter      : Result := Point(Round(X + (TotalWidth - 2 * TextGapWidth) / 2), Round(Y + TotalHeight / 2));
-            taRightJustify: Result := Point(Round(X * 2 - TextGapWidth), Round(Y + TotalHeight / 2));
-          end;
+        case Alignment of
+          taLeftJustify:
+            Result := Point(TextWidth, Round(Y + TotalHeight / 2));
+          taCenter:
+            Result := Point(Round(X + (TotalWidth - 2 * TextGapWidth) / 2), Round(Y + TotalHeight / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2 - TextGapWidth), Round(Y + TotalHeight / 2));
         end;
       180..269:
-        begin
-          case Alignment of
-            taLeftJustify : Result := Point(TotalWidth, Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
-            taCenter      : Result := Point(Round(X + TotalWidth / 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
-            taRightJustify: Result := Point(Round(X * 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
-          end;
-        end;
-      else begin
         case Alignment of
-          taLeftJustify : Result := Point(TextGapWidth, Round(Y - TotalHeight / 2));
-          taCenter      : Result := Point(Round(X - (TotalWidth - 2 * TextGapWidth) / 2), Round(Y - TotalHeight / 2));
-          taRightJustify: Result := Point(Round(X * 2 - TextWidth), Round(Y - TotalHeight / 2));
+          taLeftJustify:
+            Result := Point(TotalWidth, Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+          taCenter:
+            Result := Point(Round(X + TotalWidth / 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
         end;
-      end;
+      else
+        case Alignment of
+          taLeftJustify:
+            Result := Point(TextGapWidth, Round(Y - TotalHeight / 2));
+          taCenter:
+            Result := Point(Round(X - (TotalWidth - 2 * TextGapWidth) / 2), Round(Y - TotalHeight / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2 - TextWidth), Round(Y - TotalHeight / 2));
+        end;
     end;
-  end;
 end;
 
 procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
-  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: Boolean = True;
   Alignment: TAlignment = taLeftJustify);
 var
-  TxtWdt, TxtHgt : Extended;
-  angB, X, Y : Real;
+  TxtWdt, TxtHgt: Extended;
+  AngleB, X, Y: Real;
   Origin: TPoint;
 begin
   // Calculate intermediate values
   case Angle of
-    0..89   : angB := DegToRad(90 - Angle);
-    90..179 : angB := DegToRad(Angle - 90);
-    180..269: angB := DegToRad(270 - Angle);
+    0..89:
+      AngleB := DegToRad(90 - Angle);
+    90..179:
+      AngleB := DegToRad(Angle - 90);
+    180..269:
+      AngleB := DegToRad(270 - Angle);
   else {270..359}
-    angB := DegToRad(Angle - 270);
+    AngleB := DegToRad(Angle - 270);
   end;
-  with Canvas do begin
-    TxtWdt := TextWidth (Text);
+  with Canvas do
+  begin
+    TxtWdt := TextWidth(Text);
     TxtHgt := TextHeight(Text);
   end;
-  with Info do begin
-    TextWidth    := Round(sin(angB) * TxtWdt);
-    TextGapWidth := Round(cos(angB) * TxtHgt);
-    TextHeight    := Round(cos(angB) * TxtWdt);
-    TextGapHeight := Round(sin(angB) * TxtHgt);
+  with Info do
+  begin
+    TextWidth := Round(Sin(AngleB) * TxtWdt);
+    TextGapWidth := Round(Cos(AngleB) * TxtHgt);
+    TextHeight := Round(Cos(AngleB) * TxtWdt);
+    TextGapHeight := Round(Sin(AngleB) * TxtHgt);
     // Calculate new sizes of component
-    TotalWidth   := (TextWidth + TextGapWidth);
-    TotalHeight   := (TextHeight + TextGapHeight);
+    TotalWidth := (TextWidth + TextGapWidth);
+    TotalHeight := (TextHeight + TextGapHeight);
   end;
   // Calculate draw position of text
-  with Rect do begin
+  with Rect do
+  begin
     X := (Right - Left) / 2;
     Y := (Bottom - Top) / 2;
   end;
@@ -408,13 +438,13 @@ begin
           Info.posX := Info.TotalWidth;
           Info.posY := Info.TextGapHeight;
         end;
-      else begin{270..359}
-        Info.PosX := Info.TextGapWidth;
-        Info.PosY := 0;
-      end;
+    else{270..359}
+      Info.PosX := Info.TextGapWidth;
+      Info.PosY := 0;
     end;
   end
-  else begin
+  else
+  begin
     Info.PosX := Origin.X;
     Info.PosY := Origin.Y;
   end;
@@ -465,10 +495,15 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable]; 
+
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
+  FHotTrackOptions := TJvHotTrackOptions.Create;
+  // (rom) needs better font handling
   FHotTrackFont.OnChange := HotFontChanged;
+
   Width := 65;
   Height := 17;
   FAutoSize := True;
@@ -477,7 +512,6 @@ begin
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
   FShadowPos := spRightBottom;
-  FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoOpenURL := True;
 end;
 
@@ -485,6 +519,7 @@ destructor TJvCustomLabel.Destroy;
 begin
   FChangeLink.Free;
   FHotTrackFont.Free;
+  FHotTrackOptions.Free;
   FreeAndNil(FConsumerSvc);
   inherited Destroy;
 end;
@@ -537,7 +572,7 @@ begin
         Canvas.Font := HotTrackFont
       else
         Canvas.Font := Font;
-      if (Flags and DT_CALCRECT <> 0) then
+      if (Flags and DT_CALCRECT) <> 0 then
       begin
         if ItemsRenderer <> nil then
           Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
@@ -580,7 +615,7 @@ begin
     Flags := Flags or DT_NOPREFIX;
   Flags := Flags or EllipsisFlags[TextEllipsis];
   Flags := DrawTextBiDiModeFlags(Flags);
-  if MouseOver then
+  if MouseOver and HotTrack then
     Canvas.Font := HotTrackFont
   else
   begin
@@ -654,13 +689,12 @@ var
   Text: array [0..4096] of Char;
   TextX, TextY: Integer;
   Phi: Real;
-  w, h: Integer;
+  W, H: Integer;
   CalcRect: Boolean;
 begin
   CalcRect := (Flags and DT_CALCRECT <> 0);
   StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
-  if CalcRect and ((Text[0] = #0) or ShowAccelChar and
-    (Text[0] = '&') and (Text[1] = #0)) then
+  if CalcRect and ((Text[0] = #0) or ShowAccelChar and (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
 
   Canvas.Start;
@@ -670,17 +704,17 @@ begin
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
-      w := Rect.Right - Rect.Left;
-      h := Rect.Bottom - Rect.Top;
-      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
+      W := Rect.Right - Rect.Left;
+      H := Rect.Bottom - Rect.Top;
+      TextX := Trunc(0.5 * W - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
         0.5 * Canvas.TextHeight(Text) * Sin(Phi));
-      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
+      TextY := Trunc(0.5 * H - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
         0.5 * Canvas.TextWidth(Text) * Sin(Phi));
     end
     else
     begin
-      w := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      h := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+      W := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      H := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
       TextX := 3;
       TextY := 3;
       if Angle <= 90 then
@@ -706,8 +740,8 @@ begin
 
     if CalcRect then
     begin
-      Rect.Right := Rect.Left + w;
-      Rect.Bottom := Rect.Top + h;
+      Rect.Right := Rect.Left + W;
+      Rect.Bottom := Rect.Top + H;
       if HasImage then
         Inc(Rect.Right, Images.Width);
       InflateRect(Rect, -XOffsetFrame, -YOffsetFrame);
@@ -740,33 +774,69 @@ var
   Rect,CalcRect: TRect;
   DrawStyle: Integer;
   InteriorMargin: Integer;
+  OldPenColor: TColor;
 begin
   InteriorMargin := 0;
   if not Enabled and not (csDesigning in ComponentState) then
     FDragging := False;
+
   with Canvas do
   begin
-    Canvas.Brush.Color := Color;
-    Canvas.Brush.Style := bsSolid;
-    if not Transparent and ((RoundedFrame = 0) or (FrameColor = clNone)) then
-      DrawThemedBackground(Self, Canvas, ClientRect)
-    else
-    if Transparent then
-      Canvas.Brush.Style := bsClear;
-    if FrameColor <> clNone then
+    Rect := ClientRect;
+
+    {Inserted by (dejoy) 2005-07-20}
+    if Enabled and MouseOver and HotTrack  then
     begin
-      if RoundedFrame = 0 then
+      if HotTrackOptions.Enabled then
       begin
-        Brush.Color := FrameColor;
-        FrameRect( Canvas,  ClientRect);
-      end
+        Canvas.Brush.Color := HotTrackOptions.Color;
+        Canvas.Brush.Style := bsSolid;
+        if HotTrackOptions.FrameVisible then
+        begin
+          OldPenColor := Pen.Color;
+          if RoundedFrame = 0 then
+          begin
+            Canvas.Pen.Color := HotTrackOptions.FrameColor;
+            Canvas.Rectangle(0, 0, Width, Height);
+          end
+          else
+          begin 
+            FrameRounded(Canvas, ClientRect, HotTrackOptions.FrameColor, RoundedFrame);
+          end;
+          Canvas.Pen.Color := OldPenColor;
+        end
+        else
+          Canvas.FillRect(Rect);
+      end;
+    end
+    else
+    begin
+      Canvas.Font := Self.Font;
+    {Insert End by (dejoy)}
+
+      Canvas.Brush.Color := Color;
+      Canvas.Brush.Style := bsSolid;
+      if not Transparent and ((RoundedFrame = 0) or (FrameColor = clNone)) then
+        DrawThemedBackground(Self, Canvas, ClientRect)
       else
+      if Transparent then
+        Canvas.Brush.Style := bsClear;
+
+      if FrameColor <> clNone then
       begin
-        Brush.Color := Color; 
-        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
+        if RoundedFrame = 0 then
+        begin
+          Brush.Color := FrameColor;
+          FrameRect( Canvas,  ClientRect);
+        end
+        else
+        begin
+          Brush.Color := Color; 
+          FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
+        end;
       end;
     end;
-    Rect := ClientRect;
+
     Inc(Rect.Left, MarginLeft + InteriorMargin);
     Dec(Rect.Right, MarginRight + InteriorMargin);
     Inc(Rect.Top, MarginTop + InteriorMargin);
@@ -1019,8 +1089,6 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and Enabled then
     FDragging := True;
-  if Button = mbRight then // (ahuser) moved from WMRButtonDown
-    UpdateTracking;
 end;
 
 procedure TJvCustomLabel.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1034,20 +1102,19 @@ end;
 
 procedure TJvCustomLabel.UpdateTracking;
 var
-  P: TPoint;
-  OldValue: Boolean;
+  OldValue, OtherDragging: Boolean;
 begin
   OldValue := MouseOver;
-  GetCursorPos(P);
-  MouseOver := Enabled and (FindDragTarget(P, True) = Self) and
-    IsForegroundTask;
+  OtherDragging :=  
+    DragActivated 
+    ;
+
+  MouseOver := Enabled and not OtherDragging and
+    (FindDragTarget(Mouse.CursorPos, True) = Self) and IsForegroundTask;
   if MouseOver <> OldValue then
-    if MouseOver then
-      MouseEnter(Self)
-    else
-      MouseLeave(Self);
+    Invalidate;
 end;
-(*
+
 procedure TJvCustomLabel.FocusChanged(AControl: TWinControl);
 var
   Active: Boolean;
@@ -1061,7 +1128,6 @@ begin
   end;
   inherited FocusChanged(AControl);
 end;
-*)
 
 procedure TJvCustomLabel.TextChanged;
 begin
@@ -1096,25 +1162,56 @@ begin
   UpdateTracking;
 end;
 
-procedure TJvCustomLabel.VisibleChanged;
-begin
-  inherited VisibleChanged;
-  if Visible then
-    UpdateTracking;
-end;
-
 procedure TJvCustomLabel.MouseEnter(Control: TControl);
+var
+  NeedRepaint: Boolean;
+  OtherDragging:Boolean;
 begin
-  inherited MouseEnter(Control);
-  if MouseOver and Enabled and IsForegroundTask and HotTrack then
-    FontChanged;
+  if csDesigning in ComponentState then
+    Exit;
+
+  if IsForegroundTask then
+    MouseCapture := True;  //Capture for MouseUp event
+
+  if not MouseOver and Enabled and IsForegroundTask then
+  begin
+    OtherDragging :=  
+      DragActivated 
+      ;
+    NeedRepaint := not Transparent and
+      ( 
+      (FHotTrack  and not (FDragging or OtherDragging)));
+
+    inherited MouseEnter(Control); // set MouseOver
+
+    if NeedRepaint then
+      Invalidate;
+  end;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
+var
+  NeedRepaint: Boolean;
+  OtherDragging: Boolean;
 begin
-  if MouseOver and HotTrack then
-    FontChanged;
-  inherited MouseLeave(Control);
+  if csDesigning in ComponentState then
+    Exit;
+  MouseCapture := False;
+  if  MouseOver and Enabled then
+  begin
+    OtherDragging :=  
+      DragActivated 
+      ;
+
+    NeedRepaint := not Transparent and
+      ( 
+      (FHotTrack  and (FDragging or not OtherDragging)));
+
+    inherited MouseLeave(Control); // set MouseOver
+
+    if NeedRepaint then
+      Invalidate;
+  end;
 end;
 
 procedure TJvCustomLabel.SetImageIndex(Value: TImageIndex);
@@ -1260,13 +1357,44 @@ begin
   end;
 end;
 
-procedure TJvCustomLabel.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+procedure TJvCustomLabel.SetHotTrackFontOptions(Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
     UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
+end;
+
+function TJvCustomLabel.GetHotTrack: Boolean;
+begin
+  Result := FHotTrack;
+end;
+
+function TJvCustomLabel.GetHotTrackFont: TFont;
+begin
+  Result := FHotTrackFont;
+end;
+
+function TJvCustomLabel.GetHotTrackFontOptions: TJvTrackFontOptions;
+begin
+  Result := FHotTrackFontOptions;
+end;
+
+function TJvCustomLabel.GetHotTrackOptions: TJvHotTrackOptions;
+begin
+  Result := FHotTrackOptions;
+end;
+
+procedure TJvCustomLabel.SetHotTrack(Value: Boolean);
+begin
+  FHotTrack := Value;
+end;
+
+procedure TJvCustomLabel.SetHotTrackOptions(Value: TJvHotTrackOptions);
+begin
+  if (FHotTrackOptions <> Value) and (Value <> nil) then
+    FHotTrackOptions.Assign(Value);
 end;
 
 procedure TJvCustomLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -1296,13 +1424,11 @@ end;
 procedure TJvCustomLabel.SetRoundedFrame(const Value: Integer);
 begin
   if FRoundedFrame <> Value then
-  begin
     if (Value < Height div 2) and (Value >= 0) then
     begin
       FRoundedFrame := Value;
       Invalidate;
     end;
-  end;
 end;
 
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
@@ -1313,17 +1439,16 @@ begin
     Pen.Color := AColor;
     Dec(Right);
     Dec(Bottom);
-    Polygon([
-      Point(Left + R, Top),
-        Point(Right - R, Top),
-        Point(Right, Top + R),
-        Point(Right, Bottom - R),
-        Point(Right - R, Bottom),
-        Point(Left + R, Bottom),
-        Point(Left, Bottom - R),
-        Point(Left, Top + R),
-        Point(Left + R, Top)
-        ]);
+    Polygon(
+     [Point(Left + R, Top),
+      Point(Right - R, Top),
+      Point(Right, Top + R),
+      Point(Right, Bottom - R),
+      Point(Right - R, Bottom),
+      Point(Left + R, Bottom),
+      Point(Left, Bottom - R),
+      Point(Left, Top + R),
+      Point(Left + R, Top)]);
     Inc(Right);
     Inc(Bottom);
   end;

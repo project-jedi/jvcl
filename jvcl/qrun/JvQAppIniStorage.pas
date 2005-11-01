@@ -186,12 +186,47 @@ begin
   FPreserveLeadingTrailingBlanks := Value;
 end;
 
+{ Optimalization of TCustomIniFile.ValueExists is only done for Delphi 7; Probably
+  works the same for other versions, but I can't check that.
+  Note that this is a dirty hack, a better way would be to rewrite TMemIniFile;
+  especially expose FSections, but other optimizations can be done also.
+  For example TCustomIniFile.SectionExists}
+
+type
+  TJvMemIniFile = class(TMemIniFile)
+  public
+    function DoesValueExists(const Section, Ident: string): Boolean;
+  end;
+
+  {$HINTS OFF}
+  TMemIniFileAccessPrivate = class(TCustomIniFile)
+  private
+    FSections: TStringList;
+  end;
+  {$HINTS ON}
+
+function TJvMemIniFile.DoesValueExists(const Section, Ident: string): Boolean;
+var
+  I: Integer;
+  Strings: TStrings;
+begin
+  I := TMemIniFileAccessPrivate(Self).FSections.IndexOf(Section);
+  if I >= 0 then
+  begin
+    Strings := TStrings(TMemIniFileAccessPrivate(Self).FSections.Objects[I]);
+    I := Strings.IndexOfName(Ident);
+    Result := I >= 0;
+  end else
+    Result := False;
+end;
+
+
 //=== { TJvCustomAppIniStorage } =============================================
 
 constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FIniFile := TMemIniFile.Create(Name);
+  inherited Create(AOwner); 
+  FIniFile := TJvMemIniFile.Create(Name); 
 end;
 
 destructor TJvCustomAppIniStorage.Destroy;
@@ -493,8 +528,8 @@ function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean
 begin
   if IniFile <> nil then
   begin
-    ReloadIfNeeded;
-    Result := IniFile.ValueExists(CalcDefaultSection(Section), Key);
+    ReloadIfNeeded; 
+    Result := TJvMemIniFile(IniFile).DoesValueExists(CalcDefaultSection(Section), Key); 
   end
   else
     Result := False;
@@ -590,11 +625,13 @@ end;
 function TJvCustomAppIniStorage.PathExistsInt(const Path: string): Boolean;
 var
   Section: string;
-  Key: string;
 begin
   ReloadIfNeeded;
-  SplitKeyPath(Path, Section, Key);
-  Result := IniFile.SectionExists(Section + '\' + Key);
+  if Copy(Path,1,1) = PathDelim then
+    Section := Copy(Path, 2, Length(Path)-1)
+  else
+    Section := Path;
+  Result := IniFile.SectionExists(Section);
 end;
 
 function TJvCustomAppIniStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;

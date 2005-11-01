@@ -43,7 +43,7 @@ interface
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
   QWindows, QMessages, Classes, QControls, QImgList,
   JvQToolEdit;
 
@@ -81,16 +81,19 @@ type
     procedure SetMinValue(AValue: Extended);
     procedure SetZeroEmpty(Value: Boolean);
     procedure SetFormatOnEditing(Value: Boolean);
-    function GetText: string;  reintroduce; 
+//    function GetText: string;  reintroduce;
 //    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    function IsFormatStored: Boolean; 
-  protected 
-    procedure Paint; override; 
+    function IsFormatStored: Boolean;
+  protected
+    procedure Paint; override;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
 
-    procedure SetText(const AValue: string);  reintroduce;  virtual; 
+    function GetText: TCaption;  reintroduce; virtual;
+    procedure SetText(const AValue: TCaption); reintroduce; virtual;
+//    procedure SetText(const AValue: string);   reintroduce;
+//      virtual;
 
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -123,7 +126,9 @@ type
     property MaxValue: Extended read FMaxValue write SetMaxValue;
     property MinValue: Extended read FMinValue write SetMinValue;
     property FormatOnEditing: Boolean read FFormatOnEditing write SetFormatOnEditing default False;
-    property Text: string read GetText write SetText stored False;
+//    property Text: string read GetText write SetText stored False;
+
+    property Text: TCaption read GetText write SetText stored False;
     property MaxLength default 0;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty default True;
     //Polaris
@@ -313,15 +318,17 @@ var
 type
   TJvPopupWindowAccessProtected = class(TJvPopupWindow);
 
+
+
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
-  I: Integer;
+  I: Integer; 
 begin
   Result := False;
   for I := 1 to Length(Value) do
     if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
-      Exit;
-  Result := TextToFloat(PChar(Value), RetValue, fvExtended);
+      Exit; 
+  Result := TextToFloat(PChar(Value), RetValue, fvExtended); 
 end;
 
 function FormatFloatStr(const S: string; Thousands: Boolean): string;
@@ -338,8 +345,8 @@ begin
     MinSym := 1;
   I := Pos(DecimalSeparator, S);
   if I > 0 then
-    MaxSym := I - 1;
-  I := Pos('E', AnsiUpperCase(S));
+    MaxSym := I - 1; 
+  I := Pos('E', AnsiUpperCase(S)); 
   if I > 0 then
     MaxSym := Min(I - 1, MaxSym);
   Result := Copy(S, MaxSym + 1, MaxInt);
@@ -427,7 +434,7 @@ end;
 function xTextToValText(const AValue: string): string;
 begin
   Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then
+  if DecimalSeparator <> AnsiChar(ThousandSeparator) then
     Result := DelChars(Result, ThousandSeparator);
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
     Result := ReplaceStr(Result, '.', DecimalSeparator);
@@ -449,8 +456,8 @@ begin
   Result := False;
   S := EditText;
   GetSel(SelStart, SelStop);
-  System.Delete(S, SelStart + 1, SelStop - SelStart);
-  System.Insert(Key, S, SelStart + 1);
+  Delete(S, SelStart + 1, SelStop - SelStart);
+  Insert(Key, S, SelStart + 1);
   S := xTextToValText(S);
   DecPos := Pos(DecimalSeparator, S);
   if DecPos > 0 then
@@ -473,13 +480,14 @@ begin
   if PopupVisible and (UpCase(Key) in
     DigitSymbols +
     [DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
-    [ThousandSeparator]) then
+    [AnsiChar(ThousandSeparator)]) then
   begin
     TJvPopupWindowAccessProtected(FPopup).KeyPress(Key);
+   // EditText := TJvPopupWindowAccessProtected(FPopup).Text;
     Key := #0;
   end;
-  if Key in ['.', ','] - [ThousandSeparator] then
-    Key := DecimalSeparator;
+  if Key in ['.', ','] - [AnsiChar(ThousandSeparator)] then
+    Key := Char(DecimalSeparator);
   inherited KeyPress(Key);
   if (Key in [#32..#255]) and not IsValidChar(Key) then
   begin
@@ -691,8 +699,8 @@ begin
           Result := FMaxValue;
       end;
     end;
-    if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateResFmt(@RsEOutOfRangeXFloat,
+    if RaiseOnError and (Result <> NewValue) then 
+      raise ERangeError.CreateResFmt(@RsEOutOfRangeXFloat, 
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;
@@ -761,9 +769,9 @@ begin
   end;
 end;
 
-function TJvCustomNumEdit.GetText: string;
+function TJvCustomNumEdit.GetText: TCaption;
 begin
-  Result := inherited Text;
+  Result := inherited GetText;
 end;
 
 (*
@@ -802,7 +810,8 @@ begin
 end;
 *)
 
-procedure TJvCustomNumEdit.SetText(const AValue: string);
+//procedure TJvCustomNumEdit.SetText(const AValue: string);
+procedure TJvCustomNumEdit.SetText(const AValue: TCaption);
 begin
   if not (csReading in ComponentState) then
   begin
@@ -1009,7 +1018,6 @@ begin
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
       Bmp.LoadFromResourceName(HInstance, sCalcBmp);
       GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally

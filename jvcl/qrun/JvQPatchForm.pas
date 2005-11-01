@@ -64,11 +64,11 @@ type
     procedure btnDestClick(Sender: TObject);
   private
     FPos: Integer;
+    FPatch: TStringList;
     function Crypt(Value: Byte): Byte;
   public
-    FPatch: TStringList;
-    procedure LoadFromStr(Value: TStringList);
-    function SetFromStr: TStringList;
+    procedure LoadFromStr(Value: TStrings);
+    function SetFromStr: TStrings;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -89,7 +89,7 @@ uses
 
 {$R *.xfm}
 
-procedure TPatchFrm.LoadFromStr(Value: TStringList);
+procedure TPatchFrm.LoadFromStr(Value: TStrings);
 begin
   if Value.Count > 2 then
   begin
@@ -98,7 +98,7 @@ begin
   end;
 end;
 
-function TPatchFrm.SetFromStr: TStringList;
+function TPatchFrm.SetFromStr: TStrings;
 begin
   Result := FPatch;
 end;

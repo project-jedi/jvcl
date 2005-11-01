@@ -34,7 +34,7 @@ Contributor(s):
               warrenpstma att hotmail dott com
 
 Last Modified:
-
+  
   2003-09-30 - (WP) - Alpha-Initial checkin of new component, into JVCL3 CVS tree.
   2004-02-26 - (WP) - Pre-JVCL3.0-Has been substantially jedified, also new
                       properties/events, and some renaming has occurred. See
@@ -57,14 +57,28 @@ Last Modified:
                       canvases are used to paint the bitmap, and to paint the
                       floating layer on top, thus the need for the changes.
 
+  2005-04-15 - (WP) - Changed internal Data storage from Array of Array to 
+	              simple single-dimension array. This has many benefits,
+ 		      and at least one drawback.  The benefit is that much
+                      larger sets of pens/data values can be accomodated.
+                      The drawback is that you can't add a pen to an already displayed
+                      chart without regenerating all the data points in it. 
+                      If you change the pen count you now MUST clear the data, 
+                      and re-plot the chart. Any attempt to add a pen,
+                      write the new pen, and then plot without rewriting the other
+                      values will cause data to be displayed in a corrupt fashion.
+		      I think this obscure limitation is better to live with than 
+                      the many alternatives.  The problem I have is that the chart 
+		      supports extremely large data sets, and clearing the data 
+	              MULTIPLE times would be a huge performance penalty in 
+		      any application. You can enable the OLD mode, with it's
+                      limitations, by defining TJVCHART_ARRAY_OF_ARRAY.
+
+
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-  MARCH 2004 -JVCL3BETA- STILL IN DEVELOPMENT. REPORT PROBLEMS TO JEDI JVCL
-  BUG TRACKING SYSTEM (AKA 'MANTIS') AND THE JEDI.VCL NEWSGROUP!
-  JUNE 23 2004 -JVCL3BETA- Negative values and anything other than 0 in
-                YMin properties was causing problems. Fixed. -WPostma.
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -73,6 +87,8 @@ unit JvQChart;
 {$I jvcl.inc}
 
 interface
+{$R+}
+{$Q+}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -122,7 +138,9 @@ type
 
   TJvChartLegend = (clChartLegendNone, clChartLegendRight, clChartLegendBelow);
 
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   TJvChartDataArray = array of array of Double;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
   TJvChart = class;
 
@@ -192,7 +210,7 @@ type
     property LineWidth: Integer read FLineWidth write FLineWidth;
     property Caption: string read FCaption write FCaption;
     property CaptionPosition :TJvChartCaptionPosition read FCaptionPosition write FCaptionPosition;
-    property CaptionBoxed :Boolean read FCaptionBoxed write FCaptionBoxed;  
+    property CaptionBoxed :Boolean read FCaptionBoxed write FCaptionBoxed;
 
     property Tag  :Integer read FTag write FTag; // User assignable integer like TComponent.Tag
 
@@ -205,7 +223,12 @@ type
     a memory cap, so we don't thrash the system or leak forever.  -WAP.}
   TJvChartData = class(TObject)
   private
+    {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
     FData: TJvChartDataArray;
+    {$ELSE}
+    FData: array of Double;
+    {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+
     FClearToValue: Double; // Typically either 0.0 or NaN
     FTimeStamp: array of TDateTime; // Time-series as a TDateTime
       // Dynamic array of dynamic array of Double.
@@ -213,6 +236,8 @@ type
       // *** Order of indexing: FData[ValueIndex,Pen] ***
     FDataAlloc: Integer; // Last Allocated Value.
     FValueCount: Integer; // Number of sample indices used
+    FPenCount:Integer; // can't be changed without erasing all data!
+
   protected
     procedure Grow(Pen, ValueIndex: Integer);
       //GetValue/SetValue resizer, also throws exception if Pen,ValueIndex is negative or just way too big.
@@ -229,6 +254,7 @@ type
 
 
     function DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
+
     procedure Clear; // Resets All Data to zero.
     procedure ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
     procedure Scroll;
@@ -774,7 +800,12 @@ uses
   JvQJVCLUtils, JvQConsts, JvQResources;
 
 const
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   CHART_SANITY_LIMIT = 60000;
+{$ELSE}
+  CHART_SANITY_LIMIT = 12000000;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+
         // Any attempt to have more than CHART_SANITY_LIMIT elements in this
         // graph will be treated as an internal failure on our part.  This prevents
         // ugly situations where we thrash because of excessive memory usage.
@@ -869,33 +900,69 @@ end;
 //=== { TJvChartData } =======================================================
 
 constructor TJvChartData.Create;
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I: Integer;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 begin
   inherited Create;
+  FPenCount := DEFAULT_PEN_COUNT; // Can never set less than one inside TJvChartData!
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
+  // FPenCount must be valid here:
   for I := 0 to DEFAULT_PEN_COUNT do
     Grow(I, DEFAULT_VALUE_COUNT);
+{$ELSE}
+  Grow( DEFAULT_PEN_COUNT, DEFAULT_VALUE_COUNT);
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 end;
 
 destructor TJvChartData.Destroy;
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I: Integer;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 begin
+  {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   for I := 0 to FDataAlloc - 1 do
     Finalize(FData[I]);
+  {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
   Finalize(FData); // Free array.
   inherited Destroy;
 end;
 
 function TJvChartData.GetValue(Pen, ValueIndex: Integer): Double;
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 begin
-  // Grow base array
   Assert(ValueIndex >= 0);
   Grow(Pen, ValueIndex);
   Result := FData[ValueIndex, Pen]; // This will raise EInvalidOP for NaN values.
 end;
+{$ELSE}
+var
+  idx:Integer;
+begin
+  // Grow base array
+
+  if (Pen<0)or(Pen>=FPenCount) then
+      result := NaN
+  else begin
+
+  Assert(FPenCount>0);
+  idx := (ValueIndex*FPenCount)+Pen;
+
+  if (idx<0) or (idx>CHART_SANITY_LIMIT) then // Sanity check!
+    raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
+
+  if idx>=Length(FData) then
+      Grow(Pen,ValueIndex);
+  Result := FData[ idx ];
+  end;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+
 
 procedure TJvChartData.SetValue(Pen, ValueIndex: Integer; NewValue: Double);
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 begin
   // Grow base array
   Grow(Pen, ValueIndex);
@@ -907,6 +974,31 @@ begin
     FValueCount := ValueIndex + 1;
   end;
 end;
+{$ELSE}
+var
+  idx:Integer;
+begin
+  Assert(FPenCount>0);
+
+  // Grow base array
+  if (Pen<0)or(Pen>=FPenCount) then
+      raise ERangeError.CreateRes(@RsEPenIndexInvalid);
+
+
+
+  idx := (ValueIndex*FPenCount)+Pen;
+
+  if (idx<0) or (idx>CHART_SANITY_LIMIT) then // Sanity check!
+    raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
+
+  if idx>=Length(FData) then
+      Grow(Pen,ValueIndex);
+  FData[ idx ] := NewValue;
+
+  if ValueIndex >= FValueCount then
+      FValueCount := ValueIndex + 1;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 function TJvChartData.GetTimestamp(ValueIndex: Integer): TDateTime;
 begin
@@ -926,6 +1018,7 @@ begin
 end;
 
 procedure TJvChartData.Scroll;
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I, J: Integer;
 begin
@@ -944,8 +1037,37 @@ begin
   FTimeStamp[FValueCount - 1] := 0;
   // Check we didn't break the heap:
 end;
+{$ELSE}
+var
+ t:Integer;
+ idx:Integer;
+begin
+  if (FValueCount>FPenCount) then begin
+    Assert(FPenCount>0);
+    idx := (FValueCount*FPenCount);
+    
+
+    // Yeah, I wish:
+    //System.Move( {Source} FData[FPenCount], {Dest} FData[0], idx-FPenCount);
+    for t := 0 to (idx-FPenCount) do begin
+        FData[t] := FData[t+FPenCount];
+    end;
+
+    for t := (idx-FPenCount) to idx-1 do begin
+        if (t>Length(FData)) then
+            break;
+          FData[t] := FClearToValue;
+    end;
+    //Dec(FValueCount,FPenCount);
+  end else begin
+    FPenCount := 0;
+    Clear;
+  end;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 procedure TJvChartData.PreGrow(Pen, ValueIndex: Integer);
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
  t:Integer;
 begin
@@ -956,7 +1078,17 @@ begin
     end;
     FDataAlloc := ValueIndex;
 end;
+{$ELSE}
+begin
+  if Pen>FPenCount then
+      FPenCount := Pen;
+  Grow(Pen,ValueIndex);
+  FDataAlloc := ValueIndex;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
+
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 var
   I, J, oldLength: Integer;
@@ -1009,32 +1141,55 @@ begin
     end;
   end;
 end;
+{$ELSE}
+procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
+var
+  n,idx:Integer;
+  oldlen:Integer;
+begin
+  Assert(Assigned(Self));
+  Assert(FPenCount>0);
+  idx := (ValueIndex+1)*FPenCount;
+  oldlen := Length(FData);
+  if (idx>= oldlen) then begin
+      idx := idx + 1024; // Add 1024 floats (8k) headroom.
+      SetLength(FData,idx+1);
+      for n := oldlen to idx do begin
+          FData[n] := FClearToValue;
+      end;
+  end;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+
 
 function TJvChartData.DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
 var
   S: string;
-  I, IMax: Integer;
+  I: Integer;
+  aValue:Double;
 begin
   if (ValueIndex < 0) or (ValueIndex >= FDataAlloc) then
     Exit;
-  IMax := Length(FData[ValueIndex]) - 1;
+
 
   if Timestamp[ValueIndex] > 0.0 then
     S := FormatDateTime('hh:nn:ss ', Timestamp[ValueIndex]);
-  for I := 0 to IMax do
+  for I := 0 to FPenCount-1 do
   begin
-    if IsNaN(FData[ValueIndex, I]) then
+    aValue := GetValue(I,ValueIndex);
+    if IsNaN(aValue) then
       S := S + '-'
     else
-      S := S + Format('%5.2f', [FData[ValueIndex, I]]);
+      S := S + Format('%5.2f', [aValue]);
 
-    if I < IMax then
+    if I < FPenCount-1 then
       S := S + ', '
   end;
   Result := S;
 end;
 
 procedure TJvChartData.Clear; // Resets FValuesCount/FPenCount to zero. Zeroes everything too, just for good luck.
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I, J: Integer;
 begin
@@ -1043,15 +1198,31 @@ begin
       FData[I, J] := FClearToValue;
   FValueCount := 0;
 end;
+{$ELSE}
+var
+  I: Integer;
+begin
+  for I := 0 to Length(FData)-1 do begin
+      FData[I] := FClearToValue;
+  end;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+
 
 procedure TJvChartData.ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I, J: Integer;
 begin
   for I := 0 to FDataAlloc - 1 do
     for J := 0 to Length(FData[I]) - 1 do
-      FData[I, J] := 0.0;
+      FData[I, J] :=  ClearToValue; // 0.0;
 end;
+{$ELSE}
+begin
+  Clear;
+end;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 //=== { TJvChartYAxisOptions } ===============================================
 
@@ -1135,8 +1306,17 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
 begin
+  if IsNan(NewYMin) then exit;
+
+  try
   if NewYMin = FYMin then
     Exit;
+  except
+    on E:Exception do begin
+        OutputDebugString('TJvChartYAxisOptions.SetYMin-WTF?');
+        Exit;
+    end;
+  end;
 
   FYMin := NewYMin;
 
@@ -1164,6 +1344,8 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
+  if IsNan(NewYMax) then exit;
+
   if NewYMax = FYMax then
     Exit;
 
@@ -1487,6 +1669,8 @@ begin
     raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
   FPenCount := Count;
   SetLength(FPenSecondaryAxisFlag, FPenCount + 1);
+  // notify data object:
+  NotifyOptionsChange;
 end;
 
 function TJvChartOptions.GetPenLegends: TStrings;
@@ -2239,6 +2423,17 @@ end;
 {**************************************************************************}
 procedure TJvChart.PlotGraph;
 begin
+  Assert(Assigned(Options));
+
+  // Sanity check on YEnd/XEnd:
+  if (Options.YEnd <= 0) or (Options.XEnd <= 0) or
+    (Options.YEnd > Height) or (Options.XEnd > Width) then
+  begin
+    FInPlotGraph := True; // recursion blocker.
+    ResizeChartCanvas; // Recovery. This shouldn't happen.
+    FInPlotGraph := False;
+  end;
+
     _PlotGraph;
     Invalidate; // Force repaint.
 end;
@@ -2716,14 +2911,6 @@ begin { Enough local functions for ya? -WP }
   Assert(Assigned(Options.SecondaryYAxis));
   Assert(Assigned(AverageData));
 
-  // Sanity check on YEnd/XEnd:
-  if (Options.YEnd <= 0) or (Options.XEnd <= 0) or
-    (Options.YEnd > Height) or (Options.XEnd > Width) then
-  begin
-    FInPlotGraph := True; // recursion blocker.
-    ResizeChartCanvas; // Recovery. This shouldn't happen.
-    FInPlotGraph := False;
-  end;
 
   // NEW: Primary Y axis is always shown, but secondary is only shown
   // if a pen is set up to plot on the secondary Y Axis scale.
@@ -3251,6 +3438,11 @@ begin
   end;
   if csLoading in ComponentState then
     Exit; // Component properties being set at runtime.
+
+  if Options.PenCount<>Self.Data.FPenCount then begin
+      if Options.PenCount>0 then { never set Data.FPenCount to zero internally! }
+        Data.FPenCount := Options.PenCount;
+  end;
 
   // Event fire:
   if Assigned(FOnOptionsChangeEvent) then

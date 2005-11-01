@@ -22,7 +22,7 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Below [100113 dott 1101 att compuserve dott com] - alternate TJvPageControl.OwnerDraw routine
-Peter Thörnqvist [peter3 at sourceforge dot net] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
+Peter Thrnqvist [peter3 at sourceforge dot net] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
 Alfi [alioscia_alessi att onde dott net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar
 Andreas Hausladen - TJvIPAddress designtime bug, components changed to JvExVCL
