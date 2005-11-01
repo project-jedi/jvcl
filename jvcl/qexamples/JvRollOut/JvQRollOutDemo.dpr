@@ -3,18 +3,16 @@
 {*           Manual modifications will be lost on next release.               *}
 {******************************************************************************}
 
-program InspectorSimpleExample;
+program JvQRollOutDemo;
 
 uses
   QForms,
-  InspectorSimpleExampleMain in 'InspectorSimpleExampleMain.pas' {SimpleMainForm},
-  JvQDoubleBuffering in 'JvQDoubleBuffering.pas',
-  JvQEventFilter in 'JvQEventFilter.pas';
+  MainFrm in 'MainFrm.pas' {Form1};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TSimpleMainForm, SimpleMainForm);
+  Application.CreateForm(TForm1, Form1);
   Application.Run;
 end.

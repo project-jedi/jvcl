@@ -1,0 +1,54 @@
+object MainForm: TMainForm
+  Left = 429
+  Top = 419
+  Width = 572
+  Height = 298
+  VertScrollBar.Range = 49
+  HorzScrollBar.Range = 273
+  BorderStyle = fbsDialog
+  Caption = 'TJvFullColorDialog example'
+  Color = clButton
+  Font.Color = clBlack
+  Font.Height = 13
+  Font.Name = 'Helvetica'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 0
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  Visible = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  object JvFullColorLabel: TJvFullColorLabel
+    Left = 16
+    Top = 32
+    Width = 257
+    Height = 17
+    LabelColor = 67108864
+    Font.Color = clText
+    Font.Height = 13
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    Brush.Color = clBlack
+    Caption = 'JvFullColorLabel'
+    AutoSize = False
+    OnDblClick = JvFullColorLabelDblClick
+  end
+  object LabelInfo: TLabel
+    Left = 16
+    Top = 8
+    Width = 210
+    Height = 16
+    Caption = 'Double-click on a label to customize'
+  end
+  object JvFullColorDialog: TJvFullColorDialog
+    FullColor = 704643061
+    OnApply = JvFullColorDialogApply
+    Left = 232
+    Top = 128
+  end
+end

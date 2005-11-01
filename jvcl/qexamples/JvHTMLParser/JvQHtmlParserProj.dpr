@@ -3,18 +3,18 @@
 {*           Manual modifications will be lost on next release.               *}
 {******************************************************************************}
 
-program InspectorSimpleExample;
+program JvQHtmlParserProj;
 
 uses
   QForms,
-  InspectorSimpleExampleMain in 'InspectorSimpleExampleMain.pas' {SimpleMainForm},
-  JvQDoubleBuffering in 'JvQDoubleBuffering.pas',
-  JvQEventFilter in 'JvQEventFilter.pas';
+  JvQHTMLParserMainFormU in 'JvQHTMLParserMainFormU.pas' {JvQHTMLParserMainForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TSimpleMainForm, SimpleMainForm);
+  Application.Title := 'JvHtmlParserDemo';
+  Application.CreateForm(TJvHTMLParserMainForm, JvHTMLParserMainForm);
   Application.Run;
 end.
+

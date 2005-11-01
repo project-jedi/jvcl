@@ -36,7 +36,9 @@ interface
 uses
   QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms, QDialogs,
   QStdCtrls, QMask,
-  JvQEdit, JvQToolEdit, JvQBaseEdits, JvQExMask;
+  JvQEdit, JvQToolEdit, JvQBaseEdits, JvQExMask, QComboEdits,
+  JvQExComboEdits, JvQMaskEdit, JvQCheckedMaskEdit, JvQAutoComplete,
+  JvQExStdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -45,7 +47,12 @@ type
     JvDateEdit1: TJvDateEdit;
     JvButtonBox1: TJvComboEdit;
     JvCalcEdit1: TJvCalcEdit;
+    JvCheckedMaskEdit1: TJvCheckedMaskEdit;
+    JvEdit1: TJvEdit;
+    JvLookupAutoComplete1: TJvLookupAutoComplete;
     procedure JvButtonBox1ButtonClick(Sender: TObject);
+    procedure FormLoaded(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
   public
   end;
@@ -60,6 +67,18 @@ implementation
 procedure TForm1.JvButtonBox1ButtonClick(Sender: TObject);
 begin
   ShowMessage('Button clicked');
+end;
+
+procedure TForm1.FormLoaded(Sender: TObject);
+begin
+  JvCalcEdit1.BorderStyle := bsRaised3D;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  JvFilenameBox1.BorderStyle := bsNone;
+  JvCheckedMaskEdit1.BorderStyle := bsDouble;
+  JvDateEdit1.BorderStyle := bsRaisedPanel;
 end;
 
 end.

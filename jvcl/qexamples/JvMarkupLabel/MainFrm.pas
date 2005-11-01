@@ -8,7 +8,7 @@ unit MainFrm;
 interface
 
 uses
-  Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms,
+  Types, SysUtils, Classes, QGraphics, QControls, QForms,
   QDialogs, QComCtrls, JvQComCtrls, JvQComponent, JvQMarkupLabel, QStdCtrls,
   JvQExControls, JvQExComCtrls, JvQExStdCtrls, JvQGroupBox;
 

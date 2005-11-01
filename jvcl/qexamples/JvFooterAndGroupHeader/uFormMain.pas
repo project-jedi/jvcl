@@ -36,7 +36,8 @@ interface
 uses
   QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms, QDialogs,
   QExtCtrls, QStdCtrls, JvQFooter, JvQGroupHeader, JvQComponent, JvQBitBtn, QButtons,
-  JvQExButtons, JvQExExtCtrls, JvQExControls;
+  JvQExButtons, JvQExExtCtrls, JvQExControls, JvQExStdCtrls, JvQButton,
+  JvQCtrls;
 
 type
   TForm1 = class(TForm)

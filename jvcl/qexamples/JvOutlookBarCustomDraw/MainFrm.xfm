@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 421
-  Top = 486
+  Left = 389
+  Top = 235
   ActiveControl = ComboBox1
   AutoScroll = False
   Caption = 
@@ -50,7 +50,6 @@ object Form1: TForm1
     Top = 0
     Width = 169
     Height = 265
-    DoubleBuffered = True
     Align = alLeft
     Pages = <
       item
@@ -208,6 +207,13 @@ object Form1: TForm1
     LargeImages = ImageList2
     SmallImages = ImageList1
     PageButtonHeight = 24
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'MS Shell Dlg 2'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
     TabOrder = 0
   end
   object ComboBox1: TComboBox

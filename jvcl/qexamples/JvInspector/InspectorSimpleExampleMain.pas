@@ -36,7 +36,7 @@ interface
 uses
   QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms,
   QDialogs, QStdCtrls, QExtCtrls, JvQComponent, JvQInspector, JvQExControls,
-  JvQExExtCtrls;
+  JvQExExtCtrls, JvQInspExtraEditors;
 
 type
   TSimpleMainForm = class(TForm)
@@ -57,9 +57,22 @@ implementation
 {$R *.xfm}
 
 procedure TSimpleMainForm.FormShow(Sender: TObject);
+var
+  i: integer;
 begin
   JvInspector1.Clear;
   JvInspector1.AddComponent(Self, 'A Form Inspecting Itself', True);
+  for i := 0 to ComponentCount - 1 do
+    JvInspector1.AddComponent(Components[i],
+      Components[i].Name + ': ' + Components[i].ClassName, False);
+
 end;
+
+initialization
+//  TJvInspectorAlignItem.RegisterAsDefaultItem;
+//  TJvInspectorAnchorsItem.RegisterAsDefaultItem;
+  TJvInspectorColorItem.RegisterAsDefaultItem;
+  TJvInspectorTImageIndexItem.RegisterAsDefaultItem;
+
 
 end.

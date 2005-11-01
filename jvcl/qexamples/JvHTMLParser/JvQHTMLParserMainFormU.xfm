@@ -1,0 +1,378 @@
+object JvHTMLParserMainForm: TJvHTMLParserMainForm
+  Left = 336
+  Top = 225
+  Width = 534
+  Height = 441
+  VertScrollBar.Range = 19
+  HorzScrollBar.Range = 86
+  ActiveControl = JvPageControl1
+  Caption = 'JvHtmlParser  DEMO'
+  Color = clButton
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001002020100001001000E80200001600000028000000200000004000
+    0000010004000000000080020000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    000000BBBBBB000000000000000000000000BBB0000BBB000000000000000000
+    000BB00000000BBB0000000000000000000BB00000000BBB0000000000000000
+    00BBBB0000000BBBB00000000000000000BBBB00000000BBBB00000000000000
+    00BBBBB0000000BBBB0000000000000000BBBBB0000000BBBB00000000000000
+    00BBBBB0000000BBBB00000000000000000BBB00000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
+    000000000000BBBBBBB00000000000000000000000BBBBBBBBBBBB0000000000
+    000000000000000000000000000000000000000000000000000000000000FFFF
+    FFFFFFFFFFFFFFC0FFFFFF1E3FFFFE7F8FFFFE7F8FFFFC3F87FFFC3FC3FFFC1F
+    C3FFFC1FC3FFFC1FC3FFFE3FC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF
+    C3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF
+    C3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF01FFFFFC003FFFFFFFFFFFFFFFFF}
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  object JvPageControl1: TJvPageControl
+    Left = 0
+    Top = 0
+    Width = 534
+    Height = 422
+    ActivePage = TabSheet4
+    Align = alClient
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    HotTrack = True
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Hint = 'Table Demo'
+      Caption = 'Table'
+      object JvSplitter1: TJvSyncSplitter
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 3
+        Cursor = crVSplit
+        Align = alTop
+        ResizeStyle = rsPattern
+      end
+      object JvPanel1: TJvPanel
+        Left = 0
+        Top = 358
+        Width = 526
+        Height = 34
+        HotTrackFont.Color = clBlack
+        HotTrackFont.Height = 11
+        HotTrackFont.Name = 'MS Shell Dlg'
+        HotTrackFont.Pitch = fpVariable
+        HotTrackFont.Style = []
+        HotTrackFont.Weight = 40
+        Align = alBottom
+        BevelInner = bvRaised
+        BevelOuter = bvLowered
+        Color = clBackground
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'MS Sans Serif'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
+        TabOrder = 0
+        object btnProcessTable: TJvImgBtn
+          Left = 442
+          Top = 5
+          Width = 75
+          Height = 25
+          Anchors = [akRight, akBottom]
+          Caption = 'Execute'
+          Font.Color = clText
+          Font.Height = 11
+          Font.Name = 'MS Sans Serif'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Font.Weight = 40
+          ParentFont = False
+          TabOrder = 0
+          OnClick = btnProcessTableClick
+          HotTrackFont.Color = clText
+          HotTrackFont.Height = 11
+          HotTrackFont.Name = 'MS Sans Serif'
+          HotTrackFont.Pitch = fpVariable
+          HotTrackFont.Style = []
+          HotTrackFont.Weight = 40
+        end
+      end
+      object JvTreeView1: TTreeView
+        Left = 0
+        Top = 3
+        Width = 526
+        Height = 158
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Columns = <>
+        TabOrder = 1
+      end
+      object JvDisplayMemo1: TMemo
+        Left = 0
+        Top = 160
+        Width = 529
+        Height = 169
+        Anchors = [akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'JvDisplayMemo1')
+        ScrollBars = ssAutoVertical
+        TabOrder = 2
+      end
+    end
+    object TabSheet2: TTabSheet
+      Hint = 'HTML to text converter'
+      Caption = 'HTML2Text'
+      ImageIndex = 1
+      object JvPanel2: TJvPanel
+        Left = 0
+        Top = 358
+        Width = 526
+        Height = 34
+        HotTrackFont.Color = clBlack
+        HotTrackFont.Height = 11
+        HotTrackFont.Name = 'MS Shell Dlg'
+        HotTrackFont.Pitch = fpVariable
+        HotTrackFont.Style = []
+        HotTrackFont.Weight = 40
+        Align = alBottom
+        BevelInner = bvRaised
+        BevelOuter = bvLowered
+        Color = clBackground
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'MS Sans Serif'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
+        TabOrder = 0
+        object btnProcessHTML2Text: TJvImgBtn
+          Left = 444
+          Top = 5
+          Width = 75
+          Height = 25
+          Anchors = [akRight, akBottom]
+          Caption = 'Execute'
+          Font.Color = clText
+          Font.Height = 11
+          Font.Name = 'MS Sans Serif'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Font.Weight = 40
+          ParentFont = False
+          TabOrder = 0
+          OnClick = btnProcessHTML2TextClick
+          HotTrackFont.Color = clText
+          HotTrackFont.Height = 11
+          HotTrackFont.Name = 'MS Sans Serif'
+          HotTrackFont.Pitch = fpVariable
+          HotTrackFont.Style = []
+          HotTrackFont.Weight = 40
+        end
+      end
+      object JvDisplayMemo2: TMemo
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 329
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Lines.Strings = (
+          'JvDisplayMemo2')
+        ScrollBars = ssAutoVertical
+        TabOrder = 1
+      end
+    end
+    object TabSheet3: TTabSheet
+      Hint = 'Simple URL detector'
+      Caption = 'URL detect'
+      ImageIndex = 2
+      object JvPanel3: TJvPanel
+        Left = 0
+        Top = 358
+        Width = 526
+        Height = 34
+        HotTrackFont.Color = clBlack
+        HotTrackFont.Height = 11
+        HotTrackFont.Name = 'MS Shell Dlg'
+        HotTrackFont.Pitch = fpVariable
+        HotTrackFont.Style = []
+        HotTrackFont.Weight = 40
+        Align = alBottom
+        BevelInner = bvRaised
+        BevelOuter = bvLowered
+        Color = clBackground
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'MS Sans Serif'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
+        TabOrder = 0
+        object btnProcessURL: TJvImgBtn
+          Left = 442
+          Top = 5
+          Width = 75
+          Height = 25
+          Anchors = [akRight, akBottom]
+          Caption = 'Execute'
+          Font.Color = clText
+          Font.Height = 11
+          Font.Name = 'MS Sans Serif'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Font.Weight = 40
+          ParentFont = False
+          TabOrder = 0
+          OnClick = btnProcessURLClick
+          HotTrackFont.Color = clText
+          HotTrackFont.Height = 11
+          HotTrackFont.Name = 'MS Sans Serif'
+          HotTrackFont.Pitch = fpVariable
+          HotTrackFont.Style = []
+          HotTrackFont.Weight = 40
+        end
+      end
+      object JvDisplayMemo3: TMemo
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 329
+        Align = alTop
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Lines.Strings = (
+          'JvDisplayMemo3')
+        ScrollBars = ssAutoVertical
+        TabOrder = 1
+      end
+    end
+    object TabSheet4: TTabSheet
+      Hint = 'Tags detector'
+      Caption = 'Tags'
+      ImageIndex = 3
+      object JvPanel4: TJvPanel
+        Left = 0
+        Top = 358
+        Width = 526
+        Height = 34
+        HotTrackFont.Color = clBlack
+        HotTrackFont.Height = 11
+        HotTrackFont.Name = 'MS Shell Dlg'
+        HotTrackFont.Pitch = fpVariable
+        HotTrackFont.Style = []
+        HotTrackFont.Weight = 40
+        Align = alBottom
+        BevelInner = bvRaised
+        BevelOuter = bvLowered
+        Color = clBackground
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'MS Sans Serif'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
+        TabOrder = 0
+        object btnProcessTags: TJvImgBtn
+          Left = 442
+          Top = 5
+          Width = 75
+          Height = 25
+          Anchors = [akRight, akBottom]
+          Caption = 'Execute'
+          Font.Color = clText
+          Font.Height = 11
+          Font.Name = 'MS Sans Serif'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Font.Weight = 40
+          ParentFont = False
+          TabOrder = 0
+          OnClick = btnProcessTagsClick
+          HotTrackFont.Color = clText
+          HotTrackFont.Height = 11
+          HotTrackFont.Name = 'MS Sans Serif'
+          HotTrackFont.Pitch = fpVariable
+          HotTrackFont.Style = []
+          HotTrackFont.Weight = 40
+        end
+      end
+      object JvDisplayMemo4: TMemo
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 329
+        Align = alTop
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Lines.Strings = (
+          'JvDisplayMemo4')
+        ScrollBars = ssAutoVertical
+        TabOrder = 1
+      end
+    end
+  end
+  object JvStatusBar1: TJvStatusBar
+    Left = 0
+    Top = 422
+    Width = 534
+    Height = 19
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    Panels = <>
+    ParentFont = False
+    SimplePanel = True
+  end
+  object btnOpen: TButton
+    Left = 11
+    Top = 389
+    Width = 75
+    Height = 25
+    Anchors = [akLeft, akBottom]
+    Caption = '&Open...'
+    TabOrder = 2
+    OnClick = btnOpenClick
+  end
+  object JvHtmlParser1: TJvHTMLParser
+    FileName = 'data\sample.htm'
+    Left = 40
+    Top = 44
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'HTML files|*.htm;*.html;*.htt|All files|*.*'
+    FilterIndex = 0
+    InitialDir = '.'
+    Height = 0
+    Width = 0
+    Left = 176
+    Top = 88
+  end
+end
