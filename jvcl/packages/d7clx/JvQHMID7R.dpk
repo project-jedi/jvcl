@@ -34,20 +34,17 @@ package JvQHMID7R;
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
-{$I jvcl.inc}
-
 requires
   JvQCoreD7R,
-  JclVClx,
+  DJclVClx,
   visualclx
   ;
 
 contains
   JvQSLDMappingEditorDialog in '..\..\qrun\JvQSLDMappingEditorDialog.pas' {frmSLDMappingEditorDialog},
-  JvQDialButton in '..\..\qrun\JvQDialButton.pas' ,
-  JvQLED in '..\..\qrun\JvQLED.pas' ,
-  JvQSegmentedLEDDisplay in '..\..\qrun\JvQSegmentedLEDDisplay.pas' ,
-  JvQSegmentedLEDDisplayMapperFrame in '..\..\qrun\JvQSegmentedLEDDisplayMapperFrame.pas' {fmeJvSegmentedLEDDisplayMapper: TFrame}
-  ;
+  JvQDialButton in '..\..\qrun\JvQDialButton.pas',
+  JvQLED in '..\..\qrun\JvQLED.pas',
+  JvQSegmentedLEDDisplay in '..\..\qrun\JvQSegmentedLEDDisplay.pas',
+  JvQSegmentedLEDDisplayMapperFrame in '..\..\qrun\JvQSegmentedLEDDisplayMapperFrame.pas' {fmeJvSegmentedLEDDisplayMapper: TFrame};
 
 end.

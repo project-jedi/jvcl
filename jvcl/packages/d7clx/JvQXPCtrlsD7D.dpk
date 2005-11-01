@@ -34,8 +34,6 @@ package JvQXPCtrlsD7D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
-{$I jvcl.inc}
-
 requires
   JvQCoreD7D,
   JvQStdCtrlsD7D,
@@ -43,8 +41,7 @@ requires
   ;
 
 contains
-  JvQXPCtrlsReg in '..\..\qdesign\JvQXPCtrlsReg.pas' ,
-  JvQXPPropertyEditors in '..\..\qdesign\JvQXPPropertyEditors.pas' 
-  ;
+  JvQXPCtrlsReg in '..\..\qdesign\JvQXPCtrlsReg.pas',
+  JvQXPPropertyEditors in '..\..\qdesign\JvQXPPropertyEditors.pas';
 
 end.
