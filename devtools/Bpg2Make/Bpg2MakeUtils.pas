@@ -177,6 +177,10 @@ type
 {$ENDIF COMPILER5}
 
 function LoadUtf8File(const Filename: string): string;
+const
+  BOM_UTF16_LSB: array [0..1] of Char = #$FF#$FE;
+  BOM_UTF16_MSB: array [0..1] of Char = #$FE#$FF;
+  BOM_UTF8: array [0..2] of Char = #$EF#$BB#$BF;
 var
   Content: UTF8String;
   Stream: TFileStream;
@@ -188,16 +192,15 @@ begin
   finally
     Stream.Free;
   end;
-  Delete(Content, 1, 3); // This a little bit dirty but unless we mix UTF8,
-                         // UTF16 and ANSI files there is no problem.
+  if Copy(Content, 1, 3) = BOM_UTF8 then
+  begin
+    Delete(Content, 1, 3);
   {$IFDEF COMPILER6_UP}
-  Result := Utf8ToAnsi(Content);
-  {$ELSE}
-    { Delphi 5 (should) never reachs this because the Installer uses the newest
-      installed Delphi version and only reads the project groups of installed
-      Delphi/BCB/BDN versions. }
-  Result := Content;
+    Result := Utf8ToAnsi(Content);
+  end
+  else
   {$ENDIF COMPILIER6_UP}
+    Result := Content;
 end;
 
 procedure ProcessBdsgroupFile(const Filename: string; MkLines, Targets, Commands: TStrings);
@@ -252,7 +255,7 @@ begin
     if Targets.Count > 1 then
     begin
       MkLines.Add('PROJECTS = ' + Targets.Names[0] + ' \');
-      for i := 2 to Targets.Count - 2 do
+      for i := 1 to Targets.Count - 2 do
         MkLines.Add(#9 + Targets.Names[i] + ' \');
       MkLines.Add(#9 + Targets.Names[Targets.Count - 1]);
     end
