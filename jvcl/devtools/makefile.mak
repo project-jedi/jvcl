@@ -106,7 +106,7 @@ Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr \
   @$(MAKE) -DCFG=Bpg2Make\Bpg2Make.cfg configfile >NUL
   @cd Bpg2Make
   $(DCCx) Bpg2Make.dpr
-#  -@del Bpg2Make.cfg >NUL 2>NUL
+  -@IF EXIST Bpg2Make.cfg  del /q Bpg2Make.cfg >NUL
   @cd ..
 
 jtouch.exe: JTouch\jtouch.dpr \
@@ -142,7 +142,7 @@ pg.exe: PackagesGenerator\pg.dpr \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\FileUtils.pas \
 		PackagesGenerator\GenerateUtils.pas
-  @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile
+  @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile >NUL
   @cd PackagesGenerator
   $(DCCx) -DNO_JCL pg.dpr
   -@IF EXIST pg.cfg  del /q pg.cfg >NUL
