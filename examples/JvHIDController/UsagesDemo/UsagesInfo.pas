@@ -74,11 +74,11 @@ begin
           HID_USAGE_GENERIC_Z:
             UsageText := 'Z Axis';
           HID_USAGE_GENERIC_RX:
-            UsageText := 'Relative X Axis';
+            UsageText := 'Rotational X Axis';
           HID_USAGE_GENERIC_RY:
-            UsageText := 'Relative Y Axis';
+            UsageText := 'Rotational Y Axis';
           HID_USAGE_GENERIC_RZ:
-            UsageText := 'Relative Z Axis';
+            UsageText := 'Rotational Z Axis';
           HID_USAGE_GENERIC_SLIDER:
             UsageText := 'Slider';
           HID_USAGE_GENERIC_DIAL:
