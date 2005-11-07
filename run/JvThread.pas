@@ -246,7 +246,7 @@ const
 
 implementation
 
-uses JvResources;
+uses JvResources, JvDsaDialogs;
 
 var
   SyncMtx: THandle = 0;
@@ -766,7 +766,7 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType,
+  FSynchMessageDlgResult := JvDsaDialogs.MessageDlg(FSynchMsg, FSynchAType,
     FSynchAButtons, FSynchHelpCtx);
 end;
 
