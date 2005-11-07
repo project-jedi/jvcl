@@ -404,7 +404,7 @@ begin
   Caption      := ' ';
   ClientHeight := 88;
   ClientWidth  := 268;
-  FormStyle    := fsStayOnTop;
+  FormStyle    := DialogOptions.FormStyle;
   {$IFDEF COMPILER7_UP}
   Position     := poOwnerFormCenter;
   {$ELSE}
@@ -559,7 +559,7 @@ begin
   BorderIcons  := [];
   BorderStyle  := bsDialog;
   Caption      := ' ';
-  FormStyle    := fsStayOnTop;
+  FormStyle    := DialogOptions.FormStyle;
   {$IFDEF COMPILER7_UP}
   Position     := poOwnerFormCenter;
   {$ELSE}
