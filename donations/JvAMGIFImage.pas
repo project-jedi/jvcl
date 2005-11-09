@@ -57,7 +57,7 @@
 //                                                                            //
 // Changed 2004.03.09 by Finn Tolderlund:                                     //
 // Added a ForceFrame property to the TGIFImage class.                        //
-// The ForceFrame property can be used to make TGIFImage display a apecific   //
+// The ForceFrame property can be used to make TGIFImage display a specific   //
 // sub frame from an animated gif.                                            //
 // How to use: Set the Animate property to False and set the ForceFrame       //
 // property to a desired frame number (0-N)                                   //
@@ -6021,18 +6021,18 @@ end;
 const
   HashKeyBits = 13; // Max number of bits per Hash Key
 
-  HashSize = 8009; // Size of hash table
-                                                // Must be prime
-                                                // Must be > than HashMaxCode
-                                                // Must be < than HashMaxKey
+  HashSize = 8009;  // Size of hash table
+                    // Must be prime
+                    // Must be > than HashMaxCode
+                    // Must be < than HashMaxKey
 
   HashKeyMax = (1 shl HashKeyBits) - 1; // Max hash key value
-                                                // 13 bits = 8191
+                                        // 13 bits = 8191
 
   HashKeyMask = HashKeyMax; // $1FFF
   GIFCodeMask = GIFCodeMax; // $0FFF
 
-  HashEmpty = $000FFFFF; // 20 bits
+  HashEmpty = $000FFFFF;    // 20 bits
 
 type
   // A Hash Key is 20 bits wide.
@@ -6214,7 +6214,6 @@ type
   TGIFReader = class(TGIFStream)
   public
     constructor Create(Stream: TStream);
-
     function Read(var Buffer; Count: Longint): Longint; override;
   end;
 
