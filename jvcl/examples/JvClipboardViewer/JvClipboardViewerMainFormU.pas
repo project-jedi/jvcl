@@ -57,7 +57,7 @@ end;
 
 procedure TJvClipboardViewerMainForm.JvClipboardViewer1Text(Sender: TObject; AText: string);
 begin
-  Memo1.Lines.Text := Text;
+  Memo1.Lines.Text := AText;
 end;
 
 end.
