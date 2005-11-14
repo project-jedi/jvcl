@@ -48,24 +48,23 @@ type
   TJvCustomThreadDialogForm = class;
   TJvThread = class;
 
-  TJvCustomThreadDialogFormEvent = procedure(DialogForm: TJvCustomThreadDialogForm) of
-    object;
+  TJvCustomThreadDialogFormEvent = procedure(DialogForm: TJvCustomThreadDialogForm) of object;
 
   TJvCustomThreadDialogOptions = class(TPersistent)
   private
-    FFormStyle: tFormStyle;
+    FFormStyle: TFormStyle;
     FOwner: TJvCustomThreadDialog;
-    FShowDialog: boolean;
-    FShowModal: boolean;
+    FShowDialog: Boolean;
+    FShowModal: Boolean;
   protected
-    procedure SetShowDialog(Value: boolean);
-    procedure SetShowModal(Value: boolean);
+    procedure SetShowDialog(Value: Boolean);
+    procedure SetShowModal(Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
-    property FormStyle: tFormStyle Read FFormStyle Write FFormStyle;
-    property ShowDialog: boolean Read FShowDialog Write SetShowDialog default False;
-    property ShowModal: boolean Read FShowModal Write SetShowModal default True;
+    property FormStyle: TFormStyle read FFormStyle write FFormStyle;
+    property ShowDialog: Boolean read FShowDialog write SetShowDialog default False;
+    property ShowModal: Boolean read FShowModal write SetShowModal default True;
   end;
 
   TJvCustomThreadDialogForm = class(TForm)
@@ -75,14 +74,14 @@ type
     FConnectedThread: TJvThread;
     FDialogOptions: TJvCustomThreadDialogOptions;
     FInternalTimer: TTimer;
-    FInternalTimerInterval: integer;
+    FInternalTimerInterval: Integer;
     FOnClose: TCloseEvent;
     FOnCloseQuery: TCloseQueryEvent;
     FOnShow: TNotifyEvent;
     FParentHandle: HWND;
     procedure SetConnectedDataComponent(Value: TComponent);
     procedure SetConnectedDataObject(Value: TObject);
-    procedure SetInternalTimerInterval(Value: integer);
+    procedure SetInternalTimerInterval(Value: Integer);
     procedure SetOnClose(Value: TCloseEvent);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -92,27 +91,23 @@ type
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
   public
-    constructor CreateNew(AOwner: TComponent; Dummy: integer = 0); override;
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     constructor CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
       Parent: TWinControl = nil); virtual;
     destructor Destroy; override;
     procedure DefaultCancelBtnClick(Sender: TObject);
     procedure ReplaceFormClose(Sender: TObject; var Action: TCloseAction);
-    procedure ReplaceFormCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure ReplaceFormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ReplaceFormShow(Sender: TObject);
-    property ConnectedDataComponent: TComponent
-      Read FConnectedDataComponent Write SetConnectedDataComponent;
-    property ConnectedDataObject: TObject Read FConnectedDataObject
-      Write SetConnectedDataObject;
-    property ConnectedThread: TJvThread Read FConnectedThread;
-    property DialogOptions: TJvCustomThreadDialogOptions
-      Read FDialogOptions Write FDialogOptions;
-    property InternalTimerInterval: integer
-      Read FInternalTimerInterval Write SetInternalTimerInterval;
+    property ConnectedDataComponent: TComponent read FConnectedDataComponent write SetConnectedDataComponent;
+    property ConnectedDataObject: TObject read FConnectedDataObject write SetConnectedDataObject;
+    property ConnectedThread: TJvThread read FConnectedThread;
+    property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write FDialogOptions;
+    property InternalTimerInterval: Integer read FInternalTimerInterval write SetInternalTimerInterval;
   published
-    property OnClose: TCloseEvent Read FOnClose Write SetOnClose;
-    property OnCloseQuery: TCloseQueryEvent Read FOnCloseQuery Write FOnCloseQuery;
-    property OnShow: TNotifyEvent Read FOnShow Write FOnShow;
+    property OnClose: TCloseEvent read FOnClose write SetOnClose;
+    property OnCloseQuery: TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
   TJvCustomThreadDialog = class(TJvComponent)
@@ -123,18 +118,16 @@ type
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; virtual; abstract;
     //    property ThreadStatusDialog: TJvCustomThreadDialogForm
-    //      Read FThreadStatusDialog Write FThreadStatusDialog;
+    //      read FThreadStatusDialog write FThreadStatusDialog;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure CloseThreadDialogForm;
-    function CreateThreadDialogForm(ConnectedThread: TJvThread):
-      TJvCustomThreadDialogForm; virtual; abstract;
+    function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    property DialogOptions: TJvCustomThreadDialogOptions
-      Read FDialogOptions Write FDialogOptions;
-    property OnPressCancel: TNotifyEvent Read FOnPressCancel Write FOnPressCancel;
+    property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write FDialogOptions;
+    property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
   end;
 
   TJvBaseThread = class(TThread)
@@ -146,44 +139,42 @@ type
     FSender: TObject;
     FSynchAButtons: TMsgDlgButtons;
     FSynchAType: TMsgDlgType;
-    FSynchHelpCtx: longint;
-    FSynchMessageDlgResult: word;
+    FSynchHelpCtx: Longint;
+    FSynchMessageDlgResult: Word;
     FSynchMsg: string;
     procedure ExceptionHandler;
   protected
     procedure InternalMessageDlg;
   public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-      Params: Pointer); virtual;
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
     procedure Execute; override;
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-      AButtons: TMsgDlgButtons; HelpCtx: longint): word;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
   end;
 
   TJvThread = class(TJvComponent)
   private
     FAfterCreateDialogForm: TJvCustomThreadDialogFormEvent;
-    FThreadCount: integer;
+    FThreadCount: Integer;
     FThreads: TThreadList;
-    FExclusive: boolean;
-    FRunOnCreate: boolean;
+    FExclusive: Boolean;
+    FRunOnCreate: Boolean;
     FOnBegin: TNotifyEvent;
     FOnExecute: TJvNotifyParamsEvent;
     FOnFinish: TNotifyEvent;
     FOnFinishAll: TNotifyEvent;
-    FFreeOnTerminate: boolean;
+    FFreeOnTerminate: Boolean;
     FThreadDialog: TJvCustomThreadDialog;
     FThreadDialogForm: TJvCustomThreadDialogForm;
     procedure DoCreate;
     procedure DoTerminate(Sender: TObject);
-    function GetCount: integer;
-    function GetThreads(Index: integer): TJvBaseThread;
-    function GetTerminated: boolean;
+    function GetCount: Integer;
+    function GetThreads(Index: Integer): TJvBaseThread;
+    function GetTerminated: Boolean;
     procedure CreateThreadDialogForm;
     function GetLastThread: TJvBaseThread;
   protected
-    procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
-      virtual;
+    procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -195,43 +186,40 @@ type
 
     procedure Synchronize(Method: TThreadMethod);
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-      AButtons: TMsgDlgButtons; HelpCtx: longint): word;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 
-    property Count: integer Read GetCount;
-    property Threads[Index: integer]: TJvBaseThread Read GetThreads;
-    property LastThread: TJvBaseThread Read GetLastThread;
-    property ThreadDialogForm: TJvCustomThreadDialogForm Read FThreadDialogForm;
+    property Count: Integer read GetCount;
+    property Threads[Index: Integer]: TJvBaseThread read GetThreads;
+    property LastThread: TJvBaseThread read GetLastThread;
+    property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
   published
-    function OneThreadIsRunning: boolean;
+    function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
     {$IFDEF UNIX}
-    function GetPolicy(Thread: THandle): integer;
-    procedure SetPolicy(Thread: THandle; Policy: integer);
+    function GetPolicy(Thread: THandle): Integer;
+    procedure SetPolicy(Thread: THandle; Policy: Integer);
     {$ENDIF UNIX}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
     procedure Terminate; // terminates all running threads
-    property Terminated: boolean Read GetTerminated;
-    property Exclusive: boolean Read FExclusive Write FExclusive;
-    property RunOnCreate: boolean Read FRunOnCreate Write FRunOnCreate;
-    property FreeOnTerminate: boolean Read FFreeOnTerminate Write FFreeOnTerminate;
-    property ThreadDialog: TJvCustomThreadDialog Read FThreadDialog Write FThreadDialog;
+    property Terminated: Boolean read GetTerminated;
+    property Exclusive: Boolean read FExclusive write FExclusive;
+    property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
+    property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
+    property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
     property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent
-      Read FAfterCreateDialogForm Write FAfterCreateDialogForm;
-    property OnBegin: TNotifyEvent Read FOnBegin Write FOnBegin;
-    property OnExecute: TJvNotifyParamsEvent Read FOnExecute Write FOnExecute;
-    property OnFinish: TNotifyEvent Read FOnFinish Write FOnFinish;
-    property OnFinishAll: TNotifyEvent Read FOnFinishAll Write FOnFinishAll;
+      read FAfterCreateDialogForm write FAfterCreateDialogForm;
+    property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
+    property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
+    property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
+    property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
   end;
 
-
-
- // Cannot be synchronized to the MainThread (VCL)
- // (rom) why are these in the interface section?
+// Cannot be synchronized to the MainThread (VCL)
+// (rom) why are these in the interface section?
 procedure Synchronize(Method: TNotifyEvent);
-
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 
 {$IFDEF UNITVERSIONING}
@@ -246,7 +234,8 @@ const
 
 implementation
 
-uses JvResources, JvDsaDialogs;
+uses
+  JvResources;
 
 var
   SyncMtx: THandle = 0;
@@ -276,17 +265,17 @@ end;
 constructor TJvCustomThreadDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create;
-  FOwner      := AOwner;
+  FOwner := AOwner;
   FShowDialog := False;
-  FShowModal  := True;
+  FShowModal := True;
 end;
 
-procedure TJvCustomThreadDialogOptions.SetShowDialog(Value: boolean);
+procedure TJvCustomThreadDialogOptions.SetShowDialog(Value: Boolean);
 begin
   FShowDialog := Value;
 end;
 
-procedure TJvCustomThreadDialogOptions.SetShowModal(Value: boolean);
+procedure TJvCustomThreadDialogOptions.SetShowModal(Value: Boolean);
 begin
   FShowModal := Value;
 end;
@@ -294,12 +283,11 @@ end;
 //=== { TJvCustomThreadDialogForm } =========================================
 
 constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent;
-  Dummy: integer = 0);
+  Dummy: Integer = 0);
 begin
   inherited CreateNew(AOwner, Dummy);
   FInternalTimerInterval := 250;
-  if Assigned(AOwner) and
-    (AOwner is TJvThread) then
+  if AOwner is TJvThread then
     FConnectedThread := TJvThread(AOwner)
   else
     raise EJVCLException.CreateRes(@RsENotATJvThread);
@@ -316,9 +304,9 @@ constructor TJvCustomThreadDialogForm.CreateNewFormStyle(AOwner: TJvThread;
 begin
   if FormStyle <> fsStayOnTop then
     if Assigned(Parent) then
-      fParentHandle := Parent.Handle
+      FParentHandle := Parent.Handle
     else
-      fParentHandle := 0;
+      FParentHandle := 0;
   CreateNew(AOwner);
 end;
 
@@ -331,8 +319,8 @@ end;
 procedure TJvCustomThreadDialogForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if fParentHandle <> 0 then
-    Params.WndParent := fParentHandle;
+  if FParentHandle <> 0 then
+    Params.WndParent := FParentHandle;
 end;
 
 procedure TJvCustomThreadDialogForm.DefaultCancelBtnClick(Sender: TObject);
@@ -343,7 +331,6 @@ end;
 
 procedure TJvCustomThreadDialogForm.InitializeFormContents;
 begin
-
 end;
 
 procedure TJvCustomThreadDialogForm.Notification(AComponent: TComponent;
@@ -360,14 +347,14 @@ begin
   if not (csDestroying in ComponentState) then
     if Assigned(ConnectedThread) and ConnectedThread.Terminated then
       Close
-    else if not Assigned(ConnectedThread) then
+    else
+    if not Assigned(ConnectedThread) then
       Close
     else
       UpdateFormContents;
 end;
 
-procedure TJvCustomThreadDialogForm.ReplaceFormClose(Sender: TObject;
-  var Action: TCloseAction);
+procedure TJvCustomThreadDialogForm.ReplaceFormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FInternalTimer.OnTimer := nil;
   FInternalTimer.Enabled := False;
@@ -376,8 +363,7 @@ begin
     FOnClose(Sender, Action);
 end;
 
-procedure TJvCustomThreadDialogForm.ReplaceFormCloseQuery(Sender: TObject;
-  var CanClose: boolean);
+procedure TJvCustomThreadDialogForm.ReplaceFormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if Assigned(ConnectedThread) then
     CanClose := ConnectedThread.Terminated
@@ -414,7 +400,7 @@ begin
   FConnectedDataObject := Value;
 end;
 
-procedure TJvCustomThreadDialogForm.SetInternalTimerInterval(Value: integer);
+procedure TJvCustomThreadDialogForm.SetInternalTimerInterval(Value: Integer);
 begin
   FInternalTimerInterval  := Value;
   FInternalTimer.Interval := Value;
@@ -448,8 +434,7 @@ begin
   end;
 end;
 
-procedure TJvCustomThreadDialog.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvCustomThreadDialog.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -464,9 +449,9 @@ begin
   inherited Create(AOwner);
   FThreadCount := 0;
   FRunOnCreate := True;
-  FExclusive   := True;
+  FExclusive := True;
   FFreeOnTerminate := True;
-  FThreads     := TThreadList.Create;
+  FThreads := TThreadList.Create;
 end;
 
 destructor TJvThread.Destroy;
@@ -496,7 +481,8 @@ begin
   if Operation = opRemove then
     if AComponent = FThreadDialog then
       FThreadDialog := nil
-    else if AComponent = FThreadDialogForm then
+    else
+    if AComponent = FThreadDialogForm then
       FThreadDialogForm := nil
 end;
 
@@ -507,7 +493,7 @@ begin
 end;
 
 function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-  AButtons: TMsgDlgButtons; HelpCtx: longint): word;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
   if Assigned(LastThread) then
     Result := LastThread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
@@ -529,7 +515,7 @@ begin
     BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
     try
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
-      BaseThread.OnTerminate     := DoTerminate;
+      BaseThread.OnTerminate := DoTerminate;
       FThreads.Add(BaseThread);
       DoCreate;
     except
@@ -566,19 +552,19 @@ end;
 
 procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
 begin
-  SetThreadPriority(Thread, integer(Priority));
+  SetThreadPriority(Thread, Integer(Priority));
 end;
 
 {$IFDEF UNIX}
 
-function TJvThread.GetPolicy(Thread: THandle): integer;
+function TJvThread.GetPolicy(Thread: THandle): Integer;
 begin
   Result := 0;
   if Thread <> 0 then
     Result := GetThreadPolicy(Thread);
 end;
 
-procedure TJvThread.SetPolicy(Thread: THandle; Policy: integer);
+procedure TJvThread.SetPolicy(Thread: THandle; Policy: Integer);
 begin
   if Thread <> 0 then
     SetThreadPriority(Thread, Policy);
@@ -626,7 +612,7 @@ begin
   end;
 end;
 
-function TJvThread.OneThreadIsRunning: boolean;
+function TJvThread.OneThreadIsRunning: Boolean;
 begin
   Result := FThreadCount > 0;
 end;
@@ -634,7 +620,7 @@ end;
 procedure TJvThread.Terminate;
 var
   List: TList;
-  I:    integer;
+  I: Integer;
 begin
   List := FThreads.LockList;
   try
@@ -649,7 +635,7 @@ begin
   end;
 end;
 
-function TJvThread.GetCount: integer;
+function TJvThread.GetCount: Integer;
 var
   List: TList;
 begin
@@ -661,7 +647,7 @@ begin
   end;
 end;
 
-function TJvThread.GetThreads(Index: integer): TJvBaseThread;
+function TJvThread.GetThreads(Index: Integer): TJvBaseThread;
 var
   List: TList;
 begin
@@ -673,13 +659,13 @@ begin
   end;
 end;
 
-function TJvThread.GetTerminated: boolean;
+function TJvThread.GetTerminated: Boolean;
 var
-  I:    integer;
+  I: Integer;
   List: TList;
 begin
   Result := True;
-  List   := FThreads.LockList;
+  List := FThreads.LockList;
   try
     for I := 0 to List.Count - 1 do
     begin
@@ -736,8 +722,7 @@ end;
 
 //=== { TJvBaseThread } ======================================================
 
-constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-  Params: Pointer);
+constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
@@ -757,7 +742,7 @@ begin
   except
     on E: Exception do
     begin
-      FException     := E;
+      FException := E;
       FExceptionAddr := ExceptAddr;
       Self.Synchronize(ExceptionHandler);
     end;
@@ -766,17 +751,16 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  FSynchMessageDlgResult := JvDsaDialogs.MessageDlg(FSynchMsg, FSynchAType,
-    FSynchAButtons, FSynchHelpCtx);
+  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-  AButtons: TMsgDlgButtons; HelpCtx: longint): word;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
-  FSynchMsg      := Msg;
-  FSynchAType    := AType;
+  FSynchMsg := Msg;
+  FSynchAType := AType;
   FSynchAButtons := AButtons;
-  FSynchHelpCtx  := HelpCtx;
+  FSynchHelpCtx := HelpCtx;
   Synchronize(InternalMessageDlg);
   Result := FSynchMessageDlgResult;
 end;
