@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
                 Alexander Samusenko[sandx att chat dott ru].
+                CarlEfird.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -221,7 +222,8 @@ end;
 
 procedure TJvHTMLParser.AnalyseString(const Str: string);
 var
-  Str2: string;
+  Str2, Str3: string;
+  StartTag1, StartTag2: string;
   I, J, K, Index: Integer;
   TagInfo: TTagInfo;
   AttributesList: TStringList;
@@ -286,7 +288,8 @@ var
     Tmp := Value;
     UniqueString(Tmp);
     P := PChar(Tmp);
-    if P^ in [#0, '<', '>'] then
+//    if P^ in [#0, '<', '>'] then
+    if P^ in [#0, '>'] then
       Exit;
     // skip first word (the tag) and any whitespace
     while (P^ <> #0) and (P <> nil) do
@@ -312,21 +315,34 @@ begin
     FTagList.Clear;
     for I := 0 to FKeys.Count - 1 do
     begin
+      StartTag1 := TJvParserInfo(FKeys.Objects[I]).StartTag;
+      Starttag2 := '';
+      if (Length(StartTag1) > 2) and (StartTag1[Length(StartTag1)] = '>') then
+      begin
+        // split the tag so tags with attributes can be found
+        Delete(StartTag1, Length(StartTag1), 1);
+        StartTag2 := '>';
+      end;
       J := 1;
       while J <> 0 do
       begin
-        J := StrSearch(TJvParserInfo(FKeys.Objects[I]).StartTag, Str, J);
+        // changed from StrSearch(case sensitive) to StrFind (case insensitive)
+        J := StrFind(StartTag1, Str, J);
         if J > 0 then
         begin
-          K := StrSearch(TJvParserInfo(FKeys.Objects[I]).EndTag, Str, J);
+          // changed from StrSearch(case sensitive) to StrFind (case insensitive)
+          K := StrFind(TJvParserInfo(FKeys.Objects[I]).EndTag, Str, J);
           TagInfo.BeginPos := J;
           TagInfo.EndPos := K + Length(TJvParserInfo(FKeys.Objects[I]).EndTag);
           TagInfo.Key := I;
           case TJvParserInfo(FKeys.Objects[I]).TakeText of
             0: //Between limits
               begin
-                TagInfo.BeginContext := J +
-                  Length(TJvParserInfo(FKeys.Objects[I]).StartTag);
+                if StartTag2 = '' then
+                  TagInfo.BeginContext := J + Length(TJvParserInfo(FKeys.Objects[I]).StartTag)
+                else
+                  // changed from StrSearch(case sensitive) to StrFind (case insensitive)
+                  TagInfo.BeginContext := StrFind(StartTag2, Str, j) + 1;
                 TagInfo.EndContext := K;
               end;
             1: //All before start tag
@@ -336,14 +352,18 @@ begin
               end;
             2: //All after start tag
               begin
-                TagInfo.BeginContext := J +
-                  Length(TJvParserInfo(FKeys.Objects[I]).StartTag);
+                if StartTag2 = '' then
+                  TagInfo.BeginContext := J + Length(TJvParserInfo(FKeys.Objects[I]).StartTag)
+                else
+                  // changed from StrSearch(case sensitive) to StrFind (case insensitive)
+                  TagInfo.BeginContext := StrFind(StartTag2, Str, j) + 1;
                 TagInfo.EndContext := Length(Str);
               end;
             3: //The whole line if containing start tag
               begin
                 TagInfo.BeginContext := J;
-                TagInfo.EndContext := StrSearch(Lf, Str, J);
+                // changed from StrSearch(case sensitive) to StrFind (case insensitive)
+                TagInfo.EndContext := StrFind(Lf, Str, J);
               end;
           end;
           FTagList.AddValue(TagInfo);
@@ -357,13 +377,20 @@ begin
   begin
     for Index := 0 to Count - 1 do
     begin
+      // Str2 now contains eveything between the start and end tags
       Str2 := Copy(Str, PTagInfo(Items[Index]).BeginContext,
         PTagInfo(Items[Index]).EndContext - PTagInfo(Items[Index]).BeginContext);
+      if StartTag2 = '' then
+        Str3 := ''
+      else
+        //Str3 contains the start tag as found, may include attributes or other tags
+        Str3 := Copy(Str, PTagInfo(Items[Index]).BeginPos,
+          PTagInfo(Items[Index]).BeginContext - PTagInfo(Items[Index]).BeginPos - 1);
       if Assigned(FOnKeyFound) then
         FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], Str2, Str);
       if Assigned(FOnKeyFoundEx) then
       begin
-        ParseAttributes(AttributesList, Str2);
+        ParseAttributes(AttributesList, Str3);
         FOnKeyFoundEx(Self, FKeys[PTagInfo(Items[Index]).Key], Str2, Str,
           PTagInfo(Items[Index])^, AttributesList);
       end;
