@@ -252,17 +252,16 @@ procedure TJvLinkedControls.Notification(AComponent: TComponent; Operation: TOpe
 var
   I: Integer;
 begin
-  // make sure the owning control isn't being destroyed
-  if Assigned(FControl) and (csDestroying in FControl.ComponentState) then
-    Exit;
-  BeginUpdate;
-  try
-    if (AComponent is TControl) and (Operation = opRemove) then
+  if (Operation = opRemove) and (AComponent is TControl) then
+  begin
+    BeginUpdate;
+    try
       for I := 0 to Count - 1 do
         if Items[I].Control = AComponent then
           Items[I].Control := nil;
-  finally
-    EndUpdate;
+    finally
+      EndUpdate;
+    end;
   end;
 end;
 
