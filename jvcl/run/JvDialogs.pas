@@ -438,6 +438,7 @@ begin
     DialogData2000.OpenFileName.lStructSize := SizeOf(DialogData2000);
     DialogData2000.FlagsEx := PlacesBar[FShowPlacesBar];
     Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
+    TOpenFileName(DialogData).nFilterIndex := DialogData2000.OpenFileName.nFilterIndex;
     {$ELSE}
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
     {$ENDIF COMPILER5}
