@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Zolja
+Marc Geldon
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -182,7 +183,7 @@ type
   public
     constructor Create(AOwner: TTreeNodes);
     destructor Destroy; override;
-    
+
     procedure SetMasterValue(AValue: Variant);
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); override;
     property MasterValue: Variant read FMasterValue;
@@ -388,15 +389,18 @@ var
   PersistNode: Boolean;
   TV: TJvDBTreeView;
 begin
-  TV := (TreeView as TJvDBTreeView);
-  PersistNode := TV.FPersistentNode;
-  TV.MoveTo(Self as TJvDBTreeNode, Destination as TJvDBTreeNode, Mode);
-  TV.FPersistentNode := True;
-  if Destination.HasChildren and (Destination.Count = 0) then
-    Free
-  else
-    inherited MoveTo(Destination, Mode);
-  TV.FPersistentNode := PersistNode;
+  if Destination <> nil then
+  begin
+    TV := TreeView as TJvDBTreeView;
+    PersistNode := TV.FPersistentNode;
+    TV.MoveTo(Self as TJvDBTreeNode, Destination as TJvDBTreeNode, Mode);
+    TV.FPersistentNode := True;
+    if (Destination <> nil) and Destination.HasChildren and (Destination.Count = 0) then
+      Free
+    else
+      inherited MoveTo(Destination, Mode);
+    TV.FPersistentNode := PersistNode;
+  end;
 end;
 
 procedure TJvDBTreeNode.SetMasterValue(AValue: Variant);
@@ -1017,11 +1021,14 @@ end;
 
 procedure TJvCustomDBTreeView.Change2(Node: TTreeNode);
 begin
-  if ((Node as TJvDBTreeNode).FMasterValue = Unassigned) then
-    Exit;
-  FDataLink.DataSet.Locate(FMasterField, (Node as TJvDBTreeNode).FMasterValue, []);
-  if ((Node as TJvDBTreeNode).FMasterValue = NULL) then
-    (Node as TJvDBTreeNode).SetMasterValue(FDataLink.DataSet.FieldByName(MasterField).AsVariant);
+  if Node <> nil then
+  begin
+    if (Node as TJvDBTreeNode).FMasterValue = Unassigned then
+      Exit;
+    FDataLink.DataSet.Locate(FMasterField, TJvDBTreeNode(Node).FMasterValue, []);
+    if TJvDBTreeNode(Node).FMasterValue = Null then
+      TJvDBTreeNode(Node).SetMasterValue(FDataLink.DataSet.FieldByName(MasterField).AsVariant);
+  end;
 end;
 
 procedure TJvCustomDBTreeView.InternalRecordChanged(Field: TField);
@@ -1086,7 +1093,7 @@ function TJvCustomDBTreeView.CanEdit(Node: TTreeNode): Boolean;
 begin
   Result := inherited CanEdit(Node);
   if FDataLink.DataSet <> nil then
-    Result := Result and not FDataLink.ReadOnly;
+    Result := Result and not FDataLink.ReadOnly and not ReadOnly;
 end;
 
 procedure TJvCustomDBTreeView.Edit(const Item: TTVItem);
@@ -1184,10 +1191,17 @@ begin
   InDelete := True;
   try
     NewSel := FindNextNode(Selected);
+
+    If (NewSel = nil) then
+      NewSel := Items.GetFirstNode;
+
     FDataLink.DataSet.Delete;
     Selected.Free;
-    if NewSel <> nil then
+    if (NewSel <> nil) then
+    begin
       NewSel.Selected := True;
+      Change2(NewSel);
+    end;
   finally
     InDelete := False;
     Dec(FUpdateLock);
@@ -1262,8 +1276,8 @@ var
   HT: THitTests;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
-  if ValidDataSet and (DragMode = dmAutomatic) and
-    not FDataLink.ReadOnly and not Accept then
+  if ValidDataSet and (DragMode = dmAutomatic) and not FDataLink.ReadOnly and
+     not ReadOnly and not Accept then
   begin
     HT := GetHitTestInfoAt(X, Y);
     Node := GetNodeAt(X, Y);
