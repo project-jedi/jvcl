@@ -3109,7 +3109,8 @@ begin
   begin
     lNode := Items[AAbsoluteIndex];
 
-    if not lnode.IsFirstNode then
+    //if not lnode.IsFirstNode then // Delphi 7+
+    if not (not lnode.Deleting and (lnode.Parent = nil) and (lnode.GetPrevSibling = nil)) then
     begin
       lNode2 :=  lNode.getPrevSibling;
       if lNode2 <> nil then
@@ -3133,7 +3134,7 @@ begin
   begin
     lNode := Items[AAbsoluteIndex];
 
-    if not ((not lNode.Deleting) and (lNode.Parent = nil) and (lNode.getNextSibling = nil)) then
+    if not (not lNode.Deleting and (lNode.Parent = nil) and (lNode.getNextSibling = nil)) then
     begin
       lNode2 :=  lNode.getNextSibling;
       if lNode2 <> nil then
