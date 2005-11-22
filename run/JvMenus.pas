@@ -306,7 +306,6 @@ type
     FHotImageChangeLink: TChangeLink;
     FOnGetHotImageIndex: TItemImageEvent;
 
-    FPopupPoint: TPoint;
     FParentBiDiMode: Boolean;
     FCanvas: TControlCanvas;
 
@@ -331,6 +330,9 @@ type
     procedure WMDrawItem(var Msg: TWMDrawItem); message WM_DRAWITEM;
     procedure WMMeasureItem(var Msg: TWMMeasureItem); message WM_MEASUREITEM;
     procedure SetBiDiModeFromPopupControl;
+    {$IFNDEF COMPILER9_UP}
+    procedure SetPopupPoint(const Pt: TPoint);
+    {$ENDIF !COMPILER9_UP}
 
     procedure WriteState(Writer: TWriter); override;
     procedure ReadState(Reader: TReader); override;
@@ -1400,7 +1402,7 @@ begin
   FDisabledImageChangeLink.OnChange := DisabledImageListChange;
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := HotImageListChange;
-  FPopupPoint := Point(-1, -1);
+  SetPopupPoint(Point(-1, -1));
 
   // Set default values that are not 0
   FTextVAlignment := vaMiddle;
@@ -1538,6 +1540,19 @@ begin
   end;
 end;
 
+{$IFNDEF COMPILER9_UP}
+type
+  TPopupMenuPrivate = class(TMenu)
+  public
+    FPopupPoint: TPoint;
+  end;
+
+procedure TJvPopupMenu.SetPopupPoint(const Pt: TPoint);
+begin
+  TPopupMenuPrivate(Self).FPopupPoint := Pt;
+end;
+{$ENDIF !COMPILER9_UP}
+
 procedure TJvPopupMenu.SetBiDiModeFromPopupControl;
 var
   AControl: TControl;
@@ -1546,7 +1561,7 @@ begin
     Exit;
   if FParentBiDiMode then
   begin
-    AControl := FindPopupControl(FPopupPoint);
+    AControl := FindPopupControl(PopupPoint);
     if AControl <> nil then
       BiDiMode := AControl.BiDiMode
     else
@@ -1563,7 +1578,7 @@ begin
     Exit;
   if FParentBiDiMode then
   begin
-    AControl := FindPopupControl(FPopupPoint);
+    AControl := FindPopupControl(PopupPoint);
     if AControl <> nil then
       Result := AControl.UseRightToLeftAlignment
     else
@@ -1580,16 +1595,12 @@ const
     (TPM_RIGHTALIGN, TPM_LEFTALIGN, TPM_CENTERALIGN));
   Buttons: array[TTrackButton] of Word =
   (TPM_RIGHTBUTTON, TPM_LEFTBUTTON);
-var
-  FOnPopup: TNotifyEvent;
 begin
-  FPopupPoint := Point(X, Y);
+  SetPopupPoint(Point(X, Y));
   FParentBiDiMode := ParentBiDiMode;
   try
     SetBiDiModeFromPopupControl;
-    FOnPopup := OnPopup;
-    if Assigned(FOnPopup) then
-      FOnPopup(Self);
+    DoPopup(Self);
     if IsOwnerDrawMenu then
       RefreshMenu(True);
     AdjustBiDiBehavior;
