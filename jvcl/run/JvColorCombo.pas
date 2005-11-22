@@ -48,7 +48,7 @@ uses
   {$ENDIF CLR}
   Windows, Messages,
   Classes, Controls, Dialogs, Graphics,
-  JvComboBox;
+  JvCombobox;
 
 type
   TJvNewColorEvent = procedure(Sender: TObject; Color: TColor; var DisplayName: string;

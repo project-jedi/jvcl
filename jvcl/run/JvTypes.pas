@@ -72,6 +72,7 @@ type
 {$IFNDEF CLR}
 type
   TBytes = Pointer;
+  IntPtr = Pointer;
 {$ENDIF !CLR}
 
 {$IFDEF VCL}
@@ -141,6 +142,9 @@ type
   end;
   {$M-}
   {$ENDIF COMPILER5}
+  {$IFDEF CLR}
+  IUnknown = IInterface;
+  {$ENDIF CLR}
 
   // Base class for persistent properties that can show events.
   // By default, Delphi and BCB don't show the events of a class

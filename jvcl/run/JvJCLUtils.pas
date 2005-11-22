@@ -114,6 +114,30 @@ function GetProtectedObjectEvent(Instance: TObject; const EventName: string): De
 function SystemParametersInfo(uiAction, uiParam: UINT;
   var pvParam: TNonClientMetrics; fWinIni: UINT): BOOL; overload; external;
 
+{ These EnumFontFamilies and EnumFonts declarations are modified versions that
+  allow to specify an Object as Param value. They are used for .NET exclusivly. }
+type
+  TFNFontEnumObjProc = function ([in] var logfont: TLogFont;
+    [in] var textmetric: TTextMetric; dword: DWORD; lparam: TObject): Integer;
+  TFNFontEnum2ObjProc = function ([in] var logfont: TEnumLogFont;
+    [in] var textmetric: TNewTextMetric; FontType: DWORD; lParam: TObject): Integer;
+
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies(DC: HDC; p2: string; p3: TFNFontEnumObjProc; p4: TObject): BOOL; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies(DC: HDC; p2: IntPtr; p3: TFNFontEnumObjProc; p4: TObject): BOOL; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies2(DC: HDC; p2: string; p3: TFNFontEnum2ObjProc; p4: TObject): BOOL; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFontFamilies')]
+function EnumFontFamilies2(DC: HDC; p2: IntPtr; p3: TFNFontEnum2ObjProc; p4: TObject): BOOL; overload; external;
+
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFonts')]
+function EnumFonts(DC: HDC; lpszFace: string; fntenmprc: TFNFontEnumObjProc;
+  LParam: TObject): Integer; overload; external;
+[SuppressUnmanagedCodeSecurity, DllImport(gdi32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'EnumFonts')]
+function EnumFonts(DC: HDC; lpszFace: IntPtr; fntenmprc: TFNFontEnumObjProc;
+  LParam: TObject): Integer; overload; external;
+
 function AnsiLastChar(const S: string): Char;
 {$ENDIF CLR}
 
