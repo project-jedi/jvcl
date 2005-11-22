@@ -23,13 +23,12 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
     Left = 0
     Top = 0
     Width = 526
-    Height = 395
+    Height = 388
     ActivePage = TabSheet1
     Align = alClient
     HotTrack = True
     ParentShowHint = False
     ShowHint = True
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Hint = 'Table Demo'
@@ -58,7 +57,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 156
         Width = 518
-        Height = 177
+        Height = 170
         AutoSize = False
         ClipboardCommands = []
         MaxLines = 0
@@ -72,7 +71,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
       end
       object JvPanel1: TJvPanel
         Left = 0
-        Top = 333
+        Top = 326
         Width = 518
         Height = 34
         MultiLine = False
@@ -80,7 +79,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 2
         object btnProcessTable: TJvImgBtn
-          Left = 442
+          Left = 438
           Top = 5
           Width = 75
           Height = 25
@@ -104,7 +103,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 0
         Width = 518
-        Height = 333
+        Height = 326
         AutoSize = False
         ClipboardCommands = []
         MaxLines = 0
@@ -117,7 +116,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
       end
       object JvPanel2: TJvPanel
         Left = 0
-        Top = 333
+        Top = 326
         Width = 518
         Height = 34
         MultiLine = False
@@ -149,7 +148,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 0
         Width = 518
-        Height = 333
+        Height = 326
         AutoSize = False
         ClipboardCommands = []
         MaxLines = 0
@@ -162,7 +161,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
       end
       object JvPanel3: TJvPanel
         Left = 0
-        Top = 333
+        Top = 326
         Width = 518
         Height = 34
         MultiLine = False
@@ -194,7 +193,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 0
         Width = 518
-        Height = 333
+        Height = 326
         AutoSize = False
         ClipboardCommands = []
         MaxLines = 0
@@ -207,7 +206,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
       end
       object JvPanel4: TJvPanel
         Left = 0
-        Top = 333
+        Top = 326
         Width = 518
         Height = 34
         MultiLine = False
@@ -234,15 +233,15 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
   end
   object JvStatusBar1: TJvStatusBar
     Left = 0
-    Top = 395
+    Top = 388
     Width = 526
     Height = 19
     Panels = <>
     SimplePanel = True
   end
   object btnOpen: TButton
-    Left = 16
-    Top = 363
+    Left = 12
+    Top = 355
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
