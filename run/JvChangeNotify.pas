@@ -112,6 +112,7 @@ type
     procedure Execute; override;
   public
     constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate: Boolean);
+    destructor Destroy; override;
     property OnChangeNotify: TJvThreadNotifyEvent read FNotify write FNotify;
   end;
 
@@ -377,7 +378,10 @@ end;
 
 procedure TJvChangeNotify.DoThreadTerminate(Sender: TObject);
 begin
-  if FreeOnTerminate then
+  { FThread must be set to NIL only if the calling thread is still assigned
+    to the FThread field. If this is not so, another thread was started and
+    this thread was terminated by SetActive(). }
+  if TThread(Sender).FreeOnTerminate and (FThread = Sender) then
     FThread := nil;
 end;
 
@@ -435,14 +439,13 @@ begin
       end;
       if FThread <> nil then
       begin
-        FThread.Terminate;
         if FreeOnTerminate then
-          FThread := nil
-        else
-        begin
-          FThread.WaitFor;
-          FreeAndNil(FThread);
-        end;
+          FThread.FreeOnTerminate := False;
+        FThread.Terminate;
+        if FThread.Suspended then
+          FThread.Resume;
+        FThread.WaitFor;
+        FreeAndNil(FThread);
       end;
       FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval, FFreeOnTerminate);
       FThread.OnChangeNotify := DoThreadChangeNotify;
@@ -452,14 +455,13 @@ begin
     else
     if FThread <> nil then
     begin
-      FThread.Terminate;
       if FreeOnTerminate then
-        FThread := nil
-      else
-      begin
-        FThread.WaitFor;
-        FreeAndNil(FThread);
-      end;
+        FThread.FreeOnTerminate := False;
+      FThread.Terminate;
+      if FThread.Suspended then
+        FThread.Resume;
+      FThread.WaitFor;
+      FreeAndNil(FThread);
     end;
 
     {
@@ -511,6 +513,11 @@ begin
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
   FreeOnTerminate := AFreeOnTerminate;
+end;
+
+destructor TJvChangeThread.Destroy;
+begin
+  inherited Destroy;
 end;
 
 procedure TJvChangeThread.Execute;
