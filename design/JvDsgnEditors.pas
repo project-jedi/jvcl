@@ -997,10 +997,15 @@ end;
 
 procedure TJvImageListEditor.ExecuteVerb(Index: Integer);
 begin
+  { The hard typecast to TImageList is necessary because EditImageList does
+    not want a TCustomImageList but the component could be one. This seems to
+    be ok because TListView.SmallImages is also a TCustomImageList and not a
+    TImageList. So the Component Editor for TCustomImageList must also use a
+    hard typecast. } 
   if Designer <> nil then
     case Index of
       0:
-        if EditImageList(Component as TImageList) then
+        if EditImageList(TImageList(Component)) then
           Designer.Modified;
       1:
         SaveAsBitmap(TImageList(Component));
