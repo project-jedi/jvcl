@@ -15,6 +15,7 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s): Dmitry Osinovsky, Peter Thornqvist, Olga Kobzar
+                Peter Schraut (http://www.console-de.de)
 
 Portions created by Dmitry Osinovsky and Olga Kobzar are
 Copyright (C) 2003 ProgramBank Ltd.
@@ -167,6 +168,8 @@ Upcoming JVCL 3.00
 
    - bug fixed: exceptions, raised in Assign nil to Method property  - dejoy-2004-3-13
    - fixed  Character '"' error in SkipToEnd from dejoy 2004-5-25;
+
+   - peter schraut added shl, shr and xor support
 }
 
 unit JvInterpreter;
@@ -5085,6 +5088,28 @@ var
             if Prior(TTyp) < Prior(OpTyp) then
               Exit;
           end;
+
+        // [peter schraut: added ttShl case on 2005/08/14]
+        ttShl:
+          if priorShl > Prior(OpTyp) then
+            Result := PopExp shl Expression(TTyp)
+          else
+            Exit;
+
+        // [peter schraut: added ttShr case on 2005/08/14]
+        ttShr:
+          if priorShr > Prior(OpTyp) then
+            Result := PopExp shr Expression(TTyp)
+          else
+            Exit;
+
+        // [peter schraut: added ttXor case on 2005/08/14]
+        ttXor:
+          if priorXor > Prior(OpTyp) then
+            Result := PopExp xor Expression(TTyp)
+          else
+            Exit;
+
         ttMul:
           if priorMul > Prior(OpTyp) then
             Result := PopExp * Expression(TTyp)
@@ -6196,9 +6221,12 @@ begin
     case TTyp of
       ttEmpty:
         ErrorExpected('''' + kwEND + '''');
+
       ttIdentifier..ttBoolean, ttLB, ttRB, ttCol, ttPoint, ttLS, ttRS,
-        ttNot..ttEquLess, ttDoubleQuote, ttTrue, ttFalse:
+      ttNot..ttXor, // [peter schraut: replaced ttEquLess with ttXor on 2005/08/14]
+      ttDoubleQuote, ttTrue, ttFalse:
         NextToken;
+
       ttSemicolon, ttEnd, ttElse, ttUntil, ttFinally, ttExcept, ttDo, ttOf:
         Break;
       ttColon:
