@@ -181,6 +181,11 @@ const
 // WinInet
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
 
+{$ENDIF COMPILER5}
+
+{$IFNDEF COMPILER7_UP}
+  // For Delphi 5 / BCB 5 and those who will not install Delphi 6 Update 2
+
 // Windows
 const
   {$EXTERNALSYM SPI_GETMENUSHOWDELAY}
@@ -219,8 +224,7 @@ const
   SPI_GETKEYBOARDCUES = $100A;
   {$EXTERNALSYM SPI_SETKEYBOARDCUES}
   SPI_SETKEYBOARDCUES = $100B;
-
-{$ENDIF COMPILER5}
+{$ENDIF !COMPILER7_UP}
 
 implementation
 
