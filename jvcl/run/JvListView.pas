@@ -15,6 +15,7 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+                dejoy
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -1383,6 +1384,7 @@ function TJvListView.MoveDown(Index: Integer; Focus: Boolean = True): Integer;
 var
   lv, lv2: TListItem;
   FOnInsert, FOnDeletion: TLVDeletedEvent;
+  FOnCompare: TLVCompareEvent;
 begin
   Result := Index;
   if (Index >= 0) and (Index < Items.Count) then
@@ -1390,15 +1392,18 @@ begin
     lv2 := Items[Index];
     FOnInsert := OnInsert;
     FOnDeletion := OnDeletion;
+    FOnCompare := OnCompare;
     try
       OnInsert := nil;
       OnDeletion := nil;
+      OnCompare := nil;
       lv := Items.Insert(Index + 2);
       lv.Assign(lv2);
       lv2.Delete;
     finally
-      OnInsert := nil;
-      OnDeletion := nil;
+      OnInsert := FOnInsert;
+      OnDeletion := FOnDeletion;
+      OnCompare := FOnCompare;
     end;
     if Focus then
     begin
@@ -1413,6 +1418,7 @@ function TJvListView.MoveUp(Index: Integer; Focus: Boolean = True): Integer;
 var
   lv, lv2: TListItem;
   FOnInsert, FOnDeletion: TLVDeletedEvent;
+  FOnCompare: TLVCompareEvent;
 begin
   Result := Index;
   if (Index > 0) and (Index < Items.Count) then
@@ -1420,15 +1426,18 @@ begin
     lv2 := Items[Index];
     FOnInsert := OnInsert;
     FOnDeletion := OnDeletion;
+    FOnCompare := OnCompare;
     try
       OnInsert := nil;
       OnDeletion := nil;
+      OnCompare := nil;
       lv := Items.Insert(Index - 1);
       lv.Assign(lv2);
       lv2.Delete;
     finally
-      OnInsert := nil;
-      OnDeletion := nil;
+      OnInsert := FOnInsert;
+      OnDeletion := FOnDeletion;
+      OnCompare := FOnCompare;
     end;
     if Focus then
     begin
