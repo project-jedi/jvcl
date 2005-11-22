@@ -134,7 +134,7 @@ void __fastcall TTMTimeLineMainForm::mnuEditMemoClick(TObject *Sender)
   // That way, you can keep all the creating and freeing stuff in the
   // dialog unit instead of in the calling unit.
   // This reduces the dialog call to a one-liner:
-  MemoEditFrm->Edit(S,JvTimeLine1->SelDate,Ico); // the Edit function automatically updates S if the user clicked OK in the dialog
+  TMemoEditFrm_Edit(S,JvTimeLine1->SelDate,Ico); // the Edit function automatically updates S if the user clicked OK in the dialog
   AnsiString sTmp = Trim(S->Text);
   if( sTmp.Length() == 0 )
   { // there is no text, so free the stringlist to conserve memory

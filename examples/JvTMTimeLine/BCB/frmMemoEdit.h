@@ -40,6 +40,8 @@ All Rights Reserved.
 #include <ExtCtrls.hpp>
 #include <Menus.hpp>
 //---------------------------------------------------------------------------
+bool __fastcall TMemoEditFrm_Edit(TStrings* Lines, TDateTime ADate, TIcon* Icon=NULL);
+//---------------------------------------------------------------------------
 class TMemoEditFrm : public TForm
 {
 __published:	// IDE-managed Components
@@ -67,9 +69,6 @@ __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
         __fastcall TMemoEditFrm(TComponent* Owner);
-        virtual bool __fastcall Edit(TStrings* Lines, TDateTime ADate, TIcon* Icon=NULL);
 };
-//---------------------------------------------------------------------------
-extern PACKAGE TMemoEditFrm *MemoEditFrm;
 //---------------------------------------------------------------------------
 #endif

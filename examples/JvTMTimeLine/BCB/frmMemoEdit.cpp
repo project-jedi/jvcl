@@ -113,13 +113,12 @@ void __fastcall TMemoEditFrm::Selectall1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-
-bool __fastcall TMemoEditFrm::Edit(TStrings* Lines, TDateTime ADate, TIcon* Icon)
+bool __fastcall TMemoEditFrm_Edit(TStrings* Lines, TDateTime ADate, TIcon* Icon)
 {
  TMemoEditFrm* f;
  bool flResult;
 
-  f = new TMemoEditFrm(this);
+  f = new TMemoEditFrm(Application);
   try
   {
     f->Icon = Icon;

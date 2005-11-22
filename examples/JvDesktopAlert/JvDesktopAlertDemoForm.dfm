@@ -15,6 +15,9 @@ object JvDesktopAlertDemoFrm: TJvDesktopAlertDemoFrm
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  DesignSize = (
+    359
+    425)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -2533,7 +2536,7 @@ object JvDesktopAlertDemoFrm: TJvDesktopAlertDemoFrm
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppIniFileStorage1
-    AppStoragePath = '%FORM_NAME%'
+    AppStoragePath = '%FORM_NAME%\'
     StoredProps.Strings = (
       'cbLocation.ItemIndex'
       'chkClickable.Checked'

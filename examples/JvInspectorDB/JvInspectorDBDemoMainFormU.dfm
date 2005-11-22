@@ -14,9 +14,12 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnShow = FormShow
+  DesignSize = (
+    596
+    447)
   PixelsPerInch = 96
   TextHeight = 13
   object JvInspector1: TJvInspector
@@ -25,16 +28,8 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
     Width = 233
     Height = 447
     Anchors = [akLeft, akTop, akBottom]
-    BandWidth = 150
-    BevelKind = bkTile
-    BevelInner = bvNone
-    RelativeDivider = False
-    Divider = 75
     ItemHeight = 16
     Painter = JvInspectorBorlandPainter1
-    ReadOnly = False
-    UseBands = False
-    WantTabs = False
   end
   object DBGrid1: TDBGrid
     Left = 236
@@ -95,6 +90,7 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
     OnClick = btnCloseClick
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
+    DrawNameEndEllipsis = False
     Left = 88
     Top = 96
   end
