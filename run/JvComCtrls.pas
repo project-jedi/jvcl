@@ -22,6 +22,7 @@ Alfi [alioscia_alessi att onde dott net] alternate TJvPageControl.OwnerDraw rout
 Rudy Velthuis - ShowRange in TJvTrackBar
 Andreas Hausladen - TJvIPAddress designtime bug, components changed to JvExVCL
 Kai Gossens - TJvIPAddress: changing Color, drawing bug on XP (fat frame on edits removed)
+dejoy - TJvTreeView.MoveUp/MoveDown
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -605,6 +606,12 @@ type
     function GetNodePopup(Node: TTreeNode): TPopupMenu;
     procedure InsertMark(Node: TTreeNode; MarkAfter: Boolean); // TVM_SETINSERTMARK
     procedure RemoveMark;
+
+    { Move up the display order }
+    function MoveUp(AAbsoluteIndex: Integer; Focus: Boolean = True): Integer;
+    { move down the display order }
+    function MoveDown(AAbsoluteIndex: Integer; Focus: Boolean = True): Integer;
+
     property InsertMarkColor: TColor read GetInsertMarkColor write SetInsertMarkColor;
     property Checked[Node: TTreeNode]: Boolean read GetChecked write SetChecked;
     property MaxScrollTime: Integer read GetMaxScrollTime write SetMaxScrollTime;
@@ -3091,6 +3098,54 @@ begin
     Result := SendMessage(Handle, TVM_GETLINECOLOR, 0, 0)
   else
     Result := clDefault;
+end;
+
+function TJvTreeView.MoveUp(AAbsoluteIndex: Integer; Focus: Boolean): Integer;
+var
+  lNode, lNode2: TTreeNode;
+begin
+  Result := AAbsoluteIndex;
+  if (AAbsoluteIndex > 0) and (AAbsoluteIndex < Items.Count) then
+  begin
+    lNode := Items[AAbsoluteIndex];
+
+    if not lnode.IsFirstNode then
+    begin
+      lNode2 :=  lNode.getPrevSibling;
+      if lNode2 <> nil then
+        lNode.MoveTo(lNode2, naInsert);
+    end;
+    if Focus then
+    begin
+      lNode.Selected := True;
+      lNode.Focused := True;
+    end;
+    Result := lNode.AbsoluteIndex;
+  end;
+end;
+
+function TJvTreeView.MoveDown(AAbsoluteIndex: Integer; Focus: Boolean): Integer;
+var
+  lNode, lNode2: TTreeNode;
+begin
+  Result := AAbsoluteIndex;
+  if (AAbsoluteIndex >= 0) and (AAbsoluteIndex < Items.Count - 1) then
+  begin
+    lNode := Items[AAbsoluteIndex];
+
+    if not ((not lNode.Deleting) and (lNode.Parent = nil) and (lNode.getNextSibling = nil)) then
+    begin
+      lNode2 :=  lNode.getNextSibling;
+      if lNode2 <> nil then
+        lNode2.MoveTo(lNode, naInsert);
+    end;
+    if Focus then
+    begin
+      lNode.Selected := True;
+      lNode.Focused := True;
+    end;
+    Result := lNode.AbsoluteIndex;
+  end;
 end;
 
 procedure TJvTreeView.SetLineColor(Value: TColor);
