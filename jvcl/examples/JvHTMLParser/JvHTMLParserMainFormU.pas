@@ -61,6 +61,8 @@ type
     OpenDialog1: TOpenDialog;
     procedure btnProcessTableClick(Sender: TObject);
     procedure TableKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
+    procedure TableKeyFoundEx(Sender: TObject; Key, Results,
+      OriginalLine: String; TagInfo: TTagInfo; Attributes: TStrings);
     procedure HTML2TextKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
     procedure URLDetectKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
     procedure TagsKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
@@ -100,7 +102,8 @@ begin
     AddCondition('TD', '<TD>', '</TD>');
     AddCondition('TH', '<TH>', '</TH>');
     AddCondition('TR', '<TR>', '</TR>');
-    OnKeyFound := TableKeyFound;
+//    OnKeyFound := TableKeyFound;
+    OnKeyFoundEx := TableKeyFoundEx;
   end;
   try
     JvTreeView1.Items.BeginUpdate;
@@ -190,7 +193,23 @@ procedure TJvHTMLParserMainForm.TableKeyFound(Sender: TObject; Key, Results,
 begin
   Self.Tag := Self.Tag + 1;
   JvDisplayMemo1.Lines.Add(Key + #13#10 + Results);
-  if Key = 'TR' then
+  if UpperCase(Key) = 'TR' then
+    CurNode := JvTreeView1.Items.AddChild(nil, 'TR')
+  else
+    JvTreeView1.Items.AddChild(CurNode, Results);
+end;
+
+procedure TJvHTMLParserMainForm.TableKeyFoundEx(Sender: TObject;
+  Key, Results, OriginalLine: String; TagInfo: TTagInfo;
+  Attributes: TStrings);
+var
+  i : integer;
+begin
+  Self.Tag := Self.Tag + 1;
+  JvDisplayMemo1.Lines.Add(Key + #13#10 + Results);
+  for i:=0 to Attributes.Count-1 do
+    JvDisplayMemo1.Lines.Add('Attributes=' + Attributes[i]);
+  if UpperCase(Key) = 'TR' then
     CurNode := JvTreeView1.Items.AddChild(nil, 'TR')
   else
     JvTreeView1.Items.AddChild(CurNode, Results);
