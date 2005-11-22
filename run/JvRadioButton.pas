@@ -389,7 +389,7 @@ procedure TJvRadioButton.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
+  if Assigned(FLinkedControls) then
     LinkedControls.Notification(AComponent, Operation);
 end;
 
