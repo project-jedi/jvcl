@@ -1517,6 +1517,7 @@ begin
     TJvUndo(Items[0]).Free;
     inherited Delete(0);
   end;
+  inherited Clear;
 end;
 
 procedure TJvUndoBuffer.ClearRedo;
