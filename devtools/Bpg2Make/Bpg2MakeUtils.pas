@@ -195,11 +195,13 @@ begin
   if Copy(Content, 1, 3) = BOM_UTF8 then
   begin
     Delete(Content, 1, 3);
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     Result := Utf8ToAnsi(Content);
+	{$ELSE}
+    Result := Content;	
+    {$ENDIF COMPILER6_UP}
   end
   else
-  {$ENDIF COMPILIER6_UP}
     Result := Content;
 end;
 
