@@ -195,7 +195,10 @@ begin
     Application.ShowHint := ShowHint;
   end;
   if Glyph.Empty then
+  begin
+    Glyph.Assign(nil); // fixes GDI resource leak
     Glyph.LoadFromResourceName(HInstance, 'JvgHintHELP');
+  end;
 end;
 
 procedure TJvgHint.NewHint(Sender: TObject);

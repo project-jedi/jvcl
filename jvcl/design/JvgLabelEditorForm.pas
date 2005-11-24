@@ -535,6 +535,10 @@ begin
   inherited InitializeEditor;
   // loading from Resource file save ~ 200K in DFM file
   imglBrushes.ResInstLoad(HInstance, rtBitmap, 'JvgLabelEditorDlgBRUSH', clFuchsia);
+  sbtnLabelDirectionDown.Glyph.Assign(nil); // fixes GDI resource leak
+  sbtnLabelDirectionUp.Glyph.Assign(nil);
+  sbtnLabelDirectionRight.Glyph.Assign(nil);
+  sbtnLabelDirectionLeft.Glyph.Assign(nil);
   sbtnLabelDirectionDown.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgDOWN');
   sbtnLabelDirectionUp.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgUP');
   sbtnLabelDirectionRight.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgRIGHT');

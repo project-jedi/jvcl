@@ -1383,6 +1383,7 @@ begin
       Parent := Self;
       Visible := False;
       Transparent := False;
+      Bmp.Assign(nil); // fixes GDI resource leak
       Bmp.LoadFromResourceName(HInstance, 'JvCustomOutlookBarDOWNARROW');
       Glyph := Bmp;
       OnClick := DoDwnClick;

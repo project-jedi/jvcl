@@ -913,7 +913,7 @@ begin
       begin
         if Trim(ResourceIds[i]) <> '' then
         try
-         // load resource
+          // load resource
           ResStream := nil;
           try
             try
@@ -921,6 +921,7 @@ begin
             except
               ResStream := nil;
             end;
+            Bmp.Assign(nil); // fixes GDI resource leak
             if ResStream <> nil then
               Bmp.LoadFromResourceName(HInstance, ResourceIds[i])
             else
@@ -932,7 +933,7 @@ begin
             ResStream.Free;
           end;
 
-         // add bitmap
+          // add bitmap
           if not Bmp.Empty and (Bmp.Width > 0) and (Bmp.Height > 0) then
           begin
             case TransparentMode of

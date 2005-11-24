@@ -1107,6 +1107,7 @@ begin
   try
     Bmp.LoadFromResourceName(HInstance, 'JvCustomTimeLineITEMLEFT');
     FItemHintImageList.Add(Bmp, nil);
+    Bmp.Assign(nil); // fixes GDI resource leak
     Bmp.LoadFromResourceName(HInstance, 'JvCustomTimeLineITEMRIGHT');
     FItemHintImageList.Add(Bmp, nil);
   finally

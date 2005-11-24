@@ -2225,6 +2225,7 @@ var
               if (dsClicked in DrawState) and (dsHighlight in DrawState) then
                 Index := 2; // down
             end;
+            Bitmap.Assign(nil); // fixes GDI resource leak
             if FCollapsed then
               Bitmap.LoadFromResourceName(HInstance, 'JvXPCustomWinXPBarEXPAND' + IntToStr(Index))
             else

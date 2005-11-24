@@ -628,6 +628,7 @@ begin
   if FExpanded <> Value then
   begin
     FExpanded := Value;
+    FButton.Glyph.Assign(nil); // fixes GDI resource leak
     if FExpanded then
       FButton.Glyph.LoadFromResourceName(HInstance, 'JvScrollMaxBandBTNMINUS')
     else

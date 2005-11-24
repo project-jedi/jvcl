@@ -390,6 +390,7 @@ begin
       Bitmap := TBitmap.Create;
       try
         Bitmap.Transparent := True;
+        Bitmap.Assign(nil); // fixes GDI resource leak
         Bitmap.LoadFromResourceName(HInstance, 'JvXPCheckboxCHECKBOX');
         if Theme = WindowsXP then
           JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
