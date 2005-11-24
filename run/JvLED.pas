@@ -259,7 +259,7 @@ end;
 procedure TJvCustomLED.DoBlink(Sender: TObject);
 begin
   {$IFDEF VCL}
-  //if not IsIconic(Application.Handle) then
+  if not IsIconic(Application.Handle) then
   {$ENDIF VCL}
     Status := not Status;
 end;
