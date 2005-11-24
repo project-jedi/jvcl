@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Controls, Graphics, ExtCtrls,
+  Windows, Messages, Controls, Forms, Graphics, ExtCtrls,
   Classes,
   JvComponent;
 
@@ -258,7 +258,10 @@ end;
 
 procedure TJvCustomLED.DoBlink(Sender: TObject);
 begin
-  Status := not Status;
+  {$IFDEF VCL}
+  //if not IsIconic(Application.Handle) then
+  {$ENDIF VCL}
+    Status := not Status;
 end;
 
 procedure TJvCustomLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -290,6 +293,10 @@ var
   X, Y: Integer;
 begin
   inherited ColorChanged;
+  { Work around a TBitmap.ReadDIB() bug where FreeContext() is not called. This
+    missing call leads to a GDI-Handle leak when the application is minimized
+    because then FreeBitmapContexts() is not called. }
+  FImgPict.Assign(nil);
   FImgPict.LoadFromResourceName(HInstance, cGreenLEDName);
   FImgPict.PixelFormat := pf24bit;
   for X := 0 to FImgPict.Width - 1 do
