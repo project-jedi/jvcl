@@ -80,6 +80,7 @@ procedure TJvPcx.LoadFromResourceName(Instance: THandle;
 var
   Stream: TStream;
 begin
+  Assign(nil); // fixes GDI resource leak
   if ResType = RT_BITMAP then
     inherited LoadFromResourceName(Instance, ResName)
   else
@@ -99,6 +100,7 @@ procedure TJvPcx.LoadFromResourceID(Instance: THandle; ResID: Integer;
 var
   Stream: TStream;
 begin
+  Assign(nil); // fixes GDI resource leak
   if ResType = RT_BITMAP then
     inherited LoadFromResourceID(Instance, ResID)
   else

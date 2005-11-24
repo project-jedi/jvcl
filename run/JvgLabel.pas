@@ -1331,6 +1331,8 @@ end;
 
 //=== { TJvgGlyphLabel } =====================================================
 
+// (rom) Glyph handling is a mess
+
 constructor TJvgGlyphLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1413,6 +1415,8 @@ begin
   end
   else
   begin
+    FGlyphOn.Assign(nil); // fixes GDI resource leak
+    FGlyphOff.Assign(nil); // fixes GDI resource leak
     FGlyphOn.LoadFromResourceName(HInstance, 'JvgON');
     FGlyphOff.LoadFromResourceName(HInstance, 'JvgOFF');
     FGlyphDisabled := TBitmap.Create;

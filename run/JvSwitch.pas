@@ -286,6 +286,7 @@ begin
   end
   else
   begin
+    FBitmaps[Index <> 0].Assign(nil); // fixes GDI resource leak
     FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]);
     Exclude(FUserBitmaps, Index <> 0);
   end;

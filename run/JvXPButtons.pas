@@ -868,7 +868,9 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(HInstance, PChar('JvXPCustomToolButton' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
+        Bitmap.Assign(nil); // fixes GDI resource leak
+        Bitmap.LoadFromResourceName(HInstance,
+          PChar('JvXPCustomToolButton' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
           Ord(FToolType)), 3, MaxInt)));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)

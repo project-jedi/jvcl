@@ -876,11 +876,17 @@ begin
   //if (csDesigning in ComponentState){and not(csLoading in ComponentState)}then
   begin
     if not Assigned(FGlyphOn) then
-      FGlyphOn := TBitmap.Create;
+      FGlyphOn := TBitmap.Create
+    else
+      FGlyphOn.Assign(nil); // fixes GDI resource leak
     if not Assigned(FGlyphOff) then
-      FGlyphOff := TBitmap.Create;
+      FGlyphOff := TBitmap.Create
+    else
+      FGlyphOff.Assign(nil); // fixes GDI resource leak
     if not Assigned(FGlyphDisabled) then
-      FGlyphDisabled := TBitmap.Create;
+      FGlyphDisabled := TBitmap.Create
+    else
+      FGlyphDisabled.Assign(nil); // fixes GDI resource leak
     FGlyphOn.LoadFromResourceName(HInstance, 'JvgON');
     FGlyphOff.LoadFromResourceName(HInstance, 'JvgOFF');
     FGlyphDisabled.LoadFromResourceName(HInstance, 'JvgDISABLED');

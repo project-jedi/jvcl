@@ -686,6 +686,7 @@ begin
     Handle := LoadLibraryW(ThemeFileNameW);
     if Handle > 0 then
     try
+      ABitmap.Assign(nil); // fixes GDI resource leak
       ABitmap.LoadFromResourceName(Handle, TranslateBitmapFileName(BitmapFileNameW));
       { (rb) can't determine actual transparent color? }
       ABitmap.TransparentColor := clFuchsia;

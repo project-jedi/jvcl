@@ -2401,9 +2401,11 @@ var
 
       if not CustomGlyphs then
       begin
+        UpArrow.Assign(nil); // fixes GDI resource leak
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtn);
         UpArrow.TransparentColor := clWhite;
         UpArrow.Transparent := True;
+        DownArrow.Assign(nil); // fixes GDI resource leak
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtn);
         DownArrow.TransparentColor := clWhite;
         DownArrow.Transparent := True;
@@ -2446,9 +2448,11 @@ var
       DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       if not CustomGlyphs then
       begin
+        UpArrow.Assign(nil); // fixes GDI resource leak
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
         UpArrow.TransparentColor := clWhite;
         UpArrow.Transparent := True;
+        DownArrow.Assign(nil); // fixes GDI resource leak
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtnPole);
         DownArrow.TransparentColor := clWhite;
         DownArrow.Transparent := True;
