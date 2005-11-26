@@ -3670,6 +3670,7 @@ var
   PtrCsvColumn: PCsvColumn;
   CsvFieldName: string;
   ColNum, I: Integer;
+  ColonPos: Integer;
 begin
   if not ValidateHeaderRow then
   begin
@@ -3689,6 +3690,12 @@ begin
   begin
     // Get a string in the format COLUMNAME:Options
     CsvFieldName := StrEatWhiteSpace(GetCsvRowItem(@CsvFieldRec, ColNum));
+
+    // Mantis 3192: Remove the options from the field name or FindByName will
+    // never find the column which will lead to a Database error being triggered
+    ColonPos := Pos(':', CsvFieldName);
+    if (ColonPos > 0) then
+      CsvFieldName := Copy(CsvFieldName, 1, ColonPos - 1);
 
     if CsvFieldName = '' then
       JvCsvDatabaseError(FTableName, RsEErrorProcessingFirstLine);
