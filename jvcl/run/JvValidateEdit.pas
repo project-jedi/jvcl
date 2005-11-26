@@ -13,7 +13,8 @@ The Original Code is JvValidateEdit, released on 20 February 2003,
 Portions created by Christopher Latta are Copyright (C) 2003 Christopher Latta.
 All Rights Reserved.
 
-Contributor(s): Peter Thrnqvist
+Contributor(s): Peter Thornqvist
+                Peter Schraut (http://www.console-dev.de)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
 home page, located at http://jvcl.sourceforge.net
@@ -121,8 +122,8 @@ type
     procedure SetDecimalPlaces(NewValue: Cardinal);
     procedure SetDisplayFormat(NewValue: TJvValidateEditDisplayFormat);
     procedure SetZeroEmpty(NewValue: Boolean);
-    function GetAsInteger: Integer;
-    procedure SetAsInteger(NewValue: Integer);
+    function GetAsInteger: Int64;
+    procedure SetAsInteger(NewValue: Int64);
     function GetAsCurrency: Currency;
     procedure SetAsCurrency(NewValue: Currency);
     function GetAsFloat: Double;
@@ -133,12 +134,12 @@ type
     function IsCheckCharsStored: Boolean;
     function CurrRangeValue(CheckValue: Currency): Currency; overload;
     function FloatRangeValue(CheckValue: Double): Double; overload;
-    function IntRangeValue(CheckValue: Integer): Integer; overload;
+    function IntRangeValue(CheckValue: Int64): Int64; overload;
     function GetEditText: string;
     procedure SetEditText(const NewValue: string);
     procedure ChangeText(const NewValue: string);
-    function BaseToInt(const BaseValue: string; Base: Byte): Integer;
-    function IntToBase(NewValue: Integer; Base: Byte): string;
+    function BaseToInt(const BaseValue: string; Base: Byte): Int64;
+    function IntToBase(NewValue: Int64; Base: Byte): string;
     procedure DoValueChanged;
     procedure SetDisplayPrefix(const NewValue: string);
     procedure SetDisplaySuffix(const NewValue: string);
@@ -192,7 +193,7 @@ type
     function IsValid: Boolean; virtual; // fires OnIsValid if assigned
 
     procedure Assign(Source: TPersistent); override;
-    property AsInteger: Integer read GetAsInteger write SetAsInteger;
+    property AsInteger: Int64 read GetAsInteger write SetAsInteger;
     property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
   end;
@@ -547,7 +548,7 @@ begin
   end;
 end;
 
-function TJvCustomValidateEdit.GetAsInteger: Integer;
+function TJvCustomValidateEdit.GetAsInteger: Int64;
 begin
   case FDisplayFormat of
     dfBinary:
@@ -557,11 +558,11 @@ begin
     dfOctal:
       Result := BaseToInt(FEditText, 8);
   else
-    Result := StrToIntDef(FEditText, 0);
+    Result := StrToInt64Def(FEditText, 0);
   end;
 end;
 
-procedure TJvCustomValidateEdit.SetAsInteger(NewValue: Integer);
+procedure TJvCustomValidateEdit.SetAsInteger(NewValue: Int64);
 begin
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
@@ -665,7 +666,11 @@ begin
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfNone, dfCustom:
       EditText := NewValue;
     dfBinary, dfHex, dfInteger, dfOctal, dfYear:
+      {$IFDEF COMPILER5}
+      SetAsInteger(Integer(NewValue));
+      {$ELSE}
       SetAsInteger(NewValue);
+      {$ENDIF COMPILER5}
     dfCurrency, dfFloat, dfPercent, dfScientific:
       SetAsFloat(NewValue);
   end;
@@ -810,7 +815,7 @@ begin
     Result := FMinValue;
 end;
 
-function TJvCustomValidateEdit.IntRangeValue(CheckValue: Integer): Integer;
+function TJvCustomValidateEdit.IntRangeValue(CheckValue: Int64): Int64;
 begin
   Result := CheckValue;
   if FHasMaxValue and (CheckValue > FMaxValue) then
@@ -912,7 +917,7 @@ begin
       dfCurrency:
         ChangeText(Format('%.*m', [FDecimalPlaces, AsCurrency]));
       dfInteger:
-        ChangeText(Format('%d', [AsInteger]));
+        ChangeText(IntToStr(AsInteger));
       dfFloat:
         ChangeText(Format('%.*n', [FDecimalPlaces, AsFloat]));
       dfScientific:
@@ -954,14 +959,14 @@ begin
   end;
 end;
 
-function TJvCustomValidateEdit.BaseToInt(const BaseValue: string; Base: Byte): Integer;
+function TJvCustomValidateEdit.BaseToInt(const BaseValue: string; Base: Byte): Int64;
 begin
   Assert(Base <= 36, RsEBaseTooBig);
   Assert(Base > 1, RsEBaseTooSmall);
   Result := Numb2Dec(BaseValue, Base);
 end;
 
-function TJvCustomValidateEdit.IntToBase(NewValue:Integer; Base: Byte): string;
+function TJvCustomValidateEdit.IntToBase(NewValue:Int64; Base: Byte): string;
 begin
   Assert(Base <= 36, RsEBaseTooBig);
   Assert(Base > 1, RsEBaseTooSmall);
