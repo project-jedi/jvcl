@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Lionel Reynaud
 Portions created by Lionel Reynaud are Copyright (C) 2004 Lionel Reynaud.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Marc Geldon
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -199,7 +199,8 @@ type
     FDocument: TStringList;
     FDestination: TExportDestination;
     FExportSeparator: TExportSeparator;
-    FShowColumnName: boolean;
+    FShowColumnName: Boolean;
+    FQuoteEveryTime: Boolean;
     procedure SetExportSeparator(const Value: TExportSeparator);
     function SeparatorToString(ASeparator: TExportSeparator): string;
     procedure SetDestination(const Value: TExportDestination);
@@ -220,6 +221,7 @@ type
     property Destination: TExportDestination read FDestination write SetDestination default edFile;
     property ExportSeparator: TExportSeparator read FExportSeparator write SetExportSeparator default esTab;
     property ShowColumnName: boolean read FShowColumnName write FShowColumnName default true;
+    property QuoteEveryTime: Boolean read FQuoteEveryTime write FQuoteEveryTime default True;
   end;
 
   TJvDBGridXMLExport = class(TJvCustomDBGridExport)
@@ -1014,7 +1016,7 @@ begin
               if not FRecordColumns[I].Field.IsNull then
               begin
                 lField := FRecordColumns[I].Field.AsString;
-                if Pos(Separator, lField) <> 0 then
+                if (Pos(Separator, lField) <> 0) or (FQuoteEveryTime) then
                   lString := lString + AnsiQuotedStr(lField, '"')
                 else
                   lString := lString + lField;
