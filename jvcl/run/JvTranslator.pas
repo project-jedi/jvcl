@@ -415,43 +415,46 @@ var
       begin
         PropInfo := PropList[I];
         PropName := PropInfo^.Name;
-        try
-          if InSkipList(AComponent, PropName) or (PropInfo^.SetProc = nil) then
-            Continue;
-          case PropInfo^.PropType^.Kind of
-            tkInteger:
-              Elem.Properties.Add(PropName, GetOrdProp(AComponent, PropName));
-            tkEnumeration:
-              Elem.Properties.Add(PropName, GetEnumProp(AComponent, PropName));
-            tkSet:
-              Elem.Properties.Add(PropName, GetSetProp(AComponent, PropName));
-            tkString, tkLString, tkWString:
-              Elem.Properties.Add(PropName, XMLEncode(InternalGetWideStrProp(AComponent, PropName)));
-            tkClass:
-              begin
-                AnObj := GetObjectProp(AComponent, PropName);
-                if IsObject(AnObj.ClassType, cTTreeNodes) then
-                  TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTListItems) then
-                  ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTStrings) then
-                  StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTCollection) then
-                  CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName), Recurse)
-                else
-                if not IsObject(AnObj.ClassType, cTComponent) then
-                  // NB! TComponents are excluded because most of the time, a published TComponent
-                  // property references another component on the form. In some cases, however, a TComponent
-                  // *can* be an internal component and this code won't list it.
-                  // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
-                  InnerComponentToXML(AnObj, Elem.Items.Add(PropName), Recurse);
-              end;
-          end;
-        except
-          //
+
+        if InSkipList(AComponent, PropName) or (PropInfo^.SetProc = nil) then
+          Continue;
+        case PropInfo^.PropType^.Kind of
+          tkInteger:
+            Elem.Properties.Add(PropName, GetOrdProp(AComponent, PropName));
+          tkEnumeration:
+            Elem.Properties.Add(PropName, GetEnumProp(AComponent, PropName));
+          tkSet:
+            Elem.Properties.Add(PropName, GetSetProp(AComponent, PropName));
+          tkString, tkLString, tkWString:
+            Elem.Properties.Add(PropName, XMLEncode(InternalGetWideStrProp(AComponent, PropName)));
+          tkClass:
+            begin
+              AnObj := GetObjectProp(AComponent, PropName);
+
+              // The property may not be assigned (action, popupmenu...), in
+              // this case, we can't do anything with it.
+              if not Assigned(AnObj) then
+                Continue;
+
+              if IsObject(AnObj.ClassType, cTTreeNodes) then
+                TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
+              else
+              if IsObject(AnObj.ClassType, cTListItems) then
+                ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
+              else
+              if IsObject(AnObj.ClassType, cTStrings) then
+                StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
+              else
+              if IsObject(AnObj.ClassType, cTCollection) then
+                CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName), Recurse)
+              else
+              if not IsObject(AnObj.ClassType, cTComponent) then
+                // NB! TComponents are excluded because most of the time, a published TComponent
+                // property references another component on the form. In some cases, however, a TComponent
+                // *can* be an internal component and this code won't list it.
+                // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
+                InnerComponentToXML(AnObj, Elem.Items.Add(PropName), Recurse);
+            end;
         end;
       end;
     end;
