@@ -724,10 +724,10 @@ function Dec2Hex(N: Longint; A: Byte): string; {$IFDEF SUPPORTS_INLINE} inline; 
 function Hex2Dec(const S: string): Longint;
 { Hex2Dec converts the given hexadecimal string to the corresponding integer
   value. }
-function Dec2Numb(N: Longint; A, B: Byte): string;
+function Dec2Numb(N: Int64; A, B: Byte): string;
 { Dec2Numb converts the given value to a string representation with the
   base equal to B and with the minimum number of digits (A) specified. }
-function Numb2Dec(S: string; B: Byte): Longint;
+function Numb2Dec(S: string; B: Byte): Int64;
 { Numb2Dec converts the given B-based numeric string to the corresponding
   integer value. }
 function IntToBin(Value: Longint; Digits, Spaces: Integer): string;
@@ -6125,7 +6125,7 @@ begin
   Result := StrToIntDef(HexStr, 0);
 end;
 
-function Dec2Numb(N: Longint; A, B: Byte): string;
+function Dec2Numb(N: Int64; A, B: Byte): string;
 var
   C: Integer;
   Number: Cardinal;
@@ -6151,9 +6151,9 @@ begin
     Result := AddChar('0', Result, A);
 end;
 
-function Numb2Dec(S: string; B: Byte): Longint;
+function Numb2Dec(S: string; B: Byte): Int64;
 var
-  I, P: Longint;
+  I, P: Int64;
 begin
   I := Length(S);
   Result := 0;
