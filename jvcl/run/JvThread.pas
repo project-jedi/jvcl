@@ -751,7 +751,8 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
+  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, 
+                                       FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
