@@ -359,6 +359,7 @@ type
     procedure InitAlpha;
   public
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent);
 
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
     procedure LoadFromResourceName(Instance: THandle; const ResName: string);
@@ -383,6 +384,7 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Source: TPersistent);
 
     procedure LoadFromResourceName(Instance: THandle; const ResName: string);
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
@@ -740,6 +742,15 @@ begin
   inherited Destroy;
 end;
 
+procedure TAlphaBitmap.Assign(Source: TPersistent);
+begin
+  // What to do here when Source is not nil???
+  if not Assigned(Source) then
+    FreeHandle
+  else
+    ;
+end;
+
 function TAlphaBitmap.CreateDIB(ADC: HDC; AWidth, AHeight: Integer): HBitmap;
 begin
   with FBitmapInfo.bmiHeader do
@@ -887,6 +898,14 @@ destructor TBitmapAdapter.Destroy;
 begin
   FBitmap.Free;
   inherited Destroy;
+end;
+
+procedure TBitmapAdapter.Assign(Source: TPersistent);
+begin
+  if FBitmap is TBitmap then
+    (FBitmap as TBitmap).Assign(Source)
+  else if FBitmap is TAlphaBitmap then
+    (FBitmap as TAlphaBitmap).Assign(Source);
 end;
 
 procedure TBitmapAdapter.Clear;
