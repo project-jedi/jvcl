@@ -101,8 +101,9 @@ type
     {**** Drag'n'Drop ****}
     procedure TimerDnDTimer(Sender: TObject);
   protected
-    FSavedActive: Boolean;
-    
+    //FSavedActive: Boolean;
+    FMastersStream:TStream;
+
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
       
@@ -420,6 +421,7 @@ begin
   TimerDnD.OnTimer := TimerDnDTimer;
   FStartMasterValue := Null;
   FSelectedIndex := 1;
+  FMastersStream := nil;
 end;
 
 destructor TJvCustomDBTreeView.Destroy;
@@ -427,6 +429,7 @@ begin
   FDataLink.Free;
   FDataLink := nil;
   TimerDnD.Free;
+  FMastersStream.Free;
   inherited Destroy;
 end;
 
@@ -1387,20 +1390,60 @@ begin
   FMirror := Value;
 end;
 
+// Note about the code in CreateWnd/DestroyWnd: When docking/undocking a form
+// containing a DBTreeView, or even when showing/hiding such a form, the tree
+// is emptied then refilled. But this makes it lose all it's master values
+// The initial solution was to close then reopen the dataset, but this is
+// ungraceful and was replaced by the code below, proposed in issue 3256.
 procedure TJvCustomDBTreeView.CreateWnd;
+var
+  Node: TTreeNode;
+  temp: string;
+  strLength: integer;
 begin
   inherited CreateWnd;
-  if Assigned(FDataLink) and Assigned(FDataLink.DataSet) then
-    FDataLink.DataSet.Active := FSavedActive;
+  
+  // tree is restored. Now we must restore information about Master Values
+  if assigned(FMastersStream) and (Items.Count > 0)
+  then begin
+    Node := Items.GetFirstNode;
+    FMastersStream.Position := 0;
+    while Assigned(Node) do
+    begin
+      FMastersStream.Read(strLength, SizeOf(strLength));
+      SetLength(temp, strLength);
+      FMastersStream.Read(temp[1], strLength);
+      TJvDBTreeNode(Node).SetMasterValue(temp);
+      Node := Node.GetNext;
+    end;
+    // nil is required, for the destructor not to try to destroy an already
+    // destroyed object;
+    FreeAndNil(FMastersStream);
+  end;
 end;
 
 procedure TJvCustomDBTreeView.DestroyWnd;
+var
+  Node: TTreeNode;
+  temp: string;
+  strLength: integer;
 begin
-  if Assigned(FDataLink) and Assigned(FDataLink.DataSet) then
+  if Items.Count > 0 then
   begin
-    FSavedActive := FDataLink.DataSet.Active;
-    FDataLink.DataSet.Active := False;
+    // save master values into stream
+    FMastersStream := TMemoryStream.Create;
+    Node := Items.GetFirstNode;
+    while Assigned(Node) do
+    begin
+      // save MasterValue as string
+      temp := VarToStr(TJvDBTreeNode(Node).MasterValue);
+      strLength := length(temp);
+      FMastersStream.Write(strLength, SizeOf(strLength));
+      FMastersStream.Write(temp[1], strLength);
+      Node := Node.GetNext;
+    end;
   end;
+  
   inherited DestroyWnd;
 end;
 
