@@ -1026,7 +1026,7 @@ procedure TJvCustomDBTreeView.Change2(Node: TTreeNode);
 begin
   if Node <> nil then
   begin
-    if (Node as TJvDBTreeNode).FMasterValue = Unassigned then
+    if VarIsEmpty((Node as TJvDBTreeNode).FMasterValue) then
       Exit;
     FDataLink.DataSet.Locate(FMasterField, TJvDBTreeNode(Node).FMasterValue, []);
     if TJvDBTreeNode(Node).FMasterValue = Null then
