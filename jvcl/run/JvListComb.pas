@@ -1277,10 +1277,16 @@ end;
 procedure TJvImageComboBox.CNCommand(var Msg: TWMCommand);
 begin
   inherited;
+  {$IFDEF COMPILER6_UP}
+  // Under D6 and upper, if OnSelect is Assigned, OnChange is not triggered
+  // so we do it ourselves. But to avoid triggering OnChange twice (Mantis 3175)
+  // for the same change of Item, we only do it if OnSelect is Assigned.
   case Msg.NotifyCode of
     CBN_SELCHANGE:
-      Change;
+      if Assigned(OnSelect) then
+        Change;
   end;
+  {$ENDIF COMPILER6_UP}
 end;
 {$ENDIF VCL}
 
