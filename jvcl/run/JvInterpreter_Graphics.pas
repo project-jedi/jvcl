@@ -1217,6 +1217,7 @@ end;
 
 procedure TBitmap_LoadFromResourceName(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  TBitmap(Args.Obj).Assign(nil); // fixes GDI resource leak
   TBitmap(Args.Obj).LoadFromResourceName(Args.Values[0], Args.Values[1]);
 end;
 
@@ -1224,6 +1225,7 @@ end;
 
 procedure TBitmap_LoadFromResourceID(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  TBitmap(Args.Obj).Assign(nil); // fixes GDI resource leak
   TBitmap(Args.Obj).LoadFromResourceID(Args.Values[0], Args.Values[1]);
 end;
 
