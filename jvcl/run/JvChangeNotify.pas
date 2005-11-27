@@ -100,6 +100,9 @@ type
     property Items[Index: Integer]: TJvChangeItem read GetItem write SetItem; default;
   end;
 
+  { WARNING: Do not call Thread.Terminate from user code. This will leave a
+    dangling TJvChangeNotify.FThread reference which will cause an access
+    violation at the next TJvChangeNotify.SetActive call. }
   TJvChangeThread = class(TThread)
   private
     FNotifyArray: TJvNotifyArray;
@@ -112,7 +115,6 @@ type
     procedure Execute; override;
   public
     constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate: Boolean);
-    destructor Destroy; override;
     property OnChangeNotify: TJvThreadNotifyEvent read FNotify write FNotify;
   end;
 
@@ -131,7 +133,7 @@ type
     procedure CheckActive(const Name: string);
     procedure NotifyError(const Msg: string);
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
-    procedure DoThreadTerminate(Sender: TObject);
+    procedure SetFreeOnTerminate(const Value: Boolean);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
     procedure Loaded; override;
@@ -143,8 +145,8 @@ type
     property Notifications: TJvChangeItems read FCollection write SetCollection;
     property CheckInterval: Integer read FInterval write SetInterval default 100;
     // Set FreeOnTerminate to True if you want to be able to change the Active property
-    // in the OnChangeNotify event. NOTE: FreeOnTerminate should be changed when Active := False
-    property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate default True;
+    // in the OnChangeNotify event.
+    property FreeOnTerminate: Boolean read FFreeOnTerminate write SetFreeOnTerminate default True;
     property OnChangeNotify: TJvNotifyEvent read FNotify write FNotify;
   end;
 
@@ -311,6 +313,9 @@ end;
 
 destructor TJvChangeNotify.Destroy;
 begin
+  if Assigned(FThread) then
+    FThread.FreeOnTerminate := False;
+  FFreeOnTerminate := False; // do not call SetFreeOnTerminate here
   Active := False;
   FCollection.Free;
   inherited Destroy;
@@ -376,15 +381,6 @@ begin
   Change(Notifications[Index]);
 end;
 
-procedure TJvChangeNotify.DoThreadTerminate(Sender: TObject);
-begin
-  { FThread must be set to NIL only if the calling thread is still assigned
-    to the FThread field. If this is not so, another thread was started and
-    this thread was terminated by SetActive(). }
-  if TThread(Sender).FreeOnTerminate and (FThread = Sender) then
-    FThread := nil;
-end;
-
 procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
   cActions: array [TJvChangeAction] of Cardinal =
@@ -397,7 +393,7 @@ var
   I: Integer;
   S: string;
 begin
-  if (FActive <> Value) then
+  if FActive <> Value then
   begin
     FActive := Value;
     if csDesigning in ComponentState then
@@ -413,7 +409,7 @@ begin
         {$ENDIF CLR}
       {$IFDEF CLR}
       for I := 0 to High(FNotifyArray) do
-        FNotifyArray[I] := INVALID_HANDLE_VALUE; 
+        FNotifyArray[I] := INVALID_HANDLE_VALUE;
       {$ELSE}
       FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
       {$ENDIF CLR}
@@ -439,29 +435,36 @@ begin
       end;
       if FThread <> nil then
       begin
-        if FreeOnTerminate then
-          FThread.FreeOnTerminate := False;
+        FThread.OnChangeNotify := nil;
         FThread.Terminate;
         if FThread.Suspended then
           FThread.Resume;
-        FThread.WaitFor;
-        FreeAndNil(FThread);
+        if FreeOnTerminate then
+          FThread := nil
+        else
+        begin
+          FThread.WaitFor;
+          FreeAndNil(FThread);
+        end;
       end;
       FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval, FFreeOnTerminate);
       FThread.OnChangeNotify := DoThreadChangeNotify;
-      FThread.OnTerminate := DoThreadTerminate;
       FThread.Resume;
     end
     else
     if FThread <> nil then
     begin
-      if FreeOnTerminate then
-        FThread.FreeOnTerminate := False;
+      FThread.OnChangeNotify := nil;
       FThread.Terminate;
       if FThread.Suspended then
         FThread.Resume;
-      FThread.WaitFor;
-      FreeAndNil(FThread);
+      if FreeOnTerminate then
+        FThread := nil
+      else
+      begin
+        FThread.WaitFor;
+        FreeAndNil(FThread);
+      end;
     end;
 
     {
@@ -495,6 +498,24 @@ begin
   end;
 end;
 
+procedure TJvChangeNotify.SetFreeOnTerminate(const Value: Boolean);
+var
+  State: Boolean;
+begin
+  if csLoading in ComponentState then
+    FFreeOnTerminate := Value
+  else
+  begin
+    State := Active;
+    try
+      Active := False;
+      FFreeOnTerminate := Value;
+    finally
+      Active := State;
+    end;
+  end;
+end;
+
 //=== { TJvChangeThread } ====================================================
 
 constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate:Boolean);
@@ -515,11 +536,6 @@ begin
   FreeOnTerminate := AFreeOnTerminate;
 end;
 
-destructor TJvChangeThread.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvChangeThread.Execute;
 var
   I: Integer;
@@ -535,7 +551,7 @@ begin
         @FNotifyArray[0],
         {$ENDIF CLR}
         False, FInterval);
-      if (I >= 0) and (I < FCount) then
+      if (I >= 0) and (I < FCount) and not Terminated then
       begin
         try
           FIndex := I;
@@ -566,6 +582,7 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
