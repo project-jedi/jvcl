@@ -727,7 +727,13 @@ end;
 procedure TJvFormDesktopAlert.ShowNoActivate;
 begin
   Include(FFormState, fsShowing);
-  Windows.SetParent(Handle, 0);
+//  Windows.SetParent(Handle, 0);
+//-- The above was introduced to partially solve the issue of the visible
+//--   TJvFormDesktopAlert(s) dropping behind another App when this App is
+//--   defocused.
+//-- Unfortunately, this re-introduces the bug of momentarily taking the focus
+//--   away from the active form within this App, when it has the focus.
+//--   A further side-effect is to set Application.Active := True
   SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE
     or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOREDRAW or SWP_NOSENDCHANGING);
   DoShow;
