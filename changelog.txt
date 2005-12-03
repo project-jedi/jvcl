@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-12-03:
+- TJvFormStorage.StoredProps can now be directly edited with the standard IDE strings editor & code editor by editing it from Object Inspector. The StoredProps Editor can still be invoked by double clicking on the TJvFormStorage component on the form. (Mantis #3150) // elahn
 2005-08-21:
 - JvInspector packages removed and integrated in the new JvRuntimeDesign package. See http://sourceforge.net/forum/forum.php?forum_id=490055 for details on procedure  // obones
 2005-07-02:
