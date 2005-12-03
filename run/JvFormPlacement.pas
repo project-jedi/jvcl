@@ -168,10 +168,11 @@ type
 
   TJvStoredValues = class;
   TJvStoredValue = class;
+  TJvFormStorageStringList = class;
 
   TJvFormStorage = class(TJvFormPlacement)
   private
-    FStoredProps: TStringList;
+    FStoredProps: TJvFormStorageStringList; 
     FStoredValues: TJvStoredValues;
     FStoredPropsPath: string;
     function GetStoredProps: TStrings;
@@ -202,6 +203,15 @@ type
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
     property StoredPropsPath: string read FStoredPropsPath write FStoredPropsPath;
     property StoredValuesPath: string read GetStoredValuesPath write SetStoredValuesPath;
+  end;
+
+  TJvFormStorageStringList = class(TStringList)
+  private
+    FFormStorage: TJvFormStorage;
+  public
+    constructor Create(AFormStorage: TJvFormStorage);
+    procedure Assign(Source: TPersistent); override;
+    procedure LoadFromStream(Stream: TStream); override;
   end;
 
   TJvIniLink = class(TPersistent)
@@ -996,7 +1006,7 @@ end;
 constructor TJvFormStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FStoredProps := TStringList.Create;
+  FStoredProps := TJvFormStorageStringList.Create(Self); 
   FStoredValues := TJvStoredValues.Create(Self);
   FStoredValues.Storage := Self;
 end;
@@ -1400,6 +1410,28 @@ end;
 procedure TJvFormStorage.SetStoredValuesPath(const AValue: string);
 begin
   FStoredValues.Path := AValue;
+end;
+
+{ TJvFormStorageStringList }
+
+procedure TJvFormStorageStringList.Assign(Source: TPersistent);
+begin
+  inherited;
+  if not (csLoading in FFormStorage.ComponentState) then
+    UpdateStoredList(FFormStorage.Owner, Self, True);
+end;
+
+constructor TJvFormStorageStringList.Create(AFormStorage: TJvFormStorage);
+begin
+  inherited Create;
+  FFormStorage := AFormStorage;
+end;
+
+procedure TJvFormStorageStringList.LoadFromStream(Stream: TStream);
+begin
+  inherited;
+  if not (csLoading in FFormStorage.ComponentState) then
+    UpdateStoredList(FFormStorage.Owner, Self, True);
 end;
 
 {$IFDEF UNITVERSIONING}
