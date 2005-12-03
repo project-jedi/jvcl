@@ -104,8 +104,6 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TJvMinMaxProperty);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
-    'StoredProps', TJvStoredPropsProperty);
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvWindowHook,
     'WinControl', TJvComponentFormProperty);
