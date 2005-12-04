@@ -741,7 +741,7 @@ end;
 
 procedure TDBNavigator_Write_VisibleButtons(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TDBNavigator(Args.Obj).VisibleButtons := TButtonSet(Word(V2S(Value)))
+  TDBNavigator(Args.Obj).VisibleButtons := {$IFDEF COMPILER10_UP}TNavButtonSet{$ELSE}TButtonSet{$ENDIF COMPILER10_UP}(Word(V2S(Value)))
 end;
 
 { property Read Flat: Boolean }

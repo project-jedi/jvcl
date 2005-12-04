@@ -397,7 +397,7 @@ begin
     begin
       // for selected
       TargetConfig := SelTargetConfig;
-      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetTypes[TargetConfig.Target.IsBCB]), TargetConfig.Target.Version]);
+      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetTypes[TargetConfig.Target.IsBCB and not TargetConfig.Target.IsDelphi]), TargetConfig.Target.Version]);
 
       CheckBoxDeveloperInstall.Checked := TargetConfig.DeveloperInstall;
       CheckBoxDebugUnits.Checked := TargetConfig.DebugUnits;

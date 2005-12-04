@@ -46,6 +46,7 @@ procedure RegisterZoom;
 implementation
 
 uses
+  Dialogs,
   JvDsgnConsts;
 
 const
@@ -153,7 +154,9 @@ begin
       end;
   end;
   if F <> nil then
-    if F.WindowState <> wsMaximized then
+    if F.Parent <> nil then
+      MessageDlg(RsCantZoomDocked,mtError,[mbCancel],0)
+    else if F.WindowState <> wsMaximized then
       F.WindowState := wsMaximized
     else
       F.WindowState := wsNormal;

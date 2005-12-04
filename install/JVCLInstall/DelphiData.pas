@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, ShlObj;
 
 const
-  BDSVersions: array[1..3] of record
+  BDSVersions: array[1..4] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -45,7 +45,8 @@ const
                               end = (
     (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
-    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True)
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True)
   );
 
 type
@@ -107,6 +108,7 @@ type
     destructor Destroy; override;
 
     function IsBCB: Boolean;
+    function IsDelphi: Boolean;
     function IsBDS: Boolean;
     function IsPersonal: Boolean;
     function DisplayName: string;
@@ -433,7 +435,7 @@ begin
   Result := Dir;
   if AnsiStartsText(RootDir + PathDelim, Dir) then
   begin
-    if IsBCB then
+    if IsBCB and not IsDelphi and not IsBDS then
       Result := '$(BCB)' // do not localize
     else if not IsBDS then
       Result := '$(DELPHI)' // do not localize
@@ -487,7 +489,12 @@ end;
 
 function TCompileTarget.IsBCB: Boolean;
 begin
-  Result := (CompareText(Name, 'Delphi') <> 0);
+  Result := (AnsiPos(AnsiUppercase('Builder'), AnsiUppercase(Name)) > 0) or (IsBDS and (Version >= 10));
+end;
+
+function TCompileTarget.IsDelphi: Boolean;
+begin
+  Result := (AnsiPos(AnsiUppercase('Delphi'), AnsiUppercase(Name)) > 0) or (IsBDS and (Version >= 10));
 end;
 
 function TCompileTarget.IsBDS: Boolean;
@@ -670,7 +677,7 @@ end;
 
 function TCompileTarget.GetHomepage: string;
 begin
-  if IsBCB then
+  if IsBCB and not IsBDS then
     Result := 'http://www.borland.com/products/downloads/download_cbuilder.html' // do not localize
   else
   begin

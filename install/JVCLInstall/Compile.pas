@@ -461,7 +461,7 @@ begin
     begin
       with Data.TargetConfig[i] do
       begin
-        if not Target.IsBCB then
+        if not Target.IsBCB or (Target.IsBcb and Target.IsDelphi) then
         begin
           // Delphi requires .bpl files
           if ((Target.Version >= 7) and 
@@ -543,7 +543,8 @@ begin
     if not TargetConfig.DeveloperInstall then
     begin
       // debug units
-      if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
+      if (not TargetConfig.Target.IsBCB or (TargetConfig.Target.IsBCB and TargetConfig.Target.IsDelphi)) and
+        TargetConfig.DebugUnits then
         Result := CompileProjectGroup(
           TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
     end;
@@ -771,6 +772,8 @@ begin
       if Length(JVCLPackagesDir) < 100 then DccOpt := '-Q- -M -B' else DccOpt := '-Q -M -B';
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
+    if TargetConfig.Target.IsBCB and TargetConfig.Target.IsDelphi then
+      DccOpt := DccOpt + ' -JL -NB"$(BPILIBDIR)" -NO"$(BPILIBDIR)"';  // Dual packages, bpi and lib files in BPILIBDIR for BDS 2006
 
     if (not DebugUnits) then
       DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO'
@@ -1009,7 +1012,7 @@ begin
   if ps > 0 then
   begin
     Delete(Result, ps, 2);
-    Insert(Format('%s%d', [LowerCase(TargetTypes[TargetConfig.Target.IsBCB]), TargetConfig.Target.Version]),
+    Insert(Format('%s%d', [LowerCase(TargetTypes[TargetConfig.Target.IsBCB and not TargetConfig.Target.IsDelphi]), TargetConfig.Target.Version]),
       Result, ps);
   end;
 end;
@@ -1162,7 +1165,7 @@ begin
       Lines.Add(Pkg.TargetName + ': ' + Pkg.SourceName + ' ' + Dependencies);
       Lines.Add(#9'@echo [Compiling: ' + Pkg.TargetName + ']');
       Lines.Add(#9'@cd ' + Pkg.RelSourceDir);
-      if ProjectGroup.Target.IsBCB then
+      if ProjectGroup.Target.IsBCB and not ProjectGroup.Target.IsDelphi then
       begin
         if not ProjectGroup.TargetConfig.Build then
         begin
@@ -1238,7 +1241,9 @@ begin
         Lines.Add(#9'$(MAKE) -f $&.mak');
       end
       else
+      begin
         Lines.Add(#9'$(DCC) $&.dpk');
+      end;
       Lines.Add(#9'@cd ' + GetReturnPath(Pkg.RelSourceDir));
       Lines.Add('');
     end;

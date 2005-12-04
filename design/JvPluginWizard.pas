@@ -217,6 +217,7 @@ begin
     {$ENDIF BCB}
     {$IFDEF DELPHI}
     Repository := Installations.DelphiInstallationFromVersion[
+      {$IFDEF DELPHI10}10{$ENDIF}
       {$IFDEF DELPHI9} 9 {$ENDIF}
       {$IFDEF DELPHI7} 7 {$ENDIF}
       {$IFDEF DELPHI6} 6 {$ENDIF}
@@ -583,7 +584,7 @@ end;
   Author         : Stefaan Lesage
   Arguments      : None
   Return Values  : Returns the complete path to the implementation ( source )
-                   file name, e.g. “C:\dir\Unit1.pas”. If GetUnnamed returns
+                   file name, e.g. C:\dir\Unit1.pas. If GetUnnamed returns
                    True, the file name is just a placeholder, and the user
                    will be prompted for a file name when the file is saved.
   Exceptions     : None
@@ -625,7 +626,7 @@ end;
   Author         : Stefaan Lesage
   Arguments      : None
   Return Values  : Returns True if the newly created form is to be the
-                   application’s main form. It returns False if the form
+                   applications main form. It returns False if the form
                    is not necessarily the main form.
   Exceptions     : None
   Description    : Property getter for the MainForm property.
@@ -645,7 +646,7 @@ end;
   Name           : TJvPluginModuleCreator.GetOwner
   Author         : Stefaan Lesage
   Arguments      : None
-  Return Values  : Returns the module interface of the new module’s owner,
+  Return Values  : Returns the module interface of the new modules owner,
                    that is, it returns the project interface for a new source
                    file or the project group interface for a new project.
                    You can create a module that does not have an owner by
@@ -796,7 +797,7 @@ end;
   Name           : TJvPluginModuleCreator.NewImplSource
   Author         : Stefaan Lesage
   Arguments      : ModuleIdent   - The ModuleIdent parameter is the name of
-                                   the unit or module, e.g., “Unit1”. Use
+                                   the unit or module, e.g., Unit1. Use
                                    this to parameterize the file contents.
                    FormIdent     - The FormIdent parameter is the name of
                                    the form. Use this to parameterize the
@@ -810,7 +811,7 @@ end;
 
   Exceptions     : None
   Description    : NewImplSource returns the source code for the new
-                   module’s implementation or 0 for a default unit.
+                   modules implementation or 0 for a default unit.
   History        :
 
   Date         By                   Description
@@ -879,7 +880,7 @@ end;
   Name           : TJvPluginModuleCreator.NewIntfSource
   Author         : Stefaan Lesage
   Arguments      : ModuleIdent   - The ModuleIdent parameter is the name of
-                                   the unit or module, e.g., “Unit1”. Use
+                                   the unit or module, e.g., Unit1. Use
                                    this to parameterize the file contents.
                    FormIdent     - The FormIdent parameter is the name of
                                    the form. Use this to parameterize the
@@ -892,7 +893,7 @@ end;
                    a default form will be created.
 
   Exceptions     : None
-  Description    : NewIntfSource returns the source code for the new module’s
+  Description    : NewIntfSource returns the source code for the new modules
                    interface or 0 for a default header.
   History        :
 

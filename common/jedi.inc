@@ -125,6 +125,7 @@
   DELPHI8             Defined when compiling with Delphi 8
   DELPHI2005          Defined when compiling with Delphi 2005
   DELPHI9             Alias for DELPHI2005
+  DELPHI10     Defined when compiling with Delphi 10
   DELPHI1_UP          Defined when compiling with Delphi 1 or higher
   DELPHI2_UP          Defined when compiling with Delphi 2 or higher
   DELPHI3_UP          Defined when compiling with Delphi 3 or higher
@@ -135,6 +136,7 @@
   DELPHI8_UP          Defined when compiling with Delphi 8 or higher
   DELPHI2005_UP       Defined when compiling with Delphi 2005 or higher
   DELPHI9_UP          Alias for DELPHI2005_UP
+  DELPHI10_UP  Defined when compiling with Delphi 10 or higher
 
 
 - Kylix Versions
@@ -166,6 +168,7 @@
   DELPHICOMPILER7     Defined when compiling with Delphi 7
   DELPHICOMPILER8     Defined when compiling with Delphi 8
   DELPHICOMPILER9     Defined when compiling with Delphi 2005
+  DELPHICOMPILER10    Defined when compiling with Delphi 10
   DELPHICOMPILER1_UP  Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP  Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -175,6 +178,7 @@
   DELPHICOMPILER7_UP  Defined when compiling with Delphi 7 or higher
   DELPHICOMPILER8_UP  Defined when compiling with Delphi 8 or higher
   DELPHICOMPILER9_UP  Defined when compiling with Delphi 2005
+  DELPHICOMPILER10_UP Defined when compiling with Delphi 10 or higher
 
 
 - C++ Builder Versions
@@ -190,11 +194,13 @@
   BCB4         Defined when compiling with C++ Builder 4
   BCB5         Defined when compiling with C++ Builder 5
   BCB6         Defined when compiling with C++ Builder 6
+  BCB10        Defined when compiling with C++ Builder 10
   BCB1_UP      Defined when compiling with C++ Builder 1 or higher
   BCB3_UP      Defined when compiling with C++ Builder 3 or higher
   BCB4_UP      Defined when compiling with C++ Builder 4 or higher
   BCB5_UP      Defined when compiling with C++ Builder 5 or higher
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
+  BCB10_UP     Defined when compiling with C++ Builder 10 or higher
 
 
 - Compiler Versions
@@ -217,6 +223,7 @@
   COMPILER7     Defined when compiling with Delphi 7
   COMPILER8     Defined when compiling with Delphi 8
   COMPILER9     Defined when compiling with Delphi 9
+  COMPILER10    Defined when compiling with Delphi 10 or C++ Builder 10
   COMPILER1_UP  Defined when compiling with Delphi 1 or higher
   COMPILER2_UP  Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -227,6 +234,7 @@
   COMPILER7_UP  Defined when compiling with Delphi 7
   COMPILER8_UP  Defined when compiling with Delphi 8
   COMPILER9_UP  Defined when compiling with Delphi Personalities of BDS 3.0
+  COMPILER10_UP Defined when compiling with Delphi 10 or C++ Builder 10 or higher
 
 
 - RTL Versions
@@ -253,6 +261,7 @@
   RTL150_UP     Defined when compiling with Delphi 7 or later
   RTL160_UP     Defined when compiling with Delphi 8 or later
   RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or later
+  RTL180_UP     Defined when compiling with Delphi 10, C++ Builder 6 or later
 
 
 - Feature Directives
@@ -372,6 +381,17 @@
     {$I kylix.inc} // FPC incompatible stuff
   {$ELSE ~KYLIX}
 
+    {$IFDEF VER180}
+      {$DEFINE COMPILER10}
+      {$IFDEF BCB}
+        {$DEFINE BCB10}
+      {$ELSE}
+        {$DEFINE DELPHI10}
+        {$DEFINE DELPHICOMPILER10}
+      {$ENDIF}
+      {$DEFINE RTL180_UP}
+    {$ENDIF}
+
     {$IFDEF VER170}
       {$DEFINE BDS3}
       {$DEFINE COMPILER9}
@@ -482,6 +502,19 @@
 { DELPHIX_UP from DELPHIX mappings                                             }
 {------------------------------------------------------------------------------}
 
+{$IFDEF DELPHI10}
+  {$DEFINE DELPHI10_UP}
+  {$DEFINE DELPHI9_UP}
+  {$DEFINE DELPHI8_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
 {$IFDEF DELPHI9}
   {$DEFINE DELPHI2005_UP} // synonym to DELPHI9_UP
   {$DEFINE DELPHI9_UP}
@@ -578,6 +611,16 @@
 { BCBX_UP from BCBX mappings                                                   }
 {------------------------------------------------------------------------------}
 
+{$IFDEF BCB10}
+  {$DEFINE BCB10_UP}
+  {$DEFINE BCB7_UP}
+  {$DEFINE BCB6_UP}
+  {$DEFINE BCB5_UP}
+  {$DEFINE BCB4_UP}
+  {$DEFINE BCB3_UP}
+  {$DEFINE BCB1_UP}
+{$ENDIF}
+
 {$IFDEF BCB6}
   {$DEFINE BCB6_UP}
   {$DEFINE BCB5_UP}
@@ -611,6 +654,19 @@
 {------------------------------------------------------------------------------}
 { DELPHICOMPILERX_UP from DELPHICOMPILERX mappings                             }
 {------------------------------------------------------------------------------}
+
+{$IFDEF DELPHICOMPILER10}
+  {$DEFINE DELPHICOMPILER10_UP}
+  {$DEFINE DELPHICOMPILER9_UP}
+  {$DEFINE DELPHICOMPILER8_UP}
+  {$DEFINE DELPHICOMPILER7_UP}
+  {$DEFINE DELPHICOMPILER6_UP}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF DELPHICOMPILER9}
   {$DEFINE DELPHICOMPILER9_UP}
@@ -687,6 +743,20 @@
 {------------------------------------------------------------------------------}
 { COMPILERX_UP from COMPILERX mappings                                         }
 {------------------------------------------------------------------------------}
+
+{$IFDEF COMPILER10}
+  {$DEFINE COMPILER10_UP}
+  {$DEFINE COMPILER9_UP}
+  {$DEFINE COMPILER8_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER9}
   {$DEFINE COMPILER9_UP}
@@ -787,6 +857,10 @@
 { RTLX_UP from RTLX_UP mappings                                                }
 {------------------------------------------------------------------------------}
 
+{$IFDEF RTL180_UP}
+  {$DEFINE RTL170_UP}
+{$ENDIF}
+
 {$IFDEF RTL170_UP}
   {$DEFINE RTL160_UP}
 {$ENDIF}
@@ -845,7 +919,7 @@
 
 {$IFDEF FPC}
   {$IFDEF  VER1_0}
-     Please use FPC 2.0 or later to compile this.
+     Please use FPC 1.98 or later to compile this.
   {$ELSE}
     {$DEFINE SUPPORTS_OUTPARAMS}
     {$DEFINE SUPPORTS_WIDECHAR}
@@ -1051,6 +1125,9 @@
 // History:
 
 // $Log$
+// Revision 1.19  2005/12/04 10:22:49  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.18  2005/11/01 20:46:09  obones
 // Removed COMPLIB_VCL and COMPLIB_VisualCLX, they are not used and obsolete
 //

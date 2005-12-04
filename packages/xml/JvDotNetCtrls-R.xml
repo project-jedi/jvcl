@@ -24,7 +24,7 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="c5,c6,d5,d6,d7,d9" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvDotNetUtils.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

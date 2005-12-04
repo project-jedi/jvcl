@@ -33,6 +33,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, DB, DBTables, Bde,
+  {$IFDEF COMPILER10_UP}
+  DBCommonTypes,
+  {$ENDIF COMPILER10_UP}
   JvTimer, JvComponentBase;
 
 type

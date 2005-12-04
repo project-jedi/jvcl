@@ -177,7 +177,7 @@ type
       // exists which means that the JCL is too old for the JVCL.
 
     property CompiledJCL: Boolean read FCompiledJCL;
-      // CompiledJCL is True if D/CJcl.dcp and D/CJclVcl.dcp exist for this
+      // CompiledJCL is True if Jcl.dcp and JclVcl.dcp exist for this
       // target.
 
     property Frameworks: TFrameworks read FFrameworks;
@@ -733,21 +733,24 @@ begin
   // if the JCL is actually installed because users may not have put the
   // JCL directory in their browsing and/or search paths, especially
   // BCB users.
-  if (Target.IsBCB and
-      FileExists(Format('%s\JclC%d0.bpl', [BplDir, Target.Version]))) or
-     (not Target.IsBCB and
-      FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version]))) then
-    FMissingJCL := False;
+  if Target.Version > 7 then
+    FMissingJCL := not FileExists(Format('%s\Jcl%d0.bpl', [BplDir, Target.Version]))
+  else
+    if (Target.IsBCB and not Target.IsDelphi and
+        FileExists(Format('%s\JclC%d0.bpl', [BplDir, Target.Version]))) or
+       ((not Target.IsBCB or (Target.IsBCB and Target.IsDelphi)) and
+        FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version]))) then
+      FMissingJCL := False;
 
 
-  // are C/DJcl.dcp and C/DJclVcl.dcp available
+  // are Jcl.dcp and JclVcl.dcp available
   if Target.Version = 5 then S := '50' else S := '';
 
-  if (Target.IsBCB and
+  if (Target.IsBCB and not Target.IsDelphi and
       FileExists(Format('%s\JclC%s.dcp', [BplDir, S])) and
       FileExists(Format('%s\JclVclC%s.dcp', [BplDir, S])))
      or
-     (not Target.IsBCB and
+     ((not Target.IsBCB or (Target.IsBCB and Target.IsDelphi)) and
       FileExists(Format('%s\JclD%s.dcp', [BplDir, S])) and
       FileExists(Format('%s\JclVclD%s.dcp', [BplDir, S])))
      then
@@ -831,10 +834,10 @@ begin
 
   if Target.IsBDS then
     Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bdsgroup', // do not localize
-      [TargetTypes[Target.IsBCB], Target.Version, Pers, Clx])
+      [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version, Pers, Clx])
   else
     Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
-      [TargetTypes[Target.IsBCB], Target.Version, Pers, Clx]);
+      [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version, Pers, Clx]);
 end;
 
 procedure TTargetConfig.SavePackagesSettings(ProjectGroup: TProjectGroup);
@@ -925,12 +928,12 @@ begin
     else
       Pers := 'p'; // do not localize
   end;
-  Result := Format('%s%d%s', [TargetTypes[Target.IsBCB], Target.Version, Pers]); // do not localize
+  Result := Format('%s%d%s', [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version, Pers]); // do not localize
 end;
 
 function TTargetConfig.GetUnitOutDir: string;
 begin
-  Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB], Target.Version]); // do not localize
+  Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version]); // do not localize
 end;
 
 procedure TTargetConfig.SetInstallMode(Value: TInstallMode);
@@ -1173,7 +1176,7 @@ begin
     DcpDir := FixBackslashBackslash(DcpDir);
 
     // Load jvcl%t.inc. Or the jvclbase.inc when no jvcl%t.inc exists
-    Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', [LowerCase(TargetTypes[Target.IsBCB]), Target.Version]);
+    Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', [LowerCase(TargetTypes[Target.IsBCB and not Target.IsDelphi]), Target.Version]);
     if not FileExists(Filename) then
     begin
       JVCLConfig.LoadFromFile(GetJVCLDir + '\common\jvclbase.inc');

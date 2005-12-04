@@ -20,7 +20,7 @@
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="dbrtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="bdertl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
+    <Package Name="bdertl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p,d10,d10p" Condition=""/>
     <Package Name="vcldb" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>

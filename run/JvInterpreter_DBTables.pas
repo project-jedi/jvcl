@@ -35,6 +35,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER10_UP}
+  DBCommonTypes,
+  {$ENDIF COMPILER10_UP}
   JvInterpreter;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);

@@ -541,6 +541,8 @@ resourcestring
 //=== JvIDEZoom.pas ==========================================================
 resourcestring
   RsZoomEditWindow = 'Zoom Edit Window';
+  RsCantZoomDocked = 'An edit window can not be zoomed while docked,' + sLineBreak +
+                     'switch to the "Classic Undocked" layout to use this command'; 
 
 //=== JvImagePreviewForm.pas =================================================
 resourcestring

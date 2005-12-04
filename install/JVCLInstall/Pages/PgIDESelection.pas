@@ -263,7 +263,7 @@ begin
 {  if (FileExists(Dir + '\Jcl.dcp') and FileExists(Dir + '\JclVcl.dcp')) or
      (FileExists(Dir + '\Jcl.dcp') and FileExists(Dir + '\JclVcl.dcp')) then
   begin
-   // are D/CJcl.dcp and D/CJclVcl.dcp are available that we could use
+   // are Jcl.dcp and JclVcl.dcp available that we could use
    // Delphi 5 / BCB 5 are not supported here
   end
   else}
