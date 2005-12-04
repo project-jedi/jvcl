@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality" Type="String">Default.Personality</Option>
+      <Option Name="ProjectType" Type="String"></Option>
+      <Option Name="Version" Type="String">1.0</Option>
+      <Option Name="GUID" Type="String">{17A5E582-4675-463D-A507-B23750D23515}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects ActiveProject="JvJansD10R.bpl">
+      <Projects Name="Jv3rdD10R.bpl" Type="String">d10\Jv3rdD10R.bdsproj</Projects>
+      <Projects Name="JvCoreD10R.bpl" Type="String">d10\JvCoreD10R.bdsproj</Projects>
+      <Projects Name="JvCoreD10D.bpl" Type="String">d10\JvCoreD10D.bdsproj</Projects>
+      <Projects Name="JvSystemD10R.bpl" Type="String">d10\JvSystemD10R.bdsproj</Projects>
+      <Projects Name="JvSystemD10D.bpl" Type="String">d10\JvSystemD10D.bdsproj</Projects>
+      <Projects Name="JvStdCtrlsD10R.bpl" Type="String">d10\JvStdCtrlsD10R.bdsproj</Projects>
+      <Projects Name="JvStdCtrlsD10D.bpl" Type="String">d10\JvStdCtrlsD10D.bdsproj</Projects>
+      <Projects Name="JvCtrlsD10R.bpl" Type="String">d10\JvCtrlsD10R.bdsproj</Projects>
+      <Projects Name="JvCtrlsD10D.bpl" Type="String">d10\JvCtrlsD10D.bdsproj</Projects>
+      <Projects Name="JvCmpD10R.bpl" Type="String">d10\JvCmpD10R.bdsproj</Projects>
+      <Projects Name="JvCmpD10D.bpl" Type="String">d10\JvCmpD10D.bdsproj</Projects>
+      <Projects Name="JvCustomD10R.bpl" Type="String">d10\JvCustomD10R.bdsproj</Projects>
+      <Projects Name="JvCustomD10D.bpl" Type="String">d10\JvCustomD10D.bdsproj</Projects>
+      <Projects Name="JvDlgsD10R.bpl" Type="String">d10\JvDlgsD10R.bdsproj</Projects>
+      <Projects Name="JvDlgsD10D.bpl" Type="String">d10\JvDlgsD10D.bdsproj</Projects>
+      <Projects Name="JvCryptD10R.bpl" Type="String">d10\JvCryptD10R.bdsproj</Projects>
+      <Projects Name="JvCryptD10D.bpl" Type="String">d10\JvCryptD10D.bdsproj</Projects>
+      <Projects Name="JvMMD10R.bpl" Type="String">d10\JvMMD10R.bdsproj</Projects>
+      <Projects Name="JvMMD10D.bpl" Type="String">d10\JvMMD10D.bdsproj</Projects>
+      <Projects Name="JvNetD10R.bpl" Type="String">d10\JvNetD10R.bdsproj</Projects>
+      <Projects Name="JvNetD10D.bpl" Type="String">d10\JvNetD10D.bdsproj</Projects>
+      <Projects Name="JvAppFrmD10R.bpl" Type="String">d10\JvAppFrmD10R.bdsproj</Projects>
+      <Projects Name="JvAppFrmD10D.bpl" Type="String">d10\JvAppFrmD10D.bdsproj</Projects>
+      <Projects Name="JvInterpreterD10R.bpl" Type="String">d10per\JvInterpreterD10R.bdsproj</Projects>
+      <Projects Name="JvInterpreterD10D.bpl" Type="String">d10\JvInterpreterD10D.bdsproj</Projects>
+      <Projects Name="JvBandsD10R.bpl" Type="String">d10\JvBandsD10R.bdsproj</Projects>
+      <Projects Name="JvBandsD10D.bpl" Type="String">d10\JvBandsD10D.bdsproj</Projects>
+      <Projects Name="JvPluginD10R.bpl" Type="String">d10\JvPluginD10R.bdsproj</Projects>
+      <Projects Name="JvPluginD10D.bpl" Type="String">d10\JvPluginD10D.bdsproj</Projects>
+      <Projects Name="JvJansD10R.bpl" Type="String">d10\JvJansD10R.bdsproj</Projects>
+      <Projects Name="JvJansD10D.bpl" Type="String">d10\JvJansD10D.bdsproj</Projects>
+      <Projects Name="JvGlobusD10R.bpl" Type="String">d10per\JvGlobusD10R.bdsproj</Projects>
+      <Projects Name="JvGlobusD10D.bpl" Type="String">d10per\JvGlobusD10D.bdsproj</Projects>
+      <Projects Name="JvPrintPreviewD10R.bpl" Type="String">d10\JvPrintPreviewD10R.bdsproj</Projects>
+      <Projects Name="JvPrintPreviewD10D.bpl" Type="String">d10\JvPrintPreviewD10D.bdsproj</Projects>
+      <Projects Name="JvPageCompsD10R.bpl" Type="String">d10\JvPageCompsD10R.bdsproj</Projects>
+      <Projects Name="JvPageCompsD10D.bpl" Type="String">d10\JvPageCompsD10D.bdsproj</Projects>
+      <Projects Name="JvValidatorsD10R.bpl" Type="String">d10\JvValidatorsD10R.bdsproj</Projects>
+      <Projects Name="JvValidatorsD10D.bpl" Type="String">d10\JvValidatorsD10D.bdsproj</Projects>
+      <Projects Name="JvUIBD10R.bpl" Type="String">d10per\JvUIBD10R.bdsproj</Projects>
+      <Projects Name="JvUIBD10D.bpl" Type="String">d10\JvUIBD10D.bdsproj</Projects>
+      <Projects Name="JvWizardD10R.bpl" Type="String">d10\JvWizardD10R.bdsproj</Projects>
+      <Projects Name="JvWizardD10D.bpl" Type="String">d10\JvWizardD10D.bdsproj</Projects>
+      <Projects Name="JvTimeFrameworkD10R.bpl" Type="String">d10\JvTimeFrameworkD10R.bdsproj</Projects>
+      <Projects Name="JvTimeFrameworkD10D.bpl" Type="String">d10\JvTimeFrameworkD10D.bdsproj</Projects>
+      <Projects Name="JvHMID10R.bpl" Type="String">d10\JvHMID10R.bdsproj</Projects>
+      <Projects Name="JvHMID10D.bpl" Type="String">d10\JvHMID10D.bdsproj</Projects>
+      <Projects Name="JvManagedThreadsD10R.bpl" Type="String">d10\JvManagedThreadsD10R.bdsproj</Projects>
+      <Projects Name="JvManagedThreadsD10D.bpl" Type="String">d10\JvManagedThreadsD10D.bdsproj</Projects>
+      <Projects Name="JvXPCtrlsD10R.bpl" Type="String">d10\JvXPCtrlsD10R.bdsproj</Projects>
+      <Projects Name="JvXPCtrlsD10D.bpl" Type="String">d10\JvXPCtrlsD10D.bdsproj</Projects>
+      <Projects Name="JvDockingD10R.bpl" Type="String">d10\JvDockingD10R.bdsproj</Projects>
+      <Projects Name="JvDockingD10D.bpl" Type="String">d10\JvDockingD10D.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrlsD10R.bpl" Type="String">d10per\JvDotNetCtrlsD10R.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrlsD10D.bpl" Type="String">d10\JvDotNetCtrlsD10D.bdsproj</Projects>
+      <Projects Name="JvRuntimeDesignD10R.bpl" Type="String">d10per\JvRuntimeDesignD10R.bdsproj</Projects>
+      <Projects Name="JvRuntimeDesignD10D.bpl" Type="String">d10\JvRuntimeDesignD10D.bdsproj</Projects>
+      <Projects Name="Targets" Type="String">Jv3rdD10R.bpl JvCoreD10R.bpl JvCoreD10D.bpl JvSystemD10R.bpl JvSystemD10D.bpl JvStdCtrlsD10R.bpl JvStdCtrlsD10D.bpl JvCtrlsD10R.bpl JvCtrlsD10D.bpl JvCmpD10R.bpl JvCmpD10D.bpl JvCustomD10R.bpl JvCustomD10D.bpl JvDlgsD10R.bpl JvDlgsD10D.bpl JvCryptD10R.bpl JvCryptD10D.bpl JvMMD10R.bpl JvMMD10D.bpl JvNetD10R.bpl JvNetD10D.bpl JvAppFrmD10R.bpl JvAppFrmD10D.bpl JvInterpreterD10R.bpl JvInterpreterD10D.bpl JvBandsD10R.bpl JvBandsD10D.bpl JvPluginD10R.bpl JvPluginD10D.bpl JvJansD10R.bpl JvJansD10D.bpl JvGlobusD10R.bpl JvGlobusD10D.bpl JvPrintPreviewD10R.bpl JvPrintPreviewD10D.bpl JvPageCompsD10R.bpl JvPageCompsD10D.bpl JvValidatorsD10R.bpl JvValidatorsD10D.bpl JvUIBD10R.bpl JvUIBD10D.bpl JvWizardD10R.bpl JvWizardD10D.bpl JvTimeFrameworkD10R.bpl JvTimeFrameworkD10D.bpl JvHMID10R.bpl JvHMID10D.bpl JvManagedThreadsD10R.bpl JvManagedThreadsD10D.bpl JvXPCtrlsD10R.bpl JvXPCtrlsD10D.bpl JvDockingD10R.bpl JvDockingD10D.bpl JvDotNetCtrlsD10R.bpl JvDotNetCtrlsD10D.bpl JvRuntimeDesignD10R.bpl JvRuntimeDesignD10D.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

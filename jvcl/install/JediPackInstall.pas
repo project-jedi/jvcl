@@ -88,7 +88,7 @@ const
   JclHelpIndexName  = 'JEDI Code Library Reference';
   HHFileName        = 'HH.EXE';
 
-  JclRuntimeDpk     = 'packages\JCL.dpk';
+  JclRuntimeDpk     = 'packages\JCL%d0.dpk';
   JclIdeDebugDpk    = 'examples\debugextension\JclDebugIde%d0.dpk';
   JclIdeAnalyzerDpk = 'examples\projectanalyzer\ProjectAnalyzer%d0.dpk';
   JclIdeFavoriteDpk = 'examples\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';

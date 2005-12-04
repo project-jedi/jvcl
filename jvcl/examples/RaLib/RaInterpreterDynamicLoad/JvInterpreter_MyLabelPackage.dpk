@@ -28,10 +28,7 @@ requires
   rtl,
   vcl,
   MyLabelPackage,
-  DJCL60,
-  vclx,
-  JvCoreD6R,
-  JvInterpreterD6R;
+  vclx;
 
 contains
   JvInterpreter_MyLabel in 'JvInterpreter_MyLabel.pas';

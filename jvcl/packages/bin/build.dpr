@@ -88,7 +88,7 @@ const // keep in sync with JVCL Installer's DelphiData.pas
     (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
-    (Name: 'Delphi'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 0{FIXME}; Supported: False) 
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True) 
   );
 
 type
