@@ -101,7 +101,7 @@ For further informations have a look at http://www.scalabium.com
 ATTENTION : 
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
 SMEXPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
-{$DEFINE USE_3RDPARTY_SMEXPORT}
+{.$DEFINE USE_3RDPARTY_SMEXPORT}
 
 { Activates SM-Import Wrapper Components (in DBActions)
 For further informations have a look at http://www.scalabium.com 
