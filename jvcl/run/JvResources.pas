@@ -1624,7 +1624,8 @@ resourcestring
 
 //=== JvPoweredBy.pas ========================================================
 resourcestring
-  RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/PoweredByJCL.htm';
+  //RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/PoweredByJCL.htm';
+  RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/';
   RsURLPoweredByJVCL = 'http://homepages.borland.com/jedi/jvcl/PoweredByJVCL.htm';
 
 //=== JvProfilerForm.pas =====================================================

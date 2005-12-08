@@ -46,6 +46,7 @@ type
     FAutoSize: Boolean;
     procedure SetAutoSize(Value: Boolean);
     {$ENDIF VisualCLX}
+    procedure SetURL(const Value: string);
   protected
     procedure Paint; override;
     procedure Click; override;
@@ -56,7 +57,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
-    property URL: string read FURL write FURL;
+    property URL: string read FURL write SetURL stored True;
     property Image: TBitmap read FImage;
   end;
 
@@ -85,6 +86,7 @@ type
     property ShowHint;
     property Visible;
     property Width default 195;
+    property URL;
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -174,6 +176,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvPoweredBy.SetURL(const Value: string);
+begin
+  if Value <> FURL then
+  begin
+    FURL := Value;
+    if FURL = '' then
+      Cursor := crDefault
+    else
+      Cursor := crHandPoint;
+  end;
+end;
+
 procedure TJvPoweredBy.Paint;
 var
   DestRect, SrcRect: TRect;
@@ -201,7 +215,7 @@ end;
 
 procedure TJvPoweredBy.Click;
 begin
-  if not Assigned(OnClick) then
+  if not Assigned(OnClick) and (URL <> '') then
     OpenObject(URL)
   else
     inherited Click;
