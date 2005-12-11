@@ -1,9 +1,9 @@
 object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
   Left = 215
   Top = 128
-  Width = 689
-  Height = 660
   Caption = 'JvDynControlEngine / JvParameterList Sample'
+  ClientHeight = 626
+  ClientWidth = 681
   Color = clBtnFace
   DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
@@ -1678,7 +1678,11 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Top = 15
       Width = 272
       Height = 189
-      MultiLine = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'Tahoma'
+      HotTrackFont.Style = []
       ArrangeSettings.BorderLeft = 5
       ArrangeSettings.BorderTop = 5
       ArrangeSettings.DistanceVertical = 3
@@ -1775,7 +1779,11 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Top = 15
         Width = 171
         Height = 69
-        MultiLine = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
         ArrangeSettings.DistanceVertical = 3
@@ -1817,7 +1825,11 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Top = 15
         Width = 167
         Height = 69
-        MultiLine = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
         ArrangeSettings.DistanceVertical = 3
@@ -1859,7 +1871,11 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Top = 15
         Width = 347
         Height = 134
-        MultiLine = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
         ArrangeSettings.DistanceVertical = 3
@@ -2008,7 +2024,11 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Top = 15
       Width = 272
       Height = 129
-      MultiLine = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'Tahoma'
+      HotTrackFont.Style = []
       ArrangeSettings.BorderLeft = 5
       ArrangeSettings.BorderTop = 5
       ArrangeSettings.DistanceVertical = 3
@@ -2131,6 +2151,7 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
     StorageOptions.AutoEncodeValue = False
     StorageOptions.AutoEncodeEntity = False
     StorageOptions.AutoIndent = True
+    StorageOptions.InvalidCharReplacement = '_'
     FileName = 'JvParameterListDemo.xml'
     RootNodeName = 'Configuration'
     SubStorages = <>
