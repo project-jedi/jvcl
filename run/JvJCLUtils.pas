@@ -6649,9 +6649,15 @@ begin
 end;
 
 function FileDateTime(const FileName: string): TDateTime;
+{$IFNDEF COMPILER10_UP}
 var
   Age: Longint;
+{$ENDIF !COMPILER10_UP}
 begin
+  {$IFDEF COMPILER10_UP}
+  if not FileAge(Filename, Result) then
+    Result := NullDate;
+  {$ELSE}
   Age := FileAge(FileName);
   {$IFDEF MSWINDOWS}
   // [roko] -1 is valid FileAge value on Linux
@@ -6660,6 +6666,7 @@ begin
   else
   {$ENDIF MSWINDOWS}
     Result := FileDateToDateTime(Age);
+  {$ENDIF COMPILER10_UP}
 end;
 
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
