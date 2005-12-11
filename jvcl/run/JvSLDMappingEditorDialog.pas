@@ -41,7 +41,7 @@ uses
   JvExControls, JvComponent;
 
 type
-  TfrmSLDMappingEditorDialog = class(TForm)
+  TfrmSLDMappingEditorDialog = class(TJvForm)
     EditorFrame: TfmeJvSegmentedLEDDisplayMapper;
     lblDigitClassCaption: TLabel;
     lblSegmentCountCaption: TLabel;

@@ -36,10 +36,10 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ExtCtrls, StdCtrls, Mask, 
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorSpaces, JvFullColorRotate,
-  JvExMask, JvSpin;
+  JvExMask, JvSpin, JvComponent;
 
 type
-  TJvFullColorCircleFrm = class(TForm)
+  TJvFullColorCircleFrm = class(TJvForm)
     JvColorCircle: TJvFullColorCircle;
     RadioButtonCommonSettings: TRadioButton;
     RadioButtonAxisSettings: TRadioButton;

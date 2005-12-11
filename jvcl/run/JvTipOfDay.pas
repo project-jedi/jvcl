@@ -177,7 +177,7 @@ uses
   {$IFDEF VCL}
   JvWndProcHook,
   {$ENDIF VCL}
-  JvButton, JvResources;
+  JvButton, JvResources, JvComponent;
 
 {$R JvTipOfDay.res}
 
@@ -271,7 +271,7 @@ end;
 
 procedure TJvTipOfDay.Execute;
 var
-  LForm: TForm;
+  LForm: TJvForm;
 begin
   // Reentrance check
   if FRunning then
@@ -291,7 +291,7 @@ begin
 
     { toShowOnStartUp will be changed in ExecuteVS/ExecuteStandard if
       the user changes the checkbox }
-    LForm := TForm.Create(Application);
+    LForm := TJvForm.Create(Application);
     with LForm do
     try
       if Style = tsVC then

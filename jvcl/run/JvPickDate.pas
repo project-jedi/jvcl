@@ -173,7 +173,7 @@ implementation
 
 uses
   Math, Consts,
-  JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton;
+  JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton, JvComponent;
 
 procedure FontSetDefault(AFont: TFont);
 {$IFDEF VCL}
@@ -1295,7 +1295,7 @@ end;
 //=== { TJvSelectDateDlg } ===================================================
 
 type
-  TJvSelectDateDlg = class(TForm)
+  TJvSelectDateDlg = class(TJvForm)
     Calendar: TJvCalendar;
     TitleLabel: TLabel;
     procedure PrevMonthBtnClick(Sender: TObject);

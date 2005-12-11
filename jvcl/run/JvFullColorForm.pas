@@ -36,10 +36,10 @@ uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
   Dialogs, StdCtrls, ExtCtrls, Mask,
   JvFullColorCtrls, JvFullColorSpaces, JvFullColorDialogs, JvExMask,
-  JvSpin, JvExStdCtrls, JvCombobox, JvColorCombo;
+  JvSpin, JvExStdCtrls, JvCombobox, JvColorCombo, JvComponent;
 
 type
-  TJvFullColorFrm = class(TForm)
+  TJvFullColorFrm = class(TJvForm)
     LabelColorSpace: TLabel;
     GroupBoxSettings: TGroupBox;
     ScrollBarAxis0: TScrollBar;

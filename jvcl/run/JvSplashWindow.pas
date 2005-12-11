@@ -36,10 +36,10 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvAnimatedImage;
+  JvAnimatedImage, JvComponent;
 
 type
-  TJvSplashWindow = class(TForm)
+  TJvSplashWindow = class(TJvForm)
   private
     FTextMessage: TLabel;
     function GetMessageText: string;

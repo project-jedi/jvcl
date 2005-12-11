@@ -215,7 +215,7 @@ implementation
 
 uses
   TypInfo,
-  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineVCL;
+  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineVCL, JvComponent;
 
 var
   GlobalDefaultDynControlEngine: TJvDynControlEngine = nil;
@@ -499,7 +499,7 @@ begin
   else
   if AControlType = jctForm then
   begin
-    Result := TControl(TForm.Create(AOwner));
+    Result := TControl(TJvForm.CreateNew(AOwner));
     if AControlName <> '' then
       Result.Name := AControlName;
   end

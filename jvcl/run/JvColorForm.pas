@@ -42,7 +42,7 @@ uses
   Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
   JvConsts, // missing color constants for D5
-  JvColorBox;
+  JvColorBox, JvComponent;
 
 const
   cButtonWidth = 22;
@@ -55,7 +55,7 @@ type
     property OnClose;
   end;
 
-  TJvColorForm = class(TForm)
+  TJvColorForm = class(TJvForm)
     OtherBtn: TSpeedButton;
     procedure OtherBtnClick(Sender: TObject);
     procedure DoColorClick(Sender: TObject);

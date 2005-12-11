@@ -60,7 +60,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms,
-  JvInterpreter, JvJVCLUtils;
+  JvInterpreter, JvJVCLUtils, JvComponent;
 
 type
   TJvInterpreterGetDfmFileName = procedure(Sender: TObject; UnitName: string;
@@ -71,7 +71,7 @@ type
 
   TJvInterpreterFm = class;
 
-  TJvInterpreterForm = class(TForm)
+  TJvInterpreterForm = class(TJvForm)
   private
     FJvInterpreterFm: TJvInterpreterFm;
     FMethodList: TList;

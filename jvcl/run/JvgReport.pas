@@ -985,7 +985,11 @@ var
 begin
   if Assigned(BeforePrint) then
     BeforePrint(Self);
+  {$IFDEF USEJVCL}
+  OwnerWnd := TForm(TJvForm).Create(nil);
+  {$ELSE}
   OwnerWnd := TForm.Create(nil);
+  {$ENDIF}
   TForm(OwnerWnd).WindowState := wsMaximized;
   ParentWnd := OwnerWnd;
   //OwnerWnd.Show;

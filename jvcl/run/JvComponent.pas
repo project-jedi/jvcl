@@ -73,6 +73,8 @@ type
   TJvCustomTreeView = class(TJvExCustomTreeView);
 
   TJvForm = class(TJvExForm)
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
@@ -110,6 +112,8 @@ const
 
 implementation
 
+uses Forms;
+
 {$IFDEF USE_DXGETTEXT}
 const
   cDomainName = 'jvcl';
@@ -145,6 +149,20 @@ begin
 end;
 
 {$ENDIF USE_DXGETTEXT}
+
+procedure TJvForm.CreateParams(var Params: TCreateParams); //override;
+begin
+  inherited CreateParams(Params);
+
+  // Fixing the Window Ghosting "bug"
+  Params.Style := params.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    Params.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    Params.WndParent := Application.MainForm.Handle
+  else
+    Params.WndParent := Application.Handle;
+end;
 
 //=== { TJvPopupListBox } ====================================================
 
