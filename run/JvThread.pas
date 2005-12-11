@@ -41,7 +41,7 @@ uses
   QWindows, QControls, QExtCtrls,
   {$ENDIF UNIX}
   Forms, Dialogs,
-  JvTypes, JvComponentBase;
+  JvTypes, JvComponentBase, JvComponent;
 
 type
   TJvCustomThreadDialog = class;
@@ -67,7 +67,7 @@ type
     property ShowModal: Boolean read FShowModal write SetShowModal default True;
   end;
 
-  TJvCustomThreadDialogForm = class(TForm)
+  TJvCustomThreadDialogForm = class(TJvForm)
   private
     FConnectedDataComponent: TComponent;
     FConnectedDataObject: TObject;

@@ -233,11 +233,11 @@ end;
 
 function TJvSticker.CaptionDialog(S: string): string;
 var
-  Form: TForm;
+  Form: TJvForm;
   Memo: TMemo;
 begin
   Result := '';
-  Form := TForm.Create(Self);
+  Form := TJvForm.Create(Self);
   try
     Form.Width := 350;
     Form.Height := 200;

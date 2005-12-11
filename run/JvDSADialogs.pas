@@ -41,13 +41,13 @@ uses
   QWindows, QClipbrd,
   {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs, Graphics, Controls, Forms, StdCtrls, Dialogs,
-  ExtCtrls,
+  ExtCtrls, JvComponent,
   JvComponentBase, JvDynControlEngine, JvTypes;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
 
-  TDSAMessageForm = class(TForm)
+  TDSAMessageForm = class(TJvForm)
   private
     FTimeout: Integer;
     FTimer: TTimer;

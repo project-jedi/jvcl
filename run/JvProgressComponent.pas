@@ -95,7 +95,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources, JvJCLUtils;
+  JvConsts, JvResources, JvJCLUtils, JvComponent;
 
 const
   CM_SHOWEVENT = CM_JVBASE + 1;
@@ -108,7 +108,7 @@ type
     Result: Integer;
   end;
 
-  TJvProgressForm = class(TForm)
+  TJvProgressForm = class(TJvForm)
   private
     procedure CMShowEvent(var Msg: TCMShowEvent); message CM_SHOWEVENT;
   end;

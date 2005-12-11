@@ -34,10 +34,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Controls, Forms, Dialogs, ComCtrls, ActnList, ImgList, ToolWin,
-  SysUtils, Classes;
+  SysUtils, Classes, JvComponent;
 
 type
-  TFoLog = class(TForm)
+  TFoLog = class(TJvForm)
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;

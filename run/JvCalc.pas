@@ -42,7 +42,7 @@ uses
   {$IFDEF VisualCLX}
   QImgList,
   {$ENDIF VisualCLX}
-  JvBaseDlg;
+  JvBaseDlg, JvComponent;
 
 const
   DefCalcPrecision = 15;
@@ -94,7 +94,7 @@ type
     property OnDisplayChange: TNotifyEvent read FOnDisplayChange write FOnDisplayChange;
   end;
 
-  TJvCalculatorForm = class(TForm)
+  TJvCalculatorForm = class(TJvForm)
   private
     FMainPanel: TPanel;
     FCalcPanel: TPanel;

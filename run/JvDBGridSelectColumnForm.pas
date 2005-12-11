@@ -34,10 +34,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, Forms, StdCtrls, Dialogs, CheckLst, ExtCtrls,
-  DB, DBGrids, JvDBGrid;
+  DB, DBGrids, JvDBGrid, JvComponent;
 
 type
-  TfrmSelectColumn = class(TForm)
+  TfrmSelectColumn = class(TJvForm)
     Panel1: TPanel;
     clbList: TCheckListBox;
     cbWithFieldName: TCheckBox;
