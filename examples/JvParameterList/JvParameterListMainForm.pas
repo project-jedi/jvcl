@@ -46,7 +46,7 @@ uses
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
-  JvExExtCtrls, JvAppXMLStorage, JvCipher;
+  JvExExtCtrls, JvAppXMLStorage, JvCipher, JvComponentBase;
 
 type
   TJvParameterListDemoMainFrm = class(TForm)
@@ -836,13 +836,13 @@ end;
 
 procedure TJvParameterListDemoMainFrm.Button5Click(Sender: TObject);
 begin
-  MessageDlg('Simple warning box, standard title, VCL buttons and image.',
+  JVDSADialogs.MessageDlg('Simple warning box, standard title, VCL buttons and image.',
     mtWarning, [mbOK], 0);
 end;
 
 procedure TJvParameterListDemoMainFrm.Button6Click(Sender: TObject);
 begin
-  MessageDlg('Simple confirmation box, standard title, VCL buttons and image.',
+  JVDSADialogs.MessageDlg('Simple confirmation box, standard title, VCL buttons and image.',
     mtConfirmation, [mbYes, mbNo], 0);
 end;
 
@@ -1108,7 +1108,7 @@ begin
     ParameterList.Messages.OkButton := 'C&opy';
     ParameterList.Messages.CancelButton := '&Cancel';
     if ParameterList.ShowParameterDialog then
-      MessageDlg(ParameterList.ParameterByName('Memo').ASString, mtInformation, [mbok], 0);
+      JVDSADialogs.MessageDlg(ParameterList.ParameterByName('Memo').ASString, mtInformation, [mbok], 0);
   finally
     ParameterList.Free;
   end;
