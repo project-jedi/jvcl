@@ -1336,7 +1336,8 @@ begin
   // API, we simply use it to update the values of the AddressValues property
   // If we did not do this, then those values would not get updated as reported
   // in Mantis 2986.
-  UpdateValuesFromString(Msg.Text);
+  if Assigned(AddressValues) then // prevent designtime AV in BDS 2006
+    UpdateValuesFromString(Msg.Text);
 end;
 
 procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
