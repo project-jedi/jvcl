@@ -940,7 +940,7 @@ end;
 
 function TJvCaptionPanel.CanStartDrag: Boolean;
 begin
-  Result := True;
+  Result := Align = alNone;
   if Assigned(FOnStartAutoDrag) then
     FOnStartAutoDrag(Self, Result);
 end;
