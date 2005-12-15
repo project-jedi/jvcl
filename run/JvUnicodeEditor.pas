@@ -1218,7 +1218,7 @@ begin
       if not ReadOnly then
         if X > 0 then
         begin
-          // in the middle of line - в середине строки
+          // in the middle of line
           if (not PersistentBlocks) and FSelection.IsSelected then
             DoAndCorrectXY(RemoveSelectedBlock)
           else
@@ -1252,31 +1252,41 @@ begin
         else
         if Y > 0 then
         begin
-          LockUpdate;
-          try
-            //{ at begin of line - в начале строки}
-            RemoveSelectedBlock;
-            ReLine;
+          // at the start of line
+          if FSelection.IsSelected then
+          begin
+            BeginCompound;
+            try
+              DoAndCorrectXY(RemoveSelectedBlock);
+              ReLine;
+            finally
+              EndCompound;
+            end;
+          end
+          else
+          begin
+            LockUpdate;
+            try
+              X := Length(FLines[Y - 1]);
 
-            X := Length(FLines[Y - 1]);
+              { --- UNDO --- }
+              TJvBackspaceUndo.Create(Self, X + 1, CaretY - 1, Lf);
+              CaretUndo := False;
+              { --- /UNDO --- }
 
-            { --- UNDO --- }
-            TJvBackspaceUndo.Create(Self, X + 1, CaretY - 1, Lf);
-            CaretUndo := False;
-            { --- /UNDO --- }
+             // persistent blocks: adjust selection
+              AdjustPersistentBlockSelection(CaretX, CaretY, amLineConcat, [X, CaretY - 1]);
 
-           // persistent blocks: adjust selection
-            AdjustPersistentBlockSelection(CaretX, CaretY, amLineConcat, [X, CaretY - 1]);
-
-            FLines.DeleteText(X, Y - 1, -1, Y);
-            Dec(Y);
-          finally
-            UnlockUpdate;
+              FLines.DeleteText(X, Y - 1, -1, Y);
+              Dec(Y);
+            finally
+              UnlockUpdate;
+            end;
+            UpdateEditorSize;
+            TextModified(X, Y, maDelete, sLineBreak);
+            Invalidate;
+            Changed;
           end;
-          UpdateEditorSize;
-          TextModified(X, Y, maDelete, sLineBreak);
-          Invalidate;
-          Changed;
         end;
     ecDelete:
       if not ReadOnly then
