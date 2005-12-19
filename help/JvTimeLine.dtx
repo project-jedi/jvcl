@@ -45,7 +45,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.AutoSize
 Summary
-  Indicates whether the timeline’s height changes automatically to accommodate the items it contains.
+  Indicates whether the timeline's height changes automatically to accommodate the items it contains.
 Description
   If AutoSize is set to True, the height of the timeline view adjusts automatically so that the items
   fit in it with no vertical margin.
@@ -298,8 +298,8 @@ Description
   item. OnDrawItem occurs only for owner-draw timeline views.
 
   The size of the rectangle that contains the item is determined either by the ItemHeight property or
-  fixed owner-draw timeline views or by the response to the OnMeasureItem event for variable
-  owner-draw timeline views.
+  fixed owner-draw timeline views or by the response to the OnMeasureItem event for variable owner-draw
+  timeline views.
 Parameters
   Sender - The timeline view control in which an item is about to be drawn.
   Canvas - Provides a drawing surface on which to draw the menu item.
@@ -406,7 +406,7 @@ Description
 
   The ItemHeight parameter should specify the height in pixels that the given item will occupy in the
   control. The ItemHeight parameter is passed by reference (a var parameter), which initially contains
-  the default height of the item or the height of the item text in the control’s font. The handler can
+  the default height of the item or the height of the item text in the control's font. The handler can
   set ItemHeight to a value appropriate to the contents of the item, such as the height of a graphical
   image to be displayed within the item.
 
@@ -639,9 +639,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.TopOffset
 Summary
-  Specifies the height of the top-most blank area of the timeline view.
+  Specifies the height of the topmost blank area of the timeline view.
 Description
-  Use TopOffset to get or set the height of the control’s top-most blank area.
+  Use TopOffset to get or set the height of the control's topmost blank area.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.VertSupports
@@ -833,8 +833,8 @@ Summary
 Description
   Set Hint to a \string that provides more information about the meaning of the timeline item than the
   Caption. The hint text appears in a Help Hint window when the user pauses with the mouse over the
-  timeline item if Help Hints are enabled (that is, if the Form’s and the \Application’s ShowHint
-  properties are True). It is also available for the code in the application’s OnHint event handler.
+  timeline item if Help Hints are enabled (that is, if the Form's and the \Application's ShowHint
+  properties are True). It is also available for the code in the application's OnHint event handler.
 
   The value of Hint can specify both a short value for the Help Hint window and a longer \string to be
   used by the OnHint event handler. To provide both a short and a long hint, set Hint to the short
@@ -964,7 +964,7 @@ Summary
   TJvTimeItems maintains the collection of items that appear in a timeline view control.
 Description
   Each TJvTimeItems represents a collection of TJvTimeItem objects in a TTimeLine. At design time, use
-  the timeline control’s Columns editor to add, remove, or modify columns. At run-time, use the
+  the timeline control's Columns editor to add, remove, or modify columns. At run-time, use the
   properties and methods of TJvTimeItems to manipulate the list of items displayed by a timeline view
   control.
 See Also

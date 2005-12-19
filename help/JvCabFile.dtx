@@ -64,15 +64,15 @@ Description
   Cabinet files provide a file format that offers an efficient way to package and compress multiple
   files into a single file. TJvCABFile properties, methods, and events can be used when listing files
   stored in the .CAB, or when extracting files for subsequent use or installation. TJvCABFile does NOT
-  provide methods for creating or populating .CAB files. Use the CABARC.EXE utility to create or
+  provide methods for creating or populating .CAB files. Use the CABARC.EXE utility to \create or
   populate cabinet files.
 
   An application can assign procedures for the event handlers that correspond to notifications from the
   Setup API, including:
 
-  <TABLE>
-    Event Handler          Notification
-    =====================  ===========================  ------------------
+  <TABLE 30c%,40c%,30c%>
+    Event Handler          Notification                 \
+    ---------------------  ---------------------------  ==================
     OnCABInfo              SPFILENOTIFY_CABINETINFO
     OnFilesListed          SPFILENOTIFY_FILEINCABINET   (general callback)
     OnFileExtracted        SPFILENOTIFY_FILEEXTRACTED
@@ -132,15 +132,15 @@ Description
 
   Use Files to access the file names stored in the cabinet file identified by FileName.
 
-  Use <LINK ExtractFile> to extract a specific file from the cabinet file identified in FileName to a
-  specific destination path.
+  Use ExtractFile to extract a specific file from the cabinet file identified in FileName to a specific
+  destination path.
 Parameters
   DestPath - The path where extracted files will be stored.
 Return value
   The return value for ExtractAll is True when SetupIterateCabinet completes successfully, or False if
   FileName does not exist or another Win32 error is encountered in the callback function.
 See Also
-  Files, FileName, <LINK ExtractFile>
+  Files, FileName, ExtractFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.ExtractFile
@@ -160,8 +160,8 @@ Description
 
   Use Files to access the file names stored in the cabinet file identified by the FileName property.
 
-  Use <LINK ExtractAll> to extract all files from the cabinet file identified in the FileName property
-  to a specific destination path.
+  Use ExtractAll to extract all files from the cabinet file identified in the FileName property to a
+  specific destination path.
 Parameters
   FileName - \File name to extract from the cabinet file.
   DestPath - Path to use for storing the extracted file.
@@ -169,7 +169,7 @@ Return value
   The return value for ExtractFile is True when SetupIterateCabinet completes successfully, or False if
   \FileName does not exist or another Win32 error is encountered in the callback function.
 See Also
-  Files, FileName, <LINK ExtractAll>
+  Files, FileName, ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.FileName
@@ -184,10 +184,10 @@ Description
   is signaled. Event notification is not performed if a procedure has not been assigned to the
   OnFilesListed event handler.
 
-  FileName is used in <LINK ExtractFile> and <LINK ExtractAll> when calling the SetupIterateCabinet API
-  function for the file operation.
+  FileName is used in ExtractFile and ExtractAll when calling the SetupIterateCabinet API function for
+  the file operation.
 See Also
-  Files, OnFilesListed, TNotifyEvent, <LINK ExtractFile>, <LINK ExtractAll>
+  Files, OnFilesListed, TNotifyEvent, ExtractFile, ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.Files
@@ -223,7 +223,7 @@ Parameters
              be signaled from the callback function.
   CABInfo - Structure used to store cabinet file information from the Setup API.
 See Also
-  <LINK ExtractAll>, <LINK ExtractFile>
+  ExtractAll, ExtractFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnFileExtracted
@@ -233,12 +233,12 @@ Description
   OnFileExtracted is a TOnExtracted property that represents the event handler signaled when a file has
   been extracted from the cabinet file using the Setup API. OnFileExtracted is signaled when the
   SPFILENOTIFY_FILEEXTRACTED notification is received in the internal extraction callback function
-  after a call to <LINK ExtractFile> or <LINK ExtractAll>.
+  after a call to ExtractFile or ExtractAll.
 
   OnFileExtracted can be used to detect when the extraction is complete, or when a Win32 error has
   occurred during the Setup API function calls. The OnFileExtracted event handler can also be used to
-  halt extraction of additional files, during execution of the <LINK ExtractAll> method, by setting the
-  Cont argument to False.
+  halt extraction of additional files, during execution of the ExtractAll method, by setting the Cont
+  argument to False.
 
   Successed is Boolean value that indicates if a Win32 error occurred while trying to build a file
   listing or extract the file specified in Source. Successed contains True if a Win32 error has not
@@ -258,7 +258,7 @@ Parameters
   Source    - Source file name extracted from the Cabinet file.
   Dest      - Destination file name created for the extracted file.
 See Also
-  <LINK ExtractFile>, <LINK ExtractAll>
+  ExtractFile, ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnFilesListed
@@ -301,7 +301,7 @@ Parameters
   CABInfo - Structure used to store cabinet file information from the Setup API.
   NewPath - Path to use for files extracted from the new .CAB file.
 See Also
-  <LINK ExtractFile>, <LINK ExtractAll>
+  ExtractFile, ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnStartFileExtraction
@@ -325,7 +325,7 @@ Parameters
   FileName - The full path and file name for the member to be extracted from the cabinet file.
   DestPath - Represents the full path and file name where extracted file information will be stored.
 See Also
-  <LINK ExtractFile>, <LINK ExtractAll>, OnFileExtracted
+  ExtractFile, ExtractAll, OnFileExtracted
 
 ----------------------------------------------------------------------------------------------------
 @@TOnCABInfo

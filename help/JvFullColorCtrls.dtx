@@ -42,6 +42,7 @@ Summary
   Exception raised when a color cannot be converted or when components cannot be linked.
 Description
   This exception is raised if the next cases:
+
   * There is no registered color space to handle this color.
   * The color is not valid in the current color space.
   * The color component (TJvFullColorTrackBar) is already linked to another instance of
@@ -627,6 +628,7 @@ Summary
   The color has changed.
 Description
   This event is triggered when the color is changed, it occurs in these cases :
+
   * the FullColor property was changed.
   * the user changed the cursor position using the mouse.
   * the user changed the cursor position using the keyboard.
@@ -677,7 +679,7 @@ Summary
   The third axis value.
 Description
   The user is able to modify the value of axis X and axis Y using the keyboard and the keyboard. But he
-  can't change the third axis value. This value is used t paint the buffer, this value is used in any
+  can't change the third axis value. This value is used to paint the buffer, this value is used in any
   point to get the RGB value of the color (X,Y,ValueZ) --> (R,G,B). The Z axis is given by the current
   axis configuration.
 
@@ -1193,6 +1195,7 @@ Summary
 Description
   This control mimics the behavior and the functionality of the plane displayed in the "Choose a
   color..." standard-dialog box. It is highly configurable :
+
   * the property AxisConfig changes the configuration of axes used to display the panel.
   * the properties CrossStyle, CrossSize and CrossCircle change the Cross appearance.
   * the properties ReverseAxisX and ReverseAxisY can change the panel orientation.
@@ -1405,10 +1408,12 @@ Description
   property.
 
   If the Orientation property is trHorizontal :
+
   * ArrowPosition = coNormal places the arrow above the bar.
   * ArrowPosition = coOpposite places the arrow below the bar.
 
   If the Orientation property is trVertical :
+
   * ArrowPosition = coNormal places the arrow at the left side of the bar.
   * ArrowPosition = coOpposite places the arrow at the right side of the bar.
 See Also
@@ -1501,6 +1506,7 @@ Summary
   Specify the orientation of the bar.
 Description
   This property changes the orientation of the bar :
+
   * trHorizontal : the bar orientation will be horizontal.
   * trVertical : the bar orientation will be vertical.
 See Also

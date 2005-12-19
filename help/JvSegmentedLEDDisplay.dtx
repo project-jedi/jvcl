@@ -933,10 +933,8 @@ Description
                               names may be separated by a comma.
   </TABLE>
 
-  Control items may be separated by a semicolon.
-Note
-  since the open bracket "[" is used to signal the start of a control items, you can only map it by
-  specifying <B>[&[]</B> in the map text.
+  Control items may be separated by a semicolon. Note since the open bracket "[" is used to signal the
+  start of a control items, you can only map it by specifying <B>[&[]</B> in the map text.
 
   characters that can not be mapped are interpreted as an empty digit (i.e. has no influence on the
   digit) and will effectively be skipped.
@@ -1027,12 +1025,11 @@ Summary
   Collection class used by the segmented LED display.
 Description
   TJvSegmentedLEDDigits is a TOwnedCollection derivative used to hold the list of digits used by a
-  <LINK TJvCustomSegmentedLEDDisplay, segmented LED display>.
-Note
-  upon changing the <LINK TJvCustomSegmentedLEDDisplay.DigitClass, digit style> of the display control,
-  the collection will be destroyed and recreated (specifying the new digit class to use). Any reference
-  to a TJvSegmentedLEDDigits might become invalid in such occasion. Generally you will not need to keep
-  a reference to the collection but rather use the <LINK TJvCustomSegmentedLEDDisplay.Digits, Digits>
+  <LINK TJvCustomSegmentedLEDDisplay, segmented LED display>. Note upon changing the <LINK
+  TJvCustomSegmentedLEDDisplay.DigitClass, digit style> of the display control, the collection will be
+  destroyed and recreated (specifying the new digit class to use). Any reference to a
+  TJvSegmentedLEDDigits might become invalid in such occasion. Generally you will not need to keep a
+  reference to the collection but rather use the <LINK TJvCustomSegmentedLEDDisplay.Digits, Digits>
   property of the display control.
 
 ----------------------------------------------------------------------------------------------------

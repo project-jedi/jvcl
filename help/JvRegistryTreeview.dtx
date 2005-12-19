@@ -155,9 +155,12 @@ Summary
   Creates a subkey under the root key and loads registry information from a file into the newly created
   subkey.
 Description
-  Call LoadKey to: 1. \Create a new subkey under the root key, and 2. Load registry information from a
-  file into the subkey. Registry information can include data values, subkeys, and data values for
-  those subkeys.
+  Call LoadKey to:
+
+  1. \Create a new subkey under the root key, and
+  2. Load registry information from a file into the subkey.
+
+  Registry information can include data values, subkeys, and data values for those subkeys.
 
   LoadKey is intended to simplify creation of a key, its values and subkeys, and the values for those
   subkeys in a single operation. A key, its subkeys, and all data values of the key and its subkeys is
@@ -180,9 +183,11 @@ See Also
 Summary
   Updates the node's data.
 Description
-  Call RefreshNode to refresh the display for the selected node. To re-read all data from the registry,
-  set Node to nil. Calling RefreshNode will: 1. \Delete the subnodes in the treeview, and 2. Re-read
-  all the data from the registry again
+  Call RefreshNode to refresh the display for the selected node. To reread all data from the registry,
+  set Node to nil. Calling RefreshNode will:
+
+  1. \Delete the subnodes in the treeview, and
+  2. Reread all the data from the registry again
 Parameters
   Node - The node to refresh
 

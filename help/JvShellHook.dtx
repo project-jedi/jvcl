@@ -13,150 +13,158 @@ Author
   Peter Thornqvist
 
 ----------------------------------------------------------------------------------------------------
-@@GET_APPCOMMAND_LPARAM
-<TITLE GET_APPCOMMAND_LPARAM function>
-Summary
-  Retrieves the application command from the specified LPARAM value.
-Description
-  The return value is the bits of the high-order word representing the application command. It can be
-  one of the following values.
-  <TABLE>
-    APPCOMMAND_BASS_BOOST              Toggle the bass boost on and off.
-    APPCOMMAND_BASS_DOWN               Decrease the bass.
-    APPCOMMAND_BASS_UP                 Increase the bass.
-    APPCOMMAND_BROWSER_BACKWARD        Navigate backward.
-    APPCOMMAND_BROWSER_FAVORITES       Open favorites.
-    APPCOMMAND_BROWSER_FORWARD         Navigate forward.
-    APPCOMMAND_BROWSER_HOME            Navigate home.
-    APPCOMMAND_BROWSER_REFRESH         Refresh page.
-    APPCOMMAND_BROWSER_SEARCH          Open search.
-    APPCOMMAND_BROWSER_STOP            Stop download.
-    APPCOMMAND_LAUNCH_APP1             Start App1.
-    APPCOMMAND_LAUNCH_APP2             Start App2.
-    APPCOMMAND_LAUNCH_MAIL             Open mail.
-    APPCOMMAND_MEDIA_NEXTTRACK         Go to next track.
-    APPCOMMAND_MEDIA_PLAY_PAUSE        Play or pause playback.
-    APPCOMMAND_MEDIA_PREVIOUSTRACK     Go to previous track.
-    APPCOMMAND_MEDIA_SELECT            Go to Media Select mode.
-    APPCOMMAND_MEDIA_STOP              Stop playback.
-    APPCOMMAND_MICROPHONE_VOLUME_DOWN  Windows XP: Increase microphone volume.
-    APPCOMMAND_MICROPHONE_VOLUME_MUTE  Windows XP: Mute the microphone.
-    APPCOMMAND_MICROPHONE_VOLUME_UP    Windows XP: Decrease microphone volume.
-    APPCOMMAND_TREBLE_DOWN             Decrease the treble.
-    APPCOMMAND_TREBLE_UP               Increase the treble.
-    APPCOMMAND_VOLUME_DOWN             Lower the volume.
-    APPCOMMAND_VOLUME_MUTE             Mute the volume.
-    APPCOMMAND_VOLUME_UP               Raise the volume.
-  </TABLE>
-
-  This function is a converted macro.
-Parameters
-  lParam - Specifies the value to be converted.
-See Also
-  <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
-  GET_MOUSEORKEY_LPARAM>
-
-----------------------------------------------------------------------------------------------------
-@@GET_DEVICE_LPARAM
-<TITLE GET_DEVICE_LPARAM function>
-Summary
-  Retrieves the input device type from the specified LPARAM value.
-Description
-  The return value is the bit of the high-order word representing the input device type. It can be one
-  of the following values.
-  <TABLE>
-    Value              Meaning
-    -----------------  -----------------------------------------------------------------------
-    FAPPCOMMAND_KEY    User pressed a key.
-    FAPPCOMMAND_MOUSE  User clicked a mouse button.
-    FAPPCOMMAND_OEM    An unidentified hardware source generated the event. It could be a
-                         mouse or a keyboard event.
-  </TABLE>
-
-  This function is identical to the <LINK GET_MOUSEORKEY_LPARAM> function. This function is a converted
-  macro.
-Parameters
-  lParam - Specifies the value to be converted.
-See Also
-  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
-  GET_MOUSEORKEY_LPARAM>
+##@@GET_APPCOMMAND_LPARAM
+##<TITLE GET_APPCOMMAND_LPARAM function>
+##Summary
+##  Retrieves the application command from the specified LPARAM value.
+##Description
+##  The return value is the bits of the high-order word representing the application command. It can be
+##  one of the following values.
+##  <TABLE>
+##    APPCOMMAND_BASS_BOOST              Toggle the bass boost on and off.
+##    APPCOMMAND_BASS_DOWN               Decrease the bass.
+##    APPCOMMAND_BASS_UP                 Increase the bass.
+##    APPCOMMAND_BROWSER_BACKWARD        Navigate backward.
+##    APPCOMMAND_BROWSER_FAVORITES       Open favorites.
+##    APPCOMMAND_BROWSER_FORWARD         Navigate forward.
+##    APPCOMMAND_BROWSER_HOME            Navigate home.
+##    APPCOMMAND_BROWSER_REFRESH         Refresh page.
+##    APPCOMMAND_BROWSER_SEARCH          Open search.
+##    APPCOMMAND_BROWSER_STOP            Stop download.
+##    APPCOMMAND_LAUNCH_APP1             Start App1.
+##    APPCOMMAND_LAUNCH_APP2             Start App2.
+##    APPCOMMAND_LAUNCH_MAIL             Open mail.
+##    APPCOMMAND_MEDIA_NEXTTRACK         Go to next track.
+##    APPCOMMAND_MEDIA_PLAY_PAUSE        Play or pause playback.
+##    APPCOMMAND_MEDIA_PREVIOUSTRACK     Go to previous track.
+##    APPCOMMAND_MEDIA_SELECT            Go to Media Select mode.
+##    APPCOMMAND_MEDIA_STOP              Stop playback.
+##    APPCOMMAND_MICROPHONE_VOLUME_DOWN  Windows XP: Increase microphone volume.
+##    APPCOMMAND_MICROPHONE_VOLUME_MUTE  Windows XP: Mute the microphone.
+##    APPCOMMAND_MICROPHONE_VOLUME_UP    Windows XP: Decrease microphone volume.
+##    APPCOMMAND_TREBLE_DOWN             Decrease the treble.
+##    APPCOMMAND_TREBLE_UP               Increase the treble.
+##    APPCOMMAND_VOLUME_DOWN             Lower the volume.
+##    APPCOMMAND_VOLUME_MUTE             Mute the volume.
+##    APPCOMMAND_VOLUME_UP               Raise the volume.
+##  </TABLE>
+##
+##  This function is a converted macro.
+##Parameters
+##  lParam - Specifies the value to be converted.
+##See Also
+##  <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
+##  GET_MOUSEORKEY_LPARAM>
 
 ----------------------------------------------------------------------------------------------------
-@@GET_FLAGS_LPARAM
-<TITLE GET_FLAGS_LPARAM function>
-Summary
-  Retrieves the state of certain virtual keys from the specified LPARAM value.
-Description
-  The return value is the low-order word representing the virtual key state. It can be one of the
-  following values.
-  <TABLE>
-    MK_CONTROL   The Ctrl key is down.
-    MK_LBUTTON   The left mouse button is down.
-    MK_MBUTTON   The middle mouse button is down.
-    MK_RBUTTON   The right mouse button is down.
-    MK_SHIFT     The Shift key is down.
-    MK_XBUTTON1  The first X button is down.
-    MK_XBUTTON2  The second X button is down.
-  </TABLE>
-
-  This function is identical to the <LINK GET_KEYSTATE_LPARAM> function. This function is a converted
-  macro.
-Parameters
-  lParam - Specifies the value to be converted.
-See Also
-  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
-  GET_MOUSEORKEY_LPARAM>
-
-----------------------------------------------------------------------------------------------------
-@@GET_KEYSTATE_LPARAM
-<TITLE GET_KEYSTATE_LPARAM function>
-Summary
-  Retrieves the state of certain virtual keys from the specified LPARAM value.
-Description
-  The return value is the low-order word representing the virtual key state. It can be one of the
-  following values.
-  <TABLE>
-    MK_CONTROL   The Ctrl key is down.
-    MK_LBUTTON   The left mouse button is down.
-    MK_MBUTTON   The middle mouse button is down.
-    MK_RBUTTON   The right mouse button is down.
-    MK_SHIFT     The Shift key is down.
-    MK_XBUTTON1  The first X button is down.
-    MK_XBUTTON2  The second X button is down.
-  </TABLE>
-
-  This function is identical to the <LINK GET_FLAGS_LPARAM> function. This function is a converted
-  macro.
-Parameters
-  lParam - Specifies the value to be converted.
-See Also
-  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK
-  GET_MOUSEORKEY_LPARAM>
+##@@GET_DEVICE_LPARAM
+##<TITLE GET_DEVICE_LPARAM function>
+##Summary
+##  Retrieves the input device type from the specified LPARAM value.
+##Description
+##  The return value is the bit of the high-order word representing the input device type. It can be one
+##  of the following values.
+##  <TABLE>
+##    Value              Meaning
+##    -----------------  -----------------------------------------------------------------------
+##    FAPPCOMMAND_KEY    User pressed a key.
+##    FAPPCOMMAND_MOUSE  User clicked a mouse button.
+##    FAPPCOMMAND_OEM    An unidentified hardware source generated the event. It could be a
+##                         mouse or a keyboard event.
+##  </TABLE>
+##
+##  This function is identical to the <LINK GET_MOUSEORKEY_LPARAM> function. This function is a converted
+##  macro.
+##Parameters
+##  lParam - Specifies the value to be converted.
+##See Also
+##  <LINK GET_APPCOMMAND_LPARAM>, 
+##  <LINK GET_FLAGS_LPARAM>, 
+##  <LINK GET_KEYSTATE_LPARAM>, 
+##  <LINK GET_MOUSEORKEY_LPARAM>
 
 ----------------------------------------------------------------------------------------------------
-@@GET_MOUSEORKEY_LPARAM
-<TITLE GET_MOUSEORKEY_LPARAM function>
-Summary
-  Retrieves the input device type from the specified LPARAM value.
-Description
-  The return value is the bit of the high-order word representing the input device type. It can be one
-  of the following values.
-  <TABLE>
-    Value              Meaning
-    -----------------  -----------------------------------------------------------------------
-    FAPPCOMMAND_KEY    User pressed a key.
-    FAPPCOMMAND_MOUSE  User clicked a mouse button.
-    FAPPCOMMAND_OEM    An unidentified hardware source generated the event. It could be a
-                         mouse or a keyboard event.
-  </TABLE>
+##@@GET_FLAGS_LPARAM
+##<TITLE GET_FLAGS_LPARAM function>
+##Summary
+##  Retrieves the state of certain virtual keys from the specified LPARAM value.
+##Description
+##  The return value is the low-order word representing the virtual key state. It can be one of the
+##  following values.
+##  <TABLE>
+##    MK_CONTROL   The Ctrl key is down.
+##    MK_LBUTTON   The left mouse button is down.
+##    MK_MBUTTON   The middle mouse button is down.
+##    MK_RBUTTON   The right mouse button is down.
+##    MK_SHIFT     The Shift key is down.
+##    MK_XBUTTON1  The first X button is down.
+##    MK_XBUTTON2  The second X button is down.
+##  </TABLE>
+##
+##  This function is identical to the <LINK GET_KEYSTATE_LPARAM> function. This function is a converted
+##  macro.
+##Parameters
+##  lParam - Specifies the value to be converted.
+##See Also
+##  <LINK GET_APPCOMMAND_LPARAM>, 
+##  <LINK GET_DEVICE_LPARAM>, 
+##  <LINK GET_KEYSTATE_LPARAM>, 
+##  <LINK GET_MOUSEORKEY_LPARAM>
 
-  This function is identical to the <LINK GET_DEVICE_LPARAM> function. This function is a converted
-  macro.
-Parameters
-  lParam - Specifies the value to be converted.
-See Also
-  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK
-  GET_KEYSTATE_LPARAM>
+----------------------------------------------------------------------------------------------------
+##@@GET_KEYSTATE_LPARAM
+##<TITLE GET_KEYSTATE_LPARAM function>
+##Summary
+##  Retrieves the state of certain virtual keys from the specified LPARAM value.
+##Description
+##  The return value is the low-order word representing the virtual key state. It can be one of the
+##  following values.
+##  <TABLE>
+##    MK_CONTROL   The Ctrl key is down.
+##    MK_LBUTTON   The left mouse button is down.
+##    MK_MBUTTON   The middle mouse button is down.
+##    MK_RBUTTON   The right mouse button is down.
+##    MK_SHIFT     The Shift key is down.
+##    MK_XBUTTON1  The first X button is down.
+##    MK_XBUTTON2  The second X button is down.
+##  </TABLE>
+##
+##  This function is identical to the <LINK GET_FLAGS_LPARAM> function. This function is a converted
+##  macro.
+##Parameters
+##  lParam - Specifies the value to be converted.
+##See Also
+##  <LINK GET_APPCOMMAND_LPARAM>, 
+##  <LINK GET_DEVICE_LPARAM>, 
+##  <LINK GET_FLAGS_LPARAM>, 
+##  <LINK GET_MOUSEORKEY_LPARAM>
+
+----------------------------------------------------------------------------------------------------
+##@@GET_MOUSEORKEY_LPARAM
+##<TITLE GET_MOUSEORKEY_LPARAM function>
+##Summary
+##  Retrieves the input device type from the specified LPARAM value.
+##Description
+##  The return value is the bit of the high-order word representing the input device type. It can be one
+##  of the following values.
+##  <TABLE>
+##    Value              Meaning
+##    -----------------  -----------------------------------------------------------------------
+##    FAPPCOMMAND_KEY    User pressed a key.
+##    FAPPCOMMAND_MOUSE  User clicked a mouse button.
+##    FAPPCOMMAND_OEM    An unidentified hardware source generated the event. It could be a
+##                         mouse or a keyboard event.
+##  </TABLE>
+##
+##  This function is identical to the <LINK GET_DEVICE_LPARAM> function. This function is a converted
+##  macro.
+##Parameters
+##  lParam - Specifies the value to be converted.
+##See Also
+##  <LINK GET_APPCOMMAND_LPARAM>, 
+##  <LINK GET_DEVICE_LPARAM>, 
+##  <LINK GET_FLAGS_LPARAM>, 
+##  <LINK GET_KEYSTATE_LPARAM>
 
 ----------------------------------------------------------------------------------------------------
 @@PShellHookInfo
@@ -225,14 +233,14 @@ Description
     HSHELL_ENDTASK               The HWND handle of the window that should be forced to exit.
     HSHELL_APPCOMMAND            The APPCOMMAND which has been unhandled by the application
                                    or other hooks. See WM_APPCOMMAND in the Windows API Help
-                                   and use the function <LINK GET_APPCOMMAND_LPARAM> to
-                                   extract the parameter.
+                                   and use the function GET_APPCOMMAND_LPARAM to extract the
+                                   parameter.
   </TABLE>
 Parameters
   Sender - The object that called the event.
   Msg    - The message received. lParam should be interpreted according to the value of wParam.
-See Also
-  <LINK GET_APPCOMMAND_LPARAM>
+##See Also
+##  <LINK GET_APPCOMMAND_LPARAM>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShellHookEvent

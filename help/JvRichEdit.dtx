@@ -206,7 +206,7 @@ Description
   * Open
   * Multiple <LINK TJvConversion.ConvertRead, ConvertRead> or <LINK TJvConversion.ConvertWrite,
     ConvertWrite> calls.
-  * Retry, if an error occurred, followed again by multiple ConvertRead or ConvertWrite calls.
+  * Retry, if an \error occurred, followed again by multiple ConvertRead or ConvertWrite calls.
   * Done, to finalize the converter.
 
   The following objects are descendants of TJvConversion:
@@ -2007,8 +2007,8 @@ Description
   Use LineSpacing to specify the spacing between lines. The meaning of LineSpacing depends on the value
   of LineSpacingRule:
 
-  <TABLE>
-    LineSpacingRule    LineSpacing
+  <TABLE 30c%,70c%>
+    \LineSpacingRule   LineSpacing
     -----------------  -----------------------------------------------------------------------
     lsSpecifiedOrMore  Specifies the spacing from one line to the next, in points; however,
                          if LineSpacing specifies a value that is less than single spacing,
@@ -2184,7 +2184,7 @@ Description
 
   Rich Edit 2.0 includes the following features in addition to the features provided by Rich Edit
   version 1.0.
-  <TABLE>
+  <TABLE 30c%,70c%>
     Feature                                   Description
     ----------------------------------------  ------------------------------------------------
     Find Up/Find Down support                 Searching forward and backward is supported,
@@ -2227,7 +2227,7 @@ Description
 
   With a few exceptions, Rich Edit 2.0 uses the same functions, structures, and properties as Rich Edit
   1.0 (supported by the standard TRichEdit control). But note the following differences:
-  <TABLE>
+  <TABLE 30c%,70c%>
     Property                                  Description
     ----------------------------------------  ------------------------------------------------
     <LINK TJvCustomRichEdit.AutoURLDetect,    Enables or disables automatic URL detection.
@@ -2248,8 +2248,7 @@ Description
       StopGroupTyping>
   </TABLE>
 
-  actions into the current undo action.
-  <TABLE>
+  <TABLE 30c%,70c%>
     Class              Description
     -----------------  -----------------------------------------------------------------------
     TJvTextAttributes  Wrapper for CHARFORMAT2, contains information about character
@@ -2259,7 +2258,7 @@ Description
   </TABLE>
 
   Wrappers for messages:
-  <TABLE>
+  <TABLE 30c%,70c%>
     Function                                  Description
     ----------------------------------------  ------------------------------------------------
     <LINK TJvCustomRichEdit.GetCharPos,       Retrieves the client area coordinates of a
@@ -2280,29 +2279,30 @@ Description
   <B>Rich Edit Version 3.0</B>
 
   Rich Edit 3.0 includes the following features in addition to the features provided by Rich Edit
-  <TABLE>
-    Feature                             Description
-    ----------------------------------  ------------------------------------------------------
-    \Zoom                               The zoom factor is given by a ratio, see property
-                                          <LINK TJvCustomRichEdit.Zoom, Zoom>.
-    Paragraph numbering (single-level)  Numeric, upper and lower alphabetic, or Roman
-                                          numeral, see property <LINK
-                                          TJvParaAttributes.Numbering, Numbering> of
-                                          TJvParaAttributes.
-    Normal and heading styles           Built-in normal style and heading styles 1 through 9
-                                          are supported, see property <LINK
-                                          TJvParaAttributes.HeadingStyle, HeadingStyle> of
-                                          TJvParaAttributes.
-    More underline types                Dashed, dash-dot, dash-dot-dot, and dot underlining
-                                          has been added, see property <LINK
-                                          TJvTextAttributes.UnderlineType, UnderlineType>.
-    Underline coloring                  Underlined text can be tagged with one of 15 document
-                                          choices for underline colors, see property <LINK
-                                          TJvTextAttributes.UnderlineColor, UnderlineColor>.
-    Hidden text                         See property <LINK TJvTextAttributes.Hidden, Hidden>
-                                          of TJvTextAttributes.
-    Increased undo control              Undo can be suspended and resumed (an IME
-                                          requirement). (TODO)
+  <TABLE 30c%,70c%>
+    Feature                              Description
+    -----------------------------------  -----------------------------------------------------
+    \Zoom                                The zoom factor is given by a ratio, see property
+                                           <LINK TJvCustomRichEdit.Zoom, Zoom>.
+    \Paragraph numbering (single-level)  Numeric, upper and lower alphabetic, or Roman
+                                           numeral, see property <LINK
+                                           TJvParaAttributes.Numbering, Numbering> of
+                                           TJvParaAttributes.
+    Normal and heading styles            Built-in normal style and heading styles 1 through 9
+                                           are supported, see property <LINK
+                                           TJvParaAttributes.HeadingStyle, HeadingStyle> of
+                                           TJvParaAttributes.
+    More underline types                 Dashed, dash-dot, dash-dot-dot, and dot underlining
+                                           has been added, see property <LINK
+                                           TJvTextAttributes.UnderlineType, UnderlineType>.
+    Underline coloring                   Underlined text can be tagged with one of 15
+                                           document choices for underline colors, see
+                                           property <LINK TJvTextAttributes.UnderlineColor,
+                                           UnderlineColor>.
+    Hidden text                          See property <LINK TJvTextAttributes.Hidden, Hidden>
+                                           of TJvTextAttributes.
+    Increased undo control               Undo can be suspended and resumed (an IME
+                                           requirement). (TODO)
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -2585,31 +2585,36 @@ Description
   Alternatively, you can use property SubscriptStyle to specify whether the text is made of subscript
   and superscript characters. Note (= is equals; ~ is approx.)
 
-  1 point = 20 twips. (A twip is a TWenthIeth of a Point)
+
+  <TABLE>
+    1 point = 20 twips. (A twip is a TWenthIeth of a Point)
+  </TABLE>
 
   For printing:
 
-  72 points = 1 physical inch.
-
-  1440 twips = 1 physical inch.
-
-  1 inch ~ 25,40 mm, thus
-
-  2,83 points ~ 1 mm
-
-  56,7 twips ~ 1 mm
+  <TABLE>
+    72 points = 1 physical inch.
+    1440 twips = 1 physical inch.
+    1 inch ~ 25,40 mm, thus
+    2,83 points ~ 1 mm
+    56,7 twips ~ 1 mm
+  </TABLE>
 
   For screen:
 
-  72 points ~ 1 logical inch.
-
-  1440 twips ~ 1 logical inch.
+  <TABLE>
+    72 points ~ 1 logical inch.
+    1440 twips ~ 1 logical inch.
+  </TABLE>
 
   The relation between a logical inch and a physical inch depends on your monitor/video driver. Windows
   typically uses 96 pixels per logical inch for small fonts and 120 pixels per logical inch for large
   fonts. So, if 1 logical inch = 96 pixels, then
 
-  1 pixel = 1/96 logical inch ~ 1440/96 twips = 15 twips = 3/4 point.
+
+  <TABLE>
+    1 pixel = 1/96 logical inch ~ 1440/96 twips = 15 twips = 3/4 point.
+  </TABLE>
 See Also
   TJvTextAttributes.SubscriptStyle
 
