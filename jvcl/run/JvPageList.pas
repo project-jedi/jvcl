@@ -795,14 +795,15 @@ begin
     end;
     Page.Refresh;
 
-    if CanChange(FPages.IndexOf(Page)) then
+    if (csLoading in ComponentState) or CanChange(FPages.IndexOf(Page)) then
     begin
       if (FActivePage <> nil) and (FActivePage <> Page) then
         FActivePage.Visible := False;
       if (FActivePage <> Page) then
       begin
         FActivePage := Page;
-        Change;
+        if not (csLoading in ComponentState) then
+          Change;
       end;
       if (ParentForm <> nil) and (FActivePage <> nil) and
         (ParentForm.ActiveControl = FActivePage) then
