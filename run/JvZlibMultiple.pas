@@ -34,6 +34,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF MSWINDOWS}
+  Windows, // inline
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes, Graphics, Controls, Dialogs,
   JclCompression,
   JvComponentBase;
@@ -62,6 +65,14 @@ uses
 //
 // -----------------------------------------------------------------------------}
 
+{ November 11, 2005 - yozey
+
+  NOTE #1
+  Added new procedures to pause and terminate the compression process.
+  These would be very useful in a threaded environment.
+
+  See below.
+}
 type
   {NEW:}
   TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string; var WriteFile: Boolean) of object;
@@ -73,6 +84,7 @@ type
   TJvZlibMultiple = class(TJvComponent)
   private
     FStorePaths: Boolean;
+    FIgnoreExclusive : Boolean; // November 7, 2004 - USE WITH CAUTION !!!!!
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
@@ -83,12 +95,19 @@ type
     // of the file, returning the file names and sizes inside. 
     FOnDecompressingFile: TFileBeforeWriteEvent;
     FOnDecompressedFile: TFileAfterWriteEvent;
+    FTerminateCompress : Boolean;  // Note #1
+    FTerminateDecompress : Boolean;  // Note #1
+    FCompressionPause : Boolean;  // Note #1
+    FDecompressionPause : Boolean;   // Note #1
   protected
     procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
     procedure DoProgress(Position, Total: Integer); virtual;
+    procedure DoStopCompression;   // Note #1
+    procedure DoStopDecompression; // Note #1
+    property CompressionPaused : Boolean read FCompressionPause write FCompressionPause; // Note #1
+    property DecompressionPaused : Boolean read FDecompressionPause write FDecompressionPause;  // Note #1
   public
     constructor Create(AOwner: TComponent); override;
-
     // compresses a list of files (can contain wildcards)
     // NOTE: caller must free returned stream!
     function CompressFiles(Files: TStrings): TStream; overload;
@@ -110,6 +129,9 @@ type
     procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
   published
     property StorePaths: Boolean read FStorePaths  write FStorePaths default True;
+    // NOTE : This property allows you to override already opened files - USE WITH CAUTION!!! opened files may still be writing data
+    //        causing stored files to be different from the final file.
+    property IgnoreExclusive : Boolean read FIgnoreExclusive write FIgnoreExclusive default False;
      // NOTE: Changed decompression event parameters. July 26 2004. -WPostma.
     property OnDecompressingFile: TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
     property OnDecompressedFile: TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
@@ -151,6 +173,7 @@ constructor TJvZlibMultiple.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStorePaths := True;
+  FIgnoreExclusive := False;
 end;
 
 function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean): TStream;
@@ -225,7 +248,10 @@ var
 
 begin
   Stream := TMemoryStream.Create;
-  FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
+  if not IgnoreExclusive then
+    FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite)
+  else
+    FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
   try
     ZStream := TJclZLibCompressStream.Create(Stream);
     try
@@ -237,7 +263,9 @@ begin
         Count := FileStream.Read(Buffer, SizeOf(Buffer));
         ZStream.Write(Buffer, Count);
         DoProgress(FileStream.Position, FileStream.Size);
-      until Count = 0;
+        while CompressionPaused do
+          Sleep(1);
+      until (Count = 0) or FTerminateCompress;
     finally
       ZStream.Free;
     end;
@@ -245,10 +273,10 @@ begin
     if Assigned(FOnCompressedFile) then
       FOnCompressedFile(Self, FilePath);
 
-      if StorePaths then
-        WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size)
-      else
-        WriteFileRecord('', FileName, FileStream.Size, Stream.Size);
+    if StorePaths then
+      WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size)
+    else
+      WriteFileRecord('', FileName, FileStream.Size, Stream.Size);
 
     DestStream.CopyFrom(Stream, 0);
   finally
@@ -278,6 +306,7 @@ var
   I: Integer;
   S1, S2, Common: string;
 begin
+  FTerminateCompress := False;
   { (RB) Letting this function create a stream is not a good idea;
          see other CompressFiles function that causes a memory leak }
   Result := TMemoryStream.Create;
@@ -364,6 +393,7 @@ begin
     Stream.Read(FileSize, SizeOf(FileSize));
     Stream.Read(I, SizeOf(I));
     CStream := TMemoryStream.Create;
+
     try
       CStream.CopyFrom(Stream, I);
       CStream.Position := 0;
@@ -393,10 +423,11 @@ begin
             begin
               FileStream.Write(Buffer, Count);
               DoProgress(FileStream.Size, FileSize);
+              while DecompressionPaused do
+                Sleep(1);
             end;
             Inc(TotalByteCount, Count);
-          until Count = 0;
-
+          until (Count = 0) or FTerminateDecompress;
           if Assigned(FOnDecompressedFile) then
             FOnDecompressedFile(Self, S, TotalByteCount);
         finally
@@ -430,6 +461,16 @@ procedure TJvZlibMultiple.DoProgress(Position, Total: Integer);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Position, Total);
+end;
+
+procedure TJvZlibMultiple.DoStopCompression;
+begin
+  FTerminateCompress := True;
+end;
+
+procedure TJvZlibMultiple.DoStopDecompression;
+begin
+  FTerminateDecompress := True;
 end;
 
 {$IFDEF UNITVERSIONING}
