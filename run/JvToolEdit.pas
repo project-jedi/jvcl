@@ -143,6 +143,10 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure CloseUp(Accept: Boolean); virtual;
+    {$IFDEF CLR}
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+    {$ENDIF CLR}
   public
     constructor Create(AOwner: TComponent); override;
     function GetPopupText: string; virtual;
@@ -5161,7 +5165,7 @@ begin
   // would lead to the parent of the pasted component being set to the
   // TJvPopupWindow instead of the parent of the selected component.
   // This was reported in issue 3042 and was seen in TJvCustomDateEdit
-  // descendents 
+  // descendents
   if not (csDesigning in ComponentState) then
     ControlStyle := ControlStyle + [csAcceptsControls];
   Visible := False;
@@ -5179,6 +5183,19 @@ begin
   if Assigned(FCloseUp) then
     FCloseUp(Self, Accept);
 end;
+
+{$IFDEF CLR}
+{ Allow this unit to access protected members of anchestors. }
+procedure TJvPopupWindow.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TJvPopupWindow.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+end;
+{$ENDIF CLR}
 
 {$IFDEF VCL}
 procedure TJvPopupWindow.CreateParams(var Params: TCreateParams);

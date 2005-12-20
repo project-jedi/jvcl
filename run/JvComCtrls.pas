@@ -2146,7 +2146,11 @@ function TJvPageControl.CanChange: Boolean;
 begin
   Result := inherited CanChange;
   if Result and (ActivePage <> nil) and ReduceMemoryUse then
+    {$IFDEF CLR}
+    ActivePage.GetType.InvokeMember('DestroyHandle', BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, ActivePage, []);
+    {$ELSE}
     TTabSheetAccessProtected(ActivePage).DestroyHandle;
+    {$ENDIF}
 end;
 
 procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
