@@ -227,7 +227,7 @@ begin
   try
     StrPCopy(Tmp, Value);
     Decode(Key, Tmp, Length(Value));
-    Result := Tmp;
+    SetString(Result, Tmp, Length(Value));
   finally
     FreeMem(Tmp);
   end;
@@ -241,7 +241,7 @@ begin
   try
     StrPCopy(Tmp, Value);
     Encode(Key, Tmp, Length(Value));
-    Result := Tmp;
+    SetString(Result, Tmp, Length(Value));
   finally
     FreeMem(Tmp);
   end;
