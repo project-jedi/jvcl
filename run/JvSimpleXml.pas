@@ -247,6 +247,9 @@ type
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
+    procedure Move(const CurIndex, NewIndex: Integer);
+    function IndexOf(const Value: TJvSimpleXMLElem): Integer; overload;
+    function IndexOf(const Value: string): Integer; overload;
     function Value(const Name: string; Default: string = ''): string;
     function IntValue(const Name: string; Default: Int64 = -1): Int64;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
@@ -3399,6 +3402,28 @@ begin
   Result := TJvSimpleXMLElemDocType.Create(nil);
   Result.Value := AValue;
   FElems.AddObject('', Result);
+end;
+
+procedure TJvSimpleXMLElems.Move(const CurIndex, NewIndex: Integer);
+begin
+  if FElems <> nil then
+    FElems.Move(CurIndex, NewIndex);
+end;
+
+function TJvSimpleXMLElems.IndexOf(const Value: TJvSimpleXMLElem): Integer;
+begin
+  if FElems = nil then
+    Result := -1
+  else
+    Result := FElems.IndexOfObject(Value);
+end;
+
+function TJvSimpleXMLElems.IndexOf(const Value: string): Integer;
+begin
+  if FElems = nil then
+    Result := -1
+  else
+    Result := FElems.IndexOf(Value);
 end;
 
 initialization
