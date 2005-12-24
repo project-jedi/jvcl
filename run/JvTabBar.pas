@@ -96,6 +96,7 @@ type
     FOnGetEnabled: TJvGetEnabledEvent;
     FOnGetModified: TJvGetModifiedEvent;
     FShowHint: Boolean;
+    FAutoDeleteDatas: TObjectList;
     function GetEnabled: Boolean;
     function GetModified: Boolean;
 
@@ -127,6 +128,7 @@ type
     function GetNextVisible: TJvTabBarItem;
     function GetPreviousVisible: TJvTabBarItem;
     procedure MakeVisible;
+    function AutoDeleteData: TObjectList;
 
     property Data: TObject read FData write FData;
     property TabBar: TJvCustomTabBar read GetTabBar;
@@ -1559,7 +1561,8 @@ end;
 destructor TJvTabBarItem.Destroy;
 begin
   PopupMenu := nil;
-  Visible := False; // CanSelect returns false 
+  Visible := False; // CanSelect returns false
+  FAutoDeleteDatas.Free;
   inherited Destroy;
 end;
 
@@ -1727,6 +1730,13 @@ begin
   Result := nil;
 end;
 
+function TJvTabBarItem.AutoDeleteData: TObjectList;
+begin
+  if not Assigned(FAutoDeleteDatas) then
+    FAutoDeleteDatas := TObjectList.Create;
+  Result := FAutoDeleteDatas;
+end;
+
 function TJvTabBarItem.GetClosing: Boolean;
 begin
   Result := TabBar.ClosingTab = Self;
@@ -1868,8 +1878,8 @@ end;
 
 destructor TJvTabBarPainter.Destroy;
 begin
+  inherited Destroy; // invokes TJvTabBar.Notification that accesses FOnChangeList 
   FOnChangeList.Free;
-  inherited Destroy;
 end;
 
 procedure TJvTabBarPainter.Changed;

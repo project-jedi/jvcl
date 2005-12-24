@@ -75,6 +75,7 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
+    FData: TObject;
   protected
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
@@ -110,6 +111,7 @@ type
     property OnPaint: TJvPagePaintEvent read FOnPaint write FOnPaint;
     property OnAfterPaint: TJvPagePaintEvent read FOnAfterPaint write FOnAfterPaint;
   public
+    property Data: TObject read FData write FData;
     property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
   end;
 
@@ -178,6 +180,7 @@ type
     function HidePage(Page: TJvCustomPage): TJvCustomPage; virtual;
     function ShowPage(Page: TJvCustomPage; PageIndex: Integer = -1): TJvCustomPage; virtual;
     function GetPageClass: TJvCustomPageClass;
+    function GetVisiblePageCount: Integer;
     property Height default 200;
     property Width default 300;
 
@@ -690,6 +693,16 @@ begin
     Result := TJvCustomPage(Pages[AIndex])
   else
     Result := nil;
+end;
+
+function TJvCustomPageList.GetVisiblePageCount: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to PageCount - 1 do
+    if Pages[i].Visible then
+      Inc(Result);
 end;
 
 procedure TJvCustomPageList.SetActivePageIndex(AIndex: Integer);
