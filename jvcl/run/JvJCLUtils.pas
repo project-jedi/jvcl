@@ -144,9 +144,6 @@ function AnsiLastChar(const S: string): Char;
 function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer; // ANSI-Stream
 function WriteStringToStream(Stream: TStream; const Buf: string; BufSize: Integer): Integer; // ANSI-Stream
 
-// (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
-type
-  TDateOrder = (doMDY, doDMY, doYMD);
 const
   DefaultDateOrder = doDMY;
   CenturyOffset: Byte = 60;
