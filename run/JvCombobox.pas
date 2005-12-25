@@ -35,17 +35,14 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  JvCheckListBox, JvExStdCtrls,
+  {$IFDEF CLR}
+  Types,
+  {$ENDIF !CLR}
   {$IFDEF COMPILER5}
   JvAutoComplete,
   {$ENDIF COMPILER5}
-  JvJVCLUtils,
-  {$IFDEF CLR}
-  Types,
-  {$ELSE}
-  JvDataProvider,
-  {$ENDIF !CLR}
-  JvMaxPixel, JvToolEdit;
+  JvJVCLUtils, JvCheckListBox, JvExStdCtrls, JvDataProvider, JvMaxPixel,
+  JvToolEdit;
 
 type
   TJvCustomComboBox = class;
@@ -86,7 +83,7 @@ type
     property Updating: Boolean read FUpdating;
     property DestroyCount: Integer read FDestroyCnt;
   public
-    constructor Create;
+    constructor Create; {$IFDEF CLR} override; {$ENDIF CLR}
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
     procedure Clear; override;
@@ -117,9 +114,9 @@ type
     FReadOnly: Boolean; // ain
     {$IFNDEF CLR}
     FConsumerSvc: TJvDataConsumer;
+    FProviderToggle: Boolean;
     {$ENDIF !CLR}
     FProviderIsActive: Boolean;
-    FProviderToggle: Boolean;
     FIsFixedHeight: Boolean;
     FMeasureStyle: TJvComboBoxMeasureStyle;
     FLastSetItemHeight: Integer;
@@ -137,7 +134,7 @@ type
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
   protected
     function GetText: TCaption; virtual;
-    procedure SetText(const Value: TCaption); virtual;
+    procedure SetText(const Value: TCaption); reintroduce; virtual; 
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
@@ -1650,11 +1647,13 @@ end;
 
 function TJvCustomComboBox.HandleFindString(StartIndex: Integer; Value: string;
   ExactMatch: Boolean): Integer;
+{$IFNDEF CLR}
 var
   VL: IJvDataConsumerViewList;
   HasLooped: Boolean;
   Item: IJvDataItem;
   ItemText: IJvDataItemText;
+{$ENDIF CLR}
 begin
   {$IFNDEF CLR}
   if IsProviderSelected and

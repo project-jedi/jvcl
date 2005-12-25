@@ -44,6 +44,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  Types,
+  {$ENDIF CLR}
   Windows, Messages,
   Classes, Graphics, Controls, Forms, StdCtrls, Buttons,
   {$IFDEF VCL}
@@ -94,10 +97,10 @@ type
     procedure InvalidateItem(Index: Integer);
     procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
     {$IFDEF VCL}
-    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+    procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
+    function DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState): Boolean; override;
     procedure DoGetText(Index: Integer; var Text: string); virtual; // JvListBox
     {$ENDIF VisualCLX}
     procedure Resize; override;
@@ -358,11 +361,11 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvComboListBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TJvComboListBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-function TJvComboListBox.DrawItem(Index: Integer; Rect: TRect;
+function TJvComboListBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState): Boolean;
 {$ENDIF VisualCLX}
 var
@@ -397,11 +400,11 @@ begin
     else
       P := nil;
     if (P = nil) or (DrawStyle <> dsStretch) then
-      Canvas.FillRect(Rect);
+      Canvas.FillRect(ARect);
     if (P <> nil) and (P.Graphic <> nil) then
     begin
-      TmpRect := Classes.Rect(0, 0, P.Graphic.Width, P.Graphic.Height);
-      if DoDrawImage(Index, P, Rect) then
+      TmpRect := Rect(0, 0, P.Graphic.Width, P.Graphic.Height);
+      if DoDrawImage(Index, P, ARect) then
       begin
         case DrawStyle of
           dsOriginal:
@@ -409,7 +412,7 @@ begin
               B := TBitmap.Create;
               try
                 B.Assign(P.Bitmap);
-                TmpRect := GetOffset(Rect, Classes.Rect(0, 0, B.Width, B.Height));
+                TmpRect := GetOffset(ARect, Rect(0, 0, B.Width, B.Height));
                 B.Width := Min(B.Width,TmpRect.Right - TmpRect.Left);
                 B.Height := Min(B.Height,TmpRect.Bottom - TmpRect.Top);
                 Canvas.Draw(TmpRect.Left, TmpRect.Top, B);
@@ -419,8 +422,8 @@ begin
             end;
           dsStretch, dsProportional:
             begin
-              TmpRect := DestRect(P, Rect);
-              OffsetRect(TmpRect, Rect.Left, Rect.Top);
+              TmpRect := DestRect(P, ARect);
+              OffsetRect(TmpRect, ARect.Left, ARect.Top);
               Canvas.StretchDraw(TmpRect, P.Graphic);
             end;
         end;
@@ -428,13 +431,13 @@ begin
     end
     else
     begin
-      TmpRect := Rect;
+      TmpRect := ARect;
       InflateRect(TmpRect, -2, -2);
       if DoDrawText(Index, Items[Index], TmpRect) then
       begin
         AText := Items[Index];
         DoGetText(Index, AText);
-        DrawText(Canvas.Handle, PChar(AText), Length(AText),
+        DrawText(Canvas.Handle, {$IFDEF CLR} AText {$ELSE} PChar(AText) {$ENDIF}, Length(AText),
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
       end;
     end;
@@ -450,32 +453,32 @@ begin
       Canvas.Pen.Color := clHighlight;
       Canvas.Pen.Width := 1 + Ord(not HotTrackCombo);
 
-      Points[0] := Point(Rect.Left, Rect.Top);
-      Points[1] := Point(Rect.Right - 2, Rect.Top);
-      Points[2] := Point(Rect.Right - 2, Rect.Bottom - 2);
-      Points[3] := Point(Rect.Left, Rect.Bottom - 2);
-      Points[4] := Point(Rect.Left, Rect.Top);
+      Points[0] := Point(ARect.Left, ARect.Top);
+      Points[1] := Point(ARect.Right - 2, ARect.Top);
+      Points[2] := Point(ARect.Right - 2, ARect.Bottom - 2);
+      Points[3] := Point(ARect.Left, ARect.Bottom - 2);
+      Points[4] := Point(ARect.Left, ARect.Top);
       Canvas.Polygon(Points);
 
       // draw button body
       if ButtonWidth > 2 then // 2 because Pen.Width is 2
       begin
-        TmpRect := Classes.Rect(Rect.Right - ButtonWidth - 1,
-          Rect.Top + 1, Rect.Right - 2 - Ord(FPushed), Rect.Bottom - 2 - Ord(FPushed));
+        TmpRect := Rect(ARect.Right - ButtonWidth - 1,
+          ARect.Top + 1, ARect.Right - 2 - Ord(FPushed), ARect.Bottom - 2 - Ord(FPushed));
         DrawComboArrow(Canvas, TmpRect, FMouseOver and Focused, FPushed);
       end;
       Canvas.Brush.Style := bsSolid;
     end
     else
     if odFocused in State then
-      Canvas.DrawFocusRect(Rect);
+      Canvas.DrawFocusRect(ARect);
 
     Canvas.Pen.Color := clBtnShadow;
     Canvas.Pen.Width := 1;
-    Canvas.MoveTo(Rect.Left, Rect.Bottom - 1);
-    Canvas.LineTo(Rect.Right, Rect.Bottom - 1);
-    Canvas.MoveTo(Rect.Right - 1, Rect.Top);
-    Canvas.LineTo(Rect.Right - 1, Rect.Bottom - 1);
+    Canvas.MoveTo(ARect.Left, ARect.Bottom - 1);
+    Canvas.LineTo(ARect.Right, ARect.Bottom - 1);
+    Canvas.MoveTo(ARect.Right - 1, ARect.Top);
+    Canvas.LineTo(ARect.Right - 1, ARect.Bottom - 1);
   finally
     Canvas.Unlock;
   end;
@@ -532,7 +535,7 @@ begin
     R.Right := R.Right - ButtonWidth;
     // don't redraw content, just button
     ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
-    Windows.InvalidateRect(Handle, @R2, False);
+    Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R2, False);
   end;
 end;
 
