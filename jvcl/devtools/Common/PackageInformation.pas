@@ -33,7 +33,7 @@ interface
 uses
   SysUtils, Classes, Contnrs,
   JvSimpleXml;
-
+  
 type
   { xml Package files }
 
@@ -90,6 +90,12 @@ type
   end;
 
   /// <summary>
+  /// TProjectType specifies the type of project defined in the package
+  /// </summary>
+  TProjectType = ( ptPackageRun, ptPackageDesign, ptPackage, ptLibrary,
+    ptProgram );
+
+  /// <summary>
   /// TPackageXmlInfo contains the generic .xml file for a bpl target.
   /// </summary>
   TPackageXmlInfo = class(TObject)
@@ -102,7 +108,7 @@ type
     FRequires: TObjectList;
     FContains: TObjectList;
     FRequiresDB: Boolean;
-    FIsDesign: Boolean;
+    FProjectType: TProjectType;
     FIsXPlatform: Boolean;
     FC5PFlags: string;
     FC6PFlags: string;
@@ -137,7 +143,7 @@ type
     property ContainCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property RequiresDB: Boolean read FRequiresDB;
-    property IsDesign: Boolean read FIsDesign;
+    property ProjectType: TProjectType read FProjectType;
     property IsXPlaform: Boolean read FIsXPlatform;
     property ImageBase: string read FImageBase;
     property VersionMajorNumber: string read FVersionMajorNumber;
@@ -270,7 +276,7 @@ type
     function GetBplName: string;
     function GetDescription: string;
     function GetDisplayName: string;
-    function GetIsDesign: Boolean;
+    function GetProjectType: TProjectType;
     function GetName: string;
     function GetRequiresDB: Boolean;
   public
@@ -285,7 +291,7 @@ type
     property Requires[Index: Integer]: TRequiredPackage read GetRequires;
     property ContainCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainedFile read GetContains;
-    property IsDesign: Boolean read GetIsDesign;
+    property ProjectType: TProjectType read GetProjectType;
 
     property Owner: TBpgPackageTarget read FOwner;
     property XmlDir: string read FXmlDir;
@@ -302,6 +308,50 @@ function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo; over
   { returns a cached TPackageXmlInfo instance. }
 function GetPackageXmlInfo(const XmlFilename: string): TPackageXmlInfo; overload;
   { returns a cached TPackageXmlInfo instance. }
+
+  /// <summary>
+  /// ProjectTypeToChar convert a project type into one char
+  /// </summary>
+function ProjectTypeToChar(AProjectType: TProjectType): Char;
+
+  /// <summary>
+  /// CharToProjectType converts a char to one project type
+  /// </summary>
+function CharToProjectType(AProjectChar: Char): TProjectType;
+
+  /// <summary>
+  /// ProjectTypeIsDesign returns if a project is made to be run inside
+  ///  the IDE
+  /// </summary>
+function ProjectTypeIsDesign(AProjectType: TProjectType): Boolean;
+
+  /// <summary>
+  /// ProjectTypeToBinaryExtension returns the extension associated to the
+  ///  binary file made by the compiler
+  /// </summary>
+function ProjectTypeToBinaryExtension(AProjectType: TProjectType): string;
+
+  /// <summary>
+  /// ProjectTypeToSourceExtension returns the extension of the project file
+  /// </summary>
+function ProjectTypeToSourceExtension(AProjectType: TProjectType): string;
+
+  /// <summary>
+  /// ProjectTypeIsDLL returns if the project type is compiled as a DLL
+  /// </summary>
+function ProjectTypeIsDLL(AProjectType: TProjectType): Boolean;
+
+  /// <summary>
+  /// ProjectTypeIsDLL returns if the project type is compiled as a package
+  /// </summary>
+function ProjectTypeIsPackage(AProjectType: TProjectType): Boolean;
+
+  /// <summary>
+  /// ProjectTypeToProjectName returns the project name associated to the
+  ///  source file (usually this is the first word of the project file):
+  ///  'Package', 'Program' or 'Library'
+  /// </summary>
+function ProjectTypeToProjectName(ProjectType: TProjectType): string;
 
 implementation
 
@@ -522,6 +572,99 @@ begin
   end;
 end;
 
+function ProjectTypeToChar(AProjectType: TProjectType): Char;
+begin
+  case AProjectType of
+    ptPackageRun:
+      Result := 'R';              // do not localize
+    ptPackageDesign:
+      Result := 'D';              // do not localize
+    ptPackage:
+      Result := 'P';              // do not localize
+    ptLibrary:
+      Result := 'L';              // do not localize
+    ptProgram:
+      Result := 'X';              // do not localize
+    else
+      raise Exception.Create('Invalid project type');
+  end;
+end;
+
+function CharToProjectType(AProjectChar: Char): TProjectType;
+begin
+  case AProjectChar of
+    'R', 'r':                     // do not localize
+      Result := ptPackageRun;
+    'D', 'd':                     // do not localize
+      Result := ptPackageDesign;
+    'P', 'p':                     // do not localize
+      Result := ptPackage;
+    'L', 'l':                     // do not localize
+      Result := ptLibrary;
+    'X', 'x':                     // do not localize
+      Result := ptProgram;
+    else
+      raise Exception.Create('Invalid project char');
+  end;
+end;
+
+function ProjectTypeIsDesign(AProjectType: TProjectType): Boolean;
+begin
+  Result := AProjectType in [ptPackage,ptPackageDesign];
+end;
+
+function ProjectTypeToBinaryExtension(AProjectType: TProjectType): string;
+begin
+  case AProjectType of
+    ptPackageRun,
+    ptPackageDesign,
+    ptPackage: Result := '.bpl';        // do not localize
+    ptLibrary: Result := '.dll';        // do not localize
+    ptProgram: Result := '.exe';        // do not localize
+    else
+      raise Exception.Create('Invalid project type');
+  end;
+end;
+
+function ProjectTypeToSourceExtension(AProjectType: TProjectType): string;
+begin
+  case AProjectType of
+    ptPackageRun,
+    ptPackageDesign,
+    ptPackage: Result := '.dpk';        // do not localize
+    ptLibrary: Result := '.dpr';        // do not localize
+    ptProgram: Result := '.dpr';        // do not localize
+    else
+      raise Exception.Create('Invalid project type');
+  end;
+end;
+
+function ProjectTypeIsDLL(AProjectType: TProjectType): Boolean;
+begin
+  Result := AProjectType = ptLibrary;
+end;
+
+function ProjectTypeIsPackage(AProjectType: TProjectType): Boolean;
+begin
+  Result := AProjectType in [ptPackage, ptPackageRun, ptPackageDesign];
+end;
+
+function ProjectTypeToProjectName(ProjectType: TProjectType): string;
+begin
+  case ProjectType of
+    ptPackageRun,
+    ptPackageDesign,
+    ptPackage:
+      Result := 'Package';       // do not localize
+    ptLibrary:
+      Result := 'Library';       // do not localize
+    ptProgram:
+      Result := 'Program';       // do not localize
+    else
+      raise Exception.Create('Invalid project type');
+  end;
+end;
+
 { TPackageXmlInfoItem }
 
 constructor TPackageXmlInfoItem.Create(const AName, ATargets, ACondition: string);
@@ -587,8 +730,16 @@ begin
   FName := ChangeFileExt(ExtractFileName(FFilename), '');
   FRequires := TObjectList.Create;
   FContains := TObjectList.Create;
-  FIsDesign := EndsWith(Name, '-D', True); // do not localize
-    // IsDesign is updated in LoadFromFile
+  // FProjectType is updated in LoadFromFile
+  try
+    if (Length(Name) > 1) and (Name[Length(Name)-1] = '-') then  // do not localize
+      FProjectType := CharToProjectType(Name[Length(Name)])
+    else
+      FProjectType := ptPackageRun;
+  except
+    FProjectType := ptPackageRun;
+  end;
+
   FC5Libs := TStringList.Create;
   FC6Libs := TStringList.Create;
   FC10Libs := TStringList.Create;
@@ -664,7 +815,17 @@ begin
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
 
     FDisplayName := RootNode.Properties.Value('Name');                  // do not localize
-    FIsDesign := RootNode.Properties.BoolValue('Design', IsDesign);     // do not localize
+
+    xml.Options := xml.Options - [sxoAutoCreate];
+    if Assigned(RootNode.Properties.ItemNamed['Design']) then           // do not localize
+      if RootNode.Properties.ItemNamed['Design'].BoolValue then         // do not localize
+        FProjectType := ptPackageDesign
+      else
+        FProjectType := ptPackageRun
+    else
+      FProjectType := CharToProjectType(RootNode.Properties.Value('Type', '')[1]); // do not localize
+    xml.Options := xml.Options + [sxoAutoCreate];
+
     FIsXPlatform := RootNode.Properties.BoolValue('XPlatform', False);  // do not localize
     FDescription := RootNode.Items.Value('Description');                // do not localize
     FClxDescription := RootNode.Items.Value('ClxDescription');          // do not localize
@@ -818,9 +979,9 @@ begin
   Result := CompareText(p1.Info.DisplayName, p2.Info.DisplayName);
   if Result = 0 then
   begin
-    if p1.Info.IsDesign and not p2.Info.IsDesign then
+    if p1.Info.ProjectType > p2.Info.ProjectType then
       Result := 1
-    else if not p1.Info.IsDesign and p2.Info.IsDesign then
+    else if p1.Info.ProjectType < p2.Info.ProjectType then
       Result := -1;
   end;
 end;
@@ -1080,9 +1241,9 @@ begin
   Result := FXmlInfo.DisplayName;
 end;
 
-function TPackageInfo.GetIsDesign: Boolean;
+function TPackageInfo.GetProjectType: TProjectType;
 begin
-  Result := FXmlInfo.IsDesign;
+  Result := FXmlInfo.ProjectType;
 end;
 
 function TPackageInfo.GetName: string;

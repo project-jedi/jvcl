@@ -290,10 +290,10 @@ begin
       begin
         case DisplayMode of
           0: // designtime
-            if not ProjectGroup.Packages[i].Info.IsDesign then
+            if not ProjectTypeIsDesign(ProjectGroup.Packages[i].Info.ProjectType) then
               Continue;
           1: // runtime
-            if ProjectGroup.Packages[i].Info.IsDesign then
+            if ProjectTypeIsDesign(ProjectGroup.Packages[i].Info.ProjectType) then
               Continue;
           2: // both
             ;
@@ -379,7 +379,7 @@ begin
 
     if Pkg <> nil then
     begin
-      if Pkg.Info.IsDesign then
+      if ProjectTypeIsDesign(Pkg.Info.ProjectType) then
       begin
        // designtime package can be installed
         if State[i] = cbGrayed then
@@ -429,7 +429,7 @@ end;
 
 function TFramePackageSelection.GetStateOfPackage(Pkg: TPackageTarget): TCheckBoxState;
 begin
-  if Pkg.Info.IsDesign then
+  if ProjectTypeIsDesign(Pkg.Info.ProjectType) then
   begin
     Pkg.Install := Pkg.Compile;
     if Pkg.Install then
@@ -458,7 +458,7 @@ var
 begin
   Canvas := TCheckListBox(Control).Canvas;
   Pkg := TPackageTarget(CheckListBoxPackages.Items.Objects[Index]);
-  if Pkg.Info.IsDesign then
+  if ProjectTypeIsDesign(Pkg.Info.ProjectType) then
   begin
     ImgIndex := 0;
     if Pkg.Info.RequiresDB then

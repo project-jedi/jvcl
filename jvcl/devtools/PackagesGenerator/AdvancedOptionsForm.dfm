@@ -14,9 +14,6 @@ object frmAdvancedOptions: TfrmAdvancedOptions
   OldCreateOrder = False
   Position = poMainFormCenter
   Scaled = False
-  DesignSize = (
-    404
-    312)
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel

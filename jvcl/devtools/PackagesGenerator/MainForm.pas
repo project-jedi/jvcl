@@ -48,8 +48,6 @@ type
     lblModel: TLabel;
     aevEvents: TApplicationEvents;
     ledName: TEdit;
-    rbtRuntime: TRadioButton;
-    rbtDesign: TRadioButton;
     ledDescription: TEdit;
     lblDependencies: TLabel;
     jsgDependencies: TJvStringGrid;
@@ -106,6 +104,8 @@ type
     lblGUID: TLabel;
     btnGenerateGUID: TButton;
     edtGUID: TEdit;
+    ComboBoxType: TComboBox;
+    procedure ComboBoxTypeSelect(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -122,8 +122,6 @@ type
       ARow: Integer; const Value: String);
     procedure ledDescriptionChange(Sender: TObject);
     procedure ledNameChange(Sender: TObject);
-    procedure rbtDesignClick(Sender: TObject);
-    procedure rbtRuntimeClick(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
     procedure actPrevPackageUpdate(Sender: TObject);
     procedure actNextPackageUpdate(Sender: TObject);
@@ -191,7 +189,7 @@ implementation
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
   GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedOptionsForm,
-  GenerationMessagesForm, ActiveX,
+  GenerationMessagesForm, ActiveX, PackageInformation,
   {$IFNDEF COMPILER6_UP}
   ComObj,  // For GUID related functions under D5
   {$ENDIF COMPILER6_UP}
@@ -211,6 +209,11 @@ end;
 procedure TfrmMain.aevEventsHint(Sender: TObject);
 begin
   jsbStatus.Panels[0].Text:= GetLongHint(Application.Hint);
+end;
+
+procedure TfrmMain.ComboBoxTypeSelect(Sender: TObject);
+begin
+  Changed := True;
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
@@ -397,16 +400,6 @@ begin
   Changed := True;
 end;
 
-procedure TfrmMain.rbtDesignClick(Sender: TObject);
-begin
-  Changed := True;
-end;
-
-procedure TfrmMain.rbtRuntimeClick(Sender: TObject);
-begin
-  Changed := True;
-end;
-
 procedure TfrmMain.edtGUIDChange(Sender: TObject);
 begin
   Changed := True;
@@ -444,17 +437,17 @@ var
   packageNode : TJvSimpleXmlElem;
   filesNode : TJvSimpleXmlElem;
   fileNode : TJvSimpleXmlElem;
+  ProjectType: TProjectType;
 begin
   if PathIsAbsolute(PackagesLocation) then
     FileName := PackagesLocation
   else
     FileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
 
-  FileName := FileName + PathSeparator+'xml'+PathSeparator + ledName.Text;
-  if rbtDesign.Checked then
-    FileName := FileName + '-D.xml'
-  else
-    FileName := FileName + '-R.xml';
+  ProjectType := TProjectType(ComboBoxType.ItemIndex);
+  FileName := Format('%s%sxml%s%s-%s.xml',[FileName, PathSeparator,
+    PathSeparator, ledName.Text, ProjectTypeToChar(ProjectType)]);
+
   xml := TJvSimpleXml.Create(nil);
   try
     with xml do
@@ -466,7 +459,15 @@ begin
       Root.Name := 'Package';
       rootNode := xml.Root;
       rootNode.Properties.Add('Name', ledName.Text);
-      rootNode.Properties.Add('Design', rbtDesign.Checked);
+      case ProjectType of
+        ptPackageRun:
+          rootNode.Properties.Add('Design', False);
+        ptPackageDesign:
+          rootNode.Properties.Add('Design', True);
+        else
+          rootNode.Properties.Add('Type', ProjectTypeToChar(ProjectType));
+      end;
+
 
       // add description, PFLAGS and libs
       rootNode.Items.Add('Description', ledDescription.Text);
@@ -564,11 +565,10 @@ begin
     xmlFileName := PackagesLocation
   else
     xmlFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
-  xmlFileName := xmlFileName + PathSeparator+'xml'+PathSeparator;
-  if rbtDesign.Checked then
-    xmlFileName := xmlFileName + jlbList.Items[jlbList.ItemIndex] + '.xml'
-  else
-    xmlFileName := xmlFileName + jlbList.Items[jlbList.ItemIndex] + '.xml';
+
+  xmlFileName := Format('%s%sxml%s%s.xml', [xmlFileName, PathSeparator,
+    PathSeparator, jlbList.Items[jlbList.ItemIndex]]);
+
   xml := TJvSimpleXml.Create(nil);
   try
     with xml do
@@ -580,8 +580,18 @@ begin
       // read root node
       rootNode := xml.Root;
       ledName.Text      := rootNode.Properties.ItemNamed['Name'].Value;
-      rbtDesign.Checked := rootNode.Properties.ItemNamed['Design'].BoolValue;
-      rbtRuntime.Checked := not rbtDesign.Checked;
+
+      xml.Options := xml.Options - [sxoAutoCreate];
+      if Assigned(rootNode.Properties.ItemNamed['Design']) then
+      begin
+        if rootNode.Properties.ItemNamed['Design'].BoolValue then
+          ComboBoxType.ItemIndex := Integer(ptPackageDesign)
+        else
+          ComboBoxType.ItemIndex := Integer(ptPackageRun);
+      end
+      else
+        ComboBoxType.ItemIndex := Integer(CharToProjectType(rootNode.Properties.ItemNamed['Type'].Value[1]));
+      xml.Options := xml.Options + [sxoAutoCreate];
 
       // read description, PFLAGS, GUID, and libs
       ledDescription.Text := rootNode.Items.ItemNamed['Description'].Value;
@@ -915,8 +925,7 @@ begin
   // empty everything
   ledName.Text := '';
   ledDescription.Text := '';
-  rbtDesign.Checked := False;
-  rbtRuntime.Checked := True;
+  ComboBoxType.ItemIndex := Integer(ptPackageRun);
   edtGUID.Text := '';
   ledC5PFlags.Text := '';
   ledC6PFlags.Text := '';

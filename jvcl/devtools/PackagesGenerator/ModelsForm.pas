@@ -105,6 +105,7 @@ begin
     Cells[5, 0] := 'ver';
     Cells[6, 0] := 'PathSep';
     Cells[7, 0] := 'IsClx';
+    Cells[8, 0] := 'IsBds';
 
     ColWidths[0] := 40;
     ColWidths[1] := 30;
@@ -114,6 +115,7 @@ begin
     ColWidths[5] := 25;
     ColWidths[6] := 45;
     ColWidths[7] := 30;
+    ColWidths[8] := 30;
   end;
 
   with stgAliases do
@@ -235,6 +237,8 @@ begin
       row[6] := target.properties.ItemNamed['PathSep'].value;
     if Assigned(target.properties.ItemNamed['IsClx']) then
       row[7] := target.properties.ItemNamed['IsClx'].value;
+    if Assigned(target.properties.ItemNamed['IsBds']) then
+      row[8] := target.properties.ItemNamed['IsBds'].value;
 
     stgTargets.InsertRow(stgTargets.RowCount);
   end;
@@ -327,6 +331,8 @@ begin
         target.properties.Add('PathSep', row[6]);
       if row[7] <> '' then
         target.properties.Add('IsClx', row[7]);
+      if row[8] <> '' then
+        target.properties.Add('IsBds', row[8]);
     end;
 
     // aliases

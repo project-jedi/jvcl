@@ -297,7 +297,7 @@ const
 implementation
 
 uses
-  Utils, CmdLineUtils;
+  Utils, CmdLineUtils, PackageInformation;
 
 resourcestring
   RsComponentPalettePrefix = 'TJv';
@@ -854,7 +854,7 @@ begin
     Ini.EraseSection(ProjectGroup.BpgName);
     for i := 0 to ProjectGroup.Count - 1 do
       with ProjectGroup.Packages[i] do
-        if not Info.IsDesign then
+        if not ProjectTypeIsDesign(Info.ProjectType) then
           Ini.WriteBool(ProjectGroup.BpgName, Info.Name, Compile);
     Ini.UpdateFile;
   finally
@@ -877,7 +877,7 @@ begin
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')); // do not localize
   try
     for i := 0 to ProjectGroup.Count - 1 do
-      if not ProjectGroup.Packages[i].Info.IsDesign then
+      if not ProjectTypeIsDesign(ProjectGroup.Packages[i].Info.ProjectType) then
         // Ini read defaults to True, to compile and install newly created packages
         ProjectGroup.Packages[i].Compile := Ini.ReadBool(ProjectGroup.BpgName, ProjectGroup.Packages[i].Info.Name, True);
   finally
@@ -1224,7 +1224,7 @@ begin
   for PackageIndex := 0 to ProjectGroup.Count - 1 do
   begin
     if ProjectGroup.Packages[PackageIndex].Install and
-       ProjectGroup.Packages[PackageIndex].Info.IsDesign then
+       ProjectTypeIsDesign(ProjectGroup.Packages[PackageIndex].Info.ProjectType) then
     begin
       KnownPackages.Add(
         ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName, // do not localize

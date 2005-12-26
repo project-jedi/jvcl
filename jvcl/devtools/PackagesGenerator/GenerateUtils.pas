@@ -64,6 +64,7 @@ type
     FDefines: TStringList;
     FPathSep: string;
     FIsCLX  : Boolean;
+    FIsBDS  : Boolean;
     function GetDir: string;
     function GetEnv: string;
     function GetPDir: string;
@@ -81,6 +82,7 @@ type
     property Defines: TStringList read FDefines;
     property PathSep: string      read FPathSep;
     property IsCLX  : Boolean     read FIsCLX;
+    property IsBDS  : Boolean     read FIsBDS;
   end;
 
   TTargetList = class (TObjectList)
@@ -625,10 +627,11 @@ var
   Ver   : string;
   Typ   : string;
   Prefix: string;
+  ATarget: TTarget;
 begin
-
-  Env := TargetList[GetNonPersoTarget(target)].Env;
-  Ver := TargetList[GetNonPersoTarget(target)].Ver;
+  ATarget := TargetList[GetNonPersoTarget(target)];
+  Env := ATarget.Env;
+  Ver := ATarget.Ver;
   Typ := Copy(Name, Length(Name), 1);
 
   if ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (StrToInt(Ver) < 6) then
@@ -649,7 +652,7 @@ begin
 
   // If we find Prefix in the Name, then use it first, else, fall back
   // to GPrefix.
-  if Pos(Prefix, Name) > 0 then
+  if (Pos(Prefix, Name) > 0) then
     Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1)
   else
     Name := Copy(Name, Length(GPrefix)+1, Pos('-', Name)-Length(GPrefix)-1);
@@ -665,11 +668,13 @@ end;
 
 function HasModelPrefix(Name : string; const target:string): Boolean;
 var
-  Env   : string;
-  Ver   : string;
+  Env: string;
+  Ver: string;
+  ATarget: TTarget;
 begin
-  Env := TargetList[GetNonPersoTarget(target)].Env;
-  Ver := TargetList[GetNonPersoTarget(target)].Ver;
+  ATarget := TargetList[GetNonPersoTarget(target)];
+  Env := ATarget.Env;
+  Ver := ATarget.Ver;
   Result := False;
 
   // We first try a CLX prefix
@@ -1112,9 +1117,22 @@ begin
     Result := xml.Description;
 end;
 
-function ApplyTemplateAndSave(const path, target, package, extension
- : string; template : TStrings; xml : TPackageXmlInfo;
-  const templateName, xmlName : string) : string;
+function ApplyTemplateAndSave(const path, target, package, extension: string;
+  template : TStrings; xml : TPackageXmlInfo;
+  const templateName, xmlName : string): string;
+type
+  TProjectConditional = record
+    StartLine: string;
+    EndLine: string;
+    ProjectType: TProjectType;
+  end;
+const
+  ProjectConditionals: array [0..4] of TProjectConditional =
+    ( ( StartLine:'<%%% BEGIN PROGRAMONLY %%%>'; EndLine:'<%%% END PROGRAMONLY %%%>'; ProjectType:ptProgram),
+      ( StartLine:'<%%% BEGIN PACKAGEONLY %%%>'; EndLine:'<%%% END PACKAGEONLY %%%>'; ProjectType:ptPackage),
+      ( StartLine:'<%%% BEGIN LIBRARYONLY %%%>'; EndLine:'<%%% END LIBRARYONLY %%%>'; ProjectType:ptLibrary),
+      ( StartLine:'<%%% BEGIN DESIGNONLY %%%>'; EndLine:'<%%% END DESIGNONLY %%%>'; ProjectType:ptPackageDesign),
+      ( StartLine:'<%%% BEGIN RUNONLY %%%>'; EndLine:'<%%% END RUNONLY %%%>'; ProjectType:ptPackageRun) );
 var
   OutFileName : string;
   oneLetterType : string;
@@ -1134,11 +1152,12 @@ var
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
   AddedLines: Integer;
   IgnoreNextSemicolon: Boolean;
-  UnitFileName, UnitFilePath, UnitFileExtension: string;
+  UnitFileName, UnitFilePath, UnitFileExtension, NoLinkPackageList: string;
   PathPAS, PathCPP, PathRC, PathASM, PathLIB: string;
 begin
-  outFile := TStringList.Create;
   Result := '';
+
+  outFile := TStringList.Create;
   containsSomething := False;
   repeatSectionUsed := False;
 
@@ -1156,8 +1175,8 @@ begin
     begin
       UnitFileName := xml.Contains[I].Name;
       UnitFilePath := ExtractFilePath(UnitFileName);
-      if UnitFilePath[Length(UnitFilePath)] = PathSeparator then
-        UnitFilePath := Copy(UnitFilePath,1,Length(UnitFilePath)-1);
+      if (UnitFilePath <> '') and (UnitFilePath[Length(UnitFilePath)] = PathSeparator) then
+        UnitFilePath := Copy(UnitFilePath, 1, Length(UnitFilePath)-1);
       UnitFilePath := UnitFilePath + ';';
       UnitFileExtension := ExtractFileExt(UnitFileName);
       if Pos(';'+UnitFilePath,PathLIB) = 0 then
@@ -1183,15 +1202,22 @@ begin
     end;
     // read the xml file
     OutFileName := xml.Name;
-    if xml.IsDesign then
-    begin
-      OutFileName := OutFileName + '-D';
-      oneLetterType := 'd';
-    end
+    OneLetterType := ProjectTypeToChar(xml.ProjectType);
+    OutFileName := OutFileName + '-' + OneLetterType[1];
+    if ProjectTypeIsDesign(xml.ProjectType) then
+      OneLetterType := 'd'
     else
+      OneLetterType := 'r';
+
+    NoLinkPackageList := '';
+    for i := 0 to xml.RequireCount - 1 do
+      if xml.Requires[i].IsIncluded(Target) then
     begin
-      OutFileName := OutFileName + '-R';
-      oneLetterType := 'r';
+      reqPackName := BuildPackageName(xml.Requires[i], target);
+      if NoLinkPackageList = '' then
+        NoLinkPackageList := reqPackName
+      else
+        NoLinkPackageList := Format('%s;%s', [NoLinkPackageList, reqPackName]);
     end;
 
     OutFileName := path + TargetToDir(target) + PathSeparator +
@@ -1383,6 +1409,18 @@ begin
             end;
           end;
         end
+        else if curLine = '<%%% DO NOT GENERATE %%%>' then
+          Exit
+        else for j := Low(ProjectConditionals) to High(ProjectConditionals) do
+        begin
+          if curLine = ProjectConditionals[j].StartLine then
+          begin
+            if xml.ProjectType <> ProjectConditionals[j].ProjectType then
+              while (i < Count) and not IsTrimmedString(template[i], ProjectConditionals[j].EndLine) do
+                Inc(i);
+            Break;
+          end;
+        end
       end
       else
       begin
@@ -1404,14 +1442,20 @@ begin
              'VERSION_MINOR_NUMBER%', xml.VersionMinorNumber,
              'RELEASE_NUMBER%', xml.ReleaseNumber,
              'BUILD_NUMBER%', xml.BuildNumber,
-             'TYPE%', Iff(xml.IsDesign, 'DESIGN', 'RUN'),
+             'TYPE%', Iff(ProjectTypeIsDesign(xml.ProjectType), 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
              'type%', OneLetterType,
              'PATHPAS%', PathPAS,
              'PATHCPP%', PathCPP,
              'PATHASM%', PathASM,
              'PATHRC%', PathRC,
-             'PATHLIB%', PathLIB]) then
+             'PATHLIB%', PathLIB,
+             'PROJECT%', ProjectTypeToProjectName(xml.ProjectType),
+             'BINEXTENSION%', ProjectTypeToBinaryExtension(xml.ProjectType),
+             'ISDLL%', Iff(ProjectTypeIsDLL(xml.ProjectType), 'True', 'False'),
+             'ISPACKAGE%', Iff(ProjectTypeIsPackage(xml.ProjectType), 'True', 'False'),
+             'SOURCEEXTENSION%', ProjectTypeToSourceExtension(xml.ProjectType),
+             'NOLINKPACKAGELIST%', NoLinkPackageList]) then
            begin
              if Pos('%DATETIME%', tmpStr) > 0 then
                TimeStampLine := I;
@@ -1592,7 +1636,7 @@ var
   rec : TSearchRec;
   i : Integer;
   j : Integer;
-  templateName, templateNamePers : string;
+  templateName, templateExtension, templateNamePers : string;
   xml : TPackageXmlInfo;
   xmlName : string;
   template, templatePers : TStringList;
@@ -1692,6 +1736,8 @@ begin
            // load (buffered) xml file
             xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
             xml := GetPackageXmlInfo(xmlName);
+
+            TemplateExtension := ExtractFileExt(templateName);
 
             persoTarget := ApplyTemplateAndSave(
                                  path,
@@ -1793,6 +1839,9 @@ begin
   FIsCLX := False;
   if Assigned(Node.Properties.ItemNamed['IsCLX']) then
     FIsCLX := Node.Properties.ItemNamed['IsCLX'].BoolValue;
+  FIsBDS := False;
+  if Assigned(Node.Properties.ItemNamed['IsBDS']) then
+    FIsBDS := Node.Properties.ItemNamed['IsBDS'].BoolValue;
 end;
 
 destructor TTarget.Destroy;
@@ -1810,11 +1859,22 @@ begin
 end;
 
 function TTarget.GetEnv: string;
+var
+  I: Integer;
 begin
   if FEnv <> '' then
     Result := FEnv
+  else if Length(Name) > 1 then
+  begin
+    I := 1;
+    while (I < Length(Name)) and not (Name[I] in ['0'..'9']) do
+      Inc(I);
+    if Name[I] in ['0'..'9'] then
+      Dec(I);
+    Result := AnsiUpperCase(Copy(Name,1,I));
+  end
   else
-    Result := AnsiUpperCase(Name[1]);
+    Result := '';
 end;
 
 function TTarget.GetPDir: string;
@@ -1827,18 +1887,21 @@ end;
 
 function TTarget.GetVer: string;
 var
-  I : Integer;
+  Start, I : Integer;
 begin
   if FVer <> '' then
     Result := FVer
   else if Length(Name)>1 then
   begin
-    I := 2;
+    Start := 2;
+    while (Start < Length(Name)) and not (Name[Start] in ['0'..'9']) do
+      Inc(Start);
+    I := Start;
     while (I < Length(Name)) and (Name[I] in ['0'..'9']) do
       Inc(I);
     if I < Length(name) then
       Dec(I);
-    Result := AnsiLowerCase(Copy(Name, 2, I-2+1));
+    Result := AnsiLowerCase(Copy(Name, Start, I-Start+1));
   end
   else
     Result := '';
