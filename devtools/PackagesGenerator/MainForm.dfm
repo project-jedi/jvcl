@@ -26,7 +26,6 @@ object frmMain: TfrmMain
     Top = 52
     Width = 2
     Height = 502
-    Cursor = crHSplit
   end
   object jsbStatus: TJvStatusBar
     Left = 0
@@ -37,7 +36,6 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object pnlList: TPanel
     Left = 0
@@ -86,10 +84,10 @@ object frmMain: TfrmMain
       Caption = 'Menus'
       EdgeBorders = []
       Flat = True
+      Menu = jmmMain
       ShowCaptions = True
       TabOrder = 0
       Wrapable = False
-      Menu = jmmMain
     end
     object jtbTools: TJvToolBar
       Left = 11
@@ -292,36 +290,13 @@ object frmMain: TfrmMain
       TabOrder = 0
       OnChange = ledNameChange
     end
-    object rbtRuntime: TRadioButton
-      Left = 575
-      Top = 8
-      Width = 69
-      Height = 17
-      Anchors = [akTop, akRight]
-      Caption = 'Runtime'
-      Checked = True
-      TabOrder = 1
-      TabStop = True
-      OnClick = rbtRuntimeClick
-    end
-    object rbtDesign: TRadioButton
-      Left = 507
-      Top = 8
-      Width = 61
-      Height = 17
-      Alignment = taLeftJustify
-      Anchors = [akTop, akRight]
-      Caption = 'Design'
-      TabOrder = 2
-      OnClick = rbtDesignClick
-    end
     object ledDescription: TEdit
       Left = 92
       Top = 32
       Width = 445
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      TabOrder = 3
+      TabOrder = 1
       OnChange = ledDescriptionChange
     end
     object ledC5PFlags: TEdit
@@ -330,7 +305,7 @@ object frmMain: TfrmMain
       Width = 460
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 4
+      TabOrder = 2
       OnChange = ledC5PFlagsChange
     end
     object ledC6PFlags: TEdit
@@ -339,7 +314,7 @@ object frmMain: TfrmMain
       Width = 460
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 5
+      TabOrder = 3
       OnChange = ledC6PFlagsChange
     end
     object pnlDepAndFiles: TPanel
@@ -349,7 +324,7 @@ object frmMain: TfrmMain
       Height = 365
       Anchors = [akLeft, akTop, akRight, akBottom]
       BevelOuter = bvNone
-      TabOrder = 6
+      TabOrder = 4
       object sptDepAndFiles: TSplitter
         Left = 0
         Top = 165
@@ -416,7 +391,7 @@ object frmMain: TfrmMain
       Height = 45
       Anchors = [akRight, akBottom]
       Caption = 'Advanced'
-      TabOrder = 7
+      TabOrder = 5
       OnClick = btnAdvancedBCBClick
     end
     object btnCLXDescription: TButton
@@ -426,7 +401,7 @@ object frmMain: TfrmMain
       Height = 21
       Anchors = [akTop, akRight]
       Caption = 'CLX Description'
-      TabOrder = 8
+      TabOrder = 6
       OnClick = btnCLXDescriptionClick
     end
     object edtGUID: TEdit
@@ -435,7 +410,7 @@ object frmMain: TfrmMain
       Width = 460
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 9
+      TabOrder = 7
       OnChange = edtGUIDChange
     end
     object btnGenerateGUID: TButton
@@ -445,8 +420,25 @@ object frmMain: TfrmMain
       Height = 21
       Anchors = [akRight, akBottom]
       Caption = 'Generate'
-      TabOrder = 10
+      TabOrder = 8
       OnClick = btnGenerateGUIDClick
+    end
+    object ComboBoxType: TComboBox
+      Left = 498
+      Top = 8
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      Anchors = [akTop, akRight]
+      ItemHeight = 13
+      TabOrder = 9
+      OnClick = ComboBoxTypeSelect
+      Items.Strings = (
+        'Package Run-only'
+        'Package Design-only'
+        'Package'
+        'Library'
+        'Program')
     end
   end
   object jmmMain: TJvMainMenu

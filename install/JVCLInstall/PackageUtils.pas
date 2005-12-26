@@ -245,9 +245,9 @@ begin
   Result := CompareText(p1.Info.DisplayName, p2.Info.DisplayName);
   if Result = 0 then
   begin
-    if p1.Info.IsDesign and not p2.Info.IsDesign then
+    if ProjectTypeIsDesign(p1.Info.ProjectType) and not ProjectTypeIsDesign(p2.Info.ProjectType) then
       Result := 1
-    else if not p1.Info.IsDesign and p2.Info.IsDesign then
+    else if not ProjectTypeIsDesign(p1.Info.ProjectType) and ProjectTypeIsDesign(p2.Info.ProjectType) then
       Result := -1;
   end;
 end;
@@ -375,7 +375,7 @@ end;
 
 procedure TPackageTarget.SetInstall(const Value: Boolean);
 begin
-  if Info.IsDesign then
+  if ProjectTypeIsDesign(Info.ProjectType) then
     FInstall := Value
   else
     FInstall := False; // runtime packages are not installable.
