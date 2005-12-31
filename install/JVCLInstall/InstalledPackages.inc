@@ -70,7 +70,7 @@ begin
   if Target.IsBCB then
     Result := False
   else
-    if Target.Version = 9 then 
+    if (Target.Version = 9) or (Target.Version = 10) then 
       Result := FileExists(Target.BDSProjectsDir + Format('\bpl\IcsDel%d%d.dcp', [Target.Version,0]))
     else
       Result := FileExists(Target.RootDir + Format('\Projects\bpl\IcsDel%d%d.dcp', [Target.Version,0]));//Target.VersionedDCP('\Projects\bpl\IcsDel.dcp'));  
