@@ -38,6 +38,8 @@ function Opt_SMExportComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2005.dcp')
+  else if Target.Version = 10 then
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2006.dcp')
   else
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMExport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
 end;
@@ -48,6 +50,8 @@ function Opt_SMImportComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2005.dcp')
+  else if Target.Version = 10 then
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2006.dcp')
   else
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMImport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
 end;
@@ -76,7 +80,7 @@ end;
 { DevExpress CX-Editors }
 function Opt_CXEditorComponents(Target: TCompileTarget): Boolean;
 begin
-  if Target.Version = 9 then 
+  if (Target.Version = 9) or (Target.Version = 10) then 
     Result := FileExists(GetSystemDir+(Format('\cxEditors%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])))
   else
     Result := FileExists(GetSystemDir+(Format('\cxEditorsVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
@@ -86,7 +90,7 @@ end;
 { DevExpress CX-Grid }
 function Opt_CXGridComponents(Target: TCompileTarget): Boolean;
 begin
-  if Target.Version = 9 then 
+  if (Target.Version = 9) or (Target.Version = 10) then 
     Result := FileExists(GetSystemDir+(Format('\cxGrid%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])))
   else
     Result := FileExists(GetSystemDir+(Format('\cxGridVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
@@ -98,6 +102,8 @@ function Opt_DOAComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then 
     Result := FileExists(Target.BDSProjectsDir + '\bpl\doa40d2005.dcp')
+  else if Target.Version = 10 then 
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa40d2006.dcp')
   else
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\doa40%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));  
 end;
