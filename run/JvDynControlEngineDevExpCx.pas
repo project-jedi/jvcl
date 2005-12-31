@@ -27,8 +27,14 @@ unit JvDynControlEngineDevExpCx;
 
 interface
 
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$IFNDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
+{$ELSE}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
