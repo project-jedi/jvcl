@@ -220,6 +220,7 @@ type
     function GetItem(const Index: Integer): TJvSimpleXMLElem;
     procedure AddChild(const Value: TJvSimpleXMLElem);
     procedure AddChildFirst(const Value: TJvSimpleXMLElem);
+    procedure InsertChild(const Value: TJvSimpleXMLElem; Index: Integer);
     procedure DoItemRename(var Value: TJvSimpleXMLElem; const Name: string);
     procedure CreateElems;
   public
@@ -244,6 +245,8 @@ type
     function AddComment(const Name: string; const Value: string): TJvSimpleXMLElemComment;
     function AddCData(const Name: string; const Value: string): TJvSimpleXMLElemCData;
     function AddText(const Name: string; const Value: string): TJvSimpleXMLElemText;
+    function Insert(Value: TJvSimpleXMLElem; Index: Integer): TJvSimpleXMLElem; overload;
+    function Insert(const Name: string; Index: Integer): TJvSimpleXMLElemClassic; overload;
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
@@ -1201,6 +1204,8 @@ begin
   inherited Create;
   FName := '';
   FParent := TJvSimpleXMLElem(AOwner);
+  if Assigned(FParent) then
+    FSimpleXML := FParent.FSimpleXML;
   FContainer := nil;
 end;
 
@@ -1422,7 +1427,10 @@ begin
 
   // If there already is a container, notify it to remove the element
   if Assigned(Value.Container) then
+  begin
     Value.Container.Notify(Value, opRemove);
+    Value.Parent := Parent;
+  end;
 
   FElems.AddObject(Value.Name, Value);
 
@@ -1435,7 +1443,10 @@ begin
 
   // If there already is a container, notify it to remove the element
   if Assigned(Value.Container) then
+  begin
     Value.Container.Notify(Value, opRemove);
+    Value.Parent := Parent;
+  end;
 
   FElems.InsertObject(0, Value.Name, Value);
 
@@ -1713,6 +1724,7 @@ begin
               lElem.LoadFromStream(Stream);
               lStreamPos := Stream.Position;
               FElems.AddObject(lElem.Name, lElem);
+              Notify(lElem, opInsert);
               St := '';
               lPos := 0;
               Break;
@@ -1751,7 +1763,7 @@ begin
   case Operation of
     opRemove:
       if Value.Container = Self then  // Only remove if we have it
-        FElems.Delete(FElems.IndexOf(Value.Name));
+        FElems.Delete(FElems.IndexOfObject(Value));
     opInsert:
       Value.Container := Self;
   end;
@@ -1776,6 +1788,60 @@ begin
     Result := Default
   else
     Result := Elem.Value;
+end;
+
+procedure TJvSimpleXMLElems.Move(const CurIndex, NewIndex: Integer);
+begin
+  if FElems <> nil then
+    FElems.Move(CurIndex, NewIndex);
+end;
+
+function TJvSimpleXMLElems.IndexOf(const Value: TJvSimpleXMLElem): Integer;
+begin
+  if FElems = nil then
+    Result := -1
+  else
+    Result := FElems.IndexOfObject(Value);
+end;
+
+function TJvSimpleXMLElems.IndexOf(const Value: string): Integer;
+begin
+  if FElems = nil then
+    Result := -1
+  else
+    Result := FElems.IndexOf(Value);
+end;
+
+procedure TJvSimpleXMLElems.InsertChild(const Value: TJvSimpleXMLElem; Index: Integer);
+begin
+  CreateElems;
+
+  // If there already is a container, notify it to remove the element
+  if Assigned(Value.Container) then
+  begin
+    Value.Container.Notify(Value, opRemove);
+    Value.Parent := Parent;
+  end;
+
+  FElems.InsertObject(Index, Value.Name, Value);
+
+  Notify(Value, opInsert);
+end;
+
+function TJvSimpleXMLElems.Insert(Value: TJvSimpleXMLElem;
+  Index: Integer): TJvSimpleXMLElem;
+begin
+  if Value <> nil then
+    InsertChild(Value, Index);
+  Result := Value;
+end;
+
+function TJvSimpleXMLElems.Insert(const Name: string;
+  Index: Integer): TJvSimpleXMLElemClassic;
+begin
+  Result := TJvSimpleXMLElemClassic.Create(Parent);
+  Result.FName := Name; //Directly set parent to avoid notification
+  InsertChild(Result, Index);
 end;
 
 function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
@@ -3402,28 +3468,6 @@ begin
   Result := TJvSimpleXMLElemDocType.Create(nil);
   Result.Value := AValue;
   FElems.AddObject('', Result);
-end;
-
-procedure TJvSimpleXMLElems.Move(const CurIndex, NewIndex: Integer);
-begin
-  if FElems <> nil then
-    FElems.Move(CurIndex, NewIndex);
-end;
-
-function TJvSimpleXMLElems.IndexOf(const Value: TJvSimpleXMLElem): Integer;
-begin
-  if FElems = nil then
-    Result := -1
-  else
-    Result := FElems.IndexOfObject(Value);
-end;
-
-function TJvSimpleXMLElems.IndexOf(const Value: string): Integer;
-begin
-  if FElems = nil then
-    Result := -1
-  else
-    Result := FElems.IndexOf(Value);
 end;
 
 initialization
