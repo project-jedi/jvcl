@@ -54,6 +54,8 @@ uses
 type
   TComponentClass = class of TComponent;
 
+  TJvChangeDataComponent = procedure(DataComponent: TComponent) of object;
+
   TJvShowSingleRecordWindowOptions = class(TPersistent)
   private
     FDialogCaption: string;
@@ -97,10 +99,13 @@ type
   TJvDatabaseActionList = class(TActionList)
   private
     FDataComponent: TComponent;
+    FOnChangeDataComponent: TJvChangeDataComponent;
   protected
     procedure SetDataComponent(Value: TComponent);
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    property OnChangeDataComponent: TJvChangeDataComponent read
+        FOnChangeDataComponent write FOnChangeDataComponent;
   published
     property DataComponent: TComponent Read FDataComponent Write SetDataComponent;
   end;
@@ -177,6 +182,7 @@ type
     FOnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent;
     FDataEngine: TJvDatabaseActionBaseEngine;
     FDataComponent: TComponent;
+    FOnChangeDataComponent: TJvChangeDataComponent;
   protected
     procedure SetDataComponent(Value: TComponent);
     procedure SetEnabled(Value: boolean);
@@ -203,6 +209,8 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property DataSource: TDataSource Read GetDataSource;
     property DataSet: TDataSet Read GetDataSet;
+    property OnChangeDataComponent: TJvChangeDataComponent read
+        FOnChangeDataComponent write FOnChangeDataComponent;
   published
     property OnExecute: TJvDatabaseExecuteEvent Read FOnExecute Write FOnExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
@@ -520,6 +528,8 @@ begin
   for I := 0 to ActionCount - 1 do
     if Actions[I] is TJvDatabaseBaseAction then
       TJvDatabaseBaseAction(Actions[I]).DataComponent := Value;
+  if Assigned(OnChangeDataComponent) then
+    OnChangeDataComponent (Value);
 end;
 
 procedure TJvDatabaseActionList.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1094,6 +1104,8 @@ begin
     FDataEngine := IntRegisteredActionEngineList.GetEngine(FDataComponent)
   else
     FDataEngine := nil;
+  if Assigned(OnChangeDataComponent) then
+    OnChangeDataComponent (Value);
 end;
 
 procedure TJvDatabaseBaseAction.SetEnabled(Value: boolean);
