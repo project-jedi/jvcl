@@ -104,10 +104,10 @@ type
     procedure SetDataComponent(Value: TComponent);
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property OnChangeDataComponent: TJvChangeDataComponent read
-        FOnChangeDataComponent write FOnChangeDataComponent;
   published
     property DataComponent: TComponent Read FDataComponent Write SetDataComponent;
+    property OnChangeDataComponent: TJvChangeDataComponent read
+        FOnChangeDataComponent write FOnChangeDataComponent;
   end;
 
   TJvDatabaseActionBaseEngine = class(TObject)
@@ -209,9 +209,9 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property DataSource: TDataSource Read GetDataSource;
     property DataSet: TDataSet Read GetDataSet;
+  published
     property OnChangeDataComponent: TJvChangeDataComponent read
         FOnChangeDataComponent write FOnChangeDataComponent;
-  published
     property OnExecute: TJvDatabaseExecuteEvent Read FOnExecute Write FOnExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
       Read FOnExecuteDataSource Write FOnExecuteDataSource;
