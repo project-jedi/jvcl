@@ -11,7 +11,7 @@
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvDlgs-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p,D7,D7p,D9,D9p" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
     <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
@@ -23,8 +23,8 @@
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="dbrtl" Targets="C6,C6p,D6,D6p,D7,D7p,D7clx,D9,D9p" Condition=""/>
-    <Package Name="vcldb" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p,d10,d10p" Condition=""/>
+    <Package Name="dbrtl" Targets="allbut5" Condition=""/>
+    <Package Name="vcldb" Targets="allbut5" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
@@ -32,24 +32,27 @@
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="dataclx" Targets="K3" Condition=""/>
     <Package Name="visualdbclx" Targets="allclx" Condition=""/>
-    <Package Name="SMExportC5" Targets="c5, c5s" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportC6" Targets="c6, c6p" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportD5" Targets="d5, d5s" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportD6" Targets="d6, d6p" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportD7" Targets="d7, d7p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportC5" Targets="c5,c5s" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportC6" Targets="c6,c6p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD5" Targets="d5,d5s" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD6" Targets="d6,d6p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD7" Targets="d7,d7p" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2005" Targets="d9,D9p" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMImportC5" Targets="c5, c5s" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportC6" Targets="c6, c6p" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportD5" Targets="d5, d5s" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportD6" Targets="d6, d6p" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportD7" Targets="d7, d7p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMExportD2006" Targets="d10,D10p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMImportC5" Targets="c5,c5s" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportC6" Targets="c6,c6p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD5" Targets="d5,d5s" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD6" Targets="d6,d6p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD7" Targets="d7,d7p" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2005" Targets="d9,D9p" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="cxGridVCLC5" Targets="c5, c5s" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLC6" Targets="c6, c6p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD5" Targets="d5, d5s" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD6" Targets="d6, d6p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD7" Targets="d7, d7p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="SMImportD2006" Targets="d10,D10p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="cxGridVCLC5" Targets="c5,c5s" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLC6" Targets="c6,c6p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLD5" Targets="d5,d5s" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLD6" Targets="d6,d6p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLD7" Targets="d7,d7p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridD9" Targets="d9,D9p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridD10" Targets="d10,D10p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="all" Formname="" Condition=""/>

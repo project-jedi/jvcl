@@ -11,10 +11,10 @@
     <Package Name="Jcl" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="JclC50" Targets="C5,C5s" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
+    <Package Name="vcl" Targets="allbut5" Condition=""/>
     <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
+    <Package Name="vclx" Targets="allbut5" Condition=""/>
+    <Package Name="rtl" Targets="allbut5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDockControlForm.pas" Targets="allbutclx" Formname="" Condition=""/>

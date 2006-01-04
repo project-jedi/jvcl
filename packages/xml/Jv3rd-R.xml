@@ -8,7 +8,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="rtl" Targets="d6,d6p,c6,c6p,d7,d7p,d7clx,Kylix,d9,d9p,D10,D10p" Condition=""/>
+    <Package Name="rtl" Targets="allbut5" Condition=""/>
     <Package Name="vcl50" Targets="d5,d5s,c5,c5s" Condition=""/>
   </Requires>
   <Contains>
