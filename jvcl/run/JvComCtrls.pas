@@ -2397,7 +2397,11 @@ end;
 function TJvTreeNode.GetFont: TFont;
 begin
   if not Assigned(FFont) then
+  begin
     FFont := TFont.Create;
+    if Assigned(Owner) and (TreeView is TJvExTreeView) then
+      FFont.Assign(TJvExTreeView(TreeView).Font);
+  end;
 
   Result := FFont;
 end;
@@ -2405,7 +2409,11 @@ end;
 function TJvTreeNode.GetBrush: TBrush;
 begin
   if not Assigned(FBrush) then
+  begin
     FBrush := TBrush.Create;
+    if Assigned(Owner) and (TreeView is TJvExTreeView) then
+      FBrush.Assign(TJvExTreeView(TreeView).Brush);
+  end;
 
   Result := FBrush;
 end;
