@@ -226,17 +226,29 @@ type
     FCanUpdate: boolean;
     FCanDelete: boolean;
     FEditModeActive: boolean;
+    FManualEnabled: Boolean;
+    procedure SetManualEnabled(const Value: Boolean);
   protected
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
   published
+    // If this paramater is active, the Action will be enabled if for the datacomponent-dataset is active
     property IsActive: boolean Read FIsActive Write FIsActive default True;
+    // If this paramater is active, the Action will be enabled if for the datacomponent-dataset contains records
     property HasData: boolean Read FHasData Write FHasData default True;
+    // If this paramater is active, the Action will be enabled if insert is allowed for the datacomponent-dataset
     property CanInsert: boolean Read FCanInsert Write FCanInsert default False;
+    // If this paramater is active, the Action will be enabled if update is allowed for the datacomponent-dataset
     property CanUpdate: boolean Read FCanUpdate Write FCanUpdate default False;
+    // If this paramater is active, the Action will be enabled if delete is allowed for the datacomponent-dataset
     property CanDelete: boolean Read FCanDelete Write FCanDelete default False;
+    // If this paramater is active, the Action will be enabled if the datacomponent-dataset is in edit mode
     property EditModeActive: boolean Read FEditModeActive Write FEditModeActive default False;
+    // This property allows you enable / disable the action independently from the
+    // automatic handling by IsActive, HasData, CanInsert, CanUpdate, EditModeActive
+    property ManualEnabled: Boolean read FManualEnabled write SetManualEnabled
+        default True;
   end;
 
   TJvDatabaseBaseActiveAction = class(TJvDatabaseBaseAction)
@@ -1107,7 +1119,7 @@ begin
   if Assigned(OnChangeDataComponent) then
     OnChangeDataComponent (Value);
 end;
-
+                                                                 
 procedure TJvDatabaseBaseAction.SetEnabled(Value: boolean);
 begin
   if Enabled <> Value then
@@ -1251,6 +1263,13 @@ begin
   FCanUpdate := False;
   FCanDelete := False;
   FEditModeActive := False;
+  FManualEnabled := True;
+end;
+
+procedure TJvDatabaseSimpleAction.SetManualEnabled(const Value: Boolean);
+begin
+  FManualEnabled := Value;
+  UpdateTarget(Self);
 end;
 
 procedure TJvDatabaseSimpleAction.UpdateTarget(Target: TObject);
@@ -1259,7 +1278,7 @@ var
 begin
   if Assigned(DataSet) and not EngineControlsDisabled then
   begin
-    Res := False;
+    Res := ManualEnabled;
     if IsActive then
       Res := Res and EngineIsActive;
     if HasData then
