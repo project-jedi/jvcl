@@ -38,9 +38,9 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  Windows, Messages, Controls,
+  Windows, Messages, Controls, Forms,
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QStdCtrls, // TOwnerDrawState 
+  Qt, QGraphics, QStdCtrls, QForms, // TOwnerDrawState
   {$ENDIF VisualCLX}
   JvConsts,
   JVCLVer, JvComponentBase, JvExControls, JvExExtCtrls, JvExForms,
@@ -73,8 +73,10 @@ type
   TJvCustomTreeView = class(TJvExCustomTreeView);
 
   TJvForm = class(TJvExForm)
+  {$IFDEF VCL}
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+  {$ENDIF VCL}
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
@@ -112,8 +114,6 @@ const
 
 implementation
 
-uses Forms;
-
 {$IFDEF USE_DXGETTEXT}
 const
   cDomainName = 'jvcl';
@@ -150,19 +150,26 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
+{$IFDEF VCL}
+
 procedure TJvForm.CreateParams(var Params: TCreateParams); //override;
 begin
   inherited CreateParams(Params);
 
-  // Fixing the Window Ghosting "bug"
-  Params.Style := params.Style or WS_POPUP;
-  if Assigned(Screen.ActiveForm) then
-    Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
-    Params.WndParent := Application.MainForm.Handle
-  else
-    Params.WndParent := Application.Handle;
+  if FormStyle <> fsMDIChild then
+  begin
+    // Fixing the Window Ghosting "bug"
+    Params.Style := params.Style or WS_POPUP;
+    if Assigned(Screen.ActiveForm) then
+      Params.WndParent := Screen.ActiveForm.Handle
+    else if Assigned (Application.MainForm) then
+      Params.WndParent := Application.MainForm.Handle
+    else
+      Params.WndParent := Application.Handle;
+  end;
 end;
+
+{$ENDIF VCL}
 
 //=== { TJvPopupListBox } ====================================================
 
@@ -179,6 +186,7 @@ begin
     WindowClass.Style := CS_SAVEBITS;
   end;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvPopupListBox.CreateWnd;
@@ -192,7 +200,6 @@ begin
   QWidget_setFocus(Handle);
   {$ENDIF VisualCLX}
 end;
-
 
 {$IFDEF VisualCLX}
 
