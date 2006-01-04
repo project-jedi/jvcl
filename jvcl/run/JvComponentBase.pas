@@ -38,10 +38,6 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  Windows, Messages, Controls,
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QStdCtrls, // TOwnerDrawState 
-  {$ENDIF VisualCLX}
   JvConsts,
   JVCLVer;
 
