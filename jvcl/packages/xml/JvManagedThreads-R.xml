@@ -13,8 +13,8 @@
     <Package Name="JCLC50" Targets="C5,C5s" Condition="USEJVCL"/>
     <Package Name="JCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,d7clx,d9,D9p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9,D9p" Condition=""/>
+    <Package Name="rtl" Targets="allbut5,d7clx" Condition=""/>
+    <Package Name="vcl" Targets="allbut5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMTComponents.pas" Targets="all" Formname="" Condition=""/>
