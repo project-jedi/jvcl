@@ -393,7 +393,6 @@ begin
     {$ENDIF VisualCLX}
     {$IFDEF VCL}
     Bitmap.Assign(ColorMap);
-    ColorMap.ReleaseHandle;
     {$ENDIF VCL}
   finally
     ColorMap.Free;
