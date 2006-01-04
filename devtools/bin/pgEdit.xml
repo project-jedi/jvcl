@@ -81,6 +81,7 @@
         <alias name="allclx" value="d7clx,k3,k3p"/>
         <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
         <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3,d9,d10"/>
+        <alias name="allbut5" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
       </aliases>
       <ClxReplacements>
         <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
