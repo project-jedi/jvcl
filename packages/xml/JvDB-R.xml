@@ -53,6 +53,13 @@
     <Package Name="cxGridVCLD7" Targets="d7,d7p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridD9" Targets="d9,D9p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridD10" Targets="d10,D10p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="DOA40C5" Targets="c5,c5s" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA40C6" Targets="c6,c6p" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA40D5" Targets="d5,d5s" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA40D6" Targets="d6,d6p" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA40D7" Targets="d7,d7p" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA40D2005" Targets="d9,D9p" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA40D2006" Targets="d10,D10p" Condition="USE_3RDPARTY_DOA"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="all" Formname="" Condition=""/>
@@ -92,5 +99,6 @@
     <File Name="..\..\run\JvDynControlEngineDBIntf.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineVCLDB.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOracleDataset.pas" Targets="allbutclx" Formname="" Condition="USE_3RDPARTY_DOA"/>
   </Contains>
 </Package>
