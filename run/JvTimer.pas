@@ -113,7 +113,7 @@ begin
   FOwner := Timer;
   inherited Create(not Enabled);
   FInterval := 1000;
-  FreeOnTerminate := True;
+  FreeOnTerminate := False;
 end;
 
 procedure TJvTimerThread.HandleException;
@@ -189,6 +189,7 @@ begin
   while FTimerThread.Suspended do
     FTimerThread.Resume;
   FTimerThread.Terminate;
+  FTimerThread.Free;
   FTimer.Free;
   inherited Destroy;
 end;
