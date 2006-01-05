@@ -575,21 +575,25 @@ begin
 end;
 
 function JvInterpreterMakeForm(const AFileName: TFileName): TForm;
+var
+  TmpInterpreterFm: TJvInterpreterFm;
 begin
-  with TJvInterpreterFm.Create(Application) do
+  TmpInterpreterFm := TJvInterpreterFm.Create(Application);
   begin
-    Result := MakeForm(FileName);
+    Result := TmpInterpreterFm.MakeForm(AFileName);
     (Result as TJvInterpreterForm).FFreeJvInterpreterFm := True;
   end;
 end;
 
 function JvInterpreterRunUnit(const AFileName: TFileName): Variant;
+var
+  TmpInterpreterFm: TJvInterpreterFm;
 begin
-  with TJvInterpreterFm.Create(Application) do
+  TmpInterpreterFm := TJvInterpreterFm.Create(Application);
   try
-    Result := RunUnit(FileName);
+    Result := TmpInterpreterFm.RunUnit(AFileName);
   finally
-    Free;
+    TmpInterpreterFm.Free;
   end;
 end;
 
