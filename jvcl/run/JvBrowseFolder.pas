@@ -34,8 +34,11 @@ unit JvBrowseFolder;
 interface
 
 {$IFDEF BCB6}
+// BCB6 needs the shtypes.h file to be included
 {$HPPEMIT '#include <shtypes.h>'}
-{$ELSE}
+{$ENDIF BCB6}
+
+{$IFDEF BCB5}
 // BCB5 doesn't have the shtypes.h file, so we have to cope with it
 (*$HPPEMIT 'namespace shlobj_h'*)
 (*$HPPEMIT '{'*)
@@ -43,7 +46,7 @@ interface
 (*$HPPEMIT '}'*)
 (*$HPPEMIT 'using namespace shlobj_h;'*)
 (*$HPPEMIT '#define _ITEMIDLIST shlobj_h::_ITEMIDLIST'*)
-{$ENDIF BCB6}
+{$ENDIF BCB5}
 
 uses
   {$IFDEF UNITVERSIONING}
