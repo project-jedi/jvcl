@@ -49,6 +49,7 @@ type
   end;
 
   TJvGetTimeEvent = procedure(Sender: TObject; var ATime: TDateTime) of object;
+  TJvGetDateEvent = TJvGetTimeEvent;
 
   TJvClock = class(TJvCustomPanel, IJvDenySubClassing)
   private
@@ -71,6 +72,9 @@ type
     FClockCenter: TPoint;
     FOnGetTime: TJvGetTimeEvent;
     FOnAlarm: TNotifyEvent;
+    FShowDate: Boolean;
+    FOnGetDate: TJvGetDateEvent;
+    FDateFormat: string;
     procedure TimerExpired(Sender: TObject);
     procedure GetTime(var T: TJvClockTime);
     function IsAlarmTime(ATime: TDateTime): Boolean;
@@ -95,6 +99,8 @@ type
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMTimeChange(var Msg: TMessage); message WM_TIMECHANGE;
+    procedure SetShowDate(const Value: Boolean);
+    procedure SetDateFormat(const Value: string);
     {$ENDIF VCL}
   protected
     procedure TextChanged; override;
@@ -109,6 +115,7 @@ type
     procedure Loaded; override;
     procedure Paint; override;
     function GetSystemTime: TDateTime; virtual;
+    function GetSystemDate: TDateTime; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -123,8 +130,10 @@ type
     property BevelInner default bvLowered;
     property BevelOuter default bvRaised;
     property DotsColor: TColor read FDotsColor write SetDotsColor default clTeal;
+    property DateFormat: string read FDateFormat write SetDateFormat;
     property ShowMode: TShowClock read FShowMode write SetShowMode default scDigital;
     property ShowSeconds: Boolean read FShowSeconds write SetShowSeconds default True;
+    property ShowDate: Boolean read FShowDate write SetShowDate default False;
     property TwelveHour: Boolean read FTwelveHour write SetTwelveHour default False;
     property LeadingZero: Boolean read FLeadingZero write SetLeadingZero default True;
     property Align;
@@ -153,6 +162,7 @@ type
     property Visible;
     property OnAlarm: TNotifyEvent read FOnAlarm write FOnAlarm;
     property OnGetTime: TJvGetTimeEvent read FOnGetTime write FOnGetTime;
+    property OnGetDate: TJvGetDateEvent read FOnGetDate write FOnGetDate;
     property OnClick;
     property OnDblClick;
     property OnMouseMove;
@@ -394,6 +404,8 @@ begin
   FDotsColor := clTeal;
   FShowSeconds := True;
   FLeadingZero := True;
+  FShowDate := False;
+  FDateFormat := ShortDateFormat; 
   GetTime(FDisplayTime);
   if FDisplayTime.Hour >= 12 then
     Dec(FDisplayTime.Hour, 12);
@@ -492,6 +504,13 @@ begin
   Result := SysUtils.Time;
   if Assigned(FOnGetTime) then
     FOnGetTime(Self, Result);
+end;
+
+function TJvClock.GetSystemDate: TDateTime;
+begin
+  Result := SysUtils.Date;
+  if Assigned(FOnGetDate) then
+    FOnGetDate(Self, Result);
 end;
 
 procedure TJvClock.GetTime(var T: TJvClockTime);
@@ -649,6 +668,24 @@ begin
   if FShowMode <> Value then
   begin
     FShowMode := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvClock.SetShowDate(const Value: Boolean);
+begin
+  if FShowDate <> Value then
+  begin
+    FShowDate := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvClock.SetDateFormat(const Value: string);
+begin
+  if FDateFormat <> Value then
+  begin
+    FDateFormat := Value;
     Invalidate;
   end;
 end;
@@ -978,7 +1015,7 @@ end;
 procedure TJvClock.PaintTimeStr(var Rect: TRect; FullTime: Boolean);
 var
   FontHeight, FontWidth, FullWidth, I, L, H: Integer;
-  TimeStr, SAmPm: string;
+  TimeStr, DateStr, SAmPm: string;
   NewTime: TJvClockTime;
 
   function IsPartSym(Idx, Num: Byte): Boolean;
@@ -1046,8 +1083,7 @@ begin
     TimeStr := TimeStr + ':ss';
   if FTwelveHour then
     TimeStr := TimeStr + ' ampm';
-  with NewTime do
-    TimeStr := FormatDateTime(TimeStr, GetSystemTime);
+  TimeStr := FormatDateTime(TimeStr, GetSystemTime);
   if (H >= 10) or FLeadingZero then
     L := 5
   else
@@ -1061,6 +1097,8 @@ begin
     FontHeight := TextHeight('8');
     FontWidth := TextWidth('8');
     FullWidth := TextWidth(SAmPm) + (L * FontWidth);
+    if ShowDate then
+      FullWidth := FullWidth + (Length(DateFormat) + 1) * FontWidth;
     with Rect do
     begin
       Left := ((Right + Left) - FullWidth) div 2;
@@ -1069,6 +1107,18 @@ begin
       Bottom := Top + FontHeight;
     end;
     Brush.Color := Color;
+    if ShowDate then
+    begin
+      DateStr := FormatDateTime(DateFormat + ' ', GetSystemDate);
+      {$IFDEF CLR}
+      DrawText(Canvas, DateStr, Length(DateStr), Rect,
+        DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
+      {$ELSE}
+      DrawText(Canvas, PChar(DateStr), Length(DateStr), Rect,
+        DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
+      {$ENDIF CLR}
+      Inc(Rect.Left, Length(DateFormat) * FontWidth);
+    end;
     for I := 1 to L do
     begin
       Rect.Right := Rect.Left + FontWidth;
