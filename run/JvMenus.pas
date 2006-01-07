@@ -2116,7 +2116,7 @@ begin
   FItem := Item;
   FState := State;
 
-  FGlyph := nil;
+  FGlyph := Item.Bitmap;
   BackColor := Canvas.Brush.Color;
   FNumGlyphs := 1;
   if Assigned(FMainMenu) then
@@ -2213,6 +2213,7 @@ begin
   end
   else
   begin
+    CanvasWindow := 0;
     ItemRectNoLeftMargin := ItemRect;
     TextAndMarginRect := ItemRect;
     TextRect := ItemRect;
@@ -2222,7 +2223,7 @@ begin
   DrawItemBackground(ItemRect);
 
   // draw the margin, if any
-  if LeftMargin > 0 then
+  if (LeftMargin > 0) and (CanvasWindow <> 0) then
     DrawLeftMargin(LeftMarginRect);
 
   // draw the background of each separate part
@@ -2608,7 +2609,7 @@ begin
   if Assigned(Images) then
     Result := Images.Height
   else
-  if Assigned(FGlyph) then
+  if Assigned(FGlyph) and not FGlyph.Empty then
     Result := FGlyph.Height
   else
     Result := ImageSize.Height;
@@ -2619,7 +2620,7 @@ begin
   if Assigned(Images) then
     Result := Images.Width
   else
-  if Assigned(FGlyph) then
+  if Assigned(FGlyph) and not FGlyph.Empty then
     Result := FGlyph.Width
   else
     Result := ImageSize.Width;
