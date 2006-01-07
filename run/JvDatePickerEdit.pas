@@ -539,7 +539,7 @@ begin
       lDate := 0;
       AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
       if AlwaysReturnEditDate then
-        Self.Date := lDate;
+        FDate := lDate;
     end;
   end;
   inherited Change;
