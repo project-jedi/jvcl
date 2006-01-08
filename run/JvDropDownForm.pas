@@ -137,12 +137,6 @@ begin
   FEntering := True;
   FLeaving := False;
   FCloseOnLeave := True;
-
-  with TWinControl(AOwner) do
-  begin
-    Self.Left := ClientOrigin.X;
-    Self.Top := ClientOrigin.Y + Height;
-  end;
 end;
 
 {$IFDEF VCL}
@@ -172,6 +166,15 @@ var
   LScreenRect: TRect;
 begin
   inherited DoShow;
+
+  // Mantis 3357: Always reposition ourselves with respect to the owner
+  // as it may have moved between two of our apparitions.
+  with TWinControl(Owner) do
+  begin
+    Self.Left := ClientOrigin.X;
+    Self.Top := ClientOrigin.Y + Height;
+  end;
+
   {$IFDEF VCL}
   if Screen.MonitorCount > 0 then
   begin
