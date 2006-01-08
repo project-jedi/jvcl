@@ -128,6 +128,7 @@ type
     {$ENDIF VisualCLX}
     function GetForm: TForm;
   protected
+    procedure ResolveAppStoragePath;
     procedure Loaded; override;
     procedure Save; dynamic;
     procedure Restore; dynamic;
@@ -346,6 +347,9 @@ procedure TJvFormPlacement.Loaded;
 var
   Loading: Boolean;
 begin
+  // Mantis 3190: Only resolve when we are loaded so that we get the correct
+  // form name if it's a form inheriting from another one.
+  ResolveAppStoragePath;
   Loading := csLoading in ComponentState;
   inherited Loaded;
   if not (csDesigning in ComponentState) then
@@ -398,11 +402,12 @@ begin
     FAppStoragePath := AValue + '\'
   else
     FAppStoragePath := AValue;
-  if not (csDesigning in ComponentState) then
+
+  // Mantis 3190: Do not resolve if we are loding, this is way too early to
+  // get a valid form name if this form is inheriting from another one.
+  if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
   begin
-    if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
-      Assigned(Owner) and (Owner is TCustomForm) then
-      StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase]);
+    ResolveAppStoragePath;
   end;
 end;
 
@@ -1410,6 +1415,13 @@ end;
 procedure TJvFormStorage.SetStoredValuesPath(const AValue: string);
 begin
   FStoredValues.Path := AValue;
+end;
+
+procedure TJvFormPlacement.ResolveAppStoragePath;
+begin
+  if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
+    Assigned(Owner) and (Owner is TCustomForm) then
+    StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase]);
 end;
 
 { TJvFormStorageStringList }
