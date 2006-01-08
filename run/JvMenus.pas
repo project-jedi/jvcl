@@ -411,6 +411,7 @@ type
     FOnDrawItem: TDrawMenuItemEvent;
     FImageMargin: TJvImageMargin;
     FImageSize: TJvMenuImageSize;
+    FMenuHeight: Integer;
 
     FItem: TMenuItem;
     FState: TMenuOwnerDrawState;
@@ -2124,10 +2125,13 @@ begin
   else
     FPopupMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, FGlyph, FNumGlyphs);
 
-  if not Measure and (BackColor <> clNone) then
+  if not Measure then
   begin
-    Canvas.Brush.Color := BackColor;
-    Canvas.FillRect(ItemRect);
+    if (BackColor <> clNone) then
+    begin
+      Canvas.Brush.Color := BackColor;
+      Canvas.FillRect(ItemRect);
+    end;
   end;
   FImageIndex := FItem.ImageIndex;
 
@@ -2163,8 +2167,7 @@ var
   // The item rect, whithout the left margin
   ItemRectNoLeftMargin: TRect;
 
-  CanvasWindow: HWND;
-  CanvasRect: TRect;
+  TmpWidth, TmpHeight : Integer;
 begin
   // We must do this to prevent the code in Menus.pas from drawing
   // the item before us, thus trigerring rendering glitches, especially
@@ -2177,11 +2180,28 @@ begin
   // calculate areas for the different parts of the item to be drawn
   if IsPopup then
   begin
-    // as the margin is to be drawn for the entire height of the menu,
-    // we need to retrieve this height. The only way to do that is to
-    // get the rectangle for the canvas in which we are to draw.
-    CanvasWindow := WindowFromDC(Canvas.Handle);
-    GetWindowRect(CanvasWindow, CanvasRect);
+    // As the margin is to be drawn for the entire height of the menu,
+    // we need to retrieve this height.
+    // There are multiple ways to do this:
+    // 1. Get the canvas' associated window and take its size.
+    //    This does not work well under XP with shade/slide effects on as the
+    //    call to WindowFromDC often returns 0 (Mantis 3197).
+    // 2. Measure every item in the menu.
+    //    This is very "tedious" and as such is only done when drawing the first
+    //    element. Note that this does not mean only once as the first element
+    //    will be redrawn as soon as its status changes.
+    //
+    // Solution 2 is then used as it offers the biggest reliability to retrieve
+    // the menus total height.
+    if (LeftMargin > 0) and Assigned(Item.Parent) and (Item = Item.Parent.Items[0]) then
+    begin
+      FMenuHeight := 0;
+      for I := 0 to Item.Parent.Count-1 do
+      begin
+        Measure(Item.Parent.Items[i], TmpWidth, TmpHeight);
+        Inc(FMenuHeight, tmpHeight);
+      end;
+    end;  
 
     // different values depending on the reading convention
     if IsRightToLeft then
@@ -2194,7 +2214,7 @@ begin
       OffsetRect(ImageAndMarginRect, -LeftMargin, 0);
       OffsetRect(TextAndMarginRect, -LeftMargin, 0);
 
-      LeftMarginRect := Rect(ItemRect.Right, 0, Cardinal(ItemRect.Right) - LeftMargin, CanvasRect.Bottom - CanvasRect.Top);
+      LeftMarginRect := Rect(ItemRect.Right, 0, Cardinal(ItemRect.Right) - LeftMargin, FMenuHeight);
     end
     else
     begin
@@ -2206,14 +2226,14 @@ begin
       OffsetRect(ImageAndMarginRect, LeftMargin, 0);
       OffsetRect(TextAndMarginRect, LeftMargin, 0);
 
-      LeftMarginRect := Rect(ItemRect.Left, 0, Cardinal(ItemRect.Left) + LeftMargin, CanvasRect.Bottom - CanvasRect.Top);
+      LeftMarginRect := Rect(ItemRect.Left, 0, Cardinal(ItemRect.Left) + LeftMargin, FMenuHeight);
     end;
     ImageRect := Rect(ImageAndMarginRect.Left + ImageMargin.Left, ImageAndMarginRect.Top + ImageMargin.Top, ImageAndMarginRect.Right - ImageMargin.Right, ImageAndMarginRect.Bottom - ImageMargin.Bottom);
     TextRect := Rect(TextAndMarginRect.Left + TextMargin, TextAndMarginRect.Top, TextAndMarginRect.Right, TextAndMarginRect.Bottom);
   end
   else
   begin
-    CanvasWindow := 0;
+    //CanvasWindow := 0;
     ItemRectNoLeftMargin := ItemRect;
     TextAndMarginRect := ItemRect;
     TextRect := ItemRect;
@@ -2222,8 +2242,9 @@ begin
   // first, draw the background of the entire item
   DrawItemBackground(ItemRect);
 
-  // draw the margin, if any
-  if (LeftMargin > 0) and (CanvasWindow <> 0) then
+  // draw the margin, if any. Do it all the time to go against erasing
+  // created by the operating system itself.
+  if (LeftMargin > 0) then
     DrawLeftMargin(LeftMarginRect);
 
   // draw the background of each separate part
@@ -2442,6 +2463,7 @@ begin
     OneItemHasChildren := False;
     // Find the widest item in the menu being displayed
     if Item.Parent <> nil then
+    begin
 
       // If the current item is the first one and it's not
       // alone, then discard its width because for some reason
@@ -2484,6 +2506,7 @@ begin
             ShortcutWidth := tmpWidth;
         end;
       end;
+    end;
     Result := MaxWidth;
 
     // If there was a shortcut in any of the items,
