@@ -216,9 +216,23 @@ begin
 end;
 
 procedure TJvDateTimePicker.UpdateCalendar(CalHandle: THandle);
+var
+  rect : TRect;
+  width, colWidth : Integer;
 begin
   if CalHandle <> 0 then
   begin
+    // Mantis 3399: If we are showing week numbers then we need an additional
+    // column in the calendar. Its width is one seventh of the original width
+    // of the calendar before it was showing the week numbers.
+    if WeekNumbers then
+    begin
+      GetWindowRect(CalHandle, rect);
+      width := rect.Right - rect.Left;
+      colWidth := width div 7;
+      rect.Right := rect.Right + colWidth;
+      SetWindowPos(CalHandle, 0, 0, 0, rect.Right-rect.Left, rect.Bottom-rect.Top, SWP_NOMOVE or SWP_NOZORDER);
+    end;
     SetCalendarStyle(CalHandle,MCS_WEEKNUMBERS, WeekNumbers);
     SetCalendarStyle(CalHandle,MCS_NOTODAY, not ShowToday);
     SetCalendarStyle(CalHandle,MCS_NOTODAYCIRCLE, not ShowTodayCircle);
