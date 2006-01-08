@@ -198,8 +198,8 @@ type
     function AddDocType(const AValue: string): TJvSimpleXMLElemDocType;
     procedure Clear;
     function AddStyleSheet(AType, AHRef: string): TJvSimpleXMLElemSheet;
-    function LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil): string;
-    procedure SaveToStream(const Stream: TStream; Parent: TJvSimpleXML = nil);
+    function LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil): string;
+    procedure SaveToStream(const Stream: TStream; AParent: TJvSimpleXML = nil);
     property Item[const Index: Integer]: TJvSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
     property Encoding: string read GetEncoding write SetEncoding;
@@ -258,7 +258,7 @@ type
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
     procedure BinaryValue(const Name: string; const Stream: TStream);
     function LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil): string;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil);
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil);
     procedure Sort;
     procedure CustomSort(AFunction: TJvSimpleXMLElemCompare);
     property Parent: TJvSimpleXMLElem read FParent write FParent;
@@ -297,10 +297,10 @@ type
     destructor Destroy; override;
     procedure Assign(Value: TJvSimpleXMLElem); virtual;
     procedure Clear; virtual;
-    function SaveToString: string;
-    procedure LoadFromString(const Value: string);
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); virtual; abstract;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); virtual;
+    function SaveToString(AParent: TJvSimpleXML = nil): string;
+    procedure LoadFromString(const Value: string; AParent: TJvSimpleXML = nil);
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); virtual; abstract;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); virtual;
       abstract;
     procedure GetBinaryValue(const Stream: TStream);
     property Data: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF} read FData write FData;
@@ -325,26 +325,26 @@ type
 
   TJvSimpleXMLElemComment = class(TJvSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
   end;
 
   TJvSimpleXMLElemClassic = class(TJvSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
   end;
 
   TJvSimpleXMLElemCData = class(TJvSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
   end;
 
   TJvSimpleXMLElemText = class(TJvSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
   end;
 
   TJvSimpleXMLElemHeader = class(TJvSimpleXMLElem)
@@ -355,8 +355,8 @@ type
   public
     procedure Assign(Value: TJvSimpleXMLElem); override;
     
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
     property Version: string read FVersion write FVersion;
     property StandAlone: Boolean read FStandalone write FStandalone;
     property Encoding: string read FEncoding write FEncoding;
@@ -365,17 +365,18 @@ type
 
   TJvSimpleXMLElemDocType = class(TJvSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
   end;
 
   TJvSimpleXMLElemSheet = class(TJvSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
+    procedure LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil); override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJvSimpleXML = nil); override;
   end;
 
-  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity, sxoDoNotSaveProlog);
+  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
+    sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace);
   TJvSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJvSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
   TJvSimpleXML = class(TComponent)
@@ -1053,16 +1054,8 @@ begin
     end
     else
     begin
-      if Assigned(FOnTagParsed) or Assigned(FOnValue) then
-      begin
-        FProlog.LoadFromStream(AOutStream, Self);
-        FRoot.LoadFromStream(AOutStream, Self);
-      end
-      else
-      begin
-        FProlog.LoadFromStream(AOutStream);
-        FRoot.LoadFromStream(AOutStream);
-      end;
+      FProlog.LoadFromStream(AOutStream, Self);
+      FRoot.LoadFromStream(AOutStream, Self);
     end;
   finally
     if DoFree then
@@ -1131,8 +1124,8 @@ begin
     else
     begin
       if not (sxoDoNotSaveProlog in FOptions) then
-        Prolog.SaveToStream(AOutStream);
-      Root.SaveToStream(AOutStream);
+        Prolog.SaveToStream(AOutStream, Self);
+      Root.SaveToStream(AOutStream, '', Self);
     end;
     if Assigned(FOnEncodeStream) then
     begin
@@ -1316,25 +1309,25 @@ begin
     Result := FSimpleXML;
 end;
 
-procedure TJvSimpleXMLElem.LoadFromString(const Value: string);
+procedure TJvSimpleXMLElem.LoadFromString(const Value: string; AParent : TJvSimpleXML);
 var
   Stream: TStringStream;
 begin
   Stream := TStringStream.Create(Value);
   try
-    LoadFromStream(Stream);
+    LoadFromStream(Stream, AParent);
   finally
     Stream.Free;
   end;
 end;
 
-function TJvSimpleXMLElem.SaveToString: string;
+function TJvSimpleXMLElem.SaveToString(AParent : TJvSimpleXML): string;
 var
   Stream: TStringStream;
 begin
   Stream := TStringStream.Create('');
   try
-    SaveToStream(Stream);
+    SaveToStream(Stream, '', AParent);
     Result := Stream.DataString;
   finally
     Stream.Free;
@@ -1630,19 +1623,37 @@ begin
 end;
 
 function TJvSimpleXMLElems.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML): string;
+type
+  TReadStatus = (rsWaitingTag, rsReadingTagKind, rsProcessingEndTag); 
 var
-  I, lStreamPos, Count, lPos: Integer;
+  I, lStreamPos, Count: Integer;
+  lPos: TReadStatus;
   lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
   Po: string;
   lElem: TJvSimpleXMLElem;
   Ch: Char;
+  lSimpleXML: TJvSimpleXML;
+  lTrimWhiteSpace, lContainsWhiteSpace: Boolean;
+  lStartOfContentPos, lTempStreamPos: Integer;
 begin
   lStreamPos := Stream.Position;
   Result := '';
   Po := '';
   St := '';
-  lPos := 0;
+  lPos := rsWaitingTag;
+
+  // Preserve old preceeding whitespace trimming behaviour
+  if Assigned(Parent) then
+  begin
+    lSimpleXML := Parent.SimpleXML;
+    if Assigned(lSimpleXML) then
+      lTrimWhiteSpace := sxoTrimPrecedingTextWhitespace in lSimpleXML.Options
+    else
+      lTrimWhiteSpace := False;
+  end
+  else
+    lTrimWhiteSpace := False;
 
   // We read from a stream, thus replacing the existing items
   Clear;
@@ -1651,6 +1662,8 @@ begin
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
     if AParent <> nil then
       AParent.DoLoadProgress(Stream.Position, Stream.Size);
+    lContainsWhiteSpace := False;
+    lStartOfContentPos := lStreamPos;
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -1658,23 +1671,27 @@ begin
       Ch := lBuf[I];
 
       case lPos of
-        0: //We are waiting for a tag and thus avoiding spaces
+        rsWaitingTag: //We are waiting for a tag and thus avoiding spaces
           begin
             case Ch of
               ' ', Tab, Cr, Lf:
                 begin
+                  lContainsWhiteSpace := True;
                 end;
               '<':
                 begin
-                  lPos := 1;
+                  lPos := rsReadingTagKind;
                   St := Ch;
                 end;
             else
               begin
                   //This is a text
                 lElem := TJvSimpleXMLElemText.Create(Parent);
-                Stream.Seek(lStreamPos - 1, soFromBeginning);
-                lElem.LoadFromStream(Stream);
+                if lTrimWhiteSpace then
+                  Stream.Seek(lStreamPos - 1, soFromBeginning)
+                else
+                  Stream.Seek(lStartOfContentPos, soFromBeginning);
+                lElem.LoadFromStream(Stream, AParent);
                 lStreamPos := Stream.Position;
                 CreateElems;
                 FElems.AddObject(lElem.Name, lElem);
@@ -1683,14 +1700,14 @@ begin
             end;
           end;
 
-        1: //We are trying to determine the kind of the tag
+        rsReadingTagKind: //We are trying to determine the kind of the tag
           begin
             lElem := nil;
             case Ch of
               '/':
                 if St = '<' then
                 begin
-                  lPos := 2;
+                  lPos := rsProcessingEndTag;
                   St := '';
                 end
                 else
@@ -1721,17 +1738,17 @@ begin
             begin
               CreateElems;
               Stream.Seek(lStreamPos - (Length(St)), soFromBeginning);
-              lElem.LoadFromStream(Stream);
+              lElem.LoadFromStream(Stream, AParent);
               lStreamPos := Stream.Position;
               FElems.AddObject(lElem.Name, lElem);
               Notify(lElem, opInsert);
               St := '';
-              lPos := 0;
+              lPos := rsWaitingTag;
               Break;
             end;
           end;
 
-        2: //This is an end tag
+        rsProcessingEndTag: //This is an end tag
           case Ch of
             '>':
               begin
@@ -1740,6 +1757,26 @@ begin
                 else
                   Result := St;
                 Count := 0;
+
+                // We have reached an end tag. If whitespace was found while
+                // waiting for the end tag, and the user told us to keep it
+                // then we have to create a text element.
+                // But it must only be created if there are not other elements
+                // in the list. If we did not check this, we would create a
+                // text element for whitespace found between two adjacent end
+                // tags.  
+                if lContainsWhiteSpace and not lTrimWhiteSpace  and
+                   (not Assigned(FElems) or (FElems.Count=0))then
+                begin
+                  lTempStreamPos := Stream.Position;
+                  lElem := TJvSimpleXMLElemText.Create(Parent);
+                  Stream.Seek(lStartOfContentPos, soFromBeginning);
+                  lElem.LoadFromStream(Stream, AParent);
+                  CreateElems;
+                  FElems.AddObject(lElem.Name, lElem);
+                  Stream.Seek(lTempStreamPos, soFromBeginning);
+                end;
+
                 Break;
               end;
             ':':
@@ -1770,12 +1807,12 @@ begin
 end;
 
 procedure TJvSimpleXMLElems.SaveToStream(const Stream: TStream;
-  const Level: string; Parent: TJvSimpleXML);
+  const Level: string; AParent: TJvSimpleXML);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Item[I].SaveToStream(Stream, Level, Parent);
+    Item[I].SaveToStream(Stream, Level, AParent);
 end;
 
 function TJvSimpleXMLElems.Value(const Name: string; Default: string): string;
@@ -2269,7 +2306,7 @@ end;
 
 //=== { TJvSimpleXMLElemClassic } ============================================
 
-procedure TJvSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML);
 //<element Prop="foo" Prop='bar'/>
 //<element Prop="foo" Prop='bar'>foor<b>beuh</b>bar</element>
 //<xml:element Prop="foo" Prop='bar'>foor<b>beuh</b>bar</element>
@@ -2287,8 +2324,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2328,7 +2365,7 @@ begin
                   lName := St;
                   //Load elements
                   Stream.Seek(lStreamPos, soFromBeginning);
-                  St := Items.LoadFromStream(Stream, Parent);
+                  St := Items.LoadFromStream(Stream, AParent);
                   if lNameSpace <> '' then
                   begin
                     if not AnsiSameText(lNameSpace + ':' + lName, St) then
@@ -2378,16 +2415,16 @@ begin
   Value := lValue;
   NameSpace := lNameSpace;
 
-  if Parent <> nil then
+  if AParent <> nil then
   begin
-    Parent.DoTagParsed(lName);
-    Parent.DoValueParsed(lName, lValue);
+    AParent.DoTagParsed(lName);
+    AParent.DoValueParsed(lName, lValue);
   end;
 
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; AParent: TJvSimpleXML);
 var
   St, AName, tmp: string;
   LevelAdd: string;
@@ -2439,20 +2476,20 @@ begin
     begin
       LevelAdd := SimpleXML.IndentString;
     end;
-    Items.SaveToStream(Stream, Level + LevelAdd, Parent);
+    Items.SaveToStream(Stream, Level + LevelAdd, AParent);
     if Name <> '' then
     begin
       St := Level + '</' + AName + '>' + sLineBreak;
       WriteStringToStream(Stream, St, Length(St));
     end;
   end;
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemComment } ============================================
 
-procedure TJvSimpleXMLElemComment.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemComment.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML);
 //<!-- declarations for <head> & <body> -->
 const
   CS_START_COMMENT = '<!--';
@@ -2470,8 +2507,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2520,13 +2557,13 @@ begin
   Value := St;
   Name := '';
 
-  if Parent <> nil then
-    Parent.DoValueParsed('', St);
+  if AParent <> nil then
+    AParent.DoValueParsed('', St);
 
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemComment.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemComment.SaveToStream(const Stream: TStream; const Level: string; AParent: TJvSimpleXML);
 var
   St: string;
 begin
@@ -2536,13 +2573,13 @@ begin
     WriteStringToStream(Stream, Value, Length(Value));
   St := '-->' + sLineBreak;
   WriteStringToStream(Stream, St, Length(St));
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemCData } ==============================================
 
-procedure TJvSimpleXMLElemCData.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemCData.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML);
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
 const
   CS_START_CDATA = '<![CDATA[';
@@ -2560,8 +2597,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2608,13 +2645,13 @@ begin
   Value := St;
   Name := '';
 
-  if Parent <> nil then
-    Parent.DoValueParsed('', St);
+  if AParent <> nil then
+    AParent.DoValueParsed('', St);
 
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemCData.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemCData.SaveToStream(const Stream: TStream; const Level: string; AParent: TJvSimpleXML);
 var
   St: string;
 begin
@@ -2624,13 +2661,13 @@ begin
     WriteStringToStream(Stream, Value, Length(Value));
   St := ']]>' + sLineBreak;
   WriteStringToStream(Stream, St, Length(St));
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemText } ===============================================
 
-procedure TJvSimpleXMLElemText.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemText.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML);
 var
   I, lStreamPos, Count: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
@@ -2641,8 +2678,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2668,13 +2705,13 @@ begin
   Value := St;
   Name := '';
 
-  if Parent <> nil then
-    Parent.DoValueParsed('', St);
+  if AParent <> nil then
+    AParent.DoValueParsed('', St);
 
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemText.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemText.SaveToStream(const Stream: TStream; const Level: string; AParent: TJvSimpleXML);
 var
   St, tmp: string;
 begin
@@ -2686,8 +2723,8 @@ begin
     St := Level + tmp + sLineBreak;
     WriteStringToStream(Stream, St, Length(St));
   end;
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemHeader } =============================================
@@ -2711,7 +2748,7 @@ begin
   FStandalone := False;
 end;
 
-procedure TJvSimpleXMLElemHeader.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemHeader.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML);
 //<?xml version="1.0" encoding="iso-xyzxx" standalone="yes"?>
 const
   CS_START_HEADER = '<?xml';
@@ -2727,8 +2764,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2785,7 +2822,7 @@ begin
 end;
 
 procedure TJvSimpleXMLElemHeader.SaveToStream(const Stream: TStream;
-  const Level: string; Parent: TJvSimpleXML);
+  const Level: string; AParent: TJvSimpleXML);
 var
   St: string;
 begin
@@ -2796,13 +2833,13 @@ begin
     St := St + ' standalone="yes"';
   St := St + '?>' + sLineBreak;
   WriteStringToStream(Stream, St, Length(St));
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemDocType } ============================================
 
-procedure TJvSimpleXMLElemDocType.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemDocType.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML);
 {
 <!DOCTYPE test [
 <!ELEMENT test (#PCDATA) >
@@ -2830,8 +2867,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2874,27 +2911,27 @@ begin
   Name := '';
   Value := Trim(St);
 
-  if Parent <> nil then
-    Parent.DoValueParsed('', St);
+  if AParent <> nil then
+    AParent.DoValueParsed('', St);
 
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
 procedure TJvSimpleXMLElemDocType.SaveToStream(const Stream: TStream;
-  const Level: string; Parent: TJvSimpleXML);
+  const Level: string; AParent: TJvSimpleXML);
 var
   St: string;
 begin
   St := '<!DOCTYPE ' + Value + '>' + sLineBreak;
   WriteStringToStream(Stream, St, Length(St));
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemSheet } ==============================================
 
 procedure TJvSimpleXMLElemSheet.LoadFromStream(const Stream: TStream;
-  Parent: TJvSimpleXML);
+  AParent: TJvSimpleXML);
 //<?xml-stylesheet alternate="yes" type="text/xsl" href="sheet.xsl"?>
 const
   CS_START_PI = '<?xml-stylesheet';
@@ -2910,8 +2947,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2961,7 +2998,7 @@ begin
 end;
 
 procedure TJvSimpleXMLElemSheet.SaveToStream(const Stream: TStream;
-  const Level: string; Parent: TJvSimpleXML);
+  const Level: string; AParent: TJvSimpleXML);
 var
   I: Integer;
   St: string;
@@ -2971,8 +3008,8 @@ begin
     St := St + Properties.Item[I].SaveToString;
   St := St + '?>' + sLineBreak;
   WriteStringToStream(Stream, St, Length(St));
-  if Parent <> nil then
-    Parent.DoSaveProgress;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
 end;
 
 //=== { TJvSimpleXMLElemsProlog } ============================================
@@ -3013,7 +3050,7 @@ begin
 end;
 
 function TJvSimpleXMLElemsProlog.LoadFromStream(
-  const Stream: TStream; Parent: TJvSimpleXML): string;
+  const Stream: TStream; AParent: TJvSimpleXML): string;
 {<?xml version="1.0" encoding="UTF-8" ?>
 <!-- Test -->
 <!DOCTYPE greeting [
@@ -3037,8 +3074,8 @@ begin
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if Parent <> nil then
-      Parent.DoLoadProgress(Stream.Position, Stream.Size);
+    if AParent <> nil then
+      AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -3095,7 +3132,7 @@ begin
             if lElem <> nil then
             begin
               Stream.Seek(lStreamPos - (Length(St)), soFromBeginning);
-              lElem.LoadFromStream(Stream);
+              lElem.LoadFromStream(Stream, AParent);
               lStreamPos := Stream.Position;
               FElems.AddObject(lElem.Name, lElem);
               St := '';
@@ -3110,13 +3147,13 @@ begin
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemsProlog.SaveToStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXMLElemsProlog.SaveToStream(const Stream: TStream; AParent: TJvSimpleXML);
 var
   I: Integer;
 begin
   FindHeader;
   for I := 0 to Count - 1 do
-    Item[I].SaveToStream(Stream, '', Parent);
+    Item[I].SaveToStream(Stream, '', AParent);
 end;
 
 //=== { TJvSimpleHashTable } =================================================
