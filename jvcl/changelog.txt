@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2006-01-08:
+- TJvSimpleXML will now not trim leading white space in front of text elements (Mantis 3377)
+  Use sxoTrimPrecedingTextWhitespace to get the old behaviour back. // obones
 2005-12-03:
 - TJvFormStorage.StoredProps can now be directly edited with the standard IDE strings editor & code editor by editing it from Object Inspector. The StoredProps Editor can still be invoked by double clicking on the TJvFormStorage component on the form. (Mantis #3150) // elahn
 2005-08-21:
