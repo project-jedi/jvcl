@@ -716,22 +716,29 @@ begin
 
       // calculate textrect.
       if Assigned(Image.Graphic) and not Image.Graphic.Empty then
-        case FLayout of
-          blGlyphLeft:
-            Inc(Rect.Left, Image.Width + FSpacing);
-          blGlyphRight:
-            begin
-              Dec(Rect.Left, Image.Width + FSpacing);
-              Dec(Rect.Right, (Image.Width + FSpacing) * 2);
-              Flags := Flags or DT_RIGHT;
-            end;
-          blGlyphTop:
-            Inc(Rect.Top, Image.Height + FSpacing);
-          blGlyphBottom:
-            Dec(Rect.Top, Image.Height + FSpacing);
+        if Length(Caption) > 0 then
+        begin
+          case FLayout of
+            blGlyphLeft:
+              Inc(Rect.Left, Image.Width + FSpacing);
+            blGlyphRight:
+              begin
+                Dec(Rect.Left, Image.Width + FSpacing);
+                Dec(Rect.Right, (Image.Width + FSpacing) * 2);
+                Flags := Flags or DT_RIGHT;
+              end;
+            blGlyphTop:
+              Inc(Rect.Top, Image.Height + FSpacing);
+            blGlyphBottom:
+              Dec(Rect.Top, Image.Height + FSpacing);
+          end;
         end;
-      JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags or DT_CALCRECT);
-      OffsetRect(Rect, (Width - Rect.Right) div 2, (Height - Rect.Bottom) div 2);
+
+      if Length(Caption) > 0 then
+      begin
+        JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags or DT_CALCRECT);
+        OffsetRect(Rect, (Width - Rect.Right) div 2, (Height - Rect.Bottom) div 2);
+      end;
 
       // should we draw the pressed state?
       DrawPressed := (dsHighlight in DrawState) and (dsClicked in DrawState);
@@ -742,20 +749,25 @@ begin
       if Assigned(Image.Graphic) and not Image.Graphic.Empty then
       begin
         Image.Graphic.Transparent := True;
-        case FLayout of
-          blGlyphLeft:
-            Draw(Rect.Left - (Image.Width + FSpacing), (Height - Image.Height) div 2 +
-              Integer(DrawPressed), Image.Graphic);
-          blGlyphRight:
-            Draw(Rect.Right + FSpacing, (Height - Image.Height) div 2 +
-              Integer(DrawPressed), Image.Graphic);
-          blGlyphTop:
-            Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
-              Rect.Top - (Image.Height + FSpacing), Image.Graphic);
-          blGlyphBottom:
-            Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
-              Rect.Bottom + FSpacing, Image.Graphic);
-        end;
+        if Length(Caption) > 0 then
+          case FLayout of
+            blGlyphLeft:
+              Draw(Rect.Left - (Image.Width + FSpacing), (Height - Image.Height) div 2 +
+                Integer(DrawPressed), Image.Graphic);
+            blGlyphRight:
+              Draw(Rect.Right + FSpacing, (Height - Image.Height) div 2 +
+                Integer(DrawPressed), Image.Graphic);
+            blGlyphTop:
+              Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
+                Rect.Top - (Image.Height + FSpacing), Image.Graphic);
+            blGlyphBottom:
+              Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
+                Rect.Bottom + FSpacing, Image.Graphic);
+          end
+        else
+          // draw the glyph into the center
+          Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
+            (Height - Image.Height) div 2 + Integer(DrawPressed), Image.Graphic);
       end;
 
       // draw focusrect (if enabled).
