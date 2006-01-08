@@ -144,6 +144,17 @@ procedure TJvCustomDropDownForm.CreateParams(var AParams: TCreateParams);
 begin
   inherited CreateParams(AParams);
   AParams.Style := AParams.Style or WS_BORDER;
+
+  // Fixing the Window Ghosting "bug"
+  // This also fixes mantis 3409 where the popup would not appear if its
+  // associated control was placed on a form with fsStayOnTop form style.
+  AParams.Style := Aparams.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    AParams.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    AParams.WndParent := Application.MainForm.Handle
+  else
+    AParams.WndParent := Application.Handle;
 end;
 {$ENDIF VCL}
 
