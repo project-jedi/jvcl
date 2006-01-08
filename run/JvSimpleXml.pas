@@ -1633,7 +1633,6 @@ var
   Po: string;
   lElem: TJvSimpleXMLElem;
   Ch: Char;
-  lSimpleXML: TJvSimpleXML;
   lTrimWhiteSpace, lContainsWhiteSpace: Boolean;
   lStartOfContentPos, lTempStreamPos: Integer;
 begin
@@ -1644,16 +1643,7 @@ begin
   lPos := rsWaitingTag;
 
   // Preserve old preceeding whitespace trimming behaviour
-  if Assigned(Parent) then
-  begin
-    lSimpleXML := Parent.SimpleXML;
-    if Assigned(lSimpleXML) then
-      lTrimWhiteSpace := sxoTrimPrecedingTextWhitespace in lSimpleXML.Options
-    else
-      lTrimWhiteSpace := False;
-  end
-  else
-    lTrimWhiteSpace := False;
+  lTrimWhiteSpace := Assigned(AParent) and (sxoTrimPrecedingTextWhitespace in AParent.Options);
 
   // We read from a stream, thus replacing the existing items
   Clear;
