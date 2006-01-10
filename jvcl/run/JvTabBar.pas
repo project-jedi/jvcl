@@ -1468,6 +1468,8 @@ begin
       R := Tab.DisplayRect;
       if R.Right > FBarWidth then
         Inc(FLeftIndex)
+      else if R.Left < 0 then
+        Dec(FLeftIndex)
       else
         Break;
     until FLeftIndex = Tabs.Count - 1;
