@@ -1269,6 +1269,7 @@ begin
    the wrong size, so we do this here.
   }
   AutoSize := True;
+  TJvMonthCalendar2(FCal).Today:=Date; { update the current day }
   inherited DoShow;
 end;
 
