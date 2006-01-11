@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2006-01-11:
+- TJvOracleDataset added : This is a multithreaded implementation of TOracleDataset from "Direct Oracle Access Components" 
+  http://www.allroundautomations.com
+  Include the USE_3RDPARTY_DOA option in the installation to activate the component
 2006-01-08:
 - TJvSimpleXML will now not trim leading white space in front of text elements (Mantis 3377)
   Use sxoTrimPrecedingTextWhitespace to get the old behaviour back. // obones
