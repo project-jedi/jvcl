@@ -1531,6 +1531,23 @@ resourcestring
   RsDefaultColorCaption = 'Automatic';
   RsCustomColorCaption = 'Other Colors...';
 
+//=== JvOracleDataset.pas ====================================================
+resourcestring
+  SODSOpenFetch = 'Open / Fetch : ';
+  SODSCurrentRecord = 'Current Record : ';
+  SODSRowsFetchedContinue = '%d rows fetched. Continue ? ';
+  SODSContinueYes = 'Yes';
+  SODSContinuePause = 'Pause';
+  SODSContinueNo = 'No';
+  SODSContinueClose = 'Close';
+  SODSContinueAll = 'All';
+  SODSGotoLastFetchRecords = 'Goto Last - Fetch Records';
+  SODSFetchRecords = 'Fetch Records';
+  SODSOpenQueryFetchRecords = 'Open Query - Fetch Records';
+  SODSOpenQuery = 'Open Query';
+  SODSRefreshQueryFetchRecords = 'Refresh Query - Fetch Records';
+  SODSRefreshQuery = 'Refresh Query';
+
 //=== JvPageSetup.pas ========================================================
 resourcestring
   RsEInvalidValue = 'Value must be greater than zero';
