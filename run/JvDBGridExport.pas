@@ -994,7 +994,10 @@ begin
       lString := '';
       for I := 0 to FColumnCount - 1 do
         if FRecordColumns[I].Visible then
-          lString := lString + FRecordColumns[I].ColumnName + Separator;
+          if lString = '' then
+            lString := FRecordColumns[I].ColumnName
+          else  
+            lString := Separator + lString + FRecordColumns[I].ColumnName;
       FDocument.Add(lString);
     end;
 
