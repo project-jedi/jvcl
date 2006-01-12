@@ -850,6 +850,7 @@ type
     var Action: Boolean) of object;
   TJvInvalidDateEvent = procedure(Sender: TObject; const DateString: string;
     var NewDate: TDateTime; var Accept: Boolean) of object;
+  TPreferredDateFormat = (pdLocale, pdLocaleOnly, pdCustom, pdCustomOnly);
 
   TJvCustomDateEdit = class(TJvCustomComboEdit)
   private
@@ -866,14 +867,21 @@ type
     FStartOfWeek: TDayOfWeekName;
     FWeekends: TDaysOfWeek;
     FWeekendColor: TColor;
+    FCustomDateFormat: string;
     FYearDigits: TYearDigits;
+    FDateFormatPreferred: TPreferredDateFormat;
     FDateFormat: string[10];
+    FDateFormat2: string[10];
     FFormatting: Boolean;
     // Polaris
     procedure SetMinDate(Value: TDateTime);
     procedure SetMaxDate(Value: TDateTime);
     // Polaris
     function GetDate: TDateTime;
+    procedure SetCustomDateFormat(const Value: string);
+    procedure SetDateFormatPreferred(Value: TPreferredDateFormat);
+    function IsDateFormatStored: Boolean;
+    function IsDateFormatPreferredStored: Boolean;
     procedure SetYearDigits(Value: TYearDigits);
     function GetPopupColor: TColor;
     procedure SetPopupColor(Value: TColor);
@@ -926,7 +934,9 @@ type
     procedure UpdatePopup;
     procedure PopupDropDown(DisableEdit: Boolean); override;
     procedure SetParent(AParent: TWinControl); override;
-    
+    function GetDefaultDateFormat: string; virtual;
+    function GetDefaultDateFormatPreferred: TPreferredDateFormat; virtual;
+
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
     property CalendarHints: TStrings read GetCalendarHints write SetCalendarHints;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
@@ -941,6 +951,9 @@ type
     property StartOfWeek: TDayOfWeekName read FStartOfWeek write SetStartOfWeek default Mon;
     property Weekends: TDaysOfWeek read FWeekends write SetWeekends default [Sun];
     property WeekendColor: TColor read FWeekendColor write SetWeekendColor default clRed;
+    property DateFormat: string read FCustomDateFormat write SetCustomDateFormat stored IsDateFormatStored;
+    property DateFormatPreferred: TPreferredDateFormat read FDateFormatPreferred
+      write SetDateFormatPreferred stored IsDateFormatPreferredStored;
     property YearDigits: TYearDigits read FYearDigits write SetYearDigits default dyDefault;
     property OnAcceptDate: TExecDateDialog read FOnAcceptDate write FOnAcceptDate;
     property OnInvalidDate: TJvInvalidDateEvent read FOnInvalidDate write FOnInvalidDate;
@@ -974,6 +987,8 @@ type
     property EditMask;
   published
     property Date;
+    property DateFormat;
+    property DateFormatPreferred;
     property DateAutoBetween; // Polaris
     property MinDate; // Polaris
     property MaxDate; // Polaris
@@ -3660,6 +3675,8 @@ begin
   {$IFDEF VCL}
   DateHook.Add;
   {$ENDIF VCL}
+  FCustomDateFormat := GetDefaultDateFormat;
+  FDateFormatPreferred := GetDefaultDateFormatPreferred;
 
   ControlState := ControlState + [csCreating];
   try
@@ -3769,13 +3786,33 @@ begin
       FFormatting := False;
     end;
   except
-    if CanFocus then
-      SetFocus;
-    ADate := Self.Date;
-    if DoInvalidDate(Text,ADate) then
-      Self.Date := ADate
+    if FDateFormat2 <> '' then
+    try
+      FFormatting := True;
+      try
+        SetDate(StrToDateFmt(FDateFormat2, Text));
+      finally
+        FFormatting := False;
+      end;
+    except
+      if CanFocus then
+        SetFocus;
+      ADate := Self.Date;
+      if DoInvalidDate(Text,ADate) then
+        Self.Date := ADate
+      else
+        raise;
+    end
     else
-      raise;
+    begin
+      if CanFocus then
+        SetFocus;
+      ADate := Self.Date;
+      if DoInvalidDate(Text,ADate) then
+        Self.Date := ADate
+      else
+        raise;
+    end;
   end;
 end;
 
@@ -4149,6 +4186,51 @@ begin
   end;
 end;
 
+function TJvCustomDateEdit.GetDefaultDateFormat: string;
+begin
+  Result := '';
+end;
+
+function TJvCustomDateEdit.IsDateFormatStored: Boolean;
+begin
+  Result := (FCustomDateFormat <> GetDefaultDateFormat);
+end;
+
+function TJvCustomDateEdit.GetDefaultDateFormatPreferred: TPreferredDateFormat;
+begin
+  Result := pdLocaleOnly;
+end;
+
+function TJvCustomDateEdit.IsDateFormatPreferredStored: Boolean;
+begin
+  Result := (FDateFormatPreferred <> GetDefaultDateFormatPreferred);
+end;
+
+procedure TJvCustomDateEdit.SetDateFormatPreferred(Value: TPreferredDateFormat);
+begin
+  if FDateFormatPreferred <> Value then
+  begin
+    FDateFormatPreferred := Value;
+    if not (csLoading in ComponentState) then
+      UpdateMask;
+  end;
+end;
+
+procedure TJvCustomDateEdit.SetCustomDateFormat(const Value: string);
+begin
+  if FCustomDateFormat <> Value then
+  begin
+    FCustomDateFormat := Value;
+    if not (csLoading in ComponentState) then
+    begin
+      if FDateFormatPreferred in [pdCustom, pdCustomOnly] then
+        UpdateMask
+      else
+        UpdateFormat;
+    end;
+  end;
+end;
+
 procedure TJvCustomDateEdit.SetYearDigits(Value: TYearDigits);
 begin
   if FYearDigits <> Value then
@@ -4190,7 +4272,22 @@ end;
 
 procedure TJvCustomDateEdit.UpdateFormat;
 begin
-  FDateFormat := DefDateFormat(FourDigitYear);
+  if (FDateFormatPreferred in [pdLocale, pdLocaleOnly]) or (FCustomDateFormat = '') then
+  begin
+    FDateFormat := DefDateFormat(FourDigitYear);
+    if FDateFormatPreferred = pdLocale then
+      FDateFormat2 := FCustomDateFormat
+    else
+      FDateFormat2 := '';
+  end
+  else
+  begin
+    FDateFormat := FCustomDateFormat;
+    if FDateFormatPreferred = pdCustom then
+      FDateFormat2 := DefDateFormat(FourDigitYear)
+    else
+      FDateFormat2 := '';
+  end;
 end;
 
 procedure TJvCustomDateEdit.UpdateMask;
