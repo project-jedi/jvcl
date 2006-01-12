@@ -43,6 +43,9 @@ unit JvDataEmbedded;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows, // inline
+  {$ENDIF MSWINDOWS}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
