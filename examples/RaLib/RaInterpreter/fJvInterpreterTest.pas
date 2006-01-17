@@ -40,7 +40,8 @@ uses
  {$IFDEF COMPILER6_UP}
    Variants,
    {$ENDIF}
- JvExControls, JvComponent, JvFormPlacement;
+ JvExControls, JvComponent, JvFormPlacement, JvComponentBase,
+  JvEditorCommon;
 
 
 type
@@ -103,7 +104,7 @@ var
 
 implementation
 
-uses JvJCLUtils, JvJVCLUtils, JvInterpreter_all, JvInterpreter_SysUtils{, JvInterpreter_iMTracer};
+uses JclFileUtils, JclStrings, JvJCLUtils, JvJVCLUtils, JvInterpreter_all, JvInterpreter_SysUtils{, JvInterpreter_iMTracer};
 
 {$R *.DFM}
 
@@ -119,7 +120,7 @@ var
   DosError  : integer;
 begin
   FileList.Clear;
-  Result := FindFirst(AddSlash2(Folder)+Mask, faAnyFile, SearchRec);
+  Result := FindFirst(PathAddSeparator(Folder)+Mask, faAnyFile, SearchRec);
   DosError := Result;
   while DosError = 0 do begin
     if not ((SearchRec.Attr and faDirectory) = faDirectory)  then
@@ -145,19 +146,24 @@ end;
 function FindInPath(const FileName, PathList: string): TFileName;
 var
   i: Integer;
-  S: string;
+  paths : TStringList;
 begin
   i := 0;
-  S := SubStr(PathList, i, ';');
-  while S <> '' do                  
-  begin
-    Result := AddSlash2(S) + FileName;
-    if FileExists(Result) then
-      Exit;
-    inc(i);
-    S := SubStr(PathList, i, ';');
-  end;
   Result := '';
+  paths := TStringList.Create;
+  try
+    StrToStrings(PathList, ';', paths, False);
+    while i < paths.Count do
+    begin
+      Result := PathAddSeparator(paths[i]) + FileName;
+      if FileExists(Result) then
+        Exit;
+      inc(i);
+    end;
+    Result := '';
+  finally
+    paths.Free;
+  end;
 end;
 
 { constructor Create(Msg: string) }
