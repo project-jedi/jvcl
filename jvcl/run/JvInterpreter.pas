@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Dmitry Osinovsky, Peter Thornqvist, Olga Kobzar
                 Peter Schraut (http://www.console-de.de)
+                Ivan Ravin (ivan_ra)
 
 Portions created by Dmitry Osinovsky and Olga Kobzar are
 Copyright (C) 2003 ProgramBank Ltd.
@@ -285,7 +286,7 @@ type
                                 TClassIdentifier.Identifier}
     FParamCount: Integer; { - 1..cJvInterpreterMaxArgs }
     FParamTypes: TTypeArray;
-    FParamTypeNames: TNameArray; //dejoy added
+    FParamTypeNames: TNameArray; 
     FParamNames: TNameArray;
     FResTyp: Word;
     FResTypName: string;
@@ -304,7 +305,7 @@ type
     property ParamCount: Integer read FParamCount;
     property ParamTypes[Index: Integer]: Word read GetParamType;
     property ParamNames[Index: Integer]: string read GetParamName;
-    property ParamTypeNames[Index: Integer]: string read GetParamTypeNames; //dejoy added
+    property ParamTypeNames[Index: Integer]: string read GetParamTypeNames; 
     property ResTyp: Word read FResTyp;
     property ResTypName: string read FResTypName;
     property ResDataType: IJvInterpreterDataType read FResDataType;
@@ -364,6 +365,7 @@ type
     procedure DeleteVar(const UnitName, Identifier: string);
     function GetValue(const Identifier: string; var Value: Variant; Args: TJvInterpreterArgs): Boolean;
     function SetValue(const Identifier: string; const Value: Variant; Args: TJvInterpreterArgs): Boolean;
+    procedure Assign(source: TJvInterpreterVarList);
   end;
  { notes about TJvInterpreterVarList implementation:
    - list must allow to contain more than one Var with same name;
@@ -398,7 +400,6 @@ type
     function GetTyp: Word;
   end;
 
-  //dejoy change begin
   //move from implementation section to  interface section
   TParamCount = -1..cJvInterpreterMaxArgs;
 
@@ -442,8 +443,14 @@ type
   end;
 
   TJvInterpreterClass = class(TJvInterpreterIdentifier)
+  private
+    FClassFields:TJvInterpreterVarList;   
   protected
     FClassType: TClass;
+  public
+    property ClassFields:TJvInterpreterVarList read FClassFields;
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   TJvInterpreterConst = class(TJvInterpreterIdentifier)
@@ -567,7 +574,6 @@ type
     LocalVars: TJvInterpreterVarList;
     Fun: TJvInterpreterSrcFunction;
   end;
-  //dejoy change end
 
   { TJvInterpreterAdapter - route JvInterpreter calls to Delphi functions }
   TJvInterpreterAdapter = class(TObject)
@@ -622,7 +628,8 @@ type
     function SetElement(Expression: TJvInterpreterExpression; var Variable: Variant;
       const Value: Variant; var Args: TJvInterpreterArgs): Boolean; virtual;
     function NewRecord(const RecordType: string; var Value: Variant): Boolean; virtual;
-    function FindFunDesc(const UnitName, Identifier: string): TJvInterpreterFunctionDesc; virtual;
+    function FindFunDesc(const UnitName, Identifier: string;
+      const ClassIdentifier:string=''): TJvInterpreterFunctionDesc; virtual;
     procedure CurUnitChanged(const NewUnitName: string; var Source: string); virtual;
     function UnitExists(const Identifier: string): Boolean; virtual;
     function IsEvent(Obj: TObject; const Identifier: string): Boolean; virtual;
@@ -735,13 +742,15 @@ type
       const ADllName, AFunctionName: string; AFunIndex: Integer; AParamCount: Integer;
       AParamTypes: array of Word; AResTyp: Word; AData: Pointer); dynamic;
     procedure AddSrcFun(const UnitName, Identifier: string;
+      ClassIdentifier: string; 
       PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
-      ParamTypeNames: array of string; //dejoy added
+      ParamTypeNames: array of string;
       ParamNames: array of string; ResTyp: Word; const AResTypName: string;
       AResDataType: IJvInterpreterDataType; Data: Pointer); dynamic;
     procedure AddSrcFunEx(const AUnitName, AIdentifier: string;
+      AClassIdentifier: string;
       APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
-      AParamTypeNames: array of string; //dejoy added
+      AParamTypeNames: array of string; 
       AParamNames: array of string; AResTyp: Word; const AResTypName: string;
       AResDataType: IJvInterpreterDataType; AData: Pointer); dynamic;
     procedure AddHandler(const UnitName, Identifier: string;
@@ -758,7 +767,6 @@ type
     procedure AddOnSet(Method: TJvInterpreterSetValue); dynamic;
   public
     property DisableExternalFunctions: Boolean read FDisableExternalFunctions write FDisableExternalFunctions;
-  //dejoy added begin
     property SrcUnitList: TJvInterpreterIdentifierList read FSrcUnitList;
     property ExtUnitList: TJvInterpreterIdentifierList read FExtUnitList;
     property GetList: TJvInterpreterIdentifierList read FGetList;
@@ -783,7 +791,6 @@ type
     property EventList: TJvInterpreterIdentifierList read FEventList;
     property SrcVarList: TJvInterpreterVarList read FSrcVarList;
     property SrcClassList: TJvInterpreterIdentifierList read FSrcClassList;
-  //dejoy added end
   end;
 
   TStackPtr = -1..cJvInterpreterStackMax;
@@ -1263,7 +1270,8 @@ uses
   {$IFDEF JvInterpreter_OLEAUTO}
   OleConst, ActiveX, ComObj,
   {$ENDIF JvInterpreter_OLEAUTO}
-  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
+  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes,
+  JvInterpreterFm; // required uses for class method support
 
 var
   FieldGlobalJvInterpreterAdapter: TJvInterpreterAdapter = nil;
@@ -2614,14 +2622,26 @@ begin
       JvInterpreterVarAssignment(V.Value, Value);
 end;
 
+procedure TJvInterpreterVarList.Assign(source: TJvInterpreterVarList);
+var
+  i:integer;
+  SrcVar:TJvInterpreterVar;
+begin
+  Clear;
+  for i:=0 to Source.Count-1 do begin
+    SrcVar:=TJvInterpreterVar(Source[i]);
+    with SrcVar do
+      AddVar(UnitName,Identifier,Typ,VTyp,Value,nil);  // DataType not used
+      //TJvInterpreterSimpleDataType.Create(varVariant)
+  end;
+end;
+
 //=== { TJvInterpreterFunctionDesc } =========================================
 
 function TJvInterpreterFunctionDesc.GetParamType(Index: Integer): Word;
 begin
   Result := FParamTypes[Index];
 end;
-
-//dejoy added begin
 
 function TJvInterpreterFunctionDesc.GetParamTypeNames(Index: Integer): string;
 begin
@@ -2667,7 +2687,6 @@ begin
   end;
   Result := Format(t, [Fun, FIdentifier, Param, Ret]);
 end;
-//dejoy added end
 
 function TJvInterpreterFunctionDesc.GetParamName(Index: Integer): string;
 begin
@@ -2925,10 +2944,13 @@ begin
 end;
 
 procedure TJvInterpreterAdapter.ClearSource;
+var i:integer; 
 begin
   ClearList(FSrcUnitList);
   ClearList(FSrcFunctionList);
   FSrcVarList.Clear;
+  for i:=0 to FSrcClassList.Count-1 do 
+    TJvInterpreterClass(FSrcClassList[i]).ClassFields.Clear;
   ClearList(FSrcClassList);
 end;
 
@@ -2999,9 +3021,25 @@ begin
   for I := 0 to Source.FExtUnitList.Count - 1 do
     with TJvInterpreterIdentifier(Source.FExtUnitList[I]) do
       AddExtUnitEx(Identifier, Data);
-  for I := 0 to Source.FClassList.Count - 1 do
+  for I := 0 to Source.FClassList.Count - 1 do begin
     with TJvInterpreterClass(Source.FClassList[I]) do
       AddClassEx(UnitName, FClassType, Identifier, Data);
+    TJvInterpreterClass(FClassList[FClassList.Count-1]).ClassFields.Assign(
+      TJvInterpreterClass(Source.FClassList[I]).ClassFields); 
+  end;
+
+  for I := 0 to Source.FSrcFunctionList.Count - 1 do
+    with TJvInterpreterSrcFunction(Source.FSrcFunctionList[I]).FunctionDesc do
+      AddSrcFunEx(UnitName, Identifier, ClassIdentifier, PosBeg, PosEnd, ParamCount, FParamTypes,
+        FParamTypeNames, FParamNames, ResTyp, ResTypName, ResDataType,
+        TJvInterpreterSrcFunction(Source.FSrcFunctionList[I]).Data);
+  for I := 0 to Source.FSrcUnitList.Count - 1 do begin
+    with TJvInterpreterSrcUnit(Source.FSrcUnitList[I]) do
+      AddSrcUnitEx(Identifier, Source, '', Data);
+    TJvInterpreterSrcUnit(FSrcUnitList[FSrcUnitList.Count - 1]).FUsesList:=
+      TJvInterpreterSrcUnit(Source.FSrcUnitList[I]).UsesList;
+  end;
+
   for I := 0 to Source.FConstList.Count - 1 do
     with TJvInterpreterConst(Source.FConstList[I]) do
       AddConstEx(UnitName, Identifier, Value, Data);
@@ -3110,8 +3148,9 @@ begin
   JvInterpreterClass.FClassType := AClassType;
   JvInterpreterClass.Identifier := Identifier;
   JvInterpreterClass.Data := Data;
+  JvInterpreterClass.UnitName := UnitName;  
   FClassList.Add(JvInterpreterClass);
-  FSorted := False; // Ivan_ra
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddGet(AClassType: TClass; const Identifier: string;
@@ -3136,7 +3175,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FGetList.Add(JvInterpreterMethod);
-  FSorted := False; // Ivan_ra
+  FSorted := False; 
 end;
 
 procedure TJvInterpreterAdapter.AddIGet(AClassType: TClass; const Identifier: string;
@@ -3161,7 +3200,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FIGetList.Add(JvInterpreterMethod);
-  FSorted := False; // Ivan_ra
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddIDGet(AClassType: TClass;
@@ -3209,7 +3248,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FIntfGetList.Add(JvInterpreterMethod);
-  FSorted := False; // Ivan_ra
+  FSorted := False; 
 end;
 
 procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; const Identifier: string;
@@ -3258,7 +3297,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FSetList.Add(JvInterpreterMethod);
-  FSorted := False; // Ivan_ra
+  FSorted := False; 
 end;
 
 procedure TJvInterpreterAdapter.AddISet(AClassType: TClass; const Identifier: string;
@@ -3281,7 +3320,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FISetList.Add(JvInterpreterMethod);
-  FSorted := False; // Ivan_ra
+  FSorted := False; 
 end;
 
 procedure TJvInterpreterAdapter.AddIDSet(AClassType: TClass;
@@ -3325,8 +3364,9 @@ begin
   JvInterpreterMethod.ResTyp := ResTyp;
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
+  JvInterpreterMethod.UnitName := UnitName; 
   FFunctionList.Add(JvInterpreterMethod);
-  FSorted := False; // Ivan_ra
+  FSorted := False; 
 end;
 
 procedure TJvInterpreterAdapter.AddRec(const UnitName, Identifier: string;
@@ -3361,6 +3401,7 @@ begin
     JvInterpreterRecord.Fields[I].DataType := nil;
   end;
   JvInterpreterRecord.FieldCount := High(Fields) - Low(Fields) + 1;
+  JvInterpreterRecord.UnitName := UnitName;  
   FRecordList.Add(JvInterpreterRecord);
 end;
 
@@ -3386,6 +3427,7 @@ begin
   RecMethod.ResTyp := ResTyp;
   RecMethod.Data := Data;
   ConvertParamTypes(ParamTypes, RecMethod.ParamTypes);
+  RecMethod.UnitName := UnitName;  
   FRecordGetList.Add(RecMethod);
 end;
 
@@ -3409,6 +3451,7 @@ begin
   RecMethod.ParamCount := ParamCount;
   RecMethod.Data := Data;
   ConvertParamTypes(ParamTypes, RecMethod.ParamTypes);
+  RecMethod.UnitName := UnitName;  
   FRecordSetList.Add(RecMethod);
 end;
 
@@ -3427,8 +3470,9 @@ begin
   JvInterpreterConst.Identifier := AIdentifier;
   JvInterpreterConst.Value := AValue;
   JvInterpreterConst.Data := AData;
+  JvInterpreterConst.UnitName := AUnitName;
   FConstList.Add(JvInterpreterConst);
-  FSorted := False; // Ivan_ra
+  FSorted := False; 
 end;
 
 procedure TJvInterpreterAdapter.AddExtFun(const UnitName, Identifier: string;
@@ -3459,24 +3503,27 @@ begin
     Data := AData;
     ConvertParamTypes(AParamTypes, FunctionDesc.FParamTypes);
   end;
+  JvInterpreterExtFun.UnitName := AUnitName;
   FExtFunctionList.Add(JvInterpreterExtFun);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFun(const UnitName, Identifier: string;
+  ClassIdentifier: string;
   PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
-  ParamTypeNames: array of string; //dejoy added
+  ParamTypeNames: array of string;
   ParamNames: array of string; ResTyp: Word; const AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   Data: Pointer);
 begin
-  AddSrcFunEx(UnitName, Identifier, PosBeg, PosEnd, ParamCount, ParamTypes,
-    ParamTypeNames, //dejoy added
+  AddSrcFunEx(UnitName, Identifier, ClassIdentifier, PosBeg, PosEnd, ParamCount, ParamTypes,
+    ParamTypeNames, 
     ParamNames, ResTyp, AResTypName, AResDataType, nil);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFunEx(const AUnitName, AIdentifier: string;
+  AClassIdentifier: string;
   APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
-  AParamTypeNames: array of string; //dejoy added
+  AParamTypeNames: array of string; 
   AParamNames: array of string; AResTyp: Word; const AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   AData: Pointer);
@@ -3494,13 +3541,15 @@ begin
     FunctionDesc.FResTyp := AResTyp;
     FunctionDesc.FResTypName := AResTypName;
     FunctionDesc.FResDataType := AResDataType;
+    FunctionDesc.FClassIdentifier := AClassIdentifier; // class method support
     Identifier := AIdentifier;
     Data := AData;
     ConvertParamTypes(AParamTypes, FunctionDesc.FParamTypes);
     ConvertParamNames(AParamNames, FunctionDesc.FParamNames);
-    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames); //dejoy added  for ParamTypeNames
+    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames); 
     FunctionDesc.FResTyp := AResTyp;
   end;
+  JvInterpreterSrcFun.UnitName := AUnitName;  // Code Insight
   FSrcFunctionList.Add(JvInterpreterSrcFun);
 end;
 
@@ -3625,7 +3674,8 @@ begin
 end;
 
 function TJvInterpreterAdapter.FindFunDesc(const UnitName: string;
-  const Identifier: string): TJvInterpreterFunctionDesc;
+  const Identifier: string;
+  const ClassIdentifier:string=''): TJvInterpreterFunctionDesc;
 var
   I: Integer;
 begin
@@ -3633,10 +3683,11 @@ begin
   begin
     Result := TJvInterpreterSrcFunction(FSrcFunctionList.Items[I]).FunctionDesc;
     if Cmp(Result.Identifier, Identifier) and
+      (Cmp(Result.ClassIdentifier, ClassIdentifier) or (ClassIdentifier='')) and  //  Class methods support
       (Cmp(Result.UnitName, UnitName) or (UnitName = '')) then
       Exit;
   end;
-  if UnitName <> '' then
+  if (UnitName <> '') and (ClassIdentifier='') then //  Class methods support
     Result := FindFunDesc('', Identifier)
   else
     Result := nil;
@@ -3659,7 +3710,7 @@ var
       for I := I to FGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FGetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
@@ -3696,7 +3747,7 @@ var
       for I := I to FIntfGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterIntfMethod(FIntfGetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then 
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           ((Args.ObjTyp = varUnknown) and
@@ -3722,7 +3773,7 @@ var
       for I := I to FIGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FIGetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then 
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
@@ -4088,7 +4139,7 @@ begin
     end
     else
     if (Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass)) then
-    begin // ivan_ra
+    begin
       if IGetMethod then
         Exit;
       I := Args.Count;
@@ -4100,7 +4151,7 @@ begin
       end;
       if Result then
         Exit;
-    end; // ivan_ra
+    end; 
   end
   else
   begin
@@ -4164,7 +4215,7 @@ begin
   if GetSrcVar then
     Exit;
 
-  if not ((Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass))) then // ivan_ra
+  if not ((Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass))) then 
     if GetSrcUnit then
       Exit;
 
@@ -4220,7 +4271,7 @@ var
       for I := I to FISetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FISetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then 
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           (Args.Obj is JvInterpreterMethod.FClassType) and
@@ -6381,8 +6432,8 @@ begin
   if FCurrArgs.Indexed then
   begin
     MyArgs := TJvInterpreterArgs.Create;
-    MyArgs.Obj := FCurrArgs.Obj; // ivan_ra
-    MyArgs.ObjTyp := FCurrArgs.ObjTyp; // ivan_ra
+    MyArgs.Obj := FCurrArgs.Obj;
+    MyArgs.ObjTyp := FCurrArgs.ObjTyp;
     try
       if GetValue(Identifier, Variable, MyArgs) then
       begin
@@ -7258,11 +7309,11 @@ var
                   Break;
                 NextToken;
               end;
-              FunctionDesc.FParamTypeNames[FunctionDesc.FParamCount] := ParamType; //dejoy added for ParamTypeNames
+              FunctionDesc.FParamTypeNames[FunctionDesc.FParamCount] := ParamType;  // for ParamTypeNames
               Inc(FunctionDesc.FParamCount);
               while iBeg < FunctionDesc.FParamCount do
               begin
-                FunctionDesc.FParamTypeNames[iBeg] := ParamType; //dejoy added  for ParamTypeNames
+                FunctionDesc.FParamTypeNames[iBeg] := ParamType;   // for ParamTypeNames
                 FunctionDesc.FParamTypes[iBeg] := TypeName2VarTyp(ParamType);
                 if VarParam then
                   FunctionDesc.FParamTypes[iBeg] := FunctionDesc.FParamTypes[iBeg] or
@@ -7334,13 +7385,13 @@ var
   FunctionName: string;
   FunctionIndex: Integer;
   DllName: string;
-  LastTTyp: TTokenKind; // Ivan_ra
+  LastTTyp: TTokenKind;
 begin
   FunctionDesc := TJvInterpreterFunctionDesc.Create;
   try
     ReadFunctionHeader(FunctionDesc);
     FunctionDesc.FPosBeg := CurPos;
-    LastTTyp := TTyp; // Ivan_ra
+    LastTTyp := TTyp; 
     NextToken;
     if TTyp = ttExternal then
     begin
@@ -7386,21 +7437,19 @@ begin
           FunctionName, FunctionIndex, FParamCount, FParamTypes, FResTyp);
       NextToken;
     end
-    // Ivan_ra start
     else
     if FUnitSection = usInterface then
     begin
       CurPos := FunctionDesc.FPosBeg;
       FTTyp := LastTTyp;
     end
-    // Ivan_ra finish
     else
     begin
       FindToken(ttBegin);
       SkipToEnd;
       with FunctionDesc do
-        FAdapter.AddSrcFun(FCurUnitName {??!!}, FIdentifier, FPosBeg, CurPos,
-          FParamCount, FParamTypes, FParamTypeNames {dejoy added}, FParamNames, FResTyp, FResTypName, FResDataType,
+        FAdapter.AddSrcFun(FCurUnitName {??!!}, FIdentifier, FClassIdentifier, FPosBeg, CurPos,
+          FParamCount, FParamTypes, FParamTypeNames, FParamNames, FResTyp, FResTypName, FResDataType,
             nil);
     end;
   finally
@@ -7549,6 +7598,7 @@ end;
 procedure TJvInterpreterUnit.InterpretClass(const Identifier: string);
 var
   JvInterpreterSrcClass: TJvInterpreterIdentifier;
+  FunDesc: TJvInterpreterFunctionDesc;  // Class Fields support
 begin
   NextToken;
   if TTyp <> ttLB then
@@ -7559,14 +7609,53 @@ begin
   NextToken;
   if TTyp <> ttRB then
     ErrorExpected(''')''');
-  FindToken(ttEnd);
-  NextToken;
-  if TTyp <> ttSemicolon then
-    ErrorExpected(''';''');
-  JvInterpreterSrcClass := TJvInterpreterIdentifier.Create;
-  JvInterpreterSrcClass.UnitName := FCurUnitName;
-  JvInterpreterSrcClass.Identifier := Identifier;
-  FAdapter.AddSrcClass(JvInterpreterSrcClass);
+
+  JvInterpreterSrcClass := TJvInterpreterClass.Create;
+  try
+    JvInterpreterSrcClass.UnitName := FCurUnitName;
+    JvInterpreterSrcClass.Identifier := Identifier;
+    NextToken;
+    if TTyp=ttIdentifier then begin // First fields can follow class declaration
+      Back;
+      InterpretVar(TJvInterpreterClass(JvInterpreterSrcClass).ClassFields.AddVar);
+      NextToken;
+    end;
+    while true do begin            // try to interpret other fields
+      case TTyp of { }             // property declaration not supported!!
+        ttEmpty:
+          ErrorExpected('''' + kwEND + '''');
+        ttFunction, ttProcedure:   // from InterpetFunction
+          begin
+            FunDesc := TJvInterpreterFunctionDesc.Create;
+            try                    // empty reading
+              ReadFunctionHeader(FunDesc);
+            finally
+              FunDesc.Free;
+            end;
+          end;
+        ttEnd:
+          Break;
+        ttPrivate,ttProtected,ttPublic,ttPublished:
+          begin                    // Add more fields
+            NextToken;
+            Back;
+            if TTyp=ttIdentifier then
+              InterpretVar(TJvInterpreterClass(JvInterpreterSrcClass).ClassFields.AddVar);
+          end;
+        else
+          ErrorExpected(LoadStr2(irDeclaration));
+      end; { case }
+      NextToken;
+    end;
+    NextToken;
+    if TTyp <> ttSemicolon then
+      ErrorExpected(''';''');
+
+    FAdapter.AddSrcClass(JvInterpreterSrcClass);
+  except
+    JvInterpreterSrcClass.Free;
+    raise;
+  end;
 end;
 
 procedure TJvInterpreterUnit.InterpretRecord(const Identifier: string);
@@ -7654,11 +7743,15 @@ begin
   inherited SourceChanged;
 end;
 
+type
+  TJvInterpreterFormAccessProtected = class(TJvInterpreterForm);
+
 function TJvInterpreterUnit.GetValue(const Identifier: string; var Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 var
   FunctionDesc: TJvInterpreterFunctionDesc;
   OldArgs: TJvInterpreterArgs;
+  OldInstance: TObject; // class method support
 begin
   Result := inherited GetValue(Identifier, Value, Args);
   if Result then
@@ -7670,6 +7763,10 @@ begin
     FunctionDesc := FAdapter.FindFunDesc((Args.Obj as TJvInterpreterSrcUnit).Identifier,
       Identifier)
   else
+  if (Args.Obj is TJvInterpreterForm) then
+    with TJvInterpreterFormAccessProtected(Args.Obj) do
+      FunctionDesc:=FAdapter.FindFunDesc(UnitName, Identifier, ClassIdentifier)
+  else
     FunctionDesc := nil;
 
   Result := FunctionDesc <> nil;
@@ -7677,11 +7774,18 @@ begin
   begin
     FAdapter.CheckArgs(Args, FunctionDesc.FParamCount, FunctionDesc.FParamTypes); {not tested !}
     OldArgs := FCurrArgs;
+    OldInstance:=FCurInstance;                    
+    if (Args.Obj is TJvInterpreterForm) then
+    begin
+      FCurInstance:=Args.Obj;                      // class method support
+    end;                                           //
     try
       FCurrArgs := Args;
       ExecFunction(FunctionDesc);
     finally
       FCurrArgs := OldArgs;
+      if (Args.Obj is TJvInterpreterForm) then  
+        FCurInstance:=OldInstance;              // class method support
     end;
     Value := FVResult;
   end;
@@ -8088,6 +8192,19 @@ end;
 function TJvInterpreterSrcUnit.UsesList: TNameArray;
 begin
   Result := FUsesList;
+end;
+
+{ TJvInterpreterClass }
+
+constructor TJvInterpreterClass.Create;
+begin
+  FClassFields:=TJvInterpreterVarList.Create;
+end;
+
+destructor TJvInterpreterClass.Destroy;
+begin
+  FClassFields.Free;
+  inherited Destroy;
 end;
 
 {$IFDEF JvInterpreter_OLEAUTO}
