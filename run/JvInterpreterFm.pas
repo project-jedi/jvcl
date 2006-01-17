@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Ivan Ravin (ivan_ra)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -75,6 +75,7 @@ type
   private
     FJvInterpreterFm: TJvInterpreterFm;
     FMethodList: TList;
+    FFieldList: TJvInterpreterVarList;
     FFreeJvInterpreterFm: Boolean;
     FClassIdentifier: string;
     FUnitName: string;
@@ -184,6 +185,7 @@ end;
 constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
 begin
   FMethodList := TList.Create;
+  FFieldList := TJvInterpreterVarList.Create;  // class fields suport
   {$IFDEF DELPHI}
   inherited CreateNew(AOwner);
   {$ELSE}
@@ -198,6 +200,7 @@ begin
   for I := 0 to FMethodList.Count - 1 do
     FreeMem(FMethodList[I]);
   FMethodList.Free;
+  FFieldList.Free;  // class fields suport
   inherited Destroy;
   if FFreeJvInterpreterFm then
     FJvInterpreterFm.Free;
@@ -352,6 +355,7 @@ end;
 procedure TJvInterpreterFm.LoadForm(AForm: TJvInterpreterForm);
 var
   Stream: TStream;
+  SrcClass: TJvInterpreterIdentifier;                // Class Fields support
 begin
   FForm := AForm;
   Form.FJvInterpreterFm := Self;
@@ -361,6 +365,12 @@ begin
   finally
     FreeDfmStream(Stream);
   end;
+  // Class Fields support begin
+  // copy form fields from pattern
+  SrcClass := TJvInterpreterAdapterAccessProtected(Adapter).GetSrcClass(
+    AForm.FClassIdentifier);
+  AForm.FFieldList.Assign(TJvInterpreterClass(SrcClass).ClassFields);
+  // Class Fields support end
   try
     if Assigned(Form.OnCreate) then
       Form.OnCreate(Form);
@@ -395,6 +405,14 @@ var
         Result := LocalVars.GetValue(Identifier, Value, Args);
         Exit;
       end;
+      // Class Fields support begin
+      with Form.FFieldList do
+      if FindVar('', Identifier) <> nil then
+      begin
+        Result := GetValue(Identifier, Value, Args);
+        Exit;
+      end;
+      // Class Fields support end
       { may be TForm method or published property }
       Args.Obj := Form;
       Args.ObjTyp := varObject;
@@ -463,6 +481,14 @@ begin
       Result := LocalVars.SetValue(Identifier, Value, Args);
       Exit;
     end;
+    // Class Fields support begin
+    with Form.FFieldList do
+    if FindVar('', Identifier) <> nil then
+    begin
+      Result := SetValue(Identifier, Value, Args);
+      Exit;
+    end;
+    // Class Fields support end
     { may be TForm method or published property }
     Args.Obj := CurInstance;
     Args.ObjTyp := varObject;
