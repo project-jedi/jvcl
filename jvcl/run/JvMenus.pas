@@ -417,7 +417,7 @@ type
     FState: TMenuOwnerDrawState;
 
     FImageIndex: Integer;
-    FGlyph: TGraphic;
+    FGlyph: TBitmap;
     FNumGlyphs: Integer;
     FParentMenu: TMenu;
     procedure SetLeftMargin(const Value: Cardinal);
@@ -1874,10 +1874,12 @@ begin
 
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
+  FGlyph := TBitmap.Create;
 end;
 
 destructor TJvCustomMenuItemPainter.Destroy;
 begin
+  FGlyph.Free;
   FImageSize.Free;
   FImageMargin.Free;
   inherited Destroy;
@@ -2112,18 +2114,41 @@ procedure TJvCustomMenuItemPainter.PreparePaint(Item: TMenuItem;
   ItemRect: TRect; State: TMenuOwnerDrawState; Measure: Boolean);
 var
   BackColor: TColor;
+  Graphic: TGraphic;
+  Bmp: TBitmap;
 begin
   UpdateFieldsFromMenu;
   FItem := Item;
   FState := State;
 
-  FGlyph := Item.Bitmap;
+  FGlyph.Assign(Item.Bitmap);
   BackColor := Canvas.Brush.Color;
   FNumGlyphs := 1;
+  Graphic := nil;
   if Assigned(FMainMenu) then
-    FMainMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, FGlyph, FNumGlyphs)
+    FMainMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, Graphic, FNumGlyphs)
   else
-    FPopupMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, FGlyph, FNumGlyphs);
+    FPopupMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, Graphic, FNumGlyphs);
+  if Assigned(Graphic) then
+    FGlyph.Assign(Graphic);
+
+  // Force glyph to fit inside its allocated space, if it's not empty and it
+  // does not fit into the glyph allocated space
+  if not FGlyph.Empty and
+    ((ImageWidth <> FGlyph.Width) or (ImageHeight <> FGlyph.Height)) then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Width := ImageWidth;
+      Bmp.Height := ImageHeight;
+      Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), FGlyph);
+      FGlyph.Width := Bmp.Width;
+      FGlyph.Height := Bmp.Height;
+      FGlyph.Canvas.Draw(0, 0, Bmp);
+    finally
+      Bmp.Free;
+    end;
+  end;
 
   if not Measure then
   begin
@@ -2332,7 +2357,7 @@ begin
             end;
           end
           else
-            DrawMenuBitmap(ImageRect.Left, ImageRect.Top, TBitmap(FGlyph));
+            DrawMenuBitmap(ImageRect.Left, ImageRect.Top, FGlyph);
         end
         else
         begin
@@ -2632,10 +2657,11 @@ begin
   if Assigned(Images) then
     Result := Images.Height
   else
-  if Assigned(FGlyph) and not FGlyph.Empty then
-    Result := FGlyph.Height
-  else
+  begin
     Result := ImageSize.Height;
+    if Assigned(FGlyph) and not FGlyph.Empty and (Result = 0) then
+      Result := 16;  // hard coded as in Borland's VCL
+  end;
 end;
 
 function TJvCustomMenuItemPainter.GetImageWidth: Integer;
@@ -2643,10 +2669,11 @@ begin
   if Assigned(Images) then
     Result := Images.Width
   else
-  if Assigned(FGlyph) and not FGlyph.Empty then
-    Result := FGlyph.Width
-  else
+  begin
     Result := ImageSize.Width;
+    if Assigned(FGlyph) and not FGlyph.Empty and (Result = 0) then
+      Result := 16;  // hard coded as in Borland's VCL
+  end;
 end;
 
 function TJvCustomMenuItemPainter.GetTextMargin: Integer;
