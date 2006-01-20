@@ -3066,19 +3066,22 @@ begin
   if Assigned(FBooleanFieldToEdit) and BooleanEditor then
   begin
     DataLink.Edit;
-    if FBooleanFieldToEdit.IsNull or (FieldValueChange <> JvGridBool_INVERT) then
+    if DataLink.Editing then
     begin
-      if FBooleanFieldToEdit.DataType = ftBoolean then
-        FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK)
+      if FBooleanFieldToEdit.IsNull or (FieldValueChange <> JvGridBool_INVERT) then
+      begin
+        if FBooleanFieldToEdit.DataType = ftBoolean then
+          FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK)
+        else
+          FBooleanFieldToEdit.Value := FieldValueChange + 1;
+      end
       else
-        FBooleanFieldToEdit.Value := FieldValueChange + 1;
-    end
-    else
-      if FBooleanFieldToEdit.DataType = ftBoolean then
-        FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean
-      else
-        FBooleanFieldToEdit.Value := 1 - Abs(FBooleanFieldToEdit.AsInteger);
-    InvalidateCell(Col, Row);
+        if FBooleanFieldToEdit.DataType = ftBoolean then
+          FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean
+        else
+          FBooleanFieldToEdit.Value := 1 - Abs(FBooleanFieldToEdit.AsInteger);
+      InvalidateCell(Col, Row);
+    end;
   end;
   FBooleanFieldToEdit := nil;
 end;
