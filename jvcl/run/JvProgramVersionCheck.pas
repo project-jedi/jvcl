@@ -11,6 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvProgramVersionCheck.PAS, released on 2004-12-16.
 
 The Initial Developer of the Original Code is Jens Fudickar [jens dott fudickar att oratool dott com]
+Contributor : Ed Blanchard
 All Rights Reserved.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -27,16 +28,16 @@ unit JvProgramVersionCheck;
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Classes,
-  {$IFDEF USE_3RDPARTY_INDY}
+{$IFDEF USE_3RDPARTY_INDY}
   IdHTTP, IdFtp,
-  {$ENDIF USE_3RDPARTY_INDY}
-  {$IFDEF USE_3RDPARTY_ICS}
+{$ENDIF USE_3RDPARTY_INDY}
+{$IFDEF USE_3RDPARTY_ICS}
   HttpProt, FtpCli,
-  {$ENDIF USE_3RDPARTY_ICS}
+{$ENDIF USE_3RDPARTY_ICS}
   JvPropertyStore, JvAppStorage, JvAppIniStorage, JvComponent,
   JvParameterList, JvThread, JvUrlListGrabber, JvUrlGrabbers, JvThreadDialog;
 
@@ -101,7 +102,7 @@ type
     property ProgramReleaseDate: TDateTime read FProgramReleaseDate write FProgramReleaseDate;
   end;
 
-  TJvProgramVersionInfoReleaseArray = array [TJvProgramReleaseType] of TJvProgramVersionInfo;
+  TJvProgramVersionInfoReleaseArray = array[TJvProgramReleaseType] of TJvProgramVersionInfo;
 
   { List of all Program version stored in a remote file via TJvAppStorage }
   TJvProgramVersionHistory = class(TJvCustomPropertyListStore)
@@ -254,7 +255,7 @@ type
     property VersionInfoFileName;
   end;
 
-  {$IFDEF USE_3RDPARTY_INDY}
+{$IFDEF USE_3RDPARTY_INDY}
   TJvProgramVersionHTTPLocationIndy = class(TJvProgramVersionHTTPLocation)
   private
     FIdHttp: TIdHttp;
@@ -275,9 +276,9 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-  {$ENDIF USE_3RDPARTY_INDY}
+{$ENDIF USE_3RDPARTY_INDY}
 
-  {$IFDEF USE_3RDPARTY_ICS}
+{$IFDEF USE_3RDPARTY_ICS}
   TJvProgramVersionHTTPLocationICS = class(TJvProgramVersionHTTPLocation)
   private
     FHttpCli: THttpCli;
@@ -298,7 +299,7 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-  {$ENDIF USE_3RDPARTY_ICS}
+{$ENDIF USE_3RDPARTY_ICS}
 
   TJvProgramVersionFTPLocation = class;
   TJvLoadFileFromRemoteFTPEvent = function(AProgramVersionLocation: TJvProgramVersionFTPLocation;
@@ -318,7 +319,7 @@ type
     property ProxySettings;
   end;
 
-  {$IFDEF USE_3RDPARTY_INDY}
+{$IFDEF USE_3RDPARTY_INDY}
   TJvProgramVersionFTPLocationIndy = class(TJvProgramVersionFTPLocation)
   private
     FIdFtp: TIdFtp;
@@ -339,9 +340,9 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-  {$ENDIF USE_3RDPARTY_INDY}
+{$ENDIF USE_3RDPARTY_INDY}
 
-  {$IFDEF USE_3RDPARTY_ICS}
+{$IFDEF USE_3RDPARTY_ICS}
   TJvProgramVersionFTPLocationICS = class(TJvProgramVersionFTPLocation)
   private
     FFtpClient: TFtpClient;
@@ -362,7 +363,7 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-  {$ENDIF USE_3RDPARTY_ICS}
+{$ENDIF USE_3RDPARTY_ICS}
 
   TJvProgramVersionDatabaseLocation = class;
   TJvLoadFileFromRemoteDatabaseEvent = function(AProgramVersionLocation: TJvProgramVersionDatabaseLocation;
@@ -499,7 +500,7 @@ type
     {Defines which options of the component are stored/restored via AppStorage }
     property UserOptions: TJvProgramVersionUserOptions read FUserOptions write SetUserOptions
       default [uoCheckFrequency, uoLocalDirectory, uoAllowedReleaseType,
-        uoLocationType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase];
+      uoLocationType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase];
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -530,7 +531,7 @@ const
   SProgramVersion = 'Program Version ';
   SLastCheck = 'LastCheck';
 
-//=== Common Functions =======================================================
+  //=== Common Functions =======================================================
 
 function CompareVersionNumbers(AVersion1, AVersion2: string): Integer;
 var
@@ -555,11 +556,11 @@ var
     if S = '' then
       Result := -1
     else
-      try
-        Result := StrToInt(S);
-      except
-        Result := -1;
-      end;
+    try
+      Result := StrToInt(S);
+    except
+      Result := -1;
+    end;
   end;
 
 begin
@@ -572,8 +573,7 @@ begin
       Result := 1;
       Exit;
     end
-    else
-    if N2 < N1 then
+    else if N2 < N1 then
     begin
       Result := -1;
       Exit;
@@ -648,14 +648,11 @@ function TJvProgramVersionInfo.ProgramSizeString: string;
 begin
   if ProgramSize <= 0 then
     Result := ''
-  else
-  if ProgramSize >= 1024 * 1024 * 1024 then
+  else if ProgramSize >= 1024 * 1024 * 1024 then
     Result := Format(RsPVSiceGB, [ProgramSize / 1024 / 1024 / 1024])
-  else
-  if ProgramSize >= 1024 * 1024 then
+  else if ProgramSize >= 1024 * 1024 then
     Result := Format(RsPVSiceMB, [ProgramSize / 1024 / 1024])
-  else
-  if ProgramSize >= 1024 then
+  else if ProgramSize >= 1024 then
     Result := Format(RsPVSiceKB, [ProgramSize / 1024])
   else
     Result := Format(RsPVSiceB, [ProgramSize])
@@ -706,8 +703,7 @@ begin
   begin
     if Result = nil then
       Result := CurrentProgramVersion[I]
-    else
-    if Assigned(CurrentProgramVersion[I]) and
+    else if Assigned(CurrentProgramVersion[I]) and
       (CompareVersionNumbers(Result.ProgramVersion, CurrentProgramVersion[I].ProgramVersion) > 0) then
       Result := CurrentProgramVersion[I];
     Inc(I);
@@ -733,8 +729,7 @@ begin
       if ProgramVersion[I].ProgramReleaseType = AProgramReleaseType then
         if Result = nil then
           Result := ProgramVersion[I]
-        else
-        if CompareVersionNumbers(Result.ProgramVersion, ProgramVersion[I].ProgramVersion) = 1 then
+        else if CompareVersionNumbers(Result.ProgramVersion, ProgramVersion[I].ProgramVersion) = 1 then
           Result := ProgramVersion[I];
 end;
 
@@ -791,7 +786,7 @@ begin
         Result := Result + ' - ' + DateTimeToStr(ProgramVersion[I].ProgramReleaseDate);
       if ProgramVersion[I].VersionDescription.Count > 0 then
         Result := Result + AnsiLineBreak + ProgramVersion[I].VersionDescription.Text;
-      Result := Result + AnsiLineBreak+AnsiLineBreak;
+      Result := Result + AnsiLineBreak + AnsiLineBreak;
     end;
 end;
 
@@ -818,6 +813,7 @@ function TJvCustomProgramVersionLocation.LoadFileFromRemote(
 var
   TemporaryLocalFileName: string;
   LocalFileName: string;
+  TemporaryLocalFileName2: string;
 begin
   DownloadStatus := RsPVCDownloading;
   DownloadError := '';
@@ -830,15 +826,53 @@ begin
     DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName));
   Result := LoadFileFromRemoteInt(ARemotePath, ARemoteFileName,
     ALocalPath, TemporaryLocalFileName, ABaseThread);
-  if FileExists(Result) then
+  if FileExists(Result) then // if we successfully copied the remote file to <local>.temp
   begin
     if FileExists(PathAppend(ALocalPath, LocalFileName)) then
-      DeleteFile(PathAppend(ALocalPath, LocalFileName));
-    if RenameFile(Result, PathAppend(ALocalPath, LocalFileName)) then
-      Result := PathAppend(ALocalPath, LocalFileName)
+    begin // if <local> exists
+      if DeleteFile(PathAppend(ALocalPath, LocalFileName)) then
+      begin // if we deleted <local>
+        if RenameFile(Result, PathAppend(ALocalPath, LocalFileName)) then // if we renamed <local>.temp to <local>
+          Result := PathAppend(ALocalPath, LocalFileName) // we can return <local>
+        else
+          Result := ''; // failed rename, return blank
+      end // try to delete <local>
+      else
+      begin // so, we failed delete <local>  try renaming <local>
+        TemporaryLocalFileName2 := LocalFileName + RsPVTempFileNameExtension + '.bak'; // <local>.temp.bak
+        if FileExists(PathAppend(ALocalPath, TemporaryLocalFileName2)) then // if <local>.temp.bak exists
+          DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2)); // get rid of it
+
+        // rename <local> to <local>.temp.bak  (you can't delete live file, but CAN rename in recent Win OS)
+        if RenameFile(PathAppend(ALocalPath, LocalFileName), PathAppend(ALocalPath, TemporaryLocalFileName2)) then
+        begin
+          // try to rename <local>.temp to <local>
+          if RenameFile(Result, PathAppend(ALocalPath, LocalFileName)) then
+          begin
+            // if rename <local>.temp to <local> successful set <local> as return
+            Result := PathAppend(ALocalPath, LocalFileName);
+            // delete <local>.temp.bak  if possible - we don't care if fails - leaving a backup of live exe is a "feature" anyway <g>
+            if FileExists(PathAppend(ALocalPath, TemporaryLocalFileName2)) then
+              DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2));
+          end // rename <local>.temp to <local>
+          else
+            Result := ''; // rename of <local>.temp to <local> failed, return blank
+        end // try to rename <local> to <local>.temp.bak
+        else
+          Result := ''; // rename of <local> to <local>.temp.bak failed, return blank
+      end; // try renaming <local>
+    end // <local> file exists
     else
-      Result := '';
-  end;
+    begin
+      // if <local> doesn't exist, just rename <local>.temp to <local>
+      if RenameFile(Result, PathAppend(ALocalPath, LocalFileName)) then
+        Result := PathAppend(ALocalPath, LocalFileName)
+      else
+        Result := ''; // if rename failed return blank...
+    end; // <local> doesn't exist
+  end // <we successfully copied the remote file to <local>.temp
+  else
+    Result := ''; // if we did not copy remote file to <local>.tempreturn blank
 end;
 
 function TJvCustomProgramVersionLocation.LoadInstallerFileFromRemote(
@@ -941,15 +975,12 @@ begin
     if FileExistsNoDir(PathAppend(ARemotePath, ARemoteFileName)) then
       if (ARemotePath = ALocalPath) and (ARemoteFileName = ALocalFileName) then
         Result := PathAppend(ARemotePath, ARemoteFileName)
-      else
-      if FileCopy(PathAppend(ARemotePath, ARemoteFileName), PathAppend(ALocalPath, ALocalFileName), True) then
+      else if FileCopy(PathAppend(ARemotePath, ARemoteFileName), PathAppend(ALocalPath, ALocalFileName), True) then
         if FileExistsNoDir(PathAppend(ALocalPath, ALocalFileName)) then
           Result := PathAppend(ALocalPath, ALocalFileName)
-        else
-        if FileExistsNoDir(PathAppend(ALocalPath, ARemoteFileName)) then
+        else if FileExistsNoDir(PathAppend(ALocalPath, ARemoteFileName)) then
           Result := PathAppend(ALocalPath, ARemoteFileName)
-        else
-        if FileExistsNoDir(PathAppend(ALocalPath, ExtractFileName(ARemotePath))) then
+        else if FileExistsNoDir(PathAppend(ALocalPath, ExtractFileName(ARemotePath))) then
           Result := PathAppend(ALocalPath, ExtractFileName(ARemotePath));
 end;
 
@@ -1141,15 +1172,12 @@ procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender: TObject);
 begin
   if FDownloadError <> '' then
     JvDSADialogs.MessageDlg(FDownloadError, mtError, [mbOK], 0)
-  else
-  if FExecuteDownloadInstallFileName = '' then
+  else if FExecuteDownloadInstallFileName = '' then
     JvDSADialogs.MessageDlg(RsPVCFileDownloadNotSuccessful, mtError, [mbOK], 0)
-  else
-  if FExecuteOperation = rvoCopy then
+  else if FExecuteOperation = rvoCopy then
     JvDSADialogs.MessageDlg(Format(RsPVCDownloadSuccessfulInstallManually,
       [FExecuteDownloadInstallFileName]), mtInformation, [mbOK], 0)
-  else
-  if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
+  else if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
     mtWarning, [mbYes, mbNo], 0) = mrYes then
     if ShellExecEx(FExecuteDownloadInstallFileName) then
       Application.Terminate
@@ -1350,7 +1378,7 @@ begin
       AProgramVersionInfo.ProgramLocationFileName, ALocalDirectory, ALocalInstallerFileName, ABaseThread);
     FDownloadError := SelectedLocation.DownloadError;
   end
-  else                                     
+  else
     Result := '';
 end;
 
@@ -1371,14 +1399,11 @@ begin
   if Operation = opRemove then
     if AComponent = FLocationNetwork then
       FLocationNetwork := nil
-    else
-    if AComponent = FLocationDatabase then
+    else if AComponent = FLocationDatabase then
       FLocationDatabase := nil
-    else
-    if AComponent = FLocationHTTP then
+    else if AComponent = FLocationHTTP then
       FLocationHTTP := nil
-    else
-    if AComponent = FLocationFTP then
+    else if AComponent = FLocationFTP then
       FLocationFTP := nil
 end;
 
@@ -1679,8 +1704,8 @@ begin
       except
         on E: EHttpException do
           DownloadError := Format(RsPVDownloadFailed, [IntToStr(StatusCode) + ' ' + ReasonPhrase]);
-        else
-          raise;
+      else
+        raise;
       end;
     end;
   finally
@@ -1736,33 +1761,33 @@ begin
 
   ResultStream := TFileStream.Create(ResultName, fmCreate);
   try
-  //  FFtpClient.Port := inttostr(Port);
+    //  FFtpClient.Port := inttostr(Port);
     FFtpClient.DataPortRangeStart := Port;
     FFtpClient.DataPortRangeEnd := Port;
     FFtpClient.UserName := UserName;
     FFtpClient.Password := Password;
     with FFtpClient do
     begin
-//    FtpClient1.HostName           := HostNameEdit.Text;
-//    FtpClient1.Port               := PortEdit.Text;
-//    FtpClient1.DataPortRangeStart := StrToInt(Trim(DataPortRangeStartEdit.Text));
-//    FtpClient1.DataPortRangeEnd   := Port;
-//    FtpClient1.UserName           := UserNameEdit.Text;
-//    FtpClient1.Password           := PasswordEdit.Text;
-//    FtpClient1.Account            := AccountEdit.Text;
-//    FtpClient1.HostDirName        := HostDirEdit.Text;
-//    FtpClient1.HostFileName       := HostFileEdit.Text;
-//    FtpClient1.LocalFileName      := LocalFileEdit.Text;
-//    FtpClient1.Passive            := PassiveCheckBox.Checked;
-//    FtpClient1.Binary             := BinaryCheckBox.Checked;
+      //    FtpClient1.HostName           := HostNameEdit.Text;
+      //    FtpClient1.Port               := PortEdit.Text;
+      //    FtpClient1.DataPortRangeStart := StrToInt(Trim(DataPortRangeStartEdit.Text));
+      //    FtpClient1.DataPortRangeEnd   := Port;
+      //    FtpClient1.UserName           := UserNameEdit.Text;
+      //    FtpClient1.Password           := PasswordEdit.Text;
+      //    FtpClient1.Account            := AccountEdit.Text;
+      //    FtpClient1.HostDirName        := HostDirEdit.Text;
+      //    FtpClient1.HostFileName       := HostFileEdit.Text;
+      //    FtpClient1.LocalFileName      := LocalFileEdit.Text;
+      //    FtpClient1.Passive            := PassiveCheckBox.Checked;
+      //    FtpClient1.Binary             := BinaryCheckBox.Checked;
       MultiThreaded := False;
       Binary := True;
       ProxyPort := IntToStr(ProxySettings.Port);
       ProxyServer := ProxySettings.Server;
-//      ProxyUsername := ProxySettings.UserName;
-//      ProxyPassword := ProxySettings.Password;
-//      Port := 'ftp';
-//      RcvdStream := ResultStream;
+      //      ProxyUsername := ProxySettings.UserName;
+      //      ProxyPassword := ProxySettings.Password;
+      //      Port := 'ftp';
+      //      RcvdStream := ResultStream;
       LocalFileName := ResultName;
       P := Pos('://', ARemotePath);
       if P > 0 then
