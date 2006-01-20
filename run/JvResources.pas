@@ -1536,11 +1536,11 @@ resourcestring
   SODSOpenFetch = 'Open / Fetch : ';
   SODSCurrentRecord = 'Current Record : ';
   SODSRowsFetchedContinue = '%d rows fetched. Continue ? ';
-  SODSContinueYes = 'Yes';
-  SODSContinuePause = 'Pause';
-  SODSContinueNo = 'No';
-  SODSContinueClose = 'Close';
-  SODSContinueAll = 'All';
+  SODSContinueYes = '&Yes';
+  SODSContinuePause = '&Pause';
+  SODSContinueNo = '&No';
+  SODSContinueClose = '&Close';
+  SODSContinueAll = '&All';
   SODSGotoLastFetchRecords = 'Goto Last - Fetch Records';
   SODSFetchRecords = 'Fetch Records';
   SODSOpenQueryFetchRecords = 'Open Query - Fetch Records';
