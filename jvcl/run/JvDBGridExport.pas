@@ -997,7 +997,7 @@ begin
           if lString = '' then
             lString := FRecordColumns[I].ColumnName
           else  
-            lString := Separator + lString + FRecordColumns[I].ColumnName;
+            lString := lString + Separator + FRecordColumns[I].ColumnName;
       FDocument.Add(lString);
     end;
 
