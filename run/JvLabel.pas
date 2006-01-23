@@ -1321,9 +1321,6 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  if IsForegroundTask then
-    MouseCapture := True;  //Capture for MouseUp event
-
   if not MouseOver and Enabled and IsForegroundTask then
   begin
     OtherDragging :=
@@ -1358,7 +1355,6 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-  MouseCapture := False;
   if  MouseOver and Enabled then
   begin
     OtherDragging :=
