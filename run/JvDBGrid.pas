@@ -1662,7 +1662,6 @@ begin
     EditorMode := True;
   Result := False;
   if (inherited CanEditShow) and Assigned(SelectedField)
-    and not (Columns[SelectedIndex].ReadOnly) 
     and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count) then
   begin
     FBooleanFieldToEdit := nil;
