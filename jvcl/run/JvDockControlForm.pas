@@ -3909,37 +3909,37 @@ var
   ARect: TRect;
 begin
   inherited CustomPositionDockRect(Source, X, Y);
-  if VisibleDockClientCount = 0 then
-    if JvGlobalDockClient <> nil then
-    begin
-      case Align of
-        alTop:
-          begin
-            ARect.TopLeft := ClientToScreen(Point(0, 0));
-            ARect.BottomRight := ClientToScreen(
-              Point(Width, Source.Control.TBDockHeight));
-          end;
-        alBottom:
-          begin
-            ARect.TopLeft := ClientToScreen(
-              Point(0, -Source.Control.TBDockHeight));
-            ARect.BottomRight := ClientToScreen(
-              Point(Width, 0));
-          end;
-        alLeft:
-          begin
-            ARect.TopLeft := ClientToScreen(Point(0, 0));
-            ARect.BottomRight := ClientToScreen(
-              Point(Source.Control.LRDockWidth, Height));
-          end;
-        alRight:
-          begin
-            ARect.TopLeft := ClientToScreen(Point(-Source.Control.LRDockWidth, 0));
-            ARect.BottomRight := ClientToScreen(Point(Width, Height));
-          end;
-      end;
-      Source.DockRect := ARect;
+  if (VisibleDockClientCount = 0) and (JvGlobalDockClient <> nil) then
+  begin
+    case Align of
+      alTop:
+        begin
+          ARect.TopLeft := ClientToScreen(Point(0, 0));
+          ARect.BottomRight := ClientToScreen(Point(Width, Source.Control.TBDockHeight));
+        end;
+      alBottom:
+        begin
+          ARect.TopLeft := ClientToScreen(Point(0, -Source.Control.TBDockHeight));
+          ARect.BottomRight := ClientToScreen(Point(Width, 0));
+        end;
+      alLeft:
+        begin
+          ARect.TopLeft := ClientToScreen(Point(0, 0));
+          ARect.BottomRight := ClientToScreen(Point(Source.Control.LRDockWidth, Height));
+        end;
+      alRight:
+        begin
+          ARect.TopLeft := ClientToScreen(Point(-Source.Control.LRDockWidth, 0));
+          ARect.BottomRight := ClientToScreen(Point(Width, Height));
+        end;
+      alClient:
+        begin
+          ARect.TopLeft := ClientToScreen(Point(0, 0));
+          ARect.BottomRight := ClientToScreen(Point(Width, Height));
+        end;
     end;
+    Source.DockRect := ARect;
+  end;
 end;
 
 procedure TJvDockPanel.CustomStartDock(var Source: TJvDockDragDockObject);
