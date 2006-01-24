@@ -1195,12 +1195,16 @@ begin
   try
     NewSel := FindNextNode(Selected);
 
-    If (NewSel = nil) then
+    if NewSel = nil then
+    begin
       NewSel := Items.GetFirstNode;
+      if NewSel = Selected then
+        NewSel := nil;
+    end;
 
     FDataLink.DataSet.Delete;
     Selected.Free;
-    if (NewSel <> nil) then
+    if NewSel <> nil then
     begin
       NewSel.Selected := True;
       Change2(NewSel);
@@ -1213,20 +1217,26 @@ end;
 
 function TJvCustomDBTreeView.FindNextNode(const Node: TTreeNode): TTreeNode;
 begin
-  if (Node <> nil) and (Node.Parent <> nil) then
-    if Node.Parent.Count > 1 then
-      if Node.Index = Node.Parent.Count - 1 then
-        Result := Node.Parent[Node.Index - 1]
+  if Node <> nil then
+  begin
+    if Node.Parent <> nil then
+      if Node.Parent.Count > 1 then
+        if Node.Index = Node.Parent.Count - 1 then
+          Result := Node.Parent[Node.Index - 1]
+        else
+          Result := Node.Parent[Node.Index + 1]
       else
-        Result := Node.Parent[Node.Index + 1]
+        Result := Node.Parent
     else
-      Result := Node.Parent
+      if Items.Count > 1 then
+        if Node.Index = Items.Count - 1 then
+          Result := Items[Node.Index - 1]
+        else
+          Result := Items[Node.Index + 1]
+      else
+        Result := nil;
+  end
   else
-   { if Items.Count > 1 then
-      if Node.Index = Items.Count-1 then
-        Result := Items[Node.Index-1] else
-        Result := Items[Node.Index+1]
-    else}
     Result := nil;
 end;
 
