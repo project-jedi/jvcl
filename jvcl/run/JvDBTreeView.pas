@@ -748,6 +748,8 @@ begin
               HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
           }
         end;
+      if ANode <> nil then
+        OldRecCount := RecordCount;
     finally
       try
         GotoBookmark(BK);
@@ -943,6 +945,7 @@ begin
         FreeBookmark(BK);
         EnableControls;
       end;
+      OldRecCount := RecordCount;
     end;
   finally
     Items.EndUpdate;
