@@ -146,7 +146,7 @@ procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boo
 procedure HandleDotNetHighlighting(Control: TWinControl; const Msg: TMessage;
   MouseOver: Boolean; Color: TColor);
 
-function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: Longint): TMessage; overload;
+function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: Longint): TMessage; overload; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
 function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: TControl): TMessage; overload; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
 function SmallPointToLong(const Pt: TSmallPoint): Longint; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
