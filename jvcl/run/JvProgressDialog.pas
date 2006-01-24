@@ -204,6 +204,8 @@ end;
 destructor TJvProgressDialog.Destroy;
 begin
   // Hide;
+  if Assigned(FForm) then
+    FForm.Close; // OnClose sets CloseAction:=caFree and FForm = nil
   FreeAndNil(FImage);
   FreeAndNil(FIImage);
   inherited Destroy;
@@ -223,7 +225,7 @@ begin
   if Assigned(FOnProgress) then
   begin
     // set new values
-    Image := AnImage;
+    SetPicture(AnImage);
     Min := AMin;
     Max := AMax;
     Interval := AInterval;
@@ -396,7 +398,7 @@ end;
 procedure TJvProgressDialog.RestoreValues;
 begin
   // reset values to original values
-  Image := FIImage;
+  SetPicture(FIImage);
   Min := FIMin;
   Max := FIMax;
   Interval := FIInterval;
