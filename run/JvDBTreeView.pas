@@ -1399,13 +1399,13 @@ procedure TJvCustomDBTreeView.CreateWnd;
 var
   Node: TTreeNode;
   temp: string;
-  strLength: integer;
+  strLength: Integer;
+  HasChildren: Byte;
 begin
   inherited CreateWnd;
-  
   // tree is restored. Now we must restore information about Master Values
-  if assigned(FMastersStream) and (Items.Count > 0)
-  then begin
+  if Assigned(FMastersStream) and (Items.Count > 0) then
+  begin
     Node := Items.GetFirstNode;
     FMastersStream.Position := 0;
     while Assigned(Node) do
@@ -1414,6 +1414,8 @@ begin
       SetLength(temp, strLength);
       FMastersStream.Read(temp[1], strLength);
       TJvDBTreeNode(Node).SetMasterValue(temp);
+      FMastersStream.Read(HasChildren, SizeOf(HasChildren));
+      Node.HasChildren := HasChildren <> 0;
       Node := Node.GetNext;
     end;
     // nil is required, for the destructor not to try to destroy an already
@@ -1426,7 +1428,8 @@ procedure TJvCustomDBTreeView.DestroyWnd;
 var
   Node: TTreeNode;
   temp: string;
-  strLength: integer;
+  strLength: Integer;
+  HasChildren: Byte;
 begin
   if Items.Count > 0 then
   begin
@@ -1440,10 +1443,11 @@ begin
       strLength := length(temp);
       FMastersStream.Write(strLength, SizeOf(strLength));
       FMastersStream.Write(temp[1], strLength);
+      HasChildren := Byte(Node.HasChildren);
+      FMastersStream.Write(HasChildren, SizeOf(HasChildren));
       Node := Node.GetNext;
     end;
   end;
-  
   inherited DestroyWnd;
 end;
 
