@@ -1869,8 +1869,6 @@ var
   IdxList: PDynamicIndexList;
   I: Integer;
 begin                     
-  P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
-
   IdxList := GetDynamicIndexList(TWinControl);
   for I := 0 to GetDynamicMethodCount(TWinControl) - 1 do
     if IdxList[I] = WM_PRINTCLIENT then
