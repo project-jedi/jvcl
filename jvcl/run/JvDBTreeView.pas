@@ -102,7 +102,7 @@ type
     procedure TimerDnDTimer(Sender: TObject);
   protected
     //FSavedActive: Boolean;
-    FMastersStream:TStream;
+    FMastersStream: TStream;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
