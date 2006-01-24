@@ -401,7 +401,7 @@ function GetComputerName: string;
 
 { ReplaceAllStrings searches for all substrings, Words,
   in a string, S, and replaces them with Frases with the same Index. }
-function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
+function ReplaceAllStrings(const S: string; Words, Frases: TStrings): string;
 { ReplaceStrings searches the Word in a string, S, on PosBeg position,
   in the list, Words, and if founds, replaces this Word
   with string from another list, Frases, with the same Index,
@@ -412,7 +412,7 @@ function ReplaceStrings(const S: string; PosBeg, Len: Integer; Words, Frases: TS
 function CountOfLines(const S: string): Integer;
 { DeleteLines deletes all lines from strings which in the words,  words.
   The word of will be deleted from strings. }
-procedure DeleteOfLines(Ss: TStrings; Words:array of string);
+procedure DeleteOfLines(Ss: TStrings; const Words: array of string);
 { DeleteEmptyLines deletes all empty lines from strings, Ss.
   Lines contained only spaces also deletes. }
 procedure DeleteEmptyLines(Ss: TStrings);
@@ -3417,13 +3417,13 @@ end;
       Text := ReplaceAllStrings(Text, memWords.Lines, memFrases.Lines);
 }
 
-function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
+function ReplaceAllStrings(const S: string; Words, Frases: TStrings): string;
 var
   I: Integer;
 begin
-  for I := 0 to Words.Count - 1 do
-    Result := ReplaceString(S, Words[I], Frases[I]);
   Result := S;
+  for I := 0 to Words.Count - 1 do
+    Result := ReplaceString(Result, Words[I], Frases[I]);
 end;
 
 function CountOfLines(const S: string): Integer;
@@ -3437,9 +3437,9 @@ begin
   end;
 end;
 
-procedure DeleteOfLines(Ss: TStrings; Words:array of string);
+procedure DeleteOfLines(Ss: TStrings; const Words: array of string);
 var
-  I,J: Integer;
+  I, J: Integer;
 begin
   Ss.BeginUpdate;
   try
