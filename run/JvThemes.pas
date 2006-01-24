@@ -1701,11 +1701,6 @@ begin
   end;
 end;
 
-function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
-asm
-        CALL System.@FindDynaClass
-end;
-
 procedure WMEraseBkgndHook(Self: TWinControl; var Msg: TWMEraseBkgnd);
 var
   R: TRect;
@@ -1721,6 +1716,11 @@ begin
       FillRect(Msg.DC, Self.ClientRect, Self.Brush.Handle);
   end;
   Msg.Result := 1;
+end;
+
+function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
+asm
+        CALL System.@FindDynaClass
 end;
 
 type
@@ -1827,7 +1827,7 @@ asm
         MOVZX   EAX, WORD PTR [EAX]
 @@Exit:
 end;
-  
+
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
 asm
         MOV     EAX, [EAX].vmtDynamicTable
@@ -1845,9 +1845,9 @@ end;
 
 
 var
-  OrgWinControlWMPaintClient: procedure(Instance: TObject; var Msg: TMessage);
+  OrgWinControlWMPrintClient: procedure(Instance: TObject; var Msg: TMessage);
 
-procedure FixedWMPaintClient(Instance: TObject; var Msg: TMessage);
+procedure FixedWMPrintClient(Instance: TObject; var Msg: TMessage);
 var
   IdSave: Integer;
 begin
@@ -1855,20 +1855,22 @@ begin
   begin
     IdSave := SaveDC(HDC(Msg.WParam));
     try
-      OrgWinControlWMPaintClient(Instance, Msg);
+      OrgWinControlWMPrintClient(Instance, Msg);
     finally
       RestoreDC(HDC(Msg.WParam), IdSave);
     end;
   end
   else
-    OrgWinControlWMPaintClient(Instance, Msg);
+    OrgWinControlWMPrintClient(Instance, Msg);
 end;
 
 function FindWMPrintClient: PPointer;
 var
   IdxList: PDynamicIndexList;
   I: Integer;
-begin
+begin                     
+  P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
+
   IdxList := GetDynamicIndexList(TWinControl);
   for I := 0 to GetDynamicMethodCount(TWinControl) - 1 do
     if IdxList[I] = WM_PRINTCLIENT then
@@ -1888,8 +1890,8 @@ begin
   Proc := FindWMPrintClient();
   if Proc <> nil then
   begin
-    OrgWinControlWMPaintClient := Proc^;
-    NewProc := @FixedWMPaintClient;
+    OrgWinControlWMPrintClient := Proc^;
+    NewProc := @FixedWMPrintClient;
     WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), N);
   end;
 end;
@@ -1903,7 +1905,7 @@ begin
   Proc := FindWMPrintClient;
   if Proc <> nil then
   begin
-    NewProc := @OrgWinControlWMPaintClient;
+    NewProc := @OrgWinControlWMPrintClient;
     WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), N);
   end;
 end;
