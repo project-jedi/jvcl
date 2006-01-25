@@ -360,7 +360,8 @@ begin
   if FHasMaxValue <> NewValue then
   begin
     FHasMaxValue := NewValue;
-    EnforceMaxValue;
+    if not (csLoading in ComponentState) then
+      EnforceMaxValue;
   end;
 end;
 
@@ -369,7 +370,8 @@ begin
   if FHasMinValue <> NewValue then
   begin
     FHasMinValue := NewValue;
-    EnforceMinValue;
+    if not (csLoading in ComponentState) then
+      EnforceMinValue;
   end;
 end;
 
@@ -381,7 +383,8 @@ begin
     { make MinValue consistent }
     if FMinValue > FMaxValue then
       FMinValue := FMaxValue;
-    EnforceMaxValue;
+    if not (csLoading in ComponentState) then
+      EnforceMaxValue;
   end;
 end;
 
@@ -393,7 +396,8 @@ begin
     { make MaxValue consistent }
     if FMaxValue < FMinValue then
       FMaxValue := FMinValue;
-    EnforceMinValue;
+    if not (csLoading in ComponentState) then
+      EnforceMinValue;
   end;
 end;
 
