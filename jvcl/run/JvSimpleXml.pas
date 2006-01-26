@@ -3072,10 +3072,10 @@ begin
       Inc(lStreamPos);
 
       case lPos of
-        0: //We are waiting for a tag and thus avoiding spaces
+        0: //We are waiting for a tag and thus avoiding spaces and any BOM
           begin
             case lBuf[I] of
-              ' ', Tab, Cr, Lf:
+              ' ', Tab, Cr, Lf, #$00, #$FE, #$FF, #$EF, #$BB, #$BF:
                 begin
                 end;
               '<':
