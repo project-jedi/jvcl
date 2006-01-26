@@ -193,6 +193,7 @@ function ConvertPathList(List: TStrings): string; overload;
 {$IFDEF COMPILER5}
 function AnsiStartsText(const SubStr, Text: string): Boolean;
 function ExcludeTrailingPathDelimiter(const Path: string): string;
+function GetEnvironmentVariable(const Name: string): string;
 {$ENDIF COMPIELR5}
 
 implementation

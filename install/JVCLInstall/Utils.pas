@@ -76,6 +76,10 @@ function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
 function GetEnvironmentVariable(const Name: string): string;
 {$ENDIF COMPILER5}
 
+{$IFDEF COMPILER10_UP}
+function FileAge(const Filename: string): Integer; inline;
+{$ENDIF COMPILER10_UP}
+
 procedure ClearEnvironment;
 { ClearEnvironment deletes almost all environment variables }
 
@@ -83,6 +87,15 @@ implementation
 
 uses
   DelphiData;
+
+{$IFDEF COMPILER10_UP}
+function FileAge(const Filename: string): Integer;
+begin
+  {$WARN SYMBOL_DEPRECATED OFF}
+  Result := SysUtils.FileAge(Filename);
+  {$WARN SYMBOL_DEPRECATED ON}
+end;
+{$ENDIF COMPILER10_UP}
 
 procedure ClearEnvironment;
 var
