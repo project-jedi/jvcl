@@ -65,7 +65,7 @@ type
     FHppDir: string;
     FMissingJCL: Boolean;
     FOutdatedJCL: Boolean;
-    FCompiledJCL: Boolean;
+//    FCompiledJCL: Boolean;
     FInstallJVCL: Boolean;
 
     FDeveloperInstall: Boolean;
@@ -176,7 +176,7 @@ type
       // OutdatedJCL is True if no jcl\source\common\windows\win32api directory
       // exists which means that the JCL is too old for the JVCL.
 
-    property CompiledJCL: Boolean read FCompiledJCL;
+//    property CompiledJCL: Boolean read FCompiledJCL;
       // CompiledJCL is True if Jcl.dcp and JclVcl.dcp exist for this
       // target.
 
@@ -690,9 +690,12 @@ procedure TTargetConfig.Init;
 
 var
   S: string;
+  PossibleBPLDirs: TStrings;
+  i: Integer;
+  Reg: TRegistry;
 begin
   FInstallMode := [];
-  FCompiledJCL := False;
+//  FCompiledJCL := False;
   FOutdatedJCL := False;
 
   // identify JVCL version
@@ -733,17 +736,48 @@ begin
   // if the JCL is actually installed because users may not have put the
   // JCL directory in their browsing and/or search paths, especially
   // BCB users.
-  if Target.Version > 7 then
-    FMissingJCL := not FileExists(Format('%s\Jcl%d0.bpl', [BplDir, Target.Version]))
-  else
-    if (Target.IsBCB and not Target.IsDelphi and
-        FileExists(Format('%s\JclC%d0.bpl', [BplDir, Target.Version]))) or
-       ((not Target.IsBCB or (Target.IsBCB and Target.IsDelphi)) and
-        FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version]))) then
-      FMissingJCL := False;
+  PossibleBPLDirs := TStringList.Create;
+  try
+    Reg := TRegistry.Create;
+    try
+      Reg.RootKey := HKEY_CURRENT_USER;
+
+      ConvertPathList(GetEnvironmentVariable('PATH'), PossibleBPLDirs);
+      if Reg.OpenKeyReadOnly(Target.HKLMRegistryKey + '\Environment Variables') then // do not localize
+      begin
+        if Reg.ValueExists('Path') then
+        begin
+          PossibleBPLDirs.Clear;
+          ConvertPathList(Target.ExpandDirMacros(Reg.ReadString('Path')), PossibleBPLDirs);
+        end;
+        Reg.CloseKey;
+      end;
+    finally
+      Reg.Free;
+    end;
+    PossibleBPLDirs.Insert(0, BplDir);
+    
+    for i := 0 to PossibleBPLDirs.Count - 1 do
+    begin
+      S := ExcludeTrailingPathDelimiter(PossibleBPLDirs[i]);
+      if Target.Version > 7 then
+        FMissingJCL := not FileExists(Format('%s\Jcl%d0.bpl', [S, Target.Version]))
+      else
+        if ((Target.IsBCB and not Target.IsDelphi and
+            FileExists(Format('%s\JclC%d0.bpl', [S, Target.Version]))) or
+           ((not Target.IsBCB or (Target.IsBCB and Target.IsDelphi)) and
+            FileExists(Format('%s\JclD%d0.bpl', [S, Target.Version])))) then
+          FMissingJCL := False;
+
+      if not FMissingJCL then
+        Break;
+    end;
+  finally
+    PossibleBPLDirs.Free;
+  end;
 
 
-  // are Jcl.dcp and JclVcl.dcp available
+(*  // are Jcl.dcp and JclVcl.dcp available
   if Target.Version = 5 then S := '50' else S := '';
 
   if (Target.IsBCB and not Target.IsDelphi and
@@ -773,7 +807,7 @@ begin
          FileExists(Format('%s\JclVclD%s.bpl', [BplDir, S])) then
         FMissingJCL := False;
     end;}
-  end;
+  end;*)
   FDefaultJCLDir := JCLDir;
 end;
 
