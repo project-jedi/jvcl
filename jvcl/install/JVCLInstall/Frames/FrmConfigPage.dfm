@@ -4,6 +4,7 @@ object FrameConfigPage: TFrameConfigPage
   Width = 518
   Height = 348
   TabOrder = 0
+  TabStop = True
   object LblBCBGuide: TLabel
     Left = 272
     Top = 328
@@ -203,6 +204,7 @@ object FrameConfigPage: TFrameConfigPage
       Width = 239
       Height = 49
       TabOrder = 6
+      TabStop = True
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
@@ -227,10 +229,11 @@ object FrameConfigPage: TFrameConfigPage
       Width = 239
       Height = 49
       TabOrder = 7
+      TabStop = True
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
-        Width = 70
+        Width = 71
         Caption = '&DCP Directory:'
       end
       inherited Bevel: TBevel
@@ -251,6 +254,7 @@ object FrameConfigPage: TFrameConfigPage
       Width = 239
       Height = 49
       TabOrder = 8
+      TabStop = True
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
@@ -372,7 +376,7 @@ object FrameConfigPage: TFrameConfigPage
     object LblOptionsFor: TLabel
       Left = 8
       Top = 4
-      Width = 54
+      Width = 58
       Height = 13
       Caption = '&Options for:'
       FocusControl = ComboBoxTargetIDE

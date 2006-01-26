@@ -96,6 +96,8 @@ type
 
     function HandleLine(const Line: string): TCompileLineType;
 
+    procedure BringToFront;
+
     procedure IncHint;
     procedure IncWarning;
     procedure IncError;
@@ -133,6 +135,12 @@ resourcestring
   RsCompiled = 'compiled.';
 
 { TFormCompile }
+
+procedure TFormCompile.BringToFront;
+begin
+  if Visible and Application.Active then
+    SetWindowPos(Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOACTIVATE);
+end;
 
 procedure TFormCompile.BtnOkClick(Sender: TObject);
 begin
@@ -183,7 +191,7 @@ begin
     if Assigned(FCompileMessages) then
       FCompileMessages.AddError(Line);
   end
-  else if HasText(Line, ['fatal: ']) then // do not localize
+  else if HasText(Line, ['fatal: ', 'schwerwiegend: ']) then // do not localize
   begin
     Result := clFatal;
     IncError;
@@ -228,7 +236,6 @@ begin
   end;
 end;
 
-
 procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean);
 begin
   Tag := 0;
@@ -258,7 +265,10 @@ begin
   LblStatus.Caption := '';
 
   BtnOk.Enabled := False;
-  Show;
+  if not Visible then
+    Show
+  else
+    BringToFront;
 end;
 
 procedure TFormCompile.Compiling(const Filename: string);
@@ -272,6 +282,7 @@ begin
     LblStatus.Font.Style := [];
     LblStatusCaption.Caption := RsCompiling + ':';
     LblStatus.Caption := ExtractFileName(Filename);
+    BringToFront;
     Application.ProcessMessages;
   end;
 end;
@@ -285,6 +296,7 @@ begin
   LblStatus.Font.Style := [];
   LblStatusCaption.Caption := RsLinking + ':';
   LblStatus.Caption := ExtractFileName(Filename);
+  BringToFront;
   Application.ProcessMessages;
 end;
 
@@ -342,6 +354,7 @@ begin
   FCurrentLine := Line;
   LblCurrentLine.Caption := IntToStr(Line);
   LblTotalLines.Caption := IntToStr(FTotalLines + FCurrentLine);
+  BringToFront;
   Application.ProcessMessages;
 end;
 

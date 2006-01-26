@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
-  GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser;
+  GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser,
+  JvVCL5Utils;
 
 type
   TProgressKind = (
@@ -112,15 +113,14 @@ type
     function CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
 
     function IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
+    function GeneratePackages(const Group, Targets, PackagesPath: string): Boolean; overload;
+    function GenerateAllPackages: Boolean; overload;
+    function CompileTarget(TargetConfig: TTargetConfig; DoClx: Boolean): Boolean;
   public
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
 
-    function GeneratePackages(const Group, Targets, PackagesPath: string): Boolean; overload;
-    function GenerateAllPackages: Boolean; overload;
     function Compile: Boolean;
-    function CompileTarget(TargetConfig: TTargetConfig; DoClx: Boolean): Boolean;
-
     procedure Abort; // abort compile process
 
     property AbortReason: string read FAbortReason write FAbortReason;
@@ -461,10 +461,11 @@ begin
     begin
       with Data.TargetConfig[i] do
       begin
-        if not Target.IsBCB or (Target.IsBcb and Target.IsDelphi) then
+{ // (ahuser) Already tested before Installer comes to this point.
+        if Target.SupportsPersonalities([persDelphi]) then
         begin
           // Delphi requires .bpl files
-          if ((Target.Version >= 7) and 
+          if ((Target.Version >= 7) and
               not FileExists(Format('%s\Jcl%d0.bpl', [BplDir, Target.Version])) and
               not FileExists(Format('%s\Jcl%d0.bpl', [Target.BplDir, Target.Version])))
              or
@@ -472,7 +473,7 @@ begin
               not FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version])) and
               not FileExists(Format('%s\JclD%d0.bpl', [Target.BplDir, Target.Version]))) then
             Continue; // do not install JVCL when no JCL is installed
-        end;
+        end;}
       end;
       TargetConfigs[Count] := Data.TargetConfig[i];
       Inc(Count);
@@ -522,7 +523,7 @@ begin
   Aborted := False;
   FOutput.Clear;
 
-  if TargetConfig.Target.IsBCB and TargetConfig.Build then // CLX for BCB is not supported
+  if TargetConfig.Target.SupportsPersonalities([persBCB]) and TargetConfig.Build then // CLX for BCB is not supported
   begin
     // Delete all .obj and .dcu files because dcc32.exe -JPHNE does not create new .obj
     // files if they already exist. And as a result interface changes in a unit
@@ -543,7 +544,7 @@ begin
     if not TargetConfig.DeveloperInstall then
     begin
       // debug units
-      if (not TargetConfig.Target.IsBCB or (TargetConfig.Target.IsBCB and TargetConfig.Target.IsDelphi)) and
+      if TargetConfig.Target.SupportsPersonalities([persDelphi]) and
         TargetConfig.DebugUnits then
         Result := CompileProjectGroup(
           TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
@@ -574,7 +575,7 @@ begin
     if not TargetConfig.DeveloperInstall then
     begin
       // debug units
-      if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
+      if TargetConfig.Target.SupportsPersonalities([persDelphi]) and TargetConfig.DebugUnits then
         Result := CompileProjectGroup(
           TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], True);
     end;
@@ -720,7 +721,7 @@ var
   AutoDepend: Boolean;
   TargetConfig: ITargetConfig;
   DccOpt: string;
-  Path: string;
+  Path, ExtraDcpDirs: string;
   PathList, BplPaths: TStringList;
   {S, }SearchPaths: string;
 
@@ -772,7 +773,7 @@ begin
       if Length(JVCLPackagesDir) < 100 then DccOpt := '-Q- -M -B' else DccOpt := '-Q -M -B';
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
-    if TargetConfig.Target.IsBCB and TargetConfig.Target.IsDelphi then
+    if TargetConfig.Target.SupportsPersonalities([persBCB, persDelphi]) then
       DccOpt := DccOpt + ' -JL -NB"$(BPILIBDIR)" -NO"$(BPILIBDIR)"';  // Dual packages, bpi and lib files in BPILIBDIR for BDS 2006
 
     if (not DebugUnits) then
@@ -781,6 +782,10 @@ begin
       { DeveloperInstall always use Debug units in the Jvcl\Lib\xx directory }
     if not TargetConfig.DeveloperInstall then
       CreateDir(TargetConfig.UnitOutDir + '\debug');
+
+      { Create include directory if necessary }
+    if TargetConfig.Target.SupportsPersonalities([persBCB]) then
+      ForceDirectories(TargetConfig.Target.ExpandDirMacros(TargetConfig.HppDir));
 
     { set PATH envvar and add all directories that contain .bpl files }
     PathList := TStringList.Create;
@@ -802,10 +807,17 @@ begin
       { Add paths with .bpl files from the PATH environment variable }
       BplPaths := TStringList.Create;
       try
+        BplPaths.Duplicates := dupIgnore;
         StrToPathList(StartupEnvVarPath, BplPaths);
+        BplPaths.Add(TargetConfig.Target.RootDir + '\Lib');
         for i := 0 to BplPaths.Count - 1 do
+        begin
           if DirContainsFiles(ExcludeTrailingPathDelimiter(BplPaths[i]), '*.bpl') then
             PathList.Add(ExtractShortPathName(ExcludeTrailingPathDelimiter(BplPaths[i])));
+          if DirContainsFiles(ExcludeTrailingPathDelimiter(BplPaths[i]), '*.dcp') then
+            ExtraDcpDirs := ExtraDcpDirs + ';' + ExtractShortPathName(BplPaths[i]);
+        end;
+        Delete(ExtraDcpDirs, 1, 1);
       finally
         BplPaths.Free;
       end;
@@ -852,19 +864,14 @@ begin
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
     SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
     SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
-    SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB
+    SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB personality
     SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
-    SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));  // for BCB
-    SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB
-    SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB
+    SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));
+    SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB personality
+    SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB personality
 
-    // add dxgettext unit directory
-    { Dxgettext is now included in the JVCL as JvGnugettext
-    if Data.JVCLConfig.Enabled['USE_DXGETTEXT'] then
-      SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(TargetConfig.DxgettextDir))
-    else}
-      SetEnvironmentVariable('EXTRAUNITDIRS', nil);
+    SetEnvironmentVariable('EXTRAUNITDIRS', PChar(ExtraDcpDirs));
     SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
     SetEnvironmentVariable('EXTRARESDIRS', nil);
 
@@ -981,7 +988,7 @@ begin
 
     if (FPkgCount > 0) and
        ((not ProjectGroup.TargetConfig.DeveloperInstall) or
-        (TargetConfig.Target.IsBCB)) then
+        (TargetConfig.Target.SupportsPersonalities([persBCB], True))) then // only BCB
     begin
 {**}  DoProjectProgress(RsCopyingFiles, GetProjectIndex, ProjectMax);
       { The .dfm/.xfm files are deleted from the lib directory in the
@@ -1012,7 +1019,7 @@ begin
   if ps > 0 then
   begin
     Delete(Result, ps, 2);
-    Insert(Format('%s%d', [LowerCase(TargetTypes[TargetConfig.Target.IsBCB and not TargetConfig.Target.IsDelphi]), TargetConfig.Target.Version]),
+    Insert(Format('%s%d', [LowerCase(TargetConfig.Target.TargetType), TargetConfig.Target.Version]),
       Result, ps);
   end;
 end;
@@ -1165,7 +1172,7 @@ begin
       Lines.Add(Pkg.TargetName + ': ' + Pkg.SourceName + ' ' + Dependencies);
       Lines.Add(#9'@echo [Compiling: ' + Pkg.TargetName + ']');
       Lines.Add(#9'@cd ' + Pkg.RelSourceDir);
-      if ProjectGroup.Target.IsBCB and not ProjectGroup.Target.IsDelphi then
+      if ProjectGroup.Target.SupportsPersonalities([persBCB], True) then // only BCB
       begin
         if not ProjectGroup.TargetConfig.Build then
         begin

@@ -323,7 +323,6 @@ begin
 
   FormCompile := TFormCompile.Create(Self);
   try
-    SetWindowLong(FormCompile.Handle, GWL_HWNDPARENT, Integer(Handle));
     FormCompile.Position := poDesigned;
     Pt := RichEditLog.ClientToScreen(Point((RichEditLog.Width - BtnDetails.Width) div 2, 0));
     FormCompile.Top := Pt.Y;

@@ -111,8 +111,9 @@ type
     function GetDcpDir: string;
   protected
     procedure Init; virtual;
-    procedure DoCleanPalette(reg: TRegistry; const Name: string;
+    procedure DoCleanPalette(Reg: TRegistry; const Name: string;
       RemoveEmptyPalettes: Boolean);
+    procedure ClearPackageCache(const Key: string; const AStartsWith: string);
     function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
 
     procedure UpdateOptions;
@@ -290,9 +291,6 @@ type
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;
   end;
-
-const
-  TargetTypes: array[Boolean] of string = ('D', 'C'); // do not localize
 
 implementation
 
@@ -605,13 +603,19 @@ begin
   FTarget := ATarget;
 
   FInstallMode := [pkVcl];
-  FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
+  if Target.IsBDS then
+    FDefaultHppDir := ExtractFilePath(Format(sBCBIncludeDir, [Target.RootDir])) + 'JVCL' // do not localize
+  else
+    FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FHppDir := FDefaultHppDir;
   FCleanPalettes := True;
   FDeveloperInstall := False;
   FAutoDependencies := True;
   FBplDir := Target.BplDir;
-  FDcpDir := Target.DcpDir;
+  if Target.IsBDS then
+    FDcpDir := GetUnitOutDir
+  else
+    FDcpDir := Target.DcpDir;
   FDefaultJCLDir := CmdOptions.JclPath;
   FJCLDir := FDefaultJCLDir;
   Init;
@@ -756,18 +760,22 @@ begin
       Reg.Free;
     end;
     PossibleBPLDirs.Insert(0, BplDir);
-    
+
     for i := 0 to PossibleBPLDirs.Count - 1 do
     begin
       S := ExcludeTrailingPathDelimiter(PossibleBPLDirs[i]);
       if Target.Version > 7 then
         FMissingJCL := not FileExists(Format('%s\Jcl%d0.bpl', [S, Target.Version]))
       else
-        if ((Target.IsBCB and not Target.IsDelphi and
-            FileExists(Format('%s\JclC%d0.bpl', [S, Target.Version]))) or
-           ((not Target.IsBCB or (Target.IsBCB and Target.IsDelphi)) and
-            FileExists(Format('%s\JclD%d0.bpl', [S, Target.Version])))) then
-          FMissingJCL := False;
+      if (Target.SupportsPersonalities([persBCB], True) and
+          FileExists(Format('%s\JclC%d0.bpl', [S, Target.Version]))) or
+         (Target.SupportsPersonalities([persDelphi], True) and
+          FileExists(Format('%s\JclD%d0.bpl', [S, Target.Version]))) or
+         (Target.SupportsPersonalities([persDelphi, persBCB], False) and
+          FileExists(Format('%s\Jcl%d0.bpl', [S, Target.Version]))) then
+      begin
+        FMissingJCL := False;
+      end;
 
       if not FMissingJCL then
         Break;
@@ -868,10 +876,10 @@ begin
 
   if Target.IsBDS then
     Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bdsgroup', // do not localize
-      [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version, Pers, Clx])
+      [Target.TargetType, Target.Version, Pers, Clx])
   else
     Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
-      [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version, Pers, Clx]);
+      [Target.TargetType, Target.Version, Pers, Clx]);
 end;
 
 procedure TTargetConfig.SavePackagesSettings(ProjectGroup: TProjectGroup);
@@ -962,12 +970,18 @@ begin
     else
       Pers := 'p'; // do not localize
   end;
-  Result := Format('%s%d%s', [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version, Pers]); // do not localize
+  if Target.IsBDS then
+    Result := Format('%s%d%s', [Target.TargetType, Target.Version, Pers]) // do not localize
+  else
+    Result := Format('%s%d%s', [Target.TargetType, Target.Version, Pers]); // do not localize
 end;
 
 function TTargetConfig.GetUnitOutDir: string;
 begin
-  Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB and not Target.IsDelphi], Target.Version]); // do not localize
+  if Target.IsBDS then
+    Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]) // do not localize
+  else
+    Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]); // do not localize
 end;
 
 procedure TTargetConfig.SetInstallMode(Value: TInstallMode);
@@ -1141,7 +1155,7 @@ begin
     else
       Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
 
-    if not Target.IsBCB or (HppDir = FDefaultHppDir) then
+    if not Target.SupportsPersonalities([persBCB]) or (HppDir = FDefaultHppDir) then
       Ini.DeleteKey(Target.DisplayName, 'HPPDir') // do not localize
     else
       Ini.WriteString(Target.DisplayName, 'HPPDir', HppDir); // do not localize
@@ -1210,10 +1224,15 @@ begin
     DcpDir := FixBackslashBackslash(DcpDir);
 
     // Load jvcl%t.inc. Or the jvclbase.inc when no jvcl%t.inc exists
-    Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', [LowerCase(TargetTypes[Target.IsBCB and not Target.IsDelphi]), Target.Version]);
+    if Target.IsBDS then
+      Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
+          [LowerCase(Target.TargetType), Target.Version])
+    else
+      Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
+          [LowerCase(Target.TargetType), Target.Version]);
     if not FileExists(Filename) then
     begin
-      JVCLConfig.LoadFromFile(GetJVCLDir + '\common\jvclbase.inc');
+      JVCLConfig.LoadFromFile(GetJVCLDir + '\common\jvclbase.inc'); // do not localize
       JVCLConfig.Filename := Filename;
       JVCLConfig.Modified := True; // must be stored
     end
@@ -1221,7 +1240,7 @@ begin
       JVCLConfig.LoadFromFile(Filename);
 
     // set (hidden) personal edition configuration
-    JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal;
+    JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal; // do not localize
 
     UpdateOptions;
   finally
@@ -1233,6 +1252,32 @@ procedure TTargetConfig.EnableOption(const Name: string; Enable: Boolean);
 begin
   if Name <> '' then
     JVCLConfig.Enabled[Name] := Enable and JVCLConfig.Enabled[Name];
+end;
+
+procedure TTargetConfig.ClearPackageCache(const Key: string; const AStartsWith: string);
+var
+  Reg: TRegistry;
+  Names: TStrings;
+  i: Integer;
+begin
+  Reg := TRegistry.Create;
+  try
+    if Reg.OpenKey(Target.RegistryKey + '\' + Key, False) then
+    begin
+      Names := TStringList.Create;
+      try
+        Reg.GetKeyNames(Names);
+        Reg.CloseKey;
+        for i := 0 to Names.Count - 1 do
+          if StartsWith(Names[i], AStartsWith, True) then
+            Reg.DeleteKey(Target.RegistryKey + '\' + Key + '\' + Names[i]);
+      finally
+        Names.Free;
+      end;
+    end;
+  finally
+    Reg.Free;
+  end;
 end;
 
 function TTargetConfig.RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
@@ -1247,13 +1292,15 @@ begin
 
   // remove JVCL packages
   for i := DisabledPackages.Count - 1 downto 0 do
-    if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then
+    if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then // do not localize
       DisabledPackages.Delete(i);
 
   for i := KnownPackages.Count - 1 downto 0 do
-    if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then
+    if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then // do not localize
       KnownPackages.Delete(i);
 
+  if Target.IsBDS then
+    ClearPackageCache('Package Cache', 'Jv'); // do not localize
 
   for PackageIndex := 0 to ProjectGroup.Count - 1 do
   begin
@@ -1281,7 +1328,7 @@ begin
   if InstalledJVCLVersion < 3 then
     DeinstallJVCL(nil, nil);
 
-  // remove old
+  // remove old paths
   AddPaths(Target.BrowsingPaths, False, Owner.JVCLDir,
     ['common', 'run', 'Resources', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, False, Owner.JVCLDir,
@@ -1289,15 +1336,21 @@ begin
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
     [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
 
-
-  // common
+  // update paths
   AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir, // Resources directory must not be in browse-paths
     ['common']); // do not localize
   AddPaths(Target.SearchPaths, True, Owner.JVCLDir,
-    ['common', 'Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+    [Target.InsertDirMacros(UnitOutDir), 'common', 'Resources']); // do not localize
   if DebugUnits and not DeveloperInstall then
     AddPaths(Target.DebugDcuPaths, True, Owner.JVCLDir,
       [Target.InsertDirMacros(UnitOutDir + '\debug')]); // do not localize
+  if Target.SupportsPersonalities([persBCB]) then
+  begin
+    AddPaths(Target.GlobalIncludePaths, True, Owner.JVCLDir,
+     [Target.InsertDirMacros(HppDir)]);
+    AddPaths(Target.GlobalCppSearchPaths, True, Owner.JVCLDir,
+      ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+  end;
 
   // add
   if pkVCL in InstallMode then
@@ -1336,14 +1389,14 @@ begin
   end;
 end;
 
-procedure TTargetConfig.DoCleanPalette(reg: TRegistry; const Name: string;
+procedure TTargetConfig.DoCleanPalette(Reg: TRegistry; const Name: string;
   RemoveEmptyPalettes: Boolean);
 var
   Entries, S: string;
   List: TStrings;
   i, ps: Integer;
 begin
-  Entries := reg.ReadString(Name);
+  Entries := Reg.ReadString(Name);
   List := TStringList.Create;
   try
     ps := 0;
@@ -1371,10 +1424,10 @@ begin
     if (S <> '') or (not RemoveEmptyPalettes) then
     begin
       if S <> Entries then
-        reg.WriteString(Name, S)
+        Reg.WriteString(Name, S)
     end
     else
-      reg.DeleteValue(Name);
+      Reg.DeleteValue(Name);
 
   finally
     List.Free;
@@ -1401,6 +1454,9 @@ begin
         List.Free;
       end;
     end;
+
+    if Target.IsBDS then
+      ClearPackageCache('Palette\Cache', 'Jv'); // do not localize
   finally
     Reg.Free;
   end;
@@ -1448,6 +1504,13 @@ begin
     Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
     [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
+  if Target.SupportsPersonalities([persBCB]) then
+  begin
+    AddPaths(Target.GlobalIncludePaths, False, Owner.JVCLDir,
+     [Target.InsertDirMacros(HppDir)]);
+    AddPaths(Target.GlobalCppSearchPaths, False, Owner.JVCLDir,
+      ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+  end;
   Target.SavePaths;
 
 {**}DoProgress(RsUnregisteringPackages, 2, MaxSteps);

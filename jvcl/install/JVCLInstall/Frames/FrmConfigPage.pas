@@ -96,7 +96,8 @@ type
 implementation
 
 uses
-  InstallerConsts, Core, MainConfig, Main, Utils, Math, JVCLConfiguration;
+  InstallerConsts, Core, MainConfig, Main, Utils, Math, JVCLConfiguration,
+  DelphiData;
 
 {$R *.dfm}
 
@@ -397,7 +398,7 @@ begin
     begin
       // for selected
       TargetConfig := SelTargetConfig;
-      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetTypes[TargetConfig.Target.IsBCB and not TargetConfig.Target.IsDelphi]), TargetConfig.Target.Version]);
+      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetConfig.Target.TargetType), TargetConfig.Target.Version]);
 
       CheckBoxDeveloperInstall.Checked := TargetConfig.DeveloperInstall;
       CheckBoxDebugUnits.Checked := TargetConfig.DebugUnits;
@@ -408,7 +409,7 @@ begin
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;
       FrameDirEditBrowseDCP.EditDirectory.Text := TargetConfig.DcpDir;
-      if TargetConfig.Target.IsBCB then
+      if TargetConfig.Target.SupportsPersonalities([persBCB]) then
         FrameDirEditBrowseHPP.EditDirectory.Text := TargetConfig.HppDir;
     end;
 
@@ -416,7 +417,7 @@ begin
     CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
     FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
     FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
-    FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.IsBCB;
+    FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.SupportsPersonalities([persBCB]);
     LblBCBGuide.Visible := FrameDirEditBrowseHPP.Visible;
 
     UpdateJvclIncSettings;

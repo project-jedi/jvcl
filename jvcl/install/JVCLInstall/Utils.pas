@@ -408,7 +408,7 @@ var
   i, j: Integer;
   Path: string;
 begin
- // remove old paths
+  // remove old paths
   for j := 0 to High(Paths) do
     for i := List.Count - 1 downto 0 do
       if Paths[j] <> '' then
@@ -423,7 +423,7 @@ begin
       end;
 
   if Add then
-   // add new paths
+    // add new paths
     for j := 0 to High(Paths) do
       if Paths[j] <> '' then
       begin
