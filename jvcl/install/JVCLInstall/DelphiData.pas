@@ -562,6 +562,13 @@ begin
 
     Reg.RootKey := HKEY_CURRENT_USER;
 
+    if IsBDS and Reg.OpenKeyReadOnly(HKLMRegistryKey + '\Environment Variables') then // do not localize
+    begin
+      if Reg.ValueExists('BDSPROJECTSDIR') then
+        FBDSProjectsDir := ExpandDirMacros(Reg.ReadString('BDSPROJECTSDIR')); // do not localize
+      Reg.CloseKey;
+    end;
+
     if Reg.OpenKeyReadOnly(RegistryKey) then
     begin
      // obtain updates state
