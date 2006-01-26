@@ -1484,6 +1484,9 @@ begin
 {**}DoProgress(RsCleaningPalette, 0, MaxSteps);
   CleanJVCLPalette(True);
 
+  if Target.IsBDS then
+    ClearPackageCache('Package Cache', 'Jv'); // do not localize
+
 {**}DoProgress(RsCleaningPathLists, 1, MaxSteps);
 
   // remove JVCL 1 and 2 directories
