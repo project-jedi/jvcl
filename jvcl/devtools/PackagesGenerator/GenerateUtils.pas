@@ -1117,6 +1117,9 @@ begin
     Result := xml.Description;
 end;
 
+{$IFDEF COMPILER10}
+{$WARNINGS OFF} // hide wrong warning: "Function return value could be undefined."
+{$ENDIF COMPILER10}
 function ApplyTemplateAndSave(const path, target, package, extension: string;
   template : TStrings; xml : TPackageXmlInfo;
   const templateName, xmlName : string): string;
@@ -1541,6 +1544,9 @@ begin
     outFile.Free;
   end;
 end;
+{$IFDEF COMPILER10}
+{$WARNINGS ON}
+{$ENDIF COMPILER10}
 
 function Max(d1, d2 : TDateTime): TDateTime;
 begin
