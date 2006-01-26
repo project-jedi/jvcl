@@ -4,6 +4,7 @@ object FrameUninstall: TFrameUninstall
   Width = 518
   Height = 348
   TabOrder = 0
+  TabStop = True
   object LblTarget: TLabel
     Left = 8
     Top = 120

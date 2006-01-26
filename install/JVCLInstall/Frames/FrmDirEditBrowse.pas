@@ -46,8 +46,7 @@ type
     EditDirectory: TEdit;
     BtnDirBrowse: TButton;
     procedure BtnDirBrowseClick(Sender: TObject);
-    procedure EditDirectoryEnter(Sender: TObject);
-    procedure EditDirectoryClick(Sender: TObject);
+    procedure EditDirectoryDblClick(Sender: TObject);
   private
     FOnChange: TDirEditChangeEvent;
     FUserData: TObject;
@@ -189,12 +188,7 @@ begin
   end;
 end;
 
-procedure TFrameDirEditBrowse.EditDirectoryEnter(Sender: TObject);
-begin
-  BtnDirBrowse.Click;
-end;
-
-procedure TFrameDirEditBrowse.EditDirectoryClick(Sender: TObject);
+procedure TFrameDirEditBrowse.EditDirectoryDblClick(Sender: TObject);
 begin
   BtnDirBrowse.Click;
 end;

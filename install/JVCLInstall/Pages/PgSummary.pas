@@ -87,10 +87,11 @@ begin
     begin
       if InstallJVCL then
       begin
+        { (ahuser) this is already tested before this code is executed
         if not Target.IsBCB then
         begin
           // Delphi requires .bpl files
-          if ((Target.Version >= 7) and 
+          if ((Target.Version >= 7) and
               not FileExists(Format('%s\Jcl%d0.bpl', [BplDir, Target.Version])) and
               not FileExists(Format('%s\Jcl%d0.bpl', [Target.BplDir, Target.Version])))
              or
@@ -101,7 +102,7 @@ begin
             MessageDlg(Format(RsMissingJCLForDelphi, [Target.DisplayName, Target.Version, BplDir]), mtError, [mbOk], 0);
             Continue; // do not install because the JCL is missing.
           end;
-        end;
+        end;}
 
 
         if not First then
@@ -125,9 +126,9 @@ begin
                 Add(RsInstallForFrameworks, S);
               end;
 
-             // directories:
+              // directories:
               Add(RsBplOutputDirectory, BplDir);
-              if Target.IsBCB then
+              if Target.SupportsPersonalities([persBCB]) then
               begin
                 Add(RsLibOutputDirectory, DcpDir);
                 Add(RsHppOutputDirectory, HppDir);
@@ -159,7 +160,7 @@ begin
                 Add(RsAddToSearchPath, S);
 
                 Add(RsAddToLibraryPath, UnitOutDir);
-                if Target.IsBCB then
+                if Target.SupportsPersonalities([persBCB]) then
                   Add(RsAddToIncludePath, HppDir);
               end;
             end;

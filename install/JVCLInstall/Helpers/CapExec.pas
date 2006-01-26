@@ -131,10 +131,13 @@ begin
         StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
       StartupInfo.hStdOutput := hWrite;
       StartupInfo.hStdError := StartupInfo.hStdOutput; // redirect
-      StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+      //if Pos('CompilePackages', Args) = 0 then
+        StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
 
-      if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
-        0, nil, PChar(Dir), StartupInfo, ProcessInfo) then
+      if {((Pos('CompilePackages', Args) = 0) and }CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
+        0, nil, PChar(Dir), StartupInfo, ProcessInfo){) or
+         (Pos('CompilePackages', Args) > 0) and (CreateProcess(nil, PChar('cmd.exe'), @SecAttrib, nil, True,
+        0, nil, PChar(Dir), StartupInfo, ProcessInfo))} then
       begin
         CloseHandle(ProcessInfo.hThread);
         try

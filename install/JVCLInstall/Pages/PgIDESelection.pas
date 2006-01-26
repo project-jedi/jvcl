@@ -302,20 +302,20 @@ var
 begin
   Version := 5; // find the newest Delphi version
   Tg := nil;
- // is there a Delphi?
+  // is there a Delphi?
   for i := 0 to Installer.Data.Targets.Count - 1 do
   begin
-    if (not Installer.Data.Targets[i].IsBCB) and
+    if Installer.Data.Targets[i].SupportsPersonalities([persDelphi]) and
        (Version <= Installer.Data.Targets[i].Version) then
       Tg := Installer.Data.TargetConfig[i];
   end;
 
   if Tg = nil then
   begin
-   // is there a BCB?
+    // is there a BCB?
     for i := 0 to Installer.Data.Targets.Count - 1 do
     begin
-      if (Installer.Data.Targets[i].IsBCB) and
+      if Installer.Data.Targets[i].SupportsPersonalities([persBCB]) and
          (Version <= Installer.Data.Targets[i].Version) then
         Tg := Installer.Data.TargetConfig[i];
     end;

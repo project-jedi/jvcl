@@ -4,6 +4,7 @@ object FrameInstall: TFrameInstall
   Width = 518
   Height = 348
   TabOrder = 0
+  TabStop = True
   object LblTarget: TLabel
     Left = 8
     Top = 16
@@ -20,7 +21,7 @@ object FrameInstall: TFrameInstall
   object LblInfo: TLabel
     Left = 8
     Top = 80
-    Width = 32
+    Width = 33
     Height = 13
     Caption = 'LblInfo'
   end

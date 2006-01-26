@@ -50,6 +50,19 @@ const
   );
 
 type
+  TPersonalityType = (
+    persDelphi, persDelphiNet,
+    persBCB, persManagedCpp,
+    persCSharp, persVisualBasic
+  );
+  TPersonalities = set of TPersonalityType;
+
+const
+  PersNames: array[TPersonalityType] of string = (
+    'Delphi.Win32', 'Delphi.NET', 'BCB', 'BCB.NET'{???}, 'C#Builder', 'VB.NET'
+  );
+
+type
   TCompileTarget = class;
   TCompileTargetList = class;
   TDelphiPackage = class;
@@ -64,6 +77,7 @@ type
     constructor Create;
     property Items[Index: Integer]: TCompileTarget read GetItems; default;
   end;
+
 
   TCompileTarget = class(TObject)
   private
@@ -90,6 +104,9 @@ type
     FHKLMRegistryKey: string;
     FRegistryKey: string;
     FDebugDcuPaths: TStringList;
+    FInstalledPersonalities: TStrings;
+    FGlobalIncludePaths: TStringList;
+    FGlobalCppSearchPaths: TStringList;
 
     procedure LoadFromRegistry;
     function ReadBDSProjectsDir: string;
@@ -103,19 +120,32 @@ type
     function GetBplDir: string;
     function GetDcpDir: string;
     function GetProjectDir: string;
+    function IsBCB: Boolean;
+    function IsDelphi: Boolean;
   public
     constructor Create(const AName, AVersion, ARegSubKey: string);
     destructor Destroy; override;
 
-    function IsBCB: Boolean;
-    function IsDelphi: Boolean;
     function IsBDS: Boolean;
     function IsPersonal: Boolean;
     function DisplayName: string;
 
+    function SupportedPersonalities: TPersonalities;
+      { SupportedPersonalities returns all installed personalities for the
+        target. Delphi/BCB < 9.0 return either [persDelphi] or [persBCB]. }
+    function SupportsPersonalities(Personalities: TPersonalities; Exact: Boolean = False): Boolean;
+      { SupportsPersonalities tests if the target supports all specified
+        personalities if Exact=False. If Exact=True the target must exactly
+        support all specified personalities, nothing less, nothing more. }
+
     function VersionedDCP(const Filename: string): string;
       { returns the filename + version + extension for Delphi 5 and BCB 5
         else it returns the Filename. }
+    function VersionedBPL(const Filename: string): string;
+      { returns the filename + version + extension. }
+
+    function TargetType: string;
+      { return 'D' for Delphi, 'C' for C++ and ?? for BDS }
 
     function FindPackage(const PackageName: string): TDelphiPackage;
     function FindPackageEx(const PackageNameStart: string): TDelphiPackage;
@@ -151,6 +181,8 @@ type
     property PackageSearchPathList: TStringList read FPackageSearchPaths; // with macros
     property SearchPaths: TStringList read FSearchPaths; // with macros
     property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
+    property GlobalIncludePaths: TStringList read FGlobalIncludePaths; // BDS only, with macros
+    property GlobalCppSearchPaths: TStringList read FGlobalCppSearchPaths; // BDS only, with macros
 
     property BDSProjectsDir: string read FBDSProjectsDir;
     property ProjectDir: string read GetProjectDir; // Delphi 5-7: RootDir\Projects BDS: BDSProjectDir\Projects
@@ -343,6 +375,7 @@ end;
 constructor TCompileTarget.Create(const AName, AVersion, ARegSubKey: string);
 begin
   inherited Create;
+  FInstalledPersonalities := TStringList.Create;
   FIDEName := AName;
   FIDEVersionStr := AVersion;
   FIDEVersion := StrToIntDef(Copy(FIDEVersionStr, 1, Pos('.', FIDEVersionStr) - 1), 0);
@@ -362,11 +395,15 @@ begin
   FPackageSearchPaths := TStringList.Create;
   FSearchPaths := TStringList.Create;
   FDebugDcuPaths := TStringList.Create;
+  FGlobalIncludePaths := TStringList.Create;
+  FGlobalCppSearchPaths := TStringList.Create;
 
   FBrowsingPaths.Duplicates := dupIgnore;
   FPackageSearchPaths.Duplicates := dupIgnore;
   FSearchPaths.Duplicates := dupIgnore;
   FDebugDcuPaths.Duplicates := dupIgnore;
+  FGlobalIncludePaths.Duplicates := dupIgnore;
+  FGlobalCppSearchPaths.Duplicates := dupIgnore;
 
   FDisabledPackages := TDelphiPackageList.Create;
   FKnownIDEPackages := TDelphiPackageList.Create;
@@ -381,11 +418,14 @@ begin
   FPackageSearchPaths.Free;
   FSearchPaths.Free;
   FDebugDcuPaths.Free;
+  FGlobalIncludePaths.Free;
+  FGlobalCppSearchPaths.Free;
 
   FDisabledPackages.Free;
   FKnownIDEPackages.Free;
   FKnownPackages.Free;
 
+  FInstalledPersonalities.Free;
   inherited Destroy;
 end;
 
@@ -436,12 +476,17 @@ begin
   Result := Dir;
   if AnsiStartsText(RootDir + PathDelim, Dir) then
   begin
-    if IsBCB and not IsDelphi and not IsBDS then
-      Result := '$(BCB)' // do not localize
-    else if not IsBDS then
+    if IsBDS then
+      Result := '$(BDS)' // do not localize
+    else
+    if IsDelphi then
       Result := '$(DELPHI)' // do not localize
     else
-      Result := '$(BDS)'; // do not localize
+    if IsBCB then
+      Result := '$(BCB)' // do not localize
+    else
+      Result := RootDir;
+
     Result := Result + Copy(Dir, Length(RootDir) + 1, MaxInt);
   end;
 end;
@@ -490,12 +535,12 @@ end;
 
 function TCompileTarget.IsBCB: Boolean;
 begin
-  Result := (AnsiPos(AnsiUppercase('Builder'), AnsiUppercase(Name)) > 0) or (IsBDS and (Version >= 10));
+  Result := (AnsiPos(AnsiUppercase('Builder'), AnsiUppercase(Name)) > 0);
 end;
 
 function TCompileTarget.IsDelphi: Boolean;
 begin
-  Result := (AnsiPos(AnsiUppercase('Delphi'), AnsiUppercase(Name)) > 0) or (IsBDS and (Version >= 10));
+  Result := (AnsiPos(AnsiUppercase('Delphi'), AnsiUppercase(Name)) > 0);
 end;
 
 function TCompileTarget.IsBDS: Boolean;
@@ -539,7 +584,7 @@ begin
       else
         FBDSProjectsDir := RootDir + '\Projects';
 
-     // obtain updates state
+      // obtain updates state
       List := TStringList.Create;
       try
         Reg.GetValueNames(List);
@@ -563,6 +608,7 @@ begin
 
     Reg.RootKey := HKEY_CURRENT_USER;
 
+    // update BDSProjectsDir is the user has defined an IDE-environment variable
     if IsBDS and Reg.OpenKeyReadOnly(HKLMRegistryKey + '\Environment Variables') then // do not localize
     begin
       if Reg.ValueExists('BDSPROJECTSDIR') then
@@ -572,7 +618,7 @@ begin
 
     if Reg.OpenKeyReadOnly(RegistryKey) then
     begin
-     // obtain updates state
+      // obtain updates state
       List := TStringList.Create;
       try
         Reg.GetValueNames(List);
@@ -598,7 +644,7 @@ begin
       Reg.CloseKey;
     end;
 
-   // get library paths
+    // get library paths
     if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
     begin
       FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
@@ -606,9 +652,24 @@ begin
       ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
       ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
       ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
+      Reg.CloseKey;
     end;
     if Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
+    begin
       ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
+      Reg.CloseKey;
+    end;
+    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
+    begin
+      ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
+      ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
+      Reg.CloseKey;
+    end;
+    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then
+    begin
+      Reg.GetValueNames(FInstalledPersonalities);
+      Reg.CloseKey;
+    end;
   finally
     Reg.Free;
   end;
@@ -664,12 +725,12 @@ begin
       try
         Reg.GetValueNames(List);
 
-       // remove old packages
+        // remove old packages
         for I := 0 to List.Count - 1 do
           if APackageList.IndexOfFilename(List[I]) = -1 then
             Reg.DeleteValue(List[I]);
 
-       // add new packages
+        // add new packages
         for I := 0 to APackageList.Count - 1 do
           if List.IndexOf(APackageList[I].Filename) = -1 then
             Reg.WriteString(APackageList[I].Filename, APackageList[I].Description);
@@ -714,16 +775,79 @@ begin
     begin
       Reg.WriteString('Browsing Path', ConvertPathList(FBrowsingPaths)); // do not localize
       Reg.WriteString('Search Path', ConvertPathList(FSearchPaths)); // do not localize
+      Reg.CloseKey;
     end;
     if Reg.OpenKey(RegistryKey + '\Debugging', False) then // do not localize
     begin
       S := ConvertPathList(FDebugDcuPaths);
       if S <> Reg.ReadString('Debug DCUs Path') then
-        Reg.WriteString('Debug DCUs Path', ConvertPathList(FDebugDcuPaths)); // do not localize
+        Reg.WriteString('Debug DCUs Path', S); // do not localize
+      Reg.CloseKey;
+    end;
+    if IsBDS and Reg.OpenKey(RegistryKey + '\CppPaths', False) then // meight not exist
+    begin
+      S := ConvertPathList(FGlobalIncludePaths);
+      if not Reg.ValueExists('IncludePath') or (S <> Reg.ReadString('IncludePath')) then
+        Reg.WriteString('IncludePath', S);
+      S := ConvertPathList(FGlobalCppSearchPaths);
+      if not Reg.ValueExists('SearchPath') or (S <> Reg.ReadString('SearchPath')) then
+        Reg.WriteString('SearchPath', S);
+      Reg.CloseKey;
     end;
   finally
     Reg.Free;
   end;
+end;
+
+function TCompileTarget.SupportedPersonalities: TPersonalities;
+var
+  Pers: TPersonalityType;
+begin
+  Result := [];
+  if not IsBDS then
+  begin
+    if IsDelphi then
+      Result := [persDelphi]
+    else
+    if IsBCB then
+      Result := [persBCB];
+  end
+  else
+  begin
+    for Pers := Low(TPersonalityType) to High(TPersonalityType) do
+      if FInstalledPersonalities.IndexOf(PersNames[Pers]) >= 0 then
+        Include(Result, Pers);
+  end;
+end;
+
+function TCompileTarget.SupportsPersonalities(Personalities: TPersonalities; Exact: Boolean = False): Boolean;
+begin
+  if Exact then
+    Result := SupportedPersonalities = Personalities
+  else
+    Result := SupportedPersonalities * Personalities = Personalities;
+end;
+
+function TCompileTarget.TargetType: string;
+begin
+  if IsBDS then
+  begin
+    if SupportsPersonalities([persDelphi]) then
+      Result := 'D' // do not localize
+    else
+    if SupportsPersonalities([persBCB]) then
+      Result := 'C' // do not localize
+    else
+      Result := '';
+  end
+  else
+  if IsDelphi then
+    Result := 'D' // do not localize
+  else
+  if IsBCB then
+    Result := 'C' // do not localize
+  else
+    Result := '';
 end;
 
 function TCompileTarget.GetMake: string;
@@ -823,6 +947,11 @@ begin
     Result := Filename
   else
     Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
+end;
+
+function TCompileTarget.VersionedBPL(const Filename: string): string;
+begin
+  Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
 end;
 
 function TCompileTarget.GetProjectDir: string;

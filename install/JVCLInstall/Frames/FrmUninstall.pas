@@ -96,7 +96,7 @@ begin
       ['.dcu', '.obj', '.xfm', '.dfm']);                   // do not localize
     FindFiles(TargetConfig.BplDir, 'Jv*.*', True, List,    // do not localize
       ['.bpl', '.dcp', '.tds', '.map']);                   // do not localize
-    if TargetConfig.Target.IsBCB then
+//    if TargetConfig.Target.IsBCB then
       FindFiles(TargetConfig.DcpDir, 'Jv*.*', True, List,  // do not localize
         ['.bpl', '.dcp', '.tds', '.lib', '.bpi', '.map']); // do not localize
 
