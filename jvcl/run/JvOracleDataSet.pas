@@ -129,11 +129,11 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+  published
     property AllowedAfterFetchRecordActions:
         TJvOracleDatasetAllowedAfterFetchRecordActions read
         FAllowedAfterFetchRecordActions write FAllowedAfterFetchRecordActions
         default [todafPause, todafCancel, todafAll];
-  published
     property CapitalizeLabelOptions: TJvOracleDatasetCapitalizeLabelOptions read
       FCapitalizeLabelOptions write SetCapitalizeLabelOptions;
     property FetchRowsCheck: integer read FFetchRowsCheck write SetFetchRowsCheck;
