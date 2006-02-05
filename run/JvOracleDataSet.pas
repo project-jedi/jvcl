@@ -207,7 +207,7 @@ type
     FAfterRefresh: TDataSetNotifyEvent;
     FAfterThreadExecution: TJvOracleDatasetThreadEvent;
     FBeforeOpen: TDataSetNotifyEvent;
-    FBeforeRefresh: TNotifyEvent;
+    FBeforeRefresh: TDataSetNotifyEvent;
     FBeforeThreadExecution: TJvOracleDatasetThreadEvent;
     FCurrentAction: TJvOracledatasetAction;
     FCurrentFetchDuration: TDateTime;
@@ -325,7 +325,7 @@ type
     property AfterRefresh: TDataSetNotifyEvent read FAfterRefresh write FAfterRefresh;
     property AfterThreadExecution: TJvOracleDatasetThreadEvent
       read FAfterThreadExecution write FAfterThreadExecution;
-    property BeforeRefresh: TNotifyEvent read FBeforeRefresh write FBeforeRefresh;
+    property BeforeRefresh: TDataSetNotifyEvent read FBeforeRefresh write FBeforeRefresh;
     property BeforeThreadExecution: TJvOracleDatasetThreadEvent
       read FBeforeThreadExecution write FBeforeThreadExecution;
   end;
