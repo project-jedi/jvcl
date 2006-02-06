@@ -801,12 +801,12 @@ end;
 
 procedure TJvStringGrid.LoadFromStream(Stream: TStream);
 var
-  Col, Rom, I, Count: Integer;
+  Col, Row, I, Count: Integer;
   Buffer: array [0..BufSize - 1] of Byte;
   St: string;
 begin
   Col := 0;
-  Rom := 1;
+  Row := 1;
   DoLoadProgress(0, Stream.Size);
   while Stream.Position < Stream.Size do
   begin
@@ -817,11 +817,11 @@ begin
         0:
           begin
             Inc(Col);
-            if Rom > RowCount then
-              RowCount := Rom;
+            if Row > RowCount then
+              RowCount := Row;
             if Col > ColCount then
               ColCount := Col;
-            Cells[Col - 1, Rom - 1] := St;
+            Cells[Col - 1, Row - 1] := St;
             St := '';
           end;
         1:
@@ -829,9 +829,9 @@ begin
             Inc(Col);
             if Col > ColCount then
               ColCount := Col;
-            Cells[Col - 1, Rom - 1] := St;
-            Inc(Rom);
-            if Rom > RowCount then
+            Cells[Col - 1, Row - 1] := St;
+            Inc(Row);
+            if Row > RowCount then
               RowCount := Row;
             Col := 0;
             St := '';
