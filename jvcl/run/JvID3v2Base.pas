@@ -5209,11 +5209,11 @@ begin
       Tmp := Tmp / 2;
 
     FBitrate := Round(Tmp);
-    FLengthInSec := Round((FAudioSize * 8) / (1000 * Tmp));
+    FLengthInSec := Trunc((FAudioSize * 8) / (1000 * Tmp));
   end
   else
   if FBitrate > 0 then
-    FLengthInSec := Round((FAudioSize * 8) / (1000 * FBitrate));
+    FLengthInSec := Trunc((FAudioSize * 8) / (1000 * FBitrate));
 
   if FFrameLengthInBytes = 0 then
   begin
