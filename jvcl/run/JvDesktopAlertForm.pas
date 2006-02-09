@@ -88,6 +88,17 @@ type
     acClose: TAction;
     MouseTimer: TTimer;
     FEndInterval:Cardinal;
+    FMouseInControl: Boolean;
+    FCloseable: Boolean;
+    FMoveable: Boolean;
+    FMoveAnywhere: Boolean;
+    FAllowFocus: Boolean;
+    FClickableMessage: Boolean;
+    FCaptionColorTo: TColor;
+    FWindowColorTo: TColor;
+    FWindowColorFrom: TColor;
+    FCaptionColorFrom: TColor;
+    FFrameColor: TColor;
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
@@ -105,6 +116,7 @@ type
     procedure MouseLeave(AControl: TControl); override;
     procedure DoDropDownClose(Sender: TObject);
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -112,17 +124,7 @@ type
     tbDropDown: TJvDesktopAlertButton;
     tbClose: TJvDesktopAlertButton;
 
-    Moveable: Boolean;
-    MoveAnywhere: Boolean;
-    Closeable: Boolean;
-    ClickableMessage: Boolean;
-    MouseInControl: Boolean;
-    WindowColorFrom: TColor;
-    WindowColorTo: TColor;
-    CaptionColorFrom: TColor;
-    CaptionColorTo: TColor;
-    FrameColor: TColor;
-    AllowFocus: Boolean;
+  public
     constructor Create(AOwner: TComponent); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
@@ -130,6 +132,19 @@ type
     procedure SetNewOrigin(ALeft, ATop: Integer);
     procedure DoButtonClick(Sender: TObject);
     procedure ShowNoActivate;
+    
+    property Moveable: Boolean read FMoveable write FMoveable;
+    property MoveAnywhere: Boolean read FMoveAnywhere write FMoveAnywhere;
+    property Closeable: Boolean read FCloseable write FCloseable;
+    property ClickableMessage: Boolean read FClickableMessage write FClickableMessage;
+    property MouseInControl: Boolean read FMouseInControl;
+    property WindowColorFrom: TColor read FWindowColorFrom write FWindowColorFrom;
+    property WindowColorTo: TColor read FWindowColorTo write FWindowColorTo;
+    property CaptionColorFrom: TColor read FCaptionColorFrom write FCaptionColorFrom;
+    property CaptionColorTo: TColor read FCaptionColorTo write FCaptionColorTo;
+    property FrameColor: TColor read FFrameColor write FFrameColor;
+    property AllowFocus: Boolean read FAllowFocus write FAllowFocus;
+
     property Showing read GetVisible;
     property Visible read GetVisible;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -330,7 +345,7 @@ end;
 procedure TJvFormDesktopAlert.MouseEnter(AControl: TControl);
 begin
   inherited MouseEnter(AControl);
-  MouseInControl := True;
+  FMouseInControl := True;
   //  SetFocus;
   TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   if Assigned(FOnMouseEnter) then
@@ -351,7 +366,7 @@ begin
     if not TJvDesktopAlert(Owner).StyleHandler.Active
         and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
       TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
-    MouseInControl := False;
+    FMouseInControl := False;
   end;
 end;
 
@@ -375,8 +390,8 @@ begin
   if tbDropDown.DropDownMenu = nil then
     tbDropDown.Visible := False;
 
-  // must have either WaitTime or close button
-  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+  // if the form is not closeable, then do not show the button
+  if not Closeable then 
   begin
     tbClose.Visible := False;
     tbDropDown.Left := tbClose.Left;
@@ -442,7 +457,7 @@ begin
   // if we never got a CM_MouseLeave (that happens a lot)
   MouseTimer.Enabled := False;
   GetCursorPos(P);
-  MouseInControl := PtInRect(BoundsRect, P); // and IsInForm(P);
+  FMouseInControl := PtInRect(BoundsRect, P); // and IsInForm(P);
   MouseTimer.Enabled := True;
   if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
     TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
