@@ -69,6 +69,7 @@ type
 
     function GetUnitOutDir: string;
     function GetJCLDir: string;
+    function GetJCLLibDir: string;
     function GetHppDir: string;
     function GetBplDir: string;
     function GetDcpDir: string;
@@ -87,6 +88,7 @@ type
 
     property UnitOutDir: string read GetUnitOutDir;
     property JCLDir: string read GetJCLDir;
+    property JCLLibDir: string read GetJCLLibDir;
     property HppDir: string read GetHppDir;
     property BplDir: string read GetBplDir;
     property DcpDir: string read GetDcpDir;
