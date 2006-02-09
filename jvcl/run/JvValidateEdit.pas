@@ -914,9 +914,6 @@ begin
     ChangeText('')
   else
   begin
-    if (FCriticalPoints.CheckPoints <> cpNone) and
-      (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
-      SetFontColor;
     case FDisplayFormat of
       dfCurrency:
         ChangeText(Format('%.*m', [FDecimalPlaces, AsCurrency]));
@@ -930,6 +927,14 @@ begin
         ChangeText(Format('%.*n%', [FDecimalPlaces, AsFloat]));
     else
       ChangeText(FEditText);
+    end;
+
+    // This needs to be done AFTER the text has been changed so that the color
+    // is directly shown correctly. (Mantis 3493)
+    if (FCriticalPoints.CheckPoints <> cpNone) and
+      (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+    begin
+      SetFontColor;
     end;
   end;
 end;
