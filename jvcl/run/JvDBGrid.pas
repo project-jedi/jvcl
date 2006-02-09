@@ -2267,6 +2267,7 @@ var
   lWord: string;
   lMasterField: TField;
   I, deb: Integer;
+  Found: Boolean;
 
   procedure CharsToFind;
   begin
@@ -2334,8 +2335,31 @@ begin
 
         if (Key in CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
-          CharsToFind;
-          Key := #0; // always suppress char
+          FWord := InplaceEditor.EditText;
+          deb := InplaceEditor.SelStart + InplaceEditor.SelLength;
+          if Key = Backspace then
+          begin
+            if (InplaceEditor.SelLength = 0) then
+            begin
+              lWord := Copy(FWord, 1, InplaceEditor.SelStart - 1)
+                     + Copy(FWord, deb + 1, Length(FWord) - deb + 1);
+              deb := InplaceEditor.SelStart - 1;
+            end
+            else
+            begin
+              lWord := Copy(FWord, 1, InplaceEditor.SelStart)
+                     + Copy(FWord, deb + 1, Length(FWord) - deb);
+              deb := InplaceEditor.SelStart;
+            end;
+          end
+          else
+          begin
+            lWord := Copy(FWord, 1, InplaceEditor.SelStart) + Key
+                   + Copy(FWord, deb + 1, Length(FWord) - deb);
+            deb := InplaceEditor.SelStart + 1;
+          end;
+
+          Found := False;
           with Columns[SelectedIndex].PickList do
             for I := 0 to Count - 1 do
             begin
@@ -2345,14 +2369,16 @@ begin
 
                 InplaceEditor.EditText := Strings[I];
                 Columns[SelectedIndex].Field.Text := Strings[I];
-                deb := Length(lWord);
                 InplaceEditor.SelStart := deb;
                 InplaceEditor.SelLength := Length(Text) - deb;
-                FWord := lWord;
+                Found := True;
 
                 Break;
               end;
             end;
+
+          if Found then
+            Key := #0;
         end;
       end;
   end
