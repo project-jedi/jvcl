@@ -106,6 +106,7 @@ type
 
     function GetTarget: TCompileTarget;
     function GetJCLDir: string;
+    function GetJCLLibDir: string;
     function GetHppDir: string;
     function GetBplDir: string;
     function GetDcpDir: string;
@@ -225,6 +226,9 @@ type
 
     property JCLDir: string read GetJCLDir write SetJCLDir;
       // JCLDir specifies the directory where the JCL is.
+
+    property JCLLibDir: string read GetJCLLibDir;
+      // JCLDir specifies the directory where the JCL Library files are, depending on the target.
 
     property HppDir: string read GetHppDir write FHppDir;
       // HppDir: (for BCB installation) specifies where the generated .hpp files
@@ -1025,6 +1029,14 @@ end;
 function TTargetConfig.GetJCLDir: string;
 begin
   Result := FJCLDir;
+end;
+
+function TTargetConfig.GetJCLLibDir: string;
+begin
+  // Note: if the JCL changes its naming convention, a table of equivalences
+  // would need to be built. Right now (2006/02/09), this is not necessary
+  // as the format is always %type%version.
+  Result := JCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]);
 end;
 
 function TTargetConfig.GetHppDir: string;

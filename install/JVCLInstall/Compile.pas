@@ -827,6 +827,10 @@ begin
       PathList.Free;
     end;
 
+    // Add the JCL Lib directory to the extra DcpDirs, this is where the JCL
+    // places its dcp files, starting from February 2006.
+    ExtraDcpDirs := ExtraDcpDirs + ';' + ProjectGroup.TargetConfig.JCLLibDir;
+
     { Removed until we have a non-make.exe-bug harmed build process.
     if TargetConfig.Target.Version > 6 then // Overcome make.exe "command line too long" bug
     begin
@@ -870,6 +874,7 @@ begin
     SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));
     SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB personality
     SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB personality
+    SetEnvironmentVariable('JCLLIBDIR', Pointer(TargetConfig.JclLibDir)); // for BCB personality
 
     SetEnvironmentVariable('EXTRAUNITDIRS', PChar(ExtraDcpDirs));
     SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
@@ -1058,11 +1063,12 @@ begin
     Lines.Add('');
 
     // for JCL .dcp files
-    Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s"',
+    Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s";"%s"',
       [ExtractShortPathName(ProjectGroup.TargetConfig.BplDir),
        ExtractShortPathName(ProjectGroup.TargetConfig.DcpDir),
        ExtractShortPathName(ProjectGroup.Target.BplDir),
-       ExtractShortPathName(ProjectGroup.Target.DcpDir)]));
+       ExtractShortPathName(ProjectGroup.Target.DcpDir),
+       ExtractShortPathName(ProjectGroup.TargetConfig.JCLLibDir)]));
 
     if AutoDepend then
     begin
