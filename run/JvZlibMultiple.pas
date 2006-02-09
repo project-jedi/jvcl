@@ -71,8 +71,13 @@ uses
   Added new procedures to pause and terminate the compression process.
   These would be very useful in a threaded environment.
 
+  NOTE #2    December 22, 2005 - Johann Campbell
+  - Added new procedure to list files stored in the zlib file ( basic rewrite of the decompression procedure )
+  - Exposed the Pause and Terminate procedures
+
   See below.
 }
+
 type
   {NEW:}
   TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string; var WriteFile: Boolean) of object;
@@ -104,8 +109,6 @@ type
     procedure DoProgress(Position, Total: Integer); virtual;
     procedure DoStopCompression;   // Note #1
     procedure DoStopDecompression; // Note #1
-    property CompressionPaused : Boolean read FCompressionPause write FCompressionPause; // Note #1
-    property DecompressionPaused : Boolean read FDecompressionPause write FDecompressionPause;  // Note #1
   public
     constructor Create(AOwner: TComponent); override;
     // compresses a list of files (can contain wildcards)
@@ -126,7 +129,12 @@ type
     procedure DecompressFile(FileName, Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
     // decompresses Stream into Directory optionally overwriting any existing files
     // If RelativePaths is true, any paths in the stream are stripped from their drive letter
+    procedure ListStoredFiles(FileName : String; FileList : TStrings);  // Note #2
     procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
+    procedure StopCompression;   // Note #1
+    procedure StopDecompression; // Note #1
+    property CompressionPaused : Boolean read FCompressionPause write FCompressionPause; // Note #1
+    property DecompressionPaused : Boolean read FDecompressionPause write FDecompressionPause;  // Note #1
   published
     property StorePaths: Boolean read FStorePaths  write FStorePaths default True;
     // NOTE : This property allows you to override already opened files - USE WITH CAUTION!!! opened files may still be writing data
@@ -471,6 +479,54 @@ end;
 procedure TJvZlibMultiple.DoStopDecompression;
 begin
   FTerminateDecompress := True;
+end;
+
+procedure TJvZlibMultiple.StopCompression;
+begin
+  DoStopCompression;
+end;
+
+procedure TJvZlibMultiple.StopDecompression;
+begin
+  DoStopDecompression;
+end;
+
+procedure TJvZLibMultiple.ListStoredFiles(FileName: String;
+  FileList : TStrings);
+var
+  ZStream : TFileStream;
+  FHByte : Byte;
+  FilePos, HeaderPos, CompressedSize, UnCompressedSize : Integer;
+  FileInfo : string;
+begin
+  ZStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    while ZStream.Position < ZStream.Size do
+    begin
+      ZStream.Read(FHByte, SizeOf(FHByte));
+      SetLength(FileInfo, FHByte);
+      if FHByte > 0 then
+        ZStream.Read(FileInfo[1], FHByte);
+
+      if FileInfo <> '' then
+        FileInfo := IncludeTrailingPathDelimiter(FileInfo);
+      ZStream.Read(FHByte, SizeOf(FHByte));
+      if FHByte > 0 then
+      begin
+        HeaderPos := Length(FileInfo);
+        SetLength(FileInfo, HeaderPos + FHByte);
+        ZStream.Read(FileInfo[HeaderPos + 1], FHByte);
+      end;
+
+      FileList.Add(FileInfo);
+      ZStream.Read(UncompressedSize, SizeOf(UncompressedSize));
+      ZStream.Read(CompressedSize, SizeOf(CompressedSize));
+      FilePos := ZStream.Position + CompressedSize;
+      ZStream.Position := FilePos;
+    end;
+  finally
+    ZStream.Free
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
