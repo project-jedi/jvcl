@@ -1025,7 +1025,7 @@ end;
 
 procedure TJvDesignPanel.SetActive(const Value: Boolean);
 begin
-  Surface.Active := Active;
+  Surface.Active := Value;
 end;
 
 procedure TJvDesignPanel.SetOnChange(const Value: TNotifyEvent);
