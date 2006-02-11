@@ -29,15 +29,10 @@ Known Issues:
 // Global switch to make UNICODE versions of API functions default
 {.DEFINE UNICODE}
 
-// family descriptors
-{$DEFINE WIN9x}  // Win 95, Win98 Gold, SE and ME
-{$DEFINE WIN98}  // Win98 Gold, SE and ME
-{$DEFINE WINNT}  // Win NT 3.5, 3.51 4, Win 2000, XP and Win 2003
-
 // individual versions including service packs
 // ONLY A SINGLE ONE IS ALLOWED TO BE ACTIVATED BY REMOVING THE DOT!
 {.$DEFINE WIN95}
-{.$DEFINE WIN98Gold}
+{$DEFINE WIN98Gold}
 {.$DEFINE WIN98SE}
 {.$DEFINE WIN98ME}
 {.$DEFINE WINNT35}
@@ -49,7 +44,7 @@ Known Issues:
 {.$DEFINE WINNT4_SP4}
 {.$DEFINE WINNT4_SP5}
 {.$DEFINE WINNT4_SP6}
-{$DEFINE WIN2000}
+{.DEFINE WIN2000}
 {.$DEFINE WIN2000_SP1}
 {.$DEFINE WIN2000_SP2}
 {.$DEFINE WINXP}
@@ -345,7 +340,7 @@ Known Issues:
  {$DEFINE WIN98_UP}
 {$ENDIF WIN98SE}
 
-{$IFDEF WIN98}
+{$IFDEF WIN98Gold}
  {$DEFINE WIN95_UP}
  {$DEFINE WIN98_UP}
  {$DEFINE WIN98SE_UP}
@@ -354,11 +349,14 @@ Known Issues:
 
 {$IFDEF WIN95}
  {$DEFINE WIN95_UP}
-{$ENDIF WIN98}
+{$ENDIF WIN95}
 
 // History:
 
 // $Log$
+// Revision 1.3  2006/02/11 16:50:17  marquardt
+// another fix to SetupApi.pas, windowsversion.inc defaults to Win98
+//
 // Revision 1.2  2005/08/28 15:23:33  obones
 // Added missing $
 //
