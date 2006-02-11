@@ -497,7 +497,6 @@ resourcestring
   RsEDirectHidDeviceCreationNotAllowed = 'Direct creation of a TJvHidDevice object is not allowed';
   RsEDeviceCannotBeIdentified = 'device cannot be identified';
   RsEDeviceCannotBeOpened = 'device cannot be opened';
-  RsEOnlyOneControllerPerProgram = 'Only one TJvHidDeviceController allowed per program';
   RsEHIDBooleanError = 'HID Error: a boolean function failed';
 
 {$ENDIF USEJVCL}
@@ -505,11 +504,7 @@ resourcestring
 const
   Kernel32DllName = 'kernel32.dll';
 
-var
-  // counter to prevent a second TJvHidDeviceController instance
-  GlobalInstanceCount: Integer = 0;
-
-//== =these are declared inconsistent in Windows.pas =========================
+//=== these are declared inconsistent in Windows.pas =========================
 
 function ReadFileEx(hFile: THandle; var Buffer; nNumberOfBytesToRead: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
@@ -545,14 +540,13 @@ begin
     Device.FDataError(Device, FErr);
 end;
 
+procedure DummyReadCompletion(ErrorCode: DWORD; Count: DWORD; Ovl: POverlapped); stdcall;
+begin
+end;
+
 procedure TJvHidDeviceReadThread.Execute;
 var
   SleepRet: DWORD;
-
-  procedure Dummy(ErrorCode: DWORD; Count: DWORD; Ovl: POverlapped); stdcall;
-  begin
-  end;
-
 begin
   SleepRet := WAIT_IO_COMPLETION;
   while not Terminated do
@@ -560,7 +554,7 @@ begin
     // read data
     SleepRet := WAIT_IO_COMPLETION;
     FillChar(Report[0], Device.Caps.InputReportByteLength, #0);
-    if Device.ReadFileEx(Report[0], Device.Caps.InputReportByteLength, @Dummy) then
+    if Device.ReadFileEx(Report[0], Device.Caps.InputReportByteLength, @DummyReadCompletion) then
     begin
       // wait for read to complete
       repeat
@@ -1566,11 +1560,6 @@ begin
   FVersion := cHidControllerClassVersion;
   FInDeviceChange := False;
 
-  // this is just to remind you that one controller is sufficient
-  Inc(GlobalInstanceCount);
-  if GlobalInstanceCount > 1 then
-    raise EControllerError.CreateRes(@RsEOnlyOneControllerPerProgram);
-
   FList := TList.Create;
 
   if LoadSetupApi then
@@ -1595,10 +1584,6 @@ var
   I: Integer;
   HidDev: TJvHidDevice;
 begin
-  Dec(GlobalInstanceCount);
-  // this only triggers if a second instance throws an exception
-  if GlobalInstanceCount > 0 then
-    Exit;
   // to prevent strange problems
   FDeviceChangeEvent := nil;
   FDevUnplugEvent := nil;

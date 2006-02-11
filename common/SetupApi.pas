@@ -52,14 +52,129 @@ interface
 (*$HPPEMIT '#include "setupapi.h"'*)
 
 uses
-  Windows, CommCtrl,
   {$IFDEF SETUPAPI_LINKONREQUEST}
   ModuleLoader,
   {$ENDIF SETUPAPI_LINKONREQUEST}
-  WinConvTypes;
+  Windows, CommCtrl;
 
 type
   PHICON = ^HICON;
+
+  // (rom) missing types taken from Jedi-apilib
+  INT_PTR = Integer;
+  {$EXTERNALSYM INT_PTR}
+  PINT_PTR = ^INT_PTR;
+  {$EXTERNALSYM PINT_PTR}
+  UINT_PTR = Longword;
+  {$EXTERNALSYM UINT_PTR}
+  PUINT_PTR = ^UINT_PTR;
+  {$EXTERNALSYM PUINT_PTR}
+  LONG_PTR = Longint;
+  {$EXTERNALSYM LONG_PTR}
+  PLONG_PTR = ^LONG_PTR;
+  {$EXTERNALSYM PLONG_PTR}
+  ULONG_PTR = Longword;
+  {$EXTERNALSYM ULONG_PTR}
+  PULONG_PTR = ^ULONG_PTR;
+  {$EXTERNALSYM PULONG_PTR}
+  DWORD_PTR = ULONG_PTR;
+  {$EXTERNALSYM DWORD_PTR}
+  PDWORD_PTR = ^DWORD_PTR;
+  {$EXTERNALSYM PDWORD_PTR}
+
+  //
+  // Neutral ANSI/UNICODE types and macros
+  //
+
+  {$IFDEF UNICODE}
+
+  TCHAR = WCHAR;
+  {$EXTERNALSYM TCHAR}
+  PTCHAR = PWideChar;
+  {$EXTERNALSYM PTCHAR}
+  TUCHAR = WCHAR;
+  {$EXTERNALSYM TUCHAR}
+  PTUCHAR = ^TUCHAR;
+  {$EXTERNALSYM PTUCHAR}
+
+  LPCTCH = LPWSTR;
+  LPTCH = LPWSTR;
+  {$EXTERNALSYM LPTCH}
+  PTCH = LPWSTR;
+  {$EXTERNALSYM PTCH}
+  PTSTR = LPWSTR;
+  {$EXTERNALSYM PTSTR}
+  LPTSTR = Windows.LPWSTR;
+  {$EXTERNALSYM LPTSTR}
+  PCTSTR = LPTSTR;
+  {$EXTERNALSYM PCTSTR}
+  LPCTSTR = LPTSTR;
+  {$EXTERNALSYM LPCTSTR}
+
+  PCUTSTR = PTUCHAR;
+  {$EXTERNALSYM PCUTSTR}
+  LPCUTSTR = PTUCHAR;
+  {$EXTERNALSYM LPCUTSTR}
+  PUTSTR = PTUCHAR;
+  {$EXTERNALSYM PUTSTR}
+  LPUTSTR = PTUCHAR;
+  {$EXTERNALSYM LPUTSTR}
+
+  __TEXT = WideString;
+  {$EXTERNALSYM __TEXT}
+
+  {$ELSE}
+
+  TCHAR = Char;
+  {$EXTERNALSYM TCHAR}
+  PTCHAR = PChar;
+  {$EXTERNALSYM PTCHAR}
+  TUCHAR = Byte;
+  {$EXTERNALSYM TUCHAR}
+  PTUCHAR = ^TUCHAR;
+  {$EXTERNALSYM PTUCHAR}
+
+  LPCTCH = LPSTR;
+  LPTCH = LPSTR;
+  {$EXTERNALSYM LPTCH}
+  PTCH = LPSTR;
+  {$EXTERNALSYM PTCH}
+  PTSTR = LPSTR;
+  {$EXTERNALSYM PTSTR}
+  LPTSTR = LPSTR;
+  {$EXTERNALSYM LPTSTR}
+  PCTSTR = LPCSTR;
+  {$EXTERNALSYM PCTSTR}
+  LPCTSTR = LPCSTR;
+  {$EXTERNALSYM LPCTSTR}
+
+  PCUTSTR = PTUCHAR;
+  {$EXTERNALSYM PCUTSTR}
+  LPCUTSTR = PTUCHAR;
+  {$EXTERNALSYM LPCUTSTR}
+  PUTSTR = PTUCHAR;
+  {$EXTERNALSYM PUTSTR}
+  LPUTSTR = PTUCHAR;
+  {$EXTERNALSYM LPUTSTR}
+
+  __TEXT = AnsiString;
+  {$EXTERNALSYM __TEXT}
+
+  {$ENDIF UNICODE}
+
+  LPCASTR = ^AnsiChar;
+  LPASTR = ^AnsiChar;
+  PCASTR = ^AnsiChar;
+  PASTR = ^AnsiChar;
+
+  PPCWSTR = ^LPCWSTR;
+  PPCASTR = ^LPCASTR;
+  PPCSTR  = ^LPCTSTR;
+  PPWSTR = ^LPWSTR;
+  PPASTR = ^LPASTR;
+  PPSTR  = ^LPTSTR;
+  PPTCHAR = ^PTCHAR;
+  LPLPCTSTR = ^LPCTSTR;
 
 const
   ANYSIZE_ARRAY = 1;
@@ -3969,13 +4084,13 @@ function SetupInstallServicesFromInfSectionEx(InfHandle: HINF;
 // wsprintf(CmdLineBuffer,TEXT("DefaultInstall 132 %s"),InfPath);
 // InstallHinfSection(NULL,NULL,CmdLineBuffer,0);
 //
-procedure InstallHinfSectionA(Window: HWND; ModuleHandle: HINSTANCE;
+procedure InstallHinfSectionA(Window: HWND; ModuleHandle: HINST;
   CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
 {$EXTERNALSYM InstallHinfSectionA}
-procedure InstallHinfSectionW(Window: HWND; ModuleHandle: HINSTANCE;
+procedure InstallHinfSectionW(Window: HWND; ModuleHandle: HINST;
   CommandLine: PWideChar; ShowCommand: Integer); stdcall;
 {$EXTERNALSYM InstallHinfSectionW}
-procedure InstallHinfSection(Window: HWND; ModuleHandle: HINSTANCE;
+procedure InstallHinfSection(Window: HWND; ModuleHandle: HINST;
   CommandLine: PTSTR; ShowCommand: Integer); stdcall;
 {$EXTERNALSYM InstallHinfSection}
 {$ENDIF WINXP_UP}
@@ -7169,7 +7284,7 @@ begin
   Inc(SetupApiLoadCount);
   if SetupApiLoadCount > 1 then
     Exit;
-  Result := LoadModule(SetupApiLib, SetupApiModuleName);
+  Result := ModuleLoader.LoadModule(SetupApiLib, SetupApiModuleName);
   if Result then
   begin
     {$IFDEF WINXP_UP}
@@ -7662,7 +7777,7 @@ begin
   Dec(SetupApiLoadCount);
   if SetupApiLoadCount > 0 then
     Exit;
-  UnloadModule(SetupApiLib);
+  ModuleLoader.UnloadModule(SetupApiLib);
   {$IFDEF WINXP_UP}
   SetupGetFileQueueCount := nil;
   SetupGetFileQueueFlags := nil;
