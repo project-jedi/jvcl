@@ -25,6 +25,8 @@ Known Issues:
 
 unit JvHidControllerClass;
 
+{$DEFINE DEFAULT_JVCL_INC}
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
@@ -1537,9 +1539,6 @@ begin
     Inc(FMyController.FNumCheckedOutDevices);
     Dec(FMyController.FNumCheckedInDevices);
     StartThread;
-    CloseFile;
-    CloseFileEx(omhRead);
-    CloseFileEx(omhWrite);
   end;
 end;
 
@@ -2018,9 +2017,12 @@ begin
       Dev.FIsEnumerated := True;
       Result := CheckThisOut(HidDev, I, Check(Dev));
       Dev.FIsEnumerated := False;
-      Dev.CloseFile;
-      Dev.CloseFileEx(omhRead);
-      Dev.CloseFileEx(omhWrite);
+      if not Result then
+      begin
+        Dev.CloseFile;
+        Dev.CloseFileEx(omhRead);
+        Dev.CloseFileEx(omhWrite);
+      end;
       if Result then
         Break;
     end;
