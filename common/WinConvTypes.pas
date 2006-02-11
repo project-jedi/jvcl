@@ -44,6 +44,8 @@ uses
   Windows;
 
 type
+  PHICON = ^HICON;
+
   {$IFDEF UNICODE}
   LPCTSTR = PWideChar;
   LPTSTR  = PWideChar;
