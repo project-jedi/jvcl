@@ -58,19 +58,26 @@ type
 
   TJvOracleDatasetDialogOptions = class(TJvCustomThreadDialogOptions)
   private
+    FCaption: string;
     FDynControlEngine: TJvDynControlEngine;
     FEnableCancelButton: boolean;
     FFormStyle: tFormStyle;
     FShowCancelButton: boolean;
+    FShowRowsLabel: Boolean;
+    FShowTimeLabel: Boolean;
+    procedure SetCaption(const Value: string);
     procedure SetDynControlEngine(const Value: TJvDynControlEngine);
     procedure SetEnableCancelButton(const Value: boolean);
     procedure SetFormStyle(const Value: tFormStyle);
     procedure SetShowCancelButton(const Value: boolean);
+    procedure SetShowRowsLabel(const Value: Boolean);
+    procedure SetShowTimeLabel(const Value: Boolean);
   protected
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
     destructor Destroy; override;
   published
+    property Caption: string read FCaption write SetCaption;
     property DynControlEngine: TJvDynControlEngine
       read FDynControlEngine write SetDynControlEngine;
     property EnableCancelButton: boolean read FEnableCancelButton
@@ -78,6 +85,10 @@ type
     property FormStyle: tFormStyle read FFormStyle write SetFormStyle;
     property ShowCancelButton: boolean read FShowCancelButton
       write SetShowCancelButton default True;
+    property ShowRowsLabel: Boolean read FShowRowsLabel write SetShowRowsLabel
+        default True;
+    property ShowTimeLabel: Boolean read FShowTimeLabel write SetShowTimeLabel
+        default True;
   end;
 
   TJvOracleDatasetThreadOptions = class(TPersistent)
@@ -956,8 +967,15 @@ var
 begin
   if DialogOptions.ShowDialog then
   begin
-    ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
-      DialogOptions.FormStyle);
+    if Assigned(ConnectedThread.Owner) and (ConnectedThread.Owner is TWinControl) then
+      ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
+        DialogOptions.FormStyle, TWinControl(ConnectedThread.Owner))
+    else if Assigned(ConnectedThread.Owner) and Assigned(ConnectedThread.Owner.Owner) and (ConnectedThread.Owner.Owner is TWinControl) then
+      ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
+        DialogOptions.FormStyle, TWinControl(ConnectedThread.Owner.Owner))
+    else
+     ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
+        DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
     ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
@@ -1018,7 +1036,10 @@ begin
 
   BorderIcons := [];
   BorderStyle := bsDialog;
-  Caption := ' ';
+  if DialogOptions.Caption <> '' then
+    Caption := DialogOptions.Caption
+  else
+    Caption := ' ';
   FormStyle := DialogOptions.FormStyle;
   OldCreateOrder := False;
 {$IFDEF COMPILER7_UP}
@@ -1060,7 +1081,7 @@ begin
   with StaticText do
   begin
     Top := 1;
-    Left := 80;
+    Left := 100;
     Height := 13;
     Panel.Height := Height + 6;
   end;
@@ -1072,7 +1093,10 @@ var
 begin
   if Assigned(ConnectedDataset) then
   begin
-    Caption := ConnectedDataset.CurrentOperationAction;
+    if DialogOptions.Caption <> '' then
+      Caption := DialogOptions.Caption +' - '+ConnectedDataset.CurrentOperationAction
+    else
+      Caption := ConnectedDataset.CurrentOperationAction;
     if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
       ITmpControl.ControlSetCaption(IntToStr(ConnectedDataset.CurrentRow));
     if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
@@ -1121,6 +1145,8 @@ begin
   FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
   FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
   FCancelBtn.Left := Round((FCancelButtonPanel.Width - FCancelBtn.Width) / 2);
+  FRowsPanel.Visible := DialogOptions.ShowRowsLabel;
+  FTimePanel.Visible := DialogOptions.ShowTimeLabel;
   h := 10;
   if FRowsPanel.Visible then
     h := h + FRowsPanel.Height;
@@ -1142,11 +1168,18 @@ begin
   inherited Create(AOwner);
   FEnableCancelButton := True;
   FShowCancelButton := True;
+  FShowRowsLabel := True;
+  FShowTimeLabel := True;
 end;
 
 destructor TJvOracleDatasetDialogOptions.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TJvOracleDatasetDialogOptions.SetCaption(const Value: string);
+begin
+  FCaption := Value;
 end;
 
 procedure TJvOracleDatasetDialogOptions.SetDynControlEngine(
@@ -1168,6 +1201,16 @@ end;
 procedure TJvOracleDatasetDialogOptions.SetShowCancelButton(const Value: boolean);
 begin
   FShowCancelButton := Value;
+end;
+
+procedure TJvOracleDatasetDialogOptions.SetShowRowsLabel(const Value: Boolean);
+begin
+  FShowRowsLabel := Value;
+end;
+
+procedure TJvOracleDatasetDialogOptions.SetShowTimeLabel(const Value: Boolean);
+begin
+  FShowTimeLabel := Value;
 end;
 
 procedure TJvOracleDatasetThread.intAfterCreateDialogForm(DialogForm:
