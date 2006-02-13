@@ -736,13 +736,13 @@ begin
       Result := DoValidate(Key, S, Posn);
     dfInteger:
       Result := (Pos(Key, FCheckChars) > 0) or
-        ((Key = '+') and (Posn = 1) and (Pos('+', S) = 0)) or
-        ((Key = '-') and (Posn = 1) and (Pos('-', S) = 0));
+        ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
+        ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
     dfFloat, dfCurrency, dfPercent:
       Result := (Pos(Key, FCheckChars) > 0) or
         ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
-        ((Key = '+') and (Posn = 1) and (Pos('+', S) = 0)) or
-        ((Key = '-') and (Posn = 1) and (Pos('-', S) = 0));
+        ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
+        ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
     dfNonCheckChars:
       Result := Pos(Key, FCheckChars) = 0;
     dfNone:
