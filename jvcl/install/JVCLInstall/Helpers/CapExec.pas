@@ -131,13 +131,10 @@ begin
         StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
       StartupInfo.hStdOutput := hWrite;
       StartupInfo.hStdError := StartupInfo.hStdOutput; // redirect
-      //if Pos('CompilePackages', Args) = 0 then
-        StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+      StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
 
-      if {((Pos('CompilePackages', Args) = 0) and }CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
-        0, nil, PChar(Dir), StartupInfo, ProcessInfo){) or
-         (Pos('CompilePackages', Args) > 0) and (CreateProcess(nil, PChar('cmd.exe'), @SecAttrib, nil, True,
-        0, nil, PChar(Dir), StartupInfo, ProcessInfo))} then
+      if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
+        0, nil, PChar(Dir), StartupInfo, ProcessInfo) then
       begin
         CloseHandle(ProcessInfo.hThread);
         try
@@ -156,10 +153,10 @@ begin
             begin
               WriteFile(hAbortWrite, CtrlCBuffer, SizeOf(CtrlCBuffer), Num, nil);
               if WaitForSingleObject(ProcessInfo.hProcess, 500) = WAIT_TIMEOUT then
-                TerminateProcess(ProcessInfo.hProcess, Cardinal(-3));
+                TerminateProcess(ProcessInfo.hProcess, Cardinal(1));
             end
             else
-              TerminateProcess(ProcessInfo.hProcess, Cardinal(-3));
+              TerminateProcess(ProcessInfo.hProcess, Cardinal(1));
           end;
           GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
         finally
