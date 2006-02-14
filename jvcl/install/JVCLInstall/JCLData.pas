@@ -35,7 +35,7 @@ const
     requires the user to install or compile the JCL. Changing this constant
     will only change the displayed string but not the JCL version testing
     code. }
-  JCLVersion = '1.96';
+  JCLVersion = '1.97';
 
 
   { JCLBrowsePaths specifies the JCL directories that could be found in the
