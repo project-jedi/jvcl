@@ -541,7 +541,13 @@ end;
 
 procedure JvInterpreter_FileAge(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$IFDEF COMPILER10_UP}
+  {$WARN SYMBOL_DEPRECATED OFF}
   Value := FileAge(Args.Values[0]);
+  {$WARN SYMBOL_DEPRECATED ON}
+  {$ELSE}
+  Value := FileAge(Args.Values[0]);
+  {$ENDIF COMPILER10_UP}
 end;
 
 { function FileExists(const FileName: string): Boolean; }
