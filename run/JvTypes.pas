@@ -457,6 +457,11 @@ const
   {$IFDEF VisualCLX}
   SysColCount = 42;
   {$ENDIF VisualCLX}
+  {$IFDEF COMPILER6}
+   {$IF not declared(clHotLight)}
+    {$MESSAGE ERROR 'You do not have installed Delphi 6 Update 2. Please install this before installing the JVCL. http://www.borland.com/downloads/registered/del6_reg_updates_prompt.html'}
+   {$IFEND}
+  {$ENDIF COMPILER6}
 
   ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
     (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
