@@ -177,6 +177,7 @@ type
     procedure DefaultDrawPoints(PointsStep, PointsHeight,
       ExtremePointsHeight: Longint); virtual;
     property Canvas;
+    property RulerLength: Integer read GetRulerLength;
     property Increment: Longint read FIncrement write SetIncrement default 10;
     property MinValue: Longint read FMinValue write SetMinValue default 0;
     property MaxValue: Longint read FMaxValue write SetMaxValue default 100;
