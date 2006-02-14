@@ -1,4 +1,4 @@
-{ included in JVCLData.inc (at the bottom) }
+{ included in JVCLData.pas (at the bottom) }
 // $Id$
 
 function GetSystemDir: string;
