@@ -566,24 +566,31 @@ type
     FStringChar: string;
     FCommentPairs: TStrings;
     FStringChars: string;
+    FStringEscape: string;
+    FShowBetweenHighlighting: Boolean;
     procedure SetWordPairs(Value: TStrings);
     procedure SetCommentPairs(const Value: TStrings);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+
+    function CreateStringMap(const Text: string): TDynBoolArray;
   published
     property Active: Boolean read FActive write FActive default False;
     property BorderColor: TColor read FBorderColor write FBorderColor default clSilver;
     property Color: TColor read FColor write FColor default clNone;
     property FontColor: TColor read FFontColor write FFontColor default clNone;
+    property ShowBetweenHighlighting: Boolean read FShowBetweenHighlighting write FShowBetweenHighlighting default False;
 
     property CaseSensitiveWordPairs: Boolean read FCaseSensitiveWordPairs write FCaseSensitiveWordPairs default True;
     property WordPairs: TStrings read FWordPairs write SetWordPairs;
       { example: "begin=end", "repeat=until", "for=do", "asm=end" }
     property StringChars: string read FStringChars write FStringChars;
       { example: '"''' }
-    property CommentPairs: TStrings read FCommentPairs write SetCommentPairs;
+    property StringEscape: string read FStringEscape write FStringEscape;
+      { example: '\"' }
+    property CommentPairs: TStrings read FCommentPairs write SetCommentPairs; // not implemented yet
       { example: "/*=*/", "(*=*)" }
   end;
 
@@ -912,7 +919,7 @@ type
     procedure PaintLineText(Line: Integer; ColBeg, ColEnd: Integer;
       var ColPainted: Integer); virtual; abstract;
     procedure GetBracketHighlightAttr(Line: Integer; var Attrs: TLineAttrs); virtual;
-    procedure HighlightBrackets; virtual;
+    procedure HighlightBrackets(X, Y: Integer); virtual;
     procedure GetBracketHighlightingWords(var Direction: Integer;
       const Start: AnsiString; var Stop: AnsiString; var CaseSensitive: Boolean); virtual;
     function FontCacheFind(LA: TLineAttr): TFont;
@@ -2415,6 +2422,8 @@ begin
   FWordPairs := TStringList.Create;
   FCommentPairs := TStringList.Create;
   FCaseSensitiveWordPairs := True;
+  FStringChar := '''';
+  FStringEscape := '''''';
 
   FActive := False;
   FBorderColor := clSilver;
@@ -2442,7 +2451,7 @@ begin
       Self.FWordPairs.Assign(FWordPairs);
       Self.FCaseSensitiveWordPairs := FCaseSensitiveWordPairs;
       Self.FStringChar := FStringChar;
-      Self.FCommentPairs.Assign(FCommentPairs);
+      Self.SetCommentPairs(FCommentPairs);
     end;
   end
   else
@@ -2459,6 +2468,47 @@ procedure TJvBracketHighlighting.SetCommentPairs(const Value: TStrings);
 begin
   if Value <> FCommentPairs then
     FCommentPairs.Assign(Value);
+end;
+
+function TJvBracketHighlighting.CreateStringMap(const Text: string): TDynBoolArray;
+var
+  LenText: Integer;
+  i, j, Idx, InStr: Integer;
+begin
+  LenText := Length(Text);
+  SetLength(Result, LenText);
+  for i := 0 to High(Result) do
+    Result[i] := False;
+
+  if StringChars <> '' then
+  begin
+    InStr := 0;
+    i := 0;
+    while i < LenText do
+    begin
+      if (StringEscape <> '') and // skip string escape "char"
+         IsSubString(Text, i + 1, StringEscape) then
+      begin
+        for j := 0 to Length(StringEscape) - 1 do
+          Result[i + j] := True;
+        Inc(i, Length(StringEscape));
+        Continue;
+      end;
+
+      Idx := Pos(Text[i + 1], StringChars);
+      if Idx > 0 then
+      begin
+        if InStr = Idx then
+          InStr := 0 // string end
+        else
+        if InStr = 0 then
+          InStr := Idx;
+      end;
+      if InStr <> 0 then
+        Result[i] := True;
+      Inc(i);
+    end;
+  end;
 end;
 
 //=== { TJvCustomEditorBase } ================================================
@@ -2892,7 +2942,7 @@ begin
     FSelection.IsSelected := False;
     FSelection.Selecting := False;
   end;
-  HighlightBrackets;
+  HighlightBrackets(CaretX, CaretY);
 end;
 
 procedure TJvCustomEditorBase.DoLinesChange(Sender: TObject);
@@ -2924,7 +2974,7 @@ end;
 
 procedure TJvCustomEditorBase.StatusChanged;
 begin
-  HighlightBrackets;
+  HighlightBrackets(CaretX, CaretY);
   if Assigned(FOnChangeStatus) then
     FOnChangeStatus(Self);
 end;
@@ -3257,60 +3307,65 @@ procedure TJvCustomEditorBase.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Com: Word;
 begin
-  if Completion.Visible then
-  begin
-    if Completion.DoKeyDown(Key, Shift) then
+  PaintCaret(False);
+  try
+    if Completion.Visible then
     begin
-      IgnoreKeyPress := True;
-      Exit;
-    end;
-  end
-  else
-    Completion.FTimer.Enabled := False;
-
-  if not (ssShift in Shift) then
-    FSelection.Selecting := False;
-
-  if WaitSecondKey then
-  begin
-    IgnoreKeyPress := True; { Set this before calling FKeyboard.Command2()
-                              because in FKeyboard.OnCommand2 the
-                              Editor-window can loose focus and so the
-                              second char will be printed. }
-    Com := FKeyboard.Command2(Key1, Shift1, Key, Shift);
-    WaitSecondKey := False;
-    IgnoreKeyPress := True;
-  end
-  else
-  begin
-    inherited KeyDown(Key, Shift);
-    Key1 := Key;
-    Shift1 := Shift;
-    Com := FKeyboard.Command(Key, Shift);
-    if Com = twoKeyCommand then
-    begin
-      IgnoreKeyPress := True;
-      WaitSecondKey := True;
+      if Completion.DoKeyDown(Key, Shift) then
+      begin
+        IgnoreKeyPress := True;
+        Exit;
+      end;
     end
     else
-      IgnoreKeyPress := Com > 0;
-  end;
+      Completion.FTimer.Enabled := False;
 
-  if (Com > 0) and (Com <> twoKeyCommand) then
-  begin
-    Command(Com);
-    if ssAlt in Shift then
+    if not (ssShift in Shift) then
+      FSelection.Selecting := False;
+
+    if WaitSecondKey then
     begin
-      { Setting the capture control to the editor prevents the VM_MENU key to
-        activate the mainmenu. }
-      PostMessage(Handle, CM_RESETCAPTURECONTROL, 0, Integer(GetCaptureControl));
-      SetCaptureControl(Self);
+      IgnoreKeyPress := True; { Set this before calling FKeyboard.Command2()
+                                because in FKeyboard.OnCommand2 the
+                                Editor-window can loose focus and so the
+                                second char will be printed. }
+      Com := FKeyboard.Command2(Key1, Shift1, Key, Shift);
+      WaitSecondKey := False;
+      IgnoreKeyPress := True;
+    end
+    else
+    begin
+      inherited KeyDown(Key, Shift);
+      Key1 := Key;
+      Shift1 := Shift;
+      Com := FKeyboard.Command(Key, Shift);
+      if Com = twoKeyCommand then
+      begin
+        IgnoreKeyPress := True;
+        WaitSecondKey := True;
+      end
+      else
+        IgnoreKeyPress := Com > 0;
     end;
-    Key := 0;
-  end;
 
-  if Com = ecBackspace then
-    Completion.DoKeyPress(Backspace);
+    if (Com > 0) and (Com <> twoKeyCommand) then
+    begin
+      Command(Com);
+      if ssAlt in Shift then
+      begin
+        { Setting the capture control to the editor prevents the VM_MENU key to
+          activate the mainmenu. }
+        PostMessage(Handle, CM_RESETCAPTURECONTROL, 0, Integer(GetCaptureControl));
+        SetCaptureControl(Self);
+      end;
+      Key := 0;
+    end;
+
+    if Com = ecBackspace then
+      Completion.DoKeyPress(Backspace);
+  finally
+    PaintCaret(True);
+  end;
 end;
 
 procedure TJvCustomEditorBase.KeyPress(var Key: Char);
@@ -4411,13 +4466,12 @@ begin
   end;
 end;
 
-procedure TJvCustomEditorBase.HighlightBrackets;
+procedure TJvCustomEditorBase.HighlightBrackets(X, Y: Integer);
 const
   Separators: TSysCharSet = [#0, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
     ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 var
   Text: AnsiString;
-  X, Y: Integer;
   SearchDir: Integer;
   SearchStart: AnsiString;
   SearchEnd: AnsiString;
@@ -4426,10 +4480,10 @@ var
   IsBracketCompare: Boolean;
   LenSearchEnd, LenSearchStart, LenText: Integer;
   CmpProc: function(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
+  StringMap: TDynBoolArray;
+  R: TRect;
 begin
-  X := CaretX;
-  Y := CaretY;
-
+  StringMap := nil;
   { remove last highlighting }
   if BracketHighlighting.FStart.Left > -1 then
   begin
@@ -4447,6 +4501,13 @@ begin
 
   if (Y >= 0) and GetAnsiTextLine(Y, Text) and (X >= 0) and (X < Length(Text)) then
   begin
+    LenText := Length(Text);
+
+    // Create string map
+    StringMap := BracketHighlighting.CreateStringMap(Text);
+    if StringMap[X] then
+      Exit; // we are in a string => nothing to do
+
     SearchDir := 0; // nothing to search
     CaseSensitive := False;
     IsBracketCompare := True;
@@ -4485,6 +4546,11 @@ begin
       Inc(X);
 
       GetBracketHighlightingWords(SearchDir, SearchStart, SearchEnd, CaseSensitive);
+
+{      if (SearchDir = 0) or (SearchStart = '') or (SearchEnd = '') then
+      begin
+        GetBracketHighlightingComments(SearchDir, SearchStart, SearchEnd);
+      end;}
     end;
 
     if (SearchDir <> 0) and (SearchStart <> '') and (SearchEnd <> '') then
@@ -4493,7 +4559,6 @@ begin
       BracketHighlighting.FStart.BottomRight := Point(X + 1 + Length(SearchStart) - 1, Y);
 
       SearchOpen := 1;
-      LenText := Length(Text);
       LenSearchStart := Length(SearchStart);
       LenSearchEnd := Length(SearchEnd);
 
@@ -4515,9 +4580,12 @@ begin
           Dec(Y);
           if (Y < 0) or not GetAnsiTextLine(Y, Text) then
             Break;
+          StringMap := BracketHighlighting.CreateStringMap(Text);
           X := Length(Text) - 1;
           if X < 0 then
             Continue;
+          if CaretY - Y > 800 then
+            Exit;
         end
         else // +1 direction
         if X >= Length(Text) then
@@ -4525,55 +4593,90 @@ begin
           Inc(Y);
           if not GetAnsiTextLine(Y, Text) then
             Break;
+          StringMap := BracketHighlighting.CreateStringMap(Text);
           X := 0;
           if X >= Length(Text) then
             Continue;
+          if Y - CaretY > 800 then
+            Exit;
         end;
 
-        if IsBracketCompare then // it is faster to compare one char
+        if not StringMap[X] then
         begin
-          if Text[X + 1] = SearchEnd[1] then
+          if IsBracketCompare then // it is faster to compare one char
           begin
-            Dec(SearchOpen);
-            if SearchOpen = 0 then
-            begin
-              BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
-              BracketHighlighting.FStop.BottomRight := Point(X + 1, Y);
-              PaintLine(Y);
-              Break;
-            end;
-          end
-          else
-          if Text[X + 1] = SearchStart[1] then
-            Inc(SearchOpen);
-        end
-        else
-        begin
-          // word pairs
-          if CmpProc(Text, X, SearchEnd, LenSearchEnd) then // case sensitive
-          begin
-            if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
-               ((X + 1 + LenSearchEnd < LenText) or (Text[X + 1 + LenSearchEnd] in Separators)) then
+            if Text[X + 1] = SearchEnd[1] then
             begin
               Dec(SearchOpen);
               if SearchOpen = 0 then
               begin
-                // found
                 BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
-                BracketHighlighting.FStop.BottomRight := Point(X + 1 + Length(SearchEnd) - 1, Y);
+                BracketHighlighting.FStop.BottomRight := Point(X + 1, Y);
                 Break;
               end;
-            end;
+            end
+            else
+            if Text[X + 1] = SearchStart[1] then
+              Inc(SearchOpen);
           end
           else
-          if CmpProc(Text, X, SearchStart, LenSearchStart) then // case sensitive
           begin
-            if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
-               ((X + 1 + LenSearchStart < LenText) or (Text[X + 1 + LenSearchStart] in Separators)) then
-              Inc(SearchOpen);
+            // word pairs
+            if CmpProc(Text, X, SearchEnd, LenSearchEnd) then // case sensitive
+            begin
+              if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
+                 ((X + 1 + LenSearchEnd < LenText) or (Text[X + 1 + LenSearchEnd] in Separators)) then
+              begin
+                Dec(SearchOpen);
+                if SearchOpen = 0 then
+                begin
+                  // found
+                  BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
+                  BracketHighlighting.FStop.BottomRight := Point(X + 1 + Length(SearchEnd) - 1, Y);
+                  Break;
+                end;
+              end;
+            end
+            else
+            if CmpProc(Text, X, SearchStart, LenSearchStart) then // case sensitive
+            begin
+              if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
+                 ((X + 1 + LenSearchStart < LenText) or (Text[X + 1 + LenSearchStart] in Separators)) then
+                Inc(SearchOpen);
+            end;
           end;
         end;
       until False;
+
+      { sort Start and Stop "char" }
+      if BracketHighlighting.FStart.Top > BracketHighlighting.FStop.Top then
+      begin
+        R := BracketHighlighting.FStart;
+        BracketHighlighting.FStart := BracketHighlighting.FStop;
+        BracketHighlighting.FStop := R;
+      end
+      else if (BracketHighlighting.FStart.Top = BracketHighlighting.FStop.Top) and
+              (BracketHighlighting.FStart.Left > BracketHighlighting.FStop.Left) then
+      begin
+        R := BracketHighlighting.FStart;
+        BracketHighlighting.FStart := BracketHighlighting.FStop;
+        BracketHighlighting.FStop := R;
+      end;
+
+      { The caret must be between the start and stop "char" }
+      if BracketHighlighting.FStart.Top = CaretY then
+      begin
+        if BracketHighlighting.FStart.Left > CaretX + 1 then
+          BracketHighlighting.FStop.Left := -1; // invalidate
+      end;
+      if BracketHighlighting.FStop.Top = CaretY then
+      begin
+        if BracketHighlighting.FStop.Right < CaretX then
+          BracketHighlighting.FStop.Left := -1; // invalidate
+      end;
+      if (BracketHighlighting.FStop.Top < CaretY) or (BracketHighlighting.FStart.Top > CaretY) then
+        BracketHighlighting.FStop.Left := -1; // invalidate
+
 
       { Do only highlight if start and stop are found }
       if BracketHighlighting.FStop.Left = -1 then
@@ -4584,6 +4687,47 @@ begin
         PaintLine(BracketHighlighting.FStop.Top);
       end;
     end;
+  end;
+
+  if BracketHighlighting.ShowBetweenHighlighting and
+     (BracketHighlighting.FStop.Left = -1) and
+     (Y >= 0) and (X >= 0) and GetAnsiTextLine(Y, Text) then
+  begin
+    // find ending bracket
+    StringMap := BracketHighlighting.CreateStringMap(Text);
+    SearchOpen := 1;
+    repeat
+      if X >= Length(Text) then
+      begin
+        Inc(Y);
+        if not GetAnsiTextLine(Y, Text) then
+          Break;
+        StringMap := BracketHighlighting.CreateStringMap(Text);
+        X := 0;
+        if X >= Length(Text) then
+          Continue;
+        if Y - CaretY > 800 then
+          Exit;
+      end;
+
+      if not StringMap[X] then
+      begin
+        case Text[X + 1] of
+          '(', '{', '[', '<':
+            Inc(SearchOpen);
+          ')', '}', ']', '>':
+            begin
+              Dec(SearchOpen);
+              if SearchOpen = 0 then
+              begin
+                HighlightBrackets(X, Y);
+                Break;
+              end;
+            end;
+        end;
+      end;
+      Inc(X);
+    until False;
   end;
 end;
 

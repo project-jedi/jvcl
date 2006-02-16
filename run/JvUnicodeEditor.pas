@@ -1138,6 +1138,20 @@ begin
 
           if X = CaretX then
             X := 0;
+          if ACommand <> ecBackspaceWord then
+          begin
+            { Jump to previous line and last word ending }
+            if (X = 0) and (Y > 0) then
+            begin
+              if (Y > FLines.Count) or (CaretX = 0) or (FLines[Y] = '') or
+                 CharInSetW(FLines[Y][1], Separators) then
+              begin
+                Y := Y - 1;
+                X := Length(FLines[Y]);
+              end;
+            end;
+          end;
+
           if ACommand = ecSelPrevWord then
             SetSel1(X, Y)
           else
@@ -1178,6 +1192,9 @@ begin
           begin
             Y := CaretY + 1;
             X := 0;
+            if Y < FLines.Count then
+              while (X < Length(FLines[Y])) and (CharInSetW(FLines[Y][X + 1], Separators)) do
+                Inc(X);
             if ACommand = ecSelNextWord then // this code is copied from [ecPrevWord, ecSelPrevWord]
               SetSel1(X, Y)
             else
