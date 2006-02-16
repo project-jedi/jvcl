@@ -108,7 +108,7 @@ type
   TJvDBEditShowEvent = procedure(Sender: TObject; Field: TField;
     var AllowEdit: Boolean) of object;
   TDrawColumnTitleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
-    ARect: TRect; AColumn: TColumn; ASortMarker: TBitmap; IsDown: Boolean;
+    ARect: TRect; AColumn: TColumn; var ASortMarker: TBitmap; IsDown: Boolean;
     var Offset: Integer; var DefaultDrawText,
     DefaultDrawSortMarker: Boolean) of object;
   TJvTitleHintEvent = procedure(Sender: TObject; Field: TField;
@@ -356,7 +356,7 @@ type
       var Index: Longint; var SizingPos, SizingOfs: Integer;
       var FixedInfo: TGridDrawInfo); override;
     procedure DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect; AColumn: TColumn;
-      ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
+      var ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
       var DefaultDrawText, DefaultDrawSortMarker: Boolean); virtual;
     procedure ColEnter; override;
 
@@ -2785,10 +2785,7 @@ begin
         begin
           if Bmp <> nil then
           begin
-            //          ALeft := TitleRect.Right - Bmp.Width - 3;
             ALeft := TitleRect.Right - Indicator + 3;
-            //if Down then
-            //  Inc(ALeft);
             if IsRightToLeft then
               ALeft := TitleRect.Left + 3;
             Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
@@ -3066,7 +3063,7 @@ begin
 end;
 
 procedure TJvDBGrid.DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect;
-  AColumn: TColumn; ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
+  AColumn: TColumn; var ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
   var DefaultDrawText, DefaultDrawSortMarker: Boolean);
 begin
   if Assigned(FOnDrawColumnTitle) then
