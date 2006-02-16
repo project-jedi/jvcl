@@ -919,7 +919,7 @@ type
     procedure PaintLineText(Line: Integer; ColBeg, ColEnd: Integer;
       var ColPainted: Integer); virtual; abstract;
     procedure GetBracketHighlightAttr(Line: Integer; var Attrs: TLineAttrs); virtual;
-    procedure HighlightBrackets(X, Y: Integer); virtual;
+    procedure HighlightBrackets(X, Y: Integer; BetweenSearch: Boolean = False); virtual;
     procedure GetBracketHighlightingWords(var Direction: Integer;
       const Start: AnsiString; var Stop: AnsiString; var CaseSensitive: Boolean); virtual;
     function FontCacheFind(LA: TLineAttr): TFont;
@@ -4466,7 +4466,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEditorBase.HighlightBrackets(X, Y: Integer);
+procedure TJvCustomEditorBase.HighlightBrackets(X, Y: Integer; BetweenSearch: Boolean = False);
 const
   Separators: TSysCharSet = [#0, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
     ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
@@ -4513,7 +4513,7 @@ begin
     IsBracketCompare := True;
 
     // obtain search direction and end-char
-    if Text[X + 1] in ['(', '{', '[', '<'] then
+    if Text[X + 1] in ['(', '{', '['] then
     begin
       SearchDir := +1;
       SearchStart := Text[X + 1];
@@ -4521,11 +4521,10 @@ begin
         '(': SearchEnd := ')';
         '{': SearchEnd := '}';
         '[': SearchEnd := ']';
-        '<': SearchEnd := '>';
       end;
     end
     else
-    if Text[X + 1] in [')', '}', ']', '>'] then
+    if Text[X + 1] in [')', '}', ']'] then
     begin
       SearchDir := -1;
       SearchStart := Text[X + 1];
@@ -4533,7 +4532,6 @@ begin
         ')': SearchEnd := '(';
         '}': SearchEnd := '{';
         ']': SearchEnd := '[';
-        '>': SearchEnd := '<';
       end;
     end
     else
@@ -4689,7 +4687,7 @@ begin
     end;
   end;
 
-  if BracketHighlighting.ShowBetweenHighlighting and
+  if not BetweenSearch and BracketHighlighting.ShowBetweenHighlighting and
      (BracketHighlighting.FStop.Left = -1) and
      (Y >= 0) and (X >= 0) and GetAnsiTextLine(Y, Text) then
   begin
@@ -4713,14 +4711,14 @@ begin
       if not StringMap[X] then
       begin
         case Text[X + 1] of
-          '(', '{', '[', '<':
+          '(', '{', '[':
             Inc(SearchOpen);
-          ')', '}', ']', '>':
+          ')', '}', ']':
             begin
               Dec(SearchOpen);
               if SearchOpen = 0 then
               begin
-                HighlightBrackets(X, Y);
+                HighlightBrackets(X, Y, True);
                 Break;
               end;
             end;
