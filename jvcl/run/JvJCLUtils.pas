@@ -242,6 +242,8 @@ procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
 { MoveWideChar copies Count WideChars from Source to Dest }
 procedure MoveWideChar(const Source; var Dest; Count: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 {$ENDIF !CLR}
+{ IsSubString() compares the sub string to the string. Indices are 1th based. }
+function IsSubString(const S: string; StartIndex: Integer; const SubStr: string): Boolean;
 
 { Spaces returns string consists on N space chars }
 function Spaces(const N: Integer): string;
@@ -2420,6 +2422,19 @@ begin
   Dest.Insert(DstStartIdx - 1, Source.Substring(SrcStartIdx - 1, Count));
 end;
 {$ENDIF !CLR}
+
+function IsSubString(const S: string; StartIndex: Integer; const SubStr: string): Boolean;
+begin
+  {$IFDEF CLR}
+  Result := Copy(S, StartIndex, Length(SubStr)) = SubStr;
+  {$ELSE}
+  if StartIndex < 1 then
+    StartIndex := 1;
+  if StartIndex > Length(S) then
+    StartIndex := Length(S);
+  Result := StrLComp(PChar(S) + StartIndex - 1, PChar(SubStr), Length(SubStr)) = 0;
+  {$ENDIF CLR}
+end;
 
 function Spaces(const N: Integer): string;
 begin
