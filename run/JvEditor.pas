@@ -856,6 +856,9 @@ begin
     ColBeg := 0;
   if ColEnd > Max_X then
     ColEnd := Max_X;
+
+  SetLength(LineAttrs, Max(Length(LineAttrs), Max_X + 1));
+
   LineAttrs[ColBeg].Style := Font.Style;
   LineAttrs[ColBeg].FC := Font.Color;
   LineAttrs[ColBeg].BC := Color;
