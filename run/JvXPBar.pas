@@ -1566,7 +1566,7 @@ const
 begin
   inherited Create(AOwner);
   FStoredHint := '|'; // no one in their right mind uses a pipe as the only character in a hint...
-  ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls, csActionClient];
+  ControlStyle := ControlStyle {- [csDoubleClicks]} + [csAcceptsControls, csActionClient];
   ExControlStyle := [csRedrawCaptionChanged];
   ExControlStyle := ExControlStyle + MouseEvents;
   Height := 46;
