@@ -1586,7 +1586,7 @@ begin
       Result := Application.UseRightToLeftAlignment;
   end
   else
-    Result := (BiDiMode = bdRightToLeft);
+    Result := (BiDiMode <> bdLeftToRight);
 end;
 
 procedure TJvPopupMenu.Popup(X, Y: Integer);
@@ -1604,6 +1604,19 @@ begin
     DoPopup(Self);
     if IsOwnerDrawMenu then
       RefreshMenu(True);
+
+    // Those three lines are as close as we can get to the orignal source
+    // code in the VCL. Note that for the "Items.Handle" line, it seems
+    // it does nothing as it does not store the property value, but there is
+    // a getter on that property and will eventually make a series of calls
+    // that are close enough to RebuildHandle.
+    // This is required to fix Mantis 3029, this bug having appeared following
+    // the change of value of SysLocal.MiddleEast which is always True when
+    // a program compiled in D2005 or upper is run on Windows XP or upper.
+    Items.RethinkHotkeys;
+    Items.RethinkLines;
+    Items.Handle;
+
     AdjustBiDiBehavior;
     TrackPopupMenu(Items.Handle,
       Flags[UseRightToLeftAlignment, Alignment] or Buttons[TrackButton], X, Y,
@@ -2633,7 +2646,7 @@ end;
 function TJvCustomMenuItemPainter.GetIsRightToLeft: Boolean;
 begin
   Result := (FItem.GetParentMenu <> nil) and
-    (FItem.GetParentMenu.BiDiMode = bdRightToLeft);
+    (FItem.GetParentMenu.BiDiMode <> bdLeftToRight);
 end;
 
 function TJvCustomMenuItemPainter.GetCheckMarkHeight: Integer;
