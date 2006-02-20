@@ -3320,7 +3320,7 @@ begin
     else
       Completion.FTimer.Enabled := False;
 
-    if not (ssShift in Shift) then
+    if not (ssShift in Shift) and not FMouseDown then
       FSelection.Selecting := False;
 
     if WaitSecondKey then
@@ -4033,12 +4033,12 @@ begin
       IsSelected := False;
       Selecting := True;
       if SelBlockFormat = bfLine then
-        AdjustSelLineMode(False); // Restore :=
+        AdjustSelLineMode(False); // Restore
     end
     else
     begin
       if SelBlockFormat = bfLine then
-        AdjustSelLineMode(True); // Restore :=
+        AdjustSelLineMode(True); // Restore
 
       FUpdateSelBegY := SelBegY;
       FUpdateSelEndY := SelEndY;
@@ -4076,7 +4076,6 @@ begin
           SelBegX := SelStartX;
           SelEndX := SelX;
         end;
-
 
       if SelBlockFormat = bfLine then
       begin
@@ -4829,7 +4828,7 @@ begin
   CY := CY + FTopRow;
   if CX > FLastVisibleCol then
     CX := FLastVisibleCol;
-  if CY > LineCount - 1 then
+  if (CY > LineCount - 1) and not CursorBeyondEOF then
     CY := LineCount - 1;
 end;
 
@@ -4845,7 +4844,7 @@ begin
   CY := CY + FTopRow;
   if CX > FLastVisibleCol then
     CX := FLastVisibleCol;
-  if CY > LineCount - 1 then
+  if CY > LineCount - 1 then // difference to Mouse2Caret
     CY := LineCount - 1;
 end;
 
