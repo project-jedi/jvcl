@@ -15,6 +15,7 @@ Portions created by Robert Marquardt are Copyright (C) 2005 Robert Marquardt.
 All Rights Reserved.
 
 Contributor(s):
+- Marc Geldon
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -41,12 +42,14 @@ type
   private
     FResourceName: string;
     FImage: TBitmap;
+    FURLActive: Boolean;
     FURL: string;
     {$IFDEF VisualCLX}
     FAutoSize: Boolean;
     procedure SetAutoSize(Value: Boolean);
     {$ENDIF VisualCLX}
     procedure SetURL(const Value: string);
+    procedure SetURLActive(const Value: Boolean);
   protected
     procedure Paint; override;
     procedure Click; override;
@@ -57,6 +60,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    property URLActive: Boolean read FURLActive write SetURLActive stored True default True;
     property URL: string read FURL write SetURL stored True;
     property Image: TBitmap read FImage;
   end;
@@ -86,6 +90,7 @@ type
     property ShowHint;
     property Visible;
     property Width default 195;
+    property URLActive;
     property URL;
     property OnClick;
     property OnContextPopup;
@@ -119,6 +124,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
+    property URLActive;
     property URL;
     property Visible;
     property Width default 209;
@@ -182,9 +188,32 @@ begin
   begin
     FURL := Value;
     if FURL = '' then
-      Cursor := crDefault
+    begin
+      FURLActive := False;
+      Cursor := crDefault;
+    end
     else
+    begin
+      FURLActive := True;
       Cursor := crHandPoint;
+    end;
+  end;
+end;
+
+procedure TJvPoweredBy.SetURLActive(const Value: Boolean);
+begin
+  if Value <> FURLActive then
+  begin
+    if Value then
+    begin
+      FURLActive := True;
+      Cursor := crHandPoint;
+    end
+    else
+    begin
+      FURLActive := False;
+      Cursor := crDefault;
+    end;
   end;
 end;
 
@@ -215,7 +244,7 @@ end;
 
 procedure TJvPoweredBy.Click;
 begin
-  if not Assigned(OnClick) and (URL <> '') then
+  if not Assigned(OnClick) and (URL <> '') and (URLActive) then
     OpenObject(URL)
   else
     inherited Click;
@@ -252,6 +281,7 @@ begin
   FResourceName := cPoweredByJCL;
   // simple trick with inherited
   inherited Create(AOwner);
+  FURLActive := True;
   FURL := RsURLPoweredByJCL;
 end;
 
@@ -261,6 +291,7 @@ constructor TJvPoweredByJVCL.Create(AOwner: TComponent);
 begin
   FResourceName := cPoweredByJVCL;
   inherited Create(AOwner);
+  FURLActive := True;
   FURL := RsURLPoweredByJVCL;
 end;
 
