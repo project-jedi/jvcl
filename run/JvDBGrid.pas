@@ -275,6 +275,8 @@ type
     procedure TrackButton(X, Y: Integer);
     function ActiveRowSelected: Boolean;
     function GetSelCount: Longint;
+    function GetRow: Longint;
+    procedure SetRow(Value: Longint);
     procedure SaveColumnsLayout(const AppStorage: TJvCustomAppStorage; const Section: string);
     procedure RestoreColumnsLayout(const AppStorage: TJvCustomAppStorage; const Section: string);
     function GetOptions: TDBGridOptions;
@@ -403,20 +405,20 @@ type
     procedure Save;
     procedure UpdateTabStops(ALimit: Integer = -1);
     procedure ShowColumnsDialog;
-    procedure CloseControl; // Hide the current edit control and give the focus to the grid 
+    procedure CloseControl; // Hide the current edit control and give the focus to the grid
     procedure InitializeColumnsWidth(const MinWidth, MaxWidth: Integer;
       const DisplayWholeTitle: Boolean; const FixedWidths: array of Integer);
-      
+
     procedure RegisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
     procedure UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
-      
+
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
     property Col;
     property InplaceEditor;
     property LeftCol;
-    property Row;
+    property Row: Longint read GetRow write SetRow;
     property VisibleRowCount;
     property VisibleColCount;
     property IndicatorOffset;
@@ -1029,6 +1031,23 @@ begin
     Result := SelectedRows.Count
   else
     Result := 0;
+end;
+
+function TJvDBGrid.GetRow: Longint;
+begin
+  Result := TDrawGrid(Self).Row;
+end;
+
+procedure TJvDBGrid.SetRow(Value: Longint);
+begin
+  if Value <> Row then
+  begin
+    if DataLink.Active and (Value >= TopRow) and (Value <= VisibleRowCount) then
+      DataLink.DataSet.MoveBy(Value - Row)
+    else
+    if FBeepOnError then
+      SysUtils.Beep;
+  end;
 end;
 
 procedure TJvDBGrid.SelectAll;
@@ -3629,10 +3648,10 @@ begin
                   CalcOptions := CalcOptions or DT_WORDBREAK;
               end
               else
-              if not (Field is TBlobField) then
-                HintStr := Field.DisplayText
+              if (Field is TBlobField) or EditWithBoolBox(Field) then
+                HintStr := ''
               else
-                HintStr := '';
+                HintStr := Field.DisplayText;
             end;
           end;
         end;
