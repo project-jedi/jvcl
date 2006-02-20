@@ -503,30 +503,37 @@ procedure TJvEditorStrings.ReLine;
 var
   L: Integer;
   S: string;
+  Y: Integer;
 begin
+  Y := JvEditor.CaretY; // save because Add('') changes CaretY
   JvEditor.LockUpdate;
   try
-    if Count = 0 then
-      L := JvEditor.CaretX
-    else
-      L := Length(Strings[Count - 1]);
-    while JvEditor.CaretY > Count - 1 do
-    begin
-      {--- UNDO ---}
-      TJvReLineUndo.Create(JvEditor, L, JvEditor.CaretY, sLineBreak);
-      {--- /UNDO ---}
-      L := 0;
-      Add('');
-    end;
-    S := Strings[JvEditor.CaretY];
-    if JvEditor.CaretX > Length(S) then
-    begin
-      L := JvEditor.CaretX - Length(S);
-      {--- UNDO ---}
-{     TJvReLineUndo.Create(JvEditor, Length(S),
-        JvEditor.CaretY, Spaces(L)); } {disabled: moves the caret to wrong undo position }
-      {--- /UNDO ---}
-      inherited Put(JvEditor.CaretY, S + Spaces(L));
+    BeginUpdate;
+    try
+      if Count = 0 then
+        L := JvEditor.CaretX
+      else
+        L := Length(Strings[Count - 1]);
+      while Y > Count - 1 do
+      begin
+        {--- UNDO ---}
+        TJvReLineUndo.Create(JvEditor, L, JvEditor.CaretY, sLineBreak);
+        {--- /UNDO ---}
+        L := 0;
+        Add('');
+      end;
+      JvEditor.CaretY := Y; // restore CaretY
+      S := Strings[Y];
+      if JvEditor.CaretX > Length(S) then
+      begin
+        L := JvEditor.CaretX - Length(S);
+        {--- UNDO ---}
+  //     TJvReLineUndo.Create(JvEditor, Length(S), Y, Spaces(L)); {disabled: moves the caret to wrong undo position }
+        {--- /UNDO ---}
+        inherited Put(Y, S + Spaces(L));
+      end;
+    finally
+      EndUpdate;
     end;
   finally
     JvEditor.UnlockUpdate;
