@@ -10,30 +10,30 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclVCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcljpg50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="JclVCL" Targets="VCLv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcljpg" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvGradientCaption.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGradientCaption.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimTitle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppEvent.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppHotKey.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppHotKey.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAnimation.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAutoSize.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormMagnet.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormTransparent.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormMagnet.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormTransparent.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQAppSettings.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQSystemColors.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAppSettings.pas" Targets="CLX" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSystemColors.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

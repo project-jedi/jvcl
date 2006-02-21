@@ -11,20 +11,21 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
+    <Package Name="bcbie50" Targets="Cv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvCharMap.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCharMap.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvClock.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorButton.pas" Targets="all" Formname="" Condition=""/>
@@ -33,7 +34,7 @@
     <File Name="..\..\run\JvComponentPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvContentScroller.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDice.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDriveCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDriveCtrls.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvFooter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGroupHeader.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHint.pas" Targets="all" Formname="" Condition=""/>
@@ -43,13 +44,13 @@
     <File Name="..\..\run\JvItemsPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvListComb.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMovableBevel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPageScroller.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPlaylist.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRegistryTreeview.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPageScroller.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPlaylist.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRegistryTreeview.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvRollOut.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvScrollMax.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvScrollPanel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScrollText.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollText.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpacer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="all" Formname="JvSpeedbarSetupWindow" Condition=""/>
@@ -65,12 +66,12 @@
     <File Name="..\..\run\JvaScrollText.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBehaviorLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvButtons.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaptionButton.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaptionButton.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaptionPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeColorButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeColorPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeColorForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRuler.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRuler.pas" Targets="VCL" Formname="" Condition=""/>
 </Contains>
 </Package>

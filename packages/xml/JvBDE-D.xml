@@ -7,38 +7,40 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvBDE-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvDB-D" Targets="allbutclx" Condition=""/>
-    <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvDlgs-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvDB-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvCore-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="dcldb50" Targets="C5,C5s" Condition=""/>
-    <Package Name="dsnide50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcldb50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vclbde50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="allbut5" Condition=""/>
-    <Package Name="dcldb" Targets="C6,C6p" Condition=""/>
-    <Package Name="dbrtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcldb" Targets="C6,C6p" Condition=""/>
-    <Package Name="bdertl" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JvBDE-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-D" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="dcldb50" Targets="DBv5" Condition=""/>
+    <Package Name="dsnide50" Targets="allv5" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
+    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
+    <Package Name="vclbde50" Targets="DBv5" Condition=""/>
+    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="dcldb" Targets="DBv6up" Condition=""/>
+    <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
+    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
+    <Package Name="bdertl" Targets="DBv6up" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="dclstd" Targets="allbut5" Condition=""/>
+    <Package Name="dclstd50" Targets="allv5" Condition=""/>
+    <Package Name="dclstd" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEEditors.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEReg.pas" Targets="DB" Formname="" Condition=""/>
   </Contains>
 </Package>

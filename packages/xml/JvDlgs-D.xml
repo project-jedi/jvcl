@@ -11,23 +11,24 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="dsnide50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="dsnide50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvAppletEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvAppletEditor.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\design\JvDlgsReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDialogActnResForm.pas" Targets="allbutclx" Formname="JvDialogActions: TDataModule" Condition=""/>
+    <File Name="..\..\design\JvDialogActnResForm.pas" Targets="VCL" Formname="JvDialogActions: TDataModule" Condition=""/>
   </Contains>
 </Package>

@@ -10,13 +10,14 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition="USEJVCL"/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition="USEJVCL"/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition="USEJVCL"/>
-    <Package Name="JclVCL" Targets="C6,C6p" Condition="USEJVCL"/>
-    <Package Name="rtl" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="allbut5" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition="USEJVCL"/>
+    <Package Name="JclD50" Targets="Dv5" Condition="USEJVCL"/>
+    <Package Name="Jcl" Targets="allv6up" Condition="USEJVCL"/>
+    <Package Name="JclVCL" Targets="VCLv6up" Condition="USEJVCL"/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvXPBar.pas" Targets="all" Formname="" Condition=""/>
@@ -25,7 +26,7 @@
     <File Name="..\..\run\JvXPCoreUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPCheckCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvXPProgressBar.pas" Targets="allbutclx" Formname="" Condition="USEJVCL"/>
-    <File Name="..\..\qrun\JvQXPProgressBar.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPProgressBar.pas" Targets="VCL" Formname="" Condition="USEJVCL"/>
+    <File Name="..\..\qrun\JvQXPProgressBar.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

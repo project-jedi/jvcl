@@ -10,19 +10,20 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="allbut5" Condition=""/>
-    <Package Name="vclx" Targets="allbut5" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
+    <Package Name="bcbie50" Targets="Cv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcljpg50" Targets="D5,D5s" Condition=""/>
-    <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
-    <Package Name="vcljpg" Targets="allbut5" Condition=""/>
+    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
+    <Package Name="vcljpg" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvPageListTreeView.pas" Targets="all" Formname="" Condition=""/>

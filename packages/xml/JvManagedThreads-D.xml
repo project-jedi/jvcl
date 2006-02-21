@@ -8,14 +8,15 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition="USEJVCL"/>
-    <Package Name="JvCore-D" Targets="allclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="VCL" Condition="USEJVCL"/>
+    <Package Name="JvCore-D" Targets="CLX" Condition=""/>
     <Package Name="JvManagedThreads-R" Targets="all" Condition=""/>
-    <Package Name="JCLC50" Targets="C5,C5s" Condition="USEJVCL"/>
-    <Package Name="JCL" Targets="C6,C6p" Condition="USEJVCL"/>
-    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="allbut5" Condition=""/>
+    <Package Name="JCLD50" Targets="Dv5" Condition="USEJVCL"/>
+    <Package Name="JCLC50" Targets="Cv5" Condition="USEJVCL"/>
+    <Package Name="JCL" Targets="allv6up" Condition="USEJVCL"/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvManagedThreadsReg.pas" Targets="all" Formname="" Condition=""/>

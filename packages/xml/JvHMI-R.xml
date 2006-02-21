@@ -8,18 +8,19 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
+    <Package Name="Jv3rd-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C6,C6p" Condition=""/>
-    <Package Name="JCLC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="JCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="JCLVCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclVClx" Targets="allclx" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
-    <Package Name="visualclx" Targets="allclx" Condition=""/>
+    <Package Name="JCLD50" Targets="Dv5" Condition=""/>
+    <Package Name="JCLC50" Targets="Cv5" Condition=""/>
+    <Package Name="JCL" Targets="allv6up" Condition=""/>
+    <Package Name="JCLVCL" Targets="VCLv6up" Condition=""/>
+    <Package Name="JclVClx" Targets="CLX" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
+    <Package Name="visualclx" Targets="CLX" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="all" Formname="frmSLDMappingEditorDialog" Condition=""/>

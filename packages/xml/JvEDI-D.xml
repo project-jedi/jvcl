@@ -9,14 +9,15 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvEDI-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvEDIDBBufferingReg.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\design\JvEDIDBBufferingReg.pas" Targets="DB" Formname="" Condition=""/>
   </Contains>
 </Package>
