@@ -935,6 +935,7 @@ var
   expandedTargets : TStringList;
   i : Integer;
   Alias : TAlias;
+  currentTarget : string;
 begin
   expandedTargets := TStringList.Create;
   try
@@ -946,11 +947,18 @@ begin
 
     for i := 0 to targets.Count - 1 do
     begin
-      Alias := AliasList[targets[i]];
+      currentTarget := targets[i];
+      Alias := AliasList[currentTarget];
       if Assigned(Alias) then
-        expandedTargets.AddStrings(Alias.ValueAsTStrings)
+      begin
+        expandedTargets.AddStrings(Alias.ValueAsTStrings);
+      end
       else
-        expandedTargets.Add(Trim(targets[i]));
+      begin
+        expandedTargets.Add(Trim(currentTarget));
+        if not Assigned(TargetList.ItemsByName[currentTarget]) and (GetNonPersoTarget(currentTarget) = currentTarget) then
+          WriteLn(Format('Unknown target: %s', [currentTarget])); 
+      end;
     end;
 
     // assign the values back into the caller
