@@ -72,7 +72,7 @@ JvDlgsD7R.bpl: d7\JvDlgsD7R.dpk
 JvInterpreterD7R.bpl: d7per\JvInterpreterD7R.dpk
   $(DCC)
 
-JvInterpreterD7D.bpl: d7\JvInterpreterD7D.dpk
+JvInterpreterD7D.bpl: d7per\JvInterpreterD7D.dpk
   $(DCC)
 
 JvMMD7R.bpl: d7\JvMMD7R.dpk
