@@ -94,7 +94,7 @@ var
       begin
         IndexAlias := AliasList.IndexOfName(TokenStrings.Strings[IndexToken]);
         if IndexAlias >= 0 then
-          TokenStrings.Strings[IndexToken] := AliasList.ValueFromIndex[IndexAlias];
+          TokenStrings.Strings[IndexToken] := Copy(AliasList[IndexAlias], Length(TokenStrings.Strings[IndexToken]) + 2, MaxInt);
       end;
 
       Tokens := TokenStrings.DelimitedText;
