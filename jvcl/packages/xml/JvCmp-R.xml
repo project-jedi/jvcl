@@ -10,13 +10,14 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
@@ -39,6 +40,6 @@
     <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
     <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlComponent.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQEventFilter.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQEventFilter.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -8,11 +8,11 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="rtl" Targets="allbut5" Condition=""/>
-    <Package Name="vcl50" Targets="d5,d5s,c5,c5s" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\common\JvGnugettext.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\common\JvGnugettextD5.pas" Targets="d5,d5s,c5,c5s" Formname="" Condition=""/>
+    <File Name="..\..\common\JvGnugettextD5.pas" Targets="allv5" Formname="" Condition=""/>
   </Contains>
 </Package>

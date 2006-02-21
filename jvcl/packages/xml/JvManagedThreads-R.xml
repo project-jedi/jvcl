@@ -8,13 +8,14 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
-    <Package Name="JvCore-R" Targets="allclx" Condition=""/>
-    <Package Name="JCLC50" Targets="C5,C5s" Condition="USEJVCL"/>
-    <Package Name="JCL" Targets="C6,C6p" Condition="USEJVCL"/>
-    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="allbut5,d7clx" Condition=""/>
-    <Package Name="vcl" Targets="allbut5" Condition=""/>
+    <Package Name="JvCore-R" Targets="VCL" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="CLX" Condition=""/>
+    <Package Name="JCLD50" Targets="Dv5" Condition="USEJVCL"/>
+    <Package Name="JCLC50" Targets="Cv5" Condition="USEJVCL"/>
+    <Package Name="JCL" Targets="allv6up" Condition="USEJVCL"/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMTComponents.pas" Targets="all" Formname="" Condition=""/>

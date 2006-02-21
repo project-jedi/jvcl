@@ -8,28 +8,29 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
+    <Package Name="Jv3rd-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JvCmp-R" Targets="D5,D5s,D6,D6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
-    <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="allbut5" Condition=""/>
-    <Package Name="vclx" Targets="allbut5" Condition=""/>
-    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
+    <Package Name="bcbie50" Targets="Cv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvAVICapture.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAVICapture.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvBmpAnimator.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGIF.pas" Targets="allbutclx" Formname="" Condition="USE_JV_GIF"/>
-    <File Name="..\..\run\JvGIFCtrl.pas" Targets="allbutclx" Formname="" Condition="USE_JV_GIF"/>
+    <File Name="..\..\run\JvGIF.pas" Targets="VCL" Formname="" Condition="USE_JV_GIF"/>
+    <File Name="..\..\run\JvGIFCtrl.pas" Targets="VCL" Formname="" Condition="USE_JV_GIF"/>
     <File Name="..\..\run\JvGradient.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGradientHeaderPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvIconList.pas" Targets="all" Formname="" Condition=""/>
@@ -40,20 +41,20 @@
     <File Name="..\..\run\JvImageRotate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageTransform.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageSquare.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPcx.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPcx.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvPicClip.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSlider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpecialImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpecialProgress.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSplashWindow.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStarfield.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvVirtualKeySelectionFrame.pas" Targets="allbutclx" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
-    <File Name="..\..\qrun\JvQQtKeySelectionFrame.pas" Targets="allclx" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
+    <File Name="..\..\run\JvVirtualKeySelectionFrame.pas" Targets="VCL" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
+    <File Name="..\..\qrun\JvQQtKeySelectionFrame.pas" Targets="CLX" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
     <File Name="..\..\run\JvWaitingGradient.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWaitingProgress.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWavePlayer.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvAni.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCursor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCursor.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimatedImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorTrackbar.pas" Targets="all" Formname="" Condition=""/>
@@ -63,6 +64,6 @@
     <File Name="..\..\run\JvFullColorRotate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFullColorForm.pas" Targets="all" Formname="JvFullColorFrm" Condition=""/>
     <File Name="..\..\run\JvFullColorCircleForm.pas" Targets="all" Formname="JvFullColorCircleFrm" Condition=""/>
-    <File Name="..\..\common\VFW.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\common\VFW.pas" Targets="VCL" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -9,32 +9,32 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="JvCore-R" Targets="C5,C5s,C6,C6p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
-    <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="dclstd50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="dsnide50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd" Targets="allbut5" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="dclstd50" Targets="allv5" Condition=""/>
+    <Package Name="dsnide50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="dclstd" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvLookoutEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvOutlookBarForm.pas" Targets="all" Formname="FrmOLBEditor" Condition=""/>
-    <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="allbutclx" Formname="FrmScheduleEditor" Condition=""/>
-    <File Name="..\..\design\JvScheduleEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="VCL" Formname="FrmScheduleEditor" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditors.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\design\JvTimeLineEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCustomReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQCustomReg.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvHLEditEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomReg.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQCustomReg.pas" Targets="CLX" Formname="" Condition=""/>
+    <File Name="..\..\design\JvHLEditEditor.pas" Targets="VCL" Formname="" Condition=""/>
   </Contains>
 </Package>

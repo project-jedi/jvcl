@@ -9,19 +9,20 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclVcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclVClx" Targets="allclx" Condition=""/>
-    <Package Name="designide" Targets="allbut5" Condition=""/>
-    <Package Name="dclstd" Targets="allbut5" Condition=""/>
-    <Package Name="dclstd50" Targets="D5,D5s,C5,C5s" Condition=""/>
-    <Package Name="dsnide50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="JclVcl" Targets="allv6up" Condition=""/>
+    <Package Name="JclVClx" Targets="CLX" Condition=""/>
+    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="dclstd" Targets="allv6up" Condition=""/>
+    <Package Name="dclstd50" Targets="allv5" Condition=""/>
+    <Package Name="dsnide50" Targets="allv5" Condition=""/>
+    <Package Name="vclx50" Targets="allv5" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="clxdesigner" Targets="D7clx" Condition=""/>
   </Requires>
   <Contains>
@@ -43,12 +44,12 @@
     <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="all" Formname="frmDataProviderDesigner" Condition=""/>
     <File Name="..\..\design\JvDataProviderEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDateTimeForm.pas" Targets="allbutclx" Formname="frmSelectDateTimeDlg" Condition=""/>
+    <File Name="..\..\design\JvDateTimeForm.pas" Targets="VCL" Formname="frmSelectDateTimeDlg" Condition=""/>
     <File Name="..\..\design\JvDesignerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvIDEZoom.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQIDEZoom.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIDEZoom.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQIDEZoom.pas" Targets="CLX" Formname="" Condition=""/>
     <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
@@ -56,9 +57,9 @@
     <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="all" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
     <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="all" Formname="frmAddColor" Condition=""/>
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
-    <File Name="..\..\design\JvBackgroundEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="allbutclx" Formname="JvBackgroundClientsEditor" Condition=""/>
-    <File Name="..\..\qcommon\QDesignWindows.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQImageIndexEdit.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBackgroundEditors.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="VCL" Formname="JvBackgroundClientsEditor" Condition=""/>
+    <File Name="..\..\qcommon\QDesignWindows.pas" Targets="CLX" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQImageIndexEdit.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

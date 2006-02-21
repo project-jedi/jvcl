@@ -10,16 +10,16 @@
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvHMI-R" Targets="all" Condition=""/>
-    <Package Name="JvCore-R" Targets="C6,C6p" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclVCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="allbut5" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="rtl" Targets="allbut5" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="JclVCL" Targets="VCLv6up" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="all" Formname="frmJvSLDMappingEditor" Condition=""/>

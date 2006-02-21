@@ -11,35 +11,36 @@
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JvCore-R" Targets="C5,C5s,C6,C6p" Condition=""/>
-    <Package Name="JclC50" Targets="C5,C5s" Condition=""/>
-    <Package Name="Jcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="JclVCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="dcldb50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcldb50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="allbut5" Condition=""/>
-    <Package Name="dcldb" Targets="allbut5" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="dbrtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcldb" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd50" Targets="D5,D5s" Condition=""/>
-    <Package Name="dclstd" Targets="allbut5" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JclC50" Targets="Cv5" Condition=""/>
+    <Package Name="JclD50" Targets="Dv5" Condition=""/>
+    <Package Name="Jcl" Targets="allv6up" Condition=""/>
+    <Package Name="JclVCL" Targets="VCLv6up" Condition=""/>
+    <Package Name="dcldb50" Targets="DBv5" Condition=""/>
+    <Package Name="vcl50" Targets="allv5" Condition=""/>
+    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
+    <Package Name="rtl" Targets="allv6up" Condition=""/>
+    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="dcldb" Targets="DBv6up" Condition=""/>
+    <Package Name="vcl" Targets="allv6up" Condition=""/>
+    <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
+    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
+    <Package Name="vclx" Targets="allv6up" Condition=""/>
+    <Package Name="dclstd50" Targets="allv5" Condition=""/>
+    <Package Name="dclstd" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="allbutclx" Formname="JvSelectDataSetForm" Condition=""/>
-    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCsvDataForm.pas" Targets="all" Formname="JvCsvDefStrDialog" Condition=""/>
-    <File Name="..\..\design\JvDBActnResForm.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridControlsEditorForm.pas" Targets="allbutclx" Formname="frmJvDBGridControlsEditor" Condition=""/>
+    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="DB" Formname="JvSelectDataSetForm" Condition=""/>
+    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCsvDataForm.pas" Targets="DB" Formname="JvCsvDefStrDialog" Condition=""/>
+    <File Name="..\..\design\JvDBActnResForm.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBReg.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBEditors.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridEditors.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridControlsEditorForm.pas" Targets="DB" Formname="frmJvDBGridControlsEditor" Condition=""/>
   </Contains>
 </Package>
