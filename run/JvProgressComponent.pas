@@ -57,9 +57,11 @@ type
     FProgressStep: Integer;
     FProgressPosition: Integer;
     FException: Exception;
+    FOnClose: TNotifyEvent;
     procedure SetCaption(ACaption: TCaption);
     procedure SetInfoLabel(ACaption: TCaption);
     procedure FormOnShow(Sender: TObject);
+    procedure FormOnClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormOnCancel(Sender: TObject);
     procedure SetProgressMax(const Value: Integer);
     procedure SetProgressMin(const Value: Integer);
@@ -80,6 +82,7 @@ type
     property ProgressStep: Integer read FProgressStep write SetProgressStep default 1;
     property ProgressPosition: Integer read FProgressPosition write SetProgressPosition default 0;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -99,6 +102,7 @@ uses
 
 const
   CM_SHOWEVENT = CM_JVBASE + 1;
+  CM_CLOSEEVENT = CM_JVBASE + 2;
 
 type
   TCMShowEvent = packed record
@@ -188,6 +192,7 @@ begin
       OnClick := FormOnCancel;
     end;
     FCancel := False;
+	FForm.OnClose := FormOnClose;
     if Assigned(FOnShow) then
     begin
       FForm.OnShow := FormOnShow;
@@ -207,6 +212,12 @@ end;
 procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
   PostMessage(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
+end;
+
+procedure TJvProgressComponent.FormOnClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  if Assigned(FOnClose) then
+    FOnClose(Self);
 end;
 
 procedure TJvProgressComponent.FormOnCancel(Sender: TObject);
