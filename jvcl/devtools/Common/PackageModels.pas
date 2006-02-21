@@ -311,16 +311,24 @@ var
   i: Integer;
   List: TStrings;
   Alias: TModelAlias;
+  currentTarget: string;
 begin
   List := TStringList.Create;
   try
     for i := 0 to Targets.Count - 1 do
     begin
-      Alias := FindAlias(Targets[i]);
+      currentTarget := Targets[i];
+      Alias := FindAlias(currentTarget);
       if Alias <> nil then
-        List.AddStrings(Alias.TargetNames)
+      begin
+        List.AddStrings(Alias.TargetNames);
+      end
       else
-        List.Add(Targets[i]);
+      begin
+        List.Add(currentTarget);
+        if not Assigned(FindTarget(currentTarget)) then
+          WriteLn('Unknown target: ' + currentTarget); 
+      end;
     end;
     Targets.Assign(List);
   finally
