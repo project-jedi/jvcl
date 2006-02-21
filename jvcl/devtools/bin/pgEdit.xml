@@ -72,17 +72,34 @@
         <target name="d10" pname="d10p" pdir="d10per"/>
       </targets>
       <aliases>
-        <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
-        <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
-        <alias name="Bcb" value="c5,c5s,c6,c6p,d10,d10p"/>
-        <alias name="Kylix" value="k3,k3p"/>
+        <alias name="VCL" value="c5,c5s,d5,d5s,c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
+        <alias name="VCLv5" value="c5,c5s,d5,d5s"/>
+        <alias name="VCLv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
+
+        <alias name="D" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+        <alias name="Dv5" value="d5,d5s"/>
+        <alias name="Dv6up" value="d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+
+        <alias name="C" value="c5,c5s,c6,c6p,d10,d10p"/>
+        <alias name="Cv5" value="c5,c5s"/>
+        <alias name="Cv6up" value="c6,c6p,d10,d10p"/>
+
+        <alias name="DB" value="c5,d5,c6,d6,d7,d9,d10"/>
+        <alias name="DBv5" value="c5,d5"/>
+        <alias name="DBv6up" value="c6,d6,d7,d9,d10"/>
+
+        <alias name="DBVCL" value="c5,d5,c6,d6,d7,d9,d10"/>
+        <alias name="DBVCLv5" value="c5,d5"/>
+        <alias name="DBVCLv6up" value="c6,d6,d7,d9,d10"/>
+
+        <alias name="CLX" value="d7clx,k3,k3p"/>
+        <alias name="DBCLX" value="d7clx,k3"/>
+        
+        <alias name="allv5" value="c5,c5s,d5,d5s"/>
+        <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+
         <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
         <alias name="Linux" value="k3,k3p"/>
-        <alias name="allclx" value="d7clx,k3,k3p"/>
-        <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
-        <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3,d9,d10"/>
-        <alias name="allbut5" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
-        <alias name="allbut5db" value="c6,d6,d7,d9,d10"/>
       </aliases>
       <ClxReplacements>
         <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
