@@ -2583,8 +2583,7 @@ begin
                 S := ReplaceString(NewString, FCRLF, sLineBreak + SpacesW(CaretX -
                   Length(W)));
                 S := ReplaceString(S, FCaretChar, '');
-                W := ReplaceString(NewString, FCRLF, sLineBreak);
-                NewCaret := Pos(FCaretChar, W) - 1;
+                NewCaret := Pos(FCaretChar, ReplaceString(NewString, FCRLF, sLineBreak)) - 1;
               end;
           else
             raise EJvEditorError.CreateRes(@RsEInvalidCompletionMode);
