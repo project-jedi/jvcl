@@ -208,7 +208,7 @@ begin
     FileList.Sorted := True;
     FileList.Duplicates := dupIgnore;
 
-    TargetList.Add('allclx');
+    TargetList.Add('CLX');
     FModel.ExpandTargets(TargetList);
 
    // get JVCLX compatible all files
