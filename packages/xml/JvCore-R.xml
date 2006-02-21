@@ -13,8 +13,8 @@
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="JclVcl" Targets="VCLv6up" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="ThemeManagerD6" Targets="Dv6up" Condition="JVCLThemesEnabled"/>
-    <Package Name="ThemeManagerC6" Targets="Cv6up" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerD5" Targets="Dv5" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC5" Targets="Cv5" Condition="JVCLThemesEnabled"/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
