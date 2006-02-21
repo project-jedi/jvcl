@@ -99,7 +99,7 @@ JvNetD5D.bpl: d5\JvNetD5D.dpk
 JvMMD5D.bpl: d5\JvMMD5D.dpk
   $(DCC)
 
-JvInterpreterD5D.bpl: d5\JvInterpreterD5D.dpk
+JvInterpreterD5D.bpl: d5std\JvInterpreterD5D.dpk
   $(DCC)
 
 JvDlgsD5D.bpl: d5\JvDlgsD5D.dpk

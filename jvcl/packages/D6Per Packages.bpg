@@ -99,7 +99,7 @@ JvNetD6D.bpl: d6\JvNetD6D.dpk
 JvMMD6D.bpl: d6\JvMMD6D.dpk
   $(DCC)
 
-JvInterpreterD6D.bpl: d6\JvInterpreterD6D.dpk
+JvInterpreterD6D.bpl: d6per\JvInterpreterD6D.dpk
   $(DCC)
 
 JvDlgsD6D.bpl: d6\JvDlgsD6D.dpk

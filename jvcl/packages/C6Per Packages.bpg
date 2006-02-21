@@ -138,7 +138,7 @@ JvInterpreterC6R.bpl: c6per\JvInterpreterC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC6D.bpl: c6\JvInterpreterC6D.bpk
+JvInterpreterC6D.bpl: c6per\JvInterpreterC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
@@ -170,7 +170,7 @@ JvGlobusC6R.bpl: c6per\JvGlobusC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvGlobusC6D.bpl: c6\JvGlobusC6D.bpk
+JvGlobusC6D.bpl: c6per\JvGlobusC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

@@ -138,7 +138,7 @@ JvInterpreterC5R.bpl: c5std\JvInterpreterC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC5D.bpl: c5\JvInterpreterC5D.bpk
+JvInterpreterC5D.bpl: c5std\JvInterpreterC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
@@ -170,7 +170,7 @@ JvGlobusC5R.bpl: c5std\JvGlobusC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvGlobusC5D.bpl: c5\JvGlobusC5D.bpk
+JvGlobusC5D.bpl: c5std\JvGlobusC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

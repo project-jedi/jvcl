@@ -35,7 +35,7 @@
       <Projects Name="JvAppFrmD9R.bpl" Type="String">d9\JvAppFrmD9R.bdsproj</Projects>
       <Projects Name="JvAppFrmD9D.bpl" Type="String">d9\JvAppFrmD9D.bdsproj</Projects>
       <Projects Name="JvInterpreterD9R.bpl" Type="String">d9per\JvInterpreterD9R.bdsproj</Projects>
-      <Projects Name="JvInterpreterD9D.bpl" Type="String">d9\JvInterpreterD9D.bdsproj</Projects>
+      <Projects Name="JvInterpreterD9D.bpl" Type="String">d9per\JvInterpreterD9D.bdsproj</Projects>
       <Projects Name="JvBandsD9R.bpl" Type="String">d9\JvBandsD9R.bdsproj</Projects>
       <Projects Name="JvBandsD9D.bpl" Type="String">d9\JvBandsD9D.bdsproj</Projects>
       <Projects Name="JvPluginD9R.bpl" Type="String">d9\JvPluginD9R.bdsproj</Projects>
