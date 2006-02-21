@@ -1,2 +1,0 @@
-Common folder for example executables
-The files already placed here are data files for the examples.
