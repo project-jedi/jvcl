@@ -1,6 +1,6 @@
 To:
-news://news.vienneinfo.org/nzn.fr.delphi
-news://news.delphinautes.be/delphi
+news://server.amis.tv/nzn.fr.delphi
+news://news.delphinaute.be/delphi
 Developpez.com (delphi@redaction-developpez.com)
 
 
