@@ -25,6 +25,7 @@ This release contains changes, additions and bugfixes too numerous to list here,
 - Improved installer support for Borland Developer Studio 2006, especially for users not installing in the default directories.
 - Numerous bugs fixed.
 - Support for localization using dxgettext (http://dxgettext.sourceforge.net)
+- Support for Kylix 3 has been suspended. Should you want it back, please step forward and help us here.
 
 This release is available in four different flavors:
 - Full install + latest JCL
