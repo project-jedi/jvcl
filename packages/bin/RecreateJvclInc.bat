@@ -6,5 +6,7 @@ copy %DIR%\jvclbase.inc %DIR%\jvcld5.inc
 copy %DIR%\jvclbase.inc %DIR%\jvcld6.inc
 copy %DIR%\jvclbase.inc %DIR%\jvcld7.inc
 copy %DIR%\jvclbase.inc %DIR%\jvcld9.inc
+copy %DIR%\jvclbase.inc %DIR%\jvcld10.inc
+copy %DIR%\jvclbase.inc %DIR%\jvcld11.inc
 copy %DIR%\jvclbase.inc %DIR%\jvclk3.inc
 SET DIR=
