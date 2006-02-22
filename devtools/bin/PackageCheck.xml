@@ -3,7 +3,7 @@
   <GUI>
     <MODEL>JVCL</MODEL>
     <FORM WIDTH="400" HEIGHT="300" TOP="196" LEFT="40"/>
-    <SELECTED Jv3rd-R="1" JvAppFrm-D="1" JvAppFrm-R="1" JvBands-D="1" JvBands-R="1" JvBDE-D="1" JvBDE-R="1" JvCmp-D="1" JvCmp-R="1" JvCore-D="1" JvCore-R="1" JvCrypt-D="1" JvCrypt-R="1" JvCtrls-D="1" JvCtrls-R="1" JvCustom-D="1" JvCustom-R="1" JvDB-D="1" JvDB-R="1" JvDlgs-D="1" JvDlgs-R="1" JvDocking-D="1" JvDocking-R="1" JvDotNetCtrls-D="1" JvDotNetCtrls-R="1" JvEDI-D="1" JvEDI-R="1" JvGlobus-D="1" JvGlobus-R="1" JvHMI-D="1" JvHMI-R="1" JvInterpreter-D="1" JvInterpreter-R="1" JvJans-D="1" JvJans-R="1" JvManagedThreads-D="1" JvManagedThreads-R="1" JvMM-D="1" JvMM-R="1" JvNet-D="1" JvNet-R="1" JvPageComps-D="1" JvPageComps-R="1" JvPlugin-D="1" JvPlugin-R="1" JvPrintPreview-D="1" JvPrintPreview-R="1" JvRuntimeDesign-D="1" JvRuntimeDesign-R="1" JvStdCtrls-D="1" JvStdCtrls-R="1" JvSystem-D="1" JvSystem-R="1" JvTimeFramework-D="1" JvTimeFramework-R="1" JvUIB-D="1" JvUIB-R="1" JvValidators-D="1" JvValidators-R="1" JvWizard-D="1" JvWizard-R="1" JvXPCtrls-D="1" JvXPCtrls-R="1"/>
+    <SELECTED JvCtrls-R="1" JvXPCtrls-R="1" JvAppFrm-R="1" JvTimeFramework-D="1" JvCore-D="1" JvGlobus-R="1" JvStdCtrls-D="1" JvRuntimeDesign-D="1" Jv3rd-R="1" JvBands-R="1" JvAppFrm-D="1" JvManagedThreads-D="1" JvBDE-D="1" JvCmp-R="1" JvGlobus-D="1" JvBands-D="1" JvCore-R="1" JvCtrls-D="1" JvDlgs-D="1" JvHMI-D="1" JvCrypt-D="1" JvInterpreter-D="1" JvCrypt-R="1" JvDB-R="1" JvCustom-D="1" JvBDE-R="1" JvCmp-D="1" JvCustom-R="1" JvDocking-D="1" JvDB-D="1" JvDlgs-R="1" JvDocking-R="1" JvDotNetCtrls-D="1" JvDotNetCtrls-R="1" JvEDI-R="1" JvHMI-R="1" JvInterpreter-R="1" JvJans-D="1" JvJans-R="1" JvMM-D="1" JvMM-R="1" JvPageComps-D="1" JvManagedThreads-R="1" JvEDI-D="1" JvNet-D="1" JvNet-R="1" JvPageComps-R="1" JvPrintPreview-D="1" JvPrintPreview-R="1" JvRuntimeDesign-R="1" JvStdCtrls-R="1" JvSystem-D="1" JvSystem-R="1" JvTimeFramework-R="1" JvValidators-D="1" JvUIB-D="1" JvUIB-R="1" JvValidators-R="1" JvWizard-D="1" JvWizard-R="1" JvXPCtrls-D="1" JvPlugin-D="1" JvPlugin-R="1"/>
     <CLX ENABLED="0"/>
     <HALT ENABLED="0"/>
   </GUI>
@@ -745,6 +745,32 @@
           <UNIT NAME="HttpProt"/>
           <UNIT NAME="FtpCli"/>
         </PACKAGE>
+        <PACKAGE NAME="bcbsmp50">
+          <UNIT NAME=""/>
+          <UNIT NAME="Ccalendr"/>
+          <UNIT NAME="Cdiroutl"/>
+          <UNIT NAME="Cgauges"/>
+          <UNIT NAME="Cgrid"/>
+          <UNIT NAME="Cspin"/>
+          <UNIT NAME="Perfgrap"/>
+          <UNIT NAME="Piereg"/>
+          <UNIT NAME="TAngleEditorDlg"/>
+          <UNIT NAME="TAngles"/>
+          <UNIT NAME="TAnglesProperty"/>
+          <UNIT NAME="TCCalendar"/>
+          <UNIT NAME="TCColorGrid"/>
+          <UNIT NAME="TCGauge"/>
+          <UNIT NAME="TPerformanceGraph"/>
+          <UNIT NAME="TPie"/>
+          <UNIT NAME="TPieEditor"/>
+          <UNIT NAME="TTrayIcon"/>
+          <UNIT NAME="Trayicon"/>
+        </PACKAGE>
+        <PACKAGE NAME="bcbie50">
+          <UNIT NAME=""/>
+          <UNIT NAME="Shdocvw_ocx"/>
+          <UNIT NAME="Shdocvw_tlb"/>
+        </PACKAGE>
       </PACKAGES>
       <DEFINES>
         <DEFINE NAME="VER130"/>
@@ -1179,6 +1205,23 @@
         <PACKAGE NAME="IcsBCB60">
           <UNIT NAME="HttpProt"/>
           <UNIT NAME="FtpCli"/>
+        </PACKAGE>
+        <PACKAGE NAME="bcbie">
+          <UNIT NAME=""/>
+          <UNIT NAME="Shdocvw_ocx"/>
+          <UNIT NAME="Shdocvw_tlb"/>
+        </PACKAGE>
+        <PACKAGE NAME="bcbsmp">
+          <UNIT NAME=""/>
+          <UNIT NAME="Cdiroutl"/>
+          <UNIT NAME="Cspin"/>
+          <UNIT NAME="TAngles"/>
+          <UNIT NAME="TCCalendar"/>
+          <UNIT NAME="TCColorGrid"/>
+          <UNIT NAME="TCGauge"/>
+          <UNIT NAME="TPerformanceGraph"/>
+          <UNIT NAME="TPie"/>
+          <UNIT NAME="TTrayIcon"/>
         </PACKAGE>
       </PACKAGES>
       <DEFINES>
@@ -3879,6 +3922,32 @@
           <UNIT NAME="Shdocvw"/>
           <UNIT NAME="Vclie50"/>
         </PACKAGE>
+        <PACKAGE NAME="bcbie50">
+          <UNIT NAME=""/>
+          <UNIT NAME="Shdocvw_ocx"/>
+          <UNIT NAME="Shdocvw_tlb"/>
+        </PACKAGE>
+        <PACKAGE NAME="bcbsmp50">
+          <UNIT NAME=""/>
+          <UNIT NAME="Ccalendr"/>
+          <UNIT NAME="Cdiroutl"/>
+          <UNIT NAME="Cgauges"/>
+          <UNIT NAME="Cgrid"/>
+          <UNIT NAME="Cspin"/>
+          <UNIT NAME="Perfgrap"/>
+          <UNIT NAME="Piereg"/>
+          <UNIT NAME="TAngleEditorDlg"/>
+          <UNIT NAME="TAngles"/>
+          <UNIT NAME="TAnglesProperty"/>
+          <UNIT NAME="TCCalendar"/>
+          <UNIT NAME="TCColorGrid"/>
+          <UNIT NAME="TCGauge"/>
+          <UNIT NAME="TPerformanceGraph"/>
+          <UNIT NAME="TPie"/>
+          <UNIT NAME="TPieEditor"/>
+          <UNIT NAME="TTrayIcon"/>
+          <UNIT NAME="Trayicon"/>
+        </PACKAGE>
       </PACKAGES>
       <DEFINES>
         <DEFINE NAME="VER130"/>
@@ -4494,6 +4563,23 @@
           <UNIT NAME="Tabnotbk"/>
           <UNIT NAME="Tabs"/>
           <UNIT NAME="Vclx"/>
+        </PACKAGE>
+        <PACKAGE NAME="bcbie">
+          <UNIT NAME=""/>
+          <UNIT NAME="Shdocvw_ocx"/>
+          <UNIT NAME="Shdocvw_tlb"/>
+        </PACKAGE>
+        <PACKAGE NAME="bcbsmp">
+          <UNIT NAME=""/>
+          <UNIT NAME="Cdiroutl"/>
+          <UNIT NAME="Cspin"/>
+          <UNIT NAME="TAngles"/>
+          <UNIT NAME="TCCalendar"/>
+          <UNIT NAME="TCColorGrid"/>
+          <UNIT NAME="TCGauge"/>
+          <UNIT NAME="TPerformanceGraph"/>
+          <UNIT NAME="TPie"/>
+          <UNIT NAME="TTrayIcon"/>
         </PACKAGE>
       </PACKAGES>
       <DEFINES>
