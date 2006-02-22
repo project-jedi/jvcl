@@ -7,15 +7,15 @@ Developpez.com (delphi@redaction-developpez.com)
 Sujet: 
 ANN: JVCL 3.20 est disponible
 Corps:
-L'équipe JVCL est fière d'annoncer la sortie de la version stable de la biliothèque de composants JVCL version 3.20.
+L'équipe JVCL est fière d'annoncer la sortie de la version stable de la bibliothèque de composants JVCL version 3.20.
 
-La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 5, 6, 7 2005 et 2006; C++Builder 5, 6 et 2006 (Borland Developper Studio). La JVCL est distribué sous license Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
+La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 5, 6, 7 2005 et 2006; C++Builder 5, 6 et 2006 (Borland Developper Studio). La JVCL est distribué sous licence Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
 
 Cette version contient des modifications, additions et corrections de bugs trop nombreuses pour être toutes listées ici, mais voici les plus importantes:
 
 - Support de Delphi 7, 2005 (Win32), 2006 (Win32)
 - Support de C++ Builder 5, 6 and 2006 (Borland Developer Studio)
-- La fusion de la bibliothèque Globus continue. Veuillez vous référer au fichier migrating_globus.html pour de plus amples details.
+- La fusion de la bibliothèque Globus continue. Veuillez vous référer au fichier migrating_globus.html pour de plus amples détails.
 - Amélioration de l'installeur en particulier pour le support de Borland Developper Studio 2006 chez les utilisateurs n'utilisant pas une installation par défaut.
 - De nombreux bugs ont été corrigés.
 - Support de la localisation avec l'utilisation de dxgettext (http://dxgettext.sourceforge.net). Si vous voulez utiliser la JVCL en français, c'est la seule méthode supportée par notre équipe.
