@@ -15,17 +15,11 @@
     <Package Name="visualclx" Targets="CLX" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
-    <Package Name="vclsmp50" Targets="allv5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
-    <Package Name="bcbie50" Targets="Cv5" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg" Targets="allv6up" Condition=""/>
-    <Package Name="vclsmp" Targets="allv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
-    <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMarkupCommon.pas" Targets="all" Formname="" Condition=""/>

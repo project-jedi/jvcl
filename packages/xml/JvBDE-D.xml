@@ -24,7 +24,6 @@
     <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="vcldb50" Targets="DBv5" Condition=""/>
     <Package Name="vclbde50" Targets="DBv5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="dcldb" Targets="DBv6up" Condition=""/>
@@ -33,7 +32,6 @@
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="bdertl" Targets="DBv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="dclstd50" Targets="allv5" Condition=""/>
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
   </Requires>

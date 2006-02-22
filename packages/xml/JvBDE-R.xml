@@ -11,7 +11,7 @@
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JvDB-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="DB" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
@@ -22,7 +22,7 @@
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
     <Package Name="bdertl" Targets="DBv6up" Condition=""/>
-    <Package Name="vcldb" Targets="allv6up" Condition=""/>
+    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>

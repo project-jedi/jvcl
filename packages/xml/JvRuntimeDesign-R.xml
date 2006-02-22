@@ -14,8 +14,6 @@
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="vcldb50" Targets="DBv5" Condition="!DelphiPersonalEdition"/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
-    <Package Name="bcbie50" Targets="Cv5" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
@@ -23,8 +21,6 @@
     <Package Name="vcldb" Targets="DBv6up" Condition="!DelphiPersonalEdition"/>
     <Package Name="dataclx" Targets="K3" Condition="!DelphiPersonalEdition"/>
     <Package Name="visualdbclx" Targets="clx" Condition="!DelphiPersonalEdition"/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
-    <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>

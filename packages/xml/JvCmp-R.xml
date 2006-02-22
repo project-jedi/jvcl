@@ -14,11 +14,9 @@
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMouseGesture.pas" Targets="all" Formname="" Condition=""/>

@@ -16,17 +16,18 @@
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="indy50" Targets="allv5" Condition="USE_3RDPARTY_INDY"/>
     <Package Name="indy" Targets="allv6up" Condition="USE_3RDPARTY_INDY"/>
+    <Package Name="IcsBcb50" Targets="Cv5" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="IcsBcb60" Targets="C6,C6p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel50" Targets="Dv5" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel60" Targets="D6,D6p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel70" Targets="D7,D7p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel90" Targets="D9,D9p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="IcsDel100" Targets="D10,D10p" Condition="USE_3RDPARTY_ICS"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
