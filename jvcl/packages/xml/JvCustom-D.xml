@@ -24,7 +24,6 @@
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvLookoutEditor.pas" Targets="all" Formname="" Condition=""/>

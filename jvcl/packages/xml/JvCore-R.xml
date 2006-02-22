@@ -20,12 +20,10 @@
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg" Targets="allv6up" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
     <Package Name="visualclx" Targets="CLX" Condition=""/>
   </Requires>
   <Contains>

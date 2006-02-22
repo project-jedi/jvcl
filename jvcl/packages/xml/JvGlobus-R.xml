@@ -30,8 +30,6 @@
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="vclie" Targets="DBv6up" Condition="INTERNET_COMPONENTS"/>
     <Package Name="bdertl" Targets="DBv6up" Condition=""/>
-    <Package Name="vclsmp50" Targets="Dv5" Condition=""/>
-    <Package Name="vclsmp" Targets="Dv6up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="VCL" Formname="" Condition=""/>

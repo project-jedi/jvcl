@@ -20,8 +20,6 @@
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
-    <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all" Formname="" Condition=""/>

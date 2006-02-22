@@ -18,15 +18,11 @@
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="dclstd50" Targets="allv5" Condition=""/>
-    <Package Name="bcbie50" Targets="Cv5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="Cv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
-    <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>
