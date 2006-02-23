@@ -45,11 +45,11 @@ uses
   {$IFDEF USEJVCL}
   JvComponentBase,
   {$ENDIF USEJVCL}
-  DBT, SetupApi, HID, ModuleLoader;
+  DBT, SetupApi, HID, ModuleLoader, Dialogs;
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.31';
+  cHidControllerClassVersion = '1.0.32';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -1647,13 +1647,15 @@ procedure TJvHidDeviceController.EventPipe(var Msg: TMessage);
 begin
   // sort out WM_DEVICECHANGE : DBT_DEVNODES_CHANGED
   if (Msg.Msg = WM_DEVICECHANGE) and (TWMDeviceChange(Msg).Event = DBT_DEVNODES_CHANGED) then
-  if not FInDeviceChange then
-  begin
-    FLParam := Msg.LParam;
-    FInDeviceChange := True;
-    DeviceChange;
-    FInDeviceChange := False;
-  end;
+    if not FInDeviceChange then
+    begin
+      FLParam := Msg.LParam;
+      FInDeviceChange := True;
+      DeviceChange;
+      FInDeviceChange := False;
+    end;
+  if Msg.Msg = WM_QUERYENDSESSION then
+    Msg.Result := 1;
 end;
 
 // implements OnDeviceChange event
