@@ -991,6 +991,7 @@ procedure ResourceNotFound(ResID: PChar);
 {$ENDIF !CLR}
 function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
+function CompareRect(const R1, R2: TRect): Boolean;
 
 {$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
@@ -8430,6 +8431,12 @@ end;
 function RectHeight(R: TRect): Integer;
 begin
   Result := Abs(R.Bottom - R.Top);
+end;
+
+function CompareRect(const R1, R2: TRect): Boolean;
+begin
+  Result := (R1.Left = R2.Left) and (R1.Top = R2.Top) and
+            (R1.Right = R2.Right) and (R1.Bottom = R2.Bottom);
 end;
 
 {$IFDEF MSWINDOWS}
