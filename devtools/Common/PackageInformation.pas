@@ -293,6 +293,8 @@ type
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property ProjectType: TProjectType read GetProjectType;
 
+    property XmlInfo: TPackageXmlInfo read FXmlInfo;
+
     property Owner: TBpgPackageTarget read FOwner;
     property XmlDir: string read FXmlDir;
   end;
