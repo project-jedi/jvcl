@@ -13,9 +13,9 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="%NAME%.bpl"/>
     <OBJFILES value="
-      ..\..\lib\c6\obj\%NAME%.obj
+      ..\..\lib\c6\%NAME%.obj
 <%%% START FILES %%%>
-      ..\..\lib\c6\obj\%UNITNAME%.obj
+      ..\..\lib\c6\%UNITNAME%.obj
 <%%% END FILES %%%>
     "/>
     <RESFILES value="%NAME%.res"/>
@@ -50,7 +50,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -59,7 +59,7 @@
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-N2..\..\lib\c6\obj -N0..\..\lib\c6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M
+    <PFLAGS value="-N2..\..\lib\c6 -N0..\..\lib\c6 -$YD -$W -$O- -$A8 -v -JPHNE -M
                    -DDelphiPersonalEdition
                    %C6PFLAGS%
                    -U$(BCB)\Projects\Bpl
@@ -67,7 +67,7 @@
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\c6\obj -D&quot;%DESCRIPTION%&quot; -aa -Tpp
+    <LFLAGS value="-I..\..\lib\c6 -D&quot;%DESCRIPTION%&quot; -aa -Tpp
       -Gp%type% -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
