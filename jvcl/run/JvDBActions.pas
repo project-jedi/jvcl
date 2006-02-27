@@ -534,14 +534,17 @@ procedure TJvDatabaseActionList.SetDataComponent(Value: TComponent);
 var
   I: integer;
 begin
-  FDataComponent := Value;
-  if FDataComponent <> nil then
-    FDataComponent.FreeNotification(Self);
-  for I := 0 to ActionCount - 1 do
-    if Actions[I] is TJvDatabaseBaseAction then
-      TJvDatabaseBaseAction(Actions[I]).DataComponent := Value;
-  if Assigned(OnChangeDataComponent) then
-    OnChangeDataComponent (Value);
+  if Value <> FDataComponent then 
+  begin
+    FDataComponent := Value;
+    if FDataComponent <> nil then
+      FDataComponent.FreeNotification(Self);
+    for I := 0 to ActionCount - 1 do
+      if Actions[I] is TJvDatabaseBaseAction then
+        TJvDatabaseBaseAction(Actions[I]).DataComponent := Value;
+    if Assigned(OnChangeDataComponent) then
+      OnChangeDataComponent (Value);
+  end;
 end;
 
 procedure TJvDatabaseActionList.Notification(AComponent: TComponent; Operation: TOperation);
