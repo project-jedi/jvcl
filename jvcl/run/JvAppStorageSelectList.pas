@@ -59,11 +59,7 @@ type
     function GetStoragePath: string; virtual;
     function GetDynControlEngine: TJvDynControlEngine; virtual;
     procedure SetDynControlEngine(Value: TJvDynControlEngine); virtual;
-    {$IFDEF BCB}
-    procedure CreateDlg(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
-    {$ELSE}
-    procedure CreateDialog(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
-    {$ENDIF BCB}
+    procedure CreateDlg(AOperation: TJvAppStorageSelectListOperation; ACaption: string = ''); // CreateDlg is a BCB macro
 
     procedure DialogOnOkButtonClick(Sender: TObject);
     procedure DialogOnCancelButtonClick(Sender: TObject);
@@ -213,11 +209,7 @@ begin
   FIListBoxData := nil;
 end;
 
-{$IFDEF BCB}
 procedure TJvAppStorageSelectList.CreateDlg(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
-{$ELSE}
-procedure TJvAppStorageSelectList.CreateDialog(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
-{$ENDIF BCB}
 var
   MainPanel, ButtonPanel, ListBoxPanel, ComboBoxPanel: TWinControl;
   OkButton, CancelButton: TWinControl;
@@ -342,11 +334,7 @@ begin
     {$ENDIF CLR}
   try
     LoadSelectList;
-    {$IFDEF BCB}
     CreateDlg(AOperation, ACaption);
-    {$ELSE}
-    CreateDialog(AOperation, ACaption);
-    {$ENDIF BCB}
     SelectDialog.ShowModal;
     if SelectDialog.ModalResult = mrOk then
     begin
