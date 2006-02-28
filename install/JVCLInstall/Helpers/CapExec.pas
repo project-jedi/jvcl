@@ -37,11 +37,23 @@ uses
 type
   TCaptureLine = procedure(const Line: string; var Aborted: Boolean) of object;
 
-function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
-  OnIdle: TNotifyEvent = nil; CtrlCAbort: Boolean = False): Integer;
+var
+  CaptureStatusLine: TCaptureLine = nil;
 
+function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
+  OnIdle: TNotifyEvent = nil; CtrlCAbort: Boolean = False; const EnvPath: string = '';
+  InjectDll: Boolean = False): Integer;
 
 implementation
+
+{uses
+  InjectDll, SharedMMFMem;}
+
+function GetEnvironmentVariable(const Name: string): string;
+begin
+  SetLength(Result, 8 * 1024);
+  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
+end;
 
 function Oem2Ansi(const Text: string): string;
 begin
@@ -50,20 +62,11 @@ begin
 end;
 
 function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
-  OnIdle: TNotifyEvent = nil; CtrlCAbort: Boolean = False): Integer;
-const
-  CtrlCBuffer: array[0..7] of Char = #3#3#3#3#3#3#3#3;
+  OnIdle: TNotifyEvent; CtrlCAbort: Boolean; const EnvPath: string; InjectDll: Boolean): Integer;
 var
-  ProcessInfo: TProcessInformation;
-  StartupInfo: TStartupInfo;
-  SecAttrib: TSecurityAttributes;
-  hRead, hWrite: THandle;
-  hAbortRead, hAbortWrite: THandle;
-  Line: string;
   Aborted: Boolean;
-  Num: Cardinal;
 
-  procedure ProcessInput;
+  procedure ProcessInput(hRead: THandle; var Line: string; CaptureLine: TCaptureLine);
   var
     BytesInPipe, n: Cardinal;
     S: string;
@@ -84,7 +87,8 @@ var
         for i := 1 to Length(Line) do
           if Line[i] in [#10, #13] then
           begin
-            CaptureLine(Oem2Ansi(Copy(Line, 1, i - 1)), Aborted);
+            if Assigned(CaptureLine) then
+              CaptureLine(Oem2Ansi(Copy(Line, 1, i - 1)), Aborted);
             if (Line[i] = #13) and (Line[i + 1] = #10) then
             begin
               if Line[i + 2] = #13 then
@@ -97,17 +101,29 @@ var
             Found := True;
             Break;
           end;
-      until (Aborted) or (not Found);
+      until Aborted or not Found;
     end;
   end;
 
+var
+  ProcessInfo: TProcessInformation;
+  StartupInfo: TStartupInfo;
+  SecAttrib: TSecurityAttributes;
+  hRead, hWrite: THandle;
+  hAbortRead, hAbortWrite: THandle;
+  ReadStatusPipe, WriteStatusPipe: THandle;
+  Line: string;
+  StatusLine: string;
+  OrgEnvPath: string;
+//  PipeP: ^THandle;
 begin
   Result := -2;
   if not Assigned(CaptureLine) then
     Exit;
 
   FillChar(SecAttrib, SizeOf(SecAttrib), 0);
-  with SecAttrib do begin
+  with SecAttrib do
+  begin
     nLength := SizeOf(SecAttrib);
     bInheritHandle := True;
     lpSecurityDescriptor := nil;
@@ -120,62 +136,101 @@ begin
   if not CreatePipe(hRead, hWrite, @SecAttrib, 0) then
     Exit;
   try
-    if CtrlCAbort then
-      if not CreatePipe(hAbortRead, hAbortWrite, @SecAttrib, 0) then
-        Exit;
+    if not CreatePipe(hAbortRead, hAbortWrite, @SecAttrib, 0) then
+      Exit;
+    if not CreatePipe(ReadStatusPipe, WriteStatusPipe, @SecAttrib, 0) then
+    begin
+      WriteStatusPipe := 0;
+      ReadStatusPipe := 0;
+    end;
+
     try
       StartupInfo.wShowWindow := SW_HIDE;
-      if CtrlCAbort then
-        StartupInfo.hStdInput := hAbortRead
-      else
-        StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+      StartupInfo.hStdInput := hAbortRead;
       StartupInfo.hStdOutput := hWrite;
       StartupInfo.hStdError := StartupInfo.hStdOutput; // redirect
       StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
 
-      if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
-        0, nil, PChar(Dir), StartupInfo, ProcessInfo) then
-      begin
-        CloseHandle(ProcessInfo.hThread);
-        try
-          while (WaitForSingleObject(ProcessInfo.hProcess, 30) = WAIT_TIMEOUT) and (not Aborted) do
+      OrgEnvPath := GetEnvironmentVariable('PATH');
+      if EnvPath <> '' then
+        SetEnvironmentVariable('PATH', Pointer(EnvPath));
+      try
+        if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
+          CREATE_SUSPENDED, nil, PChar(Dir), StartupInfo, ProcessInfo) then
+        begin
+          {if InjectDll then
           begin
-            ProcessInput;
-            if Assigned(OnIdle) then
-              OnIdle(nil);
-          end;
-          ProcessInput;
-          if Line <> '' then
-            CaptureLine(Line, Aborted);
-          if Aborted then
-          begin
-            if CtrlCAbort then
+            SharedGetMem(PipeP, 'Local\dcc32Hook_StatusPipe' + IntToStr(ProcessInfo.dwProcessId), SizeOf(THandle));
+            if Assigned(PipeP) then
             begin
-              WriteFile(hAbortWrite, CtrlCBuffer, SizeOf(CtrlCBuffer), Num, nil);
-              if WaitForSingleObject(ProcessInfo.hProcess, 500) = WAIT_TIMEOUT then
+              try
+                PipeP^ := WriteStatusPipe;
+                InjectHookDll(ProcessInfo.dwProcessId, ExtractFilePath(ParamStr(0)) + 'dcc32Hook.dll', False);
+              finally
+                SharedFreeMem(PipeP);
+              end;
+            end;
+          end;}
+          ResumeThread(ProcessInfo.hThread);
+
+          CloseHandle(ProcessInfo.hThread);
+          try
+            while (WaitForSingleObject(ProcessInfo.hProcess, 80) = WAIT_TIMEOUT) and (not Aborted) do
+            begin
+              ProcessInput(hRead, Line, CaptureLine);
+              if ReadStatusPipe <> 0 then
+                ProcessInput(ReadStatusPipe, StatusLine, CaptureStatusLine);
+              if Assigned(OnIdle) then
+                OnIdle(nil);
+            end;
+            ProcessInput(hRead, Line, CaptureLine);
+            if (Line <> '') and Assigned(CaptureLine) then
+              CaptureLine(Line, Aborted);
+            if ReadStatusPipe <> 0 then
+              ProcessInput(ReadStatusPipe, StatusLine, CaptureStatusLine);
+            if (StatusLine <> '') and Assigned(CaptureStatusLine) then
+              CaptureStatusLine(StatusLine, Aborted);
+            if Aborted then
+            begin
+              if CtrlCAbort then
+              begin
+                GenerateConsoleCtrlEvent(CTRL_C_EVENT, ProcessInfo.dwProcessId);
+                if WaitForSingleObject(ProcessInfo.hProcess, 500) = WAIT_TIMEOUT then
+                  TerminateProcess(ProcessInfo.hProcess, Cardinal(1));
+              end
+              else
                 TerminateProcess(ProcessInfo.hProcess, Cardinal(1));
-            end
-            else
-              TerminateProcess(ProcessInfo.hProcess, Cardinal(1));
+            end;
+            GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
+          finally
+            CloseHandle(ProcessInfo.hProcess);
           end;
-          GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
-        finally
-          CloseHandle(ProcessInfo.hProcess);
-        end;
-      end
-      else
-        Result := -1;
-    finally
-      if CtrlCAbort then
-      begin
-        CloseHandle(hAbortRead);
-        CloseHandle(hAbortWrite);
+        end
+        else
+          Result := -1;
+      finally
+        if EnvPath <> '' then
+          SetEnvironmentVariable('PATH', Pointer(OrgEnvPath));
       end;
+    finally
+      if WriteStatusPipe <> 0 then
+        CloseHandle(WriteStatusPipe);
+      if ReadStatusPipe <> 0 then
+        CloseHandle(ReadStatusPipe);
+      CloseHandle(hAbortRead);
+      CloseHandle(hAbortWrite);
     end;
   finally
     CloseHandle(hRead);
     CloseHandle(hWrite);
   end;
 end;
+
+procedure NoHooking;
+begin
+end;
+
+exports
+  NoHooking; // prevent DllInjection to hook this process
 
 end.

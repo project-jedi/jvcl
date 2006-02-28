@@ -45,6 +45,8 @@ type
     Bevel: TBevel;
     EditDirectory: TEdit;
     BtnDirBrowse: TButton;
+    procedure EditDirectoryExit(Sender: TObject);
+    procedure EditDirectoryChange(Sender: TObject);
     procedure BtnDirBrowseClick(Sender: TObject);
     procedure EditDirectoryDblClick(Sender: TObject);
   private
@@ -66,7 +68,7 @@ type
 implementation
 
 uses
-  InstallerConsts, AHCompBrowseFolderDlg, Core;
+  InstallerConsts, AHCompBrowseFolderDlg, Core, Utils;
 
 {$R *.dfm}
 
@@ -147,7 +149,7 @@ begin
   if AllowEmpty then
   begin
     BtnHandle := FindWindowEx(Handle, 0, SBtn, nil);
-    if (BtnHandle <> 0) then
+    if BtnHandle <> 0 then
     begin
       // We need the witdh of the text at runtime because it gets localized
       BtnCaption := RsNoDirectoryButton;
@@ -188,9 +190,35 @@ begin
   end;
 end;
 
+procedure TFrameDirEditBrowse.EditDirectoryChange(Sender: TObject);
+begin
+  if not DirectoryExists(EditDirectory.Text) then
+  begin
+    EditDirectory.Font.Color := clRed;
+    EditDirectory.ShowHint := True;
+  end
+  else
+  begin
+    EditDirectory.Font.Color := clWindowText;
+    EditDirectory.ShowHint := False;
+  end;
+end;
+
 procedure TFrameDirEditBrowse.EditDirectoryDblClick(Sender: TObject);
 begin
   BtnDirBrowse.Click;
+end;
+
+procedure TFrameDirEditBrowse.EditDirectoryExit(Sender: TObject);
+var
+  Dir: string;
+begin
+  Dir := EditDirectory.Text;
+  if Assigned(FOnChange) then
+  begin
+    FOnChange(Self, FUserData, Dir);
+    EditDirectory.Text := Dir;
+  end;
 end;
 
 end.

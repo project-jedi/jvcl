@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls,
-  JVCL3Install, JVCLData, PackageUtils, Compile, Utils;
+  JVCL3Install, Utils, Intf;
 
 type
   TFrameUninstall = class(TFrame)
@@ -47,7 +47,7 @@ type
     procedure Init;
   protected
     procedure EvProgress(Sender: TObject; const Text: string; Position, Max: Integer);
-    procedure EvDeleteFiles(TargetConfig: TTargetConfig);
+    procedure EvDeleteFiles(TargetConfig: ITargetConfig);
     property Installer: TInstaller read FInstaller;
   public
     class function Build(Installer: TInstaller; Client: TWinControl): TFrameUninstall;
@@ -83,7 +83,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TFrameUninstall.EvDeleteFiles(TargetConfig: TTargetConfig);
+procedure TFrameUninstall.EvDeleteFiles(TargetConfig: ITargetConfig);
 var
   List: TStrings;
   i, Percentage: Integer;
@@ -91,14 +91,20 @@ var
 begin
   List := TStringList.Create;
   try
-   // find files to delete
+    // find files to delete
     FindFiles(TargetConfig.UnitOutDir, '*.*', True, List,  // do not localize
       ['.dcu', '.obj', '.xfm', '.dfm']);                   // do not localize
-    FindFiles(TargetConfig.BplDir, 'Jv*.*', True, List,    // do not localize
-      ['.bpl', '.dcp', '.tds', '.map']);                   // do not localize
-//    if TargetConfig.Target.IsBCB then
-      FindFiles(TargetConfig.DcpDir, 'Jv*.*', True, List,  // do not localize
-        ['.bpl', '.dcp', '.tds', '.lib', '.bpi', '.map']); // do not localize
+    FindFiles(TargetConfig.DebugUnitOutDir, '*.*', True, List,  // do not localize
+      ['.bpl', '.dcp', '.lib', '.map', '.bpi', '.dcu', '.obj', '.xfm', '.dfm']);  // do not localize
+    TargetConfig.GetPackageBinariesForDeletion(List);
+    FindFiles(TargetConfig.UnitOutDir, 'Jv*.hpp', True, List, // do not localize
+      ['.hpp']);                   // do not localize
+    if CompareText(TargetConfig.UnitOutDir, TargetConfig.HppDir) <> 0 then
+      FindFiles(TargetConfig.HppDir, 'Jv*.hpp', True, List, // do not localize
+        ['.hpp']);                   // do not localize
+    if CompareText(TargetConfig.HppDir, TargetConfig.Target.RootDir + '\include\vcl') <> 0 then
+      FindFiles(TargetConfig.Target.RootDir + '\include\vcl', 'Jv*.hpp', True, List, // do not localize
+        ['.hpp']);                   // do not localize
 
     ProgressBarDelete.Max := 100;
     ProgressBarDelete.Position := 0;
@@ -150,9 +156,9 @@ begin
     if Installer.SelTargets[i].InstallJVCL then
     begin
       if Installer.Data.DeleteFilesOnUninstall then
-        Installer.SelTargets[i].DeinstallJVCL(EvProgress, EvDeleteFiles)
+        Installer.SelTargets[i].DeinstallJVCL(EvProgress, EvDeleteFiles, True)
       else
-        Installer.SelTargets[i].DeinstallJVCL(EvProgress, nil);
+        Installer.SelTargets[i].DeinstallJVCL(EvProgress, nil, True);
     end;
 end;
 

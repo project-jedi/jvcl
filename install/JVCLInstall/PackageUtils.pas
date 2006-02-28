@@ -75,6 +75,7 @@ type
                                    // Objects[]: TRequiredPackage
     FCompile: Boolean;
     FInstall: Boolean;
+    function GetDcpName: string;
 
     procedure SetCompile(Value: Boolean);
     procedure SetInstall(const Value: Boolean);
@@ -97,6 +98,7 @@ type
     property Compile: Boolean read FCompile write SetCompile;
     property Install: Boolean read FInstall write SetInstall;
 
+    property DcpName: string read GetDcpName;
     property Owner: TProjectGroup read GetOwner;
   end;
 
@@ -283,6 +285,11 @@ end;
 function TPackageTarget.FindRuntimePackage: TPackageTarget;
 begin
   Result := TPackageTarget(inherited FindRuntimePackage);
+end;
+
+function TPackageTarget.GetDcpName: string;
+begin
+  Result := ChangeFileExt(ExtractFileName(SourceName), '.dcp');
 end;
 
 procedure TPackageTarget.GetDependencies;

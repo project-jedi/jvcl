@@ -26,8 +26,13 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     Top = 24
     Width = 279
     Height = 21
+    Hint = 'Directory does not exist'
+    ParentShowHint = False
+    ShowHint = False
     TabOrder = 0
+    OnChange = EditDirectoryChange
     OnDblClick = EditDirectoryDblClick
+    OnExit = EditDirectoryExit
   end
   object BtnDirBrowse: TButton
     Left = 288

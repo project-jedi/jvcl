@@ -55,10 +55,6 @@ type
   private
     FInitializing: Boolean;
     FInstaller: TInstaller;
-    procedure Init;
-  protected
-    property Installer: TInstaller read FInstaller;
-  private
     FPositionTarget: Integer;
     FPositionProject: Integer;
     FFinished: Boolean;
@@ -66,8 +62,11 @@ type
     FLastCapLine: string;
     procedure EvProgress(Sender: TObject; const Text: string;
       Position, Max: Integer; Kind: TProgressKind);
-    procedure EvCaptureLine(const Text: string; var Aborted: Boolean);
+    procedure EvCaptureLine(const Text: string; var AAborted: Boolean);
     procedure EvIdle(Sender: TObject);
+    procedure Init;
+  protected
+    property Installer: TInstaller read FInstaller;
   public
     class function Build(Installer: TInstaller; Client: TWinControl): TFrameInstall;
     procedure Execute;
@@ -107,15 +106,16 @@ begin
 
         LblTarget.Caption := Text;
         LblTarget.Hint := Text;
-        ProgressBarTarget.Max := Max * ProjectMax;
-        ProgressBarTarget.Position := (FPositionTarget * ProjectMax);
-        FormCompile.Init('JVCL - ' + Text, not FInstaller.Data.IgnoreMakeErrors);
+        ProgressBarTarget.Max := Max * ProjectMaxProgress;
+        ProgressBarTarget.Position := (FPositionTarget * ProjectMaxProgress);
+        if Assigned(Compiler) then
+          FormCompile.Init('JVCL - ' + Text, not FInstaller.Data.IgnoreMakeErrors, Compiler.IsDcc32BugDanger);
       end;
 
     pkProject:
       begin
         FPositionProject := Position;
-        ProgressBarTarget.Position := FPositionProject + (FPositionTarget * ProjectMax);
+        ProgressBarTarget.Position := FPositionProject + (FPositionTarget * ProjectMaxProgress);
         LblTarget.Caption := LblTarget.Hint + ' - ' + Text;
         ProgressBarCompile.Position := 0;
       end;
@@ -129,7 +129,8 @@ begin
           ps := Pos('(', Text);
           if ps = 0 then
             ps := Length(Text) + 1;
-          FormCompile.Init(Trim(Copy(Text, 1, ps - 1)), False);
+          if Assigned(Compiler) then
+            FormCompile.Init(Trim(Copy(Text, 1, ps - 1)), False, Compiler.IsDcc32BugDanger);
         end
         else
           LblInfo.Caption := '';
@@ -149,7 +150,7 @@ begin
 end;
 
 procedure TFrameInstall.EvCaptureLine(const Text: string;
-  var Aborted: Boolean);
+  var AAborted: Boolean);
 var
   Line: string;
 
@@ -168,7 +169,7 @@ var
   CompileLine: TCompileLineType;
   ps: Integer;
 begin
-  Aborted := FAborted;
+  AAborted := FAborted or FormCompile.Aborted;
   Line := Text;
   if (Text <> '') and (Text[1] = #1) then
     Delete(Line, 1, 1);
@@ -186,7 +187,7 @@ begin
       if Text[1] = #1 then
         SetFont([fsBold], clGray)
       else
-      if (Text[1] = #9) and not StartsWith(Text, #9'Loaded ') then
+      if (Text[1] = #9) and not StartsWith(Text, #9'Loaded ') then // do not localize
         SetFont([], clGray)
       else if Text[1] = '[' then
         SetFont([fsBold])
@@ -207,13 +208,14 @@ begin
           LText := TrimLeft(Text);
           if StartsWith(LText, 'MAKE version', True) or // do not localize
              StartsWith(LText, 'Borland ', True) or // do not localize
-             StartsWith(LText, 'Copyright ', True) then // do not localize
+             StartsWith(LText, 'Copyright ', True) or // do not localize
+             StartsWith(LText, 'Turbo Incremental Link', True) then // do not localize
           begin
             SetFont([fsItalic], clGray);
           end
         end;
 
-        if Pos('Turbo Incremental Link', Line) <> 0 then
+        if Pos('Turbo Incremental Link', Line) <> 0 then // do not localize
         begin
           ps := Pos(':', LblInfo.Caption);
           if ps > 0 then

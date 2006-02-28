@@ -64,6 +64,11 @@ type
     PanelBk: TPanel;
     LblOptionsFor: TLabel;
     CheckBoxDebugUnits: TCheckBox;
+    CheckBoxLinkMapFiles: TCheckBox;
+    CheckBoxDeleteMapFiles: TCheckBox;
+    LblEnvPathWarning: TLabel;
+    CheckBoxAddBplDirToPath: TCheckBox;
+    procedure FrameDirEditBrowseBPLEditDirectoryChange(Sender: TObject);
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -117,19 +122,19 @@ end;
 procedure TFrameConfigPage.BplDirChanged(Sender: TObject; UserData: TObject;
   var Dir: string);
 begin
-  SelTargetConfig.BplDir := Dir;
+  SelTargetConfig.BplDir := ExcludeTrailingPathDelimiter(Dir);
 end;
 
 procedure TFrameConfigPage.DcpDirChanged(Sender: TObject; UserData: TObject;
   var Dir: string);
 begin
-  SelTargetConfig.DcpDir := Dir;
+  SelTargetConfig.DcpDir := ExcludeTrailingPathDelimiter(Dir);
 end;
 
 procedure TFrameConfigPage.HppDirChanged(Sender, UserData: TObject;
   var Dir: string);
 begin
-  SelTargetConfig.HppDir := Dir;
+  SelTargetConfig.HppDir := ExcludeTrailingPathDelimiter(Dir);
 end;
 
 function TFrameConfigPage.GetSelTargetConfig: TTargetConfig;
@@ -153,7 +158,6 @@ begin
     x := BtnEditJvclInc.BoundsRect.Right;
     BtnEditJvclInc.Width := Max(BtnEditJvclInc.Width, LblOptionsFor.Canvas.TextWidth(BtnEditJvclInc.Caption) + 16);
     BtnEditJvclInc.Left := BtnEditJvclInc.Left - (BtnEditJvclInc.BoundsRect.Right - x);
-
 
     ImageListTargets.Clear;
 
@@ -210,6 +214,8 @@ begin
 
   CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
   CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
+  CheckBoxLinkMapFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
+  CheckBoxDeleteMapFiles.Enabled := CheckBoxLinkMapFiles.Checked and CheckBoxGenerateMapFiles.Checked;
 
   if ComboBoxTargetIDE.ItemIndex <= 0 then
   begin
@@ -225,6 +231,10 @@ begin
       Installer.Data.CompileOnly := Integer(not CheckBoxIDERegister.Checked)
     else if Sender = CheckBoxGenerateMapFiles then
       Installer.Data.GenerateMapFiles := Integer(CheckBoxGenerateMapFiles.Checked)
+    else if Sender = CheckBoxLinkMapFiles then
+      Installer.Data.LinkMapFiles := Integer(CheckBoxLinkMapFiles.Checked)
+    else if Sender = CheckBoxDeleteMapFiles then
+      Installer.Data.DeleteMapFiles := Integer(CheckBoxDeleteMapFiles.Checked)
     ;
   end
   else
@@ -242,6 +252,12 @@ begin
       TargetConfig.CompileOnly := not CheckBoxIDERegister.Checked
     else if Sender = CheckBoxGenerateMapFiles then
       TargetConfig.GenerateMapFiles := CheckBoxGenerateMapFiles.Checked
+    else if Sender = CheckBoxLinkMapFiles then
+      TargetConfig.LinkMapFiles := CheckBoxLinkMapFiles.Checked
+    else if Sender = CheckBoxDeleteMapFiles then
+      TargetConfig.DeleteMapFiles := CheckBoxDeleteMapFiles.Checked
+    else if Sender = CheckBoxAddBplDirToPath then // only for SelTargetConfig
+      TargetConfig.AddBplDirToPath := CheckBoxAddBplDirToPath.Checked;
     ;
   end;
 
@@ -378,6 +394,8 @@ begin
     if ItemIndex <= 0 then
     begin
       // for all
+      BtnEditJvclInc.Caption := RsEditJvclIncAll;
+
       CheckBoxDeveloperInstall.State := TCheckBoxState(Installer.Data.DeveloperInstall);
       CheckBoxCleanPalettes.State := TCheckBoxState(Installer.Data.CleanPalettes);
       CheckBoxBuild.State := TCheckBoxState(Installer.Data.Build);
@@ -390,9 +408,13 @@ begin
         CheckBoxIDERegister.State := cbGrayed;
       end;
       CheckBoxGenerateMapFiles.State := TCheckBoxState(Installer.Data.GenerateMapFiles);
-      BtnEditJvclInc.Caption := RsEditJvclIncAll;
-
+      CheckBoxLinkMapFiles.State := TCheckBoxState(Installer.Data.LinkMapFiles);
+      CheckBoxDeleteMapFiles.State := TCheckBoxState(Installer.Data.DeleteMapFiles);
       CheckBoxDebugUnits.State := TCheckBoxState(Installer.Data.DebugUnits);
+
+      CheckBoxAddBplDirToPath.Checked := False;
+      LblEnvPathWarning.Visible := False;
+      CheckBoxAddBplDirToPath.Visible := False;
     end
     else
     begin
@@ -406,19 +428,25 @@ begin
       CheckBoxBuild.Checked := TargetConfig.Build;
       CheckBoxIDERegister.Checked := not TargetConfig.CompileOnly;
       CheckBoxGenerateMapFiles.Checked := TargetConfig.GenerateMapFiles;
+      CheckBoxLinkMapFiles.Checked := TargetConfig.LinkMapFiles;
+      CheckBoxDeleteMapFiles.Checked := TargetConfig.DeleteMapFiles;
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;
       FrameDirEditBrowseDCP.EditDirectory.Text := TargetConfig.DcpDir;
       if TargetConfig.Target.SupportsPersonalities([persBCB]) then
         FrameDirEditBrowseHPP.EditDirectory.Text := TargetConfig.HppDir;
+
+      CheckBoxAddBplDirToPath.Checked := TargetConfig.AddBplDirToPath;
     end;
 
     CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
     CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
+    CheckBoxLinkMapFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
+    CheckBoxDeleteMapFiles.Enabled := CheckBoxLinkMapFiles.Checked and CheckBoxGenerateMapFiles.Checked;
     FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
     FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
     FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.SupportsPersonalities([persBCB]);
-    LblBCBGuide.Visible := FrameDirEditBrowseHPP.Visible;
+    //LblBCBGuide.Visible := FrameDirEditBrowseHPP.Visible;
 
     UpdateJvclIncSettings;
   finally
@@ -489,6 +517,29 @@ begin
   Filename := Installer.Data.JVCLDir + '\' + SInstallHTM;
   if not OpenAtAnchor(Filename, SBCBGuideAnchor) then
     MessageDlg(Format(RsCannotOpen, [Filename]), mtError, [mbOk], 0);
+end;
+
+procedure TFrameConfigPage.FrameDirEditBrowseBPLEditDirectoryChange(
+  Sender: TObject);
+var
+  Dir: string;
+begin
+  FrameDirEditBrowseBPL.EditDirectoryChange(Sender);
+
+  Dir := FrameDirEditBrowseBPL.EditDirectory.Text;
+  if (SelTargetConfig <> nil) {and DirectoryExists(Dir)} then
+  begin
+    if not SelTargetConfig.Target.IsInEnvPath(Dir) then
+    begin
+      if DirectoryExists(Dir) then
+        FrameDirEditBrowseBPL.EditDirectory.Font.Color := clBlue;
+      LblEnvPathWarning.Visible := True;
+      CheckBoxAddBplDirToPath.Visible := True;
+      Exit;
+    end;
+  end;
+  CheckBoxAddBplDirToPath.Visible := False;
+  LblEnvPathWarning.Visible := False;
 end;
 
 procedure TFrameConfigPage.FrameDirEditBrowseHPPBtnJCLDirBrowseClick(

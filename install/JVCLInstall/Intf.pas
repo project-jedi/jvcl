@@ -44,6 +44,19 @@ const
   );
 
 type
+  ITargetConfig = interface;
+
+  TOutputDirs = record
+    UnitOutDir: string;
+    BplDir: string;
+    DcpDir: string;
+    HppDir: string;
+  end;
+
+  TDeinstallProgressEvent = procedure(Sender: TObject; const Text: string;
+    Position, Max: Integer) of object;
+  TDeleteFilesEvent = procedure(TargetConfig: ITargetConfig) of object;
+
   /// <summary>
   /// This interface is used to overcome the "circular unit references"
   /// </summary>
@@ -52,6 +65,19 @@ type
       // returns the TTargetConfig instance
 
     function GetBpgFilename(ForcePersonal: Boolean; Kind: TPackageGroupKind): string;
+    function LinkMapFile(const BinaryFileName, MapFileName: string;
+      var MapFileSize, JclDebugDataSize: Integer): Boolean;
+    function VersionedJclDcp(const Name: string): string;
+    function VersionedJclBpl(const Name: string): string;
+    function VersionedJVCLXmlDcp(const Name: string): string;
+    function VersionedJVCLXmlBpl(const Name: string): string;
+    procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
+      DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
+    function RegisterToIDE: Boolean;
+    procedure GetPackageBinariesForDeletion(List: TStrings);
+    procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
+    procedure RegisterJVCLVersionInfo;
+
     function GetTargetSymbol: string;
     function GetAutoDependencies: Boolean;
     function GetDebugUnits: Boolean;
@@ -59,21 +85,36 @@ type
     function GetCompileOnly: Boolean;
     function GetDeveloperInstall: Boolean;
     function GetGenerateMapFiles: Boolean;
+    function GetLinkMapfiles: Boolean;
+    function GetDeleteMapFiles: Boolean;
+    function GetCleanPalettes: Boolean;
+    function GetAddBplDirToPath: Boolean;
+
 
     function GetJVCLConfig: TJVCLConfig;
 
     function GetTarget: TCompileTarget;
+    function GetPathEnvVar: string;
     function GetJVCLPackagesXmlDir: string;
     function GetJVCLDir: string;
     function GetJVCLPackagesDir: string;
 
     function GetUnitOutDir: string;
-    function GetJCLDir: string;
-    function GetJCLLibDir: string;
+    function GetDebugUnitOutDir: string;
+
+    function GetJclDir: string;
+    function GetJclDcpDir: string;
+    function GetJclDcuDir: string;
+    function GetJclBplDir: string;
     function GetHppDir: string;
     function GetBplDir: string;
     function GetDcpDir: string;
+    function GetDebugHppDir: string;
+    function GetDebugBplDir: string;
+    function GetDebugDcpDir: string;
     function GetDxgettextDir: string;
+
+    function GetOutputDirs(DebugUnits: Boolean): TOutputDirs;
 
     property TargetSymbol: string read GetTargetSymbol;
     property Target: TCompileTarget read GetTarget;
@@ -83,15 +124,25 @@ type
     property CompileOnly: Boolean read GetCompileOnly;
     property DeveloperInstall: Boolean read GetDeveloperInstall;
     property GenerateMapFiles: Boolean read GetGenerateMapFiles;
+    property LinkMapFiles: Boolean read GetLinkMapFiles;
+    property DeleteMapFiles: Boolean read GetDeleteMapFiles;
+    property CleanPalettes: Boolean read GetCleanPalettes;
+    property AddBplDirToPath: Boolean read GetAddBplDirToPath;
 
     property JVCLConfig: TJVCLConfig read GetJVCLConfig;
 
     property UnitOutDir: string read GetUnitOutDir;
-    property JCLDir: string read GetJCLDir;
-    property JCLLibDir: string read GetJCLLibDir;
+    property DebugUnitOutDir: string read GetDebugUnitOutDir;
+    property JclDir: string read GetJclDir;
+    property JclDcpDir: string read GetJclDcpDir;
+    property JclDcuDir: string read GetJclDcuDir;
+    property JclBplDir: string read GetJclBplDir;
     property HppDir: string read GetHppDir;
     property BplDir: string read GetBplDir;
     property DcpDir: string read GetDcpDir;
+    property DebugHppDir: string read GetDebugHppDir;
+    property DebugBplDir: string read GetDebugBplDir;
+    property DebugDcpDir: string read GetDebugDcpDir;
     property DxgettextDir: string read GetDxgettextDir;
 
     property JVCLPackagesXmlDir: string read GetJVCLPackagesXmlDir;

@@ -47,9 +47,9 @@ resourcestring
     'is required). However, unless noted otherwise, all files, including those without an MPL'#10 +
     'header, are subject to the MPL license.';
 
-  RsInstallerName = 'JVCL 3  Installation';
+  RsInstallerName = 'JVCL %d.%d  Installation';
 
-  RsInstallerTitle = 'JVCL 3 Installation';
+  RsInstallerTitle = 'JVCL %d.%d Installation';
   RsWelcomePageSubTitle = 'Welcome to the JVCL 3 installation application';
   RsNoDelphiBcbInstalled = 'No Delphi or C++Builder is installed. The installer terminates.';
   RsDelphiBcbRunning = 'Delphi or C++Builder is running. Terminate the IDE and restart the installer.';
@@ -189,13 +189,16 @@ resourcestring
   RsJCLVersionRequired = 'JCL %s or higher required';
   RsDownloadOrSelectJclDir = 'Download or select a JCL directory.|' +
     'http://homepages.borland.com/jedi/jcl/'; // http://jcl.sourceforge.net
-  RsInstalledJVCLVersion = 'installed JVCL version: %d';
+  RsInstalledJVCLVersion = 'Installed JVCL version: %s';
   RsInstallJCL = 'Install JCL';
-  RsNoJclVersionFound = 'No JCL %s found.';
+//  RsNoJclVersionFound = 'No JCL %s found.';
 
-  RsJCLDirectoryCaption = '&JCL directory:';
+//  RsJCLDirectoryCaption = '&JCL directory:';
   RsDeleteJVCLFilesCaption = '&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)';
-  RsJCLDirectorySelectionBtnHint = 'Select JCL %s installation directory...';
+//  RsJCLDirectorySelectionBtnHint = 'Select JCL %s installation directory...';
+
+  RsUpdateData = '&Reload';
+  RsEvaluationVersion = 'Evaluation version is not supported';
 
  // Main.pas
 resourcestring

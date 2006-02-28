@@ -37,7 +37,7 @@ type
   TCmdOptions = class(TObject)
   private
     FIgnoreIDE: Boolean;
-    FJclPath: string;
+//    FJclPath: string;
     FKeepFiles: Boolean;
     FIgnoreBCB: Boolean;
     FIgnoreDelphi: Boolean;
@@ -63,7 +63,7 @@ type
     property IgnoreIDE: Boolean read FIgnoreIDE write FIgnoreIDE;
     property IgnoreBCB: Boolean read FIgnoreBCB write FIgnoreBCB;
     property IgnoreDelphi: Boolean read FIgnoreDelphi write FIgnoreDelphi;
-    property JclPath: string read FJclPath write FJclPath;
+//    property JclPath: string read FJclPath write FJclPath;
     property KeepFiles: Boolean read FKeepFiles write FKeepFiles;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
     property RegistryKeyDelphi: string read FRegistryKeyDelphi write FRegistryKeyDelphi;
@@ -85,7 +85,7 @@ begin
   AddBool('--ignore-bcb', 'Do not display and compile BCB versions.', FIgnoreBCB);
   AddBool('--ignore-delphi', 'Do not display and compile Delphi versions.', FIgnoreDelphi);
   AddSpace;
-  AddDir('--jcl-path=', 'Set the JCL root directory to X.', FJclPath);
+//  AddDir('--jcl-path=', 'Set the JCL root directory to X.', FJclPath);
   AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddSpace;
