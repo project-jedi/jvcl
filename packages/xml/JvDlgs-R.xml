@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDlgs" Design="0">
-  <Description>JVCL Dialog Controls Runtime Package</Description>
+  <Description>JVCL Dialog Components Runtime Package</Description>
   <ClxDescription>JVCLX Dialog Controls Runtime Package</ClxDescription>
   <GUID>{90931326-1139-46A4-98CF-F0BE28BEEAFF}</GUID>
   <C5PFlags>-LUvcl50 -LUvclx50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>49520000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvPrintPreview" Design="0">
-  <Description>JVCL Print Preview Components</Description>
+  <Description>JVCL Print Preview Components Runtime Package</Description>
   <GUID>{08661E45-2C90-4301-A95E-77C50EE00CAF}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>49A40000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="VCL" Condition=""/>

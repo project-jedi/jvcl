@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvGlobus" Design="0">
-  <Description>JVCL Globus Components</Description>
+  <Description>JVCL Globus Components Runtime Package</Description>
   <GUID>{3C82E074-2C1F-4E95-8837-729014E7AB08}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>49660000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
     <Package Name="JvSystem-R" Targets="DB" Condition=""/>

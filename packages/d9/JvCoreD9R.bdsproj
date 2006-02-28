@@ -112,7 +112,7 @@
       <Linker Name="MinStackSize" Type="Integer">16384</Linker>
       <Linker Name="MaxStackSize" Type="Integer">1048576</Linker>
       <Linker Name="ImageBase" Type="Integer">4194304</Linker>
-      <Linker Name="ExeDescription" Type="String">JVCL Core Runtime Package</Linker>
+      <Linker Name="ExeDescription" Type="String">JVCL Core Components Runtime Package</Linker>
     </Linker>
     <Directories>
       <Directories Name="OutputDir" Type="String"></Directories>
@@ -143,19 +143,19 @@
       <Language Name="RootDir" Type="String"></Language>
     </Language>
     <VersionInfo>
-      <VersionInfo Name="IncludeVerInfo" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="AutoIncBuild" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="MajorVer" Type="Integer">1</VersionInfo>
-      <VersionInfo Name="MinorVer" Type="Integer">0</VersionInfo>
-      <VersionInfo Name="Release" Type="Integer">0</VersionInfo>
-      <VersionInfo Name="Build" Type="Integer">0</VersionInfo>
-      <VersionInfo Name="Debug" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="PreRelease" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="Special" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="Private" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="DLL" Type="Boolean">False</VersionInfo>
-      <VersionInfo Name="Locale" Type="Integer">1053</VersionInfo>
-      <VersionInfo Name="CodePage" Type="Integer">1252</VersionInfo>
+      <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+      <VersionInfo Name="MajorVer">3</VersionInfo>
+      <VersionInfo Name="MinorVer">20</VersionInfo>
+      <VersionInfo Name="Release">0</VersionInfo>
+      <VersionInfo Name="Build">0</VersionInfo>
+      <VersionInfo Name="Debug">False</VersionInfo>
+      <VersionInfo Name="PreRelease">False</VersionInfo>
+      <VersionInfo Name="Special">False</VersionInfo>
+      <VersionInfo Name="Private">False</VersionInfo>
+      <VersionInfo Name="DLL">False</VersionInfo>
+      <VersionInfo Name="Locale">1053</VersionInfo>
+      <VersionInfo Name="CodePage">1252</VersionInfo>
     </VersionInfo>
   </Delphi.Personality>
 </BorlandProject>

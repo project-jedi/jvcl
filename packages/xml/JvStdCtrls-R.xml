@@ -2,10 +2,16 @@
 <Package Name="JvStdCtrls" Design="0">
   <Description>JVCL Standard Controls Runtime Package</Description>
   <ClxDescription>JVCLX Standard Controls Runtime Package</ClxDescription>
+  <GUID/>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>49AC0000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>

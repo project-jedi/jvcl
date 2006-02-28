@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCtrls" Design="0">
-  <Description>JVCL Controls Runtime Package</Description>
+  <Description>JVCL Visual Controls Runtime Package</Description>
   <ClxDescription>JVCLX Controls Runtime Package</ClxDescription>
   <GUID>{FA36E6EE-9969-480E-B60D-09412CA9B183}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>49280000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
@@ -73,5 +78,5 @@
     <File Name="..\..\run\JvOfficeColorForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRuler.pas" Targets="VCL" Formname="" Condition=""/>
-</Contains>
+  </Contains>
 </Package>
