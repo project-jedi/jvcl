@@ -39,6 +39,7 @@ uses
 const
   // from JwaWinUser.pas
   SC_SCREENSAVE = $F140;
+  {$EXTERNALSYM SC_SCREENSAVE}
 
 type
   TJvScreenSaveEvent = procedure(var Handled: Boolean) of object;
