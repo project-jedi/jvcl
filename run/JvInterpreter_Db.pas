@@ -2089,7 +2089,13 @@ end;
 
 procedure TDataSet_GetFieldNames(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$IFDEF COMPILER10_UP}
+  {$WARN SYMBOL_DEPRECATED OFF}
   TDataSet(Args.Obj).GetFieldNames(V2O(Args.Values[0]) as TStrings);
+  {$WARN SYMBOL_DEPRECATED ON}
+  {$ELSE}
+  TDataSet(Args.Obj).GetFieldNames(V2O(Args.Values[0]) as TStrings);
+  {$ENDIF COMPILER10_UP}
 end;
 
 { procedure GotoBookmark(Bookmark: TBookmark); }
