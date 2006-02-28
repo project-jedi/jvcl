@@ -77,6 +77,7 @@ type
     FInternalTimerInterval: Integer;
     FOnClose: TCloseEvent;
     FOnCloseQuery: TCloseQueryEvent;
+    FOnPressCancel: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FParentHandle: HWND;
     procedure SetConnectedDataComponent(Value: TComponent);
@@ -90,6 +91,7 @@ type
     procedure OnInternalTimer(Sender: TObject); virtual;
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
+    property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     constructor CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
@@ -325,6 +327,8 @@ end;
 
 procedure TJvCustomThreadDialogForm.DefaultCancelBtnClick(Sender: TObject);
 begin
+  if Assigned(OnPressCancel) then
+    OnPressCancel(Sender);
   if Assigned(ConnectedThread) then
     ConnectedThread.CancelExecute;
 end;
