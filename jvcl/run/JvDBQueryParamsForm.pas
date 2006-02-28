@@ -80,7 +80,8 @@ const
 implementation
 
 uses
-  DbConsts,
+  DBConsts,
+  JvDBUtils,
   JvTypes, JvResources;
 
 {$R *.dfm}
@@ -108,7 +109,7 @@ begin
   I := 1;
   while I <= Length(ParamString) do
   begin
-    FieldTypes[J] := ExtractFieldName(ParamString, I);
+    FieldTypes[J] := ExtractFieldNameEx(ParamString, I);
     Inc(J);
   end;
 end;

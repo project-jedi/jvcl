@@ -78,7 +78,13 @@ begin
     try
       Table.DatabaseName := Security.Database.DatabaseName;
       Table.TableName := Security.UsersTableName;
+      {$IFDEF COMPILER10_UP}
+      {$WARN SYMBOL_DEPRECATED OFF}
       Table.GetFieldNames(List);
+      {$WARN SYMBOL_DEPRECATED ON}
+      {$ELSE}
+      Table.GetFieldNames(List);
+      {$ENDIF COMPILER10_UP}
     finally
       Table.Free;
     end;

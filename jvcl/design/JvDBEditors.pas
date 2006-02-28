@@ -111,7 +111,15 @@ begin
   begin
     DataSource := TObject(GetOrdProp(Instance, PropInfo)) as TDataSource;
     if (DataSource <> nil) and (DataSource.DataSet <> nil) then
+    begin
+      {$IFDEF COMPILER10_UP}
+      {$WARN SYMBOL_DEPRECATED OFF}
       DataSource.DataSet.GetFieldNames(List);
+      {$WARN SYMBOL_DEPRECATED ON}
+      {$ELSE}
+      DataSource.DataSet.GetFieldNames(List);
+      {$ENDIF COMPILER10_UP}
+    end;
   end;
 end;
 
@@ -141,7 +149,13 @@ begin
   begin
     DataSource := TObject(GetOrdProp(Instance, PropInfo)) as TDataSource;
     if (DataSource <> nil) and (DataSource.DataSet <> nil) then
+      {$IFDEF COMPILER10_UP}
+      {$WARN SYMBOL_DEPRECATED OFF}
       DataSource.DataSet.GetFieldNames(List);
+      {$WARN SYMBOL_DEPRECATED ON}
+      {$ELSE}
+      DataSource.DataSet.GetFieldNames(List);
+      {$ENDIF COMPILER10_UP}
   end;
 end;
 

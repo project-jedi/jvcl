@@ -1985,7 +1985,7 @@ begin
   Pos := 1;
   while Pos <= Length(FieldNames) do
   begin
-    F := FieldByName(ExtractFieldName(FieldNames, Pos));
+    F := FieldByName(ExtractFieldNameEx(FieldNames, Pos));
     if (F.FieldKind = fkData) and
       (F.DataType in ftSupported - ftBlobTypes) then
       FIndexList.Add(F)
