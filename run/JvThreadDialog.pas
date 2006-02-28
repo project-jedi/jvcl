@@ -96,6 +96,7 @@ type
   published
     property DialogOptions: TJvThreadAnimateDialogOptions
       Read GetDialogOptions Write SetDialogOptions;
+    property OnPressCancel;
   end;
 
   TJvThreadSimpleDialogOptions = class(TJvThreadBaseDialogOptions)
@@ -122,6 +123,7 @@ type
   published
     property DialogOptions: TJvThreadSimpleDialogOptions
       Read GetDialogOptions Write SetDialogOptions;
+    property OnPressCancel;
   end;
 
   TJvDynControlEngineThreadDialogForm = class(TJvCustomThreadDialogForm)
@@ -275,6 +277,7 @@ begin
     ThreadDialogForm := TJvThreadSimpleDialogForm.CreateNewFormStyle(ConnectedThread,
       DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
+    ThreadDialogForm.OnPressCancel := OnPressCancel;
     ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
   end
@@ -309,6 +312,7 @@ begin
     ThreadDialogForm := TJvThreadAnimateDialogForm.CreateNewFormStyle(ConnectedThread,
       DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
+    ThreadDialogForm.OnPressCancel := OnPressCancel;
     ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
   end
