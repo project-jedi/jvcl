@@ -93,6 +93,8 @@ function CreateLocate(DataSet: TDataSet): TJvLocateObject;
 
 { Utility routines }
 
+function ExtractFieldNameEx(const Fields: {$IFDEF COMPILER10_UP} WideString {$ELSE} string {$ENDIF};
+  var Pos: Integer): string;
 function IsDataSetEmpty(DataSet: TDataSet): Boolean;
 procedure RefreshQuery(Query: TDataSet);
 function DataSetSortedSearch(DataSet: TDataSet;
@@ -715,6 +717,12 @@ procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; cons
 begin
   InternalRestoreFields(DataSet, AppStorage, AppStorage.ConcatPaths([DataSetSectionName(DataSet)]),
     RestoreVisible);
+end;
+
+function ExtractFieldNameEx(const Fields: {$IFDEF COMPILER10_UP} WideString {$ELSE} string {$ENDIF};
+  var Pos: Integer): string;
+begin
+  Result := ExtractFieldName(Fields, Pos);
 end;
 
 function IsDataSetEmpty(DataSet: TDataSet): Boolean;

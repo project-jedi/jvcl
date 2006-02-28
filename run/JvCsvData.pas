@@ -1804,7 +1804,7 @@ begin
       // (rom) no OutputDebugString in production code
       {$IFDEF DEBUGINFO_ON}
       OutputDebugString(PChar('JvCsvData.pas: ' + Name + '.SetFieldData(Field=' +
-        Field.FieldName + ',...): Invalid field.Offset in Calculated or Lookup field. '));
+        string(Field.FieldName) + ',...): Invalid field.Offset in Calculated or Lookup field. '));
       {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
