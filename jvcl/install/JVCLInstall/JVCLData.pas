@@ -33,7 +33,7 @@ interface
 uses
   Windows, Registry, SysUtils, Classes, Contnrs,
   JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils,
-  IniFiles, JCLData;
+  IniFiles, JCLData, JvConsts;
 
 const
   sPackageGeneratorFile = 'devtools\bin\pgEdit.xml';
@@ -50,22 +50,24 @@ type
 
   TInstallMode = set of TPackageGroupKind;
 
-  TDeinstallProgressEvent = procedure(Sender: TObject; const Text: string;
-    Position, Max: Integer) of object;
-  TDeleteFilesEvent = procedure(TargetConfig: TTargetConfig) of object;
-
   TTargetConfig = class(TComponent, ITargetConfig) // TComponent <-> TInterfacedObject
   private
     FOwner: TJVCLData;
     FTarget: TCompileTarget;
     FInstalledJVCLVersion: Integer;
-    FDefaultJCLDir: string;
-    FJCLDir: string;
     FDefaultHppDir: string;
+    FDcpDir: string;
+    FBplDir: string;
     FHppDir: string;
+
+    FJclDir: string;
+    FJclDcpDir: string;
+    FJclBplDir: string;
+    FJclVersion: string;
     FMissingJCL: Boolean;
-    FOutdatedJCL: Boolean;
-//    FCompiledJCL: Boolean;
+    FOutdatedJcl: Boolean;
+
+    FJVCLVersion: string;
     FInstallJVCL: Boolean;
 
     FDeveloperInstall: Boolean;
@@ -74,13 +76,13 @@ type
     FCompileOnly: Boolean;
     FDebugUnits: Boolean;
     FAutoDependencies: Boolean;
+    FAddBplDirToPath: Boolean;
 
     FInstallMode: TInstallMode;
     FFrameworks: TFrameworks;
-    FDcpDir: string;
-    FBplDir: string;
     FGenerateMapFiles: Boolean;
-
+    FLinkMapFiles: Boolean;
+    FDeleteMapFiles: Boolean;
     FJVCLConfig: TJVCLConfig;
 
     procedure SetInstallMode(Value: TInstallMode);
@@ -88,7 +90,9 @@ type
     function GetDxgettextDir: string;
     function GetDeveloperInstall: Boolean;
     function GetGenerateMapFiles: Boolean;
-    procedure SetJCLDir(const Value: string);
+    function GetLinkMapFiles: Boolean;
+    function GetDeleteMapFiles: Boolean;
+    function GetCleanPalettes: Boolean;
     function GetJVCLConfig: TJVCLConfig;
   private
     { ITargetConfig }
@@ -101,15 +105,22 @@ type
     function GetAutoDependencies: Boolean;
     function GetBuild: Boolean;
     function GetUnitOutDir: string;
+    function GetDebugUnitOutDir: string;
     function GetDebugUnits: Boolean;
     function GetCompileOnly: Boolean;
+    function GetAddBplDirToPath: Boolean;
 
     function GetTarget: TCompileTarget;
-    function GetJCLDir: string;
-    function GetJCLLibDir: string;
+    function GetJclDir: string;
+    function GetJclDcpDir: string;
+    function GetJclDcuDir: string;
+    function GetJclBplDir: string;
     function GetHppDir: string;
     function GetBplDir: string;
     function GetDcpDir: string;
+    function GetDebugHppDir: string;
+    function GetDebugBplDir: string;
+    function GetDebugDcpDir: string;
   protected
     procedure Init; virtual;
     procedure DoCleanPalette(Reg: TRegistry; const Name: string;
@@ -125,12 +136,23 @@ type
   public
     constructor Create(AOwner: TJVCLData; ATarget: TCompileTarget); reintroduce;
     destructor Destroy; override;
+    procedure Reinit;
     procedure Load;
     procedure Save;
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
+    procedure GetPackageBinariesForDeletion(List: TStrings);
     procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
-      DeleteFiles: TDeleteFilesEvent);
+      DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
     function RegisterToIDE: Boolean;
+    procedure RegisterJVCLVersionInfo;
+
+    function GetOutputDirs(DebugUnits: Boolean): TOutputDirs;
+      // GetOutputDirs returns the output directory set dependingg on DebugUnits.
+      // If DebugUnits=True the returned directories are all debug output
+      // directories. Otherwise the "normal" output directories are returned.
+
+    function GetPathEnvVar: string;
+      // GetPathEnvVar returns a proper PATH environment variable for the target.
 
     function CanInstallJVCL: Boolean;
       // CanInstallJVCL returns False when the target is not up to date or
@@ -150,8 +172,25 @@ type
     procedure ResetPackagesSettings(ProjectGroup: TProjectGroup);
       // ResetPackagesSettings sets the install property for each package target
       // to its registry setting of the current IDE target.
+
     procedure SavePackagesSettings(ProjectGroup: TProjectGroup);
       // SavePackagesSettings saves the runtime packages state to an .ini file.
+
+    function VersionedJclDcp(const Name: string): string;
+      // VersionedJclDcp inserts the suffix for JCL .dcp files; wants "Jcl.dcp"
+
+    function VersionedJclBpl(const Name: string): string;
+      // VersionedJclBpl inserts the suffix for JCL .bpl files; wants "Jcl.bpl"
+
+    function VersionedJVCLXmlDcp(const Name: string): string;
+      // VersionedVCLDcp inserts the suffix for JVCL .dcp files; wants "JvPack-R"
+
+    function VersionedJVCLXmlBpl(const Name: string): string;
+      // VersionedVCLBpl inserts the suffix for JVCL .bpl files; wants "JvPack-R"
+
+    function LinkMapFile(const BinaryFileName, MapFileName: string;
+      var MapFileSize, JclDebugDataSize: Integer): Boolean;
+      // link the map file in the binary file
 
     property TargetSymbol: string read GetTargetSymbol;
       // TargetSymbol returns the symbol that is used in the xml files for this
@@ -163,24 +202,38 @@ type
       // BPL directory for this target
     property DcpDir: string read GetDcpDir write FDcpDir;
       // DCP directory for this target
+    property HppDir: string read GetHppDir write FHppDir;
+      // HppDir: (for BCB installation) specifies where the generated .hpp files
+      // should go.
+    property DebugUnitOutDir: string read GetDebugUnitOutDir;
+      // DebugUnitOutDir specifies the JVCL directory where the .dcu should go.
+    property DebugBplDir: string read GetBplDir;
+      // Debug BPL directory for this target
+    property DebugDcpDir: string read GetDebugDcpDir;
+      // Debug DCP directory for this target
+    property DebugHppDir: string read GetDebugHppDir;
+      // Debbug HppDir: (for BCB installation) specifies where the generated .hpp files
+      // should go.
 
     property DxgettextDir: string read GetDxgettextDir;
       // Directory where dxgettext is installed or ''. (special handling for Delphi/BCB 5)
 
-    property InstalledJVCLVersion: Integer read FInstalledJVCLVersion;
+    property InstalledJVCLVersion: Integer read FInstalledJVCLVersion; // major version: 1, 2, 3, 4
       // InstalledJVCLVersion returns the version of the installed JVCL.
+
+    property JVCLVersion: string read FJVCLVersion;
+      // JVCLVersion returns version of the installed JVCL: '3.30';
+
+    property JclVersion: string read FJclVersion;
+      // JclVersion returns version of the installed JCL.
 
     property MissingJCL: Boolean read FMissingJCL;
       // MissingJCL is True when no JCL is installed and no JCL directoy was
       // found that could be installed.
 
-    property OutdatedJCL: Boolean read FOutdatedJCL;
-      // OutdatedJCL is True if no jcl\source\common\windows\win32api directory
+    property OutdatedJcl: Boolean read FOutdatedJcl;
+      // OutdatedJcl is True if no jcl\source\common\windows\win32api directory
       // exists which means that the JCL is too old for the JVCL.
-
-//    property CompiledJCL: Boolean read FCompiledJCL;
-      // CompiledJCL is True if Jcl.dcp and JclVcl.dcp exist for this
-      // target.
 
     property Frameworks: TFrameworks read FFrameworks;
       // Frameworks contains all possible package groups.
@@ -206,6 +259,14 @@ type
     property GenerateMapFiles: Boolean read GetGenerateMapFiles write FGenerateMapFiles;
       // if GenerateMapFiles is True the compiler generates .map files for each package
 
+    property LinkMapFiles: Boolean read GetLinkMapFiles write FLinkMapFiles;
+      // if LinkMapFiles is True the compiler link the map file as a resource of the binary
+      // this is JCL debug data
+
+    property DeleteMapFiles: Boolean read GetDeleteMapFiles write FDeleteMapFiles;
+      // if DeleteMapFiles is True the compiler delete the map files after they
+      // were linked in the binaries
+
     property Build: Boolean read GetBuild write FBuild;
       // if Build is True the packages are built instead of make.
 
@@ -217,23 +278,32 @@ type
       // if AutoDependencies it True the make file for the project groups will
       // contain auto dependency information for faster compilation.
 
+    property AddBplDirToPath: Boolean read GetAddBplDirToPath write FAddBplDirToPath;
+      // AddBplDirToPath: adds the BplDir to the Target.EnvPath variable. This
+      // allows the IDE to find the runtime packages.
+
     property DeveloperInstall: Boolean read GetDeveloperInstall write FDeveloperInstall;
       // DevelopInstall: add the \run directory to the library path.
 
-    property CleanPalettes: Boolean read FCleanPalettes write FCleanPalettes;
+    property CleanPalettes: Boolean read GetCleanPalettes write FCleanPalettes;
       // CleanPalettes specifies if the JVCL components should be removed from
       // the component palettes before installation.
 
-    property JCLDir: string read GetJCLDir write SetJCLDir;
-      // JCLDir specifies the directory where the JCL is.
+    property JclDir: string read GetJclDir;
+      // JclDir specifies the directory where the JCL is.
 
-    property JCLLibDir: string read GetJCLLibDir;
-      // JCLDir specifies the directory where the JCL Library files are, depending on the target.
+    property JclDcpDir: string read GetJclDcpDir;
+      // JclDcpDir returns the directory where the Jcl.dcp/JclVcl.dcp files are.
 
-    property HppDir: string read GetHppDir write FHppDir;
-      // HppDir: (for BCB installation) specifies where the generated .hpp files
-      // should go.
+    property JclDcuDir: string read GetJclDcuDir;
+      // JclDcuDir specifies the directory where the JCL .dcu files are, depending on the target.
+
+    property JclBplDir: string read GetJclBplDir;
+      // JclBplDir returns the directory where the JclXx.bpl/JclVclXX.bpl files are.
   end;
+
+  TJclLinkMapFile = function(ExecutableFileName, MapFileName: PChar;
+    var MapFileSize, JclDebugDataSize: Integer): Boolean;
 
   TJVCLData = class(TObject)
   private
@@ -245,6 +315,8 @@ type
     FDeleteFilesOnUninstall: Boolean;
     FVerbose: Boolean;
     FIgnoreMakeErrors: Boolean;
+    FJclLibrary: HModule;
+    FJclLinkMapFile: TJclLinkMapFile;
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
@@ -261,6 +333,10 @@ type
     function GetOptionState(Index: Integer): Integer;
     function GetGenerateMapFiles: Integer;
     procedure SetGenerateMapFiles(const Value: Integer);
+    function GetLinkMapFiles: Integer;
+    procedure SetLinkMapFiles(const Value: Integer);
+    function GetDeleteMapFiles: Integer;
+    procedure SetDeleteMapFiles(const Value: Integer);
     function GetDebugUnits: Integer;
     procedure SetDebugUnits(const Value: Integer);
   protected
@@ -270,9 +346,13 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure Reinit;
+
     procedure SaveTargetConfigs;
     function FindTargetConfig(const TargetSymbol: string): TTargetConfig;
     function IsJVCLInstalledAnywhere(MinVersion: Integer): Boolean;
+    function LinkMapFile(const BinaryFileName, MapFileName: string;
+      var MapFileSize, JclDebugDataSize: Integer): Boolean;
 
     property DxgettextDir: string read FDxgettextDir;
     property IsDxgettextInstalled: Boolean read FIsDxgettextInstalled;
@@ -287,6 +367,8 @@ type
     property Build: Integer read GetBuild write SetBuild;
     property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
     property GenerateMapFiles: Integer read GetGenerateMapFiles write SetGenerateMapFiles;
+    property LinkMapFiles: Integer read GetLinkMapFiles write SetLinkMapFiles;
+    property DeleteMapFiles: Integer read GetDeleteMapFiles write SetDeleteMapFiles;
 
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
     property Verbose: Boolean read FVerbose write FVerbose default False;
@@ -299,7 +381,7 @@ type
 implementation
 
 uses
-  Utils, CmdLineUtils, PackageInformation;
+  Utils, CmdLineUtils, PackageInformation, JediRegInfo;
 
 resourcestring
   RsComponentPalettePrefix = 'TJv';
@@ -311,6 +393,7 @@ resourcestring
   RsUnregisteringPackages = 'Unregistering packages...';
   RsDeletingFiles = 'Deleting files...';
   RsComplete = 'Complete.';
+  JclLinkMapFileExportName = '@Jcldebug@InsertDebugDataIntoExecutableFile$qqrpct1rit3';
 
 function ReadRegString(RootKey: HKEY; const Key, Name: string): string;
 var
@@ -358,6 +441,22 @@ begin
   SetLength(FConfigs, Targets.Count);
   for I := 0 to High(FConfigs) do
     FConfigs[I] := TTargetConfig.Create(Self, Targets[I]);
+
+  FJclLibrary := 0;
+  FJclLinkMapFile := nil;
+  for I := 0 to FTargets.Count - 1 do
+  begin
+    FJclLibrary := LoadLibrary(PChar(TargetConfig[I].VersionedJclBpl('Jcl.bpl')));
+    if FJclLibrary <> 0 then
+    begin
+      FJclLinkMapFile := GetProcAddress(FJclLibrary,PChar(JclLinkMapFileExportName));
+      if Assigned(FJclLinkMapFile) then
+        Break
+      else
+        FreeLibrary(FJclLibrary);
+    end;
+  end;
+
   Init;
 end;
 
@@ -365,6 +464,9 @@ destructor TJVCLData.Destroy;
 var
   i: Integer;
 begin
+  FJclLinkMapFile := nil;
+  FreeLibrary(FJclLibrary);
+
   for i := 0 to High(FConfigs) do
     FConfigs[I].Free;
   FTargets.Free;
@@ -401,6 +503,8 @@ begin
         3: b := TargetConfig[i].DeveloperInstall;
         4: b := TargetConfig[i].DebugUnits;
         5: b := TargetConfig[i].GenerateMapFiles;
+        6: b := TargetConfig[i].LinkMapFiles;
+        7: b := TargetConfig[i].DeleteMapFiles;
       else
         b := False;
       end;
@@ -456,6 +560,16 @@ end;
 function TJVCLData.GetGenerateMapFiles: Integer;
 begin
   Result := GetOptionState(5);
+end;
+
+function TJVCLData.GetLinkMapFiles: Integer;
+begin
+  Result := GetOptionState(6);
+end;
+
+function TJVCLData.GetDeleteMapFiles: Integer;
+begin
+  Result := GetOptionState(7);
 end;
 
 function TTargetConfig.GetJVCLConfig: TJVCLConfig;
@@ -542,6 +656,25 @@ begin
   Result := Format(sJvclIncFile, [JVCLDir]);
 end;
 
+function TJVCLData.LinkMapFile(const BinaryFileName, MapFileName: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+begin
+  try
+    Result := Assigned(FJclLinkMapFile) and FJclLinkMapFile(PChar(BinaryFileName),
+      PChar(MapFileName), MapFileSize, JclDebugDataSize);
+  except
+    Result := False;
+  end;
+end;
+
+procedure TJVCLData.Reinit;
+var
+  i: Integer;
+begin
+  for i := 0 to Targets.Count - 1 do
+    TargetConfig[i].Reinit;
+end;
+
 procedure TJVCLData.SaveTargetConfigs;
 var
   i: Integer;
@@ -590,6 +723,22 @@ begin
     TargetConfig[i].GenerateMapFiles := Value <> 0;
 end;
 
+procedure TJVCLData.SetLinkMapFiles(const Value: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Targets.Count - 1 do
+    TargetConfig[i].LinkMapFiles := Value <> 0;
+end;
+
+procedure TJVCLData.SetDeleteMapFiles(const Value: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Targets.Count - 1 do
+    TargetConfig[i].DeleteMapFiles := Value <> 0;
+end;
+
 procedure TJVCLData.SetDebugUnits(const Value: Integer);
 var
   i: Integer;
@@ -612,16 +761,19 @@ begin
   else
     FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FHppDir := FDefaultHppDir;
+
   FCleanPalettes := True;
   FDeveloperInstall := False;
   FAutoDependencies := True;
+  FGenerateMapFiles := True;
+  FLinkMapFiles := True;
+  FDeleteMapFiles := True;
+
   FBplDir := Target.BplDir;
   if Target.IsBDS then
     FDcpDir := GetUnitOutDir
   else
     FDcpDir := Target.DcpDir;
-  FDefaultJCLDir := CmdOptions.JclPath;
-  FJCLDir := FDefaultJCLDir;
   Init;
   FInstallJVCL := CanInstallJVCL;
 
@@ -639,85 +791,24 @@ end;
 procedure TTargetConfig.Init;
   // Memory allocations must go to the constructor because Init could be called
   // more the once.
-
-  function FindJCL(List: TStrings): string;
-  var
-    i, jclIndex, BrowseIndex, ps: Integer;
-    Dir: string;
-    Identify: Boolean;
-  begin
-    Result := '';
-    for i := 0 to List.Count - 1 do
-    begin
-      Dir := Target.ExpandDirMacros(List[i]);
-
-      for BrowseIndex := 0 to High(JCLBrowsePaths) do
-      begin
-        // obtain the assumed JCL root directory
-        Identify := False;
-        if EndsWith(JCLBrowsePaths[BrowseIndex], '\', False) then
-        begin
-          ps := Pos(LowerCase(Path(JCLBrowsePaths[BrowseIndex])), LowerCase(Dir));
-          if ps > 0 then
-          begin
-            Delete(Dir, ps, MaxInt);
-            Identify := True;
-          end;
-        end
-        else
-        if EndsWith(Dir, Path(JCLBrowsePaths[BrowseIndex]), True) then
-        begin
-          Dir := ExtractFileDir(ExtractFileDir(Dir));
-          Identify := True;
-        end;
-
-        if Identify then
-        begin
-          FMissingJCL := False;
-          // Check if the assumed JCL directory contains the files that identify
-          // the JCL.
-          for jclIndex := 0 to High(JCLIdentify) do
-            if not FileExists(Dir + Path(JCLIdentify[jclIndex])) then
-            begin
-              FMissingJCL := True;
-              Break;
-            end;
-
-          if not FMissingJCL then
-          begin
-            Result := Dir;
-            Break;
-          end;
-        end;
-      end;
-
-      if Result <> '' then
-        Break;
-    end;
-  end;
-
 var
-  S: string;
-  PossibleBPLDirs: TStrings;
-  i: Integer;
-  Reg: TRegistry;
+  i, FindCount: Integer;
 begin
   FInstallMode := [];
-//  FCompiledJCL := False;
-  FOutdatedJCL := False;
+  FOutdatedJcl := False;
 
   // identify JVCL version
   FInstalledJVCLVersion := 0;
-  if Target.FindPackageEx('JvPack1') <> nil then
+  if Target.FindPackageEx('JvPack1') <> nil then // do not localize
     FInstalledJVCLVersion := 1
-  else if Target.FindPackageEx('jvcl2') <> nil then
+  else if Target.FindPackageEx('jvcl2') <> nil then // do not localize
     FInstalledJVCLVersion := 2
-  else if Target.FindPackageEx('JvCore') <> nil then // VCL
+  else if Target.FindPackageEx('JvCore') <> nil then // VCL // do not localize
   begin
     Include(FInstallMode, pkVCL);
     FInstalledJVCLVersion := 3;
   end;
-  if Target.FindPackageEx('JvQCore') <> nil then // CLX
+  if Target.FindPackageEx('JvQCore') <> nil then // CLX // do not localize
   begin
     Include(FInstallMode, pkCLX);
     FInstalledJVCLVersion := 3;
@@ -731,96 +822,51 @@ begin
   if FInstallMode = [] then // if no VCL and no CLX than it is VCL
     Include(FInstallMode, pkVCL);
 
-  // identify JCL version
+
+  // find JCL by looking into the (new) JEDI Registry key
+  FOutdatedJcl := False;
   FMissingJCL := True;
-  if FJCLDir = '' then
+  FJclDir := '';
+  FJclVersion := '';
+  FJclBplDir := '';
+  FJclDcpDir := '';
+
+  with ReadJediRegInformation(Target.RegistryKey, 'JCL') do // do not localize
   begin
-    SetJCLDir(FindJCL(Target.BrowsingPaths));
-    if FJCLDir = '' then
-      SetJCLDir(FindJCL(Target.SearchPaths));
+    FJclDir := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(RootDir)); // do not localize
+    FJclDcpDir := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(DcpDir));
+    FJclBplDir := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(BplDir));
+    FJclVersion := Version;
   end;
 
-  // Check for the JCL bpl file, that's the most reliable way to find
-  // if the JCL is actually installed because users may not have put the
-  // JCL directory in their browsing and/or search paths, especially
-  // BCB users.
-  PossibleBPLDirs := TStringList.Create;
-  try
-    Reg := TRegistry.Create;
-    try
-      Reg.RootKey := HKEY_CURRENT_USER;
+  FJVCLVersion := ReadJediRegInformation(Target.RegistryKey, 'JVCL').Version;
+  if (FInstalledJVCLVersion = 0) and (FJVCLVersion <> '') then
+    FInstalledJVCLVersion := ParseVersionNumber(FJVCLVersion) shr 24
+  else
+  if (FJVCLVersion = '') and (FInstalledJVCLVersion = 3) then
+    FJVCLVersion := '3';
 
-      ConvertPathList(GetEnvironmentVariable('PATH'), PossibleBPLDirs);
-      if Reg.OpenKeyReadOnly(Target.HKLMRegistryKey + '\Environment Variables') then // do not localize
+  FMissingJCL := (FJclDir = '') or (FJclVersion = '') or (FJclDcpDir = '');
+  if not FMissingJCL then
+  begin
+    // check version number
+    FOutdatedJcl := ParseVersionNumber(FJclVersion) < ParseVersionNumber(JCLMinVersion);
+
+    if not FOutdatedJcl then
+    begin
+      // check for the JCL's .dcp files
+      FindCount := Length(JCLDcpFiles);
+      for i := 0 to High(JCLDcpFiles) do
       begin
-        if Reg.ValueExists('Path') then
+        if FileExists(FJclDcpDir + PathDelim + VersionedJclDcp(JCLDcpFiles[i])) then
         begin
-          PossibleBPLDirs.Clear;
-          ConvertPathList(Target.ExpandDirMacros(Reg.ReadString('Path')), PossibleBPLDirs);
+          Dec(FindCount);
+          Break;
         end;
-        Reg.CloseKey;
       end;
-    finally
-      Reg.Free;
+      FMissingJCL := FindCount > 0;
     end;
-    PossibleBPLDirs.Insert(0, BplDir);
-
-    for i := 0 to PossibleBPLDirs.Count - 1 do
-    begin
-      S := ExcludeTrailingPathDelimiter(PossibleBPLDirs[i]);
-      if Target.Version > 7 then
-        FMissingJCL := not FileExists(Format('%s\Jcl%d0.bpl', [S, Target.Version]))
-      else
-      if (Target.SupportsPersonalities([persBCB], True) and
-          FileExists(Format('%s\JclC%d0.bpl', [S, Target.Version]))) or
-         (Target.SupportsPersonalities([persDelphi], True) and
-          FileExists(Format('%s\JclD%d0.bpl', [S, Target.Version]))) or
-         (Target.SupportsPersonalities([persDelphi, persBCB], False) and
-          FileExists(Format('%s\Jcl%d0.bpl', [S, Target.Version]))) then
-      begin
-        FMissingJCL := False;
-      end;
-
-      if not FMissingJCL then
-        Break;
-    end;
-  finally
-    PossibleBPLDirs.Free;
   end;
-
-
-(*  // are Jcl.dcp and JclVcl.dcp available
-  if Target.Version = 5 then S := '50' else S := '';
-
-  if (Target.IsBCB and not Target.IsDelphi and
-      FileExists(Format('%s\JclC%s.dcp', [BplDir, S])) and
-      FileExists(Format('%s\JclVclC%s.dcp', [BplDir, S])))
-     or
-     ((not Target.IsBCB or (Target.IsBCB and Target.IsDelphi)) and
-      FileExists(Format('%s\JclD%s.dcp', [BplDir, S])) and
-      FileExists(Format('%s\JclVclD%s.dcp', [BplDir, S])))
-     then
-  begin
-    FCompiledJCL := True;
-
-    { (ahuser) Removed because some files require JCL source }
-    // (obones) More exactly, this is required for the compilation
-    // of the JCL DCP file for BCB targets.
-
-    {if FJCLDir = '' then // replace JCL directory
-      FJCLDir := BplDir;
-
-    if Target.IsBCB then
-      FMissingJCL := False
-    else
-    begin
-      // Delphi requires .bpl files
-      if FileExists(Format('%s\JclD%s.bpl', [BplDir, S])) and
-         FileExists(Format('%s\JclVclD%s.bpl', [BplDir, S])) then
-        FMissingJCL := False;
-    end;}
-  end;*)
-  FDefaultJCLDir := JCLDir;
 end;
 
 function TTargetConfig.CanInstallJVCL: Boolean;
@@ -884,6 +930,75 @@ begin
   else
     Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
       [Target.TargetType, Target.Version, Pers, Clx]);
+end;
+
+function TTargetConfig.VersionedJclDcp(const Name: string): string;
+begin
+  { TODO : Keep in sync with JCL naming schema }
+  if Target.Version = 5 then
+  begin
+    Result := ChangeFileExt(Name, '');
+    if Target.IsBCB then
+      Result := Result + 'c50'
+    else
+      Result := Result  + 'd50';
+    Result := ChangeFileExt(Result, ExtractFileExt(Name));
+  end
+  else
+    Result := Name;
+end;
+
+function TTargetConfig.VersionedJclBpl(const Name: string): string;
+var
+  Suffix: string;
+begin
+  { TODO : Keep in sync with JCL naming schema }
+  // Compute the JCL bpl file name
+  if Target.Version >= 7 then
+    Suffix := Format('%d0', [Target.Version])
+  else if Target.IsBCB then
+    Suffix := Format('C%d0', [Target.Version])
+  else
+    Suffix := Format('D%d0', [Target.Version]);
+  Result := ChangeFileExt(Name, '') + Suffix + ExtractFileExt(Name);
+end;
+
+function TTargetConfig.VersionedJVCLXmlDcp(const Name: string): string;
+var
+  Suffix: string;
+begin
+  { TODO : Keep in sync with JVCL naming schema }
+  if Target.IsBCB then
+    Suffix := Format('C%d', [Target.Version])
+  else
+    Suffix := Format('D%d', [Target.Version]);
+  Result := StringReplace(Name, '-', Suffix, []) + '.dcp';
+end;
+
+function TTargetConfig.VersionedJVCLXmlBpl(const Name: string): string;
+var
+  Suffix: string;
+begin
+  { TODO : Keep in sync with JVCL naming schema }
+  if Target.IsBCB then
+    Suffix := Format('C%d', [Target.Version])
+  else
+    Suffix := Format('D%d', [Target.Version]);
+  Result := StringReplace(Name, '-', Suffix, []) + '.bpl';
+end;
+
+function TTargetConfig.LinkMapFile(const BinaryFileName, MapFileName: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+begin
+  Result := Owner.LinkMapFile(BinaryFileName, MapFileName, MapFileSize,
+    JclDebugDataSize);
+end;
+
+procedure TTargetConfig.RegisterJVCLVersionInfo;
+begin
+  InstallJediRegInformation(Target.RegistryKey, 'JVCL',
+    Format('%d.%d.%d.%d', [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]),
+    DcpDir, BplDir, GetJVCLDir);
 end;
 
 procedure TTargetConfig.SavePackagesSettings(ProjectGroup: TProjectGroup);
@@ -974,18 +1089,12 @@ begin
     else
       Pers := 'p'; // do not localize
   end;
-  if Target.IsBDS then
-    Result := Format('%s%d%s', [Target.TargetType, Target.Version, Pers]) // do not localize
-  else
-    Result := Format('%s%d%s', [Target.TargetType, Target.Version, Pers]); // do not localize
+  Result := Format('%s%d%s', [Target.TargetType, Target.Version, Pers]); // do not localize
 end;
 
 function TTargetConfig.GetUnitOutDir: string;
 begin
-  if Target.IsBDS then
-    Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]) // do not localize
-  else
-    Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]); // do not localize
+  Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]) // do not localize
 end;
 
 procedure TTargetConfig.SetInstallMode(Value: TInstallMode);
@@ -1026,17 +1135,28 @@ begin
   Result := Owner.JVCLPackagesDir;
 end;
 
-function TTargetConfig.GetJCLDir: string;
+function TTargetConfig.GetJclDir: string;
 begin
-  Result := FJCLDir;
+  Result := FJclDir;
 end;
 
-function TTargetConfig.GetJCLLibDir: string;
+function TTargetConfig.GetJclDcpDir: string;
 begin
+  Result := FJclDcpDir;
+end;
+
+function TTargetConfig.GetJclDcuDir: string;
+begin
+  { TODO : Keep in sync with JCL naming schema }
   // Note: if the JCL changes its naming convention, a table of equivalences
   // would need to be built. Right now (2006/02/09), this is not necessary
   // as the format is always %type%version.
-  Result := JCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]);
+  Result := JclDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]);
+end;
+
+function TTargetConfig.GetJclBplDir: string;
+begin
+  Result := FJclBplDir;
 end;
 
 function TTargetConfig.GetHppDir: string;
@@ -1048,7 +1168,45 @@ function TTargetConfig.GetDebugUnits: Boolean;
 begin
   Result := FDebugUnits;
 end;
+//----------- Debug directories -------------
+function TTargetConfig.GetDebugUnitOutDir: string;
+begin
+  Result := UnitOutDir + PathDelim + 'debug';
+end;
 
+function TTargetConfig.GetDebugBplDir: string;
+begin
+  Result := UnitOutDir + PathDelim + 'debug';
+end;
+
+function TTargetConfig.GetDebugDcpDir: string;
+begin
+  Result := UnitOutDir + PathDelim + 'debug';
+end;
+
+function TTargetConfig.GetDebugHppDir: string;
+begin
+  Result := HppDir;
+end;
+
+function TTargetConfig.GetOutputDirs(DebugUnits: Boolean): TOutputDirs;
+begin
+  if DebugUnits then
+  begin
+    Result.UnitOutDir := DebugUnitOutDir;
+    Result.BplDir := DebugBplDir;
+    Result.DcpDir := DebugDcpDir;
+    Result.HppDir := DebugHppDir;
+  end
+  else
+  begin
+    Result.UnitOutDir := UnitOutDir;
+    Result.BplDir := BplDir;
+    Result.DcpDir := DcpDir;
+    Result.HppDir := HppDir;
+  end;
+end;
+//-------------------------------------------
 function TTargetConfig.GetAutoDependencies: Boolean;
 begin
   Result := FAutoDependencies and not Build;
@@ -1059,9 +1217,19 @@ begin
   Result := FBuild;
 end;
 
+function TTargetConfig.GetCleanPalettes: Boolean;
+begin
+  Result := FCleanPalettes;
+end;
+
 function TTargetConfig.GetCompileOnly: Boolean;
 begin
   Result := FCompileOnly;
+end;
+
+function TTargetConfig.GetAddBplDirToPath: Boolean;
+begin
+  Result := FAddBplDirToPath;
 end;
 
 function TTargetConfig.GetGenerateMapFiles: Boolean;
@@ -1069,14 +1237,32 @@ begin
   Result := FGenerateMapFiles;
 end;
 
+function TTargetConfig.GetLinkMapFiles: Boolean;
+begin
+  Result := FLinkMapFiles;
+end;
+
+function TTargetConfig.GetDeleteMapFiles: Boolean;
+begin
+  Result := FDeleteMapFiles;
+end;
+
 function TTargetConfig.GetBplDir: string;
 begin
   Result := FBplDir;
+  if Result = '' then
+    Result := Target.BplDir;
+  if Result = '' then
+    Result := '.';
 end;
 
 function TTargetConfig.GetDcpDir: string;
 begin
   Result := FDcpDir;
+  if Result = '' then
+    Result := Target.DcpDir;
+  if Result = '' then
+    Result := '.';
 end;
 
 function TTargetConfig.GetFrameworkCount: Integer;
@@ -1104,40 +1290,6 @@ begin
       Result := Result + '\delphi5'; // do not localize
 end;
 
-procedure TTargetConfig.SetJCLDir(const Value: string);
-var
-  i: Integer;
-begin
-  if Value <> FJCLDir then
-  begin
-    FJCLDir := Value;
-
-    // Check if the JCL is outdated
-    FOutdatedJCL := False;
-    for i := 0 to High(JCLIdentifyOutdated) do
-    begin
-      if JCLIdentifyOutdated[i] = '' then
-        Continue;
-      if JCLIdentifyOutdated[i][1] = '+' then
-      begin
-        if not FileExists(FJCLDir + Path(Copy(JCLIdentifyOutdated[i], 2, MaxInt))) then
-        begin
-          FOutdatedJCL := True;
-          Break;
-        end;
-      end
-      else if JCLIdentifyOutdated[i][1] = '-' then
-      begin
-        if FileExists(FJCLDir + Path(Copy(JCLIdentifyOutdated[i], 2, MaxInt))) then
-        begin
-          FOutdatedJCL := True;
-          Break;
-        end;
-      end;
-    end;
-  end;
-end;
-
 procedure TTargetConfig.Save;
 var
   Kind: TPackageGroupKind;
@@ -1162,11 +1314,6 @@ begin
   FileSetReadOnly(IniFileName, False);
   Ini := TMemIniFile.Create(IniFileName);
   try
-    if JCLDir = FDefaultJCLDir then
-      Ini.DeleteKey(Target.DisplayName, 'JCLDir') // do not localize
-    else
-      Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
-
     if not Target.SupportsPersonalities([persBCB]) or (HppDir = FDefaultHppDir) then
       Ini.DeleteKey(Target.DisplayName, 'HPPDir') // do not localize
     else
@@ -1188,6 +1335,8 @@ begin
       Ini.WriteBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode); // do not localize
     Ini.WriteBool(Target.DisplayName, 'AutoDependencies', AutoDependencies); // do not localize
     Ini.WriteBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'LinkMapFiles', LinkMapFiles); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'DeleteMapFiles', DeleteMapFiles); // do not localize
     Ini.WriteBool(Target.DisplayName, 'DebugUnits', DebugUnits); // do not localize
 
     Ini.UpdateFile;
@@ -1213,14 +1362,14 @@ begin
 
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   try
-    if JCLDir = '' then
-      JCLDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'JCLDir', JCLDir)); // do not localize
     HppDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'HPPDir', HppDir));   // do not localize
     BplDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'BPLDir', BplDir));   // do not localize
     DcpDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'DCPDir', DcpDir));   // do not localize
     DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     GenerateMapFiles := Ini.ReadBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
+    LinkMapFiles := Ini.ReadBool(Target.DisplayName, 'LinkMapFiles', LinkMapFiles); // do not localize
+    DeleteMapFiles := Ini.ReadBool(Target.DisplayName, 'DeleteMapFiles', DeleteMapFiles); // do not localize
     DebugUnits := Ini.ReadBool(Target.DisplayName, 'DebugUnits', DebugUnits); // do not localize
     Mode := [];
     for Kind := pkFirst to pkLast do
@@ -1297,6 +1446,7 @@ var
   PackageIndex, i: Integer;
   KnownPackages, DisabledPackages: TDelphiPackageList;
   Target: TCompileTarget;
+  BplFilename: string;
 begin
   Target := ProjectGroup.Target;
   KnownPackages := Target.KnownPackages;
@@ -1316,13 +1466,13 @@ begin
 
   for PackageIndex := 0 to ProjectGroup.Count - 1 do
   begin
+    BplFilename := ProjectGroup.TargetConfig.BplDir + PathDelim +
+                   ProjectGroup.Packages[PackageIndex].TargetName;
     if ProjectGroup.Packages[PackageIndex].Install and
-       ProjectTypeIsDesign(ProjectGroup.Packages[PackageIndex].Info.ProjectType) then
+       ProjectTypeIsDesign(ProjectGroup.Packages[PackageIndex].Info.ProjectType) and
+       FileExists(BplFilename) then
     begin
-      KnownPackages.Add(
-        ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName, // do not localize
-        ProjectGroup.Packages[PackageIndex].Info.Description
-      );
+      KnownPackages.Add(BplFilename, ProjectGroup.Packages[PackageIndex].Info.Description);
     end;
   end;
 
@@ -1338,7 +1488,15 @@ var
   AllPackages, PackageGroup: TProjectGroup;
 begin
   if InstalledJVCLVersion < 3 then
-    DeinstallJVCL(nil, nil);
+    DeinstallJVCL(nil, nil, True);
+
+  RegisterJVCLVersionInfo;
+
+  if AddBplDirToPath then
+  begin
+    if not Target.IsInEnvPath(BplDir) then
+      Target.EnvPath := Target.EnvPath + ';' + BplDir;
+  end;
 
   // remove old paths
   AddPaths(Target.BrowsingPaths, False, Owner.JVCLDir,
@@ -1346,7 +1504,7 @@ begin
   AddPaths(Target.SearchPaths, False, Owner.JVCLDir,
     ['common', 'run', 'Resources', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
-    [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
+    [Target.InsertDirMacros(DebugUnitOutDir), DebugUnitOutDir]); // do not localize
 
   // update paths
   AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir, // Resources directory must not be in browse-paths
@@ -1355,7 +1513,7 @@ begin
     [Target.InsertDirMacros(UnitOutDir), 'common', 'Resources']); // do not localize
   if DebugUnits and not DeveloperInstall then
     AddPaths(Target.DebugDcuPaths, True, Owner.JVCLDir,
-      [Target.InsertDirMacros(UnitOutDir + '\debug')]); // do not localize
+      [Target.InsertDirMacros(DebugUnitOutDir)]); // do not localize
   if Target.SupportsPersonalities([persBCB]) then
   begin
     AddPaths(Target.GlobalIncludePaths, True, Owner.JVCLDir,
@@ -1399,6 +1557,11 @@ begin
   finally
     AllPackages.Free;
   end;
+end;
+
+procedure TTargetConfig.Reinit;
+begin
+  Init;
 end;
 
 procedure TTargetConfig.DoCleanPalette(Reg: TRegistry; const Name: string;
@@ -1475,7 +1638,7 @@ begin
 end;
 
 procedure TTargetConfig.DeinstallJVCL(Progress: TDeinstallProgressEvent;
-  DeleteFiles: TDeleteFilesEvent);
+  DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
 
   procedure DoProgress(const Text: string; Position, Max: Integer);
   begin
@@ -1486,15 +1649,16 @@ procedure TTargetConfig.DeinstallJVCL(Progress: TDeinstallProgressEvent;
 var
   MaxSteps: Integer;
   i: Integer;
-  Ini: TMemIniFile;
-  Kind: TPackageGroupKind;
+//  Ini: TMemIniFile;
+//  Kind: TPackageGroupKind;
 begin
   MaxSteps := 4;
   if not Assigned(DeleteFiles) then
     Dec(MaxSteps);
 
 {**}DoProgress(RsCleaningPalette, 0, MaxSteps);
-  CleanJVCLPalette(True);
+  if RealUninstall then
+    CleanJVCLPalette(True);
 
   if Target.IsBDS then
     ClearPackageCache('Package Cache', 'Jv'); // do not localize
@@ -1518,7 +1682,7 @@ begin
     ['common', 'design', 'run', 'Resources', 'qcommon', 'qdesign', 'qrun', // do not localize
     Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
-    [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
+    [Target.InsertDirMacros(DebugUnitOutDir), DebugUnitOutDir]); // do not localize
   if Target.SupportsPersonalities([persBCB]) then
   begin
     AddPaths(Target.GlobalIncludePaths, False, Owner.JVCLDir,
@@ -1542,29 +1706,103 @@ begin
   end;
   Target.SavePackagesLists;
 
-  // clean ini file
-  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')); // do not localize
-  try
-    Ini.EraseSection(Target.DisplayName);
-    for Kind := pkFirst to pkLast do
-    begin
-      if Frameworks.Items[False, Kind] <> nil then
-        Ini.EraseSection(Frameworks.Items[False, Kind].BpgName);
-      if Frameworks.Items[True, Kind] <> nil then
-        Ini.EraseSection(Frameworks.Items[True, Kind].BpgName);
-    end;
-    Ini.UpdateFile;
-  finally
-    Ini.Free;
-  end;
-
-  if Assigned(DeleteFiles) then
+  if RealUninstall then
   begin
-{**}DoProgress(RsDeletingFiles, 3, MaxSteps);
-    DeleteFiles(Self);
+    RemoveJediRegInformation(Target.RegistryKey, 'JVCL');
+
+    // clean ini file
+{    Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')); // do not localize
+    try
+      Ini.EraseSection(Target.DisplayName);
+      for Kind := pkFirst to pkLast do
+      begin
+        if Frameworks.Items[False, Kind] <> nil then
+          Ini.EraseSection(Frameworks.Items[False, Kind].BpgName);
+        if Frameworks.Items[True, Kind] <> nil then
+          Ini.EraseSection(Frameworks.Items[True, Kind].BpgName);
+      end;
+      Ini.UpdateFile;
+    finally
+      Ini.Free;
+    end;}
+
+    if Assigned(DeleteFiles) then
+    begin
+  {**}DoProgress(RsDeletingFiles, 3, MaxSteps);
+      DeleteFiles(Self);
+    end;
   end;
 
 {**}DoProgress(RsComplete, MaxSteps, MaxSteps);
+end;
+
+procedure TTargetConfig.GetPackageBinariesForDeletion(List: TStrings);
+var
+  Mask: string;
+begin
+  if Target.IsBCB then
+    Mask := 'Jv*C' + IntToStr(Target.Version) + '?.*'  // do not localize
+  else
+    Mask := 'Jv*D' + IntToStr(Target.Version) + '?.*';  // do not localize
+
+  FindFiles(BplDir, Mask, False, List,
+    ['.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map']);  // do not localize
+  if CompareText(DcpDir, BplDir) <> 0 then
+    FindFiles(DcpDir, 'Jv*.*', False, List,             // do not localize
+      ['.dcp', '.lib', '.bpi', '.lsp']);                // do not localize
+  // in Default directories
+  if CompareText(BplDir, Target.BplDir) <> 0 then
+    FindFiles(Target.BplDir, Mask, False, List,
+      ['.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map']); // do not localize
+  if (CompareText(DcpDir, BplDir) <> 0) and
+     (CompareText(DcpDir, Target.DcpDir) <> 0) then
+    FindFiles(Target.DcpDir, 'Jv*.*', False, List,       // do not localize
+      ['.dcp', '.lib', '.bpi', '.lsp']);                 // do not localize
+end;
+
+function TTargetConfig.GetPathEnvVar: string;
+
+  function ShortName(const Filename: string): string;
+  begin
+    Result := ExtractShortPathName(ExcludeTrailingPathDelimiter(Filename));
+    if Result = '' then
+      Result := ExcludeTrailingPathDelimiter(Filename);
+    Result := AnsiLowerCase(Result);
+  end;
+
+var
+  List: TStrings;
+  i, k: Integer;
+  ShortDir: string;
+begin
+  List := TStringList.Create;
+  try
+    StrToPathList(Target.EnvPath, List);
+    for i := List.Count - 1 downto 0 do
+    begin
+      ShortDir := ShortName(List[i]);
+      if not DirectoryExists(ExcludeTrailingPathDelimiter(List[i])) then
+        List.Delete(i)
+      else
+        for k := 0 to Owner.Targets.Count - 1 do
+        begin
+          if (ShortName(Owner.Targets[k].BplDir) = ShortDir) or
+             (ShortName(Owner.Targets[k].DcpDir) = ShortDir) then
+          begin
+            if (ShortDir <> ShortName(Target.BplDir)) and
+               (ShortDir <> ShortName(Target.DcpDir)) and
+               (ShortDir <> ShortName(BplDir)) and
+               (ShortDir <> ShortName(DcpDir)) then
+            begin
+              List.Delete(i);
+            end;
+          end;
+        end;
+    end;
+    Result := PathListToStr(List);
+  finally
+    List.Free;
+  end;
 end;
 
 {$I InstalledPackages.inc}

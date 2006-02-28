@@ -34,13 +34,14 @@ uses
   Windows, ShellAPI, SysUtils, Classes, JvConsts;
 
 function WordWrapString(const S: string; Width: Integer = 75): string;
-  
+
 function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
   const Filename2Fmt: string; const Args2: array of const): Integer;
 function GetReturnPath(const Dir: string): string;
 function FileExists(const Filename: string): Boolean;
 function DirectoryExists(const Dir: string): Boolean;
 function Path(const APath: string): string; // converts each '\' to PathDelim
+function HaveFilesChanged(Files: TStrings; StartIndex: Integer = 0): Boolean;
 
 function FollowRelativeFilename(const RootDir: string; RelFilename: string): string;
 function CutFirstDirectory(var Dir: string): string;
@@ -65,6 +66,8 @@ function DirContainsFiles(const Dir, Mask: string): Boolean;
 
 function PathListToStr(List: TStrings): string;
 procedure StrToPathList(Paths: string; List: TStrings);
+
+function ConcatPaths(List: TStrings; const Separator: string): string;
 
 {$IFDEF COMPILER5}
 type
@@ -225,6 +228,17 @@ begin
       Result[i] := PathDelim;
 end;
 
+function HaveFilesChanged(Files: TStrings; StartIndex: Integer): Boolean;
+var
+  i: Integer;
+begin
+  Result := True;
+  for i := StartIndex to Files.Count - 1 do
+    if FileAge(Files[i]) <> Integer(Files.Objects[i]) then
+      Exit;
+  Result := False;
+end;
+
 function CutFirstDirectory(var Dir: string): string;
 var
   ps: Integer;
@@ -327,13 +341,33 @@ begin
   while ps > 0 do
   begin
     S := Trim(Copy(Paths, 1, ps - 1));
+    if (Length(S) > 1) and (S[1] = '"') and (S[Length(S)] = '"') then
+      S := Copy(S, 2, Length(S) - 2);
     if S <> '' then
       List.Add(S);
     Delete(Paths, 1, ps);
     ps := Pos(';', Paths);
   end;
 end;
-                                      
+
+function ConcatPaths(List: TStrings; const Separator: string): string;
+var
+  i: Integer;
+  S: string;
+begin
+  Result := '';
+  for i := 0 to List.Count - 1 do
+  begin
+    S := List[i];
+    if Pos(' ', S) > 0 then
+      S := '"' + S + '"';
+    if i = 0 then
+      Result := S
+    else
+      Result := Result + Separator + S;
+  end;
+end;
+
 function StartsWith(const Text, StartText: string; CaseInsensitive: Boolean = False): Boolean;
 var
   Len, i: Integer;
@@ -490,6 +524,12 @@ procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
 var
   sr: TSearchRec;
 begin
+  if Dir = '' then
+  begin
+    FindFiles('.', Mask, SubDirs, List, FileExtensions);
+    Exit;
+  end;
+
   if FindFirst(Dir + '\' + Mask, faAnyFile or faDirectory, sr) = 0 then
   try
     repeat

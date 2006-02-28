@@ -79,22 +79,41 @@ type
     FOnIdle: TNotifyEvent;
 
     FAbortReason: string;
-    FQuiet: string;
 
     function IsPackageUsed(ProjectGroup: TProjectGroup;
       RequiredPackage: TRequiredPackage): Boolean;
     function IsFileUsed(ProjectGroup: TProjectGroup;
       ContainedFile: TContainedFile): Boolean;
+    procedure SortProjectGroup(Group: TProjectGroup; List: TList);
   protected
+    function Dcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings): Integer;
+    function Bcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      const BccOpt: string; DebugUnits: Boolean; Files: TStrings; ObjFiles: TStrings): Integer;
+    function Ilink32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      const IlinkOpt: string; DebugUnits: Boolean; ObjFiles, LibFiles, ResFiles: TStrings): Integer;
+    function Tlib(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      const TlibOpt: string; DebugUnits: Boolean; ObjFiles: TStrings): Integer;
     function Make(TargetConfig: ITargetConfig; Args: string;
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
+    function CompileCppPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      const DccOpt, BccOpt, IlinkOpt: string; DebugUnits: Boolean): Integer;
+    function CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      const DccOpt: string; DebugUnits: Boolean): Integer;
+
+    function WriteDcc32Cfg(const Directory: string; TargetConfig: ITargetConfig;
+      const DccOpt: string; DebugUnits: Boolean): string; // returns the dcc32.cfg filename
     procedure DoIdle(Sender: TObject);
+
+    procedure LinkMapFile(TargetConfig: ITargetConfig; Project: TPackageTarget;
+      DebugUnits: Boolean);
 
     procedure CaptureLine(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineClean(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
     procedure CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
     procedure CaptureLineResourceCompilation(const Line: string; var Aborted: Boolean);
+    procedure CaptureStatusLineDcc32(const Line: string; var Aborted: Boolean);
 
     procedure DoTargetProgress(Current: TTargetConfig; Position, Max: Integer); virtual;
     procedure DoProjectProgress(const Text: string; Position, Max: Integer); virtual;
@@ -107,7 +126,6 @@ type
       // DoProgress is called by every DoXxxProgress method
 
     function CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
-    procedure CreateProjectGroupMakefile(ProjectGroup: TProjectGroup; AutoDepend: Boolean);
     function GenerateResources(TargetConfig: ITargetConfig): Boolean;
     function DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
     function CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
@@ -115,10 +133,12 @@ type
     function IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
     function GeneratePackages(const Group, Targets, PackagesPath: string): Boolean; overload;
     function GenerateAllPackages: Boolean; overload;
-    function CompileTarget(TargetConfig: TTargetConfig; DoClx: Boolean): Boolean;
+    function CompileTarget(TargetConfig: TTargetConfig; PackageGroupKind: TPackageGroupKind): Boolean;
   public
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
+
+    function IsDcc32BugDanger: Boolean;
 
     function Compile: Boolean;
     procedure Abort; // abort compile process
@@ -137,11 +157,11 @@ type
   end;
 
 const
-  ProjectMax = 7;
+  ProjectMaxProgress = 3;
+  MaxDcc32PathLen = 80;
 
 var
   Compiler: TCompiler = nil;
-  StartupEnvVarPath: string;
 
 resourcestring
   RsPackagesAreUpToDate = 'Packages are up to date';
@@ -156,6 +176,7 @@ resourcestring
   RsGeneratingPackages = 'Generating packages...';
   RsGeneratingResources = 'Generating resources...';
   RsCompilingPackages = 'Compiling packages...';
+  RsPostCompilationOperations = 'Post-compilation operations...';
   RsCopyingFiles = 'Copying files...';
   RsCopyingFile = 'Copying %s';
   RsFinished = 'Finished.';
@@ -167,16 +188,46 @@ resourcestring
   RsErrorCompilingResources = 'Error while compiling resources.';
   RsErrorGeneratingTemplatesForDir = 'Error generating templates for the %s directory.';
   RsErrorCompilingPackages = 'An error occured while compiling the packages.'; // this must not be the doubt of the installer
+  RsErrorLinkingMapFiles = 'An error occured while linking the map files into binaries.';
+  RsErrorDeletingMapFiles = 'An error occured while deleting the map files after the linking.';
 
   RsCommandNotFound = 'Command could not be executed.'#10#10#10'Cmdline: %s'#10#0'Start directory: %s';
 
 const
-  RsGeneratePackages = '[Generating: Packages]'; // do not localize
+  sGeneratePackages = '[Generating: Packages]'; // do not localize
+  sLinkingMapFiles = '[Linking: map files]'; // do not localize
 
 const
   CommonDependencyFiles: array[0..5] of string = (
     'jvcl.inc', 'jvclbase.inc', 'jvcl%t.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
   );
+
+function CutPersEdition(const Edition: string): string;
+var
+  i: Integer;
+begin
+  Result := Edition;
+  for i := 2 to Length(Result) do
+    if not (Result[i] in ['0'..'9']) then
+    begin
+      Result := Copy(Result, 1, i - 1);
+      Exit;
+    end;
+end;
+
+function ReplaceTargetMacros(const S: string; TargetConfig: ITargetConfig): string;
+var
+  ps: Integer;
+begin
+  Result := S;
+  ps := Pos('%t', Result);
+  if ps > 0 then
+  begin
+    Delete(Result, ps, 2);
+    Insert(Format('%s%d', [LowerCase(TargetConfig.Target.TargetType), TargetConfig.Target.Version]),
+      Result, ps);
+  end;
+end;
 
 { TCompiler }
 
@@ -185,10 +236,12 @@ begin
   inherited Create;
   FData := AData;
   FOutput := TStringList.Create;
+  CaptureStatusLine := CaptureStatusLineDcc32;
 end;
 
 destructor TCompiler.Destroy;
 begin
+  CaptureStatusLine := nil;
   FOutput.Free;
   inherited Destroy;
 end;
@@ -235,7 +288,7 @@ begin
   FOutput.Add(Line);
   if Assigned(FOnCaptureLine) then
     FOnCaptureLine(Line, FAborted);
-  Aborted := FAborted;
+  //Aborted := FAborted;
 end;
 
 procedure TCompiler.CaptureLineClean(const Line: string; var Aborted: Boolean);
@@ -250,7 +303,7 @@ begin
     Inc(FCount)
   else if (Line <> '') and (Line[1] <> #9) then
     CaptureLine(Line, FAborted);
-  Aborted := FAborted;
+  //Aborted := FAborted;
 end;
 
 procedure TCompiler.CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
@@ -295,6 +348,11 @@ begin
   end;
 end;
 
+procedure TCompiler.CaptureStatusLineDcc32(const Line: string; var Aborted: Boolean);
+begin
+  CaptureLine(Line, Aborted);
+end;
+
 procedure TCompiler.Abort;
 begin
   FAborted := True;
@@ -305,10 +363,17 @@ begin
   Compiler.CaptureLine(Text, Compiler.FAborted);
 end;
 
+procedure TCompiler.DoIdle(Sender: TObject);
+begin
+  if Assigned(FOnIdle) then
+    FOnIdle(Self);
+end;
+
 /// <summary>
 /// Make calls the make.exe of the given TargetConfig. If the StartDir is empty
 /// the JVCLPackageDir\bin directory is used. If the command could not be
-/// executed a message dialog is shown with the complete command line.
+/// executed a message dialog is shown with the complete command line. Returns
+/// the ExitCode of the last/failed command.
 /// </summary>
 function TCompiler.Make(TargetConfig: ITargetConfig; Args: string;
   CaptureLine: TCaptureLine; StartDir: string): Integer;
@@ -327,17 +392,645 @@ begin
   end;
 
   Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', Args,
-                           StartDir, CaptureLine, DoIdle);
+                           StartDir, CaptureLine, DoIdle,
+                           False, TargetConfig.GetPathEnvVar);
   if Result < 0 then // command not found
     MessageBox(0, PChar(Format(RsCommandNotFound,
                       ['"' + TargetConfig.Target.Make + '"' + Args, StartDir])),
                'JVCL Installer', MB_OK or MB_ICONERROR);
 end;
 
-procedure TCompiler.DoIdle(Sender: TObject);
+/// <summary>
+/// WriteDcc32Cfg() writes the dcc32.cfg file to the directory
+/// </summary>
+function TCompiler.WriteDcc32Cfg(const Directory: string; TargetConfig: ITargetConfig;
+  const DccOpt: string; DebugUnits: Boolean): string;
+var
+  Lines: TStrings;
+  SearchPaths, S: string;
+  i: Integer;
+  OutDirs: TOutputDirs;
 begin
-  if Assigned(FOnIdle) then
-    FOnIdle(Self);
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+
+  Lines := TStringList.Create;
+  try
+    // opts
+    Lines.Add(DccOpt);
+
+    // search paths
+    SearchPaths := '';
+    with TargetConfig do
+      for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
+      begin
+        S := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(Target.SearchPaths[i]));
+        if DirectoryExists(S) then
+        begin
+          if SearchPaths <> '' then
+            SearchPaths := SearchPaths + ';' + S
+          else
+            SearchPaths := S;
+        end;
+      end;
+    Lines.Add('-U"' + SearchPaths + '"');
+    Lines.Add('-I"' + SearchPaths + '"');
+    Lines.Add('-R"' + SearchPaths + '"');
+    Lines.Add('-O"' + SearchPaths + '"');
+
+    SearchPaths := TargetConfig.Target.ExpandDirMacros(
+      TargetConfig.Target.RootLibDir + ';' +
+      TargetConfig.Target.RootLibDir + PathDelim + 'obj;' +
+      TargetConfig.JclDcpDir + ';' +
+      TargetConfig.JclDcuDir + ';' +
+      OutDirs.DcpDir + ';' +
+      OutDirs.UnitOutDir
+    );
+    Lines.Add('-U"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
+    Lines.Add('-I"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
+    Lines.Add('-R"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Resources' + '"');
+    Lines.Add('-O"' + SearchPaths + '"');
+
+    // output directories
+    Lines.Add('-LE"' + OutDirs.BplDir + '"'); // .exe output
+    Lines.Add('-LN"' + OutDirs.DcpDir + '"'); // .dcp output
+    Lines.Add('-N0"' + OutDirs.UnitOutDir + '"'); // .dcu output
+    Lines.Add('-N1"' + OutDirs.HppDir + '"'); // .hpp output
+//    Lines.Add('-NH"' + OutDirs.HppDir + '"'); // .hpp output
+    Lines.Add('-N2"' + OutDirs.UnitOutDir + '"'); // .obj output
+//    Lines.Add('-NO"' + OutDirs.UnitOutDir + '"'); // .obj output
+    Lines.Add('-NB"' + OutDirs.DcpDir + '"'); // .bpi output
+
+    { dcc32.exe crashes if the path is too long }
+    if IsDcc32BugDanger then
+      Lines.Add('-Q');
+    if TargetConfig.Target.IsPersonal then
+      Lines.Add('-DDelphiPersonalEdition');
+
+    Result := Directory + '\dcc32.cfg';
+    Lines.SaveToFile(Result);
+  finally
+    Lines.Free;
+  end;
+end;
+
+/// <summary>
+/// Dcc32() compiles a Delphi.Win32 package. If the command could not be
+/// executed a message dialog is shown with the complete command line. Returns
+/// the ExitCode of the last/failed command.
+/// </summary>
+function TCompiler.Dcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+  const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings): Integer;
+const
+  MaxCmdLineLength = 2048 - 1;
+var
+  Dcc32Cfg, PrjFilename: string;
+  Filename, Args, CmdLine, S: string;
+  OutDirs: TOutputDirs;
+begin
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+  PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
+  if Files.Count > 0 then
+    Dcc32Cfg := WriteDcc32Cfg(ExtractFileDir(PrjFilename), TargetConfig, DccOpt, DebugUnits);
+
+  CmdLine := '';
+  Result := 0;
+  try
+    // collect files, limited by the MaxCmdLineLength
+    while Files.Count > 0 do
+    begin
+      if FAborted then
+        Break;
+
+      Filename := Files[0];
+      if Pos(' ', Filename) > 0 then
+        S := ' "' + Filename + '"'
+      else
+        S := ' ' + Filename;
+      Files.Delete(0);
+      CmdLine := '"' + TargetConfig.Target.Dcc32 + '"' + S;
+      Args := S;
+
+      while Files.Count > 0 do
+      begin
+        Filename := Files[0];
+        if Pos(' ', Filename) > 0 then
+          S := ' "' + Filename + '"'
+        else
+          S := ' ' + Filename;
+        if Length(CmdLine + S) > MaxCmdLineLength then
+          Break;
+
+        CmdLine := CmdLine + S;
+        Files.Delete(0);
+        if Assigned(ObjFiles) then
+          ObjFiles.Add(OutDirs.UnitOutDir + PathDelim + ChangeFileExt(ExtractFileName(Filename), '.obj'));
+      end;
+
+      if Data.Verbose then
+      begin
+        // output command line
+        CaptureLinePackageCompilation(#1 + CmdLine, FAborted);
+      end;
+
+      Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+                               ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
+                               False, TargetConfig.GetPathEnvVar);
+      if Result <> 0 then
+        Break;
+    end;
+  finally
+    if not CmdOptions.KeepFiles then
+      DeleteFile(Dcc32Cfg);
+  end;
+
+  if Result < 0 then // command not found
+    MessageBox(0, PChar(Format(RsCommandNotFound,
+                      [CmdLine,
+                       ExtractFileDir(PrjFilename)])),
+               'JVCL Installer', MB_OK or MB_ICONERROR);
+end;
+
+/// <summary>
+/// Bcc32() compiles C++ files. It adds the compiles .obj file names to ObjFiles
+/// If the command could not be executed a message dialog is shown with the
+/// complete command line. Returns the ExitCode of the last/failed command.
+/// </summary>
+function TCompiler.Bcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+  const BccOpt: string; DebugUnits: Boolean; Files: TStrings; ObjFiles: TStrings): Integer;
+var
+  Lines: TStrings;
+  i: Integer;
+  RspFilename: string;
+  ObjFilename: string;
+  NothingToDo: Boolean;
+  ObjAge: Integer;
+  CsmAge: Integer;
+  OutDirs: TOutputDirs;
+begin
+  Result := 0;
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+  RspFilename := Project.SourceDir + PathDelim + ChangeFileExt(ExtractFileName(Project.SourceName), '.@@@');
+
+  CsmAge := FileAge(Format('%s\lib\vcl%d0.csm', [TargetConfig.Target.RootDir, TargetConfig.Target.Version]));
+
+  NothingToDo := True;
+  Lines := TStringList.Create;
+  try
+    Lines.Add(BccOpt);
+    Lines.Add(Format('-I"%s\include;%s\include\vcl"',
+                     [TargetConfig.Target.RootDir, TargetConfig.Target.RootDir]));
+    if DebugUnits then
+      Lines.Add('-D_DEBUG -y -v');
+    Lines.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES');
+    if TargetConfig.Target.IsPersonal then
+      Lines.Add('-DDelphiPersonalEdition');
+    Lines.Add(Format('-O2 -H="%s\lib\vcl%d0.csm" -Hu -Vx -Ve -r -a8 -b- -k- -vi- -c -tWM',
+                     [TargetConfig.Target.RootDir, TargetConfig.Target.Version]));
+    Lines.Add('-n"' + OutDirs.UnitOutDir + '"');
+    // add files
+    for i := 0 to Files.Count - 1 do
+    begin
+      ObjFilename := OutDirs.UnitOutDir + PathDelim + ExtractFileName(ChangeFileExt(Files[i], '.obj'));
+      ObjAge := FileAge(ObjFilename);
+      if Assigned(ObjFiles) then
+        ObjFiles.AddObject(ObjFilename, TObject(ObjAge));
+      if not TargetConfig.AutoDependencies or
+         (ObjAge < CsmAge) or (ObjAge < FileAge(ExtractFilePath(RspFilename) + Files[i])) then
+      begin
+        Lines.Add('"' + Files[i] + '"');
+        NothingToDo := False;
+      end;
+    end;
+    if NothingToDo then
+    begin
+      Exit;
+    end;
+    Lines.SaveToFile(RspFilename);
+  finally
+    Lines.Free;
+  end;
+
+  if Data.Verbose then
+  begin
+    // output command line
+    CaptureLinePackageCompilation(#1 + '"' + TargetConfig.Target.Bcc32 + '" @' + ExtractFileName(RspFilename), FAborted);
+  end;
+  try
+    Result := CaptureExecute('"' + TargetConfig.Target.Bcc32 + '"', '@' + ExtractFileName(RspFilename),
+                             ExtractFileDir(RspFilename), CaptureLinePackageCompilation, DoIdle,
+                             False, TargetConfig.GetPathEnvVar);
+  finally
+    if not CmdOptions.KeepFiles then
+      DeleteFile(RspFilename);
+  end;
+
+  if Result < 0 then // command not found
+    MessageBox(0, PChar(Format(RsCommandNotFound,
+                      ['"' + TargetConfig.Target.Bcc32 + '" @' + ExtractFileName(RspFilename),
+                       ExtractFileDir(RspFilename)])),
+               'JVCL Installer', MB_OK or MB_ICONERROR);
+end;
+
+/// <summary>
+/// Ilink32() links .obj, .lib and .res files. If the command could not be
+/// executed a message dialog is shown with the complete command line. Returns
+/// the ExitCode of the last/failed command.
+/// </summary>
+function TCompiler.Ilink32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+  const IlinkOpt: string; DebugUnits: Boolean; ObjFiles, LibFiles, ResFiles: TStrings): Integer;
+var
+  Lines: TStrings;
+  RspFilename: string;
+  OutDirs: TOutputDirs;
+begin
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+  RspFilename := Project.SourceDir + PathDelim + ChangeFileExt(ExtractFileName(Project.SourceName), '.@@@');
+
+  Lines := TStringList.Create;
+  try
+    Lines.Add(IlinkOpt + ' +');
+    if DebugUnits then
+      Lines.Add(Format('-L"%s\lib\debug" +', [TargetConfig.Target.RootDir]))
+    else
+      Lines.Add(Format('-L"%s\lib\release" +', [TargetConfig.Target.RootDir]));
+    Lines.Add(Format('-L"%s\lib\obj;%s\lib" +',
+                     [TargetConfig.Target.RootDir, TargetConfig.Target.RootDir]));
+    Lines.Add(Format('-I"%s" +', [OutDirs.UnitOutDir])); // intermediate output dir
+    Lines.Add(Format('-j"%s" +', [OutDirs.UnitOutDir])); // .obj search path
+    Lines.Add(Format('-D"%s" +', [Project.Info.Description]));
+    Lines.Add(Format('-L"%s\common;%s\Resources;%s\design;%s\run" +', // resource files
+                     [TargetConfig.JVCLDir, TargetConfig.JVCLDir, TargetConfig.JVCLDir, TargetConfig.JVCLDir]));
+    if DebugUnits then
+      Lines.Add('-v +');
+    if not TargetConfig.GenerateMapFiles then
+      Lines.Add('-x +');
+
+    Lines.Add('-aa -Tpp -Gn -Gl -Gi +');
+    if Project.Info.XmlInfo.ImageBase <> '' then
+      Lines.Add('-b:0x' + Project.Info.XmlInfo.ImageBase + ' +');
+    case Project.Info.ProjectType of
+      ptPackageRun:
+        Lines.Add('-Gpr +');
+      ptPackageDesign:
+        Lines.Add('-Gpd +');
+      ptPackage: ;
+      ptLibrary: ;
+      ptProgram: ;
+    end;
+
+    Lines.Add(Format('-L"%s;%s" -l"%s" +', [TargetConfig.JCLDcpDir, OutDirs.DcpDir, OutDirs.DcpDir]));
+
+    // add .obj files
+    Lines.Add(ConcatPaths(ObjFiles, ' ') + ', +');
+    Lines.Add('"' + OutDirs.BplDir + PathDelim + Project.TargetName + '", +');
+    Lines.Add('"' + OutDirs.BplDir + PathDelim + ChangeFileExt(Project.TargetName, '.map') + '", +');
+    Lines.Add(ConcatPaths(LibFiles, ' ') + ',, +');
+    Lines.Add(ConcatPaths(ResFiles, ' '));
+
+    Lines.SaveToFile(RspFilename);
+  finally
+    Lines.Free;
+  end;
+
+  if Data.Verbose then
+  begin
+    // output command line
+    CaptureLinePackageCompilation(#1 + '"' + TargetConfig.Target.Ilink32 + '" @' + ExtractFileName(RspFilename), FAborted);
+  end;
+  try
+    Result := CaptureExecute('"' + TargetConfig.Target.Ilink32 + '"', '@' + ExtractFileName(RspFilename),
+                             ExtractFileDir(RspFilename), CaptureLinePackageCompilation, DoIdle,
+                             False, TargetConfig.GetPathEnvVar);
+  finally
+    if not CmdOptions.KeepFiles then
+      DeleteFile(RspFilename);
+  end;
+
+  if Result < 0 then // command not found
+    MessageBox(0, PChar(Format(RsCommandNotFound,
+                      ['"' + TargetConfig.Target.Ilink32 + '" @' + ExtractFileName(RspFilename),
+                       ExtractFileDir(RspFilename)])),
+               'JVCL Installer', MB_OK or MB_ICONERROR);
+end;
+
+/// <summary>
+/// Tlib() creates a .lib file. If the command could not be executed a message
+/// dialog is shown with the complete command line. Returns the ExitCode of the
+/// last/failed command.
+/// </summary>
+function TCompiler.Tlib(TargetConfig: ITargetConfig; Project: TPackageTarget;
+  const TlibOpt: string; DebugUnits: Boolean; ObjFiles: TStrings): Integer;
+var
+  Lines: TStrings;
+  RspFilename: string;
+  LibFilename: string;
+  OutDirs: TOutputDirs;
+begin
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+
+  RspFilename := Project.SourceDir + PathDelim + ChangeFileExt(ExtractFileName(Project.SourceName), '.@@@');
+  LibFilename := OutDirs.DcpDir + PathDelim + ChangeFileExt(ExtractFileName(Project.SourceName), '.lib');
+  DeleteFile(LibFilename);
+
+  Lines := TStringList.Create;
+  try
+    Lines.Add(TLibOpt + ' &');
+    // add .obj files
+    if ObjFiles.Count > 0 then
+      Lines.Add(' +"' + ConcatPaths(ObjFiles, '" &'#13#10 + ' +"') + '"');
+
+    Lines.SaveToFile(RspFilename);
+  finally
+    Lines.Free;
+  end;
+
+  if Data.Verbose then
+  begin
+    // output command line
+    CaptureLinePackageCompilation(#1 + '"' + TargetConfig.Target.Tlib + '" "' + LibFilename + '" @' + ExtractFileName(RspFilename), FAborted);
+  end;
+  try
+    Result := CaptureExecute('"' + TargetConfig.Target.Tlib + '"', '"' + LibFilename + '" @' + ExtractFileName(RspFilename),
+                             ExtractFileDir(RspFilename), CaptureLinePackageCompilation, DoIdle,
+                             False, TargetConfig.GetPathEnvVar);
+  finally
+    if not CmdOptions.KeepFiles then
+      DeleteFile(RspFilename);
+  end;
+
+  if Result < 0 then // command not found
+    MessageBox(0, PChar(Format(RsCommandNotFound,
+                      ['"' + TargetConfig.Target.TLib + '" "' + LibFilename + '" @' + ExtractFileName(RspFilename),
+                       ExtractFileDir(RspFilename)])),
+               'JVCL Installer', MB_OK or MB_ICONERROR);
+end;
+
+/// <summary>
+/// CompileCppPackage() compiles a BCB.Win32 package. If one of the commands
+/// could not be executed a message dialog is shown with the complete command
+/// line of the failed command. Returns the ExitCode of the last/failed command.
+/// </summary>
+function TCompiler.CompileCppPackage(TargetConfig: ITargetConfig;
+  Project: TPackageTarget; const DccOpt, BccOpt, IlinkOpt: string;
+  DebugUnits: Boolean): Integer;
+var
+  PrjFilename, PkgFilename, ResFilename: string;
+  PasFiles, CppFiles, ObjFiles, LibFiles, ResFiles: TStrings;
+  i, ObjAge, OldestObjAge, AgeIndex: Integer;
+  Dcc32Packages: string;
+  BplFilename, DcpFilename, ObjFilename: string;
+  BplAge, DcpAge, LibAge, BpiAge: Integer;
+  Changed: Boolean;
+  OutDirs: TOutputDirs;
+begin
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+
+  PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
+  BplFilename := OutDirs.BplDir + PathDelim + Project.TargetName;
+  DcpFilename := OutDirs.DcpDir + PathDelim + Project.DcpName;
+  BplAge := FileAge(BplFilename);
+  DcpAge := FileAge(DcpFilename);
+  LibAge := FileAge(ChangeFileExt(DcpFilename, '.lib'));
+  BpiAge := FileAge(ChangeFileExt(DcpFilename, '.bpi'));
+
+  PasFiles := nil;
+  CppFiles := nil;
+  ObjFiles := nil;
+  LibFiles := nil;
+  ResFiles := nil;
+  try
+    PasFiles := TStringList.Create;
+    CppFiles := TStringList.Create;
+    ObjFiles := TStringList.Create;
+    LibFiles := TStringList.Create;
+    ResFiles := TStringList.Create;
+
+    CppFiles.Add(ChangeFileExt(PrjFilename, '.cpp')); // <project>.cpp
+    ResFiles.Add(ChangeFileExt(PrjFilename, '.res')); // <project>.res
+    for i := 0 to Project.ContainCount - 1 do
+    begin
+      if IsFileUsed(Project.Owner, Project.Contains[i]) then
+      begin
+        PasFiles.Add(Project.Contains[i].Name);
+        if Project.Contains[i].FormName <> '' then
+        begin
+          ResFilename := ChangeFileExt(Project.Contains[i].Name, '.xfm');
+          if not FileExists(ResFilename) then
+            ResFilename := ChangeFileExt(Project.Contains[i].Name, '.dfm');
+          ResFiles.Add(ResFilename);
+        end;
+      end;
+    end;
+
+    ObjFiles.Add('c0pkg32.obj');
+    Dcc32Packages := '';
+    for i := 0 to Project.RequireCount - 1 do
+    begin
+      if IsPackageUsed(Project.Owner, Project.Requires[i]) then
+      begin
+        // obtain DCP filename
+        { TODO : Change this if the .dcp filename convention changes }
+        PkgFilename := ChangeFileExt(Project.Requires[i].GetBplName(Project.Owner), '');
+        ObjFiles.Add(PkgFilename + '.bpi');
+        Dcc32Packages := Dcc32Packages + ';' + PkgFilename;
+      end;
+    end;
+    if Dcc32Packages <> '' then
+      Dcc32Packages := ' -LU"' + Copy(Dcc32Packages, 2, MaxInt) + '"';
+    ObjFiles.Add('Memmgr.lib');
+    ObjFiles.Add('sysinit.obj');
+
+    LibFiles.Add('import32.lib');
+    LibFiles.Add('cp32mti.lib');
+
+    // add additional .lib files
+    if TargetConfig.Target.Version = 5 then
+      LibFiles.AddStrings(Project.Info.XmlInfo.C5Libs)
+    else
+    if TargetConfig.Target.Version = 6 then
+      LibFiles.AddStrings(Project.Info.XmlInfo.C6Libs)
+    else
+    if TargetConfig.Target.Version = 10 then // not used
+      LibFiles.AddStrings(Project.Info.XmlInfo.C10Libs);
+
+    AgeIndex := ObjFiles.Count;
+    // add .pas.obj files
+    OldestObjAge := 0;
+    for i := 0 to PasFiles.Count - 1 do
+    begin
+      ObjFilename := OutDirs.UnitOutDir + PathDelim + ChangeFileExt(ExtractFileName(PasFiles[i]), '.obj');
+      if TargetConfig.AutoDependencies then
+        ObjAge := FileAge(ObjFilename)
+      else
+        ObjAge := -1;
+      ObjFiles.AddObject(ObjFilename, TObject(ObjAge));
+      if ObjAge > OldestObjAge then
+        OldestObjAge := ObjAge;
+    end;
+
+    // compile Delphi files (creates only .dcu, .obj and .hpp files)
+    Result := CompileDelphiPackage(TargetConfig, Project, DccOpt + ' -JPHNE --BCB', DebugUnits);
+    if Result <> 0 then
+      Exit;
+
+    Changed := not TargetConfig.AutoDependencies or
+               HaveFilesChanged(ObjFiles, AgeIndex) or
+               (DcpAge < OldestObjAge);
+    if Changed then
+    begin
+      // compile Delphi package (only modified) to get .dcp file (.bpl is also created)
+      Result := CompileDelphiPackage(TargetConfig, Project,
+                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]) + ' --BCB',
+                     DebugUnits);
+      if Result <> 0 then
+        Exit;
+    end;
+
+    { Delete the dcc32 generated .lsp file which is not used at all. }
+    DeleteFile(Project.SourceDir + PathDelim +
+               ExtractFileName(ChangeFileExt(Project.SourceName, '.lsp')));
+
+    AgeIndex := ObjFiles.Count;
+    // compile C++ files
+    Result := Bcc32(TargetConfig, Project, BccOpt, DebugUnits, CppFiles, ObjFiles);
+    if Result <> 0 then
+      Exit;
+
+    Changed := not TargetConfig.AutoDependencies or
+               HaveFilesChanged(ObjFiles, AgeIndex) or
+               (BplAge < OldestObjAge) or (LibAge < OldestObjAge) or (BpiAge < OldestObjAge);
+    if Changed then
+    begin
+      // link files (create .lib, .bpi and .bpl)
+      Result := Ilink32(TargetConfig, Project, IlinkOpt, DebugUnits, ObjFiles,
+                        LibFiles, ResFiles);
+      if Result <> 0 then
+        Exit;
+    end;
+  finally
+    PasFiles.Free;
+    CppFiles.Free;
+    ObjFiles.Free;
+    LibFiles.Free;
+    ResFiles.Free;
+  end;
+end;
+
+/// <summary>
+/// CompileDelphiPackage() compiles a Delphi.Win32 package. If one of the commands
+/// could not be executed a message dialog is shown with the complete command
+/// line of the failed command. Returns the ExitCode of the last/failed command.
+/// </summary>
+function TCompiler.CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
+  const DccOpt: string; DebugUnits: Boolean): Integer;
+var
+  Files: TStrings;
+  i: Integer;
+  DcpAge, FormAge, PasAge, DcuAge: Integer;
+  PrjFilename: string;
+  Filename: string;
+  Changed: Boolean;
+  OutDirs: TOutputDirs;
+begin
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+
+  Result := 0;
+  PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
+  DcpAge := FileAge(OutDirs.DcpDir + PathDelim + Project.DcpName);
+
+  // .dpk/.bpk
+  Changed := not TargetConfig.AutoDependencies or
+             (DcpAge < FileAge(PrjFilename)) or
+             (DcpAge < FileAge(ChangeFileExt(PrjFilename, '.res')));
+  if not Changed then
+  begin
+    for i := 0 to High(CommonDependencyFiles) do
+      if DcpAge < FileAge(TargetConfig.JVCLDir + '\common\' + ReplaceTargetMacros(CommonDependencyFiles[i], TargetConfig)) then
+      begin
+        Changed := True;
+        Break;
+      end;
+  end;
+
+  if not Changed then
+  begin
+    // required JVCL package
+    for i := 0 to Project.JvDependencies.Count - 1 do
+    begin
+      if IsPackageUsed(Project.Owner, Project.JvDependenciesReqPkg[i]) then
+      begin
+        Filename := OutDirs.DcpDir + PathDelim +
+                    TargetConfig.VersionedJVCLXmlDcp(Project.JvDependenciesReqPkg[i].Name);
+        if FileAge(Filename) > DcpAge then
+        begin
+          Changed := True;
+          Break;
+        end;
+      end;
+    end;
+  end;
+  if not Changed then
+  begin
+    // required JVCL package
+    for i := 0 to Project.JclDependencies.Count - 1 do
+    begin
+      if IsPackageUsed(Project.Owner, Project.JclDependenciesReqPkg[i]) then
+      begin
+        Filename := TargetConfig.JclBplDir + PathDelim +
+                    TargetConfig.VersionedJclDcp(Project.JclDependenciesReqPkg[i].Name);
+        if FileAge(Filename) > DcpAge then
+        begin
+          Changed := True;
+          Break;
+        end;
+      end;
+    end;
+  end;
+
+  if not Changed then
+  begin
+    // files
+    for i := 0 to Project.ContainCount - 1 do
+    begin
+      if IsFileUsed(Project.Owner, Project.Contains[i]) then
+      begin
+        // .pas
+        PasAge := FileAge(Project.SourceDir + PathDelim + Project.Contains[i].Name);
+        DcuAge := FileAge(OutDirs.UnitOutDir + PathDelim +
+                          ChangeFileExt(ExtractFileName(Project.Contains[i].Name), '.dcu'));
+        if (PasAge > DcuAge) or (DcpAge < PasAge) then 
+        begin
+          Changed := True;
+          Break;
+        end;
+        // .dfm/.xfm
+        if Project.Contains[i].FormName <> '' then
+        begin
+          FormAge := FileAge(ChangeFileExt(Project.SourceDir + PathDelim +
+                             Project.Contains[i].Name, '.dfm'));
+          if FormAge = -1 then
+            FormAge := FileAge(ChangeFileExt(Project.SourceDir + PathDelim +
+                               Project.Contains[i].Name, '.xfm'));
+          if (FormAge <> -1) and (DcpAge < FormAge) then
+          begin
+            Changed := True;
+            Break;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  if Changed then
+  begin
+    Files := TStringList.Create;
+    try
+      Files.Add(ExtractFileName(ChangeFileExt(Project.SourceName, '.dpk'))); // force .dpk
+      Result := Dcc32(TargetConfig, Project, DccOpt, DebugUnits, Files, nil);
+    finally
+      Files.Free;
+    end;
+  end;
 end;
 
 /// <summary>
@@ -352,8 +1045,7 @@ var
 begin
   Result := False;
 
-  FAborted := False;
-  CaptureLine(RsGeneratePackages, FAborted);
+  CaptureLine(sGeneratePackages, FAborted);
   if FAborted then
   begin
     AbortReason := RsAbortedByUser;
@@ -392,6 +1084,12 @@ begin
     List.Free;
     TargetList.Free;
   end;
+
+  if FAborted then
+  begin
+    AbortReason := RsAbortedByUser;
+    Exit;
+  end;
   Result := True;
 end;
 
@@ -403,6 +1101,10 @@ begin
   Result := GeneratePackages('JVCL', 'all', Data.JVCLPackagesDir);
 end;
 
+/// <summary>
+/// Compile() prepares for compiling and decides if the VCL or CLX framework
+/// should be compiled.
+/// </summary>
 function TCompiler.Compile: Boolean;
 var
   i, Index: Integer;
@@ -411,10 +1113,7 @@ var
   SysInfo: string;
 begin
   Result := True;
-  if Data.Verbose then
-    FQuiet := ''
-  else
-    FQuiet := ' -s';
+  FAborted := False;
 
   SysInfo := '';
   case Win32Platform of
@@ -449,6 +1148,10 @@ begin
     CaptureLine(SysInfo, FAborted);
     CaptureLine('', FAborted);
   end;
+  CaptureLine(Format('JVCL %d.%d.%d.%d', 
+    [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]), 
+	FAborted);
+  CaptureLine('', FAborted);
 
   AbortReason := '';
   // read target configs that should be compiled
@@ -459,22 +1162,6 @@ begin
   begin
     if Data.TargetConfig[i].InstallJVCL then
     begin
-      with Data.TargetConfig[i] do
-      begin
-{ // (ahuser) Already tested before Installer comes to this point.
-        if Target.SupportsPersonalities([persDelphi]) then
-        begin
-          // Delphi requires .bpl files
-          if ((Target.Version >= 7) and
-              not FileExists(Format('%s\Jcl%d0.bpl', [BplDir, Target.Version])) and
-              not FileExists(Format('%s\Jcl%d0.bpl', [Target.BplDir, Target.Version])))
-             or
-             ((Target.Version < 7) and
-              not FileExists(Format('%s\JclD%d0.bpl', [BplDir, Target.Version])) and
-              not FileExists(Format('%s\JclD%d0.bpl', [Target.BplDir, Target.Version]))) then
-            Continue; // do not install JVCL when no JCL is installed
-        end;}
-      end;
       TargetConfigs[Count] := Data.TargetConfig[i];
       Inc(Count);
       if pkVCL in Data.TargetConfig[i].InstallMode then
@@ -485,14 +1172,14 @@ begin
   end;
   SetLength(TargetConfigs, Count);
 
-  // compile all targets
+  // compile all selected targets
   Index := 0;
   for i := 0 to Count - 1 do
   begin
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
     if pkVCL in TargetConfigs[i].InstallMode then
     begin
-      Result := CompileTarget(TargetConfigs[i], {CLX:=}False);
+      Result := CompileTarget(TargetConfigs[i], pkVCL);
       if not Result then
         Break;
       Inc(Index);
@@ -500,7 +1187,7 @@ begin
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
     if pkClx in TargetConfigs[i].InstallMode then
     begin
-      Result := CompileTarget(TargetConfigs[i], {CLX:=}True);
+      Result := CompileTarget(TargetConfigs[i], pkCLX);
       if not Result then
         Break;
       Inc(Index);
@@ -513,30 +1200,17 @@ end;
 /// CompileTarget starts CompileProjectGroup for all sub targets of the
 /// given target IDE.
 /// </summary>
-function TCompiler.CompileTarget(TargetConfig: TTargetConfig; DoClx: Boolean): Boolean;
+function TCompiler.CompileTarget(TargetConfig: TTargetConfig; PackageGroupKind: TPackageGroupKind): Boolean;
 var
-  ObjFiles: TStrings;
-  i: Integer;
+  //ObjFiles: TStrings;
+  //i: Integer;
   Aborted: Boolean;
+  DoClx: Boolean;
 begin
+  DoClx := PackageGroupKind = pkClx;
   Result := True;
   Aborted := False;
   FOutput.Clear;
-
-  if TargetConfig.Target.SupportsPersonalities([persBCB]) and TargetConfig.Build then // CLX for BCB is not supported
-  begin
-    // Delete all .obj and .dcu files because dcc32.exe -JPHNE does not create new .obj
-    // files if they already exist. And as a result interface changes in a unit
-    // let the bcc32.exe compiler fail.
-    ObjFiles := TStringList.Create;
-    try
-      FindFiles(TargetConfig.UnitOutDir, '*.*', True, ObjFiles, ['.obj', '.dcu']);
-      for i := 0 to ObjFiles.Count - 1 do
-        DeleteFile(ObjFiles[i]);
-    finally
-      ObjFiles.Free;
-    end;
-  end;
 
   // VCL
   if Result and (pkVCL in TargetConfig.InstallMode) and not DoClx then
@@ -555,8 +1229,6 @@ begin
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
 
-    if Result or not CmdOptions.KeepFiles then
-      Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
     if Result then
       CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
   end;
@@ -585,8 +1257,6 @@ begin
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
 
-    if Result or not CmdOptions.KeepFiles then
-      Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
     if Result then
       CaptureLine('[Finished JVCL for CLX installation]', Aborted); // do not localize
   end;
@@ -620,6 +1290,12 @@ begin
       Exit;
     end;
     DoResourceProgress('', FResCount, FResCount);
+  end;
+
+  if FAborted then
+  begin
+    AbortReason := RsAbortedByUser;
+    Exit;
   end;
   Result := True;
 end;
@@ -661,7 +1337,7 @@ begin
 {**}DoProgress('', 0, 100, pkOther);
 
     DestDir := ProjectGroup.TargetConfig.UnitOutDir;
-    DebugDestDir := DestDir + PathDelim + 'debug';
+    DebugDestDir := ProjectGroup.TargetConfig.DebugUnitOutDir;
 
     if ProjectGroup.IsVCLX then
     begin
@@ -690,7 +1366,7 @@ begin
           CopyFile(PChar(Files[i]), PChar(DestFile), False);
       end;
     end;
-{**}  DoProgress('', 0, Files.Count, pkOther);
+{**}DoProgress('', 0, Files.Count, pkOther);
   finally
     Files.Free;
   end;
@@ -708,6 +1384,67 @@ begin
   SetLength(Result, GetSystemDirectory(PChar(Result), Length(Result)));
 end;
 
+procedure TCompiler.SortProjectGroup(Group: TProjectGroup; List: TList);
+
+  procedure AddProject(Project: TPackageTarget);
+  var
+    i, Idx: Integer;
+    Dep: TPackageTarget;
+  begin
+    for i := 0 to Project.RequireCount - 1 do
+    begin
+      Dep := Group.FindPackageByXmlName(Project.Requires[i].Name);
+      if Dep <> nil then
+      begin
+        Idx := List.IndexOf(Dep);
+        if Idx = -1 then
+          List.Add(Dep);
+      end;
+    end;
+  end;
+
+var
+  i, k, Idx: Integer;
+  Project, DepProject: TPackageTarget;
+begin
+  for i := 0 to Group.Count - 1 do
+    if Group[i].Compile then
+      List.Add(Group[i]);
+
+  // sort
+  i := 0;
+  while i < List.Count do
+  begin
+    Project := List[i];
+    if Project.Compile then
+    begin
+      for k := 0 to Project.RequireCount - 1 do
+      begin
+        if IsPackageUsed(Group, Project.Requires[k]) then
+        begin
+          DepProject := Group.FindPackageByXmlName(Project.Requires[k].Name);
+          if DepProject <> nil then
+          begin
+            Idx := List.IndexOf(DepProject);
+            if Idx = -1 then // must insert the
+            begin
+              List.Insert(i, DepProject);
+              Dec(i);
+            end
+            else
+            if Idx > i then
+            begin
+              List.Move(idx, i);
+              Dec(i);
+            end;
+          end;
+        end;
+      end;
+    end;
+    Inc(i);
+  end;
+end;
+
 /// <summary>
 /// CompileProjectGroup starts the make file for the templates, starts the
 /// packages generator, calls the GenerateResource method and compiles all
@@ -716,15 +1453,15 @@ end;
 function TCompiler.CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
 var
   AProjectIndex, i: Integer;
-  Args: string;
-  Edition, PkgDir, JVCLPackagesDir: string;
-  AutoDepend: Boolean;
   TargetConfig: ITargetConfig;
   DccOpt: string;
-  Path, ExtraDcpDirs: string;
-  PathList, BplPaths: TStringList;
-  {S, }SearchPaths: string;
+  Edition, PkgDir, JVCLPackagesDir: string;
+  Files: TStrings;
 
+  ProjectOrder: TList;
+  Project: TPackageTarget;
+  DebugProgress: string;
+  
   function GetProjectIndex: Integer;
   begin
     Result := AProjectIndex;
@@ -732,27 +1469,31 @@ var
   end;
 
 begin
-  // ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
-  // ahuser (2005-01-22): make.exe fails only if a path with spaces is in the PATH envvar
-
-  SetEnvironmentVariable('MAKEOPTIONS', nil);
   Result := False;
+  if FAborted then
+    Exit;
+  DebugProgress := '';
+  if DebugUnits then
+     DebugProgress := ' (Debug)';
+
   FCurrentProjectGroup := ProjectGroup;
   try
     TargetConfig := ProjectGroup.TargetConfig;
-    AutoDepend := TargetConfig.AutoDependencies;
+
+    { remove current JVCL but keep the "Installation tag" valid }
+    TargetConfig.DeinstallJVCL(nil, nil, {RealUninstall:=}False);
 
     // obtain information for progress bar
     FPkgCount := 0;
     for i := 0 to ProjectGroup.Count - 1 do
       if ProjectGroup.Packages[i].Compile then
         Inc(FPkgCount);
+    FPkgIndex := 0;
 
     Edition := TargetConfig.TargetSymbol;
     if ProjectGroup.IsVCLX then
       Edition := Edition + 'clx';
     JVCLPackagesDir := TargetConfig.JVCLPackagesDir;
-    Args := '-f Makefile.mak';
 
     PkgDir := Edition;
     if not ProjectGroup.IsVCLX then // only PRO and ENT versions have CLX support
@@ -766,236 +1507,132 @@ begin
       end;
     end;
 
-    { dcc32.exe crashes if the path is too long (> 100 + line number, ...}
-    if Length(JVCLPackagesDir) < 100 then DccOpt := '-Q- -M' else DccOpt := '-Q -M';
-    // setup environment variables
+    DccOpt := '-M'; // make modified units, output 'never build' DCPs
+
     if TargetConfig.Build then
-      if Length(JVCLPackagesDir) < 100 then DccOpt := '-Q- -M -B' else DccOpt := '-Q -M -B';
+      DccOpt := DccOpt + ' -B';
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
-    if TargetConfig.Target.SupportsPersonalities([persBCB, persDelphi]) then
-      DccOpt := DccOpt + ' -JL -NB"$(BPILIBDIR)" -NO"$(BPILIBDIR)"';  // Dual packages, bpi and lib files in BPILIBDIR for BDS 2006
+    if TargetConfig.Target.IsBDS and (persBCB in TargetConfig.Target.SupportedPersonalities) then
+      // Dual packages, bpi and lib files for BDS 2006
+      DccOpt := DccOpt + ' -JL'; // for BCB 5/6 the -JPHNE is set during compilation
 
-    if (not DebugUnits) then
-      DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO'
-    else
-      { DeveloperInstall always use Debug units in the Jvcl\Lib\xx directory }
-    if not TargetConfig.DeveloperInstall then
-      CreateDir(TargetConfig.UnitOutDir + '\debug');
+    if not DebugUnits and not TargetConfig.DeveloperInstall then
+      DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO';
 
-      { Create include directory if necessary }
+    if DebugUnits then
+    begin
+      ForceDirectories(TargetConfig.DebugUnitOutDir);
+      ForceDirectories(TargetConfig.DebugBplDir);
+      ForceDirectories(TargetConfig.DebugDcpDir);
+      ForceDirectories(TargetConfig.DebugHppDir);
+    end;
+
+    { Create include directory if necessary }
     if TargetConfig.Target.SupportsPersonalities([persBCB]) then
       ForceDirectories(TargetConfig.Target.ExpandDirMacros(TargetConfig.HppDir));
 
-    { set PATH envvar and add all directories that contain .bpl files }
-    PathList := TStringList.Create;
-    try
-      PathList.Duplicates := dupIgnore;
+   // *****************************************************************
 
-      PathList.Add(GetWindowsDir);
-      PathList.Add(GetSystemDir);
-      PathList.Add(GetWindowsDir + '\Command'); // Win9x
-
-      PathList.Add(ExtractShortPathName(TargetConfig.Target.RootDir));
-      PathList.Add(ExtractShortPathName(TargetConfig.BplDir));
-      PathList.Add(ExtractShortPathName(TargetConfig.DcpDir));
-      { Add original BPL directory for "common" BPLs, but add it as the very
-        last path to prevent collisions between packages in TargetConfig.BplDir
-        and Target.BplDir. }
-      PathList.Add(ExtractShortPathName(TargetConfig.Target.BplDir));
-
-      { Add paths with .bpl files from the PATH environment variable }
-      BplPaths := TStringList.Create;
-      try
-        BplPaths.Duplicates := dupIgnore;
-        StrToPathList(StartupEnvVarPath, BplPaths);
-        BplPaths.Add(TargetConfig.Target.RootDir + '\Lib');
-        for i := 0 to BplPaths.Count - 1 do
-        begin
-          if DirContainsFiles(ExcludeTrailingPathDelimiter(BplPaths[i]), '*.bpl') then
-            PathList.Add(ExtractShortPathName(ExcludeTrailingPathDelimiter(BplPaths[i])));
-          if DirContainsFiles(ExcludeTrailingPathDelimiter(BplPaths[i]), '*.dcp') then
-            ExtraDcpDirs := ExtraDcpDirs + ';' + ExtractShortPathName(BplPaths[i]);
-        end;
-        Delete(ExtraDcpDirs, 1, 1);
-      finally
-        BplPaths.Free;
-      end;
-
-      Path := PathListToStr(PathList);
-    finally
-      PathList.Free;
-    end;
-
-    // Add the JCL Lib directory to the extra DcpDirs, this is where the JCL
-    // places its dcp files, starting from February 2006.
-    ExtraDcpDirs := ExtraDcpDirs + ';' + ProjectGroup.TargetConfig.JCLLibDir;
-
-    { Removed until we have a non-make.exe-bug harmed build process.
-    if TargetConfig.Target.Version > 6 then // Overcome make.exe "command line too long" bug
-    begin
-      SearchPaths := '';
-      for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
-      begin
-        S := ExtractShortPathName(ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.SearchPaths[i])));
-        if SearchPaths <> '' then
-          SearchPaths := SearchPaths + ';' + S
-        else
-          SearchPaths := S;
-      end;
-    end
-    else}
-      SearchPaths := '.';
-
-    SetEnvironmentVariable('PATH', PChar(Path));
-    SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
-    // especially for BCB generated make file
-    SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" ' + DccOpt));
-    SetEnvironmentVariable('UNITDIRS', PChar(SearchPaths));
-
-    SetEnvironmentVariable('QUIET', Pointer(Copy(FQuiet, 2, MaxInt))); // make command line option " -s"
-
-    SetEnvironmentVariable('TARGETS', nil); // we create our own makefile so do not allow a user defined TARGETS envvar
-    SetEnvironmentVariable('MASTEREDITION', nil);
-
-    SetEnvironmentVariable('ROOT', Pointer(TargetConfig.Target.RootDir));
-    SetEnvironmentVariable('JCLROOT', Pointer(TargetConfig.JCLDir));
-    SetEnvironmentVariable('JVCLROOT', Pointer(TargetConfig.JVCLDir));
-    SetEnvironmentVariable('VERSION', Pointer(IntToStr(TargetConfig.Target.Version)));
-    if DebugUnits then
-      SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir + '\debug'))
-    else
-      SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
-    SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
-    SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
-    SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB personality
-    SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
-    SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
-    SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));
-    SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB personality
-    SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB personality
-    SetEnvironmentVariable('JCLLIBDIR', Pointer(TargetConfig.JclLibDir)); // for BCB personality
-
-    SetEnvironmentVariable('EXTRAUNITDIRS', PChar(ExtraDcpDirs));
-    SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
-    SetEnvironmentVariable('EXTRARESDIRS', nil);
-
-    // *****************************************************************
-
-{**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
-    if ProjectGroup.Target.IsPersonal then
-    begin
-      // generate template.cfg for the "master" PkgDir
-      SetEnvironmentVariable('EDITION', PChar(Copy(Edition, 1, 2)));
-      SetEnvironmentVariable('PKGDIR', PChar(Copy(PkgDir, 1, 2)));
-      SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(Copy(PkgDir, 1, 2)));
-      if Make(TargetConfig, Args + ' Templates', CaptureLine) <> 0 then
-      begin
-        AbortReason := Format(RsErrorGeneratingTemplatesForDir, [Copy(PkgDir, 1, 2)]);
-        Exit;
-      end;
-    end;
-
-    // generate template.cfg file for PkgDir
-    SetEnvironmentVariable('EDITION', PChar(Edition));
-    SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
-    SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(PkgDir));
-    if Make(TargetConfig, Args + ' Templates', CaptureLine) <> 0 then
-    begin
-      AbortReason := Format(RsErrorGeneratingTemplatesForDir, [PkgDir]);
-      Exit;
-    end;
-
-    // *****************************************************************
-
-{**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
-    if ProjectGroup.Target.IsPersonal then
-    begin
-      // generate the packages and .cfg files for the "master" PkgDir
-      if not GeneratePackages('JVCL', Copy(Edition, 1, 2),
-                              TargetConfig.JVCLPackagesDir) then
-        Exit; // AbortReason is set in GeneratePackages
-    end;
-
-    // generate the packages and .cfg files for PkgDir
-    if not GeneratePackages('JVCL', Edition, TargetConfig.JVCLPackagesDir) then
+{**}DoProjectProgress(RsGeneratingPackages + DebugProgress, GetProjectIndex, ProjectMaxProgress);
+    // generate the packages and .cfg files for the "master" PkgDir
+    if not GeneratePackages('JVCL', CutPersEdition(Edition),
+                            TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages
 
    // *****************************************************************
 
-{**}DoProjectProgress(RsGeneratingResources, GetProjectIndex, ProjectMax);
+{**}{DoProjectProgress(RsGeneratingResources, GetProjectIndex, ProjectMaxProgress);
     if not GenerateResources(TargetConfig) then
-      Exit; // AbortReason is set in GenerateResources
+      Exit; // AbortReason is set in GenerateResources}
 
    // *****************************************************************
 
-{**}DoProjectProgress(RsCompilingPackages, GetProjectIndex, ProjectMax);
-    FPkgIndex := 0;
-    if FPkgCount > 0 then
-    begin
-      // ==== changed Resources ====
-      // As long as no dependency information about resources is in the .xml
-      // files we let the Delphi compiler decide if he wants to compile the
-      // package.
-      if (FResCount > 0) then
-        AutoDepend := False;
-      // ===========================
+{**}DoProjectProgress(RsCompilingPackages + DebugProgress, GetProjectIndex, ProjectMaxProgress);
+    { Remove .dfm/.xfm files from the lib directory so the compiler takes the
+      correct one and we do not have unused files in the lib directory. }
+    DeleteFormDataFiles(ProjectGroup);
 
-      { Now it is time to write the "xx Packages.mak" file. }
-      CreateProjectGroupMakefile(ProjectGroup, AutoDepend);
-
-      { Are there any packages that have to be compiled? Ask make.exe for this
-        information. }
-      if AutoDepend then
-      begin
-        if not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits and not DebugUnits then
-          SetEnvironmentVariable('MAKEOPTIONS', '-B -n') { make a complete make pass when the release units
-                                                           should be compiled while TargetConfig.DebugUnits are active }
-        else
-          SetEnvironmentVariable('MAKEOPTIONS', '-n');
-
-        // get the number of packages that needs compilation
-        FCount := 0;
-        if Make(TargetConfig, Args + ' CompilePackages', CaptureLineGetCompileCount) <> 0 then
+    Files := TStringList.Create;
+    try
+      { .bpl and .dcp files meight be at the wrong location. So delete them from
+        wrong locations. }
+      TargetConfig.GetPackageBinariesForDeletion(Files);
+      for i := 0 to Files.Count - 1 do
+        if not StartsWith(Files[i], TargetConfig.BplDir + PathDelim, False) and
+           not StartsWith(Files[i], TargetConfig.DcpDir + PathDelim, False) then
         begin
-          AbortReason := RsErrorCompilingPackages;
-          Exit;
+          if TargetConfig.DebugUnits then
+          begin
+            if StartsWith(Files[i], TargetConfig.DebugBplDir + PathDelim, False) and
+               StartsWith(Files[i], TargetConfig.DebugDcpDir + PathDelim, False) then
+              Continue;
+          end;
+          DeleteFile(Files[i]);
         end;
-        // update FPkgCount with the number of packages that MAKE will compile
-        FPkgCount := FCount;
-      end;
-      SetEnvironmentVariable('MAKEOPTIONS', nil);
-      if not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits and not DebugUnits then
-        SetEnvironmentVariable('MAKEOPTIONS', '-B'); { make a complete make pass when the release units
-                                                       should be compiled while TargetConfig.DebugUnits are active }
-
-      if FPkgCount > 0 then
-      begin
-        { Remove .dfm/.xfm files from the lib directory so the compiler takes the
-          correct one and we do not have unused files in the lib directory. }
-        DeleteFormDataFiles(ProjectGroup);
-
-        { Now compile the packages }
-        DoPackageProgress(nil, '', 0, FPkgCount);
-        // compile packages
-        if Make(TargetConfig, Args + FQuiet + ' CompilePackages', CaptureLinePackageCompilation) <> 0 then
-        begin
-          AbortReason := RsErrorCompilingPackages;
-          Exit;
-        end;
-        DoPackageProgress(nil, '', FPkgCount, FPkgCount);
-      end
-      else
-        CaptureLine(RsPackagesAreUpToDate, FAborted);
+    finally
+      Files.Free;
     end;
 
-    // *****************************************************************
+    { Now compile the packages }
+    DoPackageProgress(nil, '', 0, FPkgCount);
 
-    if (FPkgCount > 0) and
-       ((not ProjectGroup.TargetConfig.DeveloperInstall) or
-        (TargetConfig.Target.SupportsPersonalities([persBCB], True))) then // only BCB
+    ProjectOrder := TList.Create;
+    try
+      SortProjectGroup(ProjectGroup, ProjectOrder);
+      if ProjectOrder.Count > 0 then
+        CaptureLinePackageCompilation('[Compiling: Packages]', FAborted);
+      for i := 0 to ProjectOrder.Count - 1 do
+      begin
+        Project := ProjectOrder[i];
+        CaptureLinePackageCompilation('[Compiling: ' + Project.TargetName + ']', FAborted);
+
+        if TargetConfig.Target.IsBCB then
+        begin
+          if CompileCppPackage(TargetConfig, Project, DccOpt, '', '', DebugUnits) <> 0 then
+          begin
+            if FAborted then
+              Exit;
+            AbortReason := RsErrorCompilingPackages;
+            Exit;
+          end;
+        end
+        else
+        begin
+          { Create .dcp and .bpl }
+          if CompileDelphiPackage(TargetConfig, Project, DccOpt, DebugUnits) <> 0 then
+          begin
+            if FAborted then
+              Exit;
+            AbortReason := RsErrorCompilingPackages;
+            Exit;
+          end;
+        end;
+        if FAborted then
+          Exit;
+      end;
+    finally
+      ProjectOrder.Free;
+    end;
+    DoPackageProgress(nil, '', FPkgCount, FPkgCount);
+
+   // *****************************************************************
+
+{**}DoProjectProgress(RsPostCompilationOperations + DebugProgress, GetProjectIndex, ProjectMaxProgress);
+    if TargetConfig.GenerateMapFiles and TargetConfig.LinkMapFiles then
     begin
-{**}  DoProjectProgress(RsCopyingFiles, GetProjectIndex, ProjectMax);
+      CaptureLine(sLinkingMapFiles, FAborted);
+      for i := 0 to ProjectGroup.Count - 1 do
+        if ProjectGroup.Packages[i].Compile then
+          LinkMapFile(TargetConfig, ProjectGroup.Packages[i], DebugUnits);
+    end;
+
+   // *****************************************************************
+
+    if not ProjectGroup.TargetConfig.DeveloperInstall {or
+       (TargetConfig.Target.SupportsPersonalities([persBCB], True))} then // only BCB
+    begin
+{**}  DoProjectProgress(RsCopyingFiles + DebugProgress, GetProjectIndex, ProjectMaxProgress);
       { The .dfm/.xfm files are deleted from the lib directory in the
         resource generation section in this method.
         The files are only copied for a non-developer installation and for
@@ -1005,267 +1642,18 @@ begin
     else
 {**}  GetProjectIndex; // increase progress
 
+    if not FAborted then
+    begin
+      if TargetConfig.CleanPalettes then
+        TargetConfig.CleanJVCLPalette(False);
+      TargetConfig.RegisterToIDE;
+    end;
   finally
-{**}DoProjectProgress(RsFinished, ProjectMax, ProjectMax);
+{**}DoProjectProgress(RsFinished, ProjectMaxProgress, ProjectMaxProgress);
     FCurrentProjectGroup := nil;
   end;
+
   Result := True;
-
-  { Delete the generated "xx Package.mak" file. }
-  DeleteFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
-end;
-
-function ReplaceTargetMacros(const S: string; TargetConfig: ITargetConfig): string;
-var
-  ps: Integer;
-begin
-  Result := S;
-  ps := Pos('%t', Result);
-  if ps > 0 then
-  begin
-    Delete(Result, ps, 2);
-    Insert(Format('%s%d', [LowerCase(TargetConfig.Target.TargetType), TargetConfig.Target.Version]),
-      Result, ps);
-  end;
-end;
-
-/// <summary>
-/// CreateProjectGroupMakefile creates the make file for the project group.
-/// If AutoDepend is true, this function will add dependency information into
-/// the make file for a faster compilation process.
-/// </summary>
-procedure TCompiler.CreateProjectGroupMakefile(ProjectGroup: TProjectGroup;
-  AutoDepend: Boolean);
-var
-  Lines: TStrings;
-  i, depI: Integer;
-  Pkg: TPackageTarget;
-  Dependencies, S, PasFile, DcuFile, ObjFile, FormFile: string;
-  FilenameOnly: string;
-  DeleteFiles: Boolean;
-  BplFilename, MapFilename: string;
-  PasFileSearchDirs: string;
-begin
-  BplFilename := ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.BpgName;
-
-  Lines := TStringList.Create;
-  try
-    Lines.Add('!ifndef ROOT');
-    Lines.Add('ROOT = $(MAKEDIR)\..');
-    Lines.Add('!endif');
-    Lines.Add('!ifndef DCCOPT');
-    if Length(Data.JVCLPackagesDir) < 100 then Lines.Add('DCCOPT = -Q- -M') else Lines.Add('DCCOPT = -Q -M'); { dcc32.exe bug }
-    Lines.Add('!endif');
-    Lines.Add('');
-    Lines.Add('BPR2MAK = "$(ROOT)\bin\bpr2mak" -t..\BCB.bmk');
-    Lines.Add('MAKE = "$(ROOT)\bin\make"'{-$(MAKEFLAGS)'});
-    Lines.Add('DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)');
-    Lines.Add('');
-
-    // for JCL .dcp files
-    Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s";"%s"',
-      [ExtractShortPathName(ProjectGroup.TargetConfig.BplDir),
-       ExtractShortPathName(ProjectGroup.TargetConfig.DcpDir),
-       ExtractShortPathName(ProjectGroup.Target.BplDir),
-       ExtractShortPathName(ProjectGroup.Target.DcpDir),
-       ExtractShortPathName(ProjectGroup.TargetConfig.JCLLibDir)]));
-
-    if AutoDepend then
-    begin
-      S := ExtractShortPathName(ProjectGroup.TargetConfig.JVCLDir);
-      PasFileSearchDirs :=
-        Format('"%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign"',//;"%s"',
-               [S, S, S, S, S, S{, ProjectGroup.TargetConfig.DxgettextDir}]);
-      Lines.Add('.path.pas = ' + PasFileSearchDirs);
-      Lines.Add(Format('.path.dfm = "%s\run";"%s\design"',
-        [S, S]));
-      Lines.Add(Format('.path.xfm = "%s\qrun";"%s\qdesign"',
-        [S, S]));
-      Lines.Add(Format('.path.inc = "%s\common"', [S]));
-      Lines.Add(Format('.path.res = "%s\Resources"', [S]));
-      Lines.Add(Format('.path.bpl = "%s";"%s"',
-        [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
-      Lines.Add('');
-
-      // add files like jvcl.inc
-      Dependencies := '';
-      for depI := 0 to High(CommonDependencyFiles) do
-        Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-          ExtractFileName(ReplaceTargetMacros(CommonDependencyFiles[depI], ProjectGroup.TargetConfig));
-
-      Lines.Add('CommonDependencies = ' + Dependencies);
-      Lines.Add('');
-    end;
-    Lines.Add('');
-
-    Lines.Add('default: \');
-    for i := 0 to ProjectGroup.Count - 1 do
-    begin
-      Pkg := ProjectGroup.Packages[i];
-      if Pkg.Compile then
-        Lines.Add('  ' + Pkg.TargetName + '\');
-    end;
-    Lines.Add(''); // for last "\"
-
-    Lines.Add('');
-    for i := 0 to ProjectGroup.Count - 1 do
-    begin
-      Pkg := ProjectGroup.Packages[i];
-      // add package dependency lists
-      Dependencies := '';
-      for depI := 0 to Pkg.JvDependencies.Count - 1 do
-      begin
-        if IsPackageUsed(ProjectGroup, Pkg.JvDependenciesReqPkg[depI]) then
-        begin
-          if not ProjectGroup.TargetConfig.GenerateMapFiles then
-          begin
-            // delete the old .map file
-            MapFilename := ProjectGroup.TargetConfig.BplDir + PathDelim +
-              ChangeFileExt(ExtractFileName(Pkg.TargetName), '.map');
-            if FileExists(MapFilename) then
-              DeleteFile(MapFilename);
-          end;
-
-          Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-             ProjectGroup.FindPackageByXmlName(Pkg.JvDependencies[depI]).TargetName;
-        end;
-      end;
-
-      // add JCL dependencies
-      for depI := 0 to Pkg.JclDependencies.Count - 1 do
-      begin
-        if IsPackageUsed(ProjectGroup, Pkg.JclDependenciesReqPkg[depI]) then
-          Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-             Pkg.JclDependencies[depI] + '.dcp';
-      end;
-
-      if AutoDepend then
-      begin
-        // Add all contained files and test for their condition.
-        for depI := 0 to Pkg.Info.ContainCount - 1 do
-        begin
-          if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
-          begin
-            PasFile := Pkg.Info.Contains[depI].Name;
-            FilenameOnly := ExtractFileName(PasFile);
-            PasFile := FollowRelativeFilename(Data.JVCLPackagesXmlDir, PasFile);
-            if not FileExists(PasFile) then
-              PasFile := FindFilename(PasFileSearchDirs, FilenameOnly);
-
-            if FileExists(PasFile) then // add the file only if it exists
-            begin
-              Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-                FilenameOnly;
-
-              { Check for a .dfm/.xfm file }
-              if Pkg.Info.Contains[depI].FormName <> '' then
-              begin
-                if ProjectGroup.IsVCLX then
-                  FormFile := ChangeFileExt(PasFile, '.xfm')
-                else
-                  FormFile := ChangeFileExt(PasFile, '.dfm');
-                if FileExists(FormFile) then
-                  Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-                    ExtractFileName(FormFile);
-              end;
-
-            end;
-          end;
-        end;
-        Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
-      end;
-
-      Lines.Add(Pkg.TargetName + ': ' + Pkg.SourceName + ' ' + Dependencies);
-      Lines.Add(#9'@echo [Compiling: ' + Pkg.TargetName + ']');
-      Lines.Add(#9'@cd ' + Pkg.RelSourceDir);
-      if ProjectGroup.Target.SupportsPersonalities([persBCB], True) then // only BCB
-      begin
-        if not ProjectGroup.TargetConfig.Build then
-        begin
-          // dcc32.exe does not recreate the .obj files when they already exist.
-          // So we must delete them before compilation. This is not needed when
-          // building the JVCL for BCB because all .obj files will be deleted by
-          // the Installer before entering the compilation process.
-          DeleteFiles := False;
-          for depI := 0 to Pkg.Info.ContainCount - 1 do
-          begin
-            if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
-            begin
-              FilenameOnly := ExtractFileName(Pkg.Info.Contains[depI].Name);
-              PasFile := FollowRelativeFilename(Data.JVCLPackagesXmlDir, Pkg.Info.Contains[depI].Name);
-              if CompareText(ExtractFileExt(FilenameOnly), '.pas') = 0 then
-              begin
-                ObjFile := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(FilenameOnly, '.obj');
-                if not FileExists(PasFile) then
-                  PasFile := FindFilename(PasFileSearchDirs, FilenameOnly);
-
-                {
-                if FileExists(ObjFile) and not FileExists(PasFile) then
-                  Continue; // a little optimization: foreign units should not force the package to be built.
-                }
-
-                if not FileExists(ObjFile) or // dcc32.exe will not create the missing .obj file if the other files exist
-                   not FileExists(PasFile) or // unknown directory for the .pas file
-                   (CompareFileAge(ObjFile, [], PasFile, []) < 0) or
-                   (FileExists(BplFilename) and (
-                    (CompareFileAge(ObjFile, [], BplFilename, []) < 0) or
-                    (CompareFileAge(PasFile, [], BplFilename, []) < 0))
-                   ) then
-                begin
-                  DeleteFiles := True;
-                  Break;
-                end;
-              end;
-            end;
-          end;
-
-          if DeleteFiles then
-          begin
-            for depI := 0 to Pkg.Info.ContainCount - 1 do
-            begin
-              if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
-              begin
-                FilenameOnly := ExtractFileName(Pkg.Info.Contains[depI].Name);
-                if CompareText(ExtractFileExt(FilenameOnly), '.pas') = 0 then
-                begin
-                  ObjFile := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(FilenameOnly, '.obj');
-                  if FileExists(ObjFile) then
-                  begin
-                    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-                      Lines.Add(#9'-@del "' + ObjFile + '" >NUL')
-                    else
-                      Lines.Add(#9'-@del /f /q "' + ObjFile + '" 2>NUL');
-                  end;
-                  DcuFile := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(FilenameOnly, '.dcu');
-                  if FileExists(DcuFile) then
-                  begin
-                    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-                      Lines.Add(#9'-@del "' + DcuFile + '" >NUL')
-                    else
-                      Lines.Add(#9'-@del /f /q "' + DcuFile + '" 2>NUL');
-                  end;
-                end;
-              end;
-            end;
-          end;
-        end;
-        Lines.Add(#9'$(BPR2MAK) $&.bpk');
-        Lines.Add(#9'@echo.');                 // prevent "......Borland De"
-        Lines.Add(#9'$(MAKE) -f $&.mak');
-      end
-      else
-      begin
-        Lines.Add(#9'$(DCC) $&.dpk');
-      end;
-      Lines.Add(#9'@cd ' + GetReturnPath(Pkg.RelSourceDir));
-      Lines.Add('');
-    end;
-
-    FileSetReadOnly(ChangeFileExt(ProjectGroup.Filename, '.mak'), False);
-    Lines.SaveToFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
-  finally
-    Lines.Free;
-  end;
 end;
 
 function TCompiler.IsFileUsed(ProjectGroup: TProjectGroup;
@@ -1280,6 +1668,42 @@ function TCompiler.IsPackageUsed(ProjectGroup: TProjectGroup;
 begin
   Result := RequiredPackage.IsRequiredByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
             IsCondition(RequiredPackage.Condition, ProjectGroup.TargetConfig);
+end;
+
+procedure TCompiler.LinkMapFile(TargetConfig: ITargetConfig;
+  Project: TPackageTarget; DebugUnits: Boolean);
+var
+  BplFilename, MapFilename: string;
+  MapFileSize, JclDebugDataSize: Integer;
+  OutDirs: TOutputDirs;
+begin
+  OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
+
+  BplFileName := OutDirs.BplDir + PathDelim + Project.TargetName;
+  MapFileName := ChangeFileExt(BplFileName, '.map');
+  if FileExists(BplFilename) and FileExists(MapFileName) then
+  begin
+    CaptureLine(Format('Linking %s inside %s',
+      [ExtractFileName(MapFileName), ExtractFileName(BplFileName)]), FAborted);
+    if not TargetConfig.LinkMapFile(BplFileName, MapFileName,
+      MapFileSize, JclDebugDataSize) then
+    begin
+      CaptureLine(Format('Error: Unable to link %s', [ExtractFileName(MapFileName)]), FAborted);
+      AbortReason := RsErrorLinkingMapFiles;
+      Exit;
+    end;
+
+    if TargetConfig.DeleteMapFiles then
+    begin
+      CaptureLine(Format('Deleting file %s', [ExtractFileName(MapFileName)]), FAborted);
+      if not DeleteFile(MapFileName) then
+      begin
+        CaptureLine(Format('Error: Unable to delete %s', [MapFileName]), FAborted);
+        AbortReason := RsErrorDeletingMapFiles;
+        Exit;
+      end;
+    end;
+  end;
 end;
 
 type
@@ -1312,6 +1736,11 @@ begin
   end;
 end;
 
+function TCompiler.IsDcc32BugDanger: Boolean;
+begin
+  Result := Length(Data.JVCLDir) > MaxDcc32PathLen;
+end;
+
 { TListConditionParser }
 
 constructor TListConditionParser.Create(ATargetConfig: ITargetConfig);
@@ -1330,9 +1759,6 @@ begin
   raise Exception.Create('Missing ")" in conditional expression');
 end;
 
-
-initialization
-  StartupEnvVarPath := GetEnvironmentVariable('PATH');
 
 end.
 

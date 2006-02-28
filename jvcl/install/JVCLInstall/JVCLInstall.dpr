@@ -32,9 +32,6 @@ uses
   JvGnugettext,
   Forms,
   Main in 'Main.pas' {FormMain},
-  {$IFDEF DEBUG}
-  ExceptionDlg in 'Debug\ExceptionDlg.pas',
-  {$ENDIF DEBUG}
   Core in 'Core.pas',
   JVCL3Install in 'JVCL3Install.pas',
   PageBuilder in 'PageBuilder.pas',
@@ -71,7 +68,8 @@ uses
   CmdLineUtils in 'CmdLineUtils.pas',
   InstallerConsts in 'InstallerConsts.pas',
   FrmCompile in 'FrmCompile.pas' {FormCompile},
-  FrmCompileMessages in 'FrmCompileMessages.pas' {FormCompileMessages};
+  FrmCompileMessages in 'FrmCompileMessages.pas' {FormCompileMessages},
+  JediRegInfo in 'JediRegInfo.pas';
 
 {$R *.res}
 

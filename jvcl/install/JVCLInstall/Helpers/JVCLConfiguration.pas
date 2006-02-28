@@ -295,7 +295,18 @@ begin
 end;
 
 procedure TJVCLConfig.SaveToFile(const FileName: String);
+var
+  Lines: TStrings;
 begin
+  Lines := TStringList.Create;
+  try
+    if FileExists(FileName) then
+      Lines.LoadFromFile(FileName);
+    if Lines.Text = Text then // no changes
+      Exit;
+  finally
+    Lines.Free;
+  end;
   FileSetReadOnly(Filename, False);
   inherited SaveToFile(FileName);
 end;

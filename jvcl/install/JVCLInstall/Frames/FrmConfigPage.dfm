@@ -2,12 +2,12 @@ object FrameConfigPage: TFrameConfigPage
   Left = 0
   Top = 0
   Width = 518
-  Height = 348
+  Height = 397
   TabOrder = 0
   TabStop = True
   object LblBCBGuide: TLabel
-    Left = 272
-    Top = 328
+    Left = 279
+    Top = 379
     Width = 102
     Height = 13
     Cursor = crHandPoint
@@ -26,17 +26,38 @@ object FrameConfigPage: TFrameConfigPage
     Visible = False
     OnClick = LblBCBGuideClick
   end
+  object LblEnvPathWarning: TLabel
+    Left = 279
+    Top = 280
+    Width = 236
+    Height = 98
+    AutoSize = False
+    Caption = 
+      'The BPL directory is not in the PATH environment variable. If yo' +
+      'u do not add the directory to the PATH environment variable, Del' +
+      'phi/BCB will not be able to find the runtime packages and shows ' +
+      'you lots of error messages like: "Cannot load package JvCoreD10R' +
+      '.bpl"'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Transparent = True
+    WordWrap = True
+  end
   object GroupBoxJvclInc: TGroupBox
-    Left = 272
+    Left = 279
     Top = 33
-    Width = 241
+    Width = 234
     Height = 160
     Caption = ' JVCL Options  '
     TabOrder = 1
     object CheckBoxXPTheming: TCheckBox
       Left = 8
       Top = 16
-      Width = 225
+      Width = 223
       Height = 17
       Hint = 
         'Activate this if you have Mike Lischke'#39's Theme Manager'#13#10'(<c:navy' +
@@ -57,7 +78,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxRegisterGlobalDesignEditors: TCheckBox
       Left = 8
       Top = 40
-      Width = 225
+      Width = 223
       Height = 17
       Hint = 
         'Enable this option if you want to register property and componen' +
@@ -71,7 +92,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxDxgettextSupport: TCheckBox
       Left = 8
       Top = 64
-      Width = 225
+      Width = 223
       Height = 17
       Hint = 
         'Enable this option if you want to use the dxgettext'#13#10'(<c:navy>ht' +
@@ -88,7 +109,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxRegisterJvGif: TCheckBox
       Left = 8
       Top = 88
-      Width = 225
+      Width = 223
       Height = 17
       Hint = 
         'Enable this option if you want to register the GIF image'#13#10'Graphi' +
@@ -102,7 +123,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxUseJVCL: TCheckBox
       Left = 8
       Top = 112
-      Width = 225
+      Width = 223
       Height = 17
       Hint = 
         'Disable this if you want some packages that are not yet'#13#10'complet' +
@@ -116,7 +137,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxUnitVersioning: TCheckBox
       Left = 8
       Top = 136
-      Width = 225
+      Width = 223
       Height = 17
       Hint = 
         'Enable this option if you want that every JVCL unit should suppo' +
@@ -131,15 +152,15 @@ object FrameConfigPage: TFrameConfigPage
   end
   object GroupBoxInstallOptions: TGroupBox
     Left = 8
-    Top = 33
-    Width = 249
-    Height = 312
+    Top = 31
+    Width = 265
+    Height = 361
     Caption = ' Installation options '
     TabOrder = 0
     object CheckBoxDeveloperInstall: TCheckBox
       Left = 8
       Top = 88
-      Width = 233
+      Width = 254
       Height = 17
       Hint = 
         'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
@@ -155,7 +176,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxCleanPalettes: TCheckBox
       Left = 24
       Top = 64
-      Width = 217
+      Width = 238
       Height = 17
       Hint = 
         'Remove all JVCL components from the component palettes in'#13#10'order' +
@@ -170,7 +191,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxBuild: TCheckBox
       Left = 8
       Top = 16
-      Width = 233
+      Width = 254
       Height = 17
       Hint = 
         'Check this option if you want to build the packages instead'#13#10'of ' +
@@ -186,7 +207,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxIDERegister: TCheckBox
       Left = 8
       Top = 40
-      Width = 233
+      Width = 254
       Height = 17
       Hint = 
         'Check this option if you want to register'#13#10'the designtime packag' +
@@ -200,10 +221,10 @@ object FrameConfigPage: TFrameConfigPage
     end
     inline FrameDirEditBrowseBPL: TFrameDirEditBrowse
       Left = 2
-      Top = 155
-      Width = 239
+      Top = 203
+      Width = 261
       Height = 49
-      TabOrder = 6
+      TabOrder = 8
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel
@@ -217,23 +238,24 @@ object FrameConfigPage: TFrameConfigPage
       end
       inherited EditDirectory: TEdit
         Left = 7
-        Width = 208
+        Width = 227
+        OnChange = FrameDirEditBrowseBPLEditDirectoryChange
       end
       inherited BtnDirBrowse: TButton
-        Left = 216
+        Left = 234
       end
     end
     inline FrameDirEditBrowseDCP: TFrameDirEditBrowse
       Left = 2
-      Top = 203
-      Width = 239
+      Top = 251
+      Width = 261
       Height = 49
-      TabOrder = 7
+      TabOrder = 9
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
-        Width = 71
+        Width = 70
         Caption = '&DCP Directory:'
       end
       inherited Bevel: TBevel
@@ -242,18 +264,18 @@ object FrameConfigPage: TFrameConfigPage
       end
       inherited EditDirectory: TEdit
         Left = 7
-        Width = 208
+        Width = 227
       end
       inherited BtnDirBrowse: TButton
-        Left = 216
+        Left = 234
       end
     end
     inline FrameDirEditBrowseHPP: TFrameDirEditBrowse
       Left = 2
-      Top = 259
-      Width = 239
+      Top = 307
+      Width = 261
       Height = 49
-      TabOrder = 8
+      TabOrder = 10
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel
@@ -268,23 +290,21 @@ object FrameConfigPage: TFrameConfigPage
       end
       inherited EditDirectory: TEdit
         Left = 7
-        Width = 208
+        Width = 227
         Hint = 
           'The HPP directory specifies where the generated .hpp files'#13#10'shou' +
           'ld go. If this field is empty the generated .hpp files are'#13#10'writ' +
           'ten to the directory where the pascal source file is.'
-        ParentShowHint = False
-        ShowHint = True
       end
       inherited BtnDirBrowse: TButton
-        Left = 216
+        Left = 234
         OnClick = FrameDirEditBrowseHPPBtnJCLDirBrowseClick
       end
     end
     object CheckBoxGenerateMapFiles: TCheckBox
       Left = 8
-      Top = 136
-      Width = 233
+      Top = 138
+      Width = 254
       Height = 17
       Hint = 
         'Activate this option if the installer should generate'#13#10'detailed ' +
@@ -301,7 +321,7 @@ object FrameConfigPage: TFrameConfigPage
     object CheckBoxDebugUnits: TCheckBox
       Left = 24
       Top = 112
-      Width = 217
+      Width = 238
       Height = 17
       Hint = 
         'Activate this option if you also want to compile debug units.'#13#10'J' +
@@ -314,11 +334,38 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 4
       OnClick = CheckBoxDeveloperInstallClick
     end
+    object CheckBoxLinkMapFiles: TCheckBox
+      Left = 24
+      Top = 161
+      Width = 238
+      Height = 17
+      Hint = 
+        'Activate this option if the installer should link detailled'#13#10'map' +
+        ' informations as a resource of the binary it is describing.'#13#10#13#10'T' +
+        'he redistribution of the binary and Map file is'#13#10'simplified to t' +
+        'he redistribution of the binary.'#13#10#13#10'JclDebug can use these infor' +
+        'mations.'
+      Caption = '&Link Map files in binaries'
+      TabOrder = 6
+      OnClick = CheckBoxDeveloperInstallClick
+    end
+    object CheckBoxDeleteMapFiles: TCheckBox
+      Left = 40
+      Top = 183
+      Width = 222
+      Height = 17
+      Hint = 
+        'Activate this option if the installer should delete'#13#10'detailed ma' +
+        'p-file after they are linked in the binary.'
+      Caption = '&Delete after linking'
+      TabOrder = 7
+      OnClick = CheckBoxDeveloperInstallClick
+    end
   end
   object CheckBoxVerbose: TCheckBox
-    Left = 272
-    Top = 200
-    Width = 241
+    Left = 287
+    Top = 199
+    Width = 223
     Height = 17
     Hint = 
       'Activate this option if you want to see a more detailed compiler' +
@@ -330,9 +377,9 @@ object FrameConfigPage: TFrameConfigPage
     OnClick = CheckBoxCompileJclDcpClick
   end
   object CheckBoxIgnoreMakeErrors: TCheckBox
-    Left = 272
-    Top = 224
-    Width = 241
+    Left = 287
+    Top = 222
+    Width = 223
     Height = 17
     Hint = 
       'Activate this option if the installer should not stop when an er' +
@@ -350,7 +397,7 @@ object FrameConfigPage: TFrameConfigPage
     Height = 22
     Style = csOwnerDrawFixed
     ItemHeight = 16
-    TabOrder = 4
+    TabOrder = 6
     OnChange = ComboBoxTargetIDEChange
     OnDrawItem = ComboBoxTargetIDEDrawItem
   end
@@ -363,7 +410,7 @@ object FrameConfigPage: TFrameConfigPage
     Caption = 'Edit jvcl%s%d.inc'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 7
     OnClick = BtnEditJvclIncClick
   end
   object PanelBk: TPanel
@@ -372,16 +419,25 @@ object FrameConfigPage: TFrameConfigPage
     Width = 78
     Height = 22
     BevelOuter = bvNone
-    TabOrder = 6
+    TabOrder = 5
     object LblOptionsFor: TLabel
       Left = 8
       Top = 4
-      Width = 58
+      Width = 54
       Height = 13
       Caption = '&Options for:'
       FocusControl = ComboBoxTargetIDE
-      Transparent = False
     end
+  end
+  object CheckBoxAddBplDirToPath: TCheckBox
+    Left = 279
+    Top = 260
+    Width = 220
+    Height = 17
+    Caption = 'Add BPL Directory to PATH'
+    TabOrder = 4
+    Visible = False
+    OnClick = CheckBoxDeveloperInstallClick
   end
   object ImageListTargets: TImageList
     Left = 200

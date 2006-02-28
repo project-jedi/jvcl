@@ -4,7 +4,7 @@ object FormMain: TFormMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JVCL 3  Installation'
-  ClientHeight = 444
+  ClientHeight = 493
   ClientWidth = 683
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -25,7 +25,7 @@ object FormMain: TFormMain
     Left = 0
     Top = 0
     Width = 683
-    Height = 444
+    Height = 493
     ButtonBarHeight = 42
     ButtonStart.Caption = 'To &Start Page'
     ButtonStart.NumGlyphs = 1
@@ -54,13 +54,17 @@ object FormMain: TFormMain
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
     OnActivePageChanging = JvWizardActivePageChanging
+    DesignSize = (
+      683
+      493)
     object LblHomepage: TLabel
       Left = 8
-      Top = 424
+      Top = 473
       Width = 200
       Height = 14
       Cursor = crHandPoint
       Hint = '<c:blue>http://jvcl.sourceforge.net'
+      Anchors = [akLeft, akBottom]
       Caption = 'Jedi Visual Component Library Homepage'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
@@ -76,7 +80,7 @@ object FormMain: TFormMain
       Left = 0
       Top = 0
       Width = 161
-      Height = 402
+      Height = 451
       ActiveFont.Charset = DEFAULT_CHARSET
       ActiveFont.Color = clWindow
       ActiveFont.Height = -11

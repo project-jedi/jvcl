@@ -53,12 +53,13 @@ uses
 
 function TConfigPage.NextPage: IInstallerPage;
 begin
-  case Installer.InstallType of
+{  case Installer.InstallType of
     itFreshInstall:
       Result := TPackageSelectionPage.Create(Installer);
     itUpdate:
       Result := TSummaryPage.Create(Installer);
-  end;
+  end;}
+  Result := TPackageSelectionPage.Create(Installer);
 end;
 
 function TConfigPage.SetupPage(Client: TWinControl): TWinControl;

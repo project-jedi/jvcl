@@ -31,7 +31,8 @@ unit FrmCompile;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls;
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Consts;
 
 type
   TCompileLineType = (clText, clFileProgress, clHint, clWarning, clError, clFatal);
@@ -78,6 +79,7 @@ type
     procedure BtnOkClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
+    FAborted: Boolean;
     FHints: Cardinal;
     FWarnings: Cardinal;
     FErrors: Cardinal;
@@ -89,7 +91,7 @@ type
     procedure SetCurrentLine(Line: Cardinal);
     function IsCompileFileLine(const Line: string): Boolean;
   public
-    procedure Init(const ProjectName: string; Clear: Boolean = True);
+    procedure Init(const ProjectName: string; Clear: Boolean = True; NoShow: Boolean = False);
     procedure Compiling(const Filename: string);
     procedure Linking(const Filename: string);
     procedure Done(const ErrorReason: string = '');
@@ -101,6 +103,8 @@ type
     procedure IncHint;
     procedure IncWarning;
     procedure IncError;
+
+    property Aborted: Boolean read FAborted;
 
     property Hints: Cardinal read FHints;
     property Warnings: Cardinal read FWarnings;
@@ -129,6 +133,7 @@ resourcestring
   RsCompiling = 'Compiling';
   RsLinking = 'Linking';
   RsDone = 'Done';
+  RsCompileAborted = 'Aborted.';
   RsThereAreErrors = 'There are errors.';
   RsThereAreWarnings = 'There are warnings.';
   RsThereAreHints = 'There are hints.';
@@ -144,8 +149,13 @@ end;
 
 procedure TFormCompile.BtnOkClick(Sender: TObject);
 begin
-  Tag := 1;
-  Close;
+  if BtnOk.Caption = SOKButton then
+  begin
+    Tag := 1;
+    Close;
+  end
+  else
+    FAborted := True;
 end;
 
 function TFormCompile.HandleLine(const Line: string): TCompileLineType;
@@ -236,9 +246,10 @@ begin
   end;
 end;
 
-procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean);
+procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean; NoShow: Boolean);
 begin
   Tag := 0;
+  FAborted := False;
   LblProject.Caption := MinimizeName(ProjectName, LblProject.Canvas, LblProject.ClientWidth);
 
   LblStatusCaption.Font.Style := [];
@@ -264,11 +275,15 @@ begin
   LblStatusCaption.Caption := RsPreparing;
   LblStatus.Caption := '';
 
-  BtnOk.Enabled := False;
-  if not Visible then
-    Show
-  else
-    BringToFront;
+  BtnOk.Enabled := True;
+  BtnOk.Caption := SCancelButton;
+  //if not NoShow then
+  begin
+    if not Visible then
+      Show
+    else
+      BringToFront;
+  end;
 end;
 
 procedure TFormCompile.Compiling(const Filename: string);
@@ -312,7 +327,9 @@ begin
   LblStatus.Font.Style := [fsBold];
   LblStatusCaption.Caption := RsDone + ':';
 
-  if FErrors > 0 then
+  if Aborted then
+    LblStatus.Caption := RsCompileAborted
+  else if FErrors > 0 then
     LblStatus.Caption := RsThereAreErrors
   else if FWarnings > 0 then
     LblStatus.Caption := RsThereAreWarnings
@@ -320,8 +337,9 @@ begin
     LblStatus.Caption := RsThereAreHints
   else
     LblStatus.Caption := RsCompiled;
-  BtnOk.Enabled := ErrorReason <> '';
-  if ErrorReason <> '' then
+  //BtnOk.Enabled := ErrorReason <> '';
+  BtnOk.Caption := SOKButton;
+  if (ErrorReason <> '') or (LblStatus.Caption = RsCompileAborted) then
   begin
     Hide;
     ShowModal;
@@ -358,8 +376,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TFormCompile.FormCloseQuery(Sender: TObject;
-  var CanClose: Boolean);
+procedure TFormCompile.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := Tag = 1;
 end;

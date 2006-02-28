@@ -474,7 +474,7 @@ begin
   ImageListPackages.Draw(Canvas, Rect.Left + 1, Rect.Top + 1, ImgIndex);
   Inc(Rect.Left, ImageListPackages.Width + 2);
 
-  if IsUseJVCL(Pkg.Info) then
+  if not (odSelected in State) and IsUseJVCL(Pkg.Info) then
     Canvas.Font.Color := clGreen;
   R := Rect;
   R.Right := R.Left + 120;
@@ -536,7 +536,7 @@ var
   Index: Integer;
   S: string;
   Lines: TStrings;
-  Pkg: TPackageTarget;
+  Pkg, RuntimePkg: TPackageTarget;
   i: Integer;
 begin
   if TimerHint.Tag <> 1 then
@@ -553,12 +553,16 @@ begin
     try
       if (Pkg.RequireCount > 0) or (Pkg.ContainCount > 0) then
       begin
-        Lines.Add('<b><c:red>' + Pkg.Info.BplName + '</b><c:black>');
+        Lines.Add('<b><c:red>' + Pkg.Info.DisplayName + '</b><c:black>');
         if IsUseJVCL(Pkg.Info) then
           Lines[Lines.Count - 1] := Lines[Lines.Count - 1] + ' (USEJVCL)';
         Lines.Add('<i>' + WordWrapString(Pkg.Info.Description) + '</i>');
         Lines.Add('');
       end;
+
+      RuntimePkg := Pkg.FindRuntimePackage;
+      if RuntimePkg <> nil then
+        Pkg := RuntimePkg;
 
       if Pkg.RequireCount > 0 then
       begin

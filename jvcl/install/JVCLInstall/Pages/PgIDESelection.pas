@@ -43,9 +43,9 @@ type
     downloaded. }
   TIDESelectionPage = class(TInstallerPage, IMultiChoosePage, IUserDefinedPage)
   private
-    procedure JCLDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure DoInstallJcl(Sender: TObject);
     procedure DoClickUninstallDeleteFiles(Sender: TObject);
+    procedure DoUpdateData(Sender: TObject);
   public
     { IInstallerPage }
     function NextPage: IInstallerPage; override;
@@ -156,6 +156,14 @@ begin
 
   if Installer.InstallType <> itUninstall then
   begin
+    if Config.Target.IsEvaluation then
+    begin
+      Control.Enabled := False;
+      Control.Checked := False;
+
+      Lbl.Caption := RsEvaluationVersion;
+    end
+    else
     if not Config.IsUpToDate then
     begin
       Control.Enabled := False;
@@ -169,7 +177,8 @@ begin
       Lbl.Cursor := crHandPoint;
       Lbl.OnClick := Installer.DoHomepageClick;
     end
-    else if Config.MissingJCL or (Installer.JCLDir = '') or Config.OutdatedJCL then
+    else
+    if Config.MissingJCL or (Config.JCLDir = '') or Config.OutdatedJCL then
     begin
       Control.Enabled := False;
       Control.Checked := False;
@@ -185,8 +194,8 @@ begin
     begin
       Control.Checked := True;
       if Config.InstalledJVCLVersion > 0 then
-        Lbl.Caption := Format(RsInstalledJVCLVersion, [Config.InstalledJVCLVersion]);
-      if Config.MissingJCL and (Installer.JCLDir <> '') then
+        Lbl.Caption := Format(RsInstalledJVCLVersion, [Config.JVCLVersion]);
+      if Config.MissingJCL and (Config.JCLDir <> '') then
       begin
         Control.Enabled := False;
         Control.Checked := False;
@@ -207,7 +216,7 @@ begin
   begin
     Control.Checked := True;
     if Config.InstalledJVCLVersion > 0 then
-      Lbl.Caption := Format(RsInstalledJVCLVersion, [Config.InstalledJVCLVersion]);
+      Lbl.Caption := Format(RsInstalledJVCLVersion, [Config.JVCLVersion]);
   end;
 end;
 
@@ -215,12 +224,7 @@ function TIDESelectionPage.SetupPage(Client: TWinControl): TWinControl;
 var
   Panel: TPanel;
 begin
-  if Installer.InstallType <> itUninstall then
-    with TFrameDirEditBrowse.Build(RsJCLDirectoryCaption, Installer.JCLDir,
-           JCLDirChanged, nil, Client,
-           Format(RsJCLDirectorySelectionBtnHint, [JCLVersion])) do
-      Align := alBottom
-  else
+  if Installer.InstallType = itUninstall then
   begin
     Panel := TPanel.Create(Client);
     with Panel do
@@ -240,6 +244,18 @@ begin
       Checked := Installer.Data.DeleteFilesOnUninstall;
       OnClick := DoClickUninstallDeleteFiles;
     end;
+  end
+  else
+  begin
+    with TButton.Create(Client) do
+    begin
+      Left := Client.ClientWidth - Width - 8;
+      Top := Client.ClientHeight - Height - 8;
+      Anchors := [akRight, akBottom];
+      Parent := Client;
+      Caption := RsUpdateData;
+      OnClick := DoUpdateData;
+    end;
   end;
   Result := nil;
 end;
@@ -255,39 +271,6 @@ begin
     itUninstall:
       SubTitle := RsSelectionPageSubTitleUninstall;
   end;
-end;
-
-procedure TIDESelectionPage.JCLDirChanged(Sender: TObject; UserData: TObject;
-  var Dir: string);
-begin
-{  if (FileExists(Dir + '\Jcl.dcp') and FileExists(Dir + '\JclVcl.dcp')) or
-     (FileExists(Dir + '\Jcl.dcp') and FileExists(Dir + '\JclVcl.dcp')) then
-  begin
-   // are Jcl.dcp and JclVcl.dcp available that we could use
-   // Delphi 5 / BCB 5 are not supported here
-  end
-  else}
-  begin
-    Dir := Dir + '\';
-    while (Dir <> '') and (not FileExists(Dir + 'source\common\JclBase.pas')) do
-    begin
-      Delete(Dir, Length(Dir), 1); // remove '\'
-      Dir := ExtractFilePath(Dir);
-    end;
-  end;
-  if (Dir <> '') and (Dir[Length(Dir)] = '\') then
-    Delete(Dir, Length(Dir), 1);
-
-  if Dir <> '' then
-  begin
-    if Installer.JCLDir <> Dir then
-    begin
-      Installer.JCLDir := Dir;
-      Installer.PackageInstaller.RebuildPage;
-    end;
-  end
-  else
-    MessageDlg(Format(RsNoJclVersionFound, [JCLVersion]), mtError, [mbOk], 0);
 end;
 
 procedure TIDESelectionPage.DoInstallJcl(Sender: TObject);
@@ -323,7 +306,7 @@ begin
 
   Assert(Tg <> nil, 'No Delphi/BCB installed'); // do not localize
 
-  Dir := ExtractShortPathName(Installer.JCLDir) + '\install\build';
+  Dir := ExtractShortPathName(Tg.JCLDir) + '\install\build';
   Cmd := Dir + '\build.exe newest "--make=installer"';
 
   StartupInfo.cb := SizeOf(StartupInfo);
@@ -338,13 +321,20 @@ begin
     CloseHandle(ProcessInfo.hProcess);
     if JCLExitCode <> 0 then
       ShellExecute(0, 'open', 'http://jcl.sf.net', nil, nil, SW_NORMAL);
-    PackageInstaller.RebuildPage;
   end
   else
   begin
     if ShellExecute(0, 'open', 'http://jcl.sf.net', nil, nil, SW_NORMAL) < 32 then
       raise Exception.Create(RsErrorInstallingJCL);
   end;
+
+  DoUpdateData(nil);
+end;
+
+procedure TIDESelectionPage.DoUpdateData(Sender: TObject);
+begin
+  Installer.Data.Reinit;
+  PackageInstaller.RebuildPage;
 end;
 
 procedure TIDESelectionPage.DoClickUninstallDeleteFiles(Sender: TObject);

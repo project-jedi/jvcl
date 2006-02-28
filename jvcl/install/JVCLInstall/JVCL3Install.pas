@@ -48,8 +48,6 @@ type
     FData: TJVCLData;
     FSelTargets: TList;
 
-    function GetJclDir: WideString;
-    procedure SetJCLDir(const Value: WideString);
     function GetJVCLDir: string;
     function GetSelTargetCount: Integer;
     function GetSelTargets(Index: Integer): TTargetConfig;
@@ -70,7 +68,6 @@ type
 
     property PackageInstaller: IPackageInstaller read FPackageInstaller;
     property InstallType: TInstallType read FInstallType write FInstallType;
-    property JCLDir: WideString read GetJclDir write SetJCLDir;
     property JVCLDir: string read GetJVCLDir;
 
     property SelTargetCount: Integer read GetSelTargetCount;
@@ -132,7 +129,7 @@ var
 
 function TInstaller.InstallerName: WideString;
 begin
-  Result := RsInstallerName;
+  Result := Format(RsInstallerName, [JVCLVersionMajor, JVCLVersionMinor]);
 end;
 
 function TInstaller.FirstPage: IInstallerPage;
@@ -172,36 +169,6 @@ begin
   // do nothing
 end;
 
-function TInstaller.GetJclDir: WideString;
-var
-  i: Integer;
-  Dir: string;
-begin
-  Result := '';
-  for i := 0 to Data.Targets.Count - 1 do
-    if DirectoryExists(Data.TargetConfig[i].JCLDir) then
-    begin
-      Result := Data.TargetConfig[i].JCLDir;
-      Exit;
-    end;
-  Dir := ExtractFileDir(JVCLDir);
-  if (Dir <> '') and (Length(Dir) = 3) and (Dir[3] = '\') then { remove backslash }
-    Delete(Dir, 3, 1);
-  Result := Format(sJclRootDirFromJVCLDir, [Dir]);
-  if not DirectoryExists(Result) then
-    Result := ''
-  else
-    Result := Format(sJclRootDirName, [Dir]);
-end;
-
-procedure TInstaller.SetJCLDir(const Value: WideString);
-var
-  I: Integer;
-begin
-  for I := 0 to Data.Targets.Count - 1 do
-    Data.TargetConfig[I].JCLDir := Value;
-end;
-
 function TInstaller.GetJVCLDir: string;
 begin
   Result := Data.JVCLDir;
@@ -228,6 +195,9 @@ begin
   if ps <> 0 then
     Delete(S, 1, ps);
   ShellExecute(Application.Handle, 'open', PChar(S), nil, nil, SW_SHOWNORMAL); // do not localize
+
+  Data.Reinit;
+  PackageInstaller.RebuildPage;
 end;
 
 function TInstaller.GetSelTargetCount: Integer;
@@ -276,7 +246,7 @@ end;
 
 procedure TInstallerPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := RsInstallerTitle;
+  Title := Format(RsInstallerTitle, [JVCLVersionMajor, JVCLVersionMinor]);
   SubTitle := '';
 end;
 
@@ -403,4 +373,5 @@ initialization
       Halt(1);
     end;
   end;
+
 end.
