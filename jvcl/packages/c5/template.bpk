@@ -68,8 +68,8 @@
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\lib\c5 -L$(BCB)\Projects\Lib -L$(BCB)\Projects\Bpl
-      -D&quot;%DESCRIPTION%&quot; -aa -Tpp
-      -Gp%type% -x -Gn -Gl -Gi -v"/>
+      -b:0x%IMAGE_BASE% -D&quot;%DESCRIPTION%&quot;
+      -aa -Tpp -Gp%type% -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -85,12 +85,12 @@
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=1
-MinorVer=0
-Release=0
-Build=0
+MajorVer=%VERSION_MAJOR_NUMBER%
+MinorVer=%VERSION_MINOR_NUMBER%
+Release=%RELEASE_NUMBER%
+Build=%BUILD_NUMBER%
 Debug=0
-PreRelease=1
+PreRelease=0
 Special=1
 Private=0
 DLL=0

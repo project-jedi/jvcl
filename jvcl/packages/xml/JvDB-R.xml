@@ -1,4 +1,4 @@
- <?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDB" Design="0">
   <Description>JVCL Database Components Runtime Package</Description>
   <ClxDescription>JVCLX Database Components Runtime Package</ClxDescription>
@@ -7,6 +7,11 @@
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>49440000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCore" Design="0">
-  <Description>JVCL Core Runtime Package</Description>
+  <Description>JVCL Core Components Runtime Package</Description>
   <ClxDescription>JVCLX Core Runtime Package</ClxDescription>
   <GUID>{CCA5391F-35F6-43D1-AB48-187085D1EF5B}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>490E0000</ImageBase>
+  <VersionMajorNumber>3</VersionMajorNumber>
+  <VersionMinorNumber>20</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="Jv3rd-R" Targets="all" Condition="USE_DXGETTEXT"/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
