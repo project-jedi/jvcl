@@ -35,6 +35,16 @@ uses
   SysUtils, Classes, Forms, Controls, Graphics, Windows,
   JvWin32;
 
+const
+  sJVCLVersion = '3.30';
+  JVCLVersionMajor   = 3;    // 0=pre-release|beta/1, 2, ...=final
+  JVCLVersionMinor   = 30;   // minor release
+  JVCLVersionRelease = 0;    // 0: pre-release|beta/>=1: release
+  JVCLVersionBuild   = 0;    // build number, days since march 1, 2006
+  JVCLVersion = (JVCLVersionMajor shl 24) or (JVCLVersionMinor shl 16) or
+                (JVCLVersionRelease shl 15) or (JVCLVersionBuild shl 0);
+
+
 {$IFDEF VisualCLX}
 const
   clMoneyGreen = TColor($C0DCC0);
