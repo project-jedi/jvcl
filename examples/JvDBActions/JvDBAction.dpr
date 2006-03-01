@@ -1,5 +1,7 @@
 program JvDBAction;
 
+{%TogetherDiagram 'ModelSupport_JvDBAction\default.txaPackage'}
+
 uses
   Forms,
   JvDBActionMainForm in 'JvDBActionMainForm.pas' {JvDBActionMainFrm};

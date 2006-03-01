@@ -54,6 +54,7 @@ type
     JvDatabaseSimpleAction1: TJvDatabaseSimpleAction;
     JvDatabaseOpenAction1: TJvDatabaseOpenAction;
     JvDatabaseCloseAction1: TJvDatabaseCloseAction;
+    JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction;
   public
   end;
 

@@ -75,6 +75,8 @@ type
     JvDatabaseSimpleAction1: TJvDatabaseSimpleAction;
     JvDatabaseOpenAction1: TJvDatabaseOpenAction;
     JvDatabaseCloseAction1: TJvDatabaseCloseAction;
+    JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction;
+    BitBtn9: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
     procedure JvDBGrid1Enter(Sender: TObject);
