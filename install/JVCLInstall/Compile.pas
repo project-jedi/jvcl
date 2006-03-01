@@ -777,7 +777,6 @@ var
   PrjFilename, PkgFilename, ResFilename: string;
   PasFiles, CppFiles, ObjFiles, LibFiles, ResFiles: TStrings;
   i, ObjAge, OldestObjAge, AgeIndex: Integer;
-  Dcc32Packages: string;
   BplFilename, DcpFilename, ObjFilename: string;
   BplAge, DcpAge, LibAge, BpiAge: Integer;
   Changed: Boolean;
@@ -823,7 +822,6 @@ begin
     end;
 
     ObjFiles.Add('c0pkg32.obj');
-    Dcc32Packages := '';
     for i := 0 to Project.RequireCount - 1 do
     begin
       if IsPackageUsed(Project.Owner, Project.Requires[i]) then
@@ -832,11 +830,8 @@ begin
         { TODO : Change this if the .dcp filename convention changes }
         PkgFilename := ChangeFileExt(Project.Requires[i].GetBplName(Project.Owner), '');
         ObjFiles.Add(PkgFilename + '.bpi');
-        Dcc32Packages := Dcc32Packages + ';' + PkgFilename;
       end;
     end;
-    if Dcc32Packages <> '' then
-      Dcc32Packages := ' -LU"' + Copy(Dcc32Packages, 2, MaxInt) + '"';
     ObjFiles.Add('Memmgr.lib');
     ObjFiles.Add('sysinit.obj');
 
@@ -880,7 +875,8 @@ begin
     begin
       // compile Delphi package (only modified) to get .dcp file (.bpl is also created)
       Result := CompileDelphiPackage(TargetConfig, Project,
-                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]), // + ' --BCB',
+                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]) +
+                       {' --BCB'} ' -DBCB', // BCB 5 does not create the .dcp file in --BCB mode
                      DebugUnits);
       if Result <> 0 then
         Exit;
