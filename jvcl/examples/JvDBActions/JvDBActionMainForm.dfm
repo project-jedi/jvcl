@@ -1,9 +1,9 @@
 object JvDBActionMainFrm: TJvDBActionMainFrm
   Left = 349
   Top = 48
-  Width = 870
-  Height = 640
   Caption = 'JvDBActionMainFrm'
+  ClientHeight = 606
+  ClientWidth = 862
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,9 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    862
+    606)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
@@ -21,6 +24,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 223
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -137,6 +141,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Width = 766
     Height = 261
     DataSource = DataSource1
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
     TabOrder = 8
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -145,6 +150,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     TitleFont.Style = []
     OnEnter = JvDBGrid1Enter
     SortMarker = smUp
+    MultiSelect = True
     TitleButtons = True
     SelectColumn = scGrid
     SortedField = 'Name'
@@ -174,6 +180,15 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Action = JvDatabaseCloseAction1
     Caption = 'Close'
     TabOrder = 10
+  end
+  object BitBtn9: TBitBtn
+    Left = 376
+    Top = 570
+    Width = 121
+    Height = 25
+    Action = JvDatabaseModifyAllAction1
+    Caption = 'Modify All'
+    TabOrder = 11
   end
   object JvCsvDataSet2: TJvCsvDataSet
     FieldDefs = <
@@ -256,8 +271,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Top = 86
   end
   object JvDatabaseActionList1: TJvDatabaseActionList
-    Left = 690
-    Top = 540
+    Left = 315
+    Top = 525
     object JvDatabaseSingleRecordWindowAction1: TJvDatabaseSingleRecordWindowAction
       Category = 'JVCL-DB'
       Caption = 'Single Record Window'
@@ -348,6 +363,10 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     object JvDatabaseCloseAction1: TJvDatabaseCloseAction
       Category = 'JVCL-DB'
       Caption = 'Close'
+    end
+    object JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction
+      Category = 'JVCL-DB'
+      Caption = 'Modify All'
     end
   end
 end

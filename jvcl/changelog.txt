@@ -1,5 +1,7 @@
-Changelog for JVCL 3.0
+Changelog for JVCL 3.X
 ======================
+2006-02-28:
+- TJvDatabaseActionBaseEngine modified : Now based on TComponent and DataComponent Property added
 2006-01-11:
 - TJvOracleDataset added : This is a multithreaded implementation of TOracleDataset from "Direct Oracle Access Components" 
   http://www.allroundautomations.com

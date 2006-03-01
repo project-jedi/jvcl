@@ -86,5 +86,9 @@ object JvDialogActions: TJvDialogActions
       Category = 'JVCL-DB'
       Caption = 'Close'
     end
+    object JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction
+      Category = 'JVCL-DB'
+      Caption = 'Modify All'
+    end
   end
 end

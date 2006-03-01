@@ -44,6 +44,9 @@ uses
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
   {$ENDIF JV_MIDAS}
+  {$IFDEF USE_3RDPARTY_DOA} 
+  JvOracleDataset,
+  {$ENDIF USE_3RDPARTY_DOA}
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBGridFooter,
@@ -72,6 +75,7 @@ const
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCsvDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
+    {$IFDEF USE_3RDPARTY_DOA} TJvOracleDataset, {$ENDIF USE_3RDPARTY_DOA}
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
     TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
@@ -125,7 +129,7 @@ begin
     {$IFDEF USE_3RDPARTY_SMIMPORT}
     TJvDatabaseSMImportAction,
     {$ENDIF USE_3RDPARTY_SMIMPORT}
-    TJvDatabaseOpenAction, TJvDatabaseCloseAction], TJvDialogActions);
+    TJvDatabaseOpenAction, TJvDatabaseCloseAction, TJvDatabaseModifyAllAction], TJvDialogActions);
 end;
 
 end.
