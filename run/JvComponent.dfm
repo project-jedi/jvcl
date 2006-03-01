@@ -1,0 +1,2 @@
+object JvForm: TJvForm
+end

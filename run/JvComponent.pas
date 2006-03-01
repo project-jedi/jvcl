@@ -114,6 +114,8 @@ const
 
 implementation
 
+{$R *.dfm}  // For TJvForm, see Issue 3537.
+
 {$IFDEF USE_DXGETTEXT}
 const
   cDomainName = 'jvcl';
