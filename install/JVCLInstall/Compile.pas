@@ -880,7 +880,7 @@ begin
     begin
       // compile Delphi package (only modified) to get .dcp file (.bpl is also created)
       Result := CompileDelphiPackage(TargetConfig, Project,
-                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]) + ' --BCB',
+                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]), // + ' --BCB',
                      DebugUnits);
       if Result <> 0 then
         Exit;
