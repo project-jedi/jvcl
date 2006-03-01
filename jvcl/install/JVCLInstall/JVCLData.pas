@@ -876,8 +876,16 @@ end;
 
 function TTargetConfig.IsUpToDate: Boolean;
 begin
+  Result := True;
+  
+  if Target.IsDelphi then
+  begin
+    if Target.Version = 6 then
+    begin
+      Result := Target.LatestUpdate >= 2; // Update 2 required
+    end;
+  end;
 {
-  Result := False;
   if Target.IsBCB then
   begin
     case Target.Version of
@@ -897,7 +905,7 @@ begin
 
   // The IDE is up to date because the JCL Installer garantees this for us.
   // The JVCL requires an installed JCL, so this is no problem.
-  Result := True;
+//  Result := True;
 end;
 
 function TTargetConfig.IsOldVersionInstalled: Boolean;

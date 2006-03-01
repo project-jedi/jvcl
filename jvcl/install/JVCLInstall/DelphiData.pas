@@ -94,9 +94,7 @@ type
     FExecutable: string;
     FEdition: string;
     FRootDir: string;
-    FBDSProjectsDir: string;
-    FEnvPath: string;
-    FOrgEnvPath: string;
+    FProductVersion: string;
     FBrowsingPaths: TStringList;
     FDCPOutputDir: string;
     FBPLOutputDir: string;
@@ -111,7 +109,14 @@ type
     FInstalledPersonalities: TStrings;
     FGlobalIncludePaths: TStringList;
     FGlobalCppSearchPaths: TStringList;
+    
+    FOrgEnvVars: TStrings;
+    FEnvVars: TStrings;
+    FDefaultBDSProjectsDir: string;
 
+    function GetEnvPath: string;
+    procedure SetEnvPath(const Value: string);
+    function GetBDSProjectsDir: string;
     procedure LoadFromRegistry;
     function ReadBDSProjectsDir: string;
     procedure LoadPackagesFromRegistry(APackageList: TDelphiPackageList;
@@ -130,17 +135,19 @@ type
     function GetDcpDir: string;
     function GetRootLibDir: string;
     function GetProjectDir: string;
-    function IsDelphi: Boolean;
   public
     constructor Create(const AName, AVersion, ARegSubKey: string);
     destructor Destroy; override;
 
     function IsBDS: Boolean;
     function IsBCB: Boolean;
+    function IsDelphi: Boolean;
     function IsPersonal: Boolean;
     function DisplayName: string;
 
     function IsInEnvPath(const Dir: string): Boolean;
+      { IsInEnvPath returns True if Dir is in the EnvPath. (ShortPaths and
+        LongPaths are tested) }
 
     function SupportedPersonalities: TPersonalities;
       { SupportedPersonalities returns all installed personalities for the
@@ -188,13 +195,15 @@ type
     property IDEName: string read FIDEName;
     property IDEVersion: Integer read FIDEVersion; // 1, 7, 4
     property IDEVersionStr: string read FIDEVersionStr;
+    property ProductVersion: string read FProductVersion;
     property Executable: string read FExecutable; // [Reg->App] x:\path\Delphi.exe
     property RootDir: string read FRootDir; // [Reg->RootDir] x:\path
     property RootLibDir: string read GetRootLibDir; // RootDir + '\lib'
     property Edition: string read FEdition; // [Reg->Version] PER/PRO/CSS
     property LatestUpdate: Integer read FLatestUpdate;
     property LatestRTLPatch: Integer read FLatestRTLPatch;
-    property EnvPath: string read FEnvPath write FEnvPath;
+    property EnvPath: string read GetEnvPath write SetEnvPath;
+    property EnvVars: TStrings read FEnvVars;
 
     property BrowsingPaths: TStringList read FBrowsingPaths; // with macros
     property DCPOutputDir: string read FDCPOutputDir; // with macros
@@ -205,7 +214,7 @@ type
     property GlobalIncludePaths: TStringList read FGlobalIncludePaths; // BDS only, with macros
     property GlobalCppSearchPaths: TStringList read FGlobalCppSearchPaths; // BDS only, with macros
 
-    property BDSProjectsDir: string read FBDSProjectsDir;
+    property BDSProjectsDir: string read GetBDSProjectsDir;
     property ProjectDir: string read GetProjectDir; // Delphi 5-7: RootDir\Projects BDS: BDSProjectDir\Projects
     property BplDir: string read GetBplDir; // macros are expanded
     property DcpDir: string read GetDcpDir; // macros are expanded
@@ -429,6 +438,9 @@ begin
   FHKLMRegistryKey := KeyBorland + IDEName + '\' + IDEVersionStr;
   FRegistryKey := KeyBorland + ARegSubKey + '\' + IDEVersionStr;
 
+  FOrgEnvVars := TStringList.Create;
+  FEnvVars := TStringList.Create;
+
   FBrowsingPaths := TStringList.Create;
   FPackageSearchPaths := TStringList.Create;
   FSearchPaths := TStringList.Create;
@@ -454,6 +466,9 @@ end;
 
 destructor TCompileTarget.Destroy;
 begin
+  FOrgEnvVars.Free;
+  FEnvVars.Free;
+
   FBrowsingPaths.Free;
   FPackageSearchPaths.Free;
   FSearchPaths.Free;
@@ -497,7 +512,12 @@ begin
       else if IsBDS and (S = 'bdsprojectsdir') then // do not localize
         NewS := BDSProjectsDir
       else
-        NewS := GetEnvironmentVariable(S);
+      begin
+        if EnvVars.IndexOfName(S) >= 0 then
+          NewS := EnvVars.Values[S]
+        else
+          NewS := GetEnvironmentVariable(S);
+      end;
 
       if NewS <> S then
       begin
@@ -626,28 +646,19 @@ begin
 end;
 
 procedure TCompileTarget.LoadFromRegistry;
-var
-  Reg: TRegistry;
-  List: TStrings;
-  i: Integer;
-begin
-  Reg := TRegistry.Create;
-  try
-    Reg.RootKey := HKEY_LOCAL_MACHINE;
 
-    if Reg.OpenKeyReadOnly(HKLMRegistryKey) then
+  procedure ReadUpdateState(Reg: TRegistry);
+  var
+    List: TStrings;
+    i: Integer;
+  begin
+    if IsBDS then
     begin
-      if Reg.ValueExists('Edition') then // do not localize
-        FEdition := Reg.ReadString('Edition') // do not localize
-      else
-      if Reg.ValueExists('Version') then // do not localize
-        FEdition := Reg.ReadString('Version') // do not localize
-      else
-        FEdition := 'Pers'; // do not localize
-
-      FExecutable := Reg.ReadString('App'); // do not localize
-      FRootDir := ExcludeTrailingPathDelimiter(Reg.ReadString('RootDir')); // do not localize
-
+      if Reg.ValueExists('UpdatePackInstalled') then
+        FLatestUpdate := StrToIntDef(Reg.ReadString('UpdatePackInstalled'), 0);
+    end
+    else
+    begin
       // obtain updates state
       List := TStringList.Create;
       try
@@ -669,59 +680,57 @@ begin
         List.Free;
       end;
     end;
+  end;
 
-    Reg.RootKey := HKEY_CURRENT_USER;
+var
+  Reg: TRegistry;
+  i: Integer;
+begin
+  Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
 
-    // read special environnment variables and their overwrite
-    FBDSProjectsDir := GetEnvironmentVariable('BDSPROJECTSDIR'); // do not localize
-    FEnvPath := GetEnvironmentVariable('PATH'); // do not localize
-    if Reg.OpenKeyReadOnly(RegistryKey + '\Environment Variables') then // do not localize
+    if Reg.OpenKeyReadOnly(HKLMRegistryKey) then
     begin
-      if IsBDS and Reg.ValueExists('BDSPROJECTSDIR') then // do not localize
-        FBDSProjectsDir := ExpandDirMacros(Reg.ReadString('BDSPROJECTSDIR')); // do not localize
-      if Reg.ValueExists('Path') then // PATH-overwrite
-      begin
-        FEnvPath := ExpandDirMacros(Reg.ReadString('Path')); // do not localize
-        FOrgEnvPath := EnvPath;
-      end;
+      if Reg.ValueExists('Edition') then // do not localize
+        FEdition := Reg.ReadString('Edition') // do not localize
+      else
+      if Reg.ValueExists('Version') then // do not localize
+        FEdition := Reg.ReadString('Version') // do not localize
+      else
+        FEdition := 'Pers'; // do not localize
+
+      if Reg.ValueExists('App') then
+        FExecutable := Reg.ReadString('App'); // do not localize
+      if Reg.ValueExists('RootDir') then
+        FRootDir := ExcludeTrailingPathDelimiter(Reg.ReadString('RootDir')); // do not localize
+      if Reg.ValueExists('ProductVersion') then
+        FProductVersion := Reg.ReadString('ProductVersion');
+
+      ReadUpdateState(Reg);
       Reg.CloseKey;
     end;
 
     if IsBDS then
-    begin
-      if FBDSProjectsDir = '' then
-        FBDSProjectsDir := ReadBDSProjectsDir // reads from COREIDExx.XX's resource strings
-    end
-    else // ignore BDSPROJECTSDIR env-var because Delphi and BCB do not know them
-      FBDSProjectsDir := RootDir + '\Projects'; // do not localize
+      FDefaultBDSProjectsDir := ReadBDSProjectsDir; // reads from COREIDExx.XX's resource strings
 
-    if Reg.OpenKeyReadOnly(RegistryKey) then
+    Reg.RootKey := HKEY_CURRENT_USER;
+
+    // read special environnment variables and their overwrite
+    if Reg.OpenKeyReadOnly(RegistryKey + '\Environment Variables') then // do not localize
     begin
-      // obtain updates state
-      List := TStringList.Create;
-      try
-        Reg.GetValueNames(List);
-        for i := 1 to 10 do
-        begin
-          if Reg.ValueExists('Update #' + IntToStr(i)) then // do not localize
-            if FLatestUpdate < i then
-              FLatestUpdate := i;
-          if i = 1 then
-          begin
-            if Reg.ValueExists('Pascal RTL Patch') then // do not localize
-              if FLatestRTLPatch < i then
-                FLatestRTLPatch := i;
-          end
-          else
-            if Reg.ValueExists('Pascal RTL Patch #' + IntToStr(i)) then // do not localize
-              if FLatestRTLPatch < i then
-                FLatestRTLPatch := i;
-        end;
-      finally
-        List.Free;
-      end;
+      Reg.GetValueNames(FOrgEnvVars);
+      for i := 0 to FOrgEnvVars.Count - 1 do
+        FOrgEnvVars[i] := FOrgEnvVars[i] + '=' + Reg.ReadString(FOrgEnvVars[i]);
+      FEnvVars.Assign(FOrgEnvVars);
       Reg.CloseKey;
     end;
+
+    {if Reg.OpenKeyReadOnly(RegistryKey) then
+    begin
+      ReadUpdateState(Reg);
+      Reg.CloseKey;
+    end;}
 
     // get library paths
     if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
@@ -752,6 +761,9 @@ begin
   finally
     Reg.Free;
   end;
+
+  if FProductVersion = '' then
+    FProductVersion := Format('%d.%d', [Version, LatestUpdate]);
 
   LoadPackagesFromRegistry(FKnownIDEPackages, 'Known IDE Packages'); // do not localize
   LoadPackagesFromRegistry(FKnownPackages, 'Known Packages'); // do not localize
@@ -845,7 +857,8 @@ end;
 procedure TCompileTarget.SavePaths;
 var
   Reg: TRegistry;
-  S: string;
+  S, Value: string;
+  i: Integer;
 begin
   Reg := TRegistry.Create;
   try
@@ -873,17 +886,34 @@ begin
         Reg.WriteString('SearchPath', S);
       Reg.CloseKey;
     end;
-    if FEnvPath <> FOrgEnvPath then
+
+    if FEnvVars.Text <> FOrgEnvVars.Text then
     begin
       if Reg.OpenKey(RegistryKey + '\Environment Variables', True) then // do not localize
       begin
-        Reg.WriteString('Path', FEnvPath); // do not localize
+        // delete deleted items
+        for i := 0 to FOrgEnvVars.Count - 1 do
+          if FEnvVars.IndexOfName(FOrgEnvVars.Names[i]) = -1 then
+            Reg.DeleteValue(FOrgEnvVars.Names[i]);
+
+        // add new
+        for i := 0 to FEnvVars.Count - 1 do
+        begin
+          Value := FEnvVars.Values[FEnvVars.Names[i]];
+          if Value <> FOrgEnvVars.Values[FEnvVars.Names[i]] then
+            Reg.WriteString(FEnvVars.Names[i], Value);
+        end;
         Reg.CloseKey;
       end;
     end;
   finally
     Reg.Free;
   end;
+end;
+
+procedure TCompileTarget.SetEnvPath(const Value: string);
+begin
+  FEnvVars.Values['PATH'] := ExpandDirMacros(Value);
 end;
 
 function TCompileTarget.SupportedPersonalities: TPersonalities;
@@ -975,6 +1005,30 @@ end;
 function TCompileTarget.GetDcpDir: string;
 begin
   Result := ExpandDirMacros(DCPOutputDir);
+end;
+
+function TCompileTarget.GetEnvPath: string;
+begin
+  if EnvVars.IndexOfName('PATH') = -1 then
+    Result := GetEnvironmentVariable('PATH')
+  else
+    Result := FEnvVars.Values['PATH'];
+end;
+
+function TCompileTarget.GetBDSProjectsDir: string;
+begin
+  if IsBDS then
+  begin
+    if FEnvVars.IndexOfName('BDSPROJECTSDIR') >= 0 then // do not localize
+      Result := ExpandDirMacros(EnvVars.Values['BDSPROJECTSDIR']) // do not localize
+    else
+      Result := ExpandDirMacros(GetEnvironmentVariable('BDSPROJECTSDIR')); // do not localize
+
+    if Result = '' then // ignore BDSPROJECTSDIR env-var because Delphi and BCB do not know them
+      Result := FDefaultBDSProjectsDir;
+  end
+  else
+   Result := RootDir + '\Projects'; // do not localize
 end;
 
 procedure TCompileTarget.GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
