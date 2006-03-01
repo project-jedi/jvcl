@@ -262,9 +262,9 @@ begin
     Result.Version := IDEVersion;
     if Typ = ttBDS then
     begin
-      if Result.IDEVersion = 1 then
+      if IDEVersion <= 2 then // C#Builder 1 and Delphi 8 can't build the installer
       begin
-        Result.Typ := ttNone; // C#Builder is no valid target
+        Result.Typ := ttNone;
         Result.Version := 0;
         Result.IDEVersion := 0;
         Result.RootDir := '';
