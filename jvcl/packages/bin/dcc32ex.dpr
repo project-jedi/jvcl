@@ -475,27 +475,23 @@ begin
   GetDir(0, CurDir);
   CurDir := ExcludeTrailingPathDelimiter(CurDir);
   Dcc32Cfg := CurDir + '\dcc32.cfg';
-  if not FileExists(Dcc32Cfg) then
+  SetFileAttributes(PChar(Dcc32Cfg), FILE_ATTRIBUTE_NORMAL);
+  AssignFile(f, Dcc32Cfg);
+  {$I-}
+  Rewrite(f);
+  WriteLn(f, '-U"' + Target.LibDirs + '"');
+  WriteLn(f, '-I"' + Target.LibDirs + '"');
+  WriteLn(f, '-R"' + Target.LibDirs + '"');
+  WriteLn(f, '-O"' + Target.LibDirs + '"');
+  CloseFile(f);
+  {$I+}
+  if IOResult <> 0 then
   begin
-    AssignFile(f, Dcc32Cfg);
-    {$I-}
-    Rewrite(f);
-    WriteLn(f, '-U"' + Target.LibDirs + '"');
-    WriteLn(f, '-I"' + Target.LibDirs + '"');
-    WriteLn(f, '-R"' + Target.LibDirs + '"');
-    WriteLn(f, '-O"' + Target.LibDirs + '"');
-    CloseFile(f);
-    {$I+}
-    if IOResult <> 0 then
-    begin
-      //WriteLn(ErrOutput, 'Failed to write file ', Dcc32Cfg);
-      ExtraOpts := ExtraOpts + '-U"' + Target.LibDirs + '" -I"' + Target.LibDirs + '" -R"' + Target.LibDirs + '" -O"' + Target.LibDirs + '" ';
-      DeleteFile(PChar(Dcc32Cfg));
-      Dcc32Cfg := '';
-    end;
-  end
-  else
+    //WriteLn(ErrOutput, 'Failed to write file ', Dcc32Cfg);
+    ExtraOpts := ExtraOpts + '-U"' + Target.LibDirs + '" -I"' + Target.LibDirs + '" -R"' + Target.LibDirs + '" -O"' + Target.LibDirs + '" ';
+    DeleteFile(PChar(Dcc32Cfg));
     Dcc32Cfg := '';
+  end;
 
   Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' + ExtraOpts + CmdLine, CurDir, False);
   if Dcc32Cfg <> '' then
