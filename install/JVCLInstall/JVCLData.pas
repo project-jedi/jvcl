@@ -784,6 +784,7 @@ end;
 
 destructor TTargetConfig.Destroy;
 begin
+  FJVCLConfig.Free;
   FFrameworks.Free;
   inherited Destroy;
 end;
