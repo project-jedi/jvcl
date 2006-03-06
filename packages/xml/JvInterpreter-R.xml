@@ -22,13 +22,13 @@
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="vclbde50" Targets="DBv5" Condition=""/>
-    <Package Name="qrpt50" Targets="DBv5" Condition="JVCL_UseQuickReport"/>
     <Package Name="inet50" Targets="DBv5" Condition="INTERNET_COMPONENTS"/>
     <Package Name="vcldb50" Targets="DBv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
     <Package Name="bdertl" Targets="DBv6up" Condition=""/>
+    <Package Name="qrpt50" Targets="DBv5" Condition="JVCL_UseQuickReport"/>
     <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
