@@ -50,11 +50,13 @@ type
     FItems: TPackageGroupArray;
     FTargetConfig: ITargetConfig;
     function GetCount: Integer;
+    function GetItem(Personal: Boolean;
+      Kind: TPackageGroupKind): TProjectGroup;
   public
     constructor Create(ATargetConfig: ITargetConfig);
     destructor Destroy; override;
 
-    property Items: TPackageGroupArray read FItems write FItems;
+    property Items[Personal: Boolean; Kind: TPackageGroupKind] : TProjectGroup read GetItem;
     property Count: Integer read GetCount;
     property TargetConfig: ITargetConfig read FTargetConfig;
   end;
@@ -189,6 +191,12 @@ end;
 function TFrameworks.GetCount: Integer;
 begin
   Result := Length(FItems);
+end;
+
+function TFrameworks.GetItem(Personal: Boolean;
+  Kind: TPackageGroupKind): TProjectGroup;
+begin
+  Result := FItems[Personal, Kind];
 end;
 
 { TProjectGroup }
