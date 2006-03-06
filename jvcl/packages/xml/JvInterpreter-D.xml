@@ -25,6 +25,9 @@
     <Package Name="vcldb50" Targets="DBv5" Condition=""/>
     <Package Name="vclbde50" Targets="DBv5" Condition=""/>
     <Package Name="qrpt50" Targets="DBv5" Condition="JVCL_UseQuickReport"/>
+    <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
