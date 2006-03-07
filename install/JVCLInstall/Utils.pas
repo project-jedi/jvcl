@@ -31,7 +31,7 @@ unit Utils;
 interface
 
 uses
-  Windows, ShellAPI, SysUtils, Classes, JvConsts;
+  Windows, ShellAPI, SysUtils, Classes, JvConsts, JvVCL5Utils;
 
 function WordWrapString(const S: string; Width: Integer = 75): string;
 
@@ -59,6 +59,7 @@ procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
   const FileExtensions: array of string);
 
 function FindFilename(const Paths: string; const Filename: string): string;
+function ForceDirectoriesEx(const Directory: string): Boolean;
 
  { DirContainsFiles returns True if the directory Dir contains at least one file
    that matches Mask. }
@@ -308,6 +309,14 @@ begin
     end;
   end;
   Result := Filename;
+end;
+
+function ForceDirectoriesEx(const Directory: string): Boolean;
+begin
+  if Directory <> '' then
+    Result := ForceDirectories(Directory)
+  else
+    Result := True;
 end;
 
 function DirContainsFiles(const Dir, Mask: string): Boolean;
