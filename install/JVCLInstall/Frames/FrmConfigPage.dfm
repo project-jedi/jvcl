@@ -346,6 +346,7 @@ object FrameConfigPage: TFrameConfigPage
         'he redistribution of the binary.'#13#10#13#10'JclDebug can use these infor' +
         'mations.'
       Caption = '&Link Map files in binaries'
+      ShowHint = True
       TabOrder = 6
       OnClick = CheckBoxDeveloperInstallClick
     end
@@ -358,6 +359,7 @@ object FrameConfigPage: TFrameConfigPage
         'Activate this option if the installer should delete'#13#10'detailed ma' +
         'p-file after they are linked in the binary.'
       Caption = '&Delete after linking'
+      ShowHint = True
       TabOrder = 7
       OnClick = CheckBoxDeveloperInstallClick
     end

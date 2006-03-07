@@ -30,6 +30,7 @@ program JVCLInstall;
 
 uses
   //FastMM4,
+  //ExceptionDlg in 'Debug\ExceptionDlg.pas',
   JvGnugettext,
   Forms,
   Main in 'Main.pas' {FormMain},
