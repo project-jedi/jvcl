@@ -756,9 +756,9 @@ begin
   FTarget := ATarget;
 
   FInstallMode := [pkVcl];
-  if Target.IsBDS then
+  {if Target.IsBDS then
     FDefaultHppDir := ExtractFilePath(Format(sBCBIncludeDir, [Target.RootDir])) + 'JVCL' // do not localize
-  else
+  else}
     FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FHppDir := FDefaultHppDir;
 
