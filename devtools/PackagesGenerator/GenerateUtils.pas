@@ -463,9 +463,10 @@ var
   all : string;
   target : TTarget;
 begin
-  Result := true;
+  Result := True;
   FreeAndNil(TargetList);
   FreeAndNil(AliasList);
+  FreeAndNil(ClxReplacementList);
 
   // Ensure the xml file exists
   if not FileExists(XmlFileName) then
