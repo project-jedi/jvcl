@@ -27,6 +27,8 @@ Known Issues:
 
 {$I jedi.inc}
 
+{$DEFINE INSTALLER}
+
 {$DEFINE NO_JCL}
 
 // Reduces warnings on D7:

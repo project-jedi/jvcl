@@ -1451,7 +1451,7 @@ var
   AProjectIndex, i: Integer;
   TargetConfig: ITargetConfig;
   DccOpt: string;
-  Edition, PkgDir, JVCLPackagesDir: string;
+  Edition, JVCLPackagesDir: string;
   Files: TStrings;
 
   ProjectOrder: TList;
@@ -1491,18 +1491,6 @@ begin
       Edition := Edition + 'clx';
     JVCLPackagesDir := TargetConfig.JVCLPackagesDir;
 
-    PkgDir := Edition;
-    if not ProjectGroup.IsVCLX then // only PRO and ENT versions have CLX support
-    begin
-      if PkgDir[3] in ['p', 'P', 's', 'S'] then
-      begin
-        if PkgDir[2] = '5' then
-          PkgDir := Copy(PkgDir, 1, 2) + 'std'
-        else
-          PkgDir := Copy(PkgDir, 1, 2) + 'per';
-      end;
-    end;
-
     DccOpt := '-M'; // make modified units, output 'never build' DCPs
 
     if TargetConfig.Build then
@@ -1531,7 +1519,7 @@ begin
    // *****************************************************************
 
 {**}DoProjectProgress(RsGeneratingPackages + DebugProgress, GetProjectIndex, ProjectMaxProgress);
-    // generate the packages and .cfg files for the "master" PkgDir
+    // generate the packages and .cfg files
     if not GeneratePackages('JVCL', CutPersEdition(Edition),
                             TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages

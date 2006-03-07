@@ -91,7 +91,7 @@ var
               CaptureLine(Oem2Ansi(Copy(Line, 1, i - 1)), Aborted);
             if (Line[i] = #13) and (Line[i + 1] = #10) then
             begin
-              if Line[i + 2] = #13 then
+              if (i + 2 <= Length(Line)) and (Line[i + 2] = #13) then
                 Delete(Line, 1, i + 2)
               else
                 Delete(Line, 1, i + 1);

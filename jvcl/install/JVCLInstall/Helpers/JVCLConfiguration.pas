@@ -31,7 +31,13 @@ unit JVCLConfiguration;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, dpp_PascalParser, Utils;
+  SysUtils, Classes, Contnrs, dpp_PascalParser,
+  {$IFDEF COMPILER6_UP}
+  StrUtils,
+  {$ELSE}
+  JvVCL5Utils,
+  {$ENDIF COMPILER6_UP}
+  Utils;
 
 type
   TJVCLConfig = class;
@@ -111,8 +117,13 @@ function IsDirective(S: string; const Directive: string): Boolean;
 begin
   Result := False;
   S := Trim(S);
-  if StrLIComp(PChar(S), PChar(Directive), Length(Directive)) = 0 then
-    Result := S[Length(Directive) + 1] in [#0..#32, '}', '*'];
+  if AnsiStartsText(Directive, S) then
+  begin
+    Result := (Length(S) >= Length(Directive)) or
+      (S[Length(Directive) + 1] in [#1..#32, '}', '*']);
+  end;
+//  if StrLIComp(PChar(S), PChar(Directive), Length(Directive)) = 0 then
+//    Result := S[Length(Directive) + 1] in [#0..#32, '}', '*'];}
 end;
 
 //=== TJVCLConfigItem ========================================================
