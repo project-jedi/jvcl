@@ -1518,15 +1518,15 @@ begin
 
     if DebugUnits then
     begin
-      ForceDirectories(TargetConfig.DebugUnitOutDir);
-      ForceDirectories(TargetConfig.DebugBplDir);
-      ForceDirectories(TargetConfig.DebugDcpDir);
-      ForceDirectories(TargetConfig.DebugHppDir);
+      ForceDirectoriesEx(TargetConfig.DebugUnitOutDir);
+      ForceDirectoriesEx(TargetConfig.DebugBplDir);
+      ForceDirectoriesEx(TargetConfig.DebugDcpDir);
+      ForceDirectoriesEx(TargetConfig.DebugHppDir);
     end;
 
     { Create include directory if necessary }
     if TargetConfig.Target.SupportsPersonalities([persBCB]) then
-      ForceDirectories(TargetConfig.Target.ExpandDirMacros(TargetConfig.HppDir));
+      ForceDirectoriesEx(TargetConfig.Target.ExpandDirMacros(TargetConfig.HppDir));
 
    // *****************************************************************
 
