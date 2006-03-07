@@ -29,7 +29,7 @@ Known Issues:
 program JVCLInstall;
 
 uses
-  FastMM4,
+  //FastMM4,
   JvGnugettext,
   Forms,
   Main in 'Main.pas' {FormMain},
