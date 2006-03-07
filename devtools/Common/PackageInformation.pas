@@ -1126,7 +1126,7 @@ begin
     FUserData.Free;
   FRequireList.Free;
   FContaineList.Free;
-  // FInfo is buffered and is destroyed by XmlFileCache
+  FInfo.Free;
   inherited Destroy;
 end;
 
