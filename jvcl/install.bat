@@ -4,7 +4,7 @@ SET DELPHIVERSION=%1
 
 :: compile installer
 cd install\JVCLInstall
-del /Q *.cfg >NUL
+if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
 ..\..\packages\bin\dcc32ex.exe -Q -E..\..\bin -I..\..\install\JVCLInstall;..\..\common -U..\..\common;..\..\run -n..\..\dcu JVCLInstall.dpr
 if ERRORLEVEL 1 goto Failed
 cd ..\..
