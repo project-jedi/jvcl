@@ -184,10 +184,10 @@ resourcestring
   RsSelectionPageSubTitleUninstall = 'Select all target IDEs from which the JVCL should be uninstalled';
 
   RsErrorInstallingJCL = 'Cannot start the JCL Installer.';
-  RsDelphiBCBUpdateRequired = 'Delphi/C++Builder update required';
+  RsDelphiBCBUpdateRequired = 'Delphi/C++Builder update not installed';
   RsDownloadUpdatesFrom = 'Download from';
-  RsJCLVersionRequired = 'JCL %s or higher required';
-  RsDownloadOrSelectJclDir = 'Download or select a JCL directory.|' +
+  RsJCLVersionRequired = 'JCL %s or higher not installed';
+  RsDownloadOrSelectJclDir = 'Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|' +
     'http://homepages.borland.com/jedi/jcl/'; // http://jcl.sourceforge.net
   RsInstalledJVCLVersion = 'Installed JVCL version: %s';
   RsInstallJCL = 'Install JCL';
