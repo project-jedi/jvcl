@@ -90,6 +90,7 @@ type
   private
     FStorePaths: Boolean;
     FIgnoreExclusive : Boolean; // November 7, 2004 - USE WITH CAUTION !!!!!
+    FCompressionLevel: TJclCompressionLevel;
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
@@ -119,7 +120,7 @@ type
     procedure CompressFiles(Files: TStrings; const FileName: string); overload;
     // compresses a Directory (recursing if Recursive is true)
     // NOTE: caller must free returned stream!
-    function CompressDirectory(const Directory: string; Recursive: Boolean): TStream; overload;
+    function CompressDirectory(Directory: string; Recursive: Boolean): TStream; overload;
     // compresses a Directory (recursing if Recursive is true)
     // and saves the compressed result to FileName
     procedure CompressDirectory(const Directory: string; Recursive: Boolean; const FileName: string); overload;
@@ -131,7 +132,7 @@ type
     // decompresses Stream into Directory optionally overwriting any existing files
     // If RelativePaths is true, any paths in the stream are stripped from their drive letter
     procedure ListStoredFiles(const FileName: string; FileList: TStrings);  // Note #2
-    procedure DecompressStream(Stream: TStream; const Directory: string; Overwrite: Boolean;
+    procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean;
       const RelativePaths: Boolean = True);
     procedure StopCompression;   // Note #1
     procedure StopDecompression; // Note #1
@@ -188,7 +189,7 @@ begin
   FCompressionLevel := -1;
 end;
 
-function TJvZlibMultiple.CompressDirectory(const Directory: string; Recursive: Boolean): TStream;
+function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean): TStream;
 
   procedure SearchDirectory(const SDirectory: string);
   var
@@ -369,7 +370,7 @@ begin
 end;
 
 procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
-  const Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
+  Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
 var
   FileStream: TFileStream;
   ZStream: TJclZLibDecompressStream;
