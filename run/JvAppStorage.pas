@@ -2002,6 +2002,7 @@ function TJvCustomAppStorage.ReadObjectList(const Path: string; List: TList;
 var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
+  FOldInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent;
 begin
   if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
     Result := List.Count
@@ -2010,9 +2011,13 @@ begin
     if ClearFirst then
       List.Clear;
     ResolvePath(Path + cSubStorePath, TargetStore, TargetPath); // Only needed for assigning the event
-    TargetStore.FCurrentInstanceCreateEvent := ItemCreator;
-    Result := ReadList(Path, List, ReadObjectListItem, ItemName);
-    TargetStore.FCurrentInstanceCreateEvent := nil;
+    FOldInstanceCreateEvent := TargetStore.FCurrentInstanceCreateEvent;
+	try
+      TargetStore.FCurrentInstanceCreateEvent := ItemCreator;
+      Result := ReadList(Path, List, ReadObjectListItem, ItemName);
+    finally
+      TargetStore.FCurrentInstanceCreateEvent := FOldInstanceCreateEvent;
+    end;
   end;
 end;
 
