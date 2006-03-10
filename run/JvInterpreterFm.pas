@@ -473,6 +473,19 @@ end;
 
 function TJvInterpreterFm.SetValue(const Identifier: string; const Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
+  // Class Fields support begin
+var
+  JvInterpreterForm: TJvInterpreterForm;
+
+  function SetFormValue(Form: TJvInterpreterForm): Boolean;
+  begin
+    Result := False;
+    with Form.FFieldList do
+      if FindVar('', Identifier) <> nil then
+        Result := SetValue(Identifier, Value, Args);
+  end;
+  // Class Fields support end
+
 begin
   if (Args.Obj = nil) and (CurInstance is TJvInterpreterForm) then
   begin
@@ -482,23 +495,36 @@ begin
       Exit;
     end;
     // Class Fields support begin
-    with Form.FFieldList do
-    if FindVar('', Identifier) <> nil then
+    { may be TForm field }
+    Result := SetFormValue(TJvInterpreterForm(CurInstance));
+    if not Result then
     begin
-      Result := SetValue(Identifier, Value, Args);
-      Exit;
-    end;
     // Class Fields support end
-    { may be TForm method or published property }
-    Args.Obj := CurInstance;
-    Args.ObjTyp := varObject;
-    try
-      Result := inherited SetValue(Identifier, Value, Args);
-    finally
-      Args.Obj := nil;
-      Args.ObjTyp := 0;
+      { may be TForm method or published property }
+      Args.Obj := CurInstance;
+      Args.ObjTyp := varObject;
+      try
+        Result := inherited SetValue(Identifier, Value, Args);
+      finally
+        Args.Obj := nil;
+        Args.ObjTyp := 0;
+      end;
     end;
   end
+  // Class Fields support begin
+  else
+  if (Args.Obj <> nil) and (Args.ObjTyp = varObject) and
+     (Args.Obj is TJvInterpreterForm) then
+  begin
+    JvInterpreterForm := TJvInterpreterForm(Args.Obj);
+    try
+      Args.Obj := nil;
+      Result := SetFormValue(JvInterpreterForm);
+    finally
+      Args.Obj := JvInterpreterForm;
+    end;
+  end
+  // Class Fields support end
   else
     Result := False;
   Result := Result or inherited SetValue(Identifier, Value, Args);
