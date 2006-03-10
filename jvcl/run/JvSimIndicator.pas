@@ -88,6 +88,8 @@ begin
 end;
 
 procedure TJvSimIndicator.Paint;
+const
+  NumberOfBars = 20;
 var
   R, Ri: TRect;
   I, n: Integer;
@@ -104,8 +106,8 @@ begin
   Canvas.FillRect(R);
   Dec(R.Right);
   h := R.Bottom - R.Top;
-  dh := h div 20;
-  n := Round(h * (FValue - FMinimum) / (FMaximum - FMinimum) / dh);
+  dh := h div NumberOfBars;
+  n := Round(NumberOfBars * (FValue - FMinimum)/(FMaximum - FMinimum));
   Canvas.Brush.Color := FBarColor;
   Ri := Rect(R.Left + 1, R.Bottom - dh + 1, R.Right - 1, R.Bottom);
   for I := 1 to n do
