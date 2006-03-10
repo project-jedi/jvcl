@@ -2606,9 +2606,7 @@ begin
     ConComponents[0].ScheduleManager := nil;
 
   while ScheduleCount > 0 do
-  begin
     Schedules[0].Free;
-  end;
 
   while ApptCount > 0 do
     Appts[0].Free;
