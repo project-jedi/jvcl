@@ -759,8 +759,7 @@ begin
         begin
           if not Transparent then
             FillRect(Rect(0, 0, Width, Height));
-          if csDesigning in ComponentState then
-            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
+          Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
         end;
       fsRegular:
         begin
