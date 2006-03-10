@@ -704,6 +704,7 @@ type
 
 procedure SetDefaultMenuFont(AFont: TFont);
 function UseFlatMenubars: Boolean;
+function StripHotkeyPrefix(const Text: string): string; // MBCS
 
 {$IFDEF UNITVERSIONING}
 const
@@ -729,6 +730,29 @@ const
 
   // The space between a menu item text and its shortcut
   ShortcutSpacing = '        ';
+
+function StripHotkeyPrefix(const Text: string): string; // MBCS
+var
+  I: Integer;
+begin
+  if LeadBytes <> [] then
+  begin
+    Result := Text;
+    I := 1;
+    while I <= Length(Result) do
+    begin
+      if Result[I] in LeadBytes then
+        Inc(I)
+      else
+	  if Result[I] = cHotkeyPrefix then
+        Delete(Result, I, 1);
+      Inc(I);
+    end;
+  end
+  else
+    Result := StripHotkey(Text);
+end;
+
 
 function CreateMenuItemPainterFromStyle(Style: TJvMenuStyle; Menu: TMenu): TJvCustomMenuItemPainter;
 begin
@@ -2100,14 +2124,14 @@ begin
 
   case TextVAlignment of
     vaMiddle:
-      Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Canvas.TextHeight(StripHotkey(Text))) div 2);
+      Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Canvas.TextHeight(StripHotkeyPrefix(Text))) div 2);
     vaBottom:
-      ARect.Top := ARect.Bottom - Canvas.TextHeight(StripHotkey(Text));
+      ARect.Top := ARect.Bottom - Canvas.TextHeight(StripHotkeyPrefix(Text));
   end;
 
   // if a top level menu item then draw text centered horizontally
   if not IsPopup then
-    ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(StripHotkey(Text))) div 2;
+    ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(StripHotkeyPrefix(Text))) div 2;
 
   if mdDisabled in FState then
   begin
@@ -2559,7 +2583,7 @@ begin
       Inc(Result, Canvas.TextWidth('  '));
   end
   else
-    Result := Canvas.TextWidth(StripHotkey(Item.Caption));
+    Result := Canvas.TextWidth(StripHotkeyPrefix(Item.Caption));
 end;
 
 procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem;
