@@ -313,12 +313,12 @@ type
 
   TJvSettingsTreeView = class(TJvCustomSettingsTreeView)
   published
-    property AutoExpand default True;
-    property ShowButtons default False;
+    property AutoExpand;
+    property ShowButtons;
     {$IFDEF VCL}
-    property ShowLines default False;
+    property ShowLines;
     {$ENDIF VCL}
-    property ReadOnly default True;
+    property ReadOnly;
     property PageDefault;
     property PageNodeImages;
     property PageLinks;
@@ -518,6 +518,10 @@ begin
   FLinks := TJvPageLinks.Create;
   FLinks.FTreeView := Self;
   ReadOnly := True;
+  {$IFDEF VCL}
+  ShowLines := False;
+  {$ENDIF VCL}
+  AutoExpand := True;
   ShowButtons := False;
 end;
 
