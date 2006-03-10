@@ -114,6 +114,7 @@ uses
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
+  IsPopupWindow := True;
   FButtonSize := cButtonWidth;
   FSelectedColor := clBlack;
   BorderIcons := [];
