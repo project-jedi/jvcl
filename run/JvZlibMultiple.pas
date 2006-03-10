@@ -97,7 +97,7 @@ type
     // July 26, 2004: New improved event types for decompression: Allow user to
     // skip writing of files they want skipped on extraction, and if they
     // extract nothing, they can use this "nil extraction" to scan the contents
-    // of the file, returning the file names and sizes inside. 
+    // of the file, returning the file names and sizes inside.
     FOnDecompressingFile: TFileBeforeWriteEvent;
     FOnDecompressedFile: TFileAfterWriteEvent;
     FTerminateCompress : Boolean;  // Note #1
@@ -105,7 +105,7 @@ type
     FCompressionPause : Boolean;  // Note #1
     FDecompressionPause : Boolean;   // Note #1
   protected
-    procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
+    procedure AddFile(const FileName, Directory, FilePath: string; DestStream: TStream);
     procedure DoProgress(Position, Total: Integer); virtual;
     procedure DoStopCompression;   // Note #1
     procedure DoStopDecompression; // Note #1
@@ -116,21 +116,23 @@ type
     function CompressFiles(Files: TStrings): TStream; overload;
     // compresses a list of files (can contain wildcards)
     // and saves the compressed result to FileName
-    procedure CompressFiles(Files: TStrings; FileName: string); overload;
+    procedure CompressFiles(Files: TStrings; const FileName: string); overload;
     // compresses a Directory (recursing if Recursive is true)
     // NOTE: caller must free returned stream!
-    function CompressDirectory(Directory: string; Recursive: Boolean): TStream; overload;
+    function CompressDirectory(const Directory: string; Recursive: Boolean): TStream; overload;
     // compresses a Directory (recursing if Recursive is true)
     // and saves the compressed result to FileName
-    procedure CompressDirectory(Directory: string; Recursive: Boolean; FileName: string); overload;
+    procedure CompressDirectory(const Directory: string; Recursive: Boolean; const FileName: string); overload;
     // decompresses FileName into Directory. If Overwrite is true, overwrites any existing files with
     // the same name as those in the compressed archive.
     // If RelativePaths is true, the paths in the compressed file are stripped from their drive letter
-    procedure DecompressFile(FileName, Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
+    procedure DecompressFile(const FileName, Directory: string; Overwrite: Boolean;
+      const RelativePaths: Boolean = True);
     // decompresses Stream into Directory optionally overwriting any existing files
     // If RelativePaths is true, any paths in the stream are stripped from their drive letter
-    procedure ListStoredFiles(FileName : String; FileList : TStrings);  // Note #2
-    procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
+    procedure ListStoredFiles(const FileName: string; FileList: TStrings);  // Note #2
+    procedure DecompressStream(Stream: TStream; const Directory: string; Overwrite: Boolean;
+      const RelativePaths: Boolean = True);
     procedure StopCompression;   // Note #1
     procedure StopDecompression; // Note #1
     property CompressionPaused : Boolean read FCompressionPause write FCompressionPause; // Note #1
@@ -140,6 +142,7 @@ type
     // NOTE : This property allows you to override already opened files - USE WITH CAUTION!!! opened files may still be writing data
     //        causing stored files to be different from the final file.
     property IgnoreExclusive : Boolean read FIgnoreExclusive write FIgnoreExclusive default False;
+    property CompressionLevel: TJclCompressionLevel read FCompressionLevel write FCompressionLevel default -1;
      // NOTE: Changed decompression event parameters. July 26 2004. -WPostma.
     property OnDecompressingFile: TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
     property OnDecompressedFile: TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
@@ -182,11 +185,12 @@ begin
   inherited Create(AOwner);
   FStorePaths := True;
   FIgnoreExclusive := False;
+  FCompressionLevel := -1;
 end;
 
-function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean): TStream;
+function TJvZlibMultiple.CompressDirectory(const Directory: string; Recursive: Boolean): TStream;
 
-  procedure SearchDirectory(SDirectory: string);
+  procedure SearchDirectory(const SDirectory: string);
   var
     SearchRec: TSearchRec;
     Res: Integer;
@@ -216,12 +220,13 @@ begin
   { (RB) Letting this function create a stream is not a good idea;
          see other CompressDirectory function that causes a memory leak }
   Result := TMemoryStream.Create;
-  Directory := IncludeTrailingPathDelimiter(Directory);
+  if Directory <> '' then // do not start with '\' if the caller specifies ''.
+    Directory := IncludeTrailingPathDelimiter(Directory);
   SearchDirectory('');
   Result.Position := 0;
 end;
 
-procedure TJvZlibMultiple.AddFile(FileName, Directory, FilePath: string;
+procedure TJvZlibMultiple.AddFile(const FileName, Directory, FilePath: string;
   DestStream: TStream);
 var
   Stream: TStream;
@@ -229,8 +234,9 @@ var
   ZStream: TJclZLibCompressStream;
   Buffer: array [0..1023] of Byte;
   Count: Integer;
+  FileStreamPos, FileStreamSize: Int64;
 
-  procedure WriteFileRecord(Directory, FileName: string; FileSize: Integer;
+  procedure WriteFileRecord(const Directory, FileName: string; FileSize: Integer;
     CompressedSize: Integer);
   var
     B: Byte;
@@ -261,16 +267,20 @@ begin
   else
     FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
   try
-    ZStream := TJclZLibCompressStream.Create(Stream);
+    ZStream := TJclZLibCompressStream.Create(Stream, CompressionLevel);
     try
       if Assigned(FOnCompressingFile) then
         FOnCompressingFile(Self, FilePath);
 
+      FileStreamPos := FileStream.Position;
+      FileStreamSize := FileStream.Size;
       { (RB) ZStream has an OnProgress event, thus CopyFrom can be used }
       repeat
         Count := FileStream.Read(Buffer, SizeOf(Buffer));
-        ZStream.Write(Buffer, Count);
-        DoProgress(FileStream.Position, FileStream.Size);
+        Inc(FileStreamPos, Count);
+        if Count > 0 then
+          ZStream.Write(Buffer, Count);
+        DoProgress(FileStreamPos, FileStreamSize);
         while CompressionPaused do
           Sleep(1);
       until (Count = 0) or FTerminateCompress;
@@ -282,9 +292,9 @@ begin
       FOnCompressedFile(Self, FilePath);
 
     if StorePaths then
-      WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size)
+      WriteFileRecord(Directory, FileName, FileStreamSize, Stream.Size)
     else
-      WriteFileRecord('', FileName, FileStream.Size, Stream.Size);
+      WriteFileRecord('', FileName, FileStreamSize, Stream.Size);
 
     DestStream.CopyFrom(Stream, 0);
   finally
@@ -293,8 +303,8 @@ begin
   end;
 end;
 
-procedure TJvZlibMultiple.CompressDirectory(Directory: string;
-  Recursive: Boolean; FileName: string);
+procedure TJvZlibMultiple.CompressDirectory(const Directory: string;
+  Recursive: Boolean; const FileName: string);
 var
   TmpStream: TStream;
 begin
@@ -344,7 +354,7 @@ begin
   Result.Position := 0;
 end;
 
-procedure TJvZlibMultiple.CompressFiles(Files: TStrings; FileName: string);
+procedure TJvZlibMultiple.CompressFiles(Files: TStrings; const FileName: string);
 var
   TmpStream: TStream;
 begin
@@ -359,7 +369,7 @@ begin
 end;
 
 procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
-  Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
+  const Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
 var
   FileStream: TFileStream;
   ZStream: TJclZLibDecompressStream;
@@ -370,11 +380,13 @@ var
   Buffer: array [0..1023] of Byte;
   TotalByteCount: Longword;
   WriteMe: Boolean; // Allow skipping of files instead of writing them.
+  FileStreamSize, StreamSize: Int64;
 begin
   if Directory <> '' then
     Directory := IncludeTrailingPathDelimiter(Directory);
 
-  while Stream.Position < Stream.Size do
+  StreamSize := Stream.Size; // cache, to not FileSeek on every iteration
+  while Stream.Position < StreamSize do
   begin
     //Read and force the directory
     Stream.Read(B, SizeOf(B));
@@ -413,9 +425,9 @@ begin
         //This fails if Directory isn't empty
         WriteMe := True;
         if Assigned(FOnDecompressingFile) then
-            FOnDecompressingFile(Self, S, WriteMe);
+          FOnDecompressingFile(Self, S, WriteMe);
 
-        if WriteMe then        
+        if WriteMe then
           FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive)
         else
           FileStream := nil; // skip it!
@@ -425,12 +437,13 @@ begin
           TotalByteCount := 0;
 
           { (RB) ZStream has an OnProgress event, thus copyfrom can be used }
+          FileStreamSize := 0;
           repeat
             Count := ZStream.Read(Buffer, SizeOf(Buffer));
             if Assigned(FileStream) then
             begin
-              FileStream.Write(Buffer, Count);
-              DoProgress(FileStream.Size, FileSize);
+              Inc(FileStreamSize, FileStream.Write(Buffer, Count));
+              DoProgress(FileStreamSize, FileSize);
               while DecompressionPaused do
                 Sleep(1);
             end;
@@ -449,7 +462,7 @@ begin
   end;
 end;
 
-procedure TJvZlibMultiple.DecompressFile(FileName, Directory: string;
+procedure TJvZlibMultiple.DecompressFile(const FileName, Directory: string;
   Overwrite: Boolean; const RelativePaths: Boolean);
 var
   Stream: TFileStream;
@@ -491,17 +504,18 @@ begin
   DoStopDecompression;
 end;
 
-procedure TJvZLibMultiple.ListStoredFiles(FileName: String;
-  FileList : TStrings);
+procedure TJvZLibMultiple.ListStoredFiles(const FileName: string; FileList: TStrings);
 var
   ZStream : TFileStream;
   FHByte : Byte;
   FilePos, HeaderPos, CompressedSize, UnCompressedSize : Integer;
   FileInfo : string;
+  ZStreamSize: Int64;
 begin
   ZStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    while ZStream.Position < ZStream.Size do
+    ZStreamSize := ZStream.Size;
+    while ZStream.Position < ZStreamSize do
     begin
       ZStream.Read(FHByte, SizeOf(FHByte));
       SetLength(FileInfo, FHByte);
