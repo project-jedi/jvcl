@@ -59,7 +59,8 @@ uses
   {$IFDEF VisualCLX}
   Qt, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32;
+  JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32,
+  JvToolEdit;
 
 const
   JvDefPageControlBorder = 4;
@@ -174,7 +175,6 @@ type
     procedure WMCtlColorEdit(var Msg: TWMCtlColorEdit); message WM_CTLCOLOREDIT;
     procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
     procedure WMKeyUp(var Msg: TWMKeyUp); message WM_KEYUP;
-    //procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SelectTabControl(Previous: Boolean);
   protected
     procedure GetDlgCode(var Code: TDlgCodes); override;
@@ -688,6 +688,7 @@ implementation
 uses
   SysUtils,
   JclStrings,
+  JvThemes,
   JvConsts, JvJCLUtils;
 
 {$IFDEF VCL}
@@ -832,7 +833,17 @@ begin
   case Msg.Msg of
     WM_ENABLE:
       if csDesigning in FIPAddress.ComponentState then
-        Exit;
+        Exit
+      else
+      begin
+        {$IFDEF JVCLThemesEnabled}
+        if not FIPAddress.Enabled and ThemeServices.ThemesEnabled then
+        begin
+          EnableWindow(Handle, True);
+          Exit;
+        end;
+        {$ENDIF JVCLThemesEnabled}
+      end;
     WM_DESTROY:
       Handle := 0;
     WM_KEYFIRST..WM_KEYLAST:
@@ -1187,7 +1198,7 @@ begin
   // of a mouse click. Thus we do nothing or it would prevent
   // the focus from being directly set to the field. Note that
   // doing this does not prevent OnFocus from running, which
-  // is what we want. 
+  // is what we want.
   if not FFocusFromField then
     inherited;
 end;
