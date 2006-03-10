@@ -203,6 +203,9 @@ end;
 
 procedure TfrmValidatorsEditor.FormCreate(Sender: TObject);
 begin
+  {$IFDEF COMPILER9_UP}
+  FormStyle := fsStayOnTop;
+  {$ENDIF COMPILER9_UP}
   AddValidatorClasses;
 end;
 
