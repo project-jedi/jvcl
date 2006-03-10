@@ -2592,7 +2592,7 @@ begin
               end;
             cmTemplates:
               begin
-                S := ReplaceString(NewString, FCRLF, sLineBreak + SpacesW(CaretX -
+                S := ReplaceString(NewString, FCRLF, sLineBreak + Spaces(CaretX -
                   Length(W)));
                 S := ReplaceString(S, FCaretChar, '');
                 NewCaret := Pos(FCaretChar, ReplaceString(NewString, FCRLF, sLineBreak)) - 1;
