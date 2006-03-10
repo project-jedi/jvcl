@@ -320,6 +320,7 @@ type
   published
     property Align;
     property AutoExpand: Boolean read FAutoExpand write FAutoExpand default True;
+	property MultiSelect default False;
     property BorderStyle;
     property BevelInner;
     property BevelOuter;
@@ -1093,6 +1094,7 @@ begin
   FDisplayNames := TStringList.Create;
   ReadBitmaps;
   GetDir(0, FDirectory);
+  MultiSelect := False;
   ResetItemHeight;
 end;
 
