@@ -3,7 +3,7 @@ The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
 http://www.mozilla.org/MPL/MPL-1.1.html
-                        
+
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Controls, Forms,
-  JvComponentBase, JvErrorIndicator;
+  JvComponentBase, JvErrorIndicator, JvVCL5Utils;
 
 type
   EValidatorError = class(Exception);
@@ -315,47 +315,6 @@ begin
     Result := Comp.ClassName;
 end;
 
-{$IFNDEF COMPILER6_UP}
-
-// these types and functions were introduced in D6
-type
-  TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
-
-function FindVarData(const V: Variant): PVarData;
-begin
-  Result := @TVarData(V);
-  while Result.VType = varByRef or varVariant do
-    Result := PVarData(Result.VPointer);
-end;
-
-function VarCompareValue(const A, B: Variant): TVariantRelationship;
-const
-  CTruth: array [Boolean] of TVariantRelationship = (vrNotEqual, vrEqual);
-var
-  LA, LB: TVarData;
-begin
-  LA := FindVarData(A)^;
-  LB := FindVarData(B)^;
-  if LA.VType = varEmpty then
-    Result := CTruth[LB.VType = varEmpty]
-  else
-  if LA.VType = varNull then
-    Result := CTruth[LB.VType = varNull]
-  else
-  if LB.VType in [varEmpty, varNull] then
-    Result := vrNotEqual
-  else
-  if A = B then
-    Result := vrEqual
-  else
-  if A < B then
-    Result := vrLessThan
-  else
-    Result := vrGreaterThan;
-end;
-
-{$ENDIF COMPILER6_UP}
-
 //=== { TJvBaseValidator } ===================================================
 
 constructor TJvBaseValidator.Create(AOwner: TComponent);
@@ -427,7 +386,13 @@ begin
     begin
       PropInfo := GetPropInfo(FControlToValidate, FPropertyToValidate);
       if (PropInfo <> nil) and (PropInfo^.GetProc <> nil) then
+      begin
         Result := GetPropValue(FControlToValidate, FPropertyToValidate, False);
+        if (PropInfo.PropType^ = TypeInfo(TDateTime)) or
+           (PropInfo.PropType^ = TypeInfo(TDate)) or
+           (PropInfo.PropType^ = TypeInfo(TTime)) then
+          Result := VarAsType(Result, varDate);
+      end;
     end;
   end;
 end;
@@ -517,7 +482,20 @@ var
   R: Variant;
 begin
   R := GetValidationPropertyValue;
-  Valid := VarCompareValue(R, '') <> vrEqual;
+  case VarType(R) of
+    varDate:
+      Valid := VarCompareValue(R, 0) <> vrEqual; // zero is the invalid valid
+    varSmallint,
+    varInteger,
+    varSingle,
+    varDouble,
+    varCurrency,
+    varBoolean,
+    varByte:
+      ; // nothing to do because all values are valid
+  else
+    Valid := VarCompareValue(R, '') <> vrEqual;
+  end;
 end;
 
 //=== { TJvCustomValidator } =================================================

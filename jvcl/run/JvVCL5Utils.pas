@@ -131,9 +131,13 @@ function Sign(const AValue: Int64): TValueSign; overload;
 function Sign(const AValue: Double): TValueSign; overload;
 
 // Variants
+type
+  TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
+
 function FindVarData(const V: Variant): PVarData;
 function VarIsStr(const V: Variant): Boolean;
 function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
+function VarCompareValue(const A, B: Variant): TVariantRelationship;
 
 // Misc
 function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
@@ -876,6 +880,33 @@ begin
   GetMonitorInfo(Monitor.Handle, @MonInfo);
   Result := MonInfo.rcWork;
 end;
+
+function VarCompareValue(const A, B: Variant): TVariantRelationship;
+const
+  CTruth: array [Boolean] of TVariantRelationship = (vrNotEqual, vrEqual);
+var
+  LA, LB: TVarData;
+begin
+  LA := FindVarData(A)^;
+  LB := FindVarData(B)^;
+  if LA.VType = varEmpty then
+    Result := CTruth[LB.VType = varEmpty]
+  else
+  if LA.VType = varNull then
+    Result := CTruth[LB.VType = varNull]
+  else
+  if LB.VType in [varEmpty, varNull] then
+    Result := vrNotEqual
+  else
+  if A = B then
+    Result := vrEqual
+  else
+  if A < B then
+    Result := vrLessThan
+  else
+    Result := vrGreaterThan;
+end;
+
 
 //=== { TCustomImageList } ===================================================
 
