@@ -74,8 +74,11 @@ type
 
   TJvForm = class(TJvExForm)
   {$IFDEF VCL}
+  private
+    FIsPopupWindow: Boolean; 
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+    property IsPopupWindow: Boolean read FIsPopupWindow write FIsPopupWindow;
   {$ENDIF VCL}
   {$IFDEF USE_DXGETTEXT}
   public
@@ -154,14 +157,14 @@ end;
 
 {$IFDEF VCL}
 
-procedure TJvForm.CreateParams(var Params: TCreateParams); //override;
+procedure TJvForm.CreateParams(var Params: TCreateParams); 
 begin
   inherited CreateParams(Params);
 
-  if FormStyle <> fsMDIChild then
+  if (FormStyle <> fsMDIChild) and not IsPopupWindow then
   begin
     // Fixing the Window Ghosting "bug"
-    Params.Style := params.Style or WS_POPUP;
+    Params.Style := Params.Style or WS_POPUP;
     if Assigned(Screen.ActiveForm) then
       Params.WndParent := Screen.ActiveForm.Handle
     else if Assigned (Application.MainForm) then
