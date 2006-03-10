@@ -263,7 +263,7 @@ begin
   if FStyle <> Value then
   begin
     FStyle := Value;
-    FTreeView.Checkboxes := FStyle = cbsNative;
+    FTreeView.Checkboxes := FStyle <> cbsNone;
   end;
 end;
 
@@ -278,7 +278,7 @@ end;
 
 destructor TJvCheckTreeView.Destroy;
 begin
-  FCheckBoxOptions.Free;
+  FCheckBoxOptions.Free;              
   inherited Destroy;
 end;
 
