@@ -45,15 +45,17 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-{$IFDEF VCL}
 const
-  JVCL_VERSION = 320;
-  JVCL_VERSIONSTRING = '3.20';
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-const
-  JVCL_VERSIONSTRING = '1.00';
-{$ENDIF VisualCLX}
+  sJVCLVersion = '3.30';
+  JVCLVersionMajor   = 3;    // 0=pre-release|beta/1, 2, ...=final
+  JVCLVersionMinor   = 30;   // minor release
+  JVCLVersionRelease = 0;    // 0: pre-release|beta/>=1: release
+  JVCLVersionBuild   = 0;    // build number, days since march 1, 2006
+
+  JVCLVersion = (JVCLVersionMajor shl 24) or (JVCLVersionMinor shl 16) or
+                (JVCLVersionRelease shl 15) or (JVCLVersionBuild shl 0);
+  JVCL_VERSION = JVCLVersionMajor * 100 + JVCLVersionMinor;
+  JVCL_VERSIONSTRING = sJVCLVersion;
 
 type
   TJVCLAboutInfo = (JVCLAbout);

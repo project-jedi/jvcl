@@ -352,12 +352,20 @@ begin
     begin
       BorderIcons := [biSystemMenu];
       BorderStyle := fbsToolWindow;
+      {$IFDEF COMPILER10_UP}
+      if HandleAllocated then // BDS 2006 bug
+        RecreateWnd;
+      {$ENDIF COMPILER10_UP}
       FDragBar.Visible := False;
     end
     else
     begin
       BorderIcons := [];
       BorderStyle := fbsDialog;
+      {$IFDEF COMPILER10_UP}
+      if HandleAllocated then // BDS 2006 bug
+        RecreateWnd;
+      {$ENDIF COMPILER10_UP}
       FDragBar.Visible := True;
     end;
     if not DropDownMoving then
@@ -370,6 +378,10 @@ begin
     FToolWindowStyle := False;
     BorderIcons := [];
     BorderStyle := fbsDialog;
+    {$IFDEF COMPILER10_UP}
+    if HandleAllocated then // BDS 2006 bug
+      RecreateWnd;
+    {$ENDIF COMPILER10_UP}
     FDragBar.Visible := False;
   end;
 end;
