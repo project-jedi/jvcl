@@ -34,7 +34,7 @@ interface
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
   GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser,
-  JvVCL5Utils;
+  JvVCL5Utils, JVCLVer;
 
 type
   TProgressKind = (
