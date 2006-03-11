@@ -129,7 +129,7 @@ const
   DPA_RendersSingleItem = 2;
   DPA_ConsumerDisplaysList = 3;
 
-  CM_JVBASE = CM_BASE + 100;
+  CM_JVBASE = CM_BASE + 80; // warning VCL improves and comes nearer
   { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_JVBASE + 0;
   { Command message for TJvSpeedButton }
