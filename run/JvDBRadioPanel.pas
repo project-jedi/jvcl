@@ -42,7 +42,7 @@ uses
   Messages,
   {$ENDIF VCL}
   Classes, Controls, StdCtrls, DB, DBCtrls,
-  JvComponent;
+  JvExtComponent;
 
 type
   TJvDBRadioPanel = class(TJvCustomPanel)

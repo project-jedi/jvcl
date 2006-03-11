@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  JvComponent, JvCtrls, JvTypes;
+  JvExtComponent, JvCtrls, JvTypes;
 
 type
   EJvFooterError = class(EJVCLException);

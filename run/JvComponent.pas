@@ -43,8 +43,7 @@ uses
   Qt, QGraphics, QStdCtrls, QForms, // TOwnerDrawState
   {$ENDIF VisualCLX}
   JvConsts,
-  JVCLVer, JvComponentBase, JvExControls, JvExExtCtrls, JvExForms,
-  JvExStdCtrls, JvExComCtrls;
+  JVCLVer, JvComponentBase, JvExControls, JvExForms, JvExStdCtrls;
 
 {$IFDEF VisualCLX}
 type
@@ -64,26 +63,32 @@ type
 {$ENDIF VisualCLX}
 
 type
-  TJvGraphicControl = class(TJvExGraphicControl);
-  TJvPubGraphicControl = class(TJvExPubGraphicControl);
-  TJvCustomPanel = class(TJvExCustomPanel);
-  TJvCustomControl = class(TJvExCustomControl);
-  TJvWinControl = class(TJvExWinControl);
-  TJvPubCustomPanel = class(TJvExPubCustomPanel);
-  TJvCustomTreeView = class(TJvExCustomTreeView);
+  TJvGraphicControl = TJvExGraphicControl;
+  TJvPubGraphicControl = TJvExPubGraphicControl;
+  TJvCustomControl = TJvExCustomControl;
+  TJvWinControl = TJvExWinControl;
 
   TJvForm = class(TJvExForm)
   {$IFDEF VCL}
   private
-    FIsPopupWindow: Boolean; 
+    FIsFocusable: Boolean;
+    procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
+    procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    property IsPopupWindow: Boolean read FIsPopupWindow write FIsPopupWindow;
   {$ENDIF VCL}
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     procedure RefreshTranslation; virtual;
+
+    {$IFDEF VCL}
+    function ShowModal: Integer; override;
+      { ShowNoActivate() shows the form but does not activate it. }
+    procedure ShowNoActivate(CallActivate: Boolean = False);
+  published
+    property IsFocusable: Boolean read FIsFocusable write FIsFocusable default True;
+    {$ENDIF VCL}
   {$ENDIF USE_DXGETTEXT}
   end;
 
@@ -117,13 +122,18 @@ const
 
 implementation
 
-{$R *.dfm}  // For TJvForm, see Issue 3537.
+{$IFDEF COMPILER6_UP}
+uses
+  RTLConsts;
+{$ELSE}
+uses
+  Consts;
+{$ENDIF COMPILER6_UP}
 
 {$IFDEF USE_DXGETTEXT}
 const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
-
 
 {$IFDEF VisualCLX}
 function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
@@ -144,8 +154,33 @@ end;
 
 constructor TJvForm.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  TranslateComponent(Self, cDomainName);
+//  inherited Create(AOwner);
+  GlobalNameSpace.BeginWrite;
+  try
+    CreateNew(AOwner);
+    if (ClassType <> TJvForm) and not (csDesigning in ComponentState) then
+    begin
+      Include(FFormState, fsCreating);
+      try
+        if not InitInheritedComponent(Self, TJvForm) then
+          raise EResNotFound.CreateFmt(SResNotFound, [ClassName]);
+
+        TranslateComponent(Self, cDomainName);
+      finally
+        Exclude(FFormState, fsCreating);
+      end;
+      if OldCreateOrder then
+        DoCreate;
+    end;
+  finally
+    GlobalNameSpace.EndWrite;
+  end;
+end;
+
+constructor TJvForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FIsFocusable := True;
 end;
 
 procedure TJvForm.RefreshTranslation;
@@ -157,21 +192,63 @@ end;
 
 {$IFDEF VCL}
 
-procedure TJvForm.CreateParams(var Params: TCreateParams); 
+procedure TJvForm.CMShowingChanged(var Message: TMessage);
+var
+  NewParent: HWND;
 begin
-  inherited CreateParams(Params);
-
-  if (FormStyle <> fsMDIChild) and not IsPopupWindow then
+  if Showing and (FormStyle <> fsMDIChild) then
   begin
-    // Fixing the Window Ghosting "bug"
-    Params.Style := Params.Style or WS_POPUP;
-    if Assigned(Screen.ActiveForm) then
-      Params.WndParent := Screen.ActiveForm.Handle
-    else if Assigned (Application.MainForm) then
-      Params.WndParent := Application.MainForm.Handle
+    if FormStyle = fsStayOnTop then
+    begin
+      // restore StayOnTop
+      NewParent := Application.Handle;
+      if GetWindowLong(Handle, GWL_HWNDPARENT) <> Longint(NewParent) then
+        SetWindowLong(Handle, GWL_HWNDPARENT, Longint(NewParent));
+      SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOACTIVATE);
+    end
     else
-      Params.WndParent := Application.Handle;
+    begin
+      // Fixing the Window Ghosting "bug"
+      NewParent := 0;
+      if Assigned(Screen.ActiveForm) and (Screen.ActiveForm <> Self) then
+      begin
+        if fsModal in Screen.ActiveForm.FormState then
+          NewParent := Screen.ActiveForm.Handle;
+      end;
+      if (NewParent = 0) and Assigned(Application.MainForm) and (Application.MainForm <> Self) then
+        NewParent := Application.MainForm.Handle;
+      if NewParent = 0 then
+        NewParent := Application.Handle;
+      if GetWindowLong(Handle, GWL_HWNDPARENT) <> Longint(NewParent) then
+        SetWindowLong(Handle, GWL_HWNDPARENT, Longint(NewParent));
+    end;
   end;
+  inherited;
+end;
+
+function TJvForm.ShowModal: Integer;
+var
+  Msg: TMsg;
+begin
+  while PeekMessage(Msg, 0, WM_ENABLE, WM_ENABLE, PM_REMOVE) do
+    DispatchMessage(Msg);
+  Result := inherited ShowModal;
+end;
+
+procedure TJvForm.WMMouseActivate(var Msg: TMessage);
+begin
+  if IsFocusable then
+    inherited
+  else
+    Msg.Result := MA_NOACTIVATE;
+end;
+
+procedure TJvForm.ShowNoActivate(CallActivate: Boolean);
+begin
+  if CallActivate then
+    Activate;
+  SetWindowPos(Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
+  Visible := True;
 end;
 
 {$ENDIF VCL}

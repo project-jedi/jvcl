@@ -41,7 +41,7 @@ uses
   {$IFDEF BCB}
   JvTypes, // TDate / TTime macros
   {$ENDIF BCB}
-  JvComponent, JvExControls;
+  JvExtComponent, JvExControls;
 
 type
   TJvTLSelFrame = class(TPersistent)

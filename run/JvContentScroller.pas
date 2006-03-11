@@ -40,7 +40,7 @@ uses
   {$IFDEF VisualCLX}
   QTypes,
   {$ENDIF VisualCLX}
-  JvComponent;
+  JvExtComponent;
 
 type
   TJvContentScrollDirection = (sdUp, sdDown);

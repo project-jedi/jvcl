@@ -42,7 +42,7 @@ uses
   Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
   JvConsts, // missing color constants for D5
-  JvColorBox, JvComponent;
+  JvColorBox, JvComponent, JvToolEdit;
 
 const
   cButtonWidth = 22;
@@ -71,6 +71,7 @@ type
     FButtonSize: Integer;
     FColorDialog: TJvColorDialog;
     FSelectedColor: TColor;
+  protected
     procedure ShowCD(Sender: TObject);
     procedure HideCD(Sender: TObject);
     {$IFDEF VCL}
@@ -114,14 +115,14 @@ uses
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
-  IsPopupWindow := True;
+//  IsPopupWindow := True;
   FButtonSize := cButtonWidth;
   FSelectedColor := clBlack;
   BorderIcons := [];
   BorderStyle := fbsDialog;
   // (rom) this is not a standard Windows font
 //  Font.Name := 'MS Shell Dlg 2';
-  FormStyle := fsStayOnTop;
+//  FormStyle := fsStayOnTop;
   KeyPreview := True;
   OnActivate := FormActivate;
   OnClose := FormClose;
@@ -132,6 +133,7 @@ begin
   FColorDialog.OnShow := ShowCD;
   FColorDialog.OnClose := HideCD;
   MakeColorButtons;
+  IsFocusable := False;
 end;
 
 procedure TJvColorForm.SetButton(Button: TControl);
@@ -171,7 +173,7 @@ end;
 
 procedure TJvColorForm.FormDeactivate(Sender: TObject);
 begin
-  if (not FCDVisible) then
+  if not FCDVisible then
   begin
     if Visible then
       Hide;

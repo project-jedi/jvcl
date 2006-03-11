@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JvComponent;
+  JvExtComponent;
 
 type
   TJvSpacer = class(TJvCustomPanel)

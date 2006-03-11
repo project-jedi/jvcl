@@ -45,7 +45,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Forms, ExtCtrls, Controls, Buttons,
-  JvButtons, JvComponent;
+  JvButtons, JvComponent, JvExtComponent;
 
 const
   CM_PARENTBEVELEDCHANGED = WM_USER + 1;

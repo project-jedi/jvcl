@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls,
-  JvJCLUtils, JvTimer, JvComponent, JvExControls;
+  JvJCLUtils, JvTimer, JvExtComponent, JvExControls;
 
 type
   TShowClock = (scDigital, scAnalog);

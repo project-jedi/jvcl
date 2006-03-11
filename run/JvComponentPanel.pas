@@ -45,7 +45,7 @@ uses
   Types, QTypes,
   {$ENDIF VisualCLX}
   Classes, Buttons,
-  JvButtons, JvComponent;
+  JvButtons, JvExtComponent;
 
 type
   TButtonClick = procedure(Sender: TObject; Button: Integer) of object;

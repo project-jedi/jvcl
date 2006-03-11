@@ -56,7 +56,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Graphics, ImgList, ExtCtrls, ACtnList,
-  JvComponent, JvThemes;
+  JvExtComponent, JvThemes;
 
 const
   CM_EXPANDED = WM_USER + 155;

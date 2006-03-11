@@ -41,7 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, ExtCtrls, Forms,
-  JvTimer, JvComponent, JvTypes;
+  JvTimer, JvExtComponent, JvTypes;
 
 type
   TGlyphLayout = (glGlyphLeft, glGlyphRight, glGlyphTop, glGlyphBottom);

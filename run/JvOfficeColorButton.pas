@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows,  Graphics, Controls, Forms, Dialogs, 
-  JvTypes, JvExControls,JvComponent, JvSpeedButton,
+  JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
   JvOfficeColorForm, JvOfficeColorPanel;
 
 const
@@ -82,7 +82,7 @@ type
     property DragBarSpace: Integer read FDragBarSpace write SetDragBarSpace default MinDragBarSpace;
   end;
 
-  TJvCustomOfficeColorButton = class(TJvCustomPanel,IJvHotTrack)
+  TJvCustomOfficeColorButton = class(TJvCustomPanel, IJvHotTrack)
   private
     FMainButton: TJvColorSpeedButton;
     FArrowButton: TJvSpeedButton;

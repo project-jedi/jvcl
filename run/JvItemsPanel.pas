@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, ExtCtrls,
-  JvComponent, JvThemes, JvJCLUtils, JvExControls;
+  JvExtComponent, JvThemes, JvJCLUtils, JvExControls;
 
 type
   TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: Integer) of object;
