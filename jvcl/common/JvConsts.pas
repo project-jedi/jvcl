@@ -35,16 +35,6 @@ uses
   SysUtils, Classes, Forms, Controls, Graphics, Windows,
   JvWin32;
 
-const
-  sJVCLVersion = '3.30';
-  JVCLVersionMajor   = 3;    // 0=pre-release|beta/1, 2, ...=final
-  JVCLVersionMinor   = 30;   // minor release
-  JVCLVersionRelease = 0;    // 0: pre-release|beta/>=1: release
-  JVCLVersionBuild   = 0;    // build number, days since march 1, 2006
-  JVCLVersion = (JVCLVersionMajor shl 24) or (JVCLVersionMinor shl 16) or
-                (JVCLVersionRelease shl 15) or (JVCLVersionBuild shl 0);
-
-
 {$IFDEF VisualCLX}
 const
   clMoneyGreen = TColor($C0DCC0);
@@ -117,9 +107,6 @@ const
   {$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
   {$ENDIF DELPHI7}
-  {$IFDEF BCB7} // will it ever be released? No.
-  SDelphiKey = 'Software\Borland\C++Builder\7.0';
-  {$ENDIF BCB7}
   {$IFDEF DELPHI8}
   SDelphiKey = 'Software\Borland\BDS\2.0';
   {$ENDIF DELPHI8}
@@ -129,6 +116,9 @@ const
   {$IFDEF DELPHI10}
   SDelphiKey = 'Software\Borland\BDS\4.0';
   {$ENDIF DELPHI10}
+  {$IFDEF DELPHI11}
+  SDelphiKey = 'Software\Borland\BDS\5.0';
+  {$ENDIF DELPHI11}
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   SDelphiKey = '.borland/.jvclx1';
@@ -139,7 +129,7 @@ const
   DPA_RendersSingleItem = 2;
   DPA_ConsumerDisplaysList = 3;
 
-  CM_JVBASE = CM_BASE + 80;
+  CM_JVBASE = CM_BASE + 100;
   { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_JVBASE + 0;
   { Command message for TJvSpeedButton }
@@ -222,7 +212,7 @@ const
 
   {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
-  ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+    ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 
   DigitChars = ['0'..'9'];
 
