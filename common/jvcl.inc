@@ -24,6 +24,10 @@ Known Issues:
  {$D+}
 {$ENDIF JVCL_NO_DEBUGINFO}
 
+{$IFDEF JVCLINSTALLER} 
+{$I ..\install\JVCLInstall\jvcl.inc}
+{$ELSE}
+
 {$A+,B-,C+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 {$I jedi.inc}
@@ -179,3 +183,4 @@ ALERT_jedi_inc_incompatible
  {$DEFINE MSWINDOWS}
 {$ENDIF CLR}
 
+{$ENDIF INSTALLER}
