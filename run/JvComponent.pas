@@ -76,11 +76,12 @@ type
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
   protected
   {$ENDIF VCL}
-  {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+    {$IFDEF USE_DXGETTEXT}
     procedure RefreshTranslation; virtual;
+    {$ENDIF USE_DXGETTEXT}
 
     {$IFDEF VCL}
     function ShowModal: Integer; override;
@@ -89,7 +90,6 @@ type
   published
     property IsFocusable: Boolean read FIsFocusable write FIsFocusable default True;
     {$ENDIF VCL}
-  {$ENDIF USE_DXGETTEXT}
   end;
 
 //=== { TJvPopupListBox } ====================================================
@@ -150,8 +150,6 @@ end;
 
 //=== { TJvForm } ============================================================
 
-{$IFDEF USE_DXGETTEXT}
-
 constructor TJvForm.Create(AOwner: TComponent);
 begin
 //  inherited Create(AOwner);
@@ -165,7 +163,9 @@ begin
         if not InitInheritedComponent(Self, TJvForm) then
           raise EResNotFound.CreateFmt(SResNotFound, [ClassName]);
 
+        {$IFDEF USE_DXGETTEXT}
         TranslateComponent(Self, cDomainName);
+        {$ENDIF USE_DXGETTEXT}
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -182,6 +182,8 @@ begin
   inherited CreateNew(AOwner, Dummy);
   FIsFocusable := True;
 end;
+
+{$IFDEF USE_DXGETTEXT}
 
 procedure TJvForm.RefreshTranslation;
 begin
