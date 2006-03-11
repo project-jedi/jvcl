@@ -55,7 +55,7 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JvComponent, JvExControls;
+  JvComponent, JvExtComponent, JvExControls;
 
 type
   TJvCapBtnStyle = (capClose, capMax, capMin, capRestore, capHelp);

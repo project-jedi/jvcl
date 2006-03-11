@@ -39,7 +39,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   {$IFDEF USEJVCL}
   Forms, ExtCtrls, ComCtrls,
-  JvComponent;
+  JvExtComponent;
   {$ELSE}
   Forms, ExtCtrls, ComCtrls;
   {$ENDIF USEJVCL}

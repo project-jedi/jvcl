@@ -39,18 +39,22 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  JvColorBox;
+  JvColorBox, JvComponent;
+
+const
+  CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
 type
   TJvColorButton = class(TJvCustomDropButton)
   private
-    FColorForm: TForm;
+    FColorForm: TJvForm;
     FIsDown: Boolean;
     FOtherCaption: string;
     FOnChange: TNotifyEvent;
     FCustomColors: TStringList;
     FEdgeWidth: Integer;
     FColor: TColor;
+  protected
     {$IFDEF VCL}
     FOptions: TColorDialogOptions;
     procedure SetOptions(Value: TColorDialogOptions);
@@ -61,6 +65,8 @@ type
     procedure SetOtherCaption(Value: string);
     procedure SetColor(const Value: TColor);
   protected
+    procedure CMPopupCloseUp(var Msg: TMessage); message CM_POPUPCLOSEUP;
+    procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -70,6 +76,8 @@ type
     procedure Paint; override;
     procedure ShowColorPopup(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); virtual;
+    procedure PopupCloseUp; dynamic;
+    procedure FocusKilled(NextWnd: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -140,9 +148,31 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvColorButton.FocusKilled(NextWnd: Cardinal);
+var
+  Sender: TWinControl;
+  Focused: Boolean;
+begin
+  inherited FocusKilled(NextWnd);
+  Focused := Screen.ActiveControl <> Self;
+  if not Focused then
+  begin
+    Sender := FindControl(NextWnd);
+    if (Sender <> Self) and (Sender <> FColorForm) and
+      Assigned(FColorForm) and not FColorForm.ContainsControl(Sender) then
+    begin
+      { MSDN : While processing this message (WM_KILLFOCUS), do not make any
+               function calls that display or activate a window.
+      }
+      PostMessage(Handle, CM_POPUPCLOSEUP, 0, 0);
+    end;
+  end;
+end;
+
 procedure TJvColorButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  SetFocus;
   inherited MouseDown(Button, Shift, X, Y);
   ShowColorPopup(Button, Shift, X, Y);
   FIsDown := ArrowWidth <> 0;
@@ -155,6 +185,23 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   FIsDown := False;
   Repaint;
+end;
+
+procedure TJvColorButton.CMCancelMode(var Msg: TCMCancelMode);
+begin
+  if (Msg.Sender <> Self) and (Msg.Sender <> FColorForm) and
+     Assigned(FColorForm) and not FColorForm.ContainsControl(Msg.Sender) then
+    PopupCloseUp;
+end;
+
+procedure TJvColorButton.CMPopupCloseUp(var Msg: TMessage);
+begin
+  PopupCloseUp;
+end;
+
+procedure TJvColorButton.PopupCloseUp;
+begin
+  FColorForm.Hide;
 end;
 
 procedure TJvColorButton.ShowColorPopup(Button: TMouseButton; Shift: TShiftState;
@@ -177,7 +224,7 @@ begin
     end
     else
     if not FColorForm.Visible then
-      FColorForm.Show
+      FColorForm.ShowNoActivate(True)
     else
       FColorForm.Hide;
     //    ColorSquare21.Color := Self.Color;

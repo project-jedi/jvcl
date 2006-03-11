@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Controls, ExtCtrls, Forms, Graphics, SysUtils, Classes,
-  JvComponent;
+  JvExtComponent;
 
 type
   TSplitterStyle = (spUnknown, spHorizontalFirst, spHorizontalSecond,

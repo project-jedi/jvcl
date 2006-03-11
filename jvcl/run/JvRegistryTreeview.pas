@@ -38,10 +38,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, Registry, ImgList,
-  JvComponent, JvTypes;
+  JvExtComponent, JvTypes;
 
 type
-
   TJvRegistryTreeView = class(TJvCustomTreeView)
   private
     FRegistryKeys: TJvRegKeys;

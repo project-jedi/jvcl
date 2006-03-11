@@ -40,7 +40,7 @@ uses
   {$ENDIF HAS_UNIT_RTLCONSTS}
   JvVCL5Utils,
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
-  JvComponent, JvThemes, JvExControls;
+  JvComponent, JvExtComponent, JvThemes, JvExControls;
 
 const
   DefButtonWidth = 24;

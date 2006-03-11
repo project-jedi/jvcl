@@ -50,7 +50,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvTypes, JvThemes, JvComponent, JvExControls;
+  JvTypes, JvThemes, JvComponent, JvExtComponent, JvExControls;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;

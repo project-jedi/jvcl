@@ -53,7 +53,7 @@ uses
   Messages, CommCtrl,
   {$ENDIF VCL}
   Classes, Controls, ExtCtrls, ComCtrls, DB,
-  JvComponent;
+  JvExtComponent;
 
 type
   TJvDBTreeNode = class;
