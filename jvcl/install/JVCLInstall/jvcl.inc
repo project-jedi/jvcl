@@ -30,6 +30,7 @@ Known Issues:
 {$DEFINE INSTALLER}
 
 {$DEFINE NO_JCL}
+{$DEFINE VCL}
 
 // Reduces warnings on D7:
 {$IFDEF COMPILER7_UP}
