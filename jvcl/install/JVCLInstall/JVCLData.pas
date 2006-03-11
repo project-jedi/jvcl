@@ -33,7 +33,7 @@ interface
 uses
   Windows, Registry, SysUtils, Classes, Contnrs,
   JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils,
-  IniFiles, JCLData, JvConsts;
+  IniFiles, JCLData, JVCLVer;
 
 const
   sPackageGeneratorFile = 'devtools\bin\pgEdit.xml';

@@ -34,7 +34,7 @@ uses
   Windows, ShellAPI, SysUtils, Classes, Core, Graphics, Controls, Forms,
   StdCtrls, Dialogs,
   DelphiData, JVCLData, Utils,
-  JvConsts;
+  JVCLVer;
 
 type
   TInstallType = (itFreshInstall, itUpdate, itUninstall);
