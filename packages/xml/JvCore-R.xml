@@ -68,6 +68,7 @@
     <File Name="..\..\run\JvColorProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComponentBase.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComponent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExtComponent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvContextProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataProviderIntf.pas" Targets="all" Formname="" Condition=""/>
