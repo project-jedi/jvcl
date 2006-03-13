@@ -875,7 +875,7 @@ begin
   unitname := GetUnitName(incFileName);
   punitname := AnsiLowerCase(unitname);
   punitname[1] := CharUpper(punitname[1]);
-  formpathname := StrEnsureSuffix(PathSeparator, ExtractFilePath(incFileName))+GetUnitName(incFileName);
+  formpathname := StrEnsureSuffix(DirDelimiter, ExtractFilePath(incFileName))+GetUnitName(incFileName);
 
   EnsureProperSeparator(formpathname, target);
   EnsureProperSeparator(incfilename, target);
@@ -1187,7 +1187,7 @@ begin
     begin
       UnitFileName := xml.Contains[I].Name;
       UnitFilePath := ExtractFilePath(UnitFileName);
-      if (UnitFilePath <> '') and (UnitFilePath[Length(UnitFilePath)] = PathSeparator) then
+      if (UnitFilePath <> '') and (UnitFilePath[Length(UnitFilePath)] = DirDelimiter) then
         UnitFilePath := Copy(UnitFilePath, 1, Length(UnitFilePath)-1);
       UnitFilePath := UnitFilePath + ';';
       UnitFileExtension := ExtractFileExt(UnitFileName);
@@ -1232,7 +1232,7 @@ begin
         NoLinkPackageList := Format('%s;%s', [NoLinkPackageList, reqPackName]);
     end;
 
-    OutFileName := path + TargetToDir(target) + PathSeparator +
+    OutFileName := path + TargetToDir(target) + DirDelimiter +
                    ExpandPackageName(OutFileName, target)+
                    Extension;
 
@@ -1528,7 +1528,7 @@ begin
        (HasFileChanged(OutFileName, templateName, outFile, TimeStampLine)) then
     begin
       tmpStr := ExtractFilePath(templateName);
-      if tmpStr[length(tmpStr)] = PathSeparator then
+      if tmpStr[length(tmpStr)] = DirDelimiter then
         SetLength(tmpStr, length(tmpStr)-1);
       if ExtractFileName(tmpStr) = TargetList[GetNonPersoTarget(target)].PDir then
         SendMsg(SysUtils.Format(#9#9'Writing %s for %s (%s template used)', [ExtractFileName(OutFileName), target, target]))
@@ -1689,10 +1689,10 @@ begin
     if PathIsAbsolute(PackagesLocation) then
       path := PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
+      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
   end;
 
-  path := StrEnsureSuffix(PathSeparator, path);
+  path := StrEnsureSuffix(DirDelimiter, path);
 
   if prefix <> '' then
     GPrefix := Prefix;
@@ -1708,7 +1708,8 @@ begin
 
     SendMsg(SysUtils.Format('Generating packages for %s', [target]));
     // find all template files for that target
-    if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', faAnyFile, rec) = 0 then
+    if FindFirst(path + TargetToDir(target) + DirDelimiter + 'template.*',
+                 faAnyFile, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
@@ -1716,7 +1717,7 @@ begin
         try
           SendMsg(SysUtils.Format(#9'Loaded %s', [rec.Name]));
 
-          templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
+          templateName := path + TargetToDir(target) + DirDelimiter + rec.Name;
           if IsBinaryFile(templateName) then
             template.Clear
           else
@@ -1731,7 +1732,7 @@ begin
           if (persoTarget <> '') and
              DirectoryExists(path+TargetToDir(persoTarget)) then
           begin
-            templateNamePers := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
+            templateNamePers := path + TargetToDir(persoTarget) + DirDelimiter + rec.Name;
             if FileExists(templateNamePers) then
             begin
               if IsBinaryFile(templateNamePers) then
@@ -1749,7 +1750,7 @@ begin
           for j := 0 to packages.Count - 1 do
           begin
            // load (buffered) xml file
-            xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
+            xmlName := path + 'xml' + DirDelimiter + packages[j] + '.xml';
             xml := GetPackageXmlInfo(xmlName);
 
             TemplateExtension := ExtractFileExt(templateName);
@@ -1794,7 +1795,7 @@ begin
     SendMsg('Calling MakeDofs.bat');
     ShellExecute(0,
                 '',
-                PChar(StrEnsureSuffix(PathSeparator, ExtractFilePath(ParamStr(0))) + 'MakeDofs.bat'),
+                PChar(StrEnsureSuffix(DirDelimiter, ExtractFilePath(ParamStr(0))) + 'MakeDofs.bat'),
                 '',
                 PChar(ExtractFilePath(ParamStr(0))),
                 SW_SHOW);
@@ -1815,7 +1816,7 @@ var
   rec : TSearchRec;
 begin
   packages.Clear;
-  if FindFirst(StrEnsureSuffix(PathSeparator, path) +'xml'+PathSeparator+'*.xml', faAnyFile, rec) = 0 then
+  if FindFirst(StrEnsureSuffix(DirDelimiter, path) + 'xml' + DirDelimiter + '*.xml', faAnyFile, rec) = 0 then
   begin
     repeat
       packages.Add(PathExtractFileNameNoExt(rec.Name));

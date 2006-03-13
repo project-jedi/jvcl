@@ -38,9 +38,9 @@ uses
 { JclStrings emulation }
 const
   {$IFDEF COMPILER6_UP}
-  PathSeparator = PathDelim;
+  DirDelimiter = PathDelim;
   {$ELSE}
-  PathSeparator = '\';
+  DirDelimiter = '\';
   {$ENDIF MSWINDOWS}
 
 {$IFDEF COMPILER5}
@@ -293,7 +293,7 @@ begin
     if Copy(Path, 1, 2) = '\\' then
       I := 2;
     Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
-      (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
+      (Path[I + 2] = ':') and (Path[I + 3] = DirDelimiter);
   end;
 end;
 

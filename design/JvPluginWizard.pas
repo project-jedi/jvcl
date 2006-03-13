@@ -288,9 +288,9 @@ function TJvPluginProjectCreator.GetFileName: string;
 begin
   { 0 = dll; 1 = dpk }
   if PlugType = 0 then
-    Result := GetCurrentDir + PathSeparator + cPlgPrefix + PlugName + '.dpr'
+    Result := GetCurrentDir + DirDelimiter + cPlgPrefix + PlugName + '.dpr'
   else
-    Result := GetCurrentDir + PathSeparator + cPlgPrefix + PlugName + '.dpk';
+    Result := GetCurrentDir + DirDelimiter + cPlgPrefix + PlugName + '.dpk';
 end;
 
 function TJvPluginProjectCreator.GetOptionFileName: string;
@@ -598,7 +598,7 @@ end;
 
 function TJvPluginModuleCreator.GetImplFileName: string;
 begin
-  Result := GetCurrentDir + PathSeparator + cPluginPrefix + PlugName + '.pas'
+  Result := GetCurrentDir + DirDelimiter + cPluginPrefix + PlugName + '.pas'
 end;
 
 {*****************************************************************************

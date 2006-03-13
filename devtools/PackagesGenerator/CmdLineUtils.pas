@@ -136,7 +136,7 @@ begin
     if PathIsAbsolute(packagesPath) then
       packagesPath := packagesPath
     else
-      packagesPath := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + packagesPath);
+      packagesPath := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + packagesPath);
 
 
     StrToStrings(targetList, ',', targets, False);
