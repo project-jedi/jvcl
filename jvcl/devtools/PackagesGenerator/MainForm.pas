@@ -222,7 +222,7 @@ var
 begin
   inherited;
 
-  jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
+  jaxStore.FileName := StrEnsureSuffix(DirDelimiter, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
 //  if cmbModel.ItemIndex >-1 then
 //    ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
 //  else
@@ -316,13 +316,13 @@ begin
     if PathIsAbsolute(PackagesLocation) then
       PackagesDir := PackagesLocation
     else
-      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+PackagesLocation);
+      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir)+PackagesLocation);
     for i := 0 to odlAddFiles.Files.Count-1 do
     begin
       row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
       Name := odlAddFiles.Files[i];
       Dir := GetRelativePath(PackagesDir, ExtractFilePath(Name));
-      row[0] := '..' +PathSeparator+ StrEnsureSuffix(PathSeparator, Dir) + ExtractFileName(Name);
+      row[0] := '..' + DirDelimiter + StrEnsureSuffix(DirDelimiter, Dir) + ExtractFileName(Name);
       row[1] := 'all';
 
       // try to find if there is a dfm associated with the file
@@ -364,7 +364,7 @@ begin
           row[2] := FormName + ': ' + FormType;
       end;
     end;
-    odlAddFiles.InitialDir := '..'+PathSeparator+Dir;
+    odlAddFiles.InitialDir := '..' + DirDelimiter + Dir;
     Changed := True;
   end;
 end;
@@ -412,10 +412,10 @@ begin
   if PathIsAbsolute(PackagesLocation) then
     path := PackagesLocation
   else
-    path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+PackagesLocation);
+    path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
 
   EnumeratePackages(path, jlbList.Items);
-  path := StrEnsureSuffix(PathSeparator, path);
+  path := StrEnsureSuffix(DirDelimiter, path);
 {  if FileExists(path+'Default-D.xml') then
     jlbList.Items.Add('Default-D');
   if FileExists(path+'Default-R.xml') then
@@ -442,11 +442,11 @@ begin
   if PathIsAbsolute(PackagesLocation) then
     FileName := PackagesLocation
   else
-    FileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
+    FileName := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
 
   ProjectType := TProjectType(ComboBoxType.ItemIndex);
-  FileName := Format('%s%sxml%s%s-%s.xml',[FileName, PathSeparator,
-    PathSeparator, ledName.Text, ProjectTypeToChar(ProjectType)]);
+  FileName := Format('%s%sxml%s%s-%s.xml',[FileName, DirDelimiter,
+    DirDelimiter, ledName.Text, ProjectTypeToChar(ProjectType)]);
 
   xml := TJvSimpleXml.Create(nil);
   try
@@ -564,10 +564,10 @@ begin
   if PathIsAbsolute(PackagesLocation) then
     xmlFileName := PackagesLocation
   else
-    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
+    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
 
-  xmlFileName := Format('%s%sxml%s%s.xml', [xmlFileName, PathSeparator,
-    PathSeparator, jlbList.Items[jlbList.ItemIndex]]);
+  xmlFileName := Format('%s%sxml%s%s.xml', [xmlFileName, DirDelimiter,
+    DirDelimiter, jlbList.Items[jlbList.ItemIndex]]);
 
   xml := TJvSimpleXml.Create(nil);
   try
@@ -669,7 +669,7 @@ begin
     if PathIsAbsolute(PackagesLocation) then
       path := PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
+      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
 
     frmTargets.Path := path;
     if frmTargets.ShowModal = mrOk then
@@ -958,9 +958,9 @@ begin
     if PathIsAbsolute(PackagesLocation) then
       path := PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+PackagesLocation);
+      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
 
-    path := StrEnsureSuffix(PathSeparator, path) + 'xml'+PathSeparator + jlbList.Items[jlbList.ItemIndex]+'.xml';
+    path := StrEnsureSuffix(DirDelimiter, path) + 'xml' + DirDelimiter + jlbList.Items[jlbList.ItemIndex] + '.xml';
     if not DeleteFile(path) then
       Application.MessageBox(PChar('Unable to delete ' + path),
                              'Error',

@@ -91,8 +91,8 @@ begin
   try
     // NOTE: DO NOT USE DELIMITER AND DELIMITEDTEXT FROM
     // TSTRINGS, THEY WILL SPLIT PATHS WITH SPACES !!!!
-    StrToStrings(Origin, PathSeparator, OrigList);
-    StrToStrings(Destination, PathSeparator, DestList);
+    StrToStrings(Origin, DirDelimiter, OrigList);
+    StrToStrings(Destination, DirDelimiter, DestList);
 {$IFDEF MSWINDOWS}
     // Let's do some tests when the paths indicate drive letters
     // This, of course, only happens under a Windows platform
@@ -102,7 +102,7 @@ begin
     // origin, then simply return it as the result
     // Else, if the origin indicates a drive and destination
     // doesn't, then return the concatenation of origin and
-    // destination, ensuring a pathseparator between them.
+    // destination, ensuring a DirDelimiter between them.
     // Else, try to find the relative path between the two.
     if (DestList[0][2] = ':') and
        (DestList[0][1] <> OrigList[0][1]) then
@@ -112,7 +112,7 @@ begin
     else if (OrigList[0][2] = ':') and
             (DestList[0][2] <> ':') then
     begin
-      Result := StrEnsureSuffix(PathSeparator, Origin)+StrEnsureNoPrefix(PathSeparator, Destination);
+      Result := StrEnsureSuffix(DirDelimiter, Origin)+StrEnsureNoPrefix(DirDelimiter, Destination);
     end
     else
 {$ENDIF}
@@ -126,11 +126,11 @@ begin
 {$ENDIF}
         Inc(DiffIndex);
 
-      Result := StrRepeat('..'+PathSeparator, OrigList.Count - DiffIndex);
+      Result := StrRepeat('..' + DirDelimiter, OrigList.Count - DiffIndex);
       if DiffIndex < DestList.Count then
       begin
         for i := DiffIndex to DestList.Count - 2 do
-          Result := Result + DestList[i] + PathSeparator;
+          Result := Result + DestList[i] + DirDelimiter;
         Result := Result + DestList[DestList.Count-1];
       end;
     end;
@@ -147,7 +147,7 @@ var
 begin
   PathList := TStringList.Create;
   try
-    StrToStrings(Path, PathSeparator, PathList);
+    StrToStrings(Path, DirDelimiter, PathList);
     i := 0;
     while i < PathList.Count do
     begin
@@ -170,7 +170,7 @@ begin
       else
         Inc(i);
     end;
-    Result := StringsToStr(PathList, PathSeparator);
+    Result := StringsToStr(PathList, DirDelimiter);
   finally
     PathList.Free;
   end;
