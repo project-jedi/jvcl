@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows,  Graphics, Controls, Forms, Dialogs, 
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, 
   JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
   JvOfficeColorForm, JvOfficeColorPanel;
 
@@ -46,6 +46,9 @@ const
   MinButtonHeight = 22;
   MinButtonWidth = 22;
   Tag_ArrowWidth = 11;
+
+const
+  CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
 type
   TJvOfficeColorButtonProperties = class(TJvOfficeColorPanelProperties)
@@ -124,7 +127,7 @@ type
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
     {$ENDIF VCL}
 
-{IJvHotTrack}
+    {IJvHotTrack}
     function GetHotTrack: Boolean;
     function GetHotTrackOptions: TJvHotTrackOptions;
     function GetHotTrackFont: TFont;
@@ -151,7 +154,7 @@ type
     function GetClickColorType: TJvClickColorType;
     procedure DoHotTrackOptionsChange(Sender: TObject);
     procedure DoFormShowingChanged(Sender: TObject);
-    procedure DoFormKillFocus(Sender: TObject);
+//    procedure DoFormKillFocus(Sender: TObject);
     procedure DoFormClose(Sender: TObject; var Action: TCloseAction);
     procedure DoFormWindowStyleChanged(Sender: TObject);
     procedure DoButtonMouseEnter(Sender: TObject);
@@ -164,9 +167,14 @@ type
     procedure DoHoldedCustomColor(Sender: TObject;AColor: TColor);
     function GetAddInControls: TList;
   protected
+    procedure CMPopupCloseUp(var Msg: TMessage); message CM_POPUPCLOSEUP;
+    procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
+    procedure PopupCloseUp; virtual;
+    procedure FocusKilled(NextWnd: Cardinal); override;
+
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen position
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen position
-    class function GetColorsPanelClass:TJvOfficeColorPanelClass;
+    class function GetColorsPanelClass: TJvOfficeColorPanelClass;
     {$IFDEF VCL}
     procedure CreateWnd; override;
     {$ENDIF VCL}
@@ -174,12 +182,12 @@ type
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
     procedure FontChanged; override;
 
-    function CreateStandardColors(ColorList: TStrings):Integer; virtual;
-    function CreateSystemColors(ColorList: TStrings):Integer; virtual;
+    function CreateStandardColors(ColorList: TStrings): Integer; virtual;
+    function CreateSystemColors(ColorList: TStrings): Integer; virtual;
     //if you wnat to create published color list by default,override this procedure.
-    function CreateUserColors(ColorList: TStrings):Integer; virtual;
+    function CreateUserColors(ColorList: TStrings): Integer; virtual;
 
-    //Do't change the following list ,The result might unpredictability.
+    //Do't change the following list, The result might unpredictability.
     property StandardColorDrawers: TList read GetStandardColorDrawers;
     property SystemColorDrawers: TList read GetSystemColorDrawers;
     property UserColorDrawers: TList read GetUserColorDrawers;
@@ -196,10 +204,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure CreateStandardColorDrawers;virtual;
-    procedure CreateSystemColorDrawers;virtual;
-    procedure CreateUserColorDrawers;virtual;
-    procedure RearrangeControls;virtual;
+    procedure CreateStandardColorDrawers; virtual;
+    procedure CreateSystemColorDrawers; virtual;
+    procedure CreateUserColorDrawers; virtual;
+    procedure RearrangeControls; virtual;
     procedure RefreshControls;
 
     procedure AdjustSize; override;
@@ -314,7 +322,7 @@ const
 implementation
 
 uses
-  JvResources, JvJVCLUtils, JvThemes;
+  JvResources, JvJVCLUtils, JvThemes, JvComponent;
 
 const
   cArrowWidth = 'ArrowWidth';
@@ -464,10 +472,11 @@ begin
   FColorsForm := TJvOfficeColorForm.Create(Self, GetColorsPanelClass());
   with TJvOfficeColorFormAccessProtected(FColorsForm) do
   begin
+    IsFocusable := False;
     FormStyle := fsStayOnTop;
     ToolWindowStyle := False;
     OnShowingChanged := DoFormShowingChanged;
-    OnKillFocus := DoFormKillFocus;
+//    OnKillFocus := DoFormKillFocus;
     OnClose := DoFormClose;
     OnWindowStyleChanged := DoFormWindowStyleChanged;
 
@@ -680,14 +689,11 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoArrowButtonClick(Sender: TObject);
 begin
+  SetFocus;
   if Sender = FArrowButton then
   begin
     if FColorsForm.Visible or FColorFormDropDown then
-    begin
-      FColorsForm.Hide;
-      FColorFormDropDown := False;
-      FArrowButton.Down := False;
-    end
+      PopupCloseUp
     else
     begin
       if Assigned(FOnDropDown) then
@@ -853,8 +859,28 @@ end;
 procedure TJvCustomOfficeColorButton.ShowColorForm(X: Integer; Y: Integer);
 begin
   AdjustColorForm(X, Y);
-  FColorsForm.Show;
+  FColorsForm.ShowNoActivate(True);
   FColorFormDropDown := True;
+end;
+
+procedure TJvCustomOfficeColorButton.CMCancelMode(var Msg: TCMCancelMode);
+begin
+  if (Msg.Sender <> Self) and (Msg.Sender <> FColorsForm) and
+     Assigned(FColorsForm) and not FColorsForm.ContainsControl(Msg.Sender) then
+    PopupCloseUp;
+end;
+
+procedure TJvCustomOfficeColorButton.CMPopupCloseUp(var Msg: TMessage);
+begin
+  PopupCloseUp;
+end;
+
+procedure TJvCustomOfficeColorButton.PopupCloseUp;
+begin
+  if Assigned(ColorsForm) and ColorsForm.Visible then
+    FColorsForm.Hide;
+  FColorFormDropDown := False;
+  FArrowButton.Down := False;
 end;
 
 procedure TJvCustomOfficeColorButton.DoFormShowingChanged(Sender: TObject);
@@ -867,7 +893,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.DoFormKillFocus(Sender: TObject);
+{procedure TJvCustomOfficeColorButton.DoFormKillFocus(Sender: TObject);
 var
   R: TRect;
   P: TPoint;
@@ -882,6 +908,26 @@ begin
     if FArrowButton.Down then
       FArrowButton.Down := False;
     FColorFormDropDown := False;
+  end;
+end;}
+
+procedure TJvCustomOfficeColorButton.FocusKilled(NextWnd: Cardinal);
+var
+  Sender: TWinControl;
+  Focused: Boolean;
+begin
+  inherited FocusKilled(NextWnd);
+  Focused := Screen.ActiveControl <> Self;
+  if not Focused then
+  begin
+    Sender := FindControl(NextWnd);
+    if (Sender <> Self) and (Sender <> FColorsForm) and
+      Assigned(FColorsForm) and not FColorsForm.ContainsControl(Sender) then
+    begin
+      { MSDN : While processing this message (WM_KILLFOCUS), do not make any
+               function calls that display or activate a window. }
+      PostMessage(Handle, CM_POPUPCLOSEUP, 0, 0);
+    end;
   end;
 end;
 
