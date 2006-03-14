@@ -210,13 +210,11 @@ begin
 end;
 
 initialization
-
-RegisterSplashScreen;
-RegisterAboutBox;
+  RegisterSplashScreen;
+  RegisterAboutBox;
 
 finalization
-
-UnRegisterAboutBox;
+  UnRegisterAboutBox;
 
 {$ENDIF RTL170_UP}
 
