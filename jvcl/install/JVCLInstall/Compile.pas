@@ -455,9 +455,11 @@ begin
     Lines.Add('-LN"' + OutDirs.DcpDir + '"'); // .dcp output
     Lines.Add('-N0"' + OutDirs.UnitOutDir + '"'); // .dcu output
     Lines.Add('-N1"' + OutDirs.HppDir + '"'); // .hpp output
-//    Lines.Add('-NH"' + OutDirs.HppDir + '"'); // .hpp output
+    if TargetConfig.Target.IsBDS then
+      Lines.Add('-NH"' + OutDirs.HppDir + '"'); // .hpp output
     Lines.Add('-N2"' + OutDirs.UnitOutDir + '"'); // .obj output
-//    Lines.Add('-NO"' + OutDirs.UnitOutDir + '"'); // .obj output
+    if TargetConfig.Target.IsBDS then
+      Lines.Add('-NO"' + OutDirs.UnitOutDir + '"'); // .obj output
     Lines.Add('-NB"' + OutDirs.DcpDir + '"'); // .bpi output
 
     { dcc32.exe crashes if the path is too long }
