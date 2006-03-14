@@ -261,16 +261,17 @@ type
     procedure DoThreadLast;
     procedure DoThreadOpen;
     procedure DoThreadRefresh;
+    function ExecuteThreadIsActive: Boolean;
     procedure HandleAfterOpenRefresh;
     procedure HandleAfterOpenRefreshThread;
     procedure HandleBeforeOpenRefresh;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
-    procedure IntAfterOpen;
-    procedure IntAfterRefresh;
+    procedure IntSynchAfterOpen;
+    procedure IntSynchAfterRefresh;
     procedure IntAfterThreadExecution(DataSet: TJvOracleDataSet; Operation: TJvOracleDatasetOperation);
-    procedure IntBeforeOpen;
-    procedure IntBeforeRefresh;
+    procedure IntSynchBeforeOpen;
+    procedure IntSynchBeforeRefresh;
     procedure IntBeforeThreadExecution(DataSet: TJvOracleDataSet; Operation: TJvOracleDatasetOperation);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ReplaceAfterFetchRecord(Sender: TOracleDataSet;
@@ -444,7 +445,7 @@ end;
 
 procedure TJvOracleDataSet.ExecuteThreadSynchronize(Method: TThreadMethod);
 begin
-  if not ExecuteThread.Terminated then
+  if ExecuteThreadIsActive then
     ExecuteThread.Synchronize(Method)
   else
     Method;
@@ -524,14 +525,24 @@ end;
 
 procedure TJvOracleDataSet.DoThreadRefresh;
 begin
+  HandleBeforeOpenRefresh;
   if not EnhancedOptions.RefreshAsOpenClose then
-    inherited InternalRefresh
+  begin
+    inherited InternalRefresh;
+  end
   else
   begin
     Close;
     InternalOpen;
   end;
+  if not ExecuteThreadIsActive then
+    HandleAfterOpenRefresh;
   HandleAfterOpenRefreshThread;
+end;
+
+function TJvOracleDataSet.ExecuteThreadIsActive: Boolean;
+begin
+  Result := Not ExecuteThread.Terminated;
 end;
 
 function TJvOracleDataSet.GetDialogOptions: TJvOracleDatasetDialogOptions;
@@ -567,6 +578,7 @@ begin
       MoveBy(FMoveToRecordAfterOpen - 1)
     else
       MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+  HandleAfterOpenRefresh;
 end;
 
 procedure TJvOracleDataSet.HandleBeforeOpenRefresh;
@@ -614,7 +626,7 @@ begin
     ExecuteThread.ExecuteWithDialog(nil);
 end;
 
-procedure TJvOracleDataSet.IntAfterOpen;
+procedure TJvOracleDataSet.IntSynchAfterOpen;
 begin
   if Assigned(FAfterOpen) then
     FAfterOpen(Self);
@@ -622,7 +634,7 @@ begin
     CapitalizeDatasetLabels;
 end;
 
-procedure TJvOracleDataSet.IntAfterRefresh;
+procedure TJvOracleDataSet.IntSynchAfterRefresh;
 begin
   if Assigned(FAfterRefresh) then
     FAfterRefresh(Self);
@@ -635,13 +647,13 @@ begin
     FAfterThreadExecution(DataSet, Operation);
 end;
 
-procedure TJvOracleDataSet.IntBeforeOpen;
+procedure TJvOracleDataSet.IntSynchBeforeOpen;
 begin
   if Assigned(FBeforeOpen) then
     FBeforeOpen(Self);
 end;
 
-procedure TJvOracleDataSet.IntBeforeRefresh;
+procedure TJvOracleDataSet.IntSynchBeforeRefresh;
 begin
   if Assigned(FBeforeRefresh) then
     FBeforeRefresh(Self);
@@ -724,17 +736,16 @@ end;
 
 procedure TJvOracleDataSet.ReplaceAfterOpen(Dataset: TDataSet);
 begin
-  if CurrentOperation <> todoRefresh then
+  if not ExecuteThreadIsActive and (CurrentOperation <> todoRefresh) then
     HandleAfterOpenRefresh;
   if Assigned(FAfterOpen) then
-    ExecuteThreadSynchronize(IntAfterOpen);
+    ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
 procedure TJvOracleDataSet.ReplaceAfterRefresh(Dataset: TDataSet);
 begin
-  HandleAfterOpenRefresh;
   if Assigned(FAfterRefresh) then
-    ExecuteThreadSynchronize(IntAfterRefresh);
+    ExecuteThreadSynchronize(IntSynchAfterRefresh);
 end;
 
 procedure TJvOracleDataSet.ReplaceBeforeOpen(Dataset: TDataSet);
@@ -745,7 +756,7 @@ begin
     HandleBeforeOpenRefresh;
   end;
   if Assigned(FBeforeOpen) then
-    ExecuteThreadSynchronize(IntBeforeOpen);
+    ExecuteThreadSynchronize(IntSynchBeforeOpen);
 end;
 
 procedure TJvOracleDataSet.ReplaceBeforeRefresh(Dataset: TDataSet);
@@ -754,9 +765,9 @@ begin
     FMoveToRecordAfterOpen := RecNo
   else
     FMoveToRecordAfterOpen := -1;
-  HandleBeforeOpenRefresh;
+  //HandleBeforeOpenRefresh;
   if Assigned(FBeforeRefresh) then
-    ExecuteThreadSynchronize(IntBeforeRefresh);
+    ExecuteThreadSynchronize(IntSynchBeforeRefresh);
 end;
 
 procedure TJvOracleDataSet.SetActive(Value: Boolean);
