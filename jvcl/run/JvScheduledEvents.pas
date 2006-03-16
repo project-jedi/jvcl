@@ -70,6 +70,7 @@ type
     FOnEndEvent: TNotifyEvent;
     FWnd: THandle;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
     function GetAppStorage: TJvCustomAppStorage;
@@ -481,6 +482,15 @@ end;
 procedure TJvCustomScheduledEvents.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FAppStorage := Value;
+  if Assigned(FAppStorage) then
+    FAppStorage.FreeNotification(Self);
+end;
+
+procedure TJvCustomScheduledEvents.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = AppStorage) and (Operation = opRemove) then
+    AppStorage := nil;
 end;
 
 procedure TJvCustomScheduledEvents.DoEndEvent(const Event: TJvEventCollectionItem);
