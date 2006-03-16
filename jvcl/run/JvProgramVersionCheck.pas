@@ -467,6 +467,9 @@ type
     property LocationTypesSupported: TJvProgramVersionLocationTypes read GetLocationTypesSupported;
     property RemoteProgramVersionHistory: TJvProgramVersionHistory
       read FRemoteProgramVersionHistory write FRemoteProgramVersionHistory;
+    property Thread: TJvThread read FThread write FThread;
+    property ThreadDialog: TJvThreadAnimateDialog read FThreadDialog write
+        FThreadDialog;
   published
     { Defines which release types will be shown in the update dialog }
     property AllowedReleaseType: TJvProgramReleaseType
