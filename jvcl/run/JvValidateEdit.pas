@@ -291,7 +291,7 @@ implementation
 
 uses
   Math,
-  JvJCLUtils, JvResources;
+  JclStrings, JvJCLUtils, JvResources;
 
 //=== { TJvCustomValidateEdit } ==============================================
 
@@ -651,6 +651,8 @@ begin
 end;
 
 function TJvCustomValidateEdit.GetValue: Variant;
+var
+  DisplayedText : string;
 begin
   case FDisplayFormat of
     dfCurrency:
@@ -659,8 +661,17 @@ begin
       Result := StrToFloatDef(FEditText, 0);
     dfInteger, dfYear:
       Result := StrToIntDef(FEditText, 0);
-  else
-    Result := inherited Text;
+    dfHex:
+      Result := StrToIntDef('$' + FEditText, 0);
+    else
+    begin
+      DisplayedText := inherited Text;
+
+      // Remove DisplayPrefix and DisplaySuffix
+      DisplayedText := StrEnsureNoPrefix(DisplayPrefix, DisplayedText);
+      DisplayedText := StrEnsureNoSuffix(DisplaySuffix, DisplayedText);
+      Result := DisplayedText;
+    end;
   end;
 end;
 
@@ -859,9 +870,16 @@ begin
 end;
 
 procedure TJvCustomValidateEdit.FocusKilled(NextWnd: THandle);
+var
+  DisplayedText : string;
 begin
   if not (csDestroying in ComponentState) then
-    EditText := inherited Text;
+  begin
+    DisplayedText := inherited Text;
+    DisplayedText := StrEnsureNoPrefix(DisplayPrefix, DisplayedText);
+    DisplayedText := StrEnsureNoSuffix(DisplaySuffix, DisplayedText);
+    EditText := DisplayedText;
+  end;
   inherited FocusKilled(NextWnd);
 end;
 
@@ -993,11 +1011,18 @@ begin
 end;
 
 procedure TJvCustomValidateEdit.Change;
+var
+  DisplayedText : string;
 begin
   // Update FEditText for User changes, so that the AsInteger, etc,
   // functions work while editing
   if not FSelfChange then
-    FEditText := inherited Text;
+  begin
+    DisplayedText := inherited Text;
+    DisplayedText := StrEnsureNoPrefix(DisplayPrefix, DisplayedText);
+    DisplayedText := StrEnsureNoSuffix(DisplaySuffix, DisplayedText);
+    FEditText := DisplayedText;
+  end;
   inherited Change;
 end;
 
