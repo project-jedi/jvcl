@@ -579,6 +579,8 @@ begin
     else
       MoveBy(EnhancedOptions.FetchRowsFirst - 1);
   HandleAfterOpenRefresh;
+  if Assigned(FAfterOpen) then
+    ExecuteThreadSynchronize(IntSynchAfterOpen)
 end;
 
 procedure TJvOracleDataSet.HandleBeforeOpenRefresh;
@@ -628,10 +630,10 @@ end;
 
 procedure TJvOracleDataSet.IntSynchAfterOpen;
 begin
-  if Assigned(FAfterOpen) then
-    FAfterOpen(Self);
   if EnhancedOptions.CapitalizeLabelOptions.AutoExecuteAfterOpen then
     CapitalizeDatasetLabels;
+  if Assigned(FAfterOpen) then
+    FAfterOpen(Self);
 end;
 
 procedure TJvOracleDataSet.IntSynchAfterRefresh;
@@ -738,8 +740,9 @@ procedure TJvOracleDataSet.ReplaceAfterOpen(Dataset: TDataSet);
 begin
   if not ExecuteThreadIsActive and (CurrentOperation <> todoRefresh) then
     HandleAfterOpenRefresh;
-  if Assigned(FAfterOpen) then
-    ExecuteThreadSynchronize(IntSynchAfterOpen);
+  if not ExecuteThreadIsActive then
+    if Assigned(FAfterOpen) then
+      ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
 procedure TJvOracleDataSet.ReplaceAfterRefresh(Dataset: TDataSet);
