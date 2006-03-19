@@ -432,6 +432,8 @@ type
     FThread: TJvThread;
     FThreadDialog: TJvThreadAnimateDialog;
     FUserOptions: TJvProgramVersionUserOptions;
+    function GetDownloadError: string;
+    function GetSelectedLocation: TJvCustomProgramVersionLocation;
   protected
     procedure CheckLocalDirectory;
     function CurrentApplicationName: string;
@@ -441,7 +443,6 @@ type
     function GetAllowedRemoteProgramVersion: string;
     function GetAllowedRemoteProgramVersionReleaseType: string;
     function GetLocationTypesSupported: TJvProgramVersionLocationTypes;
-    function IsRemoteProgramVersionNewer: Boolean;
     function IsRemoteProgramVersionReleaseTypeNewer(AReleaseType: TJvProgramReleaseType): Boolean;
     procedure LoadData; override;
     function LoadRemoteInstallerFile(const ALocalDirectory, ALocalInstallerFileName: string;
@@ -461,12 +462,15 @@ type
     procedure DownloadInstallerFromRemote;
     procedure Execute;
     function GetRemoteVersionOperation(var ReleaseType: TJvProgramReleaseType): TJvRemoteVersionOperation;
-    function SelectedLocation: TJvCustomProgramVersionLocation;
+    function IsRemoteProgramVersionNewer: Boolean;
     procedure ShowProgramVersionsDescription(const AFromVersion, AToVersion: string);
+    property DownloadError: string read GetDownloadError;
     property LastCheck: TDateTime read FLastCheck write FLastCheck;
     property LocationTypesSupported: TJvProgramVersionLocationTypes read GetLocationTypesSupported;
     property RemoteProgramVersionHistory: TJvProgramVersionHistory
       read FRemoteProgramVersionHistory write FRemoteProgramVersionHistory;
+    property SelectedLocation: TJvCustomProgramVersionLocation read
+        GetSelectedLocation;
     property Thread: TJvThread read FThread write FThread;
     property ThreadDialog: TJvThreadAnimateDialog read FThreadDialog write
         FThreadDialog;
@@ -521,7 +525,7 @@ implementation
 uses
   SysUtils, Dialogs, Controls, ComCtrls, StdCtrls, Forms,
   JclBase, JclFileUtils, JclShell,
-  JvDSADialogs, JvParameterListParameter, JvResources;
+  JvDSADialogs, JvParameterListParameter, JvResources, Windows, Messages;
 
 const
   SParamNameVersionButtonInfo = 'VersionButtonInfo';
@@ -826,14 +830,14 @@ begin
     LocalFileName := ALocalFileName;
   TemporaryLocalFileName := LocalFileName + RsPVTempFileNameExtension;
   if FileExists(PathAppend(ALocalPath, TemporaryLocalFileName)) then
-    DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName));
+    Sysutils.DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName));
   Result := LoadFileFromRemoteInt(ARemotePath, ARemoteFileName,
     ALocalPath, TemporaryLocalFileName, ABaseThread);
   if FileExists(Result) then // if we successfully copied the remote file to <local>.temp
   begin
     if FileExists(PathAppend(ALocalPath, LocalFileName)) then
     begin // if <local> exists
-      if DeleteFile(PathAppend(ALocalPath, LocalFileName)) then
+      if Sysutils.DeleteFile(PathAppend(ALocalPath, LocalFileName)) then
       begin // if we deleted <local>
         if RenameFile(Result, PathAppend(ALocalPath, LocalFileName)) then // if we renamed <local>.temp to <local>
           Result := PathAppend(ALocalPath, LocalFileName) // we can return <local>
@@ -844,7 +848,7 @@ begin
       begin // so, we failed delete <local>  try renaming <local>
         TemporaryLocalFileName2 := LocalFileName + RsPVTempFileNameExtension + '.bak'; // <local>.temp.bak
         if FileExists(PathAppend(ALocalPath, TemporaryLocalFileName2)) then // if <local>.temp.bak exists
-          DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2)); // get rid of it
+          Sysutils.DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2)); // get rid of it
 
         // rename <local> to <local>.temp.bak  (you can't delete live file, but CAN rename in recent Win OS)
         if RenameFile(PathAppend(ALocalPath, LocalFileName), PathAppend(ALocalPath, TemporaryLocalFileName2)) then
@@ -856,7 +860,7 @@ begin
             Result := PathAppend(ALocalPath, LocalFileName);
             // delete <local>.temp.bak  if possible - we don't care if fails - leaving a backup of live exe is a "feature" anyway <g>
             if FileExists(PathAppend(ALocalPath, TemporaryLocalFileName2)) then
-              DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2));
+              Sysutils.DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2));
           end // rename <local>.temp to <local>
           else
             Result := ''; // rename of <local>.temp to <local> failed, return blank
@@ -1183,7 +1187,8 @@ begin
   else if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
     mtWarning, [mbYes, mbNo], 0) = mrYes then
     if ShellExecEx(FExecuteDownloadInstallFileName) then
-      Application.Terminate
+      //Application.Terminate
+      PostMessage(Application.Handle, WM_CLOSE, 0, 0)
     else
       JvDSADialogs.MessageDlg(RsPVCErrorStartingSetup, mtError, [mbOK], 0);
 end;
@@ -1231,6 +1236,14 @@ function TJvProgramVersionCheck.GetAllowedRemoteProgramVersionReleaseType: strin
 begin
   if Assigned(RemoteProgramVersionHistory.AllowedCurrentProgramVersion(AllowedReleaseType)) then
     Result := RemoteProgramVersionHistory.AllowedCurrentProgramVersion(AllowedReleaseType).ProgramVersionReleaseType
+  else
+    Result := '';
+end;
+
+function TJvProgramVersionCheck.GetDownloadError: string;
+begin
+  if Assigned(SelectedLocation) then
+    Result := SelectedLocation.DownloadError
   else
     Result := '';
 end;
@@ -1410,7 +1423,8 @@ begin
       FLocationFTP := nil
 end;
 
-function TJvProgramVersionCheck.SelectedLocation: TJvCustomProgramVersionLocation;
+function TJvProgramVersionCheck.GetSelectedLocation:
+    TJvCustomProgramVersionLocation;
 begin
   case LocationType of
     pvltDatabase:
