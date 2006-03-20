@@ -1033,6 +1033,8 @@ type
     procedure Clear(var V: TVarData); override;
     procedure Copy(var Dest: TVarData; const Source: TVarData;
       const Indirect: Boolean); override;
+    procedure CastTo(var Dest: TVarData; const Source: TVarData;
+      const AVarType: TVarType); override;
   end;
 
   TJvRecordVariantType = class(TJvSimpleVariantType);
@@ -1350,6 +1352,14 @@ end;
 
 //=== { TJvSimpleVariantType } ===============================================
 
+procedure TJvSimpleVariantType.CastTo(var Dest: TVarData;
+  const Source: TVarData; const AVarType: TVarType);
+begin
+  //support only inherited classes
+  Dest.VPointer := Source.VPointer;
+  //inherited;
+end;
+
 procedure TJvSimpleVariantType.Clear(var V: TVarData);
 begin
   SimplisticClear(V);
@@ -1566,13 +1576,88 @@ begin
       Result := SizeOf(Smallint);
     varDate:
       Result := SizeOf(Double);
-    varEmpty:
+    varEmpty, varVariant, varOleStr, varDispatch, varUnknown:
       Result := SizeOf(TVarData);
   else
     if ATyp = varObject then
       Result := SizeOf(Integer);
   end;
 end;
+
+{$IFNDEF COMPILER6_UP}
+function VarArrayOffset(const A: Variant; const Indices: array of Integer): Integer;
+var
+  DimValue, h, l, Dim: Integer;
+begin
+  Result := 0;
+  DimValue := 1;
+  for Dim := 1 to VarArrayDimCount(A) do
+  begin
+    l := VarArrayLowBound(A, Dim);
+    h := VarArrayHighBound(A, Dim);
+    if Dim = 1 then
+    begin
+      Result := Indices[Dim - 1] - l;
+      DimValue := h - l + 1;
+    end
+    else
+    begin
+      Result := Result + (Indices[Dim - 1] - l) * DimValue;
+      DimValue:=(h - l + 1) * DimValue;
+    end;
+  end;
+end;
+
+function VarArrayGet(const A: Variant; Indices: array of Integer): Variant;
+var
+  P, P1: Pointer;
+  LVarType: Cardinal;
+begin
+  P := VarArrayLock(A);
+  try
+    LVarType := VarType(A) and varTypeMask;
+    P1 := Pointer(Integer(P) + Typ2Size(LVarType) * VarArrayOffset(A, Indices));
+    if LVarType = varVariant then
+      Result := PVariant(P1)^
+    else
+    begin
+      TVarData(Result).VType := LVarType;
+      Move(P1^, TVarData(Result).VInteger, Typ2Size(LVarType));
+    end;
+  finally
+    VarArrayUnlock(A);
+  end;
+end;
+
+procedure VarArrayPut(const A: Variant; const Value: Variant; const Indices: array of Integer);
+var
+  P, P1:pointer;
+  LVarType: Cardinal;
+  Temp: TVarData;
+begin
+  P := VarArrayLock(A);
+  try
+    LVarType := VarType(A) and varTypeMask;
+    P1 := Pointer(Integer(P) + Typ2Size(LVarType) * VarArrayOffset(A, Indices));
+
+    if LVarType = varVariant then
+      PVariant(P1)^ := Value
+    else
+    begin
+      VarCast(Variant(Temp), Value, LVarType);
+      case LVarType of
+        varOleStr, varDispatch, varUnknown:
+          P := Temp.VPointer;
+      else
+        P := @Temp.VPointer;
+      end;
+      Move(P^, P1^, Typ2Size(LVarType));
+    end;
+  finally
+    VarArrayUnlock(A);
+  end;
+end;
+{$ENDIF}
 
 function TypeName2VarTyp(const TypeName: string): Word;
 begin
@@ -5600,9 +5685,7 @@ var
   VV: TJvInterpreterArrayValues;
   PP: PJvInterpreterArrayRec;
   Bound: Integer;
-  {$IFDEF COMPILER6_UP}
   AI: array of Integer;
-  {$ENDIF COMPILER6_UP}
 begin
   Result := False;
   if Args.Count <> 0 then
@@ -5648,8 +5731,6 @@ begin
         Result := FSharedAdapter.GetElement(Self, Variable, Value, Args);
     end
     { for Variant Arrays }
-    {$IFDEF COMPILER6_UP}
-    // No support for variant arrays on Delphi 5 yet, sorry
     else
     if VarIsArray(Variable) then
     begin
@@ -5672,7 +5753,6 @@ begin
       Value := VarArrayGet(Variable, AI);
       Result := True;
     end
-    {$ENDIF COMPILER6_UP}
     else
       { problem }
       JvInterpreterError(ieArrayRequired, CurPos);
@@ -5686,9 +5766,7 @@ var
   VV: TJvInterpreterArrayValues;
   PP: PJvInterpreterArrayRec;
   Bound: Integer;
-  {$IFDEF COMPILER6_UP}
   AI: array of Integer;
-  {$ENDIF COMPILER6_UP}
 begin
   Result := False;
   if Args.Count <> 0 then
@@ -5732,8 +5810,6 @@ begin
         Result := FSharedAdapter.SetElement(Self, Variable, Value, Args);
     end
     { for Variant Array }
-    {$IFDEF COMPILER6_UP}
-    // No support for variant arrays on Delphi 5 yet, sorry
     else
     if VarIsArray(Variable) then
     begin
@@ -5756,7 +5832,6 @@ begin
       VarArrayPut(Variable, Value, AI);
       Result := True;
     end
-    {$ENDIF COMPILER6_UP}
     else
       { problem }
       JvInterpreterError(ieArrayRequired, CurPos);
@@ -7005,36 +7080,44 @@ var
   end;
 
   procedure DoFinallyExcept(E: Exception);
+  var
+    OldExit: Boolean;
   begin
-    case TTyp of
-      ttFinally:
-        { do statements up to 'end' }
-        begin
-          InterpretBegin;
-          if E <> nil then
+    OldExit := FExit;
+    try
+      FExit := False;
+      case TTyp of
+        ttFinally:
+          { do statements up to 'end' }
           begin
-            ReRaiseException := True;
+            InterpretBegin;
+            if E <> nil then
+              ReRaiseException := True;
           end;
-        end;
-      ttExcept:
-        begin
-          if E = nil then
-            { skip except section }
-            SkipToEnd
-          else
-          { except section }
+        ttExcept:
           begin
-            try
-              InterpretExcept(E);
-            except
-              on E1: EJvInterpreterError do
-                if E1.ErrCode = ieRaise then
-                  ReRaiseException := True;
+            if E = nil then
+              { skip except section }
+              SkipToEnd
             else
-              raise;
+            { except section }
+            begin
+              try
+                InterpretExcept(E);
+              except
+                on E1: EJvInterpreterError do
+                begin
+                  if E1.ErrCode = ieRaise then
+                    ReRaiseException := True;
+                end
+                else
+                  raise;
+              end;
             end;
           end;
-        end;
+      end;
+    finally
+      FExit := FExit or OldExit;
     end;
   end;
 
