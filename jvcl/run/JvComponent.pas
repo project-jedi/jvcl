@@ -153,9 +153,13 @@ end;
 constructor TJvForm.Create(AOwner: TComponent);
 begin
 //  inherited Create(AOwner);
+  {$IFDEF CLR}
+  GlobalNameSpace.AcquireWriterLock(MaxInt);
+  {$ELSE}
   GlobalNameSpace.BeginWrite;
+  {$ENDIF CLR}
   try
-    CreateNew(AOwner);
+    CreateNew(AOwner, 0);
     if (ClassType <> TJvForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
@@ -169,11 +173,17 @@ begin
       finally
         Exclude(FFormState, fsCreating);
       end;
+      {$IFNDEF CLR}
       if OldCreateOrder then
+      {$ENDIF !CLR}
         DoCreate;
     end;
   finally
+    {$IFDEF CLR}
+    GlobalNameSpace.ReleaseWriterLock;
+    {$ELSE}
     GlobalNameSpace.EndWrite;
+    {$ENDIF CLR}
   end;
 end;
 

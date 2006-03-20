@@ -87,6 +87,9 @@ const
 implementation
 
 uses
+  {$IFDEF CLR}
+  Borland.Vcl.WinUtils,
+  {$ENDIF CLR}
   Forms, StdCtrls;
 
 {$R JvEnterTab.res}

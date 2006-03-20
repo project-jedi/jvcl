@@ -35,7 +35,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, SysUtils, DB,
+  {$IFDEF HAS_UNIT_VARIANTS} // CLR requires it here
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  Classes, SysUtils, Contnrs, DB,
   JvAppStorage;
 
 type
@@ -177,9 +180,6 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   DBConsts, Math, Controls, Forms, Dialogs,
   JvJVCLUtils, JvJCLUtils, JvTypes, JvConsts, JvResources;
 
@@ -444,7 +444,7 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 var
   FieldCount: Integer;
-  Fields: TList;
+  Fields: TObjectList;
   Fld: TField;                    {BG}   //else BAD mem leak on 'Field.asString'
   Bookmark: TBookmarkStr;
 
@@ -499,7 +499,7 @@ begin
     if IsEmpty then
       Exit;
   end;
-  Fields := TList.Create;
+  Fields := TObjectList.Create(False);
   try
     DataSet.GetFieldList(Fields, KeyFields);
     FieldCount := Fields.Count;
@@ -522,7 +522,7 @@ begin
           end;
         end;
       finally
-        if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
+        if not Result {$IFNDEF CLR} and DataSet.BookmarkValid(PChar(Bookmark)) {$ENDIF} then
           DataSet.Bookmark := Bookmark;
       end;
     finally
@@ -660,29 +660,28 @@ type
     Field: TField;
     EndIndex: Integer;
   end;
-  PFieldArray = ^TFieldArray;
-  TFieldArray = array [0..(65528 div SizeOf(TFieldInfo)) - 1] of TFieldInfo;
+  TFieldArray = array of TFieldInfo;
 const
   Delims = [' ', ','];
 var
   I, J: Integer;
   S: string;
-  FieldArray: PFieldArray;
+  FieldArray: TFieldArray;
 begin
   with DataSet do
   begin
-    FieldArray := AllocMemo(FieldCount * SizeOf(TFieldInfo));
+    SetLength(FieldArray, FieldCount);
     try
       for I := 0 to FieldCount - 1 do
       begin
         S := AppStorage.ReadString(AppStorage.ConcatPaths([CheckSection(DataSet, Path),
           Name + Fields[I].FieldName]), '');
-        FieldArray^[I].Field := Fields[I];
-        FieldArray^[I].EndIndex := Fields[I].Index;
+        FieldArray[I].Field := Fields[I];
+        FieldArray[I].EndIndex := Fields[I].Index;
         if S <> '' then
         begin
-          FieldArray^[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
-            FieldArray^[I].EndIndex);
+          FieldArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
+            FieldArray[I].EndIndex);
           Fields[I].DisplayWidth := StrToIntDef(ExtractWord(2, S, Delims),
             Fields[I].DisplayWidth);
           if RestoreVisible then
@@ -694,15 +693,15 @@ begin
       begin
         for J := 0 to FieldCount - 1 do
         begin
-          if FieldArray^[J].EndIndex = I then
+          if FieldArray[J].EndIndex = I then
           begin
-            FieldArray^[J].Field.Index := FieldArray^[J].EndIndex;
+            FieldArray[J].Field.Index := FieldArray[J].EndIndex;
             Break;
           end;
         end;
       end;
     finally
-      FreeMemo(Pointer(FieldArray));
+      FieldArray := nil;
     end;
   end;
 end;

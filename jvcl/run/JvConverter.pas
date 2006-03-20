@@ -171,8 +171,13 @@ procedure TJvDateTimeFormat.ResetDefault;
 begin
   FAMString := TimeAMString;
   FPMString := TimePMString;
+  {$IFDEF CLR}
+  FTimeSeparator := SysUtils.TimeSeparator[1];
+  FDateSeparator := SysUtils.DateSeparator[1];
+  {$ELSE}
   FTimeSeparator := SysUtils.TimeSeparator;
   FDateSeparator := SysUtils.DateSeparator;
+  {$ENDIF CLR}
   FDateOrder := doDMY;
   FTimeFormat := tfHHMMSS;
   FLongDate := False;
@@ -410,7 +415,11 @@ begin
     dtInteger:
       Result := Ch in DigitSymbols + SignSymbols;
     dtFloat:
+      {$IFDEF CLR}
+      Result := Ch in DigitSymbols + SignSymbols + [AnsiChar(DecimalSeparator[1]), 'E', 'e'];
+      {$ELSE}
       Result := Ch in DigitSymbols + SignSymbols + [DecimalSeparator, 'E', 'e'];
+      {$ENDIF CLR}
     dtDateTime, dtDate, dtTime:
       Result := True;
     dtBoolean:
@@ -446,17 +455,17 @@ var
   DateS, TimeS: set of Char;
 begin
   S := GetString;
-  DateS := ['/', '.'] + [DateTimeFormat.DateSeparator] -
-    [DateTimeFormat.TimeSeparator];
-  TimeS := [':', '-'] - [DateTimeFormat.DateSeparator] +
-    [DateTimeFormat.TimeSeparator];
+  DateS := ['/', '.'] + [AnsiChar(DateTimeFormat.DateSeparator)] -
+    [AnsiChar(DateTimeFormat.TimeSeparator)];
+  TimeS := [':', '-'] - [AnsiChar(DateTimeFormat.DateSeparator)] +
+    [AnsiChar(DateTimeFormat.TimeSeparator)];
   for I := 1 to Length(S) do
   begin
     if S[I] in DateS then
-      S[I] := DateSeparator
+      S[I] := DateSeparator{$IFDEF CLR}[1]{$ENDIF}
     else
     if S[I] in TimeS then
-      S[I] := TimeSeparator;
+      S[I] := TimeSeparator{$IFDEF CLR}[1]{$ENDIF};
   end;
   Result := StrToDateTime(S);
 end;

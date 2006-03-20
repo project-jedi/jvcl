@@ -52,9 +52,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    function Patch(Password: string = ''): Boolean;
-    function IsPatched(FileName: string): Boolean;
-    function IsPatchable(FileName: string): Boolean;
+    function Patch(const Password: string = ''): Boolean;
+    function IsPatched(const FileName: string): Boolean;
+    function IsPatchable(const FileName: string): Boolean;
     property StartFile: TFileName read FStartFile write FStartFile;
     property EndFile: TFileName read FEndFile write FEndFile;
     property ChangeInFile: Boolean read FChangeInFile write FChangeInFile default True;
@@ -108,7 +108,7 @@ begin
   FDifferences.Assign(Value);
 end;
 
-function TJvPatchFile.IsPatchable(FileName: string): Boolean;
+function TJvPatchFile.IsPatchable(const FileName: string): Boolean;
 var
   F: file of Byte;
 begin
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-function TJvPatchFile.IsPatched(FileName: string): Boolean;
+function TJvPatchFile.IsPatched(const FileName: string): Boolean;
 var
   F: file of Byte;
 begin
@@ -136,7 +136,7 @@ begin
   end;
 end;
 
-function TJvPatchFile.Patch(Password: string): Boolean;
+function TJvPatchFile.Patch(const Password: string): Boolean;
 var
   I: Integer;
   Ind, Tmp: Longint;
