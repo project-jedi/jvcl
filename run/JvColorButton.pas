@@ -77,7 +77,7 @@ type
     procedure ShowColorPopup(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); virtual;
     procedure PopupCloseUp; dynamic;
-    procedure FocusKilled(NextWnd: Cardinal); override;
+    procedure FocusKilled(NextWnd: THandle); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -148,7 +148,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvColorButton.FocusKilled(NextWnd: Cardinal);
+procedure TJvColorButton.FocusKilled(NextWnd: THandle);
 var
   Sender: TWinControl;
   Focused: Boolean;

@@ -90,6 +90,7 @@ type
   TLoadMode = (lmCopy, lmAppend);
   TSaveLoadState = (slsNone, slsLoading, slsSaving);
   TCompareRecords = function(Item1, Item2: TJvMemoryRecord): Integer of object;
+  TWordArray = array of Word;
 
   TJvMemoryData = class(TDataSet)
   private
@@ -99,7 +100,7 @@ type
     FBookmarkOfs: Integer;
     FBlobOfs: Integer;
     FRecBufSize: Integer;
-    FOffsets: PWordArray;
+    FOffsets: TWordArray;
     FLastID: Integer;
     FAutoInc: Longint;
     FActive: Boolean;
@@ -592,7 +593,7 @@ begin
   FreeIndexList;
   ClearRecords;
   FRecords.Free;
-  ReallocMem(FOffsets, 0);
+  FOffsets := nil;
   inherited Destroy;
 end;
 
@@ -728,10 +729,10 @@ begin
   Offset := 0;
   inherited InitFieldDefsFromFields;
   { Calculate fields offsets }
-  ReallocMem(FOffsets, FieldDefList.Count * SizeOf(Word));
+  SetLength(FOffsets, FieldDefList.Count);
   for I := 0 to FieldDefList.Count - 1 do
   begin
-    FOffsets^[I] := Offset;
+    FOffsets[I] := Offset;
     with FieldDefList[I] do
     begin
       if DataType in ftSupported - ftBlobTypes then

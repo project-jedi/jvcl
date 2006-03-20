@@ -153,6 +153,9 @@ const
 implementation
 
 uses
+  {$IFDEF CLR}
+  Borland.Vcl.Types, Borland.Vcl.WinUtils,
+  {$ENDIF CLR}
   JvJCLUtils, JvResources;
 
 {$R JvPoweredBy.res}
@@ -278,9 +281,15 @@ end;
 
 constructor TJvPoweredByJCL.Create(AOwner: TComponent);
 begin
+  {$IFDEF CLR}
+  inherited Create(AOwner);
+  if FResourceName = nil then
+    FResourceName := cPoweredByJCL;
+  {$ELSE}
   FResourceName := cPoweredByJCL;
   // simple trick with inherited
   inherited Create(AOwner);
+  {$ENDIF CLR}
   FURLActive := True;
   FURL := RsURLPoweredByJCL;
 end;
@@ -289,8 +298,14 @@ end;
 
 constructor TJvPoweredByJVCL.Create(AOwner: TComponent);
 begin
+  {$IFDEF CLR}
+  inherited Create(AOwner);
+  if FResourceName = nil then
+    FResourceName := cPoweredByJVCL;
+  {$ELSE}
   FResourceName := cPoweredByJVCL;
   inherited Create(AOwner);
+  {$ENDIF CLR}
   FURLActive := True;
   FURL := RsURLPoweredByJVCL;
 end;

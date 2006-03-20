@@ -65,8 +65,8 @@ type
     procedure DoDefineBinaryProperty(const Name: string; HasData: Boolean); dynamic;
     procedure ReadUnpublished(Reader: TReader); overload; dynamic;
     procedure WriteUnpublished(Writer: TWriter); overload; dynamic;
-    procedure ReadUnpublished(Stream: TStream); overload; dynamic;
-    procedure WriteUnpublished(Stream: TStream); overload; dynamic;
+    procedure ReadUnpublishedStream(Stream: TStream); overload; dynamic;
+    procedure WriteUnpublishedStream(Stream: TStream); overload; dynamic;
   public
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
@@ -84,8 +84,8 @@ type
     procedure DoDefineBinaryProperty(const Name: string; HasData: Boolean); dynamic;
     procedure ReadUnpublished(Reader: TReader); overload; dynamic;
     procedure WriteUnpublished(Writer: TWriter); overload; dynamic;
-    procedure ReadUnpublished(Stream: TStream); overload; dynamic;
-    procedure WriteUnpublished(Stream: TStream); overload; dynamic;
+    procedure ReadUnpublishedStream(Stream: TStream); overload; dynamic;
+    procedure WriteUnpublishedStream(Stream: TStream); overload; dynamic;
   public
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
@@ -106,8 +106,8 @@ type
     procedure SetSize(const Value: Integer);
   protected
     procedure DefineUnpublishedProperties(Filer: TFiler); override;
-    procedure ReadUnpublished(Stream: TStream); override;
-    procedure WriteUnpublished(Stream: TStream); override;
+    procedure ReadUnpublishedStream(Stream: TStream); override;
+    procedure WriteUnpublishedStream(Stream: TStream); override;
     procedure DoLoading; virtual;
     procedure DoLoaded; virtual;
     procedure DoSaving; virtual;
@@ -206,28 +206,44 @@ begin
   DoDefineBinaryProperty(cEmbeddedData, FStream.Size > 0);
 end;
 
-procedure TJvDataEmbedded.ReadUnpublished(Stream: TStream);
+procedure TJvDataEmbedded.ReadUnpublishedStream(Stream: TStream);
 var
   I: Integer;
+  {$IFDEF CLR}
+  A: TBytes;
+  {$ENDIF CLR}
 begin
   if DefinePropertyIs(cEmbeddedData) then
   begin
+    {$IFDEF CLR}
+    Stream.Read(I);
+    FStream.Clear;
+    SetLength(A, I);
+    Stream.Read(A, I);
+    FStream.Write(A, I);
+    {$ELSE}
     Stream.Read(I, SizeOf(I));
     FStream.Clear;
     FStream.Size := I;
     Stream.Read(FStream.Memory^, I);
+    {$ENDIF CLR}
   end;
 end;
 
-procedure TJvDataEmbedded.WriteUnpublished(Stream: TStream);
+procedure TJvDataEmbedded.WriteUnpublishedStream(Stream: TStream);
 var
   I: Integer;
 begin
   if DefinePropertyIs(cEmbeddedData) then
   begin
     I := FStream.Size;
+    {$IFDEF CLR}
+    Stream.Write(I);
+    Stream.Write(FStream.Memory, I);
+    {$ELSE}
     Stream.Write(I, SizeOf(I));
     Stream.Write(FStream.Memory^, I);
+    {$ENDIF CLR}
   end;
 end;
 
@@ -292,14 +308,13 @@ end;
 
 procedure TJvComponentEmbedded.DefineUnpublishedProperties(Filer: TFiler);
 begin
-//
 end;
 
 procedure TJvComponentEmbedded.DoDefineBinaryProperty(const Name: string; HasData: Boolean);
 begin
   FFilerTag := Name;
   if Assigned(FFiler) and (Name <> '') then
-    FFiler.DefineBinaryProperty(Name, ReadUnpublished, WriteUnpublished, HasData);
+    FFiler.DefineBinaryProperty(Name, ReadUnpublishedStream, WriteUnpublishedStream, HasData);
 end;
 
 procedure TJvComponentEmbedded.DoDefineProperty(const Name: string; HasData: Boolean);
@@ -311,7 +326,6 @@ end;
 
 procedure TJvComponentEmbedded.ReadUnpublished(Reader: TReader);
 begin
-
 end;
 
 procedure TJvComponentEmbedded.LoadFromStream(Stream: TStream);
@@ -320,14 +334,12 @@ begin
     Stream.ReadComponent(Self);
 end;
 
-procedure TJvComponentEmbedded.ReadUnpublished(Stream: TStream);
+procedure TJvComponentEmbedded.ReadUnpublishedStream(Stream: TStream);
 begin
-
 end;
 
 procedure TJvComponentEmbedded.WriteUnpublished(Writer: TWriter);
 begin
-
 end;
 
 procedure TJvComponentEmbedded.SaveToStream(Stream: TStream);
@@ -335,9 +347,8 @@ begin
   Stream.WriteComponent(Self);
 end;
 
-procedure TJvComponentEmbedded.WriteUnpublished(Stream: TStream);
+procedure TJvComponentEmbedded.WriteUnpublishedStream(Stream: TStream);
 begin
-
 end;
 
 //=== { TJvPersistentEmbedded } ==============================================
@@ -364,14 +375,13 @@ end;
 
 procedure TJvPersistentEmbedded.DefineUnpublishedProperties(Filer: TFiler);
 begin
-//
 end;
 
 procedure TJvPersistentEmbedded.DoDefineBinaryProperty(const Name: string; HasData: Boolean);
 begin
   FFilerTag := Name;
   if Assigned(FFiler) and (Name <> '') then
-    FFiler.DefineBinaryProperty(Name, ReadUnpublished, WriteUnpublished, HasData);
+    FFiler.DefineBinaryProperty(Name, ReadUnpublishedStream, WriteUnpublishedStream, HasData);
 end;
 
 procedure TJvPersistentEmbedded.DoDefineProperty(const Name: string; HasData: Boolean);
@@ -398,14 +408,12 @@ begin
   end;
 end;
 
-procedure TJvPersistentEmbedded.ReadUnpublished(Stream: TStream);
+procedure TJvPersistentEmbedded.ReadUnpublishedStream(Stream: TStream);
 begin
-//
 end;
 
 procedure TJvPersistentEmbedded.ReadUnpublished(Reader: TReader);
 begin
-//
 end;
 
 procedure TJvPersistentEmbedded.SaveToStream(Stream: TStream);
@@ -423,12 +431,10 @@ end;
 
 procedure TJvPersistentEmbedded.WriteUnpublished(Writer: TWriter);
 begin
-
 end;
 
-procedure TJvPersistentEmbedded.WriteUnpublished(Stream: TStream);
+procedure TJvPersistentEmbedded.WriteUnpublishedStream(Stream: TStream);
 begin
-
 end;
 
 {$IFDEF UNITVERSIONING}
