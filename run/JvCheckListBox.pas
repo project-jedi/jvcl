@@ -137,7 +137,6 @@ uses
 
 type
   // Used for the load/save methods
-
   TCheckListRecord = record
     Checked: Boolean;
     StringSize: Integer;
@@ -398,6 +397,7 @@ begin
   for I := 0 to Items.Count - 1 do
   begin
     ItemWidth := Canvas.TextWidth(Items[I] + ' ');
+    Inc(ItemWidth, GetCheckWidth); 
     if FMaxWidth < ItemWidth then
       FMaxWidth := ItemWidth;
   end;
@@ -550,6 +550,7 @@ begin
         {$ELSE}
         ItemWidth := Canvas.TextWidth(StrPas(PChar(Msg.lParam)) + ' ');
         {$ENDIF CLR}
+        Inc(ItemWidth, GetCheckWidth);
         if FMaxWidth < ItemWidth then
           FMaxWidth := ItemWidth;
         SetHScroll(FScroll);
@@ -557,6 +558,7 @@ begin
     LB_DELETESTRING:
       begin
         ItemWidth := Canvas.TextWidth(Items[Msg.wParam] + ' ');
+        Inc(ItemWidth, GetCheckWidth);
         if ItemWidth = FMaxWidth then
         begin
           inherited WndProc(Msg);
