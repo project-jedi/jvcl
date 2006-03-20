@@ -566,8 +566,10 @@ begin
       end;
     LB_RESETCONTENT:
       begin
+        inherited WndProc(Msg);
         FMaxWidth := 0;
         SetHScroll(FScroll);
+        Exit;
       end;
     WM_SETFONT:
       begin
