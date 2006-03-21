@@ -491,17 +491,22 @@ end;
 
 procedure TJvMsgWindow.WndProc(var Msg: TMessage);
 begin
-  try
-    if (Msg.Msg = WM_SETTINGCHANGE) or (Msg.Msg = WM_SYSCOLORCHANGE) then
+  with Msg do
+    if (Msg = WM_SETTINGCHANGE) or (Msg = WM_SYSCOLORCHANGE) then
+    try
       NotifyClients;
-  except
-    {$IFDEF COMPILER6_UP}
-    if Assigned(ApplicationHandleException) then
-      ApplicationHandleException(Self);
-    {$ELSE}
-    Application.HandleException(Self);
-    {$ENDIF COMPILER6_UP}
-  end;
+    except
+      {$IFDEF COMPILER6_UP}
+      if Assigned(ApplicationHandleException) then
+        ApplicationHandleException(Self);
+      {$ELSE}
+      Application.HandleException(Self);
+      {$ENDIF COMPILER6_UP}
+    end
+    else
+      { !! Call DefWindowProc, so messages like WM_QUERYENDSESSION are
+           processed correctly, see Mantis #3527 }
+      Result := DefWindowProc(FHandle, Msg, wParam, lParam);
 end;
 
 initialization
