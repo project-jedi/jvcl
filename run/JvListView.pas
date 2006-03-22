@@ -1491,9 +1491,11 @@ end;
 
 function TJvListView.IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean;
 begin
+  { We must custom draw both cdPrePaint and cdPostPaint because without the
+    cdPostPaint the TListView creates GDI fonts without releasing them. }
   Result := inherited IsCustomDrawn(Target, Stage) or
-    ((Stage = cdPrePaint) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty) or
-    ((Stage = cdPrePaint) and ((Target = dtItem) or (Target = dtSubItem)));
+    ((Stage in [cdPrePaint, cdPostPaint]) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty) or
+    ((Stage in [cdPrePaint, cdPostPaint]) and ((Target = dtItem) or (Target = dtSubItem)));
 end;
 
 
@@ -1521,7 +1523,6 @@ var
 
 begin
   Result := inherited CustomDraw(ARect, Stage);
-
   if Result and (Stage = cdPrePaint) and (FPicture <> nil) and (FPicture.Graphic <> nil) and not
     FPicture.Graphic.Empty and (FPicture.Graphic.Width > 0) and (FPicture.Graphic.Height > 0) then
   begin
@@ -1580,6 +1581,7 @@ begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
       Canvas.Brush := TJvListItem(Item).Brush;
+    Canvas.Handle;
   end;
 
   Result := inherited CustomDrawItem(Item, State, Stage);
