@@ -30,7 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls;
+  StdCtrls, ComCtrls, ExtCtrls, JvFormPlacement, JvComponentBase,
+  JvAppStorage, JvAppIniStorage;
 
 type
   TJvPasImport = class(TForm)
@@ -54,6 +55,8 @@ type
     cbFunctions: TCheckBox;
     cbConstants: TCheckBox;
     cbDirectCall: TCheckBox;
+    AppStorage: TJvAppIniFileStorage;
+    JvFormStorage1: TJvFormStorage;
     procedure bSourceClick(Sender: TObject);
     procedure bDestinationClick(Sender: TObject);
     procedure bImportClick(Sender: TObject);
@@ -312,8 +315,8 @@ const
       // Result := Result + SubStr(Params[i], 0, '|');
       if Result <> '[' then
         Result := Result + ', ';
-      Result := Result + TypStr(Trim(SubStr(Params[i], 1, ':')), True);
-      if SubStr(Params[i], 0, ' ') = 'var' then
+      Result := Result + TypStr(Trim(SubStrBySeparator(Params[i], 1, ':')), True);
+      if SubStrBySeparator(Params[i], 0, ' ') = 'var' then
         Result := Result + ' or varByRef';
     end;
     Result := Result + ']';
@@ -476,9 +479,9 @@ const
       Typ: string;
     begin
       Result := S;
-      if SubStr(Params[i], 0, ' ') <> 'var' then
+      if SubStrBySeparator(Params[i], 0, ' ') <> 'var' then
         Exit;
-      Typ := Trim(SubStr(Params[i], 1, ':'));
+      Typ := Trim(SubStrBySeparator(Params[i], 1, ':'));
       if Cmp(Typ, 'integer') then
         Result := 'TVarData(' + Result + ').VInteger'
       else
@@ -517,7 +520,7 @@ const
       if Result <> '(' then
         Result := Result + ', ';
       Result := Result + VarCast(V2Param('Args.Values[' + IntToStr(i) + ']',
-        Trim(SubStr(Params[i], 1, ':'))));
+        Trim(SubStrBySeparator(Params[i], 1, ':'))));
     end;
     Result := Result + ')';
   end;
@@ -1003,6 +1006,7 @@ end;
 procedure TJvPasImport.FormCreate(Sender: TObject);
 begin
   eSourceChange(nil);
+  AppStorage.FileName:=ChangeFileExt(paramstr(0),'.ini');
 end;
 
 procedure TJvPasImport.bParamsClick(Sender: TObject);

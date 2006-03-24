@@ -42,12 +42,29 @@ object JvDebugLog: TJvDebugLog
     UseDockManager = False
     Colors.Comment.Style = [fsItalic]
     Colors.Comment.ForeColor = clOlive
+    Colors.Comment.BackColor = clWindow
     Colors.Number.ForeColor = clNavy
+    Colors.Number.BackColor = clWindow
     Colors.Strings.ForeColor = clPurple
+    Colors.Strings.BackColor = clWindow
     Colors.Symbol.ForeColor = clBlue
+    Colors.Symbol.BackColor = clWindow
     Colors.Reserved.Style = [fsBold]
+    Colors.Reserved.ForeColor = clWindowText
+    Colors.Reserved.BackColor = clWindow
+    Colors.Identifier.ForeColor = clWindowText
+    Colors.Identifier.BackColor = clWindow
     Colors.Preproc.ForeColor = clGreen
+    Colors.Preproc.BackColor = clWindow
+    Colors.FunctionCall.ForeColor = clWindowText
+    Colors.FunctionCall.BackColor = clWindow
+    Colors.Declaration.ForeColor = clWindowText
+    Colors.Declaration.BackColor = clWindow
     Colors.Statement.Style = [fsBold]
+    Colors.Statement.ForeColor = clWindowText
+    Colors.Statement.BackColor = clWindow
+    Colors.PlainText.ForeColor = clWindowText
+    Colors.PlainText.BackColor = clWindow
   end
   object Panel1: TPanel
     Left = 0
@@ -65,5 +82,14 @@ object JvDebugLog: TJvDebugLog
       Caption = 'Enable Debug log'
       TabOrder = 0
     end
+  end
+  object JvFormStorage1: TJvFormStorage
+    AppStorage = JvPasImport.AppStorage
+    AppStoragePath = '%FORM_NAME%'
+    StoredProps.Strings = (
+      'cbDebug.Checked')
+    StoredValues = <>
+    Left = 232
+    Top = 56
   end
 end
