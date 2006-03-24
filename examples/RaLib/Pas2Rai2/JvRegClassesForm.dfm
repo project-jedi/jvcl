@@ -13,6 +13,7 @@ object JvRegClasses: TJvRegClasses
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -57,5 +58,13 @@ object JvRegClasses: TJvRegClasses
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 0
+  end
+  object JvFormStorage1: TJvFormStorage
+    AppStorage = JvPasImport.AppStorage
+    AppStoragePath = '%FORM_NAME%'
+    OnSavePlacement = RegAuto1AfterSave
+    StoredValues = <>
+    Left = 80
+    Top = 40
   end
 end

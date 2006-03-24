@@ -30,13 +30,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvEditor, JvHLEditor;
+  StdCtrls, ExtCtrls, JvEditor, JvHLEditor, JvExControls, JvEditorCommon,
+  JvComponentBase, JvFormPlacement;
 
 type
   TJvDebugLog  = class(TForm)
     memDebug: TJvHLEditor;
     Panel1: TPanel;
     cbDebug: TCheckBox;
+    JvFormStorage1: TJvFormStorage;
   public
   end;
 

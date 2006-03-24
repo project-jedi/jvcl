@@ -3,7 +3,7 @@ object JvPasImport: TJvPasImport
   Top = 122
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'Importing pas-file to JvI2'
+  Caption = 'Importing pas-file to JvInterpreter'
   ClientHeight = 400
   ClientWidth = 360
   Color = clBtnFace
@@ -186,7 +186,7 @@ object JvPasImport: TJvPasImport
   end
   object OpenDialog: TOpenDialog
     Filter = 'Delphi source files (*.pas)|*.pas|All files (*.*)|*.*'
-    Options = [ofHideReadOnly, ofFileMustExist]
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
     Title = 'Select pas file for importing'
     Left = 256
     Top = 16
@@ -196,5 +196,27 @@ object JvPasImport: TJvPasImport
     Title = 'Select destination file name'
     Left = 256
     Top = 72
+  end
+  object AppStorage: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    SubStorages = <>
+    Left = 240
+    Top = 112
+  end
+  object JvFormStorage1: TJvFormStorage
+    AppStorage = AppStorage
+    AppStoragePath = '%FORM_NAME%'
+    Options = [fpLocation]
+    StoredProps.Strings = (
+      'eSource.Text'
+      'eDestination.Text'
+      'cbClasses.Checked'
+      'cbFunctions.Checked'
+      'cbConstants.Checked'
+      'cbDirectCall.Checked')
+    StoredValues = <>
+    Left = 272
+    Top = 112
   end
 end

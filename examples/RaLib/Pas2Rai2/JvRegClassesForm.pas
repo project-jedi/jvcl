@@ -30,7 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  StdCtrls, JvAppStorage, JvAppRegistryStorage, JvComponentBase,
+  JvFormPlacement, JvPasImportForm;
 
 type
   TJvRegClasses  = class(TForm)
@@ -38,8 +39,9 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    procedure RegAuto1AfterLoad(Sender: TObject);
+    JvFormStorage1: TJvFormStorage;
     procedure RegAuto1AfterSave(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   public
   end;
 
@@ -50,19 +52,24 @@ implementation
 
 {$R *.DFM}
 
-procedure TJvRegClasses.RegAuto1AfterLoad(Sender: TObject);
+function ExeDirToSourceDir(const AExeDir: string): string;
 begin
-  try
-    memClasses.Lines.LoadFromFile(ExtractFilePath(Application.ExeName) + 'classes.ini');
-  except
-    memClasses.Lines.Add('TObject');
-    memClasses.Lines.Add('TStream');
-  end;
+  Result := ExtractFilePath(ExcludeTrailingPathDelimiter(AExeDir)) + 'examples\RaLib\Pas2Rai2\';
 end;
 
 procedure TJvRegClasses.RegAuto1AfterSave(Sender: TObject);
 begin
-  memClasses.Lines.SaveToFile(ExtractFilePath(Application.ExeName) + 'classes.ini');
+  memClasses.Lines.SaveToFile(ExeDirToSourceDir(ExtractFilePath(Application.ExeName)) + 'classes.ini');
+end;
+
+procedure TJvRegClasses.FormCreate(Sender: TObject);
+begin
+  try
+    memClasses.Lines.LoadFromFile(ExeDirToSourceDir(ExtractFilePath(Application.ExeName)) + 'classes.ini');
+  except
+    memClasses.Lines.Add('TObject');
+    memClasses.Lines.Add('TStream');
+  end;
 end;
 
 end.
