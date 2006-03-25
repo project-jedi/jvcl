@@ -34,7 +34,7 @@ uses
   Windows, SysUtils, Classes, Controls, Forms,
   JvSearchFiles, ComCtrls,
   JvDriveCtrls, ExtCtrls, JvID3v2Base, JvId3v2, JvID3v2Types, JvComponent,
-  StdCtrls, JvListBox, JvCombobox, JvExStdCtrls;
+  StdCtrls, JvListBox, JvCombobox, JvExStdCtrls, JvComponentBase;
 
 type
   TJvID3v2MainForm = class(TForm)
