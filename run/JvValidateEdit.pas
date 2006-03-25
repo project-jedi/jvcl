@@ -458,7 +458,8 @@ begin
           Alignment := taLeftJustify;
       dfCustom, dfNone:
         begin
-          FCheckChars := '';
+          if (FDisplayFormat = dfCustom) or not (csLoading in ComponentState) then
+            FCheckChars := '';
           if FAutoAlignment then
             Alignment := taLeftJustify;
         end;
@@ -693,8 +694,9 @@ end;
 
 procedure TJvCustomValidateEdit.SetCheckChars(const NewValue: string);
 begin
-  if (FDisplayFormat in [dfNone, dfCheckChars, dfNonCheckChars]) and
-    (FCheckChars <> NewValue) then
+  if (csLoading in ComponentState) or
+     ((FDisplayFormat in [dfNone, dfCheckChars, dfNonCheckChars]) and
+      (FCheckChars <> NewValue)) then
   begin
     FCheckChars := NewValue;
     EditText := MakeValid(FEditText);
