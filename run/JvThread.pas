@@ -132,11 +132,15 @@ type
     property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
   end;
 
+  TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult : Word) of object;
+
   TJvBaseThread = class(TThread)
   private
     FException: Exception;
     FExceptionAddr: Pointer;
     FExecuteEvent: TJvNotifyParamsEvent;
+    FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
     FParams: Pointer;
     FSender: TObject;
     FSynchAButtons: TMsgDlgButtons;
@@ -152,6 +156,9 @@ type
     procedure Execute; override;
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+  published
+    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
+        FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
 
   TJvThread = class(TJvComponent)
@@ -166,6 +173,7 @@ type
     FOnFinish: TNotifyEvent;
     FOnFinishAll: TNotifyEvent;
     FFreeOnTerminate: Boolean;
+    FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
     FThreadDialog: TJvCustomThreadDialog;
     FThreadDialogForm: TJvCustomThreadDialogForm;
     procedure DoCreate;
@@ -217,6 +225,8 @@ type
     property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
+    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
+        FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
 
 // Cannot be synchronized to the MainThread (VCL)
@@ -519,6 +529,7 @@ begin
     BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
     try
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
+      BaseThread.OnShowMessageDlgEvent := OnShowMessageDlgEvent; 
       BaseThread.OnTerminate := DoTerminate;
       FThreads.Add(BaseThread);
       DoCreate;
@@ -755,8 +766,12 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, 
-                                       FSynchAButtons, FSynchHelpCtx);
+  if Assigned (OnShowMessageDlgEvent) then
+    OnShowMessageDlgEvent (FSynchMsg, FSynchAType,
+                                       FSynchAButtons, FSynchHelpCtx, FSynchMessageDlgResult)
+  else
+    FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType,
+                                         FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
