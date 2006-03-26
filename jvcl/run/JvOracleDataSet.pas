@@ -231,6 +231,7 @@ type
     FExecuteThread: TJvOracleDatasetThread;
     FLastRowChecked: Integer;
     FMoveToRecordAfterOpen: Longint;
+    FOperationWasHandledInThread: Boolean;
     FThreadDialog: TJvOracleDatasetThreadDialog;
     FThreadOptions: TJvOracleDatasetThreadOptions;
     procedure EnableDatasetControls;
@@ -256,6 +257,8 @@ type
     procedure SynchBeforeThreadExecution;
     procedure SynchContinueFetchMessageDlg;
     procedure SynchErrorMessageDlg;
+    property OperationWasHandledInThread: Boolean read FOperationWasHandledInThread
+        write FOperationWasHandledInThread;
   protected
     procedure ExecuteThreadSynchronize(Method: TThreadMethod);
     procedure DoThreadLast;
@@ -352,6 +355,7 @@ begin
   FEnhancedOptions := TJvOracleDatasetEnhancedOptions.Create;
   FFetchMode := todfmFetch;
   IntRowCheckEnabled := True;
+  FCurrentAction := todaNothing;
   inherited AfterFetchRecord := ReplaceAfterFetchRecord;
   inherited BeforeOpen := ReplaceBeforeOpen;
   inherited AfterOpen := ReplaceAfterOpen;
@@ -525,7 +529,7 @@ end;
 
 procedure TJvOracleDataSet.DoThreadRefresh;
 begin
-  HandleBeforeOpenRefresh;
+//  HandleBeforeOpenRefresh;
   if not EnhancedOptions.RefreshAsOpenClose then
   begin
     inherited InternalRefresh;
@@ -535,8 +539,8 @@ begin
     Close;
     InternalOpen;
   end;
-  if not ExecuteThreadIsActive then
-    HandleAfterOpenRefresh;
+//  if not ExecuteThreadIsActive then
+//    HandleAfterOpenRefresh;
   HandleAfterOpenRefreshThread;
 end;
 
@@ -552,12 +556,16 @@ end;
 
 procedure TJvOracleDataSet.HandleAfterOpenRefresh;
 begin
-  Filtered := FIntDatasetWasFiltered;
-  if FMoveToRecordAfterOpen > 0 then
-    MoveTo(FMoveToRecordAfterOpen)
-  else
-    First;
-  CurrentAction := todaNothing;
+  try
+    Filtered := FIntDatasetWasFiltered;
+    if FMoveToRecordAfterOpen > 0 then
+      MoveTo(FMoveToRecordAfterOpen)
+    else
+      First;
+    CurrentAction := todaNothing;
+  finally
+    ExecuteThreadSynchronize(EnableControls);
+  end;
 end;
 
 procedure TJvOracleDataSet.HandleAfterOpenRefreshThread;
@@ -579,12 +587,14 @@ begin
     else
       MoveBy(EnhancedOptions.FetchRowsFirst - 1);
   HandleAfterOpenRefresh;
-  if Assigned(FAfterOpen) then
-    ExecuteThreadSynchronize(IntSynchAfterOpen)
+  if Assigned(FAfterOpen) and (CurrentOperation <> todoRefresh) then
+    ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
 procedure TJvOracleDataSet.HandleBeforeOpenRefresh;
 begin
+  OperationWasHandledInThread := False;
+  ExecuteThreadSynchronize(DisableControls);
   CurrentOpenDuration := 0;
   CurrentFetchDuration := 0;
   IntRowCheckEnabled := True;
@@ -614,9 +624,10 @@ procedure TJvOracleDataSet.InternalRefresh;
 var
   ThreadAllowed: Boolean;
 begin
-  ThreadAllowed := True;
   if Assigned(Master) and (Master is TJvOracleDataSet) then
-    ThreadAllowed := not TJvOracleDataSet(Master).ThreadIsActive;
+    ThreadAllowed := not TJvOracleDataSet(Master).ThreadIsActive
+  else
+    ThreadAllowed := True;
   FCurrentOperation := todoRefresh;
   if not ThreadOptions.RefreshInThread or not ThreadAllowed or
     ThreadIsActive or (csDesigning in ComponentState) then
@@ -738,7 +749,7 @@ end;
 
 procedure TJvOracleDataSet.ReplaceAfterOpen(Dataset: TDataSet);
 begin
-  if not ExecuteThreadIsActive and (CurrentOperation <> todoRefresh) then
+  if not ExecuteThreadIsActive and not OperationWasHandledInThread and (CurrentOperation <> todoRefresh) then
     HandleAfterOpenRefresh;
   if not ExecuteThreadIsActive then
     if Assigned(FAfterOpen) then
@@ -747,6 +758,8 @@ end;
 
 procedure TJvOracleDataSet.ReplaceAfterRefresh(Dataset: TDataSet);
 begin
+  if not ExecuteThreadIsActive and not OperationWasHandledInThread then
+    HandleAfterOpenRefresh;
   if Assigned(FAfterRefresh) then
     ExecuteThreadSynchronize(IntSynchAfterRefresh);
 end;
@@ -768,7 +781,7 @@ begin
     FMoveToRecordAfterOpen := RecNo
   else
     FMoveToRecordAfterOpen := -1;
-  //HandleBeforeOpenRefresh;
+  HandleBeforeOpenRefresh;
   if Assigned(FBeforeRefresh) then
     ExecuteThreadSynchronize(IntSynchBeforeRefresh);
 end;
@@ -906,16 +919,17 @@ begin
 end;
 
 procedure TJvOracleDataSet.ThreadExecute(Sender: TObject; Params: Pointer);
-var
-  CurrControlsDisabled: Boolean;
+//var
+//  CurrControlsDisabled: Boolean;
 begin
+  OperationWasHandledInThread := True;
   try
     SetErrorMessage('');
-    CurrControlsDisabled := ControlsDisabled;
+//    CurrControlsDisabled := ControlsDisabled;
     ExecuteThreadSynchronize(SynchBeforeThreadExecution);
     try
-      if not CurrControlsDisabled then
-        ExecuteThreadSynchronize(DisableControls);
+//      if not CurrControlsDisabled then
+//        ExecuteThreadSynchronize(DisableControls);
       try
         case FCurrentOperation of
           todoOpen:
@@ -937,15 +951,15 @@ begin
         end;
       end;
     finally
-      try
-        if not CurrControlsDisabled then
-        begin
-          ExecuteThreadSynchronize(EnableDatasetControls);
-          while ControlsDisabled do
-            ExecuteThreadSynchronize(EnableDatasetControls);
-        end;
-      except
-      end;
+//      try
+//        if not CurrControlsDisabled then
+//        begin
+//          ExecuteThreadSynchronize(EnableDatasetControls);
+//          while ControlsDisabled do
+//            ExecuteThreadSynchronize(EnableDatasetControls);
+//        end;
+//      except
+//      end;
     end;
     ExecuteThreadSynchronize(SynchAfterThreadExecution);
   finally
@@ -1099,6 +1113,19 @@ begin
       ITmpControl.ControlSetCaption(
         FormatDateTime('hh:nn:ss', ConnectedDataset.CurrentOpenDuration) + ' / ' +
         FormatDateTime('hh:nn:ss', ConnectedDataset.CurrentFetchDuration));
+  end
+  else
+  begin
+    if DialogOptions.Caption <> '' then
+      Caption := DialogOptions.Caption +' - '
+    else
+      Caption := '';
+    if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
+      ITmpControl.ControlSetCaption(IntToStr(0));
+    if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
+      ITmpControl.ControlSetCaption(
+        FormatDateTime('hh:nn:ss', 0) + ' / ' +
+        FormatDateTime('hh:nn:ss', 0));
   end;
 end;
 
