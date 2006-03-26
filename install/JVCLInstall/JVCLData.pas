@@ -1804,6 +1804,7 @@ begin
                (ShortDir <> ShortName(DcpDir)) then
             begin
               List.Delete(i);
+              Break;
             end;
           end;
         end;
