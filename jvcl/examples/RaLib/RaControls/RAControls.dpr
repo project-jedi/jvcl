@@ -1,10 +1,11 @@
 program RAControls;
 
+{$R 'RaControls.res' 'RaControls.rc'}
+
 uses
   Forms,
   fJvControls in 'fJvControls.pas' {MainForm};
 
-{$R *.RES}
 
 begin
   Application.Initialize;
