@@ -35,7 +35,8 @@ uses
   Menus, ExtCtrls, JvComponentPanel, StdCtrls, ComCtrls,
   JvButtons, Buttons, JvScrollMax, Mask, DBCtrls, JvBDEMove, 
   JvProgressComponent, JvHtControls, JvaScrollText, ImgList, JvComponent, JvCaptionButton,
-  JvExControls, JvExExtCtrls, JvExStdCtrls, JvExButtons;
+  JvExControls, JvExExtCtrls, JvExStdCtrls, JvExButtons, JvComponentBase,
+  JvAppStorage, JvAppIniStorage;
 
 type
   TMainForm  = class(TForm)
@@ -117,6 +118,7 @@ type
     RAhtLabel1: TJvHTLabel;
     RAhtButton1: TJvHTButton;
     RAhtLabel2: TJvHTLabel;
+    JvAppIniFileStorage1: TJvAppIniFileStorage;
     procedure RAComponentPanel1Click(Sender: TObject; Button: Integer);
     procedure TabControl1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -135,6 +137,9 @@ type
     { Private declarations }
   public
     { Public declarations }
+    procedure LoadHelpText;
+    procedure LoadScrollText;
+    procedure LoadScrollImages;
   end;
 
 var
@@ -189,7 +194,7 @@ begin
  // RAComponentPanel1.RecreateButtons;
   RAComponentPanel1.FirstVisible := 0;
   i := 0;
-  S := SubStr(Comps, i, ',');
+  S := SubStrBySeparator(Comps, i, ',');
   while S <> '' do
   begin
     RAComponentPanel1.Buttons[i].Hint := S;
@@ -198,7 +203,7 @@ begin
     except
     end;
     inc(i);
-    S := SubStr(Comps, i, ',');
+    S := SubStrBySeparator(Comps, i, ',');
   end;
 end;
 
@@ -207,27 +212,11 @@ var
   hRgn  : Windows.HRGN;
 begin
   Application.Title := Caption;
-  if FileExists(ExePath + '..\..\..\..\README.TXT') then
-  begin
-    RAScrollText1.Lines.LoadFromFile(ExePath + '..\..\..\..\README.TXT');
-    RAScrollText1.Lines.Insert(0, '$Font:Times New Roman;12;1');
-    RAScrollText1.Lines.Insert(3, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(4, '');
-    RAScrollText1.Lines.Insert(12, '$Pause 3000');
-    RAScrollText1.Lines.Insert(13, '$Font:Times New Roman;9;0');
-    RAScrollText1.Lines.Add('$Pause 10000');
-  end
-  else
-  begin
-    RAScrollText1.Lines.Clear;
-    RAScrollText1.Lines.Add('          File "' + ExpandFileName(ExePath + '..\..\..\..\README.TXT') + '" not found !');
-  end;
+
+  LoadHelpText;
+  LoadScrollImages;
+  LoadScrollText;
+
   RAScrollMax1.MouseClasses([TLabel]);
   TabControl1Change(nil);
   RAComponentPanel1Click(nil, 0);
@@ -248,10 +237,18 @@ procedure TMainForm .RAComponentPanel1Click(Sender: TObject; Button: Integer);
 begin
   Memo1.Lines.Clear;
   if Button < 0 then exit;
-//!!!  RegAuto2.ReadSection(RAComponentPanel1.Buttons[Button].Hint+'\Descript', Memo1.Lines);
+
+  Memo1.Lines.BeginUpdate;
+  try
+    Memo1.Lines.Clear;
+    JvAppIniFileStorage1.ReadStringList(RAComponentPanel1.Buttons[Button].Hint+'\Descript', Memo1.Lines);
+  finally
+    Memo1.Lines.EndUpdate;
+  end;
+
   RAScrollText1.Stop;
-//!!!  NoteBook1.ActivePage := Trim(RegAuto2.ReadString(RAComponentPanel1.Buttons[Button].Hint, 'Page', ''));
-//!!!  Memo1.Visible := RegAuto2.ReadBool(RAComponentPanel1.Buttons[Button].Hint, 'Memo', True);
+  NoteBook1.ActivePage := Trim(JvAppIniFileStorage1.ReadString(RAComponentPanel1.Buttons[Button].Hint+'\Page', ''));
+  Memo1.Visible := JvAppIniFileStorage1.ReadBoolean(RAComponentPanel1.Buttons[Button].Hint+'\Memo', True);
   if NoteBook1.ActivePage = 'JvaScrollText' then
     RAScrollText1.Scroll;
 end;
@@ -321,6 +318,39 @@ end;
 procedure TMainForm .FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   RAScrollText1.Stop;
+end;
+
+procedure TMainForm.LoadHelpText;
+var
+  Res: TResourceStream;
+  HelpText: TStringList;
+begin
+  Res := TResourceStream.Create(HInstance, 'HELPTEXT', 'TEXT');
+  try
+    HelpText := TStringList.Create;
+    try
+      HelpText.LoadFromStream(Res);
+      { This is a trick to initialize the ini storage with a TStringList instead
+        of initializing it with a file }
+      JvAppIniFileStorage1.IniFile.SetStrings(HelpText);
+    finally
+      HelpText.Free;
+    end;
+  finally
+    Res.Free;
+  end;
+end;
+
+procedure TMainForm.LoadScrollText;
+begin
+  RAScrollText1.Lines.Clear;
+  JvAppIniFileStorage1.ReadStringList('\TJvScrollText\ScrollText', RAScrollText1.Lines);
+end;
+
+procedure TMainForm.LoadScrollImages;
+begin
+  RAScrollText1.ForeImage.Bitmap.Handle := LoadBitmap(HInstance, 'FOREIMAGE');
+  RAScrollText1.BackImage.Bitmap.Handle := LoadBitmap(HInstance, 'BACKIMAGE');
 end;
 
 end.
