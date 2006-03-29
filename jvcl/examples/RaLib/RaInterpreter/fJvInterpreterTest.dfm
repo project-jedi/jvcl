@@ -4,7 +4,7 @@ object Test: TTest
   Width = 576
   Height = 447
   HelpContext = 999
-  Caption = 'JvI2 demo'
+  Caption = 'JvInterpreter demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -40,7 +40,7 @@ object Test: TTest
       Height = 13
       Caption = 'Select example'
     end
-    object ComboBox1: TComboBox
+    object cmbExamples: TComboBox
       Left = 88
       Top = 8
       Width = 473
@@ -49,11 +49,11 @@ object Test: TTest
       DropDownCount = 25
       ItemHeight = 13
       TabOrder = 0
-      OnChange = ComboBox1Change
-      OnDropDown = ComboBox1DropDown
+      OnChange = cmbExamplesChange
+      OnDropDown = cmbExamplesDropDown
     end
   end
-  object Memo1: TJvHLEditor
+  object memSource: TJvHLEditor
     Left = 0
     Top = 57
     Width = 360
@@ -70,9 +70,10 @@ object Test: TTest
     Completion.CRLF = '/n'
     Completion.Separator = '='
     TabStops = '3 5'
+    BracketHighlighting.StringEscape = #39#39
     SelForeColor = clHighlightText
     SelBackColor = clHighlight
-    OnKeyDown = Memo1KeyDown
+    OnKeyDown = memSourceKeyDown
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -85,14 +86,29 @@ object Test: TTest
     UseDockManager = False
     Colors.Comment.Style = [fsItalic]
     Colors.Comment.ForeColor = clOlive
+    Colors.Comment.BackColor = clWindow
     Colors.Number.ForeColor = clNavy
+    Colors.Number.BackColor = clWindow
     Colors.Strings.ForeColor = clPurple
+    Colors.Strings.BackColor = clWindow
     Colors.Symbol.ForeColor = clBlue
+    Colors.Symbol.BackColor = clWindow
     Colors.Reserved.Style = [fsBold]
     Colors.Reserved.ForeColor = clBlack
+    Colors.Reserved.BackColor = clWindow
     Colors.Identifier.ForeColor = clBlack
+    Colors.Identifier.BackColor = clWindow
     Colors.Preproc.ForeColor = clGreen
+    Colors.Preproc.BackColor = clWindow
+    Colors.FunctionCall.ForeColor = clWindowText
+    Colors.FunctionCall.BackColor = clWindow
+    Colors.Declaration.ForeColor = clWindowText
+    Colors.Declaration.BackColor = clWindow
     Colors.Statement.Style = [fsBold]
+    Colors.Statement.ForeColor = clWindowText
+    Colors.Statement.BackColor = clWindow
+    Colors.PlainText.ForeColor = clWindowText
+    Colors.PlainText.BackColor = clWindow
   end
   object Panel2: TPanel
     Left = 360
@@ -208,14 +224,14 @@ object Test: TTest
         end
       end
     end
-    object Memo2: TMemo
+    object memDescription: TMemo
       Left = 3
       Top = 3
       Width = 202
       Height = 237
       Align = alClient
       Lines.Strings = (
-        'Memo2')
+        '')
       ScrollBars = ssVertical
       TabOrder = 1
     end
@@ -240,11 +256,6 @@ object Test: TTest
       Caption = ' '
       TabOrder = 0
     end
-  end
-  object RegAuto1: TJvFormStorage
-    StoredValues = <>
-    Left = 248
-    Top = 136
   end
   object OpenDialog1: TOpenDialog
     Filter = 
@@ -273,9 +284,36 @@ object Test: TTest
     Left = 260
     Top = 89
   end
-  object RegAuto2: TJvFormStorage
-    StoredValues = <>
+  object AppStorage: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    FileName = 'JvInterpreterTest.ini'
+    SubStorages = <>
+    Left = 280
+    Top = 168
+  end
+  object JvFormStorage1: TJvFormStorage
+    AppStorage = AppStorage
+    AppStoragePath = 'Test'
+    StoredValues = <
+      item
+        Name = 'SelectedExample'
+        Value = ''
+        OnSave = JvFormStorage1StoredValues0Save
+        OnRestore = JvFormStorage1StoredValues0Restore
+      end>
+    Left = 280
+    Top = 200
+  end
+  object FixedExamplesStorage: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.PreserveLeadingTrailingBlanks = True
+    ReadOnly = True
+    FlushOnDestroy = False
+    Location = flCustom
+    SubStorages = <>
     Left = 248
-    Top = 208
+    Top = 168
   end
 end

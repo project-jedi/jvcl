@@ -41,18 +41,17 @@ uses
    Variants,
    {$ENDIF}
  JvExControls, JvComponent, JvFormPlacement, JvComponentBase,
-  JvEditorCommon;
+  JvEditorCommon, JvAppStorage, JvAppIniStorage;
 
 
 type
   TTest = class(TForm)
-    RegAuto1: TJvFormStorage;
     Panel1: TPanel;
     OpenDialog1: TOpenDialog;
     Table1: TTable;
     DataSource1: TDataSource;
     JvInterpreterProgram1: TJvInterpreterFm;
-    Memo1: TJvHLEditor;
+    memSource: TJvHLEditor;
     Panel2: TPanel;
     Notebook1: TNotebook;
     bRunReport: TButton;
@@ -60,43 +59,54 @@ type
     Label1: TLabel;
     Button1: TButton;
     Button5: TButton;
-    Memo2: TMemo;
+    memDescription: TMemo;
     pnlTime: TPanel;
     Label3: TLabel;
-    ComboBox1: TComboBox;
-    RegAuto2: TJvFormStorage;
+    cmbExamples: TComboBox;
     Panel3: TPanel;
     pnlResult: TPanel;
     Button2: TButton;
     Button3: TButton;
+    AppStorage: TJvAppIniFileStorage;
+    JvFormStorage1: TJvFormStorage;
+    FixedExamplesStorage: TJvAppIniFileStorage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure RegAuto1AfterSave(Sender: TObject);
-    procedure RegAuto1AfterLoad(Sender: TObject);
     procedure bRunFormClick(Sender: TObject);
     procedure bRunReportClick(Sender: TObject);
     procedure JvInterpreterProgram1GetUnitSource(UnitName: string; var Source: string;
       var Done: Boolean);
-    procedure ComboBox1Change(Sender: TObject);
+    procedure cmbExamplesChange(Sender: TObject);
     procedure Panel1Resize(Sender: TObject);
     procedure JvInterpreterProgram1Statement(Sender: TObject);
-    procedure Memo1KeyDown(Sender: TObject; var Key: Word;
+    procedure memSourceKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ComboBox1DropDown(Sender: TObject);
+    procedure cmbExamplesDropDown(Sender: TObject);
     procedure JvInterpreterProgram1GetDfmFileName(Sender: TObject; UnitName: String;
       var FileName: String; var Done: Boolean);
     procedure JvInterpreterProgram1GetValue(Sender: TObject;
       Identifier: String; var Value: Variant; Args: TJvInterpreterArgs;
       var Done: Boolean);
+    procedure JvFormStorage1StoredValues0Restore(Sender: TJvStoredValue;
+      var AValue: Variant);
+    procedure JvFormStorage1StoredValues0Save(Sender: TJvStoredValue;
+      var AValue: Variant);
   private
     { Private declarations }
     Parser : TJvIParser;
-    InternalExamplesCount: Integer;
+    FFixedExampleCount: Integer;
     CurFileName: TFileName;
   public
     { Public declarations }
     V: Variant;
+
+    procedure GotoExample(const AName: string);
+    procedure GotoFixedExample(const AName: string);
+    procedure GotoCustomExample(const AName: string);
+    procedure FillExamples(Examples: TStrings);
+    procedure ClearScreen;
+    procedure SaveCustomExample;
   end;
 
 var
@@ -172,35 +182,23 @@ begin
   Value := O2V(EZeroDivide.Create(Args.Values[0]));
 end;
 
-procedure TTest.FormCreate(Sender: TObject);
+function SourceDir: string;
 var
-  SS: TStringList;
-  i: Integer;
+  AExeDir: string;
 begin
-{
-//!!!
-  try
-    RegAuto2.IniStrings.LoadFromFile(ExePath + 'JvInterpreterTest.ini');
-  except
-    MessageDlg('Can''t load file "JvInterpreterTest.ini".'#13+
-      'Please put it in same folder as JvInterpreterTest.exe.',
-      mtError, [mbCancel], -1);
-  end;
+  AExeDir := ExtractFilePath(Application.ExeName);
+  Result := ExtractFilePath(ExcludeTrailingPathDelimiter(AExeDir)) + 'examples\RaLib\RaInterpreter\';
+end;
 
-  RegAuto2.ReadSection('Demos', ComboBox1.Items);
-}
-  InternalExamplesCount := ComboBox1.Items.Count;
-  SS := TStringList.Create;
-  try
-    ReadFolder(ExePath + 'samples', 'sample - *.pas', SS);
-    if SS.Count > 0 then
-      ComboBox1.Items.Add('------ custom files (samples folder) ------');
-    SS.Sort;
-    for i := 0 to SS.Count - 1 do
-      ComboBox1.Items.Add(SS[i]);
-  finally
-    SS.Free;
-  end;
+function SamplesDir: string;
+begin
+  Result := SourceDir + 'samples\';
+end;
+
+procedure TTest.FormCreate(Sender: TObject);
+begin
+  FillExamples(cmbExamples.Items);
+
   JvInterpreterProgram1.Adapter.AddGet(EZeroDivide, 'Create', EZeroDivide_Create, 1, [varEmpty], varEmpty);
   DecimalSeparator := '.';
   Parser := TJvIParser.Create;
@@ -222,17 +220,18 @@ var
   obj:TObject;
   vtype:TVarType;
 begin
-  RegAuto1AfterSave(nil);
+  SaveCustomExample;
+  
   if (Sender = Button1) or (Sender = Button2) or (Sender = Button5) then
   begin
-    JvInterpreterProgram1.Source := Memo1.Lines.Text;
+    JvInterpreterProgram1.Source := memSource.Lines.Text;
     CurFileName := '';
   end
   else if Sender = Button3 then
   begin
     if not OpenDialog1.Execute then Exit;
     CurFileName := OpenDialog1.FileName;
-    Memo1.Lines.Text := LoadTextFile(CurFileName);
+    memSource.Lines.Text := LoadTextFile(CurFileName);
     JvInterpreterProgram1.Source := LoadTextFile(CurFileName);
   end;                            
 
@@ -276,10 +275,10 @@ begin
       pnlResult.Caption := IntToStr(E.ErrCode) + ': ' + ReplaceString(E.Message, #10, ' ');
       if E.ErrPos > -1 then
       begin
-        Memo1.SelStart := E.ErrPos;
-        Memo1.SelLength := 0;
+        memSource.SelStart := E.ErrPos;
+        memSource.SelLength := 0;
       end;
-      Memo1.SetFocus;
+      memSource.SetFocus;
     end;
     on E : Exception do
     begin
@@ -287,10 +286,10 @@ begin
         ReplaceString(JvInterpreterProgram1.LastError.Message, #10, ' ');
       if JvInterpreterProgram1.LastError.ErrPos > -1 then
       begin
-        Memo1.SelStart := JvInterpreterProgram1.LastError.ErrPos;
-        Memo1.SelLength := 0;
+        memSource.SelStart := JvInterpreterProgram1.LastError.ErrPos;
+        memSource.SelLength := 0;
       end;
-      Memo1.SetFocus;
+      memSource.SetFocus;
       raise;
     end
     else
@@ -303,21 +302,13 @@ begin
     pnlResult.Color := clBtnFace;
   end;
 end;
-              
-procedure TTest.RegAuto1AfterSave(Sender: TObject);
-begin
-{
-//!!!
-  RegAuto1.WriteInteger(Name, 'PrId', ComboBox1.ItemIndex);
-  if ComboBox1.ItemIndex >= InternalExamplesCount then
-    Memo1.Lines.SaveToFile(ExePath + 'samples\' + ComboBox1.Text);
-}    
-end;
 
-procedure TTest.RegAuto1AfterLoad(Sender: TObject);
+procedure TTest.SaveCustomExample;
 begin
-//!!!  ComboBox1.ItemIndex := RegAuto1.ReadInteger(Name, 'PrId', 0);
-//!!!  ComboBox1Change(nil);
+  if cmbExamples.ItemIndex > FFixedExampleCount then
+  begin
+    memSource.Lines.SaveToFile(SourceDir + 'samples\' + cmbExamples.Text);
+  end;
 end;
 
 var
@@ -329,7 +320,7 @@ var
   FN: TFileName;
 begin
   FN := FindInPath(UnitName + '.pas', ConcatSep(ExtractFilePath(CurFileName),
-    ExePath + ';' + ExePath + 'samples', ';'));
+    SourceDir + ';' + SamplesDir, ';'));
   if FileExists(FN) then
   begin
     Source := LoadTextFile(FN);
@@ -341,7 +332,7 @@ procedure TTest.JvInterpreterProgram1GetDfmFileName(Sender: TObject; UnitName: S
   var FileName: String; var Done: Boolean);
 begin
   FileName := FindInPath(UnitName + '.dfm', ConcatSep(ExtractFilePath(CurFileName),
-      ExePath + ';' + ExePath + 'samples', ';'));
+    SourceDir + ';' + SamplesDir, ';'));
   Done := FileExists(FileName);
 end;
 
@@ -372,26 +363,14 @@ begin
 //   end;
 end;
 
-procedure TTest.ComboBox1Change(Sender: TObject);
+procedure TTest.cmbExamplesChange(Sender: TObject);
 begin
-  Memo1.Lines.Clear;
-  Memo2.Lines.Clear;
-  if ComboBox1.ItemIndex < InternalExamplesCount then
-  begin
-//!!!    RegAuto2.ReadWholeSection(ComboBox1.Text + '\Source', Memo1.Lines);
-//!!!    RegAuto2.ReadWholeSection(ComboBox1.Text + '\Description', Memo2.Lines);
-//!!!    Notebook1.ActivePage := RegAuto2.ReadString(ComboBox1.Text, 'Page', 'Default');
-  end else
-  begin
-    Memo1.Lines.LoadFromFile(ExePath + 'samples\' + ComboBox1.Text);
-    Notebook1.ActivePage := 'Default';
-  end;
-//  Memo1.Refresh;
+  GotoExample(cmbExamples.Text);
 end;
 
 procedure TTest.Panel1Resize(Sender: TObject);
 begin
-  ComboBox1.Width := Panel1.Width - ComboBox1.Left - Pixels(Self, 8);
+  cmbExamples.Width := Panel1.Width - cmbExamples.Left - Pixels(Self, 8);
 end;
 
 procedure TTest.JvInterpreterProgram1Statement(Sender: TObject);
@@ -399,16 +378,16 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TTest.Memo1KeyDown(Sender: TObject; var Key: Word;
+procedure TTest.memSourceKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = ord('S')) and ([ssCtrl] = Shift) then
-    RegAuto1AfterSave(nil);
+    SaveCustomExample;
 end;
 
-procedure TTest.ComboBox1DropDown(Sender: TObject);
+procedure TTest.cmbExamplesDropDown(Sender: TObject);
 begin
-  RegAuto1AfterSave(nil);
+  SaveCustomExample;
 end;
                                                     
 procedure TTest.JvInterpreterProgram1GetValue(Sender: TObject;
@@ -439,6 +418,104 @@ begin
     Done := True;
     Value := Args.Values[0] + 1;
   end
+end;
+
+procedure TTest.GotoFixedExample(const AName: string);
+begin
+  memSource.Lines.BeginUpdate;
+  try
+    memSource.Clear;
+    FixedExamplesStorage.ReadStringList(AName + '\Source', memSource.Lines);
+  finally
+    memSource.Lines.EndUpdate;
+  end;
+
+  memDescription.Lines.BeginUpdate;
+  try
+    memDescription.Clear;
+    FixedExamplesStorage.ReadStringList(AName + '\Description', memDescription.Lines);
+  finally
+    memDescription.Lines.EndUpdate;
+  end;
+
+  Notebook1.ActivePage := FixedExamplesStorage.ReadString(AName + '\Page', 'Default');
+end;
+
+procedure TTest.GotoCustomExample(const AName: string);
+begin
+  memSource.Lines.LoadFromFile(SamplesDir + AName);
+  memDescription.Clear;
+  Notebook1.ActivePage := 'Default';
+end;
+
+procedure TTest.FillExamples(Examples: TStrings);
+var
+  CustomExamples: TStringList;
+  I: Integer;
+begin
+  FixedExamplesStorage.FileName := SourceDir + 'JvInterpreterTest.ini';
+
+  Examples.BeginUpdate;
+  try
+    Examples.Clear;
+
+    // add fixed examples from the ini file
+    FixedExamplesStorage.ReadStringList('Demos',Examples);
+    FFixedExampleCount :=Examples.Count;
+
+    // add custom examples from the samples directory
+    CustomExamples := TStringList.Create;
+    try
+      ReadFolder(SamplesDir, 'sample - *.pas', CustomExamples);
+      if CustomExamples.Count > 0 then
+      begin
+        Examples.Add('------ custom files (samples folder) ------');
+        CustomExamples.Sort;
+        for i := 0 to CustomExamples.Count - 1 do
+          Examples.Add(CustomExamples[i]);
+      end;
+     finally
+       CustomExamples.Free;
+     end;
+  finally
+    Examples.EndUpdate;
+  end;
+end;
+
+procedure TTest.JvFormStorage1StoredValues0Restore(Sender: TJvStoredValue;
+  var AValue: Variant);
+begin
+  GotoExample(AValue);
+end;
+
+procedure TTest.JvFormStorage1StoredValues0Save(Sender: TJvStoredValue;
+  var AValue: Variant);
+begin
+  AValue := cmbExamples.Text;
+end;
+
+procedure TTest.GotoExample(const AName: string);
+var
+  Index: Integer;
+begin
+  Index := cmbExamples.Items.IndexOf(AName);
+  cmbExamples.ItemIndex := Index;
+
+  if Index < 0 then
+    ClearScreen
+  else if Index < FFixedExampleCount then
+    GotoFixedExample(AName)
+  else if Index = FFixedExampleCount then
+    ClearScreen
+  else if Index > FFixedExampleCount then
+    GotoCustomExample(AName);
+end;
+
+procedure TTest.ClearScreen;
+begin
+  memSource.Clear;
+  memDescription.Clear;
+  Notebook1.ActivePage := 'Empty';
 end;
 
 initialization
