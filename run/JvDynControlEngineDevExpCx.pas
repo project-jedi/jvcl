@@ -31,7 +31,7 @@ interface
 
 {$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning;
+  JclUnitVersioning, JvDynControlEngineIntf;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}
@@ -44,7 +44,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
-  cxProgressBar,
+  cxProgressBar, cxPC,
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -738,7 +738,7 @@ type
 
   TJvDynControlCxTreeView = class(TcxTreeView, IUnknown,
     IJvDynControl, IJvDynControlTreeView,
-    IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -768,6 +768,9 @@ type
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
 
+    //IJvDynControlDblClick
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
+
     // IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -795,6 +798,65 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
+
+type
+  TJvDynControlCxTabControl = class(TcxTabControl, IUnknown, IJvDynControl,
+      IJvDynControlTabControl, IJvDynControlDevExpCx)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlTabControl
+    procedure ControlCreateTab (const AName : string);
+    procedure ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex (Index : integer);
+    function ControlGetTabIndex : integer;
+    procedure ControlSetMultiLine (Value : boolean);
+    procedure ControlSetScrollOpposite (Value : boolean);
+    procedure ControlSetHotTrack (Value : boolean);
+    procedure ControlSetRaggedRight (Value : boolean);
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxPageControl = class(TcxPageControl, IUnknown,
+      IJvDynControl, IJvDynControlTabControl, IJvDynControlPageControl, IJvDynControlDevExpCx)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value: TAnchors);
+
+    //IJvDynControlTabControl
+    procedure ControlCreateTab(const AName: string);
+    procedure ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex(Index: integer);
+    function ControlGetTabIndex: integer;
+    procedure ControlSetMultiLine (Value : boolean);
+    procedure ControlSetScrollOpposite (Value : boolean);
+    procedure ControlSetHotTrack (Value : boolean);
+    procedure ControlSetRaggedRight (Value : boolean);
+
+    //IJvDynControlPageControl
+    function ControlGetPage(const PageName: string): TWinControl;
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
   TJvDynControlEngineDevExpCx = class(TJvDynControlEngine)
   private
     FCxProperties: TCxDynControlWrapper;
@@ -808,6 +870,7 @@ type
   published
     property CxProperties: TCxDynControlWrapper read FCxProperties write FCxProperties;
   end;
+
 
 procedure SetDynControlEngineDevExpCxDefault;
 function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
@@ -2309,7 +2372,7 @@ begin
   FIntItems.Clear;
   for I := 0 to Items.Count-1 do
     FIntItems.Add(Items[I].Text);
-  Result.Assign(FIntItems);
+  Result := FIntItems;
 end;
 
 procedure TJvDynControlCxCheckListBox.ControlSetOnDblClick(Value: TNotifyEvent);
@@ -3096,6 +3159,11 @@ begin
   SortType := Value;
 end;
 
+procedure TJvDynControlCxTreeView.ControlSetOnDblClick(Value: TNotifyEvent);
+begin
+  OnDblClick := Value;
+end;
+
 procedure TJvDynControlCxTreeView.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   LookAndFeel.Assign(Value.LookAndFeel);
@@ -3249,6 +3317,209 @@ begin
   LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
+
+//=== { TJvDynControlCxTabControl } =========================================
+
+procedure TJvDynControlCxTabControl.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
+begin
+  OnChange := OnChangeEvent;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
+begin
+  OnChanging := OnChangingEvent;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetTabIndex (Index : integer);
+begin
+  TabIndex := Index;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlCreateTab (const AName : string);
+begin
+  Tabs.Add(AName);
+end;
+
+function TJvDynControlCxTabControl.ControlGetTabIndex : integer;
+begin
+  Result := TabIndex;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetCxProperties(Value:
+    TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetMultiLine (Value : boolean);
+begin
+  MultiLine := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetScrollOpposite (Value : boolean);
+begin
+  ScrollOpposite := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetHotTrack (Value : boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlCxTabControl.ControlSetRaggedRight (Value : boolean);
+begin
+  RaggedRight := Value;
+end;
+
+
+//=== { TJvDynControlCxPageControl } =========================================
+
+procedure TJvDynControlCxPageControl.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlCreateTab(const AName: string);
+var
+  TabSheet: TcxTabSheet;
+begin
+  TabSheet := TcxTabSheet.Create(self);
+  TabSheet.Caption := AName;
+  TabSheet.PageControl := self;
+  TabSheet.Parent := Self;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
+begin
+  OnChange := OnChangeEvent;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
+begin
+  OnChanging := OnChangingEvent;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetTabIndex(Index: integer);
+begin
+  TabIndex := Index;
+end;
+
+function TJvDynControlCxPageControl.ControlGetTabIndex: integer;
+begin
+  Result := TabIndex;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetMultiLine (Value : boolean);
+begin
+  MultiLine := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetScrollOpposite (Value : boolean);
+begin
+  ScrollOpposite := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetHotTrack (Value : boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetRaggedRight (Value : boolean);
+begin
+  RaggedRight := Value;
+end;
+
+function TJvDynControlCxPageControl.ControlGetPage(const PageName: string): TWinControl;
+var
+  i: Integer;
+begin
+  i := Tabs.IndexOf(PageName);
+  if (i >= 0) and (i < PageCount) then
+    Result := TWinControl(Pages[i])
+  else
+    Result := nil;
+end;
+
+procedure TJvDynControlCxPageControl.ControlSetCxProperties(Value:
+    TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+
 //=== { TJvDynControlEngineDevExpCx } ========================================
 
 constructor TJvDynControlEngineDevExpCx.Create;
@@ -3300,6 +3571,8 @@ begin
   RegisterControlType(jctButtonEdit, TJvDynControlCxButtonEdit);
   RegisterControlType(jctTreeVIew, TJvDynControlCxTreeView);
   RegisterControlType(jctProgressbar, TJvDynControlCxProgressbar);
+  RegisterControlType(jctTabControl, TJvDynControlCxTabControl);
+  RegisterControlType(jctPageControl, TJvDynControlCxPageControl);
 end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
@@ -3313,6 +3586,7 @@ begin
   Result := Control;
 end;
 
+
 //=== { DynControlEngineDevExpCx } ===========================================
 
 procedure SetDynControlEngineDevExpCxDefault;
@@ -3325,6 +3599,7 @@ function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 begin
   Result := IntDynControlEngineDevExpCx;
 end;
+
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 initialization
