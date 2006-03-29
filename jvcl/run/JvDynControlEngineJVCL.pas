@@ -669,7 +669,7 @@ type
   end;
 
   TJvDynControlJVCLTreeView = class(TJvTreeView, IUnknown,
-    IJvDynControl, IJvDynControlTreeView, IJvDynControlReadOnly)
+    IJvDynControl, IJvDynControlTreeView, IJvDynControlReadOnly, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -698,6 +698,9 @@ type
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+
+    //IJvDynControlDblClick
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
 
   TJvDynControlJVCLProgressBar = class(TJvProgressBar, IUnknown, IJvDynControl,
@@ -720,6 +723,61 @@ type
     procedure ControlSetSmooth(Value: boolean);
     procedure ControlSetStep(Value: integer);
   end;
+
+type
+  TJvDynControlJVCLTabControl = class(TJvTabControl, IUnknown, IJvDynControl,
+      IJvDynControlTabControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlTabControl
+    procedure ControlCreateTab (const AName : string);
+    procedure ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex (Index : integer);
+    function ControlGetTabIndex : integer;
+    procedure ControlSetMultiLine (Value : boolean);
+    procedure ControlSetScrollOpposite (Value : boolean);
+    procedure ControlSetHotTrack (Value : boolean);
+    procedure ControlSetRaggedRight (Value : boolean);
+  end;
+
+  TJvDynControlJVCLPageControl = class(TJvPageControl, IUnknown,
+      IJvDynControl, IJvDynControlTabControl, IJvDynControlPageControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value: TAnchors);
+
+    //IJvDynControlTabControl
+    procedure ControlCreateTab(const AName: string);
+    procedure ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex(Index: integer);
+    function ControlGetTabIndex: integer;
+    procedure ControlSetMultiLine (Value : boolean);
+    procedure ControlSetScrollOpposite (Value : boolean);
+    procedure ControlSetHotTrack (Value : boolean);
+    procedure ControlSetRaggedRight (Value : boolean);
+
+    //IJvDynControlPageControl
+    function ControlGetPage(const PageName: string): TWinControl;
+  end;
+
 
 function DynControlEngineJVCL: TJvDynControlEngine;
 procedure SetDynControlEngineJVCLDefault;
@@ -2840,6 +2898,12 @@ begin
   SortType := Value;
 end;
 
+procedure TJvDynControlJVCLTreeView.ControlSetOnDblClick(Value: TNotifyEvent);
+begin
+  OnDblClick := Value;
+end;
+
+
 //=== { TJvDynControlJVCLProgressbar } =========================================
 
 procedure TJvDynControlJVCLProgressbar.ControlSetDefaultProperties;
@@ -2958,7 +3022,198 @@ begin
   RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
   RegisterControlType(jctTreeView, TJvDynControlJVCLTreeView);
   RegisterControlType(jctProgressbar, TJvDynControlJVCLProgressbar);
+  RegisterControlType(jctTabControl, TJvDynControlJVCLTabControl);
+  RegisterControlType(jctPageControl, TJvDynControlJVCLPageControl);
 end;
+
+procedure TJvDynControlJVCLTabControl.ControlCreateTab (const AName : string);
+begin
+  Tabs.Add(AName);
+end;
+
+function TJvDynControlJVCLTabControl.ControlGetTabIndex : integer;
+begin
+  Result := TabIndex;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetMultiLine (Value : boolean);
+begin
+  MultiLine := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetScrollOpposite (Value : boolean);
+begin
+  ScrollOpposite := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetHotTrack (Value : boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetRaggedRight (Value : boolean);
+begin
+  RaggedRight := Value;
+end;
+
+//=== { TJvDynControlJVCLPageControl } =========================================
+
+procedure TJvDynControlJVCLPageControl.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlCreateTab(const AName: string);
+var
+  TabSheet: TTabSheet;
+begin
+  TabSheet := TTabSheet.Create(self);
+  TabSheet.Caption := AName;
+  TabSheet.PageControl := self;
+  TabSheet.Parent := Self;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
+begin
+  OnChange := OnChangeEvent;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
+begin
+  OnChanging := OnChangingEvent;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetTabIndex(Index: integer);
+begin
+  TabIndex := Index;
+end;
+
+function TJvDynControlJVCLPageControl.ControlGetTabIndex: integer;
+begin
+  Result := TabIndex;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetMultiLine (Value : boolean);
+begin
+  MultiLine := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetScrollOpposite (Value : boolean);
+begin
+  ScrollOpposite := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetHotTrack (Value : boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlJVCLPageControl.ControlSetRaggedRight (Value : boolean);
+begin
+  RaggedRight := Value;
+end;
+
+function TJvDynControlJVCLPageControl.ControlGetPage(const PageName: string): TWinControl;
+var
+  i: Integer;
+begin
+  i := Tabs.IndexOf(PageName);
+  if (i >= 0) and (i < PageCount) then
+    Result := TWinControl(Pages[i])
+  else
+    Result := nil;
+end;
+
+//=== { TJvDynControlJVCLTabControl } =========================================
+
+procedure TJvDynControlJVCLTabControl.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
+begin
+  OnChange := OnChangeEvent;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
+begin
+  OnChanging := OnChangingEvent;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetTabIndex (Index : integer);
+begin
+  TabIndex := Index;
+end;
+
+procedure TJvDynControlJVCLTabControl.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
 
 initialization
   {$IFDEF UNITVERSIONING}

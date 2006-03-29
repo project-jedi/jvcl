@@ -68,6 +68,8 @@ const
   jctTreeView = TJvDynControlType('TreeView');
   jctForm = TJvDynControlType('Form');
   jctProgressBar = TJvDynControlType('Progressbar');
+  jctPageControl = TJvDynControlType('Pagecontrol');
+  jctTabControl = TJvDynControlType('Tabcontrol');
 
 type
   TControlClass = class of TControl;
@@ -174,6 +176,10 @@ type
       const AControlName: string): TWinControl; virtual;
     function CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
+    function CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; APages : TStrings): TWinControl; virtual;
+    function CreateTabControlControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; ATabs : TStrings): TWinControl; virtual;
     function CreateButton(AOwner: TComponent; AParentControl: TWinControl;
       const AButtonName, ACaption, AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
@@ -638,8 +644,11 @@ var
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctComboBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-  DynCtrlItems.ControlSetItems(AItems);
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+  end;
 end;
 
 function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
@@ -693,8 +702,11 @@ var
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-  DynCtrlItems.ControlSetItems(AItems);
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+  end;
 end;
 
 function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent;
@@ -703,8 +715,11 @@ var
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctCheckListBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-  DynCtrlItems.ControlSetItems(AItems);
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+  end;
 end;
 
 function TJvDynControlEngine.CreateDateTimeControl(AOwner: TComponent;
@@ -750,10 +765,41 @@ begin
 end;
 
 function TJvDynControlEngine.CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
-  const AControlName: string): TWinControl; 
+  const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctTreeView, AOwner, AParentControl, AControlName));
 end;
+
+function TJvDynControlEngine.CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string;APages : TStrings): TWinControl;
+var
+  DynTabControl: IJvDynControlTabControl;
+  i: Integer;
+begin
+  Result := TWinControl(CreateControl(jctPageControl, AOwner, AParentControl, AControlName));
+  if Assigned(APages) and (APages.Count > 0) then
+  begin
+    IntfCast(Result, IJvDynControlTabControl, DynTabControl);
+    for i := 0 to APages.Count - 1 do
+      DynTabControl.ControlCreateTab(APages[i]);
+  end;
+end;
+
+function TJvDynControlEngine.CreateTabControlControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string;ATabs : TStrings): TWinControl;
+var
+  DynTabControl: IJvDynControlTabControl;
+  i: Integer;
+begin
+  Result := TWinControl(CreateControl(jctTabControl, AOwner, AParentControl, AControlName));
+  if Assigned(ATabs) and (ATabs.Count > 0) then
+  begin
+    IntfCast(Result, IJvDynControlTabControl, DynTabControl);
+    for i := 0 to ATabs.Count - 1 do
+      DynTabControl.ControlCreateTab(ATabs[i]);
+  end;
+end;
+
 
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;
   AParentControl: TWinControl; const AButtonName, ACaption, AHint: string;
@@ -809,7 +855,6 @@ begin
     {$ENDIF CLR}
   Panel := CreatePanelControl(AOwner, AParentControl, '', '', alNone);
   LabelControl := CreateLabelControl(AOwner, Panel, '', ACaption, AFocusControl);
-//  LabelControl.Width := panel.Canvas.
   AFocusControl.Parent := Panel;
   LabelControl.Top := 1;
   LabelControl.Left := 1;

@@ -278,6 +278,26 @@ type
     procedure ControlSetStep(Value: integer);
   end;
 
+  IJvDynControlTabControl = interface
+    ['{1C9FA637-14CC-4329-886F-696FD08AE951}']
+    procedure ControlCreateTab (const AName : string);
+    procedure ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex (Index : integer);
+    function ControlGetTabIndex : integer;
+    procedure ControlSetMultiLine (Value : boolean);
+    procedure ControlSetScrollOpposite (Value : boolean);
+    procedure ControlSetHotTrack (Value : boolean);
+    procedure ControlSetRaggedRight (Value : boolean);
+  end;
+
+  IJvDynControlPageControl = interface
+    ['{6FCC9619-EA8D-43E6-BB66-D754A01B0720}']
+    function ControlGetPage (const PageName : String) : TWinControl;
+  end;
+
+  
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
