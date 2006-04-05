@@ -2990,10 +2990,17 @@ begin
         end
         else if Assigned(Node) and (ssShift in KeysToShiftState(Keys)) then
         begin
+          {$IFDEF COMPILER6_UP}
           if SelectionCount > 0 then
             FirstNodeIndex := Selections[0].Index
           else
             FirstNodeIndex := 0;
+          {ELSE}
+          if Assigned(Selected) then
+            FirstNodeIndex := Selected.Index
+          else
+            FirstNodeIndex := 0;
+          {$ENDIF COMPILER6_UP}
 
           ClearSelection;
           if FirstNodeIndex < Node.Index then
