@@ -237,7 +237,6 @@ type
     property ImeMode;
     property ImeName;
     property ItemHeight;
-    property ItemIndex default -1;
     property MaxLength;
     property MeasureStyle;
     property ParentBiDiMode;
@@ -276,6 +275,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property Items; { Must be published after OnMeasureItem }
+    property ItemIndex default -1;  { Must be published after Items (see Mantis 3512) }
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
