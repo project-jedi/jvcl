@@ -1901,7 +1901,9 @@ procedure TJvXPCustomWinXPBar.SetCollapsed(Value: Boolean);
 begin
   if Value <> FCollapsed then
   begin
-    if not (csLoading in ComponentState) then
+    // Using fading while loading is useless.
+    // Using the fading thread at design time is NOT safe. See Mantis 3547.
+    if ComponentState * [csLoading, csDesigning] = [] then
     begin
       if Assigned(FBeforeCollapsedChange) then
         FBeforeCollapsedChange(Self, Value);
