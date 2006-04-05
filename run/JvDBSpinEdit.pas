@@ -42,6 +42,8 @@ type
     FDataLink: TFieldDataLink;
     FIsNull: Boolean;
     FAllowNull: Boolean;
+    FDataChanging: Boolean;
+    
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -102,6 +104,7 @@ begin
   inherited Create(AOwner);
   inherited ReadOnly := True;
   FAllowNull := True;
+  FDataChanging := False;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
@@ -135,27 +138,47 @@ begin
   Msg.Result := Longint(FDataLink);
 end;
 
-procedure TJvDBSpinEdit.DataChange(Sender: TObject); { Triggered when data changes in DataSource. }
+procedure TJvDBSpinEdit.DataChange(Sender: TObject);
 begin
-  if FDataLink.Field <> nil then
-  begin
-    if Focused and FDataLink.CanModify then
-      Text := FDataLink.Field.Text
+  FDataChanging := True;
+  try
+    if FDataLink.Field <> nil then
+    begin
+      if Focused and FDataLink.CanModify then
+      begin
+        // Mantis 2131: If field is numeric and it has a DisplayFormat then
+        // take the unformatted text (in AsString) to have a valid number in
+        // the Value property.
+        if (FDataLink.Field is TNumericField) and
+          (Length((FDataLink.Field as TNumericField).DisplayFormat) <> 0) then
+          Text := FDataLink.Field.AsString
+        else
+          Text := FDataLink.Field.Text;
+      end
+      else
+      begin
+        FIsNull := (FDataLink.Field.DisplayText = '');
+        // Mantis 2131, see above
+        if (FDataLink.Field is TNumericField) and
+          (Length((FDataLink.Field as TNumericField).DisplayFormat) <> 0) then
+          Text := FDataLink.Field.AsString
+        else
+          Text := FDataLink.Field.DisplayText;
+
+        if FDataLink.Editing or (FDataLink.Field.DataSet.State = dsInsert) then
+          Modified := True;
+      end;
+    end
     else
     begin
-      FIsNull := (FDataLink.Field.DisplayText = '');
-      Text := FDataLink.Field.DisplayText;
-      if FDataLink.Editing or (FDataLink.Field.DataSet.State = dsInsert) then
-        Modified := True;
+      FIsNull := False;
+      if csDesigning in ComponentState then
+        Text := Name
+      else
+        Text := '';
     end;
-  end
-  else
-  begin
-    FIsNull := False;
-    if csDesigning in ComponentState then
-      Text := Name
-    else
-      Text := '';
+  finally
+    FDataChanging := False;
   end;
 end;
 
@@ -272,6 +295,8 @@ procedure TJvDBSpinEdit.SetValue(NewValue: Extended);
 begin
   FIsNull := (Text = '') and (NewValue = 0.0);
   inherited SetValue(NewValue);
+  if not FDataChanging then
+    FDataLink.Edit;
 end;
 
 procedure TJvDBSpinEdit.TextChanged;
