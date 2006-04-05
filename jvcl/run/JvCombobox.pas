@@ -209,6 +209,7 @@ type
 
   TJvComboBox = class(TJvCustomComboBox)
   published
+    property Align;
     property HintColor;
     property MaxPixel;
     property AutoComplete default True;
