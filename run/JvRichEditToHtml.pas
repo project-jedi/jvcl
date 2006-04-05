@@ -167,8 +167,10 @@ function TJvRichEditToHtml.AttToHtml(Value: TFont): string;
 begin
   FEndSection := cHTMLFontEnd;
   FCToH.RgbColor := Value.Color;
+
+  // Mantis 2817: The font size was not correctly computed 
   Result := Format('<FONT COLOR="#%s" SIZE="%d" FACE="%s">',
-                    [FCToH.HtmlColor,(Value.Size mod 8) + 2,Value.Name]);
+                    [FCToH.HtmlColor,(Value.Size div 8),Value.Name]);
   if fsBold in Value.Style then
   begin
     FEndSection := cHTMLBoldEnd + FEndSection;
@@ -227,7 +229,7 @@ end;
 
 procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
 var
-  I, J, K: Integer;
+  I, J: Integer;
   Datt, Att, CurrAt: TFont;
   DPara, Para, CurrPara: TJvParaAttributesRec;
   St: string;
@@ -255,9 +257,9 @@ begin
     Strings.Add(AttToHtml(Datt));
     FEnd := FEndSection;
 
-    K := 0;
     CurrAt.Assign(Datt);
     FEndSection := '';
+    Value.SelStart := 0;
     for I := 0 to Value.Lines.Count - 1 do
     begin
       St := '';
@@ -266,7 +268,6 @@ begin
       begin
         for J := 1 to Length(Value.Lines[I]) do
         begin
-          Value.SelStart := K + J - 1;
           Value.SelLength := 1;
           Att.Assign(Value.SelAttributes);
           Para.Alignment := Value.Paragraph.Alignment;
@@ -285,9 +286,10 @@ begin
             St := St + ParaToHtml(Para);
           end;
           St := St + CharToHtml(Value.Lines[I][J]);
+          Value.SelStart := Value.SelStart + 1;
         end;
       end;
-      K := K + Length(Value.Lines[I]) + 2;
+      Value.SelStart := Value.SelStart + 2;  // Mantis 2817: Skip carriage return
       Strings.Add(cHTMLBR + St);
       Application.ProcessMessages;
     end;
@@ -325,7 +327,7 @@ end;
 procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TJvRichEdit;
   Strings: TStrings);
 var
-  I, J, K: Integer;
+  I, J: Integer;
   Datt, Att, CurrAt: TFont;
   DPara, Para, CurrPara: TJvRichEditParaAttributesRec;
   St: string;
@@ -353,9 +355,9 @@ begin
     Strings.Add(AttToHtml(Datt));
     FEnd := FEndSection;
 
-    K := 0;
     CurrAt.Assign(Datt);
     FEndSection := '';
+    Value.SelStart := 0;
     for I := 0 to Value.Lines.Count - 1 do
     begin
       St := '';
@@ -364,7 +366,6 @@ begin
       begin
         for J := 1 to Length(Value.Lines[I]) do
         begin
-          Value.SelStart := K + J - 1;
           Value.SelLength := 1;
           Att.Assign(Value.SelAttributes);
           Para.Alignment := Value.Paragraph.Alignment;
@@ -383,9 +384,10 @@ begin
             St := St + ParaToHtml(Para);
           end;
           St := St + CharToHtml(Value.Lines[I][J]);
+          Value.SelStart := Value.SelStart + 1;
         end;
       end;
-      K := K + Length(Value.Lines[I]) + 2;
+      Value.SelStart := Value.SelStart + 2;  // Mantis 2817: Skip carriage return
       Strings.Add(cHTMLBR + St);
       Application.ProcessMessages;
     end;
