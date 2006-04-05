@@ -373,6 +373,7 @@ type
     property Layout;
     property Constraints;
     property OnHyperLinkClick;
+    property WordWrap;
   end;
 
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
