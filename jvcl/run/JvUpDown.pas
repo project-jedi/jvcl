@@ -296,6 +296,10 @@ end;
 
 procedure TJvCustomUpDown.CNNotify(var Msg: TWMNotify);
 begin
+  // Call the inherited handler to allow for inherited events to be triggered
+  // (Mantis 3513)
+  inherited;
+  
   with Msg do
     if NMHdr^.code = UDN_DELTAPOS then
       if AcceptPosition(PNMUpDown(NMHdr).iPos + PNMUpDown(NMHdr).iDelta) then
