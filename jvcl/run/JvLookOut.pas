@@ -1966,7 +1966,11 @@ begin
   ACount := GetButtonCount;
   if ACount = 0 then
     Exit;
-  FButtons.Sort(Compare);
+
+// Mantis 2842: Sorting triggers the issue, and I can't see any reason why
+// it should be sorted according to "Top" in the first place. (obones)
+//  FButtons.Sort(Compare);
+
   FInScroll := True;
   for I := 0 to ACount - 1 do
   begin
