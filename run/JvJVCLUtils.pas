@@ -7693,11 +7693,15 @@ begin
                   if Pos(cCOLOR, TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, cCOLOR);
+                    if Prp[1] = '#' then
+                      Prp[1] := '$';
                     Canvas.Font.Color := StringToColor(Prp);
                   end;
                   if Pos(cBGCOLOR, TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, cBGCOLOR);
+                    if Prp[1] = '#' then
+                      Prp[1] := '$';
                     if UpperCase(Prp) = 'CLNONE' then
                       Trans := True
                     else
@@ -7709,7 +7713,7 @@ begin
                   if Pos('SIZE', TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, 'SIZE');
-                    Canvas.Font.Size := StrToIntDef(Prp,Canvas.Font.Size);
+                    Canvas.Font.Size := StrToIntDef(Prp,2) * Canvas.Font.Size div 2;
                   end;
                 end;
             end;
