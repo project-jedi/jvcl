@@ -419,6 +419,7 @@ type
     property InplaceEditor;
     property LeftCol;
     property Row: Longint read GetRow write SetRow;
+    property CurrentDrawRow: Integer read FCurrentDrawRow;
     property VisibleRowCount;
     property VisibleColCount;
     property IndicatorOffset;
@@ -2879,7 +2880,7 @@ begin
   if (Columns.State = csDefault) or not DefaultDrawing or (csDesigning in ComponentState) then
     inherited DrawDataCell(Rect, Field, State);
   inherited DrawColumnCell(Rect, DataCol, Column, State);
-  if DefaultDrawing and Highlight and not (csDesigning in ComponentState) and
+  if DefaultDrawing and (gdFocused in State) and not (csDesigning in ComponentState) and
     not (dgRowSelect in Options) and
     (ValidParentForm(Self).ActiveControl = Self) then
     Canvas.DrawFocusRect(Rect);
