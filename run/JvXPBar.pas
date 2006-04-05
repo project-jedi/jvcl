@@ -300,6 +300,10 @@ type
   private
     FWinXPBar: TJvXPCustomWinXPBar;
     FRollDirection: TJvXPBarRollDirection;
+    FWinXPBarNewOffSet: Integer;
+  protected
+    procedure DoWinXPBarSetRollOffset;
+    procedure DoWinXPBarInternalRedraw;
   public
     constructor Create(WinXPBar: TJvXPCustomWinXPBar; RollDirection: TJvXPBarRollDirection);
     procedure Execute; override;
@@ -1344,6 +1348,16 @@ begin
   Suspended := False;
 end;
 
+procedure TJvXPFadeThread.DoWinXPBarInternalRedraw;
+begin
+  FWinXPBar.InternalRedraw;
+end;
+
+procedure TJvXPFadeThread.DoWinXPBarSetRollOffset;
+begin
+  FWinXPBar.RollOffset := FWinXPBarNewOffSet;
+end;
+
 procedure TJvXPFadeThread.Execute;
 var
   NewOffset: Integer;
@@ -1363,7 +1377,10 @@ begin
       NewOffset := 0;
     if NewOffset > FWinXPBar.FItemHeight then
       NewOffset := FWinXPBar.FItemHeight;
-    FWinXPBar.RollOffset := NewOffset;
+
+    FWinXPBarNewOffSet := NewOffset;
+    Synchronize(DoWinXPBarSetRollOffset);
+
 
     { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
@@ -1382,8 +1399,8 @@ begin
   { redraw button state }
   FWinXPBar.FCollapsed := FRollDirection = rdCollapse;
   if FWinXPBar.FShowRollButton then
-    FWinXPBar.InternalRedraw;
-
+    Synchronize(DoWinXPBarInternalRedraw);
+    
   { update inspector }
   if csDesigning in FWinXPBar.ComponentState then
     {$IFDEF VCL}
@@ -2057,10 +2074,15 @@ begin
     if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
     begin
       { set linked 'action' as Sender }
-      if Assigned(FVisibleItems[FHoverIndex].Action) then
-        FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex].Action)
-      else
+      if Assigned(FVisibleItems[FHoverIndex].Action) and
+         (@FVisibleItems[FHoverIndex].FOnClick <> @FVisibleItems[FHoverIndex].Action.OnExecute) then
+        FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex])
+      else if not (csDesigning in ComponentState) and
+              Assigned(FVisibleItems[FHoverIndex].ActionLink) then
+        FVisibleItems[FHoverIndex].ActionLink.Execute(Self)
+      else if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex]);
+
       CallInherited := False;
     end;
     Collapsed := False;
