@@ -385,19 +385,24 @@ var
   LResult: DWORD;
 begin
   // (rom) secure thread against exceptions
+  LResult := WAIT_OBJECT_0;
   try
     while not Terminated do
     begin
-      // reset event signal, so we can get it again
-      ResetEvent(FEventHandle);
+      // reset event signal if we're here for any other reason than a
+      // timeout, so we can get it again
+      if LResult <> WAIT_TIMEOUT then
+        ResetEvent(FEventHandle);
       // wait for event to happen
-      LResult := WaitForSingleObject(FEventHandle, INFINITE);
+      LResult := WaitForSingleObject(FEventHandle, 100);
       // check event Result
       case LResult of
         WAIT_OBJECT_0:
           Synchronize(DoChange);
-      else
-        Synchronize(DoChange);
+        WAIT_TIMEOUT:
+          ;  
+        else
+          Synchronize(DoChange);
       end;
     end;
   except
