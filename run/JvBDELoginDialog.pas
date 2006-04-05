@@ -404,7 +404,7 @@ begin
         begin
           Result := CheckUser(Table);
 
-     if not Result then
+          if not Result then
           begin
             if Assigned(FOnLoginFailure) then
               FOnLoginFailure(Self, GetUserName, FDialog.PasswordEdit.Text)
