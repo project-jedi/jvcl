@@ -389,7 +389,7 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvToolEdit;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvToolEdit, JclStrings;
 
 {$R JvSpin.Res}
 
@@ -643,7 +643,7 @@ end;
 
 procedure TJvCustomSpinEdit.Change;
 var
-  //  OldText: string;
+  OldText: string;
   OldSelStart: Integer;
 begin
   { (rb) Maybe move to CMTextChanged }
@@ -653,7 +653,7 @@ begin
   FChanging := True;
   OldSelStart := SelStart;
   try
-    //    OldText := inherited Text;
+    OldText := inherited Text;
     try
       if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
       begin
@@ -671,8 +671,11 @@ begin
 
   if FOldValue <> Value then
   begin
-    if Thousands and (Length(Text) mod 4 = 1) and (SelStart > 0) then
-      SelStart := SelStart + 1;
+    // Mantis 3469: This has the advandtage to be completely transparent to
+    // the number of decimals shown in the control
+    if Thousands then
+      SelStart := SelStart + StrCharCount(Text, ThousandSeparator) - StrCharCount(OldText,ThousandSeparator);
+           
     inherited Change;
     FOldValue := Value;
   end;
