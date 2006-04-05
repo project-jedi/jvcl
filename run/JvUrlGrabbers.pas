@@ -796,14 +796,6 @@ begin
       end;
       InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
-      if Grabber.ProxyMode = pmManual then
-      begin
-        // if manual mode and valid session, we set proxy user name and password
-        InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
-        InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
-      end;
-
-
       // Connect to the host
       hHostConnection := InternetConnect(hSession, PChar(HostName), Port,
         UserName, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
@@ -831,6 +823,19 @@ begin
         Exit;
       end;
 //      InternetSetStatusCallback(hDownload, PFNInternetStatusCallback(@DownloadCallBack));
+
+      if Grabber.ProxyMode in [pmManual, pmSysConfig] then
+      begin
+        // if manual mode and valid session, we set proxy user name and password
+        InternetSetOption(hDownload,
+                          INTERNET_OPTION_PROXY_USERNAME,
+                          PChar(Grabber.ProxyUserName),
+                          Length(Grabber.ProxyUserName)+1);
+        InternetSetOption(hDownload,
+                          INTERNET_OPTION_PROXY_PASSWORD,
+                          PChar(Grabber.ProxyPassword),
+                          Length(Grabber.ProxyPassword)+1);
+      end;
 
       //Send the request
       HttpSendRequest(hDownload, nil, 0, nil, 0);
