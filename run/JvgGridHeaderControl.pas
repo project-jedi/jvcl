@@ -188,10 +188,10 @@ begin
       begin
         if EqualSize then
           G.ColWidths[Col + I] := Trunc((ColsToJoinWidth / ColsToJoin /
-            ColsToJoinWidth) * Sections[Sect].Width) - 1
+            ColsToJoinWidth) * Sections[Sect].Width) - G.GridLineWidth
         else
           G.ColWidths[Col + I] := Trunc((G.ColWidths[Col + I] /
-            ColsToJoinWidth) * Sections[Sect].Width) - 1;
+            ColsToJoinWidth) * Sections[Sect].Width) - G.GridLineWidth;
       end;
       //G.ColWidths[Col + ColsToJoin-1] := G.ColWidths[Col + ColsToJoin-1] + Sections[Sect].Width - ColsToJoinWidth - ColsToJoin;
     end;
