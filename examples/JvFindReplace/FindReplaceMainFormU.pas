@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, StdCtrls, JvFindReplace, JvComponent, ExtCtrls;
+  Menus, StdCtrls, JvFindReplace, JvComponent, ExtCtrls, JvComponentBase;
 
 type
   TFindReplaceMainForm = class(TForm)
@@ -227,7 +227,8 @@ end;
 procedure TFindReplaceMainForm.Rememberlastsearch1Click(Sender: TObject);
 begin
    Rememberlastsearch1.Checked := not Rememberlastsearch1.Checked;
-   FindReplace1.Keeptext := Rememberlastsearch1.Checked;
+   // (obones): Look at this.
+//   FindReplace1.Keeptext := Rememberlastsearch1.Checked;
 end;
 
 end.

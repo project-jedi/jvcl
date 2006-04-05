@@ -31,12 +31,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, JvgPage, StdCtrls, JvgListBox, JvgAskListBox, JvgLabel, JvgGroupBox, JvgBevel,
-  JvgTreeView, ExtCtrls, JvgJump, Buttons, JvgTab, JvgImage, JvgFlyingText, JvgDigits,
-  JvgTypes, JvgCaption, JvgShape, JvgHint, ImgList, JvgHoleShape, JvgRuler, JvgGridHeaderControl,
-  Grids, DBGrids, JvgBitBtn, JvgSplit, JvgStringGrid, JvgCheckBox, JvgSpeedButton,
-  JvgShadow, JvgWizardHeader, Mask, JvgEdit, JvgProgress,
+  JvgTreeView, ExtCtrls, Buttons, JvgTab, JvgImage, JvgFlyingText, JvgDigits,
+  JvgTypes, JvgCaption, JvgHint, ImgList, JvgHoleShape, JvgRuler, JvgGridHeaderControl,
+  Grids, DBGrids, JvgSplit, JvgStringGrid, JvgCheckBox, JvgSpeedButton,
+  JvgShadow, JvgWizardHeader, Mask, JvgProgress,
   Spin, JvComponent, JvgStaticText, JvgSmallFontsDefense, JvExButtons,
-  JvExExtCtrls, JvExComCtrls, JvExControls;
+  JvExExtCtrls, JvExComCtrls, JvExControls, JvComponentBase;
 
 type
   TGLDemoFrm = class(TForm)
@@ -52,7 +52,6 @@ type
     TabSheet9: TTabSheet;
     TabSheet10: TTabSheet;
     TabSheet11: TTabSheet;
-    FrJumpingComponent1: TJvgJumpingComponent;
     Panel3: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
@@ -90,10 +89,6 @@ type
     TabSheet16: TTabSheet;
     HeaderControl2: THeaderControl;
     FrCaption1: TJvgCaption;
-    glBitBtn1: TJvgBitBtn;
-    glBitBtn2: TJvgBitBtn;
-    glBitBtn3: TJvgBitBtn;
-    glBitBtn4: TJvgBitBtn;
     glStaticText1: TJvgStaticText;
     glLabel3: TJvgLabel;
     glSplitter1: TJvgSplitter;
@@ -251,7 +246,6 @@ type
     Image8: TImage;
     glStaticText2: TJvgStaticText;
     sbTglHelpPanel: TSpeedButton;
-    procedure pcMainChange(Sender: TObject);
     procedure FreeFlyingText1TextLineChanging(Sender: TObject;
       LineNum: Integer);
     procedure sbShowHoleShapeDemoClick(Sender: TObject);
@@ -276,16 +270,6 @@ implementation
 uses JvgUtils, HShape, shellApi, glHelpPanel_demo;
 
 {$R *.DFM}
-
-procedure TGLDemoFrm.pcMainChange(Sender: TObject);
-begin
-  with (sender as TJvgPageControl) do
-  begin
-    glFlyingText.Active := ActivePage = TabSheet9;
-    FrJumpingComponent1.Active := ActivePage = TabSheet5;
-    Timer1.Enabled := ActivePage = TabSheet12;
-  end;
-end;
 
 procedure TGLDemoFrm.FreeFlyingText1TextLineChanging(Sender: TObject;
   LineNum: Integer);

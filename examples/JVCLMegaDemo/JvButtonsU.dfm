@@ -1,9 +1,9 @@
 object JvButtons: TJvButtons
   Left = 353
   Top = 131
-  Width = 546
-  Height = 345
   Caption = 'various buttons'
+  ClientHeight = 318
+  ClientWidth = 538
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,23 +13,6 @@ object JvButtons: TJvButtons
   OldCreateOrder = True
   PixelsPerInch = 96
   TextHeight = 13
-  object JvTransparentButton21: TJvTransparentButton2
-    Left = 32
-    Top = 89
-    Width = 131
-    Height = 82
-    AllowAllUp = True
-    Caption = 'JvTransparent Button 2'
-    Color = clBackground
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-    ActiveImage = ilTreeview
-    DisabledImage = ilTreeview
-    WordWrap = True
-  end
   object JvArrowButton1: TJvArrowButton
     Left = 32
     Top = 32

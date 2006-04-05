@@ -88,7 +88,6 @@ object GLDemoFrm: TGLDemoFrm
     TabOrder = 0
     TabStop = False
     TabWidth = 17
-    OnChange = pcMainChange
     Glyphs = ListBox2IL
     SingleGlyph = True
     TabStyle.Borders = [fsdLeft, fsdTop, fsdRight, fsdBottom]
@@ -121,6 +120,10 @@ object GLDemoFrm: TGLDemoFrm
     Options = [ftoAutoFontDirection, ftoExcludeGlyphs]
     object TabSheet1: TTabSheet
       Caption = 'ListBox '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glListBox1: TJvgListBox
         Left = 0
         Top = 0
@@ -540,6 +543,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet2: TTabSheet
       Caption = ' AskListBox '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object FrAskListBox1: TJvgAskListBox
         Left = 0
         Top = 17
@@ -1320,6 +1327,10 @@ object GLDemoFrm: TGLDemoFrm
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image2: TImage
         Left = 26
         Top = 164
@@ -2589,6 +2600,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet4: TTabSheet
       Caption = 'Page&&TabControl'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glTabControl3: TJvgTabControl
         Left = 328
         Top = 6
@@ -3696,6 +3711,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet5: TTabSheet
       Caption = 'Bevel '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glBevel2: TJvgBevel
         Left = 61
         Top = 98
@@ -3842,6 +3861,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet6: TTabSheet
       Caption = 'TreeView '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glSplitter2: TJvgSplitter
         Left = 259
         Top = 0
@@ -3939,19 +3962,22 @@ object GLDemoFrm: TGLDemoFrm
         ChecksScheme = 5
         CheckStateInheritance = True
         Indent = 35
-        Items.Data = {
-          0400000023000000010000000100000001000000FFFFFFFF0000000003000000
-          0A4D756C74696D6564696127000000000000000000000001000000FFFFFFFF00
-          000000000000000E566F6C756D6520636F6E74726F6C24000000000000000000
-          000001000000FFFFFFFF00000000000000000B4D65646961706C617965722700
-          0000000000000000000001000000FFFFFFFF00000000000000000E536F756E64
-          207265636F7264657223000000020000000200000001000000FFFFFFFF000000
-          00020000000A436F6E6E656374696F6E1F000000000000000000000001000000
-          FFFFFFFF0000000000000000064469616C757024000000000000000000000001
-          000000FFFFFFFF00000000000000000B446972656374206C696E6B2000000000
-          0000000000000001000000FFFFFFFF0000000000000000075370656369616C2A
-          000000000000000000000001000000FFFFFFFF0000000000000000115374616E
-          646172642070726F6772616D73}
+        Items.NodeData = {
+          01040000002D000000010000000100000001000000FFFFFFFF00000000030000
+          000A4D0075006C00740069006D00650064006900610035000000000000000000
+          000001000000FFFFFFFF00000000000000000E56006F006C0075006D00650020
+          0063006F006E00740072006F006C002F000000000000000000000001000000FF
+          FFFFFF00000000000000000B4D00650064006900610070006C00610079006500
+          720035000000000000000000000001000000FFFFFFFF00000000000000000E53
+          006F0075006E00640020007200650063006F0072006400650072002D00000002
+          0000000200000001000000FFFFFFFF00000000020000000A43006F006E006E00
+          65006300740069006F006E0025000000000000000000000001000000FFFFFFFF
+          0000000000000000064400690061006C00750070002F00000000000000000000
+          0001000000FFFFFFFF00000000000000000B4400690072006500630074002000
+          6C0069006E006B0027000000000000000000000001000000FFFFFFFF00000000
+          00000000075300700065006300690061006C003B000000000000000000000001
+          000000FFFFFFFF0000000000000000115300740061006E006400610072006400
+          2000700072006F006700720061006D007300}
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -4074,19 +4100,22 @@ object GLDemoFrm: TGLDemoFrm
           ChecksScheme = 2
           CheckStateInheritance = True
           Indent = 35
-          Items.Data = {
-            0400000023000000000000000000000001000000FFFFFFFF0000000003000000
-            0A4D756C74696D6564696127000000000000000000000001000000FFFFFFFF00
-            000000000000000E566F6C756D6520636F6E74726F6C24000000000000000000
-            000001000000FFFFFFFF00000000000000000B4D65646961706C617965722700
-            0000000000000000000001000000FFFFFFFF00000000000000000E536F756E64
-            207265636F7264657223000000000000000000000001000000FFFFFFFF000000
-            00020000000A436F6E6E656374696F6E1F000000000000000000000001000000
-            FFFFFFFF0000000000000000064469616C757024000000000000000000000001
-            000000FFFFFFFF00000000000000000B446972656374204C696E6B2000000000
-            0000000000000001000000FFFFFFFF0000000000000000075370656369616C2A
-            000000000000000000000001000000FFFFFFFF0000000000000000115374616E
-            646172642050726F6772616D73}
+          Items.NodeData = {
+            01040000002D000000000000000000000001000000FFFFFFFF00000000030000
+            000A4D0075006C00740069006D00650064006900610035000000000000000000
+            000001000000FFFFFFFF00000000000000000E56006F006C0075006D00650020
+            0063006F006E00740072006F006C002F000000000000000000000001000000FF
+            FFFFFF00000000000000000B4D00650064006900610070006C00610079006500
+            720035000000000000000000000001000000FFFFFFFF00000000000000000E53
+            006F0075006E00640020007200650063006F0072006400650072002D00000000
+            0000000000000001000000FFFFFFFF00000000020000000A43006F006E006E00
+            65006300740069006F006E0025000000000000000000000001000000FFFFFFFF
+            0000000000000000064400690061006C00750070002F00000000000000000000
+            0001000000FFFFFFFF00000000000000000B4400690072006500630074002000
+            4C0069006E006B0027000000000000000000000001000000FFFFFFFF00000000
+            00000000075300700065006300690061006C003B000000000000000000000001
+            000000FFFFFFFF0000000000000000115300740061006E006400610072006400
+            2000500072006F006700720061006D007300}
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -4107,7 +4136,7 @@ object GLDemoFrm: TGLDemoFrm
           Width = 274
           Height = 158
           GlyphChecked.Data = {
-            46070000424D460700000000000036040000280000000E0000000E0000000100
+            460B0000424D460B00000000000036080000280000000E0000000E0000000100
             2000000000001003000000000000000000000001000000000000000000000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00C0DCC0000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF000000FFFF00FF000000FF00
@@ -4167,7 +4196,7 @@ object GLDemoFrm: TGLDemoFrm
             000000FF00006F706F006F706F006F706F006F706F0000FF000000FF000000FF
             000000FF000000FF0000}
           GlyphUnChecked.Data = {
-            46070000424D460700000000000036040000280000000E0000000E0000000100
+            460B0000424D460B00000000000036080000280000000E0000000E0000000100
             2000000000001003000000000000000000000001000000000000000000000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00C0DCC0000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF000000FFFF00FF000000FF00
@@ -4268,17 +4297,20 @@ object GLDemoFrm: TGLDemoFrm
           ReadOnly = True
           HideSelection = False
           Indent = 19
-          Items.Data = {
-            0200000024000000FFFFFFFFFFFFFFFF01000000FFFFFFFF0000000003000000
-            0B4170706C69636174696F6E25000000000000000000000001000000FFFFFFFF
-            00000000000000000C46756C6C20496E7374616C6C2700000000000000000000
-            0001000000FFFFFFFF00000000000000000E437573746F6D20496E7374616C6C
-            28000000000000000000000001000000FFFFFFFF00000000000000000F4D696E
-            756D756D20496E7374616C6C22000000000000000000000001000000FFFFFFFF
-            0000000002000000094C69627261726965732A00000000000000000000000100
-            0000FFFFFFFF00000000000000001146756C6C207769746820736F7572636573
-            28000000000000000000000001000000FFFFFFFF00000000000000000F576974
-            686F757420736F7572636573}
+          Items.NodeData = {
+            01020000002F000000FFFFFFFFFFFFFFFF01000000FFFFFFFF00000000030000
+            000B4100700070006C00690063006100740069006F006E003100000000000000
+            0000000001000000FFFFFFFF00000000000000000C460075006C006C00200049
+            006E007300740061006C006C0035000000000000000000000001000000FFFFFF
+            FF00000000000000000E43007500730074006F006D00200049006E0073007400
+            61006C006C0037000000000000000000000001000000FFFFFFFF000000000000
+            00000F4D0069006E0075006D0075006D00200049006E007300740061006C006C
+            002B000000000000000000000001000000FFFFFFFF0000000002000000094C00
+            690062007200610072006900650073003B000000000000000000000001000000
+            FFFFFFFF000000000000000011460075006C006C002000770069007400680020
+            0073006F007500720063006500730037000000000000000000000001000000FF
+            FFFFFF00000000000000000F57006900740068006F0075007400200073006F00
+            75007200630065007300}
           Align = alBottom
           TabOrder = 1
           Options = []
@@ -4293,6 +4325,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet7: TTabSheet
       Caption = 'Shadow '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glShadow13: TJvgShadow
         Left = 454
         Top = 186
@@ -4782,11 +4818,12 @@ object GLDemoFrm: TGLDemoFrm
         ChecksScheme = 2
         BorderStyle = bsNone
         Indent = 19
-        Items.Data = {
-          0300000022000000000000000000000001000000FFFFFFFF0000000000000000
-          0954676C536861646F7722000000000000000000000001000000FFFFFFFF0000
-          0000000000000954676C44696769747321000000000000000000000001000000
-          FFFFFFFF00000000000000000854676C4C6162656C}
+        Items.NodeData = {
+          01030000002B000000000000000000000001000000FFFFFFFF00000000000000
+          0009540067006C0053006800610064006F0077002B0000000000000000000000
+          01000000FFFFFFFF000000000000000009540067006C00440069006700690074
+          00730029000000000000000000000001000000FFFFFFFF000000000000000008
+          540067006C004C006100620065006C00}
         TabOrder = 5
         Options = []
         BoldSelection = False
@@ -4797,6 +4834,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet8: TTabSheet
       Caption = ' BitmapImage '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -4922,6 +4963,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet9: TTabSheet
       Caption = 'FlyingText '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -4973,6 +5018,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet10: TTabSheet
       Caption = 'Digits '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object diTime: TJvgDigits
         Left = 3
         Top = -1
@@ -5832,6 +5881,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet11: TTabSheet
       Caption = 'GroupBox '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label2: TLabel
         Left = 214
         Top = 8
@@ -6418,6 +6471,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet12: TTabSheet
       Caption = ' About '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Shape2: TShape
         Left = 0
         Top = 0
@@ -8161,6 +8218,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet13: TTabSheet
       Caption = 'Splitter '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glSplitter1: TJvgSplitter
         Left = 157
         Top = 0
@@ -8194,6 +8255,10 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet14: TTabSheet
       Caption = ' HoleShape '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glBevel5a: TJvgBevel
         Left = 0
         Top = 0
@@ -8226,6 +8291,10 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet15: TTabSheet
       Caption = 'Ruler '
       ImageIndex = 14
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glRuler1: TJvgRuler
         Left = 0
         Top = 0
@@ -8246,6 +8315,10 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet16: TTabSheet
       Caption = 'Buttons '
       ImageIndex = 15
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glSpeedButton1: TJvgSpeedButton
         Left = 208
         Top = 16
@@ -8318,47 +8391,14 @@ object GLDemoFrm: TGLDemoFrm
         DefaultStyle = False
         ModalResult = 0
       end
-      object glBitBtn1: TJvgBitBtn
-        Left = 16
-        Top = 16
-        Width = 75
-        Height = 25
-        Cursor = crHandPoint
-        Caption = 'glBitBtn1'
-        TabOrder = 0
-      end
-      object glBitBtn2: TJvgBitBtn
-        Left = 16
-        Top = 48
-        Width = 75
-        Height = 25
-        Cursor = crHandPoint
-        Caption = 'glBitBtn1'
-        TabOrder = 1
-      end
-      object glBitBtn3: TJvgBitBtn
-        Left = 16
-        Top = 80
-        Width = 75
-        Height = 25
-        Cursor = crHandPoint
-        Caption = 'glBitBtn1'
-        TabOrder = 2
-      end
-      object glBitBtn4: TJvgBitBtn
-        Left = 16
-        Top = 112
-        Width = 75
-        Height = 25
-        Cursor = crHandPoint
-        Caption = 'glBitBtn1'
-        Default = True
-        TabOrder = 3
-      end
     end
     object TabSheet17: TTabSheet
       Caption = 'WizardHeader '
       ImageIndex = 16
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glWizardHeader1: TJvgWizardHeader
         Left = 0
         Top = 0
@@ -8482,6 +8522,10 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet18: TTabSheet
       Caption = 'Progress '
       ImageIndex = 17
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glProgress1: TJvgProgress
         Left = 8
         Top = 16
@@ -8724,6 +8768,10 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet19: TTabSheet
       Caption = 'Nonvisual '
       ImageIndex = 18
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image1: TImage
         Left = 10
         Top = 16
@@ -9443,6 +9491,10 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet20: TTabSheet
       Caption = 'CheckBox'
       ImageIndex = 19
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object glCheckBox1: TJvgCheckBox
         Tag = 1
         Left = 14
@@ -12062,12 +12114,6 @@ object GLDemoFrm: TGLDemoFrm
       Font.Style = []
       ParentFont = False
     end
-  end
-  object FrJumpingComponent1: TJvgJumpingComponent
-    Step = 1
-    ActiveControl = glBevel2
-    Left = 83
-    Top = 146
   end
   object MainPageControlIL: TImageList
     Height = 10

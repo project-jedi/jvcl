@@ -57,6 +57,9 @@ var
 
 implementation
 
+uses
+  JvAppCommand;
+
 {$R *.dfm}
 
 procedure TJvShellHookDemoMainForm.FormCreate(Sender: TObject);
@@ -165,13 +168,13 @@ begin
         if chkNoRedraw.Checked then Exit else S := 'HSHELL_REDRAW';
       HSHELL_TASKMAN: S := 'HSHELL_TASKMAN';
       HSHELL_LANGUAGE: S := 'HSHELL_LANGUAGE';
-      HSHELL_SYSMENU: S := 'HSHELL_SYSMENU';
-      HSHELL_ENDTASK: S := 'HSHELL_ENDTASK';
+//      HSHELL_SYSMENU: S := 'HSHELL_SYSMENU';
+//      HSHELL_ENDTASK: S := 'HSHELL_ENDTASK';
       HSHELL_ACCESSIBILITYSTATE: S := 'HSHELL_ACCESSIBILITYSTATE';
       HSHELL_WINDOWREPLACED: S := 'HSHELL_WINDOWREPLACED';
-      HSHELL_WINDOWREPLACING: S := 'HSHELL_WINDOWREPLACING';
-      HSHELL_FLASH: S := 'HSHELL_FLASH';
-      HSHELL_RUDEAPPACTIVATED: S := 'HSHELL_RUDEAPPACTIVATED';
+//      HSHELL_WINDOWREPLACING: S := 'HSHELL_WINDOWREPLACING';
+//      HSHELL_FLASH: S := 'HSHELL_FLASH';
+//      HSHELL_RUDEAPPACTIVATED: S := 'HSHELL_RUDEAPPACTIVATED';
       HSHELL_APPCOMMAND: S := GetAppCommand(lParam);
     else
       S := Format('Unknown command ($%.8x)', [wParam]);

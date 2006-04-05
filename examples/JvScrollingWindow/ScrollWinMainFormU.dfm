@@ -2,14 +2,13 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
   Left = 317
   Top = 139
   ActiveControl = Button1
-  AutoScroll = False
   Caption = 
     'Demo program for TScrollingWindow with JvDivider and JvExpressBu' +
     'tton'
   ClientHeight = 306
   ClientWidth = 392
   Color = clBtnFace
-  Constraints.MinHeight = 340
+  Constraints.MinHeight = 333
   Constraints.MinWidth = 400
   DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
@@ -21,6 +20,9 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
   Position = poDesktopCenter
   Scaled = False
   OnResize = FormResize
+  DesignSize = (
+    392
+    306)
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -118,11 +120,8 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       Width = 15
       Height = 21
       Associate = Edit1
-      Min = 0
       Max = 10
-      Position = 0
       TabOrder = 5
-      Wrap = False
       OnClick = UpDown1Click
     end
     object CheckBox1: TCheckBox
@@ -165,7 +164,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 3
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton2: TJvExpressButton
@@ -185,7 +183,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 12
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton3: TJvExpressButton
@@ -205,7 +202,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 0
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton4: TJvExpressButton
@@ -225,7 +221,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 1
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton5: TJvExpressButton
@@ -245,7 +240,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 4
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton21: TJvExpressButton
@@ -265,7 +259,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 11
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton22: TJvExpressButton
@@ -285,7 +278,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 2
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton23: TJvExpressButton
@@ -305,7 +297,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 10
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton24: TJvExpressButton
@@ -325,7 +316,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 9
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton25: TJvExpressButton
@@ -345,7 +335,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 8
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton26: TJvExpressButton
@@ -365,7 +354,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 6
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton27: TJvExpressButton
@@ -385,7 +373,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 5
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
     object ExpressButton28: TJvExpressButton
@@ -405,7 +392,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       HighlightFont.Style = []
       ImageIndex = 7
       LargeImages = ImageList1
-      ParentFont = False
       Spacing = 6
     end
   end
