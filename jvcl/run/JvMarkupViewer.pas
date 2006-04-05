@@ -318,13 +318,13 @@ var
       PopTag;
     end
     else
-    if LTag = 'I' then
+    if LTag = 'i' then
     begin // italic
       PushTag;
       FStyle := FStyle + [fsItalic];
     end
     else
-    if LTag = '/I' then
+    if LTag = '/i' then
     begin // cancel italic
       FStyle := FStyle - [fsItalic];
       PopTag;
