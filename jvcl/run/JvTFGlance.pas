@@ -687,6 +687,8 @@ type
     FCell: TJvTFGlanceCell;
     FPhysicalCell: TJvTFGlanceCell;
     FRepeatGrouped: Boolean;
+    FShowSchedNamesInHint: Boolean;
+    procedure SetShowSchedNamesInHint(const Value: Boolean);
     function GetRepeatAppt(Index: Integer): TJvTFAppt;
     function GetSchedule(Index: Integer): TJvTFSched;
     function GetDate: TDate;
@@ -732,6 +734,7 @@ type
     function GetApptAt(X, Y: Integer): TJvTFAppt; virtual;
   published
     property RepeatGrouped: Boolean read FRepeatGrouped write SetRepeatGrouped default True;
+    property ShowSchedNamesInHint: Boolean read FShowSchedNamesInHint write SetShowSchedNamesInHint default True;
     property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit default True;
   end;
 
@@ -761,7 +764,7 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
-  JvConsts, JvResources;
+  JvConsts, JvResources, JclStrings;
 {$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
@@ -2863,8 +2866,21 @@ begin
 end;
 
 procedure TJvTFCustomGlance.CheckApptHint(Info: TJvTFGlanceCoord);
+var
+  ExtraDesc : string;
 begin
-  FHint.ApptHint(Info.Appt, Info.AbsX + 8, Info.AbsY + 8, True, True, False);
+  if FViewer.ShowSchedNamesInHint then
+{$IFDEF USEJVCL}
+    ExtraDesc := StringsToStr(SchedNames, ', ', False);
+{$ELSE}
+  begin
+    SchedNames.Delimiter := ', ';
+    ExtraDesc := SchedNames.DelimitedText;
+  end;
+{$ENDIF USEJVCL}
+  ExtraDesc := ExtraDesc + #13#10;
+
+  FHint.ApptHint(Info.Appt, Info.AbsX + 8, Info.AbsY + 8, True, True, False, ExtraDesc);
 end;
 
 procedure TJvTFCustomGlance.CheckViewerApptHint(X, Y: Integer);
@@ -3489,6 +3505,7 @@ constructor TJvTFGlanceViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRepeatGrouped := True;
+  FShowSchedNamesInHint := True;
   FInplaceEdit := True;
 end;
 
@@ -3642,6 +3659,16 @@ begin
   if Value <> FRepeatGrouped then
   begin
     FRepeatGrouped := Value;
+    Refresh;
+  end;
+end;
+
+procedure TJvTFGlanceViewer.SetShowSchedNamesInHint(
+  const Value: Boolean);
+begin
+  if FShowSchedNamesInHint <> Value then
+  begin
+    FShowSchedNamesInHint := Value;
     Refresh;
   end;
 end;

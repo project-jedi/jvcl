@@ -711,7 +711,7 @@ type
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect; const AHint: THintString); override;
     procedure ApptHint(Appt: TJvTFAppt; X, Y: Integer;
-      ShowDatesTimes, ShowDesc, FormattedDesc: Boolean); virtual;
+      ShowDatesTimes, ShowDesc, FormattedDesc: Boolean; const ExtraDesc: string = ''); virtual;
     procedure StartEndHint(StartDate, EndDate: TDate; StartTime, EndTime: TTime;
       X, Y: Integer; ShowDates: Boolean);
     procedure CellHint(Row, Col: Integer; const HintText: string; CellRect: TRect);
@@ -3801,7 +3801,7 @@ begin
 end;
 
 procedure TJvTFHint.ApptHint(Appt: TJvTFAppt; X, Y: Integer; ShowDatesTimes,
-  ShowDesc, FormattedDesc: Boolean);
+  ShowDesc, FormattedDesc: Boolean; const ExtraDesc: string = '');
 var
   HintTopLeft: TPoint;
   Immediate: Boolean;
@@ -3818,6 +3818,7 @@ begin
       ApptDesc := Appt.Description;
       if not FormattedDesc then
         ApptDesc := StripCRLF(ApptDesc);
+      ApptDesc := ExtraDesc + ApptDesc;
       SetHintText(Appt.StartDate, Appt.EndDate, Appt.StartTime, Appt.EndTime,
         ApptDesc, ShowDatesTimes, ShowDesc);
       FHintRect := CalcHintRect(FApptCtrl.Width, FHintText, nil);
