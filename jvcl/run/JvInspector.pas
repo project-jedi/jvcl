@@ -1027,6 +1027,7 @@ type
     procedure DrawName(const ACanvas: TCanvas); virtual;
     procedure DrawValue(const ACanvas: TCanvas); virtual;
     function EditFocused: Boolean; dynamic;
+    procedure ExpandItems(AExpand: Boolean);
     function HasViewableItems: Boolean; virtual;
     function IndexOf(const Item: TJvCustomInspectorItem): Integer; overload; virtual;
     function IndexOf(const Data: TJvCustomInspectorData): Integer; overload; virtual;
@@ -3424,6 +3425,9 @@ begin
     end;
     if not DraggingDivider and not RowSizing and not BandSizing then
       Selecting := True;
+  end;
+  if Button in [mbLeft, mbRight] then
+  begin
     if (Item <> nil) and
       ((Item.HasViewableItems and not (iifExpanded in Item.Flags)) or
       (iifExpanded in Item.Flags)) then
@@ -3433,8 +3437,13 @@ begin
       begin
         Item.Expanded := not Item.Expanded;
         Selecting := False;
+        if Button = mbRight then
+          Item.ExpandItems(Item.Expanded);
       end;
     end;
+  end;
+  if Button = mbLeft then
+  begin
     if (Item <> nil) and (PtInRect(Item.Rects[iprNameArea], Point(X, Y)) or
       PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
       Item.MouseDown(Button, Shift, X, Y);
@@ -7354,6 +7363,18 @@ end;
 function TJvCustomInspectorItem.EditFocused: Boolean;
 begin
   Result := (EditCtrl <> nil) and EditCtrl.Focused;
+end;
+
+procedure TJvCustomInspectorItem.ExpandItems(AExpand: Boolean);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Items[i].HasViewableItems then
+    begin
+      Items[i].Expanded := AExpand;
+      Items[i].ExpandItems(AExpand);
+    end;
 end;
 
 function TJvCustomInspectorItem.HasViewableItems: Boolean;
