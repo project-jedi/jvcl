@@ -1,5 +1,7 @@
 Changelog for JVCL 3.X
 ======================
+2006-04-04:
+- Added PositionOffset property to TJvGroupHeader // ahuser
 2006-02-28:
 - TJvDatabaseActionBaseEngine modified : Now based on TComponent and DataComponent Property added
 - Updated JVCL Installer with lots of internal changes and bugfixes // ahuser
