@@ -212,6 +212,8 @@ type
 
     property EditMask: string read GetEditMask write SetEditMask;
     property Text: TCaption read GetText write SetText;
+
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
@@ -904,9 +906,26 @@ begin
 end;
 
 procedure TJvCustomDatePickerEdit.Loaded;
+var
+  SavedWidth : Integer;
 begin
-  inherited Loaded;
-  UpdateDisplay;
+  // (obones) Mantis 2491: After a copy and paste operation in the IDE, the new
+  // control would be one pixel less in width. This is caused by a call to
+  // SetText that triggers a call to TCustomMaskEdit.CheckCursor that sends
+  // WM_LEFT to the control. Somehow, this ends up being eaten by the designer
+  // and reduces the width. Add a call to CheckCursor just before UpdateDisplay
+  // below, you'll see it's reduced by two. What's weird is that if you do the
+  // exact same thing in Loaded in TJvCustomCheckedMaskedEdit, the width does
+  // not get reduced. So it must be something in this class, but I cannot
+  // figure out exactly what is done here to trigger this. For now, Let's just
+  // save and restore the width.
+  SavedWidth := Width;
+  try
+    inherited Loaded;
+    UpdateDisplay;
+  finally
+    Width := SavedWidth;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.ParseFigures(var AFigures: TJvDateFigures;
@@ -989,6 +1008,13 @@ begin
   end;
 end;
 
+procedure TJvCustomDatePickerEdit.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+
+end;
+
 procedure TJvCustomDatePickerEdit.SetCalAppearance(
   const AValue: TJvMonthCalAppearance);
 begin
@@ -1017,6 +1043,7 @@ procedure TJvCustomDatePickerEdit.SetDate(const AValue: TDateTime);
 begin
   if (FDate <> AValue) and ValidateDate(AValue) then
   begin
+    StoreDate := Trunc(AValue) = Trunc(FDate);
     FDate := AValue;
     if AValue <> 0 then
       Checked := True;
@@ -1031,8 +1058,7 @@ begin
   if FDateFormat = '' then
     FDateFormat := ShortDateFormat;
   DateSeparator := DetermineDateSeparator(FDateFormat); //calls ResetDateFormat implicitly
-  if FDateFormat <> ShortDateFormat then
-    FStoreDateFormat := True;
+  StoreDateFormat := FDateFormat <> ShortDateFormat;
 end;
 
 procedure TJvCustomDatePickerEdit.SetDateSeparator(const AValue: Char);
@@ -1052,6 +1078,9 @@ procedure TJvCustomDatePickerEdit.SetEditMask(const AValue: string);
 var
   OldSep: Char;
 begin
+{  if csDesigning in ComponentState then
+    Exit;}
+
   OldSep := SysUtils.DateSeparator;
   SysUtils.DateSeparator := Self.DateSeparator;
   try
@@ -1160,6 +1189,9 @@ procedure TJvCustomDatePickerEdit.WMPaste(var Msg: TMessage);
 var
   OldSep: Char;
 begin
+  if csDesigning in ComponentState then
+    Exit;
+    
   OldSep := SysUtils.DateSeparator;
   SysUtils.DateSeparator := Self.DateSeparator;
   try
