@@ -138,6 +138,11 @@ const
   );
 {$ENDIF UNITVERSIONING}
 
+// Required for outside use (see the MegaDemo for instance)
+function GET_APPCOMMAND_LPARAM(lParam: LPARAM): WORD;
+function GET_DEVICE_LPARAM(lParam: LPARAM): WORD;
+function GET_KEYSTATE_LPARAM(lParam: LPARAM): WORD;
+
 implementation
 
 uses
