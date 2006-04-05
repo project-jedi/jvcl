@@ -610,7 +610,9 @@ begin
   begin
     Result := Handles[I];
     if Result.Selected = AValue then
-      Break;
+      Break
+    else
+      Result := nil;
   end;
 end;
 
