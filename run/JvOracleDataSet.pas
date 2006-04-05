@@ -523,25 +523,28 @@ end;
 
 procedure TJvOracleDataSet.DoThreadOpen;
 begin
-  inherited SetActive(True);
-  HandleAfterOpenRefreshThread;
+  try
+    inherited SetActive(True);
+  finally
+    HandleAfterOpenRefreshThread;
+  end;
 end;
 
 procedure TJvOracleDataSet.DoThreadRefresh;
 begin
-//  HandleBeforeOpenRefresh;
-  if not EnhancedOptions.RefreshAsOpenClose then
-  begin
-    inherited InternalRefresh;
-  end
-  else
-  begin
-    Close;
-    InternalOpen;
+  try
+    if not EnhancedOptions.RefreshAsOpenClose then
+    begin
+      inherited InternalRefresh;
+    end
+    else
+    begin
+      Close;
+      InternalOpen;
+    end;
+  finally
+    HandleAfterOpenRefreshThread;
   end;
-//  if not ExecuteThreadIsActive then
-//    HandleAfterOpenRefresh;
-  HandleAfterOpenRefreshThread;
 end;
 
 function TJvOracleDataSet.ExecuteThreadIsActive: Boolean;
@@ -558,10 +561,11 @@ procedure TJvOracleDataSet.HandleAfterOpenRefresh;
 begin
   try
     Filtered := FIntDatasetWasFiltered;
-    if FMoveToRecordAfterOpen > 0 then
-      MoveTo(FMoveToRecordAfterOpen)
-    else
-      First;
+    if Active then
+      if FMoveToRecordAfterOpen > 0 then
+        MoveTo(FMoveToRecordAfterOpen)
+      else
+        First;
     CurrentAction := todaNothing;
   finally
     ExecuteThreadSynchronize(EnableControls);
@@ -572,23 +576,24 @@ procedure TJvOracleDataSet.HandleAfterOpenRefreshThread;
 begin
   CurrentOpenDuration := Now - FCurrentOperationStart;
   FCurrentOperationStart := Now;
+  QueryAllRecords := FIntQueryAllRecords;
   CurrentFetchDuration := 0;
   CurrentAction := todaFetch;
-  First;
-  if FIntQueryAllRecords then
+  if Active then
   begin
-    QueryAllRecords := True;
-    inherited InternalLast;
-  end
-  else
-  if (EnhancedOptions.FetchRowsFirst > RecordCount) or (FMoveToRecordAfterOpen > RecordCount) then
-    if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
-      MoveBy(FMoveToRecordAfterOpen - 1)
+    First;
+    if QueryAllRecords then
+      inherited InternalLast
     else
-      MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+    if (EnhancedOptions.FetchRowsFirst > RecordCount) or (FMoveToRecordAfterOpen > RecordCount) then
+      if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
+        MoveBy(FMoveToRecordAfterOpen - 1)
+      else
+        MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+  end;
   HandleAfterOpenRefresh;
-  if Assigned(FAfterOpen) and (CurrentOperation <> todoRefresh) then
-    ExecuteThreadSynchronize(IntSynchAfterOpen);
+  if Active and Assigned(FAfterOpen) and (CurrentOperation <> todoRefresh) then
+      ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
 procedure TJvOracleDataSet.HandleBeforeOpenRefresh;
