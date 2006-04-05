@@ -384,7 +384,7 @@ type
     FDuplicates: TDuplicates;
   public
     function IndexOf(const UnitName, Identifier: string): TJvInterpreterIdentifier;
-    function Find(const Identifier: string; var Index: Integer): Boolean;
+    function Find(const Identifier: string; var Index: Integer; const ClassName: string = ''): Boolean;
     procedure Sort(Compare: TListSortCompare = nil); virtual;
     property Duplicates: TDuplicates read FDuplicates write FDuplicates;
   end;
@@ -2385,9 +2385,10 @@ begin
           end;
         varDouble, varCurrency:
           begin
-            OAValues[I] := ElementVariant;
-            OA[I].VExtended := TVarData(ElementVariant).VPointer;
-            OA[I].VType := vtExtended;
+            OAValues[i] := V[i];
+            VarCast(OAValues[I], OAValues[I], varCurrency);
+            OA[i].vCurrency := @TVarData(OAValues[i]).vCurrency;
+            OA[i].VType := vtCurrency;
           end;
       else
         OAValues[I] := ElementVariant;
@@ -2410,8 +2411,6 @@ begin
           end;
         varString, varOleStr:
           begin
-            // OA[I].vPChar := PChar(string(V[I]));
-            // OA[I].VType := vtPChar;
             OAValues[I] := V[I];
             OA[I].VVariant := @OAValues[I];
             OA[I].VType := vtVariant;
@@ -2424,9 +2423,10 @@ begin
           end;
         varDouble, varCurrency:
           begin
-            OAValues[I] := V[I];
-            OA[I].VExtended := TVarData(V[I]).VPointer;
-            OA[I].VType := vtExtended;
+            OAValues[i] := V[i];
+            VarCast(OAValues[I], OAValues[I], varCurrency);
+            OA[i].vCurrency := @TVarData(OAValues[i]).vCurrency;
+            OA[i].VType := vtCurrency;
           end;
       else
         OAValues[I] := V[I];
@@ -2463,12 +2463,6 @@ begin
   end
   else
   begin
-    if (TVarData(V).VType = varBoolean) and (VarType = varInteger) then
-      Result := Ord(V = True)
-    else
-    if TVarData(V).VType = varInteger then
-      Result := Integer(V)
-    else
     if TVarData(V).VType = varArray then
     begin
       TVarData(Result) := TVarData(V);
@@ -2898,7 +2892,7 @@ end;
 //=== { TJvInterpreterIdentifierList } =======================================
 
 function TJvInterpreterIdentifierList.Find(const Identifier: string;
-  var Index: Integer): Boolean;
+  var Index: Integer; const ClassName: string = ''): Boolean;
 var
   L, H, I, C: Integer;
 begin
@@ -2923,6 +2917,13 @@ begin
     end;
   end;
   Index := L;
+
+  // Mantis 2676: Looking for our specific class, if applicable
+  if not Result or (ClassName = '') then
+    exit;
+  I := Index;
+  while (I <= Count - 1) and (AnsiStrIComp(PChar(TJvInterpreterIdentifier(List[I]).Identifier), PChar(Identifier)) = 0) do
+   if SameText(TJvInterpreterMethod(List[I]).FClassType.ClassName, ClassName) then begin Index := I; exit; end else inc(I);
 end;
 
 procedure TJvInterpreterIdentifierList.Sort(Compare: TListSortCompare = nil);
@@ -3787,11 +3788,19 @@ var
   var
     I: Integer;
     JvInterpreterMethod: TJvInterpreterMethod;
+    IdentifierFound: Boolean;
   begin
     Result := GetValueRTTI(Identifier, Value, Args);
     if Result then
       Exit;
-    if FGetList.Find(Identifier, I) then
+
+    // Mantis 2676: Looking for the actual class name if appropriate
+    if Args.ObjTyp = varObject then
+      IdentifierFound := FGetList.Find(Identifier, i, Args.Obj.ClassName)
+    else
+      IdentifierFound := FGetList.Find(Identifier, i);
+
+    if IdentifierFound then
       for I := I to FGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FGetList[I]);
