@@ -1218,9 +1218,9 @@ end;
 
 procedure TJvDirectoryListBox.BuildList;
 const
-  CFlagsDir = SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or
+  CFlagsDir = SHGFI_SYSICONINDEX or SHGFI_SMALLICON or
               SHGFI_SELECTED or SHGFI_OPENICON or SHGFI_DISPLAYNAME;
-  CFlagsSubDirs = SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or
+  CFlagsSubDirs = SHGFI_SYSICONINDEX or SHGFI_SMALLICON or
                   SHGFI_DISPLAYNAME;
 var
   TempPath: string;
@@ -1582,7 +1582,7 @@ begin
       FSearchFiles.Search;
 
       { Overlay included to display linked folders or files etc. }
-      Flags := SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME;
+      Flags := SHGFI_SYSICONINDEX or SHGFI_SMALLICON or SHGFI_DISPLAYNAME;
       if GetShellVersion >= $00050000 then
         Flags := Flags or SHGFI_OVERLAYINDEX;
 
