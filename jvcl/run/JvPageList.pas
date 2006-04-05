@@ -773,6 +773,11 @@ var
   I: Integer;
   {$ENDIF COMPILER9_UP}
 begin
+  // Mantis 3227: Checking if the page can be changed has to be done at the
+  // beginning or the page would change but not the index...
+  if not (csLoading in ComponentState) and not CanChange(FPages.IndexOf(Page)) then
+    Exit;
+
   if GetPageCount = 0 then
     FActivePage := nil;
   if (Page = nil) or (Page.PageList <> Self) then
@@ -808,21 +813,18 @@ begin
     end;
     Page.Refresh;
 
-    if (csLoading in ComponentState) or CanChange(FPages.IndexOf(Page)) then
+    if (FActivePage <> nil) and (FActivePage <> Page) then
+      FActivePage.Visible := False;
+    if (FActivePage <> Page) then
     begin
-      if (FActivePage <> nil) and (FActivePage <> Page) then
-        FActivePage.Visible := False;
-      if (FActivePage <> Page) then
-      begin
-        FActivePage := Page;
-        if not (csLoading in ComponentState) then
-          Change;
-      end;
-      if (ParentForm <> nil) and (FActivePage <> nil) and
-        (ParentForm.ActiveControl = FActivePage) then
-      begin
-        FActivePage.SelectFirst;
-      end;
+      FActivePage := Page;
+      if not (csLoading in ComponentState) then
+        Change;
+    end;
+    if (ParentForm <> nil) and (FActivePage <> nil) and
+      (ParentForm.ActiveControl = FActivePage) then
+    begin
+      FActivePage.SelectFirst;
     end;
   end;
 end;
