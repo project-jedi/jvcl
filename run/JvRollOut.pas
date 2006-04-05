@@ -1098,7 +1098,8 @@ end;
 procedure TJvCustomRollOut.ParentColorChanged;
 begin
   inherited ParentColorChanged;
-  Colors.Color := Color;
+  if ParentColor then
+    Colors.Color := Color;
 end;
 
 function TJvCustomRollOut.MouseIsOnButton: Boolean;
