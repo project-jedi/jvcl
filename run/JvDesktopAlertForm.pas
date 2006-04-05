@@ -99,6 +99,8 @@ type
     FWindowColorFrom: TColor;
     FCaptionColorFrom: TColor;
     FFrameColor: TColor;
+    FOnShown: TNotifyEvent;
+    FOnShowing: TNotifyEvent;
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
@@ -153,7 +155,9 @@ type
     property ParentFont;
     property PopupMenu;
     property OnClose;
+    property OnShowing: TNotifyEvent read FOnShowing write FOnShowing;
     property OnShow;
+    property OnShown: TNotifyEvent read FOnShown write FOnShown;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -372,6 +376,9 @@ end;
 
 procedure TJvFormDesktopAlert.DoShow;
 begin
+  if Assigned(OnShowing) then
+    OnShowing(Self);
+    
   inherited DoShow;
   TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   lblText.HotTrackFont.Style := [fsUnderLine];
@@ -405,6 +412,9 @@ begin
   lblText.Top := lblHeader.Top + lblHeader.Height;
   TJvDesktopAlert(Owner).StyleHandler.DoStartAnimation;
   MouseTimer.Enabled := True;
+
+  if Assigned(OnShown) then
+    OnShown(Self);
 end;
 
 {$IFDEF VCL}

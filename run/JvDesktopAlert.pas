@@ -161,6 +161,8 @@ type
     FAutoFree: Boolean;
     FAlertStyle: TJvAlertStyle;
     FStyleHandler: TJvCustomDesktopAlertStyleHandler;
+    FOnShown: TNotifyEvent;
+    FOnShowing: TNotifyEvent;
     function GetStacker: TJvDesktopAlertStack;
     procedure SetButtons(const Value: TJvDesktopAlertButtons);
     procedure SetColors(const Value: TJvDesktopAlertColors);
@@ -170,7 +172,9 @@ type
     procedure SetImage(const Value: TPicture);
     procedure SetImages(const Value: TCustomImageList);
     procedure SetPopupMenu(const Value: TPopupMenu);
+    procedure InternalOnShowing(Sender: TObject);
     procedure InternalOnShow(Sender: TObject);
+    procedure InternalOnShown(Sender: TObject);
     procedure InternalOnClose(Sender: TObject; var Action: TCloseAction);
     procedure InternalMouseEnter(Sender: TObject);
     procedure InternalMouseLeave(Sender: TObject);
@@ -241,7 +245,9 @@ type
     // This property is equivalent to StyleHandler, it is just renamed to look better in the inspector
     property StyleOptions: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
 
+    property OnShowing: TNotifyEvent read FOnShowing write FOnShowing;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnShown: TNotifyEvent read FOnShown write FOnShown;
     property OnCloseButtonClick: TNotifyEvent read GetCloseButtonClick write SetCloseButtonClick;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -786,7 +792,9 @@ begin
       end;
   end;
 
-  FDesktopForm.OnShow := InternalOnShow;
+  FDesktopForm.OnShowing := InternalOnShowing;
+  FDesktopForm.OnShow    := InternalOnShow;
+  FDesktopForm.OnShown   := InternalOnShown;
   FDesktopForm.OnClose := InternalOnClose;
   FDesktopForm.OnMouseEnter := InternalMouseEnter;
   FDesktopForm.OnMouseLeave := InternalMouseLeave;
@@ -990,6 +998,18 @@ procedure TJvDesktopAlert.InternalOnShow(Sender: TObject);
 begin
   if Assigned(FOnShow) then
     FOnShow(Self);
+end;
+
+procedure TJvDesktopAlert.InternalOnShowing(Sender: TObject);
+begin
+  if Assigned(FOnShowing) then
+    FOnShowing(Self);
+end;
+
+procedure TJvDesktopAlert.InternalOnShown(Sender: TObject);
+begin
+  if Assigned(FOnShown) then
+    FOnShown(Self);
 end;
 
 procedure TJvDesktopAlert.Notification(AComponent: TComponent;
