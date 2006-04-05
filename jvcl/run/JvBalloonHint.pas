@@ -16,6 +16,8 @@ All Rights Reserved.
 
 Contributor(s):
 
+  2006-01-17 - J. Vignoles - Added support for Unicode hint and header
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -67,8 +69,8 @@ type
       (Used the check on resize of the anchor window whether the stem point is
       still inside the balloon window): }
     RStemPointPosition: TPoint;
-    RHeader: string;
-    RHint: string;
+    RUTF8Header: string;
+    RUTF8Hint: string;
     RIconKind: TJvIconKind;
     RImageIndex: TImageIndex;
     RVisibleTime: Integer;
@@ -90,8 +92,8 @@ type
     FSwitchHeight: Integer;
     FShowIcon: Boolean;
     FShowHeader: Boolean;
-    FMsg: string;
-    FHeader: string;
+    FMsg: Widestring;
+    FHeader: Widestring;
     FMessageTop: Integer;
     FTipHeight: Integer;
     FTipWidth: Integer;
@@ -170,7 +172,7 @@ type
     FActive: Boolean;
     FOptions: TJvBalloonOptions;
     FImages: TCustomImageList;
-    FDefaultHeader: string;
+    FDefaultHeader: WideString;
     FDefaultIcon: TJvIconKind;
     FDefaultImageIndex: TImageIndex;
     FData: THintData;
@@ -225,16 +227,16 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AHeader: string = '';
+    procedure ActivateHint(ACtrl: TControl; const AHint: Widestring; const AHeader: Widestring = '';
       const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
-    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AImageIndex: TImageIndex;
-      const AHeader: string = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
-    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AIconKind: TJvIconKind;
-      const AHeader: string = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: Widestring; const AImageIndex: TImageIndex;
+      const AHeader: Widestring = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: Widestring; const AIconKind: TJvIconKind;
+      const AHeader: Widestring = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
     procedure ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosition: TPoint;
-      const AHeader, AHint: string; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault;
+      const AHeader, AHint: Widestring; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault;
       const AIconKind: TJvIconKind = ikInformation; const AImageIndex: TImageIndex = -1);
-    procedure ActivateHintRect(ARect: TRect; const AHeader, AHint: string;
+    procedure ActivateHintRect(ARect: TRect; const AHeader, AHint: Widestring;
       const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault; const AIconKind: TJvIconKind = ikInformation;
       const AImageIndex: TImageIndex = -1);
     procedure CancelHint;
@@ -249,7 +251,7 @@ type
       FDefaultBalloonPosition default bpAuto;
     property DefaultImageIndex: TImageIndex read FDefaultImageIndex write FDefaultImageIndex
       default -1;
-    property DefaultHeader: string read FDefaultHeader write FDefaultHeader;
+    property DefaultHeader: Widestring read FDefaultHeader write FDefaultHeader;
     property DefaultIcon: TJvIconKind read FDefaultIcon write FDefaultIcon default ikInformation;
     property Images: TCustomImageList read FImages write SetImages;
     property Options: TJvBalloonOptions read FOptions write SetOptions default [boShowCloseBtn];
@@ -285,7 +287,8 @@ uses
   SysUtils, Math,
   Registry, CommCtrl, MMSystem,
   ComCtrls, // needed for GetComCtlVersion
-  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32;
+  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
+  JclUnicode;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -295,6 +298,51 @@ const
   CTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
   DefaultTextFlags: Longint = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
+
+// Unicode wrapping around DrawTextW  so that if ran under Win98/Me, it
+// continues to work.
+type
+  DrawTextWPtr = function (hDC: HDC; lpString: PWideChar; nCount: Integer;
+                           var lpRect: TRect; uFormat: UINT): Integer; stdcall;
+
+
+var
+  user32Handle: THandle;
+  DrawTextWFunc : DrawTextWPtr = nil;
+
+procedure InitUnicodeWrap;
+begin
+  user32Handle := LoadLibrary('user32.dll');
+  if user32Handle <> 0 then
+  begin
+    DrawTextWFunc := GetProcAddress(user32Handle, 'DrawTextW');
+  end;
+end;
+
+procedure FinalizeUnicodeWrap;
+begin
+  FreeLibrary(user32Handle);
+end;
+
+function WDrawText(hDC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: UINT): Integer;
+var
+  aString: string;
+  lpaString: PChar;
+
+begin
+  if Assigned(@DrawTextWFunc) then
+  begin
+    Result := DrawTextWFunc(hDc,lpString,nCount,lpRect,uFormat);
+  end else begin
+    if Assigned(LpString) then
+    begin
+      aString := WideCharToString(lpstring);
+      lpaString := @aString[1];
+    end else lpaString := nil;
+    Result := DrawTextA(hDc,lpaString,nCount,lpRect,uFormat);
+  end;
+end;
+
 
 type
   TGlobalCtrl = class(TComponent)
@@ -527,7 +575,7 @@ begin
     Result := Rect(0, 0, MaxWidth, 0);
     Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawText(Canvas.Handle, PChar(FHeader), -1, Result,
+    WDrawText(Canvas.Handle, PWideChar(FHeader), -1, Result,
       DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
 
     { Other }
@@ -558,7 +606,9 @@ var
 begin
   Init(AData);
 
-  FMsg := AHint;
+  FMsg := UTF8ToWideString(AHint);
+  if (FMsg = '') then
+    FMsg := AHint;
 
   { Calc HintRect }
   MsgRect := CalcMsgRect(MaxWidth);
@@ -605,7 +655,7 @@ begin
     Result := Rect(0, 0, MaxWidth, 0);
     Canvas.Font := Screen.HintFont;
 //    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawText(Canvas.Handle, PChar(FMsg), -1, Result,
+    WDrawText(Canvas.Handle, PWideChar(FMsg), -1, Result,
     DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
 
     { Other }
@@ -887,7 +937,7 @@ begin
     Inc(HintRect.Top, FDeltaY + FMessageTop);
     Canvas.Font := Screen.HintFont;
 //    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect,
+    WDrawText(Canvas.Handle, PWideChar(FMsg), -1, HintRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
@@ -900,7 +950,7 @@ begin
     Inc(HeaderRect.Top, FDeltaY + 8);
     Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect,
+    WDrawText(Canvas.Handle, PWideChar(FHeader), -1, HeaderRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
@@ -978,8 +1028,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
-  const AImageIndex: TImageIndex; const AHeader: string;
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: Widestring;
+  const AImageIndex: TImageIndex; const AHeader: Widestring;
   const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
@@ -989,10 +1039,10 @@ begin
 
   with FData do
   begin
-    RHint := AHint;
+    RUTF8Hint := WideStringToUTF8(AHint);
     RIconKind := ikCustom;
     RImageIndex := AImageIndex;
-    RHeader := AHeader;
+    RUTF8Header := WideStringToUTF8(AHeader);
     RVisibleTime := VisibleTime;
   end;
 
@@ -1000,7 +1050,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHint(ACtrl: TControl;
-  const AHint, AHeader: string; const VisibleTime: Integer);
+  const AHint, AHeader: Widestring; const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
     Exit;
@@ -1009,8 +1059,8 @@ begin
 
   with FData do
   begin
-    RHint := AHint;
-    RHeader := AHeader;
+    RUTF8Hint := WideStringToUTF8(AHint);
+    RUTF8Header := WideStringToUTF8(AHeader);
     RVisibleTime := VisibleTime;
     RIconKind := ikNone;
   end;
@@ -1018,8 +1068,8 @@ begin
   InternalActivateHint(ACtrl);
 end;
 
-procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
-  const AIconKind: TJvIconKind; const AHeader: string; const VisibleTime: Integer);
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: Widestring;
+  const AIconKind: TJvIconKind; const AHeader: Widestring; const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
     Exit;
@@ -1028,10 +1078,10 @@ begin
 
   with FData do
   begin
-    RHint := AHint;
+    RUTF8Hint := WideStringToUTF8(AHint);
     RIconKind := AIconKind;
     RImageIndex := -1;
-    RHeader := AHeader;
+    RUTF8Header := WideStringToUTF8(AHeader);
     RVisibleTime := VisibleTime;
   end;
 
@@ -1039,7 +1089,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHintPos(AAnchorWindow: TCustomForm;
-  AAnchorPosition: TPoint; const AHeader, AHint: string;
+  AAnchorPosition: TPoint; const AHeader, AHint: Widestring;
   const VisibleTime: Integer; const AIconKind: TJvIconKind;
   const AImageIndex: TImageIndex);
 begin
@@ -1049,8 +1099,8 @@ begin
   begin
     RAnchorWindow := AAnchorWindow;
     RAnchorPosition := AAnchorPosition;
-    RHeader := AHeader;
-    RHint := AHint;
+    RUTF8Header := WideStringToUTF8(AHeader);
+    RUTF8Hint := WideStringToUTF8(AHint);
     RVisibleTime := VisibleTime;
     RIconKind := AIconKind;
     RImageIndex := AImageIndex;
@@ -1061,7 +1111,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHintRect(ARect: TRect; const AHeader,
-  AHint: string; const VisibleTime: Integer; const AIconKind: TJvIconKind;
+  AHint: Widestring; const VisibleTime: Integer; const AIconKind: TJvIconKind;
   const AImageIndex: TImageIndex);
 begin
   CancelHint;
@@ -1070,8 +1120,8 @@ begin
   begin
     RAnchorWindow := nil;
     RAnchorPosition := Point((ARect.Left + ARect.Right) div 2, ARect.Bottom);
-    RHeader := AHeader;
-    RHint := AHint;
+    RUTF8Header := WideStringToUTF8(AHeader);
+    RUTF8Hint := WideStringToUTF8(AHint);
     RVisibleTime := VisibleTime;
     RIconKind := AIconKind;
     RImageIndex := AImageIndex;
@@ -1229,7 +1279,7 @@ begin
   begin
     { Use defaults if necessairy: }
     if boUseDefaultHeader in Options then
-      RHeader := DefaultHeader;
+      RUTF8Header := WideStringToUTF8(DefaultHeader);
     if boUseDefaultIcon in Options then
       RIconKind := DefaultIcon;
     if boUseDefaultImageIndex in Options then
@@ -1271,7 +1321,7 @@ begin
       TmpMaxWidth := Screen.Width
     else
       TmpMaxWidth := MaxWidth;
-    Rect := FHint.CalcHintRect(TmpMaxWidth, RHint, @FData);
+    Rect := FHint.CalcHintRect(TmpMaxWidth, RUTF8Hint, @FData);
 
     { Offset the rectangle to the anchor position }
     if Assigned(RAnchorWindow) then
@@ -1284,7 +1334,7 @@ begin
     if boPlaySound in Options then
       TGlobalCtrl.Instance.PlaySound(RIconKind);
 
-    FHint.InternalActivateHint(Rect, RHint);
+    FHint.InternalActivateHint(Rect, RUTF8Hint);
 
     { Now we can determine the actual anchor & stempoint position: }
     if Assigned(RAnchorWindow) then
@@ -1749,7 +1799,10 @@ begin
   begin
     FImageIndex := RImageIndex;
     FIconKind := RIconKind;
-    FHeader := RHeader;
+    FHeader := UTF8ToWideString(RUTF8Header);
+    if FHeader = '' then
+      FHeader := RUTF8Header;
+    
 
     FShowHeader := FHeader > '';
     FShowIcon := (FIconKind <> ikNone) and
@@ -1919,7 +1972,7 @@ begin
     Inc(HintRect.Top, FDeltaY + FMessageTop);
     Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect, 
+    WDrawText(Canvas.Handle, PWideChar(FMsg), -1, HintRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
@@ -1931,7 +1984,7 @@ begin
       Inc(HeaderRect.Left, FImageSize.cx + 8);
     Inc(HeaderRect.Top, FDeltaY + 8);
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect,
+    WDrawText(Canvas.Handle, PWideChar(FHeader), -1, HeaderRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
@@ -2011,8 +2064,10 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  InitUnicodeWrap;
 
 finalization
+  FinalizeUnicodeWrap;
   FreeAndNil(GGlobalCtrl);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
