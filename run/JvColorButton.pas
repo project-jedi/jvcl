@@ -45,6 +45,7 @@ const
   CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
 type
+  TJvColorButtonPaletteShowing = procedure(var CanShowPalette: Boolean) of object;
   TJvColorButton = class(TJvCustomDropButton)
   private
     FColorForm: TJvForm;
@@ -54,6 +55,8 @@ type
     FCustomColors: TStringList;
     FEdgeWidth: Integer;
     FColor: TColor;
+    FButtonShowsPalette: Boolean;
+    FOnPaletteShowing: TJvColorButtonPaletteShowing;
   protected
     {$IFDEF VCL}
     FOptions: TColorDialogOptions;
@@ -78,6 +81,7 @@ type
       X, Y: Integer); virtual;
     procedure PopupCloseUp; dynamic;
     procedure FocusKilled(NextWnd: THandle); override;
+    procedure DoPaletteShowing(var CanShowPalette: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -85,6 +89,7 @@ type
     property ArrowWidth;
     property OtherCaption: string read FOtherCaption write SetOtherCaption;
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
+    property ButtonShowsPalette: Boolean read FButtonShowsPalette write FButtonShowsPalette default True;
     {$IFDEF VCL}
     property Options: TColorDialogOptions read FOptions write SetOptions;
     {$ENDIF VCL}
@@ -105,6 +110,7 @@ type
     property OnMouseUp;
     property OnKeyDown;
     property OnKeyUp;
+    property OnPaletteShowing: TJvColorButtonPaletteShowing read FOnPaletteShowing write FOnPaletteShowing;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -135,6 +141,7 @@ begin
   FEdgeWidth := 4;
   Width := 42;
   Height := 21;
+  FButtonShowsPalette := True;
   FColorForm := TJvColorForm.CreateNew(Self);
   TJvColorForm(FColorForm).SetButton(Self);
   FOtherCaption := RsOtherCaption;
@@ -146,6 +153,12 @@ begin
   FCustomColors.Free;
   FreeAndNil(FColorForm);
   inherited Destroy;
+end;
+
+procedure TJvColorButton.DoPaletteShowing(var CanShowPalette: Boolean);
+begin
+  if Assigned(OnPaletteShowing) then
+    OnPaletteShowing(CanShowPalette);
 end;
 
 procedure TJvColorButton.FocusKilled(NextWnd: THandle);
@@ -171,11 +184,21 @@ end;
 
 procedure TJvColorButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  CanShowPalette: Boolean;
 begin
   SetFocus;
   inherited MouseDown(Button, Shift, X, Y);
-  ShowColorPopup(Button, Shift, X, Y);
-  FIsDown := ArrowWidth <> 0;
+  if FButtonShowsPalette or (X > Width - ArrowWidth) then
+  begin
+    CanShowPalette := True;
+    DoPaletteShowing(CanShowPalette);
+    if CanShowPalette then
+    begin
+      ShowColorPopup(Button, Shift, X, Y);
+      FIsDown := True;
+    end;
+  end;
   Repaint;
 end;
 
