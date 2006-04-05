@@ -876,9 +876,15 @@ begin
     if Changed then
     begin
       // compile Delphi package (only modified) to get .dcp file (.bpl is also created)
+      // Note: in order to be REALLY safe, we should also pass --BCB here to get the
+      // compiler in BCB mode and ensure that should a unit be recompiled, it is in the
+      // same state as it was when the dcu/obj/hpp files were created. However, this
+      // does not work with BCB5, as it won't generate the dcp file with --BCB. Defining
+      // BDB via -DBCB is also not working here. So we have to "hope" the compiler
+      // is intelligent enough to see that it just needs to pack the dcu files into
+      // the final dcp file.
       Result := CompileDelphiPackage(TargetConfig, Project,
-                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]) +
-                       {' --BCB'} ' -DBCB', // BCB 5 does not create the .dcp file in --BCB mode
+                     StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]),
                      DebugUnits);
       if Result <> 0 then
         Exit;
