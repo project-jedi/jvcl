@@ -2996,10 +2996,9 @@ begin
           else
             FirstNodeIndex := 0;
           {ELSE}
+          FirstNodeIndex := 0;
           if Assigned(Selected) then
-            FirstNodeIndex := Selected.Index
-          else
-            FirstNodeIndex := 0;
+            FirstNodeIndex := Selected.Index;
           {$ENDIF COMPILER6_UP}
 
           ClearSelection;
