@@ -1311,6 +1311,7 @@ end;
 
 procedure TJvCustomListBox.DoBackgroundChange(Sender: TObject);
 begin
+  UpdateStyle;
   Invalidate;
 end;
 
@@ -2153,6 +2154,11 @@ begin
     Style := lbOwnerDrawVariable
   else
   if Alignment <> taLeftJustify then
+    Style := lbOwnerDrawFixed;
+
+  // Mantis 3477: Background requires the list to be ownerdrawn
+  if Background.Visible and Assigned(Background.Image) and
+     not (Style in [lbOwnerDrawVariable, lbOwnerDrawFixed]) then
     Style := lbOwnerDrawFixed;
 
   if (PreviousStyle = lbStandard) and (Style <> lbStandard) then
