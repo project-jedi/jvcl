@@ -645,7 +645,7 @@ begin
     dfInteger, dfYear:
       EditText := IntToStr(IntRangeValue(Trunc(NewValue)));
     dfCurrency, dfFloat, dfPercent:
-      EditText := FloatToStr(FloatRangeValue(NewValue));
+      EditText := Format('%.*n', [FDecimalPlaces, FloatRangeValue(NewValue)]);
     dfScientific:
       EditText := Format('%e', [FloatRangeValue(NewValue)]);
   end;
