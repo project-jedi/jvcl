@@ -36,7 +36,7 @@ uses
 
 type
   TJvButtons = class(TForm)
-    JvTransparentButton21: TJvTransparentButton2;
+    JvTransparentButton1: TJvTransparentButton;
     JvArrowButton1: TJvArrowButton;
     ilTreeview: TImageList;
     JvImageJEDI: TJvImage;

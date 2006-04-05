@@ -1,9 +1,9 @@
 object FindReplaceMainForm: TFindReplaceMainForm
   Left = 374
   Top = 141
-  Width = 473
-  Height = 363
   Caption = 'FindReplace test/demo program'
+  ClientHeight = 336
+  ClientWidth = 465
   Color = clBtnFace
   Constraints.MinHeight = 200
   Constraints.MinWidth = 450
@@ -24,7 +24,7 @@ object FindReplaceMainForm: TFindReplaceMainForm
     Left = 0
     Top = 81
     Width = 465
-    Height = 233
+    Height = 255
     Align = alClient
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -96,13 +96,12 @@ object FindReplaceMainForm: TFindReplaceMainForm
     end
   end
   object FindReplace1: TJvFindReplace
-    Fast = True
-    Options = [frDown, frShowHelp]
-    EditControl = Memo1
-    KeepText = True
     OnFind = FindReplace1Find
     OnReplace = FindReplace1Replace
     OnNotFound = FindReplace1NotFound
+    EditControl = Memo1
+    Fast = True
+    Options = [frDown, frShowHelp]
     Left = 48
     Top = 104
   end

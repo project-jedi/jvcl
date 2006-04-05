@@ -33,7 +33,7 @@ uses
   Dialogs, JvAppXMLStorage, JvFormPlacementSelectList, JvFormPlacement,
   JvAppDBStorage, JvAppStorageSelectList, JvAppStorage, JvAppIniStorage,
   JvComponent, JvAppRegistryStorage, ExtCtrls, ComCtrls, ToolWin, StdCtrls,
-  ShellAPI, Menus, jvDynControlEngine, jvDynControlEngineJVCL;
+  ShellAPI, Menus, jvDynControlEngine, jvDynControlEngineJVCL, JvComponentBase;
 
 type
   TJvAppStorageSubStorageMainForm = class(TForm)
@@ -81,7 +81,7 @@ type
   private
     procedure CheckStorageKind;
   protected
-    procedure loaded; override;
+    procedure Loaded; override;
     { Private declarations }
   public
     { Public declarations }
@@ -175,7 +175,7 @@ begin
   // selection values etc...
 end;
 
-procedure TJvAppStorageSubStorageMainForm.loaded;
+procedure TJvAppStorageSubStorageMainForm.Loaded;
 begin
   CheckStorageKind;
 end;

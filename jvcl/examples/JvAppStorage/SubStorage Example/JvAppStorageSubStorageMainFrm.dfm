@@ -44,6 +44,7 @@ object JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm
         Height = 13
         Align = alTop
         Caption = 'Stored Memo:'
+        ExplicitWidth = 66
       end
       object Memo2: TMemo
         Left = 1
@@ -174,7 +175,6 @@ object JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm
     ButtonHeight = 21
     ButtonWidth = 148
     Caption = 'ToolBar1'
-    EdgeBorders = []
     EdgeInner = esNone
     EdgeOuter = esNone
     ShowCaptions = True
@@ -235,7 +235,7 @@ object JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppStorage1
-    AppStoragePath = '%FORM_NAME%\'
+    AppStoragePath = 'JvAppStorageSubStorageMainForm\'
     OnRestorePlacement = JvFormStorage1RestorePlacement
     StoredProps.Strings = (
       'Option1.Checked'
@@ -282,6 +282,7 @@ object JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm
     StorageOptions.AutoEncodeValue = False
     StorageOptions.AutoEncodeEntity = False
     StorageOptions.AutoIndent = True
+    StorageOptions.InvalidCharReplacement = '_'
     FileName = 'AppStorageExample3.xml'
     RootNodeName = 'Configuration'
     SubStorages = <>

@@ -1,8 +1,6 @@
 object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   Left = 333
   Top = 148
-  Width = 540
-  Height = 280
   Hint = 
     'Try opening and closing programs, move focus between application' +
     's etc.'#13#10#13#10'If your keyboard has extra buttons for opening mail pr' +
@@ -11,6 +9,8 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     'is grayed out, this means your system doesn'#39't support '#13#10'the Regi' +
     'sterShellHookWindow/DeregisterShellHookWindow functions.'#13#10
   Caption = 'JvShellHook Demo'
+  ClientHeight = 253
+  ClientWidth = 532
   Color = clBtnFace
   Constraints.MinHeight = 280
   Constraints.MinWidth = 540
@@ -27,6 +27,9 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    532
+    253)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -43,28 +46,31 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     ParentFont = False
   end
   object btnClear: TButton
-    Left = 448
-    Top = 207
+    Left = 440
+    Top = 180
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = '&Clear'
     TabOrder = 3
     OnClick = btnClearClick
+    ExplicitLeft = 448
+    ExplicitTop = 207
   end
   object chkActive: TCheckBox
     Left = 16
-    Top = 197
+    Top = 170
     Width = 97
     Height = 17
     Anchors = [akLeft, akBottom]
     Caption = '&Active'
     TabOrder = 1
     OnClick = chkActiveClick
+    ExplicitTop = 197
   end
   object chkNoRedraw: TCheckBox
     Left = 16
-    Top = 220
+    Top = 193
     Width = 121
     Height = 17
     Anchors = [akLeft, akBottom]
@@ -72,12 +78,13 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     Checked = True
     State = cbChecked
     TabOrder = 2
+    ExplicitTop = 220
   end
   object lvMessages: TListView
     Left = 8
     Top = 32
-    Width = 515
-    Height = 155
+    Width = 507
+    Height = 128
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     Columns = <
@@ -104,5 +111,7 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     TabOrder = 0
     ViewStyle = vsReport
     OnResize = lvMessagesResize
+    ExplicitWidth = 515
+    ExplicitHeight = 155
   end
 end
