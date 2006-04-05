@@ -72,6 +72,8 @@ type
 //    FLabelOptions: TJvGroupHeaderOptions;
     FBevelOptions: TJvGroupHeaderOptions;
     FBevelSpace: Integer;
+    FPositionOffset: Integer;
+    procedure SetPositionOffset(const Value: Integer);
     function GetTransparent: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetTransparent(Value: Boolean);
@@ -82,8 +84,8 @@ type
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
-    function GetLabelText: string;
   protected
+    function GetLabelText: string; virtual;
     procedure Paint; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
@@ -115,6 +117,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Visible;
+    property PositionOffset: Integer read FPositionOffset write SetPositionOffset default 0;
     property BevelOptions: TJvGroupHeaderOptions read FBevelOptions write SetBevelOptions;
     property BevelSpace: Integer read FBevelSpace write SetBevelSpace default 12;
     // (p3) is this used anywhere?
@@ -327,6 +330,7 @@ begin
     // DoDrawText takes care of BiDi alignments
     DrawStyle := DT_EXPANDTABS or WordWraps[False] or Alignments[FAlignment];
     // Calculate vertical layout
+    OffsetRect(Rect, FPositionOffset, 0);
     if FLayout <> lTop then
     begin
       CalcRect := Rect;
@@ -351,22 +355,30 @@ begin
   case FAlignment of
     taLeftJustify:
       begin
-        LX1 := lbWidth + FBevelSpace;
-        LX2 := Width - lbWidth - FBevelSpace;
+        LX1 := 0;
+        LX2 := PositionOffset - FBevelSpace;
+        LX3 := PositionOffset + lbWidth + FBevelSpace;
+        LX4 := Width - lbWidth - FBevelSpace;
       end;
     taCenter:
       begin
         LX1 := 0;
-        LX2 := (Width div 2) - (lbWidth div 2) - (FBevelSpace div 2);
-        LX3 := LX2 + lbWidth;
+        LX2 := (Width - lbWidth) div 2 + PositionOffset - FBevelSpace;
+        LX3 := LX2 + lbWidth + 2 * FBevelSpace;
         LX4 := Width;
       end;
     taRightJustify:
       begin
         LX1 := 0;
-        LX2 := Width - lbWidth - FBevelSpace;
+        LX2 := PositionOffset + Width - lbWidth - FBevelSpace;
+        LX3 := LX2 + lbWidth + 2 * FBevelSpace;
+        LX4 := Width;
       end;
   end;
+  if LX2 < LX1 then
+    LX2 := LX1;
+  if LX4 < LX3 then
+    LX4 := LX3;
 
   LY := 0;
   case FLayout of
@@ -410,9 +422,12 @@ begin
 
       // Locate and draw the line
 
-      BevelLine(Color1, LX1, LY, LX2);
-      BevelLine(Color2, LX1, LY + 1, LX2);
-      if FAlignment = taCenter then // Draw right bevel
+      if LX1 <> LX2 then
+      begin
+        BevelLine(Color1, LX1, LY, LX2);
+        BevelLine(Color2, LX1, LY + 1, LX2);
+      end;
+      if (LX3 <> LX4) then // Draw right bevel
       begin
         BevelLine(Color1, LX3, LY, LX4);
         BevelLine(Color2, LX3, LY + 1, LX4);
@@ -503,6 +518,15 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvGroupHeader.SetPositionOffset(const Value: Integer);
+begin
+  if Value <> FPositionOffset then
+  begin
+    FPositionOffset := Value;
     Invalidate;
   end;
 end;
