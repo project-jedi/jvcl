@@ -329,7 +329,9 @@ begin
       finally
         Bmp.Free;
       end;
-    end;
+    end
+    else
+      inherited Paint;
     {$ELSE}
     inherited Paint;
     {$ENDIF JVCLThemesEnabled}
