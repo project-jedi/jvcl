@@ -2617,8 +2617,13 @@ end;
 procedure TJvTreeView.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if FCheckBoxes then
-    Params.Style := Params.Style or TVS_CHECKBOXES;
+  
+  // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
+  // parameter seems to trigger a bug in ComCtrl where it will show a
+  // scroll bar that has nothing to do here. Setting the GWL_STYLE window
+  // long shows the checkboxes and does not trigger this bug.
+{  if FCheckBoxes then
+    Params.Style := Params.Style or TVS_CHECKBOXES;}
 end;
 
 procedure TJvTreeView.CreateWnd;
@@ -2758,26 +2763,31 @@ begin
           Color := clHighlight;
       end;
     end;
-    if IsNodeSelected(Node) then
+  end;
+
+  // Mantis 3250: This needs to be done wether we are multiselecting or not
+  // but it forces the rest of the code to ensure that the list of selected
+  // nodes is consistent with the desired display (see CNNotify).
+  if IsNodeSelected(Node) then
+  begin
+    if Focused then
     begin
-      if Focused then
-      begin
-        Canvas.Font.Color := clHighlightText;
-        Canvas.Brush.Color := clHighlight;
-      end
-      else
-      if not HideSelection then
-      begin
-        Canvas.Font.Color := Font.Color;
-        Canvas.Brush.Color := clInactiveBorder;
-      end;
+      Canvas.Font.Color := clHighlightText;
+      Canvas.Brush.Color := clHighlight;
     end
     else
+    if not HideSelection then
     begin
       Canvas.Font.Color := Font.Color;
-      Canvas.Brush.Color := Color;
+      Canvas.Brush.Color := clInactiveBorder;
     end;
+  end
+  else
+  begin
+    Canvas.Font.Color := Font.Color;
+    Canvas.Brush.Color := Color;
   end;
+
   if Assigned(FOnCustomDrawItem) then
     FOnCustomDrawItem(Self, Node, State, DefaultDraw);
 end;
@@ -2838,7 +2848,10 @@ begin
     end;
   end
   else
+  begin
+    FClearBeforeSelect := True;
     FSelectThisNode := True;
+  end;
   inherited KeyDown(Key, Shift);
   if ((Key = VK_SPACE) or (Key = VK_RETURN)) and MenuDblClick and IsMenuItemClick(Selected) then
     TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
@@ -2888,12 +2901,27 @@ procedure TJvTreeView.SetCheckBoxes(const Value: Boolean);
 const
   cNewType: array [Boolean] of TListViewItemType = (itDefault, itCheckBox);
 {$ENDIF VisualCLX}
+{$IFDEF VCL}
+var
+  CurStyle: Integer;
+{$ENDIF VCL}
 begin
   if FCheckBoxes <> Value then
   begin
     FCheckBoxes := Value;
     {$IFDEF VCL}
-    RecreateWnd;
+    // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
+    // parameter seems to trigger a bug in ComCtrl where it will show a
+    // scroll bar that has nothing to do here. Setting the GWL_STYLE window
+    // long shows the checkboxes and does not trigger this bug.
+    //RecreateWnd;
+
+    HandleNeeded;
+    CurStyle := GetWindowLong(Handle, GWL_STYLE);
+    if FCheckBoxes then
+      SetWindowLong(Handle, GWL_STYLE, CurStyle or TVS_CHECKBOXES)
+    else
+      SetWindowLong(Handle, GWL_STYLE, CurStyle and not TVS_CHECKBOXES)
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     Items.ChangeItemTypes(cNewType[FCheckBoxes]);
@@ -2947,18 +2975,43 @@ end;
 procedure TJvTreeView.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   Node: TTreeNode;
+  FirstNodeIndex, I: Integer;
 begin
   ResetPostOperationFlags;
   with Msg do
-    if MultiSelect and (htOnItem in GetHitTestInfoAt(XPos, YPos)) then
+    if (htOnItem in GetHitTestInfoAt(XPos, YPos)) then
     begin
-      Node := GetNodeAt(XPos, YPos);
-      if Assigned(Node) and (ssCtrl in KeysToShiftState(Keys)) then
-        SelectItem(Node, IsNodeSelected(Node))
-      else
+      if MultiSelect then
       begin
-        ClearSelection;
-        SelectItem(Node);
+        Node := GetNodeAt(XPos, YPos);
+        if Assigned(Node) and (ssCtrl in KeysToShiftState(Keys)) then
+        begin
+          SelectItem(Node, IsNodeSelected(Node));
+        end
+        else if Assigned(Node) and (ssShift in KeysToShiftState(Keys)) then
+        begin
+          if SelectionCount > 0 then
+            FirstNodeIndex := Selections[0].Index
+          else
+            FirstNodeIndex := 0;
+
+          ClearSelection;
+          if FirstNodeIndex < Node.Index then
+          begin
+            for I := FirstNodeIndex to Node.Index do
+              SelectItem(Items[I]);
+          end
+          else
+          begin
+            for I := FirstNodeIndex downto Node.Index do
+              SelectItem(Items[I]);
+          end;
+        end
+        else
+        begin
+          ClearSelection;
+          SelectItem(Node);
+        end;
       end;
     end;
   inherited;
@@ -2985,6 +3038,15 @@ var
   Point: TPoint;
   I, J: Integer;
 begin
+  // Need to indicate ClearBeforeSelect if the item is about to change
+  // or we would get rendering glitches because of an inconsistent
+  // selection list. (Mantis 3250)
+  case Msg.NMHdr.code of
+    TVN_SELCHANGEDA, TVN_SELCHANGEDW:
+      if not Multiselect then
+        FClearBeforeSelect := True;
+  end;
+  
   inherited;
   if Windows.GetCursorPos(Point) then // prevent AV after "computer locked" dialog
   begin
