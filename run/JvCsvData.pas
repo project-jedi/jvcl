@@ -271,7 +271,8 @@ type
     FOpenFileName: string; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
-    FCreatePaths: Boolean; // When saving, create subdirectories/paths if it doesn't exist?
+    FCreatePaths: Boolean;
+    procedure SetHasHeaderRow(const Value: Boolean); // When saving, create subdirectories/paths if it doesn't exist?
     procedure SetSeparator(const Value: Char);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
       SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
@@ -560,7 +561,7 @@ type
     property Changed: Boolean read FFileDirty write FFileDirty;
     // property DataFileSize: Integer read GetDataFileSize;
 
-    // if HasHeaderRow is True, calidate that it conforms to CvsFieldDef
+    // if HasHeaderRow is True, validate that it conforms to CvsFieldDef
     property ValidateHeaderRow: Boolean read FValidateHeaderRow write FValidateHeaderRow default True;
     property ExtendedHeaderInfo: Boolean read FExtendedHeaderInfo write FExtendedHeaderInfo;
 
@@ -605,7 +606,7 @@ type
     property OpenFileName: string read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
-    property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
+    property HasHeaderRow: Boolean read FHasHeaderRow write SetHasHeaderRow default True;
     property HeaderRow: string read FHeaderRow; // first row of CSV file.
     property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
   end;
@@ -1118,6 +1119,17 @@ begin
   FIsFiltered := True;
   if Active then
     First;
+end;
+
+procedure TJvCustomCsvDataSet.SetHasHeaderRow(const Value: Boolean);
+begin
+  if FHasHeaderRow <> Value then
+  begin
+    FHasHeaderRow := Value;
+    // Mantis 3479: Now unactivates the dataset and cleans FHeaderRow
+    Active := False;
+    FHeaderRow := '';
+  end;
 end;
 
 // Make Rows Visible Only if they match filterString
