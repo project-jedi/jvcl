@@ -3564,6 +3564,10 @@ end;
 
 procedure TJvCustomInspector.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  // Mantis 3424: Required for the application not to hang under BDS2006
+  // (and maybe 2005). Does not have any impact under D7 and lower.
+  inherited Notification(AComponent, Operation);
+  
   if (Operation = opRemove) and (AComponent = Painter) then
     FPainter := nil;
 end;
