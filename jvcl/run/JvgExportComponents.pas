@@ -513,14 +513,15 @@ begin
     RecNo := OldRecNo + 1;
     InsertStrings(Footer, SubHeaderFont, FOnGetSubHeaderLineFont);
 
-    if ExtractFileExt(FSaveToFileName) = '' then
-      FSaveToFileName := ChangeFileExt(FSaveToFileName, '.xls');
-    DeleteFileEx(FSaveToFileName);
+    if Length(FSaveToFileName) > 0 then
+    begin
+      if ExtractFileExt(FSaveToFileName) = '' then
+        FSaveToFileName := ChangeFileExt(FSaveToFileName, '.xls');
+      DeleteFileEx(FSaveToFileName);
 
-    if FSaveToFileName <> '' then
-      XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);
-
-
+      if FSaveToFileName <> '' then
+        XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);
+    end;
   finally
     try  
       if CloseExcel then 
