@@ -469,7 +469,9 @@ end;
 procedure TJvDBDateTimePicker.UpdateData(Sender: TObject);
 begin
   // update value in datalink with date value in control, not from system
-  if not FDataLink.Editing then
+  // DataLink field might be empty
+  if not Assigned(FDataLink.Field) or 
+     not FDataLink.Editing then
     Exit;
   if Kind = dtkDate then
   begin
@@ -502,19 +504,27 @@ begin
     inherited
   else
   begin
-    if Kind = dtkDate then
+    // DataLink field might be empty
+    if Assigned(FDataLink.Field) then
     begin
-      if IsDateAndTimeField then
-        D := FDataLink.Field.AsDateTime
+      if Kind = dtkDate then
+      begin
+        if IsDateAndTimeField then
+          D := FDataLink.Field.AsDateTime
+        else
+          D := Trunc(FDataLink.Field.AsDateTime);
+      end
       else
-        D := Trunc(FDataLink.Field.AsDateTime);
+      begin
+        if IsDateAndTimeField then
+          D := FDataLink.Field.AsDateTime
+        else
+          D := Frac(FDataLink.Field.AsDateTime);
+      end;
     end
     else
     begin
-      if IsDateAndTimeField then
-        D := FDataLink.Field.AsDateTime
-      else
-        D := Frac(FDataLink.Field.AsDateTime);
+      D := Now;  // Default value for date time edits
     end;
 
     DateTimeToSystemTime(D, ST);
