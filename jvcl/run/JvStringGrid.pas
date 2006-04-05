@@ -75,6 +75,7 @@ type
     FAlignment: TAlignment;
     FSetCanvasProperties: TDrawCellEvent;
     FGetCellAlignment: TGetCellAlignmentEvent;
+    FOnColWidthsChanged: TNotifyEvent;
     FCaptionClick: TCaptionClickEvent;
     FCellOnMouseDown: TGridCoord;
     FOnExitCell: TExitCellEvent;
@@ -108,6 +109,7 @@ type
   protected
     function CreateEditor: TInplaceEdit; override;
     function CanEditShow: Boolean; override;
+    procedure ColWidthsChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -237,6 +239,7 @@ type
     property OnSetCanvasProperties: TDrawCellEvent read FSetCanvasProperties write FSetCanvasProperties;
     property OnGetCellAlignment: TGetCellAlignmentEvent read FGetCellAlignment write FGetCellAlignment;
     property OnCaptionClick: TCaptionClickEvent read FCaptionClick write FCaptionClick;
+    property OnColWidthsChanged: TNotifyEvent read FOnColWidthsChanged write FOnColWidthsChanged;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -477,6 +480,13 @@ begin
     if not Result then
       EditorMode := False;
   end;
+end;
+
+procedure TJvStringGrid.ColWidthsChanged;
+begin
+  inherited;
+  if Assigned(FOnColWidthsChanged) then
+    FOnColWidthsChanged(Self);
 end;
 
 procedure TJvStringGrid.SortGrid(Column: Integer;
