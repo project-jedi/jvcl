@@ -1637,9 +1637,9 @@ type
 
     procedure CreatePicDrawList(ARect: TRect; Appt: TJvTFAppt; DrawList: TList);
     procedure FilterPicDrawList(ARect: TRect; DrawList: TList;
-      var PicsHeight: Integer);
+      var PicsHeight: Integer; var PicsWidth: Integer);
     procedure CanDrawWhat(ACanvas: TCanvas; ApptRect: TRect;
-      PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
+      PicsHeight, PicsWidth: Integer; var CanDrawText, CanDrawPics: Boolean);
     procedure DrawListPics(ACanvas: TCanvas; var ARect: TRect; DrawList: TList);
     procedure ClearPicDrawList(DrawList: TList);
 
@@ -5677,7 +5677,6 @@ procedure TJvTFDays.DrawApptDetail(ACanvas: TCanvas; ARect: TRect;
 var
   TheFrameRect, TxtRect, DetailRect, BarRect, HandleRect: TRect;
   Txt: string;
-  PTxt: PChar;
   Flags: UINT;
   CanDrawText, CanDrawPics, CanDrawAppt: Boolean;
   PicsHeight, PicsWidth: Integer;
@@ -5782,10 +5781,7 @@ begin
         end;
 
           //PTxt := StrNew(PChar(Txt));
-        PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-        StrPCopy(PTxt, Txt);
-        Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-        StrDispose(PTxt);
+        Windows.DrawText(ACanvas.Handle, PChar(Txt), -1, TxtRect, Flags);
       end;
     end;
 
@@ -6376,7 +6372,6 @@ var
   LRect: TRect;
   TheCol: TJvTFDaysCol;
   Txt: string;
-  PTxt: PChar;
   Flags: UINT;
 begin
   {$IFDEF Jv_TIMEBLOCKS}
@@ -6415,12 +6410,8 @@ begin
     end;
 
     // All parameters now specified.  Now calc text height.
-    PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-    StrPCopy(PTxt, Txt);
-
     Flags := DT_NOPREFIX or DT_WORDBREAK or DT_CENTER or DT_CALCRECT;
-    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, LRect, Flags);
-    StrDispose(PTxt);
+    TxtHt := Windows.DrawText(ACanvas.Handle, PChar(Txt), -1, LRect, Flags);
 
     if TxtHt > Tallest then
       Tallest := TxtHt;
@@ -6628,7 +6619,6 @@ var
   I, J, MajorTickLength, MinorTickLength, TickLength: Integer;
   LRect: TRect;
   Lbl: string;
-  PTxt: PChar;
   PrevHour, CurrentHour: Word;
   //  FirstMajor,
   Selected, PrevHrSel, CurrHrSel, Switch: Boolean;
@@ -6725,12 +6715,8 @@ begin
 
         ACanvas.Brush.Style := bsClear;
 
-        PTxt := StrAlloc((Length(Lbl) + 4) * SizeOf(Char));
-        StrPCopy(PTxt, Lbl);
-
-        Windows.DrawText(ACanvas.Handle, PTxt, -1, LRect,
+        Windows.DrawText(ACanvas.Handle, PChar(Lbl), -1, LRect,
           DT_NOPREFIX or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-        StrDispose(PTxt);
 
         if Assigned(FOnDrawMajorRowHdr) then
           FOnDrawMajorRowHdr(Self, ACanvas, LRect, I - 1, PrevHrSel);
@@ -6748,7 +6734,6 @@ procedure TJvTFDays.DrawMinor(ACanvas: TCanvas; ARect: TRect; RowNum: Integer;
 var
   Attr: TJvTFDaysFancyRowHdrAttr;
   MinorRect, TxtRect: TRect;
-  PTxt: PChar;
 begin
   // do the background shading
   ACanvas.Brush.Color := FancyRowHdrAttr.Color;
@@ -6788,9 +6773,6 @@ begin
   ACanvas.Font.Assign(Attr.MinorFont);
   ACanvas.Brush.Style := bsClear;
 
-  PTxt := StrAlloc((Length(LabelStr) + 4) * SizeOf(Char));
-  StrPCopy(PTxt, LabelStr);
-
   // draw the focus rect if needed
   if (RowNum = FocusedRow) and Focused and ShowFocus then
   begin
@@ -6799,9 +6781,8 @@ begin
     ManualFocusRect(ACanvas, MinorRect);
   end;
 
-  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect,
+  Windows.DrawText(ACanvas.Handle, PChar(LabelStr), -1, TxtRect,
     DT_SINGLELINE or DT_RIGHT or DT_NOPREFIX or DT_VCENTER);
-  StrDispose(PTxt);
 
   if Assigned(FOnDrawMinorRowHdr) then
     FOnDrawMinorRowHdr(Self, ACanvas, ARect, RowNum, Selected);
@@ -10939,52 +10920,54 @@ begin
   // (This is continuing to give me problems and I don't know why.)
   //PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
   PTxt := StrAlloc((Length(Txt) + 12) * SizeOf(Char));
-  StrPCopy(PTxt, Txt);
-
-  if (ColTitleStyle = ctsMultiClip) or (ColTitleStyle = ctsMultiEllipsis) then
-  begin
-    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
-      Flags or DT_CALCRECT);
-    // "reset" PTxt
+  try
     StrPCopy(PTxt, Txt);
 
-    if TxtHt < RectHeight(TxtRect) then
+    if (ColTitleStyle = ctsMultiClip) or (ColTitleStyle = ctsMultiEllipsis) then
     begin
-       // we need to vertically center the text
-      TxtRectHt := RectHeight(TxtRect);
-      TxtRect.Top := TxtRect.Top + RectHeight(TxtRect) div 2 - TxtHt div 2;
-      TxtRect.Bottom := Lesser(TxtRect.Top + TxtRectHt, TxtRect.Bottom);
-    end;
-  end
-  else
-  if ColTitleStyle = ctsHide then
-  begin
-    Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
-    if RectWidth(CalcRect) > RectWidth(TxtRect) then
-      StrPCopy(PTxt, '');
-  end
-  {$IFDEF Jv_TIMEBLOCKS}
-  // okay to leave
-  else
-  if ColTitleStyle = ctsRotated then
-   //DrawAngleText(ACanvas, TxtRect, UseAttr.TitleRotation, Txt);
-    DrawAngleText(ACanvas, TxtRect, TxtBounds, UseAttr.TitleRotation,
-      taCenter, vaCenter, Txt);
-  {$ELSE}
-  // remove
-  //; // semi-colon needed to terminate last end
-  {$ENDIF Jv_TIMEBLOCKS}
+      TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
+        Flags or DT_CALCRECT);
+      // "reset" PTxt
+      StrPCopy(PTxt, Txt);
 
-  {$IFDEF Jv_TIMEBLOCKS}
-  // okay to leave
-  if ColTitleStyle <> ctsRotated then
-    Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-  {$ELSE}
-  // remove
-  //Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-  {$ENDIF Jv_TIMEBLOCKS}
+      if TxtHt < RectHeight(TxtRect) then
+      begin
+         // we need to vertically center the text
+        TxtRectHt := RectHeight(TxtRect);
+        TxtRect.Top := TxtRect.Top + RectHeight(TxtRect) div 2 - TxtHt div 2;
+        TxtRect.Bottom := Lesser(TxtRect.Top + TxtRectHt, TxtRect.Bottom);
+      end;
+    end
+    else
+    if ColTitleStyle = ctsHide then
+    begin
+      Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
+      if RectWidth(CalcRect) > RectWidth(TxtRect) then
+        StrPCopy(PTxt, '');
+    end
+    {$IFDEF Jv_TIMEBLOCKS}
+    // okay to leave
+    else
+    if ColTitleStyle = ctsRotated then
+     //DrawAngleText(ACanvas, TxtRect, UseAttr.TitleRotation, Txt);
+      DrawAngleText(ACanvas, TxtRect, TxtBounds, UseAttr.TitleRotation,
+        taCenter, vaCenter, Txt);
+    {$ELSE}
+    // remove
+    //; // semi-colon needed to terminate last end
+    {$ENDIF Jv_TIMEBLOCKS}
 
-  StrDispose(PTxt);
+    {$IFDEF Jv_TIMEBLOCKS}
+    // okay to leave
+    if ColTitleStyle <> ctsRotated then
+      Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
+    {$ELSE}
+    // remove
+    //Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
+    {$ENDIF Jv_TIMEBLOCKS}
+  finally
+    StrDispose(PTxt);
+  end;
 
   if not IsGroupHdr and (Index = FocusedCol) and Focused then
   begin
@@ -12046,14 +12029,14 @@ begin
 end;
 
 procedure TJvTFDaysPrinter.CanDrawWhat(ACanvas: TCanvas; ApptRect: TRect;
-  PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
+  PicsHeight, PicsWidth: Integer; var CanDrawText, CanDrawPics: Boolean);
 var
   TextHeightThreshold, TextWidthThreshold: Integer;
 begin
   TextHeightThreshold := ACanvas.TextHeight('Wq') * Thresholds.TextHeight;
   TextWidthThreshold := ACanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
 
-  if TextHeightThreshold + PicsHeight < RectHeight(ApptRect) then
+  if TextHeightThreshold < RectHeight(ApptRect) then
   begin
     CanDrawText := RectWidth(ApptRect) >= TextWidthThreshold;
     CanDrawPics := True;
@@ -12678,10 +12661,9 @@ procedure TJvTFDaysPrinter.DrawApptDetail(ACanvas: TCanvas; ARect: TRect;
 var
   TheFrameRect, TxtRect, DetailRect, BarRect: TRect;
   Txt: string;
-  PTxt: PChar;
   Flags: UINT;
   CanDrawText, CanDrawPics, CanDrawAppt: Boolean;
-  PicsHeight: Integer;
+  PicsHeight, PicsWidth: Integer;
   DrawList: TList;
   DrawInfo: TJvTFDaysApptDrawInfo;
 begin
@@ -12757,14 +12739,14 @@ begin
         // be correct.
         //Font := ApptAttr.Font;
         CreatePicDrawList(TxtRect, Appt, DrawList);
-        FilterPicDrawList(TxtRect, DrawList, PicsHeight);
+        FilterPicDrawList(TxtRect, DrawList, PicsHeight, PicsWidth);
         // Calc'ing text height and width in CanDrawWhat
-        CanDrawWhat(ACanvas, TxtRect, PicsHeight, CanDrawText, CanDrawPics);
+        CanDrawWhat(ACanvas, TxtRect, PicsHeight, PicsWidth, CanDrawText, CanDrawPics);
 
         if CanDrawPics then
         begin
           DrawListPics(ACanvas, TxtRect, DrawList);
-          Inc(TxtRect.Top, PicsHeight);
+          Inc(TxtRect.Left, PicsWidth); // Mantis 2340: Be coherent with JvTFDays
         end;
       finally
         ClearPicDrawList(DrawList);
@@ -12783,11 +12765,7 @@ begin
           Flags := Flags or DT_END_ELLIPSIS;
         end;
 
-        //PTxt := StrNew(PChar(Txt));
-        PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-        StrPCopy(PTxt, Txt);
-        Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-        StrDispose(PTxt);
+        Windows.DrawText(ACanvas.Handle, PChar(Txt), -1, TxtRect, Flags);
       end;
     end;
 
@@ -13125,7 +13103,6 @@ var
   I, MajorTickLength, MinorTickLength, TickLength: Integer;
   ARect: TRect;
   Lbl: string;
-  PTxt: PChar;
   PrevHour, CurrentHour: Word;
   FirstMajor, Switch: Boolean;
 begin
@@ -13156,16 +13133,21 @@ begin
       begin
         with ARect do
         begin
-          Left := 0;
-          Right := RowHdrWidth - MinorTickLength;
+          Left := 1;  // Allow for a small margin on left side
+          Right := RowHdrWidth; // No "cutting" before the end of the cell.
           Top := CellRect(-1, HourStartRow(PrevHour), PageInfo).Top;
+
             //group if Top < ColHdrHeight then
               //group Top := ColHdrHeight;
           if Top < CalcGroupColHdrsHeight then
             Top := CalcGroupColHdrsHeight;
           Bottom := CellRect(-1, HourEndRow(PrevHour), PageInfo).Bottom - 1;
-          if Bottom > GetDataHeight(PageInfo.ShowColHdr) then
-            Bottom := GetDataHeight(PageInfo.ShowColHdr);
+
+          // No need to check for Bottom to be outside the page, CellRect
+          // calculates it so that it does not happen. And using GetDataHeight
+          // is not a good idea as it removes the column header height, which
+          // is NOT what we want here as we want the page's integral height.
+          // If we wer to use it, we would trigger Mantis 2340.
         end;
 
         if FancyRowHdrAttr.Hr2400 then
@@ -13190,12 +13172,8 @@ begin
         ACanvas.Font.Assign(FancyRowHdrAttr.MajorFont);
         ACanvas.Brush.Style := bsClear;
 
-        PTxt := StrAlloc((Length(Lbl) + 4) * SizeOf(Char));
-        StrPCopy(PTxt, Lbl);
-
-        Windows.DrawText(ACanvas.Handle, PTxt, -1, ARect,
-          DT_NOPREFIX or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-        StrDispose(PTxt);
+        Windows.DrawText(ACanvas.Handle, PChar(Lbl), -1, ARect,
+          DT_NOPREFIX or DT_SINGLELINE or DT_LEFT or DT_VCENTER);
 
         if Assigned(FOnDrawMajorRowHdr) then
           FOnDrawMajorRowHdr(Self, ACanvas, ARect, I - 1, False);
@@ -13278,7 +13256,6 @@ procedure TJvTFDaysPrinter.DrawMinor(ACanvas: TCanvas; ARect: TRect;
   RowNum: Integer; const LabelStr: string; TickLength: Integer);
 var
   MinorRect, TxtRect: TRect;
-  PTxt: PChar;
 begin
   // do the background shading
   ACanvas.Brush.Color := FancyRowHdrAttr.Color;
@@ -13308,12 +13285,8 @@ begin
   ACanvas.Font.Assign(FancyRowHdrAttr.MinorFont);
   ACanvas.Brush.Style := bsClear;
 
-  PTxt := StrAlloc((Length(LabelStr) + 4) * SizeOf(Char));
-  StrPCopy(PTxt, LabelStr);
-
-  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect,
+  Windows.DrawText(ACanvas.Handle, PChar(LabelStr), -1, TxtRect,
     DT_SINGLELINE or DT_RIGHT or DT_NOPREFIX or DT_VCENTER);
-  StrDispose(PTxt);
 
   if Assigned(FOnDrawMinorRowHdr) then
     FOnDrawMinorRowHdr(Self, ACanvas, ARect, RowNum, False);
@@ -13358,13 +13331,14 @@ begin
 end;
 
 procedure TJvTFDaysPrinter.FilterPicDrawList(ARect: TRect;
-  DrawList: TList; var PicsHeight: Integer);
+  DrawList: TList; var PicsHeight: Integer; var PicsWidth: Integer);
 var
   I, NextPicLeft, PicRight, PicBottom: Integer;
   DrawIt: Boolean;
   DrawInfo: TJvTFDrawPicInfo;
 begin
   PicsHeight := 0;
+  PicsWidth := 0;
   if DrawList.Count = 0 then
     Exit;
 
@@ -13418,6 +13392,7 @@ begin
       end;
     end;
   end;
+  PicsWidth := NextPicLeft - ARect.Left;
 end;
 
 function TJvTFDaysPrinter.GetApptDispColor(Appt: TJvTFAppt): TColor;
@@ -13563,7 +13538,7 @@ begin
     LastHour := RowToHour(LastFullRow);
     LastHourStart := HourStartRow(LastHour);
 
-    if (RowNum = LastHourStart) or
+    if ((RowNum = LastHourStart) and not RowStartsHour(RowNum)) or
       ((LastHourStart = PageInfo.StartRow) and (RowNum = PageInfo.StartRow)) then
       TimeFmt := Full24
     else
@@ -14067,7 +14042,6 @@ procedure TJvTFDaysPrinter.DrawColGroupHdr(ACanvas: TCanvas;
 var
   ARect, TxtRect, CalcRect: TRect;
   Txt: string;
-  PTxt: PChar;
   Flags: UINT;
   TxtHt, TxtRectHt: Integer;
   UseAttr: TJvTFDaysHdrAttr;
@@ -14107,12 +14081,9 @@ begin
   Windows.InflateRect(TxtRect, -2, -2);
   CalcRect := TxtRect;
 
-  PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-  StrPCopy(PTxt, Txt);
-
   if (ColTitleStyle = ctsMultiClip) or (ColTitleStyle = ctsMultiEllipsis) then
   begin
-    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
+    TxtHt := Windows.DrawText(ACanvas.Handle, PChar(Txt), -1, CalcRect,
       Flags or DT_CALCRECT);
 
     if TxtHt < RectHeight(TxtRect) then
@@ -14126,13 +14097,12 @@ begin
   else
   if ColTitleStyle = ctsHide then
   begin
-    Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
+    Windows.DrawText(ACanvas.Handle, PChar(Txt), -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
-      StrPCopy(PTxt, '');
+      Txt := '';
   end;
 
-  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-  StrDispose(PTxt);
+  Windows.DrawText(ACanvas.Handle, PChar(Txt), -1, TxtRect, Flags);
 
   DrawFrame(ACanvas, ARect, HdrAttr.Frame3D);
 
