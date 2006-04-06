@@ -242,6 +242,7 @@ type
     function GetCurrentOperationAction: string;
     function GetDialogOptions: TJvOracleDatasetDialogOptions;
     function GetFetchMode: TJvOracleDatasetFetchMode;
+    procedure HandleAfterOpenRefresh;
     procedure SetCurrentAction(const Value: TJvOracleDatasetAction);
     procedure SetCurrentFetchDuration(const Value: TDateTime);
     procedure SetCurrentOpenDuration(const Value: TDateTime);
@@ -265,7 +266,6 @@ type
     procedure DoThreadOpen;
     procedure DoThreadRefresh;
     function ExecuteThreadIsActive: Boolean;
-    procedure HandleAfterOpenRefresh;
     procedure HandleAfterOpenRefreshThread;
     procedure HandleBeforeOpenRefresh;
     procedure InternalLast; override;
@@ -559,21 +559,6 @@ end;
 
 procedure TJvOracleDataSet.HandleAfterOpenRefresh;
 begin
-  try
-    Filtered := FIntDatasetWasFiltered;
-    if Active then
-      if FMoveToRecordAfterOpen > 0 then
-        MoveTo(FMoveToRecordAfterOpen)
-      else
-        First;
-    CurrentAction := todaNothing;
-  finally
-    ExecuteThreadSynchronize(EnableControls);
-  end;
-end;
-
-procedure TJvOracleDataSet.HandleAfterOpenRefreshThread;
-begin
   CurrentOpenDuration := Now - FCurrentOperationStart;
   FCurrentOperationStart := Now;
   QueryAllRecords := FIntQueryAllRecords;
@@ -591,6 +576,21 @@ begin
       else
         MoveBy(EnhancedOptions.FetchRowsFirst - 1);
   end;
+  try
+    Filtered := FIntDatasetWasFiltered;
+    if Active then
+      if FMoveToRecordAfterOpen > 0 then
+        MoveTo(FMoveToRecordAfterOpen)
+      else
+        First;
+    CurrentAction := todaNothing;
+  finally
+    ExecuteThreadSynchronize(EnableControls);
+  end;
+end;
+
+procedure TJvOracleDataSet.HandleAfterOpenRefreshThread;
+begin
   HandleAfterOpenRefresh;
   if Active and Assigned(FAfterOpen) and (CurrentOperation <> todoRefresh) then
       ExecuteThreadSynchronize(IntSynchAfterOpen);
@@ -614,6 +614,8 @@ begin
 end;
 
 procedure TJvOracleDataSet.InternalLast;
+var
+  ShowModal    :Boolean;
 begin
   FCurrentOperation := todoLast;
   if not ThreadOptions.LastInThread or ThreadIsActive or (csDesigning in ComponentState) then
@@ -622,7 +624,16 @@ begin
     FCurrentOperation := todoNothing;
   end
   else
+  begin
+    if Assigned(ExecuteThread.ThreadDialog) then
+    begin
+      showModal := ExecuteThread.ThreadDialog.DialogOptions.ShowModal;
+      ExecuteThread.ThreadDialog.DialogOptions.ShowModal := True;
+    end;
     ExecuteThread.ExecuteWithDialog(nil);
+    if Assigned(ExecuteThread.ThreadDialog) then
+      ExecuteThread.ThreadDialog.DialogOptions.ShowModal := showModal;
+  end;
 end;
 
 procedure TJvOracleDataSet.InternalRefresh;
@@ -637,7 +648,9 @@ begin
   if not ThreadOptions.RefreshInThread or not ThreadAllowed or
     ThreadIsActive or (csDesigning in ComponentState) then
   begin
+    HandleBeforeOpenRefresh;
     inherited InternalRefresh;
+    HandleAfterOpenRefresh;
     FCurrentOperation := todoNothing;
   end
   else
@@ -805,7 +818,9 @@ begin
       FCurrentOperation := todoOpen;
     if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
     begin
+      HandleBeforeOpenRefresh;
       inherited SetActive(Value);
+      HandleAfterOpenRefresh;
       if CurrentOperation <> todoRefresh then
         FCurrentOperation := todoNothing;
     end
@@ -907,8 +922,7 @@ begin
     AddButton(SODSContinuePause, Integer(mrCancel));
   AddButton(SODSContinueNo, Integer(mrNo));
   if todafAll in EnhancedOptions.AllowedAfterFetchRecordActions then
-    AddButton(SODSContinueClose, Integer(mrAbort));
-  AddButton(SODSContinueAll, Integer(mrAll));
+    AddButton(SODSContinueAll, Integer(mrAll));
   if todafCancel in EnhancedOptions.AllowedAfterFetchRecordActions then
     AddButton(SODSContinueClose, Integer(mrAbort));
   FSynchMessageDlgBtn := JvDSADialogs.MessageDlgEx(FSynchMessageDlgMsg,
@@ -924,47 +938,30 @@ begin
 end;
 
 procedure TJvOracleDataSet.ThreadExecute(Sender: TObject; Params: Pointer);
-//var
-//  CurrControlsDisabled: Boolean;
 begin
   OperationWasHandledInThread := True;
   try
     SetErrorMessage('');
-//    CurrControlsDisabled := ControlsDisabled;
     ExecuteThreadSynchronize(SynchBeforeThreadExecution);
     try
-//      if not CurrControlsDisabled then
-//        ExecuteThreadSynchronize(DisableControls);
-      try
-        case FCurrentOperation of
-          todoOpen:
-            DoThreadOpen;
-          todoRefresh:
-            DoThreadRefresh;
-          todoLast:
-            DoThreadLast;
-        end;
-      except
-        on E: Exception do
+      case FCurrentOperation of
+        todoOpen:
+          DoThreadOpen;
+        todoRefresh:
+          DoThreadRefresh;
+        todoLast:
+          DoThreadLast;
+      end;
+    except
+      on E: Exception do
+      begin
+        SetErrorMessage(E.Message);
+        if ThreadOptions.ShowExceptionMessage then
         begin
-          SetErrorMessage(E.Message);
-          if ThreadOptions.ShowExceptionMessage then
-          begin
-            FSynchMessageDlgMsg := E.Message;
-            ExecuteThreadSynchronize(SynchErrorMessageDlg);
-          end;
+          FSynchMessageDlgMsg := E.Message;
+          ExecuteThreadSynchronize(SynchErrorMessageDlg);
         end;
       end;
-    finally
-//      try
-//        if not CurrControlsDisabled then
-//        begin
-//          ExecuteThreadSynchronize(EnableDatasetControls);
-//          while ControlsDisabled do
-//            ExecuteThreadSynchronize(EnableDatasetControls);
-//        end;
-//      except
-//      end;
     end;
     ExecuteThreadSynchronize(SynchAfterThreadExecution);
   finally
