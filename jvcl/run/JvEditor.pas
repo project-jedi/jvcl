@@ -207,6 +207,17 @@ type
     property OnLineInserted;
     property OnLineDeleted;
 
+    { TControl }
+    property DragMode;
+    property DragKind;
+    property DragCursor;
+    property OnDragOver;
+    property OnDragDrop;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnEndDock;
+    property OnEndDrag;
+
     { TCustomControl }
     property Align;
     property Enabled;
@@ -225,15 +236,12 @@ type
     property Constraints;
     property UseDockManager default True;
     property DockSite;
-    property DragKind;
     property ParentBiDiMode;
     property OnCanResize;
     property OnConstrainedResize;
     property OnDockDrop;
     property OnDockOver;
-    property OnEndDock;
     property OnGetSiteInfo;
-    property OnStartDock;
     property OnUnDock;
     property OnEnter;
     property OnExit;
