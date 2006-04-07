@@ -896,7 +896,6 @@ type
     property UpdateLock: Integer read FUpdateLock;
     property Compound: Integer read FCompound;
     property EditorClient: TJvEditorClient read FEditorClient;
-    property Gutter: TJvGutter read FGutter;
   protected
     function GetClipboardBlockFormat: TJvSelBlockFormat;
     procedure SetClipboardBlockFormat(const Value: TJvSelBlockFormat);
@@ -1006,6 +1005,8 @@ type
     procedure EndCompound;
     procedure PostBeginCompound;
     procedure PostEndCompound;
+
+    property Gutter: TJvGutter read FGutter;
 
     property LeftCol: Integer read FLeftCol;
     property TopRow: Integer read FTopRow;
@@ -4328,7 +4329,7 @@ begin
   BY := ECR.Top div CellRect.Height;
   EY := ECR.Bottom div CellRect.Height + 1;
   for I := BY to EY do
-    PaintLine(FTopRow + I, FLeftCol + BX, FLeftCol + EX);
+    PaintLine(FTopRow + I, FLeftCol + BX, FLeftCol + EX + 1);
 
   PaintCaret(True);
   FGutter.Paint;
