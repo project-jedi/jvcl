@@ -643,8 +643,9 @@ const
           ((St[2] = '*') or (St[2] = '/'));
       // Support for SQL comment line beginning with -- 
       hlSql:
-        Result := (LS > 1) and ((St[1] = '-') and
-          (St[2] = '-'));
+        Result := (LS > 1) and (((St[1] = '-') and
+          (St[2] = '-')) or
+          (St[1] = '/') and ((St[2] = '*'))); // support for /* */
       // HTML multi line comment support
       hlHtml:
         Result := (LS > 3) and (St[1] = '<') and (St[2] = '!')

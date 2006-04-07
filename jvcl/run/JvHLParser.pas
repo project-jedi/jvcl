@@ -257,7 +257,7 @@ var
           P := F;
         end
         else
-        if (FStyle in [psCpp, psCocoR, psPhp]) and (P[1] = '*') then
+        if (FStyle in [psCpp, psCocoR, psPhp, psSQL]) and (P[1] = '*') then
         begin
           if P[2] = #0 then
             Exit; // line end
@@ -654,7 +654,7 @@ var
           P := F;
         end
         else
-        if (FStyle in [psCpp, psCocoR, psPhp]) and (P[1] = '*') then
+        if (FStyle in [psCpp, psCocoR, psPhp, psSQL]) and (P[1] = '*') then
         begin
           if P[2] = #0 then
             Exit; // line end
