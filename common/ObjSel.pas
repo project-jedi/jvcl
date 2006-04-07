@@ -672,7 +672,7 @@ type
   IDsObjectPicker = interface(IUnknown)
     ['{0c87e64e-3b7a-11d2-b9e0-00c04fd8dbf7}']
     // Sets scope, filter, etc. for use with next invocation of dialog
-    function Initialize(const pInitInfo: DSOP_INIT_INFO): HRESULT; stdcall;
+    function Initialize(const pInitInfo: PDSOP_INIT_INFO): HRESULT; stdcall;
     // Creates the modal DS Object Picker dialog.
     function InvokeDialog(hwndParent: HWND; out ppdoSelections: IDataObject): HRESULT; stdcall;
   end;
