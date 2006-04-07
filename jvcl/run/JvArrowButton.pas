@@ -67,6 +67,7 @@ type
     FFlat: Boolean;
     FMouseInControl: Boolean;
     FDropDown: TPopupMenu;
+    FDropOnButtonClick: Boolean;
     FOnDrop: TNotifyEvent;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
@@ -121,6 +122,7 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Down: Boolean read FDown write SetDown default False;
     property DropDown: TPopupMenu read FDropDown write FDropDown;
+    property DropOnButtonClick: Boolean read FDropOnButtonClick write FDropOnButtonClick default False;
     property Caption;
     property Enabled;
     property Flat: Boolean read FFlat write SetFlat default False;
@@ -980,7 +982,8 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
     Exit;
-  FArrowClick := (X >= Width - ArrowWidth) and (X <= Width) and (Y >= 0) and (Y <= Height);
+  FArrowClick := (X >= Width - ArrowWidth) and (X <= Width)
+             and (Y >= 0) and (Y <= Height) or DropOnButtonClick;
 
   if Button = mbLeft then
   begin
@@ -1028,7 +1031,8 @@ begin
     Repaint;
   end;
 
-  DoClick := (X >= 0) and (X <= Width - ArrowWidth) and (Y >= 0) and (Y <= Height);
+  DoClick := (X >= 0) and (X <= Width - ArrowWidth) and (Y >= 0) and (Y <= Height)
+             and not DropOnButtonClick;
 
   if GroupIndex = 0 then
   begin
