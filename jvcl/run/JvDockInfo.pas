@@ -226,8 +226,10 @@ begin
         else
         if Pos('RightDockPanel', ControlName) > Index then
           Result := RightDockPanel;
-        if (Result <> nil) and (Pos('PopupPanel', ControlName) > 20) then
-          Result := TJvDockVSNETPanel(Result).VSChannel.VSPopupPanel;
+
+        // Mantis 3603: No more AV, Result may not always be a TJvDockVSNETPanel
+        if (Result is TJvDockVSNETPanel) and (Pos('PopupPanel', ControlName) > 20) then
+          Result := (Result as TJvDockVSNETPanel).VSChannel.VSPopupPanel;
       end;
   end;
 end;
