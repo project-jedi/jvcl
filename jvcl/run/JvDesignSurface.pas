@@ -890,40 +890,64 @@ end;
 function TJvDesignSurface.Clear: TJvDesignSurface;
 begin
   BeginUpdate;
-  Container.DestroyComponents;
-  EndUpdate;
+  try
+    Container.DestroyComponents;
+  finally
+    EndUpdate;
+  end;
   Result := Self;
 end;
 
 procedure TJvDesignSurface.SaveToStream(AStream: TStream);
 begin
   BeginUpdate;
-  DesignSaveComponentToStream(Container, AStream);
-  EndUpdate;
+  try
+    DesignSaveComponentToStream(Container, AStream);
+  finally
+    EndUpdate;
+  end;
 end;
 
 function TJvDesignSurface.LoadFromStream(AStream: TStream): TJvDesignSurface;
+var
+  SavedName: string;
 begin
   BeginUpdate;
-  Container.DestroyComponents;
-  DesignLoadComponentFromStream(Container, AStream, ReaderError);
-  EndUpdate;
+  SavedName := Container.Name;
+  try
+    Container.DestroyComponents;
+    DesignLoadComponentFromStream(Container, AStream, ReaderError);
+    Container.Name := SavedName;
+  finally
+    Container.Name := SavedName;
+    EndUpdate;
+  end;
   Result := Self;
 end;
 
 procedure TJvDesignSurface.SaveToFile(const AFileName: string);
 begin
   BeginUpdate;
-  DesignSaveComponentToFile(Container, AFileName);
-  EndUpdate;
+  try
+    DesignSaveComponentToFile(Container, AFileName);
+  finally
+    EndUpdate;
+  end;
 end;
 
 function TJvDesignSurface.LoadFromFile(const AFileName: string): TJvDesignSurface;
+var
+  SavedName: string;
 begin
   BeginUpdate;
-  Container.DestroyComponents;
-  DesignLoadComponentFromFile(Container, AFileName, ReaderError);
-  EndUpdate;
+  SavedName := Container.Name;
+  try
+    Container.DestroyComponents;
+    DesignLoadComponentFromFile(Container, AFileName, ReaderError);
+  finally
+    Container.Name := SavedName;
+    EndUpdate;
+  end;
   Result := Self;
 end;
 
