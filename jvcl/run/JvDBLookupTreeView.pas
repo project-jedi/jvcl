@@ -919,6 +919,11 @@ begin
     taRightJustify: X := W - Canvas.TextWidth(Text) - 3;
     taCenter: X := (W - Canvas.TextWidth(Text)) div 2;
   end;
+
+  // Fill the background (Mantis 2723)
+  SetRect(R, 0, 0, W, ClientHeight);
+  Canvas.FillRect(R);
+
   SetRect(R, 1, 1, W - 1, ClientHeight - 1);
   Canvas.TextRect(R, X, 2, Text);
   if Selected then
