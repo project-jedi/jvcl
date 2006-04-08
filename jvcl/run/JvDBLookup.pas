@@ -42,6 +42,9 @@ uses
   {$IFDEF VCL}
   Windows, Messages,
   {$ENDIF VCL}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   Classes, Graphics, Controls, Forms, DB, DBCtrls,
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 

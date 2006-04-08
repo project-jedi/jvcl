@@ -3894,7 +3894,7 @@ end;
 
 procedure TJvDBGrid.ShowSelectColumnClick;
 var
-  R: TRect;
+  R, WorkArea: TRect;
   Frm: TfrmSelectColumn;
 begin
   R := CellRect(0, 0);
@@ -3902,7 +3902,19 @@ begin
   try
     if not IsRectEmpty(R) then
       with ClientToScreen(Point(R.Left, R.Bottom + 1)) do
+      begin
+        {$IFDEF COMPILER5}
+        SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
+        {$ELSE}
+        WorkArea := Screen.WorkAreaRect;
+        {$ENDIF COMPILER5}
+        { force the form the be in the working area }
+        if X + Frm.Width > WorkArea.Right then
+          X := WorkArea.Right - Frm.Width;
+        if Y + Frm.Height > WorkArea.Bottom then
+          Y := WorkArea.Bottom - Frm.Height;
         Frm.SetBounds(X, Y, Frm.Width, Frm.Height);
+      end;
     Frm.Grid := TJvDBGrid(Self);
     Frm.DataSource := DataLink.DataSource;
     Frm.SelectColumn := FSelectColumn;
