@@ -42,7 +42,7 @@ uses
   JvComponentBase;
 
 const
-  CJvBallonHintVisibleTimeDefault = 5000;
+  cJvBallonHintVisibleTimeDefault = 5000;
 
 type
   TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -92,8 +92,8 @@ type
     FSwitchHeight: Integer;
     FShowIcon: Boolean;
     FShowHeader: Boolean;
-    FMsg: Widestring;
-    FHeader: Widestring;
+    FMsg: WideString;
+    FHeader: WideString;
     FMessageTop: Integer;
     FTipHeight: Integer;
     FTipWidth: Integer;
@@ -227,17 +227,17 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure ActivateHint(ACtrl: TControl; const AHint: Widestring; const AHeader: Widestring = '';
-      const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
-    procedure ActivateHint(ACtrl: TControl; const AHint: Widestring; const AImageIndex: TImageIndex;
-      const AHeader: Widestring = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
-    procedure ActivateHint(ACtrl: TControl; const AHint: Widestring; const AIconKind: TJvIconKind;
-      const AHeader: Widestring = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: WideString; const AHeader: WideString = '';
+      const VisibleTime: Integer = cJvBallonHintVisibleTimeDefault); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: WideString; const AImageIndex: TImageIndex;
+      const AHeader: WideString = ''; const VisibleTime: Integer = cJvBallonHintVisibleTimeDefault); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: WideString; const AIconKind: TJvIconKind;
+      const AHeader: WideString = ''; const VisibleTime: Integer = cJvBallonHintVisibleTimeDefault); overload;
     procedure ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosition: TPoint;
-      const AHeader, AHint: Widestring; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault;
+      const AHeader, AHint: WideString; const VisibleTime: Integer = cJvBallonHintVisibleTimeDefault;
       const AIconKind: TJvIconKind = ikInformation; const AImageIndex: TImageIndex = -1);
-    procedure ActivateHintRect(ARect: TRect; const AHeader, AHint: Widestring;
-      const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault; const AIconKind: TJvIconKind = ikInformation;
+    procedure ActivateHintRect(ARect: TRect; const AHeader, AHint: WideString;
+      const VisibleTime: Integer = cJvBallonHintVisibleTimeDefault; const AIconKind: TJvIconKind = ikInformation;
       const AImageIndex: TImageIndex = -1);
     procedure CancelHint;
 
@@ -251,7 +251,7 @@ type
       FDefaultBalloonPosition default bpAuto;
     property DefaultImageIndex: TImageIndex read FDefaultImageIndex write FDefaultImageIndex
       default -1;
-    property DefaultHeader: Widestring read FDefaultHeader write FDefaultHeader;
+    property DefaultHeader: WideString read FDefaultHeader write FDefaultHeader;
     property DefaultIcon: TJvIconKind read FDefaultIcon write FDefaultIcon default ikInformation;
     property Images: TCustomImageList read FImages write SetImages;
     property Options: TJvBalloonOptions read FOptions write SetOptions default [boShowCloseBtn];
@@ -294,111 +294,56 @@ const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
     ssLarge isn't used (yet)
   }
-  CTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
-  CTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
-  CTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
+  cTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
+  cTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
+  cTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
   DefaultTextFlags: Longint = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
 
 // Unicode wrapping around DrawTextW  so that if ran under Win98/Me, it
 // continues to work.
 type
-  DrawTextWPtr = function (hDC: HDC; lpString: PWideChar; nCount: Integer;
-                           var lpRect: TRect; uFormat: UINT): Integer; stdcall;
-
+  TDrawTextW = function(hDC: HDC; lpString: PWideChar; nCount: Integer;
+    var lpRect: TRect; uFormat: UINT): Integer; stdcall;
 
 var
-  user32Handle: THandle;
-  DrawTextWFunc : DrawTextWPtr = nil;
+  UnicoWSHandle: HModule = 0;
+  _DrawTextW: TDrawTextW = nil;
 
 procedure InitUnicodeWrap;
+var
+  UserHandle: HMODULE;
 begin
-  user32Handle := LoadLibrary('user32.dll');
-  if user32Handle <> 0 then
+  { All Windows programs already load user32.dll so we can use GetModuleHandle }
+  UserHandle := GetModuleHandle('USER32');
+  if UserHandle <> 0 then
+    @_DrawTextW := GetProcAddress(UserHandle, 'DrawTextW');
+
+  if not Assigned(_DrawTextW) then
   begin
-    DrawTextWFunc := GetProcAddress(user32Handle, 'DrawTextW');
+    { Try the Microsoft Layer for Unicode dll }
+    UnicoWSHandle := SafeLoadLibrary('UNICOWS.DLL');
+    if UnicoWSHandle <> 0 then
+      @_DrawTextW := GetProcAddress(UnicoWSHandle, 'DrawTextW');
   end;
 end;
 
 procedure FinalizeUnicodeWrap;
 begin
-  FreeLibrary(user32Handle);
+  if UnicoWSHandle <> 0 then
+    FreeLibrary(UnicoWSHandle);
 end;
 
-function WDrawText(hDC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: UINT): Integer;
+function DrawTextW(hDC: HDC; const WS: WideString; var lpRect: TRect; uFormat: UINT): Integer;
 var
-  aString: string;
-  lpaString: PChar;
-
+  S: string;
 begin
-  if Assigned(@DrawTextWFunc) then
+  if Assigned(_DrawTextW) then
+    Result := _DrawTextW(hDC, PWideChar(WS), Length(WS), lpRect, uFormat)
+  else
   begin
-    Result := DrawTextWFunc(hDc,lpString,nCount,lpRect,uFormat);
-  end else begin
-    if Assigned(LpString) then
-    begin
-      aString := WideCharToString(lpstring);
-      lpaString := @aString[1];
-    end else lpaString := nil;
-    Result := DrawTextA(hDc,lpaString,nCount,lpRect,uFormat);
+    S := WideCharLenToString(PWideChar(WS), Length(WS));
+    Result := DrawTextA(hDC, PChar(S), Length(S), lpRect, uFormat);
   end;
-end;
-
-
-type
-  TGlobalCtrl = class(TComponent)
-  private
-    FBkColor: TColor;
-    FCtrls: TList;
-    FDefaultImages: TImageList;
-    FNeedUpdateBkColor: Boolean;
-    FOldHintWindowClass: THintWindowClass;
-    FSounds: array [TJvIconKind] of string;
-    FUseBalloonAsApplicationHint: Boolean;
-    FDesigning: Boolean;
-    function GetMainCtrl: TJvBalloonHint;
-    procedure GetDefaultImages;
-    procedure GetDefaultSounds;
-    procedure SetBkColor(const Value: TColor);
-    procedure SetUseBalloonAsApplicationHint(const Value: Boolean);
-  protected
-    procedure Add(ABalloonHint: TJvBalloonHint);
-    procedure Remove(ABalloonHint: TJvBalloonHint);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    class function Instance: TGlobalCtrl;
-    function HintImageSize: TSize; overload;
-    function HintImageSize(const AIconKind: TJvIconKind;
-      const AImageIndex: TImageIndex): TSize; overload;
-    procedure DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor); overload;
-    procedure DrawHintImage(Canvas: TCanvas; X, Y: Integer; const AIconKind: TJvIconKind;
-      const AImageIndex: TImageIndex; const ABkColor: TColor); overload;
-    procedure PlaySound(const AIconKind: TJvIconKind);
-
-    property BkColor: TColor read FBkColor write SetBkColor;
-    property MainCtrl: TJvBalloonHint read GetMainCtrl;
-    property UseBalloonAsApplicationHint: Boolean read FUseBalloonAsApplicationHint
-      write SetUseBalloonAsApplicationHint;
-  end;
-
-var
-  GGlobalCtrl: TGlobalCtrl = nil;
-  { A TJvBalloonHint may be needed, while there isn't an instance of it around.
-    For example, if the user sets HintWindowClass to TJvBalloonWindow.
-  }
-  GMainCtrl: TJvBalloonHint = nil;
-
-function WorkAreaRect: TRect;
-begin
-  SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0);
-end;
-
-function DesktopRect: TRect;
-begin
-  Result := Rect(GetSystemMetrics(SM_XVIRTUALSCREEN),
-                 GetSystemMetrics(SM_YVIRTUALSCREEN),
-                 GetSystemMetrics(SM_CXVIRTUALSCREEN),
-                 GetSystemMetrics(SM_CYVIRTUALSCREEN));
 end;
 
 {$IFDEF COMPILER5}
@@ -422,6 +367,19 @@ begin
 end;
 
 {$ENDIF COMPILER5}
+
+function WorkAreaRect: TRect;
+begin
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0);
+end;
+
+function DesktopRect: TRect;
+begin
+  Result := Rect(GetSystemMetrics(SM_XVIRTUALSCREEN),
+                 GetSystemMetrics(SM_YVIRTUALSCREEN),
+                 GetSystemMetrics(SM_CXVIRTUALSCREEN),
+                 GetSystemMetrics(SM_CYVIRTUALSCREEN));
+end;
 
 function IsWinXP_UP: Boolean;
 begin
@@ -466,6 +424,50 @@ begin
     raise EInvalidOperation.CreateResFmt(@RsEParentGivenNotAParent, [AControl.Name]);
 end;
 {$ENDIF COMPILER6_UP}
+
+type
+  TGlobalCtrl = class(TComponent)
+  private
+    FBkColor: TColor;
+    FCtrls: TList;
+    FDefaultImages: TImageList;
+    FNeedUpdateBkColor: Boolean;
+    FOldHintWindowClass: THintWindowClass;
+    FSounds: array [TJvIconKind] of string;
+    FUseBalloonAsApplicationHint: Boolean;
+    FDesigning: Boolean;
+    function GetMainCtrl: TJvBalloonHint;
+    procedure GetDefaultImages;
+    procedure GetDefaultSounds;
+    procedure SetBkColor(const Value: TColor);
+    procedure SetUseBalloonAsApplicationHint(const Value: Boolean);
+  protected
+    procedure Add(ABalloonHint: TJvBalloonHint);
+    procedure Remove(ABalloonHint: TJvBalloonHint);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    class function Instance: TGlobalCtrl;
+    function HintImageSize: TSize; overload;
+    function HintImageSize(const AIconKind: TJvIconKind;
+      const AImageIndex: TImageIndex): TSize; overload;
+    procedure DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor); overload;
+    procedure DrawHintImage(Canvas: TCanvas; X, Y: Integer; const AIconKind: TJvIconKind;
+      const AImageIndex: TImageIndex; const ABkColor: TColor); overload;
+    procedure PlaySound(const AIconKind: TJvIconKind);
+
+    property BkColor: TColor read FBkColor write SetBkColor;
+    property MainCtrl: TJvBalloonHint read GetMainCtrl;
+    property UseBalloonAsApplicationHint: Boolean read FUseBalloonAsApplicationHint
+      write SetUseBalloonAsApplicationHint;
+  end;
+
+var
+  GGlobalCtrl: TGlobalCtrl = nil;
+  { A TJvBalloonHint may be needed, while there isn't an instance of it around.
+    For example, if the user sets HintWindowClass to TJvBalloonWindow.
+  }
+  GMainCtrl: TJvBalloonHint = nil;
 
 //=== { TJvBalloonWindow } ===================================================
 
@@ -575,7 +577,7 @@ begin
     Result := Rect(0, 0, MaxWidth, 0);
     Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    WDrawText(Canvas.Handle, PWideChar(FHeader), -1, Result,
+    DrawTextW(Canvas.Handle, FHeader, Result,
       DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
 
     { Other }
@@ -628,9 +630,9 @@ begin
     StemSize := ssNormal;
   end;
 
-  FTipHeight := CTipHeight[StemSize];
-  FTipWidth := CTipWidth[StemSize];
-  FTipDelta := CTipDelta[StemSize];
+  FTipHeight := cTipHeight[StemSize];
+  FTipWidth := cTipWidth[StemSize];
+  FTipDelta := cTipDelta[StemSize];
 
   { Combine }
   Result := Rect(0, 0, Max(MsgRect.Right, HeaderRect.Right),
@@ -655,8 +657,8 @@ begin
     Result := Rect(0, 0, MaxWidth, 0);
     Canvas.Font := Screen.HintFont;
 //    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    WDrawText(Canvas.Handle, PWideChar(FMsg), -1, Result,
-    DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
+    DrawTextW(Canvas.Handle, FMsg, Result,
+      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
 
     { Other }
     Inc(Result.Right, 27);
@@ -937,7 +939,7 @@ begin
     Inc(HintRect.Top, FDeltaY + FMessageTop);
     Canvas.Font := Screen.HintFont;
 //    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    WDrawText(Canvas.Handle, PWideChar(FMsg), -1, HintRect,
+    DrawTextW(Canvas.Handle, FMsg, HintRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
@@ -950,7 +952,7 @@ begin
     Inc(HeaderRect.Top, FDeltaY + 8);
     Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    WDrawText(Canvas.Handle, PWideChar(FHeader), -1, HeaderRect,
+    DrawTextW(Canvas.Handle, FHeader, HeaderRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
@@ -1028,8 +1030,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: Widestring;
-  const AImageIndex: TImageIndex; const AHeader: Widestring;
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: WideString;
+  const AImageIndex: TImageIndex; const AHeader: WideString;
   const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
@@ -1050,7 +1052,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHint(ACtrl: TControl;
-  const AHint, AHeader: Widestring; const VisibleTime: Integer);
+  const AHint, AHeader: WideString; const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
     Exit;
@@ -1068,8 +1070,8 @@ begin
   InternalActivateHint(ACtrl);
 end;
 
-procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: Widestring;
-  const AIconKind: TJvIconKind; const AHeader: Widestring; const VisibleTime: Integer);
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: WideString;
+  const AIconKind: TJvIconKind; const AHeader: WideString; const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
     Exit;
@@ -1089,7 +1091,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHintPos(AAnchorWindow: TCustomForm;
-  AAnchorPosition: TPoint; const AHeader, AHint: Widestring;
+  AAnchorPosition: TPoint; const AHeader, AHint: WideString;
   const VisibleTime: Integer; const AIconKind: TJvIconKind;
   const AImageIndex: TImageIndex);
 begin
@@ -1111,7 +1113,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHintRect(ARect: TRect; const AHeader,
-  AHint: Widestring; const VisibleTime: Integer; const AIconKind: TJvIconKind;
+  AHint: WideString; const VisibleTime: Integer; const AIconKind: TJvIconKind;
   const AImageIndex: TImageIndex);
 begin
   CancelHint;
@@ -1482,7 +1484,7 @@ end;
 procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer;
   const AIconKind: TJvIconKind; const AImageIndex: TImageIndex; const ABkColor: TColor);
 const
-  CDefaultImages: array [TJvIconKind] of Integer = (-1, -1, 0, 1, 2, 3, 4);
+  cDefaultImages: array [TJvIconKind] of Integer = (-1, -1, 0, 1, 2, 3, 4);
 begin
   case AIconKind of
     ikCustom:
@@ -1490,7 +1492,7 @@ begin
         if not Assigned(Images) or (AImageIndex < 0) or (AImageIndex >= Images.Count) then
         begin
           BkColor := ABkColor;
-          FDefaultImages.Draw(Canvas, X, Y, CDefaultImages[ikInformation]);
+          FDefaultImages.Draw(Canvas, X, Y, cDefaultImages[ikInformation]);
         end
         else
           Images.Draw(Canvas, X, Y, AImageIndex);
@@ -1499,7 +1501,7 @@ begin
   else
     begin
       BkColor := ABkColor;
-      FDefaultImages.Draw(Canvas, X, Y, CDefaultImages[AIconKind]);
+      FDefaultImages.Draw(Canvas, X, Y, cDefaultImages[AIconKind]);
     end;
   end;
 end;
@@ -1524,13 +1526,13 @@ const
   }
 
   { ikApplication, ikError, ikInformation, ikQuestion, ikWarning }
-  CIcons: array [TPictureType, ikApplication..ikWarning] of Integer =
+  cIcons: array [TPictureType, ikApplication..ikWarning] of Integer =
    (
     (100, 103, 104, 102, 101),                             // XP
     (OIC_SAMPLE, 20480, 20481, OIC_QUES, 20482),           // Normal
     (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG)   // Paranoid
    );
-  CFlags: array [Boolean] of UINT = (0, LR_SHARED);
+  cFlags: array [Boolean] of UINT = (0, LR_SHARED);
 var
   IconKind: TJvIconKind;
   PictureType: TPictureType;
@@ -1560,13 +1562,13 @@ begin
           PictureType = ptSimple -> Modules = (0, 0)
   }
 
-  for IconKind := Low(CIcons[PictureType]) to High(CIcons[PictureType]) do
+  for IconKind := Low(cIcons[PictureType]) to High(cIcons[PictureType]) do
   begin
     Shared := (PictureType = ptSimple) or
       (PictureType = ptNormal) and (IconKind in [ikApplication, ikQuestion]);
     IconHandle :=
-      LoadImage(Modules[Shared], MakeIntResource(CIcons[PictureType, IconKind]),
-      IMAGE_ICON, 16, 16, CFlags[Shared]);
+      LoadImage(Modules[Shared], MakeIntResource(cIcons[PictureType, IconKind]),
+      IMAGE_ICON, 16, 16, cFlags[Shared]);
     ImageList_AddIcon(FDefaultImages.Handle, IconHandle);
     { MSDN: Do not use DestroyIcon to destroy a shared icon. A shared icon is
       valid as long as the module from which it was loaded remains in memory }
@@ -1802,7 +1804,6 @@ begin
     FHeader := UTF8ToWideString(RUTF8Header);
     if FHeader = '' then
       FHeader := RUTF8Header;
-    
 
     FShowHeader := FHeader > '';
     FShowIcon := (FIconKind <> ikNone) and
@@ -1849,7 +1850,7 @@ procedure TJvBalloonWindowEx.InternalActivateHint(var Rect: TRect;
 const
   {TJvAnimationStyle = (atNone, atSlide, atRoll, atRollHorNeg, atRollHorPos, atRollVerNeg,
     atRollVerPos, atSlideHorNeg, atSlideHorPos, atSlideVerNeg, atSlideVerPos, atCenter, atBlend);}
-  CAnimationStyle: array [TJvAnimationStyle] of Integer =
+  cAnimationStyle: array [TJvAnimationStyle] of Integer =
    (0, AW_SLIDE, 0, AW_HOR_NEGATIVE,
     AW_HOR_POSITIVE, AW_VER_NEGATIVE, AW_VER_POSITIVE, AW_HOR_NEGATIVE or AW_SLIDE,
     AW_HOR_POSITIVE or AW_SLIDE, AW_VER_NEGATIVE or AW_SLIDE, AW_VER_POSITIVE or AW_SLIDE,
@@ -1878,7 +1879,7 @@ begin
   BoundRect(Rect, DesktopRect);
 
   with Rect do
-    SetBounds(Left, Top, Right-Left, Bottom-Top);
+    SetBounds(Left, Top, Right - Left, Bottom - Top);
   UpdateRegion;
 
   { Set the Z order of the balloon }
@@ -1907,7 +1908,7 @@ begin
       AutoValue := 0;
     { This function will fail on systems other than Windows XP,
       because of use of the window region: }
-    AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
+    AnimateWindowProc(Handle, FAnimationTime, cAnimationStyle[FAnimationStyle] or AutoValue);
   end;
 
   { Ensure property Visible is set to True: }
@@ -1972,7 +1973,7 @@ begin
     Inc(HintRect.Top, FDeltaY + FMessageTop);
     Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    WDrawText(Canvas.Handle, PWideChar(FMsg), -1, HintRect,
+    DrawTextW(Canvas.Handle, FMsg, HintRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
@@ -1984,7 +1985,7 @@ begin
       Inc(HeaderRect.Left, FImageSize.cx + 8);
     Inc(HeaderRect.Top, FDeltaY + 8);
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    WDrawText(Canvas.Handle, PWideChar(FHeader), -1, HeaderRect,
+    DrawTextW(Canvas.Handle, FHeader, HeaderRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
