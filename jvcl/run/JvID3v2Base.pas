@@ -6379,9 +6379,12 @@ end;
 
 procedure TJvID3Frames.Remove(Frame: TJvID3Frame);
 begin
-  FList.Remove(Frame);
-  Frame.FFrames := nil;
-  Changed;
+  if Assigned(Frame) then
+  begin
+    FList.Remove(Frame);
+    Frame.FFrames := nil;
+    Changed;
+  end;
 end;
 
 procedure TJvID3Frames.RemoveEmptyFrames;
