@@ -1,5 +1,8 @@
 Changelog for JVCL 3.X
 ======================
+2006-04-08:
+- Added TJvDBNavigator component to JvDBControls.pas that introduces a Transparent property // ahuser
+- Fixed JvDBGrid select columns dialog out of screen bug. // ahuser
 2006-04-04:
 - Added PositionOffset property to TJvGroupHeader // ahuser
 2006-02-28:
