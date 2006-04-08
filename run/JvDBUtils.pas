@@ -35,6 +35,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_VARIANTS} // CLR requires it here
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
