@@ -671,6 +671,19 @@ type
     property OnStartDock;
   end;
 
+  TJvDBNavigator = class(TDBNavigator)
+  private
+    FTransparent: Boolean;
+    procedure SetTransparent(Value: Boolean);
+  protected
+    procedure Paint; override;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Transparent: Boolean read FTransparent write SetTransparent default True;
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2629,6 +2642,54 @@ begin
     if not (csLoading in ComponentState) then
       UpdateData;
   end;
+end;
+
+//=== { TJvDBNavigator } =====================================================
+
+constructor TJvDBNavigator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Transparent := True;
+end;
+
+procedure TJvDBNavigator.SetTransparent(Value: Boolean);
+var
+  Button: TNavigateBtn;
+begin
+  FTransparent := Value;
+  if Value then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
+
+  {$IFDEF COMPILER7_UP}
+  ParentBackground := Value;
+  {$ENDIF COMPILER7_UP}
+  for Button := Low(Buttons) to High(Buttons) do
+    Buttons[Button].Transparent := Value;
+  Invalidate;
+end;
+
+procedure TJvDBNavigator.Paint;
+begin
+  if Transparent then
+    Exit;
+end;
+
+procedure TJvDBNavigator.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+var
+  Pt: TPoint;
+begin
+  if Transparent then
+  begin
+    OffsetWindowOrgEx(Msg.DC, Left, Top, @Pt);
+    SendMessage(Parent.Handle, WM_ERASEBKGND, Msg.DC, Msg.DC);
+    SendMessage(Parent.Handle, WM_PRINTCLIENT, Msg.DC, Msg.DC);
+    SetWindowOrgEx(Msg.DC, Pt.X, Pt.Y, nil);
+    Msg.Result := 1;
+  end
+  else
+    inherited;
 end;
 
 {$IFDEF UNITVERSIONING}

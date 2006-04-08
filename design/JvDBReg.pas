@@ -84,7 +84,7 @@ begin
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
     TJvDBGrid, TJvDBUltimGrid, TJvDBGridFooter, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit,
     TJvDBMaskEdit, TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel,
-    TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
+    TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage, TJvDBNavigator]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
