@@ -818,9 +818,7 @@ begin
       FCurrentOperation := todoOpen;
     if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
     begin
-      HandleBeforeOpenRefresh;
       inherited SetActive(Value);
-      HandleAfterOpenRefresh;
       if CurrentOperation <> todoRefresh then
         FCurrentOperation := todoNothing;
     end
