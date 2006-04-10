@@ -3906,7 +3906,7 @@ begin
         {$IFDEF COMPILER5}
         SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
         {$ELSE}
-        WorkArea := Screen.WorkAreaRect;
+        WorkArea := Screen.MonitorFromWindow(Handle).WorkareaRect;
         {$ENDIF COMPILER5}
         { force the form the be in the working area }
         if X + Frm.Width > WorkArea.Right then
