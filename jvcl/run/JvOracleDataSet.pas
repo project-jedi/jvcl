@@ -234,7 +234,6 @@ type
     FOperationWasHandledInThread: Boolean;
     FThreadDialog: TJvOracleDatasetThreadDialog;
     FThreadOptions: TJvOracleDatasetThreadOptions;
-    procedure EnableDatasetControls;
     function GetCurrentAction: TJvOracleDatasetAction;
     function GetCurrentFetchDuration: TDateTime;
     function GetCurrentOpenDuration: TDateTime;
@@ -427,26 +426,6 @@ begin
   Result := TJvOracleDataSet.Create(AOwner);
 end;
 
-procedure TJvOracleDataSet.EnableDatasetControls;
-var
-  P: Integer;
-begin
-  try
-    UpdateCursorPos;
-  except
-  end;
-  EnableControls;
-  try
-    if not ControlsDisabled and Active then
-    begin
-      P := RecNo;
-      First;
-      MoveBy(P - 1);
-    end;
-  except
-  end;
-end;
-
 procedure TJvOracleDataSet.ExecuteThreadSynchronize(Method: TThreadMethod);
 begin
   if ExecuteThreadIsActive then
@@ -629,7 +608,9 @@ begin
     begin
       showModal := ExecuteThread.ThreadDialog.DialogOptions.ShowModal;
       ExecuteThread.ThreadDialog.DialogOptions.ShowModal := True;
-    end;
+    end
+    else
+      ShowModal := False;
     ExecuteThread.ExecuteWithDialog(nil);
     if Assigned(ExecuteThread.ThreadDialog) then
       ExecuteThread.ThreadDialog.DialogOptions.ShowModal := showModal;

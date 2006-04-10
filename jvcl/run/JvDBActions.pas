@@ -1237,7 +1237,9 @@ begin
         begin
           Dataset.Bookmark := Bkm;
           Result := true;
-        end;
+        end
+        else
+          Result := False;
       end
       else
       begin
