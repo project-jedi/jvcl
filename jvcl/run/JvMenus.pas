@@ -684,6 +684,11 @@ type
     procedure UpdateFieldsFromMenu; override;
     function GetTextMargin: Integer; override;
     procedure DrawCheckImage(ARect: TRect); override;
+
+    procedure DrawBorder(WRect: TRect);
+    procedure DrawItemBorderParts(Item: TMenuItem; Canvas: TCanvas; WRect: TRect);
+    function GetShowingItemsParent(WRect: TRect; StartingItem: TMenuItem): TMenuItem;
+    function GetItemScreenRect(ParentItem: TMenuItem; Index: Integer): TRect;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -723,7 +728,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvConsts, JvJCLUtils, JvJVCLUtils;
+  JclGraphUtils, JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
   Separator = '-';
@@ -731,6 +736,12 @@ const
   // The space between a menu item text and its shortcut
   ShortcutSpacing = '        ';
 
+// Variables usesd by the XP painter to hook into the window procedure
+// of the window used to render menus
+var
+  OldMenuWndProcHandle: Integer;
+  currentXPPainter : TJvXPMenuItemPainter;
+  
 function StripHotkeyPrefix(const Text: string): string; // MBCS
 var
   I: Integer;
@@ -3039,6 +3050,81 @@ begin
         Canvas.Pixels[X + BX, Y + BY] := ShadowColor;
 end;
 
+procedure TJvXPMenuItemPainter.DrawBorder(WRect: TRect);
+var
+  Canvas: TJvDesktopCanvas;
+  RightToLeft: Boolean;
+  I: Integer;
+  ShowingItemsParent: TMenuItem;
+begin
+  // Local value, just in case FItem is nil, which could theoretically happen
+  // as DrawBorder is called from the replacement window procedure.
+  RightToLeft := Menu.BiDiMode <> bdLeftToRight;
+  
+  // To draw the border, the easiest way is to actually draw on the desktop
+  Canvas := TJvDesktopCanvas.Create;
+  try
+    with Canvas do
+    begin
+      Brush.Style := bsClear;
+      Pen.Color := RGB(102, 102, 102);
+      Pen.Style := psSolid;
+
+      // dark contour
+      Rectangle(WRect);
+
+      // two white lines above bottom
+      Pen.Color := clWhite;
+      MoveTo(WRect.Left + 1, WRect.Bottom - 2);
+      LineTo(WRect.Right - 1, WRect.Bottom - 2);
+      MoveTo(WRect.Left + 1, WRect.Bottom - 3);
+      LineTo(WRect.Right - 1, WRect.Bottom - 3);
+
+      // two white lines below top
+      MoveTo(WRect.Left + 1, WRect.Top + 1);
+      LineTo(WRect.Right - 1, WRect.Top + 1);
+      MoveTo(WRect.Left + 1, WRect.Top + 2);
+      LineTo(WRect.Right - 1, WRect.Top + 2);
+
+      // three lines before right
+      if RightToLeft then
+        Pen.Color := ImageBackgroundColor
+      else
+        Pen.Color := clWhite;
+      MoveTo(WRect.Right - 2, WRect.Top + 3);
+      LineTo(WRect.Right - 2, WRect.Bottom - 3);
+      MoveTo(WRect.Right - 3, WRect.Top + 3);
+      LineTo(WRect.Right - 3, WRect.Bottom - 3);
+
+      // two lines after left
+      if RightToLeft then
+        Pen.Color := clWhite
+      else
+        Pen.Color := ImageBackgroundColor;
+      MoveTo(WRect.Left + 1, WRect.Top + 3);
+      LineTo(WRect.Left + 1, WRect.Bottom - 3);
+      MoveTo(WRect.Left + 2, WRect.Top + 3);
+      LineTo(WRect.Left + 2, WRect.Bottom - 3);
+
+
+      // Try to find which (sub)items are showing in order to paint the
+      // bits of items that are in the border (eg selected/checked).
+      // To do that, we first find the parent, possibly recursively, and
+      // once we get it, we loop on its children.
+      ShowingItemsParent := GetShowingItemsParent(WRect, Menu.Items);
+      if Assigned(ShowingItemsParent) then
+      begin
+        for I := 0 to ShowingItemsParent.Count - 1 do
+        begin
+          DrawItemBorderParts(ShowingItemsParent.Items[I], Canvas, WRect);
+        end;
+      end;
+    end;
+  finally
+    Canvas.Free;
+  end;
+end;
+
 procedure TJvXPMenuItemPainter.DrawDisabledImage(X, Y: Integer);
 begin
   // to take the margin into account
@@ -3147,6 +3233,76 @@ begin
   end;
 end;
 
+procedure TJvXPMenuItemPainter.DrawItemBorderParts(Item: TMenuItem;
+  Canvas: TCanvas; WRect: TRect);
+var
+  ItemInfo: MENUITEMINFO;
+  ItemRect: TRect;
+begin
+  ItemInfo.cbSize := sizeof(ItemInfo);
+  ItemInfo.fMask := MIIM_STATE;
+  if GetMenuItemInfo(Item.Parent.Handle, Item.MenuIndex, True, ItemInfo) then
+  begin
+    ItemRect := GetItemScreenRect(Item.Parent, Item.MenuIndex);
+    with Canvas do
+    begin
+      // If the item is selected (Highlighted), then the closing borders
+      // of the selection rectangle are in the border of the menu window.
+      // Hence, we must draw them here.
+      if (ItemInfo.fState and MFS_HILITE) = MFS_HILITE then
+      begin
+        Brush.Style := bsClear;
+        Pen.Assign(SelectionFramePen);
+        MoveTo(WRect.Left + 2, ItemRect.Top + 0);
+        LineTo(WRect.Left + 2, ItemRect.Bottom - 1);
+        MoveTo(WRect.Right - 3, ItemRect.Top + 0);
+        LineTo(WRect.Right - 3, ItemRect.Bottom - 1);
+
+        // change the pen for the next instructions to draw in
+        // the correct color for a selected item.
+        Pen.Style := psSolid;
+        Pen.Color := SelectionFrameBrush.Color;
+
+        if IsRightToLeft then
+        begin
+          MoveTo(WRect.Right - 4, ItemRect.Top);
+          LineTo(WRect.Right - 4, ItemRect.Bottom - 1);
+          Pixels[WRect.Right - 4, ItemRect.Top] := SelectionFramePen.Color;
+          Pixels[WRect.Right - 4, ItemRect.Bottom - 2] := SelectionFramePen.Color;
+        end
+        else
+        begin
+          MoveTo(WRect.Left + 3, ItemRect.Top);
+          LineTo(WRect.Left + 3, ItemRect.Bottom - 1);
+          Pixels[WRect.Left + 3, ItemRect.Top] := SelectionFramePen.Color;
+          Pixels[WRect.Left + 3, ItemRect.Bottom - 2] := SelectionFramePen.Color;
+        end;
+      end;
+
+      // If the item is checked then the left closing border of the checkbox
+      // rectangle is in the border of the menu window.
+      // Hence, we must draw it here.
+      if (ItemInfo.fState and MFS_CHECKED) = MFS_CHECKED then
+      begin
+        // change the pen for the next instructions to draw in
+        // the correct color for a selected item.
+        Pen.Assign(SelectionFramePen);
+
+        if IsRightToLeft then
+        begin
+          MoveTo(WRect.Right - 4, ItemRect.Top);
+          LineTo(WRect.Right - 4, ItemRect.Bottom - 1);
+        end
+        else
+        begin
+          MoveTo(WRect.Left + 3, ItemRect.Top+1);
+          LineTo(WRect.Left + 3, ItemRect.Bottom - 2);
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TJvXPMenuItemPainter.DrawMenuBitmap(X, Y: Integer; Bitmap: TBitmap);
 begin
   if mdDisabled in FState then
@@ -3209,12 +3365,53 @@ begin
     Inc(Height, 2);
 end;
 
+// This is the replacement Window Procedure for the window that is used
+// to render the menus. Basically, it calls DrawBorder when it receives
+// an WM_NCPAINT message so that it overrides the default behaviour of
+// the Win32 API.
+// Note: We use a global variable to keep track of the current XPPainter
+// and not the SetProp and GetProp APIs. This is because it turned out that
+// the value read by GetProp was correct but its cast back to the item
+// painter address was not. So we use the global variable approach, ensuring
+// it gets reinitialized whenever the window disappears;
+function XPMenuItemPainterWndProc(hwnd : THandle;
+    uMsg : UINT;
+    wParam : WPARAM;
+    lParam : LPARAM): LRESULT; stdcall;
+var
+  WindowRect: TRect;
+begin
+  Result := CallWindowProc(Pointer(OldMenuWndProcHandle), hwnd, uMsg, wParam, lParam);
+  case uMsg of
+    WM_NCPAINT:
+      begin
+        if GetWindowRect(hwnd, WindowRect) and Assigned(currentXPPainter) then
+        begin
+          currentXPPainter.DrawBorder(WindowRect);
+        end;
+      end;
+    WM_SHOWWINDOW:
+      begin
+        if wParam = 0 then
+        begin
+          SetWindowLong(hwnd, GWL_WNDPROC, OldMenuWndProcHandle);
+          currentXPPainter := nil;
+        end;
+      end;
+    WM_NCDESTROY:
+      begin
+        SetWindowLong(hwnd, GWL_WNDPROC, OldMenuWndProcHandle);
+        currentXPPainter := nil;
+      end;
+  end;
+end;
+
 procedure TJvXPMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect;
   State: TMenuOwnerDrawState);
 var
-  DesktopCanvas: TJvDesktopCanvas;
   CanvasWindow: HWND;
   WRect: TRect;
+  tmpWndProcHandle : Integer;
 begin
   FItem := Item;
 
@@ -3228,131 +3425,25 @@ begin
       (FMainMenu.GetOwner is TForm) and
       (TForm(FMainMenu.GetOwner).Handle = CanvasWindow)) then
     begin
-      DesktopCanvas := TJvDesktopCanvas.Create;
-      GetWindowRect(CanvasWindow, WRect);
-
-      with DesktopCanvas do
+      // If we have a window, that has a WndProc, which is different from our
+      // replacement WndProc and we are not at design time, then install
+      // our replacement WndProc.
+      // Once this is done, we can draw the border in the appropriate rect. 
+      if CanvasWindow <> 0 then
       begin
-        Brush.Style := bsClear;
-        Pen.Color := RGB(102, 102, 102);
-        Pen.Style := psSolid;
-
-        // dark contour
-        Rectangle(WRect);
-
-        // two white lines above bottom
-        Pen.Color := clWhite;
-        MoveTo(WRect.Left + 1, WRect.Bottom - 2);
-        LineTo(WRect.Right - 1, WRect.Bottom - 2);
-        MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-        LineTo(WRect.Right - 1, WRect.Bottom - 3);
-
-        // two white lines below top
-        MoveTo(WRect.Left + 1, WRect.Top + 1);
-        LineTo(WRect.Right - 1, WRect.Top + 1);
-        MoveTo(WRect.Left + 1, WRect.Top + 2);
-        LineTo(WRect.Right - 1, WRect.Top + 2);
-
-        // three lines before right
-        if IsRightToLeft then
-          Pen.Color := ImageBackgroundColor
-        else
-          Pen.Color := clWhite;
-        MoveTo(WRect.Right - 2, WRect.Top + ItemRect.Top + 3);
-        LineTo(WRect.Right - 2, WRect.Top + ItemRect.Bottom + 3);
-        MoveTo(WRect.Right - 3, WRect.Top + ItemRect.Top + 3);
-        LineTo(WRect.Right - 3, WRect.Top + ItemRect.Bottom + 3);
-
-        // two lines after left
-        if IsRightToLeft then
-          Pen.Color := clWhite
-        else
-          Pen.Color := ImageBackgroundColor;
-        MoveTo(WRect.Left + 1, WRect.Top + ItemRect.Top + 3);
-        LineTo(WRect.Left + 1, WRect.Top + ItemRect.Bottom + 3);
-        MoveTo(WRect.Left + 2, WRect.Top + ItemRect.Top + 3);
-        LineTo(WRect.Left + 2, WRect.Top + ItemRect.Bottom + 3);
-
-        // and one more line on one side, depending on the bidi mode
-        // the line will only be drawn if the drawing rectangle is smaller
-        // than the borders
-        // also add a line of image background at the top and bottom
-        // of the column to look even more like the real XP menus.
-        Pen.Style := psSolid;
-        Pen.Color := ImageBackgroundColor;
-        if not IsRightToLeft then
+        tmpWndProcHandle := GetWindowLong(CanvasWindow, GWL_WNDPROC);
+        if (tmpWndProcHandle <> 0) and
+           (tmpWndProcHandle <> Integer(@XPMenuItemPainterWndProc)) and
+           not (csDesigning in Menu.ComponentState) then
         begin
-          if ItemRect.Left > 0 then
-          begin
-            MoveTo(WRect.Left + 3, WRect.Top + ItemRect.Top + 3);
-            LineTo(WRect.Left + 3, WRect.Top + ItemRect.Bottom + 3);
-            MoveTo(WRect.Left + 1, WRect.Top + 2);
-            LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + 1, WRect.Top + 2);
-            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-            LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + 1, WRect.Bottom - 3);
-          end
-          else
-          begin
-            MoveTo(WRect.Left + 1, WRect.Top + 2);
-            LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right, WRect.Top + 2);
-            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-            LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right, WRect.Bottom - 3);
-          end;
-        end
-        else
-        begin
-          if ItemRect.Right < WRect.Right - WRect.Left + 1 then
-          begin
-            MoveTo(WRect.Right - 4, WRect.Top + ItemRect.Top + 3);
-            LineTo(WRect.Right - 4, WRect.Top + ItemRect.Bottom + 3);
-            MoveTo(WRect.Right - 2, WRect.Top + 2);
-            LineTo(WRect.Right - 2 - CheckMarkWidth - ImageMargin.Left - ImageWidth - ImageMargin.Right - 1, WRect.Top + 2);
-            MoveTo(WRect.Right - 2, WRect.Bottom - 3);
-            LineTo(WRect.Right - 2 - CheckMarkWidth - ImageMargin.Left - ImageWidth - ImageMargin.Right - 1, WRect.Bottom - 3);
-          end
-          else
-          begin
-            MoveTo(WRect.Right - 2, WRect.Top + 2);
-            LineTo(WRect.Right - 2 - CheckMarkWidth - ImageMargin.Left - ImageWidth - ImageMargin.Right, WRect.Top + 2);
-            MoveTo(WRect.Right - 2, WRect.Bottom - 3);
-            LineTo(WRect.Right - 2 - CheckMarkWidth - ImageMargin.Left - ImageWidth - ImageMargin.Right, WRect.Bottom - 3);
-          end;
+          OldMenuWndProcHandle := tmpWndProcHandle;
+          currentXPPainter := Self;
+          SetWindowLong(CanvasWindow, GWL_WNDPROC, Integer(@XPMenuItemPainterWndProc));
         end;
 
-        // if the item is selected, close the selection frame by drawing
-        // two lines at the end of the item, 1 pixel from the sides
-        // of the window rectangle
-        if mdSelected in State then
-        begin
-          Brush.Style := bsClear;
-          Pen.Assign(SelectionFramePen);
-          MoveTo(WRect.Left + 2, WRect.Top + ItemRect.Top + 3);
-          LineTo(WRect.Left + 2, WRect.Top + ItemRect.Bottom + 2);
-          MoveTo(WRect.Right - 3, WRect.Top + ItemRect.Top + 3);
-          LineTo(WRect.Right - 3, WRect.Top + ItemRect.Bottom + 2);
-
-          // change the pen for the next instructions to draw in
-          // the correct color for a selected item.
-          Pen.Style := psSolid;
-          Pen.Color := SelectionFrameBrush.Color;
-
-          if IsRightToLeft then
-          begin
-            MoveTo(WRect.Right - 4, WRect.Top + ItemRect.Top + 3);
-            LineTo(WRect.Right - 4, WRect.Top + ItemRect.Bottom + 1);
-            Pixels[WRect.Right - 4, WRect.Top + ItemRect.Top + 3] := SelectionFramePen.Color;
-            Pixels[WRect.Right - 4, WRect.Top + ItemRect.Bottom + 1] := SelectionFramePen.Color;
-          end
-          else
-          begin
-            MoveTo(WRect.Left + 3, WRect.Top + ItemRect.Top + 3);
-            LineTo(WRect.Left + 3, WRect.Top + ItemRect.Bottom + 1);
-            Pixels[WRect.Left + 3, WRect.Top + ItemRect.Top + 3] := SelectionFramePen.Color;
-            Pixels[WRect.Left + 3, WRect.Top + ItemRect.Bottom + 1] := SelectionFramePen.Color;
-          end;
-        end;
+        GetWindowRect(CanvasWindow, WRect);
+        DrawBorder(WRect);
       end;
-      DesktopCanvas.Free;
     end;
   end;
 
@@ -3400,6 +3491,40 @@ begin
     (not (mdSelected in FState) or (not IsPopup) or
     (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
     );
+end;
+
+function TJvXPMenuItemPainter.GetItemScreenRect(ParentItem: TMenuItem;
+  Index: Integer): TRect;
+begin
+  // Contrary to what the MSDN writes, the first parameter to this function
+  // MUST be 0 even for top level menu items...
+  GetMenuItemRect(0, ParentItem.Handle, Index, Result);
+end;
+
+function TJvXPMenuItemPainter.GetShowingItemsParent(WRect: TRect;
+  StartingItem: TMenuItem): TMenuItem;
+var
+  ItemRect: TRect;
+  I: Integer;
+begin
+  Result := nil;
+  if StartingItem.Count = 0 then
+    Exit;
+
+  ItemRect := GetItemScreenRect(StartingItem, 0);
+  if RectIncludesRect(ItemRect, WRect) then
+  begin
+    Result := StartingItem;
+  end
+  else
+  begin
+    I := 0;
+    while not Assigned(Result) and (I < StartingItem.Count) do
+    begin
+      Result := GetShowingItemsParent(WRect, StartingItem[I]);
+      Inc(I);
+    end;
+  end;
 end;
 
 procedure TJvXPMenuItemPainter.UpdateFieldsFromMenu;
