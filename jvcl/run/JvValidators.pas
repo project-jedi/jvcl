@@ -117,7 +117,7 @@ type
     procedure Validate; override;
   end;
 
-  TJvValidateCompareOperator = (vcoLessThan, vcoLessOrEqual, vcoEqual, vcoGreaterOrEqual, vcoGreaterThan);
+  TJvValidateCompareOperator = (vcoLessThan, vcoLessOrEqual, vcoEqual, vcoGreaterOrEqual, vcoGreaterThan, vcoNotEqual);
 
   TJvCompareValidator = class(TJvBaseValidator)
   private
@@ -566,6 +566,8 @@ begin
       Valid := (VR = vrGreaterThan) or (VR = vrEqual);
     vcoGreaterThan:
       Valid := (VR = vrGreaterThan);
+    vcoNotEqual:
+      Valid := VR <> vrEqual;
   end;
 end;
 
@@ -645,6 +647,8 @@ begin
       Valid := (VR = vrGreaterThan) or (VR = vrEqual);
     vcoGreaterThan:
       Valid := (VR = vrGreaterThan);
+    vcoNotEqual:
+      Valid := (VR <> vrEqual);
   end;
 end;
 
