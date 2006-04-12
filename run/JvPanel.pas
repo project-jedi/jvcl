@@ -530,7 +530,7 @@ end;
 procedure TJvCustomArrangePanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if Transparent and not IsThemed then
+  if Transparent {and not IsThemed} then
   begin
     // (rom) gives a better look in IDE if always set (not fully correct though)
     //if not (csDesigning in ComponentState) then
@@ -675,7 +675,7 @@ begin
       else
       begin
         R := ClientRect;
-        InflateRect(R,-BevelWidth,-BevelWidth);
+        InflateRect(R, -BevelWidth, -BevelWidth);
         Canvas.FillRect(R);
       end;
     end;
@@ -684,7 +684,7 @@ begin
   begin
     Canvas.Font := Self.Font;
     Canvas.Brush.Color := Color;
-    if not Transparent or IsThemed then
+    if not Transparent {or IsThemed} then
       DrawThemedBackground(Self, Canvas, ClientRect)
     else
       Canvas.Brush.Style := bsClear;
@@ -748,7 +748,7 @@ begin
         X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
         Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
         // (rom) bsClear takes care of that already
-        //if Transparent and not IsThemed then
+        //if Transparent {and not IsThemed} then
         //  SetBkMode(Handle, BkModeTransparent);
         Canvas.Font.Color := clBtnHighlight;
         TextOut(X, Y, 'o');
@@ -764,7 +764,7 @@ end;
 procedure TJvCustomArrangePanel.AdjustSize;
 begin
   inherited AdjustSize;
-  if Transparent and not IsThemed then
+  if Transparent {and not IsThemed} then
   begin
     // (ahuser) That is the only way to draw the border of the contained controls.
     Width := Width + 1;
@@ -857,7 +857,7 @@ begin
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
-      if Transparent and not IsThemed then
+      if Transparent {and not IsThemed} then
         SetBkMode(ACanvas.Handle, BkModeTransparent);
       DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags);
     end;
@@ -878,7 +878,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  if not MouseOver and Enabled  and (Control = nil) then
+  if not MouseOver and Enabled and (Control = nil) then
   begin
     OtherDragging :=
       {$IFDEF VCL}
@@ -892,7 +892,7 @@ begin
       DragActivated;
      {$ENDIF VisualCLX}
     NeedRepaint := not Transparent and
-     (IsThemed or (FHotTrack and Enabled and not FDragging and not OtherDragging));
+     ({IsThemed or} (FHotTrack and Enabled and not FDragging and not OtherDragging));
     inherited MouseEnter(Control); // set MouseOver
     if NeedRepaint then
       Repaint;
@@ -922,7 +922,7 @@ begin
   if MouseOver and Enabled and (Control = nil) then
   begin
     NeedRepaint := not Transparent and
-     (IsThemed or (FHotTrack and (FDragging or (Enabled and not OtherDragging))));
+     ({IsThemed or} (FHotTrack and (FDragging or (Enabled and not OtherDragging))));
     inherited MouseLeave(Control); // set MouseOver
     if NeedRepaint then
       Repaint;
@@ -936,7 +936,7 @@ begin
   if Value <> FTransparent then
   begin
     FTransparent := Value;
-    if not IsThemed then
+    {if not IsThemed then}
     begin
       {$IFDEF VCL}
       RecreateWnd;
@@ -972,7 +972,7 @@ end;
 
 function TJvCustomArrangePanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  if Transparent and not IsThemed then
+  if Transparent {and not IsThemed} then
     Result := True
   else
     Result := inherited DoEraseBackground(Canvas, Param);
@@ -1128,7 +1128,7 @@ end;
 procedure TJvCustomArrangePanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  if Transparent and not IsThemed then
+  if Transparent {and not IsThemed} then
     Invalidate;
 end;
 
