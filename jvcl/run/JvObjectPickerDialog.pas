@@ -716,7 +716,7 @@ begin
   Scopes.Initialize(ScopesInitInfo);
   InitializeAttributes;
   Selection.FreeSelection;
-  HRes := FObjectPicker.Initialize(InitInfo);
+  HRes := FObjectPicker.Initialize(@InitInfo);
   // (p3) this won't raise a second exception
   if not Succeeded(HRes) then
     Exit;
