@@ -24,6 +24,8 @@ Description:
   Set the HotKey property to a *unique* combination of Ctrl,Alt,Shift and a character.
   Set active to True to receive notifications when the hotkey is pressed. The OnHotKey
   event is called when the user presses the hotkey combination.
+  
+30/03/2006 Added property WinModifier. Windows key will now be recognized.
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -47,7 +49,7 @@ type
   TJvHotKeyRegisterFailed = procedure(Sender: TObject; var HotKey: TShortCut) of object;
 
   TJvApplicationHotKey = class(TJvComponent)
-  private
+  protected
     FActive: Boolean;
     FHotKey: TShortCut;
     FOnHotKey: TNotifyEvent;
@@ -55,6 +57,8 @@ type
     FID: Integer;
     FHasRegistered: Boolean;
     FOnHotKeyRegisterFailed: TJvHotKeyRegisterFailed;
+    FWindowsKey : Boolean;
+    
     procedure SetActive(Value: Boolean);
     procedure SetHotKey(Value: TShortCut);
     function WndProc(var Msg: TMessage): Boolean;
@@ -63,11 +67,17 @@ type
   protected
     procedure DoHotKey; virtual;
     function DoRegisterHotKey: Boolean; dynamic;
+
+    procedure SetWindowsKey(Value : Boolean);
   public
     destructor Destroy; override;
   published
     property Active: Boolean read FActive write SetActive default False;
     property HotKey: TShortCut read FHotKey write SetHotKey;
+
+    // If True, the Windows Key must be pressed for the shortcut to trigger
+    property WindowsKey: Boolean read FWindowsKey write SetWindowsKey default False;
+
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
     property OnHotKeyRegisterFailed: TJvHotKeyRegisterFailed
       read FOnHotKeyRegisterFailed write FOnHotKeyRegisterFailed;
@@ -128,6 +138,16 @@ begin
   end;
 end;
 
+procedure TJvApplicationHotKey.SetWindowsKey(Value : Boolean);
+begin
+  FWindowsKey := Value;
+  If Active then
+  begin
+    Active := false;
+    Active := true;
+  end;
+end;
+
 function TJvApplicationHotKey.DoRegisterHotKey: Boolean;
 var
   AShortCut: TShortCut;
@@ -138,6 +158,10 @@ begin
   begin
     FHandle := TWinControl(Owner).Handle;
     GetHotKey(FHotKey, VirtKey, Mods);
+
+    if WindowsKey then
+      Mods := Mods or MOD_WIN;
+
     while not RegisterHotKey(FHandle, FID, Mods, VirtKey) do
     begin
       if Assigned(FOnHotKeyRegisterFailed) then
