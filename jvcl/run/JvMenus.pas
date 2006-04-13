@@ -449,6 +449,9 @@ type
     function UseHotImages: Boolean;
     function UseDisabledImages: Boolean;
 
+    // Will force the menu to rebuild itself.
+    procedure ForceMenuRebuild;
+
     // This procedure will update the fields that are
     // instances of objects derived from TPersistent. This
     // allows for modification in the painter without any impact
@@ -2166,8 +2169,10 @@ var
   Bmp: TBitmap;
 begin
   UpdateFieldsFromMenu;
+
   FItem := Item;
   FState := State;
+  FImageIndex := FItem.ImageIndex;
 
   FGlyph.Assign(Item.Bitmap);
   BackColor := Canvas.Brush.Color;
@@ -2206,7 +2211,6 @@ begin
       Canvas.FillRect(ItemRect);
     end;
   end;
-  FImageIndex := FItem.ImageIndex;
 
   if Assigned(FMainMenu) then
     FMainMenu.GetImageIndex(FItem, FState, FImageIndex)
@@ -2247,9 +2251,6 @@ begin
   // when a top menuitem that has an image index not equal to -1
   Item.OnDrawItem := EmptyDrawItem;
 
-  // prepare the painting
-  PreparePaint(Item, ItemRect, State, False);
-
   // calculate areas for the different parts of the item to be drawn
   if IsPopup then
   begin
@@ -2274,7 +2275,15 @@ begin
         Measure(Item.Parent.Items[i], TmpWidth, TmpHeight);
         Inc(FMenuHeight, tmpHeight);
       end;
-    end;  
+    end;
+
+    // Prepare the painting only now so as to not trigger Mantis 3636.
+    // This is required because Measure will call PreparePaint which will
+    // set values such as FItem, FState and FImageIndex.
+    // Note that we cannot modify prepare paint to NOT set those values
+    // when measuring because many of the "width" related functions do need
+    // a valid FItem member.
+    PreparePaint(Item, ItemRect, State, False);
 
     // different values depending on the reading convention
     if IsRightToLeft then
@@ -2306,7 +2315,9 @@ begin
   end
   else
   begin
-    //CanvasWindow := 0;
+    // prepare the painting (see above)
+    PreparePaint(Item, ItemRect, State, False);
+
     ItemRectNoLeftMargin := ItemRect;
     TextAndMarginRect := ItemRect;
     TextRect := ItemRect;
@@ -2750,6 +2761,28 @@ begin
     Result := FPopupMenu.TextVAlignment;
 end;
 
+procedure TJvCustomMenuItemPainter.ForceMenuRebuild;
+var
+  DummyItem: TMenuItem;
+  RootItem: TMenuItem;
+begin
+  // Ideally, we would like to call RebuildHandle in TMenuItem but this
+  // method is private. As we cannot, we add and immediately remove a fake
+  // item. This in turns trigger the calls to RebuildHandle.
+  if Assigned(FMainMenu) then
+    RootItem := FMainMenu.Items
+  else
+    RootItem := FPopupMenu.Items;
+
+  DummyItem := TMenuItem.Create(nil);
+  try
+    RootItem.Add(DummyItem);
+    RootItem.Remove(DummyItem);
+  finally
+    DummyItem.Free;
+  end;
+end;
+
 procedure TJvCustomMenuItemPainter.UpdateFieldsFromMenu;
 begin
   if Assigned(FMainMenu) then
@@ -2810,6 +2843,9 @@ end;
 procedure TJvCustomMenuItemPainter.SetLeftMargin(const Value: Cardinal);
 begin
   FLeftMargin := Value;
+
+  // Force a rebuild as the width of the items has changed
+  ForceMenuRebuild;
 end;
 
 procedure TJvCustomMenuItemPainter.SetImageBackgroundColor(const Value: TColor);
