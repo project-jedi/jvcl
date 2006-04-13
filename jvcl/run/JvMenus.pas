@@ -104,7 +104,7 @@ type
   // content of the menu it is linked to has changed.
 
   // This next type is the event triggered when the menu has changed
-  // If Rebuild is true, the menu as had to be rebuilt because of a
+  // If Rebuild is true, the menu has had to be rebuilt because of a
   // change in its layout, not in the properties of one of its item.
   // Unfortunately, for a reason yet to be discovered, Rebuild is
   // always false, even when adding or removing items in the menu.
@@ -2842,10 +2842,13 @@ end;
 
 procedure TJvCustomMenuItemPainter.SetLeftMargin(const Value: Cardinal);
 begin
-  FLeftMargin := Value;
+  if FLeftMargin <> Value then
+  begin
+    FLeftMargin := Value;
 
-  // Force a rebuild as the width of the items has changed
-  ForceMenuRebuild;
+    // Force a rebuild as the width of the items has changed
+    ForceMenuRebuild;
+  end;
 end;
 
 procedure TJvCustomMenuItemPainter.SetImageBackgroundColor(const Value: TColor);
