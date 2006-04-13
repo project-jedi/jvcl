@@ -51,7 +51,7 @@ uses
   System.Text,
   {$ENDIF CLR}
   Windows, Classes,
-  JvComponentBase;
+  JvComponentBase, JvTypes;
 
 type
   TJvNotifyArray = array [0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;
@@ -64,6 +64,16 @@ type
 
   TJvChangeItems = class;
   TJvChangeNotify = class;
+
+  // Exception used by NotifyError
+  EJVCLChangeNotifyException =  class(EJVCLException)
+  private
+    FErrorDirectory : string;
+  public
+    constructor Create(const ErrorMsg: string; const ErrorDirectory: string);
+    
+    property ErrorDirectory : string read FErrorDirectory;
+  end;
 
   TJvChangeItem = class(TCollectionItem)
   private
@@ -165,8 +175,8 @@ const
 implementation
 
 uses
-  SysUtils, 
-  JvVCL5Utils, JvJCLUtils, JvResources, JvTypes;
+  SysUtils,
+  JvVCL5Utils, JvJCLUtils, JvResources;
   // JvJCLUtils for DirectoryExists
 
 function ActionsToString(Actions: TJvChangeActions): string;
@@ -373,7 +383,7 @@ begin
   SetLength(ErrorMsg, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
     GetLastError, 0, PChar(ErrorMsg), Length(ErrorMsg), nil));
   {$ENDIF CLR}
-  raise EJVCLException.CreateFmt(RsENotifyErrorFmt, [ErrorMsg, Msg]);
+  raise EJVCLChangeNotifyException.Create(ErrorMsg, Msg);
 end;
 
 procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: Integer);
@@ -391,6 +401,7 @@ var
   cA: TJvChangeAction;
   Flags: Cardinal;
   I: Integer;
+  J: Integer;
   S: string;
 begin
   if FActive <> Value then
@@ -430,8 +441,16 @@ begin
         FNotifyArray[I] := FindFirstChangeNotification(
           {$IFDEF CLR} S {$ELSE} PChar(S) {$ENDIF},
           BOOL(FCollection[I].IncludeSubTrees), Flags);
-        if FNotifyArray[I] = INVALID_HANDLE_VALUE then
+        if FNotifyArray[I] = INVALID_HANDLE_VALUE then begin
+          // Clean up before raising the exception
+          for J := 0 to I - 1 do begin
+            FindCloseChangeNotification(FNotifyArray[J]);
+            FNotifyArray[J] := INVALID_HANDLE_VALUE;
+          end;
+          FActive := False;
+          // Now raise the exception
           NotifyError(FCollection[I].Directory);
+        end;
       end;
       if FThread <> nil then
       begin
@@ -579,6 +598,13 @@ procedure TJvChangeThread.SynchChange;
 begin
   if Assigned(FNotify) then
     FNotify(Self, FIndex);
+end;
+
+{ EJVCLChangeNotifyException }
+
+constructor EJVCLChangeNotifyException.Create(const ErrorMsg: string; const ErrorDirectory: string);
+begin
+  inherited CreateFmt(RsENotifyErrorFmt, [ErrorMsg, ErrorDirectory]);
 end;
 
 {$IFDEF UNITVERSIONING}
