@@ -1,7 +1,6 @@
 @echo off
 
-: The languages that are known to the JVCL
-set LANGUAGES=bg de es fr it nl pl ro ru sv
+call SetLanguages.bat
 
 echo Update JVCL Installer PO template file and the translations derived from it
 echo Current languages: %LANGUAGES%
