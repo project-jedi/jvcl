@@ -1392,7 +1392,9 @@ begin
     with Canvas do
     begin
       if FTransparent then
-        CopyParentImage(Self, Canvas)
+      begin
+        CopyParentImage(Self, Canvas);
+      end
       else
       begin
         if Flat then
