@@ -478,6 +478,7 @@ type
     FPopupMenu: TPopupMenu;
     FFont: TFont;
     FBrush: TBrush;
+    FOnCheckedChange: TNotifyEvent;
     function GetChecked: Boolean;
     procedure SetChecked(Value: Boolean);
     function GetBold: Boolean;
@@ -489,6 +490,7 @@ type
     procedure SetBrush(const Value: TBrush);
   protected
     procedure Reinitialize; virtual;
+    procedure DoCheckedChange;
   public
     class function CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 
@@ -503,11 +505,14 @@ type
     property Font: TFont read GetFont write SetFont;
     property Brush: TBrush read GetBrush write SetBrush;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
+    
+    property OnCheckedChange: TNotifyEvent read FOnCheckedChange write FOnCheckedChange;
   end;
 
   TPageChangedEvent = procedure(Sender: TObject; Item: TTreeNode; Page: TTabSheet) of object;
   TJvTreeViewComparePageEvent = procedure(Sender: TObject; Page: TTabSheet;
     Node: TTreeNode; var Matches: Boolean) of object;
+  TJvTreeViewNodeCheckedChange = procedure(Sender: TObject; Node: TJvTreeNode) of object;
 
   TJvTreeView = class(TJvExTreeView)
   private
@@ -532,6 +537,8 @@ type
     FOldMenuChange: TMenuChangeEvent;
     FMenuDblClick: Boolean;
     FReinitializeTreeNode: Boolean;
+    FOnNodeCheckedChange: TJvTreeViewNodeCheckedChange;
+    
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
@@ -544,7 +551,6 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure SetCheckBoxes(const Value: Boolean);
     function GetItemHeight: Integer;
     procedure SetItemHeight(Value: Integer);
     function GetInsertMarkColor: TColor;
@@ -561,6 +567,10 @@ type
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
   protected
+    procedure DoNodeCheckedChange(Node: TJvTreeNode);
+    procedure TreeNodeCheckedChange(Sender: TObject); virtual;
+    procedure SetCheckBoxes(const Value: Boolean); virtual;
+    
     procedure RebuildFromMenu; virtual;
     function IsMenuItemClick(Node: TTreeNode): Boolean;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
@@ -640,6 +650,8 @@ type
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+    
+    property OnNodeCheckedChange: TJvTreeViewNodeCheckedChange read FOnNodeCheckedChange write FOnNodeCheckedChange;
   end;
 
   {$ENDIF VCL}
@@ -2382,6 +2394,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvTreeNode.DoCheckedChange;
+begin
+  if Assigned(OnCheckedChange) then
+    OnCheckedChange(Self);
+end;
+
 procedure TJvTreeNode.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
@@ -2509,6 +2527,7 @@ begin
         Item.State := TVIS_CHECKED shr 1;
       TreeView_SetItem(Handle, Item);
     end;
+    DoCheckedChange;
   end;
 end;
 
@@ -2612,6 +2631,7 @@ end;
 function TJvTreeView.CreateNode: TTreeNode;
 begin
   Result := TJvTreeNode.CreateEnh(Items);
+  (Result as TJvTreeNode).OnCheckedChange := TreeNodeCheckedChange;
 end;
 
 procedure TJvTreeView.CreateParams(var Params: TCreateParams);
@@ -2894,6 +2914,17 @@ end;
 procedure TJvTreeView.SetBold(Node: TTreeNode; Value: Boolean);
 begin
   TJvTreeNode(Node).Bold := Value;
+end;
+
+procedure TJvTreeView.DoNodeCheckedChange(Node: TJvTreeNode);
+begin
+  if Assigned(OnNodeCheckedChange) then
+    OnNodeCheckedChange(Self, Node);
+end;
+
+procedure TJvTreeView.TreeNodeCheckedChange(Sender: TObject);
+begin
+  DoNodeCheckedChange(Sender as TJvTreeNode);
 end;
 
 procedure TJvTreeView.SetCheckBoxes(const Value: Boolean);
