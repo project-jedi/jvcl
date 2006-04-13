@@ -1527,9 +1527,10 @@ type
 
 procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 var
-  I, Count, X, Y, SaveIndex: Integer;
+  I, Count, SaveIndex: Integer;
   DC: HDC;
   R, SelfR, CtlR: TRect;
+  ViewPortOrg: TPoint;
 begin
   if (Control = nil) or (Control.Parent = nil) then
     Exit;
@@ -1538,18 +1539,27 @@ begin
   with Control.Parent do
     ControlState := ControlState + [csPaintCopy];
   try
+    // The view port may already be set. This is especially true when
+    // a control using CopyParentImage is placed inside a control that
+    // calls it as well. Best example is a TJvSpeeButton in a TJvPanel,
+    // both with Transparent set to True (discovered while working on
+    // Mantis 3624)
+    GetViewPortOrgEx(DC, ViewPortOrg);
+    
     with Control do
     begin
       SelfR := Bounds(Left, Top, Width, Height);
-      X := -Left;
-      Y := -Top;
+
+      ViewPortOrg.X := ViewPortOrg.X-Left;
+      ViewPortOrg.Y := ViewPortOrg.Y-Top;
     end;
-    { Copy parent control image }
+    
+    // Copy parent control image
     SaveIndex := SaveDC(DC);
     try
-      SetViewPortOrgEx(DC, X, Y, nil);
+      SetViewPortOrgEx(DC, ViewPortOrg.X, ViewPortOrg.Y, nil);
       IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
-        Control.Parent.ClientHeight);
+        Control.Parent.ClientHeight);  
       {$IFDEF CLR}
         Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
         Control.Parent.GetType.InvokeMember('PaintWindow',
@@ -1565,16 +1575,18 @@ begin
     finally
       RestoreDC(DC, SaveIndex);
     end;
-    { Copy images of graphic controls }
+    
+    // Copy images of control's siblings 
+    // Note: while working on Mantis 3624 it was decided that there was no
+    // real reason to limit this to controls derived from TGraphicControl.
     for I := 0 to Count - 1 do
     begin
       if Control.Parent.Controls[I] = Control then
         Break
       else
-      if (Control.Parent.Controls[I] <> nil) and
-        (Control.Parent.Controls[I] is TGraphicControl) then
+      if (Control.Parent.Controls[I] <> nil) then
       begin
-        with TGraphicControl(Control.Parent.Controls[I]) do
+        with Control.Parent.Controls[I] do
         begin
           CtlR := Bounds(Left, Top, Width, Height);
           if IntersectRect(R, SelfR, CtlR) and Visible then
@@ -1582,8 +1594,7 @@ begin
             ControlState := ControlState + [csPaintCopy];
             SaveIndex := SaveDC(DC);
             try
-              SaveIndex := SaveDC(DC);
-              SetViewPortOrgEx(DC, Left + X, Top + Y, nil);
+              SetViewPortOrgEx(DC, Left + ViewPortOrg.X, Top + ViewPortOrg.Y, nil);
               IntersectClipRect(DC, 0, 0, Width, Height);
               Perform(WM_PAINT, DC, 0);
             finally
