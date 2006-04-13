@@ -658,6 +658,16 @@ begin
     Exit;
   end;
 
+  // Mantis 3624: Draw our parent's image first if we are transparent.
+  // This might not seem useful at first as we have removed the csOpaque
+  // from our style and the API is doing the drawing just fine. But this
+  // is required for other transparent controls placed on us. This way,
+  // they call us with their own canvas into which we draw what we are
+  // placed on. This way, there is an automatic chain of transparency up
+  // to the controls at the bottom that are not transparent.
+  if Transparent then
+    CopyParentImage(Self, Canvas);
+
   if MouseOver and HotTrack then
   begin
     Canvas.Font := Self.HotTrackFont;
