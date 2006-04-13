@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at source
 Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Olivier Sannier 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -119,11 +119,14 @@ type
     procedure SetCheckBoxOptions(const Value: TJvTreeViewCheckBoxOptions);
     procedure InternalSetChecked(Node: TTreeNode; const Value: Boolean; Levels: Integer);
   protected
+    procedure TreeNodeCheckedChange(Sender: TObject); override;
     function ToggleNode(Node: TTreeNode) : Boolean; virtual;
     procedure Click; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure DoToggled(Node: TTreeNode); dynamic;
     function DoToggling(Node: TTreeNode): Boolean; dynamic;
+    function CreateNode: TTreeNode; override;
+    procedure SetCheckBoxes(const Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -167,11 +170,20 @@ var
 begin
   if Assigned(Node) then
   begin
+    if Node.StateIndex = -1 then
+      Node.StateIndex := AUnchecked;
+      
     if Node.StateIndex = AUnChecked then
-      Node.StateIndex := AChecked
+    begin
+      Node.StateIndex := AChecked;
+      (Node as TJvTreeNode).Checked := True;
+    end
     else
     if Node.StateIndex = AChecked then
-      Node.StateIndex := AUnChecked
+    begin
+      Node.StateIndex := AUnChecked;
+      (Node as TJvTreeNode).Checked := False;
+    end
     else
     if Node.StateIndex = ARadioUnchecked then
     begin
@@ -187,6 +199,7 @@ begin
         Tmp := Tmp.getNextSibling;
       end;
       Node.StateIndex := ARadioChecked;
+      (Node as TJvTreeNode).Checked := True;
     end;
   end;
 end;
@@ -276,6 +289,13 @@ begin
   FCheckBoxOptions.FTreeView := Self;
 end;
 
+function TJvCheckTreeView.CreateNode: TTreeNode;
+begin
+  Result := inherited CreateNode;
+  if CheckBoxes and (CheckBoxOptions.Style = cbsJVCL) then  
+    Result.StateIndex := CheckBoxOptions.CheckBoxUncheckedIndex;
+end;
+
 destructor TJvCheckTreeView.Destroy;
 begin
   FCheckBoxOptions.Free;              
@@ -353,6 +373,31 @@ begin
         Node.StateIndex := 0;
 end;
 
+procedure TJvCheckTreeView.SetCheckBoxes(const Value: Boolean);
+var
+  I: Integer;
+begin
+  inherited SetCheckBoxes(Value);
+
+  if CheckBoxes then
+  begin
+    // When dealing with checkboxes, the StateIndex is used to represent
+    // what an item is (radio/checkbox) and its state. If left to -1, this
+    // will prevent the rest of the code here from working properly.
+    // Hence we take steps to ensure that every item with a state at -1 is
+    // an unchecked checkbox
+    for I := 0 to Items.Count - 1 do
+    begin
+      if Items[I].StateIndex = -1 then
+        Items[I].StateIndex := CheckBoxOptions.CheckBoxUncheckedIndex;
+    end;
+  end
+  else
+  begin
+    CheckBoxOptions.Style := cbsNone;
+  end;
+end;
+
 procedure TJvCheckTreeView.SetCheckBoxOptions(const Value: TJvTreeViewCheckBoxOptions);
 begin
   FCheckBoxOptions.Assign(Value);
@@ -383,11 +428,14 @@ end;
 
 procedure TJvCheckTreeView.SetChecked(Node: TTreeNode; const Value: Boolean);
 begin
-  with CheckBoxOptions do
-    if Style = cbsJVCL then
-      InternalSetChecked(Node, Value, CheckBoxOptions.CascadeLevels)
-    else
-      inherited Checked[Node] := Value;
+  // Mantis 3608: We call inherited to be sure that the visual state is
+  // updated according to the correct value.
+  // Then if the style is JVCL, we work internally to update the StateIndex
+  // of the node that is being modified. 
+  inherited Checked[Node] := Value;
+  
+  if CheckBoxOptions.Style = cbsJVCL then
+    InternalSetChecked(Node, Value, CheckBoxOptions.CascadeLevels)
 end;
 
 procedure TJvCheckTreeView.SetRadioItem(Node: TTreeNode; const Value: Boolean);
@@ -420,6 +468,19 @@ begin
         CheckBoxUncheckedIndex, CheckBoxCheckedIndex, RadioUncheckedIndex, RadioCheckedIndex);
     DoToggled(Node);
     Result := True;
+  end;
+end;
+
+procedure TJvCheckTreeView.TreeNodeCheckedChange(Sender: TObject);
+var
+  Node: TJvTreeNode;
+begin
+  inherited TreeNodeCheckedChange(Sender);
+
+  if CheckBoxOptions.Style = cbsJVCL then
+  begin
+    Node := Sender as TJvTreeNode;
+    InternalSetChecked(Node, Node.Checked, CheckBoxOptions.CascadeLevels)
   end;
 end;
 
