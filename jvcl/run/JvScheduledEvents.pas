@@ -661,10 +661,18 @@ end;
 procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
 begin
   with Msg do
-    if Msg = CM_EXECEVENT then
-      Dispatch(Msg)
+    case Msg of
+      CM_EXECEVENT:
+        Dispatch(Msg);
+      WM_TIMECHANGE:
+        begin
+          // Mantis 3355: Time has changed, stop and restart the schedules
+          StopAll;
+          StartAll;
+        end;
     else
       Result := DefWindowProc(Handle, Msg, WParam, LParam);
+    end;
 end;
 {$ENDIF VCL}
 
