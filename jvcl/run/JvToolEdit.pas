@@ -600,6 +600,7 @@ type
     property ClipboardCommands; // RDB
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
+    property OEMConvert; // Mantis 3621
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
