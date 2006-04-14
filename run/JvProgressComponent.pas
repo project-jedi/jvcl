@@ -192,17 +192,26 @@ begin
       OnClick := FormOnCancel;
     end;
     FCancel := False;
-	FForm.OnClose := FormOnClose;
-    if Assigned(FOnShow) then
+    
+    FForm.OnClose := FormOnClose;
+    if csDesigning in ComponentState then
     begin
-      FForm.OnShow := FormOnShow;
-      FException := nil;
-      FForm.ShowModal;
-      if FException <> nil then
-        raise FException;
+      FForm.Show;
+      FForm.BringToFront;
     end
     else
-      FForm.Show;
+    begin
+      if Assigned(FOnShow) then
+      begin
+        FForm.OnShow := FormOnShow;
+        FException := nil;
+        FForm.ShowModal;
+        if FException <> nil then
+          raise FException;
+      end
+      else
+        FForm.Show;
+    end;
   finally
     if Assigned(FOnShow) then
       FreeAndNil(FForm);
