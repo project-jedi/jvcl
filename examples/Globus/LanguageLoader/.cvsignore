@@ -1,0 +1,4 @@
+*.local
+*.cfg
+*.identcache
+__history

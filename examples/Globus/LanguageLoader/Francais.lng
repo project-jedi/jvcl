@@ -1,0 +1,43 @@
+[Translation.Info]
+
+[Form1]
+; ***** MAIN MENUS *****
+&File=&Fichier
+&Edit=&Éditer
+&Language=&Langue
+&Help=&Aide
+
+OK=Accepter
+Cancel=Annuler
+
+; ***** File Menu *****
+&New=&Nouveau
+&Open=&Ouvrir
+&Save=&Sauver
+E&xit=&Quitter
+
+; ***** Edit Menu *****
+&Undo=&Annuler
+&Redo=&Refaire
+Cu&t=Cou&per
+&Copy=&Copier
+&Paste=C&oller
+
+; Language menu
+&English=&Anglais
+&Dutch=&Hollandais
+&French=&Francais
+
+
+; ***** Help Menu *****
+&Help=&Aide / Information
+&About...=A &propos de...
+
+
+
+[Strings]
+; ***** const strings *****
+English=Anglais
+Dutch=Hollandais
+French=Francais
+
