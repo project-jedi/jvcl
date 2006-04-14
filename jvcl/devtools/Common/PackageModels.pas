@@ -326,8 +326,12 @@ begin
       else
       begin
         List.Add(currentTarget);
-        if not Assigned(FindTarget(currentTarget)) then
-          WriteLn('Unknown target: ' + currentTarget); 
+
+        // (obones): Need to find a way to inform the caller that we don't
+        // know the target it asked for. Using WriteLn is not a good idea
+        // as the caller may be a GUI application.
+        //if not Assigned(FindTarget(currentTarget)) then
+          //WriteLn('Unknown target: ' + currentTarget);
       end;
     end;
     Targets.Assign(List);
