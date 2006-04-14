@@ -182,11 +182,11 @@ type
 
 const
   Highlighters: array [TJvHighlighter] of PChar =
-   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
+   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'JScript', 'VB', 'Html',
     'Perl', 'Ini', 'CocoR', 'PHP', 'NQC', 'C#', 'User Defined');
 
   HighlighterNames: array [TJvHighlighter] of PChar =
-   ('Default', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
+   ('Default', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'JScript', 'VB', 'Html',
     'Perl', 'Ini', 'Coco/R', 'PHP', 'NQC', 'C#', 'Custom');
 
 {$IFDEF UNITVERSIONING}
