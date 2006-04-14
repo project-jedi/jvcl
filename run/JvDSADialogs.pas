@@ -60,7 +60,7 @@ type
     procedure TimerEvent(Sender: TObject);
     procedure WriteToClipboard(const Text: string);
     function GetFormText: string;
-    function TimeoutUnit(Secs: Integer): string;
+    class function TimeoutUnit(Count: Integer; Seconds: Boolean = True): string;  
     procedure CancelAutoClose;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -350,6 +350,20 @@ function DSARegStore: TDSARegStorage;
 function DSAQueueStore: TDSAQueueStorage;
 
 //----------------------------------------------------------------------------
+// DSA time formatting function.
+// Returns a string representing the number of seconds.
+// Standard function returns this:
+// "(Secs) sec" if Secs is lower than 60
+// "(Secs div 60) min (Secs mod 60) sec" if Secs is greater or equal to 60
+// The min and sec constants are taken from resource strings in JvResources.
+//----------------------------------------------------------------------------
+type
+  TJvDSATimeFormatter = function(Secs: Integer) : string;
+
+procedure SetDSATimeFormatter(const ATimeFormatter: TJvDSATimeFormatter);
+function StandardDSATimeFormatter(Secs: Integer) : string;
+
+//----------------------------------------------------------------------------
 // VCL component
 //----------------------------------------------------------------------------
 
@@ -443,6 +457,30 @@ const
 
 type
   PBoolean = ^Boolean;
+
+var
+  TimeFormatter: TJvDSATimeFormatter = StandardDSATimeFormatter;
+
+procedure SetDSATimeFormatter(const ATimeFormatter: TJvDSATimeFormatter);
+begin
+  TimeFormatter := ATimeFormatter
+end;
+
+function StandardDSATimeFormatter(Secs: Integer) : string;
+var
+  Mins: Integer;
+  TimeStr: string;
+begin
+  Mins := Secs div 60;
+  Secs := Secs mod 60;
+  if Mins <> 0 then
+    TimeStr := Format('%d %s %d %s', [Mins, TDSAMessageForm.TimeoutUnit(Mins, False),
+                                      Secs, TDSAMessageForm.TimeoutUnit(Secs)])
+  else
+    TimeStr := Format('%d %s', [Secs, TDSAMessageForm.TimeoutUnit(Secs)]);
+
+  Result := Format(RsCntdownText, [TimeStr]);
+end;
 
 //=== CheckMarkTexts =========================================================
 
@@ -555,7 +593,7 @@ begin
     end
     else
     if FCountdown <> nil then
-      FCountdown.Caption := Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]);
+      FCountdown.Caption := TimeFormatter(Timeout);  
   end;
 end;
 
@@ -615,12 +653,18 @@ begin
     TLabel(Components[I]).Caption, CrLf, DividerLine, ButtonCaptions, CrLf, DividerLine]);
 end;
 
-function TDSAMessageForm.TimeoutUnit(Secs: Integer): string;
+class function TDSAMessageForm.TimeoutUnit(Count: Integer; Seconds: Boolean): string;
 begin
-  if Secs <> 1 then
-    Result := RsCntdownSecsText
+  if Seconds then
+    if Count <> 1 then
+      Result := RsCntdownSecsText
+    else
+      Result := RsCntdownSecText
   else
-    Result := RsCntdownSecText;
+    if Count <> 1 then
+      Result := RsCntdownMinsText
+    else
+      Result := RsCntdownMinText;
 end;
 
 procedure TDSAMessageForm.CancelAutoClose;
@@ -793,13 +837,13 @@ begin
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
         {$IFDEF VCL}
-        DrawText(Canvas.Handle, PChar(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])),
-          Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
+        DrawText(Canvas.Handle, PChar(TimeFormatter(Timeout)),
+          Length(TimeFormatter(Timeout)) + 1, TempRect,     
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        DrawText(Canvas, Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]),
-          Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
+        DrawText(Canvas, TimeFormatter(Timeout),
+          Length(TimeFormatter(Timeout)) + 1, TempRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
         {$ENDIF VisualCLX}
         TimeoutTextWidth := TempRect.Right;
@@ -884,8 +928,8 @@ begin
         end;
       if ATimeout > 0 then
       begin
-        CountDownlabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Countdown', Format(RsCntdownText,
-          [Timeout, TimeoutUnit(Timeout)]), nil);
+        CountDownlabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Countdown',
+          TimeFormatter(Timeout), nil);   
         with CountDownlabel do
         begin
           {$IFDEF VCL}
