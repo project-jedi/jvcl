@@ -584,7 +584,7 @@ uses
   cxCustomData,
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvResources, JvParameterList, JvParameterListParameter, TypInfo,
-  JvDSADialogs, Dialogs;
+  JvDSADialogs, Dialogs, Variants;
 
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
@@ -2056,10 +2056,7 @@ begin
               else
                 Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
             CellType := ctBlank;
-          end
-          else
-            if Field.DataType in [ftString, ftWideString] then
-              Text := '''' + AnsiReplaceStr(Text, '''', '''''') + '''';
+          end;
     end
     else
       if Text = '' then
@@ -2073,19 +2070,21 @@ begin
         else
           if CellType in [ctDateTime, ctDate, ctTime] then
           begin
-            DT := StrToDate(Text);
-            if DT <= 0 then
-              Text := SNull
-            else
-              if DT = Trunc(DT) then
-                Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
+            try
+              DT := VarToDateTime(Text);
+              if DT <= 0 then
+                Text := SNull
               else
-                Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
+                if DT = Trunc(DT) then
+                  Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
+                else
+                  Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
+            except
+              on e:exception do
+                Text := Format(StoDateFormatLong, [Text]);
+            end;
             CellType := ctBlank;
-          end
-          else
-            if CellType in [ctString] then
-              Text := '''' + AnsiReplaceStr(Text, '''', '''''') + '''';
+          end;
 end;
 
 procedure TJvDatabaseSMExportOptions.SMEWizardDlgOnBeforeExecute(Sender: TObject);
