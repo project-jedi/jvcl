@@ -66,11 +66,17 @@ type
   private
     FHeight: Integer;
     FWidth: Integer;
+    FOnChange: TNotifyEvent;
+    procedure SetHeight(const Value: Integer);
+    procedure SetWidth(const Value: Integer);
   public
     procedure Assign(Source: TPersistent); override;
+    procedure DoChange;
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
+    property Height: Integer read FHeight write SetHeight;
+    property Width: Integer read FWidth write SetWidth;
   end;
 
   // margins around an image
@@ -80,13 +86,21 @@ type
     FLeft: Integer;
     FRight: Integer;
     FBottom: Integer;
+    FOnChange: TNotifyEvent;
+    procedure SetBottom(const Value: Integer);
+    procedure SetLeft(const Value: Integer);
+    procedure SetRight(const Value: Integer);
+    procedure SetTop(const Value: Integer);
   public
     procedure Assign(Source: TPersistent); override;
+    procedure DoChange;
+    
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property Left: Integer read FLeft write FLeft;
-    property Top: Integer read FTop write FTop;
-    property Right: Integer read FRight write FRight;
-    property Bottom: Integer read FBottom write FBottom;
+    property Left: Integer read FLeft write SetLeft;
+    property Top: Integer read FTop write SetTop;
+    property Right: Integer read FRight write SetRight;
+    property Bottom: Integer read FBottom write SetBottom;
   end;
 
   // the vertical aligment
@@ -209,6 +223,8 @@ type
     procedure SetHotImages(Value: TCustomImageList);
   protected
     procedure ImageListChange(Sender: TObject);
+    procedure ImageSizeChange(Sender: TObject);
+    procedure ImageMarginChange(Sender: TObject);
     procedure DisabledImageListChange(Sender: TObject);
     procedure HotImageListChange(Sender: TObject);
     function FindForm: TWinControl;
@@ -230,7 +246,7 @@ type
     function IsOwnerDrawMenu: Boolean;
 
     // called when the menu has changed. If Rebuild is true, the menu
-    // as had to be rebuilt because of a change in its layout, not in
+    // has had to be rebuilt because of a change in its layout, not in
     // the properties of one of its item. Unfortunately, for a reason
     // yet to be discovered, Rebuild is always false, even when adding
     // or removing items in the menu.
@@ -241,6 +257,7 @@ type
     procedure Refresh;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState);
+    procedure Rebuild(ForceIfLoading: Boolean = False);
 
     // change registering methods
     procedure RegisterChanges(ChangeLink: TJvMenuChangeLink);
@@ -323,6 +340,8 @@ type
     procedure SetStyle(Value: TJvMenuStyle);
   protected
     procedure ImageListChange(Sender: TObject);
+    procedure ImageSizeChange(Sender: TObject);
+    procedure ImageMarginChange(Sender: TObject);
     procedure DisabledImageListChange(Sender: TObject);
     procedure HotImageListChange(Sender: TObject);
     procedure WndMessage(Sender: TObject; var AMsg: TMessage;
@@ -359,6 +378,7 @@ type
     procedure Popup(X, Y: Integer); override;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState);
+    procedure Rebuild(ForceIfLoading: Boolean = False);
 
     property Canvas: TCanvas read GetCanvas;
     // get the currently used painter
@@ -909,12 +929,19 @@ begin
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
   FChangeLinks := TObjectList.Create(False);
+
   FImageMargin := TJvImageMargin.Create;
+  FImageMargin.OnChange := ImageMarginChange;
+
   FImageSize := TJvMenuImageSize.Create;
+  FImageSize.OnChange := ImageSizeChange;
+
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
+
   FDisabledImageChangeLink := TChangeLink.Create;
   FDisabledImageChangeLink.OnChange := DisabledImageListChange;
+
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := HotImageListChange;
 
@@ -983,6 +1010,16 @@ procedure TJvMainMenu.ImageListChange(Sender: TObject);
 begin
   if Sender = FImages then
     RefreshMenu(IsOwnerDrawMenu);
+end;
+
+procedure TJvMainMenu.ImageMarginChange(Sender: TObject);
+begin
+  Rebuild;
+end;
+
+procedure TJvMainMenu.ImageSizeChange(Sender: TObject);
+begin
+  Rebuild;
 end;
 
 procedure TJvMainMenu.SetImages(Value: TCustomImageList);
@@ -1077,6 +1114,25 @@ begin
   Result := FindControl(WindowHandle);
   if (Result = nil) and (Owner is TWinControl) then
     Result := TWinControl(Owner);
+end;
+
+procedure TJvMainMenu.Rebuild(ForceIfLoading: Boolean);
+var
+  DummyItem: TMenuItem;
+begin
+  if not ForceIfLoading and (csLoading in ComponentState) then
+    Exit;
+    
+  // Ideally, we would like to call RebuildHandle in TMenuItem but this
+  // method is private. As a result, we add and immediately remove a fake
+  // item. This in turn triggers the call to RebuildHandle.
+  DummyItem := TMenuItem.Create(nil);
+  try
+    Items.Add(DummyItem);
+    Items.Remove(DummyItem);
+  finally
+    DummyItem.Free;
+  end;
 end;
 
 procedure TJvMainMenu.Refresh;
@@ -1433,14 +1489,22 @@ begin
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
   FCursor := crDefault;
   FImageMargin := TJvImageMargin.Create;
+  FImageMargin.OnChange := ImageMarginChange;
+
   FImageSize := TJvMenuImageSize.Create;
+  FImageSize.OnChange := ImageSizeChange;
+
   PopupList.Add(Self);
+
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
+
   FDisabledImageChangeLink := TChangeLink.Create;
   FDisabledImageChangeLink.OnChange := DisabledImageListChange;
+
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := HotImageListChange;
+  
   SetPopupPoint(Point(-1, -1));
 
   // Set default values that are not 0
@@ -1496,6 +1560,16 @@ procedure TJvPopupMenu.ImageListChange(Sender: TObject);
 begin
   if Sender = FImages then
     RefreshMenu(IsOwnerDrawMenu);
+end;
+
+procedure TJvPopupMenu.ImageMarginChange(Sender: TObject);
+begin
+  Rebuild;
+end;
+
+procedure TJvPopupMenu.ImageSizeChange(Sender: TObject);
+begin
+  Rebuild;
 end;
 
 procedure TJvPopupMenu.SetImages(Value: TCustomImageList);
@@ -1878,6 +1952,25 @@ procedure TJvPopupMenu.ReadState(Reader: TReader);
 begin
   //  Reader.ReadComponent(FJvMenuItemPainter);
   inherited ReadState(Reader);
+end;
+
+procedure TJvPopupMenu.Rebuild(ForceIfLoading: Boolean);
+var
+  DummyItem: TMenuItem;
+begin
+  if not ForceIfLoading and (csLoading in ComponentState) then
+    Exit;
+
+  // Ideally, we would like to call RebuildHandle in TMenuItem but this
+  // method is private. As a result, we add and immediately remove a fake
+  // item. This in turn triggers the call to RebuildHandle.
+  DummyItem := TMenuItem.Create(nil);
+  try
+    Items.Add(DummyItem);
+    Items.Remove(DummyItem);
+  finally
+    DummyItem.Free;
+  end;
 end;
 
 procedure TJvPopupMenu.WriteState(Writer: TWriter);
@@ -2762,25 +2855,14 @@ begin
 end;
 
 procedure TJvCustomMenuItemPainter.ForceMenuRebuild;
-var
-  DummyItem: TMenuItem;
-  RootItem: TMenuItem;
 begin
-  // Ideally, we would like to call RebuildHandle in TMenuItem but this
-  // method is private. As we cannot, we add and immediately remove a fake
-  // item. This in turns trigger the calls to RebuildHandle.
-  if Assigned(FMainMenu) then
-    RootItem := FMainMenu.Items
-  else
-    RootItem := FPopupMenu.Items;
+  if csLoading in ComponentState then
+    Exit;
 
-  DummyItem := TMenuItem.Create(nil);
-  try
-    RootItem.Add(DummyItem);
-    RootItem.Remove(DummyItem);
-  finally
-    DummyItem.Free;
-  end;
+  if Assigned(FMainMenu) then
+    FMainMenu.Rebuild
+  else if Assigned(FPopupMenu) then
+    FPopupMenu.Rebuild;
 end;
 
 procedure TJvCustomMenuItemPainter.UpdateFieldsFromMenu;
@@ -3679,6 +3761,48 @@ begin
     inherited Assign(Source);
 end;
 
+procedure TJvImageMargin.DoChange;
+begin
+  if Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+procedure TJvImageMargin.SetBottom(const Value: Integer);
+begin
+  if FBottom <> Value then
+  begin
+    FBottom := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvImageMargin.SetLeft(const Value: Integer);
+begin
+  if FLeft <> Value then
+  begin
+    FLeft := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvImageMargin.SetRight(const Value: Integer);
+begin
+  if FRight <> Value then
+  begin
+    FRight := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvImageMargin.SetTop(const Value: Integer);
+begin
+  if FTop <> Value then
+  begin
+    FTop := Value;
+    DoChange;
+  end;
+end;
+
 //=== { TJvMenuImageSize } ===================================================
 
 procedure TJvMenuImageSize.Assign(Source: TPersistent);
@@ -3690,6 +3814,30 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+procedure TJvMenuImageSize.DoChange;
+begin
+  if Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+procedure TJvMenuImageSize.SetHeight(const Value: Integer);
+begin
+  if FHeight <> Value then
+  begin
+    FHeight := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvMenuImageSize.SetWidth(const Value: Integer);
+begin
+  if FWidth <> Value then
+  begin
+    FWidth := Value;
+    DoChange;
+  end;
 end;
 
 initialization
