@@ -42,15 +42,15 @@ type
   private
     FDataLink: TDataLink;
     FUpdate: Boolean;
-    FNoIndexItem: string;
+    FNoIndexItemName: string;
     FEnableNoIndex: Boolean;
     FChanging: Boolean;
     FDisplayMode: TJvIdxDisplayMode;
     function GetDataSource: TDataSource;
     procedure SetDataSource(Value: TDataSource);
     function GetIndexFieldName(var AName: string): Boolean;
-    procedure SetNoIndexItem(const Value: string);
-    function GetNoIndexItem: string;
+    procedure SetNoIndexItemName(const Value: string);
+    function GetNoIndexItemName: string;
     procedure SetEnableNoIndex(Value: Boolean);
     procedure SetDisplayMode(Value: TJvIdxDisplayMode);
     procedure ActiveChanged;
@@ -66,7 +66,7 @@ type
     destructor Destroy; override;
   published
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property NoIndexItem: string read GetNoIndexItem write SetNoIndexItem;
+    property NoIndexItemName: string read GetNoIndexItemName write SetNoIndexItemName;
     property EnableNoIndex: Boolean read FEnableNoIndex write SetEnableNoIndex default False;
     property DisplayMode: TJvIdxDisplayMode read FDisplayMode write SetDisplayMode default dmFieldLabels;
     property DragCursor;
@@ -176,7 +176,7 @@ begin
   FDataLink := TJvKeyDataLink.Create(Self);
   Style := csDropDownList;
   FUpdate := False;
-  FNoIndexItem := '';
+  FNoIndexItemName := '';
   FEnableNoIndex := False;
   FDisplayMode := dmFieldLabels;
 end;
@@ -187,11 +187,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDBIndexCombo.SetNoIndexItem(const Value: string);
+procedure TJvDBIndexCombo.SetNoIndexItemName(const Value: string);
 begin
-  if Value <> FNoIndexItem then
+  if Value <> FNoIndexItemName then
   begin
-    FNoIndexItem := Value;
+    FNoIndexItemName := Value;
     if not (csLoading in ComponentState) then
       ActiveChanged;
   end;
@@ -217,9 +217,9 @@ begin
   end;
 end;
 
-function TJvDBIndexCombo.GetNoIndexItem: string;
+function TJvDBIndexCombo.GetNoIndexItemName: string;
 begin
-  Result := FNoIndexItem;
+  Result := FNoIndexItemName;
 end;
 
 function TJvDBIndexCombo.GetDataSource: TDataSource;
@@ -278,12 +278,13 @@ begin
   Result := True;
   if ItemIndex >= 0 then
   begin
-    if EnableNoIndex and (Items[ItemIndex] = NoIndexItem) then
+    if EnableNoIndex and (Items[ItemIndex] = NoIndexItemName) then
       AName := ''
     else
     begin
       AName := TIndexDef(Items.Objects[ItemIndex]).Fields;
-      if AName = '' then
+      if (AName = '') or
+         (ixDescending in TIndexDef(Items.Objects[ItemIndex]).Options)  then
       begin
         AName := TIndexDef(Items.Objects[ItemIndex]).Name;
         Result := False;
@@ -312,7 +313,13 @@ begin
           if not (ixExpression in Options) then
           begin
             if FDisplayMode = dmIndexName then
-              AFld := Name
+            begin
+              if (Name = '') and (EnableNoIndex) and
+                 (TableType = ttparadox) and (ixprimary in Options) then
+                AFLd := NoIndexItemName
+              else
+                AFld := Name
+            end
             else
             begin
               AFld := '';
@@ -334,8 +341,8 @@ begin
           end;
     end;
     if EnableNoIndex then
-      if List.IndexOf(NoIndexItem) < 0 then
-        List.AddObject(NoIndexItem, nil);
+     if List.IndexOf(NoIndexItemName) < 0 then
+       List.AddObject(NoIndexItemName, nil);
   finally
     List.EndUpdate;
   end;
@@ -409,7 +416,7 @@ procedure TJvDBIndexCombo.UpdateList;
     end;
     if EnableNoIndex and FDataLink.Active then
       if (Table.IndexFieldNames = '') and (Table.IndexName = '') then
-        Result := Items.IndexOf(NoIndexItem);
+        Result := Items.IndexOf(NoIndexItemName);
   end;
 
 begin
