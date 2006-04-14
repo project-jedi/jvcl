@@ -630,7 +630,10 @@ resourcestring
   RsDSActkAskText = 'Do not ask me again';
   RsDSActkWarnText = 'Do not warn me again';
 
-  RsCntdownText = 'This dialog is closing in %0:d %1:s.';
+  RsCntdownText = 'This dialog is closing in %s.';
+
+  RsCntdownMinText = 'minute';
+  RsCntdownMinsText = 'minutes';
   RsCntdownSecText = 'second';
   RsCntdownSecsText = 'seconds';
 
