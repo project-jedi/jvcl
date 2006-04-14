@@ -2004,46 +2004,29 @@ end;
 function TJvMemoryData.GetValues(FldNames: string = ''): Variant;
 var
   I: Integer;
-  List: TStrings;
-
-  function FldNamesToStrList(Flds: string): TStrings;
-  var
-    InStr, SubStr: string;
-    I, Len: Integer;
-  begin
-    Result := TStringList.Create;
-    Len := Length(Flds);
-    InStr := Flds;
-    SubStr := '';
-    I := 1;
-    while (I <= Len) do
-    begin
-      if (InStr[I] = ';') or (I = Len) then
-      begin
-        if (I = Len) and not (InStr[I] = ';') then
-          SubStr := SubStr + InStr[I];
-        Result.Add(SubStr);
-        SubStr := '';
-      end
-      else
-        SubStr := SubStr + InStr[I];
-      Inc(I);
-    end;
-  end;
-
+  List : TList;
 begin
   Result := Null;
-  if FldNames = '' then 
-    List := FldNamesToStrList(FKeyFieldNames)
-  else
-    List := FldNamesToStrList(FldNames);
-  try
-    I := List.Count;
-    Result := VarArrayCreate([0, I], varVariant);
+  if FldNames = '' then
+    FldNames := FKeyFieldNames;
+  if FldNames = '' then Exit;
+
+  // Mantis 3610: If there is only one field in the dataset, return a
+  // variant array with only one element. This seems to be required for
+  // ADO, DBIsam, DBX and others to work.
+  if Pos(';',FldNames) > 0 then
+  begin
+    List := TList.Create;
+    GetFieldList(List,FldNames);
+    Result := VarArrayCreate([0, List.Count - 1], varVariant);
     for I := 0 to List.Count - 1 do
-      Result[I] := FieldValues[List[I]];
-  finally
+      Result[I] := TField(List[I]).Value;
     FreeAndNil(List);
+  end
+  else
+  begin
+    Result := VarArrayCreate([0,0],VarVariant);
+    Result[0] := FieldByName(FldNames).Value;
   end;
 end;
 
