@@ -57,14 +57,17 @@ uses
   {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   {$IFDEF USEJVCL}
-  ComCtrls, Grids,
+  ComCtrls,
   JvComponentBase;
   {$ELSE}
-  ComCtrls, Grids;
+  ComCtrls;
   {$ENDIF USEJVCL}
 
 type
-  TLanguageLoaderOptions = set of (lofTrimSpaces);
+  TLanguageLoaderOptions = set of (lofTrimSpaces, lofConvertEscapes);
+  // lofConvertEscapes: if set (=default) converts escape sequences when reading
+  // language strings form language file, eg \n = #10 (Note: only used in
+  // FTranslationStrings, not in FTranslations
   //{опция удаления начальных и завершающих пробелов}
   { Option to Trim first and last spaces [translated] }
 
@@ -74,19 +77,102 @@ type
   TJvgLanguageLoader = class(TComponent)
   {$ENDIF USEJVCL}
   private
-    FList: TStringList;
+    // FTranslations: temporary stringlist with translations of strings on a form
+    // Note: is destroyed after the translation is complete!
+    FTranslations: TStringList;
+
+    // FOldStrings: temporary stringlist needed when changing translations
+    // Note: is destroyed after the translation is complete!
+    FOldStrings: TStringList;
+
+    // FTranslationChange: used internally. Set to true when changing translations
+    // This way we now we have to look up the original text in FOldStrings.
+    FTranslationChange: Boolean;
+
+    // FOptions: some translation options
     FOptions: TLanguageLoaderOptions;
+
+    // FSaveEmpty doesn't work at the moment? (include in options?)
+    //FSaveEmpty: Boolean; //JGB: save empty strings or not (default=false)
+
+    // FDictionaryFileName: Name and path of the language dictionary file
+    FDictionaryFileName: string;
+
+    // FFormSection: section in languagefile where the translation of the
+    // current form can be found
+    // (empty=default=[<FormName>] (if Owner=nil: [Translation])
+    FFormSection: string;
+
+    // FStringsSection: section in languagefile where the translation of
+    // string consts can be found
+    // (empty=default=[<FormName>.Strings] (if Owner=nil: [Translation.Strings])
+    FStringsSection: string;
+
+    // FTranslationStrings: list of string translations!
+    // Read form FStringSection of language file
+    FTranslationStrings: TStringList;
+
+    // FIgnoreList: List of component names that should not be translated e.g. contents of a RichEdit control
+    FIgnoreList: TStringList;
+
+    // DEPRECATED
     function TranslateString(AText: string): string;
+
+    procedure SetIgnoreList(const Value: TStringList);
+    procedure SetTranslationStrings(const Value: TStringList);
+    function GetFormSection: string;
+    function GetStringsSection: string;
   protected
     procedure UpdateComponent(Component: TPersistent); virtual;
-  public
+    procedure GetAllComponentStrings(Component: TPersistent); virtual;
+
+    // Changed to internal function
     procedure LoadLanguage(Component: TComponent; const FileName: string);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    // TranslateComponent: Translate the said component using the language file
+    // specified in FDictionaryFileName
+    procedure TranslateComponent(Component: TComponent; DoLoadStrings: Boolean);
+
+    // ChangeTranslation: As TranslateComponent but now change an already
+    // translated component to another language. DictionaryFileName should
+    // contain the new language filename and the old (current) language file
+    // should be in OldLanguageFilename
+    procedure ChangeTranslation(Component: TComponent; DoLoadStrings: Boolean;
+      OldLanguageFileName: string);
+
+    // LoadStrings: Loads strings form the FStringsSection of the languagefile
+    // into FTranslationStrings, after that it can be used in MessageBox and Translate
+    procedure LoadStrings;
+
+    // JGB - Save all strings on a form (equivalent to LoadLanguage
+    procedure SaveAllStrings(Component: TComponent; FileName: string);
+
+    // JGB - Translation wrapper for Application.Messagebox
+    // Call this instead of Application.Messagebox when translation is needed
+    function MessageBox(const Text, Caption: PChar; Flags: Longint = MB_OK): Integer;
+    // Maybe more like MessageBox needed?
+
+    // JGB - Translate: use this to translate a string loaded in ... stringlist (todo)
+    function Translate(const Text: string): string;
+
+    property TranslationStrings: TStringList read FTranslationStrings
+      write SetTranslationStrings;
   published
-    property Options: TLanguageLoaderOptions read FOptions write FOptions;
+    property Options: TLanguageLoaderOptions read FOptions write FOptions
+      default [lofTrimSpaces, lofConvertEscapes];
+    property DictionaryFileName: string read FDictionaryFileName
+      write FDictionaryFileName;
+    property FormSection: string read GetFormSection write FFormSection;
+    property StringsSection: string read GetStringsSection write FStringsSection;
+    property IgnoreList: TStringList read FIgnoreList write SetIgnoreList;
   end;
 
-procedure LoadLanguage(Component: TComponent; const FileName: string;
-  Options: TLanguageLoaderOptions);
+
+procedure LoadLanguage(Component: TComponent; FileName: string; Options:
+  TLanguageLoaderOptions);
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
@@ -102,14 +188,15 @@ const
 
 implementation
 
-uses
-  TypInfo;
+{.$DEFINE DEBUG_LANG}
+uses {$IFDEF DEBUG_LANG}DbugIntf,{$ENDIF}
+  TypInfo, IniFiles, JclStrings;
 
 //{Ф-ия для загрузки словаря без предварительного создания компонента}
 { Function to load dictionary without previous creation of the component [translated] }
 
-procedure LoadLanguage(Component: TComponent; const FileName: string;
-  Options: TLanguageLoaderOptions);
+procedure LoadLanguage(Component: TComponent; FileName: string; Options:
+  TLanguageLoaderOptions);
 var
   LanguageLoader: TJvgLanguageLoader;
 begin
@@ -121,7 +208,56 @@ begin
   end;
 end;
 
-//=== { TJvgLanguageLoader } =================================================
+{ TJvgLanguageLoader }
+
+constructor TJvgLanguageLoader.Create(AOwner: TComponent);
+begin
+  inherited;
+  Options := [lofTrimSpaces,lofConvertEscapes];
+  FIgnoreList := TStringList.Create;
+  FIgnoreList.Sorted := True;
+  FIgnoreList.CaseSensitive := True;
+  FTranslationStrings := TStringList.Create;
+  FTranslationStrings.Sorted := True;
+  FTranslationStrings.CaseSensitive := True;
+end;
+
+destructor TJvgLanguageLoader.Destroy;
+begin
+  FreeAndNil(FIgnoreList);
+  FreeAndNil(FTranslationStrings);
+  inherited Destroy;
+end;
+
+procedure TJvgLanguageLoader.SetIgnoreList(const Value: TStringList);
+begin
+  FIgnoreList.Assign(Value);
+end;
+
+procedure TJvgLanguageLoader.SetTranslationStrings(const Value: TStringList);
+begin
+  FTranslationStrings.Assign(Value);
+end;
+
+function TJvgLanguageLoader.GetFormSection: string;
+begin
+  if FFormSection <> '' then
+    Result := FFormSection
+  else if Owner <> nil then
+    Result := Owner.Name
+  else
+    Result := 'Translation';
+end;
+
+function TJvgLanguageLoader.GetStringsSection: string;
+begin
+  if FStringsSection <> '' then
+    Result := FStringsSection
+  else if Owner <> nil then
+    Result := Owner.Name
+  else
+    Result := 'Translation.Strings';
+end;
 
 //{  Загрузка словаря, обход указанного компонента и  }
 //{  всех его дочерних компонентов                    }
@@ -129,7 +265,9 @@ end;
   [translated] }
 
 procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; const FileName: string);
-
+var 
+  IniFile: TCustomIniFile;
+  
   procedure UpdateAllComponents(Component: TComponent);
   var
     I: Integer;
@@ -142,15 +280,146 @@ procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; const FileName:
   end;
 
 begin
-  FList := TStringList.Create;
+  FTranslations := TStringList.Create;
+  IniFile := TIniFile.Create(FileName);
   try
     //{ Загрузка словаря из заданного файла }
     { Loading dictionary from given file }
-    FList.LoadFromFile(FileName);
-    FList.Sorted := True;
+    FTranslations.Sorted := true;
+    FTranslations.CaseSensitive := True;
+    IniFile.ReadSectionValues(FormSection,FTranslations);
     UpdateAllComponents(Component);
   finally
-    FreeAndNil(FList);
+    FTranslations.Free;
+    FreeAndNil(IniFile);
+  end;
+end;
+
+// TranslateComponent: Translate the said component using the language file
+// specified in FDictionaryFileName
+// if DoLoadStrings = true then LoadStrings is called after translating the form
+procedure TJvgLanguageLoader.TranslateComponent(Component: TComponent;
+  DoLoadStrings: Boolean);
+begin
+  if DictionaryFileName <> '' then
+  begin
+    LoadLanguage(Component,DictionaryFileName);
+    if DoLoadStrings then
+      LoadStrings;
+  end;
+end;
+
+// ChangeTranslation: As TranslateComponent but now change an already
+// translated component to another language. DictionaryFileName should
+// contain the new language filename and the old (current) language file
+// should be in OldLanguageFilename
+procedure TJvgLanguageLoader.ChangeTranslation(Component: TComponent;
+  DoLoadStrings: Boolean; OldLanguageFileName: string);
+var 
+  OldIniFile: TCustomIniFile;
+  I: Integer;
+  EqualPos, Len: Integer;
+  TempStr: string;
+begin
+  if (DictionaryFileName <> '') and (OldLanguageFileName <> '') then
+  begin
+    FOldStrings := TStringList.Create;
+    OldIniFile := TIniFile.Create(OldLanguageFileName);
+    try
+      FOldStrings.CaseSensitive := True;
+      FOldStrings.Sorted := False;
+      OldIniFile.ReadSectionValues(FormSection, FOldStrings);
+      FOldStrings.BeginUpdate;
+      for I := 0 to FOldStrings.Count-1 do
+      begin
+        TempStr := FOldStrings.Strings[I];
+        EqualPos := Pos('=', TempStr);
+        if EqualPos > 0 then // Found: exchange Name=Value
+        begin
+          Len := Length(TempStr);
+          FOldStrings.Strings[I] := Copy(TempStr, EqualPos + 1, Len - EqualPos) + '=' +
+            Copy(TempStr,1,EqualPos-1);
+        end;
+      end;
+      FOldStrings.EndUpdate;
+      FOldStrings.Sorted := True;
+      FTranslationChange := True;
+      LoadLanguage(Component, DictionaryFileName);
+    finally
+      FTranslationChange := False;
+      FreeAndNil(FOldStrings);
+      OldIniFile.Free;
+    end;
+    // *** Alas, Changing translation for the following is not possible!
+    if DoLoadStrings then
+      LoadStrings;
+  end;
+end;
+
+
+// LoadStrings: Loads strings form the FStringsSection of the languagefile
+// into FTranslationStrings, after that it can be used in MessageBox and Translate
+procedure TJvgLanguageLoader.LoadStrings;
+var 
+  I: Integer;
+  IniFile: TCustomIniFile;
+begin
+  if DictionaryFileName <> '' then
+  begin
+    IniFile := TIniFile.Create(DictionaryFileName);
+    try
+      TranslationStrings.Clear; // Remove old translation strings
+      TranslationStrings.Sorted := False; // no sort during processing
+      IniFile.ReadSectionValues(StringsSection, TranslationStrings);
+      if lofConvertEscapes in Options then
+      begin
+        TranslationStrings.BeginUpdate;
+        for I := 0 to TranslationStrings.Count-1 do
+          TranslationStrings.Strings[I] :=
+            StrEscapedToString(TranslationStrings.Strings[i]);
+        TranslationStrings.EndUpdate;
+      end;
+      TranslationStrings.Sorted := True; // and now sort once
+    finally
+      FreeAndNil(IniFile);
+    end;
+  end;
+end;
+
+
+// JGB - Save all strings on a form (equivalent to LoadLanguage
+procedure TJvgLanguageLoader.SaveAllStrings(Component: TComponent; FileName: string);
+var 
+  IniFile: TCustomIniFile;
+  
+  procedure GetAllComponents(Component: TComponent);
+  var
+    I: Integer;
+  begin
+    // Processing the component's properties [translated] 
+    GetAllComponentStrings(Component);
+    for I := 0 to Component.ComponentCount - 1 do
+      GetAllComponents(Component.Components[I]);
+  end;
+  
+  procedure WriteSectionValues;
+  var 
+    i: Integer;
+  begin
+    for I := 0 to FTranslations.Count-1 do
+      IniFile.WriteString(FormSection, FTranslations.Names[i],FTranslations.Values[FTranslations.Names[i]]);
+  end;
+  
+begin
+  FTranslations := TStringList.Create;
+  IniFile := TIniFile.Create(FileName);
+  try
+    // Saving dictionary to given file 
+    GetAllComponents(Component);
+    WriteSectionValues; // write to dictionary
+  finally
+    FTranslations.Free;
+    IniFile.Free;
   end;
 end;
 
@@ -164,19 +433,32 @@ var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  I, J: Integer;
+  I, J, Idx: integer;
   AName, PropName, StringPropValue: string;
   PropList: PPropList;
-  NumProps: Word;
+  NumProps: word;
   PropObject: TObject;
+  OldSort: Boolean;
+  TempTrans: string;
+  
+  function NeedsTranslation(SourceStr: string; var DestStr: string): Boolean;
+  begin
+    DestStr := TranslateString(SourceStr);
+    Result := SourceStr <> DestStr;
+  end;
+  
 begin
+  // JGB: First we look if this component is in the ignore list
+  if IgnoreList.Find(Component.GetNamePath, Idx) then
+    Exit; // Found in the list of excluded components so don't translate
+
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
   AName := TypeInf^.Name;
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * SizeOf(Pointer));
+  GetMem(PropList, NumProps * sizeof(Pointer));
 
   try
     GetPropInfos(TypeInf, PropList);
@@ -195,11 +477,11 @@ begin
           if PropName <> 'Name' then
           begin
             //{ Получение значения свойства и поиск перевода в словаре }
-            { Retrieving the property's value and searching for translation in
+            { Retrieving the property's value and searchin for translation in
               dictionary [translated] }
             StringPropValue := GetStrProp(Component, PropInfo);
-            SetStrProp(Component, PropInfo,
-              TranslateString(StringPropValue));
+            if NeedsTranslation(StringPropValue, TempTrans) then
+              SetStrProp(Component, PropInfo, TempTrans);
           end;
         tkClass:
           begin
@@ -218,33 +500,43 @@ begin
               begin
                 TStrings(PropObject).BeginUpdate;
                 try
-                  for J := 0 to TStrings(PropObject).Count - 1 do
-                    TStrings(PropObject)[J] :=
-                      TranslateString(TStrings(PropObject)[J]);
+                  if PropObject is TStringList then
+                  begin
+                    // It's problematic when a stringlist is sorted:
+                    // so reset it for now
+                    OldSort := (PropObject as TStringList).Sorted;
+                    (PropObject as TStringList).Sorted := False;
+                    for J := 0 to (PropObject as TStrings).Count - 1 do
+                      if NeedsTranslation(TStrings(PropObject)[J], TempTrans) then
+                        TStrings(PropObject)[J] := TempTrans;
+                    (PropObject as TStringList).Sorted := OldSort;
+                  end
+                  else
+                    for J := 0 to (PropObject as TStrings).Count - 1 do
+                      if NeedsTranslation(TStrings(PropObject)[J], TempTrans) then
+                        TStrings(PropObject)[J] := TempTrans;
                 finally
                   TStrings(PropObject).EndUpdate;
                 end;
-              end
-              else
+              end;
               if PropObject is TTreeNodes then
               begin
                 TTreeNodes(PropObject).BeginUpdate;
                 try
-                  for J := 0 to TTreeNodes(PropObject).Count - 1 do
-                    TTreeNodes(PropObject).Item[J].Text :=
-                      TranslateString(TTreeNodes(PropObject).Item[J].Text);
+                  for J := 0 to (PropObject as TTreeNodes).Count - 1 do
+                    if NeedsTranslation(TTreeNodes(PropObject).Item[J].Text, TempTrans) then
+                      TTreeNodes(PropObject).Item[J].Text := TempTrans;
                 finally
                   TTreeNodes(PropObject).EndUpdate;
                 end;
-              end
-              else
+              end;
               if PropObject is TListItems then
               begin
                 TListItems(PropObject).BeginUpdate;
                 try
-                  for J := 0 to TListItems(PropObject).Count - 1 do
-                    TListItems(PropObject).Item[J].Caption :=
-                      TranslateString(TListItems(PropObject).Item[J].Caption);
+                  for J := 0 to (PropObject as TListItems).Count - 1 do
+                    if NeedsTranslation(TListItems(PropObject).Item[J].Caption, TempTrans) then
+                      TListItems(PropObject).Item[J].Caption := TempTrans;
                 finally
                   TListItems(PropObject).EndUpdate;
                 end;
@@ -257,7 +549,109 @@ begin
       end;
     end;
   finally
-    FreeMem(PropList, NumProps * SizeOf(Pointer));
+    FreeMem(PropList, NumProps * sizeof(Pointer));
+  end;
+end;
+
+{ Get all strings on this component that can be translated and put it in
+  the dictionary. }
+
+procedure TJvgLanguageLoader.GetAllComponentStrings(Component: TPersistent);
+var
+  PropInfo: PPropInfo;
+  TypeInf, PropTypeInf: PTypeInfo;
+  TypeData: PTypeData;
+  I, J, Idx: integer;
+  AName, PropName, StringPropValue: string;
+  PropList: PPropList;
+  NumProps: Word;
+  PropObject: TObject;
+begin
+  // JGB: First we look if this component is in the ignore list
+  if IgnoreList.Find(Component.GetNamePath, Idx) then
+    Exit; // Found in the list of excluded components so don't translate
+
+  { Playing with RTTI }
+  TypeInf := Component.ClassInfo;
+  AName := TypeInf^.Name;
+  TypeData := GetTypeData(TypeInf);
+  NumProps := TypeData^.PropCount;
+
+  GetMem(PropList, NumProps * sizeof(pointer));
+
+  try
+    GetPropInfos(TypeInf, PropList);
+
+    for I := 0 to NumProps - 1 do
+    begin
+      PropName := PropList^[I]^.Name;
+
+      PropTypeInf := PropList^[I]^.PropType^;
+      PropInfo := PropList^[I];
+
+      case PropTypeInf^.Kind of
+        tkString, tkLString:
+          { .Name is not to be translated [translated] }
+          if PropName <> 'Name' then
+          begin
+            { Retrieving the property's value and storing in dictionary  }
+            StringPropValue := GetStrProp(Component, PropInfo);
+            if {FSaveEmpty or} (StringPropValue <> '') then
+            begin
+              //FTranslations.Add(PropName+'='+StringPropValue);
+              FTranslations.Add(Component.GetNamePath + '.' + PropName);
+              FTranslations.Values[Component.GetNamePath + '.' + PropName] := StringPropValue;
+            end;
+          end;
+        tkClass:
+          begin
+            PropObject := GetObjectProp(Component, PropInfo); //{, TPersistent}
+
+            if Assigned(PropObject) then
+            begin
+              { For children properties-classes calling iterate again [translated] }
+              if (PropObject is TPersistent) then
+                UpdateComponent(PropObject as TPersistent);
+
+              { Specific handling of some certain classes [translated] }
+              if (PropObject is TStrings) then
+              begin
+                for J := 0 to (PropObject as TStrings).Count - 1 do
+                  if {FSaveEmpty or} (TStrings(PropObject)[J] <> '') then
+                  begin
+                    FTranslations.Add(Component.GetNamePath + '.' + PropName);
+                    FTranslations.Values[Component.GetNamePath + '.' + PropName] :=
+                      TStrings(PropObject)[J];
+                  end;
+              end;
+              if (PropObject is TTreeNodes) then
+              begin
+                for J := 0 to (PropObject as TTreeNodes).Count - 1 do
+                  if {FSaveEmpty or} (TTreeNodes(PropObject).Item[J].Text <> '') then
+                  begin
+                    FTranslations.Add(Component.GetNamePath + '.' + PropName);
+                    FTranslations.Values[Component.GetNamePath + '.' + PropName] :=
+                      TTreeNodes(PropObject).Item[J].Text;
+                  end;
+              end;
+              if (PropObject is TListItems) then
+              begin
+                for J := 0 to (PropObject as TListItems).Count - 1 do
+                  if {FSaveEmpty or} (TListItems(PropObject).Item[J].Caption <> '') then
+                  begin
+                    FTranslations.Add(Component.GetNamePath + '.' + PropName);
+                    FTranslations.Values[Component.GetNamePath + '.' + PropName] :=
+                      TListItems(PropObject).Item[J].Caption;
+                  end;
+              end;
+              { And here may be added more specific handlers for certain other
+                classes [translated] }
+            end;
+          end;
+      end;
+    end;
+  finally
+    FreeMem(PropList, NumProps * sizeof(pointer));
   end;
 end;
 
@@ -265,19 +659,44 @@ end;
 { Searching for translation of given line in dictionary [translated] }
 
 function TJvgLanguageLoader.TranslateString(AText: string): string;
+var 
+  TempStr: string;
 begin
-  if AText <> '' then
-  begin
-    if lofTrimSpaces in Options then
-      AText := Trim(AText);
-    if Assigned(FList) and (FList.IndexOfName(AText) <> -1) then
-      Result := FList.Values[AText]
-    else
-      Result := AText;
-  end
+  if lofTrimSpaces in Options then
+    AText := trim(AText);
+
+  if FTranslationChange then
+    TempStr := FOldStrings.Values[AText]
   else
-    Result := '';
+    TempStr := AText;
+
+  if FTranslations.IndexOfName(TempStr) <> -1 then
+    Result := FTranslations.Values[TempStr]
+  else
+    Result := AText;
 end;
+
+// JGB - Translation wrapper for Application.Messagebox
+// Call this instead of Application.Messagebox when translation is needed
+function TJvgLanguageLoader.MessageBox(const Text, Caption: PChar; Flags: Longint = MB_OK): Integer;
+begin
+  Result := Application.MessageBox(PChar(Translate(string(Text))),PChar(Translate(string(Caption))),Flags);
+end;
+
+// JGB - Translate: use this to translate a string
+function TJvgLanguageLoader.Translate(const Text: string): string;
+begin
+  // should be removed: spaces are always trimmed when using ini file
+  if lofTrimSpaces in Options then
+    Result := Trim(Text)
+  else
+    Result := Text;
+
+  Result := FTranslationStrings.Values[Result];
+  if Result = '' then
+    Result := Text;
+end;
+
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
