@@ -311,7 +311,7 @@ begin
     case FHighlighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlJava, hlNQC, hlCSharp:
+      hlCBuilder, hlJava, hlJScript, hlNQC, hlCSharp:
         Parser.Style := psCpp;
       hlPython:
         Parser.Style := psPython;
@@ -431,6 +431,14 @@ const
     ' default for native short transient new static true' +
     ' null super try package switch void private synchronized volatile' +
     ' protected this while public throw return throws ';
+  JScriptKeyWords =
+//'@cc_on @if @set'
+    ' break delete function return typeof case do if switch var' +
+    ' catch else in this void continue false instanceof throw while' +
+    ' debugger finally new true with default for null try' +
+    ' abstract double goto native static boolean enum implements package super' +
+    ' byte export import private synchronized char extends int protected throws' +
+    ' class final interface public transient const float long short volatile' ;
 
   VBKeyWords =
     ' as and base binary byref byval call case class compare const date debug declare deftype dim do each else elseif ' +
@@ -572,6 +580,10 @@ const
   begin
     Result := PosNI(St, JavaKeyWords);
   end;
+  function IsJScriptKeyWord(const St: string): Boolean;
+  begin
+    Result := PosNI(St, JScriptKeyWords);
+  end;
 
   function IsVBKeyWord(const St: string): Boolean;
   begin
@@ -638,7 +650,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlJava, hlPhp, hlNQC, hlCSharp:
+      hlCBuilder, hlJava, hlJScript, hlPhp, hlNQC, hlCSharp:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       // Support for SQL comment line beginning with -- 
@@ -675,7 +687,7 @@ const
       hlPascal:
         Result := ((LS > 0) and ((St[1] = '{') and (St[2] = '$'))) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*') and (St[3] = '$'))));
-      {hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
+      {hlCBuilder, hlSql, hlJava, hlJscript, hlPhp, hlNQC:
       hlVB:
       hlPython, hlPerl:
       hlIni:
@@ -691,7 +703,7 @@ const
   begin
     LS := Length(St);
     case FHighlighter of
-      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp,
+      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlJScript, hlPerl, hlCocoR, hlPhp,
         hlNQC, hlCSharp:
         Result := (LS > 0) and ((St[1] = '''') or (St[1] = '"'));
       hlVB:
@@ -975,6 +987,14 @@ begin
               SetColor(Colors.Declaration)
             else
               F := False;
+          hlJScript:
+            if IsJScriptKeyWord(Token) then
+              SetColor(Colors.Reserved)
+            else
+            if PrevToken = 'function' then
+              SetColor(Colors.Declaration)
+            else
+              F := False;
           hlVB:
             if IsVBKeyWord(Token) then
               SetColor(Colors.Reserved)
@@ -1096,7 +1116,7 @@ begin
       if IsIntConstant(Token) or IsRealConstant(Token) then
         SetColor(Colors.Number)
       else
-      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC, hlCSharp]) and
+      if (FHighlighter in [hlCBuilder, hlJava, hlJScript, hlPython, hlPhp, hlNQC, hlCSharp]) and
         (PrevToken = '0') and ((Token[1] = 'x') or (Token[1] = 'X')) then
         SetColor(Colors.Number)
       else
@@ -1300,7 +1320,7 @@ begin
                   end;
                 end;
             end;
-          hlCBuilder, hlSql, hlJava, hlPhp, hlNQC, hlCSharp:
+          hlCBuilder, hlSql, hlJava, hlJScript, hlPhp, hlNQC, hlCSharp:
             case FLong of
               lgNone: //  not in comment
                 case S[I] of
@@ -1330,7 +1350,7 @@ begin
                           { ?? }
                       end
                       else
-                      if FHighlighter in [hlCBuilder, hlJava, hlNQC] then
+                      if FHighlighter in [hlCBuilder, hlJava, hlJScript, hlNQC] then
                       begin
                         if (LastNonSpaceChar(S) = '\') and (HasStringOpenEnd(Lines, iLine)) then
                           FLong := lgString;
@@ -1373,7 +1393,7 @@ begin
                   end
                   else
                   begin
-                    if FHighlighter in [hlCBuilder, hlJava, hlNQC] then
+                    if FHighlighter in [hlCBuilder, hlJava, hlJScript, hlNQC] then
                     begin
                       if (LastNonSpaceChar(S) <> '\') or (not HasStringOpenEnd(Lines, iLine)) then
                         FLong := lgNone;
@@ -1589,7 +1609,7 @@ begin
             Result := P - PChar(FLine);
           end;
       end;
-    hlCBuilder, hlSql, hlJava, hlPhp, hlNQC, hlCSharp:
+    hlCBuilder, hlSql, hlJava, hlJScript, hlPhp, hlNQC, hlCSharp:
       begin
         case FLong of
           lgComment2:
@@ -1682,7 +1702,7 @@ begin
   case FHighlighter of
     hlPascal:
       S := #13'{}*()/ ';
-    hlCBuilder, hlJava, hlSql, hlPhp, hlNQC, hlCSharp:
+    hlCBuilder, hlJava, hlJScript, hlSql, hlPhp, hlNQC, hlCSharp:
       S := #13'*/\ ';
     hlVB:
       S := #13'''';

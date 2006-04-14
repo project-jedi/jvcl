@@ -1145,7 +1145,7 @@ type
 //=== Highligther Editor =====================================================
 
 type
-  TJvHighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
+  TJvHighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlJScript, hlVB,
     hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC, hlCSharp,
     hlSyntaxHighlighter);
   TLongTokenType = 0..255;
