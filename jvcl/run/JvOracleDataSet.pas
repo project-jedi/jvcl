@@ -629,9 +629,7 @@ begin
   if not ThreadOptions.RefreshInThread or not ThreadAllowed or
     ThreadIsActive or (csDesigning in ComponentState) then
   begin
-    HandleBeforeOpenRefresh;
     inherited InternalRefresh;
-    HandleAfterOpenRefresh;
     FCurrentOperation := todoNothing;
   end
   else
