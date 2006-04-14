@@ -958,7 +958,7 @@ begin
       begin
         expandedTargets.Add(Trim(currentTarget));
         if not Assigned(TargetList.ItemsByName[currentTarget]) and (GetNonPersoTarget(currentTarget) = currentTarget) then
-          WriteLn(Format('Unknown target: %s', [currentTarget])); 
+          SendMsg(Format('Unknown target: %s', [currentTarget])); 
       end;
     end;
 
