@@ -63,7 +63,7 @@ uses
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
   JvDesktopAlert, JvDesktopAlertEditors, JvProgressComponent, JvSelectDirectory,
   JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
-  JvTipOfDayEditor;
+  JvTipOfDayEditor, JvProgressComponentEditor;
 
 {$R JvDlgsReg.dcr}
 
@@ -110,6 +110,7 @@ begin
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvProgressComponent, TJvProgressComponentEditor);
   {$IFDEF VCL}
   RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvSaveDialog, TJvBaseDlgEditor);
