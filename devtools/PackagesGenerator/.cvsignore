@@ -2,3 +2,6 @@
 *.ddp
 *.drc
 *.~*
+*.local
+*.identcache
+__history
