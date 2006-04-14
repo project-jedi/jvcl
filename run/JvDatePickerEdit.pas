@@ -1097,10 +1097,16 @@ begin
 end;
 
 procedure TJvCustomDatePickerEdit.SetPopupValue(const Value: Variant);
+var
+  NewDate: TDateTime;
 begin
   if FPopup is TJvDropCalendar then
-    TJvDropCalendar(FPopup).SelDate :=
-      StrToDateDef(VarToStr(Value), SysUtils.Date);
+  begin
+    // We must do the conversion ourselves as the date format might
+    // have been personalized. (Mantis 3628)
+    AttemptTextToDate(VarToStr(Value), NewDate);
+    TJvDropCalendar(FPopup).SelDate := NewDate;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
