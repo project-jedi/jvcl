@@ -255,7 +255,6 @@ type
     FAutoCompleteIntf: IAutoComplete;
     FAutoCompleteItems: TStrings;
     FAutoCompleteOptions: TJvAutoCompleteOptions;
-    FAutoCompleteSource: IEnumString;
     procedure SetAutoCompleteItems(Strings: TStrings);
     procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
     procedure SetAlignment(Value: TAlignment);
@@ -368,6 +367,8 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateAutoComplete; virtual;
+    procedure DestroyWnd; override;
+    procedure DestroyAutoComplete; virtual;
     procedure UpdateAutoComplete; virtual;
     function GetAutoCompleteSource: IEnumString; virtual;
     {$ENDIF VCL}
@@ -565,6 +566,7 @@ type
     {$IFDEF VCL}
     procedure CreateHandle; override;
     procedure DestroyWindowHandle; override;
+    procedure DestroyAutoComplete; override;
     procedure UpdateAutoComplete; override;
     function GetAutoCompleteSource: IEnumString; override;
     {$ENDIF VCL}
@@ -586,7 +588,6 @@ type
     property MaxLength;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     property LongName: string read GetLongName;
     property ShortName: string read GetShortName;
   published
@@ -600,7 +601,7 @@ type
     property ClipboardCommands; // RDB
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
-    property OEMConvert; // Mantis 3621
+    property OEMConvert default True; // Mantis 3621
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
@@ -2087,9 +2088,8 @@ begin
   PopupCloseUp(Self, False);
   FButton.OnClick := nil;
   {$IFDEF VCL}
-  FAutoCompleteSource := nil;
+  DestroyAutoComplete;
   FAutoCompleteItems.Free;
-  FAutoCompleteIntf := nil;
   {$ENDIF VCL}
   inherited Destroy;
   {$IFDEF VCL}
@@ -2303,6 +2303,11 @@ begin
   end;
 end;
 
+procedure TJvCustomComboEdit.DestroyAutoComplete;
+begin
+  FAutoCompleteIntf := nil;
+end;
+
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -2369,6 +2374,15 @@ begin
   Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
   {$ENDIF VCL}
 end;
+
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.DestroyWnd;
+begin
+  inherited DestroyWnd;
+  { Mantis #3642 }
+  DestroyAutoComplete;
+end;
+{$ENDIF VCL}
 
 procedure TJvCustomComboEdit.DoChange;
 begin
@@ -4692,20 +4706,6 @@ begin
   end;
 end;
 
-destructor TJvFileDirEdit.Destroy;
-begin
-  {$IFDEF VCL}
-  // Mantis 3112: We drop the references we get to the various interfaces
-  // thus avoiding accesses to them triggered by the ancestor(s) destructor(s)
-  FMRUList := nil;
-  FHistoryList := nil;
-  FFileSystemList:= nil;
-  FAutoCompleteSourceIntf := nil;
-  {$ENDIF VCL}
-
-  inherited Destroy;
-end;
-
 procedure TJvFileDirEdit.Change;
 var
   Ps: Integer;
@@ -4821,6 +4821,18 @@ procedure TJvFileDirEdit.SetDragAccept(Value: Boolean);
 begin
   if not (csDesigning in ComponentState) and (Handle <> 0) then
     DragAcceptFiles(Handle, Value);
+end;
+
+procedure TJvFileDirEdit.DestroyAutoComplete;
+begin
+  // Mantis 3112: We drop the references we get to the various interfaces
+  // thus avoiding accesses to them triggered by the ancestor(s) destructor(s)
+  FMRUList := nil;
+  FHistoryList := nil;
+  FFileSystemList:= nil;
+  FAutoCompleteSourceIntf := nil;
+
+  inherited DestroyAutoComplete;
 end;
 
 procedure TJvFileDirEdit.UpdateAutoComplete;
