@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">DelphiDotNet.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">2.0</Option>
+			<Option Name="GUID">{2B08B5F6-1DAA-45AA-8B00-6791A7C7FF59}</Option>
+		</Option>
+	</PersonalityInfo>
+	<DelphiDotNet.Personality>
+		<Source>
+			<Source Name="MainSource">Jedi.Jvcl.dpk</Source>
+		</Source>
+		<FileVersion>
+			<FileVersion Name="Version">7.0</FileVersion>
+		</FileVersion>
+		<Compiler>
+			<Compiler Name="A">0</Compiler>
+			<Compiler Name="B">0</Compiler>
+			<Compiler Name="C">1</Compiler>
+			<Compiler Name="D">1</Compiler>
+			<Compiler Name="E">0</Compiler>
+			<Compiler Name="F">0</Compiler>
+			<Compiler Name="G">1</Compiler>
+			<Compiler Name="H">1</Compiler>
+			<Compiler Name="I">1</Compiler>
+			<Compiler Name="J">0</Compiler>
+			<Compiler Name="K">0</Compiler>
+			<Compiler Name="L">1</Compiler>
+			<Compiler Name="M">0</Compiler>
+			<Compiler Name="N">1</Compiler>
+			<Compiler Name="O">1</Compiler>
+			<Compiler Name="P">1</Compiler>
+			<Compiler Name="Q">0</Compiler>
+			<Compiler Name="R">0</Compiler>
+			<Compiler Name="S">0</Compiler>
+			<Compiler Name="T">0</Compiler>
+			<Compiler Name="U">0</Compiler>
+			<Compiler Name="V">1</Compiler>
+			<Compiler Name="W">0</Compiler>
+			<Compiler Name="X">1</Compiler>
+			<Compiler Name="Y">1</Compiler>
+			<Compiler Name="Z">1</Compiler>
+			<Compiler Name="ShowHints">True</Compiler>
+			<Compiler Name="ShowWarnings">True</Compiler>
+			<Compiler Name="UnitAliases">WinTypes=Borland.Vcl.Windows;WinProcs=Borland.Vcl.Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;</Compiler>
+			<Compiler Name="NamespacePrefix">Borland.Vcl;Jedi.Jcl;Jedi.Jvcl</Compiler>
+			<Compiler Name="GenerateDocumentation">False</Compiler>
+			<Compiler Name="DefaultNamespace">Jedi.Jvcl</Compiler>
+			<Compiler Name="SymbolDeprecated">True</Compiler>
+			<Compiler Name="SymbolLibrary">True</Compiler>
+			<Compiler Name="SymbolPlatform">True</Compiler>
+			<Compiler Name="SymbolExperimental">True</Compiler>
+			<Compiler Name="UnitLibrary">True</Compiler>
+			<Compiler Name="UnitPlatform">True</Compiler>
+			<Compiler Name="UnitDeprecated">True</Compiler>
+			<Compiler Name="UnitExperimental">True</Compiler>
+			<Compiler Name="HResultCompat">True</Compiler>
+			<Compiler Name="HidingMember">True</Compiler>
+			<Compiler Name="HiddenVirtual">True</Compiler>
+			<Compiler Name="Garbage">True</Compiler>
+			<Compiler Name="BoundsError">True</Compiler>
+			<Compiler Name="ZeroNilCompat">True</Compiler>
+			<Compiler Name="StringConstTruncated">True</Compiler>
+			<Compiler Name="ForLoopVarVarPar">True</Compiler>
+			<Compiler Name="TypedConstVarPar">True</Compiler>
+			<Compiler Name="AsgToTypedConst">True</Compiler>
+			<Compiler Name="CaseLabelRange">True</Compiler>
+			<Compiler Name="ForVariable">True</Compiler>
+			<Compiler Name="ConstructingAbstract">True</Compiler>
+			<Compiler Name="ComparisonFalse">True</Compiler>
+			<Compiler Name="ComparisonTrue">True</Compiler>
+			<Compiler Name="ComparingSignedUnsigned">True</Compiler>
+			<Compiler Name="CombiningSignedUnsigned">True</Compiler>
+			<Compiler Name="UnsupportedConstruct">True</Compiler>
+			<Compiler Name="FileOpen">True</Compiler>
+			<Compiler Name="FileOpenUnitSrc">True</Compiler>
+			<Compiler Name="BadGlobalSymbol">True</Compiler>
+			<Compiler Name="DuplicateConstructorDestructor">True</Compiler>
+			<Compiler Name="InvalidDirective">True</Compiler>
+			<Compiler Name="PackageNoLink">True</Compiler>
+			<Compiler Name="PackageThreadVar">True</Compiler>
+			<Compiler Name="ImplicitImport">True</Compiler>
+			<Compiler Name="HPPEMITIgnored">True</Compiler>
+			<Compiler Name="NoRetVal">True</Compiler>
+			<Compiler Name="UseBeforeDef">True</Compiler>
+			<Compiler Name="ForLoopVarUndef">True</Compiler>
+			<Compiler Name="UnitNameMismatch">True</Compiler>
+			<Compiler Name="NoCFGFileFound">True</Compiler>
+			<Compiler Name="MessageDirective">True</Compiler>
+			<Compiler Name="ImplicitVariants">True</Compiler>
+			<Compiler Name="UnicodeToLocale">True</Compiler>
+			<Compiler Name="LocaleToUnicode">True</Compiler>
+			<Compiler Name="ImagebaseMultiple">True</Compiler>
+			<Compiler Name="SuspiciousTypecast">True</Compiler>
+			<Compiler Name="PrivatePropAccessor">True</Compiler>
+			<Compiler Name="UnsafeType">True</Compiler>
+			<Compiler Name="UnsafeCode">True</Compiler>
+			<Compiler Name="UnsafeCast">True</Compiler>
+			<Compiler Name="OptionTruncated">True</Compiler>
+			<Compiler Name="WideCharReduced">True</Compiler>
+			<Compiler Name="DuplicatesIgnored">True</Compiler>
+			<Compiler Name="UnitInitSeq">True</Compiler>
+			<Compiler Name="LocalPInvoke">True</Compiler>
+			<Compiler Name="CodePage"></Compiler>
+		</Compiler>
+		<Linker>
+			<Linker Name="MapFile">0</Linker>
+			<Linker Name="OutputObjs">0</Linker>
+			<Linker Name="ConsoleApp">1</Linker>
+			<Linker Name="DebugInfo">True</Linker>
+			<Linker Name="RemoteSymbols">False</Linker>
+			<Linker Name="GenerateDRC">False</Linker>
+			<Linker Name="MinStackSize">4096</Linker>
+			<Linker Name="MaxStackSize">1048576</Linker>
+			<Linker Name="ImageBase">4194304</Linker>
+			<Linker Name="ExeDescription">JEDI Component Library for .NET</Linker>
+			<Linker Name="GenerateHpps">False</Linker>
+		</Linker>
+		<Directories>
+			<Directories Name="OutputDir"></Directories>
+			<Directories Name="UnitOutputDir">..\..\lib\d10</Directories>
+			<Directories Name="PackageDLLOutputDir">..\..\lib\d10</Directories>
+			<Directories Name="PackageDCPOutputDir">..\..\lib\d10</Directories>
+			<Directories Name="SearchPath">..\..\common;..\..\lib\d10;..\..\..\jcl\lib\d10;c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0;c:\windows\microsoft.net\framework\v1.1.4322;Z:\Jedi\JVCL3\packages;..\..\lib\d10.net;..\..\Resources;Z:\Jedi\JVCL3\run</Directories>
+			<Directories Name="Packages">Z:\Jedi\JVCL3\run\Jedi.Jcl.dll;Borland.VclX;Borland.Vcl;Borland.VclRtl;c:\windows\microsoft.net\framework\v1.1.4322\System.Drawing.dll;c:\windows\microsoft.net\framework\v1.1.4322\System.dll;Borland.Delphi</Directories>
+			<Directories Name="Conditionals"></Directories>
+			<Directories Name="DebugSourceDirs"></Directories>
+			<Directories Name="UsePackages">False</Directories>
+		</Directories>
+		<Parameters>
+			<Parameters Name="RunParams"></Parameters>
+			<Parameters Name="HostApplication"></Parameters>
+			<Parameters Name="Launcher"></Parameters>
+			<Parameters Name="UseLauncher">False</Parameters>
+			<Parameters Name="DebugCWD"></Parameters>
+			<Parameters Name="RemoteHost"></Parameters>
+			<Parameters Name="RemotePath"></Parameters>
+			<Parameters Name="RemoteLauncher"></Parameters>
+			<Parameters Name="RemoteCWD"></Parameters>
+			<Parameters Name="RemoteDebug">False</Parameters>
+			<Parameters Name="Debug Symbols Search Path"></Parameters>
+			<Parameters Name="LoadAllSymbols">True</Parameters>
+			<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+		</Parameters>
+		<VersionInfo>
+			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+			<VersionInfo Name="MajorVer">1</VersionInfo>
+			<VersionInfo Name="MinorVer">0</VersionInfo>
+			<VersionInfo Name="Release">0</VersionInfo>
+			<VersionInfo Name="Build">0</VersionInfo>
+			<VersionInfo Name="Debug">False</VersionInfo>
+			<VersionInfo Name="PreRelease">False</VersionInfo>
+			<VersionInfo Name="Special">False</VersionInfo>
+			<VersionInfo Name="Private">False</VersionInfo>
+			<VersionInfo Name="DLL">False</VersionInfo>
+			<VersionInfo Name="Locale">1031</VersionInfo>
+			<VersionInfo Name="CodePage">1252</VersionInfo>
+		</VersionInfo>
+		<VersionInfoKeys>
+			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+			<VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
+			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
+		</VersionInfoKeys>
+		<Language>
+			<Language Name="ActiveLang"></Language>
+			<Language Name="ProjectLang">$00000000</Language>
+			<Language Name="RootDir"></Language>
+		</Language>  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <FileList>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.Delphi.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Delphi" AssemblyName="Borland.Delphi" Version="10.0.4143.0" LinkUnits="False"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="System" AssemblyName="System" Version="1.0.5000.0" LinkUnits="False"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.Drawing.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="System.Drawing" AssemblyName="System.Drawing" Version="1.0.5000.0" LinkUnits="False"/>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.VclRtl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.VclRtl" AssemblyName="Borland.VclRtl" Version="10.0.4143.0" LinkUnits="False"/>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.Vcl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Vcl" AssemblyName="Borland.Vcl" Version="10.0.4143.0" LinkUnits="False"/>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.VclX.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.VclX" AssemblyName="Borland.VclX" Version="10.0.4143.0" LinkUnits="False"/>
+      <File FileName="..\..\run\Jedi.Jcl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Jedi.Jcl" AssemblyName="Jedi.Jcl" LinkUnits="False"/>
+      <File FileName="..\..\run\JvAppStorage.pas" ContainerId="" ModuleName="JvAppStorage"/>
+      <File FileName="..\..\run\JvJVCLUtils.pas" ContainerId="" ModuleName="JvJVCLUtils"/>
+      <File FileName="..\..\run\JvJCLUtils.pas" ContainerId="" ModuleName="JvJCLUtils"/>
+      <File FileName="..\..\run\JvExControls.pas" ContainerId="" ModuleName="JvExControls"/>
+      <File FileName="..\..\run\JvExStdCtrls.pas" ContainerId="" ModuleName="JvExStdCtrls"/>
+      <File FileName="..\..\run\JvExButtons.pas" ContainerId="" ModuleName="JvExButtons"/>
+      <File FileName="..\..\run\JvExCheckLst.pas" ContainerId="" ModuleName="JvExCheckLst"/>
+      <File FileName="..\..\run\JvExComCtrls.pas" ContainerId="" ModuleName="JvExComCtrls"/>
+      <File FileName="..\..\run\JvExExtCtrls.pas" ContainerId="" ModuleName="JvExExtCtrls"/>
+      <File FileName="..\..\run\JvExForms.pas" ContainerId="" ModuleName="JvExForms"/>
+      <File FileName="..\..\run\JvExMask.pas" ContainerId="" ModuleName="JvExMask"/>
+      <File FileName="..\..\run\JvBehaviorLabel.pas" ContainerId="" ModuleName="JvBehaviorLabel"/>
+      <File FileName="..\..\run\JvBaseEdits.pas" ContainerId="" ModuleName="JvBaseEdits"/>
+      <File FileName="..\..\run\JvToolEdit.pas" ContainerId="" ModuleName="JvToolEdit"/>
+      <File FileName="..\..\run\JvPickDate.pas" ContainerId="" ModuleName="JvPickDate"/>
+      <File FileName="..\..\run\JvEdit.pas" ContainerId="" ModuleName="JvEdit"/>
+      <File FileName="..\..\run\JvCheckBox.pas" ContainerId="" ModuleName="JvCheckBox"/>
+      <File FileName="..\..\run\JvCaptionPanel.pas" ContainerId="" ModuleName="JvCaptionPanel"/>
+      <File FileName="..\..\run\JvButtonPersistent.pas" ContainerId="" ModuleName="JvButtonPersistent"/>
+      <File FileName="..\..\common\JvConsts.pas" ContainerId="" ModuleName="JvConsts"/>
+      <File FileName="..\..\run\JVCLVer.pas" ContainerId="" ModuleName="JVCLVer"/>
+      <File FileName="..\..\run\JvComponent.pas" ContainerId="" ModuleName="JvComponent"/>
+      <File FileName="..\..\run\JvComponentBase.pas" ContainerId="" ModuleName="JvComponentBase"/>
+      <File FileName="..\..\run\JvResources.pas" ContainerId="" ModuleName="JvResources"/>
+      <File FileName="..\..\run\JvTypes.pas" ContainerId="" ModuleName="JvTypes"/>
+      <File FileName="..\..\run\JvProgressBar.pas" ContainerId="" ModuleName="JvProgressBar"/>
+      <File FileName="..\..\run\JvProgressUtils.pas" ContainerId="" ModuleName="JvProgressUtils"/>
+      <File FileName="..\..\run\JvThemes.pas" ContainerId="" ModuleName="JvThemes"/>
+      <File FileName="..\..\run\JvButton.pas" ContainerId="" ModuleName="JvButton"/>
+      <File FileName="..\..\run\JvSpeedButton.pas" ContainerId="" ModuleName="JvSpeedButton"/>
+      <File FileName="..\..\run\JvExGrids.pas" ContainerId="" ModuleName="JvExGrids"/>
+      <File FileName="..\..\run\JvBaseDlg.pas" ContainerId="" ModuleName="JvBaseDlg"/>
+      <File FileName="..\..\run\JvCalc.pas" ContainerId="" ModuleName="JvCalc"/>
+      <File FileName="..\..\run\JvCaret.pas" ContainerId="" ModuleName="JvCaret"/>
+      <File FileName="..\..\run\JvMaxPixel.pas" ContainerId="" ModuleName="JvMaxPixel"/>
+      <File FileName="..\..\run\JvFixedEditPopUp.pas" ContainerId="" ModuleName="JvFixedEditPopUp"/>
+      <File FileName="..\..\run\JvLinkedControls.pas" ContainerId="" ModuleName="JvLinkedControls"/>
+      <File FileName="..\..\run\JvPropertyStore.pas" ContainerId="" ModuleName="JvPropertyStore"/>
+      <File FileName="..\..\run\JvAlarms.pas" ContainerId="" ModuleName="JvAlarms"/>
+      <File FileName="..\..\run\JvAnimate.pas" ContainerId="" ModuleName="JvAnimate"/>
+      <File FileName="..\..\run\JvAnimatedImage.pas" ContainerId="" ModuleName="JvAnimatedImage"/>
+      <File FileName="..\..\run\JvTimer.pas" ContainerId="" ModuleName="JvTimer"/>
+      <File FileName="..\..\run\JvAnimTitle.pas" ContainerId="" ModuleName="JvAnimTitle"/>
+      <File FileName="..\..\run\JvAppAnimatedIcon.pas" ContainerId="" ModuleName="JvAppAnimatedIcon"/>
+      <File FileName="..\..\run\JvAppEvent.pas" ContainerId="" ModuleName="JvAppEvent"/>
+      <File FileName="..\..\run\JvAppIniStorage.pas" ContainerId="" ModuleName="JvAppIniStorage"/>
+      <File FileName="..\..\run\JvAppStorageSelectList.pas" ContainerId="" ModuleName="JvAppStorageSelectList"/>
+      <File FileName="..\..\run\JvDynControlEngineTools.pas" ContainerId="" ModuleName="JvDynControlEngineTools"/>
+      <File FileName="..\..\run\JvDynControlEngineVCL.pas" ContainerId="" ModuleName="JvDynControlEngineVCL"/>
+      <File FileName="..\..\run\JvDynControlEngine.pas" ContainerId="" ModuleName="JvDynControlEngine"/>
+      <File FileName="..\..\run\JvDynControlEngineIntf.pas" ContainerId="" ModuleName="JvDynControlEngineIntf"/>
+      <File FileName="..\..\run\JvSimpleXml.pas" ContainerId="" ModuleName="JvSimpleXml"/>
+      <File FileName="..\..\run\JvAppXMLStorage.pas" ContainerId="" ModuleName="JvAppXMLStorage"/>
+      <File FileName="..\..\run\JvArrayButton.pas" ContainerId="" ModuleName="JvArrayButton"/>
+      <File FileName="..\..\run\JvArrowButton.pas" ContainerId="" ModuleName="JvArrowButton"/>
+      <File FileName="..\..\run\JvaScrollText.pas" ContainerId="" ModuleName="JvaScrollText"/>
+      <File FileName="..\..\run\JvVCL5Utils.pas" ContainerId="" ModuleName="JvVCL5Utils"/>
+      <File FileName="..\..\run\JvDsgnIntf.pas" ContainerId="" ModuleName="JvDsgnIntf"/>
+      <File FileName="..\..\run\JvAutoComplete.pas" ContainerId="" ModuleName="JvAutoComplete"/>
+      <File FileName="..\..\run\JvBaseThumbnail.pas" ContainerId="" ModuleName="JvBaseThumbnail"/>
+      <File FileName="..\..\run\JvBevel.pas" ContainerId="" ModuleName="JvBevel"/>
+      <File FileName="..\..\run\JvBitBtn.pas" ContainerId="" ModuleName="JvBitBtn"/>
+      <File FileName="..\..\run\JvBitmapButton.pas" ContainerId="" ModuleName="JvBitmapButton"/>
+      <File FileName="..\..\run\JvBmpAnimator.pas" ContainerId="" ModuleName="JvBmpAnimator"/>
+      <File FileName="..\..\run\JvChangeNotify.pas" ContainerId="" ModuleName="JvChangeNotify"/>
+      <File FileName="..\..\run\JvCharMap.pas" ContainerId="" ModuleName="JvCharMap"/>
+      <File FileName="..\..\run\JvChart.pas" ContainerId="" ModuleName="JvChart"/>
+      <File FileName="..\..\run\JvCheckedMaskEdit.pas" ContainerId="" ModuleName="JvCheckedMaskEdit"/>
+      <File FileName="..\..\run\JvMaskEdit.pas" ContainerId="" ModuleName="JvMaskEdit"/>
+      <File FileName="..\..\run\JvItemsSearchs.pas" ContainerId="" ModuleName="JvItemsSearchs"/>
+      <File FileName="..\..\run\JvCheckListBox.pas" ContainerId="" ModuleName="JvCheckListBox"/>
+      <File FileName="..\..\run\JvCheckTreeView.pas" ContainerId="" ModuleName="JvCheckTreeView"/>
+      <File FileName="..\..\run\JvComCtrls.pas" ContainerId="" ModuleName="JvComCtrls"/>
+      <File FileName="..\..\run\JvWndProcHook.pas" ContainerId="" ModuleName="JvWndProcHook"/>
+      <File FileName="..\..\run\JvIconList.pas" ContainerId="" ModuleName="JvIconList"/>
+      <File FileName="..\..\run\JvAppCommand.pas" ContainerId="" ModuleName="JvAppCommand"/>
+      <File FileName="..\..\run\JvxCheckListBox.pas" ContainerId="" ModuleName="JvxCheckListBox"/>
+      <File FileName="..\..\run\JvBoxProcs.pas" ContainerId="" ModuleName="JvBoxProcs"/>
+      <File FileName="..\..\run\JvPropertyStorage.pas" ContainerId="" ModuleName="JvPropertyStorage"/>
+      <File FileName="..\..\run\JvFormPlacement.pas" ContainerId="" ModuleName="JvFormPlacement"/>
+      <File FileName="..\..\run\JvFormPlacementSelectList.pas" ContainerId="" ModuleName="JvFormPlacementSelectList"/>
+      <File FileName="..\..\run\JvClock.pas" ContainerId="" ModuleName="JvClock"/>
+      <File FileName="..\..\run\JvColorBox.pas" ContainerId="" ModuleName="JvColorBox"/>
+      <File FileName="..\..\run\JvColorButton.pas" ContainerId="" ModuleName="JvColorButton"/>
+      <File FileName="..\..\run\JvColorCombo.pas" ContainerId="" ModuleName="JvColorCombo"/>
+      <File FileName="..\..\run\JvColorForm.pas" ContainerId="" ModuleName="JvColorForm"/>
+      <File FileName="..\..\run\JvDataProviderIntf.pas" ContainerId="" ModuleName="JvDataProviderIntf"/>
+      <File FileName="..\..\run\JvCombobox.pas" ContainerId="" ModuleName="JvCombobox"/>
+      <File FileName="..\..\run\JvComboListBox.pas" ContainerId="" ModuleName="JvComboListBox"/>
+      <File FileName="..\..\run\JvListBox.pas" ContainerId="" ModuleName="JvListBox"/>
+      <File FileName="..\..\run\JvCtrls.pas" ContainerId="" ModuleName="JvCtrls"/>
+      <File FileName="..\..\run\JvDataProvider.pas" ContainerId="" ModuleName="JvDataProvider"/>
+      <File FileName="..\..\common\JvWin32.pas" ContainerId="" ModuleName="JvWin32"/>
+      <File FileName="..\..\run\JvExtComponent.pas" ContainerId="" ModuleName="JvExtComponent"/>
+      <File FileName="..\..\run\JvPoweredBy.pas" ContainerId="" ModuleName="JvPoweredBy"/>
+      <File FileName="..\..\run\JvConverter.pas" ContainerId="" ModuleName="JvConverter"/>
+      <File FileName="..\..\run\JvDataEmbedded.pas" ContainerId="" ModuleName="JvDataEmbedded"/>
+      <File FileName="..\..\run\JvEnterTab.pas" ContainerId="" ModuleName="JvEnterTab"/>
+      <File FileName="..\..\run\JvMergeManager.pas" ContainerId="" ModuleName="JvMergeManager"/>
+      <File FileName="..\..\run\JvPageManager.pas" ContainerId="" ModuleName="JvPageManager"/>
+      <File FileName="..\..\run\JvMemoryDataset.pas" ContainerId="" ModuleName="JvMemoryDataset"/>
+      <File FileName="..\..\run\JvDBUtils.pas" ContainerId="" ModuleName="JvDBUtils"/>
+    </FileList>
+  </DelphiDotNet.Personality>
+</BorlandProject>
