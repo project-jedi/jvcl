@@ -142,17 +142,26 @@ $ECHOBIN `CurrentTimeTag` "deleting old archive files"
 cd $DAILYDIR
 # delete old zips (we only keep 3 at a time)
 $FINDBIN . \( -daystart -mtime +2 -type f -name J\* \) -exec rm -f {} \;
+
 # link to latest full
 $RMBIN -f JVCL3-Latest.zip
 $LNBIN -s JVCL3-$DATESTRING.zip JVCL3-Latest.zip
 $CHMODBIN g+w JVCL3-$DATESTRING.zip
 $CHMODBIN g+w JVCL3-Latest.zip
+$RMBIN -f JVCL3-Latest.7z
+$LNBIN -s JVCL3-$DATESTRING.7z JVCL3-Latest.7z
+$CHMODBIN g+w JVCL3-$DATESTRING.7z
+$CHMODBIN g+w JVCL3-Latest.7z
 
 # link to latest source
 $RMBIN -f JVCL3-Source-Latest.zip
 $LNBIN -s JVCL3-Source-$DATESTRING.zip JVCL3-Source-Latest.zip
 $CHMODBIN g+w JVCL3-Source-$DATESTRING.zip
 $CHMODBIN g+w JVCL3-Source-Latest.zip
+$RMBIN -f JVCL3-Source-Latest.7z
+$LNBIN -s JVCL3-Source-$DATESTRING.7z JVCL3-Source-Latest.7z
+$CHMODBIN g+w JVCL3-Source-$DATESTRING.7z
+$CHMODBIN g+w JVCL3-Source-Latest.7z
 
 # copy the status docs
 $ECHOBIN `CurrentTimeTag` "copying build status page"
