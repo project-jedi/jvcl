@@ -86,7 +86,7 @@ The latest version is available for download below<br>
       <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize("JVCL3-Latest.zip");?>, <?php print GetDisplayFileSize("JVCL3-Latest.7z");?> 
       </td>
       <td style="vertical-align: top;">The complete set of files,
-including the examples and the installer.<br>
+including examples and installer.<br>
       </td>
     </tr>
     <tr>
@@ -153,7 +153,7 @@ or you can also grab one of the previous complete or source packages.<br>
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename_full).', '.GetDisplayFileSize($filename_full_7z)."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top;">The complete set of files, including the examples and the installer.<br>'."\n";
+        echo '  <td style="vertical-align: top;">The complete set of files, including examples and installer.<br>'."\n";
         echo '  </td>'."\n";
         echo '</tr>'."\n";
         echo '<tr>'."\n";
