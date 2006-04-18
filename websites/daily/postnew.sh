@@ -28,18 +28,29 @@
 #
 # ----------------------------------------------------------------------------
 
-# make our paths easy to use
+# Make our paths easy to use
+# Note: Those paths are valid on obones' server, please update to reflect those
+#       you are using on your own machine. 
+
+# path where to put the zipped files and build status page
 export DAILYDIR=/home/obones/jvcl_export/daily
+
+# working path used to export the directory
 export FILEHOME=/home/obones/jvcl_export/files
+
+# start location (usually equal to where this script is located).
 export STARTFOLDER=/home/obones/jvcl_export
+
+# URL to checkout from. Requires that the svn binary supports SSL
 export SVNURL=https://svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl
-export CVSROOT=:pserver:anonymous@cvs.sourceforge.net:/cvsroot/jvcl
-export CVS_RSH=ssh
-export DATESTRING=`date -I`
+
+# the SVN command used to get the files
+export SVNCOMMAND=export
 
 # Locations of various required binaries
-export CVSBIN=/usr/bin/cvs
-export SVNBIN=/usr/bin/svn
+# Note: Those paths are valid on obones' server, please update to reflect those
+#       you are using on your own machine. 
+export SVNBIN=/usr/local/bin/svn
 export FINDBIN=/bin/find
 export ECHOBIN=/bin/echo
 export RMBIN=/bin/rm
@@ -49,6 +60,9 @@ export CPBIN=/bin/cp
 export LNBIN=/bin/ln
 export CHMODBIN=/bin/chmod
 export SZIPBIN=/usr/local/bin/7za
+
+# The call used to get a timestamp for the zip files
+export DATESTRING=`date -I`
 
 # declare function that gets current time tag
 function CurrentTimeTag()
@@ -60,14 +74,12 @@ function CurrentTimeTag()
 $ECHOBIN `CurrentTimeTag` starting
 $RMBIN -rf $FILEHOME/jvcl
 cd $FILEHOME
-$ECHOBIN `CurrentTimeTag` "getting files from CVS"
+$ECHOBIN `CurrentTimeTag` "getting files from SVN"
 
-# get the latest sources from CVS
-$CVSBIN -Q export -rHEAD -djvcl dev/JVCL3
+# get the latest sources from SVN
+$SVNBIN $SVNCOMMAND -q $SVNURL jvcl
 cd $FILEHOME/jvcl
-# remove unwanted file(s)
-# $ECHOBIN "removing cvsignore"
-$FINDBIN -type f -name .cvsignore -exec rm -rf {} \;
+
 # convert LF to CRLF for text files
 
 # the list of extensions to convert.
@@ -153,5 +165,6 @@ $CPBIN -p -u -f "$FILEHOME/jvcl/help/Build status.html" "$DAILYDIR/Build status.
 # cd $STARTFOLDER
 $ECHOBIN `CurrentTimeTag` "deleting exported jvcl files"
 $RMBIN -rf $FILEHOME/jvcl
+
 # done!
 $ECHOBIN `CurrentTimeTag` finished
