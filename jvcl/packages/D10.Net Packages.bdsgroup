@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{84D72F31-B285-4AD5-B761-E28E2B708D11}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  
+    
+    <Projects>
+      <Projects Name="Jedi.Jcl.dll">..\..\jcl\packages\d10.net\Jedi.Jcl.bdsproj</Projects>
+      <Projects Name="Jedi.Jvcl.dll">d10.net\Jedi.Jvcl.bdsproj</Projects>
+      <Projects Name="Targets">Jedi.Jcl.dll Jedi.Jvcl.dll</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
