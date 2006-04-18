@@ -320,7 +320,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvPanel.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -338,14 +338,14 @@ uses
 const
   BkModeTransparent = TRANSPARENT;
 
-function IsThemed: Boolean;
+(*function IsThemed: Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
   Result := ThemeServices.ThemesEnabled;
   {$ELSE}
   Result := False;
   {$ENDIF JVCLThemesEnabled}
-end;
+end;*)
 
 //=== { TJvArrangeSettings } =================================================
 
