@@ -216,10 +216,15 @@ begin
   Options := [lofTrimSpaces,lofConvertEscapes];
   FIgnoreList := TStringList.Create;
   FIgnoreList.Sorted := True;
+{$IFDEF COMPILER6_UP}
   FIgnoreList.CaseSensitive := True;
+{$ENDIF COMPILER6_UP}
+
   FTranslationStrings := TStringList.Create;
   FTranslationStrings.Sorted := True;
+{$IFDEF COMPILER6_UP}
   FTranslationStrings.CaseSensitive := True;
+{$ENDIF COMPILER6_UP}
 end;
 
 destructor TJvgLanguageLoader.Destroy;
@@ -286,7 +291,9 @@ begin
     //{ Загрузка словаря из заданного файла }
     { Loading dictionary from given file }
     FTranslations.Sorted := true;
+{$IFDEF COMPILER6_UP}
     FTranslations.CaseSensitive := True;
+{$ENDIF COMPILER6_UP}
     IniFile.ReadSectionValues(FormSection,FTranslations);
     UpdateAllComponents(Component);
   finally
@@ -326,7 +333,9 @@ begin
     FOldStrings := TStringList.Create;
     OldIniFile := TIniFile.Create(OldLanguageFileName);
     try
+{$IFDEF COMPILER6_UP}
       FOldStrings.CaseSensitive := True;
+{$ENDIF COMPILER6_UP}
       FOldStrings.Sorted := False;
       OldIniFile.ReadSectionValues(FormSection, FOldStrings);
       FOldStrings.BeginUpdate;

@@ -584,7 +584,11 @@ uses
   cxCustomData,
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvResources, JvParameterList, JvParameterListParameter, TypInfo,
-  JvDSADialogs, Dialogs, Variants;
+  JvDSADialogs, 
+{$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+{$ENDIF HAS_UNIT_VARIANTS}
+  Dialogs;
 
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
