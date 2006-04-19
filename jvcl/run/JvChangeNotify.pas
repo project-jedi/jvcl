@@ -605,6 +605,7 @@ end;
 constructor EJVCLChangeNotifyException.Create(const ErrorMsg: string; const ErrorDirectory: string);
 begin
   inherited CreateFmt(RsENotifyErrorFmt, [ErrorMsg, ErrorDirectory]);
+  FErrorDirectory := ErrorDirectory;
 end;
 
 {$IFDEF UNITVERSIONING}
