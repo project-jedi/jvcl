@@ -27,6 +27,7 @@
 #   It is designed to be called from a daily cron job.
 #
 # ----------------------------------------------------------------------------
+# $Id$
 
 # Make our paths easy to use
 # Note: Those paths are valid on the shell server at sourceforge, please update 
