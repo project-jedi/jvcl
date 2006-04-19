@@ -144,11 +144,10 @@ type
     FDownloadStatus: string;
     FDownloadThreaded: Boolean;
   protected
-    procedure SetDownloadStatus(Value: string);
     function LoadFileFromRemoteInt(const ARemotePath, ARemoteFileName, ALocalPath, ALocalFileName: string;
       ABaseThread: TJvBaseThread): string; virtual;
+    procedure SetDownloadError(const Value: string); virtual;
     property DownloadStatus: string read FDownloadStatus write FDownloadStatus;
-    property DownloadError: string read FDownloadError write FDownloadError;
     property DownloadThreaded: Boolean read FDownloadThreaded write FDownloadThreaded default False;
   public
     constructor Create(AOwner: TComponent); override;
@@ -158,6 +157,7 @@ type
       ABaseThread: TJvBaseThread): string; virtual;
     function LoadVersionInfoFromRemote(const ALocalDirectory, ALocalVersionInfoFileName: string;
       ABaseThread: TJvBaseThread): string; virtual;
+    property DownloadError: string read FDownloadError write SetDownloadError;
   end;
 
   { Base class for all file based Locations like Network, FTP and HTTP }
@@ -894,9 +894,9 @@ function TJvCustomProgramVersionLocation.LoadVersionInfoFromRemote(
 begin
 end;
 
-procedure TJvCustomProgramVersionLocation.SetDownloadStatus(Value: string);
+procedure TJvCustomProgramVersionLocation.SetDownloadError(const Value: string);
 begin
-  FDownloadStatus := Value;
+  FDownloadError := Value;
 end;
 
 //=== { TJvProgramVersionCustomFileBasedLocation } ===========================
