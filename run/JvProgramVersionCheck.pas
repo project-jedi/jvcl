@@ -414,7 +414,6 @@ type
   private
     FAllowedReleaseType: TJvProgramReleaseType;
     FCheckFrequency: Integer;
-    FDownloadError: string;
     FExecuteDownloadInstallFileName: string;
     FExecuteOperation: TJvRemoteVersionOperation;
     FExecuteVersionInfo: TJvProgramVersionInfo;
@@ -471,9 +470,8 @@ type
       read FRemoteProgramVersionHistory write FRemoteProgramVersionHistory;
     property SelectedLocation: TJvCustomProgramVersionLocation read
         GetSelectedLocation;
-    property Thread: TJvThread read FThread write FThread;
-    property ThreadDialog: TJvThreadAnimateDialog read FThreadDialog write
-        FThreadDialog;
+    property Thread: TJvThread read FThread;
+    property ThreadDialog: TJvThreadAnimateDialog read FThreadDialog;
   published
     { Defines which release types will be shown in the update dialog }
     property AllowedReleaseType: TJvProgramReleaseType
@@ -899,9 +897,6 @@ end;
 procedure TJvCustomProgramVersionLocation.SetDownloadStatus(Value: string);
 begin
   FDownloadStatus := Value;
-  //  if Assigned(Owner.Owner) and
-  //     (Owner.Owner is TJvProgramVersionCheck) then
-  //       TJvProgramVersionCheck(Owner.Owner).SetThreadInfo(Value);
 end;
 
 //=== { TJvProgramVersionCustomFileBasedLocation } ===========================
@@ -1093,7 +1088,6 @@ begin
     uoAllowedReleaseType, uoLocationType, uoLocationNetwork,
     uoLocationHTTP, uoLocationFTP, uoLocationDatabase];
 
-  //  FLocations:= TJvProgramVersionLocations.Create(Self);
   FAllowedReleaseType := prtProduction;
   FLocalInstallerFileName := '';
   FLocalVersionInfoFileName := RsPVDefaultVersioninfoFileName;
@@ -1177,8 +1171,8 @@ end;
 
 procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender: TObject);
 begin
-  if FDownloadError <> '' then
-    JvDSADialogs.MessageDlg(FDownloadError, mtError, [mbOK], 0)
+  if DownloadError <> '' then
+    JvDSADialogs.MessageDlg(DownloadError, mtError, [mbOK], 0)
   else if FExecuteDownloadInstallFileName = '' then
     JvDSADialogs.MessageDlg(RsPVCFileDownloadNotSuccessful, mtError, [mbOK], 0)
   else if FExecuteOperation = rvoCopy then
@@ -1187,7 +1181,6 @@ begin
   else if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
     mtWarning, [mbYes, mbNo], 0) = mrYes then
     if ShellExecEx(FExecuteDownloadInstallFileName) then
-      //Application.Terminate
       PostMessage(Application.Handle, WM_CLOSE, 0, 0)
     else
       JvDSADialogs.MessageDlg(RsPVCErrorStartingSetup, mtError, [mbOK], 0);
@@ -1392,7 +1385,6 @@ begin
   begin
     Result := SelectedLocation.LoadInstallerFileFromRemote(AProgramVersionInfo.ProgramLocationPath,
       AProgramVersionInfo.ProgramLocationFileName, ALocalDirectory, ALocalInstallerFileName, ABaseThread);
-    FDownloadError := SelectedLocation.DownloadError;
   end
   else
     Result := '';
@@ -1477,7 +1469,7 @@ begin
       Height := 200;
       AsString := RemoteProgramVersionHistory.GetVersionsDescription(AFromVersion, AToVersion);
       Scrollbars := ssBoth;
-//      ReadOnly := True;
+      ReadOnly := True;
     end;
     ParameterList.AddParameter(Parameter);
     ParameterList.ShowParameterDialog
