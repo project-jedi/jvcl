@@ -29,17 +29,17 @@
 # ----------------------------------------------------------------------------
 
 # Make our paths easy to use
-# Note: Those paths are valid on obones' server, please update to reflect those
-#       you are using on your own machine. 
+# Note: Those paths are valid on the shell server at sourceforge, please update 
+#       to reflect those you are using on your own machine. 
 
 # path where to put the zipped files and build status page
-export DAILYDIR=/home/obones/jvcl_export/daily
+export DAILYDIR=/home/groups/j/jv/jvcl/htdocs/daily
 
 # working path used to export the directory
-export FILEHOME=/home/obones/jvcl_export/files
+export FILEHOME=/home/groups/j/jv/jvcl/daily_export
 
 # start location (usually equal to where this script is located).
-export STARTFOLDER=/home/obones/jvcl_export
+export STARTFOLDER=/home/groups/j/jv/jvcl/bin
 
 # URL to checkout from. Requires that the svn binary supports SSL
 export SVNURL=https://svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl
@@ -48,10 +48,10 @@ export SVNURL=https://svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl
 export SVNCOMMAND=export
 
 # Locations of various required binaries
-# Note: Those paths are valid on obones' server, please update to reflect those
-#       you are using on your own machine. 
-export SVNBIN=/usr/local/bin/svn
-export FINDBIN=/bin/find
+# Note: Those paths are valid on the shell server at sourceforge, please update 
+#       to reflect those you are using on your own machine. 
+export SVNBIN=/usr/bin/svn
+export FINDBIN=/usr/bin/find
 export ECHOBIN=/bin/echo
 export RMBIN=/bin/rm
 export UNIX2DOSBIN=/usr/bin/unix2dos
@@ -59,7 +59,7 @@ export ZIPBIN=/usr/bin/zip
 export CPBIN=/bin/cp
 export LNBIN=/bin/ln
 export CHMODBIN=/bin/chmod
-export SZIPBIN=/usr/local/bin/7za
+export SZIPBIN=/home/groups/j/jv/jvcl/bin/7za
 
 # The call used to get a timestamp for the zip files
 export DATESTRING=`date -I`
