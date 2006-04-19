@@ -251,7 +251,7 @@ const
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvJVCLUtils;
 
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
@@ -1123,6 +1123,9 @@ begin
     Exit;
   Index := 0;
 
+  // Important: Draw parent image to keep transparency chain working
+  CopyParentImage(Self, Canvas);
+
   if UseImages then
   begin
     // Images
@@ -1179,8 +1182,9 @@ begin
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(ARect, FPressOffset, FPressOffset);
 
-  { Norris }
-  if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) then
+  // Mantis 3641: Do not draw the rectangle if we are transparent, it's of no use.
+  if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) and
+      not Transparent then
   begin
     HelpRect := ClientRect;
     InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
