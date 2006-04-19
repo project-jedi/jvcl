@@ -137,8 +137,8 @@ type
       AInterval: Integer; var ACaption, ALabel: string; AnImage: TPicture;
       var AContinue: Boolean);
     procedure InternalDoCancel(Sender: TObject);
-    procedure DoShow;
-    procedure DoClose;
+    procedure DoShow; override;
+    procedure DoClose; override;
     procedure StoreValues;
     procedure RestoreValues;
   public
@@ -175,7 +175,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvProgressDialog.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

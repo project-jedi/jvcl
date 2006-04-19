@@ -283,7 +283,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Execute; override;
+    function Execute: Boolean; override;
   published
     property Caption: string read FCaption write FCaption;
     property Description: string read FDescription write FDescription;
@@ -307,21 +307,21 @@ type
   private
     FDestinationFolder: string;
   public
-    procedure Execute; override;
+    function Execute: Boolean; override;
   published
     property DestinationFolder: string read FDestinationFolder write FDestinationFolder;
   end;
 
   TJvAddHardwareDialog = class(TJvCommonDialogP)
   public
-    procedure Execute; override;
+    function Execute: Boolean; override;
   end;
 
   TJvOpenWithDialog = class(TJvCommonDialogP)
   private
     FFileName: TFileName;
   public
-    procedure Execute; override;
+    function Execute: Boolean; override;
   published
     property FileName: TFileName read FFileName write FFileName;
   end;
@@ -340,7 +340,7 @@ type
 
   TJvExitWindowsDialog = class(TJvCommonDialogP)
   public
-    procedure Execute; override;
+    function Execute: Boolean; override;
   end;
 
   {$IFDEF VCL}
@@ -599,7 +599,7 @@ var
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvWinDialogs.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -1308,7 +1308,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvRunDialog.Execute;
+function TJvRunDialog.Execute: Boolean;
 var
   CaptionBuffer: Pointer;
   DescriptionBuffer: Pointer;
@@ -1340,12 +1340,12 @@ begin
 
   if Assigned(SHRunDialog) then
     {$IFDEF VCL}
-    SHRunDialog(GetForegroundWindow, FIcon.Handle, nil, CaptionBuffer,
-      DescriptionBuffer, 0)
+    Result := SHRunDialog(GetForegroundWindow, FIcon.Handle, nil, CaptionBuffer,
+      DescriptionBuffer, 0) = 0
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    SHRunDialog(GetForegroundWindow, 0, nil, CaptionBuffer,
-      DescriptionBuffer, 0)
+    Result := SHRunDialog(GetForegroundWindow, 0, nil, CaptionBuffer,
+      DescriptionBuffer, 0) = 0
     {$ENDIF VisualCLX}
   else
     raise EWinDialogError.CreateRes(@RsENotSupported);
@@ -1423,24 +1423,27 @@ end;
 
 //=== { TJvNewLinkDialog } ===================================================
 
-procedure TJvNewLinkDialog.Execute;
+function TJvNewLinkDialog.Execute: Boolean;
 begin
   NewLinkHere(0, 0, PChar(DestinationFolder), 0);
+  Result := True; // No way to know it worked
 end;
 
 //=== { TJvAddHardwareDialog } ===============================================
 
-procedure TJvAddHardwareDialog.Execute;
+function TJvAddHardwareDialog.Execute: Boolean;
 var
   APModule: THandle;
   Applet: TCplApplet;
 begin
+  Result := False;
   APModule := LoadLibrary('hdwwiz.cpl');
   if APModule <= HINSTANCE_ERROR then
     Exit;
   Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));
   Applet(0, CPL_DBLCLK, 0, 0);
   FreeLibrary(APModule);
+  Result := True;
 end;
 
 function CreateShellLink(const AppName, Desc: string; Dest: string): string;
@@ -1578,9 +1581,10 @@ end;
 
 //=== { TJvOpenWithDialog } ==================================================
 
-procedure TJvOpenWithDialog.Execute;
+function TJvOpenWithDialog.Execute: Boolean;
 begin
   SHOpenWith(0, 0, PChar(FileName), SW_SHOW);
+  Result := True; // No way to know it worked
 end;
 
 //=== { TJvDiskFullDialog } ==================================================
@@ -1618,9 +1622,10 @@ end;
 
 //=== { TJvExitWindowsDialog } ===============================================
 
-procedure TJvExitWindowsDialog.Execute;
+function TJvExitWindowsDialog.Execute: Boolean;
 begin
   SHShutDownDialog(GetForegroundWindow);
+  Result := True;
 end;
 
 //=== { TJvChangeIconDialog } ================================================

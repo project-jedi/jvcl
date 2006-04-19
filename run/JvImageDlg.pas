@@ -53,13 +53,13 @@ type
   published
     property Picture: TPicture read GetPicture write SetPicture;
     property Title: string read FTitle write FTitle;
-    procedure Execute; override;
+    function Execute: Boolean; override;
   end;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvImageDlg.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -84,11 +84,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvImageDialog.Execute;
+function TJvImageDialog.Execute: Boolean;
 var
   Form: TJvForm;
   Image1: TImage;
 begin
+  Result := False;
   if (Picture.Height <> 0) and (Picture.Width <> 0) then
   begin
     Form := TJvForm.CreateNew(Self);
@@ -104,7 +105,7 @@ begin
       Form.Caption := FTitle;
       Image1.SetBounds(0,0,Picture.Width,Picture.Height);
       Image1.Anchors := [akTop, akLeft, akRight, akBottom];
-      Form.ShowModal;
+      Result := Form.ShowModal = mrOk;
     finally
       Form.Free;
     end;

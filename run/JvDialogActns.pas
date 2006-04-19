@@ -95,8 +95,6 @@ type
   protected
     FDialog: TJvCommonDialog;
     function GetDialogClass: TJvCommonDialogClass; virtual;
-    property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
-    property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
   public
     constructor Create(AOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
@@ -116,19 +114,20 @@ type
     property SecondaryShortCuts;
     {$ENDIF COMPILER6_UP}
     property Visible;
+    property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
+    property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
   end;
 
-  TJvCommonDialogPAction = class(TCustomAction)
+  TJvCommonDialogPAction = class(TJvCommonDialogAction)
   private
     FBeforeExecute: TNotifyEvent;
     FAfterExecute: TNotifyEvent;
   protected
-    FDialog: TJvCommonDialogP;
-    function GetDialogClass: TJvCommonDialogPClass; virtual;
+    //FDialog: TJvCommonDialogP;
+    function GetDialogClass: TJvCommonDialogPClass; reintroduce; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
-    procedure ExecuteTarget(Target: TObject); override;
   published
     property Caption;
     property Enabled;
@@ -144,17 +143,18 @@ type
     property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
   end;
 
+  // (obones): what's the point of this class, it's the exact same as
+  // TJvCommonDialogPAction?
   TJvCommonDialogFAction = class(TJvCommonDialogAction)
   private
     FBeforeExecute: TNotifyEvent;
     FAfterExecute: TNotifyEvent;
   protected
-    FDialog: TJvCommonDialogF;
+    //FDialog: TJvCommonDialogF;
     function GetDialogClass: TJvCommonDialogFClass; reintroduce; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
-    procedure ExecuteTarget(Target: TObject); override;
   published
     property Caption;
     property Enabled;
@@ -317,7 +317,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvDialogActns.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -398,18 +398,6 @@ begin
   Enabled := True;
 end;
 
-procedure TJvCommonDialogPAction.ExecuteTarget(Target: TObject);
-begin
-  if Assigned(FDialog) then
-  begin
-    if Assigned(FBeforeExecute) then
-      FBeforeExecute(Self);
-    FDialog.Execute;
-    if Assigned(FAfterExecute) then
-      FAfterExecute(Self);
-  end;
-end;
-
 function TJvCommonDialogPAction.GetDialogClass: TJvCommonDialogPClass;
 begin
   Result := nil;
@@ -438,18 +426,6 @@ begin
   end;
   DisableIfNoHandler := False;
   Enabled := True;
-end;
-
-procedure TJvCommonDialogFAction.ExecuteTarget(Target: TObject);
-begin
-  if Assigned(FDialog) then
-  begin
-    if Assigned(FBeforeExecute) then
-      FBeforeExecute(Self);
-    FDialog.Execute;
-    if Assigned(FAfterExecute) then
-      FAfterExecute(Self);
-  end;
 end;
 
 function TJvCommonDialogFAction.GetDialogClass: TJvCommonDialogFClass;
