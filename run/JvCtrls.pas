@@ -127,7 +127,7 @@ type
     {$ENDIF VisualCLX}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
+    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect); virtual;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -172,10 +172,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
-    procedure DrawButtonImage(ImageBounds: TRect);
-    procedure DrawButtonFocusRect(const RectContent: TRect);
-    procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
-    procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
+    procedure DrawButtonImage(ImageBounds: TRect); virtual;
+    procedure DrawButtonFocusRect(const RectContent: TRect); virtual;
+    procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect); virtual;
+    procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean); virtual;
     property Canvas: TCanvas read FCanvas;
     property CurrentAnimateFrame: Byte read FCurrentAnimateFrame;
     property MouseInControl: Boolean read FMouseInControl;
