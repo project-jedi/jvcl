@@ -1462,7 +1462,7 @@ end;
 procedure TJvProgramVersionCheck.ShowProgramVersionsDescription(const AFromVersion, AToVersion: string);
 var
   ParameterList: TJvParameterList;
-  Parameter: TJvBaseParameter;
+  Parameter: TJvMemoParameter;
 begin
   ParameterList := TJvParameterList.Create(Self);
   try
@@ -1476,6 +1476,8 @@ begin
       Width := 340;
       Height := 200;
       AsString := RemoteProgramVersionHistory.GetVersionsDescription(AFromVersion, AToVersion);
+      Scrollbars := ssBoth;
+//      ReadOnly := True;
     end;
     ParameterList.AddParameter(Parameter);
     ParameterList.ShowParameterDialog
