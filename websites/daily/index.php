@@ -1,3 +1,36 @@
+<!--
+****************************************************************************
+   JVCL daily zips index page
+
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License 
+for the specific language governing rights and limitations under the License.
+
+The Original Code is: index.php, released on 2005-05-26.
+
+The Initial Developer of the Original Code is Olivier Sannier
+Portions created by Peter Thörnqvist are Copyright (C) 2005 Olivier Sannier.
+All Rights Reserved.
+
+Contributor(s): none
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL 
+home page, located at http://jvcl.sourceforge.net
+
+Description:
+  This is a PHP index page that looks for JVCL's daily snapshots and presents
+  them in a table. It is to be placed where the daily cron job creates the
+  daily zips, usually in the daily subdirectory of the htdocs directory for
+  the jvcl group.
+
+****************************************************************************
+-->
+<!-- $Id$ -->
 <?php 
 
 // Never forget the trailing slash
@@ -174,9 +207,14 @@ or you can also grab one of the previous complete or source packages.<br>
 </table>
 <br>
 The dates are presented according to the ISO standard (YYYY-MM-DD) and the hours are those of the web server (US Pacific time).<br>
-Please note that it may take up to two hours for the mirror to get updated after a file has been published here. It is located in 
-France, and also hosts the <a href="http://www.7-zip.org/">7zip</a> files. Those archives contain the same files as the zip 
-archives but are about 50% smaller.<br>
+Notes:<br>
+<ul>
+  <li>The generation is started at 01:30 Us Pacific Time.</li> 
+  <li>The mirror generation is started at 10:30 Paris Time.</li> 
+  <li>The mirror is located in France.</li>
+  <li>It takes up to two hours for the <a href="http://www.7-zip.org/">7zip</a> files to be generated.</li> 
+  <li>The "Latest" link is created once every file is available.</li>
+</ul> 
 <br>
 Should you have any problems with those files, please do not hesitate
 to contact us on our newsgroup here:<br>
