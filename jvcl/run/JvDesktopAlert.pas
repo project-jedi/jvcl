@@ -215,7 +215,7 @@ type
     destructor Destroy; override;
     function Showing: Boolean;
     procedure Close(Immediate: Boolean);
-    procedure Execute; override;
+    function Execute: Boolean; override;
     property Form: TJvFormDesktopAlert read FDesktopForm;
     property Data: TObject read FData write FData;
     property StyleHandler: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
@@ -440,7 +440,7 @@ function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAl
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvDesktopAlert.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -726,7 +726,7 @@ begin
   end;
 end;
 
-procedure TJvDesktopAlert.Execute;
+function TJvDesktopAlert.Execute: Boolean;
 var
   ARect: TRect;
   I, X, Y: Integer;
@@ -854,6 +854,7 @@ begin
   end;
   FDesktopForm.AllowFocus := AutoFocus;
   FDesktopForm.ShowNoActivate;
+  Result := True;
   if not AutoFocus and (FActiveFocus <> GetFocus) then
   begin
     if (FActiveFocus <> NullHandle) then

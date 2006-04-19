@@ -136,7 +136,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Execute; override;
+    function Execute: Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure LoadFromFile(const AFileName: string);
     procedure SaveToFile(const AFileName: string);
@@ -163,7 +163,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvTipOfDay.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -269,10 +269,11 @@ begin
     FOnAfterExecute(Self);
 end;
 
-procedure TJvTipOfDay.Execute;
+function TJvTipOfDay.Execute: Boolean;
 var
   LForm: TJvForm;
 begin
+  Result := False;
   // Reentrance check
   if FRunning then
     Exit;
@@ -305,7 +306,7 @@ begin
       UpdateTip;
 
   {$IFDEF VCL}
-      ShowModal;
+      Result := ShowModal = mrOk;
 
       if not (toHideStartupCheckbox in Options) then
         if TButtonControlAccessProtected(FCheckBox).Checked then
@@ -328,6 +329,7 @@ begin
       OnHide := FormHide ;  // onclose
       FormStyle := fsStayOnTop;
       Show ;  // Shown non modal
+      Result := True;
     except
       Free;
     end;

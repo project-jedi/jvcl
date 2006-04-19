@@ -87,14 +87,14 @@ type
   public
     procedure LoadOptions;
     procedure SaveOptions;
-    class procedure Execute(StoreSettings: Boolean);
+    class function Execute(StoreSettings: Boolean): Boolean;
   end;
 
   TJvJVCLAboutComponent = class(TJvCommonDialogP)
   private
     FStoreSettings: Boolean;
   public
-    procedure Execute; override;
+    function Execute: Boolean; override;
   published
     property StoreSettings: Boolean read FStoreSettings write FStoreSettings default False;
   end;
@@ -102,7 +102,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvJVCLAboutForm.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -243,12 +243,12 @@ begin
   Close;
 end;
 
-procedure TJvJVCLAboutComponent.Execute;
+function TJvJVCLAboutComponent.Execute: Boolean;
 begin
-  TJvJVCLAboutForm.Execute(StoreSettings);
+  Result := TJvJVCLAboutForm.Execute(StoreSettings);
 end;
 
-class procedure TJvJVCLAboutForm.Execute(StoreSettings: Boolean);
+class function TJvJVCLAboutForm.Execute(StoreSettings: Boolean): Boolean;
 begin
   with Self.Create(Application) do
   try
@@ -257,7 +257,7 @@ begin
     // (rom) used as component outside the IDE the buttons are not useful
     btnHelp.Visible := StoreSettings;
     btnOptions.Visible := StoreSettings;
-    ShowModal;
+    Result := ShowModal = mrOk;
     if StoreSettings then
       SaveOptions;
   finally

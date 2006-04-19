@@ -48,29 +48,29 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-  TJvCommonDialogP = class(TJvComponent)
+  TJvCommonDialogP = class(TJvCommonDialog)
   public
     {$IFDEF CLR}
     procedure DefaultHandler(var Msg); virtual;
     {$ENDIF CLR}
 
-    procedure Execute; virtual; abstract;
+//    procedure Execute; virtual; abstract;
   end;
 
   // (rom) alternative to TJvCommonDialogP
-  TJvCommonDialogF = class(TJvComponent)
+  TJvCommonDialogF = class(TJvCommonDialog)
   public
     {$IFDEF CLR}
     procedure DefaultHandler(var Msg); virtual;
     {$ENDIF CLR}
 
-    function Execute: Boolean; virtual; abstract;
+//    function Execute: Boolean; virtual; abstract;
   end;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$RCSfile: JvBaseDlg.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
