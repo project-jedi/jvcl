@@ -164,7 +164,6 @@ type
   TJvThread = class(TJvComponent)
   private
     FAfterCreateDialogForm: TJvCustomThreadDialogFormEvent;
-    FThreadCount: Integer;
     FThreads: TThreadList;
     FExclusive: Boolean;
     FRunOnCreate: Boolean;
@@ -461,7 +460,6 @@ end;
 constructor TJvThread.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FThreadCount := 0;
   FRunOnCreate := True;
   FExclusive := True;
   FFreeOnTerminate := True;
@@ -525,7 +523,6 @@ begin
 
   if Assigned(FOnExecute) then
   begin
-    Inc(FThreadCount);
     BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
     try
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
@@ -611,13 +608,12 @@ end;
 
 procedure TJvThread.DoTerminate(Sender: TObject);
 begin
-  Dec(FThreadCount);
   FThreads.Remove(Sender);
   try
     if Assigned(FOnFinish) then
       FOnFinish(Self);
   finally
-    if FThreadCount = 0 then
+    if Count = 0 then
     begin
       if Assigned(ThreadDialogForm) then
         ThreadDialogForm.Close;
@@ -629,7 +625,7 @@ end;
 
 function TJvThread.OneThreadIsRunning: Boolean;
 begin
-  Result := FThreadCount > 0;
+  Result := Count > 0;
 end;
 
 procedure TJvThread.Terminate;
@@ -799,4 +795,6 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
+
+
 
