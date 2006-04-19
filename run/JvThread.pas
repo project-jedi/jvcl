@@ -116,17 +116,12 @@ type
   private
     FDialogOptions: TJvCustomThreadDialogOptions;
     FOnPressCancel: TNotifyEvent;
-    FThreadStatusDialog: TJvCustomThreadDialogForm;
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; virtual; abstract;
-    //    property ThreadStatusDialog: TJvCustomThreadDialogForm
-    //      read FThreadStatusDialog write FThreadStatusDialog;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure CloseThreadDialogForm;
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; virtual; abstract;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write FDialogOptions;
     property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
@@ -359,10 +354,16 @@ procedure TJvCustomThreadDialogForm.OnInternalTimer(Sender: TObject);
 begin
   if not (csDestroying in ComponentState) then
     if Assigned(ConnectedThread) and ConnectedThread.Terminated then
-      Close
+    begin
+      Hide;
+      Close;
+    end
     else
     if not Assigned(ConnectedThread) then
-      Close
+    begin
+      Hide;
+      Close;
+    end
     else
       UpdateFormContents;
 end;
@@ -436,23 +437,6 @@ destructor TJvCustomThreadDialog.Destroy;
 begin
   FDialogOptions.Free;
   inherited Destroy;
-end;
-
-procedure TJvCustomThreadDialog.CloseThreadDialogForm;
-begin
-  if Assigned(FThreadStatusDialog) and not (csDestroying in ComponentState) then
-  begin
-    FThreadStatusDialog.Close;
-    Application.HandleMessage;
-  end;
-end;
-
-procedure TJvCustomThreadDialog.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
-    if AComponent = FThreadStatusDialog then
-      FThreadStatusDialog := nil;
 end;
 
 //=== { TJvThread } ==========================================================
@@ -610,6 +594,8 @@ procedure TJvThread.DoTerminate(Sender: TObject);
 begin
   FThreads.Remove(Sender);
   try
+    if (Count = 0) and Assigned(ThreadDialogForm) then
+      ThreadDialogForm.Hide;
     if Assigned(FOnFinish) then
       FOnFinish(Self);
   finally
