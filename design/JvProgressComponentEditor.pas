@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvProgressComponentEditor.PAS, released on 2006-04-14.
 
 The Initial Developer of the Original Code is Olivier Sannier.
-Portions created by John Doe are Copyright (C) 2006 Olivier Sannier.
+Portions created by Olivier Sannier are Copyright (C) 2006 Olivier Sannier.
 All Rights Reserved.
 
 Contributor(s):
