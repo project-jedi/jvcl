@@ -143,7 +143,15 @@ end;
 procedure TJvProgressComponent.Execute;
 begin
   if not Assigned(FForm) then
-    FForm := TJvProgressForm.CreateNew(Self, 1); // BCB compatible
+  begin
+    // Use CreateNew in its BCB compatible version. And if we are
+    // in design mode, the owner cannot be Self or the form would simply
+    // not show up. Using Application as the owner solves this.
+    if csDesigning in ComponentState then
+      FForm := TJvProgressForm.CreateNew(Application, 1)
+    else
+      FForm := TJvProgressForm.CreateNew(Self, 1);
+  end;
   try
     FForm.Caption := Caption;
     with FForm do
@@ -194,10 +202,14 @@ begin
     FCancel := False;
     
     FForm.OnClose := FormOnClose;
+
+    // Mantis 3430: In design mode, there is no main form, hence show
+    // at the center, and in modal state to prevent the form from being
+    // lost in the background. 
     if csDesigning in ComponentState then
     begin
-      FForm.Show;
-      FForm.BringToFront;
+      FForm.Position := poScreenCenter;
+      FForm.ShowModal;
     end
     else
     begin
@@ -213,7 +225,8 @@ begin
         FForm.Show;
     end;
   finally
-    if Assigned(FOnShow) then
+    // Force recreating the window every time it is shown at design time.
+    if Assigned(FOnShow) or (csDesigning in ComponentState) then
       FreeAndNil(FForm);
   end;
 end;
@@ -232,6 +245,10 @@ end;
 procedure TJvProgressComponent.FormOnCancel(Sender: TObject);
 begin
   FCancel := True;
+
+  // Mantis 3430: In design mode, automatically hide the form upon cancellation
+  if (csDesigning in ComponentState) and Assigned(FForm) then
+    FForm.ModalResult := mrCancel;
 end;
 
 procedure TJvProgressForm.CMShowEvent(var Msg: TCMShowEvent);
