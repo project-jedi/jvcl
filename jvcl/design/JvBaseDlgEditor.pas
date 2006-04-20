@@ -70,15 +70,11 @@ procedure TJvBaseDlgEditor.ExecuteVerb(Index: Integer);
 begin
   if Index <> 0 then
     Exit;
-  if Component is TCommonDialog then // (p3) a TJvCommonDialog is also a TCommonDialog (nowadays)
+    
+  // TJvCommonDialog, TJvCommonDialogP and TJvCommonDialogF all
+  // are also a TCommonDialog
+  if Component is TCommonDialog then  
     TAccessProtectedCommonDialog(Component).Execute
-  else
-  if Component is TJvCommonDialogP then
-    TJvCommonDialogP(Component).Execute
-  else
-  // (rom) to accompany TJvCommonDialogP
-  if Component is TJvCommonDialogF then
-    TJvCommonDialogF(Component).Execute
   else
     Exit;
 
