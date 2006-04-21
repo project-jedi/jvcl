@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2006-04-21 09:16\n"
+"POT-Creation-Date: 2006-04-21 09:30\n"
 "PO-Revision-Date: 2004-12-17 22:10+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -791,13 +791,8 @@ msgstr ""
 "включително тези без MPL заглавна част, са предмет на MPL лиценза."
 
 #. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 
-#, fuzzy
-msgid "JVCL %d.%d  Installation"
-msgstr "JVCL 3  Инсталация"
-
 #. Programmer's name for it: RsInstallerTitle
-#: InstallerConsts.pas:52 
+#: InstallerConsts.pas:50 InstallerConsts.pas:52 
 #, fuzzy
 msgid "JVCL %d.%d Installation"
 msgstr "JVCL 3 Инсталация"
@@ -1313,6 +1308,10 @@ msgstr ""
 #: Debug/ExceptionDlg.pas:134 
 msgid "(no version info)"
 msgstr ""
+
+#, fuzzy
+#~ msgid "JVCL %d.%d  Installation"
+#~ msgstr "JVCL 3  Инсталация"
 
 #~ msgid "<c:blue>http://jvcl.sourceforge.net"
 #~ msgstr "<c:blue>http://jvcl.sourceforge.net"

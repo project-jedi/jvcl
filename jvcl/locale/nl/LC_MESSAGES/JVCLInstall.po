@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2006-04-21 09:16\n"
+"POT-Creation-Date: 2006-04-21 09:30\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -790,13 +790,8 @@ msgstr ""
 "Source code bestanden in de JVCL hebben een header die expliciet de licentie uitspreekt (zoals benodigd is). Echter geldt dat, tenzij anders aangegeven, alle bestanden, ook die zonder een MPL header, onderhevig zijn aan de MPL licentie."
 
 #. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 
-#, fuzzy
-msgid "JVCL %d.%d  Installation"
-msgstr "JVCL 3  Installatie"
-
 #. Programmer's name for it: RsInstallerTitle
-#: InstallerConsts.pas:52 
+#: InstallerConsts.pas:50 InstallerConsts.pas:52 
 #, fuzzy
 msgid "JVCL %d.%d Installation"
 msgstr "JVCL 3 Installatie"
@@ -1315,6 +1310,10 @@ msgstr ""
 #, fuzzy
 msgid "(no version info)"
 msgstr "Unit Versioning"
+
+#, fuzzy
+#~ msgid "JVCL %d.%d  Installation"
+#~ msgstr "JVCL 3  Installatie"
 
 #~ msgid "<c:blue>http://jvcl.sourceforge.net"
 #~ msgstr "<c:blue>http://jvcl.sourceforge.net"
