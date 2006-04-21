@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2006-04-21 09:16\n"
+"POT-Creation-Date: 2006-04-21 09:30\n"
 "PO-Revision-Date: 2004-12-18 19:04+0100\n"
 "Last-Translator: Peter Thörnqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL Localization\n"
@@ -941,17 +941,10 @@ msgstr ""
 "Källkoden i JVCL har en kommentar högst upp som klart och tydligt anger licensen som gäller\n"
 " Såvida inget annat anges, gäller MPL-licensen för alla filer, även de utan en egen licenstext.."
 
-#  FormMain..Caption
-#  Programmer's name for it: RsInstallerName
-#. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 
-#, fuzzy
-msgid "JVCL %d.%d  Installation"
-msgstr "JVCL 3  Installation"
-
 #  Programmer's name for it: RsInstallerTitle
+#. Programmer's name for it: RsInstallerName
 #. Programmer's name for it: RsInstallerTitle
-#: InstallerConsts.pas:52 
+#: InstallerConsts.pas:50 InstallerConsts.pas:52 
 #, fuzzy
 msgid "JVCL %d.%d Installation"
 msgstr "JVCL 3-installation"
@@ -1560,6 +1553,12 @@ msgstr ""
 #, fuzzy
 msgid "(no version info)"
 msgstr "Enhetsversionering"
+
+#  FormMain..Caption
+#  Programmer's name for it: RsInstallerName
+#, fuzzy
+#~ msgid "JVCL %d.%d  Installation"
+#~ msgstr "JVCL 3  Installation"
 
 #  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
 #  FormMain..JvWizard..LblHomepage..Hint

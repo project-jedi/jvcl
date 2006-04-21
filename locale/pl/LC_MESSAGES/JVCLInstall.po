@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2006-04-21 09:16\n"
+"POT-Creation-Date: 2006-04-21 09:30\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -882,17 +882,10 @@ msgstr ""
 "(jeżeli jest to wymagane). Jednak, jezeli nie zaznaczono inaczej, wszystkie pliki, łącznie z tymi\n"
 "bez nagłówka MPL, podlegają licencji MPL."
 
-#  FormMain..Caption
-#  Programmer's name for it: RsInstallerName
-#. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 
-#, fuzzy
-msgid "JVCL %d.%d  Installation"
-msgstr "Instalacja  JVCL 3"
-
 #  Programmer's name for it: RsInstallerTitle
+#. Programmer's name for it: RsInstallerName
 #. Programmer's name for it: RsInstallerTitle
-#: InstallerConsts.pas:52 
+#: InstallerConsts.pas:50 InstallerConsts.pas:52 
 #, fuzzy
 msgid "JVCL %d.%d Installation"
 msgstr "Instalacja JVCL 3 "
@@ -1502,6 +1495,12 @@ msgstr ""
 #: Debug/ExceptionDlg.pas:134 
 msgid "(no version info)"
 msgstr ""
+
+#  FormMain..Caption
+#  Programmer's name for it: RsInstallerName
+#, fuzzy
+#~ msgid "JVCL %d.%d  Installation"
+#~ msgstr "Instalacja  JVCL 3"
 
 #  FormMain..JvWizard..LblHomepage..Hint
 #~ msgid "<c:blue>http://jvcl.sourceforge.net"
