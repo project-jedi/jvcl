@@ -32,7 +32,7 @@ msgremove --no-wrap JVCLInstall.po -i ignore.po -o default.po
 
 : merge with existing jvcl.po file
 echo Updating existing translations...
-if exist JVCLInstall.po msgmerge -F -o JVCLInstall.po JVCLInstall.po default.po 
+if exist JVCLInstall.po msgmerge -o JVCLInstall.po JVCLInstall.po default.po 
 if not exist JVCLInstall.po copy default.po JVCLInstall.po
 
 : set the headers to match JVCL ones
