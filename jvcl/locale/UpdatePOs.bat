@@ -38,7 +38,7 @@ msgremove --no-wrap jvcl.po -i ignore.po -o default.po
 
 : merge with existing jvcl.po file
 echo Updating existing translations...
-if exist jvcl.po msgmerge -F -o jvcl.po jvcl.po default.po 
+if exist jvcl.po msgmerge -o jvcl.po jvcl.po default.po 
 if not exist jvcl.po copy default.po jvcl.po
 
 : set the headers to match JVCL ones
