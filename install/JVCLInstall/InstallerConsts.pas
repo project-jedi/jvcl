@@ -47,7 +47,7 @@ resourcestring
     'is required). However, unless noted otherwise, all files, including those without an MPL'#10 +
     'header, are subject to the MPL license.';
 
-  RsInstallerName = 'JVCL %d.%d  Installation';
+  RsInstallerName = 'JVCL %d.%d Installation';
 
   RsInstallerTitle = 'JVCL %d.%d Installation';
   RsWelcomePageSubTitle = 'Welcome to the JVCL 3 installation application';
