@@ -5211,10 +5211,12 @@ var
   function Expression(const OpTyp: TTokenKind): Variant;
   var
     Tmp: Variant;
+    PrevTTyp: Integer;
   begin
     Result := Unassigned;
     if OpTyp <> ttUnknown then
       NextToken;
+    PrevTTyp := TTyp;
     while True do
     begin
       case TTyp of
@@ -5390,7 +5392,7 @@ var
             NextToken;
           end;
         ttRB:
-          if TVarData(Result).VType = varEmpty then
+          if (TVarData(Result).VType = varEmpty) and (PrevTTyp <> ttIdentifier) then
             ErrorExpected(LoadStr2(irExpression))
           else
             Exit;
@@ -5403,12 +5405,12 @@ var
             NextToken;
           end;
         ttRS:
-          if TVarData(Result).VType = varEmpty then
+          if (TVarData(Result).VType = varEmpty) and (PrevTTyp <> ttIdentifier) then
             ErrorExpected(LoadStr2(irExpression))
           else
             Exit;
       else
-        if TVarData(Result).VType = varEmpty then
+        if (TVarData(Result).VType = varEmpty) and (PrevTTyp <> ttIdentifier) then
           ErrorExpected(LoadStr2(irExpression))
         else
           Exit;
