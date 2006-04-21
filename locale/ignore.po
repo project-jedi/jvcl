@@ -1004,3 +1004,8 @@ msgstr ""
 msgid "Error de tipo de dato."
 msgstr ""
 
+msgid "@Jcldebug@InsertDebugDataIntoExecutableFile$qqrpct1rit3"
+msgstr ""
+
+msgid "<c:blue>http://jvcl.sourceforge.net"
+msgstr ""
