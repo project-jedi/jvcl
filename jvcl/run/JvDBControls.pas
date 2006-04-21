@@ -71,6 +71,7 @@ type
     FOriginalValue: string;
     // Validation/event.
     FOnAcceptNewValue: TJvDBAcceptValueEvent;
+    FDefaultMask: Boolean;
     procedure ActiveChange(Sender: TObject);
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -86,8 +87,10 @@ type
     procedure UpdateData(Sender: TObject);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    function GetReadOnly: Boolean; reintroduce;   
-    procedure SetReadOnly(Value: Boolean); reintroduce;   
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
+    function GetEditMask: string;
+    procedure SetEditMask(const AValue: string);
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -152,7 +155,7 @@ type
     {Common JEDI Niceties}
     property BeepOnError;
     { designtime properties SPECIFIC to only JvDBMaskEdit: }
-    property EditMask; { from TJvCustomMaskEdit }
+    property EditMask: string read GetEditMask write SetEditMask;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -736,6 +739,7 @@ end;
 procedure TJvDBMaskEdit.Loaded;
 begin
   inherited Loaded;
+  FDefaultMask := (inherited EditMask = '');
   ResetMaxLength;
   if csDesigning in ComponentState then
     DataChange(Self);
@@ -864,6 +868,20 @@ begin
   FDataLink.ReadOnly := Value;
 end;
 
+function TJvDBMaskEdit.GetEditMask: string;
+begin
+  if FDefaultMask then
+    Result := ''
+  else
+    Result := inherited EditMask;
+end;
+
+procedure TJvDBMaskEdit.SetEditMask(const AValue: string);
+begin
+  inherited EditMask := AValue;
+  FDefaultMask := false;
+end;
+
 function TJvDBMaskEdit.GetField: TField;
 begin
   Result := FDataLink.Field;
@@ -883,7 +901,11 @@ begin
       EditText := '';  {forces update}
       FAlignment := FDataLink.Field.Alignment;
     end;
-    EditMask := FDataLink.Field.EditMask;
+    if EditMask = '' then
+    begin
+      inherited EditMask := FDataLink.Field.EditMask;
+      FDefaultMask := true;
+    end;
     if not (csDesigning in ComponentState) then
       if (FDataLink.Field.DataType in [ftString, ftWideString]) and (MaxLength = 0) then
         MaxLength := FDataLink.Field.Size;
@@ -899,7 +921,7 @@ begin
   else
   begin
     FAlignment := taLeftJustify;
-    EditMask := '';
+    //EditMask := '';
     if csDesigning in ComponentState then
       EditText := Name
     else
