@@ -284,6 +284,7 @@ type
   protected
     function GetGrabber: TJvLocalFileUrlGrabber;
     procedure Execute; override;
+    procedure Closed;
   public
     property Grabber: TJvLocalFileUrlGrabber read GetGrabber;
   end;
@@ -714,8 +715,11 @@ begin
       ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
-    Synchronize(Closed);
+
+    // (obones): Set stopped before calling closed so that users can change
+    // the URL in an OnConnectionClosed event handler.
     SetGrabberStatus(gsStopped);
+    Synchronize(Closed);
   end;
 end;
 
@@ -918,8 +922,11 @@ begin
       ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
-    Synchronize(Closed);
+    
+    // (obones): Set stopped before calling closed so that users can change
+    // the URL in an OnConnectionClosed event handler.
     SetGrabberStatus(gsStopped);
+    Synchronize(Closed);
   end;
 end;
 
@@ -1001,6 +1008,11 @@ end;
 
 //=== { TJvLocalFileUrlGrabberThread } =======================================
 
+procedure TJvLocalFileUrlGrabberThread.Closed;
+begin
+  Grabber.DoClosed;
+end;
+
 procedure TJvLocalFileUrlGrabberThread.Execute;
 var
   FileName: string;
@@ -1055,7 +1067,11 @@ begin
       AFileStream.Free;
       Grabber.Stream.Free;
       Grabber.Stream := nil;
+
+      // (obones): Set stopped before calling closed so that users can change
+      // the URL in an OnConnectionClosed event handler.
       SetGrabberStatus(gsStopped);
+      Synchronize(Closed);
     end;
   except
 //    Application.HandleException(Self);
