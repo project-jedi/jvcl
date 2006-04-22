@@ -11,7 +11,8 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvErrorIndicator.pas, released on 2002-11-16.
 
 The Initial Developer of the Original Code is Peter Thörnqvist <peter3 at sourceforge dot net>.
-Portions created by Joe Doe are Copyright (C) 2002 Peter Thörnqvist . All Rights Reserved.
+Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist .
+All Rights Reserved.
 
 Contributor(s):
 
