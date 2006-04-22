@@ -268,14 +268,12 @@ uses
   Masks,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  {$ENDIF HAS_UNIT_VARIANTS}           
   TypInfo,
   {$IFDEF VCL}
-  JclUnicode, // for reg exp support
+//  JclUnicode, // for reg exp support
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   JclWideStrings,
-  {$ENDIF VisualCLX}
   JvTypes, JvResources;
 
 var
@@ -288,8 +286,8 @@ begin
   if not Assigned(GlobalValidatorsList) then
   begin
     GlobalValidatorsList := TStringList.Create;
-   // register
-    RegisterBaseValidators;
+    // register
+    //RegisterBaseValidators; is registered in initialization
   end;
   Result := GlobalValidatorsList;
 end;
@@ -940,7 +938,7 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-  // (p3) do NOT touch! This is required to make the registration work!!!
+  // (p3) do NOT touch! This is required to make the registration work on formulars!!!
   RegisterBaseValidators;
 
 finalization
