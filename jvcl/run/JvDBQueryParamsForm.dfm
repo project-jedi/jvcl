@@ -26,9 +26,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
   OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
-  DesignSize = (
-    354
-    179)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -39,9 +36,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Define Parameters'
     TabOrder = 0
-    DesignSize = (
-      328
-      109)
     object Label1: TLabel
       Left = 8
       Top = 20
@@ -58,7 +52,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
       Anchors = [akTop, akRight]
       Caption = '&Value:'
       FocusControl = ParamValue
-      ExplicitLeft = 143
     end
     object Label3: TLabel
       Left = 135
@@ -68,7 +61,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
       Anchors = [akTop, akRight]
       Caption = '&Data type:'
       FocusControl = TypeList
-      ExplicitLeft = 143
     end
     object ParamValue: TEdit
       Left = 200
