@@ -27,9 +27,6 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    532
-    253)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -54,8 +51,6 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     Caption = '&Clear'
     TabOrder = 3
     OnClick = btnClearClick
-    ExplicitLeft = 448
-    ExplicitTop = 207
   end
   object chkActive: TCheckBox
     Left = 16
@@ -66,7 +61,6 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     Caption = '&Active'
     TabOrder = 1
     OnClick = chkActiveClick
-    ExplicitTop = 197
   end
   object chkNoRedraw: TCheckBox
     Left = 16
@@ -78,7 +72,6 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     Checked = True
     State = cbChecked
     TabOrder = 2
-    ExplicitTop = 220
   end
   object lvMessages: TListView
     Left = 8
@@ -111,7 +104,5 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     TabOrder = 0
     ViewStyle = vsReport
     OnResize = lvMessagesResize
-    ExplicitWidth = 515
-    ExplicitHeight = 155
   end
 end

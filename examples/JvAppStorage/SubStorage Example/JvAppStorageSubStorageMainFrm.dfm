@@ -44,7 +44,6 @@ object JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm
         Height = 13
         Align = alTop
         Caption = 'Stored Memo:'
-        ExplicitWidth = 66
       end
       object Memo2: TMemo
         Left = 1

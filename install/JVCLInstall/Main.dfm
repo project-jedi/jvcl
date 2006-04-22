@@ -54,9 +54,6 @@ object FormMain: TFormMain
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
     OnActivePageChanging = JvWizardActivePageChanging
-    DesignSize = (
-      683
-      493)
     object LblHomepage: TLabel
       Left = 8
       Top = 473

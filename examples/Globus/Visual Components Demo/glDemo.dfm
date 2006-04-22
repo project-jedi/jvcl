@@ -120,10 +120,6 @@ object GLDemoFrm: TGLDemoFrm
     Options = [ftoAutoFontDirection, ftoExcludeGlyphs]
     object TabSheet1: TTabSheet
       Caption = 'ListBox '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glListBox1: TJvgListBox
         Left = 0
         Top = 0
@@ -543,10 +539,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet2: TTabSheet
       Caption = ' AskListBox '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object FrAskListBox1: TJvgAskListBox
         Left = 0
         Top = 17
@@ -1327,10 +1319,6 @@ object GLDemoFrm: TGLDemoFrm
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Image2: TImage
         Left = 26
         Top = 164
@@ -2600,10 +2588,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet4: TTabSheet
       Caption = 'Page&&TabControl'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glTabControl3: TJvgTabControl
         Left = 328
         Top = 6
@@ -3711,10 +3695,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet5: TTabSheet
       Caption = 'Bevel '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glBevel2: TJvgBevel
         Left = 61
         Top = 98
@@ -3861,10 +3841,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet6: TTabSheet
       Caption = 'TreeView '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glSplitter2: TJvgSplitter
         Left = 259
         Top = 0
@@ -4325,10 +4301,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet7: TTabSheet
       Caption = 'Shadow '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glShadow13: TJvgShadow
         Left = 454
         Top = 186
@@ -4834,10 +4806,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet8: TTabSheet
       Caption = ' BitmapImage '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -4963,10 +4931,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet9: TTabSheet
       Caption = 'FlyingText '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -5018,10 +4982,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet10: TTabSheet
       Caption = 'Digits '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object diTime: TJvgDigits
         Left = 3
         Top = -1
@@ -5881,10 +5841,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet11: TTabSheet
       Caption = 'GroupBox '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label2: TLabel
         Left = 214
         Top = 8
@@ -6471,10 +6427,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet12: TTabSheet
       Caption = ' About '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Shape2: TShape
         Left = 0
         Top = 0
@@ -8218,10 +8170,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet13: TTabSheet
       Caption = 'Splitter '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glSplitter1: TJvgSplitter
         Left = 157
         Top = 0
@@ -8255,10 +8203,6 @@ object GLDemoFrm: TGLDemoFrm
     end
     object TabSheet14: TTabSheet
       Caption = ' HoleShape '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glBevel5a: TJvgBevel
         Left = 0
         Top = 0
@@ -8291,10 +8235,6 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet15: TTabSheet
       Caption = 'Ruler '
       ImageIndex = 14
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glRuler1: TJvgRuler
         Left = 0
         Top = 0
@@ -8315,10 +8255,6 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet16: TTabSheet
       Caption = 'Buttons '
       ImageIndex = 15
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glSpeedButton1: TJvgSpeedButton
         Left = 208
         Top = 16
@@ -8395,10 +8331,6 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet17: TTabSheet
       Caption = 'WizardHeader '
       ImageIndex = 16
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glWizardHeader1: TJvgWizardHeader
         Left = 0
         Top = 0
@@ -8522,10 +8454,6 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet18: TTabSheet
       Caption = 'Progress '
       ImageIndex = 17
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glProgress1: TJvgProgress
         Left = 8
         Top = 16
@@ -8768,10 +8696,6 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet19: TTabSheet
       Caption = 'Nonvisual '
       ImageIndex = 18
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Image1: TImage
         Left = 10
         Top = 16
@@ -9491,10 +9415,6 @@ object GLDemoFrm: TGLDemoFrm
     object TabSheet20: TTabSheet
       Caption = 'CheckBox'
       ImageIndex = 19
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object glCheckBox1: TJvgCheckBox
         Tag = 1
         Left = 14
