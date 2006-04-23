@@ -188,6 +188,7 @@ type
     // it is always empty.
     property Grabbers[const Index: Integer]: TJvCustomUrlGrabber read GetGrabbers;
     property GrabberCount: Integer read GetGrabberCount;
+    property NexUrlIndex: Integer read FNextUrlIndex;
   published
     // the index of the default grabber to use, if any
     property DefaultGrabberIndex: TJvUrlGrabberIndex read FDefaultGrabberIndex write SetDefaultGrabberIndex default -1;
