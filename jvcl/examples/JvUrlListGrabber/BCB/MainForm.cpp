@@ -32,6 +32,7 @@
 #pragma package(smart_init)
 #pragma link "JvComponent"
 #pragma link "JvUrlListGrabber"
+#pragma link "JvComponentBase"
 #pragma resource "*.dfm"
 TfrmMain *frmMain;
 //---------------------------------------------------------------------------
@@ -73,12 +74,6 @@ void __fastcall TfrmMain::btnGoDesignClick(TObject *Sender)
     for (i = 0; i < memUrls->Lines->Count; i++)
       if (memUrls->Lines->Strings[i] != "")
         julGrabber->URLs->Add(memUrls->Lines->Strings[i]);
-    for (i = 0; i < julGrabber->URLs->Count; i++)
-    {
-      TJvCustomUrlGrabber* urlGrabber = julGrabber->Grabbers[i];
-      urlGrabber->OutputMode = omFile;
-      urlGrabber->FileName = ExtractFilePath(Application->ExeName) + "\\result" + IntToStr(i) + ".txt";
-    }
     julGrabber->StartAll();
   }
 }
@@ -139,6 +134,15 @@ void __fastcall TfrmMain::julGrabberStatusChange(TJvUrlListGrabber *Sender,
       TJvCustomUrlGrabber *Grabber)
 {
   memExplanation->Lines->Add(Format("Grabber %d: Status change", ARRAYOFCONST((static_cast<int>(Grabber->Id)))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberGrabberAdded(TJvUrlListGrabber *Sender,
+      TJvCustomUrlGrabber *Grabber, int Index)
+{
+  Grabber->Id = Index;
+  Grabber->OutputMode = omFile;
+  Grabber->FileName = ExtractFilePath(Application->ExeName) + "\\result" + IntToStr(Index) + ".txt";
 }
 //---------------------------------------------------------------------------
 
