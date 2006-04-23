@@ -2238,6 +2238,7 @@ resourcestring
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring
   RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
+  RsEAtLeastOneGrabberRunning = 'There is at least one grabber running, you cannot change the URLs.';
   RsEGrabberNotStopped = 'The grabber is not stopped, you cannot change its URL.';
 
   RsJediAgent = 'JEDI-VCL';

@@ -71,6 +71,10 @@ type
   // of handling a given URL. This is only raised if DefaultGrabberIndex is -1
   ENoGrabberForUrl = class(Exception);
 
+  // The exception triggered if someone tries to set the URLs property while at
+  // least one grabber is running
+  EAtLeastOneGrabberRunning = class(Exception);
+
   // This component allows the user to specify a list of URLs to be
   // grabbed and then start grabbing. All the grab operations will be done
   // in parallel in the background, leaving the user's application free
@@ -121,8 +125,8 @@ type
     // returns the grabber associated with the given index
     function GetGrabbers(const Index: Integer): TJvCustomUrlGrabber;
 
-    // Called whenever the list of Urls has changed
-    procedure URLsChange(Sender: TObject);
+    // Called whenever the list of Urls is about to change
+    procedure URLsChanging(Sender: TObject);
 
     // The event handlers for the grabbers, to propagate them to the
     // user through the events of this class
@@ -594,7 +598,7 @@ begin
   FDefaultGrabbersProperties := TJvUrlGrabberDefaultPropertiesList.Create(Self);
   FGrabbers := TJvUrlGrabberList.Create(True);
   FURLs := TStringList.Create;
-  FURLs.OnChange := URLsChange;
+  FURLs.OnChanging := URLsChanging;
   FDefaultGrabberIndex := -1;
 end;
 
@@ -689,7 +693,9 @@ var
   I: Integer;
   MaxNewGrabbers: Integer;
 begin
-  // TODO: Check that no grabber is running.
+  // If at least one grabber is running, then do not start
+  if GrabberCount > 0 then
+    Exit;
 
   FGrabbers.Clear;
 
@@ -720,14 +726,11 @@ begin
   Stop;
 end;
 
-procedure TJvUrlListGrabber.URLsChange(Sender: TObject);
-var
-  I: Integer;
+procedure TJvUrlListGrabber.URLsChanging(Sender: TObject);
 begin
-  // TODO: Check that no grabber is running
-  for I := 0 to FGrabbers.Count - 1 do
-  begin
-  end;
+  // Prevent changing the URLs while at least one grabber is running 
+  if GrabberCount > 0 then
+    raise EAtLeastOneGrabberRunning.CreateRes(@RsEAtLeastOneGrabberRunning);
 end;
 
 function TJvUrlListGrabber.GetGrabberCount: Integer;
@@ -783,20 +786,16 @@ end;
 
 procedure TJvUrlListGrabber.GrabberConnectionClosed(Grabber: TObject);
 begin
-  // Grabber has closed connection, meaning that it has finished. So we now
-  // check if can and have to launch a new grabber.
-  if FNextUrlIndex < FURLs.Count then
-  begin
-    // Test for cleanup threshold
-    if Cardinal(FCleanupList.Count) = CleanupThreshold then
-      FCleanupList.Clear;
-      
-    // Put the recently finished grabber in the cleanup list
-    FCleanupList.Add(FGrabbers.Extract(Grabber));
+  // Grabber has closed connection, meaning that it has finished, hence we check
+  // the cleanup threshold move the finished grabber to the cleanup list and
+  // start a new grabber if there are URLs left
+  if Cardinal(FCleanupList.Count) = CleanupThreshold then
+    FCleanupList.Clear;
 
-    // Get a new grabber and start it
+  FCleanupList.Add(FGrabbers.Extract(Grabber));
+
+  if FNextUrlIndex < FURLs.Count then
     StartNextGrabber;
-  end;
 
   if Assigned(OnConnectionClosed) then
     OnConnectionClosed(Self, TJvCustomUrlGrabber(Grabber));
