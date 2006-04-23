@@ -488,8 +488,19 @@ type
     FContinue: Boolean;
   protected
     FGrabber: TJvCustomUrlGrabber;
+
+    procedure Execute; override;
+
+    // Derived classes must not override Execute. They must instead override
+    // Grab which is called by this class' Execute. This is done to ensure
+    // that all derived classes will always set the status back to gsStopped
+    // and trigger the OnConnectionClosed event at the end.
+    procedure Grab; virtual; abstract;
+    
     procedure Error;
     procedure Ended;
+    procedure Closed;
+    
     procedure UpdateGrabberProgress;
     procedure UpdateGrabberStatus;
 
@@ -1173,6 +1184,11 @@ end;
 
 //=== { TJvCustomUrlGrabberThread } ==========================================
 
+procedure TJvCustomUrlGrabberThread.Closed;
+begin
+  FGrabber.DoClosed;
+end;
+
 constructor TJvCustomUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
   inherited Create(True);
@@ -1199,6 +1215,23 @@ procedure TJvCustomUrlGrabberThread.Error;
 begin
   FGrabber.FStatus := gsStopped;
   FGrabber.DoError(FErrorText);
+end;
+
+procedure TJvCustomUrlGrabberThread.Execute;
+begin
+  SetGrabberStatus(gsStopped);
+  FGrabber.Stream := nil;
+  try
+    Grab;
+  finally
+    //Free all stuff's
+    FGrabber.Stream.Free;
+    FGrabber.Stream := nil;
+
+    // Signal Closed, after having changed the state of the grabber
+    SetGrabberStatus(gsStopped);
+    Synchronize(Closed);
+  end;
 end;
 
 procedure TJvCustomUrlGrabberThread.SetGrabberStatus(

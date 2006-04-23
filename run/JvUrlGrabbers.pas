@@ -154,8 +154,7 @@ type
   TJvFtpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
     function GetGrabber: TJvFtpUrlGrabber;
-    procedure Closed;
-    procedure Execute; override;
+    procedure Grab; override;
   public
     property Grabber: TJvFtpUrlGrabber read GetGrabber;
   end;
@@ -230,10 +229,8 @@ type
   protected
     FContinue: Boolean;
     function GetGrabber: TJvHttpUrlGrabber;
-    procedure Execute; override;
-    procedure Closed;
+    procedure Grab; override;
   public
-    constructor Create(Grabber: TJvCustomUrlGrabber); override;
     property Grabber: TJvHttpUrlGrabber read GetGrabber;
   end;
 
@@ -283,8 +280,7 @@ type
   TJvLocalFileUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
     function GetGrabber: TJvLocalFileUrlGrabber;
-    procedure Execute; override;
-    procedure Closed;
+    procedure Grab; override;
   public
     property Grabber: TJvLocalFileUrlGrabber read GetGrabber;
   end;
@@ -567,12 +563,7 @@ end;
 
 //=== { TJvFtpUrlGrabberThread } =============================================
 
-procedure TJvFtpUrlGrabberThread.Closed;
-begin
-  Grabber.DoClosed;
-end;
-
-procedure TJvFtpUrlGrabberThread.Execute;
+procedure TJvFtpUrlGrabberThread.Grab;
 const
   cPassive: array [Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
@@ -584,8 +575,6 @@ var
   Buf: array [0..1023] of Byte;
   dwFileSizeHigh: DWORD;
 begin
-  Grabber.Stream := nil;
-  SetGrabberStatus(gsStopped);
   hSession := nil;
   hHostConnection := nil;
   hDownload := nil;
@@ -694,10 +683,6 @@ begin
     except
     end;
   finally
-    //Free all stuff's
-    Grabber.Stream.Free;
-    Grabber.Stream := nil;
-
     //Release all handles
     // (rom) now all connections get closed and Closed is always signalled
     if (hDownload <> nil) and not InternetCloseHandle(hDownload) then
@@ -715,11 +700,6 @@ begin
       ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
-
-    // (obones): Set stopped before calling closed so that users can change
-    // the URL in an OnConnectionClosed event handler.
-    SetGrabberStatus(gsStopped);
-    Synchronize(Closed);
   end;
 end;
 
@@ -730,17 +710,7 @@ end;
 
 //=== { TJvHttpUrlGrabberThread } ============================================
 
-procedure TJvHttpUrlGrabberThread.Closed;
-begin
-  Grabber.DoClosed;
-end;
-
-constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
-begin
-  inherited Create(Grabber);
-end;
-
-procedure TJvHttpUrlGrabberThread.Execute;
+procedure TJvHttpUrlGrabberThread.Grab;
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName, strUserName, strPassword: string;
@@ -754,8 +724,6 @@ begin
   Buffer := nil;
 
   FContinue := True;
-  SetGrabberStatus(gsStopped);
-  Grabber.Stream := nil;
   hSession := nil;
   hHostConnection := nil;
   hDownload := nil;
@@ -903,8 +871,6 @@ begin
     // Free all stuff's
     if Buffer <> nil then
       FreeMem(Buffer);
-    Grabber.Stream.Free;
-    Grabber.Stream := nil;
 
     // Release all handles
     if (hDownload <> nil) and not InternetCloseHandle(hDownload) then
@@ -922,11 +888,6 @@ begin
       ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
-    
-    // (obones): Set stopped before calling closed so that users can change
-    // the URL in an OnConnectionClosed event handler.
-    SetGrabberStatus(gsStopped);
-    Synchronize(Closed);
   end;
 end;
 
@@ -1008,12 +969,7 @@ end;
 
 //=== { TJvLocalFileUrlGrabberThread } =======================================
 
-procedure TJvLocalFileUrlGrabberThread.Closed;
-begin
-  Grabber.DoClosed;
-end;
-
-procedure TJvLocalFileUrlGrabberThread.Execute;
+procedure TJvLocalFileUrlGrabberThread.Grab;
 var
   FileName: string;
   BytesRead, TotalBytes: DWORD;
@@ -1021,8 +977,6 @@ var
   AFileStream: TFileStream;
   Attrs: Integer;
 begin
-  SetGrabberStatus(gsStopped);
-  Grabber.Stream := nil;
   Grabber.ParseUrl(Grabber.Url, FileName);
   if not FileExists(FileName) then
   begin
@@ -1065,13 +1019,6 @@ begin
         SetFileAttributes(PChar(Grabber.FileName), Attrs);
     finally
       AFileStream.Free;
-      Grabber.Stream.Free;
-      Grabber.Stream := nil;
-
-      // (obones): Set stopped before calling closed so that users can change
-      // the URL in an OnConnectionClosed event handler.
-      SetGrabberStatus(gsStopped);
-      Synchronize(Closed);
     end;
   except
 //    Application.HandleException(Self);
