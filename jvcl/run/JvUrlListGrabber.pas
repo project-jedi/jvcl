@@ -717,7 +717,8 @@ procedure TJvUrlListGrabber.Stop;
 var
   I: Integer;
 begin
-  for I := 0 to FURLs.Count - 1 do
+  FNextUrlIndex := FURLs.Count; // Prevent from creating new grabbers
+  for I := 0 to GrabberCount - 1 do
     Grabbers[I].Stop;
 end;
 
@@ -787,7 +788,7 @@ end;
 procedure TJvUrlListGrabber.GrabberConnectionClosed(Grabber: TObject);
 begin
   // Grabber has closed connection, meaning that it has finished, hence we check
-  // the cleanup threshold move the finished grabber to the cleanup list and
+  // the cleanup threshold, move the finished grabber to the cleanup list and
   // start a new grabber if there are URLs left
   if Cardinal(FCleanupList.Count) = CleanupThreshold then
     FCleanupList.Clear;
