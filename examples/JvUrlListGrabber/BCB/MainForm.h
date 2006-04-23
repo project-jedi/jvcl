@@ -34,6 +34,7 @@
 #include "JvComponent.hpp"
 #include "JvUrlListGrabber.hpp"
 #include <ComCtrls.hpp>
+#include "JvComponentBase.hpp"
 //---------------------------------------------------------------------------
 class TfrmMain : public TForm
 {
@@ -69,6 +70,8 @@ __published:	// IDE-managed Components
           TJvCustomUrlGrabber *Grabber);
   void __fastcall julGrabberStatusChange(TJvUrlListGrabber *Sender,
           TJvCustomUrlGrabber *Grabber);
+  void __fastcall julGrabberGrabberAdded(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber, int Index);
 private:	// User declarations
 public:		// User declarations
   __fastcall TfrmMain(TComponent* Owner);

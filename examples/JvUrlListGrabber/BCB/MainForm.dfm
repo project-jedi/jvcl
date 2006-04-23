@@ -13,6 +13,9 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  DesignSize = (
+    535
+    411)
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel
@@ -116,6 +119,7 @@ object frmMain: TfrmMain
     OnRequestSent = julGrabberRequestSent
     OnConnectionClosed = julGrabberConnectionClosed
     OnStatusChange = julGrabberStatusChange
+    OnGrabberAdded = julGrabberGrabberAdded
     Left = 384
     Top = 192
     DefaultGrabbersPropertiesList = <
@@ -124,14 +128,16 @@ object frmMain: TfrmMain
         Value.FileName = 'output.txt'
         Value.OutputMode = omFile
         Value.Agent = 'JEDI-VCL'
-        Value.Port = 21
+        Value.ProxyAddresses = 'proxyserver'
+        Value.ProxyIgnoreList = '<local>'
       end
       item
         UrlType = 'HTTP'
         Value.FileName = 'output.txt'
         Value.OutputMode = omFile
         Value.Agent = 'JEDI-VCL'
-        Value.Port = 80
+        Value.ProxyAddresses = 'proxyserver'
+        Value.ProxyIgnoreList = '<local>'
       end
       item
         UrlType = 'LocalFile'
