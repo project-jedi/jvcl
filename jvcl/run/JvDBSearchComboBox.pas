@@ -363,7 +363,8 @@ begin
   if Assigned(FDataLink.DataSet) then
     for I := 0 to Items.Count - 1 do
       FDataLink.DataSet.FreeBookmark(Pointer(Items.Objects[I]));
-  Items.Clear;
+  if not (csDestroying in ComponentState) then
+    Items.Clear;
 end;
 
 function TJvDBCustomSearchComboBox.GetResult: Variant;
