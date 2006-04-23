@@ -121,6 +121,7 @@ object frmMain: TfrmMain
     OnRequestSent = julGrabberRequestSent
     OnConnectionClosed = julGrabberConnectionClosed
     OnStatusChange = julGrabberStatusChange
+    OnGrabberAdded = julGrabberGrabberAdded
     Left = 384
     Top = 156
     DefaultGrabbersPropertiesList = <

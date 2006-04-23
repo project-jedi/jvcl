@@ -30,7 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvUrlListGrabber, StdCtrls, JvComponent, ComCtrls;
+  Dialogs, JvUrlListGrabber, StdCtrls, JvComponent, ComCtrls,
+  JvComponentBase;
 
 type
   TfrmMain = class(TForm)
@@ -65,6 +66,8 @@ type
     procedure julGrabberDoneFile(Sender: TJvUrlListGrabber;
       Grabber: TJvCustomUrlGrabber; FileName: String; FileSize: Integer;
       Url: String);
+    procedure julGrabberGrabberAdded(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber; Index: Integer);
   private
     { Private declarations }
   public
@@ -102,22 +105,13 @@ begin
     for i := 0 to memUrls.Lines.Count -1 do
       if memUrls.Lines[i] <> '' then
         julGrabber.URLs.Add(memUrls.Lines[i]);
-    for i := 0 to julGrabber.URLs.Count -1 do
-    begin
-      with julGrabber.Grabbers[i] do
-      begin
-        Id := i;
-        OutputMode := omFile;
-        FileName := ExtractFilePath(Application.ExeName) + '\result' + IntToStr(i) + '.txt';
-      end;
-    end;
-    julGrabber.StartAll;
+    julGrabber.Start;
   end;
 end;
 
 procedure TfrmMain.btnStopClick(Sender: TObject);
 begin
-  julGrabber.StopAll;
+  julGrabber.Stop;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -128,51 +122,59 @@ end;
 procedure TfrmMain.julGrabberConnectedToServer(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Connected to server',[Grabber.Id]));
+  memExplanation.Lines.Add(Format('Grabber %d: Connected to server', [Grabber.Id]));
 end;
 
 procedure TfrmMain.julGrabberStatusChange(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Status change',[Grabber.Id]));
+  memExplanation.Lines.Add(Format('Grabber %d: Status change', [Grabber.Id]));
 end;
 
 procedure TfrmMain.julGrabberError(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber; ErrorMsg: String);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Error: %s',[Grabber.Id, ErrorMsg]));
+  memExplanation.Lines.Add(Format('Grabber %d: Error: %s', [Grabber.Id, ErrorMsg]));
 end;
 
 procedure TfrmMain.julGrabberProgress(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber; Position, TotalSize: Int64; Url: String;
   var Continue: Boolean);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Url: %s, Position: %d of %d',[Grabber.Id, Url, Position, TotalSize]));
+  memExplanation.Lines.Add(Format('Grabber %d: Url: %s, Position: %d of %d', [Grabber.Id, Url, Position, TotalSize]));
 end;
 
 procedure TfrmMain.julGrabberConnectionClosed(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Connection closed',[Grabber.Id]));
+  memExplanation.Lines.Add(Format('Grabber %d: Connection closed', [Grabber.Id]));
 end;
 
 procedure TfrmMain.julGrabberRequestSent(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Request sent',[Grabber.Id]));
+  memExplanation.Lines.Add(Format('Grabber %d: Request sent', [Grabber.Id]));
 end;
 
 procedure TfrmMain.julGrabberSendingRequest(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Sending request',[Grabber.Id]));
+  memExplanation.Lines.Add(Format('Grabber %d: Sending request', [Grabber.Id]));
 end;
 
 procedure TfrmMain.julGrabberDoneFile(Sender: TJvUrlListGrabber;
   Grabber: TJvCustomUrlGrabber; FileName: String; FileSize: Integer;
   Url: String);
 begin
-  memExplanation.Lines.Add(Format('Grabber %d: Done file %s of size %d from %s',[Grabber.Id, FileName, FileSize, Url]));
+  memExplanation.Lines.Add(Format('Grabber %d: Done file %s of size %d from %s', [Grabber.Id, FileName, FileSize, Url]));
+end;
+
+procedure TfrmMain.julGrabberGrabberAdded(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber; Index: Integer);
+begin
+  Grabber.Id := Index;
+  Grabber.OutputMode := omFile;
+  Grabber.FileName := ExtractFilePath(Application.ExeName) + '\result' + IntToStr(Index) + '.txt';
 end;
 
 end.
