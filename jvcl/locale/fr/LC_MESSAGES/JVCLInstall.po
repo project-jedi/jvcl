@@ -1229,7 +1229,7 @@ msgstr "Téléchargez la JCL, fermez l'installateur de la JVCL et installez la J
 #. Programmer's name for it: RsInstalledJVCLVersion
 #: InstallerConsts.pas:192 
 msgid "Installed JVCL version: %s"
-msgstr "Version JVCL installée: %d"
+msgstr "Version JVCL installée: %s"
 
 #. Programmer's name for it: RsInstallJCL
 #: InstallerConsts.pas:193 
