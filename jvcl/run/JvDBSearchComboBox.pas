@@ -68,6 +68,7 @@ type
     FDataLink: TJvSearchComboBoxLink;
     FChanging: Boolean;
     FDataResult: string;
+    FBookmarks: TList;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(const Value: string);
@@ -252,6 +253,7 @@ end;
 constructor TJvDBCustomSearchComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBookmarks := TList.Create;
   FDataLink := TJvSearchComboBoxLink.Create(Self);
   FChanging := False;
 end;
@@ -259,6 +261,7 @@ end;
 destructor TJvDBCustomSearchComboBox.Destroy;
 begin
   ClearList;
+  FBookmarks.Free;
   FDataLink.Free;
   FDataLink := nil; // Notification() is called by inherited Destroy
   inherited Destroy;
@@ -329,7 +332,7 @@ var
   N, CurIndex: Integer;
 begin
   if (FDataLink.DataField = nil) or (FDataLink.DataSet = nil) or
-    (not FDataLink.DataSet.Active) then
+     (not FDataLink.DataSet.Active) then
     Exit;
   ClearList;
   CurIndex := -1;
@@ -342,7 +345,8 @@ begin
       First;
       while not EOF do
       begin
-        Items.AddObject(FieldByName(FDataLink.FDataFieldName).DisplayText, GetBookmark);
+        FBookmarks.Add(GetBookmark);
+        Items.AddObject(FieldByName(FDataLink.FDataFieldName).DisplayText, FBookmarks.Last);
         if Bookmark = Bmrk then
           CurIndex := N;
         Inc(N);
@@ -361,9 +365,9 @@ var
   I: Integer;
 begin
   if Assigned(FDataLink.DataSet) then
-    for I := 0 to Items.Count - 1 do
-      FDataLink.DataSet.FreeBookmark(Pointer(Items.Objects[I]));
-  if not (csDestroying in ComponentState) then
+    for I := 0 to FBookmarks.Count - 1 do
+      FDataLink.DataSet.FreeBookmark(FBookmarks[I]);
+  if HandleAllocated then // TCustomComboBox uses SendMessage(Handle, ...) to obtain count
     Items.Clear;
 end;
 
