@@ -261,10 +261,10 @@ end;
 destructor TJvDBCustomSearchComboBox.Destroy;
 begin
   ClearList;
-  FBookmarks.Free;
   FDataLink.Free;
   FDataLink := nil; // Notification() is called by inherited Destroy
   inherited Destroy;
+  FBookmarks.Free;
 end;
 
 procedure TJvDBCustomSearchComboBox.Notification(Component: TComponent; Operation: TOperation);
@@ -367,7 +367,8 @@ begin
   if Assigned(FDataLink.DataSet) then
     for I := 0 to FBookmarks.Count - 1 do
       FDataLink.DataSet.FreeBookmark(FBookmarks[I]);
-  if HandleAllocated then // TCustomComboBox uses SendMessage(Handle, ...) to obtain count
+  FBookmarks.Clear;
+  if HandleAllocated and not (csDestroying in ComponentState) then // TCustomComboBox uses SendMessage(Handle, ...) to clear items
     Items.Clear;
 end;
 
