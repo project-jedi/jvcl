@@ -451,7 +451,6 @@ type
     function GetTextWidth(Item: TMenuItem): Integer;
     function GetCheckMarkHeight: Integer; virtual;
     function GetCheckMarkWidth: Integer; virtual;
-    function GetComponentState: TComponentState;
     function GetDisabledImages: TCustomImageList;
     function GetDrawHighlight: Boolean; virtual;
     function GetGrayColor: TColor; virtual;
@@ -568,7 +567,6 @@ type
     // menu to which the painter is linked
     property CheckMarkHeight: Integer read GetCheckMarkHeight;
     property CheckMarkWidth: Integer read GetCheckMarkWidth;
-    property ComponentState: TComponentState read GetComponentState;
     property DisabledImages: TCustomImageList read GetDisabledImages;
     property DrawHighlight: Boolean read GetDrawHighlight;
     property GrayColor: TColor read GetGrayColor;
@@ -2160,16 +2158,20 @@ function TJvCustomMenuItemPainter.GetDisabledImages: TCustomImageList;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.DisabledImages
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu.DisabledImages
   else
-    Result := FPopupMenu.DisabledImages;
+    Result := nil;
 end;
 
 function TJvCustomMenuItemPainter.GetHotImages: TCustomImageList;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.HotImages
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu.HotImages
   else
-    Result := FPopupMenu.HotImages;
+    Result := nil;
 end;
 
 function TJvCustomMenuItemPainter.GetImages: TCustomImageList;
@@ -2185,16 +2187,20 @@ begin
   else
   if Assigned(FMainMenu) then
     Result := FMainMenu.Images
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu.Images
   else
-    Result := FPopupMenu.Images;
+    Result := nil;
 end;
 
 function TJvCustomMenuItemPainter.GetShowCheckMarks: Boolean;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.ShowCheckMarks
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu.ShowCheckMarks
   else
-    Result := FPopupMenu.ShowCheckMarks;
+    Result := False;
 end;
 
 function TJvCustomMenuItemPainter.UseImages: Boolean;
@@ -2273,7 +2279,7 @@ begin
   Graphic := nil;
   if Assigned(FMainMenu) then
     FMainMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, Graphic, FNumGlyphs)
-  else
+  else if Assigned(FPopupMenu) then
     FPopupMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, Graphic, FNumGlyphs);
   if Assigned(Graphic) then
     FGlyph.Assign(Graphic);
@@ -2307,7 +2313,7 @@ begin
 
   if Assigned(FMainMenu) then
     FMainMenu.GetImageIndex(FItem, FState, FImageIndex)
-  else
+  else if Assigned(FPopupMenu) then
     FPopupMenu.GetImageIndex(FItem, FState, FImageIndex);
 end;
 
@@ -2755,7 +2761,7 @@ end;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.ShadowColor
-  else
+  else if Assigned(FPopupMenu) then
     Result := FPopupMenu.ShadowColor;
 end;}
 
@@ -2832,8 +2838,10 @@ function TJvCustomMenuItemPainter.GetTextMargin: Integer;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.TextMargin
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu.TextMargin
   else
-    Result := FPopupMenu.TextMargin;
+    Result := 0;
 end;
 
 procedure TJvCustomMenuItemPainter.DrawCheckMarkBackground(ARect: TRect);
@@ -2850,8 +2858,10 @@ function TJvCustomMenuItemPainter.GetTextVAlignment: TJvVerticalAlignment;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.TextVAlignment
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu.TextVAlignment
   else
-    Result := FPopupMenu.TextVAlignment;
+    Result := vaMiddle;
 end;
 
 procedure TJvCustomMenuItemPainter.ForceMenuRebuild;
@@ -2873,20 +2883,12 @@ begin
     FImageMargin.Assign(FMainMenu.ImageMargin);
     FImageSize.Assign(FMainMenu.ImageSize);
   end
-  else
+  else if Assigned(FPopupMenu) then
   begin
     FOnDrawItem := FPopupMenu.OnDrawItem;
     FImageMargin.Assign(FPopupMenu.ImageMargin);
     FImageSize.Assign(FPopupMenu.ImageSize);
   end;
-end;
-
-function TJvCustomMenuItemPainter.GetComponentState: TComponentState;
-begin
-  if Assigned(FMainMenu) then
-    Result := FMainMenu.ComponentState
-  else
-    Result := FPopupMenu.ComponentState;
 end;
 
 procedure TJvCustomMenuItemPainter.DefaultDrawLeftMargin(ARect: TRect;
@@ -2942,8 +2944,10 @@ function TJvCustomMenuItemPainter.GetMenu: TMenu;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu
+  else if Assigned(FPopupMenu) then
+    Result := FPopupMenu
   else
-    Result := FPopupMenu;
+    Result := nil;
 end;
 
 procedure TJvCustomMenuItemPainter.SetMenu(const Value: TMenu);
@@ -3724,7 +3728,7 @@ begin
     if Assigned(FMainMenu.OnMeasureItem) then
       FMainMenu.OnMeasureItem(FMainMenu, Item, Width, Height);
   end
-  else
+  else if Assigned(FPopupMenu) then
   begin
     if Assigned(FPopupMenu.OnMeasureItem) then
       FPopupMenu.OnMeasureItem(FPopupMenu, Item, Width, Height);
@@ -3739,7 +3743,7 @@ begin
     if Assigned(FMainMenu.OnDrawItem) then
       FMainMenu.OnDrawItem(FMainMenu, Item, ItemRect, State);
   end
-  else
+  else if Assigned(FPopupMenu) then
   begin
     if Assigned(FPopupMenu.OnDrawItem) then
       FPopupMenu.OnDrawItem(FPopupMenu, Item, ItemRect, State);
