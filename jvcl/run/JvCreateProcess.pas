@@ -69,19 +69,16 @@ type
     function GetPriority: TJvProcessPriority;
     procedure SetPriority(const Value: TJvProcessPriority);
   public
-    constructor Create(AProcessID: DWORD; const AFileName: TFileName;
-      const AProcessName: string);
+    constructor Create(AProcessID: DWORD; const AFileName: TFileName; const AProcessName: string);
     function Close(UseQuit: Boolean = False): Boolean;
     class function PriorityText(Priority: TJvProcessPriority): string;
     function Terminate: Boolean;
     property FileName: TFileName read FFileName;
-    property LargeIconIndex: Integer index SHGFI_LARGEICON read
-      GetSystemIconIndex;
+    property LargeIconIndex: Integer index SHGFI_LARGEICON read GetSystemIconIndex;
     property Priority: TJvProcessPriority read GetPriority write SetPriority;
     property ProcessID: DWORD read FProcessID;
     property ProcessName: string read FProcessName;
-    property SmallIconIndex: Integer index SHGFI_SMALLICON read
-      GetSystemIconIndex;
+    property SmallIconIndex: Integer index SHGFI_SMALLICON read GetSystemIconIndex;
   end;
 
   TJvCPSBuffer = array [0..CCPS_BufferSize - 1] of Char;
@@ -116,24 +113,19 @@ type
     property Title: string read FTitle write FTitle;
     property Left: Integer read FLeft write FLeft default 0;
     property Top: Integer read FTop write FTop default 0;
-    property DefaultPosition: Boolean read FDefaultPosition write
-      FDefaultPosition default True;
+    property DefaultPosition: Boolean read FDefaultPosition write FDefaultPosition default True;
     property Width: Integer read FWidth write FWidth default 0;
     property Height: Integer read FHeight write FHeight default 0;
     property DefaultSize: Boolean read FDefaultSize write FDefaultSize default True;
-    property ShowWindow: TJvCPSShowWindow read FShowWindow write FShowWindow
-      default swNormal;
-    property DefaultWindowState: Boolean read FDefaultWindowState write
-      FDefaultWindowState default True;
-    property ForceOnFeedback: Boolean read FForceOnFeedback write
-      FForceOnFeedback default False;
-    property ForceOffFeedback: Boolean read FForceOffFeedback write
-      FForceOffFeedback default False;
+    property ShowWindow: TJvCPSShowWindow read FShowWindow write FShowWindow default swNormal;
+    property DefaultWindowState: Boolean read FDefaultWindowState write FDefaultWindowState default True;
+    property ForceOnFeedback: Boolean read FForceOnFeedback write FForceOnFeedback default False;
+    property ForceOffFeedback: Boolean read FForceOffFeedback write FForceOffFeedback default False;
   end;
 
   TJvCreateProcess = class;
 
-  TJvBaseReader = class
+  TJvBaseReader = class(TObject)
   private
     FCreateProcess: TJvCreateProcess;
     FConsoleOutput: TStringList;
@@ -170,7 +162,6 @@ type
     FHandle: THandle;
     FExitCode: Cardinal;
     FRunningThreadCount: Integer;
-
     function GetConsoleOutput: TStrings;
     function GetEnvironment: TStrings;
     procedure SetWaitForTerminate(const Value: Boolean);
@@ -220,21 +211,14 @@ type
   published
     property ApplicationName: string read FApplicationName write FApplicationName;
     property CommandLine: string read FCommandLine write FCommandLine;
-    property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags
-      default [];
-    property CurrentDirectory: string read FCurrentDirectory write
-      FCurrentDirectory;
+    property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags default [];
+    property CurrentDirectory: string read FCurrentDirectory write FCurrentDirectory;
     property Environment: TStrings read GetEnvironment write SetEnvironment;
-    property Priority: TJvProcessPriority read FPriority write FPriority default
-      ppNormal;
-    property StartupInfo: TJvCPSStartupInfo read FStartupInfo write
-      SetStartupInfo;
-    property WaitForTerminate: Boolean read FWaitForTerminate write
-      SetWaitForTerminate default True;
-    property ConsoleOptions: TJvConsoleOptions read FConsoleOptions write
-      FConsoleOptions default [coOwnerData];
-    property OnTerminate: TJvCPSTerminateEvent read FOnTerminate write
-      FOnTerminate;
+    property Priority: TJvProcessPriority read FPriority write FPriority default ppNormal;
+    property StartupInfo: TJvCPSStartupInfo read FStartupInfo write SetStartupInfo;
+    property WaitForTerminate: Boolean read FWaitForTerminate write SetWaitForTerminate default True;
+    property ConsoleOptions: TJvConsoleOptions read FConsoleOptions write FConsoleOptions default [coOwnerData];
+    property OnTerminate: TJvCPSTerminateEvent read FOnTerminate write FOnTerminate;
     property OnRead: TJvCPSReadEvent read GetOnRead write SetOnRead;
     property OnRawRead: TJvCPSRawReadEvent read GetOnRawRead write SetOnRawRead;
     property OnErrorRead: TJvCPSReadEvent read GetOnErrorRead write SetOnErrorRead;
@@ -264,8 +248,7 @@ const
 
   //MaxProcessCount = 4096;
   ProcessPriorities: array [TJvProcessPriority] of DWORD =
-    (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS,
-     REALTIME_PRIORITY_CLASS);
+    (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, REALTIME_PRIORITY_CLASS);
 
 type
   { Threads which monitor the created process }
@@ -438,7 +421,7 @@ type
     Assumed is that the 3 handles are not the same or 0.
   }
 
-  TJvRWEHandles = class
+  TJvRWEHandles = class(TObject)
   private
     FHandle: array [0..2] of THandle;
     function GetHandle(const Index: Integer): THandle;
