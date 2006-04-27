@@ -78,7 +78,9 @@ begin
 
   {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
-    '', TJvExeNameProperty);
+    'ApplicationName', TJvExeNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
+    'CommandLine', TJvExeNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     'CurrentDirectory', TJvDirectoryProperty);
   {$ENDIF USEWINDOWS}
