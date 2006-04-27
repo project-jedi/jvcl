@@ -684,33 +684,49 @@ end;
 function TJvValidators.Validate: Boolean;
 var
   I: Integer;
+  Controls: TList;
 begin
   Result := True;
   if ValidationSummary <> nil then
     FValidationSummary.BeginUpdate;
   try
-    for I := 0 to Count - 1 do
-    begin
-      if Items[I].Enabled then
+    Controls := TList.Create;
+    try
+      { Get all controls that should be validated }
+      if FErrorIndicator <> nil then
+        for I := 0 to Count - 1 do
+          if Items[I].Enabled and (Items[I].ControlToValidate <> nil) then
+            if Controls.IndexOf(Items[I].ControlToValidate) = -1 then
+              Controls.Add(Items[I].ControlToValidate);
+
+      for I := 0 to Count - 1 do
       begin
-        Items[I].Validate;
-        if not Items[I].Valid then
+        if Items[I].Enabled then
         begin
-          if (Items[I].ErrorMessage <> '') and (Items[I].ControlToValidate <> nil) then
+          Items[I].Validate;
+          if not Items[I].Valid then
           begin
-            if ValidationSummary <> nil then
-              FValidationSummary.AddError(Items[I].ErrorMessage);
-            if ErrorIndicator <> nil then
-              FErrorIndicator.SetError(Items[I].ControlToValidate, Items[I].ErrorMessage);
-          end;                   
-          Result := False;
-          if not DoValidateFailed(Items[I]) then
-            Exit;
-        end
-        else
-        if (Items[I].ControlToValidate <> nil) and (FErrorIndicator <> nil) then
-          FErrorIndicator.SetError(Items[I].ControlToValidate, ''); // clear error indicator
+            if (Items[I].ErrorMessage <> '') and (Items[I].ControlToValidate <> nil) then
+            begin
+              if ValidationSummary <> nil then
+                FValidationSummary.AddError(Items[I].ErrorMessage);
+              if ErrorIndicator <> nil then
+                FErrorIndicator.SetError(Items[I].ControlToValidate, Items[I].ErrorMessage);
+              if FErrorIndicator <> nil then
+                Controls.Remove(Items[I].ControlToValidate); { control is not valid }
+            end;
+            Result := False;
+            if not DoValidateFailed(Items[I]) then
+              Exit;
+          end;
+        end;
       end;
+      { Clear ErrorIndicators for controls that are valid }
+      if FErrorIndicator <> nil then
+        for I := 0 to Controls.Count - 1 do
+          FErrorIndicator.SetError(Controls[I], ''); // clear error indicator
+    finally
+      Controls.Free;
     end;
   finally
     if ValidationSummary <> nil then
