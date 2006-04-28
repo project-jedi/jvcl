@@ -1182,9 +1182,9 @@ begin
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(ARect, FPressOffset, FPressOffset);
 
-  // Mantis 3641: The fix for this was removed, the fsRegular style does what's
-  //              requested already.
-  if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) then
+  // Mantis 3641: Do not draw the rectangle if we are transparent, it's of no use.
+  if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) and
+      not Transparent then
   begin
     HelpRect := ClientRect;
     InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
