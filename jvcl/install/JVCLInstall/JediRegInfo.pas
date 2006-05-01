@@ -113,12 +113,43 @@ procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string);
 var
   Reg: TRegistry;
   Names: TStringList;
+  JediKeyName, ProjectKeyName: string;
 begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.DeleteKey(IdeRegKey + '\Jedi\' + ProjectName); // do not localize
-    if Reg.OpenKey(IdeRegKey + '\Jedi', False) then // do not localize
+// (outchy) do not delete target settings
+//    Reg.DeleteKey(IdeRegKey + '\Jedi\' + ProjectName); // do not localize
+
+    JediKeyName := IdeRegKey + '\Jedi';                  // do not localize
+    ProjectKeyName := JediKeyName + '\' + ProjectName;   // do not localize
+
+    if Reg.OpenKey(ProjectKeyName, False) then
+    begin
+      Reg.DeleteValue('Version'); // do not localize
+      Reg.DeleteValue('DcpDir'); // do not localize
+      Reg.DeleteValue('BplDir'); // do not localize
+      Reg.DeleteValue('RootDir'); // do not localize
+
+      Names := TStringList.Create;
+      try
+        Reg.GetKeyNames(Names);
+        if Names.Count = 0 then
+        begin
+          Reg.GetValueNames(Names);
+          if Names.Count = 0 then
+          begin
+            Reg.CloseKey;
+            Reg.DeleteKey(ProjectKeyName); // do not localize
+          end;
+        end;
+      finally
+        Names.Free;
+      end;
+    end;
+
+
+    if Reg.OpenKey(JediKeyName, False) then // do not localize
     begin
       Names := TStringList.Create;
       try
@@ -129,7 +160,7 @@ begin
           if Names.Count = 0 then
           begin
             Reg.CloseKey;
-            Reg.DeleteKey(IdeRegKey + '\Jedi'); // do not localize
+            Reg.DeleteKey(JediKeyName); // do not localize
           end;
         end;
       finally
