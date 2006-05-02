@@ -675,6 +675,9 @@ begin
           Grabber.Stream.Write(Buf, LocalBytesRead);
           DoProgress;
         end;
+
+        // Be CPU friendly.
+        SleepEx(0, True);
       end;
 
       SetGrabberStatus(gsStopping);
@@ -845,6 +848,9 @@ begin
             Grabber.Stream.Write(Buf, dwBytesRead);
             DoProgress;
           end;
+
+          // Be CPU friendly.
+          SleepEx(0, True);
         end;
 
         SetGrabberStatus(gsStopping);
@@ -859,6 +865,9 @@ begin
             Break;
           Grabber.Stream.Write(Buf, dwBytesRead);
           Synchronize(UpdateGrabberProgress);
+          
+          // Be CPU friendly.
+          SleepEx(0, True);
         end;
 
         SetGrabberStatus(gsStopping);
@@ -1011,6 +1020,9 @@ begin
         if BytesRead > 0 then
           Grabber.Stream.Write(Buf, BytesRead);
         DoProgress;
+        
+        // Be CPU friendly.
+        SleepEx(0, True);
       end;
       SetGrabberStatus(gsStopping);
       if not Terminated and Continue then // acp
