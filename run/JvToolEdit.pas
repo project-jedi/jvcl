@@ -972,7 +972,7 @@ type
     constructor Create(AOwner: TComponent); override;
     class function DefaultImageIndex: TImageIndex; override;
     destructor Destroy; override;
-    procedure CheckValidDate;
+    procedure CheckValidDate; virtual;
     function GetDateMask: string;
     procedure UpdateMask; virtual;
     property Date: TDateTime read GetDate write SetDate stored IsDateStored;
