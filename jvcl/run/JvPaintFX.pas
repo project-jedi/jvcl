@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -1810,6 +1810,10 @@ begin
             N := SrcWidth - J + SrcWidth - 1
           else
             N := J;
+            
+          if N < 0 then
+            N := -N;
+
           k := Contrib^[I].N;
           Contrib^[I].N := Contrib^[I].N + 1;
           Contrib^[I].P^[k].Pixel := N;
@@ -1951,9 +1955,15 @@ begin
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
     SourceLine := Work.ScanLine[0];
-    Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
+    if Work.Height > 1 then
+      Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine)
+    else
+      Delta := 0;
     DestLine := Dst.ScanLine[0];
-    DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine);
+    if Dst.Height > 1 then
+      DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine)
+    else
+      DestDelta := 0;
     for k := 0 to DstWidth - 1 do
     begin
       DestPixel := pointer(DestLine);
