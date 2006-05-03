@@ -41,7 +41,7 @@ uses
   {$IFDEF CLR}
   System.Runtime.InteropServices,
   {$ENDIF CLR}
-  Windows, Messages, SysUtils, Classes, Controls, Graphics,
+  Windows, Messages, SysUtils, Classes, Controls, Graphics, StdCtrls, 
   JvExCheckLst;
 
 type
@@ -76,8 +76,6 @@ type
     procedure SetHeader(Index: Integer; const Value: Boolean);
     procedure SetHeaderColor(Value: TColor);
     procedure SetHeaderBackgroundColor(Value: TColor);
-  protected
-    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
   public
     property Header[Index: Integer]: Boolean read GetHeader write SetHeader;
   published
@@ -85,6 +83,11 @@ type
     property HeaderBackgroundColor: TColor read FHeaderBackgroundColor write SetHeaderBackgroundColor default clInfoBk;
     destructor Destroy; override;
   {$ENDIF COMPILER5}
+  private
+    FOnItemDrawing: TDrawItemEvent;
+  protected
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+    procedure DoItemDrawing(Index: Integer; Rect: TRect; State: TOwnerDrawState);
   public
     constructor Create(AOwner: TComponent); override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -106,6 +109,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   published
+    property OnItemDrawing: TDrawItemEvent read FOnItemDrawing write FOnItemDrawing;
+
     property MultiSelect;
     property HintColor;
     property OnMouseEnter;
@@ -205,16 +210,26 @@ begin
   Result := FHeaders.IndexOf(Pointer(Index)) >= 0;
 end;
 
+{$ENDIF COMPILER5}
+
+procedure TJvCheckListBox.DoItemDrawing(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+begin
+  if Assigned(OnItemDrawing) then
+    OnItemDrawing(Self, Index, Rect, State);
+end;
+
 procedure TJvCheckListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
+  DoItemDrawing(Index, Rect, State);
+  {$IFDEF COMPILER5}
   if Header[Index] then
   begin
     Canvas.Font.Color := HeaderColor;
     Canvas.Brush.Color := HeaderBackgroundColor;
   end;
+  {$ENDIF COMPILER5}
   inherited DrawItem(Index, Rect, State);
 end;
-{$ENDIF COMPILER5}
 
 procedure TJvCheckListBox.CheckAll;
 var
