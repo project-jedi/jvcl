@@ -356,6 +356,7 @@ procedure TJvInterpreterFm.LoadForm(AForm: TJvInterpreterForm);
 var
   Stream: TStream;
   SrcClass: TJvInterpreterIdentifier;                // Class Fields support
+  i: integer;
 begin
   FForm := AForm;
   Form.FJvInterpreterFm := Self;
@@ -365,11 +366,20 @@ begin
   finally
     FreeDfmStream(Stream);
   end;
+  // find form class
+  if AForm.FClassIdentifier = '' then
+    for i:=0 to Adapter.SrcClassList.Count-1 do
+      if cmp(TJvInterpreterIdentifier(Adapter.SrcClassList[i]).UnitName,FForm.FUnitName) then
+      begin
+        FForm.FClassIdentifier := TJvInterpreterIdentifier(Adapter.SrcClassList[i]).Identifier;
+        Break;
+      end;
   // Class Fields support begin
   // copy form fields from pattern
   SrcClass := TJvInterpreterAdapterAccessProtected(Adapter).GetSrcClass(
     AForm.FClassIdentifier);
-  AForm.FFieldList.Assign(TJvInterpreterClass(SrcClass).ClassFields);
+  if assigned(SrcClass) then
+    AForm.FFieldList.Assign(TJvInterpreterClass(SrcClass).ClassFields);
   // Class Fields support end
   try
     if Assigned(Form.OnCreate) then
