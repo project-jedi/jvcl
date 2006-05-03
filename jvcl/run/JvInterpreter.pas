@@ -384,7 +384,7 @@ type
     FDuplicates: TDuplicates;
   public
     function IndexOf(const UnitName, Identifier: string): TJvInterpreterIdentifier;
-    function Find(const Identifier: string; var Index: Integer; const ClassName: string = ''): Boolean;
+    function Find(const Identifier: string; var Index: Integer): Boolean;
     procedure Sort(Compare: TListSortCompare = nil); virtual;
     property Duplicates: TDuplicates read FDuplicates write FDuplicates;
   end;
@@ -2469,6 +2469,9 @@ begin
       TVarData(Result).VType := VarType;
     end
     else
+    if (VarType = varEmpty) and not VarIsEmpty(V) then
+      Result := V  // because any cast to unassigned = unassigned 
+    else
       Result := VarAsType(V, VarType);
   end;
 end;
@@ -2892,7 +2895,7 @@ end;
 //=== { TJvInterpreterIdentifierList } =======================================
 
 function TJvInterpreterIdentifierList.Find(const Identifier: string;
-  var Index: Integer; const ClassName: string = ''): Boolean;
+  var Index: Integer): Boolean;
 var
   L, H, I, C: Integer;
 begin
@@ -2917,13 +2920,6 @@ begin
     end;
   end;
   Index := L;
-
-  // Mantis 2676: Looking for our specific class, if applicable
-  if not Result or (ClassName = '') then
-    exit;
-  I := Index;
-  while (I <= Count - 1) and (AnsiStrIComp(PChar(TJvInterpreterIdentifier(List[I]).Identifier), PChar(Identifier)) = 0) do
-   if SameText(TJvInterpreterMethod(List[I]).FClassType.ClassName, ClassName) then begin Index := I; exit; end else inc(I);
 end;
 
 procedure TJvInterpreterIdentifierList.Sort(Compare: TListSortCompare = nil);
@@ -3794,13 +3790,7 @@ var
     if Result then
       Exit;
 
-    // Mantis 2676: Looking for the actual class name if appropriate
-    if Args.ObjTyp = varObject then
-      IdentifierFound := FGetList.Find(Identifier, i, Args.Obj.ClassName)
-    else
-      IdentifierFound := FGetList.Find(Identifier, i);
-
-    if IdentifierFound then
+    if FGetList.Find(Identifier, i) then
       for I := I to FGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FGetList[I]);
@@ -6082,7 +6072,8 @@ var
     I: Integer;
   begin
     for I := 0 to FCurrArgs.Count - 1 do
-      if TVarData(FCurrArgs.Values[I]).VType in [varArray, varRecord] then
+      if (TVarData(FCurrArgs.Values[I]).VType = varArray)
+      or (TVarData(FCurrArgs.Values[I]).VType = varRecord) then
         NotImplemented(RsEInterpreter402);
   end;
 
