@@ -3784,7 +3784,6 @@ var
   var
     I: Integer;
     JvInterpreterMethod: TJvInterpreterMethod;
-    IdentifierFound: Boolean;
   begin
     Result := GetValueRTTI(Identifier, Value, Args);
     if Result then
