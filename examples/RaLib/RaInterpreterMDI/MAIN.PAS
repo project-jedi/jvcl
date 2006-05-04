@@ -25,11 +25,12 @@
 ******************************************************************}
 
 unit Main;
-// (p3) NB! The exe must be saved in the same folder as the source files since they are accessed from the progam directly!
+
 interface
 
 uses SysUtils, Forms, Controls, Menus, Classes, ComCtrls,
-  JvInterpreter, JvInterpreterFm, JvInterpreter_all, JvComponent;
+  JvInterpreter, JvInterpreterFm, JvInterpreter_all, JvComponent,
+  JvComponentBase, JvJCLUtils;
 
 type
   TMainForm = class(TForm)
@@ -60,16 +61,22 @@ implementation
 
 {$R *.DFM}
 
-uses ChildWin, aboutRaInterpreter;
+function SourceDir: string;
+var
+  AExeDir: string;
+begin
+  AExeDir := ExtractFilePath(paramstr(0));
+  Result := ExtractFilePath(ExcludeTrailingPathDelimiter(AExeDir)) + 'examples\RaLib\RaInterpreterMDI\';
+end;
 
 procedure TMainForm.FileNew1Execute(Sender: TObject);
 begin
-  JvInterpreterFm1.RunForm(ExtractFilePath(paramstr(0)) + 'childwin.pas');
+  JvInterpreterFm1.RunForm(SourceDir + 'childwin.pas');
 end;
 
 procedure TMainForm.HelpAbout1Execute(Sender: TObject);
 begin
-  JvInterpreterRunFormModal(ExtractFilePath(paramstr(0)) + 'aboutRAInterpreter.pas');
+  JvInterpreterRunFormModal(SourceDir + 'aboutRAInterpreter.pas');
 end;
 
 procedure TMainForm.FileExit1Execute(Sender: TObject);
