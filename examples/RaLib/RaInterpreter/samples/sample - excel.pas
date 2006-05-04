@@ -18,14 +18,14 @@ For Line := 1 to LineCount do
 begin
    Cell := ExcelWindow.Cells(Line + 1, 1);
    // [translated]:
-   Cell.Value := 'Line ' + Line;
+   Cell.Value := 'Line ' + IntToStr(Line);
 end;
 // Let's put down names of columns [translated]
 for column := 1 to ColumnCount do
 begin
    Cell := ExcelWindow.Cells(1, Column + 1);
    // [translated]:
-   Cell.Value := 'Column ' + Column;
+   Cell.Value := 'Column ' + IntToStr(Column);
 end;
 // let us fill the cells of table with values [translated]
 for Line := 1 to LineCount do
@@ -36,11 +36,11 @@ for Line := 1 to LineCount do
    end;
 
 // Isolate range in the table and set to its variable of the language [translated]
-Range := ExcelWindow.Range(ExcelWindow.Cells(1, 1),
-                          ExcelWindow.Cells(LineCount + 1, ColumnCount + 1));
+Range := ExcelWindow.Range(ExcelWindow.Cells(1, 1).Address+':'+
+                          ExcelWindow.Cells(LineCount + 1, ColumnCount + 1).Address);
 // let us assign the name of the chosen region [translated]
 // [translated]:
-Range.Name := 'Oblast Dannyh';
+Range.Name := 'Oblast_Dannyh';
 // Let's define a framework of the selected area and we shall assign its variable of the language [translated]
 Border := Range.Borders;
 // Let's set styles for a framework of the selected area [translated]
@@ -53,5 +53,5 @@ Diagram := Diagram.Add(5, 5 + Range.Top + Range.Height,
                           Range.Width, Range.Height);
 MyDiagram := Diagram.Chart;
 // [translated]:
-MyDiagram.ChartWizard('Oblast Dannyh ', -4102, 6, 1, 1, 1, 1, 'Report');
+MyDiagram.ChartWizard('Oblast_Dannyh ', -4102, 6, 1, 1, 1, 1, 'Report');
 end;
