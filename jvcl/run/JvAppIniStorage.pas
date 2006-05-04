@@ -316,7 +316,7 @@ end;
 // Removes " at the beginning and the end
 function TJvCustomAppIniStorage.RestoreLeadingTrailingBlanks(const Value: string): string;
 begin
-  if (Value[1] = '"') and (Value[Length(Value)] = '"') then
+  if (Value <> '') and (Value[1] = '"') and (Value[Length(Value)] = '"') then
     Result := Copy(Value, 2, Length(Value) - 2)
   else
     Result := Value;
