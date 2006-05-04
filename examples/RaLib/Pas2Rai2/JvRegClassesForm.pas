@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvAppStorage, JvAppRegistryStorage, JvComponentBase,
-  JvFormPlacement, JvPasImportForm;
+  JvFormPlacement, JvPasImportForm, JvJCLUtils;
 
 type
   TJvRegClasses  = class(TForm)
