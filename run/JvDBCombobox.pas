@@ -249,7 +249,7 @@ begin
   if DroppedDown then
     Exit;
   if FDataLink.Field <> nil then
-    ComboText := FDataLink.Field.Text
+    ComboText := FDataLink.Field.AsString
   else
   if csDesigning in ComponentState then
     ComboText := Name
@@ -581,7 +581,7 @@ begin
   if FDataLink.Field <> nil then
     if FEnableValues then
     begin
-      I := Values.IndexOf(FDataLink.Field.Text);
+      I := Values.IndexOf(FDataLink.Field.AsString);
       if I >= 0 then
         Result := Items.Strings[I]
     end
