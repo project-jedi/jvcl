@@ -378,7 +378,7 @@ end;
 procedure TJvDBRadioPanel.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
-    Value := FDataLink.Field.Text
+    Value := FDataLink.Field.AsString
   else
     Value := '';
 end;
