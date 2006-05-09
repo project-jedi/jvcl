@@ -772,6 +772,10 @@ begin
       OB.FLastButtonIndex := -1;
     OB.Invalidate;
   end;
+
+  // Mantis 3688
+  FActionLink.Free;
+  
   inherited Destroy;
 end;
 
@@ -857,6 +861,16 @@ end;
 
 procedure TJvOutlookBarButton.Click;
 begin
+  // Mantis 3689
+  { Call OnClick if assigned and not equal to associated action's OnExecute.
+    If associated action's OnExecute assigned then call it, otherwise, call
+    OnClick. }
+  if Assigned(FOnClick) and Assigned(Action) and (@FOnClick <> @Action.OnExecute) then
+    FOnClick(Self)
+  else
+  if (GetOutlookBar <> nil) and (FActionLink <> nil) and not (csDesigning in GetOutlookBar.ComponentState) then
+    FActionLink.Execute(GetOutlookBar)
+  else
   if Assigned(FOnClick) then
     FOnClick(Self);
 end;
