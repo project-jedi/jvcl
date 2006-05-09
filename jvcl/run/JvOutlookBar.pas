@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvOLBar.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
-Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
+The Initial Developer of the Original Code is Peter Thrnqvist [peter3 at sourceforge dot net]
+Portions created by Peter Thrnqvist are Copyright (C) 2002 Peter Thrnqvist.
 All Rights Reserved.
 
 Contributor(s):
@@ -869,7 +869,7 @@ begin
     FOnClick(Self)
   else
   if (GetOutlookBar <> nil) and (FActionLink <> nil) and not (csDesigning in GetOutlookBar.ComponentState) then
-    FActionLink.Execute(GetOutlookBar)
+    FActionLink.Execute{$IFDEF COMPILER6_UP}(GetOutlookBar){$ENDIF COMPILER6_UP}
   else
   if Assigned(FOnClick) then
     FOnClick(Self);
