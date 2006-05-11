@@ -144,8 +144,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddThumb(ATitle: string; Redraw: Boolean);
-    procedure AddFromFile(AFile: string);
-    procedure AddFromStream(AStream: TStream; AType: TGRFKind);
+    function AddFromFile(AFile: string) : Integer;
+    procedure AddFromStream(AStream: TStream; AType: TGRFKind); overload;
+    function AddFromStream(AStream: TStream; AType: TGRFKind; aTitle : String): Integer; overload;
+
     procedure Delete(No: Longint);
     procedure EmptyList;
     procedure SortList;
@@ -773,6 +775,11 @@ begin
 end;
 
 procedure TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind);
+begin
+   self.AddFromStream(AStream, AType, '');
+end;
+
+function TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind; aTitle : String): Integer;
 var
   Thb: TJvThumbnail;
 begin
@@ -785,15 +792,16 @@ begin
   Thb.OnClick := OnClick;
   Thb.Photo.OnClick := OnClick;
   Thb.OnDblClick := OnDblClick;
+  Thb.Title := aTitle;
   Thb.Photo.OnDblClick := OnDblClick;
   //  Thb.Buffer := Vbuffer;
   Thb.Photo.LoadFromStream(AStream, Thb.StreamFileType);
-  FThumbList.AddObject(Thb.Title, Thb);
+  Result := FThumbList.AddObject(Thb.Title, Thb);
   InsertControl(Thb);
   CalculateSize;
 end;
 
-procedure TJvThumbView.AddFromFile(AFile: string);
+function  TJvThumbView.AddFromFile(AFile: string) : Integer;
 var
   ThumbnailTitle: string;
   FFont: TFont;
@@ -822,6 +830,7 @@ begin
   CalculateSize;
   Reposition(0);
   TJvThumbnail(FThumbList.Objects[FThumbList.IndexOf(AFile)]).FileName := AFile;
+  result := FThumbList.IndexOf(AFile);
 end;
 
 procedure TJvThumbView.Delete(No: Longint);
