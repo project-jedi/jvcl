@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvPrvwRender.pas, released on 2003-01-01.
 
-The Initial Developer of the Original Code is Peter Thörnqvist.
-Portions created by Peter Thörnqvist are Copyright (c) 2003 by Peter Thörnqvist.
+The Initial Developer of the Original Code is Peter Thrnqvist.
+Portions created by Peter Thrnqvist are Copyright (c) 2003 by Peter Thrnqvist.
 All Rights Reserved.
 
 Contributor(s):
@@ -210,7 +210,7 @@ type
     FOnNewPage: TJvNewPageEvent;
     FOnBeginDoc: TNotifyEvent;
     FOnAbort: TNotifyEvent;
-    procedure SetPrinter(const Value: TPrinter);
+    procedure SetPrinterProperty(const Value: TPrinter);  // Not called SetPrinter for BCB compatibility
     procedure CheckPrinter;
     procedure CheckActive;
     procedure SetPrintPreview(const Value: TJvCustomPreviewControl);
@@ -234,7 +234,7 @@ type
     procedure Print;
     procedure Assign(Source: TPersistent); override;
     property Title: string read GetTitle write SetTitle;
-    property Printer: TPrinter read FPrinter write SetPrinter;
+    property Printer: TPrinter read FPrinter write SetPrinterProperty;
   published
     property Collate: Boolean read FCollate write FCollate default False;
     property Copies: Integer read FCopies write SetNumCopies default 0;
@@ -1038,7 +1038,7 @@ begin
     FCopies := 1;
 end;
 
-procedure TJvPreviewPrinter.SetPrinter(const Value: TPrinter);
+procedure TJvPreviewPrinter.SetPrinterProperty(const Value: TPrinter);
 begin
   CheckActive;
   FPrinter := Value;
