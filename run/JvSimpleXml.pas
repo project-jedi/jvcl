@@ -163,6 +163,9 @@ type
     function Add(const Name, Value: string): TJvSimpleXMLProp; overload;
     function Add(const Name: string; const Value: Int64): TJvSimpleXMLProp; overload;
     function Add(const Name: string; const Value: Boolean): TJvSimpleXMLProp; overload;
+    function Insert(const Index: Integer; const Name, Value: string): TJvSimpleXMLProp; overload;
+    function Insert(const Index: Integer; const Name: string; const Value: Int64): TJvSimpleXMLProp; overload;
+    function Insert(const Index: Integer; const Name: string; const Value: Boolean): TJvSimpleXMLProp; overload;
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
@@ -1927,8 +1930,31 @@ begin
   Result := Add(Name, BoolToStr(Value));
 end;
 
-function TJvSimpleXMLProps.BoolValue(const Name: string;
-  Default: Boolean): Boolean;
+function TJvSimpleXMLProps.Insert(const Index: Integer; const Name, Value: string): TJvSimpleXMLProp;
+var
+  Elem: TJvSimpleXMLProp;
+begin
+  if FProperties = nil then
+    FProperties := THashedStringList.Create;
+  Elem := TJvSimpleXMLProp.Create();
+  FProperties.InsertObject(Index, Name, Elem);
+  Elem.FName := Name; //Avoid notification
+  Elem.Value := Value;
+  Elem.Parent := Self;
+  Result := Elem;
+end;
+
+function TJvSimpleXMLProps.Insert(const Index: Integer; const Name: string; const Value: Int64): TJvSimpleXMLProp;
+begin
+  Result := Insert(Index, Name, IntToStr(Value));
+end;
+
+function TJvSimpleXMLProps.Insert(const Index: Integer; const Name: string; const Value: Boolean): TJvSimpleXMLProp;
+begin
+  Result := Insert(Index, Name, BoolToStr(Value));
+end;
+
+function TJvSimpleXMLProps.BoolValue(const Name: string; Default: Boolean): Boolean;
 var
   Prop: TJvSimpleXMLProp;
 begin
