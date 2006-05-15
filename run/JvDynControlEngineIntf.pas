@@ -249,6 +249,7 @@ type
     procedure ControlSetAllowGrayed(Value: boolean);
     procedure ControlSetState(Value: TCheckBoxState);
     function ControlGetState: TCheckBoxState;
+    property ControlState : TCheckBoxState read ControlGetState write ControlSetState;
   end;
 
   IJvDynControlTreeView = interface
@@ -261,6 +262,7 @@ type
     procedure ControlSetToolTips(Value: boolean);
     procedure ControlSetItems(Value: TTreeNodes);
     function ControlGetItems: TTreeNodes;
+    property ControlItems: TTreeNodes read ControlGetItems write ControlSetItems;
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
     function ControlGetSelected: TTreeNode;
@@ -285,6 +287,7 @@ type
     procedure ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
     procedure ControlSetTabIndex (Index : integer);
     function ControlGetTabIndex : integer;
+    property ControlTabIndex : integer read ControlGetTabIndex write ControlSetTabIndex;
     procedure ControlSetMultiLine (Value : boolean);
     procedure ControlSetScrollOpposite (Value : boolean);
     procedure ControlSetHotTrack (Value : boolean);
@@ -296,12 +299,12 @@ type
     function ControlGetPage (const PageName : String) : TWinControl;
   end;
 
-  
+
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
