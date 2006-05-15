@@ -656,25 +656,25 @@ end;
 
 procedure TJvOfficeColorPanelProperties.ReadData(Reader: TReader);
 begin
-  if SameText(FFilerTag,cShowAutoButton) then
+  if SameText(FFilerTag, cShowAutoButton) then
     ShowDefaultColor := Reader.ReadBoolean
   else
-  if SameText(FFilerTag,cShowOtherButton) then
+  if SameText(FFilerTag, cShowOtherButton) then
     ShowCustomColor := Reader.ReadBoolean
   else
-  if SameText(FFilerTag,cShowColorHint) then
+  if SameText(FFilerTag, cShowColorHint) then
     ShowColorsHint := Reader.ReadBoolean
   else
-  if SameText(FFilerTag,cAutoCaption) then
+  if SameText(FFilerTag, cAutoCaption) then
     DefaultColorCaption := Reader.ReadString
   else
-  if SameText(FFilerTag,cOtherCaption) then
+  if SameText(FFilerTag, cOtherCaption) then
     CustomColorCaption := Reader.ReadString
   else
-  if SameText(FFilerTag,cAutoHint) then
+  if SameText(FFilerTag, cAutoHint) then
     DefaultColorHint := Reader.ReadString
   else
-  if SameText(FFilerTag,cOtherHint) then
+  if SameText(FFilerTag, cOtherHint) then
     CustomColorHint := Reader.ReadString;
 end;
 
@@ -1180,19 +1180,19 @@ begin
       if EnumName = '' then
         Break;
       if SameText(EnumName, 'cdFullOpen') then
-        Include(Result,cdFullOpen)
+        Include(Result, cdFullOpen)
       else
       if SameText(EnumName, 'cdPreventFullOpen') then
-        Include(Result,cdPreventFullOpen)
+        Include(Result, cdPreventFullOpen)
       else
       if SameText(EnumName, 'cdShowHelp') then
-        Include(Result,cdShowHelp)
+        Include(Result, cdShowHelp)
       else
       if SameText(EnumName, 'cdSolidColor') then
-        Include(Result,cdSolidColor)
+        Include(Result, cdSolidColor)
       else
       if SameText(EnumName, 'cdAnyColor') then
-        Include(Result,cdAnyColor);
+        Include(Result, cdAnyColor);
     end;
   except
     SkipSetBody;
@@ -2505,17 +2505,17 @@ end;
 
 procedure TJvOfficeColorPanel.ReadData(Reader: TReader);
 begin
-  if SameText(FFilerTag,'Color') then
+  if SameText(FFilerTag, 'Color') then
     SelectedColor := JvReaderReadColor(Reader)
   else
-  if SameText(FFilerTag,'Flat') then
+  if SameText(FFilerTag, 'Flat') then
     FlatBorder := Reader.ReadBoolean
   else
-  if SameText(FFilerTag,'CustomColors') then
+  if SameText(FFilerTag, 'CustomColors') then
     JvReaderReadStrings(Reader,ColorDlgCustomColors)
   {$IFDEF VCL}
   else
-  if SameText(FFilerTag,'Options') then
+  if SameText(FFilerTag, 'Options') then
     ColorDialogOptions := JvReaderReadColorDialogOptions(Reader)
   {$ENDIF VCL}
   ;
