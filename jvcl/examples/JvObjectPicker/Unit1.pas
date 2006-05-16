@@ -119,7 +119,7 @@ begin
     { (p3) not sure about this one (was @Attributes[0])... }
     InitInfo.apwzAttributeNames := LPLPWSTR(@Attributes[0]);
     // 5. initialize object picker
-    if SUCCEEDED(ObjPicker.Initialize(InitInfo)) then
+    if SUCCEEDED(ObjPicker.Initialize(@InitInfo)) then
     begin
       // 6. display dialog
       HR := ObjPicker.InvokeDialog(0, DataObj);
