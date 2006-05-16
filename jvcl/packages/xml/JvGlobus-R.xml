@@ -38,7 +38,6 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgRichEditUtils.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgRuler.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgScrollBox.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgShade.pas" Targets="VCL" Formname="" Condition=""/>
