@@ -1,5 +1,7 @@
 Changelog for JVCL 3.X
 ======================
+2006-05-16:
+- TJvgProcess moved to Archive because TJvCreateProcess is much better // (rom)
 2006-04-23:
 - Introduced MaxSimultaneousGrabbers in JvUrlListGrabber, thus changing the Grabbers array behaviour to only contain the running grabbers. // obones
 2006-04-08:

@@ -53,9 +53,9 @@ uses
   JvgFileIterator, {JvgFileUtils, } JvgFixFont, JvgShadow, {JvgGraph,}
   JvgGraphicButton, JvgSingleInstance, {JvgShape, }
   JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgSplit,
-  {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, //JvgSysInf,
+  {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, {JvgSysInf, }
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
-  JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
+  JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, {JvgProcess, }
   {JvgProcessUtils, } JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
   JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, JvgBevel,
@@ -99,7 +99,7 @@ begin
     TJvgExtSpeedButton, TJvgWizardHeader, TJvgCaption]);
 
   RegisterComponents(RsPaletteGlobusComponents2, [TJvgCheckBox,
-    TJvgRuler, TJvgPageControl, TJvgTabControl, TJvgProcess,
+    TJvgRuler, TJvgPageControl, TJvgTabControl,
     TJvgMailSlotServer, TJvgMailSlotClient, TJvgLabel, TJvgFlyingText,
     TJvgDigits, TJvgStaticText, TJvgHoleShape, TJvgHelpPanel,
     TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
@@ -134,10 +134,8 @@ begin
     'Resources', TJvgResourcesProperty); }
 
   //RegisterComponentEditor(TJvgGridHeaderControl, TJvgGridHeaderControl_Editor);
-  //RegisterPropertyEditor(TypeInfo(STRING), TJvgMaskEdit, 'EditMask',
+  //RegisterPropertyEditor(TypeInfo(string), TJvgMaskEdit, 'EditMask',
   //  TMaskProperty);
-  //RegisterPropertyEditor(TypeInfo(STRING), TJvgProcess, 'FileName',
-  //  TFilenameProperty);
 end;
 
 end.

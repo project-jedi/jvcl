@@ -92,7 +92,6 @@
     <File Name="..\..\run\JvgLogics.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgMailSlots.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgPage.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgProcess.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProgress.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="DB" Formname="JvgfPrintPreview" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="DB" Formname="JvgPrintSetup" Condition="JVCL_UseQuickReport"/>
