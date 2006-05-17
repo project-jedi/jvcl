@@ -49,6 +49,9 @@ const
   RadianEscapments: array [TglLabelDir] of Integer = (0, -1800, -900, 900);
 
 type
+  TFontWeight = (fwDONTCARE, fwTHIN, fwEXTRALIGHT, fwLIGHT, fwNORMAL, fwMEDIUM,
+    fwSEMIBOLD, fwBOLD, fwEXTRABOLD, fwHEAVY);
+
   {$IFDEF USEJVCL}
   TJvgCustomLabel = class(TJvGraphicControl)
   {$ELSE}

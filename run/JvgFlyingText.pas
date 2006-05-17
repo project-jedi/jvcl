@@ -66,7 +66,7 @@ type
     FGradient: TJvgGradient;
     FThreeDGradient: TJvg3DGradient;
     FInteriorOffset: Word;
-    FScalePercent: TSpPercent;
+    FScalePercent: Integer;
     FStepScaleFactor: Single;
     FResultFont: TFont;
     FTimerInterval: Word;
@@ -111,7 +111,7 @@ type
     procedure BuildTxtBitmap;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure OnParamsChanged(Sender: TObject);
-    procedure Repaint_;
+    procedure InternalRepaint;
 
     function GetText: TStrings;
     procedure SetHorAlign(Value: TglHorAlign);
@@ -119,7 +119,7 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetBackgrColor(Value: TColor);
     procedure SetInteriorOffset(Value: Word);
-    procedure SetScalePercent(Value: TSpPercent);
+    procedure SetScalePercent(Value: Integer);
     procedure SetStepScaleFactor(Value: Single);
     procedure SetResultFont(Value: TFont);
     procedure SetTimerInterval(Value: Word);
@@ -149,7 +149,7 @@ type
     property Gradient: TJvgGradient read FGradient write FGradient;
     property Gradient3D: TJvg3DGradient read FThreeDGradient write FThreeDGradient;
     property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
-    property ScalePercent: TSpPercent read FScalePercent write SetScalePercent default 5;
+    property ScalePercent: Integer read FScalePercent write SetScalePercent default 5;
     property StepScaleFactor: Single read FStepScaleFactor write SetStepScaleFactor;
     property ResultFont: TFont read FResultFont write SetResultFont;
     property TimerInterval: Word read FTimerInterval write SetTimerInterval default 10;
@@ -658,16 +658,16 @@ procedure TJvgFlyingText.WMSize(var Msg: TWMSize);
 begin
   FNeedRemakeBackground := True;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.OnParamsChanged(Sender: TObject);
 begin
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
-procedure TJvgFlyingText.Repaint_;
+procedure TJvgFlyingText.InternalRepaint;
 //var R: TRect;
 begin
   if FLoaded then
@@ -680,14 +680,14 @@ procedure TJvgFlyingText.SetHorAlign(Value: TglHorAlign);
 begin
   FHorAlign := Value;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetVertAlign(Value: TglVertAlign);
 begin
   FVertAlign := Value;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetTransparent(Value: Boolean);
@@ -695,14 +695,14 @@ begin
   FTransparent := Value;
   FNeedRemakeBackground := True;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetBackgrColor(Value: TColor);
 begin
   FBackgrColor := Value;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetInteriorOffset(Value: Word);
@@ -710,11 +710,14 @@ begin
   FInteriorOffset := Value;
 end;
 
-procedure TJvgFlyingText.SetScalePercent(Value: TSpPercent);
+procedure TJvgFlyingText.SetScalePercent(Value: Integer);
 begin
-  FScalePercent := Value;
-  BuildBitmaps;
-  Repaint_;
+  if (Value >= 1) and (Value <= 99) then
+  begin
+    FScalePercent := Value;
+    BuildBitmaps;
+    InternalRepaint;
+  end;
 end;
 
 procedure TJvgFlyingText.SetStepScaleFactor(Value: Single);
@@ -725,7 +728,7 @@ begin
     Value := 2;
   FStepScaleFactor := Value;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetResultFont(Value: TFont);
@@ -767,7 +770,7 @@ begin
     for I := 0 to FText.Count - 1 do
       FText[I] := Trim(FText[I]);
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
   Active := OldActive;
 end;
 
@@ -777,7 +780,7 @@ begin
     Exit;
   FFastDraw := Value;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetDirection(Value: TglScalingDir);
@@ -788,7 +791,7 @@ begin
   if csDesigning in ComponentState then
   begin
     BuildBitmaps;
-    Repaint_;
+    InternalRepaint;
   end;
 end;
 
@@ -798,7 +801,7 @@ begin
     Exit;
   FShowTextWhilePassive := Value;
   BuildBitmaps;
-  Repaint_;
+  InternalRepaint;
 end;
 
 procedure TJvgFlyingText.SetVisible(Value: Boolean);
@@ -810,7 +813,7 @@ begin
   if FVisible then
   begin
     BuildBitmaps;
-    Repaint_;
+    InternalRepaint;
   end;
 end;
 
