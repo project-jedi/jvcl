@@ -268,6 +268,7 @@ type
     function ControlGetSelected: TTreeNode;
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+    procedure ControlSortItems;
   end;
 
   IJvDynControlProgressbar = interface

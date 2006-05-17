@@ -767,6 +767,7 @@ type
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+    procedure ControlSortItems;
 
     //IJvDynControlDblClick
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
@@ -3167,6 +3168,11 @@ end;
 procedure TJvDynControlCxTreeView.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+procedure TJvDynControlCxTreeView.ControlSortItems;
+begin
+  AlphaSort;
 end;
 
 //=== { TJvDynControlCxProgressbar } =========================================

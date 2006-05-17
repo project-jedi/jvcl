@@ -698,6 +698,7 @@ type
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+    procedure ControlSortItems;
 
     //IJvDynControlDblClick
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
@@ -2901,6 +2902,11 @@ end;
 procedure TJvDynControlJVCLTreeView.ControlSetOnDblClick(Value: TNotifyEvent);
 begin
   OnDblClick := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSortItems;
+begin
+  AlphaSort;
 end;
 
 
