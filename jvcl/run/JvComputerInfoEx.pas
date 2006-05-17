@@ -4883,9 +4883,9 @@ var
 begin
   InitMap;
   for I := 0 to Length(FMap) - 1 do
-    if FMap[I].Y = Index then
+    if FMap[I].X = Index then
     begin
-      Result := FMap[I].X;
+      Result := FMap[I].Y;
       Exit;
     end;
   Result := -1;
