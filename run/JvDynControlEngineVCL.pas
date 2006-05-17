@@ -692,6 +692,7 @@ type
     function ControlGetSelected: TTreeNode;
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+    procedure ControlSortItems;
 
     //IJvDynControlDblClick = interface
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
@@ -2922,6 +2923,11 @@ end;
 procedure TJvDynControlVCLTreeView.ControlSetOnDblClick(Value: TNotifyEvent);
 begin
   OnDblClick := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSortItems;
+begin
+  AlphaSort;
 end;
 
 //=== { TJvDynControlVCLProgressbar } =========================================
