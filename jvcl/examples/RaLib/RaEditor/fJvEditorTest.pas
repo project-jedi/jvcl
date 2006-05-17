@@ -31,7 +31,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvEditor, JvHLParser, StdCtrls, ExtCtrls, ComCtrls, JvHLEditor,
-  ImgList, JvComponent, JvFormPlacement, JvExControls, JvEditorCommon;
+  ImgList, JvComponent, JvFormPlacement, JvExControls, JvEditorCommon,
+  JvComponentBase;
 
 type
   TfrmEditor = class(TForm)
@@ -91,6 +92,40 @@ implementation
 uses JvJCLUtils, JvConsts;
 
 {$R *.DFM}
+
+{ SubStr returns substring from string, S,
+  separated with Separator string}
+
+function SubStr(const S: string; const Index: Integer; const Separator: string): string;
+var
+  I: Integer;
+  pB, pE: PChar;
+begin
+  Result := '';
+  if ((Index < 0) or ((Index = 0) and (Length(S) > 0) and (S[1] = Separator))) or
+    (Length(S) = 0) then
+    Exit;
+  pB := PChar(S);
+  for I := 1 to Index do
+  begin
+    pB := StrPos(pB, PChar(Separator));
+    if pB = nil then
+      Exit;
+    pB := pB + Length(Separator);
+    if pB[0] = #0 then
+      Exit;
+  end;
+  pE := StrPos(pB + 1, PChar(Separator));
+  if pE = nil then
+    pE := PChar(S) + Length(S);
+  if not (AnsiStrLIComp(pB, PChar(Separator), Length(Separator)) = 0) then
+    SetString(Result, pB, pE - pB);
+end;
+
+function Cmp(const S1, S2: string): Boolean;
+begin
+  Result := AnsiStrIComp(PChar(S1), PChar(S2)) = 0;
+end;
 
 procedure TfrmEditor.FormCreate(Sender: TObject);
 begin
