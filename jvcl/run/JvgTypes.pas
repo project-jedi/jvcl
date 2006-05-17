@@ -85,7 +85,6 @@ const
 {$ENDIF MSWINDOWS}
 
 type
-  TSpPercent = 1..99;
   TglItemsDrawStyle = (idsNone, idsRecessed, idsRaised);
   TglWallpaperOption = (fwoNone, fwoStretch, fwoPropStretch, fwoTile);
   TglDrawState = (fdsDefault, fdsDisabled, fdsDelicate);
@@ -104,13 +103,10 @@ type
   //  TglGgradientColorOnStep = ( fgcIncrease, fgcDecrease );
   TglLabelDir = (fldLeftRight, fldRightLeft, fldUpDown, fldDownUp);
   TglAlignment = (ftaLeftJustify, ftaRightJustify, ftaCenter, ftaBroadwise);
-  TFontWeight = (fwDONTCARE, fwTHIN, fwEXTRALIGHT, fwLIGHT, fwNORMAL, fwMEDIUM,
-    fwSEMIBOLD, fwBOLD, fwEXTRABOLD, fwHEAVY);
   TglGlyphKind = (fgkCustom, fgkDefault);
   TglFileType = (fftUndefined, fftGif, fftJpeg, fftBmp);
   // TglProgressBorderStyle = (fbsFlat, fbsCtl3D, fbsStatusControl,
   //   fbsRaised, fbsRaisedFrame, fbsRecessedFrame);
-  TPercentRange = 0..100;
   TglLabelOption = (floActiveWhileControlFocused, floBufferedDraw,
     floDelineatedText, floIgnoreMouse, {floQuality3D,} floTransparentFont);
   TglLabelOptions = set of TglLabelOption;
@@ -143,7 +139,6 @@ type
   TglTreeViewOptions = set of TglTreeViewOption;
 
   TFocusControlMethod = (fcmOnMouseEnter, fcmOnMouseDown, fcmOnMouseUp);
-  TProgressChangeEvent = procedure(Sender: TObject; Percent: Integer) of object;
   TglOnGetItemColorEvent = procedure(Sender: TObject; Index: Integer; var Color: TColor) of object;
 
   //  TglDrawGlyphsOption = ( fgoDefaultEnabled, fgoDefaultDisabled );

@@ -55,7 +55,7 @@ type
     FColors: TJvgSimleLabelColors;
     FGradient: TJvgGradient;
     FGradientBack: TJvgGradient;
-    FPercent: TPercentRange;
+    FPercent: Integer;
     FCaptionAlignment: TAlignment;
     FCaptionDirection: TglLabelDir;
     FCaptionStyle: TglTextStyle;
@@ -68,7 +68,7 @@ type
     procedure SetBevelInner(Value: TPanelBevel);
     procedure SetBevelOuter(Value: TPanelBevel);
     procedure SetBevelBold(Value: Boolean);
-    procedure SetPercent(Value: TPercentRange);
+    procedure SetPercent(Value: Integer);
     procedure SetCaptionAlignment(Value: TAlignment);
     procedure SetCaptionDirection(Value: TglLabelDir);
     procedure SetCaptionStyle(Value: TglTextStyle);
@@ -92,7 +92,7 @@ type
     property Colors: TJvgSimleLabelColors read FColors write FColors;
     property Gradient: TJvgGradient read FGradient write FGradient;
     property GradientBack: TJvgGradient read FGradientBack write FGradientBack;
-    property Percent: TPercentRange read FPercent write SetPercent;
+    property Percent: Integer read FPercent write SetPercent;
     property CaptionAlignment: TAlignment read FCaptionAlignment write SetCaptionAlignment default taLeftJustify;
     property CaptionDirection: TglLabelDir read FCaptionDirection write SetCaptionDirection default fldLeftRight;
     property CaptionStyle: TglTextStyle read FCaptionStyle write SetCaptionStyle default fstShadow;
@@ -391,9 +391,9 @@ begin
   Repaint;
 end;
 
-procedure TJvgProgress.SetPercent(Value: TPercentRange);
+procedure TJvgProgress.SetPercent(Value: Integer);
 begin
-  if FPercent <> Value then
+  if (FPercent <> Value) and (Value >= 0) and (Value <= 100) then
   begin
     FPercent := Value;
     FGradient.PercentFilling := FPercent;

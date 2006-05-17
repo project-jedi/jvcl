@@ -90,7 +90,7 @@ type
   private
     FBufferedDraw: Boolean;
     FSteps: Integer;
-    FPercentFilling: TPercentRange;
+    FPercentFilling: Integer;
     FBrushStyle: TBrushStyle;
     FOrientation: TglGradientDir; //...public!
     FActive: Boolean;
@@ -98,14 +98,14 @@ type
     procedure SetActive(Value: Boolean);
     procedure SetOrientation(Value: TglGradientDir);
     procedure SetSteps(Value: Integer);
-    procedure SetPercentFilling(Value: TPercentRange);
+    procedure SetPercentFilling(Value: Integer);
     procedure SetBrushStyle(Value: TBrushStyle);
   protected
     property Active: Boolean read FActive write SetActive;
     property BufferedDraw: Boolean read FBufferedDraw write FBufferedDraw default False;
     property Orientation: TglGradientDir read FOrientation write SetOrientation;
     property Steps: Integer read FSteps write SetSteps default 255;
-    property PercentFilling: TPercentRange read FPercentFilling write SetPercentFilling default 100;
+    property PercentFilling: Integer read FPercentFilling write SetPercentFilling default 100;
     property BrushStyle: TBrushStyle read FBrushStyle write SetBrushStyle default bsSolid;
   public
     constructor Create; override;
@@ -672,9 +672,9 @@ begin
   end;
 end;
 
-procedure TJvgCustomGradient.SetPercentFilling(Value: TPercentRange);
+procedure TJvgCustomGradient.SetPercentFilling(Value: Integer);
 begin
-  if FPercentFilling <> Value then
+  if (FPercentFilling <> Value) and (Value >= 0) and (Value <= 100) then
   begin
     FPercentFilling := Value;
     Changed;
