@@ -294,8 +294,7 @@ end;
 
 procedure TJvErrorIndicator.Delete(Index: Integer);
 begin
-  Controls[Index].Free;
-  FControls.Delete(Index);
+  Controls[Index].Free; // removes itself from FControls[]
 end;
 
 function TJvErrorIndicator.GetError(AControl: TControl): string;
@@ -539,7 +538,7 @@ var
   I: Integer;
 begin
   StopThread;
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     Controls[I].Free;
   FControls.Clear;
 end;
@@ -629,6 +628,7 @@ end;
 
 destructor TJvErrorControl.Destroy;
 begin
+  TJvErrorIndicator(Owner).FControls.Extract(Self);
   Control := nil;
   inherited Destroy;
 end;
