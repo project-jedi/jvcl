@@ -567,7 +567,7 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

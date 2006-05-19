@@ -224,7 +224,7 @@ procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

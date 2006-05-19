@@ -716,7 +716,7 @@ function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

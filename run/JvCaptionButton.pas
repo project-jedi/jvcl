@@ -295,7 +295,7 @@ function AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest,
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
