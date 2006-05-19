@@ -1669,7 +1669,7 @@ uses
 {$ENDIF LINUX}
 
 const
-  VersionInfo = '$RCSfile$' + #13 + '$Revision$' + #13 + '$Date$' + #13;
+  VersionInfo = '$URL$' + #13 + '$Revision$' + #13 + '$Date$' + #13;
 
 type
   THackCanvas = class(TCanvas);
