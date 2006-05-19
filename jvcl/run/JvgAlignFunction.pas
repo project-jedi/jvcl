@@ -49,7 +49,7 @@ procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TJvgNeedAlign;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

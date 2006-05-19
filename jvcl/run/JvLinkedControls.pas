@@ -87,7 +87,7 @@ function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedCo
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

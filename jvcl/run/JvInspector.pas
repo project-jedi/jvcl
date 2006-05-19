@@ -2124,7 +2124,7 @@ procedure RestoreCanvasState(const Canvas: TCanvas; const SavedIdx: Integer);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

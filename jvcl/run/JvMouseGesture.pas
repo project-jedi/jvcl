@@ -421,7 +421,7 @@ function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boo
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
