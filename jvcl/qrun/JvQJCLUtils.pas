@@ -992,7 +992,7 @@ procedure CollectionSort(Collection: TCollection; sortProc: TCollectionSortProc)
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

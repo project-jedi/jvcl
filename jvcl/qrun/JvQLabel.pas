@@ -315,7 +315,7 @@ procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

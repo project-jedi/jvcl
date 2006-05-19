@@ -74,7 +74,7 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
