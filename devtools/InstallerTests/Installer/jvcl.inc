@@ -15,7 +15,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: jvcl.inc,v 1.3 2004/12/23 00:25:12 ahuser Exp $
+// $Id$
 
 {***************************************************************************}
 {* THIS IS A SPECIAL VERSION OF THE jvcl.inc THAT IS ONLY USED BY THE JVCL *}

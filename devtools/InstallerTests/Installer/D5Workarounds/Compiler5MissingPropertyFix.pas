@@ -22,7 +22,7 @@ home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: Compiler5MissingPropertyFix.pas,v 1.3 2004/12/23 00:25:11 ahuser Exp $
+// $Id$
 
 unit Compiler5MissingPropertyFix;
 

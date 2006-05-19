@@ -22,7 +22,7 @@ home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: Utils.pas,v 1.20 2005/03/15 17:24:27 ahuser Exp $
+// $Id$
 
 unit Utils;
 
