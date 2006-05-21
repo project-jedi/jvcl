@@ -3135,7 +3135,8 @@ end;
 
 procedure TJvCustomAppMemoryFileStorage.SetFileName(const Value: TFileName);
 begin
-  if FFileName <> PathAddExtension(Value, DefaultExtension) then
+  // Mantis 3680: only add an extension if there is not already one.
+  if (Length(ExtractFileExt(Value)) = 0) then
   begin
     if not (csLoading in ComponentState) and not IsUpdating then
       Flush;
