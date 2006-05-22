@@ -44,11 +44,10 @@ uses
 type
   TJvGetSearchItemPrefixEvent = procedure(Sender: TObject; var Prefix: string) of object;
 
-  { TControlAutoComplete implements a autocomplete code for a controls it is a
+  { TControlAutoComplete implements an autocomplete code for controls. It is an
     abstract base class. After you have created an instance of a derived class
     you must either assign the AutoCompleteEvent to the OnKeyPress event of the
-    control or you must call the AutoComplete method from in a KeyPress event
-    handler.
+    control or you must call the AutoComplete method in a KeyPress event handler.
 
     (ahuser) 2005-01-31: changed from TObject to TComponent due to Notification()
     Do not register this component it is more a "TObject" than a TComponent. }
@@ -125,10 +124,10 @@ type
     property EditCtrl: TCustomEdit read FEditCtrl write SetEditCtrl;
   end;
 
-  { TEditListAutoComplete implements a autocomplete code for a Edit/TStrings
+  { TEditListAutoComplete implements an autocomplete code for a Edit/TStrings
     pair. After you have created an instance of this class you must either
     assign the AutoCompleteEvent to the OnKeyPress event of the edit control
-    or you must call the AutoComplete method from in a KeyPress event handler. }
+    or you must call the AutoComplete method in a KeyPress event handler. }
   TJvEditListAutoComplete = class(TJvBaseEditListAutoComplete)
   private
     FOnItemIndexChange: TNotifyEvent;
@@ -149,10 +148,10 @@ type
     property OnValidateItemIndex: TNotifyEvent read FOnValidateItemIndex write FOnValidateItemIndex;
   end;
 
-  { TEditListBoxAutoComplete implements a autocomplete code for a Edit/ListBox
+  { TEditListBoxAutoComplete implements an autocomplete code for a Edit/ListBox
     pair. After you have created an instance of this class you must either
     assign the AutoCompleteEvent to the OnKeyPress event of the edit control
-    or you must call the AutoComplete method from in a KeyPress event handler. }
+    or you must call the AutoComplete method in a KeyPress event handler. }
   TJvEditListBoxAutoComplete = class(TJvBaseEditListAutoComplete)
   private
     FListBox: TCustomListBox;
@@ -167,10 +166,10 @@ type
     property ListBox: TCustomListBox read FListBox write SetListBox;
   end;
 
-  { TComboBoxAutoComplete implements a autocomplete code for a ComboBox.
+  { TComboBoxAutoComplete implements an autocomplete code for a ComboBox.
     After you have created an instance of this class you must either assign the
     AutoCompleteEvent to the OnKeyPress event of the edit control or you must
-    call the AutoComplete method from in a KeyPress event handler. }
+    call the AutoComplete method in a KeyPress event handler. }
   TJvComboBoxAutoComplete = class(TJvControlAutoComplete)
   private
     FComboBox: TCustomComboBox;
