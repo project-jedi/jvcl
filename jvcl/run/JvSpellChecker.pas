@@ -380,7 +380,7 @@ begin
       begin
         for J := 0 to List.Count - 1 do
         begin
-          S := PChar(List[J]);
+          Pointer(S) := List[J];
           StrDecRef(S);
         end;
         TList(FWordTable[I]).Free;
