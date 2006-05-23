@@ -1654,8 +1654,7 @@ begin
       DeviceChange;
       FInDeviceChange := False;
     end;
-  if Msg.Msg = WM_QUERYENDSESSION then
-    Msg.Result := 1;
+  Msg.Result := DefWindowProc(FHWnd, Msg.Msg, Msg.wParam, Msg.lParam);
 end;
 
 // implements OnDeviceChange event
