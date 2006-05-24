@@ -331,7 +331,8 @@ type
   end;
 
   TJvDynControlCxCheckBox = class(TcxCheckBox, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlReadOnly,
+    IJvDynControlCheckBox)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -347,6 +348,11 @@ type
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
     procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlCheckBox
+    procedure ControlSetAllowGrayed(Value: boolean);
+    procedure ControlSetState(Value: TCheckBoxState);
+    function ControlGetState: TCheckBoxState;
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -1873,6 +1879,31 @@ procedure TJvDynControlCxCheckBox.ControlSetAnchors(Value : TAnchors);
 begin
   Anchors := Value;
 end;
+
+procedure TJvDynControlCxCheckBox.ControlSetAllowGrayed(Value: boolean);
+begin
+  Properties.AllowGrayed := Value;
+end;
+
+procedure TJvDynControlCxCheckBox.ControlSetState(Value: TCheckBoxState);
+begin
+  Case Value of
+    cbUnchecked : State := cbsUnchecked;
+    cbChecked : State := cbsChecked;
+    cbGrayed : State := cbsGrayed;
+  end;
+
+end;
+
+function TJvDynControlCxCheckBox.ControlGetState: TCheckBoxState;
+begin
+  Case State of
+    cbsUnchecked : Result := cbUnchecked;
+    cbsChecked : Result := cbChecked;
+    cbsGrayed : Result := cbGrayed;
+  end;
+end;
+
 
 procedure TJvDynControlCxCheckBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
