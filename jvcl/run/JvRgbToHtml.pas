@@ -51,11 +51,12 @@ type
   end;
 
 function RgbToHtml(Value: TColor): string;
+function HtmlToRgb(const Value: string): TColor;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -71,6 +72,17 @@ begin
     try
       RGBColor := Value;
       Result := HTMLColor;
+    finally
+      Free;
+    end;
+end;
+
+function HtmlToRgb(const Value: string): TColor;
+begin
+  with TJvRGBToHTML.Create(nil) do
+    try
+      HTMLColor := Value;
+      Result := RGBColor;
     finally
       Free;
     end;

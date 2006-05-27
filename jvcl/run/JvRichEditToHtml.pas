@@ -89,6 +89,8 @@ const
 
 implementation
 
+uses StdCtrls;
+
 
 const
   // (rom) needs renaming?
@@ -102,7 +104,7 @@ const
 //  cHTMLFontColorBegin = '<FONT COLOR=#';
 //  cHTMLSize = ' SIZE=';
 //  cHTMLFace = ' FACE="';
-  cHTMLFontEnd = '</FONT>';
+  cHTMLFontEnd = '</SPAN>';
 
   cHTMLBoldBegin = '<B>';
   cHTMLBoldEnd = '</B>';
@@ -164,13 +166,17 @@ begin
 end;
 
 function TJvRichEditToHtml.AttToHtml(Value: TFont): string;
+var
+  Size: Integer;
 begin
   FEndSection := cHTMLFontEnd;
   FCToH.RgbColor := Value.Color;
 
-  // Mantis 2817: The font size was not correctly computed 
-  Result := Format('<FONT COLOR="#%s" SIZE="%d" FACE="%s">',
-                    [FCToH.HtmlColor,(Value.Size div 8),Value.Name]);
+  Size := Value.Size;
+  if Size = 0 then
+    Size := 8;
+  Result := Format('<SPAN style="color: #%s; font-size: %dpt; font-family: %s;">',
+                    [FCToH.HtmlColor, Size, Value.Name]);
   if fsBold in Value.Style then
   begin
     FEndSection := cHTMLBoldEnd + FEndSection;
@@ -193,24 +199,6 @@ begin
   end;
 end;
 
-function TJvRichEditToHtml.ParaToHtml(Value: TJvParaAttributesRec): string;
-begin
-  FEndPara := cHTMLParaEnd;
-  case Value.Alignment of
-    Classes.taLeftJustify:
-      Result := cHTMLParaLeft;
-    Classes.taRightJustify:
-      Result := cHTMLParaRight;
-    Classes.taCenter:
-      Result := cHTMLParaCenter;
-  end;
-  if Value.Numbering = ComCtrls.nsBullet then
-  begin
-    Result := cHTMLListBegin + Result;
-    FEndPara := FEndPara + cHTMLListEnd;
-  end;
-end;
-
 function Diff(One, Two: TFont): Boolean;
 begin
   Result := (One.Color <> Two.Color) or (One.Style <> Two.Style) or
@@ -227,89 +215,6 @@ begin
   Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
 end;
 
-procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
-var
-  I, J: Integer;
-  Datt, Att, CurrAt: TFont;
-  DPara, Para, CurrPara: TJvParaAttributesRec;
-  St: string;
-  FEnd: string;
-begin
-  Strings.BeginUpdate;
-  Value.Lines.BeginUpdate;
-  try
-    Strings.Clear;
-    Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
-//    Strings.Add(cHTMLHeadBegin);
-//    Strings.Add(Format(cHTMLTitleFmt, [Title]));
-//    Strings.Add(cHTMLBodyBegin);
-    Datt := TFont.Create;
-    Att := TFont.Create;
-    CurrAt := TFont.Create;
-
-    DPara.Alignment := taLeftJustify;
-    DPara.Numbering := ComCtrls.nsNone;
-    CurrPara.Alignment := DPara.Alignment;
-    CurrPara.Numbering := DPara.Numbering;
-    FEndPara := '';
-
-    Datt.Assign(Value.DefAttributes);
-    Strings.Add(AttToHtml(Datt));
-    FEnd := FEndSection;
-
-    CurrAt.Assign(Datt);
-    FEndSection := '';
-    Value.SelStart := 0;
-    for I := 0 to Value.Lines.Count - 1 do
-    begin
-      St := '';
-      CurrPara.Numbering := ComCtrls.nsNone;
-      if Length(Value.Lines[I]) > 0 then
-      begin
-        for J := 1 to Length(Value.Lines[I]) do
-        begin
-          Value.SelLength := 1;
-          Att.Assign(Value.SelAttributes);
-          Para.Alignment := Value.Paragraph.Alignment;
-          Para.Numbering := Value.Paragraph.Numbering;
-          if Diff(Att, CurrAt) then
-          begin
-            St := St + FEndSection;
-            CurrAt.Assign(Att);
-            St := St + AttToHtml(Att);
-          end;
-          if DiffPara(Para, CurrPara) then
-          begin
-            St := St + FEndPara;
-            CurrPara.Alignment := Para.Alignment;
-            CurrPara.Numbering := Para.Numbering;
-            St := St + ParaToHtml(Para);
-          end;
-          St := St + CharToHtml(Value.Lines[I][J]);
-          Value.SelStart := Value.SelStart + 1;
-        end;
-      end;
-      Value.SelStart := Value.SelStart + 2;  // Mantis 2817: Skip carriage return
-      Strings.Add(cHTMLBR + St);
-      Application.ProcessMessages;
-    end;
-    Strings.Add(FEndSection);
-    Strings.Add(FEndPara);
-
-    Datt.Free;
-    Att.Free;
-    CurrAt.Free;
-
-    Strings.Add(FEnd);
-    Strings.AddStrings(FFooter);
-//    Strings.Add(cHTMLBodyEnd);
-//    Strings.Add(cHTMLEnd);
-  finally
-    Strings.EndUpdate;
-    Value.Lines.EndUpdate;
-  end;
-end;
-
 procedure TJvRichEditToHtml.ConvertToHtml(Value: TJvRichEdit;
   const FileName: string);
 var
@@ -324,72 +229,84 @@ begin
   end;
 end;
 
-procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TJvRichEdit;
-  Strings: TStrings);
+procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
 var
   I, J: Integer;
   Datt, Att, CurrAt: TFont;
-  DPara, Para, CurrPara: TJvRichEditParaAttributesRec;
+  DPara, Para, CurrPara: TJvParaAttributesRec;
   St: string;
   FEnd: string;
+  LOnChange: TNotifyEvent;
+  LOnSelectionChange: TNotifyEvent;
+  Text: string;
 begin
+  LOnChange := Value.OnChange;
+  LOnSelectionChange := Value.OnSelectionChange;
   Strings.BeginUpdate;
   Value.Lines.BeginUpdate;
   try
+    Value.OnChange := nil;
+    Value.OnSelectionChange := nil;
+
     Strings.Clear;
 //    Strings.Add(cHTMLHeadBegin);
 //    Strings.Add(Format(cHTMLTitleFmt, [Title]));
 //    Strings.Add(cHTMLBodyBegin);
-    Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
+    if Header.Count > 0 then
+      Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
     Datt := TFont.Create;
     Att := TFont.Create;
     CurrAt := TFont.Create;
 
-    DPara.Alignment := paLeftJustify;
-    DPara.Numbering := nsNone;
+    DPara.Alignment := taLeftJustify;
+    DPara.Numbering := ComCtrls.nsNone;
     CurrPara.Alignment := DPara.Alignment;
     CurrPara.Numbering := DPara.Numbering;
-    FEndPara := '';
+    Strings.Add(ParaToHtml(Para));
 
     Datt.Assign(Value.DefAttributes);
     Strings.Add(AttToHtml(Datt));
-    FEnd := FEndSection;
 
     CurrAt.Assign(Datt);
-    FEndSection := '';
     Value.SelStart := 0;
+    Text := Value.Text;
+
     for I := 0 to Value.Lines.Count - 1 do
     begin
+      Text := Value.Lines[I];
+      Value.SelLength := 1;
+      Att.Assign(Value.SelAttributes);
+      Para.Alignment := Value.Paragraph.Alignment;
+      Para.Numbering := Value.Paragraph.Numbering;
+
       St := '';
-      CurrPara.Numbering := nsNone;
-      if Length(Value.Lines[I]) > 0 then
+      if DiffPara(Para, CurrPara) or (Para.Numbering = ComCtrls.nsBullet) then
       begin
-        for J := 1 to Length(Value.Lines[I]) do
-        begin
-          Value.SelLength := 1;
-          Att.Assign(Value.SelAttributes);
-          Para.Alignment := Value.Paragraph.Alignment;
-          Para.Numbering := Value.Paragraph.Numbering;
-          if Diff(Att, CurrAt) then
-          begin
-            St := St + FEndSection;
-            CurrAt.Assign(Att);
-            St := St + AttToHtml(Att);
-          end;
-          if DiffPara(Para, CurrPara) then
-          begin
-            St := St + FEndPara;
-            CurrPara.Alignment := Para.Alignment;
-            CurrPara.Numbering := Para.Numbering;
-            St := St + ParaToHtml(Para);
-          end;
-          St := St + CharToHtml(Value.Lines[I][J]);
-          Value.SelStart := Value.SelStart + 1;
-        end;
+        St := St + FEndSection + FEndPara;
+        CurrPara.Alignment := Para.Alignment;
+        CurrPara.Numbering := Para.Numbering;
+        CurrAt.Assign(Att);
+
+        St := St + ParaToHtml(Para) + AttToHtml(Att);
       end;
-      Value.SelStart := Value.SelStart + 2;  // Mantis 2817: Skip carriage return
-      Strings.Add(cHTMLBR + St);
-      Application.ProcessMessages;
+
+      for J := 1 to Length(Text) do
+      begin
+        Att.Assign(Value.SelAttributes);
+        if Diff(Att, CurrAt) then
+        begin
+          CurrAt.Assign(Att);
+          St := St + FEndSection + AttToHtml(Att);
+        end;
+        St := St + CharToHtml(Text[J]);
+        Value.SelStart := Value.SelStart + 1;
+      end;
+      if I = 0 then
+        Strings.Add(St)
+      else
+        Strings.Add(cHTMLBR + St);
+
+      Value.SelStart := Value.SelStart + 1; // #10
     end;
     Strings.Add(FEndSection);
     Strings.Add(FEndPara);
@@ -403,6 +320,106 @@ begin
 //    Strings.Add(cHTMLBodyEnd);
 //    Strings.Add(cHTMLEnd);
   finally
+    Value.OnChange := LOnChange;
+    Value.OnSelectionChange := LOnSelectionChange;
+    Strings.EndUpdate;
+    Value.Lines.EndUpdate;
+  end;
+end;
+
+procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TJvRichEdit; Strings: TStrings);
+var
+  I, J: Integer;
+  Datt, Att, CurrAt: TFont;
+  DPara, Para, CurrPara: TJvRichEditParaAttributesRec;
+  St: string;
+  FEnd: string;
+  LOnChange: TNotifyEvent;
+  LOnSelectionChange: TNotifyEvent;
+  Text: string;
+begin
+  LOnChange := Value.OnChange;
+  LOnSelectionChange := Value.OnSelectionChange;
+  Strings.BeginUpdate;
+  Value.Lines.BeginUpdate;
+  try
+    Value.OnChange := nil;
+    Value.OnSelectionChange := nil;
+
+    Strings.Clear;
+//    Strings.Add(cHTMLHeadBegin);
+//    Strings.Add(Format(cHTMLTitleFmt, [Title]));
+//    Strings.Add(cHTMLBodyBegin);
+    if Header.Count > 0 then
+      Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
+    Datt := TFont.Create;
+    Att := TFont.Create;
+    CurrAt := TFont.Create;
+
+    DPara.Alignment := paLeftJustify;
+    DPara.Numbering := nsNone;
+    CurrPara.Alignment := DPara.Alignment;
+    CurrPara.Numbering := DPara.Numbering;
+    Strings.Add(ParaToHtml(Para));
+
+    Datt.Assign(Value.DefAttributes);
+    Strings.Add(AttToHtml(Datt));
+
+    CurrAt.Assign(Datt);
+    Value.SelStart := 0;
+    Text := Value.Text;
+
+    for I := 0 to Value.Lines.Count - 1 do
+    begin
+      Text := Value.Lines[I];
+      Value.SelLength := 1;
+      Att.Assign(Value.SelAttributes);
+      Para.Alignment := Value.Paragraph.Alignment;
+      Para.Numbering := Value.Paragraph.Numbering;
+
+      St := '';
+      if DiffPara(Para, CurrPara) or (Para.Numbering = nsBullet) then
+      begin
+        St := St + FEndSection + FEndPara;
+        CurrPara.Alignment := Para.Alignment;
+        CurrPara.Numbering := Para.Numbering;
+        CurrAt.Assign(Att);
+
+        St := St + ParaToHtml(Para) + AttToHtml(Att);
+      end;
+
+      for J := 1 to Length(Text) do
+      begin
+        Att.Assign(Value.SelAttributes);
+        if Diff(Att, CurrAt) then
+        begin
+          CurrAt.Assign(Att);
+          St := St + FEndSection + AttToHtml(Att);
+        end;
+        St := St + CharToHtml(Text[J]);
+        Value.SelStart := Value.SelStart + 1;
+      end;
+      if I = 0 then
+        Strings.Add(St)
+      else
+        Strings.Add(cHTMLBR + St);
+
+      Value.SelStart := Value.SelStart + 1; // #10
+    end;
+    Strings.Add(FEndSection);
+    Strings.Add(FEndPara);
+
+    Datt.Free;
+    Att.Free;
+    CurrAt.Free;
+
+    Strings.Add(FEnd);
+    Strings.AddStrings(Footer);
+//    Strings.Add(cHTMLBodyEnd);
+//    Strings.Add(cHTMLEnd);
+  finally
+    Value.OnChange := LOnChange;
+    Value.OnSelectionChange := LOnSelectionChange;
     Strings.EndUpdate;
     Value.Lines.EndUpdate;
   end;
@@ -410,20 +427,46 @@ end;
 
 function TJvRichEditToHtml.ParaToHtml(Value: TJvRichEditParaAttributesRec): string;
 begin
-  FEndPara := cHTMLParaEnd;
   case Value.Alignment of
     paLeftJustify:
-      Result := cHTMLParaLeft;
+      Result := 'ALIGN="LEFT"';
     paRightJustify:
-      Result := cHTMLParaRight;
+      Result := 'ALIGN="RIGHT"';
     paCenter:
-      Result := cHTMLParaCenter;
+      Result := 'ALIGN="CENTER"';
   end;
   if Value.Numbering = nsBullet then
   begin
-    Result := cHTMLListBegin + Result;
-    FEndPara := FEndPara + cHTMLListEnd;
+    Result := '<LI ' + Result + '>';
+    FEndPara := '</LI>';
+  end
+  else
+  begin
+    Result := '<P ' + Result + '>';
+    FEndPara := '</P>';
+  end
+end;
+
+function TJvRichEditToHtml.ParaToHtml(Value: TJvParaAttributesRec): string;
+begin
+  case Value.Alignment of
+    Classes.taLeftJustify:
+      Result := 'ALIGN="LEFT"';
+    Classes.taRightJustify:
+      Result := 'ALIGN="RIGHT"';
+    Classes.taCenter:
+      Result := 'ALIGN="CENTER"';
   end;
+  if Value.Numbering = ComCtrls.nsBullet then
+  begin
+    Result := '<LI ' + Result + '>';
+    FEndPara := '</LI>';
+  end
+  else
+  begin
+    Result := '<P ' + Result + '>';
+    FEndPara := '</P>';
+  end
 end;
 
 function TJvRichEditToHtml.GetFooter: TStrings;
