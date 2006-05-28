@@ -457,6 +457,8 @@ type
 
   TJvDatabaseSMExportOptions = class(TPersistent)
   private
+    FOnAfterExecuteExport: TNotifyEvent;
+    FOnBeforeExecuteExport: TNotifyEvent;
     FHelpContext: THelpContext;
     FFormats: TExportFormatTypes;
     FTitle: TCaption;
@@ -476,6 +478,10 @@ type
     property DefaultOptionsDirectory: string read FDefaultOptionsDirectory write FDefaultOptionsDirectory;
     property KeyGenerator: string read FKeyGenerator write FKeyGenerator;
     property Options: TSMOptions read FOptions write FOptions;
+    property OnAfterExecuteExport: TNotifyEvent read FOnAfterExecuteExport write
+        FOnAfterExecuteExport;
+    property OnBeforeExecuteExport: TNotifyEvent read FOnBeforeExecuteExport write
+        FOnBeforeExecuteExport;
   end;
 
   TJvDatabaseSMExportAction = class(TJvDatabaseBaseActiveAction)
@@ -2046,21 +2052,22 @@ begin
         CellType := ctBlank;
       end
       else
-        if Field.DataType in [ftFloat, ftBCD, ftCurrency] then
-          Text := AnsiReplaceStr(Text, ',', '.')
-        else
-          if Field.DataType in [ftDate, ftDateTime] then
-          begin
-            DT := Field.AsDateTime;
-            if DT <= 0 then
-              Text := SNull
-            else
-              if DT = Trunc(DT) then
-                Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
+        Case Field.DataType of
+          ftFloat, ftBCD, ftCurrency:
+            Text := AnsiReplaceStr(Text, ',', '.');
+          ftDate, ftDateTime :
+            begin
+              DT := Field.AsDateTime;
+              if DT <= 0 then
+                Text := SNull
               else
-                Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
-            CellType := ctBlank;
-          end;
+                if DT = Trunc(DT) then
+                  Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
+                else
+                  Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
+              CellType := ctBlank;
+            end;
+        end;
     end
     else
       if Text = '' then
@@ -2069,32 +2076,36 @@ begin
         CellType := ctBlank;
       end
       else
-        if CellType in [ctDouble, ctCurrency] then
-          Text := AnsiReplaceStr(Text, ',', '.')
-        else
-          if CellType in [ctDateTime, ctDate, ctTime] then
-          begin
-            try
-              DT := VarToDateTime(Text);
-              if DT <= 0 then
-                Text := SNull
-              else
-                if DT = Trunc(DT) then
-                  Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
+        Case CellType of
+          ctDouble, ctCurrency :
+            Text := AnsiReplaceStr(Text, ',', '.');
+          ctDateTime, ctDate, ctTime:
+            begin
+              try
+                DT := VarToDateTime(Text);
+                if DT <= 0 then
+                  Text := SNull
                 else
-                  Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
-            except
-              on e:exception do
-                Text := Format(StoDateFormatLong, [Text]);
+                  if DT = Trunc(DT) then
+                    Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
+                  else
+                    Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
+              except
+                on e:exception do
+                  Text := Format(StoDateFormatLong, [Text]);
+              end;
+              CellType := ctBlank;
             end;
-            CellType := ctBlank;
-          end;
+        end;
 end;
 
 procedure TJvDatabaseSMExportOptions.SMEWizardDlgOnBeforeExecute(Sender: TObject);
 begin
-  if Sender is TSMExportToSQL then
-    TSMExportToSQL(Sender).SQLQuote := #0;
+  if Assigned(FOnBeforeExecuteExport) then
+    FOnBeforeExecuteExport (Sender)
+  else
+    if Sender is TSMExportToSQL then
+      TSMExportToSQL(Sender).SQLQuote := '''';
 end;
 
 //=== { TJvDatabaseSMExportAction } ==========================================
@@ -2134,6 +2145,7 @@ begin
     SMEWizardDlg.ColumnSource := csDataSet;
     SMEWizardDlg.OnGetCellParams := Options.SMEWizardDlgGetCellParams;
     SMEWizardDlg.OnBeforeExecute := Options.SMEWizardDlgOnBeforeExecute;
+    SMEWizardDlg.OnAfterExecute := Options.OnAfterExecuteExport;
     SMEWizardDlg.DataSet := DataSource.DataSet;
     SMEWizardDlg.Title := Options.Title;
     SMEWizardDlg.KeyGenerator := Options.Title;
