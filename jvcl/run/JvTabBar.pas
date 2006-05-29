@@ -640,6 +640,8 @@ begin
   finally
     Canvas.Pen.Assign(Pen);
     Canvas.Brush.Assign(Brush);
+    Pen.Free;
+    Brush.Free;
   end;
 end;
 
