@@ -794,9 +794,6 @@ type
     function GetFullFileName: TFileName;
 
     property AsString: string read GetAsString write SetAsString;
-    property FileName: TFileName read FFileName write SetFileName;
-    property Location: TFileLocation read FLocation write SetLocation default flExeFile;
-
     // OnGetFileName triggered on Location = flCustom
     property OnGetFileName: TJvAppStorageGetFileNameEvent read FOnGetFileName write SetOnGetFileName;
 
@@ -807,7 +804,10 @@ type
     procedure Reload; override;
     function ReloadNeeded: Boolean; override;
 
+    property FileName: TFileName read FFileName write SetFileName;
     property FullFileName: TFileName read GetFullFileName;
+    property Location: TFileLocation read FLocation write SetLocation default
+        flExeFile;
   published
     property ReadOnly;
   end;
