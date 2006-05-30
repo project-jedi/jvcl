@@ -629,7 +629,7 @@ const
     S := UnitNameStr;
     AdapterNames.Add(S);
     Adapter.Add('    AddFunction(c' + S + ', ''' + Name + ''', ' +
-      ClassName + 'JvInterpreter_' + Name + ', ' + IntToStr(Params.Count) + ', ' + ParamTypStr + ', ' + ResVar + ');');
+      'JvInterpreter_' + Name + ', ' + IntToStr(Params.Count) + ', ' + ParamTypStr + ', ' + ResVar + ');');
   end;
 
   procedure AddProp;
