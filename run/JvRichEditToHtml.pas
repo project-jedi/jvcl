@@ -14,7 +14,8 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buyp
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com],
+                Andreas Hausladen [Andreas dott Hausladen att gmx dott de].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,11 +32,12 @@ unit JvRichEditToHtml;
 interface
 
 uses
+ Windows,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics, Forms, ComCtrls,
-  JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponentBase;
+  JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponentBase, JclStrings;
 
 type
   TJvParaAttributesRec = record
@@ -48,6 +50,28 @@ type
     Numbering: TJvNumbering;
   end;
 
+  TFontInfo = class(TPersistent)
+  private
+    FFontData: TFontData;
+    FColor: TColor;
+    FPixelsPerInch: Integer;
+    FLink: Boolean;
+    function GetSize: Integer;
+    procedure SetSize(const Value: Integer);
+  public
+    constructor Create(APixelsPerInch: Integer);
+    procedure Assign(Source: TPersistent); override;
+    property Color: TColor read FColor write FColor;
+    property Link: Boolean read FLink write FLink;
+
+    property Size: Integer read GetSize write SetSize;
+    property Height: Integer read FFontData.Height write FFontData.Height;
+    property Pitch: TFontPitch read FFontData.Pitch write FFontData.Pitch;
+    property Style: TFontStylesBase read FFontData.Style write FFontData.Style;
+    property Charset: TFontCharset read FFontData.Charset write FFontData.Charset;
+    property Name: TFontDataName read FFontData.Name write FFontData.Name;
+  end;
+  
   TJvRichEditToHtml = class(TJvComponent)
   private
     FCToH: TJvRgbToHtml;
@@ -57,7 +81,7 @@ type
     FTitle: string;
     FFooter: TStringList;
     FHeader: TStringList;
-    function AttToHtml(Value: TFont): string;
+    function AttToHtml(Value: TFontInfo): string;
     function ParaToHtml(Value: TJvParaAttributesRec): string;overload;
     function ParaToHtml(Value: TJvRichEditParaAttributesRec): string;overload;
     function GetFooter: TStrings;
@@ -88,9 +112,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
-uses StdCtrls;
-
 
 const
   // (rom) needs renaming?
@@ -125,6 +146,58 @@ const
 
   cHTMLListBegin = '<LI>';
   cHTMLListEnd = '</LI>';
+
+{ TFontInfo }
+
+procedure TFontInfo.Assign(Source: TPersistent);
+begin
+  if Source is TTextAttributes then
+  begin
+    FFontData.Name := TTextAttributes(Source).Name;
+    FFontData.Height := TTextAttributes(Source).Height;
+    FFontData.Pitch := TTextAttributes(Source).Pitch;
+    FFontData.Style := TTextAttributes(Source).Style;
+    FFontData.Charset := TTextAttributes(Source).Charset;
+    FColor := TTextAttributes(Source).Color;
+    FLink := False;
+  end
+  else if Source is TJvTextAttributes then
+  begin
+    FFontData.Name := TJvTextAttributes(Source).Name;
+    FFontData.Height := TJvTextAttributes(Source).Height;
+    FFontData.Pitch := TJvTextAttributes(Source).Pitch;
+    FFontData.Style := TJvTextAttributes(Source).Style;
+    FFontData.Charset := TJvTextAttributes(Source).Charset;
+    FColor := TJvTextAttributes(Source).Color;
+    FLink := TJvTextAttributes(Source).Link;
+  end
+  else if Source is TFontInfo then
+  begin
+    FFontData := TFontInfo(Source).FFontData;
+    FColor := TFontInfo(Source).FColor;
+    FLink := TFontInfo(Source).FLink;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+constructor TFontInfo.Create(APixelsPerInch: Integer);
+begin
+  inherited Create;
+  FPixelsPerInch := APixelsPerInch;
+end;
+
+function TFontInfo.GetSize: Integer;
+begin
+  Result := -MulDiv(Height, 72, FPixelsPerInch);
+end;
+
+procedure TFontInfo.SetSize(const Value: Integer);
+begin
+  FFontData.Height := -MulDiv(Value, FPixelsPerInch, 72);
+end;
+
+{ TJvRichEditToHtml }
 
 constructor TJvRichEditToHtml.Create(AOwner: TComponent);
 begin
@@ -165,14 +238,14 @@ begin
   end;
 end;
 
-function TJvRichEditToHtml.AttToHtml(Value: TFont): string;
+function TJvRichEditToHtml.AttToHtml(Value: TFontInfo): string;
 var
   Size: Integer;
 begin
   FEndSection := cHTMLFontEnd;
   FCToH.RgbColor := Value.Color;
 
-  Size := Value.Size;
+  Size := Abs(Value.Size);
   if Size = 0 then
     Size := 8;
   Result := Format('<SPAN style="color: #%s; font-size: %dpt; font-family: %s;">',
@@ -197,12 +270,19 @@ begin
     FEndSection := cHTMLUnderlineEnd + FEndSection;
     Result := Result + cHTMLUnderlineBegin;
   end;
+
+//  if Value.Link then
+//  begin
+//    FEndSection := '</a>' + FEndSection;
+//    Result := Result + '<a href="#">';
+//  end;
 end;
 
-function Diff(One, Two: TFont): Boolean;
+function Diff(One, Two: TFontInfo): Boolean;
 begin
   Result := (One.Color <> Two.Color) or (One.Style <> Two.Style) or
-    (One.Name <> Two.Name) or (One.Size <> Two.Size);
+    (One.Name <> Two.Name) or (One.Size <> Two.Size) or
+    (One.Link <> Two.Link);
 end;
 
 function DiffPara(One, Two: TJvParaAttributesRec): Boolean;overload;
@@ -232,13 +312,14 @@ end;
 procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
 var
   I, J: Integer;
-  Datt, Att, CurrAt: TFont;
+  Datt, Att, CurrAt: TFontInfo;
   DPara, Para, CurrPara: TJvParaAttributesRec;
-  St: string;
+  St: TStringBuilder;
   FEnd: string;
   LOnChange: TNotifyEvent;
   LOnSelectionChange: TNotifyEvent;
   Text: string;
+  Len: Integer;
 begin
   LOnChange := Value.OnChange;
   LOnSelectionChange := Value.OnSelectionChange;
@@ -249,14 +330,11 @@ begin
     Value.OnSelectionChange := nil;
 
     Strings.Clear;
-//    Strings.Add(cHTMLHeadBegin);
-//    Strings.Add(Format(cHTMLTitleFmt, [Title]));
-//    Strings.Add(cHTMLBodyBegin);
     if Header.Count > 0 then
-      Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
-    Datt := TFont.Create;
-    Att := TFont.Create;
-    CurrAt := TFont.Create;
+      Strings.Add(StringReplace(Header.Text, '<#TITLE>', Title, [rfReplaceAll]));
+    Datt := TFontInfo.Create(Value.Font.PixelsPerInch);
+    Att := TFontInfo.Create(Value.Font.PixelsPerInch);
+    CurrAt := TFontInfo.Create(Value.Font.PixelsPerInch);
 
     DPara.Alignment := taLeftJustify;
     DPara.Numbering := ComCtrls.nsNone;
@@ -269,44 +347,57 @@ begin
 
     CurrAt.Assign(Datt);
     Value.SelStart := 0;
-    Text := Value.Text;
-
-    for I := 0 to Value.Lines.Count - 1 do
-    begin
-      Text := Value.Lines[I];
+    Value.SelectAll;
+    Text := Value.SelText;
+    Len := Length(Text);
+    St := TStringBuilder.Create;
+    try
+      I := 1;
       Value.SelLength := 1;
-      Att.Assign(Value.SelAttributes);
-      Para.Alignment := Value.Paragraph.Alignment;
-      Para.Numbering := Value.Paragraph.Numbering;
-
-      St := '';
-      if DiffPara(Para, CurrPara) or (Para.Numbering = ComCtrls.nsBullet) then
+      while I <= Len do
       begin
-        St := St + FEndSection + FEndPara;
-        CurrPara.Alignment := Para.Alignment;
-        CurrPara.Numbering := Para.Numbering;
-        CurrAt.Assign(Att);
-
-        St := St + ParaToHtml(Para) + AttToHtml(Att);
-      end;
-
-      for J := 1 to Length(Text) do
-      begin
+        // new line
+        Value.SelStart := I - 1;
         Att.Assign(Value.SelAttributes);
-        if Diff(Att, CurrAt) then
-        begin
-          CurrAt.Assign(Att);
-          St := St + FEndSection + AttToHtml(Att);
-        end;
-        St := St + CharToHtml(Text[J]);
-        Value.SelStart := Value.SelStart + 1;
-      end;
-      if I = 0 then
-        Strings.Add(St)
-      else
-        Strings.Add(cHTMLBR + St);
+        Para.Alignment := Value.Paragraph.Alignment;
+        Para.Numbering := Value.Paragraph.Numbering;
 
-      Value.SelStart := Value.SelStart + 1; // #10
+        St.Length := 0;
+        if DiffPara(Para, CurrPara) or (Para.Numbering = ComCtrls.nsBullet) then
+        begin
+          St.Append(FEndSection).Append(FEndPara);
+          CurrPara.Alignment := Para.Alignment;
+          CurrPara.Numbering := Para.Numbering;
+          CurrAt.Assign(Att);
+          St.Append(ParaToHtml(Para)).Append(AttToHtml(Att));
+        end;
+
+        J := I;
+        while (J <= Len) and not (Text[J] in [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
+        begin
+          Att.Assign(Value.SelAttributes);
+          if Diff(Att, CurrAt) then
+          begin
+            St.Append(FEndSection);
+            CurrAt.Assign(Att);
+            St.Append(AttToHtml(Att));
+          end;
+
+          if Text[J] in ['A'..'Z', 'a'..'z', '0'..'9'] then
+            St.Append(Text[J])
+          else
+            St.Append(CharToHtml(Text[J]));
+          Inc(J);
+          Value.SelStart := J - 1;
+        end;
+        if I = 1 then
+          Strings.Add(St.ToString())
+        else
+          Strings.Add(cHTMLBR + St.ToString());
+        I := J + 1;
+      end;
+    finally
+      St.Free;
     end;
     Strings.Add(FEndSection);
     Strings.Add(FEndPara);
@@ -317,8 +408,6 @@ begin
 
     Strings.Add(FEnd);
     Strings.AddStrings(Footer);
-//    Strings.Add(cHTMLBodyEnd);
-//    Strings.Add(cHTMLEnd);
   finally
     Value.OnChange := LOnChange;
     Value.OnSelectionChange := LOnSelectionChange;
@@ -330,13 +419,14 @@ end;
 procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TJvRichEdit; Strings: TStrings);
 var
   I, J: Integer;
-  Datt, Att, CurrAt: TFont;
+  Datt, Att, CurrAt: TFontInfo;
   DPara, Para, CurrPara: TJvRichEditParaAttributesRec;
-  St: string;
+  St: TStringBuilder;
   FEnd: string;
   LOnChange: TNotifyEvent;
   LOnSelectionChange: TNotifyEvent;
   Text: string;
+  Len: Integer;
 begin
   LOnChange := Value.OnChange;
   LOnSelectionChange := Value.OnSelectionChange;
@@ -347,14 +437,11 @@ begin
     Value.OnSelectionChange := nil;
 
     Strings.Clear;
-//    Strings.Add(cHTMLHeadBegin);
-//    Strings.Add(Format(cHTMLTitleFmt, [Title]));
-//    Strings.Add(cHTMLBodyBegin);
     if Header.Count > 0 then
-      Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
-    Datt := TFont.Create;
-    Att := TFont.Create;
-    CurrAt := TFont.Create;
+      Strings.Add(StringReplace(Header.Text, '<#TITLE>', Title, [rfReplaceAll]));
+    Datt := TFontInfo.Create(Value.Font.PixelsPerInch);
+    Att := TFontInfo.Create(Value.Font.PixelsPerInch);
+    CurrAt := TFontInfo.Create(Value.Font.PixelsPerInch);
 
     DPara.Alignment := paLeftJustify;
     DPara.Numbering := nsNone;
@@ -367,44 +454,57 @@ begin
 
     CurrAt.Assign(Datt);
     Value.SelStart := 0;
-    Text := Value.Text;
-
-    for I := 0 to Value.Lines.Count - 1 do
-    begin
-      Text := Value.Lines[I];
+    Value.SelectAll;
+    Text := Value.SelText;
+    Len := Length(Text);
+    St := TStringBuilder.Create;
+    try
+      I := 1;
       Value.SelLength := 1;
-      Att.Assign(Value.SelAttributes);
-      Para.Alignment := Value.Paragraph.Alignment;
-      Para.Numbering := Value.Paragraph.Numbering;
-
-      St := '';
-      if DiffPara(Para, CurrPara) or (Para.Numbering = nsBullet) then
+      while I <= Len do
       begin
-        St := St + FEndSection + FEndPara;
-        CurrPara.Alignment := Para.Alignment;
-        CurrPara.Numbering := Para.Numbering;
-        CurrAt.Assign(Att);
-
-        St := St + ParaToHtml(Para) + AttToHtml(Att);
-      end;
-
-      for J := 1 to Length(Text) do
-      begin
+        // new line
+        Value.SelStart := I - 1;
         Att.Assign(Value.SelAttributes);
-        if Diff(Att, CurrAt) then
-        begin
-          CurrAt.Assign(Att);
-          St := St + FEndSection + AttToHtml(Att);
-        end;
-        St := St + CharToHtml(Text[J]);
-        Value.SelStart := Value.SelStart + 1;
-      end;
-      if I = 0 then
-        Strings.Add(St)
-      else
-        Strings.Add(cHTMLBR + St);
+        Para.Alignment := Value.Paragraph.Alignment;
+        Para.Numbering := Value.Paragraph.Numbering;
 
-      Value.SelStart := Value.SelStart + 1; // #10
+        St.Length := 0;
+        if DiffPara(Para, CurrPara) or (Para.Numbering = nsBullet) then
+        begin
+          St.Append(FEndSection).Append(FEndPara);
+          CurrPara.Alignment := Para.Alignment;
+          CurrPara.Numbering := Para.Numbering;
+          CurrAt.Assign(Att);
+          St.Append(ParaToHtml(Para)).Append(AttToHtml(Att));
+        end;
+
+        J := I;
+        while (J <= Len) and not (Text[J] in [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
+        begin
+          Att.Assign(Value.SelAttributes);
+          if Diff(Att, CurrAt) then
+          begin
+            St.Append(FEndSection);
+            CurrAt.Assign(Att);
+            St.Append(AttToHtml(Att));
+          end;
+
+          if Text[J] in ['A'..'Z', 'a'..'z', '0'..'9'] then
+            St.Append(Text[J])
+          else
+            St.Append(CharToHtml(Text[J]));
+          Inc(J);
+          Value.SelStart := J - 1;
+        end;
+        if I = 1 then
+          Strings.Add(St.ToString())
+        else
+          Strings.Add(cHTMLBR + St.ToString());
+        I := J + 1;
+      end;
+    finally
+      St.Free;
     end;
     Strings.Add(FEndSection);
     Strings.Add(FEndPara);
@@ -415,8 +515,6 @@ begin
 
     Strings.Add(FEnd);
     Strings.AddStrings(Footer);
-//    Strings.Add(cHTMLBodyEnd);
-//    Strings.Add(cHTMLEnd);
   finally
     Value.OnChange := LOnChange;
     Value.OnSelectionChange := LOnSelectionChange;
