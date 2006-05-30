@@ -2512,7 +2512,10 @@ end;
 procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant);
 begin
   if (TVarData(Source).VType = varArray) or (TVarData(Source).VType = varRecord) then
+  begin
+    VarClear(Dest);
     TVarData(Dest) := TVarData(Source)
+  end
   else
     Dest := Source;
 end;
