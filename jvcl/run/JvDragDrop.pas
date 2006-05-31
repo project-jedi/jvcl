@@ -209,6 +209,7 @@ end;
 procedure TJvDragDrop.Loaded;
 begin
   inherited Loaded;
+  FAcceptDrag := False;
   SetAcceptDrag(FStreamedAcceptDrag);
 end;
 
