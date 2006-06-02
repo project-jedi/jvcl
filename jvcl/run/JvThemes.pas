@@ -1843,6 +1843,8 @@ asm
         ADD     EAX, 2
 end;
 
+type
+  PPointer = ^Pointer;
 
 var
   OrgWinControlWMPrintClient: procedure(Instance: TObject; var Msg: TMessage);
