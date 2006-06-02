@@ -52,6 +52,7 @@ type
     FPreviousStepText: string;
     FShowDivider: Boolean;
     FShowNavigators: Boolean;
+    FShowNavigation: Boolean;
     function GetActiveStepRect: TRect;
     function GetPreviousStepRect: TRect;
     function GetNextStepRect: TRect;
@@ -68,6 +69,7 @@ type
     function StoreActiveStepFormat: Boolean;
     function StoreNextStepText: Boolean;
     function StorePreviousStepText: Boolean;
+    procedure SetShowNavigation(const Value: Boolean);
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
@@ -84,6 +86,7 @@ type
     property NextStepText: string read FNextStepText write SetNextStepText stored StoreNextStepText;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property ShowNavigators: Boolean read FShowNavigators write SetShowNavigators default True;
+    property ShowNavigation: Boolean read FShowNavigation write SetShowNavigation default True;
   end;
 
 {$IFDEF USEJVCL}
@@ -269,7 +272,7 @@ begin
 
   // YW - Ignore all disabled pages at run time
     APage := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
-    if Assigned(APage) and (PageIndex <> -1) then
+    if Assigned(APage) and (PageIndex <> -1) and ShowNavigation then
     begin
       TextRect := GetPreviousStepRect;
       ArrowRect := GetPreviousArrowRect;
@@ -295,7 +298,7 @@ begin
 
   // YW - Ignore all disabled pages at run time
     APage := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
-    if Assigned(APage) and (PageIndex <> -1) then
+    if Assigned(APage) and (PageIndex <> -1) and ShowNavigation then
     begin
       TextRect := GetNextStepRect;
       ArrowRect := GetNextArrowRect;
@@ -377,6 +380,15 @@ begin
   end;
 end;
 
+procedure TJvWizardRouteMapSteps.SetShowNavigation(const Value: Boolean);
+begin
+  if Value <> FShowNavigation then
+  begin
+    FShowNavigation := Value;
+    Invalidate;
+  end;
+end;
+
 function TJvWizardRouteMapSteps.StoreActiveStepFormat: Boolean;
 begin
   Result := ActiveStepFormat <> RsActiveStepFormat;
@@ -394,6 +406,7 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
