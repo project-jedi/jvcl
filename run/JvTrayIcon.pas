@@ -101,6 +101,8 @@ type
 
     function GetApplicationVisible: Boolean;
     procedure SetApplicationVisible(const Value: Boolean);
+    function GetIconVisible: Boolean;
+    procedure SetIconVisible(const Value: Boolean);
   protected
     FActive: Boolean;
     FIcon: TIcon;
@@ -204,6 +206,7 @@ type
 
     property ApplicationVisible: Boolean read GetApplicationVisible write SetApplicationVisible;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
+    property IconVisible: Boolean read GetIconVisible write SetIconVisible;
   published
     property Active: Boolean read FActive write SetActive default False;
     property Animated: Boolean read FAnimated write SetAnimated default False;
@@ -859,6 +862,11 @@ begin
   end;
 end;
 
+function TJvTrayIcon.GetIconVisible: Boolean;
+begin
+  Result := tisTrayIconVisible in FState;
+end;
+
 function TJvTrayIcon.GetSystemMinimumBalloonDelay: Cardinal;
 begin
   // from Microsoft's documentation, a balloon is shown for at
@@ -1159,6 +1167,14 @@ begin
   end;
 end;
 
+procedure TJvTrayIcon.SetIconVisible(const Value: Boolean);
+begin
+  if Value then
+    ShowTrayIcon
+  else
+    HideTrayIcon;
+end;
+
 procedure TJvTrayIcon.SetTask(const Value: Boolean);
 begin
   if FTask <> Value then
@@ -1276,16 +1292,20 @@ begin
 
   // All checks passed, make the trayicon visible:
 
-  Include(FState, tisTrayIconVisible);
+  { Calling Shell_NotifyIcon can fail on XP when the shell is busy
+    See http://support.microsoft.com/default.aspx?scid=kb;ja;418138
+  }
+  if NotifyIcon(NIF_MESSAGE or NIF_ICON or NIF_TIP, NIM_ADD) then
+  begin
+    Include(FState, tisTrayIconVisible);
 
-  NotifyIcon(NIF_MESSAGE or NIF_ICON or NIF_TIP, NIM_ADD);
+    // If we call NIM_SETVERSION, we must call it *after* NIM_ADD.
+    if GetShellVersion >= Shell32VersionIE5 then
+      NotifyIcon(0, NIM_SETVERSION);
 
-  // If we call NIM_SETVERSION, we must call it *after* NIM_ADD.
-  if GetShellVersion >= Shell32VersionIE5 then
-    NotifyIcon(0, NIM_SETVERSION);
-
-  if Animated then
-    StartAnimation;
+    if Animated then
+      StartAnimation;
+  end;
 end;
 
 procedure TJvTrayIcon.StartAnimation;
