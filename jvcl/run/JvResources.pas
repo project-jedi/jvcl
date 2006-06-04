@@ -515,6 +515,18 @@ resourcestring
   RsSRWCancelButtonCaption = '&Cancel';
   RsSRWCloseButtonCaption = 'C&lose';
 
+//=== JvDBActions.pas, =======================================================
+resourcestring
+  SModifyAllOkButton = 'Modify';
+  SModifyAllCaption = 'Modify All Records';
+  SModifyAllModifyField = 'Modify Field';
+  SModifyAllOnlyIfNull = 'Only If Null';
+  SModifyAllChangeTo = 'Change To';
+  SModifyAllClearFieldValues = 'Clear Field Values';
+  SShowSQLStatementCaption = 'Show Current SQL Statement';
+  SSQLStatementClipboardButton = 'Clipboard';
+
+
 //=== JvDBControls.pas =======================================================
 resourcestring
   RsInactiveData = 'Closed';
