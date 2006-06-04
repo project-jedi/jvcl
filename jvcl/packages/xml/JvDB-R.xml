@@ -69,6 +69,9 @@
     <File Name="..\..\run\JvCsvData.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvParse.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActions.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBActionsEngineControlcxGrid.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
     <File Name="..\..\run\JvDBCombobox.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBControls.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB" Formname="" Condition=""/>
