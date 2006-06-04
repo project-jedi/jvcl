@@ -412,10 +412,17 @@ type
   end;
 
   TJvDatabaseShowSQLStatementAction = class(TJvDatabaseBaseActiveAction)
+  private
+    FWordWrap: Boolean;
+  protected
   public
+    constructor Create(AOwner: TComponent); override;
     procedure ExecuteTarget(Target: TObject); override;
     procedure ShowSQLStatement;
     procedure UpdateTarget(Target: TObject); override;
+  published
+    //1 Defines if the memo for the sql-statement is word-wrapped
+    property WordWrap: Boolean read FWordWrap write FWordWrap default True;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1579,6 +1586,12 @@ begin
     (not EnabledOnlyIfSelectedRows or (EngineSelectedRowsCount > 1)));
 end;
 
+constructor TJvDatabaseShowSQLStatementAction.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FWordWrap := True;
+end;
+
 procedure TJvDatabaseShowSQLStatementAction.ExecuteTarget(Target: TObject);
 begin
   ShowSQLStatement;
@@ -1597,7 +1610,7 @@ begin
     begin
       SearchName := 'SQLStatement';
       ScrollBars := ssBoth;
-      WordWrap := False;
+      TJvMemoParameter(Parameter).WordWrap := Self.WordWrap;
       ReadOnly := True;
       //Caption := '&SQL Statement';
       AsString := DatasetEngine.SQL;
