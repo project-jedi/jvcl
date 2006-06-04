@@ -53,7 +53,8 @@ uses
   JvDBRadioPanel, JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor,
-  JvDBActions, JvDBActnResForm;
+  JvDBActionsEngine, JvDBActions, 
+  JvDBActnResForm;
 
 {$R JvDBReg.dcr}
 
@@ -129,7 +130,8 @@ begin
     {$IFDEF USE_3RDPARTY_SMIMPORT}
     TJvDatabaseSMImportAction,
     {$ENDIF USE_3RDPARTY_SMIMPORT}
-    TJvDatabaseOpenAction, TJvDatabaseCloseAction, TJvDatabaseModifyAllAction], TJvDialogActions);
+    TJvDatabaseOpenAction, TJvDatabaseCloseAction, TJvDatabaseModifyAllAction,
+    TJvDatabaseShowSQLStatementAction], TJvDialogActions);
 end;
 
 end.
