@@ -50,7 +50,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 {.$DEFINE QREPORT4}
 
 { Enable this define if you have installed the Internet Components with the Delphi installer }
-{$DEFINE INTERNET_COMPONENTS}
+{.$DEFINE INTERNET_COMPONENTS}
 
 { Activate this define if you have Mike Lischke's Theme Manager
 (http://www.lischke-online.de) installed and available and
@@ -132,3 +132,8 @@ ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 { Activates Direct Oracle Access Components
 For further informations have a look at http://www.allroundautomations.com }
 {.$DEFINE USE_3RDPARTY_DOA}
+
+{ Activates the CoreLabs VCL Oracle Data Access Components 
+For further informations have a look at http://www.crlab.com }
+{.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
+
