@@ -111,6 +111,17 @@ begin
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\doa40%s%d.bpl', [LowerCase(Target.TargetType), Target.Version]));
 end;
 
+{------------------------------------------------------------------------------}
+{ ODAC Components }
+function Opt_ODACComponents(Target: TCompileTarget): Boolean;
+begin
+  if Target.Version = 10 then
+    Result := FileExists(Target.RootDir + '\Bin\OdacVcl100.bpl')
+  else
+    Result := FileExists(Target.RootDir + Format('\Odac\Bin\OdacVcl%d.bpl', [Target.Version]));
+end;
+
+
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -130,6 +141,8 @@ begin
   EnableOption('USE_3RDPARTY_ICS', Opt_ICSComponents(Target));
 
   EnableOption('USE_3RDPARTY_DOA', Opt_DOAComponents(Target));
+
+  EnableOption('USE_3RDPARTY_CORELAB_ODAC', Opt_ODACComponents(Target));
 
   EnableOption('USE_3RDPARTY_SMIMPORT', Opt_SMImportComponents(Target));
   EnableOption('USE_3RDPARTY_SMEXPORT', Opt_SMExportComponents(Target));
