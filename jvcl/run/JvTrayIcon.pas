@@ -540,27 +540,28 @@ begin
     FIconData.uTimeOut := ADelay;
     FIconData.dwInfoFlags := cInfoFlagValues[BalloonType];
 
-    NotifyIcon(NIF_INFO, NIM_MODIFY);
-
-    if (Title = '') and (Value = '') then
+    if NotifyIcon(NIF_INFO, NIM_MODIFY) then
     begin
-      Dec(FBalloonCount);
-      if FBalloonCount < 0 then
-        FBalloonCount := 0;
-    end
-    else
-      Inc(FBalloonCount);
+      if (Title = '') and (Value = '') then
+      begin
+        Dec(FBalloonCount);
+        if FBalloonCount < 0 then
+          FBalloonCount := 0;
+      end
+      else
+        Inc(FBalloonCount);
 
-    // if the delay is less than the system's minimum and the balloon
-    // was really shown (title and value are not both empty)
-    // (rb) XP: if Value = '' then balloon is not shown
-    if (ADelay < GetSystemMinimumBalloonDelay) and ((Title <> '') or (Value <> '')) then
-      // then we enable the ballon closer timer which will cancel
-      // the balloon when the delay is elapsed
-      SetTimer(FHandle, CloseBalloonTimer, ADelay, nil);
+      // if the delay is less than the system's minimum and the balloon
+      // was really shown (title and value are not both empty)
+      // (rb) XP: if Value = '' then balloon is not shown
+      if (ADelay < GetSystemMinimumBalloonDelay) and ((Title <> '') or (Value <> '')) then
+        // then we enable the ballon closer timer which will cancel
+        // the balloon when the delay is elapsed
+        SetTimer(FHandle, CloseBalloonTimer, ADelay, nil);
 
-    if Assigned(FOnBalloonShow) then
-      FOnBalloonShow(Self);
+      if Assigned(FOnBalloonShow) then
+        FOnBalloonShow(Self);
+    end;
   end;
 end;
 
@@ -929,9 +930,10 @@ begin
   // reentrance check
   if tisTrayIconVisible in FState then
   begin
-    Exclude(FState, tisTrayIconVisible);
     EndAnimation;
-    NotifyIcon(0, NIM_DELETE);
+
+    if NotifyIcon(0, NIM_DELETE) then
+      Exclude(FState, tisTrayIconVisible);
   end;
 end;
 
@@ -1050,9 +1052,48 @@ begin
 end;
 
 function TJvTrayIcon.NotifyIcon(uFlags: UINT; dwMessage: DWORD): Boolean;
+const
+  cMaxRetryCount = 30; // arbitrary
+  cDelay = 1000; // arbitrary                    
+var
+  ErrorCode: Integer;
+  RetryCount: Integer;
 begin
   FIconData.uFlags := uFlags;
   Result := Shell_NotifyIcon(dwMessage, @FIconData);
+  if not Result then
+  begin
+    { Calling Shell_NotifyIcon can fail on XP when the shell is busy
+      See http://support.microsoft.com/default.aspx?scid=kb;ja;418138
+
+      Shell_NotifyIcon has a timeout of 4 sec. to complete. If that fails
+      because the shell is busy, then False is returned and GetLastError
+      returns ERROR_TIMEOUT (but testing shows that it can also return 0)
+      Solution is to wait a bit and retry. The translated text of the
+      Japanese MSDN web-page is a bit hard to read for me, but I think
+      it also mentions calling with parameter NIM_MODIFY.
+
+      http://qc.borland.com/wc/qcmain.aspx?d=29306 provides steps to
+      reproduce this problem.
+    }
+    ErrorCode := GetLastError;
+    if (ErrorCode = 0) or (ErrorCode = ERROR_TIMEOUT) then
+    begin
+      RetryCount := 0;
+      repeat
+        Sleep(cDelay);
+        if dwMessage = NIM_ADD then
+        begin
+          Result := Shell_NotifyIcon(NIM_MODIFY, @FIconData);
+          if Result then
+            Exit;
+        end;
+
+        Inc(RetryCount);
+        Result := Shell_NotifyIcon(dwMessage, @FIconData);
+      until Result or (RetryCount > cMaxRetryCount);
+    end;
+  end;
 end;
 
 procedure TJvTrayIcon.SetActive(Value: Boolean);
@@ -1292,9 +1333,6 @@ begin
 
   // All checks passed, make the trayicon visible:
 
-  { Calling Shell_NotifyIcon can fail on XP when the shell is busy
-    See http://support.microsoft.com/default.aspx?scid=kb;ja;418138
-  }
   if NotifyIcon(NIF_MESSAGE or NIF_ICON or NIF_TIP, NIM_ADD) then
   begin
     Include(FState, tisTrayIconVisible);
