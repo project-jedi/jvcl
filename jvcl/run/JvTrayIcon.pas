@@ -1069,9 +1069,16 @@ begin
       Shell_NotifyIcon has a timeout of 4 sec. to complete. If that fails
       because the shell is busy, then False is returned and GetLastError
       returns ERROR_TIMEOUT (but testing shows that it can also return 0)
-      Solution is to wait a bit and retry. The translated text of the
-      Japanese MSDN web-page is a bit hard to read for me, but I think
-      it also mentions calling with parameter NIM_MODIFY.
+      Solution is to wait a bit and retry.
+
+      However, even when GetLastError() returns ERROR_TIMEOUT,
+      the icon can often be actually added(or deleted).
+
+      In the timeout of NIM_ADD, it can be confirmed that Shell_NotifyIcon(NIM_MODIFY)
+      returns true and the addition of the icon has succeeded.
+      To similar, In the timeout of NIM_DELETE, it can be confirmed that
+      Shell_NotifyIcon(NIM_MODIFY) returns false and the deletion of the icon has
+      succeeded. (See Mantis #3747)
 
       http://qc.borland.com/wc/qcmain.aspx?d=29306 provides steps to
       reproduce this problem.
@@ -1082,12 +1089,14 @@ begin
       RetryCount := 0;
       repeat
         Sleep(cDelay);
-        if dwMessage = NIM_ADD then
-        begin
-          Result := Shell_NotifyIcon(NIM_MODIFY, @FIconData);
-          if Result then
-            Exit;
+
+        case dwMessage of
+          NIM_ADD: Result := Shell_NotifyIcon(NIM_MODIFY, @FIconData);
+          NIM_DELETE: Result := not Shell_NotifyIcon(NIM_MODIFY, @FIconData);
         end;
+
+        if Result then
+          Exit;
 
         Inc(RetryCount);
         Result := Shell_NotifyIcon(dwMessage, @FIconData);
