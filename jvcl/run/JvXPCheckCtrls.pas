@@ -57,6 +57,7 @@ type
     procedure Click; override;
     procedure Paint; override;
     procedure HookResized; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property BoundLines: TJvXPBoundLines read FBoundLines write SetBoundLines default [];
     property Checked: Boolean read FChecked write SetChecked default False;
     property Spacing: Byte read FSpacing write SetSpacing default 3;
@@ -208,6 +209,15 @@ begin
     dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, True, FHlGradient);
 
   LockedInvalidate;
+end;
+
+procedure TJvXPCustomCheckControl.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_SPACE:
+      Checked := not Checked;  
+  end;
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvXPCustomCheckControl.SetBoundLines(Value: TJvXPBoundLines);
