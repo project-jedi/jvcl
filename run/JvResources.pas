@@ -1524,6 +1524,7 @@ resourcestring
   RsLogInformation = 'Information';
   RsLogSuccessAudit = 'Success Audit';
   RsLogFailureAudit = 'Failure Audit';
+  RsLogUserSIDNotFound = 'User SID not found';
 
 //=== JvObjectPickerDialog.pas ===============================================
 resourcestring

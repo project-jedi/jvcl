@@ -504,14 +504,23 @@ var
   DomainName: array [0..512] of Char;
   DomainNameLen: Cardinal;
   Use: SID_NAME_USE;
+  UserSID: PSID;
 
 begin
   Result := '';
 
-  UserNameLen := SizeOf(UserName);
-  DomainNameLen := SizeOf(DomainName);
-  if LookupAccountSID(nil, SID, UserName, UserNameLen, DomainName, DomainNameLen, Use) then
-    Result := string(DomainName) + '\' + string(UserName);
+  UserSID := SID;
+  if Assigned(UserSID) then
+  begin
+    UserNameLen := SizeOf(UserName);
+    DomainNameLen := SizeOf(DomainName);
+    if LookupAccountSID(nil, UserSID, UserName, UserNameLen, DomainName, DomainNameLen, Use) then
+      Result := string(DomainName) + '\' + string(UserName);
+  end
+  else
+  begin
+    Result := RsLogUserSIDNotFound;
+  end;
 end;
 
 function TJvNTEventLogRecord.GetType: string;
@@ -562,7 +571,9 @@ end;
 
 function TJvNTEventLogRecord.GetSID: PSID;
 begin
-  Result := PSID(PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.UserSidOffset);
+  Result := nil;
+  if PEventLogRecord(FCurrentRecord)^.UserSidLength > 0 then
+    Result := PSID(PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.UserSidOffset);
 end;
 
 function TJvNTEventLogRecord.GetString(Index: Cardinal): string;
