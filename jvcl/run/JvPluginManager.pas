@@ -163,7 +163,7 @@ type
     property Plugins[Index: Integer]: TJvPlugIn read GetPlugin;
     property PluginCount: Integer read GetPluginCount;
     procedure SendMessage(PluginMessage: Longint; PluginParams: string);
-    function AddCustomPlugin(PlugIn: TJvPlugIn): Boolean;
+    function AddCustomPlugin(PlugIn: TJvPlugIn; const FileName: string = ''): Boolean; 
   published
     property PluginFolder: string read FPluginFolder write FPluginFolder;
     property Extension: string read FExtension write SetExtension;
@@ -300,14 +300,18 @@ end;
 
 // Create and add plugin - if error occurs, the Plugin is not added to list
 
-function TJvPluginManager.AddCustomPlugin(PlugIn: TJvPlugIn): Boolean;
+function TJvPluginManager.AddCustomPlugin(PlugIn: TJvPlugIn; const FileName: string = ''): Boolean;
 var
   PlgInfo: TPluginInfo;
   Counter: Integer;
 begin
   Result := False;
   try
-    Result := PlugIn.Initialize(Self, Application, 'CustomPlugin');
+    if Length(FileName) = 0 then
+      Result := PlugIn.Initialize(Self, Application, 'CustomPlugin')
+    else
+      Result := PlugIn.Initialize(Self, Application, FileName);
+
     if not Result then
       Exit;
 
@@ -411,7 +415,7 @@ begin
       end; // if Plugin.InstanceCount > 0
 
       // initialize the plugin and add to list
-      if AddCustomPlugin(PlugIn) then
+      if AddCustomPlugin(PlugIn, FileName) then
       begin
         PlgInfo := FPluginInfos.Last;
         PlgInfo.PluginKind := PlgKind;
