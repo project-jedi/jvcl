@@ -15,6 +15,7 @@
   <Requires>
     <Package Name="JvUIB-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
