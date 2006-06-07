@@ -76,6 +76,10 @@ type
     function GetLines: TStrings;
     procedure SetLines(const Value: TStrings);
     procedure SetHideCaret(const Value: Boolean);
+    function GetFlat: Boolean;
+    function GetParentFlat: Boolean;
+    procedure SetFlat(const Value: Boolean);
+    procedure SetParentFlat(const Value: Boolean);
   protected
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
@@ -109,6 +113,8 @@ type
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Lines: TStrings read GetLines write SetLines;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   end;
@@ -140,6 +146,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Flat;
     property Font;
     property HideSelection;
     property ImeMode;
@@ -149,6 +156,7 @@ type
     property OEMConvert;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentFlat;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -288,6 +296,11 @@ begin
   Result := Perform(EM_LINEFROMCHAR, -1, 0);
 end;
 
+function TJvCustomMemo.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
+end;
+
 procedure TJvCustomMemo.KeyPress(var Key: Char);
 begin
   { only process if maxlines is set }
@@ -335,6 +348,11 @@ begin
   end;
 end;
 
+procedure TJvCustomMemo.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+
 procedure TJvCustomMemo.SetTransparent(Value: Boolean);
 begin
   if Value <> FTransparent then
@@ -378,9 +396,19 @@ begin
   end;
 end;
 
+procedure TJvCustomMemo.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
+end;
+
 function TJvCustomMemo.GetLines: TStrings;
 begin
   Result := inherited Lines;
+end;
+
+function TJvCustomMemo.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
 end;
 
 procedure TJvCustomMemo.SetLines(const Value: TStrings);
