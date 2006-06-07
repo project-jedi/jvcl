@@ -458,7 +458,6 @@ type
     function GetImageHeight: Integer; virtual;
     function GetImageWidth: Integer; virtual;
     function GetImages: TCustomImageList;
-    function GetIsPopup: Boolean;
     function GetIsRightToLeft: Boolean;
     function GetShowCheckMarks: Boolean;
     function GetTextMargin: Integer; virtual;
@@ -467,6 +466,7 @@ type
     function UseImages: Boolean;
     function UseHotImages: Boolean;
     function UseDisabledImages: Boolean;
+    function IsPopup(const Item: TMenuItem): Boolean;
 
     // Will force the menu to rebuild itself.
     procedure ForceMenuRebuild;
@@ -576,7 +576,6 @@ type
     property ImageMargin: TJvImageMargin read FImageMargin;
     property ImageSize: TJvMenuImageSize read FImageSize;
     property ImageWidth: Integer read GetImageWidth;
-    property IsPopup: Boolean read GetIsPopup;
     property IsRightToLeft: Boolean read GetIsRightToLeft;
     property ShowCheckMarks: Boolean read GetShowCheckMarks;
     property TextMargin: Integer read GetTextMargin;
@@ -2243,7 +2242,7 @@ begin
   end;
 
   // if a top level menu item then draw text centered horizontally
-  if not IsPopup then
+  if not IsPopup(FItem) then
     ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(StripHotkeyPrefix(Text))) div 2;
 
   if mdDisabled in FState then
@@ -2351,7 +2350,7 @@ begin
   Item.OnDrawItem := EmptyDrawItem;
 
   // calculate areas for the different parts of the item to be drawn
-  if IsPopup then
+  if IsPopup(Item) then
   begin
     // As the margin is to be drawn for the entire height of the menu,
     // we need to retrieve this height.
@@ -2417,8 +2416,8 @@ begin
     // prepare the painting (see above)
     PreparePaint(Item, ItemRect, State, False);
 
-    ItemRectNoLeftMargin := ItemRect;
     TextAndMarginRect := ItemRect;
+    ItemRectNoLeftMargin := ItemRect;
     TextRect := ItemRect;
   end;
 
@@ -2431,7 +2430,7 @@ begin
     DrawLeftMargin(LeftMarginRect);
 
   // draw the background of each separate part
-  if IsPopup then
+  if IsPopup(Item) then
   begin
     if ShowCheckMarks then
       DrawCheckMarkBackground(CheckMarkRect);
@@ -2450,12 +2449,12 @@ begin
     // if item is checked and if we show check marks and if
     // the item is a popup (ie, not a top item), then we draw
     // the check image
-    if Item.Checked and ShowCheckMarks and IsPopup then
+    if Item.Checked and ShowCheckMarks and IsPopup(Item) then
       DrawCheckImage(CheckMarkRect);
 
     // It is now time to draw the image. The image will not be
     // drawn for root menu items (non popup).
-    if IsPopup then
+    if IsPopup(Item) then
     begin
       // if we have a valid image from the list to use for this item
       if UseImages then
@@ -2536,7 +2535,9 @@ begin
     // draw the text of the item (or a separator)
 
     if Item.Caption = Separator then
+    begin
       DrawSeparator(ItemRectNoLeftMargin)
+    end
     else
     begin
       // find the largest text element
@@ -2562,7 +2563,7 @@ begin
       // draw the text
       Canvas.Brush.Style := bsClear;
       DrawItemText(TextRect, Item.Caption, DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
-      if (Item.ShortCut <> scNone) and (Item.Count = 0) and IsPopup then
+      if (Item.ShortCut <> scNone) and (Item.Count = 0) and IsPopup(Item) then
       begin
         // draw the shortcut
         DrawItemText(Rect(TextRect.Left + MaxWidth, TextRect.Top, TextRect.Right, TextRect.Bottom),
@@ -2613,10 +2614,10 @@ begin
     Result := clBtnShadow;
 end;
 
-function TJvCustomMenuItemPainter.GetIsPopup: Boolean;
+function TJvCustomMenuItemPainter.IsPopup(const Item: TMenuItem): Boolean;
 begin
-  Result := (FItem.Parent = nil) or (FItem.Parent.Parent <> nil) or
-    not (FItem.Parent.Owner is TMainMenu);
+  Result := (Item.Parent = nil) or (Item.Parent.Parent <> nil) or
+    not (Item.Parent.Owner is TMainMenu);
 end;
 
 function TJvCustomMenuItemPainter.GetTextWidth(Item: TMenuItem): Integer;
@@ -2628,7 +2629,7 @@ var
   OneItemHasChildren: Boolean;
   CaptionRect: TRect;
 begin
-  if IsPopup then
+  if IsPopup(Item) then
   begin
     // The width of the text is splitted in three parts:
     // Text Shortcut SubMenuArrow.
@@ -2712,7 +2713,7 @@ procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem;
 begin
   PreparePaint(Item, Rect(0, 0, 0, 0), [], True);
 
-  if IsPopup then
+  if IsPopup(Item) then
   begin
     Width := LeftMargin + Cardinal(CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + TextMargin + GetTextWidth(Item));
 
@@ -3058,7 +3059,7 @@ end;
 
 procedure TJvOfficeMenuItemPainter.DrawSelectedFrame(ARect: TRect);
 begin
-  if not IsPopup then
+  if not IsPopup(FItem) then
   begin
     CleanupGlyph(ARect);
     Frame3D(Canvas, ARect, clBtnShadow, clBtnHighlight, 1);
@@ -3073,14 +3074,14 @@ end;
 
 procedure TJvOfficeMenuItemPainter.DrawNotCheckedImageBack(ARect: TRect);
 begin
-  if (mdSelected in FState) and IsPopup then
+  if (mdSelected in FState) and IsPopup(FItem) then
     DrawFrame(ARect);
 end;
 
 function TJvOfficeMenuItemPainter.GetDrawHighlight: Boolean;
 begin
   Result := NewStyleControls and
-    (not (mdSelected in FState) or (not IsPopup) or
+    (not (mdSelected in FState) or (not IsPopup(FItem)) or
     (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
     );
 end;
@@ -3107,7 +3108,7 @@ end;
 procedure TJvOfficeMenuItemPainter.DrawItemText(ARect: TRect;
   const Text: string; Flags: Integer);
 begin
-  if not IsPopup then
+  if not IsPopup(FItem) then
     Canvas.Font.Color := clMenuText;
   inherited DrawItemText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
@@ -3115,7 +3116,7 @@ end;
 procedure TJvOfficeMenuItemPainter.DrawItemBackground(ARect: TRect);
 begin
   inherited DrawItemBackground(ARect);
-  if not IsPopup and (mdHotlight in FState) then
+  if not IsPopup(FItem) and (mdHotlight in FState) then
     DrawFrame(ARect);
 end;
 
@@ -3321,7 +3322,7 @@ const
 begin
   with Canvas do
   begin
-    if IsPopup then
+    if IsPopup(FItem) then
     begin
       // popup items, always white background
       Brush.Color := clWhite;
@@ -3457,7 +3458,7 @@ begin
   with Canvas do
   begin
     Font.Color := clMenuText;
-    if IsPopup then
+    if IsPopup(FItem) then
     begin
       Brush.Assign(SelectionFrameBrush);
       Pen.Style := psClear;
@@ -3541,7 +3542,7 @@ begin
   FItem := Item;
 
   // draw the contour of the window
-  if IsPopup and not (csDesigning in ComponentState) then
+  if IsPopup(Item) and not (csDesigning in ComponentState) then
   begin
     CanvasWindow := WindowFromDC(Canvas.Handle);
 
@@ -3613,7 +3614,7 @@ end;
 function TJvXPMenuItemPainter.GetDrawHighlight: Boolean;
 begin
   Result := NewStyleControls and
-    (not (mdSelected in FState) or (not IsPopup) or
+    (not (mdSelected in FState) or (not IsPopup(FItem)) or
     (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
     );
 end;
