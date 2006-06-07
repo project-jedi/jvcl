@@ -82,12 +82,25 @@ end;
 
 procedure TfrmJvDBGridControlsEditor.Initialize;
 var
-  I: Integer;
+  I, Index: Integer;
 begin
-  for I := 0 to Grid.Columns.Count - 1 do
-    lbFields.Items.Add(Grid.Columns.Items[I].FieldName);
+  if (Grid.DataSource <> nil) and (Grid.DataSource.DataSet <> nil) and
+     not Grid.DataSource.DataSet.Active then
+  begin
+    for I := 0 to Grid.DataSource.DataSet.Fields.Count - 1 do
+      if Grid.DataSource.DataSet.Fields[i].Visible then
+        lbFields.Items.Add(Grid.DataSource.DataSet.Fields[i].FieldName);
+  end
+  else
+    for I := 0 to Grid.Columns.Count - 1 do
+      lbFields.Items.Add(Grid.Columns.Items[I].FieldName);
   for I := 0 to JvDBGridControls.Count - 1 do
+  begin
     lbSelected.Items.Add(JvDBGridControls.Items[I].FieldName);
+    Index := lbFields.Items.IndexOf(JvDBGridControls.Items[I].FieldName);
+    if Index >= 0 then
+      lbFields.Items.Delete(Index);
+  end;
   for I := 0 to Grid.Owner.ComponentCount - 1 do
     if Grid.Owner.Components[I] is TWinControl then
       if IsPublishedProp(Grid.Owner.Components[I], 'DataField') then
@@ -152,6 +165,7 @@ begin
         FieldName := lbFields.Items[lbFields.ItemIndex];
         FitCell := fcCellSize;
       end;
+      lbFields.Items.Delete(lbFields.ItemIndex);
     end
     else
       MessageDlg(Format(RsJvDBGridAlreadyAdded,
@@ -163,6 +177,7 @@ procedure TfrmJvDBGridControlsEditor.sbDeleteClick(Sender: TObject);
 begin
   if lbSelected.ItemIndex >= 0 then
   begin
+    lbFields.Items.Add(lbSelected.Items[lbSelected.ItemIndex]);
     JvDBGridControls.Items[lbSelected.ItemIndex].Free;
     lbSelected.Items.Delete(lbSelected.ItemIndex);
   end;
