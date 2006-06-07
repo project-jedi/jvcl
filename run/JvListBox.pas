@@ -168,6 +168,7 @@ type
     {$ENDIF !CLR}
     FProviderIsActive: Boolean;
     FProviderToggle: Boolean;
+    FMoving: Boolean;
 
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -195,6 +196,10 @@ type
     procedure SetHotTrack(const Value: Boolean);
     procedure SetBackground(const Value: TJvListBoxBackground);
     function GetLimitToClientWidth: Boolean;
+    function GetFlat: Boolean;
+    procedure SetFlat(const Value: Boolean);
+    function GetParentFlat: Boolean;
+    procedure SetParentFlat(const Value: Boolean);
   protected
     procedure FontChanged; override;
     function GetItemsClass: TJvListBoxStringsClass; virtual;
@@ -323,6 +328,8 @@ type
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default True;
     property Background: TJvListBoxBackground read FBackground write SetBackground;
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
   end;
 
   TJvListBox = class(TJvCustomListBox)
@@ -356,6 +363,8 @@ type
     property DisabledTextColor;
     property ShowFocusRect;
     property Background;
+    property Flat;
+    property ParentFlat;
 
     property MultiSelect;
     property ParentBiDiMode;
@@ -1614,9 +1623,19 @@ begin
   Result := FDragImage;
 end;
 
+function TJvCustomListBox.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
+end;
+
 function TJvCustomListBox.GetLimitToClientWidth: Boolean;
 begin
   Result := FMultiline and (ScrollBars in [ssNone, ssVertical]);
+end;
+
+function TJvCustomListBox.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
 end;
 
 procedure TJvCustomListBox.InvertSelection;
@@ -2026,6 +2045,11 @@ begin
   end;
 end;
 
+procedure TJvCustomListBox.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+
 procedure TJvCustomListBox.SetHotTrack(const Value: Boolean);
 begin
   if FHotTrack <> Value then
@@ -2064,6 +2088,11 @@ begin
     else
       RemeasureAll;
   end;
+end;
+
+procedure TJvCustomListBox.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
 end;
 
 procedure TJvCustomListBox.SetScrollBars(const Value: TScrollStyle);

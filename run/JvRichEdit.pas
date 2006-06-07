@@ -621,6 +621,10 @@ type
     // From JvRichEdit.pas by Sébastien Buysse
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    function GetFlat: Boolean;
+    procedure SetFlat(const Value: Boolean);
+    function GetParentFlat: Boolean;
+    procedure SetParentFlat(const Value: Boolean);
   protected
     procedure ColorChanged; override;
     procedure FontChanged; override;
@@ -696,6 +700,8 @@ type
     // from CCR
     property OnInPlaceActivate: TNotifyEvent read FOnInPlaceActivate write FOnInPlaceActivate;
     property OnInPlaceDeactivate: TNotifyEvent read FOnInPlaceDeactivate write FOnInPlaceDeactivate;
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -779,6 +785,7 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+    property Flat;
     property Font;
     property ForceUndo;
     property HideSelection;
@@ -794,6 +801,7 @@ type
     property MaxLength;
     property OLEDragDrop;
     property ParentColor;
+    property ParentFlat;
     property ParentFont;
     property ParentShowHint;
     property PlainText;
@@ -2936,6 +2944,11 @@ begin
     Result.Init(GetParentWindow(Self));
 end;
 
+function TJvCustomRichEdit.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
+end;
+
 function TJvCustomRichEdit.GetConverter(const AFileName: string;
   const Kind: TJvConversionKind): TJvConversion;
 begin
@@ -2977,6 +2990,11 @@ end;
 function TJvCustomRichEdit.GetLineLength(CharIndex: Integer): Integer;
 begin
   Result := SendMessage(Handle, EM_LINELENGTH, CharIndex, 0);
+end;
+
+function TJvCustomRichEdit.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
 end;
 
 function TJvCustomRichEdit.GetPopupMenu: TPopupMenu;
@@ -3884,6 +3902,11 @@ begin
   FDefAttributes.Assign(Value);
 end;
 
+procedure TJvCustomRichEdit.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+
 procedure TJvCustomRichEdit.SetHideScrollBars(Value: Boolean);
 begin
   if HideScrollBars <> Value then
@@ -3925,6 +3948,11 @@ begin
     FOLEDragDrop := Value;
     RecreateWnd;
   end;
+end;
+
+procedure TJvCustomRichEdit.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
 end;
 
 procedure TJvCustomRichEdit.SetPlainText(Value: Boolean);
