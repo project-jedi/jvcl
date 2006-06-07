@@ -520,7 +520,7 @@ const
     (Value: $0000FFFF;    Constant: 'clYellow';         Description: RsClYellow),
     (Value: $0000FF00;    Constant: 'clBrightGreen';    Description: RsClBrightGreen),
     (Value: $00FFFF00;    Constant: 'clTurquoise';      Description: RsClTurquoise),
-    (Value: $00FFCC00;    Constant: 'clSkyBlue';        Description: RsClSkyBlue),
+    (Value: $00F0CAA6;    Constant: 'clSkyBlue';        Description: RsClSkyBlue),
     (Value: $00663399;    Constant: 'clPlum';           Description: RsClPlum),
     (Value: $00C0C0C0;    Constant: 'clGray25';         Description: RsClGray25),
 
