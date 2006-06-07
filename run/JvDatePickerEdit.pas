@@ -430,7 +430,12 @@ begin
         if (ARaise) then
           raise
         else
-          ADate := OldDate;
+        begin
+          if AText = '' then
+            ADate := Now
+          else
+            ADate := OldDate;
+        end;
       end;
     finally
       SysUtils.DateSeparator := OldSeparator;
