@@ -42,9 +42,6 @@ OnGetCellProps and OnDrawDataCell are obsolete.
 
 KNOWN ISSUES:
 
-- THE AlwaysShowEditor OPTION IS NOT COMPATIBLE WITH THE CUSTOM INPLACE EDIT CONTROLS
-  Custom inplace edit controls are deactivated when this option is set to True.
-
 - THE ColLines OPTION DOES NOT WORK WELL WITH HIDDEN COLUMNS - BUG SOURCE: DBGRID.PAS
   If a column is followed by hidden columns and ColLines is set to False, the display size
   of the column is smaller than its width. This is easy to notice when you give the focus
@@ -255,6 +252,7 @@ type
 
     FChangeLinks: TObjectList;
     FShowMemos: Boolean;
+    FAlwaysShowEditor: Boolean;
 
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
@@ -530,6 +528,8 @@ type
   TBookmarks = class(TBookmarkList);
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
+
+  TOpenCustomEdit = class(TCustomEdit);
 
 const
   GridBmpNames: array [TGridPicture] of PChar =
@@ -875,11 +875,13 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
+  FAlwaysShowEditor := dgAlwaysShowEditor in inherited Options;
+  inherited Options := inherited Options - [dgAlwaysShowEditor];
 
   // (obones): issue 3026: need to create FChangeLinks at the beginning
   // so that any change can access the object. It seems that on some
   // foreign systems, the assignment to the Options property triggers
-  // NotifyLayoutChange, so it needs the FChangeLinks object 
+  // NotifyLayoutChange, so it needs the FChangeLinks object
   FChangeLinks := TObjectList.Create(False);
 
   FAutoSort := True;
@@ -912,7 +914,7 @@ begin
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
   // Note to users: the second line may not compile on non western european
-  // systems, in which case you should simply remove it and recompile. 
+  // systems, in which case you should simply remove it and recompile.
   FCharList :=
     ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',', Backspace,
      'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç'];
@@ -941,7 +943,7 @@ begin
   FSelectColumnsDialogStrings.Free;
 
   FChangeLinks.Free;
-  
+
   inherited Destroy;
 end;
 
@@ -1499,13 +1501,22 @@ begin
     Result := Result + [dgMultiSelect]
   else
     Result := Result - [dgMultiSelect];
+
+  if FAlwaysShowEditor then
+    Result := Result + [dgAlwaysShowEditor]
+  else
+    Result := Result - [dgAlwaysShowEditor];
 end;
 
 procedure TJvDBGrid.SetOptions(Value: TDBGridOptions);
 var
   NewOptions: TGridOptions;
 begin
-  inherited Options := Value - [dgMultiSelect];
+  { The AlwaysShowEditor option is not compatible with the custom inplace edit
+    controls. But if the EditorMode is set to True in ColEnter() it emulates the
+    AlwaysShowEditor option. }
+  inherited Options := Value - [dgMultiSelect, dgAlwaysShowEditor];
+  FAlwaysShowEditor := dgAlwaysShowEditor in Value;
   NewOptions := TDrawGrid(Self).Options;
   {
   if FTitleButtons then
@@ -1576,7 +1587,8 @@ begin
   if FAcquireFocus and CanFocus and not (csDesigning in ComponentState) then
   begin
     SetFocus;
-    Result := Focused or (InplaceEditor <> nil) and InplaceEditor.Focused;
+    Result := Focused or ((InplaceEditor <> nil) and InplaceEditor.Focused) or
+                         ((FCurrentControl <> nil) and FCurrentControl.Focused);
   end;
 end;
 
@@ -1584,7 +1596,7 @@ function TJvDBGrid.CanEditShow: Boolean;
 
   function UseDefaultEditor: Boolean;
   const
-    ude_DEFAULT_EDITOR = 0;
+    ude_DEFAULT_EDITOR = 0;                      
     ude_BOOLEAN_EDITOR = 1;
     ude_CUSTOM_EDITOR = 2;
   var
@@ -1603,7 +1615,7 @@ function TJvDBGrid.CanEditShow: Boolean;
     // Is there an editor for the selected field ?
     F := SelectedField;
     Control := FControls.ControlByField(F.FieldName);
-    if Assigned(Control) and not (dgAlwaysShowEditor in Options) then
+    if Assigned(Control) and not (dgAlwaysShowEditor in inherited Options) then
       Editor := ude_CUSTOM_EDITOR
     else
     if EditWithBoolBox(F) then
@@ -1678,7 +1690,7 @@ function TJvDBGrid.CanEditShow: Boolean;
   end;
 
 begin
-  if (dgAlwaysShowEditor in Options) and not EditorMode then
+  if (dgAlwaysShowEditor in inherited Options) and not EditorMode then
     EditorMode := True;
   Result := False;
   if (inherited CanEditShow) and Assigned(SelectedField)
@@ -1984,145 +1996,150 @@ begin
     DblClick;
     Exit;
   end;
-  if Sizing(X, Y) then
-    inherited MouseDown(Button, Shift, X, Y)
-  else
-  begin
-    Cell := MouseCoord(X, Y);
-
-    if (Button = mbRight) and FTitleArrow and
-      (dgTitles in Options) and (dgIndicator in Options) and
-      (Cell.X = 0) and (Cell.Y = 0) then
-    begin
-      if Assigned(FOnTitleArrowMenuEvent) then
-        FOnTitleArrowMenuEvent(Self);
-
-      // Display TitlePopup if it exists
-      if Assigned(FTitlePopup) then
-      begin
-        GetCursorPos(CursorPos);
-        FTitlePopup.PopupComponent := Self;
-        FTitlePopup.Popup(CursorPos.X, CursorPos.Y);
-      end;
-      Exit;
-    end;
-
-    if (DragKind = dkDock) and (Cell.X < IndicatorOffset) and
-      (Cell.Y < TitleOffset) and (not (csDesigning in ComponentState)) then
-    begin
-      BeginDrag(False);
-      Exit;
-    end;
-    if FTitleButtons and (DataLink <> nil) and DataLink.Active and
-      (Cell.Y < TitleOffset) and (Cell.X >= IndicatorOffset) and
-      not (csDesigning in ComponentState) then
-    begin
-      if ((dgColumnResize in Options) or (csDesigning in ComponentState)) and (Button = mbRight) then
-      begin
-        Button := mbLeft;
-        FSwapButtons := True;
-        MouseCapture := True;
-      end
-      else
-      if Button = mbLeft then
-      begin
-        EnableClick := True;
-        CheckTitleButton(Cell.X - IndicatorOffset, Cell.Y, EnableClick);
-        if EnableClick then
-        begin
-          MouseCapture := True;
-          FTracking := True;
-          FPressedCol := GetMasterColumn(Cell.X, Cell.Y);
-          TrackButton(X, Y);
-        end
-        else
-        if FBeepOnError then
-          SysUtils.Beep;
-        Exit;
-      end;
-    end;
-    if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
-    begin
-      if dgIndicator in Options then
-        inherited MouseDown(Button, Shift, 1, Y)
-      else
-      if Cell.Y >= TitleOffset then
-        if Cell.Y - Row <> 0 then
-          DataLink.DataSet.MoveBy(Cell.Y - Row);
-    end
+  FAcquireFocus := False;
+  try
+    if Sizing(X, Y) then
+      inherited MouseDown(Button, Shift, X, Y)
     else
     begin
-      //-------------------------------------------------------------------------------
-      // Prevents the grid from going back to the first column when dgRowSelect is True
-      // Does not work if there's no indicator column
-      //-------------------------------------------------------------------------------
-      if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
-        inherited MouseDown(Button, Shift, 1, Y)
-      else
-        inherited MouseDown(Button, Shift, X, Y);
-    end;  
-    MouseDownEvent := OnMouseDown;
-    if Assigned(MouseDownEvent) then
-      MouseDownEvent(Self, Button, Shift, X, Y);
-    if not (((csDesigning in ComponentState) or (dgColumnResize in Options)) and
-      (Cell.Y < TitleOffset)) and (Button = mbLeft) then
-    begin
-      if MultiSelect and DataLink.Active then
-        with SelectedRows do
+      Cell := MouseCoord(X, Y);
+
+      if (Button = mbRight) and FTitleArrow and
+        (dgTitles in Options) and (dgIndicator in Options) and
+        (Cell.X = 0) and (Cell.Y = 0) then
+      begin
+        if Assigned(FOnTitleArrowMenuEvent) then
+          FOnTitleArrowMenuEvent(Self);
+
+        // Display TitlePopup if it exists
+        if Assigned(FTitlePopup) then
         begin
-          FSelecting := False;
-          if Shift * KeyboardShiftStates = [ssCtrl] then
-            CurrentRowSelected := not CurrentRowSelected
-          else
+          GetCursorPos(CursorPos);
+          FTitlePopup.PopupComponent := Self;
+          FTitlePopup.Popup(CursorPos.X, CursorPos.Y);
+        end;
+        Exit;
+      end;
+
+      if (DragKind = dkDock) and (Cell.X < IndicatorOffset) and
+        (Cell.Y < TitleOffset) and (not (csDesigning in ComponentState)) then
+      begin
+        BeginDrag(False);
+        Exit;
+      end;
+      if FTitleButtons and (DataLink <> nil) and DataLink.Active and
+        (Cell.Y < TitleOffset) and (Cell.X >= IndicatorOffset) and
+        not (csDesigning in ComponentState) then
+      begin
+        if ((dgColumnResize in Options) or (csDesigning in ComponentState)) and (Button = mbRight) then
+        begin
+          Button := mbLeft;
+          FSwapButtons := True;
+          MouseCapture := True;
+        end
+        else
+        if Button = mbLeft then
+        begin
+          EnableClick := True;
+          CheckTitleButton(Cell.X - IndicatorOffset, Cell.Y, EnableClick);
+          if EnableClick then
           begin
-            if (Shift * KeyboardShiftStates = [ssShift]) and (Count > 0) then
-            begin
-              lLastSelected := Items[Count - 1];
-              CurrentRowSelected := not CurrentRowSelected;
-              if CurrentRowSelected then
-              begin
-                with DataLink.DataSet do
-                begin
-                  DisableControls;
-                  try
-                    lNewSelected := Bookmark;
-                    lCompare := CompareBookmarks(Pointer(lNewSelected), Pointer(lLastSelected));
-                    if lCompare > 0 then
-                    begin
-                      GotoBookmark(Pointer(lLastSelected));
-                      Next;
-                      while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
-                      begin
-                        CurrentRowSelected := True;
-                        Next;
-                      end;
-                    end
-                    else
-                    if lCompare < 0 then
-                    begin
-                      GotoBookmark(Pointer(lLastSelected));
-                      Prior;
-                      while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
-                      begin
-                        CurrentRowSelected := True;
-                        Prior;
-                      end;
-                    end;
-                  finally
-                    EnableControls;
-                  end;
-                end;
-              end;
-            end
+            MouseCapture := True;
+            FTracking := True;
+            FPressedCol := GetMasterColumn(Cell.X, Cell.Y);
+            TrackButton(X, Y);
+          end
+          else
+          if FBeepOnError then
+            SysUtils.Beep;
+          Exit;
+        end;
+      end;
+      if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
+      begin
+        if dgIndicator in Options then
+          inherited MouseDown(Button, Shift, 1, Y)
+        else
+        if Cell.Y >= TitleOffset then
+          if Cell.Y - Row <> 0 then
+            DataLink.DataSet.MoveBy(Cell.Y - Row);
+      end
+      else
+      begin
+        //-------------------------------------------------------------------------------
+        // Prevents the grid from going back to the first column when dgRowSelect is True
+        // Does not work if there's no indicator column
+        //-------------------------------------------------------------------------------
+        if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
+          inherited MouseDown(Button, Shift, 1, Y)
+        else
+          inherited MouseDown(Button, Shift, X, Y);
+      end;  
+      MouseDownEvent := OnMouseDown;
+      if Assigned(MouseDownEvent) then
+        MouseDownEvent(Self, Button, Shift, X, Y);
+      if not (((csDesigning in ComponentState) or (dgColumnResize in Options)) and
+        (Cell.Y < TitleOffset)) and (Button = mbLeft) then
+      begin
+        if MultiSelect and DataLink.Active then
+          with SelectedRows do
+          begin
+            FSelecting := False;
+            if Shift * KeyboardShiftStates = [ssCtrl] then
+              CurrentRowSelected := not CurrentRowSelected
             else
             begin
-              Clear;
-              if FClearSelection then
-                CurrentRowSelected := True;
+              if (Shift * KeyboardShiftStates = [ssShift]) and (Count > 0) then
+              begin
+                lLastSelected := Items[Count - 1];
+                CurrentRowSelected := not CurrentRowSelected;
+                if CurrentRowSelected then
+                begin
+                  with DataLink.DataSet do
+                  begin
+                    DisableControls;
+                    try
+                      lNewSelected := Bookmark;
+                      lCompare := CompareBookmarks(Pointer(lNewSelected), Pointer(lLastSelected));
+                      if lCompare > 0 then
+                      begin
+                        GotoBookmark(Pointer(lLastSelected));
+                        Next;
+                        while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
+                        begin
+                          CurrentRowSelected := True;
+                          Next;
+                        end;
+                      end
+                      else
+                      if lCompare < 0 then
+                      begin
+                        GotoBookmark(Pointer(lLastSelected));
+                        Prior;
+                        while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
+                        begin
+                          CurrentRowSelected := True;
+                          Prior;
+                        end;
+                      end;
+                    finally
+                      EnableControls;
+                    end;
+                  end;
+                end;
+              end
+              else
+              begin
+                Clear;
+                if FClearSelection then
+                  CurrentRowSelected := True;
+              end;
             end;
           end;
-        end;
+      end;
     end;
+  finally
+    FAcquireFocus := True;
   end;
 end;
 
@@ -3161,6 +3178,8 @@ end;
 procedure TJvDBGrid.ColEnter;
 begin
   FWord := '';
+  if FAlwaysShowEditor and not EditorMode then
+    EditorMode := True;
   inherited ColEnter;
 end;
 
@@ -3734,6 +3753,7 @@ begin
   if Control.Parent <> Self.Parent then
     Control.Parent := Self.Parent;
 
+  GridControl := nil;
   R := CellRect(ACol, ARow);
   if ((R.Right - R.Left) < 1) or ((R.Bottom - R.Top) < 1) then
     // Cell too small to be drawn -> the control is not drawn
@@ -3744,6 +3764,16 @@ begin
     R.TopLeft := TControl(Control.Parent).ScreenToClient(R.TopLeft);
     R.BottomRight := ClientToScreen(R.BottomRight);
     R.BottomRight := TControl(Control.Parent).ScreenToClient(R.BottomRight);
+    if Control is TCustomEdit then
+    begin
+      { The edit control's text is not painted at good position when the control
+        has no border }
+      if TOpenCustomEdit(Control).BorderStyle = bsNone then
+      begin
+        Inc(R.Left, 2);
+        Inc(R.Top, 2);
+      end;
+    end;
     ClientTopLeft := TControl(Control.Parent).ScreenToClient(Self.ClientOrigin);
     GridControl := FControls.ControlByName(Control.Name);
     if GridControl.FitCell in [fcDesignSize, fcBiggest] then
@@ -3789,6 +3819,10 @@ begin
   end;
   Control.BringToFront;
   Control.Show;
+  if Assigned(GridControl) and not (GridControl.FitCell in [fcDesignSize, fcBiggest]) then
+    { If the Control is shown for the first time, the bounds are not correct.
+      Esp. "Height" is too large }
+    Control.BoundsRect := R;
 
   if Self.Visible and Control.Visible and Self.Parent.Visible and GetParentForm(Self).Visible then
   begin
