@@ -156,6 +156,7 @@ type
     FImageIndex: TImageIndex;
     FAlignment: TAlignment;
     FEnabled: Boolean;
+    FLinkedObject: TObject;
     procedure SetButtonSize(const Value: TJvBarButtonSize);
     procedure SetCaption(const Value: TCaption);
     procedure SetColor(const Value: TColor);
@@ -202,6 +203,9 @@ type
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
+
+    // A property for user's usage, allowing to link an objet to the page.
+    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
