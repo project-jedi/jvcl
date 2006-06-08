@@ -4,7 +4,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
   BorderStyle = bsDialog
   Caption = 'JvValidateEdit Demo'
   ClientHeight = 402
-  ClientWidth = 384
+  ClientWidth = 474
   Color = clBtnFace
   Constraints.MinHeight = 170
   Constraints.MinWidth = 325
@@ -30,7 +30,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
   object GroupBox1: TGroupBox
     Left = 8
     Top = 8
-    Width = 369
+    Width = 458
     Height = 233
     Caption = 'Properties'
     TabOrder = 0
@@ -185,33 +185,19 @@ object frmValidateEditDemo: TfrmValidateEditDemo
     object GroupBox3: TGroupBox
       Left = 8
       Top = 152
-      Width = 353
+      Width = 443
       Height = 73
       Caption = 'Critical Points'
       TabOrder = 13
-      object Label8: TLabel
-        Left = 104
-        Top = 16
-        Width = 31
-        Height = 13
-        Caption = 'Above'
-      end
       object Label9: TLabel
-        Left = 200
+        Left = 290
         Top = 16
         Width = 31
         Height = 13
         Caption = 'Colour'
       end
-      object Label10: TLabel
-        Left = 104
-        Top = 40
-        Width = 28
-        Height = 13
-        Caption = 'Below'
-      end
       object Label11: TLabel
-        Left = 200
+        Left = 290
         Top = 40
         Width = 31
         Height = 13
@@ -225,7 +211,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         Caption = 'Check Points:'
       end
       object edCPMaxValue: TEdit
-        Left = 144
+        Left = 229
         Top = 16
         Width = 49
         Height = 21
@@ -233,7 +219,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         OnExit = edCPMaxValueExit
       end
       object colCPAbove: TJvColorComboBox
-        Left = 240
+        Left = 330
         Top = 16
         Width = 105
         Height = 20
@@ -298,7 +284,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         TabOrder = 1
       end
       object edCPMinValue: TEdit
-        Left = 144
+        Left = 229
         Top = 40
         Width = 49
         Height = 21
@@ -306,7 +292,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         OnExit = edCPMinValueExit
       end
       object colCPBelow: TJvColorComboBox
-        Left = 240
+        Left = 330
         Top = 40
         Width = 105
         Height = 20
@@ -380,12 +366,30 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         TabOrder = 4
         OnChange = cbCPCheckPointsChange
       end
+      object chkMaxValueIncluded: TCheckBox
+        Left = 101
+        Top = 18
+        Width = 120
+        Height = 17
+        Caption = 'Max Value Included'
+        TabOrder = 5
+        OnClick = chkMaxValueIncludedClick
+      end
+      object chkMinValueIncluded: TCheckBox
+        Left = 101
+        Top = 42
+        Width = 120
+        Height = 17
+        Caption = 'Min Value Included'
+        TabOrder = 6
+        OnClick = chkMinValueIncludedClick
+      end
     end
   end
   object GroupBox2: TGroupBox
     Left = 8
     Top = 296
-    Width = 369
+    Width = 458
     Height = 97
     Caption = 'Set To'
     TabOrder = 1
@@ -448,16 +452,12 @@ object frmValidateEditDemo: TfrmValidateEditDemo
   object JvValidateEdit: TJvValidateEdit
     Left = 8
     Top = 264
-    Width = 369
+    Width = 458
     Height = 21
-    CheckChars = '01234567890'
-    CriticalPoints.CheckPoints = cpNone
-    CriticalPoints.ColorAbove = clBlue
-    CriticalPoints.ColorBelow = clRed
-    PasswordChar = #0
+    CriticalPoints.MaxValueIncluded = False
+    CriticalPoints.MinValueIncluded = False
+    EditText = '0'
     TabOrder = 3
-    Text = '0'
-    Value = 0
     OnCustomValidate = JvValidateEditCustomValidate
     OnValueChanged = JvValidateEditValueChanged
   end
