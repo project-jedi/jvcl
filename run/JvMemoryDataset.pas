@@ -217,7 +217,9 @@ type
     function IsSequenced: Boolean; override;
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
-    procedure SortOnFields(const FieldNames: string = ''; 
+    function Lookup(const KeyFields: string; const KeyValues: Variant;
+      const ResultFields: string): Variant; override;
+    procedure SortOnFields(const FieldNames: string = '';
       CaseInsensitive: Boolean = True; Descending: Boolean = False);
     procedure EmptyTable;
     procedure CopyStructure(Source: TDataSet; UseAutoIncAsInteger: Boolean = False);
@@ -1537,6 +1539,89 @@ begin
   begin
     DataEvent(deDataSetChange, 0);
     DoAfterScroll;
+  end;
+end;
+
+function TJvMemoryData.Lookup(const KeyFields: string; const KeyValues: Variant;
+  const ResultFields: string): Variant;
+var
+  FieldCount: Integer;
+  Fields: TList;
+  Fld: TField; //else BAD mem leak on 'Field.asString'
+// Bookmark: TBookmarkStr;
+  SaveState: TDataSetState;
+  i: integer;
+  Matched: boolean;
+
+  function CompareField(var Field: TField; Value: Variant): Boolean; {BG}
+  var
+    S: string;
+  begin
+    if Field.DataType = ftString then
+    begin
+      if Value = Null then
+        Result := Field.IsNull
+      else
+      begin
+        S := Field.AsString;
+        Result := AnsiSameStr(S, Value);
+      end;
+    end
+    else
+      Result := (Field.Value = Value);
+  end;
+
+  function CompareRecord: Boolean;
+  var
+    I: Integer;
+  begin
+    if FieldCount = 1 then
+    begin
+      Fld := TField(Fields.First);
+      Result := CompareField(Fld, KeyValues)
+    end
+    else
+    begin
+      Result := True;
+      for I := 0 to FieldCount - 1 do
+      begin
+        Fld := TField(Fields[I]);
+        Result := Result and CompareField(Fld, KeyValues[I]); 
+      end;
+    end;
+  end;
+begin
+  Result := NULL;
+  CheckBrowseMode;
+    if IsEmpty then Exit;
+
+  Fields := TList.Create;
+  try
+    GetFieldList(Fields, KeyFields);
+    FieldCount := Fields.Count;
+    Matched := CompareRecord;
+    if Matched then
+       Result := FieldValues[ ResultFields]
+    else begin
+        SaveState := SetTempState(dsCalcFields);
+        try
+          try
+             for i := 0 to Recordcount - 1 do begin
+                RecordToBuffer(Records[i], TempBuffer);
+                CalculateFields(TempBuffer);
+                Matched := CompareRecord;
+                if Matched then
+                  Break;
+             end;
+          finally
+            if Matched then Result := FieldValues[ ResultFields];
+          end;
+        finally
+          RestoreState(SaveState);
+        end;
+    end;
+  finally
+    Fields.Free;
   end;
 end;
 
