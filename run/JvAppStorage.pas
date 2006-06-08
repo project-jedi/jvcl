@@ -667,6 +667,8 @@ type
     FFloatAsString: Boolean;
     FDefaultIfReadConvertError: Boolean;
     FDefaultIfValueNotExists: Boolean;
+    FStoreDefaultValues: Boolean;
+    procedure SetStoreDefaultValues(const Value: Boolean);
   protected
     procedure SetBooleanAsString(Value: Boolean); virtual;
     procedure SetBooleanStringTrueValues(Value: string); virtual;
@@ -700,6 +702,8 @@ type
       write SetDefaultIfReadConvertError default False;
     property DefaultIfValueNotExists: Boolean read FDefaultIfValueNotExists
       write SetDefaultIfValueNotExists default True;
+    property StoreDefaultValues: Boolean read FStoreDefaultValues
+      write SetStoreDefaultValues default False;
   end;
 
   TJvAppStorageOptions = class(TJvCustomAppStorageOptions)
@@ -714,6 +718,7 @@ type
     property FloatAsString;
     property DefaultIfReadConvertError;
     property DefaultIfValueNotExists;
+    property StoreDefaultValues;
   end;
 
   TJvAppSubStorages = class(TOwnedCollection)
@@ -1031,6 +1036,7 @@ begin
   DateTimeAsString := True;
   DefaultIfReadConvertError := False;
   DefaultIfValueNotExists := True;
+  StoreDefaultValues := False;
 end;
 
 function TJvCustomAppStorageOptions.IsValueListString(const AValue, AList: string): Boolean;
@@ -1104,6 +1110,12 @@ end;
 procedure TJvCustomAppStorageOptions.SetSetAsStr(Value: Boolean);
 begin
   FSetAsStr := Value;
+end;
+
+procedure TJvCustomAppStorageOptions.SetStoreDefaultValues(
+  const Value: Boolean);
+begin
+  FStoreDefaultValues := Value;
 end;
 
 procedure TJvCustomAppStorageOptions.SetDateTimeAsStr(Value: Boolean);
@@ -2466,38 +2478,66 @@ var
 begin
   if not Assigned(PersObj) then
     Exit;
+
+  P := GetPropInfo(PersObj, PropName, tkAny);
+
+  // If not storing the default values, then do not do anything if the property
+  // is read only, write only or its "stored" function returns False.
+  // Note: we do not add a call to IsDefaultPropertyValue here because it would
+  // return True for any sub component which is not desirable as we want to
+  // always store sub classes whether they are components or not.
+  if not StorageOptions.StoreDefaultValues and
+     (not Assigned(P^.GetProc) or not Assigned(P^.SetProc) or
+      not IsStoredProp(PersObj, P)) then
+    Exit;  
+
   case PropType(PersObj, PropName) of
     tkLString, tkWString, tkString:
-      WriteString(Path, GetStrProp(PersObj, PropName));
+      if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        WriteString(Path, GetStrProp(PersObj, PropName));
     tkEnumeration:
       begin
-        TmpValue := GetOrdProp(PersObj, PropName);
-        WriteEnumeration(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          WriteEnumeration(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+        end;
       end;
     tkSet:
       begin
-        TmpValue := GetOrdProp(PersObj, PropName);
-        WriteSet(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          WriteSet(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+        end;
       end;
     tkChar, tkInteger:
       begin
-        if StorageOptions.TypedIntegerAsString then
+        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
         begin
-          TmpValue := GetOrdProp(PersObj, PropName);
-          WriteEnumeration(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
-        end
-        else
-          WriteInteger(Path, GetOrdProp(PersObj, PropName));
+          if StorageOptions.TypedIntegerAsString then
+          begin
+            TmpValue := GetOrdProp(PersObj, PropName);
+            WriteEnumeration(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+          end
+          else
+          begin
+            WriteInteger(Path, GetOrdProp(PersObj, PropName));
+          end;
+        end;
       end;
     tkInt64:
-      WriteString(Path, IntToStr(GetInt64Prop(PersObj, PropName)));
+      if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        WriteString(Path, IntToStr(GetInt64Prop(PersObj, PropName)));
     tkFloat:
       begin
-        P := GetPropInfo(PersObj, PropName, tkAny);
-        if (P <> nil) and (P.PropType <> nil) and (P.PropType{$IFNDEF CLR}^{$ENDIF} = TypeInfo(TDateTime)) then
-          WriteDateTime(Path, GetFloatProp(PersObj, PropName))
-        else
-          WriteFloat(Path, GetFloatProp(PersObj, PropName));
+        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        begin
+          if (P <> nil) and (P.PropType <> nil) and (P.PropType{$IFNDEF CLR}^{$ENDIF} = TypeInfo(TDateTime)) then
+            WriteDateTime(Path, GetFloatProp(PersObj, PropName))
+          else
+            WriteFloat(Path, GetFloatProp(PersObj, PropName));
+        end;
       end;
     tkClass:
       begin
@@ -2505,12 +2545,19 @@ begin
         if Assigned(RegisteredAppStoragePropertyEngineList) and
           Recursive and
           RegisteredAppStoragePropertyEngineList.WriteProperty(Self, Path, PersObj, SubObj, Recursive) then
+        begin
           // Do nothing else, the handling is done in the WriteProperty procedure
+        end
         else
+        begin
           if SubObj is TStrings then
+          begin
             WriteStringList(Path, TStrings(SubObj))
+          end
           else
+          begin
             if (SubObj is TPersistent) and Recursive then
+            begin
               if SubObj is TJvCustomPropertyStore then
               begin
                 TJvCustomPropertyStore(SubObj).AppStoragePath := Path;
@@ -2518,10 +2565,15 @@ begin
                 TJvCustomPropertyStore(SubObj).StoreProperties;
               end
               else
+              begin
                 if SubObj is TCollection then
                   WriteCollection(Path, TCollection(SubObj))
                 else
                   WritePersistent(Path, TPersistent(SubObj), Recursive, nil);
+              end;
+            end;
+          end;
+        end;
       end;
   end;
 end;
