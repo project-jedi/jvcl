@@ -5267,7 +5267,7 @@ begin
   inherited Create(AOwner);
   {$ENDIF VisualCLX}
 
-  FEditor := TWinControl(AOwner);
+  FEditor := AOwner as TWinControl;
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable];
 
   // If we were to add csAcceptsControls at design time, any attempt
