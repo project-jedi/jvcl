@@ -57,6 +57,8 @@ type
     FColorBelow: TColor;
     FMaxValue: Double;
     FMinValue: Double;
+    FMaxValueIncluded: Boolean;
+    FMinValueIncluded: Boolean;
     FOnChange: TNotifyEvent;
     FDefCheckPoints: TJvValidateEditCriticalPointsCheck;
     FDefColorAbove: TColor;
@@ -82,6 +84,8 @@ type
     property ColorBelow: TColor read FColorBelow write SetColorBelow stored IsColorBelowStored;
     property MaxValue: Double read FMaxValue write SetMaxValue;
     property MinValue: Double read FMinValue write SetMinValue;
+    property MaxValueIncluded: Boolean read FMaxValueIncluded write FMaxValueIncluded;
+    property MinValueIncluded: Boolean read FMinValueIncluded write FMinValueIncluded;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -292,6 +296,25 @@ implementation
 uses
   Math,
   JclStrings, JvJCLUtils, JvResources;
+
+function IsGreater(Value, MaxValue: Double;
+         MaxValueIncluded: Boolean): Boolean;
+begin
+  if MaxValueIncluded then
+    Result := Value >= MaxValue
+  else
+    Result := Value > MaxValue;
+end;
+
+function IsLower(Value, MinValue: Double;
+         MinValueIncluded: Boolean): Boolean;
+begin
+  if MinValueIncluded then
+    Result := Value <= MinValue
+  else
+    Result := Value < MinValue;
+end;
+
 
 //=== { TJvCustomValidateEdit } ==============================================
 
@@ -1063,10 +1086,12 @@ begin
   Result := True;
   case FCriticalPoints.CheckPoints of
     cpMaxValue:
-      Result := AsFloat <= FCriticalPoints.MaxValue;
+      Result := IsLower(AsFloat, FCriticalPoints.MaxValue, FCriticalPoints.MaxValueIncluded);
+    cpMinValue:
+      Result := IsGreater(AsFloat, FCriticalPoints.MinValue, FCriticalPoints.MinValueIncluded);
     cpBoth:
-      Result := (AsFloat <= FCriticalPoints.MaxValue) and
-                (AsFloat >= FCriticalPoints.MinValue);
+      Result := IsLower(AsFloat, FCriticalPoints.MaxValue, FCriticalPoints.MaxValueIncluded) and
+                IsGreater(AsFloat, FCriticalPoints.MinValue, FCriticalPoints.MinValueIncluded);
   end;
   if Assigned(FOnIsValid) then
     FOnIsValid(Self, Result);
@@ -1079,20 +1104,20 @@ begin
     cpNone:
       Font.Color := FStandardFontColor;
     cpMinValue:
-      if AsFloat < FCriticalPoints.MinValue then
+      if IsLower(AsFloat, FCriticalPoints.MinValue, not FCriticalPoints.MinValueIncluded) then
         Font.Color := FCriticalPoints.ColorBelow
       else
         Font.Color := FStandardFontColor;
     cpMaxValue:
-      if AsFloat > FCriticalPoints.MaxValue then
+      if IsGreater(AsFloat, FCriticalPoints.MaxValue, not FCriticalPoints.MaxValueIncluded) then
         Font.Color := FCriticalPoints.ColorAbove
       else
         Font.Color := FStandardFontColor;
     cpBoth:
-      if AsFloat > FCriticalPoints.MaxValue then
+      if IsGreater(AsFloat, FCriticalPoints.MaxValue, not FCriticalPoints.MaxValueIncluded) then
         Font.Color := FCriticalPoints.ColorAbove
       else
-      if AsFloat < FCriticalPoints.MinValue then
+      if IsLower(AsFloat, FCriticalPoints.MinValue, not FCriticalPoints.MinValueIncluded) then
         Font.Color := FCriticalPoints.ColorBelow
       else
         Font.Color := FStandardFontColor;
@@ -1132,6 +1157,8 @@ constructor TJvValidateEditCriticalPoints.Create;
 begin
   inherited Create;
   SetDefaults(cpNone, clBlue, clRed);
+  FMaxValueIncluded := False;
+  FMinValueIncluded := False;
 end;
 
 procedure TJvValidateEditCriticalPoints.SetCheckPoints(NewValue: TJvValidateEditCriticalPointsCheck);
