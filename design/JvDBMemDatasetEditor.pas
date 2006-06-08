@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  DsnDBCst, DSDesign, DBReg, Dialogs,
+  DsnDBCst, DSDesign, Dialogs,
   JvJVCLUtils, JvMemoryDataSet, JvSelectDataSetForm, JvConsts, JvDsgnConsts;
 
 //=== { TJvAbstractMemDataSetEditor } ========================================
