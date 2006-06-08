@@ -38,6 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  Contnrs,
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ComCtrls,
   ExtCtrls,
   JvConsts,  // for clSkyBlue
@@ -167,6 +168,15 @@ type
     property Data: Pointer read FData write SetData;
   end;
 
+  TJvViewerItemList = class(TObjectList)
+  private
+    function GetItem(Index: Integer): TJvViewerItem;
+    procedure SetItem(Index: Integer; const Value: TJvViewerItem);
+  published
+  public
+    property Items[Index: Integer]: TJvViewerItem read GetItem write SetItem; default;
+  end;
+
   TJvViewerItemClass = class of TJvViewerItem;
 
   // TODO
@@ -187,7 +197,7 @@ type
   TJvCustomItemViewer = class(TJvExScrollingWinControl)
   private
     FCanvas: TCanvas;
-    FItems: TList;
+    FItems: TJvViewerItemList;
     FOptions: TJvCustomItemViewerOptions;
     FTopLeft: TPoint;
     FItemSize: TSize;
@@ -799,7 +809,7 @@ begin
   inherited Create(AOwner);
   ParentColor := False;
   ControlStyle := [csCaptureMouse, csDisplayDragImage, csClickEvents, csOpaque, csDoubleClicks];
-  FItems := TList.Create;
+  FItems := TJvViewerItemList.Create;
   FOptions := GetOptionsClass.Create(Self);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -830,7 +840,7 @@ end;
 
 function TJvCustomItemViewer.Add(AItem: TJvViewerItem): Integer;
 begin
-  Insert(FItems.Count + 1, AItem);
+  Insert(FItems.Count, AItem);
   Result := FItems.Count - 1;
 end;
 
@@ -889,14 +899,10 @@ begin
 end;
 
 procedure TJvCustomItemViewer.Clear;
-var
-  I: Integer;
 begin
   BeginUpdate;
   try
-    for I := 0 to FItems.Count - 1 do
-      TObject(FItems[I]).Free;
-    FItems.Count := 0;
+    FItems.Clear;
   finally
     EndUpdate;
   end;
@@ -1981,6 +1987,18 @@ procedure TViewerDrawImageList.Initialize;
 begin
   inherited Initialize;
   DragCursor := crArrow;
+end;
+
+{ TJvViewerItemList }
+
+function TJvViewerItemList.GetItem(Index: Integer): TJvViewerItem;
+begin
+  Result := inherited Items[Index] as TJvViewerItem;
+end;
+
+procedure TJvViewerItemList.SetItem(Index: Integer; const Value: TJvViewerItem);
+begin
+  inherited Items[Index] := Value;
 end;
 
 initialization
