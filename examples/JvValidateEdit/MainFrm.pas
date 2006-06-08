@@ -67,11 +67,9 @@ type
     edMaxValue: TEdit;
     edMinValue: TEdit;
     GroupBox3: TGroupBox;
-    Label8: TLabel;
     edCPMaxValue: TEdit;
     Label9: TLabel;
     colCPAbove: TJvColorComboBox;
-    Label10: TLabel;
     edCPMinValue: TEdit;
     Label11: TLabel;
     colCPBelow: TJvColorComboBox;
@@ -79,6 +77,8 @@ type
     cbCPCheckPoints: TComboBox;
     chkAsVariant: TCheckBox;
     JvValidateEdit: TJvValidateEdit;
+    chkMaxValueIncluded: TCheckBox;
+    chkMinValueIncluded: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure cbDisplayFormatKeyPress(Sender: TObject; var Key: Char);
     procedure cbDisplayFormatChange(Sender: TObject);
@@ -100,6 +100,8 @@ type
     procedure JvValidateEditCustomValidate(Sender: TObject; Key: Char;
       const AText: String; const Pos: Integer; var IsValid: Boolean);
     procedure JvValidateEditValueChanged(Sender: TObject);
+    procedure chkMaxValueIncludedClick(Sender: TObject);
+    procedure chkMinValueIncludedClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -275,6 +277,16 @@ begin
   if chkValueChanged.Checked then
     MessageDlg('ValidateEdit Text changed to: ' + JvValidateEdit.Text,
       mtInformation, [mbOK], 0);
+end;
+
+procedure TfrmValidateEditDemo.chkMaxValueIncludedClick(Sender: TObject);
+begin
+  JvValidateEdit.CriticalPoints.MaxValueIncluded := chkMaxValueIncluded.Checked;
+end;
+
+procedure TfrmValidateEditDemo.chkMinValueIncludedClick(Sender: TObject);
+begin
+  JvValidateEdit.CriticalPoints.MinValueIncluded := chkMinValueIncluded.Checked;
 end;
 
 end.
