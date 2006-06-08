@@ -122,6 +122,10 @@ For further informations have a look at http://www.devexpress.com }
 For further informations have a look at http://www.indyproject.org }
 {.$DEFINE USE_3RDPARTY_INDY}
 
+{ Activates the Internet Direct (Indy)-Components version 10.
+For further informations have a look at http://www.indyproject.org }
+{.$DEFINE USE_3RDPARTY_INDY10}
+
 { Activates the ICS-Components (Internet component suite
 For further informations have a look at http://www.overbyte.be/ 
 ATTENTION : 
