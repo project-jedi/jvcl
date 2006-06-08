@@ -877,13 +877,13 @@ begin
         Update;
       {$IFDEF VCL}
       {$IFDEF COMPILER6_UP}
-      if not CheckDefaults or (Self.AutoCheck = False) then
+      if not CheckDefaults or not Self.AutoCheck then
         Self.AutoCheck := AutoCheck;
       {$ENDIF COMPILER6_UP}
       {$ENDIF VCL}
       if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
         Self.Caption := Caption;
-      if not CheckDefaults or (Self.Checked = False) then
+      if not CheckDefaults or not Self.Checked then
         Self.Checked := Checked;
       if not CheckDefaults or Self.Enabled then
         Self.Enabled := Enabled;
@@ -2453,8 +2453,12 @@ var
 begin
   inherited InitiateAction;
   // go through each item and update
+  // Note: Do not call ActionChange as it would trigger Mantis 3244 and it is
+  // basically wrong as the point of InitiateAction is to call Update (see in
+  // the inherited code).
   for I := 0 to Items.Count - 1 do
-    Items[I].ActionChange(Items[I].Action, csLoading in ComponentState);
+    if Assigned(Items[I].ActionLink) then
+      Items[I].ActionLink.Update;
 end;
 
 {$IFDEF VCL}
