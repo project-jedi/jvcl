@@ -1551,7 +1551,11 @@ begin
 
   ResultStream := TFileStream.Create(ResultName, fmCreate);
   try
+    {$IFDEF USE_3RDPARTY_INDY10}
+    FIdHTTP.BoundPort := Port;
+    {$ELSE}
     FIdHTTP.Port := Port;
+    {$ENDIF USE_3RDPARTY_INDY10}
     with FIdHTTP do
     begin
       ProxyParams.ProxyPort := ProxySettings.Port;
