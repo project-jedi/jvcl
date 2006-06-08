@@ -703,7 +703,7 @@ type
     property DefaultIfValueNotExists: Boolean read FDefaultIfValueNotExists
       write SetDefaultIfValueNotExists default True;
     property StoreDefaultValues: Boolean read FStoreDefaultValues
-      write SetStoreDefaultValues default False;
+      write SetStoreDefaultValues default True;
   end;
 
   TJvAppStorageOptions = class(TJvCustomAppStorageOptions)
@@ -1036,7 +1036,7 @@ begin
   DateTimeAsString := True;
   DefaultIfReadConvertError := False;
   DefaultIfValueNotExists := True;
-  StoreDefaultValues := False;
+  StoreDefaultValues := True;
 end;
 
 function TJvCustomAppStorageOptions.IsValueListString(const AValue, AList: string): Boolean;
