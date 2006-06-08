@@ -157,7 +157,7 @@ uses
 const
   MaxCalcDataOffset = 256; // 128 bytes per record for Calculated Field Data.
   // JvCsvSep = ','; // converted to property Separator
-  MAXCOLUMNS = 80;
+  MAXCOLUMNS = 120;
   DEFAULT_CSV_STR_FIELD = 80;
   MAXLINELENGTH = 2048;
   COLUMN_ENDMARKER = $FFFF;
@@ -1857,11 +1857,22 @@ begin
         begin
           // Copy 0 to Field.Size bytes into NewVal (delphi String)
           if PChar(Buffer)[0] = Chr(0) then
+          begin
             CP := -1
+          end
           else
-            for CP := 1 to Field.Size - 1 do
-              if PChar(Buffer)[CP] = Chr(0) then
-                Break;
+          begin
+            if Field.Size = 1 then
+            begin
+              CP := 0;
+            end
+            else
+            begin
+              for CP := 1 to Field.Size - 1 do
+                if PChar(Buffer)[CP] = Chr(0) then
+                  Break;
+            end;
+          end;
           if CP > Field.Size - 1 then
             CP := Field.Size - 1;
           NewVal := Copy(PChar(Buffer), 1, CP + 1);
