@@ -1074,7 +1074,8 @@ begin
   TempList := TList.Create;
   try
     for I := 0 to Screen.CustomFormCount - 1 do
-      if not (Screen.CustomForms[I] is TJvDockableForm) then
+      if not (Screen.CustomForms[I] is TJvDockableForm) and
+        Assigned(FinddockClient(Screen.CustomForms[I])) then
         TempList.Add(Screen.CustomForms[I]);
 
     for I := 0 to TempList.Count - 1 do
