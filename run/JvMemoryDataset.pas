@@ -335,7 +335,8 @@ const
 implementation
 
 uses
-  Forms, Dialogs, DbConsts, Math,
+  Windows,  // to avoid warning under BDS2006
+  Forms, Dialogs, DbConsts, Math, FMTBcd,
   JvResources;
 
 const
@@ -343,7 +344,7 @@ const
     ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob];
 
   ftSupported = [ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat,
-    ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD, ftBytes,
+    ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD, ftFMTBCD, ftBytes,
     ftVarBytes, ftADT, ftFixedChar, ftWideString,
     ftLargeint, ftVariant, ftGuid] +
     ftBlobTypes;
@@ -421,8 +422,8 @@ begin
         Result := SizeOf(Double);
       ftCurrency:
         Result := SizeOf(Double);
-      ftBCD:
-        Result := 34;
+      ftBCD, ftFMTBCD:
+        Result := SizeOf(TBcd);
       ftDate, ftTime:
         Result := SizeOf(Longint);
       ftDateTime:
@@ -637,6 +638,8 @@ begin
       else
       if Double(Data1^) < Double(Data2^) then
         Result := -1;
+    ftBcd, ftFMTBcd:
+      Result := BcdCompare(TBcd(Data1^), TBcd(Data2^));
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then
         Result := 1
