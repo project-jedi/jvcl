@@ -895,6 +895,10 @@ function CharIsMoney(const Ch: AnsiChar): Boolean;
 
 { there is a STrToIntDef provided by Delphi, but no "safe" versions of
   StrToFloat or StrToCurr }
+// Note: before using StrToFloatDef, please be aware that it will ignore
+// any character that is not a valid character for a float, which is different
+// from what the one in Delphi 6 up is doing. This has been documented in Mantis
+// issue# 2935: http://homepages.borland.com/jedi/issuetracker/view.php?id=2935
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
 function IntToExtended(I: Integer): Extended;
@@ -7892,6 +7896,10 @@ begin
   end;
 end;
 
+// Note: before using StrToFloatDef, please be aware that it will ignore
+// any character that is not a valid character for a float, which is different
+// from what the one in Delphi 6 up is doing. This has been documented in Mantis
+// issue# 2935: http://homepages.borland.com/jedi/issuetracker/view.php?id=2935
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 var
   {$IFDEF CLR}
