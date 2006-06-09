@@ -1109,10 +1109,10 @@ begin
   begin
     // We must do the conversion ourselves as the date format might
     // have been personalized. (Mantis 3628)
-    if AttemptTextToDate(VarToStr(Value), NewDate) then
-      TJvDropCalendar(FPopup).SelDate := NewDate
-    else
-      TJvDropCalendar(FPopup).SelDate := Now; // Default to Now if the Value is not valid. (Mantis 3733)
+    // Default to Now if the Value is not valid. (Mantis 3733)
+    if not AttemptTextToDate(VarToStr(Value), NewDate) then
+      NewDate := Now;
+    TJvDropCalendar(FPopup).SelDate := NewDate;
   end;
 end;
 
