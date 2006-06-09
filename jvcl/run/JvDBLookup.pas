@@ -578,7 +578,7 @@ type
     property Font;
     {$IFDEF VCL}
     property Flat;
-    property ParentCtl3D;
+    property ParentFlat;
     {$ENDIF VCL}
     property HideSelection;
     property Anchors;

@@ -151,7 +151,7 @@ type
     property GroupIndex;
     property ImeMode;
     property ImeName;
-    property ParentCtl3D;
+    property ParentFlat;
     {$ENDIF VCL}
     property MaxLength;
     property ParentColor;

@@ -249,7 +249,7 @@ type
     property ImeMode;
     property ImeName;
     property OEMConvert;
-    property ParentCtl3D;
+    property ParentFlat;
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}

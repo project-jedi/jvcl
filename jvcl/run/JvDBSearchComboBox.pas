@@ -108,16 +108,18 @@ type
     property Constraints;
     property Style;
     property Color;
-    property Ctl3D;
     property DragMode;
     property DragCursor;
     property DropDownCount;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    property ParentFlat;
+    {$ENDIF VCL}
     property Font;
     property ItemHeight;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

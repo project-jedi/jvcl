@@ -461,19 +461,21 @@ type
     property BiDiMode;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
     property DropDownCount;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    property ParentFlat;
+    {$ENDIF VCL}
     property Font;
     property ImeMode;
     property ImeName;
     property ItemHeight;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -544,19 +546,21 @@ type
     property BiDiMode;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
     property DropDownCount;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    property ParentFlat;
+    {$ENDIF VCL}
     property Font;
     property ImeMode;
     property ImeName;
     property ItemHeight;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

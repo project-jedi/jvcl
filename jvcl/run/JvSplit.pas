@@ -103,8 +103,8 @@ type
     property Enabled;
     property Color;
     {$IFDEF VCL}
-    property Ctl3D default False;
-    property ParentCtl3D default False;
+    property Flat default True;
+    property ParentFlat default False;
     {$ENDIF VCL}
     property Cursor read GetCursor stored False;
     property TopLeftLimit: Integer read FTopLeftLimit write FTopLeftLimit default 20;
@@ -163,8 +163,8 @@ begin
   FControlFirst := nil;
   FControlSecond := nil;
   {$IFDEF VCL}
-  ParentCtl3D := False;
-  Ctl3D := False;
+  ParentFlat := False;
+  Flat := True;
   {$ENDIF VCL}
 end;
 

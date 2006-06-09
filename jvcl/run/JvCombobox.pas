@@ -127,11 +127,19 @@ type
     procedure SetEmptyValue(const Value: string);
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
+    procedure ReadCtl3D(Reader: TReader);
+    procedure ReadParentCtl3D(Reader: TReader);
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMInitDialog(var Msg: TWMInitDialog); message WM_INITDIALOG;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
-    procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+    {$IFDEF VCL}
+    function GetFlat: Boolean;
+    function GetParentFlat: Boolean;
+    procedure SetFlat(const Value: Boolean);
+    procedure SetParentFlat(const Value: Boolean);
+    {$ENDIF VCL}
   protected
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); reintroduce; virtual; 
@@ -192,11 +200,16 @@ type
     property Text: TCaption read GetText write SetText;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
+    {$IFDEF VCL}
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
+    {$ENDIF VCL}
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
     procedure WndProc(var Msg: TMessage); override; // ain
     function GetItemCount: Integer; {$IFDEF COMPILER6_UP} override; {$ELSE} virtual; {$ENDIF}
+    procedure DefineProperties(Filer: TFiler);override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -233,6 +246,7 @@ type
     property Enabled;
     property EmptyValue;
     property EmptyFontColor;
+    property Flat;
     property Font;
     property ImeMode;
     property ImeName;
@@ -241,6 +255,7 @@ type
     property MeasureStyle;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentFlat;
     property ParentFont;
     property ParentShowHint;
     {$IFNDEF CLR}
@@ -359,12 +374,14 @@ type
     property DropDownLines;
     property Delimiter;
 
-    property Ctl3D;
     property Cursor;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    property ParentFlat;
+    {$ENDIF VCL}
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property ShowHint;
@@ -1406,6 +1423,14 @@ begin
     DoEmptyValueExit;
 end;
 
+procedure TJvCustomComboBox.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+
+  Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
+  Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
+end;
+
 function TJvCustomComboBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
@@ -1841,6 +1866,16 @@ begin
   end;
 end;
 
+procedure TJvCustomComboBox.ReadCtl3D(Reader: TReader);
+begin
+  Flat := not Reader.ReadBoolean;
+end;
+
+procedure TJvCustomComboBox.ReadParentCtl3D(Reader: TReader);
+begin
+  ParentFlat := Reader.ReadBoolean;
+end;
+
 function TJvCustomComboBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
@@ -1893,6 +1928,28 @@ begin
     RecreateWnd;
   end;
 end;
+
+{$IFDEF VCL}
+function TJvCustomComboBox.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
+end;
+
+function TJvCustomComboBox.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
+end;
+
+procedure TJvCustomComboBox.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+
+procedure TJvCustomComboBox.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
+end;
+{$ENDIF VCL}
 
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
 begin

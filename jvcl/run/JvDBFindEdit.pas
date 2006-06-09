@@ -87,15 +87,17 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    property ParentFlat;
+    {$ENDIF VCL}
     property Font;
     property HideSelection;
     property MaxLength;
     Property EditMask;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;

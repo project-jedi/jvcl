@@ -260,7 +260,10 @@ type
     procedure SetAlignment(Value: TAlignment);
     function GetFlat: Boolean;
     procedure ReadCtl3D(Reader: TReader);
+    procedure ReadParentCtl3D(Reader: TReader);
     procedure SetFlat(const Value: Boolean);
+    function GetParentFlat: Boolean;
+    procedure SetParentFlat(const Value: Boolean);
     function IsFlatStored: Boolean;
     {$ENDIF VCL}
     function BtnWidthStored: Boolean;
@@ -415,6 +418,7 @@ type
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
     {$IFDEF VCL}
     property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True; 
     {$ENDIF VCL}
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
@@ -473,7 +477,7 @@ type
     property ImeName;
     property OEMConvert;
     property ParentBiDiMode;
-    property ParentCtl3D;
+    property ParentFlat;
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}
@@ -662,7 +666,7 @@ type
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem];
     property Flat;
-    property ParentCtl3D;
+    property ParentFlat;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
     {$ENDIF VCL}
@@ -769,7 +773,7 @@ type
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
     property Flat;
-    property ParentCtl3D;
+    property ParentFlat;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate];
     {$ENDIF VCL}
     property InitialDir: string read FInitialDir write FInitialDir;
@@ -1015,7 +1019,7 @@ type
     property DragKind;
     property Flat;
     property ParentBiDiMode;
-    property ParentCtl3D;
+    property ParentFlat;
     property ImeMode;
     property ImeName;
     property OnEndDock;
@@ -2369,9 +2373,11 @@ end;
 procedure TJvCustomComboEdit.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
+
   Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
   {$IFDEF VCL}
   Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
+  Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
   {$ENDIF VCL}
 end;
 
@@ -2545,6 +2551,21 @@ end;
 function TJvCustomComboEdit.GetFlat: Boolean;
 begin
   Result := not Ctl3D;
+end;
+
+function TJvCustomComboEdit.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
+end;
+
+procedure TJvCustomComboEdit.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+
+procedure TJvCustomComboEdit.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
 end;
 {$ENDIF VCL}
 
@@ -2932,7 +2953,12 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomComboEdit.ReadCtl3D(Reader: TReader);
 begin
-  Ctl3D := Reader.ReadBoolean;
+  Flat := not Reader.ReadBoolean;
+end;
+
+procedure TJvCustomComboEdit.ReadParentCtl3D(Reader: TReader);
+begin
+  ParentFlat := Reader.ReadBoolean;
 end;
 {$ENDIF VCL}
 
@@ -3197,13 +3223,6 @@ begin
       Invalidate;
   end;
 end;
-
-{$IFDEF VCL}
-procedure TJvCustomComboEdit.SetFlat(const Value: Boolean);
-begin
-  Ctl3D := not Value;
-end;
-{$ENDIF VCL}
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin

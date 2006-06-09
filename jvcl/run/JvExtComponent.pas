@@ -33,11 +33,29 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvComponentBase, JvComponent, JvExControls, JvExForms, JvExExtCtrls,
+  Classes, JvComponentBase, JvComponent, JvExControls, JvExForms, JvExExtCtrls,
   JvExComCtrls;
 
 type
-  TJvCustomPanel = TJvExCustomPanel;
+  TJvCustomPanel = class(TJvExCustomPanel)
+  protected
+    {$IFDEF VCL}
+    function GetFlat: Boolean;
+    procedure ReadCtl3D(Reader: TReader);
+    procedure ReadParentCtl3D(Reader: TReader);
+    procedure SetFlat(const Value: Boolean);
+    function GetParentFlat: Boolean;
+    procedure SetParentFlat(const Value: Boolean);
+    {$ENDIF VCL}
+
+    procedure DefineProperties(Filer: TFiler); override;
+
+    {$IFDEF VCL}
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
+    {$ENDIF VCL}
+  end;
+  
   TJvPubCustomPanel = TJvExPubCustomPanel;
   TJvCustomTreeView = TJvExCustomTreeView;
 
@@ -52,6 +70,50 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+{ TJvCustomPanel }
+
+{$IFDEF VCL}
+function TJvCustomPanel.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
+end;
+
+function TJvCustomPanel.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
+end;
+
+procedure TJvCustomPanel.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+
+procedure TJvCustomPanel.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
+end;
+
+procedure TJvCustomPanel.ReadCtl3D(Reader: TReader);
+begin
+  Flat := not Reader.ReadBoolean;
+end;
+
+procedure TJvCustomPanel.ReadParentCtl3D(Reader: TReader);
+begin
+  ParentFlat := Reader.ReadBoolean;
+end;
+{$ENDIF VCL}
+
+procedure TJvCustomPanel.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+
+  {$IFDEF VCL}
+  Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
+  Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
+  {$ENDIF VCL}
+end;
 
 initialization
   {$IFDEF UNITVERSIONING}
