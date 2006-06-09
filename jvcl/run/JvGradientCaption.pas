@@ -435,16 +435,6 @@ end;
 
 //=== { TJvGradientCaption } ================================================
 
-function SysGradient: Boolean;
-var
-  Info: BOOL;
-begin
-  if SystemParametersInfo(SPI_GETGRADIENTCAPTIONS, SizeOf(Info), @Info, 0) then
-    Result := Info
-  else
-    Result := False;
-end;
-
 constructor TJvGradientCaption.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
