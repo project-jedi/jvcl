@@ -327,20 +327,25 @@ begin
     ADirectory := ADirectory + PathDelim;
   for NumExtensions := 0 to FGraphicExtensions.Count - 1 do
   begin
-    if (FindFirstGraphic(FGraphicExtensions[NumExtensions]) = 0) and
-      (FFileList.IndexOf(ADirectory + SearchRec.Name) < 0) then
+    if (FindFirstGraphic(FGraphicExtensions[NumExtensions]) = 0) then
     begin
-      FFileList.Add(ADirectory + SearchRec.Name);
-      FFileListSorted.Add(ADirectory + SearchRec.Name);
-      repeat
-        FResult := FindNext(SearchRec);
-        if (FResult = 0) and (FFileList.IndexOf(ADirectory + SearchRec.Name) < 0) then
+      try
+        if (FFileList.IndexOf(ADirectory + SearchRec.Name) < 0) then
         begin
           FFileList.Add(ADirectory + SearchRec.Name);
           FFileListSorted.Add(ADirectory + SearchRec.Name);
+          repeat
+            FResult := FindNext(SearchRec);
+            if (FResult = 0) and (FFileList.IndexOf(ADirectory + SearchRec.Name) < 0) then
+            begin
+              FFileList.Add(ADirectory + SearchRec.Name);
+              FFileListSorted.Add(ADirectory + SearchRec.Name);
+            end;
+          until FResult <> 0;
         end;
-      until FResult <> 0;
-      FindClose(SearchRec);
+      finally
+        FindClose(SearchRec);
+      end;
     end;
   end;
   FFileListSorted.Sort;
