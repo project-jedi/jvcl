@@ -2547,7 +2547,12 @@ begin
 
   Channel := RetrieveChannel(ADockClient.ParentForm.HostDockSite);
   if not Assigned(Channel) then
+  begin
+    // Mantis 3752
+    if ADockClient.ParentForm.Parent is TJvDockVSNETTabSheet then
+      (ADockClient.ParentForm.Parent as TJvDockVSNETTabSheet).OldVisible := AVisible;
     Exit;
+  end;
 
   Pane := Channel.FindPane(ADockClient.ParentForm);
   if Assigned(Pane) and (Pane.FDockForm = ADockClient.ParentForm) then
