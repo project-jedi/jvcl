@@ -2881,7 +2881,12 @@ begin
     end
     else
     begin
-      if (Field is TStringField) or ((Field is TMemoField) and FShowMemos) then
+      if (Field is TStringField) or
+         (FShowMemos and (Field is TMemoField)
+          {$IFDEF COMPILER10_UP}
+          or (Field is TWideMemoField)
+          {$ENDIF COMPILER10_UP}
+         ) then
       begin
         if Assigned(Field.OnGetText) then
           MemoText := Field.DisplayText
