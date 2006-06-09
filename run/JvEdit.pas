@@ -106,6 +106,10 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     function IsFlatStored: Boolean;
+    procedure ReadCtl3D(Reader: TReader);
+    procedure ReadParentCtl3D(Reader: TReader);
+    function GetParentFlat: Boolean;
+    procedure SetParentFlat(const Value: Boolean);
     {$ENDIF VCL}
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
@@ -164,6 +168,7 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
+    procedure DefineProperties(Filer: TFiler); override;
   public
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
@@ -188,6 +193,7 @@ type
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
     {$IFDEF VCL}
     property Text: TCaption read GetText write SetText;
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
     {$ENDIF VCL}
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
     property HintColor;
@@ -216,7 +222,7 @@ type
     property ImeName;
     property OEMConvert;
     property ParentBiDiMode;
-    property ParentCtl3D;
+    property ParentFlat;
     property UseFixedPopup; // asn: clx not implemented yet
     {$ENDIF VCL}
     property Caret;
@@ -644,6 +650,18 @@ begin
   {$ENDIF VisualClx}
 end;
 
+{$IFDEF VCL}
+function TJvCustomEdit.GetParentFlat: Boolean;
+begin
+  Result := ParentCtl3D;
+end;
+
+procedure TJvCustomEdit.SetParentFlat(const Value: Boolean);
+begin
+  ParentCtl3D := Value;
+end;
+{$ENDIF VCL}
+
 function TJvCustomEdit.GetPasswordChar: Char;
 begin
   {$IFDEF VCL}
@@ -735,6 +753,28 @@ begin
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
+end;
+
+{$IFDEF VCL}
+procedure TJvCustomEdit.ReadCtl3D(Reader: TReader);
+begin
+  Flat := not Reader.ReadBoolean;
+end;
+
+procedure TJvCustomEdit.ReadParentCtl3D(Reader: TReader);
+begin
+  ParentFlat := Reader.ReadBoolean;
+end;
+{$ENDIF VCL}
+
+procedure TJvCustomEdit.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+
+  {$IFDEF VCL}
+  Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
+  Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
+  {$ENDIF VCL}
 end;
 
 procedure TJvCustomEdit.MaxPixelChanged(Sender: TObject);

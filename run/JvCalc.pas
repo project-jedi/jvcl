@@ -57,7 +57,7 @@ type
     FMemory: Double;
     FTitle: string;
     {$IFDEF VCL}
-    FCtl3D: Boolean;
+    FFlat: Boolean;
     {$ENDIF VCL}
     FPrecision: Byte;
     FBeepOnError: Boolean;
@@ -70,6 +70,9 @@ type
     function GetTitle: string;
     procedure SetTitle(const Value: string);
     function TitleStored: Boolean;
+    procedure ReadCtl3D(Reader: TReader);
+    function GetCtl3D: Boolean;
+    procedure SetCtl3D(const Value: Boolean);
   protected
     procedure Change; dynamic;
     procedure CalcKey(var Key: Char); dynamic;
@@ -78,13 +81,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: Boolean; override;
+    procedure DefineProperties(Filer: TFiler);override;
+    
     property CalcDisplay: Double read GetDisplay;
     property Memory: Double read FMemory;
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
-    {$IFDEF VCL}
-    property Ctl3D: Boolean read FCtl3D write FCtl3D default True;
-    {$ENDIF VCL}
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
     property Title: string read GetTitle write SetTitle stored TitleStored;
@@ -92,6 +94,9 @@ type
     property OnCalcKey: TKeyPressEvent read FOnCalcKey write FOnCalcKey;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDisplayChange: TNotifyEvent read FOnDisplayChange write FOnDisplayChange;
+    {$IFDEF VCL}
+    property Flat: Boolean read FFlat write FFlat default False;
+    {$ENDIF VCL}
   end;
 
   TJvCalculatorForm = class(TJvForm)
@@ -477,10 +482,17 @@ begin
   inherited Create(AOwner);
   FTitle := RsCalculatorCaption;
   {$IFDEF VCL}
-  FCtl3D := True;
+  FFlat := False;
   {$ENDIF VCL}
   FPrecision := DefCalcPrecision;
   FBeepOnError := True;
+end;
+
+procedure TJvCalculator.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+
+  Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
 end;
 
 destructor TJvCalculator.Destroy;
@@ -517,7 +529,7 @@ begin
   with FCalc do
   try
     {$IFDEF VCL}
-    Ctl3D := FCtl3D;
+    Ctl3D := not FFlat;
     {$ENDIF VCL}
     Caption := Self.Title;
     TJvCalculatorPanel(FCalcPanel).FMemory := Self.FMemory;
@@ -546,6 +558,11 @@ begin
   end;
 end;
 
+function TJvCalculator.GetCtl3D: Boolean;
+begin
+  Result := not Flat;
+end;
+
 function TJvCalculator.GetDisplay: Double;
 begin
   if Assigned(FCalc) then
@@ -557,6 +574,16 @@ end;
 function TJvCalculator.GetTitle: string;
 begin
   Result := FTitle;
+end;
+
+procedure TJvCalculator.ReadCtl3D(Reader: TReader);
+begin
+  Flat := not Reader.ReadBoolean;
+end;
+
+procedure TJvCalculator.SetCtl3D(const Value: Boolean);
+begin
+  Flat := not Value;
 end;
 
 procedure TJvCalculator.SetTitle(const Value: string);

@@ -1,5 +1,8 @@
 Changelog for JVCL 3.X
 ======================
+2006-06-08
+- Ctl3D and ParentCtl3D have been removed from the components, replaced by Flat and ParentFlat // obones
+  Measures have been taken to ensure that existing DFMs are read correctly.
 2006-05-16:
 - TJvgProcess moved to Archive because TJvCreateProcess is much better // (rom)
 - moved unused JvgRichEditUtils.pas to Archive. Any user can use it from there. // (rom)

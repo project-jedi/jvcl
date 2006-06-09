@@ -230,7 +230,7 @@ type
     property DragKind;
     property Flat;
     property ParentBiDiMode;
-    property ParentCtl3D;
+    property ParentFlat;
     property ImeMode;
     property ImeName;
     property OnEndDock;

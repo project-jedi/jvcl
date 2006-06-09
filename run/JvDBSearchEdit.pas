@@ -95,12 +95,12 @@ type
     property CharCase;
     property Color;
     {$IFDEF VCL}
-    property Ctl3D;
+    property Flat;
     property DragCursor;
     property ImeMode;
     property ImeName;
     property OEMConvert;
-    property ParentCtl3D;
+    property ParentFlat;
     {$ENDIF VCL}
     property DragMode;
     property Enabled;
