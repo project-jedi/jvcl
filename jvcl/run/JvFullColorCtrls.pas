@@ -38,7 +38,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvJCLUtils, JvTypes, JvFullColorSpaces, JvFullColorRotate;
+  JvJCLUtils, JvTypes, JvComboBox, JvFullColorSpaces, JvFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
@@ -428,7 +428,7 @@ type
   TJvFullColorSpaceFormatEvent = procedure(Sender: TObject; AColorSpace: TJvColorSpace;
     out ACaption: string) of object;
 
-  TJvFullColorSpaceCombo = class(TCustomComboBox)
+  TJvFullColorSpaceCombo = class(TJvCustomComboBox)
   private
     FAllowVariable: Boolean;
     FItemFormat: TJvFullColorSpaceFormat;
@@ -513,7 +513,7 @@ type
   TJvFullColorAxisFormatEvent = procedure(Sender: TObject; AAxisConfig: TJvFullColorAxisConfig;
     out ACaption: string) of object;
 
-  TJvFullColorAxisCombo = class(TCustomComboBox)
+  TJvFullColorAxisCombo = class(TJvCustomComboBox)
   private
     FItemFormat: TJvFullColorAxisConfigFormat;
     FColorID: TJvFullColorSpaceID;
