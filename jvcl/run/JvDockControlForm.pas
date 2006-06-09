@@ -1075,7 +1075,8 @@ begin
   try
     for I := 0 to Screen.CustomFormCount - 1 do
       if not (Screen.CustomForms[I] is TJvDockableForm) and
-        Assigned(FinddockClient(Screen.CustomForms[I])) then
+        (Assigned(FinddockClient(Screen.CustomForms[I])) or
+         Assigned(FinddockServer(Screen.CustomForms[I]))) then
         TempList.Add(Screen.CustomForms[I]);
 
     for I := 0 to TempList.Count - 1 do
