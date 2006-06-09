@@ -1442,7 +1442,7 @@ begin
         MoveRow(I + 1, I);
         Sorted := False;
       end;
-  until Sorted or (J = 1000);
+  until Sorted or (J >= RowCount + 1000);
   Repaint;
 end;
 
