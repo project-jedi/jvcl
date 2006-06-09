@@ -49,6 +49,8 @@ type
     FRgnChanged: Boolean;
     FWinHook: TJvWindowHook;
     FStartColor: TColor;
+    FEndColor: TColor;
+    FFillDirection : TFillDirection;
     FCaptions: TJvCaptionList;
     FFont: TFont;
     FDefaultFont: Boolean;
@@ -89,6 +91,8 @@ type
     procedure SetFontInactiveColor(Value: TColor);
     procedure SetHideDirection(Value: THideDirection);
     procedure SetPopupMenu(Value: TPopupMenu);
+    procedure SetEndColor(Value: TColor);
+    procedure SetFillDirection(Value: TFillDirection);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -119,6 +123,10 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
     property StartColor: TColor read FStartColor write SetStartColor
       default clWindowText;
+    property EndColor: TColor read FEndColor write SetEndColor
+      default clActiveCaption; 
+    property  FillDirection : TFillDirection read FFillDirection write SetFillDirection
+      default fdLeftToRight; 
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
@@ -175,12 +183,13 @@ type
     property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
-function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvGradientCaption;
+function GradientFormCaption(AForm: TCustomForm; AStartColor, AEndColor: TColor):
+  TJvGradientCaption;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile: '$RCSfile: JvGradientCaption.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -193,12 +202,14 @@ uses
   SysUtils,
   JvConsts;
 
-function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvGradientCaption;
+function GradientFormCaption(AForm: TCustomForm; AStartColor, AEndColor: TColor):
+  TJvGradientCaption;
 begin
   Result := TJvGradientCaption.Create(AForm);
   with Result do
   try
     FStartColor := AStartColor;
+    FEndColor := AEndColor;
     FormCaption := AForm.Caption;
     Update;
   except
@@ -445,6 +456,8 @@ begin
   FWinHook.BeforeMessage := BeforeMessage;
   FWinHook.AfterMessage := AfterMessage;
   FStartColor := clWindowText;
+  FEndColor := clActiveCaption;// doubt: should it be clGradientActiveCaption?
+  FFillDirection := fdLeftToRight;
   FFontInactiveColor := clInactiveCaptionText;
   FFormCaption := '';
   FFont := TFont.Create;
@@ -720,6 +733,17 @@ begin
   end;
 end;
 
+procedure TJvGradientCaption.SetEndColor(Value: TColor);
+begin
+  if FEndColor <> Value then
+  begin
+    FEndColor := Value;
+    if Active then
+      Update;
+  end;
+end;
+
+
 function TJvGradientCaption.GetActive: Boolean;
 begin
   Result := FActive;
@@ -848,7 +872,6 @@ procedure TJvGradientCaption.DrawGradientCaption(DC: HDC);
 var
   R, DrawRect: TRect;
   Icons: TBorderIcons;
-  C: TColor;
   Ico: HIcon;
   Image: TBitmap;
   S: string;
@@ -932,29 +955,14 @@ begin
     Image.Width := RectWidth(R);
     Image.Height := RectHeight(R);
     R := Rect(-Image.Width div 4, 0, Image.Width, Image.Height);
-    if SysGradient then
-    begin
-      if FWindowActive then
-        C := clGradientActiveCaption
-      else
-        C := clGradientInactiveCaption;
-    end
-    else
-    begin
-      if FWindowActive then
-        C := clActiveCaption
-      else
-        C := clInactiveCaption;
-    end;
     if (FWindowActive and GradientActive) or
       (not FWindowActive and GradientInactive) then
     begin
-      GradientFillRect(Image.Canvas, R, FStartColor, C, fdLeftToRight,
-        FGradientSteps);
+      GradientFillRect(Image.Canvas, R, FStartColor, FEndColor, FFillDirection, FGradientSteps);
     end
     else
     begin
-      Image.Canvas.Brush.Color := C;
+      Image.Canvas.Brush.Color := FEndColor;
       Image.Canvas.FillRect(R);
     end;
     R.Left := 0;
@@ -1109,7 +1117,7 @@ procedure TJvGradientCaption.SetGradientSteps(Value: Integer);
 begin
   if FGradientSteps <> Value then
   begin
-    FGradientSteps := Value;
+    FGradientSteps := Value mod 256; // auto resets to 0 at 256
     if Active and ((FWindowActive and GradientActive) or
       (not FWindowActive and GradientInactive)) then
       Update;
@@ -1156,7 +1164,18 @@ begin
   end;
 end;
 
+procedure TJvGradientCaption.SetFillDirection(Value: TFillDirection);
+begin
+  if FFillDirection <> Value then
+  begin
+    FFillDirection := Value;
+    if Active then
+      Update;
+  end;
+end;
+
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
