@@ -50,6 +50,10 @@ uses
   {$ENDIF VisualCLX}
   JvEdit, JvExMask, JvMaskEdit, JvComponent;
 
+const
+  DefaultInitRepeatPause = 400; { pause before repeat timer (ms) }
+  DefaultRepeatPause = 100;
+
 type
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
 
@@ -72,6 +76,8 @@ type
     FOnTopClick: TNotifyEvent;
     FOnBottomClick: TNotifyEvent;
     FButtonStyle: TJvSpinButtonStyle;
+    FInitRepeatPause: Integer;
+    FRepeatPause: Integer;
     procedure SetButtonStyle(Value: TJvSpinButtonStyle);
     procedure TopClick;
     procedure BottomClick;
@@ -121,6 +127,8 @@ type
     property DownGlyph: TBitmap read GetDownGlyph write SetDownGlyph;
     property UpGlyph: TBitmap read GetUpGlyph write SetUpGlyph;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
+    property InitRepeatPause: Integer read FInitRepeatPause write FInitRepeatPause default DefaultInitRepeatPause;
+    property RepeatPause: Integer read FRepeatPause write FRepeatPause default DefaultRepeatPause;
     property ShowHint;
     property ParentShowHint;
     property Anchors;
@@ -398,10 +406,6 @@ const
   sSpinDownBtn = 'JvSpinDOWN';
   sSpinUpBtnPole = 'JvSpinUPPOLE';
   sSpinDownBtnPole = 'JvSpinDOWNPOLE';
-
-const
-  InitRepeatPause = 400; { pause before repeat timer (ms) }
-  RepeatPause = 100;
 
   (*Polaris
 procedure TJvSpinButton.DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState);
@@ -1555,6 +1559,8 @@ begin
   Width := 20;
   FLastDown := sbNotDown;
   FButtonBitmaps := nil;
+  FInitRepeatPause := DefaultInitRepeatPause;
+  FRepeatPause := DefaultRepeatPause;
 
   SpinButtonBitmapsManager.AddClient;
 end;
