@@ -444,7 +444,7 @@ const
     '  // Band Object' + CrLf +
     '  T%0:s = class(Tz%2:sBandObject)' + CrLf +
     '  protected' + CrLf +
-    '    function CreateBandForm(const ParentWnd: HWND): TJvBandForm; override;' + CrLf +
+    '    function CreateBandForm(const ParentWnd: THandle): TJvBandForm; override;' + CrLf +
     '  end;' + CrLf2 +
 
     '  // Band Form' + CrLf +
@@ -467,7 +467,7 @@ const
 
     '{ T%0:s }' + CrLf2 +
 
-    'function T%0:s.CreateBandForm(const ParentWnd: HWND): TJvBandForm;' + CrLf +
+    'function T%0:s.CreateBandForm(const ParentWnd: THandle): TJvBandForm;' + CrLf +
     'begin' + CrLf +
     '  Result := T%4:s.CreateBandForm(ParentWnd, Self);' + CrLf +
     'end;' + CrLf2 +
