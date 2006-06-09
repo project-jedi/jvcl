@@ -338,7 +338,10 @@ implementation
 
 uses
   Windows,  // to avoid warning under BDS2006
-  Forms, Dialogs, DbConsts, Math, FMTBcd,
+  Forms, Dialogs, DbConsts, Math,
+  {$IFDEF COMPILER6_UP} 
+  FMTBcd,
+  {$ENDIF COMPILER6_UP} 
   JvResources;
 
 const
@@ -346,8 +349,11 @@ const
     ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob];
 
   ftSupported = [ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat,
-    ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD, ftFMTBCD, ftBytes,
-    ftVarBytes, ftADT, ftFixedChar, ftWideString,
+    ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD,
+    {$IFDEF COMPILER6_UP}     
+    ftFMTBCD, 
+    {$ENDIF COMPILER6_UP}     
+    ftBytes, ftVarBytes, ftADT, ftFixedChar, ftWideString,
     ftLargeint, ftVariant, ftGuid] +
     ftBlobTypes;
 
@@ -397,6 +403,19 @@ begin
     Result := vrGreaterThan;
 end;
 
+function BcdCompare(const Bcd1, Bcd2: TBcd): Integer;
+var
+  Curr1, Curr2: Currency;
+begin
+  Result := 0;
+  if BCDToCurr(Bcd1, Curr1) and BCDToCurr(Bcd2, Curr2) then
+  begin
+    if Curr1 < Curr2 then
+      Result := -1
+    else if Curr1 > Curr2 then
+      Result := 1;
+  end;
+end;
 {$ENDIF COMPILER5}
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
@@ -424,7 +443,10 @@ begin
         Result := SizeOf(Double);
       ftCurrency:
         Result := SizeOf(Double);
-      ftBCD, ftFMTBCD:
+      {$IFDEF COMPILER6_UP} 
+      ftFMTBCD,
+      {$ENDIF COMPILER6_UP} 
+      ftBCD:
         Result := SizeOf(TBcd);
       ftDate, ftTime:
         Result := SizeOf(Longint);
@@ -640,7 +662,10 @@ begin
       else
       if Double(Data1^) < Double(Data2^) then
         Result := -1;
-    ftBcd, ftFMTBcd:
+    {$IFDEF COMPILER6_UP}
+    ftFMTBcd,
+    {$ENDIF COMPILER6_UP}
+    ftBcd:
       Result := BcdCompare(TBcd(Data1^), TBcd(Data2^));
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then
