@@ -248,32 +248,55 @@ begin
     // draw the blocks
     if Orientation = pbHorizontal then
     begin
-      R := Rect(2, 2, Steps + 1, Height - 4);
-      OffsetRect(R, 2, 1);
-      while BarSize > 2 do
+      if Smooth then
       begin
-        if R.Right > Width - 3 then
-          R.Right := Width - 3;
-        if R.Right - R.Left > 0 then
+        R.Right := R.Left + BarSize;
+        InflateRect(R, -1, -1);
+        if R.Right > Width - 2 then
+          R.Right := Width - 2;
+        if R.Right > R.Left then
           DrawBlock(Bmp.Canvas, R);
-        OffsetRect(R, Steps + 1, 0);
-        Dec(BarSize, Steps + 1);
+      end
+      else
+      begin
+        R := Rect(2, 2, Steps + 1, Height - 4);
+        OffsetRect(R, 2, 1);
+        while BarSize > 2 do
+        begin
+          if R.Right > Width - 3 then
+            R.Right := Width - 3;
+          if R.Right - R.Left > 0 then
+            DrawBlock(Bmp.Canvas, R);
+          OffsetRect(R, Steps + 1, 0);
+          Dec(BarSize, Steps + 1);
+        end;
       end;
     end
     else
     begin
-      R := Rect(2, 2, Width - 4, Steps + 1);
-      OffsetRect(R, 1, 0);
-      OffsetRect(R, 0, Height - Steps - 4);
-      while BarSize > 2 do
+      if Smooth then
       begin
-        if R.Top < 3 then
-          R.Top := 3;
-        if R.Bottom - R.Top > 0 then
-          DrawBlock(Bmp.Canvas, R);
-        OffsetRect(R, 0, -Steps - 1);
-        Dec(BarSize, Steps + 1);
-      end;
+        R.Top := R.Bottom - BarSize;
+        if R.Top < 2 then
+          R.Top := 2;
+        InflateRect(R, -1, -1);
+        DrawBlock(Bmp.Canvas, R);
+      end
+      else
+      begin
+        R := Rect(2, 2, Width - 4, Steps + 1);
+        OffsetRect(R, 1, 0);
+        OffsetRect(R, 0, Height - Steps - 4);
+        while BarSize > 2 do
+        begin
+          if R.Top < 3 then
+            R.Top := 3;
+          if R.Bottom - R.Top > 0 then
+            DrawBlock(Bmp.Canvas, R);
+          OffsetRect(R, 0, -Steps - 1);
+          Dec(BarSize, Steps + 1);
+        end;
+      end;  
     end;
     ACanvas.Brush.Color := AColor;
     with ACanvas do
