@@ -57,6 +57,7 @@ type
   TClickMenuEvent = procedure(Sender: TObject; const RecentName,
     Caption: string; UserData: Longint) of object;
   TGetItemInfoEvent = procedure(Sender: TObject; Item: TMenuItem) of object;
+  TGetItemInfoExEvent  = procedure(Sender: TObject; Item: TMenuItem; Index:integer) of object;
 
   TAccelDelimiter = (adTab, adSpace);
   TRecentMode = (rmInsert, rmAppend);
@@ -100,6 +101,7 @@ type
     FOnAfterUpdate: TNotifyEvent;
     FOnBeforeUpdate: TNotifyEvent;
     FOnItemInfo: TGetItemInfoEvent;
+    FOnItemInfoEx: TGetItemInfoExEvent;
     FDuplicates: TDuplicates;
     FMenuLocation: TMenuLocation;
     FMaxLength: Integer;
@@ -143,6 +145,7 @@ type
     procedure GetItemData(var Caption: string; var ShortCut: TShortCut;
       UserData: Longint); dynamic;
     procedure GetItemInfo(Item: TMenuItem); dynamic;
+    procedure GetItemInfoEx(Item: TMenuItem; Index:integer); dynamic;
     procedure DoClick(const RecentName, Caption: string; UserData: Longint); dynamic;
     procedure DoBeforeUpdate; virtual;
     procedure DoAfterUpdate; virtual;
@@ -191,6 +194,7 @@ type
     // this makes it easier to set any additional properties of the menu item not
     // handled by OnGetItemData.
     property OnGetItemInfo: TGetItemInfoEvent read FOnItemInfo write FOnItemInfo;
+    property OnGetItemInfoEx: TGetItemInfoExEvent read FOnItemInfoEx write FOnItemInfoEx;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -473,10 +477,14 @@ begin
         else
           C := ' ';
         Item.Caption := C + AccelDelimChars[FAccelDelimiter] + DoMinimizeName(S);
+      end
+ 	  	else
+      begin
+        Item.Caption := DoMinimizeName(S);
       end;
-      Item.Tag := I;
+      Item.Tag := I;      
       AddMenuItem(Item);
-      GetItemInfo(Item);
+      GetItemInfoEx(Item, I);
     end;
     DoAfterUpdate;
     if AutoEnable then
@@ -662,6 +670,13 @@ procedure TJvMRUManager.GetItemInfo(Item: TMenuItem);
 begin
   if Assigned(FOnItemInfo) then
     FOnItemInfo(Self, Item);
+end;
+
+procedure TJvMRUManager.GetItemInfoEx(Item: TMenuItem; Index: integer);
+begin
+  GetItemInfo(Item);
+  if Assigned(FOnItemInfoEx) then
+    FOnItemInfoEx(Self, Item, Index);
 end;
 
 procedure TJvMRUManager.SetDuplicates(const Value: TDuplicates);
