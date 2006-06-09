@@ -141,6 +141,7 @@ type
     var FileName: TFileName) of object;
   TJvAppStorageObjectListItemCreateEvent = function(Sender: TJvCustomAppStorage; const Path: string; Index: Integer):
     TPersistent of object;
+  TJvAppStorageErrorEvent = procedure(Sender: TObject; const Value: string) of object;
 
   TJvAppStorageOptionsClass = class of TJvCustomAppStorageOptions;
 
@@ -177,6 +178,7 @@ type
     FAutoReload: Boolean;
     FCurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent;
     FReadOnly: Boolean;
+    FOnError: TJvAppStorageErrorEvent;
     function GetUpdating: Boolean;
   protected
     FFlushOnDestroy: Boolean;
@@ -388,6 +390,7 @@ type
 
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
+    procedure DoError(const msg: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -607,6 +610,9 @@ type
       write FOnEncryptPropertyValue;
     property OnDecryptPropertyValue: TJvAppStorageCryptEvent read FOnDecryptPropertyValue
       write FOnDecryptPropertyValue;
+
+    // called when an error occured in one of the methods.
+    property OnError: TJvAppStorageErrorEvent read FOnError write FOnError;
   end;
 
   { Generic store that can only be used to combine various other storages (only storages in the
@@ -1562,6 +1568,12 @@ end;
 procedure TJvCustomAppStorage.DoWriteDateTime(const Path: string; Value: TDateTime);
 begin
   DoWriteFloat(Path, Value);
+end;
+
+procedure TJvCustomAppStorage.DoError(const msg: string);
+begin
+  if Assigned(OnError) then
+    OnError(Self, msg);
 end;
 
 function TJvCustomAppStorage.DoReadBoolean(const Path: string; Default: Boolean): Boolean;

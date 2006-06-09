@@ -911,10 +911,15 @@ var
 begin
   if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
   begin
-    Path := ExtractFilePath(FullFileName);
-    if Path <> '' then
-      ForceDirectories(Path);
-    Xml.SaveToFile(FullFileName);
+    try
+      Path := ExtractFilePath(FullFileName);
+      if Path <> '' then
+        ForceDirectories(Path);
+      Xml.SaveToFile(FullFileName);
+    except
+      on E: Exception do
+        DoError(E.Message);
+    end;
   end;
 end;
 
