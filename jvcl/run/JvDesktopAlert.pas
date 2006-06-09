@@ -90,7 +90,10 @@ type
 
   TJvDesktopAlertPosition =
    (dapTopLeft, dapTopRight, dapBottomLeft, dapBottomRight, dapCustom,
-    dapDesktopCenter, dapMainFormCenter, dapOwnerFormCenter, dapActiveFormCenter);
+    dapDesktopCenter, dapMainFormCenter, dapOwnerFormCenter, dapActiveFormCenter,
+    dapMainFormTopLeft, dapMainFormTopRight, dapMainFormBottomLeft, dapMainFormBottomRight,
+    dapOwnerFormTopLeft, dapOwnerFormTopRight, dapOwnerFormBottomLeft, dapOwnerFormBottomRight,
+    dapActiveFormTopLeft, dapActiveFormTopRight, dapActiveFormBottomLeft, dapActiveFormBottomRight);
 
   TJvDesktopAlertLocation = class(TJvDesktopAlertChangePersistent)
   private
@@ -731,6 +734,7 @@ var
   ARect: TRect;
   I, X, Y: Integer;
   FActiveWindow, FActiveFocus: HWND;
+  Position: TJvDesktopAlertPosition;
 
   procedure CenterForm(AForm: TCustomForm; ARect: TRect);
   begin
@@ -744,6 +748,30 @@ begin
     FDesktopForm.Close;
 
   ARect := ScreenWorkArea;
+  if (Application <> nil) and (Application.MainForm <> nil) and
+     (Location.Position in [dapMainFormTopLeft, dapMainFormTopRight, dapMainFormBottomLeft, dapMainFormBottomRight]) then
+    ARect := Application.MainForm.BoundsRect
+  else
+  if (Screen.ActiveForm <> nil) and
+     (Location.Position in [dapActiveFormTopLeft, dapActiveFormTopRight, dapActiveFormBottomLeft, dapActiveFormBottomRight]) then
+    ARect := Screen.ActiveForm.BoundsRect
+  else
+  if (Owner is TCustomForm) and
+     (Location.Position in [dapOwnerFormTopLeft, dapOwnerFormTopRight, dapOwnerFormBottomLeft, dapOwnerFormBottomRight]) then
+    ARect := TCustomForm(Owner).BoundsRect;
+
+  Position := Location.Position;
+  case Position of
+    dapMainFormTopLeft, dapActiveFormTopLeft, dapOwnerFormTopLeft:
+      Position := dapTopLeft;
+    dapMainFormTopRight, dapActiveFormTopRight, dapOwnerFormTopRight:
+      Position := dapTopRight;
+    dapMainFormBottomLeft, dapActiveFormBottomLeft, dapOwnerFormBottomLeft:
+      Position := dapBottomLeft;
+    dapMainFormBottomRight, dapActiveFormBottomRight, dapOwnerFormBottomRight:
+      Position := dapBottomRight;
+  end;
+
   if Location.Width <> 0 then
     FDesktopForm.Width := Location.Width
   else
@@ -752,7 +780,7 @@ begin
     FDesktopForm.Height := Location.Height
   else
     FDesktopForm.Height := cDefaultAlertFormHeight;
-  case Location.Position of
+  case Position of
     dapTopLeft:
       begin
         FDesktopForm.Top := ARect.Top;
