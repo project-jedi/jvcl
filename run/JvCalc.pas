@@ -71,8 +71,6 @@ type
     procedure SetTitle(const Value: string);
     function TitleStored: Boolean;
     procedure ReadCtl3D(Reader: TReader);
-    function GetCtl3D: Boolean;
-    procedure SetCtl3D(const Value: Boolean);
   protected
     procedure Change; dynamic;
     procedure CalcKey(var Key: Char); dynamic;
@@ -558,11 +556,6 @@ begin
   end;
 end;
 
-function TJvCalculator.GetCtl3D: Boolean;
-begin
-  Result := not Flat;
-end;
-
 function TJvCalculator.GetDisplay: Double;
 begin
   if Assigned(FCalc) then
@@ -579,11 +572,6 @@ end;
 procedure TJvCalculator.ReadCtl3D(Reader: TReader);
 begin
   Flat := not Reader.ReadBoolean;
-end;
-
-procedure TJvCalculator.SetCtl3D(const Value: Boolean);
-begin
-  Flat := not Value;
 end;
 
 procedure TJvCalculator.SetTitle(const Value: string);
