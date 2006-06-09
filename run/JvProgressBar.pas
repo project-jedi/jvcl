@@ -221,8 +221,6 @@ begin
     Exit;
   // calculate the size of the bar based on Min, Max, Position and Width or Height
   APos := Position;
-  if not Smooth then
-    APos := APos - APos mod Steps;
   ASize := MulDiv(GetMaxBarSize, (APos - Min), (Max - Min));
   DrawBar(Canvas, ASize);
 end;
