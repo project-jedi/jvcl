@@ -2487,6 +2487,45 @@ var
   TmpValue: Integer;
   SubObj: TObject;
   P: PPropInfo;
+
+  function IsDefaultOrdProp(PropInfo: PPropInfo): Boolean;
+  var
+    Value: Longint;
+    Default: LongInt;
+  begin
+    Value := GetOrdProp(PersObj, PropInfo);
+    Default := PPropInfo(PropInfo)^.Default;
+    Result :=  (Default <> LongInt($80000000)) and (Value = Default);
+  end;
+
+  function IsDefaultStrProp(PropInfo: PPropInfo): Boolean;
+  var
+    Value: WideString;
+  begin
+    {$IFDEF COMPILER6_UP}
+    Value := GetWideStrProp(PersObj, PropInfo);
+    {$ELSE}
+    Value := GetStrProp(PersObj, PropInfo);
+    {$ENDIF COMPILER6_UP}
+    Result := Value = '';
+  end;
+
+  function IsDefaultInt64Prop(PropInfo: PPropInfo): Boolean;
+  var
+    Value: Int64;
+  begin
+    Value := GetInt64Prop(PersObj, PropInfo);
+    Result := Value = 0;
+  end;
+
+  function IsDefaultFloatProp(PropInfo: PPropInfo): Boolean;
+  var
+    Value: Extended;
+  begin
+    Value := GetFloatProp(PersObj, PropInfo);
+    Result := Value = 0;
+  end;
+
 begin
   if not Assigned(PersObj) then
     Exit;
@@ -2505,11 +2544,11 @@ begin
 
   case PropType(PersObj, PropName) of
     tkLString, tkWString, tkString:
-      if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+      if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
         WriteString(Path, GetStrProp(PersObj, PropName));
     tkEnumeration:
       begin
-        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
           TmpValue := GetOrdProp(PersObj, PropName);
           WriteEnumeration(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
@@ -2517,7 +2556,7 @@ begin
       end;
     tkSet:
       begin
-        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
           TmpValue := GetOrdProp(PersObj, PropName);
           WriteSet(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
@@ -2525,7 +2564,7 @@ begin
       end;
     tkChar, tkInteger:
       begin
-        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
           if StorageOptions.TypedIntegerAsString then
           begin
@@ -2539,11 +2578,11 @@ begin
         end;
       end;
     tkInt64:
-      if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+      if StorageOptions.StoreDefaultValues or not IsDefaultInt64Prop(P) then
         WriteString(Path, IntToStr(GetInt64Prop(PersObj, PropName)));
     tkFloat:
       begin
-        if StorageOptions.StoreDefaultValues or not IsDefaultPropertyValue(PersObj, P, nil) then
+        if StorageOptions.StoreDefaultValues or not IsDefaultFloatProp(P) then
         begin
           if (P <> nil) and (P.PropType <> nil) and (P.PropType{$IFNDEF CLR}^{$ENDIF} = TypeInfo(TDateTime)) then
             WriteDateTime(Path, GetFloatProp(PersObj, PropName))
