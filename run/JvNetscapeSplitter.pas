@@ -1350,23 +1350,27 @@ begin
   if AllowDrag then
   begin
     inherited;
-
-    // The order is important here.  ButtonHitTest must be evaluated before
-    // the ButtonStyle because it will change the cursor (over button or not).
-    // If the order were reversed, the cursor would not get set for bsWindows
-    // style since short-circuit Boolean eval would stop it from ever being
-    // called in the first place.
-    if ButtonHitTest(Msg.XPos, Msg.YPos) and (ButtonStyle = bsNetscape) then
-    begin
-      if not FIsHighlighted then
-        PaintButton(True)
-    end
-    else
-    if FIsHighlighted then
-      PaintButton(False);
   end
   else
+  begin
     DefaultHandler(Msg); // Bypass TSplitter and just let normal handling occur.
+  end;
+
+  // Mantis 3718: The button is always highlighted whatever value AllowDrag is.
+  
+  // The order is important here.  ButtonHitTest must be evaluated before
+  // the ButtonStyle because it will change the cursor (over button or not).
+  // If the order were reversed, the cursor would not get set for bsWindows
+  // style since short-circuit Boolean eval would stop it from ever being
+  // called in the first place.
+  if ButtonHitTest(Msg.XPos, Msg.YPos) and (ButtonStyle = bsNetscape) then
+  begin
+    if not FIsHighlighted then
+      PaintButton(True)
+  end
+  else
+  if FIsHighlighted then
+    PaintButton(False);
 end;
 
 {$ENDIF VCL}
