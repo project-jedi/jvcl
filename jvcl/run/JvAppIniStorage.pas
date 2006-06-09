@@ -731,11 +731,16 @@ var
 begin
   if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
   begin
-    Path := ExtractFilePath(IniFile.FileName);
-    if Path <> '' then
-      ForceDirectories(Path);
-    IniFile.Rename(FullFileName, False);
-    IniFile.UpdateFile;
+    try
+      Path := ExtractFilePath(IniFile.FileName);
+      if Path <> '' then
+        ForceDirectories(Path);
+      IniFile.Rename(FullFileName, False);
+      IniFile.UpdateFile;
+    except
+      on E: Exception do
+        DoError(E.Message);
+    end;
   end;
 end;
 
