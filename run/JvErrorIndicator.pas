@@ -53,6 +53,8 @@ type
   // IJvErrorIndicator is implemented by the TJvErrorIndicator
   IJvErrorIndicator = interface
     ['{5BCB5404-9C17-4CC6-96EC-46567CA19A12}']
+    procedure BeginUpdate;
+    procedure EndUpdate;
     procedure SetError(AControl: TControl; const AErrorMessage: WideString);
     procedure SetClientError(const AClient: IJvErrorIndicatorClient);
   end;

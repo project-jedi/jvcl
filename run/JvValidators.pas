@@ -691,6 +691,8 @@ begin
     FValidationSummary.BeginUpdate;
   try
     Controls := TList.Create;
+    if FErrorIndicator <> nil then
+      FErrorIndicator.BeginUpdate;
     try
       { Get all controls that should be validated }
       if FErrorIndicator <> nil then
@@ -726,6 +728,7 @@ begin
         for I := 0 to Controls.Count - 1 do
           FErrorIndicator.SetError(Controls[I], ''); // clear error indicator
     finally
+      FErrorIndicator.EndUpdate;
       Controls.Free;
     end;
   finally
