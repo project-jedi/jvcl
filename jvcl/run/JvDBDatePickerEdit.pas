@@ -132,6 +132,12 @@ type
     // property MaxYear default 2900;
     // property MinYear default 1900;
     {$IFDEF VCL}
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     {property BiDiMode;}
     property Flat;
     {property ParentBiDiMode;}
