@@ -221,6 +221,12 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     property BorderStyle;
     property Caret;

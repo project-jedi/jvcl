@@ -107,6 +107,12 @@ type
     property AutoSelect;
     property AutoSize;
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property BorderStyle;
     property CharCase;

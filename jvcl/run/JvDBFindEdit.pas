@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, ExtCtrls, DB, DBCtrls,
+  Windows, Classes, Controls, ExtCtrls, DB, DBCtrls,
   JvMaskEdit;
 
 type
@@ -90,6 +90,12 @@ type
     property DragCursor;
     property Enabled;
     {$IFDEF VCL}
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
     {$ENDIF VCL}

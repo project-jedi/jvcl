@@ -142,6 +142,12 @@ type
   published
     property AutoSize;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Proportional: Boolean read FProportional write SetProportional default False;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
 
