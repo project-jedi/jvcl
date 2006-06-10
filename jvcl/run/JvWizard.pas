@@ -536,8 +536,8 @@ type
     procedure SetIndent(Value: Integer);
     procedure SetFont(Value: TFont);
     procedure SetWizardPageHeader(Value: TJvWizardPageHeader);
-    procedure OnChange(Sender: TObject);
     procedure AdjustFont(const AFont: TFont);
+    procedure FontChange(Sender: TObject);
   protected
     { YW - Get the area where the title text should be painted on. }
     function GetTextRect(const ACanvas: TCanvas;
@@ -1807,7 +1807,7 @@ begin
     begin
       AdjustFont(FWizardPageHeader.WizardPage.Font);
     end;
-    FFont.OnChange := OnChange;
+    FFont.OnChange := FontChange;
   end;
 end;
 
@@ -1903,8 +1903,7 @@ end;
 
 procedure TJvWizardPageTitle.SetFont(Value: TFont);
 begin
-  if (FFont <> Value) and
-    not (Assigned(FWizardPageHeader) and FWizardPageHeader.ParentFont) then
+  if (FFont <> Value) then
   begin
     FFont.Assign(Value);
   end;
@@ -1944,6 +1943,14 @@ begin
   end;
 end;
 
+procedure TJvWizardPageTitle.FontChange(Sender: TObject);
+begin
+  // Font has changed, set the ParentFont property to False.
+  if Assigned(FWizardPageHeader) then
+    FWizardPageHeader.ParentFont := False;
+  DoChange;
+end;
+
 procedure TJvWizardPageTitle.Assign(Source: TPersistent);
 begin
   if Source is TJvWizardPageTitle then
@@ -1961,11 +1968,6 @@ begin
   end
   else
     inherited Assign(Source);
-end;
-
-procedure TJvWizardPageTitle.OnChange(Sender: TObject);
-begin
-  DoChange;
 end;
 
 //=== { TJvWizardPageObject } ================================================
@@ -2169,6 +2171,10 @@ begin
   begin
     FParentFont := Value;
     AdjustTitleFont;
+
+    // Setting back the value as AdjustTitleFont might change the font, thus
+    // trigerring this handler again.
+    FParentFont := Value;
   end;
 end;
 
