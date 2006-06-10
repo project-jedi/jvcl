@@ -233,8 +233,16 @@ type
     property Align;
     property Action;
     property AutoSelect;
+    property AutoSize;
     property BeepOnError;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BorderStyle;
+    property ButtonFlat;
     property ButtonHint;
     property CharCase;
     property ClickKey;
@@ -345,14 +353,13 @@ type
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
-    // Polaris
     property AlwaysShowPopup default False;
     property DateAutoBetween;
     property MinDate;
     property MaxDate;
     property Align;
-    // Polaris
     property Action;
+    property AutoSize;
     property BeepOnError;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -371,6 +378,12 @@ type
     property DirectInput;
     {$IFDEF VCL}
     property DragCursor;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property DragKind;
     property Flat;
@@ -495,6 +508,7 @@ type
     property DecimalPlaceRound;
 
     property Action;
+    property AutoSize;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DefaultParams: Boolean read FDefaultParams write SetDefaultParams default False;
@@ -504,6 +518,7 @@ type
     property BeepOnError;
     property BorderStyle;
     property ButtonHint;
+    property ButtonFlat;
     property CheckOnExit;
     property ClickKey;
     property Color;
@@ -521,6 +536,12 @@ type
     property ButtonWidth;
     property HideSelection;
     property Anchors;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property Constraints;
     property DragKind;

@@ -205,9 +205,16 @@ type
     property Address: LongWord read FAddress write SetAddress default 0;
     property AddressValues: TJvIPAddressValues read FAddressValues write SetAddressValues;
     property Anchors;
+    property AutoSize;
     property Color;
     property Constraints;
     {$IFDEF VCL}
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property DragCursor;
     property DragKind;
     property OnStartDock;

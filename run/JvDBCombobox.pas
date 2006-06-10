@@ -124,9 +124,16 @@ type
     destructor Destroy; override;
   published
     property Align; // Polaris
+    property AutoSize;
     property Style { must be published before Items }
       default csDropDownList; // Polaris
     property BeepOnError;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Color;
     property DataField;
     property DataSource;

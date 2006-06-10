@@ -79,6 +79,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property AutoSize;
     {$IFDEF COMPILER5}
     property Format: string read FFormat write SetFormat;
     {$ENDIF COMPILER5}

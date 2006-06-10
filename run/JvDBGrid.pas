@@ -441,6 +441,10 @@ type
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
     {$IFDEF COMPILER6_UP}
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
     {$ENDIF COMPILER6_UP}
     property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;

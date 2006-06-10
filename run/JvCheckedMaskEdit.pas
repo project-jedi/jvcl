@@ -94,6 +94,12 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property ButtonFlat;
     property ButtonHint;

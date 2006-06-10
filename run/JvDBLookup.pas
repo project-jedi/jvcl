@@ -272,6 +272,7 @@ type
   published
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Align;
+    property AutoSize;
     property Color;
     property DataField;
     property DataSource;
@@ -286,6 +287,12 @@ type
     property Font;
     property IgnoreCase;
     property Anchors;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property Constraints;
     property DragKind;
@@ -565,6 +572,7 @@ type
     property PopupOnlyLocate: Boolean read FPopupOnlyLocate write FPopupOnlyLocate default True;
     property Alignment;
     property AutoSelect;
+    property AutoSize;
     property BorderStyle;
     property ButtonHint;
     property CharCase;
@@ -577,6 +585,12 @@ type
     property Enabled;
     property Font;
     {$IFDEF VCL}
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
     {$ENDIF VCL}

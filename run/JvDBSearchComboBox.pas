@@ -96,6 +96,7 @@ type
     property Align;
     property Anchors;
     property AutoComplete default True;
+    property AutoSize;
     {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
     property BevelEdges;

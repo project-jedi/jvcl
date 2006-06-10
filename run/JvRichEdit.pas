@@ -771,11 +771,18 @@ type
     property Align;
     property Alignment;
     property AutoAdvancedTypography;
+    property AutoSize;
     property AutoURLDetect;
     property AutoVerbMenu;
     property AllowObjects;
     property AllowInPlace;
     property Anchors;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property BorderWidth;
     property DragKind;

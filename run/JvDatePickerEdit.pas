@@ -245,6 +245,12 @@ type
     {$IFDEF VCL}
     {property BiDiMode;}
     {property ParentBiDiMode;}
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Flat;
     property ImeMode;
     property ImeName;

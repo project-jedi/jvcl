@@ -220,6 +220,7 @@ type
     property ListVisible: Boolean read FListVisible;
     property Text: string read FText;
   published
+    property AutoSize;
     property Color;
     property DataField;
     property DataSource;
@@ -271,6 +272,12 @@ type
     property ImeMode;
     property ImeName;
     property Anchors;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property BorderWidth;
     property Constraints;
@@ -367,6 +374,12 @@ type
     destructor Destroy; override;
   published
     property Align;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Color;
     property DataField;
@@ -453,6 +466,9 @@ uses
   {$IFDEF COMPILER6_UP}
   VDBConsts,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER10_UP}
+  Types,  // to allow inline expansion 
+  {$ENDIF COMPILER10_UP}
   CommCtrl, Graphics, DBConsts,
   JvThemes;
 

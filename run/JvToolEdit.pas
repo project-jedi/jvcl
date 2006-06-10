@@ -469,6 +469,12 @@ type
     {$IFDEF VCL}
     property AutoCompleteItems;
     property AutoCompleteOptions;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -665,6 +671,12 @@ type
     {$IFDEF VCL}
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem];
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
     { (rb) Obsolete; added 'stored False', eventually remove }
@@ -772,6 +784,12 @@ type
     {$IFDEF VCL}
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate];
@@ -1015,6 +1033,12 @@ type
     property DirectInput;
     {$IFDEF VCL}
     property DragCursor;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property DragKind;
     property Flat;
