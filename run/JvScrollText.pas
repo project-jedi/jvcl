@@ -172,9 +172,9 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     FScroll.OnDraw := nil;
-    FScroll.Terminate;
-    // FScroll.WaitFor;
-    FreeAndNil(FScroll);
+    if FScroll.Suspended then
+      FScroll.Resume;
+    FScroll.Free;
   end;
   Application.HintPause := FDeja;
   FItems.Free;
