@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
+  Windows, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
   JvExExtCtrls;
 
 type
@@ -71,6 +71,7 @@ type
     FPicture: TPicture;
     FClickCount: Integer;
     FPictureChange: TNotifyEvent;
+    FDrawing: Boolean;
     procedure SetState(Value: TPicState);
     procedure PicturesChanged(Sender: TObject);
     procedure DoPictureChange(Sender: TObject);
@@ -80,6 +81,7 @@ type
     function UsesPictures: Boolean;
   protected
     procedure Click; override;
+    procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function HitTest(X, Y: Integer): Boolean; override;
@@ -241,8 +243,41 @@ begin
 end;
 
 procedure TJvImage.DoOwnPictureChange(Sender: TObject);
+var
+  G: TGraphic;
+  D : TRect;
 begin
+  // All this code is required for Transparent, Center and other inherited
+  // properties to work fine.
+  if AutoSize and (Picture.Width > 0) and (Picture.Height > 0) then
+	SetBounds(Left, Top, Picture.Width, Picture.Height);
+  G := Picture.Graphic;
+  if G <> nil then
+  begin
+    if not ((G is TMetaFile) or (G is TIcon)) then
+      G.Transparent := inherited Transparent;
+    D := DestRect;
+    if (not G.Transparent) and (D.Left <= 0) and (D.Top <= 0) and
+       (D.Right >= Width) and (D.Bottom >= Height) then
+      ControlStyle := ControlStyle + [csOpaque]
+    else  // picture might not cover entire clientrect
+      ControlStyle := ControlStyle - [csOpaque];
+    if DoPaletteChange and FDrawing then Update;
+  end
+  else ControlStyle := ControlStyle - [csOpaque];
+  if not FDrawing then Invalidate;
+
   inherited Picture.Assign(FPicture);
+end;
+
+procedure TJvImage.Paint;
+begin
+  FDrawing := True;
+  try
+    inherited Paint;
+  finally
+    FDrawing := False;
+  end;
 end;
 
 procedure TJvImage.PicturesChanged(Sender: TObject);
