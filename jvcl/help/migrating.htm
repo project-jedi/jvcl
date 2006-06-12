@@ -270,7 +270,20 @@ property to the Value property. Note that this is being worked on and a
 fix will be provided shortly.<br>
 </p>
 <p>&nbsp;</p>
-<h3>TJVxCurrencyEdit</h3>
+<h3>TJvFloatEdit2</h3>
+<p>Search and replace TJvFloatEdit with TJvValidateEdit in PAS and
+DFM files, and delete JvTypedEdit from the Uses clause in the PAS.
+Then set the DisplayFormat property to dfFloat. If you have set the
+MaxDecimals property, then rename it to DecimalPlaces and set
+TrimDecimals to True.</p>
+<p><br>
+</p>
+<h3>TJvImageSquare</h3>
+<p>In DFM files, replace the BackColor property by Color and ImageList
+by Images.</p>
+<p><br>
+</p>
+<h3>TJvxCurrencyEdit</h3>
 <p>Usually used as an Integer edit, therefore again replaced by
 TJvValidateEdit. Search/Replace TJVxCurrencyEdit to TJvValidateEdit in
 PAS and DFM files, then delete the DisplayFormat property of
