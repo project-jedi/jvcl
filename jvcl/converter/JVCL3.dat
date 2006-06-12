@@ -248,3 +248,5 @@ HideStartButton=ShowStartButton(False)
 TJvxCurrencyEdit=TJvValidateEdit
 TJvIntegerEdit=TJvValidateEdit
 JvTypedEdit=JvValidateEdit
+JvxClock=JvClock
+TJvxClock=TJvClock
