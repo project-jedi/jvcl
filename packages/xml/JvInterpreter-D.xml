@@ -35,7 +35,6 @@
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="bdertl" Targets="DBv6up" Condition=""/>
-    <Package Name="qrpt" Targets="DBv6up" Condition="JVCL_UseQuickReport"/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvInterpreterReg.pas" Targets="VCL" Formname="" Condition=""/>
