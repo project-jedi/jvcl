@@ -40,7 +40,7 @@ uses
   ComCtrls, ExtCtrls, Grids, ValEdit, JvComCtrls, Menus, ActnList, StdActns, ImgList,
   ToolWin,
   JvComponent, JvSearchFiles, JvBaseDlg, JvBrowseFolder, JVCLConvertUtils,
-  JvFormPlacement, JvAppStorage, JvAppIniStorage, JvDialogs;
+  JvFormPlacement, JvAppStorage, JvAppIniStorage, JvDialogs, JvComponentBase;
 
 type
   { TValueListEditor (imposer class that allows "=" in strings) }
