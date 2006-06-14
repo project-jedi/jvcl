@@ -215,10 +215,12 @@ type
     property BiDiMode;
     property DragCursor;
     property DragKind;
+    property Flat;
     property ImeMode;
     property ImeName;
     property OEMConvert;
     property ParentBiDiMode;
+    property ParentFlat;
     property OnEndDock;
     property OnStartDock;
     {$IFDEF COMPILER6_UP}
