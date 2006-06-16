@@ -4251,7 +4251,7 @@ begin
             FColors.HeaderColorTo := TColor($903B09);
             FColors.SplitterColorFrom := TColor($B78676);
             FColors.SplitterColorTo := TColor($A03D09);
-            FColors.ButtonSeparatorColor := clGray;
+            FColors.ButtonSeparatorColor := TColor($2D9600);
 
             FColors.ToolPanelColorFrom := clWindow;
             FColors.ToolPanelColorTo := clWindow;
@@ -4278,7 +4278,7 @@ begin
             FColors.HeaderColorTo := TColor($917275);
             FColors.SplitterColorFrom := TColor($B8ABA9);
             FColors.SplitterColorTo := TColor($81767E);
-            FColors.ButtonSeparatorColor := clGray;
+            FColors.ButtonSeparatorColor := TColor($947C7C);
             FColors.ToolPanelColorFrom := clWindow;
             FColors.ToolPanelColorTo := clWindow;
             FColors.ToolPanelHeaderColorFrom := TColor($F4E2E1);
@@ -4304,7 +4304,7 @@ begin
             FColors.HeaderColorTo := TColor($427665);
             FColors.SplitterColorFrom := TColor($758D81);
             FColors.SplitterColorTo := TColor($3A584D);
-            FColors.ButtonSeparatorColor := clGray;
+            FColors.ButtonSeparatorColor := TColor($588060);
             FColors.ToolPanelColorFrom := clWindow;
             FColors.ToolPanelColorTo := clWindow;
             FColors.ToolPanelHeaderColorFrom := TColor($D6F3E3);
