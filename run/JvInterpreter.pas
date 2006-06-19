@@ -1633,7 +1633,7 @@ procedure VarArrayPut(const A: Variant; const Value: Variant; const Indices: arr
 var
   P, P1:pointer;
   LVarType: Cardinal;
-  Temp: variant;;
+  Temp: variant;
 begin
   P := VarArrayLock(A);
   try
