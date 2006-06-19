@@ -33,6 +33,7 @@
     <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="vclie" Targets="DBv6up" Condition="INTERNET_COMPONENTS"/>
     <Package Name="bdertl" Targets="DBv6up" Condition=""/>
   </Requires>
