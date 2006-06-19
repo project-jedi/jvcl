@@ -1633,7 +1633,7 @@ procedure VarArrayPut(const A: Variant; const Value: Variant; const Indices: arr
 var
   P, P1:pointer;
   LVarType: Cardinal;
-  Temp: TVarData;
+  Temp: variant;;
 begin
   P := VarArrayLock(A);
   try
@@ -1647,9 +1647,9 @@ begin
       VarCast(Variant(Temp), Value, LVarType);
       case LVarType of
         varOleStr, varDispatch, varUnknown:
-          P := Temp.VPointer;
+          P := TVarData(Temp).VPointer;
       else
-        P := @Temp.VPointer;
+        P := @TVarData(Temp).VPointer;
       end;
       Move(P^, P1^, Typ2Size(LVarType));
     end;
@@ -2512,10 +2512,7 @@ end;
 procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant);
 begin
   if (TVarData(Source).VType = varArray) or (TVarData(Source).VType = varRecord) then
-  begin
-    VarClear(Dest);
     TVarData(Dest) := TVarData(Source)
-  end
   else
     Dest := Source;
 end;
@@ -2530,13 +2527,7 @@ begin
   else
   if TempType = varRecord then
     TJvInterpreterRecHolder(TVarData(V).VPointer).Free;
-  {case TVarData(V).VType of
-    varArray:
-      JvInterpreterArrayFree(PJvInterpreterArrayRec(TVarData(V).VPointer));
-    varRecord:
-      TJvInterpreterRecHolder(TVarData(V).VPointer).Free;
-  end;}
-  V := Null;
+  varclear(V);
 end;
 
 {
@@ -4237,7 +4228,21 @@ begin
       end;
       if Result then
         Exit;
-    end; 
+    end
+    else
+    if Args.ObjTyp = varDispatch then
+    { Ole automation call }
+    begin
+      {$IFDEF JvInterpreter_OLEAUTO}
+      Result := DispatchCall(Identifier, Value, Args, True);
+      if Result then begin
+        Args.ReturnIndexed := True;
+        Exit;
+      end;
+      {$ELSE}
+      NotImplemented(RsOleAutomationCall);
+      {$ENDIF JvInterpreter_OLEAUTO}
+    end;
   end
   else
   begin
@@ -4925,7 +4930,7 @@ end;
 
 destructor TJvInterpreterExpression.Destroy;
 begin
-  //JvInterpreterVarFree(FVResult);
+  JvInterpreterVarFree(FVResult);
   FAdapter.Free;
   FArgs.Free;
   FPStream.Free;
@@ -4972,7 +4977,7 @@ end;
 
 procedure TJvInterpreterExpression.Init;
 begin
-  FVResult := Null;
+  JvInterpreterVarFree(FVResult);
   FExpStackPtr := -1;
   // Parse;
   FParser.Init;
@@ -5632,6 +5637,7 @@ begin
     FCurrArgs.Assignment;
   FCurrArgs.ReturnIndexed := False;
 
+  JvInterpreterVarFree(Result);
   if GetValue(Identifier, Result, FCurrArgs) then
   begin
     if TVarData(Result).VType = varRecord then
@@ -5979,7 +5985,7 @@ var
     FFunctionContext := FC;
     PFunctionContext(FFunctionContext).LocalVars := TJvInterpreterVarList.Create;
     FFunctionStack.Add(FFunctionContext);
-    FVResult := Null;
+    JvInterpreterVarFree(FVResult);
     if FunctionDesc <> nil then
     begin
       FCurrArgs.FHasVars := False;
@@ -6015,7 +6021,6 @@ var
   var
     FC: PFunctionContext;
     C: Integer;
-    VarList: TJvInterpreterVarList; // VARLEAKFIX
 
     procedure UpdateVarParams; { TJvInterpreterFunction.InFunction.LeaveFunction local. How bizarre. }
     var
@@ -6053,16 +6058,14 @@ var
         //LEAKY:  TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VPointer := nil;
 
         //VARLEAKFIX begin - Feb 2004 - Warren Postma. Fix suggested by ivan_ra att mail dott ru
-        VarList := PFunctionContext(FFunctionContext).LocalVars;
-        VarList.GetValue(cResult, FVResult, FCurrArgs);
-        VarClear(VarList.FindVar('', cResult).Value);
+        LocalVars.GetValue(cResult, FVResult, FCurrArgs);
         //VARLEAKFIX end.
       end;
 
       FCurrArgs.Count := C;
     end;
     FC := PFunctionContext(FFunctionContext).PrevFunContext;
-    PFunctionContext(FFunctionContext).LocalVars.Free;
+    LocalVars.Free;
     Dispose(PFunctionContext(FFunctionContext));
     Dispose(VarNames);
     FFunctionStack.Delete(FFunctionStack.Count - 1);
@@ -6497,6 +6500,7 @@ begin
     end;
   end;
   { normal (not method) assignmnent }
+  JvInterpreterVarFree(FVResult);
   { push args }
   MyArgs := FCurrArgs;
   FCurrArgs := TJvInterpreterArgs.Create;
@@ -7861,7 +7865,7 @@ begin
   begin
     FAdapter.CheckArgs(Args, FunctionDesc.FParamCount, FunctionDesc.FParamTypes); {not tested !}
     OldArgs := FCurrArgs;
-    OldInstance:=FCurInstance;                    
+    OldInstance:=FCurInstance;
     if (Args.Obj is TJvInterpreterForm) then
     begin
       FCurInstance:=Args.Obj;                      // class method support
