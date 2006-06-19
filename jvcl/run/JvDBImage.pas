@@ -55,7 +55,7 @@ IMAGE FORMATS:
    For example (actual code of the initialization section):
 
      RegisterGraphicSignature([$D7, $CD], 0, TMetaFile); // WMF
-     RegisterGraphicSignature([0, 1], 0, TMetaFile);     // EMF
+     RegisterGraphicSignature([1, 0], 0, TMetaFile);     // EMF
      RegisterGraphicSignature('JFIF', 6, TJPEGImage);
 
    You can also unregister signature. IF you want use TGIFImage instead of
@@ -235,7 +235,7 @@ begin
     RegisterGraphicSignature('BM', 0, TBitmap);
     RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
     RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
-    RegisterGraphicSignature([0, 1], 0, TMetafile); // EMF
+    RegisterGraphicSignature([1, 0], 0, TMetafile); // EMF
     RegisterGraphicSignature('JFIF', 6, TJPEGImage);
     RegisterGraphicSignature('Exif', 6 , TJPEGImage);
     // NB! Registering these will add a requirement on having the JvMM package installed
