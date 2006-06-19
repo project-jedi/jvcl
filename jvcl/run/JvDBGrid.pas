@@ -2886,10 +2886,11 @@ begin
     else
     begin
       if (Field is TStringField) or
-         (FShowMemos and (Field is TMemoField)
+         (FShowMemos and ((Field is TMemoField)
           {$IFDEF COMPILER10_UP}
           or (Field is TWideMemoField)
           {$ENDIF COMPILER10_UP}
+          )
          ) then
       begin
         if Assigned(Field.OnGetText) then
