@@ -85,7 +85,7 @@ type
     FAnimating: Boolean;
     FCanvas: TCanvas;
     FCurrentAnimateFrame: Byte;
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FIsFocused: Boolean;
@@ -104,7 +104,7 @@ type
     procedure SetAnimate(const Value: Boolean);
     procedure SetAnimateFrames(const Value: Integer);
     procedure SetAnimateInterval(const Value: Cardinal);
-    procedure SetImageIndex(const Value: Integer);
+    procedure SetImageIndex(const Value: TImageIndex);
     procedure SetImages(const Value: TCustomImageList);
     procedure SetImageVisible(const Value: Boolean);
     procedure SetKind(const Value: TJvImgBtnKind);
@@ -158,7 +158,7 @@ type
     property AnimateInterval: Cardinal read FAnimateInterval write SetAnimateInterval default 200;
     property Color default clBtnFace;
     property Images: TCustomImageList read FImages write SetImages;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property ImageVisible: Boolean read FImageVisible write SetImageVisible default True;
     property Kind: TJvImgBtnKind read FKind write SetKind default bkCustom;
     property Flat: Boolean read FFlat write SetFlat default False;
@@ -334,14 +334,8 @@ end;
 procedure TJvCustomImageButton.CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
 var
   BlockWidth, ButtonWidth, ButtonHeight, BlockMargin, InternalSpacing: Integer;
+  Flags: Integer;
 begin
-  SetRect(RectText, 0, 0, 0, 0);
-  //  RectText.Right := ButtonRect.Right - ButtonRect.Left;
-  {$IFDEF CLR}
-  DrawText(Canvas, GetRealCaption, -1, RectText, DT_CALCRECT or Alignments[FAlignment]);
-  {$ELSE}
-  DrawText(Canvas, PChar(GetRealCaption), -1, RectText, DT_CALCRECT or Alignments[FAlignment]);
-  {$ENDIF CLR}
   if IsImageVisible then
   begin
     with GetImageList do
@@ -353,11 +347,26 @@ begin
     SetRect(RectImage, 0, 0, 0, 0);
     InternalSpacing := 0;
   end;
+
+  // In order to take WordWrap into account, we MUST pass a non zero rectangle
+  // to DrawText and so we must calculate a original bounding rectangle
+  SetRect(RectText, 0, 0, 0, 0);
+  RectText.Right := ButtonRect.Right - ButtonRect.Left - (RectImage.Right - RectImage.Left);
   if FAlignment <> taCenter then
   begin
     if RectText.Right < Width - RectImage.Right - 18 then
       RectText.Right := Width - RectImage.Right - 18;
   end;
+  Flags := DT_CALCRECT or Alignments[FAlignment];
+  if WordWrap then
+    Flags := Flags or DT_WORDBREAK;
+  {$IFDEF CLR}
+  DrawText(Canvas, GetRealCaption, -1, RectText, Flags);
+  {$ELSE}
+  DrawText(Canvas, PChar(GetRealCaption), -1, RectText, Flags);
+  {$ENDIF CLR}
+
+  // Now offset the rectangles according to layout and spacings
   BlockWidth := RectImage.Right + InternalSpacing + RectText.Right;
   ButtonWidth := ButtonRect.Right - ButtonRect.Left;
   if Margin = -1 then
@@ -700,6 +709,9 @@ var
   RealCaption: string;
 begin
   Flags := DrawTextBiDiModeFlags(DT_VCENTER or Alignments[FAlignment]);
+  if WordWrap then
+    Flags := Flags or DT_WORDBREAK;
+    
   RealCaption := GetRealCaption;
   with Canvas do
   begin
@@ -909,7 +921,7 @@ begin
   end;
 end;
 
-procedure TJvCustomImageButton.SetImageIndex(const Value: Integer);
+procedure TJvCustomImageButton.SetImageIndex(const Value: TImageIndex);
 begin
   if FImageIndex <> Value then
   begin
