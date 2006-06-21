@@ -41,11 +41,30 @@ uses
 
 const
   WM_AUTOSELECT = WM_USER + 1;
-
+  ALL_VIEW_STYLES = [vsIcon, vsSmallIcon, vsList, vsReport];
+  
 type
+  TJvListView = class;
+  TJvListViewGroup = class;
   EJvListViewError = EJVCLException;
+
+  // Mantis 980: new type for Groups
+  TLVGROUP = record
+    cbSize: UINT;
+    mask: UINT;
+    pszHeader: LPWSTR;
+    cchHeader: Integer;
+    pszFooter: LPWSTR;
+    cchFooter: Integer;
+    iGroupId: Integer;
+    stateMask: UINT;
+    state: UINT;
+    uAlign: UINT;
+  end;
+
   //  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvOnProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
+  TJvListViewCompareGroupEvent = procedure(Sender: TObject; Group1, Group2: TJvListViewGroup; var Compare: Integer) of object; 
 
   TJvListItems = class(TListItems, IJvAppStorageHandler, IJvAppStoragePublishedProps)
   private
@@ -78,7 +97,9 @@ type
     FBold: Boolean;
     FFont: TFont;
     FBrush: TBrush;
+    FGroupId: Integer;
     procedure SetBrush(const Value: TBrush);
+    procedure SetGroupId(const Value: Integer);
   protected
     procedure SetPopupMenu(const Value: TPopupMenu);
     procedure SetFont(const Value: TFont);
@@ -89,6 +110,7 @@ type
   published
     property Font: TFont read FFont write SetFont;
     property Brush: TBrush read FBrush write SetBrush;
+    property GroupId: Integer read FGroupId write SetGroupId default -1;
     // Published now for the usage of AppStorage.Read/WritePersistent
     property Caption;
     property Checked;
@@ -122,12 +144,54 @@ type
     property Items[Index: Integer] : TJvListExtendedColumn read GetItem write SetItem; default;
   end;
 
+  TJvListViewGroup = class(TCollectionItem)
+  private
+    FHeader: WideString;
+    FGroupId: Integer;
+    FHeaderAlignment: TAlignment;
+    procedure SetHeader(const Value: WideString);
+    procedure SetHeaderAlignment(const Value: TAlignment);
+    procedure SetGroupId(const Value: Integer);
+
+    procedure UpdateGroupProperties(const NewGroupId: Integer = -1);
+  public
+    constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
+    procedure Assign(AValue: TPersistent); override;
+    procedure SetLVGROUP(var GroupInfo: TLVGROUP);
+  published
+    property GroupId: Integer read FGroupId write SetGroupId default -1;
+    property Header: WideString read FHeader write SetHeader;
+    property HeaderAlignment: TAlignment read FHeaderAlignment write SetHeaderAlignment default taLeftJustify;
+  end;
+
+  TJvListViewGroups = class(TOwnedCollection)
+  private
+    FSorted: Boolean;
+    function GetItem(Index: Integer): TJvListViewGroup;
+    procedure SetItem(Index: Integer; const Value: TJvListViewGroup);
+
+    function ParentList: TJvListView;
+    procedure InsertGroupIntoList(group: TJvListViewGroup);
+    procedure RemoveGroupFromList(group: TJvListViewGroup);
+
+    function Compare(Id1, Id2: Integer): Integer;
+    function GetItemById(GroupId: Integer): TJvListViewGroup;
+    procedure SetSorted(const Value: Boolean);
+  protected
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
+  public
+    constructor Create(AOwner: TPersistent);
+    procedure Sort;
+      
+    property Items[Index: Integer] : TJvListViewGroup read GetItem write SetItem; default;
+    property ItemsById[GroupId: Integer]: TJvListViewGroup read GetItemById;
+  published
+    property Sorted: Boolean read FSorted write SetSorted;
+  end;
+
   TViewStyles = set of TViewStyle;
 
-const
-  ALL_VIEW_STYLES = [vsIcon, vsSmallIcon, vsList, vsReport];
-
-type
   TJvListView = class(TJvExListView)
   private
     FAutoClipboardCopy: Boolean;
@@ -146,8 +210,13 @@ type
     FExtendedColumns: TJvListExtendedColumns;
     FSavedExtendedColumns: TJvListExtendedColumns;
     FViewStylesItemBrush: TViewStyles;  // use for Create/DestroyWnd process
+    FGroupView: Boolean;
+    FGroups: TJvListViewGroups;
+    FOnCompareGroups: TJvListViewCompareGroupEvent;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
+    procedure SetGroupView(const Value: Boolean);
+    procedure SetGroups(const Value: TJvListViewGroups);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
@@ -157,6 +226,7 @@ type
     procedure SetItemIndex(const Value: Integer);
     {$ENDIF COMPILER5}
     procedure SetViewStylesItemBrush(const Value: TViewStyles);
+    function DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
   protected
     function CreateListItem: TListItem; override;
     function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -226,6 +296,8 @@ type
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
     property SmallImages write SetSmallImages;
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
+    property GroupView: Boolean read FGroupView write SetGroupView default False;
+    property Groups: TJvListViewGroups read FGroups write SetGroups;
 
     property ViewStylesItemBrush : TViewStyles read FViewStylesItemBrush write SetViewStylesItemBrush default ALL_VIEW_STYLES;
 
@@ -234,6 +306,7 @@ type
     property OnLoadProgress: TJvOnProgress read FOnLoadProgress write FOnLoadProgress;
     property OnSaveProgress: TJvOnProgress read FOnSaveProgress write FOnSaveProgress;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
+    property OnCompareGroups: TJvListViewCompareGroupEvent read FOnCompareGroups write FOnCompareGroups;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -263,14 +336,66 @@ const
 implementation
 
 uses
-  Math,
+  Math, Contnrs,
+  JclWideStrings,
   JvJCLUtils, JvConsts, JvResources;
 
-//=== { TJvListItem } ========================================================
+type
+  // Mantis 980: New types for group handling
+  tagLVITEMA = packed record
+    mask: UINT;
+    iItem: Integer;
+    iSubItem: Integer;
+    state: UINT;
+    stateMask: UINT;
+    pszText: PAnsiChar;
+    cchTextMax: Integer;
+    iImage: Integer;
+    lParam: lParam;
+    iIndent: Integer;
+    iGroupId: Integer;
+    cColumns: UINT;
+    puColumns: PUINT;
+  end;
+  TLVITEMA = tagLVITEMA;
+
+  TFNLVGROUPCOMPARE = function (Group1_ID: Integer; Group2_ID: Integer; pvData: Pointer): Integer; stdcall;
+  PFNLVGROUPCOMPARE = ^TFNLVGROUPCOMPARE;
+
+  tagLVINSERTGROUPSORTED = packed record
+    pfnGroupCompare: PFNLVGROUPCOMPARE;
+    pvData: Pointer;
+    lvGroup: TLVGROUP;
+  end;
+  TLVINSERTGROUPSORTED = tagLVINSERTGROUPSORTED;
+  PLVINSERTGROUPSORTED = ^TLVINSERTGROUPSORTED;
 
 const
+  // Mantis 980: New constants for group handling
+  LVM_INSERTGROUP       = LVM_FIRST + 145;
+  LVM_SETGROUPINFO      = LVM_FIRST + 147;
+  LVM_REMOVEGROUP       = LVM_FIRST + 150;
+  LVM_MOVEITEMTOGROUP   = LVM_FIRST + 154;
+  LVM_ENABLEGROUPVIEW   = LVM_FIRST + 157;
+  LVM_SORTGROUPS        = LVM_FIRST + 158;
+  LVM_INSERTGROUPSORTED = LVM_FIRST + 159;
+
+  LVIF_GROUPID = $0100;
+
+  LVGF_HEADER  = $00000001;
+  LVGF_ALIGN   = $00000008;
+  LVGF_GROUPID = $00000010;
+
+  LVGA_HEADER_LEFT   = $00000001;
+  LVGA_HEADER_CENTER = $00000002;
+  LVGA_HEADER_RIGHT  = $00000004;
+
+  AlignmentToLVGA: array[TAlignment] of Integer = (LVGA_HEADER_LEFT, LVGA_HEADER_RIGHT, LVGA_HEADER_CENTER);
+
   // (rom) increased from 100
   cColumnsHandled = 1024;
+
+//=== { TJvListItem } ========================================================
 
 constructor TJvListItem.CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
 begin
@@ -280,6 +405,7 @@ begin
   FPopupMenu := Popup; // (Salvatore) Get it from the JvListView
   FFont := TFont.Create;
   FBrush := TBrush.Create;
+  FGroupId := -1;
 end;
 
 destructor TJvListItem.Destroy;
@@ -298,6 +424,28 @@ end;
 procedure TJvListItem.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
+end;
+
+procedure TJvListItem.SetGroupId(const Value: Integer);
+var
+  infos: JvListView.TLVITEMA;
+  list: TCustomListView;
+begin
+  if FGroupId <> Value then
+  begin
+    FGroupId := Value;
+
+    list := Owner.Owner;
+    if Assigned(list) then
+    begin
+      ZeroMemory(@infos, sizeof(infos));
+      infos.mask := LVIF_GROUPID;
+      infos.iItem := Index;
+      infos.iGroupId := FGroupId;
+
+      SendMessage(list.Handle, LVM_SETITEM, 0, LPARAM(@infos));
+    end;
+  end;
 end;
 
 procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
@@ -470,10 +618,12 @@ begin
   FViewStylesItemBrush := ALL_VIEW_STYLES;
   FExtendedColumns := TJvListExtendedColumns.Create(Self);
   FSavedExtendedColumns := TJvListExtendedColumns.Create(Self);
+  FGroups := TJvListViewGroups.Create(Self);
 end;
 
 destructor TJvListView.Destroy;
 begin
+  FGroups.Free;
   FExtendedColumns.Free;
   FSavedExtendedColumns.Free;
 
@@ -1605,6 +1755,21 @@ begin
   FPicture.Assign(Value);
 end;
 
+procedure TJvListView.SetGroupView(const Value: Boolean);
+begin
+  if FGroupView <> Value then
+  begin
+    FGroupView := Value;
+
+    SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(FGroupView), 0);
+  end;
+end;
+
+procedure TJvListView.SetGroups(const Value: TJvListViewGroups);
+begin
+  FGroups.Assign(Value);
+end;
+
 procedure TJvListView.DoPictureChange(Sender: TObject);
 begin
 //  if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
@@ -1658,6 +1823,267 @@ begin
   Invalidate;
 end;
 
+function TJvListView.DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
+begin
+  if Assigned(OnCompareGroups) then
+    OnCompareGroups(Self, Group1, Group2, Result)
+  else
+    Result := Group2.GroupId - Group1.GroupId;
+end;
+
+  { TJvListViewGroup }
+
+procedure TJvListViewGroup.Assign(AValue: TPersistent);
+var
+  Source: TJvListViewGroup;
+begin
+  if AValue is TJvListViewGroup then
+  begin
+    Source := AValue as TJvListViewGroup;
+    
+    FHeader := Source.Header;
+    FHeaderAlignment := Source.HeaderAlignment;
+    FGroupId := Source.GroupId;
+    UpdateGroupProperties;
+  end;
+end;
+
+constructor TJvListViewGroup.Create(Collection: TCollection);
+begin
+  // Before inherited for Notify to acces it
+  FGroupId := -1;
+  FHeaderAlignment := taLeftJustify;
+  FHeader := 'Group';
+  
+  inherited Create(Collection);
+end;
+
+destructor TJvListViewGroup.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvListViewGroup.SetHeader(const Value: WideString);
+var
+  List: TJvListView;
+  ItemList: TObjectList;
+  I: Integer;
+  Item: TJvListItem;
+begin
+  if FHeader <> Value then
+  begin
+    FHeader := Value;
+
+    // In order to change the header text, one actually has to delete the
+    // group and recreate it. Simply calling UpdateGroupProperties won't do.
+    // But the items MUST stay in the group, hence the need to save them in
+    // a list, remove them from the group, then add them once the group is back. 
+    List := (Collection as TJvListViewGroups).ParentList;
+    ItemList := TObjectList.Create(False);
+    try
+      if Assigned(List) then
+      begin
+        for I := 0 to List.Items.Count - 1 do
+        begin
+          Item := List.Items[I] as TJvListItem;
+          if Item.GroupId = GroupId then
+          begin
+            ItemList.Add(Item);
+            Item.GroupId := -1;
+          end;
+        end;
+      end;
+
+      (Collection as TJvListViewGroups).RemoveGroupFromList(Self);
+      (Collection as TJvListViewGroups).InsertGroupIntoList(Self);
+      
+      if Assigned(List) and (ItemList.Count > 0) then
+      begin
+        for I := 0 to ItemList.Count - 1 do
+        begin
+          Item := ItemList[I] as TJvListItem;
+          Item.GroupId := GroupId;
+        end;
+      end;
+    finally
+      ItemList.Free;
+    end;
+  end;
+end;
+
+procedure TJvListViewGroup.SetHeaderAlignment(const Value: TAlignment);
+begin
+  if FHeaderAlignment <> Value then
+  begin
+    FHeaderAlignment := Value;
+    UpdateGroupProperties;
+  end;
+end;
+
+procedure TJvListViewGroup.SetLVGROUP(var GroupInfo: TLVGROUP);
+begin
+  ZeroMemory(@GroupInfo, sizeof(GroupInfo));
+
+  GroupInfo.cbSize := sizeof(GroupInfo);
+  GroupInfo.mask := LVGF_HEADER or LVGF_ALIGN or LVGF_GROUPID;
+  GroupInfo.iGroupId := FGroupId;
+  GroupInfo.pszHeader := PWideChar(FHeader);
+  GroupInfo.cchHeader := Length(FHeader);
+  GroupInfo.uAlign := AlignmentToLVGA[HeaderAlignment];
+end;
+
+procedure TJvListViewGroup.SetGroupId(const Value: Integer);
+begin
+  if FGroupId <> Value then
+  begin
+    UpdateGroupProperties(Value);
+    FGroupId := Value;
+  end;
+end;
+
+procedure TJvListViewGroup.UpdateGroupProperties(const NewGroupId: Integer = -1);
+var
+  GroupInfo: TLVGROUP;
+  List: TJvListView;
+begin
+  List := (Collection as TJvListViewGroups).ParentList;
+  if Assigned(List) then
+  begin
+    SetLVGROUP(GroupInfo);
+    if NewGroupId <> -1 then
+      GroupInfo.iGroupId := NewGroupId;
+    SendMessage(List.Handle, LVM_SETGROUPINFO, FGroupId, LPARAM(@GroupInfo));
+    List.Invalidate;
+  end;
+end;
+
+{ TJvListViewGroups }
+
+function TJvListViewGroups.Compare(Id1, Id2: Integer): Integer;
+var
+  List: TJvListView;
+begin
+  Result := Id2 - Id1;
+  List := ParentList;
+  if Assigned(List) then
+  begin
+    Result := List.DoCompareGroups(ItemsById[Id1], ItemsById[Id2]);
+  end;
+end;
+
+constructor TJvListViewGroups.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvListViewGroup);
+end;
+
+function TJvListViewGroups.GetItem(Index: Integer): TJvListViewGroup;
+begin
+  Result := inherited Items[Index] as TJvListViewGroup;
+end;
+
+function TJvListViewGroups.GetItemById(GroupId: Integer): TJvListViewGroup;
+var
+  I: Integer;
+begin
+  Result := nil;
+  I := 0;
+  while (I < Count) and not Assigned(Result) do
+  begin
+    if Items[I].GroupId = GroupId then
+      Result := Items[I];
+    Inc(I);
+  end;
+end;
+
+function LVGroupCompare(Group1_ID: Integer; Group2_ID: Integer; pvData: Pointer): Integer; stdcall;
+begin
+  Result := TJvListViewGroups(pvData).Compare(Group1_ID, Group2_ID);
+end;
+
+procedure TJvListViewGroups.InsertGroupIntoList(group: TJvListViewGroup);
+var
+  List: TJvListView;
+  GroupInfo: TLVGROUP;
+  GroupSortedInfo: TLVINSERTGROUPSORTED; 
+begin
+  List := ParentList;
+  if Assigned(List) then
+  begin
+    if group.GroupId = -1 then
+      group.FGroupId := Count;
+    if Sorted then
+    begin
+      GroupSortedInfo.pfnGroupCompare := @LVGroupCompare;
+      GroupSortedInfo.pvData := Self;
+      group.SetLVGROUP(GroupSortedInfo.lvGroup);
+      SendMessage(List.Handle, LVM_INSERTGROUPSORTED, WPARAM(@GroupSortedInfo), 0);
+    end
+    else
+    begin
+      group.SetLVGROUP(GroupInfo);
+      SendMessage(List.Handle, LVM_INSERTGROUP, group.Index, LPARAM(@GroupInfo));
+    end;
+  end;
+end;
+
+procedure TJvListViewGroups.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+begin
+  case Action of
+    cnAdded:
+      InsertGroupIntoList(Item as TJvListViewGroup);
+    cnDeleting:
+      RemoveGroupFromList(Item as TJvListViewGroup);
+  end;
+end;
+
+function TJvListViewGroups.ParentList: TJvListView;
+var
+  Owner: TPersistent;
+begin
+  Result := nil;
+  Owner := GetOwner;
+  if Owner is TJvListView then
+    Result := Owner as TJvListView;    
+end;
+
+procedure TJvListViewGroups.RemoveGroupFromList(group: TJvListViewGroup);
+var
+  List: TJvListView;
+begin
+  List := ParentList;
+  if Assigned(List) then
+  begin
+    SendMessage(List.Handle, LVM_REMOVEGROUP, group.GroupId, 0);
+  end;
+end;
+
+procedure TJvListViewGroups.SetItem(Index: Integer;
+  const Value: TJvListViewGroup);
+begin
+  inherited Items[Index] := Value;
+end;
+
+procedure TJvListViewGroups.SetSorted(const Value: Boolean);
+begin
+  if FSorted <> Value then
+  begin
+    FSorted := Value;
+    if FSorted then
+      Sort;
+  end;
+end;
+
+procedure TJvListViewGroups.Sort;
+var
+  List: TJvListView;
+begin
+  List := ParentList;
+  if Assigned(List) then
+  begin
+    SendMessage(List.Handle, LVM_SORTGROUPS, WPARAM(@LVGroupCompare), LPARAM(Self));
+  end;
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization
