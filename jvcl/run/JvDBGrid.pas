@@ -533,8 +533,6 @@ type
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
 
-  TOpenCustomEdit = class(TCustomEdit);
-
 const
   GridBmpNames: array [TGridPicture] of PChar =
   ('JvDBGridBLOB', 'JvDBGridMEMO', 'JvDBGridPICT', 'JvDBGridOLE', 'JvDBGridOBJECT',
@@ -879,7 +877,7 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
-  FAlwaysShowEditor := dgAlwaysShowEditor in inherited Options;
+  FAlwaysShowEditor := False;
   inherited Options := inherited Options - [dgAlwaysShowEditor];
 
   // (obones): issue 3026: need to create FChangeLinks at the beginning
@@ -1619,7 +1617,7 @@ function TJvDBGrid.CanEditShow: Boolean;
     // Is there an editor for the selected field ?
     F := SelectedField;
     Control := FControls.ControlByField(F.FieldName);
-    if Assigned(Control) and not (dgAlwaysShowEditor in inherited Options) then
+    if Assigned(Control) then //and not (dgAlwaysShowEditor in inherited Options) then
       Editor := ude_CUSTOM_EDITOR
     else
     if EditWithBoolBox(F) then
@@ -1694,8 +1692,8 @@ function TJvDBGrid.CanEditShow: Boolean;
   end;
 
 begin
-  if (dgAlwaysShowEditor in inherited Options) and not EditorMode then
-    EditorMode := True;
+  //if (dgAlwaysShowEditor in inherited Options) and not EditorMode then
+  //  ShowEditor;
   Result := False;
   if (inherited CanEditShow) and Assigned(SelectedField)
     and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count) then
@@ -2008,11 +2006,11 @@ begin
     begin
       Cell := MouseCoord(X, Y);
 
-      if (Button = mbRight) and FTitleArrow and
+      if (Button = mbRight) and
         (dgTitles in Options) and (dgIndicator in Options) and
         (Cell.X = 0) and (Cell.Y = 0) then
       begin
-        if Assigned(FOnTitleArrowMenuEvent) then
+        if (FTitleArrow and Assigned(FOnTitleArrowMenuEvent)) then
           FOnTitleArrowMenuEvent(Self);
 
         // Display TitlePopup if it exists
@@ -2271,17 +2269,17 @@ begin
       case Char(Msg.CharCode) of
         #32:
         begin
-          EditorMode := True;
+          ShowEditor;
           ChangeBoolean(JvGridBool_INVERT);
         end;
         Backspace, '0', '-':
         begin
-          EditorMode := True;
+          ShowEditor;
           ChangeBoolean(JvGridBool_UNCHECK);
         end;
         '1', '+':
         begin
-          EditorMode := True;
+          ShowEditor;
           ChangeBoolean(JvGridBool_CHECK);
         end;
       end;
@@ -3188,9 +3186,9 @@ end;
 procedure TJvDBGrid.ColEnter;
 begin
   FWord := '';
-  if FAlwaysShowEditor and not EditorMode then
-    EditorMode := True;
   inherited ColEnter;
+  if FAlwaysShowEditor and not EditorMode then
+    ShowEditor;
 end;
 
 function TJvDBGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
@@ -3763,7 +3761,6 @@ begin
   if Control.Parent <> Self.Parent then
     Control.Parent := Self.Parent;
 
-  GridControl := nil;
   R := CellRect(ACol, ARow);
   if ((R.Right - R.Left) < 1) or ((R.Bottom - R.Top) < 1) then
     // Cell too small to be drawn -> the control is not drawn
@@ -3774,16 +3771,21 @@ begin
     R.TopLeft := TControl(Control.Parent).ScreenToClient(R.TopLeft);
     R.BottomRight := ClientToScreen(R.BottomRight);
     R.BottomRight := TControl(Control.Parent).ScreenToClient(R.BottomRight);
-    if Control is TCustomEdit then
-    begin
-      { The edit control's text is not painted at good position when the control
-        has no border }
-      if TOpenCustomEdit(Control).BorderStyle = bsNone then
-      begin
-        Inc(R.Left, 2);
-        Inc(R.Top, 2);
-      end;
-    end;
+    
+    // I removed this code because moving a control away from the topleft corner
+    // of the cell lets appear the cell and its focus rectangle behind. Fred.
+    
+    //if Control is TCustomEdit then
+    //begin
+    //  { The edit control's text is not painted at good position when the control
+    //    has no border }
+    //  if TOpenCustomEdit(Control).BorderStyle = bsNone then
+    //  begin
+    //    Inc(R.Left, 2);
+    //    Inc(R.Top, 2);
+    //  end;
+    //end;
+    
     ClientTopLeft := TControl(Control.Parent).ScreenToClient(Self.ClientOrigin);
     GridControl := FControls.ControlByName(Control.Name);
     if GridControl.FitCell in [fcDesignSize, fcBiggest] then
@@ -3829,10 +3831,10 @@ begin
   end;
   Control.BringToFront;
   Control.Show;
-  if Assigned(GridControl) and not (GridControl.FitCell in [fcDesignSize, fcBiggest]) then
-    { If the Control is shown for the first time, the bounds are not correct.
-      Esp. "Height" is too large }
-    Control.BoundsRect := R;
+  //if Assigned(GridControl) and not (GridControl.FitCell in [fcDesignSize, fcBiggest]) then
+  //  { If the Control is shown for the first time, the bounds are not correct.
+  //    Esp. "Height" is too large }
+  //  Control.BoundsRect := R;
 
   if Self.Visible and Control.Visible and Self.Parent.Visible and GetParentForm(Self).Visible then
   begin
@@ -3892,7 +3894,7 @@ begin
         if CharCode = VK_TAB then
         begin
           CloseControl;
-          PostMessage(Handle, WM_KEYDOWN, CharCode, KeyData);
+          PostMessage(Handle, WM_KEYDOWN, VK_TAB, KeyData);
         end
         else
         begin
