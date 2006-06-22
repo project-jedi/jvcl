@@ -3994,27 +3994,30 @@ end;
 
 procedure TJvCustomDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if IsInWordArray(Key, [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
-    VK_ADD, VK_SUBTRACT, VK_RETURN]) and PopupVisible then
+  if not ReadOnly then
   begin
-    if FPopup is TJvPopupWindow then
-      TJvPopupWindow(FPopup).KeyDown(Key, Shift);
-    Key := 0;
-  end
-  else
-  if (Shift = []) and DirectInput then
-  begin
-    case Key of
-      VK_ADD:
-        begin
-          ApplyDate(NvlDate(Date, Now) + 1);
-          Key := 0;
-        end;
-      VK_SUBTRACT:
-        begin
-          ApplyDate(NvlDate(Date, Now) - 1);
-          Key := 0;
-        end;
+    if IsInWordArray(Key, [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
+      VK_ADD, VK_SUBTRACT, VK_RETURN]) and PopupVisible then
+    begin
+      if FPopup is TJvPopupWindow then
+        TJvPopupWindow(FPopup).KeyDown(Key, Shift);
+      Key := 0;
+    end
+    else
+    if (Shift = []) and DirectInput then
+    begin
+      case Key of
+        VK_ADD:
+          begin
+            ApplyDate(NvlDate(Date, Now) + 1);
+            Key := 0;
+          end;
+        VK_SUBTRACT:
+          begin
+            ApplyDate(NvlDate(Date, Now) - 1);
+            Key := 0;
+          end;
+      end;
     end;
   end;
   inherited KeyDown(Key, Shift);
@@ -4022,23 +4025,26 @@ end;
 
 procedure TJvCustomDateEdit.KeyPress(var Key: Char);
 begin
-  if (Key in ['T', 't', '+', '-']) and PopupVisible then
+  if not ReadOnly then
   begin
-    if FPopup is TJvPopupWindow then
-      TJvPopupWindow(FPopup).KeyPress(Key);
-    Key := #0;
-  end
-  else
-  if DirectInput then
-    case Key of
-      'T', 't':
-        begin
-          ApplyDate(Trunc(Now));
+    if (Key in ['T', 't', '+', '-']) and PopupVisible then
+    begin
+      if FPopup is TJvPopupWindow then
+        TJvPopupWindow(FPopup).KeyPress(Key);
+      Key := #0;
+    end
+    else
+    if DirectInput then
+      case Key of
+        'T', 't':
+          begin
+            ApplyDate(Trunc(Now));
+            Key := #0;
+          end;
+        '+', '-':
           Key := #0;
-        end;
-      '+', '-':
-        Key := #0;
-    end;
+      end;
+  end;
   inherited KeyPress(Key);
 end;
 
