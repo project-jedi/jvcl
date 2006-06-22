@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  JvComponentBase;
+  JvComponentBase, MultiMon;
 
 type
   TJvFormMagnet = class(TJvComponent)
@@ -610,13 +610,23 @@ end;
 procedure TJvFormMagnet.MoveTo(var SrcRect, Rect: TRect);
 var
   DesktopWorkRect, PreviousRect: TRect;
+  Monitor: HMONITOR;
+  MonInfo: TMonitorInfo;
 begin
   PreviousRect := SrcRect;
 
   // Move to a side of the desktop?
   if FScreenMagnet then
   begin
-    SystemParametersInfo(SPI_GETWORKAREA, 0, @DesktopWorkRect, 0);
+    Monitor := MultiMon.MonitorFromRect(@PreviousRect, MONITOR_DEFAULTTONEAREST);
+    if Monitor <> 0 then
+    begin
+      MonInfo.cbSize := SizeOf(MonInfo);
+      GetMonitorInfo(Monitor, @MonInfo);
+      DesktopWorkRect := MonInfo.rcWork;
+    end
+    else
+      SystemParametersInfo(SPI_GETWORKAREA, 0, @DesktopWorkRect, 0);
     MagnetScreen(PreviousRect, Rect, DesktopWorkRect);
   end;
 
