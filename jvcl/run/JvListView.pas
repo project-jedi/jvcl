@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, CommCtrl, Menus, ImgList, Clipbrd,
-  JvTypes, JvExComCtrls, JvAppStorage;
+  JvTypes, JvExComCtrls, JvAppStorage, JvVCL5Utils;
 
 const
   WM_AUTOSELECT = WM_USER + 1;
@@ -125,7 +125,7 @@ type
     function GetSortMethod: TJvSortMethod;
     procedure SetSortMethod(const Value: TJvSortMethod);
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
 
     procedure Assign(AValue: TPersistent); override;
   published
@@ -155,7 +155,7 @@ type
 
     procedure UpdateGroupProperties(const NewGroupId: Integer = -1);
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Assign(AValue: TPersistent); override;
     procedure SetLVGROUP(var GroupInfo: TLVGROUP);
@@ -550,7 +550,7 @@ begin
     inherited Assign(AValue);
 end;
 
-constructor TJvListExtendedColumn.Create(Collection: TCollection);
+constructor TJvListExtendedColumn.Create(Collection: Classes.TCollection);
 begin
   inherited Create(Collection);
 
@@ -1848,7 +1848,7 @@ begin
   end;
 end;
 
-constructor TJvListViewGroup.Create(Collection: TCollection);
+constructor TJvListViewGroup.Create(Collection: Classes.TCollection);
 begin
   // Before inherited for Notify to acces it
   FGroupId := -1;
