@@ -239,6 +239,8 @@ type
     property LabelMargin: TJvRect read FLabelMargin write SetLabelMargin;
   end;
 
+  TJvInsertMarkPosition = (impBefore, impAfter);
+
   TJvListView = class(TJvExListView)
   private
     FAutoClipboardCopy: Boolean;
@@ -262,11 +264,13 @@ type
     FOnCompareGroups: TJvListViewCompareGroupEvent;
     FViewStyle: TJvViewStyle;
     FTileViewProperties: TJvTileViewProperties;
+    FInsertMarkColor: TColor;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure SetGroupView(const Value: Boolean);
     procedure SetGroups(const Value: TJvListViewGroups);
     procedure SetTileViewProperties(const Value: TJvTileViewProperties);
+    procedure SetInsertMarkColor(const Value: TColor);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
@@ -331,6 +335,10 @@ type
     function MoveDown(Index: Integer; Focus: Boolean = True): Integer;
     function SelectNextItem(Focus: Boolean = True): Integer;
     function SelectPrevItem(Focus: Boolean = True): Integer;
+    
+    function ShowInsertMark(ItemIndex: Integer; Position: TJvInsertMarkPosition): Boolean;
+    function HideInsertMark: Boolean;
+    function GetInsertMarkPosition(const X, Y: Integer; var ItemIndex: Integer; var Position: TJvInsertMarkPosition): Boolean;
 
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
@@ -352,6 +360,7 @@ type
     property GroupView: Boolean read FGroupView write SetGroupView default False;
     property Groups: TJvListViewGroups read FGroups write SetGroups;
     property TileViewProperties: TJvTileViewProperties read FTileViewProperties write SetTileViewProperties;
+    property InsertMarkColor: TColor read FInsertMarkColor write SetInsertMarkColor;
 
     property ViewStylesItemBrush : TJvViewStyles read FViewStylesItemBrush write SetViewStylesItemBrush default ALL_VIEW_STYLES;
     property ViewStyle: TJvViewStyle read FViewStyle write SetViewStyle default vsIcon;
@@ -396,7 +405,7 @@ uses
   JvConsts, JvResources;
 
 type
-  // Mantis 980: New types for group handling
+  // Mantis 980: New types for group/tile/insert mark handling
   tagLVITEMA = packed record
     mask: UINT;
     iItem: Integer;
@@ -445,21 +454,35 @@ type
   TLVTILEINFO = tagLVTILEINFO;
   PLVTILEINFO = ^TLVTILEINFO;
 
+  tagLVINSERTMARK = packed record
+    cbSize: UINT;
+    dwFlags: DWORD;
+    iItem: Integer;
+    dwReserved: DWORD;
+  end;
+  TLVINSERTMARK = tagLVINSERTMARK;
+  PLVINSERTMARK = ^TLVINSERTMARK;
+
 const
   // Mantis 980: New constants for group/tile/insert mark handling
-  LVM_SETTILEWIDTH      = LVM_FIRST + 141;
-  LVM_SETVIEW           = LVM_FIRST + 142;
-  LVM_INSERTGROUP       = LVM_FIRST + 145;
-  LVM_SETGROUPINFO      = LVM_FIRST + 147;
-  LVM_REMOVEGROUP       = LVM_FIRST + 150;
-  LVM_MOVEITEMTOGROUP   = LVM_FIRST + 154;
-  LVM_ENABLEGROUPVIEW   = LVM_FIRST + 157;
-  LVM_SORTGROUPS        = LVM_FIRST + 158;
-  LVM_INSERTGROUPSORTED = LVM_FIRST + 159;
-  LVM_GETTILEVIEWINFO   = LVM_FIRST + 163;
-  LVM_SETTILEVIEWINFO   = LVM_FIRST + 162;
-  LVM_SETTILEINFO       = LVM_FIRST + 164;
-  LVM_GETTILEINFO       = LVM_FIRST + 165;
+  LVM_SETTILEWIDTH       = LVM_FIRST + 141;
+  LVM_SETVIEW            = LVM_FIRST + 142;
+  LVM_INSERTGROUP        = LVM_FIRST + 145;
+  LVM_SETGROUPINFO       = LVM_FIRST + 147;
+  LVM_REMOVEGROUP        = LVM_FIRST + 150;
+  LVM_MOVEITEMTOGROUP    = LVM_FIRST + 154;
+  LVM_ENABLEGROUPVIEW    = LVM_FIRST + 157;
+  LVM_SORTGROUPS         = LVM_FIRST + 158;
+  LVM_INSERTGROUPSORTED  = LVM_FIRST + 159;
+  LVM_GETTILEVIEWINFO    = LVM_FIRST + 163;
+  LVM_SETTILEVIEWINFO    = LVM_FIRST + 162;
+  LVM_SETTILEINFO        = LVM_FIRST + 164;
+  LVM_GETTILEINFO        = LVM_FIRST + 165;
+  LVM_SETINSERTMARK      = LVM_FIRST + 166;
+  LVM_INSERTMARKHITTEST  = LVM_FIRST + 168;
+  LVM_GETINSERTMARKRECT  = LVM_FIRST + 169;
+  LVM_SETINSERTMARKCOLOR = LVM_FIRST + 170;
+  LVM_GETINSERTMARKCOLOR = LVM_FIRST + 171;
 
   LVIF_GROUPID = $0100;
 
@@ -491,8 +514,12 @@ const
   LVTVIM_COLUMNS     = 2;
   LVTVIM_LABELMARGIN = 4;
 
+  // LVIM (ListViewInsertMark Constants)
+  LVIM_AFTER = 1;
+
   AlignmentToLVGA: array[TAlignment] of Integer = (LVGA_HEADER_LEFT, LVGA_HEADER_RIGHT, LVGA_HEADER_CENTER);
   TileSizeKindToLVTVIF: array[TJvTileSizeKind] of Integer = (LVTVIF_AUTOSIZE, LVTVIF_FIXEDWIDTH, LVTVIF_FIXEDHEIGHT, LVTVIF_FIXEDSIZE);
+  InsertMarkPositionToLVIM: array[TJvInsertMarkPosition] of Integer = (0, LVIM_AFTER);
 
   // (rom) increased from 100
   cColumnsHandled = 1024;
@@ -1620,6 +1647,11 @@ begin
     FExtendedColumns.Assign(FSavedExtendedColumns);
 
   LoadTileViewProperties;
+  FInsertMarkColor := SendMessage(Handle, LVM_GETINSERTMARKCOLOR, 0, 0);
+
+  // Force a change from True to False so that InsertMarks work correctly.
+  SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(True), 0);
+  SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(FGroupView), 0);
 end;
 
 procedure TJvListView.UpdateHeaderImages(HeaderHandle: Integer);
@@ -1813,6 +1845,46 @@ begin
     PostMessage(Handle, WM_AUTOSELECT, Integer(Items[Index]), 1);
 end;
 
+function TJvListView.ShowInsertMark(ItemIndex: Integer; Position: TJvInsertMarkPosition): Boolean;
+var
+  Infos: TLVINSERTMARK;
+begin
+  ZeroMemory(@Infos, SizeOf(Infos));
+  
+  Infos.cbSize := SizeOf(Infos);
+  Infos.dwFlags := InsertMarkPositionToLVIM[Position];
+  Infos.iItem := ItemIndex;
+
+  Result := Bool(SendMessage(Handle, LVM_SETINSERTMARK, 0, LPARAM(@Infos)));
+end;
+
+function TJvListView.HideInsertMark: Boolean;
+begin
+  Result := ShowInsertMark(-1, impBefore);
+end;
+
+function TJvListView.GetInsertMarkPosition(const X, Y: Integer;
+  var ItemIndex: Integer; var Position: TJvInsertMarkPosition): Boolean;
+var
+  Infos: TLVINSERTMARK;
+  Point: TPoint;
+begin
+  Point.X := X;
+  Point.Y := Y;
+  
+  ZeroMemory(@Infos, SizeOf(Infos));
+  
+  Infos.cbSize := SizeOf(Infos);
+  Result := Bool(SendMessage(Handle, LVM_INSERTMARKHITTEST, WPARAM(@Point), LPARAM(@Infos)));
+  if Result then
+  begin
+    ItemIndex := Infos.iItem;
+    if (Infos.dwFlags and LVIM_AFTER) = LVIM_AFTER then
+      Position := impAfter
+    else
+      Position := impBefore;
+  end;
+end;
 
 function TJvListView.IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean;
 begin
@@ -1948,6 +2020,16 @@ end;
 procedure TJvListView.SetTileViewProperties(const Value: TJvTileViewProperties);
 begin
   FTileViewProperties.Assign(Value);
+end;
+
+procedure TJvListView.SetInsertMarkColor(const Value: TColor);
+begin
+  if FInsertMarkColor <> Value then
+  begin
+    FInsertMarkColor := Value;
+
+    SendMessage(Handle, LVM_SETINSERTMARKCOLOR, 0, ColorToRGB(FInsertMarkColor));
+  end;
 end;
 
 procedure TJvListView.DoPictureChange(Sender: TObject);
@@ -2086,49 +2168,20 @@ end;
 
 procedure TJvListViewGroup.SetHeader(const Value: WideString);
 var
-  List: TJvListView;
-  ItemList: TObjectList;
-  I: Integer;
-  Item: TJvListItem;
+  SavedGroupId: Integer;
 begin
   if FHeader <> Value then
   begin
     FHeader := Value;
 
-    // In order to change the header text, one actually has to delete the
-    // group and recreate it. Simply calling UpdateGroupProperties won't do.
-    // But the items MUST stay in the group, hence the need to save them in
-    // a list, remove them from the group, then add them once the group is back. 
-    List := (Collection as TJvListViewGroups).ParentList;
-    ItemList := TObjectList.Create(False);
-    try
-      if Assigned(List) then
-      begin
-        for I := 0 to List.Items.Count - 1 do
-        begin
-          Item := List.Items[I] as TJvListItem;
-          if Item.GroupId = GroupId then
-          begin
-            ItemList.Add(Item);
-            Item.GroupId := -1;
-          end;
-        end;
-      end;
-
-      (Collection as TJvListViewGroups).RemoveGroupFromList(Self);
-      (Collection as TJvListViewGroups).InsertGroupIntoList(Self);
-      
-      if Assigned(List) and (ItemList.Count > 0) then
-      begin
-        for I := 0 to ItemList.Count - 1 do
-        begin
-          Item := ItemList[I] as TJvListItem;
-          Item.GroupId := GroupId;
-        end;
-      end;
-    finally
-      ItemList.Free;
-    end;
+    // Due to a undocumented bug/feature in the list view, one has to change
+    // the GroupId as well, when changing the caption or the caption
+    // modification is not taken into account. 
+    SavedGroupId := GroupId;
+    UpdateGroupProperties(MaxInt);
+    FGroupId := MaxInt;
+    UpdateGroupProperties(SavedGroupId);
+    FGroupId := SavedGroupId;
   end;
 end;
 
