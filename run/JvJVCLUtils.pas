@@ -552,7 +552,7 @@ type
 { end JvGraph }
 
 type
-  // equivalent of TPoint, but that can be a published property for BCB
+  // equivalent of TPoint, but that can be a published property 
   TJvPoint = class(TPersistent)
   private
     FY: Longint;
@@ -563,14 +563,16 @@ type
   protected
     procedure DoChange;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(Source: TPersistent); overload; override;
+    procedure Assign(Source: TPoint); reintroduce; overload;
+    procedure CopyToPoint(var Point: TPoint);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property X: Longint read FX write SetX;
-    property Y: Longint read FY write SetY;
+    property X: Longint read FX write SetX default 0;
+    property Y: Longint read FY write SetY default 0;
   end;
 
-  // equivalent of TRect, but that can be a published property for BCB
+  // equivalent of TRect, but that can be a published property
   TJvRect = class(TPersistent)
   private
     FTopLeft: TJvPoint;
@@ -596,17 +598,38 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(Source: TPersistent); overload; override;
+    procedure Assign(Source: TRect); reintroduce; overload;
+    procedure CopyToRect(var Rect: TRect);
     property TopLeft: TJvPoint read FTopLeft write SetTopLeft;
     property BottomRight: TJvPoint read FBottomRight write SetBottomRight;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property Left: Integer read GetLeft write SetLeft;
-    property Top: Integer read GetTop write SetTop;
-    property Right: Integer read GetRight write SetRight;
-    property Bottom: Integer read GetBottom write SetBottom;
+    property Left: Integer read GetLeft write SetLeft default 0;
+    property Top: Integer read GetTop write SetTop default 0;
+    property Right: Integer read GetRight write SetRight default 0;
+    property Bottom: Integer read GetBottom write SetBottom default 0;
+  end;
+
+  TJvSize = class(TPersistent)
+  private
+    FWidth: Longint;
+    FHeight: Longint;
+    FOnChange: TNotifyEvent;
+    procedure SetWidth(Value: Longint);
+    procedure SetHeight(Value: Longint);
+  protected
+    procedure DoChange;
+  public
+    procedure Assign(Source: TPersistent); overload; override; 
+    procedure Assign(Source: TSize); reintroduce; overload;
+    procedure CopyToSize(var Size: TSize);
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property Width: Longint read FWidth write SetWidth default 0;
+    property Height: Longint read FHeight write SetHeight default 0;
   end;
 
 { begin JvCtrlUtils }
@@ -7198,6 +7221,18 @@ begin
     inherited Assign(Source);
 end;
 
+procedure TJvPoint.Assign(Source: TPoint);
+begin
+  X := Source.X;
+  Y := Source.Y;
+end;
+
+procedure TJvPoint.CopyToPoint(var Point: TPoint);
+begin
+  Point.X := X;
+  Point.Y := Y;
+end;
+
 procedure TJvPoint.DoChange;
 begin
   if Assigned(FOnChange) then
@@ -7217,6 +7252,18 @@ begin
 end;
 
 //=== { TJvRect } ============================================================
+
+procedure TJvRect.Assign(Source: TRect);
+begin
+  TopLeft.Assign(Source.TopLeft);
+  BottomRight.Assign(Source.BottomRight);
+end;
+
+procedure TJvRect.CopyToRect(var Rect: TRect);
+begin
+  TopLeft.CopyToPoint(Rect.TopLeft);
+  BottomRight.CopyToPoint(Rect.BottomRight);
+end;
 
 constructor TJvRect.Create;
 begin
@@ -7325,6 +7372,59 @@ end;
 procedure TJvRect.SetWidth(Value: Integer);
 begin
   FBottomRight.X := FTopLeft.X + Value;
+end;
+
+  { TJvSize }
+
+procedure TJvSize.Assign(Source: TPersistent);
+begin
+  if Source is TJvSize then
+  begin
+    FWidth := (Source as TJvSize).Width;
+    FHeight := (Source as TJvSize).Height;
+    DoChange;
+  end
+  else
+  begin
+    inherited Assign(Source);
+  end;
+end;
+
+procedure TJvSize.Assign(Source: TSize);
+begin
+  FWidth := Source.cx;
+  FHeight := Source.cy;
+  DoChange; 
+end;
+
+procedure TJvSize.CopyToSize(var Size: TSize);
+begin
+  Size.cx := Width;
+  Size.cy := Height;
+end;
+
+procedure TJvSize.DoChange;
+begin
+  if Assigned(OnChange) then
+   OnChange(Self);
+end;
+
+procedure TJvSize.SetHeight(Value: Integer);
+begin
+  if FHeight <> Value then
+  begin
+    FHeight := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvSize.SetWidth(Value: Integer);
+begin
+  if FWidth <> Value then
+  begin
+    FWidth := Value;
+    DoChange;
+  end;
 end;
 
 function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
