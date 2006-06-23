@@ -204,6 +204,66 @@ type
     property Sorted: Boolean read FSorted write SetSorted;
   end;
 
+  TJvGroupsPropertiesBorderRect = class(TJvRect)
+  published
+    property Top default 12;
+  end;
+
+  TJvGroupsPropertiesBorderColors = class(TPersistent)
+  private
+    FRight: TColor;
+    FBottom: TColor;
+    FTop: TColor;
+    FLeft: TColor;
+    FOnChange: TNotifyEvent;
+    procedure SetBottom(const Value: TColor);
+    procedure SetLeft(const Value: TColor);
+    procedure SetRight(const Value: TColor);
+    procedure SetTop(const Value: TColor);
+  protected
+    procedure DoChange;
+  public
+    procedure Assign(Source: TPersistent); override;
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property Top: TColor read FTop write SetTop default $C8D0D4;
+    property Left: TColor read FLeft write SetLeft default clWhite;
+    property Bottom: TColor read FBottom write SetBottom default clWhite;
+    property Right: TColor read FRight write SetRight default clWhite;
+  end;
+
+  TJvGroupsProperties = class(TPersistent)
+  private
+    FBorderSize: TJvGroupsPropertiesBorderRect;
+    FBorderColor: TJvGroupsPropertiesBorderColors;
+    FHeaderColor: TColor;
+
+    FOnChange: TNotifyEvent;
+    FLoading: Boolean;
+    procedure SetBorderSize(const Value: TJvGroupsPropertiesBorderRect);
+    procedure SetBorderColor(const Value: TJvGroupsPropertiesBorderColors);
+
+    procedure BorderSizeChange(Sender: TObject);
+    procedure BorderColorChange(Sender: TObject);
+    procedure SetHeaderColor(const Value: TColor);
+  protected
+    procedure DoChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure LoadFromList(List: TCustomListView);
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property BorderSize: TJvGroupsPropertiesBorderRect read FBorderSize write SetBorderSize;
+    property HeaderColor: TColor read FHeaderColor write SetHeaderColor default clBlack;
+
+    // Note that BorderColor is currently ignored by the Win32 API
+    property BorderColor: TJvGroupsPropertiesBorderColors read FBorderColor write SetBorderColor;
+  end;
+
   TJvViewStyles = set of TJvViewStyle;
 
   TJvTileSizeKind = (tskAutoSize, tskFixedWidth, tskFixedHeight, tskFixedSize);
@@ -261,6 +321,7 @@ type
     FViewStylesItemBrush: TJvViewStyles;  // use for Create/DestroyWnd process
     FGroupView: Boolean;
     FGroups: TJvListViewGroups;
+    FGroupsProperties: TJvGroupsProperties;
     FOnCompareGroups: TJvListViewCompareGroupEvent;
     FViewStyle: TJvViewStyle;
     FTileViewProperties: TJvTileViewProperties;
@@ -269,6 +330,7 @@ type
     procedure SetPicture(const Value: TPicture);
     procedure SetGroupView(const Value: Boolean);
     procedure SetGroups(const Value: TJvListViewGroups);
+    procedure SetGroupsProperties(const Value: TJvGroupsProperties);
     procedure SetTileViewProperties(const Value: TJvTileViewProperties);
     procedure SetInsertMarkColor(const Value: TColor);
     procedure SetHeaderImages(const Value: TCustomImageList);
@@ -282,7 +344,9 @@ type
     procedure SetViewStylesItemBrush(const Value: TJvViewStyles);
     function DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
     procedure TileViewPropertiesChange(Sender: TObject);
+    procedure GroupsPropertiesChange(Sender: TObject);
     procedure LoadTileViewProperties;
+    procedure LoadGroupsProperties;
   protected
     function CreateListItem: TListItem; override;
     function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -359,6 +423,7 @@ type
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
     property GroupView: Boolean read FGroupView write SetGroupView default False;
     property Groups: TJvListViewGroups read FGroups write SetGroups;
+    property GroupsProperties: TJvGroupsProperties read FGroupsProperties write SetGroupsProperties;
     property TileViewProperties: TJvTileViewProperties read FTileViewProperties write SetTileViewProperties;
     property InsertMarkColor: TColor read FInsertMarkColor write SetInsertMarkColor;
 
@@ -463,6 +528,23 @@ type
   TLVINSERTMARK = tagLVINSERTMARK;
   PLVINSERTMARK = ^TLVINSERTMARK;
 
+  tagLVGROUPMETRICS = packed record
+    cbSize: UINT;
+    mask: UINT;
+    Left: UINT;
+    Top: UINT;
+    Right: UINT;
+    Bottom: UINT;
+    crLeft: COLORREF;
+    crTop: COLORREF;
+    crRight: COLORREF;
+    crBottom: COLORREF;
+    crHeader: COLORREF;
+    crFooter: COLORREF;
+  end;
+  TLVGROUPMETRICS = tagLVGROUPMETRICS;
+  PLVGROUPMETRICS = ^TLVGROUPMETRICS;
+
 const
   // Mantis 980: New constants for group/tile/insert mark handling
   LVM_SETTILEWIDTH       = LVM_FIRST + 141;
@@ -471,6 +553,8 @@ const
   LVM_SETGROUPINFO       = LVM_FIRST + 147;
   LVM_REMOVEGROUP        = LVM_FIRST + 150;
   LVM_MOVEITEMTOGROUP    = LVM_FIRST + 154;
+  LVM_SETGROUPMETRICS    = LVM_FIRST + 155;
+  LVM_GETGROUPMETRICS    = LVM_FIRST + 156;
   LVM_ENABLEGROUPVIEW    = LVM_FIRST + 157;
   LVM_SORTGROUPS         = LVM_FIRST + 158;
   LVM_INSERTGROUPSORTED  = LVM_FIRST + 159;
@@ -516,6 +600,12 @@ const
 
   // LVIM (ListViewInsertMark Constants)
   LVIM_AFTER = 1;
+
+  // LVGMF (ListViewGroupMetricsFlag Constants)
+  LVGMF_NONE        = $00000000;
+  LVGMF_BORDERSIZE  = $00000001;
+  LVGMF_BORDERCOLOR = $00000002;
+  LVGMF_TEXTCOLOR   = $00000004;
 
   AlignmentToLVGA: array[TAlignment] of Integer = (LVGA_HEADER_LEFT, LVGA_HEADER_RIGHT, LVGA_HEADER_CENTER);
   TileSizeKindToLVTVIF: array[TJvTileSizeKind] of Integer = (LVTVIF_AUTOSIZE, LVTVIF_FIXEDWIDTH, LVTVIF_FIXEDHEIGHT, LVTVIF_FIXEDSIZE);
@@ -814,13 +904,16 @@ begin
   FExtendedColumns := TJvListExtendedColumns.Create(Self);
   FSavedExtendedColumns := TJvListExtendedColumns.Create(Self);
   FGroups := TJvListViewGroups.Create(Self);
+  FGroupsProperties := TJvGroupsProperties.Create;
   FTileViewProperties := TJvTileViewProperties.Create;
 
   FTileViewProperties.OnChange := TileViewPropertiesChange;
+  FGroupsProperties.OnChange := GroupsPropertiesChange;
 end;
 
 destructor TJvListView.Destroy;
 begin
+  FGroupsProperties.Free;
   FTileViewProperties.Free;
   FGroups.Free;
   FExtendedColumns.Free;
@@ -1647,6 +1740,7 @@ begin
     FExtendedColumns.Assign(FSavedExtendedColumns);
 
   LoadTileViewProperties;
+  LoadGroupsProperties;
   FInsertMarkColor := SendMessage(Handle, LVM_GETINSERTMARKCOLOR, 0, 0);
 
   // Force a change from True to False so that InsertMarks work correctly.
@@ -2017,6 +2111,11 @@ begin
   FGroups.Assign(Value);
 end;
 
+procedure TJvListView.SetGroupsProperties(const Value: TJvGroupsProperties);
+begin
+  FGroupsProperties.Assign(Value);
+end;
+
 procedure TJvListView.SetTileViewProperties(const Value: TJvTileViewProperties);
 begin
   FTileViewProperties.Assign(Value);
@@ -2129,9 +2228,38 @@ begin
   end;
 end;
 
+procedure TJvListView.GroupsPropertiesChange(Sender: TObject);
+var
+  Infos: TLVGROUPMETRICS;
+begin
+  if not (csLoading in ComponentState) then
+  begin
+    ZeroMemory(@Infos, SizeOf(Infos));
+
+    Infos.cbSize := SizeOf(Infos);
+    Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
+    Infos.Top := GroupsProperties.BorderSize.Top;
+    Infos.Left := GroupsProperties.BorderSize.Left;
+    Infos.Bottom := GroupsProperties.BorderSize.Bottom;
+    Infos.Right := GroupsProperties.BorderSize.Right;
+    Infos.crTop := GroupsProperties.BorderColor.Top;
+    Infos.crLeft := GroupsProperties.BorderColor.Left;
+    Infos.crBottom := GroupsProperties.BorderColor.Bottom;
+    Infos.crRight := GroupsProperties.BorderColor.Right;
+    Infos.crHeader := GroupsProperties.HeaderColor;
+
+    SendMessage(Handle, LVM_SETGROUPMETRICS, 0, LPARAM(@Infos));
+  end;
+end;
+
 procedure TJvListView.LoadTileViewProperties;
 begin
   TileViewProperties.LoadFromList(Self);
+end;
+
+procedure TJvListView.LoadGroupsProperties;
+begin
+  GroupsProperties.LoadFromList(Self);
 end;
 
   { TJvListViewGroup }
@@ -2447,6 +2575,151 @@ end;
 procedure TJvTileViewProperties.TileSizeChange(Sender: TObject);
 begin
   DoChange;
+end;
+
+  { TJvGroupProperties }
+
+procedure TJvGroupsProperties.BorderColorChange(Sender: TObject);
+begin
+  DoChange;
+end;
+
+procedure TJvGroupsProperties.BorderSizeChange(Sender: TObject);
+begin
+  DoChange;
+end;
+
+constructor TJvGroupsProperties.Create;
+begin
+  inherited Create;
+
+  FBorderSize := TJvGroupsPropertiesBorderRect.Create;
+  FBorderColor := TJvGroupsPropertiesBorderColors.Create;
+
+  FBorderSize.OnChange := BorderSizeChange;
+  FBorderColor.OnChange := BorderColorChange;
+end;
+
+destructor TJvGroupsProperties.Destroy;
+begin
+  FBorderSize.Free;
+  FBorderColor.Free;
+
+  inherited Destroy;
+end;
+
+procedure TJvGroupsProperties.DoChange;
+begin
+  if not FLoading and Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+procedure TJvGroupsProperties.LoadFromList(List: TCustomListView);
+var
+  Infos: TLVGROUPMETRICS; 
+begin
+  ZeroMemory(@Infos, SizeOf(Infos));
+
+  Infos.cbSize := SizeOf(Infos);
+  Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
+  SendMessage(List.Handle, LVM_GETGROUPMETRICS, 0, LPARAM(@Infos));
+
+  FLoading := True;
+  try
+    BorderSize.Top := Infos.Top;
+    BorderSize.Left := Infos.Left;
+    BorderSize.Bottom := Infos.Bottom;
+    BorderSize.Right := Infos.Right;
+    BorderColor.Top := Infos.crTop and $00FFFFFF;
+    BorderColor.Left := Infos.crLeft and $00FFFFFF;
+    BorderColor.Bottom := Infos.crBottom and $00FFFFFF;
+    BorderColor.Right := Infos.crRight and $00FFFFFF;
+    HeaderColor := Infos.crHeader and $00FFFFFF;
+  finally
+    FLoading := False;
+  end;
+end;
+
+procedure TJvGroupsProperties.SetBorderColor(const Value: TJvGroupsPropertiesBorderColors);
+begin
+  FBorderColor.Assign(Value);
+end;
+
+procedure TJvGroupsProperties.SetBorderSize(const Value: TJvGroupsPropertiesBorderRect);
+begin
+  FBorderSize.Assign(Value);
+end;
+
+procedure TJvGroupsProperties.SetHeaderColor(const Value: TColor);
+begin
+  if FHeaderColor <> Value then
+  begin
+    FHeaderColor := Value;
+    DoChange;
+  end;
+end;
+
+{ TJvRectColors }
+
+procedure TJvGroupsPropertiesBorderColors.Assign(Source: TPersistent);
+var
+  SourceColors: TJvGroupsPropertiesBorderColors;
+begin
+  if Source is TJvGroupsPropertiesBorderColors then
+  begin
+    SourceColors := Source as TJvGroupsPropertiesBorderColors;
+    FTop := SourceColors.Top;
+    FLeft := SourceColors.Left;
+    FBottom := SourceColors.Bottom;
+    FRight := SourceColors.Right;
+    DoChange;
+  end
+  else
+  begin
+    inherited Assign(Source);
+  end;
+end;
+
+procedure TJvGroupsPropertiesBorderColors.DoChange;
+begin
+  if Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+procedure TJvGroupsPropertiesBorderColors.SetBottom(const Value: TColor);
+begin
+  if FBottom <> Value then
+  begin
+    FBottom := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvGroupsPropertiesBorderColors.SetLeft(const Value: TColor);
+begin
+  if FLeft <> Value then
+  begin
+    FLeft := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvGroupsPropertiesBorderColors.SetRight(const Value: TColor);
+begin
+  if FRight <> Value then
+  begin
+    FRight := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvGroupsPropertiesBorderColors.SetTop(const Value: TColor);
+begin
+  if FTop <> Value then
+  begin
+    FTop := Value;
+    DoChange;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
