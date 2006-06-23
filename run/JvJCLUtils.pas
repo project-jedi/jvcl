@@ -1236,6 +1236,10 @@ type
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
     procedure DoChange(Item: Integer; Action: TListNotification);
   public
+    {$IFDEF COMPILER5}
+    procedure Assign(Source: TList);
+    {$ENDIF COMPILER5}
+    
     // To be used with DefineProperties in client classes.
     procedure ReadData(Reader: TReader);
     procedure WriteData(Writer: TWriter);
@@ -9984,6 +9988,18 @@ function TIntegerList.Add(Value: Integer): Integer;
 begin
   Result := inherited Add(Pointer(Value));
 end;
+
+{$IFDEF COMPILER5}
+procedure TIntegerList.Assign(Source: TList);
+var
+  I: Integer;
+begin
+  Clear;
+  Capacity := Source.Count;
+  for I := 0 to Source.Count - 1 do
+    Add(Integer(Source[I]));
+end;
+{$ENDIF COMPILER5}
 
 procedure TIntegerList.DoChange(Item: Integer; Action: TListNotification);
 begin
