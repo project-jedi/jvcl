@@ -1221,6 +1221,39 @@ function VarIsStr(const V: Variant): Boolean;
 {$ENDIF COMPILER5}
 {$ENDIF !BCB}
 
+// Containers
+type
+  TIntegerListChange = procedure(Sender: TObject; Item: Integer; Action: TListNotification) of object;
+
+  TIntegerList = class(TList)
+  private
+    FOnChange: TIntegerListChange;
+    FLoading: Boolean;
+    
+    function GetItem(Index: Integer): Integer;
+    procedure SetItem(Index: Integer; const Value: Integer);
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    procedure DoChange(Item: Integer; Action: TListNotification);
+  public
+    // To be used with DefineProperties in client classes.
+    procedure ReadData(Reader: TReader);
+    procedure WriteData(Writer: TWriter);
+    property Loading: Boolean read FLoading;
+
+    // Overloaded to accept/return Integer instead of Pointer.
+    function Add(Value: Integer): Integer;
+    function Extract(Item: Integer): Integer;
+    function First: Integer;
+    function IndexOf(Item: Integer): Integer;
+    procedure Insert(Index: Integer; Item: Integer);
+    function Last: Integer;
+    function Remove(Item: Integer): Integer;
+    property Items[Index: Integer]: Integer read GetItem write SetItem; default;
+
+    property OnChange: TIntegerListChange read FOnChange write FOnChange;
+  end;
+
 type
   TCollectionSortProc = function(Item1, Item2: TCollectionItem): Integer;
 
@@ -9944,6 +9977,90 @@ begin
   Result := Trunc(86400 * (FTime - Now));
 end;
 {$ENDIF COMPILER5}
+
+{ TIntegerList }
+
+function TIntegerList.Add(Value: Integer): Integer;
+begin
+  Result := inherited Add(Pointer(Value));
+end;
+
+procedure TIntegerList.DoChange(Item: Integer; Action: TListNotification);
+begin
+  if Assigned(OnChange) then
+    OnChange(Self, Item, Action);
+end;
+
+function TIntegerList.Extract(Item: Integer): Integer;
+begin
+  Result := Integer(inherited Extract(Pointer(Item)));
+end;
+
+function TIntegerList.First: Integer;
+begin
+  Result := Integer(inherited First);
+end;
+
+function TIntegerList.GetItem(Index: Integer): Integer;
+begin
+  Result := Integer(inherited Items[Index]);
+end;
+
+function TIntegerList.IndexOf(Item: Integer): Integer;
+begin
+  Result := inherited IndexOf(Pointer(Item));
+end;
+
+procedure TIntegerList.Insert(Index, Item: Integer);
+begin
+  inherited Insert(Index, Pointer(Item));
+end;
+
+function TIntegerList.Last: Integer;
+begin
+  Result := Integer(inherited Last);
+end;
+
+procedure TIntegerList.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  DoChange(Integer(Ptr), Action);
+end;
+
+procedure TIntegerList.ReadData(Reader: TReader);
+begin
+  FLoading := True;
+  try
+    Clear;
+    Reader.ReadListBegin;
+    while not Reader.EndOfList do
+    begin
+      Add(Reader.ReadInteger);
+    end;
+    Reader.ReadListEnd;
+  finally
+    FLoading := False;
+  end;
+end;
+
+function TIntegerList.Remove(Item: Integer): Integer;
+begin
+  Result := Integer(inherited Remove(Pointer(Item)));
+end;
+
+procedure TIntegerList.SetItem(Index: Integer; const Value: Integer);
+begin
+  inherited Items[Index] := Pointer(Value);
+end;
+
+procedure TIntegerList.WriteData(Writer: TWriter);
+var
+  I: Integer;
+begin
+  Writer.WriteListBegin;
+  for I := 0 to Count - 1 do
+    Writer.WriteInteger(Items[I]);
+  Writer.WriteListEnd;
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization
