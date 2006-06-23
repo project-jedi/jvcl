@@ -37,12 +37,15 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, CommCtrl, Menus, ImgList, Clipbrd,
-  JvTypes, JvExComCtrls, JvAppStorage, JvVCL5Utils;
+  JvJCLUtils, JvJVCLUtils, JvTypes, JvExComCtrls, JvAppStorage, JvVCL5Utils;
+
+type
+  TJvViewStyle = (vsIcon, vsSmallIcon, vsList, vsReport, vsTile);
 
 const
   WM_AUTOSELECT = WM_USER + 1;
-  ALL_VIEW_STYLES = [vsIcon, vsSmallIcon, vsList, vsReport];
-  
+  ALL_VIEW_STYLES = [vsIcon, vsSmallIcon, vsList, vsReport, vsTile];
+
 type
   TJvListView = class;
   TJvListViewGroup = class;
@@ -98,15 +101,26 @@ type
     FFont: TFont;
     FBrush: TBrush;
     FGroupId: Integer;
+    FTileColumns: TIntegerList;
     procedure SetBrush(const Value: TBrush);
     procedure SetGroupId(const Value: Integer);
+    procedure SetTileColumns(const Value: TIntegerList);
+
+    procedure ReadTileColumns(Reader: TReader);
+    procedure WriteTileColumns(Writer: TWriter);
+    procedure TileColumnsChange(Sender: TObject; Item: Integer; Action: TListNotification);
   protected
     procedure SetPopupMenu(const Value: TPopupMenu);
     procedure SetFont(const Value: TFont);
+    procedure UpdateTileColumns;
   public
     constructor CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
     destructor Destroy; override;
+
+    procedure DefineProperties(Filer: TFiler); override;
+
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
+    property TileColumns: TIntegerList read FTileColumns write SetTileColumns;
   published
     property Font: TFont read FFont write SetFont;
     property Brush: TBrush read FBrush write SetBrush;
@@ -190,7 +204,40 @@ type
     property Sorted: Boolean read FSorted write SetSorted;
   end;
 
-  TViewStyles = set of TViewStyle;
+  TJvViewStyles = set of TJvViewStyle;
+
+  TJvTileSizeKind = (tskAutoSize, tskFixedWidth, tskFixedHeight, tskFixedSize);
+
+  TJvTileViewProperties = class(TPersistent)
+  private
+    FLabelMargin: TJvRect;
+    FTileSize: TJvSize;
+    FSubLinesCount: Integer;
+    FTileSizeKind: TJvTileSizeKind;
+    FOnChange: TNotifyEvent;
+    FLoading: Boolean;
+    procedure SetLabelMargin(const Value: TJvRect);
+    procedure SetSubLinesCount(const Value: Integer);
+    procedure SetTileSize(const Value: TJvSize);
+    procedure SetTileSizeKind(const Value: TJvTileSizeKind);
+
+    procedure LabelMarginChange(Sender: TObject);
+    procedure TileSizeChange(Sender: TObject);
+  protected
+    procedure DoChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure LoadFromList(List: TCustomListView);
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property TileSizeKind: TJvTileSizeKind read FTileSizeKind write SetTileSizeKind default tskAutoSize;
+    property TileSize: TJvSize read FTileSize write SetTileSize;
+    property SubLinesCount: Integer read FSubLinesCount write SetSubLinesCount default 1;
+    property LabelMargin: TJvRect read FLabelMargin write SetLabelMargin;
+  end;
 
   TJvListView = class(TJvExListView)
   private
@@ -209,14 +256,17 @@ type
     FPicture: TPicture;
     FExtendedColumns: TJvListExtendedColumns;
     FSavedExtendedColumns: TJvListExtendedColumns;
-    FViewStylesItemBrush: TViewStyles;  // use for Create/DestroyWnd process
+    FViewStylesItemBrush: TJvViewStyles;  // use for Create/DestroyWnd process
     FGroupView: Boolean;
     FGroups: TJvListViewGroups;
     FOnCompareGroups: TJvListViewCompareGroupEvent;
+    FViewStyle: TJvViewStyle;
+    FTileViewProperties: TJvTileViewProperties;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure SetGroupView(const Value: Boolean);
     procedure SetGroups(const Value: TJvListViewGroups);
+    procedure SetTileViewProperties(const Value: TJvTileViewProperties);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
@@ -225,8 +275,10 @@ type
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
     {$ENDIF COMPILER5}
-    procedure SetViewStylesItemBrush(const Value: TViewStyles);
+    procedure SetViewStylesItemBrush(const Value: TJvViewStyles);
     function DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
+    procedure TileViewPropertiesChange(Sender: TObject);
+    procedure LoadTileViewProperties;
   protected
     function CreateListItem: TListItem; override;
     function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -240,6 +292,7 @@ type
     function GetItemPopup(Node: TListItem): TPopupMenu;
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
+    procedure SetViewStyle(Value: TJvViewStyle); reintroduce; virtual;
 
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -298,8 +351,10 @@ type
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
     property GroupView: Boolean read FGroupView write SetGroupView default False;
     property Groups: TJvListViewGroups read FGroups write SetGroups;
+    property TileViewProperties: TJvTileViewProperties read FTileViewProperties write SetTileViewProperties;
 
-    property ViewStylesItemBrush : TViewStyles read FViewStylesItemBrush write SetViewStylesItemBrush default ALL_VIEW_STYLES;
+    property ViewStylesItemBrush : TJvViewStyles read FViewStylesItemBrush write SetViewStylesItemBrush default ALL_VIEW_STYLES;
+    property ViewStyle: TJvViewStyle read FViewStyle write SetViewStyle default vsIcon;
 
     property OnAutoSort: TJvListViewColumnSortEvent read FOnAutoSort write FOnAutoSort;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
@@ -338,7 +393,7 @@ implementation
 uses
   Math, Contnrs,
   JclWideStrings,
-  JvJCLUtils, JvConsts, JvResources;
+  JvConsts, JvResources;
 
 type
   // Mantis 980: New types for group handling
@@ -370,8 +425,30 @@ type
   TLVINSERTGROUPSORTED = tagLVINSERTGROUPSORTED;
   PLVINSERTGROUPSORTED = ^TLVINSERTGROUPSORTED;
 
+  tagLVTILEVIEWINFO = packed record
+    cbSize: UINT;
+    dwMask: DWORD;
+    dwFlags: DWORD;
+    sizeTile: TSize;
+    cLines: Integer;
+    rcLabelMargin: TRect;
+  end;
+  TLVTILEVIEWINFO = tagLVTILEVIEWINFO;
+  PLVTILEVIEWINFO = ^TLVTILEVIEWINFO;
+
+  tagLVTILEINFO = packed record
+    cbSize: UINT;
+    iItem: Integer;
+    cColumns: UINT;
+    puColumns: PUINT;
+  end;
+  TLVTILEINFO = tagLVTILEINFO;
+  PLVTILEINFO = ^TLVTILEINFO;
+
 const
-  // Mantis 980: New constants for group handling
+  // Mantis 980: New constants for group/tile/insert mark handling
+  LVM_SETTILEWIDTH      = LVM_FIRST + 141;
+  LVM_SETVIEW           = LVM_FIRST + 142;
   LVM_INSERTGROUP       = LVM_FIRST + 145;
   LVM_SETGROUPINFO      = LVM_FIRST + 147;
   LVM_REMOVEGROUP       = LVM_FIRST + 150;
@@ -379,18 +456,43 @@ const
   LVM_ENABLEGROUPVIEW   = LVM_FIRST + 157;
   LVM_SORTGROUPS        = LVM_FIRST + 158;
   LVM_INSERTGROUPSORTED = LVM_FIRST + 159;
+  LVM_GETTILEVIEWINFO   = LVM_FIRST + 163;
+  LVM_SETTILEVIEWINFO   = LVM_FIRST + 162;
+  LVM_SETTILEINFO       = LVM_FIRST + 164;
+  LVM_GETTILEINFO       = LVM_FIRST + 165;
 
   LVIF_GROUPID = $0100;
 
+  // ListViewGroupFlag
   LVGF_HEADER  = $00000001;
   LVGF_ALIGN   = $00000008;
   LVGF_GROUPID = $00000010;
 
+  // group alignment
   LVGA_HEADER_LEFT   = $00000001;
   LVGA_HEADER_CENTER = $00000002;
   LVGA_HEADER_RIGHT  = $00000004;
 
+  // view styles
+  LV_VIEW_ICON = $00;
+  LV_VIEW_DETAILS = $01;
+  LV_VIEW_SMALLICON = $02;
+  LV_VIEW_LIST = $03;
+  LV_VIEW_TILE = $04;
+
+  // LVTVIF (ListViewTileViewInfoFlag Constants)
+  LVTVIF_AUTOSIZE    = 0;
+  LVTVIF_FIXEDWIDTH  = 1;
+  LVTVIF_FIXEDHEIGHT = 2;
+  LVTVIF_FIXEDSIZE   = 3;
+
+  // LVTVIM (ListViewTileViewInfoMask Constants)
+  LVTVIM_TILESIZE    = 1;
+  LVTVIM_COLUMNS     = 2;
+  LVTVIM_LABELMARGIN = 4;
+
   AlignmentToLVGA: array[TAlignment] of Integer = (LVGA_HEADER_LEFT, LVGA_HEADER_RIGHT, LVGA_HEADER_CENTER);
+  TileSizeKindToLVTVIF: array[TJvTileSizeKind] of Integer = (LVTVIF_AUTOSIZE, LVTVIF_FIXEDWIDTH, LVTVIF_FIXEDHEIGHT, LVTVIF_FIXEDSIZE);
 
   // (rom) increased from 100
   cColumnsHandled = 1024;
@@ -406,14 +508,32 @@ begin
   FFont := TFont.Create;
   FBrush := TBrush.Create;
   FGroupId := -1;
+  FTileColumns := TIntegerList.Create;
+
+  FTileColumns.OnChange := TileColumnsChange;
+end;
+
+procedure TJvListItem.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+
+  // Because a TList is not saved natively by Delphi, we do it ourselves.
+  Filer.DefineProperty('TileColumns', ReadTileColumns, WriteTileColumns, True);
 end;
 
 destructor TJvListItem.Destroy;
 begin
+  FTileColumns.Free;
   FFont.Free;
   FBrush.Free;
   
   inherited Destroy;
+end;
+
+procedure TJvListItem.ReadTileColumns(Reader: TReader);
+begin
+  FTileColumns.ReadData(Reader);
+  UpdateTileColumns;
 end;
 
 procedure TJvListItem.SetBrush(const Value: TBrush);
@@ -428,22 +548,22 @@ end;
 
 procedure TJvListItem.SetGroupId(const Value: Integer);
 var
-  infos: JvListView.TLVITEMA;
-  list: TCustomListView;
+  Infos: JvListView.TLVITEMA;
+  List: TCustomListView;
 begin
   if FGroupId <> Value then
   begin
     FGroupId := Value;
 
-    list := Owner.Owner;
-    if Assigned(list) then
+    List := Owner.Owner;
+    if Assigned(List) then
     begin
-      ZeroMemory(@infos, sizeof(infos));
-      infos.mask := LVIF_GROUPID;
-      infos.iItem := Index;
-      infos.iGroupId := FGroupId;
+      ZeroMemory(@Infos, sizeof(Infos));
+      Infos.mask := LVIF_GROUPID;
+      Infos.iItem := Index;
+      Infos.iGroupId := FGroupId;
 
-      SendMessage(list.Handle, LVM_SETITEM, 0, LPARAM(@infos));
+      SendMessage(List.Handle, LVM_SETITEM, 0, LPARAM(@Infos));
     end;
   end;
 end;
@@ -451,6 +571,54 @@ end;
 procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
 begin
   FPopupMenu := Value;
+end;
+
+procedure TJvListItem.SetTileColumns(const Value: TIntegerList);
+begin
+  FTileColumns.Assign(Value);
+end;
+
+procedure TJvListItem.TileColumnsChange(Sender: TObject; Item: Integer;
+  Action: TListNotification);
+begin
+  if not TileColumns.Loading then
+    UpdateTileColumns;
+end;
+
+procedure TJvListItem.UpdateTileColumns;
+type
+  TCardinalArray = array [0..0] of Cardinal;
+var
+  List: TCustomListView;
+  TileInfos: TLVTILEINFO;
+  Cols: ^TCardinalArray;
+  I: Integer;
+begin
+  List := Owner.Owner;
+  if Assigned(List) then
+  begin
+    GetMem(Cols, FTileColumns.Count);
+    try
+      for I := 0 to FTileColumns.Count - 1 do
+      begin
+        Cols[I] := FTileColumns[I];
+      end;
+
+      ZeroMemory(@TileInfos, SizeOf(TileInfos));
+      TileInfos.cbSize := SizeOf(TileInfos);
+      TileInfos.iItem := Index;
+      TileInfos.cColumns := FTileColumns.Count;
+      TileInfos.puColumns := PUINT(Cols);
+      SendMessage(List.Handle, LVM_SETTILEINFO, 0, LPARAM(@TileInfos));
+    finally
+      FreeMem(Cols);
+    end;
+  end;
+end;
+
+procedure TJvListItem.WriteTileColumns(Writer: TWriter);
+begin
+  FTileColumns.WriteData(Writer);
 end;
 
 //=== { TJvListItems } =======================================================
@@ -619,10 +787,14 @@ begin
   FExtendedColumns := TJvListExtendedColumns.Create(Self);
   FSavedExtendedColumns := TJvListExtendedColumns.Create(Self);
   FGroups := TJvListViewGroups.Create(Self);
+  FTileViewProperties := TJvTileViewProperties.Create;
+
+  FTileViewProperties.OnChange := TileViewPropertiesChange;
 end;
 
 destructor TJvListView.Destroy;
 begin
+  FTileViewProperties.Free;
   FGroups.Free;
   FExtendedColumns.Free;
   FSavedExtendedColumns.Free;
@@ -1446,6 +1618,8 @@ begin
   UpdateHeaderImages(ListView_GetHeader(Handle));
   if FSavedExtendedColumns.Count > 0 then
     FExtendedColumns.Assign(FSavedExtendedColumns);
+
+  LoadTileViewProperties;
 end;
 
 procedure TJvListView.UpdateHeaderImages(HeaderHandle: Integer);
@@ -1489,6 +1663,7 @@ procedure TJvListView.Loaded;
 begin
   inherited Loaded;
   UpdateHeaderImages(ListView_GetHeader(Handle));
+  TileViewProperties.DoChange;
 end;
 
 procedure TJvListView.WMNCCalcSize(var Msg: TWMNCCalcSize);
@@ -1770,6 +1945,11 @@ begin
   FGroups.Assign(Value);
 end;
 
+procedure TJvListView.SetTileViewProperties(const Value: TJvTileViewProperties);
+begin
+  FTileViewProperties.Assign(Value);
+end;
+
 procedure TJvListView.DoPictureChange(Sender: TObject);
 begin
 //  if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
@@ -1817,10 +1997,29 @@ end;
 
 {$ENDIF COMPILER5}
 
-procedure TJvListView.SetViewStylesItemBrush(const Value: TViewStyles);
+procedure TJvListView.SetViewStylesItemBrush(const Value: TJvViewStyles);
 begin
   FViewStylesItemBrush := Value;
   Invalidate;
+end;
+
+procedure TJvListView.SetViewStyle(Value: TJvViewStyle);
+begin
+  if Value <> FViewStyle then
+  begin
+    FViewStyle := Value;
+    if Value = vsTile then
+    begin
+      if HandleAllocated then
+      begin
+        SendMessage(Handle, LVM_SETVIEW, LV_VIEW_TILE, 0);
+      end;
+    end
+    else
+    begin
+      inherited ViewStyle := TViewStyle(Value);
+    end;
+  end;
 end;
 
 function TJvListView.DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
@@ -1829,6 +2028,28 @@ begin
     OnCompareGroups(Self, Group1, Group2, Result)
   else
     Result := Group2.GroupId - Group1.GroupId;
+end;
+
+procedure TJvListView.TileViewPropertiesChange(Sender: TObject);
+var
+  Infos: TLVTILEVIEWINFO;
+begin
+  if not (csLoading in ComponentState) then
+  begin
+    Infos.cbSize := SizeOf(Infos);
+    Infos.dwMask := LVTVIM_TILESIZE or LVTVIM_COLUMNS or LVTVIM_LABELMARGIN;
+    Infos.dwFlags := TileSizeKindToLVTVIF[TileViewProperties.TileSizeKind];
+    TileViewProperties.TileSize.CopyToSize(Infos.sizeTile);
+    infos.cLines := TileViewProperties.SubLinesCount;
+    TileViewProperties.LabelMargin.CopyToRect(infos.rcLabelMargin);
+
+    SendMessage(Handle, LVM_SETTILEVIEWINFO, 0, LPARAM(@Infos));
+  end;
+end;
+
+procedure TJvListView.LoadTileViewProperties;
+begin
+  TileViewProperties.LoadFromList(Self);
 end;
 
   { TJvListViewGroup }
@@ -2083,6 +2304,96 @@ begin
   begin
     SendMessage(List.Handle, LVM_SORTGROUPS, WPARAM(@LVGroupCompare), LPARAM(Self));
   end;
+end;
+
+  { TJvTileViewProperties }
+
+constructor TJvTileViewProperties.Create;
+begin
+  inherited Create;
+
+  FLabelMargin := TJvRect.Create;
+  FTileSize := TJvSize.Create;
+
+  FLabelMargin.OnChange := LabelMarginChange;
+  FTileSize.OnChange := TileSizeChange;
+
+  SubLinesCount := 1;
+  FTileSizeKind := tskAutoSize;
+end;
+
+destructor TJvTileViewProperties.Destroy;
+begin
+  FTileSize.Free;
+  FLabelMargin.Free;
+
+  inherited Destroy;
+end;
+
+procedure TJvTileViewProperties.DoChange;
+begin
+  if not FLoading and Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+procedure TJvTileViewProperties.LabelMarginChange(Sender: TObject);
+begin
+  DoChange;
+end;
+
+procedure TJvTileViewProperties.LoadFromList(List: TCustomListView);
+var
+  Infos: TLVTILEVIEWINFO;
+begin
+  Infos.cbSize := SizeOf(Infos);
+  Infos.dwMask := LVTVIM_TILESIZE or LVTVIM_COLUMNS or LVTVIM_LABELMARGIN;
+  SendMessage(List.Handle, LVM_GETTILEVIEWINFO, 0, LPARAM(@Infos));
+
+  FLoading := True;
+  try
+    case Infos.dwFlags of
+      LVTVIF_FIXEDHEIGHT:
+        TileSizeKind := tskFixedHeight;
+      LVTVIF_FIXEDWIDTH:
+        TileSizeKind := tskFixedWidth;
+      LVTVIF_FIXEDSIZE:
+        TileSizeKind := tskFixedSize;
+      else
+        TileSizeKind := tskAutoSize;
+    end;
+    TileSize.Assign(Infos.sizeTile);
+    SubLinesCount := infos.cLines;
+    LabelMargin.Assign(infos.rcLabelMargin);
+  finally
+    FLoading := False;
+  end;
+end;
+
+procedure TJvTileViewProperties.SetLabelMargin(const Value: TJvRect);
+begin
+  FLabelMargin.Assign(Value);
+end;
+
+procedure TJvTileViewProperties.SetSubLinesCount(const Value: Integer);
+begin
+  FSubLinesCount := Value;
+  DoChange;
+end;
+
+procedure TJvTileViewProperties.SetTileSize(const Value: TJvSize);
+begin
+  FTileSize.Assign(Value);
+end;
+
+procedure TJvTileViewProperties.SetTileSizeKind(const Value: TJvTileSizeKind);
+begin
+  FTileSizeKind := Value;
+  DoChange;
+end;
+
+procedure TJvTileViewProperties.TileSizeChange(Sender: TObject);
+begin
+  DoChange;
 end;
 
 {$IFDEF UNITVERSIONING}
