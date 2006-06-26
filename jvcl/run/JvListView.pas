@@ -86,7 +86,7 @@ type
     { List item writer used in the call to WriteList. }
     procedure WriteListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const Index: Integer; const ItemName: string);
-    { List item deleter usedin the call to WriteList. }
+    { List item deleter used in the call to WriteList. }
     procedure DeleteListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer; const ItemName: string);
   public
@@ -205,6 +205,8 @@ type
   end;
 
   TJvGroupsPropertiesBorderRect = class(TJvRect)
+  public
+    constructor Create;
   published
     property Top default 12;
   end;
@@ -223,6 +225,8 @@ type
   protected
     procedure DoChange;
   public
+    constructor Create;
+    
     procedure Assign(Source: TPersistent); override;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -326,6 +330,7 @@ type
     FViewStyle: TJvViewStyle;
     FTileViewProperties: TJvTileViewProperties;
     FInsertMarkColor: TColor;
+    FSettingJvViewStyle: Boolean;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure SetGroupView(const Value: Boolean);
@@ -360,7 +365,8 @@ type
     function GetItemPopup(Node: TListItem): TPopupMenu;
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
-    procedure SetViewStyle(Value: TJvViewStyle); reintroduce; virtual;
+    procedure SetViewStyle(Value: TViewStyle); override;
+    procedure SetJvViewStyle(Value: TJvViewStyle); virtual;
 
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -425,10 +431,10 @@ type
     property Groups: TJvListViewGroups read FGroups write SetGroups;
     property GroupsProperties: TJvGroupsProperties read FGroupsProperties write SetGroupsProperties;
     property TileViewProperties: TJvTileViewProperties read FTileViewProperties write SetTileViewProperties;
-    property InsertMarkColor: TColor read FInsertMarkColor write SetInsertMarkColor;
+    property InsertMarkColor: TColor read FInsertMarkColor write SetInsertMarkColor default clBlack;
 
     property ViewStylesItemBrush : TJvViewStyles read FViewStylesItemBrush write SetViewStylesItemBrush default ALL_VIEW_STYLES;
-    property ViewStyle: TJvViewStyle read FViewStyle write SetViewStyle default vsIcon;
+    property ViewStyle: TJvViewStyle read FViewStyle write SetJvViewStyle default vsIcon;
 
     property OnAutoSort: TJvListViewColumnSortEvent read FOnAutoSort write FOnAutoSort;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
@@ -558,8 +564,9 @@ const
   LVM_ENABLEGROUPVIEW    = LVM_FIRST + 157;
   LVM_SORTGROUPS         = LVM_FIRST + 158;
   LVM_INSERTGROUPSORTED  = LVM_FIRST + 159;
-  LVM_GETTILEVIEWINFO    = LVM_FIRST + 163;
+  LVM_REMOVEALLGROUPS    = LVM_FIRST + 160;
   LVM_SETTILEVIEWINFO    = LVM_FIRST + 162;
+  LVM_GETTILEVIEWINFO    = LVM_FIRST + 163;
   LVM_SETTILEINFO        = LVM_FIRST + 164;
   LVM_GETTILEINFO        = LVM_FIRST + 165;
   LVM_SETINSERTMARK      = LVM_FIRST + 166;
@@ -568,6 +575,7 @@ const
   LVM_SETINSERTMARKCOLOR = LVM_FIRST + 170;
   LVM_GETINSERTMARKCOLOR = LVM_FIRST + 171;
 
+  // ListViewItemFlag
   LVIF_GROUPID = $0100;
 
   // ListViewGroupFlag
@@ -893,6 +901,7 @@ begin
   FSortOnClick := True;
   FSortMethod := smAutomatic;
   FLast := -1;
+  FInsertMarkColor := clBlack;
   FAutoClipboardCopy := True;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := DoHeaderImagesChange;
@@ -1739,12 +1748,13 @@ begin
   if FSavedExtendedColumns.Count > 0 then
     FExtendedColumns.Assign(FSavedExtendedColumns);
 
+  // Get the values from the newly created list view
   LoadTileViewProperties;
   LoadGroupsProperties;
   FInsertMarkColor := SendMessage(Handle, LVM_GETINSERTMARKCOLOR, 0, 0);
 
   // Force a change from True to False so that InsertMarks work correctly.
-  SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(True), 0);
+  SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(not FGroupView), 0);
   SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(FGroupView), 0);
 end;
 
@@ -2143,7 +2153,7 @@ begin
   inherited;
   // This may happen at design time, especially when migrating
   // a project that uses an old version of TJvListView that did
-  // not the ExtendedColumns
+  // not have the ExtendedColumns
   if Msg.WParam < FExtendedColumns.Count then
     FExtendedColumns.Delete(Msg.WParam);
 end;
@@ -2184,21 +2194,37 @@ begin
   Invalidate;
 end;
 
-procedure TJvListView.SetViewStyle(Value: TJvViewStyle);
+procedure TJvListView.SetViewStyle(Value: TViewStyle);
+begin
+  // If someone is setting the view style via an ancestor class reference,
+  // we force it to be set through our setter. But if it's set via our setter
+  // then we inform the ancestor class' code so that display is updated.
+  if not FSettingJvViewStyle then
+    SetJvViewStyle(TJvViewStyle(Value))
+  else
+    inherited SetViewStyle(Value);
+end;
+
+procedure TJvListView.SetJvViewStyle(Value: TJvViewStyle);
 begin
   if Value <> FViewStyle then
   begin
-    FViewStyle := Value;
-    if Value = vsTile then
-    begin
-      if HandleAllocated then
+    FSettingJvViewStyle := True;
+    try
+      FViewStyle := Value;
+      if Value = vsTile then
       begin
-        SendMessage(Handle, LVM_SETVIEW, LV_VIEW_TILE, 0);
+        if HandleAllocated then
+        begin
+          SendMessage(Handle, LVM_SETVIEW, LV_VIEW_TILE, 0);
+        end;
+      end
+      else
+      begin
+        inherited ViewStyle := TViewStyle(Value);
       end;
-    end
-    else
-    begin
-      inherited ViewStyle := TViewStyle(Value);
+    finally
+      FSettingJvViewStyle := False;
     end;
   end;
 end;
@@ -2303,8 +2329,8 @@ begin
     FHeader := Value;
 
     // Due to a undocumented bug/feature in the list view, one has to change
-    // the GroupId as well, when changing the caption or the caption
-    // modification is not taken into account. 
+    // the GroupId as well when changing the caption or the modification is
+    // not taken into account.
     SavedGroupId := GroupId;
     UpdateGroupProperties(MaxInt);
     FGroupId := MaxInt;
@@ -2499,7 +2525,7 @@ begin
   FLabelMargin.OnChange := LabelMarginChange;
   FTileSize.OnChange := TileSizeChange;
 
-  SubLinesCount := 1;
+  FSubLinesCount := 1;
   FTileSizeKind := tskAutoSize;
 end;
 
@@ -2526,27 +2552,31 @@ procedure TJvTileViewProperties.LoadFromList(List: TCustomListView);
 var
   Infos: TLVTILEVIEWINFO;
 begin
-  Infos.cbSize := SizeOf(Infos);
-  Infos.dwMask := LVTVIM_TILESIZE or LVTVIM_COLUMNS or LVTVIM_LABELMARGIN;
-  SendMessage(List.Handle, LVM_GETTILEVIEWINFO, 0, LPARAM(@Infos));
+  if not (csDesigning in List.ComponentState) then
+  begin
+    Infos.cbSize := SizeOf(Infos);
+    Infos.dwMask := LVTVIM_TILESIZE or LVTVIM_COLUMNS or LVTVIM_LABELMARGIN;
 
-  FLoading := True;
-  try
-    case Infos.dwFlags of
-      LVTVIF_FIXEDHEIGHT:
-        TileSizeKind := tskFixedHeight;
-      LVTVIF_FIXEDWIDTH:
-        TileSizeKind := tskFixedWidth;
-      LVTVIF_FIXEDSIZE:
-        TileSizeKind := tskFixedSize;
-      else
-        TileSizeKind := tskAutoSize;
+    SendMessage(List.Handle, LVM_GETTILEVIEWINFO, 0, LPARAM(@Infos));
+    
+    FLoading := True;
+    try
+      case Infos.dwFlags of
+        LVTVIF_FIXEDHEIGHT:
+          FTileSizeKind := tskFixedHeight;
+        LVTVIF_FIXEDWIDTH:
+          FTileSizeKind := tskFixedWidth;
+        LVTVIF_FIXEDSIZE:
+          FTileSizeKind := tskFixedSize;
+        else
+          FTileSizeKind := tskAutoSize;
+      end;
+      TileSize.Assign(Infos.sizeTile);
+      FSubLinesCount := infos.cLines;
+      LabelMargin.Assign(infos.rcLabelMargin);
+    finally
+      FLoading := False;
     end;
-    TileSize.Assign(Infos.sizeTile);
-    SubLinesCount := infos.cLines;
-    LabelMargin.Assign(infos.rcLabelMargin);
-  finally
-    FLoading := False;
   end;
 end;
 
@@ -2618,25 +2648,28 @@ procedure TJvGroupsProperties.LoadFromList(List: TCustomListView);
 var
   Infos: TLVGROUPMETRICS; 
 begin
-  ZeroMemory(@Infos, SizeOf(Infos));
+  if not (csDesigning in List.ComponentState) then
+  begin
+    ZeroMemory(@Infos, SizeOf(Infos));
 
-  Infos.cbSize := SizeOf(Infos);
-  Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
-  SendMessage(List.Handle, LVM_GETGROUPMETRICS, 0, LPARAM(@Infos));
-
-  FLoading := True;
-  try
-    BorderSize.Top := Infos.Top;
-    BorderSize.Left := Infos.Left;
-    BorderSize.Bottom := Infos.Bottom;
-    BorderSize.Right := Infos.Right;
-    BorderColor.Top := Infos.crTop and $00FFFFFF;
-    BorderColor.Left := Infos.crLeft and $00FFFFFF;
-    BorderColor.Bottom := Infos.crBottom and $00FFFFFF;
-    BorderColor.Right := Infos.crRight and $00FFFFFF;
-    HeaderColor := Infos.crHeader and $00FFFFFF;
-  finally
-    FLoading := False;
+    Infos.cbSize := SizeOf(Infos);
+    Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
+    SendMessage(List.Handle, LVM_GETGROUPMETRICS, 0, LPARAM(@Infos));
+    
+    FLoading := True;
+    try
+      BorderSize.Top := Infos.Top;
+      BorderSize.Left := Infos.Left;
+      BorderSize.Bottom := Infos.Bottom;
+      BorderSize.Right := Infos.Right;
+      BorderColor.Top := Infos.crTop and $00FFFFFF;
+      BorderColor.Left := Infos.crLeft and $00FFFFFF;
+      BorderColor.Bottom := Infos.crBottom and $00FFFFFF;
+      BorderColor.Right := Infos.crRight and $00FFFFFF;
+      HeaderColor := Infos.crHeader and $00FFFFFF;
+    finally
+      FLoading := False;
+    end;
   end;
 end;
 
@@ -2659,7 +2692,16 @@ begin
   end;
 end;
 
-{ TJvRectColors }
+  { TJvGroupsPropertiesBorderRect }
+
+constructor TJvGroupsPropertiesBorderRect.Create;
+begin
+  inherited Create;
+
+  Top := 12;
+end;
+
+{ TJvGroupsPropertiesBorderColors }
 
 procedure TJvGroupsPropertiesBorderColors.Assign(Source: TPersistent);
 var
@@ -2678,6 +2720,16 @@ begin
   begin
     inherited Assign(Source);
   end;
+end;
+
+constructor TJvGroupsPropertiesBorderColors.Create;
+begin
+  inherited Create;
+
+  Top := $C8D0D4;
+  Left := clWhite;
+  Bottom := clWhite;
+  Right := clWhite;
 end;
 
 procedure TJvGroupsPropertiesBorderColors.DoChange;
