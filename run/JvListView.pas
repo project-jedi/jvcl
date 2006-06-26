@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
                 dejoy
+                Olivier Sannier [obones att altern dott org]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -365,7 +366,9 @@ type
     function GetItemPopup(Node: TListItem): TPopupMenu;
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
+    {$IFDEF COMPILER6_UP}
     procedure SetViewStyle(Value: TViewStyle); override;
+    {$ENDIF COMPILER6_UP}
     procedure SetJvViewStyle(Value: TJvViewStyle); virtual;
 
     procedure CreateWnd; override;
@@ -2194,6 +2197,7 @@ begin
   Invalidate;
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvListView.SetViewStyle(Value: TViewStyle);
 begin
   // If someone is setting the view style via an ancestor class reference,
@@ -2204,6 +2208,7 @@ begin
   else
     inherited SetViewStyle(Value);
 end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvListView.SetJvViewStyle(Value: TJvViewStyle);
 begin
