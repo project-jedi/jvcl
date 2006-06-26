@@ -7515,9 +7515,17 @@ begin
   StartupInfo.wShowWindow := Visibility;
   if not CreateProcess(nil, PChar(CommandLine), nil, nil, False, CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
     nil, Pointer(WorkingDirectory), StartupInfo, ProcessInfo) then
-    WaitForSingleObject(ProcessInfo.hProcess, INFINITE)
+  begin
+    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+
+    // required to avoid running resource leak.
+    CloseHandle(ProcessInfo.hProcess);
+    CloseHandle(ProcessInfo.hThread);
+  end
   else
+  begin
     Result := GetLastError;
+  end;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
