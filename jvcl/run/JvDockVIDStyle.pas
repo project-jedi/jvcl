@@ -578,7 +578,7 @@ procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, End
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile: '$RCSfile: JvDockVIDStyle.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -3005,8 +3005,13 @@ begin
     CurrPage := GetPageFromDockClient(Client);
     if CurrPage <> nil then
     begin
-      if (FTabImageList <> nil) and ShowTabImages and
-        (FTabImageList.Count > CurrPage.ImageIndex) then
+      //if (FTabImageList <> nil) and ShowTabImages and
+      //  (FTabImageList.Count > CurrPage.ImageIndex) then
+      //prevent AV
+      if Assigned(FTabImageList) then
+        if ShowTabImages and
+           (FTabImageList.Count > CurrPage.ImageIndex) and
+           (CurrPage.ImageIndex >= 0) then
       begin
         FTabImageList.Delete(CurrPage.ImageIndex);
         for I := 0 to Count - 1 do

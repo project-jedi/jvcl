@@ -305,7 +305,7 @@ type
     property Caption;
     property Height stored False;
     property Highlighted: Boolean read FHighlighted write SetHighlighted default False;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default 0;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Left stored False;
     property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
     property TabVisible: Boolean read FTabVisible write SetTabVisible default True;
@@ -534,7 +534,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile: '$RCSfile: JvDockSupportControl.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -3355,6 +3355,7 @@ begin
   Visible := False;
   FTabVisible := True;
   FHighlighted := False;
+  FImageIndex := -1;
 end;
 
 destructor TJvDockTabSheet.Destroy;
