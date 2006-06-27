@@ -261,8 +261,9 @@ end;
 
 function FieldSubtypeName(ASubtype: Word): string;
 const
+  MinSubType = fldstMONEY - 1;
   MaxSubtype = fldstAUTOINC;
-  Subtypes: array [fldstMONEY - 1..MaxSubtype] of PChar =
+  Subtypes: array [MinSubType..MaxSubtype] of PChar =
     ('Password', 'Money', 'Memo', 'Binary', 'Formatted Memo', 'OLE',
      'Graphic', 'dBase OLE', 'User Typed', 'Auto Increment');
 begin

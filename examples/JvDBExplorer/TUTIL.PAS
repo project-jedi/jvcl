@@ -40,10 +40,19 @@ Unit TUtil;
 
 interface
 
+
 {$IFDEF WIN32}
-uses Windows, DB, BDE, SysUtils, DBTables;
+uses
+  {$IFDEF COMPILER10_UP}
+  DBCommonTypes,
+  {$ENDIF COMPILER10_UP}
+  Windows, DB, BDE, SysUtils, DBTables;
 {$ELSE}
-uses WinTypes, WinProcs, DB, DbiTypes, DbiProcs, DbiErrs, SysUtils, DbTables;
+uses
+  {$IFDEF COMPILER10_UP}
+  DBCommonTypes,
+  {$ENDIF COMPILER10_UP}
+  WinTypes, WinProcs, DB, DbiTypes, DbiProcs, DbiErrs, SysUtils, DbTables;
 {$ENDIF}
 
 type
