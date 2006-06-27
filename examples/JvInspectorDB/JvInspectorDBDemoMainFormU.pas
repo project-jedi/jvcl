@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, DB, DBTables, Grids, DBGrids, JvInspector, JvInspDB, StdCtrls,
-  JvComponent, JvExControls;
+  JvComponent, JvExControls, JvComponentBase;
 
 type
   TJvInspectorDBDemoMainForm = class(TForm)

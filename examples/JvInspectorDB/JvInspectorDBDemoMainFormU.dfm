@@ -1,9 +1,9 @@
 object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   Left = 224
   Top = 196
-  Width = 604
-  Height = 481
   Caption = 'JvInspectorDBDemoMainForm'
+  ClientHeight = 454
+  ClientWidth = 596
   Color = clBtnFace
   Constraints.MinHeight = 200
   Constraints.MinWidth = 450
@@ -19,14 +19,14 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   OnShow = FormShow
   DesignSize = (
     596
-    447)
+    454)
   PixelsPerInch = 96
   TextHeight = 13
   object JvInspector1: TJvInspector
     Left = 0
     Top = 0
     Width = 233
-    Height = 447
+    Height = 420
     Anchors = [akLeft, akTop, akBottom]
     ItemHeight = 16
     Painter = JvInspectorBorlandPainter1
@@ -34,8 +34,8 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   object DBGrid1: TDBGrid
     Left = 236
     Top = 0
-    Width = 357
-    Height = 409
+    Width = 349
+    Height = 382
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
     TabOrder = 1
@@ -71,7 +71,7 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   end
   object btnOpenCloseDS: TButton
     Left = 240
-    Top = 416
+    Top = 389
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -80,8 +80,8 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
     OnClick = btnOpenCloseDSClick
   end
   object btnClose: TButton
-    Left = 517
-    Top = 416
+    Left = 509
+    Top = 389
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
