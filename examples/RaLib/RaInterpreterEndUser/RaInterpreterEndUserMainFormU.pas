@@ -31,7 +31,7 @@ interface
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,
   StdCtrls, Forms, DBCtrls, DB, DBGrids, Grids, ExtCtrls, 
-  Buttons, JvComponent, JvFormPlacement;
+  Buttons, JvComponent, JvFormPlacement, JvComponentBase;
 
 type
   TRaInterpreterEndUserMainForm = class(TForm)
