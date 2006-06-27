@@ -1512,6 +1512,12 @@ type
     property SortMethods: Boolean read GetSortMethods write SetSortMethods;
   end;
 
+  TJvInspectorVariantItem = class(TJvCustomInspectorItem)
+  protected
+    function GetDisplayValue: string; override;
+    procedure SetDisplayValue(const Value: string); override;
+  end;
+
   TJvCustomInspectorData = class(TPersistent)
   private
     FTypeInfo: PTypeInfo;
@@ -1548,6 +1554,7 @@ type
     function GetAsMethod: TMethod; virtual; abstract;
     function GetAsOrdinal: Int64; virtual; abstract;
     function GetAsString: string; virtual; abstract;
+    function GetAsVariant: Variant; virtual; abstract;
     function GetItemCount: Integer;
     function GetItems(I: Integer): TJvCustomInspectorItem;
     function GetName: string; virtual;
@@ -1565,6 +1572,7 @@ type
     procedure SetAsMethod(const Value: TMethod); virtual; abstract;
     procedure SetAsOrdinal(const Value: Int64); virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
+    procedure SetAsVariant(const Value: Variant); virtual; abstract;
     procedure SetName(const Value: string); virtual;
     procedure SetTypeInfo(Value: PTypeInfo); virtual;
     function SupportsMethodPointers: Boolean; virtual;
@@ -1585,6 +1593,7 @@ type
     property AsMethod: TMethod read GetAsMethod write SetAsMethod;
     property AsOrdinal: Int64 read GetAsOrdinal write SetAsOrdinal;
     property AsString: string read GetAsString write SetAsString;
+    property AsVariant: Variant read GetAsVariant write SetAsVariant;
     property ItemCount: Integer read GetItemCount;
     property Items[I: Integer]: TJvCustomInspectorItem read GetItems;
     property Name: string read GetName write SetName;
@@ -1631,6 +1640,7 @@ type
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
+    function GetAsVariant: Variant; override;
     function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAddress(const Value: Pointer); virtual;
     procedure SetAsFloat(const Value: Extended); override;
@@ -1638,6 +1648,7 @@ type
     procedure SetAsMethod(const Value: TMethod); override;
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
+    procedure SetAsVariant(const Value: Variant); override;
     function SupportsMethodPointers: Boolean; override;
   public
     procedure GetAsSet(var Buf); override;
@@ -1964,6 +1975,7 @@ const
   cJvInspectorOrdinal = 'Ordinal';
   cJvInspectorString = 'string';
   cJvInspectorSet = 'set';
+  cJvInspectorVariant = 'variant';
 
 // All the declarations below are to help support Type Info under C++ Builder
 
@@ -2144,6 +2156,9 @@ uses
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   {$IFDEF VCL}
   Consts, Dialogs, Forms, Buttons,
   {$ENDIF VCL}
@@ -8867,6 +8882,18 @@ begin
   Data.AsString := Value;
 end;
 
+{ TJvInspectorVariantItem }
+
+function TJvInspectorVariantItem.GetDisplayValue: string;
+begin
+  Result := Data.AsVariant;
+end;
+
+procedure TJvInspectorVariantItem.SetDisplayValue(const Value: string);
+begin
+  Data.AsVariant := Value;
+end;
+
 //=== { TJvInspectorClassItem } ==============================================
 
 constructor TJvInspectorClassItem.Create(const AParent: TJvCustomInspectorItem;
@@ -10903,6 +10930,19 @@ begin
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
+function TJvInspectorVarData.GetAsVariant: Variant;
+begin
+  CheckReadAccess;
+  if TypeInfo.Kind = tkVariant then
+  begin
+    Result := PVariant(Address)^;
+  end
+  else
+  begin
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorVariant]);
+  end;
+end;
+
 function TJvInspectorVarData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
 begin
   Result := (Ref is TJvInspectorVarData) and (TJvInspectorVarData(Ref).Address = Address);
@@ -11060,6 +11100,19 @@ begin
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
+procedure TJvInspectorVarData.SetAsVariant(const Value: Variant);
+begin
+  CheckWriteAccess;
+  if TypeInfo.Kind = tkVariant then
+  begin
+    PVariant(Address)^ := Value;
+  end
+  else
+  begin
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorVariant]);
+  end;
+end;
+
 function TJvInspectorVarData.SupportsMethodPointers: Boolean;
 begin
   Result := True;
@@ -11087,12 +11140,18 @@ end;
 
 function TJvInspectorVarData.HasValue: Boolean;
 begin
-  Result := IsInitialized;
+  // Cannot use AsVariant, it calls HasValue
+  Result := IsInitialized and
+            ((TypeInfo.Kind <> tkVariant) or
+             not VarIsNull(PVariant(Address)^));
 end;
 
 function TJvInspectorVarData.IsAssigned: Boolean;
 begin
-  Result := IsInitialized;
+  // Cannot use AsVariant, it calls IsAssigned
+  Result := IsInitialized and
+            ((TypeInfo.Kind <> tkVariant) or
+             not VarIsEmpty(PVariant(Address)^));
 end;
 
 function TJvInspectorVarData.IsInitialized: Boolean;
@@ -12849,6 +12908,7 @@ begin
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateItem, TypeInfo(TDate)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorTimeItem, TypeInfo(TTime)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateTimeItem, TypeInfo(TDateTime)));
+    Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorVariantItem, TypeInfo(Variant)));
   end;
 end;
 
