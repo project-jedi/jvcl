@@ -6057,6 +6057,10 @@ procedure TJvCustomInspectorItem.EditKillFocus(Sender: TObject);
 begin
   if DroppedDown then
     CloseUp(False);
+
+  // Mantis 3391: When the focus is lost, the editing is finished, so that
+  // moving to another item or another control always updates the value.
+  DoneEdit;
 end;
 
 procedure TJvCustomInspectorItem.AutoCompleteStart(Sender: TObject);
@@ -6842,13 +6846,18 @@ begin
       try
         if Inspector.CanFocus and EditCtrl.Focused then
           Inspector.SetFocus;
-        {$IFDEF VCL}
-        EditCtrl.WindowProc := FEditWndPrc; //Edit_WndProc;
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        QObject_removeEventFilter(EditCtrl.Handle, Inspector.Handle);
-        {$ENDIF VisualCLX}
-        EditCtrl.Free;
+          
+        // Following Mantis 3391, setting the Focus may set EditCtrl to nil
+        if Assigned(EditCtrl) then
+        begin
+          {$IFDEF VCL}
+          EditCtrl.WindowProc := FEditWndPrc; //Edit_WndProc;
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          QObject_removeEventFilter(EditCtrl.Handle, Inspector.Handle);
+          {$ENDIF VisualCLX}
+          EditCtrl.Free;
+        end;
       finally
         FEditCtrlDestroying := False;
       end;
