@@ -1043,7 +1043,7 @@ JvOutlookBarCustomDrawDemo.exe: "JvOutlookBarCustomDraw\JvOutlookBarCustomDrawDe
   @cd ..
 
 JvNavPaneDemo.exe: "JvNavigationPane\JvNavPaneDemo.dpr"
-  @cd JvNavigationPaned
+  @cd JvNavigationPane
   $(DCC) $&.dpr
   @cd ..
 
@@ -1062,7 +1062,7 @@ JvAppStoreDemoSubStorage.exe: "JvAppStorage\SubStorage Example\JvAppStoreDemoSub
   $(DCCH) $&.dpr
   @cd ..\..
  
-JvDBAction.exe: "JvDBActions\JvDBAction.exe" 
+JvDBAction.exe: "JvDBActions\JvDBAction.dpr" 
   @cd JvDBActions
   $(DCC) $&.dpr
   @cd ..
@@ -1102,7 +1102,7 @@ JvEdits.exe: "JvEdits\JvEdits.dpr"
   $(DCC) $&.dpr
   @cd ..
  
-EmbeddedForm.exe: "JvEmbeddedForms\EmbeddedForms.dpr" 
+EmbeddedForm.exe: "JvEmbeddedForms\EmbeddedForm.dpr" 
   @cd JvEmbeddedForms
   $(DCC) $&.dpr
   @cd ..
