@@ -6079,8 +6079,16 @@ begin
     if not Assigned(FAutoComplete) then
     begin
       FAutoComplete := TJvEditListBoxAutoComplete.Create(TCustomEdit(EditCtrl), ListBox);
-      FAutoComplete.OnDropDown := AutoCompleteStart;
+    end
+    else
+    begin
+      // Mantis 3401: AutoComplete component is already created, but the
+      // EditCtrl and ListBox properties may have been reset to nil, especially
+      // by the DoneEdit call. Hence the need to reaffect them.
+      FAutoComplete.EditCtrl := EditCtrl;
+      FAutoComplete.ListBox := ListBox;
     end;
+    FAutoComplete.OnDropDown := AutoCompleteStart;
     FAutoComplete.AutoComplete(Key);
   end;
 end;
