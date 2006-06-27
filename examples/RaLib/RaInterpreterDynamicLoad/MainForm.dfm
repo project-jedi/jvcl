@@ -1,9 +1,9 @@
 object Main: TMain
   Left = 404
   Top = 118
-  Width = 179
-  Height = 192
   Caption = 'Main'
+  ClientHeight = 165
+  ClientWidth = 171
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
