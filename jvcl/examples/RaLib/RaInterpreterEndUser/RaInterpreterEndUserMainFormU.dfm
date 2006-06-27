@@ -1,10 +1,10 @@
 object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
   Left = 352
   Top = 106
-  Width = 585
-  Height = 420
   ActiveControl = Panel1
   Caption = 'JvI2 plug-in reports end user demo'
+  ClientHeight = 393
+  ClientWidth = 577
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -52,7 +52,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
     Left = 0
     Top = 41
     Width = 376
-    Height = 349
+    Height = 352
     Align = alClient
     BevelInner = bvLowered
     BorderWidth = 4
@@ -62,7 +62,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
       Left = 6
       Top = 6
       Width = 364
-      Height = 337
+      Height = 340
       Align = alClient
       BorderStyle = bsNone
       DataSource = DMRaIntrEndUsr.DataSource1
@@ -78,7 +78,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
     Left = 376
     Top = 41
     Width = 201
-    Height = 349
+    Height = 352
     Align = alRight
     BorderWidth = 3
     Caption = 'Panel3'
@@ -87,7 +87,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
       Left = 4
       Top = 4
       Width = 193
-      Height = 341
+      Height = 344
       Align = alClient
       Lines.Strings = (
         'This is normal Delphi'
@@ -127,6 +127,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
     end
   end
   object RegAuto1: TJvFormStorage
+    AppStoragePath = 'RaInterpreterEndUserMainForm'
     StoredValues = <>
     Left = 172
     Top = 164
