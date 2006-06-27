@@ -86,6 +86,8 @@ type
     FLastExceptionMessage: string;
     FSilent: Boolean;
     FOnException: TNotifyEvent;
+    FUseFieldGetText: boolean;
+    procedure SetUseFieldGetText(const Value: boolean);
     procedure CheckVisibleColumn;
   protected
     procedure HandleException;
@@ -95,12 +97,14 @@ type
     procedure DoSave; virtual;
     procedure DoClose; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function GetFieldValue(const Field: TField): string;
   public
     constructor Create(AOwner: TComponent); override;
     function ExportGrid: Boolean;
   published
     // (p3) these should be published: all exporters must support them
     property Caption: string read FCaption write FCaption;
+    property UseFieldGetText:boolean read FUseFieldGetText write SetUseFieldGetText default False;
     property Grid: TDBGrid read FGrid write FGrid;
     property FileName: TFileName read FFileName write FFileName;
     property Silent: Boolean read FSilent write FSilent default True;
@@ -249,7 +253,7 @@ procedure GetWordGridFormatValues(Proc: TGetStrProc);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile: '$RCSfile: JvDBGridExport.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -330,6 +334,19 @@ begin
   DoClose;
 end;
 
+function TJvCustomDBGridExport.GetFieldValue(const Field: TField): string;
+begin
+  if Assigned(Field.OnGetText) and FUseFieldGetText then
+  begin
+    Result := '';
+    Field.OnGetText(Field, Result, True);
+  end
+  else
+  begin
+    Result := string(Field.Value);
+  end;
+end;
+
 procedure TJvCustomDBGridExport.HandleException;
 begin
   if ExceptObject <> nil then
@@ -350,6 +367,11 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Grid) then
     Grid := nil;
+end;
+
+procedure TJvCustomDBGridExport.SetUseFieldGetText(const Value: boolean);
+begin
+  FUseFieldGetText := Value;
 end;
 
 //=== { TJvDBGridWordExport } ================================================
@@ -449,7 +471,7 @@ begin
           begin
             if FRecordColumns[I].Exportable and not FRecordColumns[I].Field.IsNull then
             try
-              lTable.Cell(J, K).Range.InsertAfter(string(FRecordColumns[I].Field.Value));
+              lTable.Cell(J, K).Range.InsertAfter(GetFieldValue(FRecordColumns[I].Field));
             except
               Result := False;
               HandleException;
@@ -609,8 +631,7 @@ begin
             begin
               lCell := lTable.Range[IndexFieldToExcel(K) + IntToStr(J)];
               try
-                // Do not cast with string !
-                lCell.Value := FRecordColumns[I].Field.Value;
+                lCell.Value := GetFieldValue(FRecordColumns[I].Field);
               except
                 Result := False;
                 HandleException;
@@ -885,7 +906,7 @@ begin
               begin
                 if Exportable and not Field.IsNull then
                 try
-                  lText := Field.AsString;
+                  lText := GetFieldValue(Field);
                   if lText = '' then
                     lText := '&nbsp;';
                 except
@@ -1018,7 +1039,7 @@ begin
             try
               if not FRecordColumns[I].Field.IsNull then
               begin
-                lField := FRecordColumns[I].Field.AsString;
+                lField := GetFieldValue(FRecordColumns[I].Field);  
                 if (Pos(Separator, lField) <> 0) or (FQuoteEveryTime) then
                   lString := lString + AnsiQuotedStr(lField, '"')
                 else
@@ -1148,14 +1169,12 @@ begin
             for I := 0 to FColumnCount - 1 do
               if FRecordColumns[I].Exportable then
               try
-                with FRecordColumns[I] do
-                  Properties.Add(ColumnName, Field.AsString);
+                Properties.Add(FRecordColumns[I].ColumnName, GetFieldValue(FRecordColumns[I].Field));
               except
                 Result := False;
                 HandleException;
               end;
           end;
-
           Next;
           Inc(ARecNo);
           if not DoProgress(0, lRecCount, ARecNo, Caption) then
