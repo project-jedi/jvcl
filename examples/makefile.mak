@@ -81,7 +81,12 @@ PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDem
 JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtrlsDemo.exe JvUrlListGrabberDemo.exe \
 JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe WndProcHookDemo.exe \
 WinXPBarDemo.exe SimpleDemo.exe JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe \
-PageListDemo.exe TVDemo.exe BkgndDemo.exe JvComputerInfoExDemo.exe JvStarfieldDemo.exe
+PageListDemo.exe TVDemo.exe BkgndDemo.exe JvComputerInfoExDemo.exe JvStarfieldDemo.exe \ 
+JvAppStoreDemo.exe JvAppStoreDemoSelList.exe JvAppStoreDemoSubStorage.exe JvDBAction.exe \
+JvDBFindEditDemo.exe JvDBHTLabelDemo.exe JvDBImageDemo.exe JvDBSearchDemo.exe JvDesignerDemo.exe \
+JvDesktopAlertDemo.exe JvEdits.exe EmbeddedForm.exe JvFullColorCircleDialogPrj.exe JvFullColorDialogPrj.exe \
+SpecialProgressTestPrj.exe JvTranslatorProj.exe JvUltimDBGridADOTest.exe \
+JvUltimDBGridBDETest.exe   
 #
 # (rom) deactivated  requires components not always installed
 #Hospital.exe
@@ -1038,9 +1043,101 @@ JvOutlookBarCustomDrawDemo.exe: "JvOutlookBarCustomDraw\JvOutlookBarCustomDrawDe
   @cd ..
 
 JvNavPaneDemo.exe: "JvNavigationPane\JvNavPaneDemo.dpr"
-  @cd JvNavigationPane
+  @cd JvNavigationPaned
   $(DCC) $&.dpr
   @cd ..
+
+JvAppStoreDemo.exe: "JvAppStorage\Base Example\JvAppStoreDemo.dpr" 
+  @cd JvAppStorage\Base Example
+  $(DCCH) $&.dpr
+  @cd ..\..
+
+JvAppStoreDemoSelList.exe: "JvAppStorage\SelectList Example\JvAppStoreDemoSelList.dpr" 
+  @cd JvAppStorage\SelectList Example
+  $(DCCH) $&.dpr
+  @cd ..\..
+ 
+JvAppStoreDemoSubStorage.exe: "JvAppStorage\SubStorage Example\JvAppStoreDemoSubStorage.dpr" 
+  @cd JvAppStorage\SubStorage Example
+  $(DCCH) $&.dpr
+  @cd ..\..
+ 
+JvDBAction.exe: "JvDBActions\JvDBAction.exe" 
+  @cd JvDBActions
+  $(DCC) $&.dpr
+  @cd ..
+
+JvDBFindEditDemo.exe: "JvDBFindEdit\JvDBFindEditDemo.dpr" 
+  @cd JvDBFindEdit
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvDBHTLabelDemo.exe: "JvDBHTLabel\JvDBHTLabelDemo.dpr" 
+  @cd JvDBHTLabel
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvDBImageDemo.exe: "JvDBImage\JvDBImageDemo.dpr" 
+  @cd JvDBImage
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvDBSearchDemo.exe: "JvDBSearch\JvDBSearchDemo.dpr" 
+  @cd JvDBSearch
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvDesignerDemo.exe: "JvDesigner\JvDesignerDemo.dpr" 
+  @cd JvDesigner
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvDesktopAlertDemo.exe: "JvDesktopAlert\JvDesktopAlertDemo.dpr" 
+  @cd JvDesktopAlert
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvEdits.exe: "JvEdits\JvEdits.dpr" 
+  @cd JvEdits
+  $(DCC) $&.dpr
+  @cd ..
+ 
+EmbeddedForm.exe: "JvEmbeddedForms\EmbeddedForms.dpr" 
+  @cd JvEmbeddedForms
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvFullColorCircleDialogPrj.exe: "JvFullColorCircleDialog\JvFullColorCircleDialogPrj.dpr" 
+  @cd JvFullColorCircleDialog
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvFullColorDialogPrj.exe: "JvFullColorDialog\JvFullColorDialogPrj.dpr" 
+  @cd JvFullColorDialog
+  $(DCC) $&.dpr
+  @cd ..
+ 
+SpecialProgressTestPrj.exe: "JvSpecialProgress\SpecialProgressTestPrj.dpr" 
+  @cd JvSpecialProgress
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvTranslatorProj.exe: "JvTranslator\JvTranslatorProj.dpr" 
+  @cd JvTranslator
+  $(DCC) $&.dpr
+  @cd ..
+ 
+JvUltimDBGridADOTest.exe: "JvUltimDBGrid\ADO\JvUltimDBGridADOTest.dpr" 
+  @cd JvUltimDBGrid\ADO
+  $(DCC) $&.dpr
+  @cd ..\..
+ 
+JvUltimDBGridBDETest.exe: "JvUltimDBGrid\BDE\JvUltimDBGridBDETest.dpr" 
+  @cd JvUltimDBGrid\BDE
+  $(DCC) $&.dpr
+  @cd ..\..
+   
+
 #---------------------------------------------------------------------------------------------------
 .PHONY: clean
 clean: 
