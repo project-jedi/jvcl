@@ -42,6 +42,14 @@ const
   PackageFileName    = 'JvInterpreterD7R.bpl';
   ALLPackageFileName = 'JvInterpreterD7R.bpl';
 {$ENDIF COMPILER7}
+{$IFDEF COMPILER9}
+  PackageFileName    = 'JvInterpreterD9R.bpl';
+  ALLPackageFileName = 'JvInterpreterD9R.bpl';
+{$ENDIF COMPILER9}
+{$IFDEF COMPILER10}
+  PackageFileName    = 'JvInterpreterD10R.bpl';
+  ALLPackageFileName = 'JvInterpreterD10R.bpl';
+{$ENDIF COMPILER10}
 
 procedure DynamicJvInterpreterRunFormModal(const FileName: TFileName);
 var
