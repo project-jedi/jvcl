@@ -930,7 +930,7 @@ function TCompiler.CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TP
 var
   Files: TStrings;
   i: Integer;
-  DcpAge, FormAge, PasAge, DcuAge: Integer;
+  DcpAge, FormAge, PasAge, DcuAge, BplAge: Integer;
   PrjFilename: string;
   Filename: string;
   Changed: Boolean;
@@ -941,11 +941,15 @@ begin
   Result := 0;
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
   DcpAge := FileAge(OutDirs.DcpDir + PathDelim + Project.DcpName);
+  BplAge := FileAge(OutDirs.BplDir + PathDelim + Project.TargetName);
 
   // .dpk/.bpk
   Changed := not TargetConfig.AutoDependencies or
              (DcpAge < FileAge(PrjFilename)) or
-             (DcpAge < FileAge(ChangeFileExt(PrjFilename, '.res')));
+             (DcpAge < FileAge(ChangeFileExt(PrjFilename, '.res'))) or
+             (DcpAge > BplAge); // this happens if the .dcp is not for the .bpl
+  if DcpAge > BplAge then
+    DcpAge := BplAge; // compile units that are newer than the bpl if the bpl is older than the dcp
   if not Changed then
   begin
     for i := 0 to High(CommonDependencyFiles) do
@@ -975,7 +979,7 @@ begin
   end;
   if not Changed then
   begin
-    // required JVCL package
+    // required JCL package
     for i := 0 to Project.JclDependencies.Count - 1 do
     begin
       if IsPackageUsed(Project.Owner, Project.JclDependenciesReqPkg[i]) then
