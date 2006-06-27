@@ -894,6 +894,7 @@ type
     procedure EditKillFocus(Sender: TObject);
     procedure EditKeyPress(Sender: TObject; var Key: Char); dynamic;
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); dynamic;
+    procedure EditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState); dynamic;
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
     procedure EditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -6072,7 +6073,7 @@ end;
 procedure TJvCustomInspectorItem.EditKeyPress(Sender: TObject; var Key: Char);
 begin
   if Assigned(Inspector.FOnEditorKeyPress) then
-    Inspector.FOnEditorKeyPress(Self,Key);
+    Inspector.FOnEditorKeyPress(Inspector, Key);
   if Inspector.AutoComplete and (iifValueList in Flags) and not ReadOnly then
   begin
     if not Assigned(FAutoComplete) then
@@ -6129,6 +6130,13 @@ begin
           ButtonClick(Sender);
         end;
     end;
+end;
+
+procedure TJvCustomInspectorItem.EditKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Assigned(Inspector.FOnEditorKeyUp) then
+    Inspector.FOnEditorKeyUp(Inspector, Key, Shift);
 end;
 
 procedure TJvCustomInspectorItem.EditMouseDown(Sender: TObject;
@@ -7513,8 +7521,8 @@ begin
       //Memo := TMemo.Create(Inspector);
       Memo := TJvInspectorMemo.Create(Inspector);
       Memo.OnContextPopup := Inspector.FOnEditorContextPopup;
-      Memo.OnKeyUp := Inspector.FOnEditorKeyUp;
-      Memo.OnKeyPress := Inspector.FOnEditorKeyPress;
+      Memo.OnKeyUp := EditKeyUp;
+      Memo.OnKeyPress := EditKeyPress;
       Memo.WordWrap := True;
       Memo.WantReturns := False;
       Memo.ScrollBars := ssVertical;
@@ -7542,8 +7550,8 @@ begin
       //Edit := TEdit.Create(Inspector);
       Edit := TJvInspectorEdit.Create(Inspector);
       Edit.OnContextPopup := Inspector.FOnEditorContextPopup;
-      Edit.OnKeyUp := Inspector.FOnEditorKeyUp;
-      Edit.OnKeyPress := Inspector.FOnEditorKeyPress;
+      Edit.OnKeyUp := EditKeyUp;
+      Edit.OnKeyPress := EditKeyPress; 
       Edit.OnExit := EditFocusLost;
       TJvInspectorEdit(Edit).OnKillFocus := EditKillFocus;
       { marcelb: removed this stuff; it's not needed at all (especially with the new SaveValues
