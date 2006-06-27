@@ -32,14 +32,6 @@ object Form1: TForm1
   Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
-  object JvGradient1: TJvGradient
-    Left = 0
-    Top = 0
-    Width = 338
-    Height = 159
-    StartColor = clNormalHighlight
-    EndColor = clWhite
-  end
   object JvFilenameBox1: TJvFilenameEdit
     Left = 18
     Top = 8
