@@ -1,9 +1,9 @@
 object DBExplorerMainForm: TDBExplorerMainForm
   Left = 223
   Top = 155
-  Width = 480
-  Height = 237
   Caption = 'Database Explorer'
+  ClientHeight = 191
+  ClientWidth = 472
   Color = clAppWorkSpace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -61,7 +61,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 168
+    Top = 171
     Width = 472
     Height = 20
     Align = alBottom
@@ -95,8 +95,6 @@ object DBExplorerMainForm: TDBExplorerMainForm
         Width = 141
         Height = 18
         Align = alClient
-        Min = 0
-        Max = 100
         Step = 5
         TabOrder = 0
       end
@@ -625,6 +623,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Top = 36
   end
   object FormPlacement: TJvFormStorage
+    AppStoragePath = 'DBExplorerMainForm'
     OnSavePlacement = FormPlacementSavePlacement
     OnRestorePlacement = FormPlacementRestorePlacement
     StoredProps.Strings = (
