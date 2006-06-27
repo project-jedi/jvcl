@@ -26,13 +26,23 @@
 
 unit fEdits;
 
+{$I 'jvcl.inc'}
+
 interface
 
+{$IFDEF VCL}
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Mask,
+  JvEdit, JvToolEdit, JvBaseEdits, JvExMask;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 uses
   QWindows, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
   QStdCtrls, QMask,
   JvQEdit, JvQToolEdit, JvQBaseEdits, JvQExMask, QComboEdits,
   JvQExComboEdits, JvQExControls, JvQComponent, JvQGradient;
+{$ENDIF VisualCLX}
 
 type
   TForm1 = class(TForm)
@@ -41,7 +51,6 @@ type
     JvDateEdit1: TJvDateEdit;
     JvButtonBox1: TJvComboEdit;
     JvCalcEdit1: TJvCalcEdit;
-    JvGradient1: TJvGradient;
     procedure JvButtonBox1ButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -53,7 +62,12 @@ var
 
 implementation
 
+{$IFDEF VCL}
+{$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R *.xfm}
+{$ENDIF VisualCLX}
 
 procedure TForm1.JvButtonBox1ButtonClick(Sender: TObject);
 begin
