@@ -37,10 +37,16 @@ unit DBCbRest;
 
 {$R-}
 
+{$I 'jvcl.inc'}
+
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  ExtCtrls, BDE, JvLabel, JvComponent;
+uses
+  {$IFDEF COMPILER10_UP}
+  DBCommonTypes,
+  {$ENDIF COMPILER10_UP}
+  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  ExtCtrls, BDE, JvLabel, JvComponent, JvExControls;
 
 type
   TRestructureDialog = class(TForm)

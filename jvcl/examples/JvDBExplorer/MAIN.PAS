@@ -42,7 +42,7 @@ uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
   DBCtrls, JvSpeedbar, JvMRUList, ComCtrls, 
   JvComponent, JvMRUManager,
   JvFormPlacement, JvBDEProgress, JvLabel, JvDBControls, JvAppEvent,
-  JvExExtCtrls, JvExControls;
+  JvExExtCtrls, JvExControls, JvComponentBase, JvExtComponent;
 
 type
   TDBExplorerMainForm = class(TForm)
