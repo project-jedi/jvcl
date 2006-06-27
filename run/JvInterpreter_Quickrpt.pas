@@ -56,6 +56,8 @@ uses
   SysUtils, Classes, Controls, Forms, Graphics, Db,
   {$IFDEF JVCL_UseQuickReport}
   QrPrntr, Quickrpt, QrCtrls,
+  {$ELSE}
+  {$MESSAGE FATAL 'You must have QuickReport to compile this unit'}
   {$ENDIF JVCL_UseQuickReport}
   JvInterpreterFm, JvResources, JvTypes;
 
