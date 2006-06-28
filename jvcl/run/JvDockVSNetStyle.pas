@@ -952,9 +952,8 @@ begin
   end;
   { Add the form icon }
 
-  //1. TCustomFormAccess(AControl).Icon is never nil
-  //if TCustomFormAccess(AControl).Icon = nil then
-  if not TCustomFormAccess(AControl).Icon.HandleAllocated then
+  if not Assigned(TCustomFormAccess(AControl).Icon) 
+    {$IFDEF COMPILER6_UP}or not TCustomFormAccess(AControl).Icon.HandleAllocated{$ENDIF COMPILER6_UP} then
   begin
     Icon := TIcon.Create;
     try
