@@ -11281,9 +11281,10 @@ end;
 
 procedure TJvInspectorPropData.NotifyRemoveData(const Instance: TJvCustomInspectorData);
 begin
-  if (Instance <> nil) and (Instance <> Self) and (Instance.TypeInfo.Kind = tkClass) and
-    (TObject(Instance.AsOrdinal) = Self.Instance) then
-    Free;
+// The following is commented out due to Mantis #3348:
+//  if (Instance <> nil) and (Instance <> Self) and (Instance.TypeInfo.Kind = tkClass) and
+//    (TObject(Instance.AsOrdinal) = Self.Instance) then
+//    Free;
 end;
 
 procedure TJvInspectorPropData.SetAsFloat(const Value: Extended);
