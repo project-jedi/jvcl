@@ -38,22 +38,33 @@ uses
   JvExControls, JvExForms;
 
 type
+  TEraseBackgroundEvent = procedure(Sender: TObject; Canvas: TCanvas; var Result: Boolean) of object;
+
   TJvScrollBox = class(TJvExScrollBox)
   private
     FHotTrack: Boolean;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
+    FOnPaint: TNotifyEvent;
+    FCanvas: TCanvas;
+    FOnEraseBackground: TEraseBackgroundEvent;
     procedure SetHotTrack(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure PaintWindow(DC: HDC); override;
+    procedure Paint; virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Canvas: TCanvas read FCanvas;
   published
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor;
@@ -66,6 +77,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property TabStop;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    property OnEraseBackground: TEraseBackgroundEvent read FOnEraseBackground write FOnEraseBackground;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -89,6 +102,14 @@ begin
   FHotTrack := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+end;
+
+destructor TJvScrollBox.Destroy;
+begin
+  FCanvas.Free;
+  inherited Destroy;
 end;
 
 procedure TJvScrollBox.WMHScroll(var Msg: TWMHScroll);
@@ -183,7 +204,46 @@ begin
     end;
 end;
 
+procedure TJvScrollBox.PaintWindow(DC: HDC);
+begin
+  FCanvas.Lock;
+  try
+    FCanvas.Handle := DC;
+    try
+      TControlCanvas(FCanvas).UpdateTextFlags;
+      Paint;
+    finally
+      FCanvas.Handle := 0;
+    end;
+  finally
+    FCanvas.Unlock;
+  end;
+end;
+
+procedure TJvScrollBox.WMPaint(var Msg: TWMPaint);
+begin
+  ControlState := ControlState + [csCustomPaint];
+  inherited;
+  ControlState := ControlState - [csCustomPaint];
+end;
+
+function TJvScrollBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnEraseBackground) then
+    FOnEraseBackground(Self, Canvas, Result);
+  if not Result then
+    Result := inherited DoEraseBackground(Canvas, Param);
+end;
+
+procedure TJvScrollBox.Paint;
+begin
+  if Assigned(FOnPaint) then
+    FOnPaint(Self);
+end;
+
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
