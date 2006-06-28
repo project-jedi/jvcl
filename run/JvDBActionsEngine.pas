@@ -133,6 +133,8 @@ type
     function CanDelete: boolean; virtual;
     function EOF: boolean; virtual;
     function Bof: boolean; virtual;
+    function CanRefresh: boolean; virtual;
+    function CanNavigate: boolean; virtual;
     procedure DisableControls; virtual;
     procedure EnableControls; virtual;
     function ControlsDisabled: boolean; virtual;
@@ -329,6 +331,16 @@ begin
     Result := DataSet.Bof
   else
     Result := False;
+end;
+
+function TJvDatabaseActionBaseControlEngine.CanRefresh: boolean;
+begin
+  Result := Assigned(DataSet);
+end;
+
+function TJvDatabaseActionBaseControlEngine.CanNavigate: boolean;
+begin
+  Result := Assigned(DataSet);
 end;
 
 procedure TJvDatabaseActionBaseControlEngine.DisableControls;
