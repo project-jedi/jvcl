@@ -1,7 +1,7 @@
 var
   MyForm: TForm;
 begin
-  MyForm := JvInterpreterMakeForm(ExePath + 'samples\fModalForm.pas');
+  MyForm := JvInterpreterMakeForm(SamplesDir+'fModalForm.pas');
   if MyForm.ShowModal = mrOk then
     showmessage('OK button clicked');
   MyForm.Free;
