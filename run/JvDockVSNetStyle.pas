@@ -899,6 +899,39 @@ begin
 end;
 
 function TJvDockVSBlock.AddPane(AControl: TControl; const AWidth: Integer): TJvDockVSPane;
+const
+  ANDbits: array[0..2*16-1] of  byte = ($FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF,
+                                        $FF,$FF);
+  XORbits: array[0..2*16-1] of  byte = ($00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00,
+                                        $00,$00);
 var
   Icon: TIcon;
   ADockClient: TJvDockClient;
@@ -918,12 +951,18 @@ begin
       ADockClient.VSPaneWidth := AWidth;
   end;
   { Add the form icon }
-  if TCustomFormAccess(AControl).Icon = nil then
+
+  //1. TCustomFormAccess(AControl).Icon is never nil
+  //if TCustomFormAccess(AControl).Icon = nil then
+  if not TCustomFormAccess(AControl).Icon.HandleAllocated then
   begin
     Icon := TIcon.Create;
     try
       Icon.Width := 16;
       Icon.Height := 16;
+      //2. Adding an Icon without real bitmap does nothing,
+      //so transparent icon needed
+      Icon.Handle := CreateIcon(hInstance,16,16,1,1,@ANDbits,@XORbits);
       FImageList.AddIcon(Icon);
     finally
       Icon.Free;
