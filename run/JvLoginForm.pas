@@ -60,6 +60,7 @@ type
   TCheckUnlockEvent = function(const Password: string): Boolean of object;
   TUnlockAppEvent = procedure(Sender: TObject; const UserName,
     Password: string; var AllowUnlock: Boolean) of object;
+  TJvOnGetPassword = procedure(Sender: TObject; const UserName: string; var Password: string) of object;
 
   TJvLoginForm = class;
 
@@ -81,6 +82,7 @@ type
     FOnUnlock: TCheckUnlockEvent;
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
+    FOnGetPassword: TJvOnGetPassword;
     {$IFDEF VCL}
     FUnlockDlgShowing: Boolean;
     FPasswordChar: Char;
@@ -114,6 +116,7 @@ type
     property OnIconDblClick: TNotifyEvent read FOnIconDblClick write FOnIconDblClick;
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
+    property OnGetPassword: TJvOnGetPassword read FOnGetPassword write FOnGetPassword;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -135,6 +138,7 @@ type
   protected
     function DoCheckUser(const UserName, Password: string): Boolean; dynamic;
     function DoLogin(var UserName: string): Boolean; override;
+    function DoGetPassword(const UserName, Password: string): string;
     procedure Loaded; override;
   published
     property Active;
@@ -148,6 +152,7 @@ type
     property PasswordChar;
     {$ENDIF VCL}
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
+    property OnGetPassword;
     property AfterLogin;
     property BeforeLogin;
     property OnUnlockApp;
@@ -176,12 +181,14 @@ type
     FAttempt: Integer;
     FOnFormShow: TNotifyEvent;
     FOnOkClick: TNotifyEvent;
+    FOnGetPassword: TJvOnGetPassword;
   public
     AttemptNumber: Integer;
     property Attempt: Integer read FAttempt;
     property SelectDatabase: Boolean read FSelectDatabase write FSelectDatabase;
     property OnFormShow: TNotifyEvent read FOnFormShow write FOnFormShow;
     property OnOkClick: TNotifyEvent read FOnOkClick write FOnOkClick;
+    property OnGetPassword: TJvOnGetPassword read FOnGetPassword write FOnGetPassword;
   end;
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
@@ -504,7 +511,7 @@ begin
       if SetCursor then
         Screen.Cursor := crHourGlass;
       try
-        if DoCheckUser(UserNameEdit.Text, PasswordEdit.Text) then
+        if DoCheckUser(UserNameEdit.Text, DoGetPassword(UserNameEdit.Text, PasswordEdit.Text)) then
           ModalResult := mrOk
         else
           ModalResult := mrNone;
@@ -537,6 +544,13 @@ begin
     Result := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName)
   else
     Result := UserName;
+end;
+
+function TJvLoginDialog.DoGetPassword(const UserName, Password: string): string;
+begin
+  Result := Password;
+  if Assigned(OnGetPassword) then
+    OnGetPassword(Self, UserName, Result);
 end;
 
 function TJvLoginDialog.DoLogin(var UserName: string): Boolean;
