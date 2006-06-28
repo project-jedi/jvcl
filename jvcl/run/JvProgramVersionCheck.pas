@@ -1196,7 +1196,7 @@ begin
   begin
     LastCheck := Now;
     if not DirectoryExists(LocalDirectory) then
-      if not ForceDirectories(LocalDirectory) then
+      if (LocalDirectory <> '') and not ForceDirectories(LocalDirectory) then
         LocalDirectory := '';
     RemoteAppStorage.FileName :=
       LoadRemoteVersionInfoFile(LocalDirectory, LocalVersionInfoFileName);
@@ -1566,6 +1566,7 @@ begin
         Request.UserName := UserName;
       if Password <> '' then
         Request.Password := Password;
+      Request.BasicAuthentication := PasswordRequired;
       try
         if Copy(ARemotePath, Length(ARemotePath), 1) <> '/' then
           Get(ARemotePath + '/' + ARemoteFileName, ResultStream)
