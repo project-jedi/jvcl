@@ -97,6 +97,8 @@ type
     function EngineCanDelete: boolean;
     function EngineEof: boolean;
     function EngineBof: boolean;
+    function EngineCanNavigate: boolean;
+    function EngineCanRefresh: boolean;
     function EngineControlsDisabled: boolean;
     function EngineEditModeActive: boolean;
     function EngineSelectedRowsCount: integer;
@@ -220,6 +222,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   published
     property RefreshLastPosition: boolean read FRefreshLastPosition write FRefreshLastPosition default True;
     property RefreshAsOpenClose: boolean read FRefreshAsOpenClose write FRefreshAsOpenClose default False;
@@ -632,6 +635,22 @@ begin
     Result := False;
 end;
 
+function TJvDatabaseBaseAction.EngineCanNavigate: boolean;
+begin
+  if Assigned(ControlEngine) then
+    Result := ControlEngine.CanNavigate
+  else
+    Result := False;
+end;
+
+function TJvDatabaseBaseAction.EngineCanRefresh: boolean;
+begin
+  if Assigned(ControlEngine) then
+    Result := ControlEngine.CanRefresh
+  else
+    Result := False;
+end;
+
 function TJvDatabaseBaseAction.EngineControlsDisabled: boolean;
 begin
   if Assigned(ControlEngine) then
@@ -752,7 +771,7 @@ end;
 
 procedure TJvDatabaseFirstAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof);
+  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseFirstAction.ExecuteTarget(Target: TObject);
@@ -765,7 +784,7 @@ end;
 
 procedure TJvDatabaseLastAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof);
+  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseLastAction.ExecuteTarget(Target: TObject);
@@ -778,7 +797,7 @@ end;
 
 procedure TJvDatabasePriorAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof);
+  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof and EngineCanNavigate);
 end;
 
 procedure TJvDatabasePriorAction.ExecuteTarget(Target: TObject);
@@ -791,7 +810,7 @@ end;
 
 procedure TJvDatabaseNextAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof);
+  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseNextAction.ExecuteTarget(Target: TObject);
@@ -810,7 +829,7 @@ end;
 
 procedure TJvDatabasePriorBlockAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof);
+  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof and EngineCanNavigate);
 end;
 
 procedure TJvDatabasePriorBlockAction.ExecuteTarget(Target: TObject);
@@ -835,7 +854,7 @@ end;
 
 procedure TJvDatabaseNextBlockAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof);
+  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseNextBlockAction.ExecuteTarget(Target: TObject);
@@ -899,6 +918,13 @@ begin
   end;
 end;
 
+//=== { TJvDatabaseBaseActiveAction } ========================================
+
+procedure TJvDatabaseRefreshAction.UpdateTarget(Target: TObject);
+begin
+  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineCanRefresh);
+end;
+
 constructor TJvDatabasePositionAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -913,7 +939,7 @@ const
   cFormat = ' %3d / %3d ';
   cFormatSelected = ' %3d / %3d (%d)';
 begin
-  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineHasData);
+  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineHasData and EngineCanNavigate);
   try
     if not EngineIsActive then
       SetCaption(Format(cFormat, [0, 0]))
