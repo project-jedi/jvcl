@@ -65,6 +65,7 @@ type
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
     FOnLoginFailure: TJvDBLoginEvent;
+    FOnGetPassword: TJvOnGetPassword;
     procedure Login(Database: TDatabase; LoginParams: TStrings);
     function GetUserInfo: Boolean;
     function CheckUser(Table: TTable): Boolean;
@@ -79,6 +80,7 @@ type
     destructor Destroy; override;
     function Execute(LoginParams: TStrings): Boolean;
     function GetUserName: string;
+    function GetPassword: string;
     function CheckDatabaseChange: Boolean;
     procedure FillParams(LoginParams: TStrings);
     property Mode: TDialogMode read FMode;
@@ -97,6 +99,7 @@ type
     property LoginName: string read FLoginName write FLoginName;
   published
     property OnLoginFailure: TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
+    property OnGetPassword: TJvOnGetPassword read FOnGetPassword write FOnGetPassword;
   end;
 
 procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
@@ -107,7 +110,7 @@ function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
   var LoginName: string; AppStorage: TJvCustomAppStorage;
   AppStoragePath: string; SelectDatabase: Boolean;
-  LoginFailure: TJvDBLoginEvent): Boolean;
+  LoginFailure: TJvDBLoginEvent; OnGetPassword: TJvOnGetPassword): Boolean;
 
 function UnlockDialog(const UserName: string; OnUnlock: TCheckUnlockEvent;
   IconDblClick: TNotifyEvent): Boolean;
@@ -366,7 +369,7 @@ begin
   LoginParams.BeginUpdate;
   try
     LoginParams.Values[szUSERNAME] := GetUserName;
-    LoginParams.Values[szPASSWORD] := FDialog.PasswordEdit.Text;
+    LoginParams.Values[szPASSWORD] := GetPassword;
     if CheckDatabaseChange then
     begin
       LoginParams.Values[szSERVERNAME] := Copy(FDialog.UserNameEdit.Text,
@@ -380,6 +383,13 @@ end;
 procedure TJvDBLoginDialog.Login(Database: TDatabase; LoginParams: TStrings);
 begin
   FillParams(LoginParams);
+end;
+
+function TJvDBLoginDialog.GetPassword: string;
+begin
+  Result := FDialog.PasswordEdit.Text;
+  if Assigned(OnGetPassword) then
+    OnGetPassword(Self, GetUserName, Result);
 end;
 
 function TJvDBLoginDialog.GetUserInfo: Boolean;
@@ -492,7 +502,7 @@ function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
   var LoginName: string; AppStorage: TJvCustomAppStorage;
   AppStoragePath: string; SelectDatabase: Boolean;
-  LoginFailure: TJvDBLoginEvent): Boolean;
+  LoginFailure: TJvDBLoginEvent; OnGetPassword: TJvOnGetPassword): Boolean;
 var
   Dlg: TJvDBLoginDialog;
 begin
@@ -509,6 +519,7 @@ begin
     Dlg.UserNameField := UserNameField;
     Dlg.AppStorage := AppStorage;
     Dlg.AppStoragePath := AppStoragePath;
+    Dlg.OnGetPassword := OnGetPassword;
     Result := Dlg.Execute(nil);
     if Result then
       LoginName := Dlg.LoginName;

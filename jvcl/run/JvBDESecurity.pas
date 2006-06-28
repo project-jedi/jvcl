@@ -187,7 +187,7 @@ begin
     IconClick := DoIconDblClick;
   Result := LoginDialog(Database, AttemptNumber, UsersTableName,
     LoginNameField, MaxPasswordLen, DoCheckUser, IconClick, UserName,
-    AppStorage, AppStoragePath, SelectAlias,FOnLoginFailure );
+    AppStorage, AppStoragePath, SelectAlias, FOnLoginFailure, OnGetPassword);
 end;
 
 function TJvDBSecurity.ChangePassword: Boolean;
