@@ -418,6 +418,12 @@ begin
     Done := True;
     Value := Args.Values[0] + 1;
   end
+  else
+  if Cmp(Identifier, 'SamplesDir') then
+  begin
+    Done := True;
+    Value := SamplesDir;
+  end
 end;
 
 procedure TTest.GotoFixedExample(const AName: string);

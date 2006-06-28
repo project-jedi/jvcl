@@ -1,5 +1,5 @@
 var
-  B : TControl;
+  B : TPoint;
   P: TPoint;
 begin
   P := Point(0, 0);
