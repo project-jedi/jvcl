@@ -4158,7 +4158,7 @@ begin
         // is completely set. But when destroying, the parent chain would be
         // already broken, and F would then be Form2, thus returning a different
         // section name than the one returned when loading.
-        F := GetParentForm(TControl(Component), False);
+        F := GetParentForm(TControl(Component){$IFDEF COMPILER9_UP}, False{$ENDIF COMPILER9_UP});
         if F <> nil then
           Result := F.ClassName + Result
         else
