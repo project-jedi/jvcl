@@ -4150,7 +4150,15 @@ begin
       Result := Component.Name;
       if Component is TControl then
       begin
-        F := GetParentForm(TControl(Component));
+        // Pass False to GetParentForm to stop at the FIRST parent that is
+        // a TCustomForm. This is required to fix Mantis 3785. Indeed with
+        // the default value, the returned form would be the top most form.
+        // Say, you have a control in Form2, with an instance of Form2 docked
+        // in Form1. When loading, F would Form1, because the parent chain
+        // is completely set. But when destroying, the parent chain would be
+        // already broken, and F would then be Form2, thus returning a different
+        // section name than the one returned when loading.
+        F := GetParentForm(TControl(Component), False);
         if F <> nil then
           Result := F.ClassName + Result
         else
