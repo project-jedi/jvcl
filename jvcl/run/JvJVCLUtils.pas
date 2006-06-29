@@ -410,6 +410,7 @@ procedure ExecAfterPause(Proc: TProcObj; Pause: Integer);
 { end JvUtils }
 
 { begin JvAppUtils}
+function GetFirstParentForm(Control: TControl): TCustomForm;
 function GetDefaultSection(Component: TComponent): string;
 function GetDefaultIniName: string;
 
@@ -4136,6 +4137,15 @@ end;
 
 { begin JvApputils }
 
+function GetFirstParentForm(Control: TControl): TCustomForm;
+begin
+  while not (Control is TCustomForm) and (Control.Parent <> nil) do
+    Control := Control.Parent;
+  if Control is TCustomForm then
+    Result := TCustomForm(Control) else
+    Result := nil;
+end;
+
 function GetDefaultSection(Component: TComponent): string;
 var
   F: TCustomForm;
@@ -4150,15 +4160,19 @@ begin
       Result := Component.Name;
       if Component is TControl then
       begin
-        // Pass False to GetParentForm to stop at the FIRST parent that is
-        // a TCustomForm. This is required to fix Mantis 3785. Indeed with
-        // the default value, the returned form would be the top most form.
+        // GetParentForm will not stop at the first TCustomForm it finds.
+        // Starting with Delphi 2005, we can pass False as the second parameter
+        // to stop at the FIRST parent that is a TCustomForm, but this is not
+        // available in earlier versions of Delphi. Hence the creation and
+        // use of GetFirstParentForm.
+        // This is required to fix Mantis 3785. Indeed with GetParentForm, the
+        // returned form would be the top most form.
         // Say, you have a control in Form2, with an instance of Form2 docked
         // in Form1. When loading, F would Form1, because the parent chain
         // is completely set. But when destroying, the parent chain would be
         // already broken, and F would then be Form2, thus returning a different
         // section name than the one returned when loading.
-        F := GetParentForm(TControl(Component){$IFDEF COMPILER9_UP}, False{$ENDIF COMPILER9_UP});
+        F := GetFirstParentForm(TControl(Component));
         if F <> nil then
           Result := F.ClassName + Result
         else
