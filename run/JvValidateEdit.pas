@@ -305,6 +305,8 @@ uses
   Math,
   {$IFDEF HAS_UNIT_VARIANTS}
   VarUtils,
+  {$ELSE}
+  ActiveX,
   {$ENDIF HAS_UNIT_VARIANTS}
   JclStrings, JvJCLUtils, JvResources;
 
