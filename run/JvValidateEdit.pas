@@ -154,7 +154,7 @@ type
     procedure EnforceMinValue;
     procedure SetTrimDecimals(const Value: Boolean);
   protected
-    function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
+    function IsValidChar(const S: string; var Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(const ParseString: string): string;virtual;
     procedure Change; override;
     procedure FocusKilled(NextWnd: THandle); override;
@@ -303,6 +303,9 @@ implementation
 
 uses
   Math,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  VarUtils,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JclStrings, JvJCLUtils, JvResources;
 
 function IsGreater(Value, MaxValue: Double;
@@ -647,6 +650,8 @@ begin
 end;
 
 function TJvCustomValidateEdit.GetAsFloat: Double;
+var
+  Cur: Currency;
 begin
   case FDisplayFormat of
     dfBinary:
@@ -657,6 +662,15 @@ begin
       Result := BaseToInt(FEditText, 8);
     dfScientific:
       Result := ScientificStrToFloat(FEditText);
+    dfCurrency:
+      begin
+        // Mantis 3494: The Edit text may contain extra characters such as
+        // parenthesis that indicate the amount is negative. Using StrToFloatDef
+        // would not catch the negative part, hence the need to use a function
+        // that knows how to do the conversion.
+        VarCyFromStr(FEditText, LOCALE_USER_DEFAULT, 0, Cur);
+        Result := Cur;
+      end;
   else
     Result := StrToFloatDef(FEditText, 0);
   end;
@@ -689,10 +703,18 @@ end;
 function TJvCustomValidateEdit.GetValue: Variant;
 var
   DisplayedText : string;
+  Cur: Currency;
 begin
   case FDisplayFormat of
     dfCurrency:
-      Result := StrToCurrDef(FEditText, 0);
+      begin
+        // Mantis 3494: The Edit text may contain extra characters such as
+        // parenthesis that indicate the amount is negative. Using StrToFloatDef
+        // would not catch the negative part, hence the need to use a function
+        // that knows how to do the conversion.
+        VarCyFromStr(FEditText, LOCALE_USER_DEFAULT, 0, Cur);
+        Result := Cur;
+      end;
     dfFloat, dfFloatGeneral, dfPercent, dfScientific:
       Result := StrToFloatDef(FEditText, 0);
     dfInteger, dfYear:
@@ -758,20 +780,30 @@ end;
 
 function TJvCustomValidateEdit.MakeValid(const ParseString: string): string;
 var
-  S: string;
+  C: Char;
   I: Integer;
+  L: Integer;
 begin
-  S := '';
+  SetLength(Result, Length(ParseString));
+  L := 0;
   for I := 1 to Length(ParseString) do
-    if IsValidChar(Copy(ParseString, 1, I - 1), ParseString[I], I) then
-      S := S + ParseString[I];
-  Result := S;
+  begin
+    C := ParseString[I];
+    if IsValidChar(Copy(ParseString, 1, I - 1), C, I) then
+    begin
+      Result[L+1] := C;
+      Inc(L);
+    end;
+  end;
+  SetLength(Result, L);
 end;
 
 function TJvCustomValidateEdit.IsValidChar(const S: string;
-  Key: Char; Posn: Integer): Boolean;
+  var Key: Char; Posn: Integer): Boolean;
 var
   iPosE: Integer;
+  ExpectedNegPos: Integer;
+  ExpectedNegChar: Char;
 begin
   case FDisplayFormat of
     dfBinary, dfCheckChars, dfHex, dfOctal, dfYear:
@@ -786,11 +818,50 @@ begin
       Result := (Pos(Key, FCheckChars) > 0) or
         ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
         ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
-    dfFloat, dfFloatGeneral, dfCurrency, dfPercent:
+    dfFloat, dfFloatGeneral, dfPercent:
       Result := (Pos(Key, FCheckChars) > 0) or
         ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
         ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
         ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
+    dfCurrency:
+      begin
+        // The currency negative format can be quite complicated. The current
+        // one is indicated by the value of NegCurrFormat, and can have any
+        // value from 0 to 15 according to the MSDN and Delphi's help.
+        // So we must take into account that some format require the negative
+        // sign to be at the end, while some others replace it by parenthesis.
+        // See http://www.delphibasics.co.uk/RTL.asp?Name=NegCurrFormat for
+        // an online version of Delphi's help.
+        // If we were not to use this, it would trigger Mantis 3494, where
+        // the number would go from negative to positive simply by focusing out
+        // of the control.
+        ExpectedNegChar := '-';
+        ExpectedNegPos := 1;
+        case NegCurrFormat of
+          0, 4, 14, 15:
+            begin
+              ExpectedNegPos := 1;
+              ExpectedNegChar := '(';
+            end;
+          1, 5, 8, 9:   ExpectedNegPos := 1;
+          2:            ExpectedNegPos := 2;
+          3, 7, 10, 11: ExpectedNegPos := Length(S);
+          6:            ExpectedNegPos := Length(S)-1;
+          12:           ExpectedNegPos := 3;
+          13:           ExpectedNegPos := Length(S)-2;
+        end;
+        
+        if (Key = '(') and (Posn = 1) and (NegCurrFormat in [0, 4, 14, 15]) then
+        begin
+          Key := '-';
+        end;
+        
+        Result := (Pos(Key, FCheckChars) > 0) or
+          ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
+          ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
+          ((Key = '-') and (Posn = ExpectedNegPos) and ((Pos(ExpectedNegChar, S) = 0) or (SelLength > 0)));
+
+      end;
     dfNonCheckChars:
       Result := Pos(Key, FCheckChars) = 0;
     dfNone:
