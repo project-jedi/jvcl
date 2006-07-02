@@ -31,12 +31,12 @@ cd ..
 
 :: start installer
 echo [Starting installer...]
-start bin\JVCLInstall.exe "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
+start bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
 if ERRORLEVEL 1 goto FailStart
 goto Leave
 
 :FailStart
-bin\JVCLInstall.exe "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
+bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
 goto Leave
 
 :Failed
