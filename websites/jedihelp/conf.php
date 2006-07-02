@@ -19,5 +19,8 @@ $inactivityDelay = 20 *60;
 // the name of the cookie used to keep track of logins
 $cookieName = "jhelp_admin_cookie";
 
+// The base URL for an item image
+$itemImageBaseUrl = "http://svn.sourceforge.net/viewcvs.cgi/*checkout*/jvcl/trunk/jvcl/images/";
+
 
 ?>
