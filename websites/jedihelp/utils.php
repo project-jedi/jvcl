@@ -623,7 +623,7 @@ function GetItemImageUrl($itemName)
 {
   global $itemImageBaseUrl;
   
-  return $itemImageBaseUrl.strtoupper($itemName).".BMP";
+  return $itemImageBaseUrl.strtoupper($itemName).".png";
 }
 
 function ItemHasImage($itemName)
@@ -678,14 +678,15 @@ function ImageCreateFromBMP($filename)
   $PALETTE = array();
   if ($BMP['colors'] < 16777216)
   {
-    $PALETTE = unpack('V'.$BMP['colors'], fread($f1,$BMP['colors']*4));
+    $PALETTE = unpack('V'.$BMP['colors'], fread($f1, $BMP['colors']*4));
   }
   
   // 4 : Image creation
   $IMG = fread($f1,$BMP['size_bitmap']);
   $VIDE = chr(0);
   
-  $res = imagecreatetruecolor($BMP['width'],$BMP['height']);
+  $res = imagecreate($BMP['width'], $BMP['height']);
+  $imagePalette = array();
   $P = 0;
   $Y = $BMP['height']-1;
   while ($Y >= 0)
@@ -737,7 +738,21 @@ function ImageCreateFromBMP($filename)
       }
       else
         return FALSE;
-      imagesetpixel($res,$X,$Y,$COLOR[1]);
+      
+      // Create a new palette color if it has never been created before
+      if (!array_key_exists($COLOR[1], $imagePalette))
+        $imagePalette[$COLOR[1]] = imageColorAllocate($res, 
+                                                      ($COLOR[1] >> 16)& 0xFF,  // R
+                                                      ($COLOR[1] >> 8) & 0xFF,  // G
+                                                      ($COLOR[1] >> 0) &0xFF    // B
+                                                     );
+
+      // Use the color now that we are sure it exists    
+      $colorToUse = $imagePalette[$COLOR[1]];
+      
+     // echo $X.','.$Y.':'.$COLOR[1].' '.$colorToUse.'<br>';
+      
+      imagesetpixel($res, $X, $Y, $colorToUse);
       $X++;
       $P += $BMP['bytes_per_pixel'];
     }

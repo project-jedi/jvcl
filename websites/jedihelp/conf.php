@@ -20,7 +20,7 @@ $inactivityDelay = 20 *60;
 $cookieName = "jhelp_admin_cookie";
 
 // The base URL for an item image
-$itemImageBaseUrl = "http://svn.sourceforge.net/viewcvs.cgi/*checkout*/jvcl/trunk/jvcl/images/";
+$itemImageBaseUrl = "itemimages/";//"http://svn.sourceforge.net/viewcvs.cgi/*checkout*/jvcl/trunk/jvcl/images/";
 
 
 ?>
