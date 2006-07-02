@@ -118,6 +118,26 @@
     $tpl->setVariable("LAST_CHANGED", $last_changed_tpl->get());
   }
   
+  function SetItemImage(&$tpl, $itemName)
+  {
+    $itemimage_tpl = new HTML_Template_IT("./"); 
+    $itemimage_tpl->loadTemplatefile("itemimage.tpl.html", true, true);
+    
+    if (ItemHasImage($itemName))
+    {
+      $itemimage_tpl->setCurrentBlock("image_available");
+      $itemimage_tpl->setVariable("ITEM_NAME", urlencode($itemName));
+      $itemimage_tpl->parseCurrentBlock("image_available");
+    }
+    else
+    {
+      $itemimage_tpl->setCurrentBlock("no_image_available");
+      $itemimage_tpl->parseCurrentBlock("no_image_available");
+    }
+
+    $tpl->setVariable("ITEM_IMAGE", $itemimage_tpl->get());
+  }
+  
   if (realpath(__FILE__) == realpath($_SERVER["SCRIPT_FILENAME"]))
     header("Location: http://".$_SERVER["HTTP_HOST"].dirname($_SERVER["PHP_SELF"])."/index.php");
 
