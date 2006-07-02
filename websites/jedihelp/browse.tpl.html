@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Browsing project {PROJECT_NAME}</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <script language="Javascript">
+  <!--
+    function goPage(offset)
+    {
+      // Note the first + to force the Integer type or 1+1 would give 11...
+      document.change_options.page.value = +document.change_options.original_page.value + offset;
+      document.change_options.submit();
+    }
+  // -->
+  </script>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Browsing a project<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+<a href="unit.php?ProjectId=%7BPROJECT_ID%7D&edit=1">
+  <img border="0" src="plus.png" title="Add a unit" alt="Add a unit"></a>
+<a href="genfile.php?ProjectId=%7BPROJECT_ID%7D">
+  <img border="0" src="file_arrow.png" title="Generate DTX files" alt="Generate DTX files"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>Project {PROJECT_NAME}<br>
+</h2>
+{PROJECT_DESCRIPTION}<br>
+<br>
+{LAST_CHANGED}
+<br>
+<!-- BEGIN nav_pane -->
+<div style="position: absolute; right: 10px;"><br>
+  <form name="change_options" action="browse.php?Id={NAV_PANE_PROJECT_ID}&types={TYPES}" method="post">
+    <input type="hidden" name="original_page" value="{PAGE}">
+    <input type="hidden" name="original_per_pages" value="{PER_PAGES}">
+    <font style="font-size: 7pt;">
+<!-- BEGIN prev_page -->
+      <a href="javascript:goPage(-1);"><img align="middle" border="0" src="left_arrow.png" title="Previous page" alt="Previous page"></a>
+<!-- END prev_page -->
+<!-- BEGIN prev_page_disabled --><img align="middle" border="0" src="left_arrow_disabled.png" title="There are no previous pages" alt="There are no previous pages">
+<!-- END prev_page_disabled -->
+      &nbsp;
+<!-- BEGIN next_page -->  
+      <a href="javascript:goPage(+1);"><img align="middle" border="0" src="right_arrow.png" title="Next page" alt="Next page"></a>
+<!-- END next_page -->  
+<!-- BEGIN next_page_disabled --><img align="middle" border="0" src="right_arrow_disabled.png" title="There are no next pages" alt="There are no next pages">
+<!-- END next_page_disabled -->  
+      &nbsp;  
+      Page:
+      <select name="page" style="font-size: 7pt;" onchange="this.form.submit();">
+<!-- BEGIN page_list --><option {SELECTED} value="{VALUE}">{VALUE}</option>
+<!-- END page_list -->
+      </select>&nbsp;&nbsp;
+      Items per page: 
+      <select name="per_pages" style="font-size: 7pt;" onchange="this.form.submit();">
+<!-- BEGIN per_pages_list --><option {SELECTED} value="{VALUE}">{VALUE}</option>
+<!-- END per_pages_list -->
+      </select>
+    </font>
+  </form>
+</div>
+<!-- END nav_pane -->
+
+<!-- BEGIN by_units -->
+<h2>Units in the project</h2>
+<br>
+<table
+ style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="4">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold; text-align: left;">Unit<br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Summary<br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Author<br>
+      </td>
+    </tr>
+<!-- BEGIN unit_list --> <tr>
+      <td style="vertical-align: top;"><a
+ href="unit.php?Id=%7BUNIT_ID%7D">{UNIT_NAME}</a><br>
+      </td>
+      <td style="vertical-align: top;">{UNIT_SUMMARY}<br>
+      </td>
+      <td style="vertical-align: top;">{UNIT_AUTHOR}<br>
+      </td>
+    </tr>
+<!-- END unit_list -->
+  </tbody>
+</table>
+<!-- END by_units -->
+
+<!-- BEGIN no_units -->
+<center><i>There are no units in this project.</i></center>
+<!-- END no_units -->
+
+<!-- BEGIN by_types -->
+<h2>Types in the project</h2>
+<br>
+<table
+ style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="4">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold; text-align: left;">Type<br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Summary<br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Unit<br>
+      </td>
+    </tr>
+<!-- BEGIN type_list --> <tr>
+      <td style="vertical-align: top;"><a
+ href="item.php?Id=%7BTYPE_ID%7D">{TYPE_NAME}</a><br>
+      </td>
+      <td style="vertical-align: top;">{TYPE_SUMMARY}<br>
+      </td>
+      <td style="vertical-align: top;">
+        <a href="unit.php?Id=%7BTYPE_UNIT_ID%7D">{TYPE_UNIT_NAME}</a>
+      </td>
+    </tr>
+<!-- END type_list -->
+  </tbody>
+</table>
+<!-- END by_types -->
+
+<!-- BEGIN no_types -->
+<center><i>There are no types in this project.</i></center>
+<!-- END no_types -->
+<br>
+{COMMON_FOOTER}
+</body>
+</html>

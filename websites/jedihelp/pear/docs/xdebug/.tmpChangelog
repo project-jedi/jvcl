@@ -1,0 +1,1763 @@
+Mon Apr 21 15:16:41 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml:
+- Update package information
+
+Mon Apr 21 14:40:22 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/php_xdebug.h:
+- Added xdebug_call_class() as addition to xdebug_call_function().
+
+Sat Apr 19 22:44:47 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Put back in the maximum nesting protection.
+
+Sat Apr 19 20:55:38 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_superglobals.c:
+- Add required include
+
+Sat Apr 19 20:35:31 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_superglobals.c:
+- Move the settings, function declarations and the xdebug_dump_superglobals()
+  to the correct spot.
+
+Fri Apr 18 17:00:05 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Turn off xdebug.collect_params by default
+
+Fri Apr 18 16:59:10 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- One one more todo item
+
+Fri Apr 18 12:23:01 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_code_coverage.c
+/xdebug/xdebug_superglobals.c:
+- Fix problems with symbols on MacOSX
+
+Tue Apr 15 08:01:04 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/package.xml
+/xdebug/php_xdebug.h:
+- Go with 1.2.0rc2
+
+Tue Apr 15 07:55:57 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_com.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handlers.c
+/xdebug/xdebug_hash.c
+/xdebug/xdebug_profiler.c
+/xdebug/xdebug_var.c:
+- CS
+
+Mon Apr 14 22:25:56 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug.c:
+- Fix handling of paths under Windows
+
+Mon Apr 14 15:49:34 CEST 2003 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug_profiler.c:
+- Added overall stats to HTML profiles.
+
+Mon Apr 14 15:44:25 CEST 2003 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug_profiler.c:
+- Only stop tracing if it was started by the profiler.
+
+Sat Apr 12 19:00:46 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Really remove unused include
+
+Sat Apr 12 18:59:59 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Remove unused include
+
+Sat Apr 12 18:58:39 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_com.c:
+- Fix the Windows stuff
+
+Sat Apr 12 18:54:35 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- ZTS Fix
+
+Thu Apr 10 23:13:13 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/xdebug_handler_gdb.c:
+- Fixed the superglobals issue in Zend Engine 2
+
+Thu Apr 10 23:09:33 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Thu Apr 10 10:29:07 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fixed getting zvals from the op structure for Zend Engine 2.
+
+Wed Apr 9 21:35:08 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h:
+- Switch back version no
+
+Tue Apr 8 20:58:48 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fixed handling of auto_profiling (Noticed by Gildas Noël
+  <g.noel@symphonieonline.com>)
+
+Sun Apr 6 21:03:09 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml:
+- Fix the package file
+
+Sun Apr 6 21:02:06 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix a segfault here and there, still quite a lot to do for ZE2.
+
+Sun Apr 6 20:32:00 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Sun Apr 6 20:30:12 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/CREDITS:
+- Update CREDITS
+
+Sun Apr 6 20:28:42 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml
+/xdebug/php_xdebug.h:
+- Go with 1.2.0rc1
+
+Sat Apr 5 10:48:20 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.mak:
+- Fix the Windows makefile
+
+Sat Apr 5 10:42:22 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Allow remote debugging to be enabled in httpd.conf and .htaccess files.
+
+Sat Apr 5 10:40:54 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_code_coverage.c
+/xdebug/xdebug_code_coverage.h
+/xdebug/config.m4
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug.dsp
+/xdebug/xdebug.mak:
+- Added code coverage, enable with xdebug_start_code_coverage(), disable with
+  xdebug_stop_code_coverage() and get the information with
+  xdebug_get_code_coverage(). The latter returns an array with each element
+  being an array containing the lines and the number of times a statement was
+  run on that line, per executed file. 
+
+Sat Apr 5 00:54:51 CEST 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_superglobals.c
+/xdebug/xdebug_superglobals.h:
+- Header maintenance
+
+Fri Mar 28 19:50:47 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Removed unused var
+
+Fri Mar 28 19:50:10 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.mak:
+- Fix make file for nmake
+
+Fri Mar 28 17:38:49 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Made it compile with Zend Engine 2
+- Changed copyright notice
+
+Thu Feb 27 16:02:08 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Improve memory allocation code by a factor of about 500
+
+Thu Feb 27 12:59:24 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/config.m4
+/xdebug/xdebug_superglobals.c
+/xdebug/xdebug_superglobals.h:
+- Make it compile on Linux again
+
+Sun Feb 23 22:47:28 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- update TODO
+
+Thu Feb 20 15:30:55 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_superglobals.c
+/xdebug/xdebug_superglobals.h
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug.dsp
+/xdebug/xdebug_llist.c
+/xdebug/xdebug_llist.h:
+- Added dumping of superglobals (patch by Harald Radi <phanto@php.net>).
+
+Fri Feb 14 23:13:20 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/tests/test6.phpt:
+- Fixed output buffering stuff
+
+Sat Feb 8 12:41:42 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix visibility level of ini settings
+
+Sun Feb 2 19:52:14 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/compile.bat:
+- Fix some typoes
+
+Sun Feb 2 19:45:46 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Stop using url_encode, and use xmlize instead.
+
+Sun Feb 2 17:15:09 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h:
+- Prevent the use of the "show" command for internal functions
+
+Fri Jan 31 16:06:39 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/config.m4:
+- Add our useful stuff too :)
+
+Wed Jan 29 21:57:03 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/config.m4:
+- Changed Makefile to use PHP_NEW_EXTENSION and removed a useles check.
+
+Wed Jan 29 16:56:46 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Made remote_enable default to Off
+
+Tue Jan 28 21:50:23 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Update .dsp file
+
+Tue Jan 28 21:48:24 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/compile.bat
+/xdebug/xdebug.mak
+/xdebug/xdebug.dsp:
+- Add script to automate builds on Windows
+
+Tue Jan 28 21:30:13 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_profiler.c:
+- Make Windows happy
+
+Mon Jan 27 22:17:09 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h:
+- Add XML responses which can be enabled by executing "option response_format
+  1" before the script is run with "run".
+
+Fri Jan 24 14:58:54 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h:
+- We're not always interested in a link like this
+
+Wed Jan 22 17:35:39 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- Make 'continue' work too (in addition to 'cont').
+
+Mon Jan 20 21:27:30 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/test.sh
+/xdebug/usefulstuff.c
+/xdebug/usefulstuff.h
+/xdebug/xdebug.c
+/xdebug/xdebug_com.c
+/xdebug/xdebug_com.h
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handlers.c
+/xdebug/xdebug_handlers.h
+/xdebug/xdebug_profiler.c
+/xdebug/xdebug_profiler.h
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h
+/xdebug/debugclient/main.c
+/xdebug/debugclient/usefulstuff.c
+/xdebug/debugclient/usefulstuff.h:
+- Happy New Year!
+
+Mon Jan 20 20:53:44 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- Add some more verbose error messages
+
+Fri Jan 17 20:34:35 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/xdebug_handler_gdb.c:
+- Disallow 'cont' and the breakpoint commands when a script terminated due
+  to a an error condition (E_*ERROR).
+- Fixed printing of 'eval' return values (both results and errors).
+- Fixed typo in help for "finish".
+
+Fri Jan 17 10:39:56 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Bugfixing items
+
+Tue Jan 14 22:49:05 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/TODO:
+- Update for Zend Engine 2
+
+Tue Jan 14 22:45:14 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test14b.phpt
+/xdebug/tests/test16b.phpt
+/xdebug/tests/test20.phpt
+/xdebug/tests/assert_test.phpt
+/xdebug/tests/auto_trace.phpt
+/xdebug/tests/get_function_trace.phpt
+/xdebug/tests/test1.phpt
+/xdebug/tests/test10.phpt
+/xdebug/tests/test11.phpt
+/xdebug/tests/test12.phpt
+/xdebug/tests/test13.phpt
+/xdebug/tests/test14.phpt
+/xdebug/tests/test15.phpt
+/xdebug/tests/test16.phpt
+/xdebug/tests/test17.phpt
+/xdebug/tests/test18.phpt
+/xdebug/tests/test19.phpt
+/xdebug/tests/test6.phpt
+/xdebug/tests/test8.phpt
+/xdebug/tests/test9.phpt
+/xdebug/tests/trace.phpt:
+- Added Zend Engine 2 specific tests
+- Updated existing tests with the "xdebug.collect_params=1" setting
+
+Wed Jan 8 20:34:40 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_profiler.c
+/xdebug/xdebug_var.h:
+- Make it compile on Windows again.
+
+Tue Jan 7 22:07:48 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix changelog
+
+Tue Jan 7 22:07:19 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_var.c:
+- Implemented the 'eval' command with which you can set and get variables and 
+  evaluate any piece of PHP code from the debugger interface.
+- Started with adding hooks for a custom error handler.
+- Added a utility function to free xdebug_str's.
+
+Tue Jan 7 01:28:17 CET 2003 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- xdebug_[stop|start]_trace() cannot be static because they are needed
+  by xdebug_profiler.c. Moved the function declarations to php_xdebug.h
+  as well.
+
+Sun Jan 5 17:22:09 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fixed segfault with custom session handler.
+
+Sun Jan 5 16:27:28 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c:
+- Make it compile on Windows again.
+
+Fri Jan 3 15:28:32 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- Fixed segfault with 'show' when there were no used variables in the current
+  scope.
+- Fixed 'help' command to show the data commands if they are available.
+
+Fri Jan 3 08:13:12 CET 2003 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/xdebug.c:
+- Fixed bug when the parameter to xdebug_function_trace() was the empty
+  string.
+- Fixed typo in TODO
+
+Fri Dec 20 17:49:08 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix Changelog
+
+Fri Dec 20 17:17:56 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/tests/get_function_trace.phpt:
+- Time index is a float, not an int
+
+Fri Dec 20 16:52:10 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/xdebug.c
+/xdebug/tests/get_function_trace.phpt
+/xdebug/tests/test2.phpt:
+- Fix get_function_trace() by including timing and memory usage information.
+- Adjusted test scripts
+
+Fri Dec 20 16:51:03 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/test.sh:
+- Also use the installed PHP
+
+Fri Dec 20 16:47:17 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/test.sh:
+- Make this better working
+
+Fri Dec 20 16:43:09 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/auto_trace.phpt:
+- Fix auto_trace test
+
+Fri Dec 20 15:52:50 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/xdebug_handler_gdb.c:
+- Allow printing of data in 'init' state.
+
+Fri Dec 20 01:00:36 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug.c
+/xdebug/xdebug_profiler.c
+/xdebug/xdebug_profiler.h:
+- More WS fixes.
+- Corrected time calculations.
+
+Thu Dec 19 23:03:13 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug_profiler.c:
+- Lots & lots of WS fixes.
+- Fixed the HTML output of the Function Execution Profile mode.
+
+Thu Dec 19 22:43:08 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug_profiler.c
+/xdebug/xdebug_profiler.h
+/xdebug/Makefile.in
+/xdebug/config.m4
+/xdebug/package.xml
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Added another profiling mode, which can be accessed via
+  XDEBUG_PROFILER_FC_SUM. 
+- Moved the profiling code into it's own file.
+- Fixed some bugs inside the profiling code (more fixes are pending).
+
+Thu Dec 19 07:37:15 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/TODO:
+- Adding some notes for myself.
+
+Wed Dec 18 12:58:32 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Sun Dec 15 23:54:35 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Thu Dec 12 04:32:34 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug.c:
+- Implemented a much better and not to mention properly working function
+  merging algorithm. This change also lead to removal of few large chunks
+  of no longer needed code.
+- Added a number of sanity checks that prevent invalid input from causing
+  segvs.
+
+Sun Dec 8 21:56:49 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/TODO
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Added automatic profiling.
+
+Mon Dec 2 12:02:35 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Mon Dec 2 00:44:12 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/TODO
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Separated to profiling sorting/analysis code from the output code, which
+  allows the profiling data to be easily presented in a variety of formats.
+- Added xdebug_get_function_profile() function that returns the profiling
+  data as an associated array already sorted according to the profiling
+  mode used.
+- In the stack-dump profiling mode made the sorting algorithm work across
+  all levels rather then just the 1st one. 
+
+Fri Nov 29 17:43:44 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug.c:
+- Fixed a bug with the calculation of total execution time.
+- Replaced tabs with spaces in the cli 'footer'.
+
+Fri Nov 29 17:07:42 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix crash due to not passing the string.
+
+Fri Nov 29 16:49:21 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix table termination
+
+Fri Nov 29 16:36:55 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Initialize in RINIT to make windows happy
+
+Fri Nov 29 16:23:38 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Style Kaijatzu
+
+Fri Nov 29 07:56:16 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fixing ChangeLog entries
+
+Fri Nov 29 03:43:17 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/TODO
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Added Stack-Dump profiling.
+- Rewrote the timing code to be significantly more accurate.
+- Fixed crashes when handling things line include().
+- Optimized the detection of xdebug profiler termination function.
+- Minor whitespace fixes in the previously committed code.
+
+Thu Nov 28 22:06:16 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Thu Nov 28 16:19:04 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix changelog and NEWS
+
+Thu Nov 28 14:43:17 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/TODO:
+- A wishlist for the profiler.
+
+Thu Nov 28 14:19:46 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/xdebug.c:
+- Added myself to the credits.
+
+Wed Nov 27 23:43:17 CET 2002 Ilia Alshanetsky <ilia@prohost.org>:
+- Made a mistake with formatting of the commit message, this should correct
+  the problem.
+
+Wed Nov 27 23:39:22 CET 2002 Ilia Alshanetsky <ilia@prohost.org>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_llist.h:
+- Added profiling support to xdebug. This introduces 3 new functions,
+  xdebug_start_profiling() that begins profiling process, 
+  xdebug_stop_profiling() that ends the profiling process and
+  xdebug_dump_function_trace() that dumps the profiling data. 
+
+Fri Nov 15 15:13:13 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/test.sh
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c:
+- Implemented the "kill" (kills the running script) and "delete" (removes
+  a breakpoint on a specified element) command.
+
+Fri Nov 15 15:12:05 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_llist.c:
+- Only call the destructor if it's available
+
+Fri Nov 15 15:10:55 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test2.phpt
+/xdebug/tests/test8.phpt:
+- Fix tests
+
+Wed Nov 13 16:03:31 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- FreeBSD 4.6 fixes
+
+Wed Nov 13 14:39:55 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Typo
+
+Wed Nov 13 13:35:56 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml:
+- Oopsie
+
+Wed Nov 13 13:31:02 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Merge changes to changelog
+
+Wed Nov 13 13:27:47 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Add note about parameter collection
+
+Wed Nov 13 13:26:35 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Change some defaults
+
+Wed Nov 13 13:21:15 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml:
+- Update date in package file
+
+Wed Nov 13 13:17:48 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Change date
+
+Tue Nov 12 12:08:02 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/Makefile.frag
+/xdebug/debugclient/COPYING
+/xdebug/debugclient/INSTALL
+/xdebug/debugclient/Makefile.am
+/xdebug/debugclient/acinclude.m4
+/xdebug/debugclient/buildconf
+/xdebug/debugclient/config.guess
+/xdebug/debugclient/config.sub
+/xdebug/debugclient/configure.in
+/xdebug/debugclient/cvsclean
+/xdebug/debugclient/install-sh
+/xdebug/debugclient/ltmain.sh
+/xdebug/debugclient/mkinstalldirs
+/xdebug/debugclient/usefulstuff.c
+/xdebug/debugclient/usefulstuff.h
+/xdebug/debugclient/main.c
+/xdebug/debugclient/Makefile
+/xdebug/debugclient/build/buildcheck.sh
+/xdebug/debugclient/build/buildconf1.mk
+/xdebug/debugclient/build/buildconf2.mk
+/xdebug/debugclient/build/clean.mk
+/xdebug/debugclient/build/config-stubs
+/xdebug/debugclient/build/threads.m4:
+- Make the debug client use autoconf/automake. (Derick)
+- Added libedit support to the debugclient. (Marco)
+
+Tue Nov 12 09:58:59 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Fix bug in linux' debugclient
+
+Mon Nov 11 16:41:19 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/.cvsignore:
+- Update cvsignore file
+
+Mon Nov 11 16:07:48 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/package.xml
+/xdebug/php_xdebug.h:
+- Go with 1.1.0
+
+Mon Nov 11 09:58:09 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/.cvsignore:
+- Add Debug and Release to .cvsignore
+
+Mon Nov 11 07:34:18 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/debugclient.dsp:
+- Update .dsp file
+
+Mon Nov 11 00:56:10 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Add Debug and Release to .cvsignore
+
+Mon Nov 11 00:54:54 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/debugclient.dsp:
+- Add .dsp file for debugclient
+
+Mon Nov 11 00:53:50 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Whitespace
+
+Mon Nov 11 00:51:57 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Make the debug client compatible with Windows
+
+Sun Nov 10 21:14:44 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/usefulstuff.c
+/xdebug/debugclient/main.c:
+- Fix debug client after Windows fixes.
+
+Sun Nov 10 20:31:26 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_com.h
+/xdebug/usefulstuff.h
+/xdebug/usefulstuff.c:
+- Make the debug server work nicely on files AND sockets now on Windows.
+
+Sun Nov 10 20:27:13 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Removed some unused code
+
+Sun Nov 10 13:42:48 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Fixed bug in printing 0-sized arrays.
+
+Sun Nov 10 13:36:09 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- Fixed bug in symbol scoping, the local symbol table is now scanned first.
+
+Sun Nov 10 00:36:51 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Update .dsp file
+
+Sat Nov 9 23:39:23 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/xdebug.c:
+- Fixed error_reporting awareness for remote debugger
+
+Sat Nov 9 23:15:02 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Update TODO
+
+Sat Nov 9 23:13:35 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handlers.h:
+- Implemented "finish" (step out)
+- Cleaned some \n's in help lines
+
+Sat Nov 9 21:00:16 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handlers.h:
+- Implemented "next" (step over)
+- Fixed a compile error due to windows 'fixes'
+- Removed outcommented code
+
+Sat Nov 9 13:52:41 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test6.phpt:
+- Fix test
+
+Sat Nov 9 13:50:33 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix defines, this would never have compiled if GETTIME was not available.
+
+Fri Nov 8 15:30:39 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/README:
+- Update README
+
+Thu Nov 7 18:56:53 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- Windows updates
+
+Thu Nov 7 18:42:47 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h:
+- Fixed variable listings
+- Fixed a few memory leaks
+
+Tue Nov 5 18:14:24 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Fixed problem with breakpoints on internal functions.
+
+Mon Nov 4 15:14:09 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix crashbug
+
+Sun Nov 3 16:43:05 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/config.m4
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handlers.h
+/xdebug/tests/test14.phpt:
+- Implemented the list, print, show, step and pwd commands.
+
+Fri Nov 1 23:37:42 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_com.c:
+- Init Winsock2
+
+Wed Oct 30 22:19:19 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Lessen time-out
+
+Wed Oct 30 20:00:14 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Make it compile on Windows again.
+
+Tue Oct 29 22:28:39 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h:
+- Commence working on the release
+
+Tue Oct 29 18:54:46 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml:
+- Fixed superfluous files in package.xml
+
+Tue Oct 29 16:57:06 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml
+/xdebug/php_xdebug.h
+/xdebug/xdebug_com.h
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h:
+- Update NEWS
+- Fix e-mail
+
+Tue Oct 29 16:54:37 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handlers.c
+/xdebug/xdebug_handlers.h:
+- Implemented file:line breakpoints
+
+Tue Oct 29 13:00:55 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handlers.c
+/xdebug/xdebug_handlers.h:
+- Implement setting file:line breakpoints
+
+Tue Oct 29 12:58:44 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Update portnumber on the server side too
+
+Tue Oct 29 12:11:27 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Change debugger port.
+
+Tue Oct 29 12:01:33 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Fixed problem when two servers connected to the debug client. The 2nd one
+  would be queued by the client and thus 'hang' the server, which is waiting
+  for the ACK of the connect() call. Now we close the rendezvous socket
+  after a real connection has been estabilished, and reopen it when the
+  connection has been closed.
+
+Tue Oct 29 11:04:54 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/memory_usage.phpt:
+- Fix test
+
+Tue Oct 29 00:45:45 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Update .cvsignore
+
+Tue Oct 29 00:44:43 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Add Winsock linkage
+
+Tue Oct 29 00:44:18 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/usefulstuff.c:
+- Fix warning on Windows
+
+Tue Oct 29 00:28:37 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Update .dsp file
+
+Tue Oct 29 00:23:15 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/usefulstuff.c
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_hash.c:
+- Windows updates
+
+Mon Oct 28 17:09:32 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/memory_usage.phpt
+/xdebug/tests/.cvsignore:
+- Added xdebug.collect_params setting. If this setting is on (the default)
+  then Xdebug collects all parameters passed to functions, otherwise they
+  are not collected at all.
+
+Mon Oct 28 16:33:13 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/usefulstuff.c
+/xdebug/usefulstuff.h
+/xdebug/Makefile.frag
+/xdebug/Makefile.in
+/xdebug/package.xml
+/xdebug/test.sh
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handlers.h
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h
+/xdebug/xdebug_socket.c
+/xdebug/xdebug_socket.h
+/xdebug/debugclient/Makefile
+/xdebug/debugclient/main.c
+/xdebug/debugclient/usefulstuff.c
+/xdebug/debugclient/usefulstuff.h:
+- Cleanup
+
+Mon Oct 28 08:16:06 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- Postpone some things to 1.2.0
+
+Mon Oct 28 00:34:11 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/tests/test1.phpt
+/xdebug/tests/test18.phpt
+/xdebug/tests/test2.phpt:
+- Implemented correct handling of include/require and eval.
+
+Sun Oct 27 17:19:22 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/assert_test.phpt:
+- Fix test case
+
+Sun Oct 27 17:01:37 CET 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Remove unused code
+
+Fri Oct 25 08:02:18 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/test.sh
+/xdebug/xdebug.c
+/xdebug/tests/assert_test.phpt:
+- Fixed a bug when calling functions with the internal call_user_func()
+  function.
+- Added test shell script for easier testing.
+
+Thu Oct 24 23:40:37 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/Makefile.frag:
+- Copy only on "make install"
+
+Thu Oct 24 23:40:09 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Remove unused function
+
+Thu Oct 24 23:29:15 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix problems with filenames from which a function was called. Sometimes
+  the filename of the called function was recorded instead of the caller
+  one.
+
+Thu Oct 24 23:27:26 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/auto_trace.phpt
+/xdebug/tests/test1.phpt
+/xdebug/tests/test10.phpt
+/xdebug/tests/test11.phpt
+/xdebug/tests/test12.phpt
+/xdebug/tests/test13.phpt
+/xdebug/tests/test14.phpt
+/xdebug/tests/test15.phpt
+/xdebug/tests/test16.phpt
+/xdebug/tests/test17.phpt
+/xdebug/tests/test18.phpt
+/xdebug/tests/test2.phpt
+/xdebug/tests/test4.phpt
+/xdebug/tests/test5.phpt
+/xdebug/tests/test6.phpt
+/xdebug/tests/test7.phpt
+/xdebug/tests/test8.phpt
+/xdebug/tests/test9.phpt
+/xdebug/tests/trace.phpt:
+- Fix testsuite to work with new run-tests.php script
+
+Tue Oct 22 15:15:05 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/Makefile:
+- Re-add makefile
+
+Tue Oct 22 15:09:28 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/Makefile.frag
+/xdebug/package.xml
+/xdebug/debugclient/Makefile:
+- Also make debugclient
+
+Tue Oct 22 12:57:22 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/package.xml:
+- update package.xml and todo
+
+Mon Oct 21 21:21:47 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Remove outdated crap
+
+Mon Oct 21 15:55:55 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_com.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handlers.c:
+- Make -Wall happy
+
+Mon Oct 21 15:19:27 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handlers.h:
+- Implemented class/method breakpoints
+
+Mon Oct 21 13:57:32 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/Makefile
+/xdebug/debugclient/main.c
+/xdebug/debugclient/usefulstuff.c:
+- Being pedantic
+
+Sun Oct 20 21:19:22 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handlers.h:
+- Added "bt" command to get backtraces
+- Redid showing of E_* errors to the client
+- Made it more look like GDB
+- Added better help texts
+- Reordened functions in file
+
+Sun Oct 20 21:07:19 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Handle connection aborts from the server side gracefully.
+
+Sun Oct 20 20:23:18 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/main.c:
+- Look more like GDB
+
+Sat Oct 19 21:14:23 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c:
+- Abstracted error reporting in response to commands from the client.
+
+Sat Oct 19 18:16:32 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_socket.c
+/xdebug/debugclient/usefulstuff.c:
+- Use constant to define buffer size
+
+Sat Oct 19 18:13:14 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/.cvsignore:
+- Add .cvsignore file
+
+Sat Oct 19 18:12:58 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/debugclient/Makefile
+/xdebug/debugclient/main.c
+/xdebug/debugclient/usefulstuff.c
+/xdebug/debugclient/usefulstuff.h:
+- Added debug client
+
+Sat Oct 19 17:21:30 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/auto_trace.phpt
+/xdebug/tests/test10.phpt
+/xdebug/tests/test11.phpt
+/xdebug/tests/test12.phpt
+/xdebug/tests/test13.phpt
+/xdebug/tests/test14.phpt
+/xdebug/tests/test15.phpt
+/xdebug/tests/test16.phpt
+/xdebug/tests/test17.phpt
+/xdebug/tests/test18.phpt
+/xdebug/tests/test19.phpt
+/xdebug/tests/test7.phpt
+/xdebug/tests/test8.phpt
+/xdebug/tests/test9.phpt
+/xdebug/tests/trace.phpt
+/xdebug/tests/test1.phpt
+/xdebug/tests/test4.phpt
+/xdebug/tests/test10.php
+/xdebug/tests/test11.php
+/xdebug/tests/test12.php
+/xdebug/tests/test13.php
+/xdebug/tests/test14.php
+/xdebug/tests/test15.php
+/xdebug/tests/test16.php
+/xdebug/tests/test17.php
+/xdebug/tests/test18.php
+/xdebug/tests/test19.php
+/xdebug/tests/test20.php
+/xdebug/tests/test20a.php
+/xdebug/tests/test7.php
+/xdebug/tests/test8.php
+/xdebug/tests/test9.php
+/xdebug/tests/trace.php:
+- Reworked test-suite
+
+Fri Oct 18 22:57:23 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Consistency
+
+Fri Oct 18 22:56:52 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Consistency
+
+Fri Oct 18 22:54:43 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Typo
+
+Fri Oct 18 22:54:25 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Update NEWS
+
+Fri Oct 18 22:52:54 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Update NEWS
+
+Fri Oct 18 22:49:49 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_com.h
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h:
+- Added automatic starting of function traces (xdebug.auto_trace, defaulting to
+  "off").
+- Rewrote gathering of function names and parameters.
+- Xdebug now only works with PHP 4.3.0pre1 and later.
+- Some code clean ups.
+- Added support for breakpoints (only on function name for now).
+- Fixed building with a ZTS enabled PHP.
+- Better handling of error conditions from remote debugging client.
+- Dropped making use of extended opcodes.
+- (GDB Handler) Reimplemented parsing debugging commands
+- (GDB Handler) Added "help", "quit" and "break" handlers.
+
+Fri Oct 18 22:40:31 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test19.php
+/xdebug/tests/test20.php
+/xdebug/tests/test20a.php
+/xdebug/tests/.cvsignore:
+- Added two more tests
+- Added .swp to ignores files
+
+Fri Oct 18 22:38:09 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/.cvsignore
+/xdebug/tests/test1.phpt
+/xdebug/tests/test2.phpt
+/xdebug/tests/test3.phpt
+/xdebug/tests/test4.phpt
+/xdebug/tests/test5.phpt
+/xdebug/tests/test6.phpt
+/xdebug/tests/001.phpt
+/xdebug/tests/test1.php
+/xdebug/tests/test2.php
+/xdebug/tests/test3.php
+/xdebug/tests/test4.php
+/xdebug/tests/test5.php
+/xdebug/tests/test6.php:
+- Converted tests
+
+Thu Oct 17 13:15:49 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Implement automatic starting of tracing
+
+Sat Oct 12 16:46:09 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Beautify output (patch by Sander Roobol <sander@php.net>)
+
+Thu Oct 10 13:54:31 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_socket.c:
+- Fix bug in algorithm
+
+Sun Oct 6 11:36:36 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix Zend Engine 2 issues
+
+Sat Oct 5 23:29:21 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Some Zend Engine 2 work
+
+Mon Sep 30 07:56:24 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_hash.c
+/xdebug/xdebug_hash.h
+/xdebug/Makefile.in
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handlers.h:
+- Updated error handling from debug commands
+- Implemented the setting of function breakpoints
+- Added hash functions from SRM
+
+Sat Sep 28 21:29:13 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_socket.c
+/xdebug/xdebug_socket.h
+/xdebug/Makefile.in
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handlers.h:
+- Moved xdebug_socket_read_line() to it's own file
+- Fix return value handling
+
+Sat Sep 28 21:28:01 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Initialize member variable
+
+Thu Sep 26 18:09:26 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Added time index and memory footprint to CLI dumps. The information shown
+  contains now everything available.
+- Check for remote initialization failures.
+
+Mon Sep 23 16:25:55 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h:
+- Added command line parsing
+
+Fri Sep 20 22:09:56 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Fix line-endings
+- update project file
+
+Tue Sep 17 10:07:43 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/README:
+- Update README
+
+Tue Sep 17 10:07:06 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/README:
+- update README
+
+Mon Sep 16 16:52:35 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Fix off-by-one error
+
+Mon Sep 16 16:52:02 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Fix off-by-one error
+
+Thu Sep 12 21:47:08 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_com.c
+/xdebug/xdebug_com.h
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handlers.h
+/xdebug/xdebug_var.c:
+- Begin of sockets stuff
+
+Sun Sep 8 18:38:01 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handlers.h:
+- Implemented infrastructure for JIT and REQ debugging
+
+Sat Sep 7 14:12:17 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handlers.c:
+- More windows build fixes
+
+Sat Sep 7 00:39:20 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handler_gdb.c
+/xdebug/xdebug_handler_gdb.h
+/xdebug/Makefile.in
+/xdebug/config.m4
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_com.h
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handlers.c
+/xdebug/xdebug_handlers.h:
+- Change socket to contexts
+- Added basic GDB emulation files
+
+Sat Sep 7 00:35:19 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_handlers.h
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_com.h
+/xdebug/xdebug_com.c:
+- Windows build fixes
+
+Thu Sep 5 13:25:12 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/Makefile.in:
+- Update Makefile.in for old PHP versions (=< 4.2)
+
+Wed Sep 4 21:00:37 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Updated NEWS file
+
+Wed Sep 4 20:56:49 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_com.c
+/xdebug/xdebug_com.h
+/xdebug/xdebug_handler_php3.c
+/xdebug/xdebug_handler_php3.h
+/xdebug/xdebug_handlers.c
+/xdebug/xdebug_handlers.h
+/xdebug/TODO
+/xdebug/config.m4
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h:
+- Implemented remote debugger handler abstraction
+- Added a php3 compatible debugger handler
+- Abstracted error type to string function
+- Merged memory allocation problems from the 1.0 branch
+- Merged API version check from the 1.0 branch
+- Rename execute_data_ptr to current_execute_data for ZE2 compability
+
+Mon Sep 2 12:53:31 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h:
+- Fix estrdup/free issue
+
+Mon Sep 2 12:20:40 CEST 2002 Jani Taskinen <sniper@iki.fi>
+/xdebug/.cvsignore:
+Some missing entries.. :)
+
+Mon Sep 2 12:09:13 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix API check
+
+Mon Sep 2 10:06:05 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix ChangeLog
+
+Sun Sep 1 12:26:54 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c:
+- MFH: Fix memory problems
+
+Sun Sep 1 01:25:10 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Update .cvsignore file
+
+Sun Sep 1 01:23:52 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c:
+- MFH: Fix for memory consuption bug
+
+Sat Aug 31 22:54:15 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Bump up version no
+
+Sat Aug 31 22:49:56 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO:
+- New TODO for 1.1 and 1.2
+
+Sat Aug 31 10:33:27 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/config.m4:
+- Prevent xdebug from being compiled in into PHP.
+
+Fri Aug 30 16:03:04 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Add more targets to .cvsignore file
+
+Fri Aug 30 15:04:20 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Define HAVE_EXECUTE_DATA_PTR in .dsp file
+
+Fri Aug 30 14:45:55 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Windows fixes
+
+Fri Aug 30 11:09:46 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/TODO
+/xdebug/package.xml
+/xdebug/xdebug.c:
+- Administrativia
+
+Fri Aug 30 11:08:16 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Use old code for PHP versions < 4.3.0
+
+Fri Aug 30 10:23:50 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Prevent the use of assert in older PHP versions.
+
+Fri Aug 30 08:18:48 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/tests/test17.php:
+- Implement gathering of parameters to internal functions.
+- Updating test case 17 to demonstrate it.
+
+Wed Aug 28 19:56:01 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Increased pre-allocated memory for dumping variables to have some
+  increase in performance.
+
+Wed Aug 28 19:53:34 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c:
+- Remove ", " at the end of arrays and object var arrays.
+
+Wed Aug 28 19:47:53 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Change "?" to "{missing}" for missing parameters to functions.
+
+Wed Aug 28 19:45:11 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Update xdebug_get_function_trace() with new logic
+- Fix crash bug in xdebug_get_function_trace() due to new logic
+
+Wed Aug 28 10:31:14 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Make it compile with PHP versions <= 4.2.0
+
+Tue Aug 27 22:40:58 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test18.php:
+- Added test for eval (nr 18)
+
+Tue Aug 27 22:26:38 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/test1.php
+/xdebug/tests/test9.php
+/xdebug/tests/test9a.php
+/xdebug/tests/test_class.php:
+- Implemented superior way of getting function names 
+- Adjusted testcases
+
+Mon Aug 19 13:20:16 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Added support for error messages with stack trace in syslog (Patch by 
+  Sergio Ballestrero <s.ballestrero@planetweb.it>)
+
+Mon Jul 1 18:08:16 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix include stuff (thanks to sweede <sweede@gallatinriver.net>)
+
+Mon Jun 24 10:04:14 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix building on Windows
+
+Sun Jun 23 23:29:09 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Attempt to make it build on windows again
+
+Sun Jun 23 18:37:53 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml
+/xdebug/xdebug.c:
+- Go with 0.9.0
+
+Sun Jun 23 18:35:03 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h
+/xdebug/tests/test17.php:
+- Don't rely on the output buffering in PHP, which is still a little bit
+  shaky.
+
+Sun Jun 16 22:05:59 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Added fflush() to flush the trace to file after every line
+- Fix crash bug
+
+Sun Jun 16 20:39:48 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/package.xml
+/xdebug/xdebug.c:
+- Add PECL package file
+- Maintain version info
+
+Sun Jun 16 20:15:47 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Whitespace
+
+Sun Jun 16 20:09:55 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix some warnings on Windows
+
+Sun Jun 16 20:07:29 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/tests/test2.php:
+- Fix ZTS issues
+- Remove xdebug_get|dump_function_trace|stack from output
+
+Mon Jun 10 15:01:23 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c:
+- Fixed a memory leak in delayed included files. (Derick)
+- Added support for PHP 4.1.2. (Derick)
+
+Sun Jun 9 09:45:51 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/tests/test10.php:
+- Rewrote xdebug_get_function_stack() and xdebug_get_function_trace() to return
+  data in multidimensional arrays.
+
+Thu Jun 6 13:51:43 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fixed double freeing
+
+Thu Jun 6 13:05:49 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/test15.php
+/xdebug/tests/test16.php
+/xdebug/tests/test2.php
+/xdebug/tests/test7.php:
+- Add support for classnames, variable include files and variable function
+  names.
+- Implemented links to the PHP Manual in traces.
+- Added timestamps and memory usage to function traces.
+- Splitted function names from class names in the function_stack_entries.
+- Added tests for variable functions and classes
+- Updated tests
+
+Sun Jun 2 21:16:17 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Update NEWS
+
+Sun Jun 2 21:15:47 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fixed crash when a statement was called without a function stack
+
+Wed May 29 16:33:18 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c
+/xdebug/tests/test14.php:
+- Implement variable function names.
+- Fix a bug in circular references.
+
+Sun May 26 21:04:10 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Update DSP (thanks to Sander)
+
+Sun May 26 15:56:51 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c
+/xdebug/xdebug_var.c:
+- Fix ZTS build
+
+Sun May 26 14:35:54 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix version
+
+Sun May 26 13:42:02 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix NEWS
+
+Sun May 26 13:01:05 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Unify unknown data
+
+Sun May 26 13:00:17 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test13.php:
+- Added test for variable function calls  (13)
+
+Sat May 25 16:01:23 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix NEWS
+
+Sat May 25 16:00:42 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_var.c
+/xdebug/xdebug_var.h
+/xdebug/Makefile.in
+/xdebug/config.m4
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/xdebug_llist.c
+/xdebug/xdebug_llist.h:
+- Implemented MUCH better parameter tracing for user defined functions
+  (and render parameter tracing to internal functions unusable).
+- s/SRM_LLIST/XDEBUG_LLIST
+- Moved variable dumping code to xdebug_var.c
+- Unified unknown entries for class/function names
+
+Sat May 25 15:44:11 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test10.php:
+- Add test for functions as parameters to functions (10).
+
+Sat May 25 15:42:52 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test11.php
+/xdebug/tests/test12.php
+/xdebug/tests/test7.php
+/xdebug/tests/test8.php
+/xdebug/tests/test9.php:
+- Added more calls to test 7.
+- Updated test 8 and 9 to use xdebug_dump_function_trace().
+- Added new tests for indirect function calls (11) and complex
+  parameters (12).
+
+Sun May 19 16:32:54 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/config.m4
+/xdebug/xdebug.c
+/xdebug/tests/test1.php
+/xdebug/tests/test7.php:
+- First attempt at class stuff
+
+Sat May 18 22:41:20 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Update NEWS
+
+Sat May 18 22:39:57 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Renamed xdebug_get_function_trace() to xdebug_dump_function_trace().
+- Implemented new xdebug_get_function_trace() to return the function trace in
+  an array.
+- Added a parameter to xdebug_start_trace(). When this parameter is used,
+  xdebug will dump a function trace to the filename which this parameter
+  speficies.
+
+Fri May 17 20:42:37 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/test7.php
+/xdebug/tests/test8.php
+/xdebug/tests/test9.php
+/xdebug/tests/test9a.php:
+- Fix problem for backtracking by ZEND_DO_FCALL_BY_NAME
+- Added defines around variable handling
+
+Thu May 16 23:16:10 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix bug, no more HTML output in CLI
+
+Thu May 16 23:09:43 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Always set the background color
+
+Wed May 15 20:57:43 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix logging to syslog
+- Move around some lines in the CLI debug message
+
+Tue May 14 20:22:29 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Attempt to fix the nested function issue.
+
+Tue May 14 13:07:55 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Respect error_reporting setting
+
+Tue May 14 12:45:29 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- configure maintenance
+
+Tue May 14 12:41:14 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/Makefile.in:
+- Fix the Makefile
+
+Tue May 14 11:39:28 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Update NEWS
+
+Tue May 14 11:38:36 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/Makefile.in
+/xdebug/config.m4:
+- Change configure scripts to work with PHP 4.2.x
+
+Tue May 14 11:37:58 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Layout NEWS
+
+Tue May 14 11:36:49 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Update cvsignore
+
+Sun May 12 12:58:08 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Fix typo
+
+Sun May 12 12:57:46 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test5.php
+/xdebug/tests/test6.php:
+- Added test 5 for testing nested function calls
+- Added test 6 for multi-dimensional constant arrays passed to functions.
+
+Sun May 12 12:56:37 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Implemented handling single-dimensional constant arrays passed to a function.
+   function. (Derick)
+
+Sun May 12 10:28:39 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix bug in levels with includes
+
+Sat May 11 21:33:42 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Make extended_info always work. (Thanks to Edin Kadribasic and Harald Radi
+  for assisting me tracking this down).
+
+Sat May 11 21:24:55 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Renaming internals to make sure no symbol clashes occur
+
+Sat May 11 14:52:06 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test4.php:
+- Add simple test for postponed declared functions
+
+Sat May 11 14:51:12 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Implement postponed declared function names
+
+Sat May 11 14:21:18 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Fix error message
+
+Sat May 11 12:03:25 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Update NEWS
+
+Sat May 11 12:02:58 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Implemented function traces (xdebug_start_trace(), xdebug_stop_trace() and
+  xdebug_get_function_trace()).
+- Fixed segfaults in xdebug_call_*
+- Added includes to the function trace/stacks
+- Fixed warnings for window build
+
+Sat May 11 11:59:12 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/test2a.php
+/xdebug/tests/trace.php
+/xdebug/tests/test2.php:
+- Added new tests
+
+Fri May 10 21:11:54 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Add config.cache to ignored files
+
+Fri May 10 19:57:47 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Make it work on windows (Thanks to Edin Kadribasic for providing this
+  information)
+
+Fri May 10 13:08:11 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Disable multiple displays of the error
+
+Fri May 10 12:59:21 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Update .dsp
+
+Thu May 9 14:12:44 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug_llist.c
+/xdebug/xdebug_llist.h
+/xdebug/config.m4
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/srm_llist.c
+/xdebug/srm_llist.h:
+- srm_llist > xdebug_llist
+- prework for function call traces
+
+Wed May 8 19:19:09 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Change comments to make Jani happy
+
+Wed May 8 10:17:09 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>:
+- Fix NEWS
+
+Wed May 8 10:14:56 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Release version 0.7.0
+
+Wed May 8 10:14:00 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/README:
+- Add readme
+
+Wed May 8 09:44:00 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Support static method calls (foo::bar()).
+
+Tue May 7 16:09:13 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Implement display of include/require
+
+Mon May 6 14:59:37 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Remove functions from the stack after they are finished
+
+Sat May 4 19:27:20 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/EXPERIMENTAL:
+- My code is never experimental :)
+
+Fri May 3 20:33:34 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/test3.php:
+- Add ini_setting and functions to enable and disable showing stacktraces.
+
+Thu May 2 19:10:18 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Make it compile under ZTS mode
+
+Thu May 2 12:22:15 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c:
+- Disable xdebug_memory_usage() when memory_limit was not compiled in.
+
+Thu May 2 11:58:04 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.c:
+- Made errors show up always
+
+Thu May 2 10:59:41 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/test_memory.php:
+- Implemented xdebug_memory_usage() which returns the memory in use by PHPs
+  engine.
+
+Thu May 2 10:58:51 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/tests/.test1.php.swp:
+- Remove swap file
+
+Thu May 2 08:56:20 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/xdebug.dsp:
+- Added .dsp file (Patch by Sebastian Bergmann)
+
+Thu Apr 25 08:27:48 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/php_xdebug.h
+/xdebug/xdebug.c
+/xdebug/tests/test2.php:
+- Implement userland functions
+
+Thu Apr 25 08:27:03 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Update cvsignore
+
+Wed Apr 24 16:30:12 CEST 2002 Derick Rethans <d.rethans@jdimedia.nl>
+/xdebug/.cvsignore:
+- Fix cvsignore
+

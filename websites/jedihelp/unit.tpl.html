@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Browsing unit {UNIT_NAME}</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Browsing a unit<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="browse.php?Id=%7BPROJECT_ID%7D">
+  <img border="0" src="up.png" title="Back to project {PROJECT_NAME}" alt="Back to project {PROJECT_NAME}"></a>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+<a href="item.php?UnitId=%7BUNIT_ID%7D&edit=1">
+  <img border="0" src="plus.png" title="Add an item" alt="Add an item"></a>
+<a href="unit.php?Id=%7BUNIT_ID%7D&edit=1">
+  <img border="0" src="input_zone.png" title="Edit unit" alt="Edit unit"></a>
+<a href="genfile.php?UnitId=%7BUNIT_ID%7D">
+  <img border="0" src="file_arrow.png" title="Generate DTX file" alt="Generate DTX file"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>Unit {UNIT_NAME}<br>
+</h2>
+<b>Author</b>: {UNIT_AUTHOR}<br>
+<br>
+<b>Package</b>: {UNIT_PACKAGE}<br>
+<br>
+<b>Status</b>: {UNIT_STATUS}<br>
+<br>
+{UNIT_DESCRIPTION}<br>
+<br>
+{LAST_CHANGED}
+<br>
+<h2>Items in the unit<br>
+</h2>
+<!-- BEGIN no_items -->
+<br>
+<center><i>There are no items in this unit. Click 
+<a href="item.php?UnitId=%7BADD_UNIT_ID%7D&edit=1">here</a> to add one.</i></center><br>
+<!-- END no_items -->
+<!-- BEGIN items -->
+<table
+ style="width: 85%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="4" align="center">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold; text-align: left;">Item<br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Summary<br>
+      </td>
+    </tr>
+<!-- BEGIN item_list --> <tr>
+      <td style="vertical-align: top;">
+        <a href="item.php?Id=%7BITEM_ID%7D">{ITEM_NAME}</a>
+      </td>
+      <td style="vertical-align: top;">{ITEM_SUMMARY}</td>
+    </tr>
+<!-- END item_list -->
+  </tbody>
+</table>
+<!-- END items -->
+{COMMON_FOOTER}
+</body>
+</html>

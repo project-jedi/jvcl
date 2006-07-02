@@ -1,0 +1,51 @@
+How to run tests
+----------------
+
+Log to the repository (use "phpfi" as password):
+$ cvs -d :pserver:cvsread@cvs.php.net:/repository login
+$ cvs -d :pserver:cvsread@cvs.php.net:/repository co php4/pear
+$ cd pear/DB/tests/driver
+$ vi setup.inc       # add a working dsn for your database
+$ pear run-tests .   # runs all tests (the .phpt files)
+$ pear run-tests 02fetch.phpt # run only this test
+
+Each test that fails generates a .php (which you can execute), a .exp
+(the expected output), a .out (the test output) and a .diff (a diff -u
+from the .exp and .out files).
+
+<test file or directory> can be:
+
+pear/DB/tests:            Common PEAR DB tests
+pear/DB/tests/<backend>:  Specific backend tests (old tests, don't used them)
+pear/DB/tests/driver:     Common tests for all the drivers
+
+If you run the tests, please report or fill the TEST CONFORMANCE table
+in the STATUS document. Before any commit to CVS be sure to run the tests
+and nothing got broken with the change.
+
+If you get the message "skip", means that the test it's not executed. Look
+at the DB/tests/driver/skipif.inc to see what's the problem (probably
+a connection problem).
+
+
+DB tester matrix
+----------------
+                                   B - A - C - K - E - N - D - S
+TESTER                   ibase ifx   msql  mssql mysql mysql4 oci8  odbc  pgsql sybase  fbsql
+John Horton               -     X     -     -     -      -     -     -     -      -       -
+Tim Zickus                -     -     -     -     -      -     X     -     -      -       -
+Tim Parkin                -     -     -     -     -      -     X     -     -      -       -
+Paul Gardiner             -     X     -     -     -      -     -     -     -      -       -
+Daniel, Adam              -     -     -     -     -      -     X     -     -      -       -
+szii@sziisoft.com         -     -     -     -     -      -     -     X¹    -      -       -
+jmh3@linuxfreak.com       -     -     -     -     -      -     -     -     X      -       -
+Kevin Henrikson           -     -     -     -     -      -     X     -     -      -       -
+Stig Bakken               -     -     -     -     X      -     -     -     X      -       -
+Chuck Hagenbuch           -     -     -     X     -      -     -     -     -      -       -
+Ludovico Magnocavallo     X     -     -     -     -      -     -     -     -      -       -
+
+MISSING TESTERS           -     -     X     -     -      X     -     -     -      X       X
+
+Comments:
+
+[1]: ODBC using IBM DB2

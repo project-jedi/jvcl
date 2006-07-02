@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Search Results</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Search Results<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back the home page" alt="Back to the home page"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>Search Results<br>
+</h2>
+{RESULT_MESSAGE}<br>
+<br>
+<!-- BEGIN item_list -->
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="4">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 1px;"><span
+ style="font-weight: bold;">Relevance</span><br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Item<br>
+      </td>
+      <td style="font-weight: bold; text-align: left;">Summary<br>
+      </td>
+    </tr>
+<!-- BEGIN item_list_items --> 
+    <tr>
+      <td style="vertical-align: top; width: 1px;">{ITEM_RELEVANCE}<br>
+      </td>
+      <td style="vertical-align: top;">
+        <!-- BEGIN item_is_unit --><a href="unit.php?Id=%7BUNIT_ID%7D"><!-- END item_is_unit -->
+        <!-- BEGIN item_is_not_unit --><a href="item.php?Id=%7BITEM_ID%7D"><!-- END item_is_not_unit -->
+          {ITEM_NAME}
+        </a>
+      </td>
+      <td style="vertical-align: top;">{ITEM_SUMMARY}<br>
+      </td>
+    </tr>
+<!-- END item_list_items -->
+  </tbody>
+</table>
+<br>
+<!-- END item_list -->
+<font size="-2">Search performed in {SEARCH_DURATION} seconds.</font><br>
+{COMMON_FOOTER}
+</div>
+</body>
+</html>

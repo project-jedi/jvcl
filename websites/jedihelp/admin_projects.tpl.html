@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <title>Jedi Online Help - Administration - Projects</title>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Administration - Projects<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back the home page" alt="Back to the home page"></a>
+{ADMIN_TOOLBAR}
+</div>
+<h2>Projects</h2>
+<span style="font-style: italic; color: rgb(255, 0, 0);">{MESSAGE}</span><br>
+<br>
+Please use the elements below to manage the projects in the JEDI Online
+help. Click on the name to edit the details of a given project or click
+<a href="admin_edit_project.php">here</a> to add one.<br>
+<br>
+<!-- BEGIN projects_table -->
+<form style="margin-left: 40px;" action="admin_projects.php"
+ method="post">
+  <div style="text-align: center;"> <input type="hidden" name="action"
+ value="delete"> </div>
+  <table cellpadding="4" cellspacing="0" border="0"
+ style="text-align: left; width: 80%;">
+    <tbody>
+      <tr>
+        <td
+ style="vertical-align: top; font-weight: bold; text-align: center;"><br>
+        </td>
+        <td style="vertical-align: top; font-weight: bold;">Name<br>
+        </td>
+        <td style="vertical-align: top; font-weight: bold;">Description<br>
+        </td>
+      </tr>
+<!-- BEGIN delete_projects --> <tr>
+        <td style="vertical-align: top; width: 1px; text-align: center;">
+        <input type="checkbox" name="projects[]" value="{PROJECT_ID}"> </td>
+        <td style="vertical-align: top;"><a
+ href="admin_edit_project.php?Id=%7BPROJECT_ID%7D">{PROJECT_NAME}</a><br>
+        </td>
+        <td style="vertical-align: top;">{PROJECT_DESCRIPTION}<br>
+        </td>
+      </tr>
+<!-- END delete_projects --> <tr>
+        <td colspan="3" rowspan="1" style="vertical-align: top;">
+        <div style="text-align: center;"><input type="submit"
+ value="Delete selected projects"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<!-- END projects_table -->
+{COMMON_FOOTER}
+</body>
+</html>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<org.eclipse.uml2:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:org.eclipse.uml2="http:///org/eclipse/uml2.ecore" xmi:id="3G7fgaCTEdiGQt0V7xtmQg==" name="db">
+  <ownedMember xsi:type="org.eclipse.uml2:Package" xmi:id="SxI8wKCUEdiGQt0V7xtmQg==" name="the package">
+    <ownedMember xsi:type="org.eclipse.uml2:Class" xmi:id="ZUSgsKCUEdiGQt0V7xtmQg==" name="Unit"/>
+  </ownedMember>
+</org.eclipse.uml2:Model>

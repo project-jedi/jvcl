@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+<!-- BEGIN auto_refresher -->
+  <meta http-equiv="refresh" content="1;URL=admin_seealso.php?action=gen">
+<!-- END auto_refresher -->
+  <title>Jedi Online Help - Administration - See Also links</title>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Administration - See Also links<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back the home page" alt="Back to the home page"></a>
+{ADMIN_TOOLBAR}
+</div>
+<h2>See Also links<br>
+</h2>
+<span style="font-style: italic; color: rgb(255, 0, 0);">{MESSAGE}</span><br>
+<br>
+Please click <a href="admin_seealso.php?action=gen">here</a> to force
+the generation of the See Also links. Please note that this can be a
+very lengthy process.<br>
+<br>
+Please use the elements below to manage the words that are to be
+considered as links to external items when generating the See Also
+links for the JEDI Online
+help.<br>
+<br>
+<!-- BEGIN no_external_items -->
+<div style="margin-left: 40px;"><span style="font-style: italic;">{NO_EXTERNAL_ITEMS_MESSAGE}</span>
+</div>
+<!-- END no_external_items -->
+<!-- BEGIN external_items_section -->
+<form style="margin-left: 40px;" action="admin_seealso.php"
+ method="post"> <input type="hidden" name="action" value="delete">
+  <table cellpadding="4" cellspacing="0" border="0"
+ style="text-align: left; width: 80%;">
+    <tbody>
+      <tr>
+        <td
+ style="vertical-align: top; font-weight: bold; text-align: center;"><br>
+        </td>
+        <td style="vertical-align: top; font-weight: bold;">Name<br>
+        </td>
+        <td style="vertical-align: top; font-weight: bold;">Description<br>
+        </td>
+      </tr>
+<!-- BEGIN delete_external_items --> <tr>
+        <td style="vertical-align: top; width: 1px; text-align: center;">
+        <input type="checkbox" name="externalItems[]"
+ value="{EXTERNAL_ITEM_ID}"> </td>
+        <td style="vertical-align: top;">{EXTERNAL_ITEM_NAME}<br>
+        </td>
+        <td style="vertical-align: top;">{EXTERNAL_ITEM_DESCRIPTION}<br>
+        </td>
+      </tr>
+<!-- END delete_external_items --> <tr>
+        <td colspan="3" rowspan="1" style="vertical-align: top;">
+        <div style="text-align: center;"><input type="submit"
+ value="Delete selected external items"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<!-- END external_items_section -->
+<form style="margin-left: 40px;" action="admin_seealso.php"
+ method="post">
+  <div style="text-align: center; margin-left: 40px;"> <input
+ type="hidden" name="action" value="add"> </div>
+  <table cellpadding="4" cellspacing="0" border="0"
+ style="text-align: left;">
+    <tbody>
+      <tr>
+        <td style="font-weight: bold; text-align: center;">Name</td>
+        <td style="font-weight: bold; text-align: center;">Description</td>
+      </tr>
+      <tr>
+        <td><input type="text" name="name"></td>
+        <td><textarea name="description" rows="6" cols="40"> </textarea></td>
+      </tr>
+      <tr>
+        <td style="text-align: center;" colspan="2"><input type="submit"
+ value="Add this external item"></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+{COMMON_FOOTER}
+</body>
+</html>

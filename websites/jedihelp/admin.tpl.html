@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <title>Jedi Online Help - Administration</title>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Administration<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back to the home page" alt="Back to the home page"></a>
+{ADMIN_TOOLBAR}
+</div>
+<h2>Actions</h2>
+<br>
+Depending on the usage rights granted to your account, here are the operations you can perform:<br>
+<br/>
+<!-- BEGIN add_file_section -->
+<ul>
+  <li><span style="font-weight: bold;">Add a file </span></li>
+</ul>
+The file can either be a dtx or zip containing dtx files<br>
+<br>
+<!-- BEGIN add_file_no_projects_section -->
+<div style="margin-left: 80px;"><span style="font-style: italic;">{NO_PROJECTS_MESSAGE}</span>
+</div>
+<!-- END add_file_no_projects_section -->
+<!-- BEGIN add_file_project_list_section -->
+<form style="margin-left: 80px;" enctype="multipart/form-data"
+ action="addfile.php" method="post">Add this file <input type="hidden"
+ name="MAX_FILE_SIZE" value="10000000"> <input type="file"
+ name="uploadedfile">&nbsp;into the
+  <select name="project">
+<!-- BEGIN add_file_project_name_section -->
+  <option value="{PROJECT_ID}">{PROJECT_NAME}</option>
+<!-- END add_file_project_name_section -->
+  </select>
+project. <input type="submit" value="Go"></form>
+<!-- END add_file_project_list_section -->
+<br>
+<!-- END add_file_section -->
+<!-- BEGIN manage_si_section -->
+<ul style="font-weight: bold;">
+  <li>Manage submitted items</li>
+</ul>
+Visitors of the help website may decide to contribute by submitting items. 
+Those are not directly added into the database but first need to be
+reviewed by a member of the administration team. Click 
+<a href="admin_submitted_items.php">here</a> to manage those submitted
+items.<br>
+<br>
+<!-- END manage_si_section -->
+<!-- BEGIN manage_see_also_section -->
+<ul style="font-weight: bold;">
+  <li>Manage "See also" links</li>
+</ul>
+The See Also links are not processed everytime a file is added because
+it might take a long time. Click <a href="admin_seealso.php?action=gen">here</a>
+to regenerate them now. Some words can be marked as external links (to
+the Delphi or C++ Builder help for instance) and will thus be ignored.
+You can manage them on that <a href="admin_seealso.php">page</a>.<br>
+<br>
+<!-- END manage_see_also_section -->
+<!-- BEGIN manage_projects_section -->
+<ul style="font-weight: bold;">
+  <li>Manage projects</li>
+</ul>
+The projects are the containers for units. Please use this <a
+ href="admin_projects.php">page</a> to manage them.<br>
+<br>
+<!-- END manage_projects_section -->
+<!-- BEGIN manage_users_section -->
+<ul style="font-weight: bold;">
+  <li>Manage users</li>
+</ul>
+Only some users can directly modify the content of the help databse.
+Please use this <a href="admin_users.php">page</a> to manage them.<br>
+<!-- END manage_users_section -->
+<!-- BEGIN nothing_allowed_section -->
+Sorry, while you have a some level of authorization to see this page, there are no 
+section that can be accessed with this right. Please contact an administrator who
+will assess the situation.
+<!-- END nothing_allowed_section -->
+{COMMON_FOOTER}
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Advanced Search</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Advanced Search<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="index.php">
+  <img border="0" src="home.png" title="Back the home page" alt="Back to the home page"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>Advanced Search<br>
+</h2>
+Please fill the required information below then press the Search button
+<br>
+<br>
+<form style="margin-left: 40px;" action="search_result.php"
+ method="post">
+  <table
+ style="width: 100%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="0" class="special">
+    <tbody>
+      <tr>
+        <td
+ style="width: 1px; white-space: nowrap; vertical-align: middle;">Search
+for:</td>
+        <td> <input size="60" name="search_text"> </td>
+      </tr>
+      <tr>
+        <td
+ style="width: 1px; white-space: nowrap; vertical-align: middle;">Limit
+to this field:</td>
+        <td>
+        <select name="field">
+<!-- BEGIN field_list -->
+        <option value="{FIELD_NAME}">{FIELD_DISPLAY_NAME}</option>
+<!-- END field_list -->
+        </select>
+        </td>
+      </tr>
+      <tr>
+        <td
+ style="vertical-align: middle; width: 1px; white-space: nowrap;">Limit
+to project(s):<br>
+        </td>
+        <td style="vertical-align: top;">
+        <select name="projects[]" size="{PROJECT_COUNT}">
+<!-- BEGIN projects_list -->
+        <option value="{PROJECT_ID}">{PROJECT_NAME}</option>
+<!-- END projects_list -->
+        </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: middle; width: 1px; white-space: nowrap;">
+          Limit to Author:
+        </td>
+        <td style="vertical-align: top;">
+          <input type="text" name="limit_author" size="60">
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: middle; width: 1px; white-space: nowrap;">
+          Undocumented items only
+        </td>
+        <td style="vertical-align: top;">
+          <input type="checkbox" name="undocumented_only" value="1" size="60" style="margin-left: 0px;">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 1px; white-space: nowrap; vertical-align: middle;">
+          Search type:
+        </td>
+        <td style="vertical-align: bottom;">
+          <input type="radio" checked name="search_type" value="0" style="margin-left: 0px;"> 
+          <span style="vertical-align: top;">Regular</span> 
+          <input type="radio" name="search_type" value="1"> 
+          <span style="vertical-align: top;">Boolean</span>
+          <input type="radio" name="search_type" value="2"> 
+          <span style="vertical-align: top;">Query Expansion</span> 
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: middle; width: 1px; white-space: nowrap;">
+          Maximum number of results:
+        </td>
+        <td style="vertical-align: top;">
+          <select name="results_limit">
+            <option value="25">25</option>
+            <option value="50" selected>50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+            <option value="2000000">No limit</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <div style="text-align: center;"><input type="submit" value="Search">
+  </div>
+</form>
+<br>
+<font size="-2">
+Note: The search is done using the FULLTEXT functions from MySQL. As a result, 
+among other things, words made of three characters or less will never return a result. 
+Click <a href="http://dev.mysql.com/doc/mysql/en/Fulltext_Search.html" target="_blank">
+here</a> to open the MySQL website detailling those functions.
+</font>
+<br>
+{COMMON_FOOTER}
+</body>
+</html>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<!-- This is a test file for XML_RSS. -->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
+
+<channel>
+ <title>Test</title>
+ <link>http://pear.php.net/</link>
+ <description>This is a test channel for XML_RSS</description>
+</channel>
+
+<image>
+ <title>PEAR</title>
+ <url>http://pear.php.net/gifs/pearsmall.gif</url>
+ <link>http://pear.php.net/</link>
+</image>
+
+<item>
+ <title>PHP homepage</title>
+ <link>http://php.net/</link>
+</item>
+
+<item>
+ <title>PEAR homepage</title>
+ <link>http://pear.php.net/</link>
+</item>
+
+<item>
+ <title>PHP-GTK homepage</title>
+ <link>http://gtk.php.net/</link>
+</item>
+
+<item>
+ <title>PHP QA homepage</title>
+ <link>http://qa.php.net/</link>
+</item>
+
+<textinput>
+ <title>Search Slashdot</title>
+ <description>Search Slashdot stories</description>
+ <name>query</name>
+ <link>http://slashdot.org/search.pl</link>
+</textinput>
+
+</rdf:RDF>

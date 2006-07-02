@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Editing {ITEM_NAME}</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <script language="Javascript">
+  <!--
+    function ShowHide(divName, img)
+    {
+      var div = document.getElementById(divName)
+      
+      if (div.style.visibility == "hidden")
+      {
+        div.style.visibility = "visible"
+        div.style.height = ""
+        img.src = "minus_box.png"
+      }
+      else
+      {
+        div.style.visibility = "hidden"
+        div.style.height = "0px"
+        img.src = "plus_box.png"
+      }
+    }
+    
+  // -->
+  </script>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Editing details<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="unit.php?Id=%7BUNIT_ID%7D">
+  <img border="0" src="up.png" title="Back to unit {UNIT_NAME}" alt="Back to unit {UNIT_NAME}"></a>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>{ITEM_NAME}<br>
+</h2>
+<form name="edit_form" method="post" action="submit_item.php">
+<input type="hidden" name="unit_id" value="{UNIT_ID}">
+<input type="hidden" name="item_id" value="{ITEM_ID}">
+<span style="font-weight: bold;">Name</span>
+<div style="margin-left: 40px; margin-top: 5px;">
+<input type="text" maxlength="200" style="width: 90%;" name="name" value="{ITEM_NAME}"><br>
+</div>
+<br>
+
+<a href="javascript: ShowHide('summary_div', document.summary_div_img);">
+<!-- BEGIN empty_summary -->
+  <img border="0" src="plus_box.png" name="summary_div_img"></a>
+<span style="font-weight: bold;">Summary</span>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="summary_div">
+<!-- END empty_summary -->
+<!-- BEGIN filled_summary -->
+  <img border="0" src="minus_box.png" name="summary_div_img"></a>
+<span style="font-weight: bold;">Summary</span>
+<div style="margin-left: 40px; margin-top: 5px;" id="summary_div">
+<!-- END filled_summary -->
+<textarea name="summary" rows="2" wrap="virtual" style="width: 90%;">{SUMMARY}</textarea><br>
+<br>
+</div>
+
+<a href="javascript: ShowHide('parameters_div', document.parameters_div_img);">
+<!-- BEGIN empty_parameters -->
+  <img border="0" src="plus_box.png" name="parameters_div_img"></a>
+<span style="font-weight: bold;">Parameters</span><br>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="parameters_div">
+<!-- END empty_parameters --> 
+<!-- BEGIN filled_parameters -->
+  <img border="0" src="minus_box.png" name="parameters_div_img"></a>
+<span style="font-weight: bold;">Parameters</span><br>
+<div style="margin-left: 40px; margin-top: 5px;" id="parameters_div">
+<!-- END filled_parameters --> 
+<textarea name="parameters" rows="5" wrap="virtual" style="width: 90%;">{PARAMETERS}</textarea><br>
+<br>
+</div>
+
+<a href="javascript: ShowHide('return_value_div', document.return_value_div_img);">
+<!-- BEGIN empty_return_value -->
+  <img border="0" src="plus_box.png" name="return_value_div_img"></a>
+<span style="font-weight: bold;">Return value</span><br>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="return_value_div">
+<!-- END empty_return_value --> 
+<!-- BEGIN filled_return_value -->
+  <img border="0" src="minus_box.png" name="return_value_div_img"></a>
+<span style="font-weight: bold;">Return value</span><br>
+<div style="margin-left: 40px; margin-top: 5px;" id="return_value_div">
+<!-- END filled_return_value --> 
+<textarea name="return_value" rows="1" wrap="virtual" style="width: 90%;">{RETURN_VALUE}</textarea><br>
+<br>
+</div>
+
+<a href="javascript: ShowHide('description_div', document.description_div_img);">
+<!-- BEGIN empty_description -->
+  <img border="0" src="plus_box.png" name="description_div_img"></a>
+<span style="font-weight: bold;">Description</span><br>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="description_div">
+<!-- END empty_description --> 
+<!-- BEGIN filled_description -->
+  <img border="0" src="minus_box.png" name="description_div_img"></a>
+<span style="font-weight: bold;">Description</span><br>
+<div style="margin-left: 40px; margin-top: 5px;" id="description_div">
+<!-- END filled_description --> 
+<textarea name="description" rows="5" wrap="virtual" style="width: 90%;">{DESCRIPTION}</textarea><br>
+<br>
+</div>
+
+<a href="javascript: ShowHide('extras_div', document.extras_div_img);">
+<!-- BEGIN empty_extras -->
+  <img border="0" src="plus_box.png" name="extras_div_img"></a>
+<span style="font-weight: bold;">Extra information</span><br>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="extras_div">
+<!-- END empty_extras --> 
+<!-- BEGIN filled_extras -->
+  <img border="0" src="minus_box.png" name="extras_div_img"></a>
+<span style="font-weight: bold;">Extra information</span><br>
+<div style="margin-left: 40px; margin-top: 5px;" id="extras_div">
+<!-- END filled_extras --> 
+<textarea name="extras" rows="1" wrap="virtual" style="width: 90%;">{EXTRAS}</textarea><br>
+<br>
+</div>
+
+<a href="javascript: ShowHide('see_also_div', document.see_also_div_img);">
+<!-- BEGIN empty_see_also -->
+  <img border="0" src="plus_box.png" name="see_also_div_img"></a>
+<span style="font-weight: bold;">See Also</span><br>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="see_also_div">
+<!-- END empty_see_also --> 
+<!-- BEGIN filled_see_also -->
+  <img border="0" src="minus_box.png" name="see_also_div_img"></a>
+<span style="font-weight: bold;">See Also</span><br>
+<div style="margin-left: 40px; margin-top: 5px;" id="see_also_div">
+<!-- END filled_see_also --> 
+<textarea name="see_also_list" rows="2" wrap="virtual" style="width: 90%;">{SEE_ALSO_LIST}</textarea><br>
+<br>
+</div>
+
+<a href="javascript: ShowHide('jvcl_info_div', document.jvcl_info_div_img);">
+<!-- BEGIN empty_jvcl_info -->
+  <img border="0" src="plus_box.png" name="jvcl_info_div_img"></a>
+<span style="font-weight: bold;">JVCL Information</span><br>
+<div style="margin-left: 40px; margin-top: 5px; visibility: hidden; height: 0px;" id="jvcl_info_div">
+<!-- END empty_jvcl_info --> 
+<!-- BEGIN filled_jvcl_info -->
+  <img border="0" src="minus_box.png" name="jvcl_info_div_img"></a>
+<span style="font-weight: bold;">JVCL Information</span><br>
+<div style="margin-left: 40px; margin-top: 5px;" id="jvcl_info_div">
+<!-- END filled_jvcl_info --> 
+<textarea name="jvcl_info" rows="2" wrap="virtual" style="width: 90%;">{JVCL_INFO}</textarea><br>
+<br>
+</div>
+
+<div style="text-align: center;">
+  <input type="submit" value="Submit">&nbsp;
+<!-- BEGIN cancel_item -->
+  <input type="button" value="Cancel" onclick="location.href = 'item.php?Id={CANCEL_ITEM_ID}';">
+<!-- END cancel_item -->
+<!-- BEGIN cancel_unit -->
+  <input type="button" value="Cancel" onclick="location.href = 'unit.php?Id={CANCEL_UNIT_ID}';">
+<!-- END cancel_unit -->
+</div>
+</form>
+{COMMON_FOOTER}
+</body>
+</html>

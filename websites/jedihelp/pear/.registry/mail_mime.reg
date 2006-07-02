@@ -1,0 +1,13 @@
+a:13:{s:8:"provides";a:0:{}s:8:"filelist";a:6:{s:8:"mime.php";a:4:{s:4:"role";s:3:"php";s:14:"baseinstalldir";s:4:"Mail";s:6:"md5sum";s:32:"0caaff707bc5a6c22a799320de3fef37";s:12:"installed_as";s:29:"/usr/share/pear/Mail/mime.php";}s:14:"mimeDecode.php";a:4:{s:4:"role";s:3:"php";s:14:"baseinstalldir";s:4:"Mail";s:6:"md5sum";s:32:"26c14ff366dd6f3a1d6336083b05c1f1";s:12:"installed_as";s:35:"/usr/share/pear/Mail/mimeDecode.php";}s:12:"mimePart.php";a:4:{s:4:"role";s:3:"php";s:14:"baseinstalldir";s:4:"Mail";s:6:"md5sum";s:32:"248efdb87e5fad7f6c4ad00e3b5675ce";s:12:"installed_as";s:33:"/usr/share/pear/Mail/mimePart.php";}s:9:"xmail.dtd";a:4:{s:4:"role";s:4:"data";s:14:"baseinstalldir";s:4:"Mail";s:6:"md5sum";s:32:"194810c478066eaeb28f51116b88e25a";s:12:"installed_as";s:40:"/usr/share/pear/data/Mail_Mime/xmail.dtd";}s:9:"xmail.xsl";a:4:{s:4:"role";s:4:"data";s:14:"baseinstalldir";s:4:"Mail";s:6:"md5sum";s:32:"61cea06fb6b4bd3a4b5e2d37384e14a9";s:12:"installed_as";s:40:"/usr/share/pear/data/Mail_Mime/xmail.xsl";}s:7:"dirtree";a:2:{s:20:"/usr/share/pear/Mail";b:1;s:30:"/usr/share/pear/data/Mail_Mime";b:1;}}s:7:"package";s:9:"Mail_Mime";s:7:"summary";s:52:"Provides classes to create and decode mime messages.";s:11:"description";s:73:"Provides classes to deal with creation and manipulation of mime messages:";s:11:"maintainers";a:2:{i:0;a:4:{s:6:"handle";s:7:"richard";s:4:"name";s:13:"Richard Heyes";s:5:"email";s:15:"richard@php.net";s:4:"role";s:4:"lead";}i:1;a:4:{s:6:"handle";s:3:"cox";s:4:"name";s:13:"Tomas V.V.Cox";s:5:"email";s:15:"cox@idecnet.com";s:4:"role";s:11:"contributor";}}s:7:"version";s:5:"1.2.1";s:12:"release_date";s:10:"2002-07-27";s:15:"release_license";s:3:"PHP";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:62:"o License change
+o Applied a few changes From Ilia Alshanetsky";s:9:"changelog";a:3:{i:0;a:4:{s:7:"version";s:3:"1.2";s:12:"release_date";s:10:"2002-07-14";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:189:"o Added header encoding
+o Altered mimePart to put boundary parameter on newline
+o Changed addFrom() to setFrom()
+o Added setSubject()
+o Made mimePart inherit crlf setting from mime
+      
+
+";}i:1;a:4:{s:7:"version";s:3:"1.1";s:12:"release_date";s:10:"2002-04-03";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:77:"This is a maintenance release with various bugfixes and minor enhancements.
+
+";}i:2;a:4:{s:7:"version";s:3:"1.0";s:12:"release_date";s:10:"2001-12-28";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:55:"This is the initial release of the Mime_Mail package.
+
+";}}s:13:"_lastmodified";i:1068223353;}

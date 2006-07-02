@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Administration - Submitted Items - Reviewing</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  
+  <script language="javascript">
+  <!--
+    function SubmitForm(actionValue)
+    {
+      document.edit_form.elements['action'].value = actionValue;
+      document.edit_form.submit(); 
+    }
+  -->
+  </script>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>Jedi Online Help - Administration - Submitted Items - Reviewing<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="admin_submitted_items.php"><img border="0" src="up.png" title="Back to the list" alt="Back to the list"></a>
+<a href="index.php"><img border="0" src="home.png" title="Back the home page" alt="Back to the home page"></a>
+{ADMIN_TOOLBAR}
+</div>
+<h2>Proposed modifications for {ITEM_NAME}<br>
+</h2>
+<br>
+<br>
+Please review the proposed changes below and decide wether you accept or reject them by
+clicking on the appropriate button at the bottom of that page.  
+<br>
+<br>
+<form name="edit_form" method="post" action="admin_submitted_items.php">
+<input type="hidden" name="unit_id" value="{UNIT_ID}">
+<input type="hidden" name="item_id" value="{ITEM_ID}">
+<input type="hidden" name="original_item_id" value="{ORIGINAL_ITEM_ID}">
+<input type="hidden" name="action" value="">
+<table border="0" cellspacing="0" align="center" width="90%">
+  <tr>
+    <td style="font-weight: bold; text-align: center;">Field</td>
+    <td style="font-weight: bold; text-align: center;">Original value</td>
+    <td style="font-weight: bold; text-align: center;">Proposed value</td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; width: 1px; white-space: nowrap;">Name</td>
+    <td>{ORIGINAL_ITEM_NAME}</td>
+    <td style="width: 45%;">
+      <input type="text" maxlength="200" style="width: 100%;" name="name" value="{ITEM_NAME}">
+    </td>
+  </tr>  
+  <tr>
+    <td style="font-weight: bold; width: 1px;">Summary</td>
+    <td>{ORIGINAL_SUMMARY}</td>
+    <td style="width: 45%;">
+      <textarea name="summary" rows="2" wrap="virtual" style="width: 100%;">{SUMMARY}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; width: 1px;">Parameters</td>
+    <td>{ORIGINAL_PARAMETERS}</td>
+    <td style="width: 45%;">
+      <textarea name="parameters" rows="5" wrap="virtual" style="width: 100%;">{PARAMETERS}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; width: 1px;">Return value</td>
+    <td>{ORIGINAL_RETURN_VALUE}</td>
+    <td style="width: 45%;">
+      <textarea name="return_value" rows="2" wrap="virtual" style="width: 100%;">{RETURN_VALUE}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; width: 1px;">Description</td>
+    <td>{ORIGINAL_DESCRIPTION}</td>
+    <td style="width: 45%;">
+      <textarea name="description" rows="5" wrap="virtual" style="width: 100%;">{DESCRIPTION}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; white-space: nowrap; width: 1px;">Extra information</td>
+    <td>{ORIGINAL_EXTRAS}</td>
+    <td style="width: 45%;">
+      <textarea name="extras" rows="2" wrap="virtual" style="width: 100%;">{EXTRAS}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; width: 1px;">See Also</td>
+    <td>{ORIGINAL_SEE_ALSO_LIST}</td>
+    <td style="width: 45%;">
+      <textarea name="see_also_list" rows="2" wrap="virtual" style="width: 100%;">{SEE_ALSO_LIST}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-weight: bold; width: 1px; white-space: nowrap;">JVCL Information</td>
+    <td>{ORIGINAL_JVCL_INFO}</td>
+    <td style="width: 45%;">
+      <textarea name="jvcl_info" rows="2" wrap="virtual" style="width: 100%;">{JVCL_INFO}</textarea>
+    </td>
+  </tr>
+</table> 
+<br> 
+<div style="text-align: center;">
+  <input type="button" value="Accept" onclick="SubmitForm('accept');">&nbsp;
+  <input type="button" value="Reject" onclick="SubmitForm('reject');">&nbsp;
+  <input type="button" value="Cancel" onclick="location.href = 'admin_submitted_items.php';">
+</div>
+</form>
+{COMMON_FOOTER}
+</body>
+</html>

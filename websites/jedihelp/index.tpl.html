@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <SCRIPT LANGUAGE="JavaScript" src="utils.js"></SCRIPT>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help</h1>
+<hr style="width: 100%; height: 2px;">
+<h2>Introduction</h2>
+Welcome to the JEDI online help system which contains the documentation
+for various JEDI projects. The first ones are the JVCL and the JCL but
+more will come in the future.<br>
+The help available here is generated from the Doc-O-Matic source files
+and thus will be equivalent to the help bundled with the projects.<br>
+Please choose from one of the options below<br>
+<br>
+<h2>Search</h2>
+<!-- BEGIN search_no_projects -->
+<span style="font-style: italic;">
+{NO_PROJECTS_MESSAGE}<br>
+<br>
+</span>
+<!-- END search_no_projects -->
+<!-- BEGIN search_section -->
+<div id="overDiv" style="position: absolute;"></div>
+<SCRIPT LANGUAGE="JavaScript" src="overlib.js"></SCRIPT>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="0" class="special">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <form action="search_result.php" method="post">Search for: <input
+ type="text" name="search_text"> in project
+        <select name="project">
+<!-- BEGIN search_project_name -->
+        <option value="{PROJECT_ID}">{PROJECT_NAME}</option>
+<!-- END search_project_name -->
+        </select>
+&nbsp; <input type="submit" value="Search">&nbsp;
+<a href="http://dev.mysql.com/doc/mysql/en/Fulltext_Search.html"
+   target="_blank" 
+   onmouseover="popup('The search is done using the FULLTEXT functions from MySQL. '+
+                      'As a result, among other things, words made of three characters '+
+                      'or less will never return a result.<br>' +
+                      'Click on the image to open the MySQL website detailling those '+
+                      'functions.');" 
+   onmouseout="nd();"><img border="0" src="help.png"></a></form>
+Or use the <a href="advanced_search.php">Advanced
+search</a> </td>
+    </tr>
+  </tbody>
+</table>
+<!-- END search_section -->
+<h2>Browse</h2>
+<!-- BEGIN browse_no_projects --><span style="font-style: italic;">
+{NO_PROJECTS_MESSAGE}<br>
+<br>
+</span><!-- END browse_no_projects --><!-- BEGIN browse_section -->Choose
+a
+project for which to browse the help:<br>
+<table
+ style="width: 85%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="4">
+  <tbody>
+<!-- BEGIN browse_project --> 
+    <tr>
+      <td>{PROJECT_NAME}</td> 
+      <td style="vertical-align: top;"><a
+ href="browse.php?Id=%7BPROJECT_ID%7D">By&nbsp;units</a>
+      </td>
+      <td style="vertical-align: top;"><a
+ href="browse.php?Id=%7BPROJECT_ID%7D&types=1">By&nbsp;types</a>
+      </td>
+      <td style="vertical-align: top;">{PROJECT_DESCRIPTION}
+      </td>
+    </tr>
+<!-- END browse_project -->
+  </tbody>
+</table>
+<br>
+<!-- END browse_section -->
+<!-- BEGIN not_logged -->
+<h2>Login</h2>
+If you are a registered user, you should <a href="login.php">login</a> to have direct
+write access to the content of the items.<br>
+<br>
+<i>There is no registration form, logins are only granted after a request has been sent
+to the project leaders for the respective Jedi projects.</i><br>
+<br>
+<!-- END not_logged -->
+<!-- BEGIN logged -->
+<h2>Edit your details</h2>
+If you want to edit your details (password, email, name), please click
+<a href="edit_my_details.php">here</a>.<br>
+<br>
+<!-- END logged -->
+<h2>Administration</h2>
+Access the <a href="admin.php">administration site</a> to manage the
+help contents.<br>
+<br>
+{COMMON_FOOTER}
+<br>
+<br>
+</body>
+</html>

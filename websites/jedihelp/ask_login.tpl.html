@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <title>Jedi Online Help - Administration</title>
+  <SCRIPT LANGUAGE="JavaScript" src="md5.js"></SCRIPT>
+  <script LANGUAGE="JavaScript" >
+  <!--
+    function hash()
+    {
+      document.logger.md5_hash.value = hex_md5(document.logger.pass.value);
+      document.logger.pass.value = '';
+    }
+  -->
+  </script>
+</head>
+<body>
+<h1>JEDI Online help - Administration<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+<a href="advanced_search.php"><img border="0" src="search.png" title="Search" alt="Search"></a>
+<a href="admin.php"><img border="0" src="gear.png" title="Administration" alt="Administration"></a>
+</div>
+<font color="red">{MESSAGE}</font>
+<h2>Login Required</h2>
+You need to login before you can access this part of the website. Please do
+so by filling this form.<br>
+<br>
+<form action="admin.php" name="logger" method="post" onsubmit="hash();">
+  <input type="hidden" name="md5_hash" value="">
+  <table align="center" border="0" cellspacing="0">
+    <tr>
+      <td>User name:</td>
+      <td><input type="text" name="user_name"></td>
+    </tr>
+    <tr>
+      <td>Password:</td>
+      <td><input type="password" name="pass"></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center;">
+        <input type="submit" value="Ok">&nbsp;
+        <input type="button" value="Cancel" onclick="location.href='index.php';">
+      </td>
+    </tr>
+  </table>
+</form>
+<br>
+<div style="text-align: right;"><font style="font-style: italic;"
+ size="-4">Copyright (c) 2004 by the JVCL Team; all rights
+reserved<br>
+Uses <a href="http://www.phpconcept.net/pclzip/">PclZip</a> by
+phpconcept and parts of the <a href="http://pear.php.net/">PEAR</a>
+library</font><br>
+</div>
+</body>
+</html>

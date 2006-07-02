@@ -1,0 +1,134 @@
+Mon, Apr 21, 2003 - xdebug 1.2.0
+
+= Fixed compilation on MacOSX. (Derick)
+
+
+Tue, Apr 15, 2003 - xdebug 1.2.0rc2
+
+= Fixed handling Windows paths in the debugger. (Derick)
+= Fixed getting zvals out of Zend Engine 2. (Derick)
+
+
+Sun, Apr 6, 2003 - xdebug 1.2.0rc1
+
++ Added code coverage functions to check which lines and how often they were
+  touched during execution. (Derick)
++ Made Xdebug compatible with Zend Engine 2. (Derick)
++ Added dumping of super globals on errors. (Harald Radi)
++ Added XML protocol for the debugger client. (Derick)
+= Fixed handling of "continue" (so that it also continues with the script).
+  (Derick)
++ Additions to the remote debugger: "eval" (evaluate any PHP code from the
+  debugger client). (Derick)
++ Added profiling support to xdebug. This introduces 3 new functions,
+  xdebug_start_profiling() that begins profiling process, 
+  xdebug_stop_profiling() that ends the profiling process and
+  xdebug_dump_function_trace() that dumps the profiling data. (Ilia)
++ Implemented the "kill" (kills the running script) and "delete" (removes
+  a breakpoint on a specified element) command. (Derick)
+
+
+Wed Nov 11, 2002 - xdebug 1.1.0
+
++ Implemented the "list" (source listing), "print" (printing variable
+  contents), "show" (show all variables in the scope), "step" (step through
+  execution), "pwd" (print working directory), "next" (step over) and "finish"
+  (step out) commands for the remote debugger. (Derick)
+= Fixed lots of small bugs, under them memory leaks and crash bugs. (Derick)
+= Parameters to functions are no longer recorded by default; use the
+  xdebug.collect_params=1 setting in php.ini to turn it on again.
+
+
+Tue Oct 29, 2002 - xdebug 1.1.0pre2
+
++ Implemented class::method, object->method and file.ext:line style
+  breakpoints. (Derick)
+= Changed debugger port from 7869 to 17869. (Derick)
++ Added xdebug.collect_params setting. If this setting is on (the default)
+  then Xdebug collects all parameters passed to functions, otherwise they
+  are not collected at all. (Derick)
++ Implemented correct handling of include/require and eval. (Derick)
+
+
+Mon Oct 22, 2002 - xdebug 1.1.0pre1
+
++ Added automatic starting of function traces (xdebug.auto_trace, defaulting to
+  "off"). (Derick)
+- Xdebug no longer supports PHP versions below PHP 4.3.0pre1. (Derick)
++ Added gdb compatible debugger handler with support for simple (function only)
+  breakpoints. (Derick)
+= Implemented a new way to get class names and file names. (Derick, Thies C.
+  Arntzen <thies@thieso.net>)
++ Added time-index and memory footprint to CLI dumps. (Derick)
++ Implemented remote debugger handler abstraction. (Derick)
++ Added a php3 compatible debugger handler. (Derick)
+
+
+Sun Sep 1, 2002 - xdebug 1.0.0rc1
+
++ Implemented gathering of parameters to internal functions (only available
+  in combination with PHP 4.3.0-dev). (Derick)
+= Implemented a new way to get class names and file names. (Derick, Thies C.
+  Arntzen <thies@thieso.net>)
++ Added support for error messages with stack trace in syslog. (Sergio
+  Ballestrero <s.ballestrero@planetweb.it>)
+= Windows compilation fixes. (Derick)
+
+
+Sun Jun 23, 2002 - xdebug 0.9.0
+
+= Fixed a problem with output buffering in PHP. (Derick)
+= Fixed a memory leak in delayed included files. (Derick)
++ Added support for PHP 4.1.2. (Derick)
+= Rewrote xdebug_get_function_stack() and xdebug_get_function_trace() to return
+  data in multidimensional arrays. (Derick)
+= Fixed compiling without memory limit enabled (Sander Roobol, Derick)
++ Add support for classnames, variable include files and variable
+  function names. (Derick)
++ Implemented links to the PHP Manual in traces. (Derick)
++ Added timestamps and memory usage to function traces. (Derick)
+= Fixed crash when using an user defined session handler. (Derick)
++ Implemented variable function names ($a = 'foo'; $f();) for use in
+  traces. (Derick)
+
+
+Sun May 26, 2002 - xdebug 0.8.0 - Yoda
+
++ Implemented much better parameter tracing for user defined
+  functions. (Derick)
+= Renamed xdebug_get_function_trace() to xdebug_dump_function_trace().
+  (Derick)
+= Implemented new xdebug_get_function_trace() to return the function trace in
+  an array. (Derick)
++ Added a parameter to xdebug_start_trace(). When this parameter is used,
+  xdebug will dump a function trace to the filename which this parameter
+  speficies. (Derick)
++ Fix a problem with nested member functions. (Derick)
+= Make configure scripts work with PHP 4.2.x. (Derick)
++ Implemented handling single-dimensional constant arrays passed to a
+  function. (Derick)
+= Fix function traces in windows. (Derick)
++ Implemented function traces, which you can start and stop with
+  xdebug_start_trace() and xdebug_stop_trace(). You can view the trace by using
+  the return array from xdebug_get_function_trace(). (Derick)
+= Fixed segfaults with xdebug_call_*(). (Derick)
+
+
+Wed May 08, 2002 - xdebug 0.7.0 - Freedom
+
++ Implemented handling of static method calls (foo::bar). (Derick)
++ Added correct handling of include(_once)/require(_once) and eval().
+  (Derick)
++ Added ini setting to change the default setting for enabling showing
+  enhanced error messages. (Defaults to "On"). (Derick)
++ Added the functions xdebug_enable() and xdebug_disable() to change the
+  showing of stack traces from within your code. (Derick)
+= Fixed the extension to show all errors. (Derick)
++ Implemented xdebug_memory_usage() which returns the memory in use by PHPs
+  engine. (Derick)
+
+
+Legenda:
++ New additions
+- Removed functions
+= Bug fixes

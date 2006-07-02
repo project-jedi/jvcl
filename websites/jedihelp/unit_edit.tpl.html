@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - Browsing unit {UNIT_NAME}</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Editing a unit<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="browse.php?Id=%7BPROJECT_ID%7D">
+  <img border="0" src="up.png" title="Back to project {PROJECT_NAME}" alt="Back to project {PROJECT_NAME}"></a>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>Editing unit {UNIT_NAME}<br>
+</h2>
+<form name="edit_form" method="post" action="submit_unit.php">
+<input type="hidden" name="unit_id" value="{UNIT_ID}">
+<input type="hidden" name="project_id" value="{PROJECT_ID}">
+<b>Name</b><br>
+<div style="margin-left: 40px; margin-top: 5px;">
+<input type="text" name="unit_name" maxlength="200" style="width: 90%;" value="{UNIT_NAME}"><br>
+</div>
+<br>
+<b>Author</b><br>
+<div style="margin-left: 40px; margin-top: 5px;">
+<textarea name="author" rows="2" wrap="virtual" style="width: 90%;">{UNIT_AUTHOR}</textarea><br>
+</div>
+<br>
+<b>Package</b><br>
+<div style="margin-left: 40px; margin-top: 5px;">
+<input type="text" name="package" maxlength="200" style="width: 90%;" value="{UNIT_PACKAGE}"><br>
+</div>
+<br>
+<b>Status</b><br>
+<div style="margin-left: 40px; margin-top: 5px;">
+<input type="text" name="status" maxlength="200" style="width: 90%;" value="{UNIT_STATUS}"><br>
+</div>
+<br>
+<b>Description</b><br>
+<div style="margin-left: 40px; margin-top: 5px;">
+<textarea name="description" rows="10" wrap="virtual" style="width: 90%;">{UNIT_DESCRIPTION}</textarea><br>
+</div>
+<br>
+<div style="text-align: center;">
+  <input type="submit" value="Submit">&nbsp;
+<!-- BEGIN cancel_unit -->
+  <input type="button" value="Cancel" onclick="location.href = 'unit.php?Id={CANCEL_UNIT_ID}';">
+<!-- END cancel_unit -->
+<!-- BEGIN cancel_project -->
+  <input type="button" value="Cancel" onclick="location.href = 'browse.php?Id={CANCEL_PROJECT_ID}';">
+<!-- END cancel_project -->
+</div>
+</form>
+{COMMON_FOOTER}
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <title>Jedi Online Help - Login</title>
+  <SCRIPT LANGUAGE="JavaScript" src="md5.js"></SCRIPT>
+  <script LANGUAGE="JavaScript" >
+  <!--
+    function hash()
+    {
+      document.logger.md5_hash.value = hex_md5(document.logger.pass.value);
+      document.logger.pass.value = '';
+    }
+  -->
+  </script>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Login<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+{COMMON_TOOLBAR}
+</div>
+<font color="red">{MESSAGE}</font>
+<h2>Login Required</h2>
+You need to login before you can access this part of the website. Please do
+so by filling this form.<br>
+<br>
+<form action="login.php?returnTo={RETURN_TO}" name="logger" method="post" onsubmit="hash();">
+  <input type="hidden" name="md5_hash" value="">
+  <table align="center" border="0" cellspacing="0">
+    <tr>
+      <td>User name:</td>
+      <td><input type="text" name="user_name"></td>
+    </tr>
+    <tr>
+      <td>Password:</td>
+      <td><input type="password" name="pass"></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center;">
+        <input type="submit" value="Ok">&nbsp;
+        <input type="button" value="Cancel" onclick="location.href='index.php';">
+      </td>
+    </tr>
+  </table>
+</form>
+{COMMON_FOOTER}
+</body>
+</html>

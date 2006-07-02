@@ -1,0 +1,30 @@
+a:14:{s:8:"provides";a:18:{s:14:"class;Net_SMTP";a:3:{s:4:"type";s:5:"class";s:4:"name";s:8:"Net_SMTP";s:8:"explicit";b:1;}s:27:"function;Net_SMTP::setDebug";a:3:{s:4:"type";s:8:"function";s:4:"name";s:18:"Net_SMTP::setDebug";s:8:"explicit";b:1;}s:30:"function;Net_SMTP::getResponse";a:3:{s:4:"type";s:8:"function";s:4:"name";s:21:"Net_SMTP::getResponse";s:8:"explicit";b:1;}s:26:"function;Net_SMTP::connect";a:3:{s:4:"type";s:8:"function";s:4:"name";s:17:"Net_SMTP::connect";s:8:"explicit";b:1;}s:29:"function;Net_SMTP::disconnect";a:3:{s:4:"type";s:8:"function";s:4:"name";s:20:"Net_SMTP::disconnect";s:8:"explicit";b:1;}s:23:"function;Net_SMTP::auth";a:3:{s:4:"type";s:8:"function";s:4:"name";s:14:"Net_SMTP::auth";s:8:"explicit";b:1;}s:23:"function;Net_SMTP::helo";a:3:{s:4:"type";s:8:"function";s:4:"name";s:14:"Net_SMTP::helo";s:8:"explicit";b:1;}s:27:"function;Net_SMTP::mailFrom";a:3:{s:4:"type";s:8:"function";s:4:"name";s:18:"Net_SMTP::mailFrom";s:8:"explicit";b:1;}s:25:"function;Net_SMTP::rcptTo";a:3:{s:4:"type";s:8:"function";s:4:"name";s:16:"Net_SMTP::rcptTo";s:8:"explicit";b:1;}s:28:"function;Net_SMTP::quotedata";a:3:{s:4:"type";s:8:"function";s:4:"name";s:19:"Net_SMTP::quotedata";s:8:"explicit";b:1;}s:23:"function;Net_SMTP::data";a:3:{s:4:"type";s:8:"function";s:4:"name";s:14:"Net_SMTP::data";s:8:"explicit";b:1;}s:28:"function;Net_SMTP::send_from";a:3:{s:4:"type";s:8:"function";s:4:"name";s:19:"Net_SMTP::send_from";s:8:"explicit";b:1;}s:28:"function;Net_SMTP::soml_from";a:3:{s:4:"type";s:8:"function";s:4:"name";s:19:"Net_SMTP::soml_from";s:8:"explicit";b:1;}s:28:"function;Net_SMTP::saml_from";a:3:{s:4:"type";s:8:"function";s:4:"name";s:19:"Net_SMTP::saml_from";s:8:"explicit";b:1;}s:23:"function;Net_SMTP::rset";a:3:{s:4:"type";s:8:"function";s:4:"name";s:14:"Net_SMTP::rset";s:8:"explicit";b:1;}s:23:"function;Net_SMTP::vrfy";a:3:{s:4:"type";s:8:"function";s:4:"name";s:14:"Net_SMTP::vrfy";s:8:"explicit";b:1;}s:23:"function;Net_SMTP::noop";a:3:{s:4:"type";s:8:"function";s:4:"name";s:14:"Net_SMTP::noop";s:8:"explicit";b:1;}s:33:"function;Net_SMTP::identifySender";a:3:{s:4:"type";s:8:"function";s:4:"name";s:24:"Net_SMTP::identifySender";s:8:"explicit";b:1;}}s:8:"filelist";a:2:{s:8:"SMTP.php";a:4:{s:4:"role";s:3:"php";s:14:"baseinstalldir";s:3:"Net";s:6:"md5sum";s:32:"f23ac82b7b992d52032580e05babfba9";s:12:"installed_as";s:28:"/usr/share/pear/Net/SMTP.php";}s:7:"dirtree";a:1:{s:19:"/usr/share/pear/Net";b:1;}}s:7:"package";s:8:"Net_SMTP";s:7:"summary";s:47:"Provides an implementation of the SMTP protocol";s:11:"description";s:78:"Provides an implementation of the SMTP protocol using PEAR's Net_Socket class.";s:11:"maintainers";a:2:{i:0;a:4:{s:6:"handle";s:8:"chagenbu";s:4:"name";s:15:"Chuck Hagenbuch";s:5:"email";s:15:"chuck@horde.org";s:4:"role";s:4:"lead";}i:1;a:4:{s:6:"handle";s:3:"jon";s:4:"name";s:10:"Jon Parise";s:5:"email";s:11:"jon@php.net";s:4:"role";s:4:"lead";}}s:7:"version";s:5:"1.2.3";s:12:"release_date";s:10:"2003-05-11";s:15:"release_license";s:11:"PHP License";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:194:"Both 235 (Authentication successful) and 503 (Error: already authenticated) are now accepted as valid AUTH responses.
+
+503 (Error: already authenticated) is now considered a valid EHLO response.";s:12:"release_deps";a:1:{i:1;a:3:{s:4:"type";s:3:"pkg";s:3:"rel";s:3:"has";s:4:"name";s:10:"Net_Socket";}}s:9:"changelog";a:8:{i:0;a:4:{s:7:"version";s:5:"1.2.2";s:12:"release_date";s:10:"2003-05-02";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:122:"Fix a call-time pass-by-reference problem that was raising a warning if call-time pass-by-reference was disabled.
+      
+
+";}i:1;a:4:{s:7:"version";s:5:"1.2.1";s:12:"release_date";s:10:"2003-04-26";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:181:"The Auth_SASL package is no longer absolutely required, but it will be used if it is available.  Otherwise, the authentication methods that depend upon it will be disabled.
+      
+
+";}i:2;a:4:{s:7:"version";s:5:"1.2.0";s:12:"release_date";s:10:"2003-04-06";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:63:"- Perform data quoting in its own routine: quotedata()
+      
+
+";}i:3;a:4:{s:7:"version";s:5:"1.1.2";s:12:"release_date";s:10:"2003-02-17";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:118:"- Correctly handle the case where the server's ESMTP response includes a SIZE keyword with no specific value.
+      
+
+";}i:4;a:4:{s:7:"version";s:5:"1.1.1";s:12:"release_date";s:10:"2003-01-30";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:78:"- Don't enforce a maximum message size if the SIZE parameter is zero.
+      
+
+";}i:5;a:4:{s:7:"version";s:5:"1.1.0";s:12:"release_date";s:10:"2003-01-18";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:316:"- The SMTP server's SIZE capability is now honored.
+- Improved support for SMTP authentication (LOGIN, PLAIN, CRAM-MD5, DIGEST-MD5).
+- Overhauled the server response parsing system.
+- Added optional debugging output (enabled via setDebug()).
+- A timeout value can now be specified for the socket connection.
+      
+
+";}i:6;a:4:{s:7:"version";s:5:"1.0.1";s:12:"release_date";s:10:"2003-01-02";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:83:"Corrected an off-by-one bug that corrupted the list of ESMTP capabilities.
+      
+
+";}i:7;a:4:{s:7:"version";s:3:"1.0";s:12:"release_date";s:10:"2002-06-11";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:33:"Initial release as PEAR package
+
+";}}s:13:"_lastmodified";i:1068220505;}

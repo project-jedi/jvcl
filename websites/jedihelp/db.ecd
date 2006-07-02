@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" size="722,359" id="platform:/resource/jedihelp/jedihelp.ecore#/" metadata="emf-1.0" initialized="true" showWireOptions="3">
+  <children xsi:type="editmodel:ClassEditModel" location="261,28" size="111,111" targetConnections="//@children.1/@sourceConnections.0" id="platform:/resource/jedihelp/jedihelp.ecore#//Unit" runTimeClassModel="Description;Author;Name;Id">
+    <children xsi:type="editmodel:CompartmentEditModel">
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Unit/Author">
+        <model href="jedihelp.ecore#//Unit/Author"/>
+      </children>
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Unit/Description">
+        <model href="jedihelp.ecore#//Unit/Description"/>
+      </children>
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Unit/Id">
+        <model href="jedihelp.ecore#//Unit/Id"/>
+      </children>
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Unit/Name">
+        <model href="jedihelp.ecore#//Unit/Name"/>
+      </children>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <model href="jedihelp.ecore#//Unit"/>
+    <classifierPreferences xsi:type="editmodel:EMFClassDiagramClassifierPreference" attributeSorter="Natural" methodSorter="Natural"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="103,234" size="111,111" targetConnections="//@children.1/@sourceConnections.1" id="platform:/resource/jedihelp/jedihelp.ecore#//Section" runTimeClassModel="Summary;Description;Name;Id">
+    <children xsi:type="editmodel:CompartmentEditModel">
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Section/Description">
+        <model href="jedihelp.ecore#//Section/Description"/>
+      </children>
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Section/Id">
+        <model href="jedihelp.ecore#//Section/Id"/>
+      </children>
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Section/Name">
+        <model href="jedihelp.ecore#//Section/Name"/>
+      </children>
+      <children xsi:type="editmodel:AttributeEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Section/Summary">
+        <model href="jedihelp.ecore#//Section/Summary"/>
+      </children>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="77,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" id="platform:/resource/jedihelp/jedihelp.ecore#//Section/Unit" navigable="true" multiplicityLabel="//@children.1/@sourceConnections.0/@children.1/@children.1" roleLabel="//@children.1/@sourceConnections.0/@children.1/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" size="15,10" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" size="5,10" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <model href="jedihelp.ecore#//Section/Unit"/>
+      </children>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" connectionRouterKind="Manhattan" source="//@children.1" target="//@children.1" targetEnd="//@children.1/@sourceConnections.1/@children.1" sourceEnd="//@children.1/@sourceConnections.1/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,10" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="10,0" id="platform:/resource/jedihelp/jedihelp.ecore#//Section/See Also" anchorKind="FixedAtEdge" navigable="true" multiplicityLabel="//@children.1/@sourceConnections.1/@children.1/@children.1" roleLabel="//@children.1/@sourceConnections.1/@children.1/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" location="119,207" size="31,10" fontInfo="Arial-8-0" automaticRelocationAllowed="false" locationOnWireFromSource="-4.0" distanceFromWire="21.0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" location="96,206" size="12,10" fontInfo="Arial-8-0" automaticRelocationAllowed="false" locationOnWireFromSource="-4.999999999999999" distanceFromWire="-11.0" anchorKind="LastPart"/>
+        <model href="jedihelp.ecore#//Section/See Also"/>
+      </children>
+    </sourceConnections>
+    <model href="jedihelp.ecore#//Section"/>
+    <classifierPreferences xsi:type="editmodel:EMFClassDiagramClassifierPreference" attributeSorter="Natural" methodSorter="Natural"/>
+  </children>
+  <model href="jedihelp.ecore#/"/>
+  <classDiagramPreferences xsi:type="editmodel:EMFClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural"/>
+</editmodel:ClassDiagramEditModel>

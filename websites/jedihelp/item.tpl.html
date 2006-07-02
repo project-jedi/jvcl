@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Jedi Online Help - {ITEM_NAME}</title>
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Details<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px; text-align: right;"><br>
+<a href="unit.php?Id=%7BUNIT_ID%7D">
+  <img border="0" src="up.png" title="Back to unit {UNIT_NAME}" alt="Back to unit {UNIT_NAME}"></a>
+<a href="index.php"><img border="0" src="home.png" title="Back to start" alt="Back"></a>
+<a href="item.php?Id=%7BITEM_ID%7D&edit=1">
+  <img border="0" src="input_zone.png" title="Edit" alt="Edit"></a>
+{COMMON_TOOLBAR}
+</div>
+<h2>{ITEM_NAME}<br>
+</h2>
+<!-- BEGIN summary -->
+<span style="font-weight: bold;">Summary</span>
+<div style="margin-left: 40px;">{SUMMARY}</div>
+<br>
+<!-- END summary -->
+<!-- BEGIN parameters -->
+<span style="font-weight: bold;">Parameters</span><br>
+<div style="margin-left: 40px;">{PARAMETERS}</div>
+<br>
+<!-- END parameters -->
+<!-- BEGIN return_value -->
+<span style="font-weight: bold;">Return value</span><br>
+<div style="margin-left: 40px;">{RETURN_VALUE}</div>
+<br>
+<!-- END return_value -->
+<!-- BEGIN description -->
+<span style="font-weight: bold;">Description</span><br>
+<div style="margin-left: 40px;">{DESCRIPTION}</div>
+<br>
+<!-- END description -->
+<!-- BEGIN extras -->
+<span style="font-weight: bold;">Extra information</span><br>
+<div style="margin-left: 40px;">{EXTRAS}</div>
+<br>
+<!-- END extras -->
+<!-- BEGIN see_also -->
+<span style="font-weight: bold;">See Also</span><br>
+<div style="margin-left: 40px;">
+<!-- BEGIN see_also_internal -->{SEPARATOR}<a
+ href="item.php?Id=%7BSEE_ALSO_ID%7D">{SEE_ALSO_NAME}</a><!-- END see_also_internal -->{SEE_ALSO_OTHERS}<br>
+</div>
+<br>
+<!-- END see_also -->
+<!-- BEGIN jvcl_info -->
+<span style="font-weight: bold;">JVCL Information</span><br>
+<div style="margin-left: 40px;">{JVCL_INFO}</div>
+<br>
+<!-- END jvcl_info -->
+{LAST_CHANGED}
+{COMMON_FOOTER}
+</body>
+</html>

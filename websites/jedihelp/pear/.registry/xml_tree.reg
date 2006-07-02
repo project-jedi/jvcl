@@ -1,0 +1,8 @@
+a:12:{s:8:"provides";a:0:{}s:8:"filelist";a:3:{s:8:"Tree.php";a:4:{s:4:"role";s:3:"php";s:14:"baseinstalldir";s:3:"XML";s:6:"md5sum";s:32:"1d4bd75ef1ee4757e903300d285183ec";s:12:"installed_as";s:28:"/usr/share/pear/XML/Tree.php";}s:13:"Tree/Node.php";a:4:{s:4:"role";s:3:"php";s:14:"baseinstalldir";s:3:"XML";s:6:"md5sum";s:32:"25097dace3b813804b1625a0420e6fd8";s:12:"installed_as";s:33:"/usr/share/pear/XML/Tree/Node.php";}s:7:"dirtree";a:2:{s:19:"/usr/share/pear/XML";b:1;s:24:"/usr/share/pear/XML/Tree";b:1;}}s:7:"package";s:8:"XML_Tree";s:7:"summary";s:38:"Represent XML data in a tree structure";s:11:"description";s:127:"Allows for the building of XML data structures using a tree 
+    representation, without the need for an extension like DOMXML.";s:11:"maintainers";a:2:{i:0;a:4:{s:6:"handle";s:5:"bernd";s:4:"name";s:11:"Bernd Römer";s:5:"email";s:13:"bernd@php.net";s:4:"role";s:4:"lead";}i:1;a:4:{s:6:"handle";s:3:"cox";s:4:"name";s:13:"Tomas V.V.Cox";s:5:"email";s:15:"cox@idecnet.com";s:4:"role";s:4:"lead";}}s:7:"version";s:3:"1.1";s:12:"release_date";s:10:"2002-05-16";s:15:"release_license";s:8:"PHP 2.02";s:13:"release_state";s:6:"stable";s:13:"release_notes";s:314:"- Added support for mixed element content (cox)
+- Added identation for $node->get() (cox)
+- Adapted API to PEAR coding standars (mj)
+- Added getTreeFromString() (cox)
+- Root node now stores attributes (mj, cox)
+- Improved clone(), added insert_child() and remove_child() (bernd)
+(Backwards compatibility preserved)";s:13:"_lastmodified";i:1068220862;}

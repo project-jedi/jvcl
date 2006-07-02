@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <meta content="Olivier Sannier for the JEDI group" name="author">
+  <title>Jedi Online Help - Administration - Projects - Editing a project</title>
+</head>
+<body>
+{COMMON_LOGIN_STATUS}
+<h1>JEDI Online help - Administration - Projects - Editing a project<br>
+</h1>
+<hr style="width: 100%; height: 2px;">
+<div style="position: absolute; right: 10px;"><br>
+<a href="admin_projects.php"><img border="0" src="up.png" title="Back to the projects page" alt="Back to the projects page"></a>
+<a href="index.php"><img border="0" src="home.png" title="Back the home page" alt="Back to the home page"></a>
+{ADMIN_TOOLBAR}
+</div>
+<h2>Editing a project</h2>
+<span style="font-style: italic; color: rgb(255, 0, 0);">{MESSAGE}</span><br>
+<br>
+Please use the elements below to edit the details of the project.
+<br>
+<form action="admin_projects.php" method="post">
+  <input type="hidden" name="action" value="{ACTION}"> 
+  <input type="hidden" name="Id" value="{ID}"> 
+  <center>
+  <table cellpadding="4" cellspacing="0" border="0" style="text-align: left; width: 90%;">
+    <tbody>
+      <tr>
+        <td style="font-weight: bold; width: 1px;">Name</td>
+        <td><input type="text" name="name" value="{NAME}" style="width: 100%;"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; width: 1px;">Description</td>
+        <td><textarea name="description" rows="6" style="width: 100%;" wrap="virtual">{DESCRIPTION}</textarea></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; width: 1px; white-space: nowrap;">Reviewers Emails</td>
+        <td><textarea name="reviewers_emails" rows="2" style="width: 100%;" wrap="virtual">{REVIEWERS_EMAILS}</textarea></td>
+        <td style="width: 30%;">A comma separated list of emails which will receive 
+          a notification message when an item is submitted for review.</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; width: 1px; white-space: nowrap;">Admin email</td>
+        <td><input type="text" name="admin_email" value="{ADMIN_EMAIL}" style="width: 100%;"></td>
+        <td style="width: 30%;">The email used as the From: parameter in the notification emails</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; width: 1px; white-space: nowrap;">Send Notifications?</td>
+        <td><input type="checkbox" name="send_notifications" value="1" {SEND_NOTIFICATIONS_CHECKED}></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="text-align: center;" colspan="3">
+          <input type="submit" value="Validate">
+          <input type="button" value="Cancel" onclick="location.href=('admin_projects.php');">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </center>
+</form>
+{COMMON_FOOTER}
+</body>
+</html>
