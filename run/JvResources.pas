@@ -539,7 +539,7 @@ resourcestring
 //=== JvDBGrid.pas ===========================================================
 resourcestring
   RsJvDBGridSelectTitle = 'Select columns';
-  RsJvDBGridSelectOption = '[With the real field name]';
+  //RsJvDBGridSelectOption = '[With the real field name]';
   RsJvDBGridSelectOK = '&OK';
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
   RsEJvDBGridControlPropertyNotAssigned = 'JvDBGrid.EditControls: property Control not assigned';
