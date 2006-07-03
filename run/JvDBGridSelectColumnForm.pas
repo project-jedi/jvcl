@@ -147,7 +147,8 @@ begin
             if Assigned(lColumn) then
             begin
               ColumnTitle := lColumn.Title.Caption;
-              if not AnsiSameText(ColumnTitle, Fields[I].FieldName) then
+              if (not AnsiSameText(ColumnTitle, Fields[I].FieldName))
+                and (cbWithFieldName.Caption <> '') then
               begin
                 if not cbWithFieldName.Visible then
                   cbWithFieldName.Show;
@@ -164,7 +165,8 @@ begin
         for I := 0 to Columns.Count - 1 do
         begin
           ColumnTitle := FJvDBGrid.Columns[I].Title.Caption;
-          if not AnsiSameText(ColumnTitle, FJvDBGrid.Columns[I].FieldName) then
+          if not AnsiSameText(ColumnTitle, FJvDBGrid.Columns[I].FieldName)
+            and (cbWithFieldName.Caption <> '') then
           begin
             if not cbWithFieldName.Visible then
               cbWithFieldName.Show;
