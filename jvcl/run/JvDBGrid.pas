@@ -2198,7 +2198,7 @@ begin
 
   if FTitleArrow and (Button = mbLeft) and
     (dgTitles in Options) and (dgIndicator in Options) and
-    (Cell.X = 0) and (Cell.Y = 0) and DataLink.Active then
+    (Cell.X = 0) and (Cell.Y = 0) and (Columns.Count > 0) then
     ShowSelectColumnClick; // Selection of columns
 
   if (Button = mbLeft) and (FGridState = gsColSizing) then
@@ -3923,7 +3923,7 @@ constructor TJvSelectDialogColumnStrings.Create;
 begin
   inherited Create;
   Caption := RsJvDBGridSelectTitle;
-  RealNamesOption := RsJvDBGridSelectOption;
+  RealNamesOption := '';//RsJvDBGridSelectOption;
   OK := RsJvDBGridSelectOK;
   NoSelectionWarning := RsJvDBGridSelectWarning;
 end;
