@@ -86,7 +86,7 @@ const
 implementation
 
 uses
-  Forms, Consts,
+  Forms, Consts, SyncObjs,
   JvJVCLUtils;
 
 //=== { TJvTimerThread } =====================================================
@@ -97,20 +97,27 @@ type
     FOwner: TJvTimer;
     FInterval: Cardinal;
     FException: Exception;
+    FPaused: Boolean;
+    FPauseSection: TCriticalSection;
     procedure HandleException;
+    procedure SetPaused(const Value: Boolean);
   protected
     procedure Execute; override;
   public
     constructor Create(Timer: TJvTimer; Enabled: Boolean);
+    destructor Destroy; override;
     {$IFDEF CLR}
     procedure Synchronize(Method: TThreadMethod);
     {$ENDIF CLR}
     property Terminated;
+
+    property Paused: Boolean read FPaused write SetPaused;
   end;
 
 constructor TJvTimerThread.Create(Timer: TJvTimer; Enabled: Boolean);
 begin
   FOwner := Timer;
+  FPauseSection := TCriticalSection.Create;
   inherited Create(not Enabled);
   FInterval := 1000;
   FreeOnTerminate := False;
@@ -122,12 +129,39 @@ begin
     Application.HandleException(Self);
 end;
 
+procedure TJvTimerThread.SetPaused(const Value: Boolean);
+begin
+  if FPaused <> Value then
+  begin
+    FPaused := Value;
+
+    if FPaused then
+    begin
+      FPauseSection.Acquire;
+
+      if Suspended then
+        Resume;
+    end
+    else
+    begin
+      FPauseSection.Release;
+    end;
+  end;
+end;
+
 {$IFDEF CLR}
 procedure TJvTimerThread.Synchronize(Method: TThreadMethod);
 begin
   inherited Synchronize(Method);
 end;
 {$ENDIF CLR}
+
+destructor TJvTimerThread.Destroy;
+begin
+  FPauseSection.Free;
+
+  inherited Destroy;
+end;
 
 procedure TJvTimerThread.Execute;
 
@@ -146,12 +180,18 @@ procedure TJvTimerThread.Execute;
 
 begin
   repeat
-    if not ThreadClosed and (SleepEx(FInterval, False) = 0) and
-      not ThreadClosed and FOwner.FEnabled then
+    FPauseSection.Acquire;
+
+    if not ThreadClosed and not ThreadClosed and FOwner.FEnabled then
+    begin
       with FOwner do
+      begin
         if SyncEvent then
+        begin
           Synchronize(Timer)
+        end
         else
+        begin
           try
             Timer;
           except
@@ -161,6 +201,13 @@ begin
               HandleException;
             end;
           end;
+        end;
+      end;
+    end;
+
+    FPauseSection.Release;
+    
+    SleepEx(FInterval, False);
   until Terminated;
 end;
 
@@ -186,9 +233,9 @@ begin
   FEnabled := False;
   FOnTimer := nil;
   {TTimerThread(FTimerThread).FOwner := nil;}
+  FTimerThread.Terminate;
   while FTimerThread.Suspended do
     FTimerThread.Resume;
-  FTimerThread.Terminate;
   FTimerThread.Free;
   FTimer.Free;
   inherited Destroy;
@@ -199,16 +246,19 @@ begin
   if FThreaded then
   begin
     FreeAndNil(FTimer);
-    if not FTimerThread.Suspended then
-      FTimerThread.Suspend;
+    (FTimerThread as TJvTimerThread).Paused := True;
+{    if not FTimerThread.Suspended then
+      FTimerThread.Suspend;}
     TJvTimerThread(FTimerThread).FInterval := FInterval;
     if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
     begin
       {$IFDEF MSWINDOWS}
       FTimerThread.Priority := FThreadPriority;
       {$ENDIF MSWINDOWS}
-      while FTimerThread.Suspended do
-        FTimerThread.Resume;
+
+      (FTimerThread as TJvTimerThread).Paused := False;
+(*      while FTimerThread.Suspended do
+        FTimerThread.Resume;*)
     end;
   end
   else
