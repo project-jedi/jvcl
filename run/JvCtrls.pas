@@ -352,6 +352,7 @@ begin
   // to DrawText and so we must calculate a original bounding rectangle
   SetRect(RectText, 0, 0, 0, 0);
   RectText.Right := ButtonRect.Right - ButtonRect.Left - (RectImage.Right - RectImage.Left);
+  RectText.Bottom := ButtonRect.Bottom;
   if FAlignment <> taCenter then
   begin
     if RectText.Right < Width - RectImage.Right - 18 then
@@ -369,10 +370,18 @@ begin
   // Now offset the rectangles according to layout and spacings
   BlockWidth := RectImage.Right + InternalSpacing + RectText.Right;
   ButtonWidth := ButtonRect.Right - ButtonRect.Left;
-  if Margin = -1 then
+  if (Margin = -1) or (Alignment = taCenter) then
+  begin
     BlockMargin := (ButtonWidth - BlockWidth) div 2
+  end
   else
-    BlockMargin := Margin;
+  begin
+    if Alignment = taRightJustify then
+      BlockMargin := ButtonWidth - BlockWidth - Margin
+    else
+      BlockMargin := Margin;
+  end;
+  
   case Layout of
     blImageLeft:
       begin
@@ -877,6 +886,12 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
+
+    // For the alignment to be taken into account, the Margin value must
+    // not be equal to -1. A change of Alignment indicates that the user
+    // does not want the -1 margin value to take precedence
+    if Margin = -1 then
+      FMargin := 0;
     Invalidate;
   end;
 end;
@@ -993,6 +1008,12 @@ begin
   if (FMargin <> Value) and (Value >= -1) then
   begin
     FMargin := Value;
+
+    // Setting the value to -1 indicates that the user wants the alignment
+    // to be centered, so we force the value. This ensure coherence between
+    // this property and the Alignment property.
+    if (Value = -1) and (Alignment <> taCenter) then
+      FAlignment := taCenter;
     Invalidate;
   end;
 end;
