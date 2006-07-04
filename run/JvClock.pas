@@ -75,6 +75,8 @@ type
     FShowDate: Boolean;
     FOnGetDate: TJvGetDateEvent;
     FDateFormat: string;
+    FFixedTime: TDateTime;
+    FFixedTimeStored: Boolean;
     procedure TimerExpired(Sender: TObject);
     procedure GetTime(var T: TJvClockTime);
     function IsAlarmTime(ATime: TDateTime): Boolean;
@@ -95,6 +97,7 @@ type
     procedure ResizeFont(const Rect: TRect);
     procedure ResetAlarm;
     procedure CheckAlarm;
+    procedure SetFixedTime(const Value: TDateTime);
     {$IFDEF VCL}
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -102,6 +105,7 @@ type
     procedure SetShowDate(const Value: Boolean);
     procedure SetDateFormat(const Value: string);
     {$ENDIF VCL}
+    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
   protected
     procedure TextChanged; override;
     procedure FontChanged; override;
@@ -131,6 +135,7 @@ type
     property BevelOuter default bvRaised;
     property DotsColor: TColor read FDotsColor write SetDotsColor default clTeal;
     property DateFormat: string read FDateFormat write SetDateFormat;
+    property FixedTime: TDateTime read FFixedTime write SetFixedTime stored FFixedTimeStored;
     property ShowMode: TShowClock read FShowMode write SetShowMode default scDigital;
     property ShowSeconds: Boolean read FShowSeconds write SetShowSeconds default True;
     property ShowDate: Boolean read FShowDate write SetShowDate default False;
@@ -398,7 +403,8 @@ begin
   {$ENDIF VCL}
   BevelInner := bvLowered;
   BevelOuter := bvRaised;
-  FTimer := TJvTimer.Create(Self);
+  FFixedTimeStored := False;
+  FTimer := TJvTimer.Create(nil);
   FTimer.Interval := 450; { every second }
   FTimer.OnTimer := TimerExpired;
   FDotsColor := clTeal;
@@ -422,6 +428,9 @@ begin
     FHooked := False;
   end;
   {$ENDIF VCL}
+  FTimer.Enabled := True;
+  FTimer.Free;
+
   inherited Destroy;
 end;
 
@@ -501,7 +510,10 @@ end;
 
 function TJvClock.GetSystemTime: TDateTime;
 begin
-  Result := SysUtils.Time;
+  if Enabled then
+    Result := SysUtils.Time
+  else
+    Result := FixedTime;
   if Assigned(FOnGetTime) then
     FOnGetTime(Self, Result);
 end;
@@ -659,6 +671,23 @@ begin
   if Value <> FDotsColor then
   begin
     FDotsColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvClock.SetFixedTime(const Value: TDateTime);
+begin
+  if FFixedTime <> Value then
+  begin
+    // Fixed time is now stored
+    FFixedTime := Value;
+    FFixedTimeStored := True;
+
+    // Disable us and ensure the display time is accurate
+    Enabled := False;
+    GetTime(FDisplayTime);
+
+    // Force entire redraw.
     Invalidate;
   end;
 end;
@@ -891,6 +920,15 @@ begin
   end;
 end;
 
+procedure TJvClock.CMEnabledChanged(var Message: TMessage);
+begin
+  FTimer.Enabled := Enabled;
+  if not Enabled and not FFixedTimeStored then
+    FFixedTime := Now;
+    
+  inherited;
+end;
+
 procedure TJvClock.DrawSecondHand(Pos: Integer);
 var
   Radius: Longint;
@@ -962,8 +1000,6 @@ procedure TJvClock.PaintAnalogClock(PaintMode: TPaintMode);
 var
   NewTime: TJvClockTime;
 begin
-  if not Enabled then Exit;
-  
   Canvas.Pen.Color := Font.Color;
   Canvas.Brush.Color := Color;
   SetBkMode(Canvas.Handle, TRANSPARENT);
@@ -1056,8 +1092,6 @@ var
   end;
 
 begin
-  if not Enabled then Exit;
-
   GetTime(NewTime);
   H := NewTime.Hour;
   if NewTime.Hour >= 12 then
