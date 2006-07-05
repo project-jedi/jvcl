@@ -767,6 +767,7 @@ type
     procedure CalcNameBasedRects; override;
     procedure CalcValueBasedRects; override;
     procedure SetupRects; override;
+    procedure InitializeColors; override;
     property RealButtonAreaWidth: Integer read FRealButtonAreaWidth write FRealButtonAreaWidth;
   published
     property BackgroundColor default clWindow;
@@ -4814,8 +4815,7 @@ end;
 procedure TJvInspectorPainter.InitializeColors;
 begin
   SetDefaultProp(Self,
-    ['BackgroundColor', 'DividerColor', 'NameColor', 'ValueColor',
-    'CategoryColor', 'CategoryTextColor', 'SelectedColor', 'SelectedTextColor']);
+    ['BackgroundColor', 'DividerColor', 'CategoryColor', 'SelectedColor']);
 end;
 
 function TJvInspectorPainter.Loading: Boolean;
@@ -5238,6 +5238,15 @@ begin
   CalcEditBasedRects;
 end;
 
+procedure TJvInspectorBorlandNETBasePainter.InitializeColors;
+begin
+  inherited InitializeColors;
+
+  CategoryFont.Color := clBtnText;
+  NameFont.Color := clWindowText;
+  ValueFont.Color := clWindowText; 
+end;
+
 procedure TJvInspectorBorlandNETBasePainter.SetupRects;
 var
   ItemRect2: TRect;
@@ -5350,7 +5359,11 @@ end;
 procedure TJvInspectorBorlandPainter.InitializeColors;
 begin
   inherited InitializeColors;
+
   SetDefaultProp(Self, 'DividerLightColor');
+
+  HideSelectFont.Color := clHighlightText;
+  SelectedFont.Color := clHighlightText;
 end;
 
 procedure TJvInspectorBorlandPainter.PaintDivider(const X, YTop, YBottom: Integer);
