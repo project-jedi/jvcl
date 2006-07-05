@@ -258,6 +258,7 @@ type
   TInspectorTMethodFlag = (imfShowInstanceNames, imfNoShowFirstInstanceName, imfSortMethods,
     imfSortInstances, imfKeepFirstInstanceAsFirst);
   TInspectorTMethodFlags = set of TInspectorTMethodFlag;
+  TJvInspectorStyle = (isBorland, isDotNet, isItemPainter);
 
   TInspectorPaintRect = (iprItem, iprButtonArea, iprBtnSrcRect, iprBtnDstRect,
     iprNameArea, iprName, iprValueArea, iprValue, iprEditValue, iprEditButton,
@@ -396,7 +397,11 @@ type
     // Also, If you want the event that occurs when the user clicks the ellipsis
     // button, you want OnItemEdit, not BeforeEdit.
     FBeforeEdit: TInspectorBeforeEditEvent;
+    FStyle: TJvInspectorStyle;
+    FStylePainter: TJvInspectorPainter;
     procedure SetInspectObject(const Value: TObject);
+    procedure SetStyle(const Value: TJvInspectorStyle);
+    function GetActivePainter: TJvInspectorPainter;
     //    FOnMouseDown: TInspectorMouseDownEvent;
     {$IFDEF VisualCLX}
     // ClientWidth and ClientHeight replaces the inherited properties by
@@ -548,6 +553,7 @@ type
     property Selected: TJvCustomInspectorItem read GetSelected;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property Selecting: Boolean read FSelecting write FSelecting;
+    property Style: TJvInspectorStyle read FStyle write SetStyle;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
     property UseBands: Boolean read GetUseBands write SetUseBands;
     property VisibleCount: Integer read GetVisibleCount;
@@ -576,6 +582,7 @@ type
     procedure SaveValues;
     procedure AddComponent(Instance: TObject; const CategoryName: string = ''; Expanded: Boolean = True);
     procedure Clear;
+    property ActivePainter: TJvInspectorPainter read GetActivePainter;
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -589,6 +596,7 @@ type
     property VisibleItems;
     property InspectObject;
   published
+    property Style;  // Must be BEFORE painter to ensure everithing is read correctly
     property Align;
     property Anchors;
     property AutoComplete default True;
@@ -2172,6 +2180,16 @@ uses
 var
   GlobalTypeInfoHelpersList: TClassList;
 
+function CreatePainterFromStyle(Style: TJvInspectorStyle): TJvInspectorPainter;
+begin
+  case Style of
+    isDotNet:
+      Result := TJvInspectorDotNETPainter.Create(nil);
+  else
+    Result := TJvInspectorBorlandPainter.Create(nil);
+  end;
+end;
+
 //=== { TOpenEdit } ==========================================================
 
 {$IFDEF VisualCLX}
@@ -2745,6 +2763,11 @@ begin
   AutoComplete := True;
   AutoDropDown := False;
 
+  // An easy and 'dirty' way to force Style to take into account its value
+  // and have the setter do its job
+  FStyle := isItemPainter;
+  Style := isBorland;
+
   if not (csDesigning in ComponentState) then
     GlobalInspReg.RegInspector(Self);
 end;
@@ -2940,6 +2963,14 @@ begin
     OnItemValueError(Self, Item, E)
   else
     Result := False;
+end;
+
+function TJvCustomInspector.GetActivePainter: TJvInspectorPainter;
+begin
+  if Style = isItemPainter then
+    Result := Painter
+  else
+    Result := FStylePainter;
 end;
 
 function TJvCustomInspector.GetAfterDataCreate: TInspectorDataEvent;
@@ -3593,8 +3624,13 @@ begin
   // (and maybe 2005). Does not have any impact under D7 and lower.
   inherited Notification(AComponent, Operation);
   
-  if (Operation = opRemove) and (AComponent = Painter) then
-    FPainter := nil;
+  if (Operation = opRemove) then
+  begin
+    if (AComponent = Painter) then
+      FPainter := nil;
+    if AComponent = FStylePainter then
+      FStylePainter := nil;
+  end;
 end;
 
 procedure TJvCustomInspector.NotifySort(const Item: TJvCustomInspectorItem);
@@ -3628,13 +3664,13 @@ begin
   inherited Paint;
   {$ENDIF VisualCLX}
 
-  if Painter <> nil then
+  if ActivePainter <> nil then
   begin
     if NeedRebuild then
       InvalidateList;
     IncPaintGeneration;
-    Painter.Setup(Canvas);
-    Painter.Paint;
+    ActivePainter.Setup(Canvas);
+    ActivePainter.Paint;
   end
   else
   begin
@@ -3879,17 +3915,26 @@ begin
     if Value <> nil then
       if (Value.Inspector <> nil) and (Value.Inspector <> Self) then
         raise EJvInspector.CreateRes(@RsEJvInspPaintOnlyUsedOnce);
+
     if Painter <> nil then
     begin
       Painter.RemoveFreeNotification(Self);
       Painter.SetInspector(nil);
     end;
+    
     FPainter := Value;
+    
     if Painter <> nil then
     begin
+      Style := isItemPainter;
       Painter.SetInspector(Self);
       Painter.FreeNotification(Self);
+    end
+    else
+    begin
+      Style := isBorland;
     end;
+    
     if HandleAllocated then
       UpdateScrollBars;
   end;
@@ -3951,6 +3996,30 @@ begin
         DoItemSelected;
         InvalidateItem;
       end;
+  end;
+end;
+
+procedure TJvCustomInspector.SetStyle(const Value: TJvInspectorStyle);
+begin
+  if FStyle <> Value then
+  begin
+    FStyle := Value;
+
+    // Always remove the current painter
+    if FStylePainter <> nil then
+    begin
+      FStylePainter.SetInspector(nil);
+      FStylePainter.Free;
+      FStylePainter := nil;
+    end;
+
+    if (Style <> isItemPainter) or (Painter = nil) then
+    begin
+      Painter := nil;
+
+      FStylePainter := CreatePainterFromStyle(Value);
+      FStylePainter.SetInspector(Self);
+    end;
   end;
 end;
 
@@ -4305,6 +4374,7 @@ begin
   FVisibleList.Free;
   FExpandButton.Free;
   FCollapseButton.Free;
+  FStylePainter.Free;
 end;
 
 function TJvCustomInspector.BeginUpdate: Integer;
@@ -4976,7 +5046,7 @@ end;
 
 procedure TJvInspectorPainter.SetInspector(const AInspector: TJvCustomInspector);
 begin
-  if (AInspector <> nil) and (AInspector.Painter <> Self) then
+  if (AInspector <> nil) and (AInspector.ActivePainter <> Self) then
     raise EJvInspector.CreateRes(@RsEJvInspPaintNotActive);
   if AInspector <> Inspector then
   begin
@@ -6479,9 +6549,9 @@ begin
   begin
     case RowSizing.MinHeight of
       irsNameHeight:
-        Result := Inspector.Painter.GetNameHeight(Self);
+        Result := Inspector.ActivePainter.GetNameHeight(Self);
       irsValueHeight:
-        Result := Inspector.Painter.GetValueHeight(Self);
+        Result := Inspector.ActivePainter.GetValueHeight(Self);
       irsItemHeight:
         Result := Inspector.ItemHeight;
     else
@@ -6489,9 +6559,9 @@ begin
     end;
     case RowSizing.SizingFactor of
       irsNameHeight:
-        Result := Result + HeightFactor * Inspector.Painter.GetNameHeight(Self);
+        Result := Result + HeightFactor * Inspector.ActivePainter.GetNameHeight(Self);
       irsValueHeight:
-        Result := Result + HeightFactor * Inspector.Painter.GetValueHeight(Self);
+        Result := Result + HeightFactor * Inspector.ActivePainter.GetValueHeight(Self);
       irsItemHeight:
         Result := Result + HeightFactor * Inspector.ItemHeight;
     else
@@ -6947,9 +7017,9 @@ var
 begin
   case RowSizing.MinHeight of
     irsNameHeight:
-      Dec(Value, Inspector.Painter.GetNameHeight(Self));
+      Dec(Value, Inspector.ActivePainter.GetNameHeight(Self));
     irsValueHeight:
-      Dec(Value, Inspector.Painter.GetValueHeight(Self));
+      Dec(Value, Inspector.ActivePainter.GetValueHeight(Self));
     irsItemHeight:
       Dec(Value, Inspector.ItemHeight);
   else
@@ -6961,9 +7031,9 @@ begin
     irsNoReSize:
       Factor := 0;
     irsNameHeight:
-      Factor := Value div Inspector.Painter.GetNameHeight(Self);
+      Factor := Value div Inspector.ActivePainter.GetNameHeight(Self);
     irsValueHeight:
-      Factor := Value div Inspector.Painter.GetValueHeight(Self);
+      Factor := Value div Inspector.ActivePainter.GetValueHeight(Self);
     irsItemHeight:
       Factor := Value div Inspector.ItemHeight;
   else
@@ -7333,7 +7403,7 @@ var
   ARect: TRect;
 begin
   ARect := Rects[iprName];
-  if (Inspector.Painter <> nil) and (Inspector.Painter.DrawNameEndEllipsis) then
+  if (Inspector.ActivePainter <> nil) and (Inspector.ActivePainter.DrawNameEndEllipsis) then
   begin
     ARect.Right := ARect.Right - 2;
     DrawText(ACanvas, PChar(DisplayName), -1, ARect, DT_END_ELLIPSIS);
@@ -7938,7 +8008,7 @@ var
   ColWidth: Double;
   SaveItem: TJvCustomInspectorItem;
 begin
-  if Inspector.Painter = nil then
+  if Inspector.ActivePainter = nil then
     raise EJvInspectorItem.CreateRes(@RsEJvAssertInspectorPainter);
   VisibleColCount := 0;
   for I := 0 to ColumnCount - 1 do
@@ -7946,7 +8016,7 @@ begin
       Inc(VisibleColCount);
   WidthAvail := RectWidth(Value);
   if VisibleColCount > 1 then
-    Dec(WidthAvail, Pred(VisibleColCount) * Inspector.Painter.DividerWidth);
+    Dec(WidthAvail, Pred(VisibleColCount) * Inspector.ActivePainter.DividerWidth);
   CurRect := Value;
   WidthUsedInt := 0;
   WidthUsedDbl := 0;
@@ -7964,15 +8034,15 @@ begin
     Columns[I].Item.SetRects(RectKind, CurRect);
     if RectKind = iprValue then
     begin
-      SaveItem := Inspector.Painter.Item;
+      SaveItem := Inspector.ActivePainter.Item;
       try
-        Inspector.Painter.Item := Columns[I].Item;
-        Inspector.Painter.CalcEditBasedRects;
+        Inspector.ActivePainter.Item := Columns[I].Item;
+        Inspector.ActivePainter.CalcEditBasedRects;
       finally
-        Inspector.Painter.Item := SaveItem;
+        Inspector.ActivePainter.Item := SaveItem;
       end;
     end;
-    CurRect.Left := CurRect.Right + Inspector.Painter.DividerWidth;
+    CurRect.Left := CurRect.Right + Inspector.ActivePainter.DividerWidth;
   end;
 end;
 
@@ -8303,21 +8373,21 @@ begin
     begin
       if Inspector.Focused then
       begin
-        ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
-        ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+        ACanvas.Brush.Color := Inspector.ActivePainter.SelectedColor;
+        ACanvas.Font.Color := Inspector.ActivePainter.SelectedTextColor;
       end
       else
       begin
-        ACanvas.Brush.Color := Inspector.Painter.HideSelectColor;
-        ACanvas.Font.Color := Inspector.Painter.HideSelectTextColor;
+        ACanvas.Brush.Color := Inspector.ActivePainter.HideSelectColor;
+        ACanvas.Font.Color := Inspector.ActivePainter.HideSelectTextColor;
       end;
       with Rects[iprNameArea] do
         ACanvas.FillRect(Rect(Left, Top, Right, Bottom));
     end
     else
     begin
-      ACanvas.Brush.Color := Inspector.Painter.BackgroundColor;
-      ACanvas.Font.Color := Inspector.Painter.NameColor;
+      ACanvas.Brush.Color := Inspector.ActivePainter.BackgroundColor;
+      ACanvas.Font.Color := Inspector.ActivePainter.NameColor;
     end;
     inherited DrawName(ACanvas);
   end
@@ -8340,26 +8410,26 @@ begin
         begin
           if Inspector.Focused then
           begin
-            ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
-            ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+            ACanvas.Brush.Color := Inspector.ActivePainter.SelectedColor;
+            ACanvas.Font.Color := Inspector.ActivePainter.SelectedTextColor;
           end
           else
           begin
-            ACanvas.Brush.Color := Inspector.Painter.HideSelectColor;
-            ACanvas.Font.Color := Inspector.Painter.HideSelectTextColor;
+            ACanvas.Brush.Color := Inspector.ActivePainter.HideSelectColor;
+            ACanvas.Font.Color := Inspector.ActivePainter.HideSelectTextColor;
           end;
           with Col.Item.Rects[iprName] do
             ACanvas.FillRect(Rect(Left, RTop, Right, RBottom));
         end
         else
         begin
-          ACanvas.Brush.Color := Inspector.Painter.BackgroundColor;
-          ACanvas.Font.Color := Inspector.Painter.NameColor;
+          ACanvas.Brush.Color := Inspector.ActivePainter.BackgroundColor;
+          ACanvas.Font.Color := Inspector.ActivePainter.NameColor;
         end;
         Col.Item.DrawName(ACanvas);
         if I <> LastI then
           with Col.Item.Rects[iprName] do
-            Inspector.Painter.PaintDivider(Right - 1, Top + 1, Bottom - 2);
+            Inspector.ActivePainter.PaintDivider(Right - 1, Top + 1, Bottom - 2);
       end;
     end;
   end;
@@ -8382,7 +8452,7 @@ begin
       Col.Item.DrawValue(ACanvas);
       if I <> LastI then
         with Col.Item.Rects[iprValue] do
-          Inspector.Painter.PaintDivider(Right - 1, Top + 1, Bottom - 2);
+          Inspector.ActivePainter.PaintDivider(Right - 1, Top + 1, Bottom - 2);
     end;
   end;
 end;
