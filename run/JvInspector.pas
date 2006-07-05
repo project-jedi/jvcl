@@ -3935,9 +3935,9 @@ begin
       Painter.RemoveFreeNotification(Self);
       Painter.SetInspector(nil);
     end;
-    
+
     FPainter := Value;
-    
+
     if Painter <> nil then
     begin
       Style := isItemPainter;
@@ -4036,6 +4036,10 @@ begin
 
         FStylePainter := CreatePainterFromStyle(Value);
         FStylePainter.SetInspector(Self);
+
+
+        if HandleAllocated then
+          UpdateScrollBars;
       end;
     finally
       FSettingStyle := False;
