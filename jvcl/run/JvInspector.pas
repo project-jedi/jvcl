@@ -399,6 +399,7 @@ type
     FBeforeEdit: TInspectorBeforeEditEvent;
     FStyle: TJvInspectorStyle;
     FStylePainter: TJvInspectorPainter;
+    FSettingStyle: Boolean;
     procedure SetInspectObject(const Value: TObject);
     procedure SetStyle(const Value: TJvInspectorStyle);
     function GetActivePainter: TJvInspectorPainter;
@@ -2779,6 +2780,10 @@ begin
 
   if not (csDesigning in ComponentState) then
     GlobalInspReg.RegInspector(Self);
+
+  // Mantis 1717: Inspecting self at design time to show effects of painter.
+  if (csDesigning in ComponentState) then
+    AddComponent(Self, 'Test category for Inspector', True);
 end;
 
 {$IFDEF VisualCLX}
@@ -3938,14 +3943,15 @@ begin
       Style := isItemPainter;
       Painter.SetInspector(Self);
       Painter.FreeNotification(Self);
+
+      if HandleAllocated then
+        UpdateScrollBars;
     end
     else
     begin
-      Style := isBorland;
+      if not FSettingStyle then
+        Style := isBorland;
     end;
-    
-    if HandleAllocated then
-      UpdateScrollBars;
   end;
 end;
 
@@ -4012,22 +4018,27 @@ procedure TJvCustomInspector.SetStyle(const Value: TJvInspectorStyle);
 begin
   if FStyle <> Value then
   begin
-    FStyle := Value;
+    FSettingStyle := True;
+    try
+      FStyle := Value;
 
-    // Always remove the current painter
-    if FStylePainter <> nil then
-    begin
-      FStylePainter.SetInspector(nil);
-      FStylePainter.Free;
-      FStylePainter := nil;
-    end;
+      // Always remove the current painter
+      if FStylePainter <> nil then
+      begin
+        FStylePainter.SetInspector(nil);
+        FStylePainter.Free;
+        FStylePainter := nil;
+      end;
 
-    if (Style <> isItemPainter) or (Painter = nil) then
-    begin
-      Painter := nil;
+      if (Style <> isItemPainter) or (Painter = nil) then
+      begin
+        Painter := nil;
 
-      FStylePainter := CreatePainterFromStyle(Value);
-      FStylePainter.SetInspector(Self);
+        FStylePainter := CreatePainterFromStyle(Value);
+        FStylePainter.SetInspector(Self);
+      end;
+    finally
+      FSettingStyle := False;
     end;
   end;
 end;
@@ -5362,8 +5373,7 @@ begin
 
   SetDefaultProp(Self, 'DividerLightColor');
 
-  HideSelectFont.Color := clHighlightText;
-  SelectedFont.Color := clHighlightText;
+  ValueFont.Color := clNavy;
 end;
 
 procedure TJvInspectorBorlandPainter.PaintDivider(const X, YTop, YBottom: Integer);
@@ -5433,10 +5443,11 @@ end;
 
 constructor TJvInspectorDotNETPainter.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-
+  // inherited Create will call Initialize colors which will use this font.
   FHideSelectFont := TFont.Create;
   FHideSelectFont.OnChange := FontChange;
+  
+  inherited Create(AOwner);
 end;
 
 destructor TJvInspectorDotNETPainter.Destroy;
@@ -5548,7 +5559,11 @@ end;
 procedure TJvInspectorDotNETPainter.InitializeColors;
 begin
   inherited InitializeColors;
-  SetDefaultProp(Self, ['HideSelectColor', 'HideSelectTextColor']);
+
+  SetDefaultProp(Self, ['HideSelectColor']);
+
+  HideSelectFont.Color := clHighlightText;
+  SelectedFont.Color := clHighlightText;
 end;
 
 procedure TJvInspectorDotNETPainter.PaintDivider(const X, YTop, YBottom: Integer);
