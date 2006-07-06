@@ -85,7 +85,7 @@ type
     property Bookmark: TBookmark read FBookmark write FBookmark;
   public
     function Locate(const KeyField, KeyValue: string; Exact,
-      CaseSensitive: Boolean): Boolean;
+      CaseSensitive: Boolean; DisableControls: Boolean = True): Boolean;
     property DataSet: TDataSet read FDataSet write SetDataSet;
     property IndexSwitch: Boolean read FIndexSwitch write FIndexSwitch;
   end;
@@ -343,7 +343,7 @@ begin
 end;
 
 function TJvLocateObject.Locate(const KeyField, KeyValue: string;
-  Exact, CaseSensitive: Boolean): Boolean;
+  Exact, CaseSensitive: Boolean; DisableControls: Boolean): Boolean;
 var
   LookupKey: TField;
 
@@ -379,9 +379,10 @@ begin
   end
   else
     FCaseSensitive := CaseSensitive;
-  FBookmark := DataSet.GetBookmark;
-  try
+  if DisableControls then
     DataSet.DisableControls;
+  try
+    FBookmark := DataSet.GetBookmark;
     try
       Result := MatchesLookup(FLookupField);
       if not Result then
@@ -399,13 +400,14 @@ begin
           SetToBookmark(DataSet, FBookmark);
       end;
     finally
-      DataSet.EnableControls;
+      FLookupValue := '';
+      FLookupField := nil;
+      DataSet.FreeBookmark(FBookmark);
+      FBookmark := nil;
     end;
   finally
-    FLookupValue := '';
-    FLookupField := nil;
-    DataSet.FreeBookmark(FBookmark);
-    FBookmark := nil;
+    if DisableControls then
+      DataSet.EnableControls;
   end;
 end;
 
