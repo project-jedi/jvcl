@@ -7130,9 +7130,9 @@ var
   end;
 
 begin
+  NextToken;
   while True do
   begin
-    NextToken;
     case TTyp of
       ttFinally:
         begin
@@ -7145,7 +7145,10 @@ begin
           Exit;
         end;
       ttSemicolon:
-        DoOnStatement;
+        begin
+          DoOnStatement;
+          NextToken;
+        end;
       ttIdentifier, ttBegin, ttIf, ttWhile, ttFor, ttRepeat,
         ttBreak, ttContinue, ttTry, ttRaise, ttExit, ttCase:
         begin
