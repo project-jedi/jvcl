@@ -2142,7 +2142,7 @@ begin
     FRecordCount = #records in link buffer (<> #records in table)
   }
   { Check whether the list is completely filled.. }
-  if (FRecordCount >= (FRowCount - Ord(EmptyRowVisible))) and FLookupLink.Active then
+  if (FRecordCount > (FRowCount - Ord(EmptyRowVisible))) and FLookupLink.Active then
   begin
     { ..if so, display a scrollbar }
     Max := 4;
@@ -2483,6 +2483,7 @@ var
   P: TPoint;
   I, Y: Integer;
   S: string;
+  SelValue: string;
   {$IFDEF COMPILER6_UP}
   Animate: BOOL;
   SlideStyle: Integer;
@@ -2492,6 +2493,7 @@ begin
   begin
     if Assigned(FOnDropDown) then
       FOnDropDown(Self);
+    SelValue := Value; // backup before anything invokes a OnDataCahange event
     FDataList.Color := Color;
     FDataList.Font := Font;
     FDataList.ItemHeight := ItemHeight;
@@ -2499,7 +2501,11 @@ begin
     FDataList.EmptyValue := EmptyValue;
     FDataList.DisplayEmpty := DisplayEmpty;
     FDataList.EmptyItemColor := EmptyItemColor;
-    FDataList.RowCount := DropDownCount;
+    if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) and
+       (DropDownCount > FLookupLink.DataSource.DataSet.RecordCount) then
+      FDataList.RowCount := FLookupLink.DataSource.DataSet.RecordCount
+    else
+      FDataList.RowCount := DropDownCount;
     FDataList.LookupField := FLookupFieldName;
     FDataList.LookupFormat := FLookupFormat;
     FDataList.ListStyle := FListStyle;
@@ -2519,7 +2525,7 @@ begin
     finally
       {FDataList.FLockPosition := False;}
     end;
-    FDataList.SetValueKey(Value);
+    FDataList.SetValueKey(SelValue);
     {FDataList.KeyValueChanged;}
     if FDropDownWidth > 0 then
       FDataList.Width := FDropDownWidth
