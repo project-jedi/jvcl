@@ -31,7 +31,7 @@ unit JvDataSourceIntf;
 interface
 
 uses
-  SysUtils, Classes;     
+  SysUtils, Classes, Contnrs;     
 
 const
   DC_ACTIVECHANGED = 100;
@@ -256,6 +256,7 @@ type
     FModified: Boolean;
     FActive: Boolean;
     FMaster: TJvDataConnector;
+    FFields: TObjectList;
 
     procedure DcRecordChanged(var Msg: TJvDataConnectorMsg); message DC_RECORDCHANGED;
     procedure DcActiveChanged(var Msg: TJvDataConnectorMsg); message DC_ACTIVECHANGED;
@@ -264,6 +265,9 @@ type
 
     procedure SetDataSource(const Value: IJvDataSource);
     function GetDataSetConnected: Boolean;
+    function GetField(Index: Integer): TJvDataConnectorField;
+    function GetFieldCount: Integer;
+    function GetFieldField(Field: TObject): TJvDataConnectorField;
   protected
     property Master: TJvDataConnector read FMaster write FMaster;
 
@@ -282,8 +286,16 @@ type
 
     function CanEdit: Boolean; virtual;
   public
+    constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+
+    function FieldByName(const FieldName: TDataFieldString): TJvDataConnectorField;
+    function FindField(const FieldName: TDataFieldString): TJvDataConnectorField;
+
+    property FieldCount: Integer read GetFieldCount;
+    property Fields[Index: Integer]: TJvDataConnectorField read GetField;
+
     procedure Edit;
     procedure Reset;
     procedure UpdateRecord;
@@ -333,7 +345,7 @@ type
     property KeyField: TDataFieldString read GetKeyField write SetKeyField;
   end;
 
-  TJvListDataConnector = class(TJvKeyFieldDataConnector)
+  TJvLookupDataConnector = class(TJvKeyFieldDataConnector)
   private
     FList: TJvKeyFieldDataConnector;
     function GetListField: TDataFieldString;
@@ -357,6 +369,23 @@ type
 implementation
 
 { TJvDataConnector }
+
+constructor TJvDataConnector.Create;
+begin
+  inherited Create;
+  FFields := TObjectList.Create;
+end;
+
+destructor TJvDataConnector.Destroy;
+var
+  Handler: IJvDataSourceConnectorHandler;
+begin
+  if Assigned(FDataSource) and Supports(FDataSource, IJvDataSourceConnectorHandler, Handler) then
+    Handler.RemoveDataConnector(Self);
+  FDataSource := nil;
+  FFields.Clear;
+  inherited Destroy;
+end;
 
 procedure TJvDataConnector.ActiveChanged;
 begin
@@ -432,6 +461,7 @@ begin
   Notify(DC_ACTIVECHANGED);
   FActive := False;
   FModified := False;
+  FFields.Clear;
 end;
 
 procedure TJvDataConnector.DcActiveChanged(var Msg: TJvDataConnectorMsg);
@@ -447,6 +477,7 @@ end;
 
 procedure TJvDataConnector.DcLayoutChanged(var Msg: TJvDataConnectorMsg);
 begin
+  FFields.Clear;
   if FLockRecordChange = 0 then
   begin
     LayoutChanged;
@@ -503,9 +534,54 @@ begin
   end;
 end;
 
+function TJvDataConnector.FieldByName(const FieldName: TDataFieldString): TJvDataConnectorField;
+begin
+  Result := GetFieldField(DataSource.FieldByName(FieldName)); // raises exception if not found
+end;
+
+function TJvDataConnector.FindField(const FieldName: TDataFieldString): TJvDataConnectorField;
+begin
+  Result := nil;
+  if DataSource <> nil then
+    Result := GetFieldField(DataSource.FindField(FieldName));
+end;
+
 function TJvDataConnector.GetDataSetConnected: Boolean;
 begin
   Result := Assigned(DataSource) and (DataSource.DataSet <> nil);
+end;
+
+function TJvDataConnector.GetField(Index: Integer): TJvDataConnectorField;
+begin
+  Result := GetFieldField(DataSource.Fields[Index]);
+end;
+
+function TJvDataConnector.GetFieldCount: Integer;
+begin
+  if DataSource <> nil then
+    Result := DataSource.FieldCount
+  else
+    Result := 0;
+end;
+
+function TJvDataConnector.GetFieldField(Field: TObject): TJvDataConnectorField;
+var
+  I: Integer;
+begin
+  Result := nil;
+  if Field <> nil then
+  begin
+    for I := 0 to FFields.Count - 1 do
+    begin
+      Result := TJvDataConnectorField(FFields[I]);
+      if Result.Field = Field then
+        Exit;
+    end;
+    Result := TJvDataConnectorField.Create;
+    FFields.Add(Result);
+    Result.DataSource := DataSource;
+    Result.FieldName := DataSource.FieldName[Field];
+  end;
 end;
 
 procedure TJvDataConnector.SetDataSource(const Value: IJvDataSource);
@@ -550,16 +626,6 @@ begin
     end;
     FModified := False;
   end;
-end;
-
-destructor TJvDataConnector.Destroy;
-var
-  Handler: IJvDataSourceConnectorHandler;
-begin
-  if Assigned(FDataSource) and Supports(FDataSource, IJvDataSourceConnectorHandler, Handler) then
-    Handler.RemoveDataConnector(Self);
-  FDataSource := nil;
-  inherited Destroy;
 end;
 
 { TJvFieldDataConnector }
@@ -849,54 +915,54 @@ begin
   FKey.UpdateField(DataSource);
 end;
 
-{ TJvListDataConnector }
+{ TJvLookupDataConnector }
 
-procedure TJvListDataConnector.Assign(Source: TPersistent);
+procedure TJvLookupDataConnector.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  if Source is TJvListDataConnector then
+  if Source is TJvLookupDataConnector then
     FList.Assign(Source);
 end;
 
-constructor TJvListDataConnector.Create;
+constructor TJvLookupDataConnector.Create;
 begin
   inherited Create;
   FList := TJvKeyFieldDataConnector.Create;
   FList.Master := Self;
 end;
 
-destructor TJvListDataConnector.Destroy;
+destructor TJvLookupDataConnector.Destroy;
 begin
   FList.Free;
   inherited Destroy;
 end;
 
-function TJvListDataConnector.GetListField: TDataFieldString;
+function TJvLookupDataConnector.GetListField: TDataFieldString;
 begin
   Result := FList.DataField;
 end;
 
-function TJvListDataConnector.GetListKeyField: TDataFieldString;
+function TJvLookupDataConnector.GetListKeyField: TDataFieldString;
 begin
   Result := FList.KeyField;
 end;
 
-function TJvListDataConnector.GetListSource: IJvDataSource;
+function TJvLookupDataConnector.GetListSource: IJvDataSource;
 begin
   Result := FList.DataSource;
 end;
 
-procedure TJvListDataConnector.SetListField(const Value: TDataFieldString);
+procedure TJvLookupDataConnector.SetListField(const Value: TDataFieldString);
 begin
   FList.DataField := Value;
 end;
 
-procedure TJvListDataConnector.SetListKeyField(const Value: TDataFieldString);
+procedure TJvLookupDataConnector.SetListKeyField(const Value: TDataFieldString);
 begin
   FList.KeyField := Value;
 end;
 
-procedure TJvListDataConnector.SetListSource(const Value: IJvDataSource);
+procedure TJvLookupDataConnector.SetListSource(const Value: IJvDataSource);
 begin
   FList.DataSource := Value;
 end;

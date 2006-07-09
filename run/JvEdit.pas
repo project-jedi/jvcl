@@ -72,6 +72,7 @@ type
   protected
     procedure RecordChanged; override;
     procedure UpdateData; override;
+    property Control: TJvCustomEdit read FEdit;
   public
     constructor Create(AEdit: TJvCustomEdit);
   end;
@@ -392,11 +393,8 @@ end;
 
 procedure TJvCustomEditDataConnector.UpdateData;
 begin
-  if Field.CanModify then
-  begin
-    Field.AsString := FEdit.Text;
-    FEdit.Text := Field.AsString; // update to stored value
-  end;
+  Field.AsString := FEdit.Text;
+  FEdit.Text := Field.AsString; // update to stored value
 end;
 
 //=== { TJvCustomEdit } ======================================================

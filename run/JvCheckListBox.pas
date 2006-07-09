@@ -47,7 +47,7 @@ uses
 type
   TJvCheckListBox = class;
 
-  TJvCheckListBoxDataConnector = class(TJvListDataConnector)
+  TJvCheckListBoxDataConnector = class(TJvLookupDataConnector)
   private
     FCheckListBox: TJvCheckListBox;
     FValueChecked: string;

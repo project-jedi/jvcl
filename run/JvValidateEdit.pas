@@ -63,6 +63,7 @@ type
   public
     constructor Create(AEdit: TJvCustomValidateEdit);
     procedure Assign(Source: TPersistent); override;
+    property Control: TJvCustomValidateEdit read FEdit;
   published
     property NullValue: Variant read FNullValue write SetNullValue;
   end;

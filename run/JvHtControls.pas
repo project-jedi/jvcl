@@ -115,10 +115,28 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  Windows, Messages, Graphics, Controls, StdCtrls, Dialogs,
-  JvJVCLUtils, JvExStdCtrls;
+  JvVCL5Utils,
+  Windows, Messages, Graphics, Contnrs, Controls, StdCtrls, Dialogs,
+  JvJVCLUtils, JvExStdCtrls, JvDataSourceIntf;
 
 type
+  TJvCustomListBoxDataConnector = class(TJvFieldDataConnector)
+  private
+    FListBox: TCustomListBox;
+    FMap: TList;
+    FRecNoMap: TBucketList;
+  protected
+    procedure Populate; virtual;
+    procedure ActiveChanged; override;
+    procedure RecordChanged; override;
+    property ListBox: TCustomListBox read FListBox;
+  public
+    constructor Create(AListBox: TCustomListBox);
+    destructor Destroy; override;
+
+    procedure GotoCurrent;
+  end;
+
   THyperLinkClick = procedure(Sender: TObject; LinkName: string) of object;
 
   TJvCustomHTListBox = class(TJvExCustomListBox)
@@ -127,26 +145,31 @@ type
     FHideSel: Boolean;
     FColorHighlight: TColor;         // <-+-- Kaczkowski: from JvMultiLineListBox
     FColorHighlightText: TColor;     // <-+
-    FColorDisabledText: TColor;     // <-+
+    FColorDisabledText: TColor;
+    FDataConnector: TJvCustomListBoxDataConnector;     // <-+
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
+    procedure SetDataConnector(const Value: TJvCustomListBoxDataConnector);
   protected
+    function CreateDataConnector: TJvCustomListBoxDataConnector; virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure FontChanged; override;
+    procedure Loaded; override;
     {$IFDEF VCL}
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure Loaded; override;
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
     {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
   protected
+    procedure CMChanged(var Message: TCMChanged); message CM_CHANGED;
     property HideSel: Boolean read FHideSel write SetHideSel;
 
     // Kaczkowski - moved from JvMultiLineListBox
@@ -155,6 +178,8 @@ type
     property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
     // Kaczkowski - end
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
+
+    property DataConnector: TJvCustomListBoxDataConnector read FDataConnector write SetDataConnector;
   end;
 
   TJvHTListBox = class(TJvCustomHTListBox)
@@ -219,6 +244,8 @@ type
     property OnStartDrag;
     property Anchors;
     property Constraints;
+
+    property DataConnector;
   end;
 
   TJvCustomHTComboBox = class(TJvExCustomComboBox)
@@ -464,11 +491,90 @@ end;
 
 // Kaczkowski - end
 
+//=== { TJvCustomListBoxDataConnector } ======================================
+
+constructor TJvCustomListBoxDataConnector.Create(AListBox: TCustomListBox);
+begin
+  inherited Create;
+  FListBox := AListBox;
+  FRecNoMap := TBucketList.Create;
+  FMap := TList.Create;
+end;
+
+destructor TJvCustomListBoxDataConnector.Destroy;
+begin
+  FMap.Free;
+  FRecNoMap.Free;
+  inherited Destroy;
+end;
+
+procedure TJvCustomListBoxDataConnector.GotoCurrent;
+begin
+  if Field.IsValid and (FListBox.ItemIndex <> -1) then
+    DataSource.RecNo := Integer(FMap[FListBox.ItemIndex]);
+end;
+
+procedure TJvCustomListBoxDataConnector.ActiveChanged;
+begin
+  Populate;
+  inherited ActiveChanged;
+end;
+
+procedure TJvCustomListBoxDataConnector.Populate;
+var
+  Index: Integer;
+begin
+  FMap.Clear;
+  FRecNoMap.Clear;
+  FListBox.Items.BeginUpdate;
+  try
+    FListBox.Items.Clear;
+    if Field.IsValid then
+    begin
+      DataSource.BeginUpdate;
+      try
+        DataSource.First;
+        while not DataSource.Eof do
+        begin
+          Index := FListBox.Items.Add(Field.AsString);
+          FMap.Add(TObject(DataSource.RecNo));
+          FRecNoMap.Add(TObject(DataSource.RecNo), TObject(Index));
+          DataSource.Next;
+        end;
+      finally
+        DataSource.EndUpdate;
+      end;
+      if FRecNoMap.Find(TObject(DataSource.RecNo), Pointer(Index)) then
+        FListBox.ItemIndex := Index;
+    end;
+  finally
+    FListBox.Items.EndUpdate;
+  end;
+end;
+
+procedure TJvCustomListBoxDataConnector.RecordChanged;
+var
+  Index: Integer;
+begin
+  if Field.IsValid then
+  begin
+    if FListBox.Items.Count <> DataSource.RecordCount then
+      Populate
+    else
+      if FRecNoMap.Find(TObject(DataSource.RecNo), Pointer(Index)) then
+      begin
+        FListBox.Items[Index] := Field.AsString;
+        FListBox.ItemIndex := Index;
+      end;
+  end;
+end;
+
 //=== { TJvCustomHTListBox } =================================================
 
 constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDataConnector := CreateDataConnector;
   // Kaczkowski
   {$IFDEF VCL}
   Style := lbOwnerDrawVariable;
@@ -479,13 +585,26 @@ begin
   // Kaczkowski
 end;
 
-{$IFDEF VisualCLX}
+destructor TJvCustomHTListBox.Destroy;
+begin
+  FDataConnector.Free;
+  inherited Destroy;
+end;
+
 procedure TJvCustomHTListBox.Loaded;
 begin
   inherited Loaded;
+  {$IFDEF VisualCLX}
   Style := lbOwnerDrawVariable;
+  {$ENDIF VisualCLX}
+  DataConnector.Reset;
 end;
-{$ENDIF VisualCLX}
+
+procedure TJvCustomHTListBox.CMChanged(var Message: TCMChanged);
+begin
+  inherited;
+  DataConnector.GotoCurrent;
+end;
 
 {$IFDEF VCL}
 procedure TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
@@ -499,12 +618,13 @@ begin
   if odSelected in State then
   begin
    Canvas.Brush.Color := ColorHighlight;
-   Canvas.Font.Color  := ColorHighlightText;
+   Canvas.Font.Color := ColorHighlightText;
   end;
   if not Enabled then
     Canvas.Font.Color := ColorDisabledText;
 
   Canvas.FillRect(Rect);
+  Inc(Rect.Left, 2);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
   {$IFDEF VisualCLX}
   Result := True;
@@ -518,6 +638,11 @@ begin
 end;
 {$ENDIF VCL}
 
+function TJvCustomHTListBox.CreateDataConnector: TJvCustomListBoxDataConnector;
+begin
+  Result := TJvCustomListBoxDataConnector.Create(Self);
+end;
+
 procedure TJvCustomHTListBox.FontChanged;
 begin
   inherited FontChanged;
@@ -525,6 +650,12 @@ begin
     Exit; // VisualCLX needs this
   Canvas.Font := Font;
   ItemHeight := CanvasMaxTextHeight(Canvas);
+end;
+
+procedure TJvCustomHTListBox.SetDataConnector(const Value: TJvCustomListBoxDataConnector);
+begin
+  if Value <> FDataConnector then
+    FDataConnector.Assign(Value);
 end;
 
 procedure TJvCustomHTListBox.SetHideSel(Value: Boolean);
@@ -562,6 +693,7 @@ begin
     Canvas.Font.Color := Font.Color;
     Canvas.Brush.Color := Color;
   end;
+  Inc(R.Left, 2);
   if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
     Cursor := crHandPoint
   else
@@ -589,6 +721,7 @@ begin
     end
     else
       Canvas.Font.Color := Font.Color;
+    Inc(R.Left, 2);
     if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
     begin
       if (Pos(cURLTYPE, LinkName) > 0) or // ftp:// http:// e2k://
