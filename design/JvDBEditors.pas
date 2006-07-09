@@ -166,6 +166,9 @@ var
   Instance: TComponent;
   PropInfo: PPropInfo;
   DataSource: TDataSource;
+  {$IFDEF COMPILER6_UP}
+  DataSourceIntf: IJvDataSource;
+  {$ENDIF COMPILER6_UP}
 begin
   Instance := TComponent(GetComponent(0));
   PropInfo := TypInfo.GetPropInfo(Instance.ClassInfo, GetDataSourcePropName);
@@ -180,6 +183,25 @@ begin
       {$ELSE}
       DataSource.DataSet.GetFieldNames(List);
       {$ENDIF COMPILER10_UP}
+  end
+  else
+  if (PropInfo <> nil) and (PropInfo^.PropType^.Kind = tkInterface) then
+  begin
+    {$IFDEF COMPILER6_UP}
+    if Supports(GetInterfaceProp(Instance, PropInfo), IJvDataSource, DataSourceIntf) then
+    begin
+      if DataSourceIntf.DataSet <> nil then
+      begin
+        {$IFDEF COMPILER10_UP}
+        {$WARN SYMBOL_DEPRECATED OFF}
+        DataSourceIntf.GetFieldNames(List);
+        {$WARN SYMBOL_DEPRECATED ON}
+        {$ELSE}
+        DataSourceIntf.GetFieldNames(List);
+        {$ENDIF COMPILER10_UP}
+      end;
+    end;
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
