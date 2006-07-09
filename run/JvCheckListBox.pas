@@ -41,10 +41,38 @@ uses
   {$IFDEF CLR}
   System.Runtime.InteropServices,
   {$ENDIF CLR}
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, StdCtrls, 
-  JvExCheckLst;
+  Windows, Messages, SysUtils, Classes, Contnrs, Controls, Graphics, StdCtrls,
+  JvExCheckLst, JvVCL5Utils, JvDataSourceIntf;
 
 type
+  TJvCheckListBox = class;
+
+  TJvCheckListBoxDataConnector = class(TJvListDataConnector)
+  private
+    FCheckListBox: TJvCheckListBox;
+    FValueChecked: string;
+    FValueUnchecked: string;
+    FMap: TList;
+    FRecNumMap: TBucketList;
+    procedure SetValueChecked(const Value: string);
+    procedure SetValueUnchecked(const Value: string);
+  protected
+    procedure Popuplate; virtual;
+    procedure ActiveChanged; override;
+    procedure UpdateData; override;
+    procedure RecordChanged; override;
+    procedure GetKeyNames(out KeyName, ListKeyName: TDataFieldString);
+    procedure GotoCurrent;
+  public
+    constructor Create(ACheckListBox: TJvCheckListBox);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    function IsValid: Boolean; virtual;
+  published
+    property ValueChecked: string read FValueChecked write SetValueChecked;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
+  end;
+
   TJvCheckListBox = class(TJvExCheckListBox)
   {$IFDEF VCL}
   private
@@ -81,15 +109,20 @@ type
   published
     property HeaderColor: TColor read FHeaderColor write SetHeaderColor default clInfoText;
     property HeaderBackgroundColor: TColor read FHeaderBackgroundColor write SetHeaderBackgroundColor default clInfoBk;
-    destructor Destroy; override;
   {$ENDIF COMPILER5}
   private
+    FDataConnector: TJvCheckListBoxDataConnector;
     FOnItemDrawing: TDrawItemEvent;
+    procedure SetDataConnector(const Value: TJvCheckListBoxDataConnector);
+    procedure CMChanged(var Msg: TMessage); message CM_CHANGED;
   protected
+    function CreateDataConnector: TJvCheckListBoxDataConnector; virtual;
+    procedure ClickCheck; override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure DoItemDrawing(Index: Integer; Rect: TRect; State: TOwnerDrawState);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -123,6 +156,8 @@ type
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
     {$ENDIF VCL}
+
+    property DataConnector: TJvCheckListBoxDataConnector read FDataConnector write SetDataConnector;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -140,6 +175,216 @@ implementation
 uses
   JvItemsSearchs, JvJCLUtils;
 
+//=== { TJvCheckListBoxDataConnector } =======================================
+
+constructor TJvCheckListBoxDataConnector.Create(ACheckListBox: TJvCheckListBox);
+begin
+  inherited Create;
+  FCheckListBox := ACheckListBox;
+  FValueChecked := '1';
+  FValueUnchecked := '0';
+  FMap := TList.Create;
+  FRecNumMap := TBucketList.Create(bl256);
+end;
+
+destructor TJvCheckListBoxDataConnector.Destroy;
+begin
+  FMap.Free;
+  FRecNumMap.Free;
+  inherited Destroy;
+end;
+
+procedure TJvCheckListBoxDataConnector.GetKeyNames(out KeyName,
+  ListKeyName: TDataFieldString);
+begin
+  if List.Key.IsValid then
+    ListKeyName := List.KeyField;
+  if Key.IsValid then
+    KeyName := KeyField;
+  if ListKeyName = '' then
+    ListKeyName := KeyName;
+  if KeyName = '' then
+    KeyName := ListKeyName;
+end;
+
+procedure TJvCheckListBoxDataConnector.GotoCurrent;
+var
+  RecNo: Integer;
+begin
+  if IsValid then
+  begin
+    RecNo := Integer(FMap[FCheckListBox.ItemIndex]);
+    if ListSource.RecNo <> RecNo then
+    begin
+      Active := False;
+      try
+        ListSource.RecNo := RecNo;
+      finally
+        Active := True;
+      end;
+    end;
+  end;
+end;
+
+function TJvCheckListBoxDataConnector.IsValid: Boolean;
+begin
+  Result := List.DataSetConnected and List.Field.IsValid and
+            DataSetConnected and Field.IsValid and
+           (Key.IsValid or List.Key.IsValid or (ListSource.DataSet = DataSource.DataSet));
+end;
+
+procedure TJvCheckListBoxDataConnector.Popuplate;
+var
+  IsChecked: TList;
+  ListKeyName, KeyName: TDataFieldString;
+  I, Index: Integer;
+begin
+  FMap.Clear;
+  FRecNumMap.Clear;
+
+  FCheckListBox.Items.BeginUpdate;
+  try
+    FCheckListBox.Items.Clear;
+    Index := -1;
+    if IsValid then
+    begin
+      ListSource.BeginUpdate;
+      try
+        if DataSource.DataSet <> ListSource.DataSet then
+          DataSource.BeginUpdate;
+        try
+          IsChecked := TList.Create;
+          try
+            ListSource.First;
+            while not ListSource.Eof do
+            begin
+              Index := FCheckListBox.Items.Add(List.Field.AsString);
+              FMap.Add(TObject(ListSource.RecNo));
+              FRecNumMap.Add(TObject(ListSource.RecNo), TObject(Index));
+
+              if ListSource.DataSet = DataSource.DataSet then
+                IsChecked.Add(TObject(AnsiCompareText(Field.AsString, ValueUnchecked) <> 0))
+              else
+              begin
+                GetKeyNames(KeyName, ListKeyName);
+                if DataSource.Locate(KeyName, ListSource.FieldValue[ListSource.FieldByName(ListKeyName)], []) then
+                  IsChecked.Add(TObject(AnsiCompareText(Field.AsString, ValueUnchecked) <> 0))
+                else
+                  IsChecked.Add(TObject(False));
+              end;
+              ListSource.Next;
+            end;
+            for I := 0 to IsChecked.Count - 1 do
+              FCheckListBox.Checked[I] := Boolean(IsChecked[I]);
+          finally
+            IsChecked.Free;
+          end;
+        finally
+          if DataSource.DataSet <> ListSource.DataSet then
+            DataSource.EndUpdate;
+        end;
+      finally
+        ListSource.EndUpdate;
+      end;
+      if not FRecNumMap.Find(TObject(ListSource.RecNo), Pointer(Index)) then
+        Index := -1;
+    end;
+    FCheckListBox.ItemIndex := Index;
+  finally
+    FCheckListBox.Items.EndUpdate;
+  end
+end;
+
+procedure TJvCheckListBoxDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvCheckListBoxDataConnector then
+  begin
+    FValueChecked := TJvCheckListBoxDataConnector(Source).ValueChecked;
+    FValueUnchecked := TJvCheckListBoxDataConnector(Source).ValueUnchecked;
+    Reset;
+  end;
+end;
+
+procedure TJvCheckListBoxDataConnector.ActiveChanged;
+begin
+  Popuplate;
+end;
+
+procedure TJvCheckListBoxDataConnector.RecordChanged;
+var
+  Index: Integer;
+begin
+  if IsValid then
+  begin
+    if ListSource.RecordCount <> FCheckListBox.Items.Count then
+      Popuplate
+    else
+    if ListSource.RecNo <> -1 then
+    begin
+      if FRecNumMap.Find(TObject(ListSource.RecNo), Pointer(Index)) then
+      begin
+        FCheckListBox.Items[Index] := List.Field.AsString;
+        FCheckListBox.Checked[Index] := AnsiCompareText(Field.AsString, ValueUnchecked) <> 0;
+        if Index <> FCheckListBox.ItemIndex then
+          FCheckListBox.ItemIndex := Index;
+      end;
+    end;
+  end;
+end;
+
+procedure TJvCheckListBoxDataConnector.UpdateData;
+var
+  KeyName, ListKeyName: TDataFieldString;
+  Value: string;
+begin
+  if Field.CanModify and IsValid and (ValueChecked <> '') and (ValueUnchecked <> '') and
+     (FCheckListBox.ItemIndex <> -1) then
+  begin
+    if FCheckListBox.Checked[FCheckListBox.ItemIndex] then
+      Value := ValueChecked
+    else
+      Value := ValueUnchecked;
+
+    GotoCurrent;
+    DataSource.Edit;
+
+    if ListSource.DataSet = DataSource.DataSet then
+      Field.AsString := Value
+    else
+    begin
+      GetKeyNames(KeyName, ListKeyName);
+      DataSource.BeginUpdate;
+      try
+        if DataSource.Locate(KeyName, ListSource.FieldValue[ListSource.FieldByName(ListKeyName)], []) then
+          Field.AsString := Value;
+      finally
+        DataSource.EndUpdate;
+      end;
+    end;
+  end;
+end;
+
+procedure TJvCheckListBoxDataConnector.SetValueChecked(const Value: string);
+begin
+  if Value <> FValueChecked then
+  begin
+    FValueChecked := Value;
+    Reset;
+  end;
+end;
+
+procedure TJvCheckListBoxDataConnector.SetValueUnchecked(const Value: string);
+begin
+  if Value <> FValueUnchecked then
+  begin
+    FValueUnchecked := Value;
+    Reset;
+  end;
+end;
+
+//=== { TJvCheckListBox } ====================================================
+
 type
   // Used for the load/save methods
   TCheckListRecord = record
@@ -147,11 +392,10 @@ type
     StringSize: Integer;
   end;
 
-//=== { TJvCheckListBox } ====================================================
-
 constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDataConnector := CreateDataConnector;
   {$IFDEF COMPILER5}
   FHeaders := TList.Create;
   FHeaderColor := clInfoText;
@@ -165,13 +409,16 @@ begin
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-{$IFDEF COMPILER5}
 destructor TJvCheckListBox.Destroy;
 begin
+  {$IFDEF COMPILER5}
   FHeaders.Free;
+  {$ENDIF COMPILER5}
+  FDataConnector.Free;
   inherited Destroy;
 end;
 
+{$IFDEF COMPILER5}
 procedure TJvCheckListBox.SetHeaderColor(Value: TColor);
 begin
   if Value <> FHeaderColor then
@@ -211,6 +458,33 @@ begin
 end;
 
 {$ENDIF COMPILER5}
+
+function TJvCheckListBox.CreateDataConnector: TJvCheckListBoxDataConnector;
+begin
+  Result := TJvCheckListBoxDataConnector.Create(Self);
+end;
+
+procedure TJvCheckListBox.ClickCheck;
+begin
+  inherited;
+  if not (csLoading in ComponentState) then
+  begin
+    DataConnector.Modify;
+    DataConnector.UpdateRecord;
+  end;
+end;
+
+procedure TJvCheckListBox.SetDataConnector(const Value: TJvCheckListBoxDataConnector);
+begin
+  if Value <> FDataConnector then
+    FDataConnector.Assign(Value);
+end;
+
+procedure TJvCheckListBox.CMChanged(var Msg: TMessage);
+begin
+  inherited;
+  DataConnector.GotoCurrent;
+end;
 
 procedure TJvCheckListBox.DoItemDrawing(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin

@@ -41,9 +41,29 @@ uses
   Types,
   {$ENDIF CLR}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls,
-  JvTypes, JvExStdCtrls, JvLinkedControls;
+  JvTypes, JvExStdCtrls, JvLinkedControls, JvDataSourceIntf;
 
 type
+  TJvCheckBox = class;
+
+  TJvCheckBoxDataConnector = class(TJvFieldDataConnector)
+  private
+    FCheckBox: TJvCheckBox;
+    FValueChecked: string;
+    FValueUnchecked: string;
+    procedure SetValueChecked(const Value: string);
+    procedure SetValueUnchecked(const Value: string);
+  protected
+    procedure UpdateData; override;
+    procedure RecordChanged; override;
+  public
+    constructor Create(ACheckBox: TJvCheckBox);
+    procedure Assign(Source: TPersistent); override;
+  published
+    property ValueChecked: string read FValueChecked write SetValueChecked;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
+  end;
+
   TJvCheckBox = class(TJvExCheckBox)
   private
     FHotTrack: Boolean;
@@ -58,6 +78,7 @@ type
     FLeftText: Boolean;
     FReadOnly:Boolean;
     FLinkedControls: TJvLinkedControls;
+    FDataConnector: TJvCheckBoxDataConnector;
     function GetCanvas: TCanvas;
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
@@ -68,7 +89,9 @@ type
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure ReadAssociated(Reader: TReader);
+    procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
   protected
+    function CreateDataConnector: TJvCheckBoxDataConnector; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -94,12 +117,13 @@ type
     {$ENDIF VCL}
   {$IFDEF VisualCLX}
     procedure StateChanged(State: TToggleState); override;
-  public
   {$ENDIF VisualCLX}
-    procedure Toggle; override;
+    procedure KeyPress(var Key: Char); override;
+    procedure DoExit; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Toggle; override;
     property Canvas: TCanvas read GetCanvas;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -119,6 +143,8 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+
+    property DataConnector: TJvCheckBoxDataConnector read FDataConnector write SetDataConnector;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -137,9 +163,76 @@ uses
   SysUtils,
   JvJCLUtils, JvJVCLUtils;
 
+//=== { TJvCheckBoxDataConnector } ===========================================
+
+constructor TJvCheckBoxDataConnector.Create(ACheckBox: TJvCheckBox);
+begin
+  inherited Create;
+  FCheckBox := ACheckBox;
+  FValueChecked := '1';
+  FValueUnchecked := '0';
+end;
+
+procedure TJvCheckBoxDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvCheckBoxDataConnector then
+  begin
+    FValueChecked := TJvCheckBoxDataConnector(Source).ValueChecked;
+    FValueUnchecked := TJvCheckBoxDataConnector(Source).ValueUnchecked;
+    Reset;
+  end;
+end;
+
+procedure TJvCheckBoxDataConnector.RecordChanged;
+begin
+  if Field.IsValid and (ValueChecked <> '') and (ValueUnchecked <> '') then
+  begin
+    FCheckBox.ReadOnly := not Field.CanModify;
+    FCheckBox.Checked := AnsiCompareText(Field.AsString, ValueUnchecked) <> 0;
+  end
+  else
+  begin
+    FCheckBox.State := cbGrayed;
+    FCheckBox.ReadOnly := True;
+  end;
+end;
+
+procedure TJvCheckBoxDataConnector.UpdateData;
+begin
+  if Field.CanModify and Field.IsValid and (ValueChecked <> '') and (ValueUnchecked <> '') then
+  begin
+    if FCheckBox.Checked then
+      Field.AsString := ValueChecked
+    else
+      Field.AsString := ValueUnchecked;
+  end;
+end;
+
+procedure TJvCheckBoxDataConnector.SetValueChecked(const Value: string);
+begin
+  if Value <> FValueChecked then
+  begin
+    FValueChecked := Value;
+    Reset;
+  end;
+end;
+
+procedure TJvCheckBoxDataConnector.SetValueUnchecked(const Value: string);
+begin
+  if Value <> FValueUnchecked then
+  begin
+    FValueUnchecked := Value;
+    Reset;
+  end;
+end;
+
+//=== { TJvCheckBox } ========================================================
+
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDataConnector := CreateDataConnector;
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
   FHotTrack := False;
@@ -161,6 +254,7 @@ begin
   FHotTrackFont.Free;
   FFontSave.Free;
   FreeAndNil(FLinkedControls);
+  FDataConnector.Free;
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
@@ -171,6 +265,12 @@ begin
   inherited Loaded;
   CheckLinkedControls;
   CalcAutoSize;
+  DataConnector.Reset;
+end;
+
+function TJvCheckBox.CreateDataConnector: TJvCheckBoxDataConnector;
+begin
+  Result := TJvCheckBoxDataConnector.Create(Self);
 end;
 
 {$IFDEF VCL}
@@ -196,6 +296,28 @@ begin
   {$IFDEF VisualCLX}
   RecreateWidget;
   {$ENDIF VisualCLX}
+end;
+
+procedure TJvCheckBox.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  case Key of
+    #8, ' ':
+      DataConnector.Modify;
+    #27:
+      DataConnector.Reset;
+  end;
+end;
+
+procedure TJvCheckBox.DoExit;
+begin
+  try
+    DataConnector.UpdateRecord;
+  except
+    SetFocus;
+    raise;
+  end;
+  inherited DoExit;
 end;
 
 {$IFDEF VisualCLX}
@@ -412,6 +534,12 @@ begin
     LinkedControls.Add.Control := TControl(C);
 end;
 
+procedure TJvCheckBox.SetDataConnector(const Value: TJvCheckBoxDataConnector);
+begin
+  if Value <> FDataConnector then
+    FDataConnector.Assign(Value);
+end;
+
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
@@ -460,6 +588,8 @@ begin
   begin
     inherited;
     CheckLinkedControls;
+    if not (csLoading in ComponentState) then
+      DataConnector.Modify;
   end;
 end;
 

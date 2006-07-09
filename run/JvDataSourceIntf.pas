@@ -52,6 +52,10 @@ type
     ftVariant, ftInterface, ftIDispatch, ftGuid, ftTimeStamp, ftFMTBcd, // 32..37
     ftFixedWideChar, ftWideMemo, ftOraTimeStamp, ftOraInterval); // 38..41
 
+  TJvDBLocateOption = (loCaseInsensitive, loPartialKey);
+  TJvDBLocateOptions = set of TJvDBLocateOption;
+
+
   {$IFDEF COMPILER10_UP}
   TDataFieldString = WideString;
   {$ELSE}
@@ -59,7 +63,7 @@ type
   {$ENDIF COMPILER10_UP}
   TJvEditMask = string;
 
-  TDataConnectorMsg = record
+  TJvDataConnectorMsg = record
     Msg: Integer;
   end;
 
@@ -98,7 +102,8 @@ type
     function FieldByName(const FieldName: TDataFieldString): TObject;
     function FindField(const FieldName: TDataFieldString): TObject;
     procedure GetFieldNames(List: TStrings);
-    function RecNo: Integer;
+    function GetRecNo: Integer;
+    procedure SetRecNo(Value: Integer);
     procedure Append;
     procedure Insert;
     procedure Post;
@@ -106,7 +111,14 @@ type
     procedure Delete;
     procedure Open;
     procedure Close;
+    procedure MoveBy(Distance: Integer);
+    function Locate(const KeyFields: string; const KeyValues: Variant;
+      Options: TJvDBLocateOptions): Boolean;
 
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
+    property RecNo: Integer read GetRecNo write SetRecNo;
     property DataSet: TObject read GetDataSet;
 
     { Fields }
@@ -206,7 +218,7 @@ type
     function GetIsValid: Boolean;
     function GetCanModify: Boolean;
   protected
-    procedure UpdateField;
+    procedure UpdateField(const ADataSource: IJvDataSource);
     property DataSource: IJvDataSource read FDataSource write SetDataSource;
   public
     procedure Clear;
@@ -243,17 +255,18 @@ type
     FLockRecordChange: Integer;
     FModified: Boolean;
     FActive: Boolean;
+    FMaster: TJvDataConnector;
 
-    procedure DcRecordChanged(var Msg: TDataConnectorMsg); message DC_RECORDCHANGED;
-    procedure DcActiveChanged(var Msg: TDataConnectorMsg); message DC_ACTIVECHANGED;
-    procedure DcUpdateData(var Msg: TDataConnectorMsg); message DC_UPDATEDATA;
-    procedure DcLayoutChanged(var Msg: TDataConnectorMsg); message DC_LAYOUTCHANGED;
-
-    procedure InvokeRecordChanged;
+    procedure DcRecordChanged(var Msg: TJvDataConnectorMsg); message DC_RECORDCHANGED;
+    procedure DcActiveChanged(var Msg: TJvDataConnectorMsg); message DC_ACTIVECHANGED;
+    procedure DcUpdateData(var Msg: TJvDataConnectorMsg); message DC_UPDATEDATA;
+    procedure DcLayoutChanged(var Msg: TJvDataConnectorMsg); message DC_LAYOUTCHANGED;
 
     procedure SetDataSource(const Value: IJvDataSource);
     function GetDataSetConnected: Boolean;
   protected
+    property Master: TJvDataConnector read FMaster write FMaster;
+
       { DataSourceConnected is invoked when a new DataSource is assigned. }
     procedure DataSourceConnected; virtual;
       { DataSourceDisconnected is invoked when the DataSource is destroyed or
@@ -265,9 +278,12 @@ type
     procedure UpdateData; virtual;
     procedure LayoutChanged; virtual;
 
+    procedure Notify(Msg: Integer); virtual;
+
     function CanEdit: Boolean; virtual;
   public
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure Edit;
     procedure Reset;
     procedure UpdateRecord;
@@ -285,6 +301,7 @@ type
     procedure SetDataField(const Value: TDataFieldString);
     function GetDataField: TDataFieldString;
   protected
+    procedure UpdateFields; virtual;
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
     procedure DataSourceConnected; override;
@@ -293,9 +310,48 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     property Field: TJvDataConnectorField read FField;
   published
     property DataField: TDataFieldString read GetDataField write SetDataField;
+  end;
+
+  TJvKeyFieldDataConnector = class(TJvFieldDataConnector)
+  private
+    FKey: TJvDataConnectorField;
+    function GetKeyField: TDataFieldString;
+    procedure SetKeyField(const Value: TDataFieldString);
+  protected
+    procedure UpdateFields; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+
+    property Key: TJvDataConnectorField read FKey;
+  published
+    property KeyField: TDataFieldString read GetKeyField write SetKeyField;
+  end;
+
+  TJvListDataConnector = class(TJvKeyFieldDataConnector)
+  private
+    FList: TJvKeyFieldDataConnector;
+    function GetListField: TDataFieldString;
+    function GetListSource: IJvDataSource;
+    procedure SetListField(const Value: TDataFieldString);
+    procedure SetListSource(const Value: IJvDataSource);
+    function GetListKeyField: TDataFieldString;
+    procedure SetListKeyField(const Value: TDataFieldString);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+
+    property List: TJvKeyFieldDataConnector read FList;
+  published
+    property ListField: TDataFieldString read GetListField write SetListField;
+    property ListSource: IJvDataSource read GetListSource write SetListSource;
+    property ListKeyField: TDataFieldString read GetListKeyField write SetListKeyField;
   end;
 
 implementation
@@ -304,7 +360,7 @@ implementation
 
 procedure TJvDataConnector.ActiveChanged;
 begin
-  InvokeRecordChanged;
+  Notify(DC_RECORDCHANGED);
 end;
 
 procedure TJvDataConnector.RecordChanged;
@@ -317,7 +373,7 @@ begin
   begin
     Active := False;
     try
-      RecordChanged;
+      Notify(DC_RECORDCHANGED);
     finally
       Active := True;
     end;
@@ -331,16 +387,32 @@ end;
 
 procedure TJvDataConnector.LayoutChanged;
 begin
-  InvokeRecordChanged;
+  Notify(DC_RECORDCHANGED);
 end;
 
 procedure TJvDataConnector.Modify;
 begin
-  if Active then
+  if Active and (FLockRecordChange = 0) then
   begin
     Edit;
     FModified := True;
   end;
+end;
+
+procedure TJvDataConnector.Notify(Msg: Integer);
+var
+  M: TJvDataConnectorMsg;
+begin
+  M.Msg := Msg;
+  Dispatch(M);
+end;
+
+procedure TJvDataConnector.Assign(Source: TPersistent);
+begin
+  if Source is TJvDataConnector then
+    DataSource := TJvDataConnector(Source).DataSource
+  else
+    inherited Assign(Source);
 end;
 
 function TJvDataConnector.CanEdit: Boolean;
@@ -352,49 +424,70 @@ procedure TJvDataConnector.DataSourceConnected;
 begin
   FModified := False;
   FActive := True;
-  ActiveChanged;
+  Notify(DC_ACTIVECHANGED);
 end;
 
 procedure TJvDataConnector.DataSourceDisconnected;
 begin
-  ActiveChanged;
+  Notify(DC_ACTIVECHANGED);
   FActive := False;
   FModified := False;
 end;
 
-procedure TJvDataConnector.DcActiveChanged(var Msg: TDataConnectorMsg);
+procedure TJvDataConnector.DcActiveChanged(var Msg: TJvDataConnectorMsg);
 begin
   if FLockRecordChange = 0 then
   begin
     ActiveChanged;
     FModified := False;
   end;
+  if Assigned(FMaster) then
+    FMaster.Dispatch(Msg);
 end;
 
-procedure TJvDataConnector.DcLayoutChanged(var Msg: TDataConnectorMsg);
+procedure TJvDataConnector.DcLayoutChanged(var Msg: TJvDataConnectorMsg);
 begin
   if FLockRecordChange = 0 then
   begin
     LayoutChanged;
     FModified := False;
   end;
+  if Assigned(FMaster) then
+    FMaster.Dispatch(Msg);
 end;
 
-procedure TJvDataConnector.DcRecordChanged(var Msg: TDataConnectorMsg);
+procedure TJvDataConnector.DcRecordChanged(var Msg: TJvDataConnectorMsg);
 begin
-  InvokeRecordChanged;
-  FModified := False;
-end;
-
-procedure TJvDataConnector.DcUpdateData(var Msg: TDataConnectorMsg);
-begin
-  Inc(FLockRecordChange);
-  try
-    UpdateData;
-  finally
-    Dec(FLockRecordChange);
+  if FLockRecordChange = 0 then
+  begin
+    Inc(FLockRecordChange);
+    try
+      RecordChanged;
+    finally
+      Dec(FLockRecordChange);
+    end;
+    FModified := False;
   end;
-  FModified := False;
+
+  if Assigned(FMaster) then
+    FMaster.Dispatch(Msg);
+end;
+
+procedure TJvDataConnector.DcUpdateData(var Msg: TJvDataConnectorMsg);
+begin
+  if Active then
+  begin
+    Inc(FLockRecordChange);
+    try
+      UpdateData;
+    finally
+      Dec(FLockRecordChange);
+    end;
+    FModified := False;
+  end;
+
+  if Assigned(FMaster) then
+    FMaster.Dispatch(Msg);
 end;
 
 procedure TJvDataConnector.Edit;
@@ -413,20 +506,6 @@ end;
 function TJvDataConnector.GetDataSetConnected: Boolean;
 begin
   Result := Assigned(DataSource) and (DataSource.DataSet <> nil);
-end;
-
-procedure TJvDataConnector.InvokeRecordChanged;
-begin
-  if FLockRecordChange = 0 then
-  begin
-    Inc(FLockRecordChange);
-    try
-      RecordChanged;
-    finally
-      Dec(FLockRecordChange);
-    end;
-    FModified := False;
-  end;
 end;
 
 procedure TJvDataConnector.SetDataSource(const Value: IJvDataSource);
@@ -461,7 +540,7 @@ end;
 
 procedure TJvDataConnector.UpdateRecord;
 begin
-  if DataSetConnected and Modified then
+  if DataSetConnected and Modified and Active then
   begin
     Inc(FLockRecordChange);
     try
@@ -487,8 +566,15 @@ end;
 
 procedure TJvFieldDataConnector.ActiveChanged;
 begin
-  FField.UpdateField;
+  UpdateFields;
   inherited ActiveChanged;
+end;
+
+procedure TJvFieldDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvFieldDataConnector then
+    DataField := TJvFieldDataConnector(Source).DataField;
 end;
 
 function TJvFieldDataConnector.CanEdit: Boolean;
@@ -504,13 +590,13 @@ end;
 
 procedure TJvFieldDataConnector.DataSourceConnected;
 begin
-  FField.DataSource := DataSource;
+  UpdateFields;
   inherited DataSourceConnected;
 end;
 
 procedure TJvFieldDataConnector.DataSourceDisconnected;
 begin
-  FField.DataSource := nil;
+  UpdateFields;
   inherited DataSourceDisconnected;
 end;
 
@@ -527,14 +613,19 @@ end;
 
 procedure TJvFieldDataConnector.LayoutChanged;
 begin
-  FField.UpdateField;
+  UpdateFields;
   inherited LayoutChanged;
 end;
 
 procedure TJvFieldDataConnector.SetDataField(const Value: TDataFieldString);
 begin
   FField.FieldName := Value;
-  InvokeRecordChanged;
+  Notify(DC_RECORDCHANGED);
+end;
+
+procedure TJvFieldDataConnector.UpdateFields;
+begin
+  FField.UpdateField(DataSource);
 end;
 
 { TJvDataConnectorField }
@@ -542,10 +633,7 @@ end;
 procedure TJvDataConnectorField.SetDataSource(const Value: IJvDataSource);
 begin
   if Value <> FDataSource then
-  begin
-    FDataSource := Value;
-    UpdateField;
-  end;
+    UpdateField(Value);
 end;
 
 procedure TJvDataConnectorField.SetFieldName(const Value: TDataFieldString);
@@ -553,12 +641,13 @@ begin
   if Value <> FFieldName then
   begin
     FFieldName := Value;
-    UpdateField;
+    UpdateField(FDataSource);
   end;
 end;
 
-procedure TJvDataConnectorField.UpdateField;
+procedure TJvDataConnectorField.UpdateField(const ADataSource: IJvDataSource);
 begin
+  FDataSource := ADataSource;
   if Assigned(DataSource) and (DataSource.DataSet <> nil) then
     FField := DataSource.FindField(FFieldName)
   else
@@ -643,7 +732,7 @@ end;
 function TJvDataConnectorField.GetIsValid: Boolean;
 begin
   if (DataSource <> nil) and (Field = nil) then
-    UpdateField;
+    UpdateField(DataSource);
   Result := (DataSource <> nil) and (Field <> nil);
 end;
 
@@ -720,6 +809,96 @@ end;
 procedure TJvDataConnectorField.SetValue(const Value: Variant);
 begin
   DataSource.FieldValue[Field] := Value;
+end;
+
+{ TJvKeyFieldDataConnector }
+
+constructor TJvKeyFieldDataConnector.Create;
+begin
+  inherited Create;
+  FKey := TJvDataConnectorField.Create;
+end;
+
+destructor TJvKeyFieldDataConnector.Destroy;
+begin
+  FKey.Free;
+  inherited Destroy;
+end;
+
+procedure TJvKeyFieldDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvKeyFieldDataConnector then
+    KeyField := TJvKeyFieldDataConnector(Source).KeyField;
+end;
+
+function TJvKeyFieldDataConnector.GetKeyField: TDataFieldString;
+begin
+  Result := FKey.FieldName;
+end;
+
+procedure TJvKeyFieldDataConnector.SetKeyField(const Value: TDataFieldString);
+begin
+  FKey.FieldName := Value;
+end;
+
+
+procedure TJvKeyFieldDataConnector.UpdateFields;
+begin
+  inherited UpdateFields;
+  FKey.UpdateField(DataSource);
+end;
+
+{ TJvListDataConnector }
+
+procedure TJvListDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvListDataConnector then
+    FList.Assign(Source);
+end;
+
+constructor TJvListDataConnector.Create;
+begin
+  inherited Create;
+  FList := TJvKeyFieldDataConnector.Create;
+  FList.Master := Self;
+end;
+
+destructor TJvListDataConnector.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TJvListDataConnector.GetListField: TDataFieldString;
+begin
+  Result := FList.DataField;
+end;
+
+function TJvListDataConnector.GetListKeyField: TDataFieldString;
+begin
+  Result := FList.KeyField;
+end;
+
+function TJvListDataConnector.GetListSource: IJvDataSource;
+begin
+  Result := FList.DataSource;
+end;
+
+procedure TJvListDataConnector.SetListField(const Value: TDataFieldString);
+begin
+  FList.DataField := Value;
+end;
+
+procedure TJvListDataConnector.SetListKeyField(const Value: TDataFieldString);
+begin
+  FList.KeyField := Value;
+end;
+
+procedure TJvListDataConnector.SetListSource(const Value: IJvDataSource);
+begin
+  FList.DataSource := Value;
 end;
 
 end.

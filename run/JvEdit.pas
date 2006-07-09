@@ -133,6 +133,7 @@ type
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     function GetThemedFontHandle: HFONT;
     {$ENDIF JVCLThemesEnabled}
+    procedure SetDataConnector(const Value: TJvFieldDataConnector);
   protected
     function CreateDataConnector: TJvFieldDataConnector; virtual;
 
@@ -218,7 +219,7 @@ type
     property OnParentColorChange;
     property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
 
-    property DataConnector: TJvFieldDataConnector read FDataConnector;
+    property DataConnector: TJvFieldDataConnector read FDataConnector write SetDataConnector;
   end;
 
   TJvEdit = class(TJvCustomEdit)
@@ -834,6 +835,7 @@ begin
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
+  DataConnector.Reset;
 end;
 
 {$IFDEF VCL}
@@ -1162,6 +1164,11 @@ begin
   inherited;
 end;
 {$ENDIF JVCLThemesEnabled}
+
+procedure TJvCustomEdit.SetDataConnector(const Value: TJvFieldDataConnector);
+begin
+  FDataConnector.Assign(Value);
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization
