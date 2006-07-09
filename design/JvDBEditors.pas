@@ -30,12 +30,14 @@ unit JvDBEditors;
 interface
 
 uses
+  SysUtils,
   Classes,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, VCLEditors;
+  DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
-  DsgnIntf;
+  DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  JvDataSourceIntf;
 
 type
   {**************** from Delphi2\Lib\DBReg.pas }
@@ -104,6 +106,9 @@ var
   Instance: TComponent;
   PropInfo: PPropInfo;
   DataSource: TDataSource;
+  {$IFDEF COMPILER6_UP}
+  DataSourceIntf: IJvDataSource;
+  {$ENDIF COMPILER6_UP}
 begin
   Instance := TComponent(GetComponent(0));
   PropInfo := TypInfo.GetPropInfo(Instance.ClassInfo, GetDataSourcePropName);
@@ -120,6 +125,25 @@ begin
       DataSource.DataSet.GetFieldNames(List);
       {$ENDIF COMPILER10_UP}
     end;
+  end
+  else
+  if (PropInfo <> nil) and (PropInfo^.PropType^.Kind = tkInterface) then
+  begin
+    {$IFDEF COMPILER6_UP}
+    if Supports(GetInterfaceProp(Instance, PropInfo), IJvDataSource, DataSourceIntf) then
+    begin
+      if DataSourceIntf.DataSet <> nil then
+      begin
+        {$IFDEF COMPILER10_UP}
+        {$WARN SYMBOL_DEPRECATED OFF}
+        DataSourceIntf.GetFieldNames(List);
+        {$WARN SYMBOL_DEPRECATED ON}
+        {$ELSE}
+        DataSourceIntf.GetFieldNames(List);
+        {$ENDIF COMPILER10_UP}
+      end;
+    end;
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
