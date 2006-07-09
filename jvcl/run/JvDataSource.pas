@@ -38,6 +38,8 @@ type
   private
     FDataLink: TDataLink;
     FDataConnectors: TList;
+    FUpdateLock: Integer;
+    FUpdateLookBookmark: TObject;
     function GetDataConnector(Index: Integer): TJvDataConnector;
     function GetDataConnectorCount: Integer;
   protected
@@ -77,7 +79,8 @@ type
     function FieldByName(const FieldName: TDataFieldString): TObject;
     function FindField(const FieldName: TDataFieldString): TObject;
     procedure GetFieldNames(List: TStrings);
-    function RecNo: Integer;
+    function GetRecNo: Integer;
+    procedure SetRecNo(Value: Integer);
     procedure Append;
     procedure Insert;
     procedure Post;
@@ -85,6 +88,14 @@ type
     procedure Delete;
     procedure Open;
     procedure Close;
+    procedure MoveBy(Distance: Integer);
+    function Locate(const KeyFields: string; const KeyValues: Variant;
+      Options: TJvDBLocateOptions): Boolean;
+
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    
+    property RecNo: Integer read GetRecNo write SetRecNo;
 
     { Fields }
     function GetFieldCount: Integer;
@@ -234,7 +245,7 @@ end;
 
 procedure TJvDataSource.Notify(Msg: Integer);
 var
-  M: TDataConnectorMsg;
+  M: TJvDataConnectorMsg;
   I: Integer;
 begin
   M.Msg := Msg;
@@ -350,9 +361,14 @@ begin
   {$ENDIF COMPILER10_UP}
 end;
 
-function TJvDataSource.RecNo: Integer;
+function TJvDataSource.GetRecNo: Integer;
 begin
   Result := DataSet.RecNo;
+end;
+
+procedure TJvDataSource.SetRecNo(Value: Integer);
+begin
+  DataSet.RecNo := Value;
 end;
 
 procedure TJvDataSource.Append;
@@ -388,6 +404,44 @@ end;
 procedure TJvDataSource.Close;
 begin
   DataSet.Close;
+end;
+
+procedure TJvDataSource.MoveBy(Distance: Integer);
+begin
+  DataSet.MoveBy(Distance)
+end;
+
+function TJvDataSource.Locate(const KeyFields: string; const KeyValues: Variant;
+  Options: TJvDBLocateOptions): Boolean;
+begin
+  Result := DataSet.Locate(KeyFields, KeyValues, TLocateOptions(Options));
+end;
+
+procedure TJvDataSource.BeginUpdate;
+begin
+  if FUpdateLock = 0 then
+  begin
+    DataSet.DisableControls;
+    FUpdateLookBookmark := DataSet.GetBookmark;
+  end;
+  Inc(FUpdateLock);
+end;
+
+procedure TJvDataSource.EndUpdate;
+begin
+  Dec(FUpdateLock);
+  if FUpdateLock = 0 then
+  begin
+    try
+      try
+        DataSet.GotoBookmark(FUpdateLookBookmark);
+      except
+      end;
+      DataSet.FreeBookmark(FUpdateLookBookmark);
+    finally
+      DataSet.EnableControls;
+    end;
+  end;
 end;
 
 function TJvDataSource.GetFieldCount: Integer;

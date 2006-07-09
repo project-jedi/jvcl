@@ -62,6 +62,7 @@ type
     procedure UpdateData; override;
   public
     constructor Create(AEdit: TJvCustomValidateEdit);
+    procedure Assign(Source: TPersistent); override;
   published
     property NullValue: Variant read FNullValue write SetNullValue;
   end;
@@ -349,6 +350,15 @@ begin
 end;
 
 //=== { TJvValidateEditDataConnector } =======================================
+
+procedure TJvValidateEditDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvFieldDataConnector then
+  begin
+    NullValue := TJvValidateEditDataConnector(Source).NullValue;
+  end;
+end;
 
 constructor TJvValidateEditDataConnector.Create(AEdit: TJvCustomValidateEdit);
 begin

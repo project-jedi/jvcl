@@ -75,6 +75,51 @@ type
     procedure Delete(Index: Integer);
   end;
 
+const
+  MaxBucketItems = $1000;
+
+type
+  { The hash tables cannot be used with Key='' }
+  PBucketListItem = ^TBucketListItem;
+  TBucketListItem = record
+    Key: Pointer;
+    Value: Pointer;
+    Next: PBucketListItem;
+  end;
+
+  TBucketProc = procedure(AInfo, AItem, AData: Pointer; out AContinue: Boolean);
+
+  TCustomBucketList = class(TObject)
+  private
+    FItems: array[0..MaxBucketItems - 1] of PBucketListItem;
+    FCount: Integer;
+    function GetData(AItem: Pointer): Pointer;
+    procedure SetData(AItem: Pointer; const Value: Pointer);
+  protected
+    function BucketFor(AItem: Pointer): Integer; {virtual;}
+  public
+    destructor Destroy; override;
+    procedure Clear; virtual;
+
+    function Add(AItem, AData: Pointer): Pointer;
+    function Remove(AItem: Pointer): Pointer;
+
+    function ForEach(AProc: TBucketProc; AInfo: Pointer = nil): Boolean;
+    procedure Assign(AList: TCustomBucketList);
+
+    function Exists(AItem: Pointer): Boolean;
+    function Find(AItem: Pointer; out AData: Pointer): Boolean;
+    property Data[AItem: Pointer]: Pointer read GetData write SetData; default;
+  end;
+
+  TBucketListSizes = (bl2, bl4, bl8, bl16, bl32, bl64, bl128, bl256);
+
+  TBucketList = class(TCustomBucketList)
+  public
+    constructor Create(ABuckets: TBucketListSizes = bl16);
+  end;
+
+
 function GetRelocAddress(ProcAddress: Pointer): Pointer;
 function InstallProcHook(ProcAddress, HookProc, OrgCallProc: Pointer): Boolean;
 function UninstallProcHook(OrgCallProc: Pointer): Boolean;
@@ -425,6 +470,196 @@ begin
   inherited SetItemName(Item);
   Notify(TCollectionItem(Item), cnAdded);
 end;
+
+
+{ TCustomBucketList }
+
+destructor TCustomBucketList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TCustomBucketList.Add(AItem, AData: Pointer): Pointer;
+var
+  N: PBucketListItem;
+  Hash: Integer;
+begin
+  New(N);
+  Hash := BucketFor(AItem);
+  N.Next := FItems[Hash];
+  FItems[Hash] := N;
+  Inc(FCount);
+  N.Key := AItem;
+  N.Value := AData;
+  Result := AData;
+end;
+
+procedure AssignProc(AInfo: Pointer; AItem, AData: Pointer; out AContinue: Boolean);
+begin
+  AContinue := True;
+  TCustomBucketList(AInfo).Add(AItem, AData);
+end;
+
+procedure TCustomBucketList.Assign(AList: TCustomBucketList);
+begin
+  Clear;
+  ForEach(AssignProc, Self);
+end;
+
+procedure TCustomBucketList.Clear;
+var
+  P, N: PBucketListItem;
+  i: Integer;
+begin
+  if FCount > 0 then
+  begin
+    for i := 0 to High(FItems) do
+    begin
+      P := FItems[i];
+      while P <> nil do
+      begin
+        N := P.Next;
+        Dispose(P);
+        P := N;
+        Dec(FCount);
+      end;
+      FItems[i] := nil;
+      if FCount = 0 then
+        Break;
+    end;
+  end;
+  FCount := 0;
+end;
+
+function TCustomBucketList.Exists(AItem: Pointer): Boolean;
+var
+  Data: Pointer;
+begin
+  Result := Find(AItem, Data);
+end;
+
+function TCustomBucketList.Find(AItem: Pointer; out AData: Pointer): Boolean;
+var
+  N: PBucketListItem;
+begin
+  AData := nil;
+  N := FItems[BucketFor(AItem)];
+  while N <> nil do
+  begin
+    if N.Key = AItem then
+    begin
+      AData := N.Value;
+      Result := True;
+      Exit;
+    end;
+    N := N.Next;
+  end;
+  Result := False;
+end;
+
+function TCustomBucketList.ForEach(AProc: TBucketProc; AInfo: Pointer): Boolean;
+var
+  P: PBucketListItem;
+  i: Integer;
+begin
+  Result := False;
+  if FCount > 0 then
+  begin
+    for i := 0 to High(FItems) do
+    begin
+      P := FItems[i];
+      while P <> nil do
+      begin
+        AProc(AInfo, P.Key, P.Value, Result);
+        if not Result then
+          Exit;
+        P := P.Next;
+      end;
+    end;
+  end;
+end;
+
+function TCustomBucketList.GetData(AItem: Pointer): Pointer;
+begin
+  if not Find(AItem, Result) then
+  begin
+    SetLastError(ERROR_INVALID_PARAMETER);
+    RaiseLastWin32Error;
+  end;
+end;
+
+function TCustomBucketList.Remove(AItem: Pointer): Pointer;
+var
+  Index: Integer;
+  P, N: PBucketListItem;
+begin
+  Index := BucketFor(AItem);
+  N := FItems[Index];
+  if N <> nil then
+  begin
+    if N.Key = AItem then
+    begin
+      Result := N.Value;
+      P := N.Next;
+      Dispose(N);
+      FItems[Index] := P;
+      Dec(FCount);
+      Exit;
+    end
+    else
+    begin
+      P := N;
+      N := N.Next;
+      while N <> nil do
+      begin
+        if N.Key = AItem then
+        begin
+          Result := N.Value;
+          P.Next := N.Next;
+          Dispose(N);
+          Dec(FCount);
+          Exit;
+        end;
+        P := N;
+        N := N.Next;
+      end;
+    end;
+  end;
+  Result := nil;
+end;
+
+procedure TCustomBucketList.SetData(AItem: Pointer; const Value: Pointer);
+var
+  N: PBucketListItem;
+begin
+  N := FItems[BucketFor(AItem)];
+  while N <> nil do
+  begin
+    if N.Key = AItem then
+    begin
+      N.Value := Value;
+      Exit;
+    end;
+    N := N.Next;
+  end;
+  SetLastError(ERROR_INVALID_PARAMETER);
+  RaiseLastWin32Error;
+end;
+
+function TCustomBucketList.BucketFor(AItem: Pointer): Integer;
+begin
+  Result := Integer(AItem) mod MaxBucketItems;
+end;
+
+{ TBucketList }
+
+constructor TBucketList.Create(ABuckets: TBucketListSizes);
+begin
+  inherited Create;
+end;
+
+{------------------------------------------------------------------------------}
 
 function ReadProtectedMemory(Address: Pointer; var Buffer; Count: Cardinal): Boolean;
 var
