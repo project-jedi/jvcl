@@ -54,12 +54,13 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
-  Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs, 
+  Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$IFDEF VisualCLX}
   Qt, QComboEdits, JvQExComboEdits, QWindows,
   {$ENDIF VisualCLX}
   JvVCL5Utils,
-  JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
+  JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton,
+  JvDataSourceIntf;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -218,6 +219,17 @@ type
   TJvAutoCompleteFileOptions = set of TJvAutoCompleteFileOption;
   {$ENDIF VCL}
 
+  TJvCustomComboEditDataConnector = class(TJvFieldDataConnector)
+  private
+    FEdit: TJvCustomComboEdit;
+  protected
+    procedure RecordChanged; override;
+    procedure UpdateData; override;
+    property Control: TJvCustomComboEdit read FEdit;  
+  public
+    constructor Create(AEdit: TJvCustomComboEdit);
+  end;
+
   {$IFDEF VCL}
   TJvCustomComboEditBase = TJvExCustomMaskEdit;
   {$ENDIF VCL}
@@ -250,6 +262,7 @@ type
     { We hide the button by setting its width to 0, thus we have to store the
       width the button should have when shown again in FSavedButtonWidth: }
     FSavedButtonWidth: Integer;
+    FDataConnector: TJvCustomComboEditDataConnector;
     {$IFDEF VCL}
     FAlignment: TAlignment;
     FAutoCompleteIntf: IAutoComplete;
@@ -294,6 +307,7 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(const Value: TNumGlyphs);
     procedure SetShowButton(const Value: Boolean);
+    procedure SetDataConnector(const Value: TJvCustomComboEditDataConnector);
     {$IFDEF COMPILER6_UP}
     procedure UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
     {$ENDIF COMPILER6_UP}
@@ -319,6 +333,7 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
+    function CreateDataConnector: TJvCustomComboEditDataConnector; virtual;
     {$IFDEF COMPILER6_UP}
     {$IFDEF VCL}
     procedure CustomAlignPosition(Control: TControl; var NewLeft, NewTop, NewWidth,
@@ -341,6 +356,7 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
+    procedure DoExit; override;
     procedure DoCtl3DChanged; virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     { Repositions the child controls; checkbox }
@@ -419,7 +435,7 @@ type
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
     {$IFDEF VCL}
     property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
-    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True; 
+    property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
     {$ENDIF VCL}
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
@@ -437,6 +453,8 @@ type
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
     property OnPopupShown: TNotifyEvent read FOnPopupShown write FOnPopupShown;
     property OnPopupHidden: TNotifyEvent read FOnPopupHidden write FOnPopupHidden;
+
+    property DataConnector: TJvCustomComboEditDataConnector read FDataConnector write SetDataConnector;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -541,6 +559,8 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+
+    property DataConnector;
   end;
 
   { TJvFileDirEdit }
@@ -877,6 +897,21 @@ type
     var NewDate: TDateTime; var Accept: Boolean) of object;
   TPreferredDateFormat = (pdLocale, pdLocaleOnly, pdCustom, pdCustomOnly);
 
+  TJvCustomDateEditDataConnector = class(TJvCustomComboEditDataConnector)
+  private
+    FDefaultDate: TDateTime;
+    FDefaultDateIsNow: Boolean;
+    procedure SetDefaultDateIsNow(const Value: Boolean);
+  protected
+    procedure RecordChanged; override;
+    procedure UpdateData; override;
+  public
+    procedure Assign(Source: TPersistent); override;
+  published
+    property DefaultDate: TDateTime read FDefaultDate write FDefaultDate;
+    property DefaultDateIsNow: Boolean read FDefaultDateIsNow write SetDefaultDateIsNow; 
+  end;
+
   TJvCustomDateEdit = class(TJvCustomComboEdit)
   private
     FMinDate: TDateTime; // Polaris
@@ -961,6 +996,7 @@ type
     procedure SetParent(AParent: TWinControl); override;
     function GetDefaultDateFormat: string; virtual;
     function GetDefaultDateFormatPreferred: TPreferredDateFormat; virtual;
+    function CreateDataConnector: TJvCustomComboEditDataConnector; override;
 
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
     property CalendarHints: TStrings read GetCalendarHints write SetCalendarHints;
@@ -1106,6 +1142,8 @@ type
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
     property OnKeyDown; // RDB
+
+    property DataConnector;
   end;
 
   EComboEditError = class(EJVCLException);
@@ -2057,11 +2095,40 @@ end;
 
 {$ENDIF VCL}
 
+//=== { TJvCustomComboEditDataConnector } ====================================
+
+constructor TJvCustomComboEditDataConnector.Create(AEdit: TJvCustomComboEdit);
+begin
+  inherited Create;
+  FEdit := AEdit;
+end;
+
+procedure TJvCustomComboEditDataConnector.RecordChanged;
+begin
+  if Field.IsValid then
+  begin
+    FEdit.ReadOnly := not Field.CanModify;
+    FEdit.Text := Field.AsString;
+  end
+  else
+  begin
+    FEdit.Text := '';
+    FEdit.ReadOnly := True;
+  end;
+end;
+
+procedure TJvCustomComboEditDataConnector.UpdateData;
+begin
+  Field.AsString := FEdit.Text;
+  FEdit.Text := Field.AsString; // update to stored value
+end;
+
 //=== { TJvCustomComboEdit } =================================================
 
 constructor TJvCustomComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDataConnector := CreateDataConnector;
   ControlStyle := ControlStyle + [csCaptureMouse];
   //  AutoSize := False;   // Polaris
   Height := 21;
@@ -2120,6 +2187,7 @@ begin
   DestroyAutoComplete;
   FAutoCompleteItems.Free;
   {$ENDIF VCL}
+  FDataConnector.Free;
   inherited Destroy;
   {$IFDEF VCL}
   // call after WM_DESTROY
@@ -2254,6 +2322,7 @@ end;
 
 procedure TJvCustomComboEdit.Change;
 begin
+  DataConnector.Modify;
   if not PopupVisible then
     DoChange
   else
@@ -2454,6 +2523,12 @@ begin
   if AutoSelect and not (csLButtonDown in ControlState) then
     SelectAll;
   inherited DoEnter;
+end;
+
+procedure TJvCustomComboEdit.DoExit;
+begin
+  DataConnector.UpdateRecord;
+  inherited DoExit;
 end;
 
 {$IFDEF VisualCLX}
@@ -2789,7 +2864,7 @@ begin
   if Key in [Tab, Lf] then
   begin
     Key := #0;
-    { (rb) Next code has no use because Key = #0? } 
+    { (rb) Next code has no use because Key = #0? }
     if (Form <> nil) {and Form.KeyPreview} then
       {$IFDEF CLR}
       Form.GetType.InvokeMember('KeyPress', BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key]);
@@ -2797,8 +2872,14 @@ begin
       TWinControlAccessProtected(Form).KeyPress(Key);
       {$ENDIF CLR}
   end;
-  //Polaris       
+  //Polaris
   inherited KeyPress(Key);
+
+  if (Key = #27) and DataConnector.Active then
+  begin
+    DataConnector.Reset;
+    Key := #0;
+  end;
 end;
 
 procedure TJvCustomComboEdit.Loaded;
@@ -3380,6 +3461,17 @@ begin
   end;
 end;
 
+procedure TJvCustomComboEdit.SetDataConnector(const Value: TJvCustomComboEditDataConnector);
+begin
+  if Value <> FDataConnector then
+    FDataConnector.Assign(Value);
+end;
+
+function TJvCustomComboEdit.CreateDataConnector: TJvCustomComboEditDataConnector;
+begin
+  Result := TJvCustomComboEditDataConnector.Create(Self);
+end;
+
 procedure TJvCustomComboEdit.SetShowCaret;
 const
   CaretWidth: array [Boolean] of Integer = (1, 2);
@@ -3725,6 +3817,53 @@ begin
     (FClient as TJvCustomComboEdit).ClickKey := Value;
 end;
 
+//=== { TJvCustomDateEditDataConnector } =====================================
+
+procedure TJvCustomDateEditDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvCustomDateEditDataConnector then
+  begin
+    FDefaultDate := TJvCustomDateEditDataConnector(Source).FDefaultDate;
+    FDefaultDateIsNow := TJvCustomDateEditDataConnector(Source).DefaultDateIsNow;
+  end;
+end;
+
+procedure TJvCustomDateEditDataConnector.RecordChanged;
+begin
+  if Field.IsValid then
+  begin
+    Control.ReadOnly := not Field.CanModify;
+    TJvCustomDateEdit(Control).Date := Field.AsDataTime;
+  end
+  else
+    inherited RecordChanged;
+end;
+
+procedure TJvCustomDateEditDataConnector.SetDefaultDateIsNow(
+  const Value: Boolean);
+begin
+  if Value <> FDefaultDateIsNow then
+    FDefaultDateIsNow := Value;
+end;
+
+procedure TJvCustomDateEditDataConnector.UpdateData;
+begin
+  if TJvCustomDateEdit(Control).Date = 0 then
+  begin
+    if DefaultDateIsNow then
+      Field.AsDataTime := Now
+    else
+    if NullDate <> 0 then
+      Field.AsDataTime := DefaultDate
+    else
+      Field.Clear;
+  end
+  else
+    Field.AsDataTime := TJvCustomDateEdit(Control).Date;
+  TJvCustomDateEdit(Control).Date := Field.AsDataTime; // update
+end;
+
 //=== { TJvCustomDateEdit } ==================================================
 
 constructor TJvCustomDateEdit.Create(AOwner: TComponent);
@@ -3785,11 +3924,16 @@ begin
     FPopup.Parent := nil;
   end;
   FPopup.Free;
-  FPopup := nil;    
+  FPopup := nil;
   FCalendarHints.OnChange := nil;
   FCalendarHints.Free;
   FCalendarHints := nil;
   inherited Destroy;
+end;
+
+function TJvCustomDateEdit.CreateDataConnector: TJvCustomComboEditDataConnector;
+begin
+  Result := TJvCustomDateEditDataConnector.Create(Self);
 end;
 
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
