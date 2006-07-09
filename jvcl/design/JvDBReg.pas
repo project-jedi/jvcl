@@ -63,6 +63,7 @@ const
   cDataField = 'DataField';
   cKeyField = 'KeyField';
   cListField = 'ListField';
+  cListKeyField = 'ListKeyField';
   cMasterField = 'MasterField';
   cDetailField = 'DetailField';
   cIconField = 'IconField';
@@ -90,6 +91,11 @@ begin
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
   RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cDataField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cKeyField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cListField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cListKeyField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cLookupField, TJvLookupSourceProperty);
+  
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
