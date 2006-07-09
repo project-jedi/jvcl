@@ -41,7 +41,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Controls, Graphics,
   SysUtils, Classes,
-  JvEdit;
+  JvEdit, JvDataSourceIntf;
 
 type
   TJvValidateEditDisplayFormat = (dfAlphabetic, dfAlphaNumeric, dfBinary,
@@ -49,6 +49,22 @@ type
     dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear);
 
   TJvValidateEditCriticalPointsCheck = (cpNone, cpMinValue, cpMaxValue, cpBoth);
+
+  TJvCustomValidateEdit = class;
+
+  TJvValidateEditDataConnector = class(TJvFieldDataConnector)
+  private
+    FEdit: TJvCustomValidateEdit;
+    FNullValue: Variant;
+    procedure SetNullValue(const Value: Variant);
+  protected
+    procedure RecordChanged; override;
+    procedure UpdateData; override;
+  public
+    constructor Create(AEdit: TJvCustomValidateEdit);
+  published
+    property NullValue: Variant read FNullValue write SetNullValue;
+  end;
 
   TJvValidateEditCriticalPoints = class(TPersistent)
   private
@@ -189,6 +205,8 @@ type
       const Posn: Integer): Boolean;
     procedure Loaded; override;
 
+    function CreateDataConnector: TJvFieldDataConnector; override;
+
     property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
   public
     constructor Create(AOwner: TComponent); override;
@@ -287,6 +305,8 @@ type
     property OnStartDrag;
     property OnValueChanged;
     property OnIsValid;
+
+    property DataConnector;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -304,7 +324,7 @@ implementation
 uses
   Math,
   {$IFDEF HAS_UNIT_VARIANTS}
-  VarUtils,
+  VarUtils, Variants,
   {$ELSE}
   ActiveX,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -326,6 +346,57 @@ begin
     Result := Value <= MinValue
   else
     Result := Value < MinValue;
+end;
+
+//=== { TJvValidateEditDataConnector } =======================================
+
+constructor TJvValidateEditDataConnector.Create(AEdit: TJvCustomValidateEdit);
+begin
+  inherited Create;
+  FEdit := AEdit;
+end;
+
+procedure TJvValidateEditDataConnector.RecordChanged;
+begin
+  if Field.IsValid then
+  begin
+    FEdit.ReadOnly := not Field.CanModify;
+    if not Field.IsNull then
+      FEdit.Value := Field.Value
+    else
+    if NullValue <> Null then
+      FEdit.Value := NullValue
+    else
+      FEdit.Text := '';
+  end
+  else
+  begin
+    FEdit.Text := '';
+    FEdit.ReadOnly := False;
+  end;
+end;
+
+procedure TJvValidateEditDataConnector.SetNullValue(const Value: Variant);
+begin
+  if Value <> FNullValue then
+  begin
+    FNullValue := Value;
+    Reset;
+  end;
+end;
+
+procedure TJvValidateEditDataConnector.UpdateData;
+begin
+  if Field.CanModify and Field.IsValid then
+  begin
+    if FEdit.Value <> Null then
+      Field.Value := FEdit.Value
+    else
+    if NullValue <> Null then
+      Field.Value := FNullValue
+    else
+      RecordChanged;
+  end;
 end;
 
 
@@ -388,7 +459,17 @@ begin
 {  if DisplayFormat = dfCurrency then
     if FDecimalPlaces = 0 then
       FDecimalPlaces := CurrencyDecimals;}
-  EditText := FEditText;
+  DataConnector.Active := False;
+  try
+    EditText := FEditText;
+  finally
+    DataConnector.Active := True;
+  end;
+end;
+
+function TJvCustomValidateEdit.CreateDataConnector: TJvFieldDataConnector;
+begin
+  Result := TJvValidateEditDataConnector.Create(Self);
 end;
 
 procedure TJvCustomValidateEdit.SetHasMaxValue(NewValue: Boolean);

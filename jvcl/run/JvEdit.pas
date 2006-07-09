@@ -56,7 +56,7 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, Menus,
-  JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls;
+  JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls, JvDataSourceIntf;
 
 {$IFDEF VisualCLX}
 const
@@ -64,6 +64,18 @@ const
 {$ENDIF VisualCLX}
 
 type
+  TJvCustomEdit = class;
+
+  TJvCustomEditDataConnector = class(TJvFieldDataConnector)
+  private
+    FEdit: TJvCustomEdit;
+  protected
+    procedure RecordChanged; override;
+    procedure UpdateData; override;
+  public
+    constructor Create(AEdit: TJvCustomEdit);
+  end;
+
   TJvCustomEdit = class(TJvExCustomEdit)
   private
     {$IFDEF VisualCLX}
@@ -94,6 +106,8 @@ type
     FThemedPassword: Boolean;
     FThemedFont: TFont;
     {$ENDIF JVCLThemesEnabled}
+    FDataConnector: TJvFieldDataConnector;
+
     function GetPasswordChar: Char;
     function IsPasswordCharStored: Boolean;
     procedure SetAlignment(Value: TAlignment);
@@ -120,6 +134,8 @@ type
     function GetThemedFontHandle: HFONT;
     {$ENDIF JVCLThemesEnabled}
   protected
+    function CreateDataConnector: TJvFieldDataConnector; virtual;
+
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
@@ -131,6 +147,7 @@ type
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
@@ -153,7 +170,6 @@ type
     procedure InitWidget; override;
     procedure Paint; override;
 //    procedure TextChanged; override;
-//    procedure KeyPress(var Key: Char); override;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     {$ENDIF VisualCLX}
     procedure FocusSet(PrevWnd: THandle); override;
@@ -201,6 +217,8 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property OnParentColorChange;
     property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
+
+    property DataConnector: TJvFieldDataConnector read FDataConnector;
   end;
 
   TJvEdit = class(TJvCustomEdit)
@@ -295,6 +313,8 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+
+    property DataConnector;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -347,11 +367,44 @@ begin
   end;
 end;
 
+//=== { TJvCustomEditDataConnector } =========================================
+
+constructor TJvCustomEditDataConnector.Create(AEdit: TJvCustomEdit);
+begin
+  inherited Create;
+  FEdit := AEdit;
+end;
+
+procedure TJvCustomEditDataConnector.RecordChanged;
+begin
+  if Field.IsValid then
+  begin
+    FEdit.ReadOnly := not Field.CanModify;
+    FEdit.Text := Field.AsString;
+  end
+  else
+  begin
+    FEdit.Text := '';
+    FEdit.ReadOnly := False;
+  end;
+end;
+
+procedure TJvCustomEditDataConnector.UpdateData;
+begin
+  if Field.CanModify then
+  begin
+    Field.AsString := FEdit.Text;
+    FEdit.Text := Field.AsString; // update to stored value
+  end;
+end;
+
 //=== { TJvCustomEdit } ======================================================
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDataConnector := CreateDataConnector;
+  
   {$IFDEF VisualCLX}
   FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim);
   {$ENDIF VisualCLX}
@@ -374,6 +427,7 @@ end;
 
 destructor TJvCustomEdit.Destroy;
 begin
+  FreeAndNil(FDataConnector);
   FMaxPixel.Free;
   FCaret.Free;
   {$IFDEF JVCLThemesEnabled}
@@ -383,6 +437,11 @@ begin
   QPixmap_destroy(FNullPixmap);
   {$ENDIF VisualCLX}
   inherited Destroy;
+end;
+
+function TJvCustomEdit.CreateDataConnector: TJvFieldDataConnector;
+begin
+  Result := TJvCustomEditDataConnector.Create(Self);
 end;
 
 procedure TJvCustomEdit.CaretChanged(Sender: TObject);
@@ -406,6 +465,8 @@ begin
     Text := St;
     SelStart := Min(Sel, Length(Text));
   end;
+  if not (csLoading in ComponentState) then
+    DataConnector.Modify;
 end;
 
 {$IFDEF VCL}
@@ -591,6 +652,12 @@ end;
 
 procedure TJvCustomEdit.DoExit;
 begin
+  try
+    DataConnector.UpdateRecord;
+  except
+    SetFocus;
+    raise;
+  end;
   inherited DoExit;
   DoEmptyValueExit;
 end;
@@ -740,6 +807,20 @@ procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   UpdateGroup;
   inherited KeyDown(Key, Shift);
+end;
+
+procedure TJvCustomEdit.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if Key = #27 then
+  begin
+    if DataConnector.Active and DataConnector.Field.CanModify then
+    begin
+      DataConnector.Reset;
+      SelectAll;
+      Key := #0;
+    end;
+  end;
 end;
 
 procedure TJvCustomEdit.Loaded;

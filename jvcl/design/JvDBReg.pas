@@ -53,13 +53,14 @@ uses
   JvDBRadioPanel, JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor,
-  JvDBActionsEngine, JvDBActions, 
-  JvDBActnResForm;
+  JvDBActionsEngine, JvDBActions,
+  JvDBActnResForm, JvDataSource, JvDataSourceIntf;
 
 {$R JvDBReg.dcr}
 
 procedure Register;
 const
+  cDataField = 'DataField';
   cKeyField = 'KeyField';
   cListField = 'ListField';
   cMasterField = 'MasterField';
@@ -74,7 +75,7 @@ const
   cSortMarker = 'SortMarker';
   cPanels = 'Panels';
 begin
-  RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
+  RegisterComponents(RsPaletteDBNonVisual, [TJvDataSource, TJvMemoryData,
     TJvCsvDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
     {$IFDEF USE_3RDPARTY_DOA} TJvOracleDataset, {$ENDIF USE_3RDPARTY_DOA}
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
@@ -88,6 +89,7 @@ begin
     TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage, TJvDBNavigator]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
+  RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cDataField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
