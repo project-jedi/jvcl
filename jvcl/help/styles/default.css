@@ -32,3 +32,9 @@ a:hover {color: #cc9900;}
 .reset {background-color: #CCCCCC;border-width: 1px;border-style: solid;}
 .button {background-color: #CCCCCC;border-width: 1px;border-style: solid;}
 .InfoField {border: 2px solid #AAAAAA;padding: 4px 4px;background: #EFEFEF;}
+
+pre.sourcecode { color: black; border: 1px solid silver; padding: 5px; width: 800px; background-color: #fdfdfd; }
+code.keyword { font-weight: bold; color: navy; }
+code.comment { font-style: italic; color: green; }
+code.quote { color: blue; }
+
