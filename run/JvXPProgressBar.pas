@@ -74,11 +74,13 @@ type
     property OnStartDock;
     {$ENDIF VCL}
     property DragMode;
+    property Enabled;
     property Hint;
     property ParentColor default False;
     property PopupMenu;
     property ParentShowHint;
     property ShowHint;
+    property Visible;
 
     property OnClick;
     property OnConstrainedResize;
