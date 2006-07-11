@@ -1232,8 +1232,15 @@ end;
 
 procedure TJvCustomValidateEdit.SetText(const NewValue: TCaption);
 begin
-  EditText := NewValue;
-  DoValueChanged;
+  // If we are actually changing our value ourselves, there is no need
+  // to do it again. This may even trigger an infinite recursion, especially
+  // when in a derived component the display format is set in the constructor.
+  // In that case, the recursion would kill Delphi almost instantly.
+  if not FSelfChange then
+  begin
+    EditText := NewValue;
+    DoValueChanged;
+  end;
 end;
 
 procedure TJvCustomValidateEdit.SetDisplayPrefix(const NewValue: string);
