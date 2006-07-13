@@ -1413,7 +1413,7 @@ type
     property Colors: TJvSystemColorsInfo read GetColors write SetColors stored False;
     property CPU: TJvCPUInfo read GetCPUInfo write SetCPUInfo stored False;
     property FileInfo: TJvFileInfo read GetFileInfo write SetFileInfo stored False;
-    property Folders: TJvSystemFolders read GetSystemFolders write SetSystemFolders stored False;
+    property Folders: TJvSystemFolders read GetSystemFolders write SetSystemFolders; // stored False; // Mantis 3808: store the Folders so that TrailingPathDelimiter can be stored.
     property Identification: TJvIdentification read GetIdentification write SetIdentification stored False;
     property Keyboard: TJvKeyInfo read GetKeyInfo write SetKeyInfo stored False;
     property Memory: TJvMemInfo read GetMemoryInfo write SetMemoryInfo stored False;
