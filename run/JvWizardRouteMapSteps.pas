@@ -126,6 +126,7 @@ begin
   FNextStepText := RsNextStep;
   FShowDivider := True;
   FShowNavigators := True;
+  FShowNavigation := True;
 end;
 
 function TJvWizardRouteMapSteps.DetectPage(const Pt: TPoint): TJvWizardCustomPage;
