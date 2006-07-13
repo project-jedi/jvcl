@@ -2744,19 +2744,30 @@ procedure TJvCustomAppStorage.GetStoredValues(const Path: string;
 var
   SearchPath: string;
   I: Integer;
+  OptimizedSearchPath: string;
 begin
   Strings.BeginUpdate;
   try
     Strings.Clear;
     SearchPath := OptimizePaths([Path]);
+
     if aeoReportRelative in Options then
-      InternalGetStoredValues('', SearchPath, Strings, Options)
+    begin
+      InternalGetStoredValues('', SearchPath, Strings, Options);
+    end
     else
-      InternalGetStoredValues(OptimizePaths([Self.Path, SearchPath]) +
+    begin
+      OptimizedSearchPath := OptimizePaths([Self.Path, SearchPath]);
+      InternalGetStoredValues(OptimizedSearchPath +
         PathDelim, SearchPath, Strings, Options);
-    I := Strings.IndexOf(OptimizePaths([Self.Path, SearchPath]));
-    if I > -1 then
-      Strings.Delete(I);
+
+      // Mantis 3803: Only remove the path if ReportRelative was not asked.
+      // If not, then with \F1\R1 and \F1\F1 we would only return the values
+      // in \F1\R1 in "relative mode" which is not correct
+      I := Strings.IndexOf(OptimizedSearchPath);
+      if I > -1 then
+        Strings.Delete(I);
+    end;
   finally
     Strings.EndUpdate;
   end;
