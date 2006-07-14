@@ -117,7 +117,6 @@ Description
   This class is used, instead of just raising a bare Exception, so you can craft your exception
   handling. If you are doing a dataset operation and you want to handle only errors raised by a
   TJvCsvDataSet, you can write this:
-  <AUTOLINK OFF>
   <CODE>
   try
     MyDataSet.DoSomething;
@@ -127,7 +126,6 @@ Description
     end
   end;
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@EJvCsvKeyError
@@ -138,7 +136,6 @@ Description
   handling. If you are doing a dataset operation and you want to handle only errors raised by a
   TJvCsvDataSet that are due to invalid/duplicate primary keys.
 
-  <AUTOLINK OFF>
   <CODE>
   try
     MyDataSet.DoSomething;
@@ -148,7 +145,6 @@ Description
     end
   end;
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@GetCsvRowItem
@@ -750,7 +746,6 @@ Summary
   This allows you to add a new row to an open dataset, in CSV string form.
 Description
   AppendRowString allows you to add a new dataset row in ONE LINE of code, instead of writing:
-  <AUTOLINK OFF>
   <CODE>
   DataSet.Append;
   DataSetFIELD1.Value := 'xxx';
@@ -758,20 +753,15 @@ Description
   .. one line for each field ...
   DataSet.Post;
   </CODE>
-  <AUTOLINK ON>
   Instead, if your dataset had three columns ('NAME,ADDRESS,PHONE'), you could write:
-  <AUTOLINK OFF>
   <CODE>
   DataSet.AppendRowString('BOB,10 FRONT STREET,555-1212');
   </CODE>
-  <AUTOLINK ON>
   One common way of using this is to call GetRowAsString from one dataset, and then adding that row to
   another dataset, like this:
-  <AUTOLINK OFF>
   <CODE>
   CsvDataSet2.AppendRowString(CsvDataSet1.GetRowAsString);
   </CODE>
-  <AUTOLINK ON>
 Parameters
   RowAsString - Description for this parameter
 See Also
@@ -916,7 +906,7 @@ Description
   * Field Types are described below. $ is a string. Other punctuation indicates other types.
   * Length ONLY applies to string fields.
 
-  <TABLE>
+  <TABLE 20c%,80c%>
     Field Types  Meaning
     -----------  -----------------------------------------------------------------------------
 
@@ -935,11 +925,9 @@ Description
   </TABLE>
 
   CsvFieldDef string Example:
-  <AUTOLINK OFF>
   <CODE>
   NAME:$80,ADDRESS:$140,AGE:%,BIRTHDAY:@
   </CODE>
-  <AUTOLINK ON>
 Note
   You can use the built-in property editor (Click ...) Instead of manually typing the CsvFieldDef.
 
@@ -1541,7 +1529,6 @@ Description
   purposes. This data is NOT stored as part of the CSV file and exists only in memory.
 
   Example:
-  <AUTOLINK OFF>
   <CODE>
   MyCsvDataSet.First;
   while not  MyCsvDataSet.Eof do begin
@@ -1552,7 +1539,6 @@ Description
     MyCsvDataSet.Next;
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   UserTag - same idea as UserData, but instead of a pointer, it's an integer.
 
@@ -1566,7 +1552,6 @@ Description
   purposes. This data is NOT stored as part of the CSV file and exists only in memory.
 
   Example:
-  <AUTOLINK OFF>
   <CODE>
   MyCsvDataSet.First;
   while not  MyCsvDataSet.Eof do begin
@@ -1577,7 +1562,6 @@ Description
     MyCsvDataSet.Next;
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   UserData - Same idea as UserTag, but it's a pointer.
 

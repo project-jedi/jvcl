@@ -505,6 +505,16 @@ Description
   but rather one of the descendants.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.ActivePainter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.AddComponent
 Summary
   Adds an object to the inspector.
@@ -689,11 +699,9 @@ Summary
 Description
   CalcItemRect determines the displaying rectangle of the given item. Since this value is stored in the
   item itself, CalcItemRect can be replaced with:
-  <AUTOLINK OFF>
   <CODE>
     ItemRect := Item.Rects[iprItem];
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Item - Description for this parameter
 
@@ -703,13 +711,11 @@ Summary
   Clears the inspector.
 Description
   Clear will remove all items from the inspector. Clear is implemented as:
-  <AUTOLINK OFF>
   <CODE>
   BeginUpdate;
   Root.Clear;
   EndUpdate;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvCustomInspectorItem.Clear
 
@@ -1350,14 +1356,12 @@ Summary
 Description
   Selected is the current selected item. If no item is selected, <B>nil</B> will be returned. Reading
   Selected is the same as:
-  <AUTOLINK OFF>
   <CODE>
   if SelectedIndex > -1 then
     Selected := VisibleItems[SelectedIndex]
   else
     Selected := nil;
   </CODE>
-  <AUTOLINK ON>
   When you set Selected to a new item, and that item is not visible, Selected and SelectedIndex will
   not be changed.
 See Also
@@ -1392,6 +1396,16 @@ Description
   blocked. An item is added to this list when NotifySort is called, updates are blocked, and the item
   isn't already in the list. When EndUpdate decreases the LockCount to 0, the items will be resorted,
   after which the VisibleItems array will be rebuild.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.Style
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.TopIndex
@@ -1583,6 +1597,16 @@ Description
   (because the TypeInfo property does not point to the RTTI of a string type) an exception will occur.
   Before the data is read CheckReadAccess is called to check read access, before the data is set
   CheckWriteAccess is called to check write access.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.AsVariant
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.CheckReadAccess
@@ -2529,6 +2553,18 @@ Note
   Expanded maps onto the iifExpanded flag in the Flags property.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.ExpandItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AExpand - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Flags
 Summary
   Item flags.
@@ -3399,7 +3435,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspector
-<TITLEIMG TJvCustomInspector>
+<TITLEIMG TJvInspector>
 JVCLInfo
   GROUP=JVCL.EditsMemosAndCombos.Other
   FLAG=Component
@@ -5015,15 +5051,25 @@ See Also
   TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryTextColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPainter.CategoryTextColor
+@@TJvInspectorPainter.CategoryFont
 Summary
-  Font color for selected items.
+  Write here a summary (1 line)
 Description
-  CategoryTextColor indicates the font color for category items. Read CategoryTextColor to find out
-  which color is used for the font when rendering a category item or set it to another value to change
-  it.
+  Write here a description
 See Also
-  TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryColor
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+##@@TJvInspectorPainter.CategoryTextColor
+##Summary
+##  Font color for selected items.
+##Description
+##  CategoryTextColor indicates the font color for category items. Read CategoryTextColor to find out
+##  which color is used for the font when rendering a category item or set it to another value to change
+##  it.
+##See Also
+##  TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Create
@@ -5158,7 +5204,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPainter.HideSelectTextColor
+@@TJvInspectorPainter.HideSelectFont
 Summary
   Write here a summary (1 line)
 Description
@@ -5260,17 +5306,27 @@ Description
   Loading is used in the set methods of the color properties to avoid calls to Inspector.Invalidate.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPainter.NameColor
+@@TJvInspectorPainter.NameFont
 Summary
-  Font color for item names.
+  Write here a summary (1 line)
 Description
-  NameColor indicates the font color used to render an item's name in (unless the item is either
-  selected or a category, in which case SelectedTextColor or CategoryTextColor will be used
-  respectively). Read NameColor to find out which font color is used to render an item's name, or set
-  it to another value to change it.
+  Write here a description
 See Also
-  TJvInspectorPainter.CategoryTextColor, TJvInspectorPainter.SelectedTextColor,
-  TJvInspectorPainter.ValueColor
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+##@@TJvInspectorPainter.NameColor
+##Summary
+##  Font color for item names.
+##Description
+##  NameColor indicates the font color used to render an item's name in (unless the item is either
+##  selected or a category, in which case SelectedTextColor or CategoryTextColor will be used
+##  respectively). Read NameColor to find out which font color is used to render an item's name, or set
+##  it to another value to change it.
+##See Also
+##  TJvInspectorPainter.CategoryTextColor, TJvInspectorPainter.SelectedTextColor,
+##  TJvInspectorPainter.ValueColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Paint
@@ -5360,14 +5416,24 @@ See Also
   TJvInspectorPainter.SelectedTextColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPainter.SelectedTextColor
+@@TJvInspectorPainter.SelectedFont
 Summary
-  Font color for selected items.
+  Write here a summary (1 line)
 Description
-  SelectedTextColor indicates the font color for selected items. Read SelectedTextColor to find out
-  which color is used for the font when an item is selected or set it to another value to change it.
+  Write here a description
 See Also
-  TJvInspectorPainter.SelectedColor
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+##@@TJvInspectorPainter.SelectedTextColor
+##Summary
+##  Font color for selected items.
+##Description
+##  SelectedTextColor indicates the font color for selected items. Read SelectedTextColor to find out
+##  which color is used for the font when an item is selected or set it to another value to change it.
+##See Also
+##  TJvInspectorPainter.SelectedColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.SetInspector
@@ -5442,14 +5508,23 @@ See Also
   TJvInspectorPainter.SetupItem
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPainter.ValueColor
+@@TJvInspectorPainter.ValueFont
 Summary
-  Font color for item values.
+  Write here a summary (1 line)
 Description
-  ValueColor indicates the font color used to render an item's value. Read ValueColor to find out which
-  font color is used to render an item's value, or set it to another value to change it.
+  Write here a description
 See Also
-  TJvInspectorPainter.NameColor
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+##@@TJvInspectorPainter.ValueColor
+##Summary
+##  Font color for item values.
+##Description
+##  ValueColor indicates the font color used to render an item's value. Read ValueColor to find out which
+##  font color is used to render an item's value, or set it to another value to change it.
+##See Also
+##  TJvInspectorPainter.NameColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainterClass
@@ -5963,6 +6038,29 @@ Description
 
   TJvCustomInspectorData registers this item for all string types (ie. ShortString, AnsiString (=long
   strings) and WideString).
+
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorStyle
+<TITLE TJvInspectorStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorStyle.isBorland
+  Description for isBorland
+
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorStyle.isDotNet
+  Description for isDotNet
+
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorStyle.isItemPainter
+  Description for isItemPainter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTCaptionRegItem
@@ -6609,6 +6707,13 @@ Parameters
                version where you can specify a variable.
   ##  AVar -          The variable that holds the data. Alternatively you could use
   ##                  the overloaded version where you can specify an address.
+
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorVariantItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspSupportsMethodPointers

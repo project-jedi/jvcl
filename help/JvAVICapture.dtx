@@ -58,11 +58,9 @@ Description
   WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be ignored and will be computed according to the
   recommendation for this format:
 
-  <AUTOLINK OFF>
   <CODE>
      AvgBytesPerSec := SamplesPerSec * ((Channels * BitsPerSample) div 8)
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvAudioFormat.BitsPerSample, TJvAudioFormat.Channels, TJvAudioFormat.FillWaveFormatEx,
   TJvAudioFormat.FormatTag, TJvAudioFormat.SamplesPerSec
@@ -84,11 +82,9 @@ Description
   This value depends on the value of FormatTag. If it is equal to WAVE_FORMAT_PCM, then the value of
   BlockAlign will be ignored and computed according to.
 
-  <AUTOLINK OFF>
   <CODE>
      BlockAlign := (Channels * BitsPerSample) div 8
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvAudioFormat.BitsPerSample, TJvAudioFormat.Channels, TJvAudioFormat.FillWaveFormatEx,
   TJvAudioFormat.FormatTag

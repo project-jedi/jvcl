@@ -370,22 +370,22 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.AutoCompleteItems
 Summary
-  Write here a summary (1 line)
+  Lists the items that will be used for autocompletion.
 Description
-  Write here a description
+  Read AutoCompleteItems to access the list of items that will be used for autocompletion. Use the
+  methods of AutoCompleteItems to add, insert, delete and move items. Set the value of
+  AutoCompleteItems to copy the items from another string list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomComboEdit.AutoCompleteOptions
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.AutoCompleteOptions
 Summary
-  Write here a summary (1 line)
+  Specifies options that control autocompletion.
 Description
-  Write here a description
+  AutoCompleteOptions specifies options that control autocompletion.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomComboEdit.AutoCompleteItems
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Button
@@ -441,31 +441,43 @@ Description
   from Menus.pas. For example, the following line creates a shortcut, Ctrl+C and assigns it to a combo
   edit control named JvComboEdit1.
 
-  <AUTOLINK OFF>
   <CODE>
   JvComboEdit1.ClickKey := ShortCut(Word('C'), [ssCtrl]);
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomComboEdit.DefaultImageIndex
+@@TJvCustomComboEdit.DataConnector
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEdit.DefaultImageIndex
+Summary
+  Indicates which image from the default image list is used by the combo edit class.
+Description
+  The DefaultImages class function of a combo edit returns an image list that contains a list of
+  bitmaps that can appear on the button of a combo edit control. Class function DefaultImageIndex
+  returns which image from the default image list is used by combo edit controls of that class.
+
+  So note that different combo edit classes may return different values for DefaultImageIndex.
+See Also
+  TJvCustomComboEdit.DefaultImageIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.DefaultImages
 Summary
   Returns the default image list used by all combo edits.
 Description
-  Use the DefaultImages property to access the default image list used by all combo edits. Property
-  DefaultImageIndex indicates which image from the default image list is used by the combo edit.
+  Use the DefaultImages class function to access the default image list used by all combo edits.
+  Property DefaultImageIndex indicates which image from the default image list is used by the combo
+  edit.
+
+  Note that different combo edit classes may return different default image lists.
 Return value
   The default image list.
 See Also
@@ -603,12 +615,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnEnabledChanged
 Summary
-  Write here a summary (1 line)
+  Occurs when the Enabled state changes.
 Description
-  Write here a description
+  Write a handler for the OnEnabledChanged to take specific action when the control's Enabled state has
+  changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomComboEdit.Enabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnKeyDown
@@ -624,22 +636,31 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnPopupHidden
 Summary
-  Write here a summary (1 line)
+  Occurs when the pop-up window is hidden.
 Description
-  Write here a description
+  Write an OnPopupHidden event handler to implement special processing that needs to occur only when
+  the pop-up window is hidden.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomComboEdit.OnPopupShown
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnPopupShown
 Summary
-  Write here a summary (1 line)
+  Occurs when the pop-up window is shown.
 Description
-  Write here a description
+  Write an OnPopupShown event handler to implement special processing that needs to occur only when the
+  pop-up window is shown.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomComboEdit.OnPopupHidden
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEdit.ParentFlat
+Summary
+  Determines where a component looks to determine if it should appear flat.
+Description
+  ParentFlat determines whether the control uses its parent’s Ctl3D property.
+See Also
+  TJvCustomComboEdit.Flat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.PopupAlign
@@ -692,6 +713,23 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEditBase
 <TITLE TJvCustomComboEditBase type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEditDataConnector
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEditDataConnector.Control
 Summary
   Write here a summary (1 line)
 Description
@@ -796,6 +834,44 @@ See Also
   <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomDateEdit.DateFormat
+Summary
+  A custom Date Format String to use instead of the system locale settings.
+Description
+  Input and display of the date will be done according to DateFormat; but only if DateFormatPreferred
+  is pdCustom or pdCustomOnly.
+
+  For possible values of DateFormat see "Date-Time values, formatting"
+
+  e.g. dd/mm/yyyy
+Note
+  Only numeric values are supported. Format strings that display words (e.g. Tuesday) are not
+  supported.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDateEdit.DateFormatPreferred
+Summary
+  Determines which Date Format String to use for Input and Display.
+Description
+  TPreferredDateFormat = (pdLocale, pdLocaleOnly, pdCustom, pdCustomOnly);
+
+  pdLocale, pdLocaleOnly: Display the date using the system locale settings (set in Control Panel)
+  pdCustom, pdCustomOnly: Display the date using the DateFormat property
+
+  The default value is pdLocaleOnly which means that input will only be accepted in the format of the
+  system locale.
+
+  Similarly, pdCustomOnly means that input will only be accepted in the format of the DateFormat
+  property.
+
+  A value of pdLocale means that if an Invalid date is entered (i.e. one not in the format of the
+  system locale), then it will try to interpret the date in accordance with the DateFormat property; if
+  it is not valid according to the DateFormat string then the OnInvalidDate event will be triggered.
+
+  Similarly, a value of pdCustom means interpret the input according to the DateFormat property,
+  failing that try the system locale format, failing that trigger OnInvalidDate.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.DefaultToday
 Summary
   Specifies whether to use today's day as default.
@@ -876,6 +952,8 @@ Parameters
   Sender - The object that represents the date button control.
   ADate  - The date the user selected.
   Action - Determines whether the date specified by ADate is accepted.
+See Also
+  TJvCustomDateEdit.OnInvalidDate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.OnInvalidDate
@@ -884,13 +962,12 @@ Summary
 Description
   Write here a description
 Parameters
-  Sender     - Description for this parameter
+  Sender     - The object that represents the date button control.
   DateString - Description for this parameter
   NewDate    - Description for this parameter
   Accept     - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDateEdit.OnAcceptDate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.PopupColor
@@ -971,6 +1048,33 @@ See Also
   TJvCustomDateEdit.GetDateMask
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomDateEditDataConnector
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDateEditDataConnector.DefaultDate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDateEditDataConnector.DefaultDateIsNow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateEdit
 <TITLEIMG TJvDateEdit>
 JVCLInfo
@@ -1047,7 +1151,7 @@ Description
   directory.
 Note
   Only used if the edit text is empty when the dialog is shown. If the edit text is <I>not</I> empty
-  then that text determines the to be selected directory.
+  then that text determines the directory to be selected.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryEdit.MultipleDirs
@@ -1227,11 +1331,9 @@ Description
   The example below assigns the list of files in DialogFiles to the Items property of a TListBox
   component.
 
-  <AUTOLINK OFF>
   <CODE>
   ListBox1.Items.Assign(JvFilenameEdit1.DialogFiles);
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvFilenameEdit.Dialog, TJvFilenameEdit.DialogOptions
 
@@ -1398,6 +1500,33 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TPopupAlign.epaLeft
   The pop-up menu appears with its top left corner under the mouse.
+
+----------------------------------------------------------------------------------------------------
+@@TPreferredDateFormat
+<TITLE TPreferredDateFormat type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TPreferredDateFormat.pdLocale
+  Description for pdLocale
+
+----------------------------------------------------------------------------------------------------
+@@TPreferredDateFormat.pdLocaleOnly
+  Description for pdLocaleOnly
+
+----------------------------------------------------------------------------------------------------
+@@TPreferredDateFormat.pdCustom
+  Description for pdCustom
+
+----------------------------------------------------------------------------------------------------
+@@TPreferredDateFormat.pdCustomOnly
+  Description for pdCustomOnly
 
 ----------------------------------------------------------------------------------------------------
 @@TYearDigits

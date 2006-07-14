@@ -6,6 +6,7 @@ Summary
   Contains the TJvDBImage component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
+  Sergio Samayoa and Peter Thornqvist
 
 ----------------------------------------------------------------------------------------------------
 @@GetGraphicClass
@@ -65,67 +66,53 @@ Description
   TGraphic object. The signatures register at unit's initialization are: BMP, WMF, EMF, ICO, JPG. If
   you got some other image library (such as GIF, PCX, TIFF, ANI or PNG), just register the signature:
 
-  <AUTOLINK OFF>
   <CODE>
        RegisterGraphicSignature(<string value>, <offset>, <class>)
   </CODE>
-  <AUTOLINK ON>
 
   or
 
-  <AUTOLINK OFF>
   <CODE>
        RegisterGraphicSignature([<byte values>], <offset>, <class>)
   </CODE>
-  <AUTOLINK ON>
 
   This means: When <string value> (or byte values) found at <offset> the graphic class to use is
   <class>
 
   For example (actual code of the initialization section):
 
-  <AUTOLINK OFF>
   <CODE>
        RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
        RegisterGraphicSignature([0, 1], 0, TMetafile);     // EMF
        RegisterGraphicSignature('JFIF', 6, TJPEGImage);
   </CODE>
-  <AUTOLINK ON>
 
   You can also unregister signature. IF you want use TGIFImage instead of TJvGIFImage, you can
   unregister with:
 
-  <AUTOLINK OFF>
   <CODE>
        UnregisterGraphicSignature('GIF', 0);
   </CODE>
-  <AUTOLINK ON>
 
   or just
 
-  <AUTOLINK OFF>
   <CODE>
        UnregisterGraphicSignature(TJvGIFImage); // must add JvGIF unit in uses clause
   </CODE>
-  <AUTOLINK ON>
 
   then:
-  <AUTOLINK OFF>
   <CODE>
        RegisterGraphicSignature('GIF', 0, TGIFImage); // must add GIFImage to uses clause
   </CODE>
-  <AUTOLINK ON>
 
   If you don't like the signature registration there is a new event called OnGetGraphicClass. The event
   gets the following parameters:
 
-  <AUTOLINK OFF>
   <CODE>
       Sender: TObject;
       Stream: TMemoryStream;
       var GraphicClass: TGraphicClass)
   </CODE>
-  <AUTOLINK ON>
 
   The memory stream containing the blob data is sent in Stream to allow the user to inspect the
   contents and figure out which graphic class is.

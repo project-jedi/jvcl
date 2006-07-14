@@ -7,6 +7,7 @@ TJvAnimate
 TJvAnimatedImage
 TJvAnimTitle
 TJvAppAnimatedIcon
+TJvAppCommand
 TJvAppDBStorage
 TJvAppDdeCmd
 TJvAppEvents
@@ -83,6 +84,7 @@ TJvCSVNavigator
 TJvDatabaseActionList
 TJvDatabaseItems
 TJvDataEmbedded
+TJvDataSource
 TJvDateEdit
 TJvDatePickerEdit
 TJvDateTimePicker
@@ -113,6 +115,7 @@ TJvDBLookupTreeView
 TJvDBLookupTreeViewCombo
 TJvDBMaskEdit
 TJvDBMove
+TJvDBNavigator
 TJvDBProgress
 TJvDBProgressBar
 TJvDBRadioPanel
@@ -226,7 +229,6 @@ TJvgCheckBox
 TJvgCheckListBox
 TJvgCheckTreeView
 TJvgDBGrid
-TJvgDBNavigator
 TJvgDigits
 TJvGenetic
 TJvgExceptionHandler
@@ -254,7 +256,6 @@ TJvgMailSlotServer
 TJvgMyQRPreview
 TJvgPageControl
 TJvgPrintCrossTable
-TJvgProcess
 TJvgProgress
 TJvgQRDBText
 TJvgQRLabel
@@ -376,6 +377,7 @@ TJvOfficeColorPanel
 TJvOfficeMenuItemPainter
 TJvOpenDialog
 TJvOpenWithDialog
+TJvOracleDataset
 TJvOrganizeFavoritesDialog
 TJvOutlookBar
 TJvOutlookSplitter
@@ -430,6 +432,7 @@ TJvRGBToHTML
 TJvRichEdit
 TJvRichEditToHTML
 TJvRollOut
+TJvRuler
 TJvRunDialog
 TJvSAL
 TJvSALCore
@@ -437,6 +440,7 @@ TJvSALMath
 TJvSaveDialog
 TJvScheduledEvents
 TJvScreenSaver
+TJvScreenSaveSuppressor
 TJvScrollBar
 TJvScrollBox
 TJvScrollingWindow

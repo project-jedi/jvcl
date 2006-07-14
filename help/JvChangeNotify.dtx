@@ -23,6 +23,23 @@ Return value
   \Returns a user friendly string describing a set of actions.
 
 ----------------------------------------------------------------------------------------------------
+@@EJVCLChangeNotifyException
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@EJVCLChangeNotifyException.ErrorDirectory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction
 <TITLE TJvChangeAction type>
 Summary
@@ -158,7 +175,6 @@ Description
   you can call it with or without the Items qualifier from a TJvChangeNotify component:
 
   <B>Example:</B>
-  <AUTOLINK OFF>
   <CODE>
     JvChangeNotify1.Notifications.Items[i] := SomeValue;
 
@@ -166,7 +182,6 @@ Description
 
     JvChangeNotify1.Notifications[i] := SomeValue;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvChangeItem, TJvChangeNotify, TJvChangeNotify.Notifications
 
@@ -200,12 +215,10 @@ Description
   FreeOnTerminate is true, the call to Active will return immediately, even if the thread is not closed
   yet. In this case you can't use code like:
 
-  <AUTOLINK OFF>
   <CODE>
     JvChangeNotify1.Active := false;
     CheckForChangedFiles(); // thread might still be active here!
   </CODE>
-  <AUTOLINK ON>
 
   To avoid this situation, set FreeOnTerminate to false.
 See Also

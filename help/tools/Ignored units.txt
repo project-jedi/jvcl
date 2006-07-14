@@ -2,6 +2,7 @@ JvaDsgn
 JvAlarmsEditor
 JvAlarmsForm
 JvAnimatedEditor
+JvAppStoragePropertyEngineDB
 JvBandObjectDLLWizard
 JvBDECheckPasswordForm
 JvBDEEditors
@@ -15,6 +16,11 @@ JvCtlConst
 JvCtlReg
 JvDataEmbeddedEditor
 JvDatePickerReg
+JvDBActionsEngineControlCxGrid
+JvDBActionsEngineDatasetAdo
+JvDBActionsEngineDatasetDBExpress
+JvDBActionsEngineDatasetDoa
+JvDBActionsEngineDatasetOdac
 JvDBConst
 JvDBGridSelectColumnForm
 JvDBQueryParamsForm
@@ -22,15 +28,18 @@ JvDBReg
 JvDBRemoteLogin
 JvDBSecurityEditor
 JvDesktopAlertForm
-JvDockControlForm
 JvDropDownForm
 JvDsgnEditors
 JvDualListForm
+JvDynControlEngineDevExpCx
+JvDynControlEngineDevExpCxDB
 JvExceptionForm
 JvExComboEdits
 JvFooterEditor
 JvFormWallpaperEdit
 JvFormWallpaperEditor
+JvFullColorCircleForm
+JvFullColorForm
 JvgAlignForm
 JvgCheckVersionInfoForm
 JvgConstSysRequirements
@@ -49,6 +58,7 @@ JvIColEdit
 JvID3v2Editor
 JvImageForm
 JvInterpreter_all
+JvInterpreter_Buttons
 JvInterpreter_Classes
 JvInterpreter_ComCtrls
 JvInterpreter_Contnrs
@@ -67,6 +77,7 @@ JvInterpreter_JvEditor
 JvInterpreter_JvInterpreter
 JvInterpreter_JvRegAuto
 JvInterpreter_JvUtils
+JvInterpreter_Math
 JvInterpreter_Menus
 JvInterpreter_Quickrpt
 JvInterpreter_StdCtrls

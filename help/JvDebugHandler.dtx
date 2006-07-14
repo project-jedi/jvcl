@@ -93,20 +93,16 @@ Description
   added to "OnOtherDestination" method is all that is needed:
 
   For CodeSite 2:
-  <AUTOLINK OFF>
   <CODE>
   If CodeSite.Enabled = True Then
     CodeSite.SendStringList('ERROR INFO', JclDebugHandler1.ExceptionStringList);
   </CODE>
-  <AUTOLINK ON>
 
   For CodeSite 3:
-  <AUTOLINK OFF>
   <CODE>
   If CodeSite.Enabled = True Then
     CodeSite.Send('ERROR INFO: ', JclDebugHandler1.ExceptionStringList);
   </CODE>
-  <AUTOLINK ON>
 
   Although it is NOT necessary to check if CodeSite is enabled or not here, I choose to do so because
   if I disable it and still leave this code in place, an exception will not occur.

@@ -173,7 +173,6 @@ Description
 
   If Category = "Variables" and Item = "Item", the \XML would have to look like the following for this
   method to find a match:
-  <AUTOLINK OFF>
   <CODE>
     \<Translation\>
       ...
@@ -183,9 +182,7 @@ Description
       ...
     \</Translation\>
   </CODE>
-  <AUTOLINK ON>
   This would return the string "XXX". Alternatively, the \XML could look like this:
-  <AUTOLINK OFF>
   <CODE>
     \<Translation\>
       ...
@@ -195,7 +192,6 @@ Description
       ...
     \</Translation\>
   </CODE>
-  <AUTOLINK ON>
   This would return the string "YYY". if more than one node has the same name, the first one found is
   the one used.
 Parameters
@@ -348,7 +344,6 @@ Description
   variables somewhere in your project.
 
   <B>\Example</B>
-  <AUTOLINK OFF>
   <CODE>
   var AString:string = 'This is a string';
 
@@ -361,7 +356,6 @@ Description
                           // if it was included in the translation data
                           // loaded into a TJvTranslator instance
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslatorStrings.Add

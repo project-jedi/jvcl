@@ -279,7 +279,6 @@ Description
   instead.
 
   To determine what object displayed the popup, you should check it against the three possible values:
-  <AUTOLINK OFF>
   <CODE>
     if (JvOutlookBar1.PopUpObject is TJvOutlookBar) then
       HandleBarPopup
@@ -288,7 +287,6 @@ Description
     else if (JvOutlookBar1.PopUpObject is TJvOutlookBarButton) then
       HandleBarButton;
   </CODE>
-  <AUTOLINK ON>
 See Also
   PopupMenu
 
@@ -519,19 +517,15 @@ Description
   along with the Count property to determine the number of items. Since Items is the default property
   for TJvOutlookBarButtons, you can leave it out in code when you want to access the items.
 
-  <AUTOLINK OFF>
   <CODE>
   JvOutlookBar1.Pages[0].Buttons.Items[0].Caption := 'OK';
   </CODE>
-  <AUTOLINK ON>
 
   Equivalent:
 
-  <AUTOLINK OFF>
   <CODE>
   JvOutlookBar1.Pages[0].Buttons[0].Caption := 'OK';
   </CODE>
-  <AUTOLINK ON>
 See Also
   Delete, Count
 
@@ -677,6 +671,16 @@ Description
   The location of the image on the page button is controlled by the Alignment property.
 See Also
   TJvOutlookBarPage.Alignment
+
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarPage.LinkedObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ParentButtonSize

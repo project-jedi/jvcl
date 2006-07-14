@@ -385,12 +385,10 @@ Summary
   The prolog in the xml file
 Description
   Usually indicates the DTD to be used with the XML file. For instance:
-  <AUTOLINK OFF>
   <CODE>
   <?xml version="1.0"?>
   <!DOCTYPE greeting SYSTEM "hello.dtd">
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.Root
@@ -555,8 +553,8 @@ Summary
 Description
   Write here a description
 Parameters
-  Stream - The stream containing the data
-  Parent - The parent TJvSimpleXML component, if any
+  Stream  - The stream containing the data
+  AParent - The parent TJvSimpleXML component, if any
 See Also
   TJvSimpleXMLElem.LoadFromString
 
@@ -567,7 +565,8 @@ Summary
 Description
   Calls LoadFromStream internally
 Parameters
-  Value - The string containing the data
+  Value   - The string containing the data
+  AParent - Description for this parameter
 See Also
   TJvSimpleXMLElem.LoadFromStream
 
@@ -608,9 +607,9 @@ Summary
 Description
   The level string will be put before the element, this is used with the sxoAutoIncrement
 Parameters
-  Stream - The stream to write to
-  Level  - The level of indentation
-  Parent - The TJvSimpleXML parent, if any
+  Stream  - The stream to write to
+  Level   - The level of indentation
+  AParent - The TJvSimpleXML parent, if any
 See Also
   TJvSimpleXMLElem.SaveToString
 
@@ -648,11 +647,9 @@ Summary
 Description
   Example:
 
-  <AUTOLINK OFF>
   <CODE>
   <![CDATA[value]]>
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemClass
@@ -671,11 +668,9 @@ Summary
   A classic XML element
 Description
   Example:
-  <AUTOLINK OFF>
   <CODE>
   <element property="propvalue">value</element>
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemComment
@@ -684,11 +679,9 @@ Summary
 Description
   Example:
 
-  <AUTOLINK OFF>
   <CODE>
   <!-- This is a comment -->
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemCompare
@@ -709,11 +702,9 @@ Summary
 Description
   Example:
 
-  <AUTOLINK OFF>
   <CODE>
   <!DOCTYPE Value>
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader
@@ -721,11 +712,9 @@ Summary
   A header XML element
 Description
   Example:
-  <AUTOLINK OFF>
   <CODE>
   <?xml version="Version" standalone="yes" encoding="Encoding"?>
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.Encoding
@@ -971,6 +960,76 @@ Parameters
   Name - The name of the element to remove
 
 ----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElems.IndexOf@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElems.IndexOf@TJvSimpleXMLElem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElems.Insert@string@Integer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Name  - Description for this parameter
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElems.Insert@TJvSimpleXMLElem@Integer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Value - Description for this parameter
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.IntValue
 Summary
   Returns the Integer value of the given element
@@ -1022,6 +1081,19 @@ See Also
   TJvSimpleXMLElems.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElems.Move
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  CurIndex - Description for this parameter
+  NewIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Notify
 Summary
   Sends a message to all children
@@ -1047,9 +1119,9 @@ Summary
 Description
   Write here a description
 Parameters
-  Stream - The stream to save into
-  Level  - The level of indentation to use for the list
-  Parent - The TJvSimpleXML component that contains the list, if any
+  Stream  - The stream to save into
+  Level   - The level of indentation to use for the list
+  AParent - The TJvSimpleXML component that contains the list, if any
 See Also
   TJvSimpleXMLElems.LoadFromStream
 
@@ -1080,11 +1152,9 @@ Summary
   A stylesheet XML element
 Description
   Example:
-  <AUTOLINK OFF>
   <CODE>
   <?xml-stylesheet href="styles.css" type="text/css"?>
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog
@@ -1175,8 +1245,8 @@ Summary
 Description
   Write here a description
 Parameters
-  Stream - The stream to load the list from
-  Parent - The TJvSimpleXML parent component, if any
+  Stream  - The stream to load the list from
+  AParent - The TJvSimpleXML parent component, if any
 Return value
   Returns the portion of the stream that was read
 See Also
@@ -1189,8 +1259,8 @@ Summary
 Description
   Write here a description
 Parameters
-  Stream - The stream to save into
-  Parent - The TJvSimpleXML component that contains the list, if any
+  Stream  - The stream to save into
+  AParent - The TJvSimpleXML component that contains the list, if any
 See Also
   TJvSimpleXMLElemsProlog.LoadFromStream
 
@@ -1465,6 +1535,63 @@ Description
   If no property named Name exists in the list, no property is removed
 Parameters
   Name - The name of the property to remove
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProps.Insert@Integer@string@Boolean
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Index - Description for this parameter
+  Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProps.Insert@Integer@string@Int64
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Index - Description for this parameter
+  Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProps.Insert@Integer@string@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Index - Description for this parameter
+  Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.IntValue

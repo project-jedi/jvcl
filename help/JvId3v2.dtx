@@ -15,11 +15,11 @@ Summary
 Description
   The TJvID3Owner object contains the data of the picture frames in an ID3 v2 tag.
 
-  <TABLE>
-    Frame name      APIC
-    Frame ID        fiPicture
-    Versions        All
-    Implemented by  TJvID3PictureFrame
+  <TABLE 15c%,85c%>
+    Frame name:      APIC
+    Frame ID:        fiPicture
+    Versions:        All
+    Implemented by:  TJvID3PictureFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -48,11 +48,11 @@ Description
   Use the properties of a TJvID3Ipl to set or get fields of the involved people frames in an ID3 v2
   tag.
 
-  <TABLE>
-    Frame name      IPLS, TIPL, TMCL
-    Frame ID        fiInvolvedPeople, fiInvolvedPeople2, fiMusicianCreditList
-    Versions        All
-    Implemented by  TJvID3DoubleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      IPLS, TIPL, TMCL
+    Frame ID:        fiInvolvedPeople, fiInvolvedPeople2, fiMusicianCreditList
+    Versions:        All
+    Implemented by:  TJvID3DoubleListFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -104,11 +104,11 @@ Description
 
   This frame might be used as a reminder of a made transaction or, if signed, as proof.
 
-  <TABLE>
-    Frame name      OWNE
-    Frame ID        fiOwnership
-    Versions        2.3, 2.4
-    Implemented by  TJvID3OwnershipFrame
+  <TABLE 15c%,85c%>
+    Frame name:      OWNE
+    Frame ID:        fiOwnership
+    Versions:        2.3, 2.4
+    Implemented by:  TJvID3OwnershipFrame
   </TABLE>
 See Also
   TJvID3OwnershipFrame
@@ -652,11 +652,11 @@ Summary
 Description
   The TJvID3Popularimeter object contains data of a populari meter frame.
 
-  <TABLE>
-    Frame name      POPM
-    Frame ID        fiPopularimeter
-    Versions        All
-    Implemented by  TJvID3PopularimeterFrame
+  <TABLE 15c%,85c%>
+    Frame name:      POPM
+    Frame ID:        fiPopularimeter
+    Versions:        All
+    Implemented by:  TJvID3PopularimeterFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -698,6 +698,7 @@ Description
 
   The following table lists the relation between Winamp's description of frames and properties of a
   TJvID3Text object:
+
   <TABLE>
     Winamp       Property
     -----------  ---------------------------------------------------
@@ -714,7 +715,6 @@ Description
   the first comment frame in a tag of JvID3v21 (if the tag has no comment frame, then one is
   inserted):
 
-  <AUTOLINK OFF>
   <CODE>
   with TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment) do
   begin
@@ -723,7 +723,6 @@ Description
     Text := 'Some'#13#10'Multi'#13#10'line'#13#10'comment'
   end;
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Album
@@ -733,11 +732,11 @@ Description
   Property Album represents the value of the 'Album/Movie/Show title' frame. It is intended for the
   title of the recording (or source of sound) from which the audio in the file is taken.
 
-  <TABLE>
-    Frame name      TALB
-    Frame ID        fiAlbum
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TALB
+    Frame ID:        fiAlbum
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.AlbumSortOrder, TJvID3Text.PartInSet, TJvID3Text.TrackNum
@@ -751,11 +750,11 @@ Description
   which should be used instead of the <LINK TJvID3Text.Album, album name> for sorting purposes. E.g. an
   album named "A Soundtrack" might preferably be sorted as "Soundtrack".
 
-  <TABLE>
-    Frame name      TSOA
-    Frame ID        fiAlbumSortOrder
-    Versions        2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TSOA
+    Frame ID:        fiAlbumSortOrder
+    Versions:        2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Album
@@ -768,11 +767,11 @@ Description
   Property Band represents the value of the 'Band/Orchestra/Accompaniment' frame. It is used for
   additional information about the performers in the recording.
 
-  <TABLE>
-    Frame name      TPE2
-    Frame ID        fiBand
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPE2
+    Frame ID:        fiBand
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Conductor
@@ -785,11 +784,11 @@ Description
   Property BPM represents the value of the 'BPM' frame. It contains the number of beats per minute in
   the main part of the audio.
 
-  <TABLE>
-    Frame name      TBPM
-    Frame ID        fiBPM
-    Versions        All
-    Implemented by  TJvID3NumberFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TBPM
+    Frame ID:        fiBPM
+    Versions:        All
+    Implemented by:  TJvID3NumberFrame
   </TABLE>
 See Also
   TJvID3Text.SongLen
@@ -805,11 +804,11 @@ Description
   Property Composer is of type TStrings. Use this type to access its methods or properties to
   manipulate the composers in the list.
 
-  <TABLE>
-    Frame name      TCOM
-    Frame ID        fiComposer
-    Versions        All
-    Implemented by  TJvID3SimpleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TCOM
+    Frame ID:        fiComposer
+    Versions:        All
+    Implemented by:  TJvID3SimpleListFrame
   </TABLE>
 See Also
   TJvID3Text.Conductor
@@ -822,11 +821,11 @@ Description
   Property Conductor represents the value of the 'Conductor' frame. It is used for the name of the
   conductor.
 
-  <TABLE>
-    Frame name      TPE3
-    Frame ID        fiConductor
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPE3
+    Frame ID:        fiConductor
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Band, TJvID3Text.Composer
@@ -840,11 +839,11 @@ Description
   the sound belongs to a larger category of sounds/music. For example, classical music is often sorted
   in different musical sections (e.g. "Piano Concerto", "Weather - Hurricane").
 
-  <TABLE>
-    Frame name      TIT1
-    Frame ID        fiContentGroup
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TIT1
+    Frame ID:        fiContentGroup
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.ContentType, TJvID3Text.Title
@@ -867,11 +866,11 @@ Description
     Don't know
   </TABLE>
 
-  <TABLE>
-    Frame name      TCON
-    Frame ID        fiContentType
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TCON
+    Frame ID:        fiContentType
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3v1.Genre, TJvID3Text.ContentGroup, TJvID3Text.Mood
@@ -886,11 +885,11 @@ Description
 
   Copyright must begin with a year and a space character (five characters).
 
-  <TABLE>
-    Frame name      TCOP
-    Frame ID        fiCopyright
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TCOP
+    Frame ID:        fiCopyright
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.ProducedNotice
@@ -904,11 +903,11 @@ Description
 
   This field is always four characters long; format is DDMM, with DD the days and MM the months.
 
-  <TABLE>
-    Frame name      TDAT
-    Frame ID        fiDate
-    Versions        2.2, 2.3, replaced by RecordingTime in 2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDAT
+    Frame ID:        fiDate
+    Versions:        2.2, 2.3, replaced by RecordingTime in 2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.RecordingDates, TJvID3Text.RecordingTime, TJvID3Text.Time, TJvID3Text.Year
@@ -922,11 +921,11 @@ Description
   or organization that encoded the audio file. This field may contain a copyright message, if the audio
   file also is copyrighted by the encoder.
 
-  <TABLE>
-    Frame name      TENC
-    Frame ID        fiEncodedBy
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TENC
+    Frame ID:        fiEncodedBy
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.EncoderSettings
@@ -940,11 +939,11 @@ Description
   encoding' frame. It includes the used audio encoder and its settings when the file was encoded.
   Hardware refers to hardware encoders, not the computer on which a program was run.
 
-  <TABLE>
-    Frame name      TSSE
-    Frame ID        fiEncoderSettings
-    Versions        2.3, 2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TSSE
+    Frame ID:        fiEncoderSettings
+    Versions:        2.3, 2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.EncodedBy
@@ -957,11 +956,11 @@ Description
   Property EncodingTime represents the value of the 'Encoding time' frame. It contains a timestamp
   describing when the audio was encoded.
 
-  <TABLE>
-    Frame name      TDEN
-    Frame ID        fiEncodingTime
-    Versions        2.4
-    Implemented by  TJvID3TimestampFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDEN
+    Frame ID:        fiEncodingTime
+    Versions:        2.4
+    Implemented by:  TJvID3TimestampFrame
   </TABLE>
 See Also
   TJvID3Text.TaggingTime
@@ -974,11 +973,11 @@ Description
   Property FileOwner represents the value of the 'File owner/licensee' frame. It contains the name of
   the owner or licensee of the file and its contents.
 
-  <TABLE>
-    Frame name      TOWN
-    Frame ID        fiFileOwner
-    Versions        2.3, 2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TOWN
+    Frame ID:        fiFileOwner
+    Versions:        2.3, 2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Copyright, TJvID3Text.ProducedNotice
@@ -991,11 +990,11 @@ Description
   Property FileType represents the value of the 'File type' frame. It indicates which type of audio
   this tag defines.
 
-  <TABLE>
-    Frame name      TFLT
-    Frame ID        fiFileType
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TFLT
+    Frame ID:        fiFileType
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.MediaType
@@ -1010,11 +1009,11 @@ Description
   ground keys are represented with "A","B","C","D","E", "F" and "G" and halfkeys represented with "b"
   and "#". Minor is represented as "m", e.g. "Dbm". Off key is represented with an "o" only.
 
-  <TABLE>
-    Frame name      TKEY
-    Frame ID        fiInitialKey
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TKEY
+    Frame ID:        fiInitialKey
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1025,11 +1024,11 @@ Description
   Property ISRC represents the value of the 'ISRC' frame. It should contain the International Standard
   Recording Code (ISO 3901). It should be 12 characters long.
 
-  <TABLE>
-    Frame name      TSRC
-    Frame ID        fiISRC
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TSRC
+    Frame ID:        fiISRC
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1044,11 +1043,11 @@ Description
   Property Language is of type TStrings. Use this type to access its methods or properties to
   manipulate the languages in the list.
 
-  <TABLE>
-    Frame name      TLAN
-    Frame ID        fiLanguage
-    Versions        All
-    Implemented by  TJvID3SimpleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TLAN
+    Frame ID:        fiLanguage
+    Versions:        All
+    Implemented by:  TJvID3SimpleListFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1062,11 +1061,11 @@ Description
   Property LeadArtist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
-  <TABLE>
-    Frame name      TPE1
-    Frame ID        fiLeadArtist
-    Versions        All
-    Implemented by  TJvID3SimpleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPE1
+    Frame ID:        fiLeadArtist
+    Versions:        All
+    Implemented by:  TJvID3SimpleListFrame
   </TABLE>
 See Also
   TJvID3Text.Band, TJvID3Text.OrigArtist
@@ -1082,11 +1081,11 @@ Description
   Property Lyricist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
-  <TABLE>
-    Frame name      TEXT
-    Frame ID        fiLyricist
-    Versions        All
-    Implemented by  TJvID3SimpleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TEXT
+    Frame ID:        fiLyricist
+    Versions:        All
+    Implemented by:  TJvID3SimpleListFrame
   </TABLE>
 See Also
   TJvID3Text.OrigLyricist
@@ -1099,11 +1098,11 @@ Description
   Property MediaType represents the value of the 'Media type' frame. It describes from which media the
   sound originated.
 
-  <TABLE>
-    Frame name      TMED
-    Frame ID        fiMediaType
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TMED
+    Frame ID:        fiMediaType
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.FileType
@@ -1117,11 +1116,11 @@ Description
   frame. It contains more information about the people behind a remix and similar interpretations of
   another existing piece.
 
-  <TABLE>
-    Frame name      TPE4
-    Frame ID        fiMixArtist
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPE4
+    Frame ID:        fiMixArtist
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.LeadArtist
@@ -1134,11 +1133,11 @@ Description
   Property Mood represents the value of the 'Mood' frame. It is intended to reflect the mood of the
   audio with a few keywords, e.g. "Romantic" or "Sad".
 
-  <TABLE>
-    Frame name      TMOO
-    Frame ID        fiMood
-    Versions        2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TMOO
+    Frame ID:        fiMood
+    Versions:        2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.ContentType
@@ -1151,11 +1150,11 @@ Description
   Property NetRadioOwner represents the value of the 'Internet radio station owner' frame. It contains
   the name of the owner of the internet radio station from which the audio is streamed.
 
-  <TABLE>
-    Frame name      TRSO
-    Frame ID        fiNetRadioOwner
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TRSO
+    Frame ID:        fiNetRadioOwner
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.NetRadioStation
@@ -1168,11 +1167,11 @@ Description
   Property NetRadioStation represents the value of the 'internet radio station name' frame. It contains
   the name of the internet radio station from which the audio is streamed.
 
-  <TABLE>
-    Frame name      TRSN
-    Frame ID        fiNetRadioStation
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TRSN
+    Frame ID:        fiNetRadioStation
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.NetRadioOwner
@@ -1186,11 +1185,11 @@ Description
   intended for the title of the original recording (or source of sound), if for example the music in
   the file should be a cover of a previously released song.
 
-  <TABLE>
-    Frame name      TOAL
-    Frame ID        fiOrigAlbum
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TOAL
+    Frame ID:        fiOrigAlbum
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Album, TJvID3Text.OrigArtist
@@ -1207,11 +1206,11 @@ Description
   Property OrigArtist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
-  <TABLE>
-    Frame name      TOPE
-    Frame ID        fiOrigArtist
-    Versions        All
-    Implemented by  TJvID3SimpleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TOPE
+    Frame ID:        fiOrigArtist
+    Versions:        All
+    Implemented by:  TJvID3SimpleListFrame
   </TABLE>
 See Also
   TJvID3Text.LeadArtist, TJvID3Text.OrigAlbum
@@ -1225,11 +1224,11 @@ Description
   preferred filename for the file, since some media doesn't allow the desired length of the filename.
   The filename is case sensitive and includes its suffix.
 
-  <TABLE>
-    Frame name      TOFN
-    Frame ID        fiOrigFileName
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TOFN
+    Frame ID:        fiOrigFileName
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1244,11 +1243,11 @@ Description
   Property OrigLyricist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
-  <TABLE>
-    Frame name      TOLY
-    Frame ID        fiOrigLyricist
-    Versions        All
-    Implemented by  TJvID3SimpleListFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TOLY
+    Frame ID:        fiOrigLyricist
+    Versions:        All
+    Implemented by:  TJvID3SimpleListFrame
   </TABLE>
 See Also
   TJvID3Text.Lyricist
@@ -1261,11 +1260,11 @@ Description
   Property OrigReleaseTime represents the value of the 'Original release time' frame. It contains a
   timestamp describing when the original recording of the audio was released.
 
-  <TABLE>
-    Frame name      TDOR
-    Frame ID        fiOrigReleaseTime
-    Versions        2.4
-    Implemented by  TJvID3TimestampFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDOR
+    Frame ID:        fiOrigReleaseTime
+    Versions:        2.4
+    Implemented by:  TJvID3TimestampFrame
   </TABLE>
 See Also
   TJvID3Text.OrigAlbum, TJvID3Text.OrigArtist, TJvID3Text.ReleaseTime
@@ -1281,11 +1280,11 @@ Description
 
   This frames is always four characters long.
 
-  <TABLE>
-    Frame name      TORY
-    Frame ID        fiOrigYear
-    Versions        2.2, 2.3, replaced by OrigReleaseTime in 2.4
-    Implemented by  TJvID3NumberFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TORY
+    Frame ID:        fiOrigYear
+    Versions:        2.2, 2.3, replaced by OrigReleaseTime in 2.4
+    Implemented by:  TJvID3NumberFrame
   </TABLE>
 See Also
   TJvID3Text.OrigReleaseTime
@@ -1302,11 +1301,11 @@ Description
   The value may be extended with a "/" character and a numeric string containing the total number of
   parts in the set. E.g. "1/2".
 
-  <TABLE>
-    Frame name      TPOS
-    Frame ID        fiPartInSet
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPOS
+    Frame ID:        fiPartInSet
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Album, TJvID3Text.SetSubTitle, TJvID3Text.TrackNum
@@ -1318,11 +1317,12 @@ Summary
 Description
   Property PerformerSortOrder represents the value of the 'Performer sort order' frame. It defines a
   string which should be used instead of the <LINK TJvID3Text.Band, performer> for sorting purposes.
-  <TABLE>
-    Frame name      TSOP
-    Frame ID        fiPerformerSortOrder
-    Versions        2.4
-    Implemented by  TJvID3TextFrame
+
+  <TABLE 15c%,85c%>
+    Frame name:      TSOP
+    Frame ID:        fiPerformerSortOrder
+    Versions:        2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Band
@@ -1336,11 +1336,11 @@ Description
   milliseconds of silence that should be inserted before this audio. The value zero indicates that this
   is a part of a multifile audio track that should be played continuously.
 
-  <TABLE>
-    Frame name      TDLY
-    Frame ID        fiPlaylistDelay
-    Versions        All
-    Implemented by  TJvID3NumberFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDLY
+    Frame ID:        fiPlaylistDelay
+    Versions:        All
+    Implemented by:  TJvID3NumberFrame
   </TABLE>
 See Also
   TJvID3Text.SongLen
@@ -1360,11 +1360,11 @@ Description
 
   ProducedNotice must begin with a year and a space character (five characters).
 
-  <TABLE>
-    Frame name      TPRO
-    Frame ID        fiProducedNotice
-    Versions        2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPRO
+    Frame ID:        fiProducedNotice
+    Versions:        2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Copyright
@@ -1377,11 +1377,11 @@ Description
   Property Publisher represents the value of the 'Publisher' frame. It contains the name of the label
   or publisher.
 
-  <TABLE>
-    Frame name      TPUB
-    Frame ID        fiPublisher
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TPUB
+    Frame ID:        fiPublisher
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.ProducedNotice
@@ -1395,11 +1395,11 @@ Description
   used as complement to the Year, Date and Time frames. E.g. "4th-7th June, 12th June" in combination
   with the Year frame.
 
-  <TABLE>
-    Frame name      TRDA
-    Frame ID        fiRecordingDates
-    Versions        2.2, 2.3, replaced by RecordingTime in 2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TRDA
+    Frame ID:        fiRecordingDates
+    Versions:        2.2, 2.3, replaced by RecordingTime in 2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Date, TJvID3Text.RecordingTime, TJvID3Text.Time, TJvID3Text.Year
@@ -1412,11 +1412,11 @@ Description
   Property RecordingTime represents the value of the 'Recording time' frame. It contains a timestamp
   describing when the audio was recorded.
 
-  <TABLE>
-    Frame name      TDRC
-    Frame ID        fiRecordingTime
-    Versions        2.4
-    Implemented by  TJvID3TimestampFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDRC
+    Frame ID:        fiRecordingTime
+    Versions:        2.4
+    Implemented by:  TJvID3TimestampFrame
   </TABLE>
 See Also
   TJvID3Text.ReleaseTime
@@ -1429,11 +1429,11 @@ Description
   Property ReleaseTime represents the value of the 'Release time' frame. It contains a timestamp
   describing when the audio was first released.
 
-  <TABLE>
-    Frame name      TDRL
-    Frame ID        fiReleaseTime
-    Versions        2.4
-    Implemented by  TJvID3TimestampFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDRL
+    Frame ID:        fiReleaseTime
+    Versions:        2.4
+    Implemented by:  TJvID3TimestampFrame
   </TABLE>
 See Also
   TJvID3Text.OrigReleaseTime, TJvID3Text.RecordingTime
@@ -1446,11 +1446,11 @@ Description
   Property SetSubTitle represents the value of the 'Set subtitle' frame. It is intended for the
   subtitle of the part of a set this track belongs to.
 
-  <TABLE>
-    Frame name      TSST
-    Frame ID        fiSetSubTitle
-    Versions        2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TSST
+    Frame ID:        fiSetSubTitle
+    Versions:        2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.PartInSet, TJvID3Text.SubTitle
@@ -1463,11 +1463,11 @@ Description
   Property Size represents the value of the 'Size' frame. It contains the size of the audio file in
   bytes, excluding the ID3v2 tag.
 
-  <TABLE>
-    Frame name      TSIZ
-    Frame ID        fiSize
-    Versions        2.2, 2.3
-    Implemented by  TJvID3NumberFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TSIZ
+    Frame ID:        fiSize
+    Versions:        2.2, 2.3
+    Implemented by:  TJvID3NumberFrame
   </TABLE>
 See Also
   TJvID3Text.SongLen
@@ -1480,11 +1480,11 @@ Description
   Property SongLen represents the value of the 'Length' frame. It contains the length of the audio file
   in milliseconds.
 
-  <TABLE>
-    Frame name      TLEN
-    Frame ID        fiSongLen
-    Versions        All
-    Implemented by  TJvID3NumberFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TLEN
+    Frame ID:        fiSongLen
+    Versions:        All
+    Implemented by:  TJvID3NumberFrame
   </TABLE>
 See Also
   TJvID3Text.PlaylistDelay, TJvID3Text.Size
@@ -1497,11 +1497,11 @@ Description
   Property SubTitle represents the value of the 'Subtitle/Description refinement' frame. It is used for
   information directly related to the contents title (e.g. "Op. 16" or "Performed live at Wembley").
 
-  <TABLE>
-    Frame name      TIT3
-    Frame ID        fiSubTitle
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TIT3
+    Frame ID:        fiSubTitle
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.SetSubTitle, TJvID3Text.Title
@@ -1514,11 +1514,11 @@ Description
   Property TaggingTime represents the value of the 'Tagging time' frame. It contains a timestamp
   describing then the audio was tagged.
 
-  <TABLE>
-    Frame name      TDTG
-    Frame ID        fiTaggingTime
-    Versions        2.4
-    Implemented by  TJvID3TimestampFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TDTG
+    Frame ID:        fiTaggingTime
+    Versions:        2.4
+    Implemented by:  TJvID3TimestampFrame
   </TABLE>
 See Also
   TJvID3Text.EncodingTime
@@ -1532,11 +1532,11 @@ Description
 
   This field is always four characters long; format is HHMM, with HH the hours and MM the minutes.
 
-  <TABLE>
-    Frame name      TIME
-    Frame ID        fiTime
-    Versions        2.2, 2.3, replaced by RecordingTime in 2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TIME
+    Frame ID:        fiTime
+    Versions:        2.2, 2.3, replaced by RecordingTime in 2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Date, TJvID3Text.RecordingDates, TJvID3Text.RecordingTime, TJvID3Text.Year
@@ -1549,11 +1549,11 @@ Description
   Property Title represents the value of the 'Title/Songname/Content description' frame. It contains
   the actual name of the piece (e.g. "Adagio", "Hurricane Donna").
 
-  <TABLE>
-    Frame name      TIT2
-    Frame ID        fiTitle
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TIT2
+    Frame ID:        fiTitle
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.ContentGroup, TJvID3Text.SubTitle, TJvID3Text.TitleSortOrder
@@ -1565,11 +1565,11 @@ Summary
 Description
   Property TitleSortOrder represents the value of the 'Title sort order' frame. It defines a string
   which should be used instead of the <LINK TJvID3Text.Title, title> for sorting purposes.
-  <TABLE>
-    Frame name      TSOT
-    Frame ID        fiTitleSortOrder
-    Versions        2.4
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TSOT
+    Frame ID:        fiTitleSortOrder
+    Versions:        2.4
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Title
@@ -1584,11 +1584,11 @@ Description
   and a numeric string containing the total number of tracks/elements on the original recording. E.g.
   "4/9".
 
-  <TABLE>
-    Frame name      TRCK
-    Frame ID        fiTrackNum
-    Versions        All
-    Implemented by  TJvID3TextFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TRCK
+    Frame ID:        fiTrackNum
+    Versions:        All
+    Implemented by:  TJvID3TextFrame
   </TABLE>
 See Also
   TJvID3Text.Album, TJvID3Text.PartInSet
@@ -1602,11 +1602,11 @@ Description
 
   This frames is always four characters long.
 
-  <TABLE>
-    Frame name      TYER
-    Frame ID        fiYear
-    Versions        2.2, 2.3, replaced by RecordingTime in 2.4
-    Implemented by  TJvID3NumberFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TYER
+    Frame ID:        fiYear
+    Versions:        2.2, 2.3, replaced by RecordingTime in 2.4
+    Implemented by:  TJvID3NumberFrame
   </TABLE>
 See Also
   TJvID3Text.Date, TJvID3Text.RecordingDates, TJvID3Text.RecordingTime, TJvID3Text.Time
@@ -1621,11 +1621,11 @@ Description
   These frames are intended for one-string text information concerning the audio file in a similar way
   to the other text frames.
 
-  <TABLE>
-    Frame name      TXXX
-    Frame ID        fiUserText
-    Versions        All
-    Implemented by  TJvID3UserFrame
+  <TABLE 15c%,85c%>
+    Frame name:      TXXX
+    Frame ID:        fiUserText
+    Versions:        All
+    Implemented by:  TJvID3UserFrame
   </TABLE>
 See Also
   TJvID3UserFrame
@@ -1693,11 +1693,11 @@ Description
   "W"-frames. A single frame consists of a <LINK TJvID3UDUrl.Description, description> of the string
   and the actual URL.
 
-  <TABLE>
-    Frame name      WXXX
-    Frame ID        fiWWWUser
-    Versions        All
-    Implemented by  TJvID3URLUserFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WXXX
+    Frame ID:        fiWWWUser
+    Versions:        All
+    Implemented by:  TJvID3URLUserFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1810,11 +1810,11 @@ Summary
 Description
   Use PlayCounter to specify the number of times a file has been played.
 
-  <TABLE>
-    Frame name      PCNT
-    Frame ID        fiPlayCounter
-    Versions        All
-    Implemented by  TJvID3PlayCounterFrame
+  <TABLE 15c%,85c%>
+    Frame name:      PCNT
+    Frame ID:        fiPlayCounter
+    Versions:        All
+    Implemented by:  TJvID3PlayCounterFrame
   </TABLE>
 See Also
   TJvID3v2.Popularimeter
@@ -1887,11 +1887,11 @@ Description
   Property Artist represents the value of the 'Official artist/performer webpage' frame. It is a URL
   pointing at the artists official webpage.
 
-  <TABLE>
-    Frame name      WOAR
-    Frame ID        fiWWWArtist
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WOAR
+    Frame ID:        fiWWWArtist
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1902,11 +1902,11 @@ Description
   Property AudioFile represents the value of the 'Official audio file webpage' frame. It is a URL
   pointing at a file specific webpage.
 
-  <TABLE>
-    Frame name      WOAF
-    Frame ID        fiWWWAudioFile
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WOAF
+    Frame ID:        fiWWWAudioFile
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1917,11 +1917,11 @@ Description
   Property AudioSource represents the value of the 'Official audio source webpage' frame. It is an URL
   pointing at the official webpage for the source of the audio file, e.g. a movie.
 
-  <TABLE>
-    Frame name      WOAS
-    Frame ID        fiWWWAudioSource
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WOAS
+    Frame ID:        fiWWWAudioSource
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1932,11 +1932,11 @@ Description
   Property CommercialInfo represents the value of the 'Commercial information' frame. It is a URL
   pointing at a webpage with information such as where the album can be bought.
 
-  <TABLE>
-    Frame name      WCOM
-    Frame ID        fiWWWCommercialInfo
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WCOM
+    Frame ID:        fiWWWCommercialInfo
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1947,11 +1947,11 @@ Description
   Property Copyright represents the value of the 'Copyright/Legal information' frame. It is a URL
   pointing at a webpage where the terms of use and ownership of the file is described.
 
-  <TABLE>
-    Frame name      WCOP
-    Frame ID        fiWWWCopyright
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WCOP
+    Frame ID:        fiWWWCopyright
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1962,11 +1962,11 @@ Description
   Property Payment represents the value of the 'Payment' frame. It is a URL pointing at a webpage that
   will handle the process of paying for this file.
 
-  <TABLE>
-    Frame name      WPAY
-    Frame ID        fiWWWPayment
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WPAY
+    Frame ID:        fiWWWPayment
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1977,11 +1977,11 @@ Description
   Property Publisher represents the value of the 'Publishers official webpage' frame. It is an URL
   pointing at the official webpage for the publisher.
 
-  <TABLE>
-    Frame name      WPUB
-    Frame ID        fiWWWPublisher
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WPUB
+    Frame ID:        fiWWWPublisher
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1992,10 +1992,10 @@ Description
   Property RadioPage represents the value of the 'Official Internet radio station homepage' frame. It
   contains a URL pointing at the homepage of the internet radio station.
 
-  <TABLE>
-    Frame name      WORS
-    Frame ID        fiWWWRadioPage
-    Versions        All
-    Implemented by  TJvID3URLFrame
+  <TABLE 15c%,85c%>
+    Frame name:      WORS
+    Frame ID:        fiWWWRadioPage
+    Versions:        All
+    Implemented by:  TJvID3URLFrame
   </TABLE>
 

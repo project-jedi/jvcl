@@ -30,19 +30,20 @@ Description
   and if the first is implemented it will call those methods (either in addition to the published
   properties or exclusively):
 
-  <AUTOLINK OFF>
   <CODE>
-  TPubOnly1 = class(TPersistent) // only published properties
+  // only published properties
+  TPubOnly1 = class(TPersistent)
 
-  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps) // only published properties
+  // only published properties
+  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps)
 
-  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler) // only the IJvAppStorageHandler methods
-  are used; does not have to be a TPersistent descendant or have RTTI
+  // only the IJvAppStorageHandler methods are used; does not have to be a TPersistent descendant
+  // or have RTTI
+  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler)
 
-  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps) // the
-  IJvAppStorageHandler methods are used in addition to the published properties
+  // the IJvAppStorageHandler methods are used in addition to the published properties
+  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps)
   </CODE>
-  <AUTOLINK ON>
 See Also
   JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent
 
@@ -80,19 +81,20 @@ Description
   and if the first is implemented it will call those methods (either in addition to the published
   properties or exclusively):
 
-  <AUTOLINK OFF>
   <CODE>
-  TPubOnly1 = class(TPersistent) // only published properties
+  // only published properties
+  TPubOnly1 = class(TPersistent)
 
-  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps) // only published properties
+  // only published properties
+  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps)
 
-  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler) // only the IJvAppStorageHandler methods
-  are used; does not have to be a TPersistent descendant or have RTTI
+  // only the IJvAppStorageHandler methods are used; does not have to be a TPersistent descendant
+  // or have RTTI
+  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler)
 
-  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps) // the
-  IJvAppStorageHandler methods are used in addition to the published properties.
+  // the IJvAppStorageHandler methods are used in addition to the published properties.
+  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps)
   </CODE>
-  <AUTOLINK ON>
 See Also
   JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent
 
@@ -200,6 +202,11 @@ See Also
 @@TJvAppStorageEnumOptions
 <TITLE TJvAppStorageEnumOptions type>
 <COMBINE TJvAppStorageEnumOption>
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppStorageErrorEvent
+<TITLE TJvAppStorageErrorEvent type>
+<COMBINE TJvCustomAppStorage.OnError>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageGetFileNameEvent
@@ -615,6 +622,22 @@ See Also
   EndUpdate
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.CheckDeletePathByVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path               - Description for this parameter
+  VersionNumber      - Description for this parameter
+  DeleteIfNotEqual   - Description for this parameter
+  WriteVersionNumber - Description for this parameter
+  VersionName        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ConcatPaths
 Summary
   Combines paths into one (canonical) path.
@@ -623,7 +646,7 @@ Description
   canonical form (relative folder specifications are resolved to their final path).
 
   Below is a table of examples with different paths and their resulting value:
-  <TABLE>
+  <TABLE 60c%,40c%>
     Paths                                              Result
     =================================================  ================================
     'MyFolder1' and 'MyFolder2'                        MyFolder1\\MyFolder2
@@ -843,6 +866,19 @@ See Also
   TJvAppStorageCryptEvent
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.OnError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnTranslatePropertyName
 Summary
   Event to translate the names under which the values were stored with the backend engine.
@@ -853,7 +889,6 @@ Description
 
   Sample:
 
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm2.OptionsRegistryStorageTranslatePropertyName(
     Sender: TJvCustomAppStorage; Instance: TPersistent; var Name: String;
@@ -869,7 +904,6 @@ Description
       Name := 'This_Is_Integer';
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Sender   - AppStorage Instance
   Instance - Instance of the Parent object which is stored
@@ -914,7 +948,7 @@ Description
   bytes and put it in the location pointed to by Buf. The result value indicates the number of bytes
   actually read.
 Parameters
-  Path    - Path (relative to the current path) of the value to read.
+  Path    - \Path (relative to the current path) of the value to read.
   Buf     - Buffer in which to put the data read.
   BufSize - Size of the buffer. ReadBinary will return at most BufSize bytes.
 See Also
@@ -929,7 +963,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Path    - Path (relative to the current path) of the value to read.
+  Path    - \Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
   WriteBoolean
@@ -941,7 +975,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Path       - Path (relative to the current path) of the value to read.
+  Path       - \Path (relative to the current path) of the value to read.
   List       - Description for this parameter
   ClearFirst - Description for this parameter
   ItemName   - Description for this parameter
@@ -956,7 +990,7 @@ Description
   ReadDateTime reads date and time value from the storage. The result value is the value in the storage
   or the specified default value if it did not exist in the storage.
 Parameters
-  Path    - Path (relative to the current path) of the value to read.
+  Path    - \Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
   TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadFloat, TJvCustomAppStorage.ReadInteger,
@@ -970,7 +1004,7 @@ Summary
 Description
   Retrieves an enumeration. If the value is not found, the Default will be returned.
 Parameters
-  Path     - Path (relative to the current path) of the value to read.
+  Path     - \Path (relative to the current path) of the value to read.
   TypeInfo - Description for this parameter
   Default  - Value to return if the specified path does not exist.
   Value    - Description for this parameter
@@ -986,7 +1020,7 @@ Description
   If the value is not an Extended (or can't be converted to an Extended an EConvertError exception will
   be raised.
 Parameters
-  Path    - Path (relative to the current path) of the value to read.
+  Path    - \Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
   TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadInteger,
@@ -1004,7 +1038,7 @@ Description
   If the value is not an Integer (or can't be converted to an Integer an EConvertError exception will
   be raised.
 Parameters
-  Path    - Path (relative to the current path) of the value to read.
+  Path    - \Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
   TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
@@ -1025,7 +1059,7 @@ Description
   to as complex as reading in an entire group of values and/or sub lists) and process the data
   immediately (e.g. store it in memory or display it in a control).
 Parameters
-  Path       - Path (relative to the current path) of the value to read.
+  Path       - \Path (relative to the current path) of the value to read.
   List       - Description for this parameter
   OnReadItem - Method that will read each item from the storage.
   ItemName   - Description for this parameter
@@ -1037,7 +1071,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadObjectList@string@TList@Boolean@string
 Summary
-  Write here a summary (1 line)
+  Retrieves a list of objects.
 Description
   Retrieves a list of objects. The list is optionally cleared before before reading starts. The
   ObjectType of the Object is retrieved from the stored "Classname" value. The result value is the
@@ -1047,7 +1081,7 @@ Description
   ObjectType of the Object is defined by the ItemCreator-Event. The result value is the number of items
   read. Uses ReadList with internally provided methods to do the actual reading.
 Parameters
-  Path        - Path (relative to the current path) of the value to read.
+  Path        - \Path (relative to the current path) of the value to read.
   List        - Description for this parameter
   ClearFirst  - Description for this parameter
   ItemName    - Description for this parameter
@@ -1075,7 +1109,7 @@ Summary
 Description
   Call ReadPersistent to retrieve a TPersistent-Object with all of its published properties.
 Parameters
-  Path             - Path (relative to the current path) of the value to read.
+  Path             - \Path (relative to the current path) of the value to read.
   PersObj          - Description for this parameter
   Recursive        - Description for this parameter
   ClearFirst       - Description for this parameter
@@ -1090,7 +1124,7 @@ Summary
 Description
   Call ReadProperty to retrieve a property. If the value is not found, the property is not changed.
 Parameters
-  Path       - Path (relative to the current path) of the value to read.
+  Path       - \Path (relative to the current path) of the value to read.
   PersObj    - Description for this parameter
   PropName   - Description for this parameter
   Recursive  - Description for this parameter
@@ -1105,7 +1139,7 @@ Summary
 Description
   Call ReadSet to retrieve a set. If the value is not found, the Default will be returned.
 Parameters
-  Path      - Path (relative to the current path) of the value to read.
+  Path      - \Path (relative to the current path) of the value to read.
   ATypeInfo - Description for this parameter
   Default   - Value to return if the specified path does not exist.
   Value     - Description for this parameter
@@ -1120,7 +1154,7 @@ Description
   ReadString reads a string value from the storage. The result value is the value in the storage or the
   specified default value if it did not exist in the storage.
 Parameters
-  Path    - Path (relative to the current path) of the value to read.
+  Path    - \Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
   TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
@@ -1139,7 +1173,7 @@ Description
 
   The returned value is the number of strings read.
 Parameters
-  Path       - Path (relative to the current path) of the value to read.
+  Path       - \Path (relative to the current path) of the value to read.
   SL         - String list in which to store the strings from the storage.
   ClearFirst - Flag to indicate if the string list should be cleared before reading commences.
   ItemName   - Description for this parameter
@@ -1651,6 +1685,16 @@ Summary
   Specifies whether to store a set as string.
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorageOptions.StoreDefaultValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.TypedIntegerAsString

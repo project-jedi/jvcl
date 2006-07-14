@@ -88,7 +88,9 @@
 |   |- Bevels=Bevels=JVCL provides a number of bevel like controls.
 |   |- Groups=Group boxes=JVCL provides a number of group box like controls.
 |   |- Panels=Panels=JVCL provides a number of panel like controls.
+|- Printing=Printing=JVCL provides a number of control that deal with printing.
 |- SelectAndChoose=Selecters and choosers=JVCL provides a number of specialized selection and chooser controls.
+|- Storage=Storage=JVCL provides a number of storage components, that can retrieve and store data.
 |- System=System=JVCL provides a number of system component and controls, such as alarms and timers and  library, process and thread managment.
 |   |- AlarmsAndTimers=Alarms and timers=JVCL provides a number of components and controls to schedule and/or time events.
 |   |   |- Alarms=Alarms=JVCL provides a number of components to schedule events.

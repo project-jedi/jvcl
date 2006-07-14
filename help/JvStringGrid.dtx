@@ -503,6 +503,16 @@ Parameters
   ARow    - Indicates the row index of the fixed cell that is clicked.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.OnColWidthsChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnEditButtonClick
 Summary
   Write here a summary (1 line)
@@ -518,7 +528,8 @@ Summary
   Occurs when a cell loses the input focus.
 Description
   \Write an OnExitCell event handler to take specific action when the input focus shifts away from a
-  cell.
+  cell. Losing input focus means exiting a cell that is in edit mode. Merely navigating from cell to
+  cell will NOT trigger OnExitCell
 Parameters
   Sender   - The grid that has fired this event.
   AColumn  - Indicate the column index of the cell that loses the input focus.

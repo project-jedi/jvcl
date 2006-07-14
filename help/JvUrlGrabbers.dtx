@@ -217,18 +217,13 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.ParseUrl@string@string
 Summary
-  Write here a summary (1 line)
+  Parses the URL to extract the local filename
 Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  As local file grabbers do not use protocol, host, user name, password and port specifications, this
+  method makes life easier by allowing to pass only two parameters
 Parameters
-  Url      - Description for this parameter
-  FileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Url      - The Url to parse
+  FileName - The filename found in the Url
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.PreserveAttributes
@@ -267,137 +262,116 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber
 Summary
-  Write here a summary (1 line)
+  Base class for URL grabbers than can route their requests through a proxy
 Description
-  Write here a description
+  Commonly known protocols that can use a proxy are FTP and HTTP
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber.ProxyAddresses
 Summary
-  Write here a summary (1 line)
+  Lists the proxy addresses to use for the various protocols
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is a list of space separated values, which has the format described at the "Listing Proxy
+  Servers" in the following page:
+
+  osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber.ProxyIgnoreList
 Summary
-  Write here a summary (1 line)
+  List of space separated hosts for which the proxy is NOT to be used
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  See the "Listing the Proxy Bypass" section of the following page for more details on the format:
+
+  osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber.ProxyMode
 Summary
-  Write here a summary (1 line)
+  The proxy mode to use for the connection
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  pmManual The values in ProxyAddresses are used pmSysConfig The values defined in the registry for
+  Internet Explorer are used pmNoProxy No proxy is used
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber.ProxyPassword
 Summary
-  Write here a summary (1 line)
+  The password associated with the proxy user name
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber.ProxyUserName
 Summary
-  Write here a summary (1 line)
+  The User Name to use when connecting to the proxy
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties
 Summary
-  Write here a summary (1 line)
+  A class that holds default properties for TJvProxyingUrlGrabber
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties.ProxyAddresses
 Summary
-  Write here a summary (1 line)
+  Lists the proxy addresses to use for the various protocols
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is a list of space separated values, which has the format described at the "Listing Proxy
+  Servers" in the following page:
+
+  osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties.ProxyIgnoreList
 Summary
-  Write here a summary (1 line)
+  List of space separated hosts for which the proxy is NOT to be used
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  See the "Listing the Proxy Bypass" section of the following page for more details on the format:
+
+  osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties.ProxyMode
 Summary
-  Write here a summary (1 line)
+  The proxy mode to use for the connection
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  pmManual The values in ProxyAddresses are used pmSysConfig The values defined in the registry for
+  Internet Explorer are used pmNoProxy No proxy is used
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties.ProxyPassword
 Summary
-  Write here a summary (1 line)
+  The password associated with the proxy user name
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties.ProxyUserName
 Summary
-  Write here a summary (1 line)
+  The User Name to use when connecting to the proxy
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode
 <TITLE TJvProxyMode type>
 Summary
-  Write here a summary (1 line)
+  The available proxying modes
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode.pmNoProxy
-  Description for pmNoProxy
+  No proxy is ever used to connect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode.pmSysConfig
-  Description for pmSysConfig
+  Values read from Internet Explorer's parameters are used
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode.pmManual
-  Description for pmManual
+  Manual connection to the proxy, the values from the various ProxyXXXX properties are used
 

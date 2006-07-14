@@ -32,7 +32,6 @@ Description
   returns true if the bitmap is written to stream as RTF, or false if an error occurred.
 
   For example, to replace the selected text with a bitmap, do the following:
-  <AUTOLINK OFF>
   <CODE>
       Stream := TMemoryStream.Create;
       try
@@ -46,7 +45,6 @@ Description
         Stream.Free;
       end;
   </CODE>
-  <AUTOLINK ON>
 
   * If you stream out the RTF content of the rich edit control, the bitmaps are <I>not</I> included.
     Use <LINK TJvCustomRichEdit.InsertGraphic, InsertGraphic> if you want the bitmaps to be included in
@@ -832,6 +830,16 @@ See Also
   <LINK TJvCustomRichEdit.CanFindNext, CanFindNext>, <LINK TJvCustomRichEdit.FindDialog, FindDialog>
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.Flat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.ForceUndo
 Summary
   Specifies whether undo should be active for all types of text changes in the control.
@@ -891,11 +899,9 @@ Description
   would be 10 (three characters on the first line and seven on the next).
 
   Retrieve the length of the current line:
-  <AUTOLINK OFF>
   <CODE>
     LengthCurrentLine := JvRichEdit1.GetLineLength(JvRichEdit1.GetLineIndex(-1));
   </CODE>
-  <AUTOLINK ON>
 Parameters
   CharIndex - Specifies the character index of a character in the line whose length is to be
                retrieved. This parameter can be –1. In this case, GetLineLength returns the number of
@@ -997,7 +1003,6 @@ Description
   from resizing the image. Another way is to set ReadOnly to true.
 
   Code example:
-  <AUTOLINK OFF>
   <CODE>
   procedure AddImageToRichEdit(AImageList: TImageList; const AImageIndex: Integer);
   var
@@ -1016,7 +1021,6 @@ Description
     end;
   end;
   </CODE>
-  <AUTOLINK ON>
 Note
   InsertGraphic is slower than <LINK BitmapToRTF> and <LINK BitmapToRTF2>, but only with InsertGraphic
   you can stream out RTF content that includes the inserted graphics.
@@ -1126,7 +1130,6 @@ Description
   a call to ReplaceDialog.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm1.JvRichEdit1CloseFindDialog(Sender: TObject; Dialog: TFindDialog);
   begin
@@ -1135,7 +1138,6 @@ Description
         SetFocus;
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Sender - Rich Edit control that has fired this event.
   Dialog - Specifies the Find Text or Replace Text dialog box.
@@ -1271,14 +1273,13 @@ Description
   parameter FindText - in a Find or Replace dialog could not be found.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm1.JvRichEdit1TextNotFound(Sender: TObject;
     const FindText: string);
   begin
-    MessageDlg(Format('Text "%s" not found.', [FindText]), mtWarning, [mbOK], 0); end;
+    MessageDlg(Format('Text "%s" not found.', [FindText]), mtWarning, [mbOK], 0);
+  end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Sender   - Rich Edit control that has fired this event.
   FindText - Specifies the text the user entered.
@@ -1304,7 +1305,6 @@ Description
   automatically sets the link attribute for modified text that it identifies as a URL.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm1.JvRichEdit1URLClick(Sender: TObject; const URLText: string;
     Button: TMouseButton);
@@ -1313,7 +1313,6 @@ Description
       ShellExecute(Handle, nil, PChar(URLText), nil, nil, SW_SHOW);
   end;
   </CODE>
-  <AUTOLINK ON>
 Note
   Rich Edit 2.0
 Parameters
@@ -1352,6 +1351,16 @@ Description
   introduces some more properties. See TJvParaAttributes for an overview of these new properties.
 See Also
   TJvCustomRichEdit.OnSelectionChange, TJvParaAttributes
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.ParentFlat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.PasteSpecialDialog
@@ -1461,11 +1470,9 @@ Description
   the appropriate converter.
 
   RegisterMSTextConverters registers a TJvMSTextConversion instance for each item found in:
-  <AUTOLINK OFF>
   <CODE>
   HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Shared Tools\\Text Converters
   </CODE>
-  <AUTOLINK ON>
 Note
   Registered converters apply to <I>all</I> rich edit controls.
 See Also
@@ -1518,7 +1525,6 @@ Note
   SelAttributes is available only at runtime.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   function TForm1.CurrText: TJvTextAttributes;
   begin
@@ -1533,7 +1539,6 @@ Note
     CurrText.Style := CurrText.Style + [fsBold];
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvCustomRichEdit.DefAttributes, TJvCustomRichEdit.WordAttributes, TJvTextAttributes
 
@@ -1574,11 +1579,9 @@ Description
   is the same as EndPos, SetSelection positions the cursor at the StartPos character.
 
   For example, call:
-  <AUTOLINK OFF>
   <CODE>
   SetSelection(0, 0, True);
   </CODE>
-  <AUTOLINK ON>
   to scroll to the first position of the rich edit control
 Parameters
   StartPos    - Indicates the beginning of the range of text, where 0 is the first character in the
@@ -1643,7 +1646,6 @@ Description
 Note
   Rich edit controls do not directly support streaming. Use the Lines property to stream to or from a
   file, For example to save the selected text as unicode to a file:
-  <AUTOLINK OFF>
   <CODE>
   with JvRichEdit1 do
   try
@@ -1654,7 +1656,6 @@ Note
     StreamMode := [];
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvCustomRichEdit.PlainText, TJvCustomRichEdit.StreamFormat
 
@@ -1703,7 +1704,6 @@ Description
   This example changes the Caption and Enabled properties of 2 TMenuItem's in the OnChange event
   handler of a rich edit control named JvRichEdit1.
 
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm1.JvRichEdit1Change(Sender: TObject);
   const
@@ -1717,7 +1717,6 @@ Description
     RedoMenuItem.Caption := '&Redo ' + UndoNames[JvRichEdit1.RedoName];
   end;
   </CODE>
-  <AUTOLINK ON>
 Note
   Rich Edit 2.0
 See Also
@@ -2534,7 +2533,6 @@ Description
   You could also insert a link by inserting RTF codes. Such a link will also <B>not</B> be saved for
   rich edit dll version 3.0 and below, but it will be saved for rich edit dll version 4.0 and up.
 
-  <AUTOLINK OFF>
   <CODE>
   const
     cHyperlink = '{\\rtf1{\\field {\\*\\fldinst {HYPERLINK "%s" }}{\\fldrslt {\\ul %s }}}}';
@@ -2560,7 +2558,6 @@ Description
     end;
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvCustomRichEdit.OnURLClick, TJvTextAttributes.Disabled, TJvTextAttributes.Hidden,
   TJvTextAttributes.Protected, TJvTextAttributes.Style
@@ -2584,7 +2581,6 @@ Description
 
   Alternatively, you can use property SubscriptStyle to specify whether the text is made of subscript
   and superscript characters. Note (= is equals; ~ is approx.)
-
 
   <TABLE>
     1 point = 20 twips. (A twip is a TWenthIeth of a Point)
@@ -2610,7 +2606,6 @@ Description
   The relation between a logical inch and a physical inch depends on your monitor/video driver. Windows
   typically uses 96 pixels per logical inch for small fonts and 120 pixels per logical inch for large
   fonts. So, if 1 logical inch = 96 pixels, then
-
 
   <TABLE>
     1 pixel = 1/96 logical inch ~ 1440/96 twips = 15 twips = 3/4 point.

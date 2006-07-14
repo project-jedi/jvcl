@@ -2469,18 +2469,14 @@ Description
 
   Note that it's common for the IJvDataProvider instance to support the IJvDataItems interface as well.
   This means that if dpvMe contains a reference to IJvDataProvider that:
-  <AUTOLINK OFF>
   <CODE>
   dpvMe.QueryInterface(IJvDataItems, disRoot)
   </CODE>
-  <AUTOLINK ON>
 
   will be the same as:
-  <AUTOLINK OFF>
   <CODE>
   disRoot := dpvMe.GetItems
   </CODE>
-  <AUTOLINK ON>
 See Also
   IJvDataItems
 

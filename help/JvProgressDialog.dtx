@@ -26,12 +26,10 @@ Description
   be able to perform its intended work (unless it is done in a separate thread). For example, the
   following code would not work when displaying the dialog modally.
 
-  <AUTOLINK OFF>
   <CODE>
     JvProgressDialog1.ShowModal;
     DoLengthyProcess;
   </CODE>
-  <AUTOLINK ON>
   Because of the message loop being taken over by the dialog, the DoLengthyProcess method won't be
   called until the dialog is closed. When displaying the dialog modally, you must perform the
   processing in the OnProgress event instead.
@@ -40,7 +38,6 @@ Description
   it isn't even called in this case). Instead you can update the components properties directly while
   performing the process.
 
-  <AUTOLINK OFF>
   <CODE>
     // set up the dialog:
     JvProgressDialog1.Min := 0;
@@ -56,7 +53,6 @@ Description
     end;
     JvProgressDialog1.Hide;
   </CODE>
-  <AUTOLINK ON>
 Note
   During execution of the dialog, the component properties reflects the <I>current</I> values in the
   dialog (as changed in OnProgress or by direct assignment). After execution, the properties are reset

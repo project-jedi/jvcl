@@ -98,8 +98,19 @@ See Also
 Summary
   Specifies whether the tray icon is shown.
 Description
-  Examine Active at runtime to determine if it an icon is shown in the taskbar notification area or
-  not. Active is false by default, meaning there is no notification icon shown in the taskbar
+  Examine Active at runtime to determine whether the component is active or not. Setting Active to
+  True does actually not imply that an icon is shown in the taskbar notification area.
+  
+  No icon is shown, although Active is True, if
+  
+  * Property IconVisible is set to False after Active was set to True.
+  * Flag tvAutoHideIcon is included in property Visibility and the application is <b>not</b> 
+       minimized.
+  * The Windows Shell failed to add the icon to the tray.
+       
+  Use property IconVisible to determine whether an icon is actually shown in the tray.
+  
+  Active is false by default, meaning there is no notification icon shown in the taskbar
   notification area.
 
   Setting Active to true adds the icon specified by Icon to the tray at runtime. If Animated is also
@@ -109,7 +120,7 @@ Description
   Setting Active to false (the default), removes the notification icon from the taskbar notification
   area.
 See Also
-  Delay, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.Icons
+  Delay, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.Icons, TJvTrayIcon.IconVisible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Animated
@@ -315,7 +326,6 @@ Description
 
   For example, you could use GetIconRect to display a balloon using the TJvBalloonHint component at the
   icon position in the tray:
-  <AUTOLINK OFF>
   <CODE>
   var
     R: TRect;
@@ -324,7 +334,6 @@ Description
       JvBalloonHint1.ActivateHintRect(R, 'Header', 'Hint');
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   IconRect - The rectangle of the tray icon.
 Return value
@@ -419,6 +428,22 @@ See Also
   Delay, TJvTrayIcon.Active, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.IconIndex
 
 ----------------------------------------------------------------------------------------------------
+@@TJvTrayIcon.IconVisible
+Summary
+  Specifies if an tray icon is shown.
+Description
+  Read IconVisible to determine whether an icon is actually shown when Active is set to True. It is 
+  possible that the shell failed to add an icon to the tray.
+  
+  Set IconVisible to True to show the tray icon. Note that Active must be set to True and if
+  flag tvAutoHideIcon is included in property Visibility,
+  then the application must be minimized otherwise no tray icon is shown.
+  
+  Set IconVisible to False to hide the tray icon. Note that you can also set Active to False.
+See Also
+  Active
+
+----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.OnAnimate
 Summary
   Occurs when TJvTrayIcon changes the tray icon.
@@ -500,7 +525,6 @@ Description
   MousePos parameter is always valid.
 
   To show a custom popup menu, use the following code:
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm1.JvTrayIcon1ContextPopup(Sender: TObject; MousePos: TPoint;
     var Handled: Boolean);
@@ -512,7 +536,6 @@ Description
     PostMessage(JvTrayIcon1.Handle, WM_NULL, 0, 0);
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvTrayIcon.PopupMenu
 

@@ -61,12 +61,11 @@ Parameters
 Summary
   Lists the filenames of attachments for the current message.
 Description
-  Use Attachment before calling <LINK SendMail> to add, insert, delete and move filenames of
-  attachments for the to be send message. The number of attachments per message can be limited in some
-  messaging systems. If the limit is exceeded, an EJclMapiError exception is raised when <LINK
-  SendMail> is called. File attachments are copied to the message before <LINK SendMail> returns; thus,
-  later changes to the files do not affect the contents of the message. The files must be closed when
-  they are copied.
+  Use Attachment before calling SendMail to add, insert, delete and move filenames of attachments for
+  the to be send message. The number of attachments per message can be limited in some messaging
+  systems. If the limit is exceeded, an EJclMapiError exception is raised when SendMail is called. File
+  attachments are copied to the message before SendMail returns; thus, later changes to the files do
+  not affect the contents of the message. The files must be closed when they are copied.
 
   After calling ReadMail use Attachment to retrieve the filenames of temporary files where to file
   attachments are saved.
@@ -74,21 +73,21 @@ Description
   Attachment is of type TStrings. Use this type to access its methods or properties to manipulate the
   filenames in the attachment list.
 See Also
-  <LINK SendMail>
+  SendMail
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.BlindCopy
 Summary
   Lists the recipients of a blind copy (BCC).
 Description
-  BlindCopy lists the recipients of a blind copy for messages send by calling <LINK SendMail>. Use
-  BlindCopy to obtain direct access to the individual TJvMailRecipient objects. Each TJvMailRecipient
-  object represents an individual recipient that is send a message by calling <LINK SendMail>.
+  BlindCopy lists the recipients of a blind copy for messages send by calling SendMail. Use BlindCopy
+  to obtain direct access to the individual TJvMailRecipient objects. Each TJvMailRecipient object
+  represents an individual recipient that is send a message by calling SendMail.
 
   Use the <LINK TJvMailRecipients.Add, Add> or <LINK TJvMailRecipients.AddRecipient, AddRecipient>
   method of the recipient collection to add a single recipient to the collection. Use the <LINK
   TJvMailRecipient.Address, Address> and <LINK TJvMailRecipient.Name, Name> properties of the
-  individual entries in BlindCopy to specify or determine the address and name of a recipient.
+  individual entries in BlindCopy to specify or determine the \address and name of a recipient.
 Note
   Some messaging systems can limit the number of recipients per message.
 See Also
@@ -108,14 +107,14 @@ See Also
 Summary
   Lists the recipients of a message copy (CC).
 Description
-  CarbonCopy lists the recipients of a message copy for messages send by calling <LINK SendMail>. Use
+  CarbonCopy lists the recipients of a message copy for messages send by calling SendMail. Use
   CarbonCopy to obtain direct access to the individual TJvMailRecipient objects. Each TJvMailRecipient
-  object represents an individual recipient that is send a message by calling <LINK SendMail>.
+  object represents an individual recipient that is send a message by calling SendMail.
 
   Use the <LINK TJvMailRecipients.Add, Add> or <LINK TJvMailRecipients.AddRecipient, AddRecipient>
   method of the recipient collection to add a single recipient to the collection. Use the <LINK
   TJvMailRecipient.Address, Address> and <LINK TJvMailRecipient.Name, Name> properties of the
-  individual entries in CarbonCopy to specify or determine the address and name of a recipient.
+  individual entries in CarbonCopy to specify or determine the \address and name of a recipient.
 Note
   Some messaging systems can limit the number of recipients per message.
 See Also
@@ -209,7 +208,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.LogOn
 Summary
-  Begins a Simple MAPI session, loading the default message store and address book providers.
+  Begins a Simple MAPI session, loading the default message store and \address book providers.
 Description
   Call LogOn to begin a session with the messaging system.
 
@@ -295,7 +294,7 @@ Summary
   Retrieves a message for reading.
 Description
   Call ReadMail to retrieve one message, copying the message content into the properties and classes as
-  used in the <LINK SendMail> function. ReadMail will fill the following properties:
+  used in the SendMail function. ReadMail will fill the following properties:
 
   * Subject, with the message subject.
   * Body, with the message body.
@@ -337,16 +336,16 @@ See Also
 Summary
   Lists the primary message recipients.
 Description
-  Recipient lists the primary message recipients for messages send by calling <LINK SendMail> or for
-  messages received by calling ReadMail. Use Recipient to obtain direct access to the individual
+  Recipient lists the primary message recipients for messages send by calling SendMail or for messages
+  received by calling ReadMail. Use Recipient to obtain direct access to the individual
   TJvMailRecipient objects. Each TJvMailRecipient object represents an individual recipient that is
-  send a message by calling <LINK SendMail>, or a primary message recipient of a message received by
-  calling ReadMail.
+  send a message by calling SendMail, or a primary message recipient of a message received by calling
+  ReadMail.
 
   Use the <LINK TJvMailRecipients.Add, Add> or <LINK TJvMailRecipients.AddRecipient, AddRecipient>
   method of the recipient collection to add a single recipient to the collection. Use the <LINK
   TJvMailRecipient.Address, Address> and <LINK TJvMailRecipient.Name, Name> properties of the
-  individual entries in Recipient to specify or determine the address and name of a recipient.
+  individual entries in Recipient to specify or determine the \address and name of a recipient.
 Note
   Some messaging systems can limit the number of recipients per message.
 See Also
@@ -355,10 +354,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.ResolveName
 Summary
-  Transforms a message recipient's name as entered by a user to an unambiguous address list entry.
+  Transforms a message recipient's name as entered by a user to an unambiguous \address list entry.
 Description
   Call ResolveName to resolve a message recipient's name (as entered by a user) to an unambiguous
-  address list entry, by prompting the user to choose between possible entries. The dialog box is
+  \address list entry, by prompting the user to choose between possible entries. The dialog box is
   read-only, prohibiting changes.
 Parameters
   Name - Specifies the name to be resolved.
@@ -432,13 +431,12 @@ Description
   not have been sent to all recipients. Depending on the transport provider, recipient validation can
   be a lengthy process.
 
-  Applications that send messages to custom recipients (i.e., recipients not listed in the address
+  Applications that send messages to custom recipients (i.e., recipients not listed in the \address
   book) can avoid name resolution by setting the Address property of the recipient TJvMailRecipient
-  object to the custom address.
+  object to the custom \address.
 
   The following example sets the values of properties of a TJvMail object, and then calls SendMail.
 
-  <AUTOLINK OFF>
   <CODE>
   JvMail1.Clear;
   JvMail1.Recipient.AddRecipient(ToEdit.Text);
@@ -447,7 +445,6 @@ Description
   JvMail1.Attachment.Assign(AttachmentMemo.Lines);
   JvMail1.SendMail;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   ShowDialog - Specifies whether to display a dialog box to prompt the user for recipients and other
                 sending options. When ShowDialog is set to false, at least one recipient must be
@@ -472,11 +469,9 @@ Description
 
   The following example retrieves the current client name using the SimpleMAPI object.
 
-  <AUTOLINK OFF>
   <CODE>
   ClientLabel.Caption := JvMail1.SimpleMAPI.CurrentClientName;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvMail.FreeSimpleMapi
 
@@ -485,10 +480,10 @@ See Also
 Summary
   Specifies the message subject.
 Description
-  Use Subject to specify a text \string describing the message subject before calling <LINK SendMail>.
-  The message subject is typically limited to 256 characters or less.
+  Use Subject to specify a text \string describing the message subject before calling SendMail. The
+  message subject is typically limited to 256 characters or less.
 See Also
-  <LINK SendMail>
+  SendMail
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMail.UserLogged
@@ -647,7 +642,7 @@ See Also
 Summary
   Returns an address with a name.
 Description
-  AddressAndName returns a formatted \string so that the result is "name" <address> . If the recipient
+  AddressAndName returns a formatted \string so that the result is "name" \<address\>. If the recipient
   name is unknown, the name part is replaced by the address.
 See Also
   TJvMailRecipient.Address, TJvMailRecipient.Name
@@ -693,7 +688,7 @@ Description
   TJvMailRecipient properties are known at the time of creation, use the AddRecipient method of the
   TJvMailRecipients object. object instead.
 See Also
-  <LINK AddRecipient>
+  TJvMailRecipients.AddRecipient
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMailRecipients.AddRecipient
@@ -718,11 +713,9 @@ Description
 
   The following code adds a recipient to the <LINK TJvMail.Recipient, Recipient> list:
 
-  <AUTOLINK OFF>
   <CODE>
   JvMail1.Recipient.AddRecipient('SMTP:someone@somedomain.com', 'Some one');
   </CODE>
-  <AUTOLINK ON>
 Note
   The format of an address specified by parameter Address is <B>[address type][e-mail address]</B>.
   Examples of valid addresses are <B>FAX:206-555-1212</B> and <B>SMTP:M@X.COM</B>.

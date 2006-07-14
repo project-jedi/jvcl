@@ -35,8 +35,8 @@ Description
   Use OnKeyFound or OnKeyFoundEx to respond to event notifications that occur when an HTML is
   encountered during parsing using the component.
 See Also
-  TJvHTMLParser.Content, TJvHTMLParser.Filename, TJvHTMLParser.AnalyseString,
-  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AddConditions, TJvHTMLParser.ClearConditions,
+  TJvHTMLParser.Content, TJvHTMLParser.FileName, TJvHTMLParser.AnalyseString,
+  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AddCondition, TJvHTMLParser.ClearConditions,
   TJvHTMLParser.RemoveCondition, TJvHTMLParser.OnKeyFound, TJvHTMLParser.OnKeyFoundEx,
   TJvHTMLParser.Parser
 
@@ -56,7 +56,7 @@ Description
   Use RemoveCondition or ClearConditions to delete one or more HTML tag definitions recognized by the
   parser.
 
-  Use ConditionCount to determine the total number of HTML tags defined for the parser component.
+  Use ConditionsCount to determine the total number of HTML tags defined for the parser component.
 Parameters
   Keyword       - Name associated with the HTML tag definition.
   StartTag      - HTML that marks the start of the defined tag.
@@ -64,7 +64,7 @@ Parameters
   TextSelection - Conditional text parsing required for the HTML tag definition.
 See Also
   TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ClearConditions,
-  TJvHTMLParser.ConditionCount
+  TJvHTMLParser.ConditionsCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.AnalyseFile
@@ -72,10 +72,10 @@ Summary
   Loads and parses HTML content found in the file name for the parser.
 Description
   AnalyseFile is a procedure used to load an to parse the HTML content found in the file specified in
-  the Filename property. AnalyseFile stores the HTML in Filename in a String that is passed as an
+  the FileName property. AnalyseFile stores the HTML in FileName in a string that is passed as an
   argument to the AnalyseString method.
 See Also
-  TJvHTMLParser.AnalyseString, TJvHTMLParser.Filename
+  TJvHTMLParser.AnalyseString, TJvHTMLParser.FileName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.AnalyseString
@@ -92,7 +92,7 @@ Description
   Parser are used to create the HTML tag definitions for the parser.
 
   The TagList property is cleared proper to parsing, and updated to reflect HTML tags found matching
-  the their corresponding TJvParseInfo instance. All values in the Content property are examined for
+  the their corresponding TJvParserInfo instance. All values in the Content property are examined for
   recognized HTML tags during the parsing operation. When the parsing operation has been completed, the
   values in TagList are sorted by their offset into the Content property.
 
@@ -119,9 +119,9 @@ Description
 
   Use RemoveCondition to delete a single HTML tag definition recognized by the parser.
 
-  Use ConditionCount to determine the total number of HTML tags defined for the parser component.
+  Use ConditionsCount to determine the total number of HTML tags defined for the parser component.
 See Also
-  TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ConditionCount
+  TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ConditionsCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.ConditionsCount
@@ -139,7 +139,7 @@ See Also
 Summary
   HTML content to parse using the component.
 Description
-  Content is a read-only String property that represents the HTML content to examine when parsing HTML
+  Content is a read-only string property that represents the HTML content to examine when parsing HTML
   tags and attributes in the AnalyseString method. Content is updated using the value passed as an
   argument to the AnalyseString method.
 See Also
@@ -153,13 +153,13 @@ Description
   FileName is a TFileName property that specifies the file name used to load the HTML Content used
   during parsing operation in the parser component.
 
-  At run-time, assigning a new value to the Filename property causes the AnalyseFile method to be
-  called. Assigning a Filename value at design-time has no effect other than updating the property
+  At run-time, assigning a new value to the FileName property causes the AnalyseFile method to be
+  called. Assigning a FileName value at design-time has no effect other than updating the property
   value.
 
-  Use AnalyseString to parse the HTML content specified using a String value.
+  Use AnalyseString to parse the HTML content specified using a string value.
 See Also
-  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AnalyseProperty
+  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AnalyseString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.GetCondition@Integer@string@string@string
@@ -171,7 +171,7 @@ Description
   when parsing the HTML content in the parser.
 
   Index indicates the ordinal position of the HTML tag and parsing conditions in the list of defined
-  tags. Use ConditionCount to determine the total number of tags defined in the parser. Values in the
+  tags. Use ConditionsCount to determine the total number of tags defined in the parser. Values in the
   indicated TJvParserInfo instance are stored in the Keyword, StartTag, and EndTag variable arguments.
 
   Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
@@ -182,7 +182,7 @@ Parameters
   StartTag - HTML that marks the start of the defined tag.
   EndTag   - HTML that marls the end of the defined tag.
 See Also
-  TJvParserInfo, TJvHTMLParser.ConditionCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
+  TJvParserInfo, TJvHTMLParser.ConditionsCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.GetCondition@Integer@string@string@string@Integer
@@ -194,7 +194,7 @@ Description
   when parsing the HTML content in the parser.
 
   Index indicates the ordinal position of the HTML tag and parsing conditions in the list of defined
-  tags. Use ConditionCount to determine the total number of tags defined in the parser. Values in the
+  tags. Use ConditionsCount to determine the total number of tags defined in the parser. Values in the
   indicated TJvParserInfo instance are stored in the Keyword, StartTag, EndTag, and TextSelection
   variable arguments.
 
@@ -207,7 +207,7 @@ Parameters
   EndTag        - HTML that marls the end of the defined tag.
   TextSelection - Position of the text matching the selected tag definition.
 See Also
-  TJvParserInfo, TJvHTMLParser.ConditionCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
+  TJvParserInfo, TJvHTMLParser.ConditionsCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.OnKeyFound
@@ -236,8 +236,8 @@ Parameters
   Results      - Textual context for the HTL tag.
   OriginalLine - Line of text containing the HTML tag.
 See Also
-  TJvKeyFoundEvent, TJvKeyFoundExEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList,
-  TJvHTMLParser.Parser, TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFoundEx
+  TJvKeyFoundExEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList, TJvHTMLParser.Parser,
+  TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFoundEx
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.OnKeyFoundEx
@@ -268,8 +268,8 @@ Parameters
   TagInfo      - Storage allocated for the HTML tag definition.
   Attributes   - Attribute names and values found in the HTML start tag.
 See Also
-  TJvKeyFoundEvent, TJvKeyFoundExEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList,
-  TJvHTMLParser.Parser, TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFound
+  TJvKeyFoundEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList, TJvHTMLParser.Parser,
+  TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFound
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.Parser
@@ -285,14 +285,14 @@ Description
   for a single tag definition. The following table indicates the relative positions and uses of the
   lines added to the Parser property:
 
-  <TABLE>
+  <TABLE 20c%,80c%>
     Position  Meaning
     --------  --------------------------------------------------------------------------------
     0         Keyword or Name associated with the tag definition.
     1         HTML representing the start of the tag.
     2         HTML representing the end of the tag.
     3         Ordinal position of the tag definition in the resulting list of tags.
-    4         Conditional parsing required for the tag. See TJvParseInfo.MustBe for
+    4         Conditional parsing required for the tag. See TJvParserInfo.MustBe for
                 acceptable values.
   </TABLE>
 
@@ -300,8 +300,8 @@ Description
 
   Use TagList to access the HTML tags encountered during parsing of the HTML content for the parser.
 See Also
-  TJvHTMLParser.AddConditions, TJvHTMLParser.ClearConditions, TJvHTMLParser.RemoveCondition,
-  TJvHTMLParser.TagList, TJvParseInfo.MustBe
+  TJvHTMLParser.AddCondition, TJvHTMLParser.ClearConditions, TJvHTMLParser.RemoveCondition,
+  TJvHTMLParser.TagList, TJvParserInfo.MustBe
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.RemoveCondition
@@ -365,7 +365,7 @@ See Also
 Summary
   HTML recognized as the end of a tag definition.
 Description
-  EndTag is a String member variable that indicates the HTML recognized as the end of a tag definition
+  EndTag is a string member variable that indicates the HTML recognized as the end of a tag definition
   in the TJvHTMLParser component.
 
   StartTag and EndTag are used to determine the boundaries of an HMTL tag set during parsing of HTML in
@@ -392,7 +392,7 @@ See Also
 Summary
   HTML recognized as the start of a tag definition.
 Description
-  StartTag is a String member variable that indicates the HTML recognized as the start of a tag
+  StartTag is a string member variable that indicates the HTML recognized as the start of a tag
   definition in the TJvHTMLParser component.
 
   StartTag and EndTag are used to determine the boundaries of an HMTL tag set during parsing of HTML in

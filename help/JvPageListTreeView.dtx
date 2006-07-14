@@ -40,14 +40,12 @@ Description
   Items property along with the item's index into the tree view. For example, to access the second item
   in the tree view, you could use the following code.
 
-  <AUTOLINK OFF>
   <CODE>
     (Delphi)
       MyTreeNode := TreeView1.Items[1];
     (C++Builder)
       MyTreeNode = TreeView1->Items[1];
   </CODE>
-  <AUTOLINK ON>
 
   When setting this property at design-time in the Object Inspector the Tree View Items Editor appears.
   Use the New Item and New SubItem buttons to add items to the tree view. Use the Text property to
@@ -84,11 +82,9 @@ Description
   association at run-time, type cast the tree node to TJvPageIndexNode and set its PageIndex property.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
     TJvPageIndexNode(JvCustomPageListTreeView1.Items[SomeIndex]).PageIndex := SomePageIndex;
   </CODE>
-  <AUTOLINK ON>
 
   The linking will only have effect if the PageList property has been assigned.
 See Also
@@ -226,7 +222,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPageListTreeView
-<TITLEIMG TJvCustomPageListTreeView>
+<TITLEIMG TJvPageListTreeView>
 JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees,JVCL.PagesAndTabs
   FLAG=Component
@@ -302,7 +298,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeView
-<TITLEIMG TJvCustomPageListTreeView>
+<TITLEIMG TJvSettingsTreeView>
 JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component

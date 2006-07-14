@@ -345,7 +345,6 @@ Description
   buffer. Thus, LoadFromFile will discard any pre-existing data stored in the frame.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   JvID3v21.Open;
   with TJvID3PictureFrame.FindOrCreate(JvID3v21, ptOther) do
@@ -356,7 +355,6 @@ Description
   end;
   JvID3v21.Commit;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   FileName - The name of the file to load into the field as the value of the FileName parameter.
 See Also
@@ -377,7 +375,6 @@ Description
   binary field of the tag.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   var
     MS: TMemoryStream;
@@ -393,7 +390,6 @@ Description
     JvID3v21.Commit;
    end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Stream - Specifies the stream from which the binary field’s value of the tag is copied.
 See Also
@@ -409,7 +405,6 @@ Description
   If the named file cannot be created or opened, SaveToFile raises an exception.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   var
     Frame: TJvID3BinaryFrame;
@@ -426,7 +421,6 @@ Description
     end;
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   FileName - Specifies the name of the file.
 See Also
@@ -445,7 +439,6 @@ Description
   raises an exception.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   var
     MS: TMemoryStream;
@@ -465,14 +458,11 @@ Description
     end;
   end;
   </CODE>
-  <AUTOLINK ON>
   \Note that you can rewrite this example as
-  <AUTOLINK OFF>
   <CODE>
     { If Find results nil then the picture is cleared }
     Image1.Picture.Assign(TJvID3BinaryFrame.Find(JvID3v21, fiPicture));
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Stream - Specifies the name of the stream to which the binary field’s value is saved.
 See Also
@@ -631,7 +621,6 @@ Description
 
   Alternatively, you can use the FindOrCreate methods of frames to a specific frame component:
 
-  <AUTOLINK OFF>
   <CODE>
   var
     Frame: TJvID3Frame;
@@ -645,11 +634,9 @@ Description
       TJvID3TextFrame(Frame).Text := 'The white album';
   end;
   </CODE>
-  <AUTOLINK ON>
 
   Or:
 
-  <AUTOLINK OFF>
   <CODE>
   begin
     { JvID3v21 is the tag controller }
@@ -657,7 +644,6 @@ Description
     TJvID3TextFrame.FindOrCreate(fiAlbum).Text := 'The White Album';
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   AFrameID - Specifies the frame identifier to add.
 Return value
@@ -913,7 +899,6 @@ Description
   AFrameID as frame identifier in the tag.
 
   Example, search for a picture frame with a specific picture type:
-  <AUTOLINK OFF>
   <CODE>
   function FindPictureType(const APictureType: TJvID3PictureType): TJvID3PictureFrame; var
     Frame: TJvID3Frame;
@@ -931,7 +916,6 @@ Description
       Result := TJvID3PictureFrame(Frame);
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   AFrameID - The frame identifier to search for.
   From     - Specifies the frame after which to search for the frame identifier. FindNextFrame sets
@@ -1864,7 +1848,6 @@ Description
   be sure that the frame identifier is supported by that specific TJvID3Frame descendant class.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   var
     TextFrame: TJvID3TextFrame;
@@ -1879,7 +1862,6 @@ Description
     TextFrame.FrameID := fiComment;
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvID3Frame.FrameName
 
@@ -1897,7 +1879,6 @@ Description
   class.
 
   \Example:
-  <AUTOLINK OFF>
   <CODE>
   var
     TextFrame: TJvID3TextFrame;
@@ -1912,7 +1893,6 @@ Description
     TextFrame.FrameName := 'COMM';
   end;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvID3Frame.FrameID
 
@@ -2012,7 +1992,6 @@ Description
   one fiAlbum frame in a tag. Therefore use FindOrCreate to add frames to the tag, which checks whether
   there already exists such frame in the tag. For example:
 
-  <AUTOLINK OFF>
   <CODE>
   var
     TextFrame: TJvTextFrame;
@@ -2026,7 +2005,6 @@ Description
     PictureFrame.LoadFromFile('somepicture.jpg');
   end;
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Frame - Specifies the frame to add.
 
@@ -2501,12 +2479,10 @@ Description
 
   Use the Value property to specify the numerical value of the frame, for example:
 
-  <AUTOLINK OFF>
   <CODE>
  { Sets the value of the BMP frame to 120 }
   TJvID3NumberFrame.FindOrCreate(MyTagController, fiBPM).Value := 120;
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvID3TextFrame, TJvID3TimestampFrame
 
@@ -2661,7 +2637,6 @@ Description
   is the risk of separation of files.
 
   The following example adds a frame with a picture selected by the user to the tag:
-  <AUTOLINK OFF>
   <CODE>
   with TOpenPictureDialog.Create(Application) do
   try
@@ -2681,7 +2656,6 @@ Description
     Free;
   end;
   </CODE>
-  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PictureFrame.Description
@@ -3150,7 +3124,6 @@ Description
   and more. There may only be one text information frame of its kind in a tag.
 
   Use the Text or TextW property to specify the value of the frame, for example:
-  <AUTOLINK OFF>
   <CODE>
  { Sets the value of the Album frame  }
   with TJvID3TextFrame.FindOrCreate(MyTagController, fiAlbum) do
@@ -3159,7 +3132,6 @@ Description
     TextW := 'The White Album';
   end;
   </CODE>
-  <AUTOLINK ON>
 
   There may only be one text information frame of its kind in a tag.
 
@@ -3340,12 +3312,10 @@ Description
   and more. There may only be one text information frame of its kind in a tag.
 
   Use the Value property to specify the timestamp value of the frame, for example:
-  <AUTOLINK OFF>
   <CODE>
  { Sets the encoding time frame to the current time }
   TJvID3TextFrame.FindOrCreate(MyTagController, fiEncodingTime).Value := Now;
   </CODE>
-  <AUTOLINK ON>
 
   There may only be one text information frame of its kind in a tag. All the TJvID3TimestampFrame's are
   only valid in <LINK TJvID3Controller.Version, version 2.4.0> tags.
@@ -3429,12 +3399,10 @@ Description
   begins with "W".
 
   Use the URL property to specify the \URL link of the frame, for example:
-  <AUTOLINK OFF>
   <CODE>
   { Sets the official artist web page frame }
   TJvID3TextFrame.FindOrCreate(MyTagController, fiWWWArtist).Value := 'http://www.paulvandyk.de';
   </CODE>
-  <AUTOLINK ON>
 
   There may only be one text information frame of its kind in a tag.
 

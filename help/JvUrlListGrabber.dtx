@@ -9,6 +9,13 @@ Author
   Olivier Sannier
 
 ----------------------------------------------------------------------------------------------------
+@@EAtLeastOneGrabberRunning
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@EGrabberNotStopped
 Summary
   Exception triggered if someone tries to set the Url property while the grabber is not stopped
@@ -95,6 +102,20 @@ Description
   derived classes but cannot be abstract because of C++ Builder compatibility issues
 Return value
   A class derived from TJvCustomUrlGrabberDefaultProperties
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.GetFormattedUrl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  URL - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.GetSupportedProtocolMarker
@@ -298,11 +319,9 @@ Summary
 Description
   A URL respects this format:
 
-  <AUTOLINK OFF>
   <CODE>
     protocol [username[:password]@] host [:port] [/filename]
   </CODE>
-  <AUTOLINK ON>
 
   When a non compulsory part is missing the exit value of the associated parameter will be an empty
   string or 0
@@ -372,12 +391,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.Stream
 Summary
-  Write here a summary (1 line)
+  An access to the internal Stream used by the grabber to write the grabbed content
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.Url
@@ -392,12 +408,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.UrlGrabberThread
 Summary
-  Write here a summary (1 line)
+  A read-only access to the internal thread used for grabbing
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Grabbing is always done in threads. This property allows you to access the thread used to grab the
+  content for the given Url. Note that this property might be nil until the Start method is called.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.UserName
@@ -451,12 +465,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.Port
 Summary
-  Write here a summary (1 line)
+  The port to connect to
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.SupportedURLName
@@ -493,12 +504,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.Continue
 Summary
-  Write here a summary (1 line)
+  Used internally. If set to False the current grabber will stop.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is used in the OnProgress event handler, do not use yourself. Instead use the Stop method of the
+  associated grabber.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.DoProgress
@@ -521,12 +530,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.ErrorText
 Summary
-  Write here a summary (1 line)
+  The text of the last error
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Used internally to keep track of the message do pass in the OnError event of the grabber
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.FGrabber
@@ -534,6 +540,14 @@ Summary
   This value holds a reference to the grabber to which the thread belongs
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.Grab
+Summary
+  Does the actual grabbing of the URL
+Description
+  This method must be overriden by the derived classes. It is called by Execute which in turns ensure
+  that the state of the grabber is correctly set back to gsStopped once the grabbing is done
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.Status
@@ -568,6 +582,16 @@ Summary
 Description
   TJvCustomUrlGrabberThreadClass is the metaclass for TJvCustomUrlGrabberThread. Its value is the class
   reference for TJvCustomUrlGrabberThread or for one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TJvGrabberAddedEvent
+<TITLE TJvGrabberAddedEvent type>
+<COMBINE TJvUrlListGrabber.OnGrabberAdded>
+
+----------------------------------------------------------------------------------------------------
+@@TJvGrabberCreatedEvent
+<TITLE TJvGrabberCreatedEvent type>
+<COMBINE TJvUrlListGrabber.OnGrabberCreated>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvGrabberDoneFileEvent
@@ -907,15 +931,50 @@ Description
   defaults
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlListGrabber.Grabbers
+@@TJvUrlListGrabber.GrabberCount
 Summary
-  The Grabber objects associated with the Urls
+  Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.Grabbers
+Summary
+  The Grabber objects currently running
+Description
+  This property contains the list of currently running grabbers. Hence, if Start has not been called,
+  or all grabbers have finished their operation, it will be empty. Use GrabberCount to get the number
+  of elements in this array. Note that if MaxSimultaneousGrabbers is greater than 0, this array will
+  only contain up to this value, and not as many grabbers as there are URLs. This can then be used to
+  limit the number of simultaneous grab operations.
 Parameters
-  Index - Index of the URL in the URLs list
+  Index - Index of the grabber
 See Also
   TJvUrlListGrabber.URLs
+
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.MaxSimultaneousGrabbers
+Summary
+  Indicates the maximum simultaneous running grabbers the component can use
+Description
+  If set to 0, as many grabbers as there are URLs will be created and started by the Start method. If
+  set to anything greater than 0, there will be no more grabbers than this value running
+  simultaneously. Note that once a grabbe has finished its operation, it is moved out of the Grabbers
+  list, but is not immediately destroyed. It is placed in the list of grabbers waiting to be destroyed,
+  list which will be emptied when its number of elements is about to be CleanupThreshold + 1.
+
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.NexUrlIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnClosingConnection
@@ -979,6 +1038,33 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnGrabberAdded
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Grabber - Description for this parameter
+  Index   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnGrabberCreated
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Grabber - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnNameResolved
 Summary
   Event triggered when a name has been resolved by a grabber
@@ -1014,12 +1100,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnRedirect
 Summary
-  Write here a summary (1 line)
+  Event triggered when a grabber is being redirected to another URL
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This can occur with a protocol such as HTTP where the server can indicate a forwarding address in its
+  initial response
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnRequestComplete
@@ -1069,28 +1153,43 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnStatusChange
 Summary
-  Write here a summary (1 line)
+  Triggered when the internet status of one of the grabbers have changed
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.Start
+Summary
+  Starts the grabbing operation
+Description
+  Call this method to create the grabbers and start them. Note that up to MaxSimultaneousGrabbers will
+  be created if its value is greater than 0. Else, as many grabbers as there are URLs will be created.
+  The Grabbers property is updated as the grabbers are created, and once this is done, all the created
+  grabbers are started simultaneously.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.StartAll
 Summary
-  Starts the grabbing operations for all grabbers.
+  Deprecated, use Start instead
 Description
   If you want to start only one grabbing operation, use the Grabbers property instead
 See Also
   TJvCustomUrlGrabber.Start, TJvUrlListGrabber.StopAll, TJvUrlListGrabber.URLs
 
 ----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.Stop
+Summary
+  Call to stop all grabbers
+Description
+  This tells the grabbers to stop but does not wait for them to finish. You can know that every grab
+  operation has ended when GrabberCount is equal to 0.
+
+----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.StopAll
 Summary
-  Stops the grabbing operations for all grabbers
+  Deprecated, use Stop instead
 Description
-  If you want to stop only one grabbing operation,use the Grabbers property instead
+  If you want to stop only one grabbing operation, use the Grabbers property instead
 See Also
   TJvCustomUrlGrabber.Stop, TJvUrlListGrabber.StartAll, TJvUrlListGrabber.URLs
 
@@ -1099,7 +1198,10 @@ See Also
 Summary
   The list of URLs to be grabbed
 Description
-  Write here a description
+  This list contains the URLs to be grabbed. Note that changing this list while at least one grabber is
+  running is not allowed. Note also that the associated grabbers will only be created when required,
+  either when Start is called or when a new grabber slot is available (if MaxSimultaneousGrabbers is
+  greater than 0)
 See Also
   TJvUrlListGrabber.Grabbers
 

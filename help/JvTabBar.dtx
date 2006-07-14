@@ -1281,7 +1281,7 @@ Description
 
   TJvTabBar publishes properties defined in TJvCustomTabBar, including:
 
-  <TABLE>
+  <TABLE 50c%,50c%>
     Property              Default Value
     --------------------  -------------
     Align                 alTop
@@ -1394,6 +1394,18 @@ See Also
   TJvTabBarItems.Items
 
 ----------------------------------------------------------------------------------------------------
+@@TJvTabBarItem.AutoDeleteData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.CanSelect
 Summary
   Indicates if the tab can become the selected tab in the tabbed-bar control.
@@ -1405,12 +1417,12 @@ Description
 
   CanSelect is used when the selected tab on the TabBar control has changed, and a new tab needs to be
   drawn using the appropriate font, color, image, and close button. This occurs when the TabBar control
-  calls its' <LINK TJvCustomTabBar.FindSelectableTab, FindSelectableTab> method or when assigning a new
-  value to its' <LINK TJvCustomTabBar.SelectedTab, SelectedTab> property.
+  calls its' private FindSelectableTab method or when assigning a new value to its' <LINK
+  TJvCustomTabBar.SelectedTab, SelectedTab> property.
 Return value
   Boolean - True if the tab is visible and enabled in the tabbed-bar control.
 See Also
-  TJvCustomTabBar.SelectedTab, TJvCustomTabBar.FindSelectableTab, Enabled, Visible, TabBar
+  TJvCustomTabBar.SelectedTab, Enabled, Visible, TabBar
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Caption
@@ -1474,11 +1486,9 @@ Description
   contains False, the derived display area is a rectangle with the following Left, Top, Bottom, and
   Right coordinates:
 
-  <AUTOLINK OFF>
   <CODE>
     Rect(-1, -1, -1, -1);
   </CODE>
-  <AUTOLINK ON>
 
   Otherwise, the display area for tab is adjusted for the current orientation in the TabBar.Orientation
   property. The display area will include space required for the image specified in ImageIndex and the
@@ -1590,11 +1600,9 @@ Description
   Hint can be used to specify both a Help Hint box and long help message for an OnHint handler by
   specifying two values separated by a "|" character (the vertical bar “or” symbol).
 
-  <AUTOLINK OFF>
   <CODE>
   ATabItem.Hint := 'Tab Item|This is information about the tab item.';
   </CODE>
-  <AUTOLINK ON>
 
   If Hint contains only one value, the entire string is used as a Help Hint and returned by the
   GetLongHint function. If a control has no Hint value specified, but its parent control does, the
@@ -1651,8 +1659,8 @@ Summary
   Forces a tab onto the display area for the TabBar control.
 Description
   MakeVisible is a procedure used to force a tab onto the display area for the TabBar control.
-  MakeVisible calls the same similarly named method for the <LINK TJvTabBar.MakeVisible, TJvTabBar>
-  instance.
+  MakeVisible calls the same similarly named method for the <LINK TJvCustomTabBar.MakeVisible,
+  TJvTabBar> instance.
 
   The values in both Visible and Enabled must contain True or no action is performed.
 
@@ -1663,7 +1671,7 @@ Description
 
   The Tab can be scrolled into view and redrawn by setting the SelectedTab property in TJvTabBar.
 See Also
-  TJvTabBar.MakeVisible, TJvTabBar.SelectedTab, Visible
+  TJvCustomTabBar.MakeVisible, TJvCustomTabBar.SelectedTab, Visible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Modified

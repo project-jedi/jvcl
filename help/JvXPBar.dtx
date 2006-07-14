@@ -487,17 +487,13 @@ Description
   Use Items to access the items in the collection by index. Valid indices are between 0 and Count - 1.
   Items is the default property of TJvXPBarVisibleItems, which means you can call it either using
 
-  <AUTOLINK OFF>
   <CODE>
   JvXPBar1.Items.Items[Index]
   </CODE>
-  <AUTOLINK ON>
   or
-  <AUTOLINK OFF>
   <CODE>
   JvXPBar1.Items[Index]
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Index - The 0-based index of the item.
 See Also
@@ -578,12 +574,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Grouped
 Summary
-  Write here a summary (1 line)
+  Causes a auto-collapse of other grouped xpbars
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the grouped property is enabled, all others xpbars are collapsed when the bar is clicked.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.HeaderFont
@@ -663,8 +656,9 @@ Description
 Summary
   Provides indexed access to the items in the control.
 Description
-  Use Items to access the items in the control using an index. Valid indices are between 0 and Count - 1.
-  Items contains all the items in the list. To iterate only the visible ones, use VisibleItems
+  Use Items to access the items in the control using an index. Valid indices are between 0 and Count -
+  1. Items contains all the items in the list. To iterate only the visible ones, use VisibleItems
+
   instead.
 See Also
   Count

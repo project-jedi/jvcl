@@ -221,6 +221,8 @@ Description
   AC power status. This member can be one of the following values:
 
   <TABLE>
+    \           \
+    ----------  -------
     alsOffline  Offline
     alsOnline   Online
     alsUnknown  Unknown
@@ -363,21 +365,17 @@ Description
 
   To find out if a subclass is read-only, use code like:
 
-  <AUTOLINK OFF>
   <CODE>
    if JvComputerInfoEx1.Misc is TJvReadOnlyInfo then
     ...
   </CODE>
-  <AUTOLINK ON>
 
   To find out if a subclass is writeable, use code like:
 
-  <AUTOLINK OFF>
   <CODE>
    if JvComputerInfoEx1.Folders is TJvWriteableInfo then
     ...
   </CODE>
-  <AUTOLINK ON>
 
   Sub-classes are instantiated on-demand which means that sub-classes that you don't use will not be
   created nor will the system be queried for the information the sub-classes provide. This saves you a
@@ -417,12 +415,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.FileInfo
 Summary
-  Write here a summary (1 line)
+  Provides access to file information.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use the subproperties of FileInfo to retrieve information about an object in the file system, such as
+  a file, a folder, a directory, or a drive root.
+
+  This is a read-write class, but you can only change the <LINK TJvFileInfo.FileName> and the <LINK
+  TJvFileInfo.Modifiers> property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Folders
@@ -831,10 +830,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Denotes the CPU vendor.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.CyrixSpecific
@@ -871,52 +867,46 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Family
 Summary
-  Write here a summary (1 line)
+  Indicates the processor family.
 Description
-  Write here a description
+  Processor family. For example, for Intel processors a value of 4 denotes a 486, 5 a Pentium and 6 a
+  Pentium Pro. The family and model members are used together to form a descriptive string in the Name
+  property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Model, Stepping
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Features
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Contains a set of flags detailing the features of the processor. The possible flags are processor
+  specific.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.HasCacheInfo
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the processor specific subrecords contain valid cache information data. If False the
+  IntelSpecific, CyrixSpecific and AMDSpecific subrecords do not contain valid data.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.HasExtendedInfo
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Denotes whether or not the AMD or Cyrix processors have the extended CPUID instruction. This affects
+  the possible flags in the Features field. If False the Features member does not contain any of the
+  extended Cyrix and AMD flags (the ones starting with an 'E').
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.HasInstruction
 Summary
-  Write here a summary (1 line)
+  Indicates whether the processor supports CPU identification instructions.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the processor supports CPU identification instructions. If False the MMX, Features and
+  FrequencyInfo fields do not contain valid data.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.IntelSpecific
@@ -943,12 +933,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.IsFDIVOK
 Summary
-  Write here a summary (1 line)
+  Indicates whether the FDIV instruction is OK.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the FDIV instruction is OK, False if it's flawed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.L1CodeCache
@@ -993,72 +980,62 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Manufacturer
 Summary
-  Write here a summary (1 line)
+  Specifies the processor's manufacturer.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Contains a string describing the processor's manufacturer.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.MMX
 Summary
-  Write here a summary (1 line)
+  Indicates whether the processor supports the MMX extension instructions.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the processor supports the MMX extension instructions.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Model
 Summary
-  Write here a summary (1 line)
+  Specifies the specific model within a processor family.
 Description
-  Write here a description
+  The specific model within a processor family. For example, for an Intel processor with family 6
+  (Pentium Pro) a value of 1 denotes a Pentium Pro while a 3 denotes a Pentium II. The family and model
+  members are used together to form a descriptive string in the CpuName member.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Family, Stepping
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Name
 Summary
-  Write here a summary (1 line)
+  Specifies a descriptive string for the processor.
 Description
-  Write here a description
+  Contains a descriptive string for the processor (for example "Pentium II Xeon").
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Family, Model
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.NormFreq
 Summary
-  Write here a summary (1 line)
+  Indicates the normalized frequency of the CPU in MHz.
 Description
-  Write here a description
+  The normalized frequency of the CPU in MHz. For example, a raw frequency of 761 MHz is normalized to
+  760 MHz.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NormFreq
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.ProcessorCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of processors in the system.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The number of processors in the system. Initialized during unit initialization.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.RawFreq
 Summary
-  Write here a summary (1 line)
+  Indicates the raw frequency of the CPU in MHz.
 Description
-  Write here a description
+  The raw frequency of the CPU in MHz.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RawFreq
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.SSE
@@ -1073,44 +1050,42 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Stepping
 Summary
-  Write here a summary (1 line)
+  Indicates the processor's stepping number.
 Description
-  Write here a description
+  A processor's Family, Model and Stepping numbers refer to the manufacturing process on which a
+  processor was manufactured and can be useful in identifying a processor in a system.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Family, Model
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.TotalCycles
 Summary
-  Write here a summary (1 line)
+  Returns the elapsed, internal clock cycles during the speed test.
 Description
-  Write here a description
+  The elapsed, internal clock cycles during the speed test.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TotalCycles
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.TotalTicks
 Summary
-  Write here a summary (1 line)
+  Returns the time, in microseconds, that elapsed during the speed test.
 Description
-  Write here a description
+  The time, in microseconds, that elapsed during the speed test.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TotalCycles
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.TransmetaSpecific
 Summary
-  Write here a summary (1 line)
+  Provides information specific to Transmeta.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Use TransmetaSpecific when accessing Transmeta specific information. If the CPU is not an Transmeta,
+  this property has no valid data.
+
+  Use CPUType to determine the type of CPU.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCPUInfo.AMDSpecific, TJvCPUInfo.CPUType, TJvCPUInfo.CyrixSpecific
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.VendorIDString
@@ -1125,14 +1100,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.ViaSpecific
 Summary
-  Write here a summary (1 line)
+  Provides information specific to Via.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Use ViaSpecific when accessing Via specific information. If the CPU is not an Via, this property has
+  no valid data.
+
+  Use CPUType to determine the type of CPU.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCPUInfo.AMDSpecific, TJvCPUInfo.CPUType, TJvCPUInfo.CyrixSpecific
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo._3DNow
@@ -1191,10 +1166,20 @@ Description
 @@TJvDisplayFlags
 <TITLE TJvDisplayFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe the display mode of a device.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (dmGrayScale, dmInterlaced); - for reference)
+  The following table indicates the meaning of the various TJvDisplayFlags flags:
+
+  <TABLE>
+    Value         Meaning
+    ------------  ----------------------------------------------------------------------------
+    dmGrayScale   Specifies that the display is a noncolor device. If this flag is not set,
+                    color is assumed.
+    dmInterlaced  Specifies that the display mode is interlaced. If the flag is not set,
+                    noninterlaced is assumed.
+  </TABLE>
+See Also
+  TJvScreenInfo.Flags
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveChangeEvent
@@ -1581,20 +1566,53 @@ Description
 @@TJvHighContrastFlags
 <TITLE TJvHighContrastFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe properties of the high contrast accessibility feature.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (hcfAvailable, hcfConfirmHotKey, hcfHighContrastOn, hcfHotkeyActive, hcfHotkeyAvailable,
-  hcfHotkeySound, hcfIndicator); - for reference)
+  The following table indicates the meaning of the various TJvHighContrastFlags flags:
+
+  <TABLE>
+    Value               Meaning
+    ------------------  ----------------------------------------------------------------------
+    hcfAvailable        The high contrast feature is available.
+    hcfConfirmHotKey    A confirmation dialog appears when the high contrast feature is
+                          activated by using the hot key.
+    hcfHighContrastOn   The high contrast feature is on.
+    hcfHotkeyActive     The user can turn the high contrast feature on and off by
+                          simultaneously pressing the left ALT, left SHIFT, and PRINT SCREEN
+                          keys.
+    hcfHotkeyAvailable  The hot key associated with the high contrast feature can be enabled.
+                          An application can retrieve this value, but cannot set it.
+    hcfHotkeySound      A siren is played when the user turns the high contrast feature on or
+                          off by using the hot key.
+    hcfIndicator        This flag is not implemented.
+  </TABLE>
+See Also
+  TJvHighContrast.Flags
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHWDockInfo
 <TITLE TJvHWDockInfo type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe docking states of the computer.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (diDocked, diUndocked, diUserSupplied, diUserDocked, diUserUndocked); - for reference)
+  The following table indicates the meaning of the various TJvHWDockInfo flags:
+
+  <TABLE>
+    Value           Meaning
+    --------------  --------------------------------------------------------------------------
+    diDocked        The computer is docked. This flag is always set for desktop systems that
+                      cannot be undocked.
+    diUndocked      The computer is undocked. This flag is always set for desktop systems
+                      that cannot be undocked.
+    diUserSupplied  The current docking state is retrieved from information provided by the
+                      user in the Hardware Profiles page of the System control panel
+                      application. Windows NT 4.0: Windows NT 4.0 is not able to detect the
+                      docking state. Consequently, this flag is always set.
+    diUserDocked    The computer is docked, according to information provided by the user.
+    diUserUndocked  The computer is undocked, according to information provided by the user.
+  </TABLE>
+See Also
+  TJvHardwareProfile.DockInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconMetrics
@@ -2027,42 +2045,44 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.BorderHeight
 Summary
-  Write here a summary (1 line)
+  Height of a window border, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYBORDER
+  </CODE>
+  This is equivalent to the EdgeHeight value for windows with the 3-D look.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BorderWidth, EdgeHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.BorderWidth
 Summary
-  Write here a summary (1 line)
+  Width of a window border, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXBORDER
+  </CODE>
+  This is equivalent to the EdgeWidth value for windows with the 3-D look.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BorderHeight, EdgeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CaptionButtonheight
 Summary
-  Write here a summary (1 line)
+  Height of a button in a window's caption or title bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYSIZE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CaptionButtonWidth
 Summary
-  Write here a summary (1 line)
+  Width of a button in a window's caption or title bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXSIZE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CaretBlinkTime
@@ -2127,22 +2147,26 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CursorHeight
 Summary
-  Write here a summary (1 line)
+  Height of a cursor, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYCURSOR
+  </CODE>
+  The system cannot create cursors of other sizes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CursorWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CursorWidth
 Summary
-  Write here a summary (1 line)
+  Width of a cursor, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXCURSOR
+  </CODE>
+  The system cannot create cursors of other sizes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CursorHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CursorX
@@ -2151,8 +2175,6 @@ Summary
 Description
   \Read CursorX to find the current horizontal location of the mouse cursor in screen coordinates.
   Change CursorX to move the mouse cursor to another screen location.
-See Also
-  TJvMetricsInfo.CursorY
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CursorY
@@ -2161,28 +2183,28 @@ Summary
 Description
   \Read CursorY to find the current vertical location of the mouse cursor in screen coordinates. Change
   CursorY to move the mouse cursor to another screen location.
-See Also
-  TJvMetricsInfo.CursorX
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DBCSEnabled
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_DBCSENABLED
+  </CODE>
+  Nonzero if User32.dll supports DBCS; zero otherwise.
+
+  Windows Me/98/95: Nonzero if the double-byte character-set (DBCS) version of User.exe is installed;
+  zero otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.Debug
 Summary
-  Write here a summary (1 line)
+  Nonzero if the debug version of User.exe is installed; zero otherwise.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_DEBUG
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DialogBaseUnits
@@ -2199,30 +2221,38 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  <CODE>
+  SM_CYDLGFRAME
+  </CODE>
+  Same as FixedFrameHeight.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FixedFrameHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DialogFrameWidth
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  <CODE>
+  SM_CXDLGFRAME
+  </CODE>
+  Same as FixedFrameWidth.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FixedFrameWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DoubleClickHeight
 Summary
-  Write here a summary (1 line)
+  Height of the rectangle around the location of a first click in a double-click sequence, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYDOUBLECLK
+  </CODE>
+  The second click must occur within the rectangle defined by DoubleClickWidth and DoubleClickHeight
+  for the system to consider the two clicks a double-click. (The two clicks must also occur within a
+  specified time.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DoubleClickWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DoubleClickTime
@@ -2237,602 +2267,638 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DoubleClickWidth
 Summary
-  Write here a summary (1 line)
+  Width of the rectangle around the location of a first click in a double-click sequence, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXDOUBLECLK
+  </CODE>
+  The second click must occur within the rectangle defined by DoubleClickWidth and DoubleClickHeight
+  for the system to consider the two clicks a double-click. (The two clicks must also occur within a
+  specified time.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DoubleClickHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DragHeight
 Summary
-  Write here a summary (1 line)
+  Height of a rectangle centered on a drag point to allow for limited movement of the mouse pointer
+  before a drag operation begins, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYDRAG
+  </CODE>
+  It allows the user to click and release the mouse button easily without unintentionally starting a
+  drag operation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DragWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DragWidth
 Summary
-  Write here a summary (1 line)
+  Width of a rectangle centered on a drag point to allow for limited movement of the mouse pointer
+  before a drag operation begins, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXDRAG
+  </CODE>
+  It allows the user to click and release the mouse button easily without unintentionally starting a
+  drag operation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DragHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.EdgeHeight
 Summary
-  Write here a summary (1 line)
+  Height of a 3-D border, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYEDGE
+  </CODE>
+  This is the 3-D counterpart of BorderHeight.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EdgeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.EdgeWidth
 Summary
-  Write here a summary (1 line)
+  Width of a 3-D border, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXEDGE
+  </CODE>
+  This is the 3-D counterpart of BorderWidth.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EdgeHeight, BorderWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.FixedFrameHeight
 Summary
-  Write here a summary (1 line)
+  Thickness of the frame around the perimeter of a window that has a caption but is not sizable, in
+  pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYFIXEDFRAME
+  </CODE>
+  SM_CXFIXEDFRAME is the height of the horizontal border and SM_CYFIXEDFRAME is the width of the
+  vertical border. Same as SM_CYDLGFRAME.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.FixedFrameWidth
 Summary
-  Write here a summary (1 line)
+  Thickness of the frame around the perimeter of a window that has a caption but is not sizable, in
+  pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXFIXEDFRAME
+  </CODE>
+  SM_CXFIXEDFRAME is the height of the horizontal border and SM_CYFIXEDFRAME is the width of the
+  vertical border. Same as SM_CXDLGFRAME.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.FrameHeight
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  <CODE>
+  SM_CYFRAME
+  </CODE>
+  Same as ResizeBorderHeight.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ResizeBorderHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.FrameWidth
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  <CODE>
+  SM_CXFRAME
+  </CODE>
+  Same as ResizeBorderWidth.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ResizeBorderWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.IconHeight
 Summary
-  Write here a summary (1 line)
+  Default height of an icon, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYICON
+  </CODE>
+  The LoadIcon function can load only icons with the dimensions SM_CXICON and SM_CYICON.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.IconSpacingHeight
 Summary
-  Write here a summary (1 line)
+  Height of a grid cell for items in large icon view, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYICONSPACING
+  </CODE>
+  Each item fits into a rectangle of size SM_CXICONSPACING by SM_CYICONSPACING when arranged. This
+  value is always greater than or equal to SM_CYICON.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.IconSpacingWidth
 Summary
-  Write here a summary (1 line)
+  Width of a grid cell for items in large icon view, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXICONSPACING
+  </CODE>
+  Each item fits into a rectangle of size SM_CXICONSPACING by SM_CYICONSPACING when arranged. This
+  value is always greater than or equal to SM_CXICON.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.IconWidth
 Summary
-  Write here a summary (1 line)
+  Default width of an icon, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXICON
+  </CODE>
+  The LoadIcon function can load only icons with the dimensions specified by SM_CXICON and SM_CYICON.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.KanjiWindowHeight
 Summary
-  Write here a summary (1 line)
+  For double byte character set versions of the system, this is the height of the Kanji window at the
+  bottom of the screen, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYKANJIWINDOW
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MaxDragWindowHeight
 Summary
-  Write here a summary (1 line)
+  Default maximum height of a window that has a caption and sizing borders, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMAXTRACK
+  </CODE>
+  This metric refers to the entire desktop. The user cannot drag the window frame to a size larger than
+  these dimensions. A window can override this value by processing the WM_GETMINMAXINFO message.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MaxDragWindowWidth
 Summary
-  Write here a summary (1 line)
+  Default maximum width of a window that has a caption and sizing borders, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXMAXTRACK
+  </CODE>
+  This metric refers to the entire desktop. The user cannot drag the window frame to a size larger than
+  these dimensions. A window can override this value by processing the WM_GETMINMAXINFO message.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MaximizedWindowHeight
 Summary
-  Write here a summary (1 line)
+  Default height, in pixels, of a maximized top-level window on the primary display monitor.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMAXIMIZED
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MaximizedWindowWidth
 Summary
-  Write here a summary (1 line)
+  Default width, in pixels, of a maximized top-level window on the primary display monitor.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXMAXIMIZED
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MenuButtonHeight
 Summary
-  Write here a summary (1 line)
+  Height of menu bar buttons, such as the child window close button used in the multiple document
+  interface, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMENUSIZE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MenuButtonWidth
 Summary
-  Write here a summary (1 line)
+  Width of menu bar buttons, such as the child window close button used in the multiple document
+  interface, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXMENUSIZE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MenuCheckHeight
 Summary
-  Write here a summary (1 line)
+  Height of the default menu check-mark bitmap, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMENUCHECK
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MenuCheckWidth
 Summary
-  Write here a summary (1 line)
+  Width of the default menu check-mark bitmap, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXMENUCHECK
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MenuItemHeight
 Summary
-  Write here a summary (1 line)
+  Height of a single-line menu bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMENU
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MenuRightAligned
 Summary
-  Write here a summary (1 line)
+  Nonzero if drop-down menus are right-aligned with the corresponding menu-bar item; zero if the menus
+  are left-aligned.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_MENUDROPALIGNMENT
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MidEastEnabled
 Summary
-  Write here a summary (1 line)
+  Nonzero if the system is enabled for Hebrew and Arabic languages, zero if not.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_MIDEASTENABLED
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinDragWindowHeight
 Summary
-  Write here a summary (1 line)
+  Minimum tracking height of a window, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMINTRACK
+  </CODE>
+  The user cannot drag the window frame to a size smaller than these dimensions. A window can override
+  this value by processing the WM_GETMINMAXINFO message.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinDragWindowWidth
 Summary
-  Write here a summary (1 line)
+  Minimum tracking width of a window, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXMINTRACK
+  </CODE>
+  The user cannot drag the window frame to a size smaller than these dimensions. A window can override
+  this value by processing the WM_GETMINMAXINFO message.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinimizedWindowHeight
 Summary
-  Write here a summary (1 line)
+  Height of a minimized window, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMINIMIZED
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinimizedWindowSpacingHeight
 Summary
-  Write here a summary (1 line)
+  Height of a grid cell for a minimized window, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYMINSPACING
+  </CODE>
+  Each minimized window fits into a rectangle this size when arranged. This value is always greater
+  than or equal to MinimizedWindowHeight.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinimizedWindowHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinimizedWindowSpacingWidth
 Summary
-  Write here a summary (1 line)
+  Width of a grid cell for a minimized window, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXMINSPACING
+  </CODE>
+  Each minimized window fits into a rectangle this size when arranged. This value is always greater
+  than or equal to MinimizedWindowWidth.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinimizedWindowWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinimizedWindowWidth
 Summary
-  Write here a summary (1 line)
+  Width of a minimized window, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXMINIMIZED
+  </CODE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinimizedWindowWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinWindowHeight
 Summary
-  Write here a summary (1 line)
+  Minimum height of a window, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYMIN
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinWindowWidth
 Summary
-  Write here a summary (1 line)
+  Minimum width of a window, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXMIN
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MouseButtons
 Summary
-  Write here a summary (1 line)
+  Number of buttons on mouse.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CMOUSEBUTTONS
+  </CODE>
+  Number of buttons on mouse, or zero if no mouse is installed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MouseButtonsSwapped
 Summary
-  Write here a summary (1 line)
+  Indicates whether the meanings of the left and right mouse buttons are swapped.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_SWAPBUTTON
+  </CODE>
+  True if the meanings of the left and right mouse buttons are swapped; False otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MousePresent
 Summary
-  Write here a summary (1 line)
+  Indicates whether a mouse is installed.
 Description
-  Write here a description
+  <CODE>
+  SM_MOUSEPRESENT
+  </CODE>
+  True if a mouse is installed, False otherwise. This value is rarely False, because of support for
+  virtual mice and because some systems detect the presence of the port instead of the presence of a
+  mouse.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MouseWheelPresent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MouseWheelPresent
 Summary
-  Write here a summary (1 line)
+  Specifies whether a mouse with a wheel is installed.
 Description
-  Write here a description
+  <CODE>
+  SM_MOUSEWHEELPRESENT
+  </CODE>
+  True if a mouse with a wheel is installed; False otherwise.
+
+  Windows NT 3.51 and earlier and Windows 95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MousePresent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.Networked
 Summary
-  Write here a summary (1 line)
+  Indicates whether a network is present.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_NETWORK
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.PenWindows
 Summary
-  Write here a summary (1 line)
+  Indicates whether the Microsoft Windows for Pen computing extensions are installed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_PENWINDOWS
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ResizeBorderHeight
 Summary
-  Write here a summary (1 line)
+  Thickness of the sizing border around the perimeter of a window that can be resized, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYSIZEFRAME
+  </CODE>
+  ResizeBorderWidth is the width of the horizontal border, and ResizeBorderHeight is the height of the
+  vertical border. Same as SM_CYFRAME.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ResizeBorderWidth
 Summary
-  Write here a summary (1 line)
+  Thickness of the sizing border around the perimeter of a window that can be resized, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXSIZEFRAME
+  </CODE>
+  ResizeBorderWidth is the width of the horizontal border, and ResizeBorderHeight is the height of the
+  vertical border. Same as SM_CXFRAME.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScreenClientHeight
 Summary
-  Write here a summary (1 line)
+  Height of the client area for a full-screen window on the primary display monitor, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CYFULLSCREEN
+  </CODE>
+  To get the coordinates of the portion of the screen not obscured by the system taskbar or by
+  application desktop toolbars, read the TJvSystemParametersInfo.WorkArea property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScreenClientWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScreenClientWidth
 Summary
-  Write here a summary (1 line)
+  Width of the client area for a full-screen window on the primary display monitor, in pixels.
 Description
-  Write here a description
+  <CODE>
+  SM_CXFULLSCREEN
+  </CODE>
+  To get the coordinates of the portion of the screen not obscured by the system taskbar or by
+  application desktop toolbars, read the TJvSystemParametersInfo.WorkArea property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScreenClientHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScreenHeight
 Summary
-  Write here a summary (1 line)
+  Height of the screen of the primary display monitor, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYSCREEN
+  </CODE>
+  This is the same values obtained by calling GetDeviceCaps as follows: GetDeviceCaps(
+  hdcPrimaryMonitor, VERTRES).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScreenWidth
 Summary
-  Write here a summary (1 line)
+  Width of the screen of the primary display monitor, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXSCREEN
+  </CODE>
+  This is the same values obtained by calling GetDeviceCaps as follows: GetDeviceCaps(
+  hdcPrimaryMonitor, HORZRES).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScrollArrowHeight
 Summary
-  Write here a summary (1 line)
+  Height of a horizontal scroll bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYHSCROLL
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScrollArrowWidth
 Summary
-  Write here a summary (1 line)
+  Width of the arrow bitmap on a horizontal scroll bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXHSCROLL
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScrollHeight
 Summary
-  Write here a summary (1 line)
+  Height of the arrow bitmap on a vertical scroll bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYVSCROLL
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScrollThumbHeight
 Summary
-  Write here a summary (1 line)
+  Height of the thumb box in a vertical scroll bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYVTHUMB
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScrollThumbWidth
 Summary
-  Write here a summary (1 line)
+  Width of the thumb box in a horizontal scroll bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXHTHUMB
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScrollWidth
 Summary
-  Write here a summary (1 line)
+  Width of a vertical scroll bar, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXVSCROLL
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.Secure
 Summary
-  Write here a summary (1 line)
+  Nonzero if security is present; zero otherwise.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_SECURE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ShowSounds
 Summary
-  Write here a summary (1 line)
+  Determines whether the Show Sounds accessibility flag is on or off.
 Description
-  Write here a description
+  <CODE>
+  SM_SHOWSOUNDS
+  </CODE>
+  If it is on, the user requires an application to present information visually in situations where it
+  would otherwise present the information only in audible form. True if the feature is on, or False if
+  it is off.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSystemParametersInfo.ShowSounds
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SlowMachine
 Summary
-  Write here a summary (1 line)
+  Nonzero if the computer has a low-end (slow) processor; zero otherwise.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_SLOWMACHINE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallCaptionButtonHeight
 Summary
-  Write here a summary (1 line)
+  Height of small caption buttons, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYSMSIZE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallCaptionButtonWidth
 Summary
-  Write here a summary (1 line)
+  Width of small caption buttons, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXSMSIZE
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallIconHeight
 Summary
-  Write here a summary (1 line)
+  Recommended height of a small icon, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYSMICON
+  </CODE>
+  Small icons typically appear in window captions and in small icon view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallIconWidth
 Summary
-  Write here a summary (1 line)
+  Recommended width of a small icon, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CXSMICON
+  </CODE>
+  Small icons typically appear in window captions and in small icon view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallWindowCaptionHeight
 Summary
-  Write here a summary (1 line)
+  Height of a small caption, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYSMCAPTION
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.WindowCaptionHeight
 Summary
-  Write here a summary (1 line)
+  Height of a caption area, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  SM_CYCAPTION
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMinimizedMetrics
@@ -3098,11 +3164,35 @@ See Also
 @@TJvMouseKeysFlags
 <TITLE TJvMouseKeysFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe properties of the MouseKeys accessibility feature.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (mkfAvailable, mkfConfirmHotKey, mkfHotkeyActive, mkfHotkeySound, mkfIndicator,
-  mkfMouseKeysOn, mkfModifiers, mkfReplaceNumbers); - for reference)
+  The following table indicates the meaning of the various TJvMouseKeysFlags flags:
+
+  <TABLE>
+    Value              Meaning
+    -----------------  -----------------------------------------------------------------------
+    mkfAvailable       The MouseKeys feature is available.
+    mkfConfirmHotKey   Windows 95/98, Windows 2000: A confirmation dialog box appears when
+                         the MouseKeys feature is activated by using the hot key.
+    mkfHotkeyActive    The user can turn the MouseKeys feature on and off by using the hot
+                         key, which is LEFT ALT+LEFT SHIFT+NUM LOCK.
+    mkfHotkeySound     The system plays a siren sound when the user turns the MouseKeys
+                         feature on or off by using the hot key.
+    mkfIndicator       Windows 95/98, Windows 2000: A visual indicator is displayed when the
+                         MouseKeys feature is on.
+    mkfMouseKeysOn     The MouseKeys feature is on.
+    mkfModifiers       Windows 95/98, Windows 2000: The CTRL key increases cursor speed by
+                         the value specified by the iCtrlSpeed member, and the SHIFT key
+                         causes the cursor to delay briefly after moving a single pixel,
+                         allowing fine positioning of the cursor. If this value is not
+                         specified, the CTRL and SHIFT keys are ignored while the user moves
+                         the mouse cursor using the arrow keys.
+    mkfReplaceNumbers  Windows 95/98, Windows 2000: The numeric keypad moves the mouse when
+                         the NUM LOCK key is on. If this flag is not specified, the numeric
+                         keypad moves the mouse cursor when the NUM LOCK key is off.
+  </TABLE>
+See Also
+  TJvMouseKeys.Flags
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNonClientMetrics
@@ -3403,32 +3493,30 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.Flags
 Summary
-  Write here a summary (1 line)
+  Specifies the device's display mode.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Specifies the device's display mode.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.Height
 Summary
-  Write here a summary (1 line)
+  Specifies the height, in pixels, of the visible device surface.
 Description
-  Write here a description
+  Specifies the height, in pixels, of the visible device surface.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScreenResolution, Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.Hz
 Summary
-  Write here a summary (1 line)
+  Specifies the frequency, in hertz, of the display device.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Specifies the frequency, in hertz (cycles per second), of the display device in a particular mode.
+  This value is also known as the display device's vertical refresh rate.
+
+  Property Hz may return 60, which indicates the display hardware's default refresh rate. This default
+  rate is typically set by switches on a display card or computer motherboard, or by a configuration
+  program.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.ScreenModes
@@ -3447,18 +3535,16 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Height, Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.Width
 Summary
-  Write here a summary (1 line)
+  Specifies the width, in pixels, of the visible device surface.
 Description
-  Write here a description
+  Specifies the width, in pixels, of the visible device surface.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Height,ScreenResolution
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenMode
@@ -3559,39 +3645,37 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys
 Summary
-  Write here a summary (1 line)
+  Provides access to information about the SerialKeys accessibility feature.
 Description
-  Write here a description
+  This is <B>not</B> supported on Windows Server 2003 and Windows XP/2000/NT. The user controls this
+  feature through the control panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.Active
 Summary
-  Write here a summary (1 line)
+  Indicates whether a port is active.
 Description
-  Write here a description
+  Indicates whether a port is active.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActivePort
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.ActivePort
 Summary
-  Write here a summary (1 line)
+  Indicates the active port.
 Description
-  Write here a description
+  Indicates the active port.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.BaudRate
 Summary
-  Write here a summary (1 line)
+  Specifies the baud rate setting for the serial port.
 Description
-  Write here a description
+  Specifies the baud rate setting for the serial port specified by ActivePort.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActivePort
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.Flags
@@ -3615,54 +3699,57 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.Port
 Summary
-  Write here a summary (1 line)
+  Reserved
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Reserved
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.PortState
 Summary
-  Write here a summary (1 line)
+  Specifies the state of the port specified by ActivePort.
 Description
-  Write here a description
+  Specifies the state of the port specified by ActivePort.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActivePort.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysFlags
 <TITLE TJvSerialKeysFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe properties of the SerialKeys accessibility feature.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (serkfAvailable, serkfIndicator, serkfSerialKeysOn); - for reference)
+  The following table indicates the meaning of the various TJvSerialKeysFlags flags:
+
+  <TABLE>
+    Value              Meaning
+    -----------------  ------------------------------------
+    serkfAvailable     The SerialKeys feature is available.
+    serkfIndicator     This flag is not implemented.
+    serkfSerialKeysOn  The SerialKeys feature is on.
+  </TABLE>
+See Also
+  TJvSerialKeys.Flags
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState
 <TITLE TJvSerialKeysPortState type>
 Summary
-  Write here a summary (1 line)
+  Enumerates serial port states.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Enumerates serial port states.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState.psSerialKeysIgnored
-  Description for psSerialKeysIgnored
+  All input on this port is ignored by the SerialKeys feature.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState.psSerialKeysAware
-  Description for psSerialKeysAware
+  Input on this port is watched for SerialKeys activation sequences when no other application has the
+  port open.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState.psSerialKeysAlways
-  Description for psSerialKeysAlways
+  All input on this port is treated as SerialKeys commands.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingChangeEvent
@@ -3672,7 +3759,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentry
 Summary
-  Write here a summary (1 line)
+  Provides access to information about the SoundSentry accessibility feature.
 Description
   Write here a description
 
@@ -3789,10 +3876,19 @@ See Also
 @@TJvSoundSentryFlags
 <TITLE TJvSoundSentryFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe properties of the SoundSentry accessibility feature.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (ssfAvailable, ssfSoundSentryOn, ssfIndicator); - for reference)
+  The following table indicates the meaning of the various TJvSoundSentryFlags flags:
+
+  <TABLE>
+    Value             Meaning
+    ----------------  -------------------------------------
+    ssfAvailable      The SoundSentry feature is available.
+    ssfSoundSentryOn  The SoundSentry feature is on.
+    ssfIndicator      This flag is not implemented.
+  </TABLE>
+See Also
+  TJvSoundSentry.Flags
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryGrafEffect
@@ -3907,15 +4003,48 @@ See Also
 @@TJvStickyKeysFlags
 <TITLE TJvStickyKeysFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe properties of the StickyKeys accessibility feature.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (skfStickyKeysOn, skfAvailable, skfHotkeyActive, skfConfirmHotKey, skfHotKeySound,
-  skfIndicator, skfAudibleFeedback, skfTriState, skfTwoKeysOff, skfLeftAltLatched, skfLeftCtrlLatched,
-  skfLeftShiftLatched, skfRightAltLatched, skfRightCtrlLatched, skfRightShiftLatched,
-  skfLeftWinLatched, skfRightWinLatched, skfLeftAltLocked, skfLeftCtrlLocked, skfLeftShiftLocked
-  skfRightAltLocked, skfRightCtrlLocked, skfRightShiftLocked, skfLeftWinLocked, skfRightWinLocked); -
-  for reference)
+  The following table indicates the meaning of the various TJvStickyKeysFlags flags:
+
+  <TABLE>
+    Value                  Meaning
+    ---------------------  -------------------------------------------------------------------
+    skfStickyKeysOn        The StickyKeys feature is on.
+    skfAvailable           The StickyKeys feature is available.
+    skfHotkeyActive        The user can turn the StickyKeys feature on and off by pressing
+                             the SHIFT key five times.
+    skfConfirmHotKey       Windows 95/98, Windows 2000: A confirmation dialog appears when
+                             the StickyKeys feature is activated by using the hot key.
+    skfHotKeySound,        The system plays a siren sound when the user turns the StickyKeys
+                             feature on or off by using the hot key.
+    skfIndicator           Windows 95/98, Windows 2000: A visual indicator should be
+                             displayed when the StickyKeys feature is on.
+    skfAudibleFeedback     The system plays a sound when the user latches, locks, or releases
+                             modifier keys using the StickyKeys feature.
+    skfTriState            Pressing a modifier key twice in a row locks down the key until
+                             the user presses it a third time.
+    skfTwoKeysOff          Releasing a modifier key that has been pressed in combination with
+                             any other key turns off the StickyKeys feature.
+    skfLeftAltLatched      Windows 98, Windows 2000: The left ALT key is latched.
+    skfLeftCtrlLatched     Windows 98, Windows 2000: The left CTRL key is latched.
+    skfLeftShiftLatched    Windows 98, Windows 2000: The left SHIFT key is latched.
+    skfRightAltLatched     Windows 98, Windows 2000: The right ALT key is latched.
+    skfRightCtrlLatched    Windows 98, Windows 2000: The right CTRL key is latched.
+    skfRightShiftLatched,  Windows 98, Windows 2000: The right SHIFT key is latched.
+    skfLeftWinLatched      Windows 98, Windows 2000: The left Windows key is latched.
+    skfRightWinLatched     Windows 98, Windows 2000: The right Windows key is latched.
+    skfLeftAltLocked       Windows 98, Windows 2000: The left ALT key is locked.
+    skfLeftCtrlLocked      Windows 98, Windows 2000: The left CTRL key is locked.
+    skfLeftShiftLocked     Windows 98, Windows 2000: The left SHIFT key is locked.
+    skfRightAltLocked      Windows 98, Windows 2000: The right ALT key is locked.
+    skfRightCtrlLocked     Windows 98, Windows 2000: The right CTRL key is locked.
+    skfRightShiftLocked    Windows 98, Windows 2000: The right SHIFT key is locked.
+    skfLeftWinLocked       Windows 98, Windows 2000: The left Windows key is locked.
+    skfRightWinLocked      Windows 98, Windows 2000: The right Windows key is locked.
+  </TABLE>
+See Also
+  TJvSystemParametersInfo.StickyKeys
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo
@@ -3931,312 +4060,315 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DDarkShadow
 Summary
-  Write here a summary (1 line)
+  Color of dark shadow for three-dimensional display elements.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_3DDKSHADOW = 21
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DFace
 Summary
-  Write here a summary (1 line)
+  Face color for three-dimensional display elements and for dialog box backgrounds.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_3DFACE = 15
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DHighlight
 Summary
-  Write here a summary (1 line)
+  Highlight color for three-dimensional display elements (for edges facing the light source.)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_3DHIGHLIGHT = 20;
+  COLOR_3DHILIGHT   = 20;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DLight
 Summary
-  Write here a summary (1 line)
+  Light color for three-dimensional display elements (for edges facing the light source.)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_3DLIGHT = 22;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DShadow
 Summary
-  Write here a summary (1 line)
+  Shadow color for three-dimensional display elements (for edges facing away from the light source).
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_3DSHADOW = 16;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorActiveBorder
 Summary
-  Write here a summary (1 line)
+  Color of active window border.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_ACTIVEBORDER = 10;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorActiveCaption
 Summary
-  Write here a summary (1 line)
+  Color of active window title bar.
 Description
-  Write here a description
+  <CODE>
+  COLOR_ACTIVECAPTION = 2;
+  </CODE>
+
+  If not Windows NT or Windows 95: Specifies the left side color in the color gradient of an active
+  window's title bar if the gradient effect is enabled.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorGradientActiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorAppWorkspace
 Summary
-  Write here a summary (1 line)
+  Background color of multiple document interface (MDI) applications.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_APPWORKSPACE = 12;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBackground
 Summary
-  Write here a summary (1 line)
+  Color of desktop.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_BACKGROUND = 1;
+  COLOR_DESKTOP    = 1;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBtnFace
 Summary
-  Write here a summary (1 line)
+  Face color for three-dimensional display elements and for dialog box backgrounds.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_BTNFACE = 15;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBtnText
 Summary
-  Write here a summary (1 line)
+  Color of text on push buttons.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_BTNTEXT = 18;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorCaptionText
 Summary
-  Write here a summary (1 line)
+  Color of text in caption, size box, and scroll bar arrow box.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_CAPTIONTEXT = 9;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientActiveCaption
 Summary
-  Write here a summary (1 line)
+  Right side color in the color gradient of an active window's title bar.
 Description
-  Write here a description
+  <CODE>
+  COLOR_GRADIENTACTIVECAPTION = 27;
+  </CODE>
+  ColorActiveCaption specifies the left side color. Check <LINK
+  TJvSystemParametersInfo.GradientCaptions> to determine whether the gradient effect is enabled.
+  Windows NT and Windows 95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSystemParametersInfo.GradientCaptions, ColorActiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientInactiveCaption
 Summary
-  Write here a summary (1 line)
+  Right side color in the color gradient of an inactive window's title bar.
 Description
-  Write here a description
+  <CODE>
+  COLOR_GRADIENTINACTIVECAPTION = 28;
+  </CODE>
+  ColorInactiveCaption specifies the left side color. Windows NT and Windows 95: This value is not
+  supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorInactiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGrayText
 Summary
-  Write here a summary (1 line)
+  Color of grayed (disabled) text.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_GRAYTEXT = 17;
+  </CODE>
+  This color is set to 0 if the current display driver does not support a solid gray color.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlight
 Summary
-  Write here a summary (1 line)
+  Color of item(s) selected in a control.
 Description
-  Write here a description
+  <CODE>
+  COLOR_HIGHLIGHT = 13;
+  </CODE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorMenuHighlight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlightText
 Summary
-  Write here a summary (1 line)
+  Color of text of item(s) selected in a control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_HIGHLIGHTTEXT = 14;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHotLight
 Summary
-  Write here a summary (1 line)
+  Color for a hot-tracked item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_HOTLIGHT = 26;
+  </CODE>
+  Windows NT and Windows 95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInactiveBorder
 Summary
-  Write here a summary (1 line)
+  Color of inactive window border.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_INACTIVEBORDER = 11;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInactiveCaption
 Summary
-  Write here a summary (1 line)
+  Color of inactive window caption.
 Description
-  Write here a description
+  <CODE>
+  COLOR_INACTIVECAPTION = 3;
+  </CODE>
+  If not Windows NT or Windows 95: Specifies the left side color in the color gradient of an inactive
+  window's title bar if the gradient effect is enabled.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorGradientInactiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInactiveCaptionText
 Summary
-  Write here a summary (1 line)
+  Color of text in an inactive caption.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_INACTIVECAPTIONTEXT = 19;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInfoBk
 Summary
-  Write here a summary (1 line)
+  Background color for tooltip controls.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_INFOBK = 24;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInfoText
 Summary
-  Write here a summary (1 line)
+  Text color for tooltip controls.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_INFOTEXT = 23;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorMenu
 Summary
-  Write here a summary (1 line)
+  Menu background.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_MENU = 4;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorMenuBar
 Summary
-  Write here a summary (1 line)
+  The background color for the menu bar when menus appear as flat menus
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_MENUBAR = 30;
+  </CODE>
+  The background color for the menu bar when menus appear as flat menus (see SystemParametersInfo).
+  However, COLOR_MENU continues to specify the background color of the menu popup.
+
+  Windows 2000/NT and Windows Me/98/95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorMenuHighlight
 Summary
-  Write here a summary (1 line)
+  The color used to highlight menu items when the menu appears as a flat menu
 Description
-  Write here a description
+  <CODE>
+  COLOR_MENUHILIGHT = 29;
+  </CODE>
+  For flat menu, see <LINK TJvSystemParametersInfo.FlatMenu>. The highlighted menu item is outlined
+  with ColorHighlight.
+
+  Windows 2000/NT and Windows Me/98/95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSystemParametersInfo.FlatMenu, ColorHighlight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorMenuText
 Summary
-  Write here a summary (1 line)
+  Color of text in menus.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_MENUTEXT = 7;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorScrollBar
 Summary
-  Write here a summary (1 line)
+  Color of scroll bar gray area.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_SCROLLBAR = 0;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorWindow
 Summary
-  Write here a summary (1 line)
+  Color of window background.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_WINDOW = 5;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorWindowFrame
 Summary
-  Write here a summary (1 line)
+  Color of window frame.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_WINDOWFRAME = 6;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorWindowText
 Summary
-  Write here a summary (1 line)
+  Color of text in windows.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  COLOR_WINDOWTEXT = 8;
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders
@@ -4248,42 +4380,44 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.AppData
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for application-specific data.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_APPDATA
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Application Data.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonAppData
 Summary
-  Write here a summary (1 line)
+  Contains application data for all users.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COMMON_APPDATA
+  </CODE>
+  A typical path is C:\\Documents and Settings\\All Users\\Application Data.
+Note
+  Version 5.0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonDesktopDirectory
 Summary
-  Write here a summary (1 line)
+  Contains files and folders that appear on the desktop for all users.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COMMON_DESKTOPDIRECTORY
+  </CODE>
+  A typical path is C:\\Documents and Settings\\All Users\\Desktop. Valid only for Windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonFavorites
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for favorite items common to all users.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COMMON_FAVORITES
+  </CODE>
+  Valid only for Windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonFiles
@@ -4298,42 +4432,45 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonPrograms
 Summary
-  Write here a summary (1 line)
+  contains the directories for the common program groups that appear on the Start menu for all users.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COMMON_PROGRAMS
+  </CODE>
+  A typical path is C:\\Documents and Settings\\All Users\\Start Menu\\Programs. Valid only for Windows
+  NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonStartmenu
 Summary
-  Write here a summary (1 line)
+  Contains the programs and folders that appear on the Start menu for all users.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COMMON_STARTMENU
+  </CODE>
+  A typical path is C:\\Documents and Settings\\All Users\\Start Menu. Valid only for Windows NT
+  systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonStartup
 Summary
-  Write here a summary (1 line)
+  Contains the programs that appear in the Startup folder for all users.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COMMON_STARTUP
+  </CODE>
+  A typical path is C:\\Documents and Settings\\All Users\\Start Menu\\Programs\\Startup. Valid only
+  for Windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Cookies
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for Internet cookies.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_COOKIES
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Cookies.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Current
@@ -4346,172 +4483,185 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Desktop
 Summary
-  Write here a summary (1 line)
+  The virtual folder representing the Windows desktop, the root of the namespace.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_DESKTOP
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.DesktopDirectory
 Summary
-  Write here a summary (1 line)
+  Used to physically store file objects on the desktop (not to be confused with the desktop folder
+  itself).
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_DESKTOPDIRECTORY
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Desktop.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Favorites
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for the user's favorite items.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_FAVORITES
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Favorites.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Fonts
 Summary
-  Write here a summary (1 line)
+  A virtual folder containing fonts.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_FONTS
+  </CODE>
+  A typical path is C:\Windows\Fonts.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.History
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for Internet history items.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_HISTORY
+  </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.InternetCache
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for temporary Internet files.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_INTERNET_CACHE
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Local Settings\\Temporary Internet
+  Files.
+Note
+  Version 4.72.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Nethood
 Summary
-  Write here a summary (1 line)
+  Containing the link objects that may exist in the My Network Places virtual folder.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_NETHOOD
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\NetHood.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Personal
 Summary
-  Write here a summary (1 line)
+  The virtual folder representing the My Documents desktop item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_PERSONAL
+  </CODE>
+  Previous to Version 6.0: The file system directory used to physically store a user's common
+  repository of documents. A typical path is C:\\Documents and Settings\\<I>username</I>\\My
+  Documents.
+Note
+  Version 6.0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Printhood
 Summary
-  Write here a summary (1 line)
+  Contains the link objects that can exist in the Printers virtual folder.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_PRINTHOOD
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\PrintHood.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Profile
 Summary
-  Write here a summary (1 line)
+  The user's profile folder.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_PROFILE
+  </CODE>
+  A typical path is C:\\Documents and Settings\\username.
+Note
+  Version 5.0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.ProgramFiles
 Summary
-  Write here a summary (1 line)
+  The Program Files folder.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_PROGRAM_FILES
+  </CODE>
+  A typical path is C:\\Program Files.
+Note
+  Version 5.0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Programs
 Summary
-  Write here a summary (1 line)
+  Contains the user's program groups (which are themselves file system directories).
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_PROGRAMS
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Start Menu\\Programs.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Recent
 Summary
-  Write here a summary (1 line)
+  Contains shortcuts to the user's most recently used documents.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_RECENT
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\My Recent Documents.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.SendTo
 Summary
-  Write here a summary (1 line)
+  Contains Send To menu items.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_SENDTO
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\SendTo.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.StartMenu
 Summary
-  Write here a summary (1 line)
+  Contains Start menu items.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_STARTMENU
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Start Menu.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Startup
 Summary
-  Write here a summary (1 line)
+  Corresponds to the user's Startup program group.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_STARTUP
+  </CODE>
+  The system starts these programs whenever any user logs onto Windows NT or starts Windows 95. A
+  typical path is C:\\Documents and Settings\\<I>username</I>\\Start Menu\\Programs\\Startup.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.System
 Summary
-  Write here a summary (1 line)
+  The Windows System folder.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_SYSTEM
+  </CODE>
+  A typical path is C:\\Windows\\System32.
+Note
+  Version 5.0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Temp
@@ -4526,12 +4676,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Templates
 Summary
-  Write here a summary (1 line)
+  Serves as a common repository for document templates.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_TEMPLATES
+  </CODE>
+  A typical path is C:\\Documents and Settings\\<I>username</I>\\Templates.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.TrailingPathDelimiter
@@ -4546,12 +4696,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Windows
 Summary
-  Write here a summary (1 line)
+  The Windows directory or SYSROOT.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <CODE>
+  CSIDL_WINDOWS
+  </CODE>
+  This corresponds to the %windir% or %SYSTEMROOT% environment variables. A typical path is
+  C:\\Windows.
+Note
+  Version 5.0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo
@@ -4603,22 +4756,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.Animation
 Summary
-  Write here a summary (1 line)
+  Specifies whether minimize and restore animation is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the beeper is on, or False if it is off.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.Beep
 Summary
-  Write here a summary (1 line)
+  Determines whether the warning beeper is on.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the beeper is on, or False if it is off.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.BorderMultiplier
@@ -4633,22 +4780,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.CaretWidth
 Summary
-  Write here a summary (1 line)
+  The caret width in edit controls, in pixels.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Windows NT and Windows Me/98/95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ComboboxAnimation
 Summary
-  Write here a summary (1 line)
+  Determines whether the slide-open effect for combo boxes is enabled
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True for enabled, or False for disabled.
+
+  Windows NT and Windows 95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.CursorShadow
@@ -4683,12 +4826,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.DragFullWindows
 Summary
-  Write here a summary (1 line)
+  Determines whether dragging of full windows is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if enabled, or False otherwise.
+
+  Windows 95: This flag is supported only if Windows Plus! is installed. See <LINK
+  TJvSystemParametersInfo.WindowsExtensions, WindowsExtensions>. See WindowsExtensions
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.DropShadow
@@ -4717,8 +4860,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSystemColorsInfo.ColorMenuHighlight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.FocusBorderHeight
@@ -4797,8 +4939,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSystemColorsInfo.ColorGradientActiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.GridGranularity
@@ -4863,12 +5004,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.IconTitleWrap
 Summary
-  Write here a summary (1 line)
+  Determines whether icon-title wrapping is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if enabled, or False otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.IconVerticalSpacing
@@ -4923,12 +5061,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ListboxSmoothScrolling
 Summary
-  Write here a summary (1 line)
+  Determines whether the smooth-scrolling effect for list boxes is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True for enabled, or False for disabled.
+
+  Windows NT and Windows 95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.LowPowerActive
@@ -4953,52 +5090,54 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MenuAnimation
 Summary
-  Write here a summary (1 line)
+  Determines whether the menu animation feature is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This master switch must be on to enable menu animation effects. True if animation is enabled and
+  False if it is disabled.
+
+  If animation is enabled, MenuFade indicates whether menus use fade or slide animation.
+
+  Windows NT and Windows 95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MenuFade
 Summary
-  Write here a summary (1 line)
+  Determines whether the selection fade effect is enabled.
 Description
-  Write here a description
+  True if enabled or False if disabled. The selection fade effect causes the menu item selected by the
+  user to remain on the screen briefly while fading out after the menu is dismissed.
+
+  MenuAnimation must be on to enable menu animation effects.
+
+  Windows NT and Windows Me/98/95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MenuAnimation
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MenuLeftAligned
 Summary
-  Write here a summary (1 line)
+  Determines whether pop-up menus are left-aligned or right-aligned, relative to the corresponding
+  menu-bar item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if left-aligned, or False otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MenuShowDelay
 Summary
-  Write here a summary (1 line)
+  Specifies the time, in milliseconds, that the system waits before displaying a shortcut menu when the
+  mouse cursor is over a submenu item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Windows 95: Not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MenuUnderLines
 Summary
-  Write here a summary (1 line)
+  Determines whether menu access keys are always underlined.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if menu access keys are always underlined, and False if they are underlined only when the menu
+  is activated by the keyboard.
+
+  Windows NT and Windows 95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MinimizedMetrics
@@ -5013,52 +5152,54 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseClickLock
 Summary
-  Write here a summary (1 line)
+  Retrieves the state of the Mouse ClickLock feature.
 Description
-  Write here a description
+  True if enabled, or False otherwise.
+
+  Windows 2000/NT and Windows 98/95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MouseClickLockTime
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseClickLockTime
 Summary
-  Write here a summary (1 line)
+  Retrieves the time delay before the primary mouse button is locked.
 Description
-  Write here a description
+  This is only enabled if MouseClickLock is set to True.
+
+  Windows 2000/NT and Windows 98/95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MouseClickLock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseHoverHeight
 Summary
-  Write here a summary (1 line)
+  Retrieves the height, in pixels, of the rectangle within which the mouse pointer has to stay for
+  TrackMouseEvent to generate a WM_MOUSEHOVER message.
 Description
-  Write here a description
+  Windows 95: Not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MouseHoverTime, MouseHoverWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseHoverTime
 Summary
-  Write here a summary (1 line)
+  Retrieves the time, in milliseconds, that the mouse pointer has to stay in the hover rectangle for
+  TrackMouseEvent to generate a WM_MOUSEHOVER message.
 Description
-  Write here a description
+  Windows 95: Not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MouseHoverHeight, MouseHoverWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseHoverWidth
 Summary
-  Write here a summary (1 line)
+  Retrieves the width, in pixels, of the rectangle within which the mouse pointer has to stay for
+  TrackMouseEvent to generate a WM_MOUSEHOVER message.
 Description
-  Write here a description
+  Windows 95: Not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MouseHoverHeight, MouseHoverTime
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseKeys
@@ -5073,12 +5214,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseSonar
 Summary
-  Write here a summary (1 line)
+  Retrieves the state of the Mouse Sonar feature.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if enabled or False otherwise.
+
+  Windows 2000/NT and Windows 98/95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseSpeed
@@ -5123,12 +5263,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseVanish
 Summary
-  Write here a summary (1 line)
+  Retrieves the state of the Mouse Vanish feature.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if enabled or False otherwise. For more information, see About Mouse Input.
+
+  Windows 2000/NT and Windows 98/95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.NonClientMetrics
@@ -5143,12 +5282,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.PowerOffActive
 Summary
-  Write here a summary (1 line)
+  Determines whether the power-off phase of screen saving is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if enabled, or False if disabled.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.PowerOffTimeout
@@ -5173,22 +5309,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaverActive
 Summary
-  Write here a summary (1 line)
+  Determines whether screen saving is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if screen saving is enabled, or False otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaverRunning
 Summary
-  Write here a summary (1 line)
+  Determines whether a screen saver is currently running on the window station of the calling process.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if a screen saver is currently running, or False otherwise.
+
+  Windows NT and Windows 95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaveTimeOut
@@ -5203,12 +5335,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SelectionFade
 Summary
-  Write here a summary (1 line)
+  Determines whether the selection fade effect is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if enabled or False if disabled.
+
+  The selection fade effect causes the menu item selected by the user to remain on the screen briefly
+  while fading out after the menu is dismissed.
+
+  Windows NT and Windows Me/98/95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SerialKeys
@@ -5223,32 +5357,29 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ShowIMEUI
 Summary
-  Write here a summary (1 line)
+  Determines whether the IME status window is visible (on a per-user basis).
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the status window is visible, or False if it is not. Windows NT and Windows 95: This value is
+  not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ShowSounds
 Summary
-  Write here a summary (1 line)
+  Determines whether the Show Sounds accessibility flag is on or off.
 Description
-  Write here a description
+  If it is on, the user requires an application to present information visually in situations where it
+  would otherwise present the information only in audible form. True if the feature is on, or False if
+  it is off.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMetricsInfo.ShowSounds
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SnapToDefaultButton
 Summary
-  Write here a summary (1 line)
+  Determines whether the snap-to-default-button feature is enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If enabled, the mouse cursor automatically moves to the default button, such as OK or Apply, of a
+  dialog box. True if the feature is on, or False if it is off. Windows 95: Not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SoundSentry
@@ -5283,52 +5414,51 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipAnimation
 Summary
-  Write here a summary (1 line)
+  Determines whether ToolTip animation is enabled.
 Description
-  Write here a description
+  True if enabled or False if disabled. If ToolTip animation is enabled, SPI_GETTOOLTIPFADE indicates
+  whether ToolTips use fade or slide animation.
+
+  Windows NT and Windows Me/98/95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ToolTipFade
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipFade
 Summary
-  Write here a summary (1 line)
+  Specifies whether ToolTip animation uses a fade effect or a slide effect.
 Description
-  Write here a description
+  If ToolTipAnimation is enabled, ToolTipFade specifies whether ToolTip animation uses a fade effect or
+  a slide effect. True for fade animation or False for slide animation.
+
+  Windows NT and Windows Me/98/95: This value is not supported.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ToolTipAnimation
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.UIEffects
 Summary
-  Write here a summary (1 line)
+  Determines whether UI effects are enabled or disabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if all UI effects are enabled, or False if they are disabled.
+
+  Windows NT and Windows Me/98/95: This value is not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WheelScrollLines
 Summary
-  Write here a summary (1 line)
+  Retrieves the number of lines to scroll when the mouse wheel is rotated.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The default value is 3.
+
+  Windows 95: Not supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WindowsExtensions
 Summary
-  Write here a summary (1 line)
+  Determines whether the Windows extension, Windows Plus!, is installed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Only Windows 95: True if the extension is installed, or False if it is not.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WorkArea
@@ -5344,11 +5474,24 @@ See Also
 @@TJvToggleKeysFlags
 <TITLE TJvToggleKeysFlags type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describe properties of the ToggleKeys accessibility feature.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (tkfAvailable, tkfConfirmHotkey, tkfHotkeyActive, tkfHotkeySound, tkfToggleKeysOn); - for
-  reference)
+  The following table indicates the meaning of the various TJvToggleKeysFlags flags:
+
+  <TABLE>
+    Value             Meaning
+    ----------------  ------------------------------------------------------------------------
+    tkfAvailable      The ToggleKeys feature is available.
+    tkfConfirmHotkey  Windows 95/98, Windows 2000: A confirmation dialog box appears when the
+                        ToggleKeys feature is activated by using the hot key.
+    tkfHotkeyActive   The user can turn the ToggleKeys feature on and off by holding down the
+                        NUM LOCK key for eight seconds.
+    tkfHotkeySound    The system plays a siren sound when the user turns the ToggleKeys
+                        feature on or off by using the hot key.
+    tkfToggleKeysOn   The ToggleKeys feature is on.
+  </TABLE>
+See Also
+  TJvSystemParametersInfo.ToggleKeys
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle
@@ -5377,11 +5520,26 @@ See Also
 @@TJvWindowsArrange
 <TITLE TJvWindowsArrange type>
 Summary
-  Write here a summary (1 line)
+  Set of flags that describes starting positions and a directions, and is used to specify how the
+  system arranges windows.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (waDown, waLeft, waRight, waUp, waBottomLeft, waBottomRight, waHide, waTopLeft, waTopRight); -
-  for reference)
+  The following table indicates the meaning of the various TJvWindowsArrange flags:
+
+  <TABLE>
+    Value          Meaning
+    -------------  -------------------------------------------------------------------------
+    waDown         Arrange vertically, top to bottom.
+    waLeft         Arrange horizontally, left to right.
+    waRight        Arrange horizontally, right to left.
+    waUp           Arrange vertically, bottom to top.
+    waBottomLeft   Start at the lower-left corner of the screen (default position).
+    waBottomRight  Start at the lower-right corner of the screen.
+    waHide         Hide minimized windows by moving them off the visible area of the screen.
+    waTopLeft      Start at the upper-left corner of the screen.
+    waTopRight     Start at the upper-right corner of the screen.
+  </TABLE>
+See Also
+  TJvMetricsInfo.Arrange, TJvMinimizedMetrics.Arrange
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWriteableInfo

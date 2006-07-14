@@ -450,20 +450,16 @@ Description
   Use StoredProps to directly determine the components and their properties that are managed by the
   storage component. The format of the list is:
 
-  <AUTOLINK OFF>
   <CODE>
   component.property
   </CODE>
-  <AUTOLINK ON>
 
   Thus for example:
 
-  <AUTOLINK OFF>
   <CODE>
   CheckBox1.Checked
   Button1.Caption
   </CODE>
-  <AUTOLINK ON>
 
   A <LINK TJvFormStorage_StoredProps_Editor, StoredProps editor> is provided for design-time editing of
   the StoredProps property.
@@ -504,14 +500,12 @@ Description
 
   The following code assumes that the storage component has 3 stored value objects, and sets and stores
   their values:
-  <AUTOLINK OFF>
   <CODE>
   JvFormStorage1.StoredValues[0].Value := 'Germany';
   JvFormStorage1.StoredValues[1].Value := 'Berlin';
   JvFormStorage1.StoredValues[2].Value := 10331000;
   JvFormStorage1.StoredValues.SaveValues;
   </CODE>
-  <AUTOLINK ON>
 Note
   An easier way to set and retrieve values of stored value objects when the name of each stored value
   object is known is to call StoredValue; however, StoredValue cannot be used to change a stored
@@ -529,6 +523,13 @@ Description
   empty value.
 See Also
   TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredPropsPath
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormStorageStringList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage_StoredProps_Editor
@@ -565,11 +566,9 @@ Summary
 
   The selected component and its property are displayed in the Stored Properties list box. For
   example,
-  <AUTOLINK OFF>
   <CODE>
   CheckBox1.Checked
   </CODE>
-  <AUTOLINK ON>
 See Also
   TJvFormStorage.StoredProps
 

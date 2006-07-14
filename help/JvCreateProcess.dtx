@@ -25,6 +25,43 @@ Description
   Run> raises an EJvProcessError error.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvBaseReader
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseReader.ConsoleOutput
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseReader.OnRawRead
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseReader.OnRead
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvConsoleOption
 <TITLE TJvConsoleOption type>
 Summary
@@ -42,6 +79,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvConsoleOption.coRedirect
   Redirects the standard input and output of console processes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvConsoleOption.coSeparateError
+  Description for coSeparateError
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConsoleOptions
@@ -614,6 +655,46 @@ See Also
   TJvCreateProcess.Run
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.ErrorReader
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.InputReader
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.OnErrorRawRead
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.OnErrorRead
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.OnRawRead
 Summary
   Occurs when a console process created with TJvCreateProcess outputs some data.
@@ -643,7 +724,6 @@ Description
   (#13) chars.
 
   Example:
-  <AUTOLINK OFF>
   <CODE>
   procedure TForm1.JvCreateProcess1Read(Sender: TObject; const S: string;
     const StartsOnNewLine: Boolean);
@@ -661,7 +741,6 @@ Description
       ListBox1.Items[ListBox1.Count - 1] := S
   end;
   </CODE>
-  <AUTOLINK ON>
 Note
   coRedirect must be included in ConsoleOptions, otherwise no OnRead event will be fired.
 Parameters

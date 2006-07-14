@@ -24,6 +24,16 @@ Description
   to display a common color selection dialog.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvColorButton.ButtonShowsPalette
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorButton.Color
 Summary
   Specifies the currently selected color in the button.
@@ -43,11 +53,9 @@ Description
   CustomColors> property of TColorDialog. You can also edit the property as a standard TStringList,
   inside which you put values of this form:
 
-  <AUTOLINK OFF>
   <CODE>
   ColorX=rrggbb
   </CODE>
-  <AUTOLINK ON>
 
   where X is a letter from A to P and rrggbb is an hexadecimal RGB code. Hence ColorA=FF0000 would add
   a pure red as the first custom color.
@@ -70,6 +78,18 @@ Description
   Write a handler for the OnChange event to take specific actions when the Color property is changed.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvColorButton.OnPaletteShowing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  CanShowPalette - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorButton.Options
 Summary
   Specifies options for the common color dialog.
@@ -87,4 +107,9 @@ Summary
 Description
   Use OtherCaption to set the text that is displayed on the "Other" button. The "Other" button is used
   to display a common color dialog and is located on the drop-down form of the button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorButtonPaletteShowing
+<TITLE TJvColorButtonPaletteShowing type>
+<COMBINE TJvColorButton.OnPaletteShowing>
 

@@ -532,14 +532,17 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabDefaultPainter
-<TITLEIMG TJvTabControlPainter>
+<TITLEIMG TJvTabDefaultPainter>
 JVCLInfo
   GROUP=JVCL.PagesAndTabs
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Parametrized drawing of a TJvPageControl or a TJvTabControl
 Description
-  Write here a description
+  1. Drop a TJvTabDefaultPainter on a form or frame where a TJvPageControl or a TJvTabControl is
+  2. Set OwnerDraw of the TJvPageControl or a TJvTabControl to true
+  3. Assign your TJvTabDefaultPainter to the TabPainter property of your TJvPageControl or a
+     TJvTabControl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabDefaultPainter.ActiveColorFrom
@@ -867,6 +870,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvTreeNode.OnCheckedChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvTreeNode.PopupMenu
 Summary
   Write here a summary (1 line)
@@ -913,8 +926,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Node - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -970,17 +981,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx> .
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-See Also
-  HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.InsertMark
@@ -1065,8 +1065,6 @@ Summary
 Description
   Use LineColor to specify the color used for the line connecting nodes in the tree. ShowLines must be
   true for this property to have any effect.
-See Also
-  ShowLines
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.MaxScrollTime
@@ -1097,8 +1095,6 @@ Note
   event and reset the Menu property to its previous value.
 
   Failing to do so can cause errors and even Access Violation exceptions in your program.
-See Also
-  TJvTreeView.MenuDblClick
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.MenuDblClick
@@ -1111,8 +1107,36 @@ Description
   If MenuDblClick is false, the menu item's OnClick event is called when the item is selected, either
   with the mouse or the keyboard. If MenuDblClick is true, the user must double-click the item with the
   mouse or select it and press either SPACE or ENTER.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.MoveDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AAbsoluteIndex - Description for this parameter
+  Focus          - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  TJvTreeView.Menu
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.MoveUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AAbsoluteIndex - Description for this parameter
+  Focus          - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnComparePage
@@ -1129,8 +1153,6 @@ Parameters
   Page    - The current page being compared.
   Node    - The current node being compared.
   Matches - Set this to true if Page is a match to Node.
-See Also
-  TJvTreeView.PageControl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnCustomDrawItem
@@ -1153,8 +1175,19 @@ Summary
   Occurs when the horizontal scrollbar is moved.
 Description
   Write a handler for this event to take specific action when the horizontal scrollbar is changed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.OnNodeCheckedChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Node   - Description for this parameter
 See Also
-  TJvTreeView.OnVerticalScroll
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnPageChanged
@@ -1168,25 +1201,13 @@ Parameters
   Sender - The control that triggered the event.
   Item   - The selected node
   Page   - The new active page in the page control.
-See Also
-  TJvTreeView.PageControl
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnSelectionChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the color property for the parent of the control changes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnVerticalScroll
@@ -1194,8 +1215,6 @@ Summary
   Occurs when the vertical scrollbar is moved.
 Description
   Write a handler for this event to take specific action when the vertical scrollbar is changed.
-See Also
-  TJvTreeView.OnHorizontalScroll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.PageControl
@@ -1209,8 +1228,6 @@ Description
   node. If no tab is found, the active tab is not changed.
 
   To control what tab gets activated, write a handler for the OnComparePage event.
-See Also
-  TJvTreeView.OnComparePage, TJvTreeView.OnPageChanged
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.RemoveMark
@@ -1248,8 +1265,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1320,6 +1335,11 @@ See Also
 @@TJvTreeViewComparePageEvent
 <TITLE TJvTreeViewComparePageEvent type>
 <COMBINE TJvTreeView.OnComparePage>
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeViewNodeCheckedChange
+<TITLE TJvTreeViewNodeCheckedChange type>
+<COMBINE TJvTreeView.OnNodeCheckedChange>
 
 ----------------------------------------------------------------------------------------------------
 @@TPageChangedEvent

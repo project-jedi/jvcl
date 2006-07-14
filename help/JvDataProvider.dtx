@@ -57,11 +57,9 @@ Description
   returns False, otherwise True will be returned.
 
   This function is implemented as:
-  <AUTOLINK OFF>
   <CODE>
   Result := DP_FindItemsIntf(AItem, IJvDataItemsImages, Images);
   </CODE>
-  <AUTOLINK ON>
 Parameters
   AItem  - Data item for which the nearest IJvDataItemsImages implementation is to be found.
   Images - Variable to retrieve the reference to the IJvDataItemsImages interface in.
@@ -99,11 +97,9 @@ Description
   function returns False, otherwise True will be returned.
 
   This function is implemented as:
-  <AUTOLINK OFF>
   <CODE>
   Result := DP_FindItemsIntf(AItem, IJvDataItemsRenderer, Images);
   </CODE>
-  <AUTOLINK ON>
 Parameters
   AItem    - Data item for which the nearest IJvDataItemsRenderer implementation is to be found.
   Renderer - Variable to retrieve the reference to the IJvDataItemsRenderer interface in.
@@ -187,7 +183,6 @@ Description
   selection and release with a try/finally to make sure the release of the consumer/context takes
   place:
 
-  <AUTOLINK OFF>
   <CODE>
   DP_SelectConsumerContext(<I>Provider</I>, <I>Consumer</I>, <I>Context</I>);
   <B>try</B>
@@ -196,7 +191,6 @@ Description
     DP_ReleaseConsumerContext(<I>Provider</I>);
   <B>end;</B>
   </CODE>
-  <AUTOLINK ON>
 Parameters
   Provider - Reference to the IJvDataProvider to select a new consumer and context for.
   Consumer - Reference to the consumer to select as the active consumer.
