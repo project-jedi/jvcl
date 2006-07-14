@@ -383,7 +383,7 @@ begin
   if Assigned(FDataSource) and Supports(FDataSource, IJvDataSourceConnectorHandler, Handler) then
     Handler.RemoveDataConnector(Self);
   FDataSource := nil;
-  FFields.Clear;
+  FFields.Free;
   inherited Destroy;
 end;
 
