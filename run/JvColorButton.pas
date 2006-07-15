@@ -95,22 +95,45 @@ type
     {$ENDIF VCL}
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Color: TColor read FColor write SetColor default clBlack;
-    property Enabled;
-    property Hint;
     property Height default 21;
-    property ShowHint;
     property Width default 42;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnPaletteShowing: TJvColorButtonPaletteShowing read FOnPaletteShowing write FOnPaletteShowing;
+
+    property Action;
+    property Align;
+    property Anchors;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property ParentBiDiMode;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnClick;
-    property OnDblClick;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnKeyDown;
-    property OnKeyUp;
-    property OnPaletteShowing: TJvColorButtonPaletteShowing read FOnPaletteShowing write FOnPaletteShowing;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 {$IFDEF UNITVERSIONING}
