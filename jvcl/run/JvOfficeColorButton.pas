@@ -257,8 +257,6 @@ type
     property DragKind;
     property ParentBiDiMode;
     property OnCanResize;
-    property OnEndDock;
-    property OnGetSiteInfo;
     {$ENDIF VCL}
     property Align;
     property Anchors;
@@ -271,7 +269,7 @@ type
     property PopupMenu;
     property ShowHint;
     property TabOrder;
-    property TabStop;
+    property TabStop default True;
     property Visible;
     property Flat;
     property BackColor;  // basic Control bg color.
@@ -287,17 +285,7 @@ type
     property Glyph;
     property Properties;
     property OnConstrainedResize;
-    property OnContextPopup;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
     property OnResize;
-    property OnStartDrag;
     property OnDropDown;
     property OnArrowClick;
     property OnColorChange;
@@ -307,6 +295,26 @@ type
 //so you can show coustom ColorDialog yourself.
     property OnShowOwnerColorDialog;
     property OnClick;
+
+    property Action;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -433,6 +441,7 @@ begin
   FHotTrack := False;
   FFloatingBgColor := clBtnFace;
   FDropingBgColor := clBtnFace;
+  TabStop := True;
 
   ControlStyle := ControlStyle - [csAcceptsControls, csSetCaption] + [csOpaque];
   BevelOuter := bvNone;
