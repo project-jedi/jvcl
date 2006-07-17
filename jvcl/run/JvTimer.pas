@@ -236,6 +236,7 @@ begin
   FTimerThread.Terminate;
   while FTimerThread.Suspended do
     FTimerThread.Resume;
+  (FTimerThread as TJvTimerThread).Paused := False;
   FTimerThread.Free;
   FTimer.Free;
   inherited Destroy;
