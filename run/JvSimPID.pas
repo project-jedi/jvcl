@@ -93,18 +93,37 @@ type
     property Direct: Boolean read FDirect write SetDirect default False;
     property Manual: Boolean read FManual write SetManual default False;
     property Active: Boolean read FActive write SetActive default False;
+
     property Align;
+    property Anchors;
     property Color default clWhite;
     property Height default 100;
-    property Visible;
-    property Width default 20;
-    property ShowHint;
+    property ParentShowHint;
     property PopupMenu;
+    property ShowHint;
+    property Width default 20;
+    property Visible;
+
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseActivate;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnClick;
-    property OnDblClick;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 {$IFDEF UNITVERSIONING}
