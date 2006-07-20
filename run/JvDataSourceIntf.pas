@@ -31,6 +31,9 @@ unit JvDataSourceIntf;
 interface
 
 uses
+  {$IFNDEF DelphiPersonalEdition}
+  DB,
+  {$ENDIF !DelphiPersonalEdition}
   SysUtils, Classes, Contnrs;     
 
 const
@@ -40,10 +43,19 @@ const
   DC_LAYOUTCHANGED = 103;
 
 type
+  // To avoid ambiguities in BCB when used with the Pro and above SKUs, the
+  // DB related types are simply mapped to those from the DB unit.
+  // Of course, in the case of a Personal edition, they have to be fully
+  // declared.
+  {$IFDEF DelphiPersonalEdition}
   TJvDataSetState = (dsInactive, dsBrowse, dsEdit, dsInsert, dsSetKey,
     dsCalcFields, dsFilter, dsNewValue, dsOldValue, dsCurValue, dsBlockRead,
     dsInternalCalc, dsOpening);
+  {$ELSE}
+  TJvDataSetState = TDataSetState;
+  {$ENDIF DelphiPersonalEdition}
 
+  {$IFDEF DelphiPersonalEdition}
   TJvDBFieldType = (ftUnknown, ftString, ftSmallint, ftInteger, ftWord, // 0..4
     ftBoolean, ftFloat, ftCurrency, ftBCD, ftDate, ftTime, ftDateTime, // 5..11
     ftBytes, ftVarBytes, ftAutoInc, ftBlob, ftMemo, ftGraphic, ftFmtMemo, // 12..18
@@ -51,10 +63,16 @@ type
     ftLargeint, ftADT, ftArray, ftReference, ftDataSet, ftOraBlob, ftOraClob, // 25..31
     ftVariant, ftInterface, ftIDispatch, ftGuid, ftTimeStamp, ftFMTBcd, // 32..37
     ftFixedWideChar, ftWideMemo, ftOraTimeStamp, ftOraInterval); // 38..41
+  {$ELSE}
+  TJvDBFieldType = TFieldType;
+  {$ENDIF DelphiPersonalEdition}
 
+  {$IFDEF DelphiPersonalEdition}
   TJvDBLocateOption = (loCaseInsensitive, loPartialKey);
+  {$ELSE}
+  TJvDBLocateOption = TLocateOption;
+  {$ENDIF DelphiPersonalEdition}
   TJvDBLocateOptions = set of TJvDBLocateOption;
-
 
   {$IFDEF COMPILER10_UP}
   TDataFieldString = WideString;
