@@ -112,15 +112,18 @@ type
     property OnDragOver;
     property OnEndDock;
     property OnEndDrag;
-    property OnMouseActivate;
     property OnMouseDown;
+    {$IFDEF COMPILER9_UP}
     property OnMouseEnter;
     property OnMouseLeave;
+    {$ENDIF COMPILER9_UP}
     property OnMouseMove;
     property OnMouseUp;
+    {$IFDEF COMPILER6_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    {$ENDIF COMPILER6_UP}
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
