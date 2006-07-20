@@ -60,6 +60,33 @@ type
     property BackColor: TColor read FBackColor write SetBackColor default clSilver;
     property Width default 25;
     property Height default 100;
+
+    property Align;
+    property Anchors;
+    property ParentShowHint;
+    property ShowHint;
+    property Visible;
+
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseActivate;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 {$IFDEF UNITVERSIONING}
