@@ -101,6 +101,7 @@ type
     FPauseSection: TCriticalSection;
     procedure HandleException;
     procedure SetPaused(const Value: Boolean);
+    function GetPaused: Boolean;
   protected
     procedure Execute; override;
   public
@@ -111,7 +112,7 @@ type
     {$ENDIF CLR}
     property Terminated;
 
-    property Paused: Boolean read FPaused write SetPaused;
+    property Paused: Boolean read GetPaused write SetPaused;
   end;
 
 constructor TJvTimerThread.Create(Timer: TJvTimer; Enabled: Boolean);
@@ -133,19 +134,12 @@ procedure TJvTimerThread.SetPaused(const Value: Boolean);
 begin
   if FPaused <> Value then
   begin
+    FPauseSection.Acquire;
     FPaused := Value;
+    FPauseSection.Release;
 
-    if FPaused then
-    begin
-      FPauseSection.Acquire;
-
-      if Suspended then
-        Resume;
-    end
-    else
-    begin
-      FPauseSection.Release;
-    end;
+    if not FPaused and Suspended then
+      Resume;
   end;
 end;
 
@@ -181,35 +175,40 @@ procedure TJvTimerThread.Execute;
 
 begin
   repeat
-    FPauseSection.Acquire;
-
     if not ThreadClosed and not ThreadClosed and FOwner.FEnabled then
     begin
-      with FOwner do
+      if FOwner.SyncEvent then
       begin
-        if SyncEvent then
-        begin
-          Synchronize(Timer)
-        end
-        else
-        begin
-          try
-            Timer;
-          except
-            on E: Exception do
-            begin
-              FException := E;
-              HandleException;
-            end;
+        Synchronize(FOwner.Timer)
+      end
+      else
+      begin
+        try
+          FOwner.Timer;
+        except
+          on E: Exception do
+          begin
+            FException := E;
+            HandleException;
           end;
         end;
       end;
     end;
 
-    FPauseSection.Release;
-    
     SleepEx(FInterval, False);
+
+    // while we are paused, we do not do anything. However, we do call SleepEx
+    // in the alertable state to avoid 100% CPU usage.
+    while Paused and not Terminated do
+      SleepEx(0, True);
   until Terminated;
+end;
+
+function TJvTimerThread.GetPaused: Boolean;
+begin
+  FPauseSection.Acquire;
+  Result := FPaused;
+  FPauseSection.Release;
 end;
 
 //=== { TJvTimer } ===========================================================
