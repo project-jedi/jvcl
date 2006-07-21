@@ -53,6 +53,7 @@ type
     FCaptions: TStringList;
     FColors: TStringList;
     FHints: THintStringList;
+    FEnableds: array of Boolean;
     {$IFDEF JVCLThemesEnabled}
     FMouseOverBtn: TPoint;
     FThemed: Boolean;
@@ -67,6 +68,8 @@ type
     procedure MouseToCell(const X, Y: Integer; var ACol, ARow: Integer);
     function CellRect(ACol, ARow: Integer): TRect;
     procedure SetHints(const Value: THintStringList);
+    function GetEnableds(Index: Integer): Boolean;
+    procedure SetEnableds(Index: Integer; const Value: Boolean);
   protected
     procedure FontChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -77,11 +80,10 @@ type
     procedure MouseLeave(AControl: TControl); override;
     {$ENDIF JVCLThemesEnabled}
     procedure Paint; override;
+    procedure SizeChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DoShowHint(var HintStr: THintString;
-      var CanShow: Boolean; var HintInfo: THintInfo);
 
     {this procedure can be used in response to a Application.OnShowHint event
      button hints are stored in the hints property from array top-left to array bottom right
@@ -100,29 +102,51 @@ type
      I could have set the Application.OnShowHint handler directly in this component,
      but if you have more components that do this then only the last one would work
      }
+    procedure DoShowHint(var HintStr: THintString;
+      var CanShow: Boolean; var HintInfo: THintInfo);
+
+    // A list of individual button Enabled state, from the top-left to the bottom-right button
+    property Enableds[Index: Integer]: Boolean read GetEnableds write SetEnableds;
   published
     property Align;
+    property Anchors;
     property Rows: Integer read FRows write SetRows;
     property Cols: Integer read FCols write SetCols;
-    property Font;
-    property Captions: TStrings read GetCaptions write SetCaptions;
-    property Height default 35;
     {A List of button captions from the top-left to the bottom-right button}
-    property Hints: THintStringList read FHints write SetHints;
+    property Captions: TStrings read GetCaptions write SetCaptions;
+    property Enabled;
+    property Font;
+    property Height default 35;
     {A List of button hints from the top-left to the bottom-right button}
-    property Colors: TStrings read GetColors write SetColors;
+    property Hints: THintStringList read FHints write SetHints;
     {A List of button Colors from the top-left to the bottom-right button
-     values must standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
+     values must be standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex Color triplets}
+    property Colors: TStrings read GetColors write SetColors;
     property Hint;
     property ShowHint default True;
     {$IFDEF JVCLThemesEnabled}
     property Themed: Boolean read FThemed write SetThemed default False;
     {$ENDIF JVCLThemesEnabled}
+    property Visible;
     property Width default 35;
-    property OnArrayButtonClicked: TArrayButtonClicked read FOnArrayButtonClicked write FOnArrayButtonClicked;
     {provides you with the Column and Row of the clicked button
     the topleft button has Column=0 and Row=0}
+    property OnArrayButtonClicked: TArrayButtonClicked read FOnArrayButtonClicked write FOnArrayButtonClicked;
+    property OnCanResize;
+    property OnMouseDown;
+    {$IFDEF COMPILER9_UP}
+    property OnMouseEnter;
+    property OnMouseLeave;
+    {$ENDIF COMPILER9_UP}
+    property OnMouseMove;
+    property OnMouseUp;
+    {$IFDEF COMPILER6_UP}
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    {$ENDIF COMPILER6_UP}
+    property OnResize;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -165,6 +189,7 @@ begin
   FCaptions.Free;
   FHints.Free;
   FColors.Free;
+  SetLength(FEnableds, 0);
   inherited Destroy;
 end;
 
@@ -185,22 +210,28 @@ var
 begin
   if Button = mbLeft then
   begin
-    FPushDown := True;
     MouseToCell(X, Y, Col, Row);
-    FPtDown := Point(Col, Row);
-    Invalidate;
+    if FEnableds[Row * Cols + Col] then
+    begin
+      FPushDown := True;
+      FPtDown := Point(Col, Row);
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvArrayButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if Button = mbLeft then
+  if (Button = mbLeft) and FPushDown then
   begin
-    FPushDown := False;
-    Invalidate;
-    if Assigned(FOnArrayButtonClicked) then
-      OnArrayButtonClicked(FPtDown.X, FPtDown.Y);
+    if FEnableds[FPtDown.Y * Cols + FPtDown.X] then
+    begin
+      FPushDown := False;
+      Invalidate;
+      if Assigned(FOnArrayButtonClicked) then
+        OnArrayButtonClicked(FPtDown.X, FPtDown.Y);
+    end;
   end
 end;
 
@@ -336,7 +367,17 @@ begin
     begin
       FCols := Value;
       Invalidate;
+      SizeChanged;
     end;
+end;
+
+procedure TJvArrayButton.SetEnableds(Index: Integer; const Value: Boolean);
+begin
+  if FEnableds[Index] <> Value then
+  begin
+    FEnableds[Index] := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvArrayButton.SetRows(const Value: Integer);
@@ -346,7 +387,30 @@ begin
     begin
       FRows := Value;
       Invalidate;
+      SizeChanged;
     end;
+end;
+
+procedure TJvArrayButton.SizeChanged;
+var
+  OriginalEnableds: array of Boolean;
+  I: Integer;
+  MinLength: Integer;
+begin
+  SetLength(OriginalEnableds, Length(FEnableds));
+  for I := 0 to Length(FEnableds) - 1 do
+    OriginalEnableds[I] := FEnableds[I];
+    
+  SetLength(FEnableds, Rows * Cols);
+
+  MinLength := Length(OriginalEnableds);
+  if MinLength > Length(FEnableds) then
+    MinLength := Length(FEnableds);
+
+  for I := 0 to MinLength - 1 do
+    FEnableds[I] := OriginalEnableds[I];
+  for I := MinLength to Length(FEnableds) - 1 do
+    FEnableds[I] := True;
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -385,6 +449,11 @@ end;
 function TJvArrayButton.GetColors: TStrings;
 begin
   Result := FColors;
+end;
+
+function TJvArrayButton.GetEnableds(Index: Integer): Boolean;
+begin
+  Result := FEnableds[Index];
 end;
 
 procedure TJvArrayButton.SetColors(const Value: TStrings);
