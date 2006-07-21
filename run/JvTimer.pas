@@ -158,9 +158,10 @@ end;
 
 destructor TJvTimerThread.Destroy;
 begin
-  FPauseSection.Free;
-
   inherited Destroy;
+
+  // Used by Execute, and hence in the inherited Destroy (Mantis 3819).
+  FPauseSection.Free;
 end;
 
 procedure TJvTimerThread.Execute;
