@@ -534,7 +534,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile: JvDockSupportControl.pas,v $';
+    RCSfile: 'URL: JvDockSupportControl.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
