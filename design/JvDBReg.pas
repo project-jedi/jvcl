@@ -46,7 +46,13 @@ uses
   {$ENDIF JV_MIDAS}
   {$IFDEF USE_3RDPARTY_DOA} 
   JvOracleDataset,
+  JvDBPasswordDialogDoa,
+  JvDBLogonDialogDoa,
   {$ENDIF USE_3RDPARTY_DOA}
+  {$IFDEF USE_3RDPARTY_CORELAB_ODAC} 
+  JvDBPasswordDialogOdac,
+  JvDBLogonDialogOdac,
+  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBGridFooter,
@@ -78,7 +84,12 @@ const
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvDataSource, TJvMemoryData,
     TJvCsvDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
-    {$IFDEF USE_3RDPARTY_DOA} TJvOracleDataset, {$ENDIF USE_3RDPARTY_DOA}
+    {$IFDEF USE_3RDPARTY_DOA} 
+    TJvOracleDataset, TJvDBDoaLogonDialog, TJvDBDoaPasswordDialog,
+    {$ENDIF USE_3RDPARTY_DOA}
+    {$IFDEF USE_3RDPARTY_CORELAB_ODAC} 
+    TJvDBOdacConnectDialog, TJvDBOdacPasswordDialog,
+    {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
     TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
