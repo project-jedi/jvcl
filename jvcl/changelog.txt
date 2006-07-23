@@ -1,5 +1,11 @@
 Changelog for JVCL 3.X
 ======================
+2006-07-23
+- New Database Components for Logon and Change Password included.
+  Support for database components "Direct Oracle Access Components" 
+  http://www.allroundautomations.com
+  Include the USE_3RDPARTY_DOA option in the installation to activate the component
+  and "Oracle Data Access Components" http://www.crlab.com". Include the USE_3RDPARTY_CORELAB_ODAC option in the installation to activate the component
 2006-06-08
 - Ctl3D and ParentCtl3D have been removed from the components, replaced by Flat and ParentFlat // obones
   Measures have been taken to ensure that existing DFMs are read correctly.
