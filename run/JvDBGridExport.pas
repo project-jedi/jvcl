@@ -253,7 +253,7 @@ procedure GetWordGridFormatValues(Proc: TGetStrProc);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile: JvDBGridExport.pas,v $';
+    RCSfile: 'URL: JvDBGridExport.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'

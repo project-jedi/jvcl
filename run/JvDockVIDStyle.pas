@@ -578,7 +578,7 @@ procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, End
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile: JvDockVIDStyle.pas,v $';
+    RCSfile: 'URL: JvDockVIDStyle.pas,v $';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
