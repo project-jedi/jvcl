@@ -198,7 +198,7 @@ resourcestring
 resourcestring
   RsEOutOfRangeXFloat = 'Value must be between %.*f and %.*f';
 
-//=== JvBDECheckPasswordForm.pas =============================================
+//=== JvBDECheckPasswordForm.pas+JvBaseDBPasswordDialog ======================
 resourcestring
   RsChangePassword = 'Change password';
   RsOldPasswordLabel = '&Old password:';
@@ -207,6 +207,66 @@ resourcestring
   RsPasswordChanged = 'Password has been changed';
   RsPasswordNotChanged = 'Password has not been changed';
   RsPasswordsMismatch = 'The new and confirmed passwords do not match';
+
+//=== JvBaseDBPasswordDialog.pas  ============================================
+resourcestring
+  RsOldPasswordsMismatch = 'The current and old passwords do not match';
+  RsChangeButtonCaption = 'Change';
+  RsPasswordLengthToShort = 'Password length must be greater or equal %d';
+  RsPasswordNotAllowedCharacters = 'Password contains not allowed characters';
+
+//=== JvDBLogonDialogDoa.pas + JvDBLogonDialogOdac.pas  ======================
+resourcestring
+  RsDoYouWantToChangePassword = 'Do you want to change the password?';
+
+//=== JvBaseDBLogonDialog.pas  ===============================================
+resourcestring
+  RsLogonToDatabase = 'Logon to Database';
+  RsBtnConnect = 'Connect';
+  RsBtnCancel = 'Cancel';
+  RsBtnAdditional = 'Additional';
+  RsBtnHintAddDefinitionToList = 'Add Definition to List';
+  RsBtnHintSelectDefinitionFromList = 'Select Definition from List';
+  RsBtnHintDeleteDefinitionFromList = 'Delete Definition from List';
+  RsPageByUser = 'By User';
+  RsPageByDatabase = 'By Database';
+  RsPageByGroup = 'By Group';
+  RsPageDefaultList = 'Default List';
+  RsUsername = '&Username';
+  RsPassword = '&Password';
+  RsDatabase = '&Database';
+  RsShortcut = '&Shortcut';
+  RsConnectAs = 'Connect-&As';
+
+  RSImportConnectionList = 'Import Connection List';
+  RSExportConnectionList = 'Export Connection List';
+  RsConnectionListImportCancel = 'Cancel';
+  RsConnectionListImportOverwrite = 'Overwrite';
+  RsConnectionListImportAppend = 'Append';
+  RsConnectionListImportAppendOverwriteExistingEntries = 'Append/Overwrite existing entries?';
+  RsNoConnectionEntriesFound = 'No Connection Entries found!';
+  RsConnectionListExportImportFilter = 'XML-Files (*.xml)|*.xml|INI-Files (*.ini)|*.ini|All Files (*.*)|*.*';
+  RsConnectionListItemName = 'Connection';
+  RsGroupNameUndefined = 'Undefined';
+  RsCheckboxSavePasswords = '&Save Passwords';
+  RsCheckBoxGroupByUser = 'Group By User';
+  RsCheckBoxGroupByDatabase = 'Group By Database';
+
+//=== JvDBLogonDialogOdac.pas  ===============================================
+resourcestring
+  RsOracleHome = 'Oracle Home';
+  RsUseNetOptionForDirectConnect = 'Use Net-Option for direct connect';
+  RsNetOptionCheckBoxHint =
+      'If this option is activated the connecting passed sql*net'#13#10+
+      'and tries to connect to the server direct via tcpip.'#13#10+
+      'The database name must contain Server name, Oracle service name,'#13#10+
+      'and port in the following format:'#13#10+
+      '    Host:Port:SID'#13#10+
+      '  Where'#13#10+
+      '    Host is the address of server;'#13#10+
+      '    Port is the number of port that server listens to;'#13#10+
+      '    SID is system identifier that specifies Global Database Name.';
+
 
 //=== JvBDEExceptionForm.pas =================================================
 resourcestring
