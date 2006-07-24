@@ -198,9 +198,11 @@ begin
     SleepEx(FInterval, False);
 
     // while we are paused, we do not do anything. However, we do call SleepEx
-    // in the alertable state to avoid 100% CPU usage.
+    // in the alertable state to avoid 100% CPU usage. Note that the delay
+    // should not be 0 as it may lead to 100% CPU in that case. 10 is a safe
+    // value that is small enough not to have a big impact on restart.
     while Paused and not Terminated do
-      SleepEx(0, True);
+      SleepEx(10, True);
   until Terminated;
 end;
 
