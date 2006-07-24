@@ -1019,10 +1019,10 @@ procedure TJvCustomUrlGrabber.Stop;
 begin
   if Assigned(FUrlGrabberThread) then
   begin
-    // If there is a thread, terminate it and let it destroy
-    // itself as we don't need it anymore
-    FUrlGrabberThread.FreeOnTerminate := True;
+    // If there is a thread, ask it to terminate and then free it.
+    // This will ensure that everything is cleanly destroyed (Mantis 3824).
     FUrlGrabberThread.Terminate;
+    FUrlGrabberThread.Free;
   end;
 end;
 
