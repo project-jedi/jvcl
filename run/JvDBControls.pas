@@ -113,7 +113,6 @@ type
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
-    { Here are the common designtime properties, exactly like the VCL TDBEdit }
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -125,10 +124,14 @@ type
     property BiDiMode;
     property BorderStyle;
     property CharCase;
+    property ClickKey;
+    property ClipboardCommands;
     property Color;
     property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DisabledColor;
+    property DisabledTextColor;
     property DragCursor;
     property DragKind;
     property DragMode;
