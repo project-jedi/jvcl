@@ -1715,7 +1715,7 @@ end;
 
 procedure TJvMemoryData.SetDataSetClosed(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataSet = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) and not (csLoading in ComponentState) then
     FDataSetClosed := True
   else
     FDataSetClosed := Value;
@@ -1723,7 +1723,7 @@ end;
 
 procedure TJvMemoryData.SetLoadStructure(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataSet = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) and not (csLoading in ComponentState) then
     FLoadStructure := False
   else
     FLoadStructure := Value;
@@ -1731,7 +1731,7 @@ end;
 
 procedure TJvMemoryData.SetLoadRecords(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataSet = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) and not (csLoading in ComponentState) then
     FLoadRecords := False
   else
     FLoadRecords := Value;
@@ -1739,7 +1739,7 @@ end;
 
 procedure TJvMemoryData.SetApplyMode(Value: TApplyMode);
 begin
-  if (csDesigning in ComponentState) and (FDataSet = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) and not (csLoading in ComponentState) then
     FApplyMode := amNone
   else
     FApplyMode := Value;
@@ -1747,7 +1747,7 @@ end;
 
 procedure TJvMemoryData.SetExactApply(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataSet = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) and not (csLoading in ComponentState) then
     FExactApply := False
   else
     FExactApply := Value;
