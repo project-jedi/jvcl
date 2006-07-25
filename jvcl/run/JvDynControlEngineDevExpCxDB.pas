@@ -37,9 +37,9 @@ uses
 {$ELSE}
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
   Forms, DBCtrls, DB, DBGrids, StdCtrls,
   cxDBEdit, cxDBNavigator,
@@ -48,8 +48,8 @@ uses
 
 type
   TJvDynControlCxDBEdit = class(TcxDBTextEdit, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
-    IJvDynControlDatabase)                  
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
+      IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -74,15 +74,15 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBButtonEdit = class(TcxDBButtonEdit, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
-    IJvDynControlButtonEdit, IJvDynControlButton, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
+      IJvDynControlButtonEdit, IJvDynControlButton, IJvDynControlDatabase)
   private
     FIntOnButtonClick: TNotifyEvent;
   protected
@@ -125,15 +125,15 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBFileNameEdit = class(TcxDBButtonEdit, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlFileName,
-    IJvDynControlReadOnly, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlFileName,
+      IJvDynControlReadOnly, IJvDynControlDatabase)
   private
     FInitialDir: string;
     FFilterIndex: Integer;
@@ -176,20 +176,20 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBDirectoryEdit = class(TcxDBButtonEdit, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData,
-    IJvDynControlDirectory, IJvDynControlReadOnly, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData,
+      IJvDynControlDirectory, IJvDynControlReadOnly, IJvDynControlDatabase)
   private
     FInitialDir: string;
-    {$IFDEF VCL}
+{$IFDEF VCL}
     FDialogOptions: TSelectDirOpts;
-    {$ENDIF VCL}
+{$ENDIF VCL}
     FDialogTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -214,24 +214,24 @@ type
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(const Value: string);
     procedure ControlSetDialogTitle(const Value: string);
-    {$IFDEF VCL}
+{$IFDEF VCL}
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
-    {$ENDIF VCL}
+{$ENDIF VCL}
 
     //IJvDynControlDatabase
     procedure ControlSetDataSource(Value: TDataSource);
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBCheckBox = class(TcxDBCheckBox, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDatabase,
-    IJvDynControlDBCheckbox )
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDatabase,
+      IJvDynControlDBCheckbox)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -251,7 +251,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDBCheckbox
     procedure ControlSetValueChecked(Value: Variant);
@@ -262,8 +262,8 @@ type
   end;
 
   TJvDynControlCxDBMemo = class(TcxDBMemo, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
-    IJvDynControlMemo, IJvDynControlReadOnly, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+      IJvDynControlMemo, IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -293,15 +293,15 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBRadioGroup = class(TcxDBRadioGroup, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
-    IJvDynControlRadioGroup, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+      IJvDynControlRadioGroup, IJvDynControlDatabase)
   private
     FItems: TStrings;
   public
@@ -331,15 +331,15 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBListBox = class(TcxDBListBox, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
-    IJvDynControlDblClick, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+      IJvDynControlDblClick, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -365,15 +365,15 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBComboBox = class(TcxDBComboBox, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
-    IJvDynControlComboBox, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+      IJvDynControlComboBox, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -399,14 +399,14 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBImage = class(TcxDBImage, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlImage, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlImage, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -420,9 +420,9 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
-    {$IFDEF VCL}
+{$IFDEF VCL}
     procedure ControlSetProportional(Value: Boolean);
-    {$ENDIF VCL}
+{$ENDIF VCL}
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
@@ -434,14 +434,14 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBText = class(TcxDBTextEdit, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -457,14 +457,14 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
   TJvDynControlCxDBNavigator = class(TcxDBNavigator, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlDatabase)
+      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -480,16 +480,16 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
 
   end;
 
-  TJvDynControlCxDBDateTimeEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly,
-    IJvDynControlDatabase)
+  TJvDynControlCxDBDateTimeEdit = class(TcxDBDateEdit, IUnknown, IJvDynControl,
+      IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly,
+      IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -517,12 +517,12 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
-  TJvDynControlCxDBDateEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate,
-    IJvDynControlReadOnly, IJvDynControlDatabase)
+  TJvDynControlCxDBDateEdit = class(TcxDBDateEdit, IUnknown, IJvDynControl,
+      IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate,
+      IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -549,12 +549,12 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
-  TJvDynControlCxDBTimeEdit = class (TcxDBTimeEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime,
-    IJvDynControlReadOnly, IJvDynControlDatabase)
+  TJvDynControlCxDBTimeEdit = class(TcxDBTimeEdit, IUnknown, IJvDynControl,
+      IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime,
+      IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -578,7 +578,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
 function DynControlEngineCxDB: TJvDynControlEngineDB;
@@ -593,22 +593,22 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
+{$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+{$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, TypInfo,
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
   cxEdit, cxTimeEdit, cxDBLookupComboBox, cxMemo, cxCheckbox,
-  cxGridTableView,cxGridCustomView,
+  cxGridTableView, cxGridCustomView,
   cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   JvDynControlEngineTools, JvConsts, JvJCLUtils, JvVCL5Utils;
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
@@ -616,7 +616,7 @@ uses
 var
   IntDynControlEngineCxDB: TJvDynControlEngineDB = nil;
 
-//=== { TJvDynControlCxDBEdit } ==============================================
+  //=== { TJvDynControlCxDBEdit } ==============================================
 
 procedure TJvDynControlCxDBEdit.ControlSetDefaultProperties;
 begin
@@ -658,7 +658,7 @@ end;
 
 procedure TJvDynControlCxDBEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                                    
+end;
 
 procedure TJvDynControlCxDBEdit.ControlSetValue(Value: Variant);
 begin
@@ -703,7 +703,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -852,7 +852,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBButtonEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBButtonEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -880,64 +880,64 @@ begin
   case FDialogKind of
     jdkOpen:
       with TOpenDialog.Create(Self) do
-        try
-          Options := FDialogOptions;
-          Title := FDialogTitle;
-          Filter := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
+      try
+        Options := FDialogOptions;
+        Title := FDialogTitle;
+        Filter := FFilter;
+        FilterIndex := FFilterIndex;
+        InitialDir := FInitialDir;
+        DefaultExt := FDefaultExt;
+        FileName := ControlGetValue;
+        if Execute then
+          ControlSetValue(FileName);
+      finally
+        Free;
+      end;
     jdkOpenPicture:
       with TOpenPictureDialog.Create(Self) do
-        try
-          Options := FDialogOptions;
-          Title := FDialogTitle;
-          Filter := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
+      try
+        Options := FDialogOptions;
+        Title := FDialogTitle;
+        Filter := FFilter;
+        FilterIndex := FFilterIndex;
+        InitialDir := FInitialDir;
+        DefaultExt := FDefaultExt;
+        FileName := ControlGetValue;
+        if Execute then
+          ControlSetValue(FileName);
+      finally
+        Free;
+      end;
     jdkSave:
       with TSaveDialog.Create(Self) do
-        try
-          Options := FDialogOptions;
-          Title := FDialogTitle;
-          Filter := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
+      try
+        Options := FDialogOptions;
+        Title := FDialogTitle;
+        Filter := FFilter;
+        FilterIndex := FFilterIndex;
+        InitialDir := FInitialDir;
+        DefaultExt := FDefaultExt;
+        FileName := ControlGetValue;
+        if Execute then
+          ControlSetValue(FileName);
+      finally
+        Free;
+      end;
     jdkSavePicture:
       with TSavePictureDialog.Create(Self) do
-        try
-          Options := FDialogOptions;
-          Title := FDialogTitle;
-          Filter := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
+      try
+        Options := FDialogOptions;
+        Title := FDialogTitle;
+        Filter := FFilter;
+        FilterIndex := FFilterIndex;
+        InitialDir := FInitialDir;
+        DefaultExt := FDefaultExt;
+        FileName := ControlGetValue;
+        if Execute then
+          ControlSetValue(FileName);
+      finally
+        Free;
+      end;
   end;
   if CanFocus then
     SetFocus;
@@ -997,6 +997,7 @@ begin
 end;
 
 // IJvDynControlFileName
+
 procedure TJvDynControlCxDBFileNameEdit.ControlSetInitialDir(const Value: string);
 begin
   FInitialDir := Value;
@@ -1052,7 +1053,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBFileNameEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBFileNameEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1077,13 +1078,13 @@ end;
 
 procedure TJvDynControlCxDBDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   Dir: WideString;
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   if Dir = '' then
@@ -1093,18 +1094,18 @@ begin
       Dir := PathDelim;
   if not DirectoryExists(Dir) then
     Dir := PathDelim;
-  {$IFDEF VCL}
+{$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  {$IFDEF MSWINDOWS}
-  if SelectDirectory('', '', Dir) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  if SelectDirectory('', '/', Dir, False) then
-  {$ENDIF UNIX}
-  {$ENDIF VisualCLX}
-    ControlSetValue(Dir);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$IFDEF MSWINDOWS}
+    if SelectDirectory('', '', Dir) then
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+      if SelectDirectory('', '/', Dir, False) then
+{$ENDIF UNIX}
+{$ENDIF VisualCLX}
+        ControlSetValue(Dir);
   if CanFocus then
     SetFocus;
 end;
@@ -1173,6 +1174,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvDynControlCxDBDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
 begin
   FDialogOptions := Value;
@@ -1199,7 +1201,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBDirectoryEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1281,7 +1283,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBCheckBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBCheckBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1414,7 +1416,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBMemo.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBMemo.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1549,7 +1551,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBRadioGroup.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBRadioGroup.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1592,7 +1594,7 @@ end;
 
 procedure TJvDynControlCxDBListBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
-//  Properties.OnChange := Value;
+  //  Properties.OnChange := Value;
 end;
 
 procedure TJvDynControlCxDBListBox.ControlSetOnClick(Value: TNotifyEvent);
@@ -1653,7 +1655,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBListBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBListBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1757,7 +1759,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBComboBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBComboBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1781,7 +1783,7 @@ end;
 
 procedure TJvDynControlCxDBImage.ControlSetTabOrder(Value: Integer);
 begin
-//  TabOrder := Value;
+  //  TabOrder := Value;
 end;
 
 procedure TJvDynControlCxDBImage.ControlSetHint(const Value: string);
@@ -1791,12 +1793,12 @@ end;
 
 procedure TJvDynControlCxDBImage.ControlSetOnEnter(Value: TNotifyEvent);
 begin
-//  OnEnter := Value;
+  //  OnEnter := Value;
 end;
 
 procedure TJvDynControlCxDBImage.ControlSetOnExit(Value: TNotifyEvent);
 begin
-//  OnExit := Value;
+  //  OnExit := Value;
 end;
 
 procedure TJvDynControlCxDBImage.ControlSetOnClick(Value: TNotifyEvent);
@@ -1811,7 +1813,7 @@ end;
 
 procedure TJvDynControlCxDBImage.ControlSetIncrementalDisplay(Value: Boolean);
 begin
-//  IncrementalDisplay := Value;
+  //  IncrementalDisplay := Value;
 end;
 
 procedure TJvDynControlCxDBImage.ControlSetCenter(Value: Boolean);
@@ -1820,11 +1822,12 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvDynControlCxDBImage.ControlSetProportional(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
-//  Proportional := Value;
-  {$ENDIF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
+  //  Proportional := Value;
+{$ENDIF COMPILER6_UP}
 end;
 {$ENDIF VCL}
 
@@ -1835,7 +1838,7 @@ end;
 
 procedure TJvDynControlCxDBImage.ControlSetTransparent(Value: Boolean);
 begin
-//  Transparent := Value;
+  //  Transparent := Value;
 end;
 
 procedure TJvDynControlCxDBImage.ControlSetPicture(Value: TPicture);
@@ -1873,7 +1876,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBImage.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBImage.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1914,7 +1917,7 @@ end;
 procedure TJvDynControlCxDBText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
-    
+
 procedure TJvDynControlCxDBText.ControlSetDataSource(Value: TDataSource);
 begin
   Databinding.DataSource := Value;
@@ -1935,7 +1938,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBText.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBText.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1999,7 +2002,7 @@ begin
   Result := '';
 end;
 
-procedure TJvDynControlCxDBNavigator.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBNavigator.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2016,7 +2019,7 @@ procedure TJvDynControlCxDBDateTimeEdit.ControlSetDefaultProperties;
 begin
   Properties.ShowTime := True;
   Properties.SaveTime := False;
-//  Properties.InputKind := ikStandard;
+  //  Properties.InputKind := ikStandard;
 end;
 
 procedure TJvDynControlCxDBDateTimeEdit.ControlSetReadOnly(Value: Boolean);
@@ -2068,6 +2071,7 @@ begin
 end;
 
 // IJvDynControlDate
+
 procedure TJvDynControlCxDBDateTimeEdit.ControlSetMinDate(Value: TDateTime);
 begin
   Properties.MinDate := Value;
@@ -2080,7 +2084,7 @@ end;
 
 procedure TJvDynControlCxDBDateTimeEdit.ControlSetFormat(const Value: string);
 begin
-//  Format := Value;
+  //  Format := Value;
 end;
 
 procedure TJvDynControlCxDBDateTimeEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -2109,7 +2113,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBDateTimeEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2120,7 +2124,7 @@ procedure TJvDynControlCxDBDateEdit.ControlSetDefaultProperties;
 begin
   Properties.ShowTime := False;
   Properties.SaveTime := False;
-//  Properties.InputKind := ikStandard;
+  //  Properties.InputKind := ikStandard;
 end;
 
 procedure TJvDynControlCxDBDateEdit.ControlSetReadOnly(Value: Boolean);
@@ -2172,6 +2176,7 @@ begin
 end;
 
 // IJvDynControlDate
+
 procedure TJvDynControlCxDBDateEdit.ControlSetMinDate(Value: TDateTime);
 begin
   Properties.MinDate := Value;
@@ -2184,7 +2189,7 @@ end;
 
 procedure TJvDynControlCxDBDateEdit.ControlSetFormat(const Value: string);
 begin
-//  Format := Value;
+  //  Format := Value;
 end;
 
 procedure TJvDynControlCxDBDateEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -2213,7 +2218,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBDateEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBDateEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2282,15 +2287,15 @@ end;
 
 procedure TJvDynControlCxDBTimeEdit.ControlSetFormat(const Value: string);
 begin
-//  Properties.Format := Value;
+  //  Properties.Format := Value;
   Properties.Use24HourFormat := (Pos('H', Value) > 0);
   if Pos('s', Value) > 0 then
     Properties.TimeFormat := tfHourMinSec
   else
-  if Pos('m', Value) > 0 then
-    Properties.TimeFormat := tfHourMin
-  else
-    Properties.TimeFormat := tfHour;
+    if Pos('m', Value) > 0 then
+      Properties.TimeFormat := tfHourMin
+    else
+      Properties.TimeFormat := tfHour;
 end;
 
 procedure TJvDynControlCxDBTimeEdit.ControlSetDataSource(Value: TDataSource);
@@ -2313,7 +2318,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-procedure TJvDynControlCxDBTimeEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlCxDBTimeEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2334,6 +2339,7 @@ type
   TJvDynControlEngineDevExpCxDB = class(TJvDynControlEngineDB)
   private
     FCxProperties: TCxDynControlWrapper;
+    FField: Integer;
   protected
     procedure SetcxProperties(Value: TCxDynControlWrapper);
     procedure RegisterControls; override;
@@ -2342,7 +2348,8 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl; override;
+    function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TControl; override;
     function CreateControlsFromCxGridViewOnControl(AGridView: TcxCustomGridTableView;
       AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
     function CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
@@ -2370,7 +2377,8 @@ begin
     FCxProperties.LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
-function TJvDynControlEngineDevExpCxDB.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
+function TJvDynControlEngineDevExpCxDB.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TControl;
 var
   C: TControl;
 begin
@@ -2393,13 +2401,13 @@ begin
   RegisterControlType(jctDBDateTimeEdit, TJvDynControlCxDBDateTimeEdit);
   RegisterControlType(jctDBTimeEdit, TJvDynControlCxDBTimeEdit);
   RegisterControlType(jctDBDateEdit, TJvDynControlCxDBDateEdit);
-////  RegisterControlType(jctDBCalculateEdit, TJvDynControlCxDBEdit);
-////  RegisterControlType(jctDBSpinEdit, TJvDynControlCxDBEdit);
+  ////  RegisterControlType(jctDBCalculateEdit, TJvDynControlCxDBEdit);
+  ////  RegisterControlType(jctDBSpinEdit, TJvDynControlCxDBEdit);
   RegisterControlType(jctDBDirectoryEdit, TJvDynControlCxDBDirectoryEdit);
   RegisterControlType(jctDBFileNameEdit, TJvDynControlCxDBFileNameEdit);
   RegisterControlType(jctDBMemo, TJvDynControlCxDBMemo);
   RegisterControlType(jctDBButtonEdit, TJvDynControlCxDBButtonEdit);
-//  RegisterControlType(jctDBGrid, TJvDynControlCxDBGrid);
+  //  RegisterControlType(jctDBGrid, TJvDynControlCxDBGrid);
   RegisterControlType(jctDBNavigator, TJvDynControlCxDBNavigator);
 end;
 
@@ -2408,47 +2416,49 @@ begin
   if not Assigned(ADataComponent) then
     Result := nil
   else
-  if ADataComponent is TcxCustomGridTableView then
-    if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
-      Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
+    if ADataComponent is TcxCustomGridTableView then
+      if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
+        Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
+      else
+        Result := nil
     else
-      Result := nil
-  else
-  if (ADataComponent is TcxCustomGrid) and
-     (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
-    if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController then
-      Result := TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).DataSource
-    else
-      Result := nil
-  else
-  if ADataComponent is TcxDBTextEdit then
-    Result := TcxDBTextEdit(ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBNavigator then
-    Result := TcxDBNavigator(ADataComponent).DataSource
-  else
-  if ADataComponent is TcxDBListbox then
-    Result := TcxDBListbox(ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBLookupComboBox then
-    Result := TcxDBLookupComboBox(ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBImage then
-    Result := TcxDBImage   (ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBMemo then
-    Result := TcxDBMemo(ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBRadioGroup then
-    Result := TcxDBRadioGroup(ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBRichEdit then
-    Result := TcxDBRichEdit(ADataComponent).Databinding.DataSource
-  else
-  if ADataComponent is TcxDBCheckBox then
-    Result := TcxDBCheckBox(ADataComponent).Databinding.DataSource
-  else
-    Result := inherited GetDataSourceFromDataComponent(ADataComponent);
+      if (ADataComponent is TcxCustomGrid) and
+        (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
+        if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController
+          then
+          Result :=
+            TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).DataSource
+        else
+          Result := nil
+      else
+        if ADataComponent is TcxDBTextEdit then
+          Result := TcxDBTextEdit(ADataComponent).Databinding.DataSource
+        else
+          if ADataComponent is TcxDBNavigator then
+            Result := TcxDBNavigator(ADataComponent).DataSource
+          else
+            if ADataComponent is TcxDBListbox then
+              Result := TcxDBListbox(ADataComponent).Databinding.DataSource
+            else
+              if ADataComponent is TcxDBLookupComboBox then
+                Result := TcxDBLookupComboBox(ADataComponent).Databinding.DataSource
+              else
+                if ADataComponent is TcxDBImage then
+                  Result := TcxDBImage(ADataComponent).Databinding.DataSource
+                else
+                  if ADataComponent is TcxDBMemo then
+                    Result := TcxDBMemo(ADataComponent).Databinding.DataSource
+                  else
+                    if ADataComponent is TcxDBRadioGroup then
+                      Result := TcxDBRadioGroup(ADataComponent).Databinding.DataSource
+                    else
+                      if ADataComponent is TcxDBRichEdit then
+                        Result := TcxDBRichEdit(ADataComponent).Databinding.DataSource
+                      else
+                        if ADataComponent is TcxDBCheckBox then
+                          Result := TcxDBCheckBox(ADataComponent).Databinding.DataSource
+                        else
+                          Result := inherited GetDataSourceFromDataComponent(ADataComponent);
 end;
 
 type
@@ -2477,7 +2487,8 @@ begin
     begin
       if aGridItem.PropertiesClass = TcxMemoProperties then
       begin
-        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName));
+        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', aDataSource,
+          GridDataBinding.Field.FieldName));
         if Supports(Control, IJvDynControlMemo) and Assigned(TcxGridColumn(aGridItem).Properties) then
           with Control as IJvDynControlMemo do
           begin
@@ -2488,29 +2499,31 @@ begin
           end;
       end
       else
-      if aGridItem.PropertiesClass = TcxCheckBoxProperties then
-      begin
-        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName));
-        if Supports(Control, IJvDynControlDBCheckBox) and Assigned(TcxGridColumn(aGridItem).Properties) then
-        with Control as IJvDynControlDBCheckBox do
+        if aGridItem.PropertiesClass = TcxCheckBoxProperties then
         begin
-          ControlSetValueChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueChecked);
-          ControlSetValueUnChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueUnChecked);
-        end;
-      end
-      else
-      if aGridItem.PropertiesClass = TcxComboBoxProperties then
-      begin
-        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName));
-        if Supports(Control, IJvDynControlDBCheckBox) and Assigned(TcxGridColumn(aGridItem).Properties) then
-        with Control as IJvDynControlDBCheckBox do
-        begin
-          ControlSetValueChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueChecked);
-          ControlSetValueUnChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueUnChecked);
-        end;
-      end
-      else
-        Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', ADataSource);
+          Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource,
+            GridDataBinding.Field.FieldName));
+          if Supports(Control, IJvDynControlDBCheckBox) and Assigned(TcxGridColumn(aGridItem).Properties) then
+            with Control as IJvDynControlDBCheckBox do
+            begin
+              ControlSetValueChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueChecked);
+              ControlSetValueUnChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueUnChecked);
+            end;
+        end
+        else
+          if aGridItem.PropertiesClass = TcxComboBoxProperties then
+          begin
+            Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource,
+              GridDataBinding.Field.FieldName));
+            if Supports(Control, IJvDynControlDBCheckBox) and Assigned(TcxGridColumn(aGridItem).Properties) then
+              with Control as IJvDynControlDBCheckBox do
+              begin
+                ControlSetValueChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueChecked);
+                ControlSetValueUnChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueUnChecked);
+              end;
+          end
+          else
+            Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', ADataSource);
       if FieldDefaultWidth > 0 then
         Control.Width := FieldDefaultWidth
       else
@@ -2520,15 +2533,18 @@ begin
             Control.Width :=
               TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.Size
           else
+            if (aGridItem.PropertiesClass = TcxMemoProperties) and (FieldMaxWidth > 0) then
+              Control.Width := FieldMaxWidth
+            else
         else
           if GridDataBinding.Field.DisplayWidth > 0 then
             Control.Width :=
-              TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.DisplayWidth;
+                TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.DisplayWidth;
         if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
           Control.Width := FieldMaxWidth
         else
-        if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
-          Control.Width := FieldMinWidth
+          if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+            Control.Width := FieldMinWidth
       end;
       if Assigned(TcxGridColumn(aGridItem).Properties) then
         if Supports(Control, IJvDynControlReadOnly) then
@@ -2568,9 +2584,9 @@ begin
     else
       Exit;
     for I := 0 to AGridView.GroupedItemCount - 1 do
-      TransferGridItemToControl (AGridView.GroupedItems[I], GridDataController.DataSource, AControl, CreateOptions);
+      TransferGridItemToControl(AGridView.GroupedItems[I], GridDataController.DataSource, AControl, CreateOptions);
     for I := 0 to AGridView.VisibleItemCount - 1 do
-      TransferGridItemToControl (AGridView.VisibleItems[I], GridDataController.DataSource, AControl, CreateOptions);
+      TransferGridItemToControl(AGridView.VisibleItems[I], GridDataController.DataSource, AControl, CreateOptions);
   finally
     if not Assigned(AOptions) then
       CreateOptions.Free;
@@ -2584,33 +2600,35 @@ begin
   if Assigned(ADataComponent) then
     if (ADataComponent is TcxGrid) and
       (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
-      Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView), AControl, AOptions)
+      Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView),
+        AControl, AOptions)
     else
-    if ADataComponent is TcxCustomGridTableView then
-      Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(ADataComponent), AControl, AOptions)
+      if ADataComponent is TcxCustomGridTableView then
+        Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(ADataComponent), AControl, AOptions)
+      else
+        Result := inherited CreateControlsFromDataComponentOnControl(ADataComponent, AControl, AOptions)
     else
-      Result := inherited CreateControlsFromDataComponentOnControl(ADataComponent, AControl, AOptions)
-  else
-    Result := False;
+      Result := False;
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 initialization
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$ENDIF UNITVERSIONING}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   IntDynControlEngineCxDB := TJvDynControlEngineDevExpCxDB.Create;
   SetDefaultDynControlEngineDB(IntDynControlEngineCxDB);
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 finalization
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   FreeAndNil(IntDynControlEngineCxDB);
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-  {$IFDEF UNITVERSIONING}
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
+

@@ -87,7 +87,6 @@ type
   private
     FDynControlEngine: TJvDynControlEngine;
   protected
-    function GetFieldControlType(AField: TField): TJvDynControlType; virtual;
     function GetDynControlEngine: TJvDynControlEngine;
     procedure SetDynControlEngine(ADynControlEngine: TJvDynControlEngine);
   public
@@ -142,6 +141,7 @@ type
     function CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
       AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean; virtual;
     function GetDataSourceFromDataComponent(ADataComponent: TComponent): TDataSource; virtual;
+    function GetFieldControlType(AField: TField): TJvDynControlType; virtual;
     function SupportsDataComponent(ADataComponent: TComponent): Boolean;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
@@ -525,6 +525,9 @@ begin
                 Control.Width :=
                   TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size
               else
+                if (GetFieldControlType(ADataSource.DataSet.Fields[I])= jctDBMemo) and (FieldMaxWidth > 0) then
+                  Control.Width := FieldMaxWidth
+                else
             else
               if ADataSource.DataSet.Fields[I].DisplayWidth > 0 then
                 Control.Width :=
