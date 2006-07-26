@@ -48,7 +48,7 @@ Jv3rdD5R.bpl: d5\Jv3rdD5R.dpk
 JvCoreD5D.bpl: d5\JvCoreD5D.dpk
   $(DCC)
 
-JvCoreD5R.bpl: d5\JvCoreD5R.dpk
+JvCoreD5R.bpl: d5std\JvCoreD5R.dpk
   $(DCC)
 
 JvAppFrmD5R.bpl: d5\JvAppFrmD5R.dpk

@@ -46,7 +46,7 @@ Jv3rdC5R.bpl: c5\Jv3rdC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCoreC5R.bpl: c5\JvCoreC5R.bpk
+JvCoreC5R.bpl: c5std\JvCoreC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

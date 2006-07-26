@@ -48,7 +48,7 @@ Jv3rdD7R.bpl: d7\Jv3rdD7R.dpk
 JvCoreD7D.bpl: d7\JvCoreD7D.dpk
   $(DCC)
 
-JvCoreD7R.bpl: d7\JvCoreD7R.dpk
+JvCoreD7R.bpl: d7per\JvCoreD7R.dpk
   $(DCC)
 
 JvAppFrmD7R.bpl: d7\JvAppFrmD7R.dpk
