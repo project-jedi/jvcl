@@ -3010,10 +3010,10 @@ begin
     P := Parent.ClientToScreen(Point(Left, Top));
     {$IFDEF VCL}
     Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
-    SR.Top := Monitor.Top;
-    SR.Left := Monitor.Left;
-    SR.Width := Monitor.Width;
-    SR.Height := Monitor.Height;
+    SR.Top := Monitor.WorkAreaRect.Top;
+    SR.Left := Monitor.WorkAreaRect.Left;
+    SR.Width := Monitor.WorkAreaRect.Right - Monitor.WorkAreaRect.Left;
+    SR.Height := Monitor.WorkAreaRect.Bottom - Monitor.WorkAreaRect.Top;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     SR.Top := Screen.Top;
