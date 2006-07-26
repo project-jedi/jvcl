@@ -12,7 +12,7 @@
     
     <Projects ActiveProject="JvJansD10R.bpl">
       <Projects Name="Jv3rdD10R.bpl" Type="String">d10\Jv3rdD10R.bdsproj</Projects>
-      <Projects Name="JvCoreD10R.bpl" Type="String">d10\JvCoreD10R.bdsproj</Projects>
+      <Projects Name="JvCoreD10R.bpl" Type="String">d10per\JvCoreD10R.bdsproj</Projects>
       <Projects Name="JvCoreD10D.bpl" Type="String">d10\JvCoreD10D.bdsproj</Projects>
       <Projects Name="JvSystemD10R.bpl" Type="String">d10\JvSystemD10R.bdsproj</Projects>
       <Projects Name="JvSystemD10D.bpl" Type="String">d10\JvSystemD10D.bdsproj</Projects>

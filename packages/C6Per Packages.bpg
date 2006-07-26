@@ -46,7 +46,7 @@ Jv3rdC6R.bpl: c6\Jv3rdC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCoreC6R.bpl: c6\JvCoreC6R.bpk
+JvCoreC6R.bpl: c6per\JvCoreC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
