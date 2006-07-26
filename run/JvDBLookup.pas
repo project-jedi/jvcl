@@ -1733,7 +1733,16 @@ begin
   if FListActive then
   begin
     FRecordIndex := FLookupLink.ActiveRecord;
-    FRecordCount := FLookupLink.RecordCount;
+
+    // Note: if we cannot access the DataSet, then the record count will be
+    // the one from the link and can be different from the total record count.
+    // This may result in not displaying the scrollbar.
+    // This was changed from simply using FLookupLink.RecordCount to fix
+    // Mantis 3825.
+    if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) then
+      FRecordCount := FLookupLink.DataSource.DataSet.RecordCount
+    else
+      FRecordCount := FLookupLink.RecordCount;
     FKeySelected := not ValueIsEmpty(FValue) or not FLookupLink.DataSet.Bof;
   end
   else
@@ -2136,21 +2145,24 @@ begin
   Pos := 0;
   Max := 0;
 
-  { Note: If used by JvDBLookupCombo:
-
-    FRowCount    = JvDBLookupCombo.DropDownCount
-    FRecordCount = #records in link buffer (<> #records in table)
-  }
-  { Check whether the list is completely filled.. }
+  // Check whether the list is completely filled...
   if (FRecordCount > (FRowCount - Ord(EmptyRowVisible))) and FLookupLink.Active then
   begin
-    { ..if so, display a scrollbar }
-    Max := 4;
-    if not FLookupLink.DataSet.Bof then
-      if not FLookupLink.DataSet.Eof then
-        Pos := 2
-      else
-        Pos := 4;
+    // ..if so, display a scrollbar and try to be as accurate as possible. 
+    if Assigned(FLookupLink.DataSet) and (FLookupLink.DataSet.RecNo <> -1) then
+    begin
+      Max := FRecordCount - 1;
+      Pos := FLookupLink.DataSet.RecNo - 1;
+    end
+    else
+    begin
+      Max := 4;
+      if not FLookupLink.DataSet.Bof then
+        if not FLookupLink.DataSet.Eof then
+          Pos := 2
+        else
+          Pos := 4;
+    end;
   end;
   ScrollInfo.cbSize := SizeOf(TScrollInfo);
   ScrollInfo.fMask := SIF_POS or SIF_RANGE;
@@ -2488,6 +2500,9 @@ var
   Animate: BOOL;
   SlideStyle: Integer;
   {$ENDIF COMPILER6_UP}
+  RecordCount: Integer;
+  Monitor: TMonitor;
+  SR: TJvSizeRect;
 begin
   if not FListVisible and {FListActive} CanModify then
   begin
@@ -2501,11 +2516,18 @@ begin
     FDataList.EmptyValue := EmptyValue;
     FDataList.DisplayEmpty := DisplayEmpty;
     FDataList.EmptyItemColor := EmptyItemColor;
-    if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) and
-       (DropDownCount > FLookupLink.DataSource.DataSet.RecordCount) then
-      FDataList.RowCount := FLookupLink.DataSource.DataSet.RecordCount
+    if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) then
+      RecordCount := FLookupLink.DataSource.DataSet.RecordCount
+    else
+      RecordCount := MAXINT;
+      
+    if (DropDownCount > RecordCount) then
+      FDataList.RowCount := RecordCount
     else
       FDataList.RowCount := DropDownCount;
+
+//    FDataList.
+      
     FDataList.LookupField := FLookupFieldName;
     FDataList.LookupFormat := FLookupFormat;
     FDataList.ListStyle := FListStyle;
@@ -2534,9 +2556,18 @@ begin
       FDataList.Width := Max(Width, FDataList.GetWindowWidth)
     else
       FDataList.Width := Width;
+
+    // Adjust if too close to workarea borders  
+
+    Monitor := Screen.MonitorFromWindow(Handle);
+    SR.Top := Monitor.WorkAreaRect.Top;
+    SR.Left := Monitor.WorkAreaRect.Left;
+    SR.Width := Monitor.WorkAreaRect.Right - Monitor.WorkAreaRect.Left;
+    SR.Height := Monitor.WorkAreaRect.Bottom - Monitor.WorkAreaRect.Top;
+    
     P := Parent.ClientToScreen(Point(Left, Top));
     Y := P.Y + Height;
-    if Y + FDataList.Height > Screen.Height then
+    if Y + FDataList.Height > SR.Height then
       Y := P.Y - FDataList.Height;
     case FDropDownAlign of
       daRight:
@@ -2544,8 +2575,8 @@ begin
       daCenter:
         Dec(P.X, (FDataList.Width - Width) div 2);
     end;
-    if P.X + FDataList.Width > Screen.Width then
-      P.X := Screen.Width - FDataList.Width;
+    if P.X + FDataList.Width > SR.Width then
+      P.X := SR.Width - FDataList.Width;
 
     {$IFDEF COMPILER6_UP}
     { Use slide-open effect for combo boxes if wanted. This is also possible
