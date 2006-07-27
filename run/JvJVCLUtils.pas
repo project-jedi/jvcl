@@ -53,7 +53,7 @@ uses
   Qt, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
-  Dialogs, ComCtrls, ImgList, Grids, IniFiles,
+  Dialogs, ComCtrls, ImgList, Grids, IniFiles, MultiMon,
   Classes, // must be after "Forms"
   JvVCL5Utils, JvJCLUtils, JvAppStorage, JvTypes;
 
@@ -519,6 +519,9 @@ var
   DefaultMappingMethod: TMappingMethod = mmHistogram;
 {$ENDIF VCL}
 
+function GetWorkareaRect(Monitor: TMonitor): TRect;
+function FindMonitor(Handle: HMONITOR): TMonitor;
+
 procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean): TPoint;
 
@@ -797,7 +800,7 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  Math,
+  Math, 
   JclSysInfo,
   JvConsts, JvProgressUtils, JvResources;
 
@@ -4912,6 +4915,28 @@ begin
   Result := PixelFormatToColors(ScreenPixelFormat);
 end;
 {$ENDIF VCL}
+
+function GetWorkareaRect(Monitor: TMonitor): TRect;
+var
+  MonInfo: TMonitorInfo;
+begin
+  MonInfo.cbSize := SizeOf(MonInfo);
+  GetMonitorInfo(Monitor.Handle, @MonInfo);
+  Result := MonInfo.rcWork;
+end;
+
+function FindMonitor(Handle: HMONITOR): TMonitor;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Screen.MonitorCount - 1 do
+    if Screen.Monitors[I].Handle = Handle then
+    begin
+      Result := Screen.Monitors[I];
+      Break;
+    end;
+end;
 
 { Quantizing }
 { Quantizing procedures based on free C source code written by
