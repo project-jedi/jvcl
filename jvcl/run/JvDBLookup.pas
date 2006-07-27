@@ -659,7 +659,7 @@ uses
   {$IFDEF COMPILER6_UP}
   VDBConsts,
   {$ENDIF COMPILER6_UP}
-  DBConsts, SysUtils, Math,
+  DBConsts, SysUtils, Math, MultiMon,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources;
 
 procedure CheckLookupFormat(const AFormat: string);
@@ -2503,6 +2503,7 @@ var
   RecordCount: Integer;
   Monitor: TMonitor;
   SR: TJvSizeRect;
+  Rect: TRect;
 begin
   if not FListVisible and {FListActive} CanModify then
   begin
@@ -2559,11 +2560,12 @@ begin
 
     // Adjust if too close to workarea borders  
 
-    Monitor := Screen.MonitorFromWindow(Handle);
-    SR.Top := Monitor.WorkAreaRect.Top;
-    SR.Left := Monitor.WorkAreaRect.Left;
-    SR.Width := Monitor.WorkAreaRect.Right - Monitor.WorkAreaRect.Left;
-    SR.Height := Monitor.WorkAreaRect.Bottom - Monitor.WorkAreaRect.Top;
+    Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
+    Rect := GetWorkAreaRect(Monitor);
+    SR.Top := Rect.Top;
+    SR.Left := Rect.Left;
+    SR.Width := Rect.Right - Rect.Left;
+    SR.Height := Rect.Bottom - Rect.Top;
     
     P := Parent.ClientToScreen(Point(Left, Top));
     Y := P.Y + Height;

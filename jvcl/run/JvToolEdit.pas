@@ -1401,19 +1401,6 @@ var
 
 {$IFDEF VCL}
 
-function FindMonitor(Handle: HMONITOR): TMonitor;
-var
-  I: Integer;
-begin
-  Result := nil;
-  for I := 0 to Screen.MonitorCount - 1 do
-    if Screen.Monitors[I].Handle = Handle then
-    begin
-      Result := Screen.Monitors[I];
-      Break;
-    end;
-end;
-
 function DateHook: TDateHook;
 begin
   if GDateHook = nil then
@@ -2999,6 +2986,7 @@ var
   SR: TJvSizeRect;
   {$IFDEF VCL}
   Monitor: TMonitor;
+  Rect: TRect;
   {$ENDIF VCL}
 begin
   if not ((ReadOnly and not FAlwaysShowPopup) or FPopupVisible) then
@@ -3010,10 +2998,11 @@ begin
     P := Parent.ClientToScreen(Point(Left, Top));
     {$IFDEF VCL}
     Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
-    SR.Top := Monitor.WorkAreaRect.Top;
-    SR.Left := Monitor.WorkAreaRect.Left;
-    SR.Width := Monitor.WorkAreaRect.Right - Monitor.WorkAreaRect.Left;
-    SR.Height := Monitor.WorkAreaRect.Bottom - Monitor.WorkAreaRect.Top;
+    Rect := GetWorkAreaRect(Monitor);
+    SR.Top := Rect.Top;
+    SR.Left := Rect.Left;
+    SR.Width := Rect.Right - Rect.Left;
+    SR.Height := Rect.Bottom - Rect.Top;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     SR.Top := Screen.Top;
