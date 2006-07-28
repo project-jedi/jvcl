@@ -1830,8 +1830,219 @@ begin
     AddGet(TIcon, 'Handle', TIcon_Read_Handle, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddSet(TIcon, 'Handle', TIcon_Write_Handle, 0, [varEmpty]);
-    {$ENDIF VCL}
+    {$ENDIF VCL}             
     { TFontData }
+
+    { Color constants }
+    AddConst(cGraphics, 'clScrollBar', clScrollBar);
+    AddConst(cGraphics, 'clBackground', clBackground);
+    AddConst(cGraphics, 'clActiveCaption', clActiveCaption);
+    AddConst(cGraphics, 'clInactiveCaption', clInactiveCaption);
+    AddConst(cGraphics, 'clMenu', clMenu);
+    AddConst(cGraphics, 'clWindow', clWindow);
+    AddConst(cGraphics, 'clWindowFrame', clWindowFrame);
+    AddConst(cGraphics, 'clMenuText', clMenuText);
+    AddConst(cGraphics, 'clWindowText', clWindowText);
+    AddConst(cGraphics, 'clCaptionText', clCaptionText);
+    AddConst(cGraphics, 'clActiveBorder', clActiveBorder);
+    AddConst(cGraphics, 'clInactiveBorder', clInactiveBorder);
+    AddConst(cGraphics, 'clAppWorkSpace', clAppWorkSpace);
+    AddConst(cGraphics, 'clHighlight', clHighlight);
+    AddConst(cGraphics, 'clHighlightText', clHighlightText);
+    AddConst(cGraphics, 'clBtnFace', clBtnFace);
+    AddConst(cGraphics, 'clBtnShadow', clBtnShadow);
+    AddConst(cGraphics, 'clGrayText', clGrayText);
+    AddConst(cGraphics, 'clBtnText', clBtnText);
+    AddConst(cGraphics, 'clInactiveCaptionText', clInactiveCaptionText);
+    AddConst(cGraphics, 'clBtnHighlight', clBtnHighlight);
+    AddConst(cGraphics, 'cl3DDkShadow', cl3DDkShadow);
+    AddConst(cGraphics, 'cl3DLight', cl3DLight);
+    AddConst(cGraphics, 'clInfoText', clInfoText);
+    AddConst(cGraphics, 'clInfoBk', clInfoBk);
+    {$IFDEF COMPILER6_UP}
+    AddConst(cGraphics, 'clHotLight', clHotLight);
+    AddConst(cGraphics, 'clGradientActiveCaption', clGradientActiveCaption);
+    AddConst(cGraphics, 'clGradientInactiveCaption', clGradientInactiveCaption);
+    AddConst(cGraphics, 'clMenuHighlight', clMenuHighlight);
+    AddConst(cGraphics, 'clMenuBar', clMenuBar);
+    {$ENDIF COMPILER6_UP}
+
+    AddConst(cGraphics, 'clBlack', clBlack);
+    AddConst(cGraphics, 'clMaroon', clMaroon);
+    AddConst(cGraphics, 'clGreen', clGreen);
+    AddConst(cGraphics, 'clOlive', clOlive);
+    AddConst(cGraphics, 'clNavy', clNavy);
+    AddConst(cGraphics, 'clPurple', clPurple);
+    AddConst(cGraphics, 'clTeal', clTeal);
+    AddConst(cGraphics, 'clGray', clGray);
+    AddConst(cGraphics, 'clSilver', clSilver);
+    AddConst(cGraphics, 'clRed', clRed);
+    AddConst(cGraphics, 'clLime', clLime);
+    AddConst(cGraphics, 'clYellow', clYellow);
+    AddConst(cGraphics, 'clBlue', clBlue);
+    AddConst(cGraphics, 'clFuchsia', clFuchsia);
+    AddConst(cGraphics, 'clAqua', clAqua);
+    AddConst(cGraphics, 'clLtGray', clLtGray);
+    AddConst(cGraphics, 'clDkGray', clDkGray);
+    AddConst(cGraphics, 'clWhite', clWhite);
+
+    {$IFDEF COMPILER6_UP}
+    AddConst(cGraphics, 'clMoneyGreen', clMoneyGreen);
+    AddConst(cGraphics, 'clSkyBlue', clSkyBlue);
+    AddConst(cGraphics, 'clCream', clCream);
+    AddConst(cGraphics, 'clMedGray', clMedGray);
+    {$ENDIF COMPILER6_UP}
+
+    AddConst(cGraphics, 'clNone', clNone);
+    AddConst(cGraphics, 'clDefault', clDefault);
+
+    {$IFDEF COMPILER9_UP}
+    AddConst(cGraphics, 'clWebSnow', clWebSnow);
+    AddConst(cGraphics, 'clWebFloralWhite', clWebFloralWhite);
+    AddConst(cGraphics, 'clWebLavenderBlush', clWebLavenderBlush);
+    AddConst(cGraphics, 'clWebOldLace', clWebOldLace);
+    AddConst(cGraphics, 'clWebIvory', clWebIvory);
+    AddConst(cGraphics, 'clWebCornSilk', clWebCornSilk);
+    AddConst(cGraphics, 'clWebBeige', clWebBeige);
+    AddConst(cGraphics, 'clWebAntiqueWhite', clWebAntiqueWhite);
+    AddConst(cGraphics, 'clWebWheat', clWebWheat);
+    AddConst(cGraphics, 'clWebAliceBlue', clWebAliceBlue);
+    AddConst(cGraphics, 'clWebGhostWhite', clWebGhostWhite);
+    AddConst(cGraphics, 'clWebLavender', clWebLavender);
+    AddConst(cGraphics, 'clWebSeashell', clWebSeashell);
+    AddConst(cGraphics, 'clWebLightYellow', clWebLightYellow);
+    AddConst(cGraphics, 'clWebPapayaWhip', clWebPapayaWhip);
+    AddConst(cGraphics, 'clWebNavajoWhite', clWebNavajoWhite);
+    AddConst(cGraphics, 'clWebMoccasin', clWebMoccasin);
+    AddConst(cGraphics, 'clWebBurlywood', clWebBurlywood);
+    AddConst(cGraphics, 'clWebAzure', clWebAzure);
+    AddConst(cGraphics, 'clWebMintcream', clWebMintcream);
+    AddConst(cGraphics, 'clWebHoneydew', clWebHoneydew);
+    AddConst(cGraphics, 'clWebLinen', clWebLinen);
+    AddConst(cGraphics, 'clWebLemonChiffon', clWebLemonChiffon);
+    AddConst(cGraphics, 'clWebBlanchedAlmond', clWebBlanchedAlmond);
+    AddConst(cGraphics, 'clWebBisque', clWebBisque);
+    AddConst(cGraphics, 'clWebPeachPuff', clWebPeachPuff);
+    AddConst(cGraphics, 'clWebTan', clWebTan);
+    // yellows/reds yellow ->
+    AddConst(cGraphics, 'clWebYellow', clWebYellow);
+    AddConst(cGraphics, 'clWebDarkOrange', clWebDarkOrange);
+    AddConst(cGraphics, 'clWebRed', clWebRed);
+    AddConst(cGraphics, 'clWebDarkRed', clWebDarkRed);
+    AddConst(cGraphics, 'clWebMaroon', clWebMaroon);
+    AddConst(cGraphics, 'clWebIndianRed', clWebIndianRed);
+    AddConst(cGraphics, 'clWebSalmon', clWebSalmon);
+    AddConst(cGraphics, 'clWebCoral', clWebCoral);
+    AddConst(cGraphics, 'clWebGold', clWebGold);
+    AddConst(cGraphics, 'clWebTomato', clWebTomato);
+    AddConst(cGraphics, 'clWebCrimson', clWebCrimson);
+    AddConst(cGraphics, 'clWebBrown', clWebBrown);
+    AddConst(cGraphics, 'clWebChocolate', clWebChocolate);
+    AddConst(cGraphics, 'clWebSandyBrown', clWebSandyBrown);
+    AddConst(cGraphics, 'clWebLightSalmon', clWebLightSalmon);
+    AddConst(cGraphics, 'clWebLightCoral', clWebLightCoral);
+    AddConst(cGraphics, 'clWebOrange', clWebOrange);
+    AddConst(cGraphics, 'clWebOrangeRed', clWebOrangeRed);
+    AddConst(cGraphics, 'clWebFirebrick', clWebFirebrick);
+    AddConst(cGraphics, 'clWebSaddleBrown', clWebSaddleBrown);
+    AddConst(cGraphics, 'clWebSienna', clWebSienna);
+    AddConst(cGraphics, 'clWebPeru', clWebPeru);
+    AddConst(cGraphics, 'clWebDarkSalmon', clWebDarkSalmon);
+    AddConst(cGraphics, 'clWebRosyBrown', clWebRosyBrown);
+    // greens palegoldenrod -
+    AddConst(cGraphics, 'clWebPaleGoldenrod', clWebPaleGoldenrod);
+    AddConst(cGraphics, 'clWebLightGoldenrodYellow', clWebLightGoldenrodYellow);
+    AddConst(cGraphics, 'clWebOlive', clWebOlive);
+    AddConst(cGraphics, 'clWebForestGreen', clWebForestGreen);
+    AddConst(cGraphics, 'clWebGreenYellow', clWebGreenYellow);
+    AddConst(cGraphics, 'clWebChartreuse', clWebChartreuse);
+    AddConst(cGraphics, 'clWebLightGreen', clWebLightGreen);
+    AddConst(cGraphics, 'clWebAquamarine', clWebAquamarine);
+    AddConst(cGraphics, 'clWebSeaGreen', clWebSeaGreen);
+    AddConst(cGraphics, 'clWebGoldenRod', clWebGoldenRod);
+    AddConst(cGraphics, 'clWebKhaki', clWebKhaki);
+    AddConst(cGraphics, 'clWebOliveDrab', clWebOliveDrab);
+    AddConst(cGraphics, 'clWebGreen', clWebGreen);
+    AddConst(cGraphics, 'clWebYellowGreen', clWebYellowGreen);
+    AddConst(cGraphics, 'clWebLawnGreen', clWebLawnGreen);
+    AddConst(cGraphics, 'clWebPaleGreen', clWebPaleGreen);
+    AddConst(cGraphics, 'clWebMediumAquamarine', clWebMediumAquamarine);
+    AddConst(cGraphics, 'clWebMediumSeaGreen', clWebMediumSeaGreen);
+    AddConst(cGraphics, 'clWebDarkGoldenRod', clWebDarkGoldenRod);
+    AddConst(cGraphics, 'clWebDarkKhaki', clWebDarkKhaki);
+    AddConst(cGraphics, 'clWebDarkOliveGreen', clWebDarkOliveGreen);
+    AddConst(cGraphics, 'clWebDarkgreen', clWebDarkgreen);
+    AddConst(cGraphics, 'clWebLimeGreen', clWebLimeGreen);
+    AddConst(cGraphics, 'clWebLime', clWebLime);
+    AddConst(cGraphics, 'clWebSpringGreen', clWebSpringGreen);
+    AddConst(cGraphics, 'clWebMediumSpringGreen', clWebMediumSpringGreen);
+    AddConst(cGraphics, 'clWebDarkSeaGreen', clWebDarkSeaGreen);
+    // greens/blues lightseag
+    AddConst(cGraphics, 'clWebLightSeaGreen', clWebLightSeaGreen);
+    AddConst(cGraphics, 'clWebPaleTurquoise', clWebPaleTurquoise);
+    AddConst(cGraphics, 'clWebLightCyan', clWebLightCyan);
+    AddConst(cGraphics, 'clWebLightBlue', clWebLightBlue);
+    AddConst(cGraphics, 'clWebLightSkyBlue', clWebLightSkyBlue);
+    AddConst(cGraphics, 'clWebCornFlowerBlue', clWebCornFlowerBlue);
+    AddConst(cGraphics, 'clWebDarkBlue', clWebDarkBlue);
+    AddConst(cGraphics, 'clWebIndigo', clWebIndigo);
+    AddConst(cGraphics, 'clWebMediumTurquoise', clWebMediumTurquoise);
+    AddConst(cGraphics, 'clWebTurquoise', clWebTurquoise);
+    AddConst(cGraphics, 'clWebCyan', clWebCyan);
+    AddConst(cGraphics, 'clWebAqua', clWebAqua);
+    AddConst(cGraphics, 'clWebPowderBlue', clWebPowderBlue);
+    AddConst(cGraphics, 'clWebSkyBlue', clWebSkyBlue);
+    AddConst(cGraphics, 'clWebRoyalBlue', clWebRoyalBlue);
+    AddConst(cGraphics, 'clWebMediumBlue', clWebMediumBlue);
+    AddConst(cGraphics, 'clWebMidnightBlue', clWebMidnightBlue);
+    AddConst(cGraphics, 'clWebDarkTurquoise', clWebDarkTurquoise);
+    AddConst(cGraphics, 'clWebCadetBlue', clWebCadetBlue);
+    AddConst(cGraphics, 'clWebDarkCyan', clWebDarkCyan);
+    AddConst(cGraphics, 'clWebTeal', clWebTeal);
+    AddConst(cGraphics, 'clWebDeepskyBlue', clWebDeepskyBlue);
+    AddConst(cGraphics, 'clWebDodgerBlue', clWebDodgerBlue);
+    AddConst(cGraphics, 'clWebBlue', clWebBlue);
+    AddConst(cGraphics, 'clWebNavy', clWebNavy);
+    // violets/pinks darkviol
+    AddConst(cGraphics, 'clWebDarkViolet', clWebDarkViolet);
+    AddConst(cGraphics, 'clWebDarkOrchid', clWebDarkOrchid);
+    AddConst(cGraphics, 'clWebMagenta', clWebMagenta);
+    AddConst(cGraphics, 'clWebFuchsia', clWebFuchsia);
+    AddConst(cGraphics, 'clWebDarkMagenta', clWebDarkMagenta);
+    AddConst(cGraphics, 'clWebMediumVioletRed', clWebMediumVioletRed);
+    AddConst(cGraphics, 'clWebPaleVioletRed', clWebPaleVioletRed);
+    AddConst(cGraphics, 'clWebBlueViolet', clWebBlueViolet);
+    AddConst(cGraphics, 'clWebMediumOrchid', clWebMediumOrchid);
+    AddConst(cGraphics, 'clWebMediumPurple', clWebMediumPurple);
+    AddConst(cGraphics, 'clWebPurple', clWebPurple);
+    AddConst(cGraphics, 'clWebDeepPink', clWebDeepPink);
+    AddConst(cGraphics, 'clWebLightPink', clWebLightPink);
+    AddConst(cGraphics, 'clWebViolet', clWebViolet);
+    AddConst(cGraphics, 'clWebOrchid', clWebOrchid);
+    AddConst(cGraphics, 'clWebPlum', clWebPlum);
+    AddConst(cGraphics, 'clWebThistle', clWebThistle);
+    AddConst(cGraphics, 'clWebHotPink', clWebHotPink);
+    AddConst(cGraphics, 'clWebPink', clWebPink);
+    // blue/gray/black lights
+    AddConst(cGraphics, 'clWebLightSteelBlue', clWebLightSteelBlue);
+    AddConst(cGraphics, 'clWebMediumSlateBlue', clWebMediumSlateBlue);
+    AddConst(cGraphics, 'clWebLightSlateGray', clWebLightSlateGray);
+    AddConst(cGraphics, 'clWebWhite', clWebWhite);
+    AddConst(cGraphics, 'clWebLightgrey', clWebLightgrey);
+    AddConst(cGraphics, 'clWebGray', clWebGray);
+    AddConst(cGraphics, 'clWebSteelBlue', clWebSteelBlue);
+    AddConst(cGraphics, 'clWebSlateBlue', clWebSlateBlue);
+    AddConst(cGraphics, 'clWebSlateGray', clWebSlateGray);
+    AddConst(cGraphics, 'clWebWhiteSmoke', clWebWhiteSmoke);
+    AddConst(cGraphics, 'clWebSilver', clWebSilver);
+    AddConst(cGraphics, 'clWebDimGray', clWebDimGray);
+    AddConst(cGraphics, 'clWebMistyRose', clWebMistyRose);
+    AddConst(cGraphics, 'clWebDarkSlateBlue', clWebDarkSlateBlue);
+    AddConst(cGraphics, 'clWebDarkSlategray', clWebDarkSlategray);
+    AddConst(cGraphics, 'clWebGainsboro', clWebGainsboro);
+    AddConst(cGraphics, 'clWebDarkGray', clWebDarkGray);
+    AddConst(cGraphics, 'clWebBlack', clWebBlack);
+    {$ENDIF COMPILER9_UP}
   end;
 end;
 
