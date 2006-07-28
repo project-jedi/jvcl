@@ -1839,6 +1839,9 @@ begin
       FStyleManager.RegisterChanges(FStyleLink);
       FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
+      NavPanelFont := FStyleManager.Fonts.FNavPanelFont;
+      NavPanelHotTrackFont := FStyleManager.Fonts.FNavPanelHotTrackFont;
+      NavPanelHotTrackFontOptions := FStyleManager.Fonts.FNavPanelHotTrackFontOptions;
     end;
     //    FSplitter.StyleManager := Value;
     InternalStyleManagerChanged(Self, Value);
@@ -3756,6 +3759,7 @@ begin
       FStyleManager.FreeNotification(Self);
       FColorFrom := FStyleManager.Colors.HeaderColorFrom;
       FColorTo := FStyleManager.Colors.HeaderColorTo;
+      Font := FStyleManager.Fonts.HeaderFont;
       Invalidate;
     end;
     InternalStyleManagerChanged(Self, Value);
@@ -3993,6 +3997,7 @@ begin
       FStyleManager.FreeNotification(Self);
       ColorFrom := FStyleManager.Colors.DividerColorFrom;
       ColorTo := FStyleManager.Colors.DividerColorTo;
+      Font := FStyleManager.Fonts.DividerFont;
     end;
   end;
 end;
