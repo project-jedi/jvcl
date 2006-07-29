@@ -1328,6 +1328,7 @@ resourcestring
   RsEJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
   RsEJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
   RsEJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
+  RsEJvAssertClassInfo = 'TJvInspectorPropData.New: unexpected ClassInfo = nil';
   RsEJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
 
 //=== JvInspXVCL.pas =========================================================
