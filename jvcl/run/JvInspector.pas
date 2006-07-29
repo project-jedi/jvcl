@@ -11641,6 +11641,10 @@ var
   PropList: PPropList;
 begin
   SetLength(Result, 0);
+
+  if AInstance.ClassInfo = nil then
+    raise EJvInspectorData.CreateRes(@RsEJvAssertClassInfo);
+
   PropCount := GetPropList(AInstance.ClassInfo, TypeKinds, nil);
   GetMem(PropList, PropCount * SizeOf(PPropInfo));
   try
@@ -11662,6 +11666,10 @@ var
   NameIdx: Integer;
 begin
   SetLength(Result, 0);
+
+  if AInstance.ClassInfo = nil then
+    raise EJvInspectorData.CreateRes(@RsEJvAssertClassInfo);
+
   PropCount := GetPropList(AInstance.ClassInfo, TypeKinds, nil);
   GetMem(PropList, PropCount * SizeOf(PPropInfo));
   try
