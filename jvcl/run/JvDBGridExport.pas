@@ -960,7 +960,8 @@ begin
   FDestination := edFile;
   ExportSeparator := esTab;
   Caption := RsExportFile;
-  FShowColumnName := true;
+  FShowColumnName := True;
+  FQuoteEveryTime := True;
 end;
 
 destructor TJvDBGridCSVExport.Destroy;
