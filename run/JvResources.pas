@@ -305,6 +305,10 @@ resourcestring
   RsENeedBehaviorLabel = 'Cannot call %s.Create with ALabel = nil';
   RsENoOwnerLabelParent = 'OwnerLabel.Parent is nil in %s.Start';
 
+//=== JvBevel.pas ============================================================
+resourcestring
+  RsEGradientDeprecated = 'Gradient is no longer available, use a TJvGradient component instead';
+
 //=== JvBrowseFolder.pas =====================================================
 resourcestring
   RsEShellNotCompatible = 'Shell not compatible with BrowseForFolder';
