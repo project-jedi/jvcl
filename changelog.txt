@@ -1,5 +1,9 @@
 Changelog for JVCL 3.X
 ======================
+2006-07-31
+- TJvgBevel has been deprecated and moved to archive, replaced by TJvBevel  // obones
+- TJvgSplitter has been deprecated and moved to archive, replaced by TJvNetscapeSplitter  // obones
+- TJvgGraphicButton has been deprecated and moved to archive, replaced by TJvTransparentButton  // obones
 2006-07-23
 - New Database Components for Logon and Change Password included.
   Support for database components "Direct Oracle Access Components" 

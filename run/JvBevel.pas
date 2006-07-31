@@ -55,6 +55,7 @@ type
     FEdges: TBevelEdges;
     FVerticalLines: TJvBevelLines;
     FHorizontalLines: TJvBevelLines;
+    FHorLines: TJvBevelLines;
 
     procedure ReadBevelInner(Reader: TReader);
     procedure ReadBevelOuter(Reader: TReader);
@@ -62,9 +63,6 @@ type
     procedure ReadBevelBold(Reader: TReader);
     procedure ReadBevelPenStyle(Reader: TReader);
     procedure ReadBevelPenWidth(Reader: TReader);
-    procedure ReadGradient(Reader: TReader);
-    procedure ReadHorLines(Reader: TReader);
-    procedure ReadVertLines(Reader: TReader);
     procedure IgnoreValue(Reader: TReader);
 
     procedure LinesChange(Sender: TObject);
@@ -84,7 +82,6 @@ type
     procedure DrawBold(R: TRect; Cut: TBevelCut; EffectiveEdges: TBevelEdges);
     procedure DrawLines(InnerRect: TRect; Lines: TJvBevelLines; Vertical: Boolean);
     procedure Paint; override;
-    procedure ReadState(Reader: TReader); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -93,8 +90,8 @@ type
   published
     property Bold: Boolean read FBold write SetBold default False;
     property Edges: TBevelEdges read FEdges write SetEdges default [beLeft, beTop, beRight, beBottom];
-    property Inner: TBevelCut read FInner write SetInner default bvLowered;
-    property Outer: TBevelCut read FOuter write SetOuter default bvNone;
+    property Inner: TBevelCut read FInner write SetInner default bvNone;
+    property Outer: TBevelCut read FOuter write SetOuter default bvLowered;
     property PenStyle: TPenStyle read FPenStyle write SetPenStyle default psSolid;
     property PenWidth: Integer read FPenWidth write SetPenWidth default 1;
     property HintColor;
@@ -187,13 +184,15 @@ begin
 
   FHorizontalLines := TJvBevelLines.Create;
   FVerticalLines := TJvBevelLines.Create;
-  
+
+  FHorLines := TJvBevelLines.Create;
+
   FHorizontalLines.OnChange := LinesChange;
   FVerticalLines.OnChange := LinesChange;
 
   FEdges := [beLeft, beTop, beRight, beBottom];
-  FInner := bvLowered;
-  FOuter := bvNone;
+  FInner := bvNone;
+  FOuter := bvLowered;
   FPenWidth := 1;
   FShape := bsBox;
   FStyle := bsLowered;
@@ -209,9 +208,6 @@ begin
   Filer.DefineProperty('BevelPenStyle', ReadBevelPenStyle, nil, False);
   Filer.DefineProperty('BevelPenWidth', ReadBevelPenWidth, nil, False);
   Filer.DefineProperty('InteriorOffset', IgnoreValue, nil, False);
-  Filer.DefineProperty('Gradient.Active', ReadGradient, nil, False);
-  Filer.DefineProperty('HorLines', ReadHorLines, nil, False);
-  Filer.DefineProperty('VertLines', ReadVertLines, nil, False);
 
   inherited DefineProperties(Filer);
 end;
@@ -220,6 +216,8 @@ destructor TJvBevel.Destroy;
 begin
   FHorizontalLines.Free;
   FVerticalLines.Free;
+
+  FHorLines.Free;
 
   inherited Destroy;
 end;
@@ -493,27 +491,6 @@ begin
       ;
     raise;
   end;
-end;
-
-procedure TJvBevel.ReadGradient(Reader: TReader);
-begin
-  raise EReadError.CreateRes(@RsEGradientDeprecated);
-end;
-
-procedure TJvBevel.ReadHorLines(Reader: TReader);
-begin
-//  Reader.ReadComponent(FHorizontalLines);
-end;
-
-procedure TJvBevel.ReadState(Reader: TReader);
-begin
-//  DefineProperties(Reader);
-  inherited ReadState(Reader);
-end;
-
-procedure TJvBevel.ReadVertLines(Reader: TReader);
-begin
-
 end;
 
 procedure TJvBevel.SetBold(const Value: Boolean);
