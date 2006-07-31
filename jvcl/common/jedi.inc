@@ -125,7 +125,7 @@
   DELPHI8             Defined when compiling with Delphi 8
   DELPHI2005          Defined when compiling with Delphi 2005
   DELPHI9             Alias for DELPHI2005
-  DELPHI10     Defined when compiling with Delphi 10
+  DELPHI10            Defined when compiling with Delphi Personality of BDS 4.0
   DELPHI1_UP          Defined when compiling with Delphi 1 or higher
   DELPHI2_UP          Defined when compiling with Delphi 2 or higher
   DELPHI3_UP          Defined when compiling with Delphi 3 or higher
@@ -136,7 +136,7 @@
   DELPHI8_UP          Defined when compiling with Delphi 8 or higher
   DELPHI2005_UP       Defined when compiling with Delphi 2005 or higher
   DELPHI9_UP          Alias for DELPHI2005_UP
-  DELPHI10_UP  Defined when compiling with Delphi 10 or higher
+  DELPHI10_UP         Defined when compiling with Delphi Personality of BDS 4.0
 
 
 - Kylix Versions
@@ -168,7 +168,7 @@
   DELPHICOMPILER7     Defined when compiling with Delphi 7
   DELPHICOMPILER8     Defined when compiling with Delphi 8
   DELPHICOMPILER9     Defined when compiling with Delphi 2005
-  DELPHICOMPILER10    Defined when compiling with Delphi 10
+  DELPHICOMPILER10    Defined when compiling with Delphi Personality of BDS 4.0
   DELPHICOMPILER1_UP  Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP  Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -178,7 +178,7 @@
   DELPHICOMPILER7_UP  Defined when compiling with Delphi 7 or higher
   DELPHICOMPILER8_UP  Defined when compiling with Delphi 8 or higher
   DELPHICOMPILER9_UP  Defined when compiling with Delphi 2005
-  DELPHICOMPILER10_UP Defined when compiling with Delphi 10 or higher
+  DELPHICOMPILER10_UP Defined when compiling with Delphi Personality of BDS 4.0 or higher
 
 
 - C++ Builder Versions
@@ -194,14 +194,33 @@
   BCB4         Defined when compiling with C++ Builder 4
   BCB5         Defined when compiling with C++ Builder 5
   BCB6         Defined when compiling with C++ Builder 6
-  BCB10        Defined when compiling with C++ Builder 10
+  BCB10        Defined when compiling with C++ Builder Personality of BDS 4.0
   BCB1_UP      Defined when compiling with C++ Builder 1 or higher
   BCB3_UP      Defined when compiling with C++ Builder 3 or higher
   BCB4_UP      Defined when compiling with C++ Builder 4 or higher
   BCB5_UP      Defined when compiling with C++ Builder 5 or higher
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
-  BCB10_UP     Defined when compiling with C++ Builder 10 or higher
+  BCB10_UP     Defined when compiling with C++ Builder Personality of BDS 4.0 or higher
 
+
+- Borland Developer Studio Versions
+
+  The following directives are direct mappings from the VERXXX directives to a
+  friendly name of the associated IDE. These directives are only defined if
+  the IDE is Borland Developer Studio Version 2 or above.
+
+  Note: Borland Developer Studio 2006 is marketed as Delphi 2006 or C++Builder 2006,
+  but those provide only different labels for identical content.
+
+  Directive    Description
+  ------------------------------------------------------------------------------
+  BDS          Defined when compiling with a Borland Developer Studio version's dcc32.exe
+  BDS2         Defined when compiling with BDS 2.0 (Delphi 8)
+  BDS3         Defined when compiling with BDS 3.0 (Delphi 2005)
+  BDS4         Defined when compiling with BDS 4.0 (Borland Developer Studio 2006)
+  BDS2_UP      Defined when compiling with BDS 2.0 or higher
+  BDS3_UP      Defined when compiling with BDS 3.0 or higher
+  BDS4_UP      Defined when compiling with BDS 4.0 or higher
 
 - Compiler Versions
 
@@ -223,7 +242,7 @@
   COMPILER7     Defined when compiling with Delphi 7
   COMPILER8     Defined when compiling with Delphi 8
   COMPILER9     Defined when compiling with Delphi 9
-  COMPILER10    Defined when compiling with Delphi 10 or C++ Builder 10
+  COMPILER10    Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0
   COMPILER1_UP  Defined when compiling with Delphi 1 or higher
   COMPILER2_UP  Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -234,7 +253,7 @@
   COMPILER7_UP  Defined when compiling with Delphi 7
   COMPILER8_UP  Defined when compiling with Delphi 8
   COMPILER9_UP  Defined when compiling with Delphi Personalities of BDS 3.0
-  COMPILER10_UP Defined when compiling with Delphi 10 or C++ Builder 10 or higher
+  COMPILER10_UP Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or higher
 
 
 - RTL Versions
@@ -261,7 +280,7 @@
   RTL150_UP     Defined when compiling with Delphi 7 or later
   RTL160_UP     Defined when compiling with Delphi 8 or later
   RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or later
-  RTL180_UP     Defined when compiling with Delphi 10, C++ Builder 6 or later
+  RTL180_UP     Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or later
 
 
 - Feature Directives
@@ -302,12 +321,13 @@
   SUPPORTS_FOR_IN               Compiler supports for in loops (D9+)
   SUPPORTS_NESTED_CONSTANTS     Compiler supports nested constants (D9+)
   SUPPORTS_NESTED_TYPES         Compiler supports nested types (D9+)
-  SUPPORTS_CLASS_FIELDS         Compiler supports class fields (D9+ .NET)
-  SUPPORTS_CLASS_HELPERS        Compiler supports class helpers (D9+ .NET)
-  SUPPORTS_CLASS_OPERATORS      Compiler supports class operators (D9+ .NET)
-  SUPPORTS_STRICT               Compiler supports strict keyword (D9+ .NET)
-  SUPPORTS_STATIC               Compiler supports static keyword (D9+ .NET)
-  SUPPORTS_FINAL                Compiler supports final keyword (D9+ .NET)
+  SUPPORTS_ENHANCED_RECORDS     Compiler supports class [operator|function|procedure] for record types (D9.NET, D10+)
+  SUPPORTS_CLASS_FIELDS         Compiler supports class fields (D9.NET, D10+)
+  SUPPORTS_CLASS_HELPERS        Compiler supports class helpers (D9.NET, D10+)
+  SUPPORTS_CLASS_OPERATORS      Compiler supports class operators (D9.NET, D10+)
+  SUPPORTS_STRICT               Compiler supports strict keyword (D9.NET, D10+)
+  SUPPORTS_STATIC               Compiler supports static keyword (D9.NET, D10+)
+  SUPPORTS_FINAL                Compiler supports final keyword (D9.NET, D10+)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -382,6 +402,8 @@
   {$ELSE ~KYLIX}
 
     {$IFDEF VER180}
+      {$DEFINE BDS4}
+      {$DEFINE BDS}
       {$DEFINE COMPILER10}
       {$IFDEF BCB}
         {$DEFINE BCB10}
@@ -394,6 +416,7 @@
 
     {$IFDEF VER170}
       {$DEFINE BDS3}
+      {$DEFINE BDS}
       {$DEFINE COMPILER9}
       {$DEFINE DELPHI9}
       {$DEFINE DELPHI2005} // synonym to DELPHI9
@@ -403,6 +426,7 @@
 
     {$IFDEF VER160}
       {$DEFINE BDS2}
+      {$DEFINE BDS}
       {$DEFINE COMPILER8}
       {$DEFINE DELPHI8}
       {$DEFINE DELPHICOMPILER8}
@@ -504,6 +528,7 @@
 
 {$IFDEF DELPHI10}
   {$DEFINE DELPHI10_UP}
+  {$DEFINE DELPHI2005_UP // synonym to DELPHI9_UP }
   {$DEFINE DELPHI9_UP}
   {$DEFINE DELPHI8_UP}
   {$DEFINE DELPHI7_UP}
@@ -613,7 +638,6 @@
 
 {$IFDEF BCB10}
   {$DEFINE BCB10_UP}
-  {$DEFINE BCB7_UP}
   {$DEFINE BCB6_UP}
   {$DEFINE BCB5_UP}
   {$DEFINE BCB4_UP}
@@ -649,6 +673,25 @@
 
 {$IFDEF BCB1}
   {$DEFINE BCB1_UP}
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ BDSX_UP from BDSX mappings                                                   }
+{------------------------------------------------------------------------------}
+
+{$IFDEF BDS4}
+  {$DEFINE BDS4_UP}
+  {$DEFINE BDS3_UP}
+  {$DEFINE BDS2_UP}
+{$ENDIF}
+
+{$IFDEF BDS3}
+  {$DEFINE BDS3_UP}
+  {$DEFINE BDS2_UP}
+{$ENDIF}
+
+{$IFDEF BDS2}
+  {$DEFINE BDS2_UP}
 {$ENDIF}
 
 {------------------------------------------------------------------------------}
@@ -919,7 +962,7 @@
 
 {$IFDEF FPC}
   {$IFDEF  VER1_0}
-     Please use FPC 1.98 or later to compile this.
+     Please use FPC 2.0 or later to compile this.
   {$ELSE}
     {$DEFINE SUPPORTS_OUTPARAMS}
     {$DEFINE SUPPORTS_WIDECHAR}
@@ -1038,6 +1081,7 @@
   {$DEFINE SUPPORTS_NESTED_CONSTANTS}
   {$DEFINE SUPPORTS_NESTED_TYPES}
   {$IFDEF CLR}
+    {$DEFINE SUPPORTS_ENHANCED_RECORDS}
     {$DEFINE SUPPORTS_CLASS_FIELDS}
     {$DEFINE SUPPORTS_CLASS_HELPERS}
     {$DEFINE SUPPORTS_CLASS_OPERATORS}
@@ -1046,6 +1090,16 @@
     {$DEFINE SUPPORTS_FINAL}
   {$ENDIF CLR}
 {$ENDIF COMPILER9_UP}
+
+{$IFDEF COMPILER10_UP}
+  {$DEFINE SUPPORTS_ENHANCED_RECORDS}
+  {$DEFINE SUPPORTS_CLASS_FIELDS}
+  {$DEFINE SUPPORTS_CLASS_HELPERS}
+  {$DEFINE SUPPORTS_CLASS_OPERATORS}
+  {$DEFINE SUPPORTS_STRICT}
+  {$DEFINE SUPPORTS_STATIC}
+  {$DEFINE SUPPORTS_FINAL}
+{$ENDIF COMPILER10_UP}
 
 {$IFDEF RTL140_UP}
   {$IFDEF LINUX}
@@ -1121,111 +1175,5 @@
 
 // for Delphi/BCB trial versions remove the point from the line below
 {.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
-
-// History:
-
-// $Log$
-// Revision 1.19  2005/12/04 10:22:49  obones
-// Borland Developer Studio 2006 support
-//
-// Revision 1.18  2005/11/01 20:46:09  obones
-// Removed COMPLIB_VCL and COMPLIB_VisualCLX, they are not used and obsolete
-//
-// Revision 1.17  2005/10/12 21:15:45  ahuser
-// Moved comments out of the compiler directives.
-//
-// Revision 1.16  2005/09/03 15:45:42  marquardt
-// updated from JCL new SUPPORTS_ IFDEFs for .NET
-//
-// Revision 1.25  2005/09/03 15:22:24  rrossmair
-// - support for Delphi.NET personality syntax
-//
-// Revision 1.24  2005/08/22 01:43:02  rrossmair
-// - added symbols Win32API, PUREPASCAL, DELPHI2005, DELPHI2005_UP
-// - reworked/reformated some comments
-//
-// Revision 1.23  2005/04/15 08:27:38  marquardt
-// introduced SUPPORTS_DISPID for FPC
-//
-// Revision 1.22  2005/04/07 00:41:35  rrossmair
-// - changed for FPC 1.9.8
-//
-// Revision 1.21  2005/02/22 07:36:46  marquardt
-// introduced SUPPORTS_INLINE, minor cleanups in JclRegistry
-//
-// Revision 1.20  2004/11/18 00:57:13  rrossmair
-// - check-in for release 1.93
-//
-// Revision 1.19  2004/11/06 02:11:20  mthoma
-// history cleaning.
-//
-// Revision 1.18  2004/08/10 02:52:02  rrossmair
-// - moved {$ENDIF ~JEDI_INC} to EOF.
-//
-// Revision 1.17  2004/08/09 06:38:08  peter3
-// - D8 support added
-// - D9 support added (guesswork)
-//
-// Revision 1.16  2004/07/29 17:12:28  rrossmair
-// fixed comment ("KYLIXX_UP from KYLIXX mappings")
-//
-// Revision 1.15  2004/07/29 07:58:21  marquardt
-// inc files updated
-//
-// Revision 1.14  2004/06/21 01:10:17  rrossmair
-// - $IFDEFed contents (to prevent from repeated inclusion)
-// - introduced symbols SUPPORTS_DEPRECATED_WARNINGS, SUPPORTS_LIBRARY_WARNINGS, SUPPORTS_PLATFORM_WARNINGS, SUPPORTS_COMPILETIME_MESSAGES
-// - reordered pre-CVS history
-//
-// Revision 1.13  2004/05/08 08:44:20  rrossmair
-// introduced & applied symbol HAS_UNIT_LIBC
-//
-// Revision 1.12  2004/05/06 05:03:59  rrossmair
-// SUPPORTS_ENUMVALUE definition fixed for Free Pascal Compiler
-//
-// Revision 1.11  2004/05/05 03:20:13  rrossmair
-// jedi.inc: moved FPC-incompatible Kylix-related code to separate include file "kylix.inc", disposed of FPC-related TODOs
-//
-// Revision 1.10  2004/05/01 00:03:59  rrossmair
-// FPC workaround removed; didn't work with Kylix
-//
-// Revision 1.9  2004/04/30 18:25:15  rrossmair
-// added symbols BORLAND, CPPBUILDER, BCBCOMPILER
-// removed symbol NONBORLAND
-// cleanup (reduced redundancy)
-// corrected embarrassing typo "widestring's" (for the 3rd time, I believe)
-//
-// Revision 1.8  2004/04/14 20:26:33  mthoma
-// Changed data to date
-// Local is Delphi 6 - removed todo comment
-// Replaced CLX with VisualCLX to be consistent with Borlands current definition of what "CLX" is.
-//
-// Revision 1.7  2004/04/06 05:06:12
-// add support for Kylix, FPC, RTL, versions, some speaking directives
-//
-// 2004-03-22,
-//  - add SUPPORTS_WEAKPACKAGEUNIT
-//
-// 2004-03-20,
-//  - add SUPPORTS_LOCAL
-//
-// 2004-03-18,
-//  - add SUPPORTS_LONGWORD
-//
-// 2004-03-16,
-//  - add HAS_UNIT_STRUTILS
-//  - add XPLATFORM_RTL
-//
-// 2003-12-03,
-//  - add SUPPORTS_ENUMVALUE
-//
-// 2003-11-14,
-//  - add SUPPORTS_VARARGS
-//
-// 2003-10-30,
-//  - correct and complete comments
-//  - add Kylix definitions
-//  - add RTL definitions
-//  - add FPC definitions
 
 {$ENDIF ~JEDI_INC}
