@@ -255,3 +255,7 @@ JvAngleLabel=JvLabel
 TJvAngleLabel=TJvLabel
 TJvComputerInfo=TJvComputerInfoEx
 JvComputerInfo=JvComputerInfoEx
+TJvgBevel=TJvBevel
+JvgBevel=JvBevel
+HorLines=HorizontalLines
+VertLines=VerticalLines

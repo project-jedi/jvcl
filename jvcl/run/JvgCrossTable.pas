@@ -195,7 +195,7 @@ uses
   {$IFDEF USEJVCL}
   JvComponentBase,
   {$ENDIF USEJVCL}
-  JvgTypes, JvgCommClasses, JvgUtils, JvgBevel;
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 const
   JvDefaultCaptionsColor = TColor($00FFF2D2);

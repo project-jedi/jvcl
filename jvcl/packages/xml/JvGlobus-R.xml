@@ -46,7 +46,6 @@
     <File Name="..\..\run\JvgSingleInstance.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgSmallFontsDefense.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgSpeedButton.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgSplit.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgStaticText.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgStringContainer.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgStringGrid.pas" Targets="VCL" Formname="" Condition=""/>
@@ -63,7 +62,6 @@
     <File Name="..\..\run\Jvg3DColors.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAlignFunction.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAskListBox.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgBevel.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgButton.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCaption.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCheckBox.pas" Targets="VCL" Formname="" Condition=""/>
@@ -77,7 +75,6 @@
     <File Name="..\..\run\JvgExportComponents.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFileIterator.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFlyingText.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgGraphicButton.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgGridHeaderControl.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgGroupBox.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHelpPanel.pas" Targets="VCL" Formname="" Condition=""/>
