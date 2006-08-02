@@ -48,7 +48,7 @@ uses
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
   {JvgBitBtn, } JvgRuler, JvgReport, JvgCaption, JvgReportParamsEditor,
   JvgReportParamsForm, {JvgRichEditUtils, } JvgCommClasses, {JvgRttiUtils, }
-  JvgScrollBox, JvgShade, JvgDigits,
+  {JvgScrollBox, }JvgShade, JvgDigits,
   JvgDrawTab, {JvgEdit, } JvgExceptionHandler, JvgShadowEditor,
   JvgFileIterator, {JvgFileUtils, } JvgFixFont, JvgShadow, {JvgGraph,}
   {JvgGraphicButton, }JvgSingleInstance, {JvgShape, }
@@ -95,7 +95,7 @@ begin
     {TJvgGraph,} TJvgTreeView, TJvgCheckTreeView, {TJvgSplitter, }TJvgShadow,
     TJvgShade, TJvgButton, {TJvgImageGroup,} TJvgProgress, TJvgTransparentMemo,
     {TJvgWinMask,} TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
-    TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
+    TJvgAskListBox, {TJvgScrollBox, }TJvgStringGrid, TJvgSpeedButton,
     TJvgExtSpeedButton, TJvgWizardHeader, TJvgCaption]);
 
   RegisterComponents(RsPaletteGlobusComponents2, [TJvgCheckBox,
