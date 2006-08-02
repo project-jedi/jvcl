@@ -35,11 +35,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvExControls, JvExForms;
+  JvExControls, JvExForms, JvJVCLUtils;
 
 type
   TEraseBackgroundEvent = procedure(Sender: TObject; Canvas: TCanvas; var Result: Boolean) of object;
 
+  TJvScrollBoxFillMode = (sfmTile, sfmStretch, sfmNone);
+  
   TJvScrollBox = class(TJvExScrollBox)
   private
     FHotTrack: Boolean;
@@ -48,10 +50,15 @@ type
     FOnPaint: TNotifyEvent;
     FCanvas: TCanvas;
     FOnEraseBackground: TEraseBackgroundEvent;
+    FBackground: TJvPicture;
+    FBackgroundFillMode: TJvScrollBoxFillMode;
     procedure SetHotTrack(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure SetBackground(const Value: TPicture);
+    procedure SetBackgroundFillMode(const Value: TJvScrollBoxFillMode);
+    function GetBackground: TPicture;
   protected
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure MouseEnter(Control: TControl); override;
@@ -61,11 +68,14 @@ type
     procedure PaintWindow(DC: HDC); override;
     procedure Paint; virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure PaintBackground;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read FCanvas;
   published
+    property Background: TPicture read GetBackground write SetBackground;
+    property BackgroundFillMode: TJvScrollBoxFillMode read FBackgroundFillMode write SetBackgroundFillMode default sfmTile;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor;
     property OnMouseEnter;
@@ -104,11 +114,17 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
+
+  // We use a TJvPicture to allow silent migration from TJvgScrollBox
+  // where background was a TBitmap.
+  FBackground := TJvPicture.Create;
+  FBackgroundFillMode := sfmTile;
 end;
 
 destructor TJvScrollBox.Destroy;
 begin
   FCanvas.Free;
+  FBackground.Free;
   inherited Destroy;
 end;
 
@@ -153,6 +169,28 @@ begin
   FHotTrack := Value;
   if Value then
     Ctl3D := False;
+end;
+
+procedure TJvScrollBox.SetBackground(const Value: TPicture);
+begin
+  FBackground.Assign(Value);
+  Invalidate;
+end;
+
+procedure TJvScrollBox.SetBackgroundFillMode(const Value: TJvScrollBoxFillMode);
+begin
+  if FBackgroundFillMode <> Value then
+  begin
+    FBackgroundFillMode := Value;
+    Invalidate;
+  end;
+end;
+
+function TJvScrollBox.GetBackground: TPicture;
+begin
+  // Required because FBackground is a TJvPicture and as such cannot be
+  // used directly in the property declaration.
+  Result := FBackground;
 end;
 
 procedure TJvScrollBox.GetDlgCode(var Code: TDlgCodes);
@@ -234,12 +272,72 @@ begin
     FOnEraseBackground(Self, Canvas, Result);
   if not Result then
     Result := inherited DoEraseBackground(Canvas, Param);
+
+  PaintBackground;  
 end;
 
 procedure TJvScrollBox.Paint;
 begin
   if Assigned(FOnPaint) then
     FOnPaint(Self);
+end;
+
+procedure TJvScrollBox.PaintBackground;
+var
+  R: TRect;
+  X: Integer;
+  Y: Integer;
+  BackgroundHeight: Integer;
+  BackgroundWidth: Integer;
+  XOffset: Integer;
+  YOffset: Integer;
+  SavedYOffset: Integer;
+begin
+  if Assigned(Background.Graphic) and not Background.Graphic.Empty then
+  begin
+    case BackgroundFillMode of
+      sfmTile:
+        begin
+          R := ClientRect;
+          BackgroundHeight := FBackground.Height;
+          BackgroundWidth := FBackground.Width;
+
+          XOffset := HorzScrollBar.Position - Trunc(HorzScrollBar.Position / BackgroundWidth) * BackgroundWidth;
+          YOffset := VertScrollBar.Position - Trunc(VertScrollBar.Position / BackgroundHeight) * BackgroundHeight;
+          SavedYOffset := YOffset;
+          X := R.Left;
+          while X < R.Right do
+          begin
+            Y := R.Top;
+            while Y < R.Bottom do
+            begin
+              Canvas.Draw(X - XOffset, Y - YOffset, Background.Graphic);
+
+              Inc(Y, BackgroundHeight - YOffset);
+              YOffset := 0;
+            end;
+            Inc(X, BackgroundWidth - XOffset);
+            XOffset := 0;
+            YOffset := SavedYOffset;
+          end;
+        end;
+      sfmStretch:
+        begin
+          R := ClientRect;
+          if HorzScrollBar.Range > R.Right then
+            R.Right := HorzScrollBar.Range - R.Left;
+          if VertScrollBar.Range > R.Bottom then
+            R.Bottom := VertScrollBar.Range - R.Top;
+          OffsetRect(R, -HorzScrollBar.Position, -VertScrollBar.Position);
+
+          Canvas.StretchDraw(R, Background.Graphic);
+        end;
+      sfmNone:
+        begin
+          Canvas.Draw(0, 0, Background.Graphic);
+        end;
+    end;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

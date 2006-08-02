@@ -259,3 +259,5 @@ TJvgBevel=TJvBevel
 JvgBevel=JvBevel
 HorLines=HorizontalLines
 VertLines=VerticalLines
+JvgScrollBox=JvScrollBox
+TJvgScrollBox=TJvScrollBox
