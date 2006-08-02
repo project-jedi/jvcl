@@ -554,7 +554,7 @@ type
     property Selected: TJvCustomInspectorItem read GetSelected;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property Selecting: Boolean read FSelecting write FSelecting;
-    property Style: TJvInspectorStyle read FStyle write SetStyle;
+    property Style: TJvInspectorStyle read FStyle write SetStyle default isBorland;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
     property UseBands: Boolean read GetUseBands write SetUseBands;
     property VisibleCount: Integer read GetVisibleCount;
@@ -4020,7 +4020,10 @@ begin
   begin
     FSettingStyle := True;
     try
-      FStyle := Value;
+      // Prevent changing the style if getting isItemPainter without a Painter
+      // (Mantis 3847)
+      if (Value <> isItemPainter) or (Painter <> nil) then
+        FStyle := Value;
 
       // Always remove the current painter
       if FStylePainter <> nil then
@@ -4036,7 +4039,6 @@ begin
 
         FStylePainter := CreatePainterFromStyle(Value);
         FStylePainter.SetInspector(Self);
-
 
         if HandleAllocated then
           UpdateScrollBars;
