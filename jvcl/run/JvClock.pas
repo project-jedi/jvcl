@@ -374,8 +374,8 @@ begin
   // When drawing the hour hand, only 12 hours are shown, hence the need
   // to adjust the time if it goes above, or the hand would not be drawn
   // correctly.
-  if T.Hour > 12 then
-    T.Hour := T.Hour - 12;
+  if T.Hour >= 12 then
+    Dec(T.Hour, 12);
 
   Result := (T.Hour * 5) + (T.Minute div 12);
 end;
