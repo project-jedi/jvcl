@@ -362,6 +362,12 @@ end;
 
 function HourHandPos(T: TJvClockTime): Integer;
 begin
+  // When drawing the hour hand, only 12 hours are shown, hence the need
+  // to adjust the time if it goes above, or the hand would not be drawn
+  // correctly.
+  if T.Hour > 12 then
+    T.Hour := T.Hour - 12;
+
   Result := (T.Hour * 5) + (T.Minute div 12);
 end;
 
@@ -679,9 +685,9 @@ procedure TJvClock.SetFixedTime(const Value: TDateTime);
 begin
   if FFixedTime <> Value then
   begin
-    // Fixed time is now stored
+    // Fixed time is stored if not zero
     FFixedTime := Value;
-    FFixedTimeStored := True;
+    FFixedTimeStored := FFixedTime <> 0;
 
     // Disable us and ensure the display time is accurate
     Enabled := False;
@@ -922,10 +928,17 @@ end;
 
 procedure TJvClock.CMEnabledChanged(var Message: TMessage);
 begin
-  FTimer.Enabled := Enabled;
-  if not Enabled and not FFixedTimeStored then
-    FFixedTime := Now;
-    
+  if FTimer.Enabled <> Enabled then
+  begin
+    FTimer.Enabled := Enabled;
+    if not Enabled and not FFixedTimeStored then
+      FFixedTime := Now;
+
+    // Ensure the display time is accurate and force redraw
+    GetTime(FDisplayTime);    
+    Invalidate;
+  end;
+
   inherited;
 end;
 
