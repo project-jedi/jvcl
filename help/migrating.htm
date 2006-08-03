@@ -236,7 +236,7 @@ RxToJVCLApp.dat and then run again using converter\JVCL3.dat. </p>
 <p>The converter\Globus.dat file converts
 between Globus and JVCL 3.00 initial release. However, as the Globus
 components are being merged into the JVCL, the names and properties
-change in a way that makes it almost impossible to use the converte.
+change in a way that makes it almost impossible to use the converter.
 Thus, please refer to the following <a href="migrating_globus.html">document</a>
 where you will find a list of equivalent components and properties.<br>
 <br>
@@ -245,7 +245,8 @@ where you will find a list of equivalent components and properties.<br>
 <h2><a name="ManualRep"></a>Manual component replacement</h2>
 <p>&nbsp;</p>
 <p>Here are some obsolete or changed components from JVCL 2.10 that are
-not converted automatically by JVCLConvert, and must be dealt with
+not converted automatically or not fully converted by JVCLConvert, and
+must be dealt with
 manually. The suggested basic techniques are intended to get you going
 quickly, but you must check that they make sense in your own
 circumstances. It is also <i>very</i> incomplete.</p>
@@ -342,6 +343,19 @@ to the TTimerEvent directly. For example you have to change this code</p>
 <p>to this</p>
 <pre> tlMain.Events.ItemByName('teDelayedCellEdit').Enabled := False;<br></pre>
 <p>&nbsp;<br>
+</p>
+<h3>TJvTransparentButton2</h3>
+<p>TJvTransparentButton2 will have been replaced automatically by
+TJvTransparentButton by the converter. However, the Image related
+properties will not and as such you have to take manual steps.
+ActiveImage is replaced by Images.ActiveImage and so on for the others.
+As the converter uses a simple "old"/"new" replacement scheme, it was
+not possible to put those replacements in as some other components also
+use a property called ActiveImage (or other) that must not be replaced.
+Hence the need to replace the properties manually, or if you do a
+global search an replace, you have to check that only the
+TJvTransparentButton instances have been modified.</p>
+<p>
 </p>
 </body>
 </html>
