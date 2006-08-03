@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -77,6 +77,9 @@ type
     FDateFormat: string;
     FFixedTime: TDateTime;
     FFixedTimeStored: Boolean;
+    FSecondsHandColor: TColor;
+    FMinutesHandColor: TColor;
+    FHoursHandColor: TColor;
     procedure TimerExpired(Sender: TObject);
     procedure GetTime(var T: TJvClockTime);
     function IsAlarmTime(ATime: TDateTime): Boolean;
@@ -106,6 +109,9 @@ type
     procedure SetDateFormat(const Value: string);
     {$ENDIF VCL}
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure SetHoursHandColor(const Value: TColor);
+    procedure SetMinutesHandColor(const Value: TColor);
+    procedure SetSecondsHandColor(const Value: TColor);
   protected
     procedure TextChanged; override;
     procedure FontChanged; override;
@@ -136,6 +142,9 @@ type
     property DotsColor: TColor read FDotsColor write SetDotsColor default clTeal;
     property DateFormat: string read FDateFormat write SetDateFormat;
     property FixedTime: TDateTime read FFixedTime write SetFixedTime stored FFixedTimeStored;
+    property HoursHandColor: TColor read FHoursHandColor write SetHoursHandColor default clBlack;
+    property MinutesHandColor: TColor read FMinutesHandColor write SetMinutesHandColor default clBlack;
+    property SecondsHandColor: TColor read FSecondsHandColor write SetSecondsHandColor default clBlack;
     property ShowMode: TShowClock read FShowMode write SetShowMode default scDigital;
     property ShowSeconds: Boolean read FShowSeconds write SetShowSeconds default True;
     property ShowDate: Boolean read FShowDate write SetShowDate default False;
@@ -414,6 +423,9 @@ begin
   FTimer.Interval := 450; { every second }
   FTimer.OnTimer := TimerExpired;
   FDotsColor := clTeal;
+  FHoursHandColor := clBlack;
+  FMinutesHandColor := clBlack;
+  FSecondsHandColor := clBlack;
   FShowSeconds := True;
   FLeadingZero := True;
   FShowDate := False;
@@ -659,6 +671,15 @@ begin
   end;
 end;
 
+procedure TJvClock.SetMinutesHandColor(const Value: TColor);
+begin
+  if FMinutesHandColor <> Value then
+  begin
+    FMinutesHandColor := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvClock.SetShowSeconds(Value: Boolean);
 begin
   if FShowSeconds <> Value then
@@ -698,11 +719,29 @@ begin
   end;
 end;
 
+procedure TJvClock.SetHoursHandColor(const Value: TColor);
+begin
+  if FHoursHandColor <> Value then
+  begin
+    FHoursHandColor := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvClock.SetShowMode(Value: TShowClock);
 begin
   if FShowMode <> Value then
   begin
     FShowMode := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvClock.SetSecondsHandColor(const Value: TColor);
+begin
+  if FSecondsHandColor <> Value then
+  begin
+    FSecondsHandColor := Value;
     Invalidate;
   end;
 end;
@@ -949,8 +988,8 @@ var
 begin
   Radius := (FClockRadius * SecondTip) div 100;
   SaveMode := Canvas.Pen.Mode;
-  Canvas.Pen.Mode := pmNot;
   try
+    Canvas.Pen.Mode := pmCopy;
     Canvas.MoveTo(FClockCenter.X, FClockCenter.Y);
     Canvas.LineTo(FClockCenter.X + ((CircleTab[Pos].X * Radius) div
       CirTabScale), FClockCenter.Y + ((CircleTab[Pos].Y * Radius) div
@@ -971,6 +1010,7 @@ begin
     Hand := HourSide
   else
     Hand := MinuteSide;
+
   Scale := (FClockRadius * Hand) div 100;
   Index := (Pos + SideShift) mod HandPositions;
   ptSide.Y := (CircleTab[Index].Y * Scale) div CirTabScale;
@@ -1023,38 +1063,56 @@ begin
       DrawThemedBackground(Self, Canvas, FClockRect);
       Pen.Color := Self.Font.Color;
       DrawAnalogFace;
+      Pen.Color := HoursHandColor;
       DrawFatHand(HourHandPos(FDisplayTime), True);
+      Pen.Color := MinutesHandColor;
       DrawFatHand(FDisplayTime.Minute, False);
       Pen.Color := Brush.Color;
       if ShowSeconds then
+      begin
+        Pen.Color := SecondsHandColor;
         DrawSecondHand(FDisplayTime.Second);
+      end;
     end;
   end
   else
   begin
     with Canvas do
     begin
-      Pen.Color := Brush.Color;
       GetTime(NewTime);
+
       if NewTime.Hour >= 12 then
         Dec(NewTime.Hour, 12);
+
+      // Erase seconds
+      Pen.Color := Brush.Color;
       if (NewTime.Second <> FDisplayTime.Second) then
         if ShowSeconds then
           DrawSecondHand(FDisplayTime.Second);
+
+      // Erase minutes and hours if needed
       if ((NewTime.Minute <> FDisplayTime.Minute) or
         (NewTime.Hour <> FDisplayTime.Hour)) then
       begin
         DrawFatHand(FDisplayTime.Minute, False);
         DrawFatHand(HourHandPos(FDisplayTime), True);
-        Pen.Color := Self.Font.Color;
-        DrawFatHand(NewTime.Minute, False);
-        DrawFatHand(HourHandPos(NewTime), True);
       end;
+
+      // Draw minutes and hours
+      Pen.Color := MinutesHandColor;
+      DrawFatHand(NewTime.Minute, False);
+      Pen.Color := HoursHandColor;
+      DrawFatHand(HourHandPos(NewTime), True);
+
+      // Draw seconds
       Pen.Color := Brush.Color;
       if (NewTime.Second <> FDisplayTime.Second) then
       begin
         if ShowSeconds then
+        begin
+          Pen.Color := SecondsHandColor;
           DrawSecondHand(NewTime.Second);
+        end;
         FDisplayTime := NewTime;
       end;
     end;
