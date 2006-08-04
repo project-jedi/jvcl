@@ -1118,6 +1118,7 @@ procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
 var
   Index: TImageIndex;
   HelpRect: TRect;
+  Icon: TIcon;
 begin
   if FImList.Count = 0 then
     Exit;
@@ -1198,15 +1199,15 @@ begin
     Self.Canvas.FillRect(HelpRect);
   end;
 
-  FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
 
-  (*{$IFDEF VCL}
-  ImageList_DrawEx(FImList.Handle, Index, Canvas.Handle, ARect.Left, ARect.Top, 0, 0,
-    clNone, clNone, ILD_TRANSPARENT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
-  {$ENDIF VisualCLX}*)
+  // Use a TIcon instead of FImList.Draw to avoid triggering Mantis 3851
+  Icon := TIcon.Create;
+  try
+    FImList.GetIcon(Index, Icon);
+    Canvas.Draw(ARect.Left, ARect.Top, Icon);
+  finally
+    Icon.Free;
+  end;
 end;
 
 function TJvTransparentButton.GetUseImages: Boolean;
