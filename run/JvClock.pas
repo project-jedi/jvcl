@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -1084,7 +1084,7 @@ begin
       if NewTime.Hour >= 12 then
         Dec(NewTime.Hour, 12);
 
-      // Erase seconds
+      // Erase seconds if needed
       Pen.Color := Brush.Color;
       if (NewTime.Second <> FDisplayTime.Second) then
         if ShowSeconds then
@@ -1098,13 +1098,19 @@ begin
         DrawFatHand(HourHandPos(FDisplayTime), True);
       end;
 
-      // Draw minutes and hours
-      Pen.Color := MinutesHandColor;
-      DrawFatHand(NewTime.Minute, False);
-      Pen.Color := HoursHandColor;
-      DrawFatHand(HourHandPos(NewTime), True);
+      // Draw minutes and hours if at least something changed so that we avoid
+      // drawing on top of the seconds hand if it has not changed position.
+      if ((NewTime.Minute <> FDisplayTime.Minute) or
+        (NewTime.Hour <> FDisplayTime.Hour) or
+        (NewTime.Second <> FDisplayTime.Second)) then
+      begin
+        Pen.Color := MinutesHandColor;
+        DrawFatHand(NewTime.Minute, False);
+        Pen.Color := HoursHandColor;
+        DrawFatHand(HourHandPos(NewTime), True);
+      end;
 
-      // Draw seconds
+      // Draw seconds if required
       Pen.Color := Brush.Color;
       if (NewTime.Second <> FDisplayTime.Second) then
       begin
