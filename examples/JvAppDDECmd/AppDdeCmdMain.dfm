@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 419
   Top = 117
-  Width = 536
-  Height = 393
+  ClientWidth = 528
+  ClientHeight = 367
   Caption = 'TJvAppDdeCmd Example'
   Color = clBtnFace
   Constraints.MinHeight = 150

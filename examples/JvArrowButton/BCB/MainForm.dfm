@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 312
   Top = 224
-  Width = 360
-  Height = 192
+  ClientWidth = 252
+  ClientHeight = 156
   Caption = 'ArrowButton Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

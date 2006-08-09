@@ -1,8 +1,8 @@
 object MDIMainForm: TMDIMainForm
   Left = 470
   Top = 140
-  Width = 649
-  Height = 503
+  ClientWidth = 641
+  ClientHeight = 439
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Caption = 'MDI frame window'

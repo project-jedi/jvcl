@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 340
   Top = 169
-  Width = 364
-  Height = 333
+  ClientWidth = 356
+  ClientHeight = 297
   Caption = 'JvAppHotKey demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

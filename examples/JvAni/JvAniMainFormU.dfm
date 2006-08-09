@@ -1,8 +1,8 @@
 object JvAniMainForm: TJvAniMainForm
   Left = 291
   Top = 308
-  Width = 496
-  Height = 350
+  ClientWidth = 488
+  ClientHeight = 314
   ActiveControl = DriveComboBox1
   Caption = 'ANI Viewer'
   Color = clBtnFace

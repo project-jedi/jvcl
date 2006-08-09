@@ -1,8 +1,8 @@
 object MDIChildForm: TMDIChildForm
   Left = 548
   Top = 264
-  Width = 387
-  Height = 303
+  ClientWidth = 379
+  ClientHeight = 267
   Caption = 'MDIChildForm'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 377
   Top = 198
-  Width = 650
-  Height = 400
+  ClientWidth = 642
+  ClientHeight = 344
   BorderWidth = 1
   Caption = 'JEDI Survey Reporter'
   Color = clBtnFace
@@ -16,7 +16,6 @@ object frmMain: TfrmMain
   Menu = mmMain
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96

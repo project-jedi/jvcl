@@ -59,7 +59,7 @@ object Form1: TForm1
     Left = 248
     Top = 36
     Width = 413
-    Height = 128
+    Height = 178
     AutoSize = False
     Caption = 
       'WARNING: do not use this component for your localization, the re' +

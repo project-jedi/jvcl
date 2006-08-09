@@ -1,8 +1,8 @@
 object fTglHelpPanel: TfTglHelpPanel
   Left = 326
   Top = 261
-  Width = 391
-  Height = 214
+  ClientWidth = 383
+  ClientHeight = 188
   Caption = 'TJvgHelpPanel demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

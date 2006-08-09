@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 277
   Top = 170
-  Width = 610
-  Height = 415
+  ClientWidth = 600
+  ClientHeight = 349
   BorderWidth = 1
   Caption = 'JEDI Survey Builder'
   Color = clBtnFace
@@ -16,7 +16,6 @@ object frmMain: TfrmMain
   Menu = mmMain
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnResize = FormResize
