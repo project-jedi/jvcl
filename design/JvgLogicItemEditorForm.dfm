@@ -1,8 +1,8 @@
 object JvgLogicItemEditor: TJvgLogicItemEditor
   Left = 310
   Top = 202
-  Width = 454
-  Height = 438
+  ClientWidth = 446
+  ClientHeight = 404
   Color = clBtnFace
   Constraints.MaxWidth = 454
   Constraints.MinHeight = 100
@@ -13,7 +13,6 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -63,7 +62,7 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
   end
   object Button1: TButton
     Left = 280
-    Top = 382
+    Top = 375
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -74,7 +73,7 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
   end
   object Button2: TButton
     Left = 360
-    Top = 382
+    Top = 375
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]

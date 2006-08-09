@@ -1,8 +1,8 @@
 object frmSelectColumn: TfrmSelectColumn
   Left = 445
   Top = 244
-  Width = 197
-  Height = 248
+  ClientWidth = 189
+  ClientHeight = 217
   BorderIcons = []
   BorderStyle = bsSizeToolWin
   BorderWidth = 2
@@ -18,7 +18,6 @@ object frmSelectColumn: TfrmSelectColumn
   FormStyle = fsStayOnTop
   KeyPreview = True
   OldCreateOrder = False
-  Scaled = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate

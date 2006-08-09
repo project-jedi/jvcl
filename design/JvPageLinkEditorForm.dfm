@@ -1,8 +1,8 @@
 object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   Left = 294
   Top = 184
-  Width = 472
-  Height = 267
+  ClientWidth = 464
+  ClientHeight = 231
   ActiveControl = tvItems
   BorderIcons = [biSystemMenu]
   Caption = 'JvTreeViewLinks Editor'
@@ -14,7 +14,6 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = popTree
-  Scaled = False
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
@@ -82,7 +81,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   end
   object btnOK: TButton
     Left = 285
-    Top = 207
+    Top = 199
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -92,7 +91,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   end
   object btnCancel: TButton
     Left = 373
-    Top = 207
+    Top = 199
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]

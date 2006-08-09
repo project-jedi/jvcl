@@ -1,8 +1,8 @@
 object frmOptions: TfrmOptions
   Left = 402
   Top = 138
-  Width = 425
-  Height = 445
+  ClientWidth = 417
+  ClientHeight = 409
   Caption = 'Options'
   Color = clBtnFace
   Constraints.MinHeight = 445
@@ -14,7 +14,6 @@ object frmOptions: TfrmOptions
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13

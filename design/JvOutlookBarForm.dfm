@@ -1,8 +1,8 @@
 object FrmOLBEditor: TFrmOLBEditor
   Left = 193
   Top = 134
-  Width = 194
-  Height = 255
+  ClientWidth = 186
+  ClientHeight = 219
   BorderIcons = [biSystemMenu]
   Caption = 'OutlookBar Editor'
   Color = clBtnFace
@@ -26,7 +26,6 @@ object FrmOLBEditor: TFrmOLBEditor
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   PopupMenu = popForm
-  Scaled = False
   ShowHint = True
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery

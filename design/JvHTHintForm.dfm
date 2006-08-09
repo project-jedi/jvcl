@@ -28,7 +28,6 @@ object JvHintEditor: TJvHintEditor
   KeyPreview = True
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   ShowHint = True
   PixelsPerInch = 96
   TextHeight = 13
@@ -40,9 +39,9 @@ object JvHintEditor: TJvHintEditor
     Caption = 'Hint'
   end
   object HintLabel: TLabel
-    Left = 232
+    Left = 176
     Top = 8
-    Width = 177
+    Width = 233
     Height = 13
     Alignment = taRightJustify
     Anchors = [akTop, akRight]

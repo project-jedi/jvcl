@@ -1,19 +1,18 @@
 object QuickPreviewForm: TQuickPreviewForm
   Left = 123
   Top = 127
-  Width = 312
-  Height = 347
+  ClientWidth = 304
+  ClientHeight = 320
   BorderStyle = bsSizeToolWin
   Caption = 'Painter Preview'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -10
+  Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object ScrollBox1: TScrollBox

@@ -1,8 +1,8 @@
 object FoLog: TFoLog
   Left = 454
   Top = 250
-  Width = 421
-  Height = 375
+  ClientWidth = 413
+  ClientHeight = 339
   Caption = 'FoLog'
   Color = clBtnFace
   Constraints.MinHeight = 300
@@ -25,7 +25,6 @@ object FoLog: TFoLog
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object ToolBar1: TToolBar

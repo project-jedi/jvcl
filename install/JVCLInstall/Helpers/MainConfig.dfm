@@ -13,7 +13,6 @@ object FormJvclIncConfig: TFormJvclIncConfig
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow

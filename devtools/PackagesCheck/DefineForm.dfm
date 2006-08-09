@@ -13,9 +13,6 @@ object DefForm: TDefForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    472
-    443)
   PixelsPerInch = 96
   TextHeight = 13
   object LabelSymbols: TLabel

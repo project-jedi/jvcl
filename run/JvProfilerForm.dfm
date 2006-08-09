@@ -1,8 +1,8 @@
 object ProfReport: TProfReport
   Left = 200
   Top = 114
-  Width = 453
-  Height = 300
+  ClientWidth = 445
+  ClientHeight = 264
   ActiveControl = lvReport
   BorderIcons = [biSystemMenu]
   Caption = 'Profiler Report'
@@ -39,7 +39,6 @@ object ProfReport: TProfReport
     03FFFF8003FFFFC007FFFFC007FFFFE00FFFFFE01FFFFFF07FFFFFF8FFFF}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   ShowHint = True
   OnShow = FormShow
   PixelsPerInch = 96

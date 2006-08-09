@@ -14,7 +14,6 @@ object JvChPswdForm: TJvChPswdForm
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96

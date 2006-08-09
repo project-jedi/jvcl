@@ -1,8 +1,8 @@
 inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
   Left = 336
   Top = 135
-  Width = 566
-  Height = 588
+  ClientWidth = 558
+  ClientHeight = 552
   OldCreateOrder = True
   OnCreate = FormCreate
   PixelsPerInch = 96

@@ -13,7 +13,6 @@ object frmOptions: TfrmOptions
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

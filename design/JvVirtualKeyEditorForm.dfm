@@ -12,7 +12,6 @@ object frmJvVirtualKeyEditor: TfrmJvVirtualKeyEditor
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object bbtOk: TBitBtn

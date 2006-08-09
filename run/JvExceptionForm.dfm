@@ -15,7 +15,6 @@ object JvErrorDialog: TJvErrorDialog
   FormStyle = fsStayOnTop
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp

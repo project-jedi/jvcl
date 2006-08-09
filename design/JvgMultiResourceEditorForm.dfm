@@ -1,8 +1,8 @@
 object JvgMultipleResourceEdit: TJvgMultipleResourceEdit
   Left = 198
   Top = 109
-  Width = 565
-  Height = 450
+  ClientWidth = 557
+  ClientHeight = 414
   Caption = 'glMresEdit'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,7 +11,6 @@ object JvgMultipleResourceEdit: TJvgMultipleResourceEdit
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow

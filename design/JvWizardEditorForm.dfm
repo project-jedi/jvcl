@@ -1,8 +1,8 @@
 object JvWizardPageListEditor: TJvWizardPageListEditor
   Left = 192
   Top = 107
-  Width = 192
-  Height = 309
+  ClientWidth = 184
+  ClientHeight = 273
   Caption = 'K Wizard Page Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,7 +11,6 @@ object JvWizardPageListEditor: TJvWizardPageListEditor
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13

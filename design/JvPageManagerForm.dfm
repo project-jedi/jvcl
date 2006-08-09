@@ -1,8 +1,8 @@
 object JvProxyEditor: TJvProxyEditor
   Left = 269
   Top = 114
-  Width = 514
-  Height = 331
+  ClientWidth = 508
+  ClientHeight = 295
   BorderIcons = [biSystemMenu]
   Caption = 'Page Proxy Editor'
   Color = clBtnFace
@@ -37,7 +37,6 @@ object JvProxyEditor: TJvProxyEditor
     0000000000000000000000000000000000000000000000000000000000000000
     000000000000000000000000000080000001F8063FFFFC0FFFFFFFFFFFFF0100}
   OldCreateOrder = True
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize

@@ -1,8 +1,8 @@
 object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Left = 382
   Top = 246
-  Width = 442
-  Height = 333
+  ClientWidth = 434
+  ClientHeight = 297
   Caption = 'JvCsvDataSet.CSVFieldDef Editor'
   Color = clBtnFace
   Constraints.MinHeight = 333
@@ -25,7 +25,6 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     000080070000800F0000801F0000803F0000FFFF0000FFFF0000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13

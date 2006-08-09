@@ -1,8 +1,8 @@
 object JvID3FramesEditor: TJvID3FramesEditor
   Left = 214
   Top = 191
-  Width = 181
-  Height = 266
+  ClientWidth = 173
+  ClientHeight = 239
   BorderStyle = bsSizeToolWin
   Caption = 'Frame Editor'
   Color = clBtnFace
@@ -24,7 +24,6 @@ object JvID3FramesEditor: TJvID3FramesEditor
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   PopupMenu = LocalMenu
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

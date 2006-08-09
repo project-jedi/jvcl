@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 335
   Top = 178
-  Width = 471
-  Height = 386
+  ClientWidth = 463
+  ClientHeight = 322
   Caption = 'JVCL Conversion Utility'
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -13,7 +13,6 @@ object frmMain: TfrmMain
   Menu = MainMenu1
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

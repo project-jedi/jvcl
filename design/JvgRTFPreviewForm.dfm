@@ -1,8 +1,8 @@
 object JvgRTFPreview: TJvgRTFPreview
   Left = 378
   Top = 268
-  Width = 347
-  Height = 147
+  ClientWidth = 335
+  ClientHeight = 111
   Caption = 'RTF Preview'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,6 @@ object JvgRTFPreview: TJvgRTFPreview
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Rich: TRichEdit

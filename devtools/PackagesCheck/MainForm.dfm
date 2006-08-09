@@ -13,9 +13,6 @@ object PackageCheckForm: TPackageCheckForm
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    337
-    276)
   PixelsPerInch = 96
   TextHeight = 13
   object LabelModel: TLabel

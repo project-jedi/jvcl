@@ -14,7 +14,6 @@ object frmProgress: TfrmProgress
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13

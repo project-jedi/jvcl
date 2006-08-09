@@ -39,7 +39,6 @@ object JvSpeedbarEditorMain: TJvSpeedbarEditorMain
     0001000000010000000100000001000000010000000100000001000000010000
     00010000000100000001000000030000000700001FFF00003FFF80007FFFBA00}
   OldCreateOrder = True
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
