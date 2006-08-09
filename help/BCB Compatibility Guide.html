@@ -143,7 +143,7 @@ as indicated in the table below:<br>
 </p>
 <table
  style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1">
+ border="1" cellpadding="1" cellspacing="1">
   <tbody>
     <tr>
       <td
@@ -212,7 +212,7 @@ package your are trying to build. The table below indicates the name of
 the bpi files you need to add for different missing obj files<br>
 <table
  style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1">
+ border="1" cellpadding="1" cellspacing="1">
   <tbody>
     <tr>
       <td colspan="1" rowspan="2"
@@ -436,7 +436,25 @@ this file, you must reorder the units in your uses clause so that the
 conflict goes away. For instance, in the case of Controls.hpp, the
 solution was to put Controls before Windows in the uses clause.<br>
 </p>
-<p><br>
+<h5>[Linker Error] Error: Unresolved external SomeType::GetMessageA
+referenced from SomeUnit.OBJ&nbsp; (Any function with a capital A at
+the end can be in the message)<br>
+</h5>
+<p>This is because SomeType has a public function (or getter/setter for
+a public property) that is named GetMessage while GetMessage is also a
+function from the Win32 API. As this function is implemented as Ansi
+and Unicode versions, there is a typedef that tells the compiler this:
+whenever you see GetMessage, replace it by GetMessageA.<br>
+So the compiler always uses GetMessageA and is happy about it. But when
+the linker comes in, it looks for GetMessageA in the SomeType class and
+of course does not find it.<br>
+The ONLY solution to this is to rename the function to a name that is
+not the name of an API function, and as such must be mentionned to the
+JVCL developpers.<br>
+GetMessage is not the only function name that can trigger this error,
+any function from the Win32 API that is implemented as Ansi and Unicode
+is not to be used for a public method of a class.<br>
 </p>
+<p></p>
 </body>
 </html>
