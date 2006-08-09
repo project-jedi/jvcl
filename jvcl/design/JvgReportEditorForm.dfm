@@ -1,8 +1,8 @@
 object JvgReportEditorForm: TJvgReportEditorForm
   Left = 8
   Top = 8
-  Width = 634
-  Height = 480
+  ClientWidth = 626
+  ClientHeight = 444
   Caption = 'Globus  Report Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -162,7 +162,6 @@ object JvgReportEditorForm: TJvgReportEditorForm
   KeyPreview = True
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy

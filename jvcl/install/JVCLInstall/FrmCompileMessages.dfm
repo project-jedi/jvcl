@@ -1,8 +1,8 @@
 object FormCompileMessages: TFormCompileMessages
   Left = 185
   Top = 216
-  Width = 750
-  Height = 145
+  ClientWidth = 743
+  ClientHeight = 118
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'Compiler Messages'

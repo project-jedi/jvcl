@@ -1,8 +1,8 @@
 object JvgLogicsEditorMain: TJvgLogicsEditorMain
   Left = 232
   Top = 107
-  Width = 790
-  Height = 550
+  ClientWidth = 782
+  ClientHeight = 514
   Caption = 'glLogicsEditor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,6 @@ object JvgLogicsEditorMain: TJvgLogicsEditorMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   WindowState = wsMaximized
   PixelsPerInch = 96
   TextHeight = 13

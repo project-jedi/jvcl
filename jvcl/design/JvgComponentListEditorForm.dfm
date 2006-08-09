@@ -12,7 +12,6 @@ object JvgCompListEditor: TJvgCompListEditor
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow

@@ -1,8 +1,8 @@
 object frmPageListEditor: TfrmPageListEditor
   Left = 446
   Top = 114
-  Width = 158
-  Height = 283
+  ClientWidth = 150
+  ClientHeight = 247
   Caption = 'PageList Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

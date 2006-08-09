@@ -1,8 +1,8 @@
 object frmValidatorsEditor: TfrmValidatorsEditor
   Left = 289
   Top = 205
-  Width = 160
-  Height = 260
+  ClientWidth = 152
+  ClientHeight = 224
   BorderIcons = [biSystemMenu]
   Caption = 'JvValidator Items Editor'
   Color = clBtnFace
@@ -15,7 +15,6 @@ object frmValidatorsEditor: TfrmValidatorsEditor
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = popForm
-  Scaled = False
   ShowHint = True
   OnClose = FormClose
   OnCreate = FormCreate

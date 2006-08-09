@@ -39,7 +39,6 @@ object JvFormPropsDlg: TJvFormPropsDlg
     000780000007C000000F8120021F8130061FFFF80FFFFFFC1FFFFFFFFFFF}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13

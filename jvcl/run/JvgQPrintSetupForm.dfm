@@ -14,7 +14,6 @@ object JvgPrintSetup: TJvgPrintSetup
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object rgOrientation: TRadioGroup

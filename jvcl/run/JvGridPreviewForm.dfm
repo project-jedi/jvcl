@@ -1,18 +1,17 @@
 object JvGridPreviewForm: TJvGridPreviewForm
   Left = 268
   Top = 202
-  Width = 603
-  Height = 392
+  ClientWidth = 595
+  ClientHeight = 356
   Caption = 'Preview'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -10
+  Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow

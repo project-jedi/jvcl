@@ -1,8 +1,8 @@
 object frmPluginParams: TfrmPluginParams
   Left = 348
   Top = 47
-  Width = 482
-  Height = 552
+  ClientWidth = 474
+  ClientHeight = 516
   BorderIcons = [biSystemMenu]
   Caption = 'Setup Plugin Parameters'
   Color = clBtnFace
@@ -26,7 +26,6 @@ object frmPluginParams: TfrmPluginParams
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

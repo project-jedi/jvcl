@@ -1,8 +1,8 @@
 object FormMain: TFormMain
   Left = 198
   Top = 107
-  Width = 578
-  Height = 412
+  ClientWidth = 570
+  ClientHeight = 376
   Caption = 'FormMain'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -124,7 +124,7 @@ object FormMain: TFormMain
     end
     object ButtonFix: TButton
       Left = 56
-      Top = 352
+      Top = 351
       Width = 75
       Height = 25
       Anchors = [akRight, akBottom]

@@ -1,8 +1,8 @@
 object JvgfPrintPreview: TJvgfPrintPreview
   Left = 292
   Top = 149
-  Width = 503
-  Height = 477
+  ClientWidth = 495
+  ClientHeight = 451
   Caption = 'fPrintPreview'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,6 @@ object JvgfPrintPreview: TJvgfPrintPreview
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   WindowState = wsMaximized
   OnCreate = FormCreate
   PixelsPerInch = 96

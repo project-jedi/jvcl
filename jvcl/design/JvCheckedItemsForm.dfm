@@ -1,8 +1,8 @@
 object JvCheckItemsEditor: TJvCheckItemsEditor
   Left = 285
   Top = 129
-  Width = 350
-  Height = 305
+  ClientWidth = 342
+  ClientHeight = 279
   BorderIcons = [biSystemMenu]
   Color = clBtnFace
   Constraints.MinHeight = 305
@@ -39,7 +39,6 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     FFFFFF1FFFFFFE3FFFFFFC7FFFFFF8FFFFFFF1FFFFFFF3FFFFFFFFFFFFFF0000}
   OldCreateOrder = True
   Position = poDefaultPosOnly
-  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96

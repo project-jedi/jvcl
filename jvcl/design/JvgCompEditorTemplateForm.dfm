@@ -1,8 +1,8 @@
 object JvgCompEditorTemplate: TJvgCompEditorTemplate
   Left = 346
   Top = 119
-  Width = 512
-  Height = 438
+  ClientWidth = 504
+  ClientHeight = 402
   Caption = 'JEDI VCL Component Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,7 +11,6 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

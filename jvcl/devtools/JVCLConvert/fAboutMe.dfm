@@ -1,8 +1,8 @@
 object frmAboutMe: TfrmAboutMe
   Left = 569
   Top = 209
-  Width = 237
-  Height = 383
+  ClientWidth = 229
+  ClientHeight = 347
   Caption = 'About Me'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,6 @@ object frmAboutMe: TfrmAboutMe
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -475,7 +474,7 @@ object frmAboutMe: TfrmAboutMe
   end
   object OKButton: TButton
     Left = 71
-    Top = 324
+    Top = 320
     Width = 75
     Height = 25
     Caption = 'OK'

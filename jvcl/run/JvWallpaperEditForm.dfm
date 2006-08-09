@@ -1,8 +1,8 @@
 object FoWallpaperChooser: TFoWallpaperChooser
   Left = 401
   Top = 250
-  Width = 400
-  Height = 308
+  ClientWidth = 392
+  ClientHeight = 272
   BorderIcons = [biSystemMenu]
   Caption = 'Wallpaper Chooser'
   Color = clBtnFace
@@ -13,7 +13,6 @@ object FoWallpaperChooser: TFoWallpaperChooser
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

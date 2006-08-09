@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 163
   Top = 126
-  Width = 807
-  Height = 600
+  ClientWidth = 807
+  ClientHeight = 600
   Caption = 'JVCL Package editor and generator'
   Color = clBtnFace
   Constraints.MinHeight = 400
@@ -15,7 +15,6 @@ object frmMain: TfrmMain
   KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnKeyDown = FormKeyDown
   OnShow = FormShow

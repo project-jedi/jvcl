@@ -16,7 +16,6 @@ object frmModules: TfrmModules
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
-  Scaled = false
   OnHelp = FormHelp
   PixelsPerInch = 96
   TextHeight = 13

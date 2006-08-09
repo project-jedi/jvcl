@@ -1,8 +1,8 @@
 object JvSelectDataSetForm: TJvSelectDataSetForm
   Left = 336
   Top = 201
-  Width = 262
-  Height = 221
+  ClientWidth = 254
+  ClientHeight = 185
   BorderIcons = [biSystemMenu]
   Caption = 'Memory DataSet Structure'
   Color = clBtnFace
@@ -24,7 +24,6 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox: TGroupBox

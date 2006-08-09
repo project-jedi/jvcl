@@ -13,7 +13,6 @@ object frmKnownTags: TfrmKnownTags
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object bbtOk: TBitBtn

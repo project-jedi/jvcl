@@ -15,7 +15,6 @@ object JvBdeErrorDlg: TJvBdeErrorDlg
   FormStyle = fsStayOnTop
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
