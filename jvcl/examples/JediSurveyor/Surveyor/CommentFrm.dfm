@@ -1,8 +1,8 @@
 object frmComment: TfrmComment
   Left = 414
   Top = 204
-  Width = 381
-  Height = 321
+  ClientWidth = 373
+  ClientHeight = 295
   ActiveControl = reComments
   Caption = 'Comment on "%s"'
   Color = clBtnFace

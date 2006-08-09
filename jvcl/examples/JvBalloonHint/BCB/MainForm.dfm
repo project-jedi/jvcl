@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 196
   Top = 107
-  Width = 673
-  Height = 539
+  ClientWidth = 665
+  ClientHeight = 513
   Caption = 'JVCL TJvBalloonHint Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

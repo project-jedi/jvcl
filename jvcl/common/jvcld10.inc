@@ -28,7 +28,7 @@ Known Issues:
 
 { Enable this define if you want to register property and component editors included in
 JVCL for non-JVCL components as well. }
-{.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+{$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
 installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
@@ -90,7 +90,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{.$DEFINE UNITVERSIONING}
+{$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components

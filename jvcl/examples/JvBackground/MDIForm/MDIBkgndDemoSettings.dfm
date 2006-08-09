@@ -1,8 +1,8 @@
 object BkgndImageSettings: TBkgndImageSettings
   Left = 485
   Top = 265
-  Width = 291
-  Height = 254
+  ClientWidth = 283
+  ClientHeight = 228
   Caption = 'Background Image Properties'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

@@ -1,8 +1,8 @@
 object JvAppHotKeyDemoMainForm: TJvAppHotKeyDemoMainForm
   Left = 360
   Top = 165
-  Width = 364
-  Height = 333
+  ClientWidth = 356
+  ClientHeight = 297
   Caption = 'JvAppHotKey demo'
   Color = clBtnFace
   Constraints.MinHeight = 200

@@ -39,7 +39,6 @@ object GLDemoFrm: TGLDemoFrm
     000000000000000000000000000000000000000000000000000000000000}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 13

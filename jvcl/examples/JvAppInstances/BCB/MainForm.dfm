@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 192
   Top = 107
-  Width = 643
-  Height = 357
+  ClientWidth = 635
+  ClientHeight = 331
   Caption = 'JvAppInstances Test'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

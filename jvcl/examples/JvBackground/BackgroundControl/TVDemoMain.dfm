@@ -1,8 +1,8 @@
 object JvBackgroundDemoFrm: TJvBackgroundDemoFrm
   Left = 285
   Top = 105
-  Width = 435
-  Height = 346
+  ClientWidth = 427
+  ClientHeight = 282
   Caption = 'JvBackgroundDemoFrm'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

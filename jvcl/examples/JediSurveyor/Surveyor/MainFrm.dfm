@@ -13,7 +13,6 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnContextPopup = FormContextPopup
   OnCreate = FormCreate

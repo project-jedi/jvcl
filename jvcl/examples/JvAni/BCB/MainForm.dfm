@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 311
   Top = 151
-  Width = 493
-  Height = 437
+  ClientWidth = 485
+  ClientHeight = 411
   Caption = 'ANI Viewer'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

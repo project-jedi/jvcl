@@ -1,8 +1,8 @@
 object JvAviCapDemoFrm: TJvAviCapDemoFrm
   Left = 215
   Top = 106
-  Width = 673
-  Height = 474
+  ClientWidth = 665
+  ClientHeight = 438
   Caption = 'JvAviCapture demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

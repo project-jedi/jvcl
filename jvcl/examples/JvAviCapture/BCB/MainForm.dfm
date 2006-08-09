@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 223
   Top = 103
-  Width = 708
-  Height = 544
+  ClientWidth = 700
+  ClientHeight = 508
   Caption = 'JvAVICapture demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
