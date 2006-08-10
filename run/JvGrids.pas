@@ -214,7 +214,7 @@ const
 implementation
 
 uses
-  SysUtils, Math,
+  SysUtils, Math, Types,
   JvJCLUtils, JvJVCLUtils;
 
 const
