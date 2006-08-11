@@ -4,7 +4,7 @@ object frmModels: TfrmModels
   BorderStyle = bsDialog
   Caption = 'Models'
   ClientHeight = 469
-  ClientWidth = 783
+  ClientWidth = 805
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -166,7 +166,7 @@ object frmModels: TfrmModels
   object grpProperties: TGroupBox
     Left = 8
     Top = 44
-    Width = 763
+    Width = 785
     Height = 379
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' Properties '
@@ -215,17 +215,17 @@ object frmModels: TfrmModels
       Caption = 'Include file'
     end
     object lblTargets: TLabel
-      Left = 12
-      Top = 124
-      Width = 249
+      Left = 20
+      Top = 131
+      Width = 314
       Height = 13
       Alignment = taCenter
       AutoSize = False
       Caption = 'Targets'
     end
     object lblAliases: TLabel
-      Left = 316
-      Top = 124
+      Left = 340
+      Top = 131
       Width = 229
       Height = 13
       Alignment = taCenter
@@ -251,13 +251,22 @@ object frmModels: TfrmModels
       Caption = 'No LibSuffix'
     end
     object Label1: TLabel
-      Left = 548
-      Top = 124
-      Width = 213
+      Left = 571
+      Top = 131
+      Width = 202
       Height = 13
       Alignment = taCenter
       AutoSize = False
       Caption = 'CLX Filename Replacements'
+    end
+    object lblDotNet: TLabel
+      Left = 364
+      Top = 108
+      Width = 58
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '.net'
     end
     object edtName: TEdit
       Left = 176
@@ -287,7 +296,6 @@ object frmModels: TfrmModels
       Height = 21
       AddQuotes = False
       DialogOptions = []
-      ButtonFlat = False
       TabOrder = 3
     end
     object jdePackages: TJvDirectoryEdit
@@ -295,16 +303,16 @@ object frmModels: TfrmModels
       Top = 56
       Width = 150
       Height = 21
-      ButtonFlat = False
+      DialogKind = dkWin32
       TabOrder = 4
     end
     object stgTargets: TJvStringGrid
       Left = 12
-      Top = 144
-      Width = 301
-      Height = 222
+      Top = 152
+      Width = 322
+      Height = 214
       Anchors = [akLeft, akTop, akBottom]
-      ColCount = 9
+      ColCount = 10
       DefaultColWidth = 30
       DefaultRowHeight = 18
       FixedCols = 0
@@ -321,10 +329,10 @@ object frmModels: TfrmModels
       OnGetCellAlignment = stgTargetsGetCellAlignment
     end
     object stgAliases: TJvStringGrid
-      Left = 316
-      Top = 144
-      Width = 229
-      Height = 222
+      Left = 340
+      Top = 152
+      Width = 226
+      Height = 214
       Anchors = [akLeft, akTop, akBottom]
       ColCount = 2
       DefaultRowHeight = 18
@@ -370,10 +378,10 @@ object frmModels: TfrmModels
       TabOrder = 10
     end
     object stgClxRepl: TJvStringGrid
-      Left = 548
-      Top = 144
+      Left = 572
+      Top = 152
       Width = 201
-      Height = 222
+      Height = 214
       Anchors = [akLeft, akTop, akBottom]
       ColCount = 2
       DefaultRowHeight = 18
@@ -389,6 +397,20 @@ object frmModels: TfrmModels
       FixedFont.Style = []
       OnExitCell = stgTargetsExitCell
       OnGetCellAlignment = stgTargetsGetCellAlignment
+    end
+    object edtDotNetFormat: TEdit
+      Left = 428
+      Top = 104
+      Width = 81
+      Height = 21
+      TabOrder = 12
+    end
+    object edtDotNetPrefix: TEdit
+      Left = 511
+      Top = 104
+      Width = 66
+      Height = 21
+      TabOrder = 13
     end
   end
   object btnAdd: TButton
