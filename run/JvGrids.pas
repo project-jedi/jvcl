@@ -214,7 +214,10 @@ const
 implementation
 
 uses
-  SysUtils, Math, Types,
+  SysUtils, Math,
+{$IFDEF DELPHI6_UP}
+  Types,
+{$ENDIF DELPHI6_UP}
   JvJCLUtils, JvJVCLUtils;
 
 const
