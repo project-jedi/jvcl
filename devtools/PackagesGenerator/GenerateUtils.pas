@@ -65,6 +65,7 @@ type
     FPathSep: string;
     FIsCLX  : Boolean;
     FIsBDS  : Boolean;
+    FIsDotNet: Boolean;
     function GetDir: string;
     function GetEnv: string;
     function GetPDir: string;
@@ -83,6 +84,7 @@ type
     property PathSep: string      read FPathSep;
     property IsCLX  : Boolean     read FIsCLX;
     property IsBDS  : Boolean     read FIsBDS;
+    property IsDotNet : Boolean   read FIsDotNet;
   end;
 
   TTargetList = class (TObjectList)
@@ -181,9 +183,11 @@ var
   GPrefix            : string;
   GNoLibSuffixPrefix : string;
   GClxPrefix         : string;
+  GDotNetPrefix      : string;
   GFormat            : string;
   GNoLibSuffixFormat : string;
   GClxFormat         : string;
+  GDotNetFormat      : string;
   TargetList         : TTargetList;
   AliasList          : TAliasList;
   DefinesList        : TDefinesList;
@@ -521,18 +525,23 @@ begin
 
       GNoLibSuffixPrefix  := GPrefix;
       GClxPrefix          := GPrefix;
+      GDotNetPrefix       := GPrefix;
       GNoLibSuffixFormat  := GFormat;
       GClxFormat          := GFormat;
+      GDotNetFormat       := GFormat;
 
       if Assigned(Node.Properties.ItemNamed['NoLibSuffixprefix']) then
         GNoLibSuffixPrefix := Node.Properties.ItemNamed['NoLibSuffixprefix'].Value;
       if Assigned(Node.Properties.ItemNamed['clxprefix']) then
         GClxPrefix         := Node.Properties.ItemNamed['clxprefix'].Value;
+      if Assigned(Node.Properties.ItemNamed['dotnetprefix']) then
+        GDotNetPrefix      := Node.Properties.ItemNamed['dotnetprefix'].Value;
       if Assigned(Node.Properties.ItemNamed['NoLibSuffixformat']) then
         GNoLibSuffixFormat := Node.Properties.ItemNamed['NoLibSuffixformat'].Value;
       if Assigned(Node.Properties.ItemNamed['clxformat']) then
         GClxFormat         := Node.Properties.ItemNamed['clxformat'].Value;
-
+      if Assigned(Node.Properties.ItemNamed['dotnetformat']) then
+        GDotNetFormat      := Node.Properties.ItemNamed['dotnetformat'].Value;
 
       // create the 'all' alias
       all := '';
@@ -645,6 +654,11 @@ begin
     Result := GClxFormat;
     Prefix := GClxPrefix;
   end
+  else if (TargetList[GetNonPersoTarget(target)].IsDotNet) then
+  begin
+    Result := GDotNetFormat;
+    Prefix := GDotNetPrefix;
+  end
   else
   begin
     Result := GFormat;
@@ -693,6 +707,9 @@ begin
 
   if (TargetList[GetNonPersoTarget(target)].IsCLX) then
     Result := StartsWith(GClxPrefix, Name);
+
+  if (TargetList[GetNonPersoTarget(target)].IsDotNet) then
+    Result := StartsWith(GDotNetPrefix, Name);
 
   if not Result and ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (StrToInt(Ver) < 6) then
     Result := StartsWith(GNoLibSuffixPrefix, Name);
@@ -1858,6 +1875,9 @@ begin
   FIsBDS := False;
   if Assigned(Node.Properties.ItemNamed['IsBDS']) then
     FIsBDS := Node.Properties.ItemNamed['IsBDS'].BoolValue;
+  FIsDotNet := False;
+  if Assigned(Node.Properties.ItemNamed['IsDotNet']) then
+    FIsDotNet := Node.Properties.ItemNamed['IsDotNet'].BoolValue;
 end;
 
 destructor TTarget.Destroy;

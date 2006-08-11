@@ -38,6 +38,9 @@ type
     edtNLSPrefix: TEdit;
     stgClxRepl: TJvStringGrid;
     Label1: TLabel;
+    lblDotNet: TLabel;
+    edtDotNetFormat: TEdit;
+    edtDotNetPrefix: TEdit;
     procedure stgTargetsGetCellAlignment(Sender: TJvStringGrid; AColumn,
       ARow: Integer; State: TGridDrawState; var CellAlignment: TAlignment);
     procedure stgTargetsExitCell(Sender: TJvStringGrid; AColumn,
@@ -106,6 +109,7 @@ begin
     Cells[6, 0] := 'PathSep';
     Cells[7, 0] := 'IsClx';
     Cells[8, 0] := 'IsBds';
+    Cells[9, 0] := 'IsDotNet';
 
     ColWidths[0] := 40;
     ColWidths[1] := 30;
@@ -116,6 +120,7 @@ begin
     ColWidths[6] := 45;
     ColWidths[7] := 30;
     ColWidths[8] := 30;
+    ColWidths[9] := 45;
   end;
 
   with stgAliases do
@@ -215,6 +220,13 @@ begin
   if Assigned(model.Properties.ItemNamed['nolibsuffixprefix']) then
     edtNLSPrefix.Text := model.Properties.ItemNamed['nolibsuffixprefix'].value;
 
+  edtDotNetFormat.Text := '';
+  edtDotNetPrefix.Text := '';
+  if Assigned(model.Properties.ItemNamed['dotnetformat']) then
+    edtDotNetFormat.Text := model.Properties.ItemNamed['dotnetformat'].value;
+  if Assigned(model.Properties.ItemNamed['dotnetprefix']) then
+    edtDotNetPrefix.Text := model.Properties.ItemNamed['dotnetprefix'].value;
+
   // targets
   stgTargets.RowCount := 2;
   stgTargets.Rows[1].Text := '';
@@ -239,6 +251,8 @@ begin
       row[7] := target.properties.ItemNamed['IsClx'].value;
     if Assigned(target.properties.ItemNamed['IsBds']) then
       row[8] := target.properties.ItemNamed['IsBds'].value;
+    if Assigned(target.properties.ItemNamed['IsDotNet']) then
+      row[9] := target.properties.ItemNamed['IsDotNet'].value;
 
     stgTargets.InsertRow(stgTargets.RowCount);
   end;
@@ -291,75 +305,89 @@ begin
         model := xml.root.Items.ItemNamed['Models'].Items[i];
     end;
 
-    // generic properties
-    model.Properties.ItemNamed['format'].value := edtFormat.Text;
-    model.Properties.ItemNamed['name'].value := edtName.Text;
-    model.Properties.ItemNamed['prefix'].value := edtPrefix.Text;
-    model.Properties.ItemNamed['packages'].value := jdePackages.Text;
-    model.Properties.ItemNamed['incfile'].value := jfeIncFile.Text;
+    model.Clear;
 
-    if edtClxFormat.Text <> '' then
-      model.Properties.ItemNamed['clxformat'].value := edtClxFormat.Text;
-    if edtClxPrefix.Text <> '' then
-      model.Properties.ItemNamed['clxprefix'].value := edtClxPrefix.Text;
+    xml.Options := xml.Options + [sxoAutoCreate];
+    try
+      // generic properties
+      model.Properties.ItemNamed['format'].value := edtFormat.Text;
+      model.Properties.ItemNamed['name'].value := edtName.Text;
+      model.Properties.ItemNamed['prefix'].value := edtPrefix.Text;
+      model.Properties.ItemNamed['packages'].value := jdePackages.Text;
+      model.Properties.ItemNamed['incfile'].value := jfeIncFile.Text;
 
-    if edtNLSFormat.Text <> '' then
-      model.Properties.ItemNamed['nolibsuffixformat'].value := edtNLSFormat.Text;
-    if edtNLSPrefix.Text <> '' then
-      model.Properties.ItemNamed['nolibsuffixprefix'].value := edtNLSPrefix.Text;
+      if edtClxFormat.Text <> '' then
+        model.Properties.ItemNamed['clxformat'].value := edtClxFormat.Text;
+      if edtClxPrefix.Text <> '' then
+        model.Properties.ItemNamed['clxprefix'].value := edtClxPrefix.Text;
 
-    // targets
-    model.Items.ItemNamed['targets'].Items.Clear;
-    for i := 1 to stgTargets.RowCount-2 do
-    begin
-      target := model.Items.ItemNamed['targets'].Items.Add('target');
+      if edtNLSFormat.Text <> '' then
+        model.Properties.ItemNamed['nolibsuffixformat'].value := edtNLSFormat.Text;
+      if edtNLSPrefix.Text <> '' then
+        model.Properties.ItemNamed['nolibsuffixprefix'].value := edtNLSPrefix.Text;
 
-      row := stgTargets.Rows[i];
+      if edtDotNetFormat.Text <> '' then
+        model.Properties.ItemNamed['dotnetformat'].value := edtDotNetFormat.Text;
+      if edtDotNetPrefix.Text <> '' then
+        model.Properties.ItemNamed['dotnetprefix'].value := edtDotNetPrefix.Text;
 
-      target.properties.Add('name', row[0]);
-      if row[1] <> '' then
-        target.properties.Add('dir', row[1]);
-      if row[2] <> '' then
-        target.properties.Add('pname', row[2]);
-      if row[3] <> '' then
-        target.properties.Add('pdir', row[3]);
-      if row[4] <> '' then
-        target.properties.Add('env', row[4]);
-      if row[5] <> '' then
-        target.properties.Add('ver', row[5]);
-      if row[6] <> '' then
-        target.properties.Add('PathSep', row[6]);
-      if row[7] <> '' then
-        target.properties.Add('IsClx', row[7]);
-      if row[8] <> '' then
-        target.properties.Add('IsBds', row[8]);
-    end;
-
-    // aliases
-    model.Items.ItemNamed['aliases'].Items.Clear;
-    for i := 1 to stgAliases.RowCount-2 do
-    begin
-      alias := model.Items.ItemNamed['aliases'].Items.Add('alias');
-
-      row := stgAliases.Rows[i];
-
-      alias.properties.Add('name', row[0]);
-      alias.properties.Add('value', row[1]);
-    end;
-
-    // Clx filename replacements, if any
-    if stgClxRepl.Cells[0, 1] <> '' then
-    begin
-      model.Items.ItemNamed['ClxReplacements'].Items.Clear;
-      for i := 1 to stgClxRepl.RowCount-2 do
+      // targets
+      model.Items.ItemNamed['targets'].Items.Clear;
+      for i := 1 to stgTargets.RowCount-2 do
       begin
-        replacement := model.Items.ItemNamed['ClxReplacements'].Items.Add('replacement');
+        target := model.Items.ItemNamed['targets'].Items.Add('target');
 
-        row := stgClxRepl.Rows[i];
+        row := stgTargets.Rows[i];
 
-        replacement.properties.Add('original', row[0]);
-        replacement.properties.Add('replacement', row[1]);
+        target.properties.Add('name', row[0]);
+        if row[1] <> '' then
+          target.properties.Add('dir', row[1]);
+        if row[2] <> '' then
+          target.properties.Add('pname', row[2]);
+        if row[3] <> '' then
+          target.properties.Add('pdir', row[3]);
+        if row[4] <> '' then
+          target.properties.Add('env', row[4]);
+        if row[5] <> '' then
+          target.properties.Add('ver', row[5]);
+        if row[6] <> '' then
+          target.properties.Add('PathSep', row[6]);
+        if row[7] <> '' then
+          target.properties.Add('IsClx', row[7]);
+        if row[8] <> '' then
+          target.properties.Add('IsBds', row[8]);
+        if row[9] <> '' then
+          target.Properties.Add('IsDotNet', row[9]);
       end;
+
+      // aliases
+      model.Items.ItemNamed['aliases'].Items.Clear;
+      for i := 1 to stgAliases.RowCount-2 do
+      begin
+        alias := model.Items.ItemNamed['aliases'].Items.Add('alias');
+
+        row := stgAliases.Rows[i];
+
+        alias.properties.Add('name', row[0]);
+        alias.properties.Add('value', row[1]);
+      end;
+
+      // Clx filename replacements, if any
+      if stgClxRepl.Cells[0, 1] <> '' then
+      begin
+        model.Items.ItemNamed['ClxReplacements'].Items.Clear;
+        for i := 1 to stgClxRepl.RowCount-2 do
+        begin
+          replacement := model.Items.ItemNamed['ClxReplacements'].Items.Add('replacement');
+
+          row := stgClxRepl.Rows[i];
+
+          replacement.properties.Add('original', row[0]);
+          replacement.properties.Add('replacement', row[1]);
+        end;
+      end;
+    finally
+      xml.Options := xml.Options - [sxoAutoCreate];
     end;
   end;
 end;

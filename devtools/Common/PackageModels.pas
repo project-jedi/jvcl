@@ -44,6 +44,8 @@ type
     FPersonalDir: string;
     FPathDelimiter: string;
     FIsClx: Boolean;
+    FIsBDS: Boolean;
+    FIsDotNet: Boolean;
     FDefines: TStringList;
   public
     constructor Create(AOwner: TPackageModel; XmlNode: TJvSimpleXMLElem);
@@ -55,6 +57,8 @@ type
     property PathDelimiter: string read FPathDelimiter;
     property Defines: TStringList read FDefines;
     property IsClx: Boolean read FIsClx;
+    property IsBDS: Boolean read FIsBDS;
+    property IsDotNet: Boolean read FIsDotNet;
 
     property Owner: TPackageModel read FOwner;
   end;
@@ -103,6 +107,7 @@ type
     FPrefix: string;
     FFormat: string;
     FClxPrefix: string;
+    FDotNetPrefix: string;
     FPackagesDir: string;
     FIncFile: string;
 
@@ -130,6 +135,7 @@ type
     property Prefix: string read FPrefix;
     property Format: string read FFormat;
     property ClxPrefix: string read FClxPrefix;
+    property DotNetPrefix: string read FDotNetPrefix;
     property PackagesDir: string read FPackagesDir;
     property IncFile: string read FIncFile;
 
@@ -258,6 +264,7 @@ begin
   FPrefix := XmlNode.Properties.Value('prefix');
   FFormat := XmlNode.Properties.Value('format');
   FClxPrefix := XmlNode.Properties.Value('clxPrefix');
+  FDotNetPrefix := XmlNode.Properties.Value('dotnetPrefix');
   FPackagesDir := XmlNode.Properties.Value('packages');
   FIncFile := XmlNode.Properties.Value('incfile');
 
@@ -440,6 +447,8 @@ begin
   FPersonalDir := XmlNode.Properties.Value('pdir');
   FPathDelimiter := XmlNode.Properties.Value('pathsep', '\');
   FIsClx := XmlNode.Properties.BoolValue('IsClx', False);
+  FIsBDS := XmlNode.Properties.BoolValue('IsBDS', False);
+  FIsDotNet := XmlNode.Properties.BoolValue('IsDotNet', False);
 
   FDefines := TStringList.Create;
   FDefines.Sorted := True;
