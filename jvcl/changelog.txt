@@ -1,5 +1,7 @@
 Changelog for JVCL 3.X
 ======================
+2006-08-13
+- Added HintWindowClass property to the JvExVCL controls // ahuser
 2006-08-02
 - TJvgScrollBox has been deprecated and moved to archive, replaced by TJvScrollBox  // obones
 2006-07-31
