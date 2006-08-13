@@ -1072,7 +1072,7 @@ begin
   end
 
   else if (IsCompilerDirective) and
-          (not FConditionalParse or FConditionalParseCode.Last) and
+          ({not FConditionalParse or} FConditionalParseCode.Last) and
           ((StartsText('$I ', s)) or (StartsText('$INCLUDE ', s))) then
   begin
    // parse include file
@@ -1092,7 +1092,8 @@ begin
       else
         Filename := ParseFile(s, ptInclude, {TestFileExistence:=}True);
       if Filename = '' then
-        Error(Format(SFindFile, [s]), Token);
+        //Error(Format(SFindFile, [s]), Token);
+        Exit;
       if ExtractFileName(Filename) = ExtractFileName(s) then Exit; // file was not modified so no file name change
 
       if TPascalParserEx(Token.Parser).NoReplaceMacros then Exit;
