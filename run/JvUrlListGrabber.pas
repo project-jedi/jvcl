@@ -709,7 +709,9 @@ begin
     StartNextGrabber;
 end;
 
+{$WARNINGS OFF} // hide deprecated warning when compiling the JVCL
 procedure TJvUrlListGrabber.StartAll;
+{$WARNINGS ON}
 begin
   Start;
 end;
@@ -723,7 +725,9 @@ begin
     Grabbers[I].Stop;
 end;
 
+{$WARNINGS OFF} // hide deprecated warning when compiling the JVCL
 procedure TJvUrlListGrabber.StopAll;
+{$WARNINGS ON}
 begin
   Stop;
 end;
