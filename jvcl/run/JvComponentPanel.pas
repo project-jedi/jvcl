@@ -15,6 +15,7 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -45,7 +46,7 @@ uses
   Types, QTypes,
   {$ENDIF VisualCLX}
   Classes, Buttons,
-  JvButtons, JvExtComponent;
+  JvButtons, JvExtComponent, JvExButtons;
 
 type
   TButtonClick = procedure(Sender: TObject; Button: Integer) of object;
@@ -57,13 +58,13 @@ type
     FButtons: TList;
     FOnClick: TButtonClick;
     FOnDblClick: TButtonClick;
-    FButtonPointer: TSpeedButton;
+    FButtonPointer: TJvExSpeedButton;
     FButtonLeft: TJvNoFrameButton;
     FButtonRight: TJvNoFrameButton;
     FFirstVisible: Integer;
     FLockUpdate: Integer;
-    FSelectButton: TSpeedButton;
-    function GetButton(Index: Integer): TSpeedButton;
+    FSelectButton: TJvExSpeedButton;
+    function GetButton(Index: Integer): TJvExSpeedButton;
     function GetButtonCount: Integer;
     procedure SetButtonCount(AButtonCount: Integer);
     procedure SetButtonWidth(AButtonWidth: Integer);
@@ -88,7 +89,7 @@ type
     procedure Invalidate; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    property Buttons[Index: Integer]: TSpeedButton read GetButton; default;
+    property Buttons[Index: Integer]: TJvExSpeedButton read GetButton; default;
     property FirstVisible: Integer read FFirstVisible write SetFirstVisible;
   published
     property Align;
@@ -144,7 +145,7 @@ begin
   FButtonHeight := 28;
   FButtonLeft := TJvNoFrameButton.Create(Self);
   FButtonRight := TJvNoFrameButton.Create(Self);
-  FButtonPointer := TSpeedButton.Create(Self);
+  FButtonPointer := TJvExSpeedButton.Create(Self);
   with FButtonLeft do
   begin
     Parent := Self;
@@ -212,12 +213,12 @@ begin
   FSelectButton := FButtonPointer;
 end;
 
-function TJvComponentPanel.GetButton(Index: Integer): TSpeedButton;
+function TJvComponentPanel.GetButton(Index: Integer): TJvExSpeedButton;
 begin
   if (Index < 0) or (Index > FButtons.Count - 1) then
     Result := nil
   else
-    Result := TSpeedButton(FButtons[Index]);
+    Result := TJvExSpeedButton(FButtons[Index]);
 end;
 
 function TJvComponentPanel.GetButtonCount: Integer;
@@ -227,7 +228,7 @@ end;
 
 procedure TJvComponentPanel.SetButtonCount(AButtonCount: Integer);
 var
-  TmpButton: TSpeedButton;
+  TmpButton: TJvExSpeedButton;
 begin
   // (rom) removed the exception and the limit of 100 buttons
   if AButtonCount < 0 then
@@ -242,13 +243,14 @@ begin
     end;
     while FButtons.Count < AButtonCount do
     begin
-      TmpButton := TSpeedButton.Create(Self);
+      TmpButton := TJvExSpeedButton.Create(Self);
       with TmpButton do
       begin
         Flat := True;
         Parent := Self;
         Top := 0;
         GroupIndex := 1;
+        HintWindowClass := Self.HintWindowClass;
         OnClick := BtnClick;
         OnDblClick := BtnDblClick;
       end;
@@ -292,7 +294,7 @@ procedure TJvComponentPanel.BtnClick(Sender: TObject);
 begin
   if FSelectButton <> Sender then
   begin
-    FSelectButton := TSpeedButton(Sender);
+    FSelectButton := TJvExSpeedButton(Sender);
     if Assigned(FOnClick) then
       FOnClick(Sender, FButtons.IndexOf(FSelectButton));
   end;

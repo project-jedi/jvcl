@@ -55,6 +55,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -62,7 +63,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -96,6 +97,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -131,6 +133,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -138,7 +141,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -172,6 +175,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -181,6 +185,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -188,7 +193,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -222,6 +227,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -233,6 +239,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -240,7 +247,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -274,6 +281,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -312,6 +320,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -319,7 +328,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -353,6 +362,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -392,6 +402,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -399,7 +410,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -433,6 +444,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -467,6 +479,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -474,7 +487,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -508,6 +521,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -541,6 +555,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -548,7 +563,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -582,6 +597,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -615,6 +631,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -622,7 +639,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -656,6 +673,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -689,6 +707,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -696,7 +715,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -730,6 +749,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -763,6 +783,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -770,7 +791,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -804,6 +825,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -837,6 +859,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -844,7 +867,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -878,6 +901,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -911,6 +935,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -918,7 +943,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -952,6 +977,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -985,6 +1011,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -992,7 +1019,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -1026,6 +1053,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -1059,6 +1087,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -1066,7 +1095,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -1100,6 +1129,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -1133,6 +1163,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -1140,7 +1171,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -1174,6 +1205,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -1207,6 +1239,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
+    FHintWindowClass: THintWindowClass;
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -1214,7 +1247,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
-    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TMessage); override;
     {$IFNDEF CLR}
@@ -1248,6 +1281,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   private
@@ -1380,6 +1414,8 @@ end;
 function TJvExCustomGroupBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -1717,6 +1753,8 @@ end;
 function TJvExCustomLabel.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -1918,6 +1956,8 @@ end;
 function TJvExLabel.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -2122,6 +2162,8 @@ end;
 function TJvExCustomEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -2488,6 +2530,8 @@ end;
 function TJvExCustomMemo.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -2854,6 +2898,8 @@ end;
 function TJvExCustomCombo.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -3190,6 +3236,8 @@ end;
 function TJvExCustomComboBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -3525,6 +3573,8 @@ end;
 function TJvExButtonControl.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -3860,6 +3910,8 @@ end;
 function TJvExButton.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -4195,6 +4247,8 @@ end;
 function TJvExCustomCheckBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -4530,6 +4584,8 @@ end;
 function TJvExRadioButton.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -4865,6 +4921,8 @@ end;
 function TJvExCustomListBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -5200,6 +5258,8 @@ end;
 function TJvExScrollBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -5535,6 +5595,8 @@ end;
 function TJvExGroupBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -5870,6 +5932,8 @@ end;
 function TJvExCheckBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -6205,6 +6269,8 @@ end;
 function TJvExCustomStaticText.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
@@ -6540,6 +6606,8 @@ end;
 function TJvExStaticText.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
+  if FHintWindowClass <> nil then
+    HintInfo.HintWindowClass := FHintWindowClass;
   Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
