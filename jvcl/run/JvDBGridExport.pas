@@ -343,7 +343,7 @@ begin
   end
   else
   begin
-    Result := string(Field.Value);
+    Result := VarToStr(Field.Value);
   end;
 end;
 
