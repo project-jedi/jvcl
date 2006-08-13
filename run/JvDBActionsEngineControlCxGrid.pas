@@ -180,7 +180,10 @@ end;
 function TJvDatabaseActionDevExpCxGridControlEngine.RecNo: integer;
 begin
   if Assigned(GridView) then
-    Result := GridView.DataController.FocusedRowIndex + 1
+    if GridView.DataController.IsGridMode then
+      Result := inherited RecNo
+    else
+      Result := GridView.DataController.FocusedRowIndex + 1
   else
     Result := inherited RecNo;
 end;
@@ -188,7 +191,10 @@ end;
 function TJvDatabaseActionDevExpCxGridControlEngine.RecordCount: integer;
 begin
   if Assigned(GridView) then
-    Result := GridView.DataController.RecordCount
+    if GridView.DataController.IsGridMode then
+      Result := inherited RecordCount
+    else
+      Result := GridView.DataController.RecordCount
   else
     Result := inherited RecordCount;
 end;
