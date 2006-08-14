@@ -65,7 +65,7 @@ uses
   JvAppRegistryStorage,
   {$ENDIF USEWINDOWS}
   JvAppIniStorage, JvAppStorage, JvAppStorageSelectList,
-  JvAutoComplete;
+  JvAutoComplete, JvTranslateString;
 
 {$R JvCoreReg.dcr}
 
@@ -91,7 +91,7 @@ begin
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF USEWINDOWS}
 
-  RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete]);
+  RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete, TJvTranslateString]);
 
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);

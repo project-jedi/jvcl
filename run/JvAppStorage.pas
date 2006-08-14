@@ -98,12 +98,12 @@ uses
 {$IFDEF UNIX}
   JvQJCLUtils,
 {$ENDIF UNIX}
-  JvVCL5Utils, JvComponentBase, JvTypes;
+  JvVCL5Utils, JvComponentBase, JvTypes, JvTranslateString;
 
 const
   // (rom) this name is shared in several units and should be made global
   cItem = 'Item';
-  cVersionCheckName ='Version';
+  cVersionCheckName = 'Version';
 
 type
   TJvCustomAppStorage = class;
@@ -161,7 +161,7 @@ type
     flTemp, // Store in %TEMP%; only use file name part of FileName property.
     flExeFile, // Store in same folder as application's exe file; only use file name part of FileName property.
     flUserFolder);
-      // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
+  // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
 
   TJvCustomAppStorage = class(TJvComponent)
   private
@@ -177,8 +177,11 @@ type
     FUpdateCount: Integer;
     FAutoReload: Boolean;
     FCurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent;
+    FInternalTranslateStringEngine: TJvTranslateString;
     FReadOnly: Boolean;
     FOnError: TJvAppStorageErrorEvent;
+    FTranslateStringEngine: TJvTranslateString;
+    function GetActiveTranslateStringEngine: TJvTranslateString;
     function GetUpdating: Boolean;
   protected
     FFlushOnDestroy: Boolean;
@@ -422,8 +425,8 @@ type
          should be stored in the subtree after the check.
       VersionName is the Name of the stored version number in the path }
     procedure CheckDeletePathByVersion(const Path: string; VersionNumber: Integer;
-        DeleteIfNotEqual: Boolean = False; WriteVersionNumber: Boolean = True;
-        const VersionName: string = cVersionCheckName);
+      DeleteIfNotEqual: Boolean = False; WriteVersionNumber: Boolean = True;
+      const VersionName: string = cVersionCheckName);
     class function ConcatPaths(const Paths: array of string): string;
     { Resolve a path to it's actual used storage backend and root path. }
     procedure ResolvePath(const InPath: string; out TargetStore: TJvCustomAppStorage; out TargetPath: string);
@@ -589,6 +592,14 @@ type
     procedure DisablePropertyValueCrypt;
     { Returns the current state if Property-Value Cryption is enabled }
     function IsPropertyValueCryptEnabled: Boolean;
+    {$IFDEF COMPILER6_UP}
+    function ReadWideString(const Path: string; const Default: WideString):
+        WideString;
+    procedure WriteWideString(const Path: string; const Value: WideString);
+    {$ENDIF}
+    //1 The current Translateengine which should be used for all operations. It's the internal translateengine, or the assigned property TranslateStringEngine
+    property ActiveTranslateStringEngine: TJvTranslateString read
+      GetActiveTranslateStringEngine;
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
@@ -604,6 +615,9 @@ type
     property FlushOnDestroy: Boolean read FFlushOnDestroy write SetFlushOnDestroy default True;
   published
     property StorageOptions: TJvCustomAppStorageOptions read FStorageOptions write SetStorageOptions;
+    //1 This engine gives you the possibility to translate Strings with %-Replacements
+    property TranslateStringEngine: TJvTranslateString read FTranslateStringEngine
+      write FTranslateStringEngine;
     property OnTranslatePropertyName: TJvAppStoragePropTranslateEvent read FOnTranslatePropertyName
       write FOnTranslatePropertyName;
     property OnEncryptPropertyValue: TJvAppStorageCryptEvent read FOnEncryptPropertyValue
@@ -786,6 +800,8 @@ type
   // AFTER the call to inherited in the destructor of your
   // derived class or Flush would access a deleted object
   TJvCustomAppMemoryFileStorage = class(TJvCustomAppStorage)
+  private
+    FFullFileName: TFileName;
   protected
     FFileName: TFileName;
     FLocation: TFileLocation;
@@ -802,13 +818,12 @@ type
     function DefaultExtension: string; virtual;
 
     function DoGetFileName: TFileName; virtual;
-    function GetFullFileName: TFileName;
-
     property AsString: string read GetAsString write SetAsString;
     // OnGetFileName triggered on Location = flCustom
     property OnGetFileName: TJvAppStorageGetFileNameEvent read FOnGetFileName write SetOnGetFileName;
 
     function GetPhysicalReadOnly: Boolean; override;
+    procedure RecalculateFullFileName;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -816,9 +831,9 @@ type
     function ReloadNeeded: Boolean; override;
 
     property FileName: TFileName read FFileName write SetFileName;
-    property FullFileName: TFileName read GetFullFileName;
+    property FullFileName: TFileName read FFullFileName;
     property Location: TFileLocation read FLocation write SetLocation default
-        flExeFile;
+      flExeFile;
   published
     property ReadOnly;
   end;
@@ -1156,10 +1171,12 @@ begin
   FSubStorages := TJvAppSubStorages.Create(Self);
   FCryptEnabledStatus := 0;
   FReadOnly := False;
+  FInternalTranslateStringEngine := TJvTranslateString.Create(Self);
 end;
 
 destructor TJvCustomAppStorage.Destroy;
 begin
+  FreeAndNil(FInternalTranslateStringEngine);
   if FlushOnDestroy then
     Flush;
   FreeAndNil(FSubStorages);
@@ -1205,6 +1222,9 @@ begin
   if (AComponent is TJvCustomAppStorage) and (Operation = opRemove) and
     Assigned(SubStorages) then
     SubStorages.Delete(AComponent as TJvCustomAppStorage);
+  if (Operation = opRemove) and
+    (AComponent = FTranslateStringEngine) then
+    FTranslateStringEngine := nil;
 end;
 
 procedure TJvCustomAppStorage.SetFlushOnDestroy(Value: Boolean);
@@ -2036,7 +2056,7 @@ begin
       List.Clear;
     ResolvePath(Path + cSubStorePath, TargetStore, TargetPath); // Only needed for assigning the event
     FOldInstanceCreateEvent := TargetStore.FCurrentInstanceCreateEvent;
-	try
+    try
       TargetStore.FCurrentInstanceCreateEvent := ItemCreator;
       Result := ReadList(Path, List, ReadObjectListItem, ItemName);
     finally
@@ -2423,8 +2443,14 @@ begin
   if not Assigned(PersObj) then
     Exit;
   case PropType(PersObj, PropName) of
-    tkLString, tkWString, tkString:
+    tkLString, tkString:
       SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
+    tkWString:
+      {$IFDEF COMPILER6_UP}
+      SetWideStrProp(PersObj, PropName, ReadWideString(Path, GetWideStrProp(PersObj, PropName)));
+      {$ELSE}
+      SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
+      {$ENDIF COMPILER6_UP}
     tkEnumeration:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
@@ -2495,18 +2521,18 @@ var
   begin
     Value := GetOrdProp(PersObj, PropInfo);
     Default := PPropInfo(PropInfo)^.Default;
-    Result :=  (Default <> LongInt($80000000)) and (Value = Default);
+    Result := (Default <> LongInt($80000000)) and (Value = Default);
   end;
 
   function IsDefaultStrProp(PropInfo: PPropInfo): Boolean;
   var
     Value: WideString;
   begin
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     Value := GetWideStrProp(PersObj, PropInfo);
-    {$ELSE}
+{$ELSE}
     Value := GetStrProp(PersObj, PropInfo);
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     Result := Value = '';
   end;
 
@@ -2538,14 +2564,21 @@ begin
   // return True for any sub component which is not desirable as we want to
   // always store sub classes whether they are components or not.
   if not StorageOptions.StoreDefaultValues and
-     (not Assigned(P^.GetProc) or not Assigned(P^.SetProc) or
-      not IsStoredProp(PersObj, P)) then
-    Exit;  
+    (not Assigned(P^.GetProc) or not Assigned(P^.SetProc) or
+    not IsStoredProp(PersObj, P)) then
+    Exit;
 
   case PropType(PersObj, PropName) of
-    tkLString, tkWString, tkString:
+    tkLString, tkString:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
         WriteString(Path, GetStrProp(PersObj, PropName));
+    tkWString:
+      if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
+        {$IFDEF COMPILER6_UP}
+        WriteWideString(Path, GetWideStrProp(PersObj, PropName));
+        {$ELSE}
+        WriteString(Path, GetStrProp(PersObj, PropName));
+        {$ENDIF COMPILER6_UP}
     tkEnumeration:
       begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
@@ -2808,8 +2841,8 @@ begin
 end;
 
 procedure TJvCustomAppStorage.CheckDeletePathByVersion(const Path: string;
-    VersionNumber: Integer; DeleteIfNotEqual: Boolean = False;
-    WriteVersionNumber: Boolean = True; const VersionName: string = 'Version');
+  VersionNumber: Integer; DeleteIfNotEqual: Boolean = False;
+  WriteVersionNumber: Boolean = True; const VersionName: string = 'Version');
 var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
@@ -2823,8 +2856,9 @@ begin
       OldVersionNumber := Targetstore.ReadInteger(TargetStore.ConcatPaths([Path, VersionName]));
       if DeleteIfNotEqual and (OldVersionNumber <> VersionNumber) then
         Targetstore.DeleteSubTree(Path)
-      else if (OldVersionNumber < VersionNumber) then
-        Targetstore.DeleteSubTree(Path);
+      else
+        if (OldVersionNumber < VersionNumber) then
+          Targetstore.DeleteSubTree(Path);
       if (OldVersionNumber <> VersionNumber) and WriteVersionNumber then
         TargetStore.WriteInteger(TargetStore.ConcatPaths([Path, VersionName]), VersionNumber);
     finally
@@ -2841,10 +2875,32 @@ begin
     FUpdateCount := 0;
 end;
 
+function TJvCustomAppStorage.GetActiveTranslateStringEngine: TJvTranslateString;
+begin
+  if Assigned(TranslateStringEngine) then
+    Result := TranslateStringEngine
+  else
+    Result := FInternalTranslateStringEngine;
+end;
+
 function TJvCustomAppStorage.GetUpdating: Boolean;
 begin
   Result := FUpdateCount <> 0;
 end;
+
+{$IFDEF COMPILER6_UP}
+function TJvCustomAppStorage.ReadWideString(const Path: string; const Default:
+    WideString): WideString;
+begin
+  Result := UTF8Decode(ReadString(Path, UTF8Encode(Default)));
+end;
+
+procedure TJvCustomAppStorage.WriteWideString(const Path: string; const Value:
+    WideString);
+begin
+  WriteString(Path, UTF8Encode(Value));
+end;
+{$ENDIF}
 
 //=== { TJvAppStorage } ======================================================
 
@@ -3182,6 +3238,49 @@ begin
   FFileLoaded := False;
 end;
 
+procedure TJvCustomAppMemoryFileStorage.RecalculateFullFileName;
+var
+  NameOnly: string;
+  RelPathName: string;
+  TransFileName: string;
+begin
+  if (FileName = '') and (Location <> flCustom) then
+    FFullFileName := ''
+  else
+  begin
+    TransFileName := ActiveTranslateStringEngine.TranslateString(FileName);
+    NameOnly := ExtractFileName(TransFileName);
+    if PathIsAbsolute(TransFileName) then
+      RelPathName := NameOnly
+    else
+      RelPathName := TransFileName;
+    case Location of
+      flCustom:
+        FFullFileName := DoGetFileName;
+      flExeFile:
+        FFullFileName := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
+{$IFDEF MSWINDOWS}
+      flTemp:
+        FFullFileName := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
+      flWindows:
+{$IFDEF CLR}
+        FFullFileName := '';
+{$ELSE}
+        FFullFileName := PathAddSeparator(GetWindowsFolder) + NameOnly;
+{$ENDIF ~CLR}
+      flUserFolder:
+        FFullFileName := PathAddSeparator(GetAppdataFolder) + RelPathName;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+      flTemp:
+        FFullFileName := PathAddSeparator(GetTempDir) + NameOnly;
+      flUserFolder:
+        FFullFileName := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
+{$ENDIF UNIX}
+    end;
+  end;
+end;
+
 procedure TJvCustomAppMemoryFileStorage.Reload;
 begin
   FFileLoaded := True;
@@ -3201,50 +3300,9 @@ end;
 
 function TJvCustomAppMemoryFileStorage.DoGetFileName: TFileName;
 begin
-  Result := FileName;
+  Result := ActiveTranslateStringEngine.TranslateString(FileName);
   if Assigned(FOnGetFileName) then
     FOnGetFileName(Self, Result);
-end;
-
-function TJvCustomAppMemoryFileStorage.GetFullFileName: TFileName;
-var
-  NameOnly: string;
-  RelPathName: string;
-begin
-  if (FileName = '') and (Location <> flCustom) then
-    Result := ''
-  else
-  begin
-    NameOnly := ExtractFileName(FileName);
-    if PathIsAbsolute(FileName) then
-      RelPathName := NameOnly
-    else
-      RelPathName := FileName;
-    case Location of
-      flCustom:
-        Result := DoGetFileName;
-      flExeFile:
-        Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
-{$IFDEF MSWINDOWS}
-      flTemp:
-        Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
-      flWindows:
-{$IFDEF CLR}
-        Result := '';
-{$ELSE}
-        Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
-{$ENDIF ~CLR}
-      flUserFolder:
-        Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-      flTemp:
-        Result := PathAddSeparator(GetTempDir) + NameOnly;
-      flUserFolder:
-        Result := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
-{$ENDIF UNIX}
-    end;
-  end;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.SetFileName(const Value: TFileName);
@@ -3264,6 +3322,7 @@ begin
       FFileName := Value;
     end;
 
+    RecalculateFullFileName;
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if not (csLoading in ComponentState) and not IsUpdating then
       Reload;
@@ -3287,6 +3346,7 @@ begin
     if not (csLoading in ComponentState) and not IsUpdating then
       Flush;
     FLocation := Value;
+    RecalculateFullFileName;
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if not (csLoading in ComponentState) and not IsUpdating then
       Reload;

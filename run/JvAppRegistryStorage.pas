@@ -145,9 +145,9 @@ const
   cNoRootMask = '%NONE%';
   cAppNameMask = '%APPL_NAME%';
   cCompanyNameMask = '%COMPANY_NAME%';
-  cOldDefaultRootMask =  cSoftwareKey + '\' + cCompanyNameMask + '\' + cAppNameMask;
   cDefaultAppName = 'MyJVCLApplication';
   cDefaultCompanyName = 'MyCompany';
+  cOldDefaultRootMask =  cSoftwareKey + '\' + cCompanyNameMask + '\' + cAppNameMask;
 
 { (rom) disabled unused
 const
@@ -177,59 +177,7 @@ end;
 procedure TJvAppRegistryStorage.SetRoot(const Value: string);
 var
   S: string;
-  HelpName: string;
-
-  function GetVersionInfoAppName: string;
-  var
-    VersionInfo: TJclFileVersionInfo;
-  begin
-    try
-      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
-      try
-        Result := VersionInfo.ProductName;
-      finally
-        VersionInfo.Free;
-      end;
-    except
-      on EJclFileVersionInfoError do
-        begin
-          if not FAppNameErrorHandled then
-          begin
-            MessageDlg(Format(RsRootValueReplaceFmt, [cAppNameMask, cDefaultAppName]), mtInformation, [mbOK], 0);
-            FAppNameErrorHandled := True;
-          end;
-          Result := cDefaultAppName;
-        end
-      else
-        raise;
-    end;
-  end;
-
-  function GetVersionInfoCompanyName: string;
-  var
-    VersionInfo: TJclFileVersionInfo;
-  begin
-    try
-      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
-      try
-        Result := VersionInfo.CompanyName;
-      finally
-        VersionInfo.Free;
-      end;
-    except
-      on EJclFileVersionInfoError do
-        begin
-          if not FCompanyNameErrorHandled then
-          begin
-            MessageDlg(Format(RsRootValueReplaceFmt, [cCompanyNameMask, cDefaultCompanyName]), mtInformation, [mbOK], 0);
-            FCompanyNameErrorHandled := True;
-          end;
-          Result := cDefaultCompanyName;
-        end
-      else
-        raise;
-    end;
-  end;
+  Changed: Boolean;
 
 begin
   inherited SetRoot(Value);
@@ -246,25 +194,9 @@ begin
     if GetRoot = cNoRootMask then
       SetRoot('')
     else
-    if StrFind(cAppNameMask, GetRoot) <> 0 then
-    begin
-      HelpName := GetVersionInfoAppName;
-      if HelpName = '' then
-        HelpName := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
-      S := GetRoot;
-      StrReplace(S, cAppNameMask, HelpName, [rfIgnoreCase]);
-      SetRoot(S);
-    end
-    else
-      if StrFind(cCompanyNameMask, GetRoot) <> 0 then
-      begin
-        HelpName := GetVersionInfoCompanyName;
-        if HelpName = '' then
-          HelpName := DefCompanyName;
-        S := GetRoot;
-        StrReplace(S, cCompanyNameMask, HelpName, [rfIgnoreCase]);
-        SetRoot(S);
-      end;
+      s := ActiveTranslateStringEngine.TranslateString(GetRoot, Changed);
+      if changed then
+        SetRoot (s);
   end;
 end;
 
