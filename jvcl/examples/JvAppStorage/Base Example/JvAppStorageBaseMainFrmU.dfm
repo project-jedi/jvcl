@@ -138,6 +138,7 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
         Height = 13
         Align = alTop
         Caption = 'Stored Memo:'
+        ExplicitWidth = 66
       end
       object Memo2: TMemo
         Left = 1
@@ -167,7 +168,7 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
   object JvAppIniFileStorage1: TJvAppIniFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    FileName = 'FilenameRequired.ini'
+    FileName = 'FilenameRequired%SCREENSIZe%.ini'
     DefaultSection = 'General'
     SubStorages = <
       item
@@ -178,7 +179,7 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
     Top = 87
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppRegistryStorage1
+    AppStorage = JvAppIniFileStorage1
     AppStoragePath = 'Test\'
     StoredProps.Strings = (
       'Option1.Checked'
@@ -226,7 +227,7 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
     Top = 8
   end
   object JvFormStorageSelectList1: TJvFormStorageSelectList
-    AppStorage = JvAppRegistryStorage1
+    AppStorage = JvAppIniFileStorage1
     SelectPath = 'something'
     FormStorage = JvFormStorage1
     Left = 393

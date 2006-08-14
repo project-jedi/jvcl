@@ -32,7 +32,7 @@ uses
   Dialogs, JvAppXMLStorage, JvFormPlacementSelectList, JvFormPlacement,
   JvAppDBStorage, JvAppStorageSelectList, JvAppStorage, JvAppIniStorage,
   JvComponent, JvAppRegistryStorage, ExtCtrls, ComCtrls, ToolWin, StdCtrls,
-  ShellAPI, Menus;
+  ShellAPI, Menus, JvComponentBase;
 
 type
   TJvAppStorageBaseMainFrm = class(TForm, IJvAppStorageHandler)
