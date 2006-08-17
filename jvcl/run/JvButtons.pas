@@ -15,6 +15,7 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -70,7 +71,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  Classes, Graphics, Controls, Forms, Buttons,
+  Classes, Graphics, Controls, Forms, Buttons, ExtCtrls,
   {$IFDEF VisualCLX}
   QImgList,
   {$ENDIF VisualCLX}
@@ -256,9 +257,17 @@ type
     FGlyphDrawer: TJvButtonGlyph;
     FNoBorder: Boolean;
     FOnPaint: TPaintButtonEvent;
+    FRepeatedClick: Boolean;
+    FRepeatTimer: TTimer;
+    FInitRepeatPause: Integer;
+    FRepeatPause: Integer;
+    FClicked: Boolean;
     procedure SetNoBorder(Value: Boolean);
+    procedure TimerExpired(Sender: TObject);
   protected
     procedure Paint; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -267,7 +276,10 @@ type
   published
     property Color;
     property ParentColor;
-    property NoBorder: Boolean read FNoBorder write SetNoBorder;
+    property NoBorder: Boolean read FNoBorder write SetNoBorder default True;
+    property RepeatedClick: Boolean read FRepeatedClick write FRepeatedClick default False;
+    property InitRepeatPause: Integer read FInitRepeatPause write FInitRepeatPause default 400;
+    property RepeatPause: Integer read FRepeatPause write FRepeatPause default 100;
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
 
@@ -1714,13 +1726,70 @@ begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
   FNoBorder := True;
+  FInitRepeatPause := 400;
+  FRepeatPause := 100;
 end;
 
 destructor TJvNoFrameButton.Destroy;
 begin
+  FRepeatTimer.Free;
   FGlyphDrawer.Free;
   FGlyphDrawer := nil;
   inherited Destroy;
+end;
+
+procedure TJvNoFrameButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (Button = mbLeft) and Enabled and RepeatedClick then
+  begin
+    if FRepeatTimer = nil then
+      FRepeatTimer := TTimer.Create(Self);
+    FRepeatTimer.OnTimer := TimerExpired;
+    FRepeatTimer.Interval := InitRepeatPause;
+    FRepeatTimer.Enabled := True;
+    FClicked := False;
+  end;
+end;
+
+procedure TJvNoFrameButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  OrgMouseUp: TMouseEvent;
+begin
+  if FClicked then
+  begin
+    // prevent the OnClick event to trigger again
+    if Assigned(OnMouseUp) then
+      OnMouseUp(Self, Button, Shift, X, Y);
+    OrgMouseUp := OnMouseUp;
+    try
+      OnMouseUp := nil;
+      inherited MouseUp(Button, Shift, -1, -1)
+    finally
+      OnMouseUp := OrgMouseUp;
+    end;
+  end
+  else
+    inherited MouseUp(Button, Shift, X, Y);
+  FreeAndNil(FRepeatTimer);
+end;
+
+procedure TJvNoFrameButton.TimerExpired(Sender: TObject);
+begin
+  FRepeatTimer.Interval := RepeatPause;
+  if (FState = bsDown) and Enabled and MouseCapture then
+  begin
+    try
+      FClicked := True;
+      Click;
+    except
+      FRepeatTimer.Enabled := False;
+      raise;
+    end;
+  end
+  else
+    FreeAndNil(FRepeatTimer);
 end;
 
 procedure TJvNoFrameButton.Paint;
