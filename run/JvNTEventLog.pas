@@ -432,6 +432,7 @@ var
   P: PChar;
   Args, PArgs: ^PChar;
   St: string;
+  reg: TRegistry;
 
   function FormatMessageFrom(const DllName: string): Boolean;
   var
@@ -471,26 +472,30 @@ begin
       Inc(P, lstrlen(P) + 1);
       Inc(PArgs);
     end;
-    with TRegistry.Create do
-    begin
-      RootKey := HKEY_LOCAL_MACHINE;
-      OpenKey(Format('%s\%s\%s', [cEventLogBaseKey, FEventLog.Log, Source]), False); {rw}
+    
+    reg := TRegistry.Create;
+    try
+      reg.RootKey := HKEY_LOCAL_MACHINE;
+      reg.OpenKey(Format('%s\%s\%s', [cEventLogBaseKey, FEventLog.Log, Source]), False); {rw}
 //      OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, FEventLog.Source]), False);
-      MessagePath := ReadString('EventMessageFile');
-      repeat
-        I := Pos(';', MessagePath);
-        if I <> 0 then
-        begin
-          if FormatMessageFrom(Copy(MessagePath, 1, I - 1 )) then {rw}
+      MessagePath := reg.ReadString('EventMessageFile');
+    finally
+      reg.Free;
+    end;
+
+    repeat
+      I := Pos(';', MessagePath);
+      if I <> 0 then
+      begin
+        if FormatMessageFrom(Copy(MessagePath, 1, I - 1 )) then {rw}
 //          if FormatMessageFrom(Copy(MessagePath, 1, I)) then
-            Break;
-          MessagePath := Copy(MessagePath, I + 1, MaxInt); {rw}
+          Break;
+        MessagePath := Copy(MessagePath, I + 1, MaxInt); {rw}
 //          MessagePath := Copy(MessagePath, I, MaxInt);
-        end
-        else
-          FormatMessageFrom(MessagePath);
-      until I = 0;
-    end
+      end
+      else
+        FormatMessageFrom(MessagePath);
+    until I = 0;
   finally
     FreeMem(Args)
   end;
