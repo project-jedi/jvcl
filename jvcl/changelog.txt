@@ -1,5 +1,12 @@
 Changelog for JVCL 3.X
 ======================
+2006-08-17
+- Fixed Bug in JvTabBar: ScrollButtons meight disappear // ahuser
+- Added Repeated Click to the JvTabBar's ScrollButtons // ahuser
+- Added MouseWheel support for JvTabBar // ahuser
+- Added Repeated Click to TNoFrameButton // ahuser
+- Added MouseWheel support for JvComponentPanel // ahuser
+- Fixed Scrollbutton bug in JvComponentPanel // ahuser
 2006-08-13
 - Added HintWindowClass property to the JvExVCL controls // ahuser
 2006-08-02
