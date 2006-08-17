@@ -40,16 +40,18 @@ uses
   Borland.Vcl.Classes, Borland.Vcl.Types, Borland.Vcl.Contnrs,
   Jedi.WinForms.Vcl.Graphics, Jedi.WinForms.Vcl.Controls,
   Jedi.WinForms.Vcl.Forms, Jedi.WinForms.Vcl.ImgList, Jedi.WinForms.Vcl.Menus,
-  Jedi.WinForms.Vcl.Buttons;
+  Jedi.WinForms.Vcl.Buttons, Jedi.WinForms.Vcl.ExtCtrls;
   {$ELSE}
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
+  ExtCtrls,
   {$IFDEF CLR}
   Types,
   {$ENDIF CLR}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
+  QExtCtrls,
   {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs,
   JvVCL5Utils;
@@ -319,6 +321,9 @@ type
     FOnScrollButtonClick: TJvTabBarScrollButtonClickEvent;
     FPageListTabLink: Boolean;
 
+    FRepeatTimer: TTimer;
+    FScrollRepeatedClicked: Boolean;
+
     function GetLeftTab: TJvTabBarItem;
     procedure SetLeftTab(Value: TJvTabBarItem);
     procedure SetSelectedTab(Value: TJvTabBarItem);
@@ -336,6 +341,7 @@ type
     procedure SetFlatScrollButtons(const Value: Boolean);
     procedure SetPageList(const Value: TCustomControl);
     procedure SetOrientation(const Value: TJvTabBarOrientation);
+    procedure TimerExpired(Sender: TObject);
   protected
     procedure DrawScrollBarGlyph(Canvas: TCanvas; X, Y: Integer; Left, Disabled: Boolean);
     procedure Resize; override;
@@ -367,6 +373,7 @@ type
     function ScrollButtonsMouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer): Boolean; virtual;
     function ScrollButtonsMouseMove(Shift: TShiftState; X: Integer; Y: Integer): Boolean; virtual;
 
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -836,11 +843,13 @@ begin
   begin
     // The TabSelected tab is now no more selectable
     SelectedTab := FindSelectableTab(SelectedTab);
-
-    Invalidate;
-    if Assigned(FOnChange) then
-      FOnChange(Self);
-    UpdateScrollButtons;
+    if Tabs.UpdateCount = 0 then
+    begin
+      Invalidate;
+      if Assigned(FOnChange) then
+        FOnChange(Self);
+      UpdateScrollButtons;
+    end;
   end;
 end;
 
@@ -947,6 +956,44 @@ begin
   inherited MouseLeave(AControl);
 end;
 {$ENDIF VisualCLX}
+
+function TJvCustomTabBar.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+  if not Result then
+  begin
+    Result := True;
+
+    if SelectedTab = nil then
+      SelectedTab := LeftTab;
+    if SelectedTab = nil then
+      Exit; // nothing to do
+
+    WheelDelta := WheelDelta div WHEEL_DELTA;
+    while WheelDelta <> 0 do
+    begin
+      if WheelDelta < 0 then
+      begin
+        if SelectedTab.GetNextVisible <> nil then
+          SelectedTab := SelectedTab.GetNextVisible
+        else
+          Break;
+      end
+      else
+      begin
+        if SelectedTab.GetPreviousVisible <> nil then
+          SelectedTab := SelectedTab.GetPreviousVisible
+        else
+          Break;
+      end;
+
+      if WheelDelta < 0 then
+        Inc(WheelDelta)
+      else
+        Dec(WheelDelta);
+    end;
+  end;
+end;
 
 procedure TJvCustomTabBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
@@ -1073,6 +1120,14 @@ function TJvCustomTabBar.ScrollButtonsMouseDown(Button: TMouseButton;
           begin
             State := sbsPressed;
             PaintScrollButtons;
+
+            if FRepeatTimer = nil then
+              FRepeatTimer := TTimer.Create(Self);
+            FRepeatTimer.OnTimer := TimerExpired;
+            FRepeatTimer.Interval := 400;
+            FRepeatTimer.Enabled := True;
+            FRepeatTimer.Tag := Integer(Kind);
+            FScrollRepeatedClicked := False;
           end;
         end;
     end;
@@ -1149,10 +1204,12 @@ function TJvCustomTabBar.ScrollButtonsMouseUp(Button: TMouseButton;
     case State of
       sbsPressed:
         begin
+          FreeAndNil(FRepeatTimer);
           State := sbsNormal;
           PaintScrollButtons;
-          if Result then
+          if Result and not FScrollRepeatedClicked then
             ScrollButtonClick(Kind);
+          FScrollRepeatedClicked := False;
         end;
     end;
   end;
@@ -1163,6 +1220,44 @@ begin
     Result := HandleButton(sbScrollLeft, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
   if (FBtnRightScroll <> sbsHidden) then
     Result := HandleButton(sbScrollRight, FBtnRightScroll, X, Y, FBtnRightScrollRect);
+end;
+
+procedure TJvCustomTabBar.TimerExpired(Sender: TObject);
+var
+  Kind: TJvTabBarScrollButtonKind;
+  State: TJvTabBarScrollButtonState;
+begin
+  FRepeatTimer.Interval := 100;
+  Kind := TJvTabBarScrollButtonKind(FRepeatTimer.Tag);
+  case Kind of
+    sbScrollLeft:
+      State := FBtnLeftScroll;
+    sbScrollRight:
+      State := FBtnRightScroll;
+  else
+    Exit;
+  end;
+
+  if (State = sbsPressed) and Enabled {and MouseCapture} then
+  begin
+    try
+      FScrollRepeatedClicked := True;
+      ScrollButtonClick(Kind);
+      case Kind of
+        sbScrollLeft:
+          if not (FBtnLeftScroll in [sbsHidden, sbsDisabled]) then
+            FBtnLeftScroll := sbsPressed;
+        sbScrollRight:
+          if not (FBtnRightScroll in [sbsHidden, sbsDisabled]) then
+            FBtnRightScroll := sbsPressed;
+      end;
+    except
+      FRepeatTimer.Enabled := False;
+      raise;
+    end;
+  end
+  else
+    FreeAndNil(FRepeatTimer);
 end;
 
 procedure TJvCustomTabBar.SetHotTab(Tab: TJvTabBarItem);
@@ -1385,6 +1480,7 @@ begin
   begin
     FLeftIndex := Index;
     Invalidate;
+    UpdateScrollButtons;
   end;
 end;
 
@@ -1443,10 +1539,18 @@ end;
 procedure TJvCustomTabBar.ScrollButtonClick(Button: TJvTabBarScrollButtonKind);
 begin
   if Button = sbScrollLeft then
-    Dec(FLeftIndex)
+  begin
+    if FBtnLeftScroll in [sbsHidden, sbsDisabled] then
+      Exit;
+    Dec(FLeftIndex);
+  end
   else
   if Button = sbScrollRight then
+  begin
+    if FBtnRightScroll in [sbsHidden, sbsDisabled] then
+      Exit;
     Inc(FLeftIndex);
+  end;
   UpdateScrollButtons;
   Invalidate;
   if Assigned(FOnScrollButtonClick) then

@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF VCL}
-  Messages,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QTypes,
@@ -73,6 +73,7 @@ type
     procedure BtnClick(Sender: TObject);
     procedure BtnDblClick(Sender: TObject);
     procedure MoveClick(Sender: TObject);
+    function GetVisibleCount: Integer;
     {$IFDEF VCL}
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     {$ENDIF VCL}
@@ -81,6 +82,7 @@ type
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
     procedure Resize; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -91,6 +93,9 @@ type
     procedure EndUpdate;
     property Buttons[Index: Integer]: TJvExSpeedButton read GetButton; default;
     property FirstVisible: Integer read FFirstVisible write SetFirstVisible;
+    property ButtonLeft: TJvNoFrameButton read FButtonLeft;
+    property ButtonRight: TJvNoFrameButton read FButtonRight;
+    property VisibleCount: Integer read GetVisibleCount;
   published
     property Align;
     property OnClick: TButtonClick read FOnClick write FOnClick;
@@ -138,13 +143,16 @@ uses
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  DoubleBuffered := True;
   BevelOuter := bvNone;
   FButtons := TList.Create;
   FFirstVisible := 0;
   FButtonWidth := 28;
   FButtonHeight := 28;
   FButtonLeft := TJvNoFrameButton.Create(Self);
+  FButtonLeft.RepeatedClick := True;
   FButtonRight := TJvNoFrameButton.Create(Self);
+  FButtonRight.RepeatedClick := True;
   FButtonPointer := TJvExSpeedButton.Create(Self);
   with FButtonLeft do
   begin
@@ -226,6 +234,11 @@ begin
   Result := FButtons.Count;
 end;
 
+function TJvComponentPanel.GetVisibleCount: Integer;
+begin
+  Result := (Width - (12 + 12 + FButtonWidth)) div FButtonWidth;
+end;
+
 procedure TJvComponentPanel.SetButtonCount(AButtonCount: Integer);
 var
   TmpButton: TJvExSpeedButton;
@@ -283,9 +296,11 @@ procedure TJvComponentPanel.MoveClick(Sender: TObject);
 begin
   case TSpeedButton(Sender).Tag of
     0:
-      Dec(FFirstVisible);
+      if FFirstVisible > 0 then
+        Dec(FFirstVisible);
     1:
-      Inc(FFirstVisible);
+      if FButtons.Count > FFirstVisible + VisibleCount then
+        Inc(FFirstVisible);
   end;
   Resize;
 end;
@@ -324,7 +339,6 @@ end;
 
 procedure TJvComponentPanel.Resize;
 var
-  VisibleCount: Integer;
   I: Integer;
 begin
   Height := FButtonHeight;
@@ -334,18 +348,11 @@ begin
   FButtonPointer.Width := FButtonWidth;
   FButtonLeft.Height := FButtonHeight;
   FButtonRight.Height := FButtonHeight;
-  VisibleCount := (Width - (12 + 12 + FButtonWidth)) div FButtonWidth;
   FButtonPointer.Left := 0;
   FButtonLeft.Left := FButtonWidth + 6;
   FButtonRight.Left := (FButtonWidth + 12 + 6) + VisibleCount * FButtonWidth;
-  if FFirstVisible = 0 then
-    FButtonLeft.Enabled := False
-  else
-    FButtonLeft.Enabled := True;
-  if FButtons.Count > FFirstVisible + VisibleCount then
-    FButtonRight.Enabled := True
-  else
-    FButtonRight.Enabled := False;
+  FButtonLeft.Enabled := FFirstVisible > 0;
+  FButtonRight.Enabled := FButtons.Count > FFirstVisible + VisibleCount;
   for I := 0 to FButtons.Count - 1 do
   begin
     TSpeedButton(FButtons[I]).Width := FButtonWidth;
@@ -354,6 +361,40 @@ begin
       TSpeedButton(FButtons[I]).Left := (FButtonWidth + 12 + 6) + (I - FFirstVisible) * FButtonWidth
     else
       TSpeedButton(FButtons[I]).Left := -100;
+  end;
+end;
+
+function TJvComponentPanel.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+  if not Result then
+  begin
+    Result := True;
+
+    WheelDelta := WheelDelta div WHEEL_DELTA;
+    while WheelDelta <> 0 do
+    begin
+      if WheelDelta < 0 then
+      begin
+        if ButtonRight.Enabled then
+          ButtonRight.Click
+        else
+          Break;
+      end
+      else
+      begin
+        if ButtonLeft.Enabled then
+          ButtonLeft.Click
+        else
+          Break;
+      end;
+
+      if WheelDelta < 0 then
+        Inc(WheelDelta)
+      else
+        Dec(WheelDelta);
+    end;
   end;
 end;
 
