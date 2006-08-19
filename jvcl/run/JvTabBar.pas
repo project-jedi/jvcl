@@ -441,6 +441,8 @@ type
     property ShowHint default False;
     property Height default 23;
     property Hint;
+    property Visible;
+    property Enabled;
 
     property Orientation;
     property CloseButton;
