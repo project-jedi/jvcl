@@ -306,31 +306,24 @@ type
     var lpRect: TRect; uFormat: UINT): Integer; stdcall;
 
 var
-  UnicoWSHandle: HModule = 0;
   _DrawTextW: TDrawTextW = nil;
 
 procedure InitUnicodeWrap;
 var
   UserHandle: HMODULE;
 begin
-  { All Windows programs already load user32.dll so we can use GetModuleHandle }
-  UserHandle := GetModuleHandle('USER32');
-  if UserHandle <> 0 then
-    @_DrawTextW := GetProcAddress(UserHandle, 'DrawTextW');
+  { The system DLLs for Windows 98 have export symbols for wide character
+    functions as well, but they all return FALSE, and GetLastError would return
+    ERROR_CALL_NOT_IMPLEMENTED (120), so don't try to load DrawTextW for
+    Windows 98 }
 
-  if not Assigned(_DrawTextW) then
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
-    { Try the Microsoft Layer for Unicode dll }
-    UnicoWSHandle := SafeLoadLibrary('UNICOWS.DLL');
-    if UnicoWSHandle <> 0 then
-      @_DrawTextW := GetProcAddress(UnicoWSHandle, 'DrawTextW');
+    { All Windows programs already load user32.dll so we can use GetModuleHandle }
+    UserHandle := GetModuleHandle('USER32');
+    if UserHandle <> 0 then
+      @_DrawTextW := GetProcAddress(UserHandle, 'DrawTextW');
   end;
-end;
-
-procedure FinalizeUnicodeWrap;
-begin
-  if UnicoWSHandle <> 0 then
-    FreeLibrary(UnicoWSHandle);
 end;
 
 function DrawTextW(hDC: HDC; const WS: WideString; var lpRect: TRect; uFormat: UINT): Integer;
@@ -341,6 +334,8 @@ begin
     Result := _DrawTextW(hDC, PWideChar(WS), Length(WS), lpRect, uFormat)
   else
   begin
+    { The Microsoft Layer for Unicode dll UNICOWS.DLL does probably the same as
+      the following: }
     S := WideCharLenToString(PWideChar(WS), Length(WS));
     Result := DrawTextA(hDC, PChar(S), Length(S), lpRect, uFormat);
   end;
@@ -2068,7 +2063,6 @@ initialization
   InitUnicodeWrap;
 
 finalization
-  FinalizeUnicodeWrap;
   FreeAndNil(GGlobalCtrl);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
