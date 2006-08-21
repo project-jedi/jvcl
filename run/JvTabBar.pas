@@ -473,6 +473,7 @@ type
     property OnTabSelected;
     property OnTabMoved;
     property OnChange;
+    property OnLeftTabChange;
 
     property OnMouseDown;
     property OnMouseMove;
@@ -1572,6 +1573,7 @@ begin
   Invalidate;
   if Assigned(FOnScrollButtonClick) then
     FOnScrollButtonClick(Self, Button);
+  LeftTabChanged;
 end;
 
 function TJvCustomTabBar.MakeVisible(Tab: TJvTabBarItem): Boolean;
@@ -1596,7 +1598,7 @@ begin
       else if R.Left < 0 then
       begin
         Dec(FLeftIndex);
-        AtLeft := True; // prevent an endless loop 
+        AtLeft := True; // prevent an endless loop
       end
       else
         Break;
@@ -1610,6 +1612,7 @@ begin
   begin
     UpdateScrollButtons;
     Invalidate;
+    LeftTabChanged;
   end;
 end;
 
