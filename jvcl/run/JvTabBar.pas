@@ -163,6 +163,7 @@ type
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
     function IndexOf(Item: TJvTabBarItem): Integer;
+    procedure EndUpdate; override;
     property Items[Index: Integer]: TJvTabBarItem read GetItem write SetItem; default;
 
     property TabBar: TJvCustomTabBar read GetTabBar;
@@ -274,6 +275,12 @@ type
   TJvTabBarClosingEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var AllowClose: Boolean) of object;
   TJvTabBarScrollButtonClickEvent = procedure(Sender: TObject; Button: TJvTabBarScrollButtonKind) of object;
 
+  TJvTabBarScrollButtonInfo = record
+    State: TJvTabBarScrollButtonState;
+    Rect: TRect;
+    ExState: Boolean;
+  end;
+
   TJvCustomTabBar = class(TCustomControl)
   private
     FTabs: TJvTabBarItems;
@@ -307,12 +314,8 @@ type
     FLastTabRight: Integer;
     FRequiredWidth: Integer;
     FBarWidth: Integer;
-    FBtnLeftScroll: TJvTabBarScrollButtonState;
-    FBtnRightScroll: TJvTabBarScrollButtonState;
-    FBtnLeftScrollRect: TRect;
-    FBtnRightScrollRect: TRect;
-    FBtnLeftScrollExState: Boolean;
-    FBtnRightScrollExState: Boolean;
+    FBtnLeftScroll: TJvTabBarScrollButtonInfo;
+    FBtnRightScroll: TJvTabBarScrollButtonInfo;
     FScrollButtonBackground: TBitmap;
     FHint: TCaption;
     FFlatScrollButtons: Boolean;
@@ -323,6 +326,7 @@ type
 
     FRepeatTimer: TTimer;
     FScrollRepeatedClicked: Boolean;
+    FOnLeftTabChange: TNotifyEvent;
 
     function GetLeftTab: TJvTabBarItem;
     procedure SetLeftTab(Value: TJvTabBarItem);
@@ -364,6 +368,7 @@ type
     procedure Changed; virtual;
     procedure ImagesChanged(Sender: TObject); virtual;
     procedure ScrollButtonClick(Button: TJvTabBarScrollButtonKind); virtual;
+    procedure LeftTabChanged; virtual;
 
     procedure DragOver(Source: TObject; X: Integer; Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -431,6 +436,7 @@ type
     property OnTabMoved: TJvTabBarItemEvent read FOnTabMoved write FOnTabMoved;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnScrollButtonClick: TJvTabBarScrollButtonClickEvent read FOnScrollButtonClick write FOnScrollButtonClick;
+    property OnLeftTabChange: TNotifyEvent read FOnLeftTabChange write FOnLeftTabChange;
   end;
 
   TJvTabBar = class(TJvCustomTabBar)
@@ -564,10 +570,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCustomTabBar.LeftTabChanged;
+begin
+  if Assigned(FOnLeftTabChange) then
+    FOnLeftTabChange(Self);
+end;
+
 procedure TJvCustomTabBar.Loaded;
 begin
   inherited Loaded;
   SelectedTab := FindSelectableTab(nil);
+  UpdateScrollButtons;
 end;
 
 procedure TJvCustomTabBar.Notification(Component: TComponent; Operation: TOperation);
@@ -921,6 +934,7 @@ begin
     begin
       SelectedTab.Index := InsertTab.Index;
       TabMoved(SelectedTab);
+      UpdateScrollButtons;
     end;
   end
   else
@@ -1137,10 +1151,10 @@ function TJvCustomTabBar.ScrollButtonsMouseDown(Button: TMouseButton;
 
 begin
   Result := False;
-  if (FBtnLeftScroll <> sbsHidden) then
-    Result := HandleButton(sbScrollLeft, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
-  if (FBtnRightScroll <> sbsHidden) then
-    Result := HandleButton(sbScrollRight, FBtnRightScroll, X, Y, FBtnRightScrollRect);
+  if (FBtnLeftScroll.State <> sbsHidden) then
+    Result := HandleButton(sbScrollLeft, FBtnLeftScroll.State, X, Y, FBtnLeftScroll.Rect);
+  if (FBtnRightScroll.State <> sbsHidden) then
+    Result := HandleButton(sbScrollRight, FBtnRightScroll.State, X, Y, FBtnRightScroll.Rect);
 end;
 
 function TJvCustomTabBar.ScrollButtonsMouseMove(Shift: TShiftState; X, Y: Integer): Boolean;
@@ -1190,10 +1204,10 @@ function TJvCustomTabBar.ScrollButtonsMouseMove(Shift: TShiftState; X, Y: Intege
 
 begin
   Result := False;
-  if (FBtnLeftScroll <> sbsHidden) then
-    Result := HandleButton(FBtnLeftScrollExState, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
-  if (FBtnRightScroll <> sbsHidden) then
-    Result := HandleButton(FBtnRightScrollExState, FBtnRightScroll, X, Y, FBtnRightScrollRect);
+  if (FBtnLeftScroll.State <> sbsHidden) then
+    Result := HandleButton(FBtnLeftScroll.ExState, FBtnLeftScroll.State, X, Y, FBtnLeftScroll.Rect);
+  if (FBtnRightScroll.State <> sbsHidden) then
+    Result := HandleButton(FBtnRightScroll.ExState, FBtnRightScroll.State, X, Y, FBtnRightScroll.Rect);
 end;
 
 function TJvCustomTabBar.ScrollButtonsMouseUp(Button: TMouseButton;
@@ -1218,10 +1232,10 @@ function TJvCustomTabBar.ScrollButtonsMouseUp(Button: TMouseButton;
 
 begin
   Result := False;
-  if (FBtnLeftScroll <> sbsHidden) then
-    Result := HandleButton(sbScrollLeft, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
-  if (FBtnRightScroll <> sbsHidden) then
-    Result := HandleButton(sbScrollRight, FBtnRightScroll, X, Y, FBtnRightScrollRect);
+  if (FBtnLeftScroll.State <> sbsHidden) then
+    Result := HandleButton(sbScrollLeft, FBtnLeftScroll.State, X, Y, FBtnLeftScroll.Rect);
+  if (FBtnRightScroll.State <> sbsHidden) then
+    Result := HandleButton(sbScrollRight, FBtnRightScroll.State, X, Y, FBtnRightScroll.Rect);
 end;
 
 procedure TJvCustomTabBar.TimerExpired(Sender: TObject);
@@ -1233,9 +1247,9 @@ begin
   Kind := TJvTabBarScrollButtonKind(FRepeatTimer.Tag);
   case Kind of
     sbScrollLeft:
-      State := FBtnLeftScroll;
+      State := FBtnLeftScroll.State;
     sbScrollRight:
-      State := FBtnRightScroll;
+      State := FBtnRightScroll.State;
   else
     Exit;
   end;
@@ -1247,11 +1261,11 @@ begin
       ScrollButtonClick(Kind);
       case Kind of
         sbScrollLeft:
-          if not (FBtnLeftScroll in [sbsHidden, sbsDisabled]) then
-            FBtnLeftScroll := sbsPressed;
+          if not (FBtnLeftScroll.State in [sbsHidden, sbsDisabled]) then
+            FBtnLeftScroll.State := sbsPressed;
         sbScrollRight:
-          if not (FBtnRightScroll in [sbsHidden, sbsDisabled]) then
-            FBtnRightScroll := sbsPressed;
+          if not (FBtnRightScroll.State in [sbsHidden, sbsDisabled]) then
+            FBtnRightScroll.State := sbsPressed;
       end;
     except
       FRepeatTimer.Enabled := False;
@@ -1343,7 +1357,7 @@ begin
     Bmp.Width := ClientWidth;
     Bmp.Height := ClientHeight;
     CurrentPainter.DrawBackground(Bmp.Canvas, Self, ClientRect);
-    if (FBtnLeftScroll <> sbsHidden) and (FBtnRightScroll <> sbsHidden) then
+    if (FBtnLeftScroll.State <> sbsHidden) and (FBtnRightScroll.State <> sbsHidden) then
     begin
       if not Assigned(FScrollButtonBackground) then
         FScrollButtonBackground := TBitmap.Create;
@@ -1393,8 +1407,8 @@ begin
   else
     // paint scroll button's background and the buttons
     Canvas.Draw(FBarWidth, 0, FScrollButtonBackground);
-  CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollLeft, FBtnLeftScroll, FBtnLeftScrollRect);
-  CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollRight, FBtnRightScroll, FBtnRightScrollRect);
+  CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollLeft, FBtnLeftScroll.State, FBtnLeftScroll.Rect);
+  CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollRight, FBtnRightScroll.State, FBtnRightScroll.Rect);
 end;
 
 function TJvCustomTabBar.GetTabHeight(Tab: TJvTabBarItem): Integer;
@@ -1412,7 +1426,7 @@ var
   I: Integer;
   Pt: TPoint;
 begin
-  if (FBtnLeftScroll = sbsHidden) or (X < FBarWidth) then
+  if (FBtnLeftScroll.State = sbsHidden) or (X < FBarWidth) then
   begin
     CalcTabsRects;
     Pt := Point(X, Y);
@@ -1483,6 +1497,7 @@ begin
     FLeftIndex := Index;
     Invalidate;
     UpdateScrollButtons;
+    LeftTabChanged;
   end;
 end;
 
@@ -1495,38 +1510,38 @@ begin
   if (FRequiredWidth < ClientWidth) or ((FLeftIndex = 0) and
     (FLastTabRight <= ClientWidth)) then
   begin
-    FBtnLeftScroll := sbsHidden;
-    FBtnRightScroll := sbsHidden;
+    FBtnLeftScroll.State := sbsHidden;
+    FBtnRightScroll.State := sbsHidden;
     FLeftIndex := 0;
     FBarWidth := ClientWidth;
     Invalidate;
   end
   else
   begin
-    FBtnLeftScroll := sbsNormal;
-    FBtnRightScroll := sbsNormal;
+    FBtnLeftScroll.State := sbsNormal;
+    FBtnRightScroll.State := sbsNormal;
 
     if poBottomScrollButtons in CurrentPainter.Options then
     begin
-      FBtnLeftScrollRect := Bounds(ClientWidth - BtnSize * 2 - 1 - 1,
+      FBtnLeftScroll.Rect := Bounds(ClientWidth - BtnSize * 2 - 1 - 1,
         ClientHeight - BtnSize - 2, BtnSize, BtnSize);
-      FBtnRightScrollRect := Bounds(FBtnLeftScrollRect.Right,
+      FBtnRightScroll.Rect := Bounds(FBtnLeftScroll.Rect.Right,
         ClientHeight - BtnSize - 2, BtnSize, BtnSize);
     end
     else
     begin
-      FBtnLeftScrollRect := Bounds(ClientWidth - BtnSize * 2 - 1 - 1, 2, BtnSize, BtnSize);
-      FBtnRightScrollRect := Bounds(FBtnLeftScrollRect.Right, 2, BtnSize, BtnSize);
+      FBtnLeftScroll.Rect := Bounds(ClientWidth - BtnSize * 2 - 1 - 1, 2, BtnSize, BtnSize);
+      FBtnRightScroll.Rect := Bounds(FBtnLeftScroll.Rect.Right, 2, BtnSize, BtnSize);
     end;
     if not FlatScrollButtons then
-      OffsetRect(FBtnRightScrollRect, -1, 0);
+      OffsetRect(FBtnRightScroll.Rect, -1, 0);
 
-    //CurrentPainter.GetScrollButtons(Self, FBtnLeftScrollRect, FBtnRightScrollRect);
+    //CurrentPainter.GetScrollButtons(Self, FBtnLeftScroll.Rect, FBtnRightScroll.Rect);
 
-    FBarWidth := FBtnLeftScrollRect.Left - 2;
+    FBarWidth := FBtnLeftScroll.Rect.Left - 2;
 
-    FBtnLeftScroll := State[FLeftIndex > 0];
-    FBtnRightScroll := State[FLastTabRight >= ClientWidth];
+    FBtnLeftScroll.State := State[FLeftIndex > 0];
+    FBtnRightScroll.State := State[FLastTabRight >= ClientWidth];
 
     PaintScrollButtons;
   end;
@@ -1542,14 +1557,14 @@ procedure TJvCustomTabBar.ScrollButtonClick(Button: TJvTabBarScrollButtonKind);
 begin
   if Button = sbScrollLeft then
   begin
-    if FBtnLeftScroll in [sbsHidden, sbsDisabled] then
+    if FBtnLeftScroll.State in [sbsHidden, sbsDisabled] then
       Exit;
     Dec(FLeftIndex);
   end
   else
   if Button = sbScrollRight then
   begin
-    if FBtnRightScroll in [sbsHidden, sbsDisabled] then
+    if FBtnRightScroll.State in [sbsHidden, sbsDisabled] then
       Exit;
     Inc(FLeftIndex);
   end;
@@ -1563,6 +1578,7 @@ function TJvCustomTabBar.MakeVisible(Tab: TJvTabBarItem): Boolean;
 var
   R: TRect;
   LastLeftIndex: Integer;
+  AtLeft: Boolean;
 begin
   Result := False;
   if not Assigned(Tab) or not Tab.Visible then
@@ -1571,13 +1587,17 @@ begin
   LastLeftIndex := FLeftIndex;
   if FBarWidth > 0 then
   begin
+    AtLeft := False;
     repeat
       CalcTabsRects;
       R := Tab.DisplayRect;
-      if R.Right > FBarWidth then
+      if (R.Right > FBarWidth) and not AtLeft then
         Inc(FLeftIndex)
       else if R.Left < 0 then
-        Dec(FLeftIndex)
+      begin
+        Dec(FLeftIndex);
+        AtLeft := True; // prevent an endless loop 
+      end
       else
         Break;
     until FLeftIndex = Tabs.Count - 1;
@@ -1617,8 +1637,8 @@ begin
   if Value <> FFlatScrollButtons then
   begin
     FFlatScrollButtons := Value;
-    FBtnLeftScroll := sbsHidden;
-    FBtnRightScroll := sbsHidden;
+    FBtnLeftScroll.State := sbsHidden;
+    FBtnRightScroll.State := sbsHidden;
     UpdateScrollButtons;
   end;
 end;
@@ -1908,6 +1928,13 @@ end;
 
 //=== { TJvTabBarItems } =====================================================
 
+procedure TJvTabBarItems.EndUpdate;
+begin
+  inherited EndUpdate;
+  if UpdateCount = 0 then
+    TabBar.Changed;
+end;
+
 function TJvTabBarItems.Find(const AName: string): TJvTabBarItem;
 var
   I: Integer;
@@ -1955,6 +1982,8 @@ begin
       TabBar.FClosingTab := nil;
     if TabBar.FLastInsertTab = Item then
       TabBar.FLastInsertTab := nil;
+    if TabBar.LeftTab = Item then
+      TabBar.LeftTab := TabBar.LeftTab.GetPreviousVisible;
   end;
   if TabBar.PageListTabLink and Assigned(TabBar.PageList) and
      not (csLoading in TabBar.ComponentState) and
