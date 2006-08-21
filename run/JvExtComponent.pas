@@ -33,11 +33,21 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, JvComponentBase, JvComponent, JvExControls, JvExForms, JvExExtCtrls,
+  {$IFDEF COMPILER5}
+  Windows,
+  {$ELSE}
+  Types,
+  {$ENDIF COMPILER5}
+  Classes, Graphics,
+  JvComponentBase, JvComponent, JvExControls, JvExForms, JvExExtCtrls,
   JvExComCtrls;
 
 type
+  TJvPaintPanelContentEvent = procedure(Sender: TObject; Canvas: TCanvas; R: TRect) of object;
+
   TJvCustomPanel = class(TJvExCustomPanel)
+  private
+    FOnPaintContent: TJvPaintPanelContentEvent;
   protected
     {$IFDEF VCL}
     function GetFlat: Boolean;
@@ -48,12 +58,17 @@ type
     procedure SetParentFlat(const Value: Boolean);
     {$ENDIF VCL}
 
+    procedure Paint; override;
+    procedure PaintContent(const R: TRect); virtual;
+
     procedure DefineProperties(Filer: TFiler); override;
 
     {$IFDEF VCL}
     property Flat: Boolean read GetFlat write SetFlat default False;
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
     {$ENDIF VCL}
+
+    property OnPaintContent: TJvPaintPanelContentEvent read FOnPaintContent write FOnPaintContent;
   end;
   
   TJvPubCustomPanel = TJvExPubCustomPanel;
@@ -104,6 +119,18 @@ begin
   ParentFlat := Reader.ReadBoolean;
 end;
 {$ENDIF VCL}
+
+procedure TJvCustomPanel.Paint;
+begin
+  inherited Paint;
+  PaintContent(ClientRect);
+end;
+
+procedure TJvCustomPanel.PaintContent(const R: TRect);
+begin
+  if Assigned(FOnPaintContent) then
+    FOnPaintContent(Self, Canvas, R);
+end;
 
 procedure TJvCustomPanel.DefineProperties(Filer: TFiler);
 begin

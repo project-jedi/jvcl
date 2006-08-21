@@ -74,6 +74,8 @@ type
     procedure BtnDblClick(Sender: TObject);
     procedure MoveClick(Sender: TObject);
     function GetVisibleCount: Integer;
+    procedure SetSelectedButton(Value: Integer);
+    function GetSelectedButton: Integer;
     {$IFDEF VCL}
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     {$ENDIF VCL}
@@ -96,6 +98,7 @@ type
     property ButtonLeft: TJvNoFrameButton read FButtonLeft;
     property ButtonRight: TJvNoFrameButton read FButtonRight;
     property VisibleCount: Integer read GetVisibleCount;
+    property SelectedButton: Integer read GetSelectedButton write SetSelectedButton;
   published
     property Align;
     property OnClick: TButtonClick read FOnClick write FOnClick;
@@ -121,6 +124,8 @@ type
     property OnCanResize;
     {$ENDIF VCL}
     property OnConstrainedResize;
+    property OnPaintContent;
+    property PopupMenu;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -220,6 +225,32 @@ begin
   FButtonPointer.Down := True;
   FSelectButton := FButtonPointer;
 end;
+
+procedure TJvComponentPanel.SetSelectedButton(Value: Integer);
+begin
+  if (Value <> GetSelectedButton) and (Value >= -1) and (Value < ButtonCount) then
+  begin
+    if Value = -1 then
+      SetMainButton
+    else
+    begin
+      FSelectButton := Buttons[Value];
+      FSelectButton.Down := True;
+    end;
+  end;
+end;
+
+function TJvComponentPanel.GetSelectedButton: Integer;
+begin
+  if FSelectButton <> nil then
+  begin
+    for Result := 0 to ButtonCount - 1 do
+      if Buttons[Result] = FSelectButton then
+        Exit;
+  end;
+  Result := -1;
+end;
+
 
 function TJvComponentPanel.GetButton(Index: Integer): TJvExSpeedButton;
 begin
@@ -400,6 +431,10 @@ end;
 
 procedure TJvComponentPanel.SetFirstVisible(AButton: Integer);
 begin
+  if AButton >= ButtonCount then
+    AButton := ButtonCount - 1;
+  if AButton < 0 then
+    AButton := 0;
   if FFirstVisible <> AButton then
   begin
     FFirstVisible := AButton;
