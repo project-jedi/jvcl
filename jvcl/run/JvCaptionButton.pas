@@ -253,6 +253,8 @@ type
     procedure InitiateAction; virtual;
     procedure ResetButton;
     procedure Click; dynamic;
+    
+    property DefaultButtonWidth: Integer read FDefaultButtonWidth;
   published
     property Action: TBasicAction read GetAction write SetAction;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
