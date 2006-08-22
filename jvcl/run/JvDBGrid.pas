@@ -1799,7 +1799,7 @@ begin
     IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, cIndexDefs))
   else
     IndexDefs := nil;
-  if Assigned(IndexDefs) then
+  if Assigned(IndexDefs) and Assigned(AField) then
   begin
     Descending := SortMarker = smUp;
     if GetIndexOf(AField.FieldName, LIndexName, Descending) then
@@ -1817,9 +1817,9 @@ begin
   // FBC: 2004-02-18
   // Following code handles the sortmarker if no Index is found.
   // the actual data-sorting must be implemented by the user in
-  // event OnTitleBtnClick.
+  // event OnTitleBtnClick. Of course, we need a field (Mantis 3845)
   //--------------------------------------------------------------------------
-  if AutoSort and not IndexFound then
+  if AutoSort and not IndexFound and Assigned(AField) then
   begin
     if SortedField = AField.FieldName then
     begin
