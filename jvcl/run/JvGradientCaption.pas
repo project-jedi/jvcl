@@ -200,7 +200,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts;
+  JvConsts, JvCaptionButton;
 
 function GradientFormCaption(AForm: TCustomForm; AStartColor, AEndColor: TColor):
   TJvGradientCaption;
@@ -803,7 +803,9 @@ procedure TJvGradientCaption.CalculateGradientParams(var R: TRect;
   var Icons: TBorderIcons);
 var
   I: TBorderIcon;
+  J: Integer;
   BtnCount: Integer;
+  CaptionButton: TJvCaptionButton;
 begin
   GetWindowRect(Form.Handle, R);
   Icons := Form.BorderIcons;
@@ -844,6 +846,23 @@ begin
   begin
     R.Bottom := R.Top + GetSystemMetrics(SM_CYCAPTION) - 1;
     Dec(R.Right, BtnCount * GetSystemMetrics(SM_CXSIZE));
+  end;
+
+  // Mantis 3857: take JvCaptionButtons into account
+  for J := 0 to Form.ComponentCount - 1 do
+  begin
+    if Form.Components[J] is TJvCaptionButton then
+    begin
+      CaptionButton := Form.Components[J] as TJvCaptionButton;
+      if CaptionButton.Visible then
+      begin
+        if CaptionButton.ButtonWidth = 0 then
+          Dec(R.Right, CaptionButton.DefaultButtonWidth)
+        else
+          Dec(R.Right, CaptionButton.ButtonWidth);
+        Dec(R.Right, CaptionButton.Spacing);
+      end;
+    end;
   end;
 end;
 
