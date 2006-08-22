@@ -728,7 +728,8 @@ begin
         for I := 0 to Controls.Count - 1 do
           FErrorIndicator.SetError(Controls[I], ''); // clear error indicator
     finally
-      FErrorIndicator.EndUpdate;
+      if FErrorIndicator <> nil then
+        FErrorIndicator.EndUpdate;
       Controls.Free;
     end;
   finally
