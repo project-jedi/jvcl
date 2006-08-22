@@ -263,6 +263,7 @@ type
     property EnablePopupChange;
     property Font;
     property FormatOnEditing;
+    property Glyph;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -273,6 +274,7 @@ type
     property MaxLength;
     property MaxValue;
     property MinValue;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
