@@ -376,7 +376,7 @@ begin
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
       raise EJVCLException.CreateRes(@RsESorryForOneDimensionalArraysOnly);
-    Value := VarArrayHighBound(Args.Values[0], 1)-VarArrayLowBound(Args.Values[0], 1);
+    Value := VarArrayHighBound(Args.Values[0], 1) - VarArrayLowBound(Args.Values[0], 1) + 1;
   end
   else
   if TVarData(Args.Values[0]).vType = varArray then
