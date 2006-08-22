@@ -116,6 +116,7 @@ type
     FIcon: TIcon;
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
+    FCaptionHeight: Integer;
     {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
     {$IFDEF VCL}
     FResizable: Boolean;
@@ -135,6 +136,7 @@ type
     {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Sender: TObject);
+    procedure SetCaptionHeight(const Value: Integer);
   protected
     procedure Paint; override;
     procedure Resize; override;
@@ -161,6 +163,7 @@ type
     property CaptionColor: TColor read FCaptionColor write SetCaptionColor default clActiveCaption;
     property CaptionPosition: TJvDrawPosition read FCaptionPosition write SetCaptionPosition default dpLeft;
     property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
+    property CaptionHeight: Integer read FCaptionHeight write SetCaptionHeight default 0;
     property Color;
     property Cursor;
     {$IFDEF VCL}
@@ -470,6 +473,15 @@ begin
   Invalidate;
 end;
 
+procedure TJvCaptionPanel.SetCaptionHeight(const Value: Integer);
+begin
+  if FCaptionHeight <> Value then
+  begin
+    FCaptionHeight := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCaptionPanel.SetCaption(Value: string);
 begin
   FCaption := Value;
@@ -586,18 +598,20 @@ begin
 
   FlatOffset := Ord(FlatButtons);
 
+  if FCaptionHeight = 0 then
+    FCaptionWidth := GetSystemMetrics(SM_CYCAPTION)
+  else
+    FCaptionWidth := FCaptionHeight;
   if FOutlookLook then
   begin
     if CaptionPosition = dpLeft then
-      FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 3 + FlatOffset
+      FCaptionWidth := FCaptionWidth - 3 + FlatOffset
     else
     if CaptionPosition = dpRight then
-      FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 4 + FlatOffset
+      FCaptionWidth := FCaptionWidth - 4 + FlatOffset
     else
-      FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 5 + FlatOffset
-  end
-  else
-    FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
+      FCaptionWidth := FCaptionWidth - 5 + FlatOffset
+  end;
 
   case FCaptionPosition of
     dpLeft:
