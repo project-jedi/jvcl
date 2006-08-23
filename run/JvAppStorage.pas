@@ -597,9 +597,6 @@ type
         WideString;
     procedure WriteWideString(const Path: string; const Value: WideString);
     {$ENDIF}
-    //1 The current Translateengine which should be used for all operations. It's the internal translateengine, or the assigned property TranslateStringEngine
-    property ActiveTranslateStringEngine: TJvTranslateString read
-      GetActiveTranslateStringEngine;
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
@@ -614,6 +611,9 @@ type
       to keep backward compatibility }
     property FlushOnDestroy: Boolean read FFlushOnDestroy write SetFlushOnDestroy default True;
   published
+    //1 The current Translateengine which should be used for all operations. It's the internal translateengine, or the assigned property TranslateStringEngine
+    property ActiveTranslateStringEngine: TJvTranslateString read
+        GetActiveTranslateStringEngine;
     property StorageOptions: TJvCustomAppStorageOptions read FStorageOptions write SetStorageOptions;
     //1 This engine gives you the possibility to translate Strings with %-Replacements
     property TranslateStringEngine: TJvTranslateString read FTranslateStringEngine
@@ -3279,6 +3279,7 @@ begin
 {$ENDIF UNIX}
     end;
   end;
+  FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
 end;
 
 procedure TJvCustomAppMemoryFileStorage.Reload;
@@ -3323,7 +3324,6 @@ begin
     end;
 
     RecalculateFullFileName;
-    FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if not (csLoading in ComponentState) and not IsUpdating then
       Reload;
   end;
@@ -3334,7 +3334,7 @@ begin
   if not (csLoading in ComponentState) and not IsUpdating then
     Flush;
   FOnGetFileName := Value;
-  FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
+  RecalculateFullFileName;
   if not (csLoading in ComponentState) and not IsUpdating then
     Reload;
 end;
@@ -3347,7 +3347,6 @@ begin
       Flush;
     FLocation := Value;
     RecalculateFullFileName;
-    FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if not (csLoading in ComponentState) and not IsUpdating then
       Reload;
   end;
