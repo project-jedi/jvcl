@@ -43,6 +43,10 @@ uses
   Windows, Messages, Classes, Graphics, Controls, StdCtrls,
   JvTypes, JvExStdCtrls, JvLinkedControls, JvDataSourceIntf;
 
+const
+  DefaultValueChecked = '1';
+  DefaultValueUnchecked = '0';
+
 type
   TJvCheckBox = class;
 
@@ -53,6 +57,8 @@ type
     FValueUnchecked: string;
     procedure SetValueChecked(const Value: string);
     procedure SetValueUnchecked(const Value: string);
+    function IsValueCheckedStored: Boolean;
+    function IsValueUncheckedStored: Boolean;
   protected
     procedure UpdateData; override;
     procedure RecordChanged; override;
@@ -60,8 +66,8 @@ type
     constructor Create(ACheckBox: TJvCheckBox);
     procedure Assign(Source: TPersistent); override;
   published
-    property ValueChecked: string read FValueChecked write SetValueChecked;
-    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
+    property ValueChecked: string read FValueChecked write SetValueChecked stored IsValueCheckedStored;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked stored IsValueUncheckedStored;
   end;
 
   TJvCheckBox = class(TJvExCheckBox)
@@ -169,8 +175,18 @@ constructor TJvCheckBoxDataConnector.Create(ACheckBox: TJvCheckBox);
 begin
   inherited Create;
   FCheckBox := ACheckBox;
-  FValueChecked := '1';
-  FValueUnchecked := '0';
+  FValueChecked := DefaultValueChecked;
+  FValueUnchecked := DefaultValueUnchecked;
+end;
+
+function TJvCheckBoxDataConnector.IsValueCheckedStored: Boolean;
+begin
+  Result := FValueChecked <> DefaultValueChecked;
+end;
+
+function TJvCheckBoxDataConnector.IsValueUncheckedStored: Boolean;
+begin
+  Result := FValueUnchecked <> DefaultValueUnchecked;
 end;
 
 procedure TJvCheckBoxDataConnector.Assign(Source: TPersistent);

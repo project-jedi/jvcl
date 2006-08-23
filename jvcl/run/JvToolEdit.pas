@@ -902,14 +902,15 @@ type
     FDefaultDate: TDateTime;
     FDefaultDateIsNow: Boolean;
     procedure SetDefaultDateIsNow(const Value: Boolean);
+    function IsDefaultDateStored: Boolean;
   protected
     procedure RecordChanged; override;
     procedure UpdateData; override;
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property DefaultDate: TDateTime read FDefaultDate write FDefaultDate;
-    property DefaultDateIsNow: Boolean read FDefaultDateIsNow write SetDefaultDateIsNow; 
+    property DefaultDate: TDateTime read FDefaultDate write FDefaultDate stored IsDefaultDateStored;
+    property DefaultDateIsNow: Boolean read FDefaultDateIsNow write SetDefaultDateIsNow default False; 
   end;
 
   TJvCustomDateEdit = class(TJvCustomComboEdit)
@@ -3816,6 +3817,11 @@ begin
     FDefaultDate := TJvCustomDateEditDataConnector(Source).FDefaultDate;
     FDefaultDateIsNow := TJvCustomDateEditDataConnector(Source).DefaultDateIsNow;
   end;
+end;
+
+function TJvCustomDateEditDataConnector.IsDefaultDateStored: Boolean;
+begin
+  Result := FDefaultDate <> 0;
 end;
 
 procedure TJvCustomDateEditDataConnector.RecordChanged;
