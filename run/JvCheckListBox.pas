@@ -44,6 +44,10 @@ uses
   Windows, Messages, SysUtils, Classes, Contnrs, Controls, Graphics, StdCtrls,
   JvExCheckLst, JvVCL5Utils, JvDataSourceIntf;
 
+const
+  DefaultValueChecked = '1';
+  DefaultValueUnchecked = '0';
+
 type
   TJvCheckListBox = class;
 
@@ -56,6 +60,8 @@ type
     FRecNumMap: TBucketList;
     procedure SetValueChecked(const Value: string);
     procedure SetValueUnchecked(const Value: string);
+    function IsValueCheckedStored: Boolean;
+    function IsValueUncheckedStored: Boolean;
   protected
     procedure Popuplate; virtual;
     procedure ActiveChanged; override;
@@ -69,8 +75,8 @@ type
     procedure Assign(Source: TPersistent); override;
     function IsValid: Boolean; virtual;
   published
-    property ValueChecked: string read FValueChecked write SetValueChecked;
-    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
+    property ValueChecked: string read FValueChecked write SetValueChecked stored IsValueCheckedStored;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked stored IsValueUncheckedStored;
   end;
 
   TJvCheckListBox = class(TJvExCheckListBox)
@@ -231,6 +237,16 @@ begin
   Result := List.DataSetConnected and List.Field.IsValid and
             DataSetConnected and Field.IsValid and
            (Key.IsValid or List.Key.IsValid or (ListSource.DataSet = DataSource.DataSet));
+end;
+
+function TJvCheckListBoxDataConnector.IsValueCheckedStored: Boolean;
+begin
+  Result := FValueChecked <> DefaultValueChecked;
+end;
+
+function TJvCheckListBoxDataConnector.IsValueUncheckedStored: Boolean;
+begin
+  Result := FValueUnchecked <> DefaultValueUnchecked;
 end;
 
 procedure TJvCheckListBoxDataConnector.Popuplate;

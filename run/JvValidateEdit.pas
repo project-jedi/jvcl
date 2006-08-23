@@ -57,6 +57,7 @@ type
     FEdit: TJvCustomValidateEdit;
     FNullValue: Variant;
     procedure SetNullValue(const Value: Variant);
+    function IsNullValueStored: Boolean;
   protected
     procedure RecordChanged; override;
     procedure UpdateData; override;
@@ -65,7 +66,7 @@ type
     procedure Assign(Source: TPersistent); override;
     property Control: TJvCustomValidateEdit read FEdit;
   published
-    property NullValue: Variant read FNullValue write SetNullValue;
+    property NullValue: Variant read FNullValue write SetNullValue stored IsNullValueStored;
   end;
 
   TJvValidateEditCriticalPoints = class(TPersistent)
@@ -365,6 +366,12 @@ constructor TJvValidateEditDataConnector.Create(AEdit: TJvCustomValidateEdit);
 begin
   inherited Create;
   FEdit := AEdit;
+  VarClear(FNullValue);
+end;
+
+function TJvValidateEditDataConnector.IsNullValueStored: Boolean;
+begin
+  Result := not VarIsClear(NullValue);
 end;
 
 procedure TJvValidateEditDataConnector.RecordChanged;
