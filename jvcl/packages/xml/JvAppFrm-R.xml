@@ -15,6 +15,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="all" Condition=""/> 
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
