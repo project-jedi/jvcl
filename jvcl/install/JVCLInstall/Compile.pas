@@ -1434,16 +1434,16 @@ begin
           if DepProject <> nil then
           begin
             Idx := List.IndexOf(DepProject);
-            if Idx = -1 then // must insert the
+            if Idx = -1 then // must insert the project in the list
             begin
               List.Insert(i, DepProject);
-              Dec(i);
+              Inc(i);
             end
             else
             if Idx > i then
             begin
               List.Move(idx, i);
-              Dec(i);
+              Inc(i);
             end;
           end;
         end;
