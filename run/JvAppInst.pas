@@ -184,7 +184,10 @@ begin
           if SendCmdLine then
             AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
 
-          TerminateProcess(GetCurrentProcess, 0);
+          // As ExitProcess will prevent ANY finalization to occur, we free the
+          // AppInstances object so that it can cleanup the process information  
+          AppInstances.Free;
+          ExitProcess(0);
         end;
       end;
 end;
