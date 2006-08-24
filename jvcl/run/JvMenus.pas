@@ -432,6 +432,7 @@ type
     FImageMargin: TJvImageMargin;
     FImageSize: TJvMenuImageSize;
     FMenuHeight: Integer;
+    FOneItemChecked: Boolean;
 
     FItem: TMenuItem;
     FState: TMenuOwnerDrawState;
@@ -2353,7 +2354,7 @@ begin
   if IsPopup(Item) then
   begin
     // As the margin is to be drawn for the entire height of the menu,
-    // we need to retrieve this height.
+    // we need to retrieve its height.
     // There are multiple ways to do this:
     // 1. Get the canvas' associated window and take its size.
     //    This does not work well under XP with shade/slide effects on as the
@@ -2364,14 +2365,18 @@ begin
     //    will be redrawn as soon as its status changes.
     //
     // Solution 2 is then used as it offers the biggest reliability to retrieve
-    // the menus total height.
-    if (LeftMargin > 0) and Assigned(Item.Parent) and (Item = Item.Parent.Items[0]) then
+    // the menus total height and also allows to store if there is at least one
+    // item with a checkmark shown.
+    if {(LeftMargin > 0) and }Assigned(Item.Parent) and (Item = Item.Parent.Items[0]) then
     begin
       FMenuHeight := 0;
+      FOneItemChecked := False;
       for I := 0 to Item.Parent.Count-1 do
       begin
         Measure(Item.Parent.Items[i], TmpWidth, TmpHeight);
         Inc(FMenuHeight, tmpHeight);
+
+        FOneItemChecked := FOneItemChecked or Item.Parent.Items[I].Checked;
       end;
     end;
 
@@ -2710,11 +2715,15 @@ end;
 
 procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem;
   var Width, Height: Integer);
+var
+  SavedOneItemChecked: Boolean;
 begin
   PreparePaint(Item, Rect(0, 0, 0, 0), [], True);
 
   if IsPopup(Item) then
   begin
+    SavedOneItemChecked := FOneItemChecked;
+    FOneItemChecked := Item.Checked;
     Width := LeftMargin + Cardinal(CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + TextMargin + GetTextWidth(Item));
 
     if Item.Caption = Separator then
@@ -2725,6 +2734,7 @@ begin
       Height := Max(Height, CheckMarkHeight);
       Height := Max(Height, ImageMargin.Top + ImageHeight + ImageMargin.Bottom);
     end;
+    FOneItemChecked := SavedOneItemChecked;
   end
   else
   begin
@@ -2818,8 +2828,14 @@ begin
   else
   begin
     Result := ImageSize.Height;
-    if Assigned(FGlyph) and not FGlyph.Empty and (Result = 0) then
-      Result := 16;  // hard coded as in Borland's VCL
+    if Result = 0 then
+    begin
+      if Assigned(FGlyph) and not FGlyph.Empty then
+        Result := 16  // hard coded as in Borland's VCL
+      else
+      if FOneItemChecked then
+        Result := GetSystemMetrics(SM_CYMENUCHECK);
+    end;
   end;
 end;
 
@@ -2830,8 +2846,14 @@ begin
   else
   begin
     Result := ImageSize.Width;
-    if Assigned(FGlyph) and not FGlyph.Empty and (Result = 0) then
-      Result := 16;  // hard coded as in Borland's VCL
+    if Result = 0 then
+    begin
+      if Assigned(FGlyph) and not FGlyph.Empty then
+        Result := 16  // hard coded as in Borland's VCL
+      else
+      if FOneItemChecked then
+        Result := GetSystemMetrics(SM_CXMENUCHECK);
+    end;
   end;
 end;
 
