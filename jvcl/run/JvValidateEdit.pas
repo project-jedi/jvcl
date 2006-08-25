@@ -371,7 +371,11 @@ end;
 
 function TJvValidateEditDataConnector.IsNullValueStored: Boolean;
 begin
+  {$IFDEF COMPILER6_UP}
   Result := not VarIsClear(NullValue);
+  {$ELSE}
+  Result := not VarIsEmpty(NullValue);
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvValidateEditDataConnector.RecordChanged;
