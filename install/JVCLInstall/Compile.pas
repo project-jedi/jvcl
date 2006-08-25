@@ -1394,62 +1394,66 @@ end;
 
 procedure TCompiler.SortProjectGroup(Group: TProjectGroup; List: TList);
 
-  procedure AddProject(Project: TPackageTarget);
+  procedure SortProject(Project: TPackageTarget; var ProjectIndex: Integer);
   var
-    i, Idx: Integer;
-    Dep: TPackageTarget;
+    ReqProjectIndex: Integer;
+    ReqPackage: TRequiredPackage;
+    ReqProject: TPackageTarget;
+    ListIndex: Integer;
   begin
-    for i := 0 to Project.RequireCount - 1 do
+    for ReqProjectIndex := 0 to Project.RequireCount - 1 do
     begin
-      Dep := Group.FindPackageByXmlName(Project.Requires[i].Name);
-      if Dep <> nil then
+      ReqPackage := Project.Requires[ReqProjectIndex];
+      if IsPackageUsed(Group, ReqPackage) then
       begin
-        Idx := List.IndexOf(Dep);
-        if Idx = -1 then
-          List.Add(Dep);
+        // Two cases: the required project is not in the list so we need to add,
+        // or it's already there and not in front so we need to move it.
+        // In both cases, we need to sort the moved/added package recursively 
+        // and increment the ProjectIndex only after the recursive sort is done
+        // so that packages required by the current required package are put
+        // in front of it as well.
+        ReqProject := Group.FindPackageByXmlName(ReqPackage.Name);
+        if Assigned(ReqProject) then
+        begin
+          ListIndex := List.IndexOf(ReqProject);
+          if ListIndex = -1 then
+          begin
+            List.Insert(ProjectIndex, ReqProject);
+            SortProject(ReqProject, ProjectIndex);
+            Inc(ProjectIndex);
+          end
+          else
+          if ListIndex > ProjectIndex then
+          begin
+            List.Move(ListIndex, ProjectIndex);
+            SortProject(ReqProject, ProjectIndex);
+            Inc(ProjectIndex);
+          end;
+        end;  
       end;
     end;
   end;
 
 var
-  i, k, Idx: Integer;
-  Project, DepProject: TPackageTarget;
+  CurProject: TPackageTarget;
+  CurProjectIndex: Integer;
 begin
-  for i := 0 to Group.Count - 1 do
-    if Group[i].Compile then
-      List.Add(Group[i]);
+  // Add all projects to be compiled into list.
+  for CurProjectIndex := 0 to Group.Count - 1 do
+    if Group[CurProjectIndex].Compile then
+      List.Add(Group[CurProjectIndex]);
 
-  // sort
-  i := 0;
-  while i < List.Count do
+  // Sort according to dependency list:
+  // For each package that compile, put those it requires in front of it, and
+  // this recursively.
+  CurProjectIndex := 0;
+  while CurProjectIndex < List.Count do
   begin
-    Project := List[i];
-    if Project.Compile then
-    begin
-      for k := 0 to Project.RequireCount - 1 do
-      begin
-        if IsPackageUsed(Group, Project.Requires[k]) then
-        begin
-          DepProject := Group.FindPackageByXmlName(Project.Requires[k].Name);
-          if DepProject <> nil then
-          begin
-            Idx := List.IndexOf(DepProject);
-            if Idx = -1 then // must insert the project in the list
-            begin
-              List.Insert(i, DepProject);
-              Inc(i);
-            end
-            else
-            if Idx > i then
-            begin
-              List.Move(idx, i);
-              Inc(i);
-            end;
-          end;
-        end;
-      end;
-    end;
-    Inc(i);
+    CurProject := List[CurProjectIndex];
+
+    SortProject(CurProject, CurProjectIndex);
+
+    Inc(CurProjectIndex);
   end;
 end;
 
