@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -96,7 +96,6 @@ type
     FButtonArray: array [TJvCapBtnStyle] of TJvCapBtn;
     FButtonClick: TJvCapBtnEvent;
     FCaptionPosition: TJvDrawPosition;
-    FCaptionWidth: Integer;
     FOffset: Integer;
     FButtons: TJvCapBtnStyles;
     FAutoDrag: Boolean;
@@ -140,6 +139,7 @@ type
   protected
     procedure Paint; override;
     procedure Resize; override;
+    function GetEffectiveCaptionHeight: Integer;
 
     procedure AlignControls(AControl: TControl; var R: TRect); override;
     {$IFDEF VCL}
@@ -431,7 +431,6 @@ begin
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;
   FCaptionPosition := dpLeft;
-  FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
   FAutoDrag := True;
   {$IFDEF VCL}
   FOffset := 8;
@@ -542,13 +541,13 @@ procedure TJvCaptionPanel.AlignControls(AControl: TControl; var R: TRect);
 begin
   case FCaptionPosition of
     dpLeft:
-      R := Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
+      R := Rect(GetEffectiveCaptionHeight + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
     dpTop:
-      R := Rect(0, FCaptionWidth + FCaptionOffsetSmall, ClientWidth, ClientHeight);
+      R := Rect(0, GetEffectiveCaptionHeight + FCaptionOffsetSmall, ClientWidth, ClientHeight);
     dpRight:
-      R := Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
+      R := Rect(0, 0, ClientWidth - GetEffectiveCaptionHeight - FCaptionOffsetSmall, ClientHeight);
     dpBottom:
-      R := Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
+      R := Rect(0, 0, ClientWidth, ClientHeight - GetEffectiveCaptionHeight - FCaptionOffsetSmall);
   end;
   inherited AlignControls(AControl, R);
 end;
@@ -578,6 +577,7 @@ var
   Rotation: Integer;
   R: TRect;
   FlatOffset: Integer;
+  AdjustedCaptionHeight: Integer;
 begin
   R := ClientRect;
   {$IFDEF VisualCLX}
@@ -598,36 +598,33 @@ begin
 
   FlatOffset := Ord(FlatButtons);
 
-  if FCaptionHeight = 0 then
-    FCaptionWidth := GetSystemMetrics(SM_CYCAPTION)
-  else
-    FCaptionWidth := FCaptionHeight;
+  AdjustedCaptionHeight := GetEffectiveCaptionHeight;
   if FOutlookLook then
   begin
     if CaptionPosition = dpLeft then
-      FCaptionWidth := FCaptionWidth - 3 + FlatOffset
+      AdjustedCaptionHeight := AdjustedCaptionHeight - 3 + FlatOffset
     else
     if CaptionPosition = dpRight then
-      FCaptionWidth := FCaptionWidth - 4 + FlatOffset
+      AdjustedCaptionHeight := AdjustedCaptionHeight - 4 + FlatOffset
     else
-      FCaptionWidth := FCaptionWidth - 5 + FlatOffset
+      AdjustedCaptionHeight := AdjustedCaptionHeight - 5 + FlatOffset
   end;
 
   case FCaptionPosition of
     dpLeft:
       begin
-        FCaptionRect := Rect(FBevel, FBevel, FCaptionWidth + FBevel, ClientHeight - FBevel);
+        FCaptionRect := Rect(FBevel, FBevel, AdjustedCaptionHeight + FBevel, ClientHeight - FBevel);
         Rotation := 90;
       end;
     dpTop:
-      FCaptionRect := Rect(FBevel, FBevel, ClientWidth - FBevel, FCaptionWidth + FBevel);
+      FCaptionRect := Rect(FBevel, FBevel, ClientWidth - FBevel, AdjustedCaptionHeight + FBevel);
     dpRight:
       begin
-        FCaptionRect := Rect(ClientWidth - FCaptionWidth - FBevel, FBevel, ClientWidth - FBevel, ClientHeight - FBevel);
+        FCaptionRect := Rect(ClientWidth - AdjustedCaptionHeight - FBevel, FBevel, ClientWidth - FBevel, ClientHeight - FBevel);
         Rotation := -90;
       end;
     dpBottom:
-      FCaptionRect := Rect(FBevel, ClientHeight - FCaptionWidth - FBevel, ClientWidth - FBevel, ClientHeight - FBevel);
+      FCaptionRect := Rect(FBevel, ClientHeight - AdjustedCaptionHeight - FBevel, ClientWidth - FBevel, ClientHeight - FBevel);
   end; //case
   Canvas.FillRect(FCaptionRect);
   if not FIcon.Empty then
@@ -778,6 +775,14 @@ begin
     Canvas.Stop;
   end;
   {$ENDIF VisualCLX}
+end;
+
+function TJvCaptionPanel.GetEffectiveCaptionHeight: Integer;
+begin
+  if FCaptionHeight = 0 then
+    Result := GetSystemMetrics(SM_CYCAPTION)
+  else
+    Result := FCaptionHeight;
 end;
 
 procedure TJvCaptionPanel.DrawButtons;
