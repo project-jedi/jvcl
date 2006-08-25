@@ -261,6 +261,7 @@ type
     property ParentFlat;
     {$ENDIF VCL}
     property Font;
+    property Glyph;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -274,6 +275,7 @@ type
     property ImeMode;
     property ImeName;
     property MaxLength;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
