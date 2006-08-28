@@ -115,11 +115,11 @@ type
     FIcon: TIcon;
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
-    FCaptionHeight: Integer;
     {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
     {$IFDEF VCL}
     FResizable: Boolean;
     {$ENDIF VCL}
+    FCaptionHeight: Integer;
     procedure SetIcon(Value: TIcon);
     procedure SetCaptionFont(Value: TFont);
     procedure SetCaptionColor(Value: TColor);
@@ -478,6 +478,7 @@ begin
   begin
     FCaptionHeight := Value;
     Invalidate;
+    ReAlign;
   end;
 end;
 
