@@ -1295,7 +1295,7 @@ begin
           Canvas.Free;
         end;
       finally
-        ReleaseDC(DC, 0);
+        ReleaseDC(0, DC);
       end;
     end;
   end;
@@ -1897,7 +1897,7 @@ begin
           Canvas.Free;
         end;
       finally
-        ReleaseDC(DC, 0);
+        ReleaseDC(0, DC);
       end;
     end;
   end;
