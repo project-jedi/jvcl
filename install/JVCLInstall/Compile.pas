@@ -1444,8 +1444,8 @@ begin
       List.Add(Group[CurProjectIndex]);
 
   // Sort according to dependency list:
-  // For each package that compile, put those it requires in front of it, and
-  // this recursively.
+  // For each package that must be compiled, put those it requires in front
+  // of it, and this recursively.
   CurProjectIndex := 0;
   while CurProjectIndex < List.Count do
   begin
