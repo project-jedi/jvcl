@@ -475,6 +475,11 @@ implementation
 
 uses
   Math, Contnrs,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  VarUtils, Variants,
+  {$ELSE}
+  ActiveX,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JclWideStrings,
   JvConsts, JvResources;
 
@@ -971,7 +976,7 @@ var
 
     function IsBigger(First, Second: string; SortType: TJvSortMethod): Boolean;
     var
-      I, J: Real;
+      I, J: Double;
       d, e: TDateTime;
       a, b: Currency;
       l, m: Int64;
@@ -1031,8 +1036,8 @@ var
             smNumeric:
               begin
                 try
-                  I := StrToFloat(First);
-                  J := StrToFloat(Second);
+                  VarR8FromStr(First, LOCALE_USER_DEFAULT, 0, I);
+                  VarR8FromStr(Second, LOCALE_USER_DEFAULT, 0, J);
                   Result := I > J;
                 except
                   try
@@ -1068,8 +1073,8 @@ var
               end;
             smCurrency:
               begin
-                a := StrToCurr(First);
-                b := StrToCurr(Second);
+                VarCyFromStr(First, LOCALE_USER_DEFAULT, 0, a);
+                VarCyFromStr(Second, LOCALE_USER_DEFAULT, 0, b);
                 Result := a > b;
               end;
             smAutomatic:
