@@ -960,10 +960,32 @@ begin
 end;
 
 function TJvDBGrid.EditWithBoolBox(Field: TField): Boolean;
+var
+  Value, Err: Integer;
 begin
-  Result := FBooleanEditor and ((Field.DataType = ftBoolean)
-    or ((Field.DataType in [ftSmallint, ftInteger, ftWord]) and Assigned(FIsBoolField)
-      and FIsBoolField(Self, Field)));
+  if FBooleanEditor then
+  begin
+    Result := Field.DataType = ftBoolean;
+    if not Result and Assigned(FIsBoolField) then
+    begin
+      case Field.DataType of
+        ftSmallint, ftInteger, ftWord:
+          Result := FIsBoolField(Self, Field);
+        ftString:
+          begin
+            Err := 0;
+            if not Field.IsNull then
+            begin
+              Val(Field.AsString, Value, Err);
+              if Value <> 0 then ; // prevent compiler hint
+            end;
+            Result := (Err = 0) and FIsBoolField(Self, Field);
+          end;
+      end;
+    end;
+  end
+  else
+    Result := False;
 end;
 
 function TJvDBGrid.GetImageIndex(Field: TField): Integer;
@@ -995,6 +1017,12 @@ begin
             Result := Ord(gpChecked)
           else
             Result := Ord(gpUnChecked);
+      ftString:
+        if EditWithBoolBox(Field) and not Field.IsNull then
+          if Field.AsString = '0' then
+            Result := Ord(gpUnChecked)
+          else
+            Result := Ord(gpChecked);
       ftSmallint, ftInteger, ftWord:
         if EditWithBoolBox(Field) and not Field.IsNull then
           if Field.AsInteger = 0 then
@@ -3744,7 +3772,7 @@ begin
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
-  if not (Control.Enabled and DataLink.DataSet.CanModify and DataLink.Edit) then
+  if ReadOnly or not (Control.Enabled and DataLink.DataSet.CanModify and DataLink.Edit) then
   begin
     HideCurrentControl;
     Exit;
