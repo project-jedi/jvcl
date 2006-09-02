@@ -313,6 +313,7 @@ type
     FColumns: Integer;
     FDropDownLines: Integer;
     FDelimiter: Char;
+    FIgnoreChange: Boolean;
     procedure SetItems(AItems: TStrings);
     procedure ToggleOnOff(Sender: TObject);
     procedure KeyListBox(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -332,6 +333,7 @@ type
     procedure SetDelimiter(const Value: Char);
     function IsStoredCapDeselAll: Boolean;
     function IsStoredCapSelAll: Boolean;
+    procedure ChangeText(const NewText: string);
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -342,8 +344,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
-    procedure SetUnCheckedAll(Sender: TObject);
-    procedure SetCheckedAll(Sender: TObject);
+    procedure SetUnCheckedAll(Sender: TObject = nil);
+    procedure SetCheckedAll(Sender: TObject = nil);
     function IsChecked(Index: Integer): Boolean;
     function GetText: string;
     property Checked[Index: Integer]: Boolean read GetChecked write SetChecked;
@@ -424,7 +426,6 @@ uses
   JvDataProviderIntf, JvItemsSearchs, JvThemes, JvConsts, JvResources, JvTypes;
 
 const
-  MaxSelLength = 256;
   MinDropLines = 2;
   MaxDropLines = 50;
 
@@ -448,7 +449,7 @@ var
   M: Integer;
   Temp1, Temp2: string;
 begin
-  Temp1 := Copy(Source, 1, MaxSelLength);
+  Temp1 := Source;
   Result := Part = Temp1;
   while not Result do
   begin
@@ -480,10 +481,10 @@ begin
   begin
     Len := Length(Part);
     if P = 1 then
-      Result := Copy(Source, P + Len + 1, MaxSelLength)
+      Result := Copy(Source, P + Len + 1, MaxInt)
     else
     begin
-      Result := Copy(S2, 2, P - 1) + Copy(S2, P + Len + 2, MaxSelLength);
+      Result := Copy(S2, 2, P - 1) + Copy(S2, P + Len + 2, MaxInt);
       SetLength(Result, Length(Result) - 1);
     end;
   end;
@@ -492,12 +493,6 @@ end;
 function Add(const Sub: string; var Str: string; Delimiter: Char): Boolean;
 begin
   Result := False;
-  if Length(Str) + Length(Sub) + 1 >= MaxSelLength then
-    {$IFDEF CLR}
-    raise EJVCLException.Create(RsENoMoreLength);
-    {$ELSE}
-    raise EJVCLException.CreateRes(@RsENoMoreLength);
-    {$ENDIF CLR}
   if Str = '' then
   begin
     Str := Sub;
@@ -707,7 +702,8 @@ end;
 
 procedure TJvCustomCheckedComboBox.Change;
 begin
-  DoChange;
+  if not FIgnoreChange then
+    DoChange;
 end;
 
 procedure TJvCustomCheckedComboBox.DoEnter;
@@ -766,7 +762,7 @@ end;
 procedure TJvCustomCheckedComboBox.ItemsChange(Sender: TObject);
 begin
   FListBox.Clear;
-  Text := '';
+  ChangeText('');
   FListBox.Items.Assign(FItems);
 end;
 
@@ -807,7 +803,7 @@ begin
     if ChangeData then
     begin
       FListBox.Checked[Index] := Checked;
-      Text := S;
+      ChangeText(S);
       Change;
     end;
   end;
@@ -829,7 +825,7 @@ begin
     else
       S := S + Delimiter + FListBox.Items[I];
   end;
-  Text := S;
+  ChangeText(S);
   FCheckedCount := FListBox.Items.Count;
   Repaint;
   Change;
@@ -860,7 +856,7 @@ begin
           S := FListBox.Items[I]
         else
           S := S + Delimiter + FListBox.Items[I];
-    Text := S;
+    ChangeText(S);
   end;
 end;
 
@@ -912,7 +908,7 @@ begin
   with FListBox do
     for I := 0 to Items.Count - 1 do
       Checked[I] := False;
-  Text := '';
+  ChangeText('');
   Change;
 end;
 
@@ -931,8 +927,18 @@ begin
   else
   if Remove(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
     FCheckedCount := FCheckedCount - 1;
-  Text := S;
+  ChangeText(S);
   Change;
+end;
+
+procedure TJvCustomCheckedComboBox.ChangeText(const NewText: string);
+begin
+  FIgnoreChange := True;
+  try
+    Text := NewText;
+  finally
+    FIgnoreChange := False;
+  end;
 end;
 
 //=== { TJvComboBoxStrings } =================================================
