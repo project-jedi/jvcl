@@ -1,5 +1,7 @@
 Changelog for JVCL 3.X
 ======================
+2006-09-03
+- TJvDBGrid.IsBooleanField is now called OnIsBooleanField as it is an even. Migration should be silent.   // obones
 2006-08-17
 - Fixed Bug in JvTabBar: ScrollButtons meight disappear // ahuser
 - Added Repeated Click to the JvTabBar's ScrollButtons // ahuser
