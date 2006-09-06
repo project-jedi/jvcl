@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -127,6 +127,10 @@ type
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string;
       AData: Pointer): TRect; override;
+    function CalcHintRectUTF8(MaxWidth: Integer; const AUTF8Hint: string;
+      AData: Pointer): TRect; virtual;
+    function CalcHintRectW(MaxWidth: Integer; const AHint: WideString;
+      AData: Pointer): TRect; virtual;
     property StemPointPosition: TPoint read GetStemPointPosition;
   end;
 
@@ -597,15 +601,31 @@ end;
 
 function TJvBalloonWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
   AData: Pointer): TRect;
+begin
+  // Mantis 3855: CalcHintRect is called by the VCL code and gives a non
+  // UTF-8 string. However, this string may contain characters above 127 which
+  // would then be interpreted as UTF-8 markers. So when you are sure the
+  // string for the hint is UTF-8, use CalcHintRectUTF8 below. This is what is
+  // done by the TJvBalloonHint.InternalActivateHintPos code.
+  // In any case the CalcHintRectW function is called in the end.
+  Result := CalcHintRectW(MaxWidth, WideString(AHint), AData);
+end;
+
+function TJvBalloonWindow.CalcHintRectUTF8(MaxWidth: Integer;
+  const AUTF8Hint: string; AData: Pointer): TRect;
+begin
+  Result := CalcHintRectW(MaxWidth, UTF8ToWideString(AUTF8Hint), AData);
+end;
+
+function TJvBalloonWindow.CalcHintRectW(MaxWidth: Integer;
+  const AHint: WideString; AData: Pointer): TRect;
 var
   MsgRect, HeaderRect: TRect;
   StemSize: TJvStemSize;
 begin
   Init(AData);
 
-  FMsg := UTF8ToWideString(AHint);
-  if (FMsg = '') then
-    FMsg := AHint;
+  FMsg := AHint;
 
   { Calc HintRect }
   MsgRect := CalcMsgRect(MaxWidth);
@@ -1318,7 +1338,7 @@ begin
       TmpMaxWidth := Screen.Width
     else
       TmpMaxWidth := MaxWidth;
-    Rect := FHint.CalcHintRect(TmpMaxWidth, RUTF8Hint, @FData);
+    Rect := FHint.CalcHintRectUTF8(TmpMaxWidth, RUTF8Hint, @FData);
 
     { Offset the rectangle to the anchor position }
     if Assigned(RAnchorWindow) then
