@@ -2518,9 +2518,15 @@ begin
     FDataList.DisplayEmpty := DisplayEmpty;
     FDataList.EmptyItemColor := EmptyItemColor;
     if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) then
-      RecordCount := FLookupLink.DataSource.DataSet.RecordCount
+    begin
+      RecordCount := FLookupLink.DataSource.DataSet.RecordCount;
+      if Length(DisplayEmpty) > 0 then   // Mantis 3884
+        Inc(RecordCount);
+    end
     else
+    begin
       RecordCount := MAXINT;
+    end;
       
     if (DropDownCount > RecordCount) then
       FDataList.RowCount := RecordCount
