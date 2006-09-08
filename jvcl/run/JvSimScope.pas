@@ -143,10 +143,10 @@ type
     property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
-    {$IFDEF COMPILER9_UP}
+    {$IFDEF COMPILER10_UP}
     property OnMouseEnter;
     property OnMouseLeave;
-    {$ENDIF COMPILER9_UP}
+    {$ENDIF COMPILER10_UP}
     property OnMouseMove;
     property OnMouseUp;
     {$IFDEF COMPILER6_UP}
