@@ -159,7 +159,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL:$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -315,6 +315,8 @@ end;
 procedure TJvDBOdacLogonDialog.ClearControlInterfaceObjects;
 begin
   inherited ClearControlInterfaceObjects;
+  INetOptionCheckBox:= nil;
+  IOracleHomeEditData:= nil;
 end;
 
 procedure TJvDBOdacLogonDialog.ConnectSession;
