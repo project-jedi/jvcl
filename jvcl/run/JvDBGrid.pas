@@ -89,6 +89,21 @@ const
 type
   TJvDBGrid = class;
 
+  // Mantis 3895: The only way to lift an ambiguity in an event handler is to
+  // redefine a type. A simple rename is not enough, hence the distinction 
+  // between BCB and the others. 
+  {$IFDEF BCB}
+  TJvDBGridBitmap = class(TBitmap)
+  end;
+  {$ELSE}
+  {$IFDEF DELPHI10_UP}
+  TJvDBGridBitmap = class(TBitmap)
+  end;
+  {$ELSE}
+  TJvDBGridBitmap = TBitmap;
+  {$ENDIF BCB10_UP}
+  {$ENDIF BCB}
+
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
     Field: TField) of object;
@@ -105,7 +120,7 @@ type
   TJvDBEditShowEvent = procedure(Sender: TObject; Field: TField;
     var AllowEdit: Boolean) of object;
   TDrawColumnTitleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
-    ARect: TRect; AColumn: TColumn; var ASortMarker: TBitmap; IsDown: Boolean;
+    ARect: TRect; AColumn: TColumn; var ASortMarker: TJvDBGridBitmap; IsDown: Boolean;
     var Offset: Integer; var DefaultDrawText,
     DefaultDrawSortMarker: Boolean) of object;
   TJvTitleHintEvent = procedure(Sender: TObject; Field: TField;
@@ -3142,7 +3157,7 @@ procedure TJvDBGrid.DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect;
 begin
   if Assigned(FOnDrawColumnTitle) then
   begin
-    FOnDrawColumnTitle(Self, ACanvas, ARect, AColumn, ASortMarker, IsDown, Offset,
+    FOnDrawColumnTitle(Self, ACanvas, ARect, AColumn, TJvDBGridBitmap(ASortMarker), IsDown, Offset,
       DefaultDrawText, DefaultDrawSortMarker);
   end;
 end;
