@@ -406,7 +406,8 @@ end;
 procedure TJvCustomThreadDialogForm.SetConnectedDataComponent(Value: TComponent);
 begin
   FConnectedDataComponent := Value;
-  FreeNotification(Value);
+  if Assigned(Value) then
+    FreeNotification(Value);
 end;
 
 procedure TJvCustomThreadDialogForm.SetConnectedDataObject(Value: TObject);
