@@ -301,6 +301,7 @@ type
     Jump: Byte;
     Offset: Integer;
   end;
+  PJumpCode = ^TJumpCode;
 
 var
   HandleNeededHookInstalled: Boolean = False;
@@ -327,16 +328,19 @@ end;
 procedure UninstallHandleNeededHook;
 var
   OrgProc: Pointer;
-  n: Cardinal;
+  OldProtect, Dummy: Cardinal;
 begin
   if HandleNeededHookInstalled then
   begin
     OrgProc := @TCustomImageListAccessProtected.HandleNeeded;
 
-    if WriteProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
-    begin
-      HandleNeededHookInstalled := False;
+    if VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), PAGE_EXECUTE_READWRITE, OldProtect) then
+    try
+      PJumpCode(OrgProc)^ := SavedNeededHookCode;
       FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(SavedNeededHookCode));
+      HandleNeededHookInstalled := False;
+    finally
+      VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), OldProtect, Dummy);
     end;
   end;
 end;
@@ -346,7 +350,7 @@ var
   OrgProc: Pointer;
   NewProc: Pointer;
   Code: TJumpCode;
-  n: Cardinal;
+  OldProtect, Dummy: Cardinal;
 begin
   if not HandleNeededHookInstalled then
   begin
@@ -356,12 +360,17 @@ begin
     Code.Jump := $E9;
     Code.Offset := Integer(NewProc) - Integer(OrgProc) - SizeOf(Code);
 
-    if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
-      if WriteProcessMemory(GetCurrentProcess, OrgProc, @Code, SizeOf(Code), n) then
-      begin
+    if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), Dummy) and
+      VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), PAGE_EXECUTE_READWRITE, OldProtect) then
+    begin
+      try
+        PJumpCode(OrgProc)^ := Code;
         HandleNeededHookInstalled := True;
         FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(Code));
+      finally
+        VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), OldProtect, Dummy);
       end;
+    end;
   end;
 end;
 

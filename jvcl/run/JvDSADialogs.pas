@@ -2189,13 +2189,13 @@ end;
 procedure SetVirtualMethodInstance(Instance: TObject; const VMTIdx: Integer;
   const MethodPtr: Pointer);
 var
-  OldProt: Cardinal;
+  OldProt, Dummy: Cardinal;
 begin
   VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), PAGE_READWRITE, OldProt);
   try
     PInteger(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)))^ := Integer(MethodPtr);
   finally
-    VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), OldProt, OldProt);
+    VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), OldProt, Dummy);
   end;
 end;
 

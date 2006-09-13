@@ -671,10 +671,15 @@ end;
 
 function WriteProtectedMemory(Address: Pointer; const Buffer; Count: Cardinal): Boolean;
 var
-  N: Cardinal;
+  OldProtect, Dummy: Cardinal;
 begin
-  Result := WriteProcessMemory(GetCurrentProcess, Address, @Buffer, Count, N);
-  Result := Result and (N = Count);
+  Result := VirtualProtect(Address, Count, PAGE_EXECUTE_READWRITE, OldProtect);
+  if Result then
+  try
+    Move(Buffer, Address^, Count);
+  finally
+    VirtualProtect(Address, Count, OldProtect, Dummy);
+  end;
 end;
 
 type

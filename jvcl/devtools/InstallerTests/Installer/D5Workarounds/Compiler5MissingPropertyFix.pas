@@ -72,7 +72,7 @@ type
 var
   Jump: TJump;
   DestP, OldP: Pointer;
-  OldProt: Cardinal;
+  OldProt, Dummy: Cardinal;
 begin
   if IsLibrary then
     raise Exception.Create('Not allowed in a DLL');
@@ -81,10 +81,10 @@ begin
   DestP := @TNativeBitBtn.CreateParams;
   OldP := @TOpenBitBtn.CreateParams;
   Jump.Offset := Integer(DestP) - Integer(OldP) - SizeOf(TJump);
-  if VirtualProtect(OldP, SizeOf(TJump), PAGE_READWRITE, @OldProt) then
+  if VirtualProtect(OldP, SizeOf(TJump), PAGE_EXECUTE_READWRITE, @OldProt) then
   begin
     Move(Jump, OldP^, SizeOf(TJump));
-    VirtualProtect(OldP, SizeOf(TJump), OldProt, nil);
+    VirtualProtect(OldP, SizeOf(TJump), OldProt, Dummy);
   end;
 end;
 
@@ -145,13 +145,13 @@ end;
 procedure ReplaceVmtField(Vmt: PVmt; VmtOffset: Integer; Value: Pointer);
 var
   Index: Integer;
-  OldProt: Cardinal;
+  OldProt, Dummy: Cardinal;
 begin
   Index := VmtOffset div SizeOf(Pointer);
-  if VirtualProtect(@vmt[Index], SizeOf(Pointer), PAGE_READWRITE, @OldProt) then
+  if VirtualProtect(@vmt[Index], SizeOf(Pointer), PAGE_EXECUTE_READWRITE, @OldProt) then
   begin
     Vmt[Index] := Value;
-    VirtualProtect(@Vmt[Index], SizeOf(Pointer), OldProt, nil);
+    VirtualProtect(@Vmt[Index], SizeOf(Pointer), OldProt, Dummy);
   end;
 end;
 {$R+}

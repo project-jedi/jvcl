@@ -6797,7 +6797,7 @@ end;
 function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Cardinal): LongBool;
 var
-  Prot: Cardinal;
+  OldProt, Dummy: Cardinal;
 begin
   Result := False;
   lpNumberOfBytesRead := 0;
@@ -6806,7 +6806,7 @@ begin
     if nSize = 0 then
       Result := True
     else
-    if VirtualProtect(lpBaseAddress, nSize, PAGE_READWRITE, Prot) then
+    if VirtualProtect(lpBaseAddress, nSize, PAGE_EXECUTE_READWRITE, OldProt) then
     begin
       try
         Move(lpBaseAddress^, lpBuffer^, nSize);
@@ -6815,7 +6815,7 @@ begin
       except
         Result := False;
       end;
-      VirtualProtect(lpBaseAddress, nSize, Prot, nil);
+      VirtualProtect(lpBaseAddress, nSize, OldProt, Dummy);
     end;
   end;
 end;
@@ -6823,7 +6823,7 @@ end;
 function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
 var
-  Prot: Cardinal;
+  OldProt, Dummy: Cardinal;
 begin
   Result := False;
   lpNumberOfBytesWritten := 0;
@@ -6832,7 +6832,7 @@ begin
     if nSize = 0 then
       Result := True
     else
-    if VirtualProtect(lpBaseAddress, nSize, PAGE_READWRITE, Prot) then
+    if VirtualProtect(lpBaseAddress, nSize, PAGE_EXECUTE_READWRITE, OldProt) then
     begin
       try
         Move(lpBuffer^, lpBaseAddress^, nSize);
@@ -6841,7 +6841,7 @@ begin
       except
         Result := False;
       end;
-      VirtualProtect(lpBaseAddress, nSize, Prot, nil);
+      VirtualProtect(lpBaseAddress, nSize, OldProt, Dummy);
     end;
   end;
 end;
