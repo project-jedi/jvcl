@@ -1729,6 +1729,7 @@ type
     Jmp: Byte; // jmp Offset
     Offset: Integer;
   end;
+  PJumpCode = ^TJumpCode;
 
 var
   SavedWinControlCode: TJumpCode;
@@ -1737,7 +1738,7 @@ procedure InstallWinControlHook;
 var
   Code: TJumpCode;
   P: procedure;
-  N: Cardinal;
+  N, OldProtect, Dummy: Cardinal;
 begin
   if WinControlHookInstalled then
     Exit;
@@ -1757,16 +1758,18 @@ begin
       (Integer(@P) + 1) - SizeOf(Code);
 
     if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-      @SavedWinControlCode, SizeOf(SavedWinControlCode), N) then
+      @SavedWinControlCode, SizeOf(SavedWinControlCode), N)
+      and VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(Code), PAGE_EXECUTE_READWRITE, OldProtect) then
     begin
-     { The strange thing is that WriteProcessMemory does not want @P or something
-       overrides the $e9 with a "PUSH xxx"}
-      if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
-        SizeOf(Code), N) then
-      begin
+      try
+        // (outchy) to be verified without WriteProcessMemory
+        { The strange thing is that the $e9 cannot be overriden with a "PUSH xxx" }
+        PJumpCode(Cardinal(@P) + 1)^ := Code;
         WinControlHookInstalled := True;
         ThemeHooks.FEraseBkgndHooked := True;
-        FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+        FlushInstructionCache(GetCurrentProcess, Pointer(Cardinal(@P) + 1), SizeOf(Code));
+      finally
+        VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(Code), OldProtect, Dummy);
       end;
     end;
   end;
@@ -1775,7 +1778,7 @@ end;
 procedure UninstallWinControlHook;
 var
   P: procedure;
-  N: Cardinal;
+  OldProtect, Dummy: Cardinal;
 begin
   if not WinControlHookInstalled then
     Exit;
@@ -1783,11 +1786,13 @@ begin
   P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
   if Assigned(P) then
   begin
-    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-      @SavedWinControlCode, SizeOf(SavedWinControlCode), N) then
-    begin
+    if VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), PAGE_EXECUTE_READWRITE, OldProtect) then
+    try
+      PJumpCode(Cardinal(@P) + 1)^ := SavedWinControlCode;
       WinControlHookInstalled := False;
       FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedWinControlCode));
+    finally
+      VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), OldProtect, Dummy);
     end;
   end;
 end;
@@ -1885,14 +1890,20 @@ procedure InitializeWMPrintClientFix;
 var
   NewProc: Pointer;
   Proc: PPointer;
-  N: Cardinal;
+  OldProtect, Dummy: Cardinal;
 begin
   Proc := FindWMPrintClient();
   if Proc <> nil then
   begin
     OrgWinControlWMPrintClient := Proc^;
     NewProc := @FixedWMPrintClient;
-    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), N);
+
+    if VirtualProtect(Proc, SizeOf(NewProc), PAGE_EXECUTE_READWRITE, OldProtect) then
+    try
+      Proc^ := NewProc;
+    finally
+      VirtualProtect(Proc, SizeOf(NewProc), OldProtect, Dummy);
+    end;
   end;
 end;
 
@@ -1900,13 +1911,19 @@ procedure FinalizeWMPrintClientFix;
 var
   NewProc: Pointer;
   Proc: PPointer;
-  N: Cardinal;
+  OldProtect, Dummy: Cardinal;
 begin
   Proc := FindWMPrintClient;
   if Proc <> nil then
   begin
     NewProc := @OrgWinControlWMPrintClient;
-    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), N);
+
+    if VirtualProtect(Proc, SizeOf(NewProc), PAGE_EXECUTE_READWRITE, OldProtect) then
+    try
+      Proc^ := NewProc;
+    finally
+      VirtualProtect(Proc, SizeOf(NewProc), OldProtect, Dummy);
+    end;
   end;
 end;
 
