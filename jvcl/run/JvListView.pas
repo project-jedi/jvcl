@@ -42,6 +42,7 @@ uses
 
 type
   TJvViewStyle = (vsIcon, vsSmallIcon, vsList, vsReport, vsTile);
+  TJvHeaderImagePosition = (hipLeft, hipRight);
 
 const
   WM_AUTOSELECT = WM_USER + 1;
@@ -137,8 +138,13 @@ type
   private
     FSortMethod: TJvSortMethod;
     FUseParentSortMethod: Boolean;
+    FHeaderImagePosition: TJvHeaderImagePosition;
+    FUseParentHeaderImagePosition: Boolean;
     function GetSortMethod: TJvSortMethod;
     procedure SetSortMethod(const Value: TJvSortMethod);
+    function GetHeaderImagePosition: TJvHeaderImagePosition;
+    procedure SetHeaderImagePosition(const Value: TJvHeaderImagePosition);
+    procedure SetUseParentHeaderImagePosition(const Value: Boolean);
   public
     constructor Create(Collection: Classes.TCollection); override;
 
@@ -146,6 +152,8 @@ type
   published
     property SortMethod: TJvSortMethod read GetSortMethod write SetSortMethod default smAutomatic;
     property UseParentSortMethod : Boolean read FUseParentSortMethod write FUseParentSortMethod default True;
+    property HeaderImagePosition: TJvHeaderImagePosition read GetHeaderImagePosition write SetHeaderImagePosition default hipLeft;
+    property UseParentHeaderImagePosition : Boolean read FUseParentHeaderImagePosition write SetUseParentHeaderImagePosition default True;
   end;
 
   TJvListExtendedColumns = class(TOwnedCollection)
@@ -318,6 +326,7 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FImageChangeLink: TChangeLink;
+    FHeaderImagePosition: TJvHeaderImagePosition;
     FHeaderImages: TCustomImageList;
     FAutoSelect: Boolean;
     FPicture: TPicture;
@@ -332,6 +341,7 @@ type
     FTileViewProperties: TJvTileViewProperties;
     FInsertMarkColor: TColor;
     FSettingJvViewStyle: Boolean;
+    FSettingHeaderImagePosition: Boolean;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure SetGroupView(const Value: Boolean);
@@ -339,6 +349,7 @@ type
     procedure SetGroupsProperties(const Value: TJvGroupsProperties);
     procedure SetTileViewProperties(const Value: TJvTileViewProperties);
     procedure SetInsertMarkColor(const Value: TColor);
+    procedure SetHeaderImagePosition(const Value: TJvHeaderImagePosition);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
@@ -377,6 +388,7 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     procedure LVMDeleteColumn(var Msg: TMessage); message LVM_DELETECOLUMN;
     procedure LVMInsertColumn(var Msg: TMessage); message LVM_INSERTCOLUMN;
+    procedure LVMSetColumn(var Msg: TMessage); message LVM_SETCOLUMN;
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
 
     procedure InsertItem(Item: TListItem); override;
@@ -426,6 +438,7 @@ type
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property HintColor;
     property Picture: TPicture read FPicture write SetPicture;
+    property HeaderImagePosition: TJvHeaderImagePosition read FHeaderImagePosition write SetHeaderImagePosition default hipLeft;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
     property SortMethod: TJvSortMethod read FSortMethod write FSortMethod default smAutomatic;
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
@@ -849,6 +862,9 @@ begin
   begin
     FSortMethod := TJvListExtendedColumn(AValue). SortMethod;
     FUseParentSortMethod := TJvListExtendedColumn(AValue).UseParentSortMethod;
+
+    FHeaderImagePosition := TJvListExtendedColumn(AValue).HeaderImagePosition;
+    FUseParentHeaderImagePosition := TJvListExtendedColumn(AValue).UseParentHeaderImagePosition;
   end
   else
     inherited Assign(AValue);
@@ -860,6 +876,17 @@ begin
 
   FSortMethod := smAutomatic;
   FUseParentSortMethod := True;
+
+  FHeaderImagePosition := hipLeft;
+  FUseParentHeaderImagePosition := True;
+end;
+
+function TJvListExtendedColumn.GetHeaderImagePosition: TJvHeaderImagePosition;
+begin
+  if (TJvListExtendedColumns(Collection).Owner is TJvListView) and UseParentHeaderImagePosition then
+    Result := TJvListView(TJvListExtendedColumns(Collection).Owner).HeaderImagePosition
+  else
+    Result := FHeaderImagePosition;
 end;
 
 function TJvListExtendedColumn.GetSortMethod: TJvSortMethod;
@@ -870,11 +897,36 @@ begin
     Result := FSortMethod;
 end;
 
+procedure TJvListExtendedColumn.SetHeaderImagePosition(
+  const Value: TJvHeaderImagePosition);
+begin
+  FHeaderImagePosition := Value;
+  UseParentHeaderImagePosition := False;
+
+  if (TJvListExtendedColumns(Collection).Owner is TJvListView) then
+  begin
+    TJvListView(TJvListExtendedColumns(Collection).Owner).DoHeaderImagesChange(Self);
+  end;
+end;
+
 procedure TJvListExtendedColumn.SetSortMethod(
   const Value: TJvSortMethod);
 begin
   FSortMethod := Value;
   UseParentSortMethod := False;
+end;
+
+procedure TJvListExtendedColumn.SetUseParentHeaderImagePosition(
+  const Value: Boolean);
+begin
+  if FUseParentHeaderImagePosition <> Value then
+  begin
+    FUseParentHeaderImagePosition := Value;
+    if (TJvListExtendedColumns(Collection).Owner is TJvListView) then
+    begin
+      TJvListView(TJvListExtendedColumns(Collection).Owner).DoHeaderImagesChange(Self);
+    end;
+  end;
 end;
 
 { TJvListExtendedColumns }
@@ -914,6 +966,7 @@ begin
   FLast := -1;
   FInsertMarkColor := clBlack;
   FAutoClipboardCopy := True;
+  FHeaderImagePosition := hipLeft;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := DoHeaderImagesChange;
   FAutoSelect := True;
@@ -2187,6 +2240,15 @@ begin
   end;
 end;
 
+procedure TJvListView.SetHeaderImagePosition(const Value: TJvHeaderImagePosition);
+begin
+  if FHeaderImagePosition <> Value then
+  begin
+    FHeaderImagePosition := Value;
+    UpdateHeaderImages(ListView_GetHeader(Handle));
+  end;
+end;
+
 procedure TJvListView.DoPictureChange(Sender: TObject);
 begin
 //  if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
@@ -2208,6 +2270,36 @@ procedure TJvListView.LVMInsertColumn(var Msg: TMessage);
 begin
   inherited;
   FExtendedColumns.Insert(Msg.WParam);
+end;
+
+procedure TJvListView.LVMSetColumn(var Msg: TMessage);
+var
+  i: Integer;
+  Column: tagLVCOLUMNA;
+begin
+  inherited;
+
+  if not FSettingHeaderImagePosition then
+  begin
+    for i := 0 to ExtendedColumns.Count - 1 do
+    begin
+      if ExtendedColumns[i].GetHeaderImagePosition = hipRight then
+      begin
+        Column.mask := LVCF_FMT;
+        ListView_GetColumn(Handle, i, Column);
+        if Column.fmt and LVCFMT_IMAGE <> 0 then
+        begin
+          Column.fmt := Column.fmt or LVCFMT_BITMAP_ON_RIGHT;
+          FSettingHeaderImagePosition := True;
+          try
+            ListView_SetColumn(Handle, i, Column);
+          finally
+            FSettingHeaderImagePosition := False;
+          end;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TJvListView.DestroyWnd;
