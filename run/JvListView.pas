@@ -377,6 +377,7 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     procedure LVMDeleteColumn(var Msg: TMessage); message LVM_DELETECOLUMN;
     procedure LVMInsertColumn(var Msg: TMessage); message LVM_INSERTCOLUMN;
+    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
 
     procedure InsertItem(Item: TListItem); override;
     function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -635,7 +636,7 @@ const
 constructor TJvListItem.CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
 begin
   inherited Create(AOwner);
-  
+
   FBold := False;
   FPopupMenu := Popup; // (Salvatore) Get it from the JvListView
   FFont := TFont.Create;
@@ -644,6 +645,8 @@ begin
   FTileColumns := TIntegerList.Create;
 
   FTileColumns.OnChange := TileColumnsChange;
+  if AOwner.Owner is TJvListView then
+    FFont.Assign((AOwner.Owner as TJvListView).Font);
 end;
 
 procedure TJvListItem.DefineProperties(Filer: TFiler);
@@ -2096,9 +2099,44 @@ begin
   Result := inherited CustomDrawItem(Item, State, Stage);
 end;
 
+
+procedure TJvListView.CNNotify(var Message: TWMNotify);
+begin
+  with Message do
+  begin
+    if NMHdr^.code = NM_CUSTOMDRAW then
+    begin
+      with PNMCustomDraw(NMHdr)^ do
+      begin
+        if (dwDrawStage and CDDS_SUBITEM <> 0) and
+           (PNMLVCustomDraw(NMHdr)^.iSubItem = 0) then
+        begin
+          // Mantis 3908: For some reason, the inherited handler will not call
+          // the CustomDrawSubItem if iSubItem is equal to zero. But not calling
+          // it has the consequence to trigger wrong rendering if the order of
+          // columns is modified and the list item has a non standard font.
+          // Calling it ourselves here is not enough as the inherited handler
+          // does some very specific management with the canvas. So we must
+          // trick it by changing the value to a recognizable value used
+          // in our CustomDrawSubItem handler.
+          PNMLVCustomDraw(NMHdr)^.iSubItem := -1;
+          inherited;
+          PNMLVCustomDraw(NMHdr)^.iSubItem := 0;
+          Exit;
+        end;
+      end;
+    end;
+  end;
+  
+  inherited;
+end;
+
 function TJvListView.CustomDrawSubItem(Item: TListItem; SubItem: Integer;
   State: TCustomDrawState; Stage: TCustomDrawStage): Boolean;
 begin
+  if SubItem = -1 then      // See above
+    SubItem := 0;
+
   if (Stage = cdPrePaint) and Assigned(Item) then
   begin
     Canvas.Font := TJvListItem(Item).Font;
@@ -2177,7 +2215,6 @@ begin
   FSavedExtendedColumns.Assign(FExtendedColumns);
   inherited DestroyWnd;
 end;
-
 {$IFDEF COMPILER5}
 
 function TJvListView.GetItemIndex: Integer;
