@@ -63,7 +63,7 @@ uses
   QWindows,
   {$ENDIF VisualCLX}
   ImgList,
-  JvDsgnConsts, JvJCLUtils;
+  JvDsgnConsts, JvJCLUtils, JvVCL5Utils;
 
 type
   PPropData = ^TPropData;
@@ -159,69 +159,114 @@ begin
   end;
 end;
 
+function AllocTypeInfo(Size: Integer): PTypeInfo;
+var
+  P: PPointer;
+begin
+  P := AllocMem(SizeOf(P) + Size);
+  Inc(P);
+  Result := PTypeInfo(P);
+end;
+
+procedure FreeTypeInfo(ATypeInfo: PTypeInfo);
+var
+  P: PPointer;
+begin
+  P := PPointer(ATypeInfo);
+  Dec(P);
+  FreeMem(P);
+end;
+
+function GetOrgTypeInfo(ATypeInfo: PTypeInfo): PTypeInfo;
+var
+  P: PPointer;
+begin
+  P := PPointer(ATypeInfo);
+  Dec(P);
+  Result := P^;
+end;
+
+procedure SetOrgTypeInfo(ATypeInfo, Value: PTypeInfo);
+var
+  P: PPointer;
+begin
+  P := PPointer(ATypeInfo);
+  Dec(P);
+  P^ := Value;
+end;
+
 function CloneTypeInfo(OrgTypeInfo: PTypeInfo; AdditionalSpace: Longint = 0): PTypeInfo;
+var
+  OrgSize: Integer;
+begin
+  OrgSize := TypeInfoSize(OrgTypeInfo);
+  Result := AllocTypeInfo(OrgSize + AdditionalSpace);
+  SetOrgTypeInfo(Result, OrgTypeInfo);
+  Move(OrgTypeInfo^, Result^, OrgSize);
+end;
+
+function VMTTypeInfoFromClass(const AClass: TClass): PPTypeInfo;
 var
   P: PChar;
 begin
-  P := AllocMem(SizeOf(Pointer) + TypeInfoSize(OrgTypeInfo) + AdditionalSpace);
-  PInteger(P)^ := Integer(OrgTypeInfo);
-  Inc(P, 4);
-  Result := PTypeInfo(P);
-  Move(OrgTypeInfo^ , Result^, TypeInfoSize(OrgTypeInfo));
-end;
-
-function TypeInfoFromClass(const AClass: TClass): PChar;
-begin
-  Result := Pointer(AClass);
-  Dec(Result, 60); // Now pointing to TypeInfo of the VMT table.
+  P := Pointer(AClass);
+  Dec(P, 60); // Now pointing to TypeInfo of the VMT table.
+  Result := PPtypeInfo(P);
 end;
 
 procedure CreateTypeInfo(const AClass: TClass);
 var
-  P: PChar;
-  PNewInfo: Pointer;
-  OldProtect: Cardinal;
+  VMTTypeInfo: PPTypeInfo;
+  NewTypeInfo: PTypeInfo;
+  OldProtect, Dummy: Cardinal;
 begin
-  P := TypeInfoFromClass(AClass);
+  VMTTypeInfo := VMTTypeInfoFromClass(AClass);
   { Below the typeinfo is cloned, while an additional 2048 bytes are reserved at the end. This 2048
     bytes will be used to "inject" additional properties. Since each property takes 27 + the length
     of the property name bytes, assuming an average of 40 bytes/property will allow approximately 50
     properties to be appended to the existing property list. }
   // (rom) is there some security so we do not blow up everything by exceeding the 2048 bytes?
-  PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
+  NewTypeInfo := CloneTypeInfo(VMTTypeInfo^, 2048);
   {$IFDEF MSWINDOWS}
-  if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
-  try
-    PInteger(P)^ := Integer(PNewInfo);
-  finally
-    VirtualProtect(P, 4, OldProtect, OldProtect);
-  end;
+  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_WRITECOPY, OldProtect) then
+  begin
+    try
+      VMTTypeInfo^ := NewTypeInfo;
+    finally
+      VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), OldProtect, Dummy);
+    end;
+  end
+  else
+    FreeTypeInfo(NewTypeInfo);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  WriteProcessMemory(GetCurrentProcess, P, PNewInfo, 4, OldProtect);  // asn ???
+  WriteProcessMemory(GetCurrentProcess, VMTTypeInfo, NewTypeInfo, SizeOf(NewTypeInfo), OldProtect);  // asn ???
   {$ENDIF LINUX}
 end;
 
 procedure ClearTypeInfo(const AClass: TClass);
 var
-  P: PChar;
-  PNewType: PChar;
-  OldProtect: Cardinal;
+  VMTTypeInfo: PPTypeInfo;
+  OldTypeInfo, NewTypeInfo: PTypeInfo;
+  OldProtect, Dummy: Cardinal;
 begin
-  P := TypeInfoFromClass(AClass);
-  PNewType := Pointer(PInteger(P)^);  // The new type currently in use.
-  Dec(PNewType, 4);                   // Points to the original PTypeInfo value.
+  VMTTypeInfo := VMTTypeInfoFromClass(AClass);
+  OldTypeInfo := VMTTypeInfo^;
+  NewTypeInfo := GetOrgTypeInfo(OldTypeInfo);
+
   {$IFDEF MSWINDOWS}
-  if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
+  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_WRITECOPY, OldProtect) then
   try
-    PInteger(P)^ := Integer(PInteger(PNewType)^);
+    VMTTypeInfo^ := NewTypeInfo;
   finally
-    VirtualProtect(P, 4, OldProtect, OldProtect);
+    VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), OldProtect, Dummy);
   end;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  WriteProcessMemory(GetCurrentProcess, P, PNewType, 4, OldProtect);  // asn ???
+  WriteProcessMemory(GetCurrentProcess, VMTTypeInfo, NewTypeInfo, SizeOf(NewTypeInfo), OldProtect);  // asn ???
   {$ENDIF LINUX}
+
+  FreeTypeInfo(OldTypeInfo);
 end;
 
 function GetPropData(TypeData: PTypeData): PPropData;
