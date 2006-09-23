@@ -1113,8 +1113,10 @@ function TJvCustomItemViewer.GetItems(Index: Integer): TJvViewerItem;
 begin
   Result := FItems[Index];
   if Result = nil then
+  begin
     Result := GetItemClass.Create(Self);
-  FItems[Index] := Result;
+    FItems[Index] := Result;
+  end;
 end;
 
 function TJvCustomItemViewer.GetItemState(Index: Integer): TCustomDrawState;
