@@ -2524,17 +2524,14 @@ begin
         Inc(RecordCount);
     end
     else
-    begin
       RecordCount := MAXINT;
-    end;
       
     if (DropDownCount > RecordCount) then
       FDataList.RowCount := RecordCount
     else
       FDataList.RowCount := DropDownCount;
 
-//    FDataList.
-      
+
     FDataList.LookupField := FLookupFieldName;
     FDataList.LookupFormat := FLookupFormat;
     FDataList.ListStyle := FListStyle;
@@ -2564,7 +2561,7 @@ begin
     else
       FDataList.Width := Width;
 
-    // Adjust if too close to workarea borders  
+    // Adjust if too close to workarea borders
 
     Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
     Rect := GetWorkAreaRect(Monitor);
