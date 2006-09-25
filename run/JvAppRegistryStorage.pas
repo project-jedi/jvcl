@@ -364,7 +364,7 @@ begin
         RegCloseKey(TmpKey);
       end
     else
-      raise EJclRegistryError.CreateResFmt(@RsUnableToOpenKeyRead, [SubKey]);
+      raise EJclRegistryError.CreateResFmt(@RsUnableToOpenKeyRead, [SubKey, ValueName]);
 end;
 
 procedure TJvAppRegistryStorage.DeleteValueInt(const Path: string);
