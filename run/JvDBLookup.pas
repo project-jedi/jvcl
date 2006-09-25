@@ -342,6 +342,7 @@ type
   private
     FCombo: TJvLookupControl;
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
+    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
   protected
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -389,6 +390,7 @@ type
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
+    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
   protected
     procedure FocusKilled(NextWnd: THandle); override;
     procedure BoundsChanged; override;
@@ -2220,6 +2222,8 @@ end;
 
 function TJvDBLookupList.DoMouseWheelDown(Shift: TShiftState;
   MousePos: TPoint): Boolean;
+var
+  ScrollableRowCount: Integer;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
@@ -2227,21 +2231,26 @@ begin
     if FLookupLink.DataSet = nil then
       Exit;
 
+    // ScrollableRowCount = #records from the database that are visible/scrollable
+    ScrollableRowCount := RowCount - Ord(EmptyRowVisible);
+
     with FLookupLink.DataSet do
-      { FRecordCount - FRecordIndex - 1  = #records till end of visible list
-        FRecordCount div 2               = half visible list.
+      { ScrollableRowCount - FRecordIndex - 1  = #records till end of visible list
+        ScrollableRowCount div 2               = half visible list.
       }
       if Shift * [ssShift, ssCtrl] <> [] then
         { 1 line down }
-        Result := MoveBy(FRecordCount - FRecordIndex) <> 0
+        Result := MoveBy(ScrollableRowCount - FRecordIndex) <> 0
       else
         { Half Page down }
-        Result := MoveBy(FRecordCount - FRecordIndex + FRecordCount div 2 - 1) <> 0;
+        Result := MoveBy(ScrollableRowCount - FRecordIndex + ScrollableRowCount div 2 - 1) <> 0;
   end;
 end;
 
 function TJvDBLookupList.DoMouseWheelUp(Shift: TShiftState;
   MousePos: TPoint): Boolean;
+var
+  ScrollableRowCount: Integer;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then
@@ -2249,16 +2258,19 @@ begin
     if FLookupLink.DataSet = nil then
       Exit;
 
+    // ARowCount = #records from the database that are visible/scrollable
+    ScrollableRowCount := RowCount - Ord(EmptyRowVisible);
+
     with FLookupLink.DataSet do
-      { -FRecordIndex        = #records till begin of visible list
-        FRecordCount div 2   = half visible list.
+      { -FRecordIndex                 = #records till begin of visible list
+         ScrollableRowCount div 2     = half visible list.
       }
       if Shift * [ssShift, ssCtrl] <> [] then
         { One line up }
         Result := MoveBy(-FRecordIndex - 1) <> 0
       else
         { Half Page up }
-        Result := MoveBy(-FRecordIndex - FRecordCount div 2) <> 0;
+        Result := MoveBy(-FRecordIndex - ScrollableRowCount div 2) <> 0;
   end;
 end;
 
@@ -2324,6 +2336,12 @@ begin
     AddBiDiModeExStyle(ExStyle);
     WindowClass.Style := CS_SAVEBITS;
   end;
+end;
+
+procedure TJvPopupDataList.CMHintShow(var Msg: TMessage);
+begin
+  // never show
+  Msg.Result := 1;
 end;
 
 procedure TJvPopupDataList.WMMouseActivate(var Msg: TMessage);
@@ -2422,6 +2440,12 @@ begin
     if Assigned(FOnCloseUp) then
       FOnCloseUp(Self);
   end;
+end;
+
+procedure TJvDBLookupCombo.CMHintShow(var Msg: TMessage);
+begin
+  // don't show if list is visible
+  Msg.Result := Integer(FListVisible);
 end;
 
 function TJvDBLookupCombo.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
