@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvOracleDataset.PAS, released on 2002-05-26.
+The Original Code is: JvOdacSmartQuery.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is Jens Fudickar
 All Rights Reserved.
@@ -25,7 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvOracleDataSet;
+unit JvOracleDataset;
 
 {$I jvcl.inc}
 
@@ -36,297 +36,114 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
-  DB, OracleData,
-  JvThread, JvThreadDialog, JvDynControlEngine;
+  DB,
+  OracleData,
+  JvThread, JvThreadDialog, JvDynControlEngine, 
+  JvBaseDBThreadedDataset;
 
 type
-  TJvOracleDatasetOperation = (todoOpen, todoFetch, todoLast, todoRefresh, todoNothing);
-  TJvOracleDatasetAction = (todaOpen, todaFetch, todaNothing);
 
-  TJvOracleDatasetFetchMode = (todfmFetch, todfmBreak, todfmStop);
-
-  TJvOracleDatasetContinueAllowButton = (todcaPause, todcaStop, todcaAll);
-  TJvOracleDatasetContinueAllowButtons = set of TJvOracleDatasetContinueAllowButton;
-
-  TJvOracleDatasetAllowedAfterFetchRecordAction = (todafPause, todafCancel, todafAll);
-  TJvOracleDatasetAllowedAfterFetchRecordActions = set of TJvOracleDatasetAllowedAfterFetchRecordAction;
-
-  TJvOracleDataSet = class;
-
-  TJvOracleDatasetThreadEvent = procedure(DataSet: TJvOracleDataSet;
-    Operation: TJvOracleDatasetOperation) of object;
-
-  TJvOracleDatasetDialogOptions = class(TJvCustomThreadDialogOptions)
-  private
-    FCaption: string;
-    FDynControlEngine: TJvDynControlEngine;
-    FEnableCancelButton: Boolean;
-    FFormStyle: TFormStyle;
-    FShowCancelButton: Boolean;
-    FShowRowsLabel: Boolean;
-    FShowTimeLabel: Boolean;
-    procedure SetCaption(const Value: string);
-    procedure SetDynControlEngine(const Value: TJvDynControlEngine);
-    procedure SetEnableCancelButton(const Value: Boolean);
-    procedure SetFormStyle(const Value: TFormStyle);
-    procedure SetShowCancelButton(const Value: Boolean);
-    procedure SetShowRowsLabel(const Value: Boolean);
-    procedure SetShowTimeLabel(const Value: Boolean);
+  TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions = class(
+      TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions)
   public
-    constructor Create(AOwner: TJvCustomThreadDialog); override;
-    destructor Destroy; override;
+    constructor Create; override;
   published
-    property Caption: string read FCaption write SetCaption;
-    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
-    property EnableCancelButton: Boolean read FEnableCancelButton write SetEnableCancelButton default True;
-    property FormStyle: TFormStyle read FFormStyle write SetFormStyle;
-    property ShowCancelButton: Boolean read FShowCancelButton write SetShowCancelButton default True;
-    property ShowRowsLabel: Boolean read FShowRowsLabel write SetShowRowsLabel default True;
-    property ShowTimeLabel: Boolean read FShowTimeLabel write SetShowTimeLabel default True;
-  end;
+    property All;
+    property Cancel;
+    property Pause;
+  End;
 
-  TJvOracleDatasetThreadOptions = class(TPersistent)
+  TJvDoaThreadedDatasetEnhancedOptions = class(
+      TJvBaseThreadedDatasetEnhancedOptions)
   private
-    FLastInThread: Boolean;
-    FOpenInThread: Boolean;
-    FPriority: TThreadPriority;
-    FRefreshInThread: Boolean;
-    FShowExceptionMessage: Boolean;
-  public
-    constructor Create;
-  published
-    property LastInThread: Boolean read FLastInThread write FLastInThread default False;
-    property OpenInThread: Boolean read FOpenInThread write FOpenInThread default False;
-    property Priority: TThreadPriority read FPriority write FPriority default tpIdle;
-    property RefreshInThread: Boolean read FRefreshInThread write FRefreshInThread default False;
-    property ShowExceptionMessage: Boolean read FShowExceptionMessage
-      write FShowExceptionMessage default True;
-  end;
-
-  TJvOracleDatasetCapitalizeLabelOptions = class(TPersistent)
-  private
-    FAutoExecuteAfterOpen: Boolean;
-    FTrimToFirstBlank: Boolean;
-  public
-    constructor Create;
-  published
-    property AutoExecuteAfterOpen: Boolean read FAutoExecuteAfterOpen
-      write FAutoExecuteAfterOpen default False;
-    property TrimToFirstBlank: Boolean read FTrimToFirstBlank write FTrimToFirstBlank default False;
-  end;
-
-  TJvOracleDatasetEnhancedOptions = class(TPersistent)
-  private
-    FAllowedAfterFetchRecordActions: TJvOracleDatasetAllowedAfterFetchRecordActions;
-    FCapitalizeLabelOptions: TJvOracleDatasetCapitalizeLabelOptions;
-    FFetchRowsCheck: Integer;
-    FFetchRowsFirst: Integer;
-    FRefreshAsOpenClose: Boolean;
-    FRefreshLastPosition: Boolean;
-    procedure SetCapitalizeLabelOptions(const Value: TJvOracleDatasetCapitalizeLabelOptions);
-    procedure SetFetchRowsCheck(const Value: Integer);
-    procedure SetFetchRowsFirst(const Value: Integer);
-    procedure SetRefreshAsOpenClose(Value: Boolean);
-    procedure SetRefreshLastPosition(const Value: Boolean);
-  public
-    constructor Create;
-    destructor Destroy; override;
-  published
-    property AllowedAfterFetchRecordActions: TJvOracleDatasetAllowedAfterFetchRecordActions
-      read FAllowedAfterFetchRecordActions write FAllowedAfterFetchRecordActions
-      default [todafPause, todafCancel, todafAll];
-    property CapitalizeLabelOptions: TJvOracleDatasetCapitalizeLabelOptions read
-      FCapitalizeLabelOptions write SetCapitalizeLabelOptions;
-    property FetchRowsCheck: Integer read FFetchRowsCheck write SetFetchRowsCheck;
-    property FetchRowsFirst: Integer read FFetchRowsFirst write SetFetchRowsFirst;
-    property RefreshAsOpenClose: Boolean read FRefreshAsOpenClose
-      write SetRefreshAsOpenClose default False;
-    property RefreshLastPosition: Boolean read FRefreshLastPosition
-      write SetRefreshLastPosition default False;
-  end;
-
-  TJvOracleDatasetThreadDialogForm = class(TJvCustomThreadDialogForm)
-  private
-    FRowsLabel: TControl;
-    FTimeLabel: TControl;
-    FRowsStaticText: TWinControl;
-    FTimeStaticText: TWinControl;
-    FCancelBtn: TButton;
-    FCancelButtonPanel: TWinControl;
-    FRowsPanel: TWinControl;
-    FTimePanel: TWinControl;
-    FDialogOptions: TJvOracleDatasetDialogOptions;
-    FDynControlEngine: TJvDynControlEngine;
-    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl;
-      var Panel: TWinControl; var LabelCtrl: TControl; var StaticText: TWinControl;
-      const BaseName: string);
-    function GetConnectedDataset: TJvOracleDataset;
-    function GetDialogOptions: TJvOracleDatasetDialogOptions;
-    procedure SetDialogOptions(const Value: TJvOracleDatasetDialogOptions);
-    procedure SetDynControlEngine(const Value: TJvDynControlEngine);
+    function GetAllowedContinueRecordFetchOptions:
+        TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions;
+    procedure SetAllowedContinueRecordFetchOptions(const Value:
+        TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions);
   protected
-    procedure FillDialogData;
-    procedure UpdateFormContents; override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure CreateFormControls;
-    procedure TransferDialogOptions; override;
-    property ConnectedDataset: TJvOracleDataset read GetConnectedDataset;
-    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
+    function CreateAllowedContinueRecordFetchOptions:
+        TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions; override;
   published
-    property DialogOptions: TJvOracleDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
-  end;
+    property AllowedContinueRecordFetchOptions:
+        TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions read
+        GetAllowedContinueRecordFetchOptions write
+        SetAllowedContinueRecordFetchOptions;
+  End;
 
-  TJvOracleDatasetThreadDialog = class(TJvCustomThreadDialog)
+  TJvOracleDatasetThreadHandler = class(TJvBaseDatasetThreadHandler)
   private
-    function GetDialogOptions: TJvOracleDatasetDialogOptions;
-    procedure SetDialogOptions(const Value: TJvOracleDatasetDialogOptions);
+    function GetEnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions;
+    procedure SetEnhancedOptions(const Value: TJvDoaThreadedDatasetEnhancedOptions);
   protected
-    function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
-  public
-    function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
+    function CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions; override;
   published
-    property DialogOptions: TJvOracleDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
-  end;
+    property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read
+        GetEnhancedOptions write SetEnhancedOptions;
+  End;
 
-  TJvOracleDatasetThread = class(TJvThread)
-  private
-    FConnectedDataset: TJvOracleDataset;
-  protected
-    procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); override;
-  public
-    procedure CancelExecute; override;
-    property ConnectedDataset: TJvOracleDataset read FConnectedDataset write FConnectedDataset;
-  end;
-
-  TJvOracleDataSet = class(TOracleDataSet)
+  TJvOracleDataset = class(TOracleDataset, IJvThreadedDatasetInterface)
+    procedure BreakExecution;
+    procedure DoInheritedAfterOpen;
+    procedure DoInheritedAfterRefresh;
+    procedure DoInheritedBeforeOpen;
+    procedure DoInheritedBeforeRefresh;
+    procedure doInheritedInternalLast;
+    procedure doInheritedInternalRefresh;
+    procedure doInheritedSetActive(Active: Boolean);
+    procedure doInternalOpen;
+    function GetDatasetFetchAllRecords: Boolean;
+    function IsThreadAllowed: Boolean;
+    procedure SetDatasetFetchAllRecords(const Value: Boolean);
   private
     FAfterFetchRecord: TAfterFetchRecordEvent;
-    FAfterOpen: TDataSetNotifyEvent;
-    FAfterRefresh: TDataSetNotifyEvent;
-    FAfterThreadExecution: TJvOracleDatasetThreadEvent;
-    FBeforeOpen: TDataSetNotifyEvent;
-    FBeforeRefresh: TDataSetNotifyEvent;
-    FBeforeThreadExecution: TJvOracleDatasetThreadEvent;
-    FCurrentAction: TJvOracleDatasetAction;
-    FCurrentFetchDuration: TDateTime;
-    FCurrentOpenDuration: TDateTime;
-    FCurrentOperation: TJvOracleDatasetOperation;
-    FCurrentOperationStart: TDateTime;
-    FCurrentRow: Integer;
-    FEnhancedOptions: TJvOracleDatasetEnhancedOptions;
-    FErrorMessage: string;
-    FFetchMode: TJvOracleDatasetFetchMode;
-    FFetchStartTime: TDateTime;
-    FIgnoreRowsCheck: Integer;
-    FIntDatasetWasFiltered: Boolean;
-    FintQueryAllRecords: Boolean;
-    FIntRowCheckEnabled: Boolean;
-    FOpenStartTime: TDateTime;
-    FSynchAfterFetchAction: TAfterFetchRecordAction;
-    FSynchAfterFetchFilterAccept: Boolean;
-    FSynchAfterFetchSender: TOracleDataSet;
-    FSynchMessageDlgBtn: Word;
-    FSynchMessageDlgMsg: string;
-    FExecuteThread: TJvOracleDatasetThread;
-    FLastRowChecked: Integer;
-    FMoveToRecordAfterOpen: Longint;
-    FOperationWasHandledInThread: Boolean;
-    FThreadDialog: TJvOracleDatasetThreadDialog;
-    FThreadOptions: TJvOracleDatasetThreadOptions;
-    function GetCurrentAction: TJvOracleDatasetAction;
-    function GetCurrentFetchDuration: TDateTime;
-    function GetCurrentOpenDuration: TDateTime;
-    function GetCurrentOperation: TJvOracleDatasetOperation;
-    function GetCurrentOperationAction: string;
-    function GetDialogOptions: TJvOracleDatasetDialogOptions;
-    function GetFetchMode: TJvOracleDatasetFetchMode;
-    procedure HandleAfterOpenRefresh;
-    procedure SetCurrentAction(const Value: TJvOracleDatasetAction);
-    procedure SetCurrentFetchDuration(const Value: TDateTime);
-    procedure SetCurrentOpenDuration(const Value: TDateTime);
-    procedure SetDialogOptions(Value: TJvOracleDatasetDialogOptions);
-    procedure SetEnhancedOptions(Value: TJvOracleDatasetEnhancedOptions);
-    procedure SetFetchMode(const Value: TJvOracleDatasetFetchMode);
-    procedure SetFetchStartTime(const Value: TDateTime);
-    procedure SetIgnoreRowsCheck(const Value: Integer);
-    procedure SetOpenStartTime(const Value: TDateTime);
-    procedure SetThreadOptions(const Value: TJvOracleDatasetThreadOptions);
-    procedure SynchAfterFetchRecord;
-    procedure SynchAfterThreadExecution;
-    procedure SynchBeforeThreadExecution;
-    procedure SynchContinueFetchMessageDlg;
-    procedure SynchErrorMessageDlg;
-    property OperationWasHandledInThread: Boolean read FOperationWasHandledInThread
-        write FOperationWasHandledInThread;
+    FThreadHandler: TJvBaseDatasetThreadHandler;
+    function GetBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
+    function GetAfterThreadExecution: TJvThreadedDatasetThreadEvent;
+    function GetDialogOptions: TJvThreadedDatasetDialogOptions;
+    function GetEnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions;
+    function GetThreadOptions: TJvThreadedDatasetThreadOptions;
+    procedure SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
+    procedure SetAfterThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
+    procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
+    procedure SetEnhancedOptions(const Value: TJvDoaThreadedDatasetEnhancedOptions);
+    procedure SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
+    property ThreadHandler: TJvBaseDatasetThreadHandler read FThreadHandler;
   protected
-    procedure ExecuteThreadSynchronize(Method: TThreadMethod);
-    procedure DoThreadLast;
-    procedure DoThreadOpen;
-    procedure DoThreadRefresh;
-    function ExecuteThreadIsActive: Boolean;
-    procedure HandleAfterOpenRefreshThread;
-    procedure HandleBeforeOpenRefresh;
+    procedure DoAfterOpen; override;
+    procedure DoAfterRefresh; override;
+    procedure DoBeforeOpen; override;
+    procedure DoBeforeRefresh; override;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
-    procedure IntSynchAfterOpen;
-    procedure IntSynchAfterRefresh;
-    procedure IntAfterThreadExecution(DataSet: TJvOracleDataSet; Operation: TJvOracleDatasetOperation);
-    procedure IntSynchBeforeOpen;
-    procedure IntSynchBeforeRefresh;
-    procedure IntBeforeThreadExecution(DataSet: TJvOracleDataSet; Operation: TJvOracleDatasetOperation);
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure ReplaceAfterFetchRecord(Sender: TOracleDataSet;
-      FilterAccept: Boolean; var Action: TAfterFetchRecordAction);
-    procedure ReplaceAfterOpen(Dataset: TDataSet);
-    procedure ReplaceAfterRefresh(Dataset: TDataSet);
-    procedure ReplaceBeforeOpen(Dataset: TDataSet);
-    procedure ReplaceBeforeRefresh(Dataset: TDataSet);
+    procedure ReplaceAfterFetchRecord(Sender: TOracleDataSet; FilterAccept:
+        Boolean; var Action: TAfterFetchRecordAction);
     procedure SetActive(Value: Boolean); override;
-    procedure SetErrorMessage(const Value: string);
-    procedure ThreadExecute(Sender: TObject; Params: Pointer);
-    property CurrentOperation: TJvOracleDatasetOperation read GetCurrentOperation;
-    property FetchMode: TJvOracleDatasetFetchMode read GetFetchMode write SetFetchMode;
-    property FetchStartTime: TDateTime read FFetchStartTime write SetFetchStartTime;
-    property IgnoreRowsCheck: Integer read FIgnoreRowsCheck write SetIgnoreRowsCheck;
-    property IntRowCheckEnabled: Boolean read FIntRowCheckEnabled write FIntRowCheckEnabled;
-    property OpenStartTime: TDateTime read FOpenStartTime write SetOpenStartTime;
-    property ExecuteThread: TJvOracleDatasetThread read FExecuteThread;
-    property ThreadDialog: TJvOracleDatasetThreadDialog read FThreadDialog;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
-    procedure BreakExecution;
-    procedure CapitalizeDatasetLabels;
-    class function CreateJvOracleDataSet(AOwner: TComponent): TJvOracleDataSet;
-    procedure MoveTo(Position: Integer);
+    function CurrentFetchDuration: TDateTime;
+    function CurrentOpenDuration: TDateTime;
+    function ErrorMessage: string;
     function ThreadIsActive: Boolean;
-    property CurrentAction: TJvOracleDatasetAction read GetCurrentAction write SetCurrentAction;
-    property CurrentFetchDuration: TDateTime read GetCurrentFetchDuration write SetCurrentFetchDuration;
-    property CurrentOpenDuration: TDateTime read GetCurrentOpenDuration write SetCurrentOpenDuration;
-    property CurrentOperationAction: string read GetCurrentOperationAction;
-    property CurrentRow: Integer read FCurrentRow;
-    property ErrorMessage: string read FErrorMessage write SetErrorMessage;
   published
-    property AfterFetchRecord: TAfterFetchRecordEvent read FAfterFetchRecord write FAfterFetchRecord;
-    property AfterOpen: TDataSetNotifyEvent read FAfterOpen write FAfterOpen;
-    property BeforeOpen: TDataSetNotifyEvent read FBeforeOpen write FBeforeOpen;
-    property DialogOptions: TJvOracleDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
-    property EnhancedOptions: TJvOracleDatasetEnhancedOptions
-      read FEnhancedOptions write SetEnhancedOptions;
-    property ThreadOptions: TJvOracleDatasetThreadOptions read FThreadOptions write SetThreadOptions;
-    property AfterRefresh: TDataSetNotifyEvent read FAfterRefresh write FAfterRefresh;
-    property AfterThreadExecution: TJvOracleDatasetThreadEvent
-      read FAfterThreadExecution write FAfterThreadExecution;
-    property BeforeRefresh: TDataSetNotifyEvent read FBeforeRefresh write FBeforeRefresh;
-    property BeforeThreadExecution: TJvOracleDatasetThreadEvent
-      read FBeforeThreadExecution write FBeforeThreadExecution;
+    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
+        GetBeforeThreadExecution write SetBeforeThreadExecution;
+    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions
+        write SetDialogOptions;
+    property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read
+        GetEnhancedOptions write SetEnhancedOptions;
+    property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions
+        write SetThreadOptions;
+    property AfterFetchRecord: TAfterFetchRecordEvent read FAfterFetchRecord write
+        FAfterFetchRecord;
+    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
+        GetAfterThreadExecution write SetAfterThreadExecution;
   end;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -335,958 +152,299 @@ const
 
 implementation
 
-uses
-  Dialogs, DateUtils,
-  JvDynControlEngineIntf, JvDSADialogs, JvResources;
-
-//=== { TJvOracleDataSet } ===================================================
-
-constructor TJvOracleDataSet.Create(AOwner: TComponent);
+constructor TJvOracleDataset.Create(AOwner : TComponent);
 begin
-  inherited Create(AOwner);
-  FThreadOptions := TJvOracleDatasetThreadOptions.Create;
-  FExecuteThread := TJvOracleDatasetThread.Create(Self);
-  FThreadDialog := TJvOracleDatasetThreadDialog.Create(Self);
-  FExecuteThread.Exclusive := True;
-  FExecuteThread.OnExecute := ThreadExecute;
-  FExecuteThread.ConnectedDataset := Self;
-  FExecuteThread.ThreadDialog := ThreadDialog;
-  FEnhancedOptions := TJvOracleDatasetEnhancedOptions.Create;
-  FFetchMode := todfmFetch;
-  IntRowCheckEnabled := True;
-  FCurrentAction := todaNothing;
-  inherited AfterFetchRecord := ReplaceAfterFetchRecord;
-  inherited BeforeOpen := ReplaceBeforeOpen;
-  inherited AfterOpen := ReplaceAfterOpen;
-  inherited BeforeRefresh := ReplaceBeforeRefresh;
-  inherited AfterRefresh := ReplaceAfterRefresh;
+  inherited Create (AOwner);
+  FThreadHandler := TJvOracleDatasetThreadHandler.Create(Self, Self);
+  Inherited AfterFetchRecord := ReplaceAfterFetchRecord;
 end;
 
-destructor TJvOracleDataSet.Destroy;
+destructor TJvOracleDataset.Destroy;
 begin
-  if Assigned(FExecuteThread) then
-  begin
-    if not FExecuteThread.Terminated then
-      FExecuteThread.Terminate;
-    FreeAndNil(FExecuteThread);
-  end;
-  if Assigned(FEnhancedOptions) then
-    FreeAndNil(FEnhancedOptions);
-  if Assigned(FThreadOptions) then
-    FreeAndNil(FThreadOptions);
-  if Assigned(FThreadDialog) then
-    FreeAndNil(FThreadDialog);
-  inherited;
+  FreeAndNil(FThreadHandler);
+  inherited Destroy;
 end;
 
-procedure TJvOracleDataSet.BreakExecution;
+procedure TJvOracleDataset.BreakExecution;
 begin
-  if CurrentAction = todaOpen then
-    if Assigned(Session) and Session.Connected then
-      Session.BreakExecution;
-  if FetchMode = todfmFetch then
-    FetchMode := todfmBreak;
-  IntRowCheckEnabled := False;
+  if Assigned(Session) and Session.Connected then
+    Session.BreakExecution;
 end;
 
-procedure TJvOracleDataSet.CapitalizeDatasetLabels;
-var
-  I, J: Integer;
-  S: string;
-  Upper: Boolean;
+function TJvOracleDataset.CurrentFetchDuration: TDateTime;
 begin
-  if Active then
-    for I := 0 to FieldCount - 1 do
-    begin
-      S := LowerCase(Fields[I].DisplayLabel);
-      Upper := True;
-      for J := 1 to Length(S) do
-        if S[J] in ['_', '$', ' '] then
-        begin
-          Upper := True;
-          S[J] := ' ';
-        end
-        else if Upper then
-        begin
-          S[J] := UpCase(S[J]);
-          Upper := False;
-        end;
-      if EnhancedOptions.CapitalizeLabelOptions.TrimToFirstBlank then
-      begin
-        J := Pos(' ', S);
-        if J > 0 then
-          S := Copy(S, J + 1, Length(S) - J);
-      end;
-      Fields[I].DisplayLabel := S;
-    end;
-end;
-
-class function TJvOracleDataSet.CreateJvOracleDataSet(AOwner: TComponent): TJvOracleDataSet;
-begin
-  Result := TJvOracleDataSet.Create(AOwner);
-end;
-
-procedure TJvOracleDataSet.ExecuteThreadSynchronize(Method: TThreadMethod);
-begin
-  if ExecuteThreadIsActive then
-    ExecuteThread.Synchronize(Method)
-  else
-    Method;
-end;
-
-function TJvOracleDataSet.GetCurrentAction: TJvOracleDatasetAction;
-begin
-  Result := FCurrentAction;
-end;
-
-function TJvOracleDataSet.GetCurrentFetchDuration: TDateTime;
-begin
-  case CurrentAction of
-    todaOpen:
-      Result := 0;
-    todaNothing:
-      Result := FCurrentFetchDuration;
-    todaFetch:
-      Result := FCurrentFetchDuration + (Now - FCurrentOperationStart);
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.CurrentFetchDuration
   else
     Result := 0;
-  end;
 end;
 
-function TJvOracleDataSet.GetCurrentOpenDuration: TDateTime;
+function TJvOracleDataset.CurrentOpenDuration: TDateTime;
 begin
-  if CurrentAction = todaOpen then
-    Result := Now - FCurrentOperationStart
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.CurrentOpenDuration
   else
-    Result := FCurrentOpenDuration;
+    Result := 0;
 end;
 
-function TJvOracleDataSet.GetCurrentOperation: TJvOracleDatasetOperation;
+procedure TJvOracleDataset.InternalLast;
 begin
-  Result := FCurrentOperation;
+  if Assigned(ThreadHandler) then
+    ThreadHandler.InternalLast;
 end;
 
-function TJvOracleDataSet.GetCurrentOperationAction: string;
+procedure TJvOracleDataset.InternalRefresh;
 begin
-  case CurrentOperation of
-    todoOpen:
-      case CurrentAction of
-        todaOpen:
-          Result := SODSOpenQuery;
-        todaFetch:
-          Result := SODSOpenQueryFetchRecords;
-      end;
-    todoRefresh:
-      case CurrentAction of
-        todaOpen:
-          Result := SODSRefreshQuery;
-        todaFetch:
-          Result := SODSRefreshQueryFetchRecords;
-      end;
-    todoFetch:
-      Result := SODSFetchRecords;
-    todoLast:
-      Result := SODSGotoLastFetchRecords;
-  end;
+  if Assigned(ThreadHandler) then
+    ThreadHandler.InternalRefresh;
 end;
 
-function TJvOracleDataSet.GetFetchMode: TJvOracleDatasetFetchMode;
+procedure TJvOracleDataset.SetActive(Value: Boolean);
 begin
-  Result := FFetchMode;
+  if Assigned(ThreadHandler) then
+    ThreadHandler.SetActive(Value);
 end;
 
-procedure TJvOracleDataSet.DoThreadLast;
+
+procedure TJvOracleDataset.DoAfterOpen;
 begin
-  inherited InternalLast;
+  ThreadHandler.AfterOpen;
 end;
 
-procedure TJvOracleDataSet.DoThreadOpen;
+procedure TJvOracleDataset.DoAfterRefresh;
 begin
-  try
-    inherited SetActive(True);
-  finally
-    HandleAfterOpenRefreshThread;
-  end;
+  ThreadHandler.AfterRefresh;
 end;
 
-procedure TJvOracleDataSet.DoThreadRefresh;
+procedure TJvOracleDataset.DoBeforeOpen;
 begin
-  try
-    if not EnhancedOptions.RefreshAsOpenClose then
-    begin
-      inherited InternalRefresh;
-    end
-    else
-    begin
-      Close;
-      InternalOpen;
-    end;
-  finally
-    HandleAfterOpenRefreshThread;
-  end;
+  ThreadHandler.BeforeOpen;
 end;
 
-function TJvOracleDataSet.ExecuteThreadIsActive: Boolean;
+procedure TJvOracleDataset.DoBeforeRefresh;
 begin
-  Result := Not ExecuteThread.Terminated;
+  ThreadHandler.BeforeRefresh;
 end;
 
-function TJvOracleDataSet.GetDialogOptions: TJvOracleDatasetDialogOptions;
+procedure TJvOracleDataset.DoInheritedAfterOpen;
 begin
-  Result := ThreadDialog.DialogOptions;
+  Inherited DoAfterOpen;
 end;
 
-procedure TJvOracleDataSet.HandleAfterOpenRefresh;
+procedure TJvOracleDataset.DoInheritedAfterRefresh;
 begin
-  CurrentOpenDuration := Now - FCurrentOperationStart;
-  FCurrentOperationStart := Now;
-  QueryAllRecords := FIntQueryAllRecords;
-  CurrentFetchDuration := 0;
-  CurrentAction := todaFetch;
-  if Active then
-  begin
-    First;
-    if QueryAllRecords then
-      inherited InternalLast
-    else
-    if (EnhancedOptions.FetchRowsFirst > RecordCount) or (FMoveToRecordAfterOpen > RecordCount) then
-      if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
-        MoveBy(FMoveToRecordAfterOpen - 1)
-      else
-        MoveBy(EnhancedOptions.FetchRowsFirst - 1);
-  end;
-  try
-    Filtered := FIntDatasetWasFiltered;
-    if Active then
-      if FMoveToRecordAfterOpen > 0 then
-        MoveTo(FMoveToRecordAfterOpen)
-      else
-        First;
-    CurrentAction := todaNothing;
-  finally
-    ExecuteThreadSynchronize(EnableControls);
-  end;
+  Inherited DoAfterRefresh;
 end;
 
-procedure TJvOracleDataSet.HandleAfterOpenRefreshThread;
+procedure TJvOracleDataset.DoInheritedBeforeOpen;
 begin
-  HandleAfterOpenRefresh;
-  if Active and Assigned(FAfterOpen) and (CurrentOperation <> todoRefresh) then
-      ExecuteThreadSynchronize(IntSynchAfterOpen);
+  Inherited DoBeforeOpen;
 end;
 
-procedure TJvOracleDataSet.HandleBeforeOpenRefresh;
+procedure TJvOracleDataset.DoInheritedBeforeRefresh;
 begin
-  OperationWasHandledInThread := False;
-  ExecuteThreadSynchronize(DisableControls);
-  CurrentOpenDuration := 0;
-  CurrentFetchDuration := 0;
-  IntRowCheckEnabled := True;
-  FCurrentRow := 0;
-  FCurrentOperationStart := Now;
-  CurrentAction := todaOpen;
-  FIntQueryAllRecords := QueryAllRecords;
-  FIntDatasetWasFiltered := Filtered;
-  FLastRowChecked := 0;
-  Filtered := False;
-  QueryAllRecords := False;
+  Inherited DoBeforeRefresh;
 end;
 
-procedure TJvOracleDataSet.InternalLast;
-var
-  ShowModal    :Boolean;
+procedure TJvOracleDataset.doInheritedInternalLast;
 begin
-  FCurrentOperation := todoLast;
-  if not ThreadOptions.LastInThread or ThreadIsActive or (csDesigning in ComponentState) then
-  begin
-    inherited InternalLast;
-    FCurrentOperation := todoNothing;
-  end
+  Inherited InternalLast;
+end;
+
+procedure TJvOracleDataset.doInheritedInternalRefresh;
+begin
+  Inherited InternalRefresh;
+end;
+
+procedure TJvOracleDataset.doInheritedSetActive(Active: Boolean);
+begin
+  Inherited SetActive(Active);
+end;
+
+procedure TJvOracleDataset.doInternalOpen;
+begin
+  InternalOpen;
+end;
+
+function TJvOracleDataset.ErrorMessage: string;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ErrorMessage
   else
-  begin
-    if Assigned(ExecuteThread.ThreadDialog) then
-    begin
-      showModal := ExecuteThread.ThreadDialog.DialogOptions.ShowModal;
-      ExecuteThread.ThreadDialog.DialogOptions.ShowModal := True;
-    end
-    else
-      ShowModal := False;
-    ExecuteThread.ExecuteWithDialog(nil);
-    if Assigned(ExecuteThread.ThreadDialog) then
-      ExecuteThread.ThreadDialog.DialogOptions.ShowModal := showModal;
-  end;
+    Result := '';
 end;
 
-procedure TJvOracleDataSet.InternalRefresh;
-var
-  ThreadAllowed: Boolean;
+function TJvOracleDataset.GetBeforeThreadExecution:
+    TJvThreadedDatasetThreadEvent;
 begin
-  if Assigned(Master) and (Master is TJvOracleDataSet) then
-    ThreadAllowed := not TJvOracleDataSet(Master).ThreadIsActive
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.BeforeThreadExecution
   else
-    ThreadAllowed := True;
-  FCurrentOperation := todoRefresh;
-  if not ThreadOptions.RefreshInThread or not ThreadAllowed or
-    ThreadIsActive or (csDesigning in ComponentState) then
-  begin
-    inherited InternalRefresh;
-    FCurrentOperation := todoNothing;
-  end
+    Result := nil;
+end;
+
+function TJvOracleDataset.GetAfterThreadExecution:
+    TJvThreadedDatasetThreadEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.AfterThreadExecution
   else
-    ExecuteThread.ExecuteWithDialog(nil);
+    Result := nil;
 end;
 
-procedure TJvOracleDataSet.IntSynchAfterOpen;
+function TJvOracleDataset.GetDatasetFetchAllRecords: Boolean;
 begin
-  if EnhancedOptions.CapitalizeLabelOptions.AutoExecuteAfterOpen then
-    CapitalizeDatasetLabels;
-  if Assigned(FAfterOpen) then
-    FAfterOpen(Self);
+  Result := QueryAllRecords;
 end;
 
-procedure TJvOracleDataSet.IntSynchAfterRefresh;
+function TJvOracleDataset.GetDialogOptions: TJvThreadedDatasetDialogOptions;
 begin
-  if Assigned(FAfterRefresh) then
-    FAfterRefresh(Self);
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.DialogOptions
+  else
+    Result := nil;
 end;
 
-procedure TJvOracleDataSet.IntAfterThreadExecution(DataSet: TJvOracleDataSet;
-  Operation: TJvOracleDatasetOperation);
+function TJvOracleDataset.GetEnhancedOptions:
+    TJvDoaThreadedDatasetEnhancedOptions;
 begin
-  if Assigned(FAfterThreadExecution) then
-    FAfterThreadExecution(DataSet, Operation);
+  if Assigned(ThreadHandler) then
+    Result := TJvDoaThreadedDatasetEnhancedOptions(ThreadHandler.EnhancedOptions)
+  else
+    Result := nil;
 end;
 
-procedure TJvOracleDataSet.IntSynchBeforeOpen;
+function TJvOracleDataset.GetThreadOptions: TJvThreadedDatasetThreadOptions;
 begin
-  if Assigned(FBeforeOpen) then
-    FBeforeOpen(Self);
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ThreadOptions
+  else
+    Result := nil;
 end;
 
-procedure TJvOracleDataSet.IntSynchBeforeRefresh;
+function TJvOracleDataset.IsThreadAllowed: Boolean;
 begin
-  if Assigned(FBeforeRefresh) then
-    FBeforeRefresh(Self);
+  if Assigned(Master) and (Master is TJvOracleDataset) then
+    Result := not TJvOracleDataset(Master).ThreadHandler.ThreadIsActive
+  else
+    Result := True;
 end;
 
-procedure TJvOracleDataSet.IntBeforeThreadExecution(DataSet: TJvOracleDataSet;
-  Operation: TJvOracleDatasetOperation);
+procedure TJvOracleDataset.ReplaceAfterFetchRecord(Sender: TOracleDataSet;
+    FilterAccept: Boolean; var Action: TAfterFetchRecordAction);
 begin
-  if Assigned(FBeforeThreadExecution) then
-    FBeforeThreadExecution(DataSet, Operation);
-end;
-
-procedure TJvOracleDataSet.MoveTo(Position: Integer);
-begin
-  MoveBy(Position - RecNo);
-end;
-
-procedure TJvOracleDataSet.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = ThreadDialog) and (Operation = opRemove) then
-    FThreadDialog := nil;
-end;
-
-procedure TJvOracleDataSet.ReplaceAfterFetchRecord(Sender: TOracleDataSet;
-  FilterAccept: Boolean; var Action: TAfterFetchRecordAction);
-begin
-  FCurrentRow := RecordCount;
-  if Assigned(FAfterFetchRecord) then
-  begin
-    FSynchAfterFetchSender := Sender;
-    FSynchAfterFetchFilterAccept := FilterAccept;
-    FSynchAfterFetchAction := Action;
-    ExecuteThreadSynchronize(SynchAfterFetchRecord);
-    Action := FSynchAfterFetchAction;
-    Exit;
-  end;
-  case FetchMode of
-    todfmBreak:
-      begin
+  if Assigned(ThreadHandler) then
+    case ThreadHandler.CheckContinueRecordFetch of
+      tdccrContinue:
+        Action := afContinue;
+      tdccrAll:
+        Action := afContinue;
+      tdccrCancel:
+        Action := afCancel;
+      tdccrPause:
         Action := afPause;
-        FetchMode := todfmFetch;
-        Exit;
-      end;
-    todfmStop:
-      begin
+      tdccrStop:
         Action := afStop;
-        Exit;
-      end;
-  end;
-  if (EnhancedOptions.FetchRowsCheck > 0) and IntRowCheckEnabled then
-    if CurrentRow >= FLastRowChecked + EnhancedOptions.FetchRowsCheck then
-    begin
-      fCurrentFetchDuration := fCurrentFetchDuration + Now - FCurrentOperationStart;
-      CurrentAction := todaNothing;
-      FLastRowChecked := CurrentRow;
-      FSynchMessageDlgMsg := Format(SODSRowsFetchedContinue, [CurrentRow]);
-      ExecuteThreadSynchronize(SynchContinueFetchMessageDlg);
-      case FSynchMessageDlgBtn of
-        mrYes:
-          Action := afContinue;
-        mrAll:
-          begin
-            Action := afContinue;
-            IntRowCheckEnabled := False;
-          end;
-        mrAbort:
-          Action := afCancel;
-        mrCancel:
-          Action := afPause;
-        mrNo:
-          Action := afStop;
-      else
-        Action := afStop;
-      end;
-      CurrentAction := todaFetch;
-      FCurrentOperationStart := Now;
+    else
+      Action := afStop;
     end;
+  if Assigned(AfterFetchRecord) then
+    AfterFetchRecord(Sender, FilterAccept, Action);
 end;
 
-procedure TJvOracleDataSet.ReplaceAfterOpen(Dataset: TDataSet);
+procedure TJvOracleDataset.SetBeforeThreadExecution(const Value:
+    TJvThreadedDatasetThreadEvent);
 begin
-  if not ExecuteThreadIsActive and not OperationWasHandledInThread and (CurrentOperation <> todoRefresh) then
-    HandleAfterOpenRefresh;
-  if not ExecuteThreadIsActive then
-    if Assigned(FAfterOpen) then
-      ExecuteThreadSynchronize(IntSynchAfterOpen);
+  if Assigned(ThreadHandler) then
+    ThreadHandler.BeforeThreadExecution := Value;
 end;
 
-procedure TJvOracleDataSet.ReplaceAfterRefresh(Dataset: TDataSet);
+procedure TJvOracleDataset.SetAfterThreadExecution(const Value:
+    TJvThreadedDatasetThreadEvent);
 begin
-  if not ExecuteThreadIsActive and not OperationWasHandledInThread then
-    HandleAfterOpenRefresh;
-  if Assigned(FAfterRefresh) then
-    ExecuteThreadSynchronize(IntSynchAfterRefresh);
+  if Assigned(ThreadHandler) then
+    ThreadHandler.AfterThreadExecution := Value;
 end;
 
-procedure TJvOracleDataSet.ReplaceBeforeOpen(Dataset: TDataSet);
+procedure TJvOracleDataset.SetDatasetFetchAllRecords(const Value: Boolean);
 begin
-  if (CurrentOperation <> todoRefresh) then
-  begin
-    FMoveToRecordAfterOpen := -1;
-    HandleBeforeOpenRefresh;
-  end;
-  if Assigned(FBeforeOpen) then
-    ExecuteThreadSynchronize(IntSynchBeforeOpen);
+  QueryAllRecords := Value;
 end;
 
-procedure TJvOracleDataSet.ReplaceBeforeRefresh(Dataset: TDataSet);
+procedure TJvOracleDataset.SetDialogOptions(Value:
+    TJvThreadedDatasetDialogOptions);
 begin
-  if EnhancedOptions.RefreshLastPosition then
-    FMoveToRecordAfterOpen := RecNo
+  if Assigned(ThreadHandler) then
+    ThreadHandler.DialogOptions.Assign(Value);
+end;
+
+procedure TJvOracleDataset.SetEnhancedOptions(const Value:
+    TJvDoaThreadedDatasetEnhancedOptions);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.EnhancedOptions.Assign(Value);
+end;
+
+procedure TJvOracleDataset.SetThreadOptions(const Value:
+    TJvThreadedDatasetThreadOptions);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.ThreadOptions.Assign(Value);
+end;
+
+function TJvOracleDataset.ThreadIsActive: Boolean;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ThreadIsActive
   else
-    FMoveToRecordAfterOpen := -1;
-  HandleBeforeOpenRefresh;
-  if Assigned(FBeforeRefresh) then
-    ExecuteThreadSynchronize(IntSynchBeforeRefresh);
+    Result := False;
 end;
 
-procedure TJvOracleDataSet.SetActive(Value: Boolean);
+function TJvOracleDatasetThreadHandler.CreateEnhancedOptions:
+    TJvBaseThreadedDatasetEnhancedOptions;
 begin
-  if not Value then
-  begin
-    CurrentOpenDuration := 0;
-    CurrentFetchDuration := 0;
-    inherited SetActive(Value);
-  end
-  else
-  begin
-    if CurrentOperation <> todoRefresh then
-      FCurrentOperation := todoOpen;
-    if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
-    begin
-      inherited SetActive(Value);
-      if CurrentOperation <> todoRefresh then
-        FCurrentOperation := todoNothing;
-    end
-    else
-      ExecuteThread.ExecuteWithDialog(nil);
-  end;
+  Result := TJvDoaThreadedDatasetEnhancedOptions.Create;
 end;
 
-procedure TJvOracleDataSet.SetCurrentAction(const Value: TJvOracleDatasetAction);
+function TJvOracleDatasetThreadHandler.GetEnhancedOptions:
+    TJvDoaThreadedDatasetEnhancedOptions;
 begin
-  FCurrentAction := Value;
+  Result := TJvDoaThreadedDatasetEnhancedOptions(inherited EnhancedOptions);
 end;
 
-procedure TJvOracleDataSet.SetCurrentFetchDuration(const Value: TDateTime);
+procedure TJvOracleDatasetThreadHandler.SetEnhancedOptions(const Value:
+    TJvDoaThreadedDatasetEnhancedOptions);
 begin
-  FCurrentFetchDuration := Value;
+  inherited EnhancedOptions := Value;
 end;
 
-procedure TJvOracleDataSet.SetCurrentOpenDuration(const Value: TDateTime);
-begin
-  FCurrentOpenDuration := Value;
-end;
-
-procedure TJvOracleDataSet.SetDialogOptions(Value: TJvOracleDatasetDialogOptions);
-begin
-  ThreadDialog.DialogOptions.Assign(Value);
-end;
-
-procedure TJvOracleDataSet.SetEnhancedOptions(Value: TJvOracleDatasetEnhancedOptions);
-begin
-  FEnhancedOptions.Assign(Value);
-end;
-
-procedure TJvOracleDataSet.SetErrorMessage(const Value: string);
-begin
-  FErrorMessage := Value;
-end;
-
-procedure TJvOracleDataSet.SetFetchMode(const Value: TJvOracleDatasetFetchMode);
-begin
-  FFetchMode := Value;
-end;
-
-procedure TJvOracleDataSet.SetFetchStartTime(const Value: TDateTime);
-begin
-  FFetchStartTime := Value;
-end;
-
-procedure TJvOracleDataSet.SetIgnoreRowsCheck(const Value: Integer);
-begin
-  FIgnoreRowsCheck := Value;
-end;
-
-procedure TJvOracleDataSet.SetOpenStartTime(const Value: TDateTime);
-begin
-  FOpenStartTime := Value;
-end;
-
-procedure TJvOracleDataSet.SetThreadOptions(const Value: TJvOracleDatasetThreadOptions);
-begin
-  FThreadOptions.Assign(Value);
-end;
-
-procedure TJvOracleDataSet.SynchAfterFetchRecord;
-begin
-  if Assigned(FAfterFetchRecord) then
-    FAfterFetchRecord(FSynchAfterFetchSender, FSynchAfterFetchFilterAccept, FSynchAfterFetchAction);
-end;
-
-procedure TJvOracleDataSet.SynchAfterThreadExecution;
-begin
-  IntAfterThreadExecution(Self, CurrentOperation);
-end;
-
-procedure TJvOracleDataSet.SynchBeforeThreadExecution;
-begin
-  IntBeforeThreadExecution(Self, CurrentOperation);
-end;
-
-procedure TJvOracleDataSet.SynchContinueFetchMessageDlg;
-var
-  Buttons: array of string;
-  Results: array of Integer;
-  L: Integer;
-
-  procedure AddButton(Caption: string; ResultValue: Integer);
-  begin
-    Inc(L);
-    SetLength (Buttons, L);
-    SetLength (Results, L);
-    Buttons[L-1] := Caption;
-    Results[L-1] := ResultValue;
-  end;
-
-begin
-  L := 0;
-  AddButton(SODSContinueYes, Integer(mrYes));
-  if todafPause in EnhancedOptions.AllowedAfterFetchRecordActions then
-    AddButton(SODSContinuePause, Integer(mrCancel));
-  AddButton(SODSContinueNo, Integer(mrNo));
-  if todafAll in EnhancedOptions.AllowedAfterFetchRecordActions then
-    AddButton(SODSContinueAll, Integer(mrAll));
-  if todafCancel in EnhancedOptions.AllowedAfterFetchRecordActions then
-    AddButton(SODSContinueClose, Integer(mrAbort));
-  FSynchMessageDlgBtn := JvDSADialogs.MessageDlgEx(FSynchMessageDlgMsg,
-      mtConfirmation, Buttons, Results, 0, dckActiveForm, 0,
-      0, 1, -1, DialogOptions.DynControlEngine);
-end;
-
-procedure TJvOracleDataSet.SynchErrorMessageDlg;
-begin
-  FSynchMessageDlgBtn := JvDSADialogs.MessageDlg(FSynchMessageDlgMsg,
-    mtError, [mbOK], 0, dckScreen, 0,
-    mbDefault, mbDefault, mbHelp, DialogOptions.DynControlEngine);
-end;
-
-procedure TJvOracleDataSet.ThreadExecute(Sender: TObject; Params: Pointer);
-begin
-  OperationWasHandledInThread := True;
-  try
-    SetErrorMessage('');
-    ExecuteThreadSynchronize(SynchBeforeThreadExecution);
-    try
-      case FCurrentOperation of
-        todoOpen:
-          DoThreadOpen;
-        todoRefresh:
-          DoThreadRefresh;
-        todoLast:
-          DoThreadLast;
-      end;
-    except
-      on E: Exception do
-      begin
-        SetErrorMessage(E.Message);
-        if ThreadOptions.ShowExceptionMessage then
-        begin
-          FSynchMessageDlgMsg := E.Message;
-          ExecuteThreadSynchronize(SynchErrorMessageDlg);
-        end;
-      end;
-    end;
-    ExecuteThreadSynchronize(SynchAfterThreadExecution);
-  finally
-    FCurrentOperation := todoNothing;
-  end;
-end;
-
-function TJvOracleDataSet.ThreadIsActive: Boolean;
-begin
-  Result := not ExecuteThread.Terminated;
-end;
-
-function TJvOracleDatasetThreadDialog.CreateDialogOptions: TJvCustomThreadDialogOptions;
-begin
-  Result := TJvOracleDatasetDialogOptions.Create(Self);
-end;
-
-function TJvOracleDatasetThreadDialog.CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm;
-var
-  ThreadDialogForm: TJvOracleDatasetThreadDialogForm;
-begin
-  if DialogOptions.ShowDialog then
-  begin
-    if Assigned(ConnectedThread.Owner) and (ConnectedThread.Owner is TWinControl) then
-      ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
-        DialogOptions.FormStyle, TWinControl(ConnectedThread.Owner))
-    else
-    if Assigned(ConnectedThread.Owner) and Assigned(ConnectedThread.Owner.Owner) and
-      (ConnectedThread.Owner.Owner is TWinControl) then
-      ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
-        DialogOptions.FormStyle, TWinControl(ConnectedThread.Owner.Owner))
-    else
-     ThreadDialogForm := TJvOracleDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
-       DialogOptions.FormStyle);
-    ThreadDialogForm.DialogOptions := DialogOptions;
-    ThreadDialogForm.CreateFormControls;
-    Result := ThreadDialogForm;
-  end
-  else
-    Result := nil;
-end;
-
-function TJvOracleDatasetThreadDialog.GetDialogOptions: TJvOracleDatasetDialogOptions;
-begin
-  Result := TJvOracleDatasetDialogOptions(inherited DialogOptions);
-end;
-
-procedure TJvOracleDatasetThreadDialog.SetDialogOptions(const Value: TJvOracleDatasetDialogOptions);
-begin
-  inherited DialogOptions.Assign(Value);
-end;
-
-//=== { TJvOracleDatasetThreadDialogForm } ===================================
-
-constructor TJvOracleDatasetThreadDialogForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  DynControlEngine := nil;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.CreateFormControls;
-var
-  MainPanel: TWinControl;
-  ITmpPanel: IJvDynControlPanel;
-  ITmpControl: IJvDynControl;
-begin
-  MainPanel := DynControlEngine.CreatePanelControl(Self, Self, 'MainPanel', '', alClient);
-  if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
-
-  CreateTextPanel(Self, MainPanel, FTimePanel, FTimeLabel, FTimeStaticText, 'Time');
-  if Supports(FTimeLabel, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(SODSOpenFetch);
-  CreateTextPanel(Self, MainPanel, FRowsPanel, FRowsLabel, FRowsStaticText, 'Rows');
-  if Supports(FRowsLabel, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(SODSCurrentRecord);
-  FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
-  FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
-    'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick, True, True);
-  with FCancelBtn do
-  begin
-    Anchors := [akTop];
-    Top := 2;
-    FCancelButtonPanel.Height := FCancelBtn.Height + 3;
-  end;
-
-  BorderIcons := [];
-  BorderStyle := bsDialog;
-  if DialogOptions.Caption <> '' then
-    Caption := DialogOptions.Caption
-  else
-    Caption := ' ';
-  FormStyle := DialogOptions.FormStyle;
-  OldCreateOrder := False;
-  {$IFDEF COMPILER7_UP}
-  Position := poOwnerFormCenter;
-  {$ELSE}
-  Position := poScreenCenter;
-  {$ENDIF COMPILER7_UP}
-  PixelsPerInch := 96;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.CreateTextPanel(AOwner: TComponent;
-  AParent: TWinControl; var Panel: TWinControl; var LabelCtrl: TControl;
-  var StaticText: TWinControl; const BaseName: string);
-var
-  ITmpPanel: IJvDynControlPanel;
-  ITmpAutoSize: IJvDynControlAutoSize;
-  ITmpAlignment: IJvDynControlAlignment;
-begin
-  Panel := DynControlEngine.CreatePanelControl(AOwner, AParent, BaseName + 'Panel', '', alTop);
-  if not Supports(Panel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 3);
-  LabelCtrl := DynControlEngine.CreateLabelControl(AOwner, Panel, BaseName + 'Label', '', nil);
-  with LabelCtrl do
-  begin
-    Top := 1;
-    Left := 1;
-  end;
-  StaticText := DynControlEngine.CreateStaticTextControl(AOwner, Panel, BaseName + 'StaticText', '');
-  if Supports(StaticText, IJvDynControlAutoSize, ITmpAutoSize) then
-    ITmpAutoSize.ControlSetAutoSize(True);
-  if Supports(StaticText, IJvDynControlAlignment, ITmpAlignment) then
-    ITmpAlignment.ControlSetAlignment(taCenter);
-  with StaticText do
-  begin
-    Top := 1;
-    Left := 100;
-    Height := 13;
-    Panel.Height := Height + 6;
-  end;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.FillDialogData;
-var
-  ITmpControl: IJvDynControl;
-begin
-  if Assigned(ConnectedDataset) then
-  begin
-    if DialogOptions.Caption <> '' then
-      Caption := DialogOptions.Caption +' - '+ConnectedDataset.CurrentOperationAction
-    else
-      Caption := ConnectedDataset.CurrentOperationAction;
-    if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(IntToStr(ConnectedDataset.CurrentRow));
-    if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(
-        FormatDateTime('hh:nn:ss', ConnectedDataset.CurrentOpenDuration) + ' / ' +
-        FormatDateTime('hh:nn:ss', ConnectedDataset.CurrentFetchDuration));
-  end
-  else
-  begin
-    if DialogOptions.Caption <> '' then
-      Caption := DialogOptions.Caption +' - '
-    else
-      Caption := '';
-    if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(IntToStr(0));
-    if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(
-        FormatDateTime('hh:nn:ss', 0) + ' / ' +
-        FormatDateTime('hh:nn:ss', 0));
-  end;
-end;
-
-function TJvOracleDatasetThreadDialogForm.GetConnectedDataset: TJvOracleDataset;
-begin
-  if Assigned(ConnectedDataComponent) and (ConnectedDataComponent is TJvOracleDataSet) then
-    Result := TJvOracleDataSet(ConnectedDataComponent)
-  else
-    Result := nil;
-end;
-
-function TJvOracleDatasetThreadDialogForm.GetDialogOptions: TJvOracleDatasetDialogOptions;
-begin
-  Result := FDialogOptions;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.SetDialogOptions(const Value: TJvOracleDatasetDialogOptions);
-begin
-  FDialogOptions := Value;
-  DynControlEngine := DialogOptions.DynControlEngine;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.SetDynControlEngine(const Value: TJvDynControlEngine);
-begin
-  if not Assigned(Value) then
-    FDynControlEngine := DefaultDynControlEngine
-  else
-    FDynControlEngine := Value;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.TransferDialogOptions;
-var
-  H: Integer;
-begin
-  ClientWidth := 220;
-  FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
-  FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
-  FCancelBtn.Left := Round((FCancelButtonPanel.Width - FCancelBtn.Width) / 2);
-  FRowsPanel.Visible := DialogOptions.ShowRowsLabel;
-  FTimePanel.Visible := DialogOptions.ShowTimeLabel;
-  H := 10;
-  if FRowsPanel.Visible then
-    H := H + FRowsPanel.Height;
-  if FTimePanel.Visible then
-    H := H + FTimePanel.Height;
-  if FCancelButtonPanel.Visible then
-    H := H + FCancelButtonPanel.Height;
-  ClientHeight := H;
-end;
-
-procedure TJvOracleDatasetThreadDialogForm.UpdateFormContents;
-begin
-  inherited UpdateFormContents;
-  FillDialogData;
-end;
-
-//=== { TJvOracleDatasetDialogOptions } ======================================
-
-constructor TJvOracleDatasetDialogOptions.Create(AOwner: TJvCustomThreadDialog);
-begin
-  inherited Create(AOwner);
-  FEnableCancelButton := True;
-  FShowCancelButton := True;
-  FShowRowsLabel := True;
-  FShowTimeLabel := True;
-end;
-
-destructor TJvOracleDatasetDialogOptions.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetCaption(const Value: string);
-begin
-  FCaption := Value;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetDynControlEngine(const Value: TJvDynControlEngine);
-begin
-  FDynControlEngine := Value;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetEnableCancelButton(const Value: Boolean);
-begin
-  FEnableCancelButton := Value;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetFormStyle(const Value: TFormStyle);
-begin
-  FFormStyle := Value;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetShowCancelButton(const Value: Boolean);
-begin
-  FShowCancelButton := Value;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetShowRowsLabel(const Value: Boolean);
-begin
-  FShowRowsLabel := Value;
-end;
-
-procedure TJvOracleDatasetDialogOptions.SetShowTimeLabel(const Value: Boolean);
-begin
-  FShowTimeLabel := Value;
-end;
-
-procedure TJvOracleDatasetThread.intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
-begin
-  DialogForm.ConnectedDataComponent := ConnectedDataset;
-end;
-
-procedure TJvOracleDatasetThread.CancelExecute;
-begin
-  if Assigned(ConnectedDataSet) then
-    ConnectedDataSet.BreakExecution
-  else
-    inherited CancelExecute;
-end;
-
-// { TJvOracleDatasetThreadOptions } =========================================
-
-constructor TJvOracleDatasetThreadOptions.Create;
+constructor TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions.Create;
 begin
   inherited Create;
-  FLastInThread := False;
-  FOpenInThread := False;
-  FPriority := tpIdle;
-  FRefreshInThread := False;
-  FShowExceptionMessage := True;
+  All := True;
 end;
 
-//=== { TJvOracleDatasetEnhancedOptions } ====================================
-
-constructor TJvOracleDatasetEnhancedOptions.Create;
+function
+    TJvDoaThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
+    TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
 begin
-  inherited Create;
-  FRefreshAsOpenClose := False;
-  FRefreshLastPosition := False;
-  FCapitalizeLabelOptions := TJvOracleDatasetCapitalizeLabelOptions.Create;
-  FAllowedAfterFetchRecordActions := [todafPause, todafCancel];
+  Result := TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions.Create;
 end;
 
-destructor TJvOracleDatasetEnhancedOptions.Destroy;
+function
+    TJvDoaThreadedDatasetEnhancedOptions.GetAllowedContinueRecordFetchOptions:
+    TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions;
 begin
-  FreeAndNil(FCapitalizeLabelOptions);
-  inherited Destroy;
+  Result := TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions(Inherited AllowedContinueRecordFetchOptions);
 end;
 
-procedure TJvOracleDatasetEnhancedOptions.SetCapitalizeLabelOptions(const Value: TJvOracleDatasetCapitalizeLabelOptions);
+procedure
+    TJvDoaThreadedDatasetEnhancedOptions.SetAllowedContinueRecordFetchOptions(
+    const Value: TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions);
 begin
-  FCapitalizeLabelOptions.Assign(Value);
+  Inherited AllowedContinueRecordFetchOptions := Value;
 end;
 
-procedure TJvOracleDatasetEnhancedOptions.SetFetchRowsCheck(const Value: Integer);
-begin
-  FFetchRowsCheck := Value;
-end;
-
-procedure TJvOracleDatasetEnhancedOptions.SetFetchRowsFirst(const Value: Integer);
-begin
-  FFetchRowsFirst := Value;
-end;
-
-procedure TJvOracleDatasetEnhancedOptions.SetRefreshAsOpenClose(Value: Boolean);
-begin
-  FRefreshAsOpenClose := Value;
-end;
-
-procedure TJvOracleDatasetEnhancedOptions.SetRefreshLastPosition(const Value: Boolean);
-begin
-  FRefreshLastPosition := Value;
-end;
-
-//=== { TJvOracleDatasetCapitalizeLabelOptions } =============================
-
-constructor TJvOracleDatasetCapitalizeLabelOptions.Create;
-begin
-  inherited Create;
-  FAutoExecuteAfterOpen := False;
-  FTrimToFirstBlank := False;
-end;
 
 {$IFDEF UNITVERSIONING}
 initialization
@@ -1296,4 +454,5 @@ finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
 end.
+
 
