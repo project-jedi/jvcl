@@ -82,6 +82,7 @@
     <File Name="..\..\run\JvDBDateTimePicker.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBLookup.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBLookupComboEdit.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDBThreadedDataset.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBDialog.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBPasswordDialog.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBLogonDialog.pas" Targets="DB" Formname="" Condition=""/>
@@ -117,5 +118,6 @@
     <File Name="..\..\run\JvDynControlEngineVCLDB.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
-  </Contains>
+    <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+</Contains>
 </Package>

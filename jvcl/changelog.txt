@@ -1,5 +1,9 @@
 Changelog for JVCL 3.X
 ======================
+2006-09-25
+- New Component TJvBaseDatasetThreadHandler to create Threaded Dataset Descendants of "any" TDataset-Component with
+  low efforts. Two sample implementations : TJvOracleDataset and TJvOdacSmartQuery.
+  There some smaller compatibility issues with TJvOracleDataset: some property names are renamed to be more generic.
 2006-09-03
 - TJvDBGrid.IsBooleanField is now called OnIsBooleanField as it is an even. Migration should be silent.   // obones
 2006-08-17
