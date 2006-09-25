@@ -58,6 +58,7 @@ type
   TJvProgramVersionInfo = class(TJvCustomPropertyStore)
   private
     FDownloadPasswordRequired: Boolean;
+    FLocalInstallerParams: string;
     FVersionDescription: TStringList;
     FProgramSize: Integer;
     FProgramVersion: string;
@@ -78,6 +79,9 @@ type
   published
     property DownloadPasswordRequired: Boolean read FDownloadPasswordRequired write
       FDownloadPasswordRequired default False;
+    { List of parameters for the execution of the installer file }
+    property LocalInstallerParams: string read FLocalInstallerParams write
+        FLocalInstallerParams;
     { Path where the installer of the version could be found. This could be
     a absolute path or a relative path to the location of the version list file }
     property ProgramLocationPath: string read FProgramLocationPath write FProgramLocationPath;
@@ -1180,7 +1184,7 @@ begin
       [FExecuteDownloadInstallFileName]), mtInformation, [mbOK], 0)
   else if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
     mtWarning, [mbYes, mbNo], 0) = mrYes then
-    if ShellExecEx(FExecuteDownloadInstallFileName) then
+    if ShellExecEx(FExecuteDownloadInstallFileName, FExecuteVersionInfo.LocalInstallerParams) then
       PostMessage(Application.Handle, WM_CLOSE, 0, 0)
     else
       JvDSADialogs.MessageDlg(RsPVCErrorStartingSetup, mtError, [mbOK], 0);
