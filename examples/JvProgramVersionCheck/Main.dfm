@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 357
   Top = 242
-  Width = 476
-  Height = 413
   Caption = 'Form1'
+  ClientHeight = 379
+  ClientWidth = 468
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -40,6 +40,15 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
   end
+  object Button1: TButton
+    Left = 205
+    Top = 175
+    Width = 75
+    Height = 25
+    Caption = 'Check Again'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
   object JvAppIniFileStorageVersionCheck: TJvAppIniFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
@@ -55,7 +64,7 @@ object Form1: TForm1
     Top = 15
   end
   object ProgramVersionCheck: TJvProgramVersionCheck
-    AllowedReleaseType = prtBeta
+    AllowedReleaseType = prtAlpha
     AppStorage = JvAppIniFileStorageVersionCheck
     AppStoragePath = 'Local'
     CheckFrequency = 0
@@ -63,6 +72,7 @@ object Form1: TForm1
     LocalVersionInfoFileName = 'ProgramVersionCheckLocal.Ini'
     LocationDatabase = JvProgramVersionDatabaseLocation1
     LocationFTP = JvProgramVersionFTPLocation1
+    LocationHTTP = JvProgramVersionHTTPLocation1
     LocationNetwork = JvProgramVersionNetworkLocation1
     LocationType = pvltNetwork
     UserOptions = [uoCheckFrequency, uoAllowedReleaseType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase]
@@ -87,14 +97,6 @@ object Form1: TForm1
   end
   object JvProgramVersionDatabaseLocation1: TJvProgramVersionDatabaseLocation
     Left = 105
-    Top = 320
-  end
-  object JvProgramVersionHTTPLocationIndy1: TJvProgramVersionHTTPLocationIndy
-    VersionInfoLocationPathList.Strings = (
-      'htasdasd'
-      'http://www.oratool.de/test/')
-    VersionInfoFileName = 'ProjektVersions_http.ini'
-    Left = 300
     Top = 320
   end
 end
