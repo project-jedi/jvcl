@@ -659,6 +659,9 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
+var
+  List: TList;
+  I: Integer;
 begin
   with Msg do
     case Msg of
@@ -666,9 +669,25 @@ begin
         Dispatch(Msg);
       WM_TIMECHANGE:
         begin
-          // Mantis 3355: Time has changed, stop and restart the schedules
-          StopAll;
-          StartAll;
+          // Mantis 3355: Time has changed, mark all running schedules as
+          // "to be restarted", stop and then restart them.
+          List := TList.Create;
+          try
+            for I := 0 to FEvents.Count - 1 do
+            begin
+              if FEvents[I].State in [sesTriggered, sesExecuting, sesPaused] then
+              begin
+                List.Add(FEvents[I]);
+                FEvents[I].Stop;
+              end;
+            end;
+            for I := 0 to List.Count - 1 do
+            begin
+              TJvEventCollectionItem(List[I]).Start;
+            end;
+          finally
+            List.Free;
+          end;
         end;
     else
       Result := DefWindowProc(Handle, Msg, WParam, LParam);
