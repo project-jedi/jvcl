@@ -225,7 +225,10 @@ begin
           Result := BottomDockPanel
         else
         if Pos('RightDockPanel', ControlName) > Index then
-          Result := RightDockPanel;
+          Result := RightDockPanel
+        else
+        if Pos('CustomDockPanel', ControlName) > Index then
+          Result := CustomDockPanel;
 
         // Mantis 3603: No more AV, Result may not always be a TJvDockVSNETPanel
         if (Result is TJvDockVSNETPanel) and (Pos('PopupPanel', ControlName) > 20) then
