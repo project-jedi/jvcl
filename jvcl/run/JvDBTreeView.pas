@@ -563,7 +563,7 @@ end;
 
 function TJvCustomDBTreeView.ValidDataSet: Boolean;
 begin
-  Result := FDataLink.Active and Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active;
+  Result := Assigned(FDataLink) and FDataLink.Active and Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active;
 end;
 
 procedure TJvCustomDBTreeView.LinkActive(Value: Boolean);
