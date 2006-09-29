@@ -66,7 +66,7 @@ uses
   {$IFDEF VCL}
   Windows, Messages,
   {$ENDIF VCL}
-  Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
+  Classes, Graphics, Controls, Grids, Menus, DBGrids, DB, StdCtrls,
   Contnrs,
   JvTypes, {JvTypes contains Exception base class}
   JvAppStorage, JvFormPlacement, JvExDBGrids;
@@ -251,6 +251,7 @@ type
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
     FCharList: TCharList;
+    FScrollBars: TScrollStyle;
 
     FControls: TJvDBGridControls;
     FCurrentControl: TWinControl;
@@ -319,6 +320,7 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure SetShowMemos(const Value: Boolean);
     procedure SetBooleanEditor(const Value: Boolean);
+    procedure SetScrollBars(const Value: TScrollStyle);
 
     procedure SetControls(Value: TJvDBGridControls);
     procedure HideCurrentControl;
@@ -439,6 +441,7 @@ type
     property IndicatorOffset;
     property TitleOffset: Byte read GetTitleOffset;
     property CharList: TCharList read FCharList write FCharList;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
@@ -533,7 +536,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Math, TypInfo, Forms, StdCtrls, Dialogs, DBConsts,
+  SysUtils, Math, TypInfo, Forms, Dialogs, DBConsts,
   {$IFDEF COMPILER6_UP}
   StrUtils,
   JvDBLookup,
@@ -4041,6 +4044,20 @@ begin
   begin
     FBooleanEditor := Value;
     Invalidate;
+  end;
+end;
+
+procedure TJvDBGrid.SetScrollBars(const Value: TScrollStyle);
+var
+  Style: Integer;
+const
+  ScrollStyles: array [TScrollStyle] of Integer = (0, WS_HSCROLL, WS_VSCROLL, WS_HSCROLL or WS_VSCROLL);
+begin
+  if FScrollBars <> Value then
+  begin
+    FScrollBars := Value;
+    Style := GetWindowLong(Handle, GWL_STYLE);
+    SetWindowLong(Handle, GWL_STYLE, Style or ScrollStyles[Value]);
   end;
 end;
 
