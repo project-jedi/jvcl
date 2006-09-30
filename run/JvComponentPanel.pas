@@ -45,7 +45,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QTypes,
   {$ENDIF VisualCLX}
-  Classes, Buttons,
+  Classes, Controls, Buttons,
   JvButtons, JvExtComponent, JvExButtons;
 
 type
@@ -139,9 +139,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
-uses
-  Controls;
 
 {$R JvComponentPanel.res}
 
@@ -250,7 +247,6 @@ begin
   end;
   Result := -1;
 end;
-
 
 function TJvComponentPanel.GetButton(Index: Integer): TJvExSpeedButton;
 begin
