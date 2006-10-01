@@ -111,6 +111,7 @@ type
     FOnChange: TNotifyEvent;
     FOnGetImage: TGetImageEvent;
     FLookupMode: Boolean;
+    FUseRecordCount: Boolean;
     procedure CheckNotFixed;
     procedure SetLookupMode(Value: Boolean);
     function GetKeyValue: Variant;
@@ -151,6 +152,7 @@ type
     procedure SetLookupFormat(const Value: string);
     procedure SetLookupSource(Value: TDataSource);
     procedure SetItemHeight(Value: Integer);
+    procedure SetUseRecordCount(const Value: Boolean);
     function ItemHeightStored: Boolean;
     procedure DrawPicture(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
     procedure UpdateDisplayValue;
@@ -193,6 +195,7 @@ type
     property ParentColor default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabStop default True;
+    property UseRecordCount: Boolean read FUseRecordCount write SetUseRecordCount default False;
     property Value: string read FValue write SetValue stored False;
     property DisplayValue: string read FDisplayValue write SetDisplayValue stored False;
     property KeyValue: Variant read GetKeyValue write SetKeyValue stored False;
@@ -316,6 +319,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property UseRecordCount;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -476,6 +480,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property UseRecordCount;
     property Visible;
     property OnChange;
     property OnClick;
@@ -547,6 +552,8 @@ type
     procedure SetLookupValue(const Value: string);
     function GetOnGetImage: TGetImageEvent;
     procedure SetOnGetImage(Value: TGetImageEvent);
+    function GetUseRecordCount: Boolean;
+    procedure SetUseRecordCount(const Value: Boolean);
   protected
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -616,6 +623,7 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property UseRecordCount: Boolean read GetUseRecordCount write SetUseRecordCount default False;
     property Visible;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
@@ -785,6 +793,7 @@ begin
   FLocate := CreateLocate(nil);
   FIndexSwitch := True;
   FIgnoreCase := True;
+  FUseRecordCount := False;
 end;
 
 destructor TJvLookupControl.Destroy;
@@ -1303,7 +1312,7 @@ begin
   if FEmptyItemColor <> Value then
   begin
     FEmptyItemColor := Value;
-    if not (csReading in ComponentState) and (DisplayEmpty <> '') then
+    if not (csReading in ComponentState) and EmptyRowVisible then
       Invalidate;
   end;
 end;
@@ -1741,8 +1750,8 @@ begin
     // This may result in not displaying the scrollbar.
     // This was changed from simply using FLookupLink.RecordCount to fix
     // Mantis 3825.
-    if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) then
-      FRecordCount := FLookupLink.DataSource.DataSet.RecordCount
+    if Assigned(FLookupLink.DataSet) and UseRecordCount then
+      FRecordCount := FLookupLink.DataSet.RecordCount
     else
       FRecordCount := FLookupLink.RecordCount;
     FKeySelected := not ValueIsEmpty(FValue) or not FLookupLink.DataSet.Bof;
@@ -2143,27 +2152,41 @@ procedure TJvDBLookupList.UpdateScrollBar;
 var
   Pos, Max: Integer;
   ScrollInfo: TScrollInfo;
+  WantScrollbar: Boolean;
 begin
   Pos := 0;
   Max := 0;
 
-  // Check whether the list is completely filled...
-  if (FRecordCount > (FRowCount - Ord(EmptyRowVisible))) and FLookupLink.Active then
+  if Assigned(FLookupLink.DataSet) and FLookupLink.Active then
   begin
-    // ..if so, display a scrollbar and try to be as accurate as possible. 
-    if Assigned(FLookupLink.DataSet) and (FLookupLink.DataSet.RecNo <> -1) then
-    begin
-      Max := FRecordCount - 1;
-      Pos := FLookupLink.DataSet.RecNo - 1;
-    end
+    if UseRecordCount then
+      // FRecordCount is #records in the table
+      WantScrollbar := FRecordCount > (FRowCount - Ord(EmptyRowVisible))
     else
+      // FRecordCount is #records in the link buffer; we don't know the #records
+      // in the table, but is it equal or bigger than FRecordCount, if FRecordCount
+      // is smaller than the # of rows in the dropdown then FRecordCount is equal
+      // to the #records in the table and no scrollbar is shown.
+      WantScrollbar := FRecordCount = (FRowCount - Ord(EmptyRowVisible));
+
+    if WantScrollbar then
     begin
-      Max := 4;
-      if not FLookupLink.DataSet.Bof then
-        if not FLookupLink.DataSet.Eof then
-          Pos := 2
-        else
-          Pos := 4;
+      if UseRecordCount and (FLookupLink.DataSet.RecNo <> -1) then
+      begin
+        // We can be accurate
+        Max := FRecordCount - 1;
+        Pos := FLookupLink.DataSet.RecNo - 1;
+      end
+      else
+      begin
+        // Use an approximation
+        Max := 4;
+        if not FLookupLink.DataSet.Bof then
+          if not FLookupLink.DataSet.Eof then
+            Pos := 2
+          else
+            Pos := 4;
+      end;
     end;
   end;
   ScrollInfo.cbSize := SizeOf(TScrollInfo);
@@ -2231,7 +2254,6 @@ begin
     if FLookupLink.DataSet = nil then
       Exit;
 
-    // ScrollableRowCount = #records from the database that are visible/scrollable
     ScrollableRowCount := RowCount - Ord(EmptyRowVisible);
 
     with FLookupLink.DataSet do
@@ -2258,7 +2280,6 @@ begin
     if FLookupLink.DataSet = nil then
       Exit;
 
-    // ARowCount = #records from the database that are visible/scrollable
     ScrollableRowCount := RowCount - Ord(EmptyRowVisible);
 
     with FLookupLink.DataSet do
@@ -2275,32 +2296,36 @@ begin
 end;
 
 procedure TJvDBLookupList.WMVScroll(var Msg: TWMVScroll);
+var
+  ScrollableRowCount: Integer;
 begin
   FSearchText := '';
   if FLookupLink.DataSet = nil then
     Exit;
+
+  ScrollableRowCount := RowCount - Ord(EmptyRowVisible);
 
   with Msg, FLookupLink.DataSet do
     case ScrollCode of
       SB_LINEUP:
         MoveBy(-FRecordIndex - 1);
       SB_LINEDOWN:
-        MoveBy(FRecordCount - FRecordIndex);
+        MoveBy(ScrollableRowCount - FRecordIndex);
       SB_PAGEUP:
-        MoveBy(-FRecordIndex - FRecordCount + 1);
+        MoveBy(-FRecordIndex - ScrollableRowCount + 1);
       SB_PAGEDOWN:
-        MoveBy(FRecordCount - FRecordIndex + FRecordCount - 2);
+        MoveBy(ScrollableRowCount - FRecordIndex + ScrollableRowCount - 2);
       SB_THUMBPOSITION:
         begin
           case Pos of
             0:
               First;
             1:
-              MoveBy(-FRecordIndex - FRecordCount + 1);
+              MoveBy(-FRecordIndex - ScrollableRowCount + 1);
             2:
               Exit;
             3:
-              MoveBy(FRecordCount - FRecordIndex + FRecordCount - 2);
+              MoveBy(ScrollableRowCount - FRecordIndex + ScrollableRowCount - 2);
             4:
               Last;
           end;
@@ -2541,20 +2566,20 @@ begin
     FDataList.EmptyValue := EmptyValue;
     FDataList.DisplayEmpty := DisplayEmpty;
     FDataList.EmptyItemColor := EmptyItemColor;
-    if Assigned(FLookupLink.DataSource) and Assigned(FLookupLink.DataSource.DataSet) then
+    FDataList.UseRecordCount := UseRecordCount;
+    if Assigned(FLookupLink.DataSet) and UseRecordCount then
     begin
-      RecordCount := FLookupLink.DataSource.DataSet.RecordCount;
-      if Length(DisplayEmpty) > 0 then   // Mantis 3884
+      RecordCount := FLookupLink.DataSet.RecordCount;
+      if EmptyRowVisible then   // Mantis 3884
         Inc(RecordCount);
     end
     else
-      RecordCount := MAXINT;
+      RecordCount := MaxInt;
       
     if (DropDownCount > RecordCount) then
       FDataList.RowCount := RecordCount
     else
       FDataList.RowCount := DropDownCount;
-
 
     FDataList.LookupField := FLookupFieldName;
     FDataList.LookupFormat := FLookupFormat;
@@ -3715,6 +3740,27 @@ begin
   Result := True;
   if Assigned(FOnCloseUp) then
     FOnCloseUp(Self);
+end;
+
+function TJvDBLookupEdit.GetUseRecordCount: Boolean;
+begin
+  Result := TJvPopupDataWindow(FPopup).UseRecordCount;
+end;
+
+procedure TJvDBLookupEdit.SetUseRecordCount(const Value: Boolean);
+begin
+  TJvPopupDataWindow(FPopup).UseRecordCount := Value;
+end;
+
+procedure TJvLookupControl.SetUseRecordCount(const Value: Boolean);
+begin
+  if Value <> FUseRecordCount then
+  begin
+    FUseRecordCount := Value;
+    ListLinkActiveChanged;
+    if FListActive then
+      DataLinkRecordChanged(nil);
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
