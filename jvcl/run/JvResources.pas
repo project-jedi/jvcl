@@ -1625,9 +1625,12 @@ resourcestring
   SODSGotoLastFetchRecords = 'Goto Last - Fetch Records';
   SODSFetchRecords = 'Fetch Records';
   SODSOpenQueryFetchRecords = 'Open Query - Fetch Records';
+  SODSFetchRecordsCancel = 'Fetch Records - Cancel';
   SODSOpenQuery = 'Open Query';
+  SODSOpenQueryCancel = 'Open Query - Cancel' ;
   SODSRefreshQueryFetchRecords = 'Refresh Query - Fetch Records';
   SODSRefreshQuery = 'Refresh Query';
+  SODSRefreshQueryCancel = 'Refresh Query - Cancel';
 
 //=== JvPageSetup.pas ========================================================
 resourcestring

@@ -41,9 +41,9 @@ uses
 
 type
   TJvThreadedDatasetOperation = (tdoOpen, tdoFetch, tdoLast, tdoRefresh, tdoNothing);
-  TJvThreadedDatasetAction = (tdaOpen, tdaFetch, tdaNothing);
+  TJvThreadedDatasetAction = (tdaOpen, tdaFetch, tdaNothing, tdaCancel);
 
-  TJvThreadedDatasetFetchMode = (tdfmFetch, tdfmBreak, tdfmStop);
+  TJvThreadedDatasetFetchMode = (tdfmFetch, tdfmBreak, tdfmStop, tdfmNothing);
 
   TJvThreadedDatasetContinueCheckResult = (tdccrContinue, tdccrPause, tdccrStop, tdccrAll, tdccrCancel);
 
@@ -296,7 +296,6 @@ type
     procedure SetEnhancedOptions(Value: TJvBaseThreadedDatasetEnhancedOptions);
     procedure SetFetchMode(const Value: TJvThreadedDatasetFetchMode);
     procedure SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
-    procedure SynchAfterFetchRecord;
     procedure SynchAfterThreadExecution;
     procedure SynchBeforeThreadExecution;
     procedure SynchContinueFetchMessageDlg;
@@ -837,9 +836,14 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.BreakExecution;
 begin
-  IThreadedDatasetInterface.BreakExecution;
-  if FetchMode = tdfmFetch then
-    FetchMode := tdfmBreak;
+  CurrentAction := tdaCancel;
+  if (FetchMode = tdfmFetch) and (EnhancedOptions.AllowedContinueRecordFetchOptions.Pause or EnhancedOptions.AllowedContinueRecordFetchOptions.Cancel) then
+    if EnhancedOptions.AllowedContinueRecordFetchOptions.Pause then
+      FetchMode := tdfmBreak
+    else
+      FetchMode := tdfmStop
+  else
+    IThreadedDatasetInterface.BreakExecution;
   IntRowCheckEnabled := False;
 end;
 
@@ -920,6 +924,7 @@ begin
         Result := tdccrStop;
       end;
       CurrentAction := tdaFetch;
+      FetchMode := tdfmFetch;
       FCurrentOperationStart := Now;
     end;
 end;
@@ -984,7 +989,7 @@ begin
   case CurrentAction of
     tdaOpen:
       Result := 0;
-    tdaNothing:
+    tdaNothing, tdaCancel:
       Result := FCurrentFetchDuration;
     tdaFetch:
       Result := FCurrentFetchDuration + (Now - FCurrentOperationStart);
@@ -1015,6 +1020,8 @@ begin
           Result := SODSOpenQuery;
         tdaFetch:
           Result := SODSOpenQueryFetchRecords;
+        tdaCancel :
+          Result := SODSOpenQueryCancel;
       end;
     tdoRefresh:
       case CurrentAction of
@@ -1022,9 +1029,16 @@ begin
           Result := SODSRefreshQuery;
         tdaFetch:
           Result := SODSRefreshQueryFetchRecords;
+        tdaCancel :
+          Result := SODSRefreshQueryCancel;
       end;
     tdoFetch:
-      Result := SODSFetchRecords;
+      case CurrentAction of
+        tdaFetch:
+          Result := SODSFetchRecords;
+        tdaCancel :
+          Result := SODSFetchRecordsCancel;
+      end;
     tdoLast:
       Result := SODSGotoLastFetchRecords;
   end;
@@ -1055,22 +1069,26 @@ begin
   FCurrentOperationStart := Now;
   DatasetFetchAllRecords := FIntDatasetFetchAllRecords;
   CurrentFetchDuration := 0;
-  CurrentAction := tdaFetch;
-  if Dataset.Active then
+  if CurrentAction <> tdaCancel then
   begin
-    Dataset.First;
-    if DatasetFetchAllRecords then
-      IThreadedDatasetInterface.doInheritedInternalLast
-    else
-      if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or (FMoveToRecordAfterOpen > Dataset.RecordCount) then
-        if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
-          Dataset.MoveBy(FMoveToRecordAfterOpen - 1)
-        else
-          Dataset.MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+    CurrentAction := tdaFetch;
+    FetchMode := tdfmFetch;
+    if Dataset.Active then
+    begin
+      Dataset.First;
+      if DatasetFetchAllRecords then
+        IThreadedDatasetInterface.doInheritedInternalLast
+      else
+        if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or (FMoveToRecordAfterOpen > Dataset.RecordCount) then
+          if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
+            Dataset.MoveBy(FMoveToRecordAfterOpen - 1)
+          else
+            Dataset.MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+    end;
   end;
   try
     Dataset.Filtered := FIntDatasetWasFiltered;
-    if Dataset.Active then
+    if Dataset.Active and (CurrentAction <> tdaCancel) then
       if FMoveToRecordAfterOpen > 0 then
         MoveTo(FMoveToRecordAfterOpen)
       else
@@ -1084,8 +1102,6 @@ end;
 procedure TJvBaseDatasetThreadHandler.HandleAfterOpenRefreshThread;
 begin
   HandleAfterOpenRefresh;
-//  if Dataset.Active and Assigned(FAfterOpen) and (CurrentOperation <> tdoRefresh) then
-//      ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
 procedure TJvBaseDatasetThreadHandler.HandleBeforeOpenRefresh;
@@ -1098,9 +1114,10 @@ begin
   FCurrentRow := 0;
   FCurrentOperationStart := Now;
   CurrentAction := tdaOpen;
+  FetchMode := tdfmNothing;
   FIntDatasetFetchAllRecords := DatasetFetchAllRecords;
-  FIntDatasetWasFiltered := Dataset.Filtered;
   FLastRowChecked := 0;
+  FIntDatasetWasFiltered := Dataset.Filtered;
   Dataset.Filtered := False;
   DatasetFetchAllRecords := False;
 end;
@@ -1162,6 +1179,8 @@ begin
   if EnhancedOptions.CapitalizeLabelOptions.AutoExecuteAfterOpen then
     CapitalizeDatasetLabels;
   IThreadedDatasetInterface.DoInheritedAfterOpen;
+  FIntDatasetWasFiltered := Dataset.Filtered or FIntDatasetWasFiltered; // Added because in the afteropen event the filtered could be activated, and it should be deactivated for the dialog
+  Dataset.Filtered := False;
 end;
 
 procedure TJvBaseDatasetThreadHandler.IntSynchAfterRefresh;
@@ -1262,12 +1281,6 @@ end;
 function TJvBaseDatasetThreadHandler.SupportsBreakExecution: Boolean;
 begin
   Result := True;
-end;
-
-procedure TJvBaseDatasetThreadHandler.SynchAfterFetchRecord;
-begin
-//  if Assigned(FAfterFetchRecord) then
-//    FAfterFetchRecord(FSynchAfterFetchSender, FSynchAfterFetchFilterAccept, FSynchAfterFetchAction);
 end;
 
 procedure TJvBaseDatasetThreadHandler.SynchAfterThreadExecution;
