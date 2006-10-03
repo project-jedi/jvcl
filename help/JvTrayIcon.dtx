@@ -11,6 +11,15 @@ Author
   Sébastien Buysse
 
 ----------------------------------------------------------------------------------------------------
+@@RefreshTray
+<TITLE RefreshTray procedure>
+Summary
+  Deletes icons corresponding to killed programs from the tray.
+Description
+  When an application that shows an icon in the tray terminates unexpectedly, the tray icon can stay
+  visible. Call RefreshTray to delete such icons.
+
+----------------------------------------------------------------------------------------------------
 @@TAnimateEvent
 <TITLE TAnimateEvent type>
 <COMBINE TJvTrayIcon.OnAnimate>
@@ -98,20 +107,20 @@ See Also
 Summary
   Specifies whether the tray icon is shown.
 Description
-  Examine Active at runtime to determine whether the component is active or not. Setting Active to
-  True does actually not imply that an icon is shown in the taskbar notification area.
-  
+  Examine Active at runtime to determine whether the component is active or not. Setting Active to True
+  does actually <I>not</I> imply that an icon is shown in the taskbar notification area.
+
   No icon is shown, although Active is True, if
-  
+
   * Property IconVisible is set to False after Active was set to True.
-  * Flag tvAutoHideIcon is included in property Visibility and the application is <b>not</b> 
-       minimized.
+  * Flag tvAutoHideIcon is included in property Visibility and the application is <B>not</B>
+    minimized.
   * The Windows Shell failed to add the icon to the tray.
-       
+
   Use property IconVisible to determine whether an icon is actually shown in the tray.
-  
-  Active is false by default, meaning there is no notification icon shown in the taskbar
-  notification area.
+
+  Active is false by default, meaning there is no notification icon shown in the taskbar notification
+  area.
 
   Setting Active to true adds the icon specified by Icon to the tray at runtime. If Animated is also
   set to true, TJvTrayIcon uses the images in the image list specified by Icons to periodically change
@@ -311,8 +320,8 @@ See Also
 Summary
   Identifies a pop-up menu associated with the tray icon.
 Description
-  Assign a value to DropDownMenu to make a menu appear when the left button is pressed when the mouse
-  is over the icon in the taskbar notification area.
+  Assign a value to DropDownMenu to make a menu appear when the <I>left</I> button is pressed when the
+  mouse is over the icon in the taskbar notification area.
 See Also
   TJvTrayIcon.OnClick, TJvTrayIcon.PopupMenu
 
@@ -430,15 +439,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.IconVisible
 Summary
-  Specifies if an tray icon is shown.
+  Specifies if a tray icon is shown.
 Description
-  Read IconVisible to determine whether an icon is actually shown when Active is set to True. It is 
+  Read IconVisible to determine whether an icon is actually shown when Active is set to True. It is
   possible that the shell failed to add an icon to the tray.
-  
-  Set IconVisible to True to show the tray icon. Note that Active must be set to True and if
-  flag tvAutoHideIcon is included in property Visibility,
-  then the application must be minimized otherwise no tray icon is shown.
-  
+
+  Set IconVisible to True to show the tray icon. Note that Active must be set to True and if flag
+  tvAutoHideIcon is included in property Visibility, then the application must be minimized otherwise
+  no tray icon is shown.
+
   Set IconVisible to False to hide the tray icon. Note that you can also set Active to False.
 See Also
   Active
@@ -608,7 +617,7 @@ Summary
   Identifies the pop-up menu associated with the control.
 Description
   Assign a value to PopupMenu to make a pop-up menu appear when the user clicks the tray icon with the
-  right mouse.
+  <I>right</I> mouse.
 
   If no OnDblClick event handler is assigned, TJvTrayIcon automatically executes the default shortcut
   menu command, if the user double-clicks the tray icon.
@@ -672,8 +681,8 @@ Summary
   Determines if the application is shown in the task manager.
 Description
   Set VisibleInTaskList to true to show the application in the windows task manager application. Set
-  VisibleInTaskList to false to remove the application from the task manager: the application prevent
-  itself from being closed when the user logs off. The application close only when the system is shut
+  VisibleInTaskList to false to remove the application from the task manager: the application prevents
+  itself from being closed when the user logs off. The application closes only when the system is shut
   down.
 
   This only applies to Windows 95, 98 and me.
@@ -823,5 +832,6 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibility.tvAnimateToTray
-  Description for tvAnimateToTray
+  Animates the application's main form to the tray icon instead of to the application button on the
+  taskbar, when the user minimizes the application. Same when the user restores the application.
 
