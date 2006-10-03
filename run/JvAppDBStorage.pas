@@ -89,8 +89,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function SectionExists(const Path: string; RestorePosition: Boolean): Boolean;
     function ValueExists(const Section, Key: string; RestorePosition: Boolean): Boolean;
@@ -191,7 +191,7 @@ begin
   end;
 end;
 
-function TJvCustomAppDBStorage.DoReadBinary(const Path: string; Buf: TBytes;
+function TJvCustomAppDBStorage.DoReadBinary(const Path: string; Buf: TJvBytes;
   BufSize: Integer): Integer;
 var
   Value: string;
@@ -231,7 +231,7 @@ begin
 end;
 
 procedure TJvCustomAppDBStorage.DoWriteBinary(const Path: string;
-  const Buf: TBytes; BufSize: Integer);
+  const Buf: TJvBytes; BufSize: Integer);
 var
   Value, Buf1: string;
 begin

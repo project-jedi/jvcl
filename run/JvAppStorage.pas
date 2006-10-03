@@ -321,9 +321,9 @@ type
     procedure DoWriteString(const Path: string; const Value: string); virtual; abstract;
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved. }
-    function DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer; virtual; abstract;
+    function DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; virtual; abstract;
     { Stores a buffer. }
-    procedure DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer); virtual; abstract;
+    procedure DoWriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer); virtual; abstract;
     { Retrieves the specified TDateTime value. If the value is not found, the Default will be
       returned. If the value is not a TDateTime (or can't be converted to an TDateTime an
       EConvertError exception will be raised. }
@@ -357,9 +357,9 @@ type
     procedure WriteStringInt(const Path: string; const Value: string); virtual;
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved (ignores sub stores). }
-    function ReadBinaryInt(const Path: string; Buf: TBytes; BufSize: Integer): Integer; virtual;
+    function ReadBinaryInt(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; virtual;
     { Stores a buffer (ignores sub stores). }
-    procedure WriteBinaryInt(const Path: string; const Buf: TBytes; BufSize: Integer); virtual;
+    procedure WriteBinaryInt(const Path: string; const Buf: TJvBytes; BufSize: Integer); virtual;
     { Retrieves the specified TDateTime value. If the value is not found, the Default will be
       returned. If the value is not a TDateTime (or can't be converted to an TDateTime an
       EConvertError exception will be raised (ignores sub stores). }
@@ -468,9 +468,9 @@ type
     procedure WriteDateTime(const Path: string; Value: TDateTime);
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved. }
-    function ReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
+    function ReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer;
     { Stores a buffer. }
-    procedure WriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer);
+    procedure WriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer);
     { Retrieves the specified list. Caller provides a callback method that will read the individual
       items. ReadList will first determine the number of items to read and calls the specified
       method for each item. }
@@ -659,8 +659,8 @@ type
     procedure WriteFloatInt(const Path: string; Value: Extended); override;
     function ReadStringInt(const Path: string; const Default: string = ''): string; override;
     procedure WriteStringInt(const Path: string; const Value: string); override;
-    function ReadBinaryInt(const Path: string; Buf: TBytes; BufSize: Integer): Integer; override;
-    procedure WriteBinaryInt(const Path: string; const Buf: TBytes; BufSize: Integer); override;
+    function ReadBinaryInt(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; override;
+    procedure WriteBinaryInt(const Path: string; const Buf: TJvBytes; BufSize: Integer); override;
     function ReadDateTimeInt(const Path: string; Default: TDateTime): TDateTime; override;
     procedure WriteDateTimeInt(const Path: string; Value: TDateTime); override;
     function ReadBooleanInt(const Path: string; Default: Boolean): Boolean; override;
@@ -1685,12 +1685,12 @@ begin
   DoWriteString(Path, EncryptPropertyValue(Value));
 end;
 
-function TJvCustomAppStorage.ReadBinaryInt(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
+function TJvCustomAppStorage.ReadBinaryInt(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer;
 begin
   Result := DoReadBinary(Path, Buf, BufSize);
 end;
 
-procedure TJvCustomAppStorage.WriteBinaryInt(const Path: string; const Buf: TBytes; BufSize: Integer);
+procedure TJvCustomAppStorage.WriteBinaryInt(const Path: string; const Buf: TJvBytes; BufSize: Integer);
 begin
   DoWriteBinary(Path, Buf, BufSize);
 end;
@@ -1943,7 +1943,7 @@ begin
     TargetStore.WriteStringInt(TargetPath, Value);
 end;
 
-function TJvCustomAppStorage.ReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
+function TJvCustomAppStorage.ReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer;
 var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
@@ -1952,7 +1952,7 @@ begin
   Result := TargetStore.ReadBinaryInt(TargetPath, Buf, BufSize);
 end;
 
-procedure TJvCustomAppStorage.WriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer);
+procedure TJvCustomAppStorage.WriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer);
 var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
@@ -2959,12 +2959,12 @@ begin
   raise EJVCLAppStorageError.Create(RsEInvalidPath);
 end;
 
-function TJvAppStorage.ReadBinaryInt(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
+function TJvAppStorage.ReadBinaryInt(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer;
 begin
   raise EJVCLAppStorageError.Create(RsEInvalidPath);
 end;
 
-procedure TJvAppStorage.WriteBinaryInt(const Path: string; const Buf: TBytes; BufSize: Integer);
+procedure TJvAppStorage.WriteBinaryInt(const Path: string; const Buf: TJvBytes; BufSize: Integer);
 begin
   raise EJVCLAppStorageError.Create(RsEInvalidPath);
 end;
