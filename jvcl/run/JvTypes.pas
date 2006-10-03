@@ -69,11 +69,14 @@ type
 {$ENDIF VisualCLX}
 {$HPPEMIT '#endif'}
 
-{$IFNDEF CLR}
+{$IFDEF CLR}
 type
-  TBytes = Pointer;
+  TJvBytes = TBytes;
+{$ELSE}
+type
+  TJvBytes = Pointer;
   IntPtr = Pointer;
-{$ENDIF !CLR}
+{$ENDIF CLR}
 
 {$IFDEF VCL}
 type

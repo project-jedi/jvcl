@@ -105,8 +105,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer); override;
     property DefaultSection: string read FDefaultSection write FDefaultSection;
     property IniFile: TMemIniFile read FIniFile;
   public
@@ -434,7 +434,7 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-function TJvCustomAppIniStorage.DoReadBinary(const Path: string; Buf: TBytes; BufSize: Integer): Integer;
+function TJvCustomAppIniStorage.DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -450,7 +450,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; const Buf: TBytes; BufSize: Integer);
+procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer);
 var
   Section: string;
   Key: string;
