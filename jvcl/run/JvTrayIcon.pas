@@ -232,6 +232,8 @@ type
     property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
   end;
 
+procedure RefreshTray;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -249,6 +251,38 @@ uses
 
 type
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
+
+  TExtraData = packed record
+    Wnd: THandle;
+    uID: UINT;
+  end;
+
+  TTrayIconEnumerator = class
+  private
+    FToolbarHandle: THandle;
+    FProcess: THandle;
+    FCount: Integer;
+    FData: Pointer;
+    FIndex: Integer;
+    FButton: TTBButton;
+    FExtraData: TExtraData;
+    procedure Init(const DataSize: Integer);
+  public
+    constructor Create; overload;
+    constructor Create(DataSize: Integer); overload;
+    destructor Destroy; override;
+    function MoveNext: Boolean;
+
+    function ReadProcessMemory(const Address: Pointer; Count: DWORD; var Buffer): Boolean;
+
+    property CurrentButton: TTBButton read FButton;
+    property CurrentWnd: THandle read FExtraData.Wnd;
+    property CurrentID: UINT read FExtraData.uID;
+
+    property ToolbarHandle: THandle read FToolbarHandle;
+    property Index: Integer read FIndex;
+    property Data: Pointer read FData;
+  end;
 
 const
   AnimationTimer = 1;
@@ -459,6 +493,57 @@ begin
     Exit;
 
   EnumChildWindows(TrayHandle, @FindToolbar, Longint(@Result));
+end;
+
+function GetIconRect(const AWnd: THandle; const AID: UINT; var IconRect: TRect): Boolean;
+begin
+  Result := False;
+
+  with TTrayIconEnumerator.Create(SizeOf(IconRect)) do
+  try
+    while MoveNext do
+      if (CurrentWnd = AWnd) and (CurrentID = AID) then
+      begin
+        // Button can be hidden in XP
+        if (CurrentButton.fsState and TBSTATE_HIDDEN) <> 0 then
+          Exit;
+
+        // Retrieve the button rectangle..
+        SendMessage(ToolbarHandle, TB_GETITEMRECT, Index, Longint(Data));
+        // ..and copy it to the current process. If it fails no need to continue
+        if not ReadProcessMemory(FData, SizeOf(IconRect), IconRect) then
+          Exit;
+
+        // Convert it to the desktop coordinate space
+        MapWindowPoints(ToolbarHandle, HWND_DESKTOP, IconRect.TopLeft, 2);
+
+        Result := True;
+        Exit;
+      end;
+  finally
+    Free;
+  end;
+end;
+
+procedure RefreshTray;
+var
+  IconData: TNotifyIconData;
+begin
+  FillChar(IconData, SizeOf(IconData), #0);
+  IconData.cbSize := SizeOf(IconData);
+
+  with TTrayIconEnumerator.Create do
+  try
+    while MoveNext do
+      if not IsWindow(CurrentWnd) then
+      begin
+        IconData.Wnd := CurrentWnd;
+        IconData.uID := CurrentID;
+        Shell_NotifyIcon(NIM_DELETE, @IconData);
+      end;
+  finally
+    Free;
+  end;
 end;
 
 //=== { TJvTrayIcon } ========================================================
@@ -764,103 +849,8 @@ begin
 end;
 
 function TJvTrayIcon.GetIconRect(var IconRect: TRect): Boolean;
-{ Taken from http://www.thecodeproject.com/shell/ctrayiconposition.asp }
-type
-  TExtraData = packed record
-    Wnd: THandle;
-    uID: UINT;
-  end;
-var
-  ToolbarHandle: THandle; 
-  ProcessID: DWORD;  
-  Process: THandle;
-  ButtonCount: Integer;
-  Data: Pointer;
-  Index: Integer;
-  BytesRead: DWORD;
-  Button: TTBButton;
-  ExtraData: TExtraData;
 begin
-  Result := False;
-
-  // The trayicons are actually buttons on a toolbar
-  ToolbarHandle := GetToolbarHandle;
-  if ToolbarHandle = 0 then
-    Exit;
-
-  ButtonCount := SendMessage(ToolbarHandle, TB_BUTTONCOUNT, 0, 0);
-  if ButtonCount < 1 then
-    Exit;
-
-  // We want to get data from another process - it's not possible
-  // to just send messages like TB_GETBUTTON with a locally
-  // allocated buffer for return data. Pointer to locally allocated
-  // data has no usefull meaning in a context of another
-  // process (since Win95) - so we need
-  // to allocate some memory inside Tray process.
-  // Use @ProcessId for C5/D5 compatibility
-
-  if GetWindowThreadProcessId(ToolbarHandle, @ProcessID) = 0 then
-    Exit;
-
-  Process := OpenProcess(PROCESS_ALL_ACCESS, False, ProcessID);
-  if Process = 0 then
-    Exit;
-  try
-    // Allocate needed memory in the context of the tray process. We reuse
-    // Data to read multiple parts so we set it to the biggest chunk we need
-    // (TTBButton)
-    Data := VirtualAllocEx(Process, nil, SizeOf(TTBButton), MEM_COMMIT, PAGE_READWRITE);
-    if Data = nil then
-      Exit;
-    try
-      for Index := 0 to ButtonCount - 1 do
-      begin
-        // First we have to determine if the button with index Index is our
-        // button.
-        SendMessage(ToolbarHandle, TB_GETBUTTON, Index, Longint(Data));
-
-        // Read the data from the tray process into the current process.
-        Result := ReadProcessMemory(Process, Data,
-          @Button, SizeOf(Button), BytesRead) and (BytesRead = SizeOf(Button));
-        if not Result then
-          Continue;
-
-        // Read the extra data, Button.dwData points to its location
-        Result := ReadProcessMemory(Process, Pointer(Button.dwData),
-          @ExtraData, SizeOf(ExtraData), BytesRead) and (BytesRead = SizeOf(ExtraData));
-        if not Result then
-          Continue;
-
-        // Is it our button?
-        if (ExtraData.Wnd <> FHandle) or (ExtraData.uID <> cTaskbarIconIdentifier) then
-          Continue;
-
-        // Button can be hidden in XP
-        if (Button.fsState and TBSTATE_HIDDEN) <> 0 then
-          Break;
-
-        // Retrieve the button rectangle..
-        SendMessage(ToolbarHandle, TB_GETITEMRECT, Index, Longint(Data));
-        // ..and copy it to the current process
-        Result := ReadProcessMemory(Process, Data,
-          @IconRect, SizeOf(IconRect), BytesRead) and (BytesRead = SizeOf(IconRect));
-        // If it fails no need to continue
-        if not Result then
-          Break;
-
-        // Convert it to the desktop coordinate space
-        MapWindowPoints(ToolbarHandle, HWND_DESKTOP, IconRect.TopLeft, 2);
-
-        Result := True;
-        Break;
-      end;
-    finally
-      VirtualFreeEx(Process, Data, 0, MEM_RELEASE);
-    end;
-  finally
-    CloseHandle(Process);
-  end;
+  Result := JvTrayIcon.GetIconRect(Self.FHandle, cTaskbarIconIdentifier, IconRect);
 end;
 
 function TJvTrayIcon.GetIconVisible: Boolean;
@@ -1074,11 +1064,10 @@ begin
       However, even when GetLastError() returns ERROR_TIMEOUT,
       the icon can often be actually added(or deleted).
 
-      In the timeout of NIM_ADD, it can be confirmed that Shell_NotifyIcon(NIM_MODIFY)
-      returns true and the addition of the icon has succeeded.
-      To similar, In the timeout of NIM_DELETE, it can be confirmed that
-      Shell_NotifyIcon(NIM_MODIFY) returns false and the deletion of the icon has
-      succeeded. (See Mantis #3747)
+      If NIM_ADD times out and Shell_NotifyIcon(NIM_MODIFY) returns true,
+      the addition of the icon was actually successful.
+      Similarly, if NIM_DELETE times out and Shell_NotifyIcon(NIM_MODIFY) returns
+      false, the deletion of the icon was actually successful. (See Mantis #3747)
 
       http://qc.borland.com/wc/qcmain.aspx?d=29306 provides steps to
       reproduce this problem.
@@ -1116,8 +1105,6 @@ begin
     if FActive then
     begin
       InitIconData;
-      if (csDesigning in ComponentState) and not (tvVisibleDesign in Visibility) then
-        Exit;
       Hook;
       ShowTrayIcon;
     end
@@ -1510,6 +1497,105 @@ begin
   except
     Application.HandleException(Self);
   end;
+end;
+
+//=== { TTrayIconEnumerator } ==============================================
+
+constructor TTrayIconEnumerator.Create(DataSize: Integer);
+begin
+  inherited Create;
+  if DataSize < SizeOf(TTBButton) then
+    DataSize := SizeOf(TTBButton);
+  Init(DataSize);
+  FIndex := FCount;
+end;
+
+constructor TTrayIconEnumerator.Create;
+begin
+  inherited Create;
+  Init(SizeOf(TTBButton));
+  FIndex := FCount;
+end;
+
+destructor TTrayIconEnumerator.Destroy;
+begin
+  if FData <> nil then
+    VirtualFreeEx(FProcess, FData, 0, MEM_RELEASE);
+  if FProcess <> 0 then
+    CloseHandle(FProcess);
+  inherited Destroy;
+end;
+
+procedure TTrayIconEnumerator.Init(const DataSize: Integer);
+{ Taken from http://www.thecodeproject.com/shell/ctrayiconposition.asp }
+var
+  ProcessID: DWORD;
+begin
+  // The trayicons are actually buttons on a toolbar
+  FToolbarHandle := GetToolbarHandle;
+  if FToolbarHandle = 0 then
+    Exit;
+
+  FCount := SendMessage(FToolbarHandle, TB_BUTTONCOUNT, 0, 0);
+  if FCount < 1 then
+    Exit;
+
+  // We want to get data from another process - it's not possible
+  // to just send messages like TB_GETBUTTON with a locally
+  // allocated buffer for return data. Pointer to locally allocated
+  // data has no usefull meaning in a context of another
+  // process (since Win95) - so we need
+  // to allocate some memory inside Tray process.
+  // Use @ProcessId for C5/D5 compatibility
+
+  if GetWindowThreadProcessId(FToolbarHandle, @ProcessID) = 0 then
+    Exit;
+
+  FProcess := OpenProcess(PROCESS_ALL_ACCESS, False, ProcessID);
+  if FProcess = 0 then
+    Exit;
+
+  // Allocate needed memory in the context of the tray process. We reuse
+  // Data to read multiple parts so we set it to the biggest chunk we need
+  // (TTBButton)
+  FData := VirtualAllocEx(FProcess, nil, DataSize, MEM_COMMIT, PAGE_READWRITE);
+end;
+
+function TTrayIconEnumerator.MoveNext: Boolean;
+begin
+  Result := False;
+
+  if (FProcess = 0) or not Assigned(FData) then
+    Exit;
+
+  Dec(FIndex);
+
+  while FIndex >= 0 do
+  begin
+    SendMessage(FToolbarHandle, TB_GETBUTTON, FIndex, Longint(FData));
+
+    // Read the data from the tray process into the current process.
+    if ReadProcessMemory(FData, SizeOf(FButton), FButton) then
+    begin
+      // Read the extra data, Button.dwData points to its location
+      if ReadProcessMemory(Pointer(FButton.dwData), SizeOf(FExtraData), FExtraData) then
+      begin
+        Result := True;
+        Exit;
+      end;
+    end;
+
+    Dec(FIndex);
+  end;
+end;
+
+function TTrayIconEnumerator.ReadProcessMemory(const Address: Pointer;
+  Count: DWORD; var Buffer): Boolean;
+var
+  BytesRead: DWORD;
+begin
+  Result := Windows.ReadProcessMemory(FProcess, Address, @Buffer, Count, BytesRead) and
+    (BytesRead = Count);
 end;
 
 initialization
