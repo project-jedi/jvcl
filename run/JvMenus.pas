@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -687,6 +687,8 @@ type
     // other usage fields
     FSelRect: TRect;
     FCheckedPoint: TPoint;
+    procedure SetSelectionFrameBrush(const Value: TBrush);
+    procedure SetSelectionFramePen(const Value: TPen);
   protected
     procedure DrawBitmapShadow(X, Y: Integer; B: TBitmap);
     procedure DrawImageBackground(ARect: TRect); override;
@@ -718,8 +720,8 @@ type
       State: TMenuOwnerDrawState); override;
   published
     property ImageBackgroundColor default DefaultXPImageBackgroundColor;
-    property SelectionFrameBrush: TBrush read FSelectionFrameBrush;
-    property SelectionFramePen: TPen read FSelectionFramePen;
+    property SelectionFrameBrush: TBrush read FSelectionFrameBrush write SetSelectionFrameBrush;
+    property SelectionFramePen: TPen read FSelectionFramePen write SetSelectionFramePen;
     property SeparatorColor: TColor read FSeparatorColor write FSeparatorColor default DefaultXPSeparatorColor;
     property ShadowColor: TColor read FShadowColor write FShadowColor default DefaultXPShadowColor;
     property CheckedImageBackColor: TColor read FCheckedImageBackColor write FCheckedImageBackColor default DefaultXPCheckedImageBackColor;
@@ -3605,6 +3607,16 @@ begin
   // to prevent erasing when the item is selected
   Canvas.Brush.Color := clNone;
   inherited PreparePaint(Item, Rect, State, Measure);
+end;
+
+procedure TJvXPMenuItemPainter.SetSelectionFrameBrush(const Value: TBrush);
+begin
+  FSelectionFrameBrush.Assign(Value);
+end;
+
+procedure TJvXPMenuItemPainter.SetSelectionFramePen(const Value: TPen);
+begin
+  FSelectionFramePen.Assign(Value);
 end;
 
 procedure TJvXPMenuItemPainter.DrawSeparator(ARect: TRect);
