@@ -452,6 +452,20 @@ constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEvents := TJvEventCollection.Create(Self);
+
+  {$IFDEF VCL}
+  FWnd := AllocateHWndEx(WndProc);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FWnd := QWidgetH(AllocateMessageObject(Self));
+  {$ENDIF VisualCLX}
+  if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
+  begin
+    if AutoSave then
+      LoadEventStates;
+    InitEvents;
+  end;
+  ScheduleThread.AddEventComponent(Self);
 end;
 
 destructor TJvCustomScheduledEvents.Destroy;
@@ -523,16 +537,9 @@ procedure TJvCustomScheduledEvents.Loaded;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    {$IFDEF VCL}
-    FWnd := AllocateHWndEx(WndProc);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FWnd := QWidgetH(AllocateMessageObject(Self));
-    {$ENDIF VisualCLX}
     if AutoSave then
       LoadEventStates;
     InitEvents;
-    ScheduleThread.AddEventComponent(Self);
   end;
 end;
 
