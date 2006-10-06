@@ -398,15 +398,21 @@ var
 begin
   if Destination <> nil then
   begin
-    TV := TreeView as TJvDBTreeView;
-    PersistNode := TV.FPersistentNode;
-    TV.MoveTo(Self as TJvDBTreeNode, Destination as TJvDBTreeNode, Mode);
-    TV.FPersistentNode := True;
-    if (Destination <> nil) and Destination.HasChildren and (Destination.Count = 0) then
-      Free
-    else
-      inherited MoveTo(Destination, Mode);
-    TV.FPersistentNode := PersistNode;
+    // If we are trying to move ourselves in the same parent and we are
+    // already the last child, there is no point in moving us.
+    // It's even dangerous as it triggers Mantis 3934
+    if not ((Parent = Destination) and (Self = Destination.GetLastChild) and (Mode = naAddChild)) then
+    begin
+      TV := TreeView as TJvDBTreeView;
+      PersistNode := TV.FPersistentNode;
+      TV.MoveTo(Self as TJvDBTreeNode, Destination as TJvDBTreeNode, Mode);
+      TV.FPersistentNode := True;
+      if (Destination <> nil) and Destination.HasChildren and (Destination.Count = 0) then
+        Free
+      else
+        inherited MoveTo(Destination, Mode);
+      TV.FPersistentNode := PersistNode;
+    end;
   end;
 end;
 
