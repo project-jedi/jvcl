@@ -2957,6 +2957,8 @@ begin
     else
       CaretY := LineCount - 1;
   end;
+  // Must update the number of rows or it would trigger Mantis 3905.
+  Rows := LineCount;
   Changed;
 end;
 
