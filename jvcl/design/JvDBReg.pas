@@ -52,6 +52,7 @@ uses
   {$IFDEF USE_3RDPARTY_CORELAB_ODAC} 
   JvDBPasswordDialogOdac,
   JvDBLogonDialogOdac,
+  JvOdacSmartQuery,
   {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
@@ -88,7 +89,7 @@ begin
     TJvOracleDataset, TJvDBDoaLogonDialog, TJvDBDoaPasswordDialog,
     {$ENDIF USE_3RDPARTY_DOA}
     {$IFDEF USE_3RDPARTY_CORELAB_ODAC} 
-    TJvDBOdacConnectDialog, TJvDBOdacPasswordDialog,
+    TJvDBOdacConnectDialog, TJvDBOdacPasswordDialog, TjvOdacSmartQuery,
     {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
     TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
