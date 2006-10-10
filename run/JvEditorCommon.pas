@@ -3177,6 +3177,11 @@ begin
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
     WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
+    
+    if ReadOnly then
+      Style := Style or ES_READONLY
+    else
+      Style := Style and not ES_READONLY;
   end;
 end;
 
@@ -3775,10 +3780,13 @@ begin
   else {1 :}
   begin
     {$IFDEF VCL}
-    if Value then
-      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or ES_READONLY)
-    else
-      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not ES_READONLY);
+    if HandleAllocated then
+    begin
+      if Value then
+        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or ES_READONLY)
+      else
+        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not ES_READONLY);
+    end;
     {$ENDIF VCL}
     if FReadOnly <> Value then
     begin
