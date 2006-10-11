@@ -53,6 +53,7 @@ type
   private
     FDataLink: TFieldDataLink;
     FEnforceRequired: Boolean;
+    FAllowPopupBrowsing: Boolean;
     procedure ValidateShowCheckBox; overload;
     function ValidateShowCheckBox(const AValue: Boolean): Boolean; overload;
     function GetDataField: string;
@@ -68,6 +69,7 @@ type
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     function IsLinked: Boolean;
+    procedure KeyPress(var Key: Char); override;
     procedure Change; override;
     procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure PopupDropDown(DisableEdit: Boolean); override;
@@ -80,6 +82,7 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default False;
+    property AllowPopupBrowsing: Boolean read FAllowPopupBrowsing write FAllowPopupBrowsing default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -93,7 +96,7 @@ type
     property Dropped;
   published
     property Action;
-    property Align; 
+    property Align;
     property AllowNoDate;
     property AlwaysReturnEditDate;
     property Anchors;
@@ -131,6 +134,7 @@ type
     property HotTrack;
     // property MaxYear default 2900;
     // property MinYear default 1900;
+    property AllowPopupBrowsing;
     {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
@@ -189,6 +193,8 @@ type
     property OnParentColorChange;
     property OnSetFocus;
     property OnStartDrag;
+
+    property OnGetValidDateString;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -228,6 +234,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
   FEnforceRequired := False;
+  FAllowPopupBrowsing := True;
   FDataLink := TFieldDataLink.Create;
   with FDataLink do
   begin
@@ -265,6 +272,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
+  inherited DoKillFocus(ANextControl);
   if IsLinked and FDataLink.Editing then
     try
       FDataLink.UpdateRecord;
@@ -272,7 +280,6 @@ begin
       SetFocus;
       raise;
     end;
-  inherited DoKillFocus(ANextControl);
 end;
 
 procedure TJvCustomDBDatePickerEdit.WMUndo(var Msg: TMessage);
@@ -283,7 +290,7 @@ end;
 
 function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
 begin
-  Result := (not IsLinked) or FDataLink.Edit;
+  Result := not ReadOnly and (not IsLinked or FDataLink.Edit);
 end;
 
 function TJvCustomDBDatePickerEdit.GetDataField: string;
@@ -336,7 +343,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.PopupDropDown(DisableEdit: Boolean);
 begin
-  if EditCanModify then
+  if AllowPopupBrowsing or EditCanModify then
     inherited PopupDropDown(DisableEdit);
 end;
 
@@ -377,10 +384,12 @@ end;
 procedure TJvCustomDBDatePickerEdit.UpdateData(Sender: TObject);
 begin
   if IsLinked and FDataLink.Editing then
-    if not Checked then
-      FDataLink.Field.Value := Null
+  begin
+    if not Checked or (AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(Text))) then
+      FDataLink.Field.Clear
     else
       FDataLink.Field.AsDateTime := Self.Date;
+  end;
 end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateDisplay;
@@ -418,6 +427,17 @@ procedure TJvCustomDBDatePickerEdit.ValidateShowCheckBox;
 begin
   inherited SetShowCheckbox(ValidateShowCheckBox(ShowCheckBox));
 end;
+
+procedure TJvCustomDBDatePickerEdit.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if (Key = #27) and not ReadOnly and Modified and IsLinked then
+  begin
+    FDataLink.Reset;
+    Key := #0;
+  end;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization
