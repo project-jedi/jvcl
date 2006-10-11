@@ -567,7 +567,9 @@ begin
   Images := nil;
   FChangeLink.Free;
   FTabs.Free;
+  FTabs := nil;
   FScrollButtonBackground.Free;
+  FScrollButtonBackground := nil;
   
   inherited Destroy;
 end;
