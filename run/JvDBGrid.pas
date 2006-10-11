@@ -101,7 +101,7 @@ type
   end;
   {$ELSE}
   TJvDBGridBitmap = TBitmap;
-  {$ENDIF BCB10_UP}
+  {$ENDIF DELPHI10_UP}
   {$ENDIF BCB}
 
   TSelectColumn = (scDataBase, scGrid);
@@ -127,7 +127,8 @@ type
     var AHint: string; var ATimeOut: Integer) of object;
   TJvCellHintEvent = TJvTitleHintEvent;
   TJvDBColumnResizeEvent = procedure(Grid: TJvDBGrid; ACol: Longint; NewWidth: Integer) of object;
-  TJvDBIsBoolFieldEvent = function(Grid: TJvDBGrid; Field: TField): Boolean of object;
+  TJvDBCheckIfBooleanFieldEvent = function(Grid: TJvDBGrid; Field: TField;
+    var StringForTrue: string; var StringForFalse: string): Boolean of object;
 
   TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
   TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
@@ -258,7 +259,9 @@ type
     FOldControlWndProc: TWndMethod;
     FBooleanFieldToEdit: TField;
     FBooleanEditor: Boolean;
-    FOnIsBoolField: TJvDBIsBoolFieldEvent;
+    FOnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent;
+    FStringForTrue: string;
+    FStringForFalse: string;
     FWordWrap: Boolean;
 
     FAutoSizeRows: Boolean;
@@ -514,8 +517,8 @@ type
     property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
     { BooleanEditor: if true, a checkbox is used to edit boolean fields }
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
-    { OnIsBooleanField: event used to treat integer fields as boolean fields }
-    property OnIsBooleanField: TJvDBIsBoolFieldEvent read FOnIsBoolField write FOnIsBoolField;
+    { OnCheckIfBooleanField: event used to treat integer fields as boolean fields }
+    property OnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent read FOnCheckIfBooleanField write FOnCheckIfBooleanField;
     { OnColumnResized: event triggered each time a column is resized with the mouse }
     property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
   end;
@@ -945,6 +948,8 @@ begin
   FOldControlWndProc := nil;
   FBooleanFieldToEdit := nil;
   FBooleanEditor := True;
+  FStringForTrue := '1';
+  FStringForFalse := '0';
   FWordWrap := False;
 
   FAutoSizeRows := True;
@@ -979,29 +984,13 @@ begin
 end;
 
 function TJvDBGrid.EditWithBoolBox(Field: TField): Boolean;
-var
-  Value, Err: Integer;
 begin
   if FBooleanEditor then
   begin
-    Result := Field.DataType = ftBoolean;
-    if not Result and Assigned(FOnIsBoolField) then
-    begin
-      case Field.DataType of
-        ftSmallint, ftInteger, ftWord:
-          Result := FOnIsBoolField(Self, Field);
-        ftString:
-          begin
-            Err := 0;
-            if not Field.IsNull then
-            begin
-              Val(Field.AsString, Value, Err);
-              if Value <> 0 then ; // prevent compiler hint
-            end;
-            Result := (Err = 0) and FOnIsBoolField(Self, Field);
-          end;
-      end;
-    end;
+    Result := (Field.DataType = ftBoolean);
+    if (not Result) and Assigned(FOnCheckIfBooleanField) and
+      (Field.DataType in [ftSmallint, ftInteger, ftWord, ftString, ftWideString]) then
+      Result := FOnCheckIfBooleanField(Self, Field, FStringForTrue, FStringForFalse);
   end
   else
     Result := False;
@@ -1036,9 +1025,9 @@ begin
             Result := Ord(gpChecked)
           else
             Result := Ord(gpUnChecked);
-      ftString:
+      ftString, ftWideString:
         if EditWithBoolBox(Field) and not Field.IsNull then
-          if Field.AsString = '0' then
+          if AnsiSameText(Field.AsString, FStringForFalse) then
             Result := Ord(gpUnChecked)
           else
             Result := Ord(gpChecked);
@@ -3184,16 +3173,34 @@ begin
     begin
       if FBooleanFieldToEdit.IsNull or (FieldValueChange <> JvGridBool_INVERT) then
       begin
-        if FBooleanFieldToEdit.DataType = ftBoolean then
-          FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK)
+        case FBooleanFieldToEdit.DataType of
+          ftBoolean:
+            FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK);
+          ftString, ftWideString:
+            begin
+              if FieldValueChange = JvGridBool_CHECK then
+                FBooleanFieldToEdit.Value := FStringForTrue
+              else
+                FBooleanFieldToEdit.Value := FStringForFalse;
+            end;
         else
           FBooleanFieldToEdit.Value := FieldValueChange + 1;
+        end;
       end
       else
-        if FBooleanFieldToEdit.DataType = ftBoolean then
-          FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean
+        case FBooleanFieldToEdit.DataType of
+          ftBoolean:
+            FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean;
+          ftString, ftWideString:
+            begin
+              if AnsiSameText(FBooleanFieldToEdit.AsString, FStringForTrue) then
+                FBooleanFieldToEdit.Value := FStringForFalse
+              else
+                FBooleanFieldToEdit.Value := FStringForTrue;
+            end;
         else
           FBooleanFieldToEdit.Value := 1 - Abs(FBooleanFieldToEdit.AsInteger);
+        end;
       InvalidateCell(Col, Row);
     end;
   end;
@@ -3274,11 +3281,12 @@ begin
   Filer.DefineProperty('AlternRowColor', ReadAlternateRowColor, nil, False);
   Filer.DefineProperty('AlternRowFontColor', ReadAlternateRowFontColor, nil, False);
   Filer.DefineProperty('IsBooleanField', ReadIsBooleanField, nil, False);
+  Filer.DefineProperty('OnIsBooleanField', ReadIsBooleanField, nil, False);
 end;
 
 // This type and the ReadIsBooleanField procedure are here to allow silent
 // migration from the wrongly named "IsBooleanField" event to the new and
-// correct event named "OnIsBooleanField". We thus call TReader.ReadPropValue
+// correct event named "OnCheckIfBooleanField". We thus call TReader.ReadPropValue
 // that knows how to handle a property of type tkMethod.
 // We could have reproduced the code here, but calling ReadPropValue ensures
 // easy compatibility with the different versions of Delphi.
@@ -3288,7 +3296,7 @@ type
   
 procedure TJvDBGrid.ReadIsBooleanField(Reader: TReader);
 begin
-  TReaderAccess(Reader).ReadPropValue(Self, GetPropInfo(Self, 'OnIsBooleanField'));
+  TReaderAccess(Reader).ReadPropValue(Self, GetPropInfo(Self, 'OnCheckIfBooleanField'));
 end;
 
 procedure TJvDBGrid.ReadAlternateRowColor(Reader: TReader);
