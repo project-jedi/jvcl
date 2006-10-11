@@ -110,6 +110,8 @@ type
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
   end;
 
+  TJvGetValidDateStringEvent = procedure(Sender: TObject; var DateText: string) of object;
+
   TJvCustomDatePickerEdit = class(TJvCustomCheckedMaskEdit)
   private
     FAllowNoDate: Boolean;
@@ -129,6 +131,8 @@ type
     FEmptyMaskText: string;
     FStoreDateFormat: Boolean;
     FDateSeparator: Char;
+    FPopupDate: TDateTime;
+    FOnGetValidDateString: TJvGetValidDateStringEvent;
     //    FMinYear: Word;
     //    FMaxYear: Word;
     procedure CalChange(Sender: TObject);
@@ -158,7 +162,9 @@ type
     procedure SetText(const AValue: TCaption);
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
+    function GetValidDateString(const Text: string): string; virtual;
     procedure AcceptValue(const Value: Variant); override;
+    function AcceptPopup(var Value: Variant): Boolean; override;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
     procedure PopupChange; override;
@@ -201,6 +207,8 @@ type
     property ShowButton default True;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
     property StoreDateFormat: Boolean read FStoreDateFormat write FStoreDateFormat default False;
+
+    property OnGetValidDateString: TJvGetValidDateStringEvent read FOnGetValidDateString write FOnGetValidDateString;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -318,6 +326,8 @@ type
     property OnParentColorChange;
     property OnSetFocus;
     property OnStartDrag;
+
+    property OnGetValidDateString;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -407,6 +417,13 @@ begin
   Result.Figure := dfNone;
 end;
 
+function TJvCustomDatePickerEdit.GetValidDateString(const Text: string): string;
+begin
+  Result := Text;
+  if Assigned(FOnGetValidDateString) then
+    FOnGetValidDateString(Self, Result);
+end;
+
 function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
@@ -429,11 +446,11 @@ begin
         if AllowNoDate and IsEmptyMaskText(AText) then
           ADate := 0.0
         else
-          ADate := StrToDate(StrRemoveChars(AText, [' ']));
+          ADate := StrToDate(StrRemoveChars(GetValidDateString(AText), [' ']));
         Result := True;
       except
         Result := False;
-        if (ARaise) then
+        if ARaise then
           raise
         else
         begin
@@ -696,7 +713,7 @@ var
   lDate: TDateTime;
 begin
   if (ANextControl = nil) or ((ANextControl <> FPopup) and
-    (ANextControl.Owner <> FPopup)) then
+     (ANextControl.Owner <> FPopup)) then
     if not FDateError then
     begin
       PopupCloseUp(Self, False);
@@ -755,7 +772,7 @@ end;
 procedure TJvCustomDatePickerEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
-  if not (Self.Enabled) and Dropped then
+  if not Enabled and Dropped then
     PopupCloseUp(Self, False);
 end;
 
@@ -865,7 +882,7 @@ var
 begin
   DeleteSetHere := False;
 
-  if Text = NoDateText then
+  if (Text = NoDateText) and EditCanModify then
   begin
     Text := '';
     RestoreMask;
@@ -1116,10 +1133,18 @@ begin
     // We must do the conversion ourselves as the date format might
     // have been personalized. (Mantis 3628)
     // Default to Now if the Value is not valid. (Mantis 3733)
-    if not AttemptTextToDate(VarToStr(Value), NewDate) then
+    if (Value = NoDateText) or not AttemptTextToDate(VarToStr(Value), NewDate) then
       NewDate := Now;
+    FPopupDate := NewDate;
     TJvDropCalendar(FPopup).SelDate := NewDate;
   end;
+end;
+
+function TJvCustomDatePickerEdit.AcceptPopup(var Value: Variant): Boolean;
+begin
+  Result := inherited AcceptPopup(Value);
+  if Result then
+    Result := Value <> FPopupDate;
 end;
 
 procedure TJvCustomDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
