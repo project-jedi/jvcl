@@ -516,7 +516,7 @@ type
     property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
     { BooleanEditor: if true, a checkbox is used to edit boolean fields }
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
-    { OnCheckIfBooleanField: event used to treat integer fields as boolean fields }
+    { OnCheckIfBooleanField: event used to treat integer fields and string fields as boolean fields }
     property OnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent read FOnCheckIfBooleanField write FOnCheckIfBooleanField;
     { OnColumnResized: event triggered each time a column is resized with the mouse }
     property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
@@ -989,7 +989,11 @@ begin
     Result := (Field.DataType = ftBoolean);
     if (not Result) and Assigned(FOnCheckIfBooleanField) and
       (Field.DataType in [ftSmallint, ftInteger, ftWord, ftString, ftWideString]) then
+    begin
+      FStringForTrue := '1';
+      FStringForFalse := '0';
       Result := FOnCheckIfBooleanField(Self, Field, FStringForTrue, FStringForFalse);
+    end;
   end
   else
     Result := False;
