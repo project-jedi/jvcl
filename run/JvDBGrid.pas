@@ -333,7 +333,6 @@ type
     function DoKeyPress(var Msg: TWMChar): Boolean;
     procedure SetWordWrap(Value: Boolean);
     procedure NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
-    procedure ReadIsBooleanField(Reader: TReader);
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -3280,23 +3279,6 @@ begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('AlternRowColor', ReadAlternateRowColor, nil, False);
   Filer.DefineProperty('AlternRowFontColor', ReadAlternateRowFontColor, nil, False);
-  Filer.DefineProperty('IsBooleanField', ReadIsBooleanField, nil, False);
-  Filer.DefineProperty('OnIsBooleanField', ReadIsBooleanField, nil, False);
-end;
-
-// This type and the ReadIsBooleanField procedure are here to allow silent
-// migration from the wrongly named "IsBooleanField" event to the new and
-// correct event named "OnCheckIfBooleanField". We thus call TReader.ReadPropValue
-// that knows how to handle a property of type tkMethod.
-// We could have reproduced the code here, but calling ReadPropValue ensures
-// easy compatibility with the different versions of Delphi.
-type
-  TReaderAccess = class(TReader)
-  end;
-  
-procedure TJvDBGrid.ReadIsBooleanField(Reader: TReader);
-begin
-  TReaderAccess(Reader).ReadPropValue(Self, GetPropInfo(Self, 'OnCheckIfBooleanField'));
 end;
 
 procedure TJvDBGrid.ReadAlternateRowColor(Reader: TReader);
