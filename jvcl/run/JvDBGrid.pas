@@ -20,6 +20,7 @@ Contributor(s):
   Lionel Reynaud
   Flemming Brandt Clausen
   Frédéric Leneuf-Magaud
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -198,10 +199,10 @@ type
   TJvDBGrid = class(TJvExDBGrid)
   private
     FAutoSort: Boolean;
-    FBeepOnError: Boolean; // WAP
-    FAutoAppend: Boolean; // Polaris
-    FSizingIndex: Integer; // Polaris
-    FSizingOfs: Integer; // Polaris
+    FBeepOnError: Boolean;
+    FAutoAppend: Boolean;
+    FSizingIndex: Integer;
+    FSizingOfs: Integer;
     FShowGlyphs: Boolean;
     FDefaultDrawing: Boolean;
     FMultiSelect: Boolean;
@@ -372,7 +373,6 @@ type
       Column: TColumn; State: TGridDrawState); override;
     procedure ColWidthsChanged; override;
     procedure Paint; override;
-    // Polaris
     procedure CalcSizingState(X, Y: Integer; var State: TGridState;
       var Index: Longint; var SizingPos, SizingOfs: Integer;
       var FixedInfo: TGridDrawInfo); override;
@@ -446,7 +446,7 @@ type
     property CharList: TCharList read FCharList write FCharList;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   published
-    property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
+    property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True;
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
     property AutoSort: Boolean read FAutoSort write FAutoSort default True;
     property Options: TDBGridOptions read GetOptions write SetOptions default DefJvGridOptions;
@@ -480,7 +480,7 @@ type
     property OnResize;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True; // WAP.
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnter: Boolean read FPostOnEnter write FPostOnEnter default False;
@@ -944,7 +944,7 @@ begin
   FShowGlyphs := True;
   FDefaultDrawing := True;
   FClearSelection := True;
-  FAutoAppend := True; // Polaris
+  FAutoAppend := True;
   FShowTitleHint := False;
   FShowCellHint := False;
   FAlternateRowColor := clNone;
@@ -958,7 +958,7 @@ begin
   // systems, in which case you should simply remove it and recompile.
   FCharList :=
     ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',', Backspace,
-     'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç'];
+     'é', 'è', 'ê', 'ë', 'ô', 'ö', 'û', 'ù', 'â', 'à', 'ä', 'î', 'ï', 'ç'];
 
   FControls := TJvDBGridControls.Create(Self);
   FCurrentControl := nil;
@@ -1331,7 +1331,6 @@ var
     with DataLink.DataSet do
     begin
       DoSelection(Select, 1);
-      // Polaris
       if AutoAppend and Eof and CanModify and (not ReadOnly) and (dgEditing in Options) then
         Append;
     end;
@@ -1760,8 +1759,6 @@ begin
   end
   else
   begin
-    if Assigned(DataLink) and not DataLink.Editing then
-      HideCurrentControl;
     if not (Assigned(InplaceEditor) and InplaceEditor.Visible) then
       HideEditor;
   end;
@@ -1810,7 +1807,7 @@ begin
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
-// This function has a few known bugs, so don't complain about them and use
+// Fred: This function has a few known bugs, so don't complain about them and use
 // JvDBUltimGrid instead if you're looking for an improved sorting function.
 const
   cIndexName = 'IndexName';
@@ -2266,16 +2263,12 @@ begin
     if Button = mbRight then
       Button := mbLeft;
   end;
-  // Polaris
   if (Button = mbLeft) and (FGridState = gsColSizing) and
     (FSizingIndex + Byte(not (dgIndicator in Options)) <= FixedCols) then
-//    and not AutoSizeColumns
   begin
     ColWidths[FSizingIndex] := GetMinColWidth(X - FSizingOfs - CellRect(FSizingIndex, 0).Left);
     FGridState := gsNormal;
-//    Exit;
   end;
-  // Polaris
 
   if FTitleArrow and (Button = mbLeft) and
     (dgTitles in Options) and (dgIndicator in Options) and
@@ -2738,8 +2731,6 @@ var
   end;
 
 begin
-//  if gdFixed in AState then
-//    Canvas.Brush.Color := FixedColor;
   FCurrentDrawRow := ARow;
   Canvas.Font := Self.Font;
   if (DataLink <> nil) and DataLink.Active and (ACol >= 0) and
@@ -2795,7 +2786,7 @@ begin
     end;
   end
   else
-  if not (csLoading in ComponentState) and //(FTitleButtons or (FixedCols > 0)) and
+  if not (csLoading in ComponentState) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
     SavePen := Canvas.Pen.Color;
@@ -3148,8 +3139,6 @@ begin
     LoadFromAppStore(IniStorage.AppStorage, Section);
   end;
 end;
-
-// Polaris
 
 procedure TJvDBGrid.CalcSizingState(X, Y: Integer; var State: TGridState;
   var Index: Longint; var SizingPos, SizingOfs: Integer;
@@ -3843,7 +3832,7 @@ begin
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
-  if ReadOnly or not (Control.Enabled and DataLink.DataSet.CanModify and DataLink.Edit) then
+  if ReadOnly or not (Control.Enabled and DataLink.DataSet.CanModify) then
   begin
     HideCurrentControl;
     Exit;
@@ -3871,8 +3860,8 @@ begin
     R.BottomRight := ClientToScreen(R.BottomRight);
     R.BottomRight := TControl(Control.Parent).ScreenToClient(R.BottomRight);
     
-    // I removed this code because moving a control away from the topleft corner
-    // of the cell lets appear the cell and its focus rectangle behind. Fred.
+    // Fred: I removed this code because moving a control away from the topleft corner
+    // of the cell lets appear the cell and its focus rectangle behind.
     
     //if Control is TCustomEdit then
     //begin
@@ -3930,10 +3919,6 @@ begin
   end;
   Control.BringToFront;
   Control.Show;
-  //if Assigned(GridControl) and not (GridControl.FitCell in [fcDesignSize, fcBiggest]) then
-  //  { If the Control is shown for the first time, the bounds are not correct.
-  //    Esp. "Height" is too large }
-  //  Control.BoundsRect := R;
 
   if Self.Visible and Control.Visible and Self.Parent.Visible and GetParentForm(Self).Visible then
   begin
