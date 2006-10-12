@@ -446,7 +446,7 @@ begin
   FJclLinkMapFile := nil;
   for I := 0 to FTargets.Count - 1 do
   begin
-    FJclLibrary := LoadLibrary(PChar(TargetConfig[I].VersionedJclBpl('Jcl.bpl')));
+    FJclLibrary := LoadPackage(PChar(TargetConfig[I].VersionedJclBpl('Jcl.bpl')));
     if FJclLibrary <> 0 then
     begin
       FJclLinkMapFile := GetProcAddress(FJclLibrary,PChar(JclLinkMapFileExportName));
