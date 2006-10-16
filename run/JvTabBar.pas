@@ -1157,7 +1157,7 @@ begin
   Result := False;
   if (FBtnLeftScroll.State <> sbsHidden) then
     Result := HandleButton(sbScrollLeft, FBtnLeftScroll.State, X, Y, FBtnLeftScroll.Rect);
-  if (FBtnRightScroll.State <> sbsHidden) then
+  if not Result and (FBtnRightScroll.State <> sbsHidden) then
     Result := HandleButton(sbScrollRight, FBtnRightScroll.State, X, Y, FBtnRightScroll.Rect);
 end;
 
@@ -1210,7 +1210,7 @@ begin
   Result := False;
   if (FBtnLeftScroll.State <> sbsHidden) then
     Result := HandleButton(FBtnLeftScroll.ExState, FBtnLeftScroll.State, X, Y, FBtnLeftScroll.Rect);
-  if (FBtnRightScroll.State <> sbsHidden) then
+  if not Result and (FBtnRightScroll.State <> sbsHidden) then
     Result := HandleButton(FBtnRightScroll.ExState, FBtnRightScroll.State, X, Y, FBtnRightScroll.Rect);
 end;
 
@@ -1238,7 +1238,7 @@ begin
   Result := False;
   if (FBtnLeftScroll.State <> sbsHidden) then
     Result := HandleButton(sbScrollLeft, FBtnLeftScroll.State, X, Y, FBtnLeftScroll.Rect);
-  if (FBtnRightScroll.State <> sbsHidden) then
+  if not Result and (FBtnRightScroll.State <> sbsHidden) then
     Result := HandleButton(sbScrollRight, FBtnRightScroll.State, X, Y, FBtnRightScroll.Rect);
 end;
 
