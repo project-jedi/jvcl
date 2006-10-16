@@ -789,6 +789,7 @@ begin
   FExecuteThread.ConnectedDatasetThreadHandler := self;
   FExecuteThread.ThreadDialog := ThreadDialog;
   FEnhancedOptions := CreateEnhancedOptions;
+  FCurrentOperation := tdoNothing;
 end;
 
 destructor TJvBaseDatasetThreadHandler.Destroy;
@@ -1140,6 +1141,8 @@ procedure TJvBaseDatasetThreadHandler.InternalLast;
 var
   ShowModal    :Boolean;
 begin
+  if FCurrentOperation <> tdoNothing then
+    Exit;
   FCurrentOperation := tdoLast;
   if not ThreadOptions.LastInThread or ThreadIsActive or (csDesigning in ComponentState) then
   begin
@@ -1163,6 +1166,8 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.InternalRefresh;
 begin
+  if FCurrentOperation <> tdoNothing then
+    Exit;
   FCurrentOperation := tdoRefresh;
   if not ThreadOptions.RefreshInThread or not IThreadedDatasetInterface.IsThreadAllowed or
     ThreadIsActive or (csDesigning in ComponentState) then
@@ -1213,6 +1218,9 @@ begin
   end
   else
   begin
+    if (FCurrentOperation <> tdoNothing) and
+       (CurrentOperation <> tdoRefresh) then
+      Exit;
     if CurrentOperation <> tdoRefresh then
       FCurrentOperation := tdoOpen;
     if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
