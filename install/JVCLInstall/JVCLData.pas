@@ -446,7 +446,13 @@ begin
   FJclLinkMapFile := nil;
   for I := 0 to FTargets.Count - 1 do
   begin
-    FJclLibrary := LoadPackage(PChar(TargetConfig[I].VersionedJclBpl('Jcl.bpl')));
+    try
+      FJclLibrary := LoadPackage(PChar(TargetConfig[I].VersionedJclBpl('Jcl.bpl')));
+    except
+      // In case of an exception, the only thing we can do is decide not to use the BPL.
+      FJclLibrary := 0;
+    end;
+    
     if FJclLibrary <> 0 then
     begin
       FJclLinkMapFile := GetProcAddress(FJclLibrary,PChar(JclLinkMapFileExportName));
