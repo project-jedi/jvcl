@@ -342,6 +342,7 @@ type
   protected
     function JvclIncFilename: string;
     procedure Init; virtual;
+    procedure LoadLinkMapFileLibrary;
   public
     constructor Create;
     destructor Destroy; override;
@@ -442,26 +443,9 @@ begin
   for I := 0 to High(FConfigs) do
     FConfigs[I] := TTargetConfig.Create(Self, Targets[I]);
 
-  FJclLibrary := 0;
-  FJclLinkMapFile := nil;
-  for I := 0 to FTargets.Count - 1 do
-  begin
-    try
-      FJclLibrary := LoadPackage(PChar(TargetConfig[I].VersionedJclBpl('Jcl.bpl')));
-    except
-      // In case of an exception, the only thing we can do is decide not to use the BPL.
-      FJclLibrary := 0;
-    end;
-    
-    if FJclLibrary <> 0 then
-    begin
-      FJclLinkMapFile := GetProcAddress(FJclLibrary,PChar(JclLinkMapFileExportName));
-      if Assigned(FJclLinkMapFile) then
-        Break
-      else
-        FreeLibrary(FJclLibrary);
-    end;
-  end;
+  { Don't fail during startup, because MapFile linking isn't that important that
+    it should block the whole JVCL installer. }
+  FJclLibrary := Cardinal(-1);
 
   Init;
 end;
@@ -471,12 +455,55 @@ var
   i: Integer;
 begin
   FJclLinkMapFile := nil;
-  FreeLibrary(FJclLibrary);
+  if (FJclLibrary <> 0) and (FJclLibrary <> Cardinal(-1)) then
+    FreeLibrary(FJclLibrary);
 
   for i := 0 to High(FConfigs) do
     FConfigs[I].Free;
   FTargets.Free;
   inherited Destroy;
+end;
+
+procedure TJVCLData.LoadLinkMapFileLibrary;
+var
+  I: Integer;
+  Filename: string;
+  PackageLoad: procedure;
+begin
+  if FJclLibrary <> Cardinal(-1) then
+    Exit;
+
+  FJclLibrary := 0;
+  FJclLinkMapFile := nil;
+  for I := FTargets.Count - 1 downto 0 do
+  begin
+  //repeat
+    //Filename := 'Jcl' + IntToStr(Trunc(CompilerVersion) - 8) + '0.bpl';
+    Filename := TargetConfig[I].VersionedJclBpl('Jcl.bpl');
+    FJclLibrary := LoadLibrary(PChar(Filename));
+    if FJclLibrary <> 0 then
+    begin
+      FJclLinkMapFile := GetProcAddress(FJclLibrary, PChar(JclLinkMapFileExportName));
+      if Assigned(FJclLinkMapFile) then
+      begin
+        PackageLoad := GetProcAddress(FJclLibrary, 'Initialize'); //Do not localize
+        if Assigned(PackageLoad) then
+        begin
+          try
+            PackageLoad;
+          except
+            FreeLibrary(FJclLibrary);
+            // everything is lost
+            FJclLibrary := 0; // => access violation
+          end;
+          Break;
+        end;
+      end;
+      FreeLibrary(FJclLibrary);
+      FJclLibrary := 0;
+    end;
+  end;
+  //until True;
 end;
 
 function TJVCLData.FindTargetConfig(const TargetSymbol: string): TTargetConfig;
@@ -666,6 +693,8 @@ function TJVCLData.LinkMapFile(const BinaryFileName, MapFileName: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean;
 begin
   try
+    if FJclLibrary = Cardinal(-1) then
+      LoadLinkMapFileLibrary;
     Result := Assigned(FJclLinkMapFile) and FJclLinkMapFile(PChar(BinaryFileName),
       PChar(MapFileName), MapFileSize, JclDebugDataSize);
   except
