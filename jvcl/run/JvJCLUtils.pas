@@ -1179,6 +1179,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 {$ENDIF VCL}
 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
+{$EXTERNALSYM IsEqualGUID}
 
 
 {$IFNDEF BCB}
