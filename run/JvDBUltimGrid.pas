@@ -144,6 +144,8 @@ type
     SortString: string; var SortOK: Boolean) of object;
   TRestoreGridPosEvent = procedure(Sender: TJvDBUltimGrid; SavedBookmark: TBookmark;
     SavedRowPos: Integer) of object;
+  TCheckIfValidSortFieldEvent = function(Sender: TJvDBUltimGrid;
+    FieldToSort: TField): Boolean of object;
 
   TSortWith = (swIndex, swFields, swUserFunc);
 
@@ -155,6 +157,7 @@ type
     FMultiColSort: Boolean;
     FOnIndexNotFound: TIndexNotFoundEvent;
     FOnUserSort: TUserSortEvent;
+    FOnCheckIfValidSortField: TCheckIfValidSortFieldEvent;
     FSavedBookmark: TBookmarkStr;
     FSavedRowPos: Integer;
     FOnRestoreGridPosition: TRestoreGridPosEvent;
@@ -188,13 +191,20 @@ type
       swFields   : for ADO tables
       swUserFunc : for other data providers (assignment of OnUserSort is mandatory) }
     property SortWith: TSortWith read FSortWith write FSortWith default swIndex;
+
     { MultiColSort: is the sorting allowed on several columns or only one ? }
     property MultiColSort: Boolean read FMultiColSort write SetMultiColSort default True;
+
     { OnIndexNotFound: fired when SortWith = swIndex and the sorting index is not found }
-    property OnIndexNotFound: TIndexNotFoundEvent
-      read FOnIndexNotFound write FOnIndexNotFound;
+    property OnIndexNotFound: TIndexNotFoundEvent read FOnIndexNotFound write FOnIndexNotFound;
+
     { OnUserSort: fired when SortWith = swUserFunc }
     property OnUserSort: TUserSortEvent read FOnUserSort write FOnUserSort;
+
+    { OnCheckIfValidSortField allows to define your own checking routine for sorting fields }
+    property OnCheckIfValidSortField: TCheckIfValidSortFieldEvent read FOnCheckIfValidSortField
+      write FOnCheckIfValidSortField;
+
     { OnRestoreGridPosition: fired when RestoreGridPosition is called }
     property OnRestoreGridPosition: TRestoreGridPosEvent
       read FOnRestoreGridPosition write FOnRestoreGridPosition;
@@ -324,6 +334,7 @@ var
   FTS: Integer;
   SortField: TField;
   Retry: Boolean;
+  FieldIsValid: Boolean;
 begin
   FSortOK := False;
   if Assigned(DataLink) and DataLink.Active and Assigned(FieldsToSort) then
@@ -358,8 +369,12 @@ begin
       begin
         FieldsToSort[FTS].Name := Trim(FieldsToSort[FTS].Name);
         SortField := DSet.FieldByName(FieldsToSort[FTS].Name);
-        if (SortField is TBlobField) or (SortField is TBytesField) or
-          ((SortField.FieldKind <> fkData) and (SortField.FieldKind <> fkInternalCalc)) then
+        if Assigned(OnCheckIfValidSortField) then
+          FieldIsValid := OnCheckIfValidSortField(Self, SortField)
+        else
+          FieldIsValid := not (SortField is TBlobField) and not (SortField is TBytesField)
+            and ((SortField.FieldKind = fkData) or (SortField.FieldKind = fkInternalCalc));
+        if not FieldIsValid then
         begin
           // No sorting of binary or special fields
           if BeepOnError then
