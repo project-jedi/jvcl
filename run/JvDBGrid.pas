@@ -273,7 +273,6 @@ type
     FChangeLinks: TObjectList;
     FShowMemos: Boolean;
     FAlwaysShowEditor: Boolean;
-    FInColExit: Boolean;
 
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
@@ -600,23 +599,6 @@ var
 begin
   for I := 0 to Grid.ColCount - 1 do
     Grid.InvalidateCell(I, Row);
-end;
-
-type
-  TPublishedGrid = class(TDBGrid)
-  published
-    property Col;
-    property Row;
-  end;
-
-procedure SetIntGetterProp(Instance: TObject; const PropName: string; Value: Integer);
-var
-  Info: PPropInfo;
-begin
-  Info := GetPropInfo(TPublishedGrid, PropName);
-  if Info <> nil then
-    if Cardinal(Info.GetProc) and $FF000000 = $FF000000 then
-      PInteger(Cardinal(Instance) + (Cardinal(Info.GetProc) and $00FFFFFF))^ := Value;
 end;
 
 //=== { TInternalInplaceEdit } ===============================================
@@ -2038,7 +2020,7 @@ end;
 procedure TJvDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  Cell, LastCell: TGridCoord;
+  Cell: TGridCoord;
   MouseDownEvent: TMouseEvent;
   EnableClick: Boolean;
   CursorPos: TPoint;
@@ -2059,8 +2041,6 @@ begin
     else
     begin
       Cell := MouseCoord(X, Y);
-      LastCell.X := Col;
-      LastCell.Y := Row;
 
       if (Button = mbRight) and
         (dgTitles in Options) and (dgIndicator in Options) and
@@ -2132,29 +2112,7 @@ begin
           inherited MouseDown(Button, Shift, 1, Y)
         else
           inherited MouseDown(Button, Shift, X, Y);
-        if (Cell.X = LastCell.X) and (Cell.Y <> LastCell.Y) then
-        begin
-          // invoke missing ColExit and ColEnter
-          if not FInColExit then
-          begin
-            FInColExit := True;
-            try
-              SetIntGetterProp(Self, 'Col', LastCell.X);
-              SetIntGetterProp(Self, 'Row', LastCell.Y);
-              ColExit;
-            finally
-              FInColExit := False;
-            end;
-            if (Row <> LastCell.Y) then
-              Exit;
-            SetIntGetterProp(Self, 'Col', Cell.X);
-            SetIntGetterProp(Self, 'Row', Cell.Y);
-          end;
-          if not (dgAlwaysShowEditor in Options) then
-            HideEditor;
-          ColEnter;
-        end;
-      end;  
+      end;
       MouseDownEvent := OnMouseDown;
       if Assigned(MouseDownEvent) then
         MouseDownEvent(Self, Button, Shift, X, Y);
