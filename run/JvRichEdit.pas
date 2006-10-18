@@ -596,6 +596,7 @@ type
     procedure SetUndoLimit(Value: Integer);
     procedure SetZoom(Value: Integer); // Added by J.G. Boerema
     procedure UpdateTextModes(Plain: Boolean);
+    procedure UpdateTypographyOptions(const Advanced: Boolean);
     procedure AdjustFindDialogPosition(Dialog: TFindDialog);
     procedure SetupFindDialog(Dialog: TFindDialog; const SearchStr,
       ReplaceStr: string);
@@ -1694,40 +1695,6 @@ begin
   Result := SendMessage(Wnd, EM_GETOLEINTERFACE, 0, Longint(@RichEditOle)) <> 0;
 end;
 
-// (rom) needs a Pascal equivalent
-
-function AdjustLineBreaks(Dest, Source: PChar): Integer; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     EDI,EAX
-        MOV     ESI,EDX
-        MOV     EDX,EAX
-        CLD
-@@1:    LODSB
-@@2:    OR      AL,AL
-        JE      @@4
-        CMP     AL,0AH
-        JE      @@3
-        STOSB
-        CMP     AL,0DH
-        JNE     @@1
-        MOV     AL,0AH
-        STOSB
-        LODSB
-        CMP     AL,0AH
-        JE      @@1
-        JMP     @@2
-@@3:    MOV     EAX,0A0DH
-        STOSW
-        JMP     @@1
-@@4:    STOSB
-        LEA     EAX,[EDI-1]
-        SUB     EAX,EDX
-        POP     EDI
-        POP     ESI
-end;
-
 function StreamSave(dwCookie: Longint; pbBuff: PByte;
   cb: Longint; var pcb: Longint): Longint; stdcall;
 var
@@ -1744,35 +1711,167 @@ begin
   end;
 end;
 
+type
+  TCookie = class
+  private
+    FConverter: TJvConversion;
+    FSkipLf, FSkipCr: Boolean;
+    // SourceLength is number of characters
+    function AdjustLineBreaks(Dest, Source: PChar; SourceLength: Integer): Integer;
+    function AdjustLineBreaksW(Dest, Source: PWideChar; SourceLength: Integer): Integer;
+  public
+    constructor Create(AConverter: TJvConversion);
+    // BufferSize is the size of the Buffer in bytes
+    function Load(Buffer: PByte; BufferSize: Longint): Longint;
+    function LoadW(Buffer: PByte; BufferSize: Longint): Longint;
+    property Converter: TJvConversion read FConverter;
+  end;
+
+{ AdjustLineBreaks adjusts all line breaks in the given string S to be true
+  #13/#10 sequences. The function changes any #13 characters not followed by a #10
+  and any #10 characters not preceded by a #13 into #13/#10 pairs. It also
+  converts #10/#13 pairs to #13/#10 pairs. The #10/#13 pair is common in Unix text
+  files. (SysUtils)
+}
+
+function TCookie.AdjustLineBreaks(Dest, Source: PChar; SourceLength: Integer): Integer;
+var
+  SourceEnd: PChar;
+  DestStart: PChar;
+begin
+  SourceEnd := Source + SourceLength;
+  DestStart := Dest;
+  while Source < SourceEnd do
+  begin
+    case Source^ of
+      Lf:
+        if FSkipLf then
+          FSkipLf := False
+        else
+        begin
+          Dest^ := Cr;
+          Inc(Dest);
+          Dest^ := Lf;
+          Inc(Dest);
+          FSkipCr := True;
+        end;
+      Cr:
+        if FSkipCr then
+          FSkipCr := False
+        else
+        begin
+          Dest^ := Cr;
+          Inc(Dest);
+          Dest^ := Lf;
+          Inc(Dest);
+          FSkipLf := True;
+        end;
+    else
+      FSkipCr := False;
+      FSkipLf := False;
+      Dest^ := Source^;
+      Inc(Dest);
+    end;
+    Inc(Source);
+  end;
+  Result := Dest - DestStart;
+end;
+
+function TCookie.AdjustLineBreaksW(Dest, Source: PWideChar;
+  SourceLength: Integer): Integer;
+var
+  SourceEnd: PWideChar;
+  DestStart: PWideChar;
+begin
+  SourceEnd := Source + SourceLength;
+  DestStart := Dest;
+  while Source < SourceEnd do
+  begin
+    case Source^ of
+      #10:
+        if FSkipLf then
+          FSkipLf := False
+        else
+        begin
+          Dest^ := #13;
+          Inc(Dest);
+          Dest^ := #10;
+          Inc(Dest);
+          FSkipCr := True;
+        end;
+      #13:
+        if FSkipCr then
+          FSkipCr := False
+        else
+        begin
+          Dest^ := #13;
+          Inc(Dest);
+          Dest^ := #10;
+          Inc(Dest);
+          FSkipLf := True;
+        end;
+    else
+      FSkipCr := False;
+      FSkipLf := False;
+      Dest^ := Source^;
+      Inc(Dest);
+    end;
+    Inc(Source);
+  end;
+  Result := Dest - DestStart;
+end;
+
+constructor TCookie.Create(AConverter: TJvConversion);
+begin
+  inherited Create;
+  FConverter := AConverter;
+end;
+
+function TCookie.Load(Buffer: PByte; BufferSize: Longint): Longint;
+var
+  pBuff: PChar;
+begin
+  BufferSize := BufferSize div 2;
+  Result := 0;
+  pBuff := PChar(Buffer) + BufferSize;
+  if Converter <> nil then
+    Result := Converter.ConvertRead(pBuff, BufferSize);
+  if Result > 0 then
+    Result := AdjustLineBreaks(PChar(Buffer), pBuff, Result);
+end;
+
+function TCookie.LoadW(Buffer: PByte; BufferSize: Integer): Longint;
+var
+  pBuff: PWideChar;
+begin
+  BufferSize := BufferSize div 2;
+  Result := 0;
+  pBuff := PWideChar(Buffer) + BufferSize div 2;
+  if Converter <> nil then
+    Result := Converter.ConvertRead(PChar(pBuff), BufferSize);
+  if Result > 0 then
+    Result := 2 * AdjustLineBreaksW(PWideChar(Buffer), PWideChar(pBuff), Result div 2);
+end;
+
 function StreamLoad(dwCookie: Longint; pbBuff: PByte;
   cb: Longint; var pcb: Longint): Longint; stdcall;
-var
-  Buffer, pBuff: PChar;
-  Converter: TJvConversion;
 begin
   Result := NoError;
-  Converter := TJvConversion(dwCookie);
-  Buffer := StrAlloc(cb + 1);
   try
-    cb := cb div 2;
-    pcb := 0;
-    pBuff := Buffer + cb;
-    try
-      if Converter <> nil then
-        pcb := Converter.ConvertRead(pBuff, cb);
-      if pcb > 0 then
-      begin
-        pBuff[pcb] := #0;
-        if pBuff[pcb - 1] = Cr then
-          pBuff[pcb - 1] := #0;
-        pcb := AdjustLineBreaks(Buffer, pBuff);
-        Move(Buffer^, pbBuff^, pcb);
-      end;
-    except
-      Result := ReadError;
-    end;
-  finally
-    StrDispose(Buffer);
+    pcb := TCookie(dwCookie).Load(pbBuff, cb);
+  except
+    Result := ReadError;
+  end;
+end;
+
+function StreamLoadW(dwCookie: Longint; pbBuff: PByte;
+  cb: Longint; var pcb: Longint): Longint; stdcall;
+begin
+  Result := NoError;
+  try
+    pcb := TCookie(dwCookie).LoadW(pbBuff, cb);
+  except
+    Result := ReadError;
   end;
 end;
 
@@ -2666,6 +2765,10 @@ begin
     SendMessage(Handle, EM_AUTOURLDETECT, Longint(FAutoURLDetect), 0);
     FUndoLimit := SendMessage(Handle, EM_SETUNDOLIMIT, FUndoLimit, 0);
     UpdateTextModes(PlainText);
+    // GetAdvancedTypography returns now always false, because the handle
+    // is recreated, so don't use property AdvancedTypography
+    FAdvancedTypography := LAdvancedTypography;
+    UpdateTypographyOptions(FAdvancedTypography);
     SetLangOptions(FLangOptions);
   end;
   if FAllowObjects then
@@ -2675,16 +2778,13 @@ begin
     GetRichEditOle(Handle, FRichEditOle);
     UpdateHostNames;
   end;
-  AdvancedTypography := LAdvancedTypography;
 
   if FMemStream <> nil then
   begin
     FMemStream.ReadBuffer(DesignMode, SizeOf(DesignMode));
     if DesignMode then
-    begin
       TJvRichEditStrings(Lines).Format := sfPlainText;
-      TJvRichEditStrings(Lines).Mode := [];
-    end;
+    TJvRichEditStrings(Lines).Mode := [smUnicode];
     try
       Lines.LoadFromStream(FMemStream);
       FMemStream.Free;
@@ -2712,10 +2812,8 @@ begin
   DesignMode := (csDesigning in ComponentState);
   FMemStream.WriteBuffer(DesignMode, SizeOf(DesignMode));
   if DesignMode then
-  begin
     TJvRichEditStrings(Lines).Format := sfPlainText;
-    TJvRichEditStrings(Lines).Mode := [];
-  end;
+  TJvRichEditStrings(Lines).Mode := [smUnicode];
   try
     Lines.SaveToStream(FMemStream);
     FMemStream.Position := 0;
@@ -2876,8 +2974,14 @@ end;
 function TJvCustomRichEdit.GetAdvancedTypography: Boolean;
 begin
   Result := FAdvancedTypography;
-  if HandleAllocated and (RichEditVersion >= 3) then
-    Result := SendMessage(Handle, EM_GETTYPOGRAPHYOPTIONS, 0, 0) = TO_ADVANCEDTYPOGRAPHY;
+  // Advanced and normal line breaking may also be turned on automatically by
+  // the rich edit control if it is needed for certain languages. So don't
+  // rely on FAdvancedTypography alone.
+  if HandleAllocated and not (csDesigning in ComponentState) then
+  begin
+    if RichEditVersion >= 3 then
+      Result := SendMessage(Handle, EM_GETTYPOGRAPHYOPTIONS, 0, 0) and TO_ADVANCEDTYPOGRAPHY = TO_ADVANCEDTYPOGRAPHY;
+  end;
 end;
 
 function TJvCustomRichEdit.GetAutoURLDetect: Boolean;
@@ -3387,6 +3491,8 @@ begin
   begin
     HandleNeeded;
     AdvancedTypography := True;
+    // setting AdvancedTypography will set AutoAdvancedTypography to False, so:
+    AutoAdvancedTypography := True;
   end;
 end;
 
@@ -3878,11 +3984,9 @@ end;
 procedure TJvCustomRichEdit.SetAdvancedTypography(const Value: Boolean);
 begin
   FAdvancedTypography := Value;
-  if HandleAllocated and (RichEditVersion >= 3) then
-    if Value then
-      SendMessage(Handle, EM_SETTYPOGRAPHYOPTIONS, TO_ADVANCEDTYPOGRAPHY, TO_ADVANCEDTYPOGRAPHY)
-    else
-      SendMessage(Handle, EM_SETTYPOGRAPHYOPTIONS, 0, TO_ADVANCEDTYPOGRAPHY);
+  if FAdvancedTypography then
+    AutoAdvancedTypography := False;
+  UpdateTypographyOptions(FAdvancedTypography);
 end;
 
 procedure TJvCustomRichEdit.SetAllowObjects(Value: Boolean);
@@ -3981,7 +4085,7 @@ begin
             TJvRichEditStrings(Lines).Format := sfPlainText
           else
             TJvRichEditStrings(Lines).Format := sfRichText;
-          TJvRichEditStrings(Lines).Mode := [];
+          TJvRichEditStrings(Lines).Mode := [smUnicode];
           Lines.SaveToStream(MemStream);
           MemStream.Position := 0;
           TJvRichEditStrings(Lines).EnableChange(False);
@@ -4212,6 +4316,17 @@ begin
   begin
     SendMessage(Handle, EM_SETTEXTMODE, TextModes[Plain] or
       UndoModes[FUndoLimit > 1], 0);
+  end;
+end;
+
+procedure TJvCustomRichEdit.UpdateTypographyOptions(const Advanced: Boolean);
+const
+  AdvancedModes: array[Boolean] of DWORD = (0, TO_ADVANCEDTYPOGRAPHY);
+begin
+  if HandleAllocated and (RichEditVersion >= 3) then
+  begin
+    SendMessage(Handle, EM_SETTYPOGRAPHYOPTIONS, AdvancedModes[Advanced],
+      TO_ADVANCEDTYPOGRAPHY);
   end;
 end;
 
@@ -5663,58 +5778,79 @@ procedure TJvRichEditStrings.DoImport(AConverter: TJvConversion);
 var
   EditStream: TEditStream;
   TextType: Longint;
+  Cookie: TCookie;
 begin
-  with EditStream do
-  begin
-    dwCookie := Longint(AConverter);
-    pfnCallBack := StreamLoad;
-    dwError := 0;
-  end;
-  case FFormat of
-    sfDefault:
-      if FRichEdit.PlainText then
-        TextType := SF_TEXT
-      else
-        TextType := SF_RTF;
-    sfRichText:
-      TextType := SF_RTF;
-  else {sfPlainText}
-    TextType := SF_TEXT;
-  end;
-  if TextType = SF_RTF then
-  begin
-    if smPlainRtf in Mode then
-      TextType := TextType or SFF_PLAINRTF;
-  end;
-  if TextType = SF_TEXT then
-  begin
-    if (smUnicode in Mode) and (RichEditVersion > 1) then
-      TextType := TextType or SF_UNICODE;
-  end;
-  if smSelection in Mode then
-    TextType := TextType or SFF_SELECTION;
-  SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
-
-  if not AConverter.UserCancel then
-  begin
-    if (EditStream.dwError <> 0) and AConverter.Retry then
+  Cookie := TCookie.Create(AConverter);
+  try
+    with EditStream do
     begin
-      if (TextType and SF_RTF) = SF_RTF then
-        TextType := SF_TEXT
-      else
+      dwCookie := Longint(Cookie);
+      pfnCallBack := StreamLoad;
+      dwError := 0;
+    end;
+    case FFormat of
+      sfDefault:
+        if FRichEdit.PlainText then
+          TextType := SF_TEXT
+        else
+          TextType := SF_RTF;
+      sfRichText:
         TextType := SF_RTF;
-      SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
+    else {sfPlainText}
+      TextType := SF_TEXT;
+    end;
+    if TextType = SF_RTF then
+    begin
+      if smPlainRtf in Mode then
+        TextType := TextType or SFF_PLAINRTF;
+    end;
+    if TextType = SF_TEXT then
+    begin
+      if (smUnicode in Mode) and (RichEditVersion > 1) then
+      begin
+        TextType := TextType or SF_UNICODE;
+        EditStream.pfnCallback := StreamLoadW;
+      end;
+    end;
+    if smSelection in Mode then
+      TextType := TextType or SFF_SELECTION;
+    SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
+
+    if not AConverter.UserCancel then
+    begin
+      if (EditStream.dwError <> 0) and AConverter.Retry then
+      begin
+        if (TextType and SF_RTF) = SF_RTF then
+        begin
+          TextType := SF_TEXT;
+          if (smUnicode in Mode) and (RichEditVersion > 1) then
+          begin
+            TextType := TextType or SF_UNICODE;
+            EditStream.pfnCallback := StreamLoadW;
+          end;
+        end
+        else
+        begin
+          TextType := SF_RTF;
+          if smPlainRtf in Mode then
+            TextType := TextType or SFF_PLAINRTF;
+          EditStream.pfnCallback := StreamLoad;
+        end;
+        SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
+      end;
+
+      if AConverter.Error then
+        raise EOutOfResources.Create(AConverter.ErrorStr)
+      else
+      if EditStream.dwError <> 0 then
+        raise EOutOfResources.CreateRes(@sRichEditLoadFail);
     end;
 
-    if AConverter.Error then
-      raise EOutOfResources.Create(AConverter.ErrorStr)
-    else
-    if EditStream.dwError <> 0 then
-      raise EOutOfResources.CreateRes(@sRichEditLoadFail);
+    if not (smSelection in Mode) then // Mantis 2591: do not change the selection if there is one
+      FRichEdit.SetSelection(0, 0, True);
+  finally
+    Cookie.Free;
   end;
-
-  if not (smSelection in Mode) then  // Mantis 2591: do not change the selection if there is one
-    FRichEdit.SetSelection(0, 0, True);
 end;
 
 procedure TJvRichEditStrings.EnableChange(const Value: Boolean);
