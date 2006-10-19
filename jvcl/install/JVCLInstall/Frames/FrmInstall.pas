@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  InstallerConsts, FileCtrl, FrmCompile, FrmCompileMessages;
+  InstallerConsts, FileCtrl, FrmCompile, FrmCompileMessages, ComStrs;
 
 {$R *.dfm}
 
@@ -181,7 +181,13 @@ begin
       Exit;
     FLastCapLine := Line;
 
-    RichEditLog.Lines.Add(Line);
+    try
+      RichEditLog.Lines.Add(Line);
+    except
+      on E: EOutOfResources do
+        if E.Message <> sRichEditInsertError then // ignore this special EOutOfResources exception
+          raise;
+    end;
     if Text <> '' then
     begin
       if Text[1] = #1 then
