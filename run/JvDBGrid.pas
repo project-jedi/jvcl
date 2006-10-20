@@ -1238,7 +1238,7 @@ begin
     FixCount := Min(FixCount, ColCount - 1);
     inherited FixedCols := FixCount;
     for I := 1 to Min(FixedCols, ColCount - 1) do
-      TabStops[I] := False;
+      TabStops[I + IndicatorOffset - 1] := False;
   end;
   FFixedCols := FixCount - IndicatorOffset;
 end;
