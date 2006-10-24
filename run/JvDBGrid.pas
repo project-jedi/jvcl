@@ -74,7 +74,7 @@ uses
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
-    dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit];
+    dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit];
 
   {$IFDEF BCB}
   {$NODEFINE DefJvGridOptions}
@@ -233,7 +233,7 @@ type
     FWord: string;
     FShowTitleHint: Boolean;
     FSortedField: string;
-    FPostOnEnter: Boolean;
+    FPostOnEnterKey: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
     FTitlePopup: TPopupMenu;
@@ -325,6 +325,7 @@ type
     procedure SetShowMemos(const Value: Boolean);
     procedure SetBooleanEditor(const Value: Boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
+    procedure ReadPostOnEnter(Reader: TReader);
 
     procedure SetControls(Value: TJvDBGridControls);
     procedure HideCurrentControl;
@@ -482,7 +483,7 @@ type
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
-    property PostOnEnter: Boolean read FPostOnEnter write FPostOnEnter default False;
+    property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default True;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -933,7 +934,7 @@ begin
   FAlternateRowFontColor := clNone;
   FSelectColumn := scDataBase;
   FTitleArrow := False;
-  FPostOnEnter := False;
+  FPostOnEnterKey := True;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
   // Note to users: the second line may not compile on non western european
@@ -2020,7 +2021,7 @@ end;
 procedure TJvDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  Cell: TGridCoord;
+  Cell, LastCell: TGridCoord;
   MouseDownEvent: TMouseEvent;
   EnableClick: Boolean;
   CursorPos: TPoint;
@@ -2041,6 +2042,8 @@ begin
     else
     begin
       Cell := MouseCoord(X, Y);
+      LastCell.X := Col;
+      LastCell.Y := Row;
 
       if (Button = mbRight) and
         (dgTitles in Options) and (dgIndicator in Options) and
@@ -2112,6 +2115,13 @@ begin
           inherited MouseDown(Button, Shift, 1, Y)
         else
           inherited MouseDown(Button, Shift, X, Y);
+        if (Col = LastCell.X) and (Row <> LastCell.Y) then
+        begin
+          { ColEnter is not invoked when switching between rows staying in the
+            same column. }
+          if FAlwaysShowEditor and not EditorMode then
+            ShowEditor;
+        end;
       end;
       MouseDownEvent := OnMouseDown;
       if Assigned(MouseDownEvent) then
@@ -2357,7 +2367,7 @@ var
   end;
 
 begin
-  if (Key = Cr) and PostOnEnter and not ReadOnly then
+  if (Key = Cr) and PostOnEnterKey and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
 
   if not Assigned(FCurrentControl) then
@@ -3272,6 +3282,12 @@ begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('AlternRowColor', ReadAlternateRowColor, nil, False);
   Filer.DefineProperty('AlternRowFontColor', ReadAlternateRowFontColor, nil, False);
+  Filer.DefineProperty('PostOnEnter', ReadPostOnEnter, nil, False);
+end;
+
+procedure TJvDBGrid.ReadPostOnEnter(Reader: TReader);
+begin
+  PostOnEnterKey := Reader.ReadBoolean;
 end;
 
 procedure TJvDBGrid.ReadAlternateRowColor(Reader: TReader);
@@ -3938,7 +3954,7 @@ begin
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
       begin
-        if (CharCode = VK_RETURN) and PostOnEnter then
+        if (CharCode = VK_RETURN) and PostOnEnterKey then
         begin
           CloseControl;
           DataSource.DataSet.CheckBrowseMode;
@@ -3959,14 +3975,29 @@ begin
       end;
   end
   else
+  if Message.Msg = WM_KEYDOWN then
+  begin
+    with TWMKey(Message) do
+    begin
+      if ((CharCode = VK_UP) or (CharCode = VK_DOWN)) and (KeyDataToShiftState(KeyData) = []) then
+      begin
+        CloseControl;
+        DataSource.DataSet.CheckBrowseMode;
+        PostMessage(Handle, WM_KEYDOWN, CharCode, KeyData);
+      end
+      else
+        FOldControlWndProc(Message);
+    end;
+  end
+  else
   begin
     FOldControlWndProc(Message);
-    Case Message.Msg Of
+    case Message.Msg Of
       WM_GETDLGCODE:
-        Message.Result := Message.Result or DLGC_WANTTAB;
+        Message.Result := Message.Result or DLGC_WANTTAB or DLGC_WANTARROWS;
       CM_EXIT:
         HideCurrentControl;
-    End;
+    end;
   end;
 end;
 
