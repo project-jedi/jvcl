@@ -161,7 +161,10 @@ type
     function GetText: TCaption;
     procedure SetText(const AValue: TCaption);
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure CMExit(var Msg: TMessage); message CM_EXIT;
   protected
+    procedure CalChanged; virtual;
+    procedure RestoreMaskForKeyPress;
     function GetValidDateString(const Text: string): string; virtual;
     procedure AcceptValue(const Value: Variant); override;
     function AcceptPopup(var Value: Variant): Boolean; override;
@@ -220,8 +223,6 @@ type
 
     property EditMask: string read GetEditMask write SetEditMask;
     property Text: TCaption read GetText write SetText;
-
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
@@ -443,7 +444,7 @@ begin
       SysUtils.DateSeparator := FDateSeparator;
       ShortDateFormat := FInternalDateFormat;
       try
-        if AllowNoDate and IsEmptyMaskText(AText) then
+        if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
           ADate := 0.0
         else
           ADate := StrToDate(StrRemoveChars(GetValidDateString(AText), [' ']));
@@ -471,9 +472,19 @@ end;
 
 procedure TJvCustomDatePickerEdit.CalChange(Sender: TObject);
 begin
-  if FPopup is TJvDropCalendar then
-    //Text := DateToText(TJvDropCalendar(FPopup).SelDate);
-    Date := TJvDropCalendar(FPopup).SelDate;
+  CalChanged;
+end;
+
+procedure TJvCustomDatePickerEdit.CalChanged;
+var
+  NewDate: TDateTime;
+begin
+  if (FPopup is TJvDropCalendar) then
+  begin
+    NewDate := TJvDropCalendar(FPopup).SelDate;
+    if (NewDate <> Date) and EditCanModify then
+      Date := NewDate;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.CalCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -708,35 +719,35 @@ begin
   Button.Flat := not Self.Ctl3D;
 end;
 
-procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
+procedure TJvCustomDatePickerEdit.CMExit(var Msg: TMessage);
 var
   lDate: TDateTime;
 begin
-  if (ANextControl = nil) or ((ANextControl <> FPopup) and
-     (ANextControl.Owner <> FPopup)) then
-    if not FDateError then
-    begin
-      PopupCloseUp(Self, False);
-      inherited DoKillFocus(ANextControl);
-      if EnableValidation then
-      try
-        lDate := Self.Date;
-        if (Text <> NoDateText) and AttemptTextToDate(Text, lDate, True, True) then
-          Self.Date := lDate;
-      except
-        on EConvertError do
-          if not (csDestroying in ComponentState) then
-          begin
-            FDateError := True;
-            SetFocus;
-            raise;
-          end
-          else
-            Self.Date := 0;
-      end;
-    end
-    else
-      inherited DoKillFocus(ANextControl);
+  if EnableValidation then
+  try
+    lDate := Self.Date;
+    if (Text <> NoDateText) and AttemptTextToDate(Text, lDate, True, True) then
+      Self.Date := lDate;
+  except
+    on EConvertError do
+      if not (csDestroying in ComponentState) then
+      begin
+        FDateError := True;
+        SetFocus;
+        raise;
+      end
+      else
+        Self.Date := 0;
+  end;
+  inherited;
+end;
+
+procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
+begin
+  if ((ANextControl = nil) or ((ANextControl <> FPopup) and
+     (ANextControl.Owner <> FPopup))) and not FDateError then
+    PopupCloseUp(Self, False);
+  inherited DoKillFocus(ANextControl);
 end;
 
 //procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
@@ -875,18 +886,28 @@ begin
   Result := (NoDateText <> '');
 end;
 
+procedure TJvCustomDatePickerEdit.RestoreMaskForKeyPress;
+begin
+  try
+    if ((EditMask = '') or (EditMask <> FMask)) and (Text = NoDateText) and EditCanModify then
+    begin
+      Text := '';
+      RestoreMask;
+    end;
+  except
+    Text := '';
+    RestoreMask;
+    raise;
+  end;
+end;
+
 procedure TJvCustomDatePickerEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   // Indicates whether FDeleting is set here from False to True.
   DeleteSetHere: Boolean;
 begin
   DeleteSetHere := False;
-
-  if (Text = NoDateText) and EditCanModify then
-  begin
-    Text := '';
-    RestoreMask;
-  end;
+  RestoreMaskForKeyPress;
 
   if AllowNoDate and (ShortCut(Key, Shift) = NoDateShortcut) then
     Date := 0
@@ -915,6 +936,10 @@ procedure TJvCustomDatePickerEdit.KeyPress(var Key: Char);
 var
   OldSep: Char;
 begin
+  { If used in JvDBGrid the KeyDown event isn't invoked, so the EditMask istn't set
+    when the KeyPress event triggers. }
+  RestoreMaskForKeyPress;
+
   { this makes the transition easier for users used to non-mask-aware edit controls
     as they could continue typing the separator character without the cursor
     auto-advancing to the next figure when they don't expect it : }
@@ -1036,15 +1061,7 @@ begin
   end;
 end;
 
-procedure TJvCustomDatePickerEdit.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
-begin
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-
-end;
-
-procedure TJvCustomDatePickerEdit.SetCalAppearance(
-  const AValue: TJvMonthCalAppearance);
+procedure TJvCustomDatePickerEdit.SetCalAppearance(const AValue: TJvMonthCalAppearance);
 begin
   FCalAppearance.Assign(AValue);
 end;
@@ -1060,9 +1077,7 @@ begin
         Self.Date := SysUtils.Date;
     end
     else
-    begin
       Self.Date := 0;
-    end;
     Change;
   end;
 end;
@@ -1133,7 +1148,7 @@ begin
     // We must do the conversion ourselves as the date format might
     // have been personalized. (Mantis 3628)
     // Default to Now if the Value is not valid. (Mantis 3733)
-    if (Value = NoDateText) or not AttemptTextToDate(VarToStr(Value), NewDate) then
+    if (Value = Null) or (Value = NoDateText) or not AttemptTextToDate(VarToStr(Value), NewDate) then
       NewDate := Now;
     FPopupDate := NewDate;
     TJvDropCalendar(FPopup).SelDate := NewDate;
@@ -1171,9 +1186,7 @@ end;
 procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvDropCalendar then
-  begin
     TJvDropCalendar(FPopup).Show;
-  end;
 end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
@@ -1345,7 +1358,7 @@ begin
    the wrong size, so we do this here.
   }
   AutoSize := True;
-  TJvMonthCalendar2(FCal).Today:=Date; { update the current day }
+  TJvMonthCalendar2(FCal).Today := Date; { update the current day }
   inherited DoShow;
 end;
 
