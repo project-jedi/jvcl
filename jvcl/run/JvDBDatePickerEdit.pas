@@ -71,7 +71,7 @@ type
     function IsLinked: Boolean;
     procedure KeyPress(var Key: Char); override;
     procedure Change; override;
-    procedure DoKillFocus(const ANextControl: TWinControl); override;
+    procedure DoExit; override;
     procedure PopupDropDown(DisableEdit: Boolean); override;
     function EditCanModify: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
@@ -270,9 +270,9 @@ begin
     inherited;
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
+procedure TJvCustomDBDatePickerEdit.DoExit;
 begin
-  inherited DoKillFocus(ANextControl);
+  inherited DoExit;
   if IsLinked and FDataLink.Editing then
     try
       FDataLink.UpdateRecord;
@@ -437,7 +437,6 @@ begin
     Key := #0;
   end;
 end;
-
 
 {$IFDEF UNITVERSIONING}
 initialization
