@@ -2291,8 +2291,7 @@ begin
           if AData <> 0 then
           begin
             Frames[0].NewBitmap;
-            Frames[0].FBitmap.LoadFromClipboardFormat(CF_BITMAP,
-              AData, APalette);
+            Frames[0].FBitmap.LoadFromClipboardFormat(CF_BITMAP, AData, APalette);
           end;
         end;
       finally
@@ -2596,6 +2595,7 @@ var
     try
       Stream.Read(ExtensionLabel, SizeOf(Byte));
       with Result do
+      begin
         if ExtensionLabel = ExtLabels[etGraphic] then
         begin
           { graphic control extension }
@@ -2627,6 +2627,7 @@ var
         end
         else
           GifError(Format(RsEUnrecognizedGIFExt, [ExtensionLabel]));
+      end;
     except
       Result.Free;
       raise;
@@ -2698,12 +2699,12 @@ begin
   NewImage;
   with FImage do
   begin
-    Data := TMemoryStream.Create;
-    try
-      TMemoryStream(Data).SetSize(Size);
-      Stream.ReadBuffer(Data.Memory^, Size);
-      if Size > 0 then
-      begin
+    if Size > 0 then
+    begin
+      Data := TMemoryStream.Create;
+      try
+        TMemoryStream(Data).SetSize(Size);
+        Stream.ReadBuffer(Data.Memory^, Size);
         Data.Position := 0;
         ReadSignature(Data);
         ReadScreenDescriptor(Data);
@@ -2718,8 +2719,7 @@ begin
             NewItem := TJvGIFFrame.Create(Self);
             try
               if FImage.FColorMap.Count > 0 then
-                NewItem.FImage.FBitsPerPixel :=
-                  ColorsToBits(FImage.FColorMap.Count);
+                NewItem.FImage.FBitsPerPixel := ColorsToBits(FImage.FColorMap.Count);
               NewItem.FExtensions := Extensions;
               Extensions := nil;
               NewItem.LoadFromStream(Data);
@@ -2734,8 +2734,7 @@ begin
             end
             else
               SeparatorChar := CHR_TRAILER;
-            if not (SeparatorChar in [CHR_EXT_INTRODUCER,
-              CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
+            if not (SeparatorChar in [CHR_EXT_INTRODUCER, CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
             begin
               SeparatorChar := #0;
                 {GifError(RsEGIFDecodeError);}
@@ -2755,7 +2754,7 @@ begin
                 if (Ext <> nil) and (Ext.FExtType = etComment) then
                 begin
                   if FComment.Count > 0 then
-                    FComment.Add(CrLf+CrLf);
+                    FComment.Add(CrLf + CrLf);
                   FComment.AddStrings(Ext.FData);
                 end;
               end;
@@ -2767,9 +2766,9 @@ begin
           if not (SeparatorChar in [CHR_TRAILER, #0]) then
             GifError(SReadError);
         end;
+      finally
+        Data.Free;
       end;
-    finally
-      Data.Free;
     end;
   end;
   if Count > 0 then
@@ -2967,10 +2966,9 @@ begin
     WriteSignature(Mem);
     WriteScreenDescriptor(Mem);
     if FImage.FColorMap.Count > 0 then
-    begin
       with FImage.FColorMap do
         Mem.Write(Colors[0], Count * SizeOf(TGIFColorItem));
-    end;
+
     if FLooping and (FItems.Count > 1) then
     begin
       { write looping extension }
