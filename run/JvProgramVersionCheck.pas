@@ -587,7 +587,7 @@ begin
       Result := -1;
       Exit;
     end
-  until (AVersion1 = '') or (AVersion2 = '');
+  until (AVersion1 = '') and (AVersion2 = '');
 end;
 
 //=== { TJvProgramVersionsStringList } =======================================
