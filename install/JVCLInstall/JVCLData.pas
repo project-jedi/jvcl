@@ -33,7 +33,8 @@ interface
 uses
   Windows, Registry, SysUtils, Classes, Contnrs,
   JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils,
-  IniFiles, JCLData, JVCLVer;
+  IniFiles, JCLData, JVCLVer,
+  JclDebug;
 
 const
   sPackageGeneratorFile = 'devtools\bin\pgEdit.xml';
@@ -82,6 +83,7 @@ type
     FFrameworks: TFrameworks;
     FGenerateMapFiles: Boolean;
     FLinkMapFiles: Boolean;
+    FCreateJdbgFiles: Boolean;
     FDeleteMapFiles: Boolean;
     FJVCLConfig: TJVCLConfig;
 
@@ -91,6 +93,7 @@ type
     function GetDeveloperInstall: Boolean;
     function GetGenerateMapFiles: Boolean;
     function GetLinkMapFiles: Boolean;
+    function GetCreateJdbgFiles: Boolean;
     function GetDeleteMapFiles: Boolean;
     function GetCleanPalettes: Boolean;
     function GetJVCLConfig: TJVCLConfig;
@@ -192,6 +195,9 @@ type
       var MapFileSize, JclDebugDataSize: Integer): Boolean;
       // link the map file in the binary file
 
+    function CompressMapFileToJdbg(const MapFileName: string): Boolean;
+      // compresses the map file to a jdbg file      
+
     property TargetSymbol: string read GetTargetSymbol;
       // TargetSymbol returns the symbol that is used in the xml files for this
       // target.
@@ -260,12 +266,14 @@ type
       // if GenerateMapFiles is True the compiler generates .map files for each package
 
     property LinkMapFiles: Boolean read GetLinkMapFiles write FLinkMapFiles;
-      // if LinkMapFiles is True the compiler link the map file as a resource of the binary
-      // this is JCL debug data
+      // if LinkMapFiles is True the the map files are linked as a resource of the binary
+
+    property CreateJdbgFiles: Boolean read GetCreateJdbgFiles write FCreateJdbgFiles;
+      // if CreateJdbgFiles is True the map files will be compressed to jdbg files
 
     property DeleteMapFiles: Boolean read GetDeleteMapFiles write FDeleteMapFiles;
-      // if DeleteMapFiles is True the compiler delete the map files after they
-      // were linked in the binaries
+      // if DeleteMapFiles is True the the map files are deleted after they
+      // were linked in the binaries or compressed to jdbg files
 
     property Build: Boolean read GetBuild write FBuild;
       // if Build is True the packages are built instead of make.
@@ -320,29 +328,13 @@ type
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
-    function GetCleanPalettes: Integer;
-    procedure SetCleanPalettes(Value: Integer);
-    function GetDeveloperInstall: Integer;
-    procedure SetDeveloperInstall(Value: Integer);
     function GetJVCLPackagesDir: string;
     function GetJVCLPackagesXmlDir: string;
-    function GetBuild: Integer;
-    procedure SetBuild(Value: Integer);
-    function GetCompileOnly: Integer;
-    procedure SetCompileOnly(const Value: Integer);
     function GetOptionState(Index: Integer): Integer;
-    function GetGenerateMapFiles: Integer;
-    procedure SetGenerateMapFiles(const Value: Integer);
-    function GetLinkMapFiles: Integer;
-    procedure SetLinkMapFiles(const Value: Integer);
-    function GetDeleteMapFiles: Integer;
-    procedure SetDeleteMapFiles(const Value: Integer);
-    function GetDebugUnits: Integer;
-    procedure SetDebugUnits(const Value: Integer);
+    procedure SetOptionState(Index: Integer; const Value: Integer);
   protected
     function JvclIncFilename: string;
     procedure Init; virtual;
-    procedure LoadLinkMapFileLibrary;
   public
     constructor Create;
     destructor Destroy; override;
@@ -354,6 +346,7 @@ type
     function IsJVCLInstalledAnywhere(MinVersion: Integer): Boolean;
     function LinkMapFile(const BinaryFileName, MapFileName: string;
       var MapFileSize, JclDebugDataSize: Integer): Boolean;
+    function CompressMapFileToJdbg(const MapFileName: string): Boolean;
 
     property DxgettextDir: string read FDxgettextDir;
     property IsDxgettextInstalled: Boolean read FIsDxgettextInstalled;
@@ -362,14 +355,15 @@ type
     property JVCLPackagesDir: string read GetJVCLPackagesDir;
     property JVCLPackagesXmlDir: string read GetJVCLPackagesXmlDir;
 
-    property DeveloperInstall: Integer read GetDeveloperInstall write SetDeveloperInstall;
-    property DebugUnits: Integer read GetDebugUnits write SetDebugUnits;
-    property CleanPalettes: Integer read GetCleanPalettes write SetCleanPalettes;
-    property Build: Integer read GetBuild write SetBuild;
-    property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
-    property GenerateMapFiles: Integer read GetGenerateMapFiles write SetGenerateMapFiles;
-    property LinkMapFiles: Integer read GetLinkMapFiles write SetLinkMapFiles;
-    property DeleteMapFiles: Integer read GetDeleteMapFiles write SetDeleteMapFiles;
+    property DeveloperInstall: Integer index 3 read GetOptionState write SetOptionState;
+    property DebugUnits: Integer index 4 read GetOptionState write SetOptionState;
+    property CleanPalettes: Integer index 1 read GetOptionState write SetOptionState;
+    property Build: Integer index 0 read GetOptionState write SetOptionState;
+    property CompileOnly: Integer index 2 read GetOptionState write SetOptionState;
+    property GenerateMapFiles: Integer index 5 read GetOptionState write SetOptionState;
+    property LinkMapFiles: Integer index 6 read GetOptionState write SetOptionState;
+    property CreateJdbgFiles: Integer index 8 read GetOptionState write SetOptionState;
+    property DeleteMapFiles: Integer index 7 read GetOptionState write SetOptionState;
 
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
     property Verbose: Boolean read FVerbose write FVerbose default False;
@@ -394,7 +388,6 @@ resourcestring
   RsUnregisteringPackages = 'Unregistering packages...';
   RsDeletingFiles = 'Deleting files...';
   RsComplete = 'Complete.';
-  JclLinkMapFileExportName = '@Jcldebug@InsertDebugDataIntoExecutableFile$qqrpct1rit3';
 
 function ReadRegString(RootKey: HKEY; const Key, Name: string): string;
 var
@@ -464,48 +457,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TJVCLData.LoadLinkMapFileLibrary;
-var
-  I: Integer;
-  Filename: string;
-  PackageLoad: procedure;
-begin
-  if FJclLibrary <> Cardinal(-1) then
-    Exit;
-
-  FJclLibrary := 0;
-  FJclLinkMapFile := nil;
-  for I := FTargets.Count - 1 downto 0 do
-  begin
-  //repeat
-    //Filename := 'Jcl' + IntToStr(Trunc(CompilerVersion) - 8) + '0.bpl';
-    Filename := TargetConfig[I].VersionedJclBpl('Jcl.bpl');
-    FJclLibrary := LoadLibrary(PChar(Filename));
-    if FJclLibrary <> 0 then
-    begin
-      FJclLinkMapFile := GetProcAddress(FJclLibrary, PChar(JclLinkMapFileExportName));
-      if Assigned(FJclLinkMapFile) then
-      begin
-        PackageLoad := GetProcAddress(FJclLibrary, 'Initialize'); //Do not localize
-        if Assigned(PackageLoad) then
-        begin
-          try
-            PackageLoad;
-          except
-            FreeLibrary(FJclLibrary);
-            // everything is lost
-            FJclLibrary := 0; // => access violation
-          end;
-          Break;
-        end;
-      end;
-      FreeLibrary(FJclLibrary);
-      FJclLibrary := 0;
-    end;
-  end;
-  //until True;
-end;
-
 function TJVCLData.FindTargetConfig(const TargetSymbol: string): TTargetConfig;
 var
   i: Integer;
@@ -517,92 +468,6 @@ begin
       Exit;
   end;
   Result := nil;
-end;
-
-function TJVCLData.GetOptionState(Index: Integer): Integer;
-var
-  i: Integer;
-  b: Boolean;
-begin
-  Result := 0; // false
-  for i := 0 to Targets.Count - 1 do
-  begin
-    if TargetConfig[i].InstallJVCL then
-    begin
-      case Index of
-        0: b := TargetConfig[i].Build;
-        1: b := TargetConfig[i].CleanPalettes;
-        2: b := TargetConfig[i].CompileOnly;
-        3: b := TargetConfig[i].DeveloperInstall;
-        4: b := TargetConfig[i].DebugUnits;
-        5: b := TargetConfig[i].GenerateMapFiles;
-        6: b := TargetConfig[i].LinkMapFiles;
-        7: b := TargetConfig[i].DeleteMapFiles;
-      else
-        b := False;
-      end;
-      if b then
-      begin
-        if Result = 3 then
-        begin
-          Result := 2;
-          Exit;
-        end;
-        Result := 1 // true
-      end
-      else
-      begin
-        if Result = 1 then
-        begin
-          Result := 2; // mixed
-          Exit;
-        end;
-        Result := 3;
-      end;
-    end;
-  end;
-  if Result = 3 then
-    Result := 0;
-end;
-
-function TJVCLData.GetBuild: Integer;
-begin
-  Result := GetOptionState(0);
-end;
-
-function TJVCLData.GetCleanPalettes: Integer;
-begin
-  Result := GetOptionState(1);
-end;
-
-function TJVCLData.GetCompileOnly: Integer;
-begin
-  Result := GetOptionState(2);
-end;
-
-function TJVCLData.GetDeveloperInstall: Integer;
-begin
-  Result := GetOptionState(3);
-end;
-
-function TJVCLData.GetDebugUnits: Integer;
-begin
-  Result := GetOptionState(4);
-end;
-
-function TJVCLData.GetGenerateMapFiles: Integer;
-begin
-  Result := GetOptionState(5);
-end;
-
-function TJVCLData.GetLinkMapFiles: Integer;
-begin
-  Result := GetOptionState(6);
-end;
-
-function TJVCLData.GetDeleteMapFiles: Integer;
-begin
-  Result := GetOptionState(7);
 end;
 
 function TTargetConfig.GetJVCLConfig: TJVCLConfig;
@@ -691,12 +556,21 @@ end;
 
 function TJVCLData.LinkMapFile(const BinaryFileName, MapFileName: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean;
+var
+  LinkerBugUnit: string;
 begin
   try
-    if FJclLibrary = Cardinal(-1) then
-      LoadLinkMapFileLibrary;
-    Result := Assigned(FJclLinkMapFile) and FJclLinkMapFile(PChar(BinaryFileName),
-      PChar(MapFileName), MapFileSize, JclDebugDataSize);
+    Result := InsertDebugDataIntoExecutableFile(BinaryFileName, MapFileName,
+      LinkerBugUnit, MapFileSize, JclDebugDataSize);
+  except
+    Result := False;
+  end;
+end;
+
+function TJVCLData.CompressMapFileToJdbg(const MapFileName: string): Boolean;
+begin
+  try
+    Result := ConvertMapFileToJdbgFile(MapFileName);
   except
     Result := False;
   end;
@@ -718,68 +592,71 @@ begin
     TargetConfig[i].Save;
 end;
 
-procedure TJVCLData.SetBuild(Value: Integer);
+function TJVCLData.GetOptionState(Index: Integer): Integer;
 var
   i: Integer;
+  b: Boolean;
 begin
+  Result := 0; // false
   for i := 0 to Targets.Count - 1 do
-    TargetConfig[I].Build := Value <> 0;
+  begin
+    if TargetConfig[i].InstallJVCL then
+    begin
+      case Index of
+        0: b := TargetConfig[i].Build;
+        1: b := TargetConfig[i].CleanPalettes;
+        2: b := TargetConfig[i].CompileOnly;
+        3: b := TargetConfig[i].DeveloperInstall;
+        4: b := TargetConfig[i].DebugUnits;
+        5: b := TargetConfig[i].GenerateMapFiles;
+        6: b := TargetConfig[i].LinkMapFiles;
+        7: b := TargetConfig[i].DeleteMapFiles;
+        8: b := TargetConfig[i].CreateJdbgFiles;
+      else
+        b := False;
+      end;
+      if b then
+      begin
+        if Result = 3 then
+        begin
+          Result := 2;
+          Exit;
+        end;
+        Result := 1 // true
+      end
+      else
+      begin
+        if Result = 1 then
+        begin
+          Result := 2; // mixed
+          Exit;
+        end;
+        Result := 3;
+      end;
+    end;
+  end;
+  if Result = 3 then
+    Result := 0;
 end;
 
-procedure TJVCLData.SetCleanPalettes(Value: Integer);
+procedure TJVCLData.SetOptionState(Index: Integer; const Value: Integer);
 var
   i: Integer;
 begin
   for i := 0 to Targets.Count - 1 do
-    TargetConfig[I].CleanPalettes := Value <> 0;
-end;
-
-procedure TJVCLData.SetCompileOnly(const Value: Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Targets.Count - 1 do
-    TargetConfig[i].CompileOnly := Value <> 0;
-end;
-
-procedure TJVCLData.SetDeveloperInstall(Value: Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Targets.Count - 1 do
-    TargetConfig[i].DeveloperInstall := Value <> 0;
-end;
-
-procedure TJVCLData.SetGenerateMapFiles(const Value: Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Targets.Count - 1 do
-    TargetConfig[i].GenerateMapFiles := Value <> 0;
-end;
-
-procedure TJVCLData.SetLinkMapFiles(const Value: Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Targets.Count - 1 do
-    TargetConfig[i].LinkMapFiles := Value <> 0;
-end;
-
-procedure TJVCLData.SetDeleteMapFiles(const Value: Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Targets.Count - 1 do
-    TargetConfig[i].DeleteMapFiles := Value <> 0;
-end;
-
-procedure TJVCLData.SetDebugUnits(const Value: Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Targets.Count - 1 do
-    TargetConfig[i].DebugUnits := Value <> 0;
+  begin
+    case Index of
+      0: TargetConfig[i].Build := Value <> 0;
+      1: TargetConfig[i].CleanPalettes := Value <> 0;
+      2: TargetConfig[i].CompileOnly := Value <> 0;
+      3: TargetConfig[i].DeveloperInstall := Value <> 0;
+      4: TargetConfig[i].DebugUnits := Value <> 0;
+      5: TargetConfig[i].GenerateMapFiles := Value <> 0;
+      6: TargetConfig[i].LinkMapFiles := Value <> 0;
+      7: TargetConfig[i].DeleteMapFiles := Value <> 0;
+      8: TargetConfig[i].CreateJdbgFiles := Value <> 0;
+    end;
+  end;
 end;
 
 { TTargetConfig }
@@ -1038,6 +915,11 @@ begin
     JclDebugDataSize);
 end;
 
+function TTargetConfig.CompressMapFileToJdbg(const MapFileName: string): Boolean;
+begin
+  Result := Owner.CompressMapFileToJdbg(MapFileName);
+end;
+
 procedure TTargetConfig.RegisterJVCLVersionInfo;
 begin
   InstallJediRegInformation(Target.RegistryKey, 'JVCL',
@@ -1284,6 +1166,11 @@ end;
 function TTargetConfig.GetLinkMapFiles: Boolean;
 begin
   Result := FLinkMapFiles;
+end;
+
+function TTargetConfig.GetCreateJdbgFiles: Boolean;
+begin
+  Result := FCreateJdbgFiles;
 end;
 
 function TTargetConfig.GetDeleteMapFiles: Boolean;

@@ -62,7 +62,7 @@ uses
   CapExec in 'Helpers\CapExec.pas',
   PgPackageSelection in 'Pages\PgPackageSelection.pas',
   HtHint in 'Helpers\HtHint.pas',
-  Compiler5MissingPropertyFix in 'Compiler5MissingPropertyFix.pas',
+  MissingPropertyFix in 'MissingPropertyFix.pas',
   FrmInstall in 'Frames\FrmInstall.pas' {FrameInstall: TFrame},
   PgInstall in 'Pages\PgInstall.pas',
   PgUninstall in 'Pages\PgUninstall.pas',
