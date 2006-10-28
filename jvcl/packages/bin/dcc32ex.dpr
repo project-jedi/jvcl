@@ -1,3 +1,7 @@
+{$A8,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W+,X+,Y+,Z1}
+{$WARN UNSAFE_TYPE OFF}
+{$WARN UNSAFE_CODE OFF}
+{$WARN UNSAFE_CAST OFF}
 program dcc32ex;
 
 {$APPTYPE CONSOLE}
@@ -8,6 +12,9 @@ uses
 var
   DxgettextDir: string;
   ExtraUnitDirs: string;
+  UseSearchPaths: Boolean;
+  RequireJcl: Boolean;
+  RequireJvcl: Boolean;
 
 { Helper functions because no SysUtils unit is used. }
 {******************************************************************************}
@@ -107,6 +114,42 @@ begin
   SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
 end;
 {******************************************************************************}
+function ExpandDirMacros(const Path, RootDir: string): string;
+var
+  i: Integer;
+  Start, Len: Integer;
+  NewS, S: string;
+begin
+  Result := Path;
+  Len := Length(Result);
+  i := 1;
+  while i <= Len do
+  begin
+    if (Result[i] = '$') and (i < Len - 1) and (Result[i + 1] = '(') then
+    begin
+      Start := i;
+      while (i <= Len) and (Result[i] <> ')') do
+        Inc(i);
+      if i <= Len then
+      begin
+        S := Copy(Result, Start + 2, i - Start - 2);
+
+        if SameText(S, 'BDS') or SameText(S, 'BCB') or SameText(S, 'DELPHI') then
+          NewS := ExtractFileDir(RootDir)
+        else
+          NewS := GetEnvironmentVariable(S);
+
+        Delete(Result, Start, i - Start + 1);
+        Insert(NewS, Result, Start);
+        Dec(i, Length(S) + 3);
+        Inc(i, Length(NewS));
+        Len := Length(Result);
+      end;
+    end;
+    Inc(i);
+  end;
+end;
+{******************************************************************************}
 function FileExists(const Filename: string): Boolean;
 var
   Attr: Cardinal;
@@ -194,7 +237,10 @@ begin
     begin
       if Version = 5 then
         S := S + '\delphi5';
-      ExtraUnitDirs := ExtraUnitDirs + ';' + S;
+      if ExtraUnitDirs <> '' then
+        ExtraUnitDirs := ExtraUnitDirs + ';' + S
+      else
+        ExtraUnitDirs := S;
     end;
   end;
 end;
@@ -215,7 +261,11 @@ type
     IDEVersion: Integer;
     RootDir: string;
     LibDirs: string;
+    SearchPaths: string;
     KeyName: string;
+    Id: string; // ["d"|"c"]<version>
+    InstalledJcl: Boolean;
+    InstalledJvcl: Boolean;
   end;
 
 function ReadTargetInfo(Typ: TTargetType; IDEVersion: Integer): TTarget;
@@ -235,21 +285,34 @@ var
 
 var
   IDEVersionStr: string;
+  JediLibDirs, Dir, DcpDir, RootDir: string;
 begin
   Result.Typ := ttNone;
   Result.Version := 0;
   Result.IDEVersion := 0;
   Result.RootDir := '';
   Result.KeyName := '';
+  Result.Id := '';
+  Result.InstalledJcl := False;
+  Result.InstalledJvcl := False;
 
   Str(IDEVersion, IDEVersionStr);
   case Typ of
     ttDelphi:
-      Result.KeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
+      begin
+        Result.KeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
+        Result.Id := 'd';
+      end;
     ttBCB:
-      Result.KeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
+      begin
+        Result.KeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
+         Result.Id := 'c';
+      end;
     ttBDS:
-      Result.KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
+      begin
+        Result.KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
+        Result.Id := 'd';
+      end;
   end;
 
   if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(Result.KeyName), 0,
@@ -269,6 +332,7 @@ begin
         Result.IDEVersion := 0;
         Result.RootDir := '';
         Result.KeyName := '';
+        Result.Id := '';
         Exit;
       end;
       Inc(Result.Version, 6); // 3.0 => 9
@@ -278,6 +342,57 @@ begin
     Result.LibDirs := Result.RootDir + '\Lib';
     if Typ = ttBCB then
       Result.LibDirs := Result.LibDirs + ';' + Result.RootDir + '\Lib\Obj';
+    Result.Id := Result.Id + IntToStr(Result.Version);
+
+
+    if RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Library'), 0,
+                    KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
+    begin
+      Result.SearchPaths := ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('Search Path')), Result.RootDir);
+      RegCloseKey(Reg);
+      if UseSearchPaths then
+        Result.LibDirs := Result.LibDirs + ';' + Result.SearchPaths;
+    end;
+
+    JediLibDirs := '';
+    if RequireJcl and
+       (RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Jedi\JCL'), 0,
+                     KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS) then
+    begin
+      DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('DcpDir')), Result.RootDir));
+      RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('RootDir')), Result.RootDir));
+      RegCloseKey(Reg);
+      Dir := RootDir + '\lib\' + Result.Id;
+      if FileExists(Dir + '\JclBase.dcu') then
+      begin
+        if not SameText(Dir, DcpDir) then
+          JediLibDirs := JediLibDirs + ';' + Dir + ';' + DcpDir
+        else
+          JediLibDirs := JediLibDirs + ';' + Dir;
+        JediLibDirs := JediLibDirs + ';' +  RootDir + '\source';
+        Result.InstalledJcl := True;
+      end;
+    end;
+    if RequireJvcl and
+       (RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Jedi\JVCL'), 0,
+                     KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS) then
+    begin
+      DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('DcpDir')), Result.RootDir));
+      RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('RootDir')), Result.RootDir));
+      RegCloseKey(Reg);
+      Dir := RootDir + '\lib\' + Result.Id;
+      if FileExists(Dir + '\JVCLVer.dcu') then
+      begin
+        if not SameText(Dir, DcpDir) then
+          JediLibDirs := JediLibDirs + ';' + Dir + ';' + DcpDir
+        else
+          JediLibDirs := JediLibDirs + ';' + Dir;
+        JediLibDirs := JediLibDirs + ';' +  RootDir + '\common;' + RootDir + '\Resources';
+        Result.InstalledJvcl := True;
+      end;
+    end;
+    if JediLibDirs <> '' then
+      Result.LibDirs := Result.LibDirs + JediLibDirs; // leading ';' is already in JediLibDirs
   end
   else
   begin
@@ -341,10 +456,87 @@ begin
       else
       begin
         WriteLn(ErrOutput, 'Delphi 6 Update 2 is not installed.');
-        MessageBox(0, 'Delphi 6 Update 2 is not installed.', 'Error', MB_ICONERROR or MB_OK);
+        MessageBox(0, 'Delphi 6 Update 2 is not installed.', 'dcc32ex.exe', MB_ICONERROR or MB_OK);
       end;
       Halt(1);
     end;
+  end;
+end;
+
+function SkipOption(CmdLine: PChar): PChar;
+begin
+  Result := CmdLine;
+  if Result <> nil then
+  begin
+    if Result[0] = '"' then
+    begin
+      Inc(Result);
+      while (Result[0] <> #0) and (Result[0] <> '"') do
+        Inc(Result);
+      if Result[0] = '"' then
+        Inc(Result);
+    end
+    else
+    begin
+      while (Result[0] <> #0) and (Result[0] <> ' ') and (Result[0] <> #9) do
+      begin
+        if Result[0] = '"' then // embedded quotes:  -U"C:\Program Files\Borland\Delphi7\Lib"
+        begin
+          Inc(Result);
+          while (Result[0] <> #0) and (Result[0] <> '"') do
+            Inc(Result);
+          if Result[0] = '"' then
+            Inc(Result);
+        end;
+        Inc(Result);
+      end;
+      if Result[0] in [' ', #9] then
+        Inc(Result);
+    end;
+
+    // skip whitespaces
+    while Result[0] = ' ' do
+      Inc(Result);
+
+    if Result[0] = #0 then
+      Result := nil;
+  end;
+end;
+
+function ParseParams(CmdLine: PChar): PChar;
+var
+  S: string;
+  i: Integer;
+begin
+  Result := CmdLine;
+  while CmdLine <> nil do
+  begin
+    CmdLine := SkipOption(Result);
+    if CmdLine = nil then
+      S := Result
+    else
+      SetString(S, Result, CmdLine - Result);
+
+    // delete right spaces
+    i := Length(S);
+    while (i > 0) and (S[i] = ' ') do
+      Dec(i);
+    if i <> Length(S) then
+      S := Copy(S, 1, i);
+
+    if (S <> '') and (S[1] = '"') then
+      S := Copy(S, 2, Length(S) - 2);
+    if SameText(S, '--use-search-paths') then
+      UseSearchPaths := True
+    else
+    if SameText(S, '--requires-jcl') then
+      RequireJcl := True
+    else
+    if SameText(S, '--requires-jvcl') then
+      RequireJvcl := True
+    else
+      Break;
+    Result := CmdLine;
   end;
 end;
 
@@ -354,6 +546,7 @@ var
   NewestTarget: TTarget;
   Target: TTarget;
   InvalidFound: Boolean;
+  DependencyCheckFailed: Boolean;
   f: TextFile;
   Status: Integer;
   Dcc32Cfg, CurDir, ExtraOpts: string;
@@ -363,7 +556,16 @@ var
   PreferedVersion: Integer;
   PreferedTarget: TTarget;
   Err: Integer;
+  ErrMsg: string;
 begin
+  CmdLine := GetCommandLine;
+  CmdLine := SkipOption(CmdLine); // skip executable name
+  CmdLine := ParseParams(CmdLine);
+{  UseSearchPaths := GetEnvironmentVariable('UseSeachPaths') = '1';
+  RequireJcl := GetEnvironmentVariable('RequireJCL') = '1';
+  RequireJvcl := GetEnvironmentVariable('RequireJVCL') = '1';}
+
+
   PreferedTyp := ttNone;
   PreferedVersion := 0;
   DelphiVersion := GetEnvironmentVariable('DelphiVersion');
@@ -386,6 +588,7 @@ begin
   PreferedTarget.Typ := ttNone;
 
   NewestTarget.Typ := ttNone;
+  DependencyCheckFailed := False;
   InvalidFound := False;
   for Typ := ttFirst to High(TTargetType) do
   begin
@@ -398,11 +601,25 @@ begin
         if FileExists(Target.RootDir + '\bin\dcc32.exe') and
            (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
         begin
-          if (NewestTarget.Typ = ttNone) or (NewestTarget.Version < Target.Version) then
-            NewestTarget := Target;
+          if (not RequireJcl or Target.InstalledJcl) and (not RequireJvcl or Target.InstalledJvcl) then
+          begin
+            if (NewestTarget.Typ = ttNone) or (NewestTarget.Version < Target.Version) then
+              NewestTarget := Target;
 
-          if (Target.Typ = PreferedTyp) and (Target.Version = PreferedVersion) then
-            PreferedTarget := Target;
+            if (Target.Typ = PreferedTyp) and (Target.Version = PreferedVersion) then
+              PreferedTarget := Target;
+          end
+          else
+          begin
+            WriteLn('Missing dependencies for ', TargetNames[Target.Typ], ' ', Target.Version);
+            if RequireJcl and not Target.InstalledJcl then
+              WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)');
+            if RequireJvcl and not Target.InstalledJvcl then
+              WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)');
+            WriteLn;
+            DependencyCheckFailed := True;
+            InvalidFound := True;
+          end;
         end
         else
         begin
@@ -429,9 +646,16 @@ begin
   if NewestTarget.Typ = ttNone then
   begin
     if InvalidFound then
-      WriteLn(ErrOutput, 'No valid Delphi/BCB/BDS version found. Are your registry settings correct?')
+    begin
+      if DependencyCheckFailed then
+        ErrMsg := 'Dependencies are missing. Please install them first.'
+      else
+        ErrMsg := 'No valid Delphi/BCB/BDS version found. Are your registry settings correct?';
+    end
     else
-      WriteLn(ErrOutput, 'No Delphi/BCB/BDS version installed.');
+      ErrMsg := 'No Delphi/BCB/BDS version installed.';
+    WriteLn(ErrOutput, ErrMsg);
+    MessageBox(0, PChar(ErrMsg), 'dcc32ex.exe', MB_ICONERROR or MB_OK);
     Halt(1);
   end;
 
@@ -439,28 +663,6 @@ begin
   WriteLn('Using ', TargetNames[Target.Typ], ' ', Target.Version);
   if Target.Version = 6 then
     TestDelphi6Update2(Target);
-
-  CmdLine := GetCommandLine;
-  if CmdLine <> nil then
-  begin
-    if CmdLine[0] = '"' then
-    begin
-      Inc(CmdLine);
-      while (CmdLine[0] <> #0) and (CmdLine[0] <> '"') do
-        Inc(CmdLine);
-      if CmdLine[0] = '"' then
-        Inc(CmdLine);
-    end
-    else
-    begin
-      while (CmdLine[0] <> #0) and (CmdLine[0] <> ' ') and (CmdLine[0] <> #9) do
-        Inc(CmdLine);
-      if CmdLine[0] in [' ', #9] then
-        Inc(CmdLine);
-    end;
-    if CmdLine[0] = #0 then
-      CmdLine := nil;
-  end;
 
   ExtraOpts := '';
   // dxgettext
@@ -497,5 +699,20 @@ begin
   if Dcc32Cfg <> '' then
     DeleteFile(PChar(Dcc32Cfg));
 
+  if ParamCount = 0 then
+  begin
+    WriteLn;
+    WriteLn('Additional options (must be specified before any dcc32 parameter):');
+    WriteLn('  --use-search-paths     Use the IDE''s search paths');
+    WriteLn('  --requires-jcl         Requires an installed JCL');
+    WriteLn('  --requires-jvcl        Requires an installed JVCL');
+    WriteLn;
+    WriteLn('Environment variables:');
+    WriteLn('  DELPHIVERSION = d10    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, ...)');
+  end;
+
   ExitCode := Status;
+  {if DebugHook <> 0 then
+    ReadLn;}
 end.
