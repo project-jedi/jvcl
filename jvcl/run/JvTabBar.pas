@@ -1455,7 +1455,7 @@ end;
 
 function TJvCustomTabBar.GetLeftTab: TJvTabBarItem;
 begin
-  if FLeftIndex < Tabs.Count then
+  if (Tabs <> nil) and (FLeftIndex < Tabs.Count) then
   begin
     Result := Tabs[FLeftIndex];
     if not Result.Visible then
@@ -1474,8 +1474,7 @@ begin
   if Assigned(Value) then
   begin
     // find first visible before or at Value.Index
-    Index := 0;
-    if (Tabs.Count > 0) and (Value <> Tabs[0]) then
+    if (Tabs <> nil) and (Tabs.Count > 0) and (Value <> Tabs[0]) then
     begin
       while Index < Tabs.Count do
       begin
@@ -1988,7 +1987,7 @@ begin
       TabBar.FClosingTab := nil;
     if TabBar.FLastInsertTab = Item then
       TabBar.FLastInsertTab := nil;
-    if TabBar.LeftTab = Item then
+    if not (csDestroying in TabBar.ComponentState) and (TabBar.LeftTab = Item) then
       TabBar.LeftTab := TabBar.LeftTab.GetPreviousVisible;
   end;
   if TabBar.PageListTabLink and Assigned(TabBar.PageList) and
