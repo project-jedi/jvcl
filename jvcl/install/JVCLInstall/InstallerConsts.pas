@@ -28,8 +28,14 @@ unit InstallerConsts;
 
 interface
 
-resourcestring
+const
+  // sJVCLMacroXxx are displayed in the Summary page. They are not used by code.
+  sJVCLMacroCommonDir = '$(JVCL)\common';                                // do not localize
+  sJVCLMacroRunDir = '$(JVCL)\run';                                      // do not localize
+  sJVCLMacroResourcesDir = '$(JVCL)\Resources';                          // do not localize
+  sJVCLMacroClxDirs = '$(JVCL)\qcommon;$(JVCL)\qrun;$(JVCL)\Resources';  // do not localize
 
+resourcestring
  // JVCL3Install.pas
   SWelcomeText =
     'The JEDI Visual Component Library (JVCL) consists of a huge collection (currently ca. 500)'#10 +
@@ -141,19 +147,7 @@ resourcestring
   RsJVCLDirsFromPathLists = 'JVCL directories from path lists';
   RsJVCLPackages = 'JVCL 3 packages';
   RsJVCLFiles = 'JVCL 3 files';
-
-  RsMissingJCLForDelphi =
-    'JCL is not installed for %s. Please install the JCL before installing the JVCL.'#10 +
-    'JCLD%d0.bpl not found in %s';
-
-const
-  // sJVCLMacroXxx are displayed in the Summary page. They are not used by code.
-  sJVCLMacroCommonDir = '$(JVCL)\common';                                // do not localize
-  sJVCLMacroRunDir = '$(JVCL)\run';                                      // do not localize
-  sJVCLMacroResourcesDir = '$(JVCL)\Resources';                          // do not localize
-  sJVCLMacroClxDirs = '$(JVCL)\qcommon;$(JVCL)\qrun;$(JVCL)\Resources';  // do not localize
-
-
+  
  // PgConfig.pas
 resourcestring
   RsConfigPageTitle = 'Configuration';

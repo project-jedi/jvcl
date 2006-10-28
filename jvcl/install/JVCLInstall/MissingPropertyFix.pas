@@ -24,7 +24,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit Compiler5MissingPropertyFix;
+unit MissingPropertyFix;
 
 {$I jvcl.inc}
 
@@ -82,10 +82,10 @@ end;
 
 {$ENDIF !COMPILER7_UP}
 
-{$IFDEF COMPILER5}
+{$IFNDEF COMPILER10_UP}
 
 type
-  TCompiler5MissingPropertyFix = class(TReader)
+  TMissingPropertyFix = class(TReader)
   private
     FPropDefined: Boolean;
   protected
@@ -93,25 +93,50 @@ type
       ReadData: TReaderProc; WriteData: TWriterProc;
       HasData: Boolean); override;
   protected
+    {$IFDEF COMPILER5}
     procedure ReadWinControlDesignSize(Reader: TReader);
+    {$ENDIF COMPILER5}
+    {$IFNDEF COMPILER10_UP}
+    procedure ReadControlExplicitProp(Reader: TReader);
+    {$ENDIF ~COMPILER10_UP}
     procedure DefineProperties(Filer: TFiler);
   end;
 
-procedure TCompiler5MissingPropertyFix.ReadWinControlDesignSize(Reader: TReader);
+{$IFDEF COMPILER5}
+procedure TMissingPropertyFix.ReadWinControlDesignSize(Reader: TReader);
 begin
   Reader.ReadListBegin;
   Reader.ReadInteger;
   Reader.ReadInteger;
   Reader.ReadListEnd;
 end;
+{$ENDIF COMPILER5}
 
-procedure TCompiler5MissingPropertyFix.DefineProperties(Filer: TFiler);
+{$IFNDEF COMPILER10_UP}
+procedure TMissingPropertyFix.ReadControlExplicitProp(Reader: TReader);
 begin
+  Reader.ReadInteger;
+end;
+{$ENDIF ~COMPILER10_UP}
+
+procedure TMissingPropertyFix.DefineProperties(Filer: TFiler);
+begin
+  {$IFDEF COMPILER5}
   if Root is TWinControl then
     Filer.DefineProperty('DesignSize', ReadWinControlDesignSize, nil, False);
+  {$ENDIF COMPILER5}
+  {$IFNDEF COMPILER10_UP}
+  if Root is TControl then
+  begin
+    Filer.DefineProperty('ExplicitLeft', ReadControlExplicitProp, nil, False);
+    Filer.DefineProperty('ExplicitTop', ReadControlExplicitProp, nil, False);
+    Filer.DefineProperty('ExplicitWidth', ReadControlExplicitProp, nil, False);
+    Filer.DefineProperty('ExplicitHeight', ReadControlExplicitProp, nil, False);
+  end;
+  {$ENDIF ~COMPILER10_UP}
 end;
 
-procedure TCompiler5MissingPropertyFix.DefineProperty(const Name: string;
+procedure TMissingPropertyFix.DefineProperty(const Name: string;
   ReadData: TReaderProc; WriteData: TWriterProc;
   HasData: Boolean);
 begin
@@ -130,7 +155,7 @@ end;
 
 function NewInstanceHook(ReaderClass: TClass): TObject;
 begin
-  Result := TCompiler5MissingPropertyFix.NewInstance;
+  Result := TMissingPropertyFix.NewInstance;
 end;
 
 type
@@ -154,18 +179,24 @@ end;
 
 procedure ReplaceDefineProperty;
 begin
+  {$IFDEF COMPILER6_UP}
+  {$WARNINGS OFF}
+  {$ENDIF COMPILER6_UP}
   ReplaceVmtField(PVmt(TReader), vmtNewInstance, @NewInstanceHook);
+  {$IFDEF COMPILER6_UP}
+  {$WARNINGS ON}
+  {$ENDIF COMPILER6_UP}
 end;
 
-{$ENDIF COMPILER5}
+{$ENDIF ~COMPILER10_UP}
 
 initialization
-{$IFDEF COMPILER5}
+  {$IFNDEF COMPILER10_UP}
   ReplaceDefineProperty;
-{$ENDIF COMPILER5}
+  {$ENDIF ~COMPILER10_UP}
 
-{$IFNDEF COMPILER7_UP}
+  {$IFNDEF COMPILER7_UP}
   HookBitBtn;
-{$ENDIF !COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
 
 end.

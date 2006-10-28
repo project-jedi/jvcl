@@ -68,6 +68,7 @@ type
     CheckBoxDeleteMapFiles: TCheckBox;
     LblEnvPathWarning: TLabel;
     CheckBoxAddBplDirToPath: TCheckBox;
+    CheckBoxCreateJdbgFiles: TCheckBox;
     procedure FrameDirEditBrowseBPLEditDirectoryChange(Sender: TObject);
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
@@ -215,7 +216,9 @@ begin
   CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
   CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
   CheckBoxLinkMapFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
-  CheckBoxDeleteMapFiles.Enabled := CheckBoxLinkMapFiles.Checked and CheckBoxGenerateMapFiles.Checked;
+  CheckBoxCreateJdbgFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
+  CheckBoxDeleteMapFiles.Enabled := CheckBoxGenerateMapFiles.Checked and
+           (CheckBoxLinkMapFiles.Checked or CheckBoxCreateJdbgFiles.Checked);
 
   if ComboBoxTargetIDE.ItemIndex <= 0 then
   begin
@@ -233,6 +236,8 @@ begin
       Installer.Data.GenerateMapFiles := Integer(CheckBoxGenerateMapFiles.Checked)
     else if Sender = CheckBoxLinkMapFiles then
       Installer.Data.LinkMapFiles := Integer(CheckBoxLinkMapFiles.Checked)
+    else if Sender = CheckBoxCreateJdbgFiles then
+      Installer.Data.CreateJdbgFiles := Integer(CheckBoxCreateJdbgFiles.Checked)
     else if Sender = CheckBoxDeleteMapFiles then
       Installer.Data.DeleteMapFiles := Integer(CheckBoxDeleteMapFiles.Checked)
     ;
@@ -254,6 +259,8 @@ begin
       TargetConfig.GenerateMapFiles := CheckBoxGenerateMapFiles.Checked
     else if Sender = CheckBoxLinkMapFiles then
       TargetConfig.LinkMapFiles := CheckBoxLinkMapFiles.Checked
+    else if Sender = CheckBoxCreateJdbgFiles then
+      TargetConfig.CreateJdbgFiles := CheckBoxCreateJdbgFiles.Checked
     else if Sender = CheckBoxDeleteMapFiles then
       TargetConfig.DeleteMapFiles := CheckBoxDeleteMapFiles.Checked
     else if Sender = CheckBoxAddBplDirToPath then // only for SelTargetConfig
@@ -409,6 +416,7 @@ begin
       end;
       CheckBoxGenerateMapFiles.State := TCheckBoxState(Installer.Data.GenerateMapFiles);
       CheckBoxLinkMapFiles.State := TCheckBoxState(Installer.Data.LinkMapFiles);
+      CheckBoxCreateJdbgFiles.State := TCheckBoxState(Installer.Data.CreateJdbgFiles);
       CheckBoxDeleteMapFiles.State := TCheckBoxState(Installer.Data.DeleteMapFiles);
       CheckBoxDebugUnits.State := TCheckBoxState(Installer.Data.DebugUnits);
 
@@ -429,6 +437,7 @@ begin
       CheckBoxIDERegister.Checked := not TargetConfig.CompileOnly;
       CheckBoxGenerateMapFiles.Checked := TargetConfig.GenerateMapFiles;
       CheckBoxLinkMapFiles.Checked := TargetConfig.LinkMapFiles;
+      CheckBoxCreateJdbgFiles.Checked := TargetConfig.CreateJdbgFiles;
       CheckBoxDeleteMapFiles.Checked := TargetConfig.DeleteMapFiles;
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;

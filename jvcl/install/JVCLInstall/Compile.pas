@@ -1619,7 +1619,7 @@ begin
    // *****************************************************************
 
 {**}DoProjectProgress(RsPostCompilationOperations + DebugProgress, GetProjectIndex, ProjectMaxProgress);
-    if TargetConfig.GenerateMapFiles and TargetConfig.LinkMapFiles then
+    if TargetConfig.GenerateMapFiles and (TargetConfig.LinkMapFiles or TargetConfig.CreateJdbgFiles) then
     begin
       CaptureLine(sLinkingMapFiles, FAborted);
       for i := 0 to ProjectGroup.Count - 1 do
@@ -1685,8 +1685,15 @@ begin
   begin
     CaptureLine(Format('Linking %s inside %s',
       [ExtractFileName(MapFileName), ExtractFileName(BplFileName)]), FAborted);
-    if not TargetConfig.LinkMapFile(BplFileName, MapFileName,
+    if TargetConfig.LinkMapFiles and not TargetConfig.LinkMapFile(BplFileName, MapFileName,
       MapFileSize, JclDebugDataSize) then
+    begin
+      CaptureLine(Format('Error: Unable to link %s', [ExtractFileName(MapFileName)]), FAborted);
+      AbortReason := RsErrorLinkingMapFiles;
+      Exit;
+    end;
+
+    if TargetConfig.CreateJdbgFiles and not TargetConfig.CompressMapFileToJdbg(MapFileName) then
     begin
       CaptureLine(Format('Error: Unable to link %s', [ExtractFileName(MapFileName)]), FAborted);
       AbortReason := RsErrorLinkingMapFiles;

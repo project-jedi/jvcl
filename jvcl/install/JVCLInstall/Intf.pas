@@ -64,9 +64,11 @@ type
     function GetInstance: TObject;
       // returns the TTargetConfig instance
 
-    function GetBpgFilename(ForcePersonal: Boolean; Kind: TPackageGroupKind): string;
     function LinkMapFile(const BinaryFileName, MapFileName: string;
       var MapFileSize, JclDebugDataSize: Integer): Boolean;
+    function CompressMapFileToJdbg(const MapFileName: string): Boolean;
+
+    function GetBpgFilename(ForcePersonal: Boolean; Kind: TPackageGroupKind): string;
     function VersionedJclDcp(const Name: string): string;
     function VersionedJclBpl(const Name: string): string;
     function VersionedJVCLXmlDcp(const Name: string): string;
@@ -87,6 +89,7 @@ type
     function GetGenerateMapFiles: Boolean;
     function GetLinkMapfiles: Boolean;
     function GetDeleteMapFiles: Boolean;
+    function GetCreateJdbgFiles: Boolean;
     function GetCleanPalettes: Boolean;
     function GetAddBplDirToPath: Boolean;
 
@@ -125,6 +128,7 @@ type
     property DeveloperInstall: Boolean read GetDeveloperInstall;
     property GenerateMapFiles: Boolean read GetGenerateMapFiles;
     property LinkMapFiles: Boolean read GetLinkMapFiles;
+    property CreateJdbgFiles: Boolean read GetCreateJdbgFiles;
     property DeleteMapFiles: Boolean read GetDeleteMapFiles;
     property CleanPalettes: Boolean read GetCleanPalettes;
     property AddBplDirToPath: Boolean read GetAddBplDirToPath;

@@ -49,9 +49,9 @@ object FrameConfigPage: TFrameConfigPage
   end
   object GroupBoxJvclInc: TGroupBox
     Left = 279
-    Top = 33
+    Top = 31
     Width = 234
-    Height = 160
+    Height = 157
     Caption = ' JVCL Options  '
     TabOrder = 1
     object CheckBoxXPTheming: TCheckBox
@@ -77,7 +77,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxRegisterGlobalDesignEditors: TCheckBox
       Left = 8
-      Top = 40
+      Top = 39
       Width = 223
       Height = 17
       Hint = 
@@ -91,7 +91,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxDxgettextSupport: TCheckBox
       Left = 8
-      Top = 64
+      Top = 62
       Width = 223
       Height = 17
       Hint = 
@@ -108,7 +108,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxRegisterJvGif: TCheckBox
       Left = 8
-      Top = 88
+      Top = 85
       Width = 223
       Height = 17
       Hint = 
@@ -122,7 +122,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxUseJVCL: TCheckBox
       Left = 8
-      Top = 112
+      Top = 108
       Width = 223
       Height = 17
       Hint = 
@@ -136,7 +136,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxUnitVersioning: TCheckBox
       Left = 8
-      Top = 136
+      Top = 131
       Width = 223
       Height = 17
       Hint = 
@@ -159,7 +159,7 @@ object FrameConfigPage: TFrameConfigPage
     TabOrder = 0
     object CheckBoxDeveloperInstall: TCheckBox
       Left = 8
-      Top = 88
+      Top = 85
       Width = 254
       Height = 17
       Hint = 
@@ -175,7 +175,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxCleanPalettes: TCheckBox
       Left = 24
-      Top = 64
+      Top = 59
       Width = 238
       Height = 17
       Hint = 
@@ -206,7 +206,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxIDERegister: TCheckBox
       Left = 8
-      Top = 40
+      Top = 39
       Width = 254
       Height = 17
       Hint = 
@@ -224,7 +224,7 @@ object FrameConfigPage: TFrameConfigPage
       Top = 203
       Width = 261
       Height = 49
-      TabOrder = 8
+      TabOrder = 9
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel
@@ -233,7 +233,7 @@ object FrameConfigPage: TFrameConfigPage
         Caption = 'BP&L Directory:'
       end
       inherited Bevel: TBevel
-        Width = 309
+        Width = 261
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -250,16 +250,16 @@ object FrameConfigPage: TFrameConfigPage
       Top = 251
       Width = 261
       Height = 49
-      TabOrder = 9
+      TabOrder = 10
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
-        Width = 70
+        Width = 71
         Caption = '&DCP Directory:'
       end
       inherited Bevel: TBevel
-        Width = 309
+        Width = 261
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -275,7 +275,7 @@ object FrameConfigPage: TFrameConfigPage
       Top = 307
       Width = 261
       Height = 49
-      TabOrder = 10
+      TabOrder = 11
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel
@@ -285,7 +285,7 @@ object FrameConfigPage: TFrameConfigPage
         ParentShowHint = False
       end
       inherited Bevel: TBevel
-        Width = 309
+        Width = 261
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -303,7 +303,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxGenerateMapFiles: TCheckBox
       Left = 8
-      Top = 138
+      Top = 131
       Width = 254
       Height = 17
       Hint = 
@@ -320,7 +320,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxDebugUnits: TCheckBox
       Left = 24
-      Top = 112
+      Top = 105
       Width = 238
       Height = 17
       Hint = 
@@ -336,36 +336,53 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxLinkMapFiles: TCheckBox
       Left = 24
-      Top = 161
+      Top = 151
       Width = 238
       Height = 17
       Hint = 
         'Activate this option if the installer should link detailled'#13#10'map' +
-        ' informations as a resource of the binary it is describing.'#13#10#13#10'T' +
-        'he redistribution of the binary and Map file is'#13#10'simplified to t' +
-        'he redistribution of the binary.'#13#10#13#10'JclDebug can use these infor' +
-        'mations.'
+        ' information as a resource of the binary it is describing.'#13#10#13#10'Th' +
+        'e redistribution of the binary and Map file is'#13#10'simplified to th' +
+        'e redistribution of the binary.'#13#10#13#10'JclDebug can use these inform' +
+        'ation.'
       Caption = '&Link Map files in binaries'
+      ParentShowHint = False
       ShowHint = True
       TabOrder = 6
       OnClick = CheckBoxDeveloperInstallClick
     end
     object CheckBoxDeleteMapFiles: TCheckBox
-      Left = 40
-      Top = 183
-      Width = 222
+      Left = 24
+      Top = 185
+      Width = 201
       Height = 17
       Hint = 
         'Activate this option if the installer should delete'#13#10'detailed ma' +
-        'p-file after they are linked in the binary.'
-      Caption = '&Delete after linking'
+        'p-files after they are linked in the binary'#13#10'or the jdbg files w' +
+        'ere created.'
+      Caption = '&Delete after linking/compression'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
+      OnClick = CheckBoxDeveloperInstallClick
+    end
+    object CheckBoxCreateJdbgFiles: TCheckBox
+      Left = 24
+      Top = 168
+      Width = 238
+      Height = 17
+      Hint = 
+        'Activate this option if the installer should compress detailled'#13 +
+        #10'map information to jdbg files.'#13#10#13#10'JclDebug can use these inform' +
+        'ation.'
+      Caption = 'Compress Map files to .jdbg'
+      ParentShowHint = False
       ShowHint = True
       TabOrder = 7
-      OnClick = CheckBoxDeveloperInstallClick
     end
   end
   object CheckBoxVerbose: TCheckBox
-    Left = 287
+    Left = 279
     Top = 199
     Width = 223
     Height = 17
@@ -379,7 +396,7 @@ object FrameConfigPage: TFrameConfigPage
     OnClick = CheckBoxCompileJclDcpClick
   end
   object CheckBoxIgnoreMakeErrors: TCheckBox
-    Left = 287
+    Left = 279
     Top = 222
     Width = 223
     Height = 17
@@ -425,7 +442,7 @@ object FrameConfigPage: TFrameConfigPage
     object LblOptionsFor: TLabel
       Left = 8
       Top = 4
-      Width = 54
+      Width = 58
       Height = 13
       Caption = '&Options for:'
       FocusControl = ComboBoxTargetIDE
@@ -436,7 +453,7 @@ object FrameConfigPage: TFrameConfigPage
     Top = 260
     Width = 220
     Height = 17
-    Caption = 'Add BPL Directory to PATH'
+    Caption = 'Add BPL directory to PATH'
     TabOrder = 4
     Visible = False
     OnClick = CheckBoxDeveloperInstallClick
