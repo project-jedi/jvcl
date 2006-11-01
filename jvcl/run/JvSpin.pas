@@ -794,7 +794,7 @@ begin
   begin
     EditFormat := '0';
     if FDecimal > 0 then
-      EditFormat := EditFormat + '.' + MakeStr('#', FDecimal);
+      EditFormat := EditFormat + '.' + MakeStr('0', FDecimal);   // See Mantis 3936 about the '0' here.
     { Changing EditText sets Modified to false }
     WasModified := Modified;
     try
