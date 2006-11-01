@@ -55,6 +55,9 @@ type
   /// PRODUCTVERSION : Product version of the application out of the File-Version-Information
   /// SCREENSIZE : Size of the screen in format widthxheight
   /// DESKTOPSIZE : Size of the desktop in format widthxheight
+  TProcessCommandEvent = procedure(Sender: TObject; const Command: string;
+      var CommandResult: string; var Changed: Boolean) of object;
+
   TJvTranslateString = class(TJvComponent)
   private
     FAppNameHandled: Boolean;
@@ -70,6 +73,7 @@ type
     FLeftDelimiter: string;
     FRightDelimiter: string;
     FTimeFormat: string;
+    FOnProcessCommand: TProcessCommandEvent;
     function GetFormName: string;
     function GetFormCaption: string;
     function GetVersionInfoAppName: string;
@@ -90,6 +94,7 @@ type
     property LeftDelimiter: string read FLeftDelimiter write FLeftDelimiter;
     property RightDelimiter: string read FRightDelimiter write FRightDelimiter;
     property TimeFormat: string read FTimeFormat write FTimeFormat;
+    property OnProcessCommand: TProcessCommandEvent read FOnProcessCommand write FOnProcessCommand;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -353,6 +358,8 @@ begin
                               CommandResult := Format('%dx%d', [Screen.DesktopWidth, Screen.DesktopHeight])
                             else
                               Result := False;
+  if Assigned(FOnProcessCommand) then
+    FOnProcessCommand(Self, UpperCommand, CommandResult, Result);
 end;
 
 procedure TJvTranslateString.SetDateTimeFormat(const Value: string);
@@ -450,4 +457,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 
