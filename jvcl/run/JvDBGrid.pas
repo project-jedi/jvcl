@@ -483,7 +483,7 @@ type
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
-    property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default True;
+    property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default False;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -934,7 +934,7 @@ begin
   FAlternateRowFontColor := clNone;
   FSelectColumn := scDataBase;
   FTitleArrow := False;
-  FPostOnEnterKey := True;
+  FPostOnEnterKey := False;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
   // Note to users: the second line may not compile on non western european
@@ -989,7 +989,7 @@ begin
   begin
     Result := (Field.DataType = ftBoolean);
     if (not Result) and Assigned(FOnCheckIfBooleanField) and
-      (Field.DataType in [ftSmallint, ftInteger, ftWord, ftString, ftWideString]) then
+      (Field.DataType in [ftSmallint, ftInteger, ftLargeint, ftWord, ftString, ftWideString]) then
     begin
       FStringForTrue := '1';
       FStringForFalse := '0';
@@ -1006,17 +1006,13 @@ begin
   if FShowGlyphs and Assigned(Field) then
   begin
     case Field.DataType of
-      ftBytes, ftVarBytes, ftBlob:
+      ftBytes, ftVarBytes, ftBlob, ftTypedBinary:
         Result := Ord(gpBlob);
       ftGraphic:
         Result := Ord(gpPicture);
-      ftTypedBinary:
-        Result := Ord(gpBlob);
       ftParadoxOle, ftDBaseOle:
         Result := Ord(gpOle);
-      ftCursor:
-        Result := Ord(gpData);
-      ftReference, ftDataSet:
+      ftCursor, ftReference, ftDataSet:
         Result := Ord(gpData);
       ftMemo, ftFmtMemo:
         if not ShowMemos then
@@ -1035,7 +1031,7 @@ begin
             Result := Ord(gpUnChecked)
           else
             Result := Ord(gpChecked);
-      ftSmallint, ftInteger, ftWord:
+      ftSmallint, ftInteger, ftLargeint, ftWord:
         if EditWithBoolBox(Field) and not Field.IsNull then
           if Field.AsInteger = 0 then
             Result := Ord(gpUnChecked)
@@ -3970,31 +3966,20 @@ begin
           EscapeKey := (CharCode = VK_ESCAPE);
           FOldControlWndProc(Message);
           if EscapeKey then
+          begin
             CloseControl;
+            if Assigned(SelectedField) and (SelectedField.OldValue <> SelectedField.Value) then
+              SelectedField.Value := SelectedField.OldValue;
+          end;
         end;
       end;
-  end
-  else
-  if Message.Msg = WM_KEYDOWN then
-  begin
-    with TWMKey(Message) do
-    begin
-      if ((CharCode = VK_UP) or (CharCode = VK_DOWN)) and (KeyDataToShiftState(KeyData) = []) then
-      begin
-        CloseControl;
-        DataSource.DataSet.CheckBrowseMode;
-        PostMessage(Handle, WM_KEYDOWN, CharCode, KeyData);
-      end
-      else
-        FOldControlWndProc(Message);
-    end;
   end
   else
   begin
     FOldControlWndProc(Message);
     case Message.Msg Of
       WM_GETDLGCODE:
-        Message.Result := Message.Result or DLGC_WANTTAB or DLGC_WANTARROWS;
+        Message.Result := Message.Result or DLGC_WANTTAB;
       CM_EXIT:
         HideCurrentControl;
     end;
