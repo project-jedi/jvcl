@@ -247,7 +247,7 @@ function TJvDBSpinEdit.IsValidChar(Key: Char): Boolean;
 begin
   Result := inherited IsValidChar(Key);
   if not Result and AllowNull and
-    (Key = BackSpace) or (Key = Del) then
+    ((Key = BackSpace) or (Key = Del)) then
     Result := True;
 end;
 
