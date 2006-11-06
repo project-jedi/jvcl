@@ -65,6 +65,9 @@ type
     procedure UpClick(Sender: TObject); override;
     procedure DownClick(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    function ExecuteAction(Action: TBasicAction): Boolean; override;
+    function UpdateAction(Action: TBasicAction): Boolean; override;
+
     { Backwards compatibility; eventually remove }
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadReadOnlyField(Reader: TReader);
@@ -223,6 +226,12 @@ begin
   inherited ReadOnly := not FDataLink.Editing;
 end;
 
+function TJvDBSpinEdit.ExecuteAction(Action: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(Action) or
+            (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
+end;
+
 function TJvDBSpinEdit.GetDataField: string; { Returns data field name. }
 begin
   { FDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
@@ -338,6 +347,12 @@ end;
 
 { UpdateData is only called after calls to both FDataLink.Modified and
   FDataLink.UpdateRecord. }
+
+function TJvDBSpinEdit.UpdateAction(Action: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(Action) or
+            (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
+end;
 
 procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
 begin
