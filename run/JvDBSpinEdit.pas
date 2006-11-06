@@ -71,6 +71,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
     property IsNull: Boolean read FIsNull;
   published
     property AllowNull: Boolean read FAllowNull write FAllowNull default True;
@@ -257,6 +260,18 @@ begin
   if (Key = VK_DELETE) or (Key = VK_BACK) or
     ((Key = VK_INSERT) and (ssShift in Shift)) or IsValidChar(Char(Key)) then
     FDataLink.Edit;
+end;
+
+procedure TJvDBSpinEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+
+  if Operation = opRemove then
+  begin
+    if Assigned(FDataLink) and (AComponent = DataSource) then
+      DataSource := nil;    
+  end;
 end;
 
 procedure TJvDBSpinEdit.ReadReadOnlyField(Reader: TReader);
