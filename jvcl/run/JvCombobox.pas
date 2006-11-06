@@ -1297,6 +1297,8 @@ begin
         begin
           {$IFDEF COMPILER5}
           CloseUp;       // Delphi 5 does not have the CloseUp function, so we mimic it here
+          {$ELSE}
+          inherited;
           {$ENDIF COMPILER5}
         end;
       CBN_SELCHANGE:
