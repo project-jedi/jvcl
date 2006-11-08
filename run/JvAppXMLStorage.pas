@@ -200,10 +200,7 @@ constructor TJvAppXMLStorageOptions.Create;
 begin
   inherited Create;
   FWhiteSpaceReplacement := '';  // to keep the original behaviour
-  FInvalidCharReplacement := '_';  
-  AutoEncodeValue := true;
-  AutoIndent := true;
-  AutoEncodeEntity := true;
+  FInvalidCharReplacement := '_';
 end;
 
 function TJvAppXMLStorageOptions.GetAutoEncodeEntity: Boolean;
@@ -293,7 +290,12 @@ begin
   inherited Create(AOwner);
   (StorageOptions as TJvAppXMLStorageOptions).FStorage := Self;
   FXml := TJvSimpleXml.Create(nil);
-  FXml.Options := [sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
+  with TJvAppXMLStorageOptions(StorageOptions) do
+  begin
+    AutoEncodeValue := True;
+    AutoEncodeEntity := True;
+    AutoIndent := True;
+  end;
   // (rom) should probably be a resourcestring
   RootNodeName := 'Configuration';
 end;
