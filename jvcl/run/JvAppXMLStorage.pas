@@ -66,9 +66,12 @@ type
     constructor Create; override;
   published
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
-    property AutoEncodeValue: Boolean read GetAutoEncodeValue write SetAutoEncodeValue;
-    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write SetAutoEncodeEntity;
-    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent;
+    property AutoEncodeValue: Boolean read GetAutoEncodeValue write
+        SetAutoEncodeValue default true;
+    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write
+        SetAutoEncodeEntity default true;
+    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent default
+        true;
     property InvalidCharReplacement: string read FInvalidCharReplacement write
         SetInvalidCharReplacement;
   end;
@@ -198,6 +201,9 @@ begin
   inherited Create;
   FWhiteSpaceReplacement := '';  // to keep the original behaviour
   FInvalidCharReplacement := '_';  
+  AutoEncodeValue := true;
+  AutoIndent := true;
+  AutoEncodeEntity := true;
 end;
 
 function TJvAppXMLStorageOptions.GetAutoEncodeEntity: Boolean;
@@ -215,8 +221,7 @@ begin
   Result := sxoAutoIndent in FStorage.Xml.Options;
 end;
 
-procedure TJvAppXMLStorageOptions.SetAutoEncodeEntity(
-  const Value: Boolean);
+procedure TJvAppXMLStorageOptions.SetAutoEncodeEntity(const Value: Boolean);
 begin
   if Value then
     FStorage.Xml.Options := FStorage.Xml.Options + [sxoAutoEncodeEntity]
@@ -288,7 +293,7 @@ begin
   inherited Create(AOwner);
   (StorageOptions as TJvAppXMLStorageOptions).FStorage := Self;
   FXml := TJvSimpleXml.Create(nil);
-  FXml.Options := [sxoAutoIndent];
+  FXml.Options := [sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
   // (rom) should probably be a resourcestring
   RootNodeName := 'Configuration';
 end;
