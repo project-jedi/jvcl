@@ -1775,6 +1775,11 @@ resourcestring
     'Do you want to close and install?';
   RsPVInfoButtonCaption = 'Info';
 
+//=== JvPropertyStore.pas ====================================================
+resourcestring
+  RsJvPropertyStoreMutexStorePropertiesProcedureName = 'TJvCustomPropertyStore.StoreProperties:';
+  RsJvPropertyStoreEnterMutexTimeout = 'TJvCustomPropertyStore.StoreProperties: Mutex Timeout';
+
 //=== JvPrvwRender.pas =======================================================
 resourcestring
   RsEAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
