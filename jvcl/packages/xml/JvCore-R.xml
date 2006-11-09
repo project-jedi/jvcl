@@ -88,6 +88,7 @@
     <File Name="..\..\run\JvProgressUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStrings.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThemes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionInfo.pas" Targets="VCL" Formname="" Condition=""/>

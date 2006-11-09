@@ -61,6 +61,7 @@ type
     FOnAfterLoadProperties: TNotifyEvent;
     FOnBeforeStoreProperties: TNotifyEvent;
     FOnAfterStoreProperties: TNotifyEvent;
+    FSynchronizeStoreProperties: Boolean;
     procedure SetAutoLoad(Value: Boolean);
     function GetIgnoreProperties: TJvIgnorePropertiesStringList;
     procedure SetIgnoreProperties(Value: TJvIgnorePropertiesStringList);
@@ -100,6 +101,11 @@ type
     property OnAfterLoadProperties: TNotifyEvent read FOnAfterLoadProperties write FOnAfterLoadProperties;
     property OnBeforeStoreProperties: TNotifyEvent read FOnBeforeStoreProperties write FOnBeforeStoreProperties;
     property OnAfterStoreProperties: TNotifyEvent read FOnAfterStoreProperties write FOnAfterStoreProperties;
+    //1 Synchronize the StoreProperties procedure
+    /// Defines if the execution of the StoreProperties procedure for the current
+    /// AppStoragePath should be synchronized via a global mutex
+    property SynchronizeStoreProperties: Boolean read FSynchronizeStoreProperties
+        write FSynchronizeStoreProperties default False;
     property Tag;
   end;
 
@@ -163,12 +169,13 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Consts, SysUtils, TypInfo;
+  Consts, SysUtils, TypInfo, JclSynch, JvStrings, JvResources;
 
 const
   cLastSaveTime = 'Last Save Time';
   cObject = 'Object';
   cItem = 'Item';
+
 
 //=== { TCombinedStrings } ===================================================
 
@@ -331,6 +338,7 @@ begin
   FCombinedIgnoreProperties := TCombinedStrings.Create;
   for I := Low(IgnorePropertyList) to High(IgnorePropertyList) do
     FIntIgnoreProperties.Add(IgnorePropertyList[I]);
+  FSynchronizeStoreProperties := False;
 end;
 
 destructor TJvCustomPropertyStore.Destroy;
@@ -593,6 +601,31 @@ end;
 procedure TJvCustomPropertyStore.StoreProperties;
 var
   SaveProperties: Boolean;
+  JclMutex : TJclMutex;
+
+  procedure ExecuteStoreProperties;
+  begin
+    AppStorage.BeginUpdate;
+    try
+      UpdateChildPaths;
+      DisableAutoLoadDown;
+      SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
+      if DeleteBeforeStore then
+        AppStorage.DeleteSubTree(AppStoragePath);
+      if not IgnoreLastLoadTime then
+        AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
+      if Assigned(FOnBeforeStoreProperties) then
+        FOnBeforeStoreProperties(Self);
+      if SaveProperties then
+        StoreData;
+      AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
+      if Assigned(FOnAfterStoreProperties) then
+        FOnAfterStoreProperties(Self);
+    finally
+      AppStorage.EndUpdate;
+    end;
+  end;
+
 begin
   if not Enabled then
     Exit;
@@ -600,25 +633,26 @@ begin
     Exit;
   if not Assigned(AppStorage) then
     Exit;
-  AppStorage.BeginUpdate;
-  try
-    UpdateChildPaths;
-    DisableAutoLoadDown;
-    SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
-    if DeleteBeforeStore then
-      AppStorage.DeleteSubTree(AppStoragePath);
-    if not IgnoreLastLoadTime then
-      AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
-    if Assigned(FOnBeforeStoreProperties) then
-      FOnBeforeStoreProperties(Self);
-    if SaveProperties then
-      StoreData;
-    AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
-    if Assigned(FOnAfterStoreProperties) then
-      FOnAfterStoreProperties(Self);
-  finally
-    AppStorage.EndUpdate;
-  end;
+
+  if SynchronizeStoreProperties then
+  begin
+    JclMutex := TJclMutex.Create(nil, False, B64Encode(RsJvPropertyStoreMutexStorePropertiesProcedureName+AppStoragePath));
+    try
+      if JclMutex.WaitForever = wrSignaled then
+      try
+        ExecuteStoreProperties;
+      finally
+        JclMutex.Release;
+      end
+      else
+        raise Exception.Create(RsJvPropertyStoreEnterMutexTimeout);
+    finally
+      FreeAndNil(JclMutex);
+    end;
+  end
+  else
+    ExecuteStoreProperties
+
 end;
 
 procedure TJvCustomPropertyStore.LoadData;
