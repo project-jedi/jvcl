@@ -65,8 +65,6 @@ type
     procedure UpClick(Sender: TObject); override;
     procedure DownClick(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    function ExecuteAction(Action: TBasicAction): Boolean; override;
-    function UpdateAction(Action: TBasicAction): Boolean; override;
 
     { Backwards compatibility; eventually remove }
     procedure DefineProperties(Filer: TFiler); override;
@@ -75,6 +73,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    function ExecuteAction(Action: TBasicAction): Boolean; override;
+    function UpdateAction(Action: TBasicAction): Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     property IsNull: Boolean read FIsNull;
