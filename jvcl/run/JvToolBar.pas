@@ -282,9 +282,11 @@ begin
           if Perform(TB_GETBUTTON, iItem, Longint(@tbButton)) <> 0 then
           begin
             Button := TToolButton(tbButton.dwData);
-            if (Button <> nil) then
+            if Button <> nil then
             begin
-              Menu := Button.MenuItem.GetParentMenu;
+              Menu := nil;
+              if Button.MenuItem <> nil then
+                Menu := Button.MenuItem.GetParentMenu;
               if Menu is TJvMainMenu then
               begin
                 JvParentMenu := Button.MenuItem.GetParentMenu as TJvMainMenu;
