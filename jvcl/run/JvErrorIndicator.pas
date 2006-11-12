@@ -546,13 +546,14 @@ begin
 end;
 
 procedure TJvErrorIndicator.BeginUpdate;
-var
-  I: Integer;
+{var
+  I: Integer;}
 begin
   Inc(FUpdateCount);
   StopThread;
-  for I := 0 to Count - 1 do
-    Controls[I].Visible := False;
+  // ahuser: The following code produces flicker
+  {for I := 0 to Count - 1 do
+    Controls[I].Visible := False;}
 end;
 
 procedure TJvErrorIndicator.EndUpdate;
@@ -570,9 +571,12 @@ end;
 
 procedure TJvErrorIndicator.StartThread;
 begin
-  FBlinkThread := TJvBlinkThread.Create(BlinkRate);
-  TJvBlinkThread(FBlinkThread).OnBlink := DoBlink;
-  TJvBlinkThread(FBlinkThread).Resume;
+  if BlinkStyle <> ebsNeverBlink then
+  begin
+    FBlinkThread := TJvBlinkThread.Create(BlinkRate);
+    TJvBlinkThread(FBlinkThread).OnBlink := DoBlink;
+    TJvBlinkThread(FBlinkThread).Resume;
+  end;
 end;
 
 procedure TJvErrorIndicator.StopThread;
