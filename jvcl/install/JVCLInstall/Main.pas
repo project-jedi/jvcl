@@ -220,7 +220,7 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   Application.HintHidePause := MaxInt;
-  HintWindowClass := THtHintWindow;
+  Forms.HintWindowClass := THtHintWindow;
   Application.ShowHint := False;
   Application.ShowHint := True;
 
