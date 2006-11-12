@@ -234,6 +234,7 @@ type
     FShowTitleHint: Boolean;
     FSortedField: string;
     FPostOnEnterKey: Boolean;
+    FLeaveOnEnterKey: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
     FTitlePopup: TPopupMenu;
@@ -484,6 +485,7 @@ type
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default False;
+    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey default True;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -935,6 +937,7 @@ begin
   FSelectColumn := scDataBase;
   FTitleArrow := False;
   FPostOnEnterKey := False;
+  FLeaveOnEnterKey := True;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
   // Note to users: the second line may not compile on non western european
@@ -2363,7 +2366,7 @@ var
   end;
 
 begin
-  if (Key = Cr) and PostOnEnterKey and not ReadOnly then
+  if (Key = Cr) and (PostOnEnterKey or LeaveOnEnterKey) and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
 
   if not Assigned(FCurrentControl) then
@@ -3950,10 +3953,11 @@ begin
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
       begin
-        if (CharCode = VK_RETURN) and PostOnEnterKey then
+        if (CharCode = VK_RETURN) and (PostOnEnterKey or LeaveOnEnterKey) then
         begin
           CloseControl;
-          DataSource.DataSet.CheckBrowseMode;
+          if PostOnEnterKey then
+            DataSource.DataSet.CheckBrowseMode;
         end
         else
         if CharCode = VK_TAB then
