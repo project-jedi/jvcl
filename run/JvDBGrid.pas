@@ -485,7 +485,7 @@ type
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default False;
-    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey default True;
+    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey default False;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -901,7 +901,6 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
-  FAlwaysShowEditor := False;
   inherited Options := inherited Options - [dgAlwaysShowEditor];
 
   // (obones): issue 3026: need to create FChangeLinks at the beginning
@@ -930,14 +929,9 @@ begin
   FDefaultDrawing := True;
   FClearSelection := True;
   FAutoAppend := True;
-  FShowTitleHint := False;
-  FShowCellHint := False;
   FAlternateRowColor := clNone;
   FAlternateRowFontColor := clNone;
   FSelectColumn := scDataBase;
-  FTitleArrow := False;
-  FPostOnEnterKey := False;
-  FLeaveOnEnterKey := True;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
   // Note to users: the second line may not compile on non western european
@@ -947,16 +941,11 @@ begin
      'é', 'è', 'ê', 'ë', 'ô', 'ö', 'û', 'ù', 'â', 'à', 'ä', 'î', 'ï', 'ç'];
 
   FControls := TJvDBGridControls.Create(Self);
-  FCurrentControl := nil;
-  FOldControlWndProc := nil;
-  FBooleanFieldToEdit := nil;
   FBooleanEditor := True;
   FStringForTrue := '1';
   FStringForFalse := '0';
-  FWordWrap := False;
 
   FAutoSizeRows := True;
-  FRowResize := False;
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
   FShowMemos := True;
