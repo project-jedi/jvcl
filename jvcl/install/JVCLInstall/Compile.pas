@@ -553,7 +553,7 @@ begin
 end;
 
 /// <summary>
-/// Bcc32() compiles C++ files. It adds the compiles .obj file names to ObjFiles
+/// Bcc32() compiles C++ files. It adds the compiled .obj file names to ObjFiles
 /// If the command could not be executed a message dialog is shown with the
 /// complete command line. Returns the ExitCode of the last/failed command.
 /// </summary>
