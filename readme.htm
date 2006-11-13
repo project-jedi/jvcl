@@ -29,7 +29,8 @@ Guide</a>. Describes how to install JVCL in C++Builder.</li>
   <li><a href="help/JvExVCL.html">JvExVCL description</a>. Describes
 how to use the JvExVCL (layer for VCL and VisuaLCLX) in your own code.</li>
   <li><a href="help/Build%20Status.html">Build status</a>. Contains
-information on the current build status of the JVCL for supported Delphi and
+information on the current build status of the JVCL for supported
+Delphi and
 BCB versions.</li>
   <li><a href="help/localization.html">Localization</a>. Contains
 information on how to enable localization support in JVCL.</li>
@@ -120,7 +121,49 @@ remove the dot in {.$DEFINE
 JVCLThemesEnabled}. </li>
   <li>(Re)build the jvcl packages.</li>
 </ul>
-<p>&nbsp;</p>
+<p><br>
+If you want theming support in C++ Builder 5 and 6, you will need to
+manually create the appropriate DCP file for the installation to
+succeed instead of the steps two and three in the above list. Here are
+the steps for BCB5, thanks to Carmelo Viavattene :<br>
+</p>
+<ul>
+  <li>In the ThemeManager directory, copy ThemeManagerD5.dpk to
+ThemeManagerC5.dpk and ThemeManagerD5D.dpl to ThemeManagerC5D.dpk</li>
+  <li>With a text editor, open ThemeManagerC5.dpk and do the following
+replacements:</li>
+  <ul>
+    <li><span style="font-style: italic;">package ThemeManagerD5;</span>
+by <span style="font-style: italic;">package ThemeManagerC5;</span></li>
+    <li><span style="font-style: italic;">{$IMPLICITBUILD ON} </span>by
+      <span style="font-style: italic;">{$IMPLICITBUILD OFF}</span></li>
+  </ul>
+  <li>With a text editor, open ThemeManagerC5D.dpk and do the following
+replacements:</li>
+  <ul>
+    <li><span style="font-style: italic;">package ThemeManagerD5D;</span>
+by <span style="font-style: italic;">package ThemeManagerC5D;</span></li>
+    <li><span style="font-style: italic;">requires ThemeManagerD5 </span>by
+      <span style="font-style: italic;">requires ThemeManagerC5</span><br>
+    </li>
+    <li><span style="font-style: italic;">{$IMPLICITBUILD ON} </span>by
+      <span style="font-style: italic;">{$IMPLICITBUILD OFF}</span></li>
+  </ul>
+  <li>Open a command prompt and go in the folder where the newly
+created packages (dpk files) are located</li>
+  <li>Run these commands, replacing $(ROOT) by the root folder of your
+BCB5 installation (c:\program files\CBuilder5 by default):</li>
+  <ul>
+    <li>$(ROOT)\bin\dcc32 ThemeManagerC5.dpk</li>
+    <li>$(ROOT)\bin\dcc32 ThemeManagerC5D.dpk</li>
+  </ul>
+  <li>Copy the two newly created files to $(ROOT)\projects\bpl</li>
+  <li>Copy the two newly created OBJ files from
+$(ROOT)\projects\intermed to $(ROOT)\projects\lib<br>
+  </li>
+</ul>
+<p><br>
+</p>
 <p>Theming should now be activated for those JVCL controls that
 supports it. Note that you still need to be running on Windows XP with
 a manifest file for your project to see any theming.<br>
@@ -174,7 +217,7 @@ package also has a matching design-time package with the registration
 code and any design-time editors required by the run-time package. The
 following packages are currently available:</p>
 <p>
-<table cellspacing="2" cellpadding="2" width="100%" border="0">
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tbody>
     <tr>
       <th>Package</th>
@@ -881,6 +924,7 @@ PackageGenerator available in $(JVCL)\devtools. The installer will do
 that for you.<br>
 5. Not available in Standard and Personal versions.<br>
 <br>
+</p>
 <h4>New components added</h4>
 <p>&nbsp;</p>
 <p>The following new components and libraries has been added since JVCL
@@ -909,9 +953,10 @@ that for you.<br>
   <li>Delphi eXperience Controls II</li>
   <li>Delphi eXperience DotNet Controls II</li>
   <li>UltimVCL<br>
-  <li>TJvLookupAutoComplete (extends edit fields with autocomplete functionality)</li>
-  <li>TJvDebugHandler (creates log files on exceptions with call stack)</li>
   </li>
+  <li>TJvLookupAutoComplete (extends edit fields with autocomplete
+functionality)</li>
+  <li>TJvDebugHandler (creates log files on exceptions with call stack)</li>
 </ul>
 <p>&nbsp;</p>
 <h4>Components deprecated, renamed, removed or changed </h4>
@@ -1361,7 +1406,8 @@ we use "Camel Casing" for the file name
 component/control without the leading "T". If the unit contains several
 classes/components, it is either named after the component that will be
 installed, the most "significant" component or uses a name that
-describes the components in the unit as well as possible. For example, a unit
+describes the components in the unit as well as possible. For example,
+a unit
 with several database components could be named "JvDBControls.pas"
 whereas a unit containing a TJvEditor control would be named
 "JvEditor.pas". </li>
