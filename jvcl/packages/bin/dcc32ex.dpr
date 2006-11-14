@@ -371,6 +371,16 @@ begin
           JediLibDirs := JediLibDirs + ';' + Dir;
         JediLibDirs := JediLibDirs + ';' +  RootDir + '\source';
         Result.InstalledJcl := True;
+      end
+      else if FileExists(RootDir + '\source\common\JclBase.pas') then 
+      begin
+        JediLibDirs := JediLibDirs + ';' + RootDir + '\source;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx';
+        {$IFDEF WIN32}
+        JediLibDirs := JediLibDirs + ';' + RootDir + '\source\windows';
+        {$ELSE}
+        JediLibDirs := JediLibDirs + ':' + RootDir + '\source\unix';
+        {$ENDIF WINDOWS}
+        Result.InstalledJcl := True;
       end;
     end;
     if RequireJvcl and
