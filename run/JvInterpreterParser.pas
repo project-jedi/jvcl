@@ -673,7 +673,7 @@ begin
   { string constant }
   begin
     Inc(P);
-    while P[0] <> #0 do
+    while not (P[0] in [Lf, Cr, #0]) do
     begin
       if P[0] = '''' then
         if P[1] = '''' then
