@@ -130,6 +130,8 @@ the steps for BCB5, thanks to Carmelo Viavattene :<br>
 <ul>
   <li>In the ThemeManager directory, copy ThemeManagerD5.dpk to
 ThemeManagerC5.dpk and ThemeManagerD5D.dpk to ThemeManagerC5D.dpk</li>
+  <li>Do the same with the .res files<br>
+  </li>
   <li>With a text editor, open ThemeManagerC5.dpk and do the following
 replacements:</li>
   <ul>
@@ -159,12 +161,29 @@ BCB5 installation (c:\program files\CBuilder5 by default):</li>
   </ul>
   <li>Copy the two newly created files to $(ROOT)\projects\bpl</li>
   <li>Copy the eight newly created OBJ files from
-$(ROOT)\projects\intermed to $(ROOT)\projects\lib<br>
+$(ROOT)\projects\intermed to $(ROOT)\projects\lib</li>
+  <li>Now in the ThemeManager source directory, edit TmSchema.hpp and
+do the following replacement:</li>
+  <ul>
+    <li><span style="font-style: italic;">#include "tmschema.h" </span>by
+      <span style="font-style: italic;">#include
+"..\cbuilder\tmschema.h"</span></li>
+  </ul>
+</ul>
+<p>
+</p>
+<ul>
+  <li>Also edit UxTheme.hpp and do the following replacement:<br>
   </li>
 </ul>
+<ul>
+  <ul>
+    <li><span style="font-style: italic;">#include "uxtheme.h"</span>
+by <span style="font-style: italic;">#include "..\cbuilder\uxtheme.h"</span></li>
+  </ul>
+</ul>
 <p><br>
-</p>
-<p>Theming should now be activated for those JVCL controls that
+Theming should now be activated for those JVCL controls that
 supports it. Note that you still need to be running on Windows XP with
 a manifest file for your project to see any theming.<br>
 <br>
