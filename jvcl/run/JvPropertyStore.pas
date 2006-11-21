@@ -303,7 +303,7 @@ end;
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
-  IgnorePropertyList: array [1..16] of string =
+  IgnorePropertyList: array [1..17] of string =
    (
     'AboutJVCL',
     'AppStorage',
@@ -320,7 +320,8 @@ const
     'OnBeforeLoadProperties',
     'OnAfterLoadProperties',
     'OnBeforeStoreProperties',
-    'OnAfterStoreProperties'
+    'OnAfterStoreProperties',
+    'SynchronizeStoreProperties'
    );
 var
   I: Integer;
