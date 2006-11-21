@@ -949,21 +949,19 @@ end;
 
 procedure TJvSimpleXML.DoDecodeValue(var Value: string);
 begin
-  if Assigned(FOnDecodeValue) then
-    FOnDecodeValue(Self, Value)
-  else
   if sxoAutoEncodeValue in Options then
     SimpleXMLDecode(Value, False)
   else
   if sxoAutoEncodeEntity in Options then
     Value := EntityDecode(Value);
+  if Assigned(FOnDecodeValue) then
+    FOnDecodeValue(Self, Value);
 end;
 
 procedure TJvSimpleXML.DoEncodeValue(var Value: string);
 begin
   if Assigned(FOnEncodeValue) then
-    FOnEncodeValue(Self, Value)
-  else
+    FOnEncodeValue(Self, Value);
   if sxoAutoEncodeValue in Options then
     Value := SimpleXMLEncode(Value)
   else
