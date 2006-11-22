@@ -47,14 +47,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
+  OleCtnrs,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
   JVCLVer, JvExStdCtrls;
-
-type
-  TRichEditVersion = 1..4;
-
-  // Polaris
-  //  TCharFormat2 = TCharFormat2A;
 
 type
   TJvCustomRichEdit = class;
@@ -519,10 +514,9 @@ type
     FScreenLogPixels: Integer;
     FUndoLimit: Integer;
     FLines: TStrings;
-    FMemStream: TMemoryStream;
+    FState: TObject;
     FHideSelection: Boolean;
     FLangOptions: TRichLangOptions;
-    FModified: Boolean;
     FLinesUpdating: Boolean;
     FPageRect: TRect;
     FClickRange: TCharRange;
@@ -710,6 +704,11 @@ type
     procedure SaveToImage(Picture: TPicture);
 
     procedure InsertGraphic(AGraphic: TGraphic; const Sizeable: Boolean);
+    { Same interface as TOleContainer }
+    procedure InsertLinkToFile(const FileName: string; Iconic: Boolean);
+    procedure InsertObject(const OleClassName: string; Iconic: Boolean);
+    procedure InsertObjectFromFile(const FileName: string; Iconic: Boolean);
+    procedure InsertObjectFromInfo(const Info: TCreateInfo);
     // InsertFormatText inserts formatted text at the cursor position given by Index.
     // If Index < 0, the text is inserted at the current SelStart position.
     // S is the string to insert
@@ -871,7 +870,7 @@ type
   end;
 
 var
-  RichEditVersion: TRichEditVersion;
+  RichEditVersion: Integer;
 
   { Two procedures to construct RTF from a bitmap. You can use this to
     insert bitmaps in the rich edit control, for example:
@@ -915,7 +914,6 @@ const
 implementation
 
 uses
-  OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
 
@@ -1074,6 +1072,25 @@ type
     function DUnadvise(dwConnection: Longint): HRESULT; stdcall;
     function EnumDAdvise(out enumAdvise: IEnumStatData): HRESULT;
       stdcall;
+  end;
+
+  TJvRichEditState = class(TObject)
+  private
+    FOrigFormat: TRichStreamFormat;
+    FOrigMode: TRichStreamModes;
+    FStreamFormat: TRichStreamFormat;
+    FStreamMode: TRichStreamModes;
+    FSelStart: Integer;
+    FSelLength: Integer;
+    FModified: Boolean;
+    FForcePlainText: Boolean;
+    FStream: TMemoryStream;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Store(RichEdit: TJvCustomRichEdit);
+    procedure Restore(RichEdit: TJvCustomRichEdit);
+    property ForcePlainText: Boolean read FForcePlainText write FForcePlainText;
   end;
 
   TJvRichEditStrings = class(TStrings)
@@ -2085,7 +2102,7 @@ begin
   end;
 end;
 
-//=== EMSTextConversionError =================================================
+//=== { EMSTextConversionError } =============================================
 
 constructor EMSTextConversionError.Create(const Msg: string; AErrorCode: FCE);
 var
@@ -2431,6 +2448,8 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
+  { If you create a TJvRichEdit control at design-time the Text of the control
+    will NOT be set to its Name because csSetCaption is excluded }
   // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
   ControlStyle := ControlStyle - [csSetCaption];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
@@ -2482,7 +2501,7 @@ begin
   FWordAttributes.Free;
   FParagraph.Free;
   FLines.Free;
-  FMemStream.Free;
+  FState.Free;
   FPopupVerbMenu.Free;
   FFindDialog.Free;
   FReplaceDialog.Free;
@@ -2544,6 +2563,12 @@ begin
   SendMessage(Handle, EM_EMPTYUNDOBUFFER, 0, 0);
 end;
 
+procedure TJvCustomRichEdit.CloseActiveObject;
+begin
+  if FRichEditOle <> nil then
+    IRichEditOle(FRichEditOle).InPlaceDeactivate;
+end;
+
 procedure TJvCustomRichEdit.CloseFindDialog(Dialog: TFindDialog);
 begin
   if Assigned(FOnCloseFindDialog) then
@@ -2571,12 +2596,6 @@ begin
         end;
     end;
   end;
-end;
-
-procedure TJvCustomRichEdit.CloseActiveObject;
-begin
-  if FRichEditOle <> nil then
-    IRichEditOle(FRichEditOle).InPlaceDeactivate;
 end;
 
 procedure TJvCustomRichEdit.CMBiDiModeChanged(var Msg: TMessage);
@@ -2741,15 +2760,11 @@ end;
 
 procedure TJvCustomRichEdit.CreateWnd;
 var
-  StreamFmt: TRichStreamFormat;
-  LAdvancedTypography: Boolean;
-  Mode: TRichStreamModes;
-  DesignMode: Boolean;
+  SavedAdvancedTypography: Boolean;
+  SavedModified: Boolean;
   Mask: Longint;
 begin
-  StreamFmt := TJvRichEditStrings(Lines).Format;
-  Mode := TJvRichEditStrings(Lines).Mode;
-  LAdvancedTypography := AdvancedTypography;
+  SavedAdvancedTypography := AdvancedTypography;
   inherited CreateWnd;
   if (SysLocale.FarEast) and not (SysLocale.PriLangID = LANG_JAPANESE) then
     Font.Charset := GetDefFontCharSet;
@@ -2766,8 +2781,8 @@ begin
     FUndoLimit := SendMessage(Handle, EM_SETUNDOLIMIT, FUndoLimit, 0);
     UpdateTextModes(PlainText);
     // GetAdvancedTypography returns now always false, because the handle
-    // is recreated, so don't use property AdvancedTypography
-    FAdvancedTypography := LAdvancedTypography;
+    // is recreated, so can't use property AdvancedTypography
+    FAdvancedTypography := SavedAdvancedTypography;
     UpdateTypographyOptions(FAdvancedTypography);
     SetLangOptions(FLangOptions);
   end;
@@ -2779,48 +2794,34 @@ begin
     UpdateHostNames;
   end;
 
-  if FMemStream <> nil then
-  begin
-    FMemStream.ReadBuffer(DesignMode, SizeOf(DesignMode));
-    if DesignMode then
-      TJvRichEditStrings(Lines).Format := sfPlainText;
-    TJvRichEditStrings(Lines).Mode := [smUnicode];
-    try
-      Lines.LoadFromStream(FMemStream);
-      FMemStream.Free;
-      FMemStream := nil;
-    finally
-      TJvRichEditStrings(Lines).Format := StreamFmt;
-      TJvRichEditStrings(Lines).Mode := Mode;
-    end;
-  end;
+  if FState is TJvRichEditState then
+    TJvRichEditState(FState).Restore(Self);
+  FState.Free;
+  FState := nil;
   if RichEditVersion < 2 then
+  begin
+    { (rb) This code is probably unneccessairy; it only assigns Font to
+      FDefAttributes, see WM_SETFONT handler; but that is also done in
+      TWinControl.CreateWnd }
+    SavedModified := Modified;
+    { This changes the Modified property }
     SendMessage(Handle, WM_SETFONT, 0, 0);
-  Modified := FModified;
+    Modified := SavedModified;
+  end;
 end;
 
 procedure TJvCustomRichEdit.DestroyWnd;
-var
-  StreamFmt: TRichStreamFormat;
-  Mode: TRichStreamModes;
-  DesignMode: Boolean;
 begin
-  FModified := Modified;
-  FMemStream := TMemoryStream.Create;
-  StreamFmt := TJvRichEditStrings(Lines).Format;
-  Mode := TJvRichEditStrings(Lines).Mode;
-  DesignMode := (csDesigning in ComponentState);
-  FMemStream.WriteBuffer(DesignMode, SizeOf(DesignMode));
-  if DesignMode then
-    TJvRichEditStrings(Lines).Format := sfPlainText;
-  TJvRichEditStrings(Lines).Mode := [smUnicode];
-  try
-    Lines.SaveToStream(FMemStream);
-    FMemStream.Position := 0;
-  finally
-    TJvRichEditStrings(Lines).Format := StreamFmt;
-    TJvRichEditStrings(Lines).Mode := Mode;
+  {$IFDEF DELPHI10_UP}
+  if csRecreating in ControlState then
+  begin
+  {$ENDIF DELPHI10_UP}
+    FState := TJvRichEditState.Create;
+    TJvRichEditState(FState).ForcePlainText := csDesigning in ComponentState;
+    TJvRichEditState(FState).Store(Self);
+  {$IFDEF DELPHI10_UP}
   end;
+  {$ENDIF DELPHI10_UP}
   inherited DestroyWnd;
 end;
 
@@ -2973,15 +2974,16 @@ end;
 
 function TJvCustomRichEdit.GetAdvancedTypography: Boolean;
 begin
-  Result := FAdvancedTypography;
   // Advanced and normal line breaking may also be turned on automatically by
   // the rich edit control if it is needed for certain languages. So don't
   // rely on FAdvancedTypography alone.
   if HandleAllocated and not (csDesigning in ComponentState) then
   begin
     if RichEditVersion >= 3 then
-      Result := SendMessage(Handle, EM_GETTYPOGRAPHYOPTIONS, 0, 0) and TO_ADVANCEDTYPOGRAPHY = TO_ADVANCEDTYPOGRAPHY;
+      FAdvancedTypography := SendMessage(Handle, EM_GETTYPOGRAPHYOPTIONS, 0, 0) and TO_ADVANCEDTYPOGRAPHY =
+        TO_ADVANCEDTYPOGRAPHY;
   end;
+  Result := FAdvancedTypography;
 end;
 
 function TJvCustomRichEdit.GetAutoURLDetect: Boolean;
@@ -3055,11 +3057,6 @@ begin
     Result.Init(GetParentWindow(Self));
 end;
 
-function TJvCustomRichEdit.GetFlat: Boolean;
-begin
-  Result := not Ctl3D;
-end;
-
 function TJvCustomRichEdit.GetConverter(const AFileName: string;
   const Kind: TJvConversionKind): TJvConversion;
 begin
@@ -3074,6 +3071,11 @@ begin
       Result := GConversionFormatList.DefaultConverter;
     Result.Init(GetParentWindow(Self));
   end;
+end;
+
+function TJvCustomRichEdit.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
 end;
 
 function TJvCustomRichEdit.GetLangOptions: TRichLangOptions;
@@ -3395,6 +3397,30 @@ begin
   end;
 end;
 
+procedure TJvCustomRichEdit.InsertLinkToFile(const FileName: string;
+  Iconic: Boolean);
+var
+  Info: TCreateInfo;
+begin
+  Info.CreateType := ctLinkToFile;
+  Info.ShowAsIcon := Iconic;
+  Info.IconMetaPict := 0;
+  Info.FileName := FileName;
+  InsertObjectFromInfo(Info);
+end;
+
+procedure TJvCustomRichEdit.InsertObject(const OleClassName: string;
+  Iconic: Boolean);
+var
+  Info: TCreateInfo;
+begin
+  Info.CreateType := ctNewObject;
+  Info.ShowAsIcon := Iconic;
+  Info.IconMetaPict := 0;
+  Info.ClassID := ProgIDToClassID(OleClassName);
+  InsertObjectFromInfo(Info);
+end;
+
 function TJvCustomRichEdit.InsertObjectDialog: Boolean;
 var
   Data: TOleUIInsertObject;
@@ -3446,10 +3472,10 @@ begin
             dwFlags := REO_RESIZABLE;
             if IsNewObject then
               dwFlags := dwFlags or REO_BLANK;
-            OleCheck(OleSetDrawAspect(OleObject,
-              Data.dwFlags and IOF_CHECKDISPLAYASICON <> 0,
-              Data.hMetaPict, dvAspect));
           end;
+          OleCheck(OleSetDrawAspect(OleObject,
+            Data.dwFlags and IOF_CHECKDISPLAYASICON <> 0,
+            Data.hMetaPict, ReObject.dvAspect));
           SendMessage(Handle, EM_EXGETSEL, 0, Longint(@Selection));
           Selection.cpMax := Selection.cpMin + 1;
           OleCheck(IRichEditOle(FRichEditOle).InsertObject(ReObject));
@@ -3473,6 +3499,93 @@ begin
   end
   else
     Result := False;
+end;
+
+procedure TJvCustomRichEdit.InsertObjectFromFile(const FileName: string;
+  Iconic: Boolean);
+var
+  Info: TCreateInfo;
+begin
+  Info.CreateType := ctFromFile;
+  Info.ShowAsIcon := Iconic;
+  Info.IconMetaPict := 0;
+  Info.FileName := FileName;
+  InsertObjectFromInfo(Info);
+end;
+
+procedure TJvCustomRichEdit.InsertObjectFromInfo(
+  const Info: TCreateInfo);
+var
+  OleClientSite: IOleClientSite;
+  Storage: IStorage;
+  OleObject: IOleObject;
+  ReObject: TReObject;
+  Selection: TCharRange;
+begin
+  if not Assigned(FRichEditOle) then
+    Exit;
+
+  IRichEditOle(FRichEditOle).GetClientSite(OleClientSite);
+  Storage := nil;
+  OleObject := nil;
+  try
+    CreateStorage(Storage);
+    with Info do
+    begin
+      case CreateType of
+        ctNewObject:
+          OleCheck(OleCreate(ClassID, IOleObject, OLERENDER_DRAW, nil,
+            OleClientSite, Storage, OleObject));
+        ctFromFile:
+          OleCheck(OleCreateFromFile(GUID_NULL, PWideChar(FileName), IOleObject,
+            OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
+        ctLinkToFile:
+          OleCheck(OleCreateLinkToFile(PWideChar(FileName), IOleObject,
+            OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
+        ctFromData:
+          OleCheck(OleCreateFromData(DataObject, IOleObject,
+            OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
+        ctLinkFromData:
+          OleCheck(OleCreateLinkFromData(DataObject, IOleObject,
+            OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
+      end;
+      try
+        if CreateType = ctNewObject then
+          OleSetContainedObject(OleObject, True);
+        FillChar(ReObject, SizeOf(TReObject), 0);
+        with ReObject do
+        begin
+          cbStruct := SizeOf(TReObject);
+          cp := REO_CP_SELECTION;
+          poleobj := OleObject;
+          OleObject.GetUserClassID(clsid);
+          pstg := Storage;
+          polesite := OleClientSite;
+          dvAspect := DVASPECT_CONTENT;
+          dwFlags := REO_RESIZABLE;
+          if CreateType = ctNewObject then
+            dwFlags := dwFlags or REO_BLANK;
+        end;
+        OleCheck(OleSetDrawAspect(OleObject, ShowAsIcon,
+          IconMetaPict, ReObject.dvAspect));
+        SendMessage(Handle, EM_EXGETSEL, 0, Longint(@Selection));
+        Selection.cpMax := Selection.cpMin + 1;
+        OleCheck(IRichEditOle(FRichEditOle).InsertObject(ReObject));
+        SendMessage(Handle, EM_EXSETSEL, 0, Longint(@Selection));
+        SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
+        IRichEditOle(FRichEditOle).SetDvaspect(
+          Longint(REO_IOB_SELECTION), ReObject.dvAspect);
+        if CreateType = ctNewObject then
+          OleObject.DoVerb(OLEIVERB_SHOW, nil,
+            OleClientSite, 0, Handle, ClientRect);
+      finally
+        ReleaseObject(OleObject);
+      end;
+    end;
+  finally
+    ReleaseObject(OleClientSite);
+    ReleaseObject(Storage);
+  end;
 end;
 
 function TJvCustomRichEdit.IsAdvancedTypographyStored: Boolean;
@@ -3583,11 +3696,7 @@ var
   Data: TOleUIPasteSpecial;
   PasteFormats: array[0..PasteFormatCount - 1] of TOleUIPasteEntry;
   Format: Integer;
-  OleClientSite: IOleClientSite;
-  Storage: IStorage;
-  OleObject: IOleObject;
-  ReObject: TReObject;
-  Selection: TCharRange;
+  Info: TCreateInfo;
 begin
   Result := False;
   if not CanPaste or not Assigned(FRichEditOle) then
@@ -3622,56 +3731,23 @@ begin
       Result := True;
       if Data.nSelectedIndex in [0, 1] then
       begin
-        { CFEmbeddedObject, CFLinkSource }
-        FillChar(ReObject, SizeOf(TReObject), 0);
-        IRichEditOle(FRichEditOle).GetClientSite(OleClientSite);
-        Storage := nil;
-        try
-          CreateStorage(Storage);
-          case Data.nSelectedIndex of
-            0:
-              OleCheck(OleCreateFromData(Data.lpSrcDataObj, IOleObject,
-                OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
-            1:
-              OleCheck(OleCreateLinkFromData(Data.lpSrcDataObj, IOleObject,
-                OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
-          end;
-          try
-            with ReObject do
-            begin
-              cbStruct := SizeOf(TReObject);
-              cp := REO_CP_SELECTION;
-              poleobj := OleObject;
-              OleObject.GetUserClassID(clsid);
-              pstg := Storage;
-              polesite := OleClientSite;
-              dvAspect := DVASPECT_CONTENT;
-              dwFlags := REO_RESIZABLE;
-              OleCheck(OleSetDrawAspect(OleObject,
-                Data.dwFlags and PSF_CHECKDISPLAYASICON <> 0,
-                Data.hMetaPict, dvAspect));
-            end;
-            SendMessage(Handle, EM_EXGETSEL, 0, Longint(@Selection));
-            Selection.cpMax := Selection.cpMin + 1;
-            OleCheck(IRichEditOle(FRichEditOle).InsertObject(ReObject));
-            SendMessage(Handle, EM_EXSETSEL, 0, Longint(@Selection));
-            IRichEditOle(FRichEditOle).SetDvaspect(
-              Longint(REO_IOB_SELECTION), ReObject.dvAspect);
-          finally
-            ReleaseObject(OleObject);
-          end;
-        finally
-          ReleaseObject(OleClientSite);
-          ReleaseObject(Storage);
+        case Data.nSelectedIndex of
+          0: Info.CreateType := ctFromData;
+          1: Info.CreateType := ctLinkFromData;
         end;
+        Info.DataObject := Data.lpSrcDataObj;
+        Info.ShowAsIcon := Data.dwFlags and PSF_CHECKDISPLAYASICON <> 0;
+        Info.IconMetaPict := Data.hMetaPict;
+
+        InsertObjectFromInfo(Info);
       end
       else
       begin
         Format := PasteFormats[Data.nSelectedIndex].fmtetc.cfFormat;
         OleCheck(IRichEditOle(FRichEditOle).ImportDataObject(
           Data.lpSrcDataObj, Format, Data.hMetaPict));
+        SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
       end;
-      SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
     end;
   finally
     DestroyMetaPict(Data.hMetaPict);
@@ -4068,41 +4144,29 @@ end;
 
 procedure TJvCustomRichEdit.SetPlainText(Value: Boolean);
 var
-  MemStream: TStream;
-  StreamFmt: TRichStreamFormat;
-  Mode: TRichStreamModes;
+  State: TJvRichEditState;
 begin
   if PlainText <> Value then
   begin
     if HandleAllocated and (RichEditVersion >= 2) then
     begin
-      MemStream := TMemoryStream.Create;
+      State := TJvRichEditState.Create;
       try
-        StreamFmt := TJvRichEditStrings(Lines).Format;
-        Mode := TJvRichEditStrings(Lines).Mode;
+        State.ForcePlainText := (csDesigning in ComponentState) or Value;
+        State.Store(Self);
+
+        TJvRichEditStrings(Lines).EnableChange(False);
         try
-          if (csDesigning in ComponentState) or Value then
-            TJvRichEditStrings(Lines).Format := sfPlainText
-          else
-            TJvRichEditStrings(Lines).Format := sfRichText;
-          TJvRichEditStrings(Lines).Mode := [smUnicode];
-          Lines.SaveToStream(MemStream);
-          MemStream.Position := 0;
-          TJvRichEditStrings(Lines).EnableChange(False);
-          try
-            SendMessage(Handle, WM_SETTEXT, 0, 0);
-            UpdateTextModes(Value);
-            FPlainText := Value;
-          finally
-            TJvRichEditStrings(Lines).EnableChange(True);
-          end;
-          Lines.LoadFromStream(MemStream);
+          SendMessage(Handle, WM_SETTEXT, 0, 0);
+          UpdateTextModes(Value);
+          FPlainText := Value;
         finally
-          TJvRichEditStrings(Lines).Format := StreamFmt;
-          TJvRichEditStrings(Lines).Mode := Mode;
+          TJvRichEditStrings(Lines).EnableChange(True);
         end;
+
+        State.Restore(Self);
       finally
-        MemStream.Free;
+        State.Free;
       end;
     end;
     FPlainText := Value;
@@ -5678,6 +5742,61 @@ begin
     end;
   end;
   SetAttributes(Paragraph);
+end;
+
+//=== { TJvRichEditState } ===================================================
+
+constructor TJvRichEditState.Create;
+begin
+  inherited Create;
+  FStream := TMemoryStream.Create;
+end;
+
+destructor TJvRichEditState.Destroy;
+begin
+  FStream.Free;
+  inherited Destroy;
+end;
+
+procedure TJvRichEditState.Restore(RichEdit: TJvCustomRichEdit);
+begin
+  TJvRichEditStrings(RichEdit.Lines).Format := FStreamFormat;
+  TJvRichEditStrings(RichEdit.Lines).Mode := FStreamMode;
+
+  FStream.Position := 0;
+  RichEdit.Lines.LoadFromStream(FStream);
+
+  TJvRichEditStrings(RichEdit.Lines).Format := FOrigFormat;
+  TJvRichEditStrings(RichEdit.Lines).Mode := FOrigMode;
+
+  RichEdit.SelStart := FSelStart;
+  RichEdit.SelLength := FSelLength;
+  RichEdit.Modified := FModified;
+end;
+
+procedure TJvRichEditState.Store(RichEdit: TJvCustomRichEdit);
+begin
+  FModified := RichEdit.Modified;
+
+  FSelStart := RichEdit.SelStart;
+  FSelLength := RichEdit.SelLength;
+
+  FOrigFormat := TJvRichEditStrings(RichEdit.Lines).Format;
+  FOrigMode := TJvRichEditStrings(RichEdit.Lines).Mode;
+
+  if RichEdit.PlainText or ForcePlainText then
+    TJvRichEditStrings(RichEdit.Lines).Format := sfPlainText
+  else
+    TJvRichEditStrings(RichEdit.Lines).Format := sfRichText;
+  TJvRichEditStrings(RichEdit.Lines).Mode := [smUnicode];
+
+  FStreamFormat := TJvRichEditStrings(RichEdit.Lines).Format;
+  FStreamMode := TJvRichEditStrings(RichEdit.Lines).Mode;
+
+  RichEdit.Lines.SaveToStream(FStream);
+
+  TJvRichEditStrings(RichEdit.Lines).Format := FOrigFormat;
+  TJvRichEditStrings(RichEdit.Lines).Mode := FOrigMode;
 end;
 
 //=== { TJvRichEditStrings } =================================================
@@ -7400,10 +7519,7 @@ begin
     begin
       RichEditVersion := 2;
 
-      // GetFileVersionInfo modifies the filename parameter data while parsing.
-      // Copy the string const into a local variable to create a writeable copy.
-      FileName := RichEdit20ModuleName;
-      UniqueString(FileName);
+      FileName := GetModuleName(GLibHandle);
       InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
       if InfoSize <> 0 then
       begin
@@ -7412,7 +7528,8 @@ begin
           if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
             if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
             begin
-              RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10;
+              if FI.dwFileVersionMS and $FFFF0000 = $00050000 then
+                RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10;
               if RichEditVersion = 0 then
                 RichEditVersion := 2;
             end;
