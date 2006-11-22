@@ -139,6 +139,17 @@ object frmJvDBGridControlsEditor: TfrmJvDBGridControlsEditor
         'Design size'
         'Design/Cell size (biggest)')
     end
+    object cbLeaveOnEnterKey: TCheckBox
+      Left = 163
+      Top = 128
+      Width = 145
+      Height = 21
+      Caption = 'Return/Enter key = leave'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = cbLeaveOnEnterKeyClick
+    end
   end
   object btnOK: TButton
     Left = 365

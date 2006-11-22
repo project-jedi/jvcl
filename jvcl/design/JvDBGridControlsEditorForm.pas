@@ -51,12 +51,14 @@ type
     cbControl: TComboBox;
     LabelFillCell: TLabel;
     cbFillCell: TComboBox;
+    cbLeaveOnEnterKey: TCheckBox;
     btnOK: TButton;
     btnCancel: TButton;
     procedure FormCreate(Sender: TObject);
     procedure lbSelectedClick(Sender: TObject);
     procedure cbControlClick(Sender: TObject);
     procedure cbFillCellClick(Sender: TObject);
+    procedure cbLeaveOnEnterKeyClick(Sender: TObject);
     procedure sbAddClick(Sender: TObject);
     procedure sbDeleteClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -131,6 +133,8 @@ begin
     cbFillCell.Enabled := True;
     cbFillCell.Color := clWindow;
     cbFillCell.ItemIndex := Ord(JvDBGridControls.Items[lbSelected.ItemIndex].FitCell);
+    cbLeaveOnEnterKey.Enabled := True;
+    cbLeaveOnEnterKey.Checked := JvDBGridControls.Items[lbSelected.ItemIndex].LeaveOnEnterKey;
   end
   else
   begin
@@ -138,6 +142,7 @@ begin
     cbControl.Color := clBtnFace;
     cbFillCell.Enabled := False;
     cbFillCell.Color := clBtnFace;
+    cbLeaveOnEnterKey.Enabled := False;
   end;
 end;
 
@@ -153,6 +158,12 @@ begin
     JvDBGridControls.Items[lbSelected.ItemIndex].FitCell := TJvDBGridControlSize(cbFillCell.ItemIndex);
 end;
 
+procedure TfrmJvDBGridControlsEditor.cbLeaveOnEnterKeyClick(Sender: TObject);
+begin
+  if lbSelected.ItemIndex >= 0 then
+    JvDBGridControls.Items[lbSelected.ItemIndex].LeaveOnEnterKey := cbLeaveOnEnterKey.Checked;
+end;
+
 procedure TfrmJvDBGridControlsEditor.sbAddClick(Sender: TObject);
 begin
   if lbFields.ItemIndex >= 0 then
@@ -164,6 +175,7 @@ begin
       begin
         FieldName := lbFields.Items[lbFields.ItemIndex];
         FitCell := fcCellSize;
+        LeaveOnEnterKey := True;
       end;
       lbFields.Items.Delete(lbFields.ItemIndex);
     end
