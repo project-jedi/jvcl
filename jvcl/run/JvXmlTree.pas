@@ -1329,14 +1329,15 @@ var
   S, Token, AName: string;
   N: TJvXMLNode;
 begin
-  I := 0;
   FNodeCount := 0;
   ClearNodes;
   ClearAttributes;
   Name := 'root';
   N := Self;
   C := Lines.Count - 1;
-  repeat
+  I := 0;
+  while I <= C do
+  begin
     S := Lines[I];
     Token := Copy(S, 1, 3);
     AName := Copy(S, 4, Length(S));
@@ -1364,7 +1365,7 @@ begin
       N.ValueType := xvtCDATA;
     end;
     Inc(I);
-  until I > C;
+  end;
 end;
 
 procedure TJvXMLTree.LoadFromFile(const FileName: string);
