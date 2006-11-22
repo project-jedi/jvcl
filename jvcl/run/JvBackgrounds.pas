@@ -1575,7 +1575,7 @@ end;
 destructor TJvBackgroundClients.Destroy;
 begin
   FFixups.Free;
-  FLinks.Clear;
+  Clear; // release links
   FLinks.Free;
   inherited Destroy;
 end;
