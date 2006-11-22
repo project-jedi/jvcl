@@ -169,6 +169,7 @@ type
     FControlName: string;
     FFieldName: string;
     FFitCell: TJvDBGridControlSize;
+    FLeaveOnEnterKey: Boolean;
     FDesignWidth: Integer;  // value set when needed by PlaceControl
     FDesignHeight: Integer; // value set when needed by PlaceControl
   public
@@ -177,6 +178,7 @@ type
     property ControlName: string read FControlName write FControlName;
     property FieldName: string read FFieldName write FFieldName;
     property FitCell: TJvDBGridControlSize read FFitCell write FFitCell;
+    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey;
   end;
 
   TJvDBGridControls = class(TCollection)
@@ -234,7 +236,6 @@ type
     FShowTitleHint: Boolean;
     FSortedField: string;
     FPostOnEnterKey: Boolean;
-    FLeaveOnEnterKey: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
     FTitlePopup: TPopupMenu;
@@ -485,7 +486,6 @@ type
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default False;
-    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey default False;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -840,6 +840,7 @@ begin
     ControlName := TJvDBGridControl(Source).ControlName;
     FieldName := TJvDBGridControl(Source).FieldName;
     FitCell := TJvDBGridControl(Source).FitCell;
+    LeaveOnEnterKey := TJvDBGridControl(Source).LeaveOnEnterKey;
     FDesignWidth := 0;
     FDesignHeight := 0;
   end
@@ -1625,7 +1626,7 @@ function TJvDBGrid.CanEditShow: Boolean;
 
   function UseDefaultEditor: Boolean;
   const
-    ude_DEFAULT_EDITOR = 0;                      
+    ude_DEFAULT_EDITOR = 0;
     ude_BOOLEAN_EDITOR = 1;
     ude_CUSTOM_EDITOR = 2;
   var
@@ -1644,7 +1645,7 @@ function TJvDBGrid.CanEditShow: Boolean;
     // Is there an editor for the selected field ?
     F := SelectedField;
     Control := FControls.ControlByField(F.FieldName);
-    if Assigned(Control) then //and not (dgAlwaysShowEditor in inherited Options) then
+    if Assigned(Control) then
       Editor := ude_CUSTOM_EDITOR
     else
     if EditWithBoolBox(F) then
@@ -1719,8 +1720,6 @@ function TJvDBGrid.CanEditShow: Boolean;
   end;
 
 begin
-  //if (dgAlwaysShowEditor in inherited Options) and not EditorMode then
-  //  ShowEditor;
   Result := False;
   if (inherited CanEditShow) and Assigned(SelectedField)
     and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count) then
@@ -2355,7 +2354,7 @@ var
   end;
 
 begin
-  if (Key = Cr) and (PostOnEnterKey or LeaveOnEnterKey) and not ReadOnly then
+  if (Key = Cr) and PostOnEnterKey and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
 
   if not Assigned(FCurrentControl) then
@@ -3936,13 +3935,15 @@ end;
 procedure TJvDBGrid.ControlWndProc(var Message: TMessage);
 var
   EscapeKey: Boolean;
+  CurrentEditor: TJvDBGridControl;
 begin
   if Message.Msg = WM_CHAR then
   begin
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
       begin
-        if (CharCode = VK_RETURN) and (PostOnEnterKey or LeaveOnEnterKey) then
+        CurrentEditor := FControls.ControlByName(FCurrentControl.Name);
+        if (CharCode = VK_RETURN) and (PostOnEnterKey or CurrentEditor.LeaveOnEnterKey) then
         begin
           CloseControl;
           if PostOnEnterKey then
