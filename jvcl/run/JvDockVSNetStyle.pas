@@ -3514,7 +3514,7 @@ procedure TJvDockVSPopupPanelSplitter.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = VSPopupPanel) then
-    VSPopupPanel := nil;
+    FVSPopupPanel := nil;
 end;
 
 procedure TJvDockVSPopupPanelSplitter.Paint;
