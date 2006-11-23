@@ -207,6 +207,7 @@ type
     FSizingOfs: Integer;
     FShowGlyphs: Boolean;
     FDefaultDrawing: Boolean;
+    FReduceFlicker: Boolean;
     FMultiSelect: Boolean;
     FSelecting: Boolean;
     FClearSelection: Boolean;
@@ -228,7 +229,6 @@ type
     {$ENDIF COMPILER6_UP}
     FOnTitleBtnClick: TTitleClickEvent;
     FOnTitleBtnDblClick: TTitleClickEvent;
-    FOnShowEditor: TJvDBEditShowEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FSelectionAnchor: TBookmarkStr;
     FOnDrawColumnTitle: TDrawColumnTitleEvent;
@@ -256,6 +256,11 @@ type
     FOnShowCellHint: TJvCellHintEvent;
     FCharList: TCharList;
     FScrollBars: TScrollStyle;
+    FWordWrap: Boolean;
+    FChangeLinks: TObjectList;
+    FShowMemos: Boolean;
+    FOnShowEditor: TJvDBEditShowEvent;
+    FAlwaysShowEditor: Boolean;
 
     FControls: TJvDBGridControls;
     FCurrentControl: TWinControl;
@@ -265,24 +270,18 @@ type
     FOnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent;
     FStringForTrue: string;
     FStringForFalse: string;
-    FWordWrap: Boolean;
 
     FAutoSizeRows: Boolean;
     FRowResize: Boolean;
     FRowsHeight: Integer;
     FTitleRowHeight: Integer;
-
-    FChangeLinks: TObjectList;
-    FShowMemos: Boolean;
-    FAlwaysShowEditor: Boolean;
-
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
     procedure SetTitleRowHeight(Value: Integer);
+
     procedure WriteCellText(ARect: TRect; DX, DY: Integer; const Text: string;
       Alignment: TAlignment; ARightToLeft: Boolean; Options: Integer = 0);
-
     function GetImageIndex(Field: TField): Integer;
     procedure SetShowGlyphs(Value: Boolean);
     function GetStorage: TJvFormPlacement;
@@ -507,6 +506,8 @@ type
     property EditControls: TJvDBGridControls read FControls write SetControls;
     { AutoSizeRows: are rows resized automatically ? }
     property AutoSizeRows: Boolean read FAutoSizeRows write SetAutoSizeRows default True;
+    { ReduceFlicker: improve (but slow) the display when painting/scrolling ? }
+    property ReduceFlicker: Boolean read FReduceFlicker write FReduceFlicker default True;
     { RowResize: can rows be resized with the mouse ? }
     property RowResize: Boolean read FRowResize write SetRowResize default False;
     { RowsHeight: data rows height }
@@ -928,6 +929,7 @@ begin
   FIniLink.OnLoad := IniLoad;
   FShowGlyphs := True;
   FDefaultDrawing := True;
+  FReduceFlicker := True;
   FClearSelection := True;
   FAutoAppend := True;
   FAlternateRowColor := clNone;
@@ -2492,47 +2494,70 @@ var
   DrawBitmap: TBitmap;
   B, R: TRect;
   Hold, DrawOptions: Integer;
-begin
-  DrawBitmap := TBitmap.Create;
-  try
-    DrawBitmap.Canvas.Lock;
-    try
-      with DrawBitmap, ARect do { Use offscreen bitmap to eliminate flicker and }
-      begin                     { brush origin tics in painting / scrolling.    }
-        Width := Max(Width, Right - Left);
-        Height := Max(Height, Bottom - Top);
-        R := Classes.Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
-        B := Classes.Rect(0, 0, Right - Left, Bottom - Top);
-      end;
-      with DrawBitmap.Canvas do
-      begin
-        Font := Canvas.Font;
-        Font.Color := Canvas.Font.Color;
-        Brush := Canvas.Brush;
-        Brush.Style := bsSolid;
-        FillRect(B);
-        SetBkMode(Handle, TRANSPARENT);
-        if Canvas.CanvasOrientation = coRightToLeft then
-          ChangeBiDiModeAlignment(Alignment);
-        DrawOptions := AlignFlags[Alignment] or RTL[ARightToLeft];
-        if Options <> 0 then
-          DrawOptions := DrawOptions or Options;
-        if WordWrap then
-          DrawOptions := DrawOptions or DT_WORDBREAK;
-        Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
-      end;
+
+  procedure DrawAText(CellCanvas: TCanvas);
+  begin
+    with CellCanvas do
+    begin
       if Canvas.CanvasOrientation = coRightToLeft then
-      begin
-        Hold := ARect.Left;
-        ARect.Left := ARect.Right;
-        ARect.Right := Hold;
-      end;
-      Canvas.CopyRect(ARect, DrawBitmap.Canvas, B);
-    finally
-      DrawBitmap.Canvas.Unlock;
+        ChangeBiDiModeAlignment(Alignment);
+      DrawOptions := AlignFlags[Alignment] or RTL[ARightToLeft];
+      if Options <> 0 then
+        DrawOptions := DrawOptions or Options;
+      if WordWrap then
+        DrawOptions := DrawOptions or DT_WORDBREAK;
+      if Brush.Style <> bsSolid then
+        Brush.Style := bsSolid;
+      FillRect(B);
+      SetBkMode(Handle, TRANSPARENT);
+      Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
     end;
-  finally
-    DrawBitmap.Free;
+  end;
+
+begin
+  if ReduceFlicker then
+  begin
+    // Use offscreen bitmap to eliminate flicker and
+    // brush origin tics in painting / scrolling.
+    DrawBitmap := TBitmap.Create;
+    try
+      DrawBitmap.Canvas.Lock;
+      try
+        with DrawBitmap, ARect do
+        begin
+          Width := Max(Width, Right - Left);
+          Height := Max(Height, Bottom - Top);
+          R := Classes.Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
+          B := Classes.Rect(0, 0, Right - Left, Bottom - Top);
+        end;
+        with DrawBitmap.Canvas do
+        begin
+          Font := Canvas.Font;
+          Font.Color := Canvas.Font.Color;
+          Brush := Canvas.Brush;
+        end;
+        DrawAText(DrawBitmap.Canvas);
+        if Canvas.CanvasOrientation = coRightToLeft then
+        begin
+          Hold := ARect.Left;
+          ARect.Left := ARect.Right;
+          ARect.Right := Hold;
+        end;
+        Canvas.CopyRect(ARect, DrawBitmap.Canvas, B);
+      finally
+        DrawBitmap.Canvas.Unlock;
+      end;
+    finally
+      DrawBitmap.Free;
+    end;
+  end
+  else
+  begin
+    // No offscreen bitmap - The display is faster but flickers
+    with ARect do
+      R := Classes.Rect(Left + DX, Top + DY, Right - 1, Bottom - 1);
+    B := ARect;
+    DrawAText(Canvas);
   end;
 end;
 
@@ -2915,8 +2940,7 @@ begin
           {$IFDEF COMPILER10_UP}
           or (Field is TWideMemoField)
           {$ENDIF COMPILER10_UP}
-          )
-         ) then
+          )) then
       begin
         if Assigned(Field.OnGetText) then
           MemoText := Field.DisplayText
