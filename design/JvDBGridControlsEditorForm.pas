@@ -37,7 +37,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   StdCtrls, Buttons, Graphics,
-  JvDBGrid, TypInfo;
+  TypInfo,
+  JvDBGrid;
 
 type
   TfrmJvDBGridControlsEditor = class(TForm)
@@ -73,7 +74,8 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, JvDsgnConsts;
+  SysUtils, Dialogs,
+  JvDsgnConsts;
 
 {$R *.dfm}
 
