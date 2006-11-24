@@ -28,7 +28,6 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
       Height = 353
       ActivePage = tabMain
       Align = alClient
-      TabIndex = 0
       TabOrder = 0
       TabStop = False
       object tabMain: TTabSheet

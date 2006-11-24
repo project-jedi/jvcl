@@ -25,9 +25,6 @@ object FormStartup: TFormStartup
     Align = alClient
     ParentBackground = False
     TabOrder = 0
-    DesignSize = (
-      416
-      121)
     object Image: TImage
       Left = 1
       Top = 1
@@ -52,9 +49,6 @@ object FormStartup: TFormStartup
       Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvLowered
       TabOrder = 1
-      DesignSize = (
-        401
-        81)
       object LblComponents: TLabel
         Left = 8
         Top = 32

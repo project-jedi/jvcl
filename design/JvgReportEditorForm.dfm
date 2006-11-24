@@ -183,7 +183,6 @@ object JvgReportEditorForm: TJvgReportEditorForm
     Font.Style = []
     ParentFont = False
     TabHeight = 22
-    TabIndex = 0
     TabOrder = 0
     TabStop = False
     TabWidth = 18

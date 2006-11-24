@@ -17,9 +17,6 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   Position = poScreenCenter
   Scaled = False
   OnShow = FormShow
-  DesignSize = (
-    596
-    454)
   PixelsPerInch = 96
   TextHeight = 13
   object JvInspector1: TJvInspector
