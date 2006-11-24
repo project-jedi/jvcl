@@ -45,7 +45,6 @@ object frmOptions: TfrmOptions
     Height = 315
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'

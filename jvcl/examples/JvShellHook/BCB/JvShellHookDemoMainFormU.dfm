@@ -11,9 +11,6 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    537
-    255)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

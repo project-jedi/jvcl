@@ -51,9 +51,6 @@ object FormMain: TFormMain
     ShowRouteMap = True
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
-    DesignSize = (
-      730
-      499)
     object JvWizardPageChooseDirectories: TJvWizardInteriorPage
       Header.Height = 50
       Header.Title.Color = clNone

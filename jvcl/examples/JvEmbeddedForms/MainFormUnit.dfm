@@ -22,7 +22,6 @@ object MainForm: TMainForm
     Height = 427
     ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Example 1'

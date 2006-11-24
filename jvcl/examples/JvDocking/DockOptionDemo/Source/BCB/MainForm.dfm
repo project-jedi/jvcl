@@ -23,7 +23,6 @@ object frmMain: TfrmMain
     Height = 137
     ActivePage = TabSheet1
     Align = alTop
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Conjoin Style'

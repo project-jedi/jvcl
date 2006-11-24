@@ -62,7 +62,6 @@ object TransBtnFormMain: TTransBtnFormMain
     Height = 293
     ActivePage = TabSheet2
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 1
     TabOrder = 0
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
