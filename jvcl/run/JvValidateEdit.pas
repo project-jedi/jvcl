@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -136,6 +136,7 @@ type
     FOldFontChange: TNotifyEvent;
     FOnIsValid: TJvCustomIsValidEvent;
     FAllowEmpty: Boolean;
+    FEnforcingMinMaxValue: Boolean;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
@@ -1065,8 +1066,8 @@ begin
     (FHasMaxValue and (FMaxValue > 2000 + TwoDigitYearCenturyWindow))) and
     ((MaxLength = 0) or (MaxLength > 3)) then
     FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0), TwoDigitYearCenturyWindow));
-  if FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfHex, dfInteger,
-    dfOctal, dfPercent, dfScientific, dfYear] then
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfHex, dfInteger,
+    dfOctal, dfPercent, dfScientific, dfYear]) and not FEnforcingMinMaxValue then
   begin
     EnforceMaxValue;
     EnforceMinValue;
@@ -1330,7 +1331,14 @@ begin
   if FHasMaxValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, 
     dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
     (AsFloat > FMaxValue) then
-    SetAsFloat(FMaxValue);
+  begin
+    FEnforcingMinMaxValue := True;
+    try
+      SetAsFloat(FMaxValue);
+    finally
+      FEnforcingMinMaxValue := False;
+    end;
+  end;
 end;
 
 procedure TJvCustomValidateEdit.EnforceMinValue;
@@ -1339,7 +1347,14 @@ begin
   if FHasMinValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral,
     dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
     (AsFloat < FMinValue) then
-    SetAsFloat(FMinValue);
+  begin
+    FEnforcingMinMaxValue := True;
+    try
+      SetAsFloat(FMinValue);
+    finally
+      FEnforcingMinMaxValue := False;
+    end;
+  end;
 end;
 
 //=== { TJvValidateEditCriticalPoints } ======================================
