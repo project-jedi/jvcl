@@ -29,20 +29,20 @@ unit JvTranslateString;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
   JvComponentBase, JvResources;
 
 type
-  /// This component is for string-replacement All replacements are based on
-  /// delimiter-encapsulated words. The delimiters could be free defined. The default
+  /// This component is for string-replacement. All replacements are based on
+  /// delimiter-encapsulated words. The delimiters can be freely defined. The default
   /// is : "%"
   ///
   /// The following replacements are defined:
   /// APPL_NAME : Name of the application out of the File-Version-Information
-  /// COMPANY_NAME : Name of the softwaredeveloper company of the application out of the File-Version-Information
+  /// COMPANY_NAME : Name of the company of the application out of the File-Version-Information
   /// DATE : Current Date
   /// TIME : Current Time
   /// DATETIME : Current Date/Time
@@ -56,7 +56,7 @@ type
   /// SCREENSIZE : Size of the screen in format widthxheight
   /// DESKTOPSIZE : Size of the desktop in format widthxheight
   TProcessCommandEvent = procedure(Sender: TObject; const Command: string;
-      var CommandResult: string; var Changed: Boolean) of object;
+    var CommandResult: string; var Changed: Boolean) of object;
 
   TJvTranslateString = class(TJvComponent)
   private
@@ -80,13 +80,11 @@ type
     function GetVersionInfoFileVersion: string;
     function GetVersionInfoProductVersion: string;
     function GetVersionInfoCompanyName: string;
-    function ProcessCommand(const Command: string; var CommandResult: string):
-      Boolean;
+    function ProcessCommand(const Command: string; var CommandResult: string): Boolean;
     procedure SetDateTimeFormat(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    function TranslateString(InString: string; var Changed: Boolean): string;
-      overload;
+    function TranslateString(InString: string; var Changed: Boolean): string; overload;
     function TranslateString(InString: string): string; overload;
   published
     property DateFormat: string read FDateFormat write FDateFormat;
@@ -109,12 +107,14 @@ const
 
 implementation
 
-uses Sysutils,
-{$IFDEF HAS_UNIT_TYPES}
+uses
+  SysUtils,
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-{$ENDIF HAS_UNIT_TYPES}
-  ExtCtrls, ComCtrls, StdCtrls, JclFileUtils, Forms, dialogs,
-  JvJvclUtils;
+  {$ENDIF HAS_UNIT_TYPES}
+  ExtCtrls, ComCtrls, StdCtrls, Forms, Dialogs,
+  JclFileUtils,
+  JvJVCLUtils;
 
 const
   cAppNameMask = 'APPL_NAME';
@@ -300,8 +300,7 @@ begin
   end;
 end;
 
-function TJvTranslateString.ProcessCommand(const Command: string; var
-  CommandResult: string): Boolean;
+function TJvTranslateString.ProcessCommand(const Command: string; var CommandResult: string): Boolean;
 var
   UpperCommand: string;
 begin
@@ -314,50 +313,50 @@ begin
       CommandResult := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
   end
   else
-    if UpperCommand = cCompanyNameMask then
-    begin
-      CommandResult := GetVersionInfoCompanyName;
-      if CommandResult = '' then
-        CommandResult := DefCompanyName;
-    end
-    else
-      if UpperCommand = cFileVersionMask then
-        CommandResult := GetVersionInfoFileVersion
-      else
-        if UpperCommand = cProductVersionMask then
-          CommandResult := GetVersionInfoProductVersion
-        else
-          if UpperCommand = cDateMask then
-            DateTimeToString(CommandResult, DateFormat, Now)
-          else
-            if UpperCommand = cTimeMask then
-              DateTimeToString(CommandResult, TimeFormat, Now)
-            else
-              if UpperCommand = cDateTimeMask then
-                DateTimeToString(CommandResult, DateTimeFormat, Now)
-              else
-                if UpperCommand = cExeNameMask then
-                  CommandResult := Application.ExeName
-                else
-                  if UpperCommand = cFileNameMask then
-                    CommandResult := ExtractFileName(ChangeFileExt(Application.ExeName, ''))
-                  else
-                    if UpperCommand = cFullDirExeMask then
-                      CommandResult := ExtractFileDir(Application.ExeName)
-                    else
-                      if UpperCommand = cFormNameMask then
-                        CommandResult := GetFormName
-                      else
-                        if UpperCommand = cFormCaptionMask then
-                          CommandResult := GetFormCaption
-                        else
-                          if UpperCommand = cScreenSizeMask then
-                            CommandResult := Format('%dx%d', [Screen.Width, Screen.Height])
-                          else
-                            if UpperCommand = cDesktopSizeMask then
-                              CommandResult := Format('%dx%d', [Screen.DesktopWidth, Screen.DesktopHeight])
-                            else
-                              Result := False;
+  if UpperCommand = cCompanyNameMask then
+  begin
+    CommandResult := GetVersionInfoCompanyName;
+    if CommandResult = '' then
+      CommandResult := DefCompanyName;
+  end
+  else
+  if UpperCommand = cFileVersionMask then
+    CommandResult := GetVersionInfoFileVersion
+  else
+  if UpperCommand = cProductVersionMask then
+    CommandResult := GetVersionInfoProductVersion
+  else
+  if UpperCommand = cDateMask then
+    DateTimeToString(CommandResult, DateFormat, Now)
+  else
+  if UpperCommand = cTimeMask then
+    DateTimeToString(CommandResult, TimeFormat, Now)
+  else
+  if UpperCommand = cDateTimeMask then
+    DateTimeToString(CommandResult, DateTimeFormat, Now)
+  else
+  if UpperCommand = cExeNameMask then
+    CommandResult := Application.ExeName
+  else
+  if UpperCommand = cFileNameMask then
+    CommandResult := ExtractFileName(ChangeFileExt(Application.ExeName, ''))
+  else
+  if UpperCommand = cFullDirExeMask then
+    CommandResult := ExtractFileDir(Application.ExeName)
+  else
+  if UpperCommand = cFormNameMask then
+    CommandResult := GetFormName
+  else
+  if UpperCommand = cFormCaptionMask then
+    CommandResult := GetFormCaption
+  else
+  if UpperCommand = cScreenSizeMask then
+    CommandResult := Format('%dx%d', [Screen.Width, Screen.Height])
+  else
+  if UpperCommand = cDesktopSizeMask then
+    CommandResult := Format('%dx%d', [Screen.DesktopWidth, Screen.DesktopHeight])
+  else
+    Result := False;
   if Assigned(FOnProcessCommand) then
     FOnProcessCommand(Self, UpperCommand, CommandResult, Result);
 end;
@@ -369,80 +368,79 @@ end;
 
 function TJvTranslateString.TranslateString(InString: string): string;
 var
-  i, j: integer;
+  I, J: Integer;
   Command: string;
   CommandResult: string;
 begin
-  result := '';
+  Result := '';
   while InString <> '' do
   begin
-    i := pos(LeftDelimiter, InString);
-    if i = 0 then
+    I := Pos(LeftDelimiter, InString);
+    if I = 0 then
     begin
-      result := result + InString;
+      Result := Result + InString;
       InString := '';
     end
     else
     begin
-      result := result + copy(InString, 1, pred(i));
-      delete(InString, 1, i);
-      j := pos(RightDelimiter, InString);
-      if j > 0 then
+      Result := Result + Copy(InString, 1, I-1);
+      Delete(InString, 1, i);
+      J := Pos(RightDelimiter, InString);
+      if J > 0 then
       begin
-        Command := copy(InString, 1, pred(j));
+        Command := Copy(InString, 1, J-1);
         if ProcessCommand(Command, CommandResult) then
         begin
           Result := Result + CommandResult;
-          delete(InString, 1, j);
+          Delete(InString, 1, J);
         end
         else
         begin
-          result := result + copy(InString, 1, pred(j));
-          delete(InString, 1, pred(j));
+          Result := Result + Copy(InString, 1, J-1);
+          Delete(InString, 1, J-1);
         end;
       end
       else
       begin
-        result := result + LeftDelimiter + InString;
+        Result := Result + LeftDelimiter + InString;
         InString := '';
       end
     end;
   end;
 end;
 
-function TJvTranslateString.TranslateString(InString: string; var Changed:
-  Boolean): string;
+function TJvTranslateString.TranslateString(InString: string; var Changed: Boolean): string;
 var
-  i, j: integer;
+  I, J: Integer;
   Command: string;
   CommandResult: string;
 begin
-  result := '';
+  Result := '';
   Changed := False;
   while InString <> '' do
   begin
-    i := pos(LeftDelimiter, InString);
-    if i = 0 then
+    I := Pos(LeftDelimiter, InString);
+    if I = 0 then
     begin
-      result := result + InString;
+      Result := Result + InString;
       InString := '';
     end
     else
     begin
-      result := result + copy(InString, 1, pred(i));
-      delete(InString, 1, i);
-      j := pos(RightDelimiter, InString);
-      Command := copy(InString, 1, pred(j));
+      Result := Result + Copy(InString, 1, I-1);
+      Delete(InString, 1, I);
+      J := Pos(RightDelimiter, InString);
+      Command := Copy(InString, 1, J-1);
       if ProcessCommand(Command, CommandResult) then
       begin
         Result := Result + CommandResult;
-        delete(InString, 1, j);
+        Delete(InString, 1, J);
         Changed := True;
       end
       else
       begin
-        result := result + copy(InString, 1, pred(j));
-        delete(InString, 1, pred(j));
+        Result := Result + Copy(InString, 1, J-1);
+        Delete(InString, 1, J-1);
       end;
     end;
   end;
