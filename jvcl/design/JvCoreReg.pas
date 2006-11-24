@@ -39,9 +39,9 @@ procedure Register;
 implementation
 
 uses
-{$IFDEF RTL170_UP}
-  Windows, SysUtils, 
-{$ENDIF RTL170_UP}
+  {$IFDEF RTL170_UP}
+  Windows, SysUtils,
+  {$ENDIF RTL170_UP}
   Classes,
   Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
   {$IFDEF VisualCLX}
@@ -181,7 +181,7 @@ procedure RegisterAboutBox;
 var
   ProductImage: HBITMAP;
 begin
-  Supports(BorlandIDEServices,IOTAAboutBoxServices,AboutBoxServices);
+  Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
   Assert(Assigned(AboutBoxServices), RsENoAboutServices);
   ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JVCLSPLASH');
   AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,

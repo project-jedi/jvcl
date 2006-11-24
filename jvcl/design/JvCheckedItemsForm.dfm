@@ -1,8 +1,8 @@
 object JvCheckItemsEditor: TJvCheckItemsEditor
   Left = 285
   Top = 129
-  ClientWidth = 342
-  ClientHeight = 279
+  Width = 367
+  Height = 320
   BorderIcons = [biSystemMenu]
   Color = clBtnFace
   Constraints.MinHeight = 305
@@ -47,7 +47,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     Left = 6
     Top = 6
     Width = 246
-    Height = 259
+    Height = 275
     AllowGrayed = True
     Ctl3D = True
     DragMode = dmAutomatic
@@ -61,10 +61,10 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     OnKeyDown = CheckListKeyDown
   end
   object PanelButtons: TPanel
-    Left = 256
+    Left = 273
     Top = 0
     Width = 86
-    Height = 275
+    Height = 289
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
@@ -110,13 +110,13 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
       Top = 114
       Width = 75
       Height = 24
-      Caption = '&Clear all'
+      Caption = '&Clear All'
       TabOrder = 4
       OnClick = ClearBtnClick
     end
     object UpBtn: TButton
       Left = 3
-      Top = 149
+      Top = 157
       Width = 75
       Height = 24
       Caption = 'Move &up'
@@ -125,7 +125,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     end
     object DownBtn: TButton
       Left = 3
-      Top = 176
+      Top = 184
       Width = 75
       Height = 24
       Caption = 'Move do&wn'
@@ -134,7 +134,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     end
     object OkBtn: TButton
       Left = 3
-      Top = 213
+      Top = 229
       Width = 75
       Height = 24
       Caption = 'OK'
@@ -143,7 +143,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     end
     object CancelBtn: TButton
       Left = 3
-      Top = 240
+      Top = 256
       Width = 75
       Height = 24
       Cancel = True

@@ -38,7 +38,6 @@ type
   TJvBackgroundClientsEditor = class(TForm)
     OKBtn: TButton;
     CancelBtn: TButton;
-    HelpBtn: TButton;
     SrcList: TListBox;
     DstList: TListBox;
     SrcLabel: TLabel;
