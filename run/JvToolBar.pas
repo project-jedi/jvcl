@@ -85,7 +85,6 @@ const
 
 implementation
 
-
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -98,9 +97,7 @@ end;
 destructor TJvToolBar.Destroy;
 begin
   if (Menu <> nil) and (Menu is TJvMainMenu) then
-  begin
     TJvMainMenu(Menu).UnregisterChanges(FChangeLink);
-  end;
   FChangeLink.Free;
   inherited Destroy;
 end;
@@ -162,18 +159,14 @@ begin
     Exit;
 
   if Assigned(Menu) and (Menu is TJvMainMenu) then
-  begin
     // if the current menu is a TJvMainMenu, we must
     // unregister us from being told the changes
     TJvMainMenu(Menu).UnregisterChanges(FChangeLink);
-  end;
 
   if Value is TJvMainMenu then
-  begin
     // if the new menu is a TJvMainMenu then we register a link
     // with the menu to get informed when it has changed
     TJvMainMenu(Value).RegisterChanges(FChangeLink);
-  end;
 
   // and we set the inherited value, so that the inherited
   // methods can deal with the menu too, the most obvious
@@ -267,7 +260,7 @@ begin
   // we process the WM_NOTIFY message ourselves to be able to
   // display a dropdown JvMenu instead of a regular one.
   // However, we do that only if the menu is a TJvMainMenu and
-  // if the code in WM_NOTIFY is TBN_DROPDOW. Anything else
+  // if the code in WM_NOTIFY is TBN_DROPDOWN. Anything else
   // is given back to the inherited method.
   // The code is mostly inspired from the Delphi 6 VCL source code,
   // the major change being the creation of a TJvPopupMenu

@@ -169,13 +169,14 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Consts, SysUtils, TypInfo, JclSynch, JvStrings, JvResources;
+  Consts, SysUtils, TypInfo,
+  JclSynch,
+  JvStrings, JvResources;
 
 const
   cLastSaveTime = 'Last Save Time';
   cObject = 'Object';
   cItem = 'Item';
-
 
 //=== { TCombinedStrings } ===================================================
 
@@ -402,6 +403,10 @@ begin
 end;
 
 procedure TJvCustomPropertyStore.CloneClass(Src, Dest: TPersistent);
+var
+  Index: Integer;
+  SrcPropInfo: PPropInfo;
+  DestPropInfo: PPropInfo;
 
   function GetPropKind(PropInfo: PPropInfo): TTypeKind;
   begin
@@ -412,10 +417,6 @@ procedure TJvCustomPropertyStore.CloneClass(Src, Dest: TPersistent);
     {$ENDIF CLR}
   end;
 
-var
-  Index: Integer;
-  SrcPropInfo: PPropInfo;
-  DestPropInfo: PPropInfo;
 begin
   for Index := 0 to GetPropCount(Src) - 1 do
     if CompareText(GetPropName(Src, Index), 'Name') <> 0 then
@@ -507,6 +508,7 @@ begin
     begin
       PropName := GetPropName(Self, Index);
       VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
+      // (rom) very bad style. Better stacked if chain like the other ones.
       if IgnoreProperties.IndexOf(PropName) >= 0 then
         Continue;
       if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
@@ -543,6 +545,7 @@ begin
     for Index := 0 to GetPropCount(Self) - 1 do
     begin
       PropName := GetPropName(Self, Index);
+      // (rom) very bad style. Better stacked if chain like the other ones.
       if IgnoreProperties.IndexOf(PropName) >= 0 then
         Continue;
       if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
@@ -602,7 +605,7 @@ end;
 procedure TJvCustomPropertyStore.StoreProperties;
 var
   SaveProperties: Boolean;
-  JclMutex : TJclMutex;
+  JclMutex: TJclMutex;
 
   procedure ExecuteStoreProperties;
   begin
@@ -637,7 +640,8 @@ begin
 
   if SynchronizeStoreProperties then
   begin
-    JclMutex := TJclMutex.Create(nil, False, B64Encode(RsJvPropertyStoreMutexStorePropertiesProcedureName+AppStoragePath));
+    JclMutex := TJclMutex.Create(nil, False,
+      B64Encode(RsJvPropertyStoreMutexStorePropertiesProcedureName + AppStoragePath));
     try
       if JclMutex.WaitForever = wrSignaled then
       try
@@ -652,8 +656,7 @@ begin
     end;
   end
   else
-    ExecuteStoreProperties
-
+    ExecuteStoreProperties;
 end;
 
 procedure TJvCustomPropertyStore.LoadData;
@@ -837,8 +840,8 @@ begin
     Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]));
 end;
 
-procedure TJvCustomPropertyListStore.WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
-  const Index: Integer; const ItemName: string);
+procedure TJvCustomPropertyListStore.WriteSLOItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
   if Assigned(Objects[Index]) then
   begin

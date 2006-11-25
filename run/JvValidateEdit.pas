@@ -334,8 +334,7 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   JclStrings, JvJCLUtils, JvResources;
 
-function IsGreater(Value, MaxValue: Double;
-         MaxValueIncluded: Boolean): Boolean;
+function IsGreater(Value, MaxValue: Double; MaxValueIncluded: Boolean): Boolean;
 begin
   if MaxValueIncluded then
     Result := Value >= MaxValue
@@ -343,8 +342,7 @@ begin
     Result := Value > MaxValue;
 end;
 
-function IsLower(Value, MinValue: Double;
-         MinValueIncluded: Boolean): Boolean;
+function IsLower(Value, MinValue: Double; MinValueIncluded: Boolean): Boolean;
 begin
   if MinValueIncluded then
     Result := Value <= MinValue
@@ -421,7 +419,6 @@ begin
       RecordChanged;
   end;
 end;
-
 
 //=== { TJvCustomValidateEdit } ==============================================
 
@@ -562,11 +559,10 @@ begin
     EditText := FEditText;
 end;
 
-procedure TJvCustomValidateEdit.SetDisplayFormat(NewValue:
-  TJvValidateEditDisplayFormat);
+procedure TJvCustomValidateEdit.SetDisplayFormat(NewValue: TJvValidateEditDisplayFormat);
 const
-  ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  NUMBERS = '0123456789';
+  Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  Numbers = '0123456789';
 var
   OldFormat: TJvValidateEditDisplayFormat;
 begin
@@ -577,13 +573,13 @@ begin
     case FDisplayFormat of
       dfAlphabetic:
         begin
-          FCheckChars := ALPHABET;
+          FCheckChars := Alphabet;
           if FAutoAlignment then
             Alignment := taLeftJustify;
         end;
       dfAlphaNumeric:
         begin
-          FCheckChars := ALPHABET + NUMBERS;
+          FCheckChars := Alphabet + Numbers;
           if FAutoAlignment then
             Alignment := taLeftJustify;
         end;
@@ -605,7 +601,7 @@ begin
         end;
       dfCurrency:
         begin
-          FCheckChars := NUMBERS + DecimalSeparator;
+          FCheckChars := Numbers + DecimalSeparator;
           if FAutoAlignment then
             Alignment := taRightJustify;
           if not (csLoading in ComponentState) then
@@ -614,19 +610,19 @@ begin
         end;
       dfFloat, dfFloatGeneral, dfPercent:
         begin
-          FCheckChars := NUMBERS + DecimalSeparator;
+          FCheckChars := Numbers + DecimalSeparator;
           if FAutoAlignment then
             Alignment := taRightJustify;
         end;
       dfHex:
         begin
-          FCheckChars := NUMBERS + 'ABCDEFabcdef';
+          FCheckChars := Numbers + 'ABCDEFabcdef';
           if FAutoAlignment then
             Alignment := taRightJustify;
         end;
       dfInteger:
         begin
-          FCheckChars := NUMBERS;
+          FCheckChars := Numbers;
           if FAutoAlignment then
             Alignment := taRightJustify;
         end;
@@ -638,13 +634,13 @@ begin
         end;
       dfScientific:
         begin
-          FCheckChars := NUMBERS + 'Ee' + DecimalSeparator;
+          FCheckChars := Numbers + 'Ee' + DecimalSeparator;
           if FAutoAlignment then
             Alignment := taRightJustify;
         end;
       dfYear:
         begin
-          FCheckChars := NUMBERS;
+          FCheckChars := Numbers;
           if FAutoAlignment then
             Alignment := taRightJustify;
           MaxLength := 4;
@@ -949,24 +945,27 @@ begin
               ExpectedNegPos := 1;
               ExpectedNegChar := '(';
             end;
-          1, 5, 8, 9:   ExpectedNegPos := 1;
-          2:            ExpectedNegPos := 2;
-          3, 7, 10, 11: ExpectedNegPos := Length(S);
-          6:            ExpectedNegPos := Length(S)-1;
-          12:           ExpectedNegPos := 3;
-          13:           ExpectedNegPos := Length(S)-2;
+          1, 5, 8, 9:
+            ExpectedNegPos := 1;
+          2:
+            ExpectedNegPos := 2;
+          3, 7, 10, 11:
+            ExpectedNegPos := Length(S);
+          6:
+            ExpectedNegPos := Length(S)-1;
+          12:
+            ExpectedNegPos := 3;
+          13:
+            ExpectedNegPos := Length(S)-2;
         end;
         
         if (Key = '(') and (Posn = 1) and (NegCurrFormat in [0, 4, 14, 15]) then
-        begin
           Key := '-';
-        end;
-        
+
         Result := (Pos(Key, FCheckChars) > 0) or
           ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
           ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
           ((Key = '-') and (Posn = ExpectedNegPos) and ((Pos(ExpectedNegChar, S) = 0) or (SelLength > 0)));
-
       end;
     dfNonCheckChars:
       Result := Pos(Key, FCheckChars) = 0;
@@ -1085,7 +1084,7 @@ end;
 
 procedure TJvCustomValidateEdit.FocusKilled(NextWnd: THandle);
 var
-  DisplayedText : string;
+  DisplayedText: string;
 begin
   if not (csDestroying in ComponentState) then
   begin
@@ -1107,10 +1106,10 @@ begin
     Ps := 0;
     if TrimDecimals then
     begin
-      I := Pos('e',LowerCase(NewValue));
+      I := Pos('e', LowerCase(NewValue));
       if (DisplayFormat = dfScientific) and (I <> 0) then
       begin
-        Exponent := Copy(NewValue,I,Length(NewValue));
+        Exponent := Copy(NewValue, I, Length(NewValue));
         Dec(I);
       end else
       begin
@@ -1141,7 +1140,8 @@ begin
   // The number types need to be formatted
   if FAllowEmpty and (FEditText = '') then
     ChangeText('')
-  else if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+  else
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
     (AsFloat = 0) and FZeroEmpty then
     ChangeText('')
   else
@@ -1167,9 +1167,7 @@ begin
     // is directly shown correctly. (Mantis 3493)
     if (FCriticalPoints.CheckPoints <> cpNone) and
       (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
-    begin
       SetFontColor;
-    end;
   end;
 end;
 
@@ -1228,7 +1226,7 @@ end;
 
 procedure TJvCustomValidateEdit.Change;
 var
-  DisplayedText : string;
+  DisplayedText: string;
 begin
   // Update FEditText for User changes, so that the AsInteger, etc,
   // functions work while editing
@@ -1283,7 +1281,7 @@ begin
       Result := IsGreater(AsFloat, FCriticalPoints.MinValue, FCriticalPoints.MinValueIncluded);
     cpBoth:
       Result := IsLower(AsFloat, FCriticalPoints.MaxValue, FCriticalPoints.MaxValueIncluded) and
-                IsGreater(AsFloat, FCriticalPoints.MinValue, FCriticalPoints.MinValueIncluded);
+        IsGreater(AsFloat, FCriticalPoints.MinValue, FCriticalPoints.MinValueIncluded);
   end;
   if Assigned(FOnIsValid) then
     FOnIsValid(Self, Result);
@@ -1450,9 +1448,8 @@ begin
   Result := (FColorBelow <> FDefColorBelow);
 end;
 
-procedure TJvValidateEditCriticalPoints.SetDefaults(
-  ACheckPoints: TJvValidateEditCriticalPointsCheck; AColorAbove,
-  AColorBelow: TColor);
+procedure TJvValidateEditCriticalPoints.SetDefaults(ACheckPoints: TJvValidateEditCriticalPointsCheck;
+  AColorAbove, AColorBelow: TColor);
 begin
   FDefCheckPoints := ACheckPoints;
   FCheckPoints := ACheckPoints;

@@ -229,7 +229,7 @@ end;
 function TJvDBSpinEdit.ExecuteAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited ExecuteAction(Action) or
-            (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
+    (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
 end;
 
 function TJvDBSpinEdit.GetDataField: string; { Returns data field name. }
@@ -277,10 +277,8 @@ begin
   inherited Notification(AComponent, Operation);
 
   if Operation = opRemove then
-  begin
     if Assigned(FDataLink) and (AComponent = DataSource) then
-      DataSource := nil;    
-  end;
+      DataSource := nil;
 end;
 
 procedure TJvDBSpinEdit.ReadReadOnlyField(Reader: TReader);
@@ -351,7 +349,7 @@ end;
 function TJvDBSpinEdit.UpdateAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited UpdateAction(Action) or
-            (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
+    (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
 end;
 
 procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
