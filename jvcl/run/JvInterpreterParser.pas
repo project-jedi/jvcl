@@ -31,7 +31,6 @@ Upcoming JVCL 3.00
     - peter schraut added shl, shr and xor support
 }
 
-
 unit JvInterpreterParser;
 
 {$I jvcl.inc}
@@ -387,7 +386,7 @@ const
 // Mantis 3333 (ivan_ra): optimized version
 function PaTokenizeTag(const TokenStr: string): TTokenKind;
 var
-  Len,i: Integer;
+  Len, I: Integer;
   HVal: Integer;
 begin
   Result := P_UNKNOWN;
@@ -397,9 +396,10 @@ begin
   if (MIN_WORD_LENGTH <= Len) and (Len <= MAX_WORD_LENGTH) then
   begin
     HVal := Len;
-    for i:=1 to Len do begin
-      HVal := HVal + AssoIndices[(Byte(TokenStr[i]) - Byte('a')) and $1F];
-      if i=3 then
+    for I:=1 to Len do
+    begin
+      HVal := HVal + AssoIndices[(Byte(TokenStr[I]) - Byte('a')) and $1F];
+      if I = 3 then
         Break;
     end;
     HVal := HVal + AssoIndices[(Byte(TokenStr[Len]) - Byte('a')) and $1F];
@@ -408,10 +408,8 @@ begin
   end;
 
   if HVal <> -1 then
-  begin
     if Cmp(WordList[HVal].Token, TokenStr) then
       Result := WordList[HVal].TTyp;
-  end;
 end;
 
 const
