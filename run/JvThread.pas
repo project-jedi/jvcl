@@ -168,6 +168,7 @@ type
     FOnFinishAll: TNotifyEvent;
     FFreeOnTerminate: Boolean;
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
+    FPriority: TThreadPriority;
     FThreadDialog: TJvCustomThreadDialog;
     FThreadDialogForm: TJvCustomThreadDialogForm;
     procedure DoCreate;
@@ -195,6 +196,7 @@ type
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
     property LastThread: TJvBaseThread read GetLastThread;
+    property Terminated: Boolean read GetTerminated;
     property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
   published
     function OneThreadIsRunning: Boolean;
@@ -208,10 +210,11 @@ type
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
     procedure Terminate; // terminates all running threads
-    property Terminated: Boolean read GetTerminated;
     property Exclusive: Boolean read FExclusive write FExclusive;
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
+    property Priority: TThreadPriority read FPriority write FPriority default
+        tpNormal;
     property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
     property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent
       read FAfterCreateDialogForm write FAfterCreateDialogForm;
@@ -449,6 +452,7 @@ begin
   FExclusive := True;
   FFreeOnTerminate := True;
   FThreads := TThreadList.Create;
+  FPriority := tpNormal;
 end;
 
 destructor TJvThread.Destroy;
@@ -511,7 +515,8 @@ begin
     BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
     try
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
-      BaseThread.OnShowMessageDlgEvent := OnShowMessageDlgEvent; 
+      BaseThread.OnShowMessageDlgEvent := OnShowMessageDlgEvent;
+      BaseThread.Priority := Priority;
       BaseThread.OnTerminate := DoTerminate;
       FThreads.Add(BaseThread);
       DoCreate;
