@@ -1067,7 +1067,7 @@ begin
     ((MaxLength = 0) or (MaxLength > 3)) then
     FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0), TwoDigitYearCenturyWindow));
   if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfHex, dfInteger,
-    dfOctal, dfPercent, dfScientific, dfYear]) and not FEnforcingMinMaxValue then
+    dfOctal, dfPercent, dfScientific, dfYear]) then
   begin
     EnforceMaxValue;
     EnforceMinValue;
@@ -1330,7 +1330,7 @@ begin
   { Check the Value is within this range }
   if FHasMaxValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, 
     dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
-    (AsFloat > FMaxValue) then
+    (AsFloat > FMaxValue) and not FEnforcingMinMaxValue then
   begin
     FEnforcingMinMaxValue := True;
     try
@@ -1346,7 +1346,7 @@ begin
   { Check the Value is within this range }
   if FHasMinValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral,
     dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
-    (AsFloat < FMinValue) then
+    (AsFloat < FMinValue) and not FEnforcingMinMaxValue  then
   begin
     FEnforcingMinMaxValue := True;
     try
