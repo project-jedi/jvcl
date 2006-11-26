@@ -1639,8 +1639,8 @@ function TJvDBGrid.CanEditShow: Boolean;
 
     function IsReadOnlyField: Boolean;
     begin
-      Result := ReadOnly or Columns[SelectedIndex].ReadOnly or F.ReadOnly
-        or not F.DataSet.CanModify;
+      Result := ReadOnly or Columns[SelectedIndex].ReadOnly or F.ReadOnly or
+        not F.DataSet.CanModify;
     end;
 
   begin
@@ -1723,8 +1723,8 @@ function TJvDBGrid.CanEditShow: Boolean;
 
 begin
   Result := False;
-  if (inherited CanEditShow) and Assigned(SelectedField)
-    and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count) then
+  if (inherited CanEditShow) and Assigned(SelectedField) and
+    (SelectedIndex >= 0) and (SelectedIndex < Columns.Count) then
   begin
     FBooleanFieldToEdit := nil;
     Result := UseDefaultEditor;
@@ -2293,8 +2293,8 @@ end;
 
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 begin
-  if Assigned(SelectedField) and EditWithBoolBox(SelectedField)
-    and (Char(Msg.CharCode) in [Backspace, #32..#255]) then
+  if Assigned(SelectedField) and EditWithBoolBox(SelectedField) and
+    (Char(Msg.CharCode) in [Backspace, #32..#255]) then
   begin
     if not DoKeyPress(Msg) then
       case Char(Msg.CharCode) of
@@ -2367,8 +2367,8 @@ begin
     // Goal: Allow to go directly into the InplaceEditor when one types the first
     // characters of a word found in the list.
     // Remark: InplaceEditor is protected in TCustomGrid, published in TJvDBGrid.
-    if DataSource.DataSet.CanModify and not (ReadOnly
-      or Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly) then
+    if DataSource.DataSet.CanModify and not (ReadOnly or
+      Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly) then
     with Columns[SelectedIndex].Field do
       if (FieldKind = fkLookup) and (Key in CharList) then
       begin
@@ -2935,12 +2935,8 @@ begin
     end
     else
     begin
-      if (Field is TStringField) or
-         (FShowMemos and ((Field is TMemoField)
-          {$IFDEF COMPILER10_UP}
-          or (Field is TWideMemoField)
-          {$ENDIF COMPILER10_UP}
-          )) then
+      if (Field is TStringField) or (FShowMemos and ((Field is TMemoField)
+        {$IFDEF COMPILER10_UP} or (Field is TWideMemoField) {$ENDIF})) then
       begin
         if Assigned(Field.OnGetText) then
           MemoText := Field.DisplayText

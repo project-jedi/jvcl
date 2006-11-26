@@ -441,9 +441,11 @@ begin
         FNotifyArray[I] := FindFirstChangeNotification(
           {$IFDEF CLR} S {$ELSE} PChar(S) {$ENDIF},
           BOOL(FCollection[I].IncludeSubTrees), Flags);
-        if FNotifyArray[I] = INVALID_HANDLE_VALUE then begin
+        if FNotifyArray[I] = INVALID_HANDLE_VALUE then
+        begin
           // Clean up before raising the exception
-          for J := 0 to I - 1 do begin
+          for J := 0 to I - 1 do
+          begin
             FindCloseChangeNotification(FNotifyArray[J]);
             FNotifyArray[J] := INVALID_HANDLE_VALUE;
           end;

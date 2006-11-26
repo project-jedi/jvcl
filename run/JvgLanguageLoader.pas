@@ -248,7 +248,8 @@ function TJvgLanguageLoader.GetFormSection: string;
 begin
   if FFormSection <> '' then
     Result := FFormSection
-  else if Owner <> nil then
+  else
+  if Owner <> nil then
     Result := Owner.Name
   else
     Result := 'Translation';
@@ -258,7 +259,8 @@ function TJvgLanguageLoader.GetStringsSection: string;
 begin
   if FStringsSection <> '' then
     Result := FStringsSection
-  else if Owner <> nil then
+  else
+  if Owner <> nil then
     Result := Owner.Name
   else
     Result := 'Translation.Strings';

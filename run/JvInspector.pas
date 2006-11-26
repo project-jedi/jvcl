@@ -6865,8 +6865,8 @@ begin
     if (iifValueList in Flags) and
        (PtInRect(Rects[iprValueArea], Point(X, Y))) then
       SelectValue(1)
-    else if not Editing and Self.InheritsFrom(TJvInspectorClassItem)
-        and Assigned(Inspector.FOnItemDoubleClicked) then
+    else
+    if not Editing and Self.InheritsFrom(TJvInspectorClassItem) and Assigned(Inspector.FOnItemDoubleClicked) then
       Inspector.FOnItemDoubleClicked(Inspector, Self);
 end;
 

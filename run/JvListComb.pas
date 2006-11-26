@@ -529,17 +529,17 @@ end;
 destructor TJvImageItem.Destroy;
 var
   S: TStrings;
-  i: Integer;
+  I: Integer;
 begin
   S := GetOwnerStrings;
   FOwner := nil; // indicate that the item is in the destructor
   // PRY 2002.06.04
   //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
-  if (S <> nil) and (GetWinControl <> nil)  and not (csDestroying in GetWinControl.ComponentState) then
+  if (S <> nil) and (GetWinControl <> nil) and not (csDestroying in GetWinControl.ComponentState) then
   begin
     S.Delete(Index);
-    for i := 0 to S.Count - 1 do
-      TJvImageItem(S.Objects[i]).Index := i;
+    for I := 0 to S.Count - 1 do
+      TJvImageItem(S.Objects[I]).Index := I;
   end;
   FFont.Free;
   FGlyph.Free;

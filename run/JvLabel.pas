@@ -1339,7 +1339,7 @@ begin
       {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
-      (FHotTrack  and not (FDragging or OtherDragging)));
+      (FHotTrack and not (FDragging or OtherDragging)));
 
     inherited MouseEnter(Control); // set MouseOver
 
@@ -1374,7 +1374,7 @@ begin
       {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
-      (FHotTrack  and (FDragging or not OtherDragging)));
+      (FHotTrack and (FDragging or not OtherDragging)));
 
     inherited MouseLeave(Control); // set MouseOver
 

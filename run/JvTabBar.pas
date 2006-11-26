@@ -1597,7 +1597,8 @@ begin
       R := Tab.DisplayRect;
       if (R.Right > FBarWidth) and not AtLeft then
         Inc(FLeftIndex)
-      else if R.Left < 0 then
+      else
+      if R.Left < 0 then
       begin
         Dec(FLeftIndex);
         AtLeft := True; // prevent an endless loop

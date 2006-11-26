@@ -2700,15 +2700,16 @@ end;
 
 procedure TJvInterpreterVarList.Assign(source: TJvInterpreterVarList);
 var
-  i:integer;
-  SrcVar:TJvInterpreterVar;
+  I: Integer;
+  SrcVar: TJvInterpreterVar;
 begin
   Clear;
-  for i:=0 to Source.Count-1 do begin
-    SrcVar:=TJvInterpreterVar(Source[i]);
+  for I := 0 to Source.Count-1 do
+  begin
+    SrcVar := TJvInterpreterVar(Source[I]);
     with SrcVar do
-      AddVar(UnitName,Identifier,Typ,VTyp,Value,nil);  // DataType not used
-      //TJvInterpreterSimpleDataType.Create(varVariant)
+      AddVar(UnitName, Identifier, Typ, VTyp, Value, nil);  // DataType not used
+      //TJvInterpreterSimpleDataType.Create(varVariant);
   end;
 end;
 
@@ -2726,7 +2727,7 @@ end;
 
 function TJvInterpreterFunctionDesc.GetDefine: string;
 var
-  Fun, S, t: string;
+  Fun, S, T: string;
   Param, Ret: string;
   I: Integer;
 begin
@@ -2734,7 +2735,7 @@ begin
   if FIdentifier = '' then
     Exit;
 
-  t := '%s %s(%s)%s;';
+  T := '%s %s(%s)%s;';
 
   if FResTyp = varEmpty then
   begin
@@ -2761,7 +2762,7 @@ begin
     if I <> ParamCount - 1 then
       Param := Param + '; ';
   end;
-  Result := Format(t, [Fun, FIdentifier, Param, Ret]);
+  Result := Format(T, [Fun, FIdentifier, Param, Ret]);
 end;
 
 function TJvInterpreterFunctionDesc.GetParamName(Index: Integer): string;
@@ -4235,7 +4236,8 @@ begin
     begin
       {$IFDEF JvInterpreter_OLEAUTO}
       Result := DispatchCall(Identifier, Value, Args, True);
-      if Result then begin
+      if Result then
+      begin
         Args.ReturnIndexed := True;
         Exit;
       end;
@@ -6429,7 +6431,7 @@ var
   MyArgs: TJvInterpreterArgs;
   Variable: Variant;
   Method: TMethod;
-  t: TObject;
+  T: TObject;
   Event: TJvInterpreterEvent;
 begin
   { may be event assignment }
@@ -6468,9 +6470,9 @@ begin
               if Method.Data <> nil then
               begin
                 FEventList.Remove(Method.Data);
-                t := Method.Data;
-                if t is TJvInterpreterEvent then
-                  t.Free;
+                T := Method.Data;
+                if T is TJvInterpreterEvent then
+                  T.Free;
               end;
 
               Method.Code := nil;
@@ -7709,7 +7711,8 @@ begin
     JvInterpreterSrcClass.UnitName := FCurUnitName;
     JvInterpreterSrcClass.Identifier := Identifier;
     NextToken;
-    if TTyp=ttIdentifier then begin // First fields can follow class declaration
+    if TTyp=ttIdentifier then
+    begin // First fields can follow class declaration
       Back;
       InterpretVar(TJvInterpreterClass(JvInterpreterSrcClass).ClassFields.AddVar);
       NextToken;
@@ -7738,7 +7741,7 @@ begin
           end;
         else
           ErrorExpected(LoadStr2(irDeclaration));
-      end; { case }
+      end;
       NextToken;
     end;
     NextToken;
