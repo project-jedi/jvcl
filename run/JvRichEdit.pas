@@ -2800,7 +2800,7 @@ begin
   FState := nil;
   if RichEditVersion < 2 then
   begin
-    { (rb) This code is probably unneccessairy; it only assigns Font to
+    { (rb) This code is probably unnecessary; it only assigns Font to
       FDefAttributes, see WM_SETFONT handler; but that is also done in
       TWinControl.CreateWnd }
     SavedModified := Modified;
@@ -7494,6 +7494,19 @@ end;
 var
   GLibHandle: THandle = 0;
 
+{$IFDEF COMPILER5}
+{ copied from JclFileUtils.pas }
+function GetModulePath(const Module: HMODULE): string;
+var
+  L: Integer;
+begin
+  L := MAX_PATH + 1;
+  SetLength(Result, L);
+  L := Windows.GetModuleFileName(Module, Pointer(Result), L);
+  SetLength(Result, L);
+end;
+{$ENDIF COMPILER5}
+
 procedure InitRichEditDll;
 var
   OldError: Longint;
@@ -7519,7 +7532,11 @@ begin
     begin
       RichEditVersion := 2;
 
+      {$IFDEF COMPILER5}
+      FileName := GetModulePath(GLibHandle);
+      {$ELSE}
       FileName := GetModuleName(GLibHandle);
+      {$ENDIF COMPILER5}
       InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
       if InfoSize <> 0 then
       begin
