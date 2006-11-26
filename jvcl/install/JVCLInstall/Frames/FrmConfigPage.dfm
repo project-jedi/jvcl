@@ -379,6 +379,7 @@ object FrameConfigPage: TFrameConfigPage
       ParentShowHint = False
       ShowHint = True
       TabOrder = 7
+      OnClick = CheckBoxDeveloperInstallClick
     end
   end
   object CheckBoxVerbose: TCheckBox

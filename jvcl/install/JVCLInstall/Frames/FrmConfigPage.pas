@@ -451,7 +451,9 @@ begin
     CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
     CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
     CheckBoxLinkMapFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
-    CheckBoxDeleteMapFiles.Enabled := CheckBoxLinkMapFiles.Checked and CheckBoxGenerateMapFiles.Checked;
+    CheckBoxCreateJdbgFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
+    CheckBoxDeleteMapFiles.Enabled := (CheckBoxLinkMapFiles.Checked or CheckBoxCreateJdbgFiles.Checked)
+      and CheckBoxGenerateMapFiles.Checked;
     FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
     FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
     FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.SupportsPersonalities([persBCB]);
