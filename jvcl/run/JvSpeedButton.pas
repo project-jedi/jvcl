@@ -937,17 +937,17 @@ begin
       {$ENDIF JVCLThemesEnabled}
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
-    NeedRepaint :=  NeedRepaint
-{$IFDEF VCL}
-{$IFDEF COMPILER6_UP}
-     and not Mouse.IsDragging
-{$ELSE}
-     and not KeyPressed(VK_LBUTTON)
-{$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-     and not DragActivated
-{$ENDIF VisualCLX}
+    NeedRepaint := NeedRepaint
+      {$IFDEF VCL}
+      {$IFDEF COMPILER6_UP}
+      and not Mouse.IsDragging
+      {$ELSE}
+      and not KeyPressed(VK_LBUTTON)
+      {$ENDIF COMPILER6_UP}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      and not DragActivated
+      {$ENDIF VisualCLX}
       ;
 
     inherited MouseEnter(Control); // set MouseOver
@@ -970,21 +970,21 @@ begin
       {$ENDIF JVCLThemesEnabled}
       HotTrack or (FFlat and Enabled and not FDragging and (GetCapture = NullHandle));
 
-    NeedRepaint :=  NeedRepaint
-{$IFDEF VCL}
-{$IFDEF COMPILER6_UP}
-     and not Mouse.IsDragging
-{$ELSE}
-     and not KeyPressed(VK_LBUTTON)
-{$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-     and not DragActivated
-{$ENDIF VisualCLX}
+    NeedRepaint := NeedRepaint
+      {$IFDEF VCL}
+      {$IFDEF COMPILER6_UP}
+      and not Mouse.IsDragging
+      {$ELSE}
+      and not KeyPressed(VK_LBUTTON)
+      {$ENDIF COMPILER6_UP}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      and not DragActivated
+      {$ENDIF VisualCLX}
       ;
 
     inherited MouseLeave(Control); // set MouseOver
-    if NeedRepaint   then
+    if NeedRepaint then
       Invalidate;
   end;
 end;

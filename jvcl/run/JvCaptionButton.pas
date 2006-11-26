@@ -906,7 +906,8 @@ procedure TBitmapAdapter.Assign(Source: TPersistent);
 begin
   if FBitmap is TBitmap then
     (FBitmap as TBitmap).Assign(Source)
-  else if FBitmap is TAlphaBitmap then
+  else
+  if FBitmap is TAlphaBitmap then
     (FBitmap as TAlphaBitmap).Assign(Source);
 end;
 

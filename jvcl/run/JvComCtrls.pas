@@ -3026,7 +3026,8 @@ begin
         begin
           SelectItem(Node, IsNodeSelected(Node));
         end
-        else if Assigned(Node) and (ssShift in KeysToShiftState(Keys)) then
+        else
+        if Assigned(Node) and (ssShift in KeysToShiftState(Keys)) then
         begin
           FirstNodeIndex := 0;
           

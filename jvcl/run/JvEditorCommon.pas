@@ -4663,8 +4663,9 @@ begin
         BracketHighlighting.FStart := BracketHighlighting.FStop;
         BracketHighlighting.FStop := R;
       end
-      else if (BracketHighlighting.FStart.Top = BracketHighlighting.FStop.Top) and
-              (BracketHighlighting.FStart.Left > BracketHighlighting.FStop.Left) then
+      else
+      if (BracketHighlighting.FStart.Top = BracketHighlighting.FStop.Top) and
+        (BracketHighlighting.FStart.Left > BracketHighlighting.FStop.Left) then
       begin
         R := BracketHighlighting.FStart;
         BracketHighlighting.FStart := BracketHighlighting.FStop;

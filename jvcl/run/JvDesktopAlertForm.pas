@@ -367,8 +367,8 @@ begin
   begin
     if Assigned(FOnMouseLeave) then
       FOnMouseLeave(Self);
-    if not TJvDesktopAlert(Owner).StyleHandler.Active
-        and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+    if not TJvDesktopAlert(Owner).StyleHandler.Active and
+      (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
       TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
     FMouseInControl := False;
   end;
@@ -759,8 +759,8 @@ begin
 //-- Unfortunately, this re-introduces the bug of momentarily taking the focus
 //--   away from the active form within this App, when it has the focus.
 //--   A further side-effect is to set Application.Active := True
-  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE
-    or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOREDRAW or SWP_NOSENDCHANGING);
+  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or
+    SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOREDRAW or SWP_NOSENDCHANGING);
   DoShow;
   Exclude(FFormState, fsShowing);
   Include(FFormState, fsVisible);

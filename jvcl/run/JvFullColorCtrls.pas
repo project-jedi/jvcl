@@ -894,7 +894,7 @@ begin
   begin
     OldColor := FFullColor;
     NewColorID := ColorSpaceManager.GetColorSpaceID(Value);
-    if (NewColorID = csDEF) then
+    if NewColorID = csDEF then
       raise EJvFullColorError.CreateFmt(Rs_EUnsupportedColorSpace, [NewColorID]);
     OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
     FFullColor := Value;
@@ -977,7 +977,7 @@ end;
 procedure TJvFullColorComponent.SetWantDrawBuffer(Value: Boolean);
 begin
   FWantDrawBuffer := Value;
-  if (Value) and (Width <> 0) and (Height <> 0) then
+  if Value and (Width <> 0) and (Height <> 0) then
     Invalidate;
 end;
 
@@ -1378,7 +1378,7 @@ var
   AxisX, AxisY: TJvAxisIndex;
   PosX, PosY: Integer;
 begin
-  if (ssLeft in Shift) then
+  if ssLeft in Shift then
   begin
     AxisX := GetIndexAxisX(AxisConfig);
     AxisY := GetIndexAxisY(AxisConfig);
@@ -1900,13 +1900,13 @@ begin
 
     CenterX := Width div 2;
     CenterY := Height div 2;
-    if (ARect.Left > CenterX) then
+    if ARect.Left > CenterX then
       ARect.Left := CenterX;
-    if (ARect.Top > CenterY) then
+    if ARect.Top > CenterY then
       ARect.Top := CenterY;
-    if (ARect.Right < CenterX) then
+    if ARect.Right < CenterX then
       ARect.Right := CenterX;
-    if (ARect.Bottom < CenterY) then
+    if ARect.Bottom < CenterY then
       ARect.Bottom := CenterY;
 
     ARect.Left := ARect.Left - CrossStyle.Width - CrossSize;
@@ -2360,8 +2360,8 @@ var
   TempColor: TJvFullColor;
   GraphicRange: Integer;
 begin
-  if   (FCreating) or (Width = 0) or (Height = 0) or (FBuffer.Width = 0)
-    or (FBuffer.Height = 0) then
+  if (FCreating) or (Width = 0) or (Height = 0) or
+    (FBuffer.Width = 0) or (FBuffer.Height = 0) then
     Exit;
 
   AxisX := GetIndexAxisX(AxisConfig);
@@ -2380,7 +2380,7 @@ begin
 
     with FBuffer.Canvas do
     begin
-      if (Orientation = trHorizontal) then
+      if Orientation = trHorizontal then
         GraphicRange := FBuffer.Width - 1
       else
         GraphicRange := FBuffer.Height - 1;
@@ -2421,7 +2421,7 @@ begin
   begin
     MaxAxis := AxisMax[AxisZ];
     MinAxis := AxisMin[AxisZ];
-    if (Orientation = trHorizontal) then
+    if Orientation = trHorizontal then
       GraphicRange := FBuffer.Width - 1
     else
       GraphicRange := FBuffer.Height - 1;
@@ -2598,15 +2598,15 @@ var
   GraphicRange: Integer;
   Pos: Integer;
 begin
-  if   (not (ssLeft in Shift)) or (FBuffer.Width = 0) or (FBuffer.Height = 0)
-    or (Width = 0) or (Height = 0) then
+  if (not (ssLeft in Shift)) or (FBuffer.Width = 0) or (FBuffer.Height = 0) or
+   (Width = 0) or (Height = 0) then
     Exit;
-  if (Orientation = trHorizontal) then
+  if Orientation = trHorizontal then
     Pos := X - ArrowWidth
   else
     Pos := Y - ArrowWidth;
 
-  if (Orientation = trHorizontal) then
+  if Orientation = trHorizontal then
     GraphicRange := FBuffer.Width - 1
   else
     GraphicRange := FBuffer.Height - 1;
@@ -3165,9 +3165,10 @@ begin
       Add(FormattedItem);
     end;
   end;
-  if (OldItemIndex > -1) then
+  if OldItemIndex > -1 then
     ItemIndex := OldItemIndex
-  else ItemIndex := 0;
+  else
+    ItemIndex := 0;
 end;
 
 procedure TJvFullColorAxisCombo.SetColorID(const Value: TJvFullColorSpaceID);

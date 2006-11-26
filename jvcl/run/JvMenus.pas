@@ -2160,7 +2160,8 @@ function TJvCustomMenuItemPainter.GetDisabledImages: TCustomImageList;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.DisabledImages
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.DisabledImages
   else
     Result := nil;
@@ -2170,7 +2171,8 @@ function TJvCustomMenuItemPainter.GetHotImages: TCustomImageList;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.HotImages
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.HotImages
   else
     Result := nil;
@@ -2189,7 +2191,8 @@ begin
   else
   if Assigned(FMainMenu) then
     Result := FMainMenu.Images
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.Images
   else
     Result := nil;
@@ -2199,7 +2202,8 @@ function TJvCustomMenuItemPainter.GetShowCheckMarks: Boolean;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.ShowCheckMarks
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.ShowCheckMarks
   else
     Result := False;
@@ -2281,7 +2285,8 @@ begin
   Graphic := nil;
   if Assigned(FMainMenu) then
     FMainMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, Graphic, FNumGlyphs)
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     FPopupMenu.GetItemParams(FItem, FState, Canvas.Font, BackColor, Graphic, FNumGlyphs);
   if Assigned(Graphic) then
     FGlyph.Assign(Graphic);
@@ -2315,7 +2320,8 @@ begin
 
   if Assigned(FMainMenu) then
     FMainMenu.GetImageIndex(FItem, FState, FImageIndex)
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     FPopupMenu.GetImageIndex(FItem, FState, FImageIndex);
 end;
 
@@ -2774,7 +2780,8 @@ end;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.ShadowColor
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.ShadowColor;
 end;}
 
@@ -2863,7 +2870,8 @@ function TJvCustomMenuItemPainter.GetTextMargin: Integer;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.TextMargin
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.TextMargin
   else
     Result := 0;
@@ -2883,7 +2891,8 @@ function TJvCustomMenuItemPainter.GetTextVAlignment: TJvVerticalAlignment;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.TextVAlignment
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.TextVAlignment
   else
     Result := vaMiddle;
@@ -2896,7 +2905,8 @@ begin
 
   if Assigned(FMainMenu) then
     FMainMenu.Rebuild
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     FPopupMenu.Rebuild;
 end;
 
@@ -2908,7 +2918,8 @@ begin
     FImageMargin.Assign(FMainMenu.ImageMargin);
     FImageSize.Assign(FMainMenu.ImageSize);
   end
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
   begin
     FOnDrawItem := FPopupMenu.OnDrawItem;
     FImageMargin.Assign(FPopupMenu.ImageMargin);
@@ -2969,7 +2980,8 @@ function TJvCustomMenuItemPainter.GetMenu: TMenu;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu
   else
     Result := nil;
@@ -3763,7 +3775,8 @@ begin
     if Assigned(FMainMenu.OnMeasureItem) then
       FMainMenu.OnMeasureItem(FMainMenu, Item, Width, Height);
   end
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
   begin
     if Assigned(FPopupMenu.OnMeasureItem) then
       FPopupMenu.OnMeasureItem(FPopupMenu, Item, Width, Height);
@@ -3778,7 +3791,8 @@ begin
     if Assigned(FMainMenu.OnDrawItem) then
       FMainMenu.OnDrawItem(FMainMenu, Item, ItemRect, State);
   end
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
   begin
     if Assigned(FPopupMenu.OnDrawItem) then
       FPopupMenu.OnDrawItem(FPopupMenu, Item, ItemRect, State);

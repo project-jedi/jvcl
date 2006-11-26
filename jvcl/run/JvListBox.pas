@@ -1521,10 +1521,7 @@ var
   EmptyChr: Char;
 begin
   if HandleAllocated and IsProviderSelected
-     {$IFNDEF CLR}
-     and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL)
-     {$ENDIF !CLR}
-     then
+    {$IFNDEF CLR} and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) {$ENDIF} then
   begin
     Cnt := VL.Count - SendMessage(Handle, LB_GETCOUNT, 0, 0);
     EmptyChr := #0;

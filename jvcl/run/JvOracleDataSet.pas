@@ -25,7 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvOracleDataset;
+unit JvOracleDataSet;
 
 {$I jvcl.inc}
 
@@ -35,40 +35,31 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
-  DB,
+  SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls, DB,
   OracleData,
-  JvThread, JvThreadDialog, JvDynControlEngine, 
-  JvBaseDBThreadedDataset;
+  JvThread, JvThreadDialog, JvDynControlEngine, JvBaseDBThreadedDataSet;
 
 type
-
-  TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions = class(
-      TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions)
+  TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions =
+    class(TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions)
   public
     constructor Create; override;
   published
     property All;
     property Cancel;
     property Pause;
-  End;
+  end;
 
-  TJvDoaThreadedDatasetEnhancedOptions = class(
-      TJvBaseThreadedDatasetEnhancedOptions)
+  TJvDoaThreadedDatasetEnhancedOptions = class(TJvBaseThreadedDatasetEnhancedOptions)
   private
-    function GetAllowedContinueRecordFetchOptions:
-        TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions;
-    procedure SetAllowedContinueRecordFetchOptions(const Value:
-        TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions);
+    function GetAllowedContinueRecordFetchOptions: TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions;
+    procedure SetAllowedContinueRecordFetchOptions(const Value: TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions);
   protected
-    function CreateAllowedContinueRecordFetchOptions:
-        TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions; override;
+    function CreateAllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions; override;
   published
-    property AllowedContinueRecordFetchOptions:
-        TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions read
-        GetAllowedContinueRecordFetchOptions write
-        SetAllowedContinueRecordFetchOptions;
-  End;
+    property AllowedContinueRecordFetchOptions: TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions read
+      GetAllowedContinueRecordFetchOptions write SetAllowedContinueRecordFetchOptions;
+  end;
 
   TJvOracleDatasetThreadHandler = class(TJvBaseDatasetThreadHandler)
   private
@@ -77,9 +68,8 @@ type
   protected
     function CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions; override;
   published
-    property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read
-        GetEnhancedOptions write SetEnhancedOptions;
-  End;
+    property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
+  end;
 
   TJvOracleDataset = class(TOracleDataset, IJvThreadedDatasetInterface)
     procedure BreakExecution;
@@ -87,10 +77,10 @@ type
     procedure DoInheritedAfterRefresh;
     procedure DoInheritedBeforeOpen;
     procedure DoInheritedBeforeRefresh;
-    procedure doInheritedInternalLast;
-    procedure doInheritedInternalRefresh;
-    procedure doInheritedSetActive(Active: Boolean);
-    procedure doInternalOpen;
+    procedure DoInheritedInternalLast;
+    procedure DoInheritedInternalRefresh;
+    procedure DoInheritedSetActive(Active: Boolean);
+    procedure DoInternalOpen;
     function GetDatasetFetchAllRecords: Boolean;
     function IsThreadAllowed: Boolean;
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
@@ -115,8 +105,8 @@ type
     procedure DoBeforeRefresh; override;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
-    procedure ReplaceAfterFetchRecord(Sender: TOracleDataSet; FilterAccept:
-        Boolean; var Action: TAfterFetchRecordAction);
+    procedure ReplaceAfterFetchRecord(Sender: TOracleDataSet; FilterAccept: Boolean;
+      var Action: TAfterFetchRecordAction);
     procedure SetActive(Value: Boolean); override;
   public
     constructor Create(AOwner : TComponent); override;
@@ -126,18 +116,14 @@ type
     function ErrorMessage: string;
     function ThreadIsActive: Boolean;
   published
-    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
-        GetBeforeThreadExecution write SetBeforeThreadExecution;
-    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions
-        write SetDialogOptions;
-    property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read
-        GetEnhancedOptions write SetEnhancedOptions;
-    property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions
-        write SetThreadOptions;
-    property AfterFetchRecord: TAfterFetchRecordEvent read FAfterFetchRecord write
-        FAfterFetchRecord;
-    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
-        GetAfterThreadExecution write SetAfterThreadExecution;
+    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read GetBeforeThreadExecution write
+      SetBeforeThreadExecution;
+    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
+    property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
+    property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
+    property AfterFetchRecord: TAfterFetchRecordEvent read FAfterFetchRecord write FAfterFetchRecord;
+    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read GetAfterThreadExecution write
+      SetAfterThreadExecution;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -152,11 +138,11 @@ const
 
 implementation
 
-constructor TJvOracleDataset.Create(AOwner : TComponent);
+constructor TJvOracleDataset.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
+  inherited Create(AOwner);
   FThreadHandler := TJvOracleDatasetThreadHandler.Create(Self, Self);
-  Inherited AfterFetchRecord := ReplaceAfterFetchRecord;
+  inherited AfterFetchRecord := ReplaceAfterFetchRecord;
 end;
 
 destructor TJvOracleDataset.Destroy;
@@ -228,40 +214,40 @@ end;
 
 procedure TJvOracleDataset.DoInheritedAfterOpen;
 begin
-  Inherited DoAfterOpen;
+  inherited DoAfterOpen;
 end;
 
 procedure TJvOracleDataset.DoInheritedAfterRefresh;
 begin
-  Inherited DoAfterRefresh;
+  inherited DoAfterRefresh;
 end;
 
 procedure TJvOracleDataset.DoInheritedBeforeOpen;
 begin
-  Inherited DoBeforeOpen;
+  inherited DoBeforeOpen;
 end;
 
 procedure TJvOracleDataset.DoInheritedBeforeRefresh;
 begin
-  Inherited DoBeforeRefresh;
+  inherited DoBeforeRefresh;
 end;
 
-procedure TJvOracleDataset.doInheritedInternalLast;
+procedure TJvOracleDataset.DoInheritedInternalLast;
 begin
-  Inherited InternalLast;
+  inherited InternalLast;
 end;
 
-procedure TJvOracleDataset.doInheritedInternalRefresh;
+procedure TJvOracleDataset.DoInheritedInternalRefresh;
 begin
-  Inherited InternalRefresh;
+  inherited InternalRefresh;
 end;
 
-procedure TJvOracleDataset.doInheritedSetActive(Active: Boolean);
+procedure TJvOracleDataset.DoInheritedSetActive(Active: Boolean);
 begin
-  Inherited SetActive(Active);
+  inherited SetActive(Active);
 end;
 
-procedure TJvOracleDataset.doInternalOpen;
+procedure TJvOracleDataset.DoInternalOpen;
 begin
   InternalOpen;
 end;
@@ -274,8 +260,7 @@ begin
     Result := '';
 end;
 
-function TJvOracleDataset.GetBeforeThreadExecution:
-    TJvThreadedDatasetThreadEvent;
+function TJvOracleDataset.GetBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
 begin
   if Assigned(ThreadHandler) then
     Result := ThreadHandler.BeforeThreadExecution
@@ -283,8 +268,7 @@ begin
     Result := nil;
 end;
 
-function TJvOracleDataset.GetAfterThreadExecution:
-    TJvThreadedDatasetThreadEvent;
+function TJvOracleDataset.GetAfterThreadExecution: TJvThreadedDatasetThreadEvent;
 begin
   if Assigned(ThreadHandler) then
     Result := ThreadHandler.AfterThreadExecution
@@ -305,8 +289,7 @@ begin
     Result := nil;
 end;
 
-function TJvOracleDataset.GetEnhancedOptions:
-    TJvDoaThreadedDatasetEnhancedOptions;
+function TJvOracleDataset.GetEnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions;
 begin
   if Assigned(ThreadHandler) then
     Result := TJvDoaThreadedDatasetEnhancedOptions(ThreadHandler.EnhancedOptions)
@@ -331,7 +314,7 @@ begin
 end;
 
 procedure TJvOracleDataset.ReplaceAfterFetchRecord(Sender: TOracleDataSet;
-    FilterAccept: Boolean; var Action: TAfterFetchRecordAction);
+  FilterAccept: Boolean; var Action: TAfterFetchRecordAction);
 begin
   if Assigned(ThreadHandler) then
     case ThreadHandler.CheckContinueRecordFetch of
@@ -352,15 +335,13 @@ begin
     AfterFetchRecord(Sender, FilterAccept, Action);
 end;
 
-procedure TJvOracleDataset.SetBeforeThreadExecution(const Value:
-    TJvThreadedDatasetThreadEvent);
+procedure TJvOracleDataset.SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.BeforeThreadExecution := Value;
 end;
 
-procedure TJvOracleDataset.SetAfterThreadExecution(const Value:
-    TJvThreadedDatasetThreadEvent);
+procedure TJvOracleDataset.SetAfterThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.AfterThreadExecution := Value;
@@ -371,22 +352,19 @@ begin
   QueryAllRecords := Value;
 end;
 
-procedure TJvOracleDataset.SetDialogOptions(Value:
-    TJvThreadedDatasetDialogOptions);
+procedure TJvOracleDataset.SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.DialogOptions.Assign(Value);
 end;
 
-procedure TJvOracleDataset.SetEnhancedOptions(const Value:
-    TJvDoaThreadedDatasetEnhancedOptions);
+procedure TJvOracleDataset.SetEnhancedOptions(const Value: TJvDoaThreadedDatasetEnhancedOptions);
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.EnhancedOptions.Assign(Value);
 end;
 
-procedure TJvOracleDataset.SetThreadOptions(const Value:
-    TJvThreadedDatasetThreadOptions);
+procedure TJvOracleDataset.SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.ThreadOptions.Assign(Value);
@@ -400,20 +378,17 @@ begin
     Result := False;
 end;
 
-function TJvOracleDatasetThreadHandler.CreateEnhancedOptions:
-    TJvBaseThreadedDatasetEnhancedOptions;
+function TJvOracleDatasetThreadHandler.CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions;
 begin
   Result := TJvDoaThreadedDatasetEnhancedOptions.Create;
 end;
 
-function TJvOracleDatasetThreadHandler.GetEnhancedOptions:
-    TJvDoaThreadedDatasetEnhancedOptions;
+function TJvOracleDatasetThreadHandler.GetEnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions;
 begin
   Result := TJvDoaThreadedDatasetEnhancedOptions(inherited EnhancedOptions);
 end;
 
-procedure TJvOracleDatasetThreadHandler.SetEnhancedOptions(const Value:
-    TJvDoaThreadedDatasetEnhancedOptions);
+procedure TJvOracleDatasetThreadHandler.SetEnhancedOptions(const Value: TJvDoaThreadedDatasetEnhancedOptions);
 begin
   inherited EnhancedOptions := Value;
 end;
@@ -425,26 +400,25 @@ begin
 end;
 
 function
-    TJvDoaThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
+  TJvDoaThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
     TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
 begin
   Result := TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions.Create;
 end;
 
 function
-    TJvDoaThreadedDatasetEnhancedOptions.GetAllowedContinueRecordFetchOptions:
+  TJvDoaThreadedDatasetEnhancedOptions.GetAllowedContinueRecordFetchOptions:
     TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions;
 begin
-  Result := TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions(Inherited AllowedContinueRecordFetchOptions);
+  Result := TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions(inherited AllowedContinueRecordFetchOptions);
 end;
 
 procedure
-    TJvDoaThreadedDatasetEnhancedOptions.SetAllowedContinueRecordFetchOptions(
+  TJvDoaThreadedDatasetEnhancedOptions.SetAllowedContinueRecordFetchOptions(
     const Value: TJvDoaThreadedDatasetAllowedContinueRecordFetchOptions);
 begin
-  Inherited AllowedContinueRecordFetchOptions := Value;
+  inherited AllowedContinueRecordFetchOptions := Value;
 end;
-
 
 {$IFDEF UNITVERSIONING}
 initialization
@@ -453,6 +427,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 end.
 
 

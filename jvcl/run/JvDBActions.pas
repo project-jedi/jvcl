@@ -1525,8 +1525,8 @@ begin
       begin
         Field := ControlEngine.FieldById(i);
         if Assigned(Field) then
-          if not ControlEngine.IsFieldReadOnly(Field.FieldName)
-            and ControlEngine.IsFieldVisible(Field.FieldName) then
+          if not ControlEngine.IsFieldReadOnly(Field.FieldName) and
+            ControlEngine.IsFieldVisible(Field.FieldName) then
             ItemList.Add(Field.FieldName);
         if Assigned(ControlEngine.SelectedField) then
           ItemIndex := ItemList.IndexOf(ControlEngine.SelectedField.FieldName);

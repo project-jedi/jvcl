@@ -28,16 +28,16 @@ unit JvProgramVersionCheck;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
-{$IFDEF USE_3RDPARTY_INDY}
+  {$IFDEF USE_3RDPARTY_INDY}
   IdHTTP, IdFtp,
-{$ENDIF USE_3RDPARTY_INDY}
-{$IFDEF USE_3RDPARTY_ICS}
+  {$ENDIF USE_3RDPARTY_INDY}
+  {$IFDEF USE_3RDPARTY_ICS}
   HttpProt, FtpCli,
-{$ENDIF USE_3RDPARTY_ICS}
+  {$ENDIF USE_3RDPARTY_ICS}
   JvPropertyStore, JvAppStorage, JvAppIniStorage, JvComponent,
   JvParameterList, JvThread, JvUrlListGrabber, JvUrlGrabbers, JvThreadDialog;
 
@@ -259,7 +259,7 @@ type
     property VersionInfoFileName;
   end;
 
-{$IFDEF USE_3RDPARTY_INDY}
+  {$IFDEF USE_3RDPARTY_INDY}
   TJvProgramVersionHTTPLocationIndy = class(TJvProgramVersionHTTPLocation)
   private
     FIdHttp: TIdHttp;
@@ -280,9 +280,9 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-{$ENDIF USE_3RDPARTY_INDY}
+  {$ENDIF USE_3RDPARTY_INDY}
 
-{$IFDEF USE_3RDPARTY_ICS}
+  {$IFDEF USE_3RDPARTY_ICS}
   TJvProgramVersionHTTPLocationICS = class(TJvProgramVersionHTTPLocation)
   private
     FHttpCli: THttpCli;
@@ -303,7 +303,7 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-{$ENDIF USE_3RDPARTY_ICS}
+  {$ENDIF USE_3RDPARTY_ICS}
 
   TJvProgramVersionFTPLocation = class;
   TJvLoadFileFromRemoteFTPEvent = function(AProgramVersionLocation: TJvProgramVersionFTPLocation;
@@ -323,7 +323,7 @@ type
     property ProxySettings;
   end;
 
-{$IFDEF USE_3RDPARTY_INDY}
+  {$IFDEF USE_3RDPARTY_INDY}
   TJvProgramVersionFTPLocationIndy = class(TJvProgramVersionFTPLocation)
   private
     FIdFtp: TIdFtp;
@@ -344,9 +344,9 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-{$ENDIF USE_3RDPARTY_INDY}
+  {$ENDIF USE_3RDPARTY_INDY}
 
-{$IFDEF USE_3RDPARTY_ICS}
+  {$IFDEF USE_3RDPARTY_ICS}
   TJvProgramVersionFTPLocationICS = class(TJvProgramVersionFTPLocation)
   private
     FFtpClient: TFtpClient;
@@ -367,7 +367,7 @@ type
     property VersionInfoLocationPathList;
     property VersionInfoFileName;
   end;
-{$ENDIF USE_3RDPARTY_ICS}
+  {$ENDIF USE_3RDPARTY_ICS}
 
   TJvProgramVersionDatabaseLocation = class;
   TJvLoadFileFromRemoteDatabaseEvent = function(AProgramVersionLocation: TJvProgramVersionDatabaseLocation;
@@ -450,7 +450,7 @@ type
     procedure LoadData; override;
     function LoadRemoteInstallerFile(const ALocalDirectory, ALocalInstallerFileName: string;
       AProgramVersionInfo: TJvProgramVersionInfo; ABaseThread: TJvBaseThread): string;
-    function LoadRemoteVersionInfoFile(const ALocalDirectory, ALocalVersionInfoFileName: string): string;
+    function LoadRemoteVersionInfoFile(const ALocalDirectory: string; const ALocalVersionInfoFileName: string): string;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetThreadInfo(const Info: string);
     procedure SetUserOptions(Value: TJvProgramVersionUserOptions);
@@ -582,7 +582,8 @@ begin
       Result := 1;
       Exit;
     end
-    else if N2 < N1 then
+    else
+    if N2 < N1 then
     begin
       Result := -1;
       Exit;
@@ -657,11 +658,14 @@ function TJvProgramVersionInfo.ProgramSizeString: string;
 begin
   if ProgramSize <= 0 then
     Result := ''
-  else if ProgramSize >= 1024 * 1024 * 1024 then
+  else
+  if ProgramSize >= 1024 * 1024 * 1024 then
     Result := Format(RsPVSiceGB, [ProgramSize / 1024 / 1024 / 1024])
-  else if ProgramSize >= 1024 * 1024 then
+  else
+  if ProgramSize >= 1024 * 1024 then
     Result := Format(RsPVSiceMB, [ProgramSize / 1024 / 1024])
-  else if ProgramSize >= 1024 then
+  else
+  if ProgramSize >= 1024 then
     Result := Format(RsPVSiceKB, [ProgramSize / 1024])
   else
     Result := Format(RsPVSiceB, [ProgramSize])
@@ -712,7 +716,8 @@ begin
   begin
     if Result = nil then
       Result := CurrentProgramVersion[I]
-    else if Assigned(CurrentProgramVersion[I]) and
+    else
+    if Assigned(CurrentProgramVersion[I]) and
       (CompareVersionNumbers(Result.ProgramVersion, CurrentProgramVersion[I].ProgramVersion) > 0) then
       Result := CurrentProgramVersion[I];
     Inc(I);
@@ -738,7 +743,8 @@ begin
       if ProgramVersion[I].ProgramReleaseType = AProgramReleaseType then
         if Result = nil then
           Result := ProgramVersion[I]
-        else if CompareVersionNumbers(Result.ProgramVersion, ProgramVersion[I].ProgramVersion) = 1 then
+        else
+        if CompareVersionNumbers(Result.ProgramVersion, ProgramVersion[I].ProgramVersion) = 1 then
           Result := ProgramVersion[I];
 end;
 
@@ -981,12 +987,15 @@ begin
     if FileExistsNoDir(PathAppend(ARemotePath, ARemoteFileName)) then
       if (ARemotePath = ALocalPath) and (ARemoteFileName = ALocalFileName) then
         Result := PathAppend(ARemotePath, ARemoteFileName)
-      else if FileCopy(PathAppend(ARemotePath, ARemoteFileName), PathAppend(ALocalPath, ALocalFileName), True) then
+      else
+      if FileCopy(PathAppend(ARemotePath, ARemoteFileName), PathAppend(ALocalPath, ALocalFileName), True) then
         if FileExistsNoDir(PathAppend(ALocalPath, ALocalFileName)) then
           Result := PathAppend(ALocalPath, ALocalFileName)
-        else if FileExistsNoDir(PathAppend(ALocalPath, ARemoteFileName)) then
+        else
+        if FileExistsNoDir(PathAppend(ALocalPath, ARemoteFileName)) then
           Result := PathAppend(ALocalPath, ARemoteFileName)
-        else if FileExistsNoDir(PathAppend(ALocalPath, ExtractFileName(ARemotePath))) then
+        else
+        if FileExistsNoDir(PathAppend(ALocalPath, ExtractFileName(ARemotePath))) then
           Result := PathAppend(ALocalPath, ExtractFileName(ARemotePath));
 end;
 
@@ -1177,12 +1186,15 @@ procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender: TObject);
 begin
   if DownloadError <> '' then
     JvDSADialogs.MessageDlg(DownloadError, mtError, [mbOK], 0)
-  else if FExecuteDownloadInstallFileName = '' then
+  else
+  if FExecuteDownloadInstallFileName = '' then
     JvDSADialogs.MessageDlg(RsPVCFileDownloadNotSuccessful, mtError, [mbOK], 0)
-  else if FExecuteOperation = rvoCopy then
+  else
+  if FExecuteOperation = rvoCopy then
     JvDSADialogs.MessageDlg(Format(RsPVCDownloadSuccessfulInstallManually,
       [FExecuteDownloadInstallFileName]), mtInformation, [mbOK], 0)
-  else if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
+  else
+  if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
     mtWarning, [mbYes, mbNo], 0) = mrYes then
     if ShellExecEx(FExecuteDownloadInstallFileName, FExecuteVersionInfo.LocalInstallerParams) then
       PostMessage(Application.Handle, WM_CLOSE, 0, 0)
@@ -1394,8 +1406,8 @@ begin
     Result := '';
 end;
 
-function TJvProgramVersionCheck.LoadRemoteVersionInfoFile(
-  const ALocalDirectory, ALocalVersionInfoFileName: string): string;
+function TJvProgramVersionCheck.LoadRemoteVersionInfoFile(const ALocalDirectory: string;
+  const ALocalVersionInfoFileName: string): string;
 begin
   if SelectedLocation <> nil then
     Result := SelectedLocation.LoadVersionInfoFromRemote(ALocalDirectory, ALocalVersionInfoFileName, nil)
@@ -1411,16 +1423,18 @@ begin
   if Operation = opRemove then
     if AComponent = FLocationNetwork then
       FLocationNetwork := nil
-    else if AComponent = FLocationDatabase then
+    else
+    if AComponent = FLocationDatabase then
       FLocationDatabase := nil
-    else if AComponent = FLocationHTTP then
+    else
+    if AComponent = FLocationHTTP then
       FLocationHTTP := nil
-    else if AComponent = FLocationFTP then
+    else
+    if AComponent = FLocationFTP then
       FLocationFTP := nil
 end;
 
-function TJvProgramVersionCheck.GetSelectedLocation:
-    TJvCustomProgramVersionLocation;
+function TJvProgramVersionCheck.GetSelectedLocation: TJvCustomProgramVersionLocation;
 begin
   case LocationType of
     pvltDatabase:

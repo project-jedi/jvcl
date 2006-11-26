@@ -387,8 +387,7 @@ end;
 
 procedure TJvColorArrowButton.SetArrowColor(const Value: TArrowColor);
 begin
-  if (FArrowColor.Enabled <> Value.Enabled)
-    and (FArrowColor.Disabled <> Value.Disabled)  then
+  if (FArrowColor.Enabled <> Value.Enabled) and (FArrowColor.Disabled <> Value.Disabled) then
   begin
     FArrowColor := Value;
     Repaint;
@@ -894,7 +893,7 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoFormShowingChanged(Sender: TObject);
 begin
-  if not FColorsForm.Visible  and not (csDesigning in ComponentState)then
+  if not FColorsForm.Visible and not (csDesigning in ComponentState) then
   begin
     FArrowButton.Down := False;
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);

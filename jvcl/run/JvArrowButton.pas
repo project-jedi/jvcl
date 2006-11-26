@@ -971,8 +971,7 @@ begin
   TButtonGlyph(FGlyph).CreateButtonGlyph(State);
 end;
 
-procedure TJvArrowButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvArrowButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Pnt: TPoint;
   {$IFDEF VCL}
@@ -982,8 +981,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
     Exit;
-  FArrowClick := (X >= Width - ArrowWidth) and (X <= Width)
-             and (Y >= 0) and (Y <= Height) or DropOnButtonClick;
+  FArrowClick := (X >= Width - ArrowWidth) and (X <= Width) and (Y >= 0) and (Y <= Height) or DropOnButtonClick;
 
   if Button = mbLeft then
   begin
@@ -1018,8 +1016,7 @@ begin
   Repaint;
 end;
 
-procedure TJvArrowButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvArrowButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   DoClick: Boolean;
 begin
@@ -1031,8 +1028,7 @@ begin
     Repaint;
   end;
 
-  DoClick := (X >= 0) and (X <= Width - ArrowWidth) and (Y >= 0) and (Y <= Height)
-             and not DropOnButtonClick;
+  DoClick := (X >= 0) and (X <= Width - ArrowWidth) and (Y >= 0) and (Y <= Height) and not DropOnButtonClick;
 
   if GroupIndex = 0 then
   begin

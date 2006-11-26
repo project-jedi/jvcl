@@ -593,8 +593,8 @@ const
           ((St[1] = '/') and (St[2] = '*')));
       // HTML multi line comment support 
       hlHtml:
-        Result := (LS > 3) and (St[1] = '<') and (St[2] = '!')
-          and (St[3] = '-') and (St[4] = '-');
+        Result := (LS > 3) and (St[1] = '<') and (St[2] = '!') and
+          (St[3] = '-') and (St[4] = '-');
       hlVB:
         Result := (LS > 0) and (St[1] = '''');
       hlPython, hlPerl:

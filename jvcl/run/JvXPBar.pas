@@ -2079,10 +2079,11 @@ begin
       if Assigned(FVisibleItems[FHoverIndex].Action) and
          (@FVisibleItems[FHoverIndex].FOnClick <> @FVisibleItems[FHoverIndex].Action.OnExecute) then
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex])
-      else if not (csDesigning in ComponentState) and
-              Assigned(FVisibleItems[FHoverIndex].ActionLink) then
+      else
+      if not (csDesigning in ComponentState) and Assigned(FVisibleItems[FHoverIndex].ActionLink) then
         FVisibleItems[FHoverIndex].ActionLink.Execute{$IFDEF COMPILER6_UP}(Self){$ENDIF COMPILER6_UP}
-      else if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
+      else
+      if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex]);
 
       CallInherited := False;

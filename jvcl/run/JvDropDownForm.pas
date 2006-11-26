@@ -151,7 +151,8 @@ begin
   AParams.Style := Aparams.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     AParams.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned (Application.MainForm) then
     AParams.WndParent := Application.MainForm.Handle
   else
     AParams.WndParent := Application.Handle;

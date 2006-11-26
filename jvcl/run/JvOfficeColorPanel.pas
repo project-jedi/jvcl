@@ -292,12 +292,12 @@ type
     procedure DoGetAddInControlSiteInfo(Sender: TControl; var ASiteInfo:
       TJvAddInControlSiteInfo); virtual;
     procedure DoPropertiesChanged(Sender: TObject; const PropName: string); virtual;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     procedure CreateWnd; override;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure InitWidget; override;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     procedure Loaded; override;
     procedure Resize; override;
     procedure ShowHintChanged; override;
@@ -308,10 +308,8 @@ type
       If you want to change ColorList,make sure call strings.beginupdate before change,
       and call strings.EndUpdate after changed. }
     function CreateUserColors(ColorList: TStrings): Integer; virtual;
-    procedure CreateColorDrawersByColors(DrawersList: TList; ColorsList:
-      TStringList; AVisible: Boolean);
-    procedure SetEnabled({$IFDEF VisualCLX}const{$ENDIF}Value: Boolean);
-      override;
+    procedure CreateColorDrawersByColors(DrawersList: TList; ColorsList: TStringList; AVisible: Boolean);
+    procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
 
     // Don't change the following list, the result might unpredictability.
     property StandardColorDrawers: TList read FStandardColorDrawers;
@@ -1680,17 +1678,12 @@ begin
         SetControlVisible(TControl(FSystemColorDrawers[I]), False);
 
     //set Divider Line position up System Colors
-    SetControlVisible(FDividerLine1,
-      (ShowSystemColors and (FSystemColorDrawers.Count > 0))
-      and ShowStandardColors);
+    SetControlVisible(FDividerLine1, (ShowSystemColors and (FSystemColorDrawers.Count > 0)) and
+      ShowStandardColors);
     if FDividerLine1.Visible then
       with FDividerLine1 do
       begin
-        SetBounds(
-          StdColBtnsLeft,
-          SysColBtnsTop + ColorSpaceBottom,
-          CaclButtonWidth,
-          Height);
+        SetBounds(StdColBtnsLeft, SysColBtnsTop + ColorSpaceBottom, CaclButtonWidth, Height);
         SysColBtnsTop := Top + Height;
       end;
 
@@ -1730,11 +1723,8 @@ begin
     if FDividerLine2.Visible then
       with FDividerLine2 do
       begin
-        SetBounds(
-          StdColBtnsLeft,
-          UserColBtnsTop + ColorSpaceBottom,
-          CaclButtonWidth,
-          Height);
+        SetBounds(StdColBtnsLeft, UserColBtnsTop + ColorSpaceBottom,
+          CaclButtonWidth, Height);
         UserColBtnsTop := Top + Height;
       end;
 
@@ -1897,10 +1887,8 @@ var
       end;
 
       if Properties.HoldCustomColor and
-        ( (FButtonCustomColor.DrawColor <> AColor)
-        or (UserColors.IndexOfName(StrColor) = -1) ) then
+        ((FButtonCustomColor.DrawColor <> AColor) or (UserColors.IndexOfName(StrColor) = -1)) then
       begin
-
         UserColors.BeginUpdate;
         try
           UserColors.Values[StrColor] := cUseDefaultColorHint;
@@ -1972,15 +1960,15 @@ begin
              FPriorCheckedButton.Down := True;
         end;
         // the PriorCheckedButton have not been assign.
-        if ((FPriorCheckedButton <> nil) and (not FPriorCheckedButton.Down))
+        if ((FPriorCheckedButton <> nil) and (not FPriorCheckedButton.Down)) or
           // if the PriorCheckedButton is ButtonCustom,Set CustomColorDrawer.Down to true for ever.
-        or (FPriorCheckedButton = FButtonCustomColor) then
+          (FPriorCheckedButton = FButtonCustomColor) then
           FCustomColorDrawer.Down := true;
       end
       else
       begin
         {$IFDEF VisualCLX}
-        //in clx have bug
+        // in clx have bug
         FButtonNoneColor.Down := FClickColorType = cctNoneColor;
         FButtonDefaultColor.Down := FClickColorType = cctDefaultColor;
         FButtonCustomColor.Down := FClickColorType = cctCustomColor;
@@ -2018,8 +2006,8 @@ begin
     FOnColorChange(Self);
 end;
 
-procedure TJvCustomOfficeColorPanel.DoGetAddInControlSiteInfo(Sender:
-  TControl; var ASiteInfo: TJvAddInControlSiteInfo);
+procedure TJvCustomOfficeColorPanel.DoGetAddInControlSiteInfo(Sender: TControl;
+  var ASiteInfo: TJvAddInControlSiteInfo);
 begin
   if Assigned(FOnGetAddInControlSiteInfo) then
     FOnGetAddInControlSiteInfo(Sender, ASiteInfo);
@@ -2356,8 +2344,7 @@ end;
 
 {$IFDEF VCL}
 
-procedure TJvCustomOfficeColorPanel.SetColorDialogOptions(const Value:
-  TColorDialogOptions);
+procedure TJvCustomOfficeColorPanel.SetColorDialogOptions(const Value: TColorDialogOptions);
 begin
   FColorDialogOptions := Value;
 end;
@@ -2371,13 +2358,11 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomOfficeColorPanel.InitWidget;
 begin
   inherited InitWidget;
   RearrangeControls;
 end;
-
 {$ENDIF VisualCLX}
 
 procedure TJvCustomOfficeColorPanel.SetProperties(const Value: TJvOfficeColorPanelProperties);
@@ -2522,7 +2507,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

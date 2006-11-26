@@ -3127,15 +3127,11 @@ var
   LibraryHandle: THandle;
   InternetGetConnectedStateFunc: TInternetGetConnectedStateFunc;
 begin
-  { TODO : Load dynamically (not all have WinInet) }
-  // (outchy) done
-  LibraryHandle := LoadLibrary('wininet.dll');                 { Do not localize }
+  LibraryHandle := LoadLibrary('wininet.dll');  { Do not localize }
   try
-    InternetGetConnectedStateFunc := GetProcAddress(LibraryHandle,
-                   'InternetGetConnectedState');               { Do not localize }
-    Result :=    Assigned(InternetGetConnectedStateFunc)
-             and InternetGetConnectedStateFunc(@ConnectFlag,0)
-             and (ConnectFlag <> INTERNET_CONNECTION_OFFLINE);
+    InternetGetConnectedStateFunc := GetProcAddress(LibraryHandle, 'InternetGetConnectedState');  { Do not localize }
+    Result := Assigned(InternetGetConnectedStateFunc) and InternetGetConnectedStateFunc(@ConnectFlag, 0) and
+      (ConnectFlag <> INTERNET_CONNECTION_OFFLINE);
   finally
     FreeLibrary(LibraryHandle);
   end;
