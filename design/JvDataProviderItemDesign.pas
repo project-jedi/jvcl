@@ -228,7 +228,7 @@ begin
   // (rom) is there some security so we do not blow up everything by exceeding the 2048 bytes?
   NewTypeInfo := CloneTypeInfo(VMTTypeInfo^, 2048);
   {$IFDEF MSWINDOWS}
-  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_WRITECOPY, OldProtect) then
+  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_EXECUTE_WRITECOPY, OldProtect) then
   begin
     try
       VMTTypeInfo^ := NewTypeInfo;
@@ -255,7 +255,7 @@ begin
   NewTypeInfo := GetOrgTypeInfo(OldTypeInfo);
 
   {$IFDEF MSWINDOWS}
-  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_WRITECOPY, OldProtect) then
+  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_EXECUTE_WRITECOPY, OldProtect) then
   try
     VMTTypeInfo^ := NewTypeInfo;
   finally
