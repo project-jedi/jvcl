@@ -778,6 +778,7 @@ var
   Code: TJumpCode;
   OrgCallCode: TOrgCallCode;
   I, Count: Integer;
+  WrittenBytes: Cardinal;
 begin
   ProcAddress := GetRelocAddress(ProcAddress);
   Result := False;
@@ -796,8 +797,7 @@ begin
           (SizeOf(OrgCallCode) - SizeOf(OrgCallCode.Address));
         OrgCallCode.Address := ProcAddress;
 
-        WriteProtectedMemory(OrgCallProc, OrgCallCode, SizeOf(OrgCallCode));
-        FlushInstructionCache(GetCurrentProcess, OrgCallProc, SizeOf(OrgCallCode));
+        WriteProtectedMemory(OrgCallProc, @OrgCallCode, SizeOf(OrgCallCode), WrittenBytes);
       end;
     end;
 
@@ -805,11 +805,7 @@ begin
     Code.Offset := Integer(HookProc) - (Integer(ProcAddress)) - SizeOf(Code);
 
     { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
-    if WriteProtectedMemory(Pointer(Cardinal(ProcAddress)), Code, SizeOf(Code)) then
-    begin
-      FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(Code));
-      Result := True;
-    end;
+    Result := WriteProtectedMemory(ProcAddress, @Code, SizeOf(Code), WrittenBytes);
   end;
 end;
 
@@ -817,6 +813,7 @@ function UninstallProcHook(OrgCallProc: Pointer): Boolean;
 var
   OrgCallCode: TOrgCallCode;
   ProcAddress: Pointer;
+  WrittenBytes: Cardinal;
 begin
   Result := False;
   if Assigned(OrgCallProc) then
@@ -825,8 +822,7 @@ begin
       begin
         ProcAddress := OrgCallCode.Address;
 
-        Result := WriteProtectedMemory(ProcAddress, OrgCallCode, SizeOf(TJumpCode));
-        FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
+        Result := WriteProtectedMemory(ProcAddress, @OrgCallCode, SizeOf(TJumpCode), WrittenBytes);
       end;
 end;
 
