@@ -280,7 +280,8 @@ implementation
 {$IFDEF COMPILER5}
 
 uses
-  CommCtrl;
+  CommCtrl,
+  JclSysUtils;
 
 var
   GlobalCollectionHooked: Boolean = False;
@@ -667,19 +668,6 @@ var
 begin
   Result := ReadProcessMemory(GetCurrentProcess, Address, @Buffer, Count, N);
   Result := Result and (N = Count);
-end;
-
-function WriteProtectedMemory(Address: Pointer; const Buffer; Count: Cardinal): Boolean;
-var
-  OldProtect, Dummy: Cardinal;
-begin
-  Result := VirtualProtect(Address, Count, PAGE_EXECUTE_READWRITE, OldProtect);
-  if Result then
-  try
-    Move(Buffer, Address^, Count);
-  finally
-    VirtualProtect(Address, Count, OldProtect, Dummy);
-  end;
 end;
 
 type

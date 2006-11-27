@@ -2189,14 +2189,9 @@ end;
 procedure SetVirtualMethodInstance(Instance: TObject; const VMTIdx: Integer;
   const MethodPtr: Pointer);
 var
-  OldProt, Dummy: Cardinal;
+  WrittenBytes: Cardinal;
 begin
-  VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), PAGE_EXECUTE_READWRITE, OldProt);
-  try
-    PInteger(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)))^ := Integer(MethodPtr);
-  finally
-    VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), OldProt, Dummy);
-  end;
+  WriteProtectedMemory(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), @MethodPtr, SizeOf(Pointer), WrittenBytes);
 end;
 
 //=== { TPatchedForm } =======================================================
