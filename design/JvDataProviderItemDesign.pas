@@ -63,6 +63,7 @@ uses
   QWindows,
   {$ENDIF VisualCLX}
   ImgList,
+  JclSysUtils,
   JvDsgnConsts, JvJCLUtils, JvVCL5Utils;
 
 type
@@ -218,7 +219,7 @@ procedure CreateTypeInfo(const AClass: TClass);
 var
   VMTTypeInfo: PPTypeInfo;
   NewTypeInfo: PTypeInfo;
-  OldProtect, Dummy: Cardinal;
+  WrittenBytes: Cardinal;
 begin
   VMTTypeInfo := VMTTypeInfoFromClass(AClass);
   { Below the typeinfo is cloned, while an additional 2048 bytes are reserved at the end. This 2048
@@ -227,44 +228,21 @@ begin
     properties to be appended to the existing property list. }
   // (rom) is there some security so we do not blow up everything by exceeding the 2048 bytes?
   NewTypeInfo := CloneTypeInfo(VMTTypeInfo^, 2048);
-  {$IFDEF MSWINDOWS}
-  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_EXECUTE_WRITECOPY, OldProtect) then
-  begin
-    try
-      VMTTypeInfo^ := NewTypeInfo;
-    finally
-      VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), OldProtect, Dummy);
-    end;
-  end
-  else
+  if not WriteProtectedMemory(VMTTypeInfo, @NewTypeInfo, SizeOf(NewTypeInfo), WrittenBytes) then
     FreeTypeInfo(NewTypeInfo);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  WriteProcessMemory(GetCurrentProcess, VMTTypeInfo, NewTypeInfo, SizeOf(NewTypeInfo), OldProtect);  // asn ???
-  {$ENDIF LINUX}
 end;
 
 procedure ClearTypeInfo(const AClass: TClass);
 var
   VMTTypeInfo: PPTypeInfo;
   OldTypeInfo, NewTypeInfo: PTypeInfo;
-  OldProtect, Dummy: Cardinal;
+  WrittenBytes: Cardinal;
 begin
   VMTTypeInfo := VMTTypeInfoFromClass(AClass);
   OldTypeInfo := VMTTypeInfo^;
   NewTypeInfo := GetOrgTypeInfo(OldTypeInfo);
 
-  {$IFDEF MSWINDOWS}
-  if VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), PAGE_EXECUTE_WRITECOPY, OldProtect) then
-  try
-    VMTTypeInfo^ := NewTypeInfo;
-  finally
-    VirtualProtect(VMTTypeInfo, SizeOf(NewTypeInfo), OldProtect, Dummy);
-  end;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  WriteProcessMemory(GetCurrentProcess, VMTTypeInfo, NewTypeInfo, SizeOf(NewTypeInfo), OldProtect);  // asn ???
-  {$ENDIF LINUX}
+  WriteProtectedMemory(VMTTypeInfo, @NewTypeInfo, SizeOf(NewTypeInfo), WrittenBytes);
 
   FreeTypeInfo(OldTypeInfo);
 end;

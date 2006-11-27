@@ -825,6 +825,8 @@ const
 
 implementation
 
+uses
+  JclSysUtils;
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
@@ -1738,7 +1740,7 @@ procedure InstallWinControlHook;
 var
   Code: TJumpCode;
   P: procedure;
-  N, OldProtect, Dummy: Cardinal;
+  N: Cardinal;
 begin
   if WinControlHookInstalled then
     Exit;
@@ -1757,20 +1759,13 @@ begin
     Code.Offset := Integer(@WMEraseBkgndHook) -
       (Integer(@P) + 1) - SizeOf(Code);
 
+    { The strange thing is that the $e9 cannot be overriden with a "PUSH xxx" }
     if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
       @SavedWinControlCode, SizeOf(SavedWinControlCode), N)
-      and VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(Code), PAGE_EXECUTE_READWRITE, OldProtect) then
+      and WriteProtectedMemory(Pointer(Cardinal(@P) + 1), @Code, SizeOf(Code), N) then
     begin
-      try
-        // (outchy) to be verified without WriteProcessMemory
-        { The strange thing is that the $e9 cannot be overriden with a "PUSH xxx" }
-        PJumpCode(Cardinal(@P) + 1)^ := Code;
-        WinControlHookInstalled := True;
-        ThemeHooks.FEraseBkgndHooked := True;
-        FlushInstructionCache(GetCurrentProcess, Pointer(Cardinal(@P) + 1), SizeOf(Code));
-      finally
-        VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(Code), OldProtect, Dummy);
-      end;
+      WinControlHookInstalled := True;
+      ThemeHooks.FEraseBkgndHooked := True;
     end;
   end;
 end;

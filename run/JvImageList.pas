@@ -265,6 +265,7 @@ uses
   {$IFDEF VCL}
   ActiveX,
   {$ENDIF VCL}
+  JclSysUtils,
   JvJclUtils, // SameFileName() for Delphi 5
   JvJVCLUtils, JvResources;
 
@@ -328,20 +329,14 @@ end;
 procedure UninstallHandleNeededHook;
 var
   OrgProc: Pointer;
-  OldProtect, Dummy: Cardinal;
+  WrittenBytes: Cardinal;
 begin
   if HandleNeededHookInstalled then
   begin
     OrgProc := @TCustomImageListAccessProtected.HandleNeeded;
 
-    if VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), PAGE_EXECUTE_READWRITE, OldProtect) then
-    try
-      PJumpCode(OrgProc)^ := SavedNeededHookCode;
-      FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(SavedNeededHookCode));
+    if WriteProtectedMemory(OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), WrittenBytes) then
       HandleNeededHookInstalled := False;
-    finally
-      VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), OldProtect, Dummy);
-    end;
   end;
 end;
 
@@ -350,7 +345,7 @@ var
   OrgProc: Pointer;
   NewProc: Pointer;
   Code: TJumpCode;
-  OldProtect, Dummy: Cardinal;
+  N: Cardinal;
 begin
   if not HandleNeededHookInstalled then
   begin
@@ -360,17 +355,9 @@ begin
     Code.Jump := $E9;
     Code.Offset := Integer(NewProc) - Integer(OrgProc) - SizeOf(Code);
 
-    if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), Dummy) and
-      VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), PAGE_EXECUTE_READWRITE, OldProtect) then
-    begin
-      try
-        PJumpCode(OrgProc)^ := Code;
+    if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), N) and
+      WriteProtectedMemory(OrgProc, @Code, SizeOf(Code), N) then
         HandleNeededHookInstalled := True;
-        FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(Code));
-      finally
-        VirtualProtect(OrgProc, SizeOf(SavedNeededHookCode), OldProtect, Dummy);
-      end;
-    end;
   end;
 end;
 

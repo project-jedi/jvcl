@@ -35,6 +35,9 @@ uses
 
 implementation
 
+uses
+  JclSysUtils;
+
 {$IFNDEF COMPILER7_UP}
 
 type
@@ -64,7 +67,7 @@ type
 var
   Jump: TJump;
   DestP, OldP: Pointer;
-  OldProt, Dummy: Cardinal;
+  WrittenBytes: Cardinal;
 begin
   if IsLibrary then
     raise Exception.Create('Not allowed in a DLL');
@@ -73,11 +76,7 @@ begin
   DestP := @TNativeBitBtn.CreateParams;
   OldP := @TOpenBitBtn.CreateParams;
   Jump.Offset := Integer(DestP) - Integer(OldP) - SizeOf(TJump);
-  if VirtualProtect(OldP, SizeOf(TJump), PAGE_EXECUTE_READWRITE, @OldProt) then
-  begin
-    Move(Jump, OldP^, SizeOf(TJump));
-    VirtualProtect(OldP, SizeOf(TJump), OldProt, Dummy);
-  end;
+  WriteProtectedMemory(OldP, @Jump, SizeOf(TJump), WrittenBytes);
 end;
 
 {$ENDIF !COMPILER7_UP}
