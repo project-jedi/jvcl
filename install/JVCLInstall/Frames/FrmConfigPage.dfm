@@ -233,7 +233,7 @@ object FrameConfigPage: TFrameConfigPage
         Caption = 'BP&L Directory:'
       end
       inherited Bevel: TBevel
-        Width = 261
+        Width = 309
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -255,7 +255,7 @@ object FrameConfigPage: TFrameConfigPage
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
-        Width = 71
+        Width = 70
         Caption = '&DCP Directory:'
       end
       inherited Bevel: TBevel
@@ -285,7 +285,7 @@ object FrameConfigPage: TFrameConfigPage
         ParentShowHint = False
       end
       inherited Bevel: TBevel
-        Width = 261
+        Width = 309
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -413,7 +413,7 @@ object FrameConfigPage: TFrameConfigPage
   object ComboBoxTargetIDE: TComboBox
     Left = 80
     Top = 8
-    Width = 177
+    Width = 218
     Height = 22
     Style = csOwnerDrawFixed
     ItemHeight = 16
@@ -443,7 +443,7 @@ object FrameConfigPage: TFrameConfigPage
     object LblOptionsFor: TLabel
       Left = 8
       Top = 4
-      Width = 58
+      Width = 54
       Height = 13
       Caption = '&Options for:'
       FocusControl = ComboBoxTargetIDE

@@ -29,15 +29,15 @@ object FramePackageSelection: TFramePackageSelection
     Transparent = True
   end
   object LblFrameworks: TLabel
-    Left = 232
-    Top = 8
+    Left = 356
+    Top = 49
     Width = 60
     Height = 13
     Caption = '&Frameworks:'
     FocusControl = CheckListBoxFrameworks
   end
   object LblShowMode: TLabel
-    Left = 330
+    Left = 322
     Top = 101
     Width = 80
     Height = 13
@@ -62,9 +62,9 @@ object FramePackageSelection: TFramePackageSelection
     OnMouseMove = CheckListBoxPackagesMouseMove
   end
   object ComboBoxDisplayMode: TComboBox
-    Left = 416
+    Left = 408
     Top = 97
-    Width = 97
+    Width = 105
     Height = 21
     Hint = 
       '<b>Designtime:</b>'#13#10'     Show all designtime packages. Checking/' +
@@ -89,7 +89,7 @@ object FramePackageSelection: TFramePackageSelection
   object ListViewTargetIDEs: TListView
     Left = 8
     Top = 24
-    Width = 201
+    Width = 344
     Height = 73
     Columns = <
       item
@@ -105,10 +105,10 @@ object FramePackageSelection: TFramePackageSelection
     OnSelectItem = ListViewTargetIDEsSelectItem
   end
   object CheckListBoxFrameworks: TCheckListBox
-    Left = 232
-    Top = 24
-    Width = 105
-    Height = 38
+    Left = 356
+    Top = 63
+    Width = 154
+    Height = 31
     OnClickCheck = CheckListBoxFrameworksClickCheck
     ItemHeight = 16
     Style = lbOwnerDrawVariable
