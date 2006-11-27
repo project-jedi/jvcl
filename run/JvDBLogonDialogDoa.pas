@@ -30,19 +30,19 @@ unit JvDBLogonDialogDoa;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-  Classes, JvBaseDlg, JvAppStorage, JvBaseDBLogonDialog, Forms, Oracle,
-  JvDynControlEngine, JvBaseDBPasswordDialog, JvDynControlEngineIntf, Controls;
+  {$ENDIF UNITVERSIONING}
+  Classes, Forms, Controls, Oracle,
+  JvBaseDlg, JvAppStorage, JvBaseDBLogonDialog,
+  JvDynControlEngine, JvBaseDBPasswordDialog, JvDynControlEngineIntf;
 
 type
   TJvDBDoaLogonDialogOptions = class(TJvBaseDBOracleLogonDialogOptions)
-  private
   public
     constructor Create; override;
   published
-    property AllowPasswordChange default true;
+    property AllowPasswordChange default True;
     property PasswordDialogOptions;
   end;
 
@@ -53,24 +53,19 @@ type
     procedure SetOptions(const Value: TJvDBDoaLogonDialogOptions);
     procedure SetSession(const Value: TOracleSession); reintroduce;
   protected
-    procedure CreateAdditionalConnectDialogControls(aOwner: TComponent;
-      aParentControl: TWinControl); override;
-    procedure CreateFormControls(aForm: TForm); override;
+    procedure CreateAdditionalConnectDialogControls(AOwner: TComponent;
+      AParentControl: TWinControl); override;
+    procedure CreateFormControls(AForm: TForm); override;
     function CreatePasswordChangeDialog: TJvBaseDBPasswordDialog; override;
-    procedure FillDatabaseComboBoxDefaultValues(Items: tStrings); override;
+    procedure FillDatabaseComboBoxDefaultValues(Items: TStrings); override;
     { Retrieve the class that holds the storage options and format settings. }
-    class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass;
-      override;
+    class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass; override;
     procedure HandleExpiredPassword(const ErrorMessage: string);
     procedure ResizeFormControls; override;
-    procedure TransferConnectionInfoFromDialog(ConnectionInfo:
-      TJvBaseConnectionInfo); override;
-    procedure TransferConnectionInfoToDialog(ConnectionInfo:
-      TJvBaseConnectionInfo); override;
-    procedure TransferSessionDataFromConnectionInfo(ConnectionInfo:
-      TJvBaseConnectionInfo); override;
-    procedure TransferSessionDataToConnectionInfo(ConnectionInfo:
-      TJvBaseConnectionInfo); override;
+    procedure TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo); override;
+    procedure TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo); override;
+    procedure TransferSessionDataFromConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo); override;
+    procedure TransferSessionDataToConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo); override;
   public
     procedure ClearControlInterfaceObjects; override;
     procedure ConnectSession; override;
@@ -83,7 +78,7 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL:$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -92,15 +87,20 @@ const
 
 implementation
 
-uses Sysutils, OraClasses, OraError, JvdsADialogs, Dialogs,
-  JvDBPasswordDialogDoa, stdCtrls,JvResources;
+uses
+  SysUtils, StdCtrls, Dialogs,
+  OraClasses, OraError,
+  JvDSADialogs, JvDBPasswordDialogDoa, JvResources;
 
+//=== { TJvDBDoaLogonDialogOptions } =========================================
 
 constructor TJvDBDoaLogonDialogOptions.Create;
 begin
   inherited Create;
   AllowPasswordChange := True;
 end;
+
+//=== { TJvDBDoaLogonDialog } ================================================
 
 procedure TJvDBDoaLogonDialog.ClearControlInterfaceObjects;
 begin
@@ -113,48 +113,45 @@ begin
   try
     Session.LogOn;
   except
-    on e: eOraError do
+    on E: EOraError do
     begin
-      case e.ErrorCode of
-        1005, 1017: ActivatePasswordControl;
-        12203, 12154: ActivateDatabaseControl;
+      case E.ErrorCode of
+        1005, 1017:
+          ActivatePasswordControl;
+        12203, 12154:
+          ActivateDatabaseControl;
       end;
-      if (e.ErrorCode = 28001) or
-        (e.ErrorCode = 28002) or
-        (e.ErrorCode = 28011) then
-        HandleExpiredPassword(e.Message)
+      if (E.ErrorCode = 28001) or (E.ErrorCode = 28002) or (E.ErrorCode = 28011) then
+        HandleExpiredPassword(E.Message)
       else
-        JVDsaDialogs.MessageDlg(e.Message, mtError, [mbok], 0, dckScreen,
+        JVDsaDialogs.MessageDlg(D.Message, mtError, [mbok], 0, dckScreen,
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
     end;
   end;
 end;
 
-procedure TJvDBDoaLogonDialog.CreateAdditionalConnectDialogControls(aOwner:
-  TComponent; aParentControl: TWinControl);
+procedure TJvDBDoaLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent;
+  AParentControl: TWinControl);
 begin
-  inherited CreateAdditionalConnectDialogControls(aOwner, aParentControl);
+  inherited CreateAdditionalConnectDialogControls(AOwner, AParentControl);
 end;
 
-procedure TJvDBDoaLogonDialog.CreateFormControls(aForm: TForm);
+procedure TJvDBDoaLogonDialog.CreateFormControls(AForm: TForm);
 begin
-  inherited CreateFormControls(aForm);
+  inherited CreateFormControls(AForm);
 end;
 
-function TJvDBDoaLogonDialog.CreatePasswordChangeDialog:
-  TJvBaseDBPasswordDialog;
+function TJvDBDoaLogonDialog.CreatePasswordChangeDialog: TJvBaseDBPasswordDialog;
 begin
   Result := TJvDBDoaPasswordDialog.Create(self);
 end;
 
-procedure TJvDBDoaLogonDialog.FillDatabaseComboBoxDefaultValues(Items:
-  tStrings);
+procedure TJvDBDoaLogonDialog.FillDatabaseComboBoxDefaultValues(Items: TStrings);
 begin
 
 end;
 
-class function TJvDBDoaLogonDialog.GetDBLogonDialogOptionsClass:
-  TJvBaseDBLogonDialogOptionsClass;
+class function TJvDBDoaLogonDialog.GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass;
 begin
   Result := TJvDBDoaLogonDialogOptions;
 end;
@@ -172,8 +169,8 @@ end;
 procedure TJvDBDoaLogonDialog.HandleExpiredPassword(const ErrorMessage:
   string);
 begin
-  if JVDsaDialogs.MessageDlg(ErrorMessage + #13#10 + RsDoYouWantToChangePassword, mtInformation, [mbYes, mbNo], 0,
-    dckScreen,
+  if JVDsaDialogs.MessageDlg(ErrorMessage + #13#10 + RsDoYouWantToChangePassword,
+    mtInformation, [mbYes, mbNo], 0, dckScreen,
     0, mbDefault, mbDefault, mbDefault, DynControlEngine) = mrYes then
     if ChangePassword then
       if not SessionIsConnected then
@@ -190,8 +187,7 @@ begin
   Result := Session.Connected;
 end;
 
-procedure TJvDBDoaLogonDialog.SetOptions(const Value:
-  TJvDBDoaLogonDialogOptions);
+procedure TJvDBDoaLogonDialog.SetOptions(const Value: TJvDBDoaLogonDialogOptions);
 begin
   (inherited Options).Assign(Value);
 end;
@@ -201,38 +197,34 @@ begin
   inherited SetSession(Value);
 end;
 
-procedure TJvDBDoaLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo:
-  TJvBaseConnectionInfo);
+procedure TJvDBDoaLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   inherited TransferConnectionInfoFromDialog(ConnectionInfo);
 end;
 
-procedure TJvDBDoaLogonDialog.TransferConnectionInfoToDialog(ConnectionInfo:
-  TJvBaseConnectionInfo);
+procedure TJvDBDoaLogonDialog.TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   inherited TransferConnectionInfoToDialog(ConnectionInfo);
 end;
 
-procedure TJvDBDoaLogonDialog.TransferSessionDataFromConnectionInfo(
-  ConnectionInfo: TJvBaseConnectionInfo);
+procedure TJvDBDoaLogonDialog.TransferSessionDataFromConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   if Assigned(Session) then
   begin
     Session.LogonDatabase := ConnectionInfo.Database;
     Session.LogonPassword := ConnectionInfo.Password;
     Session.LogonUsername := ConnectionInfo.Username;
-    if tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSDBA' then
+    if TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSDBA' then
       Session.ConnectAs := caSYSDBA
     else
-      if tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSOPER' then
+      if TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSOPER' then
         Session.ConnectAs := caSYSOper
       else
         Session.ConnectAs := caNormal;
   end;
 end;
 
-procedure TJvDBDoaLogonDialog.TransferSessionDataToConnectionInfo(
-  ConnectionInfo: TJvBaseConnectionInfo);
+procedure TJvDBDoaLogonDialog.TransferSessionDataToConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   if Assigned(Session) then
   begin
@@ -240,10 +232,12 @@ begin
     ConnectionInfo.Password := Session.LogonPassword;
     ConnectionInfo.Username := Session.LogonUsername;
     case Session.Connectas of
-      caSYSDBA: tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSDBA';
-      caSYSOPER: tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSOPER';
+      caSYSDBA:
+        TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSDBA';
+      caSYSOPER:
+        TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSOPER';
     else
-      tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'NORMAL';
+      TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'NORMAL';
     end;
   end;
 end;

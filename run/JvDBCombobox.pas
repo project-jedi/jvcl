@@ -75,7 +75,7 @@ type
     
     // This may cause trouble with BCB because it uses a HWND parameter
     // but as it is defined in the VCL itself, we can't do much. 
-    procedure ComboWndProc(var Msg: TMessage; ComboWnd: Hwnd;
+    procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
       ComboProc: Pointer); override;
     procedure CreateWnd; override;
     procedure DropDown; override;
@@ -85,7 +85,7 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure SetStyle(Value: TComboBoxStyle);override;
+    procedure SetStyle(Value: TComboBoxStyle); override;
     {$IFDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings); override;
     {$ENDIF COMPILER6_UP}
@@ -412,8 +412,7 @@ end;
 procedure TJvCustomDBComboBox.SetEditReadOnly;
 begin
   if (Style in [csDropDown, csSimple]) and HandleAllocated then
-    SendMessage(EditHandle,
-      EM_SETREADONLY, Ord(not FDataLink.Editing), 0);
+    SendMessage(EditHandle, EM_SETREADONLY, Ord(not FDataLink.Editing), 0);
 end;
 
 procedure TJvCustomDBComboBox.WndProc(var Msg: TMessage);
@@ -440,7 +439,7 @@ begin
   inherited WndProc(Msg);
 end;
 
-procedure TJvCustomDBComboBox.ComboWndProc(var Msg: TMessage; ComboWnd: Hwnd;
+procedure TJvCustomDBComboBox.ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
   ComboProc: Pointer);
 begin
   if not (csDesigning in ComponentState) then

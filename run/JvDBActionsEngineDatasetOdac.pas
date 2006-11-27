@@ -30,24 +30,21 @@ unit JvDBActionsEngineDatasetOdac;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes, DB,
   JvDBActionsEngine;
-
-
 
 {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 type
   TJvDatabaseActionOdacDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
     function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): boolean; override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
     function SupportsGetSQL: Boolean; override;
   end;
 {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -61,21 +58,17 @@ const
 
 implementation
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+
 uses
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   DBAccess;
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
-
-
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 function TJvDatabaseActionOdacDatasetEngine.GetSQL: string;
 begin
   Result := TCustomDADataSet(Dataset).SQL.Text;
 end;
 
-function TJvDatabaseActionOdacDatasetEngine.Supports(ADataComponent:
-    TComponent): boolean;
+function TJvDatabaseActionOdacDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := (ADataComponent is TCustomDADataSet);
 end;
@@ -85,27 +78,25 @@ begin
   Result := Assigned(Dataset);
 end;
 
-
 {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
-
 
 procedure InitActionEngineList;
 begin
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+  {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   RegisterActionEngine(TJvDatabaseActionOdacDatasetEngine);
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 end;
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   InitActionEngineList;
 
 finalization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

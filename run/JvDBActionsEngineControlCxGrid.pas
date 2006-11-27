@@ -30,20 +30,18 @@ unit JvDBActionsEngineControlCxGrid;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Forms, Controls, Classes, DB,
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGridCustomTableView, cxDBData, cxGridCustomView,
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvDBActionsEngine;
-
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 type
-  TJvDatabaseActionDevExpCxGridControlEngine = class(
-      TJvDatabaseActionBaseControlEngine)
+  TJvDatabaseActionDevExpCxGridControlEngine = class(TJvDatabaseActionBaseControlEngine)
   private
     FGridView: TcxCustomGridView;
     FGridTableView: TcxCustomGridTableView;
@@ -57,25 +55,24 @@ type
     property DBDataController: TcxDBDataController read GetDBDataController;
   public
     constructor Create(AOwner: TComponent); override;
-    function Bof: boolean; override;
-    function RecNo: integer; override;
-    function RecordCount: integer; override;
-    function CanInsert: boolean; override;
-    function CanUpdate: boolean; override;
-    function CanDelete: boolean; override;
-    function CanNavigate: boolean; override;
+    function Bof: Boolean; override;
+    function RecNo: Integer; override;
+    function RecordCount: Integer; override;
+    function CanInsert: Boolean; override;
+    function CanUpdate: Boolean; override;
+    function CanDelete: Boolean; override;
+    function CanNavigate: Boolean; override;
     procedure First; override;
     function GotoSelectedRow(const ASelectedRow: Integer): Boolean; override;
     procedure Last; override;
     procedure MoveBy(Distance: Integer); override;
     function SelectedRowsCount: Integer; override;
-    function Supports(ADataComponent: TComponent): boolean; override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
     property GridView: TcxCustomGridView read FGridView;
     property GridTableView: TcxCustomGridTableView read FGridTableView;
   end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -90,16 +87,14 @@ const
 implementation
 
 uses
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGrid, cxGridDBDataDefinitions, cxGridDBChartView,
   cxCustomData,
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-{$IFDEF HAS_UNIT_VARIANTS}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-{$ENDIF HAS_UNIT_VARIANTS}
-//  Dialogs;
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Grids;
-
 
 //=== { TJvDatabaseActionDevExpCxGridControlEngine } ================================
 
@@ -111,8 +106,7 @@ begin
   FGridView := nil;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.GetGridView(ADataComponent:
-  TComponent): TcxCustomGridView;
+function TJvDatabaseActionDevExpCxGridControlEngine.GetGridView(ADataComponent: TComponent): TcxCustomGridView;
 begin
   if Assigned(ADataComponent) then
     if ADataComponent is TcxGrid then
@@ -129,8 +123,8 @@ begin
       Result := nil;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.GetGridTableView(ADataComponent:
-  TComponent): TcxCustomGridTableView;
+function TJvDatabaseActionDevExpCxGridControlEngine.GetGridTableView(
+  ADataComponent: TComponent): TcxCustomGridTableView;
 begin
   if Assigned(ADataComponent) then
     if ADataComponent is TcxGrid then
@@ -147,8 +141,7 @@ begin
       Result := nil;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.GetDataSource(ADataComponent:
-  TComponent): TDataSource;
+function TJvDatabaseActionDevExpCxGridControlEngine.GetDataSource(ADataComponent: TComponent): TDataSource;
 begin
   if Assigned(ADataComponent) then
     if Assigned(GridView) then
@@ -164,12 +157,12 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.Supports(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := Assigned(GetGridView(ADataComponent));
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.Bof: boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.Bof: Boolean;
 begin
   if Assigned(GridView) then
     Result := GridView.DataController.FocusedRowIndex = 0
@@ -177,7 +170,7 @@ begin
     Result := inherited Bof;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.RecNo: integer;
+function TJvDatabaseActionDevExpCxGridControlEngine.RecNo: Integer;
 begin
   if Assigned(GridView) then
     if GridView.DataController.IsGridMode then
@@ -188,7 +181,7 @@ begin
     Result := inherited RecNo;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.RecordCount: integer;
+function TJvDatabaseActionDevExpCxGridControlEngine.RecordCount: Integer;
 begin
   if Assigned(GridView) then
     if GridView.DataController.IsGridMode then
@@ -199,7 +192,7 @@ begin
     Result := inherited RecordCount;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanInsert: boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanInsert: Boolean;
 begin
   if Assigned(GridTableView) then
     Result := GridTableView.OptionsData.Inserting and inherited CanInsert
@@ -207,7 +200,7 @@ begin
     Result := inherited CanInsert;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanUpdate: boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanUpdate: Boolean;
 begin
   if Assigned(GridTableView) then
     Result := GridTableView.OptionsData.Editing and inherited CanUpdate
@@ -215,7 +208,7 @@ begin
     Result := inherited CanUpdate;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanDelete: boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanDelete: Boolean;
 begin
   if Assigned(GridTableView) then
     Result := GridTableView.OptionsData.Deleting and inherited CanDelete
@@ -223,7 +216,7 @@ begin
     Result := inherited CanDelete;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanNavigate: boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanNavigate: Boolean;
 begin
   Result := Assigned(GridTableView);
 end;
@@ -245,12 +238,11 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.GotoSelectedRow(const
-  ASelectedRow: Integer): Boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.GotoSelectedRow(const ASelectedRow: Integer): Boolean;
 var
   Bkm: TBookmarkStr;
-  RecIdx : Integer;
-  RecID : Variant;
+  RecIdx: Integer;
+  RecID: Variant;
 begin
   if Assigned(DBDataController) and Assigned(Dataset) and Assigned(GridTableView) then
     try
@@ -260,7 +252,7 @@ begin
         if DataSet.BookmarkValid(TBookmark(Bkm)) then
         begin
           Dataset.Bookmark := Bkm;
-          Result := true;
+          Result := True;
         end
         else
           Result := False;
@@ -272,8 +264,7 @@ begin
         Result := DataSet.Locate(DBDataController.KeyFieldNames, RecID, [loPartialKey]);
       end;
     except
-      on e:exception do
-        Result := false;
+      Result := False;
     end
   else
     Result := False;
@@ -311,8 +302,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvDatabaseActionDevExpCxGridControlEngine.SetDatacomponent(const Value:
-  TComponent);
+procedure TJvDatabaseActionDevExpCxGridControlEngine.SetDatacomponent(const Value: TComponent);
 begin
   FGridView := GetGridView(Value);
   FGridTableView := GetGridTableView(Value);
@@ -321,24 +311,23 @@ end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
-
 procedure InitActionEngineList;
 begin
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   RegisterActionEngine(TJvDatabaseActionDevExpCxGridControlEngine);
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 end;
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   InitActionEngineList;
 
 finalization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

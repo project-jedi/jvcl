@@ -30,24 +30,21 @@ unit JvDBActionsEngineDatasetDoa;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes, DB,
   JvDBActionsEngine;
-
-
 
 {$IFDEF USE_3RDPARTY_DOA}
 type
   TJvDatabaseActionDoaDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
     function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): boolean; override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
     function SupportsGetSQL: Boolean; override;
   end;
 {$ENDIF USE_3RDPARTY_DOA}
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -66,16 +63,14 @@ uses
   OracleData;
 {$ENDIF USE_3RDPARTY_DOA}
 
-
-
 {$IFDEF USE_3RDPARTY_DOA}
+
 function TJvDatabaseActionDoaDatasetEngine.GetSQL: string;
 begin
   Result := TOracleDataset(Dataset).SQL.Text;
 end;
 
-function TJvDatabaseActionDoaDatasetEngine.Supports(ADataComponent:
-    TComponent): boolean;
+function TJvDatabaseActionDoaDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := (ADataComponent is TOracleDataset);
 end;
@@ -85,27 +80,25 @@ begin
   Result := Assigned(Dataset);
 end;
 
-
 {$ENDIF USE_3RDPARTY_DOA}
-
 
 procedure InitActionEngineList;
 begin
-{$IFDEF USE_3RDPARTY_DOA}
+  {$IFDEF USE_3RDPARTY_DOA}
   RegisterActionEngine(TJvDatabaseActionDoaDatasetEngine);
-{$ENDIF USE_3RDPARTY_DOA}
+  {$ENDIF USE_3RDPARTY_DOA}
 end;
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   InitActionEngineList;
 
 finalization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

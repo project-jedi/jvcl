@@ -30,22 +30,19 @@ unit JvDBActionsEngineDatasetAdo;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes, DB,
   JvDBActionsEngine;
-
-
 
 type
   TJvDatabaseActionAdoDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
     function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): boolean; override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
     function SupportsGetSQL: Boolean; override;
   end;
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -62,20 +59,18 @@ implementation
 uses
   AdoDb;
 
-
-
 function TJvDatabaseActionAdoDatasetEngine.GetSQL: string;
 begin
-  if (Dataset is TADOQuery) then
+  if Dataset is TADOQuery then
     Result := TADOQuery(Dataset).SQL.Text
-  else if (Dataset is TAdoTable) then
+  else
+  if Dataset is TAdoTable then
     Result := 'SELECT * FROM ' + TADOTable(Dataset).TableName;
 end;
 
-function TJvDatabaseActionAdoDatasetEngine.Supports(ADataComponent:
-    TComponent): boolean;
+function TJvDatabaseActionAdoDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
-  Result := (ADataComponent is TADOQuery) or (ADataComponent is TADOTable) ;
+  Result := (ADataComponent is TADOQuery) or (ADataComponent is TADOTable);
 end;
 
 function TJvDatabaseActionAdoDatasetEngine.SupportsGetSQL: Boolean;
@@ -83,24 +78,21 @@ begin
   Result := Assigned(Dataset);
 end;
 
-
-
-
 procedure InitActionEngineList;
 begin
   RegisterActionEngine(TJvDatabaseActionAdoDatasetEngine);
 end;
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   InitActionEngineList;
 
 finalization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
