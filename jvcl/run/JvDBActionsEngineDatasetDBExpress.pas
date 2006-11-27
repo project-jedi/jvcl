@@ -30,23 +30,19 @@ unit JvDBActionsEngineDatasetDBExpress;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Controls, Classes, DB,
   JvDBActionsEngine;
 
-
-
 type
-  TJvDatabaseActionDBExpressDatasetEngine = class(
-      TJvDatabaseActionBaseDatasetEngine)
+  TJvDatabaseActionDBExpressDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
     function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): boolean; override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
     function SupportsGetSQL: Boolean; override;
   end;
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -63,15 +59,12 @@ implementation
 uses
   SqlExpr;
 
-
-
 function TJvDatabaseActionDBExpressDatasetEngine.GetSQL: string;
 begin
   Result := TSQLQuery(Dataset).SQL.Text;
 end;
 
-function TJvDatabaseActionDBExpressDatasetEngine.Supports(ADataComponent:
-    TComponent): boolean;
+function TJvDatabaseActionDBExpressDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := (ADataComponent is TSQLQuery);
 end;
@@ -81,23 +74,21 @@ begin
   Result := Assigned(Dataset);
 end;
 
-
-
 procedure InitActionEngineList;
 begin
   RegisterActionEngine(TJvDatabaseActionDBExpressDatasetEngine);
 end;
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   InitActionEngineList;
 
 finalization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

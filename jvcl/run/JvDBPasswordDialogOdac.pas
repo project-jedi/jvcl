@@ -29,11 +29,12 @@ unit JvDBPasswordDialogOdac;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-  Classes,
-  Menus, Ora, dbaccess, JvBaseDBPasswordDialog;
+  {$ENDIF UNITVERSIONING}
+  Classes, Menus,
+  Ora, dbaccess,
+  JvBaseDBPasswordDialog;
 
 type
   TJvDBOdacPasswordDialog = class(TJvBaseDBPasswordDialog)
@@ -48,7 +49,6 @@ type
     property Session: TCustomDAConnection read GetSession write SetSession;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -61,10 +61,10 @@ const
 
 implementation
 
-uses Sysutils, ExtCtrls, ComCtrls, StdCtrls, Types;
+uses
+  SysUtils, ExtCtrls, ComCtrls, StdCtrls, Types;
 
-function TJvDBOdacPasswordDialog.ChangePasswordInSession(NewPassword: string):
-    Boolean;
+function TJvDBOdacPasswordDialog.ChangePasswordInSession(NewPassword: string): Boolean;
 begin
   Result := False;
   if Assigned(Session) then
@@ -72,9 +72,9 @@ begin
       if Session is TOraSession then
         TOraSession(Session).ChangePassword(NewPassword)
       else
-        Session.ExecSQL('ALTER USER '+Session.Username+' IDENTIFIED BY '+NewPassword, []);
+        Session.ExecSQL('ALTER USER ' + Session.Username + ' IDENTIFIED BY ' + NewPassword, []);
       Session.Password := NewPassword;
-      Result := true;
+      Result := True;
     end;
 end;
 
@@ -95,8 +95,6 @@ procedure TJvDBOdacPasswordDialog.SetSession(const Value: TCustomDAConnection);
 begin
   inherited SetSession(Value);
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization

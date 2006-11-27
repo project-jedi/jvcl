@@ -29,11 +29,12 @@ unit JvDBPasswordDialogDoa;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-  Classes,
-  Menus, Oracle, JvBaseDBPasswordDialog;
+  {$ENDIF UNITVERSIONING}
+  Classes, Menus,
+  Oracle,
+  JvBaseDBPasswordDialog;
 
 type
   TJvDBDoaPasswordDialog = class(TJvBaseDBPasswordDialog)
@@ -48,7 +49,6 @@ type
     property Session: TOracleSession read GetSession write SetSession;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -61,17 +61,17 @@ const
 
 implementation
 
-uses Sysutils, ExtCtrls, ComCtrls, StdCtrls, Types;
+uses
+  SysUtils, ExtCtrls, ComCtrls, StdCtrls, Types;
 
-function TJvDBDoaPasswordDialog.ChangePasswordInSession(NewPassword: string):
-    Boolean;
+function TJvDBDoaPasswordDialog.ChangePasswordInSession(NewPassword: string): Boolean;
 begin
   Result := False;
   if Assigned(Session) then
     begin
       TOracleSession(Session).SetPassword(NewPassword);
       Session.LogonPassword := NewPassword;
-      Result := true;
+      Result := True;
     end;
 end;
 
@@ -92,8 +92,6 @@ procedure TJvDBDoaPasswordDialog.SetSession(const Value: TOracleSession);
 begin
   inherited SetSession(Value);
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization
