@@ -838,7 +838,7 @@ end;
 
 {$ENDIF COMPILER5}
 
-//=== { TJvHotTrackOptions } ======================================
+//=== { TJvHotTrackOptions } =================================================
 
 constructor TJvHotTrackOptions.Create;
 begin
@@ -915,7 +915,7 @@ begin
   end;
 end;
 
-//============================================================================
+//=== { TJvExControl } =======================================================
 
 constructor TJvExControl.Create(AOwner: TComponent);
 begin
@@ -1118,7 +1118,7 @@ begin
   end;
 end;
 
-//============================================================================
+//=== { TJvExWinControl } ====================================================
 
 constructor TJvExWinControl.Create(AOwner: TComponent);
 begin
@@ -1455,7 +1455,7 @@ begin
   end;
 end;
 
-//============================================================================
+//=== { TJvExGraphicControl } ================================================
 
 constructor TJvExGraphicControl.Create(AOwner: TComponent);
 begin
@@ -1658,7 +1658,7 @@ begin
   end;
 end;
 
-//============================================================================
+//=== { TJvExCustomControl } =================================================
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
 begin
@@ -1995,7 +1995,7 @@ begin
   end;
 end;
 
-//============================================================================
+//=== { TJvExHintWindow } ====================================================
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);
 begin
@@ -2331,8 +2331,6 @@ begin
       HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
-
-//============================================================================
 
 initialization
   {$IFDEF UNITVERSIONING}

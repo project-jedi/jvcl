@@ -2807,7 +2807,7 @@ begin
   Result := Checked;
 end;
 
-//=== { TJvDynControlVCLTreeView } =========================================
+//=== { TJvDynControlVCLTreeView } ===========================================
 
 procedure TJvDynControlVCLTreeView.ControlSetDefaultProperties;
 begin
@@ -2928,7 +2928,7 @@ begin
   AlphaSort;
 end;
 
-//=== { TJvDynControlVCLProgressbar } =========================================
+//=== { TJvDynControlVCLProgressbar } ========================================
 
 procedure TJvDynControlVCLProgressbar.ControlSetDefaultProperties;
 begin
@@ -3044,9 +3044,9 @@ procedure TJvDynControlVCLTabControl.ControlCreateTab(const AName: string);
 var
   TabSheet: TTabSheet;
 begin
-  TabSheet := TTabSheet.Create(self);
+  TabSheet := TTabSheet.Create(Self);
   TabSheet.Caption := AName;
-  TabSheet.PageControl := TPageControl(self);
+  TabSheet.PageControl := TPageControl(Self);
   TabSheet.Parent := Self;
 end;
 
@@ -3090,7 +3090,7 @@ begin
   RaggedRight := Value;
 end;
 
-//=== { TJvDynControlVCLPageControl } =========================================
+//=== { TJvDynControlVCLPageControl } ========================================
 
 procedure TJvDynControlVCLPageControl.ControlSetDefaultProperties;
 begin

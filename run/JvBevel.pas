@@ -172,7 +172,7 @@ uses
 type
   TReaderAccess = class(TReader);
 
-//=== { TJvBevel } =========================================================
+//=== { TJvBevel } ===========================================================
 
 constructor TJvBevel.Create(AOwner: TComponent);
 begin

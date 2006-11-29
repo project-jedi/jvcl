@@ -3084,7 +3084,7 @@ begin
   LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
-//=== { TJvDynControlCxTreeView } =========================================
+//=== { TJvDynControlCxTreeView } ============================================
 
 procedure TJvDynControlCxTreeView.ControlSetDefaultProperties;
 begin
@@ -3360,7 +3360,7 @@ begin
 end;
 
 
-//=== { TJvDynControlCxTabControl } =========================================
+//=== { TJvDynControlCxTabControl } ==========================================
 
 procedure TJvDynControlCxTabControl.ControlSetDefaultProperties;
 begin
@@ -3497,9 +3497,9 @@ procedure TJvDynControlCxPageControl.ControlCreateTab(const AName: string);
 var
   TabSheet: TcxTabSheet;
 begin
-  TabSheet := TcxTabSheet.Create(self);
+  TabSheet := TcxTabSheet.Create(Self);
   TabSheet.Caption := AName;
-  TabSheet.PageControl := self;
+  TabSheet.PageControl := Self;
   TabSheet.Parent := Self;
 end;
 

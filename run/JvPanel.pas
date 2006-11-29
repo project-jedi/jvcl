@@ -485,7 +485,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== { TJvPanelHotTrackOptions } ===========================================================
+//=== { TJvPanelHotTrackOptions } ============================================
 
 constructor TJvPanelHotTrackOptions.Create;
 begin
@@ -493,7 +493,7 @@ begin
   Color := clBtnFace;
 end;
 
-//=== { TJvCustomArrangePanel } ===========================================================
+//=== { TJvCustomArrangePanel } ==============================================
 
 constructor TJvCustomArrangePanel.Create(AOwner: TComponent);
 begin

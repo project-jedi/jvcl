@@ -1499,7 +1499,7 @@ begin
   end;
 end;
 
-//=== { TTrayIconEnumerator } ==============================================
+//=== { TTrayIconEnumerator } ================================================
 
 constructor TTrayIconEnumerator.Create(DataSize: Integer);
 begin
