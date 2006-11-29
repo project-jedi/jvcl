@@ -53,7 +53,7 @@ type
     ['{E5A52F18-A7B2-4BE8-BAB6-D4F70A0999B3}']
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
@@ -71,17 +71,17 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    property ControlValue: Variant Read ControlGetValue Write ControlSetValue;
+    property ControlValue: Variant read ControlGetValue write ControlSetValue;
   end;
 
   IJvDynControlReadOnly = interface
     ['{24E45D23-AC66-4644-8403-81FF81E28B89}']
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
   end;
 
   IJvDynControlAutoSize = interface
     ['{8807045B-5FDB-4173-827D-B527D8018870}']
-    procedure ControlSetAutoSize(Value: boolean);
+    procedure ControlSetAutoSize(Value: Boolean);
   end;
 
   IJvDynControlAlign = interface
@@ -97,7 +97,7 @@ type
   IJvDynControlColor = interface
     ['{D6E907A4-0E6F-4AB7-98D5-F9C7660660F0}']
     procedure ControlSetColor(Value: TColor);
-    procedure ControlSetParentColor(Value: boolean);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   IJvDynControlBevelBorder = interface
@@ -106,15 +106,15 @@ type
     procedure ControlSetBevelKind(Value: TBevelKind);
     procedure ControlSetBevelOuter(Value: TBevelCut);
     procedure ControlSetBorderStyle(Value: TBorderStyle);
-    procedure ControlSetBorderWidth(Value: integer);
+    procedure ControlSetBorderWidth(Value: Integer);
   end;
 
   IJvDynControlItems = interface
     ['{A4391F0B-67AD-4937-B6D9-A6DBEECDFAE8}']
-    procedure ControlSetSorted(Value: boolean);
+    procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
-    property ControlItems: TStrings Read ControlGetItems Write ControlSetItems;
+    property ControlItems: TStrings read ControlGetItems write ControlSetItems;
   end;
 
   IJvDynControlEdit = interface
@@ -126,7 +126,7 @@ type
   IJvDynControlLabel = interface
     ['{247D29CD-ABA4-4F87-A25D-4987BD950F0C}']
     procedure ControlSetFocusControl(Value: TWinControl);
-    procedure ControlSetWordWrap(Value: boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
   end;
 
   TJvDynControlFileNameDialogKind = (jdkOpen, jdkOpenPicture, jdkSave, jdkSavePicture);
@@ -138,7 +138,7 @@ type
     procedure ControlSetDialogTitle(const Value: string);
     procedure ControlSetDialogOptions(Value: TOpenOptions);
     procedure ControlSetFilter(const Value: string);
-    procedure ControlSetFilterIndex(Value: integer);
+    procedure ControlSetFilterIndex(Value: Integer);
     procedure ControlSetDialogKind(Value: TJvDynControlFileNameDialogKind);
   end;
 
@@ -153,7 +153,7 @@ type
 
   IJvDynControlComboBox = interface
     ['{9E9B46D8-2BAD-4BAA-BFDC-88FA0F3C847D}']
-    procedure ControlSetNewEntriesAllowed(Value: boolean);
+    procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
 
   IJvDynControlDate = interface
@@ -170,34 +170,34 @@ type
 
   IJvDynControlRadioGroup = interface
     ['{ED143973-5D21-41CF-85E1-5EE84E58BCEF}']
-    procedure ControlSetColumns(Value: integer);
+    procedure ControlSetColumns(Value: Integer);
   end;
 
   IJvDynControlSpin = interface
     ['{7E178DEE-6AC2-47F3-B2F8-D5D68B4EC579}']
-    procedure ControlSetIncrement(Value: integer);
+    procedure ControlSetIncrement(Value: Integer);
     procedure ControlSetMinValue(Value: double);
     procedure ControlSetMaxValue(Value: double);
-    procedure ControlSetUseForInteger(Value: boolean);
+    procedure ControlSetUseForInteger(Value: Boolean);
   end;
 
   IJvDynControlPanel = interface
     ['{EB2435FE-D9A6-4D33-9F01-589D0C93C6AC}']
     procedure ControlSetBorder(ABevelInner: TPanelBevel;
-      ABevelOuter: TPanelBevel; ABevelWidth: integer; ABorderStyle: TBorderStyle;
-      ABorderWidth: integer);
+      ABevelOuter: TPanelBevel; ABevelWidth: Integer; ABorderStyle: TBorderStyle;
+      ABorderWidth: Integer);
   end;
 
   IJvDynControlImage = interface
     ['{2E07C9CD-A351-4F86-91F1-45E043455669}']
-    procedure ControlSetAutoSize(Value: boolean);
-    procedure ControlSetIncrementalDisplay(Value: boolean);
-    procedure ControlSetCenter(Value: boolean);
+    procedure ControlSetAutoSize(Value: Boolean);
+    procedure ControlSetIncrementalDisplay(Value: Boolean);
+    procedure ControlSetCenter(Value: Boolean);
     {$IFDEF VCL}
-    procedure ControlSetProportional(Value: boolean);
+    procedure ControlSetProportional(Value: Boolean);
     {$ENDIF VCL}
-    procedure ControlSetStretch(Value: boolean);
-    procedure ControlSetTransparent(Value: boolean);
+    procedure ControlSetStretch(Value: Boolean);
+    procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
     procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
@@ -205,10 +205,10 @@ type
 
   IJvDynControlButton = interface
     ['{65193802-7E31-47FD-A4B8-E1201E0A2F38}']
-    procedure ControlSetDefault(Value: boolean);
-    procedure ControlSetCancel(Value: boolean);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
     procedure ControlSetGlyph(Value: TBitmap);
-    procedure ControlSetNumGlyphs(Value: integer);
+    procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
   end;
 
@@ -220,9 +220,9 @@ type
 
   IJvDynControlMemo = interface
     ['{3AF11540-A5D5-4C9D-9977-DD3D78F1F94F}']
-    procedure ControlSetWantTabs(Value: boolean);
-    procedure ControlSetWantReturns(Value: boolean);
-    procedure ControlSetWordWrap(Value: boolean);
+    procedure ControlSetWantTabs(Value: Boolean);
+    procedure ControlSetWantReturns(Value: Boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
     procedure ControlSetScrollbars(Value: TScrollStyle);
   end;
 
@@ -233,33 +233,33 @@ type
 
   IJvDynControlCheckListBox = interface
     ['{9C50DD6C-E147-4719-A4E9-7F11AD45606C}']
-    procedure ControlSetAllowGrayed(Value: boolean);
-    procedure ControlSetChecked(Index: integer; Value: boolean);
-    procedure ControlSetItemEnabled(Index: integer; Value: boolean);
-    procedure ControlSetHeader(Index: integer; Value: boolean);
-    procedure ControlSetState(Index: integer; Value: TCheckBoxState);
-    function ControlGetChecked(Index: integer): boolean;
-    function ControlGetItemEnabled(Index: integer): boolean;
-    function ControlGetHeader(Index: integer): boolean;
-    function ControlGetState(Index: integer): TCheckBoxState;
+    procedure ControlSetAllowGrayed(Value: Boolean);
+    procedure ControlSetChecked(Index: Integer; Value: Boolean);
+    procedure ControlSetItemEnabled(Index: Integer; Value: Boolean);
+    procedure ControlSetHeader(Index: Integer; Value: Boolean);
+    procedure ControlSetState(Index: Integer; Value: TCheckBoxState);
+    function ControlGetChecked(Index: Integer): Boolean;
+    function ControlGetItemEnabled(Index: Integer): Boolean;
+    function ControlGetHeader(Index: Integer): Boolean;
+    function ControlGetState(Index: Integer): TCheckBoxState;
   end;
 
   IJvDynControlCheckBox = interface
     ['{632BF70D-5F9F-4164-8137-4E344A5C41A3}']
-    procedure ControlSetAllowGrayed(Value: boolean);
+    procedure ControlSetAllowGrayed(Value: Boolean);
     procedure ControlSetState(Value: TCheckBoxState);
     function ControlGetState: TCheckBoxState;
-    property ControlState : TCheckBoxState read ControlGetState write ControlSetState;
+    property ControlState: TCheckBoxState read ControlGetState write ControlSetState;
   end;
 
   IJvDynControlTreeView = interface
     ['{8DFBBAB2-C9C4-4709-A71F-E522D3998650}']
-    procedure ControlSetAutoExpand(Value: boolean);
-    procedure ControlSetHotTrack(Value: boolean);
-    procedure ControlSetShowHint(Value: boolean);
-    procedure ControlSetShowLines(Value: boolean);
-    procedure ControlSetShowRoot(Value: boolean);
-    procedure ControlSetToolTips(Value: boolean);
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
     procedure ControlSetItems(Value: TTreeNodes);
     function ControlGetItems: TTreeNodes;
     property ControlItems: TTreeNodes read ControlGetItems write ControlSetItems;
@@ -273,34 +273,32 @@ type
 
   IJvDynControlProgressbar = interface
     ['{BAC5B6CD-3B65-4EBA-910A-49D152671B06}']
-    procedure ControlSetMax(Value: integer);
-    procedure ControlSetMin(Value: integer);
+    procedure ControlSetMax(Value: Integer);
+    procedure ControlSetMin(Value: Integer);
     procedure ControlSetOrientation(Value: TProgressBarOrientation);
-    procedure ControlSetPosition(Value: integer);
-    procedure ControlSetSmooth(Value: boolean);
-    procedure ControlSetStep(Value: integer);
+    procedure ControlSetPosition(Value: Integer);
+    procedure ControlSetSmooth(Value: Boolean);
+    procedure ControlSetStep(Value: Integer);
   end;
 
   IJvDynControlTabControl = interface
     ['{1C9FA637-14CC-4329-886F-696FD08AE951}']
-    procedure ControlCreateTab (const AName : string);
-    procedure ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
-    procedure ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
-    procedure ControlSetTabIndex (Index : integer);
-    function ControlGetTabIndex : integer;
-    property ControlTabIndex : integer read ControlGetTabIndex write ControlSetTabIndex;
-    procedure ControlSetMultiLine (Value : boolean);
-    procedure ControlSetScrollOpposite (Value : boolean);
-    procedure ControlSetHotTrack (Value : boolean);
-    procedure ControlSetRaggedRight (Value : boolean);
+    procedure ControlCreateTab(const AName: string);
+    procedure ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex(Index: Integer);
+    function ControlGetTabIndex: Integer;
+    property ControlTabIndex: Integer read ControlGetTabIndex write ControlSetTabIndex;
+    procedure ControlSetMultiLine(Value: Boolean);
+    procedure ControlSetScrollOpposite(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetRaggedRight(Value: Boolean);
   end;
 
   IJvDynControlPageControl = interface
     ['{6FCC9619-EA8D-43E6-BB66-D754A01B0720}']
-    function ControlGetPage (const PageName : String) : TWinControl;
+    function ControlGetPage(const PageName: string): TWinControl;
   end;
-
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -313,7 +311,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF UNITVERSIONING}
 initialization

@@ -52,7 +52,7 @@ type
 
   TJvBaseDatasetThreadHandler = class;
 
-  TJvThreadedDatasetThreadEvent = procedure(DataSet: TDataset;
+  TJvThreadedDatasetThreadEvent = procedure(DataSet: TDataSet;
     Operation: TJvThreadedDatasetOperation) of object;
 
   IJvThreadedDatasetInterface = interface
@@ -60,10 +60,10 @@ type
     procedure BreakExecution;
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
-    procedure doInheritedInternalLast;
-    procedure doInheritedInternalRefresh;
-    procedure doInheritedSetActive(Active: Boolean);
-    procedure doInternalOpen;
+    procedure DoInheritedInternalLast;
+    procedure DoInheritedInternalRefresh;
+    procedure DoInheritedSetActive(Active: Boolean);
+    procedure DoInternalOpen;
     function IsThreadAllowed: Boolean;
     function ThreadIsActive: Boolean;
     procedure DoInheritedBeforeOpen;
@@ -73,10 +73,8 @@ type
     function ErrorMessage: string;
     function GetDatasetFetchAllRecords: Boolean;
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
-    property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write
-        SetDatasetFetchAllRecords;
+    property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
   end;
-
 
   TJvThreadedDatasetDialogOptions = class(TJvCustomThreadDialogOptions)
   private
@@ -121,8 +119,7 @@ type
     property OpenInThread: Boolean read FOpenInThread write FOpenInThread default False;
     property Priority: TThreadPriority read FPriority write FPriority default tpIdle;
     property RefreshInThread: Boolean read FRefreshInThread write FRefreshInThread default False;
-    property ShowExceptionMessage: Boolean read FShowExceptionMessage
-      write FShowExceptionMessage default True;
+    property ShowExceptionMessage: Boolean read FShowExceptionMessage write FShowExceptionMessage default True;
   end;
 
   TJvThreadedDatasetCapitalizeLabelOptions = class(TPersistent)
@@ -132,8 +129,7 @@ type
   public
     constructor Create; virtual;
   published
-    property AutoExecuteAfterOpen: Boolean read FAutoExecuteAfterOpen
-      write FAutoExecuteAfterOpen default False;
+    property AutoExecuteAfterOpen: Boolean read FAutoExecuteAfterOpen write FAutoExecuteAfterOpen default False;
     property TrimToFirstBlank: Boolean read FTrimToFirstBlank write FTrimToFirstBlank default False;
   end;
 
@@ -143,18 +139,17 @@ type
     FPause: Boolean;
     FCancel: Boolean;
   protected
-    property Pause: Boolean read FPause write FPause default false;
-    property Cancel: Boolean read FCancel write FCancel default false;
+    property Pause: Boolean read FPause write FPause default False;
+    property Cancel: Boolean read FCancel write FCancel default False;
   public
     constructor Create; virtual;
   published
-    property All: Boolean read FAll write FAll default false;
+    property All: Boolean read FAll write FAll default False;
   end;
 
   TJvBaseThreadedDatasetEnhancedOptions = class(TPersistent)
   private
-    FAllowedContinueRecordFetchOptions:
-        TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
+    FAllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
     FCapitalizeLabelOptions: TJvThreadedDatasetCapitalizeLabelOptions;
     FFetchRowsCheck: Integer;
     FFetchRowsFirst: Integer;
@@ -166,21 +161,18 @@ type
     procedure SetRefreshAsOpenClose(Value: Boolean);
     procedure SetRefreshLastPosition(const Value: Boolean);
   protected
-    function CreateAllowedContinueRecordFetchOptions:
-        TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions; virtual;
+    function CreateAllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
+      virtual;
   public
     constructor Create; virtual;
     destructor Destroy; override;
   published
-    property AllowedContinueRecordFetchOptions:
-        TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions read
-        FAllowedContinueRecordFetchOptions write FAllowedContinueRecordFetchOptions;
+    property AllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions read
+      FAllowedContinueRecordFetchOptions write FAllowedContinueRecordFetchOptions;
     property CapitalizeLabelOptions: TJvThreadedDatasetCapitalizeLabelOptions read
       FCapitalizeLabelOptions write SetCapitalizeLabelOptions;
-    property FetchRowsCheck: Integer read FFetchRowsCheck write SetFetchRowsCheck
-        default 2000;
-    property FetchRowsFirst: Integer read FFetchRowsFirst write SetFetchRowsFirst
-        default 1000;
+    property FetchRowsCheck: Integer read FFetchRowsCheck write SetFetchRowsCheck default 2000;
+    property FetchRowsFirst: Integer read FFetchRowsFirst write SetFetchRowsFirst default 1000;
     property RefreshAsOpenClose: Boolean read FRefreshAsOpenClose
       write SetRefreshAsOpenClose default False;
     property RefreshLastPosition: Boolean read FRefreshLastPosition
@@ -202,7 +194,7 @@ type
     procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl;
       var Panel: TWinControl; var LabelCtrl: TControl; var StaticText: TWinControl;
       const BaseName: string);
-    function GetConnectedDataset: TDataset;
+    function GetConnectedDataset: TDataSet;
     function GetConnectedDatasetHandler: TJvBaseDatasetThreadHandler;
     function GetDialogOptions: TJvThreadedDatasetDialogOptions;
     procedure SetDialogOptions(const Value: TJvThreadedDatasetDialogOptions);
@@ -214,9 +206,8 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure CreateFormControls;
     procedure TransferDialogOptions; override;
-    property ConnectedDataset: TDataset read GetConnectedDataset;
-    property ConnectedDatasetHandler: TJvBaseDatasetThreadHandler read
-        GetConnectedDatasetHandler;
+    property ConnectedDataset: TDataSet read GetConnectedDataset;
+    property ConnectedDatasetHandler: TJvBaseDatasetThreadHandler read GetConnectedDatasetHandler;
     property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
   published
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
@@ -236,21 +227,19 @@ type
 
   TJvBaseDatasetThread = class(TJvThread)
   private
-    FConnectedDataset: TDataset;
+    FConnectedDataset: TDataSet;
     FConnectedDatasetInterface: IJvThreadedDatasetInterface;
     FConnectedDatasetThreadHandler: TJvBaseDatasetThreadHandler;
-    procedure SetConnectedDataset(const Value: TDataset);
-    procedure SetConnectedDatasetThreadHandler(const Value:
-        TJvBaseDatasetThreadHandler);
+    procedure SetConnectedDataset(const Value: TDataSet);
+    procedure SetConnectedDatasetThreadHandler(const Value: TJvBaseDatasetThreadHandler);
   protected
     procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); override;
-    property ConnectedDatasetInterface: IJvThreadedDatasetInterface read
-        FConnectedDatasetInterface;
-    property ConnectedDataset: TDataset read FConnectedDataset;
+    property ConnectedDatasetInterface: IJvThreadedDatasetInterface read FConnectedDatasetInterface;
+    property ConnectedDataset: TDataSet read FConnectedDataset;
   public
     procedure CancelExecute; override;
     property ConnectedDatasetThreadHandler: TJvBaseDatasetThreadHandler read
-        FConnectedDatasetThreadHandler write SetConnectedDatasetThreadHandler;
+      FConnectedDatasetThreadHandler write SetConnectedDatasetThreadHandler;
   end;
 
   TJvBaseDatasetThreadHandler = class(TComponent)
@@ -263,7 +252,7 @@ type
     FCurrentOperation: TJvThreadedDatasetOperation;
     FCurrentOperationStart: TDateTime;
     FCurrentRow: Integer;
-    FDataset: TDataset;
+    FDataset: TDataSet;
     FEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions;
     FErrorMessage: string;
     FExecuteThread: TJvBaseDatasetThread;
@@ -300,10 +289,9 @@ type
     procedure SynchBeforeThreadExecution;
     procedure SynchContinueFetchMessageDlg;
     procedure SynchErrorMessageDlg;
-    property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write
-        SetDatasetFetchAllRecords;
+    property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
     property OperationWasHandledInThread: Boolean read FOperationWasHandledInThread
-        write FOperationWasHandledInThread;
+      write FOperationWasHandledInThread;
   protected
     procedure BreakExecution;
     function CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions; virtual;
@@ -314,10 +302,8 @@ type
     procedure ExecuteThreadSynchronize(Method: TThreadMethod);
     procedure HandleAfterOpenRefreshThread;
     procedure HandleBeforeOpenRefresh;
-    procedure IntAfterThreadExecution(DataSet: TDataset; Operation:
-        TJvThreadedDatasetOperation);
-    procedure IntBeforeThreadExecution(DataSet: TDataset; Operation:
-        TJvThreadedDatasetOperation);
+    procedure IntAfterThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
+    procedure IntBeforeThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
     procedure IntSynchAfterOpen;
     procedure IntSynchAfterRefresh;
     procedure IntSynchBeforeOpen;
@@ -327,16 +313,12 @@ type
     procedure ThreadExecute(Sender: TObject; Params: Pointer);
     property CurrentOperation: TJvThreadedDatasetOperation read GetCurrentOperation;
     property ExecuteThread: TJvBaseDatasetThread read FExecuteThread;
-    property FetchMode: TJvThreadedDatasetFetchMode read GetFetchMode write
-        SetFetchMode;
-    property IntRowCheckEnabled: Boolean read FIntRowCheckEnabled write
-        FIntRowCheckEnabled;
-    property IThreadedDatasetInterface: IJvThreadedDatasetInterface read
-        FIThreadedDatasetInterface;
+    property FetchMode: TJvThreadedDatasetFetchMode read GetFetchMode write SetFetchMode;
+    property IntRowCheckEnabled: Boolean read FIntRowCheckEnabled write FIntRowCheckEnabled;
+    property IThreadedDatasetInterface: IJvThreadedDatasetInterface read FIThreadedDatasetInterface;
     property ThreadDialog: TJvDatasetThreadDialog read FThreadDialog;
   public
-    constructor Create(AOwner: TComponent; ADataset: TDataset); reintroduce;
-        virtual;
+    constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce; virtual;
     destructor Destroy; override;
     procedure AfterOpen;
     procedure AfterRefresh;
@@ -349,27 +331,22 @@ type
     procedure MoveTo(Position: Integer);
     procedure SetActive(Value: Boolean); virtual;
     function ThreadIsActive: Boolean;
-    property CurrentAction: TJvThreadedDatasetAction read GetCurrentAction write
-        SetCurrentAction;
-    property CurrentFetchDuration: TDateTime read GetCurrentFetchDuration write
-        SetCurrentFetchDuration;
-    property CurrentOpenDuration: TDateTime read GetCurrentOpenDuration write
-        SetCurrentOpenDuration;
+    property CurrentAction: TJvThreadedDatasetAction read GetCurrentAction write SetCurrentAction;
+    property CurrentFetchDuration: TDateTime read GetCurrentFetchDuration write SetCurrentFetchDuration;
+    property CurrentOpenDuration: TDateTime read GetCurrentOpenDuration write SetCurrentOpenDuration;
     property CurrentOperationAction: string read GetCurrentOperationAction;
     property CurrentRow: Integer read FCurrentRow;
-    property Dataset: TDataset read FDataset;
+    property Dataset: TDataSet read FDataset;
     property ErrorMessage: string read FErrorMessage write SetErrorMessage;
   published
-    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions
-        write SetDialogOptions;
+    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
     property EnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions read
-        FEnhancedOptions write SetEnhancedOptions;
-    property ThreadOptions: TJvThreadedDatasetThreadOptions read FThreadOptions write
-        SetThreadOptions;
+      FEnhancedOptions write SetEnhancedOptions;
+    property ThreadOptions: TJvThreadedDatasetThreadOptions read FThreadOptions write SetThreadOptions;
     property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
-        FAfterThreadExecution write FAfterThreadExecution;
+      FAfterThreadExecution write FAfterThreadExecution;
     property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
-        FBeforeThreadExecution write FBeforeThreadExecution;
+      FBeforeThreadExecution write FBeforeThreadExecution;
   end;
 
 
@@ -386,8 +363,10 @@ const
 implementation
 
 uses
-  Dialogs, 
+  Dialogs,
   JvDynControlEngineIntf, JvDSADialogs, JvResources;
+
+//=== { TJvDatasetThreadDialog } =============================================
 
 function TJvDatasetThreadDialog.CreateDialogOptions: TJvCustomThreadDialogOptions;
 begin
@@ -409,8 +388,8 @@ begin
       ThreadDialogForm := TJvDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
         DialogOptions.FormStyle, TWinControl(ConnectedThread.Owner.Owner))
     else
-     ThreadDialogForm := TJvDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
-       DialogOptions.FormStyle);
+      ThreadDialogForm := TJvDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
+        DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
     ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
@@ -551,7 +530,7 @@ begin
   FTimeStaticText.Width:= FTimePanel.Width - FTimeLabel.Width;
 end;
 
-function TJvDatasetThreadDialogForm.GetConnectedDataset: TDataset;
+function TJvDatasetThreadDialogForm.GetConnectedDataset: TDataSet;
 begin
   if Assigned(ConnectedDatasetHandler) then
     Result := ConnectedDatasetHandler.Dataset
@@ -559,8 +538,7 @@ begin
     Result := nil;
 end;
 
-function TJvDatasetThreadDialogForm.GetConnectedDatasetHandler:
-    TJvBaseDatasetThreadHandler;
+function TJvDatasetThreadDialogForm.GetConnectedDatasetHandler: TJvBaseDatasetThreadHandler;
 begin
   if Assigned(ConnectedDataComponent) and (ConnectedDataComponent is TJvBaseDatasetThreadHandler) then
     Result := TJvBaseDatasetThreadHandler(ConnectedDataComponent)
@@ -614,6 +592,7 @@ begin
 end;
 
 //=== { TJvThreadedDatasetDialogOptions } ======================================
+
 constructor TJvThreadedDatasetDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create(AOwner);
@@ -676,7 +655,7 @@ begin
     inherited CancelExecute;
 end;
 
-procedure TJvBaseDatasetThread.SetConnectedDataset(const Value: TDataset);
+procedure TJvBaseDatasetThread.SetConnectedDataset(const Value: TDataSet);
 begin
   FConnectedDataset := Value;
   if Assigned(Value) then
@@ -688,8 +667,7 @@ begin
 
 end;
 
-procedure TJvBaseDatasetThread.SetConnectedDatasetThreadHandler(const Value:
-    TJvBaseDatasetThreadHandler);
+procedure TJvBaseDatasetThread.SetConnectedDatasetThreadHandler(const Value: TJvBaseDatasetThreadHandler);
 begin
   FConnectedDatasetThreadHandler := Value;
   if Assigned(Value) then
@@ -737,19 +715,18 @@ begin
   Result := TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions.Create;
 end;
 
-procedure TJvBaseThreadedDatasetEnhancedOptions.SetCapitalizeLabelOptions(const Value: TJvThreadedDatasetCapitalizeLabelOptions);
+procedure TJvBaseThreadedDatasetEnhancedOptions.SetCapitalizeLabelOptions(
+  const Value: TJvThreadedDatasetCapitalizeLabelOptions);
 begin
   FCapitalizeLabelOptions.Assign(Value);
 end;
 
-procedure TJvBaseThreadedDatasetEnhancedOptions.SetFetchRowsCheck(const Value:
-    Integer);
+procedure TJvBaseThreadedDatasetEnhancedOptions.SetFetchRowsCheck(const Value: Integer);
 begin
   FFetchRowsCheck := Value;
 end;
 
-procedure TJvBaseThreadedDatasetEnhancedOptions.SetFetchRowsFirst(const Value:
-    Integer);
+procedure TJvBaseThreadedDatasetEnhancedOptions.SetFetchRowsFirst(const Value: Integer);
 begin
   FFetchRowsFirst := Value;
 end;
@@ -773,8 +750,7 @@ begin
   FTrimToFirstBlank := False;
 end;
 
-constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset:
-    TDataset);
+constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset: TDataSet);
 begin
   inherited Create (AOwner);
   FDataset := ADataset;
@@ -838,7 +814,8 @@ end;
 procedure TJvBaseDatasetThreadHandler.BreakExecution;
 begin
   CurrentAction := tdaCancel;
-  if (FetchMode = tdfmFetch) and (EnhancedOptions.AllowedContinueRecordFetchOptions.Pause or EnhancedOptions.AllowedContinueRecordFetchOptions.Cancel) then
+  if (FetchMode = tdfmFetch) and (EnhancedOptions.AllowedContinueRecordFetchOptions.Pause or
+    EnhancedOptions.AllowedContinueRecordFetchOptions.Cancel) then
     if EnhancedOptions.AllowedContinueRecordFetchOptions.Pause then
       FetchMode := tdfmBreak
     else
@@ -866,7 +843,8 @@ begin
             Upper := True;
             S[J] := ' ';
           end
-          else if Upper then
+          else
+          if Upper then
           begin
             S[J] := UpCase(S[J]);
             Upper := False;
@@ -881,8 +859,7 @@ begin
       end;
 end;
 
-function TJvBaseDatasetThreadHandler.CheckContinueRecordFetch:
-    TJvThreadedDatasetContinueCheckResult;
+function TJvBaseDatasetThreadHandler.CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
 begin
   Result := tdccrContinue;
   FCurrentRow := Dataset.RecordCount;
@@ -930,21 +907,20 @@ begin
     end;
 end;
 
-function TJvBaseDatasetThreadHandler.CreateEnhancedOptions:
-    TJvBaseThreadedDatasetEnhancedOptions;
+function TJvBaseDatasetThreadHandler.CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions;
 begin
   Result := TJvBaseThreadedDatasetEnhancedOptions.Create;
 end;
 
 procedure TJvBaseDatasetThreadHandler.DoThreadLast;
 begin
-  IThreadedDatasetInterface.doInheritedInternalLast;
+  IThreadedDatasetInterface.DoInheritedInternalLast;
 end;
 
 procedure TJvBaseDatasetThreadHandler.DoThreadOpen;
 begin
   try
-    IThreadedDatasetInterface.doInheritedSetActive(True);
+    IThreadedDatasetInterface.DoInheritedSetActive(True);
   finally
     HandleAfterOpenRefreshThread;
   end;
@@ -955,12 +931,12 @@ begin
   try
     if not EnhancedOptions.RefreshAsOpenClose then
     begin
-      IThreadedDatasetInterface.doInheritedInternalRefresh;
+      IThreadedDatasetInterface.DoInheritedInternalRefresh;
     end
     else
     begin
       Dataset.Close;
-      IThreadedDatasetInterface.doInternalOpen;
+      IThreadedDatasetInterface.DoInternalOpen;
     end;
   finally
     HandleAfterOpenRefreshThread;
@@ -1050,7 +1026,7 @@ begin
   if Assigned(IThreadedDatasetInterface) then
     Result := IThreadedDatasetInterface.DatasetFetchAllRecords
   else
-    Result := false;
+    Result := False;
 end;
 
 function TJvBaseDatasetThreadHandler.GetDialogOptions:
@@ -1078,9 +1054,10 @@ begin
     begin
       Dataset.First;
       if DatasetFetchAllRecords then
-        IThreadedDatasetInterface.doInheritedInternalLast
+        IThreadedDatasetInterface.DoInheritedInternalLast
       else
-        if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or (FMoveToRecordAfterOpen > Dataset.RecordCount) then
+        if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or
+          (FMoveToRecordAfterOpen > Dataset.RecordCount) then
           if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
             Dataset.MoveBy(FMoveToRecordAfterOpen - 1)
           else
@@ -1123,15 +1100,15 @@ begin
   DatasetFetchAllRecords := False;
 end;
 
-procedure TJvBaseDatasetThreadHandler.IntAfterThreadExecution(DataSet: TDataset;
-    Operation: TJvThreadedDatasetOperation);
+procedure TJvBaseDatasetThreadHandler.IntAfterThreadExecution(DataSet: TDataSet;
+  Operation: TJvThreadedDatasetOperation);
 begin
   if Assigned(FAfterThreadExecution) then
     FAfterThreadExecution(DataSet, Operation);
 end;
 
-procedure TJvBaseDatasetThreadHandler.IntBeforeThreadExecution(DataSet: TDataset;
-    Operation: TJvThreadedDatasetOperation);
+procedure TJvBaseDatasetThreadHandler.IntBeforeThreadExecution(DataSet: TDataSet;
+  Operation: TJvThreadedDatasetOperation);
 begin
   if Assigned(FBeforeThreadExecution) then
     FBeforeThreadExecution(DataSet, Operation);
@@ -1139,14 +1116,14 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.InternalLast;
 var
-  ShowModal    :Boolean;
+  ShowModal: Boolean;
 begin
   if FCurrentOperation <> tdoNothing then
     Exit;
   FCurrentOperation := tdoLast;
   if not ThreadOptions.LastInThread or ThreadIsActive or (csDesigning in ComponentState) then
   begin
-    IThreadedDatasetInterface.doInheritedInternalLast;
+    IThreadedDatasetInterface.DoInheritedInternalLast;
     FCurrentOperation := tdoNothing;
   end
   else
@@ -1172,7 +1149,7 @@ begin
   if not ThreadOptions.RefreshInThread or not IThreadedDatasetInterface.IsThreadAllowed or
     ThreadIsActive or (csDesigning in ComponentState) then
   begin
-    IThreadedDatasetInterface.doInheritedInternalRefresh;
+    IThreadedDatasetInterface.DoInheritedInternalRefresh;
     FCurrentOperation := tdoNothing;
   end
   else
@@ -1184,7 +1161,8 @@ begin
   if EnhancedOptions.CapitalizeLabelOptions.AutoExecuteAfterOpen then
     CapitalizeDatasetLabels;
   IThreadedDatasetInterface.DoInheritedAfterOpen;
-  FIntDatasetWasFiltered := Dataset.Filtered or FIntDatasetWasFiltered; // Added because in the afteropen event the filtered could be activated, and it should be deactivated for the dialog
+  // Added because in the afteropen event the filtered could be activated, and it should be deactivated for the dialog
+  FIntDatasetWasFiltered := Dataset.Filtered or FIntDatasetWasFiltered;
   Dataset.Filtered := False;
 end;
 
@@ -1214,7 +1192,7 @@ begin
   begin
     CurrentOpenDuration := 0;
     CurrentFetchDuration := 0;
-    IThreadedDatasetInterface.doInheritedSetActive(Value);
+    IThreadedDatasetInterface.DoInheritedSetActive(Value);
   end
   else
   begin
@@ -1225,7 +1203,7 @@ begin
       FCurrentOperation := tdoOpen;
     if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
     begin
-      IThreadedDatasetInterface.doInheritedSetActive(Value);
+      IThreadedDatasetInterface.DoInheritedSetActive(Value);
       if CurrentOperation <> tdoRefresh then
         FCurrentOperation := tdoNothing;
     end
@@ -1234,8 +1212,7 @@ begin
   end;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetCurrentAction(const Value:
-    TJvThreadedDatasetAction);
+procedure TJvBaseDatasetThreadHandler.SetCurrentAction(const Value: TJvThreadedDatasetAction);
 begin
   FCurrentAction := Value;
 end;
@@ -1250,21 +1227,18 @@ begin
   FCurrentOpenDuration := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetDatasetFetchAllRecords(const Value:
-    Boolean);
+procedure TJvBaseDatasetThreadHandler.SetDatasetFetchAllRecords(const Value: Boolean);
 begin
    if Assigned(IThreadedDatasetInterface) then
     IThreadedDatasetInterface.DatasetFetchAllRecords := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetDialogOptions(Value:
-    TJvThreadedDatasetDialogOptions);
+procedure TJvBaseDatasetThreadHandler.SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
 begin
   ThreadDialog.DialogOptions.Assign(Value);
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetEnhancedOptions(Value:
-    TJvBaseThreadedDatasetEnhancedOptions);
+procedure TJvBaseDatasetThreadHandler.SetEnhancedOptions(Value: TJvBaseThreadedDatasetEnhancedOptions);
 begin
   FEnhancedOptions.Assign(Value);
 end;
@@ -1274,14 +1248,12 @@ begin
   FErrorMessage := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetFetchMode(const Value:
-    TJvThreadedDatasetFetchMode);
+procedure TJvBaseDatasetThreadHandler.SetFetchMode(const Value: TJvThreadedDatasetFetchMode);
 begin
   FFetchMode := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetThreadOptions(const Value:
-    TJvThreadedDatasetThreadOptions);
+procedure TJvBaseDatasetThreadHandler.SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
 begin
   FThreadOptions.Assign(Value);
 end;
@@ -1375,12 +1347,14 @@ begin
   Result := not ExecuteThread.Terminated;
 end;
 
+//=== { TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions } ============
+
 constructor TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions.Create;
 begin
   inherited Create;
-  FAll := false;
-  FCancel := false;
-  FPause := false;
+  FAll := False;
+  FCancel := False;
+  FPause := False;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -147,7 +147,8 @@ begin
     if Assigned(GridView) then
       if GridView.DataController is TcxGridDBDataController then
         Result := TcxGridDBDataController(GridView.DataController).DataSource
-      else if GridView.DataController is  TcxGridDBChartDataController then
+      else
+      if GridView.DataController is  TcxGridDBChartDataController then
         Result := TcxGridDBChartDataController(GridView.DataController).DataSource
       else
         Result := nil
