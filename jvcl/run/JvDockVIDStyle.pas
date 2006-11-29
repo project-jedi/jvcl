@@ -4421,7 +4421,7 @@ begin
   end;
 end;
 
-//=== { TJvDockVIDConjoinServerOption } =====================================
+//=== { TJvDockVIDConjoinServerOption } ======================================
 
 constructor TJvDockVIDConjoinServerOption.Create(ADockStyle: TJvDockObservableStyle);
 begin

@@ -143,7 +143,7 @@ end;
 
 function TJvDBDoaLogonDialog.CreatePasswordChangeDialog: TJvBaseDBPasswordDialog;
 begin
-  Result := TJvDBDoaPasswordDialog.Create(self);
+  Result := TJvDBDoaPasswordDialog.Create(Self);
 end;
 
 procedure TJvDBDoaLogonDialog.FillDatabaseComboBoxDefaultValues(Items: TStrings);

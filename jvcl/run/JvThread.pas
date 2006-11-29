@@ -269,7 +269,7 @@ begin
   end;
 end;
 
-//=== { TJvCustomThreadDialogOptions } =========================================
+//=== { TJvCustomThreadDialogOptions } =======================================
 
 constructor TJvCustomThreadDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
@@ -289,7 +289,7 @@ begin
   FShowModal := Value;
 end;
 
-//=== { TJvCustomThreadDialogForm } =========================================
+//=== { TJvCustomThreadDialogForm } ==========================================
 
 constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent;
   Dummy: Integer = 0);

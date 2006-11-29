@@ -408,7 +408,7 @@ begin
   inherited DialogOptions.Assign(Value);
 end;
 
-//=== { TJvDatasetThreadDialogForm } ===================================
+//=== { TJvDatasetThreadDialogForm } =========================================
 
 constructor TJvDatasetThreadDialogForm.Create(AOwner: TComponent);
 begin
@@ -511,7 +511,7 @@ begin
       if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
         ITmpControl.ControlSetCaption(
           FormatDateTime('hh:nn:ss', CurrentOpenDuration) + ' / ' +
-          FormatDateTime('hh:nn:ss', CurrentFetchDuration));
+            FormatDateTime('hh:nn:ss', CurrentFetchDuration));
     end
   else
   begin
@@ -591,7 +591,7 @@ begin
   FillDialogData;
 end;
 
-//=== { TJvThreadedDatasetDialogOptions } ======================================
+//=== { TJvThreadedDatasetDialogOptions } ====================================
 
 constructor TJvThreadedDatasetDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
@@ -642,6 +642,8 @@ begin
   FShowTimeLabel := Value;
 end;
 
+//=== { TJvBaseDatasetThread } ===============================================
+
 procedure TJvBaseDatasetThread.intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
 begin
   DialogForm.ConnectedDataComponent := ConnectedDatasetThreadHandler;
@@ -676,7 +678,7 @@ begin
     SetConnectedDataset (nil);
 end;
 
-// { TJvThreadedDatasetThreadOptions } =========================================
+//=== { TJvThreadedDatasetThreadOptions } ====================================
 
 constructor TJvThreadedDatasetThreadOptions.Create;
 begin
@@ -688,7 +690,7 @@ begin
   FShowExceptionMessage := True;
 end;
 
-//=== { TJvThreadedDatasetEnhancedOptions } ====================================
+//=== { TJvThreadedDatasetEnhancedOptions } ==================================
 
 constructor TJvBaseThreadedDatasetEnhancedOptions.Create;
 begin
@@ -709,7 +711,7 @@ begin
 end;
 
 function
-    TJvBaseThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
+  TJvBaseThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
     TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
 begin
   Result := TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions.Create;
@@ -741,7 +743,7 @@ begin
   FRefreshLastPosition := Value;
 end;
 
-//=== { TJvThreadedDatasetCapitalizeLabelOptions } =============================
+//=== { TJvThreadedDatasetCapitalizeLabelOptions } ===========================
 
 constructor TJvThreadedDatasetCapitalizeLabelOptions.Create;
 begin
@@ -749,6 +751,8 @@ begin
   FAutoExecuteAfterOpen := False;
   FTrimToFirstBlank := False;
 end;
+
+//=== { TJvBaseDatasetThreadHandler } ========================================
 
 constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset: TDataSet);
 begin
@@ -762,7 +766,7 @@ begin
   FThreadDialog := TJvDatasetThreadDialog.Create(Self);
   FExecuteThread.Exclusive := True;
   FExecuteThread.OnExecute := ThreadExecute;
-  FExecuteThread.ConnectedDatasetThreadHandler := self;
+  FExecuteThread.ConnectedDatasetThreadHandler := Self;
   FExecuteThread.ThreadDialog := ThreadDialog;
   FEnhancedOptions := CreateEnhancedOptions;
   FCurrentOperation := tdoNothing;

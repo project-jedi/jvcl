@@ -1483,7 +1483,7 @@ end;
 
 {$ENDIF USE_3RDPARTY_SMIMPORT}
 
-//=== { TJvDatabaseModifyAllAction } ============================================
+//=== { TJvDatabaseModifyAllAction } =========================================
 
 constructor TJvDatabaseModifyAllAction.Create(AOwner: TComponent);
 begin
@@ -1509,7 +1509,7 @@ var
 begin
   if not Assigned(ControlEngine) then
     Exit;
-  JvParameterList := TJvParameterList.Create(self);
+  JvParameterList := TJvParameterList.Create(Self);
   try
     JvParameterList.Messages.Caption := SModifyAllCaption;
     JvParameterList.Messages.OkButton := SModifyAllOkButton;
@@ -1631,7 +1631,7 @@ var
 begin
   if not Assigned(DatasetEngine) then
     Exit;
-  ParameterList := TJvParameterList.Create(self);
+  ParameterList := TJvParameterList.Create(Self);
   try
     Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
     with TJvMemoParameter(Parameter) do

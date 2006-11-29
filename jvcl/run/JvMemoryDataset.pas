@@ -368,7 +368,7 @@ const
 type
   TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
 
-//=== { Utility routines } ====================================================
+//=== { Utility routines } ===================================================
 
 function FindVarData(const V: Variant): PVarData; 
 begin

@@ -781,7 +781,7 @@ end;
 
 procedure TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind);
 begin
-   self.AddFromStream(AStream, AType, '');
+   Self.AddFromStream(AStream, AType, '');
 end;
 
 function TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind; aTitle : String): Integer;

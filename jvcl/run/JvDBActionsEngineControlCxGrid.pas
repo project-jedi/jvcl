@@ -96,7 +96,7 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Grids;
 
-//=== { TJvDatabaseActionDevExpCxGridControlEngine } ================================
+//=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 

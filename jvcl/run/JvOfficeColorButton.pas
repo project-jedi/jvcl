@@ -431,9 +431,9 @@ end;
 
 constructor TJvCustomOfficeColorButton.Create(AOwner: TComponent);
 var
-  lArrowColor:TArrowColor;
-  lOwner:TComponent;
-  lColorsChanged:Boolean;
+  LArrowColor: TArrowColor;
+  LOwner: TComponent;
+  LColorsChanged: Boolean;
 begin
   inherited Create(AOwner);
   FInited := False;
@@ -471,9 +471,9 @@ begin
     AllowAllUp := True;
     Tag := StandardColCount + 4;
     ArrowDirection := akBottom;
-    lArrowColor.Enabled := clBlack;
-    lArrowColor.Disabled := clBtnShadow;
-    ArrowColor:= lArrowColor;
+    LArrowColor.Enabled := clBlack;
+    LArrowColor.Disabled := clBtnShadow;
+    ArrowColor := LArrowColor;
     OnClick := DoArrowButtonClick;
   end;
 
@@ -508,7 +508,7 @@ begin
   end;
   if FColorsListChanged then //Changed the colors value,recreate buttons
     CreateStandardColorDrawers;
-  lColorsChanged:= FColorsListChanged;
+  LColorsChanged := FColorsListChanged;
 
   FColorsListChanged:= False;
   SystemColors.BeginUpdate;
@@ -521,13 +521,13 @@ begin
   end;
   if FColorsListChanged then //Changed the colors value,recreate buttons
     CreateSystemColorDrawers;
-  lColorsChanged:= lColorsChanged or FColorsListChanged;
+  LColorsChanged := LColorsChanged or FColorsListChanged;
 
-  lOwner := GetTopOwner(self);
+  LOwner := GetTopOwner(Self);
   // make sure that if this is not loading from DFM file or stream.
-  if (lOwner<>nil) and (lOwner.ComponentState * [csReading,csLoading] = []) then
+  if (LOwner <> nil) and (LOwner.ComponentState * [csReading,csLoading] = []) then
   begin
-    FColorsListChanged:= False;
+    FColorsListChanged := False;
     UserColors.BeginUpdate;
     UserColors.OnChange := DoColorsListChanged;
     UserColors.EndUpdate;
@@ -536,12 +536,12 @@ begin
     UserColors.OnChange := nil;
     if FColorsListChanged then //Changed the colors value,recreate buttons
       CreateUserColorDrawers;
-    lColorsChanged:= lColorsChanged or FColorsListChanged;
+    LColorsChanged := LColorsChanged or FColorsListChanged;
     FProperties.CreateDefaultText;
   end;
-  FColorsListChanged:= False;
+  FColorsListChanged := False;
 
-  if lColorsChanged then //StandardColors or SystemColors Or userColors changed.
+  if LColorsChanged then //StandardColors or SystemColors Or userColors changed.
     RearrangeControls;
     
 //  Font.Name := 'MS Shell Dlg 2';

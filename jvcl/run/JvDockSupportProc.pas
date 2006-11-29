@@ -431,7 +431,7 @@ begin
   end;
 end;
 
-//=== { TJvMsgWindow } =========================================================
+//=== { TJvMsgWindow } =======================================================
 
 constructor TJvMsgWindow.Create;
 begin

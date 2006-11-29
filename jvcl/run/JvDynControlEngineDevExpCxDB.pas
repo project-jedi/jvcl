@@ -599,16 +599,16 @@ const
 implementation
 
 uses
-{$IFDEF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-{$ENDIF HAS_UNIT_VARIANTS}
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, TypInfo,
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
   cxEdit, cxTimeEdit, cxDBLookupComboBox, cxMemo, cxCheckbox,
   cxGridTableView, cxGridCustomView,
   cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   JvDynControlEngineTools, JvConsts, JvJCLUtils, JvVCL5Utils;
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
@@ -616,7 +616,7 @@ uses
 var
   IntDynControlEngineCxDB: TJvDynControlEngineDB = nil;
 
-  //=== { TJvDynControlCxDBEdit } ==============================================
+//=== { TJvDynControlCxDBEdit } ==============================================
 
 procedure TJvDynControlCxDBEdit.ControlSetDefaultProperties;
 begin
@@ -1064,7 +1064,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-//=== { TJvDynControlCxDBDirectoryEdit } ====================================
+//=== { TJvDynControlCxDBDirectoryEdit } =====================================
 
 constructor TJvDynControlCxDBDirectoryEdit.Create(AOwner: TComponent);
 begin
@@ -1078,13 +1078,13 @@ end;
 
 procedure TJvDynControlCxDBDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Dir: WideString;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   if Dir = '' then
@@ -1094,17 +1094,17 @@ begin
       Dir := PathDelim;
   if not DirectoryExists(Dir) then
     Dir := PathDelim;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$IFDEF MSWINDOWS}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    {$IFDEF MSWINDOWS}
     if SelectDirectory('', '', Dir) then
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
+    {$ENDIF MSWINDOWS}
+      {$IFDEF UNIX}
       if SelectDirectory('', '/', Dir, False) then
-{$ENDIF UNIX}
-{$ENDIF VisualCLX}
+      {$ENDIF UNIX}
+  {$ENDIF VisualCLX}
         ControlSetValue(Dir);
   if CanFocus then
     SetFocus;
@@ -1174,7 +1174,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvDynControlCxDBDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
 begin
   FDialogOptions := Value;
@@ -1822,12 +1821,11 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvDynControlCxDBImage.ControlSetProportional(Value: Boolean);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   //  Proportional := Value;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 {$ENDIF VCL}
 
@@ -2292,10 +2290,10 @@ begin
   if Pos('s', Value) > 0 then
     Properties.TimeFormat := tfHourMinSec
   else
-    if Pos('m', Value) > 0 then
-      Properties.TimeFormat := tfHourMin
-    else
-      Properties.TimeFormat := tfHour;
+  if Pos('m', Value) > 0 then
+    Properties.TimeFormat := tfHourMin
+  else
+    Properties.TimeFormat := tfHour;
 end;
 
 procedure TJvDynControlCxDBTimeEdit.ControlSetDataSource(Value: TDataSource);
@@ -2416,49 +2414,49 @@ begin
   if not Assigned(ADataComponent) then
     Result := nil
   else
-    if ADataComponent is TcxCustomGridTableView then
-      if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
-        Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
-      else
-        Result := nil
+  if ADataComponent is TcxCustomGridTableView then
+    if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
+      Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
     else
-      if (ADataComponent is TcxCustomGrid) and
-        (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
-        if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController
-          then
-          Result :=
-            TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).DataSource
-        else
-          Result := nil
-      else
-        if ADataComponent is TcxDBTextEdit then
-          Result := TcxDBTextEdit(ADataComponent).Databinding.DataSource
-        else
-          if ADataComponent is TcxDBNavigator then
-            Result := TcxDBNavigator(ADataComponent).DataSource
-          else
-            if ADataComponent is TcxDBListbox then
-              Result := TcxDBListbox(ADataComponent).Databinding.DataSource
-            else
-              if ADataComponent is TcxDBLookupComboBox then
-                Result := TcxDBLookupComboBox(ADataComponent).Databinding.DataSource
-              else
-                if ADataComponent is TcxDBImage then
-                  Result := TcxDBImage(ADataComponent).Databinding.DataSource
-                else
-                  if ADataComponent is TcxDBMemo then
-                    Result := TcxDBMemo(ADataComponent).Databinding.DataSource
-                  else
-                    if ADataComponent is TcxDBRadioGroup then
-                      Result := TcxDBRadioGroup(ADataComponent).Databinding.DataSource
-                    else
-                      if ADataComponent is TcxDBRichEdit then
-                        Result := TcxDBRichEdit(ADataComponent).Databinding.DataSource
-                      else
-                        if ADataComponent is TcxDBCheckBox then
-                          Result := TcxDBCheckBox(ADataComponent).Databinding.DataSource
-                        else
-                          Result := inherited GetDataSourceFromDataComponent(ADataComponent);
+      Result := nil
+  else
+  if (ADataComponent is TcxCustomGrid) and
+    (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
+    if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController
+      then
+      Result :=
+        TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).DataSource
+    else
+      Result := nil
+  else
+  if ADataComponent is TcxDBTextEdit then
+    Result := TcxDBTextEdit(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBNavigator then
+    Result := TcxDBNavigator(ADataComponent).DataSource
+  else
+  if ADataComponent is TcxDBListbox then
+    Result := TcxDBListbox(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBLookupComboBox then
+    Result := TcxDBLookupComboBox(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBImage then
+    Result := TcxDBImage(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBMemo then
+    Result := TcxDBMemo(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBRadioGroup then
+    Result := TcxDBRadioGroup(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBRichEdit then
+    Result := TcxDBRichEdit(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBCheckBox then
+    Result := TcxDBCheckBox(ADataComponent).Databinding.DataSource
+  else
+    Result := inherited GetDataSourceFromDataComponent(ADataComponent);
 end;
 
 type
@@ -2614,21 +2612,21 @@ end;
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   IntDynControlEngineCxDB := TJvDynControlEngineDevExpCxDB.Create;
   SetDefaultDynControlEngineDB(IntDynControlEngineCxDB);
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 finalization
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   FreeAndNil(IntDynControlEngineCxDB);
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-{$IFDEF UNITVERSIONING}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

@@ -540,7 +540,7 @@ const
   SProgramVersion = 'Program Version ';
   SLastCheck = 'LastCheck';
 
-  //=== Common Functions =======================================================
+//=== Common Functions =======================================================
 
 function CompareVersionNumbers(AVersion1, AVersion2: string): Integer;
 var

@@ -161,14 +161,14 @@ type
   protected
     procedure CopyContents(iConnectionList: TJvBaseConnectionList; iClearBefore: Boolean);
     function CreateObject: TObject; override;
-    function GetConnection(I: LongInt): TJvBaseConnectionInfo;
+    function GetConnection(I: Longint): TJvBaseConnectionInfo;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddConnection(ConnectionInfo: TJvBaseConnectionInfo);
     function CreateConnection: TJvBaseConnectionInfo;
     function IndexOfNames(const Username, Database: string): Integer;
-    property Connection[I: LongInt]: TJvBaseConnectionInfo read GetConnection;
+    property Connection[I: Longint]: TJvBaseConnectionInfo read GetConnection;
   published
     //1 Stores the data of the last connection
     property LastConnect: TJvBaseConnectionInfo read FLastConnect write SetLastConnect;
@@ -2196,10 +2196,10 @@ end;
 
 function TJvBaseConnectionList.CreateObject: TObject;
 begin
-  Result := TJvBaseConnectionInfo.Create(self);
+  Result := TJvBaseConnectionInfo.Create(Self);
 end;
 
-function TJvBaseConnectionList.GetConnection(I: LongInt): TJvBaseConnectionInfo;
+function TJvBaseConnectionList.GetConnection(I: Longint): TJvBaseConnectionInfo;
 begin
   if (i >= 0) and (i < Count) then
     Result := TJvBaseConnectionInfo(Objects[i])

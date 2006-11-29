@@ -1365,21 +1365,21 @@ begin
   FDividerLine1 := JvDividerLineClass.Create(Self);
   with FDividerLine1 do
   begin
-    Parent := self;
+    Parent := Self;
     Visible := False;
     Height := 2;
   end;
   FDividerLine2 := JvDividerLineClass.Create(Self);
   with FDividerLine2 do
   begin
-    Parent := self;
+    Parent := Self;
     Visible := False;
     Height := 2;
   end;
   FDividerLine3 := JvDividerLineClass.Create(Self);
   with FDividerLine3 do
   begin
-    Parent := self;
+    Parent := Self;
     Visible := False;
     Height := 2;
   end;
@@ -1402,7 +1402,7 @@ begin
     FSystemColors.EndUpdate;
   end;
 
-  TopOwner := GetTopOwner(self);
+  TopOwner := GetTopOwner(Self);
   // make sure that if this is not loading from DFM file or stream.
   if (TopOwner <> nil) and (TopOwner.ComponentState * [csReading, csLoading] = [])
     then
@@ -1532,7 +1532,7 @@ begin
         on EConvertError do
         begin
           DrawColor := clDefault;
-          DisabledDrawColor := self.BackColor;
+          DisabledDrawColor := Self.BackColor;
           ExceptionRaised := True;
         end;
       end;
