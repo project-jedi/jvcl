@@ -25,11 +25,11 @@ DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u
 DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-all: uib globus docking inspector standard threads ralib rxlib plugin xml mega surveyor diagram
+all: uib docking inspector standard threads ralib rxlib plugin xml mega surveyor diagram
 #---------------------------------------------------------------------------------------------------
 surveyor: jsb.exe jsr.exe sc.exe js.exe
 #---------------------------------------------------------------------------------------------------
-globus: Gl_demo.exe _glXMLSerializer_demo.exe
+#globus: Gl_demo.exe _glXMLSerializer_demo.exe
 #---------------------------------------------------------------------------------------------------
 xml: JvSimpleXMLDemo.exe JvSimpleXMLEncodeDemo.exe JvSimpleXMLSpeedTest.exe XMLValidator.exe
 #---------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ PageListDemo.exe TVDemo.exe BkgndDemo.exe JvComputerInfoExDemo.exe JvStarfieldDe
 JvAppStoreDemo.exe JvAppStoreDemoSelList.exe JvAppStoreDemoSubStorage.exe JvDBAction.exe \
 JvDBFindEditDemo.exe JvDBHTLabelDemo.exe JvDBImageDemo.exe JvDBSearchDemo.exe JvDesignerDemo.exe \
 JvDesktopAlertDemo.exe JvEdits.exe EmbeddedForm.exe JvFullColorCircleDialogPrj.exe JvFullColorDialogPrj.exe \
-SpecialProgressTestPrj.exe JvTranslatorProj.exe JvUltimDBGridADOTest.exe \
+JvUltimDBGridADOTest.exe \
 JvUltimDBGridBDETest.exe   
 #
 # (rom) deactivated  requires components not always installed
@@ -1117,15 +1117,17 @@ JvFullColorDialogPrj.exe: "JvFullColorDialog\JvFullColorDialogPrj.dpr"
   $(DCC) $&.dpr
   @cd ..
  
-SpecialProgressTestPrj.exe: "JvSpecialProgress\SpecialProgressTestPrj.dpr" 
-  @cd JvSpecialProgress
-  $(DCC) $&.dpr
-  @cd ..
+# (rom) this is a CLX example
+#SpecialProgressTestPrj.exe: "JvSpecialProgress\SpecialProgressTestPrj.dpr" 
+#  @cd JvSpecialProgress
+#  $(DCC) $&.dpr
+#  @cd ..
  
-JvTranslatorProj.exe: "JvTranslator\JvTranslatorProj.dpr" 
-  @cd JvTranslator
-  $(DCC) $&.dpr
-  @cd ..
+# (rom) this is a CLX example
+#JvTranslatorProj.exe: "JvTranslator\JvTranslatorProj.dpr" 
+#  @cd JvTranslator
+#  $(DCC) $&.dpr
+#  @cd ..
  
 JvUltimDBGridADOTest.exe: "JvUltimDBGrid\ADO\JvUltimDBGridADOTest.dpr" 
   @cd JvUltimDBGrid\ADO

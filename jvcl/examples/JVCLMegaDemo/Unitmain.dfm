@@ -28,7 +28,7 @@ object Mainform: TMainform
   object JvNetscapeSplitter1: TJvNetscapeSplitter
     Left = 225
     Top = 181
-    Height = 577
+    Height = 573
     Cursor = crHSplit
     Hint = 'click me to have more '#13#10'space for the current demo'
     Align = alLeft
@@ -256,7 +256,7 @@ object Mainform: TMainform
     Left = 0
     Top = 181
     Width = 225
-    Height = 577
+    Height = 573
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -279,7 +279,7 @@ object Mainform: TMainform
       Left = 0
       Top = 145
       Width = 225
-      Height = 432
+      Height = 428
       AutoSize = True
       BorderWidth = 4
       Caption = 'JvXPContainer1'
@@ -345,6 +345,9 @@ object Mainform: TMainform
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
+          DesignSize = (
+            209
+            45)
           object JvLabel1: TJvLabel
             Left = 8
             Top = 8
@@ -749,6 +752,9 @@ object Mainform: TMainform
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
+          DesignSize = (
+            209
+            153)
           object JvLabel2: TJvLabel
             Left = 8
             Top = 8
@@ -783,7 +789,7 @@ object Mainform: TMainform
             Width = 177
             Height = 19
             Flat = True
-            ParentCtl3D = False
+            ParentFlat = False
             Modified = False
             Color = clInfoBk
             TabOrder = 1
@@ -797,6 +803,7 @@ object Mainform: TMainform
       Width = 225
       Height = 139
       Align = alTop
+      AutoSize = False
       Color = clInfoBk
       TabOrder = 1
       OnURLClick = JvRichEditHintsURLClick
@@ -887,6 +894,9 @@ object Mainform: TMainform
     OnCollapsedChange = JvXPBarIDECollapsedChange
     Align = alTop
     ParentFont = False
+    DesignSize = (
+      900
+      133)
     object JvPageControlComps: TJvPageControl
       Left = 7
       Top = 31
@@ -966,7 +976,7 @@ object Mainform: TMainform
   end
   object StatusBar: TJvStatusBar
     Left = 0
-    Top = 758
+    Top = 754
     Width = 900
     Height = 19
     Panels = <>

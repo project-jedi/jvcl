@@ -73,8 +73,6 @@ uses
   SearchingForm in 'SearchingForm.pas' {SearchingFormMain},
   CreateProcessExampleMainFormU in '..\JvCreateProcess\CreateProcessExampleMainFormU.pas' {CreateProcessExampleMainForm},
   ConsoleExampleMainFormU in '..\JvCreateProcess\ConsoleExampleMainFormU.pas' {ConsoleExampleMainForm},
-  hshape in '..\Globus\Visual Components Demo\hshape.pas' {HShapeFrm},
-  glDemo in '..\Globus\Visual Components Demo\glDemo.pas' {GLDemoFrm},
   glHelpPanel_demo in '..\Globus\Visual Components Demo\glHelpPanel_demo.pas' {fTglHelpPanel},
   XMLSerializerMainFormU in '..\Globus\XMLSerializer\XMLSerializerMainFormU.pas' {fglXMLSerializerDemo},
   testClasses in '..\Globus\XMLSerializer\testClasses.pas',
