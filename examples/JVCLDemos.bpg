@@ -10,8 +10,6 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS =
-Gl_demo.exe \
-_glXMLSerializer_demo.exe \
 jsb.exe \
 jsr.exe \
 sc.exe \
@@ -128,7 +126,6 @@ JvSimpleXMLDemo.exe \
 JvSimpleXMLEncodeDemo.exe \
 JvSimpleXMLSpeedTest.exe \
 XMLValidator.exe \
-SpecialProgressTestPrj.exe \
 JvSpellCheckerDemo.exe \
 JvStringGridDemo.exe \
 JvSystemPopupProj.exe \
@@ -139,7 +136,6 @@ PhotoOp.exe \
 TimeLineDemo.exe \
 TipsDemo.exe \
 SimpleTLTest1.exe \
-JvTranslatorProj.exe \
 TransparentButtonDemo.exe \
 JvTrayIconDemo.exe \
 JvTreeViewAsMenu.exe \
@@ -203,12 +199,6 @@ Rxdemo.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
-Gl_demo.exe: Globus\Visual Components Demo\Gl_demo.dpr
-$(DCC)
-
-_glXMLSerializer_demo.exe: Globus\XMLSerializer\_glXMLSerializer_demo.dpr
-$(DCC)
-
 jsb.exe: JediSurveyor\Builder\jsb.dpr
 $(DCC)
 
@@ -557,9 +547,6 @@ $(DCC)
 XMLValidator.exe: JvSimpleXML Validator\XMLValidator.dpr
 $(DCC)
 
-SpecialProgressTestPrj.exe: JvSpecialProgress\SpecialProgressTestPrj.dpr
-$(DCC)
-
 JvSpellCheckerDemo.exe: JvSpellChecker\JvSpellCheckerDemo.dpr
 $(DCC)
 
@@ -588,9 +575,6 @@ TipsDemo.exe: JvTipOfDay\TipsDemo.dpr
 $(DCC)
 
 SimpleTLTest1.exe: JvTMTimeLine\SimpleTLTest1.dpr
-$(DCC)
-
-JvTranslatorProj.exe: JvTranslator\JvTranslatorProj.dpr
 $(DCC)
 
 TransparentButtonDemo.exe: JvTransparentButton\TransparentButtonDemo.dpr

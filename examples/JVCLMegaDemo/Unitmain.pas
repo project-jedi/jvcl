@@ -41,7 +41,7 @@ uses
   ExtCtrls, JvExExtCtrls, JvSplitter, JvCtrls, JvCaptionPanel, JvToolBar,
   JvAppStorageBaseMainFrmU, ControlsExampleMainFormU, JvCheckBox,
   JvHtControls, JvStatusBar, JvNetscapeSplitter, JvDbMaskEditDemoForm,
-  JvOutlookBarCustomDrawDemoMainForm;
+  JvOutlookBarCustomDrawDemoMainForm, JvComponentBase, JvExtComponent;
 
 type
   TMainform = class(TForm)
@@ -135,7 +135,7 @@ uses
   TipOfDayMainFormU, TMTimeLineMainFormU, FindReplaceMainFormU, JvPlayListMainFormU,
   JvZLibMultipleMainFormU, OtherStandAlone, Profiler32MainFormU,
   RessourcesFormMain, SearchingForm, JclDebug, JclStrings, JclFileUtils, ShellAPI,
-  IniFiles, CreateProcessExampleMainFormU, ConsoleExampleMainFormU, glDemo,
+  IniFiles, CreateProcessExampleMainFormU, ConsoleExampleMainFormU,
   XMLSerializerMainFormU, JvAppHotKeyDemoMainFormU, JvAppStorageSelListMainfrmU,
   JvAppStorageSubStorageMainFrm, JvAviCapDemoFrmU, TVDemoMain, MDIBkgndDemoMain,
   MDIBkgndDemoSettings, MDIBkgndDemoChld, JvBehaviorLblMainFrmU, BmpAnimMainFormU,
@@ -338,7 +338,7 @@ begin
   case ID of
     1: TheFormArray[ID] := TJvFormsFrm.Create(nil);
     2: TheFormArray[ID] := TJvDialogs.Create(nil);
-    3: TheFormArray[ID] := TGLDemoFrm.Create(nil);
+//    3: TheFormArray[ID] := TGLDemoFrm.Create(nil);
     4: TheFormArray[ID] := TJvLabelsFrm.Create(nil);
     5: TheFormArray[ID] := TRaHtHintsMainForm.Create(nil);
     6: TheFormArray[ID] := TJvZoomMainForm.Create(nil);
@@ -466,14 +466,14 @@ begin
     124: TheFormArray[ID] := TJvPanelDemoMainFrm.Create(nil);
     {$IFDEF INCLUDE_DEVEXP_CX}
     125: TheFormArray[ID] := TJvParameterListDemoMainFrm.Create(nil);
-    {$ENDIF}
+    {$ENDIF INCLUDE_DEVEXP_CX}
     //125: TheFormArray[ID] := T .Create(nil);
     //126: TheFormArray[ID] := T .Create(nil);
     //127: TheFormArray[ID] := T .Create(nil);
     //128: TheFormArray[ID] := T .Create(nil);
     //129: TheFormArray[ID] := T .Create(nil);
   else
-    TheFormArray[ID] := tfrEmpty.create(nil);
+    TheFormArray[ID] := TfrEmpty.Create(nil);
   end;
 
   //Execute the forms appearance only if they need to be shown
