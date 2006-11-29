@@ -905,7 +905,7 @@ end;
 procedure TJvDBMaskEdit.SetEditMask(const AValue: string);
 begin
   inherited EditMask := AValue;
-  FDefaultMask := false;
+  FDefaultMask := False;
 end;
 
 function TJvDBMaskEdit.GetField: TField;
@@ -930,7 +930,7 @@ begin
     if EditMask = '' then
     begin
       inherited EditMask := FDataLink.Field.EditMask;
-      FDefaultMask := true;
+      FDefaultMask := True;
     end;
     if not (csDesigning in ComponentState) then
       if (FDataLink.Field.DataType in [ftString, ftWideString]) and (MaxLength = 0) then

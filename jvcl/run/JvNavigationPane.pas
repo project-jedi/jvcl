@@ -5009,7 +5009,7 @@ end;
 procedure TJvNavPaneToolButton.SetAction(const Value: TBasicAction);
 begin
   FRealButton.Action := Value;
-  FRealButton.ActionChange(Value, false);
+  FRealButton.ActionChange(Value, False);
 end;
 
 procedure TJvNavPaneToolButton.SetEnabled(const Value: Boolean);

@@ -161,7 +161,7 @@ type
     procedure GlyphChanged(Sender: TObject);
 
     { former TJvTransparentButton }
-    procedure AddGlyphGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
+    procedure AddGlyphGlyphs(AGlyph: TBitmap; AColor: TColor; Value: Integer);
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
 
     { former TJvTransparentButton2 }
@@ -1045,7 +1045,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButton.AddGlyphGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
+procedure TJvTransparentButton.AddGlyphGlyphs(AGlyph: TBitmap; AColor: TColor; Value: Integer);
 var
   Bmp: TBitmap;
   I, TmpWidth: Integer;
@@ -1057,12 +1057,12 @@ begin
   FImList.Clear;
   Bmp := TBitmap.Create;
   try
-    if not aGlyph.Empty then
+    if not AGlyph.Empty then
     begin
       { destroy old list }
-      TmpWidth := aGlyph.Width div FNumGlyphs;
+      TmpWidth := AGlyph.Width div FNumGlyphs;
       FImList.Width := TmpWidth;
-      FImList.Height := aGlyph.Height;
+      FImList.Height := AGlyph.Height;
       Bmp.Width := FImList.Width;
       Bmp.Height := FImList.Height;
       Dest := Rect(0, 0, Bmp.Width, Bmp.Height);
@@ -1070,7 +1070,7 @@ begin
       for I := 0 to FNumGlyphs - 1 do
       begin
         Source := Rect(I * Bmp.Width, 0, I * Bmp.Width + Bmp.Width, Bmp.Height);
-        Bmp.Canvas.CopyRect(Dest, aGlyph.Canvas, Source);
+        Bmp.Canvas.CopyRect(Dest, AGlyph.Canvas, Source);
         if I = 0 then { first picture }
         begin
           { create the disabled and grayed bitmaps too }

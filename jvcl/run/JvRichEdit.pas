@@ -2265,7 +2265,8 @@ begin
         else
           hMF := 0;
       finally
-        if Buffer <> nil then FreeMem(Buffer, Length);
+        if Buffer <> nil then
+          FreeMem(Buffer, Length);
         ReleaseDC(0, DC);
       end;
     end

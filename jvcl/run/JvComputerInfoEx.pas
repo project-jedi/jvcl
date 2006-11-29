@@ -1760,9 +1760,10 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if (ACpuInfo.CpuType = CPU_TYPE_AMD)
-    then Result := ACpuInfo.AMDSpecific
-    else FillChar(Result,SizeOf(Result),0);
+  if ACpuInfo.CpuType = CPU_TYPE_AMD then
+    Result := ACpuInfo.AMDSpecific
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 function TJvCPUInfo.CyrixSpecific: TCyrixSpecific;
@@ -1770,9 +1771,10 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if (ACpuInfo.CpuType = CPU_TYPE_CYRIX)
-    then Result := ACpuInfo.CyrixSpecific
-    else FillChar(Result,SizeOf(Result),0);
+  if ACpuInfo.CpuType = CPU_TYPE_CYRIX then
+    Result := ACpuInfo.CyrixSpecific
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 function TJvCPUInfo.Get3DNow: Boolean;
@@ -1930,9 +1932,10 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if (ACpuInfo.CpuType = CPU_TYPE_INTEL)
-    then Result := ACpuInfo.IntelSpecific
-    else FillChar(Result,SizeOf(Result),0);
+  if ACpuInfo.CpuType = CPU_TYPE_INTEL then
+    Result := ACpuInfo.IntelSpecific
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 procedure TJvCPUInfo.Set3DNow(const Value: Boolean);
@@ -2075,9 +2078,10 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if (ACpuInfo.CpuType = CPU_TYPE_TRANSMETA)
-    then Result := ACpuInfo.TransmetaSpecific
-    else FillChar(Result,SizeOf(Result),0);
+  if ACpuInfo.CpuType = CPU_TYPE_TRANSMETA then
+    Result := ACpuInfo.TransmetaSpecific
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 function TJvCPUInfo.ViaSpecific: TViaSpecific;
@@ -2085,9 +2089,10 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if (ACpuInfo.CpuType = CPU_TYPE_VIA)
-    then Result := ACpuInfo.ViaSpecific
-    else FillChar(Result,SizeOf(Result),0);
+  if ACpuInfo.CpuType = CPU_TYPE_VIA then
+    Result := ACpuInfo.ViaSpecific
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 //=== { TJvBIOSInfo } ========================================================

@@ -3021,13 +3021,14 @@ begin
 end;
 
 procedure TJvInterpreterAdapter.ClearSource;
-var i:integer; 
+var
+  I: Integer;
 begin
   ClearList(FSrcUnitList);
   ClearList(FSrcFunctionList);
   FSrcVarList.Clear;
-  for i:=0 to FSrcClassList.Count-1 do 
-    TJvInterpreterClass(FSrcClassList[i]).ClassFields.Clear;
+  for I := 0 to FSrcClassList.Count-1 do
+    TJvInterpreterClass(FSrcClassList[I]).ClassFields.Clear;
   ClearList(FSrcClassList);
 end;
 
@@ -3825,7 +3826,7 @@ var
       for I := I to FIntfGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterIntfMethod(FIntfGetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then 
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           ((Args.ObjTyp = varUnknown) and
@@ -3851,7 +3852,7 @@ var
       for I := I to FIGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FIGetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then 
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
@@ -4308,7 +4309,7 @@ begin
   if GetSrcVar then
     Exit;
 
-  if not ((Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass))) then 
+  if not ((Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass))) then
     if GetSrcUnit then
       Exit;
 
@@ -4364,7 +4365,7 @@ var
       for I := I to FISetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FISetList[I]);
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then 
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
           Break;
         if Assigned(JvInterpreterMethod.Func) and
           (Args.Obj is JvInterpreterMethod.FClassType) and
@@ -7711,13 +7712,14 @@ begin
     JvInterpreterSrcClass.UnitName := FCurUnitName;
     JvInterpreterSrcClass.Identifier := Identifier;
     NextToken;
-    if TTyp=ttIdentifier then
+    if TTyp = ttIdentifier then
     begin // First fields can follow class declaration
       Back;
       InterpretVar(TJvInterpreterClass(JvInterpreterSrcClass).ClassFields.AddVar);
       NextToken;
     end;
-    while true do begin            // try to interpret other fields
+    while True do
+    begin            // try to interpret other fields
       case TTyp of { }             // property declaration not supported!!
         ttEmpty:
           ErrorExpected('''' + kwEND + '''');
@@ -7736,7 +7738,7 @@ begin
           begin                    // Add more fields
             NextToken;
             Back;
-            if TTyp=ttIdentifier then
+            if TTyp = ttIdentifier then
               InterpretVar(TJvInterpreterClass(JvInterpreterSrcClass).ClassFields.AddVar);
           end;
         else
@@ -7862,7 +7864,7 @@ begin
   else
   if (Args.Obj is TJvInterpreterForm) then
     with TJvInterpreterFormAccessProtected(Args.Obj) do
-      FunctionDesc:=FAdapter.FindFunDesc(UnitName, Identifier, ClassIdentifier)
+      FunctionDesc := FAdapter.FindFunDesc(UnitName, Identifier, ClassIdentifier)
   else
     FunctionDesc := nil;
 
@@ -7871,7 +7873,7 @@ begin
   begin
     FAdapter.CheckArgs(Args, FunctionDesc.FParamCount, FunctionDesc.FParamTypes); {not tested !}
     OldArgs := FCurrArgs;
-    OldInstance:=FCurInstance;
+    OldInstance := FCurInstance;
     if (Args.Obj is TJvInterpreterForm) then
     begin
       FCurInstance:=Args.Obj;                      // class method support
@@ -7881,8 +7883,8 @@ begin
       ExecFunction(FunctionDesc);
     finally
       FCurrArgs := OldArgs;
-      if (Args.Obj is TJvInterpreterForm) then  
-        FCurInstance:=OldInstance;              // class method support
+      if Args.Obj is TJvInterpreterForm then
+        FCurInstance := OldInstance;              // class method support
     end;
     Value := FVResult;
   end;
@@ -8291,7 +8293,7 @@ begin
   Result := FUsesList;
 end;
 
-{ TJvInterpreterClass }
+//=== { TJvInterpreterClass } ================================================
 
 constructor TJvInterpreterClass.Create;
 begin

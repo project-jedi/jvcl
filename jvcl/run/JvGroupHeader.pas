@@ -464,25 +464,23 @@ begin
         lbWidth := Width - X - W;
       case BevelOptions.Shape of
         stRectangle, stSquare:
-        begin
-          Rectangle(X, Y, X + W, Y + H);
-          if FAlignment = taCenter then
-            Rectangle(X + lbWidth, Y, X + W + lbWidth, Y + H);
-        end;
-
+          begin
+            Rectangle(X, Y, X + W, Y + H);
+            if FAlignment = taCenter then
+              Rectangle(X + lbWidth, Y, X + W + lbWidth, Y + H);
+          end;
         stRoundRect, stRoundSquare:
-        begin
-          RoundRect(X, Y, X + W, Y + H, S div 4, S div 4);
-          if FAlignment = taCenter then
-            RoundRect(X + lbWidth, Y, X + W + lbWidth, Y + H, S div 4, S div 4);
-        end;
-
+          begin
+            RoundRect(X, Y, X + W, Y + H, S div 4, S div 4);
+            if FAlignment = taCenter then
+              RoundRect(X + lbWidth, Y, X + W + lbWidth, Y + H, S div 4, S div 4);
+          end;
         stCircle, stEllipse:
-        begin
-          Ellipse(X, Y, X + W, Y + H);
-          if FAlignment = taCenter then 
-            Ellipse(X + lbWidth, Y, X + W + lbWidth, Y + H);
-        end;
+          begin
+            Ellipse(X, Y, X + W, Y + H);
+            if FAlignment = taCenter then
+              Ellipse(X + lbWidth, Y, X + W + lbWidth, Y + H);
+          end;
       end;
     end;
 end;

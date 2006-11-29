@@ -254,7 +254,7 @@ type
     property LargeImages;
     property Left;
     property Offset default 1;
-    property ParentFont default false;
+    property ParentFont default False;
     property ParentImageSize;
     property ParentShowHint;
     property PopupMenu;
@@ -1649,7 +1649,7 @@ begin
   Offset := 1;
   FButtonBorder := bbLight;
   FHighlightFont.Color := clWindowText;
-  ParentFont := false;
+  ParentFont := False;
   Font.Color := clHighlightText;
 end;
 

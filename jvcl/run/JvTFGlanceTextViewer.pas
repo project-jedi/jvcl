@@ -742,7 +742,8 @@ end;
 
 procedure TJvTFGVTextControl.DoViewerDblClick;
 begin
-  if FHasScrolled then Exit;
+  if FHasScrolled then
+    Exit;
   
   Viewer.DoDblClick;
   FWasInDblClick := True;
@@ -760,7 +761,8 @@ end;
 
 procedure TJvTFGVTextControl.DblClick;
 begin
-  if FHasScrolled then Exit;
+  if FHasScrolled then
+    Exit;
   
   inherited DblClick;
   DoViewerDblClick;

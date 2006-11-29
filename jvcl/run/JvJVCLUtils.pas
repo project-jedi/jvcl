@@ -2994,7 +2994,8 @@ begin
   Result := StartHint;
   if PreDefined then
   begin
-    if Result >= crSizeAll then Result := crSizeAll - 1;
+    if Result >= crSizeAll then
+      Result := crSizeAll - 1;
   end
   else
   if Result <= crDefault then

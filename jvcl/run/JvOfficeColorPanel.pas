@@ -123,7 +123,7 @@ type
   TJvOfficeColorDrawer = class(TJvColorSpeedButton)
   public
     constructor Create(AOwner: TComponent); override;
-    property CanDrawGlyph default false;
+    property CanDrawGlyph default False;
   end;
 
   // (ahuser) TJvColorDialog is not registered as component
@@ -1955,15 +1955,14 @@ begin
             SelectedColor := FColorDialog.Color;
           end
           else
-          if (FPriorCheckedButton <> nil) then{//cancel the color dialog selection,
-            restore the Prior Checked Button down}
+          if FPriorCheckedButton <> nil then //cancel the color dialog selection, restore the Prior Checked Button down
              FPriorCheckedButton.Down := True;
         end;
         // the PriorCheckedButton have not been assign.
         if ((FPriorCheckedButton <> nil) and (not FPriorCheckedButton.Down)) or
           // if the PriorCheckedButton is ButtonCustom,Set CustomColorDrawer.Down to true for ever.
           (FPriorCheckedButton = FButtonCustomColor) then
-          FCustomColorDrawer.Down := true;
+          FCustomColorDrawer.Down := True;
       end
       else
       begin
