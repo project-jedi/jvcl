@@ -29,19 +29,19 @@ unit JvBaseDBLogonDialog;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-  JvDynControlEngine,
-  Classes, JvBaseDlg, JvAppStorage, Forms, Controls, JvDynControlEngineIntf,
-  JvPropertyStore, Menus, JvBaseDBDialog, JvBaseDBPasswordDialog;
+  {$ENDIF UNITVERSIONING}
+  Classes, Forms, Controls, Menus,
+  JvBaseDlg, JvAppStorage, JvDynControlEngine, JvDynControlEngineIntf,
+  JvPropertyStore, JvBaseDBDialog, JvBaseDBPasswordDialog;
 
 type
   TJvLogonDialogFillListEvent = procedure(List: TStringList) of object;
   TJvLogonDialogEncryptDecryptEvent = procedure(var Password: string) of object;
-  TJvLogonDialogBaseSessionEvent = function(Session: TComponent): boolean of object;
+  TJvLogonDialogBaseSessionEvent = function(Session: TComponent): Boolean of object;
 
-  TjvDBLogonDialogActivePage = (ldapConnectList, ldapUserTree, ldapDatabaseTree, ldapGroupTree);
+  TJvDBLogonDialogActivePage = (ldapConnectList, ldapUserTree, ldapDatabaseTree, ldapGroupTree);
 
   TJvBaseDBLogonDialogOptions = class(TPersistent)
   private
@@ -60,14 +60,11 @@ type
     FShowConnectionsExport: Boolean;
     FShowSavePasswords: Boolean;
     FShowShortcuts: Boolean;
-  protected
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    property AllowPasswordChange: Boolean read FAllowPasswordChange write
-      FAllowPasswordChange;
-    property PasswordDialogOptions: TJvBaseDBPasswordDialogOptions read
-      FPasswordDialogOptions;
+    property AllowPasswordChange: Boolean read FAllowPasswordChange write FAllowPasswordChange;
+    property PasswordDialogOptions: TJvBaseDBPasswordDialogOptions read FPasswordDialogOptions;
   published
     //1 Add each database from the connection list to the database combobox
     property AddConnectionsToDatabaseComboBox: Boolean read
@@ -82,19 +79,17 @@ type
     //1 Group the username casesensitive in the username tree list
     property UsernameCaseSensitive: Boolean read FUsernameCaseSensitive write
       FUsernameCaseSensitive default False;
-    property SaveLastConnect: Boolean read FSaveLastConnect write FSaveLastConnect
-      default true;
-    property SavePasswords: Boolean read FSavePasswords write FSavePasswords
-      default True;
+    property SaveLastConnect: Boolean read FSaveLastConnect write FSaveLastConnect default True;
+    property SavePasswords: Boolean read FSavePasswords write FSavePasswords default True;
     property SetLastConnectToTop: Boolean read FSetLastConnectToTop write
-      FSetLastConnectToTop default true;
+      FSetLastConnectToTop default True;
 //    property ShowColors: Boolean read FShowColors write FShowColors default False;
     property ShowConnectGroup: Boolean read FShowConnectGroup write
       FShowConnectGroup default True;
     property ShowConnectionsExport: Boolean read FShowConnectionsExport write
       FShowConnectionsExport default True;
     property ShowSavePasswords: Boolean read FShowSavePasswords write
-      FShowSavePasswords default false;
+      FShowSavePasswords default False;
     property ShowShortcuts: Boolean read FShowShortcuts write FShowShortcuts
       default True;
   end;
@@ -105,20 +100,19 @@ type
   public
     constructor Create; override;
   published
-    property ShowConnectAs: Boolean read FShowConnectAs write FShowConnectAs
-      default True;
+    property ShowConnectAs: Boolean read FShowConnectAs write FShowConnectAs default True;
   end;
 
   TJvBaseDBLogonDialogOptionsClass = class of TJvBaseDBLogonDialogOptions;
 
-  tJvBaseConnectionInfo = class(TJvCustomPropertyStore)
+  TJvBaseConnectionInfo = class(TJvCustomPropertyStore)
   private
-    fDatabase: string;
+    FDatabase: string;
     FGroup: string;
-    fPassword: string;
+    FPassword: string;
     FSavePassword: Boolean;
     FShortCut: Integer;
-    fUsername: string;
+    FUsername: string;
     function GetShortCutText: string;
     procedure SetGroup(const Value: string);
     procedure SetSavePassword(const Value: Boolean);
@@ -128,61 +122,57 @@ type
     procedure SetUsername(Value: string);
   public
     destructor Destroy; override;
-    function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
-      virtual;
+    function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string; virtual;
     function UserDatabaseString: string;
     property SavePassword: Boolean read FSavePassword write SetSavePassword;
     property ShortCut: Integer read FShortCut write FShortCut;
   published
-    property Database: string read fDatabase write SetDatabase;
+    property Database: string read FDatabase write SetDatabase;
     property Group: string read FGroup write SetGroup;
-    property Password: string read fPassword write fPassword;
+    property Password: string read FPassword write FPassword;
     property ShortCutText: string read GetShortCutText write SetShortCutText;
-    property Username: string read fUsername write SetUsername;
+    property Username: string read FUsername write SetUsername;
   end;
 
-  tJvBaseOracleConnectionInfo = class(tJvBaseConnectionInfo)
+  TJvBaseOracleConnectionInfo = class(TJvBaseConnectionInfo)
   private
     FConnectAs: string;
     procedure SetConnectAs(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
-      override;
+    function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string; override;
   published
     property ConnectAs: string read FConnectAs write SetConnectAs;
   end;
 
-  TJvLogonDialogConnectionInfoEvent = procedure(ConnectionInfo: tJvBaseConnectionInfo) of object;
+  TJvLogonDialogConnectionInfoEvent = procedure(ConnectionInfo: TJvBaseConnectionInfo) of object;
 
   TJvBaseConnectionListClass = class of TJvBaseConnectionList;
+
   TJvBaseConnectionList = class(TJvCustomPropertyListStore)
   private
-    FActivePage: TjvDBLogonDialogActivePage;
+    FActivePage: TJvDBLogonDialogActivePage;
     FGroupByDatabase: Boolean;
     FGroupByUser: Boolean;
-    FLastConnect: tJvBaseConnectionInfo;
+    FLastConnect: TJvBaseConnectionInfo;
     FSavePasswords: Boolean;
-    procedure SetLastConnect(const Value: tJvBaseConnectionInfo);
+    procedure SetLastConnect(const Value: TJvBaseConnectionInfo);
     procedure SetSavePasswords(const Value: Boolean);
   protected
-    procedure CopyContents(iConnectionList: TJvBaseConnectionList; iClearBefore:
-      Boolean);
+    procedure CopyContents(iConnectionList: TJvBaseConnectionList; iClearBefore: Boolean);
     function CreateObject: TObject; override;
-    function GetConnection(I: LongInt): tJvBaseConnectionInfo;
+    function GetConnection(I: LongInt): TJvBaseConnectionInfo;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddConnection(ConnectionInfo: TJvBaseConnectionInfo);
     function CreateConnection: TJvBaseConnectionInfo;
     function IndexOfNames(const Username, Database: string): Integer;
-    property Connection[I: LongInt]: tJvBaseConnectionInfo read GetConnection;
+    property Connection[I: LongInt]: TJvBaseConnectionInfo read GetConnection;
   published
     //1 Stores the data of the last connection
-    property LastConnect: tJvBaseConnectionInfo read FLastConnect write
-      SetLastConnect;
-    property ActivePage: TjvDBLogonDialogActivePage read FActivePage write
-      FActivePage;
+    property LastConnect: TJvBaseConnectionInfo read FLastConnect write SetLastConnect;
+    property ActivePage: TJvDBLogonDialogActivePage read FActivePage write FActivePage;
     property GroupByDatabase: Boolean read FGroupByDatabase write FGroupByDatabase;
     property GroupByUser: Boolean read FGroupByUser write FGroupByUser;
     property SavePasswords: Boolean read FSavePasswords write SetSavePasswords;
@@ -205,7 +195,7 @@ type
     DatabaseComboBox: TWinControl;
     DatabaseTreeView: TWinControl;
     FConnectionList: TJvBaseConnectionList;
-    fGroupByDatabase: Boolean;
+    FGroupByDatabase: Boolean;
     fGroupByUser: Boolean;
     FOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
     FOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
@@ -263,8 +253,8 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
-    function GetActivePage: TjvDBLogonDialogActivePage;
-    function GetCurrentDialogConnectionInfo: tJvBaseConnectionInfo;
+    function GetActivePage: TJvDBLogonDialogActivePage;
+    function GetCurrentDialogConnectionInfo: TJvBaseConnectionInfo;
     function GetDialogDatabase: string;
     function GetDialogPassword: string;
     function GetDialogUserName: string;
@@ -276,7 +266,7 @@ type
     procedure PasswordDialog_AfterTransferPasswordFromSession(var Password: string);
     procedure PasswordEditChange(Sender: TObject);
     procedure RemoveFromListBtnClick(Sender: TObject);
-    procedure SetActivePage(const Value: TjvDBLogonDialogActivePage);
+    procedure SetActivePage(const Value: TJvDBLogonDialogActivePage);
     procedure SetButtonState;
     procedure SetConnectBtnEnabled;
     procedure SetConnectionToTop(Username, Database: string);
@@ -294,16 +284,15 @@ type
     procedure ClearFormControls; virtual;
     procedure ConnectSession; virtual;
     procedure ConnectToSession;
-    procedure CreateAdditionalConnectDialogControls(aOwner: TComponent;
-      aParentControl: TWinControl); virtual;
-    procedure CreateFormControls(aForm: TForm); override;
+    procedure CreateAdditionalConnectDialogControls(AOwner: TComponent;
+      AParentControl: TWinControl); virtual;
+    procedure CreateFormControls(AForm: TForm); override;
     function CreatePasswordChangeDialog: TJvBaseDBPasswordDialog; virtual;
     procedure DoSessionConnect;
-    procedure FillAdditionalPopupMenuEntries(aPopupMenu: TPopupMenu); virtual;
-    procedure FillDatabaseComboBoxDefaultValues(Items: tStrings); virtual;
+    procedure FillAdditionalPopupMenuEntries(APopupMenu: TPopupMenu); virtual;
+    procedure FillDatabaseComboBoxDefaultValues(Items: TStrings); virtual;
     { Retrieve the class that holds the storage options and format settings. }
-    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
-      virtual;
+    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; virtual;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass; virtual;
     function GetGroupByDatabase: Boolean;
@@ -317,26 +306,19 @@ type
     procedure SetGroupByDatabase(Value: Boolean);
     procedure SetGroupByUser(Value: Boolean);
     procedure SetSession(const Value: TComponent); override;
-    procedure TransferConnectionInfoFromDialog(ConnectionInfo:
-      TJvBaseConnectionInfo); virtual;
-    procedure TransferConnectionInfoToDialog(ConnectionInfo:
-      TJvBaseConnectionInfo); virtual;
+    procedure TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo); virtual;
+    procedure TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo); virtual;
     procedure TransferSessionDataFromDialog;
-    procedure TransferSessionDataFromConnectionInfo(ConnectionInfo:
-      TJvBaseConnectionInfo); virtual;
+    procedure TransferSessionDataFromConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo); virtual;
     procedure TransferSessionDataToDialog;
-    procedure TransferSessionDataToConnectionInfo(ConnectionInfo:
-      TJvBaseConnectionInfo); virtual;
-    property ActivePage: TjvDBLogonDialogActivePage read GetActivePage write
-      SetActivePage;
+    procedure TransferSessionDataToConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo); virtual;
+    property ActivePage: TJvDBLogonDialogActivePage read GetActivePage write SetActivePage;
     property ConnectionList: TJvBaseConnectionList read FConnectionList;
-    property CurrentDialogConnectionInfo: tJvBaseConnectionInfo read
-      GetCurrentDialogConnectionInfo;
+    property CurrentDialogConnectionInfo: TJvBaseConnectionInfo read GetCurrentDialogConnectionInfo;
     property DialogDatabase: string read GetDialogDatabase write SetDialogDatabase;
     property DialogPassword: string read GetDialogPassword write SetDialogPassword;
     property DialogUserName: string read GetDialogUserName write SetDialogUserName;
-    property GroupByDatabase: Boolean read GetGroupByDatabase write
-      SetGroupByDatabase;
+    property GroupByDatabase: Boolean read GetGroupByDatabase write SetGroupByDatabase;
     property GroupByUser: Boolean read GetGroupByUser write SetGroupByUser;
   public
     constructor Create(AOwner: TComponent); override;
@@ -351,22 +333,15 @@ type
       FBeforeTransferConnectionInfoToSessionData write
       FBeforeTransferConnectionInfoToSessionData;
     //1 This events gives you the possibility to modify the connection data after receiving the data from the current session
-    property AfterTransferSessionDataToConnectionInfo:
-      TJvLogonDialogConnectionInfoEvent read
-      FAfterTransferSessionDataToConnectionInfo write
-      FAfterTransferSessionDataToConnectionInfo;
-    property OnDecryptPassword: TJvLogonDialogEncryptDecryptEvent read
-      FOnDecryptPassword write FOnDecryptPassword;
-    property OnEncryptPassword: TJvLogonDialogEncryptDecryptEvent read
-      FOnEncryptPassword write FOnEncryptPassword;
+    property AfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent read
+      FAfterTransferSessionDataToConnectionInfo write FAfterTransferSessionDataToConnectionInfo;
+    property OnDecryptPassword: TJvLogonDialogEncryptDecryptEvent read FOnDecryptPassword write FOnDecryptPassword;
+    property OnEncryptPassword: TJvLogonDialogEncryptDecryptEvent read FOnEncryptPassword write FOnEncryptPassword;
     //1 Event for filling the database list
-    property OnFillDatabaseList: TJvLogonDialogFillListEvent read
-      FOnFillDatabaseList write FOnFillDatabaseList;
+    property OnFillDatabaseList: TJvLogonDialogFillListEvent read FOnFillDatabaseList write FOnFillDatabaseList;
     //1 Event for customizing the shortcut list
-    property OnFillShortcutList: TJvLogonDialogFillListEvent read
-      FOnFillShortcutList write FOnFillShortcutList;
-    property OnSessionConnect: TJvLogonDialogBaseSessionEvent read
-      FOnSessionConnect write FOnSessionConnect;
+    property OnFillShortcutList: TJvLogonDialogFillListEvent read FOnFillShortcutList write FOnFillShortcutList;
+    property OnSessionConnect: TJvLogonDialogBaseSessionEvent read FOnSessionConnect write FOnSessionConnect;
   end;
 
   TJvBaseDBOracleLogonDialog = class(TJvBaseDBLogonDialog)
@@ -380,27 +355,21 @@ type
     procedure SetOptions(const Value: TJvBaseDBOracleLogonDialogOptions);
   protected
     procedure ClearFormControls; override;
-    procedure CreateAdditionalConnectDialogControls(aOwner: TComponent;
-      aParentControl: TWinControl); override;
-    procedure CreateFormControls(aForm: TForm); override;
+    procedure CreateAdditionalConnectDialogControls(AOwner: TComponent;
+      AParentControl: TWinControl); override;
+    procedure CreateFormControls(AForm: TForm); override;
     { Retrieve the class that holds the storage options and format settings. }
-    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
-      override;
+    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; override;
     { Retrieve the class that holds the storage options and format settings. }
-    class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass;
-      override;
+    class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass; override;
     procedure ResizeFormControls; override;
-    procedure TransferConnectionInfoFromDialog(ConnectionInfo:
-      TJvBaseConnectionInfo); override;
-    procedure TransferConnectionInfoToDialog(ConnectionInfo:
-      TJvBaseConnectionInfo); override;
-    property DialogConnectAs: string read GetDialogConnectAs write
-      SetDialogConnectAs;
+    procedure TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo); override;
+    procedure TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo); override;
+    property DialogConnectAs: string read GetDialogConnectAs write SetDialogConnectAs;
   public
     procedure ClearControlInterfaceObjects; override;
   published
-    property Options: TJvBaseDBOracleLogonDialogOptions read GetOptions write
-      SetOptions;
+    property Options: TJvBaseDBOracleLogonDialogOptions read GetOptions write SetOptions;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -415,14 +384,15 @@ const
 
 implementation
 
-uses Sysutils,
+uses
+  Windows, SysUtils,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  Windows,
-  ExtCtrls, ComCtrls, StdCtrls, JvDSADialogs, Dialogs,
-  JvAppIniStorage, JvAppXMLStorage, JvResources;
+  ExtCtrls, ComCtrls, StdCtrls, Dialogs,
+  JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources;
 
+//=== { TJvBaseDBLogonDialog } ===============================================
 
 constructor TJvBaseDBLogonDialog.Create(AOwner: TComponent);
 begin
@@ -570,17 +540,14 @@ begin
       PasswordEdit.SetFocus;
 end;
 
-procedure TJvBaseDBLogonDialog.CreateAdditionalConnectDialogControls(aOwner:
-  TComponent; aParentControl: TWinControl);
+procedure TJvBaseDBLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent;
+  AParentControl: TWinControl);
 begin
-
 end;
 
-procedure TJvBaseDBLogonDialog.CreateFormControls(aForm: TForm);
+procedure TJvBaseDBLogonDialog.CreateFormControls(AForm: TForm);
 var
-  ButtonPanel, MainPanel, LeftPanel, ListPanel,
-    ListBtnPanel,
-    GroupListPanel: TWinControl;
+  ButtonPanel, MainPanel, LeftPanel, ListPanel, ListBtnPanel, GroupListPanel: TWinControl;
   ConnectionListPageControl: TWinControl;
   Items: TStringList;
   ITabControl: IJvDynControlTabControl;
@@ -595,7 +562,7 @@ var
   IDynControlLabel: IJvDynControlLabel;
   ConnectListLabel: TWinControl;
 begin
-  with aForm do
+  with AForm do
   begin
     Name := 'DBDialog';
     Left := 472;
@@ -606,13 +573,13 @@ begin
     ClientHeight := 387;
     ClientWidth := 590;
     Position := poScreenCenter;
-    KeyPreview := true;
+    KeyPreview := True;
     OnClose := FormClose;
     OnKeyDown := FormKeyDown;
     OnShow := FormShow;
   end;
 
-  ButtonPanel := DynControlEngine.CreatePanelControl(aForm, aForm, 'ButtonPanel', '', alBottom);
+  ButtonPanel := DynControlEngine.CreatePanelControl(AForm, AForm, 'ButtonPanel', '', alBottom);
   ConnectBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'ConnectBtn',
     RsBtnConnect, '', ConnectBtnClick, True, False);
   with ConnectBtn do
@@ -635,7 +602,7 @@ begin
   end;
 
   AdditionalBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'AdditionalBtn',
-    RsBtnAdditional, '', AdditionalBtnClick, False, false);
+    RsBtnAdditional, '', AdditionalBtnClick, False, False);
   with AdditionalBtn do
   begin
     Left := 460;
@@ -651,7 +618,7 @@ begin
 
   AdditionalBtn.Visible := AdditionalPopupMenu.Items.Count > 0;
 
-  MainPanel := DynControlEngine.CreatePanelControl(aForm, aForm, 'MainPanel', '', alClient);
+  MainPanel := DynControlEngine.CreatePanelControl(AForm, AForm, 'MainPanel', '', alClient);
   with MainPanel do
   begin
     TabOrder := 0;
@@ -660,7 +627,7 @@ begin
     if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
       IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
   end;
-  ListPanel := DynControlEngine.CreatePanelControl(aForm, MainPanel, 'ListPanel', '', alClient);
+  ListPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'ListPanel', '', alClient);
   with ListPanel do
   begin
     Anchors := [akTop, akRight, akBottom];
@@ -669,7 +636,7 @@ begin
     TabOrder := 1;
   end;
 
-  ConnectListLabel := DynControlEngine.CreateStaticTextControl(aForm, ListPanel, 'ConnectListLabel',
+  ConnectListLabel := DynControlEngine.CreateStaticTextControl(AForm, ListPanel, 'ConnectListLabel',
     'Connection List');
   with ConnectListLabel do
   begin
@@ -677,7 +644,7 @@ begin
     Height := 18;
   end;
 
-  ListBtnPanel := DynControlEngine.CreatePanelControl(aForm, MainPanel, 'ListBtnPanel', '', alLeft);
+  ListBtnPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'ListBtnPanel', '', alLeft);
   with ListBtnPanel do
   begin
     Width := 32;
@@ -739,7 +706,7 @@ begin
     end;
   end;
 
-  ConnectListListBox := DynControlEngine.CreateListBoxControl(aForm, aForm, 'ConnectListListBox', nil);
+  ConnectListListBox := DynControlEngine.CreateListBoxControl(AForm, AForm, 'ConnectListListBox', nil);
   with ConnectListListBox do
   begin
     Align := alClient;
@@ -754,7 +721,7 @@ begin
       IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
   end;
 
-  UserTreeView := DynControlEngine.CreateTreeViewControl(aForm, aForm, 'UserTreeView');
+  UserTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'UserTreeView');
   with UserTreeView do
   begin
     Align := alClient;
@@ -769,7 +736,7 @@ begin
     if Supports(UserTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
       IDynControlReadOnly.ControlSetReadOnly(True);
   end;
-  DatabaseTreeView := DynControlEngine.CreateTreeViewControl(aForm, aForm, 'DatabaseTreeView');
+  DatabaseTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'DatabaseTreeView');
   with DatabaseTreeView do
   begin
     Align := alClient;
@@ -787,7 +754,7 @@ begin
 
   if Options.ShowConnectGroup then
   begin
-    GroupTreeView := DynControlEngine.CreateTreeViewControl(aForm, aForm, 'GroupTreeView');
+    GroupTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'GroupTreeView');
     with GroupTreeView do
     begin
       Align := alClient;
@@ -802,7 +769,7 @@ begin
       if Supports(GroupTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
         IDynControlReadOnly.ControlSetReadOnly(True);
     end;
-    GroupListPanel := DynControlEngine.CreatePanelControl(aForm, aForm, 'GroupListPanel', '', alBottom);
+    GroupListPanel := DynControlEngine.CreatePanelControl(AForm, AForm, 'GroupListPanel', '', alBottom);
     with GroupListPanel do
     begin
       if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
@@ -812,7 +779,7 @@ begin
       if Supports(GroupListPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
         IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
     end;
-    GroupByDatabaseCheckBox := DynControlEngine.CreateCheckboxControl(aForm, GroupListPanel, 'GroupByDatabaseCheckBox',
+    GroupByDatabaseCheckBox := DynControlEngine.CreateCheckboxControl(AForm, GroupListPanel, 'GroupByDatabaseCheckBox',
       RsCheckBoxGroupByDatabase);
     with GroupByDatabaseCheckBox do
     begin
@@ -825,7 +792,7 @@ begin
         IDynControl.ControlSetOnClick(GroupByDatabaseCheckBoxClick);
       Supports(GroupByDatabaseCheckBox, IJvDynControlCheckBox, IGroupByDatabaseCheckBox);
     end;
-    GroupByUserCheckBox := DynControlEngine.CreateCheckboxControl(aForm, GroupListPanel, 'GroupByUserCheckBox',
+    GroupByUserCheckBox := DynControlEngine.CreateCheckboxControl(AForm, GroupListPanel, 'GroupByUserCheckBox',
       RsCheckBoxGroupByUser);
     with GroupByUserCheckBox do
     begin
@@ -839,7 +806,7 @@ begin
     end;
   end;
 
-  SavePasswordsCheckBox := DynControlEngine.CreateCheckboxControl(aForm, ListPanel, 'SavePasswordsCheckBox',
+  SavePasswordsCheckBox := DynControlEngine.CreateCheckboxControl(AForm, ListPanel, 'SavePasswordsCheckBox',
     RsCheckboxSavePasswords);
   with SavePasswordsCheckBox do
   begin
@@ -851,7 +818,7 @@ begin
   Supports(SavePasswordsCheckBox, IJvDynControlCheckBox, ISavePasswordsCheckBox);
   SavePasswordsCheckBox.Visible := Options.ShowSavePasswords;
 
-  LeftPanel := DynControlEngine.CreatePanelControl(aForm, MainPanel, 'LeftPanel', '', alLeft);
+  LeftPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'LeftPanel', '', alLeft);
   with LeftPanel do
   begin
     Width := 216;
@@ -860,17 +827,17 @@ begin
     TabOrder := 0;
   end;
 
-  ConnectPanel := DynControlEngine.CreatePanelControl(aForm, LeftPanel, 'ConnectPanel', '', alTop);
+  ConnectPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ConnectPanel', '', alTop);
   with ConnectPanel do
   begin
     Height := 126;
   end;
-  LabelControl := DynControlEngine.CreateLabelControl(aForm, ConnectPanel, 'UserNameLabel', RsUsername, nil);
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'UserNameLabel', RsUsername, nil);
   with LabelControl do
   begin
     Align := alTop;
   end;
-  UsernameEdit := DynControlEngine.CreateEditControl(aForm, ConnectPanel, 'UserNameEdit');
+  UsernameEdit := DynControlEngine.CreateEditControl(AForm, ConnectPanel, 'UserNameEdit');
   with UsernameEdit do
   begin
     Align := alTop;
@@ -881,13 +848,13 @@ begin
   end;
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(UserNameEdit);
-  LabelControl := DynControlEngine.CreateLabelControl(aForm, ConnectPanel, 'PasswordEditLabel', RsPassword,
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'PasswordEditLabel', RsPassword,
     PasswordEdit);
   with LabelControl do
   begin
     Align := alTop;
   end;
-  PasswordEdit := DynControlEngine.CreateEditControl(aForm, ConnectPanel, 'PasswordEdit');
+  PasswordEdit := DynControlEngine.CreateEditControl(AForm, ConnectPanel, 'PasswordEdit');
   with PasswordEdit do
   begin
     Align := alTop;
@@ -900,12 +867,12 @@ begin
   end;
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(PasswordEdit);
-  LabelControl := DynControlEngine.CreateLabelControl(aForm, ConnectPanel, 'DatabaseLabel', RsDatabase, nil);
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'DatabaseLabel', RsDatabase, nil);
   with LabelControl do
   begin
     Align := alTop;
   end;
-  DatabaseComboBox := DynControlEngine.CreateComboBoxControl(aForm, ConnectPanel, 'DatabaseComboBox', nil);
+  DatabaseComboBox := DynControlEngine.CreateComboBoxControl(AForm, ConnectPanel, 'DatabaseComboBox', nil);
   with DatabaseComboBox do
   begin
     Align := alTop;
@@ -920,12 +887,12 @@ begin
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(DatabaseComboBox);
 
-  ShortCutPanel := DynControlEngine.CreatePanelControl(aForm, LeftPanel, 'ShortCutPanel', '', alTop);
+  ShortCutPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ShortCutPanel', '', alTop);
   with ShortCutPanel do
   begin
     Align := alTop;
   end;
-  LabelControl := DynControlEngine.CreateLabelControl(aForm, ShortCutPanel, 'ShortCutLabel', RsShortcut, nil);
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ShortCutPanel, 'ShortCutLabel', RsShortcut, nil);
   with LabelControl do
   begin
     Align := alTop;
@@ -934,7 +901,7 @@ begin
   try
     FillShortCutList(Items);
 
-    ShortCutComboBox := DynControlEngine.CreateComboBoxControl(aForm, ShortCutPanel, 'ShortCutComboBox', Items);
+    ShortCutComboBox := DynControlEngine.CreateComboBoxControl(AForm, ShortCutPanel, 'ShortCutComboBox', Items);
     Supports(ShortCutComboBox, IJvDynControlData, IShortCutComboBoxData);
     with ShortCutComboBox do
     begin
@@ -947,12 +914,12 @@ begin
     IDynControlLabel.ControlSetFocusControl(ShortCutComboBox);
   ShortCutPanel.Visible := Options.ShowShortcuts;
 
-  ConnectGroupPanel := DynControlEngine.CreatePanelControl(aForm, LeftPanel, 'ConnectGroupPanel', '', alTop);
+  ConnectGroupPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ConnectGroupPanel', '', alTop);
   with ConnectGroupPanel do
   begin
     Align := alTop;
   end;
-  LabelControl := DynControlEngine.CreateLabelControl(aForm, ConnectGroupPanel, 'ConnectGroupLabel', 'Connect &Group',
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectGroupPanel, 'ConnectGroupLabel', 'Connect &Group',
     nil);
   with LabelControl do
   begin
@@ -960,7 +927,7 @@ begin
   end;
   Items := tStringList.Create;
   try
-    ConnectGroupComboBox := DynControlEngine.CreateComboBoxControl(aForm, ConnectGroupPanel, 'ConnectGroupComboBox',
+    ConnectGroupComboBox := DynControlEngine.CreateComboBoxControl(AForm, ConnectGroupPanel, 'ConnectGroupComboBox',
       Items);
     Supports(ConnectGroupComboBox, IJvDynControlData, IConnectGroupComboBoxData);
     with ConnectGroupComboBox do
@@ -974,11 +941,10 @@ begin
     IDynControlLabel.ControlSetFocusControl(ConnectGroupComboBox);
   ConnectGroupPanel.Visible := Options.ShowConnectGroup;
 
-  CreateAdditionalConnectDialogControls(aForm, LeftPanel);
+  CreateAdditionalConnectDialogControls(AForm, LeftPanel);
 end;
 
-function TJvBaseDBLogonDialog.CreatePasswordChangeDialog:
-  TJvBaseDBPasswordDialog;
+function TJvBaseDBLogonDialog.CreatePasswordChangeDialog: TJvBaseDBPasswordDialog;
 begin
   Result := nil;
 end;
@@ -987,13 +953,13 @@ procedure TJvBaseDBLogonDialog.FillGroupTreeView;
 var
   i, j, k, g: Integer;
   Items: TTreeNodes;
-  node: tTreeNode;
-  Node2: tTreeNode;
-  found: Boolean;
+  Node: TTreeNode;
+  Node2: TTreeNode;
+  Found: Boolean;
   s: string;
   gr: string;
   GroupList: TStringList;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
 begin
   if not Assigned(IGroupTreeView) then
     Exit;
@@ -1015,7 +981,7 @@ begin
           continue;
         s := Connection.ConnectString(Options.ShowShortcuts, False);
 
-        found := False;
+        Found := False;
         for j := 0 to Items.Count - 1 do
           if Items[j].Level = 0 then
           begin
@@ -1030,7 +996,7 @@ begin
                   begin
                     Node := Items.AddChild(Node2, s);
                     Node.Data := Connection;
-                    found := true;
+                    Found := True;
                     break;
                   end;
                 end;
@@ -1039,7 +1005,7 @@ begin
                   Node := Items.AddChild(Node, Connection.Database);
                   Node := Items.AddChild(Node, s);
                   Node.Data := Connection;
-                  found := true;
+                  Found := True;
                 end;
                 Break;
               end
@@ -1053,7 +1019,7 @@ begin
                     begin
                       Node := Items.AddChild(Node2, s);
                       Node.Data := Connection;
-                      found := true;
+                      Found := True;
                       break;
                     end;
                   end;
@@ -1063,7 +1029,7 @@ begin
                     Node := Items.AddChild(Node, s);
                     //Node.SelectedIndex := i;
                     Node.Data := Connection;
-                    found := true;
+                    Found := True;
                   end;
                   Break;
                 end
@@ -1071,11 +1037,11 @@ begin
                 begin
                   Node := Items.AddChild(Node, s);
                   Node.Data := Connection;
-                  found := true;
+                  Found := True;
                   break;
                 end; {*** IF Node.Text = UpperCase(Databases[i]) THEN ***}
           end; {*** IF Items[i].Level = 0 THEN ***}
-        if not found then
+        if not Found then
         begin
           Node := Items.AddChild(nil, Gr);
           if GroupByDataBase then
@@ -1085,22 +1051,22 @@ begin
               Node := Items.AddChild(Node, Connection.Username);
           Node := Items.AddChild(Node, s);
           Node.Data := Connection;
-        end; {*** IF NOT found THEN ***}
-      end; //*** For g := 0 to GroupList.Count-1 do
+        end;
+      end;
     finally
       GroupList.Free;
     end;
-  end; {*** FOR i := 0 TO Count-1 DO ***}
+  end;
   IGroupTreeView.ControlSortItems;
-end; {*** procedure TJvBaseDBLogonDialog.CreateGroupTreeView; ***}
+end;
 
 procedure TJvBaseDBLogonDialog.CreateUserTreeView;
 var
   i, j: Integer;
-  node: tTreeNode;
-  found: Boolean;
+  Node: TTreeNode;
+  Found: Boolean;
   s: string;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
   Items: TTreeNodes;
 begin
   Items := IUserTreeView.ControlItems;
@@ -1109,7 +1075,7 @@ begin
   begin
     Connection := ConnectionList.Connection[i];
     s := Connection.ConnectString(Options.ShowShortCuts, Options.ShowConnectGroup);
-    found := False;
+    Found := False;
     for j := 0 to Items.Count - 1 do
       if Items[j].Level = 0 then
       begin
@@ -1118,19 +1084,19 @@ begin
         begin
           Node := Items.AddChild(Node, s);
           Node.Data := Connection;
-          found := true;
+          Found := True;
           break;
-        end; {*** IF Node.Text = UpperCase(Databases[i]) THEN ***}
-      end; {*** IF Items[i].Level = 0 THEN ***}
-    if not found then
+        end;
+      end;
+    if not Found then
     begin
       Node := Items.AddChild(nil, Connection.Username);
       Node := Items.AddChild(Node, s);
       Node.Data := Connection;
-    end; {*** IF NOT found THEN ***}
-  end; {*** FOR i := 0 TO Count-1 DO ***}
+    end;
+  end;
   IUserTreeView.ControlSortItems;
-end; {*** procedure TJvBaseDBLogonDialog.CreateUserTreeView; ***}
+end;
 
 procedure TJvBaseDBLogonDialog.DatabaseComboBoxChange(Sender: TObject);
 begin
@@ -1174,21 +1140,20 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.FillAdditionalPopupMenuEntries(aPopupMenu:
-  TPopupMenu);
+procedure TJvBaseDBLogonDialog.FillAdditionalPopupMenuEntries(APopupMenu: TPopupMenu);
 var
   MenuItem: TMenuItem;
 begin
   if Options.ShowConnectionsExport then
   begin
-    MenuItem := TMenuItem.Create(aPopupMenu.Owner);
+    MenuItem := TMenuItem.Create(APopupMenu.Owner);
     MenuItem.Caption := RSExportConnectionList;
     MenuItem.OnClick := OnExportConnectionList;
-    aPopupMenu.Items.Add(MenuItem);
-    MenuItem := TMenuItem.Create(aPopupMenu.Owner);
+    APopupMenu.Items.Add(MenuItem);
+    MenuItem := TMenuItem.Create(APopupMenu.Owner);
     MenuItem.Caption := RSImportConnectionList;
     MenuItem.OnClick := OnImportConnectionList;
-    aPopupMenu.Items.Add(MenuItem);
+    APopupMenu.Items.Add(MenuItem);
   end;
 end;
 
@@ -1201,12 +1166,12 @@ begin
   FillDatabaseComboBox;
   CreateUserTreeView;
   SetButtonState;
-end; {*** procedure TJvBaseDBLogonDialog.CreateConnectionLists; ***}
+end;
 
 procedure TJvBaseDBLogonDialog.FillConnectGroupComboBox;
 var
   i: Integer;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
   Items: TStringList;
   IDynControlItems: IJvDynControlItems;
 begin
@@ -1227,12 +1192,12 @@ begin
       Items.Free;
     end;
   end;
-end; {*** procedure TJvBaseDBLogonDialog.CreateGroupTreeView; ***}
+end;
 
 procedure TJvBaseDBLogonDialog.FillConnectionList;
 var
   i: Integer;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
   Items: TStrings;
 begin
   if Assigned(IConnectListListBoxItems) then
@@ -1243,14 +1208,14 @@ begin
     begin
       Connection := ConnectionList.Connection[i];
       Items.AddObject(Connection.ConnectString(Options.ShowShortCuts, Options.ShowConnectGroup), Connection);
-    end; {*** FOR i := 0 TO Count-1 DO ***}
+    end;
   end;
-end; {*** procedure TJvBaseDBLogonDialog.CreateConnectionList; ***}
+end;
 
 procedure TJvBaseDBLogonDialog.FillDatabaseComboBox;
 var
   i: Integer;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
   Items: TStringList;
   IDynControlItems: IJvDynControlItems;
 begin
@@ -1275,21 +1240,19 @@ begin
       Items.Free;
     end;
   end;
-end; {*** procedure TJvBaseDBLogonDialog.FillDatabaseComboBox; ***}
+end;
 
-procedure TJvBaseDBLogonDialog.FillDatabaseComboBoxDefaultValues(Items:
-    tStrings);
+procedure TJvBaseDBLogonDialog.FillDatabaseComboBoxDefaultValues(Items: TStrings);
 begin
-
 end;
 
 procedure TJvBaseDBLogonDialog.FillDatabaseTreeView;
 var
   i, j: Integer;
-  node: tTreeNode;
-  found: Boolean;
+  Node: TTreeNode;
+  Found: Boolean;
   s: string;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
   Items: TTreeNodes;
 begin
   Items := IDatabaseTreeView.ControlItems;
@@ -1298,7 +1261,7 @@ begin
   begin
     Connection := ConnectionList.Connection[i];
     s := Connection.ConnectString(Options.ShowShortCuts, Options.ShowConnectGroup);
-    found := False;
+    Found := False;
     for j := 0 to Items.Count - 1 do
       if Items[j].Level = 0 then
       begin
@@ -1307,19 +1270,19 @@ begin
         begin
           Node := Items.AddChild(Node, s);
           Node.Data := Connection;
-          found := true;
+          Found := True;
           break;
-        end; {*** IF Node.Text = UpperCase(Databases[i]) THEN ***}
-      end; {*** IF Items[i].Level = 0 THEN ***}
-    if not found then
+        end;
+      end;
+    if not Found then
     begin
       Node := Items.AddChild(nil, Connection.Database);
       Node := Items.AddChild(Node, s);
       Node.Data := Connection;
-    end; {*** IF NOT found THEN ***}
-  end; {*** FOR i := 0 TO Count-1 DO ***}
+    end;
+  end;
   IDatabaseTreeView.ControlSortItems;
-end; {*** procedure TJvBaseDBLogonDialog.CreateDatabaseTreeView; ***}
+end;
 
 procedure TJvBaseDBLogonDialog.FillShortCutList(Items: TStringList);
 var
@@ -1338,8 +1301,7 @@ begin
     Items.Add(ShortCutToText(ShortCut($30 + Ord('0') + (I mod 10), [ssAlt, ssCtrl, ssShift])));
 end;
 
-procedure TJvBaseDBLogonDialog.FormClose(Sender: TObject; var Action:
-  TCloseAction);
+procedure TJvBaseDBLogonDialog.FormClose(Sender: TObject; var Action:TCloseAction);
 begin
   if DBDialog.ModalResult = mrOk then
   begin
@@ -1355,7 +1317,7 @@ procedure TJvBaseDBLogonDialog.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   i: Integer;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
   sKey: Word;
   sShift: TShiftState;
 begin
@@ -1383,7 +1345,7 @@ begin
     TransferConnectionInfoToDialog(ConnectionList.LastConnect);
 end;
 
-function TJvBaseDBLogonDialog.GetActivePage: TjvDBLogonDialogActivePage;
+function TJvBaseDBLogonDialog.GetActivePage: TJvDBLogonDialogActivePage;
 begin
   if IConnectionListPageControlTab.ControlTabIndex = 1 then
     Result := ldapUserTree
@@ -1397,8 +1359,7 @@ begin
         Result := ldapConnectList;
 end;
 
-function TJvBaseDBLogonDialog.GetCurrentDialogConnectionInfo:
-  tJvBaseConnectionInfo;
+function TJvBaseDBLogonDialog.GetCurrentDialogConnectionInfo: TJvBaseConnectionInfo;
 begin
   Result := nil;
   case ActivePage of
@@ -1420,18 +1381,16 @@ begin
         (IConnectListListBoxData.ControlValue >= 0) and
         (IConnectListListBoxData.ControlValue <= IConnectListListBoxItems.ControlItems.Count - 1) then
         Result :=
-          tJvBaseConnectionInfo(IConnectListListBoxItems.ControlItems.Objects[IConnectListListBoxData.ControlValue])
+          TJvBaseConnectionInfo(IConnectListListBoxItems.ControlItems.Objects[IConnectListListBoxData.ControlValue]);
   end;
 end;
 
-class function TJvBaseDBLogonDialog.GetDBLogonConnectionListClass:
-  TJvBaseConnectionListClass;
+class function TJvBaseDBLogonDialog.GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
 begin
   Result := TJvBaseConnectionList;
 end;
 
-class function TJvBaseDBLogonDialog.GetDBLogonDialogOptionsClass:
-  TJvBaseDBLogonDialogOptionsClass;
+class function TJvBaseDBLogonDialog.GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass;
 begin
   Result := TJvBaseDBLogonDialogOptions;
 end;
@@ -1467,7 +1426,7 @@ end;
 
 function TJvBaseDBLogonDialog.GetGroupByDatabase: Boolean;
 begin
-  Result := fGroupByDatabase;
+  Result := FGroupByDatabase;
 end;
 
 function TJvBaseDBLogonDialog.GetGroupByUser: Boolean;
@@ -1617,8 +1576,10 @@ begin
         case JVDsaDialogs.MessageDlgEx(RsConnectionListImportAppendOverwriteExistingEntries,
           mtConfirmation, Buttons, Results, 0, dckScreen, 0,
           0, 2, -1, DynControlEngine) of
-          mrYes: ClearBefore := False;
-          mrNo: ClearBefore := True;
+          mrYes:
+            ClearBefore := False;
+          mrNo:
+            ClearBefore := True;
         else
           Exit;
         end;
@@ -1634,12 +1595,11 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.PasswordDialog_BeforeTransferPasswordToSession(
-  var Password: string);
+procedure TJvBaseDBLogonDialog.PasswordDialog_BeforeTransferPasswordToSession(var Password: string);
 var
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
 begin
-  Connection := tJvBaseConnectionInfo.Create(nil);
+  Connection := TJvBaseConnectionInfo.Create(nil);
   try
     Connection.Password := Password;
     if Assigned(BeforeTransferConnectionInfoToSessionData) then
@@ -1650,12 +1610,11 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.PasswordDialog_AfterTransferPasswordFromSession(
-  var Password: string);
+procedure TJvBaseDBLogonDialog.PasswordDialog_AfterTransferPasswordFromSession(var Password: string);
 var
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
 begin
-  Connection := tJvBaseConnectionInfo.Create(nil);
+  Connection := TJvBaseConnectionInfo.Create(nil);
   try
     Connection.Password := Password;
     if Assigned(AfterTransferSessionDataToConnectionInfo) then
@@ -1674,7 +1633,7 @@ end;
 procedure TJvBaseDBLogonDialog.RemoveFromListBtnClick(Sender: TObject);
 var
   Index: Integer;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
 begin
   Connection := CurrentDialogConnectionInfo;
   if Assigned(Connection) then
@@ -1710,13 +1669,15 @@ begin
       Result := True;
 end;
 
-procedure TJvBaseDBLogonDialog.SetActivePage(const Value:
-  TjvDBLogonDialogActivePage);
+procedure TJvBaseDBLogonDialog.SetActivePage(const Value: TJvDBLogonDialogActivePage);
 begin
   case Value of
-    ldapUserTree: IConnectionListPageControlTab.ControlTabIndex := 1;
-    ldapDatabaseTree: IConnectionListPageControlTab.ControlTabIndex := 2;
-    ldapGroupTree: IConnectionListPageControlTab.ControlTabIndex := 3;
+    ldapUserTree:
+      IConnectionListPageControlTab.ControlTabIndex := 1;
+    ldapDatabaseTree:
+      IConnectionListPageControlTab.ControlTabIndex := 2;
+    ldapGroupTree:
+      IConnectionListPageControlTab.ControlTabIndex := 3;
   else
     IConnectionListPageControlTab.ControlTabIndex := 0;
   end;
@@ -1784,8 +1745,8 @@ procedure TJvBaseDBLogonDialog.SetGroupByDatabase(Value: Boolean);
 var
   Change: Boolean;
 begin
-  Change := Value <> fGroupByDatabase;
-  fGroupByDatabase := Value;
+  Change := Value <> FGroupByDatabase;
+  FGroupByDatabase := Value;
   if Change then
   begin
     if Assigned(IGroupByDatabaseCheckBox) then
@@ -1820,8 +1781,7 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.SetOptions(const Value:
-  TJvBaseDBLogonDialogOptions);
+procedure TJvBaseDBLogonDialog.SetOptions(const Value: TJvBaseDBLogonDialogOptions);
 begin
   FOptions.Assign(Value);
 end;
@@ -1843,8 +1803,7 @@ begin
   ConnectionList.StoreProperties;
 end;
 
-procedure TJvBaseDBLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo:
-  TJvBaseConnectionInfo);
+procedure TJvBaseDBLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   if Assigned(ConnectionInfo) and Assigned(DBDialog) then
   begin
@@ -1864,8 +1823,7 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.TransferConnectionInfoToDialog(ConnectionInfo:
-  TJvBaseConnectionInfo);
+procedure TJvBaseDBLogonDialog.TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   if Assigned(ConnectionInfo) and Assigned(DBDialog) then
   begin
@@ -1890,7 +1848,7 @@ end;
 
 procedure TJvBaseDBLogonDialog.TransferSessionDataFromDialog;
 var
-  tmpConnectionInfo: tJvBaseConnectionInfo;
+  tmpConnectionInfo: TJvBaseConnectionInfo;
 begin
   if not Assigned(DBDialog) then
     Exit;
@@ -1906,14 +1864,13 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.TransferSessionDataFromConnectionInfo(
-  ConnectionInfo: TJvBaseConnectionInfo);
+procedure TJvBaseDBLogonDialog.TransferSessionDataFromConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo);
 begin
 end;
 
 procedure TJvBaseDBLogonDialog.TransferSessionDataToDialog;
 var
-  tmpConnectionInfo: tJvBaseConnectionInfo;
+  tmpConnectionInfo: TJvBaseConnectionInfo;
 begin
   if not Assigned(DBDialog) then
     Exit;
@@ -1929,10 +1886,11 @@ begin
   end;
 end;
 
-procedure TJvBaseDBLogonDialog.TransferSessionDataToConnectionInfo(
-  ConnectionInfo: TJvBaseConnectionInfo);
+procedure TJvBaseDBLogonDialog.TransferSessionDataToConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo);
 begin
 end;
+
+//=== { TJvBaseDBLogonDialogOptions } ========================================
 
 constructor TJvBaseDBLogonDialogOptions.Create;
 begin
@@ -1943,10 +1901,10 @@ begin
   FShowColors := False;
   FAddConnectionsToDatabaseComboBox := True;
   FAllowNullPasswords := False;
-  FSaveLastConnect := true;
-  FSetLastConnectToTop := true;
+  FSaveLastConnect := True;
+  FSetLastConnectToTop := True;
   FShowConnectGroup := True;
-  FShowSavePasswords := false;
+  FShowSavePasswords := False;
   FUsernameCaseSensitive := False;
   FDatabasenameCaseSensitive := False;
   FPasswordChar := '*';
@@ -1959,6 +1917,8 @@ begin
   FreeAndNil(FPasswordDialogOptions);
   inherited Destroy;
 end;
+
+//=== { TJvBaseDBOracleLogonDialogOptions } ==================================
 
 constructor TJvBaseDBOracleLogonDialogOptions.Create;
 begin
@@ -1978,19 +1938,19 @@ begin
   IConnectAsComboBoxData.ControlValue := 'NORMAL';
 end;
 
-procedure TJvBaseDBOracleLogonDialog.CreateAdditionalConnectDialogControls(
-  aOwner: TComponent; aParentControl: TWinControl);
+procedure TJvBaseDBOracleLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent;
+  AParentControl: TWinControl);
 var
   Items: TStringList;
   LabelControl: TControl;
   IDynControlLabel: IJvDynControlLabel;
 begin
-  ConnectAsPanel := DynControlEngine.CreatePanelControl(aOwner, aParentControl, 'ConnectAsPanel', '', alTop);
+  ConnectAsPanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'ConnectAsPanel', '', alTop);
   with ConnectAsPanel do
   begin
     Align := alTop;
   end;
-  LabelControl := DynControlEngine.CreateLabelControl(aOwner, ConnectAsPanel, 'ConnectAsLabel', RsConnectAs, nil);
+  LabelControl := DynControlEngine.CreateLabelControl(AOwner, ConnectAsPanel, 'ConnectAsLabel', RsConnectAs, nil);
   with LabelControl do
   begin
     Align := alTop;
@@ -2000,7 +1960,7 @@ begin
     Items.Add('NORMAL');
     Items.Add('SYSDBA');
     Items.Add('SYSOPER');
-    ConnectAsComboBox := DynControlEngine.CreateComboBoxControl(aOwner, ConnectAsPanel, 'ConnectAsComboBox', Items);
+    ConnectAsComboBox := DynControlEngine.CreateComboBoxControl(AOwner, ConnectAsPanel, 'ConnectAsComboBox', Items);
     Supports(ConnectAsComboBox, IJvDynControlData, IConnectAsComboBoxData);
     with ConnectAsComboBox do
     begin
@@ -2014,19 +1974,17 @@ begin
   ConnectAsPanel.Visible := Options.ShowConnectAs;
 end;
 
-procedure TJvBaseDBOracleLogonDialog.CreateFormControls(aForm: TForm);
+procedure TJvBaseDBOracleLogonDialog.CreateFormControls(AForm: TForm);
 begin
-  inherited CreateFormControls(aForm);
+  inherited CreateFormControls(AForm);
 end;
 
-class function TJvBaseDBOracleLogonDialog.GetDBLogonConnectionListClass:
-  TJvBaseConnectionListClass;
+class function TJvBaseDBOracleLogonDialog.GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
 begin
   Result := TJvBaseOracleConnectionList;
 end;
 
-class function TJvBaseDBOracleLogonDialog.GetDBLogonDialogOptionsClass:
-  TJvBaseDBLogonDialogOptionsClass;
+class function TJvBaseDBOracleLogonDialog.GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass;
 begin
   Result := TJvBaseDBOracleLogonDialogOptions;
 end;
@@ -2039,8 +1997,7 @@ begin
     Result := '';
 end;
 
-function TJvBaseDBOracleLogonDialog.GetOptions:
-  TJvBaseDBOracleLogonDialogOptions;
+function TJvBaseDBOracleLogonDialog.GetOptions: TJvBaseDBOracleLogonDialogOptions;
 begin
   Result := TJvBaseDBOracleLogonDialogOptions(inherited Options);
 end;
@@ -2057,42 +2014,39 @@ begin
     IConnectAsComboBoxData.ControlValue := Value;
 end;
 
-procedure TJvBaseDBOracleLogonDialog.SetOptions(const Value:
-  TJvBaseDBOracleLogonDialogOptions);
+procedure TJvBaseDBOracleLogonDialog.SetOptions(const Value: TJvBaseDBOracleLogonDialogOptions);
 begin
   (inherited Options).Assign(Value);
-
 end;
 
-procedure TJvBaseDBOracleLogonDialog.TransferConnectionInfoFromDialog(
-  ConnectionInfo: TJvBaseConnectionInfo);
+procedure TJvBaseDBOracleLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   inherited TransferConnectionInfoFromDialog(ConnectionInfo);
   if Assigned(ConnectionInfo) then
   begin
     if Options.ShowConnectAs then
-      tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := IConnectAsComboBoxData.ControlValue;
+      TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := IConnectAsComboBoxData.ControlValue;
   end;
 end;
 
-procedure TJvBaseDBOracleLogonDialog.TransferConnectionInfoToDialog(
-  ConnectionInfo: TJvBaseConnectionInfo);
+procedure TJvBaseDBOracleLogonDialog.TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   inherited TransferConnectionInfoToDialog(ConnectionInfo);
   if Assigned(ConnectionInfo) then
   begin
     if Options.ShowConnectAs then
-      IConnectAsComboBoxData.ControlValue := tJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs;
+      IConnectAsComboBoxData.ControlValue := TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs;
   end;
 end;
 
-destructor tJvBaseConnectionInfo.Destroy;
+//=== { TJvBaseConnectionInfo } ==============================================
+
+destructor TJvBaseConnectionInfo.Destroy;
 begin
   inherited Destroy;
 end;
 
-function tJvBaseConnectionInfo.ConnectString(ShowShortCut, ShowConnectGroup:
-  Boolean): string;
+function TJvBaseConnectionInfo.ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
 begin
   if Password <> '' then
     Result := Username + '/*****@' + Database
@@ -2106,61 +2060,64 @@ begin
       Result := Result + ' - ' + Group;
 end;
 
-function tJvBaseConnectionInfo.GetShortCutText: string;
+function TJvBaseConnectionInfo.GetShortCutText: string;
 begin
   Result := ShortCutToText(ShortCut);
 end;
 
-procedure tJvBaseConnectionInfo.SetDatabase(Value: string);
+procedure TJvBaseConnectionInfo.SetDatabase(Value: string);
 begin
-  fDatabase := Trim(Value);
+  FDatabase := Trim(Value);
 end;
 
-procedure tJvBaseConnectionInfo.SetGroup(const Value: string);
+procedure TJvBaseConnectionInfo.SetGroup(const Value: string);
 begin
   FGroup := Trim(Value);
 end;
 
-procedure tJvBaseConnectionInfo.SetSavePassword(const Value: Boolean);
+procedure TJvBaseConnectionInfo.SetSavePassword(const Value: Boolean);
+const
+  cPassword = 'Password';
 begin
   FSavePassword := Value;
   if Value then
-    if IgnoreProperties.IndexOf('Password') >= 0 then
-      IgnoreProperties.Delete(IgnoreProperties.IndexOf('Password'))
-    else
+  begin
+    if IgnoreProperties.IndexOf(cPassword) >= 0 then
+      IgnoreProperties.Delete(IgnoreProperties.IndexOf(cPassword))
+  end
   else
-    if IgnoreProperties.IndexOf('Password') < 0 then
-      IgnoreProperties.Add('Password');
+    if IgnoreProperties.IndexOf(cPassword) < 0 then
+      IgnoreProperties.Add(cPassword);
 end;
 
-procedure tJvBaseConnectionInfo.SetShortCutText(const Value: string);
+procedure TJvBaseConnectionInfo.SetShortCutText(const Value: string);
 begin
   try
     ShortCut := TextToShortCut(Value);
   except
-    on e: exception do
-      ShortCut := 0;
+    ShortCut := 0;
   end;
 end;
 
-procedure tJvBaseConnectionInfo.SetUsername(Value: string);
+procedure TJvBaseConnectionInfo.SetUsername(Value: string);
 begin
   fUserName := Trim(Value);
 end;
 
-function tJvBaseConnectionInfo.UserDatabaseString: string;
+function TJvBaseConnectionInfo.UserDatabaseString: string;
 begin
   Result := Username + '@' + Database;
 end;
 
-constructor tJvBaseOracleConnectionInfo.Create(AOwner: TComponent);
+//=== { TJvBaseOracleConnectionInfo } ========================================
+
+constructor TJvBaseOracleConnectionInfo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FConnectAs := 'NORMAL';
 end;
 
-function tJvBaseOracleConnectionInfo.ConnectString(ShowShortCut,
-  ShowConnectGroup: Boolean): string;
+function TJvBaseOracleConnectionInfo.ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
 begin
   if Password <> '' then
     Result := Username + '/*****@' + Database
@@ -2176,10 +2133,12 @@ begin
       Result := Result + ' - ' + Group;
 end;
 
-procedure tJvBaseOracleConnectionInfo.SetConnectAs(const Value: string);
+procedure TJvBaseOracleConnectionInfo.SetConnectAs(const Value: string);
 begin
   FConnectAs := Trim(UpperCase(Value));
 end;
+
+//=== { TJvBaseConnectionList } ==============================================
 
 constructor TJvBaseConnectionList.Create(AOwner: TComponent);
 begin
@@ -2194,10 +2153,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvBaseConnectionList.AddConnection(ConnectionInfo:
-  TJvBaseConnectionInfo);
+procedure TJvBaseConnectionList.AddConnection(ConnectionInfo: TJvBaseConnectionInfo);
 var
-  p, p2, i: integer;
+  p, p2, i: Integer;
 begin
   p := Items.IndexOf(ConnectionInfo.UserDatabaseString);
   while p <> -1 do
@@ -2214,11 +2172,10 @@ begin
   Items.Move(p2, 0);
 end;
 
-procedure TJvBaseConnectionList.CopyContents(iConnectionList:
-  TJvBaseConnectionList; iClearBefore: Boolean);
+procedure TJvBaseConnectionList.CopyContents(iConnectionList: TJvBaseConnectionList; iClearBefore: Boolean);
 var
   i: Integer;
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
 begin
   if iClearBefore then
     Clear;
@@ -2239,23 +2196,22 @@ end;
 
 function TJvBaseConnectionList.CreateObject: TObject;
 begin
-  Result := tJvBaseConnectionInfo.Create(self);
+  Result := TJvBaseConnectionInfo.Create(self);
 end;
 
-function TJvBaseConnectionList.GetConnection(I: LongInt): tJvBaseConnectionInfo;
+function TJvBaseConnectionList.GetConnection(I: LongInt): TJvBaseConnectionInfo;
 begin
   if (i >= 0) and (i < Count) then
-    Result := tJvBaseConnectionInfo(Objects[i])
+    Result := TJvBaseConnectionInfo(Objects[i])
   else
     Result := nil;
 end;
 
-function TJvBaseConnectionList.IndexOfNames(const Username, Database: string):
-  Integer;
+function TJvBaseConnectionList.IndexOfNames(const Username, Database: string): Integer;
 var
-  Connection: tJvBaseConnectionInfo;
+  Connection: TJvBaseConnectionInfo;
 begin
-  Connection := tJvBaseConnectionInfo.Create(nil);
+  Connection := TJvBaseConnectionInfo.Create(nil);
   try
     Connection.Username := Username;
     Connection.Database := Database;
@@ -2265,8 +2221,7 @@ begin
   end;
 end;
 
-procedure TJvBaseConnectionList.SetLastConnect(const Value:
-  tJvBaseConnectionInfo);
+procedure TJvBaseConnectionList.SetLastConnect(const Value: TJvBaseConnectionInfo);
 begin
   FLastConnect := Value;
 end;
@@ -2282,8 +2237,8 @@ end;
 
 function TJvBaseOracleConnectionList.CreateObject: TObject;
 begin
-  Result := tJvBaseOracleConnectionInfo.Create(self);
-  tJvBaseOracleConnectionInfo(Result).SavePassword := SavePasswords;
+  Result := TJvBaseOracleConnectionInfo.Create(Self);
+  TJvBaseOracleConnectionInfo(Result).SavePassword := SavePasswords;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -39,41 +39,36 @@ uses
   {$IFDEF UNIX}
   QWindows, QControls, QExtCtrls,
   {$ENDIF UNIX}
-  JvTypes, JvComponentBase, JvThread, JvdynControlEngine;
+  JvTypes, JvComponentBase, JvThread, JvDynControlEngine;
 
 type
-
   TJvThreadBaseDialogOptions = class(TJvCustomThreadDialogOptions)
   private
     FCancelButtonCaption: string;
     FCaption: string;
-    FEnableCancelButton: boolean;
+    FEnableCancelButton: Boolean;
     FInfoText: string;
     FInfoTextAlignment: TAlignment;
-    FShowCancelButton: boolean;
-    FShowElapsedTime: boolean;
+    FShowCancelButton: Boolean;
+    FShowElapsedTime: Boolean;
   protected
     procedure SetCancelButtonCaption(Value: string);
     procedure SetCaption(Value: string);
-    procedure SetEnableCancelButton(Value: boolean);
+    procedure SetEnableCancelButton(Value: Boolean);
     procedure SetInfoText(Value: string);
-    procedure SetShowCancelButton(Value: boolean);
-    procedure SetShowElapsedTime(Value: boolean);
+    procedure SetShowCancelButton(Value: Boolean);
+    procedure SetShowElapsedTime(Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
   published
-    property CancelButtonCaption: string Read FCancelButtonCaption
-      Write SetCancelButtonCaption;
-    property Caption: string Read FCaption Write SetCaption;
-    property EnableCancelButton: boolean Read FEnableCancelButton
-      Write SetEnableCancelButton default True;
-    property InfoText: string Read FInfoText Write SetInfoText;
-    property InfoTextAlignment: TAlignment Read FInfoTextAlignment
-      Write FInfoTextAlignment default taLeftJustify;
-    property ShowCancelButton: boolean Read FShowCancelButton
-      Write SetShowCancelButton default True;
-    property ShowElapsedTime: boolean Read FShowElapsedTime
-      Write SetShowElapsedTime default True;
+    property CancelButtonCaption: string read FCancelButtonCaption
+      write SetCancelButtonCaption;
+    property Caption: string read FCaption write SetCaption;
+    property EnableCancelButton: Boolean read FEnableCancelButton write SetEnableCancelButton default True;
+    property InfoText: string read FInfoText write SetInfoText;
+    property InfoTextAlignment: TAlignment read FInfoTextAlignment write FInfoTextAlignment default taLeftJustify;
+    property ShowCancelButton: Boolean read FShowCancelButton write SetShowCancelButton default True;
+    property ShowElapsedTime: Boolean read FShowElapsedTime write SetShowElapsedTime default True;
   end;
 
   TJvThreadAnimateDialogOptions = class(TJvThreadBaseDialogOptions)
@@ -81,8 +76,8 @@ type
     FCommonAVI: TCommonAVI;
     FFileName: string;
   published
-    property CommonAVI: TCommonAVI Read FCommonAVI Write FCommonAVI;
-    property FileName: string Read FFileName Write FFileName;
+    property CommonAVI: TCommonAVI read FCommonAVI write FCommonAVI;
+    property FileName: string read FFileName write FFileName;
   end;
 
   TJvThreadAnimateDialog = class(TJvCustomThreadDialog)
@@ -91,11 +86,9 @@ type
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
   public
-    function CreateThreadDialogForm(ConnectedThread: TJvThread):
-      TJvCustomThreadDialogForm; override;
+    function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
   published
-    property DialogOptions: TJvThreadAnimateDialogOptions
-      Read GetDialogOptions Write SetDialogOptions;
+    property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions write SetDialogOptions;
     property OnPressCancel;
   end;
 
@@ -103,12 +96,10 @@ type
   private
     FShowProgressBar: Boolean;
     procedure SetShowProgressBar(const Value: Boolean);
-  protected
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
   published
-    property ShowProgressBar: Boolean read FShowProgressBar write
-        SetShowProgressBar default False;
+    property ShowProgressBar: Boolean read FShowProgressBar write SetShowProgressBar default False;
   end;
 
   TJvThreadSimpleDialog = class(TJvCustomThreadDialog)
@@ -118,11 +109,9 @@ type
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
   public
-    function CreateThreadDialogForm(ConnectedThread: TJvThread):
-      TJvCustomThreadDialogForm; override;
+    function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
   published
-    property DialogOptions: TJvThreadSimpleDialogOptions
-      Read GetDialogOptions Write SetDialogOptions;
+    property DialogOptions: TJvThreadSimpleDialogOptions read GetDialogOptions write SetDialogOptions;
     property OnPressCancel;
   end;
 
@@ -130,14 +119,14 @@ type
   private
     function GetDynControlEngine: TJvDynControlEngine;
   protected
-    property DynControlEngine: TJvDynControlEngine Read GetDynControlEngine;
+    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine;
   end;
 
   TJvThreadSimpleDialogForm = class(TJvDynControlEngineThreadDialogForm)
   private
     FCancelBtn: TButton;
     FCancelButtonPanel: TWinControl;
-    FCounter: integer;
+    FCounter: Integer;
     FDefaultBorderWidth: Integer;
     FInfoText: TControl;
     FInfoTextPanel: TWinControl;
@@ -151,16 +140,14 @@ type
     procedure SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
   protected
     procedure CreateFormControls;
-    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel:
-        TWincontrol; var Text: TControl; TextAlignment: TAlignment; const BaseName:
-        string);
+    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl;
+      var Text: TControl; TextAlignment: TAlignment; const BaseName: string);
     procedure InitializeFormContents; override;
     procedure SetFormData;
     procedure SetFormHeightWidth;
     procedure UpdateFormContents; override;
   public
-    property DialogOptions: TJvThreadSimpleDialogOptions
-      Read GetDialogOptions Write SetDialogOptions;
+    property DialogOptions: TJvThreadSimpleDialogOptions read GetDialogOptions write SetDialogOptions;
   end;
 
   TJvThreadAnimateDialogForm = class(TJvDynControlEngineThreadDialogForm)
@@ -180,19 +167,15 @@ type
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
   protected
     procedure CreateFormControls;
-    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel:
-        TWincontrol; var Text: TControl; TextAlignment: TAlignment; const BaseName:
-        string);
+    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl;
+      var Text: TControl; TextAlignment: TAlignment; const BaseName: string);
     procedure InitializeFormContents; override;
     procedure SetFormData;
     procedure SetFormHeightWidth;
     procedure UpdateFormContents; override;
   public
-    property DialogOptions: TJvThreadAnimateDialogOptions
-      Read GetDialogOptions Write SetDialogOptions;
+    property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions write SetDialogOptions;
   end;
-
-function Max(a, b: integer): integer;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -207,10 +190,10 @@ const
 implementation
 
 uses
-  Dialogs,
-  JvResources, Graphics, JvDynControlEngineIntf;
+  Dialogs, Graphics,
+  JvResources, JvDynControlEngineIntf;
 
-function Max(a, b: integer): integer;
+function Max(a, b: Integer): Integer;
 begin
   if a > b then
     Result := a
@@ -223,11 +206,11 @@ end;
 constructor TJvThreadBaseDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create(AOwner);
-  FEnableCancelButton  := True;
-  FShowCancelButton    := True;
-  FShowElapsedTime     := True;
+  FEnableCancelButton := True;
+  FShowCancelButton := True;
+  FShowElapsedTime := True;
   FCancelButtonCaption := RsButtonCancelCaption;
-  FInfoTextAlignment   := taLeftJustify;
+  FInfoTextAlignment := taLeftJustify;
 end;
 
 procedure TJvThreadBaseDialogOptions.SetCancelButtonCaption(Value: string);
@@ -240,7 +223,7 @@ begin
   FCaption := Value;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetEnableCancelButton(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetEnableCancelButton(Value: Boolean);
 begin
   FEnableCancelButton := Value;
 end;
@@ -250,12 +233,12 @@ begin
   FInfoText := Value;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetShowCancelButton(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetShowCancelButton(Value: Boolean);
 begin
   FShowCancelButton := Value;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetShowElapsedTime(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetShowElapsedTime(Value: Boolean);
 begin
   FShowElapsedTime := Value;
 end;
@@ -267,8 +250,7 @@ begin
   Result := TJvThreadSimpleDialogOptions.Create(Self);
 end;
 
-function TJvThreadSimpleDialog.CreateThreadDialogForm(ConnectedThread: TJvThread):
-TJvCustomThreadDialogForm;
+function TJvThreadSimpleDialog.CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm;
 var
   ThreadDialogForm: TJvThreadSimpleDialogForm;
 begin
@@ -330,9 +312,11 @@ begin
   inherited DialogOptions.Assign(Value);
 end;
 
+//=== { TJvThreadSimpleDialogOptions } =======================================
+
 constructor TJvThreadSimpleDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
-  inherited Create (AOwner);
+  inherited Create(AOwner);
   FShowProgressBar := False;
 end;
 
@@ -342,10 +326,10 @@ begin
 end;
 
 procedure TJvThreadSimpleDialogForm.CreateTextPanel(AOwner: TComponent;
-    AParent: TWinControl; var Panel: TWincontrol; var Text: TControl;
-    TextAlignment: TAlignment; const BaseName: string);
+  AParent: TWinControl; var Panel: TWinControl; var Text: TControl;
+  TextAlignment: TAlignment; const BaseName: string);
 var
-  ITmpPanel:     IJvDynControlPanel;
+  ITmpPanel: IJvDynControlPanel;
   ITmpAlignment: IJvDynControlAlignment;
 begin
   Panel := DynControlEngine.CreatePanelControl(AOwner, AParent,
@@ -354,9 +338,8 @@ begin
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
-  Text      := DynControlEngine.CreateLabelControl(AOwner,
-    Panel, BaseName + 'StaticText', '', nil);
-  Text.Top  := FDefaultBorderWidth;
+  Text := DynControlEngine.CreateLabelControl(AOwner, Panel, BaseName + 'StaticText', '', nil);
+  Text.Top := FDefaultBorderWidth;
   Text.Left := FDefaultBorderWidth;
   if Supports(Text, IJvDynControlAlignment, ITmpAlignment) then
     ITmpAlignment.ControlSetAlignment(TextAlignment);
@@ -399,25 +382,24 @@ begin
   with FCancelBtn do
   begin
     Anchors := [akTop];
-    Top     := FDefaultBorderWidth;
+    Top := FDefaultBorderWidth;
     FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
   end;
 
-  BorderIcons  := [];
-  BorderStyle  := bsDialog;
-  Caption      := ' ';
+  BorderIcons := [];
+  BorderStyle := bsDialog;
+  Caption := ' ';
   ClientHeight := 88;
-  ClientWidth  := 268;
-  FormStyle    := DialogOptions.FormStyle;
+  ClientWidth := 268;
+  FormStyle := DialogOptions.FormStyle;
   {$IFDEF COMPILER7_UP}
-  Position     := poOwnerFormCenter;
+  Position := poOwnerFormCenter;
   {$ELSE}
-  Position     := poScreenCenter;
+  Position := poScreenCenter;
   {$ENDIF COMPILER7_UP}
 
   SetFormData;
 end;
-
 
 procedure TJvThreadSimpleDialogForm.InitializeFormContents;
 begin
@@ -445,8 +427,8 @@ end;
 
 procedure TJvThreadSimpleDialogForm.SetFormHeightWidth;
 var
-  H, W: integer;
-  ITmpAutoSize:  IJvDynControlAutoSize;
+  H, W: Integer;
+  ITmpAutoSize: IJvDynControlAutoSize;
 begin
   if Supports(FInfoText, IJvDynControlAutoSize, ITmpAutoSize) then
   begin
@@ -492,10 +474,14 @@ begin
   if Supports(FProgressbar, IJvDynControlProgressbar, ITmpProgressbar) then
     ITmpProgressbar.ControlSetPosition((FCounter*10) mod 100);
   case FCounter mod 4 of
-    0: Caption := DialogOptions.Caption + ' | ';
-    1: Caption := DialogOptions.Caption + ' / ';
-    2: Caption := DialogOptions.Caption + ' --';
-    3: Caption := DialogOptions.Caption + ' \ ';
+    0:
+      Caption := DialogOptions.Caption + ' | ';
+    1:
+      Caption := DialogOptions.Caption + ' / ';
+    2:
+      Caption := DialogOptions.Caption + ' --';
+    3:
+      Caption := DialogOptions.Caption + ' \ ';
   end;
 end;
 
@@ -535,9 +521,9 @@ begin
   FAnimate := TAnimate.Create(Self);
   with FAnimate do
   begin
-    Parent   := FAnimatePanel;
-    Top      := FDefaultBorderWidth;
-    Left     := FDefaultBorderWidth;
+    Parent := FAnimatePanel;
+    Top := FDefaultBorderWidth;
+    Left := FDefaultBorderWidth;
     AutoSize := True;
     CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
     FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
@@ -554,32 +540,27 @@ begin
   with FCancelBtn do
   begin
     Anchors := [akTop];
-    Top     := FDefaultBorderWidth;
+    Top := FDefaultBorderWidth;
     FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
   end;
 
-
-
-  BorderIcons  := [];
-  BorderStyle  := bsDialog;
-  Caption      := ' ';
-  FormStyle    := DialogOptions.FormStyle;
+  BorderIcons := [];
+  BorderStyle := bsDialog;
+  Caption := ' ';
+  FormStyle := DialogOptions.FormStyle;
   {$IFDEF COMPILER7_UP}
-  Position     := poOwnerFormCenter;
+  Position := poOwnerFormCenter;
   {$ELSE}
-  Position     := poScreenCenter;
+  Position := poScreenCenter;
   {$ENDIF COMPILER7_UP}
-
-
-
   SetFormData;
 end;
 
 procedure TJvThreadAnimateDialogForm.CreateTextPanel(AOwner: TComponent;
-    AParent: TWinControl; var Panel: TWincontrol; var Text: TControl;
-    TextAlignment: TAlignment; const BaseName: string);
+  AParent: TWinControl; var Panel: TWinControl; var Text: TControl;
+  TextAlignment: TAlignment; const BaseName: string);
 var
-  ITmpPanel:     IJvDynControlPanel;
+  ITmpPanel: IJvDynControlPanel;
   ITmpAlignment: IJvDynControlAlignment;
 begin
   Panel := DynControlEngine.CreatePanelControl(AOwner, AParent,
@@ -588,9 +569,9 @@ begin
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 3);
-  Text      := DynControlEngine.CreateLabelControl(AOwner,
+  Text := DynControlEngine.CreateLabelControl(AOwner,
     Panel, BaseName + 'StaticText', '', nil);
-  Text.Top  := FDefaultBorderWidth;
+  Text.Top := FDefaultBorderWidth;
   Text.Left := FDefaultBorderWidth;
   if Supports(Text, IJvDynControlAlignment, ITmpAlignment) then
     ITmpAlignment.ControlSetAlignment(TextAlignment);
@@ -600,7 +581,7 @@ procedure TJvThreadAnimateDialogForm.InitializeFormContents;
 begin
   inherited InitializeFormContents;
   SetFormHeightWidth;
-  FStartTime      := Now;
+  FStartTime := Now;
   FAnimate.Active := True;
 end;
 
@@ -626,7 +607,7 @@ end;
 
 procedure TJvThreadAnimateDialogForm.SetFormHeightWidth;
 var
-  H, W: integer;
+  H, W: Integer;
   ITmpAutoSize:  IJvDynControlAutoSize;
 begin
   H := 0;
@@ -641,8 +622,6 @@ begin
     ITmpAutoSize.ControlSetAutoSize(True);
     ITmpAutoSize.ControlSetAutoSize(False);
   end;
-
-
 
   if FInfoTextPanel.Visible then
     W := Max(FInfoText.Width + 80, W);

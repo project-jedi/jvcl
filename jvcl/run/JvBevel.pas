@@ -41,7 +41,7 @@ type
 
   TJvBevelStyle = (bsLowered, bsRaised, bsCustomStyle);
   TJvBevelShape = (bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine,
-                   bsRightLine, bsSpacer, bsCustomShape);
+    bsRightLine, bsSpacer, bsCustomShape);
 
   TJvBevel = class(TJvExBevel)
   private
@@ -127,9 +127,7 @@ type
     FThickness: Byte;
     FIgnoreBorder: Boolean;
     FOnChange: TNotifyEvent;
-
     procedure IgnoreValue(Reader: TReader);
-
     procedure SetBold(const Value: Boolean);
     procedure SetCount(const Value: Cardinal);
     procedure SetIgnoreBorder(const Value: Boolean);
@@ -170,10 +168,11 @@ uses
   Consts, 
   {$ENDIF HAS_UNIT_RTLCONSTS} 
   JvResources;
-  
+
 type
-  TReaderAccess = class(TReader)
-  end;
+  TReaderAccess = class(TReader);
+
+//=== { TJvBevel } =========================================================
 
 constructor TJvBevel.Create(AOwner: TComponent);
 begin
@@ -323,7 +322,8 @@ begin
 
   if Lines.Style = bvSpace then
     LineEdges := [beLeft, beTop]
-  else if Vertical then
+  else
+  if Vertical then
     LineEdges := [beLeft, beRight]
   else
     LineEdges := [beTop, beBottom];
@@ -677,7 +677,15 @@ begin
   FVerticalLines.Assign(Value);
 end;
 
-{ TJvBevelLines }
+//=== { TJvBevelLines } ======================================================
+
+constructor TJvBevelLines.Create;
+begin
+  inherited Create;
+
+  FStyle := bvLowered;
+  FThickness := 1;
+end;
 
 procedure TJvBevelLines.Assign(Source: TPersistent);
 begin
@@ -758,14 +766,6 @@ begin
     FThickness := Value;
     DoChange;
   end;
-end;
-
-constructor TJvBevelLines.Create;
-begin
-  inherited Create;
-
-  FStyle := bvLowered;
-  FThickness := 1;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -147,7 +147,13 @@ const
   cHTMLListBegin = '<LI>';
   cHTMLListEnd = '</LI>';
 
-{ TFontInfo }
+//=== { TFontInfo } ==========================================================
+
+constructor TFontInfo.Create(APixelsPerInch: Integer);
+begin
+  inherited Create;
+  FPixelsPerInch := APixelsPerInch;
+end;
 
 procedure TFontInfo.Assign(Source: TPersistent);
 begin
@@ -161,7 +167,8 @@ begin
     FColor := TTextAttributes(Source).Color;
     FLink := False;
   end
-  else if Source is TJvTextAttributes then
+  else
+  if Source is TJvTextAttributes then
   begin
     FFontData.Name := TJvTextAttributes(Source).Name;
     FFontData.Height := TJvTextAttributes(Source).Height;
@@ -171,7 +178,8 @@ begin
     FColor := TJvTextAttributes(Source).Color;
     FLink := TJvTextAttributes(Source).Link;
   end
-  else if Source is TFontInfo then
+  else
+  if Source is TFontInfo then
   begin
     FFontData := TFontInfo(Source).FFontData;
     FColor := TFontInfo(Source).FColor;
@@ -179,12 +187,6 @@ begin
   end
   else
     inherited Assign(Source);
-end;
-
-constructor TFontInfo.Create(APixelsPerInch: Integer);
-begin
-  inherited Create;
-  FPixelsPerInch := APixelsPerInch;
 end;
 
 function TFontInfo.GetSize: Integer;
@@ -197,7 +199,7 @@ begin
   FFontData.Height := -MulDiv(Value, FPixelsPerInch, 72);
 end;
 
-{ TJvRichEditToHtml }
+//=== { TJvRichEditToHtml } ==================================================
 
 constructor TJvRichEditToHtml.Create(AOwner: TComponent);
 begin
@@ -249,7 +251,7 @@ begin
   if Size = 0 then
     Size := 8;
   Result := Format('<SPAN style="color: #%s; font-size: %dpt; font-family: %s;">',
-                    [FCToH.HtmlColor, Size, Value.Name]);
+    [FCToH.HtmlColor, Size, Value.Name]);
   if fsBold in Value.Style then
   begin
     FEndSection := cHTMLBoldEnd + FEndSection;
@@ -295,8 +297,7 @@ begin
   Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
 end;
 
-procedure TJvRichEditToHtml.ConvertToHtml(Value: TJvRichEdit;
-  const FileName: string);
+procedure TJvRichEditToHtml.ConvertToHtml(Value: TJvRichEdit; const FileName: string);
 var
   S: TStringList;
 begin

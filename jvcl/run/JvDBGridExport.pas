@@ -86,8 +86,8 @@ type
     FLastExceptionMessage: string;
     FSilent: Boolean;
     FOnException: TNotifyEvent;
-    FUseFieldGetText: boolean;
-    procedure SetUseFieldGetText(const Value: boolean);
+    FUseFieldGetText: Boolean;
+    procedure SetUseFieldGetText(const Value: Boolean);
     procedure CheckVisibleColumn;
   protected
     procedure HandleException;
@@ -104,7 +104,7 @@ type
   published
     // (p3) these should be published: all exporters must support them
     property Caption: string read FCaption write FCaption;
-    property UseFieldGetText:boolean read FUseFieldGetText write SetUseFieldGetText default False;
+    property UseFieldGetText: Boolean read FUseFieldGetText write SetUseFieldGetText default False;
     property Grid: TDBGrid read FGrid write FGrid;
     property FileName: TFileName read FFileName write FFileName;
     property Silent: Boolean read FSilent write FSilent default True;
@@ -224,7 +224,7 @@ type
 
     property Destination: TExportDestination read FDestination write SetDestination default edFile;
     property ExportSeparator: TExportSeparator read FExportSeparator write SetExportSeparator default esTab;
-    property ShowColumnName: boolean read FShowColumnName write FShowColumnName default true;
+    property ShowColumnName: Boolean read FShowColumnName write FShowColumnName default true;
     property QuoteEveryTime: Boolean read FQuoteEveryTime write FQuoteEveryTime default True;
   end;
 
@@ -369,7 +369,7 @@ begin
     Grid := nil;
 end;
 
-procedure TJvCustomDBGridExport.SetUseFieldGetText(const Value: boolean);
+procedure TJvCustomDBGridExport.SetUseFieldGetText(const Value: Boolean);
 begin
   FUseFieldGetText := Value;
 end;

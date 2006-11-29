@@ -412,10 +412,12 @@ begin
   begin
     if Curr1 < Curr2 then
       Result := -1
-    else if Curr1 > Curr2 then
+    else
+    if Curr1 > Curr2 then
       Result := 1;
   end;
 end;
+
 {$ENDIF COMPILER5}
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
@@ -662,10 +664,7 @@ begin
       else
       if Double(Data1^) < Double(Data2^) then
         Result := -1;
-    {$IFDEF COMPILER6_UP}
-    ftFMTBcd,
-    {$ENDIF COMPILER6_UP}
-    ftBcd:
+    {$IFDEF COMPILER6_UP} ftFMTBcd, {$ENDIF} ftBcd:
       Result := BcdCompare(TBcd(Data1^), TBcd(Data2^));
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then
@@ -764,10 +763,8 @@ begin
   begin
     FOffsets[I] := Offset;
     with FieldDefList[I] do
-    begin
       if DataType in ftSupported - ftBlobTypes then
         Inc(Offset, CalcFieldLen(DataType, Size) + 1);
-    end;
   end;
 end;
 
@@ -1575,8 +1572,8 @@ var
   Fld: TField; //else BAD mem leak on 'Field.asString'
 // Bookmark: TBookmarkStr;
   SaveState: TDataSetState;
-  i: integer;
-  Matched: boolean;
+  I: Integer;
+  Matched: Boolean;
 
   function CompareField(var Field: TField; Value: Variant): Boolean; {BG}
   var
@@ -1616,9 +1613,10 @@ var
     end;
   end;
 begin
-  Result := NULL;
+  Result := Null;
   CheckBrowseMode;
-    if IsEmpty then Exit;
+    if IsEmpty then
+      Exit;
 
   Fields := TList.Create;
   try
@@ -1626,24 +1624,27 @@ begin
     FieldCount := Fields.Count;
     Matched := CompareRecord;
     if Matched then
-       Result := FieldValues[ ResultFields]
-    else begin
-        SaveState := SetTempState(dsCalcFields);
+       Result := FieldValues[ResultFields]
+    else
+    begin
+      SaveState := SetTempState(dsCalcFields);
+      try
         try
-          try
-             for i := 0 to Recordcount - 1 do begin
-                RecordToBuffer(Records[i], TempBuffer);
-                CalculateFields(TempBuffer);
-                Matched := CompareRecord;
-                if Matched then
-                  Break;
-             end;
-          finally
-            if Matched then Result := FieldValues[ ResultFields];
+          for I := 0 to RecordCount - 1 do
+          begin
+            RecordToBuffer(Records[I], TempBuffer);
+            CalculateFields(TempBuffer);
+            Matched := CompareRecord;
+            if Matched then
+              Break;
           end;
         finally
-          RestoreState(SaveState);
+          if Matched then
+            Result := FieldValues[ResultFields];
         end;
+      finally
+        RestoreState(SaveState);
+      end;
     end;
   finally
     Fields.Free;
@@ -1660,7 +1661,6 @@ begin
     DataEvent(deDataSetChange, 0);
   end;
 end;
-
 
 procedure TJvMemoryData.AddStatusField;
 begin
@@ -1889,7 +1889,8 @@ begin
   end;
 end;
 
-function TJvMemoryData.SaveToDataSet(Dest: TDataSet; RecordCount: Integer; DisableAllControls: Boolean = True): Integer;
+function TJvMemoryData.SaveToDataSet(Dest: TDataSet; RecordCount: Integer;
+  DisableAllControls: Boolean = True): Integer;
 var
   MovedCount: Integer;
   SB, DB: TBookmark;

@@ -64,7 +64,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlEdit
     procedure ControlSetPasswordChar(Value: Char);
@@ -94,7 +94,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlEdit
     procedure ControlSetPasswordChar(Value: Char);
@@ -128,7 +128,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
   TJvDynControlJVCLSpinEdit = class(TJvSpinEdit, IUnknown,
@@ -147,7 +147,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     // IJvDynControlSpin
     procedure ControlSetIncrement(Value: Integer);
@@ -173,7 +173,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     // IJvDynControlFileName
     procedure ControlSetInitialDir(const Value: string);
@@ -202,7 +202,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(const Value: string);
@@ -233,7 +233,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     // IJvDynControlDate
     procedure ControlSetMinDate(Value: TDateTime);
@@ -257,7 +257,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     // IJvDynControlDate
     procedure ControlSetMinDate(Value: TDateTime);
@@ -281,7 +281,7 @@ type
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetFormat(const Value: string);
   end;
@@ -308,7 +308,7 @@ type
     procedure ControlSetAllowGrayed(Value: Boolean);
     procedure ControlSetState(Value: TCheckBoxState);
     function ControlGetState: TCheckBoxState;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
   TJvDynControlJVCLMemo = class(TJvMemo, IUnknown,
@@ -333,7 +333,7 @@ type
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetWantTabs(Value: Boolean);
     procedure ControlSetWantReturns(Value: Boolean);
@@ -364,7 +364,7 @@ type
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetWantTabs(Value: Boolean);
     procedure ControlSetWantReturns(Value: Boolean);
@@ -393,7 +393,7 @@ type
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetColumns(Value: Integer);
   end;
@@ -417,7 +417,7 @@ type
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
@@ -455,7 +455,7 @@ type
     function ControlGetItemEnabled(Index: Integer): Boolean;
     function ControlGetHeader(Index: Integer): Boolean;
     function ControlGetState(Index: Integer): TCheckBoxState;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
   TJvDynControlJVCLComboBox = class(TJvComboBox, IUnknown,
@@ -478,7 +478,7 @@ type
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
@@ -486,7 +486,7 @@ type
   TJvDynControlJVCLGroupBox = class(TJvGroupBox, IUnknown,
     IJvDynControl)
   public
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -510,7 +510,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel;
       ABevelWidth: Integer; ABorderStyle: TBorderStyle; ABorderWidth: Integer);
@@ -525,10 +525,10 @@ type
     procedure ControlSetBevelInner(Value: TBevelCut);
     procedure ControlSetBevelKind(Value: TBevelKind);
     procedure ControlSetBevelOuter(Value: TBevelCut);
-    procedure ControlSetBorderStyle(Value : TBorderStyle);
-    procedure ControlSetBorderWidth(Value : Integer);
+    procedure ControlSetBorderStyle(Value: TBorderStyle);
+    procedure ControlSetBorderWidth(Value: Integer);
     // IJvDynControlColor
-    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetColor(Value: TColor);
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
@@ -555,13 +555,13 @@ type
     procedure ControlSetPicture(Value: TPicture);
     procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
   TJvDynControlJVCLScrollBox = class(TJvScrollbox, IUnknown,
     IJvDynControl)
   public
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -577,7 +577,7 @@ type
     IJvDynControlAutoSize,
     IJvDynControlAlignment)
   public
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -595,7 +595,7 @@ type
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
     // IJvDynControlColor
-    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetColor(Value: TColor);
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
@@ -605,7 +605,7 @@ type
     IJvDynControl, IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor,
     IJvDynControlAlignment)
   public
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -620,7 +620,7 @@ type
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
     // IJvDynControlColor
-    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetColor(Value: TColor);
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
@@ -646,7 +646,7 @@ type
 
     // IJvDynControlAction
     procedure ControlSetAction(Value: TCustomAction);
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
   TJvDynControlJVCLRadioButton = class(TRadioButton, IUnknown,
@@ -665,7 +665,7 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
   end;
 
   TJvDynControlJVCLTreeView = class(TJvTreeView, IUnknown,
@@ -695,7 +695,7 @@ type
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
     function ControlGetSelected: TTreeNode;
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
     procedure ControlSortItems;
@@ -714,15 +714,15 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlProgressBar
-    procedure ControlSetMax(Value: integer);
-    procedure ControlSetMin(Value: integer);
+    procedure ControlSetMax(Value: Integer);
+    procedure ControlSetMin(Value: Integer);
     procedure ControlSetOrientation(Value: TProgressBarOrientation);
-    procedure ControlSetPosition(Value: integer);
-    procedure ControlSetSmooth(Value: boolean);
-    procedure ControlSetStep(Value: integer);
+    procedure ControlSetPosition(Value: Integer);
+    procedure ControlSetSmooth(Value: Boolean);
+    procedure ControlSetStep(Value: Integer);
   end;
 
 type
@@ -737,18 +737,18 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
-    procedure ControlSetAnchors(Value : TAnchors);
+    procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlTabControl
-    procedure ControlCreateTab (const AName : string);
-    procedure ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
-    procedure ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
-    procedure ControlSetTabIndex (Index : integer);
-    function ControlGetTabIndex : integer;
-    procedure ControlSetMultiLine (Value : boolean);
-    procedure ControlSetScrollOpposite (Value : boolean);
-    procedure ControlSetHotTrack (Value : boolean);
-    procedure ControlSetRaggedRight (Value : boolean);
+    procedure ControlCreateTab(const AName: string);
+    procedure ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
+    procedure ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
+    procedure ControlSetTabIndex(Index: Integer);
+    function ControlGetTabIndex: Integer;
+    procedure ControlSetMultiLine(Value: Boolean);
+    procedure ControlSetScrollOpposite(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetRaggedRight(Value: Boolean);
   end;
 
   TJvDynControlJVCLPageControl = class(TJvPageControl, IUnknown,
@@ -768,21 +768,19 @@ type
     procedure ControlCreateTab(const AName: string);
     procedure ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
     procedure ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
-    procedure ControlSetTabIndex(Index: integer);
-    function ControlGetTabIndex: integer;
-    procedure ControlSetMultiLine (Value : boolean);
-    procedure ControlSetScrollOpposite (Value : boolean);
-    procedure ControlSetHotTrack (Value : boolean);
-    procedure ControlSetRaggedRight (Value : boolean);
+    procedure ControlSetTabIndex(Index: Integer);
+    function ControlGetTabIndex: Integer;
+    procedure ControlSetMultiLine(Value: Boolean);
+    procedure ControlSetScrollOpposite(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetRaggedRight(Value: Boolean);
 
     //IJvDynControlPageControl
     function ControlGetPage(const PageName: string): TWinControl;
   end;
 
-
 function DynControlEngineJVCL: TJvDynControlEngine;
 procedure SetDynControlEngineJVCLDefault;
-
 
 {$IFDEF UNITVERSIONING}
 const
@@ -862,7 +860,7 @@ begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLMaskEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -956,7 +954,7 @@ begin
   Result := FEditControl.Text;
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLButtonEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1062,7 +1060,7 @@ begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLCalcEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLCalcEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1122,7 +1120,7 @@ begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLSpinEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1212,7 +1210,7 @@ begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1316,7 +1314,7 @@ begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1434,7 +1432,7 @@ begin
   Result := Trunc(FDatePicker.Date) + (Trunc(FTimePicker.Time) - FTimePicker.Time);
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1511,7 +1509,7 @@ begin
   Result := Date;
 end;
 
-procedure TJvDynControlJVCLDateEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLDateEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1587,7 +1585,7 @@ begin
   Result := Time;
 end;
 
-procedure TJvDynControlJVCLTimeEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLTimeEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1671,7 +1669,7 @@ begin
   Result := State;
 end;
 
-procedure TJvDynControlJVCLCheckBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLCheckBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1745,7 +1743,7 @@ begin
   Result := Lines;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLMemo.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1774,7 +1772,6 @@ procedure TJvDynControlJVCLMemo.ControlSetAlignment(Value: TAlignment);
 begin
   Alignment := Value;
 end;
-
 
 //=== { TJvDynControlJVCLRichEdit } ==========================================
 
@@ -1845,7 +1842,7 @@ begin
   Result := Lines;
 end;
 
-procedure TJvDynControlJVCLRichEdit.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLRichEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -1943,7 +1940,7 @@ begin
   Result := Items;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLRadioGroup.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2021,7 +2018,7 @@ begin
   Result := Items;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLListBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2163,7 +2160,7 @@ begin
   Result := State[Index];
 end;
 
-procedure TJvDynControlJVCLCheckListBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLCheckListBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2241,7 +2238,7 @@ begin
   Result := Items;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLComboBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2256,7 +2253,7 @@ end;
 
 //=== { TJvDynControlJVCLGroupBox } ==========================================
 
-procedure TJvDynControlJVCLGroupBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLGroupBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2348,7 +2345,7 @@ begin
   Align := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLPanel.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2373,17 +2370,17 @@ begin
   BevelOuter:= Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetBorderStyle(Value : TBorderStyle);
+procedure TJvDynControlJVCLPanel.ControlSetBorderStyle(Value: TBorderStyle);
 begin
   BorderStyle:= Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetBorderWidth(Value : Integer);
+procedure TJvDynControlJVCLPanel.ControlSetBorderWidth(Value: Integer);
 begin
   BorderWidth := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetColor(Value : TColor);
+procedure TJvDynControlJVCLPanel.ControlSetColor(Value: TColor);
 begin
   Color := Value;
 end;
@@ -2397,7 +2394,6 @@ procedure TJvDynControlJVCLPanel.ControlSetAlignment(Value: TAlignment);
 begin
   Alignment := Value;
 end;
-
 
 //=== { TJvDynControlJVCLImage } =============================================
 
@@ -2482,14 +2478,14 @@ begin
   Result := Picture;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLImage.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLScrollBox } =========================================
 
-procedure TJvDynControlJVCLScrollBox.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLScrollBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2529,7 +2525,7 @@ end;
 
 //=== { TJvDynControlJVCLLabel } =============================================
 
-procedure TJvDynControlJVCLLabel.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLLabel.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2584,7 +2580,7 @@ begin
   AutoSize := Value;
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetColor(Value : TColor);
+procedure TJvDynControlJVCLLabel.ControlSetColor(Value: TColor);
 begin
   Color := Value;
 end;
@@ -2599,10 +2595,9 @@ begin
   Alignment := Value;
 end;
                       
-
 //=== { TJvDynControlJVCLStaticText } ========================================
 
-procedure TJvDynControlJVCLStaticText.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLStaticText.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2647,7 +2642,7 @@ begin
   AutoSize := Value;
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetColor(Value : TColor);
+procedure TJvDynControlJVCLStaticText.ControlSetColor(Value: TColor);
 begin
   Color := Value;
 end;
@@ -2661,7 +2656,6 @@ procedure TJvDynControlJVCLStaticText.ControlSetAlignment(Value: TAlignment);
 begin
   Alignment := Value;
 end;
-
 
 //=== { TJvDynControlJVCLButton } ============================================
 
@@ -2726,7 +2720,7 @@ begin
   Action := Value;
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLButton.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2783,7 +2777,7 @@ begin
   Result := Checked;
 end;
 
-procedure TJvDynControlJVCLRadioButton.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLRadioButton.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2884,7 +2878,7 @@ begin
   Result := Selected;
 end;
 
-procedure TJvDynControlJVCLTreeView.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLTreeView.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -2908,7 +2902,6 @@ procedure TJvDynControlJVCLTreeView.ControlSortItems;
 begin
   AlphaSort;
 end;
-
 
 //=== { TJvDynControlJVCLProgressbar } =========================================
 
@@ -2946,17 +2939,17 @@ begin
   Hint := Value;
 end;
 
-procedure TJvDynControlJVCLProgressbar.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLProgressbar.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
 
-procedure TJvDynControlJVCLProgressbar.ControlSetMax(Value: integer);
+procedure TJvDynControlJVCLProgressbar.ControlSetMax(Value: Integer);
 begin
   Max := Value;
 end;
 
-procedure TJvDynControlJVCLProgressbar.ControlSetMin(Value: integer);
+procedure TJvDynControlJVCLProgressbar.ControlSetMin(Value: Integer);
 begin
   Min := Value;
 end;
@@ -2966,21 +2959,20 @@ begin
   Orientation:= Value;
 end;
 
-procedure TJvDynControlJVCLProgressbar.ControlSetPosition(Value: integer);
+procedure TJvDynControlJVCLProgressbar.ControlSetPosition(Value: Integer);
 begin
   Position := Value;
 end;
 
-procedure TJvDynControlJVCLProgressbar.ControlSetSmooth(Value: boolean);
+procedure TJvDynControlJVCLProgressbar.ControlSetSmooth(Value: Boolean);
 begin
   Smooth := Value;
 end;
 
-procedure TJvDynControlJVCLProgressbar.ControlSetStep(Value: integer);
+procedure TJvDynControlJVCLProgressbar.ControlSetStep(Value: Integer);
 begin
   Step := Value;
 end;
-
 
 //=== { TJvDynControlEngineJVCL } ============================================
 
@@ -3032,17 +3024,17 @@ begin
   RegisterControlType(jctPageControl, TJvDynControlJVCLPageControl);
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlCreateTab (const AName : string);
+procedure TJvDynControlJVCLTabControl.ControlCreateTab(const AName: string);
 begin
   Tabs.Add(AName);
 end;
 
-function TJvDynControlJVCLTabControl.ControlGetTabIndex : integer;
+function TJvDynControlJVCLTabControl.ControlGetTabIndex: Integer;
 begin
   Result := TabIndex;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetAnchors(Value : TAnchors);
+procedure TJvDynControlJVCLTabControl.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
 end;
@@ -3052,22 +3044,22 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetMultiLine (Value : boolean);
+procedure TJvDynControlJVCLTabControl.ControlSetMultiLine(Value: Boolean);
 begin
   MultiLine := Value;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetScrollOpposite (Value : boolean);
+procedure TJvDynControlJVCLTabControl.ControlSetScrollOpposite(Value: Boolean);
 begin
   ScrollOpposite := Value;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetHotTrack (Value : boolean);
+procedure TJvDynControlJVCLTabControl.ControlSetHotTrack(Value: Boolean);
 begin
   HotTrack := Value;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetRaggedRight (Value : boolean);
+procedure TJvDynControlJVCLTabControl.ControlSetRaggedRight(Value: Boolean);
 begin
   RaggedRight := Value;
 end;
@@ -3133,32 +3125,32 @@ begin
   OnChanging := OnChangingEvent;
 end;
 
-procedure TJvDynControlJVCLPageControl.ControlSetTabIndex(Index: integer);
+procedure TJvDynControlJVCLPageControl.ControlSetTabIndex(Index: Integer);
 begin
   TabIndex := Index;
 end;
 
-function TJvDynControlJVCLPageControl.ControlGetTabIndex: integer;
+function TJvDynControlJVCLPageControl.ControlGetTabIndex: Integer;
 begin
   Result := TabIndex;
 end;
 
-procedure TJvDynControlJVCLPageControl.ControlSetMultiLine (Value : boolean);
+procedure TJvDynControlJVCLPageControl.ControlSetMultiLine(Value: Boolean);
 begin
   MultiLine := Value;
 end;
 
-procedure TJvDynControlJVCLPageControl.ControlSetScrollOpposite (Value : boolean);
+procedure TJvDynControlJVCLPageControl.ControlSetScrollOpposite(Value: Boolean);
 begin
   ScrollOpposite := Value;
 end;
 
-procedure TJvDynControlJVCLPageControl.ControlSetHotTrack (Value : boolean);
+procedure TJvDynControlJVCLPageControl.ControlSetHotTrack(Value: Boolean);
 begin
   HotTrack := Value;
 end;
 
-procedure TJvDynControlJVCLPageControl.ControlSetRaggedRight (Value : boolean);
+procedure TJvDynControlJVCLPageControl.ControlSetRaggedRight(Value: Boolean);
 begin
   RaggedRight := Value;
 end;
@@ -3185,12 +3177,12 @@ begin
   Hint := Value;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetOnChangeTab (OnChangeEvent: TNotifyEvent);
+procedure TJvDynControlJVCLTabControl.ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
 begin
   OnChange := OnChangeEvent;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetOnChangingTab (OnChangingEvent: TTabChangingEvent);
+procedure TJvDynControlJVCLTabControl.ControlSetOnChangingTab(OnChangingEvent: TTabChangingEvent);
 begin
   OnChanging := OnChangingEvent;
 end;
@@ -3210,7 +3202,7 @@ begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLTabControl.ControlSetTabIndex (Index : integer);
+procedure TJvDynControlJVCLTabControl.ControlSetTabIndex(Index: Integer);
 begin
   TabIndex := Index;
 end;
@@ -3219,7 +3211,6 @@ procedure TJvDynControlJVCLTabControl.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
-
 
 initialization
   {$IFDEF UNITVERSIONING}
