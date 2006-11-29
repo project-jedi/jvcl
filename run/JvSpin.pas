@@ -541,7 +541,7 @@ type
 
   TSpinButtonBitmapsManager = class;
 
-  TSpinButtonBitmaps = class
+  TSpinButtonBitmaps = class(TObject)
   private
     FManager: TSpinButtonBitmapsManager;
     FHeight: Integer;
@@ -596,7 +596,7 @@ type
     property CustomGlyphs: Boolean read FCustomGlyphs;
   end;
 
-  TSpinButtonBitmapsManager = class
+  TSpinButtonBitmapsManager = class(TObject)
   private
     FClientCount: Integer;
     FList: TList;
@@ -675,7 +675,7 @@ begin
 
   if FOldValue <> Value then
   begin
-    // Mantis 3469: This has the advandtage to be completely transparent to
+    // Mantis 3469: This has the advantage to be completely transparent to
     // the number of decimals shown in the control
     if Thousands then
       SelStart := SelStart + StrCharCount(Text, ThousandSeparator) - StrCharCount(OldText,ThousandSeparator);
@@ -2711,11 +2711,6 @@ end;
 
 //=== { TSpinButtonBitmapsManager } ==========================================
 
-procedure TSpinButtonBitmapsManager.AddClient;
-begin
-  Inc(FClientCount);
-end;
-
 constructor TSpinButtonBitmapsManager.Create;
 begin
   inherited Create;
@@ -2730,6 +2725,11 @@ begin
 
   FList.Free;
   inherited Destroy;
+end;
+
+procedure TSpinButtonBitmapsManager.AddClient;
+begin
+  Inc(FClientCount);
 end;
 
 function TSpinButtonBitmapsManager.Find(const Width, Height: Integer;
