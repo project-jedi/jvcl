@@ -143,8 +143,8 @@ begin
   FWindowsKey := Value;
   If Active then
   begin
-    Active := false;
-    Active := true;
+    Active := False;
+    Active := True;
   end;
 end;
 

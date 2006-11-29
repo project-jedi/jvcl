@@ -104,8 +104,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function BeginUpdate: integer;
-    function EndUpdate: integer;
+    function BeginUpdate: Integer;
+    function EndUpdate: Integer;
     procedure GetColors; virtual;
     function GetCustomColorsStrings: TStrings;
     procedure SetCustomColorsStrings(const Value: TStrings);
@@ -255,8 +255,8 @@ type
     function AddToMRU: Integer;
     procedure ClearMRU;
     procedure Click; override;
-    function BeginUpdate: integer;
-    function EndUpdate: integer;
+    function BeginUpdate: Integer;
+    function EndUpdate: Integer;
     function FontSubstitute(const AFontName: string): string;
     procedure FontSizeList(SizeList: TList);
     function IsTrueType: Boolean;
@@ -451,13 +451,13 @@ begin
   inherited Destroy;
 end;
 
-function TJvColorComboBox.BeginUpdate: integer;
+function TJvColorComboBox.BeginUpdate: Integer;
 begin
   Inc(FUpdateCount);
   Result := FUpdateCount;
 end;
 
-function TJvColorComboBox.EndUpdate: integer;
+function TJvColorComboBox.EndUpdate: Integer;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
@@ -613,21 +613,22 @@ end;
 procedure TJvColorComboBox.DrawItem(Index: Integer; R: TRect;
   State: TOwnerDrawState);
 var
-  aRect: TRect;
+  LRect: TRect;
   AColor: TColor;
   S: string;
 begin
-  if Index >= Items.Count then Exit;
-  aRect := R;
-  Inc(aRect.Top, 2);
-  Inc(aRect.Left, 2);
-  Dec(aRect.Bottom, 2);
+  if Index >= Items.Count then
+    Exit;
+  LRect := R;
+  Inc(LRect.Top, 2);
+  Inc(LRect.Left, 2);
+  Dec(LRect.Bottom, 2);
   if (coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions) or
     ((coCustomColors in FOptions) and (Index = Items.Count - 1)) then
-    aRect.Right := aRect.Left + FColorWidth
+    LRect.Right := LRect.Left + FColorWidth
 
   else
-    Dec(aRect.Right, 3);
+    Dec(LRect.Right, 3);
 
   with Canvas do
   begin
@@ -635,12 +636,12 @@ begin
     Brush.Color := Color;
     FillRect(R);
     Brush.Color := clGray;
-    OffsetRect(aRect, 2, 2);
-    FillRect(aRect);
-    OffsetRect(aRect, -2, -2);
+    OffsetRect(LRect, 2, 2);
+    FillRect(LRect);
+    OffsetRect(LRect, -2, -2);
     Brush.Color := TColor(Items.Objects[Index]);
     try
-      Rectangle(aRect);
+      Rectangle(LRect);
     finally
       Brush.Style := bsSolid;
       Brush.Color := AColor;
@@ -678,8 +679,8 @@ begin
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
         else
         if coRGB in FOptions then
-          S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
-            GetBValue(TColor(Items.Objects[Index]))]);
+          S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])),
+            GetGValue(TColor(Items.Objects[Index])), GetBValue(TColor(Items.Objects[Index]))]);
       end;
       R.Left := R.Left + FColorWidth + 6;
       R.Right := R.Left + TextWidth(S) + 6;
@@ -1271,13 +1272,13 @@ begin
   ItemHeight := Max(GetItemHeight(Font), FTrueTypeBmp.Height);
 end;
 
-function TJvFontComboBox.BeginUpdate: integer;
+function TJvFontComboBox.BeginUpdate: Integer;
 begin
   Inc(FUpdateCount);
   Result := FUpdateCount;
 end;
 
-function TJvFontComboBox.EndUpdate: integer;
+function TJvFontComboBox.EndUpdate: Integer;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
@@ -1648,7 +1649,7 @@ begin
   if FFontSizes = nil then
     FFontSizes := TStringlist.Create;
   FFontSizes.Clear;
-  TStringlist(FFontSizes).Sorted := true;
+  TStringList(FFontSizes).Sorted := True;
 
   {$IFDEF CLR}
   FEnumeratorDC := GetDC(HWND_DESKTOP);
@@ -1682,9 +1683,9 @@ begin
   end;
   {$ENDIF CLR}
 
-  TStringlist(FFontSizes).Sorted := false;
+  TStringlist(FFontSizes).Sorted := False;
   if FFontSizes.Count > 1 then
-    TStringlist(FFontSizes).CustomSort(IntegerSort)
+    TStringList(FFontSizes).CustomSort(IntegerSort)
   else // true type font or font with only one size, so fake it:
   begin
     FFontSizes.Clear;

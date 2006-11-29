@@ -224,7 +224,7 @@ type
 
     property Destination: TExportDestination read FDestination write SetDestination default edFile;
     property ExportSeparator: TExportSeparator read FExportSeparator write SetExportSeparator default esTab;
-    property ShowColumnName: Boolean read FShowColumnName write FShowColumnName default true;
+    property ShowColumnName: Boolean read FShowColumnName write FShowColumnName default True;
     property QuoteEveryTime: Boolean read FQuoteEveryTime write FQuoteEveryTime default True;
   end;
 

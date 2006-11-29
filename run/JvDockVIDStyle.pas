@@ -81,13 +81,19 @@ type
     property ActiveFont: TFont read FActiveFont write SetActiveFont stored IsNotSystemInfo;
     property InactiveFont: TFont read FInactiveFont write SetInactiveFont stored IsNotSystemInfo;
     property TextAlignment: TAlignment read FTextAlignment write SetTextAlignment default taLeftJustify;
-    property ActiveTitleStartColor: TColor read FActiveTitleStartColor write SetActiveTitleStartColor stored IsNotSystemInfo;
-    property ActiveTitleEndColor: TColor read FActiveTitleEndColor write SetActiveTitleEndColor stored IsNotSystemInfo;
-    property ActiveTitleVerticalGradient: Boolean read FActiveTitleVerticalGradient write SetActiveTitleVerticalGradient default False;
+    property ActiveTitleStartColor: TColor read FActiveTitleStartColor write SetActiveTitleStartColor stored
+      IsNotSystemInfo;
+    property ActiveTitleEndColor: TColor read FActiveTitleEndColor write SetActiveTitleEndColor stored
+      IsNotSystemInfo;
+    property ActiveTitleVerticalGradient: Boolean read FActiveTitleVerticalGradient write
+      SetActiveTitleVerticalGradient default False;
     property ActiveDockGrabber: Boolean read FActiveDockGrabber write SetActiveDockGrabber default False;
-    property InactiveTitleStartColor: TColor read FInactiveTitleStartColor write SetInactiveTitleStartColor stored IsNotSystemInfo;
-    property InactiveTitleEndColor: TColor read FInactiveTitleEndColor write SetInactiveTitleEndColor stored IsNotSystemInfo;
-    property InactiveTitleVerticalGradient: Boolean read FInactiveTitleVerticalGradient write SetInactiveTitleVerticalGradient default False;
+    property InactiveTitleStartColor: TColor read FInactiveTitleStartColor write SetInactiveTitleStartColor stored
+      IsNotSystemInfo;
+    property InactiveTitleEndColor: TColor read FInactiveTitleEndColor write SetInactiveTitleEndColor stored
+      IsNotSystemInfo;
+    property InactiveTitleVerticalGradient: Boolean read FInactiveTitleVerticalGradient write
+      SetInactiveTitleVerticalGradient default False;
     property TextEllipsis: Boolean read FTextEllipsis write SetTextEllipsis default True;
     property SystemInfo: Boolean read FSystemInfo write SetSystemInfo default True;
     property GrabbersSize default VIDDefaultDockGrabbersSize;
@@ -102,8 +108,10 @@ type
     FInactiveFont: TFont;
     FInactiveSheetColor: TColor;
     FShowTabImages: Boolean;
-    FShowCloseButtonOnTabs: Boolean; { NEW! if true, shows invididual close buttons on tabs. If false, you get the old VID behaviour. }
-    FShowCloseButtonOnGrabber: Boolean; {NEW! default is true, which is the old VID Style behaviour. False is a new behaviour added by Warren. }
+    { NEW! if true, shows invididual close buttons on tabs. If false, you get the old VID behaviour. }
+    FShowCloseButtonOnTabs: Boolean;
+    {NEW! default is true, which is the old VID Style behaviour. False is a new behaviour added by Warren. }
+    FShowCloseButtonOnGrabber: Boolean;
     procedure SetActiveFont(Value: TFont);
     procedure SetActiveSheetColor(const Value: TColor);
     procedure SetHotTrackColor(const Value: TColor);
@@ -132,7 +140,8 @@ type
     property ShowCloseButtonOnTabs: Boolean read FShowCloseButtonOnTabs write SetShowCloseButtonOnTabs;
     {NEW! Default is true, which is the old VID Style behaviour.
           False is a new behaviour added by Warren. }
-    property ShowCloseButtonOnGrabber: Boolean read FShowCloseButtonOnGrabber write SetShowCloseButtonOnGrabber default true;
+    property ShowCloseButtonOnGrabber: Boolean read FShowCloseButtonOnGrabber write
+      SetShowCloseButtonOnGrabber default True;
   end;
 
   TJvDockSystemInfoChange = procedure(Value: Boolean) of object;
@@ -267,7 +276,8 @@ type
     property CaptionLeftOffset: Integer read FCaptionLeftOffset write SetCaptionLeftOffset;
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
+      ADockStyle: TJvDockObservableStyle); override;
     property ShowCloseButtonOnGrabber: Boolean read FShowCloseButtonOnGrabber write SetShowCloseButtonOnGrabber;
     property AlwaysShowGrabber: Boolean read FAlwaysShowGrabber write SetAlwaysShowGrabber;
   end;
@@ -402,7 +412,8 @@ type
     property Page: TJvDockVIDTabPageControl read FPage write SetPage;
     property SelectSheet: TJvDockVIDTabSheet read FSelectSheet write FSelectSheet;
     property ShowTabImages: Boolean read FShowTabImages write SetShowTabImages;
-    property DockPanel: TJvDockPanel read FDockPanel write FDockPanel; {NEW! If docked to a TjvDockPanel, this is it. if not (nil) then it is floating.}
+    {NEW! If docked to a TJvDockPanel, this is it. if not (nil) then it is floating.}
+    property DockPanel: TJvDockPanel read FDockPanel write FDockPanel;
   end;
 
   TJvDockTabPanelClass = class of TJvDockTabPanel;
@@ -572,7 +583,8 @@ type
     property OldState: TDragState read FOldState write SetOldState;
   end;
 
-procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor; Vertical: Boolean = False);
+procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor;
+  Vertical: Boolean = False);
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
@@ -1077,7 +1089,8 @@ procedure TJvDockVIDStyle.FormStartDock(DockClient: TJvDockClient;
 begin
   inherited FormStartDock(DockClient, Source);
   Source := TJvDockVIDDragDockObject.Create(DockClient.ParentForm);
-//  Source.DockClient := DockClient; {allows DockClient.OnCheckIsDockable event to fire once before docking, to block or allow drag/drop to this site. }
+{allows DockClient.OnCheckIsDockable event to fire once before docking, to block or allow drag/drop to this site. }
+//  Source.DockClient := DockClient;
 end;
 
 procedure TJvDockVIDStyle.FormGetDockEdge(DockClient: TJvDockClient;

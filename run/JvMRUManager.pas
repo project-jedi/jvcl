@@ -57,7 +57,7 @@ type
   TClickMenuEvent = procedure(Sender: TObject; const RecentName,
     Caption: string; UserData: Longint) of object;
   TGetItemInfoEvent = procedure(Sender: TObject; Item: TMenuItem) of object;
-  TGetItemInfoExEvent  = procedure(Sender: TObject; Item: TMenuItem; Index:integer) of object;
+  TGetItemInfoExEvent  = procedure(Sender: TObject; Item: TMenuItem; Index: Integer) of object;
 
   TAccelDelimiter = (adTab, adSpace);
   TRecentMode = (rmInsert, rmAppend);
@@ -145,7 +145,7 @@ type
     procedure GetItemData(var Caption: string; var ShortCut: TShortCut;
       UserData: Longint); dynamic;
     procedure GetItemInfo(Item: TMenuItem); dynamic;
-    procedure GetItemInfoEx(Item: TMenuItem; Index:integer); dynamic;
+    procedure GetItemInfoEx(Item: TMenuItem; Index: Integer); dynamic;
     procedure DoClick(const RecentName, Caption: string; UserData: Longint); dynamic;
     procedure DoBeforeUpdate; virtual;
     procedure DoAfterUpdate; virtual;
@@ -672,7 +672,7 @@ begin
     FOnItemInfo(Self, Item);
 end;
 
-procedure TJvMRUManager.GetItemInfoEx(Item: TMenuItem; Index: integer);
+procedure TJvMRUManager.GetItemInfoEx(Item: TMenuItem; Index: Integer);
 begin
   GetItemInfo(Item);
   if Assigned(FOnItemInfoEx) then

@@ -311,7 +311,8 @@ end;
 
 procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
 begin
-  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo,
+    CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
 end;
 
 {$IFDEF VCL}
@@ -398,7 +399,7 @@ begin
     tbDropDown.Visible := False;
 
   // if the form is not closeable, then do not show the button
-  if not Closeable then 
+  if not Closeable then
   begin
     tbClose.Visible := False;
     tbDropDown.Left := tbClose.Left;
@@ -469,7 +470,8 @@ begin
   GetCursorPos(P);
   FMouseInControl := PtInRect(BoundsRect, P); // and IsInForm(P);
   MouseTimer.Enabled := True;
-  if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+  if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and
+   (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
     TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
 end;
 
@@ -524,6 +526,8 @@ begin
 end;
 
 procedure TJvDesktopAlertButton.Paint;
+const
+  cMarlett = 'Marlett';
 var
   Rect: TRect;
 begin
@@ -545,40 +549,40 @@ begin
     case ToolType of
       abtArrowLeft:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Style := [];
           Canvas.Font.Size := 10;
           DrawText(Canvas.Handle, '3', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         end;
       abtArrowRight:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Style := [];
           Canvas.Font.Size := 10;
           DrawText(Canvas.Handle, '4', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         end;
       abtClose:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Size := 7;
           Canvas.Font.Style := [];
           DrawText(Canvas.Handle, 'r', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         end;
       abtMaximize:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Style := [];
           DrawText(Canvas.Handle, '2', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         end;
       abtMinimize:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Style := [];
           DrawText(Canvas.Handle, '1', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         end;
       abtDropDown:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Size := 10;
           Canvas.Font.Style := [];
           DrawText(Canvas.Handle, 'u', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
@@ -634,7 +638,7 @@ begin
         end;
       abtRestore:
         begin
-          Canvas.Font.Name := 'Marlett';
+          Canvas.Font.Name := cMarlett;
           Canvas.Font.Style := [];
           DrawText(Canvas.Handle, '3', 1, Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         end;

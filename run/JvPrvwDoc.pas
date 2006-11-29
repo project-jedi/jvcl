@@ -1390,7 +1390,8 @@ var
   I, J: Integer;
   PrinterPhysicalOffsetX, PrinterPhysicalOffsetY: cardinal;
 begin
-  if (APrinter = nil) or APrinter.GetPrinting then Exit;
+  if (APrinter = nil) or APrinter.GetPrinting then
+    Exit;
 
   PrinterPhysicalOffsetX := GetDeviceCaps(APrinter.GetHandle, PHYSICALOFFSETX);
   PrinterPhysicalOffsetY := GetDeviceCaps(APrinter.GetHandle, PHYSICALOFFSETY);

@@ -262,10 +262,12 @@ begin
       ControlStyle := ControlStyle + [csOpaque]
     else  // picture might not cover entire clientrect
       ControlStyle := ControlStyle - [csOpaque];
-    if DoPaletteChange and FDrawing then Update;
+    if DoPaletteChange and FDrawing then
+     Update;
   end
   else ControlStyle := ControlStyle - [csOpaque];
-  if not FDrawing then Invalidate;
+  if not FDrawing then
+    Invalidate;
 
   inherited Picture.Assign(FPicture);
 end;

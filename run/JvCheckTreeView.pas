@@ -292,7 +292,7 @@ end;
 function TJvCheckTreeView.CreateNode: TTreeNode;
 begin
   Result := inherited CreateNode;
-  if CheckBoxes and (CheckBoxOptions.Style = cbsJVCL) then  
+  if CheckBoxes and (CheckBoxOptions.Style = cbsJVCL) then
     Result.StateIndex := CheckBoxOptions.CheckBoxUncheckedIndex;
 end;
 
@@ -406,15 +406,15 @@ end;
 procedure TJvCheckTreeView.InternalSetChecked(Node: TTreeNode; const Value: Boolean; Levels: Integer);
 var
   Tmp: TTreeNode;
-  toggled : Boolean;
+  Toggled: Boolean;
 begin
-  toggled := False;
+  Toggled := False;
   if Checked[Node] <> Value then
-    toggled := ToggleNode(Node);
+    Toggled := ToggleNode(Node);
   // Only cascade if the node has been toggled.
-  if toggled and (Levels <> 0) and CheckBox[Node] and
-    ((Value and (poOnCheck in CheckBoxOptions.CascadeOptions)) or (not Value and (poOnUnCheck in
-    CheckBoxOptions.CascadeOptions))) then
+  if Toggled and (Levels <> 0) and CheckBox[Node] and
+    ((Value and (poOnCheck in CheckBoxOptions.CascadeOptions)) or
+    (not Value and (poOnUnCheck in CheckBoxOptions.CascadeOptions))) then
   begin
     Tmp := Node.getFirstChild;
     while Tmp <> nil do

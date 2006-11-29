@@ -1442,7 +1442,7 @@ begin
       if FLoadStructure then
         CopyStructure(FDataSet, FAutoIncAsInteger)
       else
-      if FApplyMode <> amNone then 
+      if FApplyMode <> amNone then
       begin
         AddStatusField;
         HideStatusField;
@@ -2123,7 +2123,8 @@ begin
   Result := Null;
   if FldNames = '' then
     FldNames := FKeyFieldNames;
-  if FldNames = '' then Exit;
+  if FldNames = '' then
+    Exit;
 
   // Mantis 3610: If there is only one field in the dataset, return a
   // variant array with only one element. This seems to be required for
@@ -2193,7 +2194,7 @@ begin
             Fields[I].Value := FOriginal.Value;
         end;
       end;
-      if FApplyMode <> amNone then 
+      if FApplyMode <> amNone then
         FieldByName(FStatusName).AsInteger := Integer(rsOriginal);
       Post;
       Inc(Result);

@@ -1475,7 +1475,8 @@ var
   AverageSize: Integer;
 begin
   ChildCount := Parent.VisibleChildCount - Ord((Exclude <> nil) and (Exclude.ParentZone = Parent));
-  if ChildCount = 0 then Exit; 
+  if ChildCount = 0 then
+    Exit;
   AverageSize := DockSiteSizeAlternate div ChildCount;
   Assert(AverageSize > 0);
   Zone := TJvDockVCZone(Parent.FirstVisibleChildZone);

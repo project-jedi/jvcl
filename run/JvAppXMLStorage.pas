@@ -66,14 +66,10 @@ type
     constructor Create; override;
   published
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
-    property AutoEncodeValue: Boolean read GetAutoEncodeValue write
-        SetAutoEncodeValue default true;
-    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write
-        SetAutoEncodeEntity default true;
-    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent default
-        true;
-    property InvalidCharReplacement: string read FInvalidCharReplacement write
-        SetInvalidCharReplacement;
+    property AutoEncodeValue: Boolean read GetAutoEncodeValue write SetAutoEncodeValue default True;
+    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write SetAutoEncodeEntity default True;
+    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent default True;
+    property InvalidCharReplacement: string read FInvalidCharReplacement write SetInvalidCharReplacement;
   end;
 
   // This is the base class for an in memory XML file storage
