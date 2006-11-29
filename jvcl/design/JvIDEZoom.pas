@@ -156,7 +156,8 @@ begin
   if F <> nil then
     if F.Parent <> nil then
       MessageDlg(RsCantZoomDocked,mtError,[mbCancel],0)
-    else if F.WindowState <> wsMaximized then
+    else
+    if F.WindowState <> wsMaximized then
       F.WindowState := wsMaximized
     else
       F.WindowState := wsNormal;
