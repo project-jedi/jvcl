@@ -239,7 +239,7 @@ type
   end;
 
   TJvCPUType = (cpuUnknown, cpuIntel, cpuCyrix, cpuAMD, cpuCrusoe);
-  TJvSSEVersion = (vNoSSE, vSSE1, vSSE2, vSSE3);
+  TJvSSEVersion = (vNoSSE, vSSE1, vSSE2, vSSE3, vSSSE3);
 
   TJvCPUInfo = class(TJvReadOnlyInfo)
   private
@@ -272,6 +272,9 @@ type
     function GetL1DataCache: Cardinal;
     function GetL2Cache: Cardinal;
     function GetL3Cache: Cardinal;
+    function GetDEPCapable: Boolean;
+    function GetLogicalCore: Byte;
+    function GetPhysicalCore: Byte;
     procedure SetCPUName(const Value: string);
     procedure SetCPUType(const Value: TJvCPUType);
     procedure SetExTicks(const Value: Cardinal);
@@ -299,6 +302,9 @@ type
     procedure SetL1DataCache(const Value: Cardinal);
     procedure SetL2Cache(const Value: Cardinal);
     procedure SetL3Cache(const Value: Cardinal);
+    procedure SetDEPCapable(const Value: Boolean);
+    procedure SetLogicalCore(const Value: Byte);
+    procedure SetPhysicalCore(const Value: Byte);
   public
     function IntelSpecific: TIntelSpecific;
     function CyrixSpecific: TCyrixSpecific;
@@ -336,6 +342,9 @@ type
     // FreqInfo
     property RawFreq: Cardinal read GetRawFreq write SetRawFreq stored False;
     property NormFreq: Cardinal read GetNormFreq write SetNormFreq stored False;
+    property DEPCapable: Boolean read GetDEPCapable write SetDEPCapable stored False;
+    property PhysicalCore: Byte read GetPhysicalCore write SetPhysicalCore stored False;
+    property LogicalCore: Byte read GetLogicalCore write SetLogicalCore stored False;
   end;
 
   TJvBIOSInfo = class(TJvReadOnlyInfo)
@@ -1760,10 +1769,9 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if ACpuInfo.CpuType = CPU_TYPE_AMD then
-    Result := ACpuInfo.AMDSpecific
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  if (ACpuInfo.CpuType = CPU_TYPE_AMD)
+    then Result := ACpuInfo.AMDSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 function TJvCPUInfo.CyrixSpecific: TCyrixSpecific;
@@ -1771,10 +1779,9 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if ACpuInfo.CpuType = CPU_TYPE_CYRIX then
-    Result := ACpuInfo.CyrixSpecific
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  if (ACpuInfo.CpuType = CPU_TYPE_CYRIX)
+    then Result := ACpuInfo.CyrixSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 function TJvCPUInfo.Get3DNow: Boolean;
@@ -1800,6 +1807,11 @@ end;
 function TJvCPUInfo.GetCPUType: TJvCPUType;
 begin
   Result := TJvCPUType(GetCPUInfo.CpuType);
+end;
+
+function TJvCPUInfo.GetDEPCapable: Boolean;
+begin
+  Result := GetCPUInfo.DEPCapable;
 end;
 
 function TJvCPUInfo.GetEx3DNow: Boolean;
@@ -1877,6 +1889,11 @@ begin
   Result := GetCPUInfo.L3CacheSize;
 end;
 
+function TJvCPUInfo.GetLogicalCore: Byte;
+begin
+  Result := GetCPUInfo.LogicalCore;
+end;
+
 function TJvCPUInfo.GetManufacturer: string;
 begin
   Result := GetCPUInfo.Manufacturer;
@@ -1897,6 +1914,11 @@ begin
   Result := GetCPUSpeed.NormFreq;
 end;
 
+function TJvCPUInfo.GetPhysicalCore: Byte;
+begin
+  Result := GetCPUInfo.PhysicalCore;
+end;
+
 function TJvCPUInfo.GetProcessorCount: Integer;
 begin
   Result := JclSysInfo.ProcessorCount;
@@ -1908,11 +1930,21 @@ begin
 end;
 
 function TJvCPUInfo.GetSSE: TJvSSEVersion;
+var
+  ACPUInfo: TCpuInfo;
 begin
-  case GetCPUInfo.SSE of
+  ACPUInfo := GetCPUInfo;
+  case ACPUInfo.SSE of
     1 :  Result := vSSE1;
     2 :  Result := vSSE2;
-    3 :  Result := vSSE3;
+    3 :
+      begin
+        if (ACPUInfo.CpuType = CPU_TYPE_INTEL)
+          and ((ACPUInfo.IntelSpecific.ExFeatures and EINTEL_SSSE3) <> 0) then
+          Result := vSSSE3
+        else
+          Result := vSSE3;
+      end;
     else Result := vNoSSE;
   end;
 end;
@@ -1932,10 +1964,9 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if ACpuInfo.CpuType = CPU_TYPE_INTEL then
-    Result := ACpuInfo.IntelSpecific
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  if (ACpuInfo.CpuType = CPU_TYPE_INTEL)
+    then Result := ACpuInfo.IntelSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 procedure TJvCPUInfo.Set3DNow(const Value: Boolean);
@@ -1949,6 +1980,11 @@ begin
 end;
 
 procedure TJvCPUInfo.SetCPUType(const Value: TJvCPUType);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetDEPCapable(const Value: Boolean);
 begin
   RaiseReadOnly;
 end;
@@ -2028,6 +2064,11 @@ begin
   RaiseReadOnly;
 end;
 
+procedure TJvCPUInfo.SetLogicalCore(const Value: Byte);
+begin
+  RaiseReadOnly;
+end;
+
 procedure TJvCPUInfo.SetManufacturer(const Value: string);
 begin
   RaiseReadOnly;
@@ -2044,6 +2085,11 @@ begin
 end;
 
 procedure TJvCPUInfo.SetNormFreq(const Value: Cardinal);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetPhysicalCore(const Value: Byte);
 begin
   RaiseReadOnly;
 end;
@@ -2078,10 +2124,9 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if ACpuInfo.CpuType = CPU_TYPE_TRANSMETA then
-    Result := ACpuInfo.TransmetaSpecific
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  if (ACpuInfo.CpuType = CPU_TYPE_TRANSMETA)
+    then Result := ACpuInfo.TransmetaSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 function TJvCPUInfo.ViaSpecific: TViaSpecific;
@@ -2089,10 +2134,9 @@ var
   ACpuInfo: TCpuInfo;
 begin
   ACpuInfo := GetCPUInfo;
-  if ACpuInfo.CpuType = CPU_TYPE_VIA then
-    Result := ACpuInfo.ViaSpecific
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  if (ACpuInfo.CpuType = CPU_TYPE_VIA)
+    then Result := ACpuInfo.ViaSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 //=== { TJvBIOSInfo } ========================================================
