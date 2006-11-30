@@ -3099,7 +3099,8 @@ begin
   for I := 0 to Source.FExtUnitList.Count - 1 do
     with TJvInterpreterIdentifier(Source.FExtUnitList[I]) do
       AddExtUnitEx(Identifier, Data);
-  for I := 0 to Source.FClassList.Count - 1 do begin
+  for I := 0 to Source.FClassList.Count - 1 do
+  begin
     with TJvInterpreterClass(Source.FClassList[I]) do
       AddClassEx(UnitName, FClassType, Identifier, Data);
     TJvInterpreterClass(FClassList[FClassList.Count-1]).ClassFields.Assign(
@@ -3111,7 +3112,8 @@ begin
       AddSrcFunEx(UnitName, Identifier, ClassIdentifier, PosBeg, PosEnd, ParamCount, FParamTypes,
         FParamTypeNames, FParamNames, ResTyp, ResTypName, ResDataType,
         TJvInterpreterSrcFunction(Source.FSrcFunctionList[I]).Data);
-  for I := 0 to Source.FSrcUnitList.Count - 1 do begin
+  for I := 0 to Source.FSrcUnitList.Count - 1 do
+  begin
     with TJvInterpreterSrcUnit(Source.FSrcUnitList[I]) do
       AddSrcUnitEx(Identifier, Source, '', Data);
     TJvInterpreterSrcUnit(FSrcUnitList[FSrcUnitList.Count - 1]).FUsesList:=

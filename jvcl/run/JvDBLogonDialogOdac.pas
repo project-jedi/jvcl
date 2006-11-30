@@ -88,7 +88,7 @@ type
     property Session: TCustomDAConnection read GetSession write SetSession;
   end;
 
-  TjvDBOdacConnectDialog = class(TCustomConnectDialog)
+  TJvDBOdacConnectDialog = class(TCustomConnectDialog)
   private
     FLogonDialogInternal: TJvDBOdacLogonDialog;
     FOnFillDatabaseList: TJvLogonDialogFillListEvent;
@@ -168,22 +168,22 @@ begin
   FShowOracleHome := False;
 end;
 
-//=== { TjvDBOdacConnectDialog } =============================================
+//=== { TJvDBOdacConnectDialog } =============================================
 
-constructor TjvDBOdacConnectDialog.Create(AOwner: TComponent);
+constructor TJvDBOdacConnectDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLogonDialogInternal := TJvDBOdacLogonDialog.Create(Self);
   FLogonDialogInternal.OnFillDatabaseList := InternalFillDatabaseList;
 end;
 
-destructor TjvDBOdacConnectDialog.Destroy;
+destructor TJvDBOdacConnectDialog.Destroy;
 begin
   FreeAndNil(FLogonDialogInternal);
   inherited Destroy;
 end;
 
-function TjvDBOdacConnectDialog.Execute: Boolean;
+function TJvDBOdacConnectDialog.Execute: Boolean;
 begin
   if Assigned(FLogonDialogInternal) then
   begin
@@ -194,101 +194,101 @@ begin
     Result := False;
 end;
 
-function TjvDBOdacConnectDialog.GetAfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent;
+function TJvDBOdacConnectDialog.GetAfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent;
 begin
   Result := LogonDialogInternal.AfterTransferSessionDataToConnectionInfo;
 end;
 
-function TjvDBOdacConnectDialog.GetAppStorage: TJvCustomAppStorage;
+function TJvDBOdacConnectDialog.GetAppStorage: TJvCustomAppStorage;
 begin
   Result := LogonDialogInternal.AppStorage;
 end;
 
-function TjvDBOdacConnectDialog.GetAppStoragePath: string;
+function TJvDBOdacConnectDialog.GetAppStoragePath: string;
 begin
   Result := LogonDialogInternal.AppStoragePath;
 end;
 
-function TjvDBOdacConnectDialog.GetBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
+function TJvDBOdacConnectDialog.GetBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
 begin
   Result := LogonDialogInternal.BeforeTransferConnectionInfoToSessionData;
 end;
 
-function TjvDBOdacConnectDialog.GetDynControlEngine: TJvDynControlEngine;
+function TJvDBOdacConnectDialog.GetDynControlEngine: TJvDynControlEngine;
 begin
   Result := LogonDialogInternal.DynControlEngine
 end;
 
-function TjvDBOdacConnectDialog.GetOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
+function TJvDBOdacConnectDialog.GetOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
 begin
   Result := LogonDialogInternal.OnDecryptPassword;
 end;
 
-function TjvDBOdacConnectDialog.GetOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
+function TJvDBOdacConnectDialog.GetOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
 begin
   Result := LogonDialogInternal.OnEncryptPassword;
 end;
 
-function TjvDBOdacConnectDialog.GetOnFillShortcutList: TJvLogonDialogFillListEvent;
+function TJvDBOdacConnectDialog.GetOnFillShortcutList: TJvLogonDialogFillListEvent;
 begin
   Result := LogonDialogInternal.OnFillShortcutList;
 end;
 
-function TjvDBOdacConnectDialog.GetOptions: TJvDBOdacLogonDialogOptions;
+function TJvDBOdacConnectDialog.GetOptions: TJvDBOdacLogonDialogOptions;
 begin
   Result := LogonDialogInternal.Options
 end;
 
-procedure TjvDBOdacConnectDialog.InternalFillDatabaseList(List: TStringList);
+procedure TJvDBOdacConnectDialog.InternalFillDatabaseList(List: TStringList);
 begin
   GetServerList(List);
   if Assigned(OnFillDatabaseList) then
     OnFillDatabaseList(List);
 end;
 
-procedure TjvDBOdacConnectDialog.SetAfterTransferSessionDataToConnectionInfo(
+procedure TJvDBOdacConnectDialog.SetAfterTransferSessionDataToConnectionInfo(
   const Value: TJvLogonDialogConnectionInfoEvent);
 begin
   LogonDialogInternal.AfterTransferSessionDataToConnectionInfo := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetAppStorage(Value: TJvCustomAppStorage);
+procedure TJvDBOdacConnectDialog.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   LogonDialogInternal.AppStorage := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetAppStoragePath(Value: string);
+procedure TJvDBOdacConnectDialog.SetAppStoragePath(Value: string);
 begin
   LogonDialogInternal.AppStoragePath := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetBeforeTransferConnectionInfoToSessionData(
+procedure TJvDBOdacConnectDialog.SetBeforeTransferConnectionInfoToSessionData(
   const Value: TJvLogonDialogConnectionInfoEvent);
 begin
   LogonDialogInternal.BeforeTransferConnectionInfoToSessionData := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetDynControlEngine(const Value: TJvDynControlEngine);
+procedure TJvDBOdacConnectDialog.SetDynControlEngine(const Value: TJvDynControlEngine);
 begin
   LogonDialogInternal.DynControlEngine := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetOnDecryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
+procedure TJvDBOdacConnectDialog.SetOnDecryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
 begin
   LogonDialogInternal.OnDecryptPassword := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetOnEncryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
+procedure TJvDBOdacConnectDialog.SetOnEncryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
 begin
   LogonDialogInternal.OnEncryptPassword := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetOnFillShortcutList(const Value: TJvLogonDialogFillListEvent);
+procedure TJvDBOdacConnectDialog.SetOnFillShortcutList(const Value: TJvLogonDialogFillListEvent);
 begin
   LogonDialogInternal.OnFillShortcutList := Value;
 end;
 
-procedure TjvDBOdacConnectDialog.SetOptions(const Value: TJvDBOdacLogonDialogOptions);
+procedure TJvDBOdacConnectDialog.SetOptions(const Value: TJvDBOdacLogonDialogOptions);
 begin
   LogonDialogInternal.Options.Assign(Value);
 end;
