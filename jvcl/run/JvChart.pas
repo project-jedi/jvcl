@@ -87,7 +87,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Types, Graphics, Controls, Contnrs,
+  Windows, Messages, Classes,
+  {$IFDEF HAS_UNIT_TYPES} 
+  Types, 
+  {$ENDIF HAS_UNIT_TYPES} 
+  Graphics, Controls, Contnrs,
   JvComponent;
 
 const
