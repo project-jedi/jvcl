@@ -29,7 +29,7 @@ Contributor(s):
               warrenpstma att hotmail dott com
 
 Last Modified:
-  
+
   2003-09-30 - (WP) - Alpha-Initial checkin of new component, into JVCL3 CVS tree.
   2004-02-26 - (WP) - Pre-JVCL3.0-Has been substantially jedified, also new
                       properties/events, and some renaming has occurred. See
@@ -52,24 +52,22 @@ Last Modified:
                       canvases are used to paint the bitmap, and to paint the
                       floating layer on top, thus the need for the changes.
 
-  2005-04-15 - (WP) - Changed internal Data storage from Array of Array to 
-	              simple single-dimension array. This has many benefits,
- 		      and at least one drawback.  The benefit is that much
+  2005-04-15 - (WP) - Changed internal Data storage from Array of Array to
+               simple single-dimension array. This has many benefits,
+         and at least one drawback.  The benefit is that much
                       larger sets of pens/data values can be accomodated.
                       The drawback is that you can't add a pen to an already displayed
-                      chart without regenerating all the data points in it. 
-                      If you change the pen count you now MUST clear the data, 
+                      chart without regenerating all the data points in it.
+                      If you change the pen count you now MUST clear the data,
                       and re-plot the chart. Any attempt to add a pen,
                       write the new pen, and then plot without rewriting the other
                       values will cause data to be displayed in a corrupt fashion.
-		      I think this obscure limitation is better to live with than 
-                      the many alternatives.  The problem I have is that the chart 
-		      supports extremely large data sets, and clearing the data 
-	              MULTIPLE times would be a huge performance penalty in 
-		      any application. You can enable the OLD mode, with it's
+        I think this obscure limitation is better to live with than
+                      the many alternatives.  The problem I have is that the chart
+        supports extremely large data sets, and clearing the data
+               MULTIPLE times would be a huge performance penalty in
+        any application. You can enable the OLD mode, with it's
                       limitations, by defining TJVCHART_ARRAY_OF_ARRAY.
-
-
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -89,7 +87,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, Controls, Contnrs,
+  Windows, Messages, Classes, Types, Graphics, Controls, Contnrs,
   JvComponent;
 
 const
@@ -116,7 +114,8 @@ const
 type
   { CHART TYPES }
   TJvChartKind =
-    (ckChartNone, // Blank graph.
+   (
+    ckChartNone, // Blank graph.
     ckChartLine, // default type. Line and Marker plots.
     ckChartBar,
     ckChartStackedBar,
@@ -125,7 +124,8 @@ type
     ckChartPieChart,
     //ckChartLineWithMarkers, // obsolete. use ckChartLine, and set PenMarkerKind to cmDiamond.
     ckChartMarkers,
-    ckChartDeltaAverage);
+    ckChartDeltaAverage
+   );
 
     // ckChartLine can have a different pen type for each pen:
 
@@ -133,18 +133,20 @@ type
 
   TJvChartLegend = (clChartLegendNone, clChartLegendRight, clChartLegendBelow);
 
-{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
+  {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   TJvChartDataArray = array of array of Double;
-{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+  {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
   TJvChart = class;
 
   // TJvChartFloatingMarker.Caption position enumerator:
-  TJvChartCaptionPosition = ( cpMarker,       // put right where the marker is
-                              cpXAxisBottom,  // put below the symbol marker, in the bottom margin
-                              cpXAxisTop,      // put above the symbol marker, in the top margin
-                              cpTitleArea
-                              );
+  TJvChartCaptionPosition =
+   (
+    cpMarker, // put right where the marker is
+    cpXAxisBottom, // put below the symbol marker, in the bottom margin
+    cpXAxisTop, // put above the symbol marker, in the top margin
+    cpTitleArea
+   );
 
   TJvChartFloatingMarker = class(TObject)
   private
@@ -155,7 +157,7 @@ type
     FDragging: Boolean; // drag in progress!
     FVisible: Boolean; // Make chart marker object visible or invisible.
     FIndex: Integer; // Which marker is this?
-    FTag  :Integer; // User assignable integer like TComponent.Tag
+    FTag: Integer; // User assignable integer like TComponent.Tag
     FMarker: TJvChartPenMarkerKind; // What symbol to plot at this position?
     FMarkerColor: TColor; // Marker color.
     FXPosition: Integer; // Plot at same X co-ordinates as Data Sample X.
@@ -171,22 +173,23 @@ type
     FLineColor: TColor; // Line color.
     FLineWidth: Integer;
     FCaption: string; // Caption to print above the marker, or if no marker, then just this text is plotted.
-    FCaptionPosition :TJvChartCaptionPosition;
-    FCaptionBoxed:Boolean; // Marker caption can have a box around it to make it more readable for some uses.
-     
+    FCaptionPosition: TJvChartCaptionPosition;
+    FCaptionBoxed: Boolean; // Marker caption can have a box around it to make it more readable for some uses.
+
        //FCaptionBorderStyle:TPenStyle; // Style of border around caption, or psClear if no border.
        //FCaptionBorderColor:TColor;    //
 
     //PROTECTED CONSTRUCTOR: Only TJvChart should create a new marker object:
     constructor Create(Owner: TJvChart);
 
-    procedure SetCaption(aCaption: string);
-    procedure SetXPosition(xPos: Integer); // should invalidate the chart (FOwner) if changed.
-    procedure SetYPosition(yPos: Double); // should invalidate the chart (FOwner) if changed.
+    procedure SetCaption(ACaption: string);
+    procedure SetXPosition(XPos: Integer); // should invalidate the chart (FOwner) if changed.
+    procedure SetYPosition(YPos: Double); // should invalidate the chart (FOwner) if changed.
 
-    procedure SetVisible(isVisible: Boolean);
+    procedure SetVisible(IsVisible: Boolean);
   public
     property Index: Integer read FIndex;
+  // (rom) no need for published
   published
     property Marker: TJvChartPenMarkerKind read FMarker write FMarker;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor; // Marker color.
@@ -204,10 +207,10 @@ type
     property LineColor: TColor read FLineColor write FLineColor;
     property LineWidth: Integer read FLineWidth write FLineWidth;
     property Caption: string read FCaption write FCaption;
-    property CaptionPosition :TJvChartCaptionPosition read FCaptionPosition write FCaptionPosition;
-    property CaptionBoxed :Boolean read FCaptionBoxed write FCaptionBoxed;
+    property CaptionPosition: TJvChartCaptionPosition read FCaptionPosition write FCaptionPosition;
+    property CaptionBoxed: Boolean read FCaptionBoxed write FCaptionBoxed;
 
-    property Tag  :Integer read FTag write FTag; // User assignable integer like TComponent.Tag
+    property Tag: Integer read FTag write FTag; // User assignable integer like TComponent.Tag
 
        //property CaptionBorderStyle :TPenStyle read FCaptionBorderStyle write FCaptionBorderStyle;
        //property CaptionBorderColor :TColor    read FCaptionBorderColor write FCaptionBorderColor;
@@ -231,8 +234,7 @@ type
       // *** Order of indexing: FData[ValueIndex,Pen] ***
     FDataAlloc: Integer; // Last Allocated Value.
     FValueCount: Integer; // Number of sample indices used
-    FPenCount:Integer; // can't be changed without erasing all data!
-
+    FPenCount: Integer; // can't be changed without erasing all data!
   protected
     procedure Grow(Pen, ValueIndex: Integer);
       //GetValue/SetValue resizer, also throws exception if Pen,ValueIndex is negative or just way too big.
@@ -248,7 +250,6 @@ type
     {$ENDIF !CLR}
 
     procedure PreGrow(Pen, ValueIndex: Integer); // Advanced users. Allocate a large batch of memory in advance.
-
 
     function DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
 
@@ -271,7 +272,7 @@ type
     X, Y: Integer; { mouse position}
     ChartValueIndex: Integer; { what value in the chart? }
     ChartPenIndex: Integer; { what pen was clicked? }
-                                    { User modifiable return values for custom hinting! }
+    { User modifiable return values for custom hinting! }
     var ShowHint, HintFirstLineBold: Boolean; HintStrs: TStrings) of object; {NEW}
 
   TJvChartOptions = class;
@@ -322,12 +323,12 @@ type
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write SetYMin;
     property YDivisions: Integer read FYDivisions write SetYDivisions default 10;
-      // Number of vertical divisions in the chart
-        // YDivisions->YDivisions
+    // Number of vertical divisions in the chart
+    // YDivisions->YDivisions
     property MaxYDivisions: Integer read FMaxYDivisions write FMaxYDivisions default 20;
     property MinYDivisions: Integer read FMinYDivisions write FMinYDivisions default 5;
     property MarkerValueDecimals: Integer read FMarkerValueDecimals write FMarkerValueDecimals default -1;
-      // Decimal places on marker-values (only applies to Marker Pens with Values)
+    // Decimal places on marker-values (only applies to Marker Pens with Values)
     property YLegendDecimalPlaces: Integer read FYLegendDecimalPlaces write FYLegendDecimalPlaces;
     property DefaultYLegends: Integer read FDefaultYLegends write FDefaultYLegends default JvDefaultYLegends;
   end;
@@ -387,7 +388,7 @@ type
       // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
     FXAxisLegendSkipBy: Integer; //1=print every X axis label, 2=every other, and so on. default=1
     FXLegendHoriz: Integer; // Horizontally oriented GraphXAxisLegend ends at this X Point.
-    FXAxisLabelAlignment:TAlignment; // New: Text alignment for X axis labels. Default is left alignment.
+    FXAxisLabelAlignment: TAlignment; // New: Text alignment for X axis labels. Default is left alignment.
     FXAxisDateTimeMode: Boolean; // False=use custom text labels, True=Use Date/Time Stamps as X axis labels.
     FXAxisDateTimeFormat: string; // Usually a short date-time label, hh:nn:ss is good.
     FDateTimeFormat: string;
@@ -475,7 +476,7 @@ type
       // Do you want grid-paper look?
     property XAxisValuesPerDivision: Integer read FXAxisValuesPerDivision write FXAxisValuesPerDivision;
       // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
-    property XAxisLabelAlignment:TAlignment read FXAxisLabelAlignment write FXAxisLabelAlignment; // New: Text alignment for X axis labels. Default is left alignment.
+    property XAxisLabelAlignment: TAlignment read FXAxisLabelAlignment write FXAxisLabelAlignment; // New: Text alignment for X axis labels. Default is left alignment.
 
     property XAxisDateTimeMode: Boolean read FXAxisDateTimeMode write FXAxisDateTimeMode;
     property XAxisDateTimeFormat: string read FXAxisDateTimeFormat write FXAxisDateTimeFormat;
@@ -553,7 +554,7 @@ type
 
     // low level mouse and paint events intended ONLY FOR ADVANCED USERS:
     FOnChartPaint: TJvChartPaintEvent;
-      // After chart bitmap is painted onto control surface we can "decorate" it with owner-drawn extras.
+    // After chart bitmap is painted onto control surface we can "decorate" it with owner-drawn extras.
 
     FMouseDownShowHint: Boolean; // True=showing hint.
     FMouseDownHintBold: Boolean; // True=first line of hint is bold.
@@ -596,7 +597,7 @@ type
                               // without replotting the whole chart.
     {$IFDEF VCL}
     // Y Axis Vertical Font
-    FYFontHandle: HFont; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
+    FYFontHandle: HFONT; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
     FYLogFont: TLogFont; // Y AXIS VERTICAL TEXT: Logical Font Options Record
     procedure MakeVerticalFont; // Call GDI calls to get the Y Axis Vertical Font handle
     procedure MyGraphVertFont(ACanvas: TCanvas); // vertical font handle
@@ -665,9 +666,8 @@ type
     procedure PlotSquare(ACanvas: TCanvas; X, Y: Integer);
 
     procedure PlotMarker(ACanvas: TCanvas; MarkerKind: TJvChartPenMarkerKind; X, Y: Integer);
-      // Calls one of the Plot<Shape> functions.
+    // Calls one of the Plot<Shape> functions.
 
-    function MyPt(AX, AY: Integer): TPoint;
     procedure ClearScreen;
     // internal graphics methods
     procedure GraphSetup; // These set up variables used for all the rest of the plotting functions
@@ -692,8 +692,8 @@ type
     procedure PrimaryYAxisLabels; // Put contents into Options.PrimaryYAxis.YLegends
     procedure NotifyOptionsChange; {NEW}
 
-    procedure _PlotGraph; { internal version of _PlotGraph that doesn't call Invalidate. }
-    
+    procedure InternalPlotGraph; { internal version of _PlotGraph that doesn't call Invalidate. }
+
     { internal drawing properties, valid during Paint method invocations only }
     property XOrigin: Double read FXOrigin; {was in TJvChart.PlotGraph}
     property YOrigin: Double read FYOrigin; {was in TJvChart.PlotGraph}
@@ -703,18 +703,18 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-  // Get the X and Y Value for a particular Mouse location:
+    // Get the X and Y Value for a particular Mouse location:
     function MouseToXValue(X: Integer): Integer;
-      // convert X pixel mouse position to data index, ie Data.Values[..,<INDEX>].
+    // convert X pixel mouse position to data index, ie Data.Values[..,<INDEX>].
     function MouseToYValue(Y: Integer): Double;
-      // convert Y pixel mouse position to value in range Options.PrimaryYAxis.Min to Options.PrimaryYAxis.mAx
+    // convert Y pixel mouse position to value in range Options.PrimaryYAxis.Min to Options.PrimaryYAxis.mAx
 
     {General procedures for the graph...}
     procedure ResetGraphModule; {Call this before totally new values and Pen}
     //procedure AutoFormatGraph; {XXX BAD CODE. TO BE DELETED. MAY BE REPLACED LATER BY NEW AutoRange FUNCTION!}
 
     procedure PlotGraph; {Update screen / draw graph to screen. calls Invalidate. Don't call from inside Paint code!}
-    
+
     procedure PrintGraph; {Send picture to printer; all printing done by component}
     procedure AddGraphToOpenPrintCanvas(XStartPos, YStartPos, GraphWidth, GraphHeight: Longint);
                                     {adds the graph to the "OPEN" printer canvas}
@@ -812,35 +812,35 @@ uses
   JvJVCLUtils, JvConsts, JvResources;
 
 const
-{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
+  {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   CHART_SANITY_LIMIT = 60000;
-{$ELSE}
+  {$ELSE}
   CHART_SANITY_LIMIT = 12000000;
-{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+  {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
-        // Any attempt to have more than CHART_SANITY_LIMIT elements in this
-        // graph will be treated as an internal failure on our part.  This prevents
-        // ugly situations where we thrash because of excessive memory usage.
-        // Better to set this than to have the system pig out when we
-        // don't want it to. Set this very small when debugging,
-        // large when releasing component, and don't remove it unless
-        // you're absolutely sure. Increase it whenever necessary.
-        // Remember, it's a debugging tool, here on purpose to help keep you
-        // out of thrashing-virtual-memory-hell.   You probably have a screen
-        // to view the chart that is a maximum of 1600x1200, so more than 1600
-        // samples will mean the data should be reduced before charting.
+  // Any attempt to have more than CHART_SANITY_LIMIT elements in this
+  // graph will be treated as an internal failure on our part.  This prevents
+  // ugly situations where we thrash because of excessive memory usage.
+  // Better to set this than to have the system pig out when we
+  // don't want it to. Set this very small when debugging,
+  // large when releasing component, and don't remove it unless
+  // you're absolutely sure. Increase it whenever necessary.
+  // Remember, it's a debugging tool, here on purpose to help keep you
+  // out of thrashing-virtual-memory-hell.   You probably have a screen
+  // to view the chart that is a maximum of 1600x1200, so more than 1600
+  // samples will mean the data should be reduced before charting.
 
   MAX_VALUES = 20000;
-    // Any attempt to exceed this values count will cause array size and performance problems, thus we limit it.
+  // Any attempt to exceed this values count will cause array size and performance problems, thus we limit it.
   MAX_PEN = 100;
-    // Any attempt to exceed this pen count will cause array size and performance problems, thus we hardcode the pen limit to 100 pens.
+  // Any attempt to exceed this pen count will cause array size and performance problems, thus we hardcode the pen limit to 100 pens.
   DEFAULT_PEN_COUNT = 16; // By Default TJvChartData's internal data structures have room for up to 16 pens
   MAX_X_LEGENDS = 50;
   MAX_GRAPH_LEGEND_LEN = 9;
   REALPREC = 7;
   DEFAULT_MARKER_SIZE = 3;
   DEFAULT_VALUE_COUNT = 100;
-    // By Default TJvChartData holds 100 values per pen. Grows autofragellisticexpialidociously. :-)
+  // By Default TJvChartData holds 100 values per pen. Grows autofragellisticexpialidociously. :-)
 
 //=== {TJvChartFloatingMarker} ===============================================
 
@@ -866,44 +866,44 @@ begin
   //FYPosition := 0.0;
 end;
 
-procedure TJvChartFloatingMarker.SetCaption(aCaption: string);
+procedure TJvChartFloatingMarker.SetCaption(ACaption: string);
 begin
-  if aCaption <> FCaption then
+  if ACaption <> FCaption then
   begin
-    FCaption := aCaption;
+    FCaption := ACaption;
     if Assigned(FOwner) and FVisible then
       if not FOwner.FUpdating then
         FOwner.Invalidate;
   end;
 end;
 
-procedure TJvChartFloatingMarker.SetXPosition(xPos: Integer); // should invalidate the chart (FOwner) if changed.
+procedure TJvChartFloatingMarker.SetXPosition(XPos: Integer); // should invalidate the chart (FOwner) if changed.
 begin
-  if xPos <> FXPosition then
+  if XPos <> FXPosition then
   begin
-    FXPosition := xPos;
+    FXPosition := XPos;
     if Assigned(FOwner) and FVisible then
       if not FOwner.FUpdating then
         FOwner.Invalidate;
   end
 end;
 
-procedure TJvChartFloatingMarker.SetYPosition(yPos: Double); // should invalidate the chart (FOwner) if changed.
+procedure TJvChartFloatingMarker.SetYPosition(YPos: Double); // should invalidate the chart (FOwner) if changed.
 begin
-  if yPos <> FYPosition then
+  if YPos <> FYPosition then
   begin
-    FYPosition := yPos;
+    FYPosition := YPos;
     if Assigned(FOwner) and FVisible then
       if not FOwner.FUpdating then
         FOwner.Invalidate;
   end
 end;
 
-procedure TJvChartFloatingMarker.SetVisible(isVisible: Boolean);
+procedure TJvChartFloatingMarker.SetVisible(IsVisible: Boolean);
 begin
-  if isVisible <> FVisible then
+  if IsVisible <> FVisible then
   begin
-    FVisible := isVisible;
+    FVisible := IsVisible;
     if Assigned(FOwner) then
       if not FOwner.FUpdating then
         FOwner.Invalidate;
@@ -916,20 +916,21 @@ constructor TJvChartData.Create;
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I: Integer;
-{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+  {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 begin
   inherited Create;
   FPenCount := DEFAULT_PEN_COUNT; // Can never set less than one inside TJvChartData!
-{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
+  {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   // FPenCount must be valid here:
   for I := 0 to DEFAULT_PEN_COUNT do
     Grow(I, DEFAULT_VALUE_COUNT);
-{$ELSE}
-  Grow( DEFAULT_PEN_COUNT, DEFAULT_VALUE_COUNT);
-{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
+  {$ELSE}
+  Grow(DEFAULT_PEN_COUNT, DEFAULT_VALUE_COUNT);
+  {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 end;
 
 {$IFNDEF CLR}
+
 destructor TJvChartData.Destroy;
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
@@ -954,30 +955,29 @@ begin
 end;
 {$ELSE}
 var
-  idx: Integer;
+  Idx: Integer;
 begin
   // Grow base array
-  if (Pen < 0)or(Pen >= FPenCount) then
+  if (Pen < 0) or (Pen >= FPenCount) then
     Result := NaN
   else
   begin
-    Assert(FPenCount>0);
-    idx := (ValueIndex * FPenCount) + Pen;
+    Assert(FPenCount > 0);
+    Idx := (ValueIndex * FPenCount) + Pen;
 
-    if (idx < 0) or (idx > CHART_SANITY_LIMIT) then // Sanity check!
+    if (Idx < 0) or (Idx > CHART_SANITY_LIMIT) then // Sanity check!
       {$IFDEF CLR}
       raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
       {$ELSE}
       raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
       {$ENDIF CLR}
 
-    if idx >= Length(FData) then
+    if Idx >= Length(FData) then
       Grow(Pen, ValueIndex);
-    Result := FData[idx];
+    Result := FData[Idx];
   end;
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
-
 
 procedure TJvChartData.SetValue(Pen, ValueIndex: Integer; NewValue: Double);
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
@@ -994,30 +994,30 @@ begin
 end;
 {$ELSE}
 var
-  idx: Integer;
+  Idx: Integer;
 begin
-  Assert(FPenCount>0);
+  Assert(FPenCount > 0);
 
   // Grow base array
-  if (Pen < 0)or(Pen >= FPenCount) then
+  if (Pen < 0) or (Pen >= FPenCount) then
     {$IFDEF CLR}
     raise ERangeError.Create(RsEPenIndexInvalid);
     {$ELSE}
     raise ERangeError.CreateRes(@RsEPenIndexInvalid);
     {$ENDIF CLR}
 
-  idx := (ValueIndex * FPenCount) + Pen;
+  Idx := (ValueIndex * FPenCount) + Pen;
 
-  if (idx < 0) or (idx > CHART_SANITY_LIMIT) then // Sanity check!
+  if (Idx < 0) or (Idx > CHART_SANITY_LIMIT) then // Sanity check!
     {$IFDEF CLR}
     raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
     {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
     {$ENDIF CLR}
 
-  if idx >= Length(FData) then
-      Grow(Pen, ValueIndex);
-  FData[idx] := NewValue;
+  if Idx >= Length(FData) then
+    Grow(Pen, ValueIndex);
+  FData[Idx] := NewValue;
 
   if ValueIndex >= FValueCount then
     FValueCount := ValueIndex + 1;
@@ -1063,27 +1063,29 @@ begin
 end;
 {$ELSE}
 var
- t:Integer;
- idx:Integer;
+  T: Integer;
+  Idx: Integer;
 begin
-  if (FValueCount>FPenCount) then begin
-    Assert(FPenCount>0);
-    idx := (FValueCount*FPenCount);
-    
+  if FValueCount > FPenCount then
+  begin
+    Assert(FPenCount > 0);
+    Idx := FValueCount * FPenCount;
 
     // Yeah, I wish:
-    //System.Move( {Source} FData[FPenCount], {Dest} FData[0], idx-FPenCount);
-    for t := 0 to (idx-FPenCount) do begin
-        FData[t] := FData[t+FPenCount];
-    end;
+    //System.Move( {Source} FData[FPenCount], {Dest} FData[0], Idx-FPenCount);
+    for T := 0 to Idx - FPenCount do
+      FData[T] := FData[T + FPenCount];
 
-    for t := (idx-FPenCount) to idx-1 do begin
-        if (t>Length(FData)) then
-            break;
-          FData[t] := FClearToValue;
+    for T := Idx - FPenCount to Idx - 1 do
+    begin
+      if T > Length(FData) then
+        Break;
+      FData[T] := FClearToValue;
     end;
     //Dec(FValueCount,FPenCount);
-  end else begin
+  end
+  else
+  begin
     FPenCount := 0;
     Clear;
   end;
@@ -1093,38 +1095,40 @@ end;
 procedure TJvChartData.PreGrow(Pen, ValueIndex: Integer);
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
- t:Integer;
+  T: Integer;
 begin
-    if Length(FData)<ValueIndex then
-        SetLength(FData,ValueIndex);
-    for t := 0 to ValueIndex-1 do begin
-        SetLength(FData[t],Pen);
-    end;
-    FDataAlloc := ValueIndex;
+  if Length(FData) < ValueIndex then
+    SetLength(FData, ValueIndex);
+  for T := 0 to ValueIndex - 1 do
+    SetLength(FData[T], Pen);
+  FDataAlloc := ValueIndex;
 end;
 {$ELSE}
 begin
-  if Pen>FPenCount then
-      FPenCount := Pen;
-  Grow(Pen,ValueIndex);
+  if Pen > FPenCount then
+    FPenCount := Pen;
+  Grow(Pen, ValueIndex);
   FDataAlloc := ValueIndex;
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
-
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 var
-  I, J, oldLength: Integer;
+  I, J, OldLength: Integer;
 begin
   if (Pen < 0) or (ValueIndex < 0) then
-  begin
+    {$IFDEF CLR}
+    raise ERangeError.Create(RsEDataIndexCannotBeNegative);
+    {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexCannotBeNegative);
-  end;
+    {$ENDIF CLR}
   if (Pen > CHART_SANITY_LIMIT) or (ValueIndex > CHART_SANITY_LIMIT) then
-  begin
+    {$IFDEF CLR}
+    raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
+    {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
-  end;
+    {$ENDIF CLR}
 
   if ValueIndex >= FDataAlloc then
   begin
@@ -1135,27 +1139,27 @@ begin
       // until we start to get Really Huge, then grow in chunks!
       //--------------------------------------------------------
     if ValueIndex < 640000 then
-      FDataAlloc := (ValueIndex * 2) // Double in size
+      FDataAlloc := ValueIndex * 2 // Double in size
     else
       FDataAlloc := ValueIndex + 64000;
 
-    oldLength := Length(FData);
+    OldLength := Length(FData);
     SetLength(FData, FDataAlloc);
 
-// new: If we set FClearToValue to NaN, special handling in growing arrays:
+    // new: If we set FClearToValue to NaN, special handling in growing arrays:
     if IsNaN(FClearToValue) then
-      for I := oldLength to FDataAlloc - 1 do
+      for I := OldLength to FDataAlloc - 1 do
         for J := 0 to Length(FData[I]) - 1 do
           FData[I][J] := FClearToValue; // XXX Debug me!
 
   end;
   if Pen >= Length(FData[ValueIndex]) then
   begin
-    oldLength := Length(FData[ValueIndex]);
+    OldLength := Length(FData[ValueIndex]);
     SetLength(FData[ValueIndex], Pen + 1);
     if IsNaN(FClearToValue) then
     begin
-      for I := oldLength to FDataAlloc - 1 do
+      for I := OldLength to FDataAlloc - 1 do
       begin
         Assert(Length(FData) > ValueIndex);
         if (Length(FData[ValueIndex]) < FDataAlloc) then
@@ -1168,45 +1172,43 @@ end;
 {$ELSE}
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 var
-  n,idx:Integer;
-  oldlen:Integer;
+  N, Idx: Integer;
+  OldLen: Integer;
 begin
   Assert(Assigned(Self));
-  Assert(FPenCount>0);
-  idx := (ValueIndex+1)*FPenCount;
-  oldlen := Length(FData);
-  if (idx>= oldlen) then begin
-      idx := idx + 1024; // Add 1024 floats (8k) headroom.
-      SetLength(FData,idx+1);
-      for n := oldlen to idx do begin
-          FData[n] := FClearToValue;
-      end;
+  Assert(FPenCount > 0);
+  Idx := (ValueIndex + 1) * FPenCount;
+  OldLen := Length(FData);
+  if Idx >= OldLen then
+  begin
+    Idx := Idx + 1024; // Add 1024 floats (8k) headroom.
+    SetLength(FData, Idx + 1);
+    for N := OldLen to Idx do
+      FData[N] := FClearToValue;
   end;
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
-
 
 function TJvChartData.DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
 var
   S: string;
   I: Integer;
-  aValue:Double;
+  LValue: Double;
 begin
   if (ValueIndex < 0) or (ValueIndex >= FDataAlloc) then
     Exit;
 
-
   if Timestamp[ValueIndex] > 0.0 then
     S := FormatDateTime('hh:nn:ss ', Timestamp[ValueIndex]);
-  for I := 0 to FPenCount-1 do
+  for I := 0 to FPenCount - 1 do
   begin
-    aValue := GetValue(I,ValueIndex);
-    if IsNaN(aValue) then
+    LValue := GetValue(I, ValueIndex);
+    if IsNaN(LValue) then
       S := S + '-'
     else
-      S := S + Format('%5.2f', [aValue]);
+      S := S + Format('%5.2f', [LValue]);
 
-    if I < FPenCount-1 then
+    if I < FPenCount - 1 then
       S := S + ', '
   end;
   Result := S;
@@ -1226,12 +1228,10 @@ end;
 var
   I: Integer;
 begin
-  for I := 0 to Length(FData)-1 do begin
-      FData[I] := FClearToValue;
-  end;
+  for I := 0 to Length(FData) - 1 do
+    FData[I] := FClearToValue;
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
-
 
 procedure TJvChartData.ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
@@ -1240,7 +1240,7 @@ var
 begin
   for I := 0 to FDataAlloc - 1 do
     for J := 0 to Length(FData[I]) - 1 do
-      FData[I, J] :=  ClearToValue; // 0.0;
+      FData[I, J] := ClearToValue; // 0.0;
 end;
 {$ELSE}
 begin
@@ -1282,7 +1282,7 @@ var
   // CheckYDivisions: Integer;
   VC: Integer;
 begin
-  if (FYMax - FYMin) < 0.00001 then // make sure that there is some difference here!
+  if FYMax - FYMin < 0.00001 then // make sure that there is some difference here!
     FYMax := FYMin + 10;
 
   if (DefaultYLegends > 0) and (YDivisions = 0) then
@@ -1300,14 +1300,14 @@ begin
   VC := YDivisions;
   if VC < 1 then
     VC := 1;
-  FYGap := ((YMax - YMin) / VC);
-  FYGap1 := (((YMax - YMin) + 1) / VC);
+  FYGap := (YMax - YMin) / VC;
+  FYGap1 := ((YMax - YMin) + 1) / VC;
 
-  YPixelGap := ((FOwner.YEnd - 1) / VC); // Vertical Pixels Per Value Division counter.
+  YPixelGap := (FOwner.YEnd - 1) / VC; // Vertical Pixels Per Value Division counter.
 
   (*CheckYDivisions := Round(((YMax-YMin) + (YGap - 1)) / YGap);
-  if CheckYDivisions<>YDivisions then
-      YDivisions :=CheckYDivisions;  *)
+  if CheckYDivisions <> YDivisions then
+      YDivisions := CheckYDivisions;  *)
 
    //---------------------------------------------------------------------
    // Here's the normalization section:
@@ -1319,27 +1319,26 @@ begin
     FYGap := (YMax - YMin) / YDivisions;
   end
   else
+  if YDivisions > MaxYDivisions then
   begin
-    if YDivisions > MaxYDivisions then
-    begin
-      YDivisions := MaxYDivisions;
-      FYGap := (YMax - YMin) / YDivisions;
-    end;
+    YDivisions := MaxYDivisions;
+    FYGap := (YMax - YMin) / YDivisions;
   end;
 end;
 
 procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
 begin
-  if IsNan(NewYMin) then exit;
+  if IsNan(NewYMin) then
+    Exit;
 
   try
-  if NewYMin = FYMin then
-    Exit;
+    if NewYMin = FYMin then
+      Exit;
   except
-    on E:Exception do begin
-        OutputDebugString('TJvChartYAxisOptions.SetYMin-WTF?');
-        Exit;
-    end;
+    {$IFDEF DEBUGINFO_ON}
+    OutputDebugString('TJvChartYAxisOptions.SetYMin-WTF?');
+    {$ENDIF DEBUGINFO_ON}
+    Exit;
   end;
 
   FYMin := NewYMin;
@@ -1356,19 +1355,17 @@ begin
   FOwner.NotifyOptionsChange;
   {NEW: Auto-Regenerate Y Axis Labels}
   if Assigned(FYLegends) then
-  begin
     if FYLegends.Count > 0 then
     begin
       FYLegends.Clear;
       FOwner.FOwner.PrimaryYAxisLabels;
     end;
-  end;
-
 end;
 
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
-  if IsNan(NewYMax) then exit;
+  if IsNan(NewYMax) then
+    Exit;
 
   if NewYMax = FYMax then
     Exit;
@@ -1388,14 +1385,11 @@ begin
 
   {NEW: Auto-Regenerate Y Axis Labels}
   if Assigned(FYLegends) then
-  begin
     if FYLegends.Count > 0 then
     begin
       FYLegends.Clear;
       FOwner.FOwner.PrimaryYAxisLabels;
     end;
-  end;
-
 end;
 
 (*procedure TJvChartYAxisOptions.SetYGap(newYgap: Double);
@@ -1414,7 +1408,7 @@ end;
 
 function TJvChartYAxisOptions.GetYLegends: TStrings;
 begin
-  Result := FYLegends as TStrings;
+  Result := TStrings(FYLegends);
 end;
 
 procedure TJvChartYAxisOptions.SetYLegends(Value: TStrings);
@@ -1607,7 +1601,11 @@ end;
 procedure TJvChartOptions.SetPenColor(Index: Integer; AColor: TColor);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    {$ENDIF CLR}
 
   if Index >= Length(FPenColors) then
     SetLength(FPenColors, Index + 1);
@@ -1617,7 +1615,11 @@ end;
 procedure TJvChartOptions.SetPenStyle(Index: Integer; APenStyle: TPenStyle);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    {$ENDIF CLR}
 
   if Index >= Length(FPenStyles) then
     SetLength(FPenStyles, Index + 1);
@@ -1635,7 +1637,11 @@ end;
 function TJvChartOptions.GetAverageValue(Index: Integer): Double;
 begin
   if Index < 0 then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsEGetAverageValueIndexNegative);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEGetAverageValueIndexNegative);
+    {$ENDIF CLR}
   if Index >= Length(FAverageValue) then
     Result := 0.0
   else
@@ -1645,7 +1651,11 @@ end;
 procedure TJvChartOptions.SetAverageValue(Index: Integer; AValue: Double);
 begin
   if Index < 0 then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsESetAverageValueIndexNegative);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsESetAverageValueIndexNegative);
+    {$ENDIF CLR}
   if Index >= Length(FAverageValue) then
     SetLength(FAverageValue, Index + 1);
   FAverageValue[Index] := AValue;
@@ -1662,8 +1672,11 @@ end;
 procedure TJvChartOptions.SetPenSecondaryAxisFlag(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    {$ENDIF CLR}
   if Index >= Length(FPenSecondaryAxisFlag) then
     SetLength(FPenSecondaryAxisFlag, Index + 1);
   FPenSecondaryAxisFlag[Index] := NewValue;
@@ -1680,7 +1693,11 @@ end;
 procedure TJvChartOptions.SetPenValueLabels(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    {$ENDIF CLR}
 
   if Index >= Length(FPenValueLabels) then
     SetLength(FPenValueLabels, Index + 1);
@@ -1690,7 +1707,11 @@ end;
 procedure TJvChartOptions.SetPenCount(Count: Integer);
 begin
   if (Count < 0) or (Count >= MAX_PEN) then
+    {$IFDEF CLR}
     raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    {$ELSE}
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
+    {$ENDIF CLR}
   FPenCount := Count;
   SetLength(FPenSecondaryAxisFlag, FPenCount + 1);
   // notify data object:
@@ -1924,13 +1945,13 @@ end;
 procedure TJvChart.DesignModePaint;
 var
   DesignStr: string;
-  tw, th: Integer;
-  ACanvas: TCanvas;
+  TW, TH: Integer;
+  LCanvas: TCanvas;
 begin
-  ACanvas := GetChartCanvas;
+  LCanvas := GetChartCanvas;
 
-  ACanvas.Brush.Color := Options.PaperColor;
-  ACanvas.Rectangle(0, 0, Width, Height);
+  LCanvas.Brush.Color := Options.PaperColor;
+  LCanvas.Rectangle(0, 0, Width, Height);
 
   DesignStr := ClassName + RsChartDesigntimeLabel;
 
@@ -1953,16 +1974,16 @@ begin
   GraphYAxisDivisionMarkers;
 
   { designtime component label }
-  tw := ACanvas.TextWidth(DesignStr);
-  th := ACanvas.TextHeight(DesignStr);
+  TW := LCanvas.TextWidth(DesignStr);
+  TH := LCanvas.TextHeight(DesignStr);
 
-  ACanvas.Brush.Color := Options.PaperColor;
-  ACanvas.Pen.Color := Color;
+  LCanvas.Brush.Color := Options.PaperColor;
+  LCanvas.Pen.Color := Color;
 
   //ACanvas.Pen.Style := psDot;
-  //ACanvas.Rectangle( (width div 2) - (tw div 2), (height div 2) - (th div 2), tw, th);
-  if (tw < Width) and (th < Height) then
-    ACanvas.TextOut((Width div 2) - (tw div 2), (Height div 2) - (th div 2), DesignStr);
+  //ACanvas.Rectangle( (width div 2) - (TW div 2), (height div 2) - (TH div 2), TW, TH);
+  if (TW < Width) and (TH < Height) then
+    LCanvas.TextOut((Width div 2) - (TW div 2), (Height div 2) - (TH div 2), DesignStr);
 end;
 
 procedure TJvChart.Paint; { based on TImage.Paint }
@@ -1980,23 +2001,19 @@ begin
   end;
 
   Assert(Assigned(FPicture));
-    //inherited ACanvas.Lock;
+  //inherited ACanvas.Lock;
   inherited Canvas.StretchDraw(DestRect, Picture.Graphic);
 
-    // New: Draw custom moveable markers on TOP of base data pen layer:
+  // New: Draw custom moveable markers on TOP of base data pen layer:
   DrawFloatingMarkers;
 
-    // Draw cursor (vertical dotted line) if present:
+  // Draw cursor (vertical dotted line) if present:
   if (FCursorPosition >= 0) and (FCursorPosition <= Options.XValueCount) then
-  begin
     PaintCursor;
-  end;
 
     // Allow end-userto custom paint on the Chart chanvas:
   if Assigned(FOnPaint) then
-  begin
     FOnPaint(Self, Canvas);
-  end;
 end;
 
 // Draw an oscilliscope-like cursor over the place where the current sample is in the chart.
@@ -2013,10 +2030,10 @@ begin
     Pen.Color := Options.CursorColor;
     Pen.Style := Options.CursorStyle;
 
-    XPixelGap := (((Options.XEnd - 2) - Options.XStartOffset) /
-      (Options.XValueCount - 1));
+    XPixelGap := ((Options.XEnd - 2) - Options.XStartOffset) /
+      (Options.XValueCount - 1);
 
-    X := Round(Options.XStartOffset + (XPixelGap * FCursorPosition));
+    X := Round(Options.XStartOffset + XPixelGap * FCursorPosition);
 
     // Vertical line along X position:
     MoveTo(X, Options.YStartOffset);
@@ -2068,7 +2085,7 @@ var
   I, J: Integer;
   YDivision: Double;
   FormatStr, YDivisionStr, PrevYDivisionStr: string;
-    // left hand side, vertically ascending labels for scale of Y values.
+  // left hand side, vertically ascending labels for scale of Y values.
   Decimals: Integer;
   Unique: Boolean;
 begin
@@ -2307,7 +2324,7 @@ begin
   X1 := Round(XOrigin);
   X2 := Round(Options.XStartOffset + Options.XPixelGap * VC);
   Y1 := Options.YStartOffset - 1;
-  Y2 := Round(YOrigin)+1; // was YTempOrigin;
+  Y2 := Round(YOrigin) + 1; // was YTempOrigin;
 
   if Y2 > Height then
   begin
@@ -2339,28 +2356,27 @@ end;
 
 procedure TJvChart.GraphXAxis;
 var
-  ACanvas: TCanvas;
+  LCanvas: TCanvas;
 begin
-  ACanvas := GetChartCanvas;
+  LCanvas := GetChartCanvas;
 
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Color := Options.AxisLineColor;
-  ACanvas.Pen.Width := Options.AxisLineWidth; // was missing. Added Feb 2005. -WPostma.
+  LCanvas.Pen.Style := psSolid;
+  LCanvas.Pen.Color := Options.AxisLineColor;
+  LCanvas.Pen.Width := Options.AxisLineWidth; // was missing. Added Feb 2005. -WPostma.
   FXAxisPosition := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions));
-     (*FOO YTempOrigin; *)
-     {Draw X-axis}
-  ACanvas.MoveTo(Options.XStartOffset, FXAxisPosition);
-  MyAxisLineTo(ACanvas, Round(Options.XStartOffset + Options.XPixelGap * Options.XValueCount),
-    FXAxisPosition);
+  (*FOO YTempOrigin; *)
+  {Draw X-axis}
+  LCanvas.MoveTo(Options.XStartOffset, FXAxisPosition);
+  MyAxisLineTo(LCanvas, Round(Options.XStartOffset + Options.XPixelGap * Options.XValueCount), FXAxisPosition);
 end;
 
 procedure TJvChart.GraphXAxisDivisionMarkers; // new.
 var
   I, X: Integer;
   Lines: Integer;
-  ACanvas: TCanvas;
+  LCanvas: TCanvas;
 begin
-  ACanvas := GetChartCanvas;
+  LCanvas := GetChartCanvas;
 
   if not Options.XAxisDivisionMarkers then
     Exit;
@@ -2374,46 +2390,46 @@ begin
   for I := 1 to Lines do
   begin
     X := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
-    ACanvas.Pen.Color := Options.GetPenColor(jvChartDivisionLineColorIndex);
-    MyDrawDotLine(ACanvas, X, Options.YStartOffset + 1, X, FXAxisPosition - 1);
+    LCanvas.Pen.Color := Options.GetPenColor(jvChartDivisionLineColorIndex);
+    MyDrawDotLine(LCanvas, X, Options.YStartOffset + 1, X, FXAxisPosition - 1);
   end;
 end;
 
 procedure TJvChart.GraphYAxisDivisionMarkers;
 var
   I, Y: Integer;
-  ACanvas: TCanvas;
+  LCanvas: TCanvas;
 begin
 
   Assert(Assigned(Self));
   Assert(Assigned(Options));
   Assert(Assigned(Options.PrimaryYAxis));
   Assert(Options.PrimaryYAxis.YPixelGap > 0);
-  ACanvas := GetChartCanvas;
+  LCanvas := GetChartCanvas;
 
-  ACanvas.Font := Options.AxisFont;
+  LCanvas.Font := Options.AxisFont;
 
   for I := 0 to Options.PrimaryYAxis.YDivisions do
   begin
     Y := Round(YOrigin - (Options.PrimaryYAxis.YPixelGap * ((I) - Options.YOrigin)));
 
     if I < Options.PrimaryYAxis.YLegends.Count then
-      MyRightTextOut(ACanvas, Round(XOrigin - 3), Y, Options.PrimaryYAxis.YLegends[I]);
+      MyRightTextOut(LCanvas, Round(XOrigin - 3), Y, Options.PrimaryYAxis.YLegends[I]);
 
     Y := Round(YOrigin - (Options.PrimaryYAxis.YPixelGap * ((I) - Options.YOrigin)));
     if (I > 0) and (I < (Options.PrimaryYAxis.YDivisions)) and Options.YAxisDivisionMarkers then
     begin
-      ACanvas.Pen.Color := Options.GetPenColor(jvChartDivisionLineColorIndex);
-      MyDrawDotLine(ACanvas, Options.XStartOffset, Y,
+      LCanvas.Pen.Color := Options.GetPenColor(jvChartDivisionLineColorIndex);
+      MyDrawDotLine(LCanvas, Options.XStartOffset, Y,
         Round(Options.XStartOffset + Options.XPixelGap * Options.XValueCount) - 1, Y);
     end;
     if I > 0 then
       if Options.PrimaryYAxis.YPixelGap > 20 then
       begin // more than 20 pixels per major division?
-        ACanvas.Pen.Color := Options.GetPenColor(jvChartAxisColorIndex);
+        LCanvas.Pen.Color := Options.GetPenColor(jvChartAxisColorIndex);
 
         Y := Round(Y + (Options.PrimaryYAxis.YPixelGap / 2));
-        MyDrawAxisMark(ACanvas, Options.XStartOffset, Y,
+        MyDrawAxisMark(LCanvas, Options.XStartOffset, Y,
           Options.XStartOffset - 4, // Tick at halfway between major marks.
           Y);
       end;
@@ -2449,6 +2465,7 @@ end;
 {  c) you have changed the settings of the graph and if you do not use     }
 {     FAutoUpdateGraph option                                              }
 {**************************************************************************}
+
 procedure TJvChart.PlotGraph;
 begin
   Assert(Assigned(Options));
@@ -2462,11 +2479,11 @@ begin
     FInPlotGraph := False;
   end;
 
-    _PlotGraph;
-    Invalidate; // Force repaint.
+  InternalPlotGraph;
+  Invalidate; // Force repaint.
 end;
 
-procedure TJvChart._PlotGraph;
+procedure TJvChart.InternalPlotGraph;
 var
   ACanvas: TCanvas;
   nStackGap: Integer;
@@ -2483,7 +2500,7 @@ var
 
   procedure PlotGraphChartMarkers;
   var
-    tw, th, VC, I, J: Integer;
+    TW, TH, VC, I, J: Integer;
     PenAxisOpt: TJvChartYAxisOptions;
     V: Double;
     MaxV, MinV: array of Double;
@@ -2593,12 +2610,12 @@ var
         if Options.PenUnit.Count >= I then
           Text := Text + Options.PenUnit[I];
 
-        tw := ACanvas.TextWidth(Text);
-        th := ACanvas.TextHeight(Text);
+        TW := ACanvas.TextWidth(Text);
+        TH := ACanvas.TextHeight(Text);
 
         if Options.GetPenValueLabels(I) and
-          ((X > (LastX + (tw div 2))) or // Show if it's not going to collide
-          ((Abs(Y - LastY) > (th * 2)) and
+          ((X > (LastX + (TW div 2))) or // Show if it's not going to collide
+          ((Abs(Y - LastY) > (TH * 2)) and
           (X > LastX)) or
           ((J = MinIndex[I]) or (J = MaxIndex[I]))) then // Always show max/mins
         begin
@@ -2613,22 +2630,21 @@ var
             begin
               ACanvas.Pen.Style := psClear; //was psDot
               ACanvas.Brush.Color := Options.PaperColor; //was HintColor
-              MyPolygon(ACanvas, [MyPt(X - ((tw div 2) + 2), Y - (th + Options.MarkerSize + 2)),
-                MyPt(X - ((tw div 2) + 2), Y - Options.MarkerSize),
-                  MyPt(X + (tw div 2) + 2, Y - Options.MarkerSize),
-                  MyPt(X + (tw div 2) + 2, Y - (th + Options.MarkerSize + 2))]);
+              MyPolygon(ACanvas, [Point(X - ((TW div 2) + 2), Y - (TH + Options.MarkerSize + 2)),
+                Point(X - ((TW div 2) + 2), Y - Options.MarkerSize),
+                  Point(X + (TW div 2) + 2, Y - Options.MarkerSize),
+                  Point(X + (TW div 2) + 2, Y - (TH + Options.MarkerSize + 2))]);
               ACanvas.Pen.Style := psSolid;
             end;
 
-            if Y >= (Options.YStartOffset + 20) then
+            if Y >= Options.YStartOffset + 20 then
             begin
               ACanvas.Brush.Style := bsSolid;
-              MyCenterTextOut(ACanvas, X + 1, (Y - (Options.MarkerSize + th)) - 1, Text);
+              MyCenterTextOut(ACanvas, X + 1, (Y - (Options.MarkerSize + TH)) - 1, Text);
               ACanvas.Brush.Color := Options.PaperColor;
-              LastX := X + tw;
+              LastX := X + TW;
               LastY := Y;
             end;
-
           end;
         end;
       end;
@@ -2764,11 +2780,11 @@ var
       Result := 0.0; // can't chart! YGap is near zero, zero, or negative.
       Exit;
     end;
-    Result := (YOrigin - (((V - PenAxisOpt.YMin) / PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
-    if Result >= (YOrigin - 1) then
+    Result := YOrigin - (((V - PenAxisOpt.YMin) / PenAxisOpt.YGap) * PenAxisOpt.YPixelGap);
+    if Result >= YOrigin - 1 then
       Result := Round(YOrigin) - 1 // hit the top of the chart
     else
-    if Result < (Options.YStartOffset - 2) then
+    if Result < Options.YStartOffset - 2 then
       Result := Options.YStartOffset - 2; // Not quite good enough, but better than before.
   end;
 
@@ -2778,7 +2794,6 @@ var
     V, LineXPixelGap: Double;
     NanFlag: Boolean;
     VC: Integer;
-
     // PenAxisOpt: TJvChartYAxisOptions;
   begin
     Assert(Assigned(ACanvas));
@@ -2889,8 +2904,7 @@ var
             Round(YOrigin - YOldOrigin),
             Round(XOrigin + (J + 1) * Options.XPixelGap + (Options.XPixelGap / 2) - nStackGap),
             Round((YOrigin - YOldOrigin) -
-            ((AverageData.Value[I, J] / Options.PenAxis[I].YGap) * Options.PrimaryYAxis.YPixelGap)
-            ));
+            ((AverageData.Value[I, J] / Options.PenAxis[I].YGap) * Options.PrimaryYAxis.YPixelGap)));
           YOldOrigin := YOldOrigin + Round((AverageData.Value[I, J] / Options.PenAxis[I].YGap) *
             Options.PrimaryYAxis.YPixelGap);
         end;
@@ -2916,7 +2930,7 @@ begin { Enough local functions for ya? -WP }
   ACanvas := GetChartCanvas;
   Assert(Assigned(ACanvas));
   Assert(Assigned(ACanvas.Brush));
-  Assert(Assigned(ACanvas.Pen));  
+  Assert(Assigned(ACanvas.Pen));
 
   FPlotGraphCalled := True;
 
@@ -2938,7 +2952,6 @@ begin { Enough local functions for ya? -WP }
   Assert(Assigned(Options.PrimaryYAxis));
   Assert(Assigned(Options.SecondaryYAxis));
   Assert(Assigned(AverageData));
-
 
   // NEW: Primary Y axis is always shown, but secondary is only shown
   // if a pen is set up to plot on the secondary Y Axis scale.
@@ -2963,12 +2976,13 @@ begin { Enough local functions for ya? -WP }
   Assert(Assigned(ACanvas.Brush));
 
   { Resize Header area according to HeaderFont size }
-  if (not PrintInSession) and (Length( Options.XAxisHeader)>0) then begin
+  if (not PrintInSession) and (Length(Options.XAxisHeader) > 0) then
+  begin
     MyHeaderFont(ACanvas);
     // nOldY := Options.YStartOffset;
     nMaxTextHeight := CanvasMaxTextHeight(ACanvas) + 8;
     // Bump bottom margins if the fonts don't fit!
-    if Options.YStartOffset < (2 * nMaxTextHeight) then
+    if Options.YStartOffset < 2 * nMaxTextHeight then
     begin
       Options.YStartOffset := nMaxTextHeight * 2;
       //Options.YEnd := Options.YEnd + (nOldY - Options.YStartOffset);
@@ -3040,11 +3054,11 @@ begin { Enough local functions for ya? -WP }
   GraphXAxisLegend;
 
   {Main Header}
-  if Options.Title<>'' then 
+  if Options.Title <> '' then
     MyHeader(ACanvas, Options.Title);
 
   {X axis header}
-  if Options.XAxisHeader<>'' then
+  if Options.XAxisHeader <> '' then
     MyXHeader(ACanvas, Options.XAxisHeader);
 
   {Create the actual graph...}
@@ -3089,7 +3103,7 @@ var
   BoxWidth, BoxHeight: Integer;
   nTextHeight: Integer;
   //YTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
-  myLabel: string;
+  LLabel: string;
 
   Timestamp: TDateTime;
   TimestampStr: string;
@@ -3098,43 +3112,48 @@ var
   //YTempOrigin: Integer;
   ACanvas: TCanvas;
   { draw x axis text at various alignments:}
-  function leftXAxisText:Boolean;
+
+  function LeftXAxisText: Boolean;
   begin
     Result := True;
-      // Don't exceed right margin - causes some undesirable clipping. removed. -wpostma.
+    // Don't exceed right margin - causes some undesirable clipping. removed. -wpostma.
     {if I < Options.XLegends.Count then
       if ACanvas.TextWidth(Options.XLegends[I]) + Options.FXLegendHoriz > (Width XEnd+10) then begin
-        result := false;
-        exit;
+        Result := False;
+        Exit;
       end;}
 
     // Label X axis above or below?
     if FContainsNegative then
     begin
-      if I < Options.XLegends.Count then begin // fix exception. June 23, 2004- WPostma.
-        if Options.FXLegendHoriz<XOverlap then
-            exit; // would overlap, don't draw it.
+      if I < Options.XLegends.Count then
+      begin // fix exception. June 23, 2004- WPostma.
+        if Options.FXLegendHoriz < XOverlap then
+          Exit; // would overlap, don't draw it.
         MyLeftTextOut(ACanvas, Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I]);
-        XOverlap := Options.FXLegendHoriz+ ACanvas.TextWidth(Options.XLegends[I]);
+        XOverlap := Options.FXLegendHoriz + ACanvas.TextWidth(Options.XLegends[I]);
       end;
     end
     else
-    if I < Options.XLegends.Count then begin
-      if Options.FXLegendHoriz<XOverlap then
-            exit; // would overlap, don't draw it.
+    if I < Options.XLegends.Count then
+    begin
+      if Options.FXLegendHoriz < XOverlap then
+        Exit; // would overlap, don't draw it.
       MyLeftTextOut(ACanvas, Options.FXLegendHoriz,
         {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
         Options.XLegends[I]);
-        XOverlap := Options.FXLegendHoriz+ ACanvas.TextWidth(Options.XLegends[I]);
-    end else begin
-      Result := false;
+      XOverlap := Options.FXLegendHoriz + ACanvas.TextWidth(Options.XLegends[I]);
+    end
+    else
+    begin
+      Result := False;
       Exit;
     end;
   end;
 
-  function rightXAxisText:Boolean;
+  function RightXAxisText: Boolean;
   begin
-    Result := true;
+    Result := True;
     // Label X axis above or below?
     if FContainsNegative then
     begin
@@ -3146,13 +3165,14 @@ var
       MyRightTextOut(ACanvas, Options.FXLegendHoriz,
         {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
         Options.XLegends[I])
-    else begin
-      Result := false;
+    else
+    begin
+      Result := False;
       Exit;
     end;
   end;
 
-  function centerXAxisText:Boolean;
+  function CenterXAxisText: Boolean;
   begin
     Result := True;
     // Label X axis above or below?
@@ -3166,7 +3186,8 @@ var
       MyCenterTextOut(ACanvas, Options.FXLegendHoriz,
         {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
         Options.XLegends[I])
-    else begin
+    else
+    begin
       Result := False;
       Exit;
     end;
@@ -3195,13 +3216,12 @@ begin
     {YTempOrigin := Options.YStartOffset +
       Round(Options.PrimaryYAxis.YPixelGap * Options.PrimaryYAxis.YDivisions);}
 
-
     for I := 1 to Options.XValueCount div Options.XAxisValuesPerDivision - 1 do
     begin
       Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
       Timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
-      if (Timestamp < 0.0000001) then
+      if Timestamp < 0.0000001 then
         Continue;
 
       if Length(Options.FXAxisDateTimeFormat) = 0 then // not specified, means use Locale defaults
@@ -3210,7 +3230,7 @@ begin
         TimestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, Timestamp);
 
       // Check if writing this label would collide with previous label, if not, plot it
-      if (Options.FXLegendHoriz - (ACanvas.TextWidth(TimestampStr) div 2)) > XOverlap then
+      if Options.FXLegendHoriz - ACanvas.TextWidth(TimestampStr) div 2 > XOverlap then
       begin
         MyCenterTextOut(ACanvas, Options.FXLegendHoriz,
           {bottom:}FXAxisPosition + Options.AxisLineWidth
@@ -3241,15 +3261,18 @@ begin
     begin
       I := K * Options.FXAxisLegendSkipBy;
       //Options.FXLegendHoriz := Round(Options.XStartOffset + (Options.XPixelGap * I));
-      Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I );
+      Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
 
       case Options.FXAxisLabelAlignment of
-           taLeftJustify:
-                if not leftXAxisText then break;
-           taRightJustify:
-                if not rightXAxisText then break;
-           taCenter:
-                if not centerXAxisText then break;
+        taLeftJustify:
+          if not LeftXAxisText then
+            Break;
+        taRightJustify:
+          if not RightXAxisText then
+            Break;
+        taCenter:
+          if not CenterXAxisText then
+            Break;
       end;
     end;
   end;
@@ -3288,20 +3311,19 @@ begin
         SetFontColor(ACanvas, jvChartAxisColorIndex);
         // Draw the Pen Legend (WAP :add unit to legend. )
         if Options.PenLegends.Count > I then
-          myLabel := Options.PenLegends[I]
+          LLabel := Options.PenLegends[I]
         else
-          myLabel := IntToStr(I + 1);
+          LLabel := IntToStr(I + 1);
 
          // Put units in pen legends
          (*
             if     ( Options.PenUnit.Count > I )
                and ( Length( Options.PenUnit[I] ) >  0 ) then
-               myLabel := myLabel + ' ('+Options.PenUnit[I]+')';
+               LLabel := LLabel + ' ('+Options.PenUnit[I]+')';
          *)
 
         MyLeftTextOut(ACanvas, Options.XStartOffset + Options.XEnd + 15 + ACanvas.TextWidth('12'),
-          Options.YStartOffset + VisiblePenCount * nTextHeight + 7 + XLegendGap,
-          myLabel);
+          Options.YStartOffset + VisiblePenCount * nTextHeight + 7 + XLegendGap, LLabel);
         Inc(VisiblePenCount);
       end;
     end;
@@ -3323,7 +3345,7 @@ begin
         if Options.GetPenMarkerKind(I) = pmkNone then
           Continue; // Skip invisible pens.
 
-      Y := Options.YStartOffset + Options.YEnd + (nTextHeight div 2);
+      Y := Options.YStartOffset + Options.YEnd + nTextHeight div 2;
 
       // If chart has X legends:
       if (Options.XLegends.Count > 0) or Options.XAxisDateTimeMode then
@@ -3350,19 +3372,19 @@ begin
       SetFontColor(ACanvas, jvChartAxisColorIndex);
       // Draw the Pen Legend (WAP :add unit to legend. )
       if Options.PenLegends.Count > I then
-        myLabel := Options.PenLegends[I]
+        LLabel := Options.PenLegends[I]
       else
-        myLabel := IntToStr(I + 1);
+        LLabel := IntToStr(I + 1);
 
       // Put units in pen legends
       (*
          if     ( Options.PenUnit.Count > I )
             and ( Length( Options.PenUnit[I] ) >  0 ) then
-            myLabel := myLabel + ' ('+Options.PenUnit[I]+')';
+            LLabel := LLabel + ' ('+Options.PenUnit[I]+')';
       *)
 
-      MyLeftTextOut(ACanvas, Options.FXLegendHoriz + BoxWidth + 3, Y, myLabel);
-      Inc(Options.FXLegendHoriz, BoxWidth + ACanvas.TextWidth(myLabel) + 14);
+      MyLeftTextOut(ACanvas, Options.FXLegendHoriz + BoxWidth + 3, Y, LLabel);
+      Inc(Options.FXLegendHoriz, BoxWidth + ACanvas.TextWidth(LLabel) + 14);
       //Inc(VisiblePenCount);
       //end;
     end;
@@ -3469,9 +3491,10 @@ begin
   if csLoading in ComponentState then
     Exit; // Component properties being set at runtime.
 
-  if Options.PenCount<>Self.Data.FPenCount then begin
-      if Options.PenCount>0 then { never set Data.FPenCount to zero internally! }
-        Data.FPenCount := Options.PenCount;
+  if Options.PenCount <> Self.Data.FPenCount then
+  begin
+    if Options.PenCount > 0 then { never set Data.FPenCount to zero internally! }
+      Data.FPenCount := Options.PenCount;
   end;
 
   // Event fire:
@@ -3521,7 +3544,8 @@ begin
       Bitmap.Free;
     end;
   end;
-  if FPicture.Graphic is TBitmap then begin
+  if FPicture.Graphic is TBitmap then
+  begin
     Result := TBitmap(FPicture.Graphic).Canvas;
     Assert(Assigned(Result));
     Assert(Assigned(Result.Brush));
@@ -3588,10 +3612,11 @@ begin
   Options.SecondaryYAxis.Normalize;
 
   if (not FInPlotGraph) and Visible {and (Data.ValueCount>0)} then // endless recursion protection.
-    if Options.AutoUpdateGraph or FPlotGraphCalled then begin
-     FInPlotGraph := True; // recursion blocker.
-      _PlotGraph; { must not call Invalidate here, causes exceptions in some cases. }
-      FInPlotGraph := false;
+    if Options.AutoUpdateGraph or FPlotGraphCalled then
+    begin
+      FInPlotGraph := True; // recursion blocker.
+      InternalPlotGraph; { must not call Invalidate here, causes exceptions in some cases. }
+      FInPlotGraph := False;
     end;
 end;
 
@@ -3604,7 +3629,7 @@ begin
   StrString := Options.Title;
   if InputQuery(RsGraphHeader, Format(RsCurrentHeaders, [Options.Title]), StrString) then
     Options.Title := StrString;
-  _PlotGraph;
+  InternalPlotGraph;
   Invalidate;
   if Assigned(FOnTitleClick) then
     FOnTitleClick(Self);
@@ -3619,7 +3644,7 @@ begin
   StrString := Options.XAxisHeader;
   if InputQuery(RsGraphHeader, Format(RsXAxisHeaders, [Options.XAxisHeader]), StrString) then
     Options.XAxisHeader := StrString;
-  _PlotGraph;
+  InternalPlotGraph;
   Invalidate;
 end;
 
@@ -3638,7 +3663,7 @@ begin
     FOnYAxisClick(Self);
 
   //XXX  AutoFormatGraph; BAD CODE REMOVED. Wpostma. Call PlotGraph instead.
-  _PlotGraph;
+  InternalPlotGraph;
   Invalidate;
 end;
 
@@ -3664,10 +3689,9 @@ begin
   end;
 end;
 
-
 procedure TJvChart.MyYHeader(ACanvas: TCanvas; StrText: string);
 var
-  {ht,}wd, vert, horiz: Integer; // not used (ahuser)
+  {ht,}WD, Vert, Horiz: Integer; // not used (ahuser)
 begin
   if Length(StrText) = 0 then
     Exit;
@@ -3682,24 +3706,24 @@ begin
   if Options.XStartOffset > 10 then
   begin
     {ht := MyTextHeight(StrText); }// not used (ahuser)
-    wd := ACanvas.TextWidth(StrText);
-      // Kindof a fudge, but we'll work out something better later... :-) -WAP.
-    vert := (Options.YStartOffset * 2) + ((Height div 2) - (wd div 2));
-    if vert < 0 then
-      vert := 0;
-    horiz := 2;
+    WD := ACanvas.TextWidth(StrText);
+    // Kindof a fudge, but we'll work out something better later... :-) -WAP.
+    Vert := Options.YStartOffset * 2 + Height div 2 - WD div 2;
+    if Vert < 0 then
+      Vert := 0;
+    Horiz := 2;
     {$IFDEF VCL}
     // NOTE: Because of the logical font selected, this time TextOut goes vertical.
     // If this doesn't go vertical, it may be because the font selection above failed.
-    MyLeftTextOut(ACanvas, horiz, vert, StrText);
+    MyLeftTextOut(ACanvas, Horiz, Vert, StrText);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    wd := ACanvas.TextHeight(StrText);
-    TextOutAngle(ACanvas, 90, horiz + wd, vert, StrText);
+    WD := ACanvas.TextHeight(StrText);
+    TextOutAngle(ACanvas, 90, Horiz + WD, Vert, StrText);
     {$ENDIF VisualCLX}
   end;
   MyAxisFont(ACanvas);
-  //   Self.MyLeftTextOut(horiz, vert+50, '*');
+  //   Self.MyLeftTextOut(Horiz, Vert+50, '*');
 end;
 
 {***************************************************************************}
@@ -3750,15 +3774,13 @@ begin
     if Assigned(FDragFloatingMarker) then
     begin
       FDragFloatingMarker.FDragging := False;
-        // Solve for X Position etc.
+      // Solve for X Position etc.
       FDragFloatingMarker.XPosition := MouseToXValue(X);
 
       FDragFloatingMarker.YPosition := MouseToYValue(Y);
-        //OutputDebugString(PChar( 'End Mouse Drag Floating Object at '+InTToStr(FDragFloatingMarker.XPosition)+','+FloatToStr(FDragFloatingMarker.YPosition)) );
+      //OutputDebugString(PChar( 'End Mouse Drag Floating Object at '+InTToStr(FDragFloatingMarker.XPosition)+','+FloatToStr(FDragFloatingMarker.YPosition)) );
       if Assigned(FOnEndFloatingMarkerDrag) then
-      begin
         FOnEndFloatingMarkerDrag(Self, FDragFloatingMarker);
-      end;
 
       FDragFloatingMarker := nil;
       Invalidate;
@@ -3770,11 +3792,11 @@ begin
   begin
     Options.LegendWidth := Options.LegendWidth + (FMouseDownX - X);
     Options.XEnd := Options.XEnd - (FMouseDownX - X);
-    _PlotGraph;
+    InternalPlotGraph;
   end;
   if FMouseLegend then
   begin
-    _PlotGraph;
+    InternalPlotGraph;
     FMouseLegend := False;
   end;
   FStartDrag := False;
@@ -3829,15 +3851,13 @@ begin
         if not (Marker.XDraggable or Marker.YDraggable) then
           Continue;
         if (Abs(X - Marker.FRawXPosition) < (Options.MarkerSize * 2)) and
-          ((Marker.Marker = pmkNone) or (Abs(Y - Marker.FRawYPosition) < (Options.MarkerSize * 2))) then
+          ((Marker.Marker = pmkNone) or (Abs(Y - Marker.FRawYPosition) < Options.MarkerSize * 2)) then
         begin
           FDragFloatingMarker := Marker;
           FDragFloatingMarker.FDragging := True;
-                  //OutputDebugString('Begin Mouse Drag Floating Object');
+          //OutputDebugString('Begin Mouse Drag Floating Object');
           if Assigned(FOnBeginFloatingMarkerDrag) then
-          begin
             FOnBeginFloatingMarkerDrag(Self, FDragFloatingMarker);
-          end;
           Exit;
         end;
       end;
@@ -3857,7 +3877,7 @@ begin
     // provide our own way to set the title or title options,
     // however, if Options.MouseEdit is on, they can still set the
     // scale via mouse clicking.
-      if (Y < Options.YStartOffset) and not Assigned(FOnTitleClick) then
+    if (Y < Options.YStartOffset) and not Assigned(FOnTitleClick) then
     begin
       EditHeader;
       Exit;
@@ -4079,7 +4099,6 @@ var
   I: Integer;
   StrWidth, StrHeight: Integer;
   ACanvas: TCanvas;
-
 begin
   ACanvas := GetChartCanvas;
   ACanvas.Font.Color := Font.Color; // March 2004 Fixed.
@@ -4119,7 +4138,7 @@ begin
 
   // Get hint box height/width, size to contents:
   nWidth := nWidth + 25;
-  nHeight := (nLineH * (nLineCount)) + 8;
+  nHeight := nLineH * nLineCount + 8;
 
   // keep hint from clipping at bottom and right.
   if (Y + nHeight) > Self.Height then
@@ -4276,35 +4295,24 @@ begin
   end;
 end;
 
-// (rom) Point(AX, AY) is good enough
-
-function TJvChart.MyPt(AX, AY: Integer): TPoint;
-begin
-  with Result do
-  begin
-    X := AX;
-    Y := AY;
-  end;
-end;
-
 // Used in line charting as a Marker kind:
 
 procedure TJvChart.PlotSquare(ACanvas: TCanvas; X, Y: Integer);
 begin
-  MyPolygon(ACanvas, [MyPt(X - Options.MarkerSize, Y - Options.MarkerSize),
-    MyPt(X + Options.MarkerSize, Y - Options.MarkerSize),
-      MyPt(X + Options.MarkerSize, Y + Options.MarkerSize),
-      MyPt(X - Options.MarkerSize, Y + Options.MarkerSize)]);
+  MyPolygon(ACanvas, [Point(X - Options.MarkerSize, Y - Options.MarkerSize),
+    Point(X + Options.MarkerSize, Y - Options.MarkerSize),
+      Point(X + Options.MarkerSize, Y + Options.MarkerSize),
+      Point(X - Options.MarkerSize, Y + Options.MarkerSize)]);
 end;
 
 // Used in line charting as a Marker kind:
 
 procedure TJvChart.PlotDiamond(ACanvas: TCanvas; X, Y: Integer);
 begin
-  MyPolygon(ACanvas, [MyPt(X, Y - Options.MarkerSize),
-    MyPt(X + Options.MarkerSize, Y),
-      MyPt(X, Y + Options.MarkerSize),
-      MyPt(X - Options.MarkerSize, Y)]);
+  MyPolygon(ACanvas, [Point(X, Y - Options.MarkerSize),
+    Point(X + Options.MarkerSize, Y),
+      Point(X, Y + Options.MarkerSize),
+      Point(X - Options.MarkerSize, Y)]);
 end;
 
 procedure TJvChart.PlotFilledDiamond(ACanvas: TCanvas; X, Y: Integer);
@@ -4347,8 +4355,8 @@ begin
   // Fishy:
   MyColorRectangle(ACanvas, jvChartPaperColorIndex, 0, 0,
     // XXX The point here is to exceed the edges, wipe it all, thus the 3* and 5* multipliers.
-    (3 * Options.XStartOffset + Options.XEnd + Options.LegendWidth),
-    (5 * Options.YStartOffset + Options.YEnd));
+    3 * Options.XStartOffset + Options.XEnd + Options.LegendWidth,
+    5 * Options.YStartOffset + Options.YEnd);
   SetRectangleColor(ACanvas, jvChartAxisColorIndex);
   SetLineColor(ACanvas, jvChartAxisColorIndex);
 end;
@@ -4369,7 +4377,7 @@ begin
   Assert(Assigned(ACanvas));
   Assert(Assigned(ACanvas.Brush));
 
-   {new type of chart...}
+  {new type of chart...}
   ClearScreen;
 
    {Check graph values and correct if wrong. Actually not needed if there are no bugs}
@@ -4456,14 +4464,13 @@ begin
   Options.YOrigin := TempYOrigin;
 end;
 
-{***************************************************************************}
-{ Device depended functions for the rest of this module...check for printer }
-{ or check for metafile output!                                             }
-{***************************************************************************}
+{****************************************************************************}
+{ Device dependent functions for the rest of this module...check for printer }
+{ or check for metafile output!                                              }
+{****************************************************************************}
 
 {$IFDEF VCL}
 { !!warning: uses Win32 only font-handle stuff!!}
-
 procedure TJvChart.MakeVerticalFont;
 begin
   if Ord(FYFontHandle) <> 0 then
@@ -4542,7 +4549,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvChart.MyGraphVertFont(ACanvas: TCanvas); { !!warning: uses Win32 only font-handle stuff!!}
 begin
   Assert(Assigned(ACanvas));
@@ -4807,7 +4813,7 @@ begin
 
     {recalc average}
     CountGraphAverage;
-    _PlotGraph;
+    InternalPlotGraph;
     Invalidate;
   finally
     TempData.Free;
@@ -4820,7 +4826,7 @@ procedure TJvChart.DrawFloatingMarkers; { called from TJvChart.Paint! }
 var
   Marker, Marker2: TJvChartFloatingMarker;
   LineXPixelGap: Double;
-  captionYPosition, TextWidth, TextHeight, VC, I: Integer;
+  CaptionYPosition, TextWidth, TextHeight, VC, I: Integer;
 begin
   if csDesigning in ComponentState then
     Exit;
@@ -4850,9 +4856,7 @@ begin
     if not Marker.FDragging then
     begin
       with FOptions.PrimaryYAxis do
-      begin
         Marker.FRawYPosition := Trunc((YOrigin - (((Marker.YPosition - YMin) / YGap) * YPixelGap)));
-      end;
       Marker.FRawXPosition := Round(XOrigin + Marker.XPosition * LineXPixelGap);
     end;
   end;
@@ -4908,48 +4912,37 @@ begin
     begin
       TextHeight := Self.Canvas.TextHeight(Marker.Caption);
 
-      captionYPosition := 0; // not used.
+      CaptionYPosition := 0; // not used.
       case Marker.CaptionPosition of
-            cpMarker:
-                captionYPosition := Marker.FRawYPosition - Round(TextHeight * 1.4);
+        cpMarker:
+          CaptionYPosition := Marker.FRawYPosition - Round(TextHeight * 1.4);
+        cpXAxisBottom:
+          CaptionYPosition := Options.YStartOffset + Options.YEnd + Round(TextHeight * 1.4);
+        cpXAxisTop:
+          CaptionYPosition := Trunc(XOrigin - Round(TextHeight * 1.4));
+        cpTitleArea:
+          CaptionYPosition := (Options.YStartOffset div 2) - (TextHeight div 2);
+      end;
 
-            cpXAxisBottom:
-                captionYPosition := Options.YStartOffset + Options.YEnd + Round(TextHeight * 1.4);
-
-            cpXAxisTop:
-                captionYPosition := Trunc( XOrigin - Round(TextHeight * 1.4) );
-
-            cpTitleArea:
-                captionYPosition := (Options.YStartOffset div 2) - (TextHeight div 2);
-
-        end;
-
-
-
-      if Marker.CaptionBoxed then begin
+      if Marker.CaptionBoxed then
+      begin
         TextWidth := Self.Canvas.TextWidth(Marker.Caption) + 10;
 
         Self.Canvas.Pen.Color := Marker.LineColor;
         Self.Canvas.Pen.Width := 1;
         Self.Canvas.Pen.Style := Marker.LineStyle;
         MyRectangle(Self.Canvas,
-          {X} Marker.FRawXPosition - (TextWidth div 2),
-          {Y} captionYPosition,
-          {X2} Marker.FRawXPosition + (TextWidth div 2),
-          {Y2} captionYPosition + TextHeight + (TextHeight div 4) );
+          Marker.FRawXPosition - TextWidth div 2,
+          CaptionYPosition,
+          Marker.FRawXPosition + TextWidth div 2,
+          CaptionYPosition + TextHeight + TextHeight div 4);
         Self.Canvas.Pen.Style := psSolid;
         //MySmallGraphFont(Self.Canvas); <-redundant.
         //MyCenterTextOut(Self.Canvas, Marker.FRawXPosition, Options.FYStartOffset + Round(TextHeight / 4),
          // Marker.Caption);
       end;
 
-        MyCenterTextOut(    Self.Canvas,
-                            Marker.FRawXPosition,
-                            captionYPosition,
-                            Marker.Caption );
-
-      
-
+      MyCenterTextOut(Self.Canvas, Marker.FRawXPosition, CaptionYPosition, Marker.Caption);
     end;
   end;
 end;

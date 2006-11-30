@@ -1110,8 +1110,7 @@ begin
     if Assigned(FOnDecryptPassword) then
       FOnDecryptPassword(Result);
   except
-    on e: exception do
-      Result := '';
+    Result := '';
   end;
 end;
 
@@ -1135,8 +1134,7 @@ begin
     if Assigned(FOnEncryptPassword) then
       FOnEncryptPassword(Result);
   except
-    on e: exception do
-      Result := '';
+    Result := '';
   end;
 end;
 
