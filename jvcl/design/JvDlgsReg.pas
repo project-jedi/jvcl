@@ -79,7 +79,7 @@ begin
   RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
   {$ENDIF VisualCLX}
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory, TJvTipOfDay,
-    TJvFindReplace, TJvDSADialog]);
+    TJvFindReplace, TJvFindReplaceEditor, TJvDSADialog]);
   {$IFDEF VCL}
   RegisterComponents(RsPaletteDialog, [TJvPageSetupDialog, TJvPageSetupTitledDialog,
     TJvColorDialog, TJvAppletDialog]);
