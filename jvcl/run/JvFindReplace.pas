@@ -127,10 +127,16 @@ type
     property OnProgress: TJvReplaceProgressEvent read FOnProgress write FOnProgress;
   end;
 
+  // for custom property editor
+  TJvEditControlName = TWinControl;
+
+  TJvFindReplaceEditKind = (etEmpty, etCustomEdit, etJvCustomEditor);
+
   TJvFindReplace = class(TJvFindReplaceBase)
   private
-    FEditControl: TCustomEdit;
-    procedure SetEditControl(Value: TCustomEdit);
+    FEditControl: TJvEditControlName;
+    FEditKind: TJvFindReplaceEditKind;
+    procedure SetEditControl(Value: TJvEditControlName);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetEditText: string; override;
@@ -145,34 +151,7 @@ type
     procedure SetEditSelLength(Length: Integer); override;
     procedure SetEditFocus; override;
   published
-    property EditControl: TCustomEdit read FEditControl write SetEditControl;
-    property Fast;
-    property Options;
-    property FindText;
-    property ReplaceText;
-    property ShowDialogs;
-    property HelpContext;
-  end;
-
-  TJvFindReplaceEditor = class(TJvFindReplaceBase)
-  private
-    FEditControl: TJvCustomEditor;
-    procedure SetEditControl(Value: TJvCustomEditor);
-  protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function GetEditText: string; override;
-    function GetEditSelText: string; override;
-    function GetEditSelStart: Integer; override;
-    function GetEditSelLength: Integer; override;
-    function GetEditHandle: HWND; override;
-    procedure TestEditAssigned; override;
-    procedure SetEditText(const Text: string); override;
-    procedure SetEditSelText(const Text: string); override;
-    procedure SetEditSelStart(Start: Integer); override;
-    procedure SetEditSelLength(Length: Integer); override;
-    procedure SetEditFocus; override;
-  published
-    property EditControl: TJvCustomEditor read FEditControl write SetEditControl;
+    property EditControl: TJvEditControlName read FEditControl write SetEditControl;
     property Fast;
     property Options;
     property FindText;
@@ -359,11 +338,18 @@ begin
     FEditControl := nil;
 end;
 
-procedure TJvFindReplace.SetEditControl(Value: TCustomEdit);
+procedure TJvFindReplace.SetEditControl(Value: TJvEditControlName);
 begin
   FEditControl := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
+  if Value is TCustomEdit then
+    FEditKind := etCustomEdit
+  else
+  if Value is TJvCustomEditor then
+    FEditKind := etJvCustomEditor
+  else
+    FEditKind := etEmpty;
 end;
 
 procedure TJvFindReplace.TestEditAssigned;
@@ -374,124 +360,110 @@ end;
 
 function TJvFindReplace.GetEditText: string;
 begin
-  Result := FEditControl.Text;
+  case FEditKind of
+    etCustomEdit:
+      Result := TCustomEdit(FEditControl).Text;
+    etJvCustomEditor:
+      Result := TJvCustomEditor(FEditControl).Lines.Text;
+  else
+    Result := '';
+  end;
 end;
 
 function TJvFindReplace.GetEditSelText: string;
 begin
-  Result := FEditControl.SelText;
+  case FEditKind of
+    etCustomEdit:
+      Result := TCustomEdit(FEditControl).SelText;
+    etJvCustomEditor:
+      Result := TJvCustomEditor(FEditControl).SelText;
+  else
+    Result := '';
+  end;
 end;
 
 function TJvFindReplace.GetEditSelStart: Integer;
 begin
-  Result := FEditControl.SelStart;
+  case FEditKind of
+    etCustomEdit:
+      Result := TCustomEdit(FEditControl).SelStart;
+    etJvCustomEditor:
+      Result := TJvCustomEditor(FEditControl).SelStart;
+  else
+    Result := 0;
+  end;
 end;
 
 function TJvFindReplace.GetEditSelLength: Integer;
 begin
-  Result := FEditControl.SelLength;
+  case FEditKind of
+    etCustomEdit:
+      Result := TCustomEdit(FEditControl).SelLength;
+    etJvCustomEditor:
+      Result := TJvCustomEditor(FEditControl).SelLength;
+  else
+    Result := 0;
+  end;
 end;
 
 function TJvFindReplace.GetEditHandle: HWND;
 begin
-  Result := FEditControl.Handle;
+  case FEditKind of
+    etCustomEdit:
+      Result := TCustomEdit(FEditControl).Handle;
+  else
+    Result := HWND(0);
+  end;
 end;
 
 procedure TJvFindReplace.SetEditText(const Text: string);
 begin
-  FEditControl.Text := Text;
+  case FEditKind of
+    etCustomEdit:
+      TCustomEdit(FEditControl).Text := Text;
+    etJvCustomEditor:
+      TJvCustomEditor(FEditControl).Lines.Text := Text;
+  end;
 end;
 
 procedure TJvFindReplace.SetEditSelText(const Text: string);
 begin
-  FEditControl.SelText := Text;
+  case FEditKind of
+    etCustomEdit:
+      TCustomEdit(FEditControl).SelText := Text;
+    etJvCustomEditor:
+      TJvCustomEditor(FEditControl).SelText := Text;
+  end;
 end;
 
 procedure TJvFindReplace.SetEditSelStart(Start: Integer);
 begin
-  FEditControl.SelStart := Start;
+  case FEditKind of
+    etCustomEdit:
+      TCustomEdit(FEditControl).SelStart := Start;
+    etJvCustomEditor:
+      TJvCustomEditor(FEditControl).SelStart := Start;
+  end;
 end;
 
 procedure TJvFindReplace.SetEditSelLength(Length: Integer);
 begin
-  FEditControl.SelLength := Length;
+  case FEditKind of
+    etCustomEdit:
+      TCustomEdit(FEditControl).SelLength := Length;
+    etJvCustomEditor:
+      TJvCustomEditor(FEditControl).SelLength := Length;
+  end;
 end;
 
 procedure TJvFindReplace.SetEditFocus;
 begin
-  FEditControl.SetFocus;
-end;
-
-//=== { TJvFindReplaceEditor } ===============================================
-
-procedure TJvFindReplaceEditor.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FEditControl) then
-    FEditControl := nil;
-end;
-
-procedure TJvFindReplaceEditor.SetEditControl(Value: TJvCustomEditor);
-begin
-  FEditControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
-end;
-
-procedure TJvFindReplaceEditor.TestEditAssigned;
-begin
-  if not Assigned(FEditControl) then
-    raise EJVCLException.CreateRes(@RsENoEditAssigned);
-end;
-
-function TJvFindReplaceEditor.GetEditText: string;
-begin
-  Result := FEditControl.Lines.Text;
-end;
-
-function TJvFindReplaceEditor.GetEditSelText: string;
-begin
-  Result := FEditControl.SelText;
-end;
-
-function TJvFindReplaceEditor.GetEditSelStart: Integer;
-begin
-  Result := FEditControl.SelStart;
-end;
-
-function TJvFindReplaceEditor.GetEditSelLength: Integer;
-begin
-  Result := FEditControl.SelLength;
-end;
-
-function TJvFindReplaceEditor.GetEditHandle: HWND;
-begin
-  Result := 0;
-end;
-
-procedure TJvFindReplaceEditor.SetEditText(const Text: string);
-begin
-  FEditControl.Lines.Text := Text;
-end;
-
-procedure TJvFindReplaceEditor.SetEditSelText(const Text: string);
-begin
-  FEditControl.SelText := Text;
-end;
-
-procedure TJvFindReplaceEditor.SetEditSelStart(Start: Integer);
-begin
-  FEditControl.SelStart := Start;
-end;
-
-procedure TJvFindReplaceEditor.SetEditSelLength(Length: Integer);
-begin
-  FEditControl.SelLength := Length;
-end;
-
-procedure TJvFindReplaceEditor.SetEditFocus;
-begin
-  FEditControl.SetFocus;
+  case FEditKind of
+    etCustomEdit:
+      TCustomEdit(FEditControl).SetFocus;
+    etJvCustomEditor:
+      TJvCustomEditor(FEditControl).SetFocus;
+  end;
 end;
 
 //=== { TJvFindReplaceBase } =================================================

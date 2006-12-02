@@ -63,7 +63,7 @@ uses
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
   JvDesktopAlert, JvDesktopAlertEditors, JvProgressComponent, JvSelectDirectory,
   JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
-  JvTipOfDayEditor, JvProgressComponentEditor;
+  JvTipOfDayEditor, JvProgressComponentEditor, JvFindReplaceEditor;
 
 {$R JvDlgsReg.dcr}
 
@@ -79,7 +79,7 @@ begin
   RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
   {$ENDIF VisualCLX}
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory, TJvTipOfDay,
-    TJvFindReplace, TJvFindReplaceEditor, TJvDSADialog]);
+    TJvFindReplace, TJvDSADialog]);
   {$IFDEF VCL}
   RegisterComponents(RsPaletteDialog, [TJvPageSetupDialog, TJvPageSetupTitledDialog,
     TJvColorDialog, TJvAppletDialog]);
@@ -95,12 +95,12 @@ begin
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvLoginDialog, TJvProgressDialog, TJvProgressComponent]);
   {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvDiskPrompt, TJvCopyError,
-    TJvDeleteError, TJvRenameError]);
+  RegisterComponents(RsPaletteDialog, [TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError]);
   {$ENDIF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack,
-    TJvDualListDialog]);
-  RegisterPropertyEditor(TypeInfo(TJvCustomDesktopAlertStyleHandler), TJvDesktopAlert, '', TJvCustomDesktopAlertStyleHandlerEditor);
+  RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack, TJvDualListDialog]);
+  RegisterPropertyEditor(TypeInfo(TJvCustomDesktopAlertStyleHandler), TJvDesktopAlert, '',
+    TJvCustomDesktopAlertStyleHandlerEditor);
+  RegisterPropertyEditor(TypeInfo(TJvEditControlName), TJvFindReplace, 'EditControl', TJvFindReplaceProperty);
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
