@@ -110,10 +110,9 @@ type
     procedure lbxWizardPagesClick(Sender: TObject);
     procedure lbxWizardPagesMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure lbxWizardPagesDragOver(Sender, Source: TObject; X,
-      Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure lbxWizardPagesDragDrop(Sender, Source: TObject; X,
-      Y: Integer);
+    procedure lbxWizardPagesDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure lbxWizardPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure actWizardPagesUpdate(Action: TBasicAction;
       var Handled: Boolean);
     procedure acMoveUpExecute(Sender: TObject);
@@ -127,8 +126,7 @@ type
     procedure AddPage(Page: TJvWizardCustomPage);
     procedure AddWelcomePage;
     procedure AddInteriorPage;
-    property Wizard: TJvWizard
-      read FWizard write SetWizard;
+    property Wizard: TJvWizard read FWizard write SetWizard;
   public
     procedure Activated; override;
     {$IFDEF COMPILER6_UP}

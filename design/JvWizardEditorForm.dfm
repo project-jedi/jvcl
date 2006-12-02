@@ -1,8 +1,8 @@
 object JvWizardPageListEditor: TJvWizardPageListEditor
   Left = 192
   Top = 107
-  ClientWidth = 184
-  ClientHeight = 273
+  Width = 192
+  Height = 304
   Caption = 'K Wizard Page Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -37,12 +37,12 @@ object JvWizardPageListEditor: TJvWizardPageListEditor
       Style = tbsDropDown
     end
     object btnDeletePages: TToolButton
-      Left = 38
+      Left = 40
       Top = 0
       Action = actDeletePages
     end
     object ToolButton1: TToolButton
-      Left = 61
+      Left = 63
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -50,12 +50,12 @@ object JvWizardPageListEditor: TJvWizardPageListEditor
       Style = tbsSeparator
     end
     object tbMoveUp: TToolButton
-      Left = 69
+      Left = 71
       Top = 0
       Action = acMoveUp
     end
     object tbMoveDown: TToolButton
-      Left = 92
+      Left = 94
       Top = 0
       Action = acMoveDown
     end
@@ -64,7 +64,7 @@ object JvWizardPageListEditor: TJvWizardPageListEditor
     Left = 0
     Top = 23
     Width = 184
-    Height = 256
+    Height = 250
     Align = alClient
     ItemHeight = 13
     TabOrder = 1
