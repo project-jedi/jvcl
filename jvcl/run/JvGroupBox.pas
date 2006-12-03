@@ -14,7 +14,9 @@ The Initial Developer of the Original Code is Peter Below <100113 dott 1101 att 
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s):
+  Roman Ganz
+  Robert Marquardt
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,14 +36,23 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  JvThemes, JvExControls, JvExStdCtrls, JvJCLUtils, JvComponent;
+  JvThemes, JvExControls, JvExStdCtrls, JvCheckBox, JvJCLUtils, JvComponent;
 
 type
   TJvGroupBox = class(TJvExGroupBox, IJvDenySubClassing)
   private
+    FCheckBox: TJvCheckBox;
     FOnHotKey: TNotifyEvent;
     FPropagateEnable: Boolean;
+    FCheckable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
+    procedure SetCheckable(const Value: Boolean);
+    function GetCaption: TCaption;
+    procedure SetCaption(const Value: TCaption);
+    function GetChecked: Boolean;
+    procedure SetChecked(const Value: Boolean);
+    function StoredCheckable: Boolean;
+    procedure CheckBoxClick(Sender: TObject);
   protected
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -50,12 +61,16 @@ type
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property Canvas;
   published
     property HintColor;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
+    property Caption: TCaption read GetCaption write SetCaption;
+    property Checkable: Boolean read FCheckable write SetCheckable default False;
+    property Checked: Boolean read GetChecked write SetChecked stored StoredCheckable;
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -82,10 +97,17 @@ constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPropagateEnable := False;
+  FCheckable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
   {$ENDIF JVCLThemesEnabledD56}
+end;
+
+destructor TJvGroupBox.Destroy;
+begin
+  FCheckBox.Free;
+  inherited Destroy;
 end;
 
 procedure TJvGroupBox.Paint;
@@ -179,8 +201,7 @@ begin
   end;
 end;
 
-function TJvGroupBox.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvGroupBox.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
 begin
   Result := inherited WantKey(Key, Shift, KeyText);
   if Result then
@@ -194,7 +215,16 @@ begin
   inherited EnabledChanged;
   if PropagateEnable then
     for I := 0 to ControlCount - 1 do
-      Controls[I].Enabled := Enabled;
+      if Checkable then
+        if Enabled then
+          if Controls[I] = FCheckBox then
+            Controls[I].Enabled := True
+          else
+            Controls[I].Enabled := Checked
+        else
+          Controls[I].Enabled := False
+      else
+        Controls[I].Enabled := Enabled;
   Invalidate;
 end;
 
@@ -204,6 +234,70 @@ begin
     FOnHotKey(Self);
 end;
 
+function TJvGroupBox.GetCaption: TCaption;
+begin
+  if FCheckable then
+    Result := FCheckBox.Caption
+  else
+    Result := inherited Caption;
+end;
+
+function TJvGroupBox.GetChecked: Boolean;
+begin
+  if FCheckable then
+    Result := FCheckBox.Checked
+  else
+    Result := False;
+end;
+
+procedure TJvGroupBox.SetCaption(const Value: TCaption);
+begin
+  if FCheckable then
+    FCheckBox.Caption := Value
+  else
+    inherited Caption := Value;
+end;
+
+procedure TJvGroupBox.SetCheckable(const Value: Boolean);
+begin
+  if FCheckable <> Value then
+  begin
+    if Value then
+    begin
+      FCheckBox := TJvCheckBox.Create(Self);
+      FCheckBox.Parent := Self;
+      FCheckBox.Top := 0;
+      FCheckBox.Left := 8;
+      FCheckBox.Caption := Caption;
+      PropagateEnable := True;
+      FCheckBox.OnClick := CheckBoxClick;
+      FCheckBox.Checked := True;
+      inherited Caption := '';
+    end
+    else
+    begin
+      inherited Caption := FCheckBox.Caption;
+      FreeAndNil(FCheckBox);
+    end;
+    FCheckable := Value;
+  end;
+end;
+
+procedure TJvGroupBox.SetChecked(const Value: Boolean);
+begin
+  if Checkable then
+    FCheckBox.Checked := Value;
+end;
+
+procedure TJvGroupBox.CheckBoxClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to ControlCount - 1 do
+    if Controls[I] <> FCheckBox then
+      Controls[I].Enabled := FCheckBox.Checked;
+end;
+
 procedure TJvGroupBox.SetPropagateEnable(const Value: Boolean);
 var
   I: Integer;
@@ -211,6 +305,11 @@ begin
   FPropagateEnable := Value;
   for I := 0 to ControlCount - 1 do
     Controls[I].Enabled := Enabled;
+end;
+
+function TJvGroupBox.StoredCheckable: Boolean;
+begin
+  Result := FCheckable and Checked;
 end;
 
 {$IFDEF UNITVERSIONING}
