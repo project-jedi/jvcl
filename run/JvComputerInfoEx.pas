@@ -275,6 +275,7 @@ type
     function GetDEPCapable: Boolean;
     function GetLogicalCore: Byte;
     function GetPhysicalCore: Byte;
+    function GetHyperThreadingTechnology: Boolean;
     procedure SetCPUName(const Value: string);
     procedure SetCPUType(const Value: TJvCPUType);
     procedure SetExTicks(const Value: Cardinal);
@@ -305,6 +306,7 @@ type
     procedure SetDEPCapable(const Value: Boolean);
     procedure SetLogicalCore(const Value: Byte);
     procedure SetPhysicalCore(const Value: Byte);
+    procedure SetHyperThreadingTechnology(const Value: Boolean);
   public
     function IntelSpecific: TIntelSpecific;
     function CyrixSpecific: TCyrixSpecific;
@@ -345,6 +347,7 @@ type
     property DEPCapable: Boolean read GetDEPCapable write SetDEPCapable stored False;
     property PhysicalCore: Byte read GetPhysicalCore write SetPhysicalCore stored False;
     property LogicalCore: Byte read GetLogicalCore write SetLogicalCore stored False;
+    property HyperThreadingTechnology: Boolean read GetHyperThreadingTechnology write SetHyperThreadingTechnology stored False;
   end;
 
   TJvBIOSInfo = class(TJvReadOnlyInfo)
@@ -1854,6 +1857,11 @@ begin
   Result := GetCPUInfo.HasInstruction;
 end;
 
+function TJvCPUInfo.GetHyperThreadingTechnology: Boolean;
+begin
+  Result := GetCPUInfo.HyperThreadingTechnology;
+end;
+
 function TJvCPUInfo.GetInCycles: Cardinal;
 begin
   Result := GetCPUSpeed.InCycles;
@@ -2025,6 +2033,11 @@ begin
 end;
 
 procedure TJvCPUInfo.SetHasInstruction(const Value: Boolean);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetHyperThreadingTechnology(const Value: Boolean);
 begin
   RaiseReadOnly;
 end;
