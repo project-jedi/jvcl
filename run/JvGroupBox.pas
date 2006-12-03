@@ -61,7 +61,6 @@ type
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     property Canvas;
   published
     property HintColor;
@@ -102,12 +101,6 @@ begin
   {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
   {$ENDIF JVCLThemesEnabledD56}
-end;
-
-destructor TJvGroupBox.Destroy;
-begin
-  FCheckBox.Free;
-  inherited Destroy;
 end;
 
 procedure TJvGroupBox.Paint;
