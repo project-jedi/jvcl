@@ -4007,7 +4007,7 @@ begin
   inherited Create;
   Caption := RsJvDBGridSelectTitle;
   RealNamesOption := '';//RsJvDBGridSelectOption;
-  OK := RsJvDBGridSelectOK;
+  OK := RsButtonOKCaption;
   NoSelectionWarning := RsJvDBGridSelectWarning;
 end;
 

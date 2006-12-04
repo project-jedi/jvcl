@@ -496,7 +496,7 @@ constructor TJvParameterListMessages.Create;
 begin
   inherited Create;
   Caption := RsDialogCaption;
-  OkButton := RsOkButton;
+  OkButton := RsButtonOKCaption;
   CancelButton := RsCancelButton;
   HistoryLoadButton := RsHistoryLoadButton;
   HistorySaveButton := RsHistorySaveButton;

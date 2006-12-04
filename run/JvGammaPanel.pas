@@ -287,7 +287,7 @@ begin
     Left := 7;
     Top := 32;
     AutoSize := True;
-    Caption := RsLabelCaption;
+    Caption := RsXCaption;
     Hint := RsLabelHint;
     OnClick := Exchange;
     ShowHint := True;

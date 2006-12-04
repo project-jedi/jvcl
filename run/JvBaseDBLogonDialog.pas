@@ -590,7 +590,7 @@ begin
     Height := 25;
   end;
   CancelBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'CancelBtn',
-    RsBtnCancel, '', CancelBtnClick, False, True);
+    RsButtonCancelCaption, '', CancelBtnClick, False, True);
   with CancelBtn do
   begin
     Left := 460;
@@ -1567,7 +1567,7 @@ begin
       begin
         Buttons[0] := RsConnectionListImportAppend;
         Buttons[1] := RsConnectionListImportOverwrite;
-        Buttons[2] := RsConnectionListImportCancel;
+        Buttons[2] := RsButtonCancelCaption;
         Results[0] := Integer(mrYes);
         Results[1] := Integer(mrNo);
         Results[2] := Integer(mrCancel);
