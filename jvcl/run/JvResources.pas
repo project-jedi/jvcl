@@ -223,7 +223,6 @@ resourcestring
 resourcestring
   RsLogonToDatabase = 'Logon to Database';
   RsBtnConnect = 'Connect';
-  RsBtnCancel = 'Cancel';
   RsBtnAdditional = 'Additional';
   RsBtnHintAddDefinitionToList = 'Add Definition to List';
   RsBtnHintSelectDefinitionFromList = 'Select Definition from List';
@@ -240,7 +239,6 @@ resourcestring
 
   RSImportConnectionList = 'Import Connection List';
   RSExportConnectionList = 'Export Connection List';
-  RsConnectionListImportCancel = 'Cancel';
   RsConnectionListImportOverwrite = 'Overwrite';
   RsConnectionListImportAppend = 'Append';
   RsConnectionListImportAppendOverwriteExistingEntries = 'Append/Overwrite existing entries?';
@@ -604,7 +602,6 @@ resourcestring
 resourcestring
   RsJvDBGridSelectTitle = 'Select columns';
   //RsJvDBGridSelectOption = '[With the real field name]';
-  RsJvDBGridSelectOK = '&OK';
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
   RsEJvDBGridControlPropertyNotAssigned = 'JvDBGrid.EditControls: property Control not assigned';
 
@@ -747,7 +744,7 @@ resourcestring
 
 //=== JvDynControlEngine.pas =================================================
 resourcestring
-  RsEIntfCastError = 'SIntfCastError';
+  RsEIntfCastError = 'component does not support interface';
   RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass "%s"';
   RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass "%s"';
   RsENoFocusControl = 'TJvDynControlEngine.CreateLabelControlPanel: AFocusControl must be assigned';
@@ -912,7 +909,7 @@ resourcestring
   RsYCC_FullName  = 'YCrCb';
   RsYCC_ShortName = 'YCC';
 
-  RsXYZ_X         = 'Y';
+  RsXYZ_X         = 'X';
   RsXYZ_Y         = 'Y';
   RsXYZ_Z         = 'Z';
   RsXYZ_FullName  = 'CIE XYZ';
@@ -941,7 +938,7 @@ resourcestring
 
   RsHint1 = 'Background Color';
   RsHint2 = 'Foreground Color';
-  RsLabelCaption = 'X';
+  RsXCaption = 'X';
   RsLabelHint = 'Exchange colors';
 
   RsDefaultB = 'B : ---';
@@ -1614,23 +1611,23 @@ resourcestring
 
 //=== JvOracleDataset.pas ====================================================
 resourcestring
-  SODSOpenFetch = 'Open / Fetch : ';
-  SODSCurrentRecord = 'Current Record : ';
-  SODSRowsFetchedContinue = '%d rows fetched. Continue ? ';
-  SODSContinueYes = '&Yes';
-  SODSContinuePause = '&Pause';
-  SODSContinueNo = '&No';
-  SODSContinueClose = '&Close';
-  SODSContinueAll = '&All';
-  SODSGotoLastFetchRecords = 'Goto Last - Fetch Records';
-  SODSFetchRecords = 'Fetch Records';
-  SODSOpenQueryFetchRecords = 'Open Query - Fetch Records';
-  SODSFetchRecordsCancel = 'Fetch Records - Cancel';
-  SODSOpenQuery = 'Open Query';
-  SODSOpenQueryCancel = 'Open Query - Cancel' ;
-  SODSRefreshQueryFetchRecords = 'Refresh Query - Fetch Records';
-  SODSRefreshQuery = 'Refresh Query';
-  SODSRefreshQueryCancel = 'Refresh Query - Cancel';
+  RsODSOpenFetch = 'Open / Fetch : ';
+  RsODSCurrentRecord = 'Current Record : ';
+  RsODSRowsFetchedContinue = '%d rows fetched. Continue ? ';
+  RsODSContinueYes = '&Yes';
+  RsODSContinuePause = '&Pause';
+  RsODSContinueNo = '&No';
+  RsODSContinueClose = '&Close';
+  RsODSContinueAll = '&All';
+  RsODSGotoLastFetchRecords = 'Goto Last - Fetch Records';
+  RsODSFetchRecords = 'Fetch Records';
+  RsODSOpenQueryFetchRecords = 'Open Query - Fetch Records';
+  RsODSFetchRecordsCancel = 'Fetch Records - Cancel';
+  RsODSOpenQuery = 'Open Query';
+  RsODSOpenQueryCancel = 'Open Query - Cancel' ;
+  RsODSRefreshQueryFetchRecords = 'Refresh Query - Fetch Records';
+  RsODSRefreshQuery = 'Refresh Query';
+  RsODSRefreshQueryCancel = 'Refresh Query - Cancel';
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -1650,7 +1647,6 @@ resourcestring
   RsHistorySelectPath = 'History';
 
   RsDialogCaption = '';
-  RsOkButton = '&OK';
   RsCancelButton = '&Cancel';
   RsHistoryLoadButton = '&Load';
   RsHistorySaveButton = '&Save';

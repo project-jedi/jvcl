@@ -431,10 +431,10 @@ begin
 
   CreateTextPanel(Self, MainPanel, FTimePanel, FTimeLabel, FTimeStaticText, 'Time');
   if Supports(FTimeLabel, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(SODSOpenFetch);
+    ITmpControl.ControlSetCaption(RsODSOpenFetch);
   CreateTextPanel(Self, MainPanel, FRowsPanel, FRowsLabel, FRowsStaticText, 'Rows');
   if Supports(FRowsLabel, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(SODSCurrentRecord);
+    ITmpControl.ControlSetCaption(RsODSCurrentRecord);
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
     'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick, True, True);
@@ -886,7 +886,7 @@ begin
       fCurrentFetchDuration := fCurrentFetchDuration + Now - FCurrentOperationStart;
       CurrentAction := tdaNothing;
       FLastRowChecked := CurrentRow;
-      FSynchMessageDlgMsg := Format(SODSRowsFetchedContinue, [CurrentRow]);
+      FSynchMessageDlgMsg := Format(RsODSRowsFetchedContinue, [CurrentRow]);
       ExecuteThreadSynchronize(SynchContinueFetchMessageDlg);
       case FSynchMessageDlgBtn of
         mrYes:
@@ -998,30 +998,30 @@ begin
     tdoOpen:
       case CurrentAction of
         tdaOpen:
-          Result := SODSOpenQuery;
+          Result := RsODSOpenQuery;
         tdaFetch:
-          Result := SODSOpenQueryFetchRecords;
+          Result := RsODSOpenQueryFetchRecords;
         tdaCancel :
-          Result := SODSOpenQueryCancel;
+          Result := RsODSOpenQueryCancel;
       end;
     tdoRefresh:
       case CurrentAction of
         tdaOpen:
-          Result := SODSRefreshQuery;
+          Result := RsODSRefreshQuery;
         tdaFetch:
-          Result := SODSRefreshQueryFetchRecords;
+          Result := RsODSRefreshQueryFetchRecords;
         tdaCancel :
-          Result := SODSRefreshQueryCancel;
+          Result := RsODSRefreshQueryCancel;
       end;
     tdoFetch:
       case CurrentAction of
         tdaFetch:
-          Result := SODSFetchRecords;
+          Result := RsODSFetchRecords;
         tdaCancel :
-          Result := SODSFetchRecordsCancel;
+          Result := RsODSFetchRecordsCancel;
       end;
     tdoLast:
-      Result := SODSGotoLastFetchRecords;
+      Result := RsODSGotoLastFetchRecords;
   end;
 end;
 
@@ -1294,14 +1294,14 @@ var
 
 begin
   L := 0;
-  AddButton(SODSContinueYes, Integer(mrYes));
+  AddButton(RsODSContinueYes, Integer(mrYes));
   if EnhancedOptions.AllowedContinueRecordFetchOptions.Pause then
-    AddButton(SODSContinuePause, Integer(mrCancel));
-  AddButton(SODSContinueNo, Integer(mrNo));
+    AddButton(RsODSContinuePause, Integer(mrCancel));
+  AddButton(RsODSContinueNo, Integer(mrNo));
   if EnhancedOptions.AllowedContinueRecordFetchOptions.All then
-    AddButton(SODSContinueAll, Integer(mrAll));
+    AddButton(RsODSContinueAll, Integer(mrAll));
   if EnhancedOptions.AllowedContinueRecordFetchOptions.Cancel then
-    AddButton(SODSContinueClose, Integer(mrAbort));
+    AddButton(RsODSContinueClose, Integer(mrAbort));
   FSynchMessageDlgBtn := JvDSADialogs.MessageDlgEx(FSynchMessageDlgMsg,
       mtConfirmation, Buttons, Results, 0, dckActiveForm, 0,
       0, 1, -1, DialogOptions.DynControlEngine);
