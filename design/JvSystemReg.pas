@@ -48,7 +48,7 @@ uses
   JvDsgnConsts,
   {$IFDEF VCL}
   JvClipboardMonitor, JvClipboardViewer, JvHidControllerClass,
-  JvDragDrop, JvDdeCmd, JvAppCommand, JvScreenSaveSuppress, JvWndProcHook,
+  JvDragDrop, JvDdeCmd, JvAppCommand, JvScreenSaveSuppress, JvWndProcHook, JvSysRequirements,
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
   JvMRUList, JvMRUManager, JvCommStatus, JvJoystick,
@@ -81,7 +81,7 @@ begin
   {$IFDEF VCL}
   RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
     TJvAppDdeCmd, TJvHidDeviceController, TJvDropTarget, TJvDragDrop, TJvAppCommand,
-    TJvScreenSaveSuppressor]);
+    TJvScreenSaveSuppressor, TJvSysRequirements]);
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}

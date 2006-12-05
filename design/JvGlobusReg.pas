@@ -55,7 +55,7 @@ uses
   JvgSpeedButton, JvgStaticText, JvgHoleShape, {JvgSplit,}
   {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, {JvgSysInf, }
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
-  JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, {JvgProcess, }
+  JvgStringGrid, JvgTabComm, JvgTab, {JvgSysRequirements,} {JvgProcess, }
   {JvgProcessUtils, } JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
   JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, {JvgBevel,}
@@ -103,7 +103,7 @@ begin
     TJvgMailSlotServer, TJvgMailSlotClient, TJvgLabel, TJvgFlyingText,
     TJvgDigits, TJvgStaticText, TJvgHoleShape, TJvgHelpPanel,
     TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
-    {TJvgJumpingComponent,} TJvgStringContainer, TJvgSysRequirements,
+    {TJvgJumpingComponent,} TJvgStringContainer, {TJvgSysRequirements,}
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
     TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}

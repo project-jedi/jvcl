@@ -48,7 +48,6 @@
     <File Name="..\..\run\JvgStaticText.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgStringContainer.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgStringGrid.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgSysRequirements.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTab.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTabComm.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTransparentMemo.pas" Targets="VCL" Formname="" Condition=""/>
