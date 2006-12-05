@@ -217,153 +217,65 @@ end;
 procedure TJvSysRequirements.SetMinColorDepth(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    FMinColorDepth := 0;
-    if MaxColorDepth <> 0 then
-      MaxColorDepth := 0;
-  end
-  else
-  if Value > FMaxColorDepth then
-  begin
-    FMinColorDepth := Value;
+  FMinColorDepth := Value;
+  if (Value > MaxColorDepth) and (MaxColorDepth <> 0) then
     MaxColorDepth := Value;
-  end
-  else
-    FMinColorDepth := Value;
 end;
 
 procedure TJvSysRequirements.SetMaxColorDepth(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    if MinColorDepth <> 0 then
-      MinColorDepth := 0;
-    FMaxColorDepth := 0;
-  end
-  else
-  if Value < FMinColorDepth then
-  begin
-    FMaxColorDepth := Value;
+  FMaxColorDepth := Value;
+  if (Value <> 0) and (Value < MinColorDepth) then
     MinColorDepth := Value;
-  end
-  else
-    FMaxColorDepth := Value;
 end;
 
 procedure TJvSysRequirements.SetMinScreenX(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    FMinScreenX := 0;
-    if MaxScreenX <> 0 then
-      MaxScreenX := 0;
-  end
-  else
-  if Value > FMaxScreenX then
-  begin
-    FMinScreenX := Value;
+  FMinScreenX := Value;
+  if (Value > MaxScreenX) and (MaxScreenX <> 0) then
     MaxScreenX := Value;
-  end
-  else
-    FMaxScreenX := Value;
 end;
 
 procedure TJvSysRequirements.SetMaxScreenX(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    if MinScreenX <> 0 then
-      MinScreenX := 0;
-    FMaxScreenX := 0;
-  end
-  else
-  if Value < FMinScreenX then
-  begin
-    FMaxScreenX := Value;
+  FMaxScreenX := Value;
+  if (Value <> 0) and (MaxScreenX <> 0) then
     MinScreenX := Value;
-  end
-  else
-    FMaxScreenX := Value;
 end;
 
 procedure TJvSysRequirements.SetMinScreenY(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    FMinScreenY := 0;
-    if MaxScreenY <> 0 then
-      MaxScreenY := 0;
-  end
-  else
-  if Value > FMaxScreenY then
-  begin
-    FMinScreenY := Value;
+  FMinScreenY := Value;
+  if (Value > MaxScreenY) and (MaxScreenY <> 0) then
     MaxScreenY := Value;
-  end
-  else
-    FMinScreenY := Value;
 end;
 
 procedure TJvSysRequirements.SetMaxScreenY(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    if MinScreenY <> 0 then
-      MinScreenY := 0;
-    FMaxScreenY := 0;
-  end
-  else
-  if Value < FMinScreenY then
-  begin
-    FMaxScreenY := Value;
+  FMaxScreenY := Value;
+  if (Value <> 0) and (Value < MinScreenY) then
     MinScreenY := Value;
-  end
-  else
-    FMaxScreenY := Value;
 end;
 
 procedure TJvSysRequirements.SetMinVideoRefreshRate(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    FMinVideoRefreshRate := 0;
-    if MaxVideoRefreshRate <> 0 then
-      MaxVideoRefreshRate := 0;
-  end
-  else
-  if Value > FMaxVideoRefreshRate then
-  begin
-    FMinVideoRefreshRate := Value;
+  FMinVideoRefreshRate := Value;
+  if (Value > MaxVideoRefreshRate) and (MaxVideoRefreshRate <> 0) then
     MaxVideoRefreshRate := Value;
-  end
-  else
-    FMinVideoRefreshRate := Value;
 end;
 
 procedure TJvSysRequirements.SetMaxVideoRefreshRate(Value: Integer);
 begin
   Value := Abs(Value);
-  if Value = 0 then
-  begin
-    if MinVideoRefreshRate <> 0 then
-      MinVideoRefreshRate := 0;
-    FMaxVideoRefreshRate := 0;
-  end
-  else
-  if Value < FMinVideoRefreshRate then
-  begin
-    FMaxVideoRefreshRate := Value;
+  FMaxVideoRefreshRate := Value;
+  if (Value <> 0) and (Value < MinVideoRefreshRate) then
     MinVideoRefreshRate := Value;
-  end
-  else
-    FMaxVideoRefreshRate := Value;
 end;
 
 procedure TJvSysRequirements.SetSystemFonts(const Value: TJvSystemFontSet);
