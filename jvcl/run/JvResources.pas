@@ -1085,24 +1085,6 @@ resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
 {$ENDIF USEJVCL}
 
-//=== JvgSysRequirements.pas =================================================
-resourcestring
-  RsMinColorDepthReq = 'The color depth must be at least %1:d bits per pixel, but is only %0:d bits per pixel';
-  RsMaxColorDepthReq = 'The color depth cannot be more than %1:d bits per pixel, but is %0:d bits per pixel';
-  RsBetweenColorDepthReq = 'The color depth must be between %1:d and %2:d bits per pixel, but is %0:d bits per pixel';
-  RsMinScreenXReq = 'The horizontal screen resolution must be at least %1:d pixels, but is only %0:d pixels';
-  RsMaxScreenXReq = 'The horizontal screen resolution cannot be more than %1:d pixels, but is %0:d pixel';
-  RsBetweenScreenXReq = 'The horizontal screen resolution must be between %1:d and %2:d pixels, but is %0:d pixel';
-  RsMinScreenYReq = 'The vertical screen resolution must be at least %1:d pixels, but is only %0:d pixels';
-  RsMaxScreenYReq = 'The vertical screen resolution cannot be more than %1:d pixels, but is %0:d pixel';
-  RsBetweenScreenYReq = 'The vertical screen resolution must be between %1:d and %2:d pixels, but is %0:d pixel';
-  RsMinRefreshReq = 'The video refresh rate must be at least %1:d Hertz, but is only %0:d Hertz';
-  RsMaxRefreshReq = 'The video refresh rate cannot be more than %1:d Hertz, but is %0:d Hertz';
-  RsBetweenRefreshReq = 'The video refresh rate must be between %1:d and %2:d Hertz, but is %0:d Hertz';
-  RsWindowsVersionReq = 'This version of Windows is not supported';
-  RsSystemFontSmallReq = 'The system does not use small fonts';
-  RsSystemFontBigReq = 'The system does not use big fonts';
-
 //=== JvgUtils.pas ===========================================================
 {$IFDEF USEJVCL}
 resourcestring
@@ -1956,6 +1938,25 @@ resourcestring
 //=== JvSyncSplitter.pas =====================================================
 resourcestring
   RsEInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
+
+//=== JvSysRequirements.pas ==================================================
+resourcestring
+  RsSysRequirementsCaption = 'System Requirements for %s';
+  RsMinColorDepthReq = 'The color depth must be at least %1:d bits per pixel, but is only %0:d bits per pixel.';
+  RsMaxColorDepthReq = 'The color depth cannot be more than %1:d bits per pixel, but is %0:d bits per pixel.';
+  RsBetweenColorDepthReq = 'The color depth must be between %1:d and %2:d bits per pixel, but is %0:d bits per pixel.';
+  RsMinScreenXReq = 'The horizontal screen resolution must be at least %1:d pixels, but is only %0:d pixels.';
+  RsMaxScreenXReq = 'The horizontal screen resolution cannot be more than %1:d pixels, but is %0:d pixel.';
+  RsBetweenScreenXReq = 'The horizontal screen resolution must be between %1:d and %2:d pixels, but is %0:d pixel.';
+  RsMinScreenYReq = 'The vertical screen resolution must be at least %1:d pixels, but is only %0:d pixels.';
+  RsMaxScreenYReq = 'The vertical screen resolution cannot be more than %1:d pixels, but is %0:d pixel.';
+  RsBetweenScreenYReq = 'The vertical screen resolution must be between %1:d and %2:d pixels, but is %0:d pixel.';
+  RsMinRefreshReq = 'The video refresh rate must be at least %1:d Hertz, but is only %0:d Hertz.';
+  RsMaxRefreshReq = 'The video refresh rate cannot be more than %1:d Hertz, but is %0:d Hertz.';
+  RsBetweenRefreshReq = 'The video refresh rate must be between %1:d and %2:d Hertz, but is %0:d Hertz.';
+  RsWindowsVersionReq = 'This version of Windows is not supported.';
+  RsSystemFontSmallReq = 'The system does not use small fonts.';
+  RsSystemFontBigReq = 'The system does not use big fonts.';
 
 //=== JvSystemPopup.pas ======================================================
 resourcestring
