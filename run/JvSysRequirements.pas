@@ -44,8 +44,8 @@ type
   TJvSystemFont = (fsfSmallFont, fsfBigFont);
   TJvSystemFontSet = set of TJvSystemFont;
   TWindowsVersionSet = set of TWindowsVersion;
-
   TJvSysReqBehavior = (fsbHalt, fsbWarning);
+
   TJvWarningEvent = procedure(Sender: TObject; var ReportMessage: string;
     var DoShowWarning, DoHalt: Boolean) of object;
 
@@ -69,6 +69,15 @@ type
     FMinVideoRefreshRate: Integer;
     FMaxVideoRefreshRate: Integer;
     FOnWarning: TJvWarningEvent;
+    procedure SetMinColorDepth(Value: Integer);
+    procedure SetMaxColorDepth(Value: Integer);
+    procedure SetMinScreenX(Value: Integer);
+    procedure SetMaxScreenX(Value: Integer);
+    procedure SetMinScreenY(Value: Integer);
+    procedure SetMaxScreenY(Value: Integer);
+    procedure SetMinVideoRefreshRate(Value: Integer);
+    procedure SetMaxVideoRefreshRate(Value: Integer);
+    procedure SetSystemFonts(const Value: TJvSystemFontSet);
     procedure SetWindowsVersions(const Value: TWindowsVersionSet);
   protected
     procedure Loaded; override;
@@ -78,17 +87,17 @@ type
   published
     property Behavior: TJvSysReqBehavior read FBehavior write FBehavior default fsbHalt;
     property Enabled: Boolean read FEnabled write FEnabled default True;
-    property MinColorDepth: Integer read FMinColorDepth write FMinColorDepth default 0;
-    property MaxColorDepth: Integer read FMaxColorDepth write FMaxColorDepth default 0;
-    property MinScreenX: Integer read FMinScreenX write FMinScreenX default 0;
-    property MaxScreenX: Integer read FMaxScreenX write FMaxScreenX default 0;
-    property MinScreenY: Integer read FMinScreenY write FMinScreenY default 0;
-    property MaxScreenY: Integer read FMaxScreenY write FMaxScreenY default 0;
-    property MinVideoRefreshRate: Integer read FMinVideoRefreshRate write FMinVideoRefreshRate default 0;
-    property MaxVideoRefreshRate: Integer read FMaxVideoRefreshRate write FMaxVideoRefreshRate default 0;
+    property MinColorDepth: Integer read FMinColorDepth write SetMinColorDepth default 0;
+    property MaxColorDepth: Integer read FMaxColorDepth write SetMaxColorDepth default 0;
+    property MinScreenX: Integer read FMinScreenX write SetMinScreenX default 0;
+    property MaxScreenX: Integer read FMaxScreenX write SetMaxScreenX default 0;
+    property MinScreenY: Integer read FMinScreenY write SetMinScreenY default 0;
+    property MaxScreenY: Integer read FMaxScreenY write SetMaxScreenY default 0;
+    property MinVideoRefreshRate: Integer read FMinVideoRefreshRate write SetMinVideoRefreshRate default 0;
+    property MaxVideoRefreshRate: Integer read FMaxVideoRefreshRate write SetMaxVideoRefreshRate default 0;
     property WindowsVersions: TWindowsVersionSet read FWindowsVersions write SetWindowsVersions default
       AllWindowsVersions;
-    property SystemFonts: TJvSystemFontSet read FSystemFonts write FSystemFonts default AllSystemFonts;
+    property SystemFonts: TJvSystemFontSet read FSystemFonts write SetSystemFonts default AllSystemFonts;
     property OnWarning: TJvWarningEvent read FOnWarning write FOnWarning;
   end;
 
@@ -105,6 +114,7 @@ const
 implementation
 
 uses
+  Math,
   JvResources;
 
 constructor TJvSysRequirements.Create(AOwner: TComponent);
@@ -202,6 +212,166 @@ begin
     Test(LogPixels = 96, RsSystemFontSmallReq);
   if SystemFonts = [fsfBigFont] then
     Test(LogPixels = 120, RsSystemFontBigReq);
+end;
+
+procedure TJvSysRequirements.SetMinColorDepth(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    FMinColorDepth := 0;
+    if MaxColorDepth <> 0 then
+      MaxColorDepth := 0;
+  end
+  else
+  if Value > FMaxColorDepth then
+  begin
+    FMinColorDepth := Value;
+    MaxColorDepth := Value;
+  end
+  else
+    FMinColorDepth := Value;
+end;
+
+procedure TJvSysRequirements.SetMaxColorDepth(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    if MinColorDepth <> 0 then
+      MinColorDepth := 0;
+    FMaxColorDepth := 0;
+  end
+  else
+  if Value < FMinColorDepth then
+  begin
+    FMaxColorDepth := Value;
+    MinColorDepth := Value;
+  end
+  else
+    FMaxColorDepth := Value;
+end;
+
+procedure TJvSysRequirements.SetMinScreenX(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    FMinScreenX := 0;
+    if MaxScreenX <> 0 then
+      MaxScreenX := 0;
+  end
+  else
+  if Value > FMaxScreenX then
+  begin
+    FMinScreenX := Value;
+    MaxScreenX := Value;
+  end
+  else
+    FMaxScreenX := Value;
+end;
+
+procedure TJvSysRequirements.SetMaxScreenX(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    if MinScreenX <> 0 then
+      MinScreenX := 0;
+    FMaxScreenX := 0;
+  end
+  else
+  if Value < FMinScreenX then
+  begin
+    FMaxScreenX := Value;
+    MinScreenX := Value;
+  end
+  else
+    FMaxScreenX := Value;
+end;
+
+procedure TJvSysRequirements.SetMinScreenY(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    FMinScreenY := 0;
+    if MaxScreenY <> 0 then
+      MaxScreenY := 0;
+  end
+  else
+  if Value > FMaxScreenY then
+  begin
+    FMinScreenY := Value;
+    MaxScreenY := Value;
+  end
+  else
+    FMinScreenY := Value;
+end;
+
+procedure TJvSysRequirements.SetMaxScreenY(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    if MinScreenY <> 0 then
+      MinScreenY := 0;
+    FMaxScreenY := 0;
+  end
+  else
+  if Value < FMinScreenY then
+  begin
+    FMaxScreenY := Value;
+    MinScreenY := Value;
+  end
+  else
+    FMaxScreenY := Value;
+end;
+
+procedure TJvSysRequirements.SetMinVideoRefreshRate(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    FMinVideoRefreshRate := 0;
+    if MaxVideoRefreshRate <> 0 then
+      MaxVideoRefreshRate := 0;
+  end
+  else
+  if Value > FMaxVideoRefreshRate then
+  begin
+    FMinVideoRefreshRate := Value;
+    MaxVideoRefreshRate := Value;
+  end
+  else
+    FMinVideoRefreshRate := Value;
+end;
+
+procedure TJvSysRequirements.SetMaxVideoRefreshRate(Value: Integer);
+begin
+  Value := Abs(Value);
+  if Value = 0 then
+  begin
+    if MinVideoRefreshRate <> 0 then
+      MinVideoRefreshRate := 0;
+    FMaxVideoRefreshRate := 0;
+  end
+  else
+  if Value < FMinVideoRefreshRate then
+  begin
+    FMaxVideoRefreshRate := Value;
+    MinVideoRefreshRate := Value;
+  end
+  else
+    FMaxVideoRefreshRate := Value;
+end;
+
+procedure TJvSysRequirements.SetSystemFonts(const Value: TJvSystemFontSet);
+begin
+  if Value = [] then
+    FSystemFonts := [fsfSmallFont]
+  else
+    FSystemFonts := Value;
 end;
 
 procedure TJvSysRequirements.SetWindowsVersions(const Value: TWindowsVersionSet);
