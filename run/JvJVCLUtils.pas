@@ -6936,7 +6936,7 @@ var
   WndProc: TWndMethod;
 begin
   TMethod(WndProc).Code := Pointer(GetWindowLong(Window, 0));
-  TMethod(WndProc).Data := Pointer(GetWindowLong(Window, 4));
+  TMethod(WndProc).Data := Pointer(GetWindowLong(Window, SizeOf(Pointer)));
   if Assigned(WndProc) then
   begin
     Msg.Msg := Message;
@@ -7016,9 +7016,7 @@ begin
   try
     if Screen <> nil then
     begin
-      { begin RxLib }
       // now only available through SetDefaultJVCLCursors
-      { end RxLib }
       { (ahuser) if used in VisualCLX mode Application.Destroy crashes }
       Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
       Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
