@@ -174,8 +174,8 @@ begin
   if Msg.Msg = FHookMsg then
     DoShellMessage(Msg)
   else
-    // (rom) why inherited? The method is introduced here.
-    inherited;
+    with Msg do
+      Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);
 end;
 
 initialization
