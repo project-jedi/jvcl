@@ -159,6 +159,10 @@ begin
 end;
 
 procedure TJvTimerThread.Execute;
+const
+  Step = 10;  // Time of a wait slot, in milliseconds
+var
+  CurrentDuration: Cardinal;
 
   function ThreadClosed: Boolean;
   begin
@@ -195,7 +199,12 @@ begin
       end;
     end;
 
-    SleepEx(FInterval, False);
+    CurrentDuration := 0;
+    while not ThreadClosed and (CurrentDuration < FInterval) do
+    begin
+      SleepEx(Step, False);
+      Inc(CurrentDuration, Step);
+    end;
 
     // while we are paused, we do not do anything. However, we do call SleepEx
     // in the alertable state to avoid 100% CPU usage. Note that the delay
