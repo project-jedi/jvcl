@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Graphics, Controls, ExtCtrls,
-  JvComponent;
+  JvComponent, JvJVCLUtils;
 
 type
   TJvSimIndicator = class(TJvGraphicControl)
@@ -44,13 +44,20 @@ type
     FMinimum: Integer;
     FBarColor: TColor;
     FBackColor: TColor;
+    {$IFNDEF COMPILER7_UP}
+    FMargins: TJvRect;
+    {$ENDIF !COMPILER7_UP}
     procedure SetBarColor(const Value: TColor);
     procedure SetMaximum(const Value: Integer);
     procedure SetMinimum(const Value: Integer);
     procedure SetValue(const Value: Integer);
     procedure SetBackColor(const Value: TColor);
+    {$IFNDEF COMPILER7_UP}
+    procedure SetMargins(const Value: TJvRect);
+    {$ENDIF !COMPILER7_UP}
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Paint; override;
   published
     property Value: Integer read FValue write SetValue;
@@ -60,6 +67,10 @@ type
     property BackColor: TColor read FBackColor write SetBackColor default clSilver;
     property Width default 25;
     property Height default 100;
+    {$IFNDEF COMPILER7_UP}
+    property Margins: TJvRect read FMargins write SetMargins;
+    {$ENDIF !COMPILER7_UP}
+    
 
     property Align;
     property Anchors;
@@ -108,6 +119,7 @@ implementation
 constructor TJvSimIndicator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  
   Width := 25;
   Height := 100;
   FMinimum := 0;
@@ -115,6 +127,19 @@ begin
   FValue := 50;
   FBarColor := clLime;
   FBackColor := clSilver;
+
+  {$IFNDEF COMPILER7_UP}
+  FMargins := TJvRect.Create;
+  {$ENDIF !COMPILER7_UP}
+end;
+
+destructor TJvSimIndicator.Destroy;
+begin
+  {$IFNDEF COMPILER7_UP}
+  FMargins.Free;
+  {$ENDIF !COMPILER7_UP}
+  
+  inherited Destroy;
 end;
 
 procedure TJvSimIndicator.Paint;
@@ -197,6 +222,14 @@ begin
     Invalidate;
   end;
 end;
+
+{$IFNDEF COMPILER7_UP}
+procedure TJvSimIndicator.SetMargins(const Value: TJvRect);
+begin
+  FMargins.Assign(Value);
+  Invalidate;
+end;
+{$ENDIF !COMPILER7_UP}
 
 {$IFDEF UNITVERSIONING}
 initialization
