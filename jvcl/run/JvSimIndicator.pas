@@ -129,8 +129,13 @@ begin
   Canvas.Brush.Color := clSilver;
   Canvas.FillRect(R);
   Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
-  InflateRect(R, -3, -3);
+
+  Dec(R.Top, Margins.Top);
+  Dec(R.Left, Margins.Left);
+  Dec(R.Bottom, Margins.Bottom);
+  Dec(R.Right, Margins.Right);
   Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1);
+  
   Canvas.Brush.Color := FBackColor;
   InflateRect(R, -1, -1);
   Canvas.FillRect(R);
