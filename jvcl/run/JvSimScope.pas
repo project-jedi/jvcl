@@ -21,17 +21,16 @@ located at http://jvcl.sourceforge.net
 
 Description:
   TJvSimScope Properties:
-     Active           Starts/Stops scope
-     Color            Backgroundcolor
-     GridColor        Grid mask color
-     GridSize         Size of grid mask in pixels
-     Height           Scopes Height in pixels
-     Interval         Scroll speed in 1/100's seconds
-     LineColor        Scope dataline color
-     Position         Dataline value (range 0-100)
-     Width            Scopes width in pixels
-     BaseColor        Color of BaseLine
-     BaseLine         BaseLine value (range 0-100)
+     Active              Starts/Stops scope
+     Color               Backgroundcolor
+     GridColor           Grid mask color
+     HorizontalGridSize  Size of horiontal grid mask in logical units
+     VerticalGridSize    Size of vertical grid mask in logical units
+     Interval            Scroll speed in 1/100's seconds
+     LineColor           Scope dataline color
+     Position            Dataline value
+     BaseColor           Color of BaseLine
+     BaseLine            BaseLine value 
 
   TJvSimScope Methods:
      Clear            Clears the control and redraws grid
@@ -54,6 +53,8 @@ uses
   SysUtils, Classes;
 
 type
+  TJvScopeLineUnit = (jluPercent, jluAbsolute);
+
   TJvScopeLine = class(TCollectionItem)
   private
     FPosition: Integer;
@@ -61,6 +62,7 @@ type
     FPrevPos: Integer;
     FColor: TColor;
     FName: string;
+    FPositionUnit: TJvScopeLineUnit;
   protected
     function GetDisplayName: string; override;
   public
@@ -70,6 +72,7 @@ type
     property Name: string read FName write FName;
     property Color: TColor read FColor write FColor default clLime;
     property Position: Integer read FPosition write FPosition default 50;
+    property PositionUnit: TJvScopeLineUnit read FPositionUnit write FPositionUnit default jluPercent;
   end;
 
   TJvScopeLines = class(TOwnedCollection)
@@ -85,6 +88,8 @@ type
     property Lines[Index: Integer]: TJvScopeLine read GetItem write SetItem; default;
   end;
 
+  TJvSimScopeDisplayUnit = (jduPixels, jduLogical);
+
   TJvSimScope = class(TGraphicControl)
   private
     FAllowed: Boolean;
@@ -95,18 +100,32 @@ type
     FBaseColor: TColor;
     FGridColor: TColor;
     FBaseLine: Integer;
-    FGridSize: Integer;
     FInterval: Integer;
     FLines: TJvScopeLines;
+    FHorizontalGridSize: Integer;
+    FVerticalGridSize: Integer;
+    FDisplayUnits: TJvSimScopeDisplayUnit;
+    FMaximum: Integer;
+    FMinimum: Integer;
+    FBaseLineUnit: TJvScopeLineUnit;
+    
     procedure SetActive(Value: Boolean);
     procedure SetGridSize(Value: Integer);
     procedure SetBaseLine(Value: Integer);
     procedure SetInterval(Value: Integer);
     procedure SetLines(const Value: TJvScopeLines);
     procedure UpdateDisplay(ClearFirst: Boolean);
+    procedure SetHorizontalGridSize(const Value: Integer);
+    procedure SetVerticalGridSize(const Value: Integer);
+    function GetGridSize: Integer;
+    procedure SetDisplayUnits(const Value: TJvSimScopeDisplayUnit);
+    procedure SetMaximum(const Value: Integer);
+    procedure SetMinimum(const Value: Integer);
+    procedure UpdateCalcBase;
+    procedure SetBaseLineUnit(const Value: TJvScopeLineUnit);
   protected
-    CalcBase: Integer;
-    Counter: Integer;
+    FCalcBase: Integer;
+    FCounter: Integer;
     procedure UpdateScope(Sender: TObject);
     procedure Loaded; override;
   public
@@ -119,13 +138,20 @@ type
     property Active: Boolean read FActive write SetActive;
     property BaseColor: TColor read FBaseColor write FBaseColor default clRed;
     property BaseLine: Integer read FBaseLine write SetBaseLine default 50;
+    property BaseLineUnit: TJvScopeLineUnit read FBaseLineUnit write SetBaseLineUnit default jluPercent;
     property Color default clBlack;
+    property DisplayUnits: TJvSimScopeDisplayUnit read FDisplayUnits write SetDisplayUnits default jduPixels;
     property GridColor: TColor read FGridColor write FGridColor default clGreen;
-    property GridSize: Integer read FGridSize write SetGridSize default 16;
+    property GridSize: Integer read GetGridSize write SetGridSize stored False default 16;
+    property HorizontalGridSize: Integer read FHorizontalGridSize write SetHorizontalGridSize default 16;
     property Height default 120;
     property Interval: Integer read FInterval write SetInterval default 50;
     property Lines: TJvScopeLines read FLines write SetLines;
+    property Minimum: Integer read FMinimum write SetMinimum;
+    property Maximum: Integer read FMaximum write SetMaximum default 120;
+    property VerticalGridSize: Integer read FVerticalGridSize write SetVerticalGridSize default 16;
     property Width default 208;
+
     property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
 
     property Align;
@@ -266,6 +292,8 @@ begin
   FDrawTimer.OnTimer := UpdateScope;
   FDrawTimer.Interval := 500;
 
+  FDisplayUnits := jduPixels;
+
   Height := 120;
   Width := 208;
 
@@ -278,7 +306,7 @@ begin
 
   FLines := TJvScopeLines.Create(Self);
   Interval := 50;
-  Counter := 1;
+  FCounter := 1;
 
   ControlStyle := [csFramed, csOpaque];
   FAllowed := True;
@@ -289,6 +317,13 @@ begin
   FDrawBuffer.Free;
   FLines.Free;
   inherited Destroy;
+end;
+
+function TJvSimScope.GetGridSize: Integer;
+begin
+  Result := -1;
+  if HorizontalGridSize = VerticalGridSize then
+    Result := HorizontalGridSize;
 end;
 
 procedure TJvSimScope.Loaded;
@@ -303,7 +338,7 @@ var
 begin
   if not FAllowed then
     Exit;
-  CalcBase := (Height - Round(Height / 100 * BaseLine));
+  UpdateCalcBase;
   with FDrawBuffer.Canvas do
   begin
     Brush.Color := Color;
@@ -318,34 +353,34 @@ begin
     begin
       MoveTo(A - 1, 0);
       LineTo(A - 1, Height);
-      Dec(A, GridSize);
+      Dec(A, VerticalGridSize);
     end;
     { Horizontal lines - above BaseLine }
-    A := CalcBase;
+    A := FCalcBase;
     while A < Height do
     begin
-      Inc(A, GridSize);
+      Inc(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
       MoveTo(0, A);
       LineTo(Width, A);
     end;
     { Horizontal lines - below BaseLine }
-    A := CalcBase;
+    A := FCalcBase;
     while A > 0 do
     begin
-      Dec(A, GridSize);
+      Dec(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
       MoveTo(0, A);
       LineTo(Width, A);
     end;
     { BaseLine }
     Pen.Color := BaseColor;
-    MoveTo(0, CalcBase);
-    LineTo(Width, CalcBase);
+    MoveTo(0, FCalcBase);
+    LineTo(Width, FCalcBase);
 
     { Start new position-line on BaseLine... }
     for I := 0 to FLines.Count - 1 do
     begin
-      FLines[I].FOldPos := CalcBase;
-      FLines[I].FPrevPos := CalcBase;
+      FLines[I].FOldPos := FCalcBase;
+      FLines[I].FPrevPos := FCalcBase;
     end;
     {
     // Draws a line from 0,BaseLine to width, new pos
@@ -353,15 +388,24 @@ begin
     MoveTo(0,Height);
     LineTo(Width,Height-Round(Height/100*position));
     }
-    Counter := 1;
+    FCounter := 1;
   end;
 end;
 
 procedure TJvSimScope.SetBaseLine(Value: Integer);
 begin
   FBaseLine := Value;
-  CalcBase := (Height - Round(Height / 100 * FBaseLine));
+  UpdateCalcBase;
   UpdateDisplay(True);
+end;
+
+procedure TJvSimScope.SetBaseLineUnit(const Value: TJvScopeLineUnit);
+begin
+  if FBaseLineUnit <> Value then
+  begin
+    FBaseLineUnit := Value;
+    UpdateDisplay(True);
+  end;
 end;
 
 procedure TJvSimScope.SetInterval(Value: Integer);
@@ -369,7 +413,7 @@ begin
   if FInterval <> Value then
   begin
     FDrawTimer.Enabled := False;
-    CalcBase := (Height - Round(Height / 100 * FBaseLine));
+    UpdateCalcBase;
     FDrawTimer.Interval := Value * 10;
     FInterval := Value;
     FDrawTimer.Enabled := FActive;
@@ -378,9 +422,19 @@ end;
 
 procedure TJvSimScope.SetGridSize(Value: Integer);
 begin
-  if (FGridSize <> Value) and (Value > 0) then
+  if ((Value <> FHorizontalGridSize) or (Value <> FVerticalGridSize)) and (Value > 0) then
   begin
-    FGridSize := Value;
+    FHorizontalGridSize := Value;
+    FVerticalGridSize := Value;
+    UpdateDisplay(True);
+  end;
+end;
+
+procedure TJvSimScope.SetHorizontalGridSize(const Value: Integer);
+begin
+  if (FHorizontalGridSize <> Value) and (Value > 0) then
+  begin
+    FHorizontalGridSize := Value;
     UpdateDisplay(True);
   end;
 end;
@@ -389,7 +443,7 @@ procedure TJvSimScope.SetActive(Value: Boolean);
 begin
   if FActive <> Value then
   begin
-    CalcBase := (Height - Round(Height / 100 * BaseLine));
+    UpdateCalcBase;
     FDrawTimer.Interval := Interval * 10;
     FDrawTimer.Enabled := Value;
     FActive := Value;
@@ -429,38 +483,43 @@ begin
     Pen.Color := GridColor;
     Pen.Width := 1;
     { Draw vertical line if needed }
-    if Counter = (GridSize div 2) then
+    if FCounter = (VerticalGridSize div 2) then
     begin
       MoveTo(Width - 1, 0);
       LineTo(Width - 1, Height);
-      Counter := 0;
+      FCounter := 0;
     end;
-    Inc(Counter);
+    Inc(FCounter);
     { Horizontal lines - above BaseLine }
-    A := CalcBase;
+    A := FCalcBase;
     while A < Height do
     begin
-      Inc(A, GridSize);
+      Inc(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
       MoveTo(Width - 2, A);
       LineTo(Width, A);
     end;
     { Horizontal lines - below BaseLine }
-    A := CalcBase;
+    A := FCalcBase;
     while A > 0 do
     begin
-      Dec(A, GridSize);
+      Dec(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
       MoveTo(Width - 2, A);
       LineTo(Width, A);
     end;
     { BaseLine }
     Pen.Color := BaseColor;
-    MoveTo(Width - 2, CalcBase);
-    LineTo(Width, CalcBase);
+    MoveTo(Width - 2, FCalcBase);
+    LineTo(Width, FCalcBase);
     { Draw position for lines}
     for I := 0 to FLines.Count - 1 do
     begin
       Pen.Color := FLines[I].Color;
-      A := Height - Round(Height / 100 * FLines[I].Position);
+      case FLines[I].PositionUnit of
+        jluPercent:
+          A := Height - Round(Height * FLines[I].Position / 100);
+        jluAbsolute:
+          A := Height - Round(Height * FLines[I].Position / (Maximum - Minimum));
+      end;
       MoveTo(Width - 4, FLines[I].FOldPos);
       LineTo(Width - 2, FLines[I].FPrevPos);
       LineTo(Width - 0, A);
@@ -502,13 +561,69 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   FDrawBuffer.Height := Height;
   FDrawBuffer.Width := Width;
+  if DisplayUnits = jduPixels then
+  begin
+    FMinimum := 0;
+    FMaximum := AHeight;
+  end;
   Clear;
+end;
+
+procedure TJvSimScope.UpdateCalcBase;
+begin
+  case FBaseLineUnit of
+    jluPercent:
+      FCalcBase := (Height - Round(Height * FBaseLine / 100));
+    jluAbsolute:
+      FCalcBase := (Height - Round(Height * FBaseLine / (Maximum - Minimum)));
+  end;
+end;
+
+procedure TJvSimScope.SetDisplayUnits(const Value: TJvSimScopeDisplayUnit);
+begin
+  if FDisplayUnits <> Value then
+  begin
+    FDisplayUnits := Value;
+    if FDisplayUnits = jduPixels then
+    begin
+      FMinimum := 0;
+      FMaximum := Height;
+    end;
+    UpdateDisplay(True);
+  end;
 end;
 
 procedure TJvSimScope.SetLines(const Value: TJvScopeLines);
 begin
   FLines.Assign(Value);
   Clear;
+end;
+
+procedure TJvSimScope.SetMaximum(const Value: Integer);
+begin
+  if (DisplayUnits <> jduPixels) and (FMaximum <> Value) then
+  begin
+    FMaximum := Value;
+    UpdateDisplay(True);
+  end;
+end;
+
+procedure TJvSimScope.SetMinimum(const Value: Integer);
+begin
+  if (DisplayUnits <> jduPixels) and (FMinimum <> Value) then
+  begin
+    FMinimum := Value;
+    UpdateDisplay(True);
+  end;
+end;
+
+procedure TJvSimScope.SetVerticalGridSize(const Value: Integer);
+begin
+  if (FVerticalGridSize <> Value) and (Value > 0) then
+  begin
+    FVerticalGridSize := Value;
+    UpdateDisplay(True);
+  end;
 end;
 
 procedure TJvSimScope.UpdateDisplay(ClearFirst: Boolean);
