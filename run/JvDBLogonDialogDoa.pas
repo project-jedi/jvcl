@@ -124,7 +124,7 @@ begin
       if (E.ErrorCode = 28001) or (E.ErrorCode = 28002) or (E.ErrorCode = 28011) then
         HandleExpiredPassword(E.Message)
       else
-        JVDsaDialogs.MessageDlg(D.Message, mtError, [mbok], 0, dckScreen,
+        JVDsaDialogs.MessageDlg(E.Message, mtError, [mbok], 0, dckScreen,
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
     end;
   end;
