@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -53,20 +53,42 @@ uses
   SysUtils, Classes;
 
 type
+  TJvSimScope = class;
+
   TJvScopeLineUnit = (jluPercent, jluAbsolute);
+
+  TJvScopeLineValues = class
+  private
+    FValues: array of Integer;
+    FCount: Integer;
+    FZeroIndex: Integer;
+    
+    procedure SetCapacity(const Value: Integer);
+    function GetCapacity: Integer;
+    function GetItems(Index: Integer): Integer;
+  public
+    procedure Assign(Source: TJvScopeLineValues); 
+    procedure Add(Value: Integer);
+    procedure Clear;
+
+    property Capacity: Integer read GetCapacity write SetCapacity;
+    property Count: Integer read FCount;
+    property Items[Index: Integer]: Integer read GetItems; default;
+  end;
 
   TJvScopeLine = class(TCollectionItem)
   private
     FPosition: Integer;
-    FOldPos: Integer;
-    FPrevPos: Integer;
     FColor: TColor;
     FName: string;
     FPositionUnit: TJvScopeLineUnit;
+    FValues: TJvScopeLineValues;
   protected
     function GetDisplayName: string; override;
   public
     constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
+    
     procedure Assign(Source: TPersistent); override;
   published
     property Name: string read FName write FName;
@@ -79,8 +101,11 @@ type
   private
     function GetItem(Index: Integer): TJvScopeLine;
     procedure SetItem(Index: Integer; const Value: TJvScopeLine);
+  protected
+    function GetOwner: TJvSimScope; reintroduce;
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
-    constructor Create(AOwner: TPersistent);
+    constructor Create(AOwner: TJvSimScope);
     procedure Assign(Source: TPersistent); override;
 
     function Add: TJvScopeLine;
@@ -108,6 +133,8 @@ type
     FMaximum: Integer;
     FMinimum: Integer;
     FBaseLineUnit: TJvScopeLineUnit;
+    FTotalTimeSteps: Integer;
+    FUpdateTimeSteps: Integer;
     
     procedure SetActive(Value: Boolean);
     procedure SetGridSize(Value: Integer);
@@ -121,16 +148,21 @@ type
     procedure SetDisplayUnits(const Value: TJvSimScopeDisplayUnit);
     procedure SetMaximum(const Value: Integer);
     procedure SetMinimum(const Value: Integer);
-    procedure UpdateCalcBase;
+    procedure UpdateComputedValues;
     procedure SetBaseLineUnit(const Value: TJvScopeLineUnit);
+    procedure SetTotalTimeSteps(const Value: Integer);
+    procedure SetUpdateTimeSteps(const Value: Integer);
   protected
     FCalcBase: Integer;
-    FCounter: Integer;
-    procedure UpdateScope(Sender: TObject);
+    FStepPixelWidth: Double;
+    FCounter: Double;
+    procedure DrawTimerTimer(Sender: TObject);
+    function GetLinePixelPosition(Line: TJvScopeLine; Position: Integer): Integer;
     procedure Loaded; override;
   public
     procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
+    procedure UpdateScope;
     destructor Destroy; override;
     procedure Clear;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -149,6 +181,8 @@ type
     property Lines: TJvScopeLines read FLines write SetLines;
     property Minimum: Integer read FMinimum write SetMinimum;
     property Maximum: Integer read FMaximum write SetMaximum default 120;
+    property TotalTimeSteps: Integer read FTotalTimeSteps write SetTotalTimeSteps default 208;
+    property UpdateTimeSteps: Integer read FUpdateTimeSteps write SetUpdateTimeSteps default 2;
     property VerticalGridSize: Integer read FVerticalGridSize write SetVerticalGridSize default 16;
     property Width default 208;
 
@@ -197,14 +231,81 @@ const
 
 implementation
 
+uses
+  Math;
+
+//=== { TJvScopeLineValues } =================================================
+
+procedure TJvScopeLineValues.Add(Value: Integer);
+begin
+  if Count < Capacity then
+  begin
+    FValues[FCount] := Value;
+    Inc(FCount);
+  end
+  else
+  begin
+    FValues[FZeroIndex] := Value;
+    FZeroIndex := (FZeroIndex + 1) mod FCount;
+  end;
+end;
+
+procedure TJvScopeLineValues.Assign(Source: TJvScopeLineValues);
+var
+  I: Integer;
+begin
+  FCount := Source.FCount;
+  FZeroIndex := Source.FZeroIndex;
+  Capacity := Source.Capacity;
+  for I := 0 to Source.Capacity - 1 do
+    FValues[I] := Source.FValues[I];
+end;
+
+procedure TJvScopeLineValues.Clear;
+begin
+  FCount := 0;
+  FZeroIndex := 0;
+end;
+
+function TJvScopeLineValues.GetCapacity: Integer;
+begin
+  if Assigned(FValues) then
+    Result := Length(FValues)
+  else
+    Result := 0;
+end;
+
+function TJvScopeLineValues.GetItems(Index: Integer): Integer;
+begin
+  Result := FValues[(Index + FZeroIndex) mod FCount];
+end;
+
+procedure TJvScopeLineValues.SetCapacity(const Value: Integer);
+begin
+  if Value <> Capacity then
+  begin
+    SetLength(FValues, Value);
+  end;
+end;
 
 //=== { TJvScopeLine } =======================================================
 
 constructor TJvScopeLine.Create(Collection: TCollection);
 begin
+  // MUST be created befor, inherited create will call Notify...
+  FValues := TJvScopeLineValues.Create;
+
   inherited Create(Collection);
+
   FPosition := 50;
   FColor := clLime;
+end;
+
+destructor TJvScopeLine.Destroy;
+begin
+  FValues.Free;
+
+  inherited Destroy;
 end;
 
 procedure TJvScopeLine.Assign(Source: TPersistent);
@@ -214,6 +315,7 @@ begin
     Name := TJvScopeLine(Source).Name;
     Color := TJvScopeLine(Source).Color;
     Position := TJvScopeLine(Source).Position;
+    FValues.Assign(TJvScopeLine(Source).FValues);
   end
   else
     inherited Assign(Source);
@@ -229,7 +331,7 @@ end;
 
 //=== { TJvScopeLines } ======================================================
 
-constructor TJvScopeLines.Create(AOwner: TPersistent);
+constructor TJvScopeLines.Create(AOwner: TJvSimScope);
 begin
   inherited Create(AOwner, TJvScopeLine);
 end;
@@ -258,6 +360,11 @@ begin
   Result := TJvScopeLine(inherited Items[Index]);
 end;
 
+function TJvScopeLines.GetOwner: TJvSimScope;
+begin
+  Result := inherited GetOwner as TJvSimScope;
+end;
+
 function TJvScopeLines.IndexOfName(const AName: string): Integer;
 var
   I: Integer;
@@ -269,6 +376,17 @@ begin
       Result := I;
       Break;
     end;
+end;
+
+procedure TJvScopeLines.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+begin
+  inherited Notify(Item, Action);
+
+  if Action = cnAdded then
+  begin
+    TJvScopeLine(Item).FValues.Capacity := GetOwner.TotalTimeSteps;
+  end;
 end;
 
 procedure TJvScopeLines.SetItem(Index: Integer; const Value: TJvScopeLine);
@@ -289,10 +407,11 @@ begin
 
   FDrawTimer := TTimer.Create(Self);
   FDrawTimer.Enabled := False;
-  FDrawTimer.OnTimer := UpdateScope;
+  FDrawTimer.OnTimer := DrawTimerTimer;
   FDrawTimer.Interval := 500;
 
   FDisplayUnits := jduPixels;
+  FUpdateTimeSteps := 2;
 
   Height := 120;
   Width := 208;
@@ -319,11 +438,28 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvSimScope.DrawTimerTimer(Sender: TObject);
+begin
+  UpdateScope;
+end;
+
 function TJvSimScope.GetGridSize: Integer;
 begin
   Result := -1;
   if HorizontalGridSize = VerticalGridSize then
     Result := HorizontalGridSize;
+end;
+
+function TJvSimScope.GetLinePixelPosition(Line: TJvScopeLine;
+  Position: Integer): Integer;
+begin
+  Result := 0;
+  case Line.PositionUnit of
+    jluPercent:
+      Result := Round(Height * (1  - Position / 100));
+    jluAbsolute:
+      Result := Round(Height * ( 1 - Position / (Maximum - Minimum)));
+  end;
 end;
 
 procedure TJvSimScope.Loaded;
@@ -334,11 +470,14 @@ end;
 
 procedure TJvSimScope.Clear;
 var
-  A, I: Integer;
+  A: Double;
+  I: Integer;
+  J: Integer;
+  Position: Double;
 begin
   if not FAllowed then
     Exit;
-  UpdateCalcBase;
+  UpdateComputedValues;
   with FDrawBuffer.Canvas do
   begin
     Brush.Color := Color;
@@ -351,43 +490,58 @@ begin
     A := Width;
     while A > 0 do
     begin
-      MoveTo(A - 1, 0);
-      LineTo(A - 1, Height);
-      Dec(A, VerticalGridSize);
-    end;
-    { Horizontal lines - above BaseLine }
-    A := FCalcBase;
-    while A < Height do
-    begin
-      Inc(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
-      MoveTo(0, A);
-      LineTo(Width, A);
+      MoveTo(Round(A - 1), 0);
+      LineTo(Round(A - 1), Height);
+      A := A - VerticalGridSize * FStepPixelWidth;
     end;
     { Horizontal lines - below BaseLine }
     A := FCalcBase;
+    while A < Height do
+    begin
+      A := A + HorizontalGridSize * Height / (Maximum - Minimum);
+      MoveTo(0, Round(A));
+      LineTo(Width, Round(A));
+    end;
+    { Horizontal lines - above BaseLine }
+    A := FCalcBase;
     while A > 0 do
     begin
-      Dec(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
-      MoveTo(0, A);
-      LineTo(Width, A);
+      A := A - HorizontalGridSize * Height / (Maximum - Minimum);
+      MoveTo(0, Round(A));
+      LineTo(Width, Round(A));
     end;
     { BaseLine }
     Pen.Color := BaseColor;
     MoveTo(0, FCalcBase);
     LineTo(Width, FCalcBase);
 
-    { Start new position-line on BaseLine... }
+    // Redraw old values to keep history of values
     for I := 0 to FLines.Count - 1 do
     begin
-      FLines[I].FOldPos := FCalcBase;
-      FLines[I].FPrevPos := FCalcBase;
+      Pen.Color := FLines[I].Color;
+
+      if FLines[I].FValues.Count > 0 then
+      begin
+        Position := (TotalTimeSteps - FLines[I].FValues.Count) * FStepPixelWidth;
+
+        MoveTo(Round(Position), GetLinePixelPosition(FLines[I], FLines[I].FValues[0]));
+        J := UpdateTimeSteps - 1;
+        while J < FLines[I].FValues.Count - 1 do
+        begin
+          Position := Position + UpdateTimeSteps * FStepPixelWidth;
+          LineTo(Round(Position), GetLinePixelPosition(FLines[I], FLines[I].FValues[J]));
+          Inc(J, UpdateTimeSteps);
+        end;
+
+      end
+      else
+      begin
+        FLines[I].FValues.Clear;
+        FLines[I].FValues.Add(0);
+        FLines[I].FValues.Add(0);
+      end;
     end;
-    {
-    // Draws a line from 0,BaseLine to width, new pos
-    Pen.Color:=FLineColor;
-    MoveTo(0,Height);
-    LineTo(Width,Height-Round(Height/100*position));
-    }
+
     FCounter := 1;
   end;
 end;
@@ -395,7 +549,7 @@ end;
 procedure TJvSimScope.SetBaseLine(Value: Integer);
 begin
   FBaseLine := Value;
-  UpdateCalcBase;
+  UpdateComputedValues;
   UpdateDisplay(True);
 end;
 
@@ -413,7 +567,7 @@ begin
   if FInterval <> Value then
   begin
     FDrawTimer.Enabled := False;
-    UpdateCalcBase;
+    UpdateComputedValues;
     FDrawTimer.Interval := Value * 10;
     FInterval := Value;
     FDrawTimer.Enabled := FActive;
@@ -443,7 +597,7 @@ procedure TJvSimScope.SetActive(Value: Boolean);
 begin
   if FActive <> Value then
   begin
-    UpdateCalcBase;
+    UpdateComputedValues;
     FDrawTimer.Interval := Interval * 10;
     FDrawTimer.Enabled := Value;
     FActive := Value;
@@ -454,22 +608,29 @@ end;
   proceedings and eliminate flicker. The Paint procedure merely
   copies the contents of the FDrawBuffer. }
 
-procedure TJvSimScope.UpdateScope(Sender: TObject);
+procedure TJvSimScope.UpdateScope;
 var
-  A, I: Integer;
+  A: Double;
+  I: Integer;
   Dest, Src: TRect;
+  UpdateWidth: Integer;
+  J: Integer;
+  PosMinusOne: Double;
+  PosMinusTwo: Double;
 begin
   with FDrawBuffer.Canvas do
   begin
     Pen.Color := FGridColor;
 
+    UpdateWidth := Round(UpdateTimeSteps * FStepPixelWidth);
+
     Dest.Top := 0;
     Dest.Left := 0;
-    Dest.Right := Width - 2;
+    Dest.Right := Round(Width - UpdateWidth);
     Dest.Bottom := Height;
 
     Src.Top := 0;
-    Src.Left := 2;
+    Src.Left := Round(UpdateTimeSteps * FStepPixelWidth);
     Src.Right := Width;
     Src.Bottom := Height;
     { Copy bitmap leftwards }
@@ -477,54 +638,62 @@ begin
 
     { Draw new area }
     Pen.Color := Color;
-    Pen.Width := 2;
-    MoveTo(Width - 1, 0);
-    LineTo(Width - 1, Height);
+    Brush.Color := Color;
+    BRush.Style := bsSolid;
+    Dest.Top := 0;
+    Dest.Left := Width - UpdateWidth;
+    Dest.Right := Width;
+    Dest.Bottom := Height;
+    FilLRect(Dest);
+(*    Pen.Width := UpdateWidth;
+    MoveTo(Width - Round(UpdateWidth / 2), 0);
+    LineTo(Width - Round(UpdateWidth / 2), Height);   *)
+
+    
     Pen.Color := GridColor;
     Pen.Width := 1;
     { Draw vertical line if needed }
-    if FCounter = (VerticalGridSize div 2) then
+    if FCounter >= Round(VerticalGridSize * FStepPixelWidth / UpdateWidth) then
     begin
       MoveTo(Width - 1, 0);
       LineTo(Width - 1, Height);
       FCounter := 0;
     end;
-    Inc(FCounter);
-    { Horizontal lines - above BaseLine }
+    FCounter := FCounter + 1;
+    { Horizontal lines - below BaseLine }
     A := FCalcBase;
     while A < Height do
     begin
-      Inc(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
-      MoveTo(Width - 2, A);
-      LineTo(Width, A);
+      A := A + HorizontalGridSize * Height / (Maximum - Minimum);
+      MoveTo(Width - UpdateWidth, Round(A));
+      LineTo(Width, Round(A));
     end;
-    { Horizontal lines - below BaseLine }
+    { Horizontal lines - above BaseLine }
     A := FCalcBase;
     while A > 0 do
     begin
-      Dec(A, Round(HorizontalGridSize * Height / (Maximum - Minimum)));
-      MoveTo(Width - 2, A);
-      LineTo(Width, A);
+      A := A - HorizontalGridSize * Height / (Maximum - Minimum);
+      MoveTo(Width - UpdateWidth, Round(A));
+      LineTo(Width, Round(A));
     end;
     { BaseLine }
     Pen.Color := BaseColor;
-    MoveTo(Width - 2, FCalcBase);
+    MoveTo(Width - UpdateWidth, FCalcBase);
     LineTo(Width, FCalcBase);
     { Draw position for lines}
     for I := 0 to FLines.Count - 1 do
     begin
       Pen.Color := FLines[I].Color;
-      case FLines[I].PositionUnit of
-        jluPercent:
-          A := Height - Round(Height * FLines[I].Position / 100);
-        jluAbsolute:
-          A := Height - Round(Height * FLines[I].Position / (Maximum - Minimum));
-      end;
-      MoveTo(Width - 4, FLines[I].FOldPos);
-      LineTo(Width - 2, FLines[I].FPrevPos);
-      LineTo(Width - 0, A);
-      FLines[I].FOldPos := FLines[I].FPrevPos;
-      FLines[I].FPrevPos := A;
+
+      A := GetLinePixelPosition(FLines[I], FLines[I].Position);
+      PosMinusOne := GetLinePixelPosition(FLines[I], FLines[I].FValues[FLines[I].FValues.Count - 1 * UpdateTimeSteps]);
+      PosMinusTwo := GetLinePixelPosition(FLines[I], FLines[I].FValues[FLines[I].FValues.Count - 2 * UpdateTimeSteps]);
+      
+      MoveTo(Width - UpdateWidth * 2, Round(PosMinusTwo));
+      LineTo(Width - UpdateWidth, Round(PosMinusOne));
+      LineTo(Width - 0, Round(A));
+      for J := 0 to UpdateTimeSteps - 1 do
+        FLines[I].FValues.Add(FLines[I].Position);
     end;
   end;
   Repaint;
@@ -565,18 +734,26 @@ begin
   begin
     FMinimum := 0;
     FMaximum := AHeight;
+    FTotalTimeSteps := AWidth;
   end;
   Clear;
 end;
 
-procedure TJvSimScope.UpdateCalcBase;
+procedure TJvSimScope.UpdateComputedValues;
 begin
   case FBaseLineUnit of
     jluPercent:
-      FCalcBase := (Height - Round(Height * FBaseLine / 100));
+      begin
+        FCalcBase := (Height - Round(Height * FBaseLine / 100));
+      end;
     jluAbsolute:
-      FCalcBase := (Height - Round(Height * FBaseLine / (Maximum - Minimum)));
+      begin
+        FCalcBase := (Height - Round(Height * FBaseLine / (Maximum - Minimum)));
+      end;
   end;
+  FStepPixelWidth := Width / TotalTimeSteps;
+  if FUpdateTimeSteps * FStepPixelWidth < 2 then
+    UpdateTimeSteps := 2;
 end;
 
 procedure TJvSimScope.SetDisplayUnits(const Value: TJvSimScopeDisplayUnit);
@@ -601,7 +778,7 @@ end;
 
 procedure TJvSimScope.SetMaximum(const Value: Integer);
 begin
-  if (DisplayUnits <> jduPixels) and (FMaximum <> Value) then
+  if (FDisplayUnits <> jduPixels) and (FMaximum <> Value) then
   begin
     FMaximum := Value;
     UpdateDisplay(True);
@@ -610,10 +787,27 @@ end;
 
 procedure TJvSimScope.SetMinimum(const Value: Integer);
 begin
-  if (DisplayUnits <> jduPixels) and (FMinimum <> Value) then
+  if (FDisplayUnits <> jduPixels) and (FMinimum <> Value) then
   begin
     FMinimum := Value;
     UpdateDisplay(True);
+  end;
+end;
+
+procedure TJvSimScope.SetTotalTimeSteps(const Value: Integer);
+begin
+  if (FDisplayUnits <> jduPixels) and (FTotalTimeSteps <> Value) then
+  begin
+    FTotalTimeSteps := Value;
+    UpdateDisplay(True);
+  end;
+end;
+
+procedure TJvSimScope.SetUpdateTimeSteps(const Value: Integer);
+begin
+  if (FUpdateTimeSteps <> Value) and (FUpdateTimeSteps > 0) then
+  begin
+    FUpdateTimeSteps := Value;
   end;
 end;
 
