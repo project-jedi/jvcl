@@ -103,7 +103,11 @@ type
     procedure SetItem(Index: Integer; const Value: TJvScopeLine);
   protected
     function GetOwner: TJvSimScope; reintroduce;
+    {$IFDEF COMPILER6_UP}
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
+    {$ELSE}
+    procedure Added(var Item: TCollectionItem); override;
+    {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TJvSimScope);
     procedure Assign(Source: TPersistent); override;
@@ -292,7 +296,7 @@ end;
 
 constructor TJvScopeLine.Create(Collection: TCollection);
 begin
-  // MUST be created befor, inherited create will call Notify...
+  // MUST be created before, inherited create will call Notify...
   FValues := TJvScopeLineValues.Create;
 
   inherited Create(Collection);
@@ -378,6 +382,7 @@ begin
     end;
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvScopeLines.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
 begin
@@ -388,6 +393,12 @@ begin
     TJvScopeLine(Item).FValues.Capacity := GetOwner.TotalTimeSteps;
   end;
 end;
+{$ELSE}
+procedure TJvScopeLines.Added(var Item: TCollectionItem); override;
+begin
+  TJvScopeLine(Item).FValues.Capacity := GetOwner.TotalTimeSteps;
+end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvScopeLines.SetItem(Index: Integer; const Value: TJvScopeLine);
 begin
