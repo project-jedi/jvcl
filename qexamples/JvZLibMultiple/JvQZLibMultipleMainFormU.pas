@@ -29,9 +29,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvQZLibMultipleMainFormU;
+
+{$I jvcl.inc}
 
 interface
 

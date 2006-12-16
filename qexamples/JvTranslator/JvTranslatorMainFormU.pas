@@ -29,9 +29,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvTranslatorMainFormU;
+
+{$I jvcl.inc}
 
 interface
 

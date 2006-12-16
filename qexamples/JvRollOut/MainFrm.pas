@@ -3,8 +3,9 @@
 {*           Manual modifications will be lost on next release.               *}
 {******************************************************************************}
 
-{$I jvcl.inc}
 unit MainFrm;
+
+{$I jvcl.inc}
 
 interface
 
