@@ -24,9 +24,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
-
 program JvAppInstDemo;
+
+{$I jvcl.inc}
 
 uses
   Forms,

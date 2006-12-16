@@ -1,6 +1,6 @@
 program JvEdits;
 
-{$I 'jvcl.inc'}
+{$I jvcl.inc}
 
 uses
   {$IFDEF VCL}
