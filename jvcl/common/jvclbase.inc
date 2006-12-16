@@ -131,7 +131,7 @@ For further informations have a look at http://www.indyproject.org }
 For further informations have a look at http://www.overbyte.be/ 
 ATTENTION : 
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
-ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
+ICS* PACKAGE FROM AUTOMATIC COMPILE TO MANUAL COMPILE }
 {.$DEFINE USE_3RDPARTY_ICS}
 
 { Activates Direct Oracle Access Components
