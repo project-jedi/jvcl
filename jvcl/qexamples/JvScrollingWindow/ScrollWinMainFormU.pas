@@ -29,9 +29,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit ScrollWinMainFormU;
+
+{$I jvcl.inc}
 
 interface
 

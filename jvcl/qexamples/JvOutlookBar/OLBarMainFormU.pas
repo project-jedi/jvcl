@@ -29,9 +29,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit OLBarMainFormU;
+
+{$I jvcl.inc}
 
 interface
 
