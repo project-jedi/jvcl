@@ -29,9 +29,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
-
 program clxgettextResStr;
+
+{$I jvcl.inc}
 
 uses
   QForms,
