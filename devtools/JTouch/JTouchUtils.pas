@@ -1,5 +1,6 @@
-{$I jvcl.inc}
 unit JTouchUtils;
+
+{$I jvcl.inc}
 
 interface
 

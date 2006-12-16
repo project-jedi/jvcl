@@ -29,10 +29,12 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit Main;
+
 {$I jvcl.inc}
 
-unit Main;
 interface
+
 uses
   QWindows, QMessages, SysUtils, Variants, Classes, Types, QGraphics, QControls, QForms,
   QDialogs, QStdCtrls, QComCtrls, Parser, QFileCtrls;

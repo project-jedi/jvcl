@@ -1,8 +1,9 @@
-{$I jvcl.inc}
-
 unit JTools;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Classes, SysUtils;
 
