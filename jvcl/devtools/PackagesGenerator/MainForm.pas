@@ -1,5 +1,6 @@
-{$I jvcl.inc}
 unit MainForm;
+
+{$I jvcl.inc}
 
 interface    
 

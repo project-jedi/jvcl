@@ -24,10 +24,12 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit Main;
+
 {$I jvcl.inc}
 
-unit Main;
 interface
+
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, Parser, FileCtrl;

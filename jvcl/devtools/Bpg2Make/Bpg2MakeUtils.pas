@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit Bpg2MakeUtils;
+
+{$I jvcl.inc}
 
 interface
 

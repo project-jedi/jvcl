@@ -1,5 +1,6 @@
-{$I jvcl.inc}
 unit crlfutils;
+
+{$I jvcl.inc}
 
 interface
 

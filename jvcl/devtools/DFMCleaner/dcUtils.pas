@@ -1,6 +1,6 @@
-{$I jvcl.inc}
-
 unit dcUtils;
+
+{$I jvcl.inc}
 
 interface
 

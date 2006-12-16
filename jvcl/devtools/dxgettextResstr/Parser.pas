@@ -24,10 +24,12 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit Parser;
+
 {$I jvcl.inc}
 
-unit Parser;
 interface
+
 uses
   SysUtils, Classes, Contnrs, dpp_PascalParser, Dialogs;
 
