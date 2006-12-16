@@ -23,8 +23,10 @@
  rights and limitations under the License.
 
 ******************************************************************}
-{$I jvcl.inc}
+
 unit MessengerMainFormU;
+
+{$I jvcl.inc}
 
 interface
 

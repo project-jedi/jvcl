@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit TipOfDayMainFormU;
+
+{$I jvcl.inc}
 
 interface
 

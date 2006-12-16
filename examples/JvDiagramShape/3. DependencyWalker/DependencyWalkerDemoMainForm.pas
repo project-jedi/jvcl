@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit DependencyWalkerDemoMainForm;
+
+{$I jvcl.inc}
 
 interface
 

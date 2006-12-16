@@ -14,7 +14,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 unit MainForm;
+
 {$I jvcl.inc}
+
 interface
 
 uses

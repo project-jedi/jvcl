@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvCharStrEditor;
+
+{$I jvcl.inc}
 
 interface
 

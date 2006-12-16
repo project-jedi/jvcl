@@ -1,5 +1,6 @@
-{$I jvcl.inc}
 unit MainFrm;
+
+{$I jvcl.inc}
 
 interface
 

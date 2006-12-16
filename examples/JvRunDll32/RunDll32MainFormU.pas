@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit RunDll32MainFormU;
+
+{$I jvcl.inc}
 
 interface
 

@@ -33,6 +33,8 @@
 {                                                       }
 {*******************************************************}
 
+unit ChildWin2;
+
 {$I jvcl.inc}
 
 {$IFNDEF COMPILER3_UP}
@@ -50,8 +52,6 @@
 {$IFDEF COMPILER4_UP}
   {$UNDEF USE_QR2}
 {$ENDIF}
-
-unit ChildWin2;
 
 interface
 

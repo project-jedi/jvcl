@@ -14,7 +14,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 unit DefineWindowLayoutUnit;
+
 {$I jvcl.inc}
+
 interface
 
 uses
