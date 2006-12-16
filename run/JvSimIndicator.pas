@@ -44,17 +44,17 @@ type
     FMinimum: Integer;
     FBarColor: TColor;
     FBackColor: TColor;
-    {$IFNDEF COMPILER7_UP}
+    {$IFNDEF COMPILER10_UP}
     FMargins: TJvRect;
-    {$ENDIF !COMPILER7_UP}
+    {$ENDIF !COMPILER10_UP}
     procedure SetBarColor(const Value: TColor);
     procedure SetMaximum(const Value: Integer);
     procedure SetMinimum(const Value: Integer);
     procedure SetValue(const Value: Integer);
     procedure SetBackColor(const Value: TColor);
-    {$IFNDEF COMPILER7_UP}
+    {$IFNDEF COMPILER10_UP}
     procedure SetMargins(const Value: TJvRect);
-    {$ENDIF !COMPILER7_UP}
+    {$ENDIF !COMPILER10_UP}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,10 +67,9 @@ type
     property BackColor: TColor read FBackColor write SetBackColor default clSilver;
     property Width default 25;
     property Height default 100;
-    {$IFNDEF COMPILER7_UP}
+    {$IFNDEF COMPILER10_UP}
     property Margins: TJvRect read FMargins write SetMargins;
-    {$ENDIF !COMPILER7_UP}
-    
+    {$ENDIF !COMPILER10_UP}
 
     property Align;
     property Anchors;
@@ -128,16 +127,16 @@ begin
   FBarColor := clLime;
   FBackColor := clSilver;
 
-  {$IFNDEF COMPILER7_UP}
+  {$IFNDEF COMPILER10_UP}
   FMargins := TJvRect.Create;
-  {$ENDIF !COMPILER7_UP}
+  {$ENDIF !COMPILER10_UP}
 end;
 
 destructor TJvSimIndicator.Destroy;
 begin
-  {$IFNDEF COMPILER7_UP}
+  {$IFNDEF COMPILER10_UP}
   FMargins.Free;
-  {$ENDIF !COMPILER7_UP}
+  {$ENDIF !COMPILER10_UP}
   
   inherited Destroy;
 end;
@@ -223,13 +222,13 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER7_UP}
+{$IFNDEF COMPILER10_UP}
 procedure TJvSimIndicator.SetMargins(const Value: TJvRect);
 begin
   FMargins.Assign(Value);
   Invalidate;
 end;
-{$ENDIF !COMPILER7_UP}
+{$ENDIF !COMPILER10_UP}
 
 {$IFDEF UNITVERSIONING}
 initialization
