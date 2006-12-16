@@ -41,16 +41,19 @@ Known Issues:
 
 unit JvSimScope;
 
-interface
-
 {$I jvcl.inc}
+
+interface
 
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
-  SysUtils, Classes;
+  Windows, Messages, SysUtils, Classes,
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
+  Graphics, Controls, Forms, ExtCtrls;
 
 type
   TJvSimScope = class;
@@ -86,7 +89,7 @@ type
   protected
     function GetDisplayName: string; override;
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     
     procedure Assign(Source: TPersistent); override;
@@ -103,11 +106,7 @@ type
     procedure SetItem(Index: Integer; const Value: TJvScopeLine);
   protected
     function GetOwner: TJvSimScope; reintroduce;
-    {$IFDEF COMPILER6_UP}
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
-    {$ELSE}
-    procedure Added(var Item: TCollectionItem); override;
-    {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TJvSimScope);
     procedure Assign(Source: TPersistent); override;
@@ -294,7 +293,7 @@ end;
 
 //=== { TJvScopeLine } =======================================================
 
-constructor TJvScopeLine.Create(Collection: TCollection);
+constructor TJvScopeLine.Create(Collection: Classes.TCollection);
 begin
   // MUST be created before, inherited create will call Notify...
   FValues := TJvScopeLineValues.Create;
@@ -382,7 +381,6 @@ begin
     end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvScopeLines.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
 begin
@@ -393,12 +391,6 @@ begin
     TJvScopeLine(Item).FValues.Capacity := GetOwner.TotalTimeSteps;
   end;
 end;
-{$ELSE}
-procedure TJvScopeLines.Added(var Item: TCollectionItem); override;
-begin
-  TJvScopeLine(Item).FValues.Capacity := GetOwner.TotalTimeSteps;
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvScopeLines.SetItem(Index: Integer; const Value: TJvScopeLine);
 begin
