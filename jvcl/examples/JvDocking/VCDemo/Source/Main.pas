@@ -13,8 +13,11 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I jvcl.inc}
+
 unit Main;
+
+{$I jvcl.inc}
+
 {$IFNDEF USEJVCL}
 Sorry, this demo requires the JVCL!
 {$ENDIF}

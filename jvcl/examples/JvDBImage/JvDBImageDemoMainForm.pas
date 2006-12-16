@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvDBImageDemoMainForm;
+
+{$I jvcl.inc}
 
 interface
 

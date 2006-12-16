@@ -24,11 +24,11 @@
 
 ******************************************************************}
 
+unit fMain;
+
 {$I jvcl.inc}
 
 //!!! (p3) NB! All storage commented out using //!!!
-
-unit fMain;
 
 interface
 

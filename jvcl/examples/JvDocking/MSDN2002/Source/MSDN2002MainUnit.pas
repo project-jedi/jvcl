@@ -14,9 +14,10 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 unit MSDN2002MainUnit;
+
 {$I jvcl.inc}
+
 interface
 
 uses

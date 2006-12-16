@@ -22,11 +22,12 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvSurveyUtils;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   JvSurveyIntf, JvComputerInfoEx;
 

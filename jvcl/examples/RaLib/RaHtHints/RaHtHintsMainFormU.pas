@@ -24,10 +24,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit RaHtHintsMainFormU;
 
 {$I jvcl.inc}
-
-unit RaHtHintsMainFormU;
 
 interface
      

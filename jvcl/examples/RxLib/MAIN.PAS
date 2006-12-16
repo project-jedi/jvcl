@@ -26,9 +26,9 @@
 
 unit Main;
 
-interface
-
 {$I jvcl.inc}
+
+interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,

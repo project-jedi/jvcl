@@ -25,6 +25,7 @@
 ******************************************************************}
 
 unit database;
+
 {$I jvcl.inc}
 {$IFDEF COMPILER7_UP}
 {$WARN SYMBOL_PLATFORM OFF}

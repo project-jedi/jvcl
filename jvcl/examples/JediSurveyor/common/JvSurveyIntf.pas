@@ -22,9 +22,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvSurveyIntf;
+
+{$I jvcl.inc}
 
 interface
 

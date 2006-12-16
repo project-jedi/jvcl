@@ -28,10 +28,9 @@ description : resource identifers,
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit fJvDBTree;
 
 {$I jvcl.inc}
-
-unit fJvDBTree;
 
 interface
 

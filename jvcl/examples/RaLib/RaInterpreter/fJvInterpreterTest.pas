@@ -24,13 +24,11 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit fJvInterpreterTest;
 
 {$I jvcl.inc}
 
-unit fJvInterpreterTest;
-
 interface
-
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,

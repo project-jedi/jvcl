@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvSystemPopup2MainFormU;
+
+{$I jvcl.inc}
 
 interface
 

@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvErrorIndicatorMainDemoForm;
+
+{$I jvcl.inc}
 
 interface
 

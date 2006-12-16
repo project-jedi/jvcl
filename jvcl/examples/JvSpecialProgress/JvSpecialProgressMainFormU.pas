@@ -24,9 +24,9 @@
 
 ******************************************************************}
 
-{$I jvcl.inc}
-
 unit JvSpecialProgressMainFormU;
+
+{$I jvcl.inc}
 
 interface
 

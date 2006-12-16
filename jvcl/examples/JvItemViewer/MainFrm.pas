@@ -26,9 +26,9 @@
 
 unit MainFrm;
 
-interface
-
 {$I jvcl.inc}
+
+interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
