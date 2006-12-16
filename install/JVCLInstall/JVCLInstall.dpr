@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 program JVCLInstall;
+
+{$I jvcl.inc}
 
 uses
   //FastMM4,
