@@ -80,7 +80,9 @@ type
     sncRefresh);
 
   TJvTFScheduleManager = class;
+  {$M+}
   TJvTFSched = class;
+  {$M-}
   TJvTFAppt = class;
   TJvTFComponent = class;
   TJvTFControl = class;
@@ -320,6 +322,7 @@ type
     property Glyph: TPicture read FGlyph write SetGlyph;
   end;
 
+  {$M+}
   TJvTFSched = class(TObject)
   private
     FAppts: TStringList;
@@ -403,6 +406,7 @@ type
     property Data: Integer read FData write FData;
     property Persistent: Boolean read FPersistent write FPersistent;
   end;
+  {$M-}
 
   TJvTFScheduleManagerCacheType = (ctNone, ctTimed, ctBuffer);
   TJvTFScheduleManagerCache = class(TPersistent)
