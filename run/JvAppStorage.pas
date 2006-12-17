@@ -2081,6 +2081,7 @@ begin
     List.BeginUpdate;
     if ClearFirst then
       List.Clear;
+    ReadPersistent(Path,List,True,False);
     Result := ReadList(Path, List, ReadCollectionItem, ItemName);
   finally
     List.EndUpdate;
@@ -2091,6 +2092,7 @@ procedure TJvCustomAppStorage.WriteCollection(const Path: string;
   List: TCollection; const ItemName: string = cItem);
 begin
   WriteList(Path, List, List.Count, WriteCollectionItem, DeleteCollectionItem, ItemName);
+  WritePersistent(Path,List);
 end;
 
 function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrings;
@@ -2104,6 +2106,7 @@ begin
     try
       if ClearFirst then
         SL.Clear;
+      ReadPersistent(Path,SL,True,False);
       Result := ReadList(Path, SL, ReadStringListItem, ItemName);
     finally
       SL.EndUpdate;
@@ -2115,6 +2118,7 @@ procedure TJvCustomAppStorage.WriteStringList(const Path: string;
   const SL: TStrings; const ItemName: string = cItem);
 begin
   WriteList(Path, SL, SL.Count, WriteStringListItem, DeleteStringListItem, ItemName);
+  WritePersistent(Path,SL);
 end;
 
 function TJvCustomAppStorage.ReadStringObjectList(const Path: string; const SL: TStrings;
@@ -2140,6 +2144,7 @@ begin
       Delete(TargetPath, Length(TargetPath) - 1, 2);
       if ClearFirst then
         SL.Clear;
+      ReadPersistent(Path,SL,True,False);
       Result := TargetStore.ReadList(TargetPath, SL, TargetStore.ReadStringObjectListItem, ItemName);
     finally
       SL.EndUpdate;
@@ -2157,6 +2162,7 @@ begin
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, SL, SL.Count,
     TargetStore.WriteStringObjectListItem, TargetStore.DeleteStringObjectListItem, ItemName);
+  WritePersistent(Path,SL);
 end;
 
 procedure TJvCustomAppStorage.ReadEnumerationInt(const Path: string;
