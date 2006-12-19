@@ -201,6 +201,7 @@ type
     procedure SetDynControlEngine(const Value: TJvDynControlEngine);
   protected
     procedure FillDialogData;
+    procedure InitializeFormContents; override;
     procedure UpdateFormContents; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -302,6 +303,7 @@ type
     procedure ExecuteThreadSynchronize(Method: TThreadMethod);
     procedure HandleAfterOpenRefreshThread;
     procedure HandleBeforeOpenRefresh;
+    procedure InitOperation;
     procedure IntAfterThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
     procedure IntBeforeThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
     procedure IntSynchAfterOpen;
@@ -318,7 +320,8 @@ type
     property IThreadedDatasetInterface: IJvThreadedDatasetInterface read FIThreadedDatasetInterface;
     property ThreadDialog: TJvDatasetThreadDialog read FThreadDialog;
   public
-    constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce; virtual;
+    constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce;
+        virtual;
     destructor Destroy; override;
     procedure AfterOpen;
     procedure AfterRefresh;
@@ -499,7 +502,8 @@ procedure TJvDatasetThreadDialogForm.FillDialogData;
 var
   ITmpControl: IJvDynControl;
 begin
-  if Assigned(ConnectedDatasetHandler) then
+  if Assigned(ConnectedDatasetHandler)
+     and (ConnectedDatasetHandler.CurrentOpenDuration > 0) then
   with ConnectedDatasetHandler do
     begin
       if DialogOptions.Caption <> '' then
@@ -510,8 +514,8 @@ begin
         ITmpControl.ControlSetCaption(IntToStr(CurrentRow));
       if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
         ITmpControl.ControlSetCaption(
-          FormatDateTime('hh:nn:ss', CurrentOpenDuration) + ' / ' +
-            FormatDateTime('hh:nn:ss', CurrentFetchDuration));
+          FormatDateTime('hh:nn:ss.zzz', CurrentOpenDuration) + ' / ' +
+            FormatDateTime('hh:nn:ss.zzz', CurrentFetchDuration));
     end
   else
   begin
@@ -549,6 +553,12 @@ end;
 function TJvDatasetThreadDialogForm.GetDialogOptions: TJvThreadedDatasetDialogOptions;
 begin
   Result := FDialogOptions;
+end;
+
+procedure TJvDatasetThreadDialogForm.InitializeFormContents;
+begin
+  if Assigned(ConnectedDatasetHandler) then
+    ConnectedDatasetHandler.InitOperation;
 end;
 
 procedure TJvDatasetThreadDialogForm.SetDialogOptions(const Value: TJvThreadedDatasetDialogOptions);
@@ -754,7 +764,8 @@ end;
 
 //=== { TJvBaseDatasetThreadHandler } ========================================
 
-constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset: TDataSet);
+constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset:
+    TDataSet);
 begin
   inherited Create (AOwner);
   FDataset := ADataset;
@@ -1102,6 +1113,11 @@ begin
   FIntDatasetWasFiltered := Dataset.Filtered;
   Dataset.Filtered := False;
   DatasetFetchAllRecords := False;
+end;
+
+procedure TJvBaseDatasetThreadHandler.InitOperation;
+begin
+  FCurrentOperationStart := 2*Now;
 end;
 
 procedure TJvBaseDatasetThreadHandler.IntAfterThreadExecution(DataSet: TDataSet;
