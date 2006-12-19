@@ -677,15 +677,16 @@ begin
   begin
     // Mantis 3469: This has the advantage to be completely transparent to
     // the number of decimals shown in the control
-    if Thousands then
-      SelStart := SelStart + StrCharCount(Text, ThousandSeparator) - StrCharCount(OldText,ThousandSeparator);
-           
+
+    // (outchy) only shift SelStart by the difference in number of ThousandSeparator BEFORE SelStart
+    // do not shift if SelStart was clamped (new text length is shorter than OldSelText)
+    if Thousands and (SelStart = OldSelStart) then
+      SelStart := SelStart + StrCharCount(Copy(Text, 1, SelStart), ThousandSeparator)
+        - StrCharCount(Copy(OldText, 1, SelStart),ThousandSeparator);
+
     inherited Change;
     FOldValue := Value;
   end;
-  //  if AnsiCompareText(inherited Text, OldText) <> 0 then
-  //    inherited Change;
-
 end;
 
 function TJvCustomSpinEdit.CheckDefaultRange(CheckMax: Boolean): Boolean;
@@ -1108,12 +1109,23 @@ begin
       DownClick(Self);
     Key := 0;
   end;
+  // do not delete the decimal separator while typing
+  // all decimal digits were moved to the integer part and new decimals were added at the end 
+  if (Key = VK_DELETE) and (SelStart < Length(Text)) and (Text[SelStart + 1] = DecimalSeparator) then
+    Key := VK_RIGHT;
+  if (Key = VK_BACK) and (SelStart > 0) and (Text[SelStart] = DecimalSeparator) then
+    Key := VK_LEFT;
 end;
 
 procedure TJvCustomSpinEdit.KeyPress(var Key: Char);
 var
   I: Integer;
 begin
+  //Polaris
+  // (outchy) moved at the begining, hittinh '.' now behaves like hitting the decimal separator
+  if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
+    Key := DecimalSeparator;
+
   // andreas
   if (Key = DecimalSeparator) and (ValueType = vtFloat) then
   begin
@@ -1133,9 +1145,6 @@ begin
     Key := #0;
     DoBeepOnError;
   end;
-  //Polaris
-  if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
-    Key := DecimalSeparator;
 
   if Key <> #0 then
   begin
