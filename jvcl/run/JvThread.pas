@@ -159,6 +159,7 @@ type
   TJvThread = class(TJvComponent)
   private
     FAfterCreateDialogForm: TJvCustomThreadDialogFormEvent;
+    FBeforeResume: TNotifyEvent;
     FThreads: TThreadList;
     FExclusive: Boolean;
     FRunOnCreate: Boolean;
@@ -218,6 +219,7 @@ type
     property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
     property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent
       read FAfterCreateDialogForm write FAfterCreateDialogForm;
+    property BeforeResume: TNotifyEvent read FBeforeResume write FBeforeResume;
     property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
     property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
@@ -526,6 +528,8 @@ begin
     end;
     if FRunOnCreate then
     begin
+      if Assigned(BeforeResume) then
+        BeforeResume(Self);
       BaseThread.Resume;
       CreateThreadDialogForm;
     end;
@@ -586,6 +590,8 @@ end;
 
 procedure TJvThread.Resume(Thread: THandle);
 begin
+  if Assigned(BeforeResume) then
+    BeforeResume(Self);
   ResumeThread(Thread);
   CreateThreadDialogForm;
 end;
