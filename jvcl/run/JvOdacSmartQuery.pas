@@ -131,8 +131,6 @@ const
 
 implementation
 
-uses Dialogs;
-
 //=== { TJvOdacSmartQuery } ==================================================
 
 constructor TJvOdacSmartQuery.Create(AOwner: TComponent);
