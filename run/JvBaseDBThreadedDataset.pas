@@ -514,8 +514,8 @@ begin
         ITmpControl.ControlSetCaption(IntToStr(CurrentRow));
       if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
         ITmpControl.ControlSetCaption(
-          FormatDateTime('hh:nn:ss.zzz', CurrentOpenDuration) + ' / ' +
-            FormatDateTime('hh:nn:ss.zzz', CurrentFetchDuration));
+          FormatDateTime('hh:nn:ss', CurrentOpenDuration) + ' / ' +
+            FormatDateTime('hh:nn:ss', CurrentFetchDuration));
     end
   else
   begin
