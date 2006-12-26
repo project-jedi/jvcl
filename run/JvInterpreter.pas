@@ -4007,12 +4007,24 @@ var
         Rec := P2R(Args.Obj);
         with JvInterpreterRecord.Fields[I] do
           case Typ of
-            varInteger:
-              Value := PInteger(Rec + Offset)^;
             varSmallint:
               Value := Smallint(PWord(Rec + Offset)^);
+            varInteger:
+              Value := PInteger(Rec + Offset)^;
+            varSingle:
+              Value := PSingle(Rec + Offset)^;
+            varDouble:
+              Value := PDouble(Rec + Offset)^;
+            varCurrency:
+              Value := PCurrency(Rec + Offset)^;
+            varDate:
+              Value := PDateTime(Rec + Offset)^;
+            varOleStr:
+              Value := PWideString(Rec + Offset)^;
             varBoolean:
               Value := PBool(Rec + Offset)^;
+            varVariant:
+              Value := PVariant(Rec + Offset)^;
             varString:
               Value := PString(Rec + Offset)^;
             varEmpty:
@@ -4399,12 +4411,26 @@ var
         Rec := P2R(Args.Obj);
         with JvInterpreterRecord.Fields[I] do
           case Typ of
-            varInteger:
-              PInteger(Rec + Offset)^ := Value;
             varSmallint:
               PWord(Rec + Offset)^ := Word(Value);
+            varInteger:
+              PInteger(Rec + Offset)^ := Value;
+            varSingle:
+              PSingle(Rec + Offset)^ := Value;
+            varDouble:
+              PDouble(Rec + Offset)^ := Value;
+            varCurrency:
+              PCurrency(Rec + Offset)^ := Value;
+            varDate:
+              PDateTime(Rec + Offset)^ := Value;
+            varOleStr:
+              PWideString(Rec + Offset)^ := Value;
             varBoolean:
               PBool(Rec + Offset)^ := Value;
+            varVariant:
+              PVariant(Rec + Offset)^ := Value;
+            varString:
+              PString(Rec + Offset)^ := Value;
             varEmpty:
               JvInterpreterVarAssignment(Variant(PVarData(Rec + Offset)^), Value);
           end;
