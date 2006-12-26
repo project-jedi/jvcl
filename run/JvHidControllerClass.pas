@@ -49,7 +49,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.32';
+  cHidControllerClassVersion = '1.0.33';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -567,7 +567,11 @@ begin
       begin
         NumBytesRead := Device.HidOverlappedReadResult;
         if NumBytesRead > 0 then
-          Synchronize(DoData);
+          // synchronizing only works if the component is not instanciated in a DLL
+          if IsLibrary then
+            DoData
+          else
+            Synchronize(DoData);
       end;
     end
     else
