@@ -165,7 +165,11 @@ begin
       Include(FFormState, fsCreating);
       try
         if not InitInheritedComponent(Self, TJvForm) then
+          {$IFDEF CLR}
           raise EResNotFound.CreateFmt(SResNotFound, [ClassName]);
+          {$ELSE}
+          raise EResNotFound.CreateResFmt(@SResNotFound, [ClassName]);
+         {$ENDIF CLR}
 
         {$IFDEF USE_DXGETTEXT}
         TranslateComponent(Self, cDomainName);

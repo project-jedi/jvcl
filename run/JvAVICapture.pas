@@ -1775,7 +1775,7 @@ end;
 
 constructor EInvalidDriverIndexError.Create(Index: TJvDriverIndex; MaxIndex: TJvDriverIndex);
 begin
-  inherited CreateFmt(RsEInvalidDriverIndex, [Index, MaxIndex]);
+  inherited CreateResFmt(@RsEInvalidDriverIndex, [Index, MaxIndex]);
 end;
 
 {$IFDEF UNITVERSIONING}

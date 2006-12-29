@@ -1711,7 +1711,7 @@ begin
         begin
           ErrPos := NBeg;
           //..
-          raise EJvScriptError.Create(E.Message, ErrPos)
+          raise EJvScriptError.Create(E.Message, ErrPos);
         end
         else
           raise;

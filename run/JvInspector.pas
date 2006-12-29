@@ -11144,10 +11144,9 @@ begin
   CheckWriteAccess;
   if TypeInfo.Kind = tkInt64 then
   begin
-    if (Value < GetTypeData(TypeInfo).MinInt64Value) or
-      (Value > GetTypeData(TypeInfo).MaxInt64Value) then
-      raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
-        GetTypeData(TypeInfo).MaxValue]);
+    if (Value < GetTypeData(TypeInfo).MinInt64Value) or (Value > GetTypeData(TypeInfo).MaxInt64Value) then
+      raise ERangeError.CreateResFmt(@SOutOfRange,
+        [GetTypeData(TypeInfo).MinValue, GetTypeData(TypeInfo).MaxValue]);
     PInt64(Address)^ := Value;
     InvalidateData;
     Invalidate;
