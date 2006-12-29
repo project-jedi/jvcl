@@ -1593,7 +1593,7 @@ begin
   begin
     CS := TJvColorSpace(FColorSpaceList.Items[Index]);
     if CS.ID = NewColorSpace.ID then
-      raise EJvColorSpaceError.CreateFmt(RsECSAlreadyExists, [CS.ID, CS.Name]);
+      raise EJvColorSpaceError.CreateResFmt(@RsECSAlreadyExists, [CS.ID, CS.Name]);
   end;
   FColorSpaceList.Add(Pointer(NewColorSpace));
 end;

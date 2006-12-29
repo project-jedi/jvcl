@@ -4839,7 +4839,9 @@ begin
   if AppOnly then
     SwitchToWindow(Application.Handle, False);
 end;
+
 {$ENDIF VCL}
+
 { end JvAppUtils }
 { begin JvGraph }
 // (rom) moved here to make JvMaxMin obsolete
@@ -4856,7 +4858,11 @@ end;
 
 procedure InvalidBitmap;
 begin
+  {$IFDEF CLR}
   raise EInvalidGraphic.Create(SInvalidBitmap);
+  {$ELSE}
+  raise EInvalidGraphic.CreateRes(@SInvalidBitmap);
+  {$ENDIF CLR}
 end;
 
 function WidthBytes(I: Longint): Longint;

@@ -846,8 +846,8 @@ resourcestring
     'Axis %5:s = %6:d' + sLineBreak +
     'Axis %7:s = %8:d';
 
-  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
-  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
+  RsEDuplicateTrackBar     = 'TrackBar already used by component "%s"';
+  RsEUnsupportedColorSpace = 'Unsupported color space "%d"';
 
 //=== JvFullColorDialogs.pas =================================================
 resourcestring

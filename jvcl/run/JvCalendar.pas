@@ -1226,7 +1226,11 @@ begin
     Exit;
   Index := High(DayStates) - Low(DayStates);
   if (Index < MonthCount) or (Index < VisibleMonths) then
+    {$IFDEF CLR}
+    raise EMonthCalError.Create(RsEInvalidArgumentToSetDayStates);
+    {$ELSE}
     raise EMonthCalError.CreateRes(@RsEInvalidArgumentToSetDayStates);
+    {$ENDIF CLR}
   SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, Longint(@DayStates));
 end;
 

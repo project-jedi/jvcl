@@ -650,7 +650,7 @@ begin
         JclMutex.Release;
       end
       else
-        raise Exception.Create(RsJvPropertyStoreEnterMutexTimeout);
+        raise Exception.CreateRes(@RsJvPropertyStoreEnterMutexTimeout);
     finally
       FreeAndNil(JclMutex);
     end;

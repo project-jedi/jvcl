@@ -671,13 +671,6 @@ begin
   Result := TextToFloat(PChar(S), Value, fvExtended);
 end;
 
-(*  make Delphi 5 compiler happy // andreas
-procedure ConvertErrorFmt(ResString: PResStringRec; const Args: array of const);
-begin
-  raise EConvertError.CreateResFmt(ResString, Args);
-end;
-*)
-
 function TryStrToBool(const S: string; out Value: Boolean): Boolean;
 var
   lResult: Extended;

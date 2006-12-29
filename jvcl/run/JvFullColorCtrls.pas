@@ -895,7 +895,7 @@ begin
     OldColor := FFullColor;
     NewColorID := ColorSpaceManager.GetColorSpaceID(Value);
     if NewColorID = csDEF then
-      raise EJvFullColorError.CreateFmt(Rs_EUnsupportedColorSpace, [NewColorID]);
+      raise EJvFullColorError.CreateResFmt(@RsEUnsupportedColorSpace, [NewColorID]);
     OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
     FFullColor := Value;
     if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor) then
@@ -1314,7 +1314,7 @@ end;
 procedure TJvFullColorPanel.SetColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FColorTrackBar) then
   begin
@@ -2095,7 +2095,7 @@ end;
 procedure TJvFullColorCircle.SetBlueColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FBlueColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FBlueColorTrackBar) then
   begin
@@ -2121,7 +2121,7 @@ end;
 procedure TJvFullColorCircle.SetGreenColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FGreenColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FGreenColorTrackBar) then
   begin
@@ -2147,7 +2147,7 @@ end;
 procedure TJvFullColorCircle.SetRedColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FRedColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FRedColorTrackBar) then
   begin
@@ -2173,7 +2173,7 @@ end;
 procedure TJvFullColorCircle.SetCommonColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FCommonColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FCommonColorTrackBar) then
   begin
