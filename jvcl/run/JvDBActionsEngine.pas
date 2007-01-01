@@ -40,9 +40,6 @@ uses
   QWindows, QImgList, QGraphics,
   {$ENDIF UNIX}
   Forms, Controls, Classes, DB,
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGridCustomTableView, cxDBData,
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   DBGrids, JvPanel, JvDynControlEngineDB, JvDynControlEngineDBTools;
 
 type
@@ -625,20 +622,6 @@ begin
     Dialog.Free;
   end;
 end;
-
-//=== { TJvDatabaseActionDevExpCxGridEngine } ================================
-
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-
-{$IFDEF USE_3RDPARTY_SMEXPORT}
-
-{$ENDIF USE_3RDPARTY_SMEXPORT}
-
-{$IFDEF USE_3RDPARTY_SMIMPORT}
-
-{$ENDIF USE_3RDPARTY_SMIMPORT}
 
 //=== { TJvDatabaseActionEngineList } ========================================
 
