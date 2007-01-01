@@ -1355,6 +1355,8 @@ procedure TJvDatabaseSMExportAction.ExportData;
 const
   cLastExport = '\Last Export.SME';
 var
+  OptionsDirectory : String;
+var
   SMEWizardDlg: TSMEWizardDlg;
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   SMEEngineCx: TSMEcxCustomGridTableViewDataEngine;
@@ -1373,7 +1375,9 @@ begin
     SMEWizardDlg.Title := Options.Title;
     SMEWizardDlg.KeyGenerator := Options.Title;
     SMEWizardDlg.WizardStyle := smewiz.wsWindows2000;
-    SMEWizardDlg.SpecificationDir := Options.DefaultOptionsDirectory + '\';
+    if DirectoryExists(Options.DefaultOptionsDirectory) then
+      OptionsDirectory := ExcludeTrailingPathDelimiter(Options.DefaultOptionsDirectory);
+    SMEWizardDlg.SpecificationDir := OptionsDirectory;
     if DataComponent is TCustomDBGrid then
     begin
       SMEWizardDlg.DBGrid := TCustomControl(DataComponent);
@@ -1406,10 +1410,10 @@ begin
     SMEWizardDlg.Formats := Options.Formats;
     SMEWizardDlg.Options := Options.Options;
     SMEWizardDlg.HelpContext := Options.HelpContext;
-    if FileExists(Options.DefaultOptionsDirectory + cLastExport) then
-      SMEWizardDlg.LoadSpecification(Options.DefaultOptionsDirectory + cLastExport);
+    if FileExists(OptionsDirectory + cLastExport) then
+      SMEWizardDlg.LoadSpecification(OptionsDirectory + cLastExport);
     SMEWizardDlg.Execute;
-    SMEWizardDlg.SaveSpecification('Last Export', Options.DefaultOptionsDirectory + cLastExport, False);
+    SMEWizardDlg.SaveSpecification('Last Export', OptionsDirectory + cLastExport, False);
   finally
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
     FreeAndNil(SMEEngineCx);
