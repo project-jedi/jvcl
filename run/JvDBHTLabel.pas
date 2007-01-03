@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DB, DBCtrls,
+  Classes, DB, DBCtrls, Messages, Controls, VDBConsts,
   JvHTControls;
 
 type
@@ -49,7 +49,13 @@ type
     procedure SetDataSource(const Value: TDataSource);
     procedure DataChange(Sender: TObject);
     procedure SetMask(const Value: string);
+    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
   protected
+    function GetLabelText: string; override;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure SetAutoSize(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -181,6 +187,11 @@ end;
 
 //=== { TJvDBHTLabel } =======================================================
 
+procedure TJvDBHTLabel.CMGetDataLink(var Message: TMessage);
+begin
+  Message.Result := Integer(FDataLink);
+end;
+
 constructor TJvDBHTLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -214,6 +225,42 @@ begin
   Result := FDataLink.DataSource;
 end;
 
+function TJvDBHTLabel.GetLabelText: string;
+begin
+  if csPaintCopy in ControlState then
+  begin
+    if (Assigned(FDataLink) and Assigned(FDataLink.DataSet)) then
+      Result := ReplaceFieldNameTag(FMask, FDataLink.DataSet)
+    else
+      Result := ReplaceFieldNameTag(Mask, nil);
+  end
+  else
+    Result := Caption;
+end;
+
+procedure TJvDBHTLabel.Loaded;
+begin
+  inherited;
+  if (csDesigning in ComponentState) then DataChange(Self);
+end;
+
+procedure TJvDBHTLabel.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (FDataLink <> nil) and
+    (AComponent = DataSource) then
+    DataSource := nil;
+end;
+
+procedure TJvDBHTLabel.SetAutoSize(Value: Boolean);
+begin
+  if AutoSize <> Value then
+  begin
+    if Value and FDataLink.DataSourceFixed then DatabaseError(SDataSourceFixed);
+    inherited;
+  end;
+end;
+
 procedure TJvDBHTLabel.SetDataSource(const Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
@@ -243,4 +290,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 
