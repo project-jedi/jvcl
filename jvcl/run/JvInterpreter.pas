@@ -1641,7 +1641,12 @@ begin
     P1 := Pointer(Integer(P) + Typ2Size(LVarType) * VarArrayOffset(A, Indices));
 
     if LVarType = varVariant then
-      PVariant(P1)^ := Value
+      case TVarData(Value).VType of
+        varString:
+          PVariant(P1)^ := VarAsType(Value,varOleStr);
+      else
+        PVariant(P1)^ := Value;
+      end
     else
     begin
       VarCast(Variant(Temp), Value, LVarType);
