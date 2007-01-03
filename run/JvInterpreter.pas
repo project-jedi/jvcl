@@ -6094,7 +6094,7 @@ var
         //LEAKY:  TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VPointer := nil;
 
         //VARLEAKFIX begin - Feb 2004 - Warren Postma. Fix suggested by ivan_ra att mail dott ru
-        LocalVars.GetValue(cResult, FVResult, FCurrArgs);
+        JvInterpreterVarCopy(FVResult, LocalVars.FindVar('', cResult).Value);
         //VARLEAKFIX end.
       end;
 
