@@ -2970,7 +2970,7 @@ end;
 
 procedure TJvCustomTimeLine.SetSupportsColor(const Value: TColor);
 begin
-  if FSupportsColor > Value then
+  if FSupportsColor <> Value then
   begin
     FSupportsColor := Value;
     Invalidate;
