@@ -922,7 +922,9 @@ end;
 procedure TJvCustomHTLabel.Paint;
 var
   Rect: TRect;
+  PaintText: String;
 begin
+  PaintText := GetLabelText;
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
   if Transparent then
@@ -935,22 +937,22 @@ begin
     tlTop:
       ;
     tlBottom:
-      Rect.Top := Rect.Bottom - ItemHTHeight(Canvas, Caption);
+      Rect.Top := Rect.Bottom - ItemHTHeight(Canvas, PaintText);
     tlCenter:
-      Rect.Top := (Rect.Bottom - Rect.Top - ItemHTHeight(Canvas, Caption)) div 2;
+      Rect.Top := (Rect.Bottom - Rect.Top - ItemHTHeight(Canvas, PaintText)) div 2;
   end;
   Canvas.Font.Style := []; // only font name and font size is important
   if not Enabled then
   begin
     OffsetRect(Rect, 1, 1);
     Canvas.Font.Color := clBtnHighlight;
-    ItemHTDraw(Canvas, Rect, [odDisabled], Caption);
+    ItemHTDraw(Canvas, Rect, [odDisabled], PaintText);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
-    ItemHTDraw(Canvas, Rect, [odDisabled], Caption);
+    ItemHTDraw(Canvas, Rect, [odDisabled], PaintText);
   end
   else
-    ItemHTDraw(Canvas, Rect, [], Caption);
+    ItemHTDraw(Canvas, Rect, [], PaintText);
 end;
 
 procedure TJvCustomHTLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
