@@ -1880,13 +1880,13 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
     var Buffer; BufferLength: Integer): LongBool; stdcall;
   THidD_GetIndexedString = function(HidDeviceObject: THandle;
     Index: Integer; Buffer: PWideChar; BufferLength: Integer): LongBool; stdcall;
-  {$IFDEF WINXP}
-   // (rom) new XP functions
+
+  // (rom) new XP functions
   THidD_GetInputReport = function(HidDeviceObject: THandle;
     Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
   THidD_SetOutputReport = function(HidDeviceObject: THandle;
     Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
-  {$ENDIF WINXP}
+
   THidP_GetCaps = function(PreparsedData: PHIDPPreparsedData;
     var Capabilities: THIDPCaps): NTSTATUS; stdcall;
   THidP_GetLinkCollectionNodes = function(LinkCollectionNodes: PHIDPLinkCollectionNode;
@@ -1974,7 +1974,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
     InsertCodesProcedure: THIDPInsertScanCodes;
     InsertCodesContext: Pointer): NTSTATUS; stdcall;
     
-  {$IFDEF WIN2000}
+  // (rom) new Win2000 functions
   THidP_GetExtendedAttributes = function(ReportType: THIDPReportType;
     DataIndex: Word; PreparsedData: PHIDPPreparsedData;
     Attributes: PHIDPExtendedAttributes;
@@ -1982,7 +1982,6 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
   THidP_InitializeReportForID = function(ReportType: THIDPReportType;
     ReportID: BYTE; PreparsedData: PHIDPPreparsedData;
     var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-  {$ENDIF WIN2000}
 
 var
   HidD_Hello: THidD_Hello;
@@ -2002,11 +2001,11 @@ var
   HidD_GetSerialNumberString: THidD_GetSerialNumberString;
   HidD_GetPhysicalDescriptor: THidD_GetPhysicalDescriptor;
   HidD_GetIndexedString: THidD_GetIndexedString;
-  {$IFDEF WINXP}
-   // (rom) new XP functions
+
+  // (rom) new XP functions
   HidD_GetInputReport: THidD_GetInputReport;
   HidD_SetOutputReport: THidD_SetOutputReport;
-  {$ENDIF WINXP}
+
   HidP_GetCaps: THidP_GetCaps;
   HidP_GetLinkCollectionNodes: THidP_GetLinkCollectionNodes;
   HidP_GetSpecificButtonCaps: THidP_GetSpecificButtonCaps;
@@ -2032,10 +2031,10 @@ var
   HidP_SetUsageValueArray: THidP_SetUsageValueArray;
   HidP_UsageListDifference: THidP_UsageListDifference;
   HidP_TranslateUsagesToI8042ScanCodes: THidP_TranslateUsagesToI8042ScanCodes;
-  {$IFDEF WIN2000}
+
+  // (rom) new XP functions
   HidP_GetExtendedAttributes: THidP_GetExtendedAttributes;
   HidP_InitializeReportForID: THidP_InitializeReportForID;
-  {$ENDIF WIN2000}
 
 {$ENDIF HID_LINKONREQUEST}
 
@@ -2161,6 +2160,7 @@ const
 implementation
 
 uses
+  SysUtils,
   ModuleLoader;
 
 {$IFDEF HID_LINKONREQUEST}
@@ -2232,10 +2232,11 @@ begin
     @HidD_GetSerialNumberString := GetModuleSymbolEx(HidLib, 'HidD_GetSerialNumberString', Result);
     @HidD_GetPhysicalDescriptor := GetModuleSymbolEx(HidLib, 'HidD_GetPhysicalDescriptor', Result);
     @HidD_GetIndexedString := GetModuleSymbolEx(HidLib, 'HidD_GetIndexedString', Result);
-    {$IFDEF WINXP}
-    @HidD_GetInputReport := GetModuleSymbolEx(HidLib, 'HidD_GetInputReport', Result);
-    @HidD_SetOutputReport := GetModuleSymbolEx(HidLib, 'HidD_SetOutputReport', Result);
-    {$ENDIF WINXP}
+    if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion = 5) and (Win32MinorVersion = 1) then
+    begin
+      @HidD_GetInputReport := GetModuleSymbolEx(HidLib, 'HidD_GetInputReport', Result);
+      @HidD_SetOutputReport := GetModuleSymbolEx(HidLib, 'HidD_SetOutputReport', Result);
+    end;
     @HidP_GetCaps := GetModuleSymbolEx(HidLib, 'HidP_GetCaps', Result);
     @HidP_GetLinkCollectionNodes := GetModuleSymbolEx(HidLib, 'HidP_GetLinkCollectionNodes', Result);
     @HidP_GetSpecificButtonCaps := GetModuleSymbolEx(HidLib, 'HidP_GetSpecificButtonCaps', Result);
@@ -2261,10 +2262,11 @@ begin
     @HidP_SetUsageValueArray := GetModuleSymbolEx(HidLib, 'HidP_SetUsageValueArray', Result);
     @HidP_UsageListDifference := GetModuleSymbolEx(HidLib, 'HidP_UsageListDifference', Result);
     @HidP_TranslateUsagesToI8042ScanCodes := GetModuleSymbolEx(HidLib, 'HidP_TranslateUsagesToI8042ScanCodes', Result);
-    {$IFDEF WIN2000}
-    @HidP_GetExtendedAttributes := GetModuleSymbolEx(HidLib, 'HidP_GetExtendedAttributes', Result);
-    @HidP_InitializeReportForID := GetModuleSymbolEx(HidLib, 'HidP_InitializeReportForID', Result);
-    {$ENDIF WIN2000}
+    if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion = 5) then
+    begin
+      @HidP_GetExtendedAttributes := GetModuleSymbolEx(HidLib, 'HidP_GetExtendedAttributes', Result);
+      @HidP_InitializeReportForID := GetModuleSymbolEx(HidLib, 'HidP_InitializeReportForID', Result);
+    end;
     if not Result then
       UnloadHid;
   end;
@@ -2293,10 +2295,10 @@ begin
   @HidD_GetSerialNumberString := nil;
   @HidD_GetPhysicalDescriptor := nil;
   @HidD_GetIndexedString := nil;
-  {$IFDEF WINXP}
+
   @HidD_GetInputReport := nil;
   @HidD_SetOutputReport := nil;
-  {$ENDIF WINXP}
+
   @HidP_GetLinkCollectionNodes := nil;
   @HidP_GetSpecificButtonCaps := nil;
   @HidP_GetSpecificValueCaps := nil;
@@ -2321,10 +2323,9 @@ begin
   @HidP_SetUsageValueArray := nil;
   @HidP_UsageListDifference := nil;
   @HidP_TranslateUsagesToI8042ScanCodes := nil;
-  {$IFDEF WIN2000}
+
   @HidP_GetExtendedAttributes := nil;
   @HidP_InitializeReportForID := nil;
-  {$ENDIF WIN2000}
   {$ENDIF HID_LINKONREQUEST}
 end;
 
