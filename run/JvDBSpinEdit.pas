@@ -15,6 +15,7 @@ Portions created by Rob den Braasem are Copyright (C) 2002 Rob den Braasem.
 All Rights Reserved.
 
 Contributor(s):
+  EinWill
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -265,6 +266,12 @@ end;
 
 procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
+  if (Key = VK_ESCAPE) and (FDataLink.Editing) then
+  begin
+    FDataLink.Reset;
+    SelectAll;
+    Key := 0;
+  end;
   inherited KeyDown(Key, Shift);
   if (Key = VK_DELETE) or (Key = VK_BACK) or
     ((Key = VK_INSERT) and (ssShift in Shift)) or IsValidChar(Char(Key)) then
