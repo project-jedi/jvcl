@@ -872,42 +872,65 @@ var
   RGST: array [0..1] of TSystemTime;
   {$ENDIF CLR}
   Y, M, D: Word;
+  Flags: DWORD;
 begin
   if not HandleAllocated then
-    Exit;
+    Exit;                            
   MonthCal_SetFirstDayOfWeek(Handle, Ord(FAppearance.FirstDayOfWeek) - 1);
   MonthCal_SetMaxSelCount(Handle, FMaxSelCount);
 
   MonthCal_SetMonthDelta(Handle, FMonthDelta);
   SetSelectedDays(FFirstSelDate, FLastSelDate);
-  if (FMinDate <> 0) and (FMaxDate <> 0) then
+  with RGST[0] do
   begin
-    DecodeDate(FMinDate, Y, M, D);
-    with RGST[0] do
+    if FMinDate <> 0 then
     begin
+      DecodeDate(FMinDate, Y, M, D);
       wYear := Y;
       wMonth := M;
       wDay := D;
-    end;
-    DecodeDate(FMaxDate, Y, M, D);
-    with RGST[1] do
+      Flags := GDTR_MIN;
+    end
+    else
     begin
+      wYear := 0;
+      wMonth := 0;
+      wDay := 0;
+      Flags := 0;
+    end;
+    wDayOfWeek := 0;
+    wHour := 0;
+    wMinute := 0;
+    wSecond := 0;
+    wMilliseconds := 0;
+  end;
+  with RGST[1] do
+  begin
+    if FMaxDate <> 0 then
+    begin
+      DecodeDate(FMaxDate, Y, M, D);
       wYear := Y;
       wMonth := M;
       wDay := D;
+      Flags := Flags or GDTR_MAX;
+    end
+    else
+    begin
+      wYear := 0;
+      wMonth := 0;
+      wDay := 0;
     end;
-    {$IFDEF CLR}
-    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, RGST);
-    {$ELSE}
-    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, @RGST[0]);
-    {$ENDIF CLR}
-  end
-  else
-    {$IFDEF CLR}
-    MonthCal_SetRange(Handle, 0, RGST); // RGST is empty
-    {$ELSE}
-    MonthCal_SetRange(Handle, 0, nil);
-    {$ENDIF CLR}
+    wDayOfWeek := 0;
+    wHour := 0;
+    wMinute := 0;
+    wSecond := 0;
+    wMilliseconds := 0;
+  end;
+  {$IFDEF CLR}
+  MonthCal_SetRange(Handle, Flags, RGST);
+  {$ELSE}
+  MonthCal_SetRange(Handle, Flags, @RGST[0]);
+  {$ENDIF CLR}
   DecodeDate(FToday, Y, M, D);
   with RGST[0] do
   begin
