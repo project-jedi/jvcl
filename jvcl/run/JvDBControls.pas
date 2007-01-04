@@ -726,6 +726,9 @@ const
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP} 
+  FMTBcd,
+  {$ENDIF COMPILER6_UP} 
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -2184,13 +2187,30 @@ begin
       //if (Value = 0) and ZeroEmpty then
 //  FDataLink.Field.Clear
   else
-  if FDataLink.Field.DataType in [ftSmallint, ftInteger, ftWord] then
-    FDataLink.Field.AsInteger := Self.AsInteger
-  else
-  if FDataLink.Field.DataType = ftBoolean then
-    FDataLink.Field.AsBoolean := Boolean(Self.AsInteger)
-  else
-    FDataLink.Field.AsFloat := Self.Value;
+
+  case FDataLink.Field.DataType of
+    ftSmallint,
+    ftInteger,
+    ftWord:
+      begin
+        FDataLink.Field.AsInteger := Self.AsInteger;
+      end;
+    ftBoolean:
+      begin
+        FDataLink.Field.AsBoolean := Boolean(Self.AsInteger);
+      end;
+    {$IFDEF COMPILER6_UP}
+    ftFMTBcd,
+    {$ENDIF COMPILER6_UP}
+    ftBCD:
+      begin
+        FDataLink.Field.AsBCD := DoubleToBCD(Self.Value)
+      end;
+    else
+      begin
+        FDataLink.Field.AsFloat := Self.Value;
+      end;
+  end;
 end;
 
 procedure TJvDBCalcEdit.CMGetDataLink(var Msg: TMessage);
