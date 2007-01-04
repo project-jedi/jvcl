@@ -3392,6 +3392,11 @@ procedure TJvDockTree.SetDockSiteSize(const Value: Integer);
 begin
   DockSite.Parent.DisableAlign;
   try
+     // if we have a docksite aligned to alClient it's unnecessary
+     // to set the DockSite Size
+     if DockSite.Align = alClient then
+       Exit;
+
     if DockSite.Align in [alRight, alBottom] then
       DockSiteBegin := DockSiteBegin - (Value - DockSiteSize);
     case DockSiteOrientation of
