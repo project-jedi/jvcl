@@ -275,6 +275,7 @@ type
     FRowResize: Boolean;
     FRowsHeight: Integer;
     FTitleRowHeight: Integer;
+    FCanDelete: Boolean;
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -501,6 +502,8 @@ type
       default JvGridResizeProportionally;
     property SelectColumnsDialogStrings: TJvSelectDialogColumnStrings
       read FSelectColumnsDialogStrings write SetSelectColumnsDialogStrings;
+    { Allows user to delete things using the "del" key }
+    property CanDelete: Boolean read FCanDelete write FCanDelete default True;
 
     { EditControls: list of controls used to edit data }
     property EditControls: TJvDBGridControls read FControls write SetControls;
@@ -952,6 +955,7 @@ begin
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
   FShowMemos := True;
+  FCanDelete := True;
 end;
 
 destructor TJvDBGrid.Destroy;
@@ -1377,7 +1381,7 @@ begin
             Exit;
           end;
         VK_DELETE:
-          if not ReadOnly and CanModify and not
+          if CanDelete and not ReadOnly and CanModify and not
             IsDataSetEmpty(DataLink.DataSet) then
           begin
             if DeletePrompt then
