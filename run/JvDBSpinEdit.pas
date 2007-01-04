@@ -323,7 +323,8 @@ end;
 procedure TJvDBSpinEdit.SetValue(NewValue: Extended);
 begin
   FIsNull := (Text = '') and (NewValue = 0.0);
-  inherited SetValue(NewValue);
+  if not (FIsNull and FAllowNull) then
+    inherited SetValue(NewValue);
   if not FDataChanging then
     FDataLink.Edit;
 end;
