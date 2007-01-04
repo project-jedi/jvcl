@@ -3052,7 +3052,8 @@ begin
     from the form it contains. }
   TJvDockTabHostForm(TabHost).DockClient.Assign(Self);
 
-  Assert(TJvDockTabHostForm(TabHost).DockClient.CustomDock, 'DEBUG HELPER: Not working!');
+// Next line commented out, it seems it is useless. See Mantis 3900.
+//  Assert(TJvDockTabHostForm(TabHost).DockClient.CustomDock, 'DEBUG HELPER: Not working!');
 
   if (FTabDockClass <> nil) and (FTabDockClass <> TJvDockTabClass(ClassType)) then
   begin
