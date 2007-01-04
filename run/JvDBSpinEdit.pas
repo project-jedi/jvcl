@@ -210,13 +210,13 @@ end;
 
 procedure TJvDBSpinEdit.DownClick(Sender: TObject);
 begin
-  FDataLink.Edit;
+  FDataLink.Edit;        
   if IsNull then
   begin
     FIsNull := False;
-    Value := 1;
+    Value := 0;
     FIsNull := False;
-    Text := '1';
+    Text := '0';
   end;
   inherited DownClick(Sender);
 end;
@@ -335,9 +335,9 @@ begin
   if IsNull then
   begin
     FIsNull := False;
-    Value := 1;
+    Value := 0;
     FIsNull := False;
-    Text := '1';
+    Text := '0';
   end
   else
     inherited UpClick(Sender);
