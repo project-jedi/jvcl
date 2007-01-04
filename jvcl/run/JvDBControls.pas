@@ -2201,11 +2201,11 @@ begin
       end;
     {$IFDEF COMPILER6_UP}
     ftFMTBcd,
-    {$ENDIF COMPILER6_UP}
     ftBCD:
       begin
         FDataLink.Field.AsBCD := DoubleToBCD(Self.Value)
       end;
+    {$ENDIF COMPILER6_UP}
     else
       begin
         FDataLink.Field.AsFloat := Self.Value;
