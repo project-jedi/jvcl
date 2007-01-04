@@ -4514,6 +4514,7 @@ end;
 procedure TJvCustomInspector.Clear;
 begin
   BeginUpdate;
+  SelectedIndex := -1;
   Root.Clear;
   EndUpdate;
 end;
