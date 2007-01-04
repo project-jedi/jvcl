@@ -22,6 +22,11 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  Mantis 3932: In the OnCustomDrawItem, if you change the canvas font directly,
+               then your changes will be ignored and the items be drawn bold if
+               the item brush is not used for the given list view style
+               (report for instance). As a workaround, always change the item's
+               properties, never the canvas' directly.
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -2190,12 +2195,12 @@ begin
   if SubItem = -1 then      // See above
     SubItem := 0;
 
-  if (Stage = cdPrePaint) and Assigned(Item) then
+  if (*(Stage = cdPrePaint) and*) Assigned(Item) then
   begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
       Canvas.Brush := TJvListItem(Item).Brush;
-  end;
+  end;  
 
   Result := inherited CustomDrawSubItem(Item, SubItem, State, Stage);
 end;
