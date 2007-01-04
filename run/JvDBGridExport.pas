@@ -97,7 +97,7 @@ type
     procedure DoSave; virtual;
     procedure DoClose; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function GetFieldValue(const Field: TField): string;
+    function GetFieldValue(const Field: TField): Variant;
   public
     constructor Create(AOwner: TComponent); override;
     function ExportGrid: Boolean;
@@ -334,17 +334,18 @@ begin
   DoClose;
 end;
 
-function TJvCustomDBGridExport.GetFieldValue(const Field: TField): string;
+function TJvCustomDBGridExport.GetFieldValue(const Field: TField): Variant;
+var
+  Str: String;
 begin
   if Assigned(Field.OnGetText) and FUseFieldGetText then
   begin
     Result := '';
-    Field.OnGetText(Field, Result, True);
+    Field.OnGetText(Field, Str, True);
+    Result := Str;
   end
   else
-  begin
-    Result := VarToStr(Field.Value);
-  end;
+    Result := Field.Value;
 end;
 
 procedure TJvCustomDBGridExport.HandleException;
@@ -422,7 +423,10 @@ begin
   end;
 
   if VarIsEmpty(FWord) then
-    Exit;
+    begin
+      Result := False;
+      Exit;
+    end;
 
   try
     if not FRunningInstance then
@@ -502,6 +506,7 @@ begin
     lTable.UpdateAutoFormat;
   except
     HandleException;
+    Result := False;
   end;
 end;
 
@@ -589,7 +594,10 @@ begin
   end;
 
   if VarIsEmpty(FExcel) then
-    Exit;
+    begin
+      Result := False;
+      Exit;
+    end;
   try
     if not FRunningInstance then
       FExcel.Visible := Visible;
@@ -669,6 +677,7 @@ begin
     end;
   except
     HandleException;
+    Result := False;
   end;
 end;
 
@@ -942,6 +951,7 @@ begin
     end;
   except
     HandleException;
+    Result := False;
   end;
 end;
 
@@ -1072,6 +1082,7 @@ begin
     end;
   except
     HandleException;
+    Result := False;
   end;
 end;
 
@@ -1196,6 +1207,7 @@ begin
     end;
   except
     HandleException;
+    Result := False;
   end;
 end;
 
