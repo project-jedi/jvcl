@@ -20,6 +20,13 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL
 home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
+  Mantis 3963: When a design surface is active, the ENTIRE form where it is
+               located suffers impacts from being in design mode. This can not
+               be circumvented because the Designer property is to be set on
+               the parent form and it MUST be set for the design mode to be
+               effective. The only workaround is to not have anything else
+               on the form being designed.
+
 -----------------------------------------------------------------------------}
 // $Id$
 
