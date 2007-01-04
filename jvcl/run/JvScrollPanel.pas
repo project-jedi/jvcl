@@ -119,6 +119,7 @@ type
     procedure UpdateVisible;
     procedure ArrangeChildren;
     procedure SetupArrows;
+    procedure SetScrollAmount(const Value: Word);
   protected
     procedure VisibleChanged; override;
     procedure EnabledChanged; override;
@@ -129,7 +130,7 @@ type
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
     property Flat: Boolean read FFlat write SetFlat;
     property ScrollDirection: TJvScrollDirection read FScrollDirection write SetScrollDirection;
-    property ScrollAmount: Word read FScrollAmount write FScrollAmount default 16;
+    property ScrollAmount: Word read FScrollAmount write SetScrollAmount default 16;
     property OnScrolling: TJvScrollingEvent read FOnScrolling write FOnScrolling;
     property OnScrolled: TJvScrolledEvent read FOnScrolled write FOnScrolled;
   public
@@ -569,6 +570,18 @@ begin
     FAutoHide := Value;
     UpdateVisible;
     Invalidate;
+  end;
+end;
+
+procedure TJvCustomScrollPanel.SetScrollAmount(const Value: Word);
+begin
+  if FScrollAmount <> Value then
+  begin
+    FScrollAmount := Value;
+    if Assigned(FUpLeft) then
+      FUpLeft.Increment := Value;
+    if Assigned(FDownRight) then
+      FDownRight.Increment := Value;
   end;
 end;
 
