@@ -37,7 +37,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DB, DBCtrls, Messages, Controls, VDBConsts,
+  Classes, DB, DBCtrls, Messages, Controls, 
+  {$IFDEF COMPILER6_UP}
+  VDBConsts,
+  {$ELSE}
+  DBConsts,
+  {$ENDIF COMPILER6_UP}
   JvHTControls;
 
 type
