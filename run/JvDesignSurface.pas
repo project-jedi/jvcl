@@ -60,8 +60,8 @@ type
     destructor Destroy; override;
     function IsDesignMessage(ASender: TControl; var AMessage: TMessage): Boolean; virtual;
     procedure Clear; virtual;
-    procedure DesignChildren(AContainer: TWinControl);
-    procedure DesignComponent(AComponent: TComponent); virtual;
+    procedure DesignChildren(AContainer: TWinControl; ADesigning: Boolean);
+    procedure DesignComponent(AComponent: TComponent; ADesigning: Boolean); virtual;
     property Container: TWinControl read FContainer write SetContainer;
     property OnDesignMessage: TJvDesignMessage read FOnDesignMessage write FOnDesignMessage;
   end;
@@ -294,17 +294,17 @@ begin
   //
 end;
 
-procedure TJvDesignCustomMessenger.DesignComponent(AComponent: TComponent);
+procedure TJvDesignCustomMessenger.DesignComponent(AComponent: TComponent; ADesigning: Boolean);
 begin
   //
 end;
 
-procedure TJvDesignCustomMessenger.DesignChildren(AContainer: TWinControl);
+procedure TJvDesignCustomMessenger.DesignChildren(AContainer: TWinControl; ADesigning: Boolean);
 var
   I: Integer;
 begin
   for I := 0 to AContainer.ControlCount - 1 do
-    DesignComponent(AContainer.Controls[I]);
+    DesignComponent(AContainer.Controls[I], ADesigning);
 end;
 
 procedure TJvDesignCustomMessenger.SetContainer(AValue: TWinControl);
@@ -497,6 +497,8 @@ begin
       Deactivate;
     FActive := AValue;
     SelectionChange;
+    if Assigned(Container) then
+      Container.Invalidate;
   end;
 end;
 
@@ -649,7 +651,7 @@ begin
       CO.BoundsRect := GetBounds;
       Select(CO);
     end;
-    Messenger.DesignComponent(C);
+    Messenger.DesignComponent(C, Active);
     SelectionChange;
     Change;
     AddClass := '';
