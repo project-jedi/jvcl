@@ -7025,7 +7025,9 @@ begin
         if Assigned(EditCtrl) then
         begin
           {$IFDEF VCL}
-          EditCtrl.WindowProc := FEditWndPrc; //Edit_WndProc;
+          // Mantis 3994: Only restore if we actually changed it by our own.
+          if TMethod(EditCtrl.WindowProc).Code = @EditWndPrc then
+            EditCtrl.WindowProc := FEditWndPrc; //Edit_WndProc;
           {$ENDIF VCL}
           {$IFDEF VisualCLX}
           QObject_removeEventFilter(EditCtrl.Handle, Inspector.Handle);
