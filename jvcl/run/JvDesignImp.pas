@@ -241,7 +241,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure DesignComponent(AComponent: TComponent); override;
+    procedure DesignComponent(AComponent: TComponent; ADesigning: Boolean); override;
   end;
 
   TJvDesignMessageHookList = class(TComponent)
@@ -263,12 +263,13 @@ type
     FHooks: TJvDesignMessageHookList;
   protected
     procedure HookWinControl(AWinControl: TWinControl);
+    procedure UnhookWinControl(AWinControl: TWinControl);
     procedure SetContainer(AValue: TWinControl); override;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Clear; override;
-    procedure DesignComponent(AComponent: TComponent); override;
+    procedure DesignComponent(AComponent: TComponent; ADesigning: Boolean); override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -656,10 +657,10 @@ begin
       ShowHideResizeHandles
     else
       H.UpdateHandles;
-    Surface.Messenger.DesignComponent(H.Handles[0]);
-    Surface.Messenger.DesignComponent(H.Handles[1]);
-    Surface.Messenger.DesignComponent(H.Handles[2]);
-    Surface.Messenger.DesignComponent(H.Handles[3]);
+    Surface.Messenger.DesignComponent(H.Handles[0], True);
+    Surface.Messenger.DesignComponent(H.Handles[1], True);
+    Surface.Messenger.DesignComponent(H.Handles[2], True);
+    Surface.Messenger.DesignComponent(H.Handles[3], True);
   end;
 end;
 
@@ -1277,7 +1278,7 @@ end;
 destructor TJvDesignDesignerMessenger.Destroy;
 begin
   if Container <> nil then
-    SetComponentDesigning(Container, False);
+    DesignChildren(Container, False);
   if FDesignedForm <> nil then
     FDesignedForm.Designer := nil;
   FDesigner.Free;
@@ -1297,9 +1298,9 @@ begin
   SetComponentDesigning(AComponent, False);
 end;
 
-procedure TJvDesignDesignerMessenger.DesignComponent(AComponent: TComponent);
+procedure TJvDesignDesignerMessenger.DesignComponent(AComponent: TComponent; ADesigning: Boolean);
 begin
-  SetComponentDesigning(AComponent, True);
+  SetComponentDesigning(AComponent, ADesigning);
 end;
 
 procedure TJvDesignDesignerMessenger.SetContainer(AValue: TWinControl);
@@ -1322,7 +1323,7 @@ begin
   begin
     FDesignedForm := FindParentForm;
     FDesignedForm.Designer := FDesigner;
-    DesignChildren(Container);
+    DesignChildren(Container, True);
   end;
 end;
 
@@ -1392,23 +1393,32 @@ begin
   FHooks.Clear;
 end;
 
-procedure TJvDesignWinControlHookMessenger.DesignComponent(AComponent: TComponent);
+procedure TJvDesignWinControlHookMessenger.DesignComponent(AComponent: TComponent; ADesigning: Boolean);
 begin
-  if AComponent is TWinControl then
-    HookWinControl(TWinControl(AComponent));
+  if (AComponent is TWinControl) then
+    if ADesigning then
+      HookWinControl(TWinControl(AComponent))
+    else
+      UnhookWinControl(TWinControl(AComponent))
 end;
 
 procedure TJvDesignWinControlHookMessenger.HookWinControl(AWinControl: TWinControl);
 begin
   FHooks.Hook(AWinControl);
-  DesignChildren(AWinControl);
+  DesignChildren(AWinControl, True);
+end;
+
+procedure TJvDesignWinControlHookMessenger.UnhookWinControl(AWinControl: TWinControl);
+begin
+  FHooks.Unhook(AWinControl);
+  DesignChildren(AWinControl, False);
 end;
 
 procedure TJvDesignWinControlHookMessenger.SetContainer(AValue: TWinControl);
 begin
   inherited SetContainer(AValue);
   if Container <> nil then
-    DesignChildren(Container);
+    DesignChildren(Container, True);
 end;
 
 initialization
