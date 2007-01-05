@@ -49,7 +49,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.33';
+  cHidControllerClassVersion = '1.0.34';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -299,6 +299,15 @@ type
     function WriteFileEx(var Report; ToWrite: DWORD;
       CallBack: TPROverlappedCompletionRoutine): Boolean;
     function CheckOut: Boolean;
+    // Windows version dependent methods
+    // added in Win 2000
+    function GetExtendedAttributes(ReportType: THIDPReportType; DataIndex: Word;
+      Attributes: PHIDPExtendedAttributes; var LengthAttributes: ULONG): NTSTATUS;
+    function InitializeReportForID(ReportType: THIDPReportType; ReportID: Byte;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    // added in Win XP
+    function GetInputReport(var Report; const Size: ULONG): Boolean;
+    function SetOutputReport(var Report; const Size: ULONG): Boolean;
     // read only properties
     property Attributes: THIDDAttributes read FAttributes;
     property Caps: THIDPCaps read GetCaps;
@@ -1544,6 +1553,41 @@ begin
     Dec(FMyController.FNumCheckedInDevices);
     StartThread;
   end;
+end;
+
+function  TJvHidDevice.GetExtendedAttributes(ReportType: THIDPReportType; DataIndex: Word;
+  Attributes: PHIDPExtendedAttributes; var LengthAttributes: ULONG): NTSTATUS;
+begin
+  if Assigned(HidP_GetExtendedAttributes) then
+    Result := HidP_GetExtendedAttributes(ReportType, DataIndex, FPreparsedData,
+      Attributes, LengthAttributes)
+  else
+    Result := HIDP_STATUS_NOT_IMPLEMENTED;
+end;
+
+function TJvHidDevice.InitializeReportForID(ReportType: THIDPReportType; ReportID: Byte;
+  var Report; ReportLength: ULONG): NTSTATUS;
+begin
+  if Assigned(HidP_InitializeReportForID) then
+    Result := HidP_InitializeReportForID(ReportType, ReportID, FPreparsedData, Report, ReportLength)
+  else
+    Result := HIDP_STATUS_NOT_IMPLEMENTED;
+end;
+
+function TJvHidDevice.GetInputReport(var Report; const Size: ULONG): Boolean;
+begin
+  Result := False;
+  if Assigned(HidD_GetInputReport) then
+    if OpenFile then
+      Result := HidD_GetInputReport(FHidFileHandle, @Report, Size);
+end;
+
+function TJvHidDevice.SetOutputReport(var Report; const Size: ULONG): Boolean;
+begin
+  Result := False;
+  if Assigned(HidD_SetOutputReport) then
+    if OpenFile then
+      Result := HidD_SetOutputReport(FHidFileHandle, @Report, Size);
 end;
 
 //=== { TJvHidDeviceController } =============================================
