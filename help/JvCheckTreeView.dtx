@@ -15,13 +15,13 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
-  A treeview control that can display checkboxes and radio buttons.
+  A tree view control that can display checkboxes and radio buttons.
 Description
-  Use TJvCheckTreeView when you need to display checkboxes and/or radio buttons in a treeview.
+  Use TJvCheckTreeView when you need to display checkboxes and/or radio buttons in a tree view.
   TJvCheckTreeView can display and automatically handle the check/uncheck logic for radio buttons as
-  well as checkboxes. In addition, not all nodes in the treeview need to have checkboxes or radio
+  well as checkboxes. In addition, not all nodes in the tree view need to have checkboxes or radio
   buttons. You can freely mix and match checkboxes, radio buttons and "empty" items on every level in
-  the treeview. You can use your own checkbox images by assigning an imagelist to the StateImages
+  the tree view. You can use your own checkbox images by assigning an imagelist to the StateImages
   property containing the images you want to use.
 
 ----------------------------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.CheckBoxOptions
 Summary
-  Specifies the options for checkboxes in the treeview.
+  Specifies the options for checkboxes in the tree view.
 Description
-  Use CheckBoxOptions to get and set the checkbox options for the treeview.
+  Use CheckBoxOptions to get and set the checkbox options for the tree view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.Checked
@@ -89,7 +89,7 @@ Description
   The TJvTreeViewCheckBoxOptions class is the class used to store checkbox option settings in the
   TJvCheckTreeView components CheckBoxOptions property. Since this property is a class, it is displayed
   as a nested property set in the Object Inspector. An instance of this class is created automatically
-  by the treeview. Do not create instances of this class yourself.
+  by the tree view. Do not create instances of this class yourself.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CascadeLevels
@@ -159,7 +159,7 @@ Description
   Use Style to specify if checkboxes are to be displayed and what implementation to use. To use the
   JVCL implementation, set Style to cbsJVCL, to use Microsoft's native implementation, set Style to
   cbsNative. To disable any checkboxes, set Style to cbsNone. When Style is cbsNone, the control works
-  like a normal treeview.
+  like a normal tree view.
 
   For a more in-depth explanation of the Style property, see the help topic for <LINK
   TJvTVCheckBoxStyle, TJvTVCheckBoxStyle>.
@@ -169,7 +169,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.TreeView
 Summary
-  References the treeview that created and maintains this object.
+  References the tree view that created and maintains this object.
 Description
   TreeView is a reference to the Treeview the options are acting upon. Developers should normally not
   alter this property.
@@ -206,13 +206,13 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCheckBoxStyle.cbsNone
-  No checkboxes or radio buttons are displayed. Works like a normal treeview.
+  No checkboxes or radio buttons are displayed. Works like a normal tree view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCheckBoxStyle.cbsNative
-  Use MS implementation of checkboxes. With this option you can only display checkboxes and not
-  radioitems. You can't set up your own images using the StateImages/StateIndex properties of the
-  treeview since this is overridden by the MS implementation
+  Use MS implementation of checkboxes. With this option you can only display checkboxes and not radio
+  buttons. You can't set up your own images using the StateImages/StateIndex properties of the tree
+  view since this is overridden by the MS implementation
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCheckBoxStyle.cbsJVCL

@@ -650,7 +650,7 @@ See Also
 Summary
   Increments RefCount.
 Description
-  SuspendRefCount increments RefCount and is more-or-less an alias for _AddRef, except that descendants
+  SuspendRefCount increments RefCount and is basically an alias for _AddRef, except that descendants
   might not do anything in _AddRef whereas SuspendRefCount is guaranteed to increase RefCount
   (thread-safe).
 

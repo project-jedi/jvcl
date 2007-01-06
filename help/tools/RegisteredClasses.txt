@@ -94,6 +94,8 @@ TJvDBComboEdit
 TJvDBDateEdit
 TJvDBDatePickerEdit
 TJvDBDateTimePicker
+TJvDBDoaLogonDialog
+TJvDBDoaPasswordDialog
 TJvDBFilter
 TJvDBFindEdit
 TJvDBGrid
@@ -116,6 +118,8 @@ TJvDBLookupTreeViewCombo
 TJvDBMaskEdit
 TJvDBMove
 TJvDBNavigator
+TJvDBOdacConnectDialog
+TJvDBOdacPasswordDialog
 TJvDBProgress
 TJvDBProgressBar
 TJvDBRadioPanel
@@ -221,7 +225,6 @@ TJvFullColorTrackBar
 TJvg3DColors
 TJvGammaPanel
 TJvgAskListBox
-TJvgBevel
 TJvgBitmapImage
 TJvgButton
 TJvgCaption
@@ -239,7 +242,6 @@ TJvgExportXML
 TJvgExtSpeedButton
 TJvgFixFont
 TJvgFlyingText
-TJvgGraphicButton
 TJvgGridHeaderControl
 TJvgGroupBox
 TJvgHelpPanel
@@ -270,17 +272,14 @@ TJvGridPrinter
 TJvGroupBox
 TJvGroupHeader
 TJvgRuler
-TJvgScrollBox
 TJvgShade
 TJvgShadow
 TJvgSingleInstance
 TJvgSmallFontsDefense
 TJvgSpeedButton
-TJvgSplitter
 TJvgStaticText
 TJvgStringContainer
 TJvgStringGrid
-TJvgSysRequirements
 TJvgTabControl
 TJvgTransparentMemo
 TJvgTreeView
@@ -372,6 +371,7 @@ TJvNewLinkDialog
 TJvNTEventLog
 TJvObjectPickerDialog
 TJvObjectPropertiesDialog
+TjvOdacSmartQuery
 TJvOfficeColorButton
 TJvOfficeColorPanel
 TJvOfficeMenuItemPainter
@@ -491,6 +491,7 @@ TJvStringListToHTML
 TJvStrToHTML
 TJvSwitch
 TJvSyncSplitter
+TJvSysRequirements
 TJvSystemPopup
 TJvTabBar
 TJvTabControl
@@ -521,6 +522,7 @@ TJvTMTimeLine
 TJvToolBar
 TJvTrackBar
 TJvTracker
+TJvTranslateString
 TJvTranslator
 TJvTranslatorStrings
 TJvTransparentButton

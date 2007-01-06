@@ -156,10 +156,9 @@ Description
 @@TJvAppStorageCryptEvent
 <TITLE TJvAppStorageCryptEvent type>
 Summary
-  Event to Encrypt/Decrypt Values
+  Event type used to encrypt/decrypt string values.
 Description
-  This type is used by (for reference): TJvCustomAppStorage.OnDecryptPropertyValue
-  TJvCustomAppStorage.OnEncryptPropertyValue
+  The TJvAppStorageCryptEvent event is used to encrypt/decrypt string values.
 Parameters
   Value - Value to be encrypted/decrypted.
 See Also
@@ -535,8 +534,8 @@ Description
   Files folders. Windows Programming Guidelines require that "per user" application data have to be
   written to \<document and settings\>\\\<user\>\\\<application data\>\\\<company\>\\\<application\> ,
   while "generic" data should be written to \<document and settings\>\\\<All users\>\\\<application
-  data\>\\\<company\>\\\<application\>. Remember also that \<document and settings\> , \<All users\>
-  and \<application data\> actual names are operating system language specific, therefore do not hard
+  data\>\\\<company\>\\\<application\>. Remember also that \<document and settings\>, \<All users\> and
+  \<application data\> actual names are operating system language specific, therefore do not hard
   encode them but use operating system APIs or JCL functions to obtain actual names.
 
 ----------------------------------------------------------------------------------------------------
@@ -591,9 +590,19 @@ Description
   You should not instantiate a TJvCustomAppStorage but rather one of its descendants.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.AutoFlush
+@@TJvCustomAppStorage.ActiveTranslateStringEngine
 Summary
   Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.AutoFlush
+Summary
+  Determines when Flush is called.
 Description
   If set to True, the Flush method will be called whenever a modification has been made to the in
   memory file. If set to False, the disk file will only be updated when you call Flush or when the
@@ -604,7 +613,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.AutoReload
 Summary
-  Write here a summary (1 line)
+  Determines when Reload is called.
 Description
   If set to True, the Reload method will be called whenever an information is about to be read from the
   in memory file. If set to False, the disk file will only be read when you call Reload or when the
@@ -624,18 +633,22 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.CheckDeletePathByVersion
 Summary
-  Write here a summary (1 line)
+  Conditionally deletes the specified folder/value and any sub folders.
 Description
-  Write here a description
+  CheckDeletePathByVersion gives the possibility to delete a folder out of the storage depending on a
+  stored value named "Version".
 Parameters
-  Path               - Description for this parameter
-  VersionNumber      - Description for this parameter
-  DeleteIfNotEqual   - Description for this parameter
-  WriteVersionNumber - Description for this parameter
-  VersionName        - Description for this parameter
+  Path               - Path (relative to the current path) of the sub tree to delete.
+  VersionNumber      - The value which is compared.
+  DeleteIfNotEqual   - Indicates when to delete the subtree. If DeleteIfNotEqual is set to True, the
+                        subtree is delete when the stored value is <B>not equal</B> to parameter
+                        VersionNumber. If DeleteIfNotEqual is set to False, the subtree is deleted when
+                        the stored value is <B>less</B> than VersionNumber.
+  WriteVersionNumber - Determines if the Value of VersionNumber should be stored in the subtree after
+                        the check.
+  VersionName        - The name of the stored version number in the path
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DeleteSubTree,CheckDeletePathByVersion
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ConcatPaths
@@ -687,20 +700,37 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.DisablePropertyValueCrypt
 Summary
-  Disables the Cryption of Property-Values (Only String-Values)
+  Disables the encryption/decryption of string values.
 Description
-  Disables the Cryption of Property-Values (Only String-Values)
+  Call DisablePropertyValueCrypt to end the encryption and decryption of string values.
+
+  Each call to DisablePropertyValueCrypt should be paired by a call to EnablePropertyValueCrypt, which
+  is made to start the encyption/decryption. EnablePropertyValueCrypt/DisablePropertyValueCrypt pairs
+  can be nested.
+Note
+  Only string values are encrypted/decrypted. You can use StorageOptions to read and write non-string
+  values also as string.
 See Also
-  EnablePropertyValueCrypt
+  EnablePropertyValueCrypt, IsPropertyValueCryptEnabled, OnEncryptPropertyValue,
+  OnDecryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.EnablePropertyValueCrypt
 Summary
-  Enables the Cryption of Property-Values (Only String-Values)
+  Enables the encryption/decryption of string values.
 Description
-  Enables the Cryption of Property-Values (Only String-Values)
+  Call EnablePropertyValueCrypt to start the encryption and decryption of string values. When enabled
+  then the storage component triggers an OnEncryptPropertyValue event for each string value it writes
+  to the storage, and an OnDecryptPropertyValue event for each string value it reads from the storage.
+
+  Every call to EnablePropertyValueCrypt should be paired with a call to DisablePropertyValueCrypt.
+  EnablePropertyValueCrypt/DisablePropertyValueCrypt pairs can be nested.
+Note
+  Only string values are encrypted/decrypted. You can use StorageOptions to read and write non-string
+  values also as string.
 See Also
-  DisablePropertyValueCrypt
+  DisablePropertyValueCrypt, IsPropertyValueCryptEnabled, OnEncryptPropertyValue,
+  OnDecryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.EndUpdate
@@ -719,7 +749,7 @@ Description
   Call Flush to explicitly flush the content of the in memory file into the file indicated by
   FileName.
 See Also
-  FileName
+  FileName, FlushIfNeeded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.FlushIfNeeded
@@ -728,8 +758,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Flush, FlushNeeded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.FlushNeeded
@@ -737,11 +766,8 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FlushIfNeeded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.FlushOnDestroy
@@ -756,30 +782,30 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetCharName
 Summary
-  Write here a summary (1 line)
+  Translates a char value to a (valid) key name.
 Description
-  Write here a description
+  Call GetCharName to translate a char value to a (valid) key name. This function is used by the set
+  storage methods.
 Parameters
-  Ch - Description for this parameter
+  Ch - The char value that needs to be translated to a key name.
 Return value
-  Describe here what the function returns
+  A valid key name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GetIntName, ReadSet, WriteSet
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetIntName
 Summary
-  Write here a summary (1 line)
+  Translates an integer value to a key name.
 Description
-  Write here a description
+  Call GetIntName to translates an integer value to a key name. This function is used by the set
+  storage methods.
 Parameters
-  Value - Description for this parameter
+  Value - The integer value that needs to be translated to a key name.
 Return value
-  Describe here what the function returns
+  A valid key name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GetCharName, ReadSet, WriteSet
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetStoredValues
@@ -819,9 +845,16 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsPropertyValueCryptEnabled
 Summary
-  Write here a summary (1 line)
+  Indicates whether the encryption/decryption of values is enabled.
 Description
-  Returns the current state if Property-Value Cryption is enabled
+  Read IsPropertyValueCryptEnabled to determine whether encryption/decryption of string values is
+  enabled.
+
+  When IsPropertyValueCryptEnabled is true, the storage component triggers an OnEncryptPropertyValue
+  event for each string value it writes to the storage, and an OnDecryptPropertyValue event for each
+  string value it reads from the storage.
+See Also
+  EnablePropertyValueCrypt, DisablePropertyValueCrypt
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsUpdating
@@ -850,20 +883,20 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnDecryptPropertyValue
 Summary
-  Write here a summary (1 line)
+  Occurs when a string value needs to be decrypted.
 Description
-  Write here a description
+  Write an OnDecryptPropertyValue event handler to decrypt values that are read from the storage.
 See Also
-  TJvAppStorageCryptEvent
+  TJvAppStorageCryptEvent, OnEncryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnEncryptPropertyValue
 Summary
-  Write here a summary (1 line)
+  Occurs when a string value needs to be encrypted.
 Description
-  Write here a description
+  Write an OnEncryptPropertyValue event handler to encryt values that are to be stored in the storage.
 See Also
-  TJvAppStorageCryptEvent
+  TJvAppStorageCryptEvent, OnDecryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnError
@@ -978,7 +1011,7 @@ Parameters
   Path       - \Path (relative to the current path) of the value to read.
   List       - Description for this parameter
   ClearFirst - Description for this parameter
-  ItemName   - Description for this parameter
+  ItemName   - Prefix of the sub path for the items.
 See Also
   WriteCollection
 
@@ -1005,9 +1038,9 @@ Description
   Retrieves an enumeration. If the value is not found, the Default will be returned.
 Parameters
   Path     - \Path (relative to the current path) of the value to read.
-  TypeInfo - Description for this parameter
+  TypeInfo - A typeinfo pointer that describes the type of the data to be read.
   Default  - Value to return if the specified path does not exist.
-  Value    - Description for this parameter
+  Value    - Returns the retrieved value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadFloat
@@ -1050,7 +1083,7 @@ See Also
 Summary
   Reads a list of items.
 Description
-  ReadList reads a list of items from the storage. The result values is the number of items in the list
+  ReadList reads a list of items from the storage. The result value is the number of items in the list
   or 0 if the list does not exist in the storage.
 
   ReadList is a general purpose method that can read any list by means of the provided read method. The
@@ -1060,9 +1093,9 @@ Description
   immediately (e.g. store it in memory or display it in a control).
 Parameters
   Path       - \Path (relative to the current path) of the value to read.
-  List       - Description for this parameter
+  List       - Parameter passed to the OnReadItem event.
   OnReadItem - Method that will read each item from the storage.
-  ItemName   - Description for this parameter
+  ItemName   - Parameter passed to the OnReadItem event.
 See Also
   TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
   TJvCustomAppStorage.ReadInteger, TJvCustomAppStorage.ReadString, TJvCustomAppStorage.ReadStringList,
@@ -1073,19 +1106,20 @@ See Also
 Summary
   Retrieves a list of objects.
 Description
-  Retrieves a list of objects. The list is optionally cleared before before reading starts. The
-  ObjectType of the Object is retrieved from the stored "Classname" value. The result value is the
-  number of items read. Uses ReadList with internally provided methods to do the actual reading.
+  Retrieves a list of objects. The list is optionally cleared before before reading starts.
 
-  Retrieves a list of objects. The list is optionally cleared before before reading starts. The
-  ObjectType of the Object is defined by the ItemCreator-Event. The result value is the number of items
-  read. Uses ReadList with internally provided methods to do the actual reading.
+  When ReadObjectList is called with no ItemCreater parameter, the ObjectType of the Object is
+  retrieved from the stored "Classname" value. Otherwise, the ObjectType of the Object is defined by
+  the ItemCreator-Event.
+
+  The result value is the number of items read. Uses ReadList with internally provided methods to do
+  the actual reading.
 Parameters
   Path        - \Path (relative to the current path) of the value to read.
-  List        - Description for this parameter
-  ClearFirst  - Description for this parameter
-  ItemName    - Description for this parameter
-  ItemCreator - Description for this parameter
+  List        - Specifies the TList descendant to hold the retrieved objects.
+  ClearFirst  - Indicates whether to clear the List parameter first.
+  ItemName    - Prefix of the sub path for the items.
+  ItemCreator - Method that will create each item.
 See Also
   ReadList
 
@@ -1098,7 +1132,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Defines if the Storage-Component is readonly or not. If Readonly is true all Calls to an
+  Defines if the Storage-Component is read-only or not. If ReadOnly is true all Calls to an
   Write*-Procedure will be ignored. The property is calculated by a combination of setting the property
   ReadOnly and Result of the function GetPhysicalReadOnly
 
@@ -1140,9 +1174,9 @@ Description
   Call ReadSet to retrieve a set. If the value is not found, the Default will be returned.
 Parameters
   Path      - \Path (relative to the current path) of the value to read.
-  ATypeInfo - Description for this parameter
+  ATypeInfo - A typeinfo pointer that describes the type of the value to be read.
   Default   - Value to return if the specified path does not exist.
-  Value     - Description for this parameter
+  Value     - Returns the retrieved value.
 See Also
   WriteSet
 
@@ -1176,7 +1210,7 @@ Parameters
   Path       - \Path (relative to the current path) of the value to read.
   SL         - String list in which to store the strings from the storage.
   ClearFirst - Flag to indicate if the string list should be cleared before reading commences.
-  ItemName   - Description for this parameter
+  ItemName   - Prefix of the sub path for the items.
 See Also
   TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
   TJvCustomAppStorage.ReadInteger, TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadString,
@@ -1195,7 +1229,7 @@ Parameters
   Path        - Description for this parameter
   SL          - Description for this parameter
   ClearFirst  - Description for this parameter
-  ItemName    - Description for this parameter
+  ItemName    - Prefix of the sub path for the items.
   ItemCreator - Description for this parameter
 See Also
   WriteStringObjectList
@@ -1203,6 +1237,21 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadStringObjectList@string@TStrings@TJvAppStorageObjectListItemCreateEvent@Boolean@string
 <COMBINE TJvCustomAppStorage.ReadStringObjectList@string@TStrings@Boolean@string>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.ReadWideString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path    - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Reload
@@ -1309,8 +1358,13 @@ Parameters
   Instance - Description for this parameter
   AName    - Description for this parameter
   Reading  - Description for this parameter
-Return value
-  Describe here what the function returns
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.TranslateStringEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1345,9 +1399,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteBoolean
 Summary
-  Stores an Boolean value.
+  Stores a Boolean value.
 Description
-  Stores an Boolean value. The value is stored as string TRUE/FALSE.
+  Stores a Boolean value. The value is stored as string TRUE/FALSE.
 Parameters
   Path  - Path (relative to the current path) where the value is to be stored.
   Value - Value to store.
@@ -1355,13 +1409,13 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteCollection
 Summary
-  Write here a summary (1 line)
+  Stores a collection.
 Description
-  Write here a description
+  Call WriteCollection to store a collection in the specified location.
 Parameters
   Path     - Path (relative to the current path) where the value is to be stored.
   List     - Value to store.
-  ItemName - Description for this parameter
+  ItemName - Prefix of the sub path for the items.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteDateTime
@@ -1385,7 +1439,7 @@ Description
   Write here a description
 Parameters
   Path     - Path (relative to the current path) where the value is to be stored.
-  TypeInfo - Description for this parameter
+  TypeInfo - A typeinfo pointer that describes the type of the Value parameter.
   Value    - Value to store.
 
 ----------------------------------------------------------------------------------------------------
@@ -1438,7 +1492,7 @@ Parameters
   ItemCount     - Number of items to store.
   OnWriteItem   - Method that will write each item to the storage.
   OnDeleteItems - Method that will remove remaining items from a previous list.
-  ItemName      - Description for this parameter
+  ItemName      - Prefix of the sub path for the items.
 See Also
   TJvCustomAppStorage.ReadList, TJvCustomAppStorage.WriteBinary, TJvCustomAppStorage.WriteDateTime,
   TJvCustomAppStorage.WriteFloat, TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteString,
@@ -1449,11 +1503,12 @@ See Also
 Summary
   Stores a list of objects.
 Description
-  Stores a list of objects. Uses WriteList with internally provided methods to do the actual storing.
+  Call WriteObjectList to stores a list of objects. Uses WriteList with internally provided methods to
+  do the actual storing.
 Parameters
   Path     - Path (relative to the current path) where the value is to be stored.
   List     - Value to store.
-  ItemName - Description for this parameter
+  ItemName - Prefix of the sub path for the items.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WritePersistent
@@ -1485,9 +1540,29 @@ Summary
   Stores a set (ignores sub stores).
 Description
   Write here a description
+
+  <CODE>
+  type
+    TTest = (tstValue1, tstValue2, tstValue3);
+    TTestSet = set of TTest;
+
+  uses
+    TypInfo;
+
+  function TForm1.ReadTestSet: TTestSet;
+  begin
+    Result := [];
+    JvAppIniFileStorage1.ReadSet('SomePath', TypeInfo(TTestSet), Result, Result);
+  end;
+
+  procedure TForm1.WriteTestSet(const ATestSet: TTestSet);
+  begin
+    JvAppIniFileStorage1.WriteSet('SomePath', TypeInfo(TTestSet), ATestSet);
+  end;
+  </CODE>
 Parameters
   Path      - Path (relative to the current path) where the value is to be stored.
-  ATypeInfo - Description for this parameter
+  ATypeInfo - A typeinfo pointer that describes the type of the Value parameter.
   Value     - Value to store.
 
 ----------------------------------------------------------------------------------------------------
@@ -1516,7 +1591,7 @@ Description
 Parameters
   Path     - Path (relative to the current path) where the strings are to be stored.
   SL       - String list to store.
-  ItemName - Description for this parameter
+  ItemName - Prefix of the sub path for the items.
 See Also
   TJvCustomAppStorage.ReadStringList, TJvCustomAppStorage.WriteBinary,
   TJvCustomAppStorage.WriteDateTime, TJvCustomAppStorage.WriteFloat, TJvCustomAppStorage.WriteInteger,
@@ -1530,8 +1605,21 @@ Description
   Write here a description
 Parameters
   Path     - Path (relative to the current path) where the value is to be stored.
-  SL       - Description for this parameter
-  ItemName - Description for this parameter
+  SL       - String list to store.
+  ItemName - Prefix of the sub path for the items.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.WriteWideString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path  - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions
@@ -1626,7 +1714,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.EnumerationAsString
 Summary
-  Specifies whether to store a enumeration as string.
+  Specifies whether to store an enumeration as string.
 Description
   Write here a description
 See Also

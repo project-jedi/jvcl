@@ -1046,7 +1046,7 @@ See Also
 Summary
   Specifies the height of the node items.
 Description
-  Use ItemHeight to specify the height of the node in the treeview.
+  Use ItemHeight to specify the height of the node in the tree view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.ItemIndex
@@ -1082,12 +1082,12 @@ Summary
   Specifies a menu that is used as the items of the tree view.
 Description
   Assign a TMenu (or a descendant, like TMainMenu or TPopupMenu) to the Menu property of the control to
-  make the treeview use the menu's items for its structure.
+  make the tree view use the menu's items for its structure.
 
   When a menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
   item itself (see MenuDblClick for details).
 
-  Only menu items with valid captions (all captions except '-' and '') are added to the treeview.
+  Only menu items with valid captions (all captions except '-' and '') are added to the tree view.
 Note
   TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the
   menu's structure. The original OnChange vent is called automatically (if assigned). If you need to
@@ -1141,7 +1141,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnComparePage
 Summary
-  Occurs when the treeview needs to determine which page to activate in a page control.
+  Occurs when the tree view needs to determine which page to activate in a page control.
 Description
   Assign a handler to this event to control which page is selected in a page control when a specific
   node is clicked. This event is only triggered if PageControl is assigned.
@@ -1149,7 +1149,7 @@ Description
   If no handler is assigned, TJvTreeView selects the first tab in the page control where the Caption
   matches the Text of the selected node.
 Parameters
-  Sender  - The treeview that triggered the event.
+  Sender  - The tree view that triggered the event.
   Page    - The current page being compared.
   Node    - The current node being compared.
   Matches - Set this to true if Page is a match to Node.
@@ -1157,9 +1157,9 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnCustomDrawItem
 Summary
-  Occurs when the treeview needs to be drawn.
+  Occurs when the tree view needs to be drawn.
 Description
-  Assign a handler to this event to perform your own custom drawing of the treeview.
+  Assign a handler to this event to perform your own custom drawing of the tree view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnEditCancelled
@@ -1221,11 +1221,11 @@ Description
 Summary
   Specifies a page control to associate with the control.
 Description
-  Assign a TPageControl (or descendant) to this property to make the treeview automatically change the
-  active tab when a node is clicked in the treeview.
+  Assign a TPageControl (or descendant) to this property to make the tree view automatically change the
+  active tab when a node is clicked in the tree view.
 
-  By default, the treeview searches the tabs of the page control for a caption matching the text of the
-  node. If no tab is found, the active tab is not changed.
+  By default, the tree view searches the tabs of the page control for a caption matching the text of
+  the node. If no tab is found, the active tab is not changed.
 
   To control what tab gets activated, write a handler for the OnComparePage event.
 

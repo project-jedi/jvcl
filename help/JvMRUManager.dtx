@@ -52,7 +52,7 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  The TJvMRUManager component is a MRU (most recently used) item manager.
+  The TJvMRUManager component is a most recently used (MRU) item manager.
 Description
   Use the TJvMRUManager when you need to handle files and similar items in a menu of some kind.
 
@@ -62,7 +62,7 @@ Summary
   Specifies the delimiter between accelerator and path
 Description
   Use AccelDelimiter to specify the character that should be used between an accelerator character and
-  athe path item in a TJvMRUManager. AccelDelimiter can be either a space or a tab.
+  the path item in a TJvMRUManager. AccelDelimiter can be either a space or a tab.
 
   If ShowAccelChar is false, this property has no effect.
 
@@ -71,7 +71,7 @@ Description
 Summary
   Adds an item to the list.
 Description
-  Call Add to add a new item to the list. Typcially, a new item is added in response to opening a file
+  Call Add to add a new item to the list. Typically, a new item is added in response to opening a file
   or similar. The item is either added to the front or rear of the list depending on the value of
   Mode.
 Parameters
@@ -90,7 +90,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.AutoUpdate
 Summary
-  Specifies whether the state of the menu is updated autmatically or not.
+  Specifies whether the state of the menu is updated automatically or not.
 Description
   When AutoUpdate is true, changing properties of the component that affects the menu, automatically
   updates and rebuilds the menu as necessary.
@@ -104,7 +104,7 @@ Summary
   Specifies how many items can be in the list.
 Description
   Use Capacity to specify how many items the list can hold. When a new item is added that would make
-  the list exceeed Capacity, the oldest item is removed. What item is considered the "oldest item" is
+  the list exceed Capacity, the oldest item is removed. What item is considered the "oldest item" is
   determined by the settings of Mode.
 
 ----------------------------------------------------------------------------------------------------
@@ -127,10 +127,10 @@ Description
 Summary
   Specifies the IniStorage component to use when saving and restoring MRU items automatically.
 Description
-  Specify a IniStorage component (f ex TJvAppIniFileStorage or TJvAppregistryStorage) that should be
-  used to save and restore items from.
+  Specify an IniStorage component (For example TJvAppIniFileStorage or TJvAppRegistryStorage) that
+  should be used to save and restore items from.
 
-  Even if you don't specify a IniStorage component , you can save and load items manually using code.
+  Even if you don't specify an IniStorage component, you can save and load items manually using code.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.IsMenuEnabled
@@ -163,14 +163,15 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.MaxLength
 Summary
-  Note that this only affects the visual display of the path, not the actual stored path Specifies the
-  allowed length of a path.
+  Specifies the allowed length of a path.
 Description
   Specifies the maximum number of characters a path can have in the menu. If a path contains more than
   the allowed number of characters, the menu item caption will be shortened by removing one or more
-  characters and replacing them with ellipsises (...).
+  characters and replacing them with ellipses (...).
 
   A value of 0 indicates that there is no user-defined limit on the length.
+
+  Note that this only affects the visual display of the path, not the actual stored path.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.MenuLocation
@@ -244,20 +245,21 @@ Description
 Parameters
   Sender - the MRU manager
   Item   - the menu item to return info about
+See Also
+  TJvMRUManager.OnGetItemInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.OnGetItemInfoEx
 Summary
-  Write here a summary (1 line)
+  Occurs when info for a menu item is requested.
 Description
-  Write here a description
+  Write a handler for this event to take specific action when info for an item is requested.
 Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-  Index  - Description for this parameter
+  Sender - the MRU manager
+  Item   - the menu item to return info about
+  Index  - the index of the item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMRUManager.OnGetItemInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.OnReadItem
@@ -281,7 +283,7 @@ Description
   Write an OnWriteItem event handler to take specific action when an item is saved to a storage.
 Parameters
   Sender     - the MRU manager
-  AppStorage - the storage compoent
+  AppStorage - the storage component
   Path       - the path in storage
   Index      - index of the item
   RecentName - caption of the item
@@ -311,7 +313,7 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.RemoveInvalid
 Summary
-  Remove invalid items
+  Removes invalid items.
 Description
   Call RemoveInvalid to delete all items that can no longer be found in the file system.
 
@@ -328,7 +330,7 @@ Description
 Summary
   Saves items to storage.
 Description
-  Call Save to save items from the component into storgae. If IniStorage is nil, this method does
+  Call Save to save items from the component into storage. If IniStorage is nil, this method does
   nothing.
 
 ----------------------------------------------------------------------------------------------------
@@ -392,7 +394,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.UpdateRecentMenu
 Summary
-  Updates the menu items
+  Updates the menu items.
 Description
   Call UpdateRecentMenu to update the menu items to match the state of the MRU items.
 
@@ -401,14 +403,14 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings
 Summary
-  Special TStrings descendant used by TJvMUManager
+  Special TStrings descendant used by TJvMUManager.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.Add
 Summary
-  Add an item to the list.
+  Adds an item to the list.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
@@ -418,7 +420,7 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.AddStrings
 Summary
-  Add several items to the list.
+  Adds several items to the list.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
@@ -428,7 +430,7 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.DeleteExceed
 Summary
-  Delete items beyond the limit.
+  Deletes items beyond the limit.
 Description
   Delete items from the list that is beyond the specified MaxSize.
 
@@ -438,7 +440,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.MaxSize
 Summary
-  Specifies the aximum number of allowed items in the list.
+  Specifies the maximum number of allowed items in the list.
 Description
   Use MaxSize to set the maximum number of items that can be added to the list.
 
@@ -453,7 +455,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.Remove
 Summary
-  Remove an item from the list.
+  Removes an item from the list.
 Description
   Write here a description
 Parameters

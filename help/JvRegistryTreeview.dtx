@@ -84,7 +84,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.CurrentKey
 Summary
-  Specifies the currently select key (node) in the treeview.
+  Specifies the currently select key (node) in the tree view.
 Description
   \Read CurrentKey to access the HKEY value of the currently selected key. You can use the returned
   value as a parameter to Windows API functions that expect a HKEY as parameter.
@@ -142,7 +142,7 @@ Summary
   Specifies a listview used to display the content of the selected node.
 Description
   Assign a listview to the ListView property to have it automatically populated when the selected node
-  in the treeview changes. If you display the items in report mode, add columns to the listview with
+  in the tree view changes. If you display the items in report mode, add columns to the listview with
   the following names: "\Name", "\Value", "\Type". The "\Type" column doesn't have to be added if you
   don't want to display the data type for items. If the listview is assigned, some items are given the
   text values specified by DefaultCaption and DefaultNoValueCaption.
@@ -186,7 +186,7 @@ Description
   Call RefreshNode to refresh the display for the selected node. To reread all data from the registry,
   set Node to nil. Calling RefreshNode will:
 
-  1. \Delete the subnodes in the treeview, and
+  1. \Delete the subnodes in the tree view, and
   2. Reread all the data from the registry again
 Parameters
   Node - The node to refresh
@@ -196,7 +196,7 @@ Parameters
 Summary
   Specifies the registry keys ("hives") to display in the tree.
 Description
-  Set RegistryKeys to define what nodes are displayed in the treeview. If RegistryKeys is set to [],
+  Set RegistryKeys to define what nodes are displayed in the tree view. If RegistryKeys is set to [],
   nothing will be displayed. The default is to display HKEY_LOCAL_MACHINE and HKEY_LOCAL_USER.
 Note
   Not all available values are available on all versions of Windows. If a specific hive is not found,
@@ -205,9 +205,9 @@ Note
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RootCaption
 Summary
-  Specifies the text to display for the root item in the treeview.
+  Specifies the text to display for the root item in the tree view.
 Description
-  The root of the treeview displays a "My Computer" icon. This node is not an actual node in the
+  The root of the tree view displays a "My Computer" icon. This node is not an actual node in the
   registry but is provided to emulate the way the regedit.exe application displays the registry. Use
   RootCaption to change the text displayed for this node. By default, the text is set to "My
   Computer".

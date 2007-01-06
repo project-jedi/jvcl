@@ -53,8 +53,8 @@ Description
   If the form contains a file list box, you can set the FileList property to have the file list box
   automatically display the files from the directory specified by the Directory property. If the form
   contains a label, you can set the DirLabel property to have the currently selected directory
-  displayed in the label. If the form has a drive combobox, you can set the DriveCombo property to have
-  the currently selected drive displayed in the combobox.
+  displayed in the label. If the form has a drive combo box, you can set the DriveCombo property to
+  have the currently selected drive displayed in the combo box.
 See Also
   TJvDirectoryListBox.DirLabel, TJvDirectoryListBox.DriveCombo, TJvDirectoryListBox.FileList
 
@@ -81,7 +81,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.DriveCombo
 Summary
-  Specifies a combobox that displays the current drive.
+  Specifies a combo box that displays the current drive.
 Description
   When the current drive changes in the directory list box, the current drive in the DriveCombo
   changes. When the current drive in the DriveCombo changes, the current drive in the directory list
@@ -193,7 +193,7 @@ JVCLInfo
   GROUP=JVCL.EditsMemosAndCombos.Combos
   FLAG=Component
 Summary
-  A combobox that displays the available drives on the system.
+  A combo box that displays the available drives on the system.
 Description
   Use TJvDriveCombo to display a list of available drives on the system. TJvDriveCombo derives from
   TJvCustomComboBox, exposes many of its properties and adds functionality to also display local as
@@ -259,7 +259,7 @@ Description
 Summary
   Updates the list of drives.
 Description
-  Call Refresh to update the display in the list. When you call Refresh, the combobox clears the list,
+  Call Refresh to update the display in the list. When you call Refresh, the combo box clears the list,
   scans the system for drives and fills the Items array again, finally resetting the selected item to
   be the previously selected item.
 
@@ -270,7 +270,7 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  A listbox that displays a list of drives available on the system.
+  A list box that displays a list of drives available on the system.
 Description
   Use TJvDriveList to display a list of available drives on the system. TJvDriveList derives from
   TJvCustomListBox, exposes many of its properties and adds functionality to also display local as well
@@ -303,7 +303,7 @@ See Also
 Summary
   Provides indexed access to the drives in the control.
 Description
-  Use Drives to access a specific drive in the list based on it's index. Valid indices range from 0 to
+  Use Drives to access a specific drive in the list based on its index. Valid indices range from 0 to
   DriveCount - 1. For example, when MultiSelect is true, you can use Drives and DriveCount to create a
   list of drives the user has selected:
   <CODE>
@@ -364,17 +364,17 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.OnChange
 Summary
-  Occurs when the selection in the listbox changes.
+  Occurs when the selection in the list box changes.
 Description
-  Write a handler for the \OnChange event to take specific action when the selected item in the listbox
-  changes.
+  Write a handler for the \OnChange event to take specific action when the selected item in the list
+  box changes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Refresh
 Summary
   Updates the list of drives.
 Description
-  Call Refresh to update the display in the list. When you call Refresh, the listbox clears the list,
+  Call Refresh to update the display in the list. When you call Refresh, the list box clears the list,
   scans the system for drives and fills the Items array again, finally resetting the selected item to
   be the previously selected item.
 

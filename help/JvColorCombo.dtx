@@ -24,7 +24,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.AddColor
 Summary
-  Adds a color to the combo box's color list.
+  Adds a color to the combo box color list.
 Description
   Call AddColor at runtime to add a color to the combo box.
 Parameters
@@ -48,11 +48,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ChangeColor
 Summary
-  Changes a color in the combo box's color list.
+  Changes a color in the combo box color list.
 Description
   Call ChangeColor at runtime to change a color in the combo box.
 Parameters
-  AIndex      - Specifies a zero-based position in the combo box's list where to change the color.
+  AIndex      - Specifies a zero-based position in the combo box list where to change the color.
   AColor      - Specifies the color to set at the specified index.
   DisplayName - The display text for the new color.
 See Also
@@ -69,7 +69,7 @@ Description
   If the user selects a color from the dialog, a new item is added to the combo box, with text
   specified by NewColorText, and color as selected in the dialog.
 Note
-  coCustomColors must be included in Options, otherwise the combobox doesn't display this special
+  coCustomColors must be included in Options, otherwise the combo box doesn't display this special
   item.
 See Also
   TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText, TJvColorComboBox.OnBeforeCustom,
@@ -128,8 +128,8 @@ Description
   Use the ColorValue property to read the color value of the current selected color or specify a new
   color for the ColorValue value, to change the current selected color.
 
-  If ColorValue is set to a color that doesn't exists in the combo box's list, then the color is added
-  to the list.
+  If ColorValue is set to a color that doesn't exists in the combo box list, then the color is added to
+  the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorWidth
@@ -141,11 +141,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.CustomColorCount
 Summary
-  Indicates the number of custom colors in the combo box's color list
+  Indicates the number of custom colors in the combo box color list
 Description
-  \Read CustomColorCount to determine the number of custom colors in the combo box's color list.
+  \Read CustomColorCount to determine the number of custom colors in the combo box color list.
 Note
-  coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
+  coCustomColors must be included in Options, otherwise the combo box doesn't allow colors to be added
   by the user.
 See Also
   TJvColorComboBox.ColorDialogText, TJvColorComboBox.NewColorText, TJvColorComboBox.OnBeforeCustom,
@@ -197,11 +197,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.GetColors
 Summary
-  Clears the combo box's list and refills it with colors.
+  Clears the combo box list and refills it with colors.
 Description
-  Use GetColors to reset the combo box's list to its initial state. It fills the combo box's list with
-  the colors as defined in the Graphics unit, such as clBlack and clMaroon. If coSysColors is included
-  in Options it also adds colors defined in the Windows Control panel, such as clMenu and clWindow. If
+  Use GetColors to reset the combo box list to its initial state. It fills the combo box list with the
+  colors as defined in the Graphics unit, such as clBlack and clMaroon. If coSysColors is included in
+  Options it also adds colors defined in the Windows Control panel, such as clMenu and clWindow. If
   coCustomColors is included in Options it also adds the special combo box items which allows the user
   to add custom colors to the combo box.
 
@@ -210,7 +210,7 @@ Description
 Summary
   Fills a list with the custom colors.
 Description
-  Use GetCustomColors to retrieve a list with the custom colors in the color combo box's list.
+  Use GetCustomColors to retrieve a list with the custom colors in the color combo box list.
 Parameters
   AList - Specifies a list to be filled with custom colors.
 
@@ -249,11 +249,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.InsertColor
 Summary
-  Inserts a color at a specified position in the combo box's color list.
+  Inserts a color at a specified position in the combo box color list.
 Description
   Use the InsertColor method to insert a color into the combo box color list.
 Parameters
-  AIndex      - Specifies a zero-based position in the combo box's list where to insert the color.
+  AIndex      - Specifies a zero-based position in the combo box list where to insert the color.
   AColor      - Specifies the color to insert.
   DisplayName - The display text for the new color.
 See Also
@@ -267,11 +267,11 @@ Description
   Use NewColorText to specify a prefix for the text of colors added by the user. The user can add
   colors to the combo box by selecting the special combo box item - with text ColorDialogText.
 
-  If the user selects a color from the dialog, a new item is added to the combobox. The display text of
-  this item consist of the NewColorText and a number indicating the number of custom colors added by
+  If the user selects a color from the dialog, a new item is added to the combo box. The display text
+  of this item consist of the NewColorText and a number indicating the number of custom colors added by
   the user, so far.
 Note
-  coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
+  coCustomColors must be included in Options, otherwise the combo box doesn't allow colors to be added
   by the user.
 See Also
   TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount, TJvColorComboBox.OnBeforeCustom,
@@ -284,7 +284,7 @@ Summary
   box's list.
 Description
   Use OnBeforeCustom to respond when the special combo box item, with text as specified by
-  ColorDialogText, is added to the combo box's list.
+  ColorDialogText, is added to the combo box list.
 See Also
   TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText,
   TJvColorComboBox.OnNewColor, TJvColorComboBox.Options
@@ -292,23 +292,23 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnGetDisplayName
 Summary
-  Occurs immediately before an item is displayed in the color combobox.
+  Occurs immediately before an item is displayed in the color combo box.
 Description
-  Use OnGetDisplayName to customize an item before it is displayed in the color combobox. Set the
+  Use OnGetDisplayName to customize an item before it is displayed in the color combo box. Set the
   values of the parameters in the event handler so that the item appears correctly when it is
   displayed.
 Parameters
   Sender      - The TJvColorComboBox component that has sent this event.
-  Index       - Specifies the zero-based position of the color item in the combo box's list.
+  Index       - Specifies the zero-based position of the color item in the combo box list.
   Color       - Set Color to specify a new color for the to be displayed item. Leave Color unchanged
-                 to display the color as specified in the combo box's list.
+                 to display the color as specified in the combo box list.
   DisplayName - Set DisplayName to specify a new display name for the to be displayed item. Leave
-                 DisplayName unchanged to display the name as specified in the combo box's list.
+                 DisplayName unchanged to display the name as specified in the combo box list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnInsertColor
 Summary
-  Occurs immediately before a new item is inserted into the combo box's color list.
+  Occurs immediately before a new item is inserted into the combo box color list.
 Description
   \Write an OnInsertColor event handler to conditionally prevent colors to be added to the color combo
   box, or to alter the DisplayName of a new color.
@@ -339,7 +339,7 @@ Description
 
   Set AllowAdd to False to disallow the user to add the color.
 Note
-  coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
+  coCustomColors must be included in Options, otherwise the combo box doesn't allow colors to be added
   by the user.
 See Also
   TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText,
@@ -616,7 +616,7 @@ Description
   control. OnDrawPreviewEvent is only called if foPreviewFont is in Options.
 Parameters
   Sender       - The control that triggered the event.
-  AFontName    - The name pf the fnt about to be drawn.
+  AFontName    - The name of the font about to be drawn.
   APreviewText - The text to use to draw the preview.
   ATextWidth   - The approximate width required to draw the font name and the preview text.
   DrawPreview  - Indicates whether to draw the preview or not for this font. The default value is
@@ -633,7 +633,7 @@ Description
 
   Use Options to
 
-  * Specify which type of fonts the combobox should contain.
+  * Specify which type of fonts the combo box should contain.
   * Display each font name in the combo box using the specific font.
   * Display a font preview in the control.
   * Display a MRU list at the top of the control.
@@ -659,7 +659,7 @@ See Also
 Summary
   Specifies whether to use images to indicate the font type.
 Description
-  If UseImages is set to True, the combobox uses images to indicate the font type. Set UseImages to
+  If UseImages is set to True, the combo box uses images to indicate the font type. Set UseImages to
   False to disable showing images.
 
   The following table lists the possible images and their meaning.
@@ -696,7 +696,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foFixedPitchOnly
-  Displays only monospaced fonts in the dialog. Proportionally spaced fonts are not listed, nor are
+  Displays only monospace fonts in the dialog. Proportionally spaced fonts are not listed, nor are
   TrueType fonts that do not have the fixed-pitch flag set in the style header.
 
 ----------------------------------------------------------------------------------------------------
@@ -718,7 +718,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foDisableVerify
-  Allows you to insert a font name that doesn't exists in the combo box's list.
+  Allows you to insert a font name that doesn't exists in the combo box list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foPreviewFont

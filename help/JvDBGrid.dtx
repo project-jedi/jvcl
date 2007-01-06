@@ -66,6 +66,11 @@ Description
 <COMBINE TJvDBGrid.OnShowCellHint>
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBCheckIfBooleanFieldEvent
+<TITLE TJvDBCheckIfBooleanFieldEvent type>
+<COMBINE TJvDBGrid.OnCheckIfBooleanField>
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBColumnResizeEvent
 <TITLE TJvDBColumnResizeEvent type>
 <COMBINE TJvDBGrid.OnColumnResized>
@@ -192,6 +197,16 @@ Description
   When true shows a tick box for boolean fields.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.CanDelete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.CharList
 Summary
   Write here a summary (1 line)
@@ -235,7 +250,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.EditControls
 Summary
-  Allows field editing using in-place external controls like combo boxes or check boxes.
+  Allows field editing using inplace external controls like combo boxes or check boxes.
 Description
   In the property inspector, clicking on the ellipsis a dialog showing the columns of the grid opens.
   There you can select fields requiring special editing capabilities, and bind them to external
@@ -295,19 +310,6 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGrid.IsBooleanField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Grid  - Description for this parameter
-  Field - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Load
 Summary
   Load settings from storage.
@@ -362,6 +364,21 @@ Parameters
   ACol    - The index of the column.
   Field   - The field of the cell.
   Enabled - Indicates if the button should be enabled or not.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnCheckIfBooleanField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid           - Description for this parameter
+  Field          - Description for this parameter
+  StringForTrue  - Description for this parameter
+  StringForFalse - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnColumnResized
@@ -466,7 +483,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnShowEditor
 Summary
-  Occurs when the inplace editor is about to be shown.
+  Occurs when the in-place editor is about to be shown.
 Description
   Write a handler for this event to conditionally enable and disable cell editing.
 Parameters
@@ -516,13 +533,23 @@ Description
   OnTitleBtnClick event will also be triggered by a double-click.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGrid.PostOnEnter
+@@TJvDBGrid.PostOnEnterKey
 Summary
   Specifies whether pressing the Enter key posts the changes to the dataset.
 Description
-  Use PostOnEnter to specify whether pressing the Enter key automatically posts data to the underlying
-  dataset. If PostOnEnter is false, the user must move to another cell before the modified data is
-  committed.
+  Use PostOnEnterKey to specify whether pressing the Enter key automatically posts data to the
+  underlying dataset. If PostOnEnterKey is false, the user must move to another cell before the
+  modified data is committed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ReduceFlicker
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.RegisterLayoutChangeLink
@@ -578,6 +605,16 @@ Parameters
   Path       - The path to the storage location.
 See Also
   TJvDBGrid.IniStorage, TJvDBGrid.Load, TJvDBGrid.LoadFromAppStore, TJvDBGrid.Save
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ScrollBars
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelCount
@@ -795,6 +832,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGridBitmap
+<TITLE TJvDBGridBitmap type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGridControl
 Summary
   Write here a summary (1 line)
@@ -823,6 +871,16 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControl.FitCell
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridControl.LeaveOnEnterKey
 Summary
   Write here a summary (1 line)
 Description
@@ -973,11 +1031,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBIsBoolFieldEvent
-<TITLE TJvDBIsBoolFieldEvent type>
-<COMBINE TJvDBGrid.IsBooleanField>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings

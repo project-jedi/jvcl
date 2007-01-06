@@ -15,18 +15,18 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  A listbox that displays a combobox overlaying the selected item.
+  A list box that displays a combo box overlaying the selected item.
 Description
-  TJvComboListBox is an owner-draw listbox that displays a combobox overlaying the selected item. If
+  TJvComboListBox is an owner-draw list box that displays a combo box overlaying the selected item. If
   you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user clicks on
-  the combobox button. This component inherits from TJvCustomListBox and publishes many of its
+  the combo box button. This component inherits from TJvCustomListBox and publishes many of its
   properties and events as well as adding new ones like DropdownMenu, DrawStyle, OnDrawImage and
   OnDrawText.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.AddImage
 Summary
-  Adds an image to the listbox.
+  Adds an image to the list box.
 Description
   Use AddImage to add a TPicture to the Items list. AddImage is a helper function that assures that the
   image is copied to an internal TPicture and added to the Items.Objects list. You can also call
@@ -41,7 +41,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.AddText
 Summary
-  Adds a string to the listbox.
+  Adds a string to the list box.
 Description
   Use AddText to add a string to the Items list. AddText is a helper function and is equivalent to
   calling Items.Add.
@@ -55,9 +55,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.ButtonWidth
 Summary
-  Defines the width of the combobox button.
+  Defines the width of the combo box button.
 Description
-  Use ButtonWidth to set the width of the combobox button in the list. The default width is 26 pixels.
+  Use ButtonWidth to set the width of the combo box button in the list. The default width is 26
+  pixels.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.Delete
@@ -74,28 +75,29 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.DrawStyle
 Summary
-  Determines how images are drawn in the listbox.
+  Determines how images are drawn in the list box.
 Description
-  Use DrawStyle to specify how images are drawn in the listbox.
+  Use DrawStyle to specify how images are drawn in the list box.
 See Also
   TJvComboListBoxDrawStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.DropdownMenu
 Summary
-  Determines the pop-up menu to display when the user clicks the combobox button.
+  Determines the pop-up menu to display when the user clicks the combo box button.
 Description
-  Assign a TPopupMenu to the DropdownMenu to display it when the user clicks the combobox button in the
-  listbox. DropdownMenu is separate from PopupMenu but can point to the same TPopupMenu if necessary.
+  Assign a TPopupMenu to the DropdownMenu to display it when the user clicks the combo box button in
+  the list box. DropdownMenu is separate from PopupMenu but can point to the same TPopupMenu if
+  necessary.
 See Also
   PopupMenu
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.HotTrackCombo
 Summary
-  Specifies whether a combobox is highlighted when the mouse passes over it.
+  Specifies whether a combo box is highlighted when the mouse passes over it.
 Description
-  Set HotTrackCombo to true to provide visual feedback about which combobox is under the mouse When
+  Set HotTrackCombo to true to provide visual feedback about which combo box is under the mouse When
   HotTrackCombo is false, there is no visual feedback when the mouse passes over items of the list
   box.
 

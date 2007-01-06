@@ -11,21 +11,21 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView
 Summary
-  Base class for treeviews that has a PageList property of type IPageList.
+  Base class for tree view controls that has a PageList property of type IPageList.
 Description
-  Use TJvCustomPageListTreeView as a base class when developing treeview components that should have
-  the ability to be associated with an IPageList implementation.
+  Use TJvCustomPageListTreeView as a base class when developing tree view controls that should have the
+  ability to be associated with an IPageList implementation.
 
-  TJvCustomPageListTreeView has the same functionality as a normal treeview but in addition it can also
-  automatically change the active page of an IPageList implementation when the selected node changes.
-  Internally, the TJvCustomPageListTreeView component creates its tree nodes as TJvPageIndexNodes. A
-  TJvPageIndexNode has a PageIndex property that specifies which page in the PageList to active when
-  the node is selected.
+  TJvCustomPageListTreeView has the same functionality as a normal tree view but in addition it can
+  also automatically change the active page of an IPageList implementation when the selected node
+  changes. Internally, the TJvCustomPageListTreeView component creates its tree nodes as
+  TJvPageIndexNodes. A TJvPageIndexNode has a PageIndex property that specifies which page in the
+  PageList to active when the node is selected.
 
-  Since the nodes in the treeview is surfaced as normal TTreeNodes, you must typecast the TTreeNode to
+  Since the nodes in the tree view is surfaced as normal TTreeNodes, you must typecast the TTreeNode to
   TJvPageIndexNode in code to access the PageIndex property.
 
-  To put a PageList enabled treeview on a form, don't create instances of TJvCustomPageListTreeView.
+  To put a PageList enabled tree view on a form, don't create instances of TJvCustomPageListTreeView.
   Use the TJvPageListTreeView component instead. TJvPageListTreeView only publishes the properties of
   TJvCustomPageListTreeView without adding any new functionality.
 
@@ -95,19 +95,19 @@ See Also
 Summary
   Specifies the IPageList implementation.
 Description
-  Use the PageList property to associate an IPageList implementation with the treeview. If a PageList
+  Use the PageList property to associate an IPageList implementation with the tree view. If a PageList
   is assigned, the active page of the page list will change automatically when the user selects a new
-  node in the treeview. The page that is activated is determined by the value of the selected nodes
+  node in the tree view. The page that is activated is determined by the value of the selected nodes
   PageIndex property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSettingsTreeView
 Summary
-  A treeview that behaves like the tree view in the Options Dialog in VS.net.
+  A tree view that behaves like the tree view in the Options Dialog in VS.net.
 Description
-  TJvCustomSettingsTreeView is a base class for treeviews that behave like the treeview in the Settings
-  Dialog in Visual Studio: When a node in the treeview is selected, a new page of settings is shown on
-  a panel to the right.
+  TJvCustomSettingsTreeView is a base class for tree view controls that behave like the tree view in
+  the Settings Dialog in Visual Studio: When a node in the tree view is selected, a new page of
+  settings is shown on a panel to the right.
 
   Specifically, the following is true:
 
@@ -119,7 +119,7 @@ Description
     selected image
   * By default, AutoExpand and ReadOnly is true, ShowButtons and ShowLines are false
 
-  Other than that, it should work like a normal TreeView. Note that the treeview was designed with
+  Other than that, it should work like a normal TreeView. Note that the tree view was designed with
   AutoExpand = true in mind but should work with AutoExpand = false
 
   To get the VS look, Images should contain:
@@ -227,7 +227,7 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees,JVCL.PagesAndTabs
   FLAG=Component
 Summary
-  A treeview that can be associated with an IPageList implementation.
+  A tree view that can be associated with an IPageList implementation.
 Description
   TJvPageListTreeView is derived from TJvCustomPageListTreeView and publishes most of its properties
   but doesn't add any new functionality.
@@ -291,9 +291,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.TreeView
 Summary
-  Specifies the treeview that this class is acting upon.
+  Specifies the tree view that this class is acting upon.
 Description
-  The TreeView property is used internally to reference the treeview the class is operating on. Only
+  The TreeView property is used internally to reference the tree view the class is operating on. Only
   component developers might need to access this property.
 
 ----------------------------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
-  A treeview that behaves like the treeview in the Options Dialog in VS.Net.
+  A tree view that behaves like the tree view in the Options Dialog in VS.Net.
 Description
   TJvSettingsTreeView is derived from TJvCustomSettingsTreeView and publishes its properties but it
   does not add any new functionality.

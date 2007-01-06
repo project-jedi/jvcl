@@ -1,9 +1,13 @@
 ##Package: DB
-##Status: Completed, Incomplete
+##Status:
+##Skip: TJvDataSourceLink
+##Skip: TJvPopupDataList
+##Skip: TJvPopupDataWindow
+##Skip: TLookupSourceLink
 ----------------------------------------------------------------------------------------------------
 @@JvDBLookup.pas
 Summary
-  Contains the TJvDBLookup component.
+  Contains the TJvDBLookupCombo, TJvDBLookupEdit and TJvDBLookupList controls.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -12,22 +16,16 @@ Author
 @@TGetImageEvent
 <TITLE TGetImageEvent type>
 Summary
-  Write here a summary (1 line)
+  The type for an OnGetImage event handler.
 Description
-  Write here a description This type is used by (for reference): TJvDBLookupEdit.OnGetImage
-  TJvLookupControl.OnGetImage
+  Write here a description.
 Parameters
   Sender     - Description for this parameter
   IsEmpty    - Description for this parameter
   Graphic    - Description for this parameter
   TextMargin - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvDataSourceLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+See Also
+  TJvDBLookupEdit.OnGetImage, TJvLookupControl.OnGetImage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo
@@ -36,14 +34,14 @@ JVCLInfo
   GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.DBAware.EditsMemosAndCombos.Combos
   FLAG=Component
 Summary
-  Expands the capabilities of a regular data aware combo-box.
+  Expands the capabilities of a regular data aware combo box.
 Description
   It allows you to enter mapped storage and display values so that you can display understandable text
   versions of stored codes in your table, instead of displaying only the codes themselves where users
   have to remember what they all mean.
 
-  Alternatively you could use a TRxDBLookupCombo to display one field from a lookup source, and store a
-  different field, but the TRxDBComboBox's drop-down list comes directly from a string list and not
+  Alternatively you could use a TJvDBLookupCombo to display one field from a lookup source, and store a
+  different field, but the TJvDBComboBox's drop-down list comes directly from a string list and not
   required the lookup source.
 
 ----------------------------------------------------------------------------------------------------
@@ -60,22 +58,27 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DisplayAllFields
 Summary
-  Write here a summary (1 line)
+  Specifies whether to display the values of all lookup fields in the edit box.
 Description
-  Write here a description
+  When LookupDisplay is set to multiple fields, you can use DisplayAllFields to control whether all
+  lookup fields are shown in the edit box, or only the value of LookupField.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LookupDisplay
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DisplayValues
 Summary
-  Write here a summary (1 line)
+  References the displayed values by their positions.
 Description
-  Write here a description
+  Use DisplayValues to read the value of a lookup field at a particular position, if ListStyle is
+  lsFixed.
+
+  If ListStyle is set to lsDelimited than DisplayValues always returns the value of DisplayValue.
+
+  Index gives the position of the display value, where 0 is the position of the first display value, 1
+  is the position of the second display value, and so on.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ListStyle, LookupDisplay
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDown
@@ -99,7 +102,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDownCount
 Summary
-  Specifies the number of items displayed in the drop-down list of the TDBLookupComboBox.
+  Specifies the number of items displayed in the drop-down list of the TJvDBLookupCombo.
 Description
   Use DropDownRows to specify how many rows appear in the drop down list of the combo box. If there are
   more lookup items than DropDownRows, the lookup list box displays a scroll bar.
@@ -124,33 +127,30 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.EscapeClear
 Summary
-  Write here a summary (1 line)
+  Determines whether the associated field is cleared. when the Escape key is pressed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set EscapeClear to let users enter a “blank” value into the associated field. When the user presses
+  the Escape key, the associated field is cleared.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.IsDropDown
 Summary
-  Write here a summary (1 line)
+  Specifies whether the lookup list is open or “dropped-down”.
 Description
-  Write here a description
+  IsDropDown returns the same value as ListVisible.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDBLookupCombo.ListVisible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.ListVisible
 Summary
   Specifies whether the lookup list is open or “dropped-down”.
 Description
-  Read IsDropDown to determine whether the list of lookup values is currently in the open
-  (dropped-down) position. If IsDropDown is true, the list is open; if IsDropDown is false, the list is
-  closed.
+  Read ListVisible to determine whether the list of lookup values is currently in the open
+  (dropped-down) position. If ListVisible is true, the list is open; if IsDropDown is false, the list
+  is closed.
 See Also
-  TJvDBLookupCombo.OnDropDown
+  TJvDBLookupCombo.OnDropDown, TJvDBLookupCombo.IsDropDown
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.OnCloseUp
@@ -172,15 +172,6 @@ Description
   user. The list can be opened by the user or by calling the DropDown method.
 See Also
   TJvDBLookupCombo.DropDown, TJvDBLookupCombo.OnCloseUp
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupCombo.ResetField
-Summary
-  Write here a summary (1 line) This is an overridden method, you don't have to describe these if it
-  does the same as the inherited method
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.Text
@@ -206,58 +197,108 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.DropDownCount
 Summary
-  How much rows are displayed in the drop down list
+  Specifies the number of items displayed in the drop-down list of the TJvDBLookupEdit.
 Description
-  Write here a description
+  Use DropDownRows to specify how many rows appear in the drop down list of the combo box. If there are
+  more lookup items than DropDownRows, the lookup list box displays a scroll bar.
+
+  The default value for DropDownCount is 7.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.DropDownWidth
 Summary
-  Drop down list width (-1 = automatic)
+  Specifies the width, in pixels, of the drop-down list.
 Description
-  Write here a description
+  Use DropDownWidth to customize the width of the drop-down list. If DropDownWidth is 0 (the default),
+  the drop-down list is the same width as the combo box.
+
+  DropDownWidth is useful when displaying multiple lookup fields, and therefore, multiple columns in
+  the database lookup combo box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.FieldsDelimiter
 Summary
-  Character to delimit fields in the drop down list
+  Specifies the character used to delimit the field values in the drop-down lookup list.
 Description
-  Write here a description
+  Use FieldsDelimiter to display another character as field delimiter than the comma character.
+
+  FieldsDelimiter has only meaning if ListStyle is set to lsDelimited. Also LookupFormat must have no
+  value.
+See Also
+  TJvDBLookupEdit.ListStyle, TJvDBLookupEdit.LookupFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.ListStyle
 Summary
-  Style of the look up list (fixed or delimited)
+  Determines how the lookup list displays its items.
 Description
-  Write here a description
+  ListStyle determines how the lookup list displays its items when multiple fields specified by the
+  LookupDisplay property.
+
+  By default, style is lsFixed, meaning that the each display field always takes up a fixed width
+  accordingly to their DisplayWidth properties. The lsDelimited style meaning that each field takes a
+  variable width, and the fields are separated by the FieldsDelimiter character.
+See Also
+  TJvDBLookupEdit.DisplayAllFields, TJvDBLookupEdit.FieldsDelimiter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupDisplay
 Summary
-  Field or field list to display in the look up
+  Identifies the field or fields whose values are displayed in the lookup list.
 Description
-  Write here a description
+  The lookup control represents a field in one table by displaying the value of one or more
+  corresponding fields in another table. LookupField is the name of the field or fields in the lookup
+  table that are actually displayed, as opposed to the DataField, which is the field in the DataSource
+  that the lookup control actually represents, or the LookupField, which is the field in the lookup
+  table with the same value as the DataField.
+
+  To fully specify the list fields, both a dataset for the lookup table and the fields within that
+  dataset must be defined. The LookupSource property of the lookup control specifies the dataset for
+  the lookup table.
+
+  LookupField can represent more than one field. Separate multiple field names with semicolons.
+
+  Before specifying LookupField, specify the link between the two datasets using the LookupField
+  property. If LookupField is not set, lookup controls display LookupField field values by default. If
+  the DataField field is a lookup field, don't specify anything for LookupField; the data controls
+  automatically use the lookup field's LookupResultField property as LookupField.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupDisplayIndex
 Summary
-  Index of the lookup field to display
+  Specifies which field from the LookupField property is used for incremental searching.
 Description
-  Write here a description
+  When the LookupField property specifies more than one field, use LookupDisplayIndex to specify which
+  of those fields is the one to use for incremental searches. For the TDBLookupComboBox object,
+  LookupDisplayIndex also determines which field appears in the edit region of the combo box.
+
+  LookupDisplayIndex allows the most important value to appear in a position other than the first when
+  all the values of the LookupField fields are displayed. The value of LookupDisplayIndex must be less
+  than the number of fields specified by the LookupField property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupField
 Summary
-  Look up field
+  Identifies the field in the LookupSource dataset that must match the value of the DataField field.
 Description
-  Write here a description
+  Use LookupField to link the LookupSource of the lookup control to the DataSource. Although the name
+  of the field specified as the LookupField does not have to be the same as the name of the field
+  specified as the DataField, the two fields must have the same values.
+
+  After specifying the LookupField, choose which field the lookup control will actually display with
+  the LookupField property.
+
+  If the DataField field is a lookup field, don't specify anything for LookupField or LookupField;
+  lookup controls automatically use the data field's LookupKeyFields property for LookupField.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupSource
 Summary
-  Look up datasource
+  Identifies a data source for the data displayed in the lookup control.
 Description
-  Write here a description
+  Set LookupSource to the data source that contains the LookupField and LookupField fields. If the
+  DataField field is a lookup field, don't specify anything for LookupSource; data controls
+  automatically use the lookup field's LookupDataSet property to create a data source.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupValue
@@ -283,17 +324,32 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.OnGetImage
 Summary
-  OnGetImage event is triggered when an image is requested.
+  OnGetImage event is triggered when an image is requested. You can also use an OnGetImage event to
+  specify graphical picture to display in each item of lookup list accordingly to the contents of
+  lookup source.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.PopupOnlyLocate
 Summary
-  When false, typing into the Edit region does not launch a locate on the list data.
+  Specifies when to launch a locate on the list data.
 Description
-  (Rx 2.60) If true (default) this property affects the component behavior when the edit value is
-  changing.
+  When false, typing into the Edit region does not launch a locate on the list data.
+
+  If true (default) this property affects the component behavior when the edit value is changing.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.UseRecordCount
+Summary
+  Specifies whether the control is allowed to use RecordCount.
+Description
+  Use the UseRecordCount property to allow or forbid the control to use the RecordCount property of the
+  lookup dataset. Record counting can be a costly operation, especially for SQL queries that return
+  large result sets.
+
+  If UseRecordCount is set to false then the position of the scrollbar's thumb of the lookup list is
+  only an approximation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList
@@ -302,31 +358,14 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Lists,JVCL.DBAware.GridsTreesLists.Lists
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Provides a list of lookup items for filling in fields that require data from another dataset.
 Description
-  Use TRxDBLookupList to provide users with a convenient list of lookup items to set a field value
+  Use TJvDBLookupList to provide users with a convenient list of lookup items to set a field value
   using the values of a field in another dataset. Lookup list boxes usually display values that are a
-  represent a more meaningful description of the actual field value. The relationship between field
-  values and the corresponding values in the lookup dataset can be set using the properties
-  LookupSource, LookupField and LookupDisplay. This component provides the following: You can select
-  any number of fields to be displayed in the lookup list. End-users can incrementally search through
-  the lookup list by directly typing into the control. This is a great advantage when using lookup
-  tables that contain hundreds of even thousands of records. You can perform a lookup on a Query or QBE
-  result. It even incrementally searches on the query result. The component does not have to be bound,
-  or assigned, to a table's field (DataField and DataSource properties) which gives you greater
-  flexibility in using this lookup list for general tasks where a source table is not involved. If
-  DataSource and DataField properties is set, when a user selects a list item, the corresponding field
-  value is changed in the underlying dataset. If IgnoreCase property is True (default), the
-  incrementally search through the lookup list is processed without regard to case in the dataset's
-  data. If IndexSwitch property is True (default) and TTable component is linked to the LookupSource,
-  the incrementally search will use available indices of lookup table. The DisplayEmpty property allows
-  you specify the text value to display when no item is selected from the lookup list. If DisplayEmpty
-  set to the non-empty string, this value will be show in the top of the list additionally to the
-  lookup items. You can also use an OnGetImage event to specify graphical picture to display in each
-  item of lookup list accordingly to the contents of lookup source.
+  represent a more meaningful description of the actual field value.
 
-  RxDBLookupList provides a list of lookup items for filling in fields that require data from another
-  dataset. Use TRxDBLookupList to provide users with a convenient list of lookup items to set a field
+  TJvDBLookupList provides a list of lookup items for filling in fields that require data from another
+  dataset. Use TJvDBLookupList to provide users with a convenient list of lookup items to set a field
   value using the values of a field in another dataset. Lookup list boxes usually display values that
   are a represent a more meaningful description of the actual field value.
 
@@ -347,19 +386,6 @@ Description
 
   If DataSource and DataField properties is set, when a user selects a list item, the corresponding
   field value is changed in the underlying dataset.
-
-  If IgnoreCase property is True (default), the incrementally search through the lookup list is
-  processed without regard to case in the dataset's data.
-
-  If IndexSwitch property is True (default) and TTable component is linked to the LookupSource, the
-  incrementally search will use available indices of lookup table.
-
-  The DisplayEmpty property allows you specify the text value to display when no item is selected from
-  the lookup list. If DisplayEmpty set to the non-empty string, this value will be show in the top of
-  the list additionally to the lookup items.
-
-  You can also use an OnGetImage event to specify graphical picture to display in each item of lookup
-  list accordingly to the contents of lookup source.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList.BorderStyle
@@ -404,23 +430,23 @@ Description
 Summary
   Base class for Lookup support
 
-  TDBLookupControl is the base class for controls that provide the user with a list of lookup items for
+  TJvLookupControl is the base class for controls that provide the user with a list of lookup items for
   filling in fields that require data from another dataset.
 Description
-  Use TDBLookupControl as a base class when defining controls that permit the user to set a field value
-  by selecting a corresponding value from another dataset. The TDBLookupComboBox and TDBLookupListBox
-  controls are both descended from the TDBLookupControl and provide the user with automatic lookup
-  capabilities that are implemented in the TDBLookupControl object.
+  Use TJvLookupControl as a base class when defining controls that permit the user to set a field value
+  by selecting a corresponding value from another dataset. The TJvDBLookupCombo and TJvDBLookupList
+  controls are both descended from the TJvLookupControl and provide the user with automatic lookup
+  capabilities that are implemented in the TJvLookupControl object.
 
-  Do not create instances of TDBLookupControl. Instead, instantiate a descendant of TDBLookupControl to
+  Do not create instances of TJvLookupControl. Instead, instantiate a descendant of TJvLookupControl to
   allow the user to set field values from a set of lookup values.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ClearValue
 Summary
-  Write here a summary (1 line)
+  Clears the field value.
 Description
-  Clears the values using the default EmptyValue (declared has protected in this class)
+  Use ClearValue to clear the field value using the EmptyValue.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DataField
@@ -431,203 +457,266 @@ Description
   property. The DataField is the field whose value can be set by the lookup control, not the field
   which supplies the lookup values that are displayed by the lookup control.
 
-  If DataField specifies a lookup field component, there is no need to set the KeyField or ListField
-  properties, as the field component contains all the information about the relationship between the
-  data field value and the lookup value.
+  If DataField specifies a lookup field component, there is no need to set the LookupField or
+  LookupField properties, as the field component contains all the information about the relationship
+  between the data field value and the lookup value.
 See Also
   TJvLookupControl.DataSource, TJvLookupControl.KeyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DataSource
 Summary
-  Write here a summary (1 line)
+  Links the lookup control to the dataset that contains the DataField.
 Description
-  Write here a description
+  Use DataSource to specify the data source component that identifies the dataset the lookup control
+  represents. The lookup control represents a field in one table by displaying the value of a
+  corresponding field in another table. DataSource links to the dataset for the field the control
+  represents, as opposed to the LookupSource, which links the lookup control to the lookup table that
+  holds the field that is actually displayed. If the lookup control is used to edit data, the field
+  that actually gets changed is the one in the DataSource.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.DataField, TJvLookupControl.LookupSource
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DisplayEmpty
 Summary
-  Write here a summary (1 line)
+  Specifies a text to display when the lookup value is empty.
 Description
-  Write here a description
+  Use DisplayEmpty to display a string when an empty lookup value is selected. Property EmptyValue
+  specifies which value is the empty value.
+
+  Also when the drop-down list of the control is shown, an extra fixed row is displayed with the string
+  DisplayEmpty as text. When the user selects this row the lookup value is set to EmptyValue (or to
+  Null if EmptyValue is the empty string and EmptyStrIsNull is True).
+
+  Set DisplayEmpty to an empty string (the default) to disable this feature.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.EmptyItemColor, TJvLookupControl.EmptyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DisplayValue
 Summary
-  Write here a summary (1 line)
+  Indicates the displayed value.
 Description
-  Write here a description
+  Inspect DisplayValue to determine the value that appears in the edit region of the lookup control.
+  The user can change the value of DisplayValue by selecting a new value if ReadOnly is false and the
+  dataset is in edit mode.
+
+  DisplayValue corresponds to the value of the lookup field on the current record. If this value is
+  empty than DisplayValue is set to the DisplayEmpty string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.DisplayEmpty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.EmptyItemColor
 Summary
-  Write here a summary (1 line)
+  The color to use for the empty row.
 Description
-  The EmptyItemColor property allows you specify the color value to display additional non-scrolled
-  "empty" item in the top of the list if DisplayEmpty set to the non-empty string.
+  Use EmptyItemColor to specify the color to use for the empty row that is displayed in the drop-down
+  list of the control.
+
+  If DisplayEmpty is an empty string, this property has no effect.
+See Also
+  TJvLookupControl.DisplayEmpty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.EmptyStrIsNull
 Summary
-  Write here a summary (1 line)
+  Specifies whether to use Null as the empty value.
 Description
-  Write here a description
+  If EmptyValue is NOT an empty string, this property has no effect.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.EmptyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.EmptyValue
 Summary
-  Write here a summary (1 line)
+  Specifies which lookup value is the empty value.
 Description
-  Write here a description
+  Use EmptyValue to use a specific string as the empty lookup value.
+
+  Alternatively, set EmptyValue to an empty string and EmptyStrIsNull to true to specify Null as the
+  empty value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.EmptyStrIsNull, TJvLookupControl.DisplayEmpty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Field
 Summary
-  Write here a summary (1 line)
+  Identifies the TField object the lookup control represents.
 Description
-  Returns linked field
+  Use the Field object to directly access the field component for the field the lookup control
+  represents. If Field is a lookup field, the properties of the field component describe the
+  relationship between the field and the lookup dataset. To allow a lookup control to represent a set
+  of lookup values that do not come from another dataset, use the DataField property to bind to a
+  lookup field and use the LookupList property of the TField object to specify a list of lookup
+  values.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.FieldsDelimiter
 Summary
-  Write here a summary (1 line)
+  Specifies the character used to delimit the field values in the drop-down lookup list.
 Description
-  Write here a description
+  Use FieldsDelimiter to display another character as field delimiter than the default comma
+  character.
+
+  FieldsDelimiter is only used if ListStyle is set to lsDelimited. Also LookupFormat must have no
+  value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.ListStyle, TJvLookupControl.LookupFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.IgnoreCase
 Summary
-  Write here a summary (1 line)
+  Controls whether incremental searching is done in a case-sensitive or case-insensitive manner.
 Description
-  Write here a description
+  If IgnoreCase property is True (default), the incremental search through the lookup list is done
+  without regard to case in the dataset's data.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LookupDisplay, LookupDisplayIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.IndexSwitch
 Summary
-  Write here a summary (1 line)
+  Controls whether incremental searching is done using available indices or not.
 Description
-  If IndexSwitch property is True (default) and TTable component is linked to the LookupSource, the
-  incrementally search will use available indices of lookup table.
+  If IndexSwitch property is True (default) and a TTable component is linked to the LookupSource
+  property, the incrementally search will use available indices of the lookup table.
+See Also
+  TJvDBLocate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ItemHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the height, in pixels, of the items in the drop-down list.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ItemHeight to specify the height needed to draw the items in the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.KeyValue
 Summary
-  Write here a summary (1 line)
+  Represents the common value of the LookupField field and the DataField field.
 Description
-  Write here a description
+  Use LookupField to determine the value represented by the lookup control (not the value displayed by
+  the lookup control). When KeyValue is set, the lookup control attempts to find a record from the
+  LookupSource's dataset where the value of LookupField matches KeyValue. If such a match is found, the
+  lookup control displays the value of LookupField on that record.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DataField, LookupField, IgnoreCase, IndexSwitch
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ListStyle
 Summary
-  Write here a summary (1 line)
+  Determines how the lookup list displays its items.
 Description
   ListStyle determines how the lookup list displays its items when multiple fields specified by the
-  LookupDisplay property. property ListStyle: TLookupListStyleTLookupListStyle;
+  LookupDisplay property.
 
   By default, style is lsFixed, meaning that the each display field always takes up a fixed width
   accordingly to their DisplayWidth properties. The lsDelimited style meaning that each field takes a
-  variable width, and the fields are separated by a comma (',') character.
+  variable width, and the fields are separated by the FieldsDelimiter character.
+See Also
+  TJvLookupControl.DisplayAllFields, TJvLookupControl.FieldsDelimiter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Locate
 Summary
-  Write here a summary (1 line)
+  Locates a field.
 Description
-  Locates Avalue in the lookup dataset for field SearchField.
+  Call Locate to locate parameter AValue in the lookup dataset for field SearchField.
 
-  If Exact = true, the function locates only records where SearchField is fully equal to AValue (else
-  the function operates a partial match).
-
-  In changing the value of property IgnoreCase you can control the way the case influences the result.
-
-  This property is protected in TRXLookupControl and is defaulted to True (= ignore case)
+  By changing the value of property IgnoreCase you can control the way the case influences the result.
 Parameters
-  SearchField - Description for this parameter
-  AValue      - Description for this parameter
-  Exact       - Description for this parameter
+  SearchField - Field name on which to search.
+  AValue      - Value to match in the search field.
+  Exact       - If Exact is true, the function locates only records where SearchField is fully equal
+                 to AValue, otherwise the function operates a partial match.
+See Also
+  IgnoreCase
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupDisplay
 Summary
-  Write here a summary (1 line)
+  Identifies the field or fields whose values are displayed in the lookup list.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The lookup control represents a field in one table by displaying the value of one or more
+  corresponding fields in another table. LookupField is the name of the field or fields in the lookup
+  table that are actually displayed, as opposed to the DataField, which is the field in the DataSource
+  that the lookup control actually represents, or the LookupField, which is the field in the lookup
+  table with the same value as the DataField.
+
+  To fully specify the list fields, both a dataset for the lookup table and the fields within that
+  dataset must be defined. The LookupSource property of the lookup control specifies the dataset for
+  the lookup table.
+
+  LookupField can represent more than one field. Separate multiple field names with semicolons.
+
+  Before specifying LookupField, specify the link between the two datasets using the LookupField
+  property. If LookupField is not set, lookup controls display LookupField field values by default. If
+  the DataField field is a lookup field, don't specify anything for LookupField; the data controls
+  automatically use the lookup field's LookupResultField property as LookupField.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupDisplayIndex
 Summary
-  Write here a summary (1 line)
+  Specifies which field from the LookupField property is used for incremental searching.
 Description
-  When multiple fields specified by the LookupDisplay property, the LookupDisplayIndex specifies index
-  of a field in the LookupDisplay list which will be use in the DisplayValue property and will be
-  display in the editor of the TRxDBLookupCombo component.
+  When the LookupField property specifies more than one field, use LookupDisplayIndex to specify which
+  of those fields is the one to use for incremental searches. For the TDBLookupComboBox object,
+  LookupDisplayIndex also determines which field appears in the edit region of the combo box.
+
+  LookupDisplayIndex allows the most important value to appear in a position other than the first when
+  all the values of the LookupField fields are displayed. The value of LookupDisplayIndex must be less
+  than the number of fields specified by the LookupField property. -- When multiple fields specified by
+  the LookupDisplay property, the LookupDisplayIndex specifies index of a field in the LookupDisplay
+  list which will be use in the DisplayValue property and will be display in the editor of the
+  TJvDBLookupCombo component.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupField
 Summary
-  Write here a summary (1 line)
+  Identifies the field in the LookupSource dataset that must match the value of the DataField field.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use LookupField to link the LookupSource of the lookup control to the DataSource. Although the name
+  of the field specified as the LookupField does not have to be the same as the name of the field
+  specified as the DataField, the two fields must have the same values.
+
+  After specifying the LookupField, choose which field the lookup control will actually display with
+  the LookupField property.
+
+  If the DataField field is a lookup field, don't specify anything for LookupField or LookupField;
+  lookup controls automatically use the data field's LookupKeyFields property for LookupField.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupFormat
 Summary
-  Write here a summary (1 line)
+  Specifies the format to use to display the field values in the lookup list.
 Description
-  Write here a description
+  Use LookupFormat to display the lookup field values in a specific format in the lookup list. The
+  format string must have the same number of format specifiers as the number of fields (specified by
+  LookupDisplay). The only allowed format specifier is "%s".
+
+  For example, you have 3 fields in the lookup table: FIRSTNAME, LASTNAME and AGE. If these fields have
+  the values 'John', 'Doe', 25 resp. then you want it to be displayed as 'Doe, John (25)'. In this case
+  you have to set the properties as follows:
+  <CODE>
+  ListStyle := lsDelimited;
+  LookupDisplay := 'LASTNAME;FIRSTNAME;AGE';
+  LookupFormat := '%s, %s (%s)';
+  </CODE>
+Note
+  Property LookupFormat is ignored if ListStyle is set to lsFixed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.ListStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupSource
 Summary
-  Write here a summary (1 line)
+  Identifies a data source for the data displayed in the lookup control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set LookupSource to the data source that contains the LookupField and LookupDisplay fields. If the
+  DataField field is a lookup field, don't specify anything for LookupSource; data controls
+  automatically use the lookup field's LookupDataSet property to create a data source.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.OnChange
@@ -642,19 +731,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.OnGetImage
 Summary
-  OnGetImage event is triggered when an image is requested.
+  Occurs when an image is requested.
 Description
-  Write here a description
+  Write an OnGetImage event handler to supply an image before they are used.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ReadOnly
 Summary
-  Write here a summary (1 line)
+  Determines if the user can change the value of the field.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set ReadOnly to specify whether the control should be used for display purposes only. If ReadOnly is
+  true, the control can only be used to display the value of the field on the current record. If
+  ReadOnly is false, the user can use the control to edit the field's value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ResetField
@@ -662,6 +750,18 @@ Summary
   Write here a summary (1 line)
 Description
   Forces the value to EmptyValue and generates an internal Click
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupControl.UseRecordCount
+Summary
+  Specifies whether the control is allowed to use RecordCount.
+Description
+  Use the UseRecordCount property to allow or forbid the control to use the RecordCount property of the
+  lookup dataset. Record counting can be a costly operation, especially for SQL queries that return
+  large result sets.
+
+  If UseRecordCount is set to false then the position of the scrollbar's thumb of the lookup list is
+  only an approximation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Value
@@ -674,69 +774,22 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPopupDataList
-Summary
-  Class of the popup data list
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPopupDataWindow
-Summary
-  Class of the popup data list
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPopupDataWindow.Hide
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPopupDataWindow.OnCloseUp
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPopupDataWindow.Show
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Origin - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TLookupListStyle
 <TITLE TLookupListStyle type>
 Summary
-  Write here a summary (1 line)
+  Enumerates lookup list styles.
 Description
-  Write here a description
+  Use the TLookupListStyle type to specify a lookup list style when displaying multiple fields.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLookupControl.ListStyle, TJvDBLookupEdit.ListStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TLookupListStyle.lsFixed
-  Description for lsFixed
+  Each display field takes up a fixed width accordingly to their DisplayWidth properties.
 
 ----------------------------------------------------------------------------------------------------
 @@TLookupListStyle.lsDelimited
-  Description for lsDelimited
+  Each field takes a variable width, and the fields are separated by a specific character.
 
 ----------------------------------------------------------------------------------------------------
 @@TLookupSourceLink

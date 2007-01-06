@@ -546,7 +546,7 @@ Description
 Summary
   Does the actual grabbing of the URL
 Description
-  This method must be overriden by the derived classes. It is called by Execute which in turns ensure
+  This method must be overridden by the derived classes. It is called by Execute which in turns ensure
   that the state of the grabber is correctly set back to gsStopped once the grabbing is done
 
 ----------------------------------------------------------------------------------------------------
@@ -962,7 +962,7 @@ Summary
 Description
   If set to 0, as many grabbers as there are URLs will be created and started by the Start method. If
   set to anything greater than 0, there will be no more grabbers than this value running
-  simultaneously. Note that once a grabbe has finished its operation, it is moved out of the Grabbers
+  simultaneously. Note that once a grabber has finished its operation, it is moved out of the Grabbers
   list, but is not immediately destroyed. It is placed in the list of grabbers waiting to be destroyed,
   list which will be emptied when its number of elements is about to be CleanupThreshold + 1.
 
