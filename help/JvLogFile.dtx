@@ -15,9 +15,19 @@ JVCLInfo
   GROUP=JVCL.System.FilesAndFolders
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  This component gives logging functionality.
 Description
-  Write here a description
+  This is a pretty simple yet powerfull component, excellent for using with experimental code or
+  try-exception-do blocks.
+
+  If you want to use it just drop it on the form and at least set the log file's name (and maybe you
+  want to set the AutoSave attribute := true and the SizeLimit attribute), after that if you want to
+  log some event invoke the Add procedure like this: JvLogFile.Add('ERROR HEADER', 'ERROR DETAIL'); And
+  that's all, quick and clean.
+
+  If you want to clean the log file invoke the Clean() procedure If you want to open the log file
+  invoke the ShowLog('NAME OF LOG FILE') procedure, this will open the Jv Logging window from where you
+  can save it to a cvs file or print it.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLogFile.Active

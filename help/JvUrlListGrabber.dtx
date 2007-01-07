@@ -636,7 +636,7 @@ Parameters
 Summary
   The status of a grabber
 Description
-  Write here a description
+  The status can be : gsStopped gsConnecting gsGrabbing gsStopping
 
 ----------------------------------------------------------------------------------------------------
 @@TJvGrabberStatus.gsStopped
@@ -969,12 +969,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.NexUrlIndex
 Summary
-  Write here a summary (1 line)
+  The index of the Url that will be started next.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When this value is equal to URLs.Count, all URLs have been started for grabbing. Its value is updated
+  internally as the grabbing process (limited or not by MaxSimultaneousGrabbers) is ongoing.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnClosingConnection
