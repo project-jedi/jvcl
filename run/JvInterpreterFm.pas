@@ -396,6 +396,7 @@ function TJvInterpreterFm.GetValue(const Identifier: string; var Value: Variant;
 var
   JvInterpreterSrcClass: TJvInterpreterIdentifier;
   JvInterpreterForm: TJvInterpreterForm;
+  LocalArgs: TJvInterpreterArgs;
 
   function GetFromForm(Form: TJvInterpreterForm): Boolean;
   var
@@ -450,10 +451,26 @@ begin
     { run-time form creation }
     if Cmp(Identifier, 'Create') then
     begin
+      // setting form's Owner from expression 'create(newOwner)'
+      // when Identifier = 'Create' then Token = 'newOwner'
+      JvInterpreterForm := Args.Obj as TJvInterpreterForm;
+      LocalArgs := TJvInterpreterArgs.Create;
+      try
+        LocalArgs.Obj:=Args.Obj;
+        LocalArgs.ObjTyp:=Args.ObjTyp;
+        GetValue(Token, Value, LocalArgs);
+      finally
+        LocalArgs.Free;
+      end;
+      if JvInterpreterForm.Owner<>nil then
+        JvInterpreterForm.Owner.RemoveComponent(JvInterpreterForm);
+      if V2O(Value)<>nil then
+        TComponent(V2O(Value)).InsertComponent(JvInterpreterForm);
+
       JvInterpreterSrcClass := TJvInterpreterAdapterAccessProtected(Adapter).GetSrcClass(
-        (Args.Obj as TJvInterpreterForm).FClassIdentifier);
-      (Args.Obj as TJvInterpreterForm).FUnitName := JvInterpreterSrcClass.UnitName;
-      LoadForm(Args.Obj as TJvInterpreterForm);
+        JvInterpreterForm.FClassIdentifier);
+      JvInterpreterForm.FUnitName := JvInterpreterSrcClass.UnitName;
+      LoadForm(JvInterpreterForm);
       Value := O2V(Args.Obj);
       Result := True;
       Exit;
