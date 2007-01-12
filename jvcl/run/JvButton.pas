@@ -713,8 +713,12 @@ procedure TJvCustomButton.Click;
 var
   Tmp: TPoint;
 begin
-  inherited Click;
+  // Call ClientToScreen before the inherited Click as the OnClick handler might
+  // reset the parent, which is needed by ClientToScreen.
   Tmp := ClientToScreen(Point(0, Height));
+
+  inherited Click;
+  
   DoDropDownMenu(Tmp.X, Tmp.Y);
 end;
 
