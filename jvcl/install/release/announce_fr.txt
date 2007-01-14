@@ -5,9 +5,9 @@ Developpez.com (delphi@redaction-developpez.com)
 
 
 Sujet: 
-ANN: JVCL 3.20 est disponible
+ANN: JVCL 3.30 est disponible
 Corps:
-L'équipe JVCL est fière d'annoncer la sortie de la version stable de la bibliothèque de composants JVCL version 3.20.
+L'équipe JVCL est fière d'annoncer la sortie de la version stable de la bibliothèque de composants JVCL version 3.30.
 
 La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 5, 6, 7 2005 et 2006; C++Builder 5, 6 et 2006 (Borland Developper Studio). La JVCL est distribué sous licence Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
 
@@ -17,9 +17,8 @@ Cette version contient des modifications, additions et corrections de bugs trop 
 - Support de C++ Builder 5, 6 and 2006 (Borland Developer Studio)
 - La fusion de la bibliothèque Globus continue. Veuillez vous référer au fichier migrating_globus.html pour de plus amples détails.
 - Amélioration de l'installeur en particulier pour le support de Borland Developper Studio 2006 chez les utilisateurs n'utilisant pas une installation par défaut.
-- De nombreux bugs ont été corrigés.
-- Support de la localisation avec l'utilisation de dxgettext (http://dxgettext.sourceforge.net). Si vous voulez utiliser la JVCL en français, c'est la seule méthode supportée par notre équipe.
-- Le support de Kylix 3 a été suspendu. N'hésitez pas à vous faire connaître si vous désirez nous aider.
+- De nombreux bugs ont été corrigés et fonctionnalités ont été ajoutées (plus de 360 demandes Mantis résolues).
+- Intégration plus poussée avec la JCL
 
 Cette sortie est disponible en quatre distributions :
 - Installation complète + dernière JCL
@@ -27,7 +26,7 @@ Cette sortie est disponible en quatre distributions :
 - Source et exemples
 - Source uniquement
 
-La version actuelle est JVCL 3.20.
+La version actuelle est JVCL 3.30.
 
 
 
