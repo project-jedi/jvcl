@@ -11,9 +11,9 @@ eLists Delphi (delphi@elists.org)
 www.devarchive.com (needs username/password)
 
 Subject: 
-ANN: JVCL 3.20 Released!
+ANN: JVCL 3.30 Released!
 Body:
-The JVCL Team is proud to announce that the stable release of JVCL 3.20 is available for download. 
+The JVCL Team is proud to announce that the stable release of JVCL 3.30 is available for download. 
 
 JVCL is a library of more than 600 visual and non-visual components for Delphi 5, 6, 7, 2005 and 2006; C++Builder 5, 6 and 2006 (Borland Developer Studio). JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
 
@@ -23,9 +23,8 @@ This release contains changes, additions and bugfixes too numerous to list here,
 - Support for C++ Builder 5, 6 and 2006 (Borland Developer Studio)
 - The merge of the Globus library has continued. Refer to the migrating_globus.html file for details.
 - Improved installer support for Borland Developer Studio 2006, especially for users not installing in the default directories.
-- Numerous bugs fixed.
-- Support for localization using dxgettext (http://dxgettext.sourceforge.net)
-- Support for Kylix 3 has been suspended. Should you want it back, please step forward and help us here.
+- Numerous bugs fixed and features added (more than 360 resolved mantis issues).
+- Tighter integration with the JCL
 
 This release is available in four different flavors:
 - Full install + latest JCL
@@ -33,7 +32,7 @@ This release is available in four different flavors:
 - Source and examples only
 - Source only
 
-The current version is JVCL 3.20.
+The current version is JVCL 3.30.
 
 
 The JVCL Team
