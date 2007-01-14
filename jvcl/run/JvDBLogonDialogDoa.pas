@@ -89,7 +89,6 @@ implementation
 
 uses
   SysUtils, StdCtrls, Dialogs,
-  OraClasses, OraError,
   JvDSADialogs, JvDBPasswordDialogDoa, JvResources;
 
 //=== { TJvDBDoaLogonDialogOptions } =========================================
@@ -113,7 +112,7 @@ begin
   try
     Session.LogOn;
   except
-    on E: EOraError do
+    on E: EOracleError do
     begin
       case E.ErrorCode of
         1005, 1017:
