@@ -573,7 +573,7 @@ begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
   RspFilename := Project.SourceDir + PathDelim + ChangeFileExt(ExtractFileName(Project.SourceName), '.@@@');
 
-  CsmAge := FileAge(Format('%s\lib\vcl%d0.csm', [TargetConfig.Target.RootDir, TargetConfig.Target.Version]));
+  CsmAge := FileAgeEx(Format('%s\lib\vcl%d0.csm', [TargetConfig.Target.RootDir, TargetConfig.Target.Version]));
 
   NothingToDo := True;
   Lines := TStringList.Create;
@@ -593,11 +593,11 @@ begin
     for i := 0 to Files.Count - 1 do
     begin
       ObjFilename := OutDirs.UnitOutDir + PathDelim + ExtractFileName(ChangeFileExt(Files[i], '.obj'));
-      ObjAge := FileAge(ObjFilename);
+      ObjAge := FileAgeEx(ObjFilename);
       if Assigned(ObjFiles) then
         ObjFiles.AddObject(ObjFilename, TObject(ObjAge));
       if not TargetConfig.AutoDependencies or
-         (ObjAge < CsmAge) or (ObjAge < FileAge(ExtractFilePath(RspFilename) + Files[i])) then
+         (ObjAge < CsmAge) or (ObjAge < FileAgeEx(ExtractFilePath(RspFilename) + Files[i])) then
       begin
         Lines.Add('"' + Files[i] + '"');
         NothingToDo := False;
@@ -789,10 +789,10 @@ begin
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
   BplFilename := OutDirs.BplDir + PathDelim + Project.TargetName;
   DcpFilename := OutDirs.DcpDir + PathDelim + Project.DcpName;
-  BplAge := FileAge(BplFilename);
-  DcpAge := FileAge(DcpFilename);
-  LibAge := FileAge(ChangeFileExt(DcpFilename, '.lib'));
-  BpiAge := FileAge(ChangeFileExt(DcpFilename, '.bpi'));
+  BplAge := FileAgeEx(BplFilename);
+  DcpAge := FileAgeEx(DcpFilename);
+  LibAge := FileAgeEx(ChangeFileExt(DcpFilename, '.lib'));
+  BpiAge := FileAgeEx(ChangeFileExt(DcpFilename, '.bpi'));
 
   PasFiles := nil;
   CppFiles := nil;
@@ -857,7 +857,7 @@ begin
     begin
       ObjFilename := OutDirs.UnitOutDir + PathDelim + ChangeFileExt(ExtractFileName(PasFiles[i]), '.obj');
       if TargetConfig.AutoDependencies then
-        ObjAge := FileAge(ObjFilename)
+        ObjAge := FileAgeEx(ObjFilename)
       else
         ObjAge := -1;
       ObjFiles.AddObject(ObjFilename, TObject(ObjAge));
@@ -940,20 +940,20 @@ begin
 
   Result := 0;
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
-  DcpAge := FileAge(OutDirs.DcpDir + PathDelim + Project.DcpName);
-  BplAge := FileAge(OutDirs.BplDir + PathDelim + Project.TargetName);
+  DcpAge := FileAgeEx(OutDirs.DcpDir + PathDelim + Project.DcpName);
+  BplAge := FileAgeEx(OutDirs.BplDir + PathDelim + Project.TargetName);
 
   // .dpk/.bpk
   Changed := not TargetConfig.AutoDependencies or
-             (DcpAge < FileAge(PrjFilename)) or
-             (DcpAge < FileAge(ChangeFileExt(PrjFilename, '.res'))) or
+             (DcpAge < FileAgeEx(PrjFilename)) or
+             (DcpAge < FileAgeEx(ChangeFileExt(PrjFilename, '.res'))) or
              (DcpAge > BplAge); // this happens if the .dcp is not for the .bpl
   if DcpAge > BplAge then
     DcpAge := BplAge; // compile units that are newer than the bpl if the bpl is older than the dcp
   if not Changed then
   begin
     for i := 0 to High(CommonDependencyFiles) do
-      if DcpAge < FileAge(TargetConfig.JVCLDir + '\common\' + ReplaceTargetMacros(CommonDependencyFiles[i], TargetConfig)) then
+      if DcpAge < FileAgeEx(TargetConfig.JVCLDir + '\common\' + ReplaceTargetMacros(CommonDependencyFiles[i], TargetConfig)) then
       begin
         Changed := True;
         Break;
@@ -969,7 +969,7 @@ begin
       begin
         Filename := OutDirs.DcpDir + PathDelim +
                     TargetConfig.VersionedJVCLXmlDcp(Project.JvDependenciesReqPkg[i].Name);
-        if FileAge(Filename) > DcpAge then
+        if FileAgeEx(Filename) > DcpAge then
         begin
           Changed := True;
           Break;
@@ -986,7 +986,7 @@ begin
       begin
         Filename := TargetConfig.JclBplDir + PathDelim +
                     TargetConfig.VersionedJclDcp(Project.JclDependenciesReqPkg[i].Name);
-        if FileAge(Filename) > DcpAge then
+        if FileAgeEx(Filename) > DcpAge then
         begin
           Changed := True;
           Break;
@@ -1003,8 +1003,8 @@ begin
       if IsFileUsed(Project.Owner, Project.Contains[i]) then
       begin
         // .pas
-        PasAge := FileAge(Project.SourceDir + PathDelim + Project.Contains[i].Name);
-        DcuAge := FileAge(OutDirs.UnitOutDir + PathDelim +
+        PasAge := FileAgeEx(Project.SourceDir + PathDelim + Project.Contains[i].Name);
+        DcuAge := FileAgeEx(OutDirs.UnitOutDir + PathDelim +
                           ChangeFileExt(ExtractFileName(Project.Contains[i].Name), '.dcu'));
         if (PasAge > DcuAge) or (DcpAge < PasAge) then 
         begin
@@ -1014,10 +1014,10 @@ begin
         // .dfm/.xfm
         if Project.Contains[i].FormName <> '' then
         begin
-          FormAge := FileAge(ChangeFileExt(Project.SourceDir + PathDelim +
+          FormAge := FileAgeEx(ChangeFileExt(Project.SourceDir + PathDelim +
                              Project.Contains[i].Name, '.dfm'));
           if FormAge = -1 then
-            FormAge := FileAge(ChangeFileExt(Project.SourceDir + PathDelim +
+            FormAge := FileAgeEx(ChangeFileExt(Project.SourceDir + PathDelim +
                                Project.Contains[i].Name, '.xfm'));
           if (FormAge <> -1) and (DcpAge < FormAge) then
           begin
@@ -1362,7 +1362,7 @@ begin
     for i := 0 to Files.Count - 1 do
     begin
       DestFile := DestDir + PathDelim + ExtractFileName(Files[i]);
-      if FileAge(Files[i]) > FileAge(DestFile) then
+      if FileAgeEx(Files[i]) > FileAgeEx(DestFile) then
       begin
 {**}    DoProgress(ExtractFileName(Files[i]), i, Files.Count, pkOther);
         CopyFile(PChar(Files[i]), PChar(DestFile), False);
@@ -1370,7 +1370,7 @@ begin
       if DebugUnits then
       begin
         DestFile := DebugDestDir + PathDelim + ExtractFileName(Files[i]);
-        if FileAge(Files[i]) > FileAge(DestFile) then
+        if FileAgeEx(Files[i]) > FileAgeEx(DestFile) then
           CopyFile(PChar(Files[i]), PChar(DestFile), False);
       end;
     end;

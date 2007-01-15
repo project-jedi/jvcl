@@ -40,6 +40,7 @@ function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
 function GetReturnPath(const Dir: string): string;
 function FileExists(const Filename: string): Boolean;
 function DirectoryExists(const Dir: string): Boolean;
+function FileAgeEx(const Filename: string): Integer;
 function Path(const APath: string): string; // converts each '\' to PathDelim
 function HaveFilesChanged(Files: TStrings; StartIndex: Integer = 0): Boolean;
 
@@ -80,10 +81,6 @@ function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
 function GetEnvironmentVariable(const Name: string): string;
 {$ENDIF COMPILER5}
 
-{$IFDEF COMPILER10_UP}
-function FileAge(const Filename: string): Integer; inline;
-{$ENDIF COMPILER10_UP}
-
 procedure ClearEnvironment;
 { ClearEnvironment deletes almost all environment variables }
 
@@ -91,15 +88,6 @@ implementation
 
 uses
   DelphiData;
-
-{$IFDEF COMPILER10_UP}
-function FileAge(const Filename: string): Integer;
-begin
-  {$WARN SYMBOL_DEPRECATED OFF}
-  Result := SysUtils.FileAge(Filename);
-  {$WARN SYMBOL_DEPRECATED ON}
-end;
-{$ENDIF COMPILER10_UP}
 
 procedure ClearEnvironment;
 var
@@ -184,9 +172,9 @@ end;
 function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
   const Filename2Fmt: string; const Args2: array of const): Integer;
 begin
-  Result := FileAge(Format(Filename1Fmt, Args1))
+  Result := FileAgeEx(Format(Filename1Fmt, Args1))
             -
-            FileAge(Format(Filename2Fmt, Args2));
+            FileAgeEx(Format(Filename2Fmt, Args2));
 end;
 
 function GetReturnPath(const Dir: string): string;
@@ -219,6 +207,61 @@ begin
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 
+function GetFileAttributesExPreload(lpFileName: PChar; fInfoLevelId: TGetFileExInfoLevels;
+  lpFileInformation: Pointer): BOOL; stdcall;
+  forward;
+
+var
+  GetFileAttributesExFunc: function(lpFileName: PChar; fInfoLevelId: TGetFileExInfoLevels;
+    lpFileInformation: Pointer): BOOL; stdcall = GetFileAttributesExPreload;
+
+function GetFileAttributesExEmulated(lpFileName: PChar; fInfoLevelId: TGetFileExInfoLevels;
+  lpFileInformation: Pointer): BOOL; stdcall;
+var
+  Handle: THandle;
+  FindData: TWin32FindData;
+begin
+  Handle := FindFirstFile(lpFileName, FindData);
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
+    Windows.FindClose(Handle);
+    if lpFileInformation <> nil then
+    begin
+      Move(FindData, lpFileInformation^, SizeOf(TWin32FileAttributeData));
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
+end;
+
+function GetFileAttributesExPreload(lpFileName: PChar; fInfoLevelId: TGetFileExInfoLevels;
+  lpFileInformation: Pointer): BOOL; stdcall;
+begin
+  GetFileAttributesExFunc := GetProcAddress(GetModuleHandle(kernel32), 'GetFileAttributesExA');
+  if not Assigned(GetFileAttributesExFunc) then
+    GetFileAttributesExFunc := GetFileAttributesExEmulated;
+  Result := GetFileAttributesExFunc(lpFileName, fInfoLevelId, lpFileInformation);
+end;
+
+{ Faster replacement for the SysUtils.FileAge }
+function FileAgeEx(const FileName: string): Integer;
+var
+  FindData: TWin32FileAttributeData;
+  LocalFileTime: TFileTime;
+begin
+  if GetFileAttributesExFunc(Pointer(Filename), GetFileExInfoStandard, @FindData) then
+  begin
+    if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
+    begin
+      FileTimeToLocalFileTime(FindData.ftLastWriteTime, LocalFileTime);
+      if FileTimeToDosDateTime(LocalFileTime, LongRec(Result).Hi, LongRec(Result).Lo) then
+        Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
 function Path(const APath: string): string;
 var
   i: Integer;
@@ -235,7 +278,7 @@ var
 begin
   Result := True;
   for i := StartIndex to Files.Count - 1 do
-    if FileAge(Files[i]) <> Integer(Files.Objects[i]) then
+    if FileAgeEx(Files[i]) <> Integer(Files.Objects[i]) then
       Exit;
   Result := False;
 end;
