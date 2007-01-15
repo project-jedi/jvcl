@@ -337,7 +337,17 @@ end;
 
 procedure TFrameConfigPage.UpdateJvclIncSettings;
 begin
-  GetJVCLConfig('JVCLThemesEnabled', CheckBoxXPTheming);
+  if (SelTargetConfig <> nil) and (SelTargetConfig.Target.Version >= 7) then
+  begin
+    CheckBoxXPTheming.Enabled := False;
+    CheckBoxXPTheming.Checked := True;
+  end
+  else
+  begin
+    CheckBoxXPTheming.Enabled := True;
+    GetJVCLConfig('JVCLThemesEnabled', CheckBoxXPTheming);
+  end;
+
   GetJVCLConfig('JVCL_REGISTER_GLOBAL_DESIGNEDITORS', CheckBoxRegisterGlobalDesignEditors);
   GetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
   GetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
