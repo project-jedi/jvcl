@@ -55,6 +55,7 @@ type
     cbLeaveOnEnterKey: TCheckBox;
     btnOK: TButton;
     btnCancel: TButton;
+    cbLeaveOnUpDownKey: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure lbSelectedClick(Sender: TObject);
     procedure cbControlClick(Sender: TObject);
@@ -63,6 +64,7 @@ type
     procedure sbAddClick(Sender: TObject);
     procedure sbDeleteClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure cbLeaveOnUpDownKeyClick(Sender: TObject);
   private
     procedure SetControl(Name: string);
   public
@@ -137,6 +139,8 @@ begin
     cbFillCell.ItemIndex := Ord(JvDBGridControls.Items[lbSelected.ItemIndex].FitCell);
     cbLeaveOnEnterKey.Enabled := True;
     cbLeaveOnEnterKey.Checked := JvDBGridControls.Items[lbSelected.ItemIndex].LeaveOnEnterKey;
+    cbLeaveOnUpDownKey.Enabled := True;
+    cbLeaveOnUpDownKey.Checked := JvDBGridControls.Items[lbSelected.ItemIndex].LeaveOnUpDownKey;
   end
   else
   begin
@@ -145,6 +149,7 @@ begin
     cbFillCell.Enabled := False;
     cbFillCell.Color := clBtnFace;
     cbLeaveOnEnterKey.Enabled := False;
+    cbLeaveOnUpDownKey.Enabled := False;
   end;
 end;
 
@@ -166,6 +171,12 @@ begin
     JvDBGridControls.Items[lbSelected.ItemIndex].LeaveOnEnterKey := cbLeaveOnEnterKey.Checked;
 end;
 
+procedure TfrmJvDBGridControlsEditor.cbLeaveOnUpDownKeyClick(Sender: TObject);
+begin
+  if lbSelected.ItemIndex >= 0 then
+    JvDBGridControls.Items[lbSelected.ItemIndex].LeaveOnUpDownKey := cbLeaveOnUpDownKey.Checked;
+end;
+
 procedure TfrmJvDBGridControlsEditor.sbAddClick(Sender: TObject);
 begin
   if lbFields.ItemIndex >= 0 then
@@ -178,6 +189,7 @@ begin
         FieldName := lbFields.Items[lbFields.ItemIndex];
         FitCell := fcCellSize;
         LeaveOnEnterKey := True;
+        LeaveOnUpDownKey := True;
       end;
       lbFields.Items.Delete(lbFields.ItemIndex);
     end

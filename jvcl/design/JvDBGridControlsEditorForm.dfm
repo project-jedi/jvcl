@@ -121,12 +121,23 @@ object frmJvDBGridControlsEditor: TfrmJvDBGridControlsEditor
       Left = 160
       Top = 152
       Width = 145
-      Height = 21
+      Height = 17
       Caption = 'Return/Enter key = leave'
       Checked = True
       State = cbChecked
       TabOrder = 3
       OnClick = cbLeaveOnEnterKeyClick
+    end
+    object cbLeaveOnUpDownKey: TCheckBox
+      Left = 160
+      Top = 168
+      Width = 145
+      Height = 17
+      Caption = 'Up/Down key = leave'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = cbLeaveOnUpDownKeyClick
     end
   end
   object btnOK: TButton
