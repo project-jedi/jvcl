@@ -253,7 +253,7 @@ end;
 
 procedure TJvCustomDBComboBox.DataChange(Sender: TObject);
 begin
-  if DroppedDown then
+  if not HandleAllocated or DroppedDown then
     Exit;
   if FDataLink.Field <> nil then
     ComboText := FDataLink.Field.AsString
