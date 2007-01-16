@@ -170,6 +170,7 @@ type
     FFieldName: string;
     FFitCell: TJvDBGridControlSize;
     FLeaveOnEnterKey: Boolean;
+    FLeaveOnUpDownKey: Boolean;
     FDesignWidth: Integer;  // value set when needed by PlaceControl
     FDesignHeight: Integer; // value set when needed by PlaceControl
   public
@@ -178,7 +179,8 @@ type
     property ControlName: string read FControlName write FControlName;
     property FieldName: string read FFieldName write FFieldName;
     property FitCell: TJvDBGridControlSize read FFitCell write FFitCell;
-    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey;
+    property LeaveOnEnterKey: Boolean read FLeaveOnEnterKey write FLeaveOnEnterKey default False;
+    property LeaveOnUpDownKey: Boolean read FLeaveOnUpDownKey write FLeaveOnUpDownKey default False;
   end;
 
   TJvDBGridControls = class(TCollection)
@@ -845,6 +847,7 @@ begin
     FieldName := TJvDBGridControl(Source).FieldName;
     FitCell := TJvDBGridControl(Source).FitCell;
     LeaveOnEnterKey := TJvDBGridControl(Source).LeaveOnEnterKey;
+    LeaveOnUpDownKey := TJvDBGridControl(Source).LeaveOnUpDownKey;
     FDesignWidth := 0;
     FDesignHeight := 0;
   end
@@ -3993,11 +3996,32 @@ begin
       end;
   end
   else
+  if Message.Msg = WM_KEYDOWN then
+  begin
+    with TWMKey(Message) do
+    begin
+      CurrentEditor := FControls.ControlByName(FCurrentControl.Name);
+      if (CurrentEditor <> nil) and CurrentEditor.LeaveOnUpDownKey and
+         ((CharCode = VK_UP) or (CharCode = VK_DOWN)) and (KeyDataToShiftState(KeyData) = []) then
+      begin
+        CloseControl;
+        DataSource.DataSet.CheckBrowseMode;
+        PostMessage(Handle, WM_KEYDOWN, CharCode, KeyData);
+      end
+      else
+        FOldControlWndProc(Message);
+    end;
+  end
+  else
   begin
     FOldControlWndProc(Message);
     case Message.Msg Of
       WM_GETDLGCODE:
-        Message.Result := Message.Result or DLGC_WANTTAB;
+        begin
+          CurrentEditor := FControls.ControlByName(FCurrentControl.Name);
+          if (CurrentEditor <> nil) and CurrentEditor.LeaveOnUpDownKey then
+            Message.Result := Message.Result or DLGC_WANTTAB or DLGC_WANTARROWS;
+        end;
       CM_EXIT:
         HideCurrentControl;
     end;
