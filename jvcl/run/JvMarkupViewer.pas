@@ -53,6 +53,7 @@ type
     FMarginTop: Integer;
     {$IFDEF VCL}
     FText: TCaption;
+    function GetText: TCaption;
     procedure SetText(const Value: TCaption);
     {$ENDIF VCL}
     procedure ParseHTML(s: string);
@@ -75,13 +76,10 @@ type
     procedure Paint; override;
   published
     property Align;
-    {$IFDEF VCL}
-    property Text: TCaption read FText write SetText;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+    property Width default 300;
+    property Height default 275;
     property Text: TCaption read GetText write SetText;
-    {$ENDIF VisualCLX}
-    property BackColor: TColor read FBackColor write SetBackColor;
+    property BackColor: TColor read FBackColor write SetBackColor default clWhite;
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
@@ -260,7 +258,7 @@ var
 
   procedure PopTag;
   begin
-    Element := FTagStack.pop;
+    Element := FTagStack.Pop;
     if Element <> nil then
     begin
       FName := Element.FontName;
@@ -418,7 +416,7 @@ end;
 
 procedure TJvMarkupViewer.RenderHTML;
 var
-  R: trect;
+  R: TRect;
   X, Y, xav, clw: Integer;
   BaseLine: Integer;
   I, C: Integer;
@@ -429,14 +427,14 @@ var
   MaxHeight, MaxAscent: Integer;
   PendingBreak: Boolean;
 
-  procedure SetFont(ee: TJvHTMLElement);
+  procedure SetFont(AElem: TJvHTMLElement);
   begin
     with FBmp.Canvas do
     begin
-      Font.Name := ee.FontName;
-      Font.Size := ee.FontSize;
-      Font.Style := ee.FontStyle;
-      Font.Color := ee.FontColor;
+      Font.Name := AElem.FontName;
+      Font.Size := AElem.FontSize;
+      Font.Style := AElem.FontStyle;
+      Font.Color := AElem.FontColor;
     end;
   end;
 
@@ -587,29 +585,36 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
+function TJvMarkupViewer.GetText: TCaption;
+begin
+  Result := FText;
+end;
+{$ENDIF VCL}
+
 procedure TJvMarkupViewer.SetText(const Value: TCaption);
 var
-  s: string;
+  S: string;
 begin
-{$IFDEF VCL}
-  if Value <> FText then
+  {$IFDEF VCL}
+  if Value = FText then
     Exit;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  if Value <> GetText then
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Value = GetText then
     Exit;
-{$ENDIF VisualCLX}
-  s := Value;
-  s := StringReplace(s, sLineBreak, ' ', [rfReplaceAll]);
-  s := TrimRight(s);
-  ParseHTML(s);
+  {$ENDIF VisualCLX}
+  S := Value;
+  S := StringReplace(S, sLineBreak, ' ', [rfReplaceAll]);
+  S := TrimRight(S);
+  ParseHTML(S);
   HTMLElementDimensions;
   {$IFDEF VCL}
-  FText := s;
+  FText := S;
   Invalidate;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  inherited SetText(s);
+  inherited SetText(S);
   {$ENDIF VisualCLX}
 end;
 
