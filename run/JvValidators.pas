@@ -70,9 +70,11 @@ type
     FPropertyToValidate: string;
     FErrorMessage: string;
     FControlToValidate: TControl;
+    FErrorControl: TControl;
     FValidator: TJvValidators;
     FOnValidateFailed: TNotifyEvent;
     procedure SetControlToValidate(Value: TControl);
+    procedure SetErrorControl(Value: TControl);
   protected
     function GetValidationPropertyValue: Variant; virtual;
     procedure SetValid(const Value: Boolean); virtual;
@@ -101,6 +103,8 @@ type
     property Value: Variant read GetValidationPropertyValue;
   published
     property Valid: Boolean read GetValid write SetValid;
+    // the control that is used to align the error indicator (nil means that the ControlToValidate should be used)
+    property ErrorControl: TControl read FErrorControl write SetErrorControl;
     // the control to validate
     property ControlToValidate: TControl read FControlToValidate write SetControlToValidate;
     // the property in ControlToValidate to validate against
@@ -325,6 +329,7 @@ end;
 destructor TJvBaseValidator.Destroy;
 begin
   Debug('TJvBaseValidator.Destroy: FValidator is %s', [ComponentName(FValidator)]);
+  ErrorControl := nil;
   ControlToValidate := nil;
   if FValidator <> nil then
   begin
@@ -406,8 +411,12 @@ procedure TJvBaseValidator.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
+  begin
     if AComponent = ControlToValidate then
       ControlToValidate := nil;
+    if AComponent = ErrorControl then
+      ErrorControl := nil;
+  end;
 end;
 
 procedure TJvBaseValidator.SetValid(const Value: Boolean);
@@ -432,6 +441,18 @@ begin
       if Supports(FControlToValidate, IJvValidationProperty, Obj) then
         PropertyToValidate := Obj.GetValidationPropertyName;
     end;
+  end;
+end;
+
+procedure TJvBaseValidator.SetErrorControl(Value: TControl);
+begin
+  if FErrorControl <> Value then
+  begin
+    if FErrorControl <> nil then
+      FErrorControl.RemoveFreeNotification(Self);
+    FErrorControl := Value;
+    if FErrorControl <> nil then
+      FErrorControl.FreeNotification(Self);
   end;
 end;
 
@@ -685,6 +706,7 @@ function TJvValidators.Validate: Boolean;
 var
   I: Integer;
   Controls: TList;
+  ErrCtrl: TControl;
 begin
   Result := True;
   if ValidationSummary <> nil then
@@ -710,10 +732,14 @@ begin
           begin
             if (Items[I].ErrorMessage <> '') and (Items[I].ControlToValidate <> nil) then
             begin
+              ErrCtrl := Items[I].ErrorControl;
+              if ErrCtrl = nil then
+                ErrCtrl := Items[i].ControlToValidate;
+
               if ValidationSummary <> nil then
                 FValidationSummary.AddError(Items[I].ErrorMessage);
               if ErrorIndicator <> nil then
-                FErrorIndicator.SetError(Items[I].ControlToValidate, Items[I].ErrorMessage);
+                FErrorIndicator.SetError(ErrCtrl, Items[I].ErrorMessage);
               if FErrorIndicator <> nil then
                 Controls.Remove(Items[I].ControlToValidate); { control is not valid }
             end;
