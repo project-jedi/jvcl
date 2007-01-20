@@ -302,11 +302,11 @@ uses
 const
   DnDScrollArea = 15;
   DnDInterval = 200;
-  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString, ftWideString];
+  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString, ftWideString, ftBCD, ftFMTBCD];
   DefaultValidDetailFields = DefaultValidMasterFields;
   DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
-    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime];
-  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord];
+    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD, ftFMTBCD];
+  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD, ftFMTBCD];
 
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin
@@ -453,7 +453,7 @@ end;
 
 procedure TJvCustomDBTreeView.Warning(Msg: string);
 begin
-  MessageDlg(Name + ': ' + Msg, mtWarning, [mbOk], 0);
+  MessageDlg('TJvCustomDBTreeView.Warning()' + #13#10 + Name + ': ' + Msg, mtWarning, [mbOk], 0);
 end;
 
 function TJvCustomDBTreeView.ValidField(FieldName: string; AllowFieldTypes: TFieldTypes): Boolean;
