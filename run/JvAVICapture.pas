@@ -378,6 +378,8 @@ type
     // destroys the AviCap window just before letting the VCL destroy the handle
     // for the TWinControl
     procedure DestroyWindowHandle; override;
+    // Resizes the internal window that is used to display the AviCap content.
+    procedure ResizeAviCapWindow(Width, Height: Integer);
     // We enforce the size of the window to be equal to the
     // video frame in this method as it is the place where it
     // should be done, rather than doing it in SetBounds
@@ -1383,6 +1385,11 @@ begin
   end;
 end;
 
+procedure TJvAVICapture.ResizeAviCapWindow(Width, Height: Integer);
+begin
+  MoveWindow(FHwnd, 0, 0, Width, Height, True);
+end;
+
 procedure TJvAVICapture.RestartCallbacks;
 begin
   UsedEvents := FUsedEvents;
@@ -1395,12 +1402,16 @@ begin
   // reload video size
   FVideoFormat.Update;
 
-  // else, force the width and height to stay in a constant interval :
+  // Force the width and height to stay in a constant interval :
   // not less than cMinHeight and cMinWidth
   // not more than the video size
   // Autosizing will have been enforced in the CanAutoSize procedure
   lHeight := Max(Min(nHeight, FVideoFormat.Height), cMinHeight);
   lWidth := Max(Min(nWidth, FVideoFormat.Width), cMinWidth);
+
+  // If we changed the size here, force the resize of the internal window.
+  if (lHeight <> nHeight) or (lWidth <> nWidth) then
+    ResizeAviCapWindow(lWidth, lHeight);
 
   inherited SetBounds(nLeft, nTop, lWidth, lHeight);
 end;
@@ -1481,7 +1492,7 @@ begin
     VideoFormat.Update;
     AudioFormat.Update;
     CaptureSettings.Update;
-    SetBounds(Left, Top, Width, Height);
+    AdjustSize;
   end;
 end;
 
@@ -1761,6 +1772,10 @@ begin
   // in case there is no video yet)
   NewHeight := Max(cMinHeight, FVideoFormat.Height);
   NewWidth := Max(cMinWidth, FVideoFormat.Width);
+
+  // We must call ResizeAviCapWindow here as well as in SetBounds because
+  // CanAutoSize might be call without a call to SetBounds.
+  ResizeAviCapWindow(NewWidth, NewHeight);
 end;
 
 procedure TJvAVICapture.SetSingleFrameCapturing(const Value: Boolean);
