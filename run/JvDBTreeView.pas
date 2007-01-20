@@ -302,11 +302,14 @@ uses
 const
   DnDScrollArea = 15;
   DnDInterval = 200;
-  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString, ftWideString, ftBCD, ftFMTBCD];
+  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString, ftWideString, ftBCD
+    {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
   DefaultValidDetailFields = DefaultValidMasterFields;
   DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
-    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD, ftFMTBCD];
-  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD, ftFMTBCD];
+    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD
+	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
+  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD
+	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
 
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin

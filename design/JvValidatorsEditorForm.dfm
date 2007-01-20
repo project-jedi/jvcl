@@ -1,8 +1,8 @@
 object frmValidatorsEditor: TfrmValidatorsEditor
   Left = 289
   Top = 205
-  ClientWidth = 152
-  ClientHeight = 224
+  Width = 160
+  Height = 260
   BorderIcons = [biSystemMenu]
   Caption = 'JvValidator Items Editor'
   Color = clBtnFace
@@ -41,12 +41,12 @@ object frmValidatorsEditor: TfrmValidatorsEditor
       Style = tbsDropDown
     end
     object btnDelete: TToolButton
-      Left = 38
+      Left = 36
       Top = 0
       Action = acDelete
     end
     object ToolButton1: TToolButton
-      Left = 61
+      Left = 59
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -54,19 +54,19 @@ object frmValidatorsEditor: TfrmValidatorsEditor
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 69
+      Left = 67
       Top = 0
       Action = acMoveUp
     end
     object ToolButton3: TToolButton
-      Left = 92
+      Left = 90
       Top = 0
       Action = acMoveDown
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 211
+    Top = 207
     Width = 152
     Height = 19
     AutoHint = True
@@ -74,13 +74,12 @@ object frmValidatorsEditor: TfrmValidatorsEditor
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object lbValidators: TListBox
     Left = 0
     Top = 24
     Width = 152
-    Height = 187
+    Height = 183
     Align = alClient
     ItemHeight = 13
     TabOrder = 2
