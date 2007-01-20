@@ -71,6 +71,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     FValidator: TJvValidators;
+    FFilling: Boolean;
     function AddExisting(Validator: TJvBaseValidator): Integer; overload;
     function AddNew(ValidatorClass: TJvBaseValidatorClass): Integer; overload;
     procedure Delete(Index: Integer);
@@ -212,18 +213,32 @@ end;
 procedure TfrmValidatorsEditor.Activated;
 var
   I: Integer;
+  Index: Integer;
 begin
   inherited Activated;
-  ClearValidators;
-  if FValidator = nil then
+  if FFilling then
     Exit;
-  lbValidators.Items.BeginUpdate;
+  FFilling := True;
   try
-    for I := 0 to FValidator.Count - 1 do
-      AddExisting(FValidator.Items[I]);
+    Index := lbValidators.ItemIndex;
+    lbValidators.Items.BeginUpdate;
+    try
+      ClearValidators;
+      if FValidator <> nil then
+        for I := 0 to FValidator.Count - 1 do
+          AddExisting(FValidator.Items[I]);
+
+      if lbValidators.Items.Count = 0 then
+        Index := -1
+      else
+      if (Index >= lbValidators.Items.Count) then
+        Index := 0;
+      lbValidators.ItemIndex := Index;
+    finally
+      lbValidators.Items.EndUpdate;
+    end;
   finally
-    lbValidators.Items.EndUpdate;
-    lbValidators.ItemIndex := 0;
+    FFilling := False;
   end;
 end;
 
@@ -256,17 +271,24 @@ begin
       Close;
     end
     else
-      for I := 0 to lbValidators.Items.Count - 1 do
-        if Item = lbValidators.Items.Objects[I] then
-        begin
-          J := lbValidators.ItemIndex;
-          lbValidators.Items.Delete(I);
-          if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := J;
-          if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := J - 1;
-          Exit;
-        end;
+    begin
+      lbValidators.Items.BeginUpdate;
+      try
+        for I := 0 to lbValidators.Items.Count - 1 do
+          if Item = lbValidators.Items.Objects[I] then
+          begin
+            J := lbValidators.ItemIndex;
+            lbValidators.Items.Delete(I);
+            if lbValidators.ItemIndex < 0 then
+              lbValidators.ItemIndex := J;
+            if lbValidators.ItemIndex < 0 then
+              lbValidators.ItemIndex := J - 1;
+            Exit;
+          end;
+      finally
+        lbValidators.Items.EndUpdate;
+      end;
+    end;
     UpdateCaption;
   end;
 end;
@@ -353,8 +375,11 @@ end;
 function TfrmValidatorsEditor.AddExisting(Validator: TJvBaseValidator): Integer;
 begin
   Result := lbValidators.Items.AddObject(Validator.Name, Validator);
-  lbValidators.ItemIndex := Result;
-  lbValidatorsClick(nil);
+  if not FFilling then
+  begin
+    lbValidators.ItemIndex := Result;
+    lbValidatorsClick(nil);
+  end;
 end;
 
 function TfrmValidatorsEditor.AddNew(ValidatorClass: TJvBaseValidatorClass): Integer;
@@ -366,7 +391,7 @@ begin
     V.Name := Designer.UniqueName(V.ClassName);
     FValidator.Insert(V);
     Result := AddExisting(V);
-  except
+  except                             
     V.Free;
     raise;
   end;
