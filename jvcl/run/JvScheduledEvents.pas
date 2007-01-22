@@ -58,6 +58,48 @@ type
 
   TScheduledEventState =
     (sesNotInitialized, sesWaiting, sesTriggered, sesExecuting, sesPaused, sesEnded);
+    
+  TScheduledEventStateInfo = record
+    {Common}
+      ARecurringType: TScheduleRecurringKind;
+      AStartDate: TTimeStamp;
+      AEndType: TScheduleEndKind;
+      AEndDate: TTimeStamp;
+      AEndCount: Cardinal;
+      ALastTriggered: TTimeStamp;
+    {DayFrequency}
+      DayFrequence: record
+        ADayFrequencyStartTime: Cardinal;
+        ADayFrequencyEndTime: Cardinal;
+        ADayFrequencyInterval: Cardinal;
+      end;
+    {Daily}
+      Daily: record
+        ADayEveryWeekDay: Boolean;
+        ADayInterval: Cardinal;
+      end;
+    {Weekly}
+      Weekly: record
+        AWeekInterval: Cardinal;
+        AWeekDaysOfWeek: TScheduleWeekDays;
+      end;
+    {Monthly}
+      Monthly: record
+        AMonthIndexKind: TScheduleIndexKind;
+        AMonthIndexValue: Cardinal;
+        AMonthDay: Cardinal;
+        AMonthInterval: Cardinal;
+      end;
+    {Yearly}
+      Yearly: record
+        AYearIndexKind: TScheduleIndexKind;
+        AYearIndexValue: Cardinal;
+        AYearDay: Cardinal;
+        AYearMonth: Cardinal;
+        AYearInterval: Cardinal;
+      end;
+  end;
+  
   TScheduledEventExecute = procedure(Sender: TJvEventCollectionItem; const IsSnoozeEvent: Boolean) of object;
 
   TJvCustomScheduledEvents = class(TComponent)
@@ -197,10 +239,12 @@ type
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     procedure LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer;
-      const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime); virtual;
+      const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime;
+      const AEventInfo: TScheduledEventStateInfo); virtual;
     procedure Pause;
     procedure SaveState(out TriggerStamp: TTimeStamp; out TriggerCount, DayCount: Integer;
-      out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime); virtual;
+      out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime;
+      out AEventInfo: TScheduledEventStateInfo); virtual;
     procedure Snooze(const MSecs: Word; const Secs: Word = 0; const Mins: Word = 0;
       const Hrs: Word = 0; const Days: Word = 0);
     procedure Start;
@@ -553,6 +597,9 @@ var
   SnoozeInterval: TSystemTime;
   EventName: string;
   Event: TJvEventCollectionItem;
+
+  AInt: Cardinal;
+  EventInfo: TScheduledEventStateInfo;
 begin
   EventName := Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'Eventname']));
   if EventName <> '' then
@@ -570,9 +617,62 @@ begin
     SnoozeInterval.wMinute := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMinute']));
     SnoozeInterval.wSecond := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wSecond']));
     SnoozeInterval.wMilliseconds := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMilliseconds']));
+    {Common}
+    with EventInfo do
+      begin
+        AInt := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'RecurringType']));
+        ARecurringType := TScheduleRecurringKind(AInt);
+        AStartDate.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'StartDate_time']));
+        AStartDate.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'StartDate_date']));
+        AInt := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndType']));
+        AEndType := TScheduleEndKind(AInt);
+        AEndDate.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndDate_time']));
+        AEndDate.Date := Sender.readInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndDate_date']));
+        AEndCount := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndCount']));
+        ALastTriggered.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'LastTriggered_time']));
+        ALastTriggered.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'LastTriggered_date']));
+      end;
+    {DayFrequency}
+    with EventInfo.DayFrequence do
+      begin
+        ADayFrequencyStartTime := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayFrequencyStartTime']));
+        ADayFrequencyEndTime := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayFrequencyEndTime']));
+        ADayFrequencyInterval := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayFrequencyInterval']));
+      end;
+    {Daily}
+    with EventInfo.Daily do
+      begin
+        ADayEveryWeekDay := Sender.ReadBoolean(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayEveryWeekDay']));
+        ADayInterval := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayInterval']));
+      end;
+    {Weekly}
+    with EventInfo.Weekly do
+      begin
+        AWeekInterval := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'WeekInterval']));
+        AppStorage.ReadSet(Sender.ConcatPaths([Path, ItemName + IntToStr(Index),'WeekDaysOfWeek']), TypeInfo(TScheduleWeekDays), [], AWeekDaysOfWeek);
+      end;
+    {Monthly}
+    with EventInfo.Monthly do
+      begin
+        AInt := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'MothIndexKind']));
+        AMonthIndexKind := TScheduleIndexKind(AInt);
+        AMonthIndexValue := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'MonthIndexValue']));
+        AMonthDay := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'MonthDay']));
+        AMonthInterval := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'MonthInterval']));
+      end;
+    {Yearly}
+    with EventInfo.Yearly do
+      begin
+        AInt := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearIndexKind']));
+        AYearIndexKind := TScheduleIndexKind(AInt);
+        AYearIndexValue := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearIndexValue']));
+        AYearDay := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearDay']));
+        AYearMonth := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearMonth']));
+        AYearInterval := Sender.ReadInteger(Sender.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearInterval']));
+      end;
     Event := TJvEventCollection(List).Add;
     Event.Name := EventName;
-    Event.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
+    Event.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval, EventInfo);
   end;
 end;
 
@@ -597,8 +697,9 @@ var
   SnoozeInterval: TSystemTime;
   SnoozeDate: Integer;
   SnoozeTime: Integer;
+  EventInfo: TScheduledEventStateInfo;
 begin
-  TJvEventCollection(List)[Index].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
+  TJvEventCollection(List)[Index].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval, EventInfo);
   StampDate := Stamp.Date;
   StampTime := Stamp.Time;
   SnoozeDate := SnoozeStamp.Date;
@@ -617,6 +718,55 @@ begin
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMinute']), SnoozeInterval.wMinute);
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wSecond']), SnoozeInterval.wSecond);
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'SnoozeInterval.wMilliseconds']), SnoozeInterval.wMilliseconds);
+  {Common}
+  with EventInfo do
+    begin
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'RecurringType']), Integer(ARecurringType));
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'StartDate_time']), AStartDate.Time);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'StartDate_date']), AStartDate.Date);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndType']), Integer(AEndType));
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndDate_time']), AEndDate.Time);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndDate_date']), AEndDate.Date);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'EndCount']), AEndCount);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'LastTriggered_time']), ALastTriggered.Time);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'LastTriggered_date']), ALastTriggered.Date);
+    end;
+  {DayFrequency}
+  with EventInfo.DayFrequence do
+    begin
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayFrequencyStartTime']), ADayFrequencyStartTime);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayFrequencyEndTime']), ADayFrequencyEndTime);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayFrequencyInterval']), ADayFrequencyInterval);
+    end;
+  {Daily}
+  with EventInfo.Daily do
+    begin
+      AppStorage.WriteBoolean(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayEveryWeekDay']), ADayEveryWeekDay);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'DayInterval']), ADayInterval);
+    end;
+  {Weekly}
+  with EventInfo.Weekly do
+    begin
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'WeekInterval']), AWeekInterval);
+      AppStorage.WriteSet(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'WeekDaysOfWeek']), TypeInfo(TScheduleWeekDays), AWeekDaysOfWeek);
+    end;
+  {Monthly}
+  with EventInfo.Monthly do
+    begin
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'MothIndexKind']), Integer(AMonthIndexKind));
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'MonthIndexValue']), AMonthIndexValue);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'MonthDay']), AMonthDay);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'MonthInterval']), AMonthInterval);
+    end;
+  {Yearly}
+  with EventInfo.Yearly do
+    begin
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearIndexKind']), Integer(AYearIndexKind));
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearIndexValue']), AYearIndexValue);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearDay']), AYearDay);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearMonth']), AYearMonth);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, ItemName + IntToStr(Index), 'YearInterval']), AYearInterval);
+    end;
 end;
 
 procedure TJvCustomScheduledEvents.DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
@@ -1208,20 +1358,95 @@ begin
   end;
 end;
 
-procedure TJvEventCollectionItem.LoadState(const TriggerStamp: TTimeStamp; const TriggerCount,
-  DayCount: Integer; const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime);
+procedure TJvEventCollectionItem.LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer;
+  const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime; const AEventInfo: TScheduledEventStateInfo);
+var
+  IDayFrequency: IJclScheduleDayFrequency;
+  IDay: IJclDailySchedule;
+  IWeek: IJclWeeklySchedule;
+  IMonth: IJclMonthlySchedule;
+  IYear: IJclYearlySchedule;
 begin
-  Schedule.InitToSavedState(TriggerStamp, TriggerCount, DayCount);
-  FScheduleFire := TriggerStamp;
-  FSnoozeFire := SnoozeStamp;
-  FLastSnoozeInterval := ALastSnoozeInterval;
-  if IsNullTimeStamp(NextFire) or
-    (CompareTimeStamps(NextFire, DateTimeToTimeStamp(Now)) < 0) then
-    Schedule.NextEventFromNow(CountMissedEvents);
-  if IsNullTimeStamp(NextFire) then
-    FState := sesEnded
-  else
-    FState := sesWaiting;
+  with AEventInfo do
+    begin
+      Schedule.RecurringType:=ARecurringType;
+      if ARecurringType<>srkOneShot then
+        begin
+          IDayFrequency := Schedule as IJclScheduleDayFrequency;
+          with AEventInfo.DayFrequence do
+            begin
+              IDayFrequency.StartTime :=ADayFrequencyStartTime;
+              IDayFrequency.EndTime := ADayFrequencyEndTime;
+              IDayFrequency.Interval := ADayFrequencyInterval;
+            end;
+        end;
+      case ARecurringType of
+        srkOneShot:
+          begin
+          end;
+        srkDaily:
+          begin
+            {IJclDailySchedule}
+            IDay := Schedule as IJclDailySchedule;
+            with AEventInfo.Daily do
+              begin
+                IDay.EveryWeekDay := ADayEveryWeekDay;
+                if not ADayEveryWeekDay then
+                  IDay.Interval := ADayInterval;
+              end;
+          end;
+        srkWeekly:
+          begin
+            {IJclWeeklySchedule}
+            IWeek := Schedule as IJclWeeklySchedule;
+            with AEventInfo.Weekly do
+              begin
+                IWeek.DaysOfWeek := AWeekDaysOfWeek;
+                IWeek.Interval := AWeekInterval;
+              end;
+          end;
+        srkMonthly:
+          begin
+            {IJclMonthlySchedule}
+            IMonth := Schedule as IJclMonthlySchedule;
+            with AEventInfo.Monthly do
+              begin
+                IMonth.IndexKind := AMonthIndexKind;
+                if AMonthIndexKind <> sikNone then
+                  IMonth.IndexValue := AMonthIndexValue;
+                if AMonthIndexKind = sikNone then
+                  IMonth.Day := AMonthDay;
+                IMonth.Interval := AMonthInterval;
+              end;
+          end;
+        srkYearly:
+          begin
+            {IJclYearlySchedule}
+            IYear := Schedule as IJclYearlySchedule;
+            with AEventInfo.Yearly do
+              begin
+                IYear.IndexKind := AYearIndexKind;
+                if AYearIndexKind <> sikNone then
+                  IYear.IndexValue := AYearIndexValue
+                else
+                  IYear.Day := AYearDay;
+                IYear.Month := AYearMonth;
+                IYear.Interval := AYearInterval;
+              end;
+          end;
+      end;
+      Schedule.InitToSavedState(TriggerStamp, TriggerCount, DayCount);
+      FScheduleFire := TriggerStamp;
+      FSnoozeFire := SnoozeStamp;
+      FLastSnoozeInterval := ALastSnoozeInterval;
+      if IsNullTimeStamp(NextFire) or
+        (CompareTimeStamps(NextFire, DateTimeToTimeStamp(Now)) < 0) then
+        Schedule.NextEventFromNow(CountMissedEvents);
+      if IsNullTimeStamp(NextFire) then
+        FState := sesEnded
+      else
+        FState := sesWaiting;
+    end;
 end;
 
 procedure TJvEventCollectionItem.Pause;
@@ -1230,14 +1455,95 @@ begin
     FState := sesPaused;
 end;
 
-procedure TJvEventCollectionItem.SaveState(out TriggerStamp: TTimeStamp; out TriggerCount,
-  DayCount: Integer; out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime);
+procedure TJvEventCollectionItem.SaveState(out TriggerStamp: TTimeStamp; out TriggerCount, DayCount: Integer;
+      out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime;
+      out AEventInfo: TScheduledEventStateInfo);
+var
+  IDayFrequency: IJclScheduleDayFrequency;
+  IDay: IJclDailySchedule;
+  IWeek: IJclWeeklySchedule;
+  IMonth: IJclMonthlySchedule;
+  IYear: IJclYearlySchedule;
 begin
-  TriggerStamp := FScheduleFire;
-  TriggerCount := Schedule.TriggerCount;
-  DayCount := Schedule.DayCount;
-  SnoozeStamp := FSnoozeFire;
-  ALastSnoozeInterval := LastSnoozeInterval;
+  {Common properties}
+  with AEventInfo do
+    begin
+      AEndType := FSchedule.EndType;
+      AEndDate := FSchedule.EndDate;
+      AEndCount := FSchedule.EndCount;
+      ALastTriggered := Fschedule.LastTriggered;
+      AStartDate := FSchedule.StartDate;
+      ARecurringType := FSchedule.RecurringType;
+      {IJclScheduleDayFrequency}
+      if ARecurringType<>srkOneShot then
+        begin
+          IDayFrequency := FSchedule as IJclScheduleDayFrequency;
+          with AEventInfo.DayFrequence do
+            begin
+              ADayFrequencyStartTime := IDayFrequency.StartTime;
+              ADayFrequencyEndTime := IDayFrequency.EndTime;
+              ADayFrequencyInterval := IDayFrequency.Interval;
+            end;
+        end;
+      case ARecurringType of
+        srkOneShot:
+          begin
+          end;
+        srkDaily:
+          begin
+            {IJclDailySchedule}
+            IDay := FSchedule as IJclDailySchedule;
+            with AEventInfo.Daily do
+              begin
+                ADayInterval := IDay.Interval;
+                ADayEveryWeekDay := IDay.EveryWeekDay;
+              end;
+          end;
+        srkWeekly:
+          begin
+            {IJclWeeklySchedule}
+            IWeek := FSchedule as IJclWeeklySchedule;
+            with AEventInfo.Weekly do
+              begin
+                AWeekInterval := IWeek.Interval;
+                AWeekDaysOfWeek := IWeek.DaysOfWeek;
+              end;
+          end;
+        srkMonthly:
+          begin
+            {IJclMonthlySchedule}
+            IMonth := FSchedule as IJclMonthlySchedule;
+            with AEventInfo.Monthly do
+              begin
+                AMonthIndexKind := IMonth.IndexKind;
+                if AMonthIndexKind <> sikNone then
+                  AMonthIndexValue := IMonth.IndexValue;
+                AMonthDay := IMonth.Day;
+                AMonthInterval := IMonth.Interval;
+              end;
+          end;
+        srkYearly:
+          begin
+            {IJclYearlySchedule}
+            IYear := FSchedule as IJclYearlySchedule;
+            with AEventInfo.Yearly do
+              begin
+                AYearIndexKind := IYear.IndexKind;
+                if AYearIndexKind <> sikNone then
+                  AYearIndexValue := IYear.IndexValue;
+                AYearDay := IYear.Day;
+                AYearMonth := IYear.Month;
+                AYearInterval := IYear.Interval;
+              end;
+          end;
+      end;
+      {Old part}
+      TriggerStamp := FScheduleFire;
+      TriggerCount := Schedule.TriggerCount;
+      DayCount := Schedule.DayCount;
+      SnoozeStamp := FSnoozeFire;
+      ALastSnoozeInterval := LastSnoozeInterval;
+    end;
 end;
 
 procedure TJvEventCollectionItem.Snooze(const MSecs: Word; const Secs: Word = 0;
