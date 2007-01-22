@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -93,6 +93,7 @@ type
     destructor Destroy; override;
     
     procedure Assign(Source: TPersistent); override;
+    procedure Clear;
   published
     property Name: string read FName write FName;
     property Color: TColor read FColor write FColor default clLime;
@@ -168,6 +169,7 @@ type
     procedure UpdateScope;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearValues;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     property Active: Boolean read FActive write SetActive;
@@ -268,6 +270,10 @@ procedure TJvScopeLineValues.Clear;
 begin
   FCount := 0;
   FZeroIndex := 0;
+
+  // Always need to have two values in the queue
+  Add(0);
+  Add(0);
 end;
 
 function TJvScopeLineValues.GetCapacity: Integer;
@@ -292,6 +298,11 @@ begin
 end;
 
 //=== { TJvScopeLine } =======================================================
+
+procedure TJvScopeLine.Clear;
+begin
+  FValues.Clear;
+end;
 
 constructor TJvScopeLine.Create(Collection: Classes.TCollection);
 begin
@@ -398,6 +409,16 @@ begin
 end;
 
 //=== { TJvSimScope } ========================================================
+
+procedure TJvSimScope.ClearValues;
+var
+  I: Integer;
+begin
+  for I := 0 to FLines.Count - 1 do
+  begin
+    FLines[I].Clear;
+  end;
+end;
 
 constructor TJvSimScope.Create(AOwner: TComponent);
 begin
@@ -540,8 +561,6 @@ begin
       else
       begin
         FLines[I].FValues.Clear;
-        FLines[I].FValues.Add(0);
-        FLines[I].FValues.Add(0);
       end;
     end;
 
