@@ -62,6 +62,7 @@ type
     FOnBeforeStoreProperties: TNotifyEvent;
     FOnAfterStoreProperties: TNotifyEvent;
     FSynchronizeStoreProperties: Boolean;
+    FSynchronizeLoadProperties: Boolean;
     procedure SetAutoLoad(Value: Boolean);
     function GetIgnoreProperties: TJvIgnorePropertiesStringList;
     procedure SetIgnoreProperties(Value: TJvIgnorePropertiesStringList);
@@ -72,7 +73,7 @@ type
   protected
     procedure UpdateChildPaths(OldPath: string = ''); virtual;
     procedure SetPath(Value: string); virtual;
-    procedure SetAppStorage(Value: TJvCustomAppStorage);
+    procedure SetAppStorage(Value: TJvCustomAppStorage); virtual;
     procedure Loaded; override;
     procedure DisableAutoLoadDown;
     procedure LoadData; virtual;
@@ -106,6 +107,11 @@ type
     /// AppStoragePath should be synchronized via a global mutex
     property SynchronizeStoreProperties: Boolean read FSynchronizeStoreProperties
         write FSynchronizeStoreProperties default False;
+    //1 Synchronize the LoadProperties procedure
+    /// Defines if the execution of the LoadProperties procedure for the current
+    /// AppStoragePath should be synchronized via a global mutex
+    property SynchronizeLoadProperties: Boolean read FSynchronizeLoadProperties
+        write FSynchronizeLoadProperties default False;
     property Tag;
   end;
 
@@ -304,7 +310,7 @@ end;
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
-  IgnorePropertyList: array [1..17] of string =
+  IgnorePropertyList: array [1..18] of string =
    (
     'AboutJVCL',
     'AppStorage',
@@ -322,6 +328,7 @@ const
     'OnAfterLoadProperties',
     'OnBeforeStoreProperties',
     'OnAfterStoreProperties',
+    'SynchronizeLoadProperties',
     'SynchronizeStoreProperties'
    );
 var
@@ -341,6 +348,7 @@ begin
   for I := Low(IgnorePropertyList) to High(IgnorePropertyList) do
     FIntIgnoreProperties.Add(IgnorePropertyList[I]);
   FSynchronizeStoreProperties := False;
+  FSynchronizeLoadProperties := False;
 end;
 
 destructor TJvCustomPropertyStore.Destroy;
@@ -583,23 +591,56 @@ begin
     Result := 0;
   end;
 end;
- 
+
 procedure TJvCustomPropertyStore.LoadProperties;
+var
+  JclMutex: TJclMutex;
+
+  procedure ExecuteLoadProperties;
+  begin
+    AppStorage.BeginUpdate;
+    try
+      UpdateChildPaths;
+      FLastLoadTime := Now;
+      if ClearBeforeLoad then
+        Clear;
+      if Assigned(FOnBeforeLoadProperties) then
+        FOnBeforeLoadProperties(Self);
+      LoadData;
+      AppStorage.ReadPersistent(AppStoragePath, Self, True, True, CombinedIgnoreProperties);
+      if Assigned(FOnAfterLoadProperties) then
+        FOnAfterLoadProperties(Self);
+    finally
+      AppStorage.EndUpdate;
+    end;
+  end;
+
+
 begin
   if not Enabled then
     Exit;
   if not Assigned(AppStorage) then
     Exit;
-  UpdateChildPaths;
-  FLastLoadTime := Now;
-  if ClearBeforeLoad then
-    Clear;
-  if Assigned(FOnBeforeLoadProperties) then
-    FOnBeforeLoadProperties(Self);
-  LoadData;
-  AppStorage.ReadPersistent(AppStoragePath, Self, True, True, CombinedIgnoreProperties);
-  if Assigned(FOnAfterLoadProperties) then
-    FOnAfterLoadProperties(Self);
+
+  if SynchronizeLoadProperties then
+  begin
+    JclMutex := TJclMutex.Create(nil, False,
+      B64Encode(RsJvPropertyStoreMutexLoadPropertiesProcedureName + AppStoragePath));
+    try
+      if JclMutex.WaitForever = wrSignaled then
+      try
+        ExecuteLoadProperties;
+      finally
+        JclMutex.Release;
+      end
+      else
+        raise Exception.CreateResFmt(@RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
+    finally
+      FreeAndNil(JclMutex);
+    end;
+  end
+  else
+    ExecuteLoadProperties;
 end;
 
 procedure TJvCustomPropertyStore.StoreProperties;
@@ -650,7 +691,7 @@ begin
         JclMutex.Release;
       end
       else
-        raise Exception.CreateRes(@RsJvPropertyStoreEnterMutexTimeout);
+        raise Exception.CreateResFmt(@RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
     finally
       FreeAndNil(JclMutex);
     end;
