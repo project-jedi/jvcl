@@ -146,6 +146,8 @@ resourcestring
   RsEInvalidPath = 'Invalid path';
   RsENotAUniqueRootPath = '''%s'' is not a unique root path';
   RsECircularReferenceOfStorages = 'Circular reference of storages';
+  RsJvAppStorageSynchronizeTimeout = '%s: Mutex Timeout';
+  RsJvAppStorageSynchronizeProcedureName = 'TJvCustomAppStorage.Synchronize:';
 
 //=== JvAppStorageSelectList.pas =============================================
 resourcestring
@@ -1756,7 +1758,8 @@ resourcestring
 //=== JvPropertyStore.pas ====================================================
 resourcestring
   RsJvPropertyStoreMutexStorePropertiesProcedureName = 'TJvCustomPropertyStore.StoreProperties:';
-  RsJvPropertyStoreEnterMutexTimeout = 'TJvCustomPropertyStore.StoreProperties: Mutex Timeout';
+  RsJvPropertyStoreMutexLoadPropertiesProcedureName = 'TJvCustomPropertyStore.LoadProperties:';
+  RsJvPropertyStoreEnterMutexTimeout = '%s: Mutex Timeout';
 
 //=== JvPrvwRender.pas =======================================================
 resourcestring

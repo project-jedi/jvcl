@@ -153,6 +153,8 @@ type
     aeoRecursive); // scan sub folders as well
   TJvAppStorageEnumOptions = set of TJvAppStorageEnumOption;
 
+  TSynchronizeMethod = procedure of object;
+
   TFileLocation = (
     flCustom, // FileName property will contain full path
 {$IFDEF MSWINDOWS}
@@ -181,12 +183,24 @@ type
     FReadOnly: Boolean;
     FOnError: TJvAppStorageErrorEvent;
     FTranslateStringEngine: TJvTranslateString;
+    FSynchronizeFlushReload: Boolean;
     function GetActiveTranslateStringEngine: TJvTranslateString;
     function GetUpdating: Boolean;
   protected
     FFlushOnDestroy: Boolean;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
+    //1 Synchronize the Flush and Reload procedure
+    /// Defines if the execution of flush and reload for the current
+    /// AppStoragePath should be synchronized via a global mutex
+    /// This property should be published in the dependent classes
+    /// The procedure Synchronize could be used in the dependent class
+    /// to implement the synchronisation
+    property SynchronizeFlushReload: Boolean read FSynchronizeFlushReload write
+        FSynchronizeFlushReload default False;
+    //1 Synchronize the execution of an method using a JclMutex
+    procedure Synchronize(AMethod: TSynchronizeMethod; AIdentifier: String);
 
     { Sets the value of FFlushOnDestroy. Derived classes may override this
       method to prevent it from changing or add extra behaviour to it. }
@@ -819,6 +833,7 @@ type
 
     function DoGetFileName: TFileName; virtual;
     property AsString: string read GetAsString write SetAsString;
+    
     // OnGetFileName triggered on Location = flCustom
     property OnGetFileName: TJvAppStorageGetFileNameEvent read FOnGetFileName write SetOnGetFileName;
 
@@ -881,7 +896,7 @@ uses
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
   JclFileUtils, JclStrings, JclSysInfo, JclRTTI, JclMime,
-  JvPropertyStore, JvConsts, JvResources;
+  JvPropertyStore, JvConsts, JvResources, JvStrings, JclSynch;
 
 type
   TJvAppStoragePropertyEngineList = class(TList)
@@ -1172,6 +1187,7 @@ begin
   FCryptEnabledStatus := 0;
   FReadOnly := False;
   FInternalTranslateStringEngine := TJvTranslateString.Create(Self);
+  FSynchronizeFlushReload := False;
 end;
 
 destructor TJvCustomAppStorage.Destroy;
@@ -2841,9 +2857,13 @@ begin
 end;
 
 procedure TJvCustomAppStorage.BeginUpdate;
+var i : Integer;
 begin
   ReloadIfNeeded;
   Inc(FUpdateCount);
+  for i  := 0 to SubStorages.Count - 1 do
+    if Assigned(SubStorages[i].AppStorage) then
+      SubStorages[i].AppStorage.BeginUpdate;
 end;
 
 procedure TJvCustomAppStorage.CheckDeletePathByVersion(const Path: string;
@@ -2874,7 +2894,11 @@ begin
 end;
 
 procedure TJvCustomAppStorage.EndUpdate;
+var i : Integer;
 begin
+  for i  := 0 to SubStorages.Count - 1 do
+    if Assigned(SubStorages[i].AppStorage) then
+      SubStorages[i].AppStorage.EndUpdate;
   Dec(FUpdateCount);
   FlushIfNeeded;
   if FUpdateCount < 0 then
@@ -2893,6 +2917,31 @@ function TJvCustomAppStorage.GetUpdating: Boolean;
 begin
   Result := FUpdateCount <> 0;
 end;
+
+procedure TJvCustomAppStorage.Synchronize(AMethod: TSynchronizeMethod;
+    AIdentifier: String);
+var
+  JclMutex: TJclMutex;
+begin
+  if Assigned(AMethod) then
+  begin
+    JclMutex := TJclMutex.Create(nil, False,
+      B64Encode(RsJvAppStorageSynchronizeProcedureName + AIdentifier));
+    try
+      if JclMutex.WaitForever = wrSignaled then
+      try
+        AMethod;
+      finally
+        JclMutex.Release;
+      end
+      else
+        raise Exception.CreateResFmt(@RsJvAppStorageSynchronizeTimeout, [RsJvAppStorageSynchronizeProcedureName+AIdentifier]);
+    finally
+      FreeAndNil(JclMutex);
+    end;
+  end;
+end;
+
 
 {$IFDEF COMPILER6_UP}
 function TJvCustomAppStorage.ReadWideString(const Path: string;

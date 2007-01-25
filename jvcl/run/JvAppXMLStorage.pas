@@ -144,6 +144,9 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppXMLFileStorage = class(TJvCustomAppXMLStorage)
+  private
+    procedure FlushInternal;
+    procedure ReloadInternal;
   public
     procedure Flush; override;
     procedure Reload; override;
@@ -160,6 +163,10 @@ type
     property OnGetFileName;
     property OnEncodeValue;
     property OnDecodeValue;
+    //1 Synchronize the Flush and Reload procedure
+    /// Defines if the execution of flush and reload for the current
+    /// File should be synchronized via a global mutex
+    property SynchronizeFlushReload;
   end;
 
 procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
@@ -918,12 +925,20 @@ begin
       Path := ExtractFilePath(FullFileName);
       if Path <> '' then
         ForceDirectories(Path);
-      Xml.SaveToFile(FullFileName);
+      if SynchronizeFlushReload then
+        Synchronize(FlushInternal, FullFileName)
+      else
+        FlushInternal;
     except
       on E: Exception do
         DoError(E.Message);
     end;
   end;
+end;
+
+procedure TJvAppXMLFileStorage.FlushInternal;
+begin
+  Xml.SaveToFile(FullFileName);
 end;
 
 procedure TJvAppXMLFileStorage.Reload;
@@ -932,10 +947,18 @@ begin
   begin
     inherited Reload;
     if FileExists(FullFileName) then
-      Xml.LoadFromFile(FullFileName)
+      if SynchronizeFlushReload then
+        Synchronize(ReloadInternal, FullFileName)
+      else
+        ReloadInternal
     else // file may have disappeared. If so, clear the root element
       Xml.Root.Clear;
   end;
+end;
+
+procedure TJvAppXMLFileStorage.ReloadInternal;
+begin
+  Xml.LoadFromFile(FullFileName);
 end;
 
 //=== { Common procedures } ==================================================

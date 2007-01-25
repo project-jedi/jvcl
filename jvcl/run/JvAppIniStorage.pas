@@ -120,6 +120,9 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppIniFileStorage = class(TJvCustomAppIniStorage)
+  private
+    procedure FlushInternal;
+    procedure ReloadInternal;
   public
     procedure Flush; override;
     procedure Reload; override;
@@ -134,6 +137,10 @@ type
     property DefaultSection;
     property SubStorages;
     property OnGetFileName;
+    //1 Synchronize the Flush and Reload procedure
+    /// Defines if the execution of flush and reload for the current
+    /// File should be synchronized via a global mutex
+    property SynchronizeFlushReload;
   end;
 
 procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
@@ -735,13 +742,21 @@ begin
       Path := ExtractFilePath(IniFile.FileName);
       if Path <> '' then
         ForceDirectories(Path);
-      IniFile.Rename(FullFileName, False);
-      IniFile.UpdateFile;
+      if SynchronizeFlushReload then
+        Synchronize(FlushInternal, FullFileName)
+      else
+        FlushInternal;
     except
       on E: Exception do
         DoError(E.Message);
     end;
   end;
+end;
+
+procedure TJvAppIniFileStorage.FlushInternal;
+begin
+  IniFile.Rename(FullFileName, False);
+  IniFile.UpdateFile;
 end;
 
 procedure TJvAppIniFileStorage.Reload;
@@ -750,10 +765,18 @@ begin
   begin
     inherited Reload;
     if FileExists(FullFileName) then
-      IniFile.Rename(FullFileName, True)
+      if SynchronizeFlushReload then
+        Synchronize(ReloadInternal, FullFileName)
+      else
+        ReloadInternal
     else  // file may have disappeared. If so, clear the file
       IniFile.Clear;
   end;
+end;
+
+procedure TJvAppIniFileStorage.ReloadInternal;
+begin
+  IniFile.Rename(FullFileName, True);
 end;
 
 //=== { Common procedures } ==================================================
