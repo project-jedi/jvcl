@@ -112,6 +112,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Click; override;
   end;
 
   TJvXPButton = class(TJvXPCustomButton)
@@ -380,6 +382,12 @@ begin
   FImageChangeLink.Free;
   FImageChangeLink := nil;
   inherited Destroy;
+end;
+
+procedure TJvXPCustomButton.Click;
+begin
+  // Only there to make it public (Mantis 4015)
+  inherited Click;
 end;
 
 function TJvXPCustomButton.GetActionLinkClass: TControlActionLinkClass;
