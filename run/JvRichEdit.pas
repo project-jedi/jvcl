@@ -6458,7 +6458,7 @@ begin
     { Font.Size is in points; yHeight is in twips }
     yHeight := Font.Size * CTwipsPerPoint;
     if (Font.Color = clWindowText) or (Font.Color = clDefault) then
-      dwEffects := CFE_AUTOCOLOR
+      dwEffects := dwEffects or CFE_AUTOCOLOR
     else
       crTextColor := ColorToRGB(Font.Color);
     if fsBold in Font.Style then
