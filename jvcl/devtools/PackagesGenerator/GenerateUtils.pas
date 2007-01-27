@@ -1172,6 +1172,7 @@ var
   tmpLines, repeatLines : TStrings;
   I : Integer;
   j : Integer;
+  ImageBaseInt: string;
   tmpStr : string;
   bcbId : string;
   bcblibsList : TStrings;
@@ -1252,6 +1253,8 @@ begin
     OutFileName := path + TargetToDir(target) + DirDelimiter +
                    ExpandPackageName(OutFileName, target)+
                    Extension;
+
+    ImageBaseInt := IntToStr(StrToInt('$' + xml.ImageBase));
 
     // The time stamp hasn't been found yet
     TimeStampLine := -1;
@@ -1467,6 +1470,7 @@ begin
              'C6LIBS%', StringsToStr(xml.C6Libs, ' ', False),
              'GUID%', xml.GUID,
              'IMAGE_BASE%', xml.ImageBase,
+             'IMAGE_BASE_INT%', ImageBaseInt,
              'VERSION_MAJOR_NUMBER%', xml.VersionMajorNumber,
              'VERSION_MINOR_NUMBER%', xml.VersionMinorNumber,
              'RELEASE_NUMBER%', xml.ReleaseNumber,
