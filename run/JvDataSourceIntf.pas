@@ -386,7 +386,7 @@ type
 
 implementation
 
-{ TJvDataConnector }
+//=== { TJvDataConnector } ===================================================
 
 constructor TJvDataConnector.Create;
 begin
@@ -646,7 +646,13 @@ begin
   end;
 end;
 
-{ TJvFieldDataConnector }
+//=== { TJvFieldDataConnector } ==============================================
+
+constructor TJvFieldDataConnector.Create;
+begin
+  inherited Create;
+  FField := TJvDataConnectorField.Create;
+end;
 
 procedure TJvFieldDataConnector.ActiveChanged;
 begin
@@ -664,12 +670,6 @@ end;
 function TJvFieldDataConnector.CanEdit: Boolean;
 begin
   Result := inherited CanEdit and Field.CanModify;
-end;
-
-constructor TJvFieldDataConnector.Create;
-begin
-  inherited Create;
-  FField := TJvDataConnectorField.Create;
 end;
 
 procedure TJvFieldDataConnector.DataSourceConnected;
@@ -712,7 +712,7 @@ begin
   FField.UpdateField(DataSource);
 end;
 
-{ TJvDataConnectorField }
+//=== { TJvDataConnectorField } ==============================================
 
 procedure TJvDataConnectorField.SetDataSource(const Value: IJvDataSource);
 begin
@@ -895,7 +895,7 @@ begin
   DataSource.FieldValue[Field] := Value;
 end;
 
-{ TJvKeyFieldDataConnector }
+//=== { TJvKeyFieldDataConnector } ===========================================
 
 constructor TJvKeyFieldDataConnector.Create;
 begin
@@ -933,14 +933,7 @@ begin
   FKey.UpdateField(DataSource);
 end;
 
-{ TJvLookupDataConnector }
-
-procedure TJvLookupDataConnector.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TJvLookupDataConnector then
-    FList.Assign(Source);
-end;
+//=== { TJvLookupDataConnector } =============================================
 
 constructor TJvLookupDataConnector.Create;
 begin
@@ -953,6 +946,13 @@ destructor TJvLookupDataConnector.Destroy;
 begin
   FList.Free;
   inherited Destroy;
+end;
+
+procedure TJvLookupDataConnector.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvLookupDataConnector then
+    FList.Assign(Source);
 end;
 
 function TJvLookupDataConnector.GetListField: TDataFieldString;
