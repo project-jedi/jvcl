@@ -2491,9 +2491,11 @@ begin
   if ThemeServices.ThemesEnabled then
     inherited;
   {$ENDIF JVCLThemesEnabledD56}
-  Msg.Result := 1;
   {$IFDEF COMPILER9_UP}
   inherited;
+  Msg.Result := 0;
+  {$ELSE}
+  Msg.Result := 1;
   {$ENDIF COMPILER9_UP}
 end;
 {$ENDIF VCL}
