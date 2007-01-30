@@ -607,7 +607,7 @@ type
     { Returns the current state if Property-Value Cryption is enabled }
     function IsPropertyValueCryptEnabled: Boolean;
     {$IFDEF COMPILER6_UP}
-    function ReadWideString(const Path: string; const Default: WideString):
+    function ReadWideString(const Path: string; const Default: WideString = ''):
         WideString;
     procedure WriteWideString(const Path: string; const Value: WideString);
     {$ENDIF}
@@ -2945,7 +2945,7 @@ end;
 
 {$IFDEF COMPILER6_UP}
 function TJvCustomAppStorage.ReadWideString(const Path: string;
-  const Default: WideString): WideString;
+  const Default: WideString = ''): WideString;
 begin
   Result := UTF8Decode(ReadString(Path, UTF8Encode(Default)));
 end;
