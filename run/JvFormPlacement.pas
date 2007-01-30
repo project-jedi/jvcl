@@ -871,7 +871,8 @@ begin
 //  if FRestored or not Active then
   if Assigned(AppStorage) then
   begin
-    WriteInteger(siVersion, FVersion);
+    if VersionCheck <> fpvcNocheck then
+      WriteInteger(siVersion, FVersion);
     Save;
     SavePlacement;
     FSaved := True;
