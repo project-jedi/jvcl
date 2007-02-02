@@ -395,6 +395,7 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
     procedure FocusKilled(NextWnd: THandle); override;
     procedure BoundsChanged; override;
@@ -3046,6 +3047,37 @@ begin
     end;
     if R.Left >= ARight then
       Break;
+  end;
+end;
+
+procedure TJvDBLookupCombo.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+var
+  IsClipped: Boolean;
+  SaveRgn: HRGN;
+begin
+  IsClipped := False;
+  SaveRgn := 0;
+  if not DoubleBuffered and (TMessage(Message).wParam <> TMessage(Message).lParam) and
+    { Do not exclude parts if we are painting into a memory device context or
+      into a child's device context through DrawParentBackground(). }
+    (WindowFromDC(Message.DC) = Handle) then
+  begin
+    SaveRgn := CreateRectRgn(0, 0, 1, 1);
+    IsClipped := GetClipRgn(Message.DC, SaveRgn) = 1;
+    { Exclude the edit rectangle and the drop down button. }
+    ExcludeClipRect(Message.DC, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
+    ExcludeClipRect(Message.DC, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+  end;
+  inherited;
+
+  { Restore the backuped clipping region }
+  if SaveRgn <> 0 then
+  begin
+    if IsClipped then
+      SelectClipRgn(Message.DC, SaveRgn)
+    else
+      SelectClipRgn(Message.DC, 0);
+    DeleteObject(SaveRgn);
   end;
 end;
 
