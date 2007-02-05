@@ -482,8 +482,15 @@ begin
   if (FPopup is TJvDropCalendar) then
   begin
     NewDate := TJvDropCalendar(FPopup).SelDate;
-    if (NewDate <> Date) and EditCanModify then
-      Date := NewDate;
+    try
+      if (NewDate <> Date) and EditCanModify then
+        Date := NewDate;
+    except
+      TJvDropCalendar(FPopup).CloseOnLeave := False;
+      TJvDropCalendar(FPopup).Hide;
+      ApplicationHandleException(Self);
+      TJvDropCalendar(FPopup).Release;
+    end;
   end;
 end;
 
