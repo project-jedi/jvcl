@@ -2624,7 +2624,7 @@ var
   I: Integer;
 begin
   FClearBeforeSelect := False;
-  if FSelectedList.Count = 0 then
+  if not Assigned(FSelectedList) or (FSelectedList.Count = 0) then
     Exit;
   DoSelectionChange;
   SetLength(NeedInvalidate, FSelectedList.Count);
