@@ -65,7 +65,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Controls, ImgList,
+  Windows, Messages, Classes, Controls, ImgList, Forms,
   JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvToolEdit;
 
 type
@@ -486,9 +486,16 @@ begin
       if (NewDate <> Date) and EditCanModify then
         Date := NewDate;
     except
+      { If the EditCanModify method raises an exception the popup calendar is
+        destroyed in the modal message loop of the exception dialog and when 
+        it returns we are still in the WM_LBUTTONUP handler of the now destroyed
+        calendar.
+        To prevent this the following code first disables the destruction of the
+        calendar, then shows the exception dialog and finally resumes the destruction
+        of the calendar. }
       TJvDropCalendar(FPopup).CloseOnLeave := False;
       TJvDropCalendar(FPopup).Hide;
-      ApplicationHandleException(Self);
+      Application.HandleException(Self);
       TJvDropCalendar(FPopup).Release;
     end;
   end;
