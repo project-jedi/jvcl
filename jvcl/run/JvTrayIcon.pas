@@ -85,7 +85,8 @@ type
          the trayicon, and could not come up with a backwards compatible way
          right-away }
   TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvVisibleDesign,
-    tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick, tvAnimateToTray);
+    tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick, tvAnimateToTray,
+    tvNoRetryOnFailure);
   TTrayVisibilities = set of TTrayVisibility;
 
   TJvTrayIconState = (tisTrayIconVisible, tisAnimating, tisHooked, tisHintChanged,
@@ -608,7 +609,7 @@ const
   cInfoFlagValues: array [TBalloonType] of DWORD =
     (NIIF_NONE, NIIF_ERROR, NIIF_INFO, NIIF_WARNING);
 begin
-  if AcceptBalloons then
+  if (tisTrayIconVisible in FState) and AcceptBalloons then
   begin
     FTime := Now;
     FTimeDelay := ADelay div 1000;
@@ -1051,7 +1052,7 @@ var
 begin
   FIconData.uFlags := uFlags;
   Result := Shell_NotifyIcon(dwMessage, @FIconData);
-  if not Result then
+  if not Result and not (tvNoRetryOnFailure in Visibility) then
   begin
     { Calling Shell_NotifyIcon can fail on XP when the shell is busy
       See http://support.microsoft.com/default.aspx?scid=kb;ja;418138
