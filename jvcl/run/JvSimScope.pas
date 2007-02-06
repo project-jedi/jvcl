@@ -68,7 +68,7 @@ type
     
     procedure SetCapacity(const Value: Integer);
     function GetCapacity: Integer;
-    function GetItems(Index: Integer): Integer;
+    function GetItem(Index: Integer): Integer;
   public
     procedure Assign(Source: TJvScopeLineValues); 
     procedure Add(Value: Integer);
@@ -76,7 +76,7 @@ type
 
     property Capacity: Integer read GetCapacity write SetCapacity;
     property Count: Integer read FCount;
-    property Items[Index: Integer]: Integer read GetItems; default;
+    property Items[Index: Integer]: Integer read GetItem; default;
   end;
 
   TJvScopeLine = class(TCollectionItem)
@@ -94,6 +94,7 @@ type
     
     procedure Assign(Source: TPersistent); override;
     procedure Clear;
+    property Values: TJvScopeLineValues read FValues;
   published
     property Name: string read FName write FName;
     property Color: TColor read FColor write FColor default clLime;
@@ -111,6 +112,7 @@ type
   public
     constructor Create(AOwner: TJvSimScope);
     procedure Assign(Source: TPersistent); override;
+    procedure ClearValues;
 
     function Add: TJvScopeLine;
     function IndexOfName(const AName: string): Integer;
@@ -284,7 +286,7 @@ begin
     Result := 0;
 end;
 
-function TJvScopeLineValues.GetItems(Index: Integer): Integer;
+function TJvScopeLineValues.GetItem(Index: Integer): Integer;
 begin
   Result := FValues[(Index + FZeroIndex) mod FCount];
 end;
@@ -344,6 +346,16 @@ begin
 end;
 
 //=== { TJvScopeLines } ======================================================
+
+procedure TJvScopeLines.ClearValues;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+  begin
+    Lines[I].Clear;
+  end;
+end;
 
 constructor TJvScopeLines.Create(AOwner: TJvSimScope);
 begin
@@ -411,13 +423,8 @@ end;
 //=== { TJvSimScope } ========================================================
 
 procedure TJvSimScope.ClearValues;
-var
-  I: Integer;
 begin
-  for I := 0 to FLines.Count - 1 do
-  begin
-    FLines[I].Clear;
-  end;
+  FLines.ClearValues;
 end;
 
 constructor TJvSimScope.Create(AOwner: TComponent);
@@ -480,15 +487,19 @@ begin
   Result := 0;
   case Line.PositionUnit of
     jluPercent:
-      Result := Round(Height * (1  - Position / 100));
+      Result := Height - Round(Height * Position / 100);
     jluAbsolute:
-      Result := Round(Height * ( 1 - Position / (Maximum - Minimum)));
+      Result := Height - Round(Height * (Position - Minimum) / (Maximum - Minimum));
   end;
 end;
 
 procedure TJvSimScope.Loaded;
 begin
   inherited Loaded;
+
+  // To force having enough values in the scope.
+  ClearValues;
+  
   FAllowed := True;
 end;
 
@@ -765,13 +776,9 @@ procedure TJvSimScope.UpdateComputedValues;
 begin
   case FBaseLineUnit of
     jluPercent:
-      begin
-        FCalcBase := (Height - Round(Height * FBaseLine / 100));
-      end;
+      FCalcBase := Height - Round(Height * FBaseLine / 100);
     jluAbsolute:
-      begin
-        FCalcBase := (Height - Round(Height * FBaseLine / (Maximum - Minimum)));
-      end;
+      FCalcBase := Height - Round(Height * (FBaseLine - Minimum) / (Maximum - Minimum));
   end;
   FStepPixelWidth := Width / TotalTimeSteps;
   if FUpdateTimeSteps * FStepPixelWidth < 2 then
