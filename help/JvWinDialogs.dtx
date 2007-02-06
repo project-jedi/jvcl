@@ -238,7 +238,7 @@ Description
   Use AppletIndex to specify the desired subprogram or dialog box. AppletIndex must be in the range
   zero through one less than Count.
 See Also
-  Execute, TJvAppletDialog.Count
+  TJvAppletDialog.Execute, TJvAppletDialog.Count
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppletDialog.AppletInfo
@@ -311,7 +311,7 @@ Description
 Return value
   Returns true if both AppletName and AppletIndex are valid, false otherwise.
 See Also
-  Execute
+  TJvAppletDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseFolderDialog
@@ -377,7 +377,7 @@ Description
   contains the icons. If the user chooses a different DLL in the dialog, FileName contains that DLL's
   path when the function returns.
 See Also
-  Execute, TJvChangeIconDialog.IconIndex
+  TJvChangeIconDialog.Execute, TJvChangeIconDialog.IconIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeIconDialog.IconIndex
@@ -390,7 +390,7 @@ Description
   Inspector or in program code. Programmatic changes to IconIndex have no effect while the dialog is
   active.
 See Also
-  Execute, TJvChangeIconDialog.FileName
+  TJvChangeIconDialog.Execute, TJvChangeIconDialog.FileName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerNameDialog
@@ -427,7 +427,7 @@ Summary
 Description
   \Read ComputerName to retrieve the name of the computer that the user selected in the dialog.
 See Also
-  Execute
+  TJvComputerNameDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerNameDialog.Execute
@@ -439,7 +439,7 @@ Description
 Return value
   \Returns true when the user selects a computer and clicks the OK button, false otherwise.
 See Also
-  ComputerName
+  TJvComputerNameDialog.ComputerName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo
@@ -581,7 +581,7 @@ Note
   The dcSize360kB and dcSize720kB values are only supported on Windows 95, 98 and ME. On Windows NT and
   XP systems, the value of Capacity is ignored.
 See Also
-  Execute, TJvFormatDriveDialog.Drive, TJvFormatDriveDialog.FormatType
+  TJvFormatDriveDialog.Execute, TJvFormatDriveDialog.Drive, TJvFormatDriveDialog.FormatType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveDialog.Drive
@@ -590,7 +590,7 @@ Summary
 Description
   Use Drive to specify the drive letter of the drive to format.
 See Also
-  Execute, TJvFormatDriveDialog.Capacity, TJvFormatDriveDialog.FormatType
+  TJvFormatDriveDialog.Execute, TJvFormatDriveDialog.Capacity, TJvFormatDriveDialog.FormatType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveDialog.Execute
@@ -617,7 +617,7 @@ Note
   The ftBootable value is only supported on Windows 95, 98 and ME. On Windows NT and XP systems, if
   FormatType is set to ftBootable, Execute behaves as if FormatType was set to ftStandard.
 See Also
-  Execute, TJvFormatDriveDialog.Capacity, TJvFormatDriveDialog.Drive
+  TJvFormatDriveDialog.Execute, TJvFormatDriveDialog.Capacity, TJvFormatDriveDialog.Drive
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveDialog.OnError
@@ -630,7 +630,7 @@ Parameters
   Sender - The TJvFormatDrive component that has sent this event.
   Error  - Indicates the type of error that occurred.
 See Also
-  Execute
+  TJvFormatDriveDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveError
@@ -711,7 +711,7 @@ Description
   After calling Execute, property AssociatedApp contains the path and filename to the associated
   application if the user didn't cancel the dialog.
 See Also
-  Execute
+  TJvMIMEAssociationDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.ContentType
@@ -720,7 +720,7 @@ Summary
 Description
   Use ContentType to specify the unregistered content type for which an application is sought.
 See Also
-  Execute, TJvMIMEAssociationDialog.FileName
+  TJvMIMEAssociationDialog.Execute, TJvMIMEAssociationDialog.FileName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.Execute
@@ -743,7 +743,7 @@ Description
 Note
   FileName <I>must</I> contain an extension.
 See Also
-  Execute, TJvMIMEAssociationDialog.ContentType
+  TJvMIMEAssociationDialog.Execute, TJvMIMEAssociationDialog.ContentType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.Options
@@ -776,7 +776,7 @@ Description
     E_POINTER      One of the values of the properties is invalid.
   </TABLE>
 See Also
-  Execute
+  TJvMIMEAssociationDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationOption
@@ -823,7 +823,7 @@ Summary
 Description
   Use the DestinationFolder property to specify a destination folder for the new shortcut.
 See Also
-  Execute
+  TJvNewLinkDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNewLinkDialog.Execute
@@ -975,7 +975,7 @@ Summary
 Description
   Use Caption to specify a caption for the Out of Memory dialog.
 See Also
-  Execute
+  TJvOutOfMemoryDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOutOfMemoryDialog.Execute
@@ -1010,7 +1010,7 @@ Summary
 Description
   Use Caption to specify a caption for the Run dialog.
 See Also
-  Execute, TJvRunDialog.Description, TJvRunDialog.Icon
+  TJvRunDialog.Execute, TJvRunDialog.Description, TJvRunDialog.Icon
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRunDialog.Description
@@ -1019,7 +1019,7 @@ Summary
 Description
   Use Description to specify the description displayed in the Run dialog.
 See Also
-  Execute, TJvRunDialog.Caption, TJvRunDialog.Icon
+  TJvRunDialog.Execute, TJvRunDialog.Caption, TJvRunDialog.Icon
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRunDialog.Execute
@@ -1038,7 +1038,7 @@ Description
   Set the Icon property to provide an icon for the Run Dialog. If Icon is not set, the system provides
   a default icon.
 See Also
-  Execute, TJvRunDialog.Caption, TJvRunDialog.Description
+  TJvRunDialog.Execute, TJvRunDialog.Caption, TJvRunDialog.Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShellAboutDialog
@@ -1084,7 +1084,7 @@ Description
   Use Icon to specify an icon that displays in the dialog. If Icon is not set, the component displays
   the Microsoft Windows or Microsoft Windows NT icon.
 See Also
-  Execute
+  TJvShellAboutDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShellAboutDialog.OtherText
@@ -1205,7 +1205,7 @@ Description
     IDABORT   An error occurred.
   </TABLE>
 See Also
-  Execute
+  TJvSoftwareUpdateDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateFlags
@@ -1380,7 +1380,7 @@ Description
   After calling Execute, property AssociatedApp contains the path and filename to the associated
   application if the user didn't cancel the dialog.
 See Also
-  Execute
+  TJvURLAssociationDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialog.DefaultProtocol
@@ -1443,7 +1443,7 @@ Description
   * S_FALSE: If nothing is registered. For example, when the user elects to perform a one-time
     execution via the selected application.
 See Also
-  Execute
+  TJvURLAssociationDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialog.URL

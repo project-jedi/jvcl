@@ -45,7 +45,7 @@ Description
   TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps)
   </CODE>
 See Also
-  JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent
+  TJvCustomAppStorage.ReadPersistent,TJvCustomAppStorage.WritePersistent
 
 ----------------------------------------------------------------------------------------------------
 @@IJvAppStorageHandler.ReadFromAppStorage
@@ -96,7 +96,7 @@ Description
   TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps)
   </CODE>
 See Also
-  JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent
+  TJvCustomAppStorage.ReadPersistent,TJvCustomAppStorage.WritePersistent
 
 ----------------------------------------------------------------------------------------------------
 @@RegisterAppStoragePropertyEngine
@@ -119,7 +119,7 @@ Summary
 Description
   Defines the location of a file.
 See Also
-  TJvAppIniStorage, TJvAppXMLStorage
+  TJvAppIniFileStorage, TJvAppXMLFileStorage
 
 ----------------------------------------------------------------------------------------------------
 @@TFileLocation.flCustom
@@ -162,7 +162,7 @@ Description
 Parameters
   Value - Value to be encrypted/decrypted.
 See Also
-  OnDecryptPropertyValue, OnEncryptPropertyValue
+  TJvCustomAppStorage.OnDecryptPropertyValue, TJvCustomAppStorage.OnEncryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption
@@ -325,7 +325,7 @@ Parameters
   AProperty - Description for this parameter
   Recursive - Description for this parameter
 See Also
-  ReadProperty
+  TJvCustomAppStorage.ReadProperty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStoragePropertyBaseEngineClass
@@ -608,7 +608,7 @@ Description
   memory file. If set to False, the disk file will only be updated when you call Flush or when the
   component is destroyed.
 See Also
-  AutoReload, Flush
+  TJvCustomAppStorage.AutoReload, TJvCustomAppStorage.Flush
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.AutoReload
@@ -619,7 +619,7 @@ Description
   in memory file. If set to False, the disk file will only be read when you call Reload or when the
   FileName property is set.
 See Also
-  AutoFlush, Reload
+  TJvCustomAppStorage.AutoFlush, TJvCustomAppStorage.Reload
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.BeginUpdate
@@ -628,7 +628,7 @@ Summary
 Description
   Write here a description
 See Also
-  EndUpdate
+  TJvCustomAppStorage.EndUpdate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.CheckDeletePathByVersion
@@ -648,7 +648,7 @@ Parameters
                         the check.
   VersionName        - The name of the stored version number in the path
 See Also
-  DeleteSubTree,CheckDeletePathByVersion
+  TJvCustomAppStorage.DeleteSubTree,TJvCustomAppStorage.CheckDeletePathByVersion
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ConcatPaths
@@ -683,7 +683,7 @@ Description
 Parameters
   Path - Path (relative to the current path) of the sub tree to delete.
 See Also
-  DeleteValue
+  TJvCustomAppStorage.DeleteValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.DeleteValue
@@ -711,8 +711,8 @@ Note
   Only string values are encrypted/decrypted. You can use StorageOptions to read and write non-string
   values also as string.
 See Also
-  EnablePropertyValueCrypt, IsPropertyValueCryptEnabled, OnEncryptPropertyValue,
-  OnDecryptPropertyValue
+  TJvCustomAppStorage.EnablePropertyValueCrypt, TJvCustomAppStorage.IsPropertyValueCryptEnabled,
+  TJvCustomAppStorage.OnEncryptPropertyValue, TJvCustomAppStorage.OnDecryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.EnablePropertyValueCrypt
@@ -729,8 +729,8 @@ Note
   Only string values are encrypted/decrypted. You can use StorageOptions to read and write non-string
   values also as string.
 See Also
-  DisablePropertyValueCrypt, IsPropertyValueCryptEnabled, OnEncryptPropertyValue,
-  OnDecryptPropertyValue
+  TJvCustomAppStorage.DisablePropertyValueCrypt, TJvCustomAppStorage.IsPropertyValueCryptEnabled,
+  TJvCustomAppStorage.OnEncryptPropertyValue, TJvCustomAppStorage.OnDecryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.EndUpdate
@@ -739,17 +739,16 @@ Summary
 Description
   Write here a description
 See Also
-  BeginUpdate
+  TJvCustomAppStorage.BeginUpdate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Flush
 Summary
-  Flushes the content of the in memory file into the file indicated by FileName.
+  Flushes the content of the in memory file.
 Description
-  Call Flush to explicitly flush the content of the in memory file into the file indicated by
-  FileName.
+  Call Flush to explicitly flush the content of the in memory file.
 See Also
-  FileName, FlushIfNeeded
+  TJvCustomAppStorage.FlushIfNeeded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.FlushIfNeeded
@@ -758,7 +757,7 @@ Summary
 Description
   Write here a description
 See Also
-  Flush, FlushNeeded
+  TJvCustomAppStorage.Flush, TJvCustomAppStorage.FlushNeeded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.FlushNeeded
@@ -767,7 +766,7 @@ Summary
 Description
   Write here a description
 See Also
-  FlushIfNeeded
+  TJvCustomAppStorage.FlushIfNeeded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.FlushOnDestroy
@@ -791,7 +790,7 @@ Parameters
 Return value
   A valid key name.
 See Also
-  GetIntName, ReadSet, WriteSet
+  TJvCustomAppStorage.GetIntName, TJvCustomAppStorage.ReadSet, TJvCustomAppStorage.WriteSet
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetIntName
@@ -805,7 +804,7 @@ Parameters
 Return value
   A valid key name.
 See Also
-  GetCharName, ReadSet, WriteSet
+  TJvCustomAppStorage.GetCharName, TJvCustomAppStorage.ReadSet, TJvCustomAppStorage.WriteSet
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetStoredValues
@@ -854,7 +853,7 @@ Description
   event for each string value it writes to the storage, and an OnDecryptPropertyValue event for each
   string value it reads from the storage.
 See Also
-  EnablePropertyValueCrypt, DisablePropertyValueCrypt
+  TJvCustomAppStorage.EnablePropertyValueCrypt, TJvCustomAppStorage.DisablePropertyValueCrypt
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsUpdating
@@ -887,7 +886,7 @@ Summary
 Description
   Write an OnDecryptPropertyValue event handler to decrypt values that are read from the storage.
 See Also
-  TJvAppStorageCryptEvent, OnEncryptPropertyValue
+  TJvAppStorageCryptEvent, TJvCustomAppStorage.OnEncryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnEncryptPropertyValue
@@ -896,7 +895,7 @@ Summary
 Description
   Write an OnEncryptPropertyValue event handler to encryt values that are to be stored in the storage.
 See Also
-  TJvAppStorageCryptEvent, OnDecryptPropertyValue
+  TJvAppStorageCryptEvent, TJvCustomAppStorage.OnDecryptPropertyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnError
@@ -970,7 +969,7 @@ Parameters
 Return value
   True if the path exists, otherwise false.
 See Also
-  ValueStored
+  TJvCustomAppStorage.ValueStored
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadBinary
@@ -999,7 +998,7 @@ Parameters
   Path    - \Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
-  WriteBoolean
+  TJvCustomAppStorage.WriteBoolean
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadCollection
@@ -1013,7 +1012,7 @@ Parameters
   ClearFirst - Description for this parameter
   ItemName   - Prefix of the sub path for the items.
 See Also
-  WriteCollection
+  TJvCustomAppStorage.WriteCollection
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadDateTime
@@ -1121,7 +1120,7 @@ Parameters
   ItemName    - Prefix of the sub path for the items.
   ItemCreator - Method that will create each item.
 See Also
-  ReadList
+  TJvCustomAppStorage.ReadList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadObjectList@string@TList@TJvAppStorageObjectListItemCreateEvent@Boolean@string
@@ -1149,7 +1148,7 @@ Parameters
   ClearFirst       - Description for this parameter
   IgnoreProperties - Description for this parameter
 See Also
-  WritePersistent
+  TJvCustomAppStorage.WritePersistent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadProperty
@@ -1164,7 +1163,7 @@ Parameters
   Recursive  - Description for this parameter
   ClearFirst - Description for this parameter
 See Also
-  WriteProperty
+  TJvCustomAppStorage.WriteProperty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadSet
@@ -1178,7 +1177,7 @@ Parameters
   Default   - Value to return if the specified path does not exist.
   Value     - Returns the retrieved value.
 See Also
-  WriteSet
+  TJvCustomAppStorage.WriteSet
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadString
@@ -1232,7 +1231,7 @@ Parameters
   ItemName    - Prefix of the sub path for the items.
   ItemCreator - Description for this parameter
 See Also
-  WriteStringObjectList
+  TJvCustomAppStorage.WriteStringObjectList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadStringObjectList@string@TStrings@TJvAppStorageObjectListItemCreateEvent@Boolean@string
@@ -1256,11 +1255,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Reload
 Summary
-  Reloads the data in memory file from the file indicated by FileName.
+  Reloads the data in memory file.
 Description
-  Call Reload to explicitly load the data in memory file from the file indicated by FileName.
+  Call Reload to explicitly load the data in memory file.
 See Also
-  Flush, FileName
+  TJvCustomAppStorage.Flush
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReloadIfNeeded

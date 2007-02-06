@@ -19,7 +19,7 @@ Description
 Parameters
   AFileName - Specifies the name of the file.
 See Also
-  <LINK ReadID3v1Tag>, <LINK RemoveID3v1Tag>, <LINK WriteID3v1Tag>
+  ReadID3v1Tag, RemoveID3v1Tag, WriteID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@ReadID3v1Tag
@@ -34,7 +34,7 @@ Parameters
   AFileName - Specifies the name of the file.
   ATag      - Contains the tag data after a successful call.
 See Also
-  <LINK HasID3v1Tag>, <LINK RemoveID3v1Tag>, <LINK WriteID3v1Tag>
+  HasID3v1Tag, RemoveID3v1Tag, WriteID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@RemoveID3v1Tag
@@ -48,7 +48,7 @@ Description
 Parameters
   AFileName - Specifies the name of the file.
 See Also
-  <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, <LINK WriteID3v1Tag>
+  HasID3v1Tag, ReadID3v1Tag, WriteID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@TID3v1Tag
@@ -203,7 +203,7 @@ Description
 
   When Active is set to true, the component reads the tag from the file specified by FileName.
 See Also
-  <LINK ReadID3v1Tag>
+  ReadID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.Album
@@ -286,7 +286,7 @@ Description
 Return value
   Returns true if the commit was successful, otherwise returns false.
 See Also
-  <LINK WriteID3v1Tag>
+  WriteID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.Erase
@@ -296,7 +296,7 @@ Description
   Call Erase to remove the ID3v1 tag from the file specified by FileName. You don't have to set Active
   to true before you call Erase.
 See Also
-  <LINK RemoveID3v1Tag>
+  RemoveID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.FileName
@@ -321,7 +321,7 @@ Description
 
   Before reading or setting Genre, you must set Active to true.
 See Also
-  <LINK ID3_Genres>
+  ID3_Genres
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.GenreAsString
@@ -334,7 +334,7 @@ Description
 
   Before reading or setting GenreAsString, you must set Active to true.
 See Also
-  <LINK ID3_Genres>
+  ID3_Genres
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.HasTag
@@ -343,7 +343,7 @@ Summary
 Description
   \Read HasTag to determine whether the MP3 file specified by FileName has an ID3v1 tag.
 See Also
-  <LINK HasID3v1Tag>
+  HasID3v1Tag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.Open
@@ -406,5 +406,5 @@ Parameters
   AFileName - Specifies the name of the file.
   ATag      - Specifies the new tag data for the file.
 See Also
-  <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, <LINK RemoveID3v1Tag>
+  HasID3v1Tag, ReadID3v1Tag, RemoveID3v1Tag
 

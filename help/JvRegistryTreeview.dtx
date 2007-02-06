@@ -35,7 +35,7 @@ Parameters
 Return value
   Returns the newly created node or nil if no node was created.
 See Also
-  <LINK AddDWORDValue>, <LINK AddStringValue>, <LINK AddKey>
+  TJvRegistryTreeView.AddDWORDValue, TJvRegistryTreeView.AddStringValue, TJvRegistryTreeView.AddKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddDWORDValue
@@ -50,7 +50,7 @@ Parameters
 Return value
   Returns the newly created node or nil if no node was created.
 See Also
-  <LINK AddBinaryValue>, <LINK AddStringValue>, <LINK AddKey>
+  TJvRegistryTreeView.AddBinaryValue, TJvRegistryTreeView.AddStringValue, TJvRegistryTreeView.AddKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddKey
@@ -64,7 +64,8 @@ Parameters
 Return value
   Returns the newly created node or nil if no node was created.
 See Also
-  <LINK AddBinaryValue>, <LINK AddDWORDValue>, <LINK AddStringValue>
+  TJvRegistryTreeView.AddBinaryValue> , TJvRegistryTreeView.AddDWORDValue,
+  TJvRegistryTreeView.AddStringValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddStringValue
@@ -79,7 +80,7 @@ Parameters
 Return value
   Returns the newly created node or nil if no node was created.
 See Also
-  <LINK AddBinaryValue>, <LINK AddDWORDValue>, <LINK AddKey>
+  TJvRegistryTreeView.AddBinaryValue, TJvRegistryTreeView.AddDWORDValue, TJvRegistryTreeView.AddKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.CurrentKey
@@ -134,7 +135,8 @@ Note
   Adding new nodes using Items, will not affect the registry. To add new keys and values to the
   registry use the functions provided specifically by the TJvRegistryTreeview.
 See Also
-  <LINK AddKey>, <LINK AddBinaryValue>, <LINK AddDWORDValue>, <LINK AddStringValue>
+  TJvRegistryTreeView.AddKey, TJvRegistryTreeView.AddBinaryValue, TJvRegistryTreeView.AddDWORDValue,
+  TJvRegistryTreeView.AddStringValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.ListView
@@ -170,13 +172,13 @@ Note
   The key to load data into is determined by the CurrentKey property.
 Parameters
   Filename - The location of the file containing registry information to store in the subkey. The file
-              specified by FileName must be one previously created using the <LINK SaveKey> function or
-              the RegSaveKey Windows API function. On systems that use a file allocation table (FAT),
-              FileName cannot include an extension.
+              specified by FileName must be one previously created using the <LINK
+              TJvRegistryTreeView.SaveKey, SaveKey> function or the RegSaveKey Windows API function. On
+              systems that use a file allocation table (FAT), FileName cannot include an extension.
 Return value
   Returns true if the data was successfully loaded.
 See Also
-  <LINK SaveKey>
+  TJvRegistryTreeView.SaveKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RefreshNode
@@ -224,14 +226,14 @@ Description
 
   The key to save is read from the CurrentKey property.
 
-  Files created by SaveKey can be passed to the <LINK LoadKey> function.
+  Files created by SaveKey can be passed to the <LINK TJvRegistryTreeView.LoadKey, LoadKey> function.
 Parameters
-  Filename - the file into which to save the key information. It must be the name of a new file that
+  Filename - The file into which to save the key information. It must be the name of a new file that
               does not already exist. On FAT file systems FileName cannot include an extension.
 Return value
   If SaveKey is successful it returns True.
 See Also
-  <LINK LoadKey>
+  TJvRegistryTreeView.LoadKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.ShortPath

@@ -96,8 +96,7 @@ Note
   Handle is <I>not</I> a windows handle. You can not use it in calls to windows API's. It is just a
   number that identifies a timer uniquely in a timer list.
 See Also
-  <LINK TJvTimerEvents.DeleteByHandle>, <LINK TJvTimerEvents.ItemByHandle>, <LINK
-  TJvTimerEvents.ItemIndexByHandle>
+  TJvTimerEvents.DeleteByHandle, TJvTimerEvents.ItemByHandle, TJvTimerEvents.ItemIndexByHandle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvent.Interval
@@ -216,7 +215,7 @@ Description
 Parameters
   AHandle - Specifies the value of the timer event's Handle property.
 See Also
-  <LINK ItemByHandle>
+  TJvTimerEvents.ItemByHandle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvents.EnabledCount
@@ -226,7 +225,7 @@ Description
   EnabledCount contains the number of enabled timers in the Events array. Use Count to retrieve the
   number of <I>all</I> timers.
 See Also
-  Count
+  <DELPHILINK TCollection.Count>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvents.IndexOfName
@@ -257,7 +256,7 @@ Return value
   \Returns the TJvTimerEvent component with AHandle as handle in the list, if there is no timer event
   in the list with the specified handle, it returns nil.
 See Also
-  <LINK ItemIndexByHandle>
+  TJvTimerEvents.ItemIndexByHandle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvents.ItemByName
@@ -286,7 +285,7 @@ Return value
   \Returns the index in the list of a timer event with the specified handle. If there is no such timer
   event, ItemIndexByHandle returns -1.
 See Also
-  <LINK ItemByHandle>
+  TJvTimerEvents.ItemByHandle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvents.Items
@@ -390,7 +389,7 @@ Note
   TJvTimerEvents.ItemByHandle, ItemByHandle> for access to timer events and Add for adding a new timer
   event.
 See Also
-  <LINK Add>
+  TJvTimerList.Add
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.OnFinish

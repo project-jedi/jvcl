@@ -49,12 +49,12 @@ Description
   when the component is destroyed (usually when the application terminates).
 
   When set to True, all event states and last execution times are saved to the location specified by
-  the SaveTo property when the component is destroyed and are read back in from that location when the
-  component is created.
+  the AppStoragePath property when the component is destroyed and are read back in from that location
+  when the component is created.
 
   When set to False, no information is saved.
 See Also
-  SaveTo
+  TJvCustomScheduledEvents.AppStoragePath
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScheduledEvents.Events
@@ -104,7 +104,7 @@ Summary
 Description
   Write an OnStartEvent handler to take special action when a scheduled event is about to be executed.
 See Also
-  OnEndEvent
+  TJvCustomScheduledEvents.OnEndEvent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScheduledEvents.PauseAll
@@ -274,6 +274,7 @@ Parameters
                          TriggerStamp is executed.
   SnoozeStamp         - Timestamp of next snooze event (or NullStamp if there was no snooze request).
   ALastSnoozeInterval - _SYSTEM_TIME record containing the last issued snooze interval.
+  AEventInfo          - Description for this parameter
 See Also
   TJvEventCollectionItem.SaveState
 
@@ -373,6 +374,7 @@ Parameters
                          TriggerStamp is executed.
   SnoozeStamp         - Timestamp of next snooze event (or NullStamp if there was no snooze request).
   ALastSnoozeInterval - _SYSTEM_TIME record containing the last issued snooze interval.
+  AEventInfo          - Description for this parameter
 See Also
   TJvEventCollectionItem.LoadState
 
@@ -510,4 +512,59 @@ See Also
 @@TScheduledEventState.sesEnded
   The schedule for the scheduled event has reached its end condition and no snooze requests have been
   posted.
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo
+<TITLE TScheduledEventStateInfo type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.ARecurringType
+  Description for ARecurringType
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.AStartDate
+  Description for AStartDate
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.AEndType
+  Description for AEndType
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.AEndDate
+  Description for AEndDate
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.AEndCount
+  Description for AEndCount
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.ALastTriggered
+  Description for ALastTriggered
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.DayFrequence
+  Description for DayFrequence
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.Daily
+  Description for Daily
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.Weekly
+  Description for Weekly
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.Monthly
+  Description for Monthly
+
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventStateInfo.Yearly
+  Description for Yearly
 

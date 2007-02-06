@@ -376,7 +376,7 @@ Description
   TAggregatedPersistent is much like the VCL provided TAggregatedObject, the difference being that
   TAggregatedPersistent is derived from TPersistent and redeclares GetInterface as a virtual method.
 See Also
-  TAggregatedObject
+  <DELPHILINK TAggregatedObject>
 
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistent.Controller
@@ -658,7 +658,7 @@ Description
   result in a reference to the object being made and released, resulting in an undesired destruction of
   the object.
 See Also
-  ReleaseRefCount
+  TExtensibleInterfacedPersistent.ResumeRefCount
 
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.WriteImplementer
@@ -825,7 +825,7 @@ Description
   The best way to implement this is to iterate the list from the last to the first context and call
   DoDeleteContext for each of them.
 See Also
-  DoAddContexts
+  TJvBaseDataContexts.DoAddContext
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DoDeleteContext
@@ -847,7 +847,7 @@ Description
 Parameters
   Index - Index of the context to delete.
 See Also
-  DoAddContexts, DoClearContext
+  TJvBaseDataContexts.DoAddContext, TJvBaseDataContexts.DoClearContexts
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DoRemoveContext
@@ -871,7 +871,7 @@ Description
 Parameters
   Context - Context to remove from the list.
 See Also
-  DoAddContexts, DoClearContext
+  TJvBaseDataContexts.DoAddContext, TJvBaseDataContexts.DoClearContexts
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DsgnContext

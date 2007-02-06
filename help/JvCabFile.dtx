@@ -140,7 +140,7 @@ Return value
   The return value for ExtractAll is True when SetupIterateCabinet completes successfully, or False if
   FileName does not exist or another Win32 error is encountered in the callback function.
 See Also
-  Files, FileName, ExtractFile
+  TJvCABFile.Files, TJvCABFile.FileName, TJvCABFile.ExtractFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.ExtractFile
@@ -169,7 +169,7 @@ Return value
   The return value for ExtractFile is True when SetupIterateCabinet completes successfully, or False if
   \FileName does not exist or another Win32 error is encountered in the callback function.
 See Also
-  Files, FileName, ExtractAll
+  TJvCABFile.Files, TJvCABFile.FileName, TJvCABFile.ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.FileName
@@ -187,7 +187,8 @@ Description
   FileName is used in ExtractFile and ExtractAll when calling the SetupIterateCabinet API function for
   the file operation.
 See Also
-  Files, OnFilesListed, TNotifyEvent, ExtractFile, ExtractAll
+  TJvCABFile.Files, TJvCABFile.OnFilesListed, <DELPHILINK TNotifyEvent>, TJvCABFile.ExtractFile,
+  TJvCABFile.ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.Files
@@ -202,7 +203,7 @@ Description
   is signaled. Event notification is not performed if a procedure has not been assigned to the
   OnFilesListed event handler.
 See Also
-  FileName, OnFilesListed
+  TJvCABFile.FileName, TJvCABFile.OnFilesListed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnCABInfo
@@ -223,7 +224,7 @@ Parameters
              be signaled from the callback function.
   CABInfo - Structure used to store cabinet file information from the Setup API.
 See Also
-  ExtractAll, ExtractFile
+  TJvCABFile.ExtractAll, TJvCABFile.ExtractFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnFileExtracted
@@ -258,7 +259,7 @@ Parameters
   Source    - Source file name extracted from the Cabinet file.
   Dest      - Destination file name created for the extracted file.
 See Also
-  ExtractFile, ExtractAll
+  TJvCABFile.ExtractFile, TJvCABFile.ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnFilesListed
@@ -301,7 +302,7 @@ Parameters
   CABInfo - Structure used to store cabinet file information from the Setup API.
   NewPath - Path to use for files extracted from the new .CAB file.
 See Also
-  ExtractFile, ExtractAll
+  TJvCABFile.ExtractFile, TJvCABFile.ExtractAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnStartFileExtraction
@@ -325,7 +326,7 @@ Parameters
   FileName - The full path and file name for the member to be extracted from the cabinet file.
   DestPath - Represents the full path and file name where extracted file information will be stored.
 See Also
-  ExtractFile, ExtractAll, OnFileExtracted
+  TJvCABFile.ExtractFile, TJvCABFile.ExtractAll, TJvCABFile.OnFileExtracted
 
 ----------------------------------------------------------------------------------------------------
 @@TOnCABInfo

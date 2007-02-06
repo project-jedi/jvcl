@@ -5,9 +5,7 @@
 ##Skip: TJvDBGrid.DisableScroll
 ##Skip: TJvDBGrid.EnableScroll
 ##Skip: TJvDBGrid.MouseToCell
-##Skip: TJvDBGrid.MultiSelect
 ##Skip: TJvDBGrid.OnTopLeftChanged
-##Skip: TJvDBGrid.Options
 ##Skip: TJvDBGrid.RowsHeight
 ##Skip: TJvDBGrid.ScrollDisabled
 ##Skip: TJvDBGrid.UpdateTabStops
@@ -179,7 +177,7 @@ Description
   * The dataset has a published property named "\IndexName" of type string
   * There is an index in IndexName that contains the name of the filed of the clicked column
 See Also
-  OnTitleClick
+  TJvDBGrid.OnTitleBtnClick, TJvDBGrid.OnTitleBtnDblClick
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.BeepOnError
@@ -225,7 +223,7 @@ Description
   in the grid and MultiSelect is true. If ClearSelection is false, multi selected rows remains selected
   when the user navigates the grid.
 See Also
-  MultiSelect
+  TJvDBGrid.MultiSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.CloseControl
@@ -267,7 +265,7 @@ Description
   Set FixedCols to make additional columns in the grid appear as fixed columns. By default, the only
   fixed column in a DB grid is the indicator column.
 See Also
-  Options, Columns
+  TJvDBGrid.Options, <DELPHILINK TCustomDBGrid.Columns>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.GotoSelection
@@ -280,7 +278,7 @@ Parameters
   Index - Index of the selected row. For example: if there are two selected rows, then index 0 moves
            to the first selected row and index 1 to the second.
 See Also
-  MultiSelect
+  TJvDBGrid.MultiSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.IniStorage
@@ -352,6 +350,16 @@ Description
   than MinColumnWidth.
 See Also
   TJvDBGrid.MaxColumnWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.MultiSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnCheckButton
@@ -516,7 +524,7 @@ Description
   clicked. This event is only triggered when TitleArrow is true, the titles and indicator row are
   visible and the right mouse button is clicked.
 See Also
-  Options
+  TJvDBGrid.Options
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnTitleBtnClick
@@ -532,6 +540,16 @@ Summary
 Description
   Write a handler for this event to be notified when a title button is double-clicked. Note that the
   OnTitleBtnClick event will also be triggered by a double-click.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.Options
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.PostOnEnterKey
@@ -562,7 +580,7 @@ Description
 Parameters
   Link - The object to register
 See Also
-  TJvLayoutChangeLink
+  TJvDBGridLayoutChangeLink
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Row
@@ -625,7 +643,7 @@ Description
   Read SelCount to learn the number of selected rows in the grid. SelCount is always <= 1 when
   MultiSelect is false.
 See Also
-  MultiSelect
+  TJvDBGrid.MultiSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelectAll
@@ -634,7 +652,7 @@ Summary
 Description
   Call SelectAll to select all rows in the grid. If MultiSelect is false, this method does nothing.
 See Also
-  MultiSelect
+  TJvDBGrid.MultiSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelectColumn
@@ -699,7 +717,7 @@ Description
 Note
   If the OnGetText and OnSetText events are assigned, ShowGlyphs does nothing.
 See Also
-  TField.OnGetText, TField.OnSetText
+  <DELPHILINK TField.OnGetText>, <DELPHILINK TField.OnSetText>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ShowMemos
@@ -777,7 +795,7 @@ Description
   Set TitlePopup to an existing pop-up menu to use it as the pop-up menu for the title buttons in the
   grid.
 See Also
-  PopupMenu
+  <DELPHILINK TControl.PopupMenu>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitleRowHeight
@@ -797,12 +815,12 @@ Description
   Call ToggleRowSelection to toggle SelectedRows.CurrentRowSelected on and off. If MultiSelect is
   false, this method does nothing.
 See Also
-  MultiSelect
+  TJvDBGrid.MultiSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.UnregisterLayoutChangeLink
 Summary
-  Unregisters the given TJvLayoutChangeLink object with the grid
+  Unregisters the given TJvDBGridLayoutChangeLink object with the grid
 Description
   The given link object will be removed from the list of registered link objects, its OnChange object
   will no more be called when the grid layout changes. If it was not present in the list, nothing
@@ -810,7 +828,7 @@ Description
 Parameters
   Link - The link object to unregister
 See Also
-  TJvLayoutChangeLink
+  TJvDBGridLayoutChangeLink
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.UnselectAll
@@ -820,7 +838,7 @@ Description
   Call UnselectAll to remove any selection in the grid. If MultiSelect is false, this method does
   nothing.
 See Also
-  MultiSelect
+  TJvDBGrid.MultiSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.WordWrap
@@ -882,6 +900,16 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControl.LeaveOnEnterKey
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridControl.LeaveOnUpDownKey
 Summary
   Write here a summary (1 line)
 Description

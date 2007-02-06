@@ -163,7 +163,7 @@ Description
   to the parent page list control and changing the height has no effect. In page list descendants that
   doesn't client align the pages, changing the height will probably have effect on the page.
 See Also
-  Left, Top, Width
+  TJvCustomPage.Left, TJvCustomPage.Top, TJvCustomPage.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Left
@@ -176,7 +176,7 @@ Description
   changing the Left property will have effect on the page. The Left and Top properties are relative to
   the parent page list control.
 See Also
-  Height, Top, Width
+  TJvCustomPage.Height, TJvCustomPage.Top, TJvCustomPage.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnAfterPaint
@@ -187,7 +187,7 @@ Description
   an event handler to this event to perform any special drawing after the default painting has
   completed.
 See Also
-  OnBeforePaint
+  TJvCustomPage.OnBeforePaint
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnBeforePaint
@@ -258,7 +258,7 @@ Description
   control is contained in a TPanel, the Left and Top properties are relative to the panel. Please note
   when the page is client aligned (the default), changing the Top property will have no effect.
 See Also
-  Height, Left, Width
+  TJvCustomPage.Height, TJvCustomPage.Left, TJvCustomPage.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Width
@@ -268,7 +268,7 @@ Description
   Use the Width property to read or change the width of the control. Please note that when the page is
   client aligned (the default), changing its width will have no effect.
 See Also
-  Height, Left, Top
+  TJvCustomPage.Height, TJvCustomPage.Left, TJvCustomPage.Top
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageClass
@@ -302,7 +302,7 @@ Description
   the foreground. Only one page can be active at a time. To change the ActivePage to the page that
   precedes or follows the active page, use the FindNextPage method.
 See Also
-  ActivePageIndex, FindNextPage
+  TJvCustomPageList.ActivePageIndex, TJvCustomPageList.FindNextPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.ActivePageIndex
@@ -318,7 +318,7 @@ Description
   Setting ActivePageIndex to a value that is out of bounds (less than 0 or greater than PageCount - 1)
   results in the page list control having no active page.
 See Also
-  ActivePage
+  TJvCustomPageList.ActivePage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.FindNextPage
@@ -345,7 +345,7 @@ Parameters
 Return value
   Returns the found page or nil if no matching page was found.
 See Also
-  Pages
+  TJvCustomPageList.Pages
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.GetPageClass
@@ -381,7 +381,8 @@ Description
   instances are added to HiddenPageList in HidePage. The page instances are removed from the hidden
   page list in ShowPage.
 See Also
-  TJvCustomPage, HidePage, ShowPage, PrevPage, NextPage
+  TJvCustomPage, TJvCustomPageList.HidePage, TJvCustomPageList.ShowPage, TJvCustomPageList.PrevPage,
+  TJvCustomPageList.NextPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.HidePage
@@ -407,7 +408,7 @@ Parameters
 Return value
   TJvCustomPage - Updated page or Nil when not owned by the current page list.
 See Also
-  TJvCustomPage, ShowPage, PrevPage, NextPage
+  TJvCustomPage, TJvCustomPageList.ShowPage, TJvCustomPageList.PrevPage, TJvCustomPageList.NextPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.NextPage
@@ -417,7 +418,7 @@ Description
   Call NextPage to activate the next page after the active page. If the last page is active, NextPage
   moves to the first page. If there are no pages in the list or only one page, NextPage does nothing.
 See Also
-  PrevPage
+  TJvCustomPageList.PrevPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.OnChange
@@ -427,7 +428,7 @@ Description
   Write an OnChange event handler to take specific actions when the active page has changed. To access
   the new active page, access either the ActivePage or ActivePageIndex properties.
 See Also
-  ActivePage, ActivePageIndex, OnChanging
+  TJvCustomPageList.ActivePage, TJvCustomPageList.ActivePageIndex, TJvCustomPageList.OnChanging
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.OnChanging
@@ -447,7 +448,7 @@ Parameters
   PageIndex   - The index of the page that is to become selected.
   AllowChange - Set to false to disallow the change. This parameter is true by default.
 See Also
-  ActivePage, ActivePageIndex, OnChange
+  TJvCustomPageList.ActivePage, TJvCustomPageList.ActivePageIndex, TJvCustomPageList.OnChange
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PageCount
@@ -463,7 +464,7 @@ Description
   list control that should contain it. To remove a page at run-time, set its PageList property to nil
   and then Free the page.
 See Also
-  Pages
+  TJvCustomPageList.Pages
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PageList
@@ -474,7 +475,7 @@ Description
   are owned by the control. You should normally not use this property. Instead, use the Pages property
   to directly access the pages in the list.
 See Also
-  Pages, TJvCustomPage
+  TJvCustomPageList.Pages, TJvCustomPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.Pages
@@ -493,7 +494,8 @@ Description
   click and selected "Delete". To delete a page at runtime, set its PageList property to nil and then
   destroy it by calling its Free method.
 See Also
-  ActivePage, FindNextPage, PageList, TJvCustomPage
+  TJvCustomPageList.ActivePage, TJvCustomPageList.FindNextPage, TJvCustomPageList.PageList,
+  TJvCustomPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PrevPage
@@ -504,7 +506,7 @@ Description
   PrevPage moves to the last page. If there are no pages in the list or only one page, PrevPage does
   nothing.
 See Also
-  FindNextPage, NextPage
+  TJvCustomPageList.FindNextPage, TJvCustomPageList.NextPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PropagateEnable
@@ -520,7 +522,7 @@ Description
   the child controls is automatically changed in sync with the Parent component, making it visually
   obvious that the control is disabled or enabled.
 See Also
-  Enabled
+  <DELPHILINK TControl.Enabled>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.ShowDesignCaption
@@ -561,7 +563,8 @@ Parameters
 Return value
   TJvCustomPage - The updated page object, or Nil when the page or page list does not exist.
 See Also
-  TJvCustomPage, HidePage, ActivePage, PrevPage, NextPage
+  TJvCustomPage, TJvCustomPageList.HidePage, TJvCustomPageList.ActivePage, TJvCustomPageList.PrevPage,
+  TJvCustomPageList.NextPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPageCanPaintEvent
@@ -603,8 +606,10 @@ Description
 
   Use ShowDesignCaption to control the display position of page captions at design-time.
 See Also
-  TJvCustomPageList, TJvCustomPage, TJvStandardPage, Pages, PageCount, ActivePage, ActivePageIndex,
-  PrevPage, NextPage, PropogateEnable, ShowDesignCaption
+  TJvCustomPageList, TJvCustomPage, TJvStandardPage, TJvCustomPageList.Pages,
+  TJvCustomPageList.PageCount, TJvCustomPageList.ActivePage, TJvCustomPageList.ActivePageIndex,
+  TJvCustomPageList.PrevPage, TJvCustomPageList.NextPage, TJvCustomPageList.PropagateEnable,
+  TJvCustomPageList.ShowDesignCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPagePaintEvent

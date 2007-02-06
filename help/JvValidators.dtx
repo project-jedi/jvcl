@@ -48,7 +48,7 @@ Description
   If you set up ControlToValidate to a valid TControl at design time, the Object Inspector lists all
   published properties of the control in a drop-down list for the PropertyToValidate property.
 See Also
-  Validate
+  TJvBaseValidator.Validate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.Enabled
@@ -57,6 +57,16 @@ Summary
 Description
   Read Enabled to determine if the validator is active or not. Change Enabled to disable/enable a
   validator without having to delete it.
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseValidator.ErrorControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.ErrorMessage
@@ -132,7 +142,17 @@ Description
   The value of Valid can only be trusted after a call to TJvValidators.Validate since this method
   forces all validators to update the Valid property.
 See Also
-  Validate
+  TJvValidators.Validate
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseValidator.Validate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.Value
@@ -268,7 +288,7 @@ Parameters
   ValueToValidate - The value to validate.
   Valid           - Set this parameter to true if the validation was successful, to false otherwise.
 See Also
-  Validate
+  TJvValidators.Validate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRangeValidator
@@ -495,7 +515,7 @@ Parameters
   Index1 - Index of the first validator in the Items array.
   Index2 - Index of the second validator in the Items array.
 See Also
-  <LINK Remove>
+  TJvValidators.Remove
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Insert
@@ -506,7 +526,7 @@ Description
 Parameters
   AValidator - The validator instance to add.
 See Also
-  <LINK Remove>
+  TJvValidators.Remove
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Items

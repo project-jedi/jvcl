@@ -17,7 +17,6 @@
 ##Skip: TJvNavPanelToolButton.ImageIndex
 ##Skip: TJvNavPanelToolButton.Images
 ##Skip: TJvNavPanelToolButton.TransparentDown
-##Skip: TJvNavPaneStyleManager.RegisterChanges
 ##Skip: TJvNavPaneToolButtons.Add
 ##Skip: TJvNavPaneToolButtons.Items
 ##Skip: TJvNavStyleLink
@@ -91,7 +90,7 @@ Summary
 Description
   Use ButtonHeight to set the height of the nav pane buttons.
 See Also
-  Buttons
+  TJvCustomNavPaneToolPanel.Buttons
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.ButtonWidth
@@ -153,7 +152,7 @@ Description
   Users can change the number of maximized buttons at run-time by adjusting the splitter (provided
   Resizable is true). When they do, the value of MaximizedCount is updated as well.
 See Also
-  Resizeable, TJvNavPage.Iconic
+  TJvCustomNavigationPane.Resizable, TJvNavPanelPage.Iconic
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.NavPages
@@ -165,7 +164,7 @@ Parameters
   Index - The index of the page in the control. The first page has the index 0 and the last page has
            the index PageCount - 1
 See Also
-  PageCount
+  TJvCustomPageList.PageCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.NavPanelFont
@@ -175,7 +174,7 @@ Description
   Use NavPanelFont to set the font used on the buttons in the control. The button font is separate from
   the normal font. The normal font is used to specify the font settings for the page itself.
 See Also
-  Font
+  <DELPHILINK TControl.Font>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.NavPanelHotTrackFont
@@ -200,7 +199,7 @@ Description
 
   Note that hoFollowFont must be included for any properties to be copied at all.
 See Also
-  Font
+  <DELPHILINK TControl.Font>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.OnDropDownMenu
@@ -211,7 +210,7 @@ Description
   about to be displayed. For example, you can use this event to display another dialog or form instead
   of the assigned DropDownMenu. Set Handled to true to suppress the default menu.
 See Also
-  OnContextPopup
+  <DELPHILINK TControl.OnContextPopup>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.OnSplitterCanResize
@@ -321,7 +320,7 @@ Description
   Write an OnSplitterMoved event handler to take specific action when the user finishes dragging the
   edge of the neighboring control using the splitter.
 See Also
-  OnCanResize
+  <DELPHILINK TControl.OnCanResize>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.OnSplitterPaint
@@ -516,7 +515,7 @@ Description
   below the caption area. This value is directly compatible with the curve value specified in a call to
   TCanvas.RoundRect.
 See Also
-  TCanvas.RoundRect
+  <DELPHILINK TCanvas.RoundRect>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavPaneToolPanel.GetHitTestInfoAt
@@ -753,7 +752,8 @@ Description
   TJvNavPanePage and TJvNavPaneToolPanel. It manages an image and several properties that affects how
   the image is displayed.
 See Also
-  Center, Proportional, Tile, Stretch
+  TJvNavPaneBackgroundImage.Center, TJvNavPaneBackgroundImage.Proportional,
+  TJvNavPaneBackgroundImage.Tile, TJvNavPaneBackgroundImage.Stretch
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneBackgroundImage.Center
@@ -767,7 +767,7 @@ Note
   Center has no effect if the Stretch property is True and Picture does not specify an icon or if the
   Tile property is True.
 See Also
-  Propoportional
+  TJvNavPaneBackgroundImage.Proportional
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneBackgroundImage.DrawImage
@@ -807,7 +807,7 @@ Note
   add the relevant unit to the form's uses clause (like JvGIF or jpeg). If you forget, the image will
   not be visible at run-time.
 See Also
-  Propoportional
+  TJvNavPaneBackgroundImage.Proportional
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneBackgroundImage.Proportional
@@ -849,7 +849,7 @@ Description
 Note
   Stretch has no effect if the Picture property contains an icon or if the Tile property is True.
 See Also
-  Propoportional
+  TJvNavPaneBackgroundImage.Proportional
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneBackgroundImage.Tile
@@ -861,7 +861,7 @@ Description
 Note
   When Tile is True, Center, Proportional and Stretch has no effect.
 See Also
-  Propoportional
+  TJvNavPaneBackgroundImage.Proportional
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneBackgroundImage.Transparent
@@ -876,7 +876,7 @@ Note
   transparency (like TBitmap objects). For example, TIcon objects are always transparent so the setting
   of Transparent has no effect on TIcon objects.
 See Also
-  Propoportional
+  TJvNavPaneBackgroundImage.Proportional
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton
@@ -1112,18 +1112,19 @@ See Also
 Summary
   Specifies the top color of the panel's caption area.
 Description
-  Use ColorFrom to set the start color of the background gradient on the control's caption area.
+  Use ToolPanelColorFrom to set the start color of the background gradient on the control's caption
+  area.
 See Also
-  ColorTo
+  TJvNavPanelColors.ToolPanelColorTo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors.ToolPanelColorTo
 Summary
   Specifies the bottom color of the panel's caption area.
 Description
-  Use ColorTo to set the end color of the background gradient on the control's caption area.
+  Use ToolPanelColorTo to set the end color of the background gradient on the control's caption area.
 See Also
-  ColorFrom
+  TJvNavPanelColors.ToolPanelColorFrom
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors.ToolPanelHeaderColorFrom
@@ -1311,7 +1312,7 @@ Description
   You will also need to assign an image list to the Images property and set ButtonType to nibImage for
   the button to display the image.
 See Also
-  ButtonType
+  TJvNavIconButton.ButtonType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.Images
@@ -1433,8 +1434,6 @@ Description
 Note
   The TJvNavPanelPage doesn't have its own image list property. Instead, it accesses the LargeImages
   and LargeImages properties of its parent TJvCustomNavigationPane control.
-See Also
-  Images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.NavPanel
@@ -1551,6 +1550,18 @@ See Also
   TJvNavPaneStyleManager.Theme
 
 ----------------------------------------------------------------------------------------------------
+@@TJvNavPaneStyleManager.RegisterChanges
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvNavPaneStyleManager.Theme
 Summary
   Indicates the current theme in the style manager.
@@ -1570,7 +1581,7 @@ Description
 Parameters
   Value - The class to remove from the notification list.
 See Also
-  RegisterChanges
+  TJvNavPaneStyleManager.RegisterChanges
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolButton
@@ -1724,7 +1735,7 @@ Note
 
   You can adjust the location of the menu with the TPopupMenu.Alignment property.
 See Also
-  TPopupMenu
+  <DELPHILINK TPopupMenu>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.HeaderHeight
@@ -1777,7 +1788,7 @@ Description
   about to be displayed. For example, you can use this event to display another dialog or form instead
   of the assigned DropDownMenu. Set Handled to true to suppress the default menu.
 See Also
-  OnContextPopup
+  <DELPHILINK TControl.OnContextPopup>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.ParentStyleManager
@@ -1803,7 +1814,7 @@ Note
   The panel does not have any built in docking or sizing support. You will have to implement this
   yourself. For an example on how this could be done, see the demo.
 See Also
-  GetHitTestInfoAt
+  TJvCustomNavPaneToolPanel.GetHitTestInfoAt
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.StyleManager

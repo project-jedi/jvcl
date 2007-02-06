@@ -49,7 +49,7 @@ Description
   Alternatively, you can call the RestoreFormPlacement and SaveFormPlacement methods to explicitly
   restore and save the form's placement.
 See Also
-  RestoreFormPlacement, SaveFormPlacement
+  TJvFormPlacement.RestoreFormPlacement, TJvFormPlacement.SaveFormPlacement
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStorage
@@ -87,7 +87,7 @@ Summary
 Description
   Call EraseSection to remove all sections, all their keys, and their data values from the storage.
 See Also
-  <LINK Version>
+  TJvFormPlacement.Version
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Form
@@ -125,7 +125,8 @@ Summary
 Description
   Write an OnRestorePlacement event handler to respond after the the form's placement has been
   retrieved and restored. For example you can read other values from the storage that are not managed
-  by the component - using the <LINK ReadInteger> and <LINK ReadString> methods.
+  by the component - using the <LINK TJvFormPlacement.ReadInteger, ReadInteger> and <LINK
+  TJvFormPlacement.ReadString, ReadString> methods.
 
   This event is fired before the control that has focus on the form is retrieved and restored; thus,
   you can alter this restoring behavior in an event handler by modifying property Options.
@@ -222,7 +223,7 @@ Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
   Default - Specifies an integer value to use if the data value is not in the storage.
 See Also
-  <LINK ReadString>, <LINK WriteInteger>
+  TJvFormPlacement.ReadString, TJvFormPlacement.WriteInteger
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadString
@@ -234,7 +235,7 @@ Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
   Default - Specifies a string value to use if the data value is not in the storage.
 See Also
-  <LINK ReadInteger>, <LINK WriteString>
+  TJvFormPlacement.ReadInteger, TJvFormPlacement.WriteString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RestoreFormPlacement
@@ -247,7 +248,7 @@ Description
   If Active is set to true, the component automatically restores the placement information when the
   form is shown; thus, no call to RestoreFormPlacement is needed.
 See Also
-  TJvFormPlacement.Active, SaveFormPlacement
+  TJvFormPlacement.Active, TJvFormPlacement.SaveFormPlacement
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.SaveFormPlacement
@@ -259,7 +260,7 @@ Description
   If Active is set to true, the component automatically stores the placement information when the form
   is closed; thus, no call to SaveFormPlacement is needed.
 See Also
-  TJvFormPlacement.Active, RestoreFormPlacement
+  TJvFormPlacement.Active, TJvFormPlacement.RestoreFormPlacement
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Version
@@ -598,7 +599,7 @@ Description
   Objects that use a TJvIniLink object typically write an OnLoad event handler to retrieve its specific
   data from the storage.
 See Also
-  OnSave
+  TJvIniLink.OnSave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.OnSave
@@ -611,7 +612,7 @@ Description
   Objects that use a TJvIniLink object typically write an OnSave event handler to store its specific
   data to the storage.
 See Also
-  OnLoad
+  TJvIniLink.OnLoad
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.Storage
@@ -642,7 +643,7 @@ Summary
 Description
   Use Clear to assign a NULL value to a stored value.
 See Also
-  Value
+  TJvStoredValue.Value
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.KeyString
@@ -661,7 +662,7 @@ Description
   Use Name to identify a particular stored value within a TJvStoredValues object. Name specifies a
   string that identifies the name of the data value into which to store the value.
 See Also
-  Value
+  TJvStoredValue.Value
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnRestore
@@ -672,7 +673,7 @@ Description
   the storage. Typically, you use this event to read the Value property of the stored value object, and
   take action depending on the value of Value.
 See Also
-  OnSave, Restore, Value
+  TJvStoredValue.OnSave, TJvStoredValue.Restore, TJvStoredValue.Value
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnSave
@@ -682,7 +683,7 @@ Description
   Write an OnSave event handler to take specific actions before the stored value is stored to the
   storage. Typically, you use this event to set the Value property of the stored value object.
 See Also
-  OnRestore, Save, Value
+  TJvStoredValue.OnRestore, TJvStoredValue.Save, TJvStoredValue.Value
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Restore
@@ -692,7 +693,7 @@ Description
   Call Restore to set property Value to the data value read from the ini file or registry at a location
   specified by the Name property.
 See Also
-  OnRestore, Save
+  TJvStoredValue.OnRestore, TJvStoredValue.Save
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Save
@@ -702,7 +703,7 @@ Description
   Call Save to write the value of property Value to the ini file or registry at a location specified by
   the Name property.
 See Also
-  OnSave, Restore
+  TJvStoredValue.OnSave, TJvStoredValue.Restore
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.StoredValues
@@ -723,7 +724,7 @@ Description
   \Write OnRestore and OnSave event handles to set the value just before it is saved or get it just
   after it is read from the storage.
 See Also
-  Clear, OnRestore, OnSave
+  TJvStoredValue.Clear, TJvStoredValue.OnRestore, TJvStoredValue.OnSave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValueEvent
@@ -769,7 +770,7 @@ Return value
   Returns a value from zero (the first position) to Count - 1, if Items contains a stored value with
   the specified Name. Otherwise the return value is -1.
 See Also
-  TJvStoredValue.Name, Items
+  TJvStoredValue.Name, TJvStoredValues.Items
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Items
@@ -780,7 +781,8 @@ Description
   Count - 1. Items can reference a particular stored value by its index, but the Values property is
   preferred, because it does not depend on the order of the stored values.
 See Also
-  TJvFormStorage.StoredValues, IndexOf, StoredValue, Values
+  TJvFormStorage.StoredValues, TJvStoredValues.IndexOf, TJvStoredValues.StoredValue,
+  TJvStoredValues.Values
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Path
@@ -820,7 +822,7 @@ Description
   the stored value object is written to the ini file or registry at a location specified by its <LINK
   TJvStoredValue.Name, Name> property.
 See Also
-  TJvStoredValue.OnSave, TJvStoredValue.Save, RestoreValues
+  TJvStoredValue.OnSave, TJvStoredValue.Save, TJvStoredValues.RestoreValues
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Storage
@@ -841,7 +843,7 @@ Description
   Use the StoredValue property to get or set the value represented by a stored value object with a
   particular name.
 See Also
-  Items, Values
+  TJvStoredValues.Items, TJvStoredValues.Values
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Values
@@ -851,7 +853,7 @@ Description
   Use the Values property to get or set the properties of a stored value object with a particular
   name.
 See Also
-  Items, StoredValue
+  TJvStoredValues.Items, TJvStoredValues.StoredValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo
@@ -886,7 +888,7 @@ Description
 Note
   MaxPosLeft does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosTop, MaxSizeHeight, MaxSizeWidth
+  TJvWinMinMaxInfo.MaxPosTop, TJvWinMinMaxInfo.MaxSizeHeight, TJvWinMinMaxInfo.MaxSizeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxPosTop
@@ -897,7 +899,7 @@ Description
 Note
   MaxPosTop does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosLeft, MaxSizeHeight, MaxSizeWidth
+  TJvWinMinMaxInfo.MaxPosLeft, TJvWinMinMaxInfo.MaxSizeHeight, TJvWinMinMaxInfo.MaxSizeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxSizeHeight
@@ -908,7 +910,7 @@ Description
 Note
   MaxSizeHeight does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosLeft, MaxPosTop, MaxSizeWidth
+  TJvWinMinMaxInfo.MaxPosLeft, TJvWinMinMaxInfo.MaxPosTop, TJvWinMinMaxInfo.MaxSizeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxSizeWidth
@@ -919,7 +921,7 @@ Description
 Note
   MaxSizeWidth does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosLeft, MaxPosTop, MaxSizeHeight
+  TJvWinMinMaxInfo.MaxPosLeft, TJvWinMinMaxInfo.MaxPosTop, TJvWinMinMaxInfo.MaxSizeHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackHeight
@@ -934,7 +936,7 @@ Description
 Note
   MaxTrackHeight does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackWidth, MinTrackHeight, MinTrackWidth
+  TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackHeight, TJvWinMinMaxInfo.MinTrackWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackWidth
@@ -949,7 +951,7 @@ Description
 Note
   MaxTrackWidth does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackHeight, MinTrackHeight, MinTrackWidth
+  TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MinTrackHeight, TJvWinMinMaxInfo.MinTrackWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MinTrackHeight
@@ -965,7 +967,7 @@ Description
 Note
   MinTrackHeight does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackHeight, MaxTrackWidth, MinTrackWidth
+  TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MinTrackWidth
@@ -981,5 +983,5 @@ Description
 Note
   MinTrackWidth does <I>not</I> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackHeight, MaxTrackWidth, MinTrackHeight
+  TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackHeight
 

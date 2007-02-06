@@ -129,7 +129,8 @@ Description
   Setting Active to false (the default), removes the notification icon from the taskbar notification
   area.
 See Also
-  Delay, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.Icons, TJvTrayIcon.IconVisible
+  TJvTrayIcon.Delay, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.Icons,
+  TJvTrayIcon.IconVisible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Animated
@@ -143,7 +144,7 @@ Description
 
   You must also set Active to true to activate the animation.
 See Also
-  Delay, TJvTrayIcon.Active, TJvTrayIcon.Icons, TJvTrayIcon.OnAnimate
+  TJvTrayIcon.Delay, TJvTrayIcon.Active, TJvTrayIcon.Icons, TJvTrayIcon.OnAnimate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.ApplicationHook
@@ -434,7 +435,7 @@ Description
   notification area. If Animated is true, the icon selected by setting IconIndex will be displayed
   instead. If IconIndex = -1 or Icons is nil, the icon from the Icon property is displayed.
 See Also
-  Delay, TJvTrayIcon.Active, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.IconIndex
+  TJvTrayIcon.Delay, TJvTrayIcon.Active, TJvTrayIcon.Animated, TJvTrayIcon.Icon, TJvTrayIcon.IconIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.IconVisible
@@ -450,7 +451,7 @@ Description
 
   Set IconVisible to False to hide the tray icon. Note that you can also set Active to False.
 See Also
-  Active
+  TJvTrayIcon.Active
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.OnAnimate
@@ -834,4 +835,8 @@ Description
 @@TTrayVisibility.tvAnimateToTray
   Animates the application's main form to the tray icon instead of to the application button on the
   taskbar, when the user minimizes the application. Same when the user restores the application.
+
+----------------------------------------------------------------------------------------------------
+@@TTrayVisibility.tvNoRetryOnFailure
+  Description for tvNoRetryOnFailure
 

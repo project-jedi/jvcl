@@ -311,8 +311,8 @@ Note
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdWindows
-  <B>Version 5.0.</B> The windows directory or SYSROOT. This corresponds to the %windir% or
-  %SYSTEMROOT% environment variables. A typical path is C:\\Windows.
+  <B>Version 5.0.</B> The windows directory or SYSROOT. This corresponds to the \%windir\% or
+  \%SYSTEMROOT\% environment variables. A typical path is C:\\Windows.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCDBurnArea
@@ -462,7 +462,7 @@ Description
   Inspector or in program code. Programmatic changes to Directory have no effect while the dialog is
   active, use <LINK TJvBrowseForFolderDialog.SetSelection@string, SetSelection> for this purpose.
 See Also
-  SetSelection
+  TJvBrowseForFolderDialog.SetSelection
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.DisplayName
@@ -493,7 +493,7 @@ Description
   The Handle property, which provides access to the dialog’s window handle after a call to Execute, can
   be used in the event handlers. Handle is reset to 0 after the dialog closes.
 See Also
-  TJvBrowseForFolderDialog.OnInitialized, Execute
+  TJvBrowseForFolderDialog.OnInitialized, TJvBrowseForFolderDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.HelpContext
@@ -688,7 +688,7 @@ Parameters
   APath  - Specifies the path to expand as a \string or as a wide \string.
   IDList - Specifies the path to expand as pointer to an item identifier list.
 See Also
-  SetSelection
+  TJvBrowseForFolderDialog.SetSelection
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.SetExpandedW
@@ -747,7 +747,7 @@ Parameters
   APath  - Specifies the path to expand as a \string.
   IDList - Specifies the path to expand as pointer to an item identifier list.
 See Also
-  SetExpanded
+  TJvBrowseForFolderDialog.SetExpanded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.SetStatusText

@@ -39,7 +39,8 @@ Description
   Set Animate to true to start an animation of the image on the button. To set up the animation, use
   the properties AnimateFrames and AnimateInterval.
 See Also
-  AnimateFrames, AnimateInterval, CurrentAnimateFrame
+  TJvCustomImageButton.AnimateFrames, TJvCustomImageButton.AnimateInterval,
+  TJvCustomImageButton.CurrentAnimateFrame
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.AnimateFrames
@@ -52,7 +53,8 @@ Description
   For example, if ImageIndex is set to 0 and AnimateFrames is set to 3, the images with index 0, 1 and
   3 are animated.
 See Also
-  Animate, AnimateInterval, ImageIndex, Images
+  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateInterval, TJvCustomImageButton.ImageIndex,
+  TJvCustomImageButton.Images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.AnimateInterval
@@ -62,7 +64,7 @@ Description
   Use AnimateInterval to set the number of milliseconds that should pass before a new image is
   displayed on the button when animation is active.
 See Also
-  Animate, AnimateFrames
+  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateFrames
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Canvas
@@ -79,12 +81,12 @@ Description
   Use Click to simulate a mouse click. Click performs the following tasks:
 
   1. If the value of the Kind property is bkClose, Click closes the form. If the value of Kind is
-
-  bkHelp, Click displays the Help screen assigned with the HelpContext property. 2. Any associated
-  action fires, or, if there is no associated action, any code attached to the OnClick event is
-  executed.
+     bkHelp, Click displays the Help screen assigned with the HelpContext property.
+  2. Any associated action fires, or, if there is no associated action, any code attached to the
+     OnClick event is executed.
 See Also
-  Action, Kind, ModalResult, OnClick
+  <DELPHILINK TControl.Action>, TJvCustomImageButton.Kind, <DELPHILINK TButton.ModalResult>,
+  <DELPHILINK TControl.OnClick>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.CurrentAnimateFrame
@@ -93,7 +95,7 @@ Summary
 Description
   To find the index of the actual image displayed, add CurrentAnimateFrame and ImageIndex together
 See Also
-  ImageIndex
+  TJvCustomImageButton.ImageIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonFocusRect
@@ -104,7 +106,8 @@ Description
 Parameters
   RectContent - The rect to draw the focus rect within
 See Also
-  DrawButtonImage, DrawButtonFrame, DrawButtonText
+  TJvCustomImageButton.DrawButtonImage, TJvCustomImageButton.DrawButtonFrame,
+  TJvCustomImageButton.DrawButtonText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonFrame
@@ -116,7 +119,8 @@ Parameters
   DrawItemStruct - Contains the state of the button
   RectContent    - The bounds to draw within
 See Also
-  DrawButtonFocusRect, DrawButtonImage, DrawButtonText
+  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonImage,
+  TJvCustomImageButton.DrawButtonText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonImage
@@ -127,7 +131,8 @@ Description
 Parameters
   ImageBounds - The bounds of the image
 See Also
-  DrawButtonFocusRect, DrawButtonFrame, DrawButtonText
+  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonFrame,
+  TJvCustomImageButton.DrawButtonText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonText
@@ -139,7 +144,8 @@ Parameters
   TextBounds  - The bounds to draw the text within
   TextEnabled - Specifies if the text should be drawn as enabled or disabled
 See Also
-  DrawButtonFocusRect, DrawButtonFrame, DrawButtonImage
+  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonFrame,
+  TJvCustomImageButton.DrawButtonImage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Flat
@@ -158,7 +164,7 @@ Description
   Set ImageIndex to specify the image that appears in the control. ImageIndex is an index into the
   Images property of the control.
 See Also
-  Images
+  TJvCustomImageButton.Images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Images
@@ -168,7 +174,7 @@ Description
   Use Images to specify the imagelist that contains the image you want to display in the control. To
   select an image from the list, set the ImageIndex property to a valid value.
 See Also
-  ImageIndex
+  TJvCustomImageButton.ImageIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.ImageVisible
@@ -182,7 +188,8 @@ Description
   image, you must also set up the AnimateInterval and AnimateFrames properties as well as set Animate
   to true.
 See Also
-  Animate, AnimateFrames, AnimateInterval, ImageIndex, Images
+  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateFrames,
+  TJvCustomImageButton.AnimateInterval, TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Kind
@@ -195,7 +202,7 @@ Description
   The images (such as the green check mark on the OK button) appear on the button when using this
   version of TBitBtn.
 See Also
-  ModalResult
+  <DELPHILINK TButton.ModalResult>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Layout
@@ -206,6 +213,7 @@ Description
   button (blImageRight).
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Margin
@@ -222,7 +230,7 @@ Description
   centered. The number of pixels between the image and button edge is equal to the number of pixels
   between the opposite edge of the button and the text.
 See Also
-  ImageIndex, Images, Layout
+  TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images, TJvCustomImageButton.Layout
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.MouseInControl
@@ -232,6 +240,7 @@ Description
   Read MouseInControl to determine whether the mouse is over the button.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.OnButtonDraw
@@ -244,7 +253,7 @@ Parameters
   Sender         - The object that triggered the event
   DrawItemStruct - Holds information about the current state of the control
 See Also
-  OwnerDraw
+  TJvCustomImageButton.OwnerDraw
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.OnGetAnimateIndex
@@ -268,7 +277,7 @@ Description
   the button is not drawn automatically, instead you will have to provide the drawing logic in the
   event handler.
 See Also
-  OnButtonDraw
+  TJvCustomImageButton.OnButtonDraw
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Spacing
@@ -278,7 +287,7 @@ Description
   Spacing determines the number of pixels between the image and the text. The default value is 4
   pixels.
 See Also
-  ImageIndex, Images, Layout
+  TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images, TJvCustomImageButton.Layout
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtn

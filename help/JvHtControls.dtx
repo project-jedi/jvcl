@@ -171,8 +171,7 @@ Parameters
   Sender   - Object signaling the event notification.
   LinkName - URL for the HTML anchor clicked in the HTML-enabled control.
 See Also
-  TJvCustomHTLabel.OnHyperLinkClick, TJvCustomHTListBox.OnHyperLinkClick, TJvHTLabel.OnHyperLinkClick,
-  TJvHTListBox.OnHyperLinkClick
+  TJvCustomHTLabel.OnHyperLinkClick, TJvCustomHTListBox.OnHyperLinkClick
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox
@@ -235,7 +234,8 @@ Description
   Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
   applied to the control when selected or disabled.
 See Also
-  ColorHighlight, ColorHighlightText, ColorDisabledText, OnHyperLinkClick
+  TJvCustomHTComboBox.ColorHighlight, TJvCustomHTComboBox.ColorHighlightText,
+  TJvCustomHTComboBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox.ColorDisabledText
@@ -250,7 +250,7 @@ Description
   contains False. Use ColorHighlight and ColorHighlightText to set the values for the canvas brush and
   font colors for items when the control is Enabled.
 See Also
-  ColorHighlight, ColorHighlightText
+  TJvCustomHTComboBox.ColorHighlight, TJvCustomHTComboBox.ColorHighlightText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox.ColorHighlight
@@ -265,9 +265,9 @@ Description
   when items are rendered in DrawItem. ColorHighlight and ColorHighlightText are also used when the
   selected item in the control may have change after MouseMove or MouseUp messages.
 
-  Use ColorDisabled to indicate the font color used when the control is not Enabled.
+  Use ColorDisabledText to indicate the font color used when the control is not Enabled.
 See Also
-  ColorHighlightText, ColorDisabled
+  TJvCustomHTComboBox.ColorHighlightText, TJvCustomHTComboBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox.ColorHighlightText
@@ -282,9 +282,9 @@ Description
   when items are rendered in DrawItem. ColorHighlight and ColorHighlightText are also used when the
   selected item in the control may have change after MouseMove or MouseUp messages.
 
-  Use ColorDisabled to indicate the font color used when the control is not Enabled.
+  Use ColorDisabledText to indicate the font color used when the control is not Enabled.
 See Also
-  ColorHighlight, ColorDisabled
+  TJvCustomHTComboBox.ColorHighlight, TJvCustomHTComboBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox.DropWidth
@@ -333,7 +333,7 @@ Description
 Parameters
   Index - Ordinal position of the plain text item.
 See Also
-  Items
+  <DELPHILINK TCustomCombo.Items>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTComboBox.SetHeight
@@ -404,11 +404,8 @@ Description
 
   Use the OnHyperLinkClick event handler to respond to mouse clicks on Anchor tags found in the content
   for the control.
-
-  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
-  applied to the control when selected or disabled.
 See Also
-  ColorHighlight, ColorHighlightText, ColorDisabledText, OnHyperLinkClick, TJvHTLabel
+  TJvCustomHTLabel.OnHyperLinkClick, TJvHTLabel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTLabel.OnHyperLinkClick
@@ -418,14 +415,13 @@ Description
   OnHyperLinkClick is a THyperLinkClick property that represents the event handler signaled when the
   user clicks on an HTML \<A\> tag found in the caption for the control.
 
-  OnHyperLinkClick is used during execution of the MouseUp event when the Item has been rendered using
-  the colors specified in ColorHighlight and ColorHighlightText. The event handler is fired immediately
+  OnHyperLinkClick is used during execution of the MouseUp. The event handler is fired immediately
   after calling ShellExecute with the URL specified in the HREF attribute for the tag.
 
   Applications must assign a procedure to the OnHyperLinkClick event handler to allow responding to the
   event notification.
 See Also
-  Caption, ColorHighlight, ColorHighlightText
+  <DELPHILINK TControl.Caption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox
@@ -487,7 +483,9 @@ Description
   Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
   applied to the control when selected or disabled.
 See Also
-  OnHyperLinkClick, PlainItems, ColorHighlight, ColorHighlightText, ColorDisabledText
+  TJvCustomHTListBox.OnHyperLinkClick, TJvCustomHTListBox.PlainItems,
+  TJvCustomHTListBox.ColorHighlight, TJvCustomHTListBox.ColorHighlightText,
+  TJvCustomHTListBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox.ColorDisabledText
@@ -502,7 +500,7 @@ Description
   contains False. Use ColorHighlight and ColorHighlightText to set the values for the canvas brush and
   font colors for items when the control is Enabled.
 See Also
-  ColorHighlight, ColorHighlightText
+  TJvCustomHTListBox.ColorHighlight, TJvCustomHTListBox.ColorHighlightText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox.ColorHighlight
@@ -517,9 +515,9 @@ Description
   when items are rendered in DrawItem. ColorHighlight and ColorHighlightText are also used when the
   selected item in the control may have change after MouseMove or MouseUp messages.
 
-  Use ColorDisabled to indicate the font color used when the control is not Enabled.
+  Use ColorDisabledText to indicate the font color used when the control is not Enabled.
 See Also
-  ColorHighlightText, ColorDisabled
+  TJvCustomHTListBox.ColorHighlightText, TJvCustomHTListBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox.ColorHighlightText
@@ -534,9 +532,9 @@ Description
   when items are rendered in DrawItem. ColorHighlight and ColorHighlightText are also used when the
   selected item in the control may have change after MouseMove or MouseUp messages.
 
-  Use ColorDisabled to indicate the font color used when the control is not Enabled.
+  Use ColorDisabledText to indicate the font color used when the control is not Enabled.
 See Also
-  ColorHighlight, ColorDisabled
+  TJvCustomHTListBox.ColorHighlight, TJvCustomHTListBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox.DataConnector
@@ -575,7 +573,8 @@ Description
   Applications must assign a procedure to the OnHyperLinkClick event handler to allow responding to the
   event notification.
 See Also
-  Items, ColorHighlight, ColorHighlightText
+  <DELPHILINK TCustomListBox.Items>, TJvCustomHTListBox.ColorHighlight,
+  TJvCustomHTListBox.ColorHighlightText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomHTListBox.PlainItems
@@ -588,7 +587,7 @@ Description
 Parameters
   Index - Ordinal position of the plain text item.
 See Also
-  Items
+  <DELPHILINK TCustomListBox.Items>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBoxDataConnector
@@ -676,13 +675,11 @@ Description
     \&nbsp\;         (Non-breaking space character)
   </TABLE>
 
-  Use the OnHyperLinkClick event handler to respond to mouse clicks on Anchor tags found in the content
-  for the control.
-
   Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
   applied to the control when selected or disabled.
 See Also
-  ColorHighlight, ColorHighlightText, ColorDisabledText, OnHyperLinkClick
+  TJvCustomHTComboBox.ColorHighlight, TJvCustomHTComboBox.ColorHighlightText,
+  TJvCustomHTComboBox.ColorDisabledText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTLabel
@@ -745,11 +742,8 @@ Description
 
   Use the OnHyperLinkClick event handler to respond to mouse clicks on Anchor tags found in the content
   for the control.
-
-  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
-  applied to the control when selected or disabled.
 See Also
-  ColorHighlight, ColorHighlightText, ColorDisabledText, OnHyperLinkClick, TJvCustomHTLabel
+  TJvCustomHTLabel.OnHyperLinkClick, TJvCustomHTLabel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTListBox
@@ -814,6 +808,7 @@ Description
   Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
   applied to the control when selected or disabled.
 See Also
-  OnHyperLinkClick, PlainItems, ColorHighlight, ColorHighlightText, ColorDisabledText,
-  TJvCustomHTListBox
+  TJvCustomHTListBox.OnHyperLinkClick, TJvCustomHTListBox.PlainItems,
+  TJvCustomHTListBox.ColorHighlight, TJvCustomHTListBox.ColorHighlightText,
+  TJvCustomHTListBox.ColorDisabledText, TJvCustomHTListBox
 

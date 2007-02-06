@@ -2093,7 +2093,7 @@ Summary
 Description
   Clear will empty the list of sub items of this item.
 See Also
-  Delete
+  TJvCustomInspectorItem.Delete
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.CloseUp
@@ -2265,7 +2265,7 @@ Parameters
   Key   - Description for this parameter
   Shift - Description for this parameter
 See Also
-  Edit_WndProc
+  TJvCustomInspectorItem.Edit_WndProc
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DoGetValueList
@@ -3668,7 +3668,7 @@ Description
 Parameters
   AOwner - The component to add to the Owners list
 See Also
-  DeleteOwner
+  TJvInspectorComponentItem.DeleteOwner
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.DeleteOwner@Integer
@@ -3688,7 +3688,7 @@ Parameters
   AOwner - The component to add to the Owners list
   Index  - Index into the Owners list of the owner to be removed.
 See Also
-  DeleteOwner
+  TJvInspectorComponentItem.DeleteOwner
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.DeleteOwner@TComponent
@@ -3758,7 +3758,7 @@ Description
   Read Owners to find out which component owners are available to this item or change a specific owner
   by setting it to a new one.
 See Also
-  DeleteOwner
+  TJvInspectorComponentItem.DeleteOwner
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.ShowOwnerNames
@@ -3897,7 +3897,7 @@ Parameters
   Item      - Item to add as a column. Item is checked to be a child of the compound item.
   ItemIndex - Index into the Items item list of the item to add.
 See Also
-  DeleteColumn, InsertColumn
+  TJvInspectorCompoundItem.DeleteColumn, TJvInspectorCompoundItem.InsertColumn
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCompoundItem.AddColumn@TJvCustomInspectorItem
@@ -3963,7 +3963,7 @@ Parameters
   Item      - Item to add as a column. Item is checked to be a child of the compound item.
   ItemIndex - Index into the Items item list of the item to add.
 See Also
-  AddColumn, DeleteColumn
+  TJvInspectorCompoundItem.AddColumn, TJvInspectorCompoundItem.DeleteColumn
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCompoundItem.InsertColumn@Integer@TJvCustomInspectorItem
@@ -4035,7 +4035,7 @@ Parameters
   Item      - Item to add as a column. Item is checked to be a child of the compound item.
   ItemIndex - Index into the Items item list of the item to add.
 See Also
-  DeleteColumnPrim, InsertColumnPrim
+  TJvInspectorCustomCompoundItem.DeleteColumnPrim, TJvInspectorCustomCompoundItem.InsertColumnPrim
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem.AddColumnPrim@TJvCustomInspectorItem
@@ -4158,7 +4158,7 @@ Parameters
   Item      - Item to add as a column. Item is checked to be a child of the compound item.
   ItemIndex - Index into the Items item list of the item to add.
 See Also
-  AddColumnPrim, DeleteColumnPrim
+  TJvInspectorCustomCompoundItem.AddColumnPrim, TJvInspectorCustomCompoundItem.DeleteColumnPrim
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem.InsertColumnPrim@Integer@TJvCustomInspectorItem
@@ -4943,7 +4943,7 @@ Description
   ApplyNameFont sets the Canvas font to the font used to display the name. The base implementation sets
   this to the inspector font and selects the NameColor as the font color.
 See Also
-  TJvInspectorPainter.ApplyValueFont, TJvInspectorPainter.Canvas, TJvInspectorPainter.NameColor
+  TJvInspectorPainter.ApplyValueFont, TJvInspectorPainter.Canvas, TJvInspectorPainter.NameFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.ApplyValueFont
@@ -4955,7 +4955,7 @@ Description
   The base implementation sets this to the inspector font and selects the ValueColor as the font
   color.
 See Also
-  TJvInspectorPainter.ApplyNameFont, TJvInspectorPainter.Canvas, TJvInspectorPainter.ValueColor
+  TJvInspectorPainter.ApplyNameFont, TJvInspectorPainter.Canvas, TJvInspectorPainter.ValueFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.BackgroundColor
@@ -5048,7 +5048,7 @@ Description
   color is used as a background when rendering a category item or set it to another value to change
   it.
 See Also
-  TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryTextColor
+  TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CategoryFont
@@ -5225,12 +5225,12 @@ Description
 
   * BackgroundColor
   * DividerColor
-  * NameColor
-  * ValueColor
+  * NameFont
+  * ValueFont
   * CategoryColor
-  * CategoryTextColor
+  * CategoryFont
   * SelectedColor
-  * SelectedTextColor
+  * SelectedFont
 
   Descendants can override this method to preset additional properties.
 
@@ -5282,7 +5282,7 @@ Summary
 Description
   Item holds a reference to the item currently being painted.
 See Also
-  PaintItem
+  TJvInspectorPainter.PaintItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.ItemIndex
@@ -5293,7 +5293,7 @@ Description
   array of the item currently painted. If ItemIndex < 0, an item reference was supplied to the
   PaintItem method.
 See Also
-  PaintItem
+  TJvInspectorPainter.PaintItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Loading
@@ -5340,7 +5340,7 @@ Description
 
   Paint assumes the background color has been set prior to calling Paint.
 See Also
-  PaintItem
+  TJvInspectorPainter.PaintItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.PaintDivider
@@ -5412,8 +5412,8 @@ Summary
 Description
   SelectedColor indicates the background color for selected items. Read SelectedColor to find out which
   color is used as a background when an item is selected or set it to another value to change it.
-See Also
-  TJvInspectorPainter.SelectedTextColor
+##See Also
+##  TJvInspectorPainter.SelectedTextColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.SelectedFont
@@ -5480,7 +5480,7 @@ Description
 
   Descendants can override this method to do additional initialization if needed.
 See Also
-  PaintItem
+  TJvInspectorPainter.PaintItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.SetupRects
@@ -5493,7 +5493,7 @@ Description
 
   Descendants should override this method to initialize the other rectangles.
 See Also
-  PaintItem
+  TJvInspectorPainter.PaintItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.TeardownItem
@@ -6155,7 +6155,8 @@ Parameters
                   TComponent (or descendant) to retrieve the name. You should do so yourself in the
                   call to this method.
 See Also
-  AddMethod, DeleteInstance, IndexOfInstance
+  TJvInspectorTMethodItem.AddMethod, TJvInspectorTMethodItem.DeleteInstance,
+  TJvInspectorTMethodItem.IndexOfInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.AddMethod@TMethod@string
@@ -6177,7 +6178,8 @@ Parameters
   Instance   - Instance to which the handler should be added.
   MethodAddr - Address of the handler to add.
 See Also
-  DeleteMethod, ClearMethods, IndexOfMethod
+  TJvInspectorTMethodItem.DeleteMethod, TJvInspectorTMethodItem.ClearMethods,
+  TJvInspectorTMethodItem.IndexOfMethod
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.AddMethod@TObject@Pointer@string
@@ -6191,7 +6193,8 @@ Description
   ClearInstances removes all event instances from the list of instances. Deleting the instances will
   result in deleting all handlers.
 See Also
-  ClearMethods, DeleteInstance, IndexOfInstance
+  TJvInspectorTMethodItem.ClearMethods, TJvInspectorTMethodItem.DeleteInstance,
+  TJvInspectorTMethodItem.IndexOfInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.ClearMethods@Integer
@@ -6210,7 +6213,8 @@ Parameters
   InstanceName  - Name (case insensitive) of the instance for which to delete all handlers. If the
                    specified instance does not exist, an exception is raised.
 See Also
-  AddMethod, DeleteMethod, IndexOfMethod
+  TJvInspectorTMethodItem.AddMethod, TJvInspectorTMethodItem.DeleteMethod,
+  TJvInspectorTMethodItem.IndexOfMethod
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.ClearMethods@string
@@ -6237,7 +6241,7 @@ Parameters
   InstanceName - Name (case insensitive) of the instance to delete. If the specified instance does not
                   exist, an exception will be raised.
 See Also
-  DeleteMethod, IndexOfInstance
+  TJvInspectorTMethodItem.DeleteMethod, TJvInspectorTMethodItem.IndexOfInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.DeleteInstance@string
@@ -6269,7 +6273,8 @@ Parameters
   MethodName    - Name (case insensitive) of the handler to delete. If the specified handler does not
                    exist within the specified instance, an exception is raised.
 See Also
-  DeleteInstance, AddMethod, ClearMethods, IndexOfMethod
+  TJvInspectorTMethodItem.DeleteInstance, TJvInspectorTMethodItem.AddMethod,
+  TJvInspectorTMethodItem.ClearMethods, TJvInspectorTMethodItem.IndexOfMethod
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.DeleteMethod@Integer@string
@@ -6309,7 +6314,7 @@ Parameters
   Instance     - TObject instance to locate.
   InstanceName - Case insensitive name of the instance to locate.
 See Also
-  IndexOfMethod, DeleteInstance
+  TJvInspectorTMethodItem.IndexOfMethod, TJvInspectorTMethodItem.DeleteInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.IndexOfInstance@TObject
@@ -6335,7 +6340,8 @@ Parameters
                    not exist, -1 will be returned.
   MethodName    - Name (case insensitive) of the handler to locate.
 See Also
-  IndexOfInstance, AddMethod, DeleteMethod, ClearMethods
+  TJvInspectorTMethodItem.IndexOfInstance, TJvInspectorTMethodItem.AddMethod,
+  TJvInspectorTMethodItem.DeleteMethod, TJvInspectorTMethodItem.ClearMethods
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.IndexOfMethod@string@string
@@ -6356,7 +6362,7 @@ Summary
 Description
   InstanceCount determines the number of instances added.
 See Also
-  DeleteInstance
+  TJvInspectorTMethodItem.DeleteInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.InstanceNames
@@ -6371,7 +6377,7 @@ Description
 Parameters
   I - 0-based index in the list added instances.
 See Also
-  DeleteInstance
+  TJvInspectorTMethodItem.DeleteInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.Instances
@@ -6386,7 +6392,7 @@ Description
 Parameters
   I - 0-based index in the list added instances.
 See Also
-  DeleteInstance
+  TJvInspectorTMethodItem.DeleteInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.ItemTMethodFlags
@@ -6424,7 +6430,8 @@ Description
 Parameters
   Instance - TObject instance for which to retrieve a method name.
 See Also
-  AddMethod, DeleteMethod, ClearMethods
+  TJvInspectorTMethodItem.AddMethod, TJvInspectorTMethodItem.DeleteMethod,
+  TJvInspectorTMethodItem.ClearMethods
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.MethodNames
@@ -6441,7 +6448,8 @@ Parameters
   Instance - TObject instance for which to retrieve a method name.
   I        - 0-based index of the handler for which to retrieve the name.
 See Also
-  AddMethod, DeleteMethod, ClearMethods
+  TJvInspectorTMethodItem.AddMethod, TJvInspectorTMethodItem.DeleteMethod,
+  TJvInspectorTMethodItem.ClearMethods
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.Methods
@@ -6458,7 +6466,8 @@ Parameters
   Instance - TObject instance for which to retrieve a method name.
   I        - 0-based index of the handler for which to retrieve the name.
 See Also
-  AddMethod, DeleteMethod, ClearMethods
+  TJvInspectorTMethodItem.AddMethod, TJvInspectorTMethodItem.DeleteMethod,
+  TJvInspectorTMethodItem.ClearMethods
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.NoShowFirstInstanceName

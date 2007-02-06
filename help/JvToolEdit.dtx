@@ -406,7 +406,7 @@ Description
   Set ButtonFlat to true to remove the raised border when the button is unselected and the lowered
   border when the button is clicked or selected.
 See Also
-  <LINK TJvCustomComboEdit.Button, Button>
+  TJvCustomComboEdit.Button
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ButtonHint
@@ -416,7 +416,7 @@ Description
   Use the ButtonHint property to provide a string of help text as a Help Hint for the combo edit
   control's button.
 See Also
-  <LINK TJvCustomComboEdit.Button, Button>
+  TJvCustomComboEdit.Button
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ButtonWidth
@@ -427,7 +427,7 @@ Description
   ImageKind can change the ButtonWidth. For example, ButtonWidth is set to the default width of a
   drop-down button if ImageKind is set to ikDropDown.
 See Also
-  <LINK TJvCustomComboEdit.Button, Button>
+  TJvCustomComboEdit.Button
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ClickKey
@@ -492,7 +492,7 @@ Description
   DirectInput to false, the edit box of the combo edit will become read-only, and the user can only use
   the button of the combo edit.
 See Also
-  <LINK TJvCustomComboEdit.AlwaysEnableButton, AlwaysEnableButton>
+  TJvCustomComboEdit.AlwaysEnableButton
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.DisabledColor
@@ -525,7 +525,7 @@ Description
   Call DoClick to simulate a mouse click on the button. If the combo edit control has an OnButtonClick
   event handler, DoClick allows an application to simulate a click on the button.
 See Also
-  <LINK TJvCustomComboEdit.OnButtonClick, OnButtonClick>
+  TJvCustomComboEdit.OnButtonClick
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Flat
@@ -573,7 +573,7 @@ Description
 Note
   This property is not stored if it is supplied by a TAction object.
 See Also
-  <LINK TJvCustomComboEdit.Images, Images>, <LINK TJvCustomComboEdit.ImageKind, ImageKind>
+  TJvCustomComboEdit.Images, TJvCustomComboEdit.ImageKind
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ImageKind
@@ -582,7 +582,7 @@ Summary
 Description
   Use ImageKind to specify the appearance of the button of the edit button control.
 See Also
-  <LINK TJvCustomComboEdit.ImageIndex, ImageIndex>, <LINK TJvCustomComboEdit.Images, Images>
+  TJvCustomComboEdit.ImageIndex, TJvCustomComboEdit.Images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Images
@@ -593,7 +593,7 @@ Description
   is unassigned, no images are displayed on the button unless ImageKind is set to a value other than
   ikCustom.
 See Also
-  <LINK TJvCustomComboEdit.ImageIndex, ImageIndex>, <LINK TJvCustomComboEdit.ImageKind, ImageKind>
+  TJvCustomComboEdit.ImageIndex, TJvCustomComboEdit.ImageKind
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.NumGlyphs
@@ -620,7 +620,7 @@ Description
   Write a handler for the OnEnabledChanged to take specific action when the control's Enabled state has
   changed.
 See Also
-  TJvCustomComboEdit.Enabled
+  <DELPHILINK TControl.Enabled>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnKeyDown
@@ -631,7 +631,7 @@ Description
   OnKeyDown handler can respond to all keyboard keys, including function keys and keys combined with
   the Shift, Alt, and Ctrl keys, and pressed mouse buttons.
 See Also
-  <LINK TJvCustomComboEdit.OnButtonClick, OnButtonClick>
+  TJvCustomComboEdit.OnButtonClick
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnPopupHidden
@@ -691,7 +691,7 @@ Description
   select text. The selected text can then be manipulated by the application, or copied to the
   Clipboard.
 See Also
-  <LINK TJvCustomComboEdit.AlwaysEnableButton, AlwaysEnableButton>
+  TJvCustomComboEdit.AlwaysEnableButton
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.SettingCursor
@@ -794,7 +794,7 @@ Description
   combo control. If set to true, the control calls <LINK TJvCustomDateEdit.CheckValidDate,
   CheckValidDate> on exit of the control.
 See Also
-  <LINK TJvCustomDateEdit.CheckValidDate, CheckValidDate>, <LINK TJvCustomDateEdit.Date, Date>
+  TJvCustomDateEdit.CheckValidDate, TJvCustomDateEdit.Date
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.CheckValidDate
@@ -807,7 +807,7 @@ Description
   Call <LINK GetDateMask> to retrieve the date mask. Use CheckOnExit to specify whether to check the
   text on exit of the control.
 See Also
-  <LINK TJvCustomDateEdit.Date, Date>
+  TJvCustomDateEdit.Date
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.Date
@@ -831,7 +831,7 @@ Note
   If you specify the value 0 for MinDate, then the control won't check whether the entered date is
   equal or after the MinDate. Same for MaxDate.
 See Also
-  <LINK TJvCustomDateEdit.Date, Date>
+  TJvCustomDateEdit.Date
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.DateFormat
@@ -880,7 +880,7 @@ Description
   empty then <LINK TJvCustomDateEdit.Date, Date> will return today's date. Set DefaultToday to false to
   use the null value (12/30/1899 12:00 am) as default.
 See Also
-  <LINK TJvCustomDateEdit.Date, Date>
+  TJvCustomDateEdit.Date
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.DialogTitle
@@ -923,7 +923,7 @@ Description
   scroll the calendar. The value of the <LINK TJvCustomDateEdit.Date, Date> property cannot exceed
   MaxDate.
 See Also
-  <LINK TJvCustomDateEdit.Date, Date>
+  TJvCustomDateEdit.Date
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.MinDate
@@ -934,7 +934,7 @@ Description
   scroll the calendar. The value of the <LINK TJvCustomDateEdit.Date, Date> property cannot be before
   MaxDate.
 See Also
-  <LINK TJvCustomDateEdit.Date, Date>
+  TJvCustomDateEdit.Date
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.OnAcceptDate
@@ -1403,7 +1403,7 @@ Description
 Note
   The file entered in the combo edit control <I>must</I> exist, otherwise an empty string is returned.
 See Also
-  <LINK TJvFileDirEdit.LongName, LongName>, <LINK TJvFileDirEdit.ShortName, ShortName>
+  TJvFileDirEdit.LongName, TJvFileDirEdit.ShortName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFilenameEdit.Filter

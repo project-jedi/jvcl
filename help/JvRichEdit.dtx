@@ -55,7 +55,7 @@ Parameters
   ABitmap - The bitmap to convert.
   AStream - Stream where to save the RTF data to.
 See Also
-  <LINK TJvRichEdit>, <LINK TJvCustomRichEdit.InsertGraphic, InsertGraphic>
+  TJvRichEdit, TJvCustomRichEdit.InsertGraphic
 
 ----------------------------------------------------------------------------------------------------
 @@BitmapToRTF2
@@ -237,7 +237,7 @@ Parameters
 Return value
   Returns true if the converter can handle this extension, false otherwise.
 See Also
-  IsFormatCorrect
+  TJvConversion.IsFormatCorrect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.CanHandle@TJvConversionKind
@@ -321,7 +321,7 @@ Description
 Return value
   Returns text describing the error that occurred during the conversion.
 See Also
-  Error, TJvConversion.UserCancel
+  TJvConversion.Error, TJvConversion.UserCancel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.Filter
@@ -374,7 +374,7 @@ Parameters
 Return value
   Returns true if the converter can import the specified file or stream, false otherwise.
 See Also
-  CanHandle
+  TJvConversion.CanHandle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.IsFormatCorrect@TStream
@@ -427,7 +427,7 @@ Description
 
   Call <LINK TJvConversion.Init, Init> to set ParentWindow.
 See Also
-  <LINK TJvConversion.Init, Init>
+  TJvConversion.Init
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.PercentDone
@@ -475,7 +475,7 @@ Description
 Return value
   Returns true if the user canceled the conversion, false otherwise.
 See Also
-  Error, TJvConversion.ErrorStr
+  TJvConversion.Error, TJvConversion.ErrorStr
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConversionKind
@@ -549,7 +549,7 @@ Parameters
   FontColor  - Description for this parameter
   FontHeight - Description for this parameter
 See Also
-  <LINK InsertGraphic>, <LINK InsertFormatText>
+  TJvCustomRichEdit.InsertGraphic, TJvCustomRichEdit.InsertFormatText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.AddFormatText@string@TFontStyles@string@TColor@Integer
@@ -668,7 +668,7 @@ Description
   \Read CanFindNext to determine whether the search, initiated by a call to FindDialog, can be
   repeated. For example, you can use CanFindNext to disable or enable a 'Find Next' menu item.
 See Also
-  <LINK TJvCustomRichEdit.FindText, FindText>
+  TJvCustomRichEdit.FindText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.CanPaste
@@ -687,7 +687,7 @@ Description
 
   To \redo the most recent undo operation, call Redo.
 See Also
-  TCustomMemo.Undo
+  <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.ClearUndo
@@ -696,7 +696,7 @@ Summary
 Description
   Call ClearUndo to empty all undo and \redo buffers.
 See Also
-  TCustomMemo.CanUndo, TCustomMemo.Undo
+  <DELPHILINK TCustomMemo.CanUndo>, <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.CloseActiveObject
@@ -776,8 +776,7 @@ Parameters
 Return value
   \Returns a reference to the created Find Text dialog.
 See Also
-  <LINK TJvCustomRichEdit.CanFindNext, CanFindNext>, <LINK TJvCustomRichEdit.FindText, FindText>, <LINK
-  TJvCustomRichEdit.ReplaceDialog, ReplaceDialog>
+  TJvCustomRichEdit.CanFindNext, TJvCustomRichEdit.FindText, TJvCustomRichEdit.ReplaceDialog
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.FindNext
@@ -795,8 +794,8 @@ Description
 Return value
   \Returns true if the search text could be found, otherwise returns false.
 See Also
-  <LINK TJvCustomRichEdit.CanFindNext, CanFindNext>, <LINK TJvCustomRichEdit.FindDialog, FindDialog>,
-  <LINK TJvCustomRichEdit.FindText, FindText>, <LINK TJvCustomRichEdit.ReplaceDialog, ReplaceDialog>
+  TJvCustomRichEdit.CanFindNext, TJvCustomRichEdit.FindDialog, TJvCustomRichEdit.FindText,
+  TJvCustomRichEdit.ReplaceDialog,
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.FindText
@@ -827,7 +826,7 @@ Return value
   rich edit control (as opposed to the first position n the search range). If the search string does
   not appear in the indicated range, FindText returns -1.
 See Also
-  <LINK TJvCustomRichEdit.CanFindNext, CanFindNext>, <LINK TJvCustomRichEdit.FindDialog, FindDialog>
+  TJvCustomRichEdit.CanFindNext, TJvCustomRichEdit.FindDialog
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.Flat
@@ -936,7 +935,7 @@ Parameters
 Return value
   \Returns the specified range of characters as a string.
 See Also
-  TCustomMemo.CaretPos
+  <DELPHILINK TCustomMemo.CaretPos>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.HideScrollBars
@@ -985,7 +984,7 @@ Parameters
   FontColor  - Description for this parameter
   FontHeight - Description for this parameter
 See Also
-  <LINK AddFormatText>, <LINK InsertGraphic>
+  TJvCustomRichEdit.AddFormatText, TJvCustomRichEdit.InsertGraphic
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertFormatText@Integer@string@TFontStyles@string@TColor@Integer
@@ -1028,7 +1027,7 @@ Parameters
   AGraphic - Specifies the graphic to insert.
   Sizeable - Specifies whether the graphic can be resized by the user.
 See Also
-  <LINK BitmapToRTF>, <LINK BitmapToRTF2>, <LINK InsertFormatText>
+  BitmapToRTF, BitmapToRTF2, TJvCustomRichEdit.InsertFormatText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertLinkToFile
@@ -1193,8 +1192,7 @@ Parameters
   Sender - Rich Edit control that has fired this event.
   Dialog - Specifies the Find Text or Replace Text dialog box.
 See Also
-  <LINK TJvCustomRichEdit.CanFindNext, CanFindNext>, <LINK TJvCustomRichEdit.FindDialog, FindDialog>,
-  <LINK TJvCustomRichEdit.ReplaceDialog, ReplaceDialog>
+  TJvCustomRichEdit.CanFindNext, TJvCustomRichEdit.FindDialog, TJvCustomRichEdit.ReplaceDialog
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnConversionProgress
@@ -1313,7 +1311,7 @@ Description
   selection is changed through the SelText property. Portions of the selection can be changed through
   the Lines property.
 See Also
-  TCustomMemo.SelStart, TCustomMemo.SelText
+  <DELPHILINK TCustomMemo.SelStart>, <DELPHILINK TCustomMemo.SelText>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnTextNotFound
@@ -1335,8 +1333,7 @@ Parameters
   Sender   - Rich Edit control that has fired this event.
   FindText - Specifies the text the user entered.
 See Also
-  <LINK TJvCustomRichEdit.FindDialog, FindDialog>, <LINK TJvCustomRichEdit.ReplaceDialog,
-  ReplaceDialog>
+  TJvCustomRichEdit.FindDialog, TJvCustomRichEdit.ReplaceDialog
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnURLClick
@@ -1473,7 +1470,7 @@ Description
 
   To determine whether there are any actions in the control's \redo queue, check property CanRedo.
 See Also
-  TCustomMemo.Undo
+  <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.RedoName
@@ -1486,7 +1483,7 @@ Description
   operations. This information can be useful for applications that provide an extended user interface
   for undo and \redo operations, such as a drop-down list box of redoable actions.
 See Also
-  TCustomMemo.Undo
+  <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.RegisterConversionFormat
@@ -1527,7 +1524,7 @@ Description
 Note
   Registered converters apply to <I>all</I> rich edit controls.
 See Also
-  <LINK RegisterConversionFormat>
+  TJvCustomRichEdit.RegisterConversionFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.ReplaceDialog
@@ -1549,7 +1546,7 @@ Parameters
 Return value
   \Returns a reference to the created Replace Text dialog.
 See Also
-  <LINK TJvCustomRichEdit.FindDialog, FindDialog>
+  TJvCustomRichEdit.FindDialog
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.SaveToImage
@@ -1662,7 +1659,7 @@ Description
 Note
   Rich Edit 2.0.
 See Also
-  TCustomMemo.Undo
+  <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.StreamFormat
@@ -1738,8 +1735,8 @@ Description
 
   Setting the limit to zero disables the Undo feature.
 See Also
-  <LINK TJvCustomRichEdit.CanRedo, CanRedo>, <LINK TJvCustomRichEdit.RedoName, RedoName>, <LINK
-  TJvCustomRichEdit.UndoName, UndoName>, <LINK TJvCustomRichEdit.Redo, Redo>, TCustomMemo.Undo
+  TJvCustomRichEdit.CanRedo, TJvCustomRichEdit.RedoName, TJvCustomRichEdit.UndoName,
+  TJvCustomRichEdit.Redo, <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.UndoName
@@ -1771,7 +1768,7 @@ Description
 Note
   Rich Edit 2.0
 See Also
-  TCustomMemo.Undo
+  <DELPHILINK TCustomMemo.Undo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.UseFixedPopup
@@ -2278,24 +2275,23 @@ Description
   With a few exceptions, Rich Edit 2.0 uses the same functions, structures, and properties as Rich Edit
   1.0 (supported by the standard TRichEdit control). But note the following differences:
   <TABLE 30c%,70c%>
-    Property                                  Description
-    ----------------------------------------  ------------------------------------------------
-    <LINK TJvCustomRichEdit.AutoURLDetect,    Enables or disables automatic URL detection.
+    Property                                   Description
+    -----------------------------------------  -----------------------------------------------
+    <LINK TJvCustomRichEdit.AutoURLDetect,     Enables or disables automatic URL detection.
       AutoURLDetect>
-    <LINK TJvCustomRichEdit.CanRedo,          Determines whether there are any actions in the
-      CanRedo>                                  \redo queue.
-    <LINK TJvCustomRichEdit.LangOptions,      Retrieves or sets options for IME and Asian
-      LangOptions>                              language support.
-    <LINK TJvCustomRichEdit.RedoName,         Retrieves the type name of the next action in
-      RedoName>                                 the \redo queue.
-    <LINK TJvCustomRichEdit.UndoName,         Retrieves the type name of the next action in
-      UndoName>                                 the undo queue.
-    <LINK TJvCustomRichEdit.Redo, Redo>       Redoes the next action in the \redo queue.
-    <LINK TJvCustomRichEdit.UndoLimit,        Sets the maximum number of actions in the undo
-      UndoLimit>                                queue.
-    <LINK                                     Stops grouping consecutive typing actions into
-      TJvCustomRichEdit.StopGroupTyping,        the current undo action.
-      StopGroupTyping>
+    <LINK TJvCustomRichEdit.CanRedo, CanRedo>  Determines whether there are any actions in
+                                                 the \redo queue.
+    <LINK TJvCustomRichEdit.LangOptions,       Retrieves or sets options for IME and Asian
+      LangOptions>                               language support.
+    <LINK TJvCustomRichEdit.RedoName,          Retrieves the type name of the next action in
+      RedoName>                                  the \redo queue.
+    <LINK TJvCustomRichEdit.UndoName,          Retrieves the type name of the next action in
+      UndoName>                                  the undo queue.
+    <LINK TJvCustomRichEdit.Redo, Redo>        Redoes the next action in the \redo queue.
+    <LINK TJvCustomRichEdit.UndoLimit,         Sets the maximum number of actions in the undo
+      UndoLimit>                                 queue.
+    <LINK TJvCustomRichEdit.StopGroupTyping,   Stops grouping consecutive typing actions into
+      StopGroupTyping>                           the current undo action.
   </TABLE>
 
   <TABLE 30c%,70c%>
@@ -2378,7 +2374,7 @@ Description
   Descendants of TJvStreamConversion can use this property to access the source or destination file in
   ConvertRead or ConvertWrite procedures.
 See Also
-  ConvertRead, ConvertWrite
+  TJvConversion.ConvertRead, TJvConversion.ConvertWrite
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabAlignment
@@ -2894,7 +2890,7 @@ Description
 
   TRichLangOptions is a set of TRichLangOption values.
 See Also
-  <LINK TJvCustomRichEdit.LangOptions, LangOptions>
+  TJvCustomRichEdit.LangOptions
 
 ----------------------------------------------------------------------------------------------------
 @@TRichLangOption.rlAutoKeyboard
@@ -2933,7 +2929,7 @@ Description
 
   TRichSearchTypes is a set of TRichSearchType values.
 See Also
-  <LINK TJvCustomRichEdit.FindText, FindText>
+  TJvCustomRichEdit.FindText
 
 ----------------------------------------------------------------------------------------------------
 @@TRichSearchType.stWholeWord
@@ -2969,7 +2965,7 @@ Description
 
   TRichSelectionType is a set of TRichSelection values.
 See Also
-  <LINK TJvCustomRichEdit.SelectionType, SelectionType>
+  TJvCustomRichEdit.SelectionType
 
 ----------------------------------------------------------------------------------------------------
 @@TRichSelection.stText
@@ -3000,7 +2996,7 @@ Summary
 Description
   Use the TRichStreamFormat type to specify a specific data format.
 See Also
-  <LINK TJvCustomRichEdit.StreamFormat, StreamFormat>, <LINK TJvCustomRichEdit.StreamMode, StreamMode>
+  TJvCustomRichEdit.StreamFormat, TJvCustomRichEdit.StreamMode
 
 ----------------------------------------------------------------------------------------------------
 @@TRichStreamFormat.sfDefault
@@ -3024,7 +3020,7 @@ Description
 
   TRichStreamModes is a set of TRichStreamMode values.
 See Also
-  <LINK TJvCustomRichEdit.StreamFormat, StreamFormat>, <LINK TJvCustomRichEdit.StreamMode, StreamMode>
+  TJvCustomRichEdit.StreamFormat, TJvCustomRichEdit.StreamMode
 
 ----------------------------------------------------------------------------------------------------
 @@TRichStreamMode.smSelection
@@ -3070,7 +3066,7 @@ Description
   Use the TSubscriptStyle type to specify a style for characters, either normal, subscript or
   superscript.
 See Also
-  <LINK TJvTextAttributes.SubscriptStyle, SubscriptStyle>
+  TJvTextAttributes.SubscriptStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TSubscriptStyle.ssNone
@@ -3165,7 +3161,7 @@ Description
   The TUnderlineType type is used to specify whether and how text is underlined in a rich edit
   control.
 See Also
-  <LINK TJvTextAttributes.UnderlineType, UnderlineType>
+  TJvTextAttributes.UnderlineType
 
 ----------------------------------------------------------------------------------------------------
 @@TUnderlineType.utNone
@@ -3216,7 +3212,7 @@ Summary
 Description
   The TUndoName type represents types of rich edit control actions that can be undone or redone.
 See Also
-  <LINK TJvCustomRichEdit.RedoName, RedoName>, <LINK TJvCustomRichEdit.UndoName, UndoName>
+  TJvCustomRichEdit.RedoName, TJvCustomRichEdit.UndoName
 
 ----------------------------------------------------------------------------------------------------
 @@TUndoName.unUnknown

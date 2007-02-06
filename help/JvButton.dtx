@@ -47,7 +47,7 @@ Summary
 Description
   Calling Click calls the inherited Click method and then shows the DropDownMenu if assigned
 See Also
-  DropDownMenu
+  TJvCustomButton.DropDownMenu
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.DrawDropArrow
@@ -68,11 +68,9 @@ Summary
   Determines whether a drop arrow is drawn on the control when a DropDownMenu is assigned
 Description
   Set DropArrow to true to automatically show an arrow in the button when the DropDownMenu property is
-  assigned. The arrow is always displayed in a fixed position on the right side of the button. If the
-  arrow interferes with the image or text of the button, either resize the button or change the values
-  of Margin and Spacing until you are satisfied.
+  assigned. The arrow is always displayed in a fixed position on the right side of the button.
 See Also
-  DropDownMenu, Margin, Spacing
+  TJvCustomButton.DropDownMenu
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.DropDownMenu
@@ -81,7 +79,7 @@ Summary
 Description
   Assign a TPopupMenu to the DropDownMenu to display a menu when the button is clicked. The menu is
   displayed below the button. To control where the menu is displayed (right, left, center), use the
-  menus <LINK TPopupMenu.Align, Align> property
+  menus Align property
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.ForceSameSize
@@ -103,7 +101,7 @@ Description
   specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the button.
 See Also
-  HotTrackFont, HotGlyph, OnMouseEnter, OnMouseLeave
+  TJvCustomButton.HotTrackFont, TJvExButton.OnMouseEnter, TJvExButton.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.HotTrackFont
@@ -114,7 +112,7 @@ Description
   for the button text. To change to a new font, specify a new TFont object. To modify a font, change
   the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
-  HotTrack, HotGlyph
+  TJvCustomButton.HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.HotTrackFontOptions
@@ -138,7 +136,7 @@ Description
     JvJVCLUtils) after calling inherited.
   * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
-  HotTrack, HotTrackFont
+  TJvCustomButton.HotTrack, TJvCustomButton.HotTrackFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.OnDropDownMenu
@@ -150,7 +148,7 @@ Description
 
   Note that this event is only triggered if there is a DropDownMenu assigned to the button.
 See Also
-  DropDownMenu, OnContextPopup
+  TJvCustomButton.DropDownMenu, <DELPHILINK TControl.OnContextPopup>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.SetBounds
@@ -160,7 +158,7 @@ Description
   SetBounds calls the inherited SetBounds method and then adjusts the size of all other buttons if
   ForceSameSize is True.
 See Also
-  ForceSameSize
+  TJvCustomButton.ForceSameSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.WordWrap
@@ -205,7 +203,7 @@ Description
 Note
   If GroupIndex is zero, AllowAllUp has no effect.
 See Also
-  Down, GroupIndex
+  TJvCustomGraphicButton.Down, TJvCustomGraphicButton.GroupIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Down
@@ -225,7 +223,7 @@ Description
 Note
   When GroupIndex is 0, buttons do not remain in the selected state when clicked.
 See Also
-  AllowAllUp, GroupIndex
+  TJvCustomGraphicButton.AllowAllUp, TJvCustomGraphicButton.GroupIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.DrawDropArrow
@@ -250,7 +248,7 @@ Description
   arrow interferes with the image or text of the button, either resize the button or change the values
   of Margin and Spacing until you are satisfied.
 See Also
-  DropDownMenu
+  TJvCustomGraphicButton.DropDownMenu
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.DropDownMenu
@@ -259,9 +257,9 @@ Summary
 Description
   Assign a TPopupMenu to the DropDownMenu to display a menu when the button is clicked. The menu is
   displayed below the button. To control where the menu is displayed (right, left, center), use the
-  menus <LINK TPopUpMenu.Align, Align> property.
+  menus <LINK TPopupMenu.Align, Align> property.
 See Also
-  OnDropDownMenu
+  TJvCustomGraphicButton.OnDropDownMenu
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Flat
@@ -303,7 +301,7 @@ Description
   same group. Buttons used in this way can present mutually exclusive choices to the user, much like
   radio buttons.
 See Also
-  AllowAllUp, Down
+  TJvCustomGraphicButton.AllowAllUp, TJvCustomGraphicButton.Down
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.HotTrack
@@ -314,7 +312,8 @@ Description
   specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the button.
 See Also
-  HotTrackFont, HotGlyph, OnMouseEnter, OnMouseLeave
+  TJvCustomGraphicButton.HotTrackFont, TJvExGraphicControl.OnMouseEnter,
+  TJvExGraphicControl.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.HotTrackFont
@@ -325,7 +324,7 @@ Description
   for the button text. To change to a new font, specify a new TFont object. To modify a font, change
   the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
-  HotTrack, HotGlyph
+  TJvCustomGraphicButton.HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.HotTrackFontOptions
@@ -349,7 +348,7 @@ Description
     JvJVCLUtils) after calling inherited.
   * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
-  HotTrack, HotTrackFont
+  TJvCustomGraphicButton.HotTrack, TJvCustomGraphicButton.HotTrackFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.MouseStates
@@ -378,7 +377,7 @@ Description
 
   Note that this event is only triggered if there is a DropDownMenu assigned to the button.
 See Also
-  DropDownMenu, OnContextPopup
+  TJvCustomGraphicButton.DropDownMenu, <DELPHILINK TControl.OnContextPopup>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Pattern
@@ -390,7 +389,7 @@ Description
 
   Do not modify this bitmap.
 See Also
-  Down, MouseStates
+  TJvCustomGraphicButton.Down, TJvCustomGraphicButton.MouseStates
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.SetBounds
@@ -400,7 +399,7 @@ Description
   SetBounds calls the inherited SetBounds method and then adjusts the size of all other buttons if
   ForceSameSize is True.
 See Also
-  ForceSameSize
+  TJvCustomGraphicButton.ForceSameSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropDownButton

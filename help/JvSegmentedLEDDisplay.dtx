@@ -50,7 +50,7 @@ Parameters
   Ident - String literal representing a color
   Int   - Ordinal value of the color represented by the Ident value.
 See Also
-  IdentToColor
+  <DELPHILINK IdentToColor>
 
 ----------------------------------------------------------------------------------------------------
 @@RegisterSegmentedLEDDigitClass
@@ -225,7 +225,7 @@ Description
 
   If the DP is not visible, DPWidth will be 0 at all times.
 See Also
-  Width
+  TJvCustomSegmentedLEDDigit.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDDigit.UseDP
@@ -237,7 +237,7 @@ Description
 
   Setting UseDP may result in a change of the width of the digit. See DPWidth for more information.
 See Also
-  Width
+  TJvCustomSegmentedLEDDigit.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit
@@ -372,7 +372,7 @@ Description
   Display.DigitHeight>. Classes that require a different Height will override GetHeight to return
   another value.
 See Also
-  Display
+  TJvSegmentedLEDCharacterMapper.Display
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Left
@@ -385,7 +385,7 @@ Description
   display control will automatically invalidate the calculated segment renderings, causing them to be
   recalculated upon the first redraw.
 See Also
-  Display
+  TJvSegmentedLEDCharacterMapper.Display
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.PtInSegment
@@ -453,7 +453,7 @@ Description
   If a mapper is not assigned, setting Text will store the new value without parsing it. Assigning a
   character mapper later will then execute the mapping and the result will be stored in this property.
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.MapText, TJvCustomSegmentedLEDDisplay.CharacterMapper
+  TJvSegmentedLEDCharacterMapper.MapText, TJvCustomSegmentedLEDDisplay.CharacterMapper
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.VertAdjust
@@ -483,7 +483,7 @@ Description
   Display.DigitWidth>. Classes that require a different Width will override GetWidth to return another
   value.
 See Also
-  Display
+  TJvSegmentedLEDCharacterMapper.Display
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay
@@ -819,7 +819,7 @@ Description
   Clear empties the character mapping table. After a call to clear, no character will map to any
   segment (i.e. all characters map effectively to a space).
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.LoadFromStream, TJvBaseSegmentedLEDCharacterMapper.SaveToStream
+  TJvSegmentedLEDCharacterMapper.LoadFromStream, TJvSegmentedLEDCharacterMapper.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.CurDigit
@@ -860,7 +860,7 @@ Description
 Parameters
   FileName - File name of the mapping to load.
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.LoadFromStream, TJvBaseSegmentedLEDCharacterMapper.SaveToFile
+  TJvSegmentedLEDCharacterMapper.LoadFromStream, TJvSegmentedLEDCharacterMapper.SaveToFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.LoadFromStream
@@ -882,7 +882,7 @@ Parameters
             After reading the stream's position is updated to point to the first byte following the
             mapping.
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.LoadFromFile, TJvBaseSegmentedLEDCharacterMapper.SaveToStream
+  TJvSegmentedLEDCharacterMapper.LoadFromFile, TJvSegmentedLEDCharacterMapper.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.MappingChanged
@@ -899,7 +899,7 @@ See Also
 Summary
   Maps a text into it's segment representation.
 Description
-  MapText is the primary method for the TJvBaseSegmentedLEDCharacterMapper class.
+  MapText is the primary method for the TJvSegmentedLEDCharacterMapper class.
 
   It initializes various flags and data and then calls PrimMapText to map the text starting at the
   specified text pointer into it's segments representation and updates the specified digit
@@ -943,8 +943,8 @@ Parameters
             the next digit.
   ADigit - Reference to the digit to map for. In some cases certain digit properties may influence the
             actual mapping applied.
-See Also
-  PrimMapText
+##See Also
+##  PrimMapText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.SaveToFile
@@ -957,7 +957,7 @@ Description
 Parameters
   FileName - File name of the file in which the mapping table is to be stored.
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.LoadFromFile, TJvBaseSegmentedLEDCharacterMapper.SaveToStream
+  TJvSegmentedLEDCharacterMapper.LoadFromFile, TJvSegmentedLEDCharacterMapper.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.SaveToStream
@@ -972,7 +972,7 @@ Parameters
   Stream - Stream to which to write the mapping table. After writing the stream's position is updated
             to point to the first byte following the mapping.
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.LoadFromStream, TJvBaseSegmentedLEDCharacterMapper.SaveToFile
+  TJvSegmentedLEDCharacterMapper.LoadFromStream, TJvSegmentedLEDCharacterMapper.SaveToFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.SegMapRemoves
@@ -985,7 +985,7 @@ Description
   This flag is manipulated by the mapping string when it detects a + or - symbol within the control
   item markers ([ and ]).
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.MapText
+  TJvSegmentedLEDCharacterMapper.MapText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.TextForDigit
@@ -997,7 +997,7 @@ Description
   be rewritten as a &A; mappings that did not result in any change will not be present in this
   property).
 See Also
-  TJvBaseSegmentedLEDCharacterMapper.MapText
+  TJvSegmentedLEDCharacterMapper.MapText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDDigitClass
@@ -1226,7 +1226,7 @@ Parameters
   Int   - Ordinal value of a TUnlitColor value.
   Ident - String literal representing the color specified by Int
 See Also
-  ColorToIdent
+  <DELPHILINK ColorToIdent>
 
 ----------------------------------------------------------------------------------------------------
 @@UnlitColorToString

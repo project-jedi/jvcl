@@ -168,8 +168,8 @@ Note
   The system is only capable of estimating BatteryFullLifeTime based on calculations on BatteryLifeTime
   and BatteryLifePercent. Without smart battery subsystems, this value may not be accurate enough to be
   useful.
-See Also
-  GetPowerStatus
+##See Also
+##  GetPowerStatus
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAPMInfo.BatteryFlag
@@ -381,7 +381,10 @@ Description
   created nor will the system be queried for the information the sub-classes provide. This saves you a
   lot of time and memory at run-time.
 See Also
-  APM, BIOS, Colors, CPU, Folders, Identification, Keyboard, Memory, Metrics, Misc, OS, Screen, System
+  TJvComputerInfoEx.APM, TJvComputerInfoEx.BIOS, TJvComputerInfoEx.Colors, TJvComputerInfoEx.CPU,
+  TJvComputerInfoEx.Folders, TJvComputerInfoEx.Identification, TJvComputerInfoEx.Keyboard,
+  TJvComputerInfoEx.Memory, TJvComputerInfoEx.Metrics, TJvComputerInfoEx.Misc, TJvComputerInfoEx.OS,
+  TJvComputerInfoEx.Screen, TJvComputerInfoEx.System
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.APM
@@ -475,7 +478,7 @@ Description
   This is a read-write class but only <LINK TJvMetricsInfo.CursorX>, <LINK TJvMetricsInfo.CursorY>,
   <LINK TJvMetricsInfo.CaretX> and <LINK TJvMetricsInfo.CaretY> are writeable.
 See Also
-  GetSystemMetrics
+  <DELPHILINK GetSystemMetrics>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Misc
@@ -506,7 +509,7 @@ Parameters
             compacting memory to CPU time currently spent by Windows performing other operations. For
             example, 0x8000 represents 50 percent of CPU time spent compacting memory.
 See Also
-  WM_COMPACTING
+  <DELPHILINK WM_COMPACTING>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnDeviceAdded
@@ -519,7 +522,7 @@ Description
   This event is triggered in response to a WM_DEVICECHANGE message and a wParam set to
   DBT_DEVICEARRIVAL.
 See Also
-  WM_DEVICECHANGE, DBT_DEVICEARRIVAL
+  <DELPHILINK WM_DEVICECHANGE>, <DELPHILINK DBT_DEVICEARRIVAL>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnDeviceChange
@@ -536,7 +539,7 @@ Parameters
   Event  - Either DBT_DEVICEARRIVAL (device added) or DBT_DEVICEREMOVECOMPLETE (device removed)
   Data   - Pointer to a DEV_BROADCAST_HDR structure with additional information.
 See Also
-  WM_DEVICECHANGE, DBT_DEVICEARRIVAL, DBT_DEVICEREMOVECOMPLETE
+  <DELPHILINK WM_DEVICECHANGE>, <DELPHILINK DBT_DEVICEARRIVAL>, <DELPHILINK DBT_DEVICEREMOVECOMPLETE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnDeviceModeChange
@@ -551,7 +554,7 @@ Parameters
   Sender - The object that triggered the event.
   Device - Name of the device that changed as specified in WIN.INI.
 See Also
-  WM_DEVMODECHANGE
+  <DELPHILINK WM_DEVMODECHANGE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnDeviceRemoved
@@ -564,7 +567,7 @@ Description
   This event is triggered in response to a WM_DEVICECHANGE message and a wParam set to
   DBT_DEVICEREMOVECOMPLETE.
 See Also
-  WM_DEVICECHANGE, DBT_DEVICEREMOVECOMPLETE
+  <DELPHILINK WM_DEVICECHANGE>, <DELPHILINK DBT_DEVICEREMOVECOMPLETE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnDisplayChange
@@ -580,7 +583,7 @@ Parameters
   ScreenWidth  - The new screen width
   ScreenHeight - The new screen height
 See Also
-  WM_DISPLAYCHANGE
+  <DELPHILINK WM_DISPLAYCHANGE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnFontChange
@@ -592,7 +595,7 @@ Description
 
   This event is triggered in response to a WM_FONTCHANGE message.
 See Also
-  WM_FONTCHANGE
+  <DELPHILINK WM_FONTCHANGE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnPaletteChanged
@@ -608,7 +611,7 @@ Description
 
   This event is triggered in response to a WM_PALETTECHANGED message.
 See Also
-  WM_PALETTECHANGED
+  <DELPHILINK WM_PALETTECHANGED>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnPaletteChanging
@@ -624,7 +627,7 @@ Description
 
   This event is triggered in response to a WM_PALETTEISCHANGING message.
 See Also
-  WM_PALETTEISCHANGING
+  <DELPHILINK WM_PALETTEISCHANGING>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnPowerBroadcast
@@ -643,7 +646,7 @@ Parameters
   Data   - Function-specific data. For most messages, this parameter is reserved and not used. For
             more information, see the on-line help for WM_POWERBROADCAST.
 See Also
-  WM_POWER, WM_POWERBROADCAST
+  <DELPHILINK WM_POWER>, <DELPHILINK WM_POWERBROADCAST>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnSettingChange
@@ -668,7 +671,7 @@ Parameters
              example, this string can be the name of a registry key or the name of a section in the
              WIN.INI file.
 See Also
-  WM_SETTINGCHANGE, SystemParametersInfo
+  <DELPHILINK WM_SETTINGCHANGE>, <DELPHILINK SystemParametersInfo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnSpoolerStatusChange
@@ -688,7 +691,7 @@ Parameters
   JobStatus - Specifies the PR_JOBSTATUS flag.
   JobsLeft  - Number of jobs remaining.
 See Also
-  WM_SPOOLERSTATUS
+  <DELPHILINK WM_SPOOLERSTATUS>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnSysColorChange
@@ -699,7 +702,7 @@ Description
 
   This event is triggered in response to a WM_SYSCOLORCHANGE message.
 See Also
-  WM_SYSCOLORCHANGE
+  <DELPHILINK WM_SYSCOLORCHANGE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnTimeChange
@@ -710,7 +713,7 @@ Description
 
   This event is triggered in response to a WM_TIMECHANGE message.
 See Also
-  WM_TIMECHANGE
+  <DELPHILINK WM_TIMECHANGE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnUserChanged
@@ -725,7 +728,7 @@ Description
 
   This event is triggered in response to a WM_USERCHANGED message.
 See Also
-  WM_USERCHANGED
+  <DELPHILINK WM_USERCHANGED>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OS
@@ -802,7 +805,7 @@ Description
   This is a writeable class and you can write to all subproperties except ScreenSaverRunning and
   WindowsExtension.
 See Also
-  SystemParametersInfo
+  <DELPHILINK SystemParametersInfo>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo
@@ -883,7 +886,7 @@ Description
   Pentium Pro. The family and model members are used together to form a descriptive string in the Name
   property.
 See Also
-  Model, Stepping
+  TJvCPUInfo.Model, TJvCPUInfo.Stepping
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Features
@@ -1030,7 +1033,7 @@ Description
   (Pentium Pro) a value of 1 denotes a Pentium Pro while a 3 denotes a Pentium II. The family and model
   members are used together to form a descriptive string in the CpuName member.
 See Also
-  Family, Stepping
+  TJvCPUInfo.Family, TJvCPUInfo.Stepping
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.Name
@@ -1039,7 +1042,7 @@ Summary
 Description
   Contains a descriptive string for the processor (for example "Pentium II Xeon").
 See Also
-  Family, Model
+  TJvCPUInfo.Family, TJvCPUInfo.Model
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.NormFreq
@@ -1049,7 +1052,7 @@ Description
   The normalized frequency of the CPU in MHz. For example, a raw frequency of 761 MHz is normalized to
   760 MHz.
 See Also
-  NormFreq
+  TJvCPUInfo.RawFreq
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.PhysicalCore
@@ -1075,7 +1078,7 @@ Summary
 Description
   The raw frequency of the CPU in MHz.
 See Also
-  RawFreq
+  TJvCPUInfo.NormFreq
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.SSE
@@ -1095,7 +1098,7 @@ Description
   A processor's Family, Model and Stepping numbers refer to the manufacturing process on which a
   processor was manufactured and can be useful in identifying a processor in a system.
 See Also
-  Family, Model
+  TJvCPUInfo.Family, TJvCPUInfo.Model
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.TotalCycles
@@ -1104,7 +1107,7 @@ Summary
 Description
   The elapsed, internal clock cycles during the speed test.
 See Also
-  TotalCycles
+  TJvCPUInfo.TotalCycles
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.TotalTicks
@@ -1113,7 +1116,7 @@ Summary
 Description
   The time, in microseconds, that elapsed during the speed test.
 See Also
-  TotalCycles
+  TJvCPUInfo.TotalCycles
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUInfo.TransmetaSpecific
@@ -1234,7 +1237,7 @@ Parameters
   Sender - The object that triggered the event.
   Drive  - The drive that was added or removed.
 See Also
-  OnDeviceAdded, OnDeviceRemoved
+  TJvComputerInfoEx.OnDeviceAdded, TJvComputerInfoEx.OnDeviceRemoved
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExeType
@@ -2092,7 +2095,7 @@ Description
   </CODE>
   This is equivalent to the EdgeHeight value for windows with the 3-D look.
 See Also
-  BorderWidth, EdgeHeight
+  TJvMetricsInfo.BorderWidth, TJvMetricsInfo.EdgeHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.BorderWidth
@@ -2104,7 +2107,7 @@ Description
   </CODE>
   This is equivalent to the EdgeWidth value for windows with the 3-D look.
 See Also
-  BorderHeight, EdgeWidth
+  TJvMetricsInfo.BorderHeight, TJvMetricsInfo.EdgeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CaptionButtonheight
@@ -2194,7 +2197,7 @@ Description
   </CODE>
   The system cannot create cursors of other sizes.
 See Also
-  CursorWidth
+  TJvMetricsInfo.CursorWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CursorWidth
@@ -2206,7 +2209,7 @@ Description
   </CODE>
   The system cannot create cursors of other sizes.
 See Also
-  CursorHeight
+  TJvMetricsInfo.CursorHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.CursorX
@@ -2266,7 +2269,7 @@ Description
   </CODE>
   Same as FixedFrameHeight.
 See Also
-  FixedFrameHeight
+  TJvMetricsInfo.FixedFrameHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DialogFrameWidth
@@ -2278,7 +2281,7 @@ Description
   </CODE>
   Same as FixedFrameWidth.
 See Also
-  FixedFrameWidth
+  TJvMetricsInfo.FixedFrameWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DoubleClickHeight
@@ -2292,7 +2295,7 @@ Description
   for the system to consider the two clicks a double-click. (The two clicks must also occur within a
   specified time.)
 See Also
-  DoubleClickWidth
+  TJvMetricsInfo.DoubleClickWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DoubleClickTime
@@ -2316,7 +2319,7 @@ Description
   for the system to consider the two clicks a double-click. (The two clicks must also occur within a
   specified time.)
 See Also
-  DoubleClickHeight
+  TJvMetricsInfo.DoubleClickHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DragHeight
@@ -2330,7 +2333,7 @@ Description
   It allows the user to click and release the mouse button easily without unintentionally starting a
   drag operation.
 See Also
-  DragWidth
+  TJvMetricsInfo.DragWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.DragWidth
@@ -2344,7 +2347,7 @@ Description
   It allows the user to click and release the mouse button easily without unintentionally starting a
   drag operation.
 See Also
-  DragHeight
+  TJvMetricsInfo.DragHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.EdgeHeight
@@ -2356,7 +2359,7 @@ Description
   </CODE>
   This is the 3-D counterpart of BorderHeight.
 See Also
-  EdgeWidth
+  TJvMetricsInfo.EdgeWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.EdgeWidth
@@ -2368,7 +2371,7 @@ Description
   </CODE>
   This is the 3-D counterpart of BorderWidth.
 See Also
-  EdgeHeight, BorderWidth
+  TJvMetricsInfo.EdgeHeight, TJvMetricsInfo.BorderWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.FixedFrameHeight
@@ -2404,7 +2407,7 @@ Description
   </CODE>
   Same as ResizeBorderHeight.
 See Also
-  ResizeBorderHeight
+  TJvMetricsInfo.ResizeBorderHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.FrameWidth
@@ -2416,7 +2419,7 @@ Description
   </CODE>
   Same as ResizeBorderWidth.
 See Also
-  ResizeBorderWidth
+  TJvMetricsInfo.ResizeBorderWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.IconHeight
@@ -2618,7 +2621,7 @@ Description
   Each minimized window fits into a rectangle this size when arranged. This value is always greater
   than or equal to MinimizedWindowHeight.
 See Also
-  MinimizedWindowHeight
+  TJvMetricsInfo.MinimizedWindowHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinimizedWindowSpacingWidth
@@ -2631,7 +2634,7 @@ Description
   Each minimized window fits into a rectangle this size when arranged. This value is always greater
   than or equal to MinimizedWindowWidth.
 See Also
-  MinimizedWindowWidth
+  TJvMetricsInfo.MinimizedWindowWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinimizedWindowWidth
@@ -2642,7 +2645,7 @@ Description
   SM_CXMINIMIZED
   </CODE>
 See Also
-  MinimizedWindowWidth
+  TJvMetricsInfo.MinimizedWindowWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MinWindowHeight
@@ -2694,7 +2697,7 @@ Description
   virtual mice and because some systems detect the presence of the port instead of the presence of a
   mouse.
 See Also
-  MouseWheelPresent
+  TJvMetricsInfo.MouseWheelPresent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.MouseWheelPresent
@@ -2708,7 +2711,7 @@ Description
 
   Windows NT 3.51 and earlier and Windows 95: This value is not supported.
 See Also
-  MousePresent
+  TJvMetricsInfo.MousePresent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.Networked
@@ -2761,7 +2764,7 @@ Description
   To get the coordinates of the portion of the screen not obscured by the system taskbar or by
   application desktop toolbars, read the TJvSystemParametersInfo.WorkArea property.
 See Also
-  ScreenClientWidth
+  TJvMetricsInfo.ScreenClientWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScreenClientWidth
@@ -2774,7 +2777,7 @@ Description
   To get the coordinates of the portion of the screen not obscured by the system taskbar or by
   application desktop toolbars, read the TJvSystemParametersInfo.WorkArea property.
 See Also
-  ScreenClientHeight
+  TJvMetricsInfo.ScreenClientHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ScreenHeight
@@ -3090,7 +3093,7 @@ Description
   in milliseconds. Note that this method uses GetTickCount so if the computer has been running for more
   than 42 days, the counter will rollover to 0 and the returned value will be incorrect.
 See Also
-  TimeRunningAsString
+  TJvMiscInfo.TimeRunningAsString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMiscInfo.TimeRunningAsString
@@ -3102,7 +3105,7 @@ Description
   method uses GetTickCount so if the computer has been running for more than 42 days, the counter will
   rollover to 0 and the returned value will be incorrect.
 See Also
-  TimeRunning
+  TJvMiscInfo.TimeRunning
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMiscInfo.Versions
@@ -3544,7 +3547,7 @@ Summary
 Description
   Specifies the height, in pixels, of the visible device surface.
 See Also
-  ScreenResolution, Width
+  TJvScreenInfo.ScreenResolution, TJvScreenInfo.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.Hz
@@ -3575,7 +3578,7 @@ Summary
 Description
   Write here a description
 See Also
-  Height, Width
+  TJvScreenInfo.Height, TJvScreenInfo.Width
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenInfo.Width
@@ -3584,7 +3587,7 @@ Summary
 Description
   Specifies the width, in pixels, of the visible device surface.
 See Also
-  Height,ScreenResolution
+  TJvScreenInfo.Height,TJvScreenInfo.ScreenResolution
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenMode
@@ -3697,7 +3700,7 @@ Summary
 Description
   Indicates whether a port is active.
 See Also
-  ActivePort
+  TJvSerialKeys.ActivePort
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.ActivePort
@@ -3706,7 +3709,7 @@ Summary
 Description
   Indicates the active port.
 See Also
-  Active
+  TJvSerialKeys.Active
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.BaudRate
@@ -3715,7 +3718,7 @@ Summary
 Description
   Specifies the baud rate setting for the serial port specified by ActivePort.
 See Also
-  ActivePort
+  TJvSerialKeys.ActivePort
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.Flags
@@ -3750,7 +3753,7 @@ Summary
 Description
   Specifies the state of the port specified by ActivePort.
 See Also
-  ActivePort.
+  TJvSerialKeys.ActivePort
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysFlags
@@ -4168,7 +4171,7 @@ Description
   If not Windows NT or Windows 95: Specifies the left side color in the color gradient of an active
   window's title bar if the gradient effect is enabled.
 See Also
-  ColorGradientActiveCaption
+  TJvSystemColorsInfo.ColorGradientActiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorAppWorkspace
@@ -4228,7 +4231,7 @@ Description
   TJvSystemParametersInfo.GradientCaptions> to determine whether the gradient effect is enabled.
   Windows NT and Windows 95: This value is not supported.
 See Also
-  TJvSystemParametersInfo.GradientCaptions, ColorActiveCaption
+  TJvSystemParametersInfo.GradientCaptions, TJvSystemColorsInfo.ColorActiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientInactiveCaption
@@ -4241,7 +4244,7 @@ Description
   ColorInactiveCaption specifies the left side color. Windows NT and Windows 95: This value is not
   supported.
 See Also
-  ColorInactiveCaption
+  TJvSystemColorsInfo.ColorInactiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGrayText
@@ -4262,7 +4265,7 @@ Description
   COLOR_HIGHLIGHT = 13;
   </CODE>
 See Also
-  ColorMenuHighlight
+  TJvSystemColorsInfo.ColorMenuHighlight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlightText
@@ -4303,7 +4306,7 @@ Description
   If not Windows NT or Windows 95: Specifies the left side color in the color gradient of an inactive
   window's title bar if the gradient effect is enabled.
 See Also
-  ColorGradientInactiveCaption
+  TJvSystemColorsInfo.ColorGradientInactiveCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInactiveCaptionText
@@ -4367,7 +4370,7 @@ Description
 
   Windows 2000/NT and Windows Me/98/95: This value is not supported.
 See Also
-  TJvSystemParametersInfo.FlatMenu, ColorHighlight
+  TJvSystemParametersInfo.FlatMenu, TJvSystemColorsInfo.ColorHighlight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorMenuText
@@ -4745,7 +4748,7 @@ Description
   <CODE>
   CSIDL_WINDOWS
   </CODE>
-  This corresponds to the %windir% or %SYSTEMROOT% environment variables. A typical path is
+  This corresponds to the \%windir\% or \%SYSTEMROOT\% environment variables. A typical path is
   C:\\Windows.
 Note
   Version 5.0.
@@ -5155,7 +5158,7 @@ Description
 
   Windows NT and Windows Me/98/95: This value is not supported.
 See Also
-  MenuAnimation
+  TJvSystemParametersInfo.MenuAnimation
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MenuLeftAligned
@@ -5202,7 +5205,7 @@ Description
 
   Windows 2000/NT and Windows 98/95: This value is not supported.
 See Also
-  MouseClickLockTime
+  TJvSystemParametersInfo.MouseClickLockTime
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseClickLockTime
@@ -5213,7 +5216,7 @@ Description
 
   Windows 2000/NT and Windows 98/95: This value is not supported.
 See Also
-  MouseClickLock
+  TJvSystemParametersInfo.MouseClickLock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseHoverHeight
@@ -5223,7 +5226,7 @@ Summary
 Description
   Windows 95: Not supported.
 See Also
-  MouseHoverTime, MouseHoverWidth
+  TJvSystemParametersInfo.MouseHoverTime, TJvSystemParametersInfo.MouseHoverWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseHoverTime
@@ -5233,7 +5236,7 @@ Summary
 Description
   Windows 95: Not supported.
 See Also
-  MouseHoverHeight, MouseHoverWidth
+  TJvSystemParametersInfo.MouseHoverHeight, TJvSystemParametersInfo.MouseHoverWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseHoverWidth
@@ -5243,7 +5246,7 @@ Summary
 Description
   Windows 95: Not supported.
 See Also
-  MouseHoverHeight, MouseHoverTime
+  TJvSystemParametersInfo.MouseHoverHeight, TJvSystemParametersInfo.MouseHoverTime
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.MouseKeys
@@ -5465,7 +5468,7 @@ Description
 
   Windows NT and Windows Me/98/95: This value is not supported.
 See Also
-  ToolTipFade
+  TJvSystemParametersInfo.ToolTipFade
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipFade
@@ -5477,7 +5480,7 @@ Description
 
   Windows NT and Windows Me/98/95: This value is not supported.
 See Also
-  ToolTipAnimation
+  TJvSystemParametersInfo.ToolTipAnimation
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.UIEffects

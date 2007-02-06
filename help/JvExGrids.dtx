@@ -1,11 +1,5 @@
 ##Package: Core
 ##Status: Completed,Checked
-##Skip: TJvExPubCustomDrawGrid
-##Skip: TJvExPubCustomGrid
-##Skip: TJvExPubDrawGrid
-##Skip: TJvExPubInplaceEdit
-##Skip: TJvExPubInplaceEditList
-##Skip: TJvExPubStringGrid
 ----------------------------------------------------------------------------------------------------
 @@JvExGrids.pas
 Summary
@@ -52,12 +46,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.MouseOver
@@ -142,12 +135,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.MouseOver
@@ -232,12 +224,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.MouseOver
@@ -322,12 +313,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.MouseOver
@@ -413,12 +403,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.MouseOver
@@ -468,6 +457,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvExPubInplaceEditList
+Summary
+  Base class for extended grid edit windows.
+Description
+  TJvExPubInplaceEditList is a base class for classes in the JVCL library that descend from
+  TInplaceEdit.
+
+  TJvExPubInplaceEditList publishes properties inherited from TJvExInplaceEditList, but does not
+  introduce any new behavior.
+
+----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid
 Summary
   Base class for extended string grids.
@@ -503,12 +503,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.MouseOver

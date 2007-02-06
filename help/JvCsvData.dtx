@@ -107,7 +107,7 @@ Parameters
   TimeZoneCorrection - Timezone correction is zero unless you need to correct for different
                         timezones.
 See Also
-  DateTimeToTimeToIsoAscii
+  JvDateTimeIsoStr
 
 ----------------------------------------------------------------------------------------------------
 @@EJvCsvDataSetError
@@ -188,7 +188,7 @@ Parameters
   Data    - A literal string value to be checked, for example 'Bob Smith'
   Pattern - A pattern to be matched, can have special wildcard characters, for example 'Bob%'
 See Also
-  SetFilter
+  TJvCustomCsvDataSet.SetFilter
 
 ----------------------------------------------------------------------------------------------------
 @@JvDateIsoStr
@@ -493,7 +493,7 @@ Description
   Standard DataSet Field Definitions. The same field definitions as you would find in any other
   TDataSet descendant, such as TTable.FieldDefs, or TClientDataSet.FieldDefs.
 See Also
-  TJvCsvDataSet.CsvFieldDef,TClientDataSet.FieldDefs,TTable.FieldDefs
+  TJvCsvDataSet.CsvFieldDef, <DELPHILINK TClientDataSet.FieldDefs>, <DELPHILINK TTable.FieldDefs>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvOnGetFieldData
@@ -831,7 +831,7 @@ Description
   ID, and was a string, then having two records, one with key 'ABC' and one with key 'Abc', then adding
   the second would cause a key access violation.
 See Also
-  CsvKeyDef CsvUniqueKeys FindByCsvKey
+  TJvCustomCsvDataSet.CsvKeyDef, TJvCustomCsvDataSet.CsvUniqueKeys, TJvCustomCsvDataSet.FindByCsvKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Changed
@@ -944,7 +944,8 @@ Description
   If you want fields 'A,C' to be the key, the CSV file fields themselves MUST be ordered 'A,C, .... '
   logically.
 See Also
-  CsvUniqueKeys CaseInsensitive FindByCsvKey IsKeyUnique
+  TJvCustomCsvDataSet.CsvUniqueKeys, TJvCustomCsvDataSet.CaseInsensitive,
+  TJvCustomCsvDataSet.FindByCsvKey, TJvCustomCsvDataSet.IsKeyUnique
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CsvUniqueKeys
@@ -954,7 +955,7 @@ Description
   If CsvKeyDef is set, then this property defines whether or not two rows/records with the the same key
   can exist. If you want the dataset to enforce key uniqueness, you must set this.
 See Also
-  CsvKeyDef CaseInsensitive FindByCsvKey
+  TJvCustomCsvDataSet.CsvKeyDef, TJvCustomCsvDataSet.CaseInsensitive, TJvCustomCsvDataSet.FindByCsvKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CurrentRowAsString
@@ -1073,12 +1074,12 @@ Parameters
 Return value
   Returns true if the record was found.
 See Also
-  CsvKeyDef CaseInsensitive
+  TJvCustomCsvDataSet.CsvKeyDef, TJvCustomCsvDataSet.CaseInsensitive
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Flush
 Summary
-  Save Changes.
+  Saves changes.
 Description
   Saves changes back to the file that they were originally loaded from (according to the Filename
   property).
@@ -1168,7 +1169,8 @@ Parameters
 Return value
   Returns pointer. If UserData has not been set, or recno is out of range, returns nil.
 See Also
-  SetUserData SetAllUserData OnGetFieldData
+  TJvCustomCsvDataSet.SetUserData, TJvCustomCsvDataSet.SetAllUserData,
+  TJvCustomCsvDataSet.OnGetFieldData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetUserTag
@@ -1182,7 +1184,7 @@ Parameters
 Return value
   Returns pointer. If UserTag has not been set, or recno is out of range, returns 0.
 See Also
-  SetUserTag OnGetFieldData
+  TJvCustomCsvDataSet.SetUserTag, TJvCustomCsvDataSet.OnGetFieldData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.HasHeaderRow
@@ -1214,7 +1216,7 @@ Description
   This property contains the actual Rows of CSV data. It is never manipulated directly by the end
   user.
 See Also
-  FieldDefs
+  TJvCsvDataSet.FieldDefs
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.IsKeyUnique
@@ -1253,7 +1255,7 @@ Description
   If the property Filename points to a valid file, then the component will load that file when you set
   the Active property to true. If you don't, it's up to you to load your component data up manually.
 See Also
-  TJvCsvDataSet.FileName LoadFromFile
+  TJvCsvDataSet.FileName, TJvCustomCsvDataSet.LoadFromFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OnGetFieldData
@@ -1272,7 +1274,8 @@ Parameters
   Value     - var parameter - This is where you put the actual value (encoded as a CSV string) to be
                provided to the data aware control.
 See Also
-  OnSetFieldData GetUserTag SetUserTag GetUserData SetUserData
+  TJvCustomCsvDataSet.OnSetFieldData, TJvCustomCsvDataSet.GetUserTag, TJvCustomCsvDataSet.SetUserTag,
+  TJvCustomCsvDataSet.GetUserData, TJvCustomCsvDataSet.SetUserData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OnSetFieldData
@@ -1292,7 +1295,8 @@ Parameters
   Value     - This is the new changed field value (encoded as a CSV string) which is being put into
                the CSV file.
 See Also
-  OnGetFieldData GetUserTag SetUserTag GetUserData SetUserData SetAllUserData
+  TJvCustomCsvDataSet.OnGetFieldData, TJvCustomCsvDataSet.GetUserTag, TJvCustomCsvDataSet.SetUserTag,
+  TJvCustomCsvDataSet.GetUserData, TJvCustomCsvDataSet.SetUserData, TJvCustomCsvDataSet.SetAllUserData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OnSpecialData
@@ -1370,13 +1374,13 @@ Description
 Summary
   Save entire contents to the specified filename.
 Description
-  The property SavesToFile is ignored in this special case. NORMALLY, if SavesToFile property is set
+  The property SavesChanges is ignored in this special case. NORMALLY, if SavesChanges property is set
   you call Flush instead, and you don't have to provide the filename, since you might usually be saving
   back to the file from which you loaded.
 Parameters
   FileName - The filename to save to
 See Also
-  SavesToFile
+  TJvCustomCsvDataSet.SavesChanges
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Separator
@@ -1398,7 +1402,7 @@ Description
 Parameters
   Data - A pointer. Use nil here to clear all user data.
 See Also
-  SetUserData GetUserData
+  TJvCustomCsvDataSet.SetUserData, TJvCustomCsvDataSet.GetUserData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetAllUserTags
@@ -1409,7 +1413,7 @@ Description
 Parameters
   TagValue - The value to set all user tags to.
 See Also
-  SetUserTag GetUserTag
+  TJvCustomCsvDataSet.SetUserTag, TJvCustomCsvDataSet.GetUserTag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetFilter
@@ -1460,7 +1464,8 @@ Parameters
   RecNo    - Description for this parameter
   NewValue - new value (pointer)
 See Also
-  SetUserTag OnGetFieldData SetAllUserData
+  TJvCustomCsvDataSet.SetUserTag, TJvCustomCsvDataSet.OnGetFieldData,
+  TJvCustomCsvDataSet.SetAllUserData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetUserTag
@@ -1473,7 +1478,7 @@ Parameters
   RecNo    - Description for this parameter
   NewValue - new value (pointer)
 See Also
-  SetUserData OnGetFieldData
+  TJvCustomCsvDataSet.SetUserData, TJvCustomCsvDataSet.OnGetFieldData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Sort
@@ -1539,8 +1544,9 @@ Description
     MyCsvDataSet.Next;
   end;
   </CODE>
+  UserTag: same idea as UserData, but instead of a pointer, it's an integer.
 See Also
-  UserTag - same idea as UserData, but instead of a pointer, it's an integer.
+  TJvCustomCsvDataSet.UserTag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.UserTag
@@ -1562,8 +1568,9 @@ Description
     MyCsvDataSet.Next;
   end;
   </CODE>
+  UserData: Same idea as UserTag, but it's a pointer.
 See Also
-  UserData - Same idea as UserTag, but it's a pointer.
+  TJvCustomCsvDataSet.UserData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ValidateHeaderRow

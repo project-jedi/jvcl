@@ -63,7 +63,7 @@ Description
   When LookupDisplay is set to multiple fields, you can use DisplayAllFields to control whether all
   lookup fields are shown in the edit box, or only the value of LookupField.
 See Also
-  LookupDisplay
+  TJvDBLookupCombo.LookupDisplay
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DisplayValues
@@ -78,7 +78,7 @@ Description
   Index gives the position of the display value, where 0 is the position of the first display value, 1
   is the position of the second display value, and so on.
 See Also
-  ListStyle, LookupDisplay
+  TJvDBLookupCombo.ListStyle, TJvDBLookupCombo.LookupDisplay
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDown
@@ -225,7 +225,7 @@ Description
   FieldsDelimiter has only meaning if ListStyle is set to lsDelimited. Also LookupFormat must have no
   value.
 See Also
-  TJvDBLookupEdit.ListStyle, TJvDBLookupEdit.LookupFormat
+  TJvDBLookupEdit.ListStyle, TJvLookupControl.LookupFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.ListStyle
@@ -239,7 +239,7 @@ Description
   accordingly to their DisplayWidth properties. The lsDelimited style meaning that each field takes a
   variable width, and the fields are separated by the FieldsDelimiter character.
 See Also
-  TJvDBLookupEdit.DisplayAllFields, TJvDBLookupEdit.FieldsDelimiter
+  TJvDBLookupEdit.FieldsDelimiter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupDisplay
@@ -573,7 +573,7 @@ Description
   If IgnoreCase property is True (default), the incremental search through the lookup list is done
   without regard to case in the dataset's data.
 See Also
-  LookupDisplay, LookupDisplayIndex
+  TJvLookupControl.LookupDisplay, TJvLookupControl.LookupDisplayIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.IndexSwitch
@@ -602,7 +602,8 @@ Description
   LookupSource's dataset where the value of LookupField matches KeyValue. If such a match is found, the
   lookup control displays the value of LookupField on that record.
 See Also
-  DataField, LookupField, IgnoreCase, IndexSwitch
+  TJvLookupControl.DataField, TJvLookupControl.LookupField, TJvLookupControl.IgnoreCase,
+  TJvLookupControl.IndexSwitch
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ListStyle
@@ -616,7 +617,7 @@ Description
   accordingly to their DisplayWidth properties. The lsDelimited style meaning that each field takes a
   variable width, and the fields are separated by the FieldsDelimiter character.
 See Also
-  TJvLookupControl.DisplayAllFields, TJvLookupControl.FieldsDelimiter
+  TJvLookupControl.FieldsDelimiter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Locate
@@ -632,7 +633,7 @@ Parameters
   Exact       - If Exact is true, the function locates only records where SearchField is fully equal
                  to AValue, otherwise the function operates a partial match.
 See Also
-  IgnoreCase
+  TJvLookupControl.IgnoreCase
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupDisplay

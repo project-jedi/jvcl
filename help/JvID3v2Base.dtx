@@ -589,10 +589,10 @@ Summary
 Description
   Use the TJvID3Controller component to read, alter or remove the ID3 v2 tag of a file.
 
-  Use Active to open or close the tag controller. When Active is set to true then the controller will
+  Use Active to \open or \close the tag controller. When Active is set to true then the controller will
   be populated with frames from the file specified by the FileName property.
 
-  When open, the TJvID3Controller gives direct access to the individual frames in the tag, the header
+  When \open, the TJvID3Controller gives direct access to the individual frames in the tag, the header
   and the extended header.
 
   At design time, read, alter or remove the tag controlled by the tag controller by right-clicking on
@@ -601,7 +601,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.Active
 Summary
-  Specifies whether or not a tag controller is open.
+  Specifies whether or not a tag controller is \open.
 Description
   Use Active to determine or set whether an ID3 tag controller is populated with data. When Active is
   false, the controller is closed; the controller cannot read or write data. When Active is true, the
@@ -738,7 +738,7 @@ Parameters
 Return value
   Returns true on success, false on failure.
 See Also
-  <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1>, <LINK CopyToID3v1Ctrl>
+  TJvID3Controller.CopyFromID3v1Ctrl, TJvID3Controller.CopyToID3v1, TJvID3Controller.CopyToID3v1Ctrl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.CopyFromID3v1Ctrl
@@ -748,7 +748,8 @@ Description
   Call CopyFromID3v1Ctrl to copy the properties of the ID3 v1 component to the ID3 v2 tag. The new tag
   isn't actually written to the file until you call Commit.
 
-  See <LINK CopyFromID3v1> for a list of ID3 v2 frames that correspond to ID3 v1 fields.
+  See <LINK TJvID3Controller.CopyFromID3v1, CopyFromID3v1> for a list of ID3 v2 frames that correspond
+  to ID3 v1 fields.
 
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
@@ -756,7 +757,7 @@ Parameters
   DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the ID3
                  v1 tag.
 See Also
-  <LINK CopyFromID3v1>, <LINK CopyToID3v1>, <LINK CopyToID3v1Ctrl>
+  TJvID3Controller.CopyFromID3v1, TJvID3Controller.CopyToID3v1, TJvID3Controller.CopyToID3v1Ctrl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.CopyToID3v1
@@ -766,7 +767,8 @@ Description
   Call CopyToID3v1 to copy the ID3 v2 tag to the ID3 v1 tag of the file specified by the FileName
   property.
 
-  See <LINK CopyFromID3v1> for a list of ID3 v2 frames that correspond to ID3 v1 fields.
+  See <LINK TJvID3Controller.CopyFromID3v1, CopyFromID3v1> for a list of ID3 v2 frames that correspond
+  to ID3 v1 fields.
 
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
@@ -775,7 +777,7 @@ Parameters
 Return value
   Returns true on success, false on failure.
 See Also
-  <LINK CopyFromID3v1>, <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1Ctrl>
+  TJvID3Controller.CopyFromID3v1, TJvID3Controller.CopyFromID3v1Ctrl, TJvID3Controller.CopyToID3v1Ctrl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.CopyToID3v1Ctrl
@@ -784,7 +786,8 @@ Summary
 Description
   Call CopyToID3v1Ctrl to copy the ID3 v2 tag to the properties of the ID3 v1 component.
 
-  See <LINK CopyFromID3v1> for a list of ID3 v2 frames that correspond to ID3 v1 fields.
+  See <LINK TJvID3Controller.CopyFromID3v1, CopyFromID3v1> for a list of ID3 v2 frames that correspond
+  to ID3 v1 fields.
 
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
@@ -792,7 +795,7 @@ Parameters
   DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the ID3
                  v1 tag.
 See Also
-  <LINK CopyFromID3v1>, <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1>
+  TJvID3Controller.CopyFromID3v1, TJvID3Controller.CopyFromID3v1Ctrl, TJvID3Controller.CopyToID3v1
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.Designer
@@ -879,8 +882,8 @@ Summary
   Searches for the first frame in the tag with a specific frame identifier.
 Description
   FindFirstFrame searches for the first frame in the tag with AFrameID as frame identifier. Use
-  FindFirstFrame in conjunction with <LINK FindNextFrame> to search for all frames with a specific
-  frame identifier in the tag.
+  FindFirstFrame in conjunction with <LINK TJvID3Controller.FindNextFrame, FindNextFrame> to search for
+  all frames with a specific frame identifier in the tag.
 Parameters
   AFrameID - The frame identifier to search for.
   Frame    - Returns the first frame in the tag with AFrameID as frame identifier, or nil if no such
@@ -888,7 +891,7 @@ Parameters
 Return value
   Returns true when a frame was found, or false otherwise.
 See Also
-  <LINK FindNextFrame>
+  TJvID3Controller.FindNextFrame
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.FindNextFrame
@@ -923,7 +926,7 @@ Parameters
 Return value
   Returns true when a frame was found, or false otherwise.
 See Also
-  <LINK FindFirstFrame>
+  TJvID3Controller.FindFirstFrame
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.FrameCount
@@ -2046,7 +2049,7 @@ Return value
     heBoolean      Returns false when a frame is invalid, otherwise returns true.
   </TABLE>
 See Also
-  TJvID3Frame.ChangeToVersion
+  TJvID3Base.ChangeToVersion
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.CheckIsUnique
@@ -2137,7 +2140,7 @@ Return value
   FrameByID returns the TJvID3Frame component for the specified frame. If the frame can not be found,
   an exception is raised.
 See Also
-  FindFrame
+  TJvID3Frames.FindFrame
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.FrameByName
@@ -2157,7 +2160,7 @@ Return value
   FrameByName returns the TJvID3Frame component for the specified frame. If the frame can not be found,
   an exception is raised.
 See Also
-  FindFrame
+  TJvID3Frames.FindFrame
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.Frames
@@ -2300,7 +2303,7 @@ Return value
   Returns a TJvID3GeneralObjFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
-  FindOrCreate
+  TJvID3GeneralObjFrame.FindOrCreate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3GeneralObjFrame.Find@TJvID3Controller@string
@@ -2323,7 +2326,7 @@ Return value
   tag, or - when no such frame was found - a newly created frame. If a new frame is created, its
   ContentDescription property will be set to the value specified by the AContentDescription parameter.
 See Also
-  Find
+  TJvID3GeneralObjFrame.Find
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3GeneralObjFrame.FindOrCreate@TJvID3Controller@string
@@ -2729,7 +2732,7 @@ Description
 
   The "image/png" or "image/jpeg" picture format should be used when interoperability is wanted.
 See Also
-  <LINK ExtToMIMEType>, <LINK MIMETypeToExt>
+  ExtToMIMEType, MIMETypeToExt
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PictureFrame.PictureType
@@ -2870,7 +2873,7 @@ Return value
   Returns a TJvID3PopularimeterFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
-  FindOrCreate
+  TJvID3PopularimeterFrame.FindOrCreate
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PopularimeterFrame.Find@TJvID3Controller@string
@@ -2893,7 +2896,7 @@ Return value
   ID3 tag, or - when no such frame was found - a newly created frame. If a new frame is created, its
   EMailAddress property will be set to the value specified by the AEmailAddress parameter.
 See Also
-  Find
+  TJvID3PopularimeterFrame.Find
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PopularimeterFrame.FindOrCreate@TJvID3Controller@string

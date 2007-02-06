@@ -75,8 +75,8 @@ Description
 Parameters
   S - Specifies the item being dragged.
 See Also
-  <LINK TJvCustomListBox.DefaultDragDrop, DefaultDragDrop>, <LINK TJvCustomListBox.DefaultDragOver,
-  DefaultDragOver>, <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>
+  TJvCustomListBox.DefaultDragDrop, TJvCustomListBox.DefaultDragOver,
+  TJvCustomListBox.DefaultStartDrag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultDragDrop
@@ -95,8 +95,8 @@ Parameters
   X      - Horizon screen coordinate of the mouse in pixels.
   Y      - Vertical screen coordinate of the mouse in pixels.
 See Also
-  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>, <LINK TJvCustomListBox.DefaultStartDrag,
-  DefaultDragOver>, <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>, TControl.OnDragDrop
+  TJvCustomListBox.CreateDragImage, TJvCustomListBox.DefaultStartDrag,
+  TJvCustomListBox.DefaultStartDrag, <DELPHILINK TControl.OnDragDrop>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultDragOver
@@ -115,8 +115,8 @@ Parameters
   State  - Specifies how the dragged object is moving over the control.
   Accept - Specifies whether to accept the dragged object.
 See Also
-  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>, <LINK TJvCustomListBox.DefaultDragDrop,
-  DefaultDragDrop>, <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>, TControl.OnDragOver
+  TJvCustomListBox.CreateDragImage, TJvCustomListBox.DefaultDragDrop,
+  TJvCustomListBox.DefaultStartDrag, <DELPHILINK TControl.OnDragOver>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultDrawItem
@@ -136,7 +136,7 @@ Parameters
   ARect - The rectangle of the item.
   State - Indicates the state of the item.
 See Also
-  TControl.OnDrawItem
+  <DELPHILINK TControl.OnDrawItem>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultStartDrag
@@ -154,8 +154,8 @@ Description
 Parameters
   DragObject - Not used.
 See Also
-  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>, <LINK TJvCustomListBox.DefaultDragDrop,
-  DefaultDragDrop>, <LINK TJvCustomListBox.DefaultDragOver, DefaultDragOver>, TControl.OnStartDrag
+  TJvCustomListBox.CreateDragImage, TJvCustomListBox.DefaultDragDrop, TJvCustomListBox.DefaultDragOver,
+  <DELPHILINK TControl.OnStartDrag>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DeleteAllButSelected
@@ -166,7 +166,8 @@ Description
 Note
   MultiSelect must be set to True.
 See Also
-  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected, SelectAll
+  TJvCustomListBox.DeleteExactString, <DELPHILINK TCustomListBox.DeleteSelected>, <DELPHILINK
+  TCustomListBox.SelectAll>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DeleteExactString
@@ -180,7 +181,7 @@ Parameters
   CaseSensitive - Specifies whether the strings in the list box must be compared case-sensitive with
                    Value.
 See Also
-  DeleteSelected, SelectAll
+  <DELPHILINK TCustomListBox.DeleteSelected>, <DELPHILINK TCustomListBox.SelectAll>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DisabledTextColor
@@ -240,7 +241,8 @@ Description
 
   If the MultiSelect property is False, InvertSelection does nothing.
 See Also
-  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected, SelectAll
+  TJvCustomListBox.DeleteExactString, <DELPHILINK TCustomListBox.DeleteSelected>, <DELPHILINK
+  TCustomListBox.SelectAll>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.ItemRect
@@ -268,7 +270,7 @@ Description
   If a provider is selected, ItemsShowing should be considered read-only (and in fact does not allow
   any changes at all), otherwise it's the same as using the Items property.
 See Also
-  Items
+  <DELPHILINK TCustomListBox.Items>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.LimitToClientWidth
@@ -506,8 +508,7 @@ Parameters
   CaseSensitive - Indicates whether the match must be case\-sensitive.
   StartIndex    - Description for this parameter
 See Also
-  <LINK TJvCustomListBox.SearchPrefix, SearchPrefix>, <LINK TJvCustomListBox.SearchSubString,
-  SearchSubString>
+  TJvCustomListBox.SearchPrefix, TJvCustomListBox.SearchSubString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.SearchPrefix
@@ -522,8 +523,7 @@ Parameters
   CaseSensitive - Indicates whether the match must be case\-sensitive.
   StartIndex    - Description for this parameter
 See Also
-  <LINK TJvCustomListBox.SearchExactString, SearchExactString>, <LINK TJvCustomListBox.SearchSubString,
-  SearchSubString>
+  TJvCustomListBox.SearchExactString, TJvCustomListBox.SearchSubString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.SearchSubString
@@ -538,8 +538,7 @@ Parameters
   CaseSensitive - Indicates whether the match must be case\-sensitive.
   StartIndex    - Description for this parameter
 See Also
-  <LINK TJvCustomListBox.SearchExactString, SearchExactString>, <LINK TJvCustomListBox.SearchPrefix,
-  SearchPrefix>
+  TJvCustomListBox.SearchExactString, TJvCustomListBox.SearchPrefix
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.SelectedColor
@@ -590,7 +589,8 @@ Summary
 Description
   Use UnselectAll to deselect all items in the list box.
 See Also
-  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected, SelectAll
+  TJvCustomListBox.DeleteExactString, <DELPHILINK TCustomListBox.DeleteSelected>, <DELPHILINK
+  TCustomListBox.SelectAll>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.UpdateHorizontalExtent
@@ -622,7 +622,7 @@ Description
   TJvCustomListBox and its descendants. It specifies the bitmap and fill mode to use for drawing the
   list box's background.
 See Also
-  FillMode, Image, Visible
+  TJvListBoxBackground.FillMode, TJvListBoxBackground.Image, TJvListBoxBackground.Visible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListBoxBackground.DoDraw

@@ -1,5 +1,10 @@
 ##Package: StdCtrls
 ##Status: Completed, Incomplete
+##Skip: CalculateAlignment
+##Skip: CalculateAngleInfo
+##Skip: DrawShadowText
+##Skip: FrameRounded
+##Skip: TAngleInfo
 ----------------------------------------------------------------------------------------------------
 @@JvLabel.pas
 Summary
@@ -7,121 +12,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
-
-----------------------------------------------------------------------------------------------------
-@@CalculateAlignment
-<TITLE CalculateAlignment function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Alignment - Description for this parameter
-  Angle     - Description for this parameter
-  X         - Description for this parameter
-  Y         - Description for this parameter
-  Info      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CalculateAngleInfo
-<TITLE CalculateAngleInfo procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas    - Description for this parameter
-  Angle     - Description for this parameter
-  Text      - Description for this parameter
-  Rect      - Description for this parameter
-  Info      - Description for this parameter
-  AutoSize  - Description for this parameter
-  Alignment - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawShadowText
-<TITLE DrawShadowText function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas      - Description for this parameter
-  Str         - Description for this parameter
-  Count       - Description for this parameter
-  Rect        - Description for this parameter
-  Format      - Description for this parameter
-  ShadowSize  - Description for this parameter
-  ShadowColor - Description for this parameter
-  ShadowPos   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FrameRounded
-<TITLE FrameRounded procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  ARect  - Description for this parameter
-  AColor - Description for this parameter
-  R      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo
-<TITLE TAngleInfo type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.TextWidth
-  Description for TextWidth
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.TextHeight
-  Description for TextHeight
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.TextGapWidth
-  Description for TextGapWidth
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.TextGapHeight
-  Description for TextGapHeight
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.TotalWidth
-  Description for TotalWidth
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.TotalHeight
-  Description for TotalHeight
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.PosX
-  Description for PosX
-
-----------------------------------------------------------------------------------------------------
-@@TAngleInfo.PosY
-  Description for PosY
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel
@@ -185,12 +75,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.FocusControl
 Summary
-  Write here a summary (1 line)
+  Designates a windowed control associated with the label.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.ShowFocus
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.FrameColor
@@ -246,12 +135,12 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.HotTrackOptions
 Summary
-  Write here a summary (1 line)
+  Specifies the hot tracking options for the control.
 Description
-  Write here a description
+  Use HotTrackOptions to specify the whether and how the control is control is highlighted when the
+  mouse passes over it.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.HotTrackFontOptions
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ImageIndex
@@ -286,51 +175,50 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Margin
 Summary
-  Write here a summary (1 line)
+  Can be used to set all margins at once.
 Description
-  Write here a description
+  Setting Margin will change MarginBottom, MarginLeft, MarginRight and MarginTop.
+
+  Reading Margin returns the value of property MarginLeft.
 See Also
-  RightMargin
+  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight,
+  TJvCustomLabel.MarginTop
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginBottom
 Summary
-  Write here a summary (1 line)
+  Specifies the bottom margin.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight, TJvCustomLabel.MarginTop
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginLeft
 Summary
-  Write here a summary (1 line)
+  Specifies the left margin.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginRight, TJvCustomLabel.MarginTop
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginRight
 Summary
-  Write here a summary (1 line)
+  Specifies the right margin.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginTop
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginTop
 Summary
-  Write here a summary (1 line)
+  Specifies the top margin.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.NeedsResize
@@ -355,42 +243,48 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.RoundedFrame
 Summary
-  Write here a summary (1 line)
+  Specifies whether to draw a rounded frame.
 Description
-  Write here a description
+  Set RoundedFrame to a non-zero value to draw a rounded frame. Set RoundedFrame to 0 to draw a
+  straight frame.
+
+  Note that both HotTrackOptions.FrameVisible and HotTrackOptions.Enabled must be set to True to show a
+  frame.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvHotTrackOptions.FrameVisible, TJvHotTrackOptions.Enabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShadowColor
 Summary
-  Write here a summary (1 line)
+  The color of the text shadow.
 Description
-  Write here a description
+  Use ShadowCOlor to specify the color of the text shadow.
+
+  Note that if ShadowSize equals 0 then no text shadow is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.ShadowPos, TJvCustomLabel.ShadowSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShadowPos
 Summary
-  Write here a summary (1 line)
+  The position of the text shadow.
 Description
-  Write here a description
+  Use ShadowPos to specify the position of the text shadow. The default value is spRightBottom.
+
+  Note that if ShadowSize equals 0 then no text shadow is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.ShadowColor, TJvCustomLabel.ShadowSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShadowSize
 Summary
-  Write here a summary (1 line)
+  The size in pixels of the text shadow.
 Description
-  Write here a description
+  Use ShadowSize to specify the size of the text shadow.
+
+  Set ShadowSize to 0 to hide the text shadow.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.ShadowColor, TJvCustomLabel.ShadowPos
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShowAccelChar
@@ -405,6 +299,8 @@ Summary
   Indicates whether to draw a focus rectangle around the label when FocusControl has input focus.
 Description
   Write here a description
+See Also
+  TJvCustomLabel.FocusControl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Spacing
@@ -414,7 +310,7 @@ Description
   The value stored in Spacing is the number of pixels between the label's icon and caption. If either
   is absent from the label, the value of Spacing becomes irrelevant.
 See Also
-  LeftMargin
+  TJvCustomLabel.MarginLeft
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.TextEllipsis
@@ -498,60 +394,60 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.Angle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis
 <TITLE TJvTextEllipsis type>
 Summary
-  Write here a summary (1 line)
+  Enumerates methods to replace text by an ellipsis.
 Description
-  Write here a description
+  The TJvTextEllipsis type is used to indicate how text is replaced by an ellipsis.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.TextEllipsis
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.teNone
-  Description for teNone
+  Text is not replaced by ellipses.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.teWordEllipsis
-  Description for teWordEllipsis
+  Truncates any word that does not fit in the rectangle and adds ellipses.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.tePathEllipsis
-  Description for tePathEllipsis
+  Replaces characters in the middle of the string with ellipses so that the result fits in the
+  specified rectangle.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.teEndEllipsis
-  Description for teEndEllipsis
+  If the end of a string does not fit in the rectangle, it is truncated and ellipses are added. If a
+  word that is not at the end of the string goes beyond the limits of the rectangle, it is truncated
+  without ellipses.
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition
 <TITLE TShadowPosition type>
 Summary
-  Write here a summary (1 line)
+  Enumerates positions of text shadow.
 Description
-  Write here a description
+  Use the TShadowPosition type to indicate a text shadow position.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomLabel.ShadowPos
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spLeftTop
-  Description for spLeftTop
+  The upper left position
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spLeftBottom
-  Description for spLeftBottom
+  The lower left position.
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spRightBottom
-  Description for spRightBottom
+  The lower right position.
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spRightTop
-  Description for spRightTop
+  The upper right position.
 

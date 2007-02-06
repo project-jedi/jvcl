@@ -50,9 +50,9 @@ Summary
   Lists images available for the items in the label.
 Description
   Images is a list of bitmaps that can be displayed to the left of any item in the label. Each item can
-  specify an image from this list by using the <LINK SetImage> routine.
+  specify an image from this list by using the <LINK TJvInstallLabel.SetImage, SetImage> routine.
 See Also
-  <LINK SetImage>
+  TJvInstallLabel.SetImage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.Lines
@@ -63,7 +63,7 @@ Description
   with an optional image. Use the methods of TStrings (Add, \Delete, Assign etc) to change the content
   of the label.
 See Also
-  TStrings
+  <DELPHILINK TStrings>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.LineSpacing
@@ -87,7 +87,7 @@ Parameters
   ImageIndex - Index of the image to display.
   LineStyle  - \Font style for the exclusive item.
 See Also
-  <LINK SetImage>, <LINK SetStyle>
+  TJvInstallLabel.SetImage, TJvInstallLabel.SetStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.SetImage
@@ -99,7 +99,7 @@ Parameters
   LineIndex  - Index of the item to change.
   ImageIndex - The new image index for the item.
 See Also
-  <LINK SetExclusive>, <LINK SetStyle>
+  TJvInstallLabel.SetExclusive, TJvInstallLabel.SetStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.SetStyle
@@ -112,7 +112,7 @@ Parameters
   ImageIndex - The new image index for the item.
   LineStyle  - The new font style for the item.
 See Also
-  <LINK SetImage>, <LINK SetExclusive>
+  TJvInstallLabel.SetImage, TJvInstallLabel.SetExclusive
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.Styles
@@ -122,7 +122,7 @@ Description
   Use Styles to access the font styles used on individual items in the label. Index must be between 0
   and Lines.Count - 1.
 See Also
-  <LINK SetStyle>, <LINK SetExclusive>, <LINK SetImage>
+  TJvInstallLabel.SetStyle, TJvInstallLabel.SetExclusive, TJvInstallLabel.SetImage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.TextOffset

@@ -293,9 +293,9 @@ Description
   Close only closes the alert form if Showing returns true.
 Parameters
   Immediate - If true, closes the form as if the close button was clicked. If false, fades the form
-               according to the value of FadeOutTime
+               according to the value of the style handler.
 See Also
-  FadeOutTime
+  TJvDesktopAlert.StyleHandler
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Colors
@@ -312,10 +312,10 @@ Summary
   Provides a storage variable for user data.
 Description
   Use Data to store arbitrary data with the component. Data is similar to Tag but is defined as a
-  TObject to easily store classes and similar with the component. Note that you are still responsible
-  for handling the memory of the associated object.
+  TComponent to easily store classes and similar with the component. Note that you are still
+  responsible for handling the memory of the associated object.
 See Also
-  Tag
+  <DELPHILINK TComponent.Tag>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.DropDownMenu
@@ -368,8 +368,6 @@ Summary
   Specifies the text to use as the header of the alert.
 Description
   Set HeaderText to the text to display for the header of the window.
-See Also
-  Text
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Hint
@@ -476,10 +474,9 @@ Summary
   Occurs when the desktop alert is shown (that is, when its Visible property is set to True).
 Description
   Use OnShow to perform special processing when the desktop alert is shown. Note that the window might
-  not be visible when OnShow is called since visibility is controlled by the AlphaBlendValue value and
-  the FadeInTime value.
+  not be visible when OnShow is called since visibility is controlled by the style handler.
 See Also
-  AlphaBlendValue, FadeInTime
+  TJvDesktopAlert.StyleHandler
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnShowing
@@ -629,7 +626,7 @@ Description
 Parameters
   Index - The 0-based index of the button to access.
 See Also
-  Count
+  <DELPHILINK TCollection.Count>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertChangePersistent
@@ -995,7 +992,7 @@ Description
   TJvFadeAlertStyleHandler . An instance is automatically created when you set the AlertStyle of a
   TJvDesktopAlert component.
 See Also
-  AlertStyle, StyleHandler, StyleOptions
+  TJvDesktopAlert.AlertStyle, TJvDesktopAlert.StyleHandler, TJvDesktopAlert.StyleOptions
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFadeAlertStyleHandler.CurrentAlphaBlendValue

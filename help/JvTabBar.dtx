@@ -17,7 +17,7 @@ Description
   access pages assigned to the PageList in the control. IPageList is used when a Tab is selected or the
   PageList is assigned for the TJvTabBar control.
 See Also
-  TJvTabBar.PageList, TJvTabBar.OnTabSelected
+  TJvCustomTabBar.PageList, TJvTabBar.OnTabSelected
 
 ----------------------------------------------------------------------------------------------------
 @@IPageList.AddPage
@@ -219,7 +219,8 @@ Parameters
 Return value
   TJvTabBarItem - Tab definition created with the specified caption text.
 See Also
-  Tabs, FindTab, FindData, TJvTabBarItems.Add, TJvTabBarItem
+  TJvCustomTabBar.Tabs, TJvCustomTabBar.FindTab, TJvCustomTabBar.FindData, <DELPHILINK
+  TCollection.Add>, TJvTabBarItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.AllowTabMoving
@@ -233,7 +234,7 @@ Description
 
   The default value for AllowTabMoving is False, as assigned in the constructor for the control.
 See Also
-  Tabs, SelectedTab
+  TJvCustomTabBar.Tabs, TJvCustomTabBar.SelectedTab
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.AllowUnselected
@@ -250,7 +251,7 @@ Description
 
   The default value for AllowUnselected is False, as assigned in the constructor for the control.
 See Also
-  SelectedTab
+  TJvCustomTabBar.SelectedTab
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.AutoFreeClosed
@@ -267,7 +268,7 @@ Description
 
   The default value for AutoFreeClosed is True, as assigned in the constructor for the control.
 See Also
-  Tabs, OnTabClosed, TJvTabBarItems, TJvTabBarItem
+  TJvCustomTabBar.Tabs, TJvCustomTabBar.OnTabClosed, TJvTabBarItems, TJvTabBarItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.CloseButton
@@ -287,7 +288,7 @@ Description
   The default value for CloseButton is True, as assigned in the constructor for the control. Changing
   the value in the CloseButton property causes the control to be redrawn.
 See Also
-  Tabs
+  TJvCustomTabBar.Tabs
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.ClosingTab
@@ -303,7 +304,8 @@ Description
 
   Use AutoFreeClosed to indicate if the tab item in Tabs is automatically free after closing.
 See Also
-  TJvTabBarItem, OnTabClosing, OnTabClosed, AutoFreeClosed
+  TJvTabBarItem, TJvCustomTabBar.OnTabClosing, TJvCustomTabBar.OnTabClosed,
+  TJvCustomTabBar.AutoFreeClosed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.FindData
@@ -317,27 +319,26 @@ Description
   the specified object instance. When a match is found, the return value is the tab definition from the
   Tabs collection. If a match is not found, the return value for the method is Nil.
 
-  Use Find to locate the item in Tabs with a specific caption.
+  Use FindTab to locate the item in Tabs with a specific caption.
 Parameters
   Data - Data object to locate in the Tabs collection.
 Return value
-  TJvTabBarItem - Tab item with the specified data object, or nil.
+  Tab item with the specified data object, or nil.
 See Also
-  Find, Tabs, TJvTabBarItem.Data, TJvTabBarItems
+  TJvCustomTabBar.FindTab, TJvCustomTabBar.Tabs, TJvTabBarItem.Data, TJvTabBarItems
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.FindTab
 Summary
-  Write here a summary (1 line)
+  Returns the first tab with the given Caption.
 Description
   Write here a description
 Parameters
-  Caption - Description for this parameter
+  Caption - Caption to locate in the Tabs Collection.
 Return value
-  Describe here what the function returns
+  Tab item with the specified caption, or nil.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomTabBar.FindData, TJvCustomTabBar.Tabs, TJvTabBarItem.Caption, TJvTabBarItems
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.FlatScrollButtons
@@ -381,7 +382,7 @@ Description
 
   Use the TJvTabBarItem.Hint property to specify hints for items defined in the Tabs collection.
 See Also
-  OnHint, TJvTabBarItem.Hint
+  <DELPHILINK TApplication.OnHint>, TJvTabBarItem.Hint
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.HotTab
@@ -402,7 +403,8 @@ Description
   Use LeftTab to determine the leftmost visible tab item in the scrollable area for the tabbed-bar
   control.
 See Also
-  TJvTabBarItem, Tabs, SelectedTab, ClosingTab, LeftTab
+  TJvTabBarItem, TJvCustomTabBar.Tabs, TJvCustomTabBar.SelectedTab, TJvCustomTabBar.ClosingTab,
+  TJvCustomTabBar.LeftTab
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.HotTracking
@@ -418,7 +420,7 @@ Description
   False, there is no visual feedback when the mouse passes over tabs and HotTabs will contain the value
   Nil.
 See Also
-  HotTab, Tabs, TJvTabBarItems, TJvTabBarItem.Hot
+  TJvCustomTabBar.HotTab, TJvCustomTabBar.Tabs, TJvTabBarItems, TJvTabBarItem.Hot
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.Images
@@ -451,7 +453,7 @@ Description
   events or an assignment in program code. Assigning a new value to LeftTab causes the control to be
   redrawn with the specified item displayed of the left-hand edge of the scrollable drawing area.
 See Also
-  Tabs, TJvTabBarItems, TJvTabBarItem, SelectedTab
+  TJvCustomTabBar.Tabs, TJvTabBarItems, TJvTabBarItem, TJvCustomTabBar.SelectedTab
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.MakeVisible
@@ -471,7 +473,7 @@ Parameters
 Return value
   Boolean - Always returns False.
 See Also
-  TJvTabBarItem.Visible, SelectedTab, Tabs
+  TJvTabBarItem.Visible, TJvCustomTabBar.SelectedTab, TJvCustomTabBar.Tabs
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.Margin
@@ -485,7 +487,7 @@ Description
   The default value for Margin is 6, as assigned in the constructor for the control. Changing the value
   in Margin causes the control to be redrawn.
 See Also
-  Tabs
+  TJvCustomTabBar.Tabs
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnChange
@@ -533,7 +535,8 @@ Description
   Use OnTabClosing to perform processing required before the tab is assigned as the ClosingTab for the
   control.
 See Also
-  OnTabClosing, AutoFreeClosed, TJvTabBarItem.Visible, Tabs, ClosingTab
+  TJvCustomTabBar.OnTabClosing, TJvCustomTabBar.AutoFreeClosed, TJvTabBarItem.Visible,
+  TJvCustomTabBar.Tabs, TJvCustomTabBar.ClosingTab
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabClosing
@@ -555,7 +558,8 @@ Parameters
   Item       - Tab for the event.
   AllowClose - Indicates the item can continue closing.
 See Also
-  TJvTabBarClosingEvent, CloseButton, Tabs, ClosingTab, OnTabClosed
+  TJvTabBarClosingEvent, TJvCustomTabBar.CloseButton, TJvCustomTabBar.Tabs, TJvCustomTabBar.ClosingTab,
+  TJvCustomTabBar.OnTabClosed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabMoved
@@ -588,7 +592,7 @@ Parameters
   Sender - Control for the event.
   Item   - Tab for the event.
 See Also
-  TJvTabBarSelectingEvent, SelectedTab, OnTabSelecting
+  TJvTabBarSelectingEvent, TJvCustomTabBar.SelectedTab, TJvCustomTabBar.OnTabSelecting
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabSelecting
@@ -613,7 +617,7 @@ Parameters
   Item        - Tab for the event.
   AllowSelect - Indicates the tab can become the selected tab.
 See Also
-  TJvTabBarSelectingEvent, SelectedTab, OnTabSelected
+  TJvTabBarSelectingEvent, TJvCustomTabBar.SelectedTab, TJvCustomTabBar.OnTabSelected
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.Orientation
@@ -670,7 +674,7 @@ Description
   The class instance in Painter will be notified when changes are made to items in the Images property
   for the control.
 See Also
-  TJvTabBarPainter, TJvModernTabBarPainter, Images, Tabs
+  TJvTabBarPainter, TJvModernTabBarPainter, TJvCustomTabBar.Images, TJvCustomTabBar.Tabs
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.RightClickSelect
@@ -683,13 +687,13 @@ Description
   be displayed at the mouse coordinates.
 
   Please note that there is a potential conflict in handling right mouse button events when <LINK
-  TJvTabBar.RightClickSelect, RightClickSelect> for the TabBar control contains True and <LINK
-  TJvTabBar.PopupMenu, PopupMenu> has been assigned for the control. In this situation, a right mouse
-  button event occurring on the Tab cannot be properly resolved so no action is performed.
+  TJvTabBar.RightClickSelect, RightClickSelect> for the TabBar control contains True and property
+  PopupMenu has been assigned for the control. In this situation, a right mouse button event occurring
+  on the Tab cannot be properly resolved so no action is performed.
 
   The default value for RightClickSelect is True, as assigned in the constructor for the control.
 See Also
-  TJvTabBarItem, SelectedTab, PopupMenu
+  TJvTabBarItem, TJvCustomTabBar.SelectedTab, <DELPHILINK TControl.PopupMenu>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.SelectBeforeClose
@@ -712,7 +716,9 @@ Description
   Use the event handlers in OnTabClosing, OnTabClosed, OnTabSelecting, OnTabSelected, and OnChange
   perform application-specific actions required for items in the Tabs property.
 See Also
-  Tabs, CloseButton, SelectedTab, OnTabClosing, OnTabClosed, OnTabSelecting, OnTabSelected, OnChange
+  TJvCustomTabBar.Tabs, TJvCustomTabBar.CloseButton, TJvCustomTabBar.SelectedTab,
+  TJvCustomTabBar.OnTabClosing, TJvCustomTabBar.OnTabClosed, TJvCustomTabBar.OnTabSelecting,
+  TJvCustomTabBar.OnTabSelected, TJvCustomTabBar.OnChange
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.SelectedTab
@@ -731,7 +737,8 @@ Description
   The OnTabSelected event handler is signaled after setting the selected tab and the optional page from
   the PageList using the newly selected tab item.
 See Also
-  TJvTabBarItem, TJvTabBarItem.Index, PageList, OnTabSelected
+  TJvTabBarItem, <DELPHILINK TCollectionItem.Index>, TJvCustomTabBar.PageList,
+  TJvCustomTabBar.OnTabSelected
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.TabAt
@@ -754,7 +761,7 @@ Parameters
 Return value
   TJvTabBarItem - Tab item affected by the operation.
 See Also
-  Tabs, TJvTabBarItem.DisplayRect
+  TJvCustomTabBar.Tabs, TJvTabBarItem.DisplayRect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.Tabs
@@ -762,7 +769,8 @@ Summary
   Contains tabs defined for the tabbed-bar control.
 Description
   Tabs is a TJvTabBarItems property that stores tabs defined for the tabbed-bar control. Tabs is a
-  collection for TJvTabItem instances created at design-time or at run-time using the AddTab method.
+  collection for TJvTabBarItem instances created at design-time or at run-time using the AddTab
+  method.
 
   Values in Tabs are used when methods in the Painter for the control are called during Paint and
   PaintTab operations, and when mouse movement and click operations are performed. Applications can use
@@ -803,7 +811,7 @@ Description
 @@TJvModernTabBarPainter
 <TITLEIMG TJvModernTabBarPainter>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Bars.MenusAndTools
   FLAG=Component
 Summary
   Implements the Modern drawing style for rendering tabs on a tabbed-bar control.
@@ -856,7 +864,7 @@ Description
   Assign a TJvModernTabBarPainter instance to the <LINK TJvCustomTabBar.Painter, Painter> property in
   TJvCustomTabBar to use the Modern drawing style when rendering tabs.
 See Also
-  TJvTabBarPainter TJvCustomTabBar.Painter
+  TJvTabBarPainter, TJvCustomTabBar.Painter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.BorderColor
@@ -879,7 +887,8 @@ Description
 
   Use DividerColor to specify the color for dividers drawn between tabs on the tabbed-bar control.
 See Also
-  OnChange, Color, TabColor, DividerColor, ControlDivideColor
+  TJvCustomTabBar.OnChange, TJvModernTabBarPainter.Color, TJvModernTabBarPainter.TabColor,
+  TJvModernTabBarPainter.DividerColor, TJvModernTabBarPainter.ControlDivideColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseColor
@@ -896,15 +905,16 @@ Description
   Changing the value in CloseColor causes the OnChange event handler to be signaled, and the control is
   redrawn.
 
-  Use CloseColorDisabled to specify the color used to draw a disabled tab that is closing.
+  Use CloseRectColorDisabled to specify the color used to draw a disabled tab that is closing.
 
   Use CloseColorSelected to specify the color used to draw the selected tab when it is closing.
 
   Use CloseRectColor or CloseRectColorDisabled to specify the color for the mouse focus rectangle for
   tabs in the relevant state.
 See Also
-  OnChange, TJvTabBarItem.Closing, CloseColorDisabled, CloseColorSelected, CloseRectColor,
-  CloseRectColorDisabled
+  TJvCustomTabBar.OnChange, TJvTabBarItem.Closing, TJvModernTabBarPainter.CloseRectColorDisabled,
+  TJvModernTabBarPainter.CloseColorSelected, TJvModernTabBarPainter.CloseRectColor,
+  TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseColorSelected
@@ -924,13 +934,14 @@ Description
 
   Use CloseColor to specify the color used to draw enabled but unselected tabs.
 
-  Use CloseColorDisabled to specify the color used to draw a disabled tab that is closing.
+  Use CloseRectColorDisabled to specify the color used to draw a disabled tab that is closing.
 
   Use CloseRectColor or CloseRectColorDisabled to specify the color for the mouse focus rectangle for
   tabs in the relevant state.
 See Also
-  OnChange, TJvTabBarItem.Closing, CloseColorDisabled, CloseColor, CloseRectColor,
-  CloseRectColorDisabled
+  TJvCustomTabBar.OnChange, TJvTabBarItem.Closing, TJvModernTabBarPainter.CloseRectColorDisabled,
+  TJvModernTabBarPainter.CloseColor, TJvModernTabBarPainter.CloseRectColor,
+  TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseCrossColor
@@ -956,8 +967,10 @@ Description
   Use CloseRectColor or CloseRectColorDisabled to specify the color used for the mouse focus rectangle
   on a tab in the relevant state.
 See Also
-  OnChange, TJvTabBarItem.Enabled, ModifiedCrossColor, CloseCrossColorSelected,
-  CloseCrossColorDisabled, CloseColor, CloseColorSelected, CloseRectColor, CloseRectColorDisabled
+  TJvCustomTabBar.OnChange, TJvTabBarItem.Enabled, TJvModernTabBarPainter.ModifiedCrossColor,
+  TJvModernTabBarPainter.CloseCrossColorSelected, TJvModernTabBarPainter.CloseCrossColorDisabled,
+  TJvModernTabBarPainter.CloseColor, TJvModernTabBarPainter.CloseColorSelected,
+  TJvModernTabBarPainter.CloseRectColor, TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseCrossColorDisabled
@@ -984,8 +997,10 @@ Description
   Use CloseRectColor or CloseRectColorDisabled to specify the color used for the mouse focus rectangle
   on a tab in the relevant state.
 See Also
-  OnChange, TJvTabBarItem.Enabled, ModifiedCrossColor, CloseCrossColor, CloseCrossColorSelected,
-  CloseColor, CloseColorSelected, CloseRectColor, CloseRectColorDisabled
+  TJvCustomTabBar.OnChange, TJvTabBarItem.Enabled, TJvModernTabBarPainter.ModifiedCrossColor,
+  TJvModernTabBarPainter.CloseCrossColor, TJvModernTabBarPainter.CloseCrossColorSelected,
+  TJvModernTabBarPainter.CloseColor, TJvModernTabBarPainter.CloseColorSelected,
+  TJvModernTabBarPainter.CloseRectColor, TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseCrossColorSelected
@@ -1013,8 +1028,11 @@ Description
   Use CloseRectColor or CloseRectColorDisabled to specify the color used for the mouse focus rectangle
   on a tab in the relevant state.
 See Also
-  OnChange, TJvTabBarItem.Modified, ModifiedCrossColor, CloseCrossColor, CloseCrossColorSelected,
-  CloseCrossColorDisabled, CloseColor, CloseColorSelected, CloseRectColor, CloseRectColorDisabled
+  TJvCustomTabBar.OnChange, TJvTabBarItem.Modified, TJvModernTabBarPainter.ModifiedCrossColor,
+  TJvModernTabBarPainter.CloseCrossColor, TJvModernTabBarPainter.CloseCrossColorSelected,
+  TJvModernTabBarPainter.CloseCrossColorDisabled, TJvModernTabBarPainter.CloseColor,
+  TJvModernTabBarPainter.CloseColorSelected, TJvModernTabBarPainter.CloseRectColor,
+  TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseRectColor
@@ -1034,7 +1052,7 @@ Description
 
   Use CloseRectColorDisabled to specify the focus rectangle color for disabled tabs.
 See Also
-  TJvTabBarItem.Closing, OnChange, CloseRectColorDisabled
+  TJvTabBarItem.Closing, TJvCustomTabBar.OnChange, TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.CloseRectColorDisabled
@@ -1055,7 +1073,7 @@ Description
 
   Use CloseRectColor to specify the focus rectangle color for an enabled but unselected tab.
 See Also
-  TJvTabBarItem.Closing, OnChange, CloseRectColor
+  TJvTabBarItem.Closing, TJvCustomTabBar.OnChange, TJvModernTabBarPainter.CloseRectColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.Color
@@ -1082,7 +1100,8 @@ Description
   Use BorderColor and ControlDivideColor to specify the colors for the borders drawn around the
   tabbed-bar control.
 See Also
-  OnChange, TabColor, BorderColor, DividerColor, ControlDivideColor
+  TJvCustomTabBar.OnChange, TJvModernTabBarPainter.TabColor, TJvModernTabBarPainter.BorderColor,
+  TJvModernTabBarPainter.DividerColor, TJvModernTabBarPainter.ControlDivideColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.ControlDivideColor
@@ -1113,7 +1132,8 @@ Description
 
   Use DividerColor to specify the color for dividers drawn between tabs on the tabbed-bar control.
 See Also
-  OnChange, Color, TabColor, BorderColor, DividerColor
+  TJvCustomTabBar.OnChange, TJvModernTabBarPainter.Color, TJvModernTabBarPainter.TabColor,
+  TJvModernTabBarPainter.BorderColor, TJvModernTabBarPainter.DividerColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.DisabledFont
@@ -1131,7 +1151,7 @@ Description
 
   Use SelectedFont to specify the font used for the currently selected tab item.
 See Also
-  Font, SelectedFont, TJvModernTabBarPainter.DrawTab
+  TJvModernTabBarPainter.Font, TJvModernTabBarPainter.SelectedFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.DividerColor
@@ -1153,7 +1173,8 @@ Description
   Use BorderColor and ControlDivideColor to specify the colors for the borders drawn around the
   tabbed-bar control.
 See Also
-  OnChange, Color, TabColor, BorderColor, ControlDivideColor
+  TJvCustomTabBar.OnChange, TJvModernTabBarPainter.Color, TJvModernTabBarPainter.TabColor,
+  TJvModernTabBarPainter.BorderColor, TJvModernTabBarPainter.ControlDivideColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.Font
@@ -1171,7 +1192,7 @@ Description
 
   Use SelectedFont to specify the font used for the currently selected tab item.
 See Also
-  DisabledFont, SelectedFont, TJvModernTabBarPainter.DrawTab
+  TJvModernTabBarPainter.DisabledFont, TJvModernTabBarPainter.SelectedFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.ModifiedCrossColor
@@ -1199,8 +1220,10 @@ Description
   Use CloseRectColor or CloseRectColorDisabled to specify the color used for the mouse focus rectangle
   on a tab in the relevant state.
 See Also
-  OnChange, TJvTabBarItem.Modified, CloseCrossColor, CloseCrossColorSelected, CloseCrossColorDisabled,
-  CloseColor, CloseColorSelected, CloseRectColor, CloseRectColorDisabled
+  TJvCustomTabBar.OnChange, TJvTabBarItem.Modified, TJvModernTabBarPainter.CloseCrossColor,
+  TJvModernTabBarPainter.CloseCrossColorSelected, TJvModernTabBarPainter.CloseCrossColorDisabled,
+  TJvModernTabBarPainter.CloseColor, TJvModernTabBarPainter.CloseColorSelected,
+  TJvModernTabBarPainter.CloseRectColor, TJvModernTabBarPainter.CloseRectColorDisabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.MoveDividerColor
@@ -1217,7 +1240,7 @@ Description
   instance. Changing the value in MoveDividerColor causes the OnChange event handler to be signaled,
   and the control is redrawn.
 See Also
-  OnChange, TJvCustomTabBar.
+  TJvCustomTabBar.OnChange, TJvCustomTabBar.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.SelectedFont
@@ -1235,7 +1258,7 @@ Description
 
   Use SelectedFont to specify the font used for the currently selected tab item.
 See Also
-  DisabledFont, SelectedFont, TJvModernTabBarPainter.DrawTab
+  TJvModernTabBarPainter.DisabledFont, TJvModernTabBarPainter.SelectedFont
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.TabColor
@@ -1257,7 +1280,8 @@ Description
   Use BorderColor and ControlDivideColor to specify the colors for the borders drawn around the
   tabbed-bar control.
 See Also
-  OnChange, Color, DividerColor, BorderColor, ControlDivideColor
+  TJvCustomTabBar.OnChange, TJvModernTabBarPainter.Color, TJvModernTabBarPainter.DividerColor,
+  TJvModernTabBarPainter.BorderColor, TJvModernTabBarPainter.ControlDivideColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvModernTabBarPainter.TabWidth
@@ -1273,7 +1297,7 @@ See Also
 @@TJvTabBar
 <TITLEIMG TJvTabBar>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Bars.MenusAndTools
   FLAG=Component
 Summary
   Implements a tab bar control.
@@ -1432,7 +1456,7 @@ Description
 Return value
   Boolean - True if the tab is visible and enabled in the tabbed-bar control.
 See Also
-  TJvCustomTabBar.SelectedTab, Enabled, Visible, TabBar
+  TJvCustomTabBar.SelectedTab, TJvTabBarItem.Enabled, TJvTabBarItem.Visible, TJvTabBarItem.TabBar
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Caption
@@ -1448,7 +1472,7 @@ Description
   method is called. Caption is also used to select an existing tab in the control when calling the
   TJvCustomTabBar.FindTab method.
 See Also
-  TabBar, ImageIndex, TJvCustomTabBar.FindTab, TJvTabBarPainter.DrawTab, TJvTabBar.Painter
+  TJvTabBarItem.TabBar, TJvTabBarItem.ImageIndex, TJvCustomTabBar.FindTab, TJvTabBar.Painter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Closing
@@ -1482,7 +1506,7 @@ Description
   Use the TJvTabBar.FindData method to locate an object instance stored in the Data property for Tabs
   defined in the tabbed-bar control.
 See Also
-  TJvTabBar.FindData, JvTabBarItem, JvTabBarItems
+  TJvCustomTabBar.FindData, TJvTabBarItems
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.DisplayRect
@@ -1508,7 +1532,8 @@ Description
   definition. DisplayRect is used during MouseUp, MouseDown, and MouseMove operations in the tab bar,
   and provides the screen coordinates for tab when selected using a Mouse Click.
 See Also
-  Visible, Caption, ImageIndex, TabBar, TJvTabParPainter, TJvModernTabParPainter
+  TJvTabBarItem.Visible, TJvTabBarItem.Caption, TJvTabBarItem.ImageIndex, TJvTabBarItem.TabBar,
+  TJvTabBarPainter, TJvModernTabBarPainter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Enabled
@@ -1531,7 +1556,8 @@ Description
 
   Use Visible to determine if a tab can be displayed (has not been hidden).
 See Also
-  TJvTabBarPainter, TJvModernTabBarPainter, TJvTabBar, Visible, OnGetEnabled
+  TJvTabBarPainter, TJvModernTabBarPainter, TJvTabBar, TJvTabBarItem.Visible,
+  TJvTabBarItem.OnGetEnabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.GetImages
@@ -1554,7 +1580,8 @@ Description
 Return value
   TCustomImageList - Images to draw on tabs in the tabbed-bar control.
 See Also
-  ImageIndex, Enabled, Caption, TJvTabBarPainter, TJvModernTabBarPainter
+  TJvTabBarItem.ImageIndex, TJvTabBarItem.Enabled, TJvTabBarItem.Caption, TJvTabBarPainter,
+  TJvModernTabBarPainter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.GetNextVisible
@@ -1572,7 +1599,8 @@ Description
 Return value
   TJvTabBarItem - Visible tab definition following the current tab.
 See Also
-  GetPreviousVisible, Index, Visible, TabBar, TJvTabBarItems
+  TJvTabBarItem.GetPreviousVisible, <DELPHILINK TCollectionItem.Index>, TJvTabBarItem.Visible,
+  TJvTabBarItem.TabBar, TJvTabBarItems
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.GetPreviousVisible
@@ -1590,7 +1618,8 @@ Description
 Return value
   TJvTabBarItem - Visible tab definition prior to the current tab.
 See Also
-  GetNextVisible, Index, Visible, TabBar, TJvTabBarItems
+  TJvTabBarItem.GetNextVisible, <DELPHILINK TCollectionItem.Index>, TJvTabBarItem.Visible,
+  TJvTabBarItem.TabBar, TJvTabBarItems
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Hint
@@ -1622,7 +1651,7 @@ Description
   Please note that when the application's ShowHint property is false, the Help Hint does not appear,
   but the OnHint event handler is still called.
 See Also
-  ShowHint, ParentShowHint, TJvTabBar.ShowHint
+  TJvTabBarItem.ShowHint, <DELPHILINK TControl.ParentShowHint>, <DELPHILINK TControl.ShowHint>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Hot
@@ -1637,7 +1666,7 @@ Description
   determine the value for the property. Hot is used when the TJvTabBarPainter instance in the Painter
   property for the control calls its' DrawTab method.
 See Also
-  TJvTabBarPainter.DrawTab, TJvTabBar.Painter, TJvTabBar.HotTracking, TJvTabBar.HotTab
+  TJvTabBar.Painter, TJvTabBar.HotTracking, TJvCustomTabBar.HotTab
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.ImageIndex
@@ -1661,7 +1690,7 @@ Description
 
   Changing the value in ImageIndex causes the TJvTabBarItem and the TJvTabBar to be redrawn.
 See Also
-  TImageIndex, TJvTabBar.Images, TJvTabBarPainter
+  <DELPHILINK TImageIndex>, TJvTabBar.Images, TJvTabBarPainter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.MakeVisible
@@ -1681,7 +1710,7 @@ Description
 
   The Tab can be scrolled into view and redrawn by setting the SelectedTab property in TJvTabBar.
 See Also
-  TJvCustomTabBar.MakeVisible, TJvCustomTabBar.SelectedTab, Visible
+  TJvCustomTabBar.MakeVisible, TJvCustomTabBar.SelectedTab, TJvTabBarItem.Visible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Modified
@@ -1707,7 +1736,8 @@ Description
 
   Use Visible to determine if a tab can be displayed (has not been hidden).
 See Also
-  TJvTabBarPainter, TJvModernTabBarPainter, TJvTabBar, Visible, Enabled, OnGetModified, PageList
+  TJvTabBarPainter, TJvModernTabBarPainter, TJvTabBar, TJvTabBarItem.Visible, TJvTabBarItem.Enabled,
+  TJvTabBarItem.OnGetModified, TJvCustomTabBar.PageList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.Name
@@ -1731,7 +1761,7 @@ Description
 
   Use Data to store a TObject instance that can be used in conjunction with the tab definition.
 See Also
-  TJvTabBarItems.Find, Caption, Tag, Data
+  TJvTabBarItem.Caption, TJvTabBarItem.Tag, TJvTabBarItem.Data
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.OnGetEnabled
@@ -1753,7 +1783,7 @@ Parameters
   Sender  - Tab generating the event notification.
   Enabled - Value derived in the event handler for the Enabled property.
 See Also
-  TJvGetEnabledEvent, Enabled, Modified, OnGetModified
+  TJvGetEnabledEvent, TJvTabBarItem.Enabled, TJvTabBarItem.Modified, TJvTabBarItem.OnGetModified
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.OnGetModified
@@ -1775,7 +1805,7 @@ Parameters
   Sender   - Collection item generating the event notification.
   Modified - Value derived in the event handler for the Modified property.
 See Also
-  TJvGetModifiedEvent, Modified, OnGetEnabled, Enabled
+  TJvGetModifiedEvent, TJvTabBarItem.Modified, TJvTabBarItem.OnGetEnabled, TJvTabBarItem.Enabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.PopupMenu
@@ -1794,9 +1824,9 @@ Description
   Notification list to reflect the change.
 
   Please note that there is a potential conflict in handling right mouse button events when <LINK
-  TJvTabBar.RightClickSelect, RightClickSelect> for the TabBar control contains True and <LINK
-  TJvTabBar.PopupMenu, PopupMenu> has been assigned for the TabBar control. In this situation, a right
-  mouse button event occurring on the Tab cannot be properly resolved so no action is performed.
+  TJvTabBar.RightClickSelect, RightClickSelect> for the TabBar control contains True and property
+  \PopupMenu has been assigned for the TabBar control. In this situation, a right mouse button event
+  occurring on the Tab cannot be properly resolved so no action is performed.
 See Also
   TJvTabBar, TJvTabBar.RightClickSelect
 
@@ -1824,7 +1854,8 @@ Description
 
   Use CanSelect to determine if a tab in the TabBar control is both Enabled and Visible.
 See Also
-  TJvTabBar.SelectedTab, Enabled, OnGetEnabled, Visible, CanSelect
+  TJvCustomTabBar.SelectedTab, TJvTabBarItem.Enabled, TJvTabBarItem.OnGetEnabled,
+  TJvTabBarItem.Visible, TJvTabBarItem.CanSelect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.ShowHint
@@ -1844,7 +1875,7 @@ Description
 
   The default value for ShowHint is True, as assigned in the constructor for the collection item.
 See Also
-  Hint, TJvTabBar.ShowHint
+  TJvTabBarItem.Hint, <DELPHILINK TControl.ShowHint>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItem.TabBar
@@ -1957,7 +1988,7 @@ Parameters
 Return value
   Integer - Ordinal position of the tab in the collection.
 See Also
-  Items, TJvTabItem
+  TJvTabBarItems.Items, TJvTabBarItem
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItems.Items
@@ -1973,7 +2004,7 @@ Description
 
   Use IndexOf to find the ordinal position of a specific TJvTabBarItem instance in the collection.
 See Also
-  IndexOf, TJvTabBarItem.Assign
+  TJvTabBarItems.IndexOf, TJvTabBarItem.Assign
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarItems.TabBar
@@ -1982,11 +2013,11 @@ Summary
 Description
   TabBar is a read-only TJvCustomTabBar property that provides access to the properties, methods, and
   events of the tabbed-bar control used to render tab items in the collection. TabBar is available in
-  the identical property in TJvTabItem instances in the collection.
+  the identical property in TJvTabBarItem instances in the collection.
 
   TabBar is used primarily the TJvTabBarPainter that renders tabs on the tabbed-bar control.
 See Also
-  TJvCustomTabBar, TJvTabItem, TJvTabBarPainter, TJvModernTabBarPainter
+  TJvCustomTabBar, TJvTabBarItem, TJvTabBarPainter, TJvModernTabBarPainter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarOrientation
@@ -2002,7 +2033,7 @@ Description
   Use the Align property in TJvTabBar to specify the vertical alignment of the control within its
   container or parent control.
 See Also
-  TJvTabBar.Orientation, TJvTabBar.Align
+  TJvTabBar.Orientation, <DELPHILINK TControl.Align>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarOrientation.toTop
@@ -2034,7 +2065,8 @@ Description
 
   TJvTabBarPainter is the type used for the TJvCustomTabBar.Painter property.
 See Also
-  TJvCustomTabBar.Painter, TJvCustomTabBar.Tabs, TJvTabBarItems, TJvTabBarItem, Changed
+  TJvCustomTabBar.Painter, TJvCustomTabBar.Tabs, TJvTabBarItems, TJvTabBarItem,
+##  TJvTabBarPainter.Changed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarPainterOptions
@@ -2051,7 +2083,8 @@ Description
   TJvTabBarPainterOptions. TJvTabBarPainterOptions is the type used in the implementation of the
   TJvTabBarPainter.Options property.
 See Also
-  TJvTabBarPainterOptions, TJvTabBarPainter.Options
+  TJvTabBarPainterOptions
+##  , TJvTabBarPainter.Options
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabBarPainterOptionType.poPaintsHotTab

@@ -194,7 +194,7 @@ Description
   The host application has two means of sending a message:
 
   * <LINK TJvPluginManager.SendMessage, send a message to all loaded plugins>.
-  * <LINK TJvPlugin.SendPluginMessage, send a message to a specific plugin>.
+  * <LINK TJvPlugIn.SendPluginMessage, send a message to a specific plugin>.
 Parameters
   Sender         - Reference to the plugin.
   APluginMessage - ID of the message. See the host application's documentation of available messages.
@@ -258,7 +258,7 @@ Summary
   A single plugin command.
 Description
   TJvPluginCommand is single plugin command. Each plugin stores zero or more of the objects in their
-  <LINK TJvPlugin.Commands, Commands> property.
+  <LINK TJvPlugIn.Commands, Commands> property.
 
   Generally speaking, each plugin usually represents a menu item, a button or both. Because both menu
   items as well as buttons can have a bitmap, a plugin commands can specify a bitmap in addition to a
@@ -347,8 +347,8 @@ Summary
   Collection of plugin commands.
 Description
   TJvPluginCommands a simple derivative of TCollection and holds a collection of TJvPluginCommand
-  items. You can access this collection through the <LINK TJvPlugin.Commands, Commands> property of the
-  <LINK TJvPlugin, plugin>.
+  items. You can access this collection through the <LINK TJvPlugIn.Commands, Commands> property of the
+  <LINK TJvPlugIn, plugin>.
 See Also
   TJvPlugIn, TJvPlugIn.Commands, TJvPluginCommand
 

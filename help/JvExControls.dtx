@@ -1,10 +1,16 @@
 ##Package: Core
 ##Status: Partially documented
-##Skip: TJvExPubControl
-##Skip: TJvExPubCustomControl
-##Skip: TJvExPubGraphicControl
-##Skip: TJvExPubHintWindow
-##Skip: TJvExPubWinControl
+##Skip: CreateWMMessage@Integer@Integer@Longint
+##Skip: CreateWMMessage@Integer@Integer@TControl
+##Skip: DispatchIsDesignMsg
+##Skip: DlgCodesToDlgc
+##Skip: DlgcToDlgCodes
+##Skip: GetFocusedControl
+##Skip: GetHintColor
+##Skip: HandleDotNetHighlighting
+##Skip: ShiftStateToKeyData
+##Skip: SmallPointToLong
+##Skip: TStructPtrMessage
 ----------------------------------------------------------------------------------------------------
 @@JvExControls.pas
 Summary
@@ -13,76 +19,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
-
-----------------------------------------------------------------------------------------------------
-@@CreateWMMessage@Integer@Integer@Longint
-<TITLE CreateWMMessage function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Msg    - Description for this parameter
-  WParam - Description for this parameter
-  LParam - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@CreateWMMessage@Integer@Integer@TControl
-<TITLE CreateWMMessage function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Msg    - Description for this parameter
-  WParam - Description for this parameter
-  LParam - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@DispatchIsDesignMsg
-<TITLE DispatchIsDesignMsg function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-  Msg     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DlgCodesToDlgc
-<TITLE DlgCodesToDlgc function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DlgcToDlgCodes
-<TITLE DlgcToDlgCodes function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@DrawDotNetControl
@@ -95,50 +31,6 @@ Parameters
   Control   - Description for this parameter
   AColor    - Description for this parameter
   InControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetFocusedControl
-<TITLE GetFocusedControl function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetHintColor
-<TITLE GetHintColor procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  HintInfo  - Description for this parameter
-  AControl  - Description for this parameter
-  HintColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HandleDotNetHighlighting
-<TITLE HandleDotNetHighlighting procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control   - Description for this parameter
-  Msg       - Description for this parameter
-  MouseOver - Description for this parameter
-  Color     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -324,32 +216,6 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ShiftStateToKeyData
-<TITLE ShiftStateToKeyData function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Shift - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SmallPointToLong
-<TITLE SmallPointToLong function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Pt - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TDlgCode
 <TITLE TDlgCode type>
 Summary
@@ -415,18 +281,15 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor assign
   it a new TColor value.
-See Also
-  HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExControl.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExControl.MouseOver
@@ -435,7 +298,7 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExControl.OnMouseEnter, TJvExControl.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExControl.OnMouseEnter
@@ -497,18 +360,15 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor assign
   it a new TColor value.
-See Also
-  HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomControl.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomControl.MouseOver
@@ -517,7 +377,7 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomControl.OnMouseEnter, TJvExCustomControl.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomControl.OnMouseEnter
@@ -580,18 +440,15 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor assign
   it a new TColor value.
-See Also
-  HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExGraphicControl.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExGraphicControl.MouseOver
@@ -600,7 +457,7 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExGraphicControl.OnMouseEnter, TJvExGraphicControl.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExGraphicControl.OnMouseEnter
@@ -662,18 +519,15 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor assign
   it a new TColor value.
-See Also
-  HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExHintWindow.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExHintWindow.MouseOver
@@ -682,7 +536,7 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExHintWindow.OnMouseEnter, TJvExHintWindow.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExHintWindow.OnMouseEnter
@@ -723,6 +577,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvExPubGraphicControl
+Summary
+  Base class for extended controls.
+Description
+  TJvExPubGraphicControl is a base class for classes in the JVCL library that descend from
+  TGraphicControl.
+
+  TJvExPubGraphicControl publishes properties inherited from TJvExGraphicControl, but does not
+  introduce any new behavior.
+
+----------------------------------------------------------------------------------------------------
 @@TJvExWinControl
 Summary
   Base class for extended controls.
@@ -754,18 +619,15 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor assign
   it a new TColor value.
-See Also
-  HotTrack
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExWinControl.HintWindowClass
 Summary
-  Write here a summary (1 line)
+  Specifies the window class used to display help hints for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
+  to represent the window used for displaying the hint. Applications can customize this window by
+  creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExWinControl.MouseOver
@@ -774,7 +636,7 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExWinControl.OnMouseEnter, TJvExWinControl.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExWinControl.OnMouseEnter
@@ -817,64 +679,45 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvHotTrackOptions
 Summary
-  Write here a summary (1 line)
+  Contains hot tracking options for a control.
 Description
-  Write here a description
+  TJvHotTrackOptions is used in the HotTrackOptions property of certain JVCL controls. It specifies
+  whether and how the control is highlighted when the mouse passes over it.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHotTrackOptions.Color
 Summary
-  Write here a summary (1 line)
+  Indicates the color to use when the associated control is highlighted.
 Description
-  Write here a description
+  Use Color to set the background color to use for the control when the mouse hovers over it. Color is
+  not used unless Enabled is true.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvHotTrackOptions.Enabled
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHotTrackOptions.Enabled
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control is highlighted when the mouse passes over it.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set Enabled to true to provide visual feedback about which item is under the mouse.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHotTrackOptions.FrameColor
 Summary
-  Write here a summary (1 line)
+  Indicates the frame color to use when the associated control is highlighted.
 Description
-  Write here a description
+  Use FrameColor to set the frame color to use for the control when the mouse hovers over it.
+  FrameColor is not used unless Enabled and FrameVisible are set to True.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvHotTrackOptions.FrameVisible
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHotTrackOptions.FrameVisible
 Summary
-  Write here a summary (1 line)
+  Specifies whether to draw a frame when the associated control is highlighted/.
 Description
-  Write here a description
+  Use FrameVisible to show a frame around the control when the mouse hovers over it. FrameVisible is
+  not used unless Enabled is set to True.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStructPtrMessage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TStructPtrMessage.Msg
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvHotTrackOptions.FrameVisible
 

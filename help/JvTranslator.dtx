@@ -31,7 +31,7 @@ Summary
 Description
   Call ClearSkipList to clear the internal skip list.
 See Also
-  <LINK SkipClass>, <LINK SkipProperty>
+  TJvTranslator.SkipClass, TJvTranslator.SkipProperty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.ComponentToXML
@@ -58,7 +58,7 @@ Return value
   An \XML string then can be used in calls to TJvTranslator.Translate or as a building block for an XML
   translation template file.
 See Also
-  <LINK SkipClass>, <LINK SkipProperty>, InSkipList
+  TJvTranslator.SkipClass, TJvTranslator.SkipProperty, TJvTranslator.InSkipList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TClass
@@ -72,7 +72,7 @@ Parameters
 Return value
   True if AClass is in the skip list, false if it is not.
 See Also
-  <LINK SkipClass>
+  TJvTranslator.SkipClass
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TClass@string
@@ -87,7 +87,7 @@ Parameters
 Return value
   True if PropName of AClass is in the skip list, false if it is not.
 See Also
-  <LINK SkipClass>, <LINK SkipProperty>
+  TJvTranslator.SkipClass, TJvTranslator.SkipProperty
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TObject
@@ -101,7 +101,7 @@ Parameters
 Return value
   True if Obj is in the skip list, false if it is not.
 See Also
-  <LINK SkipClass>
+  TJvTranslator.SkipClass
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TObject@string
@@ -116,7 +116,7 @@ Parameters
 Return value
   True if PropName of Obj is in the skip list, false if it is not.
 See Also
-  <LINK SkipClass>
+  TJvTranslator.SkipClass
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.SkipClass
@@ -132,7 +132,7 @@ Description
 Parameters
   AClass - The class to skip. Calling SkipClass with the same class multiple times, does nothing.
 See Also
-  InSkipList
+  TJvTranslator.InSkipList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.SkipProperty
@@ -149,7 +149,7 @@ Parameters
   AClass   - The class containing the property.
   PropName - the property to skip in the class.
 See Also
-  InSkipList
+  TJvTranslator.InSkipList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.Translate@string
@@ -404,13 +404,14 @@ Summary
 Description
   Use Strings to read or modify the string at a particular position. Index gives the position of the
   string, where 0 is the position of the first string, 1 is the position of the second string, and so
-  \on. To locate a particular string in the list, call the <LINK IndexOf> method.
+  \on. To locate a particular string in the list, call the <LINK TJvTranslatorStrings.IndexOf, IndexOf>
+  method.
 
   \Note that this property does not work like you might expect. Specifically, when reading, the
   returned value is the <I>Name</I> part of the string, but when writing the value is written to the
   <I>\Value</I> part of the string. To read the value, use Value instead.
 See Also
-  <LINK Add>, <LINK IndexOf>
+  TJvTranslatorStrings.Add, TJvTranslatorStrings.IndexOf
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslatorStrings.Value
