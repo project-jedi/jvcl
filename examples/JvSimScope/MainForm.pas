@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JvSimScope, StdCtrls;
+  Dialogs, JvSimScope, StdCtrls, JvCPUUsage;
 
 type
   TfrmMain = class(TForm)
@@ -50,10 +50,10 @@ type
     procedure btnActivateDeactivateRandomClick(Sender: TObject);
     procedure btnAdjustMaxClick(Sender: TObject);
   private
-    FPrevIdleTime: LARGE_INTEGER;
-    FPrevSystemTime: LARGE_INTEGER;
+    FCPUUsage: TJvCPUUsage;
   public
-    { Déclarations publiques }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 var
@@ -62,9 +62,6 @@ var
 implementation
 
 {$R *.dfm}
-
-uses
-  CPUUsage;
 
 procedure TfrmMain.btnActivateDeactivateCPUClick(Sender: TObject);
 begin
@@ -104,9 +101,23 @@ begin
     jssRandom.Maximum := LineMax;
 end;
 
+constructor TfrmMain.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FCPUUsage := TJvCPUUsage.Create(Self);
+end;
+
+destructor TfrmMain.Destroy;
+begin
+  FCPUUsage.Free;
+
+  inherited Destroy;
+end;
+
 procedure TfrmMain.jssCPUUpdate(Sender: TObject);
 begin
-  jssCPU.Lines[0].Position := Round(GetCPUUsage(FPrevIdleTime, FPrevSystemTime))
+  jssCPU.Lines[0].Position := Round(FCPUUsage.Usage);
 end;
 
 procedure TfrmMain.jssRandomUpdate(Sender: TObject);
