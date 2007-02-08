@@ -284,7 +284,7 @@ end;
 
 procedure TJvDBFindEdit.ResetFilter;
 begin
-  Text :='';
+  Text := '';
   // FSearchText := '';
   FDataLink.DataSet.Filtered := False;
 end;
@@ -293,6 +293,8 @@ procedure TJvDBFindEdit.FTimerTimer(Sender: TObject);
 begin
   FTimer.Enabled := False;
   ActiveChange(Self);
+  if FFindStyle = fsFilter then
+    FDataLink.DataSet.Filtered := False;
   if FSearchText = '' then
   begin
     if FFindStyle = fsFilter then
@@ -307,10 +309,12 @@ begin
       Exit;
     if DateVal and not(FDataLink.Field is TBlobField) then
       if FFindStyle = fsNavigate then
+      begin
         if IgnoreCase then
           FDataLink.DataSet.Locate(DataField, FSearchText, [loCaseInsensitive, loPartialKey])
         else
-          FDataLink.DataSet.Locate(DataField, FSearchText, [loPartialKey])
+          FDataLink.DataSet.Locate(DataField, FSearchText, [loPartialKey]);
+      end
       else
         FDataLink.DataSet.Filtered := True;
   end;
@@ -323,8 +327,7 @@ begin
   FTimerTimer(FTimer);
 end;
 
-procedure TJvDBFindEdit.AFilterRecord(DataSet: TDataSet;
-  var Accept: Boolean);
+procedure TJvDBFindEdit.AFilterRecord(DataSet: TDataSet; var Accept: Boolean);
 begin
   Accept := True;
   if FOldFiltered and Assigned(FOldFilterRecord) then
@@ -332,17 +335,21 @@ begin
   if not Accept then
     Exit;
   if FFindMode = fmFirstPos then
+  begin
     if IgnoreCase then
       Accept := Pos(AnsiUpperCase(FSearchText),
         AnsiUpperCase(DataSet.FieldByName(DataField).AsString)) = 1
     else
-      Accept := Pos(FSearchText, DataSet.FieldByName(DataField).AsString) = 1
+      Accept := Pos(FSearchText, DataSet.FieldByName(DataField).AsString) = 1;
+  end
   else
-  if IgnoreCase then
-    Accept := Pos(AnsiUpperCase(FSearchText),
-      AnsiUpperCase(DataSet.FieldByName(DataField).AsString)) > 0
-  else
-    Accept := Pos(FSearchText, DataSet.FieldByName(DataField).AsString) > 0
+  begin
+    if IgnoreCase then
+      Accept := Pos(AnsiUpperCase(FSearchText),
+        AnsiUpperCase(DataSet.FieldByName(DataField).AsString)) > 0
+    else
+      Accept := Pos(FSearchText, DataSet.FieldByName(DataField).AsString) > 0;
+  end;
 end;
 
 procedure TJvDBFindEdit.ActiveChange(Sender: TObject);
