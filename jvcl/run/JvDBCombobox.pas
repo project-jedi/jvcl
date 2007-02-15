@@ -249,6 +249,7 @@ procedure TJvCustomDBComboBox.CreateWnd;
 begin
   inherited CreateWnd;
   SetEditReadOnly;
+  DataChange(Self);
 end;
 
 procedure TJvCustomDBComboBox.DataChange(Sender: TObject);
