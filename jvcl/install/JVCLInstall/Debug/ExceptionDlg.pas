@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JclDebug;
+  StdCtrls, ExtCtrls, JclDebug, JclWin32;
 
 const
   UM_CREATEDETAILS = WM_USER + $100;
@@ -400,7 +400,7 @@ var
   ModuleName: TFileName;
   CpuInfo: TCpuInfo;
   C: TWinControl;
-  NtHeaders: PImageNtHeaders;
+  NtHeaders: PImageNtHeaders32;
   ModuleBase: Cardinal;
   ImageBaseStr: string;
   StackList: TJclStackInfoList;
@@ -441,7 +441,7 @@ begin
         ModuleName := SL[I];
         ModuleBase := Cardinal(SL.Objects[I]);
         DetailsMemo.Lines.Add(Format('[%.8x] %s', [ModuleBase, ModuleName]));
-        NtHeaders := PeMapImgNtHeaders(Pointer(ModuleBase));
+        NtHeaders := PeMapImgNtHeaders32(Pointer(ModuleBase));
         if (NtHeaders <> nil) and (NtHeaders^.OptionalHeader.ImageBase <> ModuleBase) then
           ImageBaseStr := Format('<%.8x> ', [NtHeaders^.OptionalHeader.ImageBase])
         else
