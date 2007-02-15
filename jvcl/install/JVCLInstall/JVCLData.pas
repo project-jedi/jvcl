@@ -666,6 +666,7 @@ begin
   inherited Create(nil);
   FOwner := AOwner;
   FTarget := ATarget;
+  FBuild := CmdOptions.RebuildPackages;
 
   FInstallMode := [pkVcl];
   {if Target.IsBDS then
