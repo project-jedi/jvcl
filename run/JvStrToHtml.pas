@@ -82,7 +82,7 @@ const
       http://www.w3.org/TR/REC-html40/sgml/entities.html#h-24.2.1
       http://www.w3.org/TR/REC-html40/sgml/entities.html#h-24.4.1
   }
-  Conversions: array [1..72] of TJvHtmlCodeRec = (
+  Conversions: array [1..75] of TJvHtmlCodeRec = (
     (Ch: '"'; Html: '&quot;'),
     (Ch: '<'; Html: '&lt;'),
     (Ch: '>'; Html: '&gt;'),
@@ -154,7 +154,10 @@ const
     (Ch: 'û'; Html: '&ucirc;'),
     (Ch: 'ü'; Html: '&uuml;'),
     (Ch: 'ý'; Html: '&yacute;'),
-    (Ch: 'ÿ'; Html: '&yuml;')
+    (Ch: 'ÿ'; Html: '&yuml;'),
+    (Ch: '&'; Html: '&amp;'),
+    (Ch: '´'; Html: '&acute;'),
+    (Ch: '`'; Html: '&grave;')
     );
 
 constructor TJvStrToHtml.Create(AOwner: TComponent);
