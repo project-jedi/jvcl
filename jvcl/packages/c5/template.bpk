@@ -11,7 +11,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.05.03"/>
-    <PROJECT value="%NAME%.bpl"/>
+    <PROJECT value="%NAME%%BINEXTENSION%"/>
     <OBJFILES value="
       ..\..\lib\c5\%NAME%.obj
 <%%% START FILES %%%>

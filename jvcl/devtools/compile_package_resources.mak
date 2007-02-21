@@ -64,6 +64,7 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\c5\JvWizardC5R.res                  \
            ..\packages\c5\JvXPCtrlsC5D.res                 \
            ..\packages\c5\JvXPCtrlsC5R.res                 \
+           ..\packages\c5std\JvCoreC5R.res                 \
            ..\packages\c5std\JvDotNetCtrlsC5R.res          \
            ..\packages\c5std\JvGlobusC5D.res               \
            ..\packages\c5std\JvGlobusC5R.res               \
@@ -134,6 +135,7 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\c6\JvWizardC6R.res                  \
            ..\packages\c6\JvXPCtrlsC6D.res                 \
            ..\packages\c6\JvXPCtrlsC6R.res                 \
+           ..\packages\c6per\JvCoreC6R.res                 \
            ..\packages\c6per\JvDotNetCtrlsC6R.res          \
            ..\packages\c6per\JvGlobusC6D.res               \
            ..\packages\c6per\JvGlobusC6R.res               \
@@ -204,6 +206,7 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d10\JvWizardD10R.res                \
            ..\packages\d10\JvXPCtrlsD10D.res               \
            ..\packages\d10\JvXPCtrlsD10R.res               \
+           ..\packages\d10per\JvCoreD10R.res               \
            ..\packages\d10per\JvDotNetCtrlsD10R.res        \
            ..\packages\d10per\JvGlobusD10D.res             \
            ..\packages\d10per\JvGlobusD10R.res             \
@@ -274,6 +277,7 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d5\JvWizardD5R.res                  \
            ..\packages\d5\JvXPCtrlsD5D.res                 \
            ..\packages\d5\JvXPCtrlsD5R.res                 \
+           ..\packages\d5std\JvCoreD5R.res                 \
            ..\packages\d5std\JvDotNetCtrlsD5R.res          \
            ..\packages\d5std\JvGlobusD5D.res               \
            ..\packages\d5std\JvGlobusD5R.res               \
@@ -344,6 +348,7 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d6\JvWizardD6R.res                  \
            ..\packages\d6\JvXPCtrlsD6D.res                 \
            ..\packages\d6\JvXPCtrlsD6R.res                 \
+           ..\packages\d6per\JvCoreD6R.res                 \
            ..\packages\d6per\JvDotNetCtrlsD6R.res          \
            ..\packages\d6per\JvGlobusD6D.res               \
            ..\packages\d6per\JvGlobusD6R.res               \
@@ -456,6 +461,7 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d7clx\JvQWizardD7R.res              \
            ..\packages\d7clx\JvQXPCtrlsD7D.res             \
            ..\packages\d7clx\JvQXPCtrlsD7R.res             \
+           ..\packages\d7per\JvCoreD7R.res                 \
            ..\packages\d7per\JvDotNetCtrlsD7R.res          \
            ..\packages\d7per\JvGlobusD7D.res               \
            ..\packages\d7per\JvGlobusD7R.res               \
@@ -526,22 +532,23 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d9\JvWizardD9R.res                  \
            ..\packages\d9\JvXPCtrlsD9D.res                 \
            ..\packages\d9\JvXPCtrlsD9R.res                 \
+           ..\packages\d9per\JvCoreD9R.res                 \
            ..\packages\d9per\JvDotNetCtrlsD9R.res          \
            ..\packages\d9per\JvGlobusD9D.res               \
            ..\packages\d9per\JvGlobusD9R.res               \
            ..\packages\d9per\JvInterpreterD9D.res          \
            ..\packages\d9per\JvInterpreterD9R.res          \
            ..\packages\d9per\JvRuntimeDesignD9R.res        \
-           ..\packages\d9per\JvUIBD9R.res
-
+           ..\packages\d9per\JvUIBD9R.res                  
+                                                           
 # ---------------------------------------------------------------------------
-!if !$d(BRCC32)
-BRCC32 = brcc32
-!endif
+!if !$d(BRCC32)                                            
+BRCC32 = brcc32                                            
+!endif                                                     
 # ---------------------------------------------------------------------------
-!if $d(PATHRC)
-.PATH.res  = $(PATHRC)
-!endif
+!if $d(PATHRC)                                             
+.PATH.res  = $(PATHRC)                                     
+!endif                                                     
 # ---------------------------------------------------------------------------
 resources.res: $(RESFILES)
 
