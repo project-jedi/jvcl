@@ -45,7 +45,7 @@ uses
   {$IFDEF USEJVCL}
   JvComponentBase,
   {$ENDIF USEJVCL}
-  DBT, SetupApi, HID, ModuleLoader, Dialogs;
+  DBT, SetupApi, HID, ModuleLoader;
 
 const
   // a version string for the component
