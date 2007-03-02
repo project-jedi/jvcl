@@ -163,7 +163,8 @@ implementation
 uses
   SysUtils,
   JvJCLUtils, // BinStrToBuf & BufToBinStr
-  JvVCL5Utils, JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
+  JvVCL5Utils, JvConsts, JvResources,
+  JclAnsiStrings; // JvConsts or PathDelim under D5 and BCB5
 
 const
   cNullDigit = '0';
@@ -645,24 +646,18 @@ begin
       FlushIfNeeded;
     end
     else
-    if IniFile.SectionExists(LSection + '\' + Key) then
+    if IniFile.SectionExists(LSection + PathDelim + Key) then
     begin
-      IniFile.EraseSection(LSection + '\' + Key);
+      IniFile.EraseSection(LSection + PathDelim + Key);
       FlushIfNeeded;
     end;
   end;
 end;
 
 function TJvCustomAppIniStorage.PathExistsInt(const Path: string): Boolean;
-var
-  Section: string;
 begin
   ReloadIfNeeded;
-  if Copy(Path,1,1) = PathDelim then
-    Section := Copy(Path, 2, Length(Path)-1)
-  else
-    Section := Path;
-  Result := IniFile.SectionExists(Section);
+  Result := IniFile.SectionExists(StrEnsureNoPrefix(PathDelim, Path));
 end;
 
 function TJvCustomAppIniStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
