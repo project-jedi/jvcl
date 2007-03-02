@@ -304,6 +304,7 @@ procedure TJvDBOdacLogonDialog.ConnectSession;
 begin
   if Assigned(Session) then
   try
+    Session.DisConnect;
     Session.PerformConnect;
   except
     on E: EOraError do
