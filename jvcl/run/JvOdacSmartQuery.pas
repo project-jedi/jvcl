@@ -84,11 +84,13 @@ type
   private
     FBeforeFetch: TBeforeFetchEvent;
     FThreadHandler: TJvBaseDatasetThreadHandler;
-    function GetBeforeThreadExecution1: TJvThreadedDatasetThreadEvent;
+    function GetAfterThreadExecution: TJvThreadedDatasetThreadEvent;
+    function GetBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
     function GetDialogOptions: TJvThreadedDatasetDialogOptions;
     function GetEnhancedOptions: TJvOdacThreadedDatasetEnhancedOptions;
     function GetThreadOptions: TJvThreadedDatasetThreadOptions;
-    procedure SetBeforeThreadExecution1(const Value: TJvThreadedDatasetThreadEvent);
+    procedure SetAfterThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
+    procedure SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
     procedure SetEnhancedOptions(const Value:
         TJvOdacThreadedDatasetEnhancedOptions);
@@ -111,9 +113,11 @@ type
     function ErrorMessage: string;
     function ThreadIsActive: Boolean;
   published
+    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
+        GetAfterThreadExecution write SetAfterThreadExecution;
     property BeforeFetch: TBeforeFetchEvent read FBeforeFetch write FBeforeFetch;
-    property BeforeThreadExecution1: TJvThreadedDatasetThreadEvent read GetBeforeThreadExecution1 write
-      SetBeforeThreadExecution1;
+    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
+        GetBeforeThreadExecution write SetBeforeThreadExecution;
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
     property EnhancedOptions: TJvOdacThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
     property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
@@ -235,7 +239,17 @@ begin
     Result := '';
 end;
 
-function TJvOdacSmartQuery.GetBeforeThreadExecution1: TJvThreadedDatasetThreadEvent;
+function TJvOdacSmartQuery.GetAfterThreadExecution:
+    TJvThreadedDatasetThreadEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.AfterThreadExecution
+  else
+    Result := nil;
+end;
+
+function TJvOdacSmartQuery.GetBeforeThreadExecution:
+    TJvThreadedDatasetThreadEvent;
 begin
   if Assigned(ThreadHandler) then
     Result := ThreadHandler.BeforeThreadExecution
@@ -306,7 +320,15 @@ begin
     ThreadHandler.SetActive(Value);
 end;
 
-procedure TJvOdacSmartQuery.SetBeforeThreadExecution1(const Value: TJvThreadedDatasetThreadEvent);
+procedure TJvOdacSmartQuery.SetAfterThreadExecution(const Value:
+    TJvThreadedDatasetThreadEvent);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.AfterThreadExecution := Value;
+end;
+
+procedure TJvOdacSmartQuery.SetBeforeThreadExecution(const Value:
+    TJvThreadedDatasetThreadEvent);
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.BeforeThreadExecution := Value;
