@@ -325,6 +325,9 @@ begin
   FVersion := 0;
   FVersionCheck := fpvcCheckGreaterEqual;
   FAppStoragePath := cFormNameMask;
+  FSaved := False;
+  FRestored := False;
+  FDestroying := False;
 end;
 
 destructor TJvFormPlacement.Destroy;
@@ -594,7 +597,7 @@ end;
 
 procedure TJvFormPlacement.FormShow(Sender: TObject);
 begin
-  if IsActive then
+  if IsActive and not FRestored then
   try
     RestoreFormPlacement;
   except
@@ -866,9 +869,6 @@ end;
 
 procedure TJvFormPlacement.SaveFormPlacement;
 begin
-  { (marcelb) say what? Store when the component has done a restore previously or if it's inactive?
-    I think it should only store if Active is set to True. Changed accordingly }
-//  if FRestored or not Active then
   if Assigned(AppStorage) then
   begin
     if VersionCheck <> fpvcNocheck then
