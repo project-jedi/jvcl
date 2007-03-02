@@ -110,6 +110,7 @@ procedure TJvDBDoaLogonDialog.ConnectSession;
 begin
   if Assigned(Session) then
   try
+    Session.LogOff;
     Session.LogOn;
   except
     on E: EOracleError do
