@@ -139,7 +139,7 @@ implementation
 
 uses
   JclMime,
-  JvJCLUtils, JvResources;
+  JvJCLUtils, JvResources, JclAnsiStrings;
 
 constructor TJvCustomAppDBStorage.Create(AOwner: TComponent);
 begin
@@ -310,7 +310,7 @@ function TJvCustomAppDBStorage.IsFolderInt(const Path: string;
   ListIsValue: Boolean): Boolean;
 begin
   { TODO -oJVCL -cTESTING : Is this correct implementation? }
-  Result := SectionExists(Path, True);
+  Result := SectionExists(StrEnsureNoPrefix(PathDelim, Path), True);
 end;
 
 procedure TJvCustomAppDBStorage.Notification(AComponent: TComponent;
@@ -325,7 +325,7 @@ end;
 function TJvCustomAppDBStorage.PathExistsInt(const Path: string): Boolean;
 begin
   { TODO -oJVCL -cTESTING : Is this correct implementation? }
-  Result := SectionExists(Path, True);
+  Result := SectionExists(StrEnsureNoPrefix(PathDelim, Path), True);
 end;
 
 function TJvCustomAppDBStorage.ReadValue(const Section, Key: string): string;
