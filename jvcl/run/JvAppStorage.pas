@@ -1335,7 +1335,7 @@ procedure TJvCustomAppStorage.WriteStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
   if List is TStrings then
-    Sender.WriteStringInt(ConcatPaths([Path, ItemName + IntToStr(Index)]), TStrings(List)[Index]);
+    Sender.WriteString(ConcatPaths([Path, ItemName + IntToStr(Index)]), TStrings(List)[Index]);
 end;
 
 procedure TJvCustomAppStorage.DeleteStringListItem(Sender: TJvCustomAppStorage;
