@@ -102,6 +102,7 @@ type
     function GetOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
     function GetOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
     function GetOnFillShortcutList: TJvLogonDialogFillListEvent;
+    function GetOnSessionConnect: TJvLogonDialogBaseSessionEvent;
     function GetOptions: TJvDBOdacLogonDialogOptions;
     procedure SetAfterTransferSessionDataToConnectionInfo(const Value: TJvLogonDialogConnectionInfoEvent);
     procedure SetBeforeTransferConnectionInfoToSessionData(const Value: TJvLogonDialogConnectionInfoEvent);
@@ -109,6 +110,7 @@ type
     procedure SetOnDecryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
     procedure SetOnEncryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
     procedure SetOnFillShortcutList(const Value: TJvLogonDialogFillListEvent);
+    procedure SetOnSessionConnect(const Value: TJvLogonDialogBaseSessionEvent);
     procedure SetOptions(const Value: TJvDBOdacLogonDialogOptions);
   protected
     procedure SetAppStorage(Value: TJvCustomAppStorage);
@@ -136,9 +138,12 @@ type
     property OnEncryptPassword: TJvLogonDialogEncryptDecryptEvent read
       GetOnEncryptPassword write SetOnEncryptPassword;
     //1 Event for filling the database list
-    property OnFillDatabaseList: TJvLogonDialogFillListEvent read FOnFillDatabaseList write FOnFillDatabaseList;
+    property OnFillDatabaseList: TJvLogonDialogFillListEvent read
+        FOnFillDatabaseList write FOnFillDatabaseList;
     //1 Event for customizing the shortcut list
     property OnFillShortcutList: TJvLogonDialogFillListEvent read GetOnFillShortcutList write SetOnFillShortcutList;
+    property OnSessionConnect: TJvLogonDialogBaseSessionEvent read
+        GetOnSessionConnect write SetOnSessionConnect;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -234,6 +239,12 @@ begin
   Result := LogonDialogInternal.OnFillShortcutList;
 end;
 
+function TJvDBOdacConnectDialog.GetOnSessionConnect:
+    TJvLogonDialogBaseSessionEvent;
+begin
+  Result := LogonDialogInternal.OnSessionConnect;
+end;
+
 function TJvDBOdacConnectDialog.GetOptions: TJvDBOdacLogonDialogOptions;
 begin
   Result := LogonDialogInternal.Options
@@ -286,6 +297,12 @@ end;
 procedure TJvDBOdacConnectDialog.SetOnFillShortcutList(const Value: TJvLogonDialogFillListEvent);
 begin
   LogonDialogInternal.OnFillShortcutList := Value;
+end;
+
+procedure TJvDBOdacConnectDialog.SetOnSessionConnect(const Value:
+    TJvLogonDialogBaseSessionEvent);
+begin
+  LogonDialogInternal.OnSessionConnect:= Value;
 end;
 
 procedure TJvDBOdacConnectDialog.SetOptions(const Value: TJvDBOdacLogonDialogOptions);
