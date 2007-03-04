@@ -90,6 +90,7 @@ begin
     {$ENDIF USE_3RDPARTY_DOA}
     {$IFDEF USE_3RDPARTY_CORELAB_ODAC} 
     TJvDBOdacConnectDialog, TJvDBOdacPasswordDialog, TjvOdacSmartQuery,
+    TjvOdacOraTable, TjvOdacOraQuery,
     {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
     TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
