@@ -870,23 +870,31 @@ var
 
 var
   NewPane: TJvDockVSPane;
+  Form: TCustomForm;
+  APageControl: TJvDockTabPageControl;
 begin
   PaneWidth := GetPaneWidth;
   if Control is TJvDockTabHostForm then
   begin
     FBlockType := btTabBlock;
-    with TJvDockTabHostForm(Control) do
+    APageControl := TJvDockTabHostForm(Control).PageControl;
+    FirstIndex := VSPaneCount;
+    { Mantis 3989: (Kiriakos) PageControl.DockClients does NOT have to be in the
+      same order as PageControl.Pages; for example, if we reorder the pages. }
+    for I := 0 to APageControl.Count - 1 do
     begin
-      FirstIndex := VSPaneCount;
-      for I := 0 to PageControl.DockClientCount - 1 do
+      { (rb) Is this a valid assumption?, see for example TJvDockTabHostForm.GetActiveDockForm }
+      if (APageControl.Pages[I].ControlCount > 0) and
+        (APageControl.Pages[I].Controls[0] is TCustomForm) then
       begin
-        AddPane(PageControl.DockClients[I], PaneWidth);
-        TJvDockVSNETTabSheet(PageControl.Pages[I]).OldVisible := PageControl.DockClients[I].Visible;
-        if PageControl.Pages[I] <> PageControl.ActivePage then
-          PageControl.DockClients[I].Visible := False;
+        Form := TCustomForm(APageControl.Pages[I].Controls[0]);
+        AddPane(Form, PaneWidth);
+        TJvDockVSNETTabSheet(APageControl.Pages[I]).OldVisible := Form.Visible;
+        if APageControl.Pages[I] <> APageControl.ActivePage then
+          Form.Visible := False;
       end;
-      UpdateActivePane(FirstIndex);
     end;
+    UpdateActivePane(FirstIndex);
   end
   else
   begin
@@ -952,7 +960,7 @@ begin
   end;
   { Add the form icon }
 
-  if not Assigned(TCustomFormAccess(AControl).Icon) 
+  if not Assigned(TCustomFormAccess(AControl).Icon)
     {$IFDEF COMPILER6_UP}or not TCustomFormAccess(AControl).Icon.HandleAllocated{$ENDIF COMPILER6_UP} then
   begin
     Icon := TIcon.Create;
