@@ -135,6 +135,7 @@ type
     FException: Exception;
     FExceptionAddr: Pointer;
     FExecuteEvent: TJvNotifyParamsEvent;
+    FExecuteIsActive: Boolean;
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
     FParams: Pointer;
     FSender: TObject;
@@ -147,10 +148,12 @@ type
   protected
     procedure InternalMessageDlg;
   public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params:
+        Pointer); virtual;
     procedure Execute; override;
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    property ExecuteIsActive: Boolean read FExecuteIsActive;
   published
     property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
         FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
@@ -340,6 +343,7 @@ begin
     OnPressCancel(Sender);
   if Assigned(ConnectedThread) then
     ConnectedThread.CancelExecute;
+  ModalResult := mrNone;
 end;
 
 procedure TJvCustomThreadDialogForm.InitializeFormContents;
@@ -385,7 +389,7 @@ end;
 procedure TJvCustomThreadDialogForm.ReplaceFormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if Assigned(ConnectedThread) then
-    CanClose := ConnectedThread.Terminated
+    CanClose := not ConnectedThread.OneThreadIsRunning
   else
     CanClose := True;
   if CanClose then
@@ -606,8 +610,8 @@ procedure TJvThread.DoTerminate(Sender: TObject);
 begin
   FThreads.Remove(Sender);
   try
-    if (Count = 0) and Assigned(ThreadDialogForm) then
-      ThreadDialogForm.Hide;
+//    if (Count = 0) and Assigned(ThreadDialogForm) then
+//      ThreadDialogForm.Hide;
     if Assigned(FOnFinish) then
       FOnFinish(Self);
   finally
@@ -622,8 +626,25 @@ begin
 end;
 
 function TJvThread.OneThreadIsRunning: Boolean;
+var
+  I: Integer;
+  List: TList;
 begin
   Result := Count > 0;
+  if Result then
+  begin
+    List := FThreads.LockList;
+    try
+      for I := 0 to List.Count - 1 do
+        if TJvBaseThread(List[I]).ExecuteIsActive then
+        begin
+          Result := False;
+          Exit;
+        end;
+    finally
+      FThreads.UnlockList;
+    end;
+  end;
 end;
 
 procedure TJvThread.Terminate;
@@ -731,12 +752,14 @@ end;
 
 //=== { TJvBaseThread } ======================================================
 
-constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
+constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+    Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
   FExecuteEvent := Event;
   FParams := Params;
+  FExecuteIsActive := False;
 end;
 
 procedure TJvBaseThread.ExceptionHandler;
@@ -746,11 +769,14 @@ end;
 
 procedure TJvBaseThread.Execute;
 begin
+  FExecuteIsActive := True;
   try
     FExecuteEvent(FSender, FParams);
+    FExecuteIsActive := False;
   except
     on E: Exception do
     begin
+      FExecuteIsActive := False;
       FException := E;
       FExceptionAddr := ExceptAddr;
       Self.Synchronize(ExceptionHandler);
