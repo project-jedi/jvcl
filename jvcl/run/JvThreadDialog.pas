@@ -75,9 +75,11 @@ type
   private
     FCommonAVI: TCommonAVI;
     FFileName: string;
+    FResName: string;
   published
     property CommonAVI: TCommonAVI read FCommonAVI write FCommonAVI;
     property FileName: string read FFileName write FFileName;
+    property ResName: string read FResName write FResName;
   end;
 
   TJvThreadAnimateDialog = class(TJvCustomThreadDialog)
@@ -527,6 +529,7 @@ begin
     AutoSize := True;
     CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
     FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
+    ResName := TJvThreadAnimateDialogOptions(DialogOptions).ResName;
     FAnimatePanel.Height := Height + FDefaultBorderWidth*2;
   end;
 
@@ -598,7 +601,7 @@ begin
     Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
     FAnimatePanel.Visible := FileExists(FAnimate.FileName) or
-      (FAnimate.CommonAVI <> aviNone);
+      (FAnimate.CommonAVI <> aviNone) or (FAnimate.ResName <> '');
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
     FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
     FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
