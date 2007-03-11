@@ -550,7 +550,7 @@ begin
                   TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.Size
               else
               begin
-                if (ADynControlEngineDB.GetFieldControlType(ds.DataSet.Fields[I])= jctDBMemo) and
+                if (ADynControlEngineDB.GetFieldControlType(Field)= jctDBMemo) and
                  (FieldMaxWidth > 0) then
                   Control.Width := FieldMaxWidth;
               end

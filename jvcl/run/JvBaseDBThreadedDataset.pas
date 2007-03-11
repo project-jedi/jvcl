@@ -1057,37 +1057,37 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.HandleAfterOpenRefresh;
 begin
-  CurrentOpenDuration := Now - FCurrentOperationStart;
-  FCurrentOperationStart := Now;
-  DatasetFetchAllRecords := FIntDatasetFetchAllRecords;
-  CurrentFetchDuration := 0;
-  if CurrentAction <> tdaCancel then
-  begin
-    CurrentAction := tdaFetch;
-    FetchMode := tdfmFetch;
-    if Dataset.Active then
-    begin
-      Dataset.First;
-      if DatasetFetchAllRecords then
-        IThreadedDatasetInterface.DoInheritedInternalLast
-      else
-        if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or
-          (FMoveToRecordAfterOpen > Dataset.RecordCount) then
-          if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
-            Dataset.MoveBy(FMoveToRecordAfterOpen - 1)
-          else
-            Dataset.MoveBy(EnhancedOptions.FetchRowsFirst - 1);
-    end;
-  end;
   try
+    CurrentOpenDuration := Now - FCurrentOperationStart;
+    FCurrentOperationStart := Now;
+    DatasetFetchAllRecords := FIntDatasetFetchAllRecords;
+    CurrentFetchDuration := 0;
+    if CurrentAction <> tdaCancel then
+    begin
+      CurrentAction := tdaFetch;
+      FetchMode := tdfmFetch;
+      if Dataset.Active then
+      begin
+        Dataset.First;
+        if DatasetFetchAllRecords then
+          IThreadedDatasetInterface.DoInheritedInternalLast
+        else
+          if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or
+            (FMoveToRecordAfterOpen > Dataset.RecordCount) then
+            if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
+              Dataset.MoveBy(FMoveToRecordAfterOpen - 1)
+            else
+              Dataset.MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+      end;
+    end;
     Dataset.Filtered := FIntDatasetWasFiltered;
     if Dataset.Active and (CurrentAction <> tdaCancel) then
       if FMoveToRecordAfterOpen > 0 then
         MoveTo(FMoveToRecordAfterOpen)
       else
         Dataset.First;
-    CurrentAction := tdaNothing;
   finally
+    CurrentAction := tdaNothing;
     ExecuteThreadSynchronize(Dataset.EnableControls);
   end;
 end;

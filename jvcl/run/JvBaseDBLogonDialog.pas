@@ -1744,7 +1744,6 @@ var
   Change: Boolean;
 begin
   Change := Value <> FGroupByDatabase;
-  FGroupByDatabase := Value;
   if Change then
   begin
     if Assigned(IGroupByDatabaseCheckBox) then
@@ -1757,6 +1756,7 @@ begin
         IGroupByUserCheckBox.ControlSetState(cbUnChecked);
     FillGroupTreeView;
   end;
+  FGroupByDatabase := Value;
 end;
 
 procedure TJvBaseDBLogonDialog.SetGroupByUser(Value: Boolean);
@@ -1764,7 +1764,6 @@ var
   Change: Boolean;
 begin
   Change := Value <> fGroupByUser;
-  fGroupByUser := Value;
   if Change then
   begin
     if Assigned(IGroupByUserCheckBox) then
@@ -1777,6 +1776,7 @@ begin
         IGroupByDatabaseCheckBox.ControlSetState(cbUnChecked);
     FillGroupTreeView;
   end;
+  fGroupByUser := Value;
 end;
 
 procedure TJvBaseDBLogonDialog.SetOptions(const Value: TJvBaseDBLogonDialogOptions);
