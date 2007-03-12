@@ -638,9 +638,10 @@ begin
       for I := 0 to List.Count - 1 do
         if TJvBaseThread(List[I]).ExecuteIsActive then
         begin
-          Result := False;
+          Result := True;
           Exit;
         end;
+      Result := False;
     finally
       FThreads.UnlockList;
     end;
