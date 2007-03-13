@@ -1435,13 +1435,15 @@ end;
 procedure TJvBaseDBLogonDialog.GroupByDatabaseCheckBoxClick(Sender: TObject);
 begin
   if Assigned(IGroupByDatabaseCheckBox) then
-    GroupByDatabase := not GroupByDatabase; //IGroupByDatabaseCheckBox.ControlState = cbChecked;
+    //GroupByDatabase := not GroupByDatabase;
+    GroupByDatabase := IGroupByDatabaseCheckBox.ControlState = cbChecked;
 end;
 
 procedure TJvBaseDBLogonDialog.GroupByUserCheckBoxClick(Sender: TObject);
 begin
   if Assigned(IGroupByUserCheckBox) then
-    GroupByUser := not GroupByUser; //IGroupByUserCheckBox.ControlState = cbChecked;
+    //GroupByUser := not GroupByUser;
+    GroupByUser := IGroupByUserCheckBox.ControlState = cbChecked;
 end;
 
 procedure TJvBaseDBLogonDialog.LoadSettings;
@@ -1754,9 +1756,10 @@ begin
     if Assigned(IGroupByUserCheckBox) then
       if Value and GroupByUser then
         IGroupByUserCheckBox.ControlSetState(cbUnChecked);
-    FillGroupTreeView;
   end;
   FGroupByDatabase := Value;
+  if Change then
+    FillGroupTreeView;
 end;
 
 procedure TJvBaseDBLogonDialog.SetGroupByUser(Value: Boolean);
@@ -1774,9 +1777,10 @@ begin
     if Assigned(IGroupByDatabaseCheckBox) then
       if Value and GroupByDatabase then
         IGroupByDatabaseCheckBox.ControlSetState(cbUnChecked);
-    FillGroupTreeView;
   end;
   fGroupByUser := Value;
+  if Change then
+    FillGroupTreeView;
 end;
 
 procedure TJvBaseDBLogonDialog.SetOptions(const Value: TJvBaseDBLogonDialogOptions);
