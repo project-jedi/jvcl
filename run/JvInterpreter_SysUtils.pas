@@ -2087,11 +2087,19 @@ begin
 
     AddRec(cSysUtils, 'TSearchRec', SizeOf(TSearchRec), [
       RFD('Time', 0, varInteger),
-      RFD('Size', 4, varInteger),
+      RFD('Size', 4, varInteger),     // Supports only integer size
+      {$IFDEF DELPHI10_UP}
+      RFD('Attr', 16, varInteger),
+      RFD('Name', 20, varString),
+      RFD('ExcludeAttr', 24, varInteger),
+      RFD('FindHandle', 28, varInteger)
+      {$ELSE}
       RFD('Attr', 8, varInteger),
       RFD('Name', 12, varString),
       RFD('ExcludeAttr', 16, varInteger),
-      RFD('FindHandle', 20, varInteger)],
+      RFD('FindHandle', 20, varInteger)
+      {$ENDIF}
+      ],
       JvInterpreter_NewTSearchRec, JvInterpreter_DisposeTSearchRec, nil);
     { regional options }
     { global variables are not supported by JvInterpreter :( }
