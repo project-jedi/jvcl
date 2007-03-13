@@ -257,7 +257,7 @@ begin
   if not HandleAllocated or DroppedDown then
     Exit;
   if FDataLink.Field <> nil then
-    ComboText := FDataLink.Field.AsString
+    SetComboText(FDataLink.Field.Text)
   else
   if csDesigning in ComponentState then
     ComboText := Name
@@ -562,9 +562,8 @@ begin
   inherited Create(AOwner);
   FValues := TStringList.Create;
   FValues.OnChange := ValuesChanged;
-  //  EnableValues := False;
-  FEnableValues := True; // Polaris
-  Style := csDropDownList; // Polaris
+  FEnableValues := True;
+  Style := csDropDownList;
 end;
 
 destructor TJvDBComboBox.Destroy;
@@ -631,10 +630,11 @@ begin
         if Value = '' then
           I := -1
         else
-        if FEnableValues then
-          I := Values.IndexOf(Value)
-        else
+        begin
           I := Items.IndexOf(Value);
+          if (I = -1) and FEnableValues then
+            I := Values.IndexOf(Value);
+        end;
         if I >= Items.Count then
           I := -1;
         ItemIndex := I;
@@ -677,8 +677,7 @@ end;
 procedure TJvDBComboBox.SetStyle(Value: TComboBoxStyle);
 begin
   if (Value in [csSimple, csDropDown]) and FEnableValues then
-    //    Value := csDropDownList;
-    FEnableValues := False; // Polaris
+    FEnableValues := False;
   inherited SetStyle(Value);
 end;
 
