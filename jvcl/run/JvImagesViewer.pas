@@ -138,6 +138,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function LoadImages: Boolean;virtual;
+    procedure CustomSort(Compare: TListSortCompare); override;
+
     property Items[Index: Integer]: TJvPictureItem read GetItems;
     property Count;
   published
@@ -218,7 +220,7 @@ const
 implementation
 
 uses
-  JvVCL5Utils, JvJCLUtils;
+  JvVCL5Utils, JvJCLUtils, StrUtils;
   
 //=== { TJvImageViewerOptions } ==============================================
 
@@ -295,11 +297,11 @@ begin
     except
       on E: Exception do
         if not TJvImagesViewer(Owner).LoadErrorHandled(E, FileName) then
-          Delete
+          raise
         else
         begin
+          Delete;
           FreeAndNil(FPicture);
-          raise;
         end;
     end;
   end;
@@ -687,7 +689,23 @@ begin
   inherited Options := Value;
 end;
 
+function SortByFilename(Item1, Item2:Pointer):integer;
+begin
+  Result := AnsiCompareFileName(TJvPictureItem(Item1).Filename, TJvPictureItem(Item2).Filename);
+end;
+
+procedure TJvImagesViewer.CustomSort(Compare: TListSortCompare);
+begin
+  if Assigned(Compare) then
+    inherited CustomSort(Compare)
+  else
+    inherited CustomSort(SortByFilename);
+  Invalidate;
+end;
+
 {$IFDEF UNITVERSIONING}
+
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

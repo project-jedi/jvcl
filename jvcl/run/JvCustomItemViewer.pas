@@ -290,6 +290,7 @@ type
     procedure ItemChanged(Item: TJvViewerItem); virtual;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     function DoItemHint(Index: Integer; var HintInfo: THintInfo): Boolean; virtual;
+    procedure CustomSort(Compare:TListSortCompare);virtual;
 
     property TopLeftIndex: Integer read FTopLeftIndex;
     property BottomRightIndex: Integer read FBottomRightIndex;
@@ -1981,6 +1982,11 @@ begin
   if DeltaY <> 0 then
     VertScrollBar.Position := VertScrollBar.Position + DeltaY;
   UpdateAll;
+end;
+
+procedure TJvCustomItemViewer.CustomSort(Compare: TListSortCompare);
+begin
+  FItems.Sort(Compare);
 end;
 
 //=== { TViewerDrawImageList } ===============================================
