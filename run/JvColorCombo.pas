@@ -55,7 +55,7 @@ type
     var AllowAdd: Boolean) of object;
   TJvGetColorNameEvent = procedure(Sender: TObject; Index: Integer; Color: TColor;
     var DisplayName: string) of object;
-  TJvColorComboOption = (coText, coHex, coRGB, coSysColors, coCustomColors);
+  TJvColorComboOption = (coText, coHex, coRGB, coStdColors, coSysColors, coCustomColors);
   TJvColorComboOptions = set of TJvColorComboOption;
 
   TJvColorComboBox = class(TJvCustomComboBox)
@@ -151,7 +151,7 @@ type
     property HiliteColor: TColor read FHiliteColor write FHiliteColor default clHighlight;
     property HiliteText: TColor read FHiliteText write FHiliteText default clHighlightText;
     property NewColorText: string read FNewColorText write FNewColorText;
-    property Options: TJvColorComboOptions read FOptions write SetOptions default [coText];
+    property Options: TJvColorComboOptions read FOptions write SetOptions default [coText, coStdColors];
     // called before a new color is inserted as a result of displaying the Custom Colors dialog
     property OnNewColor: TJvNewColorEvent read FNewColor write FNewColor;
     // called before any color is inserted
@@ -433,7 +433,7 @@ begin
   FColorWidth := 21;
   FNewColorText := RsNewColorPrefix;
   FColorDialogText := RsCustomCaption;
-  FOptions := [coText];
+  FOptions := [coText, coStdColors];
   FHiliteColor := clHighlight;
   FHiliteText := clHighlightText;
   AutoComplete := False;
@@ -479,11 +479,12 @@ begin
     try
       Clear;
       FCustomColorCount := 0;
-      for I := Low(ColorValues) to High(ColorValues) do
-      begin
-        ColorName := GetColorName(ColorValues[I].Value, '');
-        InternalInsertColor(Items.Count, ColorValues[I].Value, ColorName);
-      end;
+      if coStdColors in FOptions then
+        for I := Low(ColorValues) to High(ColorValues) do
+        begin
+          ColorName := GetColorName(ColorValues[I].Value, '');
+          InternalInsertColor(Items.Count, ColorValues[I].Value, ColorName);
+        end;
       if coSysColors in FOptions then
         for I := Low(SysColorValues) to High(SysColorValues) do
         begin
@@ -493,7 +494,8 @@ begin
       DoBeforeCustom;
       if coCustomColors in FOptions then
         InternalInsertColor(Items.Count, $000001, FColorDialogText);
-      SetColorValue(FColorValue);
+      if Items.Count > 0 then
+        SetColorValue(FColorValue);
     finally
       Items.EndUpdate;
     end;
@@ -504,20 +506,8 @@ procedure TJvColorComboBox.SetOptions(Value: TJvColorComboOptions);
 begin
   if FOptions <> Value then
   begin
-    if (coCustomColors in FOptions) and (Items.Count > 0) then
-      Items.Delete(Items.Count - 1);
     FOptions := Value;
-    {    if coText in FOptions then
-        begin
-          Exclude(FOptions,coHex);
-          Exclude(FOptions,coRGB);
-        end
-        else
-        if coHex in Value then
-          Exclude(FOptions,coRGB); }
-    if coCustomColors in FOptions then
-      InternalInsertColor(Items.Count, $000001, FColorDialogText);
-    Invalidate;
+    GetColors;
   end;
 end;
 
@@ -772,6 +762,7 @@ begin
     if coCustomColors in Options then
       Inc(FCustomColorCount);
     InternalInsertColor(Items.Count - Ord(coCustomColors in Options), AColor, S);
+    if ItemIndex < 0 then ItemIndex := 0;
   end;
 end;
 
