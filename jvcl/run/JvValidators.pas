@@ -69,6 +69,7 @@ type
     FValid: Boolean;
     FPropertyToValidate: string;
     FErrorMessage: string;
+    FGroupName: string;
     FControlToValidate: TControl;
     FErrorControl: TControl;
     FValidator: TJvValidators;
@@ -109,6 +110,8 @@ type
     property ControlToValidate: TControl read FControlToValidate write SetControlToValidate;
     // the property in ControlToValidate to validate against
     property PropertyToValidate: string read FPropertyToValidate write FPropertyToValidate;
+    // make this validator a part of a group so it can be validated separately using Validate(GroupName)
+    property GroupName:string read FGroupName write FGroupName;
     property Enabled: Boolean read FEnabled write FEnabled;
     // the message to display in case of error
     property ErrorMessage: string read FErrorMessage write FErrorMessage;
@@ -217,7 +220,8 @@ type
     procedure Insert(AValidator: TJvBaseValidator);
     procedure Remove(AValidator: TJvBaseValidator);
     procedure Exchange(Index1, Index2: Integer);
-    function Validate: Boolean;
+    function Validate: Boolean; overload;
+    function Validate(const GroupName:string): Boolean; overload;
     property Items[Index: Integer]: TJvBaseValidator read GetItem; default;
     property Count: Integer read GetCount;
   published
@@ -702,7 +706,7 @@ begin
     FOnValidateFailed(Self, ABaseValidator, Result);
 end;
 
-function TJvValidators.Validate: Boolean;
+function TJvValidators.Validate(const GroupName:string): Boolean;
 var
   I: Integer;
   Controls: TList;
@@ -725,7 +729,7 @@ begin
 
       for I := 0 to Count - 1 do
       begin
-        if Items[I].Enabled then
+        if Items[I].Enabled and ((Items[I].GroupName = '') or AnsiSameText(GroupName, Items[I].GroupName)) then
         begin
           Items[I].Validate;
           if not Items[I].Valid then
@@ -762,6 +766,11 @@ begin
     if ValidationSummary <> nil then
       FValidationSummary.EndUpdate;
   end;
+end;
+
+function TJvValidators.Validate: Boolean;
+begin
+  Result := Validate('');
 end;
 
 procedure TJvValidators.Notification(AComponent: TComponent;
