@@ -312,8 +312,8 @@ type
     procedure SetParentImageSize(Value: Boolean);
     procedure SetBitmap(Value: TBitmap); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetMargin(Value: Integer);
-    procedure SetButton(Index: Integer; Value: TJvLookOutButton);
-    function GetButton(Index: Integer): TJvLookOutButton;
+    procedure SetButton(Index: Integer; Value: TJvCustomLookOutButton);
+    function GetButton(Index: Integer): TJvCustomLookOutButton;
     function GetButtonCount: Integer;
     procedure SetAutoCenter(Value: Boolean);
     function IsVisible(Control: TControl): Boolean;
@@ -338,23 +338,24 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
     property AutoCenter: Boolean read FAutoCenter write SetAutoCenter;
   public
     procedure Click; override;
     procedure DownArrow;
     procedure UpArrow;
-    function AddButton: TJvLookOutButton;
+    function AddButton: TJvCustomLookOutButton;
+    function InsertButton(Index: integer): TJvCustomLookOutButton;
     procedure ExchangeButtons(Button1, Button2: TJvCustomLookOutButton); virtual;
+    procedure MoveButton(Button: TJvCustomLookOutButton; NewIndex:integer);virtual;
     procedure EditCaption; virtual;
     procedure DisableAdjust;
     procedure EnableAdjust;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Buttons[Index: Integer]: TJvLookOutButton read GetButton write SetButton;
+    property Buttons[Index: Integer]: TJvCustomLookOutButton read GetButton write SetButton;
     property ButtonCount: Integer read GetButtonCount;
     property ActiveButton: TJvCustomLookOutButton read FActiveButton write SetActiveButton;
   published
@@ -1723,7 +1724,20 @@ begin
   FButtons.Exchange(FButtons.IndexOf(Button1), FButtons.IndexOf(Button2));
 end;
 
-function TJvLookOutPage.AddButton: TJvLookOutButton;
+procedure TJvLookOutPage.MoveButton(Button: TJvCustomLookOutButton; NewIndex: integer);
+var OldIndex:integer;
+begin
+  OldIndex := FButtons.IndexOf(Button);
+  FButtons.Move(OldIndex, NewIndex);
+end;
+
+function TJvLookOutPage.InsertButton(Index:integer): TJvCustomLookOutButton;
+begin
+  Result := AddButton;
+  MoveButton(Result, Index);
+end;
+
+function TJvLookOutPage.AddButton: TJvCustomLookOutButton;
 begin
   Result := TJvLookOutButton.Create(Self.Owner);
   Result.ImageIndex := ButtonCount;
@@ -2100,12 +2114,12 @@ begin
     DrawTopButton;
 end;
 
-procedure TJvLookOutPage.SetButton(Index: Integer; Value: TJvLookOutButton);
+procedure TJvLookOutPage.SetButton(Index: Integer; Value: TJvCustomLookOutButton);
 begin
   FButtons[Index] := Value;
 end;
 
-function TJvLookOutPage.GetButton(Index: Integer): TJvLookOutButton;
+function TJvLookOutPage.GetButton(Index: Integer): TJvCustomLookOutButton;
 begin
   Result := TJvLookOutButton(FButtons[Index]);
 end;
@@ -2979,6 +2993,7 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
