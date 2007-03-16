@@ -220,7 +220,10 @@ const
 implementation
 
 uses
-  JvVCL5Utils, JvJCLUtils, StrUtils;
+  {$IFDEF COMPILER6_UP}
+  StrUtils,
+  {$ENDIF COMPILER6_UP}
+  JvVCL5Utils, JvJCLUtils;
   
 //=== { TJvImageViewerOptions } ==============================================
 
