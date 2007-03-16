@@ -136,7 +136,7 @@ var
 begin
   if Component = nil then
     Exit;
-  Btn := TJvLookOutPage(Component).AddButton;
+  Btn := TJvLookOutPage(Component).AddButton as TJvLookOutButton;
   Btn.Name := Designer.UniqueName(cLookOutButton);
   Btn.Caption := Btn.Name;
 //  Designer.CreateComponent(TJvLookOutButton, Component, 0, MaxInt, 0, 0);
