@@ -83,6 +83,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default False;
     property AllowPopupBrowsing: Boolean read FAllowPopupBrowsing write FAllowPopupBrowsing default True;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -244,9 +245,16 @@ begin
   end;
 end;
 
+procedure TJvCustomDBDatePickerEdit.Loaded;
+begin
+  inherited Loaded;
+  if AllowNoDate and not IsLinked then
+    Date := 0.0;
+end;
+
 procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
 begin
-  if IsLinked then
+  if IsLinked and FDataLink.Active then
     Self.Date := FDataLink.Field.AsDateTime;
 end;
 
@@ -323,22 +331,27 @@ function TJvCustomDBDatePickerEdit.IsEmpty: Boolean;
 begin
   if IsLinked then
   begin
-    if FDataLink.Editing then
-      Result := inherited IsEmpty
+    if Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active then
+    begin
+      if FDataLink.Editing then
+        Result := inherited IsEmpty
+      else
+        try
+          Result := FDataLink.DataSet.IsEmpty or FDataLink.Field.IsNull;
+        except
+          Result := True;
+        end;
+    end
     else
-      try
-        Result := FDataLink.DataSet.IsEmpty or FDataLink.Field.IsNull;
-      except 
-        Result := True;
-      end;
+      Result := True;
   end
   else
-    Result := True;
+    Result := AllowNoDate and (Date = 0.0);
 end;
 
 function TJvCustomDBDatePickerEdit.IsLinked: Boolean;
 begin
-  Result := Assigned(FDataLink) and Assigned(FDataLink.Field);
+  Result := Assigned(FDataLink) and Assigned(DataSource) and (DataField <> '');
 end;
 
 procedure TJvCustomDBDatePickerEdit.PopupDropDown(DisableEdit: Boolean);
@@ -394,7 +407,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateDisplay;
 begin
-  if IsLinked then
+  if IsLinked or not (csDesigning in ComponentState) then
     inherited UpdateDisplay
   else
   begin
@@ -406,7 +419,7 @@ end;
 
 function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty) or
+  Result := (not IsLinked or FDataLink.Active) or (FDataLink.DataSet.IsEmpty) or
     (not FDataLink.Editing) or
     ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull) or
     (inherited ValidateDate(ADate));
@@ -415,7 +428,7 @@ end;
 function TJvCustomDBDatePickerEdit.ValidateShowCheckBox(const AValue: Boolean): Boolean;
 begin
   Result := AValue;
-  if EnforceRequired and IsLinked then
+  if EnforceRequired and IsLinked and FDataLink.Active then
   begin
     if AValue and FDataLink.Field.Required then
       Result := False;

@@ -65,7 +65,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Controls, ImgList, Forms,
+  {$IFDEF COMPILER5}
+  Forms,
+  {$ENDIF COMPILER5}
+  Windows, Messages, Classes, Controls, ImgList,
   JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvToolEdit;
 
 type
@@ -495,7 +498,11 @@ begin
         of the calendar. }
       TJvDropCalendar(FPopup).CloseOnLeave := False;
       TJvDropCalendar(FPopup).Hide;
+      {$IFDEF COMPILER5}
       Application.HandleException(Self);
+      {$ELSE}
+      ApplicationHandleException(Self);
+      {$ENDIF COMPILER5}
       TJvDropCalendar(FPopup).Release;
     end;
   end;
@@ -736,6 +743,7 @@ end;
 procedure TJvCustomDatePickerEdit.CMExit(var Msg: TMessage);
 var
   lDate: TDateTime;
+  OrgEditText: string;
 begin
   if EnableValidation then
   try
@@ -753,7 +761,14 @@ begin
       else
         Self.Date := 0;
   end;
+  if AllowNoDate and (lDate = 0.0) then
+  begin
+    OrgEditText := EditText;
+    EditText := '';
+  end;
   inherited;
+  if OrgEditText <> '' then
+    EditText := OrgEditText;
 end;
 
 procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
@@ -923,6 +938,12 @@ begin
   DeleteSetHere := False;
   RestoreMaskForKeyPress;
 
+  if not EditCanModify then
+  begin
+    Key := 0;
+    Exit;
+  end;
+
   if AllowNoDate and (ShortCut(Key, Shift) = NoDateShortcut) then
     Date := 0
   else
@@ -950,14 +971,14 @@ procedure TJvCustomDatePickerEdit.KeyPress(var Key: Char);
 var
   OldSep: Char;
 begin
-  { If used in JvDBGrid the KeyDown event isn't invoked, so the EditMask istn't set
+  { If used in JvDBGrid the KeyDown event isn't invoked, so the EditMask isn't set
     when the KeyPress event triggers. }
   RestoreMaskForKeyPress;
 
   { this makes the transition easier for users used to non-mask-aware edit controls
     as they could continue typing the separator character without the cursor
     auto-advancing to the next figure when they don't expect it : }
-  if (Key = Self.DateSeparator) and (Text[SelStart] = Self.DateSeparator) then
+  if not EditCanModify or ((Key = Self.DateSeparator) and (Text[SelStart] = Self.DateSeparator)) then
   begin
     Key := #0;
     Exit;
@@ -1262,7 +1283,7 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-    
+
   OldSep := SysUtils.DateSeparator;
   SysUtils.DateSeparator := Self.DateSeparator;
   try
