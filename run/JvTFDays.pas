@@ -739,6 +739,7 @@ type
     property Color: TColor read FColor write SetColor default clBlue;
   end;
 
+  {$M+}
   TJvTFDaysApptDrawInfo = class(TObject)
   private
     FColor: TColor;
@@ -761,6 +762,7 @@ type
     property Font: TFont read FFont write SetFont;
     property Visible: Boolean read FVisible write SetVisible;
   end;
+  {$M-}
 
   TJvTFGetDaysApptDrawInfoEvent = procedure(Sender: TObject; Appt: TJvTFAppt;
     DrawInfo: TJvTFDaysApptDrawInfo) of object;

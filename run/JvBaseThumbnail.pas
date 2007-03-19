@@ -71,6 +71,7 @@ type
   TGRFKind = (grBMP, grJPG, grWMF, grEMF, grICO, {$IFDEF COMPILER5} grGIF, {$ENDIF} grPNG); //,grPCX,grTGA);
   TPercent = -100..100;
 
+  {$M+}
   TFileName = class(TObject)
   private
     FLongName: string;
@@ -97,6 +98,7 @@ type
     property FileName: string read FFileName write SetName; // The FileName as given by the user
     property Length: Integer read GetLength write SetLength;
   end;
+  {$M-}
 
   { The Following classes are declared here so I can handle interaction of the mouse
     between the three components.

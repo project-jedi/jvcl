@@ -46,6 +46,7 @@ type
 
   TJvDBLoginEvent = procedure(Sender: TObject; const UserName, Password: string) of object;
 
+  {$M+}
   TJvDBLoginDialog = class(TObject)
   private
     FDialog: TJvLoginForm;
@@ -101,6 +102,7 @@ type
     property OnLoginFailure: TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
     property OnGetPassword: TJvOnGetPassword read FOnGetPassword write FOnGetPassword;
   end;
+  {$M-}
 
 procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
   AttemptNumber: Integer; ShowDBName: Boolean);

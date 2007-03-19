@@ -1319,7 +1319,7 @@ begin
     // Load jvcl%t.inc. Or the jvclbase.inc when no jvcl%t.inc exists
     if Target.IsBDS then
       Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
-          [LowerCase(Target.TargetType), Target.Version])
+          [LowerCase(Target.TargetType), Target.IDEVersion + 6]) // BDS 3 is Delphi 9
     else
       Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
           [LowerCase(Target.TargetType), Target.Version]);

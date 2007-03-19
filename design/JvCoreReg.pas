@@ -205,7 +205,7 @@ var
 begin
   Assert(Assigned(SplashScreenServices), RsENoSplashServices);
   ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JVCLSPLASH');
-  SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
+  SplashScreenServices.AddPluginBitmap(RsAboutDialogTitle, ProductImage,
     False, RsAboutLicenceStatus);
 end;
 
