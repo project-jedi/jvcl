@@ -130,6 +130,7 @@ type
   TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult : Word) of object;
 
+  {$M+}
   TJvBaseThread = class(TThread)
   private
     FException: Exception;
@@ -158,6 +159,7 @@ type
     property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
         FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
+  {$M-}
 
   TJvThread = class(TJvComponent)
   private

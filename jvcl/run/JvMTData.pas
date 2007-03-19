@@ -92,6 +92,7 @@ type
     property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
   end;
   
+  {$M+}
   TMTVCLToBuffer = class(TMTAsyncBuffer)
   private
     FOnCanWrite: TNotifyEvent;
@@ -106,6 +107,7 @@ type
   published
     property OnCanWrite: TNotifyEvent read FOnCanWrite write FOnCanWrite;
   end;
+  {$M-}
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}

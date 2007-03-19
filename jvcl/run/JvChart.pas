@@ -193,8 +193,7 @@ type
     procedure SetVisible(IsVisible: Boolean);
   public
     property Index: Integer read FIndex;
-  // (rom) no need for published
-  published
+
     property Marker: TJvChartPenMarkerKind read FMarker write FMarker;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor; // Marker color.
     property Visible: Boolean read FVisible write FVisible; // Make chart marker object visible or invisible.

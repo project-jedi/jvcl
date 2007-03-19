@@ -32,7 +32,7 @@ unit DelphiData;
 interface
 
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry, ShlObj;
+  Windows, SysUtils, Classes, Contnrs, Registry;
 
 const
   BDSVersions: array[1..5] of record
@@ -40,14 +40,15 @@ const
                                 VersionStr: string;
                                 Version: Integer;
                                 CIV: string; // coreide version
-                                ProjectDirResId: Integer;
+                                ProjectDirResId1: Integer;
+                                ProjectDirResId2: Integer;
                                 Supported: Boolean;
                               end = (
-    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
-    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
-    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
-    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True),
-    (Name: 'Developer Studio'; VersionStr: '2007'; Version: 11; CIV: '110'; ProjectDirResId: 0; Supported: False)
+    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId1: 64507; ProjectDirResId2: 0; Supported: False),
+    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; ProjectDirResId2: 0; Supported: False),
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; ProjectDirResId2: 0; Supported: True),
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId1: 64719; ProjectDirResId2: 0; Supported: True),
+    (Name: 'Codegear Delphi for Win32'; VersionStr: '2007'; Version: 10; CIV: '100'; ProjectDirResId1: 64396; ProjectDirResId2: 64398; Supported: True)  // Spacely is a non breaking change and thus uses the same folders as BDS2006
   );
 
 type
@@ -113,12 +114,16 @@ type
     FOrgEnvVars: TStrings;
     FEnvVars: TStrings;
     FDefaultBDSProjectsDir: string;
+    FCommonProjectsDir: string;
 
     function GetEnvPath: string;
     procedure SetEnvPath(const Value: string);
     function GetBDSProjectsDir: string;
+    function GetCommonProjectsDir: string;
     procedure LoadFromRegistry;
+    function GetEnvOptionsFileName: string; // Delphi 2007
     function ReadBDSProjectsDir: string;
+    function ReadCommonProjectsDir: string;
     procedure LoadPackagesFromRegistry(APackageList: TDelphiPackageList;
       const SubKey: string);
     procedure SavePackagesToRegistry(APackageList: TDelphiPackageList;
@@ -215,6 +220,7 @@ type
     property GlobalCppSearchPaths: TStringList read FGlobalCppSearchPaths; // BDS only, with macros
 
     property BDSProjectsDir: string read GetBDSProjectsDir;
+    property CommonProjectsDir: string read GetCommonProjectsDir;
     property ProjectDir: string read GetProjectDir; // Delphi 5-7: RootDir\Projects BDS: BDSProjectDir\Projects
     property BplDir: string read GetBplDir; // macros are expanded
     property DcpDir: string read GetDcpDir; // macros are expanded
@@ -268,7 +274,8 @@ uses
   StrUtils,
   {$ENDIF COMPILER6_UP}
   CmdLineUtils,
-  JvConsts;
+  JvConsts,
+  JclSysInfo, JclSimpleXml;
 
 function DequoteStr(const S: string): string;
 begin
@@ -340,6 +347,56 @@ begin
   for I := 0 to List.Count - 1 do
     Result := Result + List[I] + ';';
   SetLength(Result, Length(Result) - 1);
+end;
+
+function LoadResStrings(const BaseBinName: string;
+  const ResId: array of Integer): string;
+var
+  H: HMODULE;
+  LocaleName: array [0..4] of Char;
+  FileName, ResValue: string;
+  Index: Integer;
+begin
+  Result := '';
+
+  FileName := BaseBinName;
+  if not FileExists(FileName) then
+  begin
+    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+    if LocaleName[0] <> #0 then
+    begin
+      if FileExists(FileName + LocaleName) then
+        FileName := FileName + LocaleName
+      else
+      begin
+        LocaleName[2] := #0;
+        if FileExists(FileName + LocaleName) then
+          FileName := FileName + LocaleName
+        else
+          FileName := '';
+      end;
+    end;
+  end;
+
+  if FileName <> '' then
+  begin
+    H := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+    if H <> 0 then
+    try
+      for Index := Low(ResId) to High(ResId) do
+      begin
+        SetLength(ResValue, 1024);
+        SetLength(ResValue, LoadString(H, ResId[Index], PChar(ResValue), Length(ResValue) - 1));
+        if Result <> '' then
+          Result := ExcludeTrailingPathDelimiter(Result) + '\' + ResValue
+        else
+          Result := ResValue;
+      end;
+    finally
+      FreeLibrary(H);
+    end;
+  end;
 end;
 
 { TCompileTargetList }
@@ -511,6 +568,8 @@ begin
         NewS := FRootDir
       else if IsBDS and (S = 'bdsprojectsdir') then // do not localize
         NewS := BDSProjectsDir
+      else if IsBDS and (IDEVersion >= 5) and (S = 'bdscommondir') then
+        NewS := CommonProjectsDir
       else
       begin
         if EnvVars.IndexOfName(S) >= 0 then
@@ -553,6 +612,11 @@ begin
   begin
     Result := '$(BDSPROJECTSDIR)'; // do not localize
     Result := Result + Copy(Dir, Length(BDSProjectsDir) + 1, MaxInt);
+  end
+  else if IsBDS and (IDEVersion >= 5) and AnsiStartsText(CommonProjectsDir + PathDelim, Dir) then
+  begin
+    Result := '$(BDSCOMMONDIR)';
+    Result := Result + Copy(Dir, Length(CommonProjectsDir) + 1, MaxInt);
   end;
 end;
 
@@ -685,6 +749,8 @@ procedure TCompileTarget.LoadFromRegistry;
 var
   Reg: TRegistry;
   i: Integer;
+  EnvOptions: TJclSimpleXml;
+  PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
 begin
   Reg := TRegistry.Create;
   try
@@ -697,6 +763,8 @@ begin
       else
       if Reg.ValueExists('Version') then // do not localize
         FEdition := Reg.ReadString('Version') // do not localize
+      else if IsBDS and (IDEVersion = 5) then
+        FEdition := ''
       else
         FEdition := 'Pers'; // do not localize
 
@@ -711,10 +779,13 @@ begin
       Reg.CloseKey;
     end;
 
-    if IsBDS then
-      FDefaultBDSProjectsDir := ReadBDSProjectsDir; // reads from COREIDExx.XX's resource strings
-
     Reg.RootKey := HKEY_CURRENT_USER;
+
+    if IsBDS then
+    begin
+      FDefaultBDSProjectsDir := ReadBDSProjectsDir; // reads from COREIDExx.XX's resource strings
+      FCommonProjectsDir := ReadCommonProjectsDir;
+    end;
 
     // read special environnment variables and their overwrite
     if Reg.OpenKeyReadOnly(RegistryKey + '\Environment Variables') then // do not localize
@@ -733,25 +804,65 @@ begin
     end;}
 
     // get library paths
-    if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
+    if IsBDS and (IDEVersion >= 5) then
     begin
-      FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
-      FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
-      ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
-      ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
-      ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
-      Reg.CloseKey;
-    end;
-    if Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
+      // MsBuild
+      EnvOptions := TJclSimpleXML.Create;
+      try
+        EnvOptions.LoadFromFile(GetEnvOptionsFileName);
+        EnvOptions.Options := EnvOptions.Options - [sxoAutoCreate];
+
+        PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+        if Assigned(PropertyGroupNode) then
+        begin
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DCPOutput']; // do not localize
+          if Assigned(PropertyNode) then
+            FDCPOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
+          if Assigned(PropertyNode) then
+            FBPLOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath']; // do not localize
+          if Assigned(PropertyNode) then
+            ConvertPathList(PropertyNode.Value, FBrowsingPaths);
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32LibraryPath']; // do not localize
+          if Assigned(PropertyNode) then
+            ConvertPathList(PropertyNode.Value, FSearchPaths);
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
+          if Assigned(PropertyNode) then
+            ConvertPathList(PropertyNode.Value, FPackageSearchPaths);
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath']; // do not localize
+          if Assigned(PropertyNode) then
+            ConvertPathList(PropertyNode.Value, FDebugDcuPaths);
+        end;
+      finally
+        EnvOptions.Free;
+      end;
+    end
+    else
     begin
-      ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
-      Reg.CloseKey;
-    end;
-    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
-    begin
-      ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-      ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
-      Reg.CloseKey;
+      if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
+      begin
+        FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
+        FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
+        ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
+        ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
+        ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
+        // BDS debug DCUs
+        if Reg.ValueExists('Debug DCU Path') then // do not localize
+          ConvertPathList(Reg.ReadString('Debug DCU Path'), FDebugDcuPaths); // do not localize
+        Reg.CloseKey;
+      end;
+      if Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
+      begin
+        ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
+        Reg.CloseKey;
+      end;
+      if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
+      begin
+        ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
+        ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
+        Reg.CloseKey;
+      end;
     end;
     if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then
     begin
@@ -859,7 +970,29 @@ var
   Reg: TRegistry;
   S, Value: string;
   i: Integer;
+  EnvOptions: TJclSimpleXml;
+  PropertyGroupNode: TJclSimpleXMLElem;
 begin
+  // save both the registry and EnvOptions.proj for Delphi 2007
+  if IsBDS and (IDEVersion >= 5) then
+  begin
+    // MsBuild
+    EnvOptions := TJclSimpleXML.Create;
+    try
+      EnvOptions.LoadFromFile(GetEnvOptionsFileName);
+      EnvOptions.Options := EnvOptions.Options + [sxoAutoCreate];
+
+      PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+
+      PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath'].Value := ConvertPathList(FBrowsingPaths); // do not localize
+      PropertyGroupNode.Items.ItemNamed['Win32LibraryPath'].Value := ConvertPathList(FSearchPaths); // do not localize
+      PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath'].Value := ConvertPathList(FDebugDcuPaths); // do not localize
+
+      EnvOptions.SaveToFile(GetEnvOptionsFileName);
+    finally
+      EnvOptions.Free;
+    end;
+  end;
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
@@ -867,6 +1000,9 @@ begin
     begin
       Reg.WriteString('Browsing Path', ConvertPathList(FBrowsingPaths)); // do not localize
       Reg.WriteString('Search Path', ConvertPathList(FSearchPaths)); // do not localize
+      // BDS debug DCU
+      if Reg.ValueExists('Debug DCU Path') then // do not localize
+        Reg.WriteString('Debug DCU Path', ConvertPathList(FDebugDcuPaths));
       Reg.CloseKey;
     end;
     if Reg.OpenKey(RegistryKey + '\Debugging', False) then // do not localize
@@ -1031,6 +1167,22 @@ begin
    Result := RootDir + '\Projects'; // do not localize
 end;
 
+function TCompileTarget.GetCommonProjectsDir: string;
+begin
+  if IsBDS and (IDEVersion >= 5) then
+  begin
+    if FEnvVars.IndexOfName('BDSCOMMONDIR') >= 0 then // do not localize
+      Result := ExpandDirMacros(EnvVars.Values['BDSCOMMONDIR']) // do not localize
+    else
+      Result := ExpandDirMacros(GetEnvironmentVariable('BDSCOMMONDIR')); // do not localize
+
+    if Result = '' then // ignore BDSCOMMONDIR env-var because Delphi and BCB do not know them
+      Result := FCommonProjectsDir;
+  end
+  else
+   Result := GetBDSProjectsDir;
+end;
+
 procedure TCompileTarget.GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
 begin
   if (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
@@ -1047,61 +1199,43 @@ begin
   end;
 end;
 
-var
-  _SHGetSpecialFolderPathA: function(hwndOwner: HWND; lpszPath: PAnsiChar;
-    nFolder: Integer; fCreate: BOOL): BOOL; stdcall;
-
 function TCompileTarget.ReadBDSProjectsDir: string;
-var
-  h: HMODULE;
-  LocaleName: array[0..4] of Char;
-  Filename: string;
-  PersDir: string;
 begin
   if IsBDS and (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
   begin
-    Result := 'Borland Studio Projects'; // do not localize
+    Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
+      [BDSVersions[IDEVersion].ProjectDirResId1, BDSVersions[IDEVersion].ProjectDirResId2]);
 
-    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
-    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
-    if LocaleName[0] <> #0 then
+    if Result = '' then
     begin
-      Filename := RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.';
-      if FileExists(Filename + LocaleName) then
-        Filename := Filename + LocaleName
+      if IDEVersion < 5 then
+        Result := 'Borland Studio Projects' // do not localize
       else
-      begin
-        LocaleName[2] := #0;
-        if FileExists(Filename + LocaleName) then
-          Filename := Filename + LocaleName
-        else
-          Filename := '';
-      end;
-
-      if Filename <> '' then
-      begin
-        h := LoadLibraryEx(PChar(Filename), 0,
-          LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
-        if h <> 0 then
-        begin
-          SetLength(Result, 1024);
-          SetLength(Result, LoadString(h, BDSVersions[IDEVersion].ProjectDirResId, PChar(Result), Length(Result) - 1));
-          FreeLibrary(h);
-        end;
-      end;
+        Result := 'RAD Studio\Projects';    // do not localize
     end;
 
-    if not Assigned(_SHGetSpecialFolderPathA) then
-      _SHGetSpecialFolderPathA := GetProcAddress(GetModuleHandle('shell32.dll'), 'SHGetSpecialFolderPathA');
-    SetLength(PersDir, MAX_PATH);
-    if Assigned(_SHGetSpecialFolderPathA) and
-       _SHGetSpecialFolderPathA(0, PChar(PersDir), CSIDL_PERSONAL, False) then
-    begin
-      SetLength(PersDir, StrLen(PChar(PersDir)));
-      Result := ExcludeTrailingPathDelimiter(PersDir) + '\' + Result;
-    end
-    else
-      Result := '';
+    Result := ExcludeTrailingPathDelimiter(GetPersonalFolder) + '\' + Result;
+  end
+  else
+    Result := '';
+end;
+
+function TCompileTarget.GetEnvOptionsFileName: string; // Delphi 2007
+begin
+  Result := Format('%s\Borland\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion]);
+end;
+
+function TCompileTarget.ReadCommonProjectsDir: string;
+begin
+  if IsBDS and (IDEVersion >= 5) then
+  begin
+    Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
+      [BDSVersions[IDEVersion].ProjectDirResId1]);
+
+    if Result = '' then
+      Result := 'RAD Studio';    // do not localize
+
+    Result := Format('%s\%s\%d.0', [ExcludeTrailingPathDelimiter(GetCommonDocumentsFolder), Result, IDEVersion]);
   end
   else
     Result := '';
