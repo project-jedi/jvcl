@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls, Menus, jpeg,
-  JvPrvwRender, JvExStdCtrls, JvRichEdit{, GIFImage};
+  JvPrvwRender, JvExStdCtrls, JvRichEdit {, GIFImage};
 
 type
   TfrmMain = class(TForm)
@@ -129,7 +129,6 @@ type
     JvImg: TJvPreviewRenderGraphics;
   end;
 
-
 var
   frmMain: TfrmMain;
 
@@ -139,9 +138,10 @@ uses
 
 {$R *.dfm}
 
-
 procedure TfrmMain.Print1Click(Sender: TObject);
-var jp: TJvPreviewPrinter;
+var
+  i: integer;
+  jp: TJvPreviewPrinter;
 begin
   PrintDialog1.PrintRange := prAllPages;
   if pd.PageCount < 1 then
@@ -154,14 +154,23 @@ begin
   end;
   if PrintDialog1.Execute then
   begin
-    jp := TJvPreviewPrinter.Create(nil);
+    i := cbPreview.ItemIndex;
     try
-      jp.Assign(PrintDialog1);
-      jp.Printer := Printer;
-      jp.PrintPreview := pd;
-      jp.Print;
+      // create output suitable for the selected printer
+      cbPreview.ItemIndex := 1;
+      cbPreviewChange(Sender);
+      jp := TJvPreviewPrinter.Create(nil);
+      try
+        jp.Assign(PrintDialog1);
+        jp.Printer := Printer;
+        jp.PrintPreview := pd;
+        jp.Print;
+      finally
+        jp.Free;
+      end;
     finally
-      jp.Free;
+      cbPreview.ItemIndex := i;
+      cbPreviewChange(Sender);
     end;
   end;
 end;
@@ -337,7 +346,6 @@ begin
   end; // if
 end;
 
-
 procedure TfrmMain.Exit1Click(Sender: TObject);
 begin
   Close;
@@ -410,7 +418,7 @@ begin
     CreatePreview(false);
   end;
 end;
-                 
+
 procedure TfrmMain.BuildTXTPreview;
 begin
   with JvTxt do
@@ -437,10 +445,11 @@ begin
 end;
 
 procedure TfrmMain.BuildControlMenu;
-var m:TMenuItem;i:integer;
+var m: TMenuItem;
+  i: integer;
 begin
   mnuPreview.Clear;
-  for i := -1 to ComponentCount-1 do
+  for i := -1 to ComponentCount - 1 do
     if (i < 0) or (Components[i] is TControl) then
     begin
       m := TMenuItem.Create(self);
