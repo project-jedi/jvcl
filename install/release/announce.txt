@@ -11,20 +11,13 @@ eLists Delphi (delphi@elists.org)
 www.devarchive.com (needs username/password)
 
 Subject: 
-ANN: JVCL 3.30 Released!
+ANN: JVCL 3.31 Released!
 Body:
-The JVCL Team is proud to announce that the stable release of JVCL 3.30 is available for download. 
+The JVCL Team is proud to announce that the stable release of JVCL 3.31 is available for download. 
 
-JVCL is a library of more than 600 visual and non-visual components for Delphi 5, 6, 7, 2005 and 2006; C++Builder 5, 6 and 2006 (Borland Developer Studio). JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
+JVCL is a library of more than 600 visual and non-visual components for Delphi 5, 6, 7, 2005, 2006 and 2007; C++Builder 5, 6 and 2006 (Borland Developer Studio). JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
 
-This release contains changes, additions and bugfixes too numerous to list here, but here are some of the highlights:
-
-- Support for Delphi 5, 6, 7, 2005 (Win32), 2006 (Win32)
-- Support for C++ Builder 5, 6 and 2006 (Borland Developer Studio)
-- The merge of the Globus library has continued. Refer to the migrating_globus.html file for details.
-- Improved installer support for Borland Developer Studio 2006, especially for users not installing in the default directories.
-- Numerous bugs fixed and features added (more than 360 resolved mantis issues).
-- Tighter integration with the JCL
+This release brings official support for Delphi 2007.
 
 This release is available in four different flavors:
 - Full install + latest JCL
@@ -32,7 +25,7 @@ This release is available in four different flavors:
 - Source and examples only
 - Source only
 
-The current version is JVCL 3.30.
+The current version is JVCL 3.31.
 
 
 The JVCL Team
