@@ -98,6 +98,15 @@ ALERT_jedi_inc_incompatible
  {$I jvcld10.inc}
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF DELPIH10}
+{$IFDEF DELPHI11}
+ {$I jvcld11.inc}
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF DELPHI11}
+{-----------------------------------------------------------------------------}
+{$IFDEF DELPHI11}
+ {$I jvcld11.inc}
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF DELPHI11}
 {-----------------------------------------------------------------------------}
 { C++Builder                                                                  }
 {-----------------------------------------------------------------------------}
@@ -115,6 +124,11 @@ ALERT_jedi_inc_incompatible
  {$I jvclc10.inc}
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF BCB10}
+{-----------------------------------------------------------------------------}
+{$IFDEF BCB11}
+ {$I jvclc11.inc}
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF BCB11}
 {-----------------------------------------------------------------------------}
 { Kylix                                                                       }
 {-----------------------------------------------------------------------------}

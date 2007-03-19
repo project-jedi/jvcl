@@ -26,12 +26,11 @@ Known Issues:
 program build;
 
 {$APPTYPE CONSOLE}
-{$DEFINE JVCL}
 
 { build.exe setups the environment for a Delphi compiler }
 
 uses
-  Windows, ShlObj;
+  Windows, ShlObj, Registry;
 
 type
   TOption = record
@@ -77,7 +76,7 @@ type
   end;
 
 const // keep in sync with JVCL Installer's DelphiData.pas
-  BDSVersions: array[1..4] of record
+  BDSVersions: array[1..5] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -88,11 +87,14 @@ const // keep in sync with JVCL Installer's DelphiData.pas
     (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
-    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True) 
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True),
+    (Name: 'Codegear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '110'; ProjectDirResId: 64719; Supported: True)
   );
 
 type
-  TProduct = class(TObject)
+  TEditionTyp = (Delphi, BCB, BDS);
+
+  TEdition = class(TObject)
   private
     FMainName: string;      // d7
     FName: string;          // d7p        ( with/-out personal "p" )
@@ -103,20 +105,19 @@ type
     FLibDir: string;
     FIsPersonal: Boolean;
     FIsCLX: Boolean;
-    FKeyName: string;
+    FIsSpacely: Boolean;
 
     function GetBDSProjectsDir: string;
     procedure ReadRegistryData;
   public
-    Typ: (Delphi, BCB, BDS);
+    Typ: TEditionTyp;
     VersionStr: string;     // '9' for BDS 3.0
     Version: Integer;       // 9 for BDS 3.0
     IDEVersionStr: string;  // '3' for BDS 3.0
     IDEVersion: Integer;    // 3 for BDS 3.0
     PkgDir: string;         // d7 / d7per
   public
-    constructor Create(const AProductName, PerDirName: string);
-    function IsValid: Boolean;
+    constructor Create(const AEditionName, PerDirName: string);
 
     property RootDir: string read FRootDir;
     property BDSProjectsDir: string read GetBDSProjectsDir;
@@ -128,7 +129,7 @@ type
     property Name: string read FName;
     property IsPersonal: Boolean read FIsPersonal;
     property IsCLX: Boolean read FIsCLX;
-    property KeyName: string read FKeyName;
+    property IsSpacely: Boolean read FIsSpacely;
   end;
 
 var
@@ -142,7 +143,7 @@ var
   UserLibDir, UserDcpDir, UserBplDir: string;
 
   Targets: array of TTarget = nil;
-  Products: array of TProduct = nil;
+  Editions: array of TEdition = nil;
 
 { Helper functions because no SysUtils unit is used. }
 {******************************************************************************}
@@ -225,6 +226,14 @@ var
 begin
   attr := GetFileAttributes(PChar(Filename));
   Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY = 0);
+end;
+{******************************************************************************}
+function DirectoryExists(const Filename: string): Boolean;
+var
+  attr: Cardinal;
+begin
+  attr := GetFileAttributes(PChar(Filename));
+  Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 {******************************************************************************}
 function Execute(const Cmd: string): Integer;
@@ -504,8 +513,7 @@ begin
         begin
           if SameText(tg.Name, 'target') then
           begin
-            if FileExists(LibraryRootDir + '\packages\' + AsterixMacro(PackageGroupName, tg.Attrs('name').Value) + '.bpg') or
-               FileExists(LibraryRootDir + '\packages\' + AsterixMacro(PackageGroupName, tg.Attrs('name').Value) + '.bdsgroup') then
+            if DirectoryExists(LibraryRootDir + '\packages\' + tg.Attrs('name').Value) then
             begin
               SetLength(Targets, Length(Targets) + 1); // we do not have 10tnds iterations so this is acceptable
               with Targets[High(Targets)] do
@@ -527,21 +535,22 @@ begin
   end;
 end;
 {******************************************************************************}
-{ TProduct }
+{ TEdition }
 
-constructor TProduct.Create(const AProductName, PerDirName: string);
+constructor TEdition.Create(const AEditionName, PerDirName: string);
 var
   Index: Integer;
+  reg: TRegistry;
 begin
-  if UpCase(AProductName[1]) = 'D' then
+  if UpCase(AEditionName[1]) = 'D' then
     Typ := Delphi
   else
     Typ := BCB;
 
-  VersionStr := AProductName[2];
-  if (Length(AProductName) > 2) and (AProductName[3] in ['0'..'9']) then
+  VersionStr := AEditionName[2];
+  if (Length(AEditionName) > 2) and (AEditionName[3] in ['0'..'9']) then
   begin
-    VersionStr := VersionStr + AProductName[3];
+    VersionStr := VersionStr + AEditionName[3];
     Index := 4;
   end
   else
@@ -554,19 +563,37 @@ begin
   if Version > 7 then
   begin
     Typ := BDS;
+
     IDEVersion := Version - 6; // D 8 = BDS 2
+    
+    // We must detect Spacely here to modify IDEVersion to be one more than the one from BDS2006
+    if (Version = 10) then
+    begin
+      reg := TRegistry.Create;
+      try
+        reg.RootKey := HKEY_CURRENT_USER;
+        FIsSpacely := reg.OpenKeyReadOnly('Software\Borland\BDS\5.0\Known IDE Packages\Delphi') and
+                      reg.ValueExists('$(BDS)\Bin\delphide100.bpl');
+
+        if IsSpacely then
+          Inc(IDEVersion);
+      finally
+        reg.Free;
+      end;
+    end;
+
     IDEVersionStr := IntToStr(IDEVersion);
   end;
 
-  FMainName := Copy(AProductName, 1, Index - 1);
-  FName := AProductName;
-  PkgDir := AProductName;
+  FMainName := Copy(AEditionName, 1, Index - 1);
+  FName := AEditionName;
+  PkgDir := AEditionName;
 
-  FIsCLX := SameText('clx', Copy(AProductName, Index, 3));
+  FIsCLX := SameText('clx', Copy(AEditionName, Index, 3));
   FIsPersonal := False;
-  if Length(AProductName) > Index then
+  if Length(AEditionName) > Index then
   begin
-    if (UpCase(AProductName[Index]) = 'P') or (UpCase(AProductName[Index]) = 'S') then
+    if (UpCase(AEditionName[Index]) = 'P') or (UpCase(AEditionName[Index]) = 'S') then
     begin
       FIsPersonal := True;
       PkgDir := PerDirName
@@ -576,16 +603,9 @@ begin
   ReadRegistryData;
 end;
 {******************************************************************************}
-function TProduct.IsValid: Boolean;
-begin
-  Result := (RootDir <> '') and
-            FileExists(RootDir + '\bin\dcc32.exe') and
-            FileExists(RootDir + '\bin\brc32.exe');
-            FileExists(RootDir + '\bin\make.exe');
-end;
-{******************************************************************************}
-procedure TProduct.ReadRegistryData;
+procedure TEdition.ReadRegistryData;
 var
+  KeyName: string;
   Reg: HKEY;
   RegTyp: LongWord;
   ProjectsDir: string;
@@ -636,11 +656,11 @@ var
 begin
   case Typ of
     Delphi:
-      FKeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
+      KeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
     BCB:
-      FKeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
+      KeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
     BDS:
-      FKeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
+      KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
   end;
 
   if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
@@ -654,12 +674,12 @@ begin
   else
     ProjectsDir := FRootDir + '\Projects';
 
-  FDcpDir := FRootDir + '\Projects\Bpl';
-  FBplDir := FRootDir + '\Projects\Bpl';
+  FDcpDir := ProjectsDir + '\Bpl';
+  FBplDir := ProjectsDir + '\Bpl';
   if Typ = BCB then
-    FLibDir := FRootDir + '\Projects\Lib'
+    FLibDir := ProjectsDir + '\Lib'
   else
-    FLibDir := FRootDir + '\Projects\Bpl';
+    FLibDir := ProjectsDir + '\Bpl';
 
   if RegOpenKeyEx(HKEY_CURRENT_USER, PChar(KeyName + '\Library'), 0, KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
   begin
@@ -669,7 +689,7 @@ begin
   end;
 end;
 {******************************************************************************}
-function TProduct.GetBDSProjectsDir: string;
+function TEdition.GetBDSProjectsDir: string;
 var
   h: HMODULE;
   LocaleName: array[0..4] of Char;
@@ -762,7 +782,7 @@ begin
   end;
 end;
 {******************************************************************************}
-function TargetIndexOfProduct(const ed: string): Integer;
+function TargetIndexOfEdition(const ed: string): Integer;
 begin
   for Result := 0 to High(Targets) do
     if SameText(Targets[Result].Name, ed) or SameText(Targets[Result].PerName, ed) then
@@ -770,50 +790,48 @@ begin
   Result := -1;
 end;
 {******************************************************************************}
-procedure AddProduct(const ed: string);
+procedure AddEdition(const ed: string);
 var
   I: Integer;
-  Product: TProduct;
 begin
   if ed = '' then
     Exit;
   if SameText(ed, 'k3') then // build.exe is for Windows only (maybe CrossKylix)
     Exit;
-  for I := 0 to High(Products) do
-    if SameText(Products[i].Name, ed) then
+  for I := 0 to High(Editions) do
+    if SameText(Editions[i].Name, ed) then
       Exit;
 
-  I := TargetIndexOfProduct(ed);
+  I := TargetIndexOfEdition(ed);
   if I >= 0 then
   begin
-    Product := TProduct.Create(ed, Targets[I].PerDir);
-    SetLength(Products, Length(Products) + 1);
-    Products[High(Products)] := Product;
+    SetLength(Editions, Length(Editions) + 1);
+    Editions[High(Editions)] := TEdition.Create(ed, Targets[I].PerDir);
   end;
 end;
 {******************************************************************************}
-procedure AddAllProducts(AddPersonal: Boolean);
+procedure AddAllEditions(AddPersonal: Boolean);
 var
   i: Integer;
 begin
-  Products := nil;
+  Editions := nil;
   for i := 0 to High(Targets) do
   begin
-    AddProduct(Targets[i].Name);
+    AddEdition(Targets[i].Name);
     if AddPersonal then
-      AddProduct(Targets[i].PerName);
+      AddEdition(Targets[i].PerName);
   end;
 end;
 {******************************************************************************}
-function GetNewestProduct: TProduct;
+function GetNewestEdition: TEdition;
 var
   I: Integer;
-  ed: TProduct;
+  ed: TEdition;
 begin
-  Result := TProduct.Create('d5', '');
+  Result := TEdition.Create('d5', '');
   for I := High(Targets) downto 0 do
   begin
-    ed := TProduct.Create(Targets[I].Name, Targets[I].PerDir);
+    ed := TEdition.Create(Targets[I].Name, Targets[I].PerDir);
     try
       if ed.Version >= Result.Version then
       begin
@@ -826,18 +844,12 @@ begin
           if ed.IsCLX then
             Continue; // this is not a valid version
 
-          if ed.IsValid then
+          if (ed.RootDir <> '') and FileExists(ed.RootDir + '\bin\dcc32.exe') then
           begin
             Result.Free;
             Result := ed;
             ed := nil;
           end
-          else
-          begin
-            //WriteLn('Ignoring invalid installation or trial version of ', ed.MainName, ' ', ed.VersionStr, '.');
-            ed.Free;
-            ed := nil;
-          end;
         end;
       end;
     finally
@@ -846,11 +858,11 @@ begin
   end;
 end;
 {******************************************************************************}
-function GetNewestProductName: string;
+function GetNewestEditionName: string;
 var
-  ed: TProduct;
+  ed: TEdition;
 begin
-  ed := GetNewestProduct;
+  ed := GetNewestEdition;
   try
     if ed <> nil then
       Result := ed.Name
@@ -861,28 +873,28 @@ begin
   end;
 end;
 {******************************************************************************}
-procedure AddNewestProduct;
+procedure AddNewestEdition;
 begin
-  Products := nil;
-  AddProduct(GetNewestProductName);
+  Editions := nil;
+  AddEdition(GetNewestEditionName);
 end;
 {******************************************************************************}
 procedure Help;
 var
   I: Integer;
 begin
-  AddAllProducts(True);
+  AddAllEditions(True);
   WriteLn('build.exe setups the environment for the given targets and executes the');
-  WriteLn('makefile that does the required actions.');
+  WriteLn('make file that does the required actions.');
   WriteLn;
   WriteLn('build.exe [TARGET] [OPTIONS]');
   WriteLn('  TARGETS:');
 
   Write('    ');
-  for I := 0 to High(Products) - 1 do
-    Write(Products[I].Name, ', ');
-  if Length(Products) > 0 then
-    WriteLn(Products[High(Products)].Name);
+  for I := 0 to High(Editions) - 1 do
+    Write(Editions[I].Name, ', ');
+  if Length(Editions) > 0 then
+    WriteLn(Editions[High(Editions)].Name);
   //WriteLn('    c5, c6, c6p, d5, d5s, d6, d6p, d7, d7p, d7clx, d9');
 
   WriteLn;
@@ -988,20 +1000,22 @@ begin
     else
     begin
       if SameText(S, 'all') then
-        AddAllProducts(False)
+      begin
+        AddAllEditions(False);
+      end
       else if SameText(S, 'newest') then
       begin
-        AddNewestProduct;
-        WriteLn('Using ', GetNewestProductName, ' for build process.');
+        AddNewestEdition;
+        WriteLn('Using ', GetNewestEditionName, ' for build process.');
         WriteLn;
       end
-      else if TargetIndexOfProduct(S) = -1 then
+      else if TargetIndexOfEdition(S) = -1 then
       begin
-        WriteLn('Unknown version: ', S);
+        WriteLn('Unknown edition: ', S);
         Halt(1);
       end
       else
-        AddProduct(S);
+        AddEdition(S);
     end;
     Inc(i);
   end;
@@ -1024,53 +1038,52 @@ begin
   SetLength(Result, GetShortPathName(PChar(Path), PChar(Result), Length(Result)));
 end;
 {******************************************************************************}
-procedure FixDcc32Cfg(Product: TProduct);
+procedure FixDcc32Cfg(Edition: TEdition);
 var
   f: TextFile;
   S: string;
   FoundU, FoundLU: Boolean;
 begin
-  AssignFile(f, Product.RootDir + '\bin\dcc32.cfg');
-  if not FileExists(Product.RootDir + '\bin\dcc32.cfg') then
+  AssignFile(f, Edition.RootDir + '\bin\dcc32.cfg');
+  if not FileExists(Edition.RootDir + '\bin\dcc32.cfg') then
   begin
-    // Invalid Delphi/BCB installation or someone deleted the dcc32.cfg file.
     {$I-}
     Rewrite(f);
     {$I+}
     if IOResult = 0 then
     begin
       WriteLn(f, '-aWinTypes=Windows;WinProcs=Windows;DbiProcs=BDE;DbiTypes=BDE;DbiErrs=BDE');
-      if Product.Typ <> Delphi then
-        WriteLn(f, '-u"', Product.RootDir, '\lib";"', Product.RootDir, '\lib\obj"')
+      if Edition.Typ <> Delphi then
+        WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
       else
-        WriteLn(f, '-u"', Product.RootDir, '\lib"');
-      if (Product.Typ = BCB) and (Product.Version = 5) then
+        WriteLn(f, '-u"', Edition.RootDir, '\lib"');
+      if (Edition.Typ = BCB) and (Edition.Version = 5) then
         WriteLn(f, '-LUvcl50');
       CloseFile(f);
     end
     else
     begin
-      WriteLn('Cannot create missing default ', Product.RootDir, '\bin\dcc32.cfg');
+      WriteLn('Cannot create default ', Edition.RootDir, '\bin\dcc32.cfg');
       Halt(0);
     end;
   end
   else
   begin
     FoundU := False;
-    FoundLU := (Product.Typ <> BCB) and (Product.Version = 5);
+    FoundLU := (Edition.Typ <> BCB) or (Edition.Version <> 5);
     Reset(f);
     while not EOF(f) and not (FoundU and FoundLU) do
     begin
       ReadLn(f, S);
-      if Product.Typ = Delphi then
-        FoundU := FoundU or SameText(S, '-u"' + Product.RootDir + '\lib"') or
-                  SameText(S, '-u"' + ExtractShortPathName(Product.RootDir) + '\lib"') or
-                  SameText(S, '-u' + ExtractShortPathName(Product.RootDir) + '\lib')
+      if Edition.Typ = Delphi then
+        FoundU := FoundU or SameText(S, '-u"' + Edition.RootDir + '\lib"') or
+                  SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
+                  SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib')
       else
-        FoundU := FoundU or SameText(S, '-u"' + Product.RootDir + '\lib";"' + Product.RootDir + '\lib\obj"') or
-                  SameText(S, '-u"' + ExtractShortPathName(Product.RootDir) + '\lib";"' + ExtractShortPathName(Product.RootDir) + '\lib\obj"') or
-                  SameText(S, '-u' + ExtractShortPathName(Product.RootDir) + '\lib;' + ExtractShortPathName(Product.RootDir) + '\lib\obj');
-      if (Product.Typ = BCB) and (Product.Version = 5) then
+        FoundU := FoundU or SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
+                  SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
+                  SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj');
+      if (Edition.Typ = BCB) and (Edition.Version = 5) then
         FoundLU := FoundLU or SameText(S, '-LUvcl50');
     end;
     CloseFile(f);
@@ -1084,18 +1097,18 @@ begin
       begin
         if not FoundU then
         begin
-          if Product.Typ <> Delphi then
-            WriteLn(f, '-u"', Product.RootDir, '\lib";"', Product.RootDir, '\lib\obj"')
+          if Edition.Typ <> Delphi then
+            WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
           else
-            WriteLn(f, '-u"', Product.RootDir, '\lib"');
+            WriteLn(f, '-u"', Edition.RootDir, '\lib"');
         end;
-        if not FoundLU and (Product.Typ = BCB) and (Product.Version = 5) then
+        if not FoundLU and (Edition.Typ = BCB) and (Edition.Version = 5) then
           WriteLn(f, '-LUvcl50');
         CloseFile(f);
       end
       else
       begin
-        WriteLn('You do not have the required permissions to alter the defect ', Product.RootDir, '\bin\dcc32.cfg');
+        WriteLn('You do not have the required permissions to alter the defect ', Edition.RootDir, '\bin\dcc32.cfg');
         Halt(0);
       end;
     end;
@@ -1106,9 +1119,10 @@ end;
 var
   I: Integer;
   UnitOutDir, Path: string;
-  Product: TProduct;
+  Edition: TEdition;
 begin
   LibraryRootDir := GetLibraryRootDir;
+  // ahuser (2005-01-22): make.exe fails if a path with spaces is in the PATH envvar
 
   // set ExtraOptions default values
   for I := 0 to High(ExtraOptions) do
@@ -1123,7 +1137,7 @@ begin
   LoadTargetNames;
   ProcessArgs;
 
-  if Length(Products) = 0 then
+  if Length(Editions) = 0 then
   begin
     Help;
     Halt(1);
@@ -1136,88 +1150,118 @@ begin
   else
     SetEnvironmentVariable('QUIET', nil);
 
-  for I := 0 to High(Products) do
+  for I := 0 to High(Editions) do
   begin
     ExtraUnitDirs := '';
 
-    Product := Products[I];
-    if Length(Products) > 1 then
-      WriteLn('################################ ' + Product.Name + ' #########################################');
+    Edition := Editions[I];
+    if Length(Editions) > 1 then
+      WriteLn('################################ ' + Edition.Name + ' #########################################');
 
     // test for valid root directory/valid IDE installation
     if not Force then
     begin
-      if Product.RootDir = '' then
+      if Edition.RootDir = '' then
       begin
-        WriteLn('Delphi/BCB version not installed or the registry value of ');
-        WriteLn('[HKLM\', Product.KeyName, ']\RootDir is empty.');
+        WriteLn('Delphi/BCB version not installed.');
         Continue;
       end;
     end
     else
     begin
-      if Product.RootDir = '' then
-        Product := GetNewestProduct;
-      if Product.RootDir = '' then
+      if Edition.RootDir = '' then
+        Edition := GetNewestEdition;
+      if Edition.RootDir = '' then
       begin
-        WriteLn('Delphi/BCB version not installed or the registry value of ');
-        WriteLn('[HKLM\', Product.KeyName, ']\RootDir is empty.');
+        WriteLn('No Delphi/BCB version installed.');
         Continue;
       end;
     end;
 
     // correct dcc32.cfg file if necessary
-    FixDcc32Cfg(Product);
+    FixDcc32Cfg(Edition);
 
-    UnitOutDir := LibraryRootDir + '\lib\' + Product.MainName;
+    UnitOutDir := LibraryRootDir + '\lib\' + Edition.MainName;
     if UserDcpDir = '' then
-      UserDcpDir := Product.DcpDir;
+      UserDcpDir := Edition.DcpDir;
     if UserBplDir = '' then
-      UserBplDir := Product.BplDir;
+      UserBplDir := Edition.BplDir;
     if UserLibDir = '' then
-      UserLibDir := Product.LibDir;
+      UserLibDir := Edition.LibDir;
 
-    FindDxgettext(Product.Version);
+    FindDxgettext(Edition.Version);
 
     // setup environment and execute make.exe
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
     if UserLibDir <> UserBplDir then
-      Path := ExtractShortPathName(Product.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + ExtractShortPathName(UserLibDir) + ';' + Path
+      Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + ExtractShortPathName(UserLibDir) + ';' + Path
     else
-      Path := ExtractShortPathName(Product.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + Path;
+      Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + Path;
     { Add original BPL directory for "common" BPLs, but add it as the very last
       path to prevent collisions between packages in TargetConfig.BplDir and
       Target.BplDir. }
-    Path := Path + ';' + ExtractShortPathName(Product.BplDir);
+    Path := Path + ';' + ExtractShortPathName(Edition.BplDir);
+
+(*    dcc32cfg := CreateDcc32Cfg([
+      '-Q',
+      '-U"' + Edition.RootDir + '\Lib"',
+      '-U"' + Edition.RootDir + '\Lib\Obj"',
+      '-R"' + Edition.RootDir + '\Lib"',
+      '-I"' + Edition.RootDir + '\Include"',
+      '-I"' + Edition.RootDir + '\Include\Vcl"',
+      '-U"' + UserDcpDir + '"',
+      '-U"' + UserLibDir + '"'
+    ]);
+
+      '-I"$(JCLINCLUDEDIRS)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS2)">>"$(CFG)"
+	#
+	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
+	@echo -U"$(UNITOUTDIR)">>"$(CFG)"
+	@echo -U"$(LIBDIR)">>"$(CFG)"
+	@echo -U"$(JVCLSOURCEDIRS1)">>"$(CFG)"
+	@echo -U"$(JVCLSOURCEDIRS2)">>"$(CFG)"
+	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
+	#
+	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
+	@echo -I"$(EXTRAINCLUDEDIRS)">>"$(CFG)"
+	@echo -R"$(EXTRARESDIRS)">>"$(CFG)"
+	#
+	@echo -U"$(UNITDIRS)">>"$(CFG)"
+	@echo -R"$(UNITDIRS)">>"$(CFG)"
+*)
+
+    //SetEnvironemntVariable('CFGFILE', PChar('..\$(PKGDIR)\dcc32.cfg');
 
     SetEnvironmentVariable('PATH', Pointer(Path));
 
-    SetEnvironmentVariable('MAINBPLDIR', Pointer(Product.BplDir));
-    SetEnvironmentVariable('MAINDCPDIR', Pointer(Product.DcpDir));
+    SetEnvironmentVariable('MAINBPLDIR', Pointer(Edition.BplDir));
+    SetEnvironmentVariable('MAINDCPDIR', Pointer(Edition.DcpDir));
     SetEnvironmentVariable('BPLDIR', Pointer(UserBplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(UserDcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(UserLibDir));
     SetEnvironmentVariable('BPILIBDIR', Pointer(UserLibDir));
-    SetEnvironmentVariable('PERSONALProduct_OPTION', nil);
-    SetEnvironmentVariable('ROOT', PChar(Product.RootDir));
-    SetEnvironmentVariable('VERSION', PChar(Product.VersionStr));
+    SetEnvironmentVariable('PERSONALEDITION_OPTION', nil);
+    SetEnvironmentVariable('ROOT', PChar(Edition.RootDir));
+    SetEnvironmentVariable('VERSION', PChar(Edition.VersionStr));
     SetEnvironmentVariable('UNITOUTDIR', PChar(UnitOutDir));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
-    SetEnvironmentVariable('DCC', PChar('"' + Product.RootDir + '\bin\dcc32.exe" ' + DccOpt));
+    SetEnvironmentVariable('DCC', PChar('"' + Edition.RootDir + '\bin\dcc32.exe" ' + DccOpt));
 
-    if Product.IsPersonal then
+    if Edition.IsPersonal then
     begin
-      SetEnvironmentVariable('PERSONALProduct_OPTION', '-DDelphiPersonalProduct');
-      SetEnvironmentVariable('PKGDIR', PChar(Product.PkgDir));
-      SetEnvironmentVariable('EDITION', PChar(Product.MainName));
+      SetEnvironmentVariable('PERSONALEDITION_OPTION', '-DDelphiPersonalEdition');
+      SetEnvironmentVariable('PKGDIR', PChar(Edition.PkgDir));
+      SetEnvironmentVariable('EDITION', PChar(Edition.MainName));
       if Verbose then
-        Execute('"' + Product.RootDir + '\bin\make.exe" -f makefile.mak pg.exe')
+        Execute('"' + Edition.RootDir + '\bin\make.exe" -f makefile.mak pg.exe')
       else
-        Execute('"' + Product.RootDir + '\bin\make.exe" -s -f makefile.mak pg.exe');
+        Execute('"' + Edition.RootDir + '\bin\make.exe" -s -f makefile.mak pg.exe');
     end;
 
-    SetEnvironmentVariable('EDITION', PChar(Product.Name));
-    SetEnvironmentVariable('PKGDIR', PChar(Product.PkgDir));
+    SetEnvironmentVariable('EDITION', PChar(Edition.Name));
+    SetEnvironmentVariable('PKGDIR', PChar(Edition.PkgDir));
 
     if (ExtraUnitDirs <> '') and (ExtraUnitDirs[1] = ';') then
       Delete(ExtraUnitDirs, 1, 1);
@@ -1225,11 +1269,11 @@ begin
     SetEnvironmentVariable('DXGETTEXTDIR', Pointer(DxgettextDir));
 
 
-    ExitCode := Execute('"' + Product.RootDir + '\bin\make.exe" ' + MakeOptions);
+    ExitCode := Execute('"' + Edition.RootDir + '\bin\make.exe" ' + MakeOptions);
     if ExitCode <> 0 then
     begin
       if ExitCode < 0 then
-        WriteLn('Failed: ', '"' + Product.RootDir + '\bin\make.exe" ' + MakeOptions);
+        WriteLn('Failed: ', '"' + Edition.RootDir + '\bin\make.exe" ' + MakeOptions);
       WriteLn('Press ENTER to continue');
       ReadLn;
     end;

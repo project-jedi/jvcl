@@ -125,6 +125,7 @@ type
 
   TJvCreateProcess = class;
 
+  {$M+}
   TJvBaseReader = class(TObject)
   private
     FCreateProcess: TJvCreateProcess;
@@ -141,6 +142,7 @@ type
     property OnRead: TJvCPSReadEvent read FOnRead write FOnRead;
     property OnRawRead: TJvCPSRawReadEvent read FOnRawRead write FOnRawRead;
   end;
+  {$M-}
 
   TJvCreateProcess = class(TJvComponent)
   private

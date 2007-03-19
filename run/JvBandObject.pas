@@ -92,6 +92,7 @@ type
     function GetImplCatID: TGUID; override;
   end;
 
+  {$M+}
   TzCustomBandObject = class(TComObject, IDeskBand, IObjectWithSite, IPersist, IPersistStream, IInputObject)
   private
     FBandForm: TJvBandForm;
@@ -142,6 +143,7 @@ type
   published
     function MsgHookProc(nCode, wParam, lParam: Integer): Integer; stdcall;
   end;
+  {$M-}
 
   TzToolBandObject = class(TzCustomBandObject)
   end;

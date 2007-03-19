@@ -44,6 +44,7 @@ type
   TJvCreateDataControlsEvent = procedure(ADynControlEngineDB: TJvDynControlEngineDB;
     AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of object;
 
+  {$M+}
   TJvDynControlDataSourceEditDialog = class(TObject)
   private
     FForm: TCustomForm;
@@ -113,6 +114,7 @@ type
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
   end;
+  {$M-}
 
 function ShowDataSourceEditDialog(ADataComponent: TComponent;
   const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;

@@ -172,7 +172,6 @@ type
   private
     function GetItem(Index: Integer): TJvViewerItem;
     procedure SetItem(Index: Integer; const Value: TJvViewerItem);
-  published
   public
     property Items[Index: Integer]: TJvViewerItem read GetItem write SetItem; default;
   end;
