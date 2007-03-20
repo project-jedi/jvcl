@@ -1376,18 +1376,10 @@ end;
 procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
 var
   JvDockInfoTree: TJvDockInfoTree;
-  Form: TForm;
 begin
   AppStorage.BeginUpdate;
   try
     HideAllPopupPanel(nil); {This is in JvDockVSNetStyle.pas }
-
-    Form := TForm.CreateNew(nil);
-    // What does this form do, and why is it created only during the loading of the app storage?
-    Form.BorderStyle := bsNone;
-    Form.BoundsRect := Rect(0, 0, 0, 0);
-    Form.Visible := True;
-    Form.Name := {NOTRANSLATE} 'LoadDockTreeFromAppStorage_Form';
 
     JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
 
@@ -1402,7 +1394,6 @@ begin
         JvGlobalDockIsLoading := False;
       end;
     finally
-      Form.Release;
       JvDockUnLockWindow;
       JvDockInfoTree.Free;
     end;
@@ -1452,6 +1443,8 @@ var
 begin
   HideAllPopupPanel(nil);
 
+  { Creating a form with size 0 before locking the desktop supposedly prevents
+    some screen flicker }
   Form := TForm.CreateNew(nil);
   Form.BorderStyle := bsNone;
   Form.BoundsRect := Rect(0, 0, 0, 0);
@@ -1468,7 +1461,7 @@ begin
     JvDockInfoTree.ReadInfoFromIni;
     JvGlobalDockIsLoading := False;
   finally
-    Form.Release;
+    Form.Free;
     JvDockUnLockWindow;
     JvDockInfoTree.Free;
     MemFile.Free;
@@ -1483,6 +1476,8 @@ var
 begin
   HideAllPopupPanel(nil);
 
+  { Creating a form with size 0 before locking the desktop supposedly prevents
+    some screen flicker }
   Form := TForm.CreateNew(nil);
   Form.BorderStyle := bsNone;
   Form.BoundsRect := Rect(0, 0, 0, 0);
@@ -1505,7 +1500,7 @@ begin
   finally
     JvDockUnLockWindow;
     JvDockInfoTree.Free;
-    Form.Release;
+    Form.Free;
   end;
   ReshowAllVisibleWindow;
 end;
