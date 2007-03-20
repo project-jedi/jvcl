@@ -4,8 +4,6 @@ borland.public.cppbuilder.thirdpartytools
 jedi.vcl
 jedi.general
 Delphi Magazine (info@TheDelphiMagazine.com)
-Delphi Informant (editorial@DelphiZine.com)
-Delphi 3000 (info@bluestep.com)
 UK-BUG (bug@richplum.co.uk)
 eLists Delphi (delphi@elists.org)
 www.devarchive.com (needs username/password)
