@@ -938,13 +938,7 @@ begin
   DeleteSetHere := False;
   RestoreMaskForKeyPress;
 
-  if not EditCanModify then
-  begin
-    Key := 0;
-    Exit;
-  end;
-
-  if AllowNoDate and (ShortCut(Key, Shift) = NoDateShortcut) then
+  if AllowNoDate and (ShortCut(Key, Shift) = NoDateShortcut) and EditCanModify then
     Date := 0
   else
   if Shift * KeyboardShiftStates = [] then
@@ -978,7 +972,8 @@ begin
   { this makes the transition easier for users used to non-mask-aware edit controls
     as they could continue typing the separator character without the cursor
     auto-advancing to the next figure when they don't expect it : }
-  if not EditCanModify or ((Key = Self.DateSeparator) and (Text[SelStart] = Self.DateSeparator)) then
+  if ((Key = Self.DateSeparator) and (Text[SelStart] = Self.DateSeparator)) or
+     ((CharIsPrintable(Key) or (Key = #8)) and not EditCanModify) then
   begin
     Key := #0;
     Exit;
