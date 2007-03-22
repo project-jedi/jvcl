@@ -214,6 +214,7 @@ begin
           LText := TrimLeft(Text);
           if StartsWith(LText, 'MAKE version', True) or // do not localize
              StartsWith(LText, 'Borland ', True) or // do not localize
+             StartsWith(LText, 'CodeGear ', True) or // do not localize
              StartsWith(LText, 'Copyright ', True) or // do not localize
              StartsWith(LText, 'Turbo Incremental Link', True) then // do not localize
           begin
