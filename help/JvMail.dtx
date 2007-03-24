@@ -72,6 +72,9 @@ Description
 
   Attachment is of type TStrings. Use this type to access its methods or properties to manipulate the
   filenames in the attachment list.
+
+  To send an attachment using a different file name, insert a null char (#0) between physical and
+  virtual file names (ie: 'c:\path\physical name.ext'#0'virtualfilename.txt')
 See Also
   TJvMail.SendMail
 
