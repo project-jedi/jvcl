@@ -800,8 +800,8 @@ begin
     GridLinesW := 6 * GridLineWidth
   else
     GridLinesW := 0;
-  DefaultColWidth := (Width - GridLinesW) div 7;
-  DefaultRowHeight := (Height - GridLinesH) div 7;
+  DefaultColWidth := (ClientWidth - GridLinesW) div 7;
+  DefaultRowHeight := (ClientHeight - GridLinesH) div 7;
   inherited BoundsChanged;
 end;
 
