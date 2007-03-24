@@ -194,17 +194,24 @@ implementation
 uses
   JvConsts, JvResources;
 
-// Same as ExtractFileName, except it returns a pointer to a position in AFileName.
+// attempt to find separators (#0) between physical and virtual file name
+// if not separator is found, same as ExtractFileName, except it returns a pointer to a position in AFileName.
 
 function PExtractFileName(const AFileName: string): PChar;
 var
   I: Integer;
 begin
-  I := LastDelimiter(PathDelim + DriveDelim, AFileName);
-  if I > 0 then
-    Result := @AFileName[I + 1]
+  I := Pos(#0, AFileName);
+  if I = 0 then
+  begin
+    I := LastDelimiter(PathDelim + DriveDelim, AFileName);
+    if I > 0 then
+      Result := @AFileName[I + 1]
+    else
+      Result := PChar(AFileName);
+  end
   else
-    Result := PChar(AFileName);
+    Result := @AFileName[I + 1];
 end;
 
 //=== { TJvMailRecipient } ===================================================
@@ -408,7 +415,7 @@ procedure TJvMail.CreateMapiMessage;
       SetLength(FAttachArray, Attachment.Count);
       for I := 0 to Attachment.Count - 1 do
       begin
-        if not FileExists(Attachment[I]) then
+        if not FileExists(PChar(Attachment[I])) then
           raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
