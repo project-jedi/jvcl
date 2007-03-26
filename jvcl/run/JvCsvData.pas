@@ -1,4 +1,7 @@
 {-----------------------------------------------------------------------------
+JvCsvDataSet - March 2007 - new DeleteCsvColumn, and SetFilterNum
+
+
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -90,6 +93,9 @@ Known Issues and Updates:
                  which could caused all kinds of squirrelly things to happen
                  when the boolean (ftBoolean, csv type '!') was encountered.
                  Search for the WordBool to see the changes.
+
+
+  March 2007 - New Features added!
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -187,6 +193,9 @@ type
   { Columns are numeric, text, or one of two kinds of Specially Encoded date/time formats: }
   TJvCsvColumnFlag = (jcsvNull, jcsvString, jcsvNumeric, jcsvAsciiDateTime, jcsvGMTDateTime, jcsvTZDateTime, jcsvAsciiDate, jcsvAsciiTime );
 
+  // SetFilterNum takes one of these as a compareOperator:
+  // utility function JvCsvNumCondition uses this too.
+  TJvCsvFilterNumCompare = ( jfIntEqual, jfIntNotEqual, jfLessThan, jfGreaterThan  );
   { pointer to special CSV COLUMN }
   PCsvColumn = ^TJvCsvColumn;
   // PFieldDef = ^TFieldDef;
@@ -446,6 +455,7 @@ type
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(const FieldName: string; Pattern: string); // Make Rows Visible Only if they match filterString
+    procedure SetFilterNum(const FieldName: string; compareOperator:TJvCsvFilterNumCompare; numValue: Double );
 
     // SELECT * FROM TABLE WHERE <fieldname> IS <NULL|NOT NULL>:
     procedure SetFilterOnNull(const FieldName: string; NullFlag: Boolean);
@@ -543,6 +553,8 @@ type
     procedure SaveToFile(const FileName: string);
     procedure LoadFromFile(const FileName: string);
 
+    procedure DeleteCsvColumn( fieldName:String); // must be done when not Active! [NEW 2007!]
+
      {These are made protected so that you can write another derivce component
       unfortunately if it is in another unit, you can't do much about it.}
   protected
@@ -602,11 +614,13 @@ type
     property CsvFieldDef: string read FCsvFieldDef write SetCsvFieldDef; // Our own "Csv Field Definition String"
     property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
     property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
+    // not currently valuable, but maybe soon:
+    //property CsvColumns:TJvCsvColumns read FCsvColumns;
       
     property OpenFileName: string read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
-    property HasHeaderRow: Boolean read FHasHeaderRow write SetHasHeaderRow default True;
+    property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
     property HeaderRow: string read FHeaderRow; // first row of CSV file.
     property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
   end;
@@ -713,6 +727,8 @@ function JvCsvBackupPreviousFiles(const FileName: string; MaxFiles: Integer): Bo
 // Boolean sub expressions (|=or, &=and).
 function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
 
+// numeric filter helper function:
+function JvCsvNumCondition(FieldValue:Double; compareOperator:TJvCsvFilterNumCompare; numValue:Double):Boolean;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -935,6 +951,27 @@ begin
   FData.SetUserData(RecNo, NewValue);
 end;
 
+// JvCsv Numeric filtering helper function:
+function JvCsvNumCondition(FieldValue:Double; compareOperator:TJvCsvFilterNumCompare; numValue:Double):Boolean;
+begin
+result := false;
+ case compareOperator of
+
+  jfIntEqual:
+      result := ( Trunc(FieldValue)=Trunc(numValue) );
+
+  jfIntNotEqual:
+      result := ( Trunc(FieldValue)<>Trunc(numValue) );
+
+  jfLessThan:
+      result := ( FieldValue < numValue );
+
+  jfGreaterThan:
+      result := ( FieldValue > numValue );
+
+ end;
+
+end;
 // Recursive wildcard matching function
 
 function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
@@ -1121,18 +1158,64 @@ begin
     First;
 end;
 
-procedure TJvCustomCsvDataSet.SetHasHeaderRow(const Value: Boolean);
+// Numeric Filtering: Make Rows Visible Only if they match an integer or floating point numeric comparison operator.
+// evaluate condition:
+//   [FieldName]  [numericoperator: < > = <> ] [Numeric Value Parameter]
+procedure TJvCustomCsvDataSet.SetFilterNum(const FieldName: string; compareOperator:TJvCsvFilterNumCompare; numValue: Double );
+var
+  I: Integer;
+  PRow: PCsvRow;
+  FieldRec: PCsvColumn;
+  FieldIndex: Integer;
+  sFieldValue: string;
+  FieldValue:Double;
+  //stillVisible : Integer;
+  //m: TBookmark;
 begin
-  if FHasHeaderRow <> Value then
+  // m := GetBookmark;
+  FieldRec := FCsvColumns.FindByName(FieldName);
+  // stillVisible := 0;
+  if not Assigned(FieldRec) then
+    Exit;
+  FieldIndex := FieldRec^.FPhysical;
+  
+
+  // Now check if field value matches given pattern for this row.
+  for I := 0 to FData.Count - 1 do
   begin
-    FHasHeaderRow := Value;
-    // Mantis 3479: Now unactivates the dataset and cleans FHeaderRow
-    Active := False;
-    FHeaderRow := '';
-  end;
+    PRow := PCsvRow(FData[I]);
+    if not PRow^.Filtered then
+    begin
+      sFieldValue := FData.GetARowItem(I, FieldIndex);
+      if (Length(sFieldValue) > 0) and (sFieldValue[1] = '"') then
+        sFieldValue := _Dequote(sFieldValue); // remove quotes.
+        //sFieldValue := UpperCase(sFieldValue); // pointless on numerics
+        try
+          FieldValue := StrToFloat( sFieldValue); // remember, this baby throws EConvertError on exception!
+
+          //  if { FieldValue  [ = <> > < ] numValue } then....
+          if JvCsvNumCondition(FieldValue, compareOperator, numValue) then // hide row if not same prefix
+          begin
+            // Inc(stillVisible)   // count the number that are still visible.
+          end
+          else begin
+              PRow^.Filtered := True
+          end;
+        except
+            on E:EConvertError do begin
+                    PRow^.Filtered := True; // hide error rows.
+            end;
+        end;
+
+      end;{if not already hidden!}
+       
+  end;{ for loop}
+  FIsFiltered := True;
+  if Active then
+    First;
 end;
 
-// Make Rows Visible Only if they match filterString
+// String Filtering: Make Rows Visible Only if they match filterString
 
 procedure TJvCustomCsvDataSet.SetFilter(const FieldName: string; Pattern: string);
 var
@@ -3912,6 +3995,42 @@ begin
   RowString := RowItem^.Text;
 end;
 
+//CsvRowDeleteColumn: NEW 2007
+// used by TJvCustomCsvDataSet.DeleteCsvColumn...
+// delete a column from a PCsvRow object:
+function CsvRowDeleteColumn(RowItem: PCsvRow; column,count:Integer):String;
+var
+ from1, from2 : Integer;
+ to1,   to2   : Integer;
+begin
+  Assert(column>=0);
+
+  if (column>0) and (column<(count-1)) then begin
+    { del middle column}
+    from1 := 0;
+    to1 :=   CsvRowGetColumnMarker(RowItem, column)-1;//RowItem^.WordField[column];
+    from2 := CsvRowGetColumnMarker(RowItem, column+1);//RowItem^.WordField[column];
+    to2   := CsvRowGetColumnMarker(RowItem, count);
+    result := Copy(RowItem^.Text,from1,to1)+Copy(RowItem^.Text,from2,to2);
+  end else if (column=(count-1))  then begin
+    {del last column}
+    from1 := 0;
+    to1   := CsvRowGetColumnMarker(RowItem, column)-1;
+    result := Copy(RowItem^.Text,from1,to1);
+
+  end else begin
+    {del first column }
+    from1 := CsvRowGetColumnMarker(RowItem, column+1)+1;//RowItem^.WordField[column];
+    to1   := CsvRowGetColumnMarker(RowItem, count);
+    result := Copy(RowItem^.Text,from1,to1);
+  end;
+
+
+
+
+
+end;
+
 // convert String into a CSV Row buffer
 
 procedure StringToCsvRow(const RowString: string; Separator: Char;
@@ -4709,6 +4828,110 @@ begin
   end;
 end;
 
+//-------------------------------------------------------------------------
+//DeleteCsvColumn
+//
+// When JvCsvDataSet can't open a file, because it contains a
+// column in the file that is not defined in our CsvFieldDef, this can
+// create a difficult-to-solve problem.  If we drop an obsolete or pointless
+// CSV field from our CsvFieldDef, and we have stuff out there in the
+// field that contains that data, new versions of our program won't read
+// the files anymore.  
+//
+// CSV file editing is not for the faint of heart, and so this method
+// is considered less destructive than requiring users to repair
+// their files manually.
+//
+// To use this method:
+//         Create a CsvDataSet object with a CsvFieldDef='' (empty)
+//
+//         Set the Filename property to a fully qualified filename, that
+//         must exist, set Active to true, then to False, so we've read
+//         the column definitions!
+//
+//         Call this method, specify a column name that must be removed.
+//         The saved file won't contain the column you've removed.
+//
+// Of course, this method is inherently destructive of of your data.
+// Be careful. Make your own backup before you use this method.
+//-------------------------------------------------------------------------
+procedure TJvCustomCsvDataSet.DeleteCsvColumn(fieldName:String); // NEW 2007
+var
+  csvcol :PCsvColumn;
+  colnum : Integer;
+  t:Integer;
+  PTempRow: PCsvRow;
+  DataRow:String;
+
+begin
+  // filename must be set for this method to work
+     Assert(Length(FileName)>0);
+     Assert(FileExists(Filename));
+
+  // this should only be done when you've set the filename, and not opened the
+  // table yet!
+     Assert(not Active);
+
+  // you should set the filename, but not the CsvFieldDef in this case,
+  // because in this mode, the CsvDataSet is supposed to be able to open
+  // ANY csv file. This is the idea. Open the file, browse it, close it,
+  // do some modifications like adding or removing columns, then save those
+  // changes, then re-open the csv file to view the change.
+  Assert(Length(FCsvFieldDef)=0);
+
+
+     PTempRow := AllocMem(SizeOf(TJvCsvRow));
+     try
+
+     // begin an internal load:
+    FOpenFileName := GetFileName; // Always use the same file name to save as you did to load!!! MARCH 2004.WP
+
+  InternalInitFieldDefs; // also loads entire file!
+
+//  InternalLoadFileStrings;
+
+  Assert(Assigned(FCsvFileAsStrings));
+
+  Assert(FCsvFileAsStrings.Count>0); 
+
+  AssignFromStrings(FCsvFileAsStrings);
+
+  Assert(FCsvColumns.Count>1); // why delete last column in an empty file? besides, it would die later on anyways, opening the empty file.
+  
+  csvcol := FCsvColumns.FindByName(FieldName);
+  if not Assigned(csvcol) then
+        JvCsvDatabaseError(FTableName, Format(RsEFieldNotFound, [fieldname]));
+
+  colnum := csvcol^.FPhysical;
+
+  for t:= 0 to FCsvFileAsStrings.Count-1 do begin
+    DataRow := FCsvFileAsStrings[t];
+    if Length(DataRow) >= MAXLINELENGTH - 1 then
+      raise EJvCsvDataSetError.CreateResFmt(@RsECsvStringTooLong, [Copy(DataRow, 1, 40)]);
+    StringToCsvRow(DataRow, Separator, PTempRow, True, FEnquoteBackslash);
+
+    // delete column:
+    FCsvFileAsStrings[t] := CsvRowDeleteColumn(PTempRow, colnum, FCsvColumns.Count);
+
+  end;
+
+
+  FCsvFileAsStrings.SaveToFile(Filename);
+
+  InternalClearFileStrings;
+
+  Self.FieldDefs.Clear;
+  Assert(FieldDefs.Count=0);
+  Self.Fields.Clear;
+  Assert(Fields.Count=0);
+
+  FHeaderRow := '';// clear header row
+  FData.Clear;
+
+  finally
+      FreeMem(PTempRow);
+  end;
+end;
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
