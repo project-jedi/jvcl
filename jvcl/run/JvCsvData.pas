@@ -281,7 +281,7 @@ type
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
     FCreatePaths: Boolean;
-    procedure SetHasHeaderRow(const Value: Boolean); // When saving, create subdirectories/paths if it doesn't exist?
+    //procedure SetHasHeaderRow(const Value: Boolean); // When saving, create subdirectories/paths if it doesn't exist?
     procedure SetSeparator(const Value: Char);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
       SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
@@ -1157,6 +1157,7 @@ begin
   if Active then
     First;
 end;
+
 
 // Numeric Filtering: Make Rows Visible Only if they match an integer or floating point numeric comparison operator.
 // evaluate condition:
