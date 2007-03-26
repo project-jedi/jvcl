@@ -1,9 +1,9 @@
 object JvChartDemoForm: TJvChartDemoForm
   Left = 218
   Top = 277
-  Width = 729
-  Height = 489
   Caption = 'Jedi JvChart Demo'
+  ClientHeight = 453
+  ClientWidth = 713
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,10 +21,11 @@ object JvChartDemoForm: TJvChartDemoForm
   object Chart: TJvChart
     Left = 124
     Top = 35
-    Width = 597
-    Height = 400
+    Width = 589
+    Height = 418
     Align = alClient
     Options.XAxisValuesPerDivision = 10
+    Options.XAxisLabelAlignment = taLeftJustify
     Options.XAxisDateTimeMode = False
     Options.XAxisLegendSkipBy = 2
     Options.PenCount = 3
@@ -65,16 +66,19 @@ object JvChartDemoForm: TJvChartDemoForm
     OnChartPaint = ChartChartPaint
     OnBeginFloatingMarkerDrag = ChartBeginFloatingMarkerDrag
     OnEndFloatingMarkerDrag = ChartEndFloatingMarkerDrag
+    ExplicitWidth = 597
+    ExplicitHeight = 400
   end
   object Splitter1: TSplitter
     Left = 121
     Top = 35
-    Height = 400
+    Height = 418
+    ExplicitHeight = 400
   end
   object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 721
+    Width = 713
     Height = 35
     Align = alTop
     Font.Charset = ANSI_CHARSET
@@ -357,7 +361,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 0
     Top = 35
     Width = 121
-    Height = 400
+    Height = 418
     Align = alLeft
     Color = clBtnFace
     Font.Charset = OEM_CHARSET
@@ -373,6 +377,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Visible = False
     OnClick = ListBox1Click
     OnDblClick = ListBox1DblClick
+    ExplicitHeight = 398
   end
   object ColorDialog1: TColorDialog
     Options = [cdFullOpen]
@@ -459,6 +464,10 @@ object JvChartDemoForm: TJvChartDemoForm
         Caption = '&Large Dataset (576 samples)'
         ShortCut = 16460
         OnClick = LargeDataset576samples1Click
+      end
+      object NewFeaturesfor20071: TMenuItem
+        Caption = 'New Features for 2007'
+        OnClick = NewFeaturesfor20071Click
       end
     end
     object Help1: TMenuItem

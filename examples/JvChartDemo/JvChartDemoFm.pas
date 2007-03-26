@@ -17,13 +17,15 @@ All Rights Reserved.
 Contributor(s): -
 
 Last Modified: 2005-01-14
-  Modified 2003-2005 by Warren Postma
+
+  Modified March 2007 by Warren Postma - Show new JvChart 2007 Features.
+
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Description:
-  BAR/LINE Charting Component for JEDI
+  BAR/LINE Charting Component for JEDI [Updated March 2007]
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -79,6 +81,7 @@ type
     MenuSecondaryAxisMode: TMenuItem;
     MenuNegValueTest: TMenuItem;
     SpeedButtonTestMouseOver: TSpeedButton;
+    NewFeaturesfor20071: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure ButtonLineClick(Sender: TObject);
     procedure ButtonBarChartClick(Sender: TObject);
@@ -119,6 +122,7 @@ type
     procedure ChartBeginFloatingMarkerDrag(Sender: TJvChart;
       FloatingMarker: TJvChartFloatingMarker);
     procedure ChartChartPaint(Sender: TJvChart; aCanvas: TCanvas);
+    procedure NewFeaturesfor20071Click(Sender: TObject);
   private
 
       // Our waveform generator uses the following as state-variables:
@@ -242,6 +246,49 @@ begin
     else
       Chart.Data.Value[3, I] := NaN; // leave some blanks.
   end;
+end;
+
+procedure TJvChartDemoForm.NewFeaturesfor20071Click(Sender: TObject);
+var
+ vbar:TJvChartVerticalBar;
+ hbar:TJvChartHorizontalBar;
+begin
+   // Try out new features for 2007:
+
+   // Gradients.
+   Chart.Options.GradientColor := $00FDEEDB; // powder blue (baby blue) mostly white.
+   Chart.Options.GradientDirection :=grDown;
+
+
+
+   // Vertical Bar.
+   vbar := Chart.AddVerticalBar;
+   vbar.Color := $00FDDDC7;
+   vbar.Visible := true;
+   vbar.XLeft := 6;
+   vbar.XRight := 7;
+
+   // Horizontal Bar.
+   hbar := Chart.AddHorizontalBar;
+   hbar.Color := $007CCAC7;
+   hbar.Visible := true;
+   hbar.YTop := 3;
+   hbar.YBottom := 2;
+
+
+
+
+
+   // Lots of things not shown here are new in 2007:
+   //  Floating Marker Count, Delete a floating marker, etc,
+   // search for 'NEW 2007' in JvChart.pas for a complete
+   // look at new things.
+
+   // last thing, always update graph:
+   Chart.PlotGraph;
+   //Chart.Refresh;
+
+
 end;
 
 procedure TJvChartDemoForm.NewValues;
