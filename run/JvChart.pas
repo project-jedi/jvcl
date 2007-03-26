@@ -1,5 +1,5 @@
 {-----------------------------------------------------------------------------
-JvChart - TJvChart Component
+JvChart - TJvChart Component 2007
 
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -69,6 +69,18 @@ Last Modified:
         any application. You can enable the OLD mode, with it's
                       limitations, by defining TJVCHART_ARRAY_OF_ARRAY.
 
+  2007-04-26 - (WP) - Merged upstream changes.
+                      	- Added gradients (TJvChartGradientBar)
+                        - Added new way of doing date/time markers (Options.XAxisDateTimeMode),
+                          GraphXAxisLegend, and JvChart.Data properties StartDateTime, EndDateTime. 
+  	                    - Added vertical markers (AddVerticalBar)
+                        - Added horizontal bars (TJvChartHorizontalBar) ClearHorizontalBars
+	                      - Added FloatingMarkerCount.
+	                      - Added CopyFloatingMarkers
+	                      - New property in jvfloatingMarker: CaptionColor
+                        - Added DeleteFloatingMarkerObj
+                        - Graphical glitches/chart-display-bug-fixes.
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -135,6 +147,9 @@ type
 
   TJvChartPenMarkerKind = (pmkNone, pmkDiamond, pmkCircle, pmkSquare, pmkCross);
 
+  TJvChartGradientDirection           = (grNone, grUp, grDown,grLeft,grRight); // WP
+
+
   TJvChartLegend = (clChartLegendNone, clChartLegendRight, clChartLegendBelow);
 
   {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
@@ -152,9 +167,10 @@ type
     cpTitleArea
    );
 
-  TJvChartFloatingMarker = class(TObject)
+  TJvChartFloatingMarker = class(TPersistent) // was from TObject
   private
-    FOwner: TJvChart; // Which chart does it belongs to?
+    FOwner: TJvChart;
+    procedure SetCaptionColor(const Value: TColor); // Which chart does it belongs to?
   protected
     FRawXPosition: Integer; // raw pixel-based X position.
     FRawYPosition: Integer; // raw pixel-based Y position.
@@ -177,6 +193,7 @@ type
     FLineColor: TColor; // Line color.
     FLineWidth: Integer;
     FCaption: string; // Caption to print above the marker, or if no marker, then just this text is plotted.
+    FCaptionColor:TColor;// New 2007 - WP - Color of floating marker caption
     FCaptionPosition: TJvChartCaptionPosition;
     FCaptionBoxed: Boolean; // Marker caption can have a box around it to make it more readable for some uses.
 
@@ -194,6 +211,8 @@ type
   public
     property Index: Integer read FIndex;
 
+    procedure Assign(Source:TPersistent); override; // Should be able to copy from one floating marker to another
+
     property Marker: TJvChartPenMarkerKind read FMarker write FMarker;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor; // Marker color.
     property Visible: Boolean read FVisible write FVisible; // Make chart marker object visible or invisible.
@@ -210,6 +229,7 @@ type
     property LineColor: TColor read FLineColor write FLineColor;
     property LineWidth: Integer read FLineWidth write FLineWidth;
     property Caption: string read FCaption write FCaption;
+    property CaptionColor:TColor read FCaptionColor write SetCaptionColor;
     property CaptionPosition: TJvChartCaptionPosition read FCaptionPosition write FCaptionPosition;
     property CaptionBoxed: Boolean read FCaptionBoxed write FCaptionBoxed;
 
@@ -218,6 +238,58 @@ type
        //property CaptionBorderStyle :TPenStyle read FCaptionBorderStyle write FCaptionBorderStyle;
        //property CaptionBorderColor :TColor    read FCaptionBorderColor write FCaptionBorderColor;
   end;
+
+
+  TJvChartGradientBar  = class(TObject) // NEW 2007
+  private
+    FOwner           : TJvChart; // Which chart does it belongs to?
+    FVisible         : Boolean;
+    //FRawRect: TRect; // raw pixel-based X position.
+    FYTop,FYBottom   : double;
+    FColor           : TColor;
+    FIndex           : integer;
+    FGradDirection   : TJvChartGradientDirection;
+    FGradColor       : TColor;
+
+  protected
+     constructor Create(Owner: TJvChart);
+     procedure SetVisible(isVisible: Boolean);
+     procedure SetColor(aColor : TColor);
+     procedure SetGradientColor(aColor : TColor);
+     procedure SetGradientType(aType : TJvChartGradientDirection);
+
+  public
+    property Visible : boolean read FVisible write SetVisible;
+    property YTop    : double read FYTop write FYTop;
+    property YBottom : double read FYBottom write FYBottom;
+    property Color   : TColor read FColor write SetColor;
+    property GradDirection   : TJvChartGradientDirection read FGradDirection write FGradDirection;
+    property GradColor       : TColor read FGradColor write FGradColor;
+
+
+  end;
+
+  TJvChartHorizontalBar = class(TJvChartGradientBar)  // NEW 2007
+  private
+    FYTop,FYBottom   : double;
+  protected
+    constructor Create(Owner: TJvChart);
+  public
+    property YTop    : double read FYTop write FYTop;
+    property YBottom : double read FYBottom write FYBottom;
+  end;
+
+  TJvChartVerticalBar = class(TJvChartGradientBar)    // NEW 2007
+  private
+    FXLeft,FXRight   : integer;
+  protected
+    constructor Create(Owner: TJvChart);
+  public
+    property XLeft    : integer read FXLeft write FXLeft;
+    property XRight   : integer read FXRight write FXRight;
+  end;
+
+
 
   { TJvChartData : Holds NxN array of Reals, Resizes automatically within preset
     limits. Provides a functionality mix of dynamic memory use, but with
@@ -238,6 +310,12 @@ type
     FDataAlloc: Integer; // Last Allocated Value.
     FValueCount: Integer; // Number of sample indices used
     FPenCount: Integer; // can't be changed without erasing all data!
+
+    FStartDateTime:TDateTime; // needed for DateTime mode, and datetime axis labels!  NEW 2007
+    FEndDateTime:TDateTime;
+    procedure SetEndDateTime(const Value: TDateTime);
+    procedure SetStartDateTime(const Value: TDateTime); // needed for DateTime mode, and datetime axis labels!    NEW 2007
+    
   protected
     procedure Grow(Pen, ValueIndex: Integer);
       //GetValue/SetValue resizer, also throws exception if Pen,ValueIndex is negative or just way too big.
@@ -263,6 +341,13 @@ type
     property Timestamp[ValueIndex: Integer]: TDateTime read GetTimestamp write SetTimestamp;
     property ValueCount: Integer read FValueCount write FValueCount;
     property ClearToValue: Double read FClearToValue write FClearToValue; // Typically either 0.0 or NaN. default 0.0
+
+    // NEW 2007 [for DateTimeMode XAxis Labels]
+    property StartDateTime:TDateTime read FStartDateTime write SetStartDateTime; // needed for DateTime mode, and datetime axis labels!  NEW 2007
+    property EndDateTime:TDateTime read FEndDateTime write SetEndDateTime; // needed for DateTime mode, and datetime axis labels!    NEW 2007
+
+
+
   end;
 
   TJvChartPaintEvent = procedure(Sender: TJvChart; ACanvas: TCanvas) of object;
@@ -371,6 +456,7 @@ type
     // Each pen can be associated with either the primary or secondary axis,
     // this function decides which axis to return depending on the pen configuration:
     function GetPenAxis(Index: Integer): TJvChartYAxisOptions;
+    procedure SetXAxisDateTimeDivision(const Value: Double);
   protected
     FChartKind: TJvChartKind; // default JvChartLine
     {runtime pixel spacing multipliers}
@@ -385,6 +471,8 @@ type
     FYAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
     FXAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
     FXAxisHeader: string;
+
+
     FXLegends: TStringList; // Text labels.
     FXLegendMaxTextWidth: Integer; // runtime: display width (pixels) of widest string in FXLegends[1:X].
     FXAxisValuesPerDivision: Integer;
@@ -392,7 +480,8 @@ type
     FXAxisLegendSkipBy: Integer; //1=print every X axis label, 2=every other, and so on. default=1
     FXLegendHoriz: Integer; // Horizontally oriented GraphXAxisLegend ends at this X Point.
     FXAxisLabelAlignment: TAlignment; // New: Text alignment for X axis labels. Default is left alignment.
-    FXAxisDateTimeMode: Boolean; // False=use custom text labels, True=Use Date/Time Stamps as X axis labels.
+    FXAxisDateTimeMode: Boolean; // False=use custom text labels, True=Use Date/Time Stamps as X axis labels. [REWORKED LOGIC IN 2007!]
+    FXAxisDateTimeDivision:Double; // NEW 2007 : What is the nominal date/time division (1.0=day, 1.0/24=1 hour)
     FXAxisDateTimeFormat: string; // Usually a short date-time label, hh:nn:ss is good.
     FDateTimeFormat: string;
       // Usually a long date-time label, ISO standard yyyy-mm-dd hh:nn:ss is fine, as is Windows locale defaults.
@@ -439,6 +528,16 @@ type
     FCursorColor: TColor; // Sample indicator Cursor color
 
     FCursorStyle: TPenStyle; // Cursor style.
+    FGradientColor    : TColor; // new 2007
+    FGradientDirection : TJvChartGradientDirection; // new 2007
+
+    // INTERNALS :NEW STUFF IN 2007
+    FXAxisDateTimeFirstMarker:Integer; // at XValue initial offset    NEW 2007
+    FXAxisDateTimeSkipBy:Integer;  // an XValue indexing multiplier   NEW 2007
+    FXAxisDateTimeLines:Integer; // number of lines we're displaying  NEW 2007
+
+
+
     { event interface }
     procedure NotifyOptionsChange;
   public
@@ -451,6 +550,10 @@ type
     { plot-canvas size, depends on size of control }
     property XEnd: Longint read FXEnd write FXEnd;
     property YEnd: Longint read FYEnd write FYEnd;
+    {Gradient NEW 2007 }
+    property GradientColor     : TColor read FGradientColor write FGradientColor; // new 2007
+    property GradientDirection : TJvChartGradientDirection read FGradientDirection write FGradientDirection; // new 2007
+
     { pixel spacing : multipliers to scale real values into X/Y pixel amounts before plotting. CRITICALLY important. }
     property XPixelGap: Double read FXPixelGap write FXPixelGap;
     property XLegendMaxTextWidth: Integer read FXLegendMaxTextWidth write FXLegendMaxTextWidth;
@@ -481,7 +584,9 @@ type
       // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
     property XAxisLabelAlignment: TAlignment read FXAxisLabelAlignment write FXAxisLabelAlignment; // New: Text alignment for X axis labels. Default is left alignment.
 
-    property XAxisDateTimeMode: Boolean read FXAxisDateTimeMode write FXAxisDateTimeMode;
+    property XAxisDateTimeMode: Boolean read FXAxisDateTimeMode write FXAxisDateTimeMode; // REWORKED LOGIC NEW IN 2007! See GraphXAxisDivisionMarkers
+    property XAxisDateTimeDivision:Double read FXAxisDateTimeDivision write SetXAxisDateTimeDivision; // NEW 2007 : What is the nominal date/time division (1.0=day, 1.0/24=1 hour)
+
     property XAxisDateTimeFormat: string read FXAxisDateTimeFormat write FXAxisDateTimeFormat;
     property XAxisHeader: string read FXAxisHeader write FXAxisHeader;
     property XAxisLegendSkipBy: Integer read FXAxisLegendSkipBy write FXAxisLegendSkipBy default 1;
@@ -569,6 +674,9 @@ type
 
     FDragFloatingMarker: TJvChartFloatingMarker; //Current object we are dragging ( nil=none )
     FFloatingMarker: TObjectList; // NEW: collection of TJvChartFloatingMarker objects.
+    FHorizontalBars: TObjectList; // NEW 2007
+    FVerticalBars  : TObjectList; // NEW 2007
+
 
     FAverageData: TJvChartData;
     FBitmap: TBitmap;
@@ -589,7 +697,6 @@ type
     //NEW:
     FXOrigin: Double; {was in TJvChart.PlotGraph}
     FYOrigin: Double; {was in TJvChart.PlotGraph}
-    //FYTempOrigin: Integer; {was in TJvChart.PlotGraph}
     FXAxisPosition: Integer; // how far down (in Y dimension) is the X axis?
     FOnOptionsChangeEvent: TJvChartEvent; { Component fires this event for when options change.}
     FOnPaint: TJvChartPaintEvent; {NEW JAN 2005: Custom paint event called from TjvChart.Paint.}
@@ -608,6 +715,10 @@ type
     procedure PaintCursor; // called from Paint iif a Cursor is visible. does NOT modify FPicture!
   protected
     procedure DrawFloatingMarkers;
+    procedure DrawHorizontalBars; // NEW 2007
+    procedure DrawVerticalBars;   // NEW 2007
+    procedure DrawGradient;       // NEW 2007
+
 
     function GetFloatingMarker(Index: Integer): TJvChartFloatingMarker;
 
@@ -681,6 +792,9 @@ type
     procedure CalcYEnd; // Determine where the below-the bottom axis area starts
 
     function GetChartCanvas: TCanvas; // Get Picture.Bitmap Canvas.
+    function GetChartCanvasWidth:Integer;     //WP  NEW 2007
+    function GetChartCanvasHeight:Integer;    //WP  NEW 2007
+
 
     function DestRect: TRect; // from TImage
     procedure DesignModePaint; // Invoked by Paint method when we're in design mode.
@@ -700,8 +814,6 @@ type
     { internal drawing properties, valid during Paint method invocations only }
     property XOrigin: Double read FXOrigin; {was in TJvChart.PlotGraph}
     property YOrigin: Double read FYOrigin; {was in TJvChart.PlotGraph}
-    //property     YOldOrigin: Integer  read FYOldOrigin; {was in TJvChart.PlotGraph}
-    //property     YTempOrigin: Integer read FYTempOrigin; {was in TJvChart.PlotGraph}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -727,13 +839,32 @@ type
     procedure PivotData; { Pivot Table. Switches the x values with Pen! Resets AverageLine}
     procedure AutoHint; // Make the automatic hint message showing all pens and their values.
     procedure SetCursorPosition(Pos: Integer);
+    procedure DisplayBars; // NEW 2007
+
 
     // FLOATING MARKERS: NEW JAN 2005. -WP
-    function AddFloatingMarker: TJvChartFloatingMarker; // NEW Jan 2005!
-    procedure DeleteFloatingMarker(Index: Integer); // NEW Jan 2005!
-    procedure ClearFloatingMarkers;
+    function  AddFloatingMarker: TJvChartFloatingMarker; // NEW Jan 2005!
 
     property FloatingMarker[Index: Integer]: TJvChartFloatingMarker read GetFloatingMarker; // NEW Jan 2005!
+
+
+    procedure DeleteFloatingMarker(Index: Integer); // NEW Jan 2005!
+
+    // --NEW 2007 METHOD--
+
+    procedure DeleteFloatingMarkerObj( marker:TJvChartFloatingMarker); // NEW 2007
+    procedure ClearFloatingMarkers;
+    function  FloatingMarkerCount:Integer; // NEW 2007
+
+    function  AddHorizontalBar : TJvChartHorizontalBar; // NEW 2007
+    procedure ClearHorizontalBars;                      // NEW 2007
+    function  HorizontalBarsCount : Integer;            // NEW 2007
+
+    function AddVerticalBar   : TJvChartVerticalBar;   // NEW 2007
+    procedure ClearVerticalBars;                       // NEW 2007
+    function VerticalBarsCount   : Integer;            // NEW 2007
+
+    // -- END NEW 2007 METHOD--
 
     property Data: TJvChartData read FData;
     property AverageData: TJvChartData read FAverageData;
@@ -810,6 +941,7 @@ implementation
 
 uses
   SysUtils, Forms, Dialogs, Printers, Clipbrd,
+  Math, // uses Ceil routine.
   JclMath, // function IsNaN for Delphi 5  (ahuser)
   JvJCLUtils, // StrToFloatDef
   JvJVCLUtils, JvConsts, JvResources;
@@ -845,7 +977,206 @@ const
   DEFAULT_VALUE_COUNT = 100;
   // By Default TJvChartData holds 100 values per pen. Grows autofragellisticexpialidociously. :-)
 
+
+
+// NEW 2007:
+
+
+    // HELPER FUNCTIONS - NEW 2007
+//-------------------Helper to draw a Gradient. Use it with TJvChartHorizontalBar, for example-------------------------
+procedure GradHorizontal(Canvas:TCanvas; Rect:TRect; FromColor, ToColor:TColor) ; // NEW 2007
+var
+  X                :integer;
+  dr,dg,db         :Extended;
+  C1,C2            :TColor;
+  r1,r2,g1,g2,b1,b2:Byte;
+  R,G,B            :Byte;
+  cnt              :integer;
+  XDelta           : integer;
+begin
+  C1 := FromColor;
+  R1 := GetRValue(C1) ;
+  G1 := GetGValue(C1) ;
+  B1 := GetBValue(C1) ;
+
+  C2 := ToColor;
+  R2 := GetRValue(C2) ;
+  G2 := GetGValue(C2) ;
+  B2 := GetBValue(C2) ;
+
+  XDelta:=Rect.Right-Rect.Left; if XDelta<=0 then exit;
+
+  dr := (R2-R1) / XDelta;
+  dg := (G2-G1) / XDelta;
+  db := (B2-B1) / XDelta;
+
+  cnt := 0;
+  for X := Rect.Left to Rect.Right-1 do
+  begin
+    R := R1+Ceil(dr*cnt) ; // uses Math.
+    G := G1+Ceil(dg*cnt) ;
+    B := B1+Ceil(db*cnt) ;
+
+    Canvas.Pen.Color := RGB(R,G,B) ;
+    Canvas.MoveTo(X,Rect.Top) ;
+    Canvas.LineTo(X,Rect.Bottom) ;
+    inc(cnt) ;
+  end;
+end;
+procedure GradVertical(Canvas:TCanvas; Rect:TRect; FromColor, ToColor:TColor) ;  // NEW 2007
+var
+  Y                :integer;
+  dr,dg,db         :Extended;
+  C1,C2            :TColor;
+  r1,r2,g1,g2,b1,b2:Byte;
+  R,G,B            :Byte;
+  cnt              :Integer;
+  YDelta           : integer;
+begin
+   C1 := FromColor;
+   R1 := GetRValue(C1) ;
+   G1 := GetGValue(C1) ;
+   B1 := GetBValue(C1) ;
+
+   C2 := ToColor;
+   R2 := GetRValue(C2) ;
+   G2 := GetGValue(C2) ;
+   B2 := GetBValue(C2) ;
+
+   YDelta :=Rect.Bottom-Rect.Top; if YDelta<=0 then exit;
+   dr := (R2-R1)/YDelta;
+   dg := (G2-G1)/YDelta;
+   db := (B2-B1)/YDelta;
+
+   cnt := 0;
+   for Y := Rect.Top to Rect.Bottom-1 do
+   begin
+      R := R1+Ceil(dr*cnt) ;
+      G := G1+Ceil(dg*cnt) ;
+      B := B1+Ceil(db*cnt) ;
+
+      Canvas.Pen.Color := RGB(R,G,B) ;
+      Canvas.MoveTo(Rect.Left,Y) ;
+      Canvas.LineTo(Rect.Right,Y) ;
+      Inc(cnt) ;
+   end;
+end;
+//-----------------------------------------------------------------
+
+
+
+// TJvChartGradientBar METHODS
+
+constructor TJvChartGradientBar.Create(Owner: TJvChart);
+begin
+  inherited Create;
+  FOwner:=Owner;
+  FVisible:=false;
+  FColor:=clWhite;
+  FGradDirection:=grNone;
+  FGradColor:=FColor;
+end;
+
+procedure TJvChartGradientBar.SetVisible(isVisible: Boolean);
+begin
+  if isVisible<>FVisible then
+  begin
+    FVisible := isVisible;
+    if Assigned(FOwner) and not FOwner.FUpdating then FOwner.Invalidate;
+  end
+end;
+
+procedure TJvChartGradientBar.SetColor(aColor : TColor);
+begin
+  if aColor<>FColor then
+  begin
+    FColor:=aColor;
+    if Assigned(FOwner) and not FOwner.FUpdating then FOwner.Invalidate;
+  end
+end;
+
+procedure TJvChartGradientBar.SetGradientColor(aColor : TColor);
+begin
+  if aColor<>FGradColor then
+  begin
+    FGradColor:=aColor;
+    if Assigned(FOwner) and not FOwner.FUpdating then FOwner.Invalidate;
+  end
+end;
+
+procedure TJvChartGradientBar.SetGradientType(aType : TJvChartGradientDirection);
+begin
+  if aType<>FGradDirection then
+  begin
+    FGradDirection:=aType;
+    if Assigned(FOwner) and not FOwner.FUpdating then FOwner.Invalidate;
+  end
+end;
+
+
+// TJvChartHorizontalBar METHODS
+
+constructor TJvChartHorizontalBar.Create(Owner: TJvChart);
+begin
+  inherited Create(Owner);
+  FYTop:=0;
+  FYBottom:=0;
+end;
+
+constructor TJvChartVerticalBar.Create(Owner: TJvChart);
+begin
+  inherited Create(Owner);
+  FXLeft:=0;
+  FXRight:=0;
+end;
+
+
+
+
+
+
 //=== {TJvChartFloatingMarker} ===============================================
+
+
+
+procedure TJvChartFloatingMarker.Assign(Source: TPersistent); // NEW 2007.
+var
+ src:TJvChartFloatingMarker;
+begin
+  // don't assign FOwner, FIndex, etc.
+  //FRawXPosition  {don't copy}
+  //FRawYPosition  {don't copy}
+
+  if Source is TJvChartFloatingMarker then begin
+
+  src := TJvChartFloatingMarker(Source);
+
+  FCaption        := src.Caption;
+  FTag            := src.Tag;
+
+  //FYPositionToPen := src.YPositionToPen;
+  FMarkerColor    := src.MarkerColor;
+  FMarker         := src.Marker;
+  FLineStyle      := src.LineStyle;
+  FLineColor      := src.LineColor;
+  //FCaptionBorderStyle := psClear;
+  FXDragMin       := src.XDragMin;
+  FXDragMax       := src.XDragMax;
+
+  FLineWidth      := src.LineWidth;
+  FLineToMarker   := src.LineToMarker;
+  FLineVertical   := src.LineVertical;
+
+  FCaptionColor   := src.CaptionColor;
+  FCaptionPosition := src.CaptionPosition;
+  FCaptionBoxed   := src.CaptionBoxed;
+
+  {don't use internal property set for these:}
+  XPosition := src.XPosition;
+  YPosition := src.YPosition;
+  Visible   := src.Visible;
+ end;
+end;
 
 constructor TJvChartFloatingMarker.Create(Owner: TJvChart);
 begin
@@ -878,6 +1209,11 @@ begin
       if not FOwner.FUpdating then
         FOwner.Invalidate;
   end;
+end;
+
+procedure TJvChartFloatingMarker.SetCaptionColor(const Value: TColor);
+begin
+  FCaptionColor := Value;
 end;
 
 procedure TJvChartFloatingMarker.SetXPosition(XPos: Integer); // should invalidate the chart (FOwner) if changed.
@@ -1033,6 +1369,16 @@ begin
     Result := 0.0 // null datetime
   else
     Result := FTimeStamp[ValueIndex];
+end;
+
+procedure TJvChartData.SetEndDateTime(const Value: TDateTime);
+begin
+  FEndDateTime := Value;
+end;
+
+procedure TJvChartData.SetStartDateTime(const Value: TDateTime);
+begin
+  FStartDateTime := Value;
 end;
 
 procedure TJvChartData.SetTimestamp(ValueIndex: Integer; AValue: TDateTime);
@@ -1206,7 +1552,7 @@ begin
   for I := 0 to FPenCount - 1 do
   begin
     LValue := GetValue(I, ValueIndex);
-    if IsNaN(LValue) then
+    if Math.IsNaN(LValue) then
       S := S + '-'
     else
       S := S + Format('%5.2f', [LValue]);
@@ -1331,7 +1677,7 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
 begin
-  if IsNan(NewYMin) then
+  if Math.IsNan(NewYMin) then
     Exit;
 
   try
@@ -1367,7 +1713,7 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
-  if IsNan(NewYMax) then
+  if Math.IsNan(NewYMax) then
     Exit;
 
   if NewYMax = FYMax then
@@ -1746,6 +2092,11 @@ begin
   Result := FXLegends as TStrings;
 end;
 
+procedure TJvChartOptions.SetXAxisDateTimeDivision(const Value: Double);
+begin
+  FXAxisDateTimeDivision := Value;
+end;
+
 procedure TJvChartOptions.SetXLegends(Value: TStrings);
 begin
   FXLegends.Assign(Value);
@@ -1822,6 +2173,13 @@ begin
   FFloatingMarker := TObjectList.Create; // NEW: collection of TJvChartFloatingMarker objects.
   FFloatingMarker.OwnsObjects := True;
 
+  FHorizontalBars := TObjectList.Create; // NEW: collection of TJvChartFloatingMarker objects.
+  FHorizontalBars.OwnsObjects := True;
+
+  FVerticalBars := TObjectList.Create; // NEW: collection of TJvChartFloatingMarker objects.
+  FVerticalBars.OwnsObjects := True;
+
+
   FOptions := TJvChartOptions.Create(Self);
   CalcYEnd;
 
@@ -1868,6 +2226,9 @@ begin
   FreeAndNil(FData);
 
   FreeAndNil(FFloatingMarker); // Destroy collection of TJvChartFloatingMarker objects. Destroys contained objects also.
+  FreeAndNil(FHorizontalBars); // NEW 2007
+  FreeAndNil(FVerticalBars);   // NEW 2007
+  
 
   FreeAndNil(FMouseDownHintStrs); //new.
 
@@ -1970,6 +2331,11 @@ begin
   Options.PrimaryYAxis.Normalize;
   Options.SecondaryYAxis.Normalize;
   GraphSetup;
+
+  DrawGradient;
+  DisplayBars;
+
+
   PrimaryYAxisLabels;
   GraphXAxis;
   GraphXAxisDivisionMarkers;
@@ -2312,22 +2678,14 @@ begin
 
   FXOrigin := Options.XStartOffset + Options.XPixelGap * (Options.XOrigin);
   FYOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * PYVC);
-  //Options.YStartOffset +
-//    Round(Options.PrimaryYAxis.YPixelGap * (PYVC - Options.YOrigin));
 
-    (*FOO
-  if Options.YOrigin < 0 then
-    FYTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * PYVC)
-  else
-    FYTempOrigin := Round(YOrigin);
-         *)
   ACanvas.Brush.Style := bsClear;
 
    { NEW: Box around entire chart area. }
   X1 := Round(XOrigin);
   X2 := Round(Options.XStartOffset + Options.XPixelGap * VC);
   Y1 := Options.YStartOffset - 1;
-  Y2 := Round(YOrigin) + 1; // was YTempOrigin;
+  Y2 := Round(YOrigin) + 1; // was YTempOrigin
 
   if Y2 > Height then
   begin
@@ -2367,7 +2725,7 @@ begin
   LCanvas.Pen.Color := Options.AxisLineColor;
   LCanvas.Pen.Width := Options.AxisLineWidth; // was missing. Added Feb 2005. -WPostma.
   FXAxisPosition := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions));
-  (*FOO YTempOrigin; *)
+
   {Draw X-axis}
   LCanvas.MoveTo(Options.XStartOffset, FXAxisPosition);
   MyAxisLineTo(LCanvas, Round(Options.XStartOffset + Options.XPixelGap * Options.XValueCount), FXAxisPosition);
@@ -2378,7 +2736,19 @@ var
   I, X: Integer;
   Lines: Integer;
   LCanvas: TCanvas;
+  // these are used only in special XAxisDateTimeMode:
+  timePerXValue:Double;
+  elapsedTime:Double;
 begin
+  if not Enabled then
+    exit;
+  if (Options.XValueCount<=0) then // NOT VISIBLE WHEN NO VALUES TO SHOW. NEW 2007
+      exit;
+  if (Options.XStartOffset<=0) then // NOT VISIBLE WHEN NO ROOM TO SHOW IT. NEW 2007
+    exit;
+
+
+
   LCanvas := GetChartCanvas;
 
   if not Options.XAxisDivisionMarkers then
@@ -2386,7 +2756,69 @@ begin
   if Options.XAxisValuesPerDivision <= 0 then
     Exit;
 
-//    YTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions));
+
+  //XAxisDateTimeMode:   [NEW 2007]
+  // Make charts with XAxis divisions synchronized
+  // to some regular time division such as hourly periods.
+  //
+  // new mode! when looking at date/time charts
+  // it's useful to be able to force the divisions to be
+  // shown at hourly intervals, or if you're looking at a month of data
+  // perhaps you might want to plot a division marker at midnight
+  // or at weekly intervals.
+  //
+  if (Options.XAxisDateTimeMode)
+    and(Options.XAxisDateTimeDivision>0.000000001)
+    and(FData.EndDateTime>FData.StartDateTime)
+    then begin
+
+      // How much time goes by in this chart? ( 1.0 = one day)
+      elapsedTime := FData.EndDateTime-FData.StartDateTime;
+
+
+      // How far apart the bars are spaced is determined by
+      // XAxisDateTimeDivision.
+      // if we plot one day of values, and we want a marker every
+      // hour, we want XAxisDateTimeDivision=(1.0/24).
+
+
+      // Given the elapsed time in this chart, how many divisions
+      // should we be showing?
+      Options.FXAxisDateTimeLines := Round(elapsedTime/Options.XAxisDateTimeDivision);
+      if (Options.FXAxisDateTimeLines<0) or (Options.FXAxisDateTimeLines>10000) then // sanity check!
+        exit;
+
+      // this value is to help us figure out how much time goes by
+      // for each time we go from one X value to the next one.
+      timePerXValue := elapsedTime/Options.XValueCount;
+
+      // figure out how many divisions to move over for firstMarker
+      // given timePerXValue (1.0=one day) and StartDateTime and
+      // XAxisDateTimeDivision.
+      Options.FXAxisDateTimeFirstMarker := 0;
+      // If XAxisDateTimeDivion=1.0, and timePerXValue=0.25, then
+      // we want a division marker for every 4th value
+      Options.FXaxisDateTimeSkipBy := Round(Options.XAxisDateTimeDivision/timePerXValue);
+
+    for i := 0 to Options.FXAxisDateTimeLines-1 do begin
+          X := Round(Options.XStartOffset + (Options.XPixelGap * I * Options.FXaxisDateTimeSkipBy) )+Options.FXAxisDateTimeFirstMarker;
+          if X> Options.XEnd  then
+              break;
+          if X = Options.XStartOffset then
+              continue; // don't draw dotted line right at X Axis.
+          LCanvas.Pen.Color := Options.GetPenColor(jvChartDivisionLineColorIndex);
+          MyDrawDotLine(LCanvas, X, Options.YStartOffset + 1, X, FXAxisPosition - 1);
+    end;
+
+    // Note: datetime labels aren't drawn yet, they are drawn later,
+    // see local procedure XAxisDateTimeModeLabels2 inside
+    // GraphXAxisLegend, for the printing of the datetime labels!
+    
+    exit; // done!
+  end;  // END OF NEW CODE IN 2007 FOR THIS METHOD. -WP-
+
+
+
 
   Lines := (((Options.XValueCount + (Options.XAxisValuesPerDivision div 2)) div Options.XAxisValuesPerDivision)) - 1;
 
@@ -2546,7 +2978,7 @@ var
       for J := 0 to Options.XValueCount - 1 do
       begin
         V := FData.Value[I, J];
-        if IsNaN(V) then
+        if Math.IsNaN(V) then
           Continue;
         //MaxFlag := False;
         //MinFlag := False;
@@ -2593,7 +3025,7 @@ var
       for J := 0 to Options.XValueCount - 1 do
       begin
         V := FData.Value[I, J];
-        if IsNaN(V) then
+        if Math.IsNaN(V) then
           Continue;
         // Calculate Marker position:
         X := Round(XOrigin + J * LineXPixelGap);
@@ -2695,6 +3127,7 @@ var
   begin
 
     YTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions));
+
     BarCount := Options.PenCount * Options.XValueCount;
     BarGap := (((Options.XEnd - 1) - Options.XStartOffset) / BarCount);
 
@@ -2722,7 +3155,7 @@ var
         //Dec(X2,4);
         //Inc(X2, 2*J);
         V := FData.Value[I, J];
-        if IsNaN(V) then
+        if Math.IsNaN(V) then
           Continue;
         Y2 := Round(YOrigin - ((V / Options.PenAxis[I].YGap) * Options.PrimaryYAxis.YPixelGap));
         //Assert(Y2 < Height);
@@ -2773,7 +3206,7 @@ var
   begin
     V := FData.Value[Pen, Sample];
     PenAxisOpt := Options.PenAxis[Pen];
-    if IsNaN(V) then
+    if Math.IsNaN(V) then
     begin
       Result := NaN; // blank placeholder value in chart!
       Exit;
@@ -2817,7 +3250,7 @@ var
       SetLineColor(ACanvas, I);
       J := 0;
       V := GraphConstrainedLineY(I, J);
-      NanFlag := IsNaN(V);
+      NanFlag := Math.IsNaN(V);
       if not NanFlag then
       begin
         Y := Round(V);
@@ -2827,7 +3260,7 @@ var
       for J := 1 to Options.XValueCount - 1 do
       begin
         V := GraphConstrainedLineY(I, J);
-        if IsNaN(V) then
+        if Math.IsNaN(V) then
         begin
           NanFlag := True; // skip.
           ACanvas.MoveTo(Round(XOrigin + J * LineXPixelGap), 200); //DEBUG!
@@ -2850,7 +3283,7 @@ var
               for I2 := 0 to I - 1 do
               begin
                 V := GraphConstrainedLineY(I2, J);
-                if IsNaN(V) then
+                if Math.IsNaN(V) then
                   Continue;
                 Y1 := Round(V);
                 if Y1 = Y then
@@ -3045,6 +3478,9 @@ begin { Enough local functions for ya? -WP }
     Exit;
   end;
 
+  DrawGradient; // NEW 2007
+  DisplayBars;  // NEW 2007
+
   {Y Axis}
   GraphYAxis;
   GraphYAxisDivisionMarkers; // dotted lines making graph-paper across graph
@@ -3099,20 +3535,18 @@ begin
   end;
 end;
 
-procedure TJvChart.GraphXAxisLegend;
+procedure TJvChart.GraphXAxisLegend; // reworked in 2007.
 var
   I, K, Y, Count: Integer;
   XLegendGap: Integer;
   BoxWidth, BoxHeight: Integer;
   nTextHeight: Integer;
-  //YTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
   LLabel: string;
 
   Timestamp: TDateTime;
   TimestampStr: string;
   XOverlap: Integer;
   VisiblePenCount: Integer;
-  //YTempOrigin: Integer;
   ACanvas: TCanvas;
   { draw x axis text at various alignments:}
 
@@ -3196,35 +3630,29 @@ var
     end;
   end;
 
-begin
-  {X-LEGEND: ...}
-  ACanvas := GetChartCanvas;
-  // DoSeparate := False; // not used (ahuser)
-  XLegendGap := 0;
-  VisiblePenCount := 0;
-  XOverlap := 0; // XAxis Label Overlap protection checking variable.
+  procedure XAxisDateTimeModeLabels1; // Classic mode [REFACTORED 2007]
+  var
+   L:Integer;
+   YTempOrigin:Double;
+  begin
+    // classic JvChart XAxisDateTime mode labels painting code.
 
-  {Count how many characters to show in the separate legend}
-
-  SetLineColor(ACanvas, jvChartAxisColorIndex);
-  MyAxisFont(ACanvas);
-
-  { datetime mode for X axis legends : follow the division markers }
-  if Options.XAxisDateTimeMode then
-  begin { if DateTime mode then legends are painted where the division markers are painted }
-    // if not Options.XAxisDivisionMarkers then Exit;
+      // if not Options.XAxisDivisionMarkers then Exit;
     if Options.XAxisValuesPerDivision <= 0 then
       Exit;
+    if Options.XStartOffset <=0 then
+      Exit;
 
-    {YTempOrigin := Options.YStartOffset +
-      Round(Options.PrimaryYAxis.YPixelGap * Options.PrimaryYAxis.YDivisions);}
+    YTempOrigin := Options.YStartOffset +
+      Round(Options.PrimaryYAxis.YPixelGap * Options.PrimaryYAxis.YDivisions);
 
-    for I := 1 to Options.XValueCount div Options.XAxisValuesPerDivision - 1 do
+
+    for L := 1 to Options.XValueCount div Options.XAxisValuesPerDivision - 1 do
     begin
-      Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
+      Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * L * Options.XAxisValuesPerDivision);
 
-      Timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
-      if Timestamp < 0.0000001 then
+      Timestamp := FData.Timestamp[L * Options.XAxisValuesPerDivision - 1];
+      if (Timestamp < 0.0000001) then
         Continue;
 
       if Length(Options.FXAxisDateTimeFormat) = 0 then // not specified, means use Locale defaults
@@ -3233,7 +3661,7 @@ begin
         TimestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, Timestamp);
 
       // Check if writing this label would collide with previous label, if not, plot it
-      if Options.FXLegendHoriz - ACanvas.TextWidth(TimestampStr) div 2 > XOverlap then
+      if (Options.FXLegendHoriz - (ACanvas.TextWidth(TimestampStr) div 2)) > XOverlap then
       begin
         MyCenterTextOut(ACanvas, Options.FXLegendHoriz,
           {bottom:}FXAxisPosition + Options.AxisLineWidth
@@ -3249,150 +3677,92 @@ begin
         XOverlap := Options.FXLegendHoriz + ACanvas.TextWidth(TimestampStr);
       end;
     end;
-  end
-  else
-  if Options.XValueCount > 0 then // is there data to plot?
-  begin
-    {default X axis legend mode: use text legends}
 
-    if Options.FXAxisLegendSkipBy < 1 then
-      Options.FXAxisLegendSkipBy := 1;
-
-    Count := (Options.XValueCount + (Options.FXAxisLegendSkipBy - 1)) div Options.FXAxisLegendSkipBy;
-    // Skip the first (Index 0) Axis Label, for visual reasons.
-    for K := 0 to Count - 1 do
-    begin
-      I := K * Options.FXAxisLegendSkipBy;
-      //Options.FXLegendHoriz := Round(Options.XStartOffset + (Options.XPixelGap * I));
-      Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
-
-      case Options.FXAxisLabelAlignment of
-        taLeftJustify:
-          if not LeftXAxisText then
-            Break;
-        taRightJustify:
-          if not RightXAxisText then
-            Break;
-        taCenter:
-          if not CenterXAxisText then
-            Break;
-      end;
-    end;
   end;
 
-  MySmallGraphFont(ACanvas);
 
-  {Pen Legend on Right Sid, only if Pen count is greater than one and we want them.}
-  if Options.Legend = clChartLegendRight then
+
+  //XAxisDateTimeModeLabels2: [NEW 2007]
+  // make text labels line up with new division line drawing code
+  // in GraphXAxisDivisionMarkers:
+  procedure XAxisDateTimeModeLabels2; // [NEW 2007]
+  var
+   L:Integer;
+   X:Integer;
+   divPixels:Integer;
+   textWidth:Integer;
+   modn:Integer;
   begin
-    MySmallGraphFont(ACanvas);
-    {10 % extra space for line height}
-    nTextHeight := Round(CanvasMaxTextHeight(ACanvas) * 1.1);
-    BoxWidth := ACanvas.TextWidth('X') * 2 - 2;
-    BoxHeight := nTextHeight - 2;
+     Assert(Options.FXAxisDateTimeSkipBy >0);
 
-    MyColorRectangle(ACanvas, jvChartShadowColorIndex,
-      Options.XStartOffset + Options.XEnd + 6,
-      Options.YStartOffset + XLegendGap + 6,
-      Options.XStartOffset + Options.XEnd + Options.LegendWidth + 6,
-      Options.YStartOffset + (Options.PenCount + 1) * nTextHeight + XLegendGap + 6 + 5);
-    MyColorRectangle(ACanvas, jvChartPaperColorIndex,
-      Options.XStartOffset + Options.XEnd + 3,
-      Options.YStartOffset + 3 + XLegendGap,
-      Options.XStartOffset + Options.XEnd + Options.LegendWidth + 3,
-      Options.YStartOffset + (Options.PenCount + 1) * nTextHeight + 3 + XLegendGap + 5);
+    divPixels := Round (Options.XPixelGap * Options.FXaxisDateTimeSkipBy);
 
-    for I := 0 to Options.PenCount - 1 do
-    begin
-      if Options.PenStyle[I] <> psClear then
-      begin // Only draw legend on VISIBLE pens.
-        DrawPenColorBox(ACanvas, I, // pen#
-          BoxWidth,
-          BoxHeight,
-          Options.XStartOffset + Options.XEnd + 7,
-          Options.YStartOffset + VisiblePenCount * nTextHeight + 7 + XLegendGap);
-        SetFontColor(ACanvas, jvChartAxisColorIndex);
-        // Draw the Pen Legend (WAP :add unit to legend. )
-        if Options.PenLegends.Count > I then
-          LLabel := Options.PenLegends[I]
-        else
-          LLabel := IntToStr(I + 1);
+    for L := 0 to FOptions.FXAxisDateTimeLines-1 do begin
 
-         // Put units in pen legends
-         (*
-            if     ( Options.PenUnit.Count > I )
-               and ( Length( Options.PenUnit[I] ) >  0 ) then
-               LLabel := LLabel + ' ('+Options.PenUnit[I]+')';
-         *)
+      Timestamp := FData.Timestamp[ (L * Options.FXaxisDateTimeSkipBy) ]+Options.FXAxisDateTimeFirstMarker;
 
-        MyLeftTextOut(ACanvas, Options.XStartOffset + Options.XEnd + 15 + ACanvas.TextWidth('12'),
-          Options.YStartOffset + VisiblePenCount * nTextHeight + 7 + XLegendGap, LLabel);
-        Inc(VisiblePenCount);
-      end;
+      if (Timestamp < 0.0000001) then
+        Continue;
+
+      if Length(Options.FXAxisDateTimeFormat) = 0 then // not specified, means use Locale defaults
+        TimestampStr := TimeToStr(Timestamp)
+      else
+        TimestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, Timestamp);
+
+        textWidth := ACanvas.TextWidth(TimeStampStr);
+        if (divPixels>0) then begin
+            modn := Trunc(textWidth/divPixels)+1;
+            if modn>1 then begin
+                if (L mod modn)<>0 then
+                    continue; // skip labels if they are too densely spaced.
+            end;
+        end;
+            
+
+
+
+          X := Round(Options.XStartOffset + (Options.XPixelGap * L * Options.FXaxisDateTimeSkipBy) )+Options.FXAxisDateTimeFirstMarker;
+          if X> Options.XEnd  then
+              break;
+          if X = Options.XStartOffset then
+              continue; // don't draw dotted line right at X Axis.
+
+              MyCenterTextOut(ACanvas, X,
+                        {bottom:}FXAxisPosition + Options.AxisLineWidth,
+                        TimestampStr );
+
+          ACanvas.Pen.Color := Options.GetPenColor(jvChartDivisionLineColorIndex);
+          MyDrawDotLine(ACanvas, X, Options.YStartOffset + 1, X, FXAxisPosition - 1);
     end;
+
+  end;
+
+begin
+  {X-LEGEND: ...}
+  if (Options.XStartOffset=0)and(Options.YStartOffset=0) then
+      exit;
+  ACanvas := GetChartCanvas;
+
+  XLegendGap := 0;
+  VisiblePenCount := 0;
+  XOverlap := 0; // XAxis Label Overlap protection checking variable.
+
+  {Count how many characters to show in the separate legend}
+
+  SetLineColor(ACanvas, jvChartAxisColorIndex);
+  MyAxisFont(ACanvas);
+
+  { datetime mode for X axis legends : follow the time division markers }
+  if Options.XAxisDateTimeMode then
+  begin { if DateTime mode then legends are painted where the division markers are painted }
+    if (Data.EndDateTime>Data.StartDateTime) and (Options.XAxisDateTimeDivision>0.00001) then
+      XAxisDateTimeModeLabels2 // new mode! align division markers to even hour/day/etc boundaries!
+    else
+      XAxisDateTimeModeLabels1; // classic mode! let the labels displayed be any old time.
   end
   else
-  if Options.Legend = clChartLegendBelow then
-  begin // space-saving legend below chart
-    MySmallGraphFont(ACanvas);
-
-    {10 % extra space for line height}
-    nTextHeight := Round(CanvasMaxTextHeight(ACanvas) * 1.01);
-
-    //BoxHeight := nTextHeight - 2;
-
-    Options.FXLegendHoriz := Options.XStartOffset;
-    for I := 0 to Options.PenCount - 1 do
-    begin
-      if Options.PenStyle[I] = psClear then
-        if Options.GetPenMarkerKind(I) = pmkNone then
-          Continue; // Skip invisible pens.
-
-      Y := Options.YStartOffset + Options.YEnd + nTextHeight div 2;
-
-      // If chart has X legends:
-      if (Options.XLegends.Count > 0) or Options.XAxisDateTimeMode then
-        Y := Y + nTextHeight;
-
-      if Options.PenStyle[I] = psClear then
-      begin
-        // For markers, draw marker:
-        ACanvas.Pen.Color := Options.GetPenColor(I);
-        GraphXAxisLegendMarker(ACanvas, Options.GetPenMarkerKind(I),
-          Options.FXLegendHoriz, (Y + 8) - (Options.MarkerSize div 2));
-        BoxWidth := Options.MarkerSize + 2;
-      end
-      else
-      begin
-        // For lines, draw a pen color box:
-        BoxWidth := ACanvas.TextWidth('X') * 2 - 2;
-        DrawPenColorBox(ACanvas, I, {pen#}
-          BoxWidth - 2, {width}
-          nTextHeight - 2, {height}
-          Options.FXLegendHoriz, {X=}
-          Y + 4); {Y=}
-      end;
-      SetFontColor(ACanvas, jvChartAxisColorIndex);
-      // Draw the Pen Legend (WAP :add unit to legend. )
-      if Options.PenLegends.Count > I then
-        LLabel := Options.PenLegends[I]
-      else
-        LLabel := IntToStr(I + 1);
-
-      // Put units in pen legends
-      (*
-         if     ( Options.PenUnit.Count > I )
-            and ( Length( Options.PenUnit[I] ) >  0 ) then
-            LLabel := LLabel + ' ('+Options.PenUnit[I]+')';
-      *)
-
-      MyLeftTextOut(ACanvas, Options.FXLegendHoriz + BoxWidth + 3, Y, LLabel);
-      Inc(Options.FXLegendHoriz, BoxWidth + ACanvas.TextWidth(LLabel) + 14);
-      //Inc(VisiblePenCount);
-      //end;
-    end;
-  end;
 end;
+
 
 procedure TJvChart.DrawPenColorBox(ACanvas: TCanvas; NColor, W, H, X, Y: Integer);
 begin
@@ -3559,6 +3929,50 @@ begin
     {$ELSE}
     raise EInvalidOperation.CreateRes(@RsEUnableToGetCanvas);
     {$ENDIF CLR}
+end;
+
+
+function TJvChart.GetChartCanvasWidth:Integer;   // WP NEW 2007
+begin
+  { designtime - draw directly to screen }
+  if csDesigning in ComponentState then
+  begin
+    Result := Width;
+    Exit;
+  end;
+  if PrintInSession then
+  begin
+    Result := Printer.PageWidth;
+    Exit;
+  end;
+  if Assigned(FPicture) then
+    result := FPicture.Width
+  else
+    result := Width;
+end;
+
+
+function TJvChart.GetChartCanvasHeight:Integer; // WP NEW 2007
+begin
+  { designtime - draw directly to screen }
+  if csDesigning in ComponentState then
+  begin
+    Result := Self.Height;
+    Exit;
+  end;
+
+  { printer canvas }
+  if PrintInSession then
+  begin
+    Result := Printer.PageHeight;
+    Exit;
+  end;
+
+  { FPicture.Graphic -bitmap canvas - normal display method. }
+  if Assigned(FPicture) then
+    result := FPicture.Height
+  else
+    result := Self.Height;
 end;
 
 procedure TJvChart.CalcYEnd;
@@ -4006,6 +4420,13 @@ begin
   Invalidate; // repaint!
 end;
 
+procedure TJvChart.DisplayBars;  // NEW 2007!
+begin
+  DrawHorizontalBars;
+  DrawVerticalBars;
+end;
+
+
 { make list of 'PenName=Value' strings for each pen.. }
 
 procedure TJvChart.AutoHint; // Make the automatic hint message showing all pens and their values.
@@ -4038,7 +4459,7 @@ begin
     if Length(Str) = 0 then
       Str := IntToStr(I + 1);
     Str := Str + ' : ';
-    if IsNaN(Val) then
+    if Math.IsNaN(Val) then
       Str := Str + RsNA
     else
     begin
@@ -4980,6 +5401,20 @@ begin
   Invalidate;
 end;
 
+procedure TJvChart.DeleteFloatingMarkerObj( marker:TJvChartFloatingMarker); // NEW 2007
+var
+ i:Integer;
+begin
+  for i := 0 to FFloatingMarker.Count-1 do begin
+      if TJvChartFloatingMarker(FFloatingMarker[i])=marker then begin
+            DeletefloatingMarker(i);
+            exit;
+      end;
+  end;
+
+end;
+
+
 procedure TJvChart.ClearFloatingMarkers;
 begin
   if Assigned(FDragFloatingMarker) then
@@ -4992,6 +5427,171 @@ begin
   Assert(Assigned(FFloatingMarker));
   Result := TJvChartFloatingMarker(FFloatingMarker[Index]);
 end;
+
+function TJvChart.FloatingMarkerCount:Integer;
+begin
+  Assert(Assigned(FFloatingMarker));
+  result := FFloatingMarker.Count;
+end;
+
+
+// NEW HORIZONTAL BAR AND VERTICAL BAR AND GRADIENT PAINTING METHODS (2007) - W.Postma.
+
+procedure TJvChart.DrawGradient;   // new 2007
+var
+  ACanvas     : TCanvas;
+  RawRect     : TRect;
+  VC          : integer;
+begin
+  if csDesigning in ComponentState then Exit;
+  if (Options.FGradientDirection=grNone) or (Options.PaperColor=Options.FGradientColor) then exit;
+  ACanvas:=GetChartCanvas;
+  VC :=Options.XValueCount;
+  if VC<1 then VC:=1;
+  RawRect.Top:=FOptions.YStartOffset;
+  RawRect.Bottom:=Trunc(YOrigin);
+  RawRect.Left:=Round(XOrigin);
+  RawRect.Right:=Round(Options.XStartOffset+Options.XPixelGap*VC)-1;
+  case Options.FGradientDirection of
+    grNone : ;
+    grUp   : GradVertical(ACanvas,RawRect,Options.FGradientColor,Options.PaperColor);
+    grDown : GradVertical(ACanvas,RawRect,Options.PaperColor,Options.FGradientColor);
+    grLeft : GradHorizontal(ACanvas,RawRect,Options.PaperColor,Options.FGradientColor);
+    grRight: GradHorizontal(ACanvas,RawRect,Options.FGradientColor,Options.PaperColor);
+  end;
+end;
+
+{ Gradient bars - indicators on background of various vertical subranges }
+procedure TJvChart.DrawHorizontalBars; // new 2007
+var
+  HB          : TJvChartHorizontalBar;
+  j           : integer;
+  ACanvas     : TCanvas;
+  VC          : integer;
+  RawRect     : TRect;
+begin
+  if csDesigning in ComponentState then Exit;
+  if FHorizontalBars.Count=0 then Exit;
+  ACanvas:=GetChartCanvas;
+  VC :=Options.XValueCount;
+  if VC<1 then VC:=1;
+
+  for j:=0 to FHorizontalBars.Count-1 do
+    begin
+      HB:=TJvChartHorizontalBar(FHorizontalBars[j]);
+      if not HB.FVisible then Continue;
+
+      with FOptions.PrimaryYAxis do if (YGap<>0) then
+       begin
+        if Math.IsNaN(HB.FYTop)
+          then RawRect.Top:=FOptions.YStartOffset
+          else begin
+                RawRect.Top:=Trunc((YOrigin - (((HB.FYTop-YMin)/YGap)*YPixelGap)));
+                if RawRect.Top<0 then RawRect.Top:=FOptions.YStartOffset;
+               end;
+
+        if Math.IsNaN(HB.FYBottom)
+          then RawRect.Bottom:=Trunc(YOrigin)
+          else begin
+                RawRect.Bottom:=Trunc((YOrigin-(((HB.FYBottom-YMin)/YGap)*YPixelGap)));
+                if (RawRect.Bottom<0) or (RawRect.Bottom>YOrigin) then RawRect.Bottom:=Trunc(YOrigin);
+               end;
+
+        RawRect.Left:=Round(XOrigin);
+        RawRect.Right:=Round(Options.XStartOffset+Options.XPixelGap*VC)-1;
+       end;
+      ACanvas.Brush.Color:=HB.FColor;
+      ACanvas.Brush.Style:=bsSolid;
+      ACanvas.FillRect(RawRect);
+      if HB.FColor<>HB.FGradColor then
+        case HB.FGradDirection of
+          grNone : ;
+          grUp   : GradVertical(ACanvas,RawRect,HB.FGradColor,HB.FColor);
+          grDown : GradVertical(ACanvas,RawRect,HB.FColor,HB.FGradColor);
+        end;
+    end;
+end;
+
+procedure TJvChart.DrawVerticalBars;  // new 2007
+var
+  VB          : TJvChartVerticalBar;
+  j           : integer;
+  ACanvas     : TCanvas;
+  VC          : integer;
+  RawRect     : TRect;
+begin
+  if csDesigning in ComponentState then Exit;
+  if FVerticalBars.Count=0 then Exit;
+  ACanvas:=GetChartCanvas;
+  {VC :=Options.XValueCount;
+  if VC<1 then VC:=1;}
+
+  for j:=0 to FVerticalBars.Count-1 do
+    begin
+      VB:=TJvChartVerticalBar(FVerticalBars[j]);
+      if not VB.FVisible then Continue;
+      RawRect.Top:=FOptions.YStartOffset;
+      RawRect.Bottom:=Trunc(YOrigin);
+      RawRect.Left :=Round(Options.XStartOffset+Options.XPixelGap*VB.FXLeft);
+      if RawRect.Left<=0 then RawRect.Left:=Round(XOrigin);
+      RawRect.Right:=Round(Options.XStartOffset+Options.XPixelGap*VB.FXRight);
+      VC:=Round(Options.XStartOffset+Options.XPixelGap*Options.XValueCount);
+      if RawRect.Right>VC
+       then RawRect.Right:=VC;
+
+      ACanvas.Brush.Color:=VB.FColor;
+      ACanvas.Brush.Style:=bsSolid;
+      ACanvas.FillRect(RawRect);
+      if VB.FColor<>VB.FGradColor then
+        case VB.FGradDirection of
+          grNone : ;
+          grUp   : GradVertical(ACanvas,RawRect,VB.FGradColor,VB.FColor);
+          grDown : GradVertical(ACanvas,RawRect,VB.FColor,VB.FGradColor);
+          grLeft : GradHorizontal(ACanvas,RawRect,VB.FColor,VB.FGradColor);
+          grRight: GradHorizontal(ACanvas,RawRect,VB.FGradColor,VB.FColor);
+        end;
+    end;
+end;
+
+
+function TJvChart.AddHorizontalBar : TJvChartHorizontalBar; // NEW 2007
+begin
+  Assert(Assigned(FHorizontalBars));
+  Result:=TJvChartHorizontalBar.Create(Self);
+  Result.FIndex:=FHorizontalBars.Count;
+  FHorizontalBars.Add(Result);
+end;
+
+function TJvChart.AddVerticalBar : TJvChartVerticalBar; // NEW 2007
+begin
+  Assert(Assigned(FVerticalBars));
+  Result:=TJvChartVerticalBar.Create(Self);
+  Result.FIndex:=FVerticalBars.Count;
+  FVerticalBars.Add(Result);
+end;
+
+procedure TJvChart.ClearHorizontalBars; // NEW 2007
+begin
+	FHorizontalBars.Clear;
+end;
+
+procedure TJvChart.ClearVerticalBars; // NEW 2007
+begin
+	FVerticalBars.Clear;
+end;
+
+function TJvChart.HorizontalBarsCount : Integer; // NEW 2007
+begin
+  result:=FHorizontalBars.Count
+end;
+
+function TJvChart.VerticalBarsCount   : Integer; // NEW 2007
+begin
+  result:=FVerticalBars.Count
+end;
+
+
+
 
 {$IFDEF UNITVERSIONING}
 initialization
