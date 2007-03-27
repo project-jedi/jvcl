@@ -1,5 +1,5 @@
 {-----------------------------------------------------------------------------
-JvChart - TJvChart Component 2007
+JvChart - TJvChart Component - 2007 Public
 
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -76,10 +76,13 @@ Last Modified:
   	                    - Added vertical markers (AddVerticalBar)
                         - Added horizontal bars (TJvChartHorizontalBar) ClearHorizontalBars
 	                      - Added FloatingMarkerCount.
-	                      - Added CopyFloatingMarkers
 	                      - New property in jvfloatingMarker: CaptionColor
                         - Added DeleteFloatingMarkerObj
                         - Graphical glitches/chart-display-bug-fixes.
+  2007-04-27 - (WP) - Fixes
+                        - Calls only JclMath.IsNan, not Math.IsNan, which doesn't
+                        exist on older Delphi/BCB versions.
+	                      - Added CopyFloatingMarkers (thought I did that yesterday but missed it)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -853,6 +856,7 @@ type
     // --NEW 2007 METHOD--
 
     procedure DeleteFloatingMarkerObj( marker:TJvChartFloatingMarker); // NEW 2007
+    procedure CopyFloatingMarkers(Source:TJvChart);
     procedure ClearFloatingMarkers;
     function  FloatingMarkerCount:Integer; // NEW 2007
 
@@ -941,7 +945,7 @@ implementation
 
 uses
   SysUtils, Forms, Dialogs, Printers, Clipbrd,
-  Math, // uses Ceil routine.
+  Math, // uses Ceil routine, also defines IsNan on Delphi 6 and up.
   JclMath, // function IsNaN for Delphi 5  (ahuser)
   JvJCLUtils, // StrToFloatDef
   JvJVCLUtils, JvConsts, JvResources;
@@ -1496,7 +1500,7 @@ begin
     SetLength(FData, FDataAlloc);
 
     // new: If we set FClearToValue to NaN, special handling in growing arrays:
-    if IsNaN(FClearToValue) then
+    if JclMath.IsNan(FClearToValue) then
       for I := OldLength to FDataAlloc - 1 do
         for J := 0 to Length(FData[I]) - 1 do
           FData[I][J] := FClearToValue; // XXX Debug me!
@@ -1506,7 +1510,7 @@ begin
   begin
     OldLength := Length(FData[ValueIndex]);
     SetLength(FData[ValueIndex], Pen + 1);
-    if IsNaN(FClearToValue) then
+    if JclMath.IsNan(FClearToValue) then
     begin
       for I := OldLength to FDataAlloc - 1 do
       begin
@@ -1552,7 +1556,7 @@ begin
   for I := 0 to FPenCount - 1 do
   begin
     LValue := GetValue(I, ValueIndex);
-    if Math.IsNaN(LValue) then
+    if JclMath.IsNan(LValue) then
       S := S + '-'
     else
       S := S + Format('%5.2f', [LValue]);
@@ -1677,7 +1681,7 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
 begin
-  if Math.IsNan(NewYMin) then
+  if JclMath.IsNan(NewYMin) then
     Exit;
 
   try
@@ -1713,7 +1717,7 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
-  if Math.IsNan(NewYMax) then
+  if JclMath.IsNan(NewYMax) then
     Exit;
 
   if NewYMax = FYMax then
@@ -2526,7 +2530,7 @@ begin
 
         V := FData.Value[J, I];
 
-        if IsNaN(V) then
+        if JclMath.IsNan(V) then
           Continue;
         if NYMin > V then
           NYMin := V;
@@ -2978,7 +2982,7 @@ var
       for J := 0 to Options.XValueCount - 1 do
       begin
         V := FData.Value[I, J];
-        if Math.IsNaN(V) then
+        if JclMath.IsNan(V) then
           Continue;
         //MaxFlag := False;
         //MinFlag := False;
@@ -3025,7 +3029,7 @@ var
       for J := 0 to Options.XValueCount - 1 do
       begin
         V := FData.Value[I, J];
-        if Math.IsNaN(V) then
+        if JclMath.IsNan(V) then
           Continue;
         // Calculate Marker position:
         X := Round(XOrigin + J * LineXPixelGap);
@@ -3155,7 +3159,7 @@ var
         //Dec(X2,4);
         //Inc(X2, 2*J);
         V := FData.Value[I, J];
-        if Math.IsNaN(V) then
+        if JclMath.IsNan(V) then
           Continue;
         Y2 := Round(YOrigin - ((V / Options.PenAxis[I].YGap) * Options.PrimaryYAxis.YPixelGap));
         //Assert(Y2 < Height);
@@ -3206,7 +3210,7 @@ var
   begin
     V := FData.Value[Pen, Sample];
     PenAxisOpt := Options.PenAxis[Pen];
-    if Math.IsNaN(V) then
+    if JclMath.IsNan(V) then
     begin
       Result := NaN; // blank placeholder value in chart!
       Exit;
@@ -3250,7 +3254,7 @@ var
       SetLineColor(ACanvas, I);
       J := 0;
       V := GraphConstrainedLineY(I, J);
-      NanFlag := Math.IsNaN(V);
+      NanFlag := JclMath.IsNan(V);
       if not NanFlag then
       begin
         Y := Round(V);
@@ -3260,7 +3264,7 @@ var
       for J := 1 to Options.XValueCount - 1 do
       begin
         V := GraphConstrainedLineY(I, J);
-        if Math.IsNaN(V) then
+        if JclMath.IsNan(V) then
         begin
           NanFlag := True; // skip.
           ACanvas.MoveTo(Round(XOrigin + J * LineXPixelGap), 200); //DEBUG!
@@ -3283,7 +3287,7 @@ var
               for I2 := 0 to I - 1 do
               begin
                 V := GraphConstrainedLineY(I2, J);
-                if Math.IsNaN(V) then
+                if JclMath.IsNan(V) then
                   Continue;
                 Y1 := Round(V);
                 if Y1 = Y then
@@ -4459,7 +4463,7 @@ begin
     if Length(Str) = 0 then
       Str := IntToStr(I + 1);
     Str := Str + ' : ';
-    if Math.IsNaN(Val) then
+    if JclMath.IsNan(Val) then
       Str := Str + RsNA
     else
     begin
@@ -5414,6 +5418,18 @@ begin
 
 end;
 
+procedure TJvChart.CopyFloatingMarkers(Source:TJvChart);
+var
+ i:Integer;
+ newMarker:TJvChartFloatingMarker;
+begin
+  ClearFloatingMarkers;
+  for i := 0 to Source.FloatingMarkerCount-1 do begin
+        newMarker := Self.AddFloatingMarker;
+        newMarker.Assign(Source.GetFloatingMarker(i));
+  end;
+  Invalidate; // repaint!
+end;
 
 procedure TJvChart.ClearFloatingMarkers;
 begin
@@ -5483,14 +5499,14 @@ begin
 
       with FOptions.PrimaryYAxis do if (YGap<>0) then
        begin
-        if Math.IsNaN(HB.FYTop)
+        if JclMath.IsNan(HB.FYTop)
           then RawRect.Top:=FOptions.YStartOffset
           else begin
                 RawRect.Top:=Trunc((YOrigin - (((HB.FYTop-YMin)/YGap)*YPixelGap)));
                 if RawRect.Top<0 then RawRect.Top:=FOptions.YStartOffset;
                end;
 
-        if Math.IsNaN(HB.FYBottom)
+        if JclMath.IsNan(HB.FYBottom)
           then RawRect.Bottom:=Trunc(YOrigin)
           else begin
                 RawRect.Bottom:=Trunc((YOrigin-(((HB.FYBottom-YMin)/YGap)*YPixelGap)));
