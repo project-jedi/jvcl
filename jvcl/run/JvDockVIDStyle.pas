@@ -257,14 +257,14 @@ type
       InsertLast, Update: Boolean); override;
     procedure InsertNewParent(NewZone, SiblingZone: TJvDockZone;
       ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); override;
-    procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
+    procedure DrawDockGrabber(Control: TWinControl; const ARect: TRect); override;
     procedure DrawSplitterRect(const ARect: TRect); override;
-    procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TControl;
+    procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TWinControl;
       const ARect: TRect; PaintAlways: Boolean = False); virtual;
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
-    procedure SetActiveControl(const Value: TControl); override;
+    procedure FocusChanged(Control: TControl); override;
     procedure DrawDockSiteRect; override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect); override;
@@ -1133,7 +1133,7 @@ begin
     (Source.DropAlign = alClient)) then
   begin
     inherited CustomDockDrop(Source, X, Y);
-    JvDockManager.ActiveControl := Source.Control;
+    JvDockManager.FocusChanged(Source.Control);
     if (Source.Control is TWinControl) and TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
   end;
@@ -1687,7 +1687,7 @@ begin
   SetNewBounds(nil);
 end;
 
-procedure TJvDockVIDTree.DrawDockGrabber(Control: TControl; const ARect: TRect);
+procedure TJvDockVIDTree.DrawDockGrabber(Control: TWinControl; const ARect: TRect);
 const
   TextAlignment: array [TAlignment] of UINT =
     (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -1695,70 +1695,53 @@ var
   Option: TJvDockVIDConjoinServerOption;
   DrawRect: TRect;
   uFormat: UINT;
-  ActiveControl: TControl;
+  IsActive: Boolean;
 begin
   Assert(Assigned(Control));
 
-  with ARect do
-    if GrabbersPosition = gpLeft then
-    begin
-      {$IFDEF JVDOCK_DEBUG}
-      OutputDebugString('GrabbersPosition=gpLeft - Not supported');
-      {$ENDIF JVDOCK_DEBUG}
-    end
-    else
-    if GrabbersPosition = gpTop then
-    begin
-      if Assigned(DockStyle) and (DockStyle.ConjoinServerOption is TJvDockVIDConjoinServerOption) then
-        Option := TJvDockVIDConjoinServerOption(DockStyle.ConjoinServerOption)
-      else
-        Option := nil;
+  case GrabbersPosition of
+    gpTop:
+      with ARect do
+        if Assigned(DockStyle) and (DockStyle.ConjoinServerOption is TJvDockVIDConjoinServerOption) then
+        begin
+          Option := TJvDockVIDConjoinServerOption(DockStyle.ConjoinServerOption);
 
-      ActiveControl := GetActiveControl;
-      DrawRect := ARect;
-      //OutputDebugString(PChar('DrawRect =' + IntToStr(DrawRect.Left) + ',' + IntToStr(DrawRect.Top)+' - '+IntToStr(DrawRect.Right) + ',' + IntToStr(DrawRect.Bottom)));
+          IsActive := Control.ContainsControl(Screen.ActiveControl);
+          DrawRect := ARect;
 
-      Inc(DrawRect.Top, 2);
-      DrawRect.Bottom := DrawRect.Top + GrabberSize - 3;
-      if Option <> nil then
-      begin
-        //OutputDebugString(PChar('PaintGradientBackground =' + IntToStr(DrawRect.Left) + ',' + IntToStr(DrawRect.Top) + ' - ' + IntToStr(DrawRect.Right) + ',' + IntToStr(DrawRect.Bottom)));
-        if ActiveControl = Control then
-          PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor,
-            Option.ActiveTitleEndColor, Option.ActiveTitleVerticalGradient)
-        else
-          PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor,
-            Option.InactiveTitleEndColor, Option.InactiveTitleVerticalGradient);
-        Canvas.Brush.Style := bsClear; // body already painted
-      end;
-      PaintDockGrabberRect(Canvas, Control, DrawRect, (Option <> nil) and (Option.ActiveDockGrabber));
+          Inc(DrawRect.Top, 2);
+          DrawRect.Bottom := DrawRect.Top + GrabberSize - 3;
+          if IsActive then
+            PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor,
+              Option.ActiveTitleEndColor, Option.ActiveTitleVerticalGradient)
+          else
+            PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor,
+              Option.InactiveTitleEndColor, Option.InactiveTitleVerticalGradient);
+          Canvas.Brush.Style := bsClear; // body already painted
+          PaintDockGrabberRect(Canvas, Control, DrawRect, Option.ActiveDockGrabber);
 
-      if ActiveControl = Control then
-        Canvas.Font.Assign(Option.ActiveFont)
-      else
-        Canvas.Font.Assign(Option.InactiveFont);
-      Canvas.Brush.Style := bsClear;
-      GetCaptionRect(DrawRect);
-      uFormat := DT_VCENTER or DT_SINGLELINE or
-        (Cardinal(Ord(Option.TextEllipsis)) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
-      DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
-      if ShowCloseButtonOnGrabber or not (Control is TJvDockTabHostForm) then
-        DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
-    end
-    else
-    if GrabbersPosition = gpBottom then
-    begin
-      {$IFDEF JVDOCK_DEBUG}
+          if IsActive then
+            Canvas.Font.Assign(Option.ActiveFont)
+          else
+            Canvas.Font.Assign(Option.InactiveFont);
+          Canvas.Brush.Style := bsClear;
+          GetCaptionRect(DrawRect);
+          uFormat := DT_VCENTER or DT_SINGLELINE or
+            (Cardinal(Ord(Option.TextEllipsis)) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
+          { DIRTY cast }
+          DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
+          if ShowCloseButtonOnGrabber or not (Control is TJvDockTabHostForm) then
+            DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
+        end;
+    {$IFDEF JVDOCK_DEBUG}
+    gpBottom:
       OutputDebugString('GrabbersPosition = gpBottom - Not supported');
-      {$ENDIF JVDOCK_DEBUG}
-    end
-    else
-    if GrabbersPosition = gpRight then
-    begin
-      {$IFDEF JVDOCK_DEBUG}
+    gpRight:
       OutputDebugString('GrabbersPosition = gpRight - Not supported');
-      {$ENDIF JVDOCK_DEBUG}
-    end;
+    gpLeft:
+      OutputDebugString('GrabbersPosition=gpLeft - Not supported');
+    {$ENDIF JVDOCK_DEBUG}
+  end;
 end;
 
 procedure TJvDockVIDTree.ResetBounds(Force: Boolean);
@@ -1834,13 +1817,10 @@ begin
   inherited DrawSplitterRect(ARect);
 end;
 
-procedure TJvDockVIDTree.SetActiveControl(const Value: TControl);
+procedure TJvDockVIDTree.FocusChanged(Control: TControl);
 begin
-  if GetActiveControl <> Value then
-  begin
-    inherited SetActiveControl(Value);
-    DockSite.Invalidate;
-  end;
+  inherited FocusChanged(Control);
+  DockSite.Invalidate;
 end;
 
 procedure TJvDockVIDTree.WindowProc(var Msg: TMessage);
@@ -2274,7 +2254,7 @@ begin
 end;
 
 procedure TJvDockVIDTree.PaintDockGrabberRect(Canvas: TCanvas;
-  Control: TControl; const ARect: TRect; PaintAlways: Boolean = False);
+  Control: TWinControl; const ARect: TRect; PaintAlways: Boolean = False);
 begin
 end;
 
@@ -2400,7 +2380,7 @@ begin
     inherited CustomDockDrop(Source, X, Y);
     ParentForm.Caption := '';
     if JvDockManager <> nil then
-      JvDockManager.ActiveControl := Source.Control;
+      JvDockManager.FocusChanged(Source.Control);
     if (Source.Control is TWinControl) and Source.Control.Visible and
       TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;

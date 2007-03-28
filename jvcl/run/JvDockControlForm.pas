@@ -2943,7 +2943,7 @@ end;
 procedure TJvDockClient.Activate;
 begin
   if ParentForm.HostDockSite is TJvDockCustomPanel then
-    TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.ActiveControl := ParentForm;
+    TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.FocusChanged(ParentForm);
 end;
 
 procedure TJvDockClient.AddDockStyle(ADockStyle: TJvDockBasicStyle);
@@ -3107,7 +3107,7 @@ procedure TJvDockClient.Deactivate;
 begin
   if ParentForm.HostDockSite is TJvDockCustomPanel then
     if TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager <> nil then
-      TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.ActiveControl := nil;
+      TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.FocusChanged(nil);
 end;
 
 procedure TJvDockClient.DoFloatDockClients(PanelAlign: TAlign);
@@ -3583,10 +3583,10 @@ procedure TJvDockClient.WMActivate(var Msg: TWMActivate);
 begin
   if ParentForm is TJvDockConjoinHostForm then
     if Msg.Active = WA_INACTIVE then
-      TJvDockConjoinPanel(TJvDockConjoinHostForm(ParentForm).Panel).JvDockManager.ActiveControl := nil
+      TJvDockConjoinPanel(TJvDockConjoinHostForm(ParentForm).Panel).JvDockManager.FocusChanged(nil)
     else
-      TJvDockConjoinPanel(TJvDockConjoinHostForm(ParentForm).Panel).JvDockManager.ActiveControl :=
-        GetActiveControl(ParentForm);
+      TJvDockConjoinPanel(TJvDockConjoinHostForm(ParentForm).Panel).JvDockManager.FocusChanged(
+        GetActiveControl(ParentForm));
 end;
 
 procedure TJvDockClient.WMNCLButtonDblClk(var Msg: TWMNCHitMessage);
@@ -4567,7 +4567,7 @@ begin
   begin
     for I := alTop to alRight do
       if Assigned(DockPanelWithAlign[I]) then
-        DockPanelWithAlign[I].JvDockManager.ActiveControl := nil;
+        DockPanelWithAlign[I].JvDockManager.FocusChanged(nil);
   end
   else
   if AutoFocusDockedForm then
@@ -4579,7 +4579,7 @@ begin
       if Assigned(DockPanelWithAlign[I]) then
         if GetHostDockParent(Control) = DockPanelWithAlign[I] then
         begin
-          DockPanelWithAlign[I].JvDockManager.ActiveControl := Control;
+          DockPanelWithAlign[I].JvDockManager.FocusChanged(Control);
           if Control.CanFocus then
             Control.SetFocus;
         end;

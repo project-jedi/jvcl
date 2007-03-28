@@ -49,8 +49,6 @@ type
 
   IJvDockManager = interface(IDockManager)
     ['{7B0AACBC-E9BF-42F8-9629-E551067090B2}']
-    function GetActiveControl: TControl;
-    procedure SetActiveControl(const Value: TControl);
     function GetGrabberSize: Integer;
     procedure SetGrabberSize(const Value: Integer);
     function GetDockSplitterWidth: Integer;
@@ -84,7 +82,7 @@ type
     // Descends the Tree and Finds and return TWinControls docked to a particular parent.
     procedure ControlQuery(DockedTo: TWinControl; FoundItems: TList);
     {$ENDIF JVDOCK_QUERY}
-    property ActiveControl: TControl read GetActiveControl write SetActiveControl;
+    procedure FocusChanged(Control: TControl);
     property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
     property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
@@ -251,7 +249,6 @@ type
   TJvDockTree = class(TInterfacedObject, IJvDockManager)
   private
     FDockZoneClass: TJvDockZoneClass;
-    FActiveControl: TControl;
     FBorderWidth: Integer;
     FSplitterWidth: Integer;
     FBrush: TBrush;
@@ -361,7 +358,6 @@ type
       var CtlLevel: Integer; IncludeHide: Boolean = False): TJvDockZone; virtual;
     procedure ForEachAt(Zone: TJvDockZone; Proc: TJvDockForEachZoneProc;
       ScanKind: TJvDockTreeScanKind = tskForward; ScanPriority: TJvDockTreeScanPriority = tspSibling); virtual;
-    function GetActiveControl: TControl; virtual;
     function GetGrabberSize: Integer; virtual;
     function GetBorderHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
@@ -401,7 +397,7 @@ type
     procedure DrawDockSiteRect; virtual;
     procedure DrawZone(Zone: TJvDockZone); virtual;
     procedure DrawZoneGrabber(Zone: TJvDockZone); virtual;
-    procedure DrawDockGrabber(Control: TControl; const ARect: TRect); virtual;
+    procedure DrawDockGrabber(Control: TWinControl; const ARect: TRect); virtual;
     procedure DrawZoneSplitter(Zone: TJvDockZone); virtual;
     procedure DrawSplitterRect(const ARect: TRect); virtual;
     procedure DrawZoneBorder(Zone: TJvDockZone); virtual;
@@ -418,7 +414,7 @@ type
     procedure UpdateZone(Zone: TJvDockZone); virtual;
     procedure DrawSplitter(Zone: TJvDockZone); virtual;
     procedure RemoveControl(Control: TControl); virtual;
-    procedure SetActiveControl(const Value: TControl); virtual;
+    procedure FocusChanged(Control: TControl); virtual;
     procedure SetGrabberSize(const Value: Integer); virtual;
     procedure SetNewBounds(Zone: TJvDockZone); virtual;
     procedure SetReplacingControl(Control: TControl);
@@ -2869,14 +2865,8 @@ begin
     Result := nil;
 end;
 
-function TJvDockTree.GetActiveControl: TControl;
+procedure TJvDockTree.FocusChanged(Control: TControl);
 begin
-  Result := FActiveControl;
-end;
-
-procedure TJvDockTree.SetActiveControl(const Value: TControl);
-begin
-  FActiveControl := Value;
 end;
 
 function TJvDockTree.GetGrabberSize: Integer;
@@ -2993,8 +2983,8 @@ begin
 
       if (not PeekMessage(Mesg, FDockSite.Handle, WM_LBUTTONDBLCLK,
         WM_LBUTTONDBLCLK, PM_NOREMOVE)) and
-        (Zone.ChildControl is TWinControl) then
-        if (GetActiveControl <> Zone.ChildControl) and Zone.ChildControl.CanFocus then
+        Assigned(Zone.ChildControl) then
+        if not Zone.ChildControl.ContainsControl(Screen.ActiveControl) and Zone.ChildControl.CanFocus then
           Zone.ChildControl.SetFocus;
       if (TWinControlAccessProtected(Zone.ChildControl).DragKind = dkDock) and
         (TWinControlAccessProtected(Zone.ChildControl).DragMode = dmAutomatic) then
@@ -3949,7 +3939,7 @@ procedure TJvDockTree.DrawDockBorder(DockControl: TControl; R1, R2: TRect);
 begin
 end;
 
-procedure TJvDockTree.DrawDockGrabber(Control: TControl;
+procedure TJvDockTree.DrawDockGrabber(Control: TWinControl;
   const ARect: TRect);
 
   procedure DrawCloseButton(Left, Top: Integer);
@@ -4013,7 +4003,7 @@ begin
             else
               Canvas.Pen.Style := psClear;
 
-            Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Left+GrabberSize, ARect.Bottom);
+            Canvas.Rectangle(Left, Top, Left+GrabberSize, Bottom);
           end;
 
           DrawCloseButton(Left + BorderWidth + BorderWidth + 1, Top + BorderWidth + BorderWidth + 1);
@@ -4046,7 +4036,7 @@ begin
             end
             else
               Canvas.Pen.Style := psClear;
-            Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Top + GrabberSize + 2);
+            Canvas.Rectangle(Left, Top, Right, Top + GrabberSize + 2);
           end;
 
           DrawCloseButton(Right - GrabberSize + BorderWidth + 1, Top + BorderWidth + 1);
@@ -4062,8 +4052,8 @@ begin
           begin
             Canvas.Pen.Color := FGrabberBottomEdgeColor;
             Canvas.Pen.Style := psSolid;
-            Canvas.MoveTo(Left, ARect.Top + GrabberSize - 1);
-            Canvas.LineTo(Right, ARect.Top + GrabberSize - 1);
+            Canvas.MoveTo(Left, Top + GrabberSize - 1);
+            Canvas.LineTo(Right, Top + GrabberSize - 1);
           end;
         end;
     end;
@@ -4084,21 +4074,12 @@ begin
 end;
 
 procedure TJvDockTree.DrawZoneBorder(Zone: TJvDockZone);
-var
-  ChildControl: TControl;
 begin
-  if Zone = nil then
-    Exit;
-  ChildControl := Zone.ChildControl;
-  if (ChildControl <> nil) and ChildControl.Visible and
-    (ChildControl.HostDockSite = DockSite) then
-  begin
-  end;
 end;
 
 procedure TJvDockTree.DrawZoneGrabber(Zone: TJvDockZone);
 var
-  ChildControl: TControl;
+  ChildControl: TWinControl;
   R: TRect;
 begin
   if Zone = nil then
