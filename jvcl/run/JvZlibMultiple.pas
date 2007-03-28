@@ -105,6 +105,8 @@ type
     FTerminateDecompress : Boolean;  // Note #1
     FCompressionPause : Boolean;  // Note #1
     FDecompressionPause : Boolean;   // Note #1
+    FForceDirectoriesFlag: Boolean;
+    procedure SetForceDirectoriesFlag(const Value: Boolean); // set true to force directories
   protected
     procedure AddFile(const FileName, Directory, FilePath: string; DestStream: TStream);
     procedure DoProgress(Position, Total: Integer); virtual;
@@ -151,6 +153,9 @@ type
     property OnCompressingFile: TFileEvent read FOnCompressingFile write FOnCompressingFile;
     property OnCompressedFile: TFileEvent read FOnCompressedFile write FOnCompressedFile;
     property OnCompletedAction: TNotifyEvent read FOnCompletedAction write FOnCompletedAction;
+
+    property ForceDirectoriesFlag:Boolean read FForceDirectoriesFlag write SetForceDirectoriesFlag default true; // NEW MARCH 2007!
+
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -187,6 +192,7 @@ begin
   FStorePaths := True;
   FIgnoreExclusive := False;
   FCompressionLevel := -1;
+  FForceDirectoriesFlag := true;
 end;
 
 function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean): TStream;
@@ -382,6 +388,7 @@ var
   TotalByteCount: Longword;
   WriteMe: Boolean; // Allow skipping of files instead of writing them.
   FileStreamSize, StreamSize: Int64;
+  fd:String; // name of directory to be made if it doesn't exist (unless we're skipping it)
 begin
   if Directory <> '' then
     Directory := IncludeTrailingPathDelimiter(Directory);
@@ -394,7 +401,13 @@ begin
     SetLength(S, B);
     if B > 0 then
       Stream.Read(S[1], B);
-    ForceDirectories(Directory + S);
+
+    fd := Directory + S;
+    if (fd<>'') and (ForceDirectoriesFlag) then
+          ForceDirectories(fd);
+
+
+
     if S <> '' then
       S := IncludeTrailingPathDelimiter(S);
 
@@ -493,6 +506,11 @@ end;
 procedure TJvZlibMultiple.DoStopDecompression;
 begin
   FTerminateDecompress := True;
+end;
+
+procedure TJvZlibMultiple.SetForceDirectoriesFlag(const Value: Boolean);
+begin
+  FForceDirectoriesFlag := Value;
 end;
 
 procedure TJvZlibMultiple.StopCompression;
