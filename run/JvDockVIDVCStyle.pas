@@ -246,14 +246,14 @@ type
       InsertLast, Update: Boolean); override;
     procedure InsertNewParent(NewZone, SiblingZone: TJvDockZone;
       ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); override;
-    procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
+    procedure DrawDockGrabber(Control: TWinControl; const ARect: TRect); override;
     procedure DrawSplitterRect(const ARect: TRect); override;
     procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TControl;
       const ARect: TRect); virtual;
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
-    procedure SetActiveControl(const Value: TControl); override;
+    procedure FocusChanged; override;
     procedure DrawDockSiteRect; override;
 {    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect); override;}
@@ -1083,7 +1083,7 @@ begin
     (Source.DropAlign = alClient)) then
   begin
     inherited CustomDockDrop(Source, X, Y);
-    JvDockManager.ActiveControl := Source.Control;
+    JvDockManager.FocusChanged(Source.Control);
     if (Source.Control is TWinControl) and TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
   end;
@@ -1603,7 +1603,7 @@ begin
   SetNewBounds(nil);
 end;
 
-procedure TJvDockVIDVCTree.DrawDockGrabber(Control: TControl; const ARect: TRect);
+procedure TJvDockVIDVCTree.DrawDockGrabber(Control: TWinControl; const ARect: TRect);
 var
   lbVCDockZone: TJvDockVIDVCZone;
   DrawRect: TRect;
@@ -1779,13 +1779,10 @@ begin
   DrawFrameControl(Canvas.Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_ADJUSTRECT);
 end;
 
-procedure TJvDockVIDVCTree.SetActiveControl(const Value: TControl);
+procedure TJvDockVIDVCTree.FocusChanged;
 begin
-  if GetActiveControl <> Value then
-  begin
-    inherited SetActiveControl(Value);
-    DockSite.Invalidate;
-  end;
+  inherited FocusChanged;
+  DockSite.Invalidate;
 end;
 
 procedure TJvDockVIDVCTree.WindowProc(var Msg: TMessage);
@@ -2399,7 +2396,7 @@ begin
     inherited CustomDockDrop(Source, X, Y);
     ParentForm.Caption := '';
     if JvDockManager <> nil then
-      JvDockManager.ActiveControl := Source.Control;
+      JvDockManager.FocusChanged(Source.Control);
     if (Source.Control is TWinControl) and Source.Control.Visible and
       TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;

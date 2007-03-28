@@ -414,8 +414,8 @@ type
     procedure DoHideZoneChild(AZone: TJvDockZone); override;
     function GetTopGrabbersHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
-    procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
-    procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TControl;
+    procedure DrawDockGrabber(Control: TWinControl; const ARect: TRect); override;
+    procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TWinControl;
       const ARect: TRect; PaintAlways: Boolean = False); override;
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); override;
@@ -2922,6 +2922,7 @@ var
   AZone: TJvDockVSNETZone;
   ColorArr: array [1..2] of TColor;
   ADockClient: TJvDockClient;
+  IsActive: Boolean;
 begin
   if Zone <> nil then
   begin
@@ -2930,12 +2931,13 @@ begin
       Left := Left + ButtonWidth; // move the auto hide button to the Close Button's location
 
     AZone := TJvDockVSNETZone(Zone);
+    IsActive := AZone.ChildControl.ContainsControl(Screen.ActiveControl);
     if AZone.AutoHideBtnState <> bsNormal then
     begin
       if AZone.AutoHideBtnState = bsUp then
       begin
         ColorArr[1] := clBlack;
-        if GetActiveControl = AZone.ChildControl then
+        if IsActive then
           ColorArr[2] := clBtnFace
         else
           ColorArr[2] := clWhite;
@@ -2961,7 +2963,7 @@ begin
       Inc(Top);
     end;
 
-    if AZone.ChildControl = GetActiveControl then
+    if IsActive then
       Canvas.Pen.Color := clWhite
     else
       Canvas.Pen.Color := clBlack;
@@ -3003,6 +3005,7 @@ var
   ColorArr: array [1..2] of TColor;
   ADockClient: TJvDockClient;
   AForm: TCustomForm;
+  IsActive: Boolean;
 begin
   if Zone <> nil then
   begin
@@ -3020,6 +3023,7 @@ begin
       end;
     end;
     AZone := TJvDockVSNETZone(Zone);
+    IsActive := AZone.ChildControl.ContainsControl(Screen.ActiveControl);
 
     DrawRect.Left := Left + 6;
     DrawRect.Right := DrawRect.Left + 7;
@@ -3031,7 +3035,7 @@ begin
       if AZone.CloseBtnState = bsUp then
       begin
         ColorArr[1] := clBlack;
-        if GetActiveControl = AZone.ChildControl then
+        if IsActive then
           ColorArr[2] := clBtnFace
         else
           ColorArr[2] := clWhite;
@@ -3054,7 +3058,7 @@ begin
     if AZone.CloseBtnState = bsDown then
       OffsetRect(DrawRect, 1, 1);
 
-    if AZone.ChildControl = GetActiveControl then
+    if IsActive then
       Canvas.Pen.Color := clWhite
     else
       Canvas.Pen.Color := clBlack;
@@ -3065,7 +3069,7 @@ begin
   end;
 end;
 
-procedure TJvDockVSNETTree.DrawDockGrabber(Control: TControl; const ARect: TRect);
+procedure TJvDockVSNETTree.DrawDockGrabber(Control: TWinControl; const ARect: TRect);
 begin
   inherited DrawDockGrabber(Control, ARect);
   if DockSite.Align <> alClient then
@@ -3131,12 +3135,14 @@ begin
 end;
 
 procedure TJvDockVSNETTree.PaintDockGrabberRect(Canvas: TCanvas;
-  Control: TControl; const ARect: TRect; PaintAlways: Boolean = False);
+  Control: TWinControl; const ARect: TRect; PaintAlways: Boolean = False);
 var
   DrawRect: TRect;
+  IsActive: Boolean;
 begin
   inherited PaintDockGrabberRect(Canvas, Control, ARect);
-  if (GetActiveControl <> Control) or PaintAlways then
+  IsActive := Control.ContainsControl(Screen.ActiveControl);
+  if not IsActive or PaintAlways then
   begin
     Canvas.Pen.Color := clGray;
     DrawRect := ARect;

@@ -152,7 +152,7 @@ type
       ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); override;
     procedure InsertSibling(NewZone, SiblingZone: TJvDockZone;
       InsertLast, Update: Boolean); override;
-    procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
+    procedure DrawDockGrabber(Control: TWinControl; const ARect: TRect); override;
     procedure DrawDockSiteRect; override;
     procedure DrawSplitterRect(const ARect: TRect); override;
     procedure GetCaptionRect(var Rect: TRect); override;
@@ -938,7 +938,7 @@ begin
     HintStr := RsDockVCDockTreeExpandBtnHint;
 end;
 
-procedure TJvDockVCTree.DrawDockGrabber(Control: TControl; const ARect: TRect);
+procedure TJvDockVCTree.DrawDockGrabber(Control: TWinControl; const ARect: TRect);
 var
   VCDockZone: TJvDockVCZone;
   DrawRect: TRect;
