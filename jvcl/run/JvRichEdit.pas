@@ -61,8 +61,7 @@ type
   TJvConsistentAttributes = set of TJvConsistentAttribute;
   TSubscriptStyle = (ssNone, ssSubscript, ssSuperscript);
   TUnderlineType = (utNone, utSolid, utWord, utDouble, utDotted, utDash,
-    utDashDot, utDashDotDot, utWave, utThick,
-    utU1, utU2, utU3, utU4, utU5, utU6, utU7, utU8, utU9, utU10);
+    utDashDot, utDashDotDot, utWave, utThick);
   TUnderlineColor = (ucBlack, ucBlue, ucAqua, ucLime, ucFuchsia, ucRed,
     ucYellow, ucWhite, ucNavy, ucTeal, ucGreen, ucPurple, ucMaroon, ucOlive,
     ucGray, ucSilver);
@@ -1253,7 +1252,7 @@ const
   CPointsPerInch = 72;
 
   RichEdit10ModuleName = 'RICHED32.DLL';
-  RichEdit20ModuleName = 'C:\Comp\RichEdit dlls\5.50.30.2002\RICHED20.DLL';
+  RichEdit20ModuleName = 'RICHED20.DLL';
 
   FT_DOWN = 1;
 
