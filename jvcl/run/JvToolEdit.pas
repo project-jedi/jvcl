@@ -173,7 +173,9 @@ type
     procedure SetGlyph(const Value: TBitmap);
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
   protected
-    FDrawDropDownBtn: Boolean;
+    {$IFDEF JVCLThemesEnabled}
+    FDrawThemedDropDownBtn: Boolean;
+    {$ENDIF JVCLThemesEnabled}
     FStandard: Boolean; // Polaris
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -256,14 +258,10 @@ type
     FNumGlyphs: Integer;
     FStreamedButtonWidth: Integer;
     FStreamedFixedWidth: Boolean;
-    FStreamedShowButton: Boolean;
     FOnEnabledChanged: TNotifyEvent;
     { We hide the button by setting its width to 0, thus we have to store the
       width the button should have when shown again in FSavedButtonWidth: }
     FSavedButtonWidth: Integer;
-    {$IFDEF JVCLThemesEnabled}
-    FDecreaseNonClientArea: Boolean;
-    {$ENDIF JVCLThemesEnabled}
     FDataConnector: TJvCustomComboEditDataConnector;
     {$IFDEF VCL}
     FAlignment: TAlignment;
@@ -2157,7 +2155,6 @@ begin
   FDisabledTextColor := clGrayText;
   FGroupIndex := -1;
   FStreamedButtonWidth := -1;
-  FStreamedShowButton := True;
   FImageKind := ikCustom;
   FImageIndex := -1;
   FNumGlyphs := 1;
@@ -2402,25 +2399,8 @@ const
   Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
-  { (rb) I don't fully understand why ES_MULTILINE is used (Probably so EM_SETRECTNP
-    can be used). Using ES_MULTILINE has some disadvantages:
-    - The control uses more resources.
-    - Vertical scrolling behaves differently than single line.
-    - Can't use password style.
-    - Different behaviour of pressing Enter (See TJvCustomComboEdit.KeyDown etc.)
-    - MSDN: The EN_CHANGE notification is not sent when the ES_MULTILINE style is
-      used and the text is sent through WM_SETTEXT (See mantis #3775)
-
-
-    Some advantages:
-    - Can have tab positions.
-    - ES_RIGHT does NOT work in single-line edit on Windows 95.
-    - And we can use multiple lines :)
-
-    I think it is worthwile to investigate whether ES_MULTILINE can be dropped.
-  }
   Params.Style := Params.Style or
-    {ES_MULTILINE or} WS_CLIPCHILDREN or Alignments[FAlignment];
+    ES_MULTILINE or WS_CLIPCHILDREN or Alignments[FAlignment];
 end;
 
 {$ENDIF VCL}
@@ -2432,20 +2412,6 @@ end;
 
 procedure TJvCustomComboEdit.CreateWnd;
 begin
-  {$IFDEF JVCLThemesEnabled}
-  {  When the control is themed, Ctl3D is true and BorderStyle is bsSingle, then
-     the button can't be painted nicely in the borders of the edit control. As
-     a trick we decrease the non-client area of the edit control (See WMNCCalcSize),
-     compensate the increase of the client-area in UpdateMargins, and draw the
-     non-client border ourself (See WMNCPaint). We have to use an extra var.
-     because we must do the same thing in all the WMNC.. procedures as long as
-     the window is created.
-     It would be more logical to set FDecreaseNonClientArea in WM_NCCreate, but
-     procedure CreateWnd already exists. Setting it must be done before the
-     inherited call, because the inherited call triggers WM_NCCalcSize messages etc.
-  }
-  FDecreaseNonClientArea := ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle);
-  {$ENDIF JVCLThemesEnabled}
   inherited CreateWnd;
   UpdateControls;
   UpdateMargins;
@@ -2630,7 +2596,8 @@ end;
 procedure TJvCustomComboEdit.FontChanged;
 begin
   inherited FontChanged;
-  UpdateMargins;
+  if HandleAllocated then
+    UpdateMargins;
 end;
 
 function TJvCustomComboEdit.GetActionLinkClass: TControlActionLinkClass;
@@ -2702,35 +2669,10 @@ end;
 
 procedure TJvCustomComboEdit.GetInternalMargins(var ALeft,
   ARight: Integer);
-{$IFDEF VCL}
-begin
-  if ShowButton then
-  begin
-    {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
-    begin
-      if BorderStyle = bsNone then
-        // without the button, the text paints till the border; with the button
-        // we want an extra pixel space
-        Inc(ARight);
-    end
-    else
-    {$ENDIF JVCLThemesEnabled}
-    begin
-      if (BorderStyle = bsNone) or not Ctl3D then
-        // without the button, the text paints till the border; with the button
-        // we want an extra pixel space
-        Inc(ARight);
-    end;
-    ARight := ARight + FBtnControl.Width;
-  end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
 const
   CPixelsBetweenEditAndButton = 2;
 begin
   ARight := ARight + FBtnControl.Width + CPixelsBetweenEditAndButton;
-{$ENDIF VisualCLX}
 end;
 
 function TJvCustomComboEdit.GetMinHeight: Integer;
@@ -2931,7 +2873,6 @@ end;
 procedure TJvCustomComboEdit.Loaded;
 begin
   inherited Loaded;
-  ShowButton := FStreamedShowButton;
   if FStreamedButtonWidth >= 0 then
   begin
     SetButtonWidth(FStreamedButtonWidth);
@@ -3183,7 +3124,9 @@ begin
     FButton.ImageIndex := -1;
     FButton.NumGlyphs := 1;
   end;
-  FButton.FDrawDropDownBtn := FImageKind = ikDropDown;
+  {$IFDEF JVCLThemesEnabled}
+  FButton.FDrawThemedDropDownBtn := FImageKind = ikDropDown;
+  {$ENDIF JVCLThemesEnabled}
 
   case FImageKind of
     ikDropDown:
@@ -3193,17 +3136,17 @@ begin
           the glyph is the default themed dropdown button. When ButtonFlat = True, we
           can't use that default dropdown button (because we then use toolbar buttons,
           and there is no themed dropdown toolbar button) }
-
-        if ThemeServices.ThemesEnabled and ButtonFlat then
+        FButton.FDrawThemedDropDownBtn :=
+          ThemeServices.ThemesEnabled and not ButtonFlat;
+        if FButton.FDrawThemedDropDownBtn then
         begin
-          FButton.FDrawDropDownBtn := False;
-          LoadDefaultBitmap(FButton.ButtonGlyph.Glyph, OBM_COMBO);
+          FButton.ButtonGlyph.Glyph := nil;
           FButton.Invalidate;
         end
         else
         {$ENDIF JVCLThemesEnabled}
         begin
-          FButton.ButtonGlyph.Glyph := nil;
+          LoadDefaultBitmap(FButton.ButtonGlyph.Glyph, OBM_COMBO);
           FButton.Invalidate;
         end;
       end;
@@ -3315,8 +3258,13 @@ begin
       { Some glyphs are size dependant (ellipses), thus recreate on size changes }
       RecreateGlyph;
     end
+      //else
+      //if (Value <> ButtonWidth) and (Value < ClientWidth) then begin
+      //Polaris
     else
-    if (Value <> ButtonWidth) and (Value < Width) then
+    if (Value <> ButtonWidth) and
+      ((Assigned(Parent) and (Value < ClientWidth)) or
+      (not Assigned(Parent) and (Value < Width))) then
     begin
       FBtnControl.SetBounds(FBtnControl.Left + FBtnControl.Width - Value,
         FBtnControl.Top, Value, FBtnControl.Height);
@@ -3325,7 +3273,7 @@ begin
         ControlStyle := ControlStyle - [csFixedWidth];
       if HandleAllocated then
         {$IFDEF VCL}
-        Invalidate;
+        RecreateWnd;
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
         Invalidate;
@@ -3489,12 +3437,8 @@ end;
 
 procedure TJvCustomComboEdit.SetShowButton(const Value: Boolean);
 begin
-  if csLoading in ComponentState then
-    FStreamedShowButton := Value
-  else
   if ShowButton <> Value then
   begin
-    FStreamedShowButton := Value;
     if Value then
     begin
       { FBtnControl needs to be visible first, otherwise only FSavedButtonWidth
@@ -3629,56 +3573,6 @@ begin
             Clear;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomComboEdit.UpdateMargins;
-var
-  LLeft, LRight, LTop: Integer;
-  Loc: TRect;
-begin
-  { Delay until Loaded and Handle is created }
-  if (csLoading in ComponentState) or not HandleAllocated then
-    Exit;
-
-  {UpdateMargins gets called whenever the layout of child controls changes.
-   It uses GetInternalMargins to determine the left and right margins of the
-   actual text area.}
-
-  AdjustHeight;
-
-  LTop := 0;
-  LLeft := 0;
-  LRight := 0;
-  {$IFDEF JVCLThemesEnabled}
-  { If flat and themes are enabled, move the left edge of the edit rectangle
-    to the right, otherwise the theme edge paints over the border }
-  { (rb) This was for a specific font/language; check if this is still necessary }
-  if ThemeServices.ThemesEnabled then
-  begin
-    if (BorderStyle = bsSingle) and Ctl3D then
-    begin
-      LTop := 1;
-      LLeft := 1;
-      LRight := 3;
-    end;
-  end
-  else
-  {$ENDIF JVCLThemesEnabled}
-  begin
-    if (BorderStyle = bsSingle) and Ctl3D then
-      LRight := 4;
-  end;
-
-  GetInternalMargins(LLeft, LRight);
-
-  { (rb) EM_SETRECTNP works only for multiline edit controls, hence the
-         ES_MULTILINE in CreateParams? }
-  SetRect(Loc, LLeft, LTop, Width - LRight, ClientHeight - 1);
-  SendRectMessage(Handle, EM_SETRECTNP, 0, Loc);
-  { (rb) But for single line edit controls we could use EM_SETMARGINS }
-//  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
 procedure TJvCustomComboEdit.UpdateMargins;
 var
   LLeft, LRight, LTop: Integer;
@@ -3729,12 +3623,19 @@ begin
 
   GetInternalMargins(LLeft, LRight);
 
+  {$IFDEF VCL}
+  SetRect(Loc, LLeft, LTop, Width - LRight-3, ClientHeight - 1);
+  SendRectMessage(Handle, EM_SETRECTNP, 0, Loc);
+  // (rb) EM_SETMARGINS necessary?
+  //SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   SetRect(Loc, LLeft, LTop, Width - LRight - LTop-2, Height - 2 * LTop);
   SetEditorRect(@Loc);
   FBtnControl.Left := Loc.Right + 2;
   FBtnControl.Height := Height - 2 * LTop;
+  {$ENDIF VisualCLX}
 end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.UpdatePopupVisible;
 begin
@@ -3744,7 +3645,7 @@ end;
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
-  if FDecreaseNonClientArea then
+  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
   inherited;
@@ -3774,7 +3675,7 @@ var
   DrawRect: TRect;
   Details: TThemedElementDetails;
 begin
-  if FDecreaseNonClientArea then
+  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
   begin
     DC := GetWindowDC(Handle);
     try
@@ -4906,18 +4807,17 @@ begin
 end;
 
 procedure TJvEditButton.Paint;
-var
 {$IFDEF JVCLThemesEnabled}
+var
   ThemedState: TThemedComboBox;
   Details: TThemedElementDetails;
-{$ENDIF JVCLThemesEnabled}
   R: TRect;
-  Flags: Integer;
+{$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
-    if FDrawDropDownBtn then
+    if FDrawThemedDropDownBtn then
     begin
       if not Enabled then
         ThemedState := tcDropDownButtonDisabled
@@ -4939,36 +4839,20 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
   begin
-    if FDrawDropDownBtn then
-    begin
-      Flags := 0;
-      if not Enabled then
-        Flags := Flags or DFCS_INACTIVE;
-      if Flat then
-        Flags := Flags or DFCS_FLAT;
-      if FState in [rbsDown, rbsExclusive] then
-        Flags := Flags or DFCS_PUSHED or DFCS_FLAT;
-//      if MouseOver or IsDragging then
-//        Flags := Flags or DFCS_HOT;
-      R := ClientRect;
-      DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags or DFCS_SCROLLCOMBOBOX);
-    end else
-    begin
-      inherited Paint;
-      if FState <> rbsDown then
-        with Canvas do
-        begin
-          if NewStyleControls then
-            Pen.Color := clBtnFace
-          else
-            Pen.Color := clBtnShadow;
-          MoveTo(0, 0);
-          LineTo(0, Self.Height - 1);
-          Pen.Color := clBtnHighlight;
-          MoveTo(1, 1);
-          LineTo(1, Self.Height - 2);
-        end;
-    end;
+     inherited Paint;
+    if FState <> rbsDown then
+      with Canvas do
+      begin
+        if NewStyleControls then
+          Pen.Color := clBtnFace
+        else
+          Pen.Color := clBtnShadow;
+        MoveTo(0, 0);
+        LineTo(0, Self.Height - 1);
+        Pen.Color := clBtnHighlight;
+        MoveTo(1, 1);
+        LineTo(1, Self.Height - 2);
+      end;
   end;
 end;
 
