@@ -1509,7 +1509,8 @@ procedure TJvCaptionButton.DestroyToolTip;
 begin
   if FToolTipHandle <> 0 then
   begin
-    DestroyWindow(FToolTipHandle);
+    if not DestroyWindow(FToolTipHandle) then
+      RaiseLastWin32Error;
     FToolTipHandle := 0;
   end;
 end;
@@ -2682,6 +2683,11 @@ begin
         {DestroyToolTip;}
         // FToolTipHandle is automatically destroyed when ParentForm handle is destroyed.
         FToolTipHandle := 0;
+      end;
+    WM_CLOSE:
+      begin
+        Result := False;
+        DestroyToolTip;
       end;
     WM_NOTIFY:
       Result := HandleNotify(TWMNotify(Msg));

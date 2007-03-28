@@ -1127,7 +1127,7 @@ begin
     the edit can paint itself (We must check both colors, although only
     DisabledTextColor is passed on to PaintEdit; PaintEdit triggers a
     DoEraseBackground call) }
-  if Enabled or ((DisabledTextColor = clGrayText) and (DisabledColor = clWindow)) then
+  if Enabled or ((ColorToRGB(DisabledTextColor) = ColorToRGB(clGrayText)) and (ColorToRGB(DisabledColor) = ColorToRGB(clWindow))) then
     inherited
   else
   begin

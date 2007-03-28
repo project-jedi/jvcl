@@ -253,7 +253,7 @@ type
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
-    procedure FocusChanged; override;
+    procedure FocusChanged(Control: TControl); override;
     procedure DrawDockSiteRect; override;
 {    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect); override;}
@@ -1779,9 +1779,9 @@ begin
   DrawFrameControl(Canvas.Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_ADJUSTRECT);
 end;
 
-procedure TJvDockVIDVCTree.FocusChanged;
+procedure TJvDockVIDVCTree.FocusChanged(Control: TControl);
 begin
-  inherited FocusChanged;
+  inherited FocusChanged(Control);
   DockSite.Invalidate;
 end;
 
