@@ -2931,7 +2931,8 @@ begin
       Left := Left + ButtonWidth; // move the auto hide button to the Close Button's location
 
     AZone := TJvDockVSNETZone(Zone);
-    IsActive := AZone.ChildControl.ContainsControl(Screen.ActiveControl);
+    IsActive := Assigned(Screen.ActiveControl) and Screen.ActiveControl.Focused and
+      AZone.ChildControl.ContainsControl(Screen.ActiveControl);
     if AZone.AutoHideBtnState <> bsNormal then
     begin
       if AZone.AutoHideBtnState = bsUp then
@@ -3023,7 +3024,8 @@ begin
       end;
     end;
     AZone := TJvDockVSNETZone(Zone);
-    IsActive := AZone.ChildControl.ContainsControl(Screen.ActiveControl);
+    IsActive := Assigned(Screen.ActiveControl) and Screen.ActiveControl.Focused and
+      AZone.ChildControl.ContainsControl(Screen.ActiveControl);
 
     DrawRect.Left := Left + 6;
     DrawRect.Right := DrawRect.Left + 7;
@@ -3141,7 +3143,8 @@ var
   IsActive: Boolean;
 begin
   inherited PaintDockGrabberRect(Canvas, Control, ARect);
-  IsActive := Control.ContainsControl(Screen.ActiveControl);
+  IsActive := Assigned(Screen.ActiveControl) and Screen.ActiveControl.Focused and
+    Control.ContainsControl(Screen.ActiveControl);
   if not IsActive or PaintAlways then
   begin
     Canvas.Pen.Color := clGray;
