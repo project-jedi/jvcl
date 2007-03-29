@@ -1706,7 +1706,8 @@ begin
         begin
           Option := TJvDockVIDConjoinServerOption(DockStyle.ConjoinServerOption);
 
-          IsActive := Control.ContainsControl(Screen.ActiveControl);
+          IsActive := Assigned(Screen.ActiveControl) and Screen.ActiveControl.Focused and
+            Control.ContainsControl(Screen.ActiveControl);
           DrawRect := ARect;
 
           Inc(DrawRect.Top, 2);
