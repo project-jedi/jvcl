@@ -62,7 +62,7 @@ type
     procedure SetImageOffset(Value: Integer);
     procedure SetTextOffset(Value: Integer);
     procedure SetLineSpacing(Value: Integer);
-    procedure ImageListChange(Sender: TObject);
+    procedure Change(Sender: TObject);
     procedure UpdateStyles;
     function CheckBounds(Index: Integer): Boolean;
   protected
@@ -132,9 +132,10 @@ begin
   IncludeThemeStyle(Self, [csParentBackground]);
   {$ENDIF VCL}
   FLines := TStringList.Create;
+  FLines.OnChange := Change;
   FStyles := TList.Create;
   FImageChangeLink := TChangeLink.Create;
-  FImageChangeLink.OnChange := ImageListChange;
+  FImageChangeLink.OnChange := Change;
   FTextOffset := 24;
   FImageOffset := 2;
   FLineSpacing := 10;
@@ -343,7 +344,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvInstallLabel.ImageListChange(Sender: TObject);
+procedure TJvInstallLabel.Change(Sender: TObject);
 begin
   Invalidate;
 end;
