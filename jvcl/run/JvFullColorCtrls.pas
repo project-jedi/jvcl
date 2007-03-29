@@ -338,7 +338,6 @@ type
   TJvFullColorLabel = class(TGraphicControl)
   private
     FBrush: TBrush;
-    FFont: TFont;
     FPen: TPen;
     FCaption: TCaption;
     FShapeType: TShapeType;
@@ -359,7 +358,6 @@ type
     procedure SetRoundShapeWidth(const Value: Integer);
     procedure SetLabelColor(const Value: TJvFullColor);
     procedure SetBrush(const Value: TBrush);
-    procedure SetFont(const Value: TFont);
     procedure SetPen(const Value: TPen);
   protected
     procedure Paint; override;
@@ -373,7 +371,6 @@ type
     destructor Destroy; override;
   published
     property LabelColor: TJvFullColor read FLabelColor write SetLabelColor default fclDEFWindowText;
-    property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
     property Brush: TBrush read FBrush write SetBrush;
     property Shape: TShapeType read FShapeType write SetShapeType default stRectangle;
@@ -394,6 +391,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
@@ -2774,8 +2772,6 @@ begin
   FPen.OnChange := GraphicChange;
   FBrush := TBrush.Create;
   FBrush.OnChange := GraphicChange;
-  FFont := TFont.Create;
-  FFont.OnChange := GraphicChange;
   FShapeType := stRectangle;
   FShapePosition := spLeft;
   FSpacing := 5;
@@ -2790,7 +2786,6 @@ end;
 
 destructor TJvFullColorLabel.Destroy;
 begin
-  FFont.Free;
   FPen.Free;
   FBrush.Free;
   inherited Destroy;
@@ -3009,12 +3004,6 @@ procedure TJvFullColorLabel.SetBrush(const Value: TBrush);
 begin
   FBrush.Assign(Value);
   Invalidate;
-end;
-
-procedure TJvFullColorLabel.SetFont(const Value: TFont);
-begin
-  FFont.Assign(Value);
-  CalcSize;
 end;
 
 procedure TJvFullColorLabel.SetPen(const Value: TPen);
