@@ -350,8 +350,8 @@ type
 
 type
   TArrowColor = record
-    Enabled :TColor;
-    Disabled:TColor;
+    Enabled: TColor;
+    Disabled: TColor;
   end;
 
   TJvColorArrowButton = class(TJvSpeedButton)
@@ -364,8 +364,8 @@ type
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    property ArrowColor:TArrowColor read FArrowColor write SetArrowColor;
-    property ArrowDirection:TAnchorKind read FArrowDirection write SetArrowDirection default akBottom;
+    property ArrowColor: TArrowColor read FArrowColor write SetArrowColor;
+    property ArrowDirection: TAnchorKind read FArrowDirection write SetArrowDirection default akBottom;
   end;
 
 constructor TJvColorArrowButton.Create(AOwner: TComponent);
@@ -477,7 +477,7 @@ begin
     OnClick := DoArrowButtonClick;
   end;
 
-  FColorsForm := TJvOfficeColorForm.Create(Self, GetColorsPanelClass());
+  FColorsForm := TJvOfficeColorForm.Create(Self, GetColorsPanelClass);
   with TJvOfficeColorFormAccessProtected(FColorsForm) do
   begin
     IsFocusable := False;
@@ -506,7 +506,7 @@ begin
     StandardColors.EndUpdate;
     StandardColors.OnChange := nil;
   end;
-  if FColorsListChanged then //Changed the colors value,recreate buttons
+  if FColorsListChanged then // Changed the colors value, recreate buttons
     CreateStandardColorDrawers;
   LColorsChanged := FColorsListChanged;
 
@@ -525,7 +525,7 @@ begin
 
   LOwner := GetTopOwner(Self);
   // make sure that if this is not loading from DFM file or stream.
-  if (LOwner <> nil) and (LOwner.ComponentState * [csReading,csLoading] = []) then
+  if (LOwner <> nil) and (LOwner.ComponentState * [csReading, csLoading] = []) then
   begin
     FColorsListChanged := False;
     UserColors.BeginUpdate;
@@ -534,7 +534,7 @@ begin
     
     CreateUserColors(UserColors);
     UserColors.OnChange := nil;
-    if FColorsListChanged then //Changed the colors value,recreate buttons
+    if FColorsListChanged then // Changed the colors value, recreate buttons
       CreateUserColorDrawers;
     LColorsChanged := LColorsChanged or FColorsListChanged;
     FProperties.CreateDefaultText;
@@ -544,7 +544,7 @@ begin
   if LColorsChanged then //StandardColors or SystemColors Or userColors changed.
     RearrangeControls;
     
-//  Font.Name := 'MS Shell Dlg 2';
+  //Font.Name := 'MS Shell Dlg 2';
   Flat := True;
   {$IFDEF VisualCLX}
   // in CLX and a bug not fix when drag the colors form
@@ -641,7 +641,7 @@ end;
 function TJvCustomOfficeColorButton.CreateStandardColors(ColorList: TStrings): Integer;
 begin
   Result := ColorList.Count;
-  { Because in ColorPanel the same name function has inited,so do nothing here.
+  { Because in ColorPanel the same name function has inited, so do nothing here.
     If you want to change ColorList,make sure call Strings.BeginUpdate before change,
     and call Strings.EndUpdate after changed. }
 end;
@@ -649,17 +649,16 @@ end;
 function TJvCustomOfficeColorButton.CreateSystemColors(ColorList: TStrings): Integer;
 begin
   Result := ColorList.Count;
-  { Because in ColorPanel the same name function has inited,so do nothing here.
-    If you want to change ColorList,make sure call strings.BeginUpdate before change,
+  { Because in ColorPanel the same name function has inited, so do nothing here.
+    If you want to change ColorList, make sure call strings.BeginUpdate before change,
     and call Strings.EndUpdate after changed. }
 end;
 
-function TJvCustomOfficeColorButton.CreateUserColors(
-  ColorList: TStrings): Integer;
+function TJvCustomOfficeColorButton.CreateUserColors(ColorList: TStrings): Integer;
 begin
   Result := ColorList.Count;
-  { Because in ColorPanel the same name function has inited,so do nothing here.
-    If you want to change ColorList,make sure call strings.BeginUpdate before change,
+  { Because in ColorPanel the same name function has inited, so do nothing here.
+    If you want to change ColorList, make sure call strings.BeginUpdate before change,
     and call Strings.EndUpdate after changed. }
 end;
 
@@ -740,11 +739,8 @@ begin
   end
   else
   if ColorPanel.ClickColorType = cctCustomColor then
-  begin
     //set formStyle to fsNormal,or else the ColorFrom will stay on top of system select ColorDialog.
     FColorsForm.FormStyle := fsNormal;
-  end;
-
 end;
 
 function TJvCustomOfficeColorButton.GetColorDlgCustomColors: TStrings;
@@ -757,8 +753,7 @@ begin
   Result := ColorPanel.SelectedColor;
 end;
 
-procedure TJvCustomOfficeColorButton.DoHotTrackOptionsChange(
-  Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoHotTrackOptionsChange(Sender: TObject);
 begin
   FMainButton.HotTrackOptions := FHotTrackOptions;
   FArrowButton.HotTrackOptions := FHotTrackOptions;
@@ -815,10 +810,10 @@ end;
 
 procedure TJvCustomOfficeColorButton.SetDropingBgColor(const Value: TColor);
 begin
-  if ( FDropingBgColor <> Value ) then
+  if FDropingBgColor <> Value then
   begin
     FDropingBgColor := Value;
-    if  (not ColorsForm.ToolWindowStyle) then
+    if not ColorsForm.ToolWindowStyle then
     begin
       FColorsForm.Color := Value;
       ColorPanel.BackColor := Value;
@@ -842,9 +837,7 @@ end;
 procedure TJvCustomOfficeColorButton.SetSelectedColor(const Value: TColor);
 begin
   if ColorPanel.SelectedColor <> Value then
-  begin
     ColorPanel.SelectedColor := Value;
-  end;
 end;
 
 procedure TJvCustomOfficeColorButton.AdjustColorForm(X: Integer; Y: Integer);
@@ -1037,8 +1030,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.DoPropertiesChanged(Sender: TObject;
-  const PropName: string);
+procedure TJvCustomOfficeColorButton.DoPropertiesChanged(Sender: TObject; const PropName: string);
 begin
   if SameText(PropName, cShowDragBar) then
   begin
@@ -1095,7 +1087,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.SetHotTrackFont( Value: TFont);
+procedure TJvCustomOfficeColorButton.SetHotTrackFont(Value: TFont);
 begin
   ColorPanel.HotTrackFont := Value;
 end;
@@ -1105,14 +1097,12 @@ begin
   Result := ColorPanel.HotTrackFont;
 end;
 
-procedure TJvCustomOfficeColorButton.SetHotTrackFontOptions(
-   Value: TJvTrackFontOptions);
+procedure TJvCustomOfficeColorButton.SetHotTrackFontOptions(Value: TJvTrackFontOptions);
 begin
   ColorPanel.HotTrackFontOptions := Value;
 end;
 
-procedure TJvCustomOfficeColorButton.SetHotTrackOptions(
-   Value: TJvHotTrackOptions);
+procedure TJvCustomOfficeColorButton.SetHotTrackOptions(Value: TJvHotTrackOptions);
 begin
   if FHotTrackOptions <> Value then
   begin
@@ -1142,14 +1132,12 @@ begin
   Result := ColorPanel.UserColors;
 end;
 
-procedure TJvCustomOfficeColorButton.SetStandardColors(
-  const Value: TStringList);
+procedure TJvCustomOfficeColorButton.SetStandardColors(const Value: TStringList);
 begin
   ColorPanel.StandardColors := Value;
 end;
 
-procedure TJvCustomOfficeColorButton.SetUserColors(
-  const Value: TStringList);
+procedure TJvCustomOfficeColorButton.SetUserColors(const Value: TStringList);
 begin
   ColorPanel.UserColors := Value;
 end;
@@ -1179,8 +1167,7 @@ begin
   Result := TJvOfficeColorPanelAccessProtected(ColorPanel).AddInControls;
 end;
 
-procedure TJvCustomOfficeColorButton.SetSystemColors(
-  const Value: TStringList);
+procedure TJvCustomOfficeColorButton.SetSystemColors(const Value: TStringList);
 begin
   ColorPanel.SystemColors := Value;
 end;
@@ -1229,9 +1216,9 @@ end;
 procedure TJvCustomOfficeColorButton.DoHoldedCustomColor(Sender: TObject;AColor: TColor);
 begin
   if Assigned(FOnHoldCustomColor) then
-    FOnHoldCustomColor(Self,AColor);
+    FOnHoldCustomColor(Self, AColor);
 
-  // after hold custom color,realign the form
+  // after hold custom color, realign the form
   if Properties.HoldCustomColor and (ColorPanel.ClickColorType = cctCustomColor) then
     FColorsForm.AdjustColorForm;
 end;
@@ -1387,7 +1374,7 @@ begin
   end;
 end;
 
-{ TJvOfficeColorButton }
+//=== { TJvOfficeColorButton } ===============================================
 
 procedure TJvOfficeColorButton.DefineProperties(Filer: TFiler);
 begin

@@ -423,7 +423,8 @@ type
     property AlwaysShowPopup: Boolean read FAlwaysShowPopup write FAlwaysShowPopup default False;
     {$IFDEF VCL}
     property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
-    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions default [];
+    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions
+      write SetAutoCompleteOptions default [];
     {$ENDIF VCL}
     property Button: TJvEditButton read FButton;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat default False;
@@ -434,7 +435,8 @@ type
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
     {$IFDEF VCL}
-    property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
+    property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX} default False; {$ENDIF VisualCLX}
+      {$IFDEF VCL} stored IsFlatStored; {$ENDIF VCL}
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
     {$ENDIF VCL}
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
@@ -568,8 +570,7 @@ type
   { For internal use only; it's not intended to be used separately }
 
 type
-  TExecOpenDialogEvent = procedure(Sender: TObject; var AName: string;
-    var AAction: Boolean) of object;
+  TExecOpenDialogEvent = procedure(Sender: TObject; var AName: string; var AAction: Boolean) of object;
 
   TJvFileDirEdit = class(TJvCustomComboEdit)
   private
@@ -709,10 +710,8 @@ type
     property InitialDir: string read GetInitialDir write SetInitialDir;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property HistoryList: TStrings read GetHistoryList write SetHistoryList stored False;
-    property DialogOptions: TOpenOptions read GetOptions write SetOptions
-      default [ofHideReadOnly];
-    property DialogTitle: string read GetDialogTitle write SetDialogTitle
-      stored IsCustomTitle;
+    property DialogOptions: TOpenOptions read GetOptions write SetOptions default [ofHideReadOnly];
+    property DialogTitle: string read GetDialogTitle write SetDialogTitle stored IsCustomTitle;
     property AutoSelect;
     property ButtonHint;
     property ButtonFlat;
@@ -1165,8 +1164,7 @@ function PaintEdit(Editor: TCustomEdit; const AText: string;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
-  AAlignment: TAlignment; StandardPaint: Boolean; Flat: Boolean;
-  ACanvas: TCanvas): Boolean;
+  AAlignment: TAlignment; StandardPaint: Boolean; Flat: Boolean; ACanvas: TCanvas): Boolean;
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler or a
   TCustomComboEdit/TCustomComboMask class. If no EM_GETTEXT handler exists or
   the class is derived from another class, it uses the ClientRect of the edit
@@ -1265,13 +1263,13 @@ const
 {$IFDEF VCL}
 
 const
-  ACLO_NONE            = 0;   // don't enumerate anything
-  ACLO_CURRENTDIR      = 1;   // enumerate current directory
-  ACLO_MYCOMPUTER      = 2;   // enumerate MyComputer
-  ACLO_DESKTOP         = 4;   // enumerate Desktop Folder
-  ACLO_FAVORITES       = 8;   // enumerate Favorites Folder
-  ACLO_FILESYSONLY     = 16;  // enumerate only the file system
-  ACLO_FILESYSDIRS     = 32;  // enumerate only the file system dirs, UNC shares, and UNC servers.
+  ACLO_NONE        = 0;   // don't enumerate anything
+  ACLO_CURRENTDIR  = 1;   // enumerate current directory
+  ACLO_MYCOMPUTER  = 2;   // enumerate MyComputer
+  ACLO_DESKTOP     = 4;   // enumerate Desktop Folder
+  ACLO_FAVORITES   = 8;   // enumerate Favorites Folder
+  ACLO_FILESYSONLY = 16;  // enumerate only the file system
+  ACLO_FILESYSDIRS = 32;  // enumerate only the file system dirs, UNC shares, and UNC servers.
 
   //IID_IAutoCompList: TGUID = (D1:$00BB2760; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
   //IID_IObjMgr: TGUID = (D1:$00BB2761; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
@@ -1298,7 +1296,7 @@ const
   //#endif
 
 type
-{$IFDEF CLR}
+  {$IFDEF CLR}
   TAutoCompleteSource = class(TInterfacedObject, IEnumString)
   private
     FComboEdit: TJvCustomComboEdit;
@@ -1312,7 +1310,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
-{$ELSE}
+  {$ELSE}
   TAutoCompleteSource = class(TInterfacedObject, IEnumString)
   private
     FComboEdit: TJvCustomComboEdit;
@@ -1326,7 +1324,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
-{$ENDIF CLR}
+  {$ENDIF CLR}
 
   {$IFDEF CLR}
   [ComImport, InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
@@ -1650,7 +1648,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
@@ -1663,11 +1660,9 @@ begin
   else
     Result := True;
 end;
-
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean; Flat: Boolean;
   ACanvas: TCanvas): Boolean;
@@ -1680,11 +1675,9 @@ begin
   else
     Result := True;
 end;
-
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
-
 function PaintEdit(Editor: TCustomEdit; const AText: string;
   AAlignment: TAlignment; PopupVisible: Boolean; 
   DisabledTextColor: TColor; StandardPaint: Boolean;
@@ -1792,11 +1785,9 @@ begin
       EndPaint(TEd(Editor).Handle, PS);
   end;
 end;
-
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
   EM_GETTEXT handler exists or the edit control does not implement
   IComboEditHelper, it uses the ClientRect of the edit control. }
@@ -2374,7 +2365,8 @@ begin
   begin
     { Create the autocomplete object. }
     {$IFDEF CLR}
-    FAutoCompleteIntf := Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_AutoComplete))) as IAutoComplete;
+    FAutoCompleteIntf :=
+      Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_AutoComplete))) as IAutoComplete;
     if FAutoCompleteIntf <> nil then
     {$ELSE}
     if Succeeded(CoCreateInstance(CLSID_AutoComplete, nil, CLSCTX_INPROC_SERVER, IAutoComplete,
@@ -2636,6 +2628,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function TJvCustomComboEdit.GetFlat: Boolean;
 begin
   Result := not Ctl3D;
@@ -2655,6 +2648,7 @@ procedure TJvCustomComboEdit.SetParentFlat(const Value: Boolean);
 begin
   ParentCtl3D := Value;
 end;
+
 {$ENDIF VCL}
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
@@ -2667,8 +2661,7 @@ begin
   Result := TGlyphKind(FImageKind);
 end;
 
-procedure TJvCustomComboEdit.GetInternalMargins(var ALeft,
-  ARight: Integer);
+procedure TJvCustomComboEdit.GetInternalMargins(var ALeft, ARight: Integer);
 const
   CPixelsBetweenEditAndButton = 2;
 begin
@@ -2789,7 +2782,8 @@ begin
         if (Form <> nil) {and Form.KeyPreview} then
         begin
           {$IFDEF CLR}
-          Form.GetType.InvokeMember('KeyDown', BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key, Shift]);
+          Form.GetType.InvokeMember('KeyDown',
+            BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key, Shift]);
           {$ELSE}
           TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           {$ENDIF CLR}
@@ -2799,7 +2793,8 @@ begin
         if (Form <> nil) {and Form.KeyPreview} then
         begin
           {$IFDEF CLR}
-          Form.GetType.InvokeMember('KeyDown', BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key, Shift]);
+          Form.GetType.InvokeMember('KeyDown',
+            BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key, Shift]);
           {$ELSE}
           TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           {$ENDIF CLR}
@@ -2821,8 +2816,6 @@ var
 begin
   Form := GetParentForm(Self);
 
-  //Polaris  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
-//  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) or ((Key = #10) and PopupVisible) then
   if (Key = Cr) or (Key = Esc) or ((Key = Lf) and PopupVisible) then
   begin
     if PopupVisible then
@@ -2855,7 +2848,8 @@ begin
     { (rb) Next code has no use because Key = #0? }
     if (Form <> nil) {and Form.KeyPreview} then
       {$IFDEF CLR}
-      Form.GetType.InvokeMember('KeyPress', BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key]);
+      Form.GetType.InvokeMember('KeyPress',
+        BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key]);
       {$ELSE}
       TWinControlAccessProtected(Form).KeyPress(Key);
       {$ENDIF CLR}
@@ -2885,16 +2879,14 @@ begin
   UpdateMargins;
 end;
 
-procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   UpdateGroup;
   if Assigned(FOnKeyDown) then
     FOnKeyDown(Sender, Key, Shift);
 end;
 
-procedure TJvCustomComboEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvCustomComboEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if (FPopup <> nil) and (Button = mbLeft) then
   begin
@@ -2911,8 +2903,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TJvCustomComboEdit.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvCustomComboEdit.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FImages) then
@@ -3047,6 +3038,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomComboEdit.ReadCtl3D(Reader: TReader);
 begin
   Flat := not Reader.ReadBoolean;
@@ -3056,6 +3048,7 @@ procedure TJvCustomComboEdit.ReadParentCtl3D(Reader: TReader);
 begin
   ParentFlat := Reader.ReadBoolean;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomComboEdit.ReadGlyphKind(Reader: TReader);
@@ -3835,8 +3828,7 @@ begin
     inherited RecordChanged;
 end;
 
-procedure TJvCustomDateEditDataConnector.SetDefaultDateIsNow(
-  const Value: Boolean);
+procedure TJvCustomDateEditDataConnector.SetDefaultDateIsNow(const Value: Boolean);
 begin
   if Value <> FDefaultDateIsNow then
     FDefaultDateIsNow := Value;
@@ -4015,7 +4007,7 @@ begin
       if CanFocus then
         SetFocus;
       ADate := Self.Date;
-      if DoInvalidDate(Text,ADate) then
+      if DoInvalidDate(Text, ADate) then
         Self.Date := ADate
       else
         raise;
@@ -4025,7 +4017,7 @@ begin
       if CanFocus then
         SetFocus;
       ADate := Self.Date;
-      if DoInvalidDate(Text,ADate) then
+      if DoInvalidDate(Text, ADate) then
         Self.Date := ADate
       else
         raise;
@@ -4076,8 +4068,7 @@ begin
   inherited DoExit;
 end;
 
-function TJvCustomDateEdit.DoInvalidDate(const DateString: string;
-  var ANewDate: TDateTime): Boolean;
+function TJvCustomDateEdit.DoInvalidDate(const DateString: string; var ANewDate: TDateTime): Boolean;
 begin
   Result := False;
   if Assigned(FOnInvalidDate) then
@@ -4086,8 +4077,7 @@ end;
 
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
-  Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-   IsFourDigitYear);
+  Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and IsFourDigitYear);
 end;
 
 function TJvCustomDateEdit.GetCalendarHints: TStrings;
@@ -4138,11 +4128,9 @@ end;
 function TJvCustomDateEdit.IsCustomTitle: Boolean;
 begin
   {$IFDEF CLR}
-  Result := (CompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
-    (DialogTitle <> ''); // Polaris
+  Result := (CompareStr(RsDateDlgCaption, DialogTitle) <> 0) and (DialogTitle <> ''); // Polaris
   {$ELSE}
-  Result := (AnsiCompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
-    (DialogTitle <> ''); // Polaris
+  Result := (AnsiCompareStr(RsDateDlgCaption, DialogTitle) <> 0) and (DialogTitle <> ''); // Polaris
   {$ENDIF CLR}
 end;
 
@@ -4216,8 +4204,7 @@ begin
   begin
     D := Self.Date;
     Action := SelectDate(Self, D, DialogTitle, StartOfWeek, Weekends, // Polaris (Self added)
-      WeekendColor, CalendarHints,
-      MinDate, MaxDate); // Polaris
+      WeekendColor, CalendarHints, MinDate, MaxDate); // Polaris
     if CanFocus then
       SetFocus;
     if Action then
@@ -4378,8 +4365,7 @@ end;
 
 procedure TJvCustomDateEdit.SetPopupValue(const Value: Variant);
 begin
-  inherited SetPopupValue(StrToDateFmtDef(FDateFormat, VarToStr(Value),
-    SysUtils.Date));
+  inherited SetPopupValue(StrToDateFmtDef(FDateFormat, VarToStr(Value), SysUtils.Date));
 end;
 
 procedure TJvCustomDateEdit.SetStartOfWeek(Value: TDayOfWeekName);
@@ -4970,15 +4956,13 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-procedure TJvFileDirEdit.DoAfterDialog(var FileName: string;
-  var Action: Boolean);
+procedure TJvFileDirEdit.DoAfterDialog(var FileName: string; var Action: Boolean);
 begin
   if Assigned(FOnAfterDialog) then
     FOnAfterDialog(Self, FileName, Action);
 end;
 
-procedure TJvFileDirEdit.DoBeforeDialog(var FileName: string;
-  var Action: Boolean);
+procedure TJvFileDirEdit.DoBeforeDialog(var FileName: string; var Action: Boolean);
 begin
   if Assigned(FOnBeforeDialog) then
     FOnBeforeDialog(Self, FileName, Action);
@@ -4997,7 +4981,8 @@ end;
 function TJvFileDirEdit.GetAutoCompleteSource: IEnumString;
 begin
   {$IFDEF CLR}
-  FAutoCompleteSourceIntf := Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACLMulti))) as IEnumString;
+  FAutoCompleteSourceIntf :=
+    Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACLMulti))) as IEnumString;
   {$ELSE}
   if Failed(CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IEnumString, FAutoCompleteSourceIntf)) then
     FAutoCompleteSourceIntf := nil;
@@ -5019,7 +5004,6 @@ begin
   if FAutoCompleteFileOptions <> Value then
   begin
     FAutoCompleteFileOptions := Value;
-
     if not (csDesigning in ComponentState) then
       UpdateAutoComplete;
   end;
@@ -5055,7 +5039,8 @@ begin
     begin
       if not Assigned(FMRUList) and
         {$IFDEF CLR}
-        SucceededCom(FMRUList, Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACLMRU)))) then
+        SucceededCom(FMRUList,
+          Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACLMRU)))) then
         {$ELSE}
         Succeeded(CoCreateInstance(CLSID_ACLMRU, nil, CLSCTX_INPROC_SERVER, IUnknown, FMRUList)) then
         {$ENDIF CLR}
@@ -5074,7 +5059,8 @@ begin
     begin
       if not Assigned(FHistoryList) and
         {$IFDEF CLR}
-        SucceededCom(FHistoryList, Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACLHistory)))) then
+        SucceededCom(FHistoryList,
+          Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACLHistory)))) then
         {$ELSE}
         Succeeded(CoCreateInstance(CLSID_ACLHistory, nil, CLSCTX_INPROC_SERVER, IUnknown, FHistoryList)) then
         {$ENDIF CLR}
@@ -5093,7 +5079,8 @@ begin
     begin
       if not Assigned(FFileSystemList) and
         {$IFDEF CLR}
-        SucceededCom(FFileSystemList, Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACListISF)))) then
+        SucceededCom(FFileSystemList,
+          Activator.CreateInstance(System.Type.GetTypeFromCLSID(Guid.Create(CLSID_ACListISF)))) then
         {$ELSE}
         Succeeded(CoCreateInstance(CLSID_ACListISF, nil, CLSCTX_INPROC_SERVER, IUnknown, FFileSystemList)) then
         {$ENDIF CLR}
@@ -5503,6 +5490,7 @@ begin
 end;
 
 {$IFDEF CLR}
+
 { Allow this unit to access protected members of anchestors. }
 procedure TJvPopupWindow.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -5513,6 +5501,7 @@ procedure TJvPopupWindow.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
 end;
+
 {$ENDIF CLR}
 
 {$IFDEF VCL}
