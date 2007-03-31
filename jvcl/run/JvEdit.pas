@@ -157,7 +157,7 @@ type
 
     {$IFDEF VCL}
     function GetText: TCaption; virtual;
-    procedure SetText(const Value: TCaption); {$IFDEF CLR}reintroduce;{$ENDIF} virtual;
+    procedure SetText(const Value: TCaption); {$IFDEF CLR} reintroduce; {$ENDIF} virtual;
     procedure CreateHandle; override;
     procedure DestroyWnd; override;
     {$ENDIF VCL}
@@ -218,7 +218,8 @@ type
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property OnParentColorChange;
-    property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
+    property Flat: Boolean read GetFlat write SetFlat
+      {$IFDEF VisualCLX} default False; {$ENDIF VisualCLX}{$IFDEF VCL} stored IsFlatStored; {$ENDIF VCL}
 
     property DataConnector: TJvFieldDataConnector read FDataConnector write SetDataConnector;
   end;
@@ -403,7 +404,7 @@ constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataConnector := CreateDataConnector;
-  
+
   {$IFDEF VisualCLX}
   FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim);
   {$ENDIF VisualCLX}
@@ -717,6 +718,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function TJvCustomEdit.GetParentFlat: Boolean;
 begin
   Result := ParentCtl3D;
@@ -726,6 +728,7 @@ procedure TJvCustomEdit.SetParentFlat(const Value: Boolean);
 begin
   ParentCtl3D := Value;
 end;
+
 {$ENDIF VCL}
 
 function TJvCustomEdit.GetPasswordChar: Char;
@@ -837,6 +840,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomEdit.ReadCtl3D(Reader: TReader);
 begin
   Flat := not Reader.ReadBoolean;
@@ -846,6 +850,7 @@ procedure TJvCustomEdit.ReadParentCtl3D(Reader: TReader);
 begin
   ParentFlat := Reader.ReadBoolean;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomEdit.DefineProperties(Filer: TFiler);
@@ -1062,9 +1067,7 @@ begin
 end;
 
 {$IFDEF VCL}
-
 // (ahuser) ProtectPassword has no function under CLX
-
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
   if (csLoading in ComponentState) or not FIsLoaded then
@@ -1084,11 +1087,9 @@ begin
     inherited Text := EmptyValue;
   end;
 end;
-
 {$ENDIF VCL}
 
 {$IFDEF JVCLThemesEnabled}
-
 procedure TJvCustomEdit.SetThemedPassword(const Value: Boolean);
 begin
   if FThemedPassword <> Value then
@@ -1100,7 +1101,6 @@ begin
     RecreateWnd;
   end;
 end;
-
 {$ENDIF JVCLThemesEnabled}
 
 procedure TJvCustomEdit.UpdateGroup;
@@ -1127,7 +1127,9 @@ begin
     the edit can paint itself (We must check both colors, although only
     DisabledTextColor is passed on to PaintEdit; PaintEdit triggers a
     DoEraseBackground call) }
-  if Enabled or ((ColorToRGB(DisabledTextColor) = ColorToRGB(clGrayText)) and (ColorToRGB(DisabledColor) = ColorToRGB(clWindow))) then
+  if Enabled or
+    ((ColorToRGB(DisabledTextColor) =
+      ColorToRGB(clGrayText)) and (ColorToRGB(DisabledColor) = ColorToRGB(clWindow))) then
     inherited
   else
   begin

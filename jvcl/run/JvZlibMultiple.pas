@@ -89,7 +89,7 @@ type
   TJvZlibMultiple = class(TJvComponent)
   private
     FStorePaths: Boolean;
-    FIgnoreExclusive : Boolean; // November 7, 2004 - USE WITH CAUTION !!!!!
+    FIgnoreExclusive: Boolean; // November 7, 2004 - USE WITH CAUTION !!!!!
     FCompressionLevel: TJclCompressionLevel;
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
@@ -101,10 +101,10 @@ type
     // of the file, returning the file names and sizes inside.
     FOnDecompressingFile: TFileBeforeWriteEvent;
     FOnDecompressedFile: TFileAfterWriteEvent;
-    FTerminateCompress : Boolean;  // Note #1
-    FTerminateDecompress : Boolean;  // Note #1
-    FCompressionPause : Boolean;  // Note #1
-    FDecompressionPause : Boolean;   // Note #1
+    FTerminateCompress: Boolean;  // Note #1
+    FTerminateDecompress: Boolean;  // Note #1
+    FCompressionPause: Boolean;  // Note #1
+    FDecompressionPause: Boolean;   // Note #1
     FForceDirectoriesFlag: Boolean;
     procedure SetForceDirectoriesFlag(const Value: Boolean); // set true to force directories
   protected
@@ -138,14 +138,15 @@ type
       const RelativePaths: Boolean = True);
     procedure StopCompression;   // Note #1
     procedure StopDecompression; // Note #1
-    property CompressionPaused : Boolean read FCompressionPause write FCompressionPause; // Note #1
-    property DecompressionPaused : Boolean read FDecompressionPause write FDecompressionPause;  // Note #1
+    property CompressionPaused: Boolean read FCompressionPause write FCompressionPause; // Note #1
+    property DecompressionPaused: Boolean read FDecompressionPause write FDecompressionPause;  // Note #1
   published
     property StorePaths: Boolean read FStorePaths  write FStorePaths default True;
     // NOTE : This property allows you to override already opened files - USE WITH CAUTION!!! opened files may still be writing data
     //        causing stored files to be different from the final file.
-    property IgnoreExclusive : Boolean read FIgnoreExclusive write FIgnoreExclusive default False;
+    property IgnoreExclusive: Boolean read FIgnoreExclusive write FIgnoreExclusive default False;
     property CompressionLevel: TJclCompressionLevel read FCompressionLevel write FCompressionLevel default -1;
+    property ForceDirectoriesFlag: Boolean read FForceDirectoriesFlag write SetForceDirectoriesFlag default True; // NEW MARCH 2007!
      // NOTE: Changed decompression event parameters. July 26 2004. -WPostma.
     property OnDecompressingFile: TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
     property OnDecompressedFile: TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
@@ -153,9 +154,6 @@ type
     property OnCompressingFile: TFileEvent read FOnCompressingFile write FOnCompressingFile;
     property OnCompressedFile: TFileEvent read FOnCompressedFile write FOnCompressedFile;
     property OnCompletedAction: TNotifyEvent read FOnCompletedAction write FOnCompletedAction;
-
-    property ForceDirectoriesFlag:Boolean read FForceDirectoriesFlag write SetForceDirectoriesFlag default true; // NEW MARCH 2007!
-
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -233,8 +231,7 @@ begin
   Result.Position := 0;
 end;
 
-procedure TJvZlibMultiple.AddFile(const FileName, Directory, FilePath: string;
-  DestStream: TStream);
+procedure TJvZlibMultiple.AddFile(const FileName, Directory, FilePath: string; DestStream: TStream);
 var
   Stream: TStream;
   FileStream: TFileStream;
@@ -243,8 +240,7 @@ var
   Count: Integer;
   FileStreamPos, FileStreamSize: Int64;
 
-  procedure WriteFileRecord(const Directory, FileName: string; FileSize: Integer;
-    CompressedSize: Integer);
+  procedure WriteFileRecord(const Directory, FileName: string; FileSize: Integer; CompressedSize: Integer);
   var
     B: Byte;
     Tab: array [1..256] of Char;
@@ -388,7 +384,7 @@ var
   TotalByteCount: Longword;
   WriteMe: Boolean; // Allow skipping of files instead of writing them.
   FileStreamSize, StreamSize: Int64;
-  fd:String; // name of directory to be made if it doesn't exist (unless we're skipping it)
+  fd: string; // name of directory to be made if it doesn't exist (unless we're skipping it)
 begin
   if Directory <> '' then
     Directory := IncludeTrailingPathDelimiter(Directory);
@@ -403,10 +399,8 @@ begin
       Stream.Read(S[1], B);
 
     fd := Directory + S;
-    if (fd<>'') and (ForceDirectoriesFlag) then
+    if (fd <> '') and (ForceDirectoriesFlag) then
           ForceDirectories(fd);
-
-
 
     if S <> '' then
       S := IncludeTrailingPathDelimiter(S);
@@ -525,10 +519,10 @@ end;
 
 procedure TJvZLibMultiple.ListStoredFiles(const FileName: string; FileList: TStrings);
 var
-  ZStream : TFileStream;
-  FHByte : Byte;
-  FilePos, HeaderPos, CompressedSize, UnCompressedSize : Integer;
-  FileInfo : string;
+  ZStream: TFileStream;
+  FHByte: Byte;
+  FilePos, HeaderPos, CompressedSize, UnCompressedSize: Integer;
+  FileInfo: string;
   ZStreamSize: Int64;
 begin
   ZStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
@@ -558,7 +552,7 @@ begin
       ZStream.Position := FilePos;
     end;
   finally
-    ZStream.Free
+    ZStream.Free;
   end;
 end;
 

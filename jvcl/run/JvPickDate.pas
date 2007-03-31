@@ -112,8 +112,7 @@ type
     procedure UpdateCalendar; virtual;
     property CellText[ACol, ARow: Integer]: string read GetCellText;
 published
-    property CalendarDate: TDateTime read FDate write SetCalendarDate
-      stored StoreCalendarDate;
+    property CalendarDate: TDateTime read FDate write SetCalendarDate stored StoreCalendarDate;
     property Day: Integer index 3 read GetDateElement write SetDateElement stored False;
     property Month: Integer index 2 read GetDateElement write SetDateElement stored False;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
@@ -133,28 +132,23 @@ published
 function SelectDate(Sender: TWinControl; var Date: TDateTime; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): Boolean; // Polaris
+  MinDate: TDateTime = 0; MaxDate: TDateTime = 0): Boolean; // Polaris
 function SelectDateStr(Sender: TWinControl; var StrDate: string; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): Boolean; // Polaris
+  MinDate: TDateTime = 0; MaxDate: TDateTime = 0): Boolean; // Polaris
 function PopupDate(var Date: TDateTime; Edit: TWinControl;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): Boolean;
+  MinDate: TDateTime = 0; MaxDate: TDateTime = 0): Boolean;
 
 { Popup calendar }
 
 function CreatePopupCalendar(AOwner: TComponent;
   ABiDiMode: TBiDiMode = bdLeftToRight;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): TWinControl;
+  MinDate: TDateTime = 0.0; MaxDate: TDateTime = 0.0): TWinControl;
 procedure SetupPopupCalendar(PopupCalendar: TWinControl;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings; FourDigitYear: Boolean;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0);
+  MinDate: TDateTime = 0.0; MaxDate: TDateTime = 0.0);
 
 const
   PopupCalendarSize: TPoint = (X: 187; Y: 124);
@@ -413,8 +407,7 @@ begin
   begin
     FMinDate := Value;
     if FDate < FMinDate then
-      SetCalendarDate(FMinDate)
-        ;
+      SetCalendarDate(FMinDate);
     //    else
     UpdateCalendar;
   end;
@@ -775,8 +768,7 @@ begin
     { day of week for 1st of month }
     if FMonthOffset = 2 then
       FMonthOffset := -5;
-    MoveColRow((ADay - FMonthOffset) mod 7, (ADay - FMonthOffset) div 7 + 1,
-      False, False);
+    MoveColRow((ADay - FMonthOffset) mod 7, (ADay - FMonthOffset) div 7 + 1, False, False);
     if DayOnly then
       Update
     else
@@ -928,8 +920,7 @@ type
 
 function CreatePopupCalendar(AOwner: TComponent;
   ABiDiMode: TBiDiMode = bdLeftToRight;
-  MinDate: TDateTime  = 0;
-  MaxDate: TDateTime = 0): TWinControl;
+  MinDate: TDateTime = 0.0; MaxDate: TDateTime = 0.0): TWinControl;
 begin
   Result := TJvPopupCalendar.Create(AOwner);
 (*
