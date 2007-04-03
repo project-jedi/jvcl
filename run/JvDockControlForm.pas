@@ -668,6 +668,8 @@ type
     function GetParentForm: TJvDockTabHostForm;
     procedure DockStyleChanged(Sender: TObject);
     function GetDockStyle: TJvDockObservableStyle;
+    function GetActiveDockForm: TCustomForm;
+    function GetDockForm(Index: Integer): TCustomForm;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure ReloadDockedControl(const AControlName: string;
@@ -694,6 +696,9 @@ type
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
+
+    property ActiveDockForm: TCustomForm read GetActiveDockForm;
+    property DockForm[Index: Integer]: TCustomForm read GetDockForm;
     { ParentForm is the Owner }
     property ParentForm: TJvDockTabHostForm read GetParentForm;
     property TabPosition;
@@ -762,7 +767,6 @@ type
     procedure ShowDockedControl(AControl:TWinControl); virtual; // If aControl is docked in PageControl, change PageControl to that page. NEW! WPostma.
     procedure UpdateCaption(AControl:TWinControl); virtual; // update tab host's tabs and title bar when page caption changes.
 
-    function GetActiveDockForm: TForm;
     property DockClient;
     { Constructed in TJvDockClient.CreateTabDockClass }
     property PageControl: TJvDockTabPageControl read FPageControl write FPageControl;
@@ -4743,15 +4747,6 @@ begin
   BorderStyle := TabDockHostBorderStyle;
 end;
 
-function TJvDockTabHostForm.GetActiveDockForm: TForm;
-begin
-  if PageControl.ActivePage.ControlCount = 1 then
-    { Dirty cast }
-    Result := TForm(PageControl.ActivePage.Controls[0])
-  else
-    Result := nil;
-end;
-
 //------------------------------------------------------------------------
 // ShowDockedControl:
 //
@@ -5230,6 +5225,27 @@ procedure TJvGlobalDockManager.UnRegisterDockServer(
   ADockServer: TJvDockServer);
 begin
   FDockServers.Remove(ADockServer);
+end;
+
+function TJvDockTabPageControl.GetActiveDockForm: TCustomForm;
+begin
+  Result := DockForm[ActivePageIndex];
+end;
+
+function TJvDockTabPageControl.GetDockForm(Index: Integer): TCustomForm;
+var
+  Page: TJvDockTabSheet;
+begin
+  Result := nil;
+
+  if (Index > -1) and (Index < Count) then
+  begin
+    Page := Pages[Index];
+    if Assigned(Page) and (Page.ControlCount = 1) and (Page.Controls[0] is TCustomForm) then
+    begin
+      Result := TCustomForm(Page.Controls[0]);
+    end
+  end;
 end;
 
 procedure InitDockManager;
