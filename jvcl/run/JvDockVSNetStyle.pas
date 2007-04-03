@@ -553,7 +553,7 @@ const
 implementation
 
 uses
-  SysUtils, Math, {AppEvnts,}
+  SysUtils, Math, {AppEvnts,} JvJVCLUtils,
   JvDockSupportProc;
 
 type
@@ -883,11 +883,9 @@ begin
       same order as PageControl.Pages; for example, if we reorder the pages. }
     for I := 0 to APageControl.Count - 1 do
     begin
-      { (rb) Is this a valid assumption?, see for example TJvDockTabHostForm.GetActiveDockForm }
-      if (APageControl.Pages[I].ControlCount > 0) and
-        (APageControl.Pages[I].Controls[0] is TCustomForm) then
+      Form := APageControl.DockForm[I];
+      if Assigned(Form) then
       begin
-        Form := TCustomForm(APageControl.Pages[I].Controls[0]);
         AddPane(Form, PaneWidth);
         TJvDockVSNETTabSheet(APageControl.Pages[I]).OldVisible := Form.Visible;
         if APageControl.Pages[I] <> APageControl.ActivePage then
@@ -1168,9 +1166,18 @@ begin
 end;
 
 procedure TJvDockVSChannel.AutoFocusActiveDockForm;
+var
+  JvDockManager: IJvDockManager;
 begin
   if DockServer.AutoFocusDockedForm and Assigned(ActiveDockForm) and ActiveDockForm.CanFocus then
+  begin
     ActiveDockForm.SetFocus;
+    if TWinControlAccessProtected(ActiveDockForm).UseDockManager and
+      Supports(TWinControlAccessProtected(ActiveDockForm).DockManager, IJvDockManager, JvDockManager) then
+    begin
+      JvDockManager.FocusChanged(ActiveDockForm);
+    end;
+  end;
 end;
 
 procedure TJvDockVSChannel.CMMouseLeave(var Msg: TMessage);
@@ -1443,7 +1450,7 @@ begin
   inherited MouseMove(Shift, X, Y);
 
   NewDelayPane := PaneAtPos(Point(X, Y));
-  if Assigned(NewDelayPane) and (NewDelayPane <> PopupPane) then
+  if Assigned(NewDelayPane) and (NewDelayPane <> PopupPane) and IsForegroundTask then
   begin
     // Create the timer object if not existing
     if FAnimationDelayTimer = nil then
@@ -2815,7 +2822,7 @@ begin
   begin
     if AZone.ChildControl is TJvDockTabHostForm then
     begin
-      Form := TJvDockTabHostForm(AZone.ChildControl).GetActiveDockForm;
+      Form := TJvDockTabHostForm(AZone.ChildControl).PageControl.ActiveDockForm;
       if Form <> nil then
       begin
         ADockClient := FindDockClient(Form);
@@ -3015,7 +3022,7 @@ begin
       Exit;
     if Zone.ChildControl is TJvDockTabHostForm then
     begin
-      AForm := TJvDockTabHostForm(Zone.ChildControl).GetActiveDockForm;
+      AForm := TJvDockTabHostForm(Zone.ChildControl).PageControl.ActiveDockForm;
       if AForm <> nil then
       begin
         ADockClient := FindDockClient(AForm);

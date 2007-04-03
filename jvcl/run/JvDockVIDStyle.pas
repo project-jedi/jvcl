@@ -2654,13 +2654,13 @@ begin
 
   if ParentForm.HostDockSite is TJvDockCustomPanel then
   begin
-    if ParentForm.Visible and ParentForm.CanFocus then
-      ParentForm.SetFocus;
+    //    if ParentForm.Visible and ParentForm.CanFocus then
+    //      ParentForm.SetFocus;
     ParentForm.HostDockSite.Invalidate;
   end;
-  if (ActivePage <> nil) and (ActivePage.Visible) and (ActivePage.CanFocus) then
-    if ParentForm.Visible and ParentForm.CanFocus then
-      ActivePage.SetFocus;
+  //  if (ActivePage <> nil) and (ActivePage.Visible) and (ActivePage.CanFocus) then
+  //    if ParentForm.Visible and ParentForm.CanFocus then
+  //      ActivePage.SetFocus;
 end;
 
 procedure TJvDockVIDTabPageControl.AdjustClientRect(var Rect: TRect);
@@ -3234,6 +3234,7 @@ var
   Index: Integer;
   Msg: TWMMouse;
   Sheet: TJvDockVIDTabSheet;
+  AParentForm: TCustomForm;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Page = nil then
@@ -3244,6 +3245,12 @@ begin
   begin
     if Index <> Page.ActivePageIndex then
     begin
+      if Assigned(Page.ActivePage) and Page.ActivePage.CanFocus then
+      begin
+        AParentForm := GetParentForm(Page);
+        if Assigned(AParentForm) then
+          AParentForm.ActiveControl := Page.ActivePage;
+      end;
       Sheet := Page.ActiveVIDPage;
       Page.ActivePageIndex := Index;
       Sheet.SetSheetSort(Sheet.Caption);
