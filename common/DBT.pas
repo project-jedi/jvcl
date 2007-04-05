@@ -277,7 +277,7 @@ const
 type
   PDevBroadcastHdr = ^TDevBroadcastHdr;
   {$EXTERNALSYM DEV_BROADCAST_HDR}
-  DEV_BROADCAST_HDR = packed record
+  DEV_BROADCAST_HDR = record
     dbch_size: DWORD;
     dbch_devicetype: DWORD;
     dbch_reserved: DWORD;
@@ -292,7 +292,7 @@ type
 type
   PVolLockBroadcast = ^TVolLockBroadcast;
   {$EXTERNALSYM VolLockBroadcast}
-  VolLockBroadcast = packed record
+  VolLockBroadcast = record
     vlb_dbh: TDevBroadcastHdr;
     vlb_owner: DWORD;
     vlb_perms: Byte;
@@ -403,7 +403,7 @@ const
 type
   PDevBroadcastHeader = ^TDevBroadcastHeader;
   // no EXTERNALSYM because this struct is not declared as C type
-  DEV_BROADCAST_HEADER = packed record
+  DEV_BROADCAST_HEADER = record
     dbcd_size: DWORD;
     dbcd_devicetype: DWORD;
     dbcd_reserved: DWORD;
@@ -412,7 +412,7 @@ type
 
   PDevBroadcastOem = ^TDevBroadcastOem;
   {$EXTERNALSYM DEV_BROADCAST_OEM}
-  DEV_BROADCAST_OEM = packed record
+  DEV_BROADCAST_OEM = record
     dbco_size: DWORD;
     dbco_devicetype: DWORD;
     dbco_reserved: DWORD;
@@ -423,7 +423,7 @@ type
 
   PDevBroadcastDevNode = ^TDevBroadcastDevNode;
   {$EXTERNALSYM DEV_BROADCAST_DEVNODE}
-  DEV_BROADCAST_DEVNODE = packed record
+  DEV_BROADCAST_DEVNODE = record
     dbcd_size: DWORD;
     dbcd_devicetype: DWORD;
     dbcd_reserved: DWORD;
@@ -433,7 +433,7 @@ type
 
   PDevBroadcastVolume = ^TDevBroadcastVolume;
   {$EXTERNALSYM DEV_BROADCAST_VOLUME}
-  DEV_BROADCAST_VOLUME = packed record
+  DEV_BROADCAST_VOLUME = record
     dbcv_size: DWORD;
     dbcv_devicetype: DWORD;
     dbcv_reserved: DWORD;
@@ -451,20 +451,20 @@ const
 type
   PDevBroadCastPortA = ^TDevBroadCastPortA;
   {$EXTERNALSYM DEV_BROADCAST_PORT_A}
-  DEV_BROADCAST_PORT_A = packed record
+  DEV_BROADCAST_PORT_A = record
     dbcp_size: DWORD;
     dbcp_devicetype: DWORD;
     dbcp_reserved: DWORD;
-    dbcp_name: array[0..0] of AnsiChar;
+    dbcp_name: array [0..0] of AnsiChar;
   end;
   TDevBroadCastPortA = DEV_BROADCAST_PORT_A;
   PDevBroadCastPortW = ^TDevBroadCastPortW;
   {$EXTERNALSYM DEV_BROADCAST_PORT_W}
-  DEV_BROADCAST_PORT_W = packed record
+  DEV_BROADCAST_PORT_W = record
     dbcp_size: DWORD;
     dbcp_devicetype: DWORD;
     dbcp_reserved: DWORD;
-    dbcp_name: array[0..0] of WideChar;
+    dbcp_name: array [0..0] of WideChar;
   end;
   TDevBroadCastPortW = DEV_BROADCAST_PORT_W;
   PDevBroadCastPort = PDevBroadCastPortA;
@@ -472,7 +472,7 @@ type
 type
   PDevBroadcastNet = ^TDevBroadcastNet;
   {$EXTERNALSYM DEV_BROADCAST_NET}
-  DEV_BROADCAST_NET = packed record
+  DEV_BROADCAST_NET = record
     dbcn_size: DWORD;
     dbcn_devicetype: DWORD;
     dbcn_reserved: DWORD;
@@ -483,29 +483,29 @@ type
 
   PDevBroadcastDeviceInterfaceA = ^TDevBroadcastDeviceInterfaceA;
   {$EXTERNALSYM DEV_BROADCAST_DEVICEINTERFACE_A}
-  DEV_BROADCAST_DEVICEINTERFACE_A = packed record
+  DEV_BROADCAST_DEVICEINTERFACE_A = record
     dbcc_size: DWORD;
     dbcc_devicetype: DWORD;
     dbcc_reserved: DWORD;
     dbcc_classguid: TGUID;
-    dbcc_name: Array[0..0] of AnsiChar;
+    dbcc_name: array [0..0] of AnsiChar;
   end;
   TDevBroadcastDeviceInterfaceA = DEV_BROADCAST_DEVICEINTERFACE_A;
   PDevBroadcastDeviceInterfaceW = ^TDevBroadcastDeviceInterfaceW;
   {$EXTERNALSYM DEV_BROADCAST_DEVICEINTERFACE_W}
-  DEV_BROADCAST_DEVICEINTERFACE_W = packed record
+  DEV_BROADCAST_DEVICEINTERFACE_W = record
     dbcc_size: DWORD;
     dbcc_devicetype: DWORD;
     dbcc_reserved: DWORD;
     dbcc_classguid: TGUID;
-    dbcc_name: Array[0..0] of WideChar;
+    dbcc_name: array [0..0] of WideChar;
   end;
   TDevBroadcastDeviceInterfaceW = DEV_BROADCAST_DEVICEINTERFACE_W;
   PDevBroadcastDeviceInterface = PDevBroadcastDeviceInterfaceA;
 
   {$EXTERNALSYM DEV_BROADCAST_HANDLE}
   PDevBroadcastHandle = ^TDevBroadcastHandle;
-  DEV_BROADCAST_HANDLE = packed record
+  DEV_BROADCAST_HANDLE = record
     dbch_size: DWORD;
     dbch_devicetype: DWORD;
     dbch_reserved: DWORD;
@@ -516,7 +516,7 @@ type
 
     dbch_eventguid: TGUID;
     dbch_nameoffset: DWORD;           { offset (bytes) of variable-length string buffer (-1 if none)}
-    dbch_data: Array[0..0] of BYTE;   { variable-sized buffer, potentially containing binary and/or text data }
+    dbch_data: array [0..0] of Byte;  { variable-sized buffer, potentially containing binary and/or text data }
   end;
   TDevBroadcastHandle = DEV_BROADCAST_HANDLE;
 
@@ -558,9 +558,9 @@ const
 type
   PDevBroadcastUserdefined = ^TDevBroadcastUserdefined;
   // no EXTERNALSYM because this struct is not declared as C type
-  DEV_BROADCAST_USERDEFINED = packed record
+  DEV_BROADCAST_USERDEFINED = record
     dbud_dbh: TDevBroadcastHdr;
-    dbud_szName: Array[0..0] of Char; { ASCIIZ name }
+    dbud_szName: array [0..0] of Char; { ASCIIZ name }
    {dbud_rgbUserDefined[]: Byte; // User-defined contents }
   end;
   TDevBroadcastUserdefined = DEV_BROADCAST_USERDEFINED;
