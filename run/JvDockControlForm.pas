@@ -64,6 +64,10 @@ const
   JvDockState_Docking = 1;
   JvDockState_Floating = 2;
 
+  {$IFNDEF COMPILER9_UP}
+  CM_INVALIDATEDOCKHOST = CM_BASE + 70;
+  {$ENDIF !COMPILER9_UP}
+
 type
   TJvDockSplitterSize = 0..32767;
 
@@ -864,6 +868,10 @@ function ManualConjoinDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockC
 
 function DockStateStr(DockState: Integer): string; {return string for a dock state}
 
+{$IFNDEF COMPILER9_UP}
+procedure InvalidateDockHostSiteOfControl(Control: TControl; FocusLost: Boolean);
+{$ENDIF !COMPILER9_UP}
+
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
@@ -1283,6 +1291,29 @@ begin
   if (DockWindow.HostDockSite is TJvDockCustomControl) then
     TJvDockCustomControl(DockWindow.HostDockSite).UpdateCaption(DockWindow);
 end;
+
+{$IFNDEF COMPILER9_UP}
+procedure InvalidateDockHostSiteOfControl(Control: TControl; FocusLost: Boolean);
+var
+  ChildDockSite: TControl;
+  ParentWalk: TWinControl;
+begin
+  { Invalidate the first dock site we come across; its ui may
+    need updating to reflect which control has focus. }
+  if Control = nil then
+    Exit;
+  ChildDockSite := Control;
+  ParentWalk := Control.Parent;
+  while (ChildDockSite.HostDockSite = nil) and (ParentWalk <> nil) do
+  begin
+    ChildDockSite := ParentWalk;
+    ParentWalk := ParentWalk.Parent;
+  end;
+  if ChildDockSite <> nil then
+    TWinControlAccessProtected(ChildDockSite).SendDockNotification(CM_INVALIDATEDOCKHOST,
+      Integer(Control), Integer(FocusLost));
+end;
+{$ENDIF !COMPILER9_UP}
 
 function IsDockable(Sender: TWinControl; Client: TControl; DropCtl: TControl = nil;
   DockAlign: TAlign = alNone): Boolean;
@@ -2946,8 +2977,10 @@ end;
 
 procedure TJvDockClient.Activate;
 begin
+  {$IFNDEF COMPILER9_UP}
   if ParentForm.HostDockSite is TJvDockCustomPanel then
-    TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.FocusChanged(ParentForm);
+    InvalidateDockHostSiteOfControl(ParentForm, False);
+  {$ENDIF !COMPILER9_UP}
 end;
 
 procedure TJvDockClient.AddDockStyle(ADockStyle: TJvDockBasicStyle);
@@ -3109,9 +3142,10 @@ end;
 
 procedure TJvDockClient.Deactivate;
 begin
+  {$IFNDEF COMPILER9_UP}
   if ParentForm.HostDockSite is TJvDockCustomPanel then
-    if TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager <> nil then
-      TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.FocusChanged(nil);
+    InvalidateDockHostSiteOfControl(ParentForm, True);
+  {$ENDIF !COMPILER9_UP}
 end;
 
 procedure TJvDockClient.DoFloatDockClients(PanelAlign: TAlign);
@@ -3585,12 +3619,9 @@ end;
 
 procedure TJvDockClient.WMActivate(var Msg: TWMActivate);
 begin
-  if ParentForm is TJvDockConjoinHostForm then
-    if Msg.Active = WA_INACTIVE then
-      TJvDockConjoinPanel(TJvDockConjoinHostForm(ParentForm).Panel).JvDockManager.FocusChanged(nil)
-    else
-      TJvDockConjoinPanel(TJvDockConjoinHostForm(ParentForm).Panel).JvDockManager.FocusChanged(
-        GetActiveControl(ParentForm));
+  {$IFNDEF COMPILER9_UP}
+  InvalidateDockHostSiteOfControl(ParentForm.ActiveControl, Msg.Active = WA_INACTIVE);
+  {$ENDIF !COMPILER9_UP}
 end;
 
 procedure TJvDockClient.WMNCLButtonDblClk(var Msg: TWMNCHitMessage);
@@ -4563,31 +4594,30 @@ begin
 end;
 
 procedure TJvDockServer.WMActivate(var Msg: TWMActivate);
+{$IFNDEF COMPILER9_UP}
 var
-  I: TAlign;
   Control: TWinControl;
+{$ENDIF !COMPILER9_UP}
 begin
+  {$IFNDEF COMPILER9_UP}
   if Msg.Active = WA_INACTIVE then
   begin
-    for I := alTop to alRight do
-      if Assigned(DockPanelWithAlign[I]) then
-        DockPanelWithAlign[I].JvDockManager.FocusChanged(nil);
+    Control := ParentForm.ActiveControl;
+    if Assigned(Control) then
+      InvalidateDockHostSiteOfControl(Control, True);
   end
   else
-  if AutoFocusDockedForm then
   begin
-    Control := GetActiveControl(ParentForm);
-    if not Assigned(Control) then
-      Exit;
-    for I := alTop to alRight do
-      if Assigned(DockPanelWithAlign[I]) then
-        if GetHostDockParent(Control) = DockPanelWithAlign[I] then
-        begin
-          DockPanelWithAlign[I].JvDockManager.FocusChanged(Control);
-          if Control.CanFocus then
-            Control.SetFocus;
-        end;
+    Control := ParentForm.ActiveControl;
+    if Assigned(Control) then
+    begin
+      //      { ?? }
+      //      if AutoFocusDockedForm and Control.CanFocus then
+      //        Control.SetFocus;
+      InvalidateDockHostSiteOfControl(Control, False);
+    end;
   end;
+  {$ENDIF !COMPILER9_UP}
 end;
 
 //=== { TJvDockSplitter } ====================================================
@@ -4985,6 +5015,32 @@ begin
   Result := Perform(CM_UNDOCKCLIENT, Integer(NewTarget), Integer(Client)) = 0;
 end;
 
+function TJvDockTabPageControl.GetActiveDockForm: TCustomForm;
+begin
+  Result := DockForm[ActivePageIndex];
+end;
+
+function TJvDockTabPageControl.GetDockForm(Index: Integer): TCustomForm;
+var
+  Page: TJvDockTabSheet;
+begin
+  Result := nil;
+
+  if (Index > -1) and (Index < Count) then
+  begin
+    Page := Pages[Index];
+    if Assigned(Page) and (Page.ControlCount = 1) and (Page.Controls[0] is TCustomForm) then
+    begin
+      Result := TCustomForm(Page.Controls[0]);
+    end
+  end;
+end;
+
+function TJvDockTabPageControl.GetDockStyle: TJvDockObservableStyle;
+begin
+  Result := FStyleLink.DockStyle;
+end;
+
 function TJvDockTabPageControl.GetParentForm: TJvDockTabHostForm;
 begin
   if Parent is TJvDockTabHostForm then
@@ -5085,11 +5141,6 @@ procedure TJvDockTabPageControl.SyncWithStyle;
 begin
   HotTrack := DockStyle.TabServerOption.HotTrack;
   TabPosition := DockStyle.TabServerOption.TabPosition;
-end;
-
-function TJvDockTabPageControl.GetDockStyle: TJvDockObservableStyle;
-begin
-  Result := FStyleLink.DockStyle;
 end;
 
 //=== { TJvGlobalDockManager } ===============================================
@@ -5225,27 +5276,6 @@ procedure TJvGlobalDockManager.UnRegisterDockServer(
   ADockServer: TJvDockServer);
 begin
   FDockServers.Remove(ADockServer);
-end;
-
-function TJvDockTabPageControl.GetActiveDockForm: TCustomForm;
-begin
-  Result := DockForm[ActivePageIndex];
-end;
-
-function TJvDockTabPageControl.GetDockForm(Index: Integer): TCustomForm;
-var
-  Page: TJvDockTabSheet;
-begin
-  Result := nil;
-
-  if (Index > -1) and (Index < Count) then
-  begin
-    Page := Pages[Index];
-    if Assigned(Page) and (Page.ControlCount = 1) and (Page.Controls[0] is TCustomForm) then
-    begin
-      Result := TCustomForm(Page.Controls[0]);
-    end
-  end;
 end;
 
 procedure InitDockManager;

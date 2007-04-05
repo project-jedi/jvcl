@@ -253,7 +253,6 @@ type
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
-    procedure FocusChanged(Control: TControl); override;
     procedure DrawDockSiteRect; override;
 {    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect); override;}
@@ -1083,7 +1082,9 @@ begin
     (Source.DropAlign = alClient)) then
   begin
     inherited CustomDockDrop(Source, X, Y);
-    JvDockManager.FocusChanged(Source.Control);
+    {$IFNDEF COMPILER9_UP}
+    InvalidateDockHostSiteOfControl(Source.Control, False);
+    {$ENDIF !COMPILER9_UP}
     if (Source.Control is TWinControl) and TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
   end;
@@ -1779,12 +1780,6 @@ begin
   DrawFrameControl(Canvas.Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_ADJUSTRECT);
 end;
 
-procedure TJvDockVIDVCTree.FocusChanged(Control: TControl);
-begin
-  inherited FocusChanged(Control);
-  DockSite.Invalidate;
-end;
-
 procedure TJvDockVIDVCTree.WindowProc(var Msg: TMessage);
 var
   Align: TAlign;
@@ -2395,8 +2390,9 @@ begin
   begin
     inherited CustomDockDrop(Source, X, Y);
     ParentForm.Caption := '';
-    if JvDockManager <> nil then
-      JvDockManager.FocusChanged(Source.Control);
+    {$IFNDEF COMPILER9_UP}
+    InvalidateDockHostSiteOfControl(Source.Control, False);
+    {$ENDIF !COMPILER9_UP}
     if (Source.Control is TWinControl) and Source.Control.Visible and
       TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
@@ -2645,15 +2641,16 @@ procedure TJvDockVIDVCTabPageControl.Change;
 begin
   inherited Change;
   ParentForm.Caption := ActivePage.Caption;
+
   if ParentForm.HostDockSite is TJvDockCustomPanel then
   begin
-    if ParentForm.Visible and ParentForm.CanFocus then
-      ParentForm.SetFocus;
+    //    if ParentForm.Visible and ParentForm.CanFocus then
+    //      ParentForm.SetFocus;
     ParentForm.HostDockSite.Invalidate;
   end;
-  if (ActivePage <> nil) and (ActivePage.Visible) and (ActivePage.CanFocus) then
-    if ParentForm.Visible and ParentForm.CanFocus then
-      ActivePage.SetFocus;
+  //  if (ActivePage <> nil) and (ActivePage.Visible) and (ActivePage.CanFocus) then
+  //    if ParentForm.Visible and ParentForm.CanFocus then
+  //      ActivePage.SetFocus;
 end;
 
 procedure TJvDockVIDVCTabPageControl.AdjustClientRect(var Rect: TRect);
@@ -3197,6 +3194,7 @@ var
   Index: Integer;
   Msg: TWMMouse;
   Sheet: TJvDockVIDVCTabSheet;
+  AParentForm: TCustomForm;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Page = nil then
@@ -3207,6 +3205,12 @@ begin
   begin
     if Index <> Page.ActivePageIndex then
     begin
+      if Assigned(Page.ActivePage) and Page.ActivePage.CanFocus then
+      begin
+        AParentForm := GetParentForm(Page);
+        if Assigned(AParentForm) then
+          AParentForm.ActiveControl := Page.ActivePage;
+      end;
       Sheet := Page.ActiveVIDPage;
       Page.ActivePageIndex := Index;
       Sheet.SetSheetSort(Sheet.Caption);
@@ -3780,7 +3784,6 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
-
 function TJvDockVIDVCStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeVIDStyle, [inherited GetControlName]);

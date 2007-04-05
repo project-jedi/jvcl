@@ -82,7 +82,6 @@ type
     // Descends the Tree and Finds and return TWinControls docked to a particular parent.
     procedure ControlQuery(DockedTo: TWinControl; FoundItems: TList);
     {$ENDIF JVDOCK_QUERY}
-    procedure FocusChanged(Control: TControl);
     property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
     property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
@@ -414,7 +413,6 @@ type
     procedure UpdateZone(Zone: TJvDockZone); virtual;
     procedure DrawSplitter(Zone: TJvDockZone); virtual;
     procedure RemoveControl(Control: TControl); virtual;
-    procedure FocusChanged(Control: TControl); virtual;
     procedure SetGrabberSize(const Value: Integer); virtual;
     procedure SetNewBounds(Zone: TJvDockZone); virtual;
     procedure SetReplacingControl(Control: TControl);
@@ -2863,10 +2861,6 @@ begin
   end
   else
     Result := nil;
-end;
-
-procedure TJvDockTree.FocusChanged(Control: TControl);
-begin
 end;
 
 function TJvDockTree.GetGrabberSize: Integer;
