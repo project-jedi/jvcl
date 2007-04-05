@@ -1175,9 +1175,9 @@ begin
       TWinControl(Control).EnableAlign;
     end;
   end;
-  //  KV to avoid flickering in Vista
-  if not ((Control is TForm) and (ParentName <> '')) then
-    Control.Visible := Visible;
+//  //  KV to avoid flickering in Vista
+//  if not ((Control is TForm) and (ParentName <> '')) then
+  Control.Visible := Visible;
   Control.LRDockWidth := LRDockWidth;
   Control.TBDockHeight := TBDockHeight;
   Control.UnDockHeight := UnDockHeight;

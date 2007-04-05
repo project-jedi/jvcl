@@ -273,7 +273,6 @@ type
 
   TJvDockVSNetStyle = class(TJvDockVIDStyle)
   private
-    FMouseleaved: Boolean; { Is the mouse over *any* of the forms with this style }
     FTimer: TTimer;
     FDockServers: TList;
     FCurrentTimer: Integer;
@@ -1166,17 +1165,13 @@ begin
 end;
 
 procedure TJvDockVSChannel.AutoFocusActiveDockForm;
-var
-  JvDockManager: IJvDockManager;
 begin
   if DockServer.AutoFocusDockedForm and Assigned(ActiveDockForm) and ActiveDockForm.CanFocus then
   begin
     ActiveDockForm.SetFocus;
-    if TWinControlAccessProtected(ActiveDockForm).UseDockManager and
-      Supports(TWinControlAccessProtected(ActiveDockForm).DockManager, IJvDockManager, JvDockManager) then
-    begin
-      JvDockManager.FocusChanged(ActiveDockForm);
-    end;
+    {$IFNDEF COMPILER9_UP}
+    InvalidateDockHostSiteOfControl(ActiveDockForm, False);
+    {$ENDIF !COMPILER9_UP}
   end;
 end;
 
@@ -2238,7 +2233,6 @@ end;
 constructor TJvDockVSNetStyle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FMouseleaved := True;
   DockPanelClass := TJvDockVSNETPanel;
   DockSplitterClass := TJvDockVSNETSplitter;
   ConjoinPanelClass := TJvDockVSNETConjoinPanel;
@@ -2312,22 +2306,9 @@ function TJvDockVSNetStyle.DockClientWindowProc(DockClient: TJvDockClient;
   var Msg: TMessage): Boolean;
 var
   Channel: TJvDockVSChannel;
-  FormRect: TRect;
-  MPosTp: TPoint;
 begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
   case Msg.Msg of
-    CM_MOUSEENTER:
-      begin
-        FMouseleaved := False;
-      end;
-    CM_MOUSELEAVE: //Fix bug on AutoHide --Dejoy.
-      begin
-        GetCursorPos(MPosTp);
-        GetWindowRect(DockClient.ParentForm.Handle, FormRect);
-        if not PtInRect(FormRect, MPosTp) then
-          FMouseleaved := True;
-      end;
     CM_ENTER, CM_EXIT:
       begin
         Channel := RetrieveChannel(DockClient.ParentForm.HostDockSite);
@@ -2649,14 +2630,10 @@ begin
     Exit;
   end;
 
-  if not FMouseleaved then
-    Exit;
-
   Dec(FCurrentTimer, 100);
   if FCurrentTimer > 0 then
     Exit;
-  if FCurrentTimer < 0 then
-    DestroyTimer;
+  DestroyTimer;
 
   for I := 0 to FDockServers.Count - 1 do
   begin

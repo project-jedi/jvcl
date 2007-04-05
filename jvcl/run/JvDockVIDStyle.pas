@@ -235,6 +235,7 @@ type
     procedure SetCaptionRightOffset(const Value: Integer);
     procedure SetShowCloseButtonOnGrabber(const Value: Boolean);
     procedure SetAlwaysShowGrabber(const Value: Boolean);
+    procedure InvalidateDockSite(const Client: TControl);
   protected
     procedure InsertControlFromConjoinHost(Control: TControl;
       InsertAt: TAlign; DropCtl: TControl); virtual;
@@ -264,7 +265,6 @@ type
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
-    procedure FocusChanged(Control: TControl); override;
     procedure DrawDockSiteRect; override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect); override;
@@ -448,6 +448,7 @@ type
     function GetPage(Index: Integer): TJvDockVIDTabSheet;
     function GetActiveVIDPage: TJvDockVIDTabSheet;
     procedure SetActiveVIDPage(const Value: TJvDockVIDTabSheet);
+    procedure CMDockNotification(var Msg: TCMDockNotification); message CM_DOCKNOTIFICATION;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure CreatePanel; virtual;
@@ -1133,7 +1134,9 @@ begin
     (Source.DropAlign = alClient)) then
   begin
     inherited CustomDockDrop(Source, X, Y);
-    JvDockManager.FocusChanged(Source.Control);
+    {$IFNDEF COMPILER9_UP}
+    InvalidateDockHostSiteOfControl(Source.Control, False);
+    {$ENDIF !COMPILER9_UP}
     if (Source.Control is TWinControl) and TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
   end;
@@ -1818,16 +1821,21 @@ begin
   inherited DrawSplitterRect(ARect);
 end;
 
-procedure TJvDockVIDTree.FocusChanged(Control: TControl);
-begin
-  inherited FocusChanged(Control);
-  DockSite.Invalidate;
-end;
-
 procedure TJvDockVIDTree.WindowProc(var Msg: TMessage);
 var
   Align: TAlign;
 begin
+  if Msg.Msg = CM_DOCKNOTIFICATION then
+  begin
+    with TCMDockNotification(Msg) do
+    begin
+      if NotifyRec.ClientMsg = CM_INVALIDATEDOCKHOST then
+        InvalidateDockSite(TControl(NotifyRec.MsgWParam))
+      else
+        inherited;
+    end;
+  end
+  else
   if Msg.Msg = CM_DOCKCLIENT then
   begin
     { (rb) no idea what gi_DockRect should be doing, but prevent it is used
@@ -2380,8 +2388,9 @@ begin
   begin
     inherited CustomDockDrop(Source, X, Y);
     ParentForm.Caption := '';
-    if JvDockManager <> nil then
-      JvDockManager.FocusChanged(Source.Control);
+    {$IFNDEF COMPILER9_UP}
+    InvalidateDockHostSiteOfControl(Source.Control, False);
+    {$ENDIF !COMPILER9_UP}
     if (Source.Control is TWinControl) and Source.Control.Visible and
       TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
@@ -2513,6 +2522,23 @@ end;
 procedure TJvDockVIDTabPageControl.CreateWnd;
 begin
   inherited CreateWnd;
+end;
+
+procedure TJvDockVIDTabPageControl.CMDockNotification(
+  var Msg: TCMDockNotification);
+begin
+  if Msg.Msg = CM_DOCKNOTIFICATION then
+  begin
+    with TCMDockNotification(Msg) do
+    begin
+      if NotifyRec.ClientMsg = CM_INVALIDATEDOCKHOST then
+        InvalidateDockHostSiteOfControl(Self, Boolean(NotifyRec.MsgLParam))
+      else
+        inherited;
+    end;
+  end
+  else
+    inherited;
 end;
 
 procedure TJvDockVIDTabPageControl.CustomDockDrop(Source: TJvDockDragDockObject;
@@ -4644,6 +4670,61 @@ begin
   {DockStyle.ParentForm.Caption := '';}
   if SystemInfo then
     SetDefaultSystemCaptionInfo;
+end;
+
+{$IFNDEF COMPILER9_UP}
+function GetRealParentForm(Control: TControl): TCustomForm;
+begin
+  while not (Control is TCustomForm) and (Control.Parent <> nil) do
+    Control := Control.Parent;
+  if Control is TCustomForm then
+    Result := TCustomForm(Control)
+  else
+    Result := nil;
+end;
+{$ENDIF !COMPILER9_UP}
+
+{$IFNDEF COMPILER9_UP}
+type
+  TWinControlAccessProtected = class(TWinControl);
+{$ENDIF !COMPILER9_UP}
+
+function GetDockManager(Control: TWinControl; out ADockManager: IDockManager): Boolean;
+begin
+  ADockManager := nil;
+  {$IFDEF COMPILER9_UP}
+  with Control do
+    if UseDockManager then
+      ADockManager := DockManager;
+  {$ELSE}
+  with TWinControlAccessProtected(Control) do
+    if UseDockManager then
+      ADockManager := DockManager;
+  {$ENDIF COMPILER9_UP}
+  Result := Assigned(ADockManager);
+end;
+
+procedure TJvDockVIDTree.InvalidateDockSite(const Client: TControl);
+var
+  ParentForm: TCustomForm;
+  Rect: TRect;
+  ADockManager: IDockManager;
+begin
+  {$IFDEF COMPILER9_UP}
+  ParentForm := GetParentForm(Client, False);
+  {$ELSE}
+  ParentForm := GetRealParentForm(Client);
+  {$ENDIF COMPILER9_UP}
+  { Just invalidate the parent form's rect in the HostDockSite
+    so that we can "follow focus" on docked items. }
+  if (ParentForm <> nil) and (ParentForm.HostDockSite <> nil) then
+  begin
+    if GetDockManager(ParentForm.HostDockSite, ADockManager) then
+    begin
+      ADockManager.GetControlBounds(ParentForm, Rect);
+      InvalidateRect(ParentForm.HostDockSite.Handle, @Rect, False);
+    end;
+  end;
 end;
 
 {$IFDEF USEJVCL}
