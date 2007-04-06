@@ -408,12 +408,20 @@ end;
 procedure TJvCustomDBDatePickerEdit.UpdateDisplay;
 begin
   if IsLinked or not (csDesigning in ComponentState) then
-    inherited UpdateDisplay
-  else
   begin
-    Checked := False;
-    if not (csDesigning in ComponentState) then
-      Text := '';
+    inherited UpdateDisplay;
+  end
+  else
+  if not InternalChanging then    // Mantis 4093: Avoid stack overflow as setting Checked might call UpdateDisplay
+  begin
+    BeginInternalChange;
+    try
+      Checked := False;
+      if not (csDesigning in ComponentState) then
+        Text := '';
+    finally
+      EndInternalChange;
+    end;
   end;
 end;
 
