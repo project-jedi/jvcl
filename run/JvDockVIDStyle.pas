@@ -2532,7 +2532,11 @@ begin
     with TCMDockNotification(Msg) do
     begin
       if NotifyRec.ClientMsg = CM_INVALIDATEDOCKHOST then
+        {$IFDEF COMPILER9_UP}
+        Self.InvalidateDockHostSite(Boolean(NotifyRec.MsgLParam))
+        {$ELSE}
         InvalidateDockHostSiteOfControl(Self, Boolean(NotifyRec.MsgLParam))
+        {$ENDIF COMPILER9_UP}
       else
         inherited;
     end;
