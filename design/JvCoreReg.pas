@@ -184,8 +184,7 @@ begin
   Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
   Assert(Assigned(AboutBoxServices), RsENoAboutServices);
   ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JVCLSPLASH');
-  AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
-    RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
+  AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription,
     ProductImage, False, RsAboutLicenceStatus);
 end;
 
@@ -193,7 +192,7 @@ procedure UnregisterAboutBox;
 begin
   if (AboutBoxIndex <> 0) and Assigned(AboutBoxServices) then
   begin
-    AboutBoxServices.RemoveProductInfo(AboutBoxIndex);
+    AboutBoxServices.RemovePluginInfo(AboutBoxIndex);
     AboutBoxIndex := 0;
     AboutBoxServices := nil;
   end;
