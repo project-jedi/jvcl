@@ -98,10 +98,6 @@ ALERT_jedi_inc_incompatible
  {$I jvcld10.inc}
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF DELPIH10}
-{$IFDEF DELPHI11}
- {$I jvcld11.inc}
- {$DEFINE JVCL_CONFIGURED}
-{$ENDIF DELPHI11}
 {-----------------------------------------------------------------------------}
 {$IFDEF DELPHI11}
  {$I jvcld11.inc}
