@@ -5,7 +5,6 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-<!--    <DCC_DependencyCheckOutputName>$(BDSPROJECTSDIR)\Bpl\JvHMID11R.bpl</DCC_DependencyCheckOutputName> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -44,12 +43,6 @@
             <Parameters Name="LoadAllSymbols">True</Parameters>
             <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
           </Parameters>
-<!--          <Package_Options>
-            <Package_Options Name="ImplicitBuild">True</Package_Options>
-            <Package_Options Name="DesigntimeOnly">False</Package_Options>
-            <Package_Options Name="RuntimeOnly">False</Package_Options>
-            <Package_Options Name="LibSuffix">110</Package_Options>
-          </Package_Options> -->
           <VersionInfo>
            <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
@@ -66,16 +59,15 @@
            <VersionInfo Name="CodePage">1252</VersionInfo>
          </VersionInfo>
          <VersionInfoKeys>
-           <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
-           <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
-           <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
-           <VersionInfoKeys Name="InternalName"></VersionInfoKeys>
-           <VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
-           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-           <VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
-           <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
-           <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-           <VersionInfoKeys Name="Comments"></VersionInfoKeys>
+          <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="FileDescription">JVCL HMI Controls Runtime Package</VersionInfoKeys>
+          <VersionInfoKeys Name="FileVersion">3.31.0.0</VersionInfoKeys>
+          <VersionInfoKeys Name="InternalName">JvHMID11R</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+          <VersionInfoKeys Name="OriginalFilename">JvHMID11R.bpl</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductName">Jedi Visual Component Library</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductVersion">3.31 Build 0</VersionInfoKeys>
          </VersionInfoKeys>
         <Source>
           <Source Name="MainSource">JvHMID11R.dpk</Source>
