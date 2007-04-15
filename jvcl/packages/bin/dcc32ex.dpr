@@ -718,8 +718,8 @@ begin
     WriteLn('  --requires-jvcl        Requires an installed JVCL');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d10    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, ...)');
+    WriteLn('  DELPHIVERSION = d11    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, ...)');
   end;
 
   ExitCode := Status;
