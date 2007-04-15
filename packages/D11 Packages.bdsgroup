@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{9BFB5221-5288-4756-A733-F2859A051C9C}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects ActiveProject="JvCoreD11R.bpl">
+      <Projects Name="Jv3rdD11R.bpl">D11\Jv3rdD11R.dproj</Projects>
+      <Projects Name="JvCoreD11R.bpl">D11\JvCoreD11R.dproj</Projects>
+      <Projects Name="JvCoreD11D.bpl">D11\JvCoreD11D.dproj</Projects>
+      <Projects Name="JvSystemD11R.bpl">D11\JvSystemD11R.dproj</Projects>
+      <Projects Name="JvSystemD11D.bpl">D11\JvSystemD11D.dproj</Projects>
+      <Projects Name="JvStdCtrlsD11R.bpl">D11\JvStdCtrlsD11R.dproj</Projects>
+      <Projects Name="JvStdCtrlsD11D.bpl">D11\JvStdCtrlsD11D.dproj</Projects>
+      <Projects Name="JvCtrlsD11R.bpl">D11\JvCtrlsD11R.dproj</Projects>
+      <Projects Name="JvCtrlsD11D.bpl">D11\JvCtrlsD11D.dproj</Projects>
+      <Projects Name="JvCmpD11R.bpl">D11\JvCmpD11R.dproj</Projects>
+      <Projects Name="JvCmpD11D.bpl">D11\JvCmpD11D.dproj</Projects>
+      <Projects Name="JvCustomD11R.bpl">D11\JvCustomD11R.dproj</Projects>
+      <Projects Name="JvCustomD11D.bpl">D11\JvCustomD11D.dproj</Projects>
+      <Projects Name="JvDlgsD11R.bpl">D11\JvDlgsD11R.dproj</Projects>
+      <Projects Name="JvDlgsD11D.bpl">D11\JvDlgsD11D.dproj</Projects>
+      <Projects Name="JvCryptD11R.bpl">D11\JvCryptD11R.dproj</Projects>
+      <Projects Name="JvCryptD11D.bpl">D11\JvCryptD11D.dproj</Projects>
+      <Projects Name="JvMMD11R.bpl">D11\JvMMD11R.dproj</Projects>
+      <Projects Name="JvMMD11D.bpl">D11\JvMMD11D.dproj</Projects>
+      <Projects Name="JvNetD11R.bpl">D11\JvNetD11R.dproj</Projects>
+      <Projects Name="JvNetD11D.bpl">D11\JvNetD11D.dproj</Projects>
+      <Projects Name="JvAppFrmD11R.bpl">D11\JvAppFrmD11R.dproj</Projects>
+      <Projects Name="JvAppFrmD11D.bpl">D11\JvAppFrmD11D.dproj</Projects>
+      <Projects Name="JvDBD11R.bpl">D11\JvDBD11R.dproj</Projects>
+      <Projects Name="JvDBD11D.bpl">D11\JvDBD11D.dproj</Projects>
+      <Projects Name="JvBDED11R.bpl">D11\JvBDED11R.dproj</Projects>
+      <Projects Name="JvBDED11D.bpl">D11\JvBDED11D.dproj</Projects>
+      <Projects Name="JvInterpreterD11R.bpl">D11\JvInterpreterD11R.dproj</Projects>
+      <Projects Name="JvInterpreterD11D.bpl">D11\JvInterpreterD11D.dproj</Projects>
+      <Projects Name="JvBandsD11R.bpl">D11\JvBandsD11R.dproj</Projects>
+      <Projects Name="JvBandsD11D.bpl">D11\JvBandsD11D.dproj</Projects>
+      <Projects Name="JvPluginD11R.bpl">D11\JvPluginD11R.dproj</Projects>
+      <Projects Name="JvPluginD11D.bpl">D11\JvPluginD11D.dproj</Projects>
+      <Projects Name="JvJansD11R.bpl">D11\JvJansD11R.dproj</Projects>
+      <Projects Name="JvJansD11D.bpl">D11\JvJansD11D.dproj</Projects>
+      <Projects Name="JvGlobusD11R.bpl">D11\JvGlobusD11R.dproj</Projects>
+      <Projects Name="JvGlobusD11D.bpl">D11\JvGlobusD11D.dproj</Projects>
+      <Projects Name="JvPrintPreviewD11R.bpl">D11\JvPrintPreviewD11R.dproj</Projects>
+      <Projects Name="JvPrintPreviewD11D.bpl">D11\JvPrintPreviewD11D.dproj</Projects>
+      <Projects Name="JvPageCompsD11R.bpl">D11\JvPageCompsD11R.dproj</Projects>
+      <Projects Name="JvPageCompsD11D.bpl">D11\JvPageCompsD11D.dproj</Projects>
+      <Projects Name="JvValidatorsD11R.bpl">D11\JvValidatorsD11R.dproj</Projects>
+      <Projects Name="JvValidatorsD11D.bpl">D11\JvValidatorsD11D.dproj</Projects>
+      <Projects Name="JvUIBD11R.bpl">D11\JvUIBD11R.dproj</Projects>
+      <Projects Name="JvUIBD11D.bpl">D11\JvUIBD11D.dproj</Projects>
+      <Projects Name="JvWizardD11R.bpl">D11\JvWizardD11R.dproj</Projects>
+      <Projects Name="JvWizardD11D.bpl">D11\JvWizardD11D.dproj</Projects>
+      <Projects Name="JvTimeFrameworkD11R.bpl">D11\JvTimeFrameworkD11R.dproj</Projects>
+      <Projects Name="JvTimeFrameworkD11D.bpl">D11\JvTimeFrameworkD11D.dproj</Projects>
+      <Projects Name="JvHMID11R.bpl">D11\JvHMID11R.dproj</Projects>
+      <Projects Name="JvHMID11D.bpl">D11\JvHMID11D.dproj</Projects>
+      <Projects Name="JvManagedThreadsD11R.bpl">D11\JvManagedThreadsD11R.dproj</Projects>
+      <Projects Name="JvManagedThreadsD11D.bpl">D11\JvManagedThreadsD11D.dproj</Projects>
+      <Projects Name="JvXPCtrlsD11R.bpl">D11\JvXPCtrlsD11R.dproj</Projects>
+      <Projects Name="JvXPCtrlsD11D.bpl">D11\JvXPCtrlsD11D.dproj</Projects>
+      <Projects Name="JvDockingD11R.bpl">D11\JvDockingD11R.dproj</Projects>
+      <Projects Name="JvDockingD11D.bpl">D11\JvDockingD11D.dproj</Projects>
+      <Projects Name="JvDotNetCtrlsD11R.bpl">D11\JvDotNetCtrlsD11R.dproj</Projects>
+      <Projects Name="JvDotNetCtrlsD11D.bpl">D11\JvDotNetCtrlsD11D.dproj</Projects>
+      <Projects Name="JvEDID11R.bpl">D11\JvEDID11R.dproj</Projects>
+      <Projects Name="JvEDID11D.bpl">D11\JvEDID11D.dproj</Projects>
+      <Projects Name="JvRuntimeDesignD11R.bpl">D11\JvRuntimeDesignD11R.dproj</Projects>
+      <Projects Name="JvRuntimeDesignD11D.bpl">D11\JvRuntimeDesignD11D.dproj</Projects>
+      <Projects Name="Targets">Jv3rdD11R.bpl JvCoreD11R.bpl JvCoreD11D.bpl JvSystemD11R.bpl JvSystemD11D.bpl JvStdCtrlsD11R.bpl JvStdCtrlsD11D.bpl JvCtrlsD11R.bpl JvCtrlsD11D.bpl JvCmpD11R.bpl JvCmpD11D.bpl JvCustomD11R.bpl JvCustomD11D.bpl JvDlgsD11R.bpl JvDlgsD11D.bpl JvCryptD11R.bpl JvCryptD11D.bpl JvMMD11R.bpl JvMMD11D.bpl JvNetD11R.bpl JvNetD11D.bpl JvAppFrmD11R.bpl JvAppFrmD11D.bpl JvDBD11R.bpl JvDBD11D.bpl JvBDED11R.bpl JvBDED11D.bpl JvInterpreterD11R.bpl JvInterpreterD11D.bpl JvBandsD11R.bpl JvBandsD11D.bpl JvPluginD11R.bpl JvPluginD11D.bpl JvJansD11R.bpl JvJansD11D.bpl JvGlobusD11R.bpl JvGlobusD11D.bpl JvPrintPreviewD11R.bpl JvPrintPreviewD11D.bpl JvPageCompsD11R.bpl JvPageCompsD11D.bpl JvValidatorsD11R.bpl JvValidatorsD11D.bpl JvUIBD11R.bpl JvUIBD11D.bpl JvWizardD11R.bpl JvWizardD11D.bpl JvTimeFrameworkD11R.bpl JvTimeFrameworkD11D.bpl JvHMID11R.bpl JvHMID11D.bpl JvManagedThreadsD11R.bpl JvManagedThreadsD11D.bpl JvXPCtrlsD11R.bpl JvXPCtrlsD11D.bpl JvDockingD11R.bpl JvDockingD11D.bpl JvDotNetCtrlsD11R.bpl JvDotNetCtrlsD11D.bpl JvEDID11R.bpl JvEDID11D.bpl JvRuntimeDesignD11R.bpl JvRuntimeDesignD11D.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
