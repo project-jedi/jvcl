@@ -941,6 +941,8 @@ begin
   end;
 end;
 
+{ ahuser: These functions are not call anywhere
+
 function GetActiveControl(AForm: TCustomForm): TWinControl;
 var
   AControl: TWinControl;
@@ -970,7 +972,7 @@ begin
     end;
     AControl := AControl.Parent;
   end;
-end;
+end;}
 
 //=== Global procedures ======================================================
 
