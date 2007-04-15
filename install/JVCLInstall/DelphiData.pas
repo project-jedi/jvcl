@@ -48,7 +48,7 @@ const
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; ProjectDirResId2: 0; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; ProjectDirResId2: 0; Supported: True),
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId1: 64719; ProjectDirResId2: 0; Supported: True),
-    (Name: 'Codegear Delphi for Win32'; VersionStr: '2007'; Version: 10; CIV: '100'; ProjectDirResId1: 64396; ProjectDirResId2: 64398; Supported: True)  // Spacely is a non breaking change and thus uses the same folders as BDS2006
+    (Name: 'Codegear Delphi for Win32'; VersionStr: '2007'; Version: 11; CIV: '100'; ProjectDirResId1: 64396; ProjectDirResId2: 64398; Supported: True)
   );
 
 type
