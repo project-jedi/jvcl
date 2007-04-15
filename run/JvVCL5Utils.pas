@@ -156,6 +156,9 @@ function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
 function CompareDateTime(const A, B: TDateTime): Integer;
 
+function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
+
+
 // StrUtils
 function AnsiStartsText(const SubText, Text: string): Boolean;
 function AnsiEndsText(const SubText, Text: string): Boolean;
@@ -880,6 +883,13 @@ begin
     Result := -1
   else
     Result := 1;
+end;
+
+function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
+const
+  BoolStrs: array[Boolean, Boolean] of String = (('0', '-1'), ('False', 'True')); // do not localize
+begin
+  Result := BoolStrs[UseBoolStrs, B];
 end;
 
 procedure RaiseLastOSError;
