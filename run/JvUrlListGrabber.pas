@@ -700,9 +700,11 @@ begin
 
   FGrabbers.Clear;
 
-  MaxNewGrabbers := MaxSimultaneousGrabbers;
-  if MaxNewGrabbers = 0 then
-    MaxNewGrabbers := FURLs.Count;
+  if (MaxSimultaneousGrabbers = 0) or (FURLs.Count < MaxSimultaneousGrabbers) then
+    MaxNewGrabbers := FURLs.Count
+  else
+    MaxNewGrabbers := MaxSimultaneousGrabbers;
+
 
   FNextUrlIndex := 0;
   for I := 0 to MaxNewGrabbers - 1 do
