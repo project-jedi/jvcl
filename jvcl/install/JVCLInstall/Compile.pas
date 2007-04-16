@@ -138,7 +138,7 @@ type
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
 
-    function IsDcc32BugDanger: Boolean;
+    function IsDcc32BugDangerous: Boolean;
 
     function Compile: Boolean;
     procedure Abort; // abort compile process
@@ -418,6 +418,20 @@ begin
     // opts
     Lines.Add(DccOpt);
 
+    // default paths
+    SearchPaths := TargetConfig.Target.ExpandDirMacros(
+      TargetConfig.Target.RootLibDir + ';' +
+      TargetConfig.Target.RootLibDir + PathDelim + 'obj;' +
+      TargetConfig.JclDcpDir + ';' +
+      TargetConfig.JclDcuDir + ';' +
+      OutDirs.DcpDir + ';' +
+      OutDirs.UnitOutDir
+    );
+    Lines.Add('-U"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
+    Lines.Add('-I"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
+    Lines.Add('-R"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Resources' + '"');
+    Lines.Add('-O"' + SearchPaths + '"');
+
     // search paths
     SearchPaths := '';
     with TargetConfig do
@@ -437,19 +451,6 @@ begin
     Lines.Add('-R"' + SearchPaths + '"');
     Lines.Add('-O"' + SearchPaths + '"');
 
-    SearchPaths := TargetConfig.Target.ExpandDirMacros(
-      TargetConfig.Target.RootLibDir + ';' +
-      TargetConfig.Target.RootLibDir + PathDelim + 'obj;' +
-      TargetConfig.JclDcpDir + ';' +
-      TargetConfig.JclDcuDir + ';' +
-      OutDirs.DcpDir + ';' +
-      OutDirs.UnitOutDir
-    );
-    Lines.Add('-U"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
-    Lines.Add('-I"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
-    Lines.Add('-R"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Resources' + '"');
-    Lines.Add('-O"' + SearchPaths + '"');
-
     // output directories
     Lines.Add('-LE"' + OutDirs.BplDir + '"'); // .exe output
     Lines.Add('-LN"' + OutDirs.DcpDir + '"'); // .dcp output
@@ -463,7 +464,7 @@ begin
     Lines.Add('-NB"' + OutDirs.DcpDir + '"'); // .bpi output
 
     { dcc32.exe crashes if the path is too long }
-    if IsDcc32BugDanger then
+    if IsDcc32BugDangerous then
       Lines.Add('-Q');
     if TargetConfig.Target.IsPersonal then
       Lines.Add('-DDelphiPersonalEdition');
@@ -880,7 +881,7 @@ begin
       // compiler in BCB mode and ensure that should a unit be recompiled, it is in the
       // same state as it was when the dcu/obj/hpp files were created. However, this
       // does not work with BCB5, as it won't generate the dcp file with --BCB. Defining
-      // BDB via -DBCB is also not working here. So we have to "hope" the compiler
+      // BCB via -DBCB is also not working here. So we have to "hope" the compiler
       // is intelligent enough to see that it just needs to pack the dcu files into
       // the final dcp file.
       Result := CompileDelphiPackage(TargetConfig, Project,
@@ -1743,7 +1744,7 @@ begin
   end;
 end;
 
-function TCompiler.IsDcc32BugDanger: Boolean;
+function TCompiler.IsDcc32BugDangerous: Boolean;
 begin
   Result := Length(Data.JVCLDir) > MaxDcc32PathLen;
 end;
