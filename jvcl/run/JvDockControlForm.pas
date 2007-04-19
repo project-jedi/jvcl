@@ -915,7 +915,6 @@ var
   DockPageControlHotTrack: Boolean = False;
   TabDockHostBorderStyle: TFormBorderStyle = bsSizeToolWin;
   ConjoinDockHostBorderStyle: TFormBorderStyle = bsSizeToolWin;
-  IsWinXP: Boolean;
 
 //=== Local procedures =======================================================
 
@@ -1681,11 +1680,18 @@ begin
   ResetDockClient(FindDockClient(Control), NewTarget);
 end;
 
+function IsWinXP_UP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
+    ((Win32MajorVersion > 5) or
+    (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
+end;
+
 procedure ReshowAllVisibleWindow;
 var
   I: Integer;
 begin
-  if IsWinXP then
+  if IsWinXP_UP then
     for I := 0 to Screen.FormCount - 1 do
       if Screen.Forms[I].Visible then
         Windows.ShowWindow(Screen.Forms[I].Handle, SW_SHOW)
@@ -3556,7 +3562,7 @@ begin
   begin
     case Msg.Msg of
       CM_SHOWINGCHANGED:
-        if IsWinXP and JvGlobalDockIsLoading then
+        if IsWinXP_UP and JvGlobalDockIsLoading then
           Exit;
       WM_NCLBUTTONDOWN:
         begin
@@ -5281,17 +5287,11 @@ begin
 end;
 
 procedure InitDockManager;
-var
-  OSVersionInfo: TOSVersionInfo;
 begin
   try
     JvGlobalDockManager.Free;
     JvGlobalDockManager := nil;
     JvGlobalDockManager := TJvGlobalDockManager.Create;
-
-    OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
-    GetVersionEx(OSVersionInfo);
-    IsWinXP := (OSVersionInfo.dwMajorVersion = 5) and (OSVersionInfo.dwMinorVersion = 1);
   except
   end;
 end;
