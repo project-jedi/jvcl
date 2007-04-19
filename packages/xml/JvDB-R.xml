@@ -69,7 +69,7 @@
     <Package Name="ODAC60" Targets="d6" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC110" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB" Formname="" Condition=""/>
