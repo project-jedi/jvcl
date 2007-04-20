@@ -57,7 +57,7 @@ begin
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2005.dcp')
   else if Target.Version = 10 then
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2006.dcp')
-  else if Target.Version = 10 then
+  else if Target.Version = 11 then
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2007.dcp')
   else
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMImport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
@@ -127,7 +127,7 @@ begin
   if Target.Version = 10 then
     Result := FileExists(Target.RootDir + '\Bin\OdacVcl100.bpl')
   else if Target.Version = 11 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl110.bpl')
+    Result := FileExists(Target.RootDir + '\Bin\OdacVcl105.bpl')
   else
     Result := FileExists(Target.RootDir + Format('\Odac\Bin\OdacVcl%d.bpl', [Target.Version]));
 end;
