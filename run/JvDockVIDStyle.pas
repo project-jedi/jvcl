@@ -973,8 +973,7 @@ begin
   if IsDockable(DockClient.ParentForm, Source.Control, Source.DropOnControl, Source.DropAlign) then
   begin
     Host := nil;
-    if not JvGlobalDockIsLoading then
-      JvDockLockWindow(nil);
+    JvDockLockWindow(nil);
     try
       with DockClient do
       begin
@@ -1066,8 +1065,7 @@ begin
         end;
       end;
     finally
-      if not JvGlobalDockIsLoading then
-        JvDockUnLockWindow;
+      JvDockUnLockWindow;
     end;
   end;
 end;
@@ -2559,8 +2557,7 @@ begin
   begin
     if Source is TJvDockVIDDragDockObject then
     begin
-      JvDockLockWindow(nil);
-      JvGlobalDockIsLoading := True;
+      BeginDockLoading;
       try
         DoFloatForm(Source.Control);
         FreeAllDockableForm;
@@ -2579,9 +2576,7 @@ begin
             end;
         end;
       finally
-        JvGlobalDockIsLoading := False;
-        JvDockUnLockWindow;
-        ReshowAllVisibleWindow;
+        EndDockLoading;
         JvGlobalDockManager.DragObject.Control := nil;
       end;
     end;
