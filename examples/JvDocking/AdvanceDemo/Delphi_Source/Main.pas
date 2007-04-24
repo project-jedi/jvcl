@@ -24,7 +24,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Menus, ComCtrls, ToolWin, JvDockControlForm, JvDockTree,
   JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle, JvDockVIDVCStyle, 
-  JvDockSupportClass, ActnList
+  JvDockSupportClass, ActnList, JvComponentBase
   {$IFDEF USEJVCL}
   , JvComponent, JvAppStorage, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
   {$ENDIF}
@@ -35,6 +35,7 @@ type
   private
     FMenuItem: TMenuItem;
     FDockClient: TJvDockClient;
+    FMemo: TMemo;
     procedure SetMenuItem(AMenuItem: TMenuItem);
   protected
     procedure Notification(AComponent: TComponent;
@@ -167,7 +168,7 @@ type
     procedure SetFormCount(AStyle: TJvDockBasicStyle;
       const Value: Integer);
 
-    procedure ConstructRunTimeForm(AStyle: TJvDockBasicStyle; const AName: string);
+    procedure ConstructRunTimeForm(AStyle: TJvDockBasicStyle; const AName: string; const Loading: Boolean);
   public
     function ActionToStyle(AAction: TAction): TJvDockBasicStyle;
     function IDToStyle(const ID: Integer): TJvDockBasicStyle;
@@ -395,7 +396,7 @@ var
   DockClient: TJvDockClient;
   I: Integer;
 begin
-  for I := ShowWindow_Menu.Count -1 downto 0 do
+  for I := ShowWindow_Menu.Count - 1 downto 0 do
   begin
     aMenuItem := ShowWindow_Menu.Items[I];
     Frm := TForm(aMenuItem.Tag);
@@ -417,17 +418,19 @@ begin
   end;
 end;
 
-procedure TMainForm.ConstructRunTimeForm(AStyle: TJvDockBasicStyle; const AName: string);
+procedure TMainForm.ConstructRunTimeForm(AStyle: TJvDockBasicStyle; const AName: string; const Loading: Boolean);
 var
   Frm: TRunTimeForm;
   LStyle: Integer;
 begin
   Frm := TRunTimeForm.Create(Application);
-  Frm.Visible := True;
+  if not Loading then
+    Frm.Visible := True;
   if AName = '' then
     Frm.Name := CreateUniqueName
   else
     Frm.Name := AName;
+  Frm.FMemo.Name := Frm.Name + 'Memo';
   Frm.Caption := StyleToStr(AStyle) + ' _ ' + IntToStr(FormCount[AStyle]);
   FormCount[AStyle] := FormCount[AStyle] + 1;
   Frm.DockClient.DockStyle := AStyle;
@@ -553,7 +556,7 @@ begin
       FrmName := AppStorage.ReadString(AppStorage.ConcatPaths([APath, 'Name']));
       StyleID := AppStorage.ReadInteger(AppStorage.ConcatPaths([APath, 'StyleID']));
 
-      ConstructRunTimeForm(IDToStyle(StyleID), FrmName);
+      ConstructRunTimeForm(IDToStyle(StyleID), FrmName, True);
     end;
   finally
     AppStorage.Path := OldPath;
@@ -562,14 +565,19 @@ end;
 
 procedure TMainForm.LoadFromAppStorage(AppStorage: TJvCustomAppStorage);
 begin
-  FreeRunTimeForms;
-
-  AppStorage.BeginUpdate;
+  BeginDockLoading;
   try
-    LoadFormsFromAppStorage(AppStorage);
-    LoadDockTreeFromAppStorage(AppStorage);
+    FreeRunTimeForms;
+
+    AppStorage.BeginUpdate;
+    try
+      LoadFormsFromAppStorage(AppStorage);
+      LoadDockTreeFromAppStorage(AppStorage);
+    finally
+      AppStorage.EndUpdate;
+    end;
   finally
-    AppStorage.EndUpdate;
+    EndDockLoading;
   end;
 end;
 
@@ -605,7 +613,7 @@ end;
 procedure TMainForm.NewWindowExecute(Sender: TObject);
 begin
   if Sender is TAction then
-    ConstructRunTimeForm(ActionToStyle(TAction(Sender)), '');
+    ConstructRunTimeForm(ActionToStyle(TAction(Sender)), '', False);
 end;
 
 procedure TMainForm.PopupMenu2Popup(Sender: TObject);
@@ -796,9 +804,10 @@ begin
   Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;
   Position := poDefaultPosOnly;
-  //  Visible := F;
-  with TMemo.Create(Self) do
+  FMemo := TMemo.Create(Self);
+  with FMemo do
   begin
+    Parent := Self;
     Align := alClient;
     BorderStyle := bsNone;
   end;
