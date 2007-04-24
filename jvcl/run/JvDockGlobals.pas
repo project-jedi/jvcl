@@ -36,7 +36,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   Messages, Graphics,
-  JvDockControlForm, JvDockInfo, JvDockSupportControl;
+  JvDockControlForm {, JvDockInfo, JvDockSupportControl};
 
 const
   RsDockBaseDockTreeVersion = $00040000;
@@ -143,7 +143,6 @@ resourcestring
 
 var
   JvGlobalDockManager: TJvGlobalDockManager = nil;
-  JvGlobalDockIsLoading: Boolean = False;
   JvGlobalDockClient: TJvDockClient = nil;
 
 {$IFDEF USEJVCL}

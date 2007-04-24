@@ -114,8 +114,7 @@ begin
   begin
     Host := nil;
 
-    if not JvGlobalDockIsLoading then
-      JvDockLockWindow(nil);
+    JvDockLockWindow(nil);
     try
       with DockClient do
       begin
@@ -194,8 +193,7 @@ begin
         end;
       end;
     finally
-      if not JvGlobalDockIsLoading then
-        JvDockUnLockWindow;
+      JvDockUnLockWindow;
     end;
   end;
 end;
