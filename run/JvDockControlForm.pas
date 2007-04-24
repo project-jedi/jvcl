@@ -771,6 +771,8 @@ type
     procedure ShowDockedControl(AControl:TWinControl); virtual; // If aControl is docked in PageControl, change PageControl to that page. NEW! WPostma.
     procedure UpdateCaption(AControl:TWinControl); virtual; // update tab host's tabs and title bar when page caption changes.
 
+    // backwards compatibility: Mantis 4100
+    function GetActiveDockForm: TForm;
     property DockClient;
     { Constructed in TJvDockClient.CreateTabDockClass }
     property PageControl: TJvDockTabPageControl read FPageControl write FPageControl;
@@ -4809,6 +4811,14 @@ constructor TJvDockTabHostForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BorderStyle := TabDockHostBorderStyle;
+end;
+
+function TJvDockTabHostForm.GetActiveDockForm: TForm;
+begin
+  if PageControl.ActiveDockForm is TForm then
+    Result := TForm(PageControl.ActiveDockForm)
+  else
+    Result := nil;
 end;
 
 //------------------------------------------------------------------------
