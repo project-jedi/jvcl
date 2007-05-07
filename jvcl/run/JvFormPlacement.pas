@@ -101,6 +101,10 @@ type
     {$ENDIF VisualCLX}
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
+    FBeforeSavePlacement: TNotifyEvent;
+    FAfterSavePlacement: TNotifyEvent;
+    FBeforeRestorePlacement: TNotifyEvent;
+    FAfterRestorePlacement: TNotifyEvent;
     procedure SetAppStoragePath(const AValue: string);
     procedure SetEvents;
     procedure RestoreEvents;
@@ -163,8 +167,16 @@ type
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
     property VersionCheck: TJvFormPlacementVersionCheck read FVersionCheck write FVersionCheck default fpvcCheckGreaterEqual;
+    property BeforeSavePlacement: TNotifyEvent read FBeforeSavePlacement write
+        FBeforeSavePlacement;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement write FOnSavePlacement;
+    property AfterSavePlacement: TNotifyEvent read FAfterSavePlacement write
+        FAfterSavePlacement;
+    property BeforeRestorePlacement: TNotifyEvent read FBeforeRestorePlacement
+        write FBeforeRestorePlacement;
     property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement write FOnRestorePlacement;
+    property AfterRestorePlacement: TNotifyEvent read FAfterRestorePlacement write
+        FAfterRestorePlacement;
   end;
 
   TJvStoredValues = class;
@@ -871,10 +883,14 @@ procedure TJvFormPlacement.SaveFormPlacement;
 begin
   if Assigned(AppStorage) then
   begin
+    if Assigned(FBeforeSavePlacement) then
+      FBeforeSavePlacement(Self);
     if VersionCheck <> fpvcNocheck then
       WriteInteger(siVersion, FVersion);
     Save;
     SavePlacement;
+    if Assigned(FAfterSavePlacement) then
+      FAfterSavePlacement(Self);
     FSaved := True;
   end;
 end;
@@ -901,7 +917,9 @@ begin
     end;
     if ContinueRestore then
     begin
-      RestorePlacement;             
+      if Assigned(FBeforeRestorePlacement) then
+        FBeforeRestorePlacement(Self);
+      RestorePlacement;
       FRestored := True;
       Restore;
       if (fpActiveControl in Options) and (Owner is TCustomForm) then
@@ -911,6 +929,8 @@ begin
           TWinControl(ActiveCtl).CanFocus then
           Form.ActiveControl := TWinControl(ActiveCtl);
       end;
+      if Assigned(FAfterRestorePlacement) then
+        FAfterRestorePlacement(Self);
     end;
     FRestored := True;
   end;
