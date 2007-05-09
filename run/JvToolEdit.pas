@@ -269,7 +269,6 @@ type
     FAutoCompleteItems: TStrings;
     FAutoCompleteOptions: TJvAutoCompleteOptions;
     FTextChanged: Boolean;
-    FBeforePopupValue: Variant;
     procedure SetAutoCompleteItems(Strings: TStrings);
     procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
     procedure SetAlignment(Value: TAlignment);
@@ -2960,7 +2959,6 @@ begin
       end;
       SetDirectInput(DirectInput);
       Invalidate;
-      if AValue <> FBeforePopupValue then
       try
         if Accept and AcceptPopup(AValue) and EditCanModify then
         begin
@@ -2976,7 +2974,6 @@ begin
       end;
     finally
       FPopupVisible := False;
-      FBeforePopupValue := Null;
     end;
   end;  
 end;
@@ -3035,7 +3032,6 @@ begin
       SetPopupValue(Text)
     else
       SetPopupValue(Null);
-    FBeforePopupValue := GetPopupValue;
     if CanFocus then
       SetFocus;
     ShowPopup(Point(P.X, Y));
