@@ -60,7 +60,7 @@ uses
   JvDBRadioPanel, JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor,
-  JvDBActionsEngine, JvDBActions,
+  JvDBActionsEngine, JvDBActions, JvDBCheckBox,
   JvDBActnResForm, JvDataSource, JvDataSourceIntf;
 
 {$R JvDBReg.dcr}
@@ -100,7 +100,8 @@ begin
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
     TJvDBGrid, TJvDBUltimGrid, TJvDBGridFooter, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit,
     TJvDBMaskEdit, TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel,
-    TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage, TJvDBNavigator]);
+    TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage, TJvDBNavigator,
+    TJvDBCheckBox]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
   RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cDataField, TJvDataFieldProperty);
