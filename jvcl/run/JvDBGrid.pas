@@ -352,6 +352,8 @@ type
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
     function SortMarkerAssigned(const AFieldName: string): Boolean; dynamic;
     function ChangeSortMarker(const Value: TSortMarker): Boolean;
+    procedure CallDrawCellEvent(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
+    procedure DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); virtual;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField;
       State: TGridDrawState); override; { obsolete from Delphi 2.0 }
@@ -2568,6 +2570,16 @@ begin
   end;
 end;
 
+procedure TJvDBGrid.CallDrawCellEvent(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
+begin
+  inherited DrawCell(ACol, ARow, ARect, AState);
+end;
+
+procedure TJvDBGrid.DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
+begin
+  CallDrawCellEvent(ACol, ARow, ARect, AState);
+end;
+
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
   EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
@@ -2728,7 +2740,7 @@ begin
       Canvas.Font := DrawColumn.Font;
   end;
 
-  inherited DrawCell(ACol, ARow, ARect, AState);
+  DoDrawCell(ACol, ARow, ARect, AState);
   with ARect do
     if FTitleArrow and (ARow = 0) and (ACol = 0) and
       (dgIndicator in Options) and (dgTitles in Options) then
