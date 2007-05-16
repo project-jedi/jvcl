@@ -272,9 +272,11 @@ begin
       PopupIntf.Undo
     else
     begin
+      {$IFDEF COMPILER6_UP} // Delphi 5 is not supported
       if Edit is TCustomCombo then
         SendMessage(EditHandle, WM_UNDO, 0, 0)
       else
+      {$ENDIF COMPILER6_UP}
         Edit.Perform(WM_UNDO, 0, 0);
     end;
   end;
@@ -476,14 +478,18 @@ begin
 end;
 
 
+{$IFDEF COMPILER6_UP} // Delphi 5 is not supported
 type
   TOpenCustomCombo = class(TCustomCombo);
+{$ENDIF COMPILER6_UP}
 
 function THiddenPopupObject.GetEditHandle: THandle;
 begin
   Result := Edit.Handle;
+  {$IFDEF COMPILER6_UP} // Delphi 5 is not supported
   if Edit is TCustomCombo then
     Result := TOpenCustomCombo(Edit).FEditHandle;
+  {$ENDIF COMPILER6_UP}
 end;
 
 function THiddenPopupObject.GetTextLen: Integer;
