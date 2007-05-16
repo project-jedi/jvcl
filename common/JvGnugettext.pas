@@ -90,6 +90,10 @@ interface
 {$ifdef VER160}
   // Delphi 8
 {$endif}
+{$IFDEF CONDITIONALEXPRESSION}
+  {$DEFINE DELPHI6OROLDER}
+  {$DEFINE DELPHI7OROLDER}
+{$ENDIF}
 
 uses
 {$ifdef DELPHI5OROLDER}
