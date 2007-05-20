@@ -95,6 +95,7 @@ type
     FExecutable: string;
     FEdition: string;
     FRootDir: string;
+    FIsPersonal: Boolean;
     FProductVersion: string;
     FBrowsingPaths: TStringList;
     FDCPOutputDir: string;
@@ -703,10 +704,7 @@ end;
 
 function TCompileTarget.IsPersonal: Boolean;
 begin
-  Result := (CompareText(Edition, 'PER') = 0) or // do not localize
-            (CompareText(Edition, 'PERS') = 0) or // do not localize
-            (CompareText(Edition, 'Personal') = 0) or // do not localize
-            (CompareText(Edition, 'STD') = 0); // do not localize
+  Result := FIsPersonal;
 end;
 
 procedure TCompileTarget.LoadFromRegistry;
@@ -872,6 +870,10 @@ begin
   finally
     Reg.Free;
   end;
+
+  FIsPersonal := not FileExists(RootDir + '\Lib\db.dcu');
+  if FIsPersonal and IsBCB and FileExists(RootDir + '\Lib\Obj\db.dcu') then
+    FIsPersonal := False;
 
   if FProductVersion = '' then
     FProductVersion := Format('%d.%d', [Version, LatestUpdate]);
