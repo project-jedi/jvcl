@@ -101,6 +101,7 @@ type
     FImageSize: TSize;
     function GetStemPointPosition: TPoint;
     function GetStemPointPositionInRect(const ARect: TRect): TPoint;
+    function MultiLineWidth(const Value: string): Integer;
   protected
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
@@ -479,11 +480,43 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
 
+function TJvBalloonWindow.MultiLineWidth(const Value: string): Integer;
+var
+  W: Integer;
+  P, Start: PChar;
+  S: string;
+begin
+  Result := 0;
+  P := Pointer(Value);
+  if P <> nil then
+    while P^ <> #0 do
+    begin
+      Start := P;
+      while not (P^ in [#0, #10, #13]) do
+        P := StrNextChar(P);
+      SetString(S, Start, P - Start);
+      W := Self.Canvas.TextWidth(S);
+      if W > Result then
+        Result := W;
+      if P^ = #13 then Inc(P);
+      if P^ = #10 then Inc(P);
+    end;
+end;
+
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
+var
+  Delta: Integer;
 begin
   if HandleAllocated and IsWindowVisible(Handle) then
     ShowWindow(Handle, SW_HIDE);
 
+  if UseRightToLeftAlignment then
+  begin
+    // Remove the offset set by TApplication.ActivateHint
+    Delta := MultiLineWidth(AHint) + 5;
+    Inc(Rect.Left, Delta);
+    Inc(Rect.Right, Delta);
+  end;
   CheckPosition(Rect);
 
   Inc(Rect.Bottom, 4);
