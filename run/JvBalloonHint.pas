@@ -293,7 +293,7 @@ uses
   Registry, CommCtrl, MMSystem,
   ComCtrls, // needed for GetComCtlVersion
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
-  JclUnicode;
+  JclUnicode, JvVCL5Utils;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
