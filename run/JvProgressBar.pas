@@ -91,12 +91,27 @@ type
     property Width default 150;
   end;
 
+  { For Windows >= Vista }
+  TJvProgressBarState = (pbsNormal, pbsError, pbsPaused);
+  
+
   TJvProgressBar = class(TJvExProgressBar)
   private
   {$IFDEF VCL}
     FFillColor: TColor;
+    FMarquee: Boolean;
+    FMarqueePaused: Boolean;
+    FMarqueeDelay: Integer;
+    FSmoothReverse: Boolean;
+    FState: TJvProgressBarState;
     procedure SetFillColor(const Value: TColor);
+    procedure SetMarquee(Value: Boolean);
+    procedure SetMarqueePaused(Value: Boolean);
+    procedure SetMarqueeDelay(Value: Integer);
+    procedure SetSmoothReverse(Value: Boolean);
+    procedure SetState(Value: TJvProgressBarState);
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
   {$ENDIF VCL}
   public
@@ -104,6 +119,15 @@ type
   published
     {$IFDEF VCL}
     property FillColor: TColor read FFillColor write SetFillColor default clHighlight;
+
+    { For Windows >= XP }
+    property Marquee: Boolean read FMarquee write SetMarquee default False;
+    property MarqueePaused: Boolean read FMarqueePaused write SetMarqueePaused default False;
+    property MarqueeDelay: Integer read FMarqueeDelay write SetMarqueeDelay default 25;
+    { For Windows >= Vista }
+    property SmoothReverse: Boolean read FSmoothReverse write SetSmoothReverse default False;
+    property State: TJvProgressBarState read FState write SetState default pbsNormal;
+
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     property FillColor default clHighlight;
@@ -196,6 +220,39 @@ implementation
 
 uses
   JvJCLUtils, JvJVCLUtils;
+
+const
+  { For Windows >= XP }
+  {$EXTERNALSYM PBS_MARQUEE}
+  PBS_MARQUEE             = $08;
+  {$EXTERNALSYM PBM_SETMARQUEE}
+  PBM_SETMARQUEE          = WM_USER+10;
+
+  { For Windows >= Vista }
+  {$EXTERNALSYM PBS_SMOOTHREVERSE}
+  PBS_SMOOTHREVERSE       = $10;
+
+  { For Windows >= Vista }
+  {$EXTERNALSYM PBM_GETSTEP}
+  PBM_GETSTEP             = WM_USER+13;
+  {$EXTERNALSYM PBM_GETBKCOLOR}
+  PBM_GETBKCOLOR          = WM_USER+14;
+  {$EXTERNALSYM PBM_GETBARCOLOR}
+  PBM_GETBARCOLOR         = WM_USER+15;
+  {$EXTERNALSYM PBM_SETSTATE}
+  PBM_SETSTATE            = WM_USER+16;  { wParam = PBST_[State] (NORMAL, ERROR, PAUSED) }
+  {$EXTERNALSYM PBM_GETSTATE}
+  PBM_GETSTATE            = WM_USER+17;
+
+  { For Windows >= Vista }
+  {$EXTERNALSYM PBST_NORMAL}
+  PBST_NORMAL             = $0001;
+  {$EXTERNALSYM PBST_ERROR}
+  PBST_ERROR              = $0002;
+  {$EXTERNALSYM PBST_PAUSED}
+  PBST_PAUSED             = $0003;
+
+  cProgressStates: array[TJvProgressBarState] of Cardinal = (PBST_NORMAL, PBST_ERROR, PBST_PAUSED);
 
 //=== { TJvBaseProgressBar } =================================================
 
@@ -417,14 +474,30 @@ constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FillColor := clHighlight;
+  {$IFDEF VCL}
+  FMarqueeDelay := 25;
+  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
+
+procedure TJvProgressBar.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if Marquee and not (csDesigning in ComponentState) then
+    Params.Style := Params.Style or PBS_MARQUEE;
+  if SmoothReverse then
+    Params.Style := Params.Style or PBS_SMOOTHREVERSE;
+end;
 
 procedure TJvProgressBar.CreateWnd;
 begin
   inherited CreateWnd;
   SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FFillColor));
+  if Marquee then
+    SendMessage(Handle, PBM_SETMARQUEE, Ord(not MarqueePaused), LPARAM(MarqueeDelay));
+  if State <> pbsNormal then
+    SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
 end;
 
 procedure TJvProgressBar.SetFillColor(const Value: TColor);
@@ -438,6 +511,58 @@ begin
       // (rom) Invalidate is not good enough
       Repaint;
     end;
+  end;
+end;
+
+procedure TJvProgressBar.SetMarquee(Value: Boolean);
+begin
+  if Value <> FMarquee then
+  begin
+    FMarquee := Value;
+    if HandleAllocated and not (csDesigning in ComponentState) then
+      RecreateWnd;
+  end;
+end;
+
+procedure TJvProgressBar.SetMarqueePaused(Value: Boolean);
+begin
+  if Value <> FMarqueePaused then
+  begin
+    FMarqueePaused := Value;
+    if Marquee and HandleAllocated and not (csDesigning in ComponentState) then
+      SendMessage(Handle, PBM_SETMARQUEE, Ord(not MarqueePaused), LPARAM(MarqueeDelay));
+  end;
+end;
+
+procedure TJvProgressBar.SetMarqueeDelay(Value: Integer);
+begin
+  if Value < 0 then
+    Value := 0;
+  if Value <> FMarqueeDelay then
+  begin
+    FMarqueeDelay := Value;
+    if Marquee and HandleAllocated and not (csDesigning in ComponentState) then
+      SendMessage(Handle, PBM_SETMARQUEE, Ord(not MarqueePaused), LPARAM(MarqueeDelay));
+  end;
+end;
+
+procedure TJvProgressBar.SetSmoothReverse(Value: Boolean);
+begin
+  if Value <> FSmoothReverse then
+  begin
+    FSmoothReverse := Value;
+    if HandleAllocated then
+      RecreateWnd;
+  end;
+end;
+
+procedure TJvProgressBar.SetState(Value: TJvProgressBarState);
+begin
+  if Value <> FState then
+  begin
+    FState := Value;
+    if HandleAllocated then
+      SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
   end;
 end;
 
