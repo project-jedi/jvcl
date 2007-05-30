@@ -170,6 +170,7 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
+    destructor Destroy; override;
     property Edit: TWinControl read FEdit write SetEdit;
     // property PopupMenu: TPopupMenu read GetPopupMenu;
   end;
@@ -564,7 +565,13 @@ procedure THiddenPopupObject.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FEdit) then
-    FEdit := nil;
+    Edit := nil;
+end;
+
+destructor THiddenPopupObject.Destroy;
+begin
+  Edit := nil;
+  inherited Destroy;
 end;
 
 initialization
