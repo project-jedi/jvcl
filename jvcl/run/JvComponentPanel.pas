@@ -24,8 +24,6 @@ components : TJvComponentPanel
 description: Component panel for GUI developers
 
 Known Issues:
-  Some russian comments were translated to english; these comments are marked
-  with [translated]
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -45,7 +43,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QTypes,
   {$ENDIF VisualCLX}
-  Classes, Controls, Buttons,
+  Classes, Controls, Buttons, Forms,
   JvButtons, JvExtComponent, JvExButtons;
 
 type
@@ -270,7 +268,6 @@ procedure TJvComponentPanel.SetButtonCount(AButtonCount: Integer);
 var
   TmpButton: TJvExSpeedButton;
 begin
-  // (rom) removed the exception and the limit of 100 buttons
   if AButtonCount < 0 then
     Exit;
   BeginUpdate;
@@ -287,10 +284,10 @@ begin
       with TmpButton do
       begin
         Flat := True;
-        Parent := Self;
         Top := 0;
         GroupIndex := 1;
         HintWindowClass := Self.HintWindowClass;
+        Parent := Self;
         OnClick := BtnClick;
         OnDblClick := BtnDblClick;
       end;
@@ -371,23 +368,27 @@ begin
   Height := FButtonHeight;
   if FButtonPointer = nil then
     Exit; // asn: for visualclx
-  FButtonPointer.Height := FButtonHeight;
-  FButtonPointer.Width := FButtonWidth;
-  FButtonLeft.Height := FButtonHeight;
-  FButtonRight.Height := FButtonHeight;
-  FButtonPointer.Left := 0;
-  FButtonLeft.Left := FButtonWidth + 6;
-  FButtonRight.Left := (FButtonWidth + 12 + 6) + VisibleCount * FButtonWidth;
-  FButtonLeft.Enabled := FFirstVisible > 0;
-  FButtonRight.Enabled := FButtons.Count > FFirstVisible + VisibleCount;
-  for I := 0 to FButtons.Count - 1 do
-  begin
-    TSpeedButton(FButtons[I]).Width := FButtonWidth;
-    TSpeedButton(FButtons[I]).Height := FButtonHeight;
-    if (I >= FFirstVisible) and (I < FFirstVisible + VisibleCount) then
-      TSpeedButton(FButtons[I]).Left := (FButtonWidth + 12 + 6) + (I - FFirstVisible) * FButtonWidth
-    else
-      TSpeedButton(FButtons[I]).Left := -100;
+  DisableAlign;
+  try
+    FButtonPointer.Height := FButtonHeight;
+    FButtonPointer.Width := FButtonWidth;
+    FButtonLeft.Height := FButtonHeight;
+    FButtonRight.Height := FButtonHeight;
+    FButtonPointer.Left := 0;
+    FButtonLeft.Left := FButtonWidth + 6;
+    FButtonRight.Left := (FButtonWidth + 12 + 6) + VisibleCount * FButtonWidth;
+    FButtonLeft.Enabled := FFirstVisible > 0;
+    FButtonRight.Enabled := FButtons.Count > FFirstVisible + VisibleCount;
+    for I := 0 to FButtons.Count - 1 do
+    begin
+      if (I >= FFirstVisible) and (I < FFirstVisible + VisibleCount) then
+        TSpeedButton(FButtons[I]).SetBounds((FButtonWidth + 12 + 6) + (I - FFirstVisible) * FButtonWidth, 0, FButtonWidth, FButtonHeight)
+      else
+        TSpeedButton(FButtons[I]).SetBounds(-100, 0, FButtonWidth, FButtonHeight);
+    end;
+  finally
+    ControlState := ControlState - [csAlignmentNeeded];
+    EnableAlign;
   end;
 end;
 
@@ -450,6 +451,7 @@ begin
   if FLockUpdate = 0 then
   begin
     Resize;
+    ControlState := ControlState - [csAlignmentNeeded];
     EnableAlign;
   end;
 end;
