@@ -1,5 +1,7 @@
 Changelog for JVCL 3.X
 ======================
+2007-06-01
+- Added additional events to TJvDataSource (OnDataSetScrolled, OnFieldChanged, OnActiveChanged, OnDataSetChanged, ...)
 2007-05-27
 - Added new TJvProgressBar features for Windows XP (Marquee) and Vista (SmoothReverse, State) // ahuser
 2007-05-16
