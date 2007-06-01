@@ -42,7 +42,7 @@ uses
   {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs, Graphics, Controls, Forms, StdCtrls, Dialogs,
   ExtCtrls, JvComponent,
-  JvComponentBase, JvDynControlEngine, JvTypes;
+  JvComponentBase, JvDynControlEngine, JvTypes, JvAppStorage;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
@@ -431,6 +431,35 @@ type
     property OnAutoClose: TJvDSAAutoCloseEvent read FOnAutoClose write FOnAutoClose;
   end;
 
+type
+  TDSAAppStorage = class(TDSAStorage)
+  private
+    FAppStorage : TJvCustomAppStorage;
+    FAppStoragePath: string;
+  protected
+    function GetCheckMarkTextSuffix: string; override;
+    procedure SetCheckMarkTextSuffix(const Value: string); override;
+  public
+    constructor Create(AAppStorage : TJvCustomAppStorage; const APath : string);
+    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean; override;
+    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string; const Default: Boolean): Boolean; override;
+    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended; override;
+    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: Extended): Extended; override;
+    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64; override;
+    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: Int64): Int64; override;
+    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer; override;
+    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string; const Default: Integer): Integer; override;
+    function ReadString(const DSAInfo: TDSARegItem; const Key: string): string; override;
+    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string; const Default: string): string; override;
+    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string; const Value: Boolean); override;
+    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string; const Value: Extended); override;
+    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: Int64); override;
+    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string; const Value: Integer); override;
+    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string; const Value: string); override;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
+    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -454,6 +483,9 @@ uses
 const
   cDSAStateValueName = 'DSA_State'; // do not localize
   cDSAStateLastResultName = 'LastResult'; // do not localize
+
+  sPathStr = '%s\%s\%s';   
+
 
 type
   PBoolean = ^Boolean;
@@ -2474,6 +2506,106 @@ begin
     Result := FTimerCount
   else
     Result := 0;
+end;
+
+constructor TDSAAppStorage.Create(AAppStorage : TJvCustomAppStorage; const APath : string);
+begin
+  inherited Create;
+  FAppStorage := AAppStorage;
+  FAppStoragePath := APath;
+end;
+
+function TDSAAppStorage.GetCheckMarkTextSuffix: string;
+begin
+  Result := '';
+end;
+
+procedure TDSAAppStorage.SetCheckMarkTextSuffix(const Value: string);
+begin
+end;
+
+function TDSAAppStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
+begin
+  Result := FAppStorage.ReadBoolean(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]));
+end;
+
+function TDSAAppStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
+  const Default: Boolean): Boolean;
+begin
+  Result := FAppStorage.ReadBoolean(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Default);
+end;
+
+function TDSAAppStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
+begin
+  Result := FAppStorage.ReadFloat(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]));
+end;
+
+function TDSAAppStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
+  const Default: Extended): Extended;
+begin
+  Result := FAppStorage.ReadFloat(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Default);
+end;
+
+function TDSAAppStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
+begin
+  Result := FAppStorage.ReadInteger(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]));
+end;
+
+function TDSAAppStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: Int64): Int64;
+begin
+  Result := FAppStorage.ReadInteger(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Default);
+end;
+
+function TDSAAppStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
+begin
+  Result := FAppStorage.ReadInteger(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]));
+end;
+
+function TDSAAppStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
+  const Default: Integer): Integer;
+begin
+  Result := FAppStorage.ReadInteger(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Default);
+end;
+
+function TDSAAppStorage.ReadString(const DSAInfo: TDSARegItem; const Key: string): string;
+begin
+  Result := FAppStorage.ReadString(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]));
+end;
+
+function TDSAAppStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
+  const Default: string): string;
+begin
+  Result := FAppStorage.ReadString(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Default);
+end;
+
+procedure TDSAAppStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
+  const Value: Boolean);
+begin
+  FAppStorage.WriteBoolean(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Value);
+end;
+
+procedure TDSAAppStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
+  const Value: Extended);
+begin
+  FAppStorage.WriteFloat(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Value);
+end;
+
+procedure TDSAAppStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
+  const Value: Int64);
+begin
+  FAppStorage.WriteInteger(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Value);
+end;
+
+procedure TDSAAppStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
+  const Value: Integer);
+begin
+  FAppStorage.WriteInteger(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Value);
+end;
+
+procedure TDSAAppStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
+  const Value: string);
+begin
+  FAppStorage.WriteString(Format(sPathStr, [FAppStoragePath, DSAInfo.Name, Key]), Value);
 end;
 
 initialization
