@@ -40,6 +40,18 @@ type
     FDataConnectors: TList;
     FUpdateLock: Integer;
     FUpdateLookBookmark: TObject;
+    FOnFieldChanged: TDataChangeEvent;
+    FOnEditingChanged: TNotifyEvent;
+    FOnActiveChanged: TNotifyEvent;
+    FOnCheckBrowseMode: TNotifyEvent;
+    FOnLayoutChanged: TNotifyEvent;
+    FOnDataSetChanged: TNotifyEvent;
+    FOnDataSetScrolled: TNotifyEvent;
+    FOnRecordChanged: TNotifyEvent;
+    FEventsEnabled: Boolean;
+    FNeedScroll: Boolean;
+    FDataUpdated: Boolean;
+    FDisableEventsOnLoading: Boolean;
     function GetDataConnector(Index: Integer): TJvDataConnector;
     function GetDataConnectorCount: Integer;
   protected
@@ -49,6 +61,18 @@ type
 
     function DataSet: TDataSet;
     procedure Notify(Msg: Integer);
+
+    procedure ActiveChanged; virtual;
+    procedure FieldChanged(Field: TField); virtual;
+    procedure RecordChanged; virtual;
+    procedure LayoutChanged; virtual;
+    procedure DataSetChanged; virtual;
+    procedure DataSetScrolled; virtual;
+    procedure EditingChanged; virtual;
+    procedure CheckBrowseMode; virtual;
+    procedure UpdateData; virtual;
+
+    function AreEventsEnabled: Boolean;
 
     property DataConnectorCount: Integer read GetDataConnectorCount;
     property DataConnectors[Index: Integer]: TJvDataConnector read GetDataConnector; default;
@@ -154,6 +178,17 @@ type
     property FieldFloat[Field: TObject]: Double read GetFieldFloat write SetFieldFloat;
     property FieldDataTime[Field: TObject]: TDateTime read GetFieldDateTime write SetFieldDateTime;
     property FieldBoolean[Field: TObject]: Boolean read GetFieldBoolean write SetFieldBoolean;
+  published
+    property EventsEnabled: Boolean read FEventsEnabled write FEventsEnabled default True;
+    property DisableEventsOnLoading: Boolean read FDisableEventsOnLoading write FDisableEventsOnLoading default True;
+    property OnActiveChanged: TNotifyEvent read FOnActiveChanged write FOnActiveChanged;
+    property OnFieldChanged: TDataChangeEvent read FOnFieldChanged write FOnFieldChanged;
+    property OnRecordChanged: TNotifyEvent read FOnRecordChanged write FOnRecordChanged;
+    property OnLayoutChanged: TNotifyEvent read FOnLayoutChanged write FOnLayoutChanged;
+    property OnDataSetChanged: TNotifyEvent read FOnDataSetChanged write FOnDataSetChanged;
+    property OnDataSetScrolled: TNotifyEvent read FOnDataSetScrolled write FOnDataSetScrolled;
+    property OnEditingChanged: TNotifyEvent read FOnEditingChanged write FOnEditingChanged;
+    property OnCheckBrowseMode: TNotifyEvent read FOnCheckBrowseMode write FOnCheckBrowseMode;
   end;
 
   TJvDataSourceDataLink = class(TDataLink)
@@ -164,6 +199,10 @@ type
     procedure RecordChanged(Field: TField); override;
     procedure UpdateData; override;
     procedure LayoutChanged; override;
+    procedure DataSetChanged; override;
+    procedure DataSetScrolled(Distance: Integer); override;
+    procedure EditingChanged; override;
+    procedure CheckBrowseMode; override;
   public
     constructor Create(ADataSource: TJvDataSource);
   end;
@@ -180,23 +219,53 @@ end;
 
 procedure TJvDataSourceDataLink.LayoutChanged;
 begin
-  //inherited LayoutChanged;
   FDataSource.Notify(DC_LAYOUTCHANGED);
+  FDataSource.LayoutChanged;
 end;
 
 procedure TJvDataSourceDataLink.ActiveChanged;
 begin
   FDataSource.Notify(DC_ACTIVECHANGED);
+  FDataSource.ActiveChanged;
 end;
 
 procedure TJvDataSourceDataLink.RecordChanged(Field: TField);
 begin
   FDataSource.Notify(DC_RECORDCHANGED);
+  if Field <> nil then
+    FDataSource.FieldChanged(Field);
+  FDataSource.RecordChanged;
 end;
 
 procedure TJvDataSourceDataLink.UpdateData;
 begin
   FDataSource.Notify(DC_UPDATEDATA);
+  FDataSource.UpdateData;
+end;
+
+procedure TJvDataSourceDataLink.DataSetChanged;
+begin
+  FDataSource.Notify(DC_RECORDCHANGED);
+  FDataSource.DataSetChanged;
+end;
+
+procedure TJvDataSourceDataLink.DataSetScrolled(Distance: Integer);
+begin
+  FDataSource.Notify(DC_RECORDCHANGED); // that is what the inherited method would do
+  FDataSource.Notify(DC_DATASETSCROLLED);
+  FDataSource.DataSetScrolled;
+end;
+
+procedure TJvDataSourceDataLink.EditingChanged;
+begin
+  FDataSource.Notify(DC_EDITINGCHANGED);
+  FDataSource.EditingChanged;
+end;
+
+procedure TJvDataSourceDataLink.CheckBrowseMode;
+begin
+  FDataSource.Notify(DC_CHECKBROWSEMODE);
+  FDataSource.CheckBrowseMode;
 end;
 
 { TJvDataSource }
@@ -207,6 +276,8 @@ begin
   FDataLink := TJvDataSourceDataLink.Create(Self);
   FDataConnectors := TList.Create;
   FDataLink.DataSource := Self;
+  FEventsEnabled := True;
+  FDisableEventsOnLoading := True;
 end;
 
 procedure TJvDataSource.DataConnectorsFreeNotification;
@@ -603,8 +674,89 @@ begin
 end;
 
 procedure TJvDataSource.SetFieldBoolean(Field: TObject; const Value: Boolean);
-begin                                         
+begin
   TField(Field).AsBoolean := Value;
+end;
+
+procedure TJvDataSource.ActiveChanged;
+begin
+  try
+    if AreEventsEnabled and Assigned(FOnActiveChanged) then
+      FOnActiveChanged(Self);
+  finally
+    DataSetScrolled;
+  end;
+end;
+
+procedure TJvDataSource.CheckBrowseMode;
+begin
+  if not (FDataLink.DataSet.State in [dsEdit, dsInsert]) then
+    FDataUpdated := False; 
+  FNeedScroll := True;
+  if (FDataLink.DataSet.State = dsInsert) and FDataUpdated then
+    FNeedScroll := False;
+  if AreEventsEnabled and Assigned(FOnCheckBrowseMode) then
+    FOnCheckBrowseMode(Self);
+end;
+
+procedure TJvDataSource.DataSetChanged;
+var
+  ScrollEventEnabled: Boolean;
+begin
+  ScrollEventEnabled := FNeedScroll;
+  FNeedScroll := False;
+  try
+    if AreEventsEnabled and Assigned(FOnDataSetChanged) then
+      FOnDataSetChanged(Self);
+  finally
+    if (FDataLink.DataSet.State = dsInsert) or ScrollEventEnabled then
+      DataSetScrolled;
+  end;
+end;
+
+procedure TJvDataSource.DataSetScrolled;
+begin
+  FNeedScroll := False;
+  if AreEventsEnabled and Assigned(FOnDataSetScrolled) then
+    FOnDataSetScrolled(Self);
+end;
+
+procedure TJvDataSource.EditingChanged;
+begin
+  if FDataUpdated or (FDataLink.DataSet.RecNo <> -1) then // DataSet.State is already updated
+    FNeedScroll := False;
+  if AreEventsEnabled and Assigned(FOnEditingChanged) then
+    FOnEditingChanged(Self);
+end;
+
+procedure TJvDataSource.LayoutChanged;
+begin
+  if AreEventsEnabled and Assigned(FOnLayoutChanged) then
+    FOnLayoutChanged(Self);
+end;
+
+procedure TJvDataSource.RecordChanged;
+begin
+  if AreEventsEnabled and Assigned(FOnRecordChanged) then
+    FOnRecordChanged(Self);
+end;
+
+procedure TJvDataSource.FieldChanged(Field: TField);
+begin
+  if AreEventsEnabled and Assigned(FOnFieldChanged) then
+    FOnFieldChanged(Self, Field);
+end;
+
+procedure TJvDataSource.UpdateData;
+begin // event is handled by TDataSource
+  FDataUpdated := True;
+end;
+
+function TJvDataSource.AreEventsEnabled: Boolean;
+begin
+  Result := EventsEnabled;
+  if Result and DisableEventsOnLoading then
+    Result := not (csLoading in ComponentState);
 end;
 
 end.

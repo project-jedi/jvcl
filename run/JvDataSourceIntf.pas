@@ -41,6 +41,10 @@ const
   DC_RECORDCHANGED = 101;
   DC_UPDATEDATA = 102;
   DC_LAYOUTCHANGED = 103;
+  DC_DATASETCHANGED = 104;
+  DC_DATASETSCROLLED = 105;
+  DC_EDITINGCHANGED = 106;
+  DC_CHECKBROWSEMODE = 107;
 
 type
   // To avoid ambiguities in BCB when used with the Pro and above SKUs, the
