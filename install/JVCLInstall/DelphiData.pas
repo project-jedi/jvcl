@@ -801,8 +801,17 @@ begin
       Reg.CloseKey;
     end;}
 
+    FDCPOutputDir := '';
+    FBPLOutputDir := '';
+    FBrowsingPaths.Clear;
+    FPackageSearchPaths.Clear;
+    FSearchPaths.Clear;
+    FDebugDcuPaths.Clear;
+    FGlobalIncludePaths.Clear;
+    FGlobalCppSearchPaths.Clear;
+
     // get library paths
-    if IsBDS and (IDEVersion >= 5) then
+    if IsBDS and (IDEVersion >= 5) and FileExists(GetEnvOptionsFileName) then
     begin
       // MsBuild
       EnvOptions := TJclSimpleXML.Create;
@@ -835,33 +844,40 @@ begin
       finally
         EnvOptions.Free;
       end;
-    end
-    else
-    begin
-      if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
-      begin
-        FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
-        FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
-        ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
-        ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
-        ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
-        // BDS debug DCUs
-        if Reg.ValueExists('Debug DCU Path') then // do not localize
-          ConvertPathList(Reg.ReadString('Debug DCU Path'), FDebugDcuPaths); // do not localize
-        Reg.CloseKey;
-      end;
-      if Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
-      begin
-        ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
-        Reg.CloseKey;
-      end;
-      if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
-      begin
-        ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-        ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
-        Reg.CloseKey;
-      end;
     end;
+
+    { for BDS >= 5.0 this is the failsafe code
+      for BDS <= 4.0 this it the normal way }
+    if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
+    begin
+      if FDCPOutputDir = '' then
+        FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
+      if FBPLOutputDir = '' then
+        FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
+      if FBrowsingPaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
+      if FPackageSearchPaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
+      if FSearchPaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
+      // BDS debug DCUs
+      if (FDebugDcuPaths.Count = 0) and Reg.ValueExists('Debug DCU Path') then // do not localize
+        ConvertPathList(Reg.ReadString('Debug DCU Path'), FDebugDcuPaths); // do not localize
+      Reg.CloseKey;
+    end;
+    if (FDebugDcuPaths.Count = 0) and Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
+    begin
+      ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
+      Reg.CloseKey;
+    end;
+
+    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
+    begin
+      ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
+      ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
+      Reg.CloseKey;
+    end;
+
     if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then
     begin
       Reg.GetValueNames(FInstalledPersonalities);
