@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
+  SysUtils, Classes, Syncobjs,
   {$IFDEF MSWINDOWS}
   Windows, Controls, ExtCtrls,
   {$ENDIF MSWINDOWS}
@@ -136,7 +136,9 @@ type
     FException: Exception;
     FExceptionAddr: Pointer;
     FExecuteEvent: TJvNotifyParamsEvent;
+    FOnResumeDone: Boolean;
     FExecuteIsActive: Boolean;
+    FFinished: Boolean;
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
     FParams: Pointer;
     FSender: TObject;
@@ -147,14 +149,24 @@ type
     FSynchMsg: string;
     procedure ExceptionHandler;
   protected
-    procedure InternalMessageDlg;
-  public
+    // protected constructor prevents creation of TJvBaseThread outside of container (TJvThread)
     constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params:
         Pointer); virtual;
+    // protected destructor prevents deletion of TJvBaseThread outside of container (TJvThread)
+    destructor Destroy; override;
+    procedure InternalMessageDlg;
+  public
+    procedure Resume;
     procedure Execute; override;
+    procedure Synchronize(Method: TThreadMethod);
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    property Container: TObject read FSender;
     property ExecuteIsActive: Boolean read FExecuteIsActive;
+    property Finished: Boolean read FFinished;
+    property Terminated;
+    property Params: Pointer read FParams;
+    property ReturnValue;
   published
     property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
         FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
@@ -166,7 +178,10 @@ type
     FAfterCreateDialogForm: TJvCustomThreadDialogFormEvent;
     FBeforeResume: TNotifyEvent;
     FThreads: TThreadList;
+    FListLocker: TCriticalSection;
+    FLockedList: TList;
     FExclusive: Boolean;
+    FMaxCount: integer;
     FRunOnCreate: Boolean;
     FOnBegin: TNotifyEvent;
     FOnExecute: TJvNotifyParamsEvent;
@@ -181,42 +196,63 @@ type
     procedure DoTerminate(Sender: TObject);
     function GetCount: Integer;
     function GetThreads(Index: Integer): TJvBaseThread;
-    function GetTerminated: Boolean;
+    function GetTerminated: Boolean; // in context of thread in list - for itself; in others - for all threads in list
+    procedure SetReturnValue(RetVal: integer); // in context of thread in list - set return value (slower)
+    function GetReturnValue: integer;  // in context of thread in list - get return value (slower)
     procedure CreateThreadDialogForm;
-    function GetLastThread: TJvBaseThread;
+    function GetCurrentThread: TJvBaseThread;
   protected
     procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
+    function GetOneThreadIsRunning: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure CancelExecute; virtual;
-    function Execute(P: Pointer): THandle;
+    function Execute(P: Pointer): TJvBaseThread;
     procedure ExecuteAndWait(P: Pointer);
     procedure ExecuteWithDialog(P: Pointer);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-    procedure Synchronize(Method: TThreadMethod);
+    procedure Synchronize(Method: TThreadMethod); // (slower)
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 
+    procedure Lock;   // for safe use of property Threads[]
+    procedure Unlock;
+
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
-    property LastThread: TJvBaseThread read GetLastThread;
-    property Terminated: Boolean read GetTerminated;
+    property LastThread: TJvBaseThread read GetCurrentThread; //GetLastThread;
+    property Terminated: Boolean read GetTerminated; // in context of thread in list - for itself; in others - for all threads in list
+    property ReturnValue: integer read GetReturnValue write SetReturnValue; // in context of thread in list - set return value (slower)
+    property OneThreadIsRunning: Boolean read GetOneThreadIsRunning;
     property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
-  published
-    function OneThreadIsRunning: Boolean;
+(*
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
     {$IFDEF UNIX}
     function GetPolicy(Thread: THandle): Integer;
     procedure SetPolicy(Thread: THandle; Policy: Integer);
+    procedure SetPolicyAll(Policy: Integer);
     {$ENDIF UNIX}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
-    procedure Resume(Thread: THandle);
-    procedure Terminate; // terminates all running threads
+    procedure Resume(Thread: THandle); overload;
+*)
+    {$IFDEF UNIX}
+    procedure SetPolicy(Policy: Integer); // [not tested] in context of thread in list - for itself; in other contexts - for all threads in list
+    {$ENDIF UNIX}
+    procedure SetPriority(NewPriority: TThreadPriority); // in context of thread in list - for itself; in other contexts - for all threads in list
+    procedure Resume(BaseThread: TJvBaseThread); overload;
+    procedure Resume; overload; // resumes all threads including deferred (RunOnCreate=false)
+    procedure Suspend;          // in context of thread in list - for itself; in other contexts - for all threads in list
+    procedure Terminate;        // terminates all threads
+    procedure WaitFor;          // wait for all threads
+    procedure RemoveZombie(BaseThread: TJvBaseThread); overload; // remove finished thread (where FreeOnTerminate was false)
+    procedure RemoveZombie; overload; // remove all finished threads (where FreeOnTerminate was false)
+  published
     property Exclusive: Boolean read FExclusive write FExclusive;
+    property MaxCount: integer read FMaxCount write FMaxCount;
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
     property Priority: TThreadPriority read FPriority write FPriority default
@@ -460,6 +496,7 @@ begin
   FExclusive := True;
   FFreeOnTerminate := True;
   FThreads := TThreadList.Create;
+  FListLocker:=TCriticalSection.Create;
   FPriority := tpNormal;
 end;
 
@@ -476,12 +513,8 @@ begin
     {$ENDIF COMPILER6_UP}
   end;
   FThreads.Free;
+  FListLocker.Free;
   inherited Destroy;
-end;
-
-procedure TJvThread.CancelExecute;
-begin
-  Terminate;
 end;
 
 procedure TJvThread.Notification(AComponent: TComponent; Operation: TOperation);
@@ -495,33 +528,17 @@ begin
       FThreadDialogForm := nil
 end;
 
-procedure TJvThread.Synchronize(Method: TThreadMethod);
-begin
-  if Assigned(LastThread) then
-    LastThread.Synchronize(Method);
-end;
-
-function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
-begin
-  if Assigned(LastThread) then
-    Result := LastThread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
-  else
-    Result := 0;
-end;
-
-function TJvThread.Execute(P: Pointer): THandle;
+function TJvThread.Execute(P: Pointer): TJvBaseThread;
 var
   BaseThread: TJvBaseThread;
 begin
-  Result := 0;
-  if Exclusive and OneThreadIsRunning then
-    Exit;
+  BaseThread:=nil;
 
-  if Assigned(FOnExecute) then
-  begin
-    BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
+  if not((Exclusive and OneThreadIsRunning) or ((FMaxCount>0) and (Count>=FMaxCount))) and
+     Assigned(FOnExecute)
+  then begin
     try
+      BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
       BaseThread.OnShowMessageDlgEvent := OnShowMessageDlgEvent;
       BaseThread.Priority := Priority;
@@ -529,77 +546,16 @@ begin
       FThreads.Add(BaseThread);
       DoCreate;
     except
-      BaseThread.Free;
-      raise;
+      // all possible exceptions in Create and DoCreate
+      if Assigned(BaseThread) then
+        BaseThread.Terminate;
     end;
-    if FRunOnCreate then
-    begin
-      if Assigned(BeforeResume) then
-        BeforeResume(Self);
-      BaseThread.Resume;
-      CreateThreadDialogForm;
-    end;
-    Result := BaseThread.ThreadID;
+
+    if FRunOnCreate and Assigned(BaseThread) then
+      Resume(BaseThread);
   end;
-end;
 
-procedure TJvThread.ExecuteAndWait(P: Pointer);
-begin
-  Execute(P);
-  while OneThreadIsRunning do
-    Application.HandleMessage;
-end;
-
-function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := tpIdle;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  Result := 0;
-  {$ENDIF UNIX}
-  if Thread <> 0 then
-    Result := TThreadPriority(GetThreadPriority(Thread));
-end;
-
-procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
-begin
-  SetThreadPriority(Thread, Integer(Priority));
-end;
-
-{$IFDEF UNIX}
-
-function TJvThread.GetPolicy(Thread: THandle): Integer;
-begin
-  Result := 0;
-  if Thread <> 0 then
-    Result := GetThreadPolicy(Thread);
-end;
-
-procedure TJvThread.SetPolicy(Thread: THandle; Policy: Integer);
-begin
-  if Thread <> 0 then
-    SetThreadPriority(Thread, Policy);
-end;
-
-{$ENDIF UNIX}
-
-procedure TJvThread.QuitThread(Thread: THandle);
-begin
-  TerminateThread(Thread, 0);
-end;
-
-procedure TJvThread.Suspend(Thread: THandle);
-begin
-  SuspendThread(Thread);
-end;
-
-procedure TJvThread.Resume(Thread: THandle);
-begin
-  if Assigned(BeforeResume) then
-    BeforeResume(Self);
-  ResumeThread(Thread);
-  CreateThreadDialogForm;
+  Result := BaseThread; 
 end;
 
 procedure TJvThread.DoCreate;
@@ -608,42 +564,68 @@ begin
     FOnBegin(Self);
 end;
 
-procedure TJvThread.DoTerminate(Sender: TObject);
+procedure TJvThread.ExecuteAndWait(P: Pointer);
 begin
-  FThreads.Remove(Sender);
+  Execute(P);
+  WaitFor;
+end;
+
+procedure TJvThread.Resume(BaseThread: TJvBaseThread);
+var
+ b: boolean;
+begin
+  if Assigned(BaseThread) then
+  begin
+    b:=BaseThread.FOnResumeDone;
+    BaseThread.Resume;
+    if (not b) and
+       (not BaseThread.Terminated) and
+       (not BaseThread.Finished) then
+     CreateThreadDialogForm;
+  end
+  else
+    Resume; // no target, resume all
+end;
+
+procedure TJvThread.Resume; //All
+var
+  List: TList;
+  i: integer;
+  Thread: TJvBaseThread;
+begin
+  List:=FThreads.LockList;
   try
-//    if (Count = 0) and Assigned(ThreadDialogForm) then
-//      ThreadDialogForm.Hide;
-    if Assigned(FOnFinish) then
-      FOnFinish(Self);
-  finally
-    if Count = 0 then
+    for i:=0 to List.Count-1 do
     begin
-      if Assigned(ThreadDialogForm) then
-        ThreadDialogForm.Close;
-      if Assigned(FOnFinishAll) then
-        FOnFinishAll(Self);
+      Thread:=TJvBaseThread(List[I]);
+      while Thread.Suspended do
+        Resume(Thread);
     end;
+  finally
+    FThreads.UnlockList;
   end;
 end;
 
-function TJvThread.OneThreadIsRunning: Boolean;
+procedure TJvThread.Suspend; // in context of thread in list- suspend itself,
 var
-  I: Integer;
+  h: DWORD;
   List: TList;
+  i: integer;
+  Thread: TJvBaseThread;
 begin
-  Result := Count > 0;
-  if Result then
-  begin
-    List := FThreads.LockList;
+  Thread:=GetCurrentThread;
+  if Assigned(Thread) then
+    Thread.Suspend // suspend itself
+  else begin
+    h:=GetCurrentThreadID;
+    List:=FThreads.LockList;
     try
-      for I := 0 to List.Count - 1 do
-        if TJvBaseThread(List[I]).ExecuteIsActive then
-        begin
-          Result := True;
-          Exit;
-        end;
-      Result := False;
+      for i:=0 to List.Count-1 do
+      begin
+        Thread:=TJvBaseThread(List[i]);
+        if Thread.ThreadID<>h then
+          Thread.Suspend;
+      end;
     finally
       FThreads.UnlockList;
     end;
@@ -658,14 +640,132 @@ begin
   List := FThreads.LockList;
   try
     for I := 0 to List.Count - 1 do
-    begin
       TJvBaseThread(List[I]).Terminate;
-      if TJvBaseThread(List[I]).Suspended then
-        TJvBaseThread(List[I]).Resume;
+    Resume; //All
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+
+procedure TJvThread.CancelExecute;
+begin
+  Terminate;
+end;
+
+procedure TJvThread.DoTerminate(Sender: TObject);
+begin
+  TJvBaseThread(Sender).FExecuteIsActive:=false;
+  if Assigned(FOnFinish) then
+    try
+      FOnFinish(Sender);
+    except
+    // DoTerminate is part of destructor; destructor should not raise exceptions
+    end;
+
+  if TJvBaseThread(Sender).FreeOnTerminate then
+    FThreads.Remove(Sender);
+  TJvBaseThread(Sender).FFinished:=true;
+
+  if Count = 0 then
+  begin
+    if Assigned(ThreadDialogForm) then
+      ThreadDialogForm.Close;
+    if Assigned(FOnFinishAll) then
+      try
+        FOnFinishAll(Self);
+      except
+      // DoTerminate is part of destructor; destructor should not raise exceptions
+      end;
+  end;
+end;
+
+procedure TJvThread.RemoveZombie(BaseThread: TJvBaseThread); // remove finished thread (where FreeOnTerminate was false)
+begin
+  if Assigned(BaseThread) then
+  begin
+    if BaseThread.FFinished then
+    begin
+      FThreads.Remove(BaseThread);
+      BaseThread.Free;
+    end;
+  end
+  else
+    RemoveZombie; // no target, do for all
+end;
+
+procedure TJvThread.RemoveZombie; // remove all finished threads (where FreeOnTerminate was false)
+var
+  List: TList;
+  i: integer;
+  Thread: TJvBaseThread;
+begin
+  List:=FThreads.LockList;
+  try
+    for i:=List.Count-1 downto 0 do
+    begin
+      Thread:=TJvBaseThread(List[i]);
+      if Thread.FFinished then
+      begin
+        FThreads.Remove(Thread);
+        Thread.Free;
+      end;
     end;
   finally
     FThreads.UnlockList;
   end;
+end;
+
+function TJvThread.GetTerminated: Boolean;
+var
+  h: DWORD;
+  List: TList;
+  i: integer;
+  Thread: TJvBaseThread;
+begin
+  h:=GetCurrentThreadID;
+  Result:=true;
+  List:=FThreads.LockList;
+  try
+    for i:=0 to List.Count-1 do
+    begin
+      Thread:=TJvBaseThread(List[i]);
+      if Thread.ThreadID=h
+      then begin
+        Result:=Thread.Terminated; // context of thread in list
+        break;
+      end
+      else
+        Result:=Result and Thread.Terminated; // context of all other threads
+    end;
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+
+procedure TJvThread.WaitFor;
+begin
+  while(OneThreadIsRunning) do
+    Application.HandleMessage;
+end;
+
+procedure TJvThread.SetReturnValue(RetVal: integer);
+var
+  Thread: TJvBaseThread;
+begin
+  Thread:=GetCurrentThread;
+  if Assigned(Thread) then
+    Thread.ReturnValue:=RetVal;
+end;
+
+function TJvThread.GetReturnValue: integer;
+var
+  Thread: TJvBaseThread;
+begin
+  Thread:=GetCurrentThread;
+  if Assigned(Thread) then
+    Result:=Thread.ReturnValue
+  else
+    Result:=0;
 end;
 
 function TJvThread.GetCount: Integer;
@@ -680,31 +780,148 @@ begin
   end;
 end;
 
-function TJvThread.GetThreads(Index: Integer): TJvBaseThread;
+function TJvThread.GetCurrentThread: TJvBaseThread;
 var
+  h: DWORD;
   List: TList;
+  i: integer;
+  Thread: TJvBaseThread;
 begin
-  List := FThreads.LockList;
+  Result:=nil;
+  h:=GetCurrentThreadID;
+  List:=FThreads.LockList;
   try
-    Result := TJvBaseThread(List[Index]);
+    for i:=0 to List.Count-1 do
+    begin
+      Thread:=TJvBaseThread(List[i]);
+      if Thread.ThreadID=h
+      then begin
+        Result:=Thread;
+        break;
+      end;
+    end;
   finally
     FThreads.UnlockList;
   end;
 end;
 
-function TJvThread.GetTerminated: Boolean;
+function TJvThread.GetOneThreadIsRunning: Boolean;
 var
   I: Integer;
   List: TList;
 begin
-  Result := True;
-  List := FThreads.LockList;
+  Result:=False;
+  List:=FThreads.LockList;
   try
-    for I := 0 to List.Count - 1 do
+    for I:=0 to List.Count-1 do
     begin
-      Result := Result and TJvBaseThread(List[I]).Terminated;
-      if not Result then
-        Break;
+      Result:=not TJvBaseThread(List[I]).Finished;
+      if Result then
+        break;
+    end;
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+
+procedure TJvThread.Lock;   // for safe use of property Threads[]
+begin
+ FListLocker.Acquire;
+ try
+   if not Assigned(FLockedList) then
+     FLockedList:=FThreads.LockList;
+ except
+   FListLocker.Release;
+   raise;
+ end;
+end;
+
+function TJvThread.GetThreads(Index: Integer): TJvBaseThread;
+begin
+  FListLocker.Acquire;
+  try
+    if Assigned(FLockedList) then
+      Result := TJvBaseThread(FLockedList[Index])
+    else
+      Result:=nil;
+  finally
+   FListLocker.Release;
+ end;
+end;
+
+procedure TJvThread.Unlock;
+begin
+ try
+   if Assigned(FLockedList) then
+   begin
+     FThreads.UnlockList;
+     FLockedList:=nil;
+   end;
+ finally
+   FListLocker.Release;
+ end;
+end;
+
+procedure TJvThread.Synchronize(Method: TThreadMethod);
+var
+  Thread: TJvBaseThread;
+begin
+ Thread:=GetCurrentThread;
+ if Assigned(Thread) then
+   Thread.Synchronize(Method);
+end;
+
+function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+var
+ Thread: TJvBaseThread;
+begin
+  Thread:=GetCurrentThread;
+  if Assigned(Thread) then
+    Result:=Thread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
+  else
+    Result:=0;
+end;
+
+// new
+{$IFDEF UNIX}
+// not tested
+procedure TJvThread.SetPolicy(Policy: Integer);
+var
+  List: TList;
+  Thread: TJvBaseThread;
+  i: integer;
+begin
+  List:=FThreads.LockList;
+  try
+    Thread:=GetCurrentThread;
+    if Assigned(Thread)
+      SetThreadPolicy(Thread.Handle, Policy)  // context of thread in list
+    else
+      for i:=0 to List.Count-1 do    // context of all other threads
+        SetThreadPolicy(TJvBaseThread(List[I]).Handle, Policy);
+    end;
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+{$ENDIF UNIX}
+
+procedure TJvThread.SetPriority(NewPriority: TThreadPriority);
+var
+  List: TList;
+  Thread: TJvBaseThread;
+  i: integer;
+begin
+  List:=FThreads.LockList;
+  try
+    Thread:=GetCurrentThread;
+    if Assigned(Thread) then
+      Thread.Priority:=NewPriority   // context of thread in list
+    else begin
+      for i:=0 to List.Count-1 do    // context of all other threads
+        TJvBaseThread(List[I]).Priority:=NewPriority;
+      Priority:=NewPriority;
     end;
   finally
     FThreads.UnlockList;
@@ -739,14 +956,6 @@ begin
     Execute(P);
 end;
 
-function TJvThread.GetLastThread: TJvBaseThread;
-begin
-  if Count > 0 then
-    Result := Threads[Count - 1]
-  else
-    Result := nil;
-end;
-
 procedure TJvThread.intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
 begin
   if Assigned(FAfterCreateDialogForm) then
@@ -762,7 +971,11 @@ begin
   FSender := Sender;
   FExecuteEvent := Event;
   FParams := Params;
-  FExecuteIsActive := False;
+end;
+
+destructor TJvBaseThread.Destroy;
+begin
+  inherited Destroy;
 end;
 
 procedure TJvBaseThread.ExceptionHandler;
@@ -770,21 +983,41 @@ begin
   ShowException(FException, FExceptionAddr);
 end;
 
+procedure TJvBaseThread.Resume;
+begin
+  if not FOnResumeDone
+  then begin             // first resume (perhaps deferred)
+    FOnResumeDone:=true;
+    if (FSender is TJvThread) and
+       Assigned(TJvThread(FSender).BeforeResume) then
+      try
+        TJvThread(FSender).BeforeResume(Self);
+      except
+        Self.Terminate;
+      end;
+    FExecuteIsActive:=true;
+  end;
+  inherited Resume;     // after suspend too
+end;
+
 procedure TJvBaseThread.Execute;
 begin
-  FExecuteIsActive := True;
   try
-    FExecuteEvent(FSender, FParams);
-    FExecuteIsActive := False;
+    FExecuteIsActive := true;
+    FExecuteEvent(Self, FParams);
   except
     on E: Exception do
     begin
-      FExecuteIsActive := False;
       FException := E;
       FExceptionAddr := ExceptAddr;
       Self.Synchronize(ExceptionHandler);
     end;
   end;
+end;
+
+procedure TJvBaseThread.Synchronize(Method: TThreadMethod);
+begin
+ inherited Synchronize(Method);
 end;
 
 procedure TJvBaseThread.InternalMessageDlg;
@@ -804,7 +1037,7 @@ begin
   FSynchAType := AType;
   FSynchAButtons := AButtons;
   FSynchHelpCtx := HelpCtx;
-  Synchronize(InternalMessageDlg);
+  Self.Synchronize(InternalMessageDlg);
   Result := FSynchMessageDlgResult;
 end;
 
@@ -822,6 +1055,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-
-
-
