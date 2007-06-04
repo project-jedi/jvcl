@@ -4,6 +4,7 @@
 #pragma hdrstop
 USERES("JvThreadProj.res");
 USEFORM("fThread.cpp", Form1);
+USEUNIT("..\..\..\run\JvThread.pas");
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
