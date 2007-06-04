@@ -212,7 +212,7 @@ type
   public
     constructor Create(ABackground: TJvBackground);
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear(Immediatelly: Boolean = False);
     procedure Add(Control: TWinControl);
     procedure Remove(Control: TWinControl);
     function IndexOf(Control: TWinControl): Integer;
@@ -1575,17 +1575,20 @@ end;
 destructor TJvBackgroundClients.Destroy;
 begin
   FFixups.Free;
-  Clear; // release links
+  Clear(True); // release links immediatelly (the WndProc won't work because the handle is destroyed)
   FLinks.Free;
   inherited Destroy;
 end;
 
-procedure TJvBackgroundClients.Clear;
+procedure TJvBackgroundClients.Clear(Immediatelly: Boolean = False);
 var
   I: Integer;
 begin
   for I := 0 to FLinks.Count - 1 do
-    Links[I].Release;
+    if Immediatelly then
+      Links[I].Free
+    else
+      Links[I].Release;
   FLinks.Clear;
 end;
 
