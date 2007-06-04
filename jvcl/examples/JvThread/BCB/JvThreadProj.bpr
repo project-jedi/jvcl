@@ -1,21 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8' ?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\..\..\bin\JvThreadProj.exe"/>
-    <OBJFILES value="..\..\..\dcu\JvThreadProj.obj ..\..\..\dcu\fThread.obj"/>
+    <OBJFILES value="..\..\..\dcu\JvThread.obj ..\..\..\dcu\JvThreadProj.obj 
+      ..\..\..\dcu\fThread.obj"/>
     <RESFILES value="JvThreadProj.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) fThread.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
-    <PACKAGES value=""/>
+    <LIBRARIES value="JVSTDCTRLSC5R.lib JVSYSTEMC5R.lib VCLDB50.lib VCLX50.lib JCLC50.lib 
+      JVCOREC5R.lib Vcl50.lib"/>
+    <SPARELIBS value="Vcl50.lib JVCOREC5R.lib JCLC50.lib VCLX50.lib VCLDB50.lib JVSYSTEMC5R.lib 
+      JVSTDCTRLSC5R.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi Vcldb50.bpi vclado50.bpi ibsmp50.bpi VCLBDE50.bpi 
+      vcldbx50.bpi VCLIB50.bpi EHLIBB50.bpi CPORTLIBCB5.bpi VERSIONINFO50.bpi 
+      madBasic_.bpi madDisAsm_.bpi madExcept_.bpi bcbsmp50.bpi TEE7C5.bpi 
+      TEEDB7C5.bpi TEEUI7C5.bpi TEEPRO7C5.bpi TEELANGUAGE7C5.bpi TEEGL7C5.bpi 
+      TEEQR7C5.bpi QRPT50.bpi TeeImage7C5.bpi Vclmid50.bpi vclie50.bpi 
+      Inetdb50.bpi Inet50.bpi NMFast50.bpi webmid50.bpi bcbie50.bpi dclocx50.bpi 
+      bcb2kaxserver50.bpi dclusr50.bpi VCLSMP50.bpi JCLC50.bpi JVCOREC5R.bpi 
+      JVSTDCTRLSC5R.bpi JVSYSTEMC5R.bpi JVAPPFRMC5R.bpi JVCTRLSC5R.bpi 
+      JVBANDSC5R.bpi JVBDEC5R.bpi JVDLGSC5R.bpi JVDBC5R.bpi JVCMPC5R.bpi 
+      JVCRYPTC5R.bpi JVCUSTOMC5R.bpi JVDOCKINGC5R.bpi JVDOTNETCTRLSC5R.bpi 
+      JVEDIC5R.bpi JVHMIC5R.bpi JVINTERPRETERC5R.bpi JVJANSC5R.bpi 
+      JVMANAGEDTHREADSC5R.bpi JVMMC5R.bpi JVNETC5R.bpi JVPAGECOMPSC5R.bpi 
+      JVPLUGINC5R.bpi JVPRINTPREVIEWC5R.bpi JVTIMEFRAMEWORKC5R.bpi JVUIBC5R.bpi 
+      JVVALIDATORSC5R.bpi JVWIZARDC5R.bpi JVXPCTRLSC5R.bpi JVGLOBUSC5R.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;"/>
+    <PATHPAS value=".;..\..\..\run"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -24,16 +40,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="JvThreadProj.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\..\run;..\..\..\common"/>
-    <LIBPATH value="$(BCB)\lib\debug;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Resources"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\..\run;..\..\..\common;..\..\..\..\..\..\..\madCollection\madBasic\BCB5;..\..\..\..\..\..\..\madCollection\madDisAsm\BCB5;..\..\..\..\..\..\..\madCollection\madExcept\BCB5;..\..\..\..\..\..\..\madCollection\Plugins;&quot;"/>
+    <LIBPATH value="..\..\..\run;$(BCB)\USERCO~1\JCL\lib\c5;$(BCB)\USERCO~1\JVCL\lib\c5;$(BCB)\lib\debug;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Resources;..\..\..\..\..\..\..\madCollection\madBasic\BCB5;..\..\..\..\..\..\..\madCollection\madDisAsm\BCB5;..\..\..\..\..\..\..\madCollection\madExcept\BCB5;..\..\..\..\..\..\..\madCollection\Plugins;&quot;"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) -src_suffix cpp 
-      -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tW -tWM"/>
-    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I..\..\..\run -I..\..\..\common 
+      -I..\..\..\..\..\..\..\madCollection\madBasic\BCB5 
+      -I..\..\..\..\..\..\..\madCollection\madDisAsm\BCB5 
+      -I..\..\..\..\..\..\..\madCollection\madExcept\BCB5 
+      -I..\..\..\..\..\..\..\madCollection\Plugins 
+      -I -boa"/>
+    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -6 -b- 
+      -k -y -v -vi- -c -tW -tWM"/>
+    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$Y+ -$W -$O- -$A8 -v -JPHNE -M -LUvcl50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
@@ -41,9 +62,10 @@
   <LINKER>
     <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <ALLLIB value="cg32.lib $(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
   </LINKER>
-  <IDEOPTIONS>[Version Info]
+  <IDEOPTIONS>
+[Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
@@ -58,5 +80,61 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-</IDEOPTIONS>
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+
+[Excluded Packages]
+$(BCB)\Bin\dcldss50.bpl=Borland Decision Cube Components
+
+[HistoryLists\hlIncludePath]
+Count=0
+
+[HistoryLists\hlLibraryPath]
+Count=0
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=..\..\..\bin\
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=1
+LinkCGLIB=1
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
 </PROJECT>
