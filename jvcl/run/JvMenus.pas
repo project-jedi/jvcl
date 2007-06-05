@@ -708,7 +708,7 @@ type
     function GetTextMargin: Integer; override;
     procedure DrawCheckImage(ARect: TRect); override;
 
-    procedure DrawBorder(WRect: TRect);
+    procedure DrawBorder(ACanvas: TCanvas; WRect: TRect);
     procedure DrawItemBorderParts(Item: TMenuItem; Canvas: TCanvas; WRect: TRect);
     function GetShowingItemsParent(WRect: TRect; StartingItem: TMenuItem): TMenuItem;
     function GetItemScreenRect(ParentItem: TMenuItem; Index: Integer): TRect;
@@ -3212,9 +3212,8 @@ begin
         Canvas.Pixels[X + BX, Y + BY] := ShadowColor;
 end;
 
-procedure TJvXPMenuItemPainter.DrawBorder(WRect: TRect);
+procedure TJvXPMenuItemPainter.DrawBorder(ACanvas: TCanvas; WRect: TRect);
 var
-  Canvas: TJvDesktopCanvas;
   RightToLeft: Boolean;
   I: Integer;
   ShowingItemsParent: TMenuItem;
@@ -3222,68 +3221,62 @@ begin
   // Local value, just in case FItem is nil, which could theoretically happen
   // as DrawBorder is called from the replacement window procedure.
   RightToLeft := Menu.BiDiMode <> bdLeftToRight;
-  
-  // To draw the border, the easiest way is to actually draw on the desktop
-  Canvas := TJvDesktopCanvas.Create;
-  try
-    with Canvas do
-    begin
-      Brush.Style := bsClear;
-      Pen.Color := RGB(102, 102, 102);
-      Pen.Style := psSolid;
+
+  with ACanvas do
+  begin
+    Brush.Style := bsClear;
+    Pen.Color := RGB(102, 102, 102);
+    Pen.Style := psSolid;
 
       // dark contour
-      Rectangle(WRect);
+    Rectangle(WRect);
 
       // two white lines above bottom
-      Pen.Color := clWhite;
-      MoveTo(WRect.Left + 1, WRect.Bottom - 2);
-      LineTo(WRect.Right - 1, WRect.Bottom - 2);
-      MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-      LineTo(WRect.Right - 1, WRect.Bottom - 3);
+    Pen.Color := clWhite;
+    MoveTo(WRect.Left + 1, WRect.Bottom - 2);
+    LineTo(WRect.Right - 1, WRect.Bottom - 2);
+    MoveTo(WRect.Left + 1, WRect.Bottom - 3);
+    LineTo(WRect.Right - 1, WRect.Bottom - 3);
 
       // two white lines below top
-      MoveTo(WRect.Left + 1, WRect.Top + 1);
-      LineTo(WRect.Right - 1, WRect.Top + 1);
-      MoveTo(WRect.Left + 1, WRect.Top + 2);
-      LineTo(WRect.Right - 1, WRect.Top + 2);
+    MoveTo(WRect.Left + 1, WRect.Top + 1);
+    LineTo(WRect.Right - 1, WRect.Top + 1);
+    MoveTo(WRect.Left + 1, WRect.Top + 2);
+    LineTo(WRect.Right - 1, WRect.Top + 2);
 
       // three lines before right
-      if RightToLeft then
-        Pen.Color := ImageBackgroundColor
-      else
-        Pen.Color := clWhite;
-      MoveTo(WRect.Right - 2, WRect.Top + 3);
-      LineTo(WRect.Right - 2, WRect.Bottom - 3);
-      MoveTo(WRect.Right - 3, WRect.Top + 3);
-      LineTo(WRect.Right - 3, WRect.Bottom - 3);
+    if RightToLeft then
+      Pen.Color := ImageBackgroundColor
+    else
+      Pen.Color := clWhite;
+    MoveTo(WRect.Right - 2, WRect.Top + 3);
+    LineTo(WRect.Right - 2, WRect.Bottom - 3);
+    MoveTo(WRect.Right - 3, WRect.Top + 3);
+    LineTo(WRect.Right - 3, WRect.Bottom - 3);
 
       // two lines after left
-      if RightToLeft then
-        Pen.Color := clWhite
-      else
-        Pen.Color := ImageBackgroundColor;
-      MoveTo(WRect.Left + 1, WRect.Top + 3);
-      LineTo(WRect.Left + 1, WRect.Bottom - 3);
-      MoveTo(WRect.Left + 2, WRect.Top + 3);
-      LineTo(WRect.Left + 2, WRect.Bottom - 3);
+    if RightToLeft then
+      Pen.Color := clWhite
+    else
+      Pen.Color := ImageBackgroundColor;
+    MoveTo(WRect.Left + 1, WRect.Top + 3);
+    LineTo(WRect.Left + 1, WRect.Bottom - 3);
+    MoveTo(WRect.Left + 2, WRect.Top + 3);
+    LineTo(WRect.Left + 2, WRect.Bottom - 3);
 
 
       // Try to find which (sub)items are showing in order to paint the
       // bits of items that are in the border (eg selected/checked).
       // To do that, we first find the parent, possibly recursively, and
       // once we get it, we loop on its children.
-      ShowingItemsParent := GetShowingItemsParent(WRect, Menu.Items);
-      if Assigned(ShowingItemsParent) then
+    ShowingItemsParent := GetShowingItemsParent(WRect, Menu.Items);
+    if Assigned(ShowingItemsParent) then
+    begin
+      for I := 0 to ShowingItemsParent.Count - 1 do
       begin
-        for I := 0 to ShowingItemsParent.Count - 1 do
-        begin
-          DrawItemBorderParts(ShowingItemsParent.Items[I], Canvas, WRect);
-        end;
+        DrawItemBorderParts(ShowingItemsParent.Items[I], ACanvas, WRect);
       end;
     end;
-  finally
-    Canvas.Free;
   end;
 end;
 
@@ -3542,6 +3535,9 @@ function XPMenuItemPainterWndProc(hwnd : THandle;
     lParam : LPARAM): LRESULT; stdcall;
 var
   WindowRect: TRect;
+  DC: HDC;
+  ACanvas: TCanvas;
+  SaveIndex: INteger;
 begin
   Result := CallWindowProc(Pointer(OldMenuWndProcHandle), hwnd, uMsg, wParam, lParam);
   case uMsg of
@@ -3549,7 +3545,24 @@ begin
       begin
         if GetWindowRect(hwnd, WindowRect) and Assigned(currentXPPainter) then
         begin
-          currentXPPainter.DrawBorder(WindowRect);
+          DC := GetDCEx(hwnd, wParam, DCX_WINDOW or DCX_INTERSECTRGN);
+          try
+            ACanvas := TControlCanvas.Create;
+            try
+              SaveIndex := SaveDC(DC);
+              try
+                ACanvas.Handle := DC;
+                currentXPPainter.DrawBorder(ACanvas, WindowRect);
+              finally
+                ACanvas.Handle := 0;
+                RestoreDC(DC, SaveIndex);
+              end;
+            finally
+              ACanvas.Free;
+            end;
+          finally
+            ReleaseDC(hwnd, DC);
+          end;
         end;
       end;
     WM_SHOWWINDOW:
@@ -3604,7 +3617,7 @@ begin
         end;
 
         GetWindowRect(CanvasWindow, WRect);
-        DrawBorder(WRect);
+        DrawBorder(Canvas, WRect);
       end;
     end;
   end;
