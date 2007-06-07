@@ -762,7 +762,6 @@ const
 // Variables usesd by the XP painter to hook into the window procedure
 // of the window used to render menus
 var
-  OldMenuWndProcHandle: Integer;
   currentXPPainter : TJvXPMenuItemPainter;
   
 function StripHotkeyPrefix(const Text: string): string; // MBCS
@@ -3520,6 +3519,29 @@ begin
     Inc(Height, 2);
 end;
 
+type
+  TWindowList = class
+  private
+    FWindowList: TList;
+    FPrevProcList: TList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RemoveHook(AHandle: THandle);
+    procedure AddHook(AHandle: THandle; OldProc, NewProc: Pointer);
+    function CallPrevWindowProc(hwnd: THandle; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
+  end;
+
+var
+  GWindowList: TWindowList;
+
+function WindowList: TWindowList;
+begin
+  if GWindowList = nil then
+    GWindowList := TWindowList.Create;
+  Result := GWindowList;
+end;
+
 // This is the replacement Window Procedure for the window that is used
 // to render the menus. Basically, it calls DrawBorder when it receives
 // an WM_NCPAINT message so that it overrides the default behaviour of
@@ -3537,15 +3559,16 @@ var
   WindowRect: TRect;
   DC: HDC;
   ACanvas: TCanvas;
-  SaveIndex: INteger;
+  SaveIndex: Integer;
 begin
-  Result := CallWindowProc(Pointer(OldMenuWndProcHandle), hwnd, uMsg, wParam, lParam);
+  Result := WindowList.CallPrevWindowProc(hwnd, uMsg, wParam, lParam);
   case uMsg of
     WM_NCPAINT:
       begin
         if GetWindowRect(hwnd, WindowRect) and Assigned(currentXPPainter) then
         begin
-          DC := GetDCEx(hwnd, wParam, DCX_WINDOW or DCX_INTERSECTRGN);
+          // Mantis #4146: Without DCX_CACHE GetDCEx returns 0..
+          DC := GetDCEx(hwnd, wParam, DCX_CACHE or DCX_WINDOW or DCX_INTERSECTRGN);
           try
             ACanvas := TControlCanvas.Create;
             try
@@ -3569,13 +3592,13 @@ begin
       begin
         if wParam = 0 then
         begin
-          SetWindowLong(hwnd, GWL_WNDPROC, OldMenuWndProcHandle);
+          WindowList.RemoveHook(hwnd);
           currentXPPainter := nil;
         end;
       end;
     WM_NCDESTROY:
       begin
-        SetWindowLong(hwnd, GWL_WNDPROC, OldMenuWndProcHandle);
+        WindowList.RemoveHook(hwnd);
         currentXPPainter := nil;
       end;
   end;
@@ -3586,7 +3609,7 @@ procedure TJvXPMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect;
 var
   CanvasWindow: HWND;
   WRect: TRect;
-  tmpWndProcHandle : Integer;
+  DefProc: Pointer;
 begin
   FItem := Item;
 
@@ -3603,17 +3626,19 @@ begin
       // If we have a window, that has a WndProc, which is different from our
       // replacement WndProc and we are not at design time, then install
       // our replacement WndProc.
-      // Once this is done, we can draw the border in the appropriate rect. 
+      // Once this is done, we can draw the border in the appropriate rect.
+
+      // Note that if the menu has sub-menus we can have multiple hooks; so we
+      // use TWindowList
       if CanvasWindow <> 0 then
       begin
-        tmpWndProcHandle := GetWindowLong(CanvasWindow, GWL_WNDPROC);
-        if (tmpWndProcHandle <> 0) and
-           (tmpWndProcHandle <> Integer(@XPMenuItemPainterWndProc)) and
+        DefProc := Pointer(GetWindowLong(CanvasWindow, GWL_WNDPROC));
+        if (DefProc <> nil) and
+           (DefProc <> @XPMenuItemPainterWndProc) and
            not (csDesigning in Menu.ComponentState) then
         begin
-          OldMenuWndProcHandle := tmpWndProcHandle;
           currentXPPainter := Self;
-          SetWindowLong(CanvasWindow, GWL_WNDPROC, Integer(@XPMenuItemPainterWndProc));
+          WindowList.AddHook(CanvasWindow, DefProc, @XPMenuItemPainterWndProc);
         end;
 
         GetWindowRect(CanvasWindow, WRect);
@@ -3906,6 +3931,56 @@ begin
   end;
 end;
 
+//=== { TWindowList } =======================================================
+
+procedure TWindowList.AddHook(AHandle: THandle; OldProc, NewProc: Pointer);
+begin
+  FWindowList.Add(Pointer(AHandle));
+  FPrevProcList.Add(OldProc);
+
+  SetWindowLong(AHandle, GWL_WNDPROC, Integer(NewProc));
+end;
+
+function TWindowList.CallPrevWindowProc(hwnd: THandle; uMsg: UINT;
+  wParam: WPARAM; lParam: LPARAM): LRESULT;
+var
+  Index: Integer;
+begin
+  Index := FWindowList.IndexOf(Pointer(hwnd));
+  if Index >= 0 then
+    Result := CallWindowProc(FPrevProcList[Index], hwnd, uMsg, wParam, lParam)
+  else
+    Result := 0;
+end;
+
+constructor TWindowList.Create;
+begin
+  inherited Create;
+  FWindowList := TList.Create;
+  FPrevProcList := TList.Create;
+end;
+
+destructor TWindowList.Destroy;
+begin
+  FWindowList.Free;
+  FPrevProcList.Free;
+  inherited Destroy;
+end;
+
+procedure TWindowList.RemoveHook(AHandle: THandle);
+var
+  Index: Integer;
+begin
+  Index := FWindowList.IndexOf(Pointer(AHandle));
+  if Index >= 0 then
+  begin
+    SetWindowLong(AHandle, GWL_WNDPROC, Integer(FPrevProcList[Index]));
+
+    FWindowList.Delete(Index);
+    FPrevProcList.Delete(Index);
+  end;
+end;
+
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -3913,6 +3988,7 @@ initialization
 
 finalization
   FreeAndNil(PopupList);
+  FreeAndNil(GWindowList);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
