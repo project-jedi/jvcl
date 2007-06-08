@@ -606,9 +606,7 @@ begin
     {$IFDEF VisualCLX}
     // (ahuser) transparent not really supported under CLX
     if Transparent or (State = bsExclusive) then
-    begin
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
-    end
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True)
     else
       FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
     {$ENDIF VisualCLX}
@@ -776,6 +774,7 @@ begin
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
   {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  ControlStyle := ControlStyle - [csOpaque];
   {$ENDIF VCL}
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
@@ -872,7 +871,7 @@ begin
   end;
   { draw image: }
   TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, Layout, Margin,
-    Spacing, FState, Flat);
+    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF});
 
   { calculate were to put arrow part }
   PaintRect := Rect(Width - ArrowWidth, 0, Width, Height);
