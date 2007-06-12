@@ -71,6 +71,7 @@ type
   public
     constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure UpdateImageList;
   published
     property Kind: TJvImageListItemKind read FKind write SetKind;
@@ -417,6 +418,19 @@ begin
     ImageList.Delete(Index);
   FBitmap.Free;
   inherited Destroy;
+end;
+
+procedure TJvImageListItem.Assign(Source: TPersistent);
+begin
+  if Source is TJvImageListItem then
+  begin
+    FBitmap.Assign(TJvImageListItem(Source).FBitmap);
+    FKind := TJvImageListItem(Source).FKind;
+    FResourceName := TJvImageListItem(Source).FResourceName;
+    FTransparentColor := TJvImageListItem(Source).FTransparentColor;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvImageListItem.AddToImageList(AImageList: TImageList);
@@ -912,11 +926,12 @@ begin
           // load resource
           ResStream := nil;
           try
-            try
-              ResStream := TResourceStream.Create(HInstance, ResourceIds[i], RT_BITMAP);
-            except
-              ResStream := nil;
-            end;
+            if FindResource(HInstance, PChar(ResourceIds[I]), RT_BITMAP) <> 0 then
+              try
+                ResStream := TResourceStream.Create(HInstance, ResourceIds[i], RT_BITMAP);
+              except
+                ResStream := nil;
+              end;
             Bmp.Assign(nil); // fixes GDI resource leak
             if ResStream <> nil then
               Bmp.LoadFromResourceName(HInstance, ResourceIds[i])
