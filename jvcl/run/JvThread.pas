@@ -84,11 +84,11 @@ type
     procedure SetConnectedDataObject(Value: TObject);
     procedure SetInternalTimerInterval(Value: Integer);
     procedure SetOnClose(Value: TCloseEvent);
+    procedure InternalTimer(Sender: TObject); virtual;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeFormContents; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure OnInternalTimer(Sender: TObject); virtual;
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
     property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
@@ -130,7 +130,6 @@ type
   TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult : Word) of object;
 
-  {$M+}
   TJvBaseThread = class(TThread)
   private
     FException: Exception;
@@ -164,11 +163,9 @@ type
     property Terminated;
     property Params: Pointer read FParams;
     property ReturnValue;
-  published
     property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent
       read FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
-  {$M-}
 
   TJvThread = class(TJvComponent)
   private
@@ -178,7 +175,7 @@ type
     FListLocker: TCriticalSection;
     FLockedList: TList;
     FExclusive: Boolean;
-    FMaxCount: integer;
+    FMaxCount: Integer;
     FRunOnCreate: Boolean;
     FOnBegin: TNotifyEvent;
     FOnExecute: TJvNotifyParamsEvent;
@@ -189,17 +186,17 @@ type
     FPriority: TThreadPriority;
     FThreadDialog: TJvCustomThreadDialog;
     FThreadDialogForm: TJvCustomThreadDialogForm;
-    procedure DoCreate;
+    procedure DoBegin;
     procedure DoTerminate(Sender: TObject);
     function GetCount: Integer;
     function GetThreads(Index: Integer): TJvBaseThread;
     function GetTerminated: Boolean; // in context of thread in list - for itself; in others - for all threads in list
-    procedure SetReturnValue(RetVal: integer); // in context of thread in list - set return value (slower)
-    function GetReturnValue: integer;  // in context of thread in list - get return value (slower)
+    procedure SetReturnValue(RetVal: Integer); // in context of thread in list - set return value (slower)
+    function GetReturnValue: Integer;  // in context of thread in list - get return value (slower)
     procedure CreateThreadDialogForm;
     function GetCurrentThread: TJvBaseThread;
   protected
-    procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
+    procedure InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
     function GetOneThreadIsRunning: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
@@ -221,7 +218,7 @@ type
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
     property LastThread: TJvBaseThread read GetCurrentThread; //GetLastThread;
     property Terminated: Boolean read GetTerminated; // in context of thread in list - for itself; in others - for all threads in list
-    property ReturnValue: integer read GetReturnValue write SetReturnValue; // in context of thread in list - set return value (slower)
+    property ReturnValue: Integer read GetReturnValue write SetReturnValue; // in context of thread in list - set return value (slower)
     property OneThreadIsRunning: Boolean read GetOneThreadIsRunning;
     property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
 (*
@@ -249,11 +246,10 @@ type
     procedure RemoveZombie; overload; // remove all finished threads (where FreeOnTerminate was false)
   published
     property Exclusive: Boolean read FExclusive write FExclusive;
-    property MaxCount: integer read FMaxCount write FMaxCount;
+    property MaxCount: Integer read FMaxCount write FMaxCount;
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
-    property Priority: TThreadPriority read FPriority write FPriority default
-        tpNormal;
+    property Priority: TThreadPriority read FPriority write FPriority default tpNormal;
     property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
     property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent
       read FAfterCreateDialogForm write FAfterCreateDialogForm;
@@ -263,7 +259,7 @@ type
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
     property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
-        FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
+      FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
 
 // Cannot be synchronized to the MainThread (VCL)
@@ -331,8 +327,7 @@ end;
 
 //=== { TJvCustomThreadDialogForm } ==========================================
 
-constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent;
-  Dummy: Integer = 0);
+constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
 begin
   inherited CreateNew(AOwner, Dummy);
   FInternalTimerInterval := 250;
@@ -344,12 +339,12 @@ begin
   inherited OnClose := ReplaceFormClose;
   inherited OnCloseQuery := ReplaceFormCloseQuery;
   FInternalTimer := TTimer.Create(Self);
-  FInternalTimer.OnTimer := OnInternalTimer;
+  FInternalTimer.OnTimer := InternalTimer;
   FInternalTimer.Interval := FInternalTimerInterval;
 end;
 
-constructor TJvCustomThreadDialogForm.CreateNewFormStyle(AOwner: TJvThread;
-  FormStyle: TFormStyle; Parent: TWinControl = nil);
+constructor TJvCustomThreadDialogForm.CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
+  Parent: TWinControl = nil);
 begin
   if FormStyle <> fsStayOnTop then
     if Assigned(Parent) then
@@ -374,10 +369,10 @@ end;
 
 procedure TJvCustomThreadDialogForm.DefaultCancelBtnClick(Sender: TObject);
 begin
-  if Assigned(OnPressCancel) then
-    OnPressCancel(Sender);
-  if Assigned(ConnectedThread) then
-    ConnectedThread.CancelExecute;
+  if Assigned(FOnPressCancel) then
+    FOnPressCancel(Sender);
+  if Assigned(FConnectedThread) then
+    FConnectedThread.CancelExecute;
   ModalResult := mrNone;
 end;
 
@@ -385,8 +380,7 @@ procedure TJvCustomThreadDialogForm.InitializeFormContents;
 begin
 end;
 
-procedure TJvCustomThreadDialogForm.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvCustomThreadDialogForm.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -394,7 +388,7 @@ begin
       FConnectedDataComponent := nil;
 end;
 
-procedure TJvCustomThreadDialogForm.OnInternalTimer(Sender: TObject);
+procedure TJvCustomThreadDialogForm.InternalTimer(Sender: TObject);
 begin
   if not (csDestroying in ComponentState) then
     if Assigned(ConnectedThread) and ConnectedThread.Terminated then
@@ -423,8 +417,8 @@ end;
 
 procedure TJvCustomThreadDialogForm.ReplaceFormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  if Assigned(ConnectedThread) then
-    CanClose := not ConnectedThread.OneThreadIsRunning
+  if Assigned(FConnectedThread) then
+    CanClose := not FConnectedThread.OneThreadIsRunning
   else
     CanClose := True;
   if CanClose then
@@ -435,7 +429,7 @@ end;
 procedure TJvCustomThreadDialogForm.ReplaceFormShow(Sender: TObject);
 begin
   InitializeFormContents;
-  OnInternalTimer(nil);
+  InternalTimer(nil);
   FInternalTimer.Enabled := True;
 end;
 
@@ -450,6 +444,7 @@ end;
 procedure TJvCustomThreadDialogForm.SetConnectedDataComponent(Value: TComponent);
 begin
   FConnectedDataComponent := Value;
+  // (rom) Huh? Does this make sense?
   if Assigned(Value) then
     FreeNotification(Value);
 end;
@@ -461,7 +456,7 @@ end;
 
 procedure TJvCustomThreadDialogForm.SetInternalTimerInterval(Value: Integer);
 begin
-  FInternalTimerInterval  := Value;
+  FInternalTimerInterval := Value;
   FInternalTimer.Interval := Value;
 end;
 
@@ -529,11 +524,10 @@ function TJvThread.Execute(P: Pointer): TJvBaseThread;
 var
   BaseThread: TJvBaseThread;
 begin
-  BaseThread:=nil;
-
-  if not((Exclusive and OneThreadIsRunning) or ((FMaxCount>0) and (Count>=FMaxCount))) and
-     Assigned(FOnExecute)
-  then begin
+  BaseThread := nil;
+  if not ((Exclusive and OneThreadIsRunning) or ((FMaxCount > 0) and (Count >= FMaxCount))) and
+     Assigned(FOnExecute) then
+  begin
     try
       BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
@@ -541,9 +535,10 @@ begin
       BaseThread.Priority := Priority;
       BaseThread.OnTerminate := DoTerminate;
       FThreads.Add(BaseThread);
-      DoCreate;
+      DoBegin;
     except
-      // all possible exceptions in Create and DoCreate
+      // all possible exceptions in Create and DoBegin
+      // (rom) you get in serious trouble here because you now return terminated thread
       if Assigned(BaseThread) then
         BaseThread.Terminate;
     end;
@@ -551,11 +546,10 @@ begin
     if FRunOnCreate and Assigned(BaseThread) then
       Resume(BaseThread);
   end;
-
-  Result := BaseThread; 
+  Result := BaseThread;
 end;
 
-procedure TJvThread.DoCreate;
+procedure TJvThread.DoBegin;
 begin
   if Assigned(FOnBegin) then
     FOnBegin(Self);
@@ -569,15 +563,13 @@ end;
 
 procedure TJvThread.Resume(BaseThread: TJvBaseThread);
 var
- b: boolean;
+ B: Boolean;
 begin
   if Assigned(BaseThread) then
   begin
-    b:=BaseThread.FOnResumeDone;
+    B := BaseThread.FOnResumeDone;
     BaseThread.Resume;
-    if (not b) and
-       (not BaseThread.Terminated) and
-       (not BaseThread.Finished) then
+    if (not B) and (not BaseThread.Terminated) and (not BaseThread.Finished) then
      CreateThreadDialogForm;
   end
   else
@@ -587,14 +579,14 @@ end;
 procedure TJvThread.Resume; //All
 var
   List: TList;
-  i: integer;
+  I: Integer;
   Thread: TJvBaseThread;
 begin
-  List:=FThreads.LockList;
+  List := FThreads.LockList;
   try
-    for i:=0 to List.Count-1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Thread:=TJvBaseThread(List[I]);
+      Thread := TJvBaseThread(List[I]);
       while Thread.Suspended do
         Resume(Thread);
     end;
@@ -605,22 +597,23 @@ end;
 
 procedure TJvThread.Suspend; // in context of thread in list- suspend itself,
 var
-  h: DWORD;
+  H: DWORD;
   List: TList;
-  i: integer;
+  I: Integer;
   Thread: TJvBaseThread;
 begin
-  Thread:=GetCurrentThread;
+  Thread := GetCurrentThread;
   if Assigned(Thread) then
     Thread.Suspend // suspend itself
-  else begin
-    h:=GetCurrentThreadID;
-    List:=FThreads.LockList;
+  else
+  begin
+    H := GetCurrentThreadID;
+    List := FThreads.LockList;
     try
-      for i:=0 to List.Count-1 do
+      for I := 0 to List.Count - 1 do
       begin
-        Thread:=TJvBaseThread(List[i]);
-        if Thread.ThreadID<>h then
+        Thread := TJvBaseThread(List[I]);
+        if Thread.ThreadID <> H then
           Thread.Suspend;
       end;
     finally
@@ -651,17 +644,17 @@ end;
 
 procedure TJvThread.DoTerminate(Sender: TObject);
 begin
-  TJvBaseThread(Sender).FExecuteIsActive:=false;
+  TJvBaseThread(Sender).FExecuteIsActive := False;
   if Assigned(FOnFinish) then
     try
       FOnFinish(Sender);
     except
-    // DoTerminate is part of destructor; destructor should not raise exceptions
+      // DoTerminate is part of destructor; destructor should not raise exceptions
     end;
 
   if TJvBaseThread(Sender).FreeOnTerminate then
     FThreads.Remove(Sender);
-  TJvBaseThread(Sender).FFinished:=true;
+  TJvBaseThread(Sender).FFinished := True;
 
   if Count = 0 then
   begin
@@ -693,14 +686,14 @@ end;
 procedure TJvThread.RemoveZombie; // remove all finished threads (where FreeOnTerminate was false)
 var
   List: TList;
-  i: integer;
+  I: Integer;
   Thread: TJvBaseThread;
 begin
-  List:=FThreads.LockList;
+  List := FThreads.LockList;
   try
-    for i:=List.Count-1 downto 0 do
+    for I := List.Count - 1 downto 0 do
     begin
-      Thread:=TJvBaseThread(List[i]);
+      Thread := TJvBaseThread(List[I]);
       if Thread.FFinished then
       begin
         FThreads.Remove(Thread);
@@ -714,25 +707,25 @@ end;
 
 function TJvThread.GetTerminated: Boolean;
 var
-  h: DWORD;
+  H: DWORD;
   List: TList;
-  i: integer;
+  I: Integer;
   Thread: TJvBaseThread;
 begin
-  h:=GetCurrentThreadID;
-  Result:=true;
+  H := GetCurrentThreadID;
+  Result := True;
   List:=FThreads.LockList;
   try
-    for i:=0 to List.Count-1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Thread:=TJvBaseThread(List[i]);
-      if Thread.ThreadID=h
-      then begin
-        Result:=Thread.Terminated; // context of thread in list
-        break;
+      Thread := TJvBaseThread(List[I]);
+      if Thread.ThreadID = H then
+      begin
+        Result := Thread.Terminated; // context of thread in list
+        Break;
       end
       else
-        Result:=Result and Thread.Terminated; // context of all other threads
+        Result := Result and Thread.Terminated; // context of all other threads
     end;
   finally
     FThreads.UnlockList;
@@ -741,26 +734,26 @@ end;
 
 procedure TJvThread.WaitFor;
 begin
-  while(OneThreadIsRunning) do
+  while OneThreadIsRunning do
     Application.HandleMessage;
 end;
 
-procedure TJvThread.SetReturnValue(RetVal: integer);
+procedure TJvThread.SetReturnValue(RetVal: Integer);
 var
   Thread: TJvBaseThread;
 begin
-  Thread:=GetCurrentThread;
+  Thread := GetCurrentThread;
   if Assigned(Thread) then
-    Thread.ReturnValue:=RetVal;
+    Thread.ReturnValue := RetVal;
 end;
 
-function TJvThread.GetReturnValue: integer;
+function TJvThread.GetReturnValue: Integer;
 var
   Thread: TJvBaseThread;
 begin
-  Thread:=GetCurrentThread;
+  Thread := GetCurrentThread;
   if Assigned(Thread) then
-    Result:=Thread.ReturnValue
+    Result := Thread.ReturnValue
   else
     Result:=0;
 end;
@@ -779,22 +772,22 @@ end;
 
 function TJvThread.GetCurrentThread: TJvBaseThread;
 var
-  h: DWORD;
+  H: DWORD;
   List: TList;
-  i: integer;
+  I: Integer;
   Thread: TJvBaseThread;
 begin
-  Result:=nil;
-  h:=GetCurrentThreadID;
-  List:=FThreads.LockList;
+  Result := nil;
+  H := GetCurrentThreadID;
+  List := FThreads.LockList;
   try
-    for i:=0 to List.Count-1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Thread:=TJvBaseThread(List[i]);
-      if Thread.ThreadID=h
-      then begin
-        Result:=Thread;
-        break;
+      Thread := TJvBaseThread(List[I]);
+      if Thread.ThreadID = H then
+      begin
+        Result := Thread;
+        Break;
       end;
     end;
   finally
@@ -807,14 +800,14 @@ var
   I: Integer;
   List: TList;
 begin
-  Result:=False;
-  List:=FThreads.LockList;
+  Result := False;
+  List := FThreads.LockList;
   try
-    for I:=0 to List.Count-1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Result:=not TJvBaseThread(List[I]).Finished;
+      Result := not TJvBaseThread(List[I]).Finished;
       if Result then
-        break;
+        Break;
     end;
   finally
     FThreads.UnlockList;
@@ -826,7 +819,7 @@ begin
  FListLocker.Acquire;
  try
    if not Assigned(FLockedList) then
-     FLockedList:=FThreads.LockList;
+     FLockedList := FThreads.LockList;
  except
    FListLocker.Release;
    raise;
@@ -840,7 +833,7 @@ begin
     if Assigned(FLockedList) then
       Result := TJvBaseThread(FLockedList[Index])
     else
-      Result:=nil;
+      Result := nil;
   finally
    FListLocker.Release;
  end;
@@ -852,7 +845,7 @@ begin
    if Assigned(FLockedList) then
    begin
      FThreads.UnlockList;
-     FLockedList:=nil;
+     FLockedList := nil;
    end;
  finally
    FListLocker.Release;
@@ -863,7 +856,7 @@ procedure TJvThread.Synchronize(Method: TThreadMethod);
 var
   Thread: TJvBaseThread;
 begin
- Thread:=GetCurrentThread;
+ Thread := GetCurrentThread;
  if Assigned(Thread) then
    Thread.Synchronize(Method);
 end;
@@ -873,11 +866,11 @@ function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
 var
  Thread: TJvBaseThread;
 begin
-  Thread:=GetCurrentThread;
+  Thread := GetCurrentThread;
   if Assigned(Thread) then
-    Result:=Thread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
+    Result := Thread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
   else
-    Result:=0;
+    Result := 0;
 end;
 
 // new
@@ -887,15 +880,15 @@ procedure TJvThread.SetPolicy(Policy: Integer);
 var
   List: TList;
   Thread: TJvBaseThread;
-  i: integer;
+  I: Integer;
 begin
-  List:=FThreads.LockList;
+  List := FThreads.LockList;
   try
-    Thread:=GetCurrentThread;
-    if Assigned(Thread)
+    Thread := GetCurrentThread;
+    if Assigned(Thread) then
       SetThreadPolicy(Thread.Handle, Policy)  // context of thread in list
     else
-      for i:=0 to List.Count-1 do    // context of all other threads
+      for I := 0 to List.Count - 1 do    // context of all other threads
         SetThreadPolicy(TJvBaseThread(List[I]).Handle, Policy);
     end;
   finally
@@ -908,17 +901,18 @@ procedure TJvThread.SetPriority(NewPriority: TThreadPriority);
 var
   List: TList;
   Thread: TJvBaseThread;
-  i: integer;
+  I: Integer;
 begin
-  List:=FThreads.LockList;
+  List := FThreads.LockList;
   try
-    Thread:=GetCurrentThread;
+    Thread := GetCurrentThread;
     if Assigned(Thread) then
-      Thread.Priority:=NewPriority   // context of thread in list
-    else begin
-      for i:=0 to List.Count-1 do    // context of all other threads
-        TJvBaseThread(List[I]).Priority:=NewPriority;
-      Priority:=NewPriority;
+      Thread.Priority := NewPriority   // context of thread in list
+    else
+    begin
+      for I := 0 to List.Count - 1 do    // context of all other threads
+        TJvBaseThread(List[I]).Priority := NewPriority;
+      Priority := NewPriority;
     end;
   finally
     FThreads.UnlockList;
@@ -934,7 +928,7 @@ begin
     begin
       FreeNotification(FThreadDialogForm);
       FThreadDialogForm.TransferDialogOptions;
-      intAfterCreateDialogForm(FThreadDialogForm);
+      InternalAfterCreateDialogForm(FThreadDialogForm);
       if ThreadDialog.DialogOptions.ShowModal then
         FThreadDialogForm.ShowModal
       else
@@ -945,15 +939,14 @@ end;
 
 procedure TJvThread.ExecuteWithDialog(P: Pointer);
 begin
-  if Assigned(ThreadDialog) and
-    ThreadDialog.DialogOptions.ShowDialog and
+  if Assigned(ThreadDialog) and ThreadDialog.DialogOptions.ShowDialog and
     ThreadDialog.DialogOptions.ShowModal then
     ExecuteAndWait(P)
   else
     Execute(P);
 end;
 
-procedure TJvThread.intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
+procedure TJvThread.InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
 begin
   if Assigned(FAfterCreateDialogForm) then
     FAfterCreateDialogForm(DialogForm);

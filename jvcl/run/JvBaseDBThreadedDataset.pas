@@ -234,7 +234,7 @@ type
     procedure SetConnectedDataset(const Value: TDataSet);
     procedure SetConnectedDatasetThreadHandler(const Value: TJvBaseDatasetThreadHandler);
   protected
-    procedure intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); override;
+    procedure InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); override;
     property ConnectedDatasetInterface: IJvThreadedDatasetInterface read FConnectedDatasetInterface;
     property ConnectedDataset: TDataSet read FConnectedDataset;
   public
@@ -654,7 +654,7 @@ end;
 
 //=== { TJvBaseDatasetThread } ===============================================
 
-procedure TJvBaseDatasetThread.intAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
+procedure TJvBaseDatasetThread.InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
 begin
   DialogForm.ConnectedDataComponent := ConnectedDatasetThreadHandler;
 end;
