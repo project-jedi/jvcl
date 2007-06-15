@@ -149,13 +149,10 @@ type
     FSynchMsg: string;
     procedure ExceptionHandler;
   protected
-    // protected constructor prevents creation of TJvBaseThread outside of container (TJvThread)
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params:
-        Pointer); virtual;
-    // protected destructor prevents deletion of TJvBaseThread outside of container (TJvThread)
-    destructor Destroy; override;
     procedure InternalMessageDlg;
   public
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
+    destructor Destroy; override;
     procedure Resume;
     procedure Execute; override;
     procedure Synchronize(Method: TThreadMethod);
@@ -168,8 +165,8 @@ type
     property Params: Pointer read FParams;
     property ReturnValue;
   published
-    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
-        FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
+    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent
+      read FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
   {$M-}
 
@@ -964,8 +961,7 @@ end;
 
 //=== { TJvBaseThread } ======================================================
 
-constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-    Params: Pointer);
+constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
@@ -985,17 +981,17 @@ end;
 
 procedure TJvBaseThread.Resume;
 begin
-  if not FOnResumeDone
-  then begin             // first resume (perhaps deferred)
-    FOnResumeDone:=true;
-    if (FSender is TJvThread) and
-       Assigned(TJvThread(FSender).BeforeResume) then
+  if not FOnResumeDone then
+  begin
+    // first resume (perhaps deferred)
+    FOnResumeDone := True;
+    if FSender is TJvThread and Assigned(TJvThread(FSender).BeforeResume) then
       try
         TJvThread(FSender).BeforeResume(Self);
       except
         Self.Terminate;
       end;
-    FExecuteIsActive:=true;
+    FExecuteIsActive := True;
   end;
   inherited Resume;     // after suspend too
 end;
@@ -1003,7 +999,7 @@ end;
 procedure TJvBaseThread.Execute;
 begin
   try
-    FExecuteIsActive := true;
+    FExecuteIsActive := True;
     FExecuteEvent(Self, FParams);
   except
     on E: Exception do
@@ -1022,12 +1018,11 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  if Assigned (OnShowMessageDlgEvent) then
-    OnShowMessageDlgEvent (FSynchMsg, FSynchAType,
-                                       FSynchAButtons, FSynchHelpCtx, FSynchMessageDlgResult)
+  if Assigned(OnShowMessageDlgEvent) then
+    OnShowMessageDlgEvent(FSynchMsg, FSynchAType,
+     FSynchAButtons, FSynchHelpCtx, FSynchMessageDlgResult)
   else
-    FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType,
-                                         FSynchAButtons, FSynchHelpCtx);
+    FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
