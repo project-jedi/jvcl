@@ -258,7 +258,7 @@ begin
   if not HandleAllocated or DroppedDown then
     Exit;
   if FDataLink.Field <> nil then
-    SetComboText(FDataLink.Field.Text)
+    SetComboText(FDataLink.Field.AsString)
   else
   if csDesigning in ComponentState then
     ComboText := Name
@@ -268,7 +268,7 @@ end;
 
 procedure TJvCustomDBComboBox.UpdateData(Sender: TObject);
 begin
-  FDataLink.Field.Text := ComboText;
+  FDataLink.Field.AsString := ComboText;
 end;
 
 procedure TJvCustomDBComboBox.SetComboText(const Value: string);
@@ -435,9 +435,7 @@ begin
               if Style <> csSimple then
                 PostMessage(Handle, CB_SHOWDROPDOWN, 0, 0);
               Exit;
-            end
-            else
-              Reset;
+            end;
           except
             Reset;
             raise;
