@@ -215,7 +215,7 @@ type
     property Items[Index: Integer] : TJvListViewGroup read GetItem write SetItem; default;
     property ItemsById[GroupId: Integer]: TJvListViewGroup read GetItemById;
   published
-    property Sorted: Boolean read FSorted write SetSorted;
+    property Sorted: Boolean read FSorted write SetSorted default False;
   end;
 
   TJvGroupsPropertiesBorderRect = class(TJvRect)
