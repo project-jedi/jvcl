@@ -111,6 +111,7 @@ type
     FInstalledPersonalities: TStrings;
     FGlobalIncludePaths: TStringList;
     FGlobalCppSearchPaths: TStringList;
+    FGlobalCppLibraryPaths: TStringList;
     
     FOrgEnvVars: TStrings;
     FEnvVars: TStrings;
@@ -219,6 +220,7 @@ type
     property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
     property GlobalIncludePaths: TStringList read FGlobalIncludePaths; // BDS only, with macros
     property GlobalCppSearchPaths: TStringList read FGlobalCppSearchPaths; // BDS only, with macros
+    property GlobalCppLibraryPaths: TStringList read FGlobalCppLibraryPaths;  // BDS v5 and upper only, with macros
 
     property BDSProjectsDir: string read GetBDSProjectsDir;
     property CommonProjectsDir: string read GetCommonProjectsDir;
@@ -505,6 +507,7 @@ begin
   FDebugDcuPaths := TStringList.Create;
   FGlobalIncludePaths := TStringList.Create;
   FGlobalCppSearchPaths := TStringList.Create;
+  FGlobalCppLibraryPaths := TStringList.Create;
 
   FBrowsingPaths.Duplicates := dupIgnore;
   FPackageSearchPaths.Duplicates := dupIgnore;
@@ -512,6 +515,7 @@ begin
   FDebugDcuPaths.Duplicates := dupIgnore;
   FGlobalIncludePaths.Duplicates := dupIgnore;
   FGlobalCppSearchPaths.Duplicates := dupIgnore;
+  FGlobalCppLibraryPaths.Duplicates := dupIgnore;
 
   FDisabledPackages := TDelphiPackageList.Create;
   FKnownIDEPackages := TDelphiPackageList.Create;
@@ -533,6 +537,7 @@ begin
   FDebugDcuPaths.Free;
   FGlobalIncludePaths.Free;
   FGlobalCppSearchPaths.Free;
+  FGlobalCppLibraryPaths.Free;
 
   FDisabledPackages.Free;
   FKnownIDEPackages.Free;
@@ -810,6 +815,22 @@ begin
     FGlobalIncludePaths.Clear;
     FGlobalCppSearchPaths.Clear;
 
+    // Must read personalities before using library paths.
+    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then  // do not localize
+    begin
+      Reg.GetValueNames(FInstalledPersonalities);
+      Reg.CloseKey;
+    end;
+    
+    // IDE Version 5 comes in two flavors: 
+    // - Delphi only  (Spacely)
+    // - C++ Builder only  (Cogswell)
+    // In the second case the product name is "C++ Builder" and not "Delphi" 
+    // Right now, the name of an installation of Cogswell on top of Spacely
+    // is not yet known and a way to detect it will have to be thought of.
+    if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+      FName := 'Codegear C++ Builder for Win32';
+
     // get library paths
     if IsBDS and (IDEVersion >= 5) and FileExists(GetEnvOptionsFileName) then
     begin
@@ -825,7 +846,10 @@ begin
           PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DCPOutput']; // do not localize
           if Assigned(PropertyNode) then
             FDCPOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
+          if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBPLOutputPath'] // do not localize
+          else
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
           if Assigned(PropertyNode) then
             FBPLOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
           PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath']; // do not localize
@@ -840,6 +864,20 @@ begin
           PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath']; // do not localize
           if Assigned(PropertyNode) then
             ConvertPathList(PropertyNode.Value, FDebugDcuPaths);
+            
+            
+          if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+          begin
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FGlobalIncludePaths); // do not localize
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32LibraryPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FGlobalCppSearchPaths); // do not localize
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FGlobalCppLibraryPaths); // do not localize
+          end;
         end;
       finally
         EnvOptions.Free;
@@ -865,6 +903,7 @@ begin
         ConvertPathList(Reg.ReadString('Debug DCU Path'), FDebugDcuPaths); // do not localize
       Reg.CloseKey;
     end;
+    
     if (FDebugDcuPaths.Count = 0) and Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
     begin
       ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
@@ -875,12 +914,6 @@ begin
     begin
       ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
       ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
-      Reg.CloseKey;
-    end;
-
-    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then
-    begin
-      Reg.GetValueNames(FInstalledPersonalities);
       Reg.CloseKey;
     end;
   finally
@@ -1006,6 +1039,12 @@ begin
       PropertyGroupNode.Items.ItemNamed['Win32LibraryPath'].Value := ConvertPathList(FSearchPaths); // do not localize
       PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath'].Value := ConvertPathList(FDebugDcuPaths); // do not localize
 
+      if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+      begin
+        PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath'].Value := ConvertPathList(FGlobalIncludePaths); // do not localize
+        PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath'].Value := ConvertPathList(FGlobalCppLibraryPaths); // do not localize
+      end;
+
       EnvOptions.SaveToFile(GetEnvOptionsFileName);
     finally
       EnvOptions.Free;
@@ -1030,7 +1069,9 @@ begin
         Reg.WriteString('Debug DCUs Path', S); // do not localize
       Reg.CloseKey;
     end;
-    if IsBDS and Reg.OpenKey(RegistryKey + '\CppPaths', False) then // meight not exist
+    if IsBDS and
+       (((IDEVersion >= 5) and Reg.OpenKey(RegistryKey + '\C++\Paths', False)) or  // might not exist  // do not localize
+        Reg.OpenKey(RegistryKey + '\CppPaths', False)) then     // might not exist  // do not localize
     begin
       S := ConvertPathList(FGlobalIncludePaths);
       if not Reg.ValueExists('IncludePath') or (S <> Reg.ReadString('IncludePath')) then
@@ -1038,6 +1079,9 @@ begin
       S := ConvertPathList(FGlobalCppSearchPaths);
       if not Reg.ValueExists('SearchPath') or (S <> Reg.ReadString('SearchPath')) then
         Reg.WriteString('SearchPath', S);
+      S := ConvertPathList(FGlobalCppLibraryPaths);
+      if not Reg.ValueExists('LibraryPath') or (S <> Reg.ReadString('LibraryPath')) then
+        Reg.WriteString('LibraryPath', S);
       Reg.CloseKey;
     end;
 
@@ -1103,7 +1147,7 @@ function TCompileTarget.TargetType: string;
 begin
   if IsBDS then
   begin
-    if SupportsPersonalities([persDelphi]) then
+    if SupportsPersonalities([persDelphi]) or (Version >= 4) then  // Versions 4 and upper support dual mode packages
       Result := 'D' // do not localize
     else
     if SupportsPersonalities([persBCB]) then

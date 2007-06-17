@@ -75,6 +75,9 @@ const
   {$ENDIF !COMPILER7_UP}
 
   CS_DROPSHADOW = $00020000;
+  {$IFDEF DELPHI11_UP}
+  {$EXTERNALSYM CS_DROPSHADOW}
+  {$ENDIF DELPHI11_UP}
 
   //==========================================================================
   {$IFDEF VCL}
