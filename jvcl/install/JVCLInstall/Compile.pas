@@ -1588,7 +1588,7 @@ begin
         Project := ProjectOrder[i];
         CaptureLinePackageCompilation('[Compiling: ' + Project.TargetName + ']', FAborted);
 
-        if TargetConfig.Target.IsBCB then
+        if TargetConfig.Target.IsBCB and not TargetConfig.Target.IsBDS then
         begin
           if CompileCppPackage(TargetConfig, Project, DccOpt, '', '', DebugUnits) <> 0 then
           begin

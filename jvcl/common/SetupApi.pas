@@ -445,11 +445,18 @@ const
 
   SPFILENOTIFY_STARTREGISTRATION = $00000019;
   SPFILENOTIFY_ENDREGISTRATION   = $00000020;
+  {$IFDEF COMPILER11_UP}
+  {$EXTERNALSYM SPFILENOTIFY_STARTREGISTRATION}
+  {$EXTERNALSYM SPFILENOTIFY_ENDREGISTRATION}
+  {$ENDIF COMPILER11_UP}
 
 //
 // Extended notification for SetupScanFileQueue(Flags=SPQ_SCAN_USE_CALLBACK_SIGNERINFO)
 //
   SPFILENOTIFY_QUEUESCAN_SIGNERINFO = $00000040;
+  {$IFDEF COMPILER11_UP}
+  {$EXTERNALSYM SPFILENOTIFY_QUEUESCAN_SIGNERINFO}
+  {$ENDIF COMPILER11_UP}
 
 //
 // Copy notification. These are bit flags that may be combined.
@@ -1300,6 +1307,10 @@ type
   end;
   {$EXTERNALSYM SP_MOVEDEV_PARAMS}
   TSPMoveDevParams = SP_MOVEDEV_PARAMS;
+  {$IFDEF COMPILER11_UP}
+  {$EXTERNALSYM PSPMoveDevParams}
+  {$EXTERNALSYM TSPMoveDevParams}
+  {$ENDIF COMPILER11_UP}
 
 //
 // Values indicating a change in a device's state
@@ -2484,6 +2495,9 @@ const
 // Flags used by SetupUninstallOEMInf
 //
   SUOI_FORCEDELETE = $00000001;
+  {$IFDEF COMPILER11_UP}
+  {$EXTERNALSYM SUOI_FORCEDELETE}
+  {$ENDIF COMPILER11_UP}
 //
 // Flags for SetupCreateDiskSpaceList
 //
@@ -2538,7 +2552,7 @@ const
   FLG_ADDREG_KEYONLY_COMMON = $00002000;   // same as FLG_ADDREG_KEYONLY but also works for DELREG
   {$EXTERNALSYM FLG_ADDREG_KEYONLY_COMMON}
   FLG_ADDREG_32BITKEY       = $00004000;   // make this change in the 32 bit registry.
-  {$EXTERNALSYM FLG_ADDREG_OVERWRITEONLY}
+  {$EXTERNALSYM FLG_ADDREG_32BITKEY}
   //
   // The INF may supply any arbitrary data type ordinal in the highword except
   // for the following: REG_NONE, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ.  If this

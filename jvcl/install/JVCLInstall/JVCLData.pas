@@ -1452,6 +1452,8 @@ begin
      [Target.InsertDirMacros(HppDir)]);
     AddPaths(Target.GlobalCppSearchPaths, True, Owner.JVCLDir,
       ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+    AddPaths(Target.GlobalCppLibraryPaths, True, Owner.JVCLDir,
+      [Target.InsertDirMacros(UnitOutDir)]); // do not localize
   end;
 
   // add
@@ -1621,6 +1623,8 @@ begin
      [Target.InsertDirMacros(HppDir)]);
     AddPaths(Target.GlobalCppSearchPaths, False, Owner.JVCLDir,
       ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+    AddPaths(Target.GlobalCppLibraryPaths, False, Owner.JVCLDir,
+      [Target.InsertDirMacros(UnitOutDir)]); // do not localize
   end;
   Target.SavePaths;
 
