@@ -35,8 +35,7 @@
 #include <StdCtrls.hpp>
 #include <Forms.hpp>
 #include "JvComponent.hpp"
-#include "D:\Program Files\Borland\CBuilder5\User Components\JVCL\run\JvThread.hpp" 
-// "JvThread.hpp"
+#include "JvThread.hpp"
 #include "JvThreadDialog.hpp"
 #include "JvComponentBase.hpp"
 #include <ExtCtrls.hpp>
@@ -106,6 +105,9 @@ __published:	// IDE-managed Components
         TCheckBox *cbDeferredDeletion2;
         TCheckBox *cbDeferredDeletion1;
         TButton *btnRemoveZombie;
+    TButton *btnExecuteAndWait;
+    TButton *btnDynamicCreation;
+    TJvThreadSimpleDialog *JvThreadSimpleDialog3;
         void __fastcall JvThread1Execute(TObject *Sender, Pointer Params);
         void __fastcall JvThread2Execute(TObject *Sender, Pointer Params);
         void __fastcall btnStartJob1Click(TObject *Sender);
@@ -142,6 +144,8 @@ __published:	// IDE-managed Components
         void __fastcall cbDeferredDeletion1Click(TObject *Sender);
         void __fastcall cbDeferredDeletion2Click(TObject *Sender);
         void __fastcall btnRemoveZombieClick(TObject *Sender);
+    void __fastcall btnExecuteAndWaitClick(TObject *Sender);
+    void __fastcall btnDynamicCreationClick(TObject *Sender);
 private:	// User declarations
 protected:
 public:		// User declarations
@@ -151,6 +155,7 @@ public:		// User declarations
         __fastcall TForm1(TComponent* Owner);
         void __fastcall Stats1(void);
         void __fastcall Stats2(void);
+        void __fastcall DynamicExecute(TObject *Sender, Pointer Params);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

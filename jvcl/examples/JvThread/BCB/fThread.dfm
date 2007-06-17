@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 228
   Top = 125
   Width = 760
-  Height = 485
+  Height = 510
   Caption = 'JvThread Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 397
-    Height = 458
+    Height = 483
     Align = alLeft
     TabOrder = 0
     object GroupBox1: TGroupBox
@@ -397,7 +397,7 @@ object Form1: TForm1
       Left = 1
       Top = 321
       Width = 395
-      Height = 136
+      Height = 161
       Align = alClient
       Caption = ' Additional tests '
       TabOrder = 2
@@ -478,22 +478,40 @@ object Form1: TForm1
         end
       end
       object btnShowState: TButton
-        Left = 273
-        Top = 104
-        Width = 90
+        Left = 320
+        Top = 106
+        Width = 70
         Height = 25
         Caption = 'Show State'
         TabOrder = 6
         OnClick = btnShowStateClick
       end
       object btnRemoveZombie: TButton
-        Left = 160
-        Top = 104
-        Width = 105
+        Left = 224
+        Top = 106
+        Width = 90
         Height = 25
         Caption = 'Remove Zombie'
         TabOrder = 7
         OnClick = btnRemoveZombieClick
+      end
+      object btnExecuteAndWait: TButton
+        Left = 120
+        Top = 106
+        Width = 98
+        Height = 25
+        Caption = 'Execute and wait'
+        TabOrder = 8
+        OnClick = btnExecuteAndWaitClick
+      end
+      object btnDynamicCreation: TButton
+        Left = 12
+        Top = 106
+        Width = 102
+        Height = 25
+        Caption = 'Dynamic Creation'
+        TabOrder = 9
+        OnClick = btnDynamicCreationClick
       end
     end
   end
@@ -501,7 +519,7 @@ object Form1: TForm1
     Left = 397
     Top = 0
     Width = 355
-    Height = 458
+    Height = 483
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -575,5 +593,16 @@ object Form1: TForm1
     OnTimer = tmrAutoTimer
     Left = 408
     Top = 408
+  end
+  object JvThreadSimpleDialog3: TJvThreadSimpleDialog
+    DialogOptions.FormStyle = fsNormal
+    DialogOptions.ShowDialog = True
+    DialogOptions.ShowModal = False
+    DialogOptions.CancelButtonCaption = 'Cancel'
+    DialogOptions.Caption = 'Job 3 Simple Dialog '
+    DialogOptions.InfoText = 'Infotext'
+    DialogOptions.ShowProgressBar = True
+    Left = 84
+    Top = 448
   end
 end
