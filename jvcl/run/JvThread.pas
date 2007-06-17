@@ -134,6 +134,7 @@ type
   private
     FException: Exception;
     FExceptionAddr: Pointer;
+    FInternalTerminate: Boolean;
     FExecuteEvent: TJvNotifyParamsEvent;
     FOnResumeDone: Boolean;
     FExecuteIsActive: Boolean;
@@ -203,7 +204,8 @@ type
     destructor Destroy; override;
     procedure CancelExecute; virtual;
     function Execute(P: Pointer): TJvBaseThread;
-    procedure ExecuteAndWait(P: Pointer);
+    procedure ExecuteAndWait(P: Pointer); // wait for all threads in list
+    procedure ExecuteThreadAndWait(P: Pointer); // wait only this thread
     procedure ExecuteWithDialog(P: Pointer);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -537,10 +539,8 @@ begin
       FThreads.Add(BaseThread);
       DoBegin;
     except
-      // all possible exceptions in Create and DoBegin
-      // (rom) you get in serious trouble here because you now return terminated thread
-      if Assigned(BaseThread) then
-        BaseThread.Terminate;
+      // We can't terminate right now due to discrepancy between old and recent versions of TThread
+      BaseThread.FInternalTerminate := True;
     end;
 
     if FRunOnCreate and Assigned(BaseThread) then
@@ -556,9 +556,34 @@ begin
 end;
 
 procedure TJvThread.ExecuteAndWait(P: Pointer);
+var
+  B: Boolean;
 begin
-  Execute(P);
-  WaitFor;
+  B := FRunOnCreate;
+  FRunOnCreate := True;
+  try
+    if Assigned(Execute(P)) then
+      WaitFor;  // all threads in list
+  finally
+    FRunOnCreate := B;
+  end;
+end;
+
+procedure TJvThread.ExecuteThreadAndWait(P: Pointer);
+var
+  B: Boolean;
+  Thread: TJvBaseThread;
+begin
+  B := FRunOnCreate;
+  FRunOnCreate := True;
+  try
+    Thread := Execute(P);
+    if Assigned(Thread) then
+      while(not Thread.Finished) do  // wait for this thread
+        Application.HandleMessage;
+  finally
+    FRunOnCreate := B;
+  end;
 end;
 
 procedure TJvThread.Resume(BaseThread: TJvBaseThread);
@@ -569,14 +594,15 @@ begin
   begin
     B := BaseThread.FOnResumeDone;
     BaseThread.Resume;
-    if (not B) and (not BaseThread.Terminated) and (not BaseThread.Finished) then
+    if (not B) and (not BaseThread.FInternalTerminate) and
+       (not BaseThread.Finished) then
      CreateThreadDialogForm;
   end
   else
     Resume; // no target, resume all
 end;
 
-procedure TJvThread.Resume; //All
+procedure TJvThread.Resume; // All
 var
   List: TList;
   I: Integer;
@@ -595,9 +621,8 @@ begin
   end;
 end;
 
-procedure TJvThread.Suspend; // in context of thread in list- suspend itself,
+procedure TJvThread.Suspend;
 var
-  H: DWORD;
   List: TList;
   I: Integer;
   Thread: TJvBaseThread;
@@ -607,15 +632,15 @@ begin
     Thread.Suspend // suspend itself
   else
   begin
-    H := GetCurrentThreadID;
-    List := FThreads.LockList;
+    List := FThreads.LockList;  // suspend all
     try
       for I := 0 to List.Count - 1 do
-      begin
-        Thread := TJvBaseThread(List[I]);
-        if Thread.ThreadID <> H then
-          Thread.Suspend;
-      end;
+        try  // against "Access denied" for already finished threads
+          Thread := TJvBaseThread(List[I]);
+          if not Thread.Finished then // it's faster (prevents raising exceptions in most cases)
+            Thread.Suspend;
+        except
+        end;
     finally
       FThreads.UnlockList;
     end;
@@ -631,7 +656,7 @@ begin
   try
     for I := 0 to List.Count - 1 do
       TJvBaseThread(List[I]).Terminate;
-    Resume; //All
+    Resume; // All
   finally
     FThreads.UnlockList;
   end;
@@ -673,7 +698,7 @@ procedure TJvThread.RemoveZombie(BaseThread: TJvBaseThread); // remove finished 
 begin
   if Assigned(BaseThread) then
   begin
-    if BaseThread.FFinished then
+    if BaseThread.FFinished and (not BaseThread.FreeOnTerminate) then
     begin
       FThreads.Remove(BaseThread);
       BaseThread.Free;
@@ -694,7 +719,7 @@ begin
     for I := List.Count - 1 downto 0 do
     begin
       Thread := TJvBaseThread(List[I]);
-      if Thread.FFinished then
+      if Thread.FFinished and (not Thread.FreeOnTerminate) then
       begin
         FThreads.Remove(Thread);
         Thread.Free;
@@ -755,7 +780,7 @@ begin
   if Assigned(Thread) then
     Result := Thread.ReturnValue
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TJvThread.GetCount: Integer;
@@ -976,13 +1001,15 @@ procedure TJvBaseThread.Resume;
 begin
   if not FOnResumeDone then
   begin
-    // first resume (perhaps deferred)
+    // the first resume (perhaps deferred)
     FOnResumeDone := True;
     if FSender is TJvThread and Assigned(TJvThread(FSender).BeforeResume) then
       try
         TJvThread(FSender).BeforeResume(Self);
       except
-        Self.Terminate;
+        // Self.Terminate;
+        // We can't terminate right now due to discrepancy between old and recent versions TThread
+        FInternalTerminate := True;
       end;
     FExecuteIsActive := True;
   end;
@@ -993,6 +1020,8 @@ procedure TJvBaseThread.Execute;
 begin
   try
     FExecuteIsActive := True;
+    if FInternalTerminate then
+      Self.Terminate;
     FExecuteEvent(Self, FParams);
   except
     on E: Exception do
