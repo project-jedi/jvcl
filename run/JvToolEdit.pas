@@ -1263,13 +1263,13 @@ const
 {$IFDEF VCL}
 
 const
-  ACLO_NONE        = 0;   // don't enumerate anything
-  ACLO_CURRENTDIR  = 1;   // enumerate current directory
-  ACLO_MYCOMPUTER  = 2;   // enumerate MyComputer
-  ACLO_DESKTOP     = 4;   // enumerate Desktop Folder
-  ACLO_FAVORITES   = 8;   // enumerate Favorites Folder
-  ACLO_FILESYSONLY = 16;  // enumerate only the file system
-  ACLO_FILESYSDIRS = 32;  // enumerate only the file system dirs, UNC shares, and UNC servers.
+  ACLO_NONE            = 0;   // don't enumerate anything
+  ACLO_CURRENTDIR      = 1;   // enumerate current directory
+  ACLO_MYCOMPUTER      = 2;   // enumerate MyComputer
+  ACLO_DESKTOP         = 4;   // enumerate Desktop Folder
+  ACLO_FAVORITES       = 8;   // enumerate Favorites Folder
+  ACLO_FILESYSONLY     = 16;  // enumerate only the file system
+  ACLO_FILESYSDIRS     = 32;  // enumerate only the file system dirs, UNC shares, and UNC servers.
 
   //IID_IAutoCompList: TGUID = (D1:$00BB2760; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
   //IID_IObjMgr: TGUID = (D1:$00BB2761; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
@@ -1296,7 +1296,7 @@ const
   //#endif
 
 type
-  {$IFDEF CLR}
+{$IFDEF CLR}
   TAutoCompleteSource = class(TInterfacedObject, IEnumString)
   private
     FComboEdit: TJvCustomComboEdit;
@@ -1310,7 +1310,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
-  {$ELSE}
+{$ELSE}
   TAutoCompleteSource = class(TInterfacedObject, IEnumString)
   private
     FComboEdit: TJvCustomComboEdit;
@@ -1324,7 +1324,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
-  {$ENDIF CLR}
+{$ENDIF CLR}
 
   {$IFDEF CLR}
   [ComImport, InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
@@ -2959,11 +2959,18 @@ begin
       end;
       SetDirectInput(DirectInput);
       Invalidate;
-      if Accept and AcceptPopup(AValue) and EditCanModify then
-      begin
-        AcceptValue(AValue);
-        if FFocused then
-          inherited SelectAll;
+      try
+        if Accept and AcceptPopup(AValue) and EditCanModify then
+        begin
+          AcceptValue(AValue);
+          if FFocused then
+            inherited SelectAll;
+        end
+        else
+          Reset;
+      except
+        Reset;
+        raise;
       end;
     finally
       FPopupVisible := False;
@@ -4007,7 +4014,7 @@ begin
       if CanFocus then
         SetFocus;
       ADate := Self.Date;
-      if DoInvalidDate(Text, ADate) then
+      if DoInvalidDate(Text,ADate) then
         Self.Date := ADate
       else
         raise;
@@ -4017,7 +4024,7 @@ begin
       if CanFocus then
         SetFocus;
       ADate := Self.Date;
-      if DoInvalidDate(Text, ADate) then
+      if DoInvalidDate(Text,ADate) then
         Self.Date := ADate
       else
         raise;

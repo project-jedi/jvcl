@@ -96,7 +96,7 @@ type
     FDisplayEmpty: string;
     FSearchText: string;
     FEmptyValue: string;
-    FEmptyStrIsNull: Boolean; // Polaris
+    FEmptyStrIsNull: Boolean;
     FEmptyItemColor: TColor;
     FListActive: Boolean;
     FPopup: Boolean;
@@ -140,7 +140,7 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetDisplayEmpty(const Value: string);
     procedure SetEmptyValue(const Value: string);
-    procedure SetEmptyStrIsNull(const Value: Boolean); // Polaris
+    procedure SetEmptyStrIsNull(const Value: Boolean);
     procedure SetEmptyItemColor(Value: TColor);
     procedure SetLookupField(const Value: string);
     procedure SetValueKey(const Value: string);
@@ -179,7 +179,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DisplayEmpty: string read FDisplayEmpty write SetDisplayEmpty;
     property EmptyValue: string read FEmptyValue write SetEmptyValue stored StoreEmpty;
-    property EmptyStrIsNull: Boolean read FEmptyStrIsNull write SetEmptyStrIsNull default True; // Polaris
+    property EmptyStrIsNull: Boolean read FEmptyStrIsNull write SetEmptyStrIsNull default True;
     property EmptyItemColor: TColor read FEmptyItemColor write SetEmptyItemColor default clWindow;
     property IgnoreCase: Boolean read FIgnoreCase write FIgnoreCase default True;
     property IndexSwitch: Boolean read FIndexSwitch write FIndexSwitch default True;
@@ -199,7 +199,7 @@ type
     property Value: string read FValue write SetValue stored False;
     property DisplayValue: string read FDisplayValue write SetDisplayValue stored False;
     property KeyValue: Variant read GetKeyValue write SetKeyValue stored False;
-    procedure SetFieldValue(Field: TField; const Value: string); // Polaris
+    procedure SetFieldValue(Field: TField; const Value: string);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnGetImage: TGetImageEvent read FOnGetImage write FOnGetImage;
   public
@@ -284,7 +284,7 @@ type
     property DragMode;
     property EmptyItemColor;
     property EmptyValue;
-    property EmptyStrIsNull; // Polaris
+    property EmptyStrIsNull; 
     property Enabled;
     property FieldsDelimiter;
     property Font;
@@ -439,7 +439,7 @@ type
     property Value;
     property KeyValue;
   published
-    property Align; // Polaris
+    property Align;
     property DropDownAlign: TDropDownAlign read FDropDownAlign write FDropDownAlign default daLeft;
     property DropDownCount: Integer read FDropDownCount write FDropDownCount default 8;
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
@@ -452,7 +452,7 @@ type
     property DragCursor;
     property DragMode;
     property EmptyValue;
-    property EmptyStrIsNull; // Polaris
+    property EmptyStrIsNull;
     property EmptyItemColor;
     property Enabled;
     property FieldsDelimiter;
@@ -536,6 +536,7 @@ type
     FPopupOnlyLocate: Boolean;
     FOnCloseUp: TNotifyEvent;
     FOnDropDown: TNotifyEvent;
+    FBeforePopupValue: Variant;
     function GetListStyle: TLookupListStyle;
     procedure SetListStyle(Value: TLookupListStyle);
     function GetFieldsDelimiter: Char;
@@ -788,7 +789,7 @@ begin
   FLookupLink.FDataControl := Self;
   FListFields := TList.Create;
   FEmptyValue := '';
-  FEmptyStrIsNull := True; // Polaris
+  FEmptyStrIsNull := True;
   FEmptyItemColor := clWindow;
   FValue := FEmptyValue;
   FLocate := CreateLocate(nil);
@@ -868,10 +869,12 @@ end;
 function TJvLookupControl.GetKeyValue: Variant;
 begin
   if ValueIsEmpty(Value) then
+  begin
     if (Value = '') and FEmptyStrIsNull then
-      Result := Null // Polaris
+      Result := Null
     else
-      Result := FEmptyValue // Polaris
+      Result := FEmptyValue;
+  end
   else
     Result := Value;
 end;
@@ -879,10 +882,9 @@ end;
 procedure TJvLookupControl.SetKeyValue(const Value: Variant);
 begin
   if VarIsNull(Value) then
-    Self.Value := FEmptyValue // Polaris
+    Self.Value := FEmptyValue
   else
     Self.Value := Value;
-  //  Self.Value := Value;
 end;
 
 procedure TJvLookupControl.CheckNotCircular;
@@ -1178,7 +1180,7 @@ begin
     (FMasterField = nil) or FDataLink.Edit then
   begin
     if FDataLink.Edit then
-      SetFieldValue(FMasterField, FEmptyValue); // Polaris
+      SetFieldValue(FMasterField, FEmptyValue);
     FValue := FEmptyValue;
     FDisplayValue := '';
     inherited Text := DisplayEmpty;
@@ -1200,8 +1202,7 @@ begin
     begin
       if FDataField = FMasterField then
         FDataField.DataSet.Edit;
-      // FMasterField.AsString := Value;
-      SetFieldValue(FMasterField, Value); // Polaris
+      SetFieldValue(FMasterField, Value);
     end
     else
       Exit;
@@ -1281,8 +1282,6 @@ begin
   end;
 end;
 
-// Polaris begin
-
 procedure TJvLookupControl.SetFieldValue(Field: TField; const Value: string);
 begin
   if Value = FEmptyValue then
@@ -1306,7 +1305,6 @@ begin
         SetFieldValue(FDataField, FValue);
   end;
 end;
-// Polaris end
 
 procedure TJvLookupControl.SetEmptyItemColor(Value: TColor);
 begin
@@ -1323,20 +1321,18 @@ begin
 end;
 
 procedure TJvLookupControl.SetDisplayValue(const Value: string);
-{var S: string; }// Polaris
 begin
   if (FDisplayValue <> Value) and CanModify and (FDataLink.DataSource <> nil) and
     Locate(FDisplayField, Value, True) then
   begin
-    // S := FValue;  // Polaris
     if FDataLink.Edit then
     begin
       // if FMasterField <> nil then FMasterField.AsString := S
       //   else FDataField.AsString := S;
       if FMasterField <> nil then
-        SetFieldValue(FMasterField, FValue) // Polaris
+        SetFieldValue(FMasterField, FValue)
       else
-        SetFieldValue(FDataField, FValue); // Polaris
+        SetFieldValue(FDataField, FValue);
     end;
   end
   else
@@ -1369,17 +1365,17 @@ end;
 procedure TJvLookupControl.SetValue(const Value: string);
 begin
   if Value <> FValue then
-  begin // Polaris // begin added
+  begin
     if CanModify and (FDataLink.DataSource <> nil) and FDataLink.Edit then
     begin
       // if FMasterField <> nil then FMasterField.AsString := Value
       //   else FDataField.AsString := Value;
       if FMasterField <> nil then
-        SetFieldValue(FMasterField, Value) // Polaris
+        SetFieldValue(FMasterField, Value)
       else
-        SetFieldValue(FDataField, Value); // Polaris
+        SetFieldValue(FDataField, Value);
     end
-    else // begin  // Polaris
+    else
       SetValueKey(Value);
     Change;
   end;
@@ -2780,9 +2776,8 @@ begin
     if (Key = Esc) and FEscapeClear and (not ValueIsEmpty(FValue)) and CanModify then
     begin
       ResetField;
-      // Key := #0;
       if FValue = FEmptyValue then
-        Key := #0; // Polaris
+        Key := #0;
     end;
   end;
   inherited KeyPress(Key);
@@ -2821,7 +2816,7 @@ begin
       FAlignment := FDataField.Alignment;
     end}
       if ValueIsEmpty(FValue) then
-      begin // Polaris
+      begin
         inherited Text := DisplayEmpty;
         FAlignment := taLeftJustify;
       end
@@ -2847,9 +2842,9 @@ begin
   end
   else
   begin
-    if csDesigning in ComponentState then // Polaris
-      inherited Text := DisplayEmpty // Polaris
-    else // Polaris
+    if csDesigning in ComponentState then
+      inherited Text := DisplayEmpty
+    else
       inherited Text := '';
     if FDisplayValues <> nil then
       FDisplayValues.Clear;
@@ -3163,7 +3158,7 @@ begin
     SetRect(R, 1, 1, W - 1, ClientHeight - 1);
     if TextMargin > 0 then
       Inc(TextMargin);
-    X := 0 {2} + TextMargin; // Polaris
+    X := 0 {2} + TextMargin;
     if not (FListVisible and (FDataList.FSearchText <> '')) and not DrawList then
       case Alignment of
         taRightJustify:
@@ -3681,6 +3676,7 @@ begin
       RowCount := FDropDownCount;
     end;
   end;
+  FBeforePopupValue := GetPopupValue;
   inherited PopupDropDown(False);
 end;
 
@@ -3756,6 +3752,7 @@ begin
     TJvPopupDataWindow(FPopup).Value := TJvPopupDataWindow(FPopup).EmptyValue
   else
     TJvPopupDataWindow(FPopup).DisplayValue := Value;
+  FBeforePopupValue := GetPopupValue;
 end;
 
 function TJvDBLookupEdit.GetPopupValue: Variant;
@@ -3769,7 +3766,7 @@ end;
 
 function TJvDBLookupEdit.AcceptPopup(var Value: Variant): Boolean;
 begin
-  Result := True;
+  Result := Value <> FBeforePopupValue;
   if Assigned(FOnCloseUp) then
     FOnCloseUp(Self);
 end;

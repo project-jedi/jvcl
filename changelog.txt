@@ -1,5 +1,9 @@
 Changelog for JVCL 3.X
 ======================
+2007-05-27
+- Added new TJvProgressBar features for Windows XP (Marquee) and Vista (SmoothReverse, State) // ahuser
+2007-05-16
+- New component TJvDBCheckBox introducing the OnChange/OnChanging events which only trigger on user interaction // ahuser
 2006-09-25
 - New Component TJvBaseDatasetThreadHandler to create Threaded Dataset Descendants of "any" TDataset-Component with
   low efforts. Two sample implementations : TJvOracleDataset and TJvOdacSmartQuery.

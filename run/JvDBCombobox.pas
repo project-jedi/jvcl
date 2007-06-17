@@ -72,6 +72,7 @@ type
     procedure DoExit; override;
     procedure Change; override;
     procedure Click; override;
+    procedure Reset;
     
     // This may cause trouble with BCB because it uses a HWND parameter
     // but as it is defined in the VCL itself, we can't do much. 
@@ -416,24 +417,45 @@ begin
     SendMessage(EditHandle, EM_SETREADONLY, Ord(not FDataLink.Editing), 0);
 end;
 
+procedure TJvCustomDBComboBox.Reset;
+begin
+  DataChange(Self); {Restore text}
+end;
+
 procedure TJvCustomDBComboBox.WndProc(var Msg: TMessage);
 begin
   if not (csDesigning in ComponentState) then
     case Msg.Msg of
       WM_COMMAND:
         if TWMCommand(Msg).NotifyCode = CBN_SELCHANGE then
-          if not FDataLink.Edit then
-          begin
-            if Style <> csSimple then
-              PostMessage(Handle, CB_SHOWDROPDOWN, 0, 0);
-            Exit;
+        begin
+          try
+            if not FDataLink.Edit then
+            begin
+              if Style <> csSimple then
+                PostMessage(Handle, CB_SHOWDROPDOWN, 0, 0);
+              Exit;
+            end
+            else
+              Reset;
+          except
+            Reset;
+            raise;
           end;
+        end;
       CB_SHOWDROPDOWN:
         if Msg.WParam <> 0 then
-          FDataLink.Edit
+        begin
+          try
+            FDataLink.Edit;
+          except
+            Reset;
+            raise;
+          end;
+        end
         else
         if not FDataLink.Editing then
-          DataChange(Self); {Restore text}
+          Reset;
       WM_CREATE, WM_WINDOWPOSCHANGED, CM_FONTCHANGED:
         FPaintControl.DestroyHandle;
     end;
@@ -455,7 +477,7 @@ end;
 
 procedure TJvCustomDBComboBox.DoExit;
 begin
-  try
+  try          
     FDataLink.UpdateRecord;
   except
     SelectAll;

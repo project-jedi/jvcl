@@ -89,7 +89,7 @@ uses
   {$IFDEF CLR}
   System.Text, System.Security, System.Runtime.InteropServices,
   {$ENDIF CLR}
-  Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
+  Windows, Messages, SysUtils, Classes, Controls, Menus, StdCtrls, TypInfo,
   JvTypes;
 
 type
@@ -165,9 +165,12 @@ type
     procedure SetEdit(const Value: TWinControl);
     function GetClipboardCommands: TJvClipboardCommands;
     procedure UpdateItems;
+    function GetEditHandle: THandle;
+    property EditHandle: THandle read GetEditHandle;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
+    destructor Destroy; override;
     property Edit: TWinControl read FEdit write SetEdit;
     // property PopupMenu: TPopupMenu read GetPopupMenu;
   end;
@@ -200,7 +203,7 @@ end;
 function THiddenPopupObject.CanUndo: Boolean;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Result := SendMessage(Edit.Handle, EM_CANUNDO, 0, 0) <> 0
+    Result := SendMessage(EditHandle, EM_CANUNDO, 0, 0) <> 0
   else
     Result := False;
 end;
@@ -269,7 +272,14 @@ begin
     if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.Undo
     else
-      Edit.Perform(WM_UNDO, 0, 0);
+    begin
+      {$IFDEF COMPILER6_UP} // Delphi 5 is not supported
+      if Edit is TCustomCombo then
+        SendMessage(EditHandle, WM_UNDO, 0, 0)
+      else
+      {$ENDIF COMPILER6_UP}
+        Edit.Perform(WM_UNDO, 0, 0);
+    end;
   end;
 end;
 
@@ -468,6 +478,21 @@ begin
   end;
 end;
 
+
+{$IFDEF COMPILER6_UP} // Delphi 5 is not supported
+type
+  TOpenCustomCombo = class(TCustomCombo);
+{$ENDIF COMPILER6_UP}
+
+function THiddenPopupObject.GetEditHandle: THandle;
+begin
+  Result := Edit.Handle;
+  {$IFDEF COMPILER6_UP} // Delphi 5 is not supported
+  if Edit is TCustomCombo then
+    Result := TOpenCustomCombo(Edit).FEditHandle;
+  {$ENDIF COMPILER6_UP}
+end;
+
 function THiddenPopupObject.GetTextLen: Integer;
 begin
   if (Edit <> nil) and Edit.HandleAllocated then
@@ -479,7 +504,7 @@ end;
 function THiddenPopupObject.ReadOnly: Boolean;
 begin
   if (Edit <> nil) and Edit.HandleAllocated then
-    Result := GetWindowLong(Edit.Handle, GWL_STYLE) and ES_READONLY = ES_READONLY
+    Result := GetWindowLong(EditHandle, GWL_STYLE) and ES_READONLY = ES_READONLY
   else
     Result := False;
 end;
@@ -503,7 +528,7 @@ begin
     try
       Marshal.StructureToPtr(TObject(StartPos), p1, True);
       Marshal.StructureToPtr(TObject(EndPos), p2, True);
-      MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(p1), Longint(p2));
+      MsgResult := SendMessage(EditHandle, EM_GETSEL, Longint(p1), Longint(p2));
       StartPos := Marshal.ReadInt32(p1);
       EndPos := Marshal.ReadInt32(p2);
     finally
@@ -511,7 +536,7 @@ begin
       Marshal.FreeHGlobal(p2);
     end;
     {$ELSE}
-    MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(@StartPos), Longint(@EndPos));
+    MsgResult := SendMessage(EditHandle, EM_GETSEL, Longint(@StartPos), Longint(@EndPos));
     {$ENDIF CLR}
     Result := EndPos - StartPos;
     if (Result <= 0) and (MsgResult > 0) then
@@ -540,7 +565,13 @@ procedure THiddenPopupObject.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FEdit) then
-    FEdit := nil;
+    Edit := nil;
+end;
+
+destructor THiddenPopupObject.Destroy;
+begin
+  Edit := nil;
+  inherited Destroy;
 end;
 
 initialization

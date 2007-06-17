@@ -693,6 +693,7 @@ begin
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftInterface, System.TypeInfo(IUnknown)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftIDispatch, System.TypeInfo(IDispatch)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftGUID, System.TypeInfo(string)));
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftOraClob, System.TypeInfo(string)));
   end;
 end;
 

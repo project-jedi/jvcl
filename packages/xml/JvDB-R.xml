@@ -16,7 +16,7 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>    
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
@@ -41,6 +41,7 @@
     <Package Name="SMExportD7" Targets="d7" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2005" Targets="d9" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2006" Targets="d10" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2007" Targets="d11" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC5" Targets="c5" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD5" Targets="d5" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -48,6 +49,7 @@
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2006" Targets="d10" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2007" Targets="d11" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="cxGridVCLC5" Targets="c5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridVCLD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
@@ -55,17 +57,19 @@
     <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="DOA40C5" Targets="c5" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="DOA40C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="DOA40D5" Targets="d5" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="DOA40D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="DOA40D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="DOA40D2005" Targets="d9" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="DOA40D2006" Targets="d10" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="DOA41C5" Targets="c5" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D5" Targets="d5" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2005" Targets="d9" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2006" Targets="d10" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="ODAC50" Targets="d5" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC60" Targets="d6" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB" Formname="" Condition=""/>
@@ -119,5 +123,6 @@
     <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
     <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB" Formname="" Condition=""/>
 </Contains>
 </Package>

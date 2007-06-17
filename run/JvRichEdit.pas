@@ -358,7 +358,7 @@ type
   TRtfToForeign32 = function(ghszFile: THandle; pstgForeign: Pointer; ghBuff, ghshClass: THandle;
     lpfnIn: PFN_RTF): FCE; stdcall;
   { long PASCAL CchFetchLpszError(long fce, char FAR *lpszError, long cb); }
-  TCchFetchLpszError = function(fce: Longint; lpszError: PChar; cb: Longint): Longint stdcall;
+  TCchFetchLpszError = function(fce: Longint; lpszError: PChar; cb: Longint): Longint; stdcall;
   { long PASCAL FRegisterConverter(HANDLE hkeyRoot); }
   TFRegisterConverter = function(hkeyRoot: THandle): Longint; stdcall;
 
@@ -1861,7 +1861,9 @@ function TCookie.LoadW(Buffer: PByte; BufferSize: Integer): Longint;
 var
   pBuff: PWideChar;
 begin
-  BufferSize := BufferSize div 2;
+  // AdjustLineBreaksW can double the needed buffer size; so tell the converter
+  // to use only half the buffer and (Mantis #4129) ensure BufferSize is even.
+  BufferSize := (BufferSize div 4) * 2;
   Result := 0;
   pBuff := PWideChar(Buffer) + BufferSize div 2;
   if Converter <> nil then

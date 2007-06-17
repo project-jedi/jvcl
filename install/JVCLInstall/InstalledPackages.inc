@@ -43,6 +43,8 @@ begin
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2005.dcp')
   else if Target.Version = 10 then
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2006.dcp')
+  else if Target.Version = 11 then
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2007.dcp')
   else
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMExport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
 end;
@@ -55,6 +57,8 @@ begin
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2005.dcp')
   else if Target.Version = 10 then
     Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2006.dcp')
+  else if Target.Version = 11 then
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2007.dcp')
   else
     Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMImport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
 end;
@@ -83,32 +87,37 @@ end;
 { DevExpress CX-Editors }
 function Opt_CXEditorComponents(Target: TCompileTarget): Boolean;
 begin
-  if (Target.Version >= 9) then
-    Result := FileExists(GetSystemDir+(Format('\cxEditors%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])))
-  else
-    Result := FileExists(GetSystemDir+(Format('\cxEditorsVCL%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])));
+//  if (Target.Version >= 9) then
+//    Result := FileExists(GetSystemDir+(Format('\cxEditors%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])))
+//  else
+//    Result := FileExists(GetSystemDir+(Format('\cxEditorsVCL%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])));
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
 { DevExpress CX-Grid }
 function Opt_CXGridComponents(Target: TCompileTarget): Boolean;
 begin
-  if (Target.Version >= 9) then
-    Result := FileExists(GetSystemDir+(Format('\cxGrid%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])))
-  else
-    Result := FileExists(GetSystemDir+(Format('\cxGridVCL%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])));
+//  if (Target.Version >= 9) then
+//    Result := FileExists(GetSystemDir+(Format('\cxGrid%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])))
+//  else
+//    Result := FileExists(GetSystemDir+(Format('\cxGridVCL%s%d.bpl', [LowerCase(Target.TargetType), Target.Version])));
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
 { DOA Components }
 function Opt_DOAComponents(Target: TCompileTarget): Boolean;
 begin
-  if Target.Version = 9 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa40d2005.dcp')
-  else if Target.Version = 10 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa40d2006.dcp')
-  else
-    Result := FileExists(Target.RootDir + Format('\Projects\bpl\doa40%s%d.bpl', [LowerCase(Target.TargetType), Target.Version]));
+//  if Target.Version = 9 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa41d2005.dcp')
+//  else if Target.Version = 10 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa41d2006.dcp')
+//  else if Target.Version = 11 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa41d2007.dcp')
+//  else
+//    Result := FileExists(Target.RootDir + Format('\Projects\bpl\doa41%s%d.bpl', [LowerCase(Target.TargetType), Target.Version]));
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -117,6 +126,8 @@ function Opt_ODACComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 10 then
     Result := FileExists(Target.RootDir + '\Bin\OdacVcl100.bpl')
+  else if Target.Version = 11 then
+    Result := FileExists(Target.RootDir + '\Bin\OdacVcl105.bpl')
   else
     Result := FileExists(Target.RootDir + Format('\Odac\Bin\OdacVcl%d.bpl', [Target.Version]));
 end;

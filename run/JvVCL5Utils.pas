@@ -158,6 +158,7 @@ function CompareDateTime(const A, B: TDateTime): Integer;
 
 function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
 
+function StrNextChar(const Str: PChar): PChar;
 
 // StrUtils
 function AnsiStartsText(const SubText, Text: string): Boolean;
@@ -995,6 +996,11 @@ begin
   Result := S;
   if Result <> '' then
     CharLowerBuffW(Pointer(Result), Length(Result));
+end;
+
+function StrNextChar(const Str: PChar): PChar;
+begin
+  Result := CharNext(Str);
 end;
 
 

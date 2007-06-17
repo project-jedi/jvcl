@@ -49,6 +49,8 @@ type
 
   IJvDockManager = interface(IDockManager)
     ['{7B0AACBC-E9BF-42F8-9629-E551067090B2}']
+    function GetActiveControl: TControl;
+    procedure SetActiveControl(const Value: TControl);
     function GetGrabberSize: Integer;
     procedure SetGrabberSize(const Value: Integer);
     function GetDockSplitterWidth: Integer;
@@ -82,6 +84,8 @@ type
     // Descends the Tree and Finds and return TWinControls docked to a particular parent.
     procedure ControlQuery(DockedTo: TWinControl; FoundItems: TList);
     {$ENDIF JVDOCK_QUERY}
+    // backwards compatibility: Mantis 4100
+    property ActiveControl: TControl read GetActiveControl write SetActiveControl;
     property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
     property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
@@ -357,6 +361,7 @@ type
       var CtlLevel: Integer; IncludeHide: Boolean = False): TJvDockZone; virtual;
     procedure ForEachAt(Zone: TJvDockZone; Proc: TJvDockForEachZoneProc;
       ScanKind: TJvDockTreeScanKind = tskForward; ScanPriority: TJvDockTreeScanPriority = tspSibling); virtual;
+    function GetActiveControl: TControl; virtual;
     function GetGrabberSize: Integer; virtual;
     function GetBorderHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
@@ -413,6 +418,7 @@ type
     procedure UpdateZone(Zone: TJvDockZone); virtual;
     procedure DrawSplitter(Zone: TJvDockZone); virtual;
     procedure RemoveControl(Control: TControl); virtual;
+    procedure SetActiveControl(const Value: TControl); virtual;
     procedure SetGrabberSize(const Value: Integer); virtual;
     procedure SetNewBounds(Zone: TJvDockZone); virtual;
     procedure SetReplacingControl(Control: TControl);
@@ -2861,6 +2867,18 @@ begin
   end
   else
     Result := nil;
+end;
+
+function TJvDockTree.GetActiveControl: TControl;
+begin
+  Result := Screen.ActiveControl;
+  if not DockSite.ContainsControl(Result) then
+    Result := nil;
+end;
+
+procedure TJvDockTree.SetActiveControl(const Value: TControl);
+begin
+  {ignore}
 end;
 
 function TJvDockTree.GetGrabberSize: Integer;
