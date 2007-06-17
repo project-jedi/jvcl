@@ -1,5 +1,5 @@
 To:
-news://server.amis.tv/nzn.fr.delphi
+news://amis.grizzlydev.com/nzn.fr.delphi
 news://news.delphinaute.be/delphi
 Developpez.com (delphi@redaction-developpez.com)
 
