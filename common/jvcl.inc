@@ -117,12 +117,12 @@ ALERT_jedi_inc_incompatible
 {$ENDIF BCB6}
 {-----------------------------------------------------------------------------}
 {$IFDEF BCB10}
- {$I jvclc10.inc}
+ {$I jvcld10.inc}   // same include file for BDS based C++
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF BCB10}
 {-----------------------------------------------------------------------------}
 {$IFDEF BCB11}
- {$I jvclc11.inc}
+ {$I jvcld11.inc}   // same include file for BDS based C++
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF BCB11}
 {-----------------------------------------------------------------------------}
