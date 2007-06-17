@@ -31,7 +31,10 @@
 #pragma hdrstop
 #include <stdlib.h>
 
+//#include "D:\Program Files\Borland\CBuilder5\User Components\JVCL\run\JvThread.hpp"
+//#include "JvThread.hpp"
 #include "fThread.h"
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "JvComponent"
@@ -43,6 +46,7 @@
 #pragma resource "*.dfm"
 TForm1 *Form1;
 //---------------------------------------------------------------------------
+int LifeTime=0;
 bool SuspendRandomThread=false;
 bool RaiseExceptInThread=false;
 //---------------------------------------------------------------------------
@@ -71,7 +75,11 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::JvThread1Execute(TObject *Sender, Pointer Params)
 {
+// old: TJvThread* Container=dynamic_cast<TJvThread*>(Sender);
+
   TJvBaseThread* ThisThread=dynamic_cast<TJvBaseThread*>(Sender);
+  if(ThisThread==NULL) // for testing only
+   throw Exception("Execution error: 'Sender' is not TJvBaseThread object");
 
   if(JvThread1->Terminated) // flag 'Terminated' for current thread; slower then direct ThisThread->Terminated
   { // terminated before resume
@@ -86,9 +94,9 @@ void __fastcall TForm1::JvThread1Execute(TObject *Sender, Pointer Params)
 
   //Do the job here
   k = 0;
-  for(i=0;(i<1000) && !FL_Break;++i)
+  for(i=0; i<1000 && !FL_Break; ++i)
   {
-    for(j=0;j<10;++j)
+    for(j=0; j<10; ++j)
     {
       ++k;
       // I included here ::Sleep(0) unlike the original Delphi code to
@@ -102,14 +110,14 @@ void __fastcall TForm1::JvThread1Execute(TObject *Sender, Pointer Params)
       if(SuspendRandomThread)
       {
        SuspendRandomThread=false;
-       JvThread1->Suspend(); // itself
+       JvThread1->Suspend(); // current thread (i.e. itself)
       }
 
       if(RaiseExceptInThread)
       {
        RaiseExceptInThread=false;
        JvThread1->ReturnValue=666; // for current thread; slower then direct ThisThread->ReturnValue
-       throw Exception("Exception in Job 1, ThreadID="+IntToHex((int)ThisThread->ThreadID, 8));
+       throw Exception("Exception in Job1, ThreadID="+IntToHex((int)ThisThread->ThreadID, 8));
       }
 
       if(JvThread1->Terminated) // flag 'Terminated' for current thread; slower then direct ThisThread->Terminated
@@ -124,10 +132,10 @@ void __fastcall TForm1::JvThread1Execute(TObject *Sender, Pointer Params)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::JvThread2Execute(TObject *Sender, Pointer Params)
 {
-// old TJvThread* Container=dynamic_cast<TJvThread*>(Sender);
+// old: TJvThread* Container=dynamic_cast<TJvThread*>(Sender);
 
   TJvBaseThread* ThisThread=dynamic_cast<TJvBaseThread*>(Sender);
-  if(ThisThread==NULL)
+  if(ThisThread==NULL) // for testing only
    throw Exception("Execution error: 'Sender' is not TJvBaseThread object");
 
   if(ThisThread->Terminated)
@@ -136,10 +144,20 @@ void __fastcall TForm1::JvThread2Execute(TObject *Sender, Pointer Params)
    return;
   }
 
+  if(LifeTime)
+  {
+   // Sleep(LifeTime);
+   int t=GetTickCount();
+   while(GetTickCount()-t<LifeTime);
+
+   ThisThread->ReturnValue=555;
+   return;
+  }
+
   SJobData* Data=reinterpret_cast<SJobData*>(ThisThread->Params); // Data==Params
 
   TJvThread* Container=dynamic_cast<TJvThread*>(ThisThread->Container);
-  if(Container==NULL)
+  if(Container==NULL) // for testing only
    throw Exception("Execution error: container is not TJvThread component");
 
   int i, j, k=0;
@@ -154,48 +172,44 @@ void __fastcall TForm1::JvThread2Execute(TObject *Sender, Pointer Params)
       Form1->ThreadID2 = ThisThread->ThreadID;
       Form1->Value2=k;
       ThisThread->Synchronize(Form1->Stats2);
-// or Container->Synchronize(Form1->Stats2,); // slower then direct ThisThread->Synchronize
+// or Container->Synchronize(Form1->Stats2); // slower then direct ThisThread->Synchronize
 
       if(SuspendRandomThread)
       {
        SuspendRandomThread=false;
-       JvThread2->Suspend(); // itself
+       JvThread2->Suspend(); // current thread (i.e. itself)
       }
 
       if(RaiseExceptInThread)
       {
        RaiseExceptInThread=false;
        ThisThread->ReturnValue=666;
-       throw Exception("Exception in Job 2, ThreadID="+IntToHex((int)ThisThread->ThreadID, 8));
+       throw Exception("Exception in Job2, ThreadID="+IntToHex((int)ThisThread->ThreadID, 8));
       }
     }
   }
 
-  AnsiString s;
-  if(ThisThread->Terminated)
-  {
-   ThisThread->ReturnValue=1;
-   s="Job 2: Terminated";
-  }
-  else
-  {
-   ThisThread->ReturnValue=0;
-   s="Job 2: Normal finish";
-  }
+  if(ThisThread->Terminated) ThisThread->ReturnValue=1;
+  else ThisThread->ReturnValue=0;
 
- if(Data->Dummy[0])
-  ThisThread->SynchMessageDlg(s+": ID=0x"+IntToHex((int)ThisThread->ThreadID, 8), mtInformation, TMsgDlgButtons()<<mbOK, 0);
+  if(Data->Dummy[0])
+  { // Show sample msg before exit
+    AnsiString s;
+    if(ThisThread->Terminated) s="Job2: Terminated";
+    else s="Job2: Normal finish";
+    ThisThread->SynchMessageDlg(s+": ID=0x"+IntToHex((int)ThisThread->ThreadID, 8), mtInformation, TMsgDlgButtons()<<mbOK, 0);
 // or Container->SynchMessageDlg(s+": ID=0x"+IntToHex((int)ThisThread->ThreadID, 8), mtInformation, TMsgDlgButtons()<<mbOK, 0);
+  }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Stats1(void)
 {
-   lbStats1->Caption = "ID:"+IntToHex(ThreadID1, 8)+ " V:"+IntToStr(Value1);
+  lbStats1->Caption = "ID:"+IntToHex(ThreadID1, 8)+ " V:"+IntToStr(Value1);
 }
 
 void __fastcall TForm1::Stats2(void)
 {
-   lbStats2->Caption = "ID:"+IntToHex(ThreadID2, 8)+ " V:"+IntToStr(Value2);
+  lbStats2->Caption = "ID:"+IntToHex(ThreadID2, 8)+ " V:"+IntToStr(Value2);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::btnStartJob1Click(TObject *Sender)
@@ -205,7 +219,7 @@ void __fastcall TForm1::btnStartJob1Click(TObject *Sender)
   if(t)
   {
    int id=t->ThreadID;
-   Memo->Lines->Add("Started Job 1: "+IntToHex(id, 8));
+   Memo->Lines->Add("Job1 started: "+IntToHex(id, 8));
   }
 }
 //---------------------------------------------------------------------------
@@ -216,7 +230,7 @@ void __fastcall TForm1::btnStartJob1SimpleDlgClick(TObject *Sender)
   if(t)
   {
    int id=t->ThreadID;
-   Memo->Lines->Add("Started Job 1 with Simple Dlg: "+IntToHex(id, 8));
+   Memo->Lines->Add("Job1 with Simple Dlg started: "+IntToHex(id, 8));
   }
 }
 //---------------------------------------------------------------------------
@@ -230,7 +244,7 @@ void __fastcall TForm1::btnStartJob2Click(TObject *Sender)
   if(t)
   {
    int id=t->ThreadID;
-   Memo->Lines->Add("Started Job 2: "+IntToHex(id, 8));
+   Memo->Lines->Add("Job2 started: "+IntToHex(id, 8));
   }
   else
    delete Data; // thread was not started
@@ -246,7 +260,7 @@ void __fastcall TForm1::btnStartJob2AnimatedDlgClick(TObject *Sender)
   if(t)
   {
    int id=t->ThreadID;
-   Memo->Lines->Add("Started Job 2 with Animated Dlg: "+IntToHex(id, 8));
+   Memo->Lines->Add("Job2 with Animated Dlg started: "+IntToHex(id, 8));
   }
   else
    delete Data; // thread was not started
@@ -299,8 +313,8 @@ void __fastcall TForm1::cbPriority1Change(TObject *Sender)
  {
   int old=JvThread1->Priority;
   JvThread1->SetPriority((TThreadPriority)p); // all threads
-  if(p>old) Memo->Lines->Add("Job 1 priority boosted");
-  if(p<old) Memo->Lines->Add("Job 1 priority reduced");
+  if(p>old) Memo->Lines->Add("Job1 priority boosted");
+  if(p<old) Memo->Lines->Add("Job1 priority reduced");
  }
 }
 //---------------------------------------------------------------------------
@@ -311,8 +325,8 @@ void __fastcall TForm1::cbPriority2Change(TObject *Sender)
  {
   int old=JvThread2->Priority;
   JvThread2->SetPriority((TThreadPriority)p); // all threads
-  if(p>old) Memo->Lines->Add("Job 2 priority boosted");
-  if(p<old) Memo->Lines->Add("Job 2 priority reduced");
+  if(p>old) Memo->Lines->Add("Job2 priority boosted");
+  if(p<old) Memo->Lines->Add("Job2 priority reduced");
  }
 }
 //---------------------------------------------------------------------------
@@ -320,27 +334,27 @@ void __fastcall TForm1::btnSuspendAll1Click(TObject *Sender)
 {
  cbAutoStart1->Checked=false;
  JvThread1->Suspend(); // all threads
- Memo->Lines->Add("Job 1 suspended");
+ Memo->Lines->Add("Job1 suspended");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::btnSuspendAll2Click(TObject *Sender)
 {
  cbAutoStart2->Checked=false;
  JvThread2->Suspend(); // all threads
- Memo->Lines->Add("Job 2 suspended");
+ Memo->Lines->Add("Job2 suspended");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::btnResumeAll1Click(TObject *Sender)
 {
  JvThread1->Resume(); // all threads
- Memo->Lines->Add("Job 1 resumed");
+ Memo->Lines->Add("Job1 resumed");
  cbAutoStart1->Enabled=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::btnResumeAll2Click(TObject *Sender)
 {
  JvThread2->Resume(); // all threads
- Memo->Lines->Add("Job 2 resumed");
+ Memo->Lines->Add("Job2 resumed");
  cbAutoStart2->Enabled=true;
 }
 //---------------------------------------------------------------------------
@@ -366,24 +380,24 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
   JvThread1->Terminate();
   JvThread2->Terminate();
 
-  Memo->Lines->Add("Waiting for Job1 completion ...");
+  Memo->Lines->Add("Job1: waiting for completion ...");
   JvThread1->WaitFor();
   Memo->Lines->Add("Done");
 
-  Memo->Lines->Add("Waiting for Job2 completion ...");
+  Memo->Lines->Add("Job2: waiting for completion ...");
   JvThread2->WaitFor();
   Memo->Lines->Add("Done");
 
   if(JvThread1->Count)
   {
-   Memo->Lines->Add("Removing zombies in Job 1 ...");
+   Memo->Lines->Add("Job1: removing zombies ...");
    JvThread1->RemoveZombie();
    Memo->Lines->Add("Done");
   }
 
   if(JvThread2->Count)
   {
-   Memo->Lines->Add("Removing zombies in Job 2 ...");
+   Memo->Lines->Add("Job2: removing zombies ...");
    JvThread2->RemoveZombie();
    Memo->Lines->Add("Done");
   }
@@ -417,7 +431,7 @@ void __fastcall TForm1::JvThread1Finish(TObject *Sender)
   int rv=t->ReturnValue;
   TJvThread* Container=dynamic_cast<TJvThread*>(t->Container);
 
-  Memo->Lines->Add("Job 1 Finished: "+IntToHex(id, 8)+" result: "+IntToStr(rv));
+  Memo->Lines->Add("Job1 finished: "+IntToHex(id, 8)+" result: "+IntToStr(rv));
 
   if(rbExOnFinish->Checked)
   {
@@ -425,10 +439,8 @@ void __fastcall TForm1::JvThread1Finish(TObject *Sender)
    throw Exception("OnFinish");
   }
  }
- else
- {
-  Memo->Lines->Add("Job 1 Finished: unknown object 'Sender'");
- }
+ else // for testing only
+  Memo->Lines->Add("Job1 finished: unknown object 'Sender'");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::JvThread2Finish(TObject *Sender)
@@ -440,7 +452,7 @@ void __fastcall TForm1::JvThread2Finish(TObject *Sender)
   int rv=t->ReturnValue;
   TJvThread* Container=dynamic_cast<TJvThread*>(t->Container);
 
-  Memo->Lines->Add("Job2 Finished: "+IntToHex(id, 8)+" result: "+IntToStr(rv));
+  Memo->Lines->Add("Job2 finished: "+IntToHex(id, 8)+" result: "+IntToStr(rv));
   SJobData* data=(SJobData*)t->Params;
   delete data;
 
@@ -450,16 +462,14 @@ void __fastcall TForm1::JvThread2Finish(TObject *Sender)
    throw Exception("OnFinish");
   }
  }
- else
- {
-  Memo->Lines->Add("Finished: unknown object 'Sender'");
- }
+ else // for testing only
+  Memo->Lines->Add("Job2 finished: unknown object 'Sender'");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::JvThread1FinishAll(TObject *Sender)
 {
  TJvThread* Container=dynamic_cast<TJvThread*>(Sender);
- Memo->Lines->Add("Finished all Job 1");
+ Memo->Lines->Add("Job1 finished all");
  if(rbExOnFinishAll->Checked)
  {
   cbAutoStart1->Checked=false; // for preventing endless exception generation
@@ -470,7 +480,7 @@ void __fastcall TForm1::JvThread1FinishAll(TObject *Sender)
 void __fastcall TForm1::JvThread2FinishAll(TObject *Sender)
 {
  TJvThread* Container=dynamic_cast<TJvThread*>(Sender);
- Memo->Lines->Add("Finished all Job 2");
+ Memo->Lines->Add("Job2 finished all");
  if(rbExOnFinishAll->Checked)
  {
   cbAutoStart2->Checked=false; // for preventing endless exception generation
@@ -485,8 +495,8 @@ void __fastcall TForm1::MemoDblClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::tmrStatusTimer(TObject *Sender)
 {
- lbCount1->Caption="Job 1 count: "+IntToStr(JvThread1->Count);
- lbCount2->Caption="Job 2 count: "+IntToStr(JvThread2->Count);
+ lbCount1->Caption="Job1 count: "+IntToStr(JvThread1->Count);
+ lbCount2->Caption="Job2 count: "+IntToStr(JvThread2->Count);
 
  if(JvThread1->Count==0) lbStats1->Caption = "ID:-------- V:-";
  if(JvThread2->Count==0) lbStats2->Caption = "ID:-------- V:-";
@@ -527,16 +537,16 @@ void __fastcall TForm1::btnRemoveZombieClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::btnShowStateClick(TObject *Sender)
-{
+{ // example of use JvThread->Threads[]
  AnsiString s;
  char c;
 
- JvThread1->Lock();   // cleaning up threads with FreeOnTerminate=false
+ JvThread1->Lock();
  try
  {
   if(JvThread1->Count)
   {
-   Memo->Lines->Add("Job 1 list");
+   Memo->Lines->Add("Job1 list");
    Memo->Lines->Add("ID       Active Finished Return Value");
    for(int i=0; i<JvThread1->Count; ++i)
    {
@@ -549,19 +559,19 @@ void __fastcall TForm1::btnShowStateClick(TObject *Sender)
    }
   }
   else
-   Memo->Lines->Add("Job 1 list is empty");
+   Memo->Lines->Add("Job1 list is empty");
  }
  __finally
  {
   JvThread1->Unlock();
  }
 
- JvThread2->Lock();   // cleaning up threads with FreeOnTerminate=false
+ JvThread2->Lock();
  try
  {
   if(JvThread2->Count)
   {
-   Memo->Lines->Add("Job 2 list");
+   Memo->Lines->Add("Job2 list");
    Memo->Lines->Add("ID       Active Finished Return Value");
    for(int i=0; i<JvThread2->Count; ++i)
    {
@@ -574,11 +584,89 @@ void __fastcall TForm1::btnShowStateClick(TObject *Sender)
    }
   }
   else
-   Memo->Lines->Add("Job 2 list is empty");
+   Memo->Lines->Add("Job2 list is empty");
  }
  __finally
  {
   JvThread2->Unlock();
+ }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::btnExecuteAndWaitClick(TObject *Sender)
+{
+ if(rand()&1) JvThread1->ThreadDialog = JvThreadSimpleDialog1;
+ else JvThread1->ThreadDialog = NULL;
+
+ Memo->Lines->Add("Execute and wait ...");
+ // JvThread1->ExecuteAndWait(NULL);
+ JvThread1->ExecuteThreadAndWait(NULL);
+ Memo->Lines->Add("Execute and wait: Done");
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::DynamicExecute(TObject *Sender, Pointer Params)
+{
+  TJvBaseThread* ThisThread=dynamic_cast<TJvBaseThread*>(Sender);
+  if(ThisThread==NULL) // for testing only
+   throw Exception("Execution error: 'Sender' is not TJvBaseThread object");
+
+  if(ThisThread->Terminated)
+  { // terminated before resume
+   ThisThread->ReturnValue=-1;
+   exit;
+  }
+
+  int i, j, k;
+  bool FL_Break=false;
+
+  ThisThread->ReturnValue=0;
+
+  k = 0;
+  for(i=0; i<1000 && !FL_Break; ++i)
+  {
+    for(j=0; j<10; ++j)
+    {
+      ++k;
+      ::Sleep(0);
+      Form1->ThreadID1 = ThisThread->ThreadID;
+      Form1->Value1 = k;
+      ThisThread->Synchronize(Form1->Stats1);
+      if(SuspendRandomThread)
+      {
+       SuspendRandomThread=false;
+       ThisThread->Suspend();
+      }
+      if(RaiseExceptInThread)
+      {
+       RaiseExceptInThread=false;
+       ThisThread->ReturnValue=666;
+       throw Exception("Exception in Job3, ThreadID="+IntToHex((int)ThisThread->ThreadID, 8));
+      }
+      if(ThisThread->Terminated)
+      {
+        FL_Break = true;
+        JvThread1->ReturnValue=1;
+        break;
+      }
+    }
+  }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::btnDynamicCreationClick(TObject *Sender)
+{
+ TJvThread* Container=new TJvThread(NULL);
+ try
+ {
+  Container->OnBegin=(&JvThreadBegin);
+  Container->BeforeResume=(&JvThreadBeforeResume);
+  Container->OnExecute=(&DynamicExecute);
+  Container->ThreadDialog = JvThreadSimpleDialog3;
+  Memo->Lines->Add("Execute and wait Job3 ...");
+  Container->ExecuteAndWait(NULL);
+  Memo->Lines->Add("Execute and wait Job3: Done");
+ }
+ __finally
+ {
+  delete Container;
  }
 }
 //---------------------------------------------------------------------------
