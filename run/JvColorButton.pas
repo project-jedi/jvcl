@@ -261,11 +261,15 @@ begin
     ColorDialog.Options := FOptions;
     {$ENDIF VCL}
     OtherBtn.Caption := FOtherCaption;
+    ColorDialog.Color := FColor;
     ColorDialog.CustomColors.Assign(FCustomColors);
     if ArrowWidth = 0 then
     begin
       if ColorDialog.Execute then
+      begin
         FColor := ColorDialog.Color;
+        FCustomColors.Assign(ColorDialog.CustomColors);
+      end;
       MouseUp(mbLeft, [], X, Y);
     end
     else
