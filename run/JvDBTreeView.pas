@@ -31,6 +31,11 @@ History:
   1.61:
     - support for non-bde components,
       by Yakovlev Vacheslav (jwe att belkozin dott com)
+  3.3: martinalex, Jan 2007
+    - Fix: Add Node, IconField, value set, same value as parent
+    - Fix: Add Node, MasterField, unique value ensured
+    - Fix: Delete node, delete records for all childs
+    - Fix: Drag&drop, move node only for node drop, not for drop of other objects
 
 Known Issues:
   Some russian comments were translated to english; these comments are marked
@@ -106,7 +111,7 @@ type
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
-      
+
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
   protected
@@ -142,6 +147,7 @@ type
     function UpdateLocked: Boolean;
     function AddChildNode(const Node: TTreeNode; const Select: Boolean): TJvDBTreeNode;
     procedure DeleteNode(Node: TTreeNode);
+    function DeleteChildren(ParentNode: TTreeNode): Boolean;
     function FindNextNode(const Node: TTreeNode): TTreeNode;
     function FindNode(AMasterValue: Variant): TJvDBTreeNode;
     function SelectNode(AMasterValue: Variant): TTreeNode;
@@ -294,7 +300,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Dialogs, 
+  SysUtils, Dialogs,
   JvResources;
 
 // (rom) moved to implementation and removed type
@@ -310,7 +316,7 @@ const
 	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
   DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD
 	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
-
+	
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin
   if V = Null then
@@ -1165,22 +1171,39 @@ end;
 
 function TJvCustomDBTreeView.AddChildNode(const Node: TTreeNode; const Select: Boolean): TJvDBTreeNode;
 var
-  MV: Variant;
+  MV, MField: Variant;
   M: string;
+  iIndex: Integer;
 begin
+  iIndex := 1;
   CheckDataSet;
   if Assigned(Node) then
-    MV := (Node as TJvDBTreeNode).FMasterValue
+  begin
+    MV := (Node as TJvDBTreeNode).FMasterValue;
+    MField := FDataLink.DataSet.RecordCount + 1;
+    repeat
+      Inc(MField);
+    until FDataLink.DataSet.Lookup(FMasterField, MField, FMasterField) = Null;
+  end
   else
+  begin
     MV := FStartMasterValue;
+    MField := FStartMasterValue + 1;
+  end;
   if Assigned(Node) and Node.HasChildren and (Node.Count = 0) then
     RefreshChild(Node as TJvDBTreeNode);
   Inc(FUpdateLock);
   InAddChild := True;
   try
     OldRecCount := FDataLink.DataSet.RecordCount + 1;
+    if FIconField <> '' then
+    begin
+      iIndex := Var2Type(FDataLink.DataSet[FIconField], varInteger);
+    end;
+
     FDataLink.DataSet.Append;
     FDataLink.DataSet[FDetailField] := MV;
+    FDataLink.DataSet[FMasterField] := MField;
     if FDataLink.DataSet.FieldValues[FItemField] = Null then
       M := ''
     else
@@ -1191,8 +1214,9 @@ begin
       FMasterValue := FDataLink.DataSet.FieldValues[FMasterField];
       if FIconField <> '' then
       begin
-        ImageIndex := Var2Type(FDataLink.DataSet[FIconField], varInteger);
+        ImageIndex := iIndex;
         SelectedIndex := ImageIndex + FSelectedIndex;
+        FDataLink.DataSet[FIconField] := ImageIndex;
       end;
     end;
     Result.Selected := Select;
@@ -1206,7 +1230,10 @@ end;
 procedure TJvCustomDBTreeView.DeleteNode(Node: TTreeNode);
 var
   NewSel: TTreeNode;
+  NewMV: Variant;
+  MV: Integer;
 begin
+  MV := 0;
   CheckDataSet;
   Inc(FUpdateLock);
   InDelete := True;
@@ -1220,16 +1247,55 @@ begin
         NewSel := nil;
     end;
 
-    FDataLink.DataSet.Delete;
-    Selected.Free;
+    if NewSel <> nil then
+    begin
+      NewMV := TJvDBTreeNode(NewSel).FMasterValue;
+      MV := NewMV;
+    end;
+
+    DeleteChildren(Node);
+    // Selected.Free;  // removes selected node, why?
+
+    NewSel := FindNode(MV);
     if NewSel <> nil then
     begin
       NewSel.Selected := True;
       Change2(NewSel);
     end;
+
   finally
     InDelete := False;
     Dec(FUpdateLock);
+  end;
+end;
+
+function TJvCustomDBTreeView.DeleteChildren(ParentNode: TTreeNode): Boolean;
+var
+  ChildNode: TTreeNode;
+begin
+  CheckDataSet;
+  Inc(FUpdateLock);
+  InDelete := True;
+  try
+    with ParentNode as TJvDBTreeNode do
+    begin
+      while ParentNode.HasChildren do
+      begin
+        ChildNode := ParentNode.GetNext;
+        DeleteChildren(ChildNode);
+      end;
+
+      if FDataLink.DataSet.Locate(FMasterField, TJvDBTreeNode(ParentNode).FMasterValue, []) then
+      begin
+        FDataLink.DataSet.Delete;
+      end;
+      ParentNode.Delete;
+    end;
+
+  finally
+    InDelete := False;
+    Dec(FUpdateLock);
+    Result := true;
   end;
 end;
 
@@ -1329,17 +1395,20 @@ var
 begin
   TimerDnD.Enabled := False;
   inherited DragDrop(Source, X, Y);
-  AnItem := GetNodeAt(X, Y);
-  if ValidDataSet and (DragMode = dmAutomatic) and Assigned(Selected) and Assigned(AnItem) then
+  if Source is TJvDBTreeView  then
   begin
-    HT := GetHitTestInfoAt(X, Y);
-    if (HT - [htOnItem, htOnLabel, htOnIcon, htNowhere, htOnIndent, htOnButton] <> HT) then
+    AnItem := GetNodeAt(X, Y);
+    if ValidDataSet and (DragMode = dmAutomatic) and Assigned(Selected) and Assigned(AnItem) then
     begin
-      if (HT - [htOnItem, htOnLabel, htOnIcon] <> HT) then
-        AttachMode := naAddChild
-      else
-        AttachMode := naAdd;
-      (Selected as TJvDBTreeNode).MoveTo(AnItem, AttachMode);
+      HT := GetHitTestInfoAt(X, Y);
+      if (HT - [htOnItem, htOnLabel, htOnIcon, htNowhere, htOnIndent, htOnButton] <> HT) then
+      begin
+        if (HT - [htOnItem, htOnLabel, htOnIcon] <> HT) then
+          AttachMode := naAddChild
+        else
+          AttachMode := naAdd;
+        (Selected as TJvDBTreeNode).MoveTo(AnItem, AttachMode);
+      end;
     end;
   end;
 {
