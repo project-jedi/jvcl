@@ -16,6 +16,8 @@ Portions created by APRIORI business solutions AG are Copyright (C) 2002 APRIORI
 All Rights Reserved.
 
 Contributor(s):
+     ZENSan : State and AllowGrayed properties
+     Anudedeus (Alexandre Pranke) : State and AllowGrayed properties
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -36,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-  Classes, Windows, Graphics, Controls,
+  Classes, Windows, Graphics, Controls, StdCtrls,
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -49,6 +51,10 @@ type
     FCkGradient: TBitmap;
     FHlGradient: TBitmap;
     FSpacing: Byte;
+    FState: TCheckBoxState;
+    FAllowGrayed: Boolean;
+    procedure SetState(const Value: TCheckBoxState);
+    procedure SetAllowGrayed(const Value: Boolean);
   protected
     procedure SetBoundLines(Value: TJvXPBoundLines); virtual;
     procedure SetChecked(Value: Boolean); virtual;
@@ -59,8 +65,10 @@ type
     procedure HookResized; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property BoundLines: TJvXPBoundLines read FBoundLines write SetBoundLines default [];
+    property AllowGrayed: Boolean read FAllowGrayed write SetAllowGrayed default False;
     property Checked: Boolean read FChecked write SetChecked default False;
     property Spacing: Byte read FSpacing write SetSpacing default 3;
+    property State: TCheckBoxState read FState write SetState default cbUnchecked;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -72,6 +80,7 @@ type
   published
     // common properties.
     property Caption;
+    property AllowGrayed;
     property Enabled;
     property TabOrder;
     property TabStop default True;
@@ -80,6 +89,7 @@ type
     property Checked;
     property Spacing;
     property ParentColor;
+    property State;
     property Color;
     //property BevelInner;
     //property BevelOuter;
@@ -187,8 +197,10 @@ end;
 
 procedure TJvXPCustomCheckControl.Click;
 begin
-  // (rom) using FChecked here seemed wrong (no painting)
-  Checked := not Checked;
+  if not AllowGrayed then
+    Checked := not Checked
+  else
+    State := TCheckBoxState((Byte(State) + 1) mod 3);
   inherited Click;
 end;
 
@@ -220,6 +232,17 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
+procedure TJvXPCustomCheckControl.SetAllowGrayed(const Value: Boolean);
+begin
+  FAllowGrayed := Value;
+  if Value = False then
+    if FState = cbGrayed then
+      begin
+        State := cbUnchecked;
+        LockedInvalidate;
+      end;
+end;
+
 procedure TJvXPCustomCheckControl.SetBoundLines(Value: TJvXPBoundLines);
 begin
   if Value <> FBoundLines then
@@ -234,6 +257,10 @@ begin
   if Value <> FChecked then
   begin
     FChecked := Value;
+    if Value then
+      FState := cbChecked
+    else
+      FState := cbUnchecked;
     LockedInvalidate;
   end;
 end;
@@ -243,6 +270,20 @@ begin
   if Value <> FSpacing then
   begin
     FSpacing := Value;
+    LockedInvalidate;
+  end;
+end;
+
+procedure TJvXPCustomCheckControl.SetState(const Value: TCheckBoxState);
+begin
+  // will not change FState if FAllowGrayed = false and passed Value is cbGrayed
+  if (FState <> Value) and (FAllowGrayed or (Value <> cbGrayed)) then
+  begin
+    FState := Value;
+    if FState = cbChecked then
+      FChecked := True
+    else
+      FChecked := False;
     LockedInvalidate;
   end;
 end;
@@ -392,8 +433,8 @@ begin
         end;
     end;
 
-    // draw checked.
-    if Checked then
+    // draw checked or grayed symbols:
+    if FState in [cbChecked, cbGrayed] then
     begin
       Brush.Color := clSilver;
       Pen.Color := dxColor_Btn_Enb_Border_WXP;
@@ -401,12 +442,27 @@ begin
       try
         Bitmap.Transparent := True;
         Bitmap.Assign(nil); // fixes GDI resource leak
-        Bitmap.LoadFromResourceName(HInstance, 'JvXPCheckboxCHECKBOX');
+        if FState = cbChecked then
+        begin
+          Bitmap.LoadFromResourceName(HInstance, 'JvXPCheckboxCHECKBOX')
+        end
+        else
+        begin
+          Bitmap.Transparent := false;
+          Bitmap.LoadFromResourceName(HInstance, 'JvXPCheckboxCHECKBOXGRAY');
+        end;
         if Theme = WindowsXP then
-          JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
+        begin
+          if FState = cbChecked then
+            JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
+          else
+            JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_GraSymb_WXP);
+        end
         else
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
+        begin
           JvXPColorizeBitmap(Bitmap, clWhite);
+        end;
         {$IFDEF VCL}
         if BiDiMode = bdRightToLeft then
           Draw(R.Right - FCheckSize + 1, (ClientHeight - FCheckSize) div 2 + 3, Bitmap)

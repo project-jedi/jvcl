@@ -1,4 +1,5 @@
 JvXPCheckboxCHECKBOX           BITMAP "XPCoreCheckBox.bmp"
+JvXPCheckboxCHECKBOXGRAY       BITMAP "XPCoreCheckBoxGray.bmp"
 JvXPCustomToolButtonARROWLEFT  BITMAP "XPCoreArrowLeft.bmp"
 JvXPCustomToolButtonARROWRIGHT BITMAP "XPCoreArrowRight.bmp"
 JvXPCustomToolButtonCLOSE      BITMAP "XPCoreClose.bmp"
