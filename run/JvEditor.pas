@@ -2011,6 +2011,7 @@ end;
 
 procedure TJvCustomEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction; const Text: string);
 begin
+  Invalidate;
 end;
 
 function TJvCustomEditor.GetLineCount: Integer;
