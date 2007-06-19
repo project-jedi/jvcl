@@ -148,8 +148,16 @@ begin
 end;
 
 function TJvDateTimePicker.CheckNullValue: Boolean;
+var
+  TestedNullText: string;
 begin
-  Result := CheckNullValue(NullText, Format, Kind, DateTime, NullDate);
+  // Mantis 4058
+  if Focused then
+    TestedNullText := FKeepNullText
+  else
+    TestedNullText := FNullText;
+
+  Result := CheckNullValue(TestedNullText, Format, Kind, DateTime, NullDate);
 end;
 
 function TJvDateTimePicker.CheckNullValue(const ANullText, AFormat: string;
