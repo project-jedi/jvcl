@@ -96,6 +96,7 @@ type
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure ReadAssociated(Reader: TReader);
     procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
+    procedure SetAutoSize(Value: Boolean);
   protected
     function CreateDataConnector: TJvCheckBoxDataConnector; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
@@ -129,7 +130,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     procedure Toggle; override;
+    procedure SetFocus; override;
+
     property Canvas: TCanvas read GetCanvas;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -554,6 +558,26 @@ procedure TJvCheckBox.SetDataConnector(const Value: TJvCheckBoxDataConnector);
 begin
   if Value <> FDataConnector then
     FDataConnector.Assign(Value);
+end;
+
+procedure TJvCheckBox.SetFocus;
+var
+  I: Integer;
+  FocusLinkedControl: TControl;
+begin
+  inherited SetFocus;
+
+  FocusLinkedControl := nil;
+  I := 0;
+  while (I < LinkedControls.Count) and not Assigned(FocusLinkedControl) do
+  begin
+    if (loForceFocus in LinkedControls[I].Options) and (LinkedControls[I].Control is TWinControl) then
+      FocusLinkedControl := LinkedControls[I].Control;
+
+    Inc(I);
+  end;
+  if Assigned(FocusLinkedControl) then
+    TWinControl(FocusLinkedControl).SetFocus;
 end;
 
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);

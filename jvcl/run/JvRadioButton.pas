@@ -91,6 +91,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure SetFocus; override;
+
     property Canvas: TCanvas read GetCanvas;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment;
@@ -273,6 +276,26 @@ begin
       WordWrap := False;
     CalcAutoSize;
   end;
+end;
+
+procedure TJvRadioButton.SetFocus;
+var
+  I: Integer;
+  FocusLinkedControl: TControl;
+begin
+  inherited SetFocus;
+
+  FocusLinkedControl := nil;
+  I := 0;
+  while (I < LinkedControls.Count) and not Assigned(FocusLinkedControl) do
+  begin
+    if (loForceFocus in LinkedControls[I].Options) and (LinkedControls[I].Control is TWinControl) then
+      FocusLinkedControl := LinkedControls[I].Control;
+
+    Inc(I);
+  end;
+  if Assigned(FocusLinkedControl) then
+    TWinControl(FocusLinkedControl).SetFocus;
 end;
 
 function TJvRadioButton.GetCanvas: TCanvas;
