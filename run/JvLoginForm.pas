@@ -83,6 +83,9 @@ type
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
     FOnGetPassword: TJvOnGetPassword;
+    FAppTitleLabelCaption: string;
+    FPasswordLabelCaption: string;
+    FUserNameLabelCaption: string;
     {$IFDEF VCL}
     FUnlockDlgShowing: Boolean;
     FPasswordChar: Char;
@@ -116,6 +119,9 @@ type
     property OnIconDblClick: TNotifyEvent read FOnIconDblClick write FOnIconDblClick;
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
+    property AppTitleLabelCaption: string read FAppTitleLabelCaption write FAppTitleLabelCaption;
+    property PasswordLabelCaption: string read FPasswordLabelCaption write FPasswordLabelCaption;
+    property UserNameLabelCaption: string read FUserNameLabelCaption write FUserNameLabelCaption;
     property OnGetPassword: TJvOnGetPassword read FOnGetPassword write FOnGetPassword;
   public
     constructor Create(AOwner: TComponent); override;
@@ -144,6 +150,9 @@ type
     property Active;
     property AppStorage;
     property AppStoragePath;
+    property AppTitleLabelCaption;
+    property PasswordLabelCaption;
+    property UserNameLabelCaption;
     property AttemptNumber;
     property Caption;
     property MaxPasswordLen;
@@ -414,6 +423,12 @@ begin
     PasswordEdit.PasswordChar := PasswordChar;
     {$ENDIF VCL}
     AttemptNumber := Self.AttemptNumber;
+    if AppTitleLabelCaption <> '' then
+      AppTitleLabel.Caption := AppTitleLabelCaption;
+    if PasswordLabelCaption <> '' then
+      PasswordLabel.Caption := PasswordLabelCaption;
+    if UserNameLabelCaption <> '' then
+      UserNameLabel.Caption := UserNameLabelCaption;
   end;
 end;
 
