@@ -263,6 +263,9 @@ begin
   if csDesigning in ComponentState then
     ComboText := Name
   else
+  if FDataLink <> nil then
+    FDataLink.UpdateRecord
+  else
     ComboText := '';
 end;
 
