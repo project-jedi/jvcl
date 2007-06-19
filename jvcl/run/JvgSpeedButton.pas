@@ -168,7 +168,7 @@ begin
 
   R := ClientRect;
 
-  if FIsDown and FMouseEnter then
+  if Down or (FIsDown and FMouseEnter) then
     BevelOuter := bvLowered
   else
     BevelOuter := bvRaised;
@@ -385,7 +385,7 @@ begin
   end;
   R := ClientRect;
 
-  if FIsDown and FMouseEnter then
+  if Down or (FIsDown and FMouseEnter) then
     LStyle := StylePushed
   else
   if FMouseEnter then
