@@ -67,6 +67,7 @@ const
   { checkbox colors - WindowsXP }
   dxColor_Chk_Enb_Border_WXP   = TColor($00845118); // border line
   dxColor_Chk_Enb_NmSymb_WXP   = TColor($0021A621); // symbol normal
+  dxColor_Chk_Enb_GraSymb_WXP  = TColor($0071C671); // symbol grayed
 
   { misc colors - WindowsXP }
   dxColor_Msc_Dis_Caption_WXP  = TColor($0094A6A5); // caption color (disabled)
