@@ -96,7 +96,6 @@ type
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure ReadAssociated(Reader: TReader);
     procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
-    procedure SetAutoSize(Value: Boolean);
   protected
     function CreateDataConnector: TJvCheckBoxDataConnector; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
