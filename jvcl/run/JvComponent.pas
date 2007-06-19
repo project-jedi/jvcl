@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -224,19 +224,22 @@ begin
     end
     else
     begin
-      // Fixing the Window Ghosting "bug"
-      NewParent := 0;
-      if Assigned(Screen.ActiveForm) and (Screen.ActiveForm <> Self) then
+      // Fixing the Window Ghosting "bug", only for forms that don't have a parent assigned (Mantis 4032)
+      if not Assigned(Parent) then
       begin
-        if fsModal in Screen.ActiveForm.FormState then
-          NewParent := Screen.ActiveForm.Handle;
+        NewParent := 0;
+        if Assigned(Screen.ActiveForm) and (Screen.ActiveForm <> Self) then
+        begin
+          if fsModal in Screen.ActiveForm.FormState then
+            NewParent := Screen.ActiveForm.Handle;
+        end;
+        if (NewParent = 0) and Assigned(Application.MainForm) and (Application.MainForm <> Self) then
+          NewParent := Application.MainForm.Handle;
+        if NewParent = 0 then
+          NewParent := Application.Handle;
+        if GetWindowLong(Handle, GWL_HWNDPARENT) <> Longint(NewParent) then
+          SetWindowLong(Handle, GWL_HWNDPARENT, Longint(NewParent));
       end;
-      if (NewParent = 0) and Assigned(Application.MainForm) and (Application.MainForm <> Self) then
-        NewParent := Application.MainForm.Handle;
-      if NewParent = 0 then
-        NewParent := Application.Handle;
-      if GetWindowLong(Handle, GWL_HWNDPARENT) <> Longint(NewParent) then
-        SetWindowLong(Handle, GWL_HWNDPARENT, Longint(NewParent));
     end;
   end;
   inherited;
