@@ -1542,8 +1542,10 @@ procedure TJvMemoryData.SetRecNo(Value: Integer);
 begin
   if (Value > 0) and (Value <= FRecords.Count) then
   begin
+    DoBeforeScroll;
     FRecordPos := Value - 1;
     Resync([]);
+    DoAfterScroll;
   end;
 end;
 
