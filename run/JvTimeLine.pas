@@ -81,6 +81,7 @@ type
     FStyle: TJvTimeItemType;
     FSelected: Boolean;
     FEnabled: Boolean;
+    FOnDestroy: TNotifyEvent;
     procedure SetEnabled(Value: Boolean);
     procedure SetImageOffset(Value: Integer);
     procedure SetStyle(Value: TJvTimeItemType);
@@ -97,6 +98,7 @@ type
   protected
     procedure Update; virtual;
     function GetDisplayName: string; override;
+    procedure DoDestroy; 
   public
     constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
@@ -118,6 +120,7 @@ type
     property TextColor: TColor read FTextColor write SetTextColor default clBlack;
     property WidthAs: TJvTimeItemType read FStyle write SetStyle default asPixels;
     property Width: Integer read FWidth write SetWidth default 50;
+    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
   end;
 
   TJvTimeItems = class(TCollection)
@@ -600,7 +603,14 @@ end;
 
 destructor TJvTimeItem.Destroy;
 begin
+  DoDestroy;
   inherited Destroy;
+end;
+
+procedure TJvTimeItem.DoDestroy;
+begin
+  if Assigned(OnDestroy) then
+    OnDestroy(Self);
 end;
 
 procedure TJvTimeItem.Remove;
