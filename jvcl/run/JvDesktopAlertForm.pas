@@ -17,6 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Hans-Eric Grönlund (stack logic)
 Olivier Sannier (animation styles logic)
+Miha Vrhovnik (custom form display logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -80,20 +81,19 @@ type
     property OnClick;
   end;
 
-  TJvFormDesktopAlert = class(TJvExCustomForm)
+  // We have to inherit from TJvExForm instead of TJvExCustmForm
+  // because otherwise our custom forms might not load correctly 
+  // ('Property does not exist' exceptions are raised)
+  TJvCustomFormDesktopAlert = class(TJvExForm)
   private
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnUserMove: TNotifyEvent;
-    acClose: TAction;
     MouseTimer: TTimer;
-    FEndInterval:Cardinal;
-    FMouseInControl: Boolean;
     FCloseable: Boolean;
     FMoveable: Boolean;
     FMoveAnywhere: Boolean;
     FAllowFocus: Boolean;
-    FClickableMessage: Boolean;
     FCaptionColorTo: TColor;
     FWindowColorTo: TColor;
     FWindowColorFrom: TColor;
@@ -101,6 +101,8 @@ type
     FFrameColor: TColor;
     FOnShown: TNotifyEvent;
     FOnShowing: TNotifyEvent;
+    FEndInterval:Cardinal;
+    FMouseInControl: Boolean;
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
@@ -112,33 +114,24 @@ type
     procedure FormPaint(Sender: TObject);
     function GetVisible: Boolean;
   protected
+    acClose: TAction;
     procedure DoShow; override;
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure DoDropDownClose(Sender: TObject);
-    procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-
-  public
-    imIcon: TImage;
-    lblText: TJvLabel;
-    lblHeader: TLabel;
-    tbDropDown: TJvDesktopAlertButton;
-    tbClose: TJvDesktopAlertButton;
-
+    //override this one if you'd like to exes sth before form is shown
+    procedure InternalDoShow; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
     procedure SetNewLeft(const Value: Integer);
     procedure SetNewOrigin(ALeft, ATop: Integer);
-    procedure DoButtonClick(Sender: TObject);
     procedure ShowNoActivate;
-    
+
     property Moveable: Boolean read FMoveable write FMoveable;
     property MoveAnywhere: Boolean read FMoveAnywhere write FMoveAnywhere;
     property Closeable: Boolean read FCloseable write FCloseable;
-    property ClickableMessage: Boolean read FClickableMessage write FClickableMessage;
     property MouseInControl: Boolean read FMouseInControl;
     property WindowColorFrom: TColor read FWindowColorFrom write FWindowColorFrom;
     property WindowColorTo: TColor read FWindowColorTo write FWindowColorTo;
@@ -152,12 +145,36 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
-    property ParentFont;
-    property PopupMenu;
     property OnClose;
     property OnShowing: TNotifyEvent read FOnShowing write FOnShowing;
     property OnShow;
     property OnShown: TNotifyEvent read FOnShown write FOnShown;
+  end;
+
+  TJvFormDesktopAlert = class(TJvCustomFormDesktopAlert)
+  private
+    FClickableMessage: Boolean;
+  protected
+    procedure InternalDoShow; override;
+    procedure DoDropDownClose(Sender: TObject);
+    procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+  public
+    imIcon: TImage;
+    lblText: TJvLabel;
+    lblHeader: TLabel;
+    tbDropDown: TJvDesktopAlertButton;
+    tbClose: TJvDesktopAlertButton;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure DoButtonClick(Sender: TObject);
+
+    property ClickableMessage: Boolean read FClickableMessage write FClickableMessage;
+    property ParentFont;
+    property PopupMenu;
+    property OnClose;
+    property OnShowing;
+    property OnShow;
+    property OnShown;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -308,80 +325,8 @@ begin
   tbDropDown.OnDropDownClose := DoDropDownClose;
 end;
 
-
-procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
+procedure TJvFormDesktopAlert.InternalDoShow;
 begin
-  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo,
-    CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
-end;
-
-{$IFDEF VCL}
-procedure TJvFormDesktopAlert.WMNCHitTest(var Msg: TWMNCHitTest);
-var
-  P: TPoint;
-begin
-  with Msg do
-    P := ScreenToClient(Point(XPos, YPos));
-  if ((P.Y <= cCaptionHeight) and Moveable) or (MoveAnywhere and (ControlAtPos(P, False) = nil)) then
-  begin
-    TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
-    Msg.Result := HTCAPTION;
-  end
-  else
-    inherited;
-end;
-
-procedure TJvFormDesktopAlert.WMActivate(var Message: TWMActivate);
-begin
-  if (Message.Active = WA_INACTIVE) or AllowFocus then
-    inherited
-  else
-    Message.Result := 1;
-end;
-
-{$ENDIF VCL}
-
-procedure TJvFormDesktopAlert.acCloseExecute(Sender: TObject);
-begin
-  if Closeable then
-    Close;
-end;
-
-procedure TJvFormDesktopAlert.MouseEnter(AControl: TControl);
-begin
-  inherited MouseEnter(AControl);
-  FMouseInControl := True;
-  //  SetFocus;
-  TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvFormDesktopAlert.MouseLeave(AControl: TControl);
-var
-  P: TPoint;
-begin
-  inherited MouseLeave(AControl);
-  // make sure the mouse actually left the outer boundaries
-  GetCursorPos(P);
-  if MouseInControl and not PtInRect(BoundsRect, P) then
-  begin
-    if Assigned(FOnMouseLeave) then
-      FOnMouseLeave(Self);
-    if not TJvDesktopAlert(Owner).StyleHandler.Active and
-      (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
-      TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
-    FMouseInControl := False;
-  end;
-end;
-
-procedure TJvFormDesktopAlert.DoShow;
-begin
-  if Assigned(OnShowing) then
-    OnShowing(Self);
-    
-  inherited DoShow;
-  TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   lblText.HotTrackFont.Style := [fsUnderLine];
   lblText.HotTrackFont.Color := clNavy;
   if ClickableMessage then
@@ -411,76 +356,6 @@ begin
   lblText.Left := lblHeader.Left + 8;
   lblText.Width := tbDropDown.Left - lblText.Left;
   lblText.Top := lblHeader.Top + lblHeader.Height;
-  TJvDesktopAlert(Owner).StyleHandler.DoStartAnimation;
-  MouseTimer.Enabled := True;
-
-  if Assigned(OnShown) then
-    OnShown(Self);
-end;
-
-{$IFDEF VCL}
-procedure TJvFormDesktopAlert.WMMove(var Msg: TWMMove);
-begin
-  inherited;
-  if Showing and Assigned(FOnUserMove) then
-    FOnUserMove(Self);
-end;
-{$ENDIF VCL}
-
-procedure TJvFormDesktopAlert.SetNewTop(const Value: Integer);
-begin
-  SetNewOrigin(Left, Value);
-end;
-
-procedure TJvFormDesktopAlert.SetNewLeft(const Value: Integer);
-begin
-  SetNewOrigin(Value, Top);
-end;
-
-procedure TJvFormDesktopAlert.SetNewOrigin(ALeft, ATop: Integer);
-var
-  MoveEvent: TNotifyEvent;
-begin
-  if ((Top <> ATop) or (Left <> ALeft)) and not MouseInControl then
-  begin
-    MoveEvent := FOnUserMove;
-    FOnUserMove := nil;
-    Left := ALeft;
-    Top := ATop;
-    FOnUserMove := MoveEvent;
-  end;
-end;
-
-procedure TJvFormDesktopAlert.DoMouseTimer(Sender: TObject);
-var
-  P: TPoint;
-
-  function IsInForm(P: TPoint): Boolean;
-  var
-    W: TControl;
-  begin
-    W := ControlAtPos(P, True, True);
-    Result := (W = Self) or (FindVCLWindow(P) = Self) or ((W <> nil) and (GetParentForm(W) = Self));
-  end;
-
-begin
-  // this is here to ensure that MouseInControl is correctly set even
-  // if we never got a CM_MouseLeave (that happens a lot)
-  MouseTimer.Enabled := False;
-  GetCursorPos(P);
-  FMouseInControl := PtInRect(BoundsRect, P); // and IsInForm(P);
-  MouseTimer.Enabled := True;
-  if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and
-   (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
-    TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
-end;
-
-procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);
-begin
-  MouseTimer.Enabled := False;
-  inherited DoClose(Action);
-  if Action = caHide then
-    ShowWindow(Handle, SW_HIDE);
 end;
 
 //=== { TJvDesktopAlertButton } ==============================================
@@ -696,16 +571,6 @@ begin
   end;
 end;
 
-procedure TJvFormDesktopAlert.JvDeskTopAlertAutoFree(var Msg: TMessage);
-begin
-  // WParam is us, LParam is the TJvDesktopAlert
-  if Msg.WParam = WPARAM(Self) then
-  begin
-    Release;
-    TObject(Msg.LParam).Free;
-  end;
-end;
-
 procedure TJvFormDesktopAlert.DoButtonClick(Sender: TObject);
 var
   FEndInterval: Cardinal;
@@ -745,16 +610,163 @@ begin
   TJvDesktopAlert(Owner).StyleHandler.EndInterval := 0;
 end;
 
-procedure TJvFormDesktopAlert.WMMouseActivate(var Message: TWMMouseActivate);
+{ TJvCustomFormDesktopAlert }
+
+procedure TJvCustomFormDesktopAlert.acCloseExecute(Sender: TObject);
 begin
-  if AllowFocus then
-    inherited
-  else
-    Message.Result := MA_NOACTIVATE;
+  if Closeable then
+    Close;
 end;
 
-procedure TJvFormDesktopAlert.ShowNoActivate;
+constructor TJvCustomFormDesktopAlert.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
+
+  MouseTimer := TTimer.Create(Self);
+  MouseTimer.Enabled := False;
+  MouseTimer.Interval := 200;
+  MouseTimer.OnTimer := DoMouseTimer;
+  MouseTimer.Enabled := True;
+
+  BorderStyle := fbsNone;
+  BorderIcons := [];
+  Scaled := False;
+  OnPaint := FormPaint;
+
+  acClose := TAction.Create(Self);
+  acClose.Caption := RsClose;
+
+  acClose.ShortCut := ShortCut(VK_F4, [ssAlt]); // 32883
+  acClose.OnExecute := acCloseExecute;
+end;
+
+procedure TJvCustomFormDesktopAlert.DoClose(var Action: TCloseAction);
+begin
+  MouseTimer.Enabled := False;
+  inherited DoClose(Action);
+  if Action = caHide then
+    ShowWindow(Handle, SW_HIDE);
+end;
+
+procedure TJvCustomFormDesktopAlert.DoMouseTimer(Sender: TObject);
+var
+  P: TPoint;
+
+  function IsInForm(P: TPoint): Boolean;
+  var
+    W: TControl;
+  begin
+    W := ControlAtPos(P, True, True);
+    Result := (W = Self) or (FindVCLWindow(P) = Self) or ((W <> nil) and (GetParentForm(W) = Self));
+  end;
+
+begin
+  // this is here to ensure that MouseInControl is correctly set even
+  // if we never got a CM_MouseLeave (that happens a lot)
+  MouseTimer.Enabled := False;
+  GetCursorPos(P);
+  FMouseInControl := PtInRect(BoundsRect, P); // and IsInForm(P);
+  MouseTimer.Enabled := True;
+  if not TJvCustomDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and
+    (TJvCustomDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+    TJvCustomDesktopAlert(Owner).StyleHandler.DoEndAnimation;
+end;
+
+procedure TJvCustomFormDesktopAlert.DoShow;
+begin
+  if Assigned(OnShowing) then
+    OnShowing(Self);
+
+  inherited DoShow;
+  TJvCustomDesktopAlert(Owner).StyleHandler.AbortAnimation;
+  InternalDoShow;
+  TJvCustomDesktopAlert(Owner).StyleHandler.DoStartAnimation;
+  MouseTimer.Enabled := True;
+
+  if Assigned(OnShown) then
+    OnShown(Self);
+end;
+
+procedure TJvCustomFormDesktopAlert.FormPaint(Sender: TObject);
+begin
+  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+end;
+
+function TJvCustomFormDesktopAlert.GetVisible: Boolean;
+begin
+  Result := IsWindowVisible(Handle);
+end;
+
+procedure TJvCustomFormDesktopAlert.InternalDoShow;
+begin
+//
+end;
+
+procedure TJvCustomFormDesktopAlert.JvDeskTopAlertAutoFree(var Msg: TMessage);
+begin
+  // WParam is us, LParam is the TJvDesktopAlert
+  if Msg.WParam = WPARAM(Self) then
+  begin
+    Release;
+    TObject(Msg.LParam).Free;
+  end;
+end;
+
+procedure TJvCustomFormDesktopAlert.MouseEnter(AControl: TControl);
+begin
+  inherited MouseEnter(AControl);
+  FMouseInControl := True;
+  //  SetFocus;
+  TJvCustomDesktopAlert(Owner).StyleHandler.AbortAnimation;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvCustomFormDesktopAlert.MouseLeave(AControl: TControl);
+var
+  P: TPoint;
+begin
+  inherited MouseLeave(AControl);
+  // make sure the mouse actually left the outer boundaries
+  GetCursorPos(P);
+  if MouseInControl and not PtInRect(BoundsRect, P) then
+  begin
+    if Assigned(FOnMouseLeave) then
+      FOnMouseLeave(Self);
+    if not TJvCustomDesktopAlert(Owner).StyleHandler.Active and
+      (TJvCustomDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+      TJvCustomDesktopAlert(Owner).StyleHandler.DoEndAnimation;
+    FMouseInControl := False;
+  end;
+end;
+
+procedure TJvCustomFormDesktopAlert.SetNewLeft(const Value: Integer);
+begin
+  SetNewOrigin(Value, Top);
+end;
+
+procedure TJvCustomFormDesktopAlert.SetNewOrigin(ALeft, ATop: Integer);
+var
+  MoveEvent: TNotifyEvent;
+begin
+  if ((Top <> ATop) or (Left <> ALeft)) and not MouseInControl then
+  begin
+    MoveEvent := FOnUserMove;
+    FOnUserMove := nil;
+    Left := ALeft;
+    Top := ATop;
+    FOnUserMove := MoveEvent;
+  end;
+end;
+
+procedure TJvCustomFormDesktopAlert.SetNewTop(const Value: Integer);
+begin
+  SetNewOrigin(Left, Value);
+end;
+
+procedure TJvCustomFormDesktopAlert.ShowNoActivate;
+begin
+  Visible := True;
   Include(FFormState, fsShowing);
 //  Windows.SetParent(Handle, 0);
 //-- The above was introduced to partially solve the issue of the visible
@@ -770,10 +782,45 @@ begin
   Include(FFormState, fsVisible);
 end;
 
-function TJvFormDesktopAlert.GetVisible: Boolean;
+{$IFDEF VCL}
+procedure TJvCustomFormDesktopAlert.WMActivate(var Message: TWMActivate);
 begin
-  Result := IsWindowVisible(Handle);
+  if (Message.Active = WA_INACTIVE) or AllowFocus then
+    inherited
+  else
+    Message.Result := 1;
 end;
+
+procedure TJvCustomFormDesktopAlert.WMMouseActivate(var Message: TWMMouseActivate);
+begin
+  if AllowFocus then
+    inherited
+  else
+    Message.Result := MA_NOACTIVATE;
+end;
+
+procedure TJvCustomFormDesktopAlert.WMMove(var Msg: TWMMove);
+begin
+  inherited;
+  if Showing and Assigned(FOnUserMove) then
+    FOnUserMove(Self);
+end;
+
+procedure TJvCustomFormDesktopAlert.WMNCHitTest(var Msg: TWMNCHitTest);
+var
+  P: TPoint;
+begin
+  with Msg do
+    P := ScreenToClient(Point(XPos, YPos));
+  if ((P.Y <= cCaptionHeight) and Moveable) or (MoveAnywhere and (ControlAtPos(P, False) = nil)) then
+  begin
+    TJvCustomDesktopAlert(Owner).StyleHandler.AbortAnimation;
+    Msg.Result := HTCAPTION;
+  end
+  else
+    inherited;
+end;
+{$ENDIF VCL}
 
 initialization
   {$IFDEF UNITVERSIONING}
