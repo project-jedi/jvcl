@@ -37,7 +37,7 @@ uses
   Classes;
 
 type
-  TJvLinkedControlsOption = (loLinkChecked, loLinkEnabled, loInvertChecked, loInvertEnabled);
+  TJvLinkedControlsOption = (loLinkChecked, loLinkEnabled, loInvertChecked, loInvertEnabled, loForceFocus);
   TJvLinkedControlsOptions = set of TJvLinkedControlsOption;
 
   TJvLinkedControl = class(TCollectionItem)
