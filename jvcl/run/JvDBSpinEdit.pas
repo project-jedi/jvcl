@@ -357,7 +357,7 @@ end;
 function TJvDBSpinEdit.UpdateAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited UpdateAction(Action) or
-    (Assigned(FDataLink) and FDataLink.ExecuteAction(Action));
+    (Assigned(FDataLink) and FDataLink.UpdateAction(Action));
 end;
 
 procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
