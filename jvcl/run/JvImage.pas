@@ -92,6 +92,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure LoadFromStream(aStream: TStream); virtual;
   published
     property HintColor;
     property Pictures: TJvPictures read FPictures write FPictures;
@@ -114,6 +116,8 @@ const
 
 implementation
 
+uses
+  JvGraphics;
 
 //=== { TJvImage } ===========================================================
 
@@ -348,6 +352,18 @@ begin
     Assigned(Pictures.PicClicked1.Graphic) or
     Assigned(Pictures.PicClicked2.Graphic) or
     Assigned(Pictures.PicDown.Graphic);
+end;
+
+procedure TJvImage.LoadFromStream(aStream: TStream);
+var
+  G: TGraphic;
+begin
+  G := GetGraphicObject(aStream);
+  try
+    Picture.Assign(G);
+  finally
+    G.Free;
+  end;
 end;
 
 //=== { TJvPictures } ========================================================

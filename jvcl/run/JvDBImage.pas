@@ -35,58 +35,7 @@ WHAT IT IS:
    formats than bitmap, a limitation of TDBImage since D1.
 
 IMAGE FORMATS:
-   The implementation is simple: Just register image signatures with
-   RegisterGraphicSignature procedure and the component takes care
-   of the correct instantiation of the TGraphic object. The signatures
-   register at unit's initialization are: BMP, WMF, EMF, ICO, JPG.
-   If you got some other image library (such as GIF, PCX, TIFF, ANI or PNG),
-   just register the signature:
-
-     RegisterGraphicSignature(<string value>, <offset>, <class>)
-
-     or
-
-     RegisterGraphicSignature([<byte values>], <offset>, <class>)
-
-   This means:
-     When <string value> (or byte values) found at <offset> the graphic
-     class to use is <class>
-
-   For example (actual code of the initialization section):
-
-     RegisterGraphicSignature([$D7, $CD], 0, TMetaFile); // WMF
-     RegisterGraphicSignature([1, 0], 0, TMetaFile);     // EMF
-     RegisterGraphicSignature('JFIF', 6, TJPEGImage);
-
-   You can also unregister signature. IF you want use TGIFImage instead of
-   TJvGIFImage, you can unregister with:
-
-     UnregisterGraphicSignature('GIF', 0);
-
-     or just
-
-     UnregisterGraphicSignature(TJvGIFImage); // must add JvGIF unit in uses clause
-
-   then:
-     RegisterGraphicSignature('GIF', 0, TGIFImage); // must add GIFImage to uses clause
-
-   If you dont like the signature registration there is a new event called
-   OnGetGraphicClass. The event gets the following parameters:
-
-    Sender: TObject;
-    Stream: TMemoryStream;
-    var GraphicClass: TGraphicClass)
-
-   The memory stream containing the blob data is sent in Stream to allow the user
-   to inspect the contents and figure out which graphic class is.
-
-   If the component can't find the graphic class and the user doesn't provide it
-   in the OnGetGraphicClass event no graphic object is created, the default
-   behavior is used (Picture.Assign(Field)). This might raise an exception
-   ('Bitmap image is not valid').
-
-   The graphic class to be used must implement LoadFromStream and SaveToStream
-   methods in order to work properly.
+   See JvGraphics.pas for details
 
 SUPPORT FOR TDBCtrlGrid:
    You can safely put an TJvDBImage in TDBCtrlGrid.
@@ -102,13 +51,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JvGraphics,
   Windows, Messages, Classes, Graphics, Controls,
   Clipbrd, DB, DBCtrls, Forms, Contnrs;
 
 type
-  TJvGetGraphicClassEvent = procedure(Sender: TObject; Stream: TMemoryStream;
-    var GraphicClass: TGraphicClass) of object;
-
   TJvDBImage = class(TDBImage)
   private
     FAutoDisplay: Boolean;
@@ -154,18 +101,6 @@ type
     property OnGetGraphicClass: TJvGetGraphicClassEvent read FOnGetGraphicClass write FOnGetGraphicClass;
   end;
 
-procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
-  AGraphicClass: TGraphicClass); overload;
-procedure RegisterGraphicSignature(const ASignature: array of Byte;
-  AOffset: Integer; AGraphicClass: TGraphicClass); overload;
-
-procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
-procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer); overload;
-procedure UnregisterGraphicSignature(const ASignature: array of Byte;
-  AOffset: Integer); overload;
-
-function GetGraphicClass(Stream: TStream): TGraphicClass;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -181,158 +116,6 @@ implementation
 uses
   DBConsts, jpeg, SysUtils,
   JvConsts, JvResources;
-
-//=== { TGraphicSignature } ==================================================
-
-// Code to manage graphic's signatures.
-type
-  TGraphicSignature = class(TObject)
-  public
-    Signature: string;
-    Offset: Integer;
-    GraphicClass: TGraphicClass;
-    constructor Create(const ASignature: string; AOffset: Integer;
-      AGraphicClass: TGraphicClass);
-    function IsThisSignature(Stream: TStream): Boolean;
-  end;
-
-constructor TGraphicSignature.Create(const ASignature: string; AOffset: Integer;
-  AGraphicClass: TGraphicClass);
-begin
-  inherited Create;
-  Signature := ASignature;
-  Offset := AOffset;
-  GraphicClass := AGraphicClass;
-end;
-
-function TGraphicSignature.IsThisSignature(Stream: TStream): Boolean;
-var
-  Buffer: string;
-  Count: Integer;
-  BytesRead: Integer;
-begin
-  Result := False;
-  try
-    Count := Length(Signature);
-    SetLength(Buffer, Count);
-    Stream.Position := Offset;
-    BytesRead := Stream.Read(Buffer[1], Count);
-    Result := (BytesRead = Count) and (Buffer = Signature);
-  except
-    // Ignore any error...
-  end;
-end;
-
-var
-  GraphicSignatures: TObjectList = nil;
-
-procedure GraphicSignaturesNeeded;
-begin
-  if not Assigned(GraphicSignatures) then
-  begin
-    GraphicSignatures := TObjectList.Create;
-
-    RegisterGraphicSignature('BM', 0, TBitmap);
-    RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
-    RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
-    RegisterGraphicSignature([1, 0], 0, TMetafile); // EMF
-    RegisterGraphicSignature('JFIF', 6, TJPEGImage);
-    RegisterGraphicSignature('Exif', 6 , TJPEGImage);
-    // NB! Registering these will add a requirement on having the JvMM package installed
-    // Let users register these manually
-    // RegisterGraphicSignature([$0A], 0, TJvPcx);
-    // RegisterGraphicSignature('ACON', 8, TJvAni);
-    // JvCursorImage cannot be registered because it doesn't support
-    // LoadFromStream/SaveToStream but here's the signature for future reference:
-    // RegisterGraphicSignature([0, 0, 2, 0], 0, TJvCursorImage);
-    {$IFDEF USE_JV_GIF}
-    // RegisterGraphicSignature('GIF', 0, TJvGIFImage);
-    {$ENDIF USE_JV_GIF}
-  end;
-end;
-
-procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
-  AGraphicClass: TGraphicClass);
-var
-  GraphicSignature: TGraphicSignature;
-begin
-  GraphicSignaturesNeeded;
-  // Avoid bad signatures
-  if (ASignature = '') or (AOffset < 0) or (AGraphicClass = nil) then
-    raise Exception.CreateRes(@RsEBadGraphicSignature);
-  // Should raise an exception if empty signature, negative offset or null class.
-  GraphicSignature := TGraphicSignature.Create(ASignature, AOffset, AGraphicClass);
-  try
-    GraphicSignatures.Add(GraphicSignature)
-  except
-    GraphicSignature.Free;
-  end;
-end;
-
-procedure RegisterGraphicSignature(const ASignature: array of Byte;
-  AOffset: Integer; AGraphicClass: TGraphicClass);
-var
-  Signature: string;
-  I: Integer;
-begin
-  SetLength(Signature, Length(ASignature));
-  for I := Low(ASignature) to High(ASignature) do
-    Signature[I + 1] := Char(ASignature[I]);
-  RegisterGraphicSignature(Signature, AOffset, AGraphicClass);
-end;
-
-procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
-var
-  I: Integer;
-begin
-  if Assigned(GraphicSignatures) then
-    for I := GraphicSignatures.Count - 1 downto 0 do
-      if TGraphicSignature(GraphicSignatures[I]).GraphicClass = AGraphicClass then
-        GraphicSignatures.Delete(I);
-end;
-
-procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer);
-var
-  I: Integer;
-begin
-  if Assigned(GraphicSignatures) then
-    for I := GraphicSignatures.Count - 1 downto 0 do
-      with TGraphicSignature(GraphicSignatures[I]) do
-        if (Signature = ASignature) and (Offset = AOffset) then
-          GraphicSignatures.Delete(I);
-end;
-
-procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer);
-var
-  Signature: string;
-  I: Integer;
-begin
-  SetLength(Signature, Length(ASignature));
-  for I := Low(ASignature) to High(ASignature) do
-    Signature[I + 1] := Char(ASignature[I]);
-  UnregisterGraphicSignature(Signature, AOffset);
-end;
-
-function GetGraphicClass(Stream: TStream): TGraphicClass;
-var
-  I: Integer;
-  S: TGraphicSignature;
-begin
-  Result := nil;
-  GraphicSignaturesNeeded;
-  if Assigned(GraphicSignatures) then
-  begin
-    for I := 0 to GraphicSignatures.Count - 1 do
-    begin
-      S := TGraphicSignature(GraphicSignatures[I]);
-      if S.IsThisSignature(Stream) then
-      begin
-        Result := S.GraphicClass;
-        Exit;
-      end;
-    end;
-  end;
-end;
 
 //=== { TJvDBImage } =========================================================
 
@@ -712,7 +495,6 @@ initialization
   { registration happens in GraphicSignatures Needed() }
 
 finalization
-  FreeAndNil(GraphicSignatures);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
