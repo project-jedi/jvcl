@@ -528,7 +528,7 @@ procedure TJvCustomScrollPanel.AlignArrows;
 begin
   if FUpLeft = nil then
     Exit;
-  case ScrollDirection of
+  case FScrollDirection of
     sdVertical:
       begin
         FUpLeft.Kind := sbUp;
@@ -593,8 +593,9 @@ begin
     if FAutoArrange then
       ArrangeChildren;
     Invalidate;
-    //    AlignArrows;
-    //    UpdateVisible;
+    AlignArrows;
+    UpdateVisible;
+    AlignArrows;
   end;
 end;
 
@@ -635,7 +636,7 @@ begin
         More := 0;
         for i := 0 to ControlCount - 1 do
         begin
-          if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) then
+          if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) or (Not Controls[i].Visible) then
             Continue;
           Less := Min(Controls[i].Top, Less);
           More := Max(Controls[i].Top + Controls[i].Height, More);
@@ -650,7 +651,7 @@ begin
         More := 0;
         for i := 0 to ControlCount - 1 do
         begin
-          if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) then
+          if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) or (Not Controls[i].Visible) then
             Continue;
           Less := Min(Controls[i].Left, Less);
           More := Max(Controls[i].Left + Controls[i].Width, More);
