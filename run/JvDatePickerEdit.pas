@@ -138,7 +138,6 @@ type
     FOnGetValidDateString: TJvGetValidDateStringEvent;
     //    FMinYear: Word;
     //    FMaxYear: Word;
-    procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
     procedure CalCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -473,11 +472,6 @@ begin
     Result := False;
 end;
 
-procedure TJvCustomDatePickerEdit.CalChange(Sender: TObject);
-begin
-  CalChanged;
-end;
-
 procedure TJvCustomDatePickerEdit.CalChanged;
 var
   NewDate: TDateTime;
@@ -521,6 +515,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.CalSelect(Sender: TObject);
 begin
+  CalChanged;
   PopupCloseUp(Self, True);
 end;
 
@@ -653,7 +648,7 @@ begin
     with TJvDropCalendar(FPopup) do
     begin
 //      SelDate := Self.Date;
-      OnChange := Self.CalChange;
+      //OnChange := Self.CalChange;
       OnSelect := Self.CalSelect;
       OnDestroy := Self.CalDestroy;
       OnCloseQuery := Self.CalCloseQuery;

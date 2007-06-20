@@ -241,8 +241,11 @@ begin
 
   // new order, because result of inherited KeyDown(...) could be = 0
   // so, first set DataSet in Edit-Mode
-  if Key in [VK_BACK, VK_DELETE, VK_UP, VK_DOWN, 32..255] then // taken from TDBComboBox.KeyDown(...)
-    FDataLink.Edit;
+  case Key of
+    VK_DELETE, VK_UP, VK_DOWN:
+      if not EditCanModify then
+        Key := 0;
+  end;
   inherited KeyDown(Key, Shift);
 end;
 
@@ -256,16 +259,15 @@ begin
       SysUtils.Beep;
     Key := #0;
   end;
-  case Key of
-    CtrlH, CtrlV, CtrlX, #32..#255:
-      FDataLink.Edit;
-    Esc:
-      begin
-        FDataLink.Reset;
-        SelectAll;
-//        Key := #0;
-      end;
-  end;
+  if Key = Esc then
+  begin
+    FDataLink.Reset;
+    SelectAll;
+//  Key := #0;
+  end
+  else
+  if not EditCanModify then
+    Key := #0;
 end;
 
 function TJvDBLookupComboEdit.EditCanModify: Boolean;
