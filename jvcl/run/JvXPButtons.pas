@@ -78,6 +78,7 @@ type
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
     {$ENDIF VCL}
     procedure ImageListChange(Sender: TObject);
+    procedure GlyphChange(Sender: TObject);
   protected
     {$IFDEF VisualCLX}
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -357,6 +358,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FGlyph := {$IFDEF USEJVCL}TJvPicture{$ELSE}TBitmap{$ENDIF USEJVCL}.Create;
+  FGlyph.OnChange := GlyphChange;
   FLayout := blGlyphLeft;
   FShowAccelChar := True;
   FShowFocusRect := False;
@@ -522,6 +524,11 @@ begin
     FImageIndex := TAction(Action).ImageIndex
   else
     FImageIndex := -1;
+  LockedInvalidate;
+end;
+
+procedure TJvXPCustomButton.GlyphChange(Sender: TObject);
+begin
   LockedInvalidate;
 end;
 
@@ -711,9 +718,23 @@ begin
       // get image from action or glyph property.
       if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) and
         (FImageIndex > -1) and (FImageIndex < TAction(Action).ActionList.Images.Count) then
+      begin
         TAction(Action).ActionList.Images.GetBitmap(FImageIndex, Image.Bitmap)
+      end
       else
+      begin
+        // Mantis 4044: We need to access the width and height of the graphic but
+        // when it is a TIcon, they are only valid once the handle is created.
+        // And that only happens after the icon has been painted, hence at the
+        // first run here, we do not get the real size but the value from system
+        // metrics (see TIcon.GetWidth for instance). Ideally, we would like
+        // to call TIcon.HandleNeeded but it is private. So we access the Handle
+        // property and despite us not storing its value in anything it does
+        // call the getter anyway.
+        if FGlyph.Graphic is TIcon then
+          TIcon(FGlyph.Graphic).Handle;
         Image.Assign(FGlyph);
+      end;
 
       // autogray image (if allowed).
       if FAutoGray and not Enabled then
