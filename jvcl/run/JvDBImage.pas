@@ -77,7 +77,6 @@ type
     procedure AssignGraphicTo(Picture: TPicture);
     function DestRect(W, H, CW, CH: Integer): TRect;
     procedure Paint; override;
-
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure KeyPress(var Key: Char); override;
@@ -97,7 +96,6 @@ type
     {$ENDIF COMPILER6_UP}
     property Proportional: Boolean read FProportional write SetProportional default False;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
-
     property OnGetGraphicClass: TJvGetGraphicClassEvent read FOnGetGraphicClass write FOnGetGraphicClass;
   end;
 
@@ -145,8 +143,7 @@ begin
     Exit;
   with Field do
     if not IsBlob then
-      DatabaseErrorFmt(SFieldTypeMismatch,
-        [DisplayName, FieldTypeNames[ftBlob], FieldTypeNames[DataType]]);
+      DatabaseErrorFmt(SFieldTypeMismatch, [DisplayName, FieldTypeNames[ftBlob], FieldTypeNames[DataType]]);
 end;
 
 procedure TJvDBImage.CreateHandle;
@@ -176,7 +173,7 @@ var
   Stream: TMemoryStream;
 begin
   // If nil field or null field just exit
-  if (Field = nil) or (Field.IsNull) then
+  if (Field = nil) or Field.IsNull then
     Exit;
 
   CheckFieldType;

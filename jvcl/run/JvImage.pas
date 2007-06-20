@@ -85,15 +85,12 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function HitTest(X, Y: Integer): Boolean; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    procedure LoadFromStream(aStream: TStream); virtual;
+    procedure LoadFromStream(AStream: TStream); virtual;
   published
     property HintColor;
     property Pictures: TJvPictures read FPictures write FPictures;
@@ -181,16 +178,14 @@ begin
   end;
 end;
 
-procedure TJvImage.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvImage.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if UsesPictures then
     State := stDown;
 end;
 
-procedure TJvImage.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvImage.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if not UsesPictures or (State = stClicked1) or (State = stClicked2) then
@@ -249,7 +244,7 @@ end;
 procedure TJvImage.DoOwnPictureChange(Sender: TObject);
 var
   G: TGraphic;
-  D : TRect;
+  D: TRect;
 begin
   // All this code is required for Transparent, Center and other inherited
   // properties to work fine.
@@ -354,11 +349,11 @@ begin
     Assigned(Pictures.PicDown.Graphic);
 end;
 
-procedure TJvImage.LoadFromStream(aStream: TStream);
+procedure TJvImage.LoadFromStream(AStream: TStream);
 var
   G: TGraphic;
 begin
-  G := GetGraphicObject(aStream);
+  G := GetGraphicObject(AStream);
   try
     Picture.Assign(G);
   finally
