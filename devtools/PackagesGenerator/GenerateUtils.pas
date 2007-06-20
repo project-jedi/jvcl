@@ -175,6 +175,11 @@ type
     property Items[index : integer] : TClxReplacement read GetItems write SetItems;
   end;
 
+  TProjectProperties = class(TStringList)
+  public
+    constructor Create(Node: TJvSimpleXmlElem);
+  end;
+
 var
   GCallBack          : TGenerateCallBack;
   GPackagesLocation  : string;
@@ -193,6 +198,7 @@ var
   DefinesList        : TDefinesList;
   ClxReplacementList : TClxReplacementList;
   IsBinaryCache      : TStringList;
+  ProjectProperties  : TProjectProperties;
 
 function PackagesLocation : string;
 begin
@@ -471,6 +477,7 @@ begin
   FreeAndNil(TargetList);
   FreeAndNil(AliasList);
   FreeAndNil(ClxReplacementList);
+  FreeAndNil(ProjectProperties);
 
   // Ensure the xml file exists
   if not FileExists(XmlFileName) then
@@ -513,8 +520,9 @@ begin
       end;
 
       TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
-      AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
-      ClxReplacementList  := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
+      AliasList := TAliasList.Create(Node.Items.ItemNamed['aliases']);
+      ClxReplacementList := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
+      ProjectProperties := TProjectProperties.Create(Node.Items.ItemNamed['ProjectProperties']);
 
       if Assigned(Node.Properties.ItemNamed['incdeffile']) then
         GIncDefFileName   := Node.Properties.ItemNamed['incdeffile'].Value;
@@ -1182,6 +1190,7 @@ var
   IgnoreNextSemicolon: Boolean;
   UnitFileName, UnitFilePath, UnitFileExtension, NoLinkPackageList: string;
   PathPAS, PathCPP, PathRC, PathASM, PathLIB: string;
+  VersionMajorNumber, VersionMinorNumber, ReleaseNumber, BuildNumber: string;
 begin
   Result := '';
 
@@ -1253,6 +1262,20 @@ begin
                    Extension;
 
     ImageBaseInt := IntToStr(StrToInt('$' + xml.ImageBase));
+
+    // project-wide properties if not redefined in xml
+    VersionMajorNumber := xml.VersionMajorNumber;
+    if VersionMajorNumber = '' then
+      VersionMajorNumber := ProjectProperties.Values['VersionMajorNumber'];
+    VersionMinorNumber := xml.VersionMinorNumber;
+    if VersionMinorNumber = '' then
+      VersionMinorNumber := ProjectProperties.Values['VersionMinorNumber'];
+    ReleaseNumber := xml.ReleaseNumber;
+    if ReleaseNumber = '' then
+      ReleaseNumber := ProjectProperties.Values['ReleaseNumber'];
+    BuildNumber := xml.BuildNumber;
+    if BuildNumber = '' then
+      BuildNumber := ProjectProperties.Values['BuildNumber'];
 
     // The time stamp hasn't been found yet
     TimeStampLine := -1;
@@ -1469,10 +1492,10 @@ begin
              'GUID%', xml.GUID,
              'IMAGE_BASE%', xml.ImageBase,
              'IMAGE_BASE_INT%', ImageBaseInt,
-             'VERSION_MAJOR_NUMBER%', xml.VersionMajorNumber,
-             'VERSION_MINOR_NUMBER%', xml.VersionMinorNumber,
-             'RELEASE_NUMBER%', xml.ReleaseNumber,
-             'BUILD_NUMBER%', xml.BuildNumber,
+             'VERSION_MAJOR_NUMBER%', VersionMajorNumber,
+             'VERSION_MINOR_NUMBER%', VersionMinorNumber,
+             'RELEASE_NUMBER%', ReleaseNumber,
+             'BUILD_NUMBER%', BuildNumber,
              'TYPE%', Iff(ProjectTypeIsDesign(xml.ProjectType), 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
              'type%', OneLetterType,
@@ -2221,6 +2244,25 @@ begin
   inherited Items[index] := Value;
 end;
 
+{ TProjectProperties }
+
+constructor TProjectProperties.Create(Node: TJvSimpleXmlElem);
+var
+  i: Integer;
+  NameProp, ValueProp: TJvSimpleXMLProp;
+begin
+  inherited Create;
+
+  if Assigned(Node) then
+    for i := 0 to Node.Items.Count - 1 do
+    begin
+      NameProp := Node.Items.Item[i].Properties.ItemNamed['name'];
+      ValueProp := Node.Items.Item[i].Properties.ItemNamed['value'];
+      if Assigned(NameProp) and Assigned(ValueProp) then
+        Values[NameProp.Value] := ValueProp.Value;
+    end;
+end;
+
 initialization
   StartupDir := GetCurrentDir;
 
@@ -2233,6 +2275,7 @@ initialization
   AliasList := nil;
   DefinesList := nil;
   ClxReplacementList := nil;
+  ProjectProperties := nil;
 
   ExpandPackageTargets := ExpandTargets;
 
@@ -2242,5 +2285,6 @@ finalization
   DefinesList.Free;
   IsBinaryCache.Free;
   ClxReplacementList.Free;
+  ProjectProperties.Free;
 
 end.

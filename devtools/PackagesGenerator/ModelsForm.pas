@@ -37,10 +37,12 @@ type
     edtNLSFormat: TEdit;
     edtNLSPrefix: TEdit;
     stgClxRepl: TJvStringGrid;
-    Label1: TLabel;
+    lblClxReplacements: TLabel;
     lblDotNet: TLabel;
     edtDotNetFormat: TEdit;
     edtDotNetPrefix: TEdit;
+    stgPrjProperties: TJvStringGrid;
+    lblPrjProperties: TLabel;
     procedure stgTargetsGetCellAlignment(Sender: TJvStringGrid; AColumn,
       ARow: Integer; State: TGridDrawState; var CellAlignment: TAlignment);
     procedure stgTargetsExitCell(Sender: TJvStringGrid; AColumn,
@@ -141,6 +143,15 @@ begin
     ColWidths[1] := 90;
   end;
 
+  with stgPrjProperties do
+  begin
+    Cells[0, 0] := 'name';
+    Cells[1, 0] := 'value';
+
+    ColWidths[0] := 70;
+    ColWidths[1] := 135;
+  end;
+
 end;
 
 procedure TfrmModels.stgTargetsGetCellAlignment(Sender: TJvStringGrid;
@@ -188,7 +199,7 @@ var
   model : TJvSimpleXmlElem;
   target : TJvSimpleXmlElem;
   alias : TJvSimpleXmlElem;
-  replacement : TJvSimpleXmlElem;
+  replacement, PrjProperty : TJvSimpleXmlElem;
   row : TStrings;
   i : integer;
 begin
@@ -260,7 +271,7 @@ begin
   // aliases
   stgAliases.RowCount := 2;
   stgAliases.Rows[1].Text := '';
-  for i := 0 to model.Items.ItemNamed['aliases'].Items.count - 1 do
+  for i := 0 to model.Items.ItemNamed['aliases'].Items.Count - 1 do
   begin
     alias := model.Items.ItemNamed['aliases'].Items[i];
     row := stgAliases.Rows[stgAliases.RowCount-1];
@@ -275,7 +286,7 @@ begin
   stgClxRepl.Rows[1].Text := '';
   if Assigned(model.Items.ItemNamed['ClxReplacements']) then
   begin
-    for i := 0 to model.Items.ItemNamed['ClxReplacements'].Items.count - 1 do
+    for i := 0 to model.Items.ItemNamed['ClxReplacements'].Items.Count - 1 do
     begin
       replacement := model.Items.ItemNamed['ClxReplacements'].Items[i];
       row := stgClxRepl.Rows[stgClxRepl.RowCount-1];
@@ -285,6 +296,24 @@ begin
       stgClxRepl.InsertRow(stgClxRepl.RowCount);
     end;
   end;
+
+  stgPrjProperties.RowCount := 2;
+  stgPrjProperties.Rows[1].Text := '';
+  if Assigned(model.Items.ItemNamed['ProjectProperties']) then
+  begin
+    for i := 0 to model.Items.ItemNamed['ProjectProperties'].Items.Count - 1 do
+    begin
+      PrjProperty := model.Items.ItemNamed['ProjectProperties'].Items[i];
+      row := stgPrjProperties.Rows[stgPrjProperties.RowCount-1];
+      if Assigned(PrjProperty.Properties.ItemNamed['name']) then
+        row[0] := PrjProperty.Properties.ItemNamed['name'].Value;
+      if Assigned(PrjProperty.Properties.ItemNamed['value']) then
+        row[1] := PrjProperty.Properties.ItemNamed['value'].Value;
+
+      stgPrjProperties.InsertRow(stgPrjProperties.RowCount);
+    end;  
+  end;
+  
 end;
 
 procedure TfrmModels.SaveModel;
@@ -292,7 +321,7 @@ var
   model : TJvSimpleXmlElem;
   target : TJvSimpleXmlElem;
   alias : TJvSimpleXmlElem;
-  replacement : TJvSimpleXmlElem;
+  replacement, PrjProperty : TJvSimpleXmlElem;
   row : TStrings;
   i : integer;
 begin
@@ -384,6 +413,19 @@ begin
 
           replacement.properties.Add('original', row[0]);
           replacement.properties.Add('replacement', row[1]);
+        end;
+      end;
+
+      // Project defines, if any
+      if stgPrjProperties.Cells[0, 1] <> '' then
+      begin
+        model.Items.ItemNamed['ProjectProperties'].Items.Clear;
+        for i := 1 to stgPrjProperties.RowCount-2 do
+        begin
+          PrjProperty := model.Items.ItemNamed['ProjectProperties'].Items.Add('ProjectProperty');
+          row := stgPrjProperties.Rows[i];
+          PrjProperty.Properties.Add('name', row[0]);
+          PrjProperty.Properties.Add('value', row[1]);
         end;
       end;
     finally

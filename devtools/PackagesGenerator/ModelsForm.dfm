@@ -3,8 +3,8 @@ object frmModels: TfrmModels
   Top = 129
   BorderStyle = bsDialog
   Caption = 'Models'
-  ClientHeight = 469
-  ClientWidth = 805
+  ClientHeight = 621
+  ClientWidth = 579
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object frmModels: TfrmModels
   PixelsPerInch = 96
   TextHeight = 13
   object lblSelectModel: TLabel
-    Left = 242
+    Left = 123
     Top = 12
     Width = 141
     Height = 13
@@ -26,8 +26,8 @@ object frmModels: TfrmModels
     Caption = 'Please select a model to edit:'
   end
   object btnOk: TBitBtn
-    Left = 305
-    Top = 431
+    Left = 231
+    Top = 584
     Width = 81
     Height = 29
     Anchors = [akLeft, akBottom]
@@ -91,8 +91,8 @@ object frmModels: TfrmModels
     NumGlyphs = 2
   end
   object bttCancel: TBitBtn
-    Left = 397
-    Top = 431
+    Left = 318
+    Top = 584
     Width = 81
     Height = 29
     Anchors = [akLeft, akBottom]
@@ -154,7 +154,7 @@ object frmModels: TfrmModels
     NumGlyphs = 2
   end
   object cmbModels: TComboBox
-    Left = 397
+    Left = 278
     Top = 8
     Width = 97
     Height = 21
@@ -165,15 +165,15 @@ object frmModels: TfrmModels
   end
   object grpProperties: TGroupBox
     Left = 8
-    Top = 44
-    Width = 785
-    Height = 379
+    Top = 46
+    Width = 564
+    Height = 532
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' Properties '
     TabOrder = 3
     object lblName: TLabel
-      Left = 116
-      Top = 36
+      Left = 67
+      Top = 45
       Width = 48
       Height = 13
       Alignment = taRightJustify
@@ -181,8 +181,8 @@ object frmModels: TfrmModels
       Caption = 'Name'
     end
     object lblPrefix: TLabel
-      Left = 512
-      Top = 16
+      Left = 461
+      Top = 23
       Width = 65
       Height = 13
       Alignment = taCenter
@@ -190,8 +190,8 @@ object frmModels: TfrmModels
       Caption = 'Prefix'
     end
     object lblFormat: TLabel
-      Left = 428
-      Top = 16
+      Left = 374
+      Top = 23
       Width = 81
       Height = 13
       Alignment = taCenter
@@ -199,42 +199,44 @@ object frmModels: TfrmModels
       Caption = 'Format'
     end
     object lblPackageLocation: TLabel
-      Left = 74
-      Top = 60
+      Left = 27
+      Top = 71
       Width = 88
       Height = 13
       Alignment = taRightJustify
       Caption = 'Packages location'
     end
     object lblIncFile: TLabel
-      Left = 111
-      Top = 84
+      Left = 64
+      Top = 99
       Width = 51
       Height = 13
       Alignment = taRightJustify
       Caption = 'Include file'
     end
     object lblTargets: TLabel
-      Left = 20
-      Top = 131
-      Width = 314
+      Left = 13
+      Top = 155
+      Width = 245
       Height = 13
       Alignment = taCenter
+      Anchors = [akLeft, akTop, akRight]
       AutoSize = False
       Caption = 'Targets'
     end
     object lblAliases: TLabel
-      Left = 340
-      Top = 131
-      Width = 229
+      Left = 264
+      Top = 155
+      Width = 290
       Height = 13
       Alignment = taCenter
+      Anchors = [akTop, akRight]
       AutoSize = False
       Caption = 'Aliases'
     end
     object lblClx: TLabel
-      Left = 396
-      Top = 60
+      Left = 341
+      Top = 72
       Width = 26
       Height = 13
       Alignment = taRightJustify
@@ -242,56 +244,67 @@ object frmModels: TfrmModels
       Caption = 'CLX'
     end
     object lblNoLibSuffix: TLabel
-      Left = 364
-      Top = 84
+      Left = 309
+      Top = 100
       Width = 58
       Height = 13
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'No LibSuffix'
     end
-    object Label1: TLabel
-      Left = 571
-      Top = 131
-      Width = 202
+    object lblClxReplacements: TLabel
+      Left = 13
+      Top = 304
+      Width = 245
       Height = 13
       Alignment = taCenter
+      Anchors = [akLeft, akRight, akBottom]
       AutoSize = False
       Caption = 'CLX Filename Replacements'
     end
     object lblDotNet: TLabel
-      Left = 364
-      Top = 108
+      Left = 309
+      Top = 119
       Width = 58
       Height = 13
       Alignment = taRightJustify
       AutoSize = False
       Caption = '.net'
     end
+    object lblPrjProperties: TLabel
+      Left = 264
+      Top = 304
+      Width = 290
+      Height = 13
+      Alignment = taCenter
+      Anchors = [akRight, akBottom]
+      AutoSize = False
+      Caption = 'Project properties'
+    end
     object edtName: TEdit
-      Left = 176
-      Top = 32
+      Left = 121
+      Top = 42
       Width = 150
       Height = 21
       TabOrder = 0
     end
     object edtPrefix: TEdit
-      Left = 512
-      Top = 32
+      Left = 461
+      Top = 42
       Width = 66
       Height = 21
       TabOrder = 1
     end
     object edtFormat: TEdit
-      Left = 428
-      Top = 32
+      Left = 374
+      Top = 42
       Width = 81
       Height = 21
       TabOrder = 2
     end
     object jfeIncFile: TJvFilenameEdit
-      Left = 176
-      Top = 80
+      Left = 121
+      Top = 96
       Width = 150
       Height = 21
       AddQuotes = False
@@ -299,19 +312,19 @@ object frmModels: TfrmModels
       TabOrder = 3
     end
     object jdePackages: TJvDirectoryEdit
-      Left = 176
-      Top = 56
+      Left = 121
+      Top = 69
       Width = 150
       Height = 21
       DialogKind = dkWin32
       TabOrder = 4
     end
     object stgTargets: TJvStringGrid
-      Left = 12
-      Top = 152
-      Width = 322
-      Height = 214
-      Anchors = [akLeft, akTop, akBottom]
+      Left = 13
+      Top = 174
+      Width = 245
+      Height = 124
+      Anchors = [akLeft, akTop, akRight, akBottom]
       ColCount = 10
       DefaultColWidth = 30
       DefaultRowHeight = 18
@@ -329,11 +342,11 @@ object frmModels: TfrmModels
       OnGetCellAlignment = stgTargetsGetCellAlignment
     end
     object stgAliases: TJvStringGrid
-      Left = 340
-      Top = 152
-      Width = 226
-      Height = 214
-      Anchors = [akLeft, akTop, akBottom]
+      Left = 264
+      Top = 174
+      Width = 290
+      Height = 124
+      Anchors = [akTop, akRight, akBottom]
       ColCount = 2
       DefaultRowHeight = 18
       FixedCols = 0
@@ -350,39 +363,39 @@ object frmModels: TfrmModels
       OnGetCellAlignment = stgTargetsGetCellAlignment
     end
     object edtClxFormat: TEdit
-      Left = 428
-      Top = 56
+      Left = 373
+      Top = 69
       Width = 81
       Height = 21
       TabOrder = 7
     end
     object edtClxPrefix: TEdit
-      Left = 512
-      Top = 56
+      Left = 460
+      Top = 69
       Width = 66
       Height = 21
       TabOrder = 8
     end
     object edtNLSFormat: TEdit
-      Left = 428
-      Top = 80
+      Left = 373
+      Top = 96
       Width = 81
       Height = 21
       TabOrder = 9
     end
     object edtNLSPrefix: TEdit
-      Left = 512
-      Top = 80
+      Left = 460
+      Top = 96
       Width = 66
       Height = 21
       TabOrder = 10
     end
     object stgClxRepl: TJvStringGrid
-      Left = 572
-      Top = 152
-      Width = 201
-      Height = 214
-      Anchors = [akLeft, akTop, akBottom]
+      Left = 13
+      Top = 323
+      Width = 245
+      Height = 195
+      Anchors = [akLeft, akRight, akBottom]
       ColCount = 2
       DefaultRowHeight = 18
       FixedCols = 0
@@ -399,22 +412,43 @@ object frmModels: TfrmModels
       OnGetCellAlignment = stgTargetsGetCellAlignment
     end
     object edtDotNetFormat: TEdit
-      Left = 428
-      Top = 104
+      Left = 373
+      Top = 123
       Width = 81
       Height = 21
       TabOrder = 12
     end
     object edtDotNetPrefix: TEdit
-      Left = 511
-      Top = 104
+      Left = 460
+      Top = 123
       Width = 66
       Height = 21
       TabOrder = 13
     end
+    object stgPrjProperties: TJvStringGrid
+      Left = 264
+      Top = 323
+      Width = 290
+      Height = 195
+      Anchors = [akRight, akBottom]
+      ColCount = 2
+      DefaultRowHeight = 18
+      FixedCols = 0
+      RowCount = 2
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor]
+      TabOrder = 14
+      Alignment = taLeftJustify
+      FixedFont.Charset = DEFAULT_CHARSET
+      FixedFont.Color = clWindowText
+      FixedFont.Height = -11
+      FixedFont.Name = 'MS Sans Serif'
+      FixedFont.Style = []
+      OnExitCell = stgTargetsExitCell
+      OnGetCellAlignment = stgTargetsGetCellAlignment
+    end
   end
   object btnAdd: TButton
-    Left = 497
+    Left = 378
     Top = 8
     Width = 21
     Height = 21
@@ -426,7 +460,7 @@ object frmModels: TfrmModels
     OnClick = btnAddClick
   end
   object btnDelete: TButton
-    Left = 521
+    Left = 402
     Top = 8
     Width = 21
     Height = 21
