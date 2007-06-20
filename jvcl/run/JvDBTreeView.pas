@@ -1282,7 +1282,8 @@ begin
       while ParentNode.HasChildren do
       begin
         ChildNode := ParentNode.GetNext;
-        DeleteChildren(ChildNode);
+        // (rom) make it compile, but no idea if it is correct
+        Self.DeleteChildren(ChildNode);
       end;
 
       if FDataLink.DataSet.Locate(FMasterField, TJvDBTreeNode(ParentNode).FMasterValue, []) then
