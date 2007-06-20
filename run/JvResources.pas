@@ -1053,6 +1053,10 @@ resourcestring
 resourcestring
   RsYourTextHereCaption = 'Put your text here ...';
 
+//=== JvGraphics.pas ==========================================================
+resourcestring
+  RsBadGraphicSignature = 'Bad Graphic Signature';
+
 //=== JvgReport.pas ==========================================================
 {$IFDEF USEJVCL}
 resourcestring

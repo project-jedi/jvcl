@@ -89,37 +89,49 @@ IMAGE FORMATS:
 
 unit JvGraphics;
 
+{$I jvcl.inc}
+
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, Graphics, Contnrs;
 
 type
-  TJvGetGraphicClassEvent = procedure(Sender: TObject; Stream: TMemoryStream;
+  TJvGetGraphicClassEvent = procedure(Sender: TObject; AStream: TMemoryStream;
     var GraphicClass: TGraphicClass) of object;
 
 procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
   AGraphicClass: TGraphicClass); overload;
-procedure RegisterGraphicSignature(const ASignature: array of Byte;
-  AOffset: Integer; AGraphicClass: TGraphicClass); overload;
+procedure RegisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer;
+  AGraphicClass: TGraphicClass); overload;
 
 procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
 procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer); overload;
-procedure UnregisterGraphicSignature(const ASignature: array of Byte;
-  AOffset: Integer); overload;
+procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer); overload;
 
-function GetGraphicClass(Stream: TStream): TGraphicClass;
-function GetGraphicObject(aStream: TStream): TGraphic; overload;
-function GetGraphicObject(aStream: TStream; aSender: TObject; aOnProc: TJvGetGraphicClassEvent): TGraphic; overload;
+function GetGraphicClass(AStream: TStream): TGraphicClass;
+function GetGraphicObject(AStream: TStream): TGraphic; overload;
+function GetGraphicObject(AStream: TStream; ASender: TObject; AOnProc: TJvGetGraphicClassEvent): TGraphic; overload;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
- {JvGIF,
- PNGImage,}
- jpeg,
-// GraphicEx,
- SysUtils;
+  jpeg,
+  SysUtils,
+  JvResources, JvTypes;
 
 //=== { TGraphicSignature } ==================================================
 
@@ -130,13 +142,11 @@ type
     Signature: string;
     Offset: Integer;
     GraphicClass: TGraphicClass;
-    constructor Create(const ASignature: string; AOffset: Integer;
-      AGraphicClass: TGraphicClass);
-    function IsThisSignature(Stream: TStream): Boolean;
+    constructor Create(const ASignature: string; AOffset: Integer; AGraphicClass: TGraphicClass);
+    function IsThisSignature(AStream: TStream): Boolean;
   end;
 
-constructor TGraphicSignature.Create(const ASignature: string; AOffset: Integer;
-  AGraphicClass: TGraphicClass);
+constructor TGraphicSignature.Create(const ASignature: string; AOffset: Integer; AGraphicClass: TGraphicClass);
 begin
   inherited Create;
   Signature := ASignature;
@@ -144,7 +154,7 @@ begin
   GraphicClass := AGraphicClass;
 end;
 
-function TGraphicSignature.IsThisSignature(Stream: TStream): Boolean;
+function TGraphicSignature.IsThisSignature(AStream: TStream): Boolean;
 var
   Buffer: string;
   Count: Integer;
@@ -154,8 +164,8 @@ begin
   try
     Count := Length(Signature);
     SetLength(Buffer, Count);
-    Stream.Position := Offset;
-    BytesRead := Stream.Read(Buffer[1], Count);
+    AStream.Position := Offset;
+    BytesRead := AStream.Read(Buffer[1], Count);
     Result := (BytesRead = Count) and (Buffer = Signature);
   except
     // Ignore any error...
@@ -192,33 +202,29 @@ begin
   end;
 end;
 
-procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
-  AGraphicClass: TGraphicClass);
+procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer; AGraphicClass: TGraphicClass);
 var
   GraphicSignature: TGraphicSignature;
 begin
-  GraphicSignaturesNeeded;
   // Avoid bad signatures
   if (ASignature = '') or (AOffset < 0) or (AGraphicClass = nil) then
-    raise Exception.Create('Error: Bad Graphic Signature');
+    raise  EJVCLException.CreateRes(@RsBadGraphicSignature);
+  GraphicSignaturesNeeded;
   // Should raise an exception if empty signature, negative offset or null class.
   GraphicSignature := TGraphicSignature.Create(ASignature, AOffset, AGraphicClass);
   try
-    GraphicSignatures.Add(GraphicSignature)
+    GraphicSignatures.Add(GraphicSignature);
   except
     GraphicSignature.Free;
   end;
 end;
 
-procedure RegisterGraphicSignature(const ASignature: array of Byte;
-  AOffset: Integer; AGraphicClass: TGraphicClass);
+procedure RegisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer; AGraphicClass: TGraphicClass);
 var
   Signature: string;
-  I: Integer;
 begin
   SetLength(Signature, Length(ASignature));
-  for I := Low(ASignature) to High(ASignature) do
-    Signature[I + 1] := Char(ASignature[I]);
+  Move(ASignature[Low(ASignature)], Signature[1], Length(ASignature));
   RegisterGraphicSignature(Signature, AOffset, AGraphicClass);
 end;
 
@@ -246,15 +252,13 @@ end;
 procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer);
 var
   Signature: string;
-  I: Integer;
 begin
   SetLength(Signature, Length(ASignature));
-  for I := Low(ASignature) to High(ASignature) do
-    Signature[I + 1] := Char(ASignature[I]);
+  Move(ASignature[Low(ASignature)], Signature[1], Length(ASignature));
   UnregisterGraphicSignature(Signature, AOffset);
 end;
 
-function GetGraphicClass(Stream: TStream): TGraphicClass;
+function GetGraphicClass(AStream: TStream): TGraphicClass;
 var
   P: Integer;
   I: Integer;
@@ -264,55 +268,61 @@ begin
   GraphicSignaturesNeeded;
   if Assigned(GraphicSignatures) then
   begin
-    P := Stream.Position;
+    P := AStream.Position;
     try
       for I := 0 to GraphicSignatures.Count - 1 do
       begin
         S := TGraphicSignature(GraphicSignatures[I]);
-        if S.IsThisSignature(Stream) then
+        if S.IsThisSignature(AStream) then
         begin
           Result := S.GraphicClass;
           Exit;
         end;
       end;
     finally
-      Stream.Position := P;
+      AStream.Position := P;
     end;
   end;
 end;
 
-function GetGraphicObject(aStream: TStream): TGraphic;
+function GetGraphicObject(AStream: TStream): TGraphic;
 var
-  lOnProc: TJvGetGraphicClassEvent;
+  LOnProc: TJvGetGraphicClassEvent;
 begin
-  lOnProc := nil;
-  Result := GetGraphicObject(aStream, nil, lOnProc)
+  LOnProc := nil;
+  Result := GetGraphicObject(AStream, nil, LOnProc);
 end;
 
-function GetGraphicObject(aStream: TStream; aSender: TObject; aOnProc: TJvGetGraphicClassEvent): TGraphic; overload;
+function GetGraphicObject(AStream: TStream; ASender: TObject; AOnProc: TJvGetGraphicClassEvent): TGraphic; overload;
 var
   GraphicClass: TGraphicClass;
 begin
   // Figure out which Graphic class is...
-  GraphicClass := GetGraphicClass(aStream);
+  GraphicClass := GetGraphicClass(AStream);
   // Call user event
-  if Assigned(aOnProc) and (aStream is TMemoryStream) then
-    aOnProc(aSender, aStream as TMemoryStream, GraphicClass);
+  if Assigned(AOnProc) and (AStream is TMemoryStream) then
+    AOnProc(ASender, TMemoryStream(AStream), GraphicClass);
   // If we got one, load it..
   if Assigned(GraphicClass) then
   begin
     Result := GraphicClass.Create;
-    Result.LoadFromStream(aStream);
+    Result.LoadFromStream(AStream);
   end
   else // nope.
     Result := nil;
 end;
 
 initialization
-  { registration happens in GraphicSignatures Needed() }
+  { registration happens in GraphicSignaturesNeeded() }
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
   FreeAndNil(GraphicSignatures);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 
