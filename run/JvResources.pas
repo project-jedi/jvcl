@@ -625,10 +625,6 @@ resourcestring
   RsEDataSetDataSourceIsUnassigned = 'Dataset or DataSource unassigned';
   RsEGridIsUnassigned = 'No grid assigned';
 
-//=== JvDBImage.pas ==========================================================
-resourcestring
-  RsEBadGraphicSignature = 'Bad graphic signature';
-
 //=== JvDBLookup.pas =========================================================
 resourcestring
   RsEInvalidFormatNotAllowed = 'Invalid format: % not allowed';
@@ -1053,10 +1049,6 @@ resourcestring
 resourcestring
   RsYourTextHereCaption = 'Put your text here ...';
 
-//=== JvGraphics.pas ==========================================================
-resourcestring
-  RsBadGraphicSignature = 'Bad Graphic Signature';
-
 //=== JvgReport.pas ==========================================================
 {$IFDEF USEJVCL}
 resourcestring
@@ -1446,6 +1438,7 @@ resourcestring
   RsEPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
   RsEBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
   RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
+  RsEBadGraphicSignature = 'Bad Graphic Signature';
 
 //=== JvLinkedControls.pas ===================================================
 resourcestring

@@ -51,9 +51,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvGraphics,
   Windows, Messages, Classes, Graphics, Controls,
-  Clipbrd, DB, DBCtrls, Forms, Contnrs;
+  Clipbrd, DB, DBCtrls, Forms, Contnrs,
+  JvJVCLUtils;
 
 type
   TJvDBImage = class(TDBImage)
@@ -112,8 +112,8 @@ const
 implementation
 
 uses
-  DBConsts, jpeg, SysUtils,
-  JvConsts, JvResources;
+  DBConsts, SysUtils,
+  JvConsts;
 
 //=== { TJvDBImage } =========================================================
 
