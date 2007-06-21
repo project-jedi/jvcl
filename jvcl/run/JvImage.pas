@@ -114,7 +114,7 @@ const
 implementation
 
 uses
-  JvGraphics;
+  JvJVCLUtils;
 
 //=== { TJvImage } ===========================================================
 
