@@ -111,7 +111,7 @@ const
 implementation
 
 uses
-  CommCtrl,
+  CommCtrl, JvThemes, Types,
   JvVCL5Utils,
 //  JvJCLUtils,
   JvResources;
@@ -224,27 +224,55 @@ begin
       (wSecond = 0) and (wMilliseconds = 0);
 end;
 
+function IsWinVista_UP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6);
+end;
+
 procedure TJvDateTimePicker.UpdateCalendar(CalHandle: THandle);
 var
-  rect : TRect;
-  width, colWidth : Integer;
+  R, WindowRect: TRect;
+  MinWidth, MinHeight, MaxTodayWidth: Integer;
+  SizeHandle: THandle;
 begin
   if CalHandle <> 0 then
   begin
-    // Mantis 3399: If we are showing week numbers then we need an additional
-    // column in the calendar. Its width is one seventh of the original width
-    // of the calendar before it was showing the week numbers.
-    if WeekNumbers then
-    begin
-      GetWindowRect(CalHandle, rect);
-      width := rect.Right - rect.Left;
-      colWidth := width div 7;
-      rect.Right := rect.Right + colWidth;
-      SetWindowPos(CalHandle, 0, 0, 0, rect.Right-rect.Left, rect.Bottom-rect.Top, SWP_NOMOVE or SWP_NOZORDER);
-    end;
     SetCalendarStyle(CalHandle,MCS_WEEKNUMBERS, WeekNumbers);
     SetCalendarStyle(CalHandle,MCS_NOTODAY, not ShowToday);
     SetCalendarStyle(CalHandle,MCS_NOTODAYCIRCLE, not ShowTodayCircle);
+
+    MonthCal_GetMinReqRect(CalHandle, R);
+    with R do
+    begin
+      MinHeight := Bottom - Top;
+      MinWidth := Right - Left;
+    end;
+    MaxTodayWidth := MonthCal_GetMaxTodayWidth(CalHandle);
+    if MinWidth < MaxTodayWidth then MinWidth := MaxTodayWidth;
+    if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+    begin
+      // On Vista the popup month calendar has a parent window that we must resize
+      SizeHandle := GetParent(CalHandle);
+      // The dropdown window uses a 'border' of..
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+      begin
+        // .. 3 pixels when themed
+        Inc(MinWidth, 3*2);
+        Inc(MinHeight, 3*2);
+      end
+      else
+      {$ENDIF JVCLThemesEnabled}
+      begin
+        // .. otherwise 5 pixels
+        Inc(MinWidth, 5*2);
+        Inc(MinHeight, 5*2);
+      end;
+    end
+    else
+      SizeHandle := CalHandle;
+    GetWindowRect(SizeHandle, WindowRect);
+    MoveWindow(SizeHandle, WindowRect.Left, WindowRect.Top, MinWidth, MinHeight, False);
   end;
 end;
 
