@@ -3,7 +3,7 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
   Top = 137
   Width = 582
   Height = 409
-  Caption = 'Jedi Date Time Picker Demo'
+  Caption = 'JEDI Date Time Picker Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

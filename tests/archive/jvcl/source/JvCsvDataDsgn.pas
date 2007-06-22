@@ -32,7 +32,7 @@ Known Issues:
   Design Time unit
   (contains property editors for TCsvDataSource component)
   Written by Warren Postma.
-  Donated to Delphi Jedi Project.
+  Donated to Delphi JEDI Project.
 
 }
 interface

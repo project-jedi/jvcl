@@ -15,7 +15,7 @@ Portions created by Anthony Steele are Copyright (C) 1999-2001 Anthony Steele.
 All Rights Reserved.
 
 Contributor(s): Suggesions and code in TCustomAutoVScrollbarMemo
-                by Petr Vones and Marcel von Brakel on the Delphi Jedi VCL list
+                by Petr Vones and Marcel von Brakel on the Delphi JEDI VCL list
 
 
 Last Modified: 20002-05-26
@@ -203,7 +203,7 @@ type
   end;
 
 
-{ as required by Jedi VCL standards }
+{ as required by JEDI VCL standards }
 const
   TMEMOEX_VERSION = 0.8;
   TSINGLELINEMEMO_VERSION = 0.8;

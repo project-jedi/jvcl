@@ -6,7 +6,7 @@
 
 All Units
 ---------
- Added Jedi Licence Agreements and {$I JEDI.INC} define
+ Added JEDI Licence Agreements and {$I JEDI.INC} define
  Moved all register statements to jvJanReg.pas
  Removed Many Hints and Warnings from Code, did not get all of them.
  Updated where need to compile with Delphi 6

@@ -794,9 +794,9 @@ end;
 procedure TfrmMain.mnuAboutClick(Sender: TObject);
 begin
   ShowMessage(
-    'Jedi Package Generator'#13#10+
+    'JEDI Package Generator'#13#10+
     #13#10+
-    '(c) 2003-2005 Olivier Sannier for the Jedi group');
+    '(c) 2003-2005 Olivier Sannier for the JEDI group');
 end;
 
 procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol,

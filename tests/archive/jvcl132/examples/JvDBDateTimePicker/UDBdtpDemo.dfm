@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 113
   Width = 544
   Height = 375
-  Caption = 'Jedi Date Time Picker Demo www.delphi-jedi.org'
+  Caption = 'JEDI Date Time Picker Demo www.delphi-jedi.org'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -127,7 +127,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Height = 13
     Anchors = [akLeft, akBottom]
     AutoSize = False
-    Caption = 'Delphi Jedi Project (www.delphi-jedi.org)'
+    Caption = 'Delphi JEDI Project (www.delphi-jedi.org)'
   end
   object Bevel1: TBevel
     Left = 228

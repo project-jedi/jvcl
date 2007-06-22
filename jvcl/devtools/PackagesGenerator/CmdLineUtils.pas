@@ -18,7 +18,7 @@ uses
 
 procedure Help;
 begin
-  WriteLn('pg - Jedi Package generator');
+  WriteLn('pg - JEDI Package generator');
   WriteLn;
   WriteLn('   pg [-m=MODEL] [-x=CONFIGFILE] [-t=TARGETS]');
   WriteLn('      [-p=PATH] [-r=PREFIX] [-f=FORMAT] [-i=INCLUDEFILE] [-d]');

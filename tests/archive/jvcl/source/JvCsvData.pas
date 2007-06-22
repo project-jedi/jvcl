@@ -79,8 +79,8 @@ Known Issues:
 // Originally written by Warren Postma
 // Contact: warren.postma@sympatico.ca or warrenpstma@hotmail.com
 //
-// Donated to the Delphi Jedi Project.
-// All Copyrights and Ownership donated to the Delphi Jedi Project.
+// Donated to the Delphi JEDI Project.
+// All Copyrights and Ownership donated to the Delphi JEDI Project.
 //------------------------------------------------------------------------
 
 //  { $ R  JVCSVDATA.DCR }
