@@ -116,6 +116,11 @@ uses
 //  JvJCLUtils,
   JvResources;
 
+{$IFNDEF COMPILER7_UP}
+const
+  ComCtlVersionIE6 = $00060000;
+{$ENDIF !COMPILER7_UP}
+
 procedure SetCalendarStyle(AHandle: THandle; Value: Integer; UseStyle: Boolean);
 var
   Style: Integer;
