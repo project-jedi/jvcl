@@ -14,7 +14,7 @@
    version of a component to serve this purpose, and from which this component
    has evolved, and to Brian Weith who solved a problem neither of us really
    understands <g>, as well as Brad White who was of invaluable help to me!  And
-   finally to the members of the Jedi group who wrote the wonderful underlying code
+   finally to the members of the JEDI group who wrote the wonderful underlying code
    which this component depends upon.}
 
  { © Copyright 2004 Robert Meek dba Tangentals Design  [All Rights Reserved]

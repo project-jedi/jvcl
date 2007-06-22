@@ -181,7 +181,7 @@ object CsvDataSourceForm: TCsvDataSourceForm
         'uirements (if you link the VCL runtime statically).  '
       ''
       
-        '*** Comments or Questions? Check the Delphi Jedi VCL Support New' +
+        '*** Comments or Questions? Check the Delphi JEDI VCL Support New' +
         'sgroups. ***')
     ParentFont = False
     ReadOnly = True

@@ -1,7 +1,7 @@
 object JvChartDemoForm: TJvChartDemoForm
   Left = 218
   Top = 277
-  Caption = 'Jedi JvChart Demo'
+  Caption = 'JEDI JvChart Demo'
   ClientHeight = 453
   ClientWidth = 713
   Color = clWindow

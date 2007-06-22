@@ -61,7 +61,7 @@ object FormMain: TFormMain
       Cursor = crHandPoint
       Hint = '<c:blue>http://jvcl.sourceforge.net'
       Anchors = [akLeft, akBottom]
-      Caption = 'Jedi Visual Component Library Homepage'
+      Caption = 'JEDI Visual Component Library Homepage'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
