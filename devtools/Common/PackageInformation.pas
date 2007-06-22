@@ -231,6 +231,7 @@ type
     function GetPackages(Index: Integer): TBpgPackageTarget;
     function GetBpgName: string;
     function Add(const TargetName, SourceName: string): TBpgPackageTarget;
+    procedure LoadGroupProjFile;
     procedure LoadBDSGroupFile;
     procedure LoadBPGFile;
   protected
@@ -997,6 +998,9 @@ procedure TPackageGroup.LoadFile;
 var
   i: Integer;
 begin
+  if CompareText(ExtractFileExt(FileName), '.groupproj') = 0 then
+    LoadGroupProjFile
+  else
   if CompareText(ExtractFileExt(FileName), '.bdsgroup') = 0 then
     LoadBDSGroupFile
   else
@@ -1103,6 +1107,41 @@ begin
     end;
   finally
     Lines.Free;
+  end;
+end;
+
+procedure TPackageGroup.LoadGroupProjFile;
+var
+  xml: TJvSimpleXML;
+  CurItem, MsBuild: TJvSimpleXMLElem;
+  NameProperty: TJvSimpleXMLProp;
+  Options, Projects: TJvSimpleXMLElem;
+  i, OptIndex, PrjIndex: Integer;
+  Personality: string;
+  TgName: string;
+begin
+  xml := TJvSimpleXML.Create(nil);
+  try
+    xml.LoadFromString(LoadUtf8File(Filename));
+
+    for i := 0 to xml.Root.Items.Count - 1 do
+    begin
+      CurItem := xml.Root.Items[i];
+      NameProperty := CurItem.Properties.ItemNamed['Name'];
+      // Get all targets that have ':Make' in their name property
+      if (CompareText(CurItem.Name, 'Target') = 0) and // <Target>
+         (Assigned(NameProperty)) and (Pos(':MAKE', UpperCase(NameProperty.Value)) > 0) and
+         (CurItem.Items.Count > 0) then
+      begin
+        MsBuild := CurItem.Items[0];
+
+        TgName := Copy(NameProperty.Value, 1, Pos(':', NameProperty.Value) - 1) + '.bpl';
+        // change .dproj to .dpk and add the target
+        Add(TgName, ChangeFileExt(MsBuild.Properties.ItemNamed['Projects'].Value, '.dpk'));
+      end;
+    end;
+  finally
+    xml.Free;
   end;
 end;
 
