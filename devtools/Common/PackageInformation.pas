@@ -1115,9 +1115,7 @@ var
   xml: TJvSimpleXML;
   CurItem, MsBuild: TJvSimpleXMLElem;
   NameProperty: TJvSimpleXMLProp;
-  Options, Projects: TJvSimpleXMLElem;
-  i, OptIndex, PrjIndex: Integer;
-  Personality: string;
+  i: Integer;
   TgName: string;
 begin
   xml := TJvSimpleXML.Create(nil);
