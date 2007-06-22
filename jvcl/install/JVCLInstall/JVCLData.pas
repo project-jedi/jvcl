@@ -847,11 +847,19 @@ begin
     Clx := 'Clx';
 
   if Target.IsBDS then
-    Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bdsgroup', // do not localize
-      [Target.TargetType, Target.Version, Pers, Clx])
+  begin
+    if Target.Version >= 7 then  // Delphi 2007 and upper use groupproj files
+      Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.groupproj', // do not localize
+        [Target.TargetType, Target.Version, Pers, Clx])
+    else
+      Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bdsgroup', // do not localize
+        [Target.TargetType, Target.Version, Pers, Clx]);
+  end
   else
+  begin
     Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
       [Target.TargetType, Target.Version, Pers, Clx]);
+  end;
 end;
 
 function TTargetConfig.VersionedJclDcp(const Name: string): string;
