@@ -822,13 +822,13 @@ begin
       Reg.CloseKey;
     end;
     
-    // IDE Version 5 comes in two flavors: 
+    // BDS IDE Version 5 comes in two flavors: 
     // - Delphi only  (Spacely)
     // - C++ Builder only  (Cogswell)
     // In the second case the product name is "C++ Builder" and not "Delphi" 
     // Right now, the name of an installation of Cogswell on top of Spacely
     // is not yet known and a way to detect it will have to be thought of.
-    if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+    if IsBDS and (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
       FName := 'Codegear C++ Builder for Win32';
 
     // get library paths
