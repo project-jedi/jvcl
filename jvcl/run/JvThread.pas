@@ -54,16 +54,22 @@ type
   private
     FFormStyle: TFormStyle;
     FOwner: TJvCustomThreadDialog;
+    FShowDelay: Integer;
     FShowDialog: Boolean;
     FShowModal: Boolean;
-  protected
+    procedure SetShowDelay(const Value: Integer);
     procedure SetShowDialog(Value: Boolean);
     procedure SetShowModal(Value: Boolean);
+  protected
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
     property FormStyle: TFormStyle read FFormStyle write FFormStyle;
+    //1 Delay in milliseconds for starting the thread dialog
+    property ShowDelay: Integer read FShowDelay write SetShowDelay default 0;
+    //1 Flag if there should be a dialog which shows the thread status
     property ShowDialog: Boolean read FShowDialog write SetShowDialog default False;
+    //1 Flag if the status dialog is modal
     property ShowModal: Boolean read FShowModal write SetShowModal default True;
   end;
 
@@ -73,6 +79,7 @@ type
     FConnectedDataObject: TObject;
     FConnectedThread: TJvThread;
     FDialogOptions: TJvCustomThreadDialogOptions;
+    FInternalShowDelay: Integer;
     FInternalTimer: TTimer;
     FInternalTimerInterval: Integer;
     FOnClose: TCloseEvent;
@@ -104,7 +111,8 @@ type
     property ConnectedDataComponent: TComponent read FConnectedDataComponent write SetConnectedDataComponent;
     property ConnectedDataObject: TObject read FConnectedDataObject write SetConnectedDataObject;
     property ConnectedThread: TJvThread read FConnectedThread;
-    property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write FDialogOptions;
+    property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write
+        FDialogOptions;
     property InternalTimerInterval: Integer read FInternalTimerInterval write SetInternalTimerInterval;
   published
     property OnClose: TCloseEvent read FOnClose write SetOnClose;
@@ -315,6 +323,14 @@ begin
   FOwner := AOwner;
   FShowDialog := False;
   FShowModal := True;
+  FShowDelay := 0;
+end;
+
+procedure TJvCustomThreadDialogOptions.SetShowDelay(const Value: Integer);
+begin
+  FShowDelay := Value;
+  if FShowDelay < 0 then
+    FShowDelay := 0;
 end;
 
 procedure TJvCustomThreadDialogOptions.SetShowDialog(Value: Boolean);
@@ -343,6 +359,7 @@ begin
   FInternalTimer := TTimer.Create(Self);
   FInternalTimer.OnTimer := InternalTimer;
   FInternalTimer.Interval := FInternalTimerInterval;
+  FInternalShowDelay := 0;
 end;
 
 constructor TJvCustomThreadDialogForm.CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
@@ -393,19 +410,35 @@ end;
 procedure TJvCustomThreadDialogForm.InternalTimer(Sender: TObject);
 begin
   if not (csDestroying in ComponentState) then
-    if Assigned(ConnectedThread) and ConnectedThread.Terminated then
-    begin
-      Hide;
-      Close;
-    end
-    else
+  begin
     if not Assigned(ConnectedThread) then
     begin
-      Hide;
+      Hide; // no connected component
       Close;
     end
-    else
-      UpdateFormContents;
+    else  // connected component present
+      if ConnectedThread.Terminated then
+      begin
+        Hide;
+        Close;
+      end
+      else // not terminated
+      begin
+        if FInternalShowDelay > 0 then // Dialog is not shown until yet
+        begin
+          FInternalShowDelay := FInternalShowDelay  - FInternalTimerInterval;
+          if FInternalShowDelay <= 0 then
+          begin
+            if DialogOptions.ShowModal then
+              ShowModal
+            else
+              Show;
+          end;
+        end
+        else
+          UpdateFormContents;
+      end;   // not terminated
+  end;   // if not (csDestroying in ComponentState) then
 end;
 
 procedure TJvCustomThreadDialogForm.ReplaceFormClose(Sender: TObject; var Action: TCloseAction);
@@ -437,6 +470,8 @@ end;
 
 procedure TJvCustomThreadDialogForm.TransferDialogOptions;
 begin
+  if Assigned(DialogOptions) then
+    fInternalShowDelay := DialogOptions.ShowDelay;
 end;
 
 procedure TJvCustomThreadDialogForm.UpdateFormContents;
@@ -458,6 +493,8 @@ end;
 
 procedure TJvCustomThreadDialogForm.SetInternalTimerInterval(Value: Integer);
 begin
+  if Value < 1 then
+    Value := 1;
   FInternalTimerInterval := Value;
   FInternalTimer.Interval := Value;
 end;
@@ -558,15 +595,18 @@ end;
 procedure TJvThread.ExecuteAndWait(P: Pointer);
 var
   B: Boolean;
+  Thread: TJvBaseThread;
 begin
   B := FRunOnCreate;
   FRunOnCreate := True;
   try
-    if Assigned(Execute(P)) then
-      WaitFor;  // all threads in list
+    Thread := Execute(P);
   finally
     FRunOnCreate := B;
   end;
+
+  if Assigned(Thread) then
+    WaitFor;  // all threads in list
 end;
 
 procedure TJvThread.ExecuteThreadAndWait(P: Pointer);
@@ -954,10 +994,13 @@ begin
       FreeNotification(FThreadDialogForm);
       FThreadDialogForm.TransferDialogOptions;
       InternalAfterCreateDialogForm(FThreadDialogForm);
-      if ThreadDialog.DialogOptions.ShowModal then
-        FThreadDialogForm.ShowModal
-      else
-        FThreadDialogForm.Show;
+      if ThreadDialog.DialogOptions.ShowDelay <= 0 then
+      begin
+        if ThreadDialog.DialogOptions.ShowModal then
+          FThreadDialogForm.ShowModal
+        else
+          FThreadDialogForm.Show;
+      end;
     end;
   end;
 end;
@@ -1003,7 +1046,7 @@ begin
   begin
     // the first resume (perhaps deferred)
     FOnResumeDone := True;
-    if FSender is TJvThread and Assigned(TJvThread(FSender).BeforeResume) then
+    if (FSender is TJvThread) and Assigned(TJvThread(FSender).BeforeResume) then
       try
         TJvThread(FSender).BeforeResume(Self);
       except
