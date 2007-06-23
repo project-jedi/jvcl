@@ -108,6 +108,8 @@ type
     procedure LinkMapFile(TargetConfig: ITargetConfig; Project: TPackageTarget;
       DebugUnits: Boolean);
 
+    procedure LogModify(const Name: string; const FilenameA: string; AgeA: Integer;
+      const FilenameB: string; AgeB: Integer);
     procedure CaptureLine(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineClean(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
@@ -138,7 +140,7 @@ type
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
 
-    function IsDcc32BugDangerous: Boolean;
+    function IsDcc32BugDangerous(TargetConfig: ITargetConfig): Boolean;
 
     function Compile: Boolean;
     procedure Abort; // abort compile process
@@ -283,12 +285,32 @@ begin
     FOnProgress(Self, Text, Position, Max, Kind);
 end;
 
+procedure TCompiler.LogModify(const Name: string; const FilenameA: string; AgeA: Integer;
+  const FilenameB: string; AgeB: Integer);
+begin
+{  if AgeA = -1 then
+    CaptureLine(Format('%s: %s (%s) > %s (%s)',
+      [Name,
+       FilenameA, '-1',
+       FilenameB, DateTimeToStr(FileDateToDateTime(AgeB))]), FAborted)
+  else if AgeB = -1 then
+    CaptureLine(Format('%s: %s (%s) > %s (%s)',
+      [Name,
+       FilenameA, DateTimeToStr(FileDateToDateTime(AgeA)),
+       FilenameB, '-1']), FAborted)
+  else
+    CaptureLine(Format('%s: %s (%s) > %s (%s)',
+      [Name,
+       FilenameA, DateTimeToStr(FileDateToDateTime(AgeA)),
+       FilenameB, DateTimeToStr(FileDateToDateTime(AgeB))]), FAborted);}
+end;
+
 procedure TCompiler.CaptureLine(const Line: string; var Aborted: Boolean);
 begin
   FOutput.Add(Line);
   if Assigned(FOnCaptureLine) then
     FOnCaptureLine(Line, FAborted);
-  //Aborted := FAborted;
+  //Aborted := FAborted;   We abort only when the compiler has finished its work.
 end;
 
 procedure TCompiler.CaptureLineClean(const Line: string; var Aborted: Boolean);
@@ -303,7 +325,7 @@ begin
     Inc(FCount)
   else if (Line <> '') and (Line[1] <> #9) then
     CaptureLine(Line, FAborted);
-  //Aborted := FAborted;
+  //Aborted := FAborted;   We abort only when the compiler has finished its work.
 end;
 
 procedure TCompiler.CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
@@ -464,7 +486,7 @@ begin
     Lines.Add('-NB"' + OutDirs.DcpDir + '"'); // .bpi output
 
     { dcc32.exe crashes if the path is too long }
-    if IsDcc32BugDangerous then
+    if IsDcc32BugDangerous(TargetConfig) then
       Lines.Add('-Q');
     if TargetConfig.Target.IsPersonal then
       Lines.Add('-DDelphiPersonalEdition');
@@ -777,8 +799,8 @@ function TCompiler.CompileCppPackage(TargetConfig: ITargetConfig;
 var
   PrjFilename, PkgFilename, ResFilename: string;
   PasFiles, CppFiles, ObjFiles, LibFiles, ResFiles: TStrings;
-  i, ObjAge, OldestObjAge, AgeIndex: Integer;
-  BplFilename, DcpFilename, ObjFilename: string;
+  i, ObjAge, NewestObjAge, AgeIndex: Integer;
+  BplFilename, DcpFilename, BpiFilename, ObjFilename: string;
   BplAge, DcpAge, LibAge, BpiAge: Integer;
   Changed: Boolean;
   OutDirs: TOutputDirs;
@@ -788,10 +810,11 @@ begin
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
   BplFilename := OutDirs.BplDir + PathDelim + Project.TargetName;
   DcpFilename := OutDirs.DcpDir + PathDelim + Project.DcpName;
+  BpiFilename := ChangeFileExt(DcpFilename, '.bpi');
   BplAge := FileAgeEx(BplFilename);
   DcpAge := FileAgeEx(DcpFilename);
   LibAge := FileAgeEx(ChangeFileExt(DcpFilename, '.lib'));
-  BpiAge := FileAgeEx(ChangeFileExt(DcpFilename, '.bpi'));
+  BpiAge := FileAgeEx(BpiFilename);
 
   PasFiles := nil;
   CppFiles := nil;
@@ -851,7 +874,7 @@ begin
 
     AgeIndex := ObjFiles.Count;
     // add .pas.obj files
-    OldestObjAge := 0;
+    NewestObjAge := 0;
     for i := 0 to PasFiles.Count - 1 do
     begin
       ObjFilename := OutDirs.UnitOutDir + PathDelim + ChangeFileExt(ExtractFileName(PasFiles[i]), '.obj');
@@ -860,8 +883,8 @@ begin
       else
         ObjAge := -1;
       ObjFiles.AddObject(ObjFilename, TObject(ObjAge));
-      if ObjAge > OldestObjAge then
-        OldestObjAge := ObjAge;
+      if ObjAge > NewestObjAge then
+        NewestObjAge := ObjAge;
     end;
 
     // compile Delphi files (creates only .dcu, .obj and .hpp files)
@@ -871,7 +894,8 @@ begin
 
     Changed := not TargetConfig.AutoDependencies or
                HaveFilesChanged(ObjFiles, AgeIndex) or
-               (DcpAge < OldestObjAge);
+               (DcpAge < NewestObjAge) or
+               (BpiAge <> FileAgeEx(BpiFilename));
     if Changed then
     begin
       // compile Delphi package (only modified) to get .dcp file (.bpl is also created)
@@ -901,7 +925,7 @@ begin
 
     Changed := not TargetConfig.AutoDependencies or
                HaveFilesChanged(ObjFiles, AgeIndex) or
-               (BplAge < OldestObjAge) or (LibAge < OldestObjAge) or (BpiAge < OldestObjAge);
+               (BplAge < NewestObjAge) or (LibAge < BpiAge) or (BpiAge < NewestObjAge);
     if Changed then
     begin
       // link files (create .lib, .bpi and .bpl)
@@ -929,9 +953,9 @@ function TCompiler.CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TP
 var
   Files: TStrings;
   i: Integer;
-  DcpAge, FormAge, PasAge, DcuAge, BplAge: Integer;
-  PrjFilename: string;
-  Filename: string;
+  DcpAge, FormAge, PasAge, DcuAge, BplAge, DepAge: Integer;
+  PrjFilename, DcpFilename, BplFilename, ResFilename: string;
+  Filename, DcuFilename: string;
   Changed: Boolean;
   OutDirs: TOutputDirs;
 begin
@@ -939,24 +963,42 @@ begin
 
   Result := 0;
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
-  DcpAge := FileAgeEx(OutDirs.DcpDir + PathDelim + Project.DcpName);
-  BplAge := FileAgeEx(OutDirs.BplDir + PathDelim + Project.TargetName);
+  DcpFilename := OutDirs.DcpDir + PathDelim + Project.DcpName;
+  BplFilename := OutDirs.BplDir + PathDelim + Project.TargetName;
+  ResFilename := ChangeFileExt(PrjFilename, '.res');
+  DcpAge := FileAgeEx(DcpFilename);
+  BplAge := FileAgeEx(BplFilename);
 
   // .dpk/.bpk
   Changed := not TargetConfig.AutoDependencies or
              (DcpAge < FileAgeEx(PrjFilename)) or
-             (DcpAge < FileAgeEx(ChangeFileExt(PrjFilename, '.res'))) or
-             (DcpAge > BplAge); // this happens if the .dcp is not for the .bpl
+             (DcpAge < FileAgeEx(ResFilename)){ or
+             (DcpAge > BplAge)}; // this happens if the .dcp is not for the .bpl [BDS 2006 makes this non-function]
+  if Changed then
+  begin
+    if DcpAge < FileAgeEx(PrjFilename) then
+      LogModify('Project', PrjFilename, FileAgeEx(PrjFilename), DcpFilename, DcpAge);
+    if DcpAge < FileAgeEx(ResFilename) then
+      LogModify('Resource', ResFilename, FileAgeEx(ResFilename), DcpFilename, DcpAge);
+    {if DcpAge > BplAge then
+      LogModify('Bpl', BplFilename, BplAge, DcpFilename, DcpAge);}
+  end;
+
   if DcpAge > BplAge then
     DcpAge := BplAge; // compile units that are newer than the bpl if the bpl is older than the dcp
   if not Changed then
   begin
     for i := 0 to High(CommonDependencyFiles) do
-      if DcpAge < FileAgeEx(TargetConfig.JVCLDir + '\common\' + ReplaceTargetMacros(CommonDependencyFiles[i], TargetConfig)) then
+    begin
+      Filename := TargetConfig.JVCLDir + '\common\' + ReplaceTargetMacros(CommonDependencyFiles[i], TargetConfig);
+      DepAge := FileAgeEx(Filename);
+      if (DcpAge < DepAge) or (DepAge = -1) then
       begin
         Changed := True;
+        LogModify('Common', Filename, DepAge, DcpFilename, DcpAge);
         Break;
       end;
+    end;
   end;
 
   if not Changed then
@@ -968,9 +1010,11 @@ begin
       begin
         Filename := OutDirs.DcpDir + PathDelim +
                     TargetConfig.VersionedJVCLXmlDcp(Project.JvDependenciesReqPkg[i].Name);
-        if FileAgeEx(Filename) > DcpAge then
+        DepAge := FileAgeEx(Filename);
+        if (DepAge > DcpAge) or (DepAge = -1) then
         begin
           Changed := True;
+          LogModify('JVCL', Filename, DepAge, DcpFilename, DcpAge);
           Break;
         end;
       end;
@@ -983,11 +1027,13 @@ begin
     begin
       if IsPackageUsed(Project.Owner, Project.JclDependenciesReqPkg[i]) then
       begin
-        Filename := TargetConfig.JclBplDir + PathDelim +
+        Filename := TargetConfig.JclDcpDir + PathDelim +
                     TargetConfig.VersionedJclDcp(Project.JclDependenciesReqPkg[i].Name + '.dcp');
-        if FileAgeEx(Filename) > DcpAge then
+        DepAge := FileAgeEx(Filename);
+        if (DepAge > DcpAge) or (DepAge = -1) then
         begin
           Changed := True;
+          LogModify('JCL', Filename, DepAge, DcpFilename, DcpAge);
           Break;
         end;
       end;
@@ -1002,25 +1048,37 @@ begin
       if IsFileUsed(Project.Owner, Project.Contains[i]) then
       begin
         // .pas
-        PasAge := FileAgeEx(Project.SourceDir + PathDelim + Project.Contains[i].Name);
-        DcuAge := FileAgeEx(OutDirs.UnitOutDir + PathDelim +
-                          ChangeFileExt(ExtractFileName(Project.Contains[i].Name), '.dcu'));
-        if (PasAge > DcuAge) or (DcpAge < PasAge) then 
+        Filename := Project.SourceDir + PathDelim + Project.Contains[i].Name;
+        DcuFilename := OutDirs.UnitOutDir + PathDelim + ChangeFileExt(ExtractFileName(Project.Contains[i].Name), '.dcu');
+        PasAge := FileAgeEx(Filename);
+        DcuAge := FileAgeEx(DcuFilename);
+        if (PasAge > DcuAge) or (PasAge = -1) then
         begin
           Changed := True;
+          LogModify('Source', Filename, PasAge, DcuFilename, DcuAge);
           Break;
         end;
+        if (DcuAge > DcpAge) or (DcuAge = -1) then
+        begin
+          Changed := True;
+          LogModify('Unit', DcuFilename, DcuAge, DcpFilename, DcpAge);
+          Break;
+        end;
+
         // .dfm/.xfm
         if Project.Contains[i].FormName <> '' then
         begin
-          FormAge := FileAgeEx(ChangeFileExt(Project.SourceDir + PathDelim +
-                             Project.Contains[i].Name, '.dfm'));
+          Filename := ChangeFileExt(Filename, '.dfm');
+          FormAge := FileAgeEx(Filename);
           if FormAge = -1 then
-            FormAge := FileAgeEx(ChangeFileExt(Project.SourceDir + PathDelim +
-                               Project.Contains[i].Name, '.xfm'));
-          if (FormAge <> -1) and (DcpAge < FormAge) then
+          begin
+            Filename := ChangeFileExt(Filename, '.xfm');
+            FormAge := FileAgeEx(Filename);
+          end;
+          if (FormAge <> -1) and (FormAge > DcpAge) then
           begin
             Changed := True;
+            LogModify('Form', Filename, FormAge, DcpFilename, DcpAge);
             Break;
           end;
         end;
@@ -1481,7 +1539,7 @@ var
 
 begin
   Assert(ProjectGroup <> nil, 'The project group file wasn''t found');
-  
+
   Result := False;
   if FAborted then
     Exit;
@@ -1560,13 +1618,13 @@ begin
         wrong locations. }
       TargetConfig.GetPackageBinariesForDeletion(Files);
       for i := 0 to Files.Count - 1 do
-        if not StartsWith(Files[i], TargetConfig.BplDir + PathDelim, False) and
-           not StartsWith(Files[i], TargetConfig.DcpDir + PathDelim, False) then
+        if not StartsWith(Files[i], TargetConfig.BplDir + PathDelim, True) and
+           not StartsWith(Files[i], TargetConfig.DcpDir + PathDelim, True) then
         begin
           if TargetConfig.DebugUnits then
           begin
-            if StartsWith(Files[i], TargetConfig.DebugBplDir + PathDelim, False) and
-               StartsWith(Files[i], TargetConfig.DebugDcpDir + PathDelim, False) then
+            if StartsWith(Files[i], TargetConfig.DebugBplDir + PathDelim, True) and
+               StartsWith(Files[i], TargetConfig.DebugDcpDir + PathDelim, True) then
               Continue;
           end;
           DeleteFile(Files[i]);
@@ -1744,9 +1802,12 @@ begin
   end;
 end;
 
-function TCompiler.IsDcc32BugDangerous: Boolean;
+function TCompiler.IsDcc32BugDangerous(TargetConfig: ITargetConfig): Boolean;
 begin
-  Result := Length(Data.JVCLDir) > MaxDcc32PathLen;
+  if TargetConfig.Target.Version <= 7 then
+    Result := Length(Data.JVCLDir) > MaxDcc32PathLen
+  else
+    Result := False;
 end;
 
 { TListConditionParser }

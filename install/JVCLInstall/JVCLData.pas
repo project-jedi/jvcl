@@ -407,16 +407,6 @@ begin
   end;
 end;
 
-function FixBackslashBackslash(const Dir: string): string;
-var
-  ps: Integer;
-begin
-  Result := Dir;
-  ps := Pos('\\', Result);
-  if ps > 0 then
-    Delete(Result, ps, 1);
-end;
-
 { TJVCLData }
 
 constructor TJVCLData.Create;
@@ -747,9 +737,9 @@ begin
 
   with ReadJediRegInformation(Target.RegistryKey, 'JCL') do // do not localize
   begin
-    FJclDir := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(RootDir)); // do not localize
-    FJclDcpDir := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(DcpDir));
-    FJclBplDir := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(BplDir));
+    FJclDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(RootDir))); // do not localize
+    FJclDcpDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(DcpDir)));
+    FJclBplDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(BplDir)));
     FJclVersion := Version;
   end;
 
@@ -868,6 +858,12 @@ begin
   if Target.Version = 5 then
   begin
     Result := ChangeFileExt(Name, '');
+
+    { We must handle both cases. The case where Name = 'Jcl' and the
+      case where Name = 'JclD50' / 'JclC50'. }
+    if EndsWith(Result, 'c50', True) or EndsWith(Result, 'd50', True) then
+      Result := Copy(Result, 1, Length(Result) - 3);
+      
     if Target.IsBCB then
       Result := Result + 'c50'
     else
