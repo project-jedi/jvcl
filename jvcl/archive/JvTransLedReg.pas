@@ -1,4 +1,4 @@
-// (rom) no Jedi header because this file will die soon
+// (rom) no JEDI header because this file will die soon
 
 unit JvTransLedReg;
 

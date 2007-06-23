@@ -18,7 +18,7 @@ echo Updating %LANGUAGE%...
 msgmerge --force-po -o %LANGUAGE%\LC_MESSAGES\jvcl.po %LANGUAGE%\LC_MESSAGES\jvcl.po jvcl.po
 
 : set the headers to match JVCL ones
-..\devtools\bin\SetPoHeader -t "JVCL localization template" -c "The Jedi Visual Component Library group" -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" %LANGUAGE%\LC_MESSAGES\jvcl.po 
+..\devtools\bin\SetPoHeader -t "JVCL localization template" -c "The JEDI Visual Component Library group" -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" %LANGUAGE%\LC_MESSAGES\jvcl.po 
 
 goto end
 

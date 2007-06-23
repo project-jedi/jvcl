@@ -1,5 +1,5 @@
 # JVCL localization template
-# Copyright (C) 2006 The Jedi Visual Component Library group
+# Copyright (C) 2006 The JEDI Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
 # 
@@ -149,8 +149,8 @@ msgstr "Pomo&c"
 #  FormMain..JvWizard..LblHomepage..Caption
 #. FormMain..JvWizard..LblHomepage..Caption
 #: Main.dfm:64 
-msgid "Jedi Visual Component Library Homepage"
-msgstr "Strona domowa Jedi Visual Component Library"
+msgid "JEDI Visual Component Library Homepage"
+msgstr "Strona domowa JEDI Visual Component Library"
 
 #  FormJvclIncConfig..BtnOk..Caption
 #. ExceptionDialog..OkBtn..Caption

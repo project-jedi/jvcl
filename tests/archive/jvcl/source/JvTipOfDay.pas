@@ -153,7 +153,7 @@ uses
 {$R JvTipOfDay.res}
 
 resourcestring
-  // (rom) Jedi registry keys need rework
+  // (rom) JEDI registry keys need rework
   RC_KeyStartup = 'Software\JEDI-VCL\TipsStartup';
   RC_CloseCaption = '&Close';
   RC_NextCaption = '&Next Tip';

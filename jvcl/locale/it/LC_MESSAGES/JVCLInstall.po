@@ -138,8 +138,8 @@ msgstr "&Guida"
 #  FormMain..JvWizard..LblHomepage..Caption
 #. FormMain..JvWizard..LblHomepage..Caption
 #: Main.dfm:64 
-msgid "Jedi Visual Component Library Homepage"
-msgstr "Homepage Jedi Visual Component Library"
+msgid "JEDI Visual Component Library Homepage"
+msgstr "Homepage JEDI Visual Component Library"
 
 #  FormJvclIncConfig..BtnOk..Caption
 #. ExceptionDialog..OkBtn..Caption

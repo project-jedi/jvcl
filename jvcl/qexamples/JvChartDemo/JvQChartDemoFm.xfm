@@ -5,7 +5,7 @@ object JvChartDemoForm: TJvChartDemoForm
   Height = 489
   VertScrollBar.Range = 35
   HorzScrollBar.Range = 124
-  Caption = 'Jedi JvChart Demo'
+  Caption = 'JEDI JvChart Demo'
   Color = clBase
   Font.Color = clText
   Font.Height = 13
