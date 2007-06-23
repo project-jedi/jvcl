@@ -134,7 +134,7 @@ msgstr "&Ayuda"
 
 #. FormMain..JvWizard..LblHomepage..Caption
 #: Main.dfm:64 
-msgid "Jedi Visual Component Library Homepage"
+msgid "JEDI Visual Component Library Homepage"
 msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 
 #. ExceptionDialog..OkBtn..Caption

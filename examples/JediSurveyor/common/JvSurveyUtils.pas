@@ -51,9 +51,9 @@ function MyAnsiLastChar(const S: string): PChar;
 
 const
   cRecordSeparator = ';';
-  cSurveyFileExt = '.jsf'; // Jedi Survey File
-  cResponseFileExt = '.jrf'; // Jedi Response File
-  cReportFileExt    = '.jsr';  // Jedi Survey Report
+  cSurveyFileExt = '.jsf'; // JEDI Survey File
+  cResponseFileExt = '.jrf'; // JEDI Response File
+  cReportFileExt    = '.jsr';  // JEDI Survey Report
 
 resourcestring
   SSurveyFileFilter = 'Survey files|*.jsf|All files|*.*';

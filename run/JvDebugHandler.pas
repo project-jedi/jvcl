@@ -40,19 +40,19 @@
  { INSTRUCTIONS:
 
    This non-visual component has been tested under Delphi 7 and 9 and can be used
-   ONLY in conjuction with the Jedi Library and it's included Debug handling routines.
+   ONLY in conjuction with the JEDI Library and it's included Debug handling routines.
    All laws, rules, and provisions provided for under the Mozilla public license
    apply, and though this component may be freely used in both freeware/shareware,
    opensource and commercial projects, some restrictions DO apply, and so you are
    urged to read the MPL (license.txt) and MPL FAQ documents available in the
-   JCL-Help.chm file that comes included with the Jedi Code Library.  The latest
-   version of the Jedi Code Library can be found and downloaded from:
+   JCL-Help.chm file that comes included with the JEDI Code Library.  The latest
+   version of the JEDI Code Library can be found and downloaded from:
    http://www.delphi-jedi.org/Jedi:CODELIBJCL
 
    To use this component:  Install as a "new component" into an old or new package.
    Please note:  The above is true ONLY if you wish to make use of this pas file as
    is and NOT if it is but one component contained in a Delphi Package!  Provided you
-   have correctly installed the Jedi Library, drop the component onto the MainForm
+   have correctly installed the JEDI Library, drop the component onto the MainForm
    of a project and set the following properties in the object inspector or in your
    mainform's OnCreate method as code.
 
