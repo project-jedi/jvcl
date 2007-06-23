@@ -48,7 +48,7 @@ const
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; ProjectDirResId2: 0; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; ProjectDirResId2: 0; Supported: True),
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId1: 64719; ProjectDirResId2: 0; Supported: True),
-    (Name: 'Codegear Delphi for Win32'; VersionStr: '2007'; Version: 11; CIV: '100'; ProjectDirResId1: 64396; ProjectDirResId2: 64398; Supported: True)
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; ProjectDirResId1: 64396; ProjectDirResId2: 64398; Supported: True)
   );
 
 type
@@ -822,14 +822,15 @@ begin
       Reg.CloseKey;
     end;
     
-    // BDS IDE Version 5 comes in two flavors: 
+    // BDS IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
     // - C++ Builder only  (Cogswell)
-    // In the second case the product name is "C++ Builder" and not "Delphi" 
-    // Right now, the name of an installation of Cogswell on top of Spacely
-    // is not yet known and a way to detect it will have to be thought of.
-    if IsBDS and (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
-      FName := 'Codegear C++ Builder for Win32';
+    // - Delphi and C++Builder
+    if IsBDS and (IDEVersion = 5) and SupportsPersonalities([persDelphi], True) then
+      FName := 'CodeGear Delphi for Win32'
+    else
+    if IsBDS and (IDEVersion = 5) and SupportsPersonalities([persBCB], True) then
+      FName := 'CodeGear C++Builder for Win32';
 
     // get library paths
     if IsBDS and (IDEVersion >= 5) and FileExists(GetEnvOptionsFileName) then
