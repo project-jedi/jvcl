@@ -605,9 +605,7 @@ begin
       end;
     end;
     if NothingToDo then
-    begin
       Exit;
-    end;
     Lines.SaveToFile(RspFilename);
   finally
     Lines.Free;
@@ -986,7 +984,7 @@ begin
       if IsPackageUsed(Project.Owner, Project.JclDependenciesReqPkg[i]) then
       begin
         Filename := TargetConfig.JclBplDir + PathDelim +
-                    TargetConfig.VersionedJclDcp(Project.JclDependenciesReqPkg[i].Name);
+                    TargetConfig.VersionedJclDcp(Project.JclDependenciesReqPkg[i].Name + '.dcp');
         if FileAgeEx(Filename) > DcpAge then
         begin
           Changed := True;
@@ -1482,6 +1480,8 @@ var
   end;
 
 begin
+  Assert(ProjectGroup <> nil, 'The project group file wasn''t found');
+  
   Result := False;
   if FAborted then
     Exit;
