@@ -142,6 +142,9 @@ type
     function GetDcpDir: string;
     function GetRootLibDir: string;
     function GetProjectDir: string;
+  protected
+    property DCPOutputDir: string read FDCPOutputDir; // with macros, could contain double backslashes when resolving the macro
+    property BPLOutputDir: string read FBPLOutputDir; // with macros, could contain double backslashes when resolving the macro
   public
     constructor Create(const AName, AVersion, ARegSubKey: string);
     destructor Destroy; override;
@@ -213,8 +216,6 @@ type
     property EnvVars: TStrings read FEnvVars;
 
     property BrowsingPaths: TStringList read FBrowsingPaths; // with macros
-    property DCPOutputDir: string read FDCPOutputDir; // with macros
-    property BPLOutputDir: string read FBPLOutputDir; // with macros
     property PackageSearchPathList: TStringList read FPackageSearchPaths; // with macros
     property SearchPaths: TStringList read FSearchPaths; // with macros
     property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
@@ -276,7 +277,7 @@ uses
   {$IFDEF COMPILER6_UP}
   StrUtils,
   {$ENDIF COMPILER6_UP}
-  CmdLineUtils,
+  CmdLineUtils, Utils,
   JvConsts,
   JclSysInfo, JclSimpleXml;
 
@@ -579,9 +580,9 @@ begin
       else
       begin
         if EnvVars.IndexOfName(S) >= 0 then
-          NewS := EnvVars.Values[S]
+          NewS := FixBackslashBackslash(EnvVars.Values[S])
         else
-          NewS := GetEnvironmentVariable(S);
+          NewS := FixBackslashBackslash(GetEnvironmentVariable(S));
       end;
 
       if NewS <> S then
@@ -830,7 +831,7 @@ begin
       FName := 'CodeGear Delphi for Win32'
     else
     if IsBDS and (IDEVersion = 5) and SupportsPersonalities([persBCB], True) then
-      FName := 'CodeGear C++Builder for Win32';
+      FName := 'CodeGear C++Builder';
 
     // get library paths
     if IsBDS and (IDEVersion >= 5) and FileExists(GetEnvOptionsFileName) then
@@ -1173,7 +1174,7 @@ end;
 
 function TCompileTarget.GetBplDir: string;
 begin
-  Result := ExpandDirMacros(BPLOutputDir);
+  Result := ExcludeTrailingPathDelimiter(ExpandDirMacros(BPLOutputDir));
 end;
 
 function TCompileTarget.GetDcc32: string;
@@ -1223,11 +1224,13 @@ begin
     else
       Result := ExpandDirMacros(GetEnvironmentVariable('BDSPROJECTSDIR')); // do not localize
 
+    Result := ExcludeTrailingPathDelimiter(Result);
     if Result = '' then // ignore BDSPROJECTSDIR env-var because Delphi and BCB do not know them
       Result := FDefaultBDSProjectsDir;
   end
   else
-   Result := RootDir + '\Projects'; // do not localize
+    Result := RootDir + '\Projects'; // do not localize
+  Result := FixBackslashBackslash(Result);
 end;
 
 function TCompileTarget.GetCommonProjectsDir: string;
@@ -1241,9 +1244,10 @@ begin
 
     if Result = '' then // ignore BDSCOMMONDIR env-var because Delphi and BCB do not know them
       Result := FCommonProjectsDir;
+    Result := ExcludeTrailingPathDelimiter(FixBackslashBackslash(Result));
   end
   else
-   Result := GetBDSProjectsDir;
+    Result := GetBDSProjectsDir;
 end;
 
 procedure TCompileTarget.GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
@@ -1277,7 +1281,7 @@ begin
         Result := 'RAD Studio\Projects';    // do not localize
     end;
 
-    Result := ExcludeTrailingPathDelimiter(GetPersonalFolder) + '\' + Result;
+    Result := ExcludeTrailingPathDelimiter(FixBackslashBackslash(ExcludeTrailingPathDelimiter(GetPersonalFolder) + '\' + Result));
   end
   else
     Result := '';

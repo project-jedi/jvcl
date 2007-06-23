@@ -109,7 +109,7 @@ begin
         ProgressBarTarget.Max := Max * ProjectMaxProgress;
         ProgressBarTarget.Position := (FPositionTarget * ProjectMaxProgress);
         if Assigned(Compiler) then
-          FormCompile.Init('JVCL - ' + Text, not FInstaller.Data.IgnoreMakeErrors, Compiler.IsDcc32BugDangerous);
+          FormCompile.Init('JVCL - ' + Text, not FInstaller.Data.IgnoreMakeErrors);
       end;
 
     pkProject:
@@ -130,7 +130,7 @@ begin
           if ps = 0 then
             ps := Length(Text) + 1;
           if Assigned(Compiler) then
-            FormCompile.Init(Trim(Copy(Text, 1, ps - 1)), False, Compiler.IsDcc32BugDangerous);
+            FormCompile.Init(Trim(Copy(Text, 1, ps - 1)), False);
         end
         else
           LblInfo.Caption := '';

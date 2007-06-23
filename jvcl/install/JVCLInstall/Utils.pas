@@ -71,6 +71,8 @@ procedure StrToPathList(Paths: string; List: TStrings);
 
 function ConcatPaths(List: TStrings; const Separator: string): string;
 
+function FixBackslashBackslash(const Dir: string): string;
+
 {$IFDEF COMPILER5}
 type
   IInterface = IUnknown;
@@ -417,6 +419,20 @@ begin
       Result := S
     else
       Result := Result + Separator + S;
+  end;
+end;
+
+function FixBackslashBackslash(const Dir: string): string;
+var
+  I: Integer;
+begin
+  Result := Dir;
+  I := Length(Result) - 1;
+  while I > 1 do
+  begin
+    if (Result[I] = PathDelim) and (Result[I + 1] = PathDelim) then
+      Delete(Result, I, 1);
+    Dec(I);
   end;
 end;
 

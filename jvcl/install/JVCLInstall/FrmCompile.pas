@@ -91,7 +91,7 @@ type
     procedure SetCurrentLine(Line: Cardinal);
     function IsCompileFileLine(const Line: string): Boolean;
   public
-    procedure Init(const ProjectName: string; Clear: Boolean = True; NoShow: Boolean = False);
+    procedure Init(const ProjectName: string; Clear: Boolean = True);
     procedure Compiling(const Filename: string);
     procedure Linking(const Filename: string);
     procedure Done(const ErrorReason: string = '');
@@ -246,7 +246,7 @@ begin
   end;
 end;
 
-procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean; NoShow: Boolean);
+procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean);
 begin
   Tag := 0;
   FAborted := False;
@@ -277,13 +277,10 @@ begin
 
   BtnOk.Enabled := True;
   BtnOk.Caption := SCancelButton;
-  //if not NoShow then
-  begin
-    if not Visible then
-      Show
-    else
-      BringToFront;
-  end;
+  if not Visible then
+    Show
+  else
+    BringToFront;
 end;
 
 procedure TFormCompile.Compiling(const Filename: string);
