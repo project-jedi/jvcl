@@ -925,7 +925,7 @@ begin
 
     Changed := not TargetConfig.AutoDependencies or
                HaveFilesChanged(ObjFiles, AgeIndex) or
-               (BplAge < NewestObjAge) or {(LibAge < BpiAge) or} (BpiAge < NewestObjAge);
+               (BplAge < NewestObjAge) or (LibAge < BpiAge) or (BpiAge < NewestObjAge);
     if Changed then
     begin
       // link files (create .lib, .bpi and .bpl)
