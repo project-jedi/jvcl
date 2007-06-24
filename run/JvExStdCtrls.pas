@@ -1652,8 +1652,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -2430,8 +2433,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -2798,8 +2804,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -3136,8 +3145,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -3474,8 +3486,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -3811,8 +3826,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -4148,8 +4166,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -4485,8 +4506,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -4822,8 +4846,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -5159,8 +5186,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -5496,8 +5526,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -5833,8 +5866,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -6170,8 +6206,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -6507,8 +6546,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
@@ -6844,8 +6886,11 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 

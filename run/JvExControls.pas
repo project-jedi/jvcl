@@ -838,7 +838,7 @@ end;
 
 {$ENDIF COMPILER5}
 
-//=== { TJvHotTrackOptions } =================================================
+//=== { TJvHotTrackOptions } ======================================
 
 constructor TJvHotTrackOptions.Create;
 begin
@@ -915,7 +915,7 @@ begin
   end;
 end;
 
-//=== { TJvExControl } =======================================================
+//============================================================================
 
 constructor TJvExControl.Create(AOwner: TComponent);
 begin
@@ -1118,7 +1118,7 @@ begin
   end;
 end;
 
-//=== { TJvExWinControl } ====================================================
+//============================================================================
 
 constructor TJvExWinControl.Create(AOwner: TComponent);
 begin
@@ -1450,12 +1450,15 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
-//=== { TJvExGraphicControl } ================================================
+//============================================================================
 
 constructor TJvExGraphicControl.Create(AOwner: TComponent);
 begin
@@ -1658,7 +1661,7 @@ begin
   end;
 end;
 
-//=== { TJvExCustomControl } =================================================
+//============================================================================
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
 begin
@@ -1990,12 +1993,15 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
 
-//=== { TJvExHintWindow } ====================================================
+//============================================================================
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);
 begin
@@ -2327,10 +2333,15 @@ begin
     else
       inherited WndProc(Msg);
     end;
-    if DotNetHighlighting then
-      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    case Msg.Msg of // precheck message to prevent access violations on released controls
+      CM_MOUSEENTER, CM_MOUSELEAVE, WM_KILLFOCUS, WM_SETFOCUS, WM_NCPAINT:
+        if DotNetHighlighting then
+          HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
+    end;
   end;
 end;
+
+//============================================================================
 
 initialization
   {$IFDEF UNITVERSIONING}
