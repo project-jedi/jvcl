@@ -937,7 +937,7 @@ procedure ApplyShowingChanged;
 var
   I: Integer;
 begin
-  if IsWinXP_UP then
+  if IsWinXP_UP and (GShowingChanged <> nil) then
     for I := 0 to Screen.FormCount - 1 do
       if GShowingChanged.IndexOf(Screen.Forms[I]) >= 0 then
         Screen.Forms[i].Perform(CM_SHOWINGCHANGED, 0, 0);
