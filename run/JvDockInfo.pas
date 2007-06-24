@@ -409,6 +409,7 @@ var
   S: string;
   I: Integer;
   OldPath: string;
+  OldDefaultIfValueNotExists : Boolean;
 
   procedure CreateZoneAndAddInfo(Index: Integer);
   var
@@ -472,6 +473,8 @@ begin
     { Normally, we wouldn't find duplicate names, but if so ignore them otherwise havoc }
     FormList.Duplicates := dupIgnore;
     OldPath := FAppStorage.Path;
+    OldDefaultIfValueNotExists := FAppStorage.StorageOptions.DefaultIfValueNotExists;
+    FAppStorage.StorageOptions.DefaultIfValueNotExists := True;
     try
       FAppStorage.Path := FAppStorage.ConcatPaths([FAppStorage.Path, AppStoragePath, 'Forms']);
       if FAppStorage.ValueStored('FormNames') then
@@ -497,6 +500,7 @@ begin
       end;
     finally
       FAppStorage.Path := OldPath;
+      FAppStorage.StorageOptions.DefaultIfValueNotExists := OldDefaultIfValueNotExists;
     end;
   finally
     FormList.Free;
@@ -778,6 +782,20 @@ procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
   OldPath: string;
+
+  procedure WriteIntegerIfNonZero(const Path: string; Value: Integer);
+  begin
+    if Value <> 0 then
+      fAppStorage.WriteInteger(Path, Value);
+  end;
+
+  procedure WriteBooleanIfFalse(const Path: string; Value: Boolean);
+  begin
+    if not Value then
+      fAppStorage.WriteBoolean(Path, Value);
+  end;
+
+
 begin
   if FJvDockInfoStyle = isJVCLReadInfo then { JVCL Mode persistance : READ }
   begin
@@ -798,30 +816,30 @@ begin
           WriteString('FormNames', ReadString('FormNames') + DockFormName + ';');
           Path := ConcatPaths([Path, DockFormName]);
           WriteString('ParentName', ParentName);
-          WriteInteger('DockLeft', DockRect.Left);
-          WriteInteger('DockTop', DockRect.Top);
-          WriteInteger('DockRight', DockRect.Right);
-          WriteInteger('DockBottom', DockRect.Bottom);
+          WriteIntegerIfNonZero('DockLeft', DockRect.Left);
+          WriteIntegerIfNonZero('DockTop', DockRect.Top);
+          WriteIntegerIfNonZero('DockRight', DockRect.Right);
+          WriteIntegerIfNonZero('DockBottom', DockRect.Bottom);
           WriteString('LastDockSiteName', LastDockSiteName);
-          WriteInteger('UnDockLeft', UnDockLeft);
-          WriteInteger('UnDockTop', UnDockTop);
-          WriteInteger('LRDockWidth', LRDockWidth);
-          WriteInteger('TBDockHeight', TBDockHeight);
-          WriteInteger('UnDockWidth', UnDockWidth);
-          WriteInteger('UnDockHeight', UnDockHeight);
-          WriteInteger('VSPaneWidth', VSPaneWidth);
-          WriteBoolean('Visible', Visible);
-          WriteInteger('BorderStyle', Integer(BorderStyle));
-          WriteInteger('FormStyle', Integer(FormStyle));
-          WriteInteger('WindowState', Integer(WindowState));
-          WriteInteger('DockFormStyle', Integer(DockFormStyle));
-          WriteBoolean('CanDocked', CanDocked);
-          WriteBoolean('EachOtherDocked', EachOtherDocked);
-          WriteBoolean('LeftDocked', LeftDocked);
-          WriteBoolean('TopDocked', TopDocked);
-          WriteBoolean('RightDocked', RightDocked);
-          WriteBoolean('BottomDocked', BottomDocked);
-          WriteBoolean('CustomDocked', CustomDocked); {NEW!}
+          WriteIntegerIfNonZero('UnDockLeft', UnDockLeft);
+          WriteIntegerIfNonZero('UnDockTop', UnDockTop);
+          WriteIntegerIfNonZero('LRDockWidth', LRDockWidth);
+          WriteIntegerIfNonZero('TBDockHeight', TBDockHeight);
+          WriteIntegerIfNonZero('UnDockWidth', UnDockWidth);
+          WriteIntegerIfNonZero('UnDockHeight', UnDockHeight);
+          WriteIntegerIfNonZero('VSPaneWidth', VSPaneWidth);
+          WriteBooleanIfFalse('Visible', Visible);
+          WriteIntegerIfNonZero('BorderStyle', Integer(BorderStyle));
+          WriteIntegerIfNonZero('FormStyle', Integer(FormStyle));
+          WriteIntegerIfNonZero('WindowState', Integer(WindowState));
+          WriteIntegerIfNonZero('DockFormStyle', Integer(DockFormStyle));
+          WriteBooleanIfFalse('CanDocked', CanDocked);
+          WriteBooleanIfFalse('EachOtherDocked', EachOtherDocked);
+          WriteBooleanIfFalse('LeftDocked', LeftDocked);
+          WriteBooleanIfFalse('TopDocked', TopDocked);
+          WriteBooleanIfFalse('RightDocked', RightDocked);
+          WriteBooleanIfFalse('BottomDocked', BottomDocked);
+          WriteBooleanIfFalse('CustomDocked', CustomDocked); {NEW!}
           WriteString('DockClientData', DockClientData);
         finally
           FAppStorage.Path := OldPath;
