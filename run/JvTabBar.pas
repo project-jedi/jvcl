@@ -892,6 +892,13 @@ begin
   if AllowTabMoving then
   begin
     InsertTab := TabAt(X, Y);
+    if not Assigned(InsertTab) then
+      if Assigned(LeftTab) and (X < LeftTab.FLeft) then
+        InsertTab := LeftTab
+      else
+      if Tabs.Count > 0 then
+        InsertTab := Tabs[Tabs.Count - 1];
+
     Accept := (Source = Self) and Assigned(SelectedTab) and (InsertTab <> SelectedTab) and
       Assigned(InsertTab);
     if Accept then
@@ -934,10 +941,16 @@ begin
   if AllowTabMoving and (Source = Self) and Assigned(SelectedTab) then
   begin
     InsertTab := TabAt(X, Y);
+    if not Assigned(InsertTab) then
+      if Assigned(LeftTab) and (X < LeftTab.FLeft) then
+        InsertTab := LeftTab
+      else
+        InsertTab := Tabs[Tabs.Count - 1];
     if Assigned(InsertTab) then
     begin
       SelectedTab.Index := InsertTab.Index;
       TabMoved(SelectedTab);
+      SelectedTab.MakeVisible;
       UpdateScrollButtons;
     end;
   end
