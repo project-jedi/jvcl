@@ -3835,6 +3835,87 @@ end;
 
 // (rom) unused writeable const option removed
 
+{$IFDEF DELPHI6_UP}
+procedure TJvDockVIDVCDragDockObject.DefaultDockImage(Erase: Boolean);
+var
+  DrawRect: TRect;
+  TabControlRect: TRect;
+  TabRect: TRect;
+  PenSize: Integer;
+  ABrush: TBrush;
+  ShowTab: Boolean;
+  LeftOffset: Integer;
+  BottomOffset: Integer;
+  MaxTabWidth: Integer;
+begin
+  FErase := Erase;
+  GetBrush_PenSize_DrawRect(ABrush, PenSize, DrawRect, Erase);
+  if Erase then
+    Exit;  // No need to erase
+
+  ShowTab := False;
+  if FIsTabDockOver and Assigned(FDropTabControl) then
+  begin
+    TabControlRect := FDropTabControl.BoundsRect;
+    TabControlRect := Rect(FDropTabControl.ClientToScreen(TabControlRect.TopLeft),
+                     FDropTabControl.ClientToScreen(TabControlRect.BottomRight));
+    // This is to make sure the TabControlRect is included in the DrawRect
+    if PtInRect(DrawRect, TabControlRect.TopLeft) and
+       PtInRect(DrawRect, Point(TabControlRect.BottomRight.X -1,
+                                TabControlRect.BottomRight.Y -1))
+    then
+      ShowTab := True;
+  end;
+
+  if not ShowTab then
+  begin
+    AlphaBlendedForm.Visible := True;
+    AlphaBlendedForm.BoundsRect := DrawRect;
+    AlphaBlendedTab.Visible := False;
+    AlphaBlendedTab.BoundsRect := Rect(0, 0, 0, 0);
+  end
+  else
+  begin
+    LeftOffset := FDropTabControl.TabLeftOffset;
+    BottomOffset := FDropTabControl.Panel.TabHeight;
+    if FDropTabControl.Panel.Page.Count > 0 then
+      MaxTabWidth := FDropTabControl.Panel.Sorts[0].TabWidth
+    else
+      MaxTabWidth := 30;
+
+    if TabControlRect.Right - TabControlRect.Left < LeftOffset +  2 * MaxTabWidth then
+      MaxTabWidth := (TabControlRect.Right - TabControlRect.Left - LeftOffset) div 2;
+
+    if TabControlRect.Bottom - TabControlRect.Top  < 2 * BottomOffset then
+      BottomOffset := Max((TabControlRect.Bottom - TabControlRect.Top) div 2, 0);
+
+    Assert(FDropTabControl.TabPosition in [tpBottom, tpTop],
+      RsEDockCannotSetTabPosition);
+
+    TabRect := TabControlRect;
+    if FDropTabControl.TabPosition = tpBottom then
+    begin
+      Dec(TabControlRect.Bottom, BottomOffset);
+      AlphaBlendedForm.Visible := True;
+      AlphaBlendedForm.BoundsRect := TabControlRect;
+      TabRect := Bounds(TabRect.Left + LeftOffset, TabRect.Bottom - BottomOffset,
+                      MaxTabWidth, BottomOffset);
+      AlphaBlendedTab.Visible := True;
+      AlphaBlendedTab.BoundsRect := TabRect;
+    end
+    else
+    begin
+      Inc(TabControlRect.Top, BottomOffset);
+      AlphaBlendedForm.Visible := True;
+      AlphaBlendedForm.BoundsRect := TabControlRect;
+      TabRect := Bounds(TabRect.Left + LeftOffset, TabRect.Top,
+                      MaxTabWidth, BottomOffset);
+      AlphaBlendedTab.Visible := True;
+      AlphaBlendedTab.BoundsRect := TabRect;
+    end;
+  end;
+end;
+{$ELSE}
 procedure TJvDockVIDVCDragDockObject.DefaultDockImage(Erase: Boolean);
 const
   LeftOffset = 4;
@@ -3904,6 +3985,7 @@ begin
     ReleaseDC(DesktopWindow, DC);
   end;
 end;
+{$ENDIF DELPHI6_UP}
 
 function TJvDockVIDVCDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 begin

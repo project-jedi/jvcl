@@ -43,6 +43,11 @@ uses
   JvDockTree;
 
 type
+  TJvAlphaBlendedForm = class(TForm)
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  end;
+
   TJvDockDragDockObject = class(TObject)
   private
     // FDockClient:TObject;{NEW: Opaque reference to TJvDockClient}
@@ -62,16 +67,21 @@ type
     FCtrlDown: Boolean;
     FDockRect: TRect;
     FEraseDockRect: TRect;
+    FAlphaBlendedForm: TJvAlphaBlendedForm;
+    FAlphaBlendedTab: TJvAlphaBlendedForm;
     procedure SetBrush(const Value: TBrush);
     procedure SetDropAlign(const Value: TAlign);
     procedure SetDropOnControl(const Value: TControl);
     function GetTargetControl: TWinControl;
     procedure SetTargetControl(const Value: TWinControl);
+    function GetAlphaBlendedTab: TJvAlphaBlendedForm;
   protected
+    property AlphaBlendedForm: TJvAlphaBlendedForm read FAlphaBlendedForm;
+    property AlphaBlendedTab: TJvAlphaBlendedForm read GetAlphaBlendedTab;
     procedure DefaultDockImage(Erase: Boolean); virtual;
     procedure DrawDragRect(DoErase: Boolean); virtual;
-    procedure GetBrush_PenSize_DrawRect(
-      var ABrush: TBrush; var PenSize: Integer; var DrawRect: TRect; Erase: Boolean); virtual;
+    procedure GetBrush_PenSize_DrawRect(var ABrush: TBrush; var PenSize: Integer;
+      var DrawRect: TRect; Erase: Boolean); virtual;
     function GetFrameWidth: Integer; virtual;
     procedure SetFrameWidth(const Value: Integer); virtual;
     procedure MouseMsg(var Msg: TMessage); virtual;
@@ -1718,6 +1728,14 @@ begin
   RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_ERASE);
 end;
 
+//=== { TJvAlphaBlendedForm } ==============================================
+
+procedure TJvAlphaBlendedForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
+end;
+
 //=== { TJvDockDragDockObject } ==============================================
 
 constructor TJvDockDragDockObject.Create(AControl: TControl);
@@ -1728,6 +1746,9 @@ begin
   FBrush.Bitmap := AllocPatternBitmap(clBlack, clWhite);
   FFrameWidth := 4;
   FCtrlDown := False;
+
+  FAlphaBlendedForm := GetAlphaBlendedTab; { create the form ... }
+  FAlphaBlendedTab := nil; { ... but use it for the form and not for the tab }
 end;
 
 destructor TJvDockDragDockObject.Destroy;
@@ -1737,7 +1758,33 @@ begin
     FBrush.Free;
     FBrush := nil;
   end;
+  {$IFDEF DELPHI6_UP}
+  FAlphaBlendedForm.Free;
+  FAlphaBlendedTab.Free;
+  {$ENDIF DELPHI6_UP}
   inherited Destroy;
+end;
+
+function TJvDockDragDockObject.GetAlphaBlendedTab: TJvAlphaBlendedForm;
+begin
+  if FAlphaBlendedTab = nil then
+  begin
+    {$IFDEF DELPHI6_UP} // Delphi 5's TCustomForm doesn't have the AlphaBlend properties
+    FAlphaBlendedTab := TJvAlphaBlendedForm.CreateNew(nil);
+    with FAlphaBlendedTab do
+    begin
+      Visible := False;
+      Color := clHighlight;
+      AlphaBlend := True;
+      AlphaBlendValue := 140;
+      BorderIcons := [];
+      BorderStyle := bsNone;
+      FormStyle := fsStayOnTop;
+      BoundsRect := Rect(0, 0, 0, 0);
+    end;
+    {$ENDIF DELPHI6_UP}
+  end;
+  Result := FAlphaBlendedTab;
 end;
 
 procedure TJvDockDragDockObject.AdjustDockRect(const ARect: TRect);
@@ -1781,6 +1828,18 @@ begin
   SetCapture(Result);
 end;
 
+{$IFDEF DELPHI6_UP}
+procedure TJvDockDragDockObject.DefaultDockImage(Erase: Boolean);
+Var
+  DrawRect: TRect;
+  PenSize: Integer;
+  ABrush: TBrush;
+begin
+  GetBrush_PenSize_DrawRect(ABrush, PenSize, DrawRect, Erase);
+  AlphaBlendedForm.Visible := True;
+  AlphaBlendedForm.BoundsRect := DrawRect;
+end;
+{$ELSE}
 procedure TJvDockDragDockObject.DefaultDockImage(Erase: Boolean);
 var
   DesktopWindow: HWND;
@@ -1808,6 +1867,7 @@ begin
     ReleaseDC(DesktopWindow, DC);
   end;
 end;
+{$ENDIF DELPHI6_UP}
 
 function TJvDockDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 var
