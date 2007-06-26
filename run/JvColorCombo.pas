@@ -555,8 +555,9 @@ begin
   if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FNewColorText, [FCustomColorCount]));
-    //      Items.InsertObject(Items.Count, FNewColorText + IntToStr(FCustomColorCount), TObject(Value))
-    Inc(FCustomColorCount);
+    // If we are executing the dialog, the FCustomColorCount value has already been incremented (see the Click method)
+    if not FExecutingDialog then
+      Inc(FCustomColorCount);
     FColorValue := Value;
     ItemIndex := Items.Count - 2;
   end
@@ -567,7 +568,6 @@ begin
     ItemIndex := Items.Count - 1;
     Change;
   end;
-  //      Items.AddObject(FNewColorText + IntToStr(FCustomColorCount), TObject(Value));
 end;
 
 function TJvColorComboBox.DoNewColor(Color: TColor; var DisplayName: string): Boolean;
@@ -703,41 +703,44 @@ var
 begin
   if FExecutingDialog then
     Exit;
-  if (ItemIndex = Items.Count - 1) and (coCustomColors in FOptions) then
-  begin
-    FExecutingDialog := True;
-    CD := TColorDialog.Create(Self);
-    with CD do
-    try
-      CD.Color := ColorValue;
-      CD.CustomColors := Self.CustomColors;
-      Options := Options + [cdFullOpen, cdPreventFullOpen];
-      S := FNewColorText;
-      if Execute then
-      begin
-        Self.CustomColors := CD.CustomColors;
-        if DoNewColor(CD.Color, S) then
-          Inc(FCustomColorCount);
-        Tmp := FNewColorText;
-        try
-          FNewColorText := S;
-          ColorValue := CD.Color;
-        finally
-          FNewColorText := Tmp;
-        end;
-        Change;
-      end
-      else
-        ItemIndex := Items.Count - 2;
-    finally
-      Free;
-    end;
-  end
-  else
-  if ItemIndex >= 0 then
-    ColorValue := TColor(Items.Objects[ItemIndex]);
-  inherited Click;
-  FExecutingDialog := False;
+  try
+    if (ItemIndex = Items.Count - 1) and (coCustomColors in FOptions) then
+    begin
+      FExecutingDialog := True;
+      CD := TColorDialog.Create(Self);
+      with CD do
+      try
+        CD.Color := ColorValue;
+        CD.CustomColors := Self.CustomColors;
+        Options := Options + [cdFullOpen, cdPreventFullOpen];
+        S := FNewColorText;
+        if Execute then
+        begin
+          Self.CustomColors := CD.CustomColors;
+          if DoNewColor(CD.Color, S) then
+            Inc(FCustomColorCount);
+          Tmp := FNewColorText;
+          try
+            FNewColorText := S;
+            ColorValue := CD.Color;
+          finally
+            FNewColorText := Tmp;
+          end;
+          Change;
+        end
+        else
+          ItemIndex := Items.Count - 2;
+      finally
+        Free;
+      end;
+    end
+    else
+    if ItemIndex >= 0 then
+      ColorValue := TColor(Items.Objects[ItemIndex]);
+    inherited Click;
+  finally
+    FExecutingDialog := False;
+  end;
 end;
 
 procedure TJvColorComboBox.FontChanged;
