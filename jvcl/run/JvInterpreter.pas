@@ -4643,7 +4643,7 @@ var
     Wrd: WordBool;
     Poin: Pointer;
     Dbl: Double;
-    //TempDisp : IDispatch; ComObj
+    TempDisp : IDispatch; //ComObj
 
     procedure AddParam1(Typ: Byte; ParamSize: Integer; const Param);
     begin
@@ -4678,11 +4678,11 @@ var
           Wrd := WordBool(Param);
           AddParam1(varBoolean, SizeOf(Wrd), Wrd);
         end;
-     { varDispatch:
+      varDispatch:
         begin
-          TempDisp := VarToInterface(Param.IFace);
+          TempDisp := Param;//VarToInterface(Param).IFace);
           AddParam1(varDispatch, SizeOf(TempDisp), TempDisp);
-        end; }
+        end;
 
     end;
   end;
@@ -4719,6 +4719,8 @@ begin
     { call }
     // (rom) absolute removed
     VarDispInvoke(PVRes, Args.Obj, PChar(Names), @CallDesc, @ParamTypes[0]);
+    Ptr := 0;
+    TypePtr := 0;
   except
     on E: EOleError do
       JvInterpreterErrorN2(ieOleAuto, -1, Identifier, E.Message);
@@ -7148,6 +7150,7 @@ var
             begin
               try
                 InterpretExcept(E);
+                FLastError.Clear;
               except
                 on E1: EJvInterpreterError do
                 begin
