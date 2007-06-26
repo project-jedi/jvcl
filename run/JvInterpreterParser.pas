@@ -264,7 +264,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvInterpreter, JvInterpreterConst, JvConsts;
+  JvInterpreter, JvInterpreterConst, JvConsts, windows;
 
 const
   K = '''';
@@ -527,13 +527,13 @@ begin
           begin
           end
           else
-            { may be Identifier }
-            if not (T1 in StIdFirstSymbols) then
+            { may be Identifier }               // National symbols for OLE automation
+            if not ((T1 in StIdFirstSymbols) or IsCharAlpha(T1)) then
               Result := ttUnknown
             else
             begin
               for I := 2 to L1 do
-                if not (Token[I] in StIdSymbols) then
+                if not ((Token[I] in StIdSymbols) or IsCharAlpha(Token[I])) then
                 begin
                   Result := ttUnknown;
                   Exit;
@@ -583,6 +583,7 @@ var
   P, F: PChar;
   F1: PChar;
   I: Integer;
+  PrevPoint:boolean;
 //  PointCount: Integer;
 
   procedure Skip;
@@ -631,16 +632,22 @@ begin
   { New Token }
   F := FPCPos;
   P := FPCPos;
+  PrevPoint:=false;
+  if (P > PChar(FSource))
+  and (P[-1] = '.')
+  then
+    PrevPoint := true;
+
   { Firstly skip spaces and remarks }
   repeat
     F1 := P;
     Skip;
   until F1 = P;
-  F := P;
-  if P[0] in StIdFirstSymbols then
+  F := P;                          // National symbols for OLE automation
+  if (P[0] in StIdFirstSymbols) or PrevPoint and IsCharAlpha(P[0]) then
   { token }
   begin
-    while P[0] in StIdSymbols do
+    while (P[0] in StIdSymbols) or PrevPoint and IsCharAlpha(P[0]) do
       Inc(P);
     SetString(Result, F, P - F);
   end
