@@ -308,7 +308,7 @@ uses
 const
   DnDScrollArea = 15;
   DnDInterval = 200;
-  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString, ftWideString, ftBCD
+  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftFloat, ftString, ftWideString, ftBCD
     {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
   DefaultValidDetailFields = DefaultValidMasterFields;
   DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
