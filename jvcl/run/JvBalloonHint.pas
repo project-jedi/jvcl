@@ -45,7 +45,7 @@ const
   cJvBallonHintVisibleTimeDefault = 5000;
 
 type
-  TJvStemSize = (ssSmall, ssNormal, ssLarge);
+  TJvStemSize = (ssExtraSmall, ssSmall, ssNormal, ssLarge);
   TJvIconKind = (ikCustom, ikNone, ikApplication, ikError, ikInformation, ikQuestion, ikWarning);
   TJvBalloonOption = (boUseDefaultHeader, boUseDefaultIcon, boUseDefaultImageIndex,
     boShowCloseBtn, boCustomAnimation, boPlaySound);
@@ -88,17 +88,26 @@ type
   TJvBalloonWindow = class(THintWindow)
   private
     FCurrentPosition: TJvBalloonPosition;
-    FDeltaY: Integer;
     FSwitchHeight: Integer;
     FShowIcon: Boolean;
     FShowHeader: Boolean;
     FMsg: WideString;
     FHeader: WideString;
-    FMessageTop: Integer;
     FTipHeight: Integer;
     FTipWidth: Integer;
     FTipDelta: Integer;
     FImageSize: TSize;
+
+    FIconPos: TPoint;
+    FRoundRect: TRect;
+    FStemRect: TRect;
+    FMsgRect: TRect;
+    FHeaderRect: TRect;
+    FCloseBtnRect: TRect;
+    FShowCloseBtn: Boolean;
+    FIsMultiLineMsg: Boolean;
+    FUseRegion: Boolean;
+
     function GetStemPointPosition: TPoint;
     function GetStemPointPositionInRect(const ARect: TRect): TPoint;
     function MultiLineWidth(const Value: string): Integer;
@@ -114,15 +123,19 @@ type
     {$ENDIF COMPILER6_UP}
     procedure Paint; override;
 
+    {$IFDEF JVCLThemesEnabled}
+    function CreateThemedRegion: HRGN;
+    {$ENDIF JVCLThemesEnabled}
     function CreateRegion: HRGN;
     procedure UpdateRegion;
     procedure CalcAutoPosition(var ARect: TRect);
     procedure CheckPosition(var ARect: TRect);
 
     function CalcOffset(const ARect: TRect): TPoint;
-    function CalcHeaderRect(MaxWidth: Integer): TRect; virtual;
-    function CalcMsgRect(MaxWidth: Integer): TRect; virtual;
+    procedure MeasureHeader(const MaxWidth: Integer; var AWidth, AHeight: Integer); virtual;
+    procedure MeasureMsg(const MaxWidth: Integer; var AWidth, AHeight: Integer); virtual;
     procedure Init(AData: Pointer); virtual;
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
@@ -138,13 +151,11 @@ type
   TJvBalloonWindowEx = class(TJvBalloonWindow)
   private
     FCtrl: TJvBalloonHint;
-    FCloseBtnRect: TRect;
     FCloseState: Cardinal;
     FImageIndex: TImageIndex;
     FIconKind: TJvIconKind;
     FAnimationTime: Cardinal;
     FAnimationStyle: TJvAnimationStyle;
-    FShowCloseBtn: Boolean;
     FIsAnchored: Boolean;
   protected
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
@@ -167,7 +178,6 @@ type
     procedure MoveWindow(NewPos: TPoint);
     procedure ChangeCloseState(const AState: Cardinal);
 
-    function CalcHeaderRect(MaxWidth: Integer): TRect; override;
     procedure Init(AData: Pointer); override;
   end;
 
@@ -291,6 +301,12 @@ implementation
 uses
   SysUtils, Math,
   Registry, CommCtrl, MMSystem,
+  {$IFDEF JVCLThemesEnabled}
+  UxTheme,
+  {$IFNDEF COMPILER7_UP}
+  TmSchema,
+  {$ENDIF !COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
   ComCtrls, // needed for GetComCtlVersion
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
   JclUnicode, JvVCL5Utils;
@@ -299,10 +315,32 @@ const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
     ssLarge isn't used (yet)
   }
-  cTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
-  cTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
-  cTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
+  cTipHeight: array [TJvStemSize] of Integer = (12, 19, 21, 24);
+  cTipWidth: array [TJvStemSize] of Integer = (12, 19, 21, 24);
+  cTipDelta: array [TJvStemSize] of Integer = (16, 16, 16, 17);
   DefaultTextFlags: Longint = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
+
+{$IFDEF JVCLThemesEnabled}
+const
+  {$IFNDEF DELPHI11_UP}
+  TTBSS_POINTINGUPLEFTWALL = 1;
+  TTBSS_POINTINGUPCENTERED = 2;
+  TTBSS_POINTINGUPRIGHTWALL = 3;
+  TTBSS_POINTINGDOWNRIGHTWALL = 4;
+  TTBSS_POINTINGDOWNCENTERED = 5;
+  TTBSS_POINTINGDOWNLEFTWALL = 6;
+
+  TTP_BALLOONSTEM = 6;
+  {$ENDIF !DELPHI11_UP}
+
+  cBalloonStemState: array [TJvBalloonPosition] of Integer = (
+    TTBSS_POINTINGUPRIGHTWALL, // bpAuto
+    TTBSS_POINTINGUPRIGHTWALL, // bpLeftDown
+    TTBSS_POINTINGUPLEFTWALL, // bpRightDown
+    TTBSS_POINTINGDOWNRIGHTWALL, // bpLeftUp
+    TTBSS_POINTINGDOWNLEFTWALL // bpRightUp
+    );
+{$ENDIF JVCLThemesEnabled}
 
 // Unicode wrapping around DrawTextW  so that if ran under Win98/Me, it
 // continues to work.
@@ -388,6 +426,11 @@ begin
     (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
 end;
 
+function IsWinVista_UP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6);
+end;
+
 {$IFDEF COMPILER6_UP}
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
@@ -425,6 +468,70 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
+procedure GetHintMessageFont(AFont: TFont);
+begin
+  AFont.Assign(Screen.HintFont);
+  AFont.Style := AFont.Style - [fsBold];
+end;
+
+procedure GetHintTitleFont(AFont: TFont);
+{$IFDEF JVCLThemesEnabled}
+var
+  AThemedTextColor: Integer;
+  Result: Boolean;
+  LogFontW: TLogFontW;
+{$ENDIF JVCLThemesEnabled}
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if IsWinVista_UP and ThemeServices.ThemesEnabled then
+  begin
+    Result := GetThemeEnumValue(ThemeServices.Theme[teToolTip], TTP_BALLOONTITLE, 0,
+      TMT_TEXTCOLOR, AThemedTextColor) = S_OK;
+    if Result then
+    begin
+      // GetThemeFont is defined wrong; so cast it
+      Result := GetThemeFont(ThemeServices.Theme[teToolTip], 0, TTP_BALLOONTITLE, 0,
+        TMT_FONT, PLogFontA(@LogFontW)^) = S_OK;
+
+      if Result then
+      begin
+        AFont.Color := AThemedTextColor;
+        AFont.Handle := CreateFontIndirectW(LogFontW);
+        Exit;
+      end;
+    end;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+  AFont.Assign(Screen.HintFont);
+  AFont.Style := AFont.Style + [fsBold];
+end;
+
+function IsMultiLineStr(const Value: WideString): Boolean;
+var
+  Head, Tail: PWideChar;
+  LineCount: Integer;
+begin
+  // stripped copy of TWideStrings.SetText
+  LineCount := 0;
+  Head := PWideChar(Value);
+  while (Head^ <> WideNull) and (LineCount < 2) do
+  begin
+    Tail := Head;
+    while not (Tail^ in [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
+      (Tail^ <> WideLineSeparator) and (Tail^ <> WideParagraphSeparator) do
+      Inc(Tail);
+    Inc(LineCount);
+    Head := Tail;
+    if Head^ <> WideNull then
+    begin
+      Inc(Head);
+      if (Tail^ = WideCarriageReturn) and (Head^ = WideLineFeed) then
+        Inc(Head);
+    end;
+  end;
+  Result := LineCount >= 2;
+end;
+
 type
   TGlobalCtrl = class(TComponent)
   private
@@ -447,7 +554,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    class function Instance: TGlobalCtrl;
     function HintImageSize: TSize; overload;
     function HintImageSize(const AIconKind: TJvIconKind;
       const AImageIndex: TImageIndex): TSize; overload;
@@ -469,6 +575,13 @@ var
   }
   GMainCtrl: TJvBalloonHint = nil;
 
+function GlobalCtrl: TGlobalCtrl;
+begin
+  if not Assigned(GGlobalCtrl) then
+    GGlobalCtrl := TGlobalCtrl.Create(nil);
+  Result := GGlobalCtrl;
+end;
+
 //=== { TJvBalloonWindow } ===================================================
 
 constructor TJvBalloonWindow.Create(AOwner: TComponent);
@@ -480,33 +593,27 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
 
-function TJvBalloonWindow.MultiLineWidth(const Value: string): Integer;
 var
-  W: Integer;
-  P, Start: PChar;
-  S: string;
+  OldAnimateWindowProc: TAnimateWindowProc;
+
+function JvAnimateWindowProc(hWnd: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
 begin
-  Result := 0;
-  P := Pointer(Value);
-  if P <> nil then
-    while P^ <> #0 do
-    begin
-      Start := P;
-      while not (P^ in [#0, #10, #13]) do
-        P := StrNextChar(P);
-      SetString(S, Start, P - Start);
-      W := Self.Canvas.TextWidth(S);
-      if W > Result then
-        Result := W;
-      if P^ = #13 then Inc(P);
-      if P^ = #10 then Inc(P);
-    end;
+  SendMessage(hWnd, CM_RECREATEWND, 0, 0);
+  Result := OldAnimateWindowProc(hWnd, dwTime, dwFlags);
 end;
+
+{$IFNDEF COMPILER7_UP}
+const
+  ComCtlVersionIE6 = $00060000;
+{$ENDIF !COMPILER7_UP}
 
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
 var
   Delta: Integer;
 begin
+  ParentWindow := Application.Handle;
+  if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+    RecreateWnd;
   if HandleAllocated and IsWindowVisible(Handle) then
     ShowWindow(Handle, SW_HIDE);
 
@@ -523,12 +630,21 @@ begin
   UpdateBoundsRect(Rect);
   Dec(Rect.Bottom, 4);
 
-  UpdateRegion;
-
-  with TGlobalCtrl.Instance do
+  with GlobalCtrl do
     if ahPlaySound in MainCtrl.ApplicationHintOptions then
       PlaySound(MainCtrl.DefaultIcon);
-  inherited ActivateHint(Rect, AHint);
+  if IsWinVista_UP and (GetComCtlVersion < ComCtlVersionIE6) then
+  begin
+    OldAnimateWindowProc := AnimateWindowProc;
+    AnimateWindowProc := JvAnimateWindowProc;
+    try
+      inherited ActivateHint(Rect, AHint);
+    finally
+      AnimateWindowProc := OldAnimateWindowProc;
+    end;
+  end
+  else
+    inherited ActivateHint(Rect, AHint);
 end;
 
 procedure TJvBalloonWindow.CalcAutoPosition(var ARect: TRect);
@@ -593,43 +709,6 @@ begin
     with CalcOffset(ARect) do
       OffsetRect(ARect, X, Y);
   end;
-
-  case FCurrentPosition of
-    bpLeftDown, bpRightDown:
-      FDeltaY := FTipHeight;
-    bpLeftUp, bpRightUp:
-      FDeltaY := 0;
-  end;
-end;
-
-function TJvBalloonWindow.CalcHeaderRect(MaxWidth: Integer): TRect;
-begin
-  if FShowHeader then
-  begin
-    Result := Rect(0, 0, MaxWidth, 0);
-    Canvas.Font := Screen.HintFont;
-    Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawTextW(Canvas.Handle, FHeader, Result,
-      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
-
-    { Other }
-    Inc(Result.Right, 13);
-    Inc(Result.Bottom, 11);
-
-    if FShowIcon then
-      with FImageSize do
-      begin
-        { Include image }
-        Inc(Result.Right, cx + 8);
-        Result.Bottom := Max(Result.Bottom, cy + 11);
-      end;
-  end
-  else
-  if FShowIcon then
-    with FImageSize do
-      Result := Rect(0, 0, cx + 11, cy + 11)
-  else
-    SetRectEmpty(Result);
 end;
 
 function TJvBalloonWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
@@ -653,66 +732,139 @@ end;
 function TJvBalloonWindow.CalcHintRectW(MaxWidth: Integer;
   const AHint: WideString; AData: Pointer): TRect;
 var
-  MsgRect, HeaderRect: TRect;
+  ASize: TSize;
   StemSize: TJvStemSize;
 begin
+  FUseRegion := False;
   Init(AData);
 
   FMsg := AHint;
+  FIsMultiLineMsg := IsMultiLineStr(FMsg);
 
-  { Calc HintRect }
-  MsgRect := CalcMsgRect(MaxWidth);
-
-  { Calc HeaderRect }
-  HeaderRect := CalcHeaderRect(MaxWidth);
-  if IsRectEmpty(HeaderRect) then
+  if FShowIcon then
   begin
-    HeaderRect.Bottom := 9;
-    FMessageTop := 7;
-    StemSize := ssSmall;
+    if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+      FIconPos := Point(12, 12)
+    else
+      FIconPos := Point(12, 9);
+  end;
+
+  SetRectEmpty(FHeaderRect);
+  MeasureHeader(MaxWidth, FHeaderRect.Right, FHeaderRect.Bottom);
+  if not IsRectEmpty(FHeaderRect) then
+  begin
+    if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+      OffsetRect(FHeaderRect, 12, 9)
+    else
+      OffsetRect(FHeaderRect, 12, 10)
+  end;
+
+  SetRectEmpty(FMsgRect);
+  MeasureMsg(MaxWidth, FMsgRect.Right, FMsgRect.Bottom);
+  if not IsRectEmpty(FMsgRect) then
+  begin
+    if IsWinVista_UP then
+    begin
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+        OffsetRect(FMsgRect, 12, Max(9, FHeaderRect.Bottom))
+      else
+      {$ENDIF JVCLThemesEnabled}
+      if GetComCtlVersion >= ComCtlVersionIE6 then
+        OffsetRect(FMsgRect, 12, FHeaderRect.Bottom + 3)
+      else
+      begin
+        if FShowIcon then
+          OffsetRect(FMsgRect, 12, Max(FIconPos.Y + FImageSize.cy + 6, FHeaderRect.Bottom + 5))
+        else
+          OffsetRect(FMsgRect, 12, Max(9, FHeaderRect.Bottom + 5));
+      end;
+    end
+    else
+    begin
+      if FShowIcon then
+        OffsetRect(FMsgRect, 12, Max(FIconPos.Y + FImageSize.cy + 5, FHeaderRect.Bottom + 4))
+      else
+        OffsetRect(FMsgRect, 12, Max(9, FHeaderRect.Bottom + 4));
+    end;
+  end;
+
+  if FShowIcon then
+  begin
+    // move the right position of the header
+    if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+      OffsetRect(FHeaderRect, FImageSize.cx + 5, 0)
+    else
+      OffsetRect(FHeaderRect, FImageSize.cx + 8, 0);
+
+    // move the right position of the msg; only for vista
+    if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+      OffsetRect(FMsgRect, FImageSize.cx + 5, 0);
+  end;
+
+  {$IFDEF JVCLThemesEnabled}
+  if IsWinVista_UP and ThemeServices.ThemesEnabled and FIsMultiLineMsg then
+  begin
+    GetThemePartSize(ThemeServices.Theme[teToolTip], 0, TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition],
+      nil, TS_TRUE, ASize);
+    FStemRect := Rect(0, 0, ASize.cx, ASize.cy);
+    FTipHeight := ASize.cy;
+    FTipWidth := ASize.cx;
+    FTipDelta := $10;
+  end
+  else
+  {$ENDIF JVCLThemesEnabled}
+  begin
+    if IsRectEmpty(FHeaderRect) then
+      StemSize := ssExtraSmall
+    else
+    if not FIsMultiLineMsg then
+      StemSize := ssSmall
+    else
+      StemSize := ssNormal;
+
+    FTipHeight := cTipHeight[StemSize];
+    FTipWidth := cTipWidth[StemSize];
+    FStemRect := Rect(0, 0, FTipWidth, FTipHeight);
+    FTipDelta := cTipDelta[StemSize];
+  end;
+
+  if FShowCloseBtn then
+  begin
+    {$IFDEF JVCLThemesEnabled}
+    if IsWinXP_UP and ThemeServices.ThemesEnabled then
+      GetThemePartSize(ThemeServices.Theme[teToolTip], 0, TTP_CLOSE, TTCS_NORMAL,
+        nil, TS_DRAW, ASize)
+    else
+    {$ENDIF JVCLThemesEnabled}
+    begin
+      ASize.cx := GetSystemMetrics(SM_CXSMICON);
+      ASize.cy := GetSystemMetrics(SM_CYSMICON);
+    end;
+    FCloseBtnRect := Rect(0, 0, ASize.cx, ASize.cy);
+
+    Inc(FHeaderRect.Right, ASize.cx);
+  end;
+
+  if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+  begin
+    FRoundRect := Rect(0, 0, Max(13 + FMsgRect.Right, 13 + FHeaderRect.Right),
+      Max(FMsgRect.Bottom + 10, FHeaderRect.Bottom + 10));
+    OffsetRect(FStemRect, FTipDelta, FRoundRect.Bottom - 1);
   end
   else
   begin
-    Inc(HeaderRect.Right, 12);
-    FMessageTop := HeaderRect.Bottom + 1;
-    StemSize := ssNormal;
+    FRoundRect := Rect(0, 0, Max(14 + FMsgRect.Right, 14 + FHeaderRect.Right),
+      Max(FMsgRect.Bottom + 11, FHeaderRect.Bottom + 11));
+    OffsetRect(FStemRect, FTipDelta, FRoundRect.Bottom - 1);
   end;
 
-  FTipHeight := cTipHeight[StemSize];
-  FTipWidth := cTipWidth[StemSize];
-  FTipDelta := cTipDelta[StemSize];
-
-  { Combine }
-  Result := Rect(0, 0, Max(MsgRect.Right, HeaderRect.Right),
-    HeaderRect.Bottom + MsgRect.Bottom + FTipHeight + 13);
-
+  UnionRect(Result, FRoundRect, FStemRect);
   with CalcOffset(Result) do
     OffsetRect(Result, X, Y);
-  { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
-    arbitrary }
-  case FCurrentPosition of
-    bpAuto, bpLeftDown, bpRightDown:
-      FDeltaY := FTipHeight;
-    bpLeftUp, bpRightUp:
-      FDeltaY := 0;
-  end;
-end;
 
-function TJvBalloonWindow.CalcMsgRect(MaxWidth: Integer): TRect;
-begin
-  if FMsg > '' then
-  begin
-    Result := Rect(0, 0, MaxWidth, 0);
-    Canvas.Font := Screen.HintFont;
-//    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawTextW(Canvas.Handle, FMsg, Result,
-      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
-
-    { Other }
-    Inc(Result.Right, 27);
-  end
-  else
-    SetRectEmpty(Result);
+  OffsetRect(FCloseBtnRect, FRoundRect.Right - (FCloseBtnRect.Right - FCloseBtnRect.Left) - 6, 6);
+  FUseRegion := True;
 end;
 
 function TJvBalloonWindow.CalcOffset(const ARect: TRect): TPoint;
@@ -816,9 +968,22 @@ begin
 
   case FCurrentPosition of
     bpLeftDown, bpRightDown:
-      FDeltaY := FTipHeight;
+      begin
+        OffsetRect(FRoundRect, 0, FTipHeight - 1);
+        OffsetRect(FStemRect, 0, -FStemRect.Top);
+        OffsetRect(FMsgRect, 0, FTipHeight - 1);
+        OffsetRect(FHeaderRect, 0, FTipHeight - 1);
+        Inc(FIconPos.y, FTipHeight);
+        OffsetRect(FCloseBtnRect, 0, FTipHeight);
+
+        if FCurrentPosition = bpLeftDown then
+          OffsetRect(FStemRect, -2 * FTipDelta + (FRoundRect.Right - FRoundRect.Left) - (FStemRect.Right - FStemRect.Left), 0);
+      end;
     bpLeftUp, bpRightUp:
-      FDeltaY := 0;
+      begin
+        if FCurrentPosition = bpLeftUp then
+          OffsetRect(FStemRect, -2 * FTipDelta + (FRoundRect.Right - FRoundRect.Left) - (FStemRect.Right - FStemRect.Left), 0);
+      end;
   end;
 end;
 
@@ -842,18 +1007,27 @@ begin
   { Drop shadow in combination with custom animation may cause blurry effect,
     no solution.
   }
-  if IsWinXP_UP then
-    Params.WindowClass.Style := Params.WindowClass.Style or CS_DROPSHADOW;
+  with Params do
+  begin
+    Style := Style and not WS_BORDER;
+    if IsWinXP_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+    begin
+      WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
+      {$IFDEF JVCLThemesEnabled}
+      if IsWinVista_UP and ThemeServices.ThemesEnabled then
+        ExStyle := ExStyle or WS_EX_LAYERED;
+      {$ENDIF JVCLThemesEnabled}
+    end
+    else
+      WindowClass.Style := WindowClass.Style and not CS_DROPSHADOW;
+  end;
 end;
 
 function TJvBalloonWindow.CreateRegion: HRGN;
 var
-  Rect: TRect;
   RegionRound, RegionTip: HRGN;
   PtTail: array [0..2] of TPoint;
 begin
-  SetRect(Rect, 0, 0, Width, Height);
-
   case FCurrentPosition of
     bpLeftDown:
       begin
@@ -864,9 +1038,9 @@ begin
              2----1
         }
 
-        PtTail[0] := Point(Rect.Right - (FTipDelta + 1), 0);
-        PtTail[1] := Point(Rect.Right - (FTipDelta + 1), FTipHeight + 1);
-        PtTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), FTipHeight + 1);
+        PtTail[0] := Point(FStemRect.Right, FStemRect.Top);
+        PtTail[1] := Point(FStemRect.Right, FStemRect.Bottom);
+        PtTail[2] := Point(FStemRect.Left, FStemRect.Bottom);
       end;
     bpRightDown:
       begin
@@ -876,9 +1050,10 @@ begin
              |   \
              1----2
         }
-        PtTail[0] := Point(FTipDelta + 1, 0);
-        PtTail[1] := Point(FTipDelta + 1, FTipHeight + 1);
-        PtTail[2] := Point(FTipDelta + FTipWidth + 2, FTipHeight + 1);
+
+        PtTail[0] := Point(FStemRect.Left, FStemRect.Top);
+        PtTail[1] := Point(FStemRect.Left, FStemRect.Bottom);
+        PtTail[2] := Point(FStemRect.Right, FStemRect.Bottom);
       end;
     bpLeftUp:
       begin
@@ -889,9 +1064,9 @@ begin
                   0
         }
 
-        PtTail[0] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom + 1);
-        PtTail[1] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom - (FTipHeight + 1));
-        PtTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), Rect.Bottom - (FTipHeight + 1));
+        PtTail[0] := Point(FStemRect.Right, FStemRect.Bottom);
+        PtTail[1] := Point(FStemRect.Right, FStemRect.Top);
+        PtTail[2] := Point(FStemRect.Left, FStemRect.Top);
       end;
     bpRightUp:
       begin
@@ -902,25 +1077,40 @@ begin
              0
         }
 
-        PtTail[0] := Point(FTipDelta + 1, Rect.Bottom);
-        PtTail[1] := Point(FTipDelta + 1, Rect.Bottom - (FTipHeight + 1));
-        PtTail[2] := Point(FTipDelta + FTipWidth + 2, Rect.Bottom - (FTipHeight + 1));
+        PtTail[0] := Point(FStemRect.Left, FStemRect.Bottom);
+        PtTail[1] := Point(FStemRect.Left, FStemRect.Top);
+        PtTail[2] := Point(FStemRect.Right, FStemRect.Top);
       end;
   end;
 
   RegionTip := CreatePolygonRgn(PtTail, 3, WINDING);
-  case FCurrentPosition of
-    bpLeftDown, bpRightDown:
-      RegionRound := CreateRoundRectRgn(1, FTipHeight + 1, Width, Height - 3, 11, 11);
-  else {bpLeftUp, bpRightUp:}
-    RegionRound := CreateRoundRectRgn(1, 1, Rect.Right, Rect.Bottom - FTipHeight, 11, 11);
-  end;
+  RegionRound := CreateRoundRectRgn(FRoundRect.Left, FRoundRect.Top, FRoundRect.Right, FRoundRect.Bottom, 11, 11);
   Result := CreateRectRgn(0, 0, 1, 1);
 
   CombineRgn(Result, RegionTip, RegionRound, RGN_OR);
   DeleteObject(RegionTip);
   DeleteObject(RegionRound);
 end;
+
+{$IFDEF JVCLThemesEnabled}
+function TJvBalloonWindow.CreateThemedRegion: HRGN;
+var
+  RegionRound, RegionTip: HRGN;
+begin
+  Result := CreateRectRgn(0, 0, 1, 1);
+  if GetThemeBackgroundRegion(ThemeServices.Theme[teToolTip], 0,
+    TTP_BALLOON, 0, FRoundRect, RegionRound) = S_OK then
+  begin
+    if GetThemeBackgroundRegion(ThemeServices.Theme[teToolTip], 0,
+      TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition], FStemRect, RegionTip) = S_OK then
+    begin
+      CombineRgn(Result, RegionTip, RegionRound, RGN_OR);
+      DeleteObject(RegionTip);
+    end;
+    DeleteObject(RegionRound);
+  end;
+end;
+{$ENDIF JVCLThemesEnabled}
 
 function TJvBalloonWindow.GetStemPointPosition: TPoint;
 begin
@@ -946,7 +1136,7 @@ end;
 
 procedure TJvBalloonWindow.Init(AData: Pointer);
 begin
-  with TGlobalCtrl.Instance.MainCtrl do
+  with GlobalCtrl.MainCtrl do
   begin
     FShowIcon := (ahShowIconInHint in ApplicationHintOptions) and
       (DefaultIcon <> ikNone) and
@@ -956,8 +1146,73 @@ begin
     FCurrentPosition := DefaultBalloonPosition;
   end;
 
-  FImageSize := TGlobalCtrl.Instance.HintImageSize;
+  FImageSize := GlobalCtrl.HintImageSize;
   FSwitchHeight := GetSystemMetrics(SM_CYCURSOR);
+end;
+
+procedure TJvBalloonWindow.MeasureHeader(const MaxWidth: Integer;
+  var AWidth, AHeight: Integer);
+var
+  R: TRect;
+begin
+  if FShowHeader then
+  begin
+    R := Rect(0, 0, MaxWidth, 0);
+    GetHintTitleFont(Canvas.Font);
+    DrawTextW(Canvas.Handle, FHeader, R,
+      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
+    AWidth := R.Right - R.Left;
+    AHeight := R.Bottom - R.Top;
+  end
+  else
+  begin
+    AWidth := 0;
+    AHeight := 0;
+  end;
+end;
+
+procedure TJvBalloonWindow.MeasureMsg(const MaxWidth: Integer;
+  var AWidth, AHeight: Integer);
+var
+  R: TRect;
+begin
+  if FMsg > '' then
+  begin
+    R := Rect(0, 0, MaxWidth, 0);
+    GetHintMessageFont(Canvas.Font);
+    DrawTextW(Canvas.Handle, FMsg, R,
+      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
+    AWidth := R.Right - R.Left;
+    AHeight := R.Bottom - R.Top;
+  end
+  else
+  begin
+    AWidth := 0;
+    AHeight := 0;
+  end;
+end;
+
+function TJvBalloonWindow.MultiLineWidth(const Value: string): Integer;
+var
+  W: Integer;
+  P, Start: PChar;
+  S: string;
+begin
+  Result := 0;
+  P := Pointer(Value);
+  if P <> nil then
+    while P^ <> #0 do
+    begin
+      Start := P;
+      while not (P^ in [#0, #10, #13]) do
+        P := StrNextChar(P);
+      SetString(S, Start, P - Start);
+      W := Self.Canvas.TextWidth(S);
+      if W > Result then
+        Result := W;
+      if P^ = #13 then Inc(P);
+      if P^ = #10 then Inc(P);
+    end;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -973,34 +1228,22 @@ end;
 {$ENDIF COMPILER6_UP}
 
 procedure TJvBalloonWindow.Paint;
-var
-  HintRect: TRect;
-  HeaderRect: TRect;
 begin
   if FShowIcon then
-    TGlobalCtrl.Instance.DrawHintImage(Canvas, 12, FDeltaY + 8, Color);
+    with FIconPos do
+      GlobalCtrl.DrawHintImage(Canvas, X, Y, Color);
 
   if FMsg > '' then
   begin
-    HintRect := ClientRect;
-    Inc(HintRect.Left, 12);
-    Inc(HintRect.Top, FDeltaY + FMessageTop);
-    Canvas.Font := Screen.HintFont;
-//    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawTextW(Canvas.Handle, FMsg, HintRect,
+    GetHintMessageFont(Canvas.Font);
+    DrawTextW(Canvas.Handle, FMsg, FMsgRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
   if FShowHeader then
   begin
-    HeaderRect := ClientRect;
-    Inc(HeaderRect.Left, 12);
-    if FShowIcon then
-      Inc(HeaderRect.Left, FImageSize.cx + 8);
-    Inc(HeaderRect.Top, FDeltaY + 8);
-    Canvas.Font := Screen.HintFont;
-    Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawTextW(Canvas.Handle, FHeader, HeaderRect,
+    GetHintTitleFont(Canvas.Font);
+    DrawTextW(Canvas.Handle, FHeader, FHeaderRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
@@ -1008,9 +1251,19 @@ end;
 procedure TJvBalloonWindow.UpdateRegion;
 var
   Region: HRGN;
+  IsVisible: Boolean;
 begin
-  Region := CreateRegion;
-  if SetWindowRgn(Handle, Region, False) = 0 then
+  if not HandleAllocated or not FUseRegion then
+    Exit;
+
+  {$IFDEF JVCLThemesEnabled}
+  if IsWinVista_UP and ThemeServices.ThemesEnabled and FIsMultiLineMsg then
+    Region := CreateThemedRegion
+  else
+  {$ENDIF JVCLThemesEnabled}
+    Region := CreateRegion;
+  IsVisible := IsWindowVisible(Handle);
+  if SetWindowRgn(Handle, Region, IsVisible) = 0 then
     DeleteObject(Region);
   { MSDN: After a successful call to SetWindowRgn, the system owns the region
     specified by the region handle hRgn. The system does not make a copy of
@@ -1023,14 +1276,54 @@ procedure TJvBalloonWindow.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 var
   Brush, BrushBlack: HBRUSH;
   Region: HRGN;
+  RegionType: Integer;
+  {$IFDEF JVCLThemesEnabled}
+  R: TRect;
+  {$ENDIF JVCLThemesEnabled}
 begin
+  {$IFDEF JVCLThemesEnabled}
+  if IsWinVista_UP and ThemeServices.ThemesEnabled then
+  begin
+    if FIsMultiLineMsg then
+    begin
+      DrawThemeBackground(ThemeServices.Theme[teToolTip], Msg.DC,
+        TTP_BALLOON, 0, FRoundRect, @FRoundRect);
+      DrawThemeBackground(ThemeServices.Theme[teToolTip], Msg.DC,
+        TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition], FStemRect, @FStemRect);
+    end
+    else
+    begin
+      R := ClientRect;
+      DrawThemeBackground(ThemeServices.Theme[teToolTip], Msg.DC,
+        TTP_BALLOON, 0, R, @R);
+      // draw black border
+      BrushBlack := CreateSolidBrush(0);
+      try
+        Region := CreateRectRgn(0, 0, 0, 0);
+        RegionType := GetWindowRgn(Handle, Region);
+        if RegionType <> ERROR then
+          FrameRgn(Msg.DC, Region, BrushBlack, 1, 1);
+        DeleteObject(Region);
+      finally
+        DeleteObject(BrushBlack);
+      end;
+    end;
+
+    Msg.Result := 1;
+    Exit;
+  end;
+  {$ENDIF JVCLThemesEnabled}
   Brush := CreateSolidBrush(ColorToRGB(Color));
   BrushBlack := CreateSolidBrush(0);
   try
-    Region := CreateRegion;
-    OffsetRgn(Region, -1, -1);
-    FillRgn(Msg.DC, Region, Brush);
-    FrameRgn(Msg.DC, Region, BrushBlack, 1, 1);
+    Region := CreateRectRgn(0, 0, 0, 0);
+    RegionType := GetWindowRgn(Handle, Region);
+    if RegionType <> ERROR then
+    begin
+      FillRgn(Msg.DC, Region, Brush);
+      // draw black border
+      FrameRgn(Msg.DC, Region, BrushBlack, 1, 1);
+    end;
     DeleteObject(Region);
   finally
     DeleteObject(Brush);
@@ -1062,7 +1355,7 @@ begin
   FCustomAnimationStyle := atBlend;
   FMaxWidth := 0;
 
-  TGlobalCtrl.Instance.Add(Self);
+  GlobalCtrl.Add(Self);
 end;
 
 destructor TJvBalloonHint.Destroy;
@@ -1073,7 +1366,7 @@ begin
   if FHandle <> 0 then
     DeallocateHWndEx(FHandle);
 
-  TGlobalCtrl.Instance.Remove(Self);
+  GlobalCtrl.Remove(Self);
 
   inherited Destroy;
 end;
@@ -1205,6 +1498,12 @@ begin
     FOnClose(Self);
 end;
 
+procedure TJvBalloonWindow.CreateWnd;
+begin
+  inherited CreateWnd;
+  UpdateRegion;
+end;
+
 function TJvBalloonHint.GetHandle: THandle;
 begin
   if FHandle = 0 then
@@ -1214,7 +1513,7 @@ end;
 
 function TJvBalloonHint.GetUseBalloonAsApplicationHint: Boolean;
 begin
-  Result := TGlobalCtrl.Instance.UseBalloonAsApplicationHint;
+  Result := GlobalCtrl.UseBalloonAsApplicationHint;
 end;
 
 procedure TJvBalloonHint.HandleClick(Sender: TObject);
@@ -1382,7 +1681,7 @@ begin
         OffsetRect(Rect, X, Y);
 
     if boPlaySound in Options then
-      TGlobalCtrl.Instance.PlaySound(RIconKind);
+      GlobalCtrl.PlaySound(RIconKind);
 
     FHint.InternalActivateHint(Rect, RUTF8Hint);
 
@@ -1431,7 +1730,7 @@ end;
 procedure TJvBalloonHint.SetUseBalloonAsApplicationHint(
   const Value: Boolean);
 begin
-  TGlobalCtrl.Instance.UseBalloonAsApplicationHint := Value;
+  GlobalCtrl.UseBalloonAsApplicationHint := Value;
 end;
 
 procedure TJvBalloonHint.StartHintTimer(Value: Integer);
@@ -1547,10 +1846,8 @@ begin
     ikNone:
       ;
   else
-    begin
-      BkColor := ABkColor;
-      FDefaultImages.Draw(Canvas, X, Y, cDefaultImages[AIconKind]);
-    end;
+    BkColor := ABkColor;
+    FDefaultImages.Draw(Canvas, X, Y, cDefaultImages[AIconKind]);
   end;
 end;
 
@@ -1591,7 +1888,7 @@ begin
   PictureType := ptNormal;
   Modules[True] := 0;
 
-  if IsWinXP_UP then
+  if IsWinXP_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
   begin
     Modules[False] := GetModuleHandle('user32.dll');
     if Modules[False] <> 0 then
@@ -1613,7 +1910,7 @@ begin
   for IconKind := Low(cIcons[PictureType]) to High(cIcons[PictureType]) do
   begin
     Shared := (PictureType = ptSimple) or
-      (PictureType = ptNormal) and (IconKind in [ikApplication, ikQuestion]);
+      ((PictureType = ptNormal) and (IconKind in [ikApplication, ikQuestion]));
     IconHandle :=
       LoadImage(Modules[Shared], MakeIntResource(cIcons[PictureType, IconKind]),
       IMAGE_ICON, 16, 16, cFlags[Shared]);
@@ -1707,13 +2004,6 @@ begin
   end;
 end;
 
-class function TGlobalCtrl.Instance: TGlobalCtrl;
-begin
-  if not Assigned(GGlobalCtrl) then
-    GGlobalCtrl := TGlobalCtrl.Create(nil);
-  Result := GGlobalCtrl;
-end;
-
 procedure TGlobalCtrl.PlaySound(const AIconKind: TJvIconKind);
 begin
   if Length(FSounds[AIconKind]) > 0 then
@@ -1772,48 +2062,12 @@ end;
 
 //=== { TJvBalloonWindowEx } =================================================
 
-function TJvBalloonWindowEx.CalcHeaderRect(MaxWidth: Integer): TRect;
-begin
-  Result := inherited CalcHeaderRect(MaxWidth);
-  if FShowCloseBtn then
-  begin
-    Inc(Result.Right, 20);
-    if Result.Bottom < 20 then
-      Result.Bottom := 20;
-  end;
-end;
-
 procedure TJvBalloonWindowEx.ChangeCloseState(const AState: Cardinal);
-{$IFDEF JVCLThemesEnabled}
-var
-  Details: TThemedElementDetails;
-  Button: TThemedToolTip;
-{$ENDIF JVCLThemesEnabled}
 begin
   if AState <> FCloseState then
   begin
     FCloseState := AState;
-    {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
-    begin
-      if (AState and DFCS_PUSHED > 0) and (AState and DFCS_HOT = 0) then
-        Button := tttCloseNormal
-      else
-      if AState and DFCS_PUSHED > 0 then
-        Button := tttClosePressed
-      else
-      if AState and DFCS_HOT > 0 then
-        Button := tttCloseHot
-      else
-        Button := tttCloseNormal;
-
-      Details := ThemeServices.GetElementDetails(Button);
-      ThemeServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
-    end
-    else
-    {$ENDIF JVCLThemesEnabled}
-      DrawFrameControl(Canvas.Handle, FCloseBtnRect, DFC_CAPTION, DFCS_TRANSPARENT or
-        DFCS_CAPTIONCLOSE or FCloseState);
+    InvalidateRect(Self.Handle, @FCloseBtnRect, True);
   end;
 end;
 
@@ -1865,7 +2119,7 @@ begin
     FIsAnchored := Assigned(RAnchorWindow);
   end;
 
-  FImageSize := TGlobalCtrl.Instance.HintImageSize(FIconKind, FImageIndex);
+  FImageSize := GlobalCtrl.HintImageSize(FIconKind, FImageIndex);
   FCurrentPosition := FCtrl.DefaultBalloonPosition;
 end;
 
@@ -1906,6 +2160,7 @@ const
 var
   AutoValue: Integer;
 begin
+  FCloseState := DFCS_FLAT;
   CheckPosition(Rect);
 
   if HandleAllocated and IsWindowVisible(Handle) then
@@ -1943,7 +2198,12 @@ begin
   else
     RestoreTopMost;
 
-  if (FAnimationStyle <> atNone) and IsWinXP_UP and Assigned(AnimateWindowProc) then
+  // can only blend on Vista
+  if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
+    if FAnimationStyle <> atNone then
+      FAnimationStyle := atBlend;
+
+  if (FAnimationStyle <> atNone) and IsWinXP_UP and (GetComCtlVersion >= ComCtlVersionIE6) and Assigned(AnimateWindowProc) then
   begin
     if FAnimationStyle in [atSlide, atRoll] then
       case FCurrentPosition of
@@ -1965,9 +2225,7 @@ begin
     thus ShowWindow/SetWindowPos isn't called. We do it ourselfs: }
   if ParentWindow = 0 then
     ShowWindow(Handle, SW_SHOWNOACTIVATE);
-  {$IFDEF COMPILER5}
   Invalidate;
-  {$ENDIF COMPILER5}
 end;
 
 procedure TJvBalloonWindowEx.MoveWindow(NewPos: TPoint);
@@ -1992,48 +2250,52 @@ begin
 end;
 
 procedure TJvBalloonWindowEx.Paint;
+{$IFDEF JVCLThemesEnabled}
 var
-  HintRect: TRect;
-  HeaderRect: TRect;
+  Details: TThemedElementDetails;
+  Button: TThemedToolTip;
+{$ENDIF JVCLThemesEnabled}
 begin
-  HintRect := ClientRect;
-
   if FShowIcon then
-    TGlobalCtrl.Instance.DrawHintImage(Canvas, 12, FDeltaY + 7, FIconKind, FImageIndex, Color);
+    with FIconPos do
+      GlobalCtrl.DrawHintImage(Canvas, X, Y, FIconKind, FImageIndex, Color);
 
-  FCloseState := 0;
   if FShowCloseBtn then
   begin
-    FCloseBtnRect := Rect(HintRect.Right - 22, FDeltaY + 5, HintRect.Right - 6, FDeltaY + 21);
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
-      Dec(FCloseBtnRect.Left);
-      Dec(FCloseBtnRect.Top);
-    end;
+      if (FCloseState and DFCS_PUSHED > 0) and (FCloseState and DFCS_HOT = 0) then
+        Button := tttCloseNormal
+      else
+      if FCloseState and DFCS_PUSHED > 0 then
+        Button := tttClosePressed
+      else
+      if FCloseState and DFCS_HOT > 0 then
+        Button := tttCloseHot
+      else
+        Button := tttCloseNormal;
+
+      Details := ThemeServices.GetElementDetails(Button);
+      ThemeServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
+    end
+    else
     {$ENDIF JVCLThemesEnabled}
-    ChangeCloseState(DFCS_FLAT);
+      DrawFrameControl(Canvas.Handle, FCloseBtnRect, DFC_CAPTION, DFCS_TRANSPARENT or
+        DFCS_CAPTIONCLOSE or FCloseState);
   end;
 
   if FMsg > '' then
   begin
-    Inc(HintRect.Left, 12);
-    Inc(HintRect.Top, FDeltaY + FMessageTop);
-    Canvas.Font := Screen.HintFont;
-    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawTextW(Canvas.Handle, FMsg, HintRect,
+    GetHintMessageFont(Canvas.Font);
+    DrawTextW(Canvas.Handle, FMsg, FMsgRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
   if FShowHeader then
   begin
-    HeaderRect := ClientRect;
-    Inc(HeaderRect.Left, 12);
-    if FShowIcon then
-      Inc(HeaderRect.Left, FImageSize.cx + 8);
-    Inc(HeaderRect.Top, FDeltaY + 8);
-    Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawTextW(Canvas.Handle, FHeader, HeaderRect,
+    GetHintTitleFont(Canvas.Font);
+    DrawTextW(Canvas.Handle, FHeader, FHeaderRect,
       DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
