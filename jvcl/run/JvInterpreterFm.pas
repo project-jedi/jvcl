@@ -420,6 +420,7 @@ var
       with Form.FFieldList do
       if FindVar('', Identifier) <> nil then
       begin
+        Args.Obj:=nil;
         Result := GetValue(Identifier, Value, Args);
         Exit;
       end;
@@ -462,11 +463,12 @@ begin
       finally
         LocalArgs.Free;
       end;
-      if JvInterpreterForm.Owner<>nil then
-        JvInterpreterForm.Owner.RemoveComponent(JvInterpreterForm);
-      if V2O(Value)<>nil then
-        TComponent(V2O(Value)).InsertComponent(JvInterpreterForm);
-
+      if V2O(Value)<>JvInterpreterForm.Owner then begin
+        if JvInterpreterForm.Owner<>nil then
+          JvInterpreterForm.Owner.RemoveComponent(JvInterpreterForm);
+        if V2O(Value)<>nil then
+          TComponent(V2O(Value)).InsertComponent(JvInterpreterForm);
+      end;
       JvInterpreterSrcClass := TJvInterpreterAdapterAccessProtected(Adapter).GetSrcClass(
         JvInterpreterForm.FClassIdentifier);
       JvInterpreterForm.FUnitName := JvInterpreterSrcClass.UnitName;
@@ -508,8 +510,10 @@ var
   begin
     Result := False;
     with Form.FFieldList do
-      if FindVar('', Identifier) <> nil then
+      if FindVar('', Identifier) <> nil then begin
+        Args.Obj := nil;
         Result := SetValue(Identifier, Value, Args);
+      end;
   end;
   // Class Fields support end
 
