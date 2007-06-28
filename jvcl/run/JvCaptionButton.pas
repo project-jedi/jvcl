@@ -516,8 +516,8 @@ end;
 procedure LoadMsimg32Dll;
 begin
   GTriedLoadMsimg32Dll := True;
-  GMsimg32Handle := Windows.LoadLibrary(Msimg32DLLName);
-  if GMsimg32Handle > 0 then
+  GMsimg32Handle := SafeLoadLibrary(Msimg32DLLName);
+  if GMsimg32Handle <> 0 then
   begin
     _TransparentBlt := GetProcAddress(GMsimg32Handle, TransparentBltName);
     _AlphaBlend := GetProcAddress(GMsimg32Handle, AlphaBlendName);
@@ -651,7 +651,6 @@ function GetXPCaptionButtonBitmap(ABitmap: TBitmapAdapter; out BitmapCount: Inte
 var
   Handle: THandle;
   ThemeFileNameW, BitmapFileNameW: array [0..MAX_PATH] of WideChar;
-  OldError: Longint;
   Details: TThemedElementDetails;
   Margins: TMargins;
 begin
@@ -685,22 +684,17 @@ begin
       FillChar(Margins, SizeOf(Margins), 0);
   ABitmap.Margins := Margins;
 
-  OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
+  Handle := SafeLoadLibrary(ThemeFileNameW, SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
+  if Handle <> 0 then
   try
-    Handle := LoadLibraryW(ThemeFileNameW);
-    if Handle > 0 then
-    try
-      ABitmap.Assign(nil); // fixes GDI resource leak
-      ABitmap.LoadFromResourceName(Handle, TranslateBitmapFileName(BitmapFileNameW));
-      { (rb) can't determine actual transparent color? }
-      ABitmap.TransparentColor := clFuchsia;
+    ABitmap.Assign(nil); // fixes GDI resource leak
+    ABitmap.LoadFromResourceName(Handle, TranslateBitmapFileName(BitmapFileNameW));
+    { (rb) can't determine actual transparent color? }
+    ABitmap.TransparentColor := clFuchsia;
 
-      Result := (ABitmap.Width > 0) and (ABitmap.Height > 0);
-    finally
-      FreeLibrary(Handle);
-    end;
+    Result := (ABitmap.Width > 0) and (ABitmap.Height > 0);
   finally
-    SetErrorMode(OldError);
+    FreeLibrary(Handle);
   end;
 end;
 

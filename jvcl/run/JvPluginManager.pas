@@ -371,7 +371,7 @@ begin
       PlugIn := nil;
       case PlgKind of
         plgDLL:
-          LibHandle := LoadLibrary(PChar(FileName));
+          LibHandle := SafeLoadLibrary(FileName);
         plgPackage:
           LibHandle := LoadPackage(FileName);
       end;

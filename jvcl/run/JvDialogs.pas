@@ -191,7 +191,7 @@ end;
 procedure InstallW2kFix;
 begin
   if JvDialogsUseFixW2k and IsWin2K and (W2kFixMsAcmLibrary = 0) then
-    W2kFixMsAcmLibrary := LoadLibrary('msacm32.dll');
+    W2kFixMsAcmLibrary := SafeLoadLibrary('msacm32.dll');
 end;
 
 //=== { TJvOpenDialog } ======================================================

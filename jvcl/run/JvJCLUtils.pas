@@ -997,15 +997,15 @@ function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
 function CompareRect(const R1, R2: TRect): Boolean;
 
-{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 procedure FreeUnusedOle;
 function GetWindowsVersion: string;
 function LoadDLL(const LibName: string): THandle;
 function RegisterServer(const ModuleName: string): Boolean;
 function UnregisterServer(const ModuleName: string): Boolean;
-{$ENDIF MSWINDOWS}
 {$ENDIF !CLR}
+{$ENDIF MSWINDOWS}
 
 { String routines }
 function GetEnvVar(const VarName: string): string;
@@ -2275,17 +2275,24 @@ var
   Source, Dest: Integer;
   OSSource, OSDest: TOFStruct;
   Res: Integer;
-  Ins: Integer;
+  Inst: THandle;
   LZCopy: TLZCopy;
   LZOpenFile: TLZOpenFile;
   LZClose: TLZClose;
 begin
   Result := False;
-  Ins := LoadLibrary('LZ32.dll');
+  Inst := SafeLoadLibrary('LZ32.dll');
   try
-    LZCopy := GetProcAddress(Ins, 'LZCopy');
-    LZOpenFile := GetProcAddress(Ins, 'LZOpenFileA');
-    LZClose := GetProcAddress(Ins, 'LZClose');
+    if Inst = 0 then
+      RaiseLastOSError;
+    LZCopy := GetProcAddress(Inst, 'LZCopy');
+    LZOpenFile := GetProcAddress(Inst, 'LZOpenFileA');
+    LZClose := GetProcAddress(Inst, 'LZClose');
+    if not Assigned(LZCopy) or not Assigned(LZOpenFile) or not Assigned(LZClose) then
+    begin
+      SetLastError(ERROR_NOT_SUPPORTED);
+      RaiseLastOSError;
+    end;
     OSSource.cBytes := SizeOf(TOFStruct);
     OSDest.cBytes := SizeOf(TOFStruct);
     Source := LZOpenFile(
@@ -2309,7 +2316,7 @@ begin
       LZClose(Dest);
     end;
   finally
-    FreeLibrary(Ins);
+    FreeLibrary(Inst);
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -8391,22 +8398,18 @@ end;
 procedure RunDll32Internal(Wnd: THandle; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 var
   H: THandle;
-  ErrMode: Cardinal;
   P: TRunDLL32Proc;
 begin
-  ErrMode := SetErrorMode(SEM_FAILCRITICALERRORS or SEM_NOOPENFILEERRORBOX);
-  H := LoadLibrary(PChar(DLLName));
-  try
-    if H <> INVALID_HANDLE_VALUE then
-    begin
+  H := SafeLoadLibrary(DLLName, SEM_FAILCRITICALERRORS or SEM_NOOPENFILEERRORBOX);
+  if H <> 0 then
+  begin
+    try
       P := GetProcAddress(H, PChar(FuncName));
       if Assigned(P) then
         P(Wnd, H, PChar(CmdLine), CmdShow);
-    end;
-  finally
-    SetErrorMode(ErrMode);
-    if H <> INVALID_HANDLE_VALUE then
+    finally
       FreeLibrary(H);
+    end;
   end;
 end;
 
@@ -8426,9 +8429,7 @@ var
   pDllGetVersion: function(var Dvi: TDLLVersionInfo): Integer; stdcall;
   Dvi: TDLLVersionInfo;
 begin
-  hDLL := LoadLibrary(PChar(DLLName));
-  if hDLL < 32 then
-    hDLL := 0;
+  hDLL := SafeLoadLibrary(DLLName);
   if hDLL <> 0 then
   begin
     Result := True;
@@ -8498,13 +8499,9 @@ end;
 
 {$IFNDEF CLR}
 function LoadDLL(const LibName: string): THandle;
-var
-  ErrMode: Cardinal;
 begin
-  ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-  Result := LoadLibrary(PChar(LibName));
-  SetErrorMode(ErrMode);
-  if Result < HINSTANCE_ERROR then
+  Result := SafeLoadLibrary(LibName);
+  if Result <> 0 then
     OSCheck(False);
 end;
 

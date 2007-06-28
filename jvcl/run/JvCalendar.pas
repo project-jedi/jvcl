@@ -372,10 +372,8 @@ var
   pDllGetVersion: function(var dvi: TDLLVersionInfo): Integer; stdcall;
   dvi: TDLLVersionInfo;
 begin
-  hDLL := LoadLibrary(PChar(DLLName));
-  if (hDLL < 32) then
-    hDLL := 0;
-  if (hDLL <> 0) then
+  hDLL := SafeLoadLibrary(DLLName);
+  if hDLL <> 0 then
   begin
     Result := True;
     (*  You must get this function explicitly

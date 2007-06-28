@@ -199,7 +199,7 @@ begin
     FPHandle := GetForegroundWindow;
   FEntryIndex := -1;
 
-  FDll := LoadLibrary(PChar(RsRasDllName));
+  FDll := SafeLoadLibrary(RsRasDllName);
   if FDll <> 0 then
   begin
     FRasDial := GetProcAddress(FDll, 'RasDialA');

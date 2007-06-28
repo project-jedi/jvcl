@@ -2010,7 +2010,7 @@ var
   LastError: DWORD;
 begin
   Result := False;
-  Ins := LoadLibrary(PChar(DllName));
+  Ins := SafeLoadLibrary(DllName);
   if Ins = 0 then
     JvInterpreterErrorN(ieDllErrorLoadLibrary, -1, DllName);
   try

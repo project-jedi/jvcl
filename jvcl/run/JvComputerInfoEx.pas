@@ -2555,7 +2555,7 @@ function LoadNetLib: Boolean;
 begin
   if LibHandle = 0 then
   begin
-    LibHandle := LoadLibrary(netapi32lib);
+    LibHandle := SafeLoadLibrary(netapi32lib);
     if LibHandle <> 0 then
     begin
       @_NetWkstaGetInfo := GetProcAddress(LibHandle, 'NetWkstaGetInfo');
@@ -3023,7 +3023,7 @@ var
 begin
   FillChar(Result, SizeOf(Result), 0);
   // GetCurrentHwProfile is not available on all Win95's
-  LibHandle := LoadLibrary('advapi32.dll');
+  LibHandle := SafeLoadLibrary('advapi32.dll');
   if LibHandle <> 0 then
   try
     @GetCurrentHwProfile := GetProcAddress(LibHandle, 'GetCurrentHwProfileA');
@@ -3189,7 +3189,7 @@ var
   LibraryHandle: THandle;
   InternetGetConnectedStateFunc: TInternetGetConnectedStateFunc;
 begin
-  LibraryHandle := LoadLibrary('wininet.dll');  { Do not localize }
+  LibraryHandle := SafeLoadLibrary('wininet.dll');  { Do not localize }
   try
     InternetGetConnectedStateFunc := GetProcAddress(LibraryHandle, 'InternetGetConnectedState');  { Do not localize }
     Result := Assigned(InternetGetConnectedStateFunc) and InternetGetConnectedStateFunc(@ConnectFlag, 0) and

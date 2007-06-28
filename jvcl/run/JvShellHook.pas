@@ -91,11 +91,7 @@ const
 implementation
 
 uses
-  JvJVCLUtils,
-  JvVCL5Utils;
-
-const
-  cUser32 = 'user32.dll';
+  JvJVCLUtils, JvVCL5Utils;
 
 type
   TRegisterShellHookWindowFunc = function(THandle: HWND): BOOL; stdcall;
@@ -103,29 +99,27 @@ type
 var
   RegisterShellHookWindow: TRegisterShellHookWindowFunc = nil;
   DeregisterShellHookWindow: TRegisterShellHookWindowFunc = nil;
-  GlobalLibHandle: HMODULE = 0;
+  GlobalLibHandle: THandle = 0;
 
 procedure UnInitJvShellHooks;
 begin
   RegisterShellHookWindow := nil;
   DeregisterShellHookWindow := nil;
-  if GlobalLibHandle > 0 then
-    FreeLibrary(GlobalLibHandle);
   GlobalLibHandle := 0;
 end;
 
 function InitJvShellHooks: Boolean;
 begin
-  Result := True;
-  if GlobalLibHandle > 0 then
-    Exit; // already done this
-  GlobalLibHandle := LoadLibrary(cUser32);
-  if GlobalLibHandle > 0 then
+  if GlobalLibHandle = 0 then
   begin
-    RegisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'RegisterShellHookWindow');
-    DeregisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'DeregisterShellHookWindow');
+    GlobalLibHandle := GetModuleHandle(user32);
+    if GlobalLibHandle > 0 then
+    begin
+      RegisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'RegisterShellHookWindow');
+      DeregisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'DeregisterShellHookWindow');
+    end;
   end;
-  Result := (GlobalLibHandle > 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
+  Result := (GlobalLibHandle <> 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
 end;
 
 destructor TJvShellHook.Destroy;

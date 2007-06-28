@@ -4441,7 +4441,7 @@ begin
     if not Result then
     begin
       {$IFDEF MSWINDOWS}
-      FGDS32Lib := LoadLibrary(PChar(lib));
+      FGDS32Lib := SafeLoadLibrary(lib);
       {$ENDIF MSWINDOWS}
       {$IFDEF LINUX}
       FCryptLib := dlopen('libcrypt.so', RTLD_GLOBAL); // Service
