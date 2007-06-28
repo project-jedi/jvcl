@@ -245,7 +245,7 @@ begin
           ' MULTIPLE TITLE="' + TListBox(C).Hint + '"' +
           ' TABORDER=' + IntToStr(TListBox(C).TabOrder) +
           ' NAME=' + TListBox(C).Name +
-          S + 
+          S +
           '>';
         HTML.Add(St);
         for J := 0 to TListBox(C).Items.Count - 1 do

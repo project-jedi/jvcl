@@ -50,7 +50,7 @@ type
     FKeyData: Pointer;
     FPrevNode: TJvDockClientHashNode;
     FNextNode: TJvDockClientHashNode;
-    FListIndex: Integer;              
+    FListIndex: Integer;
   public
     property KeyName: string read FKeyName write FKeyName;
     property KeyData: Pointer read FKeyData write FKeyData;
@@ -65,7 +65,7 @@ type
     FTableSize: Integer;
     FEntryList: TList;
     FRaiseException: Boolean;
-    procedure SetTableSize(const Value: Integer);     
+    procedure SetTableSize(const Value: Integer);
   protected
     function HashProc(const Name: string): Integer; virtual;
     procedure DeleteListIndex(Index: Integer);
@@ -225,7 +225,7 @@ begin
       ParentNode := Node;
       Node := Node.FNextNode;
     end;
-    
+
     Node := CreateKeyNode(Name, Data, Index);
     Node.FPrevNode := ParentNode;
     ParentNode.NextNode := Node;

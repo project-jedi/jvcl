@@ -35,12 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes,
-  {$IFDEF VCL}
   FileCtrl,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$ENDIF VisualCLX}
   JvBaseDlg;
 
 type
@@ -50,10 +45,8 @@ type
     FDirectory: string;
     FHelpContext: Longint;
     FInitialDir: string;
-    {$IFDEF VCL}
     FClassicDialog: Boolean;
     FOptions: TSelectDirOpts;
-    {$ENDIF VCL}
     FTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -62,10 +55,8 @@ type
     property Directory: string read FDirectory;
     property HelpContext: Longint read FHelpContext write FHelpContext default 0;
     property InitialDir: string read FInitialDir write FInitialDir;
-    {$IFDEF VCL}
     property ClassicDialog: Boolean read FClassicDialog write FClassicDialog default True;
     property Options: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate, sdPerformCreate, sdPrompt];
-    {$ENDIF VCL}
     property Title: string read FTitle write FTitle;
   end;
 
@@ -88,31 +79,19 @@ begin
   FDirectory := '';
   FInitialDir := '';
   FHelpContext := 0;
-  {$IFDEF VCL}
   FClassicDialog := True;
   FOptions := [sdAllowCreate, sdPerformCreate, sdPrompt];
-  {$ENDIF VCL}
   FTitle := '';
 end;
 
 function TJvSelectDirectory.Execute: Boolean;
-{$IFDEF VisualCLX}
-var
-  Dir: WideString;
-{$ENDIF VisualCLX}
+
 begin
   FDirectory := InitialDir;
-  {$IFDEF VCL}
   if ClassicDialog then
     Result := SelectDirectory(FDirectory, Options, HelpContext)
   else
     Result := SelectDirectory(Title, InitialDir, FDirectory);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Dir := FDirectory;
-  Result := SelectDirectory(Title, InitialDir, Dir);
-  FDirectory := Dir;
-  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF UNITVERSIONING}

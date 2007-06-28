@@ -79,20 +79,15 @@ type
     procedure SetMinValue(AValue: Extended);
     procedure SetZeroEmpty(Value: Boolean);
     procedure SetFormatOnEditing(Value: Boolean);
-    function GetText: string; {$IFDEF VisualCLX} reintroduce; {$ENDIF}
+    function GetText: string;
 //    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
-    {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VisualCLX}
-    procedure Paint; override;
-    {$ENDIF VisualCLX}
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
-    procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF} virtual;
+    procedure SetText(const AValue: string);  virtual;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -146,7 +141,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -157,7 +151,6 @@ type
     property ParentCtl3D;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property Align; //Polaris
     property Alignment;
     property Anchors;
@@ -224,7 +217,6 @@ type
 
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
@@ -241,7 +233,6 @@ type
     property ImeName;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property Action;
     property Align; //Polaris
     property Alignment;
@@ -348,7 +339,7 @@ begin
   Result := AnsiChar(SysUtils.DecimalSeparator[1]);
 end;
 
-function ThousandSeparator: Char; 
+function ThousandSeparator: Char;
 begin
   Result := SysUtils.ThousandSeparator[1];
 end;
@@ -969,7 +960,7 @@ begin
     Invalidate;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomNumEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
@@ -982,22 +973,9 @@ begin
     FFocused and not PopupVisible, FCanvas, Msg) then
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomNumEdit.Paint;
-var
-  S: string;
-begin
-  if PopupVisible then
-    S := TJvPopupWindow(FPopup).GetPopupText
-  else
-    S := GetDisplayText;
-  if not PaintComboEdit(Self, S, FAlignment,
-    True, FFocused and not PopupVisible, Canvas) then
-    inherited;
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvCustomNumEdit.FontChanged;
 begin
@@ -1056,7 +1034,7 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   ControlState := ControlState + [csCreating];
   try
-    FPopup := TJvPopupWindow(CreatePopupCalculator(Self {$IFDEF VCL}, BiDiMode {$ENDIF}));
+    FPopup := TJvPopupWindow(CreatePopupCalculator(Self , BiDiMode ));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     UpdatePopup;
   finally

@@ -80,7 +80,6 @@ type
   end;
 
   TJvCheckListBox = class(TJvExCheckListBox)
-  {$IFDEF VCL}
   private
     FHotTrack: Boolean;
     FOnSelectCancel: TNotifyEvent;
@@ -100,7 +99,6 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-  {$ENDIF VCL}
   {$IFDEF COMPILER5}
   private
     FHeaders: TList;
@@ -134,7 +132,7 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-    procedure SelectAll; {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
+    procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
@@ -142,7 +140,7 @@ type
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
-    procedure DeleteSelected; {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
+    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure SaveToFile(FileName: TFileName);
     procedure LoadFromFile(FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);
@@ -155,13 +153,11 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-    {$IFDEF VCL}
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
-    {$ENDIF VCL}
 
     property DataConnector: TJvCheckListBoxDataConnector read FDataConnector write SetDataConnector;
   end;
@@ -417,11 +413,9 @@ begin
   FHeaderColor := clInfoText;
   FHeaderBackgroundColor := clInfoBk;
   {$ENDIF COMPILER5}
-  {$IFDEF VCL}
   FHotTrack := False;
   FMaxWidth := 0;
   FScroll := True;
-  {$ENDIF VCL}
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
@@ -529,7 +523,7 @@ begin
     Checked[I] := True;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCheckListBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -539,7 +533,7 @@ begin
     else
       Style := Style xor WS_HSCROLL;
 end;
-{$ENDIF VCL}
+
 
 function TJvCheckListBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
@@ -606,7 +600,7 @@ begin
       Selected[I] := not Selected[I];
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCheckListBox.LBNSelCancel(var Msg: TMessage);
 begin
   if Assigned(FOnSelectCancel) then
@@ -627,7 +621,7 @@ begin
   {$ENDIF COMPILER5}
   inherited;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCheckListBox.LoadFromFile(FileName: TFileName);
 var
@@ -669,7 +663,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCheckListBox.MouseEnter(Control: TControl);
 begin
@@ -702,14 +696,14 @@ begin
   for I := 0 to Items.Count - 1 do
   begin
     ItemWidth := Canvas.TextWidth(Items[I] + ' ');
-    Inc(ItemWidth, GetCheckWidth); 
+    Inc(ItemWidth, GetCheckWidth);
     if FMaxWidth < ItemWidth then
       FMaxWidth := ItemWidth;
   end;
   SetHScroll(FScroll);
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvCheckListBox.SaveToFile(FileName: TFileName);
 var
@@ -775,7 +769,7 @@ begin
       Selected[I] := True;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCheckListBox.SetHotTrack(const Value: Boolean);
 begin
@@ -791,7 +785,7 @@ begin
     SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvCheckListBox.UnCheckAll;
 var
@@ -810,7 +804,7 @@ begin
       Selected[I] := False;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCheckListBox.WMHScroll(var Msg: TWMHScroll);
 var
@@ -889,7 +883,7 @@ begin
   inherited WndProc(Msg);
 end;
 
-{$ENDIF VCL}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

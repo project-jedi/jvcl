@@ -72,12 +72,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, ExtCtrls,
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
   JvWndProcHook,
-  {$ENDIF VCL}
   JvJCLUtils, JvComponentBase, JvExButtons;
 
 type
@@ -91,12 +86,10 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FColor: TColor;
-    {$IFDEF VCL}
     FBiDiMode: TBiDiMode; {o}
     FParentBiDiMode: Boolean;
     procedure SetBiDiMode(Value: TBiDiMode);
     procedure SetParentBiDiMode(Value: Boolean);
-    {$ENDIF VCL}
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
@@ -127,10 +120,8 @@ type
     function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
       Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
-    {$IFDEF VCL}
     property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode;
     property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode;
-    {$ENDIF VCL}
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color: TColor read FColor write SetColor;
@@ -146,7 +137,6 @@ type
       Caption: string); override;
   end;
 
-  {$IFDEF VCL}
   TJvaCaptionButton = class(TJvComponent)
   private
     FGlyph: TJvButtonGlyph;
@@ -215,37 +205,24 @@ type
     property Visible: Boolean read FVisible write SetVisible default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
-  {$ENDIF VCL}
 
   TPaintButtonEvent = procedure(Sender: TObject; IsDown, IsDefault: Boolean; State: TButtonState) of object;
 
   TJvaColorButton = class(TJvExBitBtn)
   private
-    {$IFDEF VisualCLX}
-    FCanvas: TCanvas;    // asn: never created
-    {$ENDIF VisualCLX}
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-    {$IFDEF VCL}
     FCanvas: TControlCanvas ;
     function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    {$ENDIF VCL}
   protected
     IsFocused: Boolean;
-    {$IFDEF VCL}
     procedure SetButtonStyle(ADefault: Boolean); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure Paint; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    {$IFDEF VCL}
     property Canvas: TCanvas read GetCanvas;
-    {$ENDIF VCL}
   published
     property Color;
     property ParentColor;
@@ -302,9 +279,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
   SysUtils, Math,
   JvHtControls, JvDsgnIntf, JvConsts, JvResources, JvTypes, JvThemes;
 
@@ -318,7 +293,6 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-      {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -497,7 +471,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
 begin
@@ -518,7 +492,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
 var
@@ -588,9 +562,7 @@ begin
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
     TmpImage.Canvas.Brush.Color := Color {clBtnFace};
-    {$IFDEF VCL}
     TmpImage.Palette := CopyPalette(FOriginal.Palette);
-    {$ENDIF VCL}
     I := State;
     if Ord(I) >= NumGlyphs then
       I := bsUp;
@@ -613,19 +585,12 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-            {$IFDEF VCL}
             DDB.HandleType := bmDDB;
-            {$ENDIF VCL}
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
-                {$IFDEF VisualCLX}
-                Start;
-                {$ENDIF VisualCLX}
                 CopyRect(IRect, DDB.Canvas, ORect);
-                {$IFDEF VCL}
                 MonoBmp.Monochrome := True;
-                {$ENDIF VCL}
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
 
@@ -658,9 +623,6 @@ begin
                 SetBkColor(DestDC, clWhite);
                 BitBlt(DestDC, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                {$IFDEF VisualCLX}
-                Stop;
-                {$ENDIF VisualCLX}
               end
             else
             begin
@@ -668,9 +630,7 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-                {$IFDEF VCL}
                 HandleType := bmDDB;
-                {$ENDIF VCL}
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -683,9 +643,6 @@ begin
               end;
               with TmpImage.Canvas do
               begin
-                {$IFDEF VisualCLX}
-                Start;
-                {$ENDIF VisualCLX}
                 Brush.Color := Color {clBtnFace};
                 FillRect(IRect);
                 Brush.Color := clBtnHighlight;
@@ -698,9 +655,6 @@ begin
                 SetBkColor(Handle, clWhite);
                 BitBlt(Handle, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                {$IFDEF VisualCLX}
-                Stop;
-                {$ENDIF VisualCLX}
               end;
             end;
           finally
@@ -727,7 +681,6 @@ begin
   if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
     Exit;
   Index := CreateButtonGlyph(State);
-  {$IFDEF VCL}
   with GlyphPos do
     if Transparent or (State = bsExclusive) then
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
@@ -735,22 +688,6 @@ begin
     else
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
         ColorToRGB(Color {clBtnFace}), clNone, ILD_Normal);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  with GlyphPos do
-    if Transparent or (State = bsExclusive) then
-    begin
-      FGlyphList.Masked := True;
-      FGlyphList.BkColor := clNone;
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage); // (ahuser) VisualCLX missing Transparent draw method
-    end
-    else
-    begin
-      FGlyphList.Masked := False;
-      FGlyphList.BkColor := Color;
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage);
-    end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -759,10 +696,8 @@ var
   Flags: Longint;
 begin
   Flags := 0;
-  {$IFDEF VCL}
   if FBiDiMode <> bdLeftToRight then
     Flags := DT_RTLREADING;
-  {$ENDIF VCL}
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -974,7 +909,7 @@ end;
 
 //=== { TJvaCaptionButton } ==================================================
 
-{$IFDEF VCL}
+
 
 constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
@@ -1529,7 +1464,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvaColorButton } ====================================================
 
@@ -1537,26 +1472,19 @@ constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
-  {$IFDEF VCL}
   FCanvas := TControlCanvas.Create;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Control := Self;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FCanvas := Canvas;
-  {$ENDIF VisualCLX}
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
   FreeAndNil(FGlyphDrawer);
   inherited Destroy;
-  {$IFDEF VCL}
   FreeAndNil(FCanvas);
-  {$ENDIF VCL}
 end;
 
-{$IFDEF VCL}
+
 
 function TJvaColorButton.GetCanvas: TCanvas;
 begin
@@ -1602,45 +1530,17 @@ begin
   FCanvas.Handle := 0;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvaColorButton.Paint;
-var
-  IsDown, IsDefault: Boolean;
-  State: TButtonState;
-begin
-  if csDestroying in ComponentState then
-    Exit;
-  IsDown := Down;
-  IsDefault := Focused;
-  if not Enabled then
-    State := bsDisabled
-  else
-  if IsDown then
-    State := bsDown
-  else
-    State := bsUp;
-  if Assigned(FOnPaint) then
-    FOnPaint(Self, IsDown, IsDefault, State)
-  else
-    DefaultDrawing(IsDown, IsDefault, State);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
 var
   R: TRect;
   Flags: Longint;
 begin
-  {$IFDEF VCL}
   if (csDestroying in ComponentState) or (FCanvas.Handle = 0) then
     Exit;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if (csDestroying in ComponentState) or (FCanvas.Handle = nil) then
-    Exit;
-  {$ENDIF VisualCLX}
   R := ClientRect;
   Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
   if IsDown then
@@ -1856,9 +1756,7 @@ begin
       Offset.Y := 0;
     end;
     {O}
-    {$IFDEF VCL}
     FGlyphDrawer.BiDiMode := BiDiMode;
-    {$ENDIF VCL}
     FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, Canvas, PaintRect, Offset, Caption, Layout, Margin,
       Spacing, FState, False {True});
   end;

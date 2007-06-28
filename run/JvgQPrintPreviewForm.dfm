@@ -233,7 +233,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
     Anchors = [akLeft, akRight, akBottom]
     Min = 0
     Max = 100
-    TabOrder = 2
+    
     Visible = False
   end
   object QRPreview1: TQRPreview

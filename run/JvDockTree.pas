@@ -4110,7 +4110,7 @@ var
   R: TRect;
 begin
   R := GetSplitterRect(Zone);
-  if (R.Left <> 0) or (R.Right <> 0) then 
+  if (R.Left <> 0) or (R.Right <> 0) then
     DrawSplitterRect(R);
 end;
 

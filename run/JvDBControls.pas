@@ -45,9 +45,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   Classes, Graphics, Controls, StdCtrls, DBCtrls, DB,
   JvSecretPanel, JvLabel, JvToolEdit, JvMaskEdit, JvBaseEdits;
 
@@ -136,10 +134,8 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
-    {$IFDEF VCL}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property ImeMode;
     property ImeName;
@@ -256,10 +252,8 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
-    {$IFDEF VCL}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property Glyph;
     property ImageIndex;
@@ -381,7 +375,6 @@ type
     property DefaultToday;
     property DialogTitle;
     property DirectInput;
-    {$IFDEF VCL}
     property DragCursor;
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
@@ -398,7 +391,6 @@ type
     property ImeName;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -726,9 +718,9 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP} 
+  {$IFDEF COMPILER6_UP}
   FMTBcd,
-  {$ENDIF COMPILER6_UP} 
+  {$ENDIF COMPILER6_UP}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -1137,7 +1129,7 @@ begin
     if Msg.DC = 0 then
       EndPaint(Handle, PS);
   end;
-end;  
+end;
 
 procedure TJvDBMaskEdit.CMGetDataLink(var Msg: TMessage);
 begin

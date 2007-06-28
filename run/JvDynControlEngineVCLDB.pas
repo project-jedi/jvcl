@@ -172,9 +172,7 @@ type
     FEditControl: TDBEdit;
     FButton: TBitBtn;
     FInitialDir: string;
-    {$IFDEF VCL}
     FDialogOptions: TSelectDirOpts;
-    {$ENDIF VCL}
     FDialogTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -199,9 +197,7 @@ type
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(const Value: string);
     procedure ControlSetDialogTitle(const Value: string);
-    {$IFDEF VCL}
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
-    {$ENDIF VCL}
 
     //IJvDynControlDatabase
     procedure ControlSetDataSource(Value: TDataSource);
@@ -383,9 +379,7 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
-    {$IFDEF VCL}
     procedure ControlSetProportional(Value: Boolean);
-    {$ENDIF VCL}
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
@@ -532,7 +526,7 @@ end;
 
 procedure TJvDynControlVCLDBEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                                    
+end;
 
 procedure TJvDynControlVCLDBEdit.ControlSetValue(Value: Variant);
 begin
@@ -546,15 +540,7 @@ end;
 
 procedure TJvDynControlVCLDBEdit.ControlSetPasswordChar(Value: Char);
 begin
-  {$IFDEF VCL}
   PasswordChar := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = #0 then
-    EchoMode := emNormal
-  else
-    EchoMode := emPassword;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlVCLDBEdit.ControlSetEditMask(const Value: string);
@@ -654,7 +640,7 @@ end;
 procedure TJvDynControlVCLDBButtonEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
   FEditControl.OnClick := Value;
-end;                                                                          
+end;
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetValue(Value: Variant);
 begin
@@ -666,22 +652,11 @@ begin
   Result := FEditControl.Text;
 end;
 
-{$IFDEF VisualCLX}
-type
-  TDBEditAccessProtected = class(TDBEdit);
-{$ENDIF VisualCLX}
+
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetPasswordChar(Value: Char);
 begin
-  {$IFDEF VCL}
   FEditControl.PasswordChar := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = #0 then
-    TDBEditAccessProtected(FEditControl).EchoMode := emNormal
-  else
-    TDBEditAccessProtected(FEditControl).EchoMode := emPassword;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetEditMask(const Value: string);
@@ -989,13 +964,8 @@ end;
 
 procedure TJvDynControlVCLDBDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
-  {$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Dir: WideString;
-  {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   if Dir = '' then
@@ -1005,17 +975,7 @@ begin
       Dir := PathDelim;
   if not DirectoryExists(Dir) then
     Dir := PathDelim;
-  {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  {$IFDEF MSWINDOWS}
-  if SelectDirectory('', '', Dir) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  if SelectDirectory('', '/', Dir, False) then
-  {$ENDIF UNIX}
-  {$ENDIF VisualCLX}
     ControlSetValue(Dir);
   if FEditControl.CanFocus then
     FEditControl.SetFocus;
@@ -1085,12 +1045,12 @@ begin
   FDialogTitle := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlVCLDBDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
 begin
   FDialogOptions := Value;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlVCLDBDirectoryEdit.ControlSetDataSource(Value: TDataSource);
 begin
@@ -1666,14 +1626,14 @@ begin
   Center := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlVCLDBImage.ControlSetProportional(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
 //  Proportional := Value;
   {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlVCLDBImage.ControlSetStretch(Value: Boolean);
 begin
@@ -1755,7 +1715,7 @@ end;
 procedure TJvDynControlVCLDBText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
-    
+
 procedure TJvDynControlVCLDBText.ControlSetDataSource(Value: TDataSource);
 begin
   DataSource := Value;
@@ -1813,7 +1773,7 @@ end;
 
 procedure TJvDynControlVCLDBGrid.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                                    
+end;
 
 procedure TJvDynControlVCLDBGrid.ControlSetDataSource(Value: TDataSource);
 begin

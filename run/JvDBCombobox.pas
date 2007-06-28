@@ -35,12 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
   Classes, Graphics, Controls, StdCtrls, DB, DBCtrls,
   JvExStdCtrls;
 
@@ -73,9 +68,9 @@ type
     procedure Change; override;
     procedure Click; override;
     procedure Reset;
-    
+
     // This may cause trouble with BCB because it uses a HWND parameter
-    // but as it is defined in the VCL itself, we can't do much. 
+    // but as it is defined in the VCL itself, we can't do much.
     procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
       ComboProc: Pointer); override;
     procedure CreateWnd; override;
@@ -478,7 +473,7 @@ end;
 
 procedure TJvCustomDBComboBox.DoExit;
 begin
-  try          
+  try
     FDataLink.UpdateRecord;
   except
     SelectAll;

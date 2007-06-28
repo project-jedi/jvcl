@@ -35,9 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Contnrs, DB,
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   JclEDI, JclEDI_ANSIX12, JclEDISEF,
   JvComponentBase;
 

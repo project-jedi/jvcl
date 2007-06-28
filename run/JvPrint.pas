@@ -122,7 +122,7 @@ begin
     // JvHTControls:
     // ARect.Bottom := ARect.Bottom - ARect.Top;
     // ItemHTDraw(ACanvas,ARect,[odReserved1],AItem, GetScaleX);
-  end;                          
+  end;
   Printer.EndDoc;
   if Assigned(FOnFinishedPrint) then
     FOnFinishedPrint(Self);
@@ -189,13 +189,8 @@ begin
       with Printer do
       begin
         BeginDoc;
-        {$IFDEF VCL}
         CopyRectDIBits(Canvas, Rect(0, 0, PageWidth, PageHeight),
           Value, Rect(0, 0, Value.Width, Value.Height));
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        Canvas.StretchDraw(Rect(0, 0, PageWidth, PageHeight), Value);
-        {$ENDIF VisualCLX}
         EndDoc;
       end;
   end;
@@ -219,7 +214,7 @@ begin
   if OwnerDraw and Assigned(FOnMeasureItem) then
     FOnMeasureItem(Self, ACanvas, AIndex, AItem, Result)
   else
-    Result := ACanvas.TextHeight(AItem); 
+    Result := ACanvas.TextHeight(AItem);
 end;
 
 procedure TJvPrint.DrawItem(ACanvas: TCanvas; ARect: TRect;

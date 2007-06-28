@@ -41,9 +41,6 @@ uses
   QWindows,
   {$ENDIF UNIX}
   Graphics, Controls, Forms,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvJCLUtils;
 
@@ -149,47 +146,15 @@ type
     Reserved2: array [0..53] of Byte;
   end;
 
-{$IFDEF VisualCLX}
 
-const
-  pf4bit = pf8bit;
-  pf24bit = pf32bit;
-
-  PixelFormatMap: array [pf1bit..pf32bit] of Integer = (1, 8, 16, 32);
-
-type
-  TPrivateBitmap = class(TGraphic)
-  protected
-    {$IF defined(LINUX) or defined(COMPILER7_UP) or declared(PatchedVCLX)}
-    FPixelFormat: TPixelFormat;
-    FTransparentMode: TTransparentMode;
-    {$IFEND}
-    FImage: QImageH;
-  end;
-
-function GetBitmapImage(Bitmap: TBitmap): QImageH;
-begin
-  if Assigned(Bitmap) then
-    Result := TPrivateBitmap(Bitmap).FImage
-  else
-    Result := nil;
-end;
-
-{$ENDIF VisualCLX}
 
 procedure ReadPalette(Bitmap: TJvPcx; ColorNum: Integer; PcxPalette: PPcxPalette);
 var
   I: Integer;
   P: PPcxPaletteArray;
-  {$IFDEF VCL}
   RPal: TMaxLogPalette;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ColorTbl: PRGBQuadArray;
-  {$ENDIF VisualCLX}
 begin
   P := PPcxPaletteArray(PcxPalette);
-  {$IFDEF VCL}
   RPal.palVersion := $300;
   RPal.palNumEntries := ColorNum;
   for I := 0 to ColorNum - 1 do
@@ -201,38 +166,16 @@ begin
   end;
   Bitmap.Palette := CreatePalette(PLogPalette(@RPal)^);
   Bitmap.PaletteModified := True;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Bitmap.ImageNeeded;
-  QImage_setNumColors(GetBitmapImage(Bitmap), ColorNum);
-  ColorTbl := Bitmap.ColorTable;
-  for I := 0 to ColorNum - 1 do
-  begin
-    with ColorTbl[I] do
-    begin
-      rgbRed := P[I].Red;
-      rgbGreen := P[I].Green;
-      rgbBlue := P[I].Blue;
-      rgbReserved := 0;
-    end;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure WritePalette(Bitmap: TJvPcx; ColorNum: Integer; PcxPalette: PPcxPalette);
 var
   I: Integer;
   P: PPcxPaletteArray;
-  {$IFDEF VCL}
   RPal: array [0..256] of TPaletteEntry;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ColorTbl: PRGBQuadArray;
-  {$ENDIF VisualCLX}
 begin
   P := PPcxPaletteArray(PcxPalette);
   FillChar(P[0], ColorNum * SizeOf(TPcxPalette), 0);
-  {$IFDEF VCL}
   if Bitmap.Palette <> 0 then
   begin
     GetPaletteEntries(Bitmap.Palette, 0, ColorNum, RPal);
@@ -243,20 +186,6 @@ begin
       P[I].Blue := RPal[I].peBlue;
     end;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Bitmap.ImageNeeded;
-  if ColorNum > QImage_numColors(GetBitmapImage(Bitmap)) then
-    ColorNum := QImage_numColors(GetBitmapImage(Bitmap));
-  ColorTbl := Bitmap.ColorTable;
-  for I := 0 to ColorNum - 1 do
-    with ColorTbl[I] do
-    begin
-      P[I].Red := rgbRed;
-      P[I].Green := rgbGreen;
-      P[I].Blue := rgbBlue;
-    end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvPcx.LoadFromStream(Stream: TStream);
@@ -275,10 +204,8 @@ var
 begin
   Width := 0;
   Height := 0;
-  {$IFDEF VCL}
   Palette := 0;
   IgnorePalette := False;
-  {$ENDIF VCL}
   Monochrome := False;
 
   BytesRead := Stream.Read(Header, SizeOf(Header));
@@ -295,9 +222,7 @@ begin
           begin
             PixelFormat := pf1bit;
             Monochrome := True;
-            {$IFDEF VCL}
             IgnorePalette := True;
-            {$ENDIF VCL}
           end;
         4:
           PixelFormat := pf4bit; // VisualCLX: redirected const
@@ -311,28 +236,15 @@ begin
         3:
           begin
             PixelFormat := pf24bit; // VisualCLX: redirected const
-            {$IFDEF VCL}
             IgnorePalette := True;
-            {$ENDIF VCL}
           end;
       else
         raise EPcxError.CreateRes(@RsEPcxUnknownFormat);
       end;
   end;
 
-  {$IFDEF VCL}
   Width := Header.x1 - Header.x0 + 1;
   Height := Header.y1 - Header.y0 + 1;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FreeImage;
-  FreePixmap;
-  // work around a QGraphics bug: Qt expects QImageEndian <> IgnoreEndian for
-  // monochrome bitmaps
-  TPrivateBitmap(Self).FImage := QImage_create(
-    Header.x1 - Header.x0 + 1, Header.y1 - Header.y0 + 1,
-    PixelFormatMap[PixelFormat], 1, QImageEndian_BigEndian);
-  {$ENDIF VisualCLX}
   if (Width = 0) or (Height = 0) then
     Exit; // nothing to do
   BytesPerRasterLine := Header.BytesPerLine * Header.Planes;
@@ -352,15 +264,6 @@ begin
       Decompressed.CopyFrom(Stream, SizeOf(TPcxPalette256));
 
     // create palette (if necessary)
-    {$IFDEF VisualCLX}
-    if (Header.Bpp = 1) and (Header.Planes = 1) then
-    begin
-      Header.Palette16[1].Red := 255;
-      Header.Palette16[1].Green := 255;
-      Header.Palette16[1].Blue := 255;
-      ReadPalette(Self, 2, @Header.Palette16[0]);
-    end;
-    {$ENDIF VisualCLX}
     if (Header.Bpp = 1) and (Header.Planes = 4) then
     begin
       ReadPalette(Self, 16, @Header.Palette16[0]);
@@ -411,12 +314,7 @@ begin
         Buffer2 := @Buffer[Header.BytesPerLine];
         Buffer3 := @Buffer[Header.BytesPerLine * 2];
         Buffer4 := @Buffer[Header.BytesPerLine * 3];
-        {$IFDEF VCL}
         FillChar(ByteLine[0], BytesPerRasterLine, 0);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        FillChar(ByteLine[0], Width, 0); // VisualCLX uses pf8bit
-        {$ENDIF VisualCLX}
         for X := 0 to Width - 1 do
         begin
           B := 0;
@@ -431,24 +329,16 @@ begin
           if (Buffer4[ByteNum] shr BitNum) and $1 <> 0 then
             B := B or $08;
 
-          {$IFDEF VCL}
           if X mod 2 = 0 then // BIG ENDIAN
             B := B shl 4;
           ByteLine[X div 2] := ByteLine[X div 2] or B;
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          // VisualCLX does not support pf4bit
-          ByteLine[X] := ByteLine[X] or B;
-          {$ENDIF VisualCLX}
         end;
       end;
     end;
   finally
     Decompressed.Free;
   end;
-  {$IFDEF VCL}
   PaletteModified := True;
-  {$ENDIF VCL}
   Changed(Self);
 end;
 
@@ -466,13 +356,8 @@ var
   B: Byte;
   ByteNum, BitNum: Integer;
 begin
-  {$IFDEF VCL}
   if PixelFormat in [pfDevice, pfCustom, pf15bit, pf16bit] then
     PixelFormat := pf24bit;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ImageNeeded;
-  {$ENDIF VisualCLX}
 
   FillChar(Header, SizeOf(Header), 0);
   Header.Id := $0A;
@@ -497,25 +382,14 @@ begin
           Header.Palette16[1].Green := 255;
           Header.Palette16[1].Blue := 255;
         end;
-      {$IFDEF VCL}
       pf4bit:
         begin
           Header.Bpp := 1;
           Header.Planes := 4;
           Header.BytesPerLine := (Width + 1) div 2;
         end;
-      {$ENDIF VCL}
       pf8bit:
         begin
-          {$IFDEF VisualCLX}
-          if QImage_numColors(GetBitmapImage(Self)) <= 16 then
-          begin
-            Header.Bpp := 1;
-            Header.Planes := 4;
-            Header.BytesPerLine := (Width + 1) div 2;
-          end
-          else
-          {$ENDIF VisualCLX}
           begin
             Header.Bpp := 8;
             Header.Planes := 1;
@@ -566,16 +440,11 @@ begin
             FillChar(Buffer[0], BytesPerRasterLine, 0);
             for X := 0 to Width - 1 do
             begin
-              {$IFDEF VCL}
               B := ByteLine[X div 2];
               if X mod 2 = 0 then // BIG ENDIAN
                 B := B shr 4
               else
                 B := B and $0F;
-              {$ENDIF VCL}
-              {$IFDEF VisualCLX}
-              B := ByteLine[X];
-              {$ENDIF VisualCLX}
 
               ByteNum := X div 8;
               BitNum := 7 - (X mod 8);
@@ -628,12 +497,10 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvPcx, TControl);
   {$ENDIF COMPILER7_UP}
   RegisterClass(TJvPcx);
-  {$ENDIF VCL}
   TPicture.RegisterFileFormat(RsPcxExtension, RsPcxFilterName, TJvPcx);
 
 finalization

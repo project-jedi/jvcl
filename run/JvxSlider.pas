@@ -112,14 +112,9 @@ type
     function GetValueByOffset(Offset: Integer): Longint;
     function GetOffsetByValue(Value: Longint): Integer;
     function GetRulerLength: Integer;
-    {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    { TODO -cVisuaCLX : implement message handler substitutions }
-    {$ENDIF VisualCLX}
   protected
     procedure BoundsChanged; override;
     procedure FocusChanged(AControl: TWinControl); override;
@@ -363,7 +358,7 @@ begin
   inherited AlignControls(AControl, Rect);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomSlider.WMPaint(var Msg: TWMPaint);
 var
   DC, MemDC: HDC;
@@ -427,7 +422,7 @@ begin
   TimerTrack;
 end;
 
-{$ENDIF VCL}
+
 procedure TJvCustomSlider.Paint;
 var
   R: TRect;

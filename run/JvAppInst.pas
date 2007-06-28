@@ -124,21 +124,7 @@ const
   AI_GETACTIVE = $0004;
   AI_SETACTIVE = $0005;
 
-{$IFDEF VisualCLX}
-type
-  TPrivateComponent = class(TPersistent, IInterface, IInterfaceComponentReference)
-  protected
-    FOwner: TComponent;
-    FName: TComponentName;
-    FTag: Longint;
-    FComponents: TList;
-  public
-    function _AddRef: Integer; virtual; stdcall; abstract;
-    function _Release: Integer; virtual; stdcall; abstract;
-    function GetComponent: TComponent; virtual; abstract;
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall; abstract;
-  end;
-{$ENDIF VisualCLX}
+
 
 var
   FirstJvAppInstance: Boolean = True;
@@ -185,7 +171,7 @@ begin
             AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
 
           // As ExitProcess will prevent ANY finalization to occur, we free the
-          // AppInstances object so that it can cleanup the process information  
+          // AppInstances object so that it can cleanup the process information
           AppInstances.Free;
           ExitProcess(0);
         end;

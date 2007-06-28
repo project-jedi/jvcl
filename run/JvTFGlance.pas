@@ -697,7 +697,7 @@ type
     function GetAppt(Index: Integer): TJvTFAppt;
   protected
     FInPlaceEdit: Boolean;
-    
+
     procedure SetInplaceEdit(const Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual; abstract;
     procedure SetGlanceControl(Value: TJvTFCustomGlance); virtual;
@@ -1485,7 +1485,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvTFCustomGlance.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -1510,7 +1510,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvTFCustomGlance.DateIsSelected(ADate: TDate): Boolean;
 begin

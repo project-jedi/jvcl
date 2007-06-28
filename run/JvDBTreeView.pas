@@ -54,9 +54,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages, CommCtrl,
-  {$ENDIF VCL}
   Classes, Controls, ExtCtrls, ComCtrls, DB,
   JvExtComponent;
 
@@ -316,7 +314,7 @@ const
 	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
   DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD
 	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
-	
+
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin
   if V = Null then
@@ -339,7 +337,7 @@ begin
 end;
 
 procedure MirrorControl(Control: TWinControl; RightToLeft: Boolean);
-{$IFDEF VCL}
+
 var
   OldLong: Longword;
 begin
@@ -353,12 +351,8 @@ begin
     SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
   Control.Repaint;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-begin
-  Control.Repaint; // asn: remove?
-end;
-{$ENDIF VisualCLX}
+
+
 
 //=== { TJvDBTreeViewDataLink } ==============================================
 
@@ -1481,10 +1475,8 @@ end;
 
 procedure TJvCustomDBTreeView.SetMirror(Value: Boolean);
 begin
-  {$IFDEF VCL}
   if Value and SysLocale.MiddleEast and not (csDesigning in ComponentState) then
     MirrorControl(Self, Value);
-  {$ENDIF VCL}
   FMirror := Value;
 end;
 

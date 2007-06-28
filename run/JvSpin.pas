@@ -41,13 +41,8 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows,
-  {$IFDEF VCL}
   Messages, CommCtrl,
-  {$ENDIF VCL}
   ComCtrls, Controls, ExtCtrls, Graphics, Forms,
-  {$IFDEF VisualCLX}
-  QComboEdits, JvQExComboEdits, QComCtrlsEx,
-  {$ENDIF VisualCLX}
   JvEdit, JvExMask, JvMaskEdit, JvComponent;
 
 const
@@ -89,9 +84,7 @@ type
     procedure SetFocusControl(Value: TWinControl);
     procedure SetUpGlyph(Value: TBitmap);
     procedure TimerExpired(Sender: TObject);
-    {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    {$ENDIF VCL}
   protected
     procedure CheckButtonBitmaps;
     procedure RemoveButtonBitmaps;
@@ -115,12 +108,10 @@ type
     property Down: TSpinButtonState read FDown write SetDown default sbNotDown;
   published
     property ButtonStyle: TJvSpinButtonStyle read FButtonStyle write SetButtonStyle default sbsDefault;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Visible;
@@ -152,12 +143,7 @@ type
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
 
-  {$IFDEF VCL}
   TJvCustomSpinEdit = class(TJvExCustomMaskEdit)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
-  {$ENDIF VisualCLX}
   private
     FShowButton: Boolean;
     FCheckMaxValue: Boolean;
@@ -219,17 +205,14 @@ type
     procedure SetThousands(Value: Boolean);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure SetShowButton(Value: Boolean);
-    {$IFDEF VCL}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    {$ENDIF VCL}
   protected
     FButtonKind: TSpinButtonKind;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure FocusKilled(NextWnd: THandle); override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean; override;
     procedure BoundsChanged; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -249,10 +232,8 @@ type
 
     function IsValidChar(Key: Char): Boolean; virtual;
     procedure Change; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    {$ENDIF VCL}
     procedure DownClick(Sender: TObject); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -321,7 +302,6 @@ type
     property AutoSize;
     property BorderStyle;
     property Color;
-    {$IFDEF VCL}
     property DragCursor;
     property BiDiMode;
     property DragKind;
@@ -330,7 +310,6 @@ type
     property ImeName;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -365,14 +344,12 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property HideSelection;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     property ClipboardCommands;
   end;
 
@@ -503,22 +480,13 @@ end;
 
 type
   TColorArray = array [0..2] of TColor;
-  {$IFDEF VisualCLX}
-  THackedCustomForm = class(TCustomForm);
-  {$ENDIF VisualCLX}
 
   TJvUpDown = class(TCustomUpDown)
   private
     FChanging: Boolean;
-  {$IFDEF VCL}
     procedure ScrollMessage(var Msg: TWMVScroll);
     procedure WMHScroll(var Msg: TWMHScroll); message CN_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  protected
-    procedure Click(Button: TUDBtnType); override;
-  {$ENDIF VisualCLX}
   public
     procedure Resize; override;
   public
@@ -724,7 +692,7 @@ begin
     raise ERangeError.CreateResFmt(@RsEOutOfRangeFloat, [FMinValue, FMaxValue]);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
@@ -740,7 +708,7 @@ begin
   SetEditRect;
 end;
 
-{$ENDIF VCL}
+
 
 constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
 begin
@@ -766,7 +734,7 @@ begin
   RecreateButton;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomSpinEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array [Boolean, TAlignment] of DWORD =
@@ -784,7 +752,7 @@ begin
   inherited CreateWnd;
   SetEditRect;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomSpinEdit.DataChanged;
 var
@@ -906,8 +874,7 @@ begin
   inherited FocusKilled(NextWnd);
 end;
 
-function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean;
 begin
   if WheelDelta > 0 then
     UpClick(nil)
@@ -1110,7 +1077,7 @@ begin
     Key := 0;
   end;
   // do not delete the decimal separator while typing
-  // all decimal digits were moved to the integer part and new decimals were added at the end 
+  // all decimal digits were moved to the integer part and new decimals were added at the end
   if (Key = VK_DELETE) and (SelStart < Length(Text)) and (Text[SelStart + 1] = DecimalSeparator) then
     Key := VK_RIGHT;
   if (Key = VK_BACK) and (SelStart > 0) and (Text[SelStart] = DecimalSeparator) then
@@ -1152,12 +1119,7 @@ begin
     if (Key = Cr) or (Key = Esc) then
     begin
       { must catch and remove this, since is actually multi-line }
-      {$IFDEF VCL}
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      THackedCustomForm(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
-      {$ENDIF VisualCLX}
       if Key = Cr then
         Key := #0;
     end;
@@ -1195,12 +1157,7 @@ begin
           Align := alLeft
         else
           Align := alRight;
-        {$IFDEF VCL}
         Parent := Self;
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        Parent := Self.ClientArea;
-        {$ENDIF VisualCLX}
         OnClick := UpDownClick;
       end;
     end
@@ -1208,19 +1165,11 @@ begin
     begin
       FBtnWindow := TWinControl.Create(Self);
       FBtnWindow.Visible := True;
-      {$IFDEF VCL}
       FBtnWindow.Parent := Self;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      FBtnWindow.Parent := Self.ClientArea;
-      {$ENDIF VisualCLX}
       if FButtonKind <> bkClassic then
         FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
       else
         FBtnWindow.SetBounds(0, 0, Height, Height);
-      {$IFDEF VisualCLX}
-      FBtnWindow.Align := alRight;
-      {$ENDIF VisualCLX}
       FButton := TJvSpinButton.Create(Self);
       FButton.Visible := True;
       if FButtonKind = bkClassic then
@@ -1249,7 +1198,7 @@ begin
   else
   if FButton <> nil then
   begin { bkDiagonal }
-    if NewStyleControls and {$IFDEF VCL} Ctl3D and {$ENDIF} (BorderStyle = bsSingle) then
+    if NewStyleControls and  Ctl3D and  (BorderStyle = bsSingle) then
       if FButtonKind = bkClassic then
         R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
       else
@@ -1261,7 +1210,7 @@ begin
       R := Bounds(Width - Height, 0, Height, Height);
     if BiDiMode = bdRightToLeft then
     begin
-      if NewStyleControls and {$IFDEF VCL} Ctl3D and {$ENDIF} (BorderStyle = bsSingle) then
+      if NewStyleControls and  Ctl3D and  (BorderStyle = bsSingle) then
       begin
         R.Left := -1;
         R.Right := Height - 4;
@@ -1274,12 +1223,6 @@ begin
     end;
     with R do
       FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
-    {$IFDEF VisualCLX}
-    if BiDiMode = bdRightToLeft then
-      FBtnWindow.Align := alLeft
-    else
-      FBtnWindow.Align := alRight;
-    {$ENDIF VisualCLX}
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
@@ -1290,12 +1233,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Invalidate;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1381,23 +1319,14 @@ begin
   if BiDiMode = bdRightToLeft then
   begin
     SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1, ClientHeight + 1);
-    {$IFDEF VCL}
     SendMessage(Handle, EM_SETMARGINS, EC_LEFTMARGIN, MakeLong(GetButtonWidth, 0));
-    {$ENDIF VCL}
   end
   else
   begin
     SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
-    {$IFDEF VCL}
     SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, GetButtonWidth));
-    {$ENDIF VCL}
   end;
-  {$IFDEF VCL}
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetEditorRect(@Loc);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);
@@ -1547,14 +1476,14 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
 begin
   // The buttons we draw are buffered, thus we need to repaint them to theme changes etc.
   if FButtonBitmaps <> nil then
     TSpinButtonBitmaps(FButtonBitmaps).Reset;
 end;
-{$ENDIF VCL}
+
 
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
@@ -1969,7 +1898,7 @@ begin
     inherited Resize;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvUpDown.ScrollMessage(var Msg: TWMVScroll);
 begin
@@ -2003,29 +1932,9 @@ begin
   ScrollMessage(Msg);
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvUpDown.Click(Button: TUDBtnType);
-var
-  Pos: Integer;
-begin
-  if not FChanging then
-  begin
-    FChanging := True;
-    try
-      Pos := Position;
-      UpdatePosition(0);
-    finally
-      FChanging := False;
-    end;
-    if Pos < 0 then
-      inherited Click(btPrev)
-    else
-      inherited Click(btNext)
-  end;
-end;
-{$ENDIF VisualCLX}
+
+
 
 //=== { TSpinButtonBitmaps } =================================================
 
@@ -2171,7 +2080,7 @@ var
 
       with Canvas do
       begin
-        // Select only top button 
+        // Select only top button
         if AUpState = bpsNormal then
           SelectClipRgn(Handle, TopRegion_BottomAbove)
         else
@@ -2384,9 +2293,6 @@ var
 
     with ABitmap.Canvas do
     begin
-      {$IFDEF VisualCLX}
-      Start;
-      {$ENDIF VisualCLX}
       LColors := CColors;
       if ADownState = sbTopDown then
       begin
@@ -2429,9 +2335,6 @@ var
         DownArrow.Transparent := True;
         JvDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end;
-      {$IFDEF VisualCLX}
-      Stop;
-      {$ENDIF VisualCLX}
     end;
   end;
 
@@ -2447,9 +2350,6 @@ var
 
     with ABitmap.Canvas do
     begin
-      {$IFDEF VisualCLX}
-      Start;
-      {$ENDIF VisualCLX}
       { top glyph }
       H := Height div 2;
       R := Bounds(0, 0, Width, H);
@@ -2476,9 +2376,6 @@ var
         DownArrow.Transparent := True;
         PoleDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end;
-      {$IFDEF VisualCLX}
-      Stop;
-      {$ENDIF VisualCLX}
     end;
   end;
 
@@ -2609,12 +2506,12 @@ begin
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
     if Enabled then
-      BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, AUpArrow, Source, AUpArrow.TransparentColor)
+      BrushCopy( Dest, AUpArrow, Source, AUpArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
       try
-        BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+        BrushCopy( Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;
@@ -2627,12 +2524,12 @@ begin
     Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
 
     if Enabled then
-      BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, ADownArrow, Source, ADownArrow.TransparentColor)
+      BrushCopy( Dest, ADownArrow, Source, ADownArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
       try
-        BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+        BrushCopy( Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;

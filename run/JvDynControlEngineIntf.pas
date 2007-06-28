@@ -32,12 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
   ActnList, Graphics, ComCtrls, ImgList,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QActnList, QGraphics, QComCtrls, QImgList,
-  {$ENDIF UNIX}
   {$IFDEF CLR}
   Variants,
   {$ENDIF CLR}
@@ -146,9 +141,7 @@ type
     ['{1EAC8D4D-F839-43FD-B859-627874E41874}']
     procedure ControlSetInitialDir(const Value: string);
     procedure ControlSetDialogTitle(const Value: string);
-    {$IFDEF VCL}
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
-    {$ENDIF VCL}
   end;
 
   IJvDynControlComboBox = interface
@@ -193,9 +186,7 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
-    {$IFDEF VCL}
     procedure ControlSetProportional(Value: Boolean);
-    {$ENDIF VCL}
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);

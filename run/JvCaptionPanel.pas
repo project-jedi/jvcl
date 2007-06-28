@@ -39,9 +39,7 @@ interface
 // The downside is that the control "flashes" more when it's dragged
 {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
-{$IFDEF VisualCLX}
- {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
-{$ENDIF VisualCLX}
+
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -51,9 +49,6 @@ uses
   {$IFDEF CLR}
   Types,
   {$ENDIF CLR}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvComponent, JvExtComponent, JvExControls;
 
@@ -116,9 +111,7 @@ type
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
     {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
-    {$IFDEF VCL}
     FResizable: Boolean;
-    {$ENDIF VCL}
     FCaptionHeight: Integer;
     procedure SetIcon(Value: TIcon);
     procedure SetCaptionFont(Value: TFont);
@@ -129,10 +122,8 @@ type
     procedure SetCaptionPosition(Value: TJvDrawPosition);
     procedure DrawRotatedText(Rotation: Integer);
     procedure DrawButtons;
-    {$IFDEF VCL}
     procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
     procedure SetResizable(const Value: Boolean);
-    {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Sender: TObject);
     procedure SetCaptionHeight(const Value: Integer);
@@ -142,9 +133,7 @@ type
     function GetEffectiveCaptionHeight: Integer;
 
     procedure AlignControls(AControl: TControl; var R: TRect); override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -166,11 +155,9 @@ type
     property CaptionHeight: Integer read FCaptionHeight write SetCaptionHeight default 0;
     property Color;
     property Cursor;
-    {$IFDEF VCL}
     property DragCursor;
     property FullRepaint;
     property Locked;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FlatButtons: Boolean read FFlat write SetFlat default False;
@@ -182,9 +169,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    {$IFDEF VCL}
     property Resizable:Boolean read FResizable write SetResizable default True;
-    {$ENDIF VCL}
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -382,10 +367,6 @@ begin
     Flags := Flags or DFCS_FLAT;
 
   Canvas.Brush.Color := Color;
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-  {$ENDIF VisualCLX}
     SetBkMode(Canvas.Handle, TRANSPARENT);
     DrawFrameControl(Canvas.Handle, ClientRect, DFC_CAPTION, Flags);
     if FFlat then
@@ -399,11 +380,6 @@ begin
       else
         Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
     end;
-  {$IFDEF VisualCLX}
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 //=== { TJvCaptionPanel } ====================================================
@@ -413,33 +389,19 @@ var
   I: TJvCapBtnStyle;
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   DoubleBuffered := True;
-  {$ENDIF VCL}
   FCaptionFont := TFont.Create;
   FIcon := TIcon.Create;
-  {$IFDEF VCL}
   // (rom) Warning! This seems no standard Windows font
 //  FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FCaptionFont.Name := 'Helvetica';
-  FCaptionFont.Height := 13;
-  {$ENDIF VisualCLX}
   FCaptionFont.Style := [fsBold];
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;
   FCaptionPosition := dpLeft;
   FAutoDrag := True;
-  {$IFDEF VCL}
   FOffset := 8;
   FCaptionColor := clActiveCaption;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FOffset := 3;
-  FCaptionColor := clActiveHighlight;
-  {$ENDIF VisualCLX}
   FFlat := False;
   for I := Low(FButtonArray) to High(FButtonArray) do //Iterate
   begin
@@ -454,9 +416,7 @@ begin
   FCaptionOffsetSmall := 2;
   FCaptionOffsetLarge := 3;
   FOutlookLook := False;
-  {$IFDEF VCL}
   FResizable := True;
-  {$ENDIF VCL}
 end;
 
 destructor TJvCaptionPanel.Destroy;
@@ -553,25 +513,21 @@ begin
   inherited AlignControls(AControl, R);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCaptionPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   if BorderStyle = bsSingle then
     with Params do
     begin
-      {$IFDEF VCL}
       if Resizable then
         Style := Style or WS_THICKFRAME
       else
         Style := Style or WS_DLGFRAME;
-      {$ELSE}
-      Style := Style or WS_THICKFRAME
-      {$ENDIF VCL}
       ExStyle := ExStyle and not WS_EX_CLIENTEDGE;
     end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCaptionPanel.Paint;
 var
@@ -581,13 +537,6 @@ var
   AdjustedCaptionHeight: Integer;
 begin
   R := ClientRect;
-  {$IFDEF VisualCLX}
-  if BorderStyle = bsSingle then
-  begin
-    DrawShadePanel(Canvas, R, False, 1, nil);
-    InflateRect(R, -2, -2);
-  end;
-  {$ENDIF VisualCLX}
   with Canvas do
   begin
     Brush.Color := Color;
@@ -647,29 +596,17 @@ end;
 procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
   tH: Integer;
-  {$IFDEF VCL}
   tW: Integer;
   Lf: TLogFont;
   Tf: TFont;
   Flags: Integer;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  X, Y: Integer;
-  {$ENDIF VisualCLX}
   R: TRect;
 begin
   if FCaption = '' then
     Exit;
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-    QPainter_save(Canvas.Handle);
-    Canvas.Font.Assign(CaptionFont);
-  {$ENDIF VisualCLX}
     SetBkMode(Canvas.Handle, TRANSPARENT);
     with Canvas do
     begin
-      {$IFDEF VCL}
       Tf := TFont.Create;
       try
         Tf.Assign(CaptionFont);
@@ -686,96 +623,45 @@ begin
       finally
         Tf.Free;
       end;
-      {$ENDIF VCL}
       R := FCaptionRect;
       tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
-      {$IFDEF VCL}
       tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      X := FCaptionRect.Left;
-      Y := FCaptionRect.Top;
-      {$ENDIF VisualCLX}
       if FOutlookLook then
       begin
         Dec(tH);
-        {$IFDEF VCL}
         Dec(tW);
-        {$ENDIF VCL}
       end;
       case FCaptionPosition of
         dpLeft:
           begin
-            {$IFDEF VCL}
             if not FIcon.Empty then
               Dec(R.Bottom, FIcon.Height + 2);
             with R do
               R := Rect(Left, Bottom, Right, Top);
             OffsetRect(R, tW, -FOffset);
-            {$ENDIF VCL}
-            {$IFDEF VisualCLX}
-            X := R.Left + (FCaptionWidth + Canvas.TextHeight(Caption)) div 2 - FOffset;
-            Y := R.Bottom - 1;
-            if not FIcon.Empty then
-              Dec(Y, FIcon.Height + 3)
-            else
-              Dec(Y);
-            {$ENDIF VisualCLX}
           end;
         dpTop, dpBottom:
           begin
-            {$IFDEF VisualCLX}
-            X := R.Left;
-            Y := R.Top + tH + Canvas.TextHeight(Caption) - FOffset;
-            if not FIcon.Empty then
-              Inc(X, FIcon.Width + 3)
-            else
-              Inc(X);
-            {$ENDIF VisualCLX}
-            {$IFDEF VCL}
             OffsetRect(R, FOffset, tH);
             if not FIcon.Empty then
               Inc(R.Left, FIcon.Width + 2);
-            {$ENDIF VCL}
           end;
         dpRight:
           begin
-            {$IFDEF VisualCLX}
-            X := R.Left + (FCaptionWidth - Canvas.TextHeight(Caption)) div 2 + FOffset;
-            Y := R.Top;
-            if not FIcon.Empty then
-              Inc(Y, FIcon.Height + 3)
-            else
-              Inc(Y);
-            {$ENDIF VisualCLX}
-            {$IFDEF VCL}
             if not FIcon.Empty then
               Inc(R.Top, FIcon.Height + 2);
             with R do
               R := Rect(Right, Top, Left, Bottom);
             OffsetRect(R, -tW, FOffset);
-            {$ENDIF VCL}
           end;
       end;
-      {$IFDEF VCL}
       Flags := DT_NOPREFIX;
       if FCaptionPosition in [dpTop, dpBottom] then
         Flags := Flags or DT_VCENTER;
       if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
         Flags := Flags or DT_NOCLIP; { bug or feature? }
       DrawText(Canvas, Caption, -1, R, Flags);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      // ToDo: replace with DrawText(Canvas, .... , Rotation)
-      TextOutAngle(Canvas, Rotation, X, Y, Caption);
-      {$ENDIF VisualCLX}
     end;
-  {$IFDEF VisualCLX}
-  finally
-    QPainter_restore(Canvas.Handle);
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 function TJvCaptionPanel.GetEffectiveCaptionHeight: Integer;
@@ -965,7 +851,7 @@ begin
     FOnStartAutoDrag(Self, Result);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCaptionPanel.WMNCLButtonUp(var Msg: TWMNCLButtonUp);
 begin
   inherited;
@@ -981,7 +867,7 @@ begin
     RecreateWnd;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCaptionPanel.SetOutlookLook(const Value: Boolean);
 begin

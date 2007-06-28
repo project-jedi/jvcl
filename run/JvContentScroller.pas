@@ -37,9 +37,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, ExtCtrls,
-  {$IFDEF VisualCLX}
-  QTypes,
-  {$ENDIF VisualCLX}
   JvExtComponent;
 
 type
@@ -78,12 +75,7 @@ type
     procedure Paint; override;
     procedure DoBeforeScroll; dynamic;
     procedure DoAfterScroll; dynamic;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetText(const Value: TCaption); override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -100,7 +92,6 @@ type
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
     property LoopCount: Integer read FLoopCount write SetLoopCount default -1;
     {$ENDIF MSWINDOWS}
-    {$IFDEF VCL}
     property BiDiMode;
     property DockSite;
     property DragKind;
@@ -115,7 +106,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property Action;
     property Anchors;
     property Constraints;
@@ -364,13 +354,13 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvContentScroller.CreateWnd;
 begin
   inherited CreateWnd;
   Caption := '';
 end;
-{$ENDIF VCL}
+
 
 {
 procedure TJvContentScroller.SetScrollStart(const Value: Integer);
@@ -392,12 +382,7 @@ begin
     end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvContentScroller.SetText(const Value: TCaption);
-begin
-  inherited SetText('');
-end;
-{$ENDIF VisualCLX}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

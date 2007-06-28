@@ -3,7 +3,7 @@ object JvFullColorFrm: TJvFullColorFrm
   Top = 319
   ActiveControl = ColorBox
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
+  BorderStyle = fbsDialog
   Caption = 'Color Spaces Editor, Choose your color'
   ClientHeight = 380
   ClientWidth = 712
@@ -106,7 +106,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Height = 20
       LargeChange = 16
       Max = 255
-      PageSize = 0
+      
       TabOrder = 0
       OnChange = ScrollBarChange
     end
@@ -118,7 +118,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Height = 20
       LargeChange = 16
       Max = 255
-      PageSize = 0
+      
       TabOrder = 2
       OnChange = ScrollBarChange
     end
@@ -130,7 +130,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Height = 20
       LargeChange = 16
       Max = 255
-      PageSize = 0
+      
       TabOrder = 4
       OnChange = ScrollBarChange
     end

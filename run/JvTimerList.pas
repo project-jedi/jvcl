@@ -202,7 +202,7 @@ begin
   // the user would have to set Enable to True and thus trigger the
   // creation of the timer.
   Interval := DefaultInterval;
-  
+
   FLastExecute := GetTickCount;
 end;
 
@@ -353,12 +353,7 @@ begin
         else
           UpdateTimer;
       except
-        {$IFDEF VCL}
         Application.HandleException(Self);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        ApplicationHandleException(Self);
-        {$ENDIF VisualCLX}
       end
       else
         Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);

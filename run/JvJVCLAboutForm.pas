@@ -161,9 +161,7 @@ procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ReleaseCapture;
-  {$IFDEF VCL}
   Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
-  {$ENDIF VCL}
 end;
 
 procedure TJvJVCLAboutForm.btnHelpClick(Sender: TObject);

@@ -66,9 +66,7 @@ const
 
 const
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
-  {$IFDEF VisualCLX}
   CM_PERFORM = CM_BASE + $500 + 0; // LParam: "Msg: ^TMessage"
-  {$ENDIF VisualCLX}
   CM_SETAUTOSIZE = CM_BASE + $500 + 1; // WParam: "Value: Boolean"
 
 type
@@ -160,10 +158,6 @@ function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage): Boolean;
 procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
 
-{$IFDEF VisualCLX}
-function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
-{$ENDIF VisualCLX}
-
 type
   TJvExControl = class(TControl, IJvExControl)
   private
@@ -171,10 +165,8 @@ type
     FHintColor: TColor;
     FMouseOver: Boolean;
     FHintWindowClass: THintWindowClass;
-    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
@@ -205,10 +197,8 @@ type
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
-    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -223,10 +213,8 @@ type
     FHintColor: TColor;
     FMouseOver: Boolean;
     FHintWindowClass: THintWindowClass;
-    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
@@ -257,10 +245,8 @@ type
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
-    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -299,10 +285,8 @@ type
     FHintColor: TColor;
     FMouseOver: Boolean;
     FHintWindowClass: THintWindowClass;
-    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
@@ -333,10 +317,8 @@ type
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
-    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -375,10 +357,8 @@ type
     FHintColor: TColor;
     FMouseOver: Boolean;
     FHintWindowClass: THintWindowClass;
-    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
@@ -409,10 +389,8 @@ type
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
-    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -427,10 +405,8 @@ type
     FHintColor: TColor;
     FMouseOver: Boolean;
     FHintWindowClass: THintWindowClass;
-    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
     function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
@@ -461,10 +437,8 @@ type
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
-    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -667,12 +641,7 @@ begin
   Result := nil;
   Form := GetParentForm(AControl);
   if Assigned(Form) then
-    {$IFDEF VCL}
     Result := Form.ActiveControl;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := Form.FocusedControl;
-    {$ENDIF VisualCLX}
 end;
 
 function DlgcToDlgCodes(Value: Longint): TDlgCodes;
@@ -722,12 +691,7 @@ begin
         begin
           AHintInfo := HintInfo;
           {$IFNDEF CLR}
-          {$IFDEF VCL}
           AControl.Parent.Perform(CM_HINTSHOW, 0, Integer(@AHintInfo));
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          Perform(AControl.Parent, CM_HINTSHOW, 0, Integer(@AHintInfo));
-          {$ENDIF VisualCLX}
           {$ELSE}
           AControl.Parent.Perform(CM_HINTSHOW, 0, AHintInfo);
           {$ENDIF !CLR}
@@ -759,27 +723,6 @@ begin
       Result := True;
   end;
 end;
-
-{$IFDEF VisualCLX}
-function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
-var
-  PerformMsg, Mesg: TMessage;
-begin
-  if AControl.GetInterfaceEntry(IJvExControl) <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    Mesg.Result := 0;
-
-    PerformMsg.Msg := CM_PERFORM;
-    PerformMsg.WParam := 0;
-    PerformMsg.LParam := @Mesg;
-    PerformMsg.Result := 0;
-    AControl.Dispatch(PerformMsg);
-  end;
-end;
-{$ENDIF VisualCLX}
 
 {$IFDEF COMPILER5}
 
@@ -1017,10 +960,8 @@ end;
 procedure TJvExControl.MouseEnter(AControl: TControl);
 begin
   FMouseOver := True;
-  {$IFDEF VCL}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
-  {$ENDIF VCL}
   BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
@@ -1028,10 +969,8 @@ procedure TJvExControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
   BaseWndProc(CM_MOUSELEAVE, 0, AControl);
-  {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-  {$ENDIF VCL}
 end;
 
 {$IFNDEF CLR}
@@ -1220,10 +1159,8 @@ end;
 procedure TJvExWinControl.MouseEnter(AControl: TControl);
 begin
   FMouseOver := True;
-  {$IFDEF VCL}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
-  {$ENDIF VCL}
   BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
@@ -1231,10 +1168,8 @@ procedure TJvExWinControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
   BaseWndProc(CM_MOUSELEAVE, 0, AControl);
-  {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-  {$ENDIF VCL}
 end;
 
 {$IFNDEF CLR}
@@ -1563,10 +1498,8 @@ end;
 procedure TJvExGraphicControl.MouseEnter(AControl: TControl);
 begin
   FMouseOver := True;
-  {$IFDEF VCL}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
-  {$ENDIF VCL}
   BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
@@ -1574,10 +1507,8 @@ procedure TJvExGraphicControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
   BaseWndProc(CM_MOUSELEAVE, 0, AControl);
-  {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-  {$ENDIF VCL}
 end;
 
 {$IFNDEF CLR}
@@ -1766,10 +1697,8 @@ end;
 procedure TJvExCustomControl.MouseEnter(AControl: TControl);
 begin
   FMouseOver := True;
-  {$IFDEF VCL}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
-  {$ENDIF VCL}
   BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
@@ -1777,10 +1706,8 @@ procedure TJvExCustomControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
   BaseWndProc(CM_MOUSELEAVE, 0, AControl);
-  {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-  {$ENDIF VCL}
 end;
 
 {$IFNDEF CLR}
@@ -2109,10 +2036,8 @@ end;
 procedure TJvExHintWindow.MouseEnter(AControl: TControl);
 begin
   FMouseOver := True;
-  {$IFDEF VCL}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
-  {$ENDIF VCL}
   BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
@@ -2120,10 +2045,8 @@ procedure TJvExHintWindow.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
   BaseWndProc(CM_MOUSELEAVE, 0, AControl);
-  {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-  {$ENDIF VCL}
 end;
 
 {$IFNDEF CLR}

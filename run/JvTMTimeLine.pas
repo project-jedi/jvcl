@@ -157,8 +157,8 @@ type
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
-    function DoMouseWheelDown(Shift: TShiftState; {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;  MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -319,10 +319,8 @@ type
     // triggered for each object when writing to a file
     property OnWriteObject;
     property OnStartDrag;
-    {$IFDEF VCL}
     property OnStartDock;
     property OnEndDock;
-    {$ENDIF VCL}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -343,10 +341,7 @@ uses
 
 {$R JvTMTimeLine.res}
 
-{$IFDEF VisualCLX}
-resourcestring
-  SInvalidImage = 'Invalid Image';
-{$ENDIF VisualCLX}
+
 
 const
   cMagic = 'Jv.TMTIMELINE1';
@@ -410,15 +405,9 @@ end;
 constructor TJvCustomTMTimeline.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   DoubleBuffered := True;
-  {$ENDIF VCL}
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
-  {$IFDEF VisualCLX}
-  ControlStyle := ControlStyle - [csNoFocus];
-  InputKeys := InputKeys + [ikArrows];
-  {$ENDIF VisualCLX}
 
   FSelection := TJvTLSelFrame.Create;
   FSelection.Pen.Width := 2;
@@ -434,14 +423,8 @@ begin
 
   FMonthFont := TFont.Create;
   FMonthFont.Style := [fsItalic, fsBold];
-  {$IFDEF MSWINDOWS}
   FMonthFont.Name := 'Times New Roman';
   FMonthFont.Size := 18;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  FMonthFont.Name := 'Helvetica';
-  FMonthFont.Height  := 24;
-  {$ENDIF UNIX}
 
   FObjectsFontStyle := [fsUnderline];
   FButtonWidth := 12;
@@ -457,14 +440,8 @@ begin
   FShowTodayIcon := True;
   FShowWeeks := True;
   FShowMonths := True;
-  {$IFDEF MSWINDOWS}
   Font.Size := 7;
   Font.Name := 'Times New Roman';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  Font.Name := 'Helvetica';
-  Font.Height := 11;
-  {$ENDIF UNIX}
 
   FLeftBtn := TSpeedButton.Create(Self);
   with FLeftBtn do
@@ -842,22 +819,10 @@ begin
   Tmp := ACanvas.Brush.Color;
   try
     ACanvas.Brush.Color := AColor;
-    {$IFDEF VCL}
     ACanvas.FrameRect(ARect);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FrameRect(ACanvas, ARect);
-    {$ENDIF VisualCLX}
     InflateRect(ARect, -Abs(ALineWidth) + 1, -Abs(ALineWidth) + 1);
-    {$IFDEF VCL}
     ACanvas.FrameRect(ARect);
     ACanvas.FloodFill(ARect.Left - 1, ARect.Top - 1, AColor, fsBorder);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FrameRect(ACanvas, ARect);
-    InflateRect(ARect, -1, -1);
-    ACanvas.FillRect(ARect);
-    {$ENDIF VisualCLX}
   finally
     ACanvas.Brush.Color := Tmp;
   end;
@@ -1318,16 +1283,14 @@ begin
   end;
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
     ScrollDate(Self, -1);
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then

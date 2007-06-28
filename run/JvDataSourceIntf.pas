@@ -34,7 +34,7 @@ uses
   {$IFNDEF DelphiPersonalEdition}
   DB,
   {$ENDIF !DelphiPersonalEdition}
-  SysUtils, Classes, Contnrs;     
+  SysUtils, Classes, Contnrs;
 
 const
   DC_ACTIVECHANGED = 100;

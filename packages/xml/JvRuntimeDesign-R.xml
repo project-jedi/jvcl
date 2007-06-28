@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvRuntimeDesign" Design="0">
   <Description>JVCL Runtime Design Components Runtime Package</Description>
-  <ClxDescription>JVCLX Runtime Design Components Runtime Package</ClxDescription>
   <GUID>{019D8720-DBA1-49DD-A7AC-69BB6C65AF84}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
@@ -24,8 +23,6 @@
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition="!DelphiPersonalEdition"/>
     <Package Name="vcldb" Targets="DBv6up" Condition="!DelphiPersonalEdition"/>
-    <Package Name="dataclx" Targets="K3" Condition="!DelphiPersonalEdition"/>
-    <Package Name="visualdbclx" Targets="clx" Condition="!DelphiPersonalEdition"/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>

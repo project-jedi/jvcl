@@ -151,9 +151,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
   Math,
   JvJCLUtils;
 
@@ -216,7 +214,7 @@ end;
 
 destructor TJvImageListViewer.Destroy;
 begin
-  Images := nil; 
+  Images := nil;
   FChangeLink.Free;
   inherited Destroy;
 end;
@@ -239,7 +237,7 @@ const
     (ILD_MASK, ILD_NORMAL);
 var
   X, Y: Integer;
-  S: WideString;             
+  S: WideString;
   DrawStyle, Flags: Cardinal;
 begin
   Canvas.Brush.Color := Color;
@@ -364,4 +362,4 @@ finalization
 
 end.
 
- 
+

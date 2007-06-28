@@ -80,10 +80,8 @@ begin
     Exit;
   if not MouseOver then
   begin
-    {$IFDEF VCL}
     if HotTrack then
       Ctl3D := True;
-    {$ENDIF VCL}
     inherited MouseEnter(Control);
   end;
 end;
@@ -92,10 +90,8 @@ procedure TJvScrollBar.MouseLeave(Control: TControl);
 begin
   if MouseOver then
   begin
-    {$IFDEF VCL}
     if HotTrack then
       Ctl3D := False;
-    {$ENDIF VCL}
     inherited MouseLeave(Control);
   end;
 end;
@@ -103,10 +99,8 @@ end;
 procedure TJvScrollBar.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
-  {$IFDEF VCL}
   if FHotTrack then
     Ctl3D := False;
-  {$ENDIF VCL}  
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvStdCtrls" Design="-1">
   <Description>JVCL Standard Controls</Description>
-  <ClxDescription>JVCLX Standard Controls</ClxDescription>
   <GUID>{2022FFED-CBA4-4663-8E1E-7C0855769930}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUdclstd.dcp -LUJcl -LUJclVcl</C6PFlags>
@@ -34,7 +33,5 @@
     <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all" Formname="JvCheckItemsEditor" Condition=""/>
     <File Name="..\..\design\JvProgressEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQStdDsgnEditors.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQDateTimeForm.pas" Targets="CLX" Formname="frmSelectDateTimeDlg" Condition=""/>
   </Contains>
 </Package>

@@ -82,7 +82,7 @@ type
   end;
 
   // We have to inherit from TJvExForm instead of TJvExCustmForm
-  // because otherwise our custom forms might not load correctly 
+  // because otherwise our custom forms might not load correctly
   // ('Property does not exist' exceptions are raised)
   TJvCustomFormDesktopAlert = class(TJvExForm)
   private
@@ -103,12 +103,10 @@ type
     FOnShowing: TNotifyEvent;
     FEndInterval:Cardinal;
     FMouseInControl: Boolean;
-    {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
     procedure WMMouseActivate(var Message: TWMMouseActivate); message WM_MOUSEACTIVATE;
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
-    {$ENDIF VCL}
     procedure JvDeskTopAlertAutoFree(var Msg: TMessage); message JVDESKTOPALERT_AUTOFREE;
     procedure DoMouseTimer(Sender: TObject);
     procedure FormPaint(Sender: TObject);
@@ -251,12 +249,7 @@ begin
   WindowRect.Top := ATop;
   Inc(WindowRect.Bottom);
   Canvas.Brush.Color := clGray;
-  {$IFDEF VCL}
   Canvas.FrameRect(WindowRect);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FrameRect(Canvas, WindowRect);
-  {$ENDIF VisualCLX}
 end;
 
 //=== { TJvFormDesktopAlert } ================================================
@@ -265,12 +258,7 @@ constructor TJvFormDesktopAlert.Create(AOwner: TComponent);
 begin
   inherited CreateNew(AOwner, 1);
 
-  {$IFDEF VCL}
   Font.Assign(Screen.IconFont);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Font.Assign(Application.Font);
-  {$ENDIF VisualCLX}
   MouseTimer := TTimer.Create(Self);
   MouseTimer.Enabled := False;
   MouseTimer.Interval := 200;
@@ -526,9 +514,7 @@ begin
             (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
             ImageIndex,
             {$IFDEF COMPILER6_UP}
-            {$IFDEF VCL}
             dsTransparent,
-            {$ENDIF VCL}
             itImage,
             {$ENDIF COMPILER6_UP}
             Enabled);
@@ -782,7 +768,7 @@ begin
   Include(FFormState, fsVisible);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomFormDesktopAlert.WMActivate(var Message: TWMActivate);
 begin
   if (Message.Active = WA_INACTIVE) or AllowFocus then
@@ -820,7 +806,7 @@ begin
   else
     inherited;
 end;
-{$ENDIF VCL}
+
 
 initialization
   {$IFDEF UNITVERSIONING}

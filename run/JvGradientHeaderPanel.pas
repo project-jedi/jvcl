@@ -75,13 +75,8 @@ type
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
-    {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VisualCLX}
-    procedure AdjustSize; override;
-    {$ENDIF VisualCLX}
 //    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -109,7 +104,6 @@ type
     property LabelAlignment: TAlignment read GetLabelAlignment write SetLabelAlignment;
     property Align;
     property Anchors;
-    {$IFDEF VCL}
     property AutoSize;
     property BevelEdges;
     property BevelInner;
@@ -117,12 +111,9 @@ type
     property BevelOuter;
     property BevelWidth;
     property BorderWidth;
-    {$ENDIF VCL}
     property Constraints;
-    {$IFDEF VCL}
     property DockSite;
     property DoubleBuffered;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -131,13 +122,11 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-    {$IFDEF VCL}
     property OnCanResize;
     property OnDockDrop;
     property OnDockOver;
     property OnGetSiteInfo;
     property OnUnDock;
-    {$ENDIF VCL}
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -178,22 +167,12 @@ uses
 type
   TNoEventLabel = class(TLabel)
   public
-    {$IFDEF VisualCLX}
-    constructor Create(AOwner: TComponent); override;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     procedure Dispatch(var Message); override;
-    {$ENDIF VCL}
   end;
 
   TNoEventGradient = class(TJvGradient)
   public
-    {$IFDEF VisualCLX}
-    constructor Create(AOwner: TComponent); override;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     procedure Dispatch(var Message); override;
-    {$ENDIF VCL}
   end;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
@@ -390,21 +369,15 @@ begin
   AdjustLabelWidth;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvGradientHeaderPanel.AdjustSize;
-begin
-  inherited AdjustSize;
-  AdjustLabelWidth;
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 procedure TJvGradientHeaderPanel.WMSize(var Msg: TWMSize);
 begin
   inherited;
   AdjustLabelWidth;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvGradientHeaderPanel.AdjustLabelWidth;
 var
@@ -456,15 +429,9 @@ end;
 
 //=== { TNoEventLabel } ======================================================
 
-{$IFDEF VisualCLX}
-constructor TNoEventLabel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csNoStdEvents];
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 procedure TNoEventLabel.Dispatch(var Message);
 begin
   with TMessage(Message) do
@@ -475,19 +442,13 @@ begin
     else
       inherited Dispatch(Message);
 end;
-{$ENDIF VCL}
+
 
 //=== { TNoEventGradient } ===================================================
 
-{$IFDEF VisualCLX}
-constructor TNoEventGradient.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csNoStdEvents];
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 procedure TNoEventGradient.Dispatch(var Message);
 begin
   with TMessage(Message) do
@@ -498,7 +459,7 @@ begin
     else
       inherited Dispatch(Message);
 end;
-{$ENDIF VCL}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

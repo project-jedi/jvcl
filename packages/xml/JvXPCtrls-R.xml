@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvXPCtrls" Design="0">
   <Description>JVCL XP Controls Runtime Package</Description>
-  <ClxDescription>JVCLX XP Controls Runtime Package</ClxDescription>
   <GUID>{CFE6ED76-BD93-4A2E-BE82-A8C22E686277}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUJcl(USEJVCL) -LUJclVcl(USEJVCL)</C6PFlags>
@@ -36,6 +35,5 @@
     <File Name="..\..\run\JvXPButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPCheckCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPProgressBar.pas" Targets="VCL" Formname="" Condition="USEJVCL"/>
-    <File Name="..\..\qrun\JvQXPProgressBar.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

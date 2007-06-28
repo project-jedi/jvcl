@@ -51,7 +51,7 @@ Changes:
     Dierk schmid
     Stephane Bischoff (Tief)
     Dejoy Den
-    
+
 Known Issues:
 * AutoSize calculations aren't correct when RoundedFrame and/or Shadow are active
 -----------------------------------------------------------------------------}
@@ -67,7 +67,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList, 
+  Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
   JvTypes, JvComponent, JvDataProvider, JvExControls, JvVCL5Utils;
 
 type
@@ -168,12 +168,7 @@ type
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
     procedure AdjustBounds; virtual;
-    {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF VisualCLX}
 
     // MarginXxx do not update the control.
     property MarginLeft: Integer read FMarginLeft write FMarginLeft;
@@ -248,12 +243,10 @@ type
     property AutoSize;
     property Caption;
     property Color;
-    {$IFDEF VCL}
     property DragCursor;
     property BiDiMode;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -647,21 +640,11 @@ begin
   end;
   if IsValidImage then
     Inc(Rect.Left, GetImageWidth + Spacing);
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  RequiredState(Canvas, [csHandleValid, csFontValid]);
-  try
-  {$ENDIF VisualCLX}
     if Angle <> 0 then
       DrawAngleText(Rect, Flags, IsValidImage, SizeShadow, ColorToRGB(ColorShadow), PosShadow)
     else
       DrawShadowText(Canvas, PChar(Text), Length(Text), Rect, Flags,
         SizeShadow, ColorToRGB(ColorShadow), PosShadow);
-  {$IFDEF VisualCLX}
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
   // (p3) draw image here since it can potentionally change background and font color
   if IsValidImage and (Flags and DT_CALCRECT = 0) then
   begin
@@ -676,7 +659,7 @@ begin
     end;
     if Y < MarginTop then
       Y := MarginTop;
-    Images.Draw(Canvas, X, Y, ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
+    Images.Draw(Canvas, X, Y, ImageIndex,  Enabled);
   end;
 end;
 
@@ -688,7 +671,7 @@ begin
     DoDrawCaption(Rect, Flags);
 end;
 
-{$IFDEF VCL}
+
 //
 // TODO: check if code for VCL is applicable to CLX. If so, make change
 //
@@ -798,100 +781,9 @@ begin
     Canvas.TextOut(TextX, TextY, Text);
   end;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-//
-// TODO: replace TextOutAngle by DrawText(...., Angle) (asn)
-//
-procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
-  ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
-const // (ahuser) no function known for these
-  XOffsetFrame = 0;
-  YOffsetFrame = 0;
-var
-  Text: array [0..4096] of Char;
-  TextX, TextY: Integer;
-  Phi: Real;
-  W, H: Integer;
-  CalcRect: Boolean;
-begin
-  CalcRect := (Flags and DT_CALCRECT <> 0);
-  StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
-  if CalcRect and ((Text[0] = #0) or ShowAccelChar and (Text[0] = '&') and (Text[1] = #0)) then
-    StrCopy(Text, ' ');
 
-  Canvas.Start;
-  try
-    Canvas.Brush.Style := bsClear; // Do not Erase Shadow or Background
 
-    Phi := Angle * Pi / 180;
-    if not AutoSize then
-    begin
-      W := Rect.Right - Rect.Left;
-      H := Rect.Bottom - Rect.Top;
-      TextX := Trunc(0.5 * W - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
-        0.5 * Canvas.TextHeight(Text) * Sin(Phi));
-      TextY := Trunc(0.5 * H - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
-        0.5 * Canvas.TextWidth(Text) * Sin(Phi));
-    end
-    else
-    begin
-      W := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      H := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
-      TextX := 3;
-      TextY := 3;
-      if Angle <= 90 then
-      begin
-        TextX := TextX + Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
-        TextY := TextY + Trunc(Canvas.TextWidth(Text) * Sin(Phi) + Canvas.TextHeight(Text) * Cos(Phi) / 2);
-      end
-      else
-      if Angle >= 270 then
-        TextX := 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2)
-      else
-      if Angle <= 180 then
-      begin
-        TextX := ClientWidth - 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
-        TextY := ClientHeight - 3 + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
-      end
-      else // (180 - 270)
-      begin
-        TextX := ClientWidth - 3 + Ceil(Canvas.TextHeight(Text) * Sin(Phi) / 2);
-        TextY := TextY + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
-      end;
-    end;
-
-    if CalcRect then
-    begin
-      Rect.Right := Rect.Left + W;
-      Rect.Bottom := Rect.Top + H;
-      if HasImage then
-        Inc(Rect.Right, Images.Width);
-      InflateRect(Rect, -XOffsetFrame, -YOffsetFrame);
-    end
-    else
-    begin
-      if HasImage then
-        Inc(TextX, Images.Width);
-      Inc(TextX, XOffsetFrame);
-      Inc(TextY, YOffsetFrame);
-
-      if not Enabled then
-      begin
-        Canvas.Font.Color := clBtnHighlight;
-        TextOutAngle(Canvas, Angle, TextX + 1, TextY + 1, Text);
-        Canvas.Font.Color := clBtnShadow;
-        TextOutAngle(Canvas, Angle, TextX, TextY, Text);
-      end
-      else
-        TextOutAngle(Canvas, Angle, TextX, TextY, Text);
-    end;
-  finally
-    Canvas.Stop;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomLabel.Paint;
 var
@@ -925,10 +817,8 @@ begin
           end
           else
           begin
-            {$IFDEF VCL}
             if not Transparent then // clx: TODO
               FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, HotTrackOptions.FrameColor, fsBorder);
-            {$ENDIF VCL}
             FrameRounded(Canvas, ClientRect, HotTrackOptions.FrameColor, RoundedFrame);
           end;
           Canvas.Pen.Color := OldPenColor;
@@ -955,15 +845,13 @@ begin
         if RoundedFrame = 0 then
         begin
           Brush.Color := FrameColor;
-          FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect);
+          FrameRect( ClientRect);
         end
         else
         begin
           Brush.Color := Color;
-          {$IFDEF VCL}
           if not Transparent then // clx: TODO
             FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
-          {$ENDIF VCL}
           FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
         end;
       end;
@@ -1022,10 +910,6 @@ begin
     InflateRect(Rect, -1, 0);
     DC := GetDC(NullHandle);
     Canvas.Handle := DC;
-    {$IFDEF VisualCLX}
-    Canvas.Start(False);
-    try
-    {$ENDIF VisualCLX}
       if Angle = 0 then
       begin
         R := Rect;
@@ -1047,11 +931,6 @@ begin
       end
       else
         DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], IsValidImage, 0, 0, spLeftTop);
-    {$IFDEF VisualCLX}
-    finally
-      Canvas.Stop;
-    end;
-    {$ENDIF VisualCLX}
     Canvas.Handle := NullHandle;
     ReleaseDC(NullHandle, DC);
     InflateRect(Rect, 1, 0);
@@ -1088,9 +967,7 @@ end;
 
 procedure TJvCustomLabel.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF VCL}
   inherited SetAutoSize(Value);
-  {$ENDIF VCL}
   FAutoSize := Value;
   FNeedsResize := FAutoSize;
   AdjustBounds;
@@ -1249,15 +1126,10 @@ var
 begin
   OldValue := MouseOver;
   OtherDragging :=
-    {$IFDEF VCL}
     KeyPressed(VK_LBUTTON)
     {$IFDEF COMPILER6_UP}
     or Mouse.IsDragging
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    DragActivated
-    {$ENDIF VisualCLX}
     ;
 
   MouseOver := Enabled and not OtherDragging and
@@ -1324,15 +1196,10 @@ begin
   if not MouseOver and Enabled and IsForegroundTask then
   begin
     OtherDragging :=
-      {$IFDEF VCL}
       KeyPressed(VK_LBUTTON)
       {$IFDEF COMPILER6_UP}
       or Mouse.IsDragging
       {$ENDIF COMPILER6_UP}
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DragActivated
-      {$ENDIF VisualCLX}
       ;
     NeedRepaint := not Transparent and
       (
@@ -1358,15 +1225,10 @@ begin
   if  MouseOver and Enabled then
   begin
     OtherDragging :=
-      {$IFDEF VCL}
       KeyPressed(VK_LBUTTON)
       {$IFDEF COMPILER6_UP}
       or Mouse.IsDragging
       {$ENDIF COMPILER6_UP}
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DragActivated
-      {$ENDIF VisualCLX}
       ;
 
     NeedRepaint := not Transparent and

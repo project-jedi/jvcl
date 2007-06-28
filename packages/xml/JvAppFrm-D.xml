@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvAppFrm" Design="-1">
   <Description>JVCL Application and Form Components</Description>
-  <ClxDescription>JVCLX Application and Form Components</ClxDescription>
   <GUID>{9617AB3F-D9AD-4B56-B59F-5322F5B751ED}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
@@ -31,7 +30,6 @@
   <Contains>
     <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="VCL" Formname="GradCaptionsEditor" Condition=""/>
     <File Name="..\..\design\JvAppFrmReg.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQAppFrmReg.pas" Targets="CLX" Formname="" Condition=""/>
     <File Name="..\..\design\JvFormWallpaperEditor.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvWallpaperEditForm.pas" Targets="VCL" Formname="FoWallpaperChooser" Condition=""/>
   </Contains>

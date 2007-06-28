@@ -157,7 +157,7 @@ var
 begin
   if not Active then // Do not log if not active (obones)
     Exit;
-    
+
   LogRecord := TJvLogRecord.Create;
   LogRecord.Time := Time;
   LogRecord.Title := Title;

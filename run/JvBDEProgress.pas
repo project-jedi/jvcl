@@ -140,7 +140,7 @@ const
 implementation
 
 uses
-  SysUtils, Math, Forms, StdCtrls, 
+  SysUtils, Math, Forms, StdCtrls,
   JvProgressUtils;
 
 const

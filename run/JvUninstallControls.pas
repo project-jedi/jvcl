@@ -63,8 +63,7 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
-      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
+    procedure Clear; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure RefreshItem;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
@@ -78,7 +77,6 @@ type
     property ShowAll: Boolean read FShowAll write SetShowAll default False;
     property ShowEmptyValues: Boolean read FShowEmptyValues write SetShowEmptyValues default False;
     property Color;
-    {$IFDEF VCL}
     property DragCursor;
     property DragMode;
     property ImeMode;
@@ -88,7 +86,6 @@ type
     property OnEndDock;
     property OnStartDock;
     property DragKind;
-    {$ENDIF VCL}
     property DropDownCount;
     property Enabled;
     property Font;
@@ -143,8 +140,7 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
-      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
+    procedure Clear; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure RefreshItem;
     procedure Rebuild;
     property Items: TStrings read GetItems;
@@ -160,7 +156,6 @@ type
     property ShowAll: Boolean read FShowAll write SetShowAll default False;
     property ShowEmptyValues: Boolean read FShowEmptyValues write SetShowEmptyValues default False;
     property Color;
-    {$IFDEF VCL}
     property DragCursor;
     property DragMode;
     property ImeMode;
@@ -170,7 +165,6 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property Enabled;
     property Font;
     property ItemHeight;

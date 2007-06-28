@@ -42,10 +42,6 @@ uses
   JvControlComponent;
 
 type
-  {$IFDEF UNIX}
-  { from Classes }
-  TWndMethod = procedure(var Message: TMessage) of object;
-  {$ENDIF UNIX}
 
   TJvMessageControl = class(TJvCustomControlComponent)
   private

@@ -38,12 +38,7 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, MMSystem,
-  {$IFDEF VCL}
   Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms,
-  {$ENDIF VisualCLX}
   JvTypes, JvComponentBase;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks

@@ -47,18 +47,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetResizeStyle(Value: TResizeStyle);
     procedure VerifyPartner;
-    {$IFDEF VCL}
     procedure WndProc(var Msg: TMessage); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    {$ENDIF VisualCLX}
   published
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
     property ResizeStyle: TResizeStyle read GetResizeStyle write SetResizeStyle;
@@ -125,7 +114,7 @@ begin
         end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvSyncSplitter.WndProc(var Msg: TMessage);
 begin
   if Assigned(FPartner) and not FForcedSize and not (csDesigning in ComponentState) then
@@ -142,76 +131,9 @@ begin
     end;
   inherited WndProc(Msg);
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvSyncSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  if Assigned(FPartner) and not FForcedSize and not (csDesigning in ComponentState) then
-  begin
-    Partner.FForcedSize := True;
-    try
-      Partner.MouseDown(Button, Shift, X, Y);
-    finally
-      Partner.FForcedSize := False;
-    end;
-  end;
-end;
 
-procedure TJvSyncSplitter.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  if Assigned(FPartner) and not FForcedSize and not (csDesigning in ComponentState) then
-  begin
-    Partner.FForcedSize := True;
-    try
-      Partner.MouseMove(Shift, X, Y);
-    finally
-      Partner.FForcedSize := False;
-    end;
-  end;
-end;
 
-procedure TJvSyncSplitter.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  if Assigned(FPartner) and not FForcedSize and not (csDesigning in ComponentState) then
-  begin
-    Partner.FForcedSize := True;
-    try
-      Partner.MouseUp(Button, Shift, X, Y);
-    finally
-      Partner.FForcedSize := False;
-    end;
-  end;
-end;
-
-procedure TJvSyncSplitter.MouseEnter(AControl: TControl);
-begin
-  if Assigned(FPartner) and not FForcedSize and not (csDesigning in ComponentState) then
-  begin
-    Partner.FForcedSize := True;
-    try
-      Partner.MouseEnter(AControl);
-    finally
-      Partner.FForcedSize := False;
-    end;
-  end;
-end;
-
-procedure TJvSyncSplitter.MouseLeave(AControl: TControl);
-begin
-  if Assigned(FPartner) and not FForcedSize and not (csDesigning in ComponentState) then
-  begin
-    Partner.FForcedSize := True;
-    try
-      Partner.MouseLeave(AControl);
-    finally
-      Partner.FForcedSize := False;
-    end;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
 initialization

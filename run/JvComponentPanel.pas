@@ -37,12 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QTypes,
-  {$ENDIF VisualCLX}
   Classes, Controls, Buttons, Forms,
   JvButtons, JvExtComponent, JvExButtons;
 
@@ -74,13 +69,8 @@ type
     function GetVisibleCount: Integer;
     procedure SetSelectedButton(Value: Integer);
     function GetSelectedButton: Integer;
-    {$IFDEF VCL}
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VisualCLX}
-    procedure SetText(const Value: TCaption); override;
-    {$ENDIF VisualCLX}
     procedure Resize; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
   public
@@ -106,7 +96,6 @@ type
     property ButtonCount: Integer read GetButtonCount write SetButtonCount default 0;
     property Anchors;
     property Constraints;
-    {$IFDEF VCL}
     property AutoSize;
     property BiDiMode;
     property UseDockManager default True;
@@ -120,7 +109,6 @@ type
     property OnStartDock;
     property OnUnDock;
     property OnCanResize;
-    {$ENDIF VCL}
     property OnConstrainedResize;
     property OnPaintContent;
     property PopupMenu;
@@ -345,21 +333,15 @@ begin
     FOnDblClick(Sender, FButtons.IndexOf(Sender));
 end;
 
-{$IFDEF VCL}
+
 procedure TJvComponentPanel.WMSetText(var Msg: TWMSetText);
 begin
   inherited;
   Caption := '';
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvComponentPanel.SetText(const Value: TCaption);
-begin
-  inherited SetText('');
-  //Caption := '';
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvComponentPanel.Resize;
 var

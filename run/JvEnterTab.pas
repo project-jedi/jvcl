@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at source
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -36,9 +36,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls,
-  {$IFDEF VisualCLX}
-  Qt, JvQConsts,
-  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -50,14 +47,8 @@ type
     FBmp: TBitmap;
     FOnHandleEnter: TJvEnterAsTabEvent;
   protected
-    {$IFDEF VCL}
     function EnterHandled(AControl: TWinControl): Boolean;virtual;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function EnterHandled(AControl: QObjectH): Boolean;virtual;
-    function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual;
-    {$ENDIF VisualCLX}
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -107,22 +98,16 @@ begin
   end
   else
     Visible := False;
-  {$IFDEF VisualCLX}
-  InstallApplicationHook(TabKeyHook);
-  {$ENDIF VisualCLX}
 end;
 
 destructor TJvEnterAsTab.Destroy;
 begin
-  {$IFDEF VisualCLX}
-  UninstallApplicationHook(TabKeyHook);
-  {$ENDIF VisualCLX}
   FBmp.Free;
   inherited Destroy;
 end;
 
 
-{$IFDEF VCL}
+
 function TJvEnterAsTab.EnterHandled(AControl:TWinControl):Boolean;
 begin
   Result := AControl is TButtonControl;
@@ -145,40 +130,9 @@ begin
   else
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvEnterAsTab.EnterHandled(AControl:QObjectH):Boolean;
-begin
-  Result := QObject_inherits(AControl, 'QButton');
-  if Assigned(FOnHandleEnter) then
-    FOnHandleEnter(Self, FindObject(AControl) as TWinControl, Result);
-end;
 
-function TJvEnterAsTab.TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean;
-var
-  ws: WideString;
-begin
-  Result := False;
-  if QEvent_type(Event) = QEventType_KeyPress then
-  begin
-    if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
-      (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
-    begin
-      if AllowDefault and EnterHandled(Sender) then
-        Exit;
-      ws := Tab;
 
-      QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyPress, Key_Tab, Ord(Tab), 0, @ws, False, 1));
-      QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, Ord(Tab), 0, @ws, False, 1));
-
-      Result := True;
-    end;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvEnterAsTab.Paint;
 begin
@@ -187,7 +141,7 @@ begin
   with Canvas do
   begin
     Brush.Color := clBtnFace;
-    BrushCopy({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect, FBmp, ClientRect, clFuchsia);
+    BrushCopy( ClientRect, FBmp, ClientRect, clFuchsia);
   end;
 end;
 

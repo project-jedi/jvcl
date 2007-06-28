@@ -34,16 +34,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   Classes, Controls, Graphics, Forms,
   JvComponent, JvJVCLUtils;
 
 type
-  {$IFDEF VCL}
   TControlBorderStyle = bsNone..bsSingle;
-  {$ENDIF VCL}
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
 
@@ -109,13 +105,11 @@ type
     property Anchors;
     property Color;
     property Constraints;
-    {$IFDEF VCL}
     property DragKind;
     property DragCursor;
     property OnCanResize;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Hint;
     property ParentColor;
@@ -201,15 +195,9 @@ begin
   end;
   R := Rect(0, 0, FBmpImage.Width, FBmpImage.Height);
 
-  {$IFDEF VisualCLX}
-  FBmpImage.Canvas.Start;
-  {$ENDIF VisualCLX}
   GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, FillDirection, 255);
   if BorderStyle = bsSingle then
     DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
-  {$IFDEF VisualCLX}
-  FBmpImage.Canvas.Stop;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvColorTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -273,16 +261,10 @@ begin
 
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
-  {$IFDEF VisualCLX}
-  FBmpImage.Canvas.Start;
-  {$ENDIF VisualCLX}
   if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
     BitBlt(Canvas.Handle, ArrowOffset, BitmapOffset div 2, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy)
   else
     BitBlt(Canvas.Handle, BitmapOffset div 2, ArrowOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
-  {$IFDEF VisualCLX}
-  FBmpImage.Canvas.Stop;
-  {$ENDIF VisualCLX}
   if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
     R := Rect(0, 0, ArrowOffset, Height)
   else

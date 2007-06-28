@@ -35,9 +35,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Controls,
   JvTypes, JvComponentBase;
 
@@ -114,12 +111,7 @@ begin
   inherited Create(AOwner);
   FTitle := '';
   if Owner is TWinControl then
-    {$IFDEF VCL}
     FOwnerWindow := (AOwner as TWinControl).Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FOwnerWindow := QWidget_winId((AOwner as TWinControl).Handle)
-    {$ENDIF VisualCLX}
   else
     FOwnerWindow := HWND_DESKTOP;
   LoadSetupApi;

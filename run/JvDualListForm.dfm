@@ -3,7 +3,7 @@ object JvDualListForm: TJvDualListForm
   Top = 100
   ActiveControl = SrcList
   BorderIcons = []
-  BorderStyle = bsSingle
+  BorderStyle = fbsSingle
   ClientHeight = 269
   ClientWidth = 394
   Color = clBtnFace

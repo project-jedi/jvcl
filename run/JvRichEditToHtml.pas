@@ -71,7 +71,7 @@ type
     property Charset: TFontCharset read FFontData.Charset write FFontData.Charset;
     property Name: TFontDataName read FFontData.Name write FFontData.Name;
   end;
-  
+
   TJvRichEditToHtml = class(TJvComponent)
   private
     FCToH: TJvRgbToHtml;

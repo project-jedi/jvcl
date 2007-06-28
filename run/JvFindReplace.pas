@@ -520,10 +520,8 @@ begin
     SetEditFocus;
     SetEditSelStart(FoundPos - 1);
     SetEditSelLength(Length(FFindText));
-    {$IFDEF VCL}
     if GetEditHandle <> 0 then
       SendMessage(GetEditHandle, EM_SCROLLCARET, 0, 0);
-    {$ENDIF VCL}
     if Assigned(FOnFind) then
       FOnFind(Self);
   end
@@ -588,12 +586,7 @@ begin
     FCaption := RsFindCaption;
 
   MessageBox(
-    {$IFDEF VCL}
     TFindDialog(Sender).Handle,
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    TFindDialog(Sender).Form.Handle,
-    {$ENDIF VisualCLX}
     PChar(Format(RsNotFound, [FFindText])),
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
@@ -610,12 +603,7 @@ begin
   if FShowDialogs then
   begin
     MessageBox(
-      {$IFDEF VCL}
       TFindDialog(Sender).Handle,
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      TFindDialog(Sender).Form.Handle,
-      {$ENDIF VisualCLX}
       PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, FFindText])),
       PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
   end;
@@ -667,14 +655,8 @@ begin
   if not Value then
   begin
     NeedDialogs;
-    {$IFDEF VCL}
     FFindDialog.CloseDialog;
     FReplaceDialog.CloseDialog;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FFindDialog.Form.Close;
-    FReplaceDialog.Form.Close;
-    {$ENDIF VisualCLX}
   end;
 end;
 

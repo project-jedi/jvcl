@@ -60,9 +60,7 @@ const
 
 const
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
-  {$IFDEF VisualCLX}
   CM_PERFORM = CM_BASE + $500 + 0; // LParam: "Msg: ^TMessage"
-  {$ENDIF VisualCLX}
   CM_SETAUTOSIZE = CM_BASE + $500 + 1; // WParam: "Value: Boolean"
 
 type
@@ -153,10 +151,6 @@ function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage): Boolean;
 {$IFDEF COMPILER5}
 procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
-
-{$IFDEF VisualCLX}
-function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
-{$ENDIF VisualCLX}
 
 type
   CONTROL_DECL_DEFAULT(Control)
@@ -332,12 +326,7 @@ begin
   Result := nil;
   Form := GetParentForm(AControl);
   if Assigned(Form) then
-    {$IFDEF VCL}
     Result := Form.ActiveControl;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := Form.FocusedControl;
-    {$ENDIF VisualCLX}
 end;
 
 function DlgcToDlgCodes(Value: Longint): TDlgCodes;
@@ -387,12 +376,7 @@ begin
         begin
           AHintInfo := HintInfo;
           {$IFNDEF CLR}
-          {$IFDEF VCL}
           AControl.Parent.Perform(CM_HINTSHOW, 0, Integer(@AHintInfo));
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          Perform(AControl.Parent, CM_HINTSHOW, 0, Integer(@AHintInfo));
-          {$ENDIF VisualCLX}
           {$ELSE}
           AControl.Parent.Perform(CM_HINTSHOW, 0, AHintInfo);
           {$ENDIF !CLR}
@@ -424,27 +408,6 @@ begin
       Result := True;
   end;
 end;
-
-{$IFDEF VisualCLX}
-function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
-var
-  PerformMsg, Mesg: TMessage;
-begin
-  if AControl.GetInterfaceEntry(IJvExControl) <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    Mesg.Result := 0;
-
-    PerformMsg.Msg := CM_PERFORM;
-    PerformMsg.WParam := 0;
-    PerformMsg.LParam := @Mesg;
-    PerformMsg.Result := 0;
-    AControl.Dispatch(PerformMsg);
-  end;
-end;
-{$ENDIF VisualCLX}
 
 {$IFDEF COMPILER5}
 

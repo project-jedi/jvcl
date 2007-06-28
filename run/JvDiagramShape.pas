@@ -30,10 +30,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, 
-  {$IFDEF VisualCLX}
-  QTypes, 
-  {$ENDIF VisualCLX}
+  Windows,
   Classes, Graphics, Controls, ExtCtrls, ImgList,
   JvComponent;
 
@@ -59,12 +56,7 @@ type
     function GetCustomShapeAtPos(X, Y: Integer): TJvCustomDiagramShape;
     property CanProcessMouseMsg: Boolean read FCanProcessMouseMsg
       write FCanProcessMouseMsg;
-    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetParent(const AParent: TWidgetControl); override;
-    {$ENDIF VisualCLX}
     procedure SetSelected(Value: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property MultiSelect: Boolean read FMultiSelect write FMultiSelect;
@@ -152,22 +144,13 @@ type
     FText: TCaption;
     FAutoSize: Boolean;
     FFont: TFont;
-    {$IFDEF VCL}
     procedure SetText(const Value: TCaption);
-    {$ENDIF VCL}
     procedure SetFont(Value: TFont);
     procedure FontChange(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean);  override;
     procedure RefreshText;
-    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetParent(const AParent: TWidgetControl); override;
-    procedure SetText(const Value: TCaption); override;
-    function GetText: TCaption; override;
-    {$ENDIF VisualCLX}
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -358,7 +341,7 @@ const
 implementation
 
 uses
-  SysUtils, 
+  SysUtils,
   JvTypes, JvConsts;
 
 type
@@ -499,12 +482,10 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomDiagramShape.SetParent(const AParent: TWidgetControl);
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
+
 procedure TJvCustomDiagramShape.SetParent(AParent: TWinControl);
-{$ENDIF VCL}
+
 begin
   inherited SetParent(AParent);
   if Assigned(FCaption) then
@@ -1179,12 +1160,7 @@ begin
   SetBounds(Left, Top, FMinWidth, FMinHeight);
 end;
 
-{$IFDEF VisualCLX}
-function TJvTextShape.GetText: TCaption;
-begin
-  Result := FText;
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvTextShape.SetText(const Value: TCaption);
 begin
@@ -1214,12 +1190,10 @@ begin
   RefreshText;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvTextShape.SetParent(const AParent: TWidgetControl);
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
+
 procedure TJvTextShape.SetParent(AParent: TWinControl);
-{$ENDIF VCL}
+
 begin
   inherited SetParent(AParent);
   RefreshText;
@@ -1233,14 +1207,8 @@ begin
     Exit;
   Canvas.Font := Font;
   TempRect := ClientRect; // So can pass as a var parameter
-  {$IFDEF VCL}
   DrawText(Canvas.Handle, PCaptionChar(FText), Length(FText), TempRect,
     DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DrawText(Canvas, FText, Length(FText), TempRect,
-    DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-  {$ENDIF VisualCLX}
   inherited Paint;
 end;
 
@@ -1320,9 +1288,7 @@ begin
   Canvas.Pen := OldPen;
 
   // Draw the bitmap
-  {$IFDEF VCL}
   FImages.DrawingStyle := dsTransparent;
-  {$ENDIF VCL}
   FImages.Draw(Canvas, 0, 0, FImageIndex);
 end;
 

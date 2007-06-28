@@ -212,12 +212,7 @@ end;
 procedure JvWizardDrawTiled(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect);
 var
   AWidth, AHeight: Integer;
-  {$IFDEF VCL}
   Bmp: Graphics.TBitmap;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Bmp: QGraphics.TBitmap;
-  {$ENDIF VisualCLX}
 begin
 
   if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then
@@ -246,13 +241,8 @@ begin
       end;
       Inc(AWidth, AGraphic.Width);
     end;
-    {$IFDEF VCL}
     BitBlt(ACanvas.Handle, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height,
       Bmp.Canvas.Handle, 0, 0, SRCCOPY);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BitBlt(ACanvas, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height, Bmp.Canvas, 0, 0, SRCCOPY);
-    {$ENDIF VisualCLX}
   finally
     Bmp.Free;
   end;

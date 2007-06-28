@@ -3,7 +3,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
   Top = 156
   Anchors = [akLeft, akTop, akRight, akBottom]
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
+  BorderStyle = fbsSingle
   Caption = 'About JEDI-VCL'
   ClientHeight = 317
   ClientWidth = 438

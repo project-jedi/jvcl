@@ -236,7 +236,7 @@ begin
   {$ENDIF CLR}
 end;
 
-procedure IntfCast(Instance: TObject; const IID: {$IFDEF CLR} TInterfaceRef {$ELSE} TGUID {$ENDIF}; out Intf); 
+procedure IntfCast(Instance: TObject; const IID: {$IFDEF CLR} TInterfaceRef {$ELSE} TGUID {$ENDIF}; out Intf);
 begin
   {$IFDEF CLR}
   Intf := Instance as IID;

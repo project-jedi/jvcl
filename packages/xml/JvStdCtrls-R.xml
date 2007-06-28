@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvStdCtrls" Design="0">
   <Description>JVCL Standard Controls Runtime Package</Description>
-  <ClxDescription>JVCLX Standard Controls Runtime Package</ClxDescription>
   <GUID/>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
@@ -98,10 +97,5 @@
     <File Name="..\..\run\JvImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQTimeEdit.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQGauges.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQColorCombo.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQCombobox.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QComCtrlsEx.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

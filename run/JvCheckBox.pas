@@ -104,26 +104,15 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure AdjustSize; override;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF VisualCLX}
     procedure UpdateProperties;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
     procedure LinkedControlsChange(Sender: TObject);
     procedure CheckLinkedControls; virtual;
     procedure DefineProperties(Filer: TFiler); override;
-    {$IFDEF VCL}
     procedure BmSetCheck(var Msg: TMessage); message BM_SETCHECK;
-    {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    procedure StateChanged(State: TToggleState); override;
-  {$ENDIF VisualCLX}
     procedure KeyPress(var Key: Char); override;
     procedure DoExit; override;
   public
@@ -292,7 +281,7 @@ begin
   Result := TJvCheckBoxDataConnector.Create(Self);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
@@ -305,16 +294,11 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCheckBox.UpdateProperties;
 begin
-  {$IFDEF VCL}
   RecreateWnd;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  RecreateWidget;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCheckBox.KeyPress(var Key: Char);
@@ -339,30 +323,7 @@ begin
   inherited DoExit;
 end;
 
-{$IFDEF VisualCLX}
 
-(*
-procedure TJvCheckBox.UpdateProperties;
-begin
- { TODO:
-  (ahuser) Missing features in CLX. If we implement it we must write a paint
-           function and do all drawing ourself.
-
-  Alignment
-  LeftText
-  Layout
-  WordWrap
- }
-end;
-*)
-
-procedure TJvCheckBox.AdjustSize;
-begin
-  inherited AdjustSize;
-  CalcAutoSize;
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvCheckBox.MouseEnter(AControl: TControl);
 begin
@@ -452,9 +413,7 @@ procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
-    {$IFDEF VCL}
     //inherited SetAutoSize(Value);
-    {$ENDIF VCL}
     FAutoSize := Value;
     if Value then
       WordWrap := False;
@@ -585,7 +544,7 @@ begin
   Filer.DefineProperty('Associated', ReadAssociated, nil, False);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCheckBox.BmSetCheck(var Msg: TMessage);
 begin
 //  if not ReadOnly then
@@ -594,18 +553,9 @@ begin
     CheckLinkedControls;
 //  end;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCheckBox.StateChanged(State: TToggleState);
-begin
-//  if not ReadOnly then
-//  begin
-    inherited StateChanged(State);
-    CheckLinkedControls;
-//  end;
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvCheckBox.EnabledChanged;
 begin

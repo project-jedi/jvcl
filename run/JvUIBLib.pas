@@ -578,7 +578,7 @@ type
 
   TOnConnectionLost = procedure(Lib: TUIBLibrary) of object;
   TOnGetDBExceptionClass = procedure(Number: Integer; out Excep: EUIBExceptionClass) of object;
-  
+
   TUIBLibrary = class(TUIBaseLibrary)
   private
     FStatusVector: TStatusVector;
@@ -1216,7 +1216,7 @@ const
         (CompareText(CharacterSetStr[Result], CharacterSet) = 0) then
           Exit;
     raise Exception.CreateFmt(EUIB_CHARSETNOTFOUND, [CharacterSet]);
-  end;  
+  end;
 
 //******************************************************************************
 // Transaction
@@ -1586,7 +1586,7 @@ const
   function TUIBLibrary.DSQLInfoStatementType(var StmtHandle: IscStmtHandle): TUIBStatementType;
   var STInfo: packed record
     InfoCode: byte;
-    InfoLen : Word; 
+    InfoLen : Word;
     InfoType: TUIBStatementType;
     InfoIn: byte;
   end;
@@ -2218,7 +2218,7 @@ type
   begin
     Lock;
     try
-      Assert(Value > 0); 
+      Assert(Value > 0);
       FSegmentSize := Value;
     finally
       UnLock;
@@ -2965,7 +2965,7 @@ const
     Move(FDataBuffer^, FMemoryPool.New^, FDataBufferLength);
     FCurrentRecord := FMemoryPool.Count - 1;
   end;
-                 
+
   procedure TSQLResult.ClearRecords;
   var
     i: Integer;
@@ -3161,7 +3161,7 @@ const
   begin
     Result := (FCurrentRecord = 0) or (RecordCount = 0);
   end;
-  
+
   procedure TSQLResult.ReadBlob(const Index: Word; var str: string);
   begin
     CheckRange(Index);

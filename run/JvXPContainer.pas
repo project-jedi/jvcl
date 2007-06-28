@@ -79,9 +79,7 @@ type
     procedure SetSpacing(Value: Byte);
     procedure SetWordWrap(Value: Boolean);
   protected
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure HookEnabledChanged; override;
     procedure HookMouseDown; override;
@@ -115,9 +113,7 @@ type
   TJvXPContainer = class(TJvXPCustomContainer)
   published
     property Alignment;
-    {$IFDEF VCL}
     property AutoSize;
-    {$ENDIF VCL}
     property BorderWidth;
     property BoundColor;
     property BoundLines;
@@ -154,11 +150,9 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnCanResize;
-    {$ENDIF VCL}
     property DragMode;
     //property Enabled;
     property Font;
@@ -235,14 +229,14 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvXPCustomContainer.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
     WindowClass.Style := WindowClass.Style and not (CS_HREDRAW or CS_VREDRAW);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvXPCustomContainer.HookEnabledChanged;
 var
@@ -474,10 +468,6 @@ begin
         MoveTo(Rect.Right, Rect.Top);
         LineTo(Rect.Right, Rect.Bottom);
       end;
-      {$IFDEF VisualCLX}
-      Inc(Rect.Left, 4);
-      Dec(Rect.Right, 4);
-      {$ENDIF VisualCLX}
       DxDrawText(Self, Caption, Font, FAlignment, FLayout, FWordWrap, Rect);
       //JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, False, FAlignment,
       //  FWordWrap, Rect);

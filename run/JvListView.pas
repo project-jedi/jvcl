@@ -74,7 +74,7 @@ type
 
   //  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvOnProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
-  TJvListViewCompareGroupEvent = procedure(Sender: TObject; Group1, Group2: TJvListViewGroup; var Compare: Integer) of object; 
+  TJvListViewCompareGroupEvent = procedure(Sender: TObject; Group1, Group2: TJvListViewGroup; var Compare: Integer) of object;
 
   TJvListItems = class(TListItems, IJvAppStorageHandler, IJvAppStoragePublishedProps)
   private
@@ -211,7 +211,7 @@ type
   public
     constructor Create(AOwner: TPersistent);
     procedure Sort;
-      
+
     property Items[Index: Integer] : TJvListViewGroup read GetItem write SetItem; default;
     property ItemsById[GroupId: Integer]: TJvListViewGroup read GetItemById;
   published
@@ -240,7 +240,7 @@ type
     procedure DoChange;
   public
     constructor Create;
-    
+
     procedure Assign(Source: TPersistent); override;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -426,7 +426,7 @@ type
     function MoveDown(Index: Integer; Focus: Boolean = True): Integer;
     function SelectNextItem(Focus: Boolean = True): Integer;
     function SelectPrevItem(Focus: Boolean = True): Integer;
-    
+
     function ShowInsertMark(ItemIndex: Integer; Position: TJvInsertMarkPosition): Boolean;
     function HideInsertMark: Boolean;
     function GetInsertMarkPosition(const X, Y: Integer; var ItemIndex: Integer; var Position: TJvInsertMarkPosition): Boolean;
@@ -680,7 +680,7 @@ begin
   FTileColumns.Free;
   FFont.Free;
   FBrush.Free;
-  
+
   inherited Destroy;
 end;
 
@@ -1169,8 +1169,8 @@ var
     if Parm.Index < TJvListView(Parm.Sender).ExtendedColumns.Count  then
       SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.Index].SortMethod
     else
-      SortKind := TJvListView(Parm.Sender).SortMethod; 
-      
+      SortKind := TJvListView(Parm.Sender).SortMethod;
+
     if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
       TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.Index, SortKind);
 
@@ -2013,7 +2013,7 @@ begin
   Index := 0;
   if Assigned(ItemFocused) then
     Index := ItemIndex;
-    
+
   if AutoSelect and (Selected = nil) and (Items.Count > 0) then
     PostMessage(Handle, WM_AUTOSELECT, Integer(Items[Index]), 1);
 end;
@@ -2023,7 +2023,7 @@ var
   Infos: TLVINSERTMARK;
 begin
   ZeroMemory(@Infos, SizeOf(Infos));
-  
+
   Infos.cbSize := SizeOf(Infos);
   Infos.dwFlags := InsertMarkPositionToLVIM[Position];
   Infos.iItem := ItemIndex;
@@ -2044,9 +2044,9 @@ var
 begin
   Point.X := X;
   Point.Y := Y;
-  
+
   ZeroMemory(@Infos, SizeOf(Infos));
-  
+
   Infos.cbSize := SizeOf(Infos);
   Result := Bool(SendMessage(Handle, LVM_INSERTMARKHITTEST, WPARAM(@Point), LPARAM(@Infos)));
   if Result then
@@ -2185,7 +2185,7 @@ begin
       end;
     end;
   end;
-  
+
   inherited;
 end;
 
@@ -2200,7 +2200,7 @@ begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
       Canvas.Brush := TJvListItem(Item).Brush;
-  end;  
+  end;
 
   Result := inherited CustomDrawSubItem(Item, SubItem, State, Stage);
 end;
@@ -2441,7 +2441,7 @@ begin
   if AValue is TJvListViewGroup then
   begin
     Source := AValue as TJvListViewGroup;
-    
+
     FHeader := Source.Header;
     FHeaderAlignment := Source.HeaderAlignment;
     FGroupId := Source.GroupId;
@@ -2455,7 +2455,7 @@ begin
   FGroupId := -1;
   FHeaderAlignment := taLeftJustify;
   FHeader := 'Group';
-  
+
   inherited Create(Collection);
 end;
 
@@ -2576,7 +2576,7 @@ procedure TJvListViewGroups.InsertGroupIntoList(group: TJvListViewGroup);
 var
   List: TJvListView;
   GroupInfo: TLVGROUP;
-  GroupSortedInfo: TLVINSERTGROUPSORTED; 
+  GroupSortedInfo: TLVINSERTGROUPSORTED;
 begin
   List := ParentList;
   if Assigned(List) then
@@ -2616,7 +2616,7 @@ begin
   Result := nil;
   Owner := GetOwner;
   if Owner is TJvListView then
-    Result := Owner as TJvListView;    
+    Result := Owner as TJvListView;
 end;
 
 procedure TJvListViewGroups.RemoveGroupFromList(group: TJvListViewGroup);
@@ -2702,7 +2702,7 @@ begin
     Infos.dwMask := LVTVIM_TILESIZE or LVTVIM_COLUMNS or LVTVIM_LABELMARGIN;
 
     SendMessage(List.Handle, LVM_GETTILEVIEWINFO, 0, LPARAM(@Infos));
-    
+
     FLoading := True;
     try
       case Infos.dwFlags of
@@ -2790,7 +2790,7 @@ end;
 
 procedure TJvGroupsProperties.LoadFromList(List: TCustomListView);
 var
-  Infos: TLVGROUPMETRICS; 
+  Infos: TLVGROUPMETRICS;
 begin
   if not (csDesigning in List.ComponentState) then
   begin
@@ -2799,7 +2799,7 @@ begin
     Infos.cbSize := SizeOf(Infos);
     Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
     SendMessage(List.Handle, LVM_GETGROUPMETRICS, 0, LPARAM(@Infos));
-    
+
     FLoading := True;
     try
       BorderSize.Top := Infos.Top;

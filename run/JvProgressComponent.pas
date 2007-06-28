@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):                
+Contributor(s):
 Zinvob
 boerema
 
@@ -200,12 +200,12 @@ begin
       OnClick := FormOnCancel;
     end;
     FCancel := False;
-    
+
     FForm.OnClose := FormOnClose;
 
     // Mantis 3430: In design mode, there is no main form, hence show
     // at the center, and in modal state to prevent the form from being
-    // lost in the background. 
+    // lost in the background.
     if csDesigning in ComponentState then
     begin
       FForm.Position := poScreenCenter;

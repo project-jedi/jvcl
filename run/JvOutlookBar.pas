@@ -44,14 +44,12 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, ActnList,
   Windows, Messages, Buttons, Controls, Graphics, ImgList, Forms, StdCtrls, ExtCtrls,
-  {$IFDEF VCL}
   {$IFDEF JVCLThemesEnabled}
-  UxTheme, 
+  UxTheme,
   {$IFNDEF COMPILER7_UP}
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  {$ENDIF VCL}
   JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
 
 const
@@ -73,12 +71,7 @@ type
     function IsImageIndexLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
     function IsEnabledLinked: Boolean;override;
-    {$IFDEF VCL}
     procedure SetCaption(const Value: string); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetCaption(const Value: TCaption); override;
-    {$ENDIF VisualCLX}
     procedure SetEnabled(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
@@ -290,23 +283,15 @@ type
     procedure CMCaptionEditing(var Msg: TMessage); message CM_CAPTION_EDITING;
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
-    {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    {$ENDIF VCL}
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
   protected
-    {$IFDEF VisualCLX}
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
-    {$ENDIF VisualCLX}
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
     function GetButtonTextRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -325,7 +310,7 @@ type
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
-    procedure DoContextPopup({$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint; var Handled: Boolean); override;
+    procedure DoContextPopup( MousePos: TPoint; var Handled: Boolean); override;
     function DoDrawBackGround: Boolean;
     function DoDrawPage(ARect: TRect; Index: Integer): Boolean;
     function DoDrawPageButton(ARect: TRect; Index: Integer; Down: Boolean): Boolean;
@@ -390,12 +375,10 @@ type
     property OnEditPage;
     property Action;
     property Anchors;
-    {$IFDEF VCL}
     property BiDiMode;
     property ParentBiDiMode;
     property DragCursor;
     property DragKind;
-    {$ENDIF VCL}
     property BorderStyle;
     property Color;
     property Constraints;
@@ -459,9 +442,7 @@ type
   TJvOutlookBarEdit = class(TCustomEdit)
   private
     FCanvas: TControlCanvas;
-    {$IFDEF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF VCL}
     procedure EditAccept;
     procedure EditCancel;
     function GetCanvas: TCanvas;
@@ -500,23 +481,13 @@ end;
 
 procedure TJvOutlookBarEdit.EditAccept;
 begin
-  {$IFDEF VCL}
   Parent.Perform(CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Perform(Parent, CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
-  {$ENDIF VisualCLX}
   Hide;
 end;
 
 procedure TJvOutlookBarEdit.EditCancel;
 begin
-  {$IFDEF VCL}
   Parent.Perform(CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Perform(Parent, CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
-  {$ENDIF VisualCLX}
   Hide;
 end;
 
@@ -593,7 +564,7 @@ begin
   SetFocus;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvOutlookBarEdit.WMNCPaint(var Msg: TMessage);
 begin
   if csDestroying in ComponentState then
@@ -631,7 +602,7 @@ begin
   end;
   *)
 end;
-{$ENDIF VCL}
+
 
 //=== { TJvRepeatButton } ====================================================
 
@@ -724,12 +695,10 @@ begin
     MethodsEqual(TMethod(Client.OnClick), TMethod(Action.OnExecute));
 end;
 
-{$IFDEF VCL}
+
 procedure TJvOutlookBarButtonActionLink.SetCaption(const Value: string);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvOutlookBarButtonActionLink.SetCaption(const Value: TCaption);
-{$ENDIF VisualCLX}
+
+
 begin
   if IsCaptionLinked then
     Client.Caption := Value;
@@ -779,7 +748,7 @@ begin
 
   // Mantis 3688
   FActionLink.Free;
-  
+
   inherited Destroy;
 end;
 
@@ -1466,7 +1435,7 @@ begin
         TopButtonIndex := TopButtonIndex - 1;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomOutlookBar.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
@@ -1482,7 +1451,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomOutlookBar.DoChangeLinkChange(Sender: TObject);
 begin
@@ -1552,8 +1521,7 @@ begin
         begin
           if HasImage then
           begin
-            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
-              {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,  Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end
           else
@@ -1563,16 +1531,14 @@ begin
       taCenter:
         if HasImage then
         begin
-          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
-            {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[Index].Enabled);
+          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,  Pages[Index].Enabled);
           Inc(R.Left, PageImages.Width + 4);
         end;
       taRightJustify:
         begin
           if HasImage then
           begin
-            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
-              {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,  Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end;
           Dec(R.Right, 4);
@@ -1728,7 +1694,6 @@ begin
                   if LargeImages <> nil then
                     LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
                       Pages[Index].Buttons[I].ImageIndex,
-                      {$IFDEF VisualCLX} itImage, {$ENDIF}
                       Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
@@ -1742,14 +1707,8 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
-                {$IFDEF VCL}
                 DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-                {$ENDIF VCL}
-                {$IFDEF VisualCLX}
-                DrawText(Canvas, Pages[Index].Buttons[I].Caption, -1, R3,
-                  DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-                {$ENDIF VisualCLX}
               finally
                 Canvas.Font.Color := SavedColor;
               end;
@@ -1763,7 +1722,6 @@ begin
                   if SmallImages <> nil then
                     SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2,
                       Pages[Index].Buttons[I].ImageIndex,
-                      {$IFDEF VisualCLX} itImage, {$ENDIF}
                       Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
@@ -1778,14 +1736,8 @@ begin
                     Canvas.Font.Color := clGrayText;
                 end;
                 InflateRect(R3, -4, 0);
-                {$IFDEF VCL}
                 DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP or DT_EDITCONTROL);
-                {$ENDIF VCL}
-                {$IFDEF VisualCLX}
-                DrawText(Canvas, Pages[Index].Buttons[I].Caption, -1, R3,
-                  DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
-                {$ENDIF VisualCLX}
               finally
                 Canvas.Font.Color := SavedColor;
               end;
@@ -2566,7 +2518,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.DoContextPopup({$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint;
+procedure TJvCustomOutlookBar.DoContextPopup( MousePos: TPoint;
   var Handled: Boolean);
 var
   P: TPersistent;
@@ -2685,7 +2637,7 @@ begin
     end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomOutlookBar.CMDialogChar(var Msg: TCMDialogChar);
 var
@@ -2715,27 +2667,9 @@ begin
   end;
   inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvCustomOutlookBar.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-var
-  I: Integer;
-begin
-  if CanFocus and (ActivePage <> nil) then
-  begin
-    for I := 0 to ActivePage.Buttons.Count - 1 do
-      if IsAccel(Key, ActivePage.Buttons[I].Caption) then
-      begin
-        Result := True;
-        DoButtonClick(I);
-        Exit;
-      end;
-  end;
-  Result := inherited WantKey(Key, Shift, KeyText);
-end;
-{$ENDIF VisualCLX}
+
+
 
 function TJvCustomOutlookBar.DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage;
   Index: Integer; Down, Inside: Boolean): Boolean;

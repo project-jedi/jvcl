@@ -34,9 +34,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Menus,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvJCLUtils, JvComponent;
 
 type
@@ -75,10 +72,8 @@ type
     procedure TextChanged; override;
     procedure EnabledChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     function GetPalette: HPALETTE; override;
-    {$ENDIF VCL}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -98,12 +93,10 @@ type
     property Caption;
     property Color;
     property Cursor;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -197,7 +190,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvSwitch.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array [TBorderStyle] of Longint = (0, WS_BORDER);
@@ -209,7 +202,7 @@ begin
     Style := Style or Longword(BorderStyles[FBorderStyle]);
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvSwitch.DefineProperties(Filer: TFiler);
 
@@ -226,7 +219,7 @@ begin
   Filer.DefineBinaryProperty('Data', ReadBinaryData, WriteBinaryData,DoWrite);
 end;
 
-{$IFDEF VCL}
+
 function TJvSwitch.GetPalette: HPALETTE;
 begin
   if Enabled then
@@ -234,7 +227,7 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvSwitch.ReadBinaryData(Stream: TStream);
 begin
@@ -408,10 +401,6 @@ var
 
 begin
   ARect := GetClientRect;
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-  {$ENDIF VisualCLX}
     with Canvas do
     begin
       Font := Self.Font;
@@ -434,18 +423,6 @@ begin
           DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
       end;
     end;
-  {$IFDEF VisualCLX}
-    if BorderStyle = bsSingle then
-    begin
-      Canvas.Pen.Color := clBlack;
-      Canvas.Pen.Mode := pmCopy;
-      Canvas.Brush.Style := bsClear;
-      Canvas.Rectangle(ClientRect);
-    end;
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvSwitch.DoOn;

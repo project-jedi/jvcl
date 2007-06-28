@@ -323,7 +323,7 @@ const
     ' int monitor repeat return signed start stop sub switch task true' +
     ' until void while ';
 
-  // Support for REPLACE keyword 
+  // Support for REPLACE keyword
   SQLKeyWords =
     ' active as add asc after ascending all at alter auto' +
     ' and autoddl any avg based between basename blob' +
@@ -586,12 +586,12 @@ const
       hlCBuilder, hlJava, hlPhp, hlNQC:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
-      // Support for SQL comment line beginning with -- 
+      // Support for SQL comment line beginning with --
       hlSql:
         Result := (LS > 1) and (((St[1] = '-') and
           (St[2] = '-')) or
           ((St[1] = '/') and (St[2] = '*')));
-      // HTML multi line comment support 
+      // HTML multi line comment support
       hlHtml:
         Result := (LS > 3) and (St[1] = '<') and (St[2] = '!') and
           (St[3] = '-') and (St[4] = '-');
@@ -1369,19 +1369,19 @@ begin
                       P := StrScanW(F + I, WideChar('>'));
                       if P = nil then
                       begin
-                        // Multiline comments in HTML 
+                        // Multiline comments in HTML
                         if S[2] = '!' then
                           FLong := lgComment1
                         else
                           FLong := lgTag;
-                          
+
                         Break;
                       end
                       else
                         I := P - F + 1;
                     end;
                 end;
-              // Multiline comments in HTML 
+              // Multiline comments in HTML
               lgComment1:
                 begin
                   P := StrScanW(F + I - 1, WideChar('>'));
@@ -1592,7 +1592,7 @@ begin
       end;
     hlHtml:
       case FLong of
-        // HTML multiline comments 
+        // HTML multiline comments
         lgComment1:
           begin
             P := StrScanW(P, WideChar('>'));

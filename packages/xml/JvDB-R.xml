@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDB" Design="0">
   <Description>JVCL Database Components Runtime Package</Description>
-  <ClxDescription>JVCLX Database Components Runtime Package</ClxDescription>
   <GUID>{E63D1285-7625-4EFA-9DD7-632D72CF633C}</GUID>
   <C5PFlags>-LUvcl50 -LUvcldb50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
@@ -32,8 +31,6 @@
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="vcljpg" Targets="allv6up" Condition=""/>
-    <Package Name="dataclx" Targets="K3" Condition=""/>
-    <Package Name="visualdbclx" Targets="CLX" Condition=""/>
     <Package Name="SMExportC5" Targets="c5" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD5" Targets="d5" Condition="USE_3RDPARTY_SMEXPORT"/>

@@ -35,9 +35,6 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Messages, Controls, Graphics, StdCtrls, ComCtrls,
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
   JvCustomItemViewer;
 
 type
@@ -165,11 +162,9 @@ type
     //    property BiDiMode;
     property Color;
     property Constraints;
-    {$IFDEF VCL}
     property DockSite;
     property DragCursor;
     property DragKind;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -186,14 +181,12 @@ type
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
-    {$IFDEF VCL}
     property OnDockDrop;
     property OnDockOver;
     property OnEndDock;
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property OnDragOver;
     property OnEndDrag;
     property OnEnter;
@@ -224,7 +217,7 @@ uses
   StrUtils,
   {$ENDIF COMPILER6_UP}
   JvVCL5Utils, JvJCLUtils;
-  
+
 //=== { TJvImageViewerOptions } ==============================================
 
 constructor TJvImageViewerOptions.Create(AOwner: TJvCustomItemViewer);

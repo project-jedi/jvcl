@@ -908,7 +908,7 @@ type
   TControlAccessProtected = class(TControl);
   TWinControlAccessProtected = class(TWinControl);
 
-  
+
 {$IFNDEF USEJVCL}
 const
   cDefaultFormName = '_JVFORM_';

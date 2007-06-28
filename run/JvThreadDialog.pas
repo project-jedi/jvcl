@@ -37,7 +37,7 @@ uses
   Windows, Controls, ComCtrls, ExtCtrls,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  QWindows, QControls, QExtCtrls,
+  QWindows,
   {$ENDIF UNIX}
   JvTypes, JvComponentBase, JvThread, JvDynControlEngine;
 

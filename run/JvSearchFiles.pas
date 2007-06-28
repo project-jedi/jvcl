@@ -638,7 +638,7 @@ begin
       Exit;
 
     { DO NOT set Result := False; the search should continue, this is not an error. }
-    Inc(ADepth); 
+    Inc(ADepth);
     if not GetIsDepthAllowed(ADepth) then
       Exit;
 
@@ -653,7 +653,7 @@ begin
     end;
   finally
     List.Free;
-    Dec(ADepth); 
+    Dec(ADepth);
   end;
 end;
 

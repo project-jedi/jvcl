@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Controls, Forms, StdCtrls, 
+  Controls, Forms, StdCtrls,
   JvComponent;
 
 type

@@ -34,10 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList, 
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
   JvTypes, JvVCL5Utils, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
 
 const
@@ -68,9 +65,7 @@ type
     FWordWrap: Boolean;
     FAlignment: TAlignment;
     FParentStyleManager: Boolean;
-    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$ENDIF VCL}
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -82,18 +77,12 @@ type
     procedure SetWordWrap(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    {$IFDEF VCL}
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
-    {$ENDIF VCL}
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
     procedure Paint; override;
-    {$IFDEF VisualCLX}
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,14 +92,12 @@ type
     property Anchors;
     property Caption;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property DragMode;
     property OnStartDock;
     property OnEndDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property Enabled;
     property Font;
     property ParentFont;
@@ -195,29 +182,23 @@ type
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
     FParentStyleManager: Boolean;
-    {$IFDEF VCL}
     FDragZone: Integer;
     FOldCursor: TCursor;
-    {$ENDIF VCL}
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
-    {$IFDEF VCL}
     procedure SetCursor(const Value: TCursor);
     function GetDragZoneRect: TRect;
     function MouseInDragZone(X, Y: Integer): Boolean;
-    {$ENDIF VCL}
   protected
     procedure Paint; override;
     procedure EnabledChanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    {$IFDEF VCL}
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
-    {$ENDIF VCL}
     procedure RequestAlign; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -226,14 +207,12 @@ type
     // NB! Color is published but not used
     property Align default alBottom;
     property AutoSnap default False;
-    property Cursor {$IFDEF VCL} write SetCursor {$ENDIF} default crSizeNS;
-    {$IFDEF VCL}
+    property Cursor  write SetCursor  default crSizeNS;
     // DragZone is the number of pixels in the center of the control that constitutes the draggable area.
     // For example, with a left/right aligned splitter and a DragZone of 100, 50 pixels above and 50 pixels below
     // the vertical midpoint can be clicked to start the sizing. Any clicks outside this area will not start a sizing operation
     // If DragZone <= 0, the entire control is a drag zone
     property DragZone: Integer read FDragZone write FDragZone default 0;
-    {$ENDIF VCL}
     property ResizeStyle default rsUpdate;
     property ColorFrom: TColor read FColorFrom write SetColorFrom default TColor($B78676);
     property ColorTo: TColor read FColorTo write SetColorTo default TColor($A03D09);
@@ -362,20 +341,14 @@ type
     procedure DoStyleChange(Sender: TObject);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    {$IFDEF VCL}
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$ENDIF VCL}
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure DoColorsChange(Sender: TObject);
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    {$IFDEF VisualCLX}
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -426,12 +399,10 @@ type
     //    property Caption;
     property Constraints;
     property Down;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property DropDownMenu;
     property GroupIndex;
@@ -509,9 +480,7 @@ type
     procedure DoStyleChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
-    {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    {$ENDIF VCL}
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
     function IsColorsStored: Boolean;
@@ -520,9 +489,6 @@ type
     procedure FontChanged; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    {$IFDEF VisualCLX}
-    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    {$ENDIF VisualCLX}
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     procedure PaintButton(Canvas: TCanvas); override;
@@ -538,12 +504,10 @@ type
     property Constraints;
     property Down;
     property DropDownMenu;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -648,21 +612,15 @@ type
     procedure SetWordWrap(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    {$IFDEF VCL}
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
-    {$ENDIF VCL}
     procedure SetParentStyleManager(const Value: Boolean);
     procedure SetAction(const Value: TBasicAction);
     procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
     procedure DoBackgroundChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    function GetAction: TBasicAction;
-      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
-    {$IFDEF VisualCLX}
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
-    {$ENDIF VisualCLX}
-    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
+    function GetAction: TBasicAction; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetParent( AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -688,7 +646,6 @@ type
     property Color default clWindow;
     property ParentColor default False;
     property Caption: TCaption read GetCaption write SetCaption;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnStartDock;
@@ -696,7 +653,6 @@ type
     property OnDockOver;
     property OnUnDock;
     property OnEndDock;
-    {$ENDIF VCL}
     property DragMode;
 
     property Iconic: Boolean read GetIconic write SetIconic default False;
@@ -814,11 +770,9 @@ type
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetHeaderVisible(const Value: Boolean);
     function IsColorsStored: Boolean;
-    {$IFDEF VCL}
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
-    {$ENDIF VCL}
     procedure AlignButtons;
   protected
     procedure Paint; override;
@@ -826,11 +780,6 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-    {$IFDEF VisualCLX}
-    procedure Loaded; override;
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
     property EdgeRounding: Integer read FEdgeRounding write SetEdgeRounding default 9;
     procedure AdjustClientRect(var Rect: TRect); override;
   public
@@ -866,11 +815,9 @@ type
     property Anchors;
     property Caption;
     property Constraints;
-    {$IFDEF VCL}
     property BorderWidth;
     property DragCursor;
     property DragKind;
-    {$ENDIF VCL}
     property DragMode;
 
     property Background;
@@ -902,11 +849,9 @@ type
     property Visible;
     property Width default 185;
     property Height default 41;
-    {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property OnClick;
     property OnContextPopup;
     property OnDragDrop;
@@ -969,11 +914,9 @@ type
     procedure SetWordWrap(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    {$IFDEF VCL}
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$ENDIF VCL}
     procedure SetParentStyleManager(const Value: Boolean);
     procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
     function GetSplitterClick: TNotifyEvent;
@@ -1002,11 +945,6 @@ type
     function IsNavPanelFontHotTrackStored: Boolean;
     function IsNavPanelHotTrackFontOptionsStored: Boolean;
     procedure UpdatePages; virtual;
-    {$IFDEF VisualCLX}
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
-    function WidgetFlags: Integer; override;
-    procedure Paint; override;
-    {$ENDIF VisualCLX}
     procedure SetActivePage(Page: TJvCustomPage); override;
     procedure InsertPage(APage: TJvCustomPage); override;
     procedure RemovePage(APage: TJvCustomPage); override;
@@ -1023,9 +961,7 @@ type
     function ShowPage(Page: TJvCustomPage; PageIndex: Integer = -1): TJvCustomPage; override;
     procedure UpdatePositions;
   protected
-    {$IFDEF VCL}
     property BorderWidth default 1;
-    {$ENDIF VCL}
     property AutoHeaders: Boolean read FAutoHeaders write SetAutoHeaders default False;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Background: TJvNavPaneBackgroundImage read FBackground write SetBackground;
@@ -1075,7 +1011,6 @@ type
     property Align;
     property Anchors;
     property AutoHeaders;
-    {$IFDEF VCL}
     property BorderWidth;
     property DragCursor;
     property DragKind;
@@ -1084,7 +1019,6 @@ type
     property OnDockOver;
     property OnUnDock;
     property OnEndDock;
-    {$ENDIF VCL}
     property Background;
     property ButtonHeight;
     property ButtonWidth;
@@ -1121,12 +1055,10 @@ type
     property OnDropDownMenu;
     property OnClick;
     property OnContextPopup;
-    {$IFDEF VCL}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
-    {$ENDIF VCL}
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -1221,21 +1153,12 @@ const
 procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvNavPaneStyleManager);
 var
   Msg: TMsgStyleManagerChange;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
 begin
   Msg.Msg := CM_PARENTSTYLEMANAGERCHANGED;
   Msg.Sender := AControl;
   Msg.StyleManager := AStyleManager;
   Msg.Result := 0;
   AControl.Broadcast(Msg);
-  {$IFDEF VisualCLX}
-  with Msg do
-    for I := 0 to AControl.ControlCount - 1 do
-      if QWindows.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
-        Exit;
-  {$ENDIF VisualCLX}
 end;
 
 //=== { TJvIconPanel } =======================================================
@@ -1260,10 +1183,6 @@ begin
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
   FParentStyleManager := True;
-  {$IFDEF VisualCLX}
-  ParentFont := False;
-  ParentColor := False;
-  {$ENDIF VisualCLX}
 end;
 
 destructor TJvIconPanel.Destroy;
@@ -1377,16 +1296,11 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvIconPanel.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
@@ -1397,22 +1311,9 @@ begin
   Msg.Result := 1;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-procedure TJvIconPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  inherited ControlsListChanged(Control, Inserting);
-  InternalStyleManagerChanged(Self, StyleManager);
-end;
 
-function TJvIconPanel.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvIconPanel.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -1440,9 +1341,7 @@ begin
   FStyleLink.OnChange := DoStyleChange;
   FButtonHeight := 28;
   FButtonWidth := 22;
-  {$IFDEF VCL}
   BorderWidth := 1;
-  {$ENDIF VCL}
   ParentColor := False;
   Color := clWindow;
   ControlStyle := ControlStyle + [csOpaque];
@@ -1456,12 +1355,7 @@ begin
 
   FNavPanelFont := TFont.Create;
   FNavPanelHotTrackFont := TFont.Create;
-  {$IFDEF VCL}
   FNavPanelFont.Assign(Screen.IconFont);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FNavPanelFont.Assign(Application.Font);
-  {$ENDIF VisualCLX}
   FNavPanelFont.Style := [fsBold];
   FNavPanelFont.OnChange := DoNavPanelFontChange;
   FNavPanelHotTrackFont.Assign(FNavPanelFont);
@@ -1715,25 +1609,7 @@ begin
 end;
 
 
-{$IFDEF VisualCLX}
 
-function TJvCustomNavigationPane.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-
-procedure TJvCustomNavigationPane.Paint;
-begin
-  //  inherited;
-  if ActivePage = nil then
-  begin
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(ClientRect);
-    FBackground.DrawImage(Canvas, ClientRect);
-  end;
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvCustomNavigationPane.SetBackground(const Value: TJvNavPaneBackgroundImage);
 begin
@@ -1763,12 +1639,7 @@ function TJvCustomNavigationPane.IsNavPanelFontStored: Boolean;
 var
   F: TFont;
 begin
-  {$IFDEF VCL}
   F := Screen.IconFont;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  F := Application.Font;
-  {$ENDIF VisualCLX}
   with FNavPanelFont do
     Result := ((StyleManager = nil) or (StyleManager.Theme = nptCustom)) and ((Name <> F.Name) or (Size <> F.Size) or (Style <> [fsBold]) or
       (Color <> F.Color) or (Pitch <> F.Pitch) or (Charset <> F.Charset));
@@ -1932,16 +1803,11 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomNavigationPane.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
@@ -1970,15 +1836,9 @@ begin
   end;
   Msg.Result := 1;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomNavigationPane.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  inherited ControlsListChanged(Control, Inserting);
-  InternalStyleManagerChanged(Self, StyleManager);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvCustomNavigationPane.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -2149,12 +2009,7 @@ begin
   FChangeLink.OnChange := DoImagesChange;
   Width := 22;
   Height := 22;
-  {$IFDEF VCL}
   Font := Screen.IconFont;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Font := Application.Font;
-  {$ENDIF VisualCLX}
   Font.Style := [fsBold];
   FParentStyleManager := True;
 end;
@@ -2259,7 +2114,7 @@ begin
             Images.Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
+              ImageIndex,  Enabled);
         end;
       nibDropArrow:
         begin
@@ -2380,12 +2235,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2409,12 +2259,7 @@ begin
   Height := 28;
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
-  {$IFDEF VCL}
   Font := Screen.IconFont;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Font := Application.Font;
-  {$ENDIF VisualCLX}
   Font.Style := [fsBold];
   HotTrackFont := Font;
   HotTrackFont.Style := [fsBold];
@@ -2608,7 +2453,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvNavPanelButton.CMDialogChar(var Msg: TCMDialogChar);
 begin
   if IsAccel(Msg.CharCode, Caption) then
@@ -2619,19 +2464,9 @@ begin
   else
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvNavPanelButton.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := IsAccel(Key, Caption) and Enabled and not (ssCtrl in Shift);
-  if Result then
-    Click
-  else
-    Result := inherited WantKey(Key, Shift, KeyText);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvNavPanelButton.ParentStyleManagerChanged(
   var Msg: TMsgStyleManagerChange);
@@ -2649,12 +2484,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2904,14 +2734,8 @@ begin
   FHeaderFont.Color := clWhite;
   FHeaderFont.OnChange := DoFontChange;
 
-  {$IFDEF VCL}
   FDividerFont.Assign(Screen.IconFont);
   FNavPanelFont.Assign(Screen.IconFont);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FDividerFont.Assign(Application.Font);
-  FNavPanelFont.Assign(Application.Font);
-  {$ENDIF VisualCLX}
   FNavPanelFont.Style := [fsBold];
   FNavPanelHotTrackFont.Assign(FNavPanelFont);
   FNavPanelHotTrackFontOptions := DefaultTrackFontOptions;
@@ -3191,7 +3015,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent( AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -3300,29 +3124,18 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvNavPanelPage.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvNavPanelPage.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  inherited ControlsListChanged(Control, Inserting);
-  InternalStyleManagerChanged(Self, StyleManager);
-end;
-{$ENDIF VisualCLX}
+
+
 
 
 procedure TJvNavPanelPage.ParentStyleManagerChange(var Msg: TMessage);
@@ -3392,7 +3205,7 @@ end;
 constructor TJvOutlookSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque]; 
+  ControlStyle := ControlStyle + [csOpaque];
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   FColorFrom := TColor($B78676);
@@ -3537,16 +3350,11 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 
 function TJvOutlookSplitter.GetDragZoneRect: TRect;
 begin
@@ -3608,7 +3416,7 @@ begin
   FOldCursor := Value;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvOutlookSplitter.RequestAlign;
 begin
@@ -3731,8 +3539,7 @@ begin
     end;
     if Y > Height - Images.Height - 4 then
       Y := Height - Images.Height - 4;
-    Images.Draw(Canvas, X, Y, ImageIndex,
-      {$IFDEF VisualCLX} itImage, {$ENDIF} True);
+    Images.Draw(Canvas, X, Y, ImageIndex,  True);
   end;
 end;
 
@@ -3806,19 +3613,14 @@ begin
   Invalidate;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvNavPanelHeader.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvNavPanelHeader.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvNavPanelHeader.SetAlignment(const Value: TAlignment);
 begin
@@ -3859,30 +3661,19 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvNavPanelHeader.CMControlChange(var Msg: TMessage);
 begin
   // a control was inserted or removed
   InternalStyleManagerChanged(Self, StyleManager);
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvNavPanelHeader.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  inherited ControlsListChanged(Control, Inserting);
-  InternalStyleManagerChanged(Self, StyleManager);
-end;
-{$ENDIF VisualCLX}
+
+
 
 
 //=== { TJvNavPanelDivider } =================================================
@@ -3901,12 +3692,7 @@ begin
   FColorTo := TColor($F2C0A4);
   FFrameColor := TColor($6F2F0C);
   Cursor := crSizeNS;
-  {$IFDEF VCL}
   Font := Screen.IconFont;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Font := Application.Font;
-  {$ENDIF VisualCLX}
   Height := 19;
   Width := 125;
   FParentStyleManager := True;
@@ -4044,12 +3830,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
@@ -4385,8 +4166,7 @@ begin
   FBackground := TJvNavPaneBackgroundImage.Create;
   FBackground.OnChange := DoImagesChange;
 
-  ControlStyle := [csAcceptsControls,
-    {$IFDEF VCL} csCaptureMouse, {$ENDIF} csClickEvents,
+  ControlStyle := [csAcceptsControls,  csCaptureMouse,  csClickEvents,
     csOpaque, csDoubleClicks, csReplicatable];
 
   FButtons := TJvNavPaneToolButtons.Create(Self);
@@ -4404,12 +4184,7 @@ begin
   FHeaderHeight := 29;
   FEdgeRounding := 9;
   FShowGrabber := True;
-  {$IFDEF VCL}
   Font := Screen.IconFont;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Font := Application.Font;
-  {$ENDIF VisualCLX}
   Font.Style := [fsBold];
 
   FCloseButton := TJvNavPanelToolButton.Create(Self);
@@ -4565,12 +4340,7 @@ var
   B: TJvNavPanelToolButton;
 begin
   // first, fill the background
-  {$IFDEF VCL}
   Canvas.Lock;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  {$ENDIF VisualCLX}
   try
     R := ClientRect;
     if HeaderVisible then
@@ -4686,22 +4456,11 @@ begin
       end;
     end;
   finally
-    {$IFDEF VCL}
     Canvas.Unlock;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Canvas.Stop;
-    {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomNavPaneToolPanel.Loaded;
-begin
-  inherited Loaded;
-  AlignButtons;
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvCustomNavPaneToolPanel.AlignButtons;
 var
@@ -4864,16 +4623,11 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      {$IFDEF VCL}
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomNavPaneToolPanel.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
@@ -4893,20 +4647,9 @@ begin
   inherited;
   Color := AColor;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomNavPaneToolPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  inherited;
-  InternalStyleManagerChanged(Self, StyleManager);
-end;
 
-function TJvCustomNavPaneToolPanel.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-{$ENDIF VisualCLX}
+
 
 
 procedure TJvCustomNavPaneToolPanel.ParentStyleManagerChange(var Msg: TMessage);
@@ -5203,7 +4946,7 @@ DrawButton:
       if Assigned(Images) then
         Images.Draw(Canvas,
           (Width - Images.Width) div 2, (Height - Images.Height) div 2,
-          ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
+          ImageIndex,  Enabled);
   else
     raise EJVCLException.CreateRes(@RsEUnsupportedButtonType);
   end;
@@ -5364,7 +5107,7 @@ var
 begin
   G := Picture.Graphic;
   if G <> nil then
-    if not ({$IFDEF VCL} (G is TMetaFile) or {$ENDIF} (G is TIcon)) then
+    if not ( (G is TMetaFile) or  (G is TIcon)) then
       G.Transparent := FTransparent;
   if not FDrawing then
     Change;

@@ -187,9 +187,9 @@ type
       IJvDynControlDirectory, IJvDynControlReadOnly, IJvDynControlDatabase)
   private
     FInitialDir: string;
-{$IFDEF VCL}
+
     FDialogOptions: TSelectDirOpts;
-{$ENDIF VCL}
+
     FDialogTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -214,9 +214,9 @@ type
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(const Value: string);
     procedure ControlSetDialogTitle(const Value: string);
-{$IFDEF VCL}
+
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
-{$ENDIF VCL}
+
 
     //IJvDynControlDatabase
     procedure ControlSetDataSource(Value: TDataSource);
@@ -420,9 +420,9 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
-{$IFDEF VCL}
+
     procedure ControlSetProportional(Value: Boolean);
-{$ENDIF VCL}
+
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
@@ -1078,13 +1078,8 @@ end;
 
 procedure TJvDynControlCxDBDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
-  {$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Dir: WideString;
-  {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   if Dir = '' then
@@ -1094,17 +1089,7 @@ begin
       Dir := PathDelim;
   if not DirectoryExists(Dir) then
     Dir := PathDelim;
-  {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    {$IFDEF MSWINDOWS}
-    if SelectDirectory('', '', Dir) then
-    {$ENDIF MSWINDOWS}
-      {$IFDEF UNIX}
-      if SelectDirectory('', '/', Dir, False) then
-      {$ENDIF UNIX}
-  {$ENDIF VisualCLX}
         ControlSetValue(Dir);
   if CanFocus then
     SetFocus;
@@ -1173,12 +1158,12 @@ begin
   FDialogTitle := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlCxDBDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
 begin
   FDialogOptions := Value;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlCxDBDirectoryEdit.ControlSetDataSource(Value: TDataSource);
 begin
@@ -1820,14 +1805,14 @@ begin
   Properties.Center := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlCxDBImage.ControlSetProportional(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
   //  Proportional := Value;
   {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlCxDBImage.ControlSetStretch(Value: Boolean);
 begin

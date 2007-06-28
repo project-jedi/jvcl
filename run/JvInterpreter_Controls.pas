@@ -53,14 +53,8 @@ implementation
 
 uses
   Classes,
-  {$IFDEF VCL}
   Graphics, Controls, Menus, ImgList,
   JvInterpreter_Windows;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QMenus, QImgList,
-  JvInterpreter_Types;
-  {$ENDIF VisualCLX}
 
 { TControl }
 
@@ -113,7 +107,7 @@ begin
   TControl(Args.Obj).EndDrag(Args.Values[0]);
 end;
 
-{$IFDEF VCL}
+
 
 { function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; }
 
@@ -129,7 +123,7 @@ begin
   Value := TControl(Args.Obj).GetTextLen;
 end;
 
-{$ENDIF VCL}
+
 
 { procedure Hide; }
 
@@ -147,12 +141,12 @@ end;
 
 { function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint; }
 
-{$IFDEF VCL}
+
 procedure TControl_Perform(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TControl(Args.Obj).Perform(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
-{$ENDIF VCL}
+
 
 { procedure Refresh; }
 
@@ -191,12 +185,12 @@ end;
 
 { procedure SetTextBuf(Buffer: PChar); }
 
-{$IFDEF VCL}
+
 procedure TControl_SetTextBuf(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TControl(Args.Obj).SetTextBuf(PChar(string(Args.Values[0])));
 end;
-{$ENDIF VCL}
+
 
 { procedure Show; }
 
@@ -484,12 +478,7 @@ end;
 
 procedure TWinControl_CreateParented(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF VCL}
   Value := O2V(TWinControl.CreateParented(Args.Values[0]));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Value := O2V(TWinControl.CreateParented(V2P(Args.Values[0])));
-  {$ENDIF VisualCLX}
 end;
 
 { procedure Broadcast(var Message); }
@@ -578,12 +567,12 @@ end;
 
 { procedure PaintTo(DC: HDC; X, Y: Integer); }
 
-{$IFDEF VCL}
+
 procedure TWinControl_PaintTo(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TWinControl(Args.Obj).PaintTo(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
-{$ENDIF VCL}
+
 
 { procedure RemoveControl(AControl: TControl); }
 
@@ -680,24 +669,14 @@ end;
 
 procedure TWinControl_Read_ParentWindow(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF VCL}
   Value := Integer(TWinControl(Args.Obj).ParentWindow);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Value := Integer(TWinControl(Args.Obj).ParentWidget);
-  {$ENDIF VisualCLX}
 end;
 
 { property Write ParentWindow(Value: HWnd) }
 
 procedure TWinControl_Write_ParentWindow(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF VCL}
   TWinControl(Args.Obj).ParentWindow := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TWinControl(Args.Obj).ParentWidget := V2P(Value);
-  {$ENDIF VisualCLX}
 end;
 
 { property Read Showing: Boolean }
@@ -799,12 +778,12 @@ end;
 
 { function AddIcon(Image: TIcon): Integer; }
 
-{$IFDEF VCL}
+
 procedure TCustomImageList_AddIcon(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomImageList(Args.Obj).AddIcon(V2O(Args.Values[0]) as TIcon);
 end;
-{$ENDIF VCL}
+
 
 { procedure AddImages(Value: TCustomImageList); }
 
@@ -841,7 +820,7 @@ begin
   TCustomImageList(Args.Obj).Draw(V2O(Args.Values[0]) as TCanvas, Args.Values[1], Args.Values[2], Args.Values[3]);
 end;
 
-{$IFDEF VCL}
+
 
 { procedure DrawOverlay(Canvas: TCanvas; X, Y: Integer; ImageIndex: Integer; Overlay: TOverlay); }
 
@@ -858,7 +837,7 @@ begin
   Value := TCustomImageList(Args.Obj).FileLoad(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$ENDIF VCL}
+
 
 { procedure GetBitmap(Index: Integer; Image: TBitmap); }
 
@@ -867,7 +846,7 @@ begin
   TCustomImageList(Args.Obj).GetBitmap(Args.Values[0], V2O(Args.Values[1]) as TBitmap);
 end;
 
-{$IFDEF VCL}
+
 
 { function GetHotSpot: TPoint; }
 
@@ -897,7 +876,7 @@ begin
   Value := Integer(TCustomImageList(Args.Obj).GetMaskBitmap);
 end;
 
-{$ENDIF VCL}
+
 
 { function GetResource(ResType: TResType; Name: string; Width: Integer; LoadFlags: TLoadResources; MaskColor: TColor): Boolean; }
 
@@ -915,12 +894,12 @@ end;
 
 {  function HandleAllocated: Boolean; }
 
-{$IFDEF VCL}
+
 procedure TCustomImageList_HandleAllocated(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomImageList(Args.Obj).HandleAllocated;
 end;
-{$ENDIF VCL}
+
 
 { procedure Insert(Index: Integer; Image, Mask: TBitmap); }
 
@@ -931,12 +910,12 @@ end;
 
 { procedure InsertIcon(Index: Integer; Image: TIcon); }
 
-{$IFDEF VCL}
+
 procedure TCustomImageList_InsertIcon(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomImageList(Args.Obj).InsertIcon(Args.Values[0], V2O(Args.Values[1]) as TIcon);
 end;
-{$ENDIF VCL}
+
 
 { procedure InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor); }
 
@@ -954,12 +933,12 @@ end;
 
 { function Overlay(ImageIndex: Integer; Overlay: TOverlay): Boolean; }
 
-{$IFDEF VCL}
+
 procedure TCustomImageList_Overlay(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomImageList(Args.Obj).Overlay(Args.Values[0], Args.Values[1]);
 end;
-{$ENDIF VCL}
+
 
 { procedure RegisterChanges(Value: TChangeLink); }
 
@@ -968,7 +947,7 @@ begin
   TCustomImageList(Args.Obj).RegisterChanges(V2O(Args.Values[0]) as TChangeLink);
 end;
 
-{$IFDEF VCL}
+
 
 { function ResourceLoad(ResType: TResType; Name: string; MaskColor: TColor): Boolean; }
 
@@ -984,7 +963,7 @@ begin
   Value := TCustomImageList(Args.Obj).ResInstLoad(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]);
 end;
 
-{$ENDIF VCL}
+
 
 { procedure Replace(Index: Integer; Image, Mask: TBitmap); }
 
@@ -995,12 +974,12 @@ end;
 
 { procedure ReplaceIcon(Index: Integer; Image: TIcon); }
 
-{$IFDEF VCL}
+
 procedure TCustomImageList_ReplaceIcon(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomImageList(Args.Obj).ReplaceIcon(Args.Values[0], V2O(Args.Values[1]) as TIcon);
 end;
-{$ENDIF VCL}
+
 
 { procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor); }
 
@@ -1023,7 +1002,7 @@ begin
   Value := TCustomImageList(Args.Obj).Count;
 end;
 
-{$IFDEF VCL}
+
 
 { property Read Handle: HImageList }
 
@@ -1039,9 +1018,9 @@ begin
   TCustomImageList(Args.Obj).Handle := Value;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VCL}
+
+
 
 { property Read DragCursor: TCursor }
 
@@ -1120,7 +1099,7 @@ begin
   TImageList(Args.Obj).ShowDragImage;
 end;
 
-{$ENDIF VCL}
+
 
 { hack section }
 
@@ -1159,7 +1138,7 @@ begin
   THackControl(Args.Obj).Color := Value;
 end;
 
-{$IFDEF VCL}
+
 
 { property Read DesktopFont: Boolean }
 
@@ -1189,7 +1168,7 @@ begin
   THackControl(Args.Obj).DragCursor := Value;
 end;
 
-{$ENDIF VCL}
+
 
 { property Read DragMode: TDragMode }
 
@@ -1219,7 +1198,7 @@ begin
   THackControl(Args.Obj).Font := V2O(Value) as TFont;
 end;
 
-{$IFDEF VCL}
+
 
 { property Read IsControl: Boolean }
 
@@ -1235,7 +1214,7 @@ begin
   THackControl(Args.Obj).IsControl := Value;
 end;
 
-{$ENDIF VCL}
+
 
 { property Read MouseCapture: Boolean }
 
@@ -1321,7 +1300,7 @@ begin
   THackControl(Args.Obj).Text := Value;
 end;
 
-{$IFDEF VCL}
+
 
 { property Read WindowText: PChar }
 
@@ -1337,11 +1316,11 @@ begin
   THackControl(Args.Obj).WindowText := PChar(string(Value));
 end;
 
-{$ENDIF VCL}
+
 
 { THackWinControl }
 
-{$IFDEF VCL}
+
 
 { property Read Ctl3D: Boolean }
 
@@ -1371,9 +1350,9 @@ begin
   THackWinControl(Args.Obj).DefWndProc := V2P(Value);
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VCL}
+
+
 { property Read ImeMode: TImeMode }
 
 procedure THackWinControl_Read_ImeMode(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1430,7 +1409,7 @@ begin
   THackWinControl(Args.Obj).WindowHandle := Value;
 end;
 
-{$ENDIF VCL}
+
 
 { THackCustomControl }
 
@@ -1443,12 +1422,12 @@ end;
 
 { procedure PaintWindow(DC: HDC); }
 
-{$IFDEF VCL}
+
 procedure THackCustomControl_PaintWindow(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   THackCustomControl(Args.Obj).PaintWindow(Args.Values[0]);
 end;
-{$ENDIF VCL}
+
 
 { property Read Canvas: TCanvas }
 
@@ -1461,33 +1440,28 @@ end;
 
 { function IsDragObject(Sender: TObject): Boolean; }
 
-{$IFDEF VCL}
+
 procedure JvInterpreter_IsDragObject(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := IsDragObject(V2O(Args.Values[0]));
 end;
-{$ENDIF VCL}
+
 
 { function FindControl(Handle: HWnd): TWinControl; }
 
 procedure JvInterpreter_FindControl(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF VCL}
   Value := O2V(FindControl(Args.Values[0]));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Value := O2V(FindControl(QWidgetH(V2O(Args.Values[0]))));
-  {$ENDIF VisualCLX}
 end;
 
 { function FindVCLWindow(const Pos: TPoint): TWinControl; }
 
-{$IFDEF VCL}
+
 procedure JvInterpreter_FindVCLWindow(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(FindVCLWindow(Var2Point(Args.Values[0])));
 end;
-{$ENDIF VCL}
+
 
 { function FindDragTarget(const Pos: TPoint; AllowDisabled: Boolean): TControl; }
 
@@ -1512,12 +1486,12 @@ end;
 
 { procedure CancelDrag; }
 
-{$IFDEF VCL}
+
 procedure JvInterpreter_CancelDrag(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   CancelDrag;
 end;
-{$ENDIF VCL}
+
 
 { function CursorToString(Cursor: TCursor): string; }
 
@@ -1561,7 +1535,7 @@ begin
   Value := GetLongHint(Args.Values[0]);
 end;
 
-{$IFDEF VCL}
+
 
 { function InitWndProc(HWindow: HWnd; Message, WParam: Longint; LParam: Longint): Longint; }
 
@@ -1584,7 +1558,7 @@ begin
   MoveWindowOrg(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$ENDIF VCL}
+
 
 type
   TJvInterpreterControlsEvent = class(TJvInterpreterEvent)
@@ -1651,7 +1625,6 @@ const
 begin
   with JvInterpreterAdapter do
   begin
-    {$IFDEF VCL}
     { TDragMessage }
     AddConst(cControls, 'dmDragEnter', Ord(dmDragEnter));
     AddConst(cControls, 'dmDragLeave', Ord(dmDragLeave));
@@ -1659,7 +1632,6 @@ begin
     AddConst(cControls, 'dmDragDrop', Ord(dmDragDrop));
     AddConst(cControls, 'dmDragCancel', Ord(dmDragCancel));
     AddConst(cControls, 'dmFindTarget', Ord(dmFindTarget));
-    {$ENDIF VCL}
     { TAlign }
     AddConst(cControls, 'alNone', Ord(alNone));
     AddConst(cControls, 'alTop', Ord(alTop));
@@ -1691,9 +1663,7 @@ begin
     AddConst(cControls, 'csReplicatable', Ord(csReplicatable));
     AddConst(cControls, 'csNoStdEvents', Ord(csNoStdEvents));
     AddConst(cControls, 'csDisplayDragImage', Ord(csDisplayDragImage));
-    {$IFDEF VCL}
     AddConst(cControls, 'csReflector', Ord(csReflector));
-    {$ENDIF VCL}
     AddConst(cControls, 'csActionClient', Ord(csActionClient));
     AddConst(cControls, 'csMenuEvents', Ord(csMenuEvents));
     { TMouseButton }
@@ -1722,23 +1692,17 @@ begin
     AddGet(TControl, 'Dragging', TControl_Dragging, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'DragDrop', TControl_DragDrop, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TControl, 'EndDrag', TControl_EndDrag, 1, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TControl, 'GetTextBuf', TControl_GetTextBuf, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TControl, 'GetTextLen', TControl_GetTextLen, 0, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TControl, 'Hide', TControl_Hide, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'Invalidate', TControl_Invalidate, 0, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TControl, 'Perform', TControl_Perform, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TControl, 'Refresh', TControl_Refresh, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'Repaint', TControl_Repaint, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'ScreenToClient', TControl_ScreenToClient, 1, [varEmpty], varEmpty);
     AddGet(TControl, 'SendToBack', TControl_SendToBack, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'SetBounds', TControl_SetBounds, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TControl, 'SetTextBuf', TControl_SetTextBuf, 1, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TControl, 'Show', TControl_Show, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'Update', TControl_Update, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'Align', TControl_Read_Align, 0, [varEmpty], varEmpty);
@@ -1777,7 +1741,6 @@ begin
     AddSet(TControl, 'Cursor', TControl_Write_Cursor, 0, [varEmpty]);
     AddGet(TControl, 'Hint', TControl_Read_Hint, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'Hint', TControl_Write_Hint, 0, [varEmpty]);
-    {$IFDEF VCL}
     { TImeMode }
     AddConst(cControls, 'imDisable', Ord(imDisable));
     AddConst(cControls, 'imClose', Ord(imClose));
@@ -1791,7 +1754,6 @@ begin
     AddConst(cControls, 'imChinese', Ord(imChinese));
     AddConst(cControls, 'imSHanguel', Ord(imSHanguel));
     AddConst(cControls, 'imHanguel', Ord(imHanguel));
-    {$ENDIF VCL}
     { TWinControl }
     AddClass(cControls, TWinControl, 'TWinControl');
     AddGet(TWinControl, 'Create', TWinControl_Create, 1, [varEmpty], varEmpty);
@@ -1808,9 +1770,7 @@ begin
     AddGet(TWinControl, 'HandleNeeded', TWinControl_HandleNeeded, 0, [varEmpty], varEmpty);
     AddGet(TWinControl, 'InsertControl', TWinControl_InsertControl, 1, [varEmpty], varEmpty);
     AddGet(TWinControl, 'Invalidate', TWinControl_Invalidate, 0, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TWinControl, 'PaintTo', TWinControl_PaintTo, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TWinControl, 'RemoveControl', TWinControl_RemoveControl, 1, [varEmpty], varEmpty);
     AddGet(TWinControl, 'Realign', TWinControl_Realign, 0, [varEmpty], varEmpty);
     AddGet(TWinControl, 'Repaint', TWinControl_Repaint, 0, [varEmpty], varEmpty);
@@ -1846,20 +1806,16 @@ begin
     AddSet(TControl, 'Caption', THackControl_Write_Caption, 0, [varEmpty]);
     AddGet(TControl, 'Color', THackControl_Read_Color, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'Color', THackControl_Write_Color, 0, [varEmpty]);
-    {$IFDEF VCL}
     AddGet(TControl, 'DesktopFont', THackControl_Read_DesktopFont, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'DesktopFont', THackControl_Write_DesktopFont, 0, [varEmpty]);
     AddGet(TControl, 'DragCursor', THackControl_Read_DragCursor, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'DragCursor', THackControl_Write_DragCursor, 0, [varEmpty]);
-    {$ENDIF VCL}
     AddGet(TControl, 'DragMode', THackControl_Read_DragMode, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'DragMode', THackControl_Write_DragMode, 0, [varEmpty]);
     AddGet(TControl, 'Font', THackControl_Read_Font, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'Font', THackControl_Write_Font, 0, [varEmpty]);
-    {$IFDEF VCL}
     AddGet(TControl, 'IsControl', THackControl_Read_IsControl, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'IsControl', THackControl_Write_IsControl, 0, [varEmpty]);
-    {$ENDIF VCL}
     AddGet(TControl, 'MouseCapture', THackControl_Read_MouseCapture, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'MouseCapture', THackControl_Write_MouseCapture, 0, [varEmpty]);
     AddGet(TControl, 'ParentColor', THackControl_Read_ParentColor, 0, [varEmpty], varEmpty);
@@ -1872,7 +1828,6 @@ begin
     AddSet(TControl, 'PopupMenu', THackControl_Write_PopupMenu, 0, [varEmpty]);
     AddGet(TControl, 'Text', THackControl_Read_Text, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'Text', THackControl_Write_Text, 0, [varEmpty]);
-    {$IFDEF VCL}
     AddGet(TControl, 'WindowText', THackControl_Read_WindowText, 0, [varEmpty], varEmpty);
     AddSet(TControl, 'WindowText', THackControl_Write_WindowText, 0, [varEmpty]);
     AddGet(TWinControl, 'Ctl3D', THackWinControl_Read_Ctl3D, 0, [varEmpty], varEmpty);
@@ -1887,26 +1842,20 @@ begin
     AddSet(TWinControl, 'ParentCtl3D', THackWinControl_Write_ParentCtl3D, 0, [varEmpty]);
     AddGet(TWinControl, 'WindowHandle', THackWinControl_Read_WindowHandle, 0, [varEmpty], varEmpty);
     AddSet(TWinControl, 'WindowHandle', THackWinControl_Write_WindowHandle, 0, [varEmpty]);
-    {$ENDIF VCL}
     { TCustomControl }
     AddClass('IH_Controls', THackCustomControl, 'THackCustomControl');
     AddGet(TCustomControl, 'Paint', THackCustomControl_Paint, 0, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomControl, 'PaintWindow', THackCustomControl_PaintWindow, 1, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomControl, 'Canvas', THackCustomControl_Read_Canvas, 0, [varEmpty], varEmpty);
 
-    {$IFDEF VCL}
     { TDrawingStyle }
     AddConst(cControls, 'dsFocus', Ord(dsFocus));
     AddConst(cControls, 'dsSelected', Ord(dsSelected));
     AddConst(cControls, 'dsNormal', Ord(dsNormal));
     AddConst(cControls, 'dsTransparent', Ord(dsTransparent));
-    {$ENDIF VCL}
     { TImageType }
     AddConst(cControls, 'itImage', Ord(itImage));
     AddConst(cControls, 'itMask', Ord(itMask));
-    {$IFDEF VCL}
     { TResType }
     AddConst(cControls, 'rtBitmap', Ord(rtBitmap));
     AddConst(cControls, 'rtCursor', Ord(rtCursor));
@@ -1918,71 +1867,50 @@ begin
     AddConst(cControls, 'lrMap3DColors', Ord(lrMap3DColors));
     AddConst(cControls, 'lrTransparent', Ord(lrTransparent));
     AddConst(cControls, 'lrMonoChrome', Ord(lrMonoChrome));
-    {$ENDIF VCL}
     { TCustomImageList }
     AddClass(cControls, TCustomImageList, 'TCustomImageList');
     AddGet(TCustomImageList, 'Create', TCustomImageList_Create, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'CreateSize', TCustomImageList_CreateSize, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Assign', TCustomImageList_Assign, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Add', TCustomImageList_Add, 2, [varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'AddIcon', TCustomImageList_AddIcon, 1, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'AddImages', TCustomImageList_AddImages, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'AddMasked', TCustomImageList_AddMasked, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Clear', TCustomImageList_Clear, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Delete', TCustomImageList_Delete, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Draw', TCustomImageList_Draw, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'DrawOverlay', TCustomImageList_DrawOverlay, 5, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     AddGet(TCustomImageList, 'FileLoad', TCustomImageList_FileLoad, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'GetBitmap', TCustomImageList_GetBitmap, 2, [varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'GetHotSpot', TCustomImageList_GetHotSpot, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetIcon', TCustomImageList_GetIcon, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetImageBitmap', TCustomImageList_GetImageBitmap, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetMaskBitmap', TCustomImageList_GetMaskBitmap, 0, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'GetResource', TCustomImageList_GetResource, 5, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetInstRes', TCustomImageList_GetInstRes, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'HandleAllocated', TCustomImageList_HandleAllocated, 0, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'Insert', TCustomImageList_Insert, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'InsertIcon', TCustomImageList_InsertIcon, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'InsertMasked', TCustomImageList_InsertMasked, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     AddGet(TCustomImageList, 'Move', TCustomImageList_Move, 2, [varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'Overlay', TCustomImageList_Overlay, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'RegisterChanges', TCustomImageList_RegisterChanges, 1, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'ResourceLoad', TCustomImageList_ResourceLoad, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
-    {$ENDIF VCL}
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'ResInstLoad', TCustomImageList_ResInstLoad, 4, [varEmpty, varEmpty, varEmpty, varEmpty],
       varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'Replace', TCustomImageList_Replace, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'ReplaceIcon', TCustomImageList_ReplaceIcon, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'ReplaceMasked', TCustomImageList_ReplaceMasked, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     AddGet(TCustomImageList, 'UnRegisterChanges', TCustomImageList_UnRegisterChanges, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Count', TCustomImageList_Read_Count, 0, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TCustomImageList, 'Handle', TCustomImageList_Read_Handle, 0, [varEmpty], varEmpty);
     AddSet(TCustomImageList, 'Handle', TCustomImageList_Write_Handle, 0, [varEmpty]);
-    {$ENDIF VCL}
     AddGet(TCustomImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'SetDragImage', TCustomImageList_SetDragImage, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
@@ -1995,7 +1923,6 @@ begin
     AddGet(TCustomImageList, 'DragMove', TCustomImageList_DragMove, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddGet(TDragImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [varEmpty], varEmpty);
     AddGet(TDragImageList, 'SetDragImage', TCustomImageList_SetDragImage, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TDragImageList, 'ShowDragImage', TCustomImageList_ShowDragImage, 0, [varEmpty], varEmpty);
@@ -2007,33 +1934,24 @@ begin
     AddGet(TDragImageList, 'DragMove', TCustomImageList_DragMove, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TDragImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [varEmpty], varEmpty);
     AddGet(TDragImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     { TImageList }
     AddClass(cControls, TImageList, 'TImageList');
-    {$IFDEF VCL}
     AddFunction(cControls, 'IsDragObject', JvInterpreter_IsDragObject, 1, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddFunction(cControls, 'FindControl', JvInterpreter_FindControl, 1, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddFunction(cControls, 'FindVCLWindow', JvInterpreter_FindVCLWindow, 1, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddFunction(cControls, 'FindDragTarget', JvInterpreter_FindDragTarget, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cControls, 'GetCaptureControl', JvInterpreter_GetCaptureControl, 0, [varEmpty], varEmpty);
     AddFunction(cControls, 'SetCaptureControl', JvInterpreter_SetCaptureControl, 1, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddFunction(cControls, 'CancelDrag', JvInterpreter_CancelDrag, 0, [varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddFunction(cControls, 'CursorToString', JvInterpreter_CursorToString, 1, [varEmpty], varEmpty);
     AddFunction(cControls, 'StringToCursor', JvInterpreter_StringToCursor, 1, [varEmpty], varEmpty);
     AddFunction(cControls, 'CursorToIdent', JvInterpreter_CursorToIdent, 2, [varEmpty, varByRef], varEmpty);
     AddFunction(cControls, 'IdentToCursor', JvInterpreter_IdentToCursor, 2, [varEmpty, varByRef], varEmpty);
     AddFunction(cControls, 'GetShortHint', JvInterpreter_GetShortHint, 1, [varEmpty], varEmpty);
     AddFunction(cControls, 'GetLongHint', JvInterpreter_GetLongHint, 1, [varEmpty], varEmpty);
-    {$IFDEF VCL}
     AddFunction(cControls, 'InitWndProc', JvInterpreter_InitWndProc, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddFunction(cControls, 'SendAppMessage', JvInterpreter_SendAppMessage, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFunction(cControls, 'MoveWindowOrg', JvInterpreter_MoveWindowOrg, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF VCL}
     AddHandler(cControls, 'TMouseEvent', TJvInterpreterControlsEvent, @TJvInterpreterControlsEvent.MouseEvent);
     AddHandler(cControls, 'TMouseMoveEvent', TJvInterpreterControlsEvent, @TJvInterpreterControlsEvent.MouseMoveEvent);
     AddHandler(cControls, 'TKeyEvent', TJvInterpreterControlsEvent, @TJvInterpreterControlsEvent.KeyEvent);

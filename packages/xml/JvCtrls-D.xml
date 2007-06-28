@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCtrls" Design="-1">
   <Description>JVCL Visual Controls</Description>
-  <ClxDescription>JVCLX Visual Controls</ClxDescription>
   <GUID>{F0549080-9D89-4D9C-98E1-34930BCF1360}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
@@ -39,6 +38,5 @@
     <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvRollOutEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQSpeedbarForm.pas" Targets="CLX" Formname="JvSpeedbarEditor" Condition=""/>
   </Contains>
 </Package>

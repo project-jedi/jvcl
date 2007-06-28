@@ -35,9 +35,6 @@ uses
   {$IFDEF MSWINDOWS}
   ActnList, Graphics, ComCtrls, ImgList,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QActnList, QGraphics, QComCtrls, QImgList,
-  {$ENDIF UNIX}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -166,9 +163,7 @@ type
     FEditControl: TMaskEdit;
     FButton: TBitBtn;
     FInitialDir: string;
-    {$IFDEF VCL}
     FDialogOptions: TSelectDirOpts;
-    {$ENDIF VCL}
     FDialogTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -194,12 +189,9 @@ type
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(const Value: string);
     procedure ControlSetDialogTitle(const Value: string);
-    {$IFDEF VCL}
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
-    {$ENDIF VCL}
   end;
 
-  {$IFDEF VCL}
   TJvDynControlVCLDateTimeEdit = class(TPanel, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlDate)
   private
@@ -273,7 +265,6 @@ type
 
     procedure ControlSetFormat(const Value: string);
   end;
-  {$ENDIF VCL}
 
   TJvDynControlVCLCheckBox = class(TCheckBox, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlCheckBox)
@@ -534,9 +525,7 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
-    {$IFDEF VCL}
     procedure ControlSetProportional(Value: Boolean);
-    {$ENDIF VCL}
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
@@ -590,7 +579,6 @@ type
     procedure ControlSetAlignment(Value: TAlignment);
   end;
 
-  {$IFDEF VCL}
   TJvDynControlVCLStaticText = class(TStaticText, IUnknown,
     IJvDynControl, IJvDynControlAlign,
     IJvDynControlAutoSize, IJvDynControlColor,
@@ -617,7 +605,6 @@ type
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
   end;
-  {$ENDIF VCL}
 
   TJvDynControlVCLButton = class(TBitBtn, IUnknown,
     IJvDynControl, IJvDynControlButton, IJvDynControlAction)
@@ -854,15 +841,7 @@ end;
 
 procedure TJvDynControlVCLMaskEdit.ControlSetPasswordChar(Value: Char);
 begin
-  {$IFDEF VCL}
   PasswordChar := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = #0 then
-    EchoMode := emNormal
-  else
-    EchoMode := emPassword;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlVCLMaskEdit.ControlSetEditMask(const Value: string);
@@ -954,22 +933,11 @@ begin
   Result := FEditControl.Text;
 end;
 
-{$IFDEF VisualCLX}
-type
-  TMaskEditAccessProtected = class(TMaskEdit);
-{$ENDIF VisualCLX}
+
 
 procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
 begin
-  {$IFDEF VCL}
   FEditControl.PasswordChar := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = #0 then
-    TMaskEditAccessProtected(FEditControl).EchoMode := emNormal
-  else
-    TMaskEditAccessProtected(FEditControl).EchoMode := emPassword;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetEditMask(const Value: string);
@@ -1232,13 +1200,8 @@ end;
 
 procedure TJvDynControlVCLDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
-  {$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Dir: WideString;
-  {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   if Dir = '' then
@@ -1248,17 +1211,7 @@ begin
       Dir := PathDelim;
   if not DirectoryExists(Dir) then
     Dir := PathDelim;
-  {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  {$IFDEF MSWINDOWS}
-  if SelectDirectory('', '', Dir) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  if SelectDirectory('', '/', Dir, False) then
-  {$ENDIF UNIX}
-  {$ENDIF VisualCLX}
     ControlSetValue(Dir);
   if FEditControl.CanFocus then
     FEditControl.SetFocus;
@@ -1334,14 +1287,14 @@ begin
   FDialogTitle := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlVCLDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
 begin
   FDialogOptions := Value;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VCL}
+
+
 //=== { TJvDynControlVCLDateTimeEdit } =======================================
 
 constructor TJvDynControlVCLDateTimeEdit.Create(AOwner: TComponent);
@@ -1627,7 +1580,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvDynControlVCLCheckBox } ===========================================
 
@@ -2149,21 +2102,14 @@ end;
 procedure TJvDynControlVCLCheckListBox.ControlSetHeader(Index: Integer; Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
-  {$IFDEF VCL}
   Header[Index] := Value;
-  {$ENDIF VCL}
   {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
 begin
   {$IFDEF COMPILER6_UP}
-  {$IFDEF VCL}
   Result := Header[Index];
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := False;
-  {$ENDIF VisualCLX}
   {$ELSE}
   Result := False;
   {$ENDIF COMPILER6_UP}
@@ -2468,7 +2414,7 @@ begin
   Center := Value;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvDynControlVCLImage.ControlSetProportional(Value: Boolean);
 begin
@@ -2476,7 +2422,7 @@ begin
   Proportional := Value;
   {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlVCLImage.ControlSetStretch(Value: Boolean);
 begin
@@ -2617,7 +2563,7 @@ end;
 
 //=== { TJvDynControlVCLStaticText } =========================================
 
-{$IFDEF VCL}
+
 
 procedure TJvDynControlVCLStaticText.ControlSetDefaultProperties;
 begin
@@ -2679,7 +2625,7 @@ begin
   Alignment := Value;
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvDynControlVCLButton } =============================================
 
@@ -3202,11 +3148,7 @@ end;
 procedure TJvDynControlEngineVCL.RegisterControls;
 begin
   RegisterControlType(jctLabel, TJvDynControlVCLLabel);
-  {$IFDEF VCL}
   RegisterControlType(jctStaticText, TJvDynControlVCLStaticText);
-  {$ELSE}
-  RegisterControlType(jctLabel, TJvDynControlVCLStaticText);
-  {$ENDIF VCL}
   RegisterControlType(jctButton, TJvDynControlVCLButton);
   RegisterControlType(jctRadioButton, TJvDynControlVCLRadioButton);
   RegisterControlType(jctScrollBox, TJvDynControlVCLScrollBox);
@@ -3218,15 +3160,9 @@ begin
   RegisterControlType(jctListBox, TJvDynControlVCLListBox);
   RegisterControlType(jctCheckListBox, TJvDynControlVCLCheckListBox);
   RegisterControlType(jctRadioGroup, TJvDynControlVCLRadioGroup);
-  {$IFDEF VCL}
   RegisterControlType(jctDateTimeEdit, TJvDynControlVCLDateTimeEdit);
   RegisterControlType(jctTimeEdit, TJvDynControlVCLTimeEdit);
   RegisterControlType(jctDateEdit, TJvDynControlVCLDateEdit);
-  {$ELSE}
-  RegisterControlType(jctDateTimeEdit, TJvDynControlVCLMaskEdit);
-  RegisterControlType(jctTimeEdit, TJvDynControlVCLMaskEdit);
-  RegisterControlType(jctDateEdit, TJvDynControlVCLMaskEdit);
-  {$ENDIF VCL}
   RegisterControlType(jctEdit, TJvDynControlVCLMaskEdit);
   //  RegisterControlType(jctCalculateEdit, TJvDynControlVCLMaskEdit);
   //  RegisterControlType(jctSpinEdit, TJvDynControlVCLMaskEdit);

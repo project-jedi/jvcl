@@ -210,7 +210,7 @@ type
     procedure SetWordWrap(Value: Boolean);
     function GetAutoSize: Boolean;
   protected
-    procedure SetAutoSize(Value: Boolean); override; 
+    procedure SetAutoSize(Value: Boolean); override;
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;

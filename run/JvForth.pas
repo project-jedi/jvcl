@@ -367,14 +367,8 @@ begin
   Command := AFile;
   Params := #0;
   WorkDir := #0;
-  {$IFDEF VCL}
   ShellExecute(Application.Handle, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ShellExecute(0, 'open', PChar(Command),
-    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF VisualCLX}
 end;
 
 procedure GlobalSetValue(var AText: string; const AName, AValue: string);
@@ -1982,7 +1976,7 @@ begin
 end;
 
 procedure TJvForthScript.ProcSelDir;
-{$IFDEF VCL}
+
 var
   Dir: string;
 begin
@@ -1990,16 +1984,8 @@ begin
   if SelectDirectory(Dir, [sdAllowCreate, sdPerformCreate, sdPrompt], 0) then
     FDSOBase := Dir;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  Dir: WideString;
-begin
-  Dir := FDSOBase;
-  if SelectDirectory('Select Directory', PathDelim, Dir {$IFDEF UNIX}, True {$ENDIF}) then
-    FDSOBase := Dir;
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvForthScript.ProcExtVar;
 var

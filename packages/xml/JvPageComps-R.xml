@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvPageComps" Design="0">
   <Description>JVCL Page Style Components Runtime Package</Description>
-  <ClxDescription>JVCLX Page Style Components Runtime Package</ClxDescription>
   <GUID>{395E4777-D95E-4AB0-8290-0BA981C01E14}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>

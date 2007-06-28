@@ -33,9 +33,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   JvComponentBase;
 
@@ -48,12 +45,7 @@ type
     FEgg: string;
     FForm: TCustomForm;
     FCurString: string;
-    {$IFDEF VCL}
     function NewWndProc(var Msg: TMessage): Boolean;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -76,10 +68,10 @@ const
 
 implementation
 
-{$IFDEF VCL}
+
 uses
   JvWndProcHook;
-{$ENDIF VCL}
+
 
 function DownCase(Ch: Char): Char;
 begin
@@ -97,27 +89,17 @@ begin
   FControlKeys := [ssAlt];
   FForm := GetParentForm(TControl(AOwner));
   if (FForm <> nil) and not (csDesigning in ComponentState) then
-    {$IFDEF VCL}
     RegisterWndProcHook(FForm, NewWndProc, hoAfterMsg);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    InstallApplicationHook(NewEventFilter);
-    {$ENDIF VisualCLX}
 end;
 
 destructor TJvEasterEgg.Destroy;
 begin
   if (FForm <> nil) and not (csDesigning in ComponentState) then
-    {$IFDEF VCL}
     UnregisterWndProcHook(FForm, NewWndProc, hoAfterMsg);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    UninstallApplicationHook(NewEventFilter);
-    {$ENDIF VisualCLX}
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+
 function TJvEasterEgg.NewWndProc(var Msg: TMessage): Boolean;
 var
   Shift: TShiftState;
@@ -152,46 +134,8 @@ begin
       end;
   end;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvEasterEgg.NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-var
-  Shift: TShiftState;
-  KeyCode: Word;
-  KeyChar: Char;
-begin
-  Result := False;
-  if Active and (FEgg <> '') and (QEvent_type(Event) = QEventType_KeyRelease) then
-  begin
-    KeyCode := QKeyEvent_key(QKeyEventH(Event));
-    KeyChar := Char(QKeyEvent_ascii(QKeyEventH(Event)));
-    Shift := ButtonStateToShiftState(QKeyEvent_state(QKeyEventH(Event)));
-    if (KeyCode = Key_Shift) then
-      Include(Shift, ssShift);
-    if (KeyCode = Key_Control) then
-      Include(Shift, ssCtrl);
-    if (KeyCode = Key_Alt) then
-      Include(Shift, ssAlt);
 
-    if Shift = FControlKeys then
-    begin
-      if ssShift in Shift then
-        FCurString := FCurString + UpCase(KeyChar)
-      else
-        FCurString := FCurString + DownCase(KeyChar);
-      if FCurString = Egg then
-      begin
-        if Assigned(FOnEggFound) then
-          FOnEggFound(Self);
-        FCurString := '';
-      end
-      else
-      if Length(FCurString) >= Length(Egg) then
-        FCurString := Copy(FCurString, 2, Length(Egg));
-    end;
-  end;
-end;
-{$ENDIF VisualCLX}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

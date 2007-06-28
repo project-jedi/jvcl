@@ -47,9 +47,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvTypes, JvThemes, JvComponent, JvExtComponent, JvExControls;
 
 type
@@ -126,13 +123,6 @@ type
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions: TJvHotTrackOptions;
-    {$IFDEF VisualCLX}
-    FMoving: Boolean;
-    FGripBmp: TBitmap;
-    procedure CreateSizeGrip;
-    function GetFrameWidth: Integer;
-    function IsInsideGrip(X, Y: Integer): Boolean;
-    {$ENDIF VisualCLX}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -155,7 +145,7 @@ type
     procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
   protected
     procedure DrawCaption; dynamic;
-    procedure DrawCaptionTo(ACanvas: TCanvas {$IFDEF VisualCLX}; DrawingMask: Boolean = False {$ENDIF}); dynamic;
+    procedure DrawCaptionTo(ACanvas: TCanvas ); dynamic;
     procedure DrawBorders; dynamic;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -167,17 +157,12 @@ type
     procedure TextChanged; override;
     procedure Paint; override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    {$IFDEF VCL}
     procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
-    {$ENDIF VCL}
     function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
     procedure DoAfterMove; dynamic;
-    {$IFDEF VisualCLX}
-    procedure DrawMask(ACanvas: TCanvas); override;
-    {$ENDIF VisualCLX}
     procedure Loaded; override;
     procedure Resize; override;
     procedure Rearrange;
@@ -195,9 +180,7 @@ type
     function ArrangeEnabled: Boolean;
     property ArrangeWidth: Integer read FArrangeWidth;
     property ArrangeHeight: Integer read FArrangeHeight;
-    {$IFDEF VCL}
     property DockManager;
-    {$ENDIF VCL}
     property Canvas;
 
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
@@ -261,7 +244,6 @@ type
     property Align;
     property Alignment;
     property Anchors;
-    {$IFDEF VCL}
     property AutoSize;
     property BiDiMode;
     property UseDockManager default True;
@@ -278,7 +260,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
@@ -498,9 +479,7 @@ end;
 constructor TJvCustomArrangePanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
-  {$ENDIF VCL}
   FMultiLine := False;
   FTransparent := False;
   FFlatBorder := False;
@@ -519,13 +498,10 @@ begin
   FreeAndNil(FHotTrackFont);
   FreeAndNil(FHotTrackOptions);
   FreeAndNil(FArrangeSettings);
-  {$IFDEF VisualCLX}
-  FreeAndNil(FGripBmp);
-  {$ENDIF VisualCLX}
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomArrangePanel.CreateParams(var Params: TCreateParams);
 begin
@@ -570,7 +546,7 @@ begin
   FWasMoved := False;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvCustomArrangePanel.DoBeforeMove(X,Y: Integer): Boolean;
 begin
@@ -585,69 +561,11 @@ begin
     FOnAfterMove(Self);
 end;
 
-{$IFDEF VisualCLX}
 
-function TJvCustomArrangePanel.GetFrameWidth: Integer;
-begin
-  if FFlatBorder then
-    Result := 1
-  else
-  begin
-    Result := BorderWidth ; //Total Width of BevelInner and Outer;
-    if BevelOuter <> bvNone then
-      Inc(Result, BevelWidth);
-    if BevelInner <> bvNone then
-      Inc(Result, BevelWidth);
-  end;
-end;
-
-function TJvCustomArrangePanel.IsInsideGrip(X, Y: Integer): Boolean;
-var
-  R: TRect;
-  I: Integer;
-begin
-  I := GetFrameWidth;
-  R := Bounds(Width - 12 - I, Height - 12 - I, 12, 12);
-  Result := QWindows.PtInRect(R, X, Y);
-end;
-
-procedure TJvCustomArrangePanel.DrawMask(ACanvas: TCanvas);
-var
-  R: TRect;
-  I, J, X, Y: Integer;
-begin
-  inherited DrawMask(ACanvas);
-  ACanvas.Brush.Style := bsClear;
-  ACanvas.Pen.Color := clDontMask;
-  R := Bounds(0, 0, Width, Height);
-  I := GetFrameWidth;
-  for J := 0 to I do
-  begin
-    ACanvas.Rectangle(R);
-    InflateRect(R, -1, -1)
-  end;
-  DrawCaptionTo(ACanvas, True);
-  if Sizeable then
-  begin
-    X := ClientWidth - FGripBmp.Width - I;
-    Y := ClientHeight - FGripBmp.Height - I;
-    for I := 0 to 2 do
-      for J := 0 to 2 do
-      begin
-        ACanvas.MoveTo(X + 4 * I + J, Y + FGripBmp.Height);
-        ACanvas.LineTo(X + FGripBmp.Width, Y + 4 * I + J);
-      end
-  end;
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvCustomArrangePanel.Paint;
 var
   X, Y: Integer;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
   R: TRect;
   OldPenColor:TColor;
   OldPenWidth: Integer;
@@ -743,13 +661,6 @@ begin
     {$ENDIF JVCLThemesEnabled}
       with Canvas do
       begin
-        {$IFDEF VisualCLX}
-        I := GetFrameWidth;
-        X := ClientWidth - FGripBmp.Width - I;
-        Y := ClientHeight - FGripBmp.Height - I;
-        Draw(X, Y, FGripBmp);
-        {$ENDIF VisualCLX}
-        {$IFDEF VCL}
         Font.Name := 'Marlett';
         Font.Charset := DEFAULT_CHARSET;
         Font.Size := 12;
@@ -764,12 +675,11 @@ begin
         TextOut(X, Y, 'o');
         Canvas.Font.Color := clBtnShadow;
         TextOut(X, Y, 'p');
-        {$ENDIF VCL}
       end;
   end;
 end;
 
-{$IFDEF VCL}
+
 // (asn) with VisualCLX Width := Width + 1 will call AdjustSize
 procedure TJvCustomArrangePanel.AdjustSize;
 begin
@@ -781,7 +691,7 @@ begin
     Width := Width - 1;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomArrangePanel.DrawBorders;
 var
@@ -818,7 +728,7 @@ begin
   DrawCaptionTo(Self.Canvas);
 end;
 
-procedure TJvCustomArrangePanel.DrawCaptionTo(ACanvas: TCanvas {$IFDEF VisualCLX}; DrawingMask: Boolean = False {$ENDIF});
+procedure TJvCustomArrangePanel.DrawCaptionTo(ACanvas: TCanvas );
 const
   Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
@@ -859,11 +769,6 @@ begin
         taCenter:
           OffsetRect(ATextRect, -ATextRect.Left + (Width - (ATextRect.Right - ATextRect.Left)) div 2, 0);
       end;
-      {$IFDEF VisualCLX}
-      if DrawingMask then
-        Font.Color := clDontMask
-      else
-      {$ENDIF VisualCLX}
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
@@ -891,16 +796,11 @@ begin
   if not MouseOver and Enabled and (Control = nil) then
   begin
     OtherDragging :=
-      {$IFDEF VCL}
        {$IFDEF COMPILER6_UP}
       Mouse.IsDragging;
        {$ELSE}
       KeyPressed(VK_LBUTTON);
       {$ENDIF COMPILER6_UP}
-     {$ENDIF VCL}
-     {$IFDEF VisualCLX}
-      DragActivated;
-     {$ENDIF VisualCLX}
     NeedRepaint := not Transparent and
      ({IsThemed or} (FHotTrack and Enabled and not FDragging and not OtherDragging));
     inherited MouseEnter(Control); // set MouseOver
@@ -919,16 +819,11 @@ begin
   if csDesigning in ComponentState then
     Exit;
   OtherDragging :=
-    {$IFDEF VCL}
      {$IFDEF COMPILER6_UP}
     Mouse.IsDragging;
      {$ELSE}
     KeyPressed(VK_LBUTTON);
      {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    DragActivated;
-    {$ENDIF VisualCLX}
   if MouseOver and Enabled and (Control = nil) then
   begin
     NeedRepaint := not Transparent and
@@ -948,16 +843,7 @@ begin
     FTransparent := Value;
     {if not IsThemed then}
     begin
-      {$IFDEF VCL}
       RecreateWnd;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Masked := FTransparent;
-      if FTransparent then
-        ControlStyle := ControlStyle - [csOpaque]
-      else
-        ControlStyle := ControlStyle + [csOpaque]
-      {$ENDIF VisualCLX}
     end;
   end;
 end;
@@ -1016,12 +902,6 @@ begin
   if FSizeable <> Value then
   begin
     FSizeable := Value;
-    {$IFDEF VisualCLX}
-    if Value then
-      CreateSizeGrip
-    else
-      FreeAndNil(FGripBmp);
-    {$ENDIF VisualCLX}
     Invalidate;
   end;
 end;
@@ -1029,7 +909,6 @@ end;
 procedure TJvCustomArrangePanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  {$IFDEF VCL}
   if Sizeable and (Button = mbLeft) and ((Width - X) < 12) and ((Height - Y) < 12) then
   begin
     FDragging := True;
@@ -1039,26 +918,6 @@ begin
   end
   else
     inherited MouseDown(Button, Shift, X, Y);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Sizeable and (Button = mbLeft) and IsInsideGrip(X, Y) then
-  begin
-    FDragging := True;
-    FLastPos := Point(X, Y);
-    MouseCapture := True;
-    Screen.Cursor := crSizeNWSE;
-  end
-  else
-    if FMovable and QWindows.PtInRect(Rect( 5, 5, Width - 5, Height -5), X, Y) and DoBeforeMove( X, Y ) then
-    begin
-      FMoving := True;
-      FLastPos := Point(X, Y);
-      MouseCapture := True;
-      Screen.Cursor := crDrag;
-    end
-    else
-      inherited MouseDown(Button, Shift, X, Y);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomArrangePanel.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -1082,29 +941,12 @@ begin
     end;
   end
   else
-  {$IFDEF VCL}
     inherited MouseMove(Shift, X, Y);
   if Sizeable and ((Width - X) < 12) and ((Height - Y) < 12) then
     Cursor := crSizeNWSE
   else
     Cursor := crDefault;
-  {$ENDIF VCL}
   begin
-    {$IFDEF VisualCLX}
-    if Movable and FMoving then
-    begin
-      SetBounds(Left + X - FLastPos.X, Top + Y - FLastPos.Y, Width, Height);
-      FWasMoved := True;
-    end
-    else
-    begin
-      inherited MouseMove(Shift, X, Y);
-      if Sizeable and IsInsideGrip(X, Y) then
-        Cursor := crSizeNWSE
-      else
-        Cursor := crDefault;
-    end;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1118,19 +960,6 @@ begin
     Screen.Cursor := crDefault;
     Refresh;
   end
-  {$IFDEF VisualCLX}
-  else
-  if FMoving and Movable then
-  begin
-    FMoving := False;
-    MouseCapture := False;
-    Screen.Cursor := crDefault;
-    if FWasMoved then
-      DoAfterMove;
-    FWasMoved := False;
-    Refresh;
-  end
-  {$ENDIF VisualCLX}
   else
     inherited MouseUp(Button, Shift, X, Y);
 end;
@@ -1301,12 +1130,7 @@ begin
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
     if (OldWidth <> TmpWidth) or (OldHeight <> Height) then
-      {$IFDEF VCL}
       SendMessage(GetFocus, WM_PAINT, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      UpdateWindow(GetFocus);
-      {$ENDIF VisualCLX}
   finally
     FArrangeControlActive := False;
   end;
@@ -1434,37 +1258,7 @@ begin
     Rearrange;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomArrangePanel.CreateSizeGrip;
-var
-  I: Integer;
-begin
-  FGripBmp := TBitmap.Create;
-  FGripBmp.Width := 13; //GetSystemMetrics(SM_CXVSCROLL);
-  FGripBmp.Height := 13; //GetSystemMetrics(SM_CXYSCROLL);
-  with FGripBmp.Canvas do
-  begin
-    Brush.Color := clBackground;
-    FillRect(Bounds(0, 0, Width, Height));
-    Pen.Width := 1;
-    for I := 0 to 2 do
-    begin
-      Pen.Color := clLight;
-      MoveTo(3 * I, FGripBmp.Height);
-      LineTo(FGripBmp.Width, 3 * I);
-      Pen.Color := clDark;
-      MoveTo(3 * I + 1, FGripBmp.Height);
-      LineTo(FGripBmp.Width, 3 * I + 1);
-//      Pen.Color := clMid;
-      MoveTo(3 * I + 2, FGripBmp.Height);
-      LineTo(FGripBmp.Width, 3 * I + 2);
-    end;
-  end;
-  FGripBmp.TransparentColor := clBackground;
-  FGripBmp.TransparentMode := tmFixed;
-  FGripBmp.Transparent := True;
-end;
-{$ENDIF VisualCLX}
+
 
 { TJvPanel }
 

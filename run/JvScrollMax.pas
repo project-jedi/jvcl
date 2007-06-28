@@ -99,7 +99,7 @@ type
     procedure BoundsChanged; override;
     procedure Loaded; override;
     procedure Paint; override;
-    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
+    procedure SetParent( AParent: TWinControl); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -108,7 +108,7 @@ type
     procedure UpdateSize(ATop: Integer);
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CollapsedHeight: Integer;
-    procedure ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer); override;
+    procedure ChangeScale(M, D : Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     property Data: Pointer read FData write FData;
@@ -145,10 +145,8 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
-    {$IFDEF VCL}
     property BiDiMode;
     property ParentBiDiMode;
-    {$ENDIF VCL}
   end;
 
   TJvScrollMaxBands = class(TJvCustomControl)
@@ -237,9 +235,7 @@ type
     procedure Loaded; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function GetChildParent: TComponent; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -287,14 +283,11 @@ type
     property OnEndDrag;
     property OnStartDrag;
   public
-    {$IFDEF VCL}
     property DockManager;
-    {$ENDIF VCL}
   published
     property Anchors;
     //property AutoSize;
     property Constraints;
-    {$IFDEF VCL}
     property BiDiMode;
     property UseDockManager default True;
     property DockSite;
@@ -312,7 +305,6 @@ type
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
-    {$ENDIF VCL}
   end;
 
   EJvScrollMaxError = class(Exception);
@@ -375,9 +367,7 @@ type
   TJvScroller = class(TPanel)
   private
     FY: Integer;
-    {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    {$ENDIF VCL}
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -411,13 +401,13 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvScroller.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   with (Owner as TJvPanelScrollBar) do
     Msg.Result := Integer(FDesignInteractive and (FPage <> FMax - FMin + 1));
 end;
-{$ENDIF VCL}
+
 
 //=== { TJvPanelScrollBar } ==================================================
 
@@ -538,19 +528,17 @@ end;
 type
   TJvBandBtn = class(TJvNoFrameButton)
   private
-    {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    {$ENDIF VCL}
   protected
     procedure FontChanged; override;
   end;
 
-{$IFDEF VCL}
+
 procedure TJvBandBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvBandBtn.FontChanged;
 begin
@@ -593,9 +581,7 @@ begin
     Spacing := -1;
     NoBorder := False;
     ParentColor := True;
-    {$IFDEF VCL}
     FButton.ParentBiDiMode := True;
-    {$ENDIF VCL}
   end;
   Expanded := True;
 end;
@@ -813,7 +799,7 @@ begin
   DesignerModified(Self);
 end;
 
-procedure TJvScrollMaxBand.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
+procedure TJvScrollMaxBand.SetParent( AParent: TWinControl);
 begin
   if not ((AParent is TJvScrollMaxBands) or (AParent = nil)) then
     raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxBandCanBePutOnlyIntoTJv);
@@ -943,9 +929,9 @@ begin
   end;
 end;
 
-procedure TJvScrollMaxBand.ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer);
+procedure TJvScrollMaxBand.ChangeScale(M, D : Integer);
 begin
-  inherited ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF});
+  inherited ChangeScale(M, D );
   ExpandedHeight := FExpandedHeight * M div D;
 end;
 
@@ -1136,7 +1122,7 @@ begin
 end;
 {$ENDIF JVCLThemesEnabled}
 
-{$IFDEF VCL}
+
 procedure TJvScrollMax.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -1146,7 +1132,7 @@ begin
     ExStyle := ExStyle or WS_EX_CONTROLPARENT;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvScrollMax.Loaded;
 begin

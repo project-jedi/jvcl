@@ -146,9 +146,7 @@ const
     (Name: 'Lanczos3'; Filter: Lanczos3Filter; Width: 3.0),
     (Name: 'Mitchell'; Filter: MitchellFilter; Width: 2.0)
     );
-{$IFDEF VisualCLX}
-  pf24bit = pf32bit;
-{$ENDIF VisualCLX}
+
 
 
 

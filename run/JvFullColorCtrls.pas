@@ -464,10 +464,8 @@ type
     property DragMode;
     property DropDownCount;
     property Enabled;
-    {$IFDEF VCL}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property ImeMode;
     property ImeName;
@@ -549,10 +547,8 @@ type
     property DragMode;
     property DropDownCount;
     property Enabled;
-    {$IFDEF VCL}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property ImeMode;
     property ImeName;

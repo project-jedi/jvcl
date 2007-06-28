@@ -38,9 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   Classes, Controls, DB, DBCtrls,
   JvEdit;
 
@@ -94,14 +92,12 @@ type
     property BorderStyle;
     property CharCase;
     property Color;
-    {$IFDEF VCL}
     property Flat;
     property DragCursor;
     property ImeMode;
     property ImeName;
     property OEMConvert;
     property ParentFlat;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -154,7 +150,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  Forms, 
+  Forms,
   JvConsts;
 
 //=== { TJvDBCustomSearchEdit } ==============================================

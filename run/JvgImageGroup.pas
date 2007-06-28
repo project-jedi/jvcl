@@ -127,7 +127,7 @@ implementation
 
 uses
   Math;
-  
+
 constructor TJvgImageGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

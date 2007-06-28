@@ -94,7 +94,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure DoChange;
-    
+
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Left: Integer read FLeft write SetLeft;
@@ -763,7 +763,7 @@ const
 // of the window used to render menus
 var
   currentXPPainter : TJvXPMenuItemPainter;
-  
+
 function StripHotkeyPrefix(const Text: string): string; // MBCS
 var
   I: Integer;
@@ -923,7 +923,7 @@ constructor TJvMainMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   inherited OwnerDraw := True;
-  
+
   RegisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
@@ -1121,7 +1121,7 @@ var
 begin
   if not ForceIfLoading and (csLoading in ComponentState) then
     Exit;
-    
+
   // Ideally, we would like to call RebuildHandle in TMenuItem but this
   // method is private. As a result, we add and immediately remove a fake
   // item. This in turn triggers the call to RebuildHandle.
@@ -1503,7 +1503,7 @@ begin
 
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := HotImageListChange;
-  
+
   SetPopupPoint(Point(-1, -1));
 
   // Set default values that are not 0
@@ -1588,7 +1588,7 @@ begin
     RefreshMenu(not OldOwnerDraw);
 
   // To have the editor show the images in the ImageIndex property of
-  // the menu items  
+  // the menu items
   inherited Images := Value;
 end;
 

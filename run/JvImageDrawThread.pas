@@ -35,12 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SysUtils,
-  {$ENDIF VisualCLX}
   Classes;
 
 type

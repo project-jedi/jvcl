@@ -133,7 +133,7 @@ object ProfReport: TProfReport
     GridLines = True
     MultiSelect = True
     RowSelect = True
-    SortType = stText
+    Sorted = True
     TabOrder = 1
     ViewStyle = vsReport
     OnColumnClick = lvReportColumnClick

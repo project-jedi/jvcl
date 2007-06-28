@@ -46,11 +46,11 @@ uses
   {$ENDIF USEJVCL}
   SysUtils, StdCtrls, Classes;
 
-{$IFDEF VCL}
+
 {$IFDEF COMPILER6_UP}
 {$DEFINE USECUSTOMGRID}
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+
 
 const
   JvDefaultBorderColor = TColor($EEF5FF);
@@ -59,14 +59,8 @@ type
   {$IFNDEF USEJVCL}
   THintString = string;
   {$HPPEMIT '#ifndef TDate'}
-  {$IFDEF VCL}
   {$HPPEMIT '#define TDate Controls::TDate'}
   {$HPPEMIT '#define TTime Controls::TTime'}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  {$HPPEMIT '#define TDate TDateTime'}
-  {$HPPEMIT '#define TTime TDateTime'}
-  {$ENDIF VisualCLX}
   {$HPPEMIT '#endif'}
   {$ENDIF !USEJVCL}
 
@@ -129,7 +123,7 @@ type
 
     procedure SetYearChanged(const Value: TOnYearChanged);
     procedure SetYear(const Value: Integer);
-    
+
     procedure SetupYearData;
     procedure SetupMonths;
     function GetCellData(var S: string): Boolean;
@@ -210,7 +204,7 @@ type
     procedure UpdateAllSizes;
     procedure AdjustBounds;
     procedure Loaded; override;
-    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
+    procedure SetParent( AParent: TWinControl); override;
 
     // Those three methods are used to provide support for reading
     // the GridYear property from DFM files that were using
@@ -383,7 +377,7 @@ begin
   // Those two must be set before setting DefaultColWidth and DefaultRowHeight
   FirstRowHeight := 18;
   FirstColWidth := 70;
-  
+
   DefaultColWidth := 16;
   DefaultRowHeight := 18;//FFirstRowHeight;
 
@@ -806,12 +800,7 @@ var
   S: string;
 begin
   if GetCellData(S) then
-    {$IFDEF VCL}
     if Clipboard.HasFormat(CF_TEXT) then
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if Clipboard.AsText <> '' then
-    {$ENDIF VisualCLX}
       SetCellData(Clipboard.AsText);
 end;
 
@@ -959,9 +948,7 @@ begin
   if (Col < 1) or (Row < 1) or (FYearData[Col, Row].DisplayText = '') then
     Exit;
   CD := TColorDialog.Create(Application);
-  {$IFDEF VCL}
   CD.Options := [cdFullOpen, cdAnyColor];
-  {$ENDIF VCL}
   if CD.Execute then
   begin
     FYearData[Col, Row].CustomColor := CD.Color;
@@ -998,14 +985,8 @@ begin
   Command := AFile;
   Params := '';
   WorkDir := '';
-  {$IFDEF VCL}
   ShellExecute(GetForegroundWindow, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ShellExecute(HWND_DESKTOP, 'open', PChar(Command),
-    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvYearGrid.SetHTMLFontName(const Value: string);
@@ -1064,7 +1045,7 @@ begin
   if (ACol < 1) or (ARow < 1) then
     Exit;
 
-  ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);  
+  ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);
 
   DS := FYearData[DayIndex, MonthIndex].DisplayText;
   if DS = '' then
@@ -1105,9 +1086,7 @@ var
   CD: TColorDialog;
 begin
   CD := TColorDialog.Create(Application);
-  {$IFDEF VCL}
   CD.Options := [cdFullOpen, cdAnyColor];
-  {$ENDIF VCL}
   if CD.Execute then
     BorderColor := CD.Color;
   CD.Free;
@@ -1118,9 +1097,7 @@ var
   CD: TColorDialog;
 begin
   CD := TColorDialog.Create(Application);
-  {$IFDEF VCL}
   CD.Options := [cdFullOpen, cdAnyColor];
-  {$ENDIF VCL}
   if CD.Execute then
     BookMarkColor := CD.Color;
   CD.Free;
@@ -1143,7 +1120,7 @@ begin
   WD := DayOfWeek(EncodeDate(AYear, AMonth, 1));
   Inc(WD, Integer(FirstDayOfWeek));
   if WD > 7 then
-    Dec(WD, 7); 
+    Dec(WD, 7);
   DayMonthIndexToColRow(WD + ADay - 1, AMonth, ACol, ARow);
   Result := True;
 end;
@@ -1258,7 +1235,7 @@ begin
     ScrollBars := FSavedScrollBars;
 
   FAutoSize := Value;
-  AdjustBounds;   
+  AdjustBounds;
 end;
 
 function TJvYearGrid.GetDefaultColWidth: Integer;
@@ -1314,7 +1291,7 @@ var
   I: Integer;
   CurValue: Integer;
   MaxValue: Integer;
-  
+
   function GetHighestTextInRow(Row: Integer): Integer;
   var
     I: Integer;
@@ -1370,7 +1347,7 @@ begin
         if CurValue > MaxValue then
           MaxValue := CurValue;
       end;
-        
+
       for I := 1 to RowCount-1 do
         RowHeights[I] := MaxValue {$IFDEF USEJVCL} + CellMargins.Top + CellMargins.Bottom {$ENDIF};
     end;
@@ -1428,7 +1405,7 @@ begin
   AdjustBounds;
 end;
 
-procedure TJvYearGrid.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
+procedure TJvYearGrid.SetParent( AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if Parent <> nil then
@@ -1557,7 +1534,7 @@ var
 begin
   ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);
   AMonth := MonthIndex;
-  ADay := FYearData[MonthIndex, DayIndex].DayInMonth; 
+  ADay := FYearData[MonthIndex, DayIndex].DayInMonth;
 end;
 
 procedure TJvYearGrid.DayMonthToColRow(ADay, AMonth: Integer; var ACol,

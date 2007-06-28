@@ -39,28 +39,10 @@ uses
   JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   Windows, Messages, Controls, Forms,
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QStdCtrls, QForms, // TOwnerDrawState
-  {$ENDIF VisualCLX}
   JvConsts,
   JVCLVer, JvComponentBase, JvExControls, JvExForms, JvExStdCtrls;
 
-{$IFDEF VisualCLX}
-type
-  HDC = QWindows.HDC;
-  {$NODEFINE HDC}
-  TMessage = QWindows.TMessage;
-  {$NODEFINE TMessage}
-  TMsg = QWindows.TMsg;
-  {$NODEFINE TMsg}
-  TOwnerDrawState = QStdCtrls.TOwnerDrawState;
-  {$NODEFINE TOwnerDrawState}
-  //TBevelKind = JvQExControls.TBevelKind;
-  //{$NODEFINE TBevelKind}
-  function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-  function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
-    Flags: Cardinal): LongBool;
-{$ENDIF VisualCLX}
+
 
 type
   TJvGraphicControl = TJvExGraphicControl;
@@ -69,13 +51,11 @@ type
   TJvWinControl = TJvExWinControl;
 
   TJvForm = class(TJvExForm)
-  {$IFDEF VCL}
   private
     FIsFocusable: Boolean;
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
   protected
-  {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -83,13 +63,11 @@ type
     procedure RefreshTranslation; virtual;
     {$ENDIF USE_DXGETTEXT}
 
-    {$IFDEF VCL}
     function ShowModal: Integer; override;
       { ShowNoActivate() shows the form but does not activate it. }
     procedure ShowNoActivate(CallActivate: Boolean = False);
   published
     property IsFocusable: Boolean read FIsFocusable write FIsFocusable default True;
-    {$ENDIF VCL}
   end;
 
 //=== { TJvPopupListBox } ====================================================
@@ -100,13 +78,8 @@ type
     FSearchText: string;
     FSearchTickCount: Longint;
   protected
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     procedure CreateWnd; override;
-    {$IFDEF VisualCLX}
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
     procedure KeyPress(var Key: Char); override;
   end;
 
@@ -135,18 +108,7 @@ const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
 
-{$IFDEF VisualCLX}
-function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-begin
-  Result :=  QWindows.ColorToRGB(Color, Instance);
-end;
 
-function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
-  Flags: Cardinal): LongBool;
-begin
-  Result := QWindows.DrawEdge(Handle, Rect, Edge, Flags);
-end;
-{$ENDIF VisualCLX}
 
 //=== { TJvForm } ============================================================
 
@@ -206,7 +168,7 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
-{$IFDEF VCL}
+
 
 procedure TJvForm.CMShowingChanged(var Message: TMessage);
 var
@@ -270,11 +232,11 @@ begin
   Visible := True;
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvPopupListBox } ====================================================
 
-{$IFDEF VCL}
+
 
 procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
 begin
@@ -288,32 +250,16 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvPopupListBox.CreateWnd;
 begin
   inherited CreateWnd;
-  {$IFDEF VCL}
   Windows.SetParent(Handle, 0);
   CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWidget_setFocus(Handle);
-  {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VisualCLX}
 
-function TJvPopupListBox.WidgetFlags: Integer;
-begin
-  Result :=
-    Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW
-    Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
-    Integer(WidgetFlags_WStyle_Tool) or         // WS_EX_TOOLWINDOW
-    Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvPopupListBox.KeyPress(var Key: Char);
 var
@@ -333,9 +279,7 @@ begin
         if Length(FSearchText) < 32 then
           FSearchText := FSearchText + Key;
         {$IFNDEF CLR}
-        {$IFDEF VCL}
         SendMessage(Handle, LB_SELECTSTRING, WPARAM(-1), LPARAM(PChar(FSearchText)));
-        {$ENDIF VCL}
         {$ELSE}
         SendTextMessage(Handle, LB_SELECTSTRING, WPARAM(-1), FSearchText);
         {$ENDIF !CLR}

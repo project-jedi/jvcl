@@ -287,23 +287,10 @@ end;
 function TJvIconList.AddResource(Instance: THandle; ResId: {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF}): Integer;
 var
   Ico: TIcon;
-  {$IFDEF VisualCLX}
-  ResStream: TResourceStream;
-  {$ENDIF VisualCLX}
 begin
   Ico := TIcon.Create;
   try
-    {$IFDEF VCL}
     Ico.Handle := LoadIcon(Instance, ResId);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResId), RT_RCDATA);
-    try
-      Ico.LoadFromStream(ResStream);
-    finally
-      ResStream.Free;
-    end;
-    {$ENDIF VisualCLX}
     Result := AddIcon(Ico);
   except
     Ico.Free;
@@ -386,23 +373,10 @@ procedure TJvIconList.InsertResource(Index: Integer; Instance: THandle;
   ResId: {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF});
 var
   Ico: TIcon;
-  {$IFDEF VisualCLX}
-  ResStream: TResourceStream;
-  {$ENDIF VisualCLX}
 begin
   Ico := TIcon.Create;
   try
-    {$IFDEF VCL}
     Ico.Handle := LoadIcon(Instance, ResId);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResId), RT_RCDATA);
-    try
-      Ico.LoadFromStream(ResStream);
-    finally
-      ResStream.Free;
-    end;
-    {$ENDIF VisualCLX}
     FList.Insert(Index, Ico);
     Ico.OnChange := IconChanged;
   except

@@ -253,7 +253,6 @@ type
     property Date;
     property DateFormat;
     property DateSeparator;
-    {$IFDEF VCL}
     {property BiDiMode;}
     {property ParentBiDiMode;}
     {$IFDEF COMPILER6_UP}
@@ -269,7 +268,6 @@ type
     property ParentFlat;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DirectInput;
     property DisabledColor;
     property DisabledTextColor;
@@ -398,7 +396,7 @@ begin
     inherited AcceptValue(TmpValue);
 
   // Inherited AcceptValue will change the base class Text property, thus not
-  // calling our SetText method. As a result, we must set the date in this case 
+  // calling our SetText method. As a result, we must set the date in this case
   if Text <> TextBefore then
   begin
     AttemptTextToDate(Text, TmpDate, False);
@@ -1223,7 +1221,7 @@ begin
   // and day would not be separated at all.
   // Doing this means that a parent is required for the change to work.
   HandleNeeded;
-  
+
   BeginInternalChange;
   try
     inherited SetChecked(not IsEmpty);

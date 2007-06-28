@@ -729,7 +729,7 @@ var
   Interspace: Integer;
 begin
   Canvas.Font.Assign(Self.Font);
-  
+
   Interspace := 2;
   R := Rect(FCaptionShift.X, 0, 0, Canvas.TextHeight(Text) - FCaptionShift.Y);
 

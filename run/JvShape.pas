@@ -43,10 +43,8 @@ type
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property OnParentColorChange;
 
     property OnClick;

@@ -34,17 +34,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
   SysUtils, Classes, Contnrs, Graphics, Controls, Forms, ComCtrls, StdActns,
   JVCLVer, JvExComCtrls;
 
 type
   {$IFDEF COMPILER6_UP}
-  {$IFDEF VisualCLX}
-  TStatusPanelClass = class of TStatusPanel;
-  {$ENDIF VisualCLX}
   TJvStatusPanel = class(TStatusPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -77,21 +72,14 @@ type
   private
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
-    {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    {$ENDIF VCL}
   protected
     procedure BoundsChanged; override;
-    {$IFDEF VisualCLX}
-    procedure Paint; override;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     {$IFDEF COMPILER6_UP}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
-    function GetPanelClass: TStatusPanelClass; {$IFDEF VCL} override; {$ENDIF}
+    function GetPanelClass: TStatusPanelClass;  override;
     procedure SBSetParts(var msg: TMessage); message SB_SETPARTS;
     {$ENDIF COMPILER6_UP}
   public
@@ -140,7 +128,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
 begin
@@ -149,7 +137,7 @@ begin
   if not ThemeServices.ThemesEnabled then
   {$ENDIF JVCLThemesEnabled}
     with Params do
-      WindowClass.Style := WindowClass.Style and not CS_HREDRAW; 
+      WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
 end;
 
 procedure TJvStatusBar.WMPaint(var Msg: TWMPaint);
@@ -160,25 +148,15 @@ begin
     inherited;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvStatusBar.Paint;
-begin
-  {if FAutoHintShown then
-    DefaultHandler(Msg) // VisualCLX has no DefaultHandler
-  else}
-    inherited Paint;
-end;
-{$ENDIF VisualCLX}
+
+
 
 function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;
 var
   HintText: string;
-  {$IFDEF VCL}
   PanelEdges: Integer;
   Flags: DWORD;
-  {$ENDIF VCL}
 
   procedure CancelAutoHintShown;
   var
@@ -222,14 +200,12 @@ begin
     else
     begin
       SetAutoHintShown;
-      {$IFDEF VCL}
       PanelEdges := -1;
       Flags := SBT_NOBORDERS;
       if UseRightToLeftReading then
         Flags := Flags or SBT_RTLREADING;
       SendMessage(Handle, SB_SETPARTS, 1, LPARAM(@PanelEdges));
       SendMessage(Handle, SB_SETTEXT, Flags, LPARAM(PChar(HintText)));
-      {$ENDIF VCL}
       // (rom) may need VisualCLX part here
     end;
     Result := True;

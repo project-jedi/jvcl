@@ -91,26 +91,12 @@ begin
 end;
 
 procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
-{$IFDEF VisualCLX}
-var
-  TmpBmp: TBitmap;
-{$ENDIF VisualCLX}
+
 begin
   if (Icons <> nil) and (Icons.Count <> 0) then
   begin
     FNumber := (FNumber + 1) mod Icons.Count;
-    {$IFDEF VCL}
     Icons.GetIcon(FNumber, Application.Icon);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    TmpBmp := TBitmap.Create;
-    try
-      Icons.GetBitmap(FNumber, TmpBmp);
-      Application.Icon.Assign(TmpBmp);
-    finally
-      TmpBmp.Free;
-    end;
-    {$ENDIF VisualCLX}
   end;
 end;
 

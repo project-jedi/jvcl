@@ -37,9 +37,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  QWindows, Qt, QForms,
-  {$ENDIF VisualCLX}
   Classes, Controls, Graphics;
 
 type
@@ -173,23 +170,16 @@ begin
   Result := (Width = 0) and (Height = 0) and not Gray and Bitmap.Empty;
 end;
 
-{$IFDEF VisualCLX}
-type
-  TScrollingWidgetAccessProtected = class(TScrollingWidget);
-{$ENDIF VisualCLX}
+
 
 procedure TJvCaret.CreateCaret;
 const
   GrayHandles: array [Boolean] of THandle = (0, THandle(1));
-{$IFDEF VisualCLX}
-var
-  Handle: QWidgetH;
-{$ENDIF VisualCLX}
+
 begin
   if FCaretOwner.Focused and
     not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
   begin
-    {$IFDEF VCL}
       if UsingBitmap then
         OSCheck(Windows.CreateCaret(FCaretOwner.Handle, Bitmap.Handle, 0, 0))
       else
@@ -199,32 +189,13 @@ begin
         OSCheck(Windows.CreateCaret(FCaretOwner.Handle, 0, Width, Height));
       FCaretCreated := True;
       ShowCaret(FCaretOwner.Handle);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-      if FCaretOwner is TScrollingWidget then
-        Handle := TScrollingWidgetAccessProtected(FCaretOwner).ViewportHandle
-      else
-        Handle := FCaretOwner.Handle;
-
-      if UsingBitmap then
-        OSCheck(QWindows.CreateCaret(Handle, Bitmap.Handle, 0, 0))
-      else
-      { Gray carets seem to be unsupported on Win95 at least, so if the create
-        failed for the gray caret, try again with a standard black caret }
-      if not QWindows.CreateCaret(Handle, GrayHandles[Gray], Width, Height) then
-        OSCheck(QWindows.CreateCaret(Handle, 0, Width, Height));
-      FCaretCreated := True;
-      ShowCaret(Handle);
-    {$ENDIF VisualCLX}
   end;
 end;
 
 procedure TJvCaret.DestroyCaret;
 begin
   if CaretCreated and
-    {$IFDEF VCL}
     FCaretOwner.Focused and
-    {$ENDIF VCL}
     not (csDesigning in FCaretOwner.ComponentState) and
     not IsDefaultCaret then
   begin

@@ -400,7 +400,7 @@ begin
         WAIT_OBJECT_0:
           Synchronize(DoChange);
         WAIT_TIMEOUT:
-          ;  
+          ;
         else
           Synchronize(DoChange);
       end;
@@ -472,7 +472,7 @@ begin
       Inc(P, lstrlen(P) + 1);
       Inc(PArgs);
     end;
-    
+
     reg := TRegistry.Create;
     try
       reg.RootKey := HKEY_LOCAL_MACHINE;

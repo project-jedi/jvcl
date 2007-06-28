@@ -111,14 +111,8 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-    {$IFDEF VCL}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure LoadFromMimeSource(MimeSource: TMimeSource); override;
-    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override;
-    {$ENDIF VisualCLX}
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -167,7 +161,7 @@ begin
   CurDir := GetCurrentDir;
   with TOpenDialog.Create(nil) do
   try
-    Options := [{$IFDEF VCL} ofHideReadOnly, {$ENDIF} ofFileMustExist];
+    Options := [ ofHideReadOnly,  ofFileMustExist];
     DefaultExt := RsAniExtension;
     Filter := RsAniCurFilter;
     if Execute then
@@ -192,7 +186,7 @@ begin
 end;
 
 procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
-{$IFDEF VCL}
+
 var
   Stream: TStream;
 begin
@@ -206,12 +200,8 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-begin
-  // TODO
-end;
-{$ENDIF VisualCLX}
+
+
 
 function GetDInColors(BitCount: Word): Integer;
 begin
@@ -478,7 +468,7 @@ begin
   Result := Frames[Index].Icon.Height;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
@@ -490,7 +480,7 @@ begin
   raise EInvalidGraphicOperation.CreateRes(@SIconToClipboard);
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvAni.SetIndex(const Value: Integer);
 begin
@@ -987,12 +977,7 @@ procedure TJvAni.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if Assigned(FIcons) and (FIcons.Count > 0) then
     if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then
-      {$IFDEF VCL}
       DrawRealSizeIcon(ACanvas, Frames[Index].Icon, ARect.Left, ARect.Top);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
-      {$ENDIF VisualCLX}
 end;
 
 procedure TJvAni.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -1087,30 +1072,16 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
 
-procedure TJvAni.LoadFromMimeSource(MimeSource: TMimeSource);
-begin
-  raise EInvalidGraphicOperation.CreateRes(@RsENotSupported);
-end;
-
-procedure TJvAni.SaveToMimeSource(MimeSource: TClxMimeSource);
-begin
-  raise EInvalidGraphicOperation.CreateRes(@RsENotSupported);
-end;
-
-{$ENDIF VisualCLX}
 
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvAni, TControl);
   {$ENDIF COMPILER7_UP}
   Classes.RegisterClass(TJvAni);
-  {$ENDIF VCL}
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization

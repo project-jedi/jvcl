@@ -33,9 +33,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Windows, Graphics, Controls,
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
@@ -107,12 +104,7 @@ implementation
 
 uses
   SysUtils,
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvJVCLUtils, JvConsts;
 
 constructor TJvPicClip.Create(AOwner: TComponent);

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvRuntimeDesign" Design="-1">
   <Description>JVCL Runtime Design Components</Description>
-  <ClxDescription>JVCLX Runtime Design Components</ClxDescription>
   <GUID>{5E54CB04-C43A-4F05-853C-07A61538111C}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>

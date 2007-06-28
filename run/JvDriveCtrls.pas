@@ -1188,8 +1188,7 @@ end;
 function TJvDirectoryListBox.ReadDirectoryNames(const ParentDirectory: string;
   DirectoryList: TStrings): Integer;
 const
-  cAttr: array [Boolean] of Integer = (faDirectory,
-    {$IFDEF VCL} faReadOnly or faHidden or faSysFile or faArchive or {$ENDIF} faDirectory);
+  cAttr: array [Boolean] of Integer = (faDirectory,  faReadOnly or faHidden or faSysFile or faArchive or  faDirectory);
 var
   Status: Integer;
   SearchRec: TSearchRec;

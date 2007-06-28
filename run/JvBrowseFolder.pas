@@ -55,9 +55,6 @@ uses
   {$IFDEF CLR}
   System.Text, System.Runtime.InteropServices, System.Security,
   {$ENDIF CLR}
-  {$IFDEF VisualCLX}
-  Qt, QWindows,
-  {$ENDIF VisualCLX}
   Windows, Messages, ShlObj, Classes,
   JvBaseDlg;
 
@@ -324,10 +321,7 @@ uses
   {$ENDIF ~CLR}
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
-{$IFDEF VisualCLX}
-type
-  TMessage = Messages.TMessage;
-{$ENDIF VisualCLX}
+
 
 {$IFDEF CLR}
 // .NET loads the library on first access
@@ -1249,28 +1243,13 @@ begin
   else
     F := nil;
   if F <> nil then
-    {$IFDEF VCL}
     Result := F.Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := QWidget_winId(F.Handle)
-    {$ENDIF VisualCLX}
   else
   if Owner is TWinControl then
-    {$IFDEF VCL}
     Result := (Owner as TWinControl).Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := QWidget_winId((Owner as TWinControl).Handle)
-    {$ENDIF VisualCLX}
   else
   if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
-    {$IFDEF VCL}
     Result := Screen.ActiveCustomForm.Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := QWidget_winId(Screen.ActiveCustomForm.Handle)
-    {$ENDIF VisualCLX}
   else
     Result := GetForegroundWindow;
 end;

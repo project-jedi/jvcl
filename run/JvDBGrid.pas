@@ -64,9 +64,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   Classes, Graphics, Controls, Grids, Menus, DBGrids, DB, StdCtrls,
   Contnrs,
   JvTypes, {JvTypes contains Exception base class}
@@ -91,8 +89,8 @@ type
   TJvDBGrid = class;
 
   // Mantis 3895: The only way to lift an ambiguity in an event handler is to
-  // redefine a type. A simple rename is not enough, hence the distinction 
-  // between BCB and the others. 
+  // redefine a type. A simple rename is not enough, hence the distinction
+  // between BCB and the others.
   {$IFDEF BCB}
   TJvDBGridBitmap = class(TBitmap)
   end;
@@ -549,7 +547,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Math, TypInfo, Forms, Dialogs, DBConsts, 
+  SysUtils, Math, TypInfo, Forms, Dialogs, DBConsts,
   {$IFDEF COMPILER6_UP}
   StrUtils,
   JvDBLookup,
@@ -1165,7 +1163,7 @@ var
   I: Integer;
 begin
   // We cannot trigger DataLink.LayoutChanged nor rely on it, so we notify any linked
-  // control of the layout changes by calling DoChange on the registered 
+  // control of the layout changes by calling DoChange on the registered
   // TJvDBGridLayoutChangeLink objects
   for I := 0 to FChangeLinks.Count-1 do
     TJvDBGridLayoutChangeLink(FChangeLinks[I]).DoChange(Self, Kind);
@@ -3859,10 +3857,10 @@ begin
     R.TopLeft := TControl(Control.Parent).ScreenToClient(R.TopLeft);
     R.BottomRight := ClientToScreen(R.BottomRight);
     R.BottomRight := TControl(Control.Parent).ScreenToClient(R.BottomRight);
-    
+
     // Fred: I removed this code because moving a control away from the topleft corner
     // of the cell lets appear the cell and its focus rectangle behind.
-    
+
     //if Control is TCustomEdit then
     //begin
     //  { The edit control's text is not painted at good position when the control
@@ -3873,7 +3871,7 @@ begin
     //    Inc(R.Top, 2);
     //  end;
     //end;
-    
+
     ClientTopLeft := TControl(Control.Parent).ScreenToClient(Self.ClientOrigin);
     GridControl := FControls.ControlByName(Control.Name);
     if GridControl.FitCell in [fcDesignSize, fcBiggest] then

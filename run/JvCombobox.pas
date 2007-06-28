@@ -134,15 +134,13 @@ type
     procedure WMInitDialog(var Msg: TWMInitDialog); message WM_INITDIALOG;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
-    {$IFDEF VCL}
     function GetFlat: Boolean;
     function GetParentFlat: Boolean;
     procedure SetFlat(const Value: Boolean);
     procedure SetParentFlat(const Value: Boolean);
-    {$ENDIF VCL}
   protected
     function GetText: TCaption; virtual;
-    procedure SetText(const Value: TCaption); reintroduce; virtual; 
+    procedure SetText(const Value: TCaption); reintroduce; virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
@@ -200,10 +198,8 @@ type
     property Text: TCaption read GetText write SetText;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
-    {$IFDEF VCL}
     property Flat: Boolean read GetFlat write SetFlat default False;
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
-    {$ENDIF VCL}
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
@@ -378,10 +374,8 @@ type
 
     property Cursor;
     property Enabled;
-    {$IFDEF VCL}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property ParentColor;
     property ParentFont;
@@ -1743,7 +1737,7 @@ begin
   FKey := Key;
 end;
 
-procedure TJvCustomComboBox.KeyPress(var Key: Char); 
+procedure TJvCustomComboBox.KeyPress(var Key: Char);
 begin
   if (ReadOnly) and (Key = Chr(VK_BACK)) then
     Key := #0;
@@ -1937,7 +1931,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 function TJvCustomComboBox.GetFlat: Boolean;
 begin
   Result := not Ctl3D;
@@ -1957,7 +1951,7 @@ procedure TJvCustomComboBox.SetParentFlat(const Value: Boolean);
 begin
   ParentCtl3D := Value;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
 begin

@@ -50,9 +50,7 @@ type
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    {$IFDEF VCL}
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
-    {$ENDIF VCL}
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
     procedure Loaded; override;
@@ -101,9 +99,7 @@ begin
   FPopupControl := True;
   FPopupNames := pnHint;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
 end;
 
 destructor TJvControlBar.Destroy;
@@ -138,11 +134,9 @@ var
       It.Caption := AControl.Hint
     else
       It.Caption := AControl.Name;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     It.AutoCheck := True;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     It.Tag := Index;
     It.OnClick := PopupMenuClick;
     It.Checked := AControl.Visible;
@@ -181,9 +175,7 @@ var
   St, St2: string;
   I, J: Integer;
   LLeft, LTop: Integer;
-  {$IFDEF VCL}
   LDocked: Boolean;
-  {$ENDIF VCL}
 begin
   St := Value;
   J := 0;
@@ -210,26 +202,20 @@ begin
       if I <> 0 then
       begin
         LLeft := StrToIntDef(Copy(St2, 1, I - 1), TControl(FList[J]).Left);
-        {$IFDEF VCL}
         LDocked := True;
-        {$ENDIF VCL}
         St2 := Copy(St2, I + 1, Length(St2));
         I := Pos(',', St2);
         if I <> 0 then
         begin
-          {$IFDEF VCL}
           if Pos(cUndocked, St2) <> 0 then
             LDocked := False;
-          {$ENDIF VCL}
           St2 := Copy(St2, 1, I - 1);
         end;
-        {$IFDEF VCL}
         if LDocked and (TControl(FList[J]).Parent <> Self) then
           TControl(FList[J]).ManualDock(Self)
         else
         if (not LDocked) and (TControl(FList[J]).Parent = Self) then
           TControl(FList[J]).ManualDock(nil);
-        {$ENDIF VCL}
         LTop := StrToIntDef(St2, TControl(FList[J]).Top);
 
         if ControlAtPos(Point(LLeft, TControl(FList[J]).Top), True) <> nil then
@@ -276,14 +262,14 @@ begin
     FList.Add(Controls[I]);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvControlBar.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
   inherited DoAddDockClient(Client, ARect);
   if FList.IndexOf(Client) = -1 then
     FList.Add(Client);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvControlBar.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
 begin

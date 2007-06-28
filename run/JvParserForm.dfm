@@ -3,7 +3,7 @@ object JvHTMLParserForm: TJvHTMLParserForm
   Left = 437
   Top = 279
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
+  BorderStyle = fbsSingle
   Caption = 'Parser - Edit '
   ClientHeight = 242
   ClientWidth = 423
@@ -89,7 +89,7 @@ object JvHTMLParserForm: TJvHTMLParserForm
       Top = 22
       Width = 115
       Height = 21
-      Hint = 
+      Hint =
         'Put here the keyword'#13#10'you want the component to send'#13#10'when he ha' +
         's found this item'
       TabOrder = 0
@@ -134,7 +134,7 @@ object JvHTMLParserForm: TJvHTMLParserForm
       Top = 46
       Width = 115
       Height = 21
-      Hint = 
+      Hint =
         'Put here the position of the start tag'#13#10#13#10'1 if you don'#39't care, '#13 +
         #10'0 if it can'#39't be in the string, '#13#10'1 if you want it in the first' +
         ' position'#13#10'2 if you want it in the second position'#13#10'....'

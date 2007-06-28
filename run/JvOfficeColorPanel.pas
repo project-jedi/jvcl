@@ -37,9 +37,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Graphics, Controls, Forms, Buttons, Dialogs,ExtCtrls,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvTypes, JvExControls, JvSpeedButton,  JvPanel;
 
 const
@@ -255,10 +252,8 @@ type
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
-    {$IFDEF VCL}
     FColorDialogOptions: TColorDialogOptions;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
-    {$ENDIF VCL}
     procedure SetSelectedColor(const Value: TColor);
     function GetColorDlgCustomColors: TStrings;
     procedure SetColorDlgCustomColors(const Value: TStrings);
@@ -292,12 +287,7 @@ type
     procedure DoGetAddInControlSiteInfo(Sender: TControl; var ASiteInfo:
       TJvAddInControlSiteInfo); virtual;
     procedure DoPropertiesChanged(Sender: TObject; const PropName: string); virtual;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure InitWidget; override;
-    {$ENDIF VisualCLX}
     procedure Loaded; override;
     procedure Resize; override;
     procedure ShowHintChanged; override;
@@ -309,7 +299,7 @@ type
       and call strings.EndUpdate after changed. }
     function CreateUserColors(ColorList: TStrings): Integer; virtual;
     procedure CreateColorDrawersByColors(DrawersList: TList; ColorsList: TStringList; AVisible: Boolean);
-    procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
+    procedure SetEnabled( Value: Boolean); override;
 
     // Don't change the following list, the result might unpredictability.
     property StandardColorDrawers: TList read FStandardColorDrawers;
@@ -370,9 +360,7 @@ type
     property Properties: TJvOfficeColorPanelProperties read FProperties write SetProperties;
 
     property ColorDlgCustomColors: TStrings read GetColorDlgCustomColors write SetColorDlgCustomColors;
-    {$IFDEF VCL}
     property ColorDialogOptions: TColorDialogOptions read FColorDialogOptions write SetColorDialogOptions default [];
-    {$ENDIF VCL}
 
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
@@ -403,7 +391,6 @@ type
     property HotTrackFont;
     property HotTrackFontOptions;
     property HotTrackOptions;
-    {$IFDEF VCL}
     property ColorDialogOptions;
     property BiDiMode;
     property DragCursor;
@@ -412,7 +399,6 @@ type
     property OnCanResize;
     property OnEndDock;
     property OnGetSiteInfo;
-    {$ENDIF VCL}
 
     property Align;
     property Anchors;
@@ -1156,7 +1142,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 function JvReaderReadColorDialogOptions(Reader: TReader):TColorDialogOptions;
 var
   EnumName: string;
@@ -1196,7 +1182,7 @@ begin
     SkipSetBody;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure JvReaderReadStrings(Reader: TReader;Strings:TStrings);
 begin
@@ -1281,9 +1267,7 @@ begin
   FUserColorDrawers := TList.Create;
   FAddInControls := TList.Create;
 
-  {$IFDEF VCL}
   FColorDialogOptions := [];
-  {$ENDIF VCL}
   FClickColorType := cctNone;
 
   FProperties := TJvOfficeColorPanelProperties.Create;
@@ -1385,9 +1369,7 @@ begin
   end;
 
   FColorDialog := TJvOfficeColorDialog.Create(Self);
-  {$IFDEF VCL}
   FColorDialog.Options := FColorDialogOptions;
-  {$ENDIF VCL}
 
   FStandardColors.BeginUpdate;
   try
@@ -1868,9 +1850,6 @@ end;
 procedure TJvCustomOfficeColorPanel.DoColorButtonClick(Sender: TObject);
 var
   LastColor: TColor;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
 
   procedure HoldCustomColor(AColor: TColor);
   var
@@ -1945,9 +1924,7 @@ begin
         end
         else
         begin
-          {$IFDEF VCL}
           FColorDialog.Options := FColorDialogOptions;
-          {$ENDIF VCL}
           FColorDialog.Color := SelectedColor{FCustomColorDrawer.DrawColor};
           if FColorDialog.Execute then
           begin
@@ -1966,24 +1943,6 @@ begin
       end
       else
       begin
-        {$IFDEF VisualCLX}
-        // in clx have bug
-        FButtonNoneColor.Down := FClickColorType = cctNoneColor;
-        FButtonDefaultColor.Down := FClickColorType = cctDefaultColor;
-        FButtonCustomColor.Down := FClickColorType = cctCustomColor;
-        if Properties.ShowStandardColors then
-          for I := 0 to FStandardColorDrawers.Count - 1 do
-            TJvSpeedButton(FStandardColorDrawers[I]).Down :=
-              FStandardColorDrawers[I] = Sender;
-        if Properties.ShowSystemColors then
-          for I := 0 to FSystemColorDrawers.Count - 1 do
-            TJvSpeedButton(FSystemColorDrawers[I]).Down :=
-              FStandardColorDrawers[I] = Sender;
-        if Properties.ShowUserColors then
-          for I := 0 to FUserColorDrawers.Count - 1 do
-            TJvSpeedButton(FUserColorDrawers[I]).Down := FUserColorDrawers[I] =
-              Sender;
-        {$ENDIF VisualCLX}
 
         SelectedColor := TJvColorSpeedButton(Sender).DrawColor;
       end;
@@ -2311,7 +2270,7 @@ begin
     RearrangeControls;
 end;
 
-procedure TJvCustomOfficeColorPanel.SetEnabled({$IFDEF VisualCLX}const{$ENDIF}Value: Boolean);
+procedure TJvCustomOfficeColorPanel.SetEnabled(Value: Boolean);
 var
   I: Integer;
 begin
@@ -2341,7 +2300,7 @@ begin
     TControl(FAddInControls[I]).ShowHint := ShowHint;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomOfficeColorPanel.SetColorDialogOptions(const Value: TColorDialogOptions);
 begin
@@ -2354,15 +2313,9 @@ begin
   RearrangeControls;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomOfficeColorPanel.InitWidget;
-begin
-  inherited InitWidget;
-  RearrangeControls;
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvCustomOfficeColorPanel.SetProperties(const Value: TJvOfficeColorPanelProperties);
 begin
@@ -2481,10 +2434,8 @@ begin
   Filer.DefineProperty(FFilerTag, ReadData, nil, False);
   FFilerTag := 'CustomColors';
   Filer.DefineProperty(FFilerTag, ReadData, nil, False);
-  {$IFDEF VCL}
   FFilerTag := 'Options';
   Filer.DefineProperty(FFilerTag, ReadData, nil, False);
-  {$ENDIF VCL}
 end;
 
 procedure TJvOfficeColorPanel.ReadData(Reader: TReader);
@@ -2497,11 +2448,9 @@ begin
   else
   if SameText(FFilerTag, 'CustomColors') then
     JvReaderReadStrings(Reader,ColorDlgCustomColors)
-  {$IFDEF VCL}
   else
   if SameText(FFilerTag, 'Options') then
     ColorDialogOptions := JvReaderReadColorDialogOptions(Reader)
-  {$ENDIF VCL}
   ;
 end;
 

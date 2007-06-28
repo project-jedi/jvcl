@@ -48,9 +48,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, ShlObj, ShellAPI,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Classes, Graphics, Controls,
   JclWin32, JclSysInfo,
   JvVCL5Utils, JvJVCLUtils, JvComponentBase, JvTypes;
@@ -1500,7 +1497,6 @@ end;
 
 procedure UpdateToLogFont(AFont: TFont; var LogFont: TLogFont);
 begin
-  {$IFDEF VCL}
   with LogFont do
   begin
     StrCopy(lfFaceName, PChar(AFont.Name));
@@ -1514,10 +1510,6 @@ begin
     lfUnderline := Ord(fsUnderline in AFont.Style);
     lfStrikeOut := Ord(fsStrikeOut in AFont.Style);
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  GetObject(QFont_handle(AFont.Handle), SizeOf(LogFont), @LogFont);
-  {$ENDIF VisualCLX}
 end;
 
 procedure RaiseReadOnly(AlwaysRaise: Boolean = False);

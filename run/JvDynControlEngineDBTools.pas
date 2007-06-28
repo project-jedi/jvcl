@@ -32,12 +32,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Controls, DB, Classes,
-  {$IFDEF MSWINDOWS}
   ActnList, Forms, Graphics,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QActnList, QForms, QGraphics,
-  {$ENDIF UNIX}
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type

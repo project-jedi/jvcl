@@ -64,12 +64,10 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure SetWordWrap(const Value: Boolean);
     function GetCanvas: TCanvas;
-    {$IFDEF VCL}
     procedure SetPasswordChar(const Value: Char);
     function GetPasswordChar: Char;
     function GetText: TCaption;
     procedure SetText(const Value: TCaption);
-    {$ENDIF VCL}
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CaretChanged(Sender: TObject); dynamic;
@@ -77,10 +75,6 @@ type
     procedure FocusSet(PrevWnd: THandle); override;
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
     procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
-    {$IFDEF VisualCLX}
-    function GetText: TCaption; override;
-    procedure SetText(const Value: TCaption); override;
-    {$ENDIF VisualCLX}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure SetCaret(const Value: TJvCaret);
@@ -89,9 +83,7 @@ type
     // (rom) not CLX compatible
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   public
-    {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
-    {$ENDIF VCL}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -99,9 +91,7 @@ type
     property Leaving: Boolean read FLeaving;
   protected
     property Text: TCaption read GetText write SetText;
-    {$IFDEF VCL}
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
-    {$ENDIF VCL}
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -152,20 +142,16 @@ type
     property Enabled;
     property EditMask;
     property Font;
-    {$IFDEF VCL}
     property Flat;
     property GroupIndex;
     property ImeMode;
     property ImeName;
     property ParentFlat;
-    {$ENDIF VCL}
     property MaxLength;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    {$IFDEF VCL}
     property PasswordChar;
-    {$ENDIF VCL}
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
@@ -189,10 +175,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF VCL}
     property OnSetFocus;
     property OnKillFocus;
-    {$ENDIF VCL}
     property OnStartDrag;
   end;
 
@@ -247,7 +231,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomMaskEdit.DefaultHandler(var Msg);
 begin
   case TMessage(Msg).Msg of
@@ -258,7 +242,7 @@ begin
     inherited DefaultHandler(Msg);
   end;
 end;
-{$ENDIF VCL}
+
 
 destructor TJvCustomMaskEdit.Destroy;
 begin
@@ -305,12 +289,12 @@ begin
     FOnSetFocus(Self, APreviousControl);
 end;
 
-{$IFDEF VCL}
+
 function TJvCustomMaskEdit.GetPasswordChar: Char;
 begin
   Result := inherited PasswordChar;
 end;
-{$ENDIF VCL}
+
 
 function TJvCustomMaskEdit.GetText: TCaption;
 var
@@ -319,12 +303,7 @@ begin
   Tmp := ProtectPassword;
   try
     ProtectPassword := False;
-    {$IFDEF VCL}
     Result := inherited Text;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := inherited GetText;
-    {$ENDIF VisualCLX}
   finally
     ProtectPassword := Tmp;
   end;
@@ -337,12 +316,7 @@ begin
   if not MouseOver then
   begin
     if HotTrack then
-      {$IFDEF VCL}
       Ctl3D := True;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BorderStyle := bsSingle;
-      {$ENDIF VisualCLX}
     inherited MouseEnter(Control);
   end;
 end;
@@ -352,12 +326,7 @@ begin
   if MouseOver then
   begin
     if FHotTrack then
-      {$IFDEF VCL}
       Ctl3D := False;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BorderStyle := bsSingle; // maybe bsNone
-      {$ENDIF VisualCLX}
     inherited MouseLeave(Control);
   end;
 end;
@@ -378,25 +347,15 @@ begin
   FHotTrack := Value;
   if Value then
   begin
-    {$IFDEF VCL}
     Ctl3D := False;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BorderStyle := bsSingle; // maybe bsNone
-    {$ENDIF VisualCLX}
   end
   else
   begin
-    {$IFDEF VCL}
     Ctl3D := True;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BorderStyle := bsSingle;
-    {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomMaskEdit.SetPasswordChar(const Value: Char);
 var
   Tmp: Boolean;
@@ -409,16 +368,11 @@ begin
     ProtectPassword := Tmp;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomMaskEdit.SetText(const Value: TCaption);
 begin
-  {$IFDEF VCL}
   inherited Text := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  inherited SetText(Value);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomMaskEdit.SetAlignment(const Value: TAlignment);

@@ -644,7 +644,7 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   RegisterClasses([TJvContextProviderServerNotify]);
- 
+
 
 {$IFDEF UNITVERSIONING}
 finalization

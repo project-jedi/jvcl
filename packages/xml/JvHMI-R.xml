@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvHMI" Design="0">
   <Description>JVCL HMI Controls Runtime Package</Description>
-  <ClxDescription>JVCLX HMI Controls runtime package</ClxDescription>
   <GUID>{E8945997-84A1-4589-89BA-EF5759023364}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
@@ -19,13 +18,11 @@
     <Package Name="JCLC50" Targets="Cv5" Condition=""/>
     <Package Name="JCL" Targets="allv6up" Condition=""/>
     <Package Name="JCLVCL" Targets="VCLv6up" Condition=""/>
-    <Package Name="JclVClx" Targets="CLX" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="visualclx" Targets="CLX" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="all" Formname="frmSLDMappingEditorDialog" Condition=""/>

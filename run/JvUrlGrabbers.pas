@@ -242,7 +242,7 @@ type
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload; 
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload;
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedProtocolMarker: string; override;
@@ -436,7 +436,7 @@ constructor TJvProxyingUrlGrabberDefaultProperties.Create(
   AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
   inherited Create(AOwner);
-  
+
   FProxyMode := pmSysConfig;
   FProxyAddresses := 'proxyserver';
   FProxyIgnoreList := '<local>';
@@ -589,7 +589,7 @@ begin
         strPassword := Grabber.Password;
       if Port = 0 then
         Port := Grabber.Port;
-        
+
       // Setup the PChars for the call to InternetConnect
       if strUserName = '' then
         UserName := nil
@@ -622,7 +622,7 @@ begin
         InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
         InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
       end;
-      
+
 //      InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
       // Connect to the hostname
@@ -740,7 +740,7 @@ begin
         strPassword := Grabber.Password;
       if Port = 0 then
         Port := Grabber.Port;
-        
+
       // Setup the PChars for the call to InternetConnect
       if strUserName = '' then
         UserName := nil
@@ -750,7 +750,7 @@ begin
         Password := nil
       else
         Password := PChar(strPassword);
-      
+
       ErrorText := '';
 
       //Connect to the web
@@ -865,7 +865,7 @@ begin
             Break;
           Grabber.Stream.Write(Buf, dwBytesRead);
           Synchronize(UpdateGrabberProgress);
-          
+
           // Be CPU friendly.
           SleepEx(0, True);
         end;
@@ -1020,7 +1020,7 @@ begin
         if BytesRead > 0 then
           Grabber.Stream.Write(Buf, BytesRead);
         DoProgress;
-        
+
         // Be CPU friendly.
         SleepEx(0, True);
       end;

@@ -267,7 +267,7 @@ var
   end;
 
 begin
-  // make sure no alarm item is in past time (this will trigger the OnAlaram event every second until the alarm catches up) 
+  // make sure no alarm item is in past time (this will trigger the OnAlaram event every second until the alarm catches up)
   Current := Now;
   for I := 0 to Alarms.Count - 1 do
     Alarms[I].Time := MaxDate(Current, Alarms[I].Time);

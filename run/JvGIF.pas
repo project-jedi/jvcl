@@ -3058,13 +3058,11 @@ end;
 procedure Init;
 begin
   CF_GIF := RegisterClipboardFormat('GIF Image');
-  {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvGIFFrame, TControl);
   GroupDescendentsWith(TJvGIFImage, TControl);
   {$ENDIF COMPILER7_UP}
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
-  {$ENDIF VCL}
   {$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);

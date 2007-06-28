@@ -32,12 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
   ActnList, Graphics, ComCtrls, ImgList,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QActnList, QGraphics, QComCtrls, QImgList,
-  {$ENDIF UNIX}
   Classes,
   Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl,
@@ -1297,7 +1292,7 @@ end;
 
 procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                      
+end;
 
 procedure TJvDynControlJVCLDirectoryEdit.ControlSetHint(const Value: string);
 begin
@@ -1414,7 +1409,7 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                     
+end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetHint(const Value: string);
 begin
@@ -1492,7 +1487,7 @@ end;
 
 procedure TJvDynControlJVCLDateEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                 
+end;
 
 procedure TJvDynControlJVCLDateEdit.ControlSetHint(const Value: string);
 begin
@@ -1568,7 +1563,7 @@ end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                 
+end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetHint(const Value: string);
 begin
@@ -1712,7 +1707,7 @@ end;
 procedure TJvDynControlJVCLMemo.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                             
+end;
 
 procedure TJvDynControlJVCLMemo.ControlSetHint(const Value: string);
 begin
@@ -1811,7 +1806,7 @@ end;
 procedure TJvDynControlJVCLRichEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                             
+end;
 
 procedure TJvDynControlJVCLRichEdit.ControlSetHint(const Value: string);
 begin
@@ -1906,7 +1901,7 @@ end;
 procedure TJvDynControlJVCLRadioGroup.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                                   
+end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetHint(const Value: string);
 begin
@@ -1983,7 +1978,7 @@ end;
 procedure TJvDynControlJVCLListBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                                
+end;
 
 procedure TJvDynControlJVCLListBox.ControlSetHint(const Value: string);
 begin
@@ -2061,7 +2056,7 @@ end;
 procedure TJvDynControlJVCLCheckListBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                                     
+end;
 
 procedure TJvDynControlJVCLCheckListBox.ControlSetHint(const Value: string);
 begin
@@ -2120,9 +2115,7 @@ end;
 procedure TJvDynControlJVCLCheckListBox.ControlSetHeader(Index: Integer; Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
-  {$IFDEF VCL}
   Header[Index] := Value;
-  {$ENDIF VCL}
   {$ENDIF COMPILER6_UP}
 end;
 
@@ -2144,12 +2137,7 @@ end;
 function TJvDynControlJVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
 begin
   {$IFDEF COMPILER6_UP}
-  {$IFDEF VCL}
   Result := Header[Index];
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := False;
-  {$ENDIF VisualCLX}
   {$ELSE}
   Result := False;
   {$ENDIF COMPILER6_UP}
@@ -2203,7 +2191,7 @@ end;
 procedure TJvDynControlJVCLComboBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                                 
+end;
 
 procedure TJvDynControlJVCLComboBox.ControlSetHint(const Value: string);
 begin
@@ -2284,7 +2272,7 @@ end;
 
 procedure TJvDynControlJVCLGroupBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                 
+end;
 
 procedure TJvDynControlJVCLGroupBox.ControlSetHint(const Value: string);
 begin
@@ -2321,7 +2309,7 @@ end;
 
 procedure TJvDynControlJVCLPanel.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                              
+end;
 
 procedure TJvDynControlJVCLPanel.ControlSetHint(const Value: string);
 begin
@@ -2424,7 +2412,7 @@ end;
 procedure TJvDynControlJVCLImage.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                              
+end;
 
 procedure TJvDynControlJVCLImage.ControlSetHint(const Value: string);
 begin
@@ -2516,7 +2504,7 @@ end;
 
 procedure TJvDynControlJVCLScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                                  
+end;
 
 procedure TJvDynControlJVCLScrollBox.ControlSetHint(const Value: string);
 begin
@@ -2553,7 +2541,7 @@ end;
 
 procedure TJvDynControlJVCLLabel.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;                                              
+end;
 
 procedure TJvDynControlJVCLLabel.ControlSetHint(const Value: string);
 begin
@@ -2594,7 +2582,7 @@ procedure TJvDynControlJVCLLabel.ControlSetAlignment(Value: TAlignment);
 begin
   Alignment := Value;
 end;
-                      
+
 //=== { TJvDynControlJVCLStaticText } ========================================
 
 procedure TJvDynControlJVCLStaticText.ControlSetAnchors(Value: TAnchors);
@@ -2683,7 +2671,7 @@ end;
 procedure TJvDynControlJVCLButton.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                               
+end;
 
 procedure TJvDynControlJVCLButton.ControlSetHint(const Value: string);
 begin
@@ -2754,7 +2742,7 @@ end;
 procedure TJvDynControlJVCLRadioButton.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;                                                    
+end;
 
 procedure TJvDynControlJVCLRadioButton.ControlSetHint(const Value: string);
 begin

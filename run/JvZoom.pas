@@ -118,9 +118,6 @@ const
 implementation
 
 uses
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvJVCLUtils;
 
 constructor TJvZoom.Create(AOwner: TComponent);
@@ -197,26 +194,13 @@ begin
 end;
 
 procedure TJvZoom.PaintMe(Sender: TObject);
-{$IFDEF VisualCLX}
-var
-  P: TPoint;
-{$ENDIF VisualCLX}
+
 begin
-  {$IFDEF VCL}
   { Reading Canvas.Handle will implicitly set the canvas handle to the
     control's device context
     Calling PaintWindow will lock the canvas and call Paint
   }
   PaintWindow(Canvas.Handle);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Enabled then
-    GetCursorPos(P);
-    //Only draw if on a different position
-    if (P.X <> FLastPoint.X) or (P.Y <> FLastPoint.Y) then
-      Invalidate;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvZoom.PaintZoom;
@@ -224,12 +208,7 @@ var
   P: TPoint;
   X, Y, Dx, Dy: Integer;
   SourceRect: TRect;
-  {$IFDEF VCL}
   DesktopCanvas: TJvDesktopCanvas;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Bmp: TBitmap;
-  {$ENDIF VisualCLX}
 begin
   if Enabled then
   begin
@@ -279,23 +258,10 @@ begin
   SourceRect.Right := P.X + X;
   SourceRect.Bottom := P.Y + Y;
 
-  {$IFDEF VCL}
   //Draw the area around the mouse
   DesktopCanvas := TJvDesktopCanvas.Create;
   Canvas.CopyRect(Rect(0, 0, Width, Height), DesktopCanvas, SourceRect);
   DesktopCanvas.Free;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Bmp := TBitmap.Create;
-  Bmp.Handle := QPixmap_create;
-  try
-    with SourceRect do
-      QPixmap_grabWindow(Bmp.Handle, QWidget_winID(GetDesktopWindow), Left, Top, 2 * X, 2 * Y);
-    CopyRect(Canvas, Rect(0, 0, Width, Height), Bmp.Canvas, Rect(0,0, Bmp.Width, Bmp.Height));
-  finally
-    Bmp.Free;
-  end;
-  {$ENDIF VisualCLX}
 
   if FCrossHair then
   begin

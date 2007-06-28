@@ -1022,7 +1022,7 @@ end;
 function TJvTrayIcon.NotifyIcon(uFlags: UINT; dwMessage: DWORD): Boolean;
 const
   cMaxRetryCount = 30; // arbitrary
-  cDelay = 1000; // arbitrary                    
+  cDelay = 1000; // arbitrary
 var
   ErrorCode: Integer;
   RetryCount: Integer;

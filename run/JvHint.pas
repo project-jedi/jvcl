@@ -38,9 +38,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Controls, Forms, ExtCtrls,
-  {$IFDEF VisualCLX}
-  QGraphics, Qt,
-  {$ENDIF VisualCLX}
   JvHTControls, JvTypes;
 
 type

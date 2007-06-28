@@ -42,17 +42,11 @@ uses
   Jedi.WinForms.Vcl.Forms, Jedi.WinForms.Vcl.ImgList, Jedi.WinForms.Vcl.Menus,
   Jedi.WinForms.Vcl.Buttons, Jedi.WinForms.Vcl.ExtCtrls;
   {$ELSE}
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   ExtCtrls,
   {$IFDEF CLR}
   Types,
   {$ENDIF CLR}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
-  QExtCtrls,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs,
   JvVCL5Utils;
   {$ENDIF WINFORMS}
@@ -382,14 +376,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X: Integer; Y: Integer); override;
-    {$IFDEF VCL}
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure InitWidget; override;
-    procedure MouseLeave(AControl: TControl); override;
-    {$ENDIF VisualCLX}
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -488,12 +476,10 @@ type
     property OnStartDrag;
     property OnEndDrag;
 
-    {$IFDEF VCL}
     {$IFNDEF WINFORMS}
     property OnStartDock;
     property OnEndDock;
     {$ENDIF !WINFORMS}
-    {$ENDIF VCL}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -509,29 +495,9 @@ const
 implementation
 
 type
-  {$IFDEF VCL}
   TCanvasX = TCanvas;
-  {$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-  TCanvasX = class(TCanvas)
-    // LineTo under CLX draws the last point, Windows doesn't. This wrapper
-    // restores the last point.
-    procedure LineTo(X, Y: Integer);
-  end;
-
-procedure TCanvasX.LineTo(X, Y: Integer);
-var
-  C: TColor;
-begin
-  // Should be replaced because GetPixel is not really working under Linux
-  C := Pixels[X, Y];
-  inherited LineTo(X, Y);
-  Pixels[X, Y] := C;
-end;
-
-{$ENDIF VisualCLX}
 
 //=== { TJvCustomTabBar } ====================================================
 
@@ -570,7 +536,7 @@ begin
   FTabs := nil;
   FScrollButtonBackground.Free;
   FScrollButtonBackground := nil;
-  
+
   inherited Destroy;
 end;
 
@@ -961,7 +927,7 @@ begin
   inherited DragDrop(Source, X, Y);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomTabBar.CMMouseLeave(var Msg: TMessage);
 begin
@@ -974,21 +940,9 @@ begin
   Msg.Result := 1;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomTabBar.InitWidget;
-begin
-  inherited InitWidget;
-  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground); // reduces flicker
-end;
 
-procedure TJvCustomTabBar.MouseLeave(AControl: TControl);
-begin
-  SetHotTab(nil);
-  inherited MouseLeave(AControl);
-end;
-{$ENDIF VisualCLX}
+
 
 function TJvCustomTabBar.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
 begin
@@ -2036,7 +1990,7 @@ end;
 
 destructor TJvTabBarPainter.Destroy;
 begin
-  inherited Destroy; // invokes TJvTabBar.Notification that accesses FOnChangeList 
+  inherited Destroy; // invokes TJvTabBar.Notification that accesses FOnChangeList
   FOnChangeList.Free;
 end;
 
@@ -2056,15 +2010,10 @@ end;
 procedure TJvTabBarPainter.DrawScrollButton(Canvas: TCanvas; TabBar: TJvCustomTabBar; Button: TJvTabBarScrollButtonKind;
   State: TJvTabBarScrollButtonState; R: TRect);
 begin
-  {$IFDEF VCL}
   if TabBar.FlatScrollButtons then
     DrawButtonFace(Canvas, R, 1, bsNew, False, State = sbsPressed, False)
   else
     DrawButtonFace(Canvas, R, 1, bsWin31, False, State = sbsPressed, False);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DrawButtonFace(Canvas, R, 1, State = sbsPressed, False, TabBar.FlatScrollButtons);
-  {$ENDIF VisualCLX}
   if State = sbsPressed then
     OffsetRect(R, 1, 1);
   TabBar.DrawScrollBarGlyph(Canvas,
@@ -2291,7 +2240,7 @@ begin
     if (Tab.ImageIndex <> -1) and (Tab.GetImages <> nil) then
     begin
       Tab.GetImages.Draw(Canvas, R.Left, R.Top + (R.Bottom - R.Top - Tab.GetImages.Height) div 2,
-        Tab.ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Tab.Enabled);
+        Tab.ImageIndex,  Tab.Enabled);
       Inc(R.Left, Tab.GetImages.Width + 2);
     end;
 

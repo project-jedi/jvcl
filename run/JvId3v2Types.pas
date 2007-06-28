@@ -998,7 +998,7 @@ const
     'Progressive Rock',
     'Psychedelic Rock',
     'Symphonic Rock',
-    'Slow Rock',           
+    'Slow Rock',
     'Big Band',
     'Chorus',
     'Easy Listening',

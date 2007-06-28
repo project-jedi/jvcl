@@ -1269,7 +1269,7 @@ begin
         AValue := Trim(Copy(AValue, I + 1, MaxInt));
       end
       else
-        raise Exception.Create('');        
+        raise Exception.Create('');
     end
     else
     begin
@@ -1338,7 +1338,7 @@ begin
   if SetOperator <> soNone then
   begin
     if SecondKind = skConstant then
-      LValue2 := SecondValue             
+      LValue2 := SecondValue
     else
       LValue2 := AElement.Properties.Value(SecondValue, ParseValue(SecondValue));
     case SetOperator of

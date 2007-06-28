@@ -39,16 +39,13 @@ uses
   Windows, Graphics, Controls, Classes, SysUtils;
 
 {$HPPEMIT '#ifndef TDate'}
-{$IFDEF VCL}
+
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$HPPEMIT '#define TDate TDateTime'}
-{$HPPEMIT '#define TTime TDateTime'}
-{$ENDIF VisualCLX}
+
+
 {$HPPEMIT '#endif'}
-  
+
 type
   TJvTFVisibleScrollBars = set of (vsbHorz, vsbVert);
   EJvTFDateError = class(Exception);
@@ -491,12 +488,7 @@ begin
   DC := GetDC(HWND_DESKTOP);
   hSavFont := SelectObject(DC, AFont.Handle);
   //GetTextExtentPoint32(DC, cStr, Length(ATxt), Size);
-  {$IFDEF VCL}
   Windows.GetTextExtentPoint32(DC, PTxt, StrLen(PTxt), Size);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  GetTextExtentPoint32(DC, PTxt, StrLen(PTxt), Size);
-  {$ENDIF VisualCLX}
   StrDispose(PTxt);
   SelectObject(DC, hSavFont);
   ReleaseDC(HWND_DESKTOP, DC);
@@ -587,9 +579,7 @@ procedure DrawAngleText(ACanvas: TCanvas; HostRect: TRect;
   var TextBounds: TRect; AAngle: Integer; HAlign: TAlignment;
   VAlign: TJvTFVAlignment; ATxt: string);
 var
-  {$IFDEF VCL}
   LogFont: TLogFont;
-  {$ENDIF VCL}
   TxtRect: TRect;
   Flags: UINT;
   PTxt: PChar;
@@ -601,17 +591,14 @@ begin
   //CalcTextPos(TxtRect, ACanvas.Font, AAngle, HAlign, VAlign, ATxt);
   CalcTextPos(HostRect, TextLeft, TextTop, TextBounds, ACanvas.Font, AAngle,
     HAlign, VAlign, ATxt);
-  {$IFDEF VCL}
   Windows.GetObject(ACanvas.Font.Handle, SizeOf(LogFont), @LogFont);
   LogFont.lfEscapement := AAngle;
   LogFont.lfOrientation := LogFont.lfEscapement;
   ACanvas.Font.Handle := CreateFontIndirect(LogFont);
-  {$ENDIF VCL}
   Flags := DT_NOPREFIX or DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE;
 
   PTxt := StrAlloc((Length(ATxt) + 4) * SizeOf(Char));
   StrPCopy(PTxt, ATxt);
-  {$IFDEF VCL}
   //ClipRgn := Windows.CreateRectRgn(ARect.Left, ARect.Top,
     //                               ARect.Right, ARect.Bottom);
   ClipRgn := Windows.CreateRectRgn(HostRect.Left, HostRect.Top,
@@ -626,21 +613,6 @@ begin
   Windows.DeleteObject(ClipRgn);
   StrDispose(PTxt);
   ACanvas.Font.Handle := 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ClipRgn := CreateRectRgn(HostRect.Left, HostRect.Top,
-    HostRect.Right, HostRect.Bottom);
-  SelectClipRgn(ACanvas.Handle, ClipRgn);
-
-  //Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-  TxtRect := Rect(TextLeft, TextTop, TextLeft + 1, TextTop + 1);
-  DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-
-  SelectClipRgn(ACanvas.Handle, 0);
-  DeleteObject(ClipRgn);
-  StrDispose(PTxt);
-  ACanvas.Font.Handle := nil;
-  {$ENDIF VisualCLX}
 
   //ARect := TxtRect;
 end;

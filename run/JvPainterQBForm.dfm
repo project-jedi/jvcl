@@ -1,7 +1,7 @@
 object PainterQBForm: TPainterQBForm
   Left = 443
   Top = 124
-  BorderStyle = bsToolWindow
+  BorderStyle = fbsToolWindow
   Caption = 'QuickBack'
   ClientHeight = 292
   ClientWidth = 176
@@ -131,7 +131,7 @@ object PainterQBForm: TPainterQBForm
       Height = 170
       Kind = sbVertical
       Max = 255
-      PageSize = 0
+      
       TabOrder = 1
       OnChange = trkRedChange
     end
@@ -142,7 +142,7 @@ object PainterQBForm: TPainterQBForm
       Height = 170
       Kind = sbVertical
       Max = 255
-      PageSize = 0
+      
       TabOrder = 2
       OnChange = trkGreenChange
     end
@@ -153,7 +153,7 @@ object PainterQBForm: TPainterQBForm
       Height = 170
       Kind = sbVertical
       Max = 255
-      PageSize = 0
+      
       TabOrder = 3
       OnChange = trkBlueChange
     end
@@ -165,7 +165,7 @@ object PainterQBForm: TPainterQBForm
       Kind = sbVertical
       Max = 255
       Min = 16
-      PageSize = 0
+      
       Position = 255
       TabOrder = 4
       OnChange = trkFactorChange

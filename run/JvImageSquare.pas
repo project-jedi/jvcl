@@ -81,9 +81,7 @@ type
     property Text;
     property Visible;
     property Enabled;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property DragMode;
     property PopupMenu;
     property ParentShowHint;
@@ -114,12 +112,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   ExtCtrls, CommCtrl,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QExtCtrls,
-  {$ENDIF VisualCLX}
   JvThemes, JvResources;
 
 //=== { TJvImageSquare } =====================================================
@@ -211,13 +204,8 @@ begin
     { draw in middle }
     DX := (Width - FImageList.Width) div 2;
     DY := (Height - FImageList.Height) div 2;
-    {$IFDEF VCL}
     ImageList_DrawEx(FImageList.Handle, FIndex, Canvas.Handle,
       DX, DY, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FImageList.Draw(Canvas, DX, DY, FIndex);
-    {$ENDIF VisualCLX}
   end;
 end;
 

@@ -63,7 +63,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     property Handle: HCURSOR read FHandle;
   end;
-  
+
 var
   CF_CURSOR: UINT; { Clipboard format for cursor }
 

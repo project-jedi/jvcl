@@ -49,12 +49,7 @@ uses
   {$ENDIF CLR}
   Windows, Messages,
   Classes, Graphics, Controls, Forms, StdCtrls, Buttons,
-  {$IFDEF VCL}
   JvListBox,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, JvQExStdCtrls,
-  {$ENDIF VisualCLX}
   Menus;
 
 type
@@ -67,13 +62,7 @@ type
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: Integer;
     const APicture: TPicture; R: TRect; var DefaultDraw: Boolean) of object;
 
-  {$IFDEF VCL}
   TJvComboListBox = class(TJvCustomListBox)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TJvListBoxDataEvent = procedure(Sender: TWinControl; Index: Integer; var Text: string) of object; // JvListBox
-  TJvComboListBox = class(TJvExCustomListBox)
-  {$ENDIF VisualCLX}
   private
     FMouseOver: Boolean;
     FPushed: Boolean;
@@ -85,9 +74,6 @@ type
     FHotTrackCombo: Boolean;
     FLastHotTrack: Integer;
     FOnDropDown: TJvComboListDropDownEvent;
-    {$IFDEF VisualCLX}
-    FOnGetText: TJvListBoxDataEvent; // JvListBox
-    {$ENDIF VisualCLX}
     procedure SetDrawStyle(const Value: TJvComboListBoxDrawStyle);
     function DestRect(Picture: TPicture; ARect: TRect): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
@@ -96,13 +82,7 @@ type
   protected
     procedure InvalidateItem(Index: Integer);
     procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
-    {$IFDEF VCL}
     procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState): Boolean; override;
-    procedure DoGetText(Index: Integer; var Text: string); virtual; // JvListBox
-    {$ENDIF VisualCLX}
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -121,9 +101,6 @@ type
     procedure InsertImage(Index: Integer; P: TPicture);
     procedure Delete(Index: Integer);
   published
-    {$IFDEF VisualCLX}
-    property OnGetText: TJvListBoxDataEvent read FOnGetText write FOnGetText; // JvListBox
-    {$ENDIF VisualCLX}
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 20;
     property HotTrackCombo: Boolean read FHotTrackCombo write SetHotTrackCombo default False;
     property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu;
@@ -133,7 +110,6 @@ type
     property OnDropDown: TJvComboListDropDownEvent read FOnDropDown write FOnDropDown;
     property Align;
     property Anchors;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -150,7 +126,6 @@ type
     property OnSelectCancel;
     property OnVerticalScroll;
     property OnHorizontalScroll;
-    {$ENDIF VCL}
     property BorderStyle;
     property Color;
     property Columns;
@@ -214,9 +189,7 @@ constructor TJvComboListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Style := lbOwnerDrawFixed;
-  {$IFDEF VCL}
   ScrollBars := ssVertical;
-  {$ENDIF VCL}
   FDrawStyle := dsOriginal;
   FButtonWidth := 20;
   FLastHotTrack := -1;
@@ -360,14 +333,11 @@ begin
   DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, uState or DFCS_ADJUSTRECT);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvComboListBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvComboListBox.DrawItem(Index: Integer; ARect: TRect;
-  State: TOwnerDrawState): Boolean;
-{$ENDIF VisualCLX}
+
+
 var
   P: TPicture;
   B: TBitmap;
@@ -377,14 +347,8 @@ var
   I: Integer;
   AText: string;
 begin
-  {$IFDEF VisualCLX}
-  Result := False;
-  {$ENDIF VisualCLX}
   if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then
     Exit;
-  {$IFDEF VisualCLX}
-  Result := True;
-  {$ENDIF VisualCLX}
   Canvas.Lock;
   try
     Canvas.Font := Font;
@@ -484,13 +448,7 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvComboListBox.DoGetText(Index: Integer; var Text: string);
-begin
-  if Assigned(FOnGetText) then
-    FOnGetText(Self, Index, Text);
-end;
-{$ENDIF VisualCLX}
+
 
 function TJvComboListBox.GetOffset(OrigRect, ImageRect: TRect): TRect;
 var
@@ -545,9 +503,7 @@ var
   I: Integer;
   R: TRect;
   P: TPoint;
-  {$IFDEF VCL}
   Msg: TMsg;
-  {$ENDIF VCL}
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if ItemIndex > -1 then
@@ -574,14 +530,9 @@ begin
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
         DropdownMenu.Popup(P.X, P.Y);
-        {$IFDEF VCL}
         // wait for popup to disappear
         while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
           ;
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        QWindows.IgnoreMouseEvents(Handle);
-        {$ENDIF VisualCLX}
       end;
       MouseUp(Button, Shift, X, Y);
     end;

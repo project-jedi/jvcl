@@ -151,9 +151,7 @@ type
     procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
   end;
@@ -670,16 +668,11 @@ end;
 constructor TJvCSVNavigator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
   Caption := '';
-  {$ENDIF VCL}
   Height := 24;
   Width := 217;
   CreateButtons;
-  {$IFDEF VisualCLX}
-  ControlStyle := ControlStyle - [csSetCaption];
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCSVNavigator.BtnAddClick(Sender: TObject);
@@ -772,13 +765,13 @@ begin
   InitButton(FBtnRefresh, 193, 'JVCSVREFRESH', BtnRefreshClick, RsRefreshHint); // do not localize
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCSVNavigator.CreateWnd;
 begin
   inherited CreateWnd;
   Caption := '';
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCSVNavigator.Notification(AComponent: TComponent;
   Operation: TOperation);

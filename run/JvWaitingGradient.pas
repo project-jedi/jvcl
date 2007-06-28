@@ -75,12 +75,10 @@ type
     property Constraints;
     property Color;
     property Cursor;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
     property Enabled;
@@ -268,13 +266,7 @@ begin
   if not Assigned(FBitmap) then
     Exit;
   Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
-  {$IFDEF VisualCLX}
-  OffsetRect(FDestRect, Left, Top);
-  {$ENDIF VisualCLX}
   Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
-  {$IFDEF VisualCLX}
-  OffsetRect(FDestRect, -Left, -Top);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvWaitingGradient.Resize;

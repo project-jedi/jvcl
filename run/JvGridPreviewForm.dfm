@@ -23,8 +23,8 @@ object JvGridPreviewForm: TJvGridPreviewForm
     Width = 438
     Height = 362
     Align = alClient
-    Ctl3D = True
-    ParentCtl3D = False
+    
+    
     TabOrder = 0
     object PreviewImage: TImage
       Left = 0
@@ -154,7 +154,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Height = 66
       BorderStyle = bsNone
       Color = 16644814
-      Ctl3D = False
+      
       ItemHeight = 13
       Items.Strings = (
         'HeaderText'
@@ -162,7 +162,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
         'DateFormat'
         'TimeFormat'
         'Logo')
-      ParentCtl3D = False
+      
       TabOrder = 1
       OnClick = HeadersClick
     end
@@ -197,7 +197,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Height = 105
       BorderStyle = bsNone
       Color = 13172735
-      Ctl3D = False
+      
       ItemHeight = 13
       Items.Strings = (
         'MarginTop'
@@ -208,7 +208,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
         'PaddingLeft'
         'HeaderSize'
         'FooterSize')
-      ParentCtl3D = False
+      
       TabOrder = 4
       OnClick = MarginsClick
     end

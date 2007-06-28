@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvEDI" Design="0">
   <Description>JVCL EDI Components Runtime Package</Description>
-  <ClxDescription>JVCLX EDI Components</ClxDescription>
   <GUID>{E6B694C0-1FE7-4FF5-A8BD-FA186B72076F}</GUID>
   <C5PFlags>-LUvcl50 -LUvcldb50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
@@ -22,7 +21,6 @@
     <Package Name="vcldb50" Targets="DBv5" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
-    <Package Name="dataclx" Targets="K3" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvEDIDBBuffering.pas" Targets="DB" Formname="" Condition=""/>

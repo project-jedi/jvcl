@@ -233,7 +233,6 @@ type
 
     property AutoSelect;
     property AutoSize;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -251,7 +250,6 @@ type
     property BevelKind default bkNone;
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     property BorderStyle;
     property Caret;
     property CheckChars;
@@ -958,7 +956,7 @@ begin
           13:
             ExpectedNegPos := Length(S)-2;
         end;
-        
+
         if (Key = '(') and (Posn = 1) and (NegCurrFormat in [0, 4, 14, 15]) then
           Key := '-';
 
@@ -1071,7 +1069,7 @@ begin
     EnforceMaxValue;
     EnforceMinValue;
   end;
-//  ChangeText(FEditText); 
+//  ChangeText(FEditText);
   DisplayText;
   DoValueChanged;
 end;
@@ -1326,7 +1324,7 @@ end;
 procedure TJvCustomValidateEdit.EnforceMaxValue;
 begin
   { Check the Value is within this range }
-  if FHasMaxValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, 
+  if FHasMaxValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral,
     dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
     (AsFloat > FMaxValue) and not FEnforcingMinMaxValue then
   begin

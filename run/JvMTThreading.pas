@@ -42,9 +42,6 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF UNIX}
-  QWindows,
-  {$ENDIF UNIX}
   JvMTConsts, JvMTSync, JvVCL5Utils;
 
 type
@@ -432,7 +429,7 @@ begin
     on E: Exception do
       Log('OnExecute Exception: "' + E.Message + '"'); // do not localize
   end;
-  
+
   // make sure terminate flag is set
   FIntThread.Terminate;
 
@@ -514,7 +511,7 @@ begin
     begin
       if CurrentMTThread <> Self then
         raise EMTThreadError.CreateRes(@RsECannotChangeNameOfOtherActiveThread);
-  
+
       FName := Value;
       if FIntThread <> nil then
       begin
@@ -542,14 +539,14 @@ procedure TMTThread.Terminate;
 begin
   if Status in [tsTerminating, tsFinished] then
     Exit;
-  
+
   FStatusChange.Acquire;
   try
     if FIntThread <> nil then
       FIntThread.Terminate  {thread was Running}
     else
       FFinished := True;    {thread was initializing}
-  
+
     // make sure thread escapes from any Wait() calls
     ReleaseSemaphore(FTerminateSignal, 1, nil);
   finally
@@ -661,7 +658,7 @@ begin
         if (RaiseID <> 0) and
            (TMTThread(FThreads[I]).FIntThread.ThreadID = RaiseID) then
           Result := -1
-          // no Break; here: Return -1 only when RaiseID is the last active thread 
+          // no Break; here: Return -1 only when RaiseID is the last active thread
         else
         begin
           Result := 1;
@@ -688,7 +685,7 @@ begin
     I := FThreads.Count-1;
     while (I <> -1) and (TMTThread(FThreads[I]).Ticket <> Ticket) do
       Dec(I);
-  
+
     Result := I <> -1;
     if Result then
       Thread := TMTThread(FThreads[I])

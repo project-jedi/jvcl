@@ -139,9 +139,7 @@ type
     function txCopy: string;
     function txPenMode: string;
     function txCopyMode: string;
-    {$IFDEF VCL}
     function txFlood: string;
-    {$ENDIF VCL}
     function txDo: string;
     function txLoop: string;
     function txGoLeft: string;
@@ -494,10 +492,8 @@ begin
       Result := txEllipse;
     52:
       Result := txFilter;
-    {$IFDEF VCL}
     53:
       Result := txFlood;
-    {$ENDIF VCL}  
     54:
       Result := txGo;
     55:
@@ -959,21 +955,17 @@ end;
 
 procedure TJvTurtle.TextRotate(X, Y, Angle: Integer; AText: string;
   AFont: TFont);
-{$IFDEF VCL}
+
 var
   DC: HDC;
   Fnt: LOGFONT;
   HFnt, HFntPrev: HFONT;
   I: Integer;
   FontName: string;
-{$ENDIF VCL}
+
 begin
   if AText = '' then
     Exit;
-  {$IFDEF VisualCLX}
-  TextOutAngle(Canvas, Angle, X, Y, AText);
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
   Fnt.lfEscapement := Angle * 10;
   Fnt.lfOrientation := Angle * 10;
   if fsBold in AFont.Style then
@@ -1002,7 +994,6 @@ begin
   TextOut(DC, X, Y, PChar(AText), Length(AText));
   SelectObject(DC, HFntPrev);
   DeleteObject(HFnt);
-  {$ENDIF VCL}
 end;
 
 function TJvTurtle.txAngle: string;
@@ -1359,7 +1350,7 @@ begin
     Result := RsStackUnderflow;
 end;
 
-{$IFDEF VCL}
+
 function TJvTurtle.txFlood: string;
 var
   X, Y, XF, YF: Integer;
@@ -1374,7 +1365,7 @@ begin
   else
     Result := Format(RsInvalidIntegerIns, ['flood']);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvTurtle.SetOnRequestBackground(const Value: TRequestBackgroundEvent);
 begin

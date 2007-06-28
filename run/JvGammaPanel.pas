@@ -74,9 +74,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Align;
-    {$IFDEF VCL}
     property AutoSize;
-    {$ENDIF VCL}
     property Height default 250;
     property Width default 65;
     property ForegroundColor: TColor read FForegroundColor write SetForegroundColor default clBlack;
@@ -166,14 +164,8 @@ begin
     Top := 2;
     Left := 5;
     AutoSize := True;
-    {$IFDEF MSWINDOWS}
     Font.Size := 8;
     Font.Name := 'Arial';
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Font.Height := 13;
-    Font.Name := 'Helvetica';
-    {$ENDIF UNIX}
     Caption := RsDefaultR;
     Transparent := True;
     Parent := FPanel4;

@@ -36,15 +36,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-  {$IFDEF VCL}
   Graphics;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Graphics;
-  {$ENDIF VisualCLX}
 
 {$IFDEF MSWINDOWS}
-{$IFDEF VCL}
+
 const
   { OEM Resource Ordinal Numbers }
   OBM_CLOSE       = 32754;
@@ -81,7 +76,7 @@ const
   OBM_OLD_REDUCE  = 32757;
   OBM_OLD_ZOOM    = 32756;
   OBM_OLD_RESTORE = 32755;
-{$ENDIF VCL}
+
 {$ENDIF MSWINDOWS}
 
 type

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCmp" Design="0">
   <Description>JVCL Non-Visual Components Runtime Package</Description>
-  <ClxDescription>JVCLX Components Runtime Package</ClxDescription>
   <GUID>{D967C259-8727-4B1D-8824-FC792F5A9F89}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
@@ -43,6 +42,5 @@
     <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
     <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlComponent.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQEventFilter.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

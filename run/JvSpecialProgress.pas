@@ -130,10 +130,8 @@ type
     property OnDblClick;
     property OnDragOver;
     property OnDragDrop;
-    {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -246,14 +244,8 @@ begin
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
   begin
-    {$IFDEF VCL}
     BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight,
       FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BitBlt(Canvas, 0, 0, ClientWidth, ClientHeight,
-      FBuffer.Canvas, 0, 0, SRCCOPY);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -382,12 +374,7 @@ begin
   if BorderStyle = bsNone then
   begin
     FBuffer.Canvas.Brush.Color := Color;
-    {$IFDEF VCL}
     FBuffer.Canvas.FrameRect(Rect);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FrameRect(FBuffer.Canvas, Rect);
-    {$ENDIF VisualCLX}
   end
   else
   begin

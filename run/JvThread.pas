@@ -38,7 +38,7 @@ uses
   Windows, Controls, ExtCtrls,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  QWindows, QControls, QExtCtrls,
+  QWindows,
   {$ENDIF UNIX}
   Forms, Dialogs,
   JvTypes, JvComponentBase, JvComponent;

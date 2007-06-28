@@ -307,9 +307,7 @@ var
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, True, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
-      {$IFDEF VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-      {$ENDIF VCL}
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -400,7 +398,7 @@ begin
   SetLength(OriginalEnableds, Length(FEnableds));
   for I := 0 to Length(FEnableds) - 1 do
     OriginalEnableds[I] := FEnableds[I];
-    
+
   SetLength(FEnableds, Rows * Cols);
 
   MinLength := Length(OriginalEnableds);

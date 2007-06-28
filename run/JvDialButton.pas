@@ -118,12 +118,10 @@ type
     procedure Change; dynamic;
     procedure ClearTicks;
     procedure Click; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMSysColorChange(var Msg: TMessage); message WM_SYSCOLORCHANGE;
     procedure WndProc(var Msg: TMessage); override;
-    {$ENDIF VCL}
     procedure FocusSet(PrevWnd: THandle); override;
     procedure FocusKilled(NextWnd: THandle); override;
     procedure ColorChanged; override;
@@ -194,9 +192,7 @@ type
     property Color;
     property Cursor;
     property DefaultPos;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Frequency;
@@ -286,9 +282,7 @@ constructor TJvCustomDialButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FTicks := TList.Create;
   FBorderStyle := bsNone;
   FButtonEdge := 5;
@@ -392,9 +386,7 @@ begin
     FBorderStyle := Value;
     if HandleAllocated then
     begin
-      {$IFDEF VCL}
       RecreateWnd;
-      {$ENDIF VCL}
       DrawBorder;
     end;
   end;
@@ -515,7 +507,7 @@ begin
   begin
     FFrequency := Value;
     if FFrequency < 1 then
-      FFrequency := 1; 
+      FFrequency := 1;
     if FTickStyle = tsAuto then
     begin
       ClearTicks;
@@ -914,10 +906,6 @@ begin
   Size := 2 * FRadius + 1;
   ButtonRect := Bounds(0, 0, Size, Size);
   Canvas := FBitmap.Canvas;
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-  {$ENDIF VisualCLX}
     Canvas.Brush.Color := Parent.Brush.Color;
     Canvas.Brush.Style := bsSolid;
     {$IFDEF JVCLThemesEnabled}
@@ -964,11 +952,6 @@ begin
       // Reset viewport origin.
       SetViewportOrgEx(Canvas.Handle, OldOrg.X, OldOrg.Y, nil);
     end;
-  {$IFDEF VisualCLX}
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
   FBitmapInvalid := False;
 end;
 
@@ -1156,7 +1139,7 @@ begin
   Invalidate;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomDialButton.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array [TBorderStyle] of Cardinal = (0, WS_BORDER);
@@ -1169,7 +1152,7 @@ begin
     Params.ExStyle := Params.ExStyle or WS_EX_STATICEDGE;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomDialButton.SetPointerColor(Value: TColor);
 begin
@@ -1236,7 +1219,7 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomDialButton.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -1258,7 +1241,7 @@ begin
   Invalidate;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvCustomDialButton.SetPointerSize(Value: Integer);
 begin

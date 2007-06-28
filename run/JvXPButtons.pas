@@ -39,9 +39,6 @@ uses
   {$ENDIF USEJVCL}
   Classes, TypInfo,
   Windows, Messages, Graphics, Controls, Forms, ActnList, ImgList, Menus,
-  {$IFDEF VisualCLX}
-  JvQExControls, Qt,
-  {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -74,15 +71,10 @@ type
     FSmoothEdges: Boolean;
     FSpacing: Byte;
     FWordWrap: Boolean;
-    {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
-    {$ENDIF VCL}
     procedure ImageListChange(Sender: TObject);
     procedure GlyphChange(Sender: TObject);
   protected
-    {$IFDEF VisualCLX}
-    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    {$ENDIF VisualCLX}
     function GetActionLinkClass: TControlActionLinkClass; override;
     function IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -156,11 +148,9 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnCanResize;
-    {$ENDIF VCL}
     property DragMode;
     //property Enabled;
     property Font;
@@ -252,11 +242,9 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnCanResize;
-    {$ENDIF VCL}
     property DragMode;
     property DropDownMenu;
     property Images;
@@ -397,7 +385,7 @@ begin
   Result := TJvXPCustomButtonActionLink;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvXPCustomButton.CMDialogKey(var Msg: TCMDialogKey);
 begin
   inherited;
@@ -412,23 +400,9 @@ begin
     else
       inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvXPCustomButton.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
-begin
-  if (((Key = VK_RETURN) and (Focused or (FDefault and not (IsSibling)))) or
-      ((Key = VK_ESCAPE) and FCancel) and (Shift = [])) and
-      CanFocus then
-    begin
-      Click;
-      Result := True;
-    end
-    else
-      Result := inherited WantKey(Key, Shift, KeyText);
 
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvXPCustomButton.SetAutoGray(Value: Boolean);
 begin
@@ -444,15 +418,9 @@ begin
   if Value <> FDefault then
   begin
     FDefault := Value;
-    {$IFDEF VCL}
     if GetParentForm(Self) <> nil then
       with GetParentForm(Self) do
         Perform(CM_FOCUSCHANGED, 0, Longint(ActiveControl));
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if GetParentForm(Self) <> nil then
-      QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -648,12 +616,7 @@ begin
           Bitmap.Assign(FHlGradient)
         else
           Bitmap.Assign(FFcGradient);
-        {$IFDEF VCL}
         BitBlt(Handle, 1, 1, Width, Height, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        BitBlt(Canvas, 1, 1, Width, Height, Bitmap.Canvas, 0, 0, SRCCOPY);
-        {$ENDIF VisualCLX}
       finally
         Bitmap.Free;
       end;
@@ -663,24 +626,13 @@ begin
     if not ((dsHighlight in DrawState) and (dsClicked in DrawState)) then
     begin
       Offset := 2 * Integer(IsSpecialDrawState);
-      {$IFDEF VCL}
       BitBlt(Handle, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
         FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BitBlt(Canvas, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
-        FBgGradient.Canvas, 0, 0, SRCCOPY);
-      {$ENDIF VisualCLX}
     end
     // ...or click gradient.
     else
     begin
-      {$IFDEF VCL}
       BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BitBlt(Canvas, 1, 1, Width, Height, FCkGradient.Canvas, 0, 0, SRCCOPY);
-      {$ENDIF VisualCLX}
     end;
     // draw border lines.
     if Enabled then
@@ -688,12 +640,7 @@ begin
     else
       Pen.Color := dxColor_Btn_Dis_Border_WXP;
     Brush.Style := bsClear;
-    {$IFDEF VCL}
     RoundRect(0, 0, Width, Height, 5, 5);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    RoundRect(0, 0, Width, Height, 10, 10);
-    {$ENDIF VisualCLX}
     // draw border edges.
     if FSmoothEdges then
     begin
@@ -898,9 +845,7 @@ begin
         (Height - Images.Height) div 2 + Integer(Shifted),
         ImageIndex,
         {$IFDEF COMPILER6_UP}
-        {$IFDEF VCL}
         dsTransparent,
-        {$ENDIF VCL}
         itImage,
         {$ENDIF COMPILER6_UP}
         Enabled);
@@ -949,26 +894,17 @@ procedure TJvXPCustomToolButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
-  {$IFDEF VCL}
   Msg: TMsg;
-  {$ENDIF VCL}
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Assigned(DropDownMenu) then
   begin
     P := ClientToScreen(Point(0, Height));
     DropDownMenu.Popup(P.X, P.Y);
-    {$IFDEF VCL}
     while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    repeat
-      Application.ProcessMessages;
-    until not QWidget_isVisible(DropDownMenu.Handle);
-    {$ENDIF VisualCLX}
 
   end;
 end;

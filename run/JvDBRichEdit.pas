@@ -185,7 +185,7 @@ const
 implementation
 
 uses
-  SysUtils, 
+  SysUtils,
   JvConsts;
 
 constructor TJvDBRichEdit.Create(AOwner: TComponent);

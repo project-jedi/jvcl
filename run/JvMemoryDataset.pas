@@ -56,7 +56,7 @@ Revisions : 1st = 2004/09/19
             2nd = 2004/10/19
             3th = 2004/10/25
             4th = 2005/01/05
-            
+
 Comments and Bugs : cfzwit att yahoo dott com dott ar
 -----------------------------------------------------------------------------}
 // $Id$
@@ -339,9 +339,9 @@ implementation
 uses
   Windows,  // to avoid warning under BDS2006
   Forms, Dialogs, DbConsts, Math,
-  {$IFDEF COMPILER6_UP} 
+  {$IFDEF COMPILER6_UP}
   FMTBcd,
-  {$ENDIF COMPILER6_UP} 
+  {$ENDIF COMPILER6_UP}
   JvResources;
 
 const
@@ -350,9 +350,9 @@ const
 
   ftSupported = [ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat,
     ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD,
-    {$IFDEF COMPILER6_UP}     
-    ftFMTBCD, 
-    {$ENDIF COMPILER6_UP}     
+    {$IFDEF COMPILER6_UP}
+    ftFMTBCD,
+    {$ENDIF COMPILER6_UP}
     ftBytes, ftVarBytes, ftADT, ftFixedChar, ftWideString,
     ftLargeint, ftVariant, ftGuid] +
     ftBlobTypes;
@@ -370,7 +370,7 @@ type
 
 //=== { Utility routines } ===================================================
 
-function FindVarData(const V: Variant): PVarData; 
+function FindVarData(const V: Variant): PVarData;
 begin
   Result := @TVarData(V);
   while Result.VType = varByRef or varVariant do
@@ -445,9 +445,9 @@ begin
         Result := SizeOf(Double);
       ftCurrency:
         Result := SizeOf(Double);
-      {$IFDEF COMPILER6_UP} 
+      {$IFDEF COMPILER6_UP}
       ftFMTBCD,
-      {$ENDIF COMPILER6_UP} 
+      {$ENDIF COMPILER6_UP}
       ftBCD:
         Result := SizeOf(TBcd);
       ftDate, ftTime:
@@ -1473,7 +1473,7 @@ begin
   InternalFirst;
 end;
 
-procedure TJvMemoryData.DoAfterOpen; 
+procedure TJvMemoryData.DoAfterOpen;
 begin
   if (FDataSet <> nil) and FLoadRecords then
   begin
@@ -1481,7 +1481,7 @@ begin
       FDataSet.Open;
     FRowsOriginal := CopyFromDataset;
     if FRowsOriginal > 0 then
-    begin 
+    begin
       SortOnFields();
       if FApplyMode = amAppend then
         Last
@@ -1610,7 +1610,7 @@ var
       for I := 0 to FieldCount - 1 do
       begin
         Fld := TField(Fields[I]);
-        Result := Result and CompareField(Fld, KeyValues[I]); 
+        Result := Result and CompareField(Fld, KeyValues[I]);
       end;
     end;
   end;
@@ -1666,7 +1666,7 @@ end;
 
 procedure TJvMemoryData.AddStatusField;
 begin
-  // Check if FieldStatus not exists in FieldDefs    
+  // Check if FieldStatus not exists in FieldDefs
   if (FieldDefs.Count > 0) and not (FieldDefs[FieldDefs.Count - 1].Name = FStatusName) then
     FieldDefs.Add(FStatusName, ftSmallint);
 end;
@@ -1677,7 +1677,7 @@ begin
   if (FieldDefs.Count > 0) and (FieldDefs[FieldDefs.Count - 1].Name = FStatusName) then
   begin
     FieldDefs[FieldDefs.Count - 1].Attributes := [faHiddenCol]; // Hide in FieldDefs
-    // Check if FieldStatus not exists in Fields   
+    // Check if FieldStatus not exists in Fields
     if not (Fields[Fields.Count - 1].FieldName = FStatusName) then
       FieldDefs[FieldDefs.Count - 1].CreateField(Self);
     Fields[Fields.Count - 1].Visible := False; // Hide in Fields
@@ -1961,7 +1961,7 @@ end;
 
 procedure TJvMemoryData.SortOnFields(const FieldNames: string = '';
   CaseInsensitive: Boolean = True; Descending: Boolean = False);
-begin 
+begin
   if FieldNames <> '' then
   	CreateIndexList(FieldNames)
   else
@@ -2520,7 +2520,7 @@ begin
   Len := FieldDefs.Count - 2;
   if (Len < 1) then
     Exit;
-  
+
   bOpen := FDataSet.Active;
   try
     if not bOpen then

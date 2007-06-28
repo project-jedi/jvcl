@@ -50,9 +50,7 @@ type
     procedure SetShowExtension(const Value: Boolean);
     procedure SetShowDrive(const Value: Boolean);
   protected
-    {$IFDEF VCL}
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
-    {$ENDIF VCL}
     procedure Changed; override;
     function GetPath(Value: string; Position: Integer): string;
     procedure Refresh;
@@ -299,7 +297,7 @@ begin
   Refresh;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvPlaylist.LBDeleteString(var Msg: TMessage);
 begin
   inherited;
@@ -310,7 +308,7 @@ begin
     FItems.OnChange := ItemsChanged;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvPlaylist.Changed;
 begin

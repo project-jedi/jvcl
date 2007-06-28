@@ -41,7 +41,7 @@ type
   TEraseBackgroundEvent = procedure(Sender: TObject; Canvas: TCanvas; var Result: Boolean) of object;
 
   TJvScrollBoxFillMode = (sfmTile, sfmStretch, sfmNone);
-  
+
   TJvScrollBox = class(TJvExScrollBox)
   private
     FHotTrack: Boolean;
@@ -273,7 +273,7 @@ begin
   if not Result then
     Result := inherited DoEraseBackground(Canvas, Param);
 
-  PaintBackground;  
+  PaintBackground;
 end;
 
 procedure TJvScrollBox.Paint;

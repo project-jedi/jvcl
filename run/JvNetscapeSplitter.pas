@@ -37,9 +37,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Forms, ExtCtrls, Controls,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvExExtCtrls;
 
 const
@@ -54,9 +51,7 @@ type
 
   TJvCustomNetscapeSplitter = class(TJvExSplitter)
   private
-    {$IFDEF VCL}
     FBusy: Boolean;
-    {$ENDIF VCL}
     FShowButton: Boolean;
     FButtonWidthKind: TJvButtonWidthKind;
     FButtonWidth: Integer;
@@ -107,14 +102,12 @@ type
     // UpdateControlSize
     FControl: TControl;
     FDownPos: TPoint;
-    {$IFDEF VCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
-    {$ENDIF VCL}
     procedure LoadOtherProperties(Reader: TReader); dynamic;
     procedure StoreOtherProperties(Writer: TWriter); dynamic;
     procedure DefineProperties(Filer: TFiler); override;
@@ -250,7 +243,7 @@ begin
   FTextureColor2 := clNavy;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomNetscapeSplitter.MouseEnter(Control: TControl);
 var
@@ -343,7 +336,7 @@ begin
     FBusy := False;
   end;
 end;
-{$ENDIF VCL}
+
 
 //dfs
 
@@ -765,12 +758,7 @@ begin
     begin
       // Draw basic button
       OffscreenBmp.Canvas.Brush.Color := clGray;
-      {$IFDEF VCL}
       OffscreenBmp.Canvas.FrameRect(BtnRect);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      FrameRect(OffscreenBmp.Canvas, BtnRect);
-      {$ENDIF VisualCLX}
       InflateRect(BtnRect, -1, -1);
 
       OffscreenBmp.Canvas.Pen.Color := clWhite;
@@ -1256,7 +1244,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomNetscapeSplitter.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
@@ -1357,7 +1345,7 @@ begin
   end;
 
   // Mantis 3718: The button is always highlighted whatever value AllowDrag is.
-  
+
   // The order is important here.  ButtonHitTest must be evaluated before
   // the ButtonStyle because it will change the cursor (over button or not).
   // If the order were reversed, the cursor would not get set for bsWindows
@@ -1373,7 +1361,7 @@ begin
     PaintButton(False);
 end;
 
-{$ENDIF VCL}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

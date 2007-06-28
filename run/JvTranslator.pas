@@ -34,12 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, IniFiles,
-  {$IFDEF VCL}
   Forms, ComCtrls, Menus, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QComCtrls, QMenus, QDialogs,
-  {$ENDIF VisualCLX}
   JvSimpleXml, JvComponentBase,
   JclSimpleXML;
 

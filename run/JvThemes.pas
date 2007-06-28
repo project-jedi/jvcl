@@ -39,7 +39,6 @@ uses
   {$IFDEF COMPILER7_UP}
   Types,
   {$ENDIF COMPILER7_UP}
-  {$IFDEF VCL}
   Windows, Messages,
   {$IFDEF JVCLThemesEnabled}
   Contnrs,
@@ -49,11 +48,7 @@ uses
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  {$ENDIF VCL}
   Controls, StdCtrls, Graphics,
-  {$IFDEF VisualCLX}
-  QWindows, QForms, // Mouse
-  {$ENDIF VisualCLX}
   Buttons;
 
 const
@@ -62,15 +57,7 @@ const
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
 
 type
-  {$IFDEF VCL}
   TCMDenySubClassing = TMessage;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TCMDenySubClassing = record
-    Msg: Integer;
-    Result: Integer;
-  end;
-  {$ENDIF VisualCLX}
 
   TWinControlThemeInfo = class(TWinControl)
   public
@@ -747,12 +734,7 @@ procedure DrawThemedBorder(Control: TControl);
 
 type
   {$IFDEF COMPILER7_UP}
-   {$IFDEF VCL}
   TThemeStyle = TControlStyle;
-   {$ENDIF VCL}
-   {$IFDEF VisualCLX}
-  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
-   {$ENDIF VisualCLX}
   {$ELSE}
   TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
   {$ENDIF COMPILER7_UP}
@@ -785,18 +767,15 @@ procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
   uType, uState: UINT): BOOL;
 
-{$IFDEF VCL}
+
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; const R: TRect); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; const R: TRect); overload;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-type
-  TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
-{$ENDIF VisualCLX}
+
+
 
 { DrawThemedButtonFace draws a themed button when theming is enabled. }
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
@@ -805,13 +784,13 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
 
 { IsMouseOver returns True if the mouse is over the control. }
 function IsMouseOver(Control: TControl): Boolean;
-{$IFDEF VCL}
+
 { GetParentBackground returns True if the Control has the csParentPackground
   ControlStyle }
 function GetParentBackground(Control: TWinControl): Boolean;
 { SetParentBackground sets the Control's csParentPackground ControlStyle }
 procedure SetParentBackground(Control: TWinControl; Value: Boolean);
-{$ENDIF VCL}
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1091,7 +1070,7 @@ begin
     Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
-{$IFDEF VCL}
+
 
 function IsInvalidRect(const R: TRect): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -1158,7 +1137,7 @@ begin
   PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;
 
-{$ENDIF VCL}
+
 
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas;
   const Client: TRect; BevelWidth: Integer; Style: TButtonStyle;
@@ -1198,12 +1177,7 @@ begin
   end
   else
   {$ENDIF JVCLThemesEnabled}
-  {$IFDEF VCL}
     Result := DrawButtonFace(Canvas, Client, BevelWidth, Style, IsRounded, IsDown, IsFocused);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused);
-  {$ENDIF VisualCLX}
 end;
 
 function IsMouseOver(Control: TControl): Boolean;
@@ -1214,7 +1188,7 @@ begin
   Result := PtInRect(Control.ClientRect, Pt);
 end;
 
-{$IFDEF VCL}
+
 
 function GetParentBackground(Control: TWinControl): Boolean;
 begin
@@ -1233,7 +1207,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 {$IFDEF JVCLThemesEnabled}
 
@@ -1870,7 +1844,7 @@ function FindWMPrintClient: PPointer;
 var
   IdxList: PDynamicIndexList;
   I: Integer;
-begin                     
+begin
   IdxList := GetDynamicIndexList(TWinControl);
   for I := 0 to GetDynamicMethodCount(TWinControl) - 1 do
     if IdxList[I] = WM_PRINTCLIENT then

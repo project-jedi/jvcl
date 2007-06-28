@@ -1289,7 +1289,7 @@ const
   BOE_PLAINTEXT         = $0002;   // Use plain text layout (obsolete)
   BOE_NEUTRALOVERRIDE   = $0004;   // Override neutral layout (obsolete)
   BOE_CONTEXTREADING    = $0008;   // Context reading order
-  BOE_CONTEXTALIGNMENT  = $0010;   // Context alignment 
+  BOE_CONTEXTALIGNMENT  = $0010;   // Context alignment
 
 
 

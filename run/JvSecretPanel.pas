@@ -166,9 +166,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
   Consts, SysUtils, Math, ActnList,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvConsts;
 
@@ -394,16 +392,10 @@ begin
     begin
       I := SaveDC(Handle);
       try
-        {$IFDEF VisualCLX}
-        Start;
-        {$ENDIF VisualCLX}
         with FTxtRect do
           MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
-        {$IFDEF VisualCLX}
-        Stop;
-        {$ENDIF VisualCLX}
       finally
         RestoreDC(Handle, I);
         SetBkMode(Handle, Transparent);
@@ -659,12 +651,7 @@ begin
       StopPlay;
       if (csDesigning in ComponentState) and
           not (csDestroying in ComponentState) then
-        {$IFDEF VCL}
         ValidParentForm(Self).Designer.Modified;
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        ValidParentForm(Self).DesignerHook.Modified;
-        {$ENDIF VisualCLX}
     end;
     if not (csDestroying in ComponentState) then
       for I := 0 to Pred(ControlCount) do

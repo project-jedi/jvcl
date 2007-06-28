@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, ComObj, ShlObj, ActiveX, Classes, Controls, 
+  Windows, Messages, ComObj, ShlObj, ActiveX, Classes, Controls,
   JvBandForms;
 
 const
@@ -125,7 +125,7 @@ type
     function CloseDW(dwReserved: DWORD): HRESULT; virtual; stdcall;
     function ResizeBorderDW(var Border: TRect;
       ToolbarSite: IUnknown; Reserved: BOOL): HRESULT; virtual; stdcall;
-      
+
     // Note: this comes from IDeskBand but may not work under BCB, as it uses
     // the HWND type. See the compatibility guide for details.
     function GetWindow(out Wnd: HWND): HRESULT; virtual; stdcall;

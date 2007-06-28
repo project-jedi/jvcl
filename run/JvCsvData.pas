@@ -285,7 +285,7 @@ type
     procedure SetSeparator(const Value: Char);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
       SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
-      
+
     procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
     procedure AutoCreateDir(const FileName: string);
   protected
@@ -491,7 +491,7 @@ type
     procedure CloneRow(DataSet: TJvCustomCsvDataSet);
 
     // TODO: Implement row/record copy from ANY dataset.
-    
+
     // A fast row lookup function specific to this CSV table object.
     function FindByCsvKey(const Key: string): Boolean;
 
@@ -616,7 +616,7 @@ type
     property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
     // not currently valuable, but maybe soon:
     //property CsvColumns:TJvCsvColumns read FCsvColumns;
-      
+
     property OpenFileName: string read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
@@ -1179,7 +1179,7 @@ begin
   if not Assigned(FieldRec) then
     Exit;
   FieldIndex := FieldRec^.FPhysical;
-  
+
 
   // Now check if field value matches given pattern for this row.
   for I := 0 to FData.Count - 1 do
@@ -1209,7 +1209,7 @@ begin
         end;
 
       end;{if not already hidden!}
-       
+
   end;{ for loop}
   FIsFiltered := True;
   if Active then
@@ -2642,7 +2642,7 @@ begin
             FieldType := jcsvAsciiTime;
             FieldLen := 0; // automatic.
 	   end;
-		
+
         '!':
           begin // != Boolean field True/False
             VclFieldType := ftBoolean; // Boolean field in dataset
@@ -3282,7 +3282,7 @@ var
 begin
   Result := 0;
   Assert(Length(SortAscending) >= SortColumnCount);
-  
+
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then
     JvCsvDatabaseError(FTableName, RsEInternalCompare);
@@ -3372,7 +3372,7 @@ begin
   // Now check if the fields exist, and find the pointers to the fields
   for I := 0 to SortColumnCount - 1 do
   begin
-    SortAscending[I] := Ascending; 
+    SortAscending[I] := Ascending;
     if SortFieldNames[I] = '' then
       JvCsvDatabaseError(FTableName, RsESortFailedFieldNames);
     if SortFieldNames[I][1] = '!' then
@@ -4837,7 +4837,7 @@ end;
 // create a difficult-to-solve problem.  If we drop an obsolete or pointless
 // CSV field from our CsvFieldDef, and we have stuff out there in the
 // field that contains that data, new versions of our program won't read
-// the files anymore.  
+// the files anymore.
 //
 // CSV file editing is not for the faint of heart, and so this method
 // is considered less destructive than requiring users to repair
@@ -4893,12 +4893,12 @@ begin
 
   Assert(Assigned(FCsvFileAsStrings));
 
-  Assert(FCsvFileAsStrings.Count>0); 
+  Assert(FCsvFileAsStrings.Count>0);
 
   AssignFromStrings(FCsvFileAsStrings);
 
   Assert(FCsvColumns.Count>1); // why delete last column in an empty file? besides, it would die later on anyways, opening the empty file.
-  
+
   csvcol := FCsvColumns.FindByName(FieldName);
   if not Assigned(csvcol) then
         JvCsvDatabaseError(FTableName, Format(RsEFieldNotFound, [fieldname]));

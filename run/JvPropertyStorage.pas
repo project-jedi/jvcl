@@ -33,12 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms,
-  {$ENDIF VisualCLX}
   TypInfo,
   JvAppStorage;
 

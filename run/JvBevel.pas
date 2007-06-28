@@ -107,10 +107,8 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -161,12 +159,12 @@ const
 implementation
 
 uses
-  SysUtils, TypInfo, 
+  SysUtils, TypInfo,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ELSE}
-  Consts, 
-  {$ENDIF HAS_UNIT_RTLCONSTS} 
+  Consts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvResources;
 
 type
@@ -177,9 +175,7 @@ type
 constructor TJvBevel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
 
   FHorizontalLines := TJvBevelLines.Create;
   FVerticalLines := TJvBevelLines.Create;
@@ -465,7 +461,7 @@ var
   Value: Integer;
 begin
   // To allow for the Globus TglSide property to be read, we must read the
-  // set ourselves, replacing the fsd prefix by be before reading the value 
+  // set ourselves, replacing the fsd prefix by be before reading the value
   try
     if Reader.ReadValue <> vaSet then
       raise EReadError.CreateRes(@SInvalidPropertyValue);
@@ -478,7 +474,7 @@ begin
       if EnumName = '' then
         Break;
 
-      EnumName := StringReplace(EnumName, 'fsd', 'be', []); 
+      EnumName := StringReplace(EnumName, 'fsd', 'be', []);
       Value := GetEnumValue(EnumType, EnumName);
       if Value = -1 then
         raise EReadError.CreateRes(@SInvalidPropertyValue);

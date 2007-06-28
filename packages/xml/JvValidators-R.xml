@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvValidators" Design="0">
   <Description>JVCL Validators and Error Provider Components Runtime Package</Description>
-  <ClxDescription>JVCLX Validators and Error Indicator Components</ClxDescription>
   <GUID>{F9CFF80F-BA1D-4732-827E-0DD43E41E901}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>

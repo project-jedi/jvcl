@@ -37,9 +37,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  QWindows, QClipbrd,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs, Graphics, Controls, Forms, StdCtrls, Dialogs,
   ExtCtrls, JvComponent,
   JvComponentBase, JvDynControlEngine, JvTypes, JvAppStorage;
@@ -60,7 +57,7 @@ type
     procedure TimerEvent(Sender: TObject);
     procedure WriteToClipboard(const Text: string);
     function GetFormText: string;
-    class function TimeoutUnit(Count: Integer; Seconds: Boolean = True): string;  
+    class function TimeoutUnit(Count: Integer; Seconds: Boolean = True): string;
     procedure CancelAutoClose;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -484,7 +481,7 @@ const
   cDSAStateValueName = 'DSA_State'; // do not localize
   cDSAStateLastResultName = 'LastResult'; // do not localize
 
-  sPathStr = '%s\%s\%s';   
+  sPathStr = '%s\%s\%s';
 
 
 type
@@ -540,17 +537,15 @@ end;
 //=== { TDSAMessageForm } ====================================================
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
-{$IFDEF VCL}
+
 var
   NonClientMetrics: TNonClientMetrics;
-{$ENDIF VCL}
+
 begin
   inherited CreateNew(AOwner, Dummy);
-  {$IFDEF VCL}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
-  {$ENDIF VCL}
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 1000;
@@ -594,12 +589,7 @@ end;
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
   CancelAutoClose;
-  {$IFDEF VCL}
   Application.HelpContext(HelpContext);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Application.ContextHelp(HelpContext);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TDSAMessageForm.TimerEvent(Sender: TObject);
@@ -625,11 +615,11 @@ begin
     end
     else
     if FCountdown <> nil then
-      FCountdown.Caption := TimeFormatter(Timeout);  
+      FCountdown.Caption := TimeFormatter(Timeout);
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TDSAMessageForm.WriteToClipboard(const Text: string);
 var
   Data: THandle;
@@ -659,14 +649,9 @@ begin
   else
     raise EJVCLException.CreateRes(@SCannotOpenClipboard);
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TDSAMessageForm.WriteToClipboard(const Text: string);
-begin
-  Clipboard.AsText := Text;
-end;
-{$ENDIF VisualCLX}
+
+
 
 function TDSAMessageForm.GetFormText: string;
 var
@@ -805,13 +790,8 @@ begin
     with Result do
     begin
       Position := poDesigned; // Delphi 2005 has a new default
-      {$IFDEF VCL}
       BiDiMode := Application.BiDiMode;
       BorderStyle := bsDialog;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BorderStyle := fbsDialog;
-      {$ENDIF VisualCLX}
       Canvas.Font := Font;
       KeyPreview := True;
       OnKeyDown := CustomKeyDown;
@@ -839,28 +819,16 @@ begin
         SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
-      {$IFDEF VCL}
       DrawText(Canvas.Handle, PChar(Msg), Length(Msg) + 1, TextRect,
         DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DrawText(Canvas, Msg, Length(Msg) + 1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-      {$ENDIF VisualCLX}
 
       IconTextWidth := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
       if CheckCaption <> '' then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        {$IFDEF VCL}
         DrawText(Canvas.Handle, PChar(CheckCaption), Length(CheckCaption) + 1, TempRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        DrawText(Canvas, CheckCaption, Length(CheckCaption) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-        {$ENDIF VisualCLX}
         ChkTextWidth := TempRect.Right;
       end
       else
@@ -868,16 +836,9 @@ begin
       if ATimeout > 0 then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        {$IFDEF VCL}
         DrawText(Canvas.Handle, PChar(TimeFormatter(Timeout)),
-          Length(TimeFormatter(Timeout)) + 1, TempRect,     
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        DrawText(Canvas, TimeFormatter(Timeout),
           Length(TimeFormatter(Timeout)) + 1, TempRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-        {$ENDIF VisualCLX}
         TimeoutTextWidth := TempRect.Right;
       end
       else
@@ -924,9 +885,7 @@ begin
       with MessageLabel do
       begin
         BoundsRect := TextRect;
-        {$IFDEF VCL}
         BiDiMode := Result.BiDiMode;
-        {$ENDIF VCL}
         ALeft := IconTextWidth - TextRect.Right + HorzMargin;
         if UseRightToLeftAlignment then
           ALeft := Result.ClientWidth - ALeft - Width;
@@ -952,21 +911,17 @@ begin
       if CheckCaption <> '' then
         with DynControlEngine.CreateCheckboxControl(Result, Panel, 'DontShowAgain', CheckCaption) do
         begin
-          {$IFDEF VCL}
           BiDiMode := Result.BiDiMode;
-          {$ENDIF VCL}
           SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
             Result.ClientWidth - 2 * HorzMargin, Height);
         end;
       if ATimeout > 0 then
       begin
         CountDownlabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Countdown',
-          TimeFormatter(Timeout), nil);   
+          TimeFormatter(Timeout), nil);
         with CountDownlabel do
         begin
-          {$IFDEF VCL}
           BiDiMode := Result.BiDiMode;
-          {$ENDIF VCL}
           if CheckCaption = '' then
             SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
               Result.ClientWidth - 2 * HorzMargin, Height)
@@ -1664,17 +1619,9 @@ end;
 const
   Captions: array [TMsgDlgType] of string =
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
-  {$IFDEF MSWINDOWS}
   IconIDs: array [TMsgDlgType] of PChar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
-    (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
-     QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
-  {$ENDIF UNIX}
 
-  {$IFDEF VCL}
   ButtonCaptions: array [TMsgDlgBtn] of string =
    (SMsgDlgYes, SMsgDlgNo, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort,
     SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
@@ -1682,17 +1629,6 @@ const
   ModalResults: array [TMsgDlgBtn] of Integer =
    (mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
     mrYesToAll, 0);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
-  ButtonCaptions: array [TMsgDlgBtn] of string =
-   (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
-    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
-    SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
-  ModalResults: array [TMsgDlgBtn] of Integer =
-   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-    mrYesToAll);
-  {$ENDIF VisualCLX}
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -1705,12 +1641,7 @@ begin
   begin
     Result := TIcon.Create;
     try
-      {$IFDEF VCL}
       TIcon(Result).Handle := LoadIcon(0, IconIDs[DlgType]);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      // TODO
-      {$ENDIF VisualCLX}
     except
       Result.Free;
       raise;

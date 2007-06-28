@@ -55,9 +55,6 @@ type
     FValue: TJvDiceValue;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    {$ENDIF VisualCLX}
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
@@ -67,10 +64,8 @@ type
   protected
     procedure FocusChanged(AControl: TWinControl); override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
-    {$IFDEF VCL}
+    procedure SetAutoSize(Value: Boolean);  override;
     function GetPalette: HPALETTE; override;
-    {$ENDIF VCL}
     procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
@@ -86,16 +81,11 @@ type
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
     property Align;
-    {$IFDEF VCL}
     property AutoSize default True;
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    {$ENDIF VisualCLX}
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
     property Color;
     property Cursor;
@@ -160,9 +150,7 @@ begin
   Randomize;
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
     csOpaque, csDoubleClicks];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FInterval := 60;
   FValue := Low(TJvDiceValue);
   for I := Low(TJvDiceValue) to High(TJvDiceValue) do
@@ -200,12 +188,12 @@ begin
   Value := TJvDiceValue(Val);
 end;
 
-{$IFDEF VCL}
+
 function TJvDice.GetPalette: HPALETTE;
 begin
   Result := FBitmap[Value].Palette;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDice.DoStart;
 begin
@@ -346,9 +334,7 @@ end;
 
 procedure TJvDice.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF VCL}
   inherited SetAutoSize(Value);
-  {$ENDIF VCL}
   AdjustSize;
   Invalidate;
 end;

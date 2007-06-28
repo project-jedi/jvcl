@@ -53,12 +53,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QExtCtrls,
-  {$ENDIF VisualCLX}
   JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32,
   JvToolEdit;
 
@@ -68,7 +63,6 @@ const
   JvDefaultInactiveColorTo= TColor($ADADAD);
 
 type
-  {$IFDEF VCL}
   TJvIPAddress = class;
 
   TJvIPAddressMinMax = record
@@ -208,7 +202,6 @@ type
     property AutoSize;
     property Color;
     property Constraints;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
@@ -219,7 +212,6 @@ type
     property DragKind;
     property OnStartDock;
     property OnEndDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -248,7 +240,6 @@ type
     property OnKeyUp;
     property OnStartDrag;
   end;
-  {$ENDIF VCL}
 
   // TJvHintSource is a hint enumeration type to describe how to display hints for
   // controls that have hint properties both for the main control as well as
@@ -347,20 +338,11 @@ type
   private
     FTabPainter: TJvTabControlPainter;
     FRightClickSelect: Boolean;
-    {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
-    {$ENDIF VCL}
     procedure SetTabPainter(const Value: TJvTabControlPainter); // not WantKeys
   protected
-    {$IFDEF VisualCLX}
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
-    {$ENDIF VCL}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -384,9 +366,7 @@ type
     FTabPainter: TJvTabControlPainter;
     FRightClickSelect: Boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
-    {$IFDEF VCL}
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
-    {$ENDIF VCL}
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
@@ -399,16 +379,9 @@ type
     procedure Loaded; override;
     function CanChange: Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    {$IFDEF VisualCLX}
-    function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
-    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTabImages;
@@ -435,7 +408,6 @@ type
   private
     FOnChanged: TNotifyEvent;
     FShowRange: Boolean;
-    {$IFDEF VCL}
     FToolTips: Boolean;
     FToolTipSide: TJvTrackToolTipSide;
     FToolTipText: WideString;
@@ -445,23 +417,18 @@ type
     procedure WMNotify(var Msg: TWMNotify); message WM_NOTIFY;
     procedure CNHScroll(var Msg: TWMHScroll); message CN_HSCROLL;
     procedure CNVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
-    {$ENDIF VCL}
     procedure SetShowRange(const Value: Boolean);
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure InternalSetToolTipSide;
-    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ShowRange: Boolean read FShowRange write SetShowRange default True;
-    {$IFDEF VCL}
     property ToolTips: Boolean read FToolTips write SetToolTips default False;
     property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
-    {$ENDIF VCL}
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -471,12 +438,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF VCL}
     property OnToolTip: TJvTrackToolTipEvent read FOnToolTip write FOnToolTip;
-    {$ENDIF VCL}
   end;
 
-  {$IFDEF VCL}
 
   TJvTreeNode = class(TTreeNode)
   private
@@ -512,7 +476,7 @@ type
     property Font: TFont read GetFont write SetFont;
     property Brush: TBrush read GetBrush write SetBrush;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
-    
+
     property OnCheckedChange: TNotifyEvent read FOnCheckedChange write FOnCheckedChange;
   end;
 
@@ -545,7 +509,7 @@ type
     FMenuDblClick: Boolean;
     FReinitializeTreeNode: Boolean;
     FOnNodeCheckedChange: TJvTreeViewNodeCheckedChange;
-    
+
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
@@ -577,7 +541,7 @@ type
     procedure DoNodeCheckedChange(Node: TJvTreeNode);
     procedure TreeNodeCheckedChange(Sender: TObject); virtual;
     procedure SetCheckBoxes(const Value: Boolean); virtual;
-    
+
     procedure RebuildFromMenu; virtual;
     function IsMenuItemClick(Node: TTreeNode): Boolean;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
@@ -657,40 +621,11 @@ type
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
-    
+
     property OnNodeCheckedChange: TJvTreeViewNodeCheckedChange read FOnNodeCheckedChange write FOnNodeCheckedChange;
   end;
 
-  {$ENDIF VCL}
 
-  {$IFDEF VisualCLX}
-
-  { A fake component which either maps the properties to TTreeView or ignores them. }
-  TJvTreeView = class(TJvExTreeView)
-  private
-    FOnSelectionChange: TNotifyEvent;
-    FLineColor: TColor;
-    FLastSelection: TTreeNode;
-    FHideSelection: Boolean;
-    FShowRoot: Boolean;
-    procedure SetLineColor(Value: TColor);
-    procedure SetHideSelection(Value: Boolean);
-    procedure SetShowRoot(Value: Boolean);
-  protected
-    procedure Change(Node: TTreeNode); override;
-    procedure DoSelectionChange; dynamic;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
-    property ShowRoot: Boolean read FShowRoot write SetShowRoot default True;
-    property LineColor: TColor read FLineColor write SetLineColor default clDefault;
-
-    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
-  end;
-
-  {$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -710,7 +645,7 @@ uses
   JvThemes,
   JvConsts, JvJCLUtils;
 
-{$IFDEF VCL}
+
 
 const
   TVIS_CHECKED = $2000;
@@ -807,7 +742,7 @@ begin
   if FHandle <> 0 then
   begin
     Windows.SetFocus(FHandle);
-    SendMessage(FHandle, EM_SETSEL, 0, MaxInt); 
+    SendMessage(FHandle, EM_SETSEL, 0, MaxInt);
   end;
 end;
 
@@ -1077,7 +1012,7 @@ var
 begin
   { We paint the '.' ourself so we can also paint the control's background in
     DoEraseBackground what would be impossible without self-painting because
-    the IP-Control always paints a clWindow background in WM_PAINT. } 
+    the IP-Control always paints a clWindow background in WM_PAINT. }
   for I := 0 to (FEditControlCount - 1) - 1 do
   begin
     GetWindowRect(FEditControls[I].Handle, R1);
@@ -1353,7 +1288,7 @@ begin
     {$ELSE}
     Msg.Text := PChar(Format('%d.%d.%d.%d', [Value1, Value2, Value3, Value4]));
     {$ENDIF CLR}
-    
+
   inherited;
 end;
 
@@ -1415,7 +1350,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvTabControlPainter } ===============================================
 
@@ -1476,12 +1411,7 @@ begin
   if Owner is TForm then
     FActiveFont.Assign(TForm(Owner).Font)
   else
-    {$IFDEF VCL}
     FActiveFont.Assign(Screen.IconFont);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FActiveFont.Assign(Screen.HintFont);
-    {$ENDIF VisualCLX}
   FActiveFont.Color := clHighlight;
   FActiveFont.OnChange := DoFontChange;
   FActiveColorFrom := clWhite;
@@ -1492,12 +1422,7 @@ begin
   if Owner is TForm then
     FDisabledFont.Assign(TForm(Owner).Font)
   else
-    {$IFDEF VCL}
     FDisabledFont.Assign(Screen.IconFont);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FDisabledFont.Assign(Screen.HintFont);
-    {$ENDIF VisualCLX}
   FDisabledFont.Color := clGrayText;
   FDisabledFont.OnChange := DoFontChange;
   FDisabledColorFrom := clBtnFace;
@@ -1508,12 +1433,7 @@ begin
   if Owner is TForm then
     FInactiveFont.Assign(TForm(Owner).Font)
   else
-    {$IFDEF VCL}
     FInactiveFont.Assign(Screen.IconFont);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FInactiveFont.Assign(Screen.HintFont);
-    {$ENDIF VisualCLX}
   FInactiveFont.OnChange := DoFontChange;
   FInactiveColorFrom := JvDefaultInactiveColorFrom;
   FInactiveColorTo := JvDefaultInactiveColorTo;
@@ -1602,9 +1522,6 @@ begin
     SaveState := SaveDC(Canvas.Handle);
     try
       Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex,
-      {$IFDEF VisualCLX}
-      itImage,
-      {$ENDIF VisualCLX}
       Enabled);
     finally
       RestoreDC(Canvas.Handle, SaveState);
@@ -1769,12 +1686,9 @@ end;
 constructor TJvTabControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  InputKeys := [ikTabs];
-  {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
@@ -1823,68 +1737,11 @@ begin
   inherited;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  if (Key = VK_TAB) and (Shift * KeyboardShiftStates >= [ssCtrl]) then
-  begin
-    if (Shift * KeyboardShiftStates >= [ssShift]) then
-    begin
-      if TabIndex = 0 then
-        TabIndex := Tabs.Count - 1
-      else
-        TabIndex := TabIndex - 1;
-    end
-    else
-      TabIndex := (TabIndex + 1) mod Tabs.Count;
-    Key := 0;
-  end
-  else
-    inherited KeyDown(Key, Shift);
-end;
 
-procedure TJvTabControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  I: Integer;
-  R: TRect;
-  P: TPoint;
-begin
-  if RightClickSelect and (Button = mbRight) then
-  begin
-    P := Point(X,Y);
-    for I := 0 to Tabs.Count -1 do
-    begin
-      R := TabRect(I);
-      if PtInRect(R, P) then
-      begin
-        if (TabIndex <> I) and CanChange then
-        begin
-          TabIndex := I;
-          Change;
-        end;
-        Break;
-      end;
-    end;
-  end;
-  inherited MouseDown(Button, Shift, X, Y);
-end;
 
-function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean;
-begin
-  Result := True;
-  if Assigned(TabPainter) then
-    TabPainter.DrawTab(Self, Canvas, Images, GetImageIndex(TabIndex), Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
-  else
-    Result := inherited DrawTab(TabIndex, Rect, Active);
-end;
 
-{$ENDIF VisualCLX}
-
-{$IFDEF VCL}
 procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
   if Assigned(TabPainter) then
@@ -1892,7 +1749,7 @@ begin
   else
     inherited DrawTab(TabIndex, Rect, Active);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
@@ -1969,20 +1826,14 @@ begin
   Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
-  Active: Boolean): Boolean;
-{$ENDIF VisualCLX}
+
+
 var
   I, RealIndex: Integer;
 begin
-  {$IFDEF VisualCLX}
-  Result := False;
-  {$ENDIF VisualCLX}
   if TabPainter <> nil then
   begin
     RealIndex := 0;
@@ -1997,8 +1848,7 @@ begin
     if RealIndex < PageCount then
       TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
   end
-  else
-    {$IFDEF VisualCLX} Result := {$ENDIF} inherited DrawTab(TabIndex, Rect, Active);
+  else  inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvPageControl.Loaded;
@@ -2035,7 +1885,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvPageControl.TCMAdjustRect(var Msg: TMessage);
 var
   Offset: Integer;
@@ -2058,14 +1908,14 @@ begin
     {$ENDIF CLR}
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvPageControl.UpdateTabImages;
 begin
   inherited UpdateTabImages;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
@@ -2129,7 +1979,7 @@ begin
   inherited;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 var
@@ -2212,34 +2062,7 @@ begin
     TabPainter := nil;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvPageControl.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-var
-  I: Integer;
-  R: TRect;
-  P: TPoint;
-begin
-  if RightClickSelect and (Button = mbRight) then
-  begin
-    P := Point(X,Y);
-    for I := 0 to PageCount -1 do
-    begin
-      R := TabRect(I);
-      if PtInRect(R, P) then
-      begin
-        if (ActivePageIndex <> I) and CanChange then
-        begin
-          ActivePageIndex := I;
-          Change;
-        end;
-        Break;
-      end;
-    end;
-  end;
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-{$ENDIF VisualCLX}
+
 
 //=== { TJvTrackBar } ========================================================
 
@@ -2247,13 +2070,11 @@ constructor TJvTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF VCL}
   FToolTipSide := tsLeft;
-  {$ENDIF VCL}
   FShowRange := True;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvTrackBar.CNHScroll(var Msg: TWMHScroll);
 begin
@@ -2295,7 +2116,7 @@ begin
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -2314,7 +2135,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvTrackBar.SetToolTips(const Value: Boolean);
 begin
   if FToolTips <> Value then
@@ -2372,9 +2193,9 @@ begin
   else
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VCL}
+
+
 //=== { TJvTreeNode } ========================================================
 
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
@@ -2644,7 +2465,7 @@ end;
 procedure TJvTreeView.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  
+
   // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
   // parameter seems to trigger a bug in ComCtrl where it will show a
   // scroll bar that has nothing to do here. Setting the GWL_STYLE window
@@ -2775,7 +2596,7 @@ begin
     Canvas.Font := TJvTreeNode(Node).Font;
     Canvas.Brush := TJvTreeNode(Node).Brush;
   end;
-    
+
   if MultiSelect then
   begin
     with Canvas.Font do
@@ -2935,19 +2756,15 @@ begin
 end;
 
 procedure TJvTreeView.SetCheckBoxes(const Value: Boolean);
-{$IFDEF VisualCLX}
-const
-  cNewType: array [Boolean] of TListViewItemType = (itDefault, itCheckBox);
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
+
 var
   CurStyle: Integer;
-{$ENDIF VCL}
+
 begin
   if FCheckBoxes <> Value then
   begin
     FCheckBoxes := Value;
-    {$IFDEF VCL}
     // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
     // parameter seems to trigger a bug in ComCtrl where it will show a
     // scroll bar that has nothing to do here. Setting the GWL_STYLE window
@@ -2960,11 +2777,6 @@ begin
       SetWindowLong(Handle, GWL_STYLE, CurStyle or TVS_CHECKBOXES)
     else
       SetWindowLong(Handle, GWL_STYLE, CurStyle and not TVS_CHECKBOXES)
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Items.ChangeItemTypes(cNewType[FCheckBoxes]);
-    Selected := nil;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -3030,7 +2842,7 @@ begin
         if Assigned(Node) and (ssShift in KeysToShiftState(Keys)) then
         begin
           FirstNodeIndex := 0;
-          
+
           {$IFDEF COMPILER6_UP}
           if SelectionCount > 0 then
             FirstNodeIndex := Selections[0].Index;
@@ -3090,7 +2902,7 @@ begin
       if not Multiselect then
         FClearBeforeSelect := True;
   end;
-  
+
   inherited;
   if Windows.GetCursorPos(Point) then // prevent AV after "computer locked" dialog
   begin
@@ -3494,67 +3306,9 @@ begin
     Change;
   end;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-//=== { TJvTreeView } ========================================================
 
-constructor TJvTreeView.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FLineColor := clDefault;
-  FLastSelection := nil;
-end;
-
-destructor TJvTreeView.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TJvTreeView.SetLineColor(Value: TColor);
-begin
-  if Value <> FLineColor then
-  begin
-    FLineColor := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvTreeView.SetHideSelection(Value: Boolean);
-begin
-  if Value <> FHideSelection then
-  begin
-    FHideSelection := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvTreeView.SetShowRoot(Value: Boolean);
-begin
-  if Value <> FShowRoot then
-  begin
-    FShowRoot := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvTreeView.Change(Node: TTreeNode);
-begin
-  if Selected <> FLastSelection then
-  begin
-    FLastSelection := Selected;
-    DoSelectionChange;
-  end;
-end;
-
-procedure TJvTreeView.DoSelectionChange;
-begin
-  if Assigned(FOnSelectionChange) then
-    FOnSelectionChange(Self);
-end;
-
-{$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
 initialization

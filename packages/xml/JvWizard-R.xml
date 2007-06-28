@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvWizard" Design="0">
   <Description>JVCL Wizard Runtime Package</Description>
-  <ClxDescription>JVCLX Wizard Run Time Package</ClxDescription>
   <GUID>{86DF4ED4-828C-457A-ADE5-78BE9050BCF6}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUJcl(USEJVCL)</C6PFlags>
@@ -13,8 +12,7 @@
   <ReleaseNumber>0</ReleaseNumber>
   <BuildNumber>0</BuildNumber>
   <Requires>
-    <Package Name="JvCore-R" Targets="VCL" Condition="USEJVCL"/>
-    <Package Name="JvCore-R" Targets="CLX" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="JclC50" Targets="Cv5" Condition="USEJVCL"/>
     <Package Name="JclD50" Targets="Dv5" Condition="USEJVCL"/>
     <Package Name="Jcl" Targets="allv6up" Condition="USEJVCL"/>

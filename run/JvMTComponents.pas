@@ -76,7 +76,7 @@ type
   private
     FManager: TJvMTManager;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); 
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure SetManager(Value: TJvMTManager); virtual;
   published
@@ -154,12 +154,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AllowRecursion: Boolean read FAllowRecursion write 
+    property AllowRecursion: Boolean read FAllowRecursion write
       SetAllowRecursion default True;
-    property InitEntered: Boolean read FInitEntered write SetInitEntered 
+    property InitEntered: Boolean read FInitEntered write SetInitEntered
       default False;
   end;
-  
+
   TJvMTCountingSection = class(TJvMTSectionBase)
   private
     FInitCount: Integer;
@@ -175,7 +175,7 @@ type
     property InitCount: Integer read FInitCount write SetInitCount default 0;
     property MaxCount: Integer read FMaxCount write SetMaxCount default 1;
   end;
-  
+
   TJvMTAsyncBufferBase = class(TJvMTComponent)
   private
     FBuffer: TMTAsyncBuffer;
@@ -279,7 +279,7 @@ begin
   // We want to know about the form going down
   if AOwner <> nil then
     AOwner.FreeNotification(Self);
-  
+
   // hook to a manager object if not designing in the IDE
   if not (csDesigning in ComponentState) then
     FManager := TMTManager.Create;
@@ -290,7 +290,7 @@ begin
   // call inherited destroy, this will send Notification's to all the mtcThread
   //  components. These will release all their threads.
   inherited Destroy;
-  
+
   // Now all threads have been released.
   // Free the manager and the threads belonging to this manager.
   FManager.Free;
@@ -312,7 +312,7 @@ begin
   Result := FManager.ActiveThreads;
 end;
 
-procedure TJvMTManager.Notification(AComponent: TComponent; Operation: 
+procedure TJvMTManager.Notification(AComponent: TComponent; Operation:
   TOperation);
 begin
   // check if the form is being destroyed
@@ -324,7 +324,7 @@ begin
     // and wait until all is well
     WaitThreads;
   end;
-  
+
   inherited Notification(AComponent, Operation);
 end;
 
@@ -397,10 +397,10 @@ begin
   begin
     if FManager = nil then
       raise EThread.CreateRes(@RsENoThreadManager);
-  
+
     // get the new thread
     FThread := FManager.AcquireNewThread;
-  
+
     // hook up the nessesary events
     if Assigned(FOnExecute) then
       FThread.OnExecute := OnIntExecute;
@@ -408,13 +408,13 @@ begin
       FThread.OnTerminating := OnIntTerminating;
     if Assigned(FOnFinished) then
       FThread.OnFinished := OnIntFinished;
-  
+
     // give it a name
     FThread.Name := Name;
   end;
 end;
 
-procedure TJvMTThread.Notification(AComponent: TComponent; Operation: 
+procedure TJvMTThread.Notification(AComponent: TComponent; Operation:
   TOperation);
 begin
   if (Operation = opRemove) and (AComponent = FManager) then
@@ -518,7 +518,7 @@ begin
   HookThread;
   FThread.Wait;
 end;
-    
+
 procedure TJvMTThread.DoExecute(MTThread: TJvMTSingleThread);
 begin
   if Assigned(FOnExecute) then
@@ -633,7 +633,7 @@ begin
   CheckInactiveProperty;
   if (Max < 1) or (Init < 0) or (Init > Max) then
     raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
-  
+
   FInitCount := Init;
   FMaxCount := Max;
 end;

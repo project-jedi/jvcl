@@ -73,18 +73,10 @@ type
     procedure Deactivate;
     procedure UpdatePos;
     procedure DoOnTimer(Sender: TObject);
-    {$IFDEF VCL}
     function GetCol(Ch: Char): Word;
     function GetRow(Ch: Char): Word;
     procedure SetText(const Value: TCaption);
-    {$ENDIF VCL}
   protected
-    {$IFDEF VisualCLX}
-    function GetText: TCaption; override;
-    procedure SetText(const Value: TCaption); override;
-    function GetCol(Ch: WideChar): Word;
-    function GetRow(Ch: WideChar): Word;
-    {$ENDIF VisualCLX}
     procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property
@@ -105,9 +97,7 @@ type
     property Align;
     property Alignment;
     property FocusControl;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property DragMode;
     property ParentColor;
     property ShowHint;
@@ -317,22 +307,12 @@ begin
   Repaint;
 end;
 
-{$IFDEF VisualCLX}
-function UpCase(Ch: WideChar): WideChar;
-var
-  W: WideString;
-begin
-  W := WideUpperCase(Ch);
-  Result := W[1];
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 function TJvWinampLabel.GetCol(Ch: Char): Word;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvWinampLabel.GetCol(Ch: WideChar): Word;
-{$ENDIF VisualCLX}
+
+
 var
   Index: Integer;
 begin
@@ -350,12 +330,10 @@ begin
     Result := (Index - 1) * CharWidth;
 end;
 
-{$IFDEF VCL}
+
 function TJvWinampLabel.GetRow(Ch: Char): Word;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvWinampLabel.GetRow(Ch: WideChar): Word;
-{$ENDIF VisualCLX}
+
+
 begin
   Ch := UpCase(Ch);
   Result := 0;
@@ -445,56 +423,31 @@ begin
       Rec.Top := Rec.Top + CharHeight;
       Canvas.FillRect(Rec);
       if FActive then
-        {$IFDEF VCL}
         BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, FCurPos, 0, SRCCOPY)
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, FCurPos, 0, SRCCOPY)
-        {$ENDIF VisualCLX}
       else
       begin
         Rec := ClientRect;
         Rec.Bottom := Rec.Bottom + CharHeight;
         Rec.Left := Rec.Left + (CharWidth * Length(Text));
         Canvas.FillRect(Rec);
-        {$IFDEF VCL}
         BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, 0, 0, SRCCOPY);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, 0, 0, SRCCOPY);
-        {$ENDIF VisualCLX}
       end;
     end
     else
     begin
       FScale := Height / CharHeight;
-      {$IFDEF VCL}
       if FActive then
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, FCurPos, 0, Round(Width / FScale),
           CharHeight, SRCCOPY)
       else
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, 0, 0, Round(Width / FScale), CharHeight,
           SRCCOPY);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      if FActive then
-        StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, FCurPos, 0, Round(Width / FScale),
-          CharHeight, SRCCOPY)
-      else
-        StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, 0, 0, Round(Width / FScale), CharHeight,
-          SRCCOPY);
-      {$ENDIF VisualCLX}
     end;
   except
   end;
 end;
 
-{$IFDEF VisualCLX}
-function TJvWinampLabel.GetText: TCaption;
-begin
-  Result := FText;
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvWinampLabel.SetText(const Value: TCaption);
 var

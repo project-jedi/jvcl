@@ -169,7 +169,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    
+
     // cleans up the internal list of grabbers
     procedure Cleanup;
 
@@ -180,7 +180,7 @@ type
 
     procedure Start;
     procedure Stop;
-    
+
     // The Grabber objects associated with the Urls. This array contains up
     // to FUrls.Count if MaxSimultaneousGrabbers is 0, else up to the value
     // of MaxSimultaneousGrabbers. Note that this array only contains elements
@@ -435,7 +435,7 @@ type
     class procedure ParseUrl(URL: string; Protocol: string; var Host: string; var FileName: string;
       var UserName: string; var Password: string; var Port: Cardinal); virtual;
 
-    class function GetFormattedUrl(const URL: string): string;  
+    class function GetFormattedUrl(const URL: string): string;
 
     // Asks to Start to grab the URL
     procedure Start; virtual;
@@ -501,11 +501,11 @@ type
     // that all derived classes will always set the status back to gsStopped
     // and trigger the OnConnectionClosed event at the end.
     procedure Grab; virtual; abstract;
-    
+
     procedure Error;
     procedure Ended;
     procedure Closed;
-    
+
     procedure UpdateGrabberProgress;
     procedure UpdateGrabberStatus;
 
@@ -674,7 +674,7 @@ begin
         FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
     else
       raise ENoGrabberForUrl.CreateResFmt(@RsENoGrabberForUrl, [URL]);
-      
+
   DoGrabberCreated(Result);
 end;
 
@@ -736,7 +736,7 @@ end;
 
 procedure TJvUrlListGrabber.URLsChanging(Sender: TObject);
 begin
-  // Prevent changing the URLs while at least one grabber is running 
+  // Prevent changing the URLs while at least one grabber is running
   if GrabberCount > 0 then
     raise EAtLeastOneGrabberRunning.CreateRes(@RsEAtLeastOneGrabberRunning);
 end;

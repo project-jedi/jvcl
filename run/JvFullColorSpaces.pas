@@ -64,7 +64,7 @@ const
   csDEF = TJvFullColorSpaceID(10 shl 2);
 
   csID_MASK = $FC;
-  
+
   csMIN = $04 and csID_MASK;
   csMAX = $FF and csID_MASK;
 
@@ -261,7 +261,7 @@ type
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
   end;
-  
+
   TJvDEFColorSpace = class(TJvColorSpace)
   private
     FDelphiColors: TStringList;

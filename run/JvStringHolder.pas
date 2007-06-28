@@ -210,12 +210,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvJCLUtils, JvResources, JvConsts, JvTypes;
 
 const

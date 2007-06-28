@@ -15,7 +15,7 @@ Portions created by Erwin Molendijk are Copyright (C) 2002 Erwin Molendijk.
 All Rights Reserved.
 
 Contributor(s): ______________________________________.
-            
+
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
@@ -77,7 +77,7 @@ type
     function Read: TObject; virtual; abstract;
     procedure Write(AObject: TObject; FreeOnFail: Boolean = True); virtual; abstract;
   end;
-  
+
   TMTBufferToVCL = class(TMTAsyncBuffer)
   private
     FOnCanRead: TNotifyEvent;
@@ -91,7 +91,7 @@ type
     procedure Write(AObject: TObject; FreeOnFail: Boolean = True); override;
     property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
   end;
-  
+
   {$M+}
   TMTVCLToBuffer = class(TMTAsyncBuffer)
   private
@@ -157,7 +157,7 @@ begin
     FName := ClassName
   else
     FName := Name;
-  
+
   FMutex := TMTMutex.Create;
   FEmpty := TMTSemaphore.Create(Size, Size + 1, FName + '.Space'); // do not localize
   FFull := TMTSemaphore.Create(0, Size + 1, FName + '.Data'); // do not localize
@@ -167,7 +167,7 @@ destructor TMTBoundedQueue.Destroy;
 begin
   while Count > 0 do
     Pop.Free;
-  
+
   FMutex.Free;
   FEmpty.Free;
   FFull.Free;
@@ -219,7 +219,7 @@ begin
     FName := ClassName
   else
     FName := Name;
-  
+
   FBuffer := TMTBoundedQueue.Create(Size, 'Queue'); // do not localize
   FDataReady := TMTMutex.Create('DataReady'); // do not localize
   FVCLReady  := TMTMutex.Create('VCLReady'); // do not localize
@@ -363,10 +363,10 @@ begin
       AObject.Free;
     raise;
   end;
-  
+
   // save data object
   FData := AObject;
-  
+
   // signal worker to continue
   FVCLReady.Signal;
 end;
