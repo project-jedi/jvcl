@@ -83,6 +83,7 @@ type
       pwszRegKeyPath: LPCWSTR; pwszQuickComplete: LPCWSTR): HRESULT; stdcall;
     function Enable(fEnable: BOOL): HRESULT; stdcall;
   end;
+  {$EXTERNALSYM IAutoComplete}
 
 const
   { IAutoComplete2 options }
@@ -101,7 +102,12 @@ type
     function SetOptions(dwFlag: DWORD): HRESULT; stdcall;
     function GetOptions(var dwFlag: DWORD): HRESULT; stdcall;
   end;
-
+  {$EXTERNALSYM IAutoComplete2}
+  
+  // To avoid ambiguities, we include shldisp.h and define the _di_ interfaces ourselves
+  {$HPPEMIT '#include "shldisp.h"'}
+  {$HPPEMIT 'typedef DelphiInterface<IAutoComplete> _di_IAutoComplete;'}
+  {$HPPEMIT 'typedef DelphiInterface<IAutoComplete2> _di_IAutoComplete2;'}
 {$ENDIF !COMPILER7_UP}
 
 // C++ Builder needs this HPPEMIT in order for the generated header to compile.
