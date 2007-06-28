@@ -351,7 +351,7 @@ begin
     gmCurrent:
       begin
         if (FCurrentRecord >= FStatement.Fields.RecordCount) then
-          result := grError 
+          result := grError
       end;
   end;
 
@@ -580,7 +580,7 @@ begin
       else
         DataType := ftUnknown;
       end;
-      
+
       {$IFDEF FPC}
       //Add new defs
       FieldDefs.Add(aName,DataType,Size,Required);
@@ -947,4 +947,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}
 
-end.       
+end.

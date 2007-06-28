@@ -38,9 +38,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvConsts, JvComponent, JvOfficeColorPanel;
 
 {------------------------------------------------------------------------------}
@@ -51,22 +48,13 @@ const
   Tag_DragBarHeight = 9;
   Tag_DragBarSpace = 10;
 
-  {$IFDEF VCL}
   JvDefaultSubDragBarActiveColor = clActiveCaption;
   JvDefaultSubDragBarInactiveColor = clInactiveCaption;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JvDefaultSubDragBarActiveColor = TColor($999999);
-  JvDefaultSubDragBarInactiveColor = TColor($996666);
-  {$ENDIF VisualCLX}
 
 type
   TJvOfficeColorPanelDragBar = class(TJvWinControl)
   private
     FOwnerForm: TControl;
-    {$IFDEF VisualCLX}
-    FPos: TPoint;
-    {$ENDIF VisualCLX}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -108,12 +96,7 @@ type
     MoveStart: Boolean;
     procedure Resize; override;
     procedure VisibleChanged; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
     procedure Paint; override;
     procedure FocusKilled(NextWnd: THandle); override;
     procedure ShowingChanged; override;
@@ -164,10 +147,8 @@ begin
   AutoScroll := False;
   BorderIcons := [];
   BorderStyle := fbsDialog;
-  {$IFDEF VCL}
   BorderWidth := 0;
   AutoSize := True;
-  {$ENDIF VCL}
   FormStyle := fsStayOnTop;
 
   FToolWindowStyle := False;
@@ -201,7 +182,7 @@ begin
   FInited := True;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvOfficeColorForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -210,32 +191,15 @@ begin
     Style := Style and not WS_CAPTION;
   end;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvOfficeColorForm.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags and
-    not Integer(WidgetFlags_WStyle_Title) or
-    Integer(WidgetFlags_WType_Popup);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvOfficeColorForm.Paint;
-{$IFDEF VisualCLX}
-var
-  Rec: TRect;
-{$ENDIF VisualCLX}
+
 begin
   inherited Paint;
-{$IFDEF VisualCLX}
-  //in Clx Form have no border, paint it
-  if not ToolWindowStyle then
-  begin
-    Rec := ClientRect;
-    Frame3D(Canvas, Rec, clActiveCaption, cl3DDkShadow, 1)
-  end;
-{$ENDIF VisualCLX}
+
 end;
 
 procedure TJvOfficeColorForm.FormKeyUp(Sender: TObject; var Key: Word;
@@ -272,12 +236,7 @@ begin
     FDragBar.Visible := False;
   end;
 
-  {$IFDEF VCL}
   Offset := 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Offset := 2;
-  {$ENDIF VisualCLX}
 
   if HasDragBar then
     TempHeight := FDragBarHeight + FDragBarSpace * 2
@@ -286,18 +245,8 @@ begin
 
   ClientHeight := TempHeight + FColorPanel.ClientHeight + Offset * 2;
 
-  {$IFDEF VCL}
   Width := FColorPanel.Width + Offset * 2;
-  {$ENDIF VCL}
 
-  {$IFDEF VisualCLX}
-  // workaround a VisualCLX bug: ClientWidth does not allow values smaller than 100
-  Constraints.MaxWidth := FColorPanel.Left + FColorPanel.Width + Offset * 2;
-
-//  Constraints.MaxHeight := Height;
-  Constraints.MinWidth := Constraints.MaxWidth;
-//  Constraints.MinHeight := Constraints.MaxHeight;
-  {$ENDIF VisualCLX}
 
   if FDragBar.Visible then
     FDragBar.SetBounds(Offset, FDragBarSpace + Offset, FColorPanel.Width, FDragBarHeight);
@@ -438,9 +387,6 @@ begin
   if Button = mbLeft then
   begin
     TJvOfficeColorForm(FOwnerForm).MoveStart := True;
-    {$IFDEF VisualCLX}
-    FPos := ClientToScreen(Point(X, Y));
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -478,7 +424,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure DragControl(WinControl: TWinControl);
 const
@@ -488,14 +434,11 @@ begin
   WinControl.Perform(WM_SYSCOMMAND, SM, 0);
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvOfficeColorPanelDragBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   lOwnerForm: TJvOfficeColorForm;
-  {$IFDEF VisualCLX}
-  P, Q: TPoint;
-  {$ENDIF VisualCLX}
 begin
   inherited MouseMove(Shift, X, Y);
   lOwnerForm := TJvOfficeColorForm(FOwnerForm);
@@ -503,58 +446,28 @@ begin
   begin
     if not lOwnerForm.DropDownMoved then
       lOwnerForm.DropDownMoved := True;
-    {$IFDEF VCL}
     if lOwnerForm.MoveStart and not lOwnerForm.ToolWindowStyle then
     begin
       lOwnerForm.ToolWindowStyle := True;
       lOwnerForm.AdjustColorForm;
     end;
     DragControl(lOwnerForm);
-    {$ENDIF VCL}
 
     lOwnerForm.DropDownMoving := True;
     lOwnerForm.MoveStart := False;
 
-    {$IFDEF VisualCLX}
-    Q := ClientToScreen(Point(X, Y));
-    P := Point(Q.X - FPos.X, Q.Y - FPos.Y);
-    if (P.X <> 0) or (P.Y <> 0) then
-      with lOwnerForm do
-      begin
-        Left := Left + P.X;
-        Top := Top + P.Y;
-        FPos := Q;
-      end;
-    {$ENDIF VisualCLX}
   end;
 end;
 
 procedure TJvOfficeColorPanelDragBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-{$IFDEF VisualCLX}
-var
-  P: TPoint;
-{$ENDIF VisualCLX}
+
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if Button = mbLeft then
   begin
-    {$IFDEF VCL}
     TJvOfficeColorForm(FOwnerForm).MoveStart := False;
     TJvOfficeColorForm(FOwnerForm).DropDownMoving := False;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if TJvOfficeColorForm(FOwnerForm).DropDownMoving then
-    begin
-      TJvOfficeColorForm(FOwnerForm).DropDownMoving := False;
-      TJvOfficeColorForm(FOwnerForm).MoveStart := False;
-      TJvOfficeColorForm(FOwnerForm).ToolWindowStyle := True;
-      P := ClientToScreen(Point(X, Y));
-      FOwnerForm.Top := P.Y + 10;
-      FPos.X := 0;
-      FPos.Y := 0;
-    end;
-    {$ENDIF VisualCLX}
   end;
 end;
 

@@ -88,9 +88,7 @@ type
     property ParentFont;
     property TextOffset: Integer read FTextOffset write SetTextOffset default 24;
     property ImageOffset: Integer read FImageOffset write SetImageOffset default 2;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property DragMode;
     property PopupMenu;
     property OnClick;
@@ -128,9 +126,7 @@ type
 constructor TJvInstallLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FLines := TStringList.Create;
   FLines.OnChange := Change;
   FStyles := TList.Create;

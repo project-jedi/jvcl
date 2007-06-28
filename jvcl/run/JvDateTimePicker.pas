@@ -112,7 +112,7 @@ implementation
 
 uses
   CommCtrl, JvThemes,
-  {$IFDEF HAS_TYPES} 
+  {$IFDEF HAS_TYPES}
   Types,
   {$ENDIF HAS_TYPES}
   JvVCL5Utils,

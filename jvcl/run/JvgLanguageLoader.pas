@@ -272,9 +272,9 @@ end;
   [translated] }
 
 procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; const FileName: string);
-var 
+var
   IniFile: TCustomIniFile;
-  
+
   procedure UpdateAllComponents(Component: TComponent);
   var
     I: Integer;
@@ -324,7 +324,7 @@ end;
 // should be in OldLanguageFilename
 procedure TJvgLanguageLoader.ChangeTranslation(Component: TComponent;
   DoLoadStrings: Boolean; OldLanguageFileName: string);
-var 
+var
   OldIniFile: TCustomIniFile;
   I: Integer;
   EqualPos, Len: Integer;
@@ -371,7 +371,7 @@ end;
 // LoadStrings: Loads strings form the FStringsSection of the languagefile
 // into FTranslationStrings, after that it can be used in MessageBox and Translate
 procedure TJvgLanguageLoader.LoadStrings;
-var 
+var
   I: Integer;
   IniFile: TCustomIniFile;
 begin
@@ -400,32 +400,32 @@ end;
 
 // JGB - Save all strings on a form (equivalent to LoadLanguage
 procedure TJvgLanguageLoader.SaveAllStrings(Component: TComponent; FileName: string);
-var 
+var
   IniFile: TCustomIniFile;
-  
+
   procedure GetAllComponents(Component: TComponent);
   var
     I: Integer;
   begin
-    // Processing the component's properties [translated] 
+    // Processing the component's properties [translated]
     GetAllComponentStrings(Component);
     for I := 0 to Component.ComponentCount - 1 do
       GetAllComponents(Component.Components[I]);
   end;
-  
+
   procedure WriteSectionValues;
-  var 
+  var
     i: Integer;
   begin
     for I := 0 to FTranslations.Count-1 do
       IniFile.WriteString(FormSection, FTranslations.Names[i],FTranslations.Values[FTranslations.Names[i]]);
   end;
-  
+
 begin
   FTranslations := TStringList.Create;
   IniFile := TIniFile.Create(FileName);
   try
-    // Saving dictionary to given file 
+    // Saving dictionary to given file
     GetAllComponents(Component);
     WriteSectionValues; // write to dictionary
   finally
@@ -451,13 +451,13 @@ var
   PropObject: TObject;
   OldSort: Boolean;
   TempTrans: string;
-  
+
   function NeedsTranslation(SourceStr: string; var DestStr: string): Boolean;
   begin
     DestStr := TranslateString(SourceStr);
     Result := SourceStr <> DestStr;
   end;
-  
+
 begin
   // JGB: First we look if this component is in the ignore list
   if IgnoreList.Find(Component.GetNamePath, Idx) then
@@ -670,7 +670,7 @@ end;
 { Searching for translation of given line in dictionary [translated] }
 
 function TJvgLanguageLoader.TranslateString(AText: string): string;
-var 
+var
   TempStr: string;
 begin
   if lofTrimSpaces in Options then

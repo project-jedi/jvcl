@@ -34,9 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages, ComObj,
-  {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   JvLabel, JvComponent, JvExControls;
 
@@ -72,10 +70,8 @@ type
     FExceptObj: Exception;
     FPrevOnException: TExceptionEvent;
     FOnErrorMsg: TJvErrorEvent;
-    {$IFDEF VCL}
     FHelpFile: string;
     procedure WMHelp(var Msg: TWMHelp); message WM_HELP;
-    {$ENDIF VCL}
     procedure GetErrorMsg(var Msg: string);
     procedure ShowError;
     procedure SetShowDetails(Value: Boolean);
@@ -203,7 +199,6 @@ begin
   if FExceptObj is EInOutError then
     S := Format(RsCodeError, [S, EInOutError(FExceptObj).ErrorCode])
   else
-  {$IFDEF VCL}
   if FExceptObj is EOleException then
   begin
     with EOleException(FExceptObj) do
@@ -219,7 +214,6 @@ begin
     S := Format(RsCodeError, [S,
       EExternalException(FExceptObj).ExceptionRecord^.ExceptionCode])
   else
-  {$ENDIF VCL}
   if FExceptObj is EOSError then
     S := Format(RsCodeError,
      [S, EOSError(FExceptObj).ErrorCode])
@@ -266,7 +260,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvErrorDialog.WMHelp(var Msg: TWMHelp);
 var
   AppHelpFile: string;
@@ -280,15 +274,13 @@ begin
     Application.HelpFile := AppHelpFile;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvErrorDialog.FormCreate(Sender: TObject);
 begin
   BorderIcons := [biSystemMenu, biHelp];
   FDetailsHeight := DetailsPanel.Height;
-  {$IFDEF VCL}
   Icon.Handle := LoadIcon(0, IDI_HAND);
-  {$ENDIF VCL}
   IconImage.Picture.Icon := Icon;
   { Load string resources }
   Caption := SMsgDlgError;
@@ -306,15 +298,12 @@ end;
 procedure TJvErrorDialog.FormShow(Sender: TObject);
 var
   S: string;
-  {$IFDEF VCL}
   ExStyle: Longint;
-  {$ENDIF VCL}
 begin
   if FExceptObj.HelpContext <> 0 then
     HelpContext := FExceptObj.HelpContext
   else
     HelpContext := THelpContext(0);
-  {$IFDEF VCL}
   if FExceptObj is EOleException then
     FHelpFile := EOleException(FExceptObj).HelpFile
   else
@@ -325,7 +314,6 @@ begin
   else
     ExStyle := ExStyle and not WS_EX_CONTEXTHELP;
   SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
-  {$ENDIF VCL}
   S := Trim(FExceptObj.Message) + '.';
   GetErrorMsg(S);
   ErrorText.Caption := S;
@@ -340,12 +328,12 @@ end;
 
 procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-{$IFDEF VCL}
+
 var
   Info: THelpInfo;
-{$ENDIF VCL}
+
 begin
-{$IFDEF VCL}
+
   if (Key = VK_F1) and (HelpContext <> 0) then
   begin
     with Info do
@@ -359,7 +347,7 @@ begin
     end;
     Perform(WM_HELP, 0, Longint(@Info));
   end;
-{$ENDIF VCL}
+
 end;
 
 {$IFDEF UNITVERSIONING}

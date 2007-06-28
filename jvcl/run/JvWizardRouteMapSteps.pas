@@ -237,9 +237,7 @@ var
   APage: TJvWizardCustomPage;
   S: string;
 begin
-{$IFDEF VisualCLX}
-  try
-{$ENDIF VisualCLX}
+
     ARect := ClientRect;
     TotalPageCount := DetectPageCount(ActivePageIndex);
     Canvas.Brush.Color := Color;
@@ -319,10 +317,7 @@ begin
       DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
         DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
     end;
-{$IFDEF VisualCLX}
-  except
-  end;
-{$ENDIF VisualCLX}
+
 end;
 
 procedure TJvWizardRouteMapSteps.SetShowDivider(const Value: Boolean);

@@ -33,9 +33,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvAnimatedImage, JvComponent;
 
 type
@@ -45,12 +42,7 @@ type
     function GetMessageText: string;
     procedure SetMessageText(const Value: string);
   protected
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
   public
     Image: TImage;
     Animation: TJvAnimatedImage;
@@ -94,13 +86,7 @@ begin
   with Result do
   begin
     BorderIcons := [];
-    {$IFDEF VCL}
     BorderStyle := bsNone;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BorderStyle := fbsNone;
-    AutoScroll := False;
-    {$ENDIF VisualCLX}
     if SplashStayOnTop then
       FormStyle := fsStayOnTop
     else
@@ -108,18 +94,10 @@ begin
     ClientHeight := defSplashHeight;
     ClientWidth := defImageLeft + defTextRight + 32;
     Enabled := False;
-    {$IFDEF VCL}
     Font.Height := -11;
     Font.Name := 'MS Sans Serif';
     PixelsPerInch := 96;
     Scaled := True;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Font.Height := 11;
-    Font.Name := 'Helvetica';
-    PixelsPerInch := 96;
-    Scaled := False;
-    {$ENDIF VisualCLX}
     Font.Style := [];
     Font.Color := clWindowText;
 
@@ -148,9 +126,7 @@ begin
     Animation.Width := 32;
     Animation.Height := 32;
     Animation.Active := False;
-    {$IFDEF VCL}
     Animation.AutoSize := False;
-    {$ENDIF VCL}
     Animation.Stretch := True;
     Animation.Visible := False;
   end;
@@ -185,21 +161,15 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvSplashWindow.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or WS_DLGFRAME;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvSplashWindow.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WStyle_DialogBorder) or
-    Integer(WidgetFlags_WStyle_Tool); 
-end;
-{$ENDIF VisualCLX}
+
+
 
 function TJvSplashWindow.GetMessageText: string;
 begin
@@ -212,18 +182,9 @@ var
   VertOff: Integer;
 begin
   TextRect := Rect(FTextMessage.Left, 0, Max(Screen.Width div 2 - 64,
-    defTextWidth), 0);             
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-  {$ENDIF VisualCLX}
+    defTextWidth), 0);
     DrawText(Canvas.Handle,
       PChar(Value), - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
-  {$IFDEF VisualCLX}
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
   VertOff := (ClientHeight div 2) - ((TextRect.Bottom - TextRect.Top) div 2);
   if VertOff < 0 then
     VertOff := 10;

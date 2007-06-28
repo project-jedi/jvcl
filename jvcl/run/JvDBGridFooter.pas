@@ -133,9 +133,9 @@ type
     FIgnoreResizing: Boolean;
     FOnCalculate: TCalculateEvent;
     FOnDisplayText: TDisplayTextEvent;
-    
+
     FJvDBGridLayoutChangeLink: TJvDBGridLayoutChangeLink;
-    
+
     procedure SetColumns(Value: TFooterColumns);
     function GetDataSource: TDataSource;
     procedure SetDataSource(Value: TDataSource);
@@ -144,7 +144,7 @@ type
     procedure SetIgnoreResizing(Value: Boolean);
   protected
     procedure JvDBGridLayoutChanged(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind); dynamic;
-    
+
     procedure ReCalc;
     procedure DrawPanels; dynamic;
   public
@@ -162,7 +162,7 @@ type
     property SizeGrip default False;
     property OnCalculate: TCalculateEvent read FOnCalculate write FOnCalculate;
     property OnDisplayText: TDisplayTextEvent read FOnDisplayText write FOnDisplayText;
-  end;     
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -366,10 +366,10 @@ end;
 constructor TJvDBGridFooter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+
   FJvDBGridLayoutChangeLink := TJvDBGridLayoutChangeLink.Create;
   FJvDBGridLayoutChangeLink.OnChange := JvDBGridLayoutChanged;
-  
+
   FColumns := TFooterColumns.Create(Self);
   FDataLink := TFooterDataLink.Create(Self);
   FDBGrid := nil;
@@ -382,9 +382,9 @@ destructor TJvDBGridFooter.Destroy;
 begin
   if Assigned(FDBGrid) then
     FDBGrid.UnregisterLayoutChangeLink(FJvDBGridLayoutChangeLink);
-  
-  FJvDBGridLayoutChangeLink.Free;  
-    
+
+  FJvDBGridLayoutChangeLink.Free;
+
   FDataLink.Free;
   FDataLink := nil;
   FColumns.Free;
@@ -417,9 +417,9 @@ begin
   begin
     if Assigned(FDBGrid) then
       FDBGrid.UnregisterLayoutChangeLink(FJvDBGridLayoutChangeLink);
-      
+
     FDBGrid := Value;
-    
+
     if Assigned(FDBGrid) then
     begin
       DataSource := FDBGrid.DataSource;
@@ -605,7 +605,7 @@ begin
       Panels.EndUpdate;
     end;
   end;
-end;  
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization

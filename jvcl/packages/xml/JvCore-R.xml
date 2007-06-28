@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCore" Design="0">
   <Description>JVCL Core Components Runtime Package</Description>
-  <ClxDescription>JVCLX Core Runtime Package</ClxDescription>
   <GUID>{CCA5391F-35F6-43D1-AB48-187085D1EF5B}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
@@ -29,7 +28,6 @@
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="visualclx" Targets="CLX" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="vcldb50" Targets="DBv5" Condition=""/>
@@ -46,26 +44,6 @@
     <File Name="..\..\run\JvExStdCtrls.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="VCL" Formname="JvJVCLAboutForm" Condition=""/>
     <File Name="..\..\run\JVCLVer.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExButtons.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExCheckLst.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExComboEdits.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExComCtrls.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExControls.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExExtCtrls.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExForms.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExGrids.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExMask.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExStdCtrls.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQJVCLAboutForm.pas" Targets="CLX" Formname="JvJVCLAboutForm" Condition=""/>
-    <File Name="..\..\qrun\JVCLXVer.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQRegistryIniFile.pas" Targets="linux" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QWindows.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QMessages.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QExtDlgs.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QToolWin.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QComboEdits.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QNotebook.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QWinCursors.pas" Targets="CLX" Formname="" Condition=""/>
     <File Name="..\..\common\JvConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\JvWin32.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorProvider.pas" Targets="all" Formname="" Condition=""/>

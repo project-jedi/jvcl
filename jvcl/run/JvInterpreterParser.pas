@@ -138,11 +138,11 @@ const
   ttIn = 105; { In }
   ttRecord = 106; { Record }
   ttDownTo = 107; { DownTo }
-  
+
 
   { priority 8 - highest }
   ttNot = 21; { not }
-  
+
   { priority 6 }
   ttMul = 22; { * }
   ttDiv = 23; { / }
@@ -195,7 +195,7 @@ const
   priorShl = 6; // [peter schraut: added on 2005/08/14]
   priorShr = 6; // [peter schraut: added on 2005/08/14]
   priorXor = 3; // [peter schraut: added on 2005/08/14]
-  
+
   ttFirstExpression = 10; { tokens for expression }
   ttLastExpression = 59; {                       }
 
@@ -392,7 +392,7 @@ begin
   Result := P_UNKNOWN;
   HVal := -1;
   Len := Length(TokenStr);
-  
+
   if (MIN_WORD_LENGTH <= Len) and (Len <= MAX_WORD_LENGTH) then
   begin
     HVal := Len;

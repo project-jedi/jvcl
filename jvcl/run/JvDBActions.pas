@@ -33,12 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
   Windows, ActnList, ImgList, Graphics,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QActnList, QWindows, QImgList, QGraphics,
-  {$ENDIF UNIX}
   Forms, Controls, Classes, DB,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGridCustomTableView, cxDBData,

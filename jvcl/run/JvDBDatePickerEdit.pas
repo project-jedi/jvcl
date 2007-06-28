@@ -136,7 +136,6 @@ type
     // property MaxYear default 2900;
     // property MinYear default 1900;
     property AllowPopupBrowsing;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
@@ -152,7 +151,6 @@ type
     property ParentCtl3D;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property ImageIndex;
     property ImageKind;
     property Images;

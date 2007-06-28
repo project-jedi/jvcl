@@ -122,7 +122,7 @@ begin
 end;
 
 procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
-{$IFDEF VCL}
+
 var
   Stream: TStream;
 begin
@@ -135,12 +135,8 @@ begin
       Stream.Free;
     end;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-begin
-  // TODO
-end;
-{$ENDIF VisualCLX}
+
+
 end;
 
 function GetDInColors(BitCount: Word): Integer;
@@ -783,12 +779,7 @@ procedure TJvAnimatedCursorImage.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if FIcons.Count > 0 then
     if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then
-      {$IFDEF VCL}
       DrawRealSizeIcon(ACanvas, Frames[Index].Icon, ARect.Left, ARect.Top);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
-      {$ENDIF VisualCLX}
 end;
 
 procedure TJvAnimatedCursorImage.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;

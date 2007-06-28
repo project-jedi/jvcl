@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DB, DBCtrls, Messages, Controls, 
+  Classes, DB, DBCtrls, Messages, Controls,
   {$IFDEF COMPILER6_UP}
   VDBConsts,
   {$ELSE}
@@ -74,17 +74,12 @@ type
     property Constraints;
     property Color;
     property Layout;
-    {$IFDEF VCL}
     property DragCursor;
     property BiDiMode;
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property Canvas;
-    {$ENDIF VisualCLX}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -222,7 +217,7 @@ begin
   if Assigned(FDataLink) and Assigned(FDataLink.DataSet) then
     Caption := ReplaceFieldNameTag(FMask, FDataLink.DataSet)
   else
-    Caption := ReplaceFieldNameTag(Mask, nil); 
+    Caption := ReplaceFieldNameTag(Mask, nil);
 end;
 
 function TJvDBHTLabel.GetDataSource: TDataSource;

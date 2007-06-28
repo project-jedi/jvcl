@@ -39,9 +39,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
@@ -284,7 +282,7 @@ type
     property DragMode;
     property EmptyItemColor;
     property EmptyValue;
-    property EmptyStrIsNull; 
+    property EmptyStrIsNull;
     property Enabled;
     property FieldsDelimiter;
     property Font;
@@ -595,7 +593,6 @@ type
     property EditMask;
     property Enabled;
     property Font;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
@@ -604,7 +601,6 @@ type
     {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property HideSelection;
     property Anchors;
     property BiDiMode;
@@ -2572,7 +2568,7 @@ begin
     end
     else
       RecordCount := MaxInt;
-      
+
     if (DropDownCount > RecordCount) then
       FDataList.RowCount := RecordCount
     else
@@ -2615,7 +2611,7 @@ begin
     SR.Left := Rect.Left;
     SR.Width := Rect.Right - Rect.Left;
     SR.Height := Rect.Bottom - Rect.Top;
-    
+
     P := Parent.ClientToScreen(Point(Left, Top));
     Y := P.Y + Height;
     if Y + FDataList.Height > SR.Height then

@@ -89,10 +89,8 @@ type
     { events }
     FOnGetLineAttr: TJvGetLineAttrEvent;
     FOnCompletionApply: TOnCompletionApply;
-    
-    {$IFDEF VCL}
+
     procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
-    {$ENDIF VCL}
     { get/set for properties }
     function GetLines: TStrings;
     procedure SetLines(ALines: TStrings);
@@ -890,7 +888,7 @@ begin
   ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
-function TJvCustomEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; 
+function TJvCustomEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean;
 begin
   if (Y >= 0) and (Y < Lines.Count) then
   begin

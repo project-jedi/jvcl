@@ -64,7 +64,7 @@ type
     procedure SetWordWrap(Value: Boolean);
     procedure SetShortLinesLeftAligned(const Value: Boolean);
   protected
-    procedure SetAutoSize(Value: Boolean); override; 
+    procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;

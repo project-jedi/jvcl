@@ -374,7 +374,7 @@ end;
 function TJvDesignCustomController.GetShift: TShiftState;
 // obones: For C5/D5 compatibility, we must use a local variable
 // as KeyboardStateToShiftState with no parameters was introduced
-// in D6/C6 
+// in D6/C6
 var
   KeyState: TKeyBoardState;
 begin
@@ -865,7 +865,7 @@ end;
 function TJvDesignSurface.GetCursor(AX, AY: Integer): TCursor;
 begin
   // Using FindControl is inefficient.
-  // All we really want to know is if Selected[0] contains (AX, AY)  
+  // All we really want to know is if Selected[0] contains (AX, AY)
   if (Count > 0) and (FindControl(AX, AY) = Selected[0]) then
     Result := Selector.GetCursor(AX, AY)
   else

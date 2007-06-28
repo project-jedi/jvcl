@@ -160,7 +160,7 @@ begin
     FrameAttr.Style := fs3DRaised;
     OnChange := GlanceTitleChange;
   end;
-end; 
+end;
 
 destructor TJvTFMonths.Destroy;
 begin

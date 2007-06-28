@@ -33,9 +33,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Windows, Messages, Controls, Graphics, StdCtrls, Forms, Grids,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvConsts, JvVCL5Utils, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
 
 type
@@ -48,7 +45,7 @@ type
     var Enabled: Boolean) of object;
 
   TInplaceEditStyle = TEditStyle;
-  
+
 const
   ieSimple = esSimple;
   ieEllipsis = esEllipsis;
@@ -83,10 +80,8 @@ type
     FOnFixedCellClick: TFixedCellClickEvent;
     FOnCheckButton: TFixedCellCheckEvent;
     FOnChangeFocus: TNotifyEvent;
-    {$IFDEF VCL}
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
-    {$ENDIF VCL}
     FOnGetEditAlign: TEditAlignEvent;
     FOnEditButtonClick: TNotifyEvent;
     FOnGetPicklist: TPicklistEvent;
@@ -100,7 +95,6 @@ type
     procedure SetFixedButtons(Value: Boolean);
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
-    {$IFDEF VCL}
     function IsActiveControl: Boolean;
     procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
@@ -108,7 +102,6 @@ type
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    {$ENDIF VCL}
     procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
@@ -133,12 +126,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    {$IFDEF VCL}
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetEditText(ACol, ARow: Longint; const Value: WideString); override;
-    {$ENDIF VisualCLX}
     function CreateEditor: TInplaceEdit; override;
     procedure Paint; override;
     procedure EditChanged(Sender: TObject); dynamic;
@@ -195,10 +183,8 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-    {$IFDEF VCL}
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
-    {$ENDIF VCL}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -235,9 +221,7 @@ type
 
   TJvInplaceEdit = class(TJvExInplaceEdit)
   private
-    {$IFDEF VCL}
     FAlignment: TAlignment;
-    {$ENDIF VCL}
     FButtonWidth: Integer;
     FPickList: TJvGridPopupListBox;
     FActiveList: TWinControl;
@@ -250,19 +234,15 @@ type
     procedure SetEditStyle(Value: TInplaceEditStyle);
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
-    {$IFDEF VCL}
     procedure SetAlignment(Value: TAlignment);
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-    {$ENDIF VCL}
   protected
     procedure FocusKilled(NextWnd: THandle); override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     procedure BoundsChanged; override;
     procedure CloseUp(Accept: Boolean);
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState);
@@ -273,23 +253,14 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    {$IFDEF VCL}
     procedure PaintWindow(DC: HDC); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    {$ENDIF VisualCLX}
     procedure UpdateContents; override;
-    {$IFDEF VCL}
     procedure WndProc(var Message: TMessage); override;
-    {$ENDIF VCL}
     property ActiveList: TWinControl read FActiveList write FActiveList;
     property PickList: TJvGridPopupListBox read FPickList;
   public
     constructor Create(Owner: TComponent); override;
-    {$IFDEF VCL}
     property Alignment: TAlignment read FAlignment write SetAlignment;
-    {$ENDIF VCL}
     property EditStyle: TInplaceEditStyle read FEditStyle write SetEditStyle;
   end;
 
@@ -316,7 +287,7 @@ begin
   FEditStyle := ieSimple;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvInplaceEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array[TAlignment] of Cardinal = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -325,7 +296,7 @@ begin
   with Params do
     Style := Style or Alignments[FAlignment];
 end;
-{$ENDIF VCL}
+
 
 procedure TJvInplaceEdit.BoundsChanged;
 var
@@ -334,12 +305,10 @@ begin
   SetRect(R, 2, 2, Width - 2, Height);
   if FEditStyle <> ieSimple then
     Dec(R.Right, FButtonWidth);
-  {$IFDEF VCL}
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@R));
   SendMessage(Handle, EM_SCROLLCARET, 0, 0);
   if SysLocale.FarEast then
     SetImeCompositionWindow(Font, R.Left, R.Top);
-  {$ENDIF VCL}
 end;
 
 procedure TJvInplaceEdit.CloseUp(Accept: Boolean);
@@ -348,10 +317,8 @@ var
 begin
   if FListVisible then
   begin
-    {$IFDEF VCL}
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    {$ENDIF VCL}
     if FPickList.ItemIndex > -1 then
       ListValue := FPickList.Items[FPickList.ItemIndex];
     SetWindowPos(FActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
@@ -432,12 +399,7 @@ begin
   if (EditStyle = ieEllipsis) and (Key = VK_RETURN) and (Shift = [ssCtrl]) then
   begin
     TJvDrawGrid(Grid).EditButtonClick;
-    {$IFDEF VCL}
     KillMessage(Handle, WM_CHAR);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Key := 0;
-    {$ENDIF VisualCLX}
   end
   else
     inherited KeyDown(Key, Shift);
@@ -485,12 +447,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        {$IFDEF VCL}
         SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        THackedWinControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
-        {$ENDIF VisualCLX}
         Exit;
       end;
     end;
@@ -510,28 +467,17 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvInplaceEdit.PaintWindow(DC: HDC);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvInplaceEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
-{$ENDIF VisualCLX}
+
+
 const
   LeftOffs = 3;
 var
   R: TRect;
   Flags: Integer;
   W, G, I: Integer;
-  {$IFDEF VisualCLX}
-  DC: QPainterH;
-  {$ENDIF VisualCLX}
 begin
-  {$IFDEF VisualCLX}
-  DC := QPainter_create(QWidget_to_QPaintDevice(Handle), Handle);
-  try
-    QPainter_setClipRegion(DC, EventRegion);
-    QPainter_setClipping(DC, not QRegion_isEmpty(EventRegion));
-  {$ENDIF VisualCLX}
 
   if FEditStyle <> ieSimple then
   begin
@@ -565,15 +511,10 @@ begin
     end;
     ExcludeClipRect(DC, R.Left, R.Top, R.Right, R.Bottom);
   end;
-  {$IFDEF VisualCLX}
-  finally
-    QPainter_destroy(DC);
-  end;
-  {$ENDIF VisualCLX}
   inherited {PaintWindow(DC);}
 end;
 
-{$IFDEF VCL}
+
 procedure TJvInplaceEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -582,7 +523,7 @@ begin
     RecreateWnd;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvInplaceEdit.SetEditStyle(Value: TInplaceEditStyle);
 begin
@@ -598,9 +539,7 @@ begin
           FPickList.Visible := False;
           FPickList.Parent := Self;
           FPickList.OnMouseUp := ListMouseUp;
-          {$IFDEF VCL}
           FPickList.IntegralHeight := True;
-          {$ENDIF VCL}
           FPickList.ItemHeight := 11;
         end;
         FActiveList := FPickList;
@@ -631,12 +570,7 @@ begin
   if FPressed <> NewState then
   begin
     FPressed := NewState;
-    {$IFDEF VCL}
     InvalidateRect(Handle, @R, False);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    InvalidateRect(R, False);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -658,7 +592,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvInplaceEdit.CMCancelMode(var Msg: TCMCancelMode);
 begin
@@ -672,7 +606,7 @@ begin
   inherited;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvInplaceEdit.FocusKilled(NextWnd: THandle);
 begin
@@ -680,20 +614,16 @@ begin
     inherited FocusKilled(NextWnd)
   else
   begin
-    {$IFDEF VCL}
     ImeName := Screen.DefaultIme;
     ImeMode := imDontCare;
-    {$ENDIF VCL}
     inherited FocusKilled(NextWnd);
-    {$IFDEF VCL}
     if NextWnd <> TJvDrawGrid(Grid).Handle then
       ActivateKeyboardLayout(Screen.DefaultKbLayout, KLF_ACTIVATE);
-    {$ENDIF VCL}
   end;
   CloseUp(False);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvInplaceEdit.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
@@ -740,7 +670,7 @@ begin
   inherited WndProc(Message);
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvDrawGrid } ========================================================
 
@@ -897,7 +827,7 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDrawGrid.WMCommand(var Msg: TWMCommand);
 begin
   if (Msg.NotifyCode = EN_CHANGE) and
@@ -910,7 +840,7 @@ begin
   end;
   inherited;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDrawGrid.EditChanged(Sender: TObject);
 begin
@@ -925,20 +855,14 @@ begin
     FOnGetEditLimit(Self, Result);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDrawGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
   if not FNoUpdateData then
     inherited SetEditText(ACol, ARow, Value);
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvDrawGrid.SetEditText(ACol, ARow: Longint; const Value: WideString);
-begin
-  if not FNoUpdateData then
-    inherited SetEditText(ACol, ARow, Value);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvDrawGrid.SetFixedButtons(Value: Boolean);
 begin
@@ -1019,7 +943,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 function TJvDrawGrid.IsActiveControl: Boolean;
 var
   Handle: THandle;
@@ -1041,7 +965,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDrawGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -1259,9 +1183,6 @@ begin
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = ACol) and (FCellDown.Y = ARow) then
         Style := Style or DFCS_PUSHED;
-      {$IFDEF VisualCLX}
-      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
-      {$ENDIF VisualCLX}
       DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
@@ -1294,9 +1215,7 @@ begin
       FillRect(ARect);
     end;
   Down := FFixedCellsButtons and (gdFixed in AState) and
-    {$IFDEF VCL}
     Ctl3D and
-    {$ENDIF VCL}
     not (csLoading in ComponentState) and FPressed and FDefaultDrawing and
     (FPressedCell.X = ACol) and (FPressedCell.Y = ARow);
   inherited DefaultDrawing := FDefaultDrawing;
@@ -1316,9 +1235,7 @@ begin
     end;
   end;
   if FDefaultDrawing and
-     {$IFDEF VCL}
      Ctl3D and
-     {$ENDIF VCL}
      (gdFixed in AState) then
   begin
     FrameFlags1 := 0;
@@ -1343,9 +1260,6 @@ begin
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
-      {$IFDEF VisualCLX}
-      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
-      {$ENDIF VisualCLX}
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;
@@ -1357,7 +1271,7 @@ begin
     DrawFocusRect(Canvas.Handle, ARect);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvDrawGrid.WMRButtonUp(var Msg: TWMMouse);
 begin
@@ -1392,7 +1306,7 @@ begin
   inherited;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvDrawGrid.FocusKilled(NextWnd: THandle);
 begin
@@ -1408,13 +1322,13 @@ begin
     FOnChangeFocus(Self);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDrawGrid.WMCancelMode(var Msg: TMessage);
 begin
   StopTracking;
   inherited;
 end;
-{$ENDIF VCL}
+
 
 function TJvDrawGrid.CreateEditor: TInplaceEdit;
 begin
@@ -1448,7 +1362,7 @@ begin
     FOnEditButtonClick(Self);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDrawGrid.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
@@ -1462,7 +1376,7 @@ begin
   if Assigned(FOnVScroll) then
     FOnVScroll(Self);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDrawGrid.SetDrawButtons(const Value: Boolean);
 begin

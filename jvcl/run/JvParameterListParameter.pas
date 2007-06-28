@@ -37,9 +37,6 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF VisualCLX}
-  JvQTypes,
-  {$ENDIF VisualCLX}
   JvPanel, JvPropertyStore, JvParameterList, JvDynControlEngine, JvDSADialogs,
   JvDynControlEngineIntf;
 
@@ -327,9 +324,7 @@ type
   private
     FInitialDir: string;
     FDialogTitle: string;
-    {$IFDEF VCL}
     FDialogOptions: TSelectDirOpts;
-    {$ENDIF VCL}
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
@@ -342,9 +337,7 @@ type
     property Directory: string read GetAsString write SetAsString;
     property InitialDir: string read FInitialDir write FInitialDir;
     property DialogTitle: string read FDialogTitle write FDialogTitle;
-    {$IFDEF VCL}
     property DialogOptions: TSelectDirOpts read FDialogOptions write FDialogOptions;
-    {$ENDIF VCL}
   end;
 
   TJvListParameter = class(TJvBasePanelEditParameter)
@@ -2197,9 +2190,7 @@ begin
   if Source is TJvDirectoryParameter then
   begin
     InitialDir := TJvDirectoryParameter(Source).InitialDir;
-    {$IFDEF VCL}
     DialogOptions := TJvDirectoryParameter(Source).DialogOptions;
-    {$ENDIF VCL}
     DialogTitle := TJvDirectoryParameter(Source).DialogTitle;
   end;
 end;
@@ -2223,9 +2214,7 @@ begin
     with ITmpControlDirectory do
     begin
       ControlSetDialogTitle(DialogTitle);
-      {$IFDEF VCL}
       ControlSetDialogOptions(DialogOptions);
-      {$ENDIF VCL}
       ControlSetInitialDir(InitialDir);
     end;
 end;
@@ -2242,14 +2231,12 @@ begin
       DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;
-  {$IFDEF VCL}
   if not DirectoryExists(AData) then
     if not (sdAllowCreate in DialogOptions) then
     begin
       DSADialogsMessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, AData]), mtError, [mbOK], 0);
       Exit;
     end;
-  {$ENDIF VCL}
   Result := True;
 end;
 

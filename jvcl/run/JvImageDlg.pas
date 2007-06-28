@@ -35,9 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Graphics, Controls, Forms, ExtCtrls,
-  {$IFDEF VCL}
   jpeg,
-  {$ENDIF VCL}
   JvBaseDlg, JvComponent, JvTypes;
 
 type

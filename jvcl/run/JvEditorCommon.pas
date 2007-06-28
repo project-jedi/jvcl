@@ -215,14 +215,8 @@ const
   {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
-  {$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
   WM_COMPOUND = WM_USER + $102;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  WM_EDITCOMMAND = CM_BASE + $101;
-  WM_COMPOUND = CM_BASE + $102;
-  {$ENDIF VisualCLX}
   CM_RESETCAPTURECONTROL = CM_BASE + $103;
 
 type
@@ -235,7 +229,7 @@ type
     Height: Integer;
   end;
 
-  TLineAttr = packed record { CompareMem() requires "packed" } 
+  TLineAttr = packed record { CompareMem() requires "packed" }
     FC: TColor;
     BC: TColor;
     Style: TFontStyles;
@@ -767,7 +761,6 @@ type
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
     procedure WMCompound(var Msg: TMessage); message WM_COMPOUND;
     procedure CMResetCaptureControl(var Msg: TMessage); message CM_RESETCAPTURECONTROL;
-    {$IFDEF VCL}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
@@ -783,7 +776,6 @@ type
     procedure EMGetSelection(var Msg: TMessage); message EM_GETSEL;
     procedure EMCanUndo(var Msg: TMessage); message EM_CANUNDO;
     procedure WMGetTextLength(var Msg: TMessage); message WM_GETTEXTLENGTH;
-    {$ENDIF VCL}
   protected
     FMyDi: TDynIntArray; //array [0..Max_X] of Integer;
     FSelection: TJvSelectionRec;
@@ -831,9 +823,6 @@ type
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
-    {$IFDEF VisualCLX}
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    {$ENDIF VisualCLX}
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
       ScrollPos: Integer);
     procedure Scroll(Vert: Boolean; ScrollPos: Integer); dynamic;
@@ -843,8 +832,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean; override;
     procedure DblClick; override;
 
     procedure GetDlgCode(var Code: TDlgCodes); override;
@@ -2678,7 +2666,7 @@ begin
   FScrollBarVert.DoScroll(Msg);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomEditorBase.WMSetCursor(var Msg: TWMSetCursor);
 var
@@ -2726,7 +2714,7 @@ begin
   Msg.Result := Ord(ReadOnly);
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvCustomEditorBase.EMSetReadOnly(var Msg: TMessage);
 begin
@@ -3177,7 +3165,7 @@ begin
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
     WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
-    
+
     if ReadOnly then
       Style := Style or ES_READONLY
     else
@@ -3191,17 +3179,7 @@ begin
   UpdateEditorSize;
 end;
 
-{$IFDEF VisualCLX}
 
-function TJvCustomEditorBase.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-{  case QEvent_type(Event) of
-    QEventType_
-  end;}
-  Result := inherited EventFilter(Sender, Event);
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvCustomEditorBase.ScrollBarScroll(Sender: TObject; ScrollCode:
   TScrollCode; var ScrollPos: Integer);
@@ -3230,7 +3208,6 @@ begin
       { optimized scrolling }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
-      {$IFDEF VCL}
       if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < FEditorClient.Height then
       begin
         R := FEditorClient.ClientRect;
@@ -3254,7 +3231,6 @@ begin
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
-      {$ENDIF VCL}
         Invalidate;
       Update;
     end
@@ -3265,7 +3241,6 @@ begin
       FLeftCol := ScrollPos;
       if FLeftCol >= Max_X then
         FLeftCol := Max_X - 1;
-      {$IFDEF VCL}
       if Abs((OldFLeftCol - ScrollPos) * CellRect.Width) < FEditorClient.Width then
       begin
         R := FEditorClient.ClientRect;
@@ -3285,7 +3260,6 @@ begin
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
-      {$ENDIF VCL}
         Invalidate;
       Update;
     end;
@@ -3499,8 +3473,7 @@ begin
   end;
 end;
 
-function TJvCustomEditorBase.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvCustomEditorBase.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean;
 var
   WheelDirection: Integer;
 begin
@@ -3679,7 +3652,7 @@ begin
     MakeRowVisible(SelBegY);
     //  PaintSelection;
     //  EditorPaint;
-  end; 
+  end;
 end;
 
 procedure TJvCustomEditorBase.SetSelLength(ASelLength: Integer);
@@ -3779,7 +3752,6 @@ begin
   end
   else {1 :}
   begin
-    {$IFDEF VCL}
     if HandleAllocated then
     begin
       if Value then
@@ -3787,7 +3759,6 @@ begin
       else
         SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not ES_READONLY);
     end;
-    {$ENDIF VCL}
     if FReadOnly <> Value then
     begin
       FReadOnly := Value;
@@ -6116,7 +6087,7 @@ var
   Offset, W: Integer;
   S: string;
 begin
-  // this is a ANSI component 
+  // this is a ANSI component
   if Assigned(OnDrawItem) then
     OnDrawItem(Self, Index, Rect, State)
   else

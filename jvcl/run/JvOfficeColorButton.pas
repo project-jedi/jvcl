@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, 
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
   JvOfficeColorForm, JvOfficeColorPanel;
 
@@ -122,10 +122,8 @@ type
     procedure SetGlyph(const Value: TBitmap);
     function GetProperties: TJvOfficeColorButtonProperties;
     procedure SetProperties(const Value: TJvOfficeColorButtonProperties);
-    {$IFDEF VCL}
     function GetColorDialogOptions: TColorDialogOptions;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
-    {$ENDIF VCL}
 
     {IJvHotTrack}
     function GetHotTrack: Boolean;
@@ -175,11 +173,9 @@ type
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen position
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen position
     class function GetColorsPanelClass: TJvOfficeColorPanelClass;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
     procedure Loaded; override;
-    procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
+    procedure SetEnabled( Value: Boolean); override;
     procedure FontChanged; override;
 
     function CreateStandardColors(ColorList: TStrings): Integer; virtual;
@@ -220,9 +216,7 @@ type
     property ColorDlgCustomColors: TStrings read GetColorDlgCustomColors write SetColorDlgCustomColors;
     property ClickColorType: TJvClickColorType read GetClickColorType ;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
-    {$IFDEF VCL}
     property ColorDialogOptions: TColorDialogOptions read GetColorDialogOptions write SetColorDialogOptions default [];
-    {$ENDIF VCL}
     property StandardColors: TStringList read GetStandardColors write SetStandardColors;
     property SystemColors: TStringList read GetSystemColors write SetSystemColors;
     property UserColors: TStringList read GetUserColors write SetUserColors;
@@ -250,14 +244,12 @@ type
   published
     // UserColors must be load fist on read from the DFM file.
     property UserColors;
-    {$IFDEF VCL}
     property ColorDialogOptions;
     property BiDiMode;
     property DragCursor;
     property DragKind;
     property ParentBiDiMode;
     property OnCanResize;
-    {$ENDIF VCL}
     property Align;
     property Anchors;
     property Constraints;
@@ -444,9 +436,7 @@ begin
 
   ControlStyle := ControlStyle - [csAcceptsControls, csSetCaption] + [csOpaque];
   BevelOuter := bvNone;
-  {$IFDEF VCL}
   Locked := True;
-  {$ENDIF VCL}
   Width := MinButtonWidth + MinArrowWidth;
   Height := MinButtonHeight;
 
@@ -531,7 +521,7 @@ begin
     UserColors.BeginUpdate;
     UserColors.OnChange := DoColorsListChanged;
     UserColors.EndUpdate;
-    
+
     CreateUserColors(UserColors);
     UserColors.OnChange := nil;
     if FColorsListChanged then // Changed the colors value, recreate buttons
@@ -543,13 +533,9 @@ begin
 
   if LColorsChanged then //StandardColors or SystemColors Or userColors changed.
     RearrangeControls;
-    
+
   //Font.Name := 'MS Shell Dlg 2';
   Flat := True;
-  {$IFDEF VisualCLX}
-  // in CLX and a bug not fix when drag the colors form
-  Properties.ShowDragBar := False;
-  {$ENDIF VisualCLX}
   FMainButton.OnMouseEnter := DoButtonMouseEnter;
   FArrowButton.OnMouseEnter := DoButtonMouseEnter;
   FMainButton.OnMouseLeave := DoButtonMouseLeave;
@@ -603,13 +589,13 @@ begin
   Result := TJvOfficeColorPanel;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomOfficeColorButton.CreateWnd;
 begin
   inherited CreateWnd;
   AdjustSize;
 end;
-{$ENDIF VCL}
+
 
 type
   TControlAccessProtected = class(TControl);
@@ -618,12 +604,9 @@ procedure TJvCustomOfficeColorButton.Loaded;
 begin
   inherited Loaded;
   TControlAccessProtected(ColorsForm.ColorPanel).Loaded;
-  {$IFDEF VisualCLX}
-  AdjustSize;
-  {$ENDIF VisualCLX}
 end;
 
-procedure TJvCustomOfficeColorButton.SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean);
+procedure TJvCustomOfficeColorButton.SetEnabled( Value: Boolean);
 begin
   inherited SetEnabled(Value);
   FMainButton.Enabled := Value;
@@ -1002,7 +985,7 @@ begin
     FMainButton.Glyph := Value;
 end;
 
-{$IFDEF VCL}
+
 
 function TJvCustomOfficeColorButton.GetColorDialogOptions: TColorDialogOptions;
 begin
@@ -1014,7 +997,7 @@ begin
   ColorPanel.ColorDialogOptions := Value;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvCustomOfficeColorButton.GetProperties: TJvOfficeColorButtonProperties;
 begin
@@ -1384,10 +1367,8 @@ begin
   Filer.DefineProperty(FFilerTag, ReadData, nil, False);
   FFilerTag := 'CustomColors';
   Filer.DefineProperty(FFilerTag, ReadData, nil, False);
-  {$IFDEF VCL}
   FFilerTag := 'Options';
   Filer.DefineProperty(FFilerTag, ReadData, nil, False);
-  {$ENDIF VCL}
 end;
 
 procedure TJvOfficeColorButton.ReadData(Reader: TReader);
@@ -1397,11 +1378,9 @@ begin
   else
   if SameText(FFilerTag,'CustomColors') then
     JvReaderReadStrings(Reader,ColorDlgCustomColors)
-  {$IFDEF VCL}
   else
   if SameText(FFilerTag,'Options') then
     ColorDialogOptions := JvReaderReadColorDialogOptions(Reader)
-  {$ENDIF VCL}
   ;
 end;
 

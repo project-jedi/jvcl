@@ -42,9 +42,6 @@ uses
   Windows, ShellAPI,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, Controls,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvBaseDlg, JvWin32;
 
 type
@@ -247,12 +244,7 @@ end;
 function TJvSHFileOperation.GetWinHandle: THandle;
 begin
   if Owner is TWinControl then
-    {$IFDEF VCL}
     Result := TWinControl(Owner).Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := QWidget_winId(TWinControl(Owner).Handle)
-    {$ENDIF VisualCLX}
   else
     Result := GetForegroundWindow;
 end;

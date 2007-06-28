@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCustom" Design="0">
   <Description>JVCL Custom Controls Runtime Package</Description>
-  <ClxDescription>JVCLX Custom Controls Runtime Package</ClxDescription>
   <GUID>{4A50AFAA-822C-4884-9143-3B7A7963E7CB}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>

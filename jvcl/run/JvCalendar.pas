@@ -873,7 +873,7 @@ var
   Flags: DWORD;
 begin
   if not HandleAllocated then
-    Exit;                            
+    Exit;
   MonthCal_SetFirstDayOfWeek(Handle, Ord(FAppearance.FirstDayOfWeek) - 1);
   MonthCal_SetMaxSelCount(Handle, FMaxSelCount);
 

@@ -72,7 +72,6 @@ type
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
   end;
 
-  {$IFDEF VCL}
   TJvExCustomDockForm = class(TCustomDockForm, IJvExControl)
   WINCONTROL_DECL
   protected
@@ -81,7 +80,6 @@ type
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
   end;
- {$ENDIF VCL}
 
 
 {$IFDEF UNITVERSIONING}
@@ -165,7 +163,6 @@ begin
   inherited;
 end;
 
-{$IFDEF VCL}
 WINCONTROL_IMPL_DEFAULT(CustomDockForm)
 
 constructor TJvExCustomDockForm.CreateNew(AOwner: TComponent; Dummy: Integer);
@@ -191,7 +188,6 @@ begin
   end;
   inherited;
 end;
-{$ENDIF VCL}
 
 {$IFDEF UNITVERSIONING}
 initialization

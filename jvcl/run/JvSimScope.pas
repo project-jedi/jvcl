@@ -30,7 +30,7 @@ Description:
      LineColor           Scope dataline color
      Position            Dataline value
      BaseColor           Color of BaseLine
-     BaseLine            BaseLine value 
+     BaseLine            BaseLine value
 
   TJvSimScope Methods:
      Clear            Clears the control and redraws grid
@@ -65,12 +65,12 @@ type
     FValues: array of Integer;
     FCount: Integer;
     FZeroIndex: Integer;
-    
+
     procedure SetCapacity(const Value: Integer);
     function GetCapacity: Integer;
     function GetItem(Index: Integer): Integer;
   public
-    procedure Assign(Source: TJvScopeLineValues); 
+    procedure Assign(Source: TJvScopeLineValues);
     procedure Add(Value: Integer);
     procedure Clear;
 
@@ -91,7 +91,7 @@ type
   public
     constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
-    
+
     procedure Assign(Source: TPersistent); override;
     procedure Clear;
     property Values: TJvScopeLineValues read FValues;
@@ -141,7 +141,7 @@ type
     FBaseLineUnit: TJvScopeLineUnit;
     FTotalTimeSteps: Integer;
     FUpdateTimeSteps: Integer;
-    
+
     procedure SetActive(Value: Boolean);
     procedure SetGridSize(Value: Integer);
     procedure SetBaseLine(Value: Integer);
@@ -499,7 +499,7 @@ begin
 
   // To force having enough values in the scope.
   ClearValues;
-  
+
   FAllowed := True;
 end;
 
@@ -682,7 +682,7 @@ begin
     MoveTo(Width - Round(UpdateWidth / 2), 0);
     LineTo(Width - Round(UpdateWidth / 2), Height);   *)
 
-    
+
     Pen.Color := GridColor;
     Pen.Width := 1;
     { Draw vertical line if needed }
@@ -721,7 +721,7 @@ begin
       A := GetLinePixelPosition(FLines[I], FLines[I].Position);
       PosMinusOne := GetLinePixelPosition(FLines[I], FLines[I].FValues[FLines[I].FValues.Count - 1 * UpdateTimeSteps]);
       PosMinusTwo := GetLinePixelPosition(FLines[I], FLines[I].FValues[FLines[I].FValues.Count - 2 * UpdateTimeSteps]);
-      
+
       MoveTo(Width - UpdateWidth * 2, Round(PosMinusTwo));
       LineTo(Width - UpdateWidth, Round(PosMinusOne));
       LineTo(Width - 0, Round(A));
@@ -747,12 +747,7 @@ begin
   Rect.Left := 0;
   Rect.Right := Width;
   Rect.Bottom := Height;
-  {$IFDEF VCL}
   Canvas.CopyRect(Rect, FDrawBuffer.Canvas, Rect);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Canvas.CopyRect(Bounds(Left, Top, Width, Height), FDrawBuffer.Canvas, Rect);
-  {$ENDIF VisualCLX}
   FAllowed := True;
 end;
 

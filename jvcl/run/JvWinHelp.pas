@@ -39,9 +39,6 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Controls, Forms, Menus,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvTypes, JvComponentBase;
 
 type
@@ -117,35 +114,18 @@ function TJvWinHelp.GetOwnerHandle: THandle;
 begin
   Result := 0;
   if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
-    {$IFDEF VCL}
     Result := TWinControl(FOwner).Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := QWidget_winId(TWidgetControl(FOwner).Handle)
-    {$ENDIF VisualCLX}
   else
   if Application <> nil then
   begin
     if (Screen <> nil) and (Screen.ActiveForm <> nil) then
-      {$IFDEF VCL}
       Result := Screen.ActiveForm.Handle
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Result := QWidget_winId(Screen.ActiveForm.Handle)
-      {$ENDIF VisualCLX}
     else
     if Application.MainForm <> nil then
-      {$IFDEF VCL}
       Result := Application.MainForm.Handle
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Result := QWidget_winId(Application.MainForm.Handle)
-      {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     else
     if not (csDestroying in Application.ComponentState) then
       Result := Application.Handle;
-    {$ENDIF VCL}
   end;
 end;
 

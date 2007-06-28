@@ -32,9 +32,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  QTypes,
-  {$ENDIF VisualCLX}
   Classes, Controls, StdCtrls,
   JvComponentBase;
 
@@ -186,10 +183,8 @@ begin
     begin
       SrcList.ScrollBars := FScrollBars;
       DstList.ScrollBars := FScrollBars;
-      {$IFDEF VCL}
       if NewStyleControls then
         Font.Style := [];
-      {$ENDIF VCL}
       ShowHelp := Self.ShowHelp;
       SrcList.Sorted := Sorted;
       DstList.Sorted := Sorted;

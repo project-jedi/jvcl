@@ -232,9 +232,7 @@ begin
   with SelectDialog do
   begin
     BorderIcons := [];
-    {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
-    {$ENDIF VCL}
     BorderStyle := fbsDialog;
     FormStyle := fsNormal;
     Position := poScreenCenter;

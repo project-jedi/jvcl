@@ -15,7 +15,7 @@ Portions created by Erwin Molendijk are Copyright (C) 2002 Erwin Molendijk.
 All Rights Reserved.
 
 Contributor(s): ______________________________________.
-            
+
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
@@ -42,9 +42,6 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF UNIX}
-  QWindows,
-  {$ENDIF UNIX}
   JvMTConsts;
 
 type
@@ -203,20 +200,20 @@ var
   HandleArray: array [0..1] of THandle;
 begin
   Result := False;
-  
+
   if CurrentMTThread <> nil then
   begin {MT thread}
     // don't wait if we are already terminated
     //   because we don't want to take the risk of getting the
     //   semaphore in that case.
     CurrentMTThread.CheckTerminate;
-  
+
     // setup the handle array.
     //   the semphore has priority over the terminate signal
     //   because if we get the semaphore we must not raise an EMTTerminateError
     HandleArray[0] := FHandle;
     HandleArray[1] := CurrentMTThread.TerminateSignal;
-  
+
     // perform the wait
     case WaitForMultipleObjects(2, @HandleArray[0], False, Timeout) of
       WAIT_FAILED:

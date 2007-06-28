@@ -37,10 +37,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, 
-  {$IFDEF VCL}
+  Windows,
   Messages,
-  {$ENDIF VCL}
   Classes, Controls, StdCtrls, DB, DBCtrls,
   JvExtComponent;
 
@@ -163,7 +161,7 @@ const
 implementation
 
 uses
-  Forms, 
+  Forms,
   JvConsts;
 
 //=== { TGroupButton } =======================================================

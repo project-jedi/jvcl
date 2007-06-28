@@ -113,10 +113,8 @@ type
     property DragCursor;
     property DropDownCount;
     property Enabled;
-    {$IFDEF VCL}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property ItemHeight;
     property MaxLength;

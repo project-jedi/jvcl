@@ -35,12 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms,
-  {$IFDEF VisualCLX}
-  Qt, QRas32,
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
   Ras32,
-  {$ENDIF VCL}
   Windows, Messages,
    // Messages must be after QControls
   JvComponentBase, JvTypes;
@@ -188,12 +183,7 @@ begin
   FDomain := '';
   FConnection := 0;
   if AOwner is TWinControl then
-    {$IFDEF VCL}
     FPHandle := (AOwner as TWinControl).Handle
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FPHandle := QWidget_winid((AOwner as TWinControl).Handle)
-    {$ENDIF VisualCLX}
   else
     // (rom) is this safe?
     FPHandle := GetForegroundWindow;

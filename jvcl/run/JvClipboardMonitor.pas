@@ -34,9 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF VCL}
   Clipbrd,
-  {$ENDIF VCL}
   Classes,
   JvComponentBase;
 

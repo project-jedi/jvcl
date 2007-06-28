@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at source
 Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s): Olivier Sannier 
+Contributor(s): Olivier Sannier
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -172,7 +172,7 @@ begin
   begin
     if Node.StateIndex = -1 then
       Node.StateIndex := AUnchecked;
-      
+
     if Node.StateIndex = AUnChecked then
     begin
       Node.StateIndex := AChecked;
@@ -298,7 +298,7 @@ end;
 
 destructor TJvCheckTreeView.Destroy;
 begin
-  FCheckBoxOptions.Free;              
+  FCheckBoxOptions.Free;
   inherited Destroy;
 end;
 
@@ -431,9 +431,9 @@ begin
   // Mantis 3608: We call inherited to be sure that the visual state is
   // updated according to the correct value.
   // Then if the style is JVCL, we work internally to update the StateIndex
-  // of the node that is being modified. 
+  // of the node that is being modified.
   inherited Checked[Node] := Value;
-  
+
   if CheckBoxOptions.Style = cbsJVCL then
     InternalSetChecked(Node, Value, CheckBoxOptions.CascadeLevels)
 end;

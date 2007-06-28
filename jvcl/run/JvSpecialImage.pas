@@ -239,7 +239,7 @@ begin
     //
     // G.Transparent := FTransparent;
     //
-    // This changes the picture, leading to this call stack: 
+    // This changes the picture, leading to this call stack:
     // TJvSpecialImage.PictureChanged -> calls ApplyChanges then
     // TJvSpecialImage.ApplyChanges -> calls inherited Picture.Assign(Dest) then
     // TPicture.Assign -> calls TPicture.SetGraphic then

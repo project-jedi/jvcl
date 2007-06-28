@@ -50,9 +50,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   Classes, Controls, Forms, ComCtrls, DB,
   JvDBTreeView, JvToolEdit, JvComponent, JvExControls;
 
@@ -467,7 +465,7 @@ uses
   VDBConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF COMPILER10_UP}
-  Types,  // to allow inline expansion 
+  Types,  // to allow inline expansion
   {$ENDIF COMPILER10_UP}
   CommCtrl, Graphics, DBConsts,
   JvThemes;
@@ -969,7 +967,7 @@ begin
   end
   else
   {$ENDIF JVCLThemesEnabled}
-  {/added by zelen}  
+  {/added by zelen}
   begin
     if not FListActive or not Enabled or ReadOnly then
       Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
@@ -1129,7 +1127,7 @@ begin
 //      SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
 
     if FullExpand then
-      FDataList.FTree.FullExpand; 
+      FDataList.FTree.FullExpand;
 
     Repaint;
   end;

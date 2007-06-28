@@ -36,12 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Registry, Classes, Contnrs,
-  {$IFDEF VCL}
   Windows, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Windows, QForms,
-  {$ENDIF VisualCLX}
   JvComponentBase, JvTypes;
 
 type
@@ -163,9 +158,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
@@ -240,12 +233,7 @@ begin
   if WrongOSWarningShown or (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
     Exit;
   with Application do
-    {$IFDEF VCL}
     MessageBox(PChar(RsWrongOS), PChar(Title), MB_ICONWARNING);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    MessageBox(RsWrongOS, Title, [smbOK], smsWarning);
-    {$ENDIF VisualCLX}
   WrongOSWarningShown := True;
 end;
 

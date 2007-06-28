@@ -45,9 +45,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Controls, Graphics, Forms, ActnList,
   JvTypes, JvComponentBase;
 
@@ -57,12 +54,7 @@ const
   DefHintShortPause = DefHintPause div 10;
   DefHintHidePause = DefHintPause * 5;
 
-{$IFDEF VisualCLX}
-type
-  { short names }
-  TUIEffect = ( General, AnimateMenu, FadeMenu, AnimateCombo, AnimateTooltip, FadeTooltip );
-  TUIEffects = set of TUIEffect;
-{$ENDIF VisualCLX}
+
 
 type
   TJvAppEvents = class(TJvComponent)
@@ -83,12 +75,10 @@ type
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
-    {$IFDEF VCL}
     FUpdateMetricSettings: Boolean;
     FBiDiMode: TBiDiMode;
     FBiDiKeyboard: string;
     FNonBiDiKeyboard: string;
-    {$ENDIF VCL}
     FOnPaintIcon: TNotifyEvent;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
@@ -96,18 +86,11 @@ type
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
-    {$IFDEF VCL}
     FOnMessage: TMessageEvent;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FOnEvent: TEventEvent;
-    {$ENDIF VisualCLX}
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
-    {$IFDEF VCL}
     FOnSettingsChanged: TNotifyEvent;
-    {$ENDIF VCL}
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     procedure UpdateAppProps;
@@ -132,7 +115,6 @@ type
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
     procedure SetMouseDragThreshold(Value: Integer);
-    {$IFDEF VCL}
     function GetUpdateMetricSettings: Boolean;
     procedure SetUpdateMetricSettings(Value: Boolean);
     function GetBiDiMode: TBiDiMode;
@@ -141,20 +123,11 @@ type
     function GetNonBiDiKeyboard: string;
     procedure SetBiDiKeyboard(const Value: string);
     procedure SetNonBiDiKeyboard(const Value: string);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function GetEffects: TUIEffects;
-    function GetHintFont: TFont;
-    procedure SetEffects(Value: TUIEffects);
-    procedure SetHintFont(Value: TFont);
-    {$ENDIF VisualCLX}
   protected
     procedure Loaded; override;
-    {$IFDEF VCL}
     procedure PaintIcon; virtual;
     procedure SettingsChanged; dynamic;
     function MessageHook(var Msg: TMessage): Boolean; virtual;
-    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -163,9 +136,6 @@ type
   published
     property Chained: Boolean read FChained write FChained default True;
     property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
-    {$IFDEF VisualCLX}
-    property HintFont: TFont read GetHintFont write SetHintFont;
-    {$ENDIF VisualCLX}
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
@@ -178,17 +148,12 @@ type
       default True;
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
       default True;
-    {$IFDEF VisualCLX}
-    property Effects: TUIEffects read GetEffects write SetEffects;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     property UpdateMetricSettings: Boolean read GetUpdateMetricSettings
       write SetUpdateMetricSettings default True;
     property BiDiMode: TBiDiMode read GetBiDiMode write SetBiDiMode
       default bdLeftToRight;
     property BiDiKeyboard: string read GetBiDiKeyboard write SetBiDiKeyboard;
     property NonBiDiKeyboard: string read GetNonBiDiKeyboard write SetNonBiDiKeyboard;
-    {$ENDIF VCL}
     property MouseDragImmediate: Boolean read GetMouseDragImmediate
       write SetMouseDragImmediate default True;
     property MouseDragThreshold: Integer read GetMouseDragThreshold
@@ -206,15 +171,10 @@ type
     property OnPaintIcon: TNotifyEvent read FOnPaintIcon write FOnPaintIcon;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
-    {$IFDEF VCL}
     property OnMessage: TMessageEvent read FOnMessage write FOnMessage;
     property OnSettingsChanged: TNotifyEvent read FOnSettingsChanged write FOnSettingsChanged;
-    {$ENDIF VCL}
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange write FOnActiveFormChange;
-    {$IFDEF VisualCLX}
-    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
-    {$ENDIF VisualCLX}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -241,12 +201,7 @@ type
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
-    {$IFDEF VCL}
     FOnMessage: TMessageEvent;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FOnEvent: TEventEvent;
-    {$ENDIF VisualCLX}
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
@@ -266,19 +221,10 @@ type
     procedure DoHint(Sender: TObject);
     procedure DoMinimize(Sender: TObject);
     procedure DoRestore(Sender: TObject);
-    {$IFDEF VCL}
     function DoHelp(Command: Word; Data: {$IFDEF CLR} TObject {$ELSE} Longint {$ENDIF};
       var CallHelp: Boolean): Boolean;
     procedure DoMessage(var Msg: TMsg; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
-      const HelpKeyword: string; const HelpFile: string;
-      var Handled: Boolean): Boolean;
-    procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
-    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
-    {$ENDIF VisualCLX}
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
@@ -315,15 +261,10 @@ begin
       Application.OnActivate := nil;
       Application.OnDeactivate := nil;
       Application.OnException := nil;
-      {$IFDEF VisualCLX}
-      Application.OnEvent := nil;
-      {$ENDIF VisualCLX}
       Application.OnIdle := nil;
       Application.OnHelp := nil;
       Application.OnHint := nil;
-      {$IFDEF VCL}
       Application.OnMessage := nil;
-      {$ENDIF VCL}
       Application.OnMinimize := nil;
       Application.OnRestore := nil;
       Application.OnShowHint := nil;
@@ -354,12 +295,7 @@ begin
       FOnIdle := Application.OnIdle;
       FOnHelp := Application.OnHelp;
       FOnHint := Application.OnHint;
-      {$IFDEF VCL}
       FOnMessage := Application.OnMessage;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      FOnEvent := Application.OnEvent;
-      {$ENDIF VisualCLX}
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
@@ -375,12 +311,7 @@ begin
       Application.OnIdle := DoIdle;
       Application.OnHelp := DoHelp;
       Application.OnHint := DoHint;
-      {$IFDEF VCL}
       Application.OnMessage := DoMessage;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Application.OnEvent := DoEvent;
-      {$ENDIF VisualCLX}
       Application.OnMinimize := DoMinimize;
       Application.OnRestore := DoRestore;
       Application.OnShowHint := DoShowHint;
@@ -486,7 +417,7 @@ begin
     FOnIdle(Sender, Done);
 end;
 
-{$IFDEF VCL}
+
 function TJvAppEventList.DoHelp(Command: Word; Data: {$IFDEF CLR} TObject {$ELSE} Longint {$ENDIF};
   var CallHelp: Boolean): Boolean;
 var
@@ -505,29 +436,8 @@ begin
   if Assigned(FOnHelp) then
     Result := FOnHelp(Command, Data, CallHelp);
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvAppEventList.DoHelp(HelpType: THelpType; HelpContext: THelpContext;
-  const HelpKeyword: string; const HelpFile: string;
-  var Handled: Boolean): Boolean;
-var
-  I: Integer;
-begin
-  Result := False;
-  for I := FAppEvents.Count - 1 downto 0 do
-  begin
-    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
-    if Assigned(TJvAppEvents(FAppEvents[I]).FOnHelp) then
-      Result := TJvAppEvents(FAppEvents[I]).FOnHelp(HelpType, HelpContext,
-        HelpKeyword, HelpFile, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
-     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
-      Exit;
-  end;
-  if Assigned(FOnHelp) then
-    Result := FOnHelp(HelpType, HelpContext, HelpKeyword, HelpFile, Handled);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvAppEventList.DoHint(Sender: TObject);
 var
@@ -546,7 +456,7 @@ begin
     FOnHint(Sender);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvAppEventList.DoMessage(var Msg: TMsg; var Handled: Boolean);
 var
   I: Integer;
@@ -563,26 +473,8 @@ begin
   if Assigned(FOnMessage) then
     FOnMessage(Msg, Handled);
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvAppEventList.DoEvent(Sender: QObjectH; Event: QEventH;
-  var Handled: Boolean);
-var
-  I: Integer;
-begin
-  for I := FAppEvents.Count - 1 downto 0 do
-  begin
-    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
-    if Assigned(TJvAppEvents(FAppEvents[I]).FOnEvent) then
-      TJvAppEvents(FAppEvents[I]).FOnEvent(Sender, Event, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
-     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
-      Exit;
-  end;
-  if Assigned(FOnEvent) then
-    FOnEvent(Sender, Event, Handled);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvAppEventList.DoMinimize(Sender: TObject);
 var
@@ -706,7 +598,7 @@ begin
     FOnActionUpdate(Action, Handled);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvAppEventList.DoShortCut(var Msg: TWMKey; var Handled: Boolean);
 var
   I: Integer;
@@ -723,25 +615,8 @@ begin
   if Assigned(FOnShortCut) then
     FOnShortCut(Msg, Handled);
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvAppEventList.DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
-var
-  I: Integer;
-begin
-  for I := FAppEvents.Count - 1 downto 0 do
-  begin
-    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
-    if Assigned(TJvAppEvents(FAppEvents[I]).FOnShortCut) then
-      TJvAppEvents(FAppEvents[I]).FOnShortCut(Key, Shift, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
-     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
-      Exit;
-  end;
-  if Assigned(FOnShortCut) then
-    FOnShortCut(Key, Shift, Handled);
-end;
-{$ENDIF VisualCLX}
+
+
 
 //=== { TJvAppEvents } =======================================================
 
@@ -766,21 +641,17 @@ begin
   FMouseDragImmediate := True;
   FMouseDragThreshold := 5;
   FUpdateFormatSettings := True;
-  {$IFDEF VCL}
   FUpdateMetricSettings := True;
   FBiDiMode := bdLeftToRight;
   if not (csDesigning in ComponentState) then
     Application.HookMainWindow(MessageHook);
-  {$ENDIF VCL}
   AppList.AddEvents(Self);
 end;
 
 destructor TJvAppEvents.Destroy;
 begin
-  {$IFDEF VCL}
   if not (csDesigning in ComponentState) then
     Application.UnhookMainWindow(MessageHook);
-  {$ENDIF VCL}
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
   inherited Destroy;
@@ -806,7 +677,7 @@ begin
   FCancelDispatch := True;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvAppEvents.PaintIcon;
 var
@@ -858,7 +729,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvAppEvents.GetHintColor: TColor;
 begin
@@ -907,21 +778,17 @@ end;
 
 function TJvAppEvents.GetUpdateFormatSettings: Boolean;
 begin
-  {$IFDEF VCL}
   if not (csDesigning in ComponentState) then
     Result := Application.UpdateFormatSettings
   else
-  {$ENDIF VCL}
     Result := FUpdateFormatSettings;
 end;
 
 procedure TJvAppEvents.SetUpdateFormatSettings(Value: Boolean);
 begin
   FUpdateFormatSettings := Value;
-  {$IFDEF VCL}
   if not (csDesigning in ComponentState) then
     Application.UpdateFormatSettings := Value;
-  {$ENDIF VCL}
 end;
 
 function TJvAppEvents.GetHintShortPause: Integer;
@@ -969,30 +836,10 @@ begin
     Application.ShowMainForm := Value;
 end;
 
-{$IFDEF VisualCLX}
-function TJvAppEvents.GetEffects: TUIEffects;
-begin
-  Result := TUIEffects(Application.Effects);
-end;
-
-procedure TJvAppEvents.SetEffects(Value: TUIEffects);
-begin
-  Application.Effects := TAppEffects(Value);
-end;
-
-function TJvAppEvents.GetHintFont: TFont;
-begin
-  Result := Screen.HintFont;
-end;
-
-procedure TJvAppEvents.SetHintFont(Value: TFont);
-begin
-  Screen.HintFont := Value;
-end;
-{$ENDIF VisualCLX}
 
 
-{$IFDEF VCL}
+
+
 
 function TJvAppEvents.GetUpdateMetricSettings: Boolean;
 begin
@@ -1009,7 +856,7 @@ begin
     Application.UpdateMetricSettings := Value;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvAppEvents.GetHintShortCuts: Boolean;
 begin
@@ -1056,7 +903,7 @@ begin
     Application.HintShortCuts := Value;
 end;
 
-{$IFDEF VCL}
+
 
 function TJvAppEvents.GetBiDiMode: TBiDiMode;
 begin
@@ -1103,7 +950,7 @@ begin
     Application.NonBiDiKeyboard := Value;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvAppEvents.UpdateAppProps;
 begin
@@ -1119,12 +966,10 @@ begin
       ShowMainForm := FShowMainForm;
       HintShortCuts := FHintShortCuts;
       UpdateFormatSettings := FUpdateFormatSettings;
-      {$IFDEF VCL}
       UpdateMetricSettings := FUpdateMetricSettings;
       BiDiMode := FBiDiMode;
       BiDiKeyboard := FBiDiKeyboard;
       NonBiDiKeyboard := FNonBiDiKeyboard;
-      {$ENDIF VCL}
       with Mouse do
       begin
         DragImmediate := FMouseDragImmediate;

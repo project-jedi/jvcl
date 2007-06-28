@@ -51,11 +51,9 @@ type
     property BevelOuter default bvNone;
     property BorderStyle default bsNone;
     property Color;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnCanResize;
-    {$ENDIF VCL}
     property DragMode;
     property ParentColor;
     property Visible;

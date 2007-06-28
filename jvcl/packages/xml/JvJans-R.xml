@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvJans" Design="0">
   <Description>JVCL Jans Components Runtime Package</Description>
-  <ClxDescription>JVCLX Jans Components</ClxDescription>
   <GUID>{EB0CF9B5-CDAB-44C6-857C-0447D6CAC391}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUdclstd -LUJcl</C6PFlags>
@@ -17,7 +16,6 @@
     <Package Name="JCLD50" Targets="Dv5" Condition=""/>
     <Package Name="JCLC50" Targets="Cv5" Condition=""/>
     <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="visualclx" Targets="CLX" Condition=""/>
     <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>

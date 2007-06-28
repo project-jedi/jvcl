@@ -58,10 +58,8 @@ type
     FButtonShowsPalette: Boolean;
     FOnPaletteShowing: TJvColorButtonPaletteShowing;
   protected
-    {$IFDEF VCL}
     FOptions: TColorDialogOptions;
     procedure SetOptions(Value: TColorDialogOptions);
-    {$ENDIF VCL}
     function GetCustomColors: TStrings;
     procedure SetEdgeWidth(Value: Integer);
     procedure SetCustomColors(Value: TStrings);
@@ -90,9 +88,7 @@ type
     property OtherCaption: string read FOtherCaption write SetOtherCaption;
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
     property ButtonShowsPalette: Boolean read FButtonShowsPalette write FButtonShowsPalette default True;
-    {$IFDEF VCL}
     property Options: TColorDialogOptions read FOptions write SetOptions;
-    {$ENDIF VCL}
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Color: TColor read FColor write SetColor default clBlack;
     property Height default 21;
@@ -156,9 +152,7 @@ constructor TJvColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TabStop := False;
-  {$IFDEF VCL}
   FOptions := [];
-  {$ENDIF VCL}
   FCustomColors := TStringList.Create;
   Color := clBlack;
   FEdgeWidth := 4;
@@ -257,9 +251,7 @@ begin
     Exit;
   with TJvColorForm(FColorForm) do
   begin
-    {$IFDEF VCL}
     ColorDialog.Options := FOptions;
-    {$ENDIF VCL}
     OtherBtn.Caption := FOtherCaption;
     ColorDialog.Color := FColor;
     ColorDialog.CustomColors.Assign(FCustomColors);
@@ -313,13 +305,13 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvColorButton.SetOptions(Value: TColorDialogOptions);
 begin
   if FOptions <> Value then
     FOptions := Value;
 end;
-{$ENDIF VCL}
+
 
 function TJvColorButton.GetCustomColors: TStrings;
 begin

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvAppFrm" Design="0">
   <Description>JVCL Application and Form Components Runtime Package</Description>
-  <ClxDescription>JVCLX Application and Form Components Runtime Package</ClxDescription>
   <GUID>{E00CE13F-DE42-43C5-AEC9-57C655403758}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
@@ -39,7 +38,5 @@
     <File Name="..\..\run\JvFormTransparent.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQAppSettings.pas" Targets="CLX" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQSystemColors.pas" Targets="CLX" Formname="" Condition=""/>
   </Contains>
 </Package>

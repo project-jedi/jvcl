@@ -48,18 +48,10 @@ type
     procedure SetButtonIndex(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetSpaceInterval(const Value: Integer);
-    {$IFDEF VCL}
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetParent(const ParentA: TWidgetControl); override;
-    procedure AdjustSize; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -89,7 +81,6 @@ type
   published
     property Align;
     property Anchors;
-    {$IFDEF VCL}
     property AutoSize;
     property BiDiMode;
     property DragCursor;
@@ -98,7 +89,6 @@ type
     property OnCanResize;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
     property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
     property Color;
@@ -215,21 +205,19 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvFooterBtn.WMMove(var Msg: TWMMove);
 begin
   // Avoid running at runtime
   // if (csDesigning in ComponentState) then
   TJvFooter(Parent).UpdatePosition;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvFooterBtn.AdjustSize;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
+
+
 procedure TJvFooterBtn.WMSize(var Msg: TWMSize);
-{$ENDIF VCL}
+
 begin
   // Does not allow SizeChange
   // Avoid running at runtime
@@ -237,18 +225,11 @@ begin
     SetBounds(Left, Top, Width, Height);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvFooterBtn.SetParent(const ParentA: TWinControl);
-var
-  AParent: TWidgetControl;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
+
 procedure TJvFooterBtn.SetParent(AParent: TWinControl);
-{$ENDIF VCL}
+
 begin
-  {$IFDEF VisualCLX}
-  AParent := ParentA;
-  {$ENDIF VisualCLX}
   if AParent is TJvFooterBtn then // (p3) D6 messing up ?
     AParent := TJvFooterBtn(AParent).Parent;
   if not ((AParent is TJvFooter) or (AParent = nil)) then

@@ -95,9 +95,6 @@ uses
   {$ENDIF CLR}
   SysUtils, Classes, TypInfo,
   JclBase,
-  {$IFDEF UNIX}
-  JvQJCLUtils,
-  {$ENDIF UNIX}
   JvVCL5Utils, JvComponentBase, JvTypes, JvTranslateString;
 
 const
@@ -833,7 +830,7 @@ type
 
     function DoGetFileName: TFileName; virtual;
     property AsString: string read GetAsString write SetAsString;
-    
+
     // OnGetFileName triggered on Location = flCustom
     property OnGetFileName: TJvAppStorageGetFileNameEvent read FOnGetFileName write SetOnGetFileName;
 

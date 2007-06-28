@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, StdCtrls, Mask, 
+  ExtCtrls, StdCtrls, Mask,
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorSpaces, JvFullColorRotate,
   JvExMask, JvSpin, JvComponent;
 
@@ -147,7 +147,7 @@ type
     procedure SetGreenDelta(const Value: TJvAxisDelta);
     procedure SetBlueDelta(const Value: TJvAxisDelta);
     procedure SetColorID(const Value: TJvFullColorSpaceID);
-    procedure SetDelta(const Value: TJvColorDelta); 
+    procedure SetDelta(const Value: TJvColorDelta);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

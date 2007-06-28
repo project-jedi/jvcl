@@ -320,7 +320,7 @@ begin
 
   FWasMovedTicks := 0;
   FWasInDblClick := False;
-  
+
   //FEditor.Parent := Viewer.GlanceControl;
   // (rom) deactivated seems of no use
   // if FEditor.Parent = nil then
@@ -500,7 +500,7 @@ begin
             LineTo(aRect.Right, LineRect.Bottom - 1);
           end;
         end
-        else 
+        else
         begin
           if Appt.Color <> clDefault then
           begin
@@ -579,7 +579,7 @@ begin
     FWasMovedTicks := GetTickCount
   else
     FWasMovedTicks := 0;
-    
+
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
@@ -680,7 +680,7 @@ end;
 procedure TJvTFGVTextControl.DoExit;
 begin
   inherited DoExit;
-  FMouseLine := -1; 
+  FMouseLine := -1;
 end;
 
 {
@@ -744,7 +744,7 @@ procedure TJvTFGVTextControl.DoViewerDblClick;
 begin
   if FHasScrolled then
     Exit;
-  
+
   Viewer.DoDblClick;
   FWasInDblClick := True;
 end;
@@ -763,7 +763,7 @@ procedure TJvTFGVTextControl.DblClick;
 begin
   if FHasScrolled then
     Exit;
-  
+
   inherited DblClick;
   DoViewerDblClick;
 end;
@@ -1173,7 +1173,7 @@ begin
     Viewer.SetSelAppt(Appt);
 end;
 
-procedure TJvTFGVTextControl.Click; 
+procedure TJvTFGVTextControl.Click;
 begin
   DoViewerClick;
 end;
@@ -1371,7 +1371,7 @@ end;
 procedure TJvTFGlanceTextViewer.SetInplaceEdit(const Value: Boolean);
 begin
   inherited SetInplaceEdit(Value);
-  
+
   FViewControl.CanEdit := InPlaceEdit;
   FViewControl.Invalidate;
 end;

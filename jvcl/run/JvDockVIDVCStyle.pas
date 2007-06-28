@@ -2575,7 +2575,7 @@ var
   ARect: TRect;
 begin
   { This procedure is called when a dockable form is dragged over a
-    undocked (stand-alone) tab page controls } 
+    undocked (stand-alone) tab page controls }
   Accept := IsDockable(Self, Source.Control, Source.DropOnControl, Source.DropAlign);
   if Accept then
   begin
@@ -4399,7 +4399,7 @@ constructor TJvDockVIDVCConjoinServerOption.Create(ADockStyle: TJvDockObservable
 begin
   inherited Create(ADockStyle);
   GrabbersSize := VIDDefaultDockGrabbersSize;
-  SplitterWidth := VIDDefaultDockSplitterWidth; 
+  SplitterWidth := VIDDefaultDockSplitterWidth;
   FActiveFont := TFont.Create;
   FActiveFont.OnChange := FontChanged;
   FInactiveFont := TFont.Create;
@@ -4425,7 +4425,7 @@ begin
     BeginUpdate;
     try
       Src := TJvDockVIDVCConjoinServerOption(Source);
-      
+
       TextEllipsis := Src.TextEllipsis;
       TextAlignment := Src.TextAlignment;
       InactiveTitleEndColor := Src.InactiveTitleEndColor;

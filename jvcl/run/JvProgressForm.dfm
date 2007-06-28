@@ -2,7 +2,7 @@ object frmProgress: TfrmProgress
   Left = 411
   Top = 226
   BorderIcons = []
-  BorderStyle = bsToolWindow
+  BorderStyle = fbsToolWindow
   Caption = 'Caption'
   ClientHeight = 165
   ClientWidth = 316
@@ -42,7 +42,7 @@ object frmProgress: TfrmProgress
     Anchors = [akLeft, akTop, akRight]
     Min = 0
     Max = 100
-    TabOrder = 0
+    
   end
   object btnCancel: TButton
     Left = 224

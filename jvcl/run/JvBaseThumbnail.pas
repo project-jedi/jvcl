@@ -36,11 +36,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, // TWin32FindData
-  {$IFDEF VCL}
   {$IFDEF HAS_UNIT_LIBC}
   Libc, // stat()
   {$ENDIF HAS_UNIT_LIBC}
-  {$ENDIF VCL}
   Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
   JclBase,
   JvExForms, JvExExtCtrls;
@@ -113,12 +111,9 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
-    function DoMouseWheelDown(Shift: TShiftState;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;  MousePos: TPoint): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -154,12 +149,9 @@ type
       X, Y: Integer); override;
     procedure Click; override;
     procedure DblClick; override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
-    function DoMouseWheelDown(Shift: TShiftState;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;  MousePos: TPoint): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -391,8 +383,7 @@ begin
     inherited MouseMove(Shift, X, Y);
 end;
 
-function TJvThumbTitle.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvThumbTitle.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbnail then
     Result := TJvBaseThumbnail(Parent).DoMouseWheel(Shift, WheelDelta, MousePos)
@@ -400,8 +391,7 @@ begin
     Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
-function TJvThumbTitle.DoMouseWheelDown(Shift: TShiftState;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvThumbTitle.DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbnail then
     Result := TJvBaseThumbnail(Parent).DoMouseWheelDown(Shift, MousePos)
@@ -409,8 +399,7 @@ begin
     Result := inherited DoMouseWheelDown(Shift, MousePos);
 end;
 
-function TJvThumbTitle.DoMouseWheelUp(Shift: TShiftState;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvThumbTitle.DoMouseWheelUp(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbnail then
     Result := TJvBaseThumbnail(Parent).DoMouseWheelUp(Shift, MousePos)
@@ -545,8 +534,7 @@ begin
     inherited MouseMove(Shift, X, Y);
 end;
 
-function TJvBaseThumbnail.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvBaseThumbnail.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbView then
     Result := TJvBaseThumbView(Parent).DoMouseWheel(Shift, WheelDelta, MousePos)
@@ -554,8 +542,7 @@ begin
     Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
-function TJvBaseThumbnail.DoMouseWheelDown(Shift: TShiftState;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvBaseThumbnail.DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbView then
     Result := TJvBaseThumbView(Parent).DoMouseWheelDown(Shift, MousePos)
@@ -563,8 +550,7 @@ begin
     Result := inherited DoMouseWheelDown(Shift, MousePos);
 end;
 
-function TJvBaseThumbnail.DoMouseWheelUp(Shift: TShiftState;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+function TJvBaseThumbnail.DoMouseWheelUp(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbView then
     Result := TJvBaseThumbView(Parent).DoMouseWheelUp(Shift, MousePos)

@@ -32,9 +32,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   {$IFDEF CLR}
   System.Reflection,
   {$ENDIF CLR}
@@ -72,9 +70,7 @@ type
     function GetItemIndex: Integer; virtual; abstract;
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; virtual; abstract;
     function GetItemAt(Index: Integer): string; virtual; abstract;
-    {$IFDEF VCL}
     function GetEditHandle: THandle; virtual; abstract;
-    {$ENDIF VCL}
 
     function GetActive: Boolean; virtual;
     procedure SetFilter(const Value: string);
@@ -113,9 +109,7 @@ type
     procedure SetEditSel(StartPos, EndPos: Integer); override;
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
     function GetItemAt(Index: Integer): string; override;
-    {$IFDEF VCL}
     function GetEditHandle: THandle; override;
-    {$ENDIF VCL}
     function GetActive: Boolean; override;
     property List: TStrings read FList write FList;
   public
@@ -183,9 +177,7 @@ type
     function GetItemIndex: Integer; override;
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
     function GetItemAt(Index: Integer): string; override;
-    {$IFDEF VCL}
     function GetEditHandle: THandle; override;
-    {$ENDIF VCL}
     function GetActive: Boolean; override;
   public
     constructor Create(AComboBox: TCustomComboBox);
@@ -324,9 +316,7 @@ var
   SaveText, OldText: TCaption;
   LastByte: Integer;
   LT: Int64;
-  {$IFDEF VCL}
   Msg: TMsg;
-  {$ENDIF VCL}
 
   function HasSelectedText(var StartPos, EndPos: Integer): Boolean;
   begin
@@ -416,10 +406,8 @@ begin
         begin
           SaveText := GetText;
           LastByte := StartPos;
-          {$IFDEF VCL}
           while ByteType(SaveText, LastByte) = mbTrailByte do
             Dec(LastByte);
-          {$ENDIF VCL}
           OldText := Copy(SaveText, 1, LastByte - 1);
           SetItemIndex(-1);
           SetText(OldText + Copy(SaveText, EndPos + 1, MaxInt));
@@ -444,7 +432,6 @@ begin
     else
       SaveText := FFilter + Key;
 
-    {$IFDEF VCL}
     if Key in LeadBytes then
     begin
       if PeekMessage(Msg, GetEditHandle, 0, 0, PM_NOREMOVE) and (Msg.Message = WM_CHAR) then
@@ -457,7 +444,6 @@ begin
       end;
     end
     else
-    {$ENDIF VCL}
     if SelectItem(SaveText) then
       Key := #0;
   end;
@@ -518,29 +504,13 @@ begin
 end;
 
 procedure TJvBaseEditListAutoComplete.GetEditSel(out StartPos, EndPos: Integer);
-{$IFDEF VisualCLX}
-var
-  MarkedText: WideString;
-{$ENDIF VisualCLX}
+
 begin
-  {$IFDEF VCL}
   {$IFDEF CLR}
   EditCtrl.GetType.GetMethod('SendGetSel').Invoke(EditCtrl, [TObject(StartPos), TObject(EndPos)]);
   {$ELSE}
   SendMessage(EditCtrl.Handle, EM_GETSEL, WPARAM(@StartPos), LPARAM(@EndPos));
   {$ENDIF CLR}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  StartPos := EditCtrl.SelStart;
-  MarkedText := EditCtrl.SelText;
-  if Copy(EditCtrl.Text, StartPos + 1, Length(MarkedText)) = MarkedText then
-    EndPos := StartPos + EditCtrl.SelLength
-  else
-  begin
-    EndPos := StartPos;
-    StartPos := StartPos - EditCtrl.SelLength;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvBaseEditListAutoComplete.SetEditSel(StartPos, EndPos: Integer);
@@ -568,12 +538,12 @@ begin
   Result := List[Index];
 end;
 
-{$IFDEF VCL}
+
 function TJvBaseEditListAutoComplete.GetEditHandle: THandle;
 begin
   Result := FEditCtrl.Handle;
 end;
-{$ENDIF VCL}
+
 
 function TJvBaseEditListAutoComplete.GetActive: Boolean;
 begin
@@ -693,41 +663,25 @@ begin
     {$IFDEF CLR}
     FListSearch := not (TComboBoxStyle(ComboBox.GetType.GetProperty('Style').GetValue(ComboBox, [])) in [csDropDown, csSimple]);
     {$ELSE}
-    FListSearch := not (TCustomComboBoxAccess(ComboBox).Style in [csDropDown {$IFDEF VCL}, csSimple {$ENDIF}]);
+    FListSearch := not (TCustomComboBoxAccess(ComboBox).Style in [csDropDown , csSimple ]);
     {$ENDIF CLR}
 end;
 
-{$IFDEF VCL}
+
 function TJvComboBoxAutoComplete.GetEditHandle: THandle;
 begin
   Result := ComboBox.Handle;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvComboBoxAutoComplete.GetEditSel(out StartPos, EndPos: Integer);
-{$IFDEF VisualCLX}
-var
-  MarkedText: WideString;
-{$ENDIF VisualCLX}
+
 begin
-  {$IFDEF VCL}
   {$IFDEF CLR}
   ComboBox.GetType.GetMethod('SendGetEditSel').Invoke(ComboBox, [TObject(StartPos), TObject(EndPos)]);
   {$ELSE}
   SendMessage(ComboBox.Handle, CB_GETEDITSEL, WPARAM(@StartPos), LPARAM(@EndPos));
   {$ENDIF CLR}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  StartPos := ComboBox.SelStart;
-  MarkedText := ComboBox.SelText;
-  if Copy(GetText, StartPos + 1, Length(MarkedText)) = MarkedText then
-    EndPos := StartPos + ComboBox.SelLength
-  else
-  begin
-    EndPos := StartPos;
-    StartPos := StartPos - ComboBox.SelLength;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvComboBoxAutoComplete.SetEditSel(StartPos, EndPos: Integer);

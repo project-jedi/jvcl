@@ -1,7 +1,7 @@
 object PatchFrm: TPatchFrm
   Left = 419
   Top = 183
-  BorderStyle = bsDialog
+  BorderStyle = fbsDialog
   Caption = 'Patcher Editor'
   ClientHeight = 144
   ClientWidth = 401

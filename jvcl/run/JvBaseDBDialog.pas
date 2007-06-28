@@ -78,7 +78,7 @@ const
 
 implementation
 
-uses Sysutils, 
+uses Sysutils,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}

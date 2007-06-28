@@ -142,7 +142,7 @@ begin
   // GDI errors about "Invalid parameter" and/or "Out Of Resources".
   if (AHeight <= 0) or (AWidth <= 0) then
     Exit;
-    
+
   Bitmap.Height := AHeight;
   Bitmap.Width := AWidth;
 
@@ -176,17 +176,9 @@ begin
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
                     begin
-                      {$IFDEF VCL}
                       rgbtRed := GetRValue(GBand[iLoop - 1]);
                       rgbtGreen := GetGValue(GBand[iLoop - 1]);
                       rgbtBlue := GetBValue(GBand[iLoop - 1]);
-                      {$ENDIF VCL}
-                      {$IFDEF VisualCLX}
-                      rgbRed := GetRValue(GBand[iLoop - 1]);
-                      rgbGreen := GetGValue(GBand[iLoop - 1]);
-                      rgbBlue := GetBValue(GBand[iLoop - 1]);
-                      rgbReserved := 0;
-                      {$ENDIF VisualCLX}
                     end;
                 end;
             end;
@@ -214,17 +206,9 @@ begin
               if xLoop < AWidth  then
                 with Row[xLoop] do
                 begin
-                  {$IFDEF VCL}
                   rgbtRed := GetRValue(GBand[iLoop - 1]);
                   rgbtGreen := GetGValue(GBand[iLoop - 1]);
                   rgbtBlue := GetBValue(GBand[iLoop - 1]);
-                  {$ENDIF VCL}
-                  {$IFDEF VisualCLX}
-                  rgbRed := GetRValue(GBand[iLoop - 1]);
-                  rgbGreen := GetGValue(GBand[iLoop - 1]);
-                  rgbBlue := GetBValue(GBand[iLoop - 1]);
-                  rgbReserved := 0;
-                  {$ENDIF VisualCLX}
                 end;
               end;
           end;
@@ -323,9 +307,7 @@ begin
     ACaption := ACaption + ' ';
   if not AShowAccelChar then
     AFlags := AFlags or DT_NOPREFIX;
-  {$IFDEF VCL}
   AFlags := AParent.DrawTextBiDiModeFlags(AFlags);
-  {$ENDIF VCL}
   with ACanvas do
   begin
     Font.Assign(AFont);
@@ -378,22 +360,13 @@ begin
   try
     ColorMap.Assign(Bitmap);
     Bitmap.Dormant;
-    {$IFDEF VCL}
     Bitmap.FreeImage;
-    {$ENDIF VCL}
     with ColorMap.Canvas do
     begin
       Brush.Color := AColor;
-      BrushCopy({$IFDEF VisualCLX} ColorMap.Canvas, {$ENDIF} Rect, Bitmap, Rect, clBlack);
+      BrushCopy( Rect, Bitmap, Rect, clBlack);
     end;
-    {$IFDEF VisualCLX}
-    Bitmap.FreeImage;
     Bitmap.Assign(ColorMap);
-    Bitmap.TransparentMode := tmAuto;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
-    Bitmap.Assign(ColorMap);
-    {$ENDIF VCL}
   finally
     ColorMap.Free;
   end;

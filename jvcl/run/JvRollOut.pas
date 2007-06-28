@@ -256,9 +256,7 @@ type
     property Placement;
     property Collapsed;
     property Colors;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -303,23 +301,17 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-{$IFDEF VCL}
+
 uses
   Forms; // for IsAccel()
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  QForms; 
-{$ENDIF VisualCLX}
+
+
 // (p3) not used
 // const
 //  cIncrement = 24;
 //  cSmooth = False;
 
-{$IFDEF VCL}
+
 procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
 var
   FntLogRec: TLogFont;
@@ -329,7 +321,7 @@ begin
   FntLogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
   Cnv.Font.Handle := CreateFontIndirect(FntLogRec);
 end;
-{$ENDIF VCL}
+
 
 procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
 
@@ -627,16 +619,10 @@ procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
   begin
-    {$IFDEF VisualCLX}
-    Canvas.Brush.Style := bsSolid;
-    {$ENDIF VisualCLX}
     Invalidate;
   end
   else
   begin
-    {$IFDEF VisualCLX}
-    Canvas.Brush.Style := bsClear;
-    {$ENDIF VisualCLX}
     DrawButtonFrame;
   end;
 end;
@@ -887,9 +873,6 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
-  {$IFDEF VisualCLX}
-  WS: WideString;
-  {$ENDIF VisualCLX}
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -964,21 +947,11 @@ begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
       OffsetRect(R, 1, 1);
-    {$IFDEF VCL}
     if Placement = plLeft then
       SetTextAngle(Canvas, 270);
     DrawText(Canvas.Handle, PChar(Caption), -1, R, DT_NOCLIP);
     if Placement = plLeft then
       SetTextAngle(Canvas, 0);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    WS := Caption;
-    SetPenColor(Canvas.Handle, Font.Color);
-    if Placement = plLeft then
-      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 270)
-    else
-      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 0)
-    {$ENDIF VisualCLX}
   end;
   if ShowFocus and Focused then
   begin
@@ -1216,7 +1189,7 @@ begin
         RollOut.Collapsed := not RollOut.Collapsed;
     end;
   end;
-end;  
+end;
 
 procedure TJvRollOutAction.ExecuteTarget(Target: TObject);
 begin

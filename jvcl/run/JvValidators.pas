@@ -276,11 +276,9 @@ uses
   Masks,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}           
+  {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo,
-  {$IFDEF VCL}
 //  JclUnicode, // for reg exp support
-  {$ENDIF VCL}
   JclWideStrings,
   JvTypes, JvResources;
 

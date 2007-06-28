@@ -89,7 +89,6 @@ type
     property Constraints;
     property DragCursor;
     property Enabled;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
@@ -98,7 +97,6 @@ type
     {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
-    {$ENDIF VCL}
     property Font;
     property HideSelection;
     property MaxLength;

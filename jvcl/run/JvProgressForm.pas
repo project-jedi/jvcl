@@ -176,7 +176,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TfrmProgress.AddCaption;
 var
@@ -208,39 +208,9 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-procedure TfrmProgress.AddCaption;
-var
-  cw, ch: Integer;
-begin
-  if BorderStyle <> fbsToolWindow then
-  begin
-    cw := ClientWidth;
-    ch := ClientHeight;
-    BorderStyle := fbsToolWindow;
-    Height := Height + ch - ClientHeight;
-    Width := Width + cw - ClientWidth;
-  end
-end;
 
-procedure TfrmProgress.RemoveCaption;
-var
-  cw, ch: Integer;
-begin
-  if BorderStyle <> fbsNone then
-  begin
-    cw := ClientWidth;
-    ch := ClientHeight;
-    BorderStyle := fbsNone;
-    Height := Height + ch - ClientHeight;
-    Width := Width + cw - ClientWidth;
-  end
-end;
-
-{$ENDIF VisualCLX}
 
 function TfrmProgress.ShowModal: Integer;
 begin

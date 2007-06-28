@@ -42,12 +42,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
   JvComponent, JvTypes;
 
 type
@@ -86,15 +81,11 @@ type
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
     procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
-    {$IFDEF VCL}
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    {$ENDIF VCL}
   protected
     FState: TButtonState;
-    {$IFDEF VCL}
     function GetPalette: HPALETTE; override;
-    {$ENDIF VCL}
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -172,7 +163,6 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-      {$IFDEF VisualCLX} override; {$ENDIF}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -470,9 +460,7 @@ begin
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
     TmpImage.Canvas.Brush.Color := clBtnFace;
-    {$IFDEF VCL}
     TmpImage.Palette := CopyPalette(FOriginal.Palette);
-    {$ENDIF VCL}
     I := State;
     if Ord(I) >= NumGlyphs then
       I := bsUp;
@@ -494,9 +482,7 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-            {$IFDEF VCL}
             DDB.HandleType := bmDDB;
-            {$ENDIF VCL}
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
@@ -542,9 +528,7 @@ begin
               begin
                 Assign(FOriginal);
                 GrayBitmap(MonoBmp);
-                {$IFDEF VCL}
                 HandleType := bmDDB;
-                {$ENDIF VCL}
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -595,21 +579,12 @@ begin
     Exit;
   Index := CreateButtonGlyph(State);
   with GlyphPos do
-    {$IFDEF VCL}
     if Transparent or (State = bsExclusive) then
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
         clNone, clNone, ILD_Transparent)
     else
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
         ColorToRGB(clBtnFace), clNone, ILD_Normal);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    // (ahuser) transparent not really supported under CLX
-    if Transparent or (State = bsExclusive) then
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True)
-    else
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
-    {$ENDIF VisualCLX}
 end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -772,10 +747,8 @@ begin
   inherited Create(AOwner);
   SetBounds(0, 0, 42, 25);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
   ControlStyle := ControlStyle - [csOpaque];
-  {$ENDIF VCL}
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
@@ -943,18 +916,10 @@ begin
     begin
       GetCursorPos(P);
       FMouseInControl := not (FindDragTarget(P, True) = Self);
-      {$IFDEF VCL}
       if FMouseInControl then
         Perform(CM_MOUSELEAVE, 0, 0)
       else
         Perform(CM_MOUSEENTER, 0, 0);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      if FMouseInControl then
-        MouseLeave(Self)
-      else
-        MouseEnter(Self);
-      {$ENDIF VisualCLX}
     end;
 end;
 
@@ -973,9 +938,7 @@ end;
 procedure TJvArrowButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Pnt: TPoint;
-  {$IFDEF VCL}
   Msg: TMsg;
-  {$ENDIF VCL}
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
@@ -995,17 +958,10 @@ begin
   begin
     Pnt := ClientToScreen(Point(0, Height));
     DropDown.Popup(Pnt.X, Pnt.Y);
-    {$IFDEF VCL}
     while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    repeat
-      Application.ProcessMessages;
-    until IsWindowVisible(DropDown.Handle) = False;
-    {$ENDIF VisualCLX}
   end;
 
   if FArrowClick then
@@ -1056,12 +1012,12 @@ begin
   Repaint;
 end;
 
-{$IFDEF VCL}
+
 function TJvArrowButton.GetPalette: HPALETTE;
 begin
   Result := Glyph.Palette;
 end;
-{$ENDIF VCL}
+
 
 function TJvArrowButton.GetGlyph: TBitmap;
 begin
@@ -1273,7 +1229,7 @@ begin
   Invalidate;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvArrowButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
 begin
@@ -1291,7 +1247,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvArrowButton.MouseEnter(Control: TControl);
 {$IFDEF JVCLThemesEnabled}

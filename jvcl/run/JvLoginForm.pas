@@ -86,11 +86,9 @@ type
     FAppTitleLabelCaption: string;
     FPasswordLabelCaption: string;
     FUserNameLabelCaption: string;
-    {$IFDEF VCL}
     FUnlockDlgShowing: Boolean;
     FPasswordChar: Char;
     function UnlockHook(var Msg: TMessage): Boolean;
-    {$ENDIF VCL}
     function GetLoggedUser: string;
     procedure SetAppStorage(Value: TJvCustomAppStorage);
   protected
@@ -109,9 +107,7 @@ type
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber default 3;
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
     property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
-    {$IFDEF VCL}
     property PasswordChar: Char read FPasswordChar write FPasswordChar default '*';
-    {$ENDIF VCL}
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
@@ -157,9 +153,7 @@ type
     property Caption;
     property MaxPasswordLen;
     property UpdateCaption;
-    {$IFDEF VCL}
     property PasswordChar;
-    {$ENDIF VCL}
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
     property OnGetPassword;
     property AfterLogin;
@@ -252,9 +246,7 @@ begin
   FLoggedUser := '';
   FActive := True;
   FAttemptNumber := 3;
-  {$IFDEF VCL}
   FPasswordChar := '*';
-  {$ENDIF VCL}
   FAllowEmptyPassword := True;
 end;
 
@@ -262,9 +254,7 @@ destructor TJvCustomLogin.Destroy;
 begin
   if FLocked then
   begin
-    {$IFDEF VCL}
     Application.UnhookMainWindow(UnlockHook);
-    {$ENDIF VCL}
     FLocked := False;
   end;
   inherited Destroy;
@@ -342,9 +332,7 @@ procedure TJvCustomLogin.Lock;
 begin
   FSaveOnRestore := Application.OnRestore;
   Application.Minimize;
-  {$IFDEF VCL}
   Application.HookMainWindow(UnlockHook);
-  {$ENDIF VCL}
   FLocked := True;
 end;
 
@@ -353,10 +341,8 @@ begin
   with Application do
   begin
     ShowMainForm := False;
-    {$IFDEF VCL}
     if Handle <> 0 then
       ShowOwnedPopups(Handle, False);
-    {$ENDIF VCL}
     Terminate;
   end;
   CallTerminateProcs;
@@ -419,9 +405,7 @@ begin
       end;
     end;
     PasswordEdit.MaxLength := FMaxPasswordLen;
-    {$IFDEF VCL}
     PasswordEdit.PasswordChar := PasswordChar;
-    {$ENDIF VCL}
     AttemptNumber := Self.AttemptNumber;
     if AppTitleLabelCaption <> '' then
       AppTitleLabel.Caption := AppTitleLabelCaption;
@@ -450,7 +434,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 function TJvCustomLogin.UnlockHook(var Msg: TMessage): Boolean;
 
   function DoUnlock: Boolean;
@@ -500,7 +484,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
+
 
 //=== { TJvLoginDialog } =====================================================
 
@@ -596,10 +580,8 @@ end;
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin
   Icon := Application.Icon;
-  {$IFDEF VCL}
   if Icon.Empty then
     Icon.Handle := LoadIcon(0, IDI_APPLICATION);
-  {$ENDIF VCL}
   AppIcon.Picture.Assign(Icon);
   AppTitleLabel.Caption := Format(RsAppTitleLabel, [Application.Title]);
   PasswordLabel.Caption := RsPasswordLabel;

@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, Graphics, Controls, Messages, Forms, StdCtrls,
   JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, JvConsts;
-  
+
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
   TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown, toHideStartupCheckbox);
@@ -76,14 +76,9 @@ type
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;
-    {$IFDEF VCL}
     { Parent form: }
     FForm: TCustomForm;
     FDummyMsgSend: Boolean;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure FormHide(Sender: TObject);
-    {$ENDIF VisualCLX}
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;
@@ -128,10 +123,8 @@ type
       toShowWhenFormShown is in Options }
     procedure HookForm;
     procedure UnHookForm;
-    {$IFDEF VCL}
     { The hook; responds when the parent form activates }
     function HookProc(var Msg: TMessage): Boolean;
-    {$ENDIF VCL}
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -174,17 +167,12 @@ implementation
 
 uses
   SysUtils, Windows, ExtCtrls, Dialogs,
-  {$IFDEF VCL}
   JvWndProcHook,
-  {$ENDIF VCL}
   JvButton, JvResources, JvComponent;
 
 {$R JvTipOfDay.res}
 
-{$IFDEF VisualCLX}
-const
-  psInsideFrame: TPenStyle = psSolid;
-{$ENDIF VisualCLX}
+
 
 
 type
@@ -305,7 +293,6 @@ begin
 
       UpdateTip;
 
-  {$IFDEF VCL}
       Result := ShowModal = mrOk;
 
       if not (toHideStartupCheckbox in Options) then
@@ -324,36 +311,9 @@ begin
   finally
     FRunning := False;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-      OnHide := FormHide ;  // onclose
-      FormStyle := fsStayOnTop;
-      Show ;  // Shown non modal
-      Result := True;
-    except
-      Free;
-    end;
-  except
-    FRunning := False;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvTipOfDay.FormHide(Sender: TObject);
-begin
-  with Sender as TForm do
-  begin
-    if not (toShowStartupCheckbox in Options) then
-      if TButtonControlAccessProtected(FCheckBox).Checked then
-        Include(FOptions, toShowOnStartUp)
-      else
-        Exclude(FOptions, toShowOnStartUp);
-    Release;   // destroy it
-    FRunning := False;
-  end;
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvTipOfDay.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -382,7 +342,6 @@ end;
 
 procedure TJvTipOfDay.HookForm;
 begin
-  {$IFDEF VCL}
   if Owner is TControl then
     FForm := GetParentForm(TControl(Owner))
   else
@@ -391,10 +350,9 @@ begin
     Exit;
   FDummyMsgSend := False;
   JvWndProcHook.RegisterWndProcHook(FForm, HookProc, hoAfterMsg);
-  {$ENDIF VCL}
 end;
 
-{$IFDEF VCL}
+
 function TJvTipOfDay.HookProc(var Msg: TMessage): Boolean;
 begin
   Result := False;
@@ -419,7 +377,7 @@ begin
       end;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
@@ -757,9 +715,7 @@ end;
 
 procedure TJvTipOfDay.UnHookForm;
 begin
-  {$IFDEF VCL}
   JvWndProcHook.UnRegisterWndProcHook(FForm, HookProc, hoAfterMsg);
-  {$ENDIF VCL}
 end;
 
 procedure TJvTipOfDay.UpdateFonts;

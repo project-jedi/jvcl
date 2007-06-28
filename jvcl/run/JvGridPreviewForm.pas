@@ -36,9 +36,6 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, Grids, StdCtrls, ComCtrls, Buttons, Printers, ExtDlgs,
-  {$IFDEF VisualCLX}
-  QComCtrlsEx,
-  {$ENDIF VisualCLX}
   JvGridPrinter, JvComponent;
 
 type
@@ -160,25 +157,13 @@ begin
   end;
   if Margins.ItemIndex > 5 then
   begin
-    {$IFDEF VCL}
     Margin.Min := 6;
     Margin.Max := 72;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Margin.Min := 6;
-    Margin.Max := 72;
-    {$ENDIF VisualCLX}
   end
   else
   begin
-    {$IFDEF VCL}
     Margin.Min := 0;
     Margin.Max := 400;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Margin.Min := 0;
-    Margin.Max := 400;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -216,14 +201,8 @@ begin
   Header.Text := GridPrinter.PrintOptions.PageTitle;
   Margin.Position := GridPrinter.PrintOptions.MarginTop;
   Margins.ItemIndex := 0;
-  {$IFDEF VCL}
   PreviewPage.Max := PageCount;
   lblpages.Caption := Format(RsOfd, [PreviewPage.Max]);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  PreviewPage.Max := PageCount;
-  lblpages.Caption := Format(RsOfd, [PreviewPage.Max]);
-  {$ENDIF VisualCLX}
   GridPrinter.PrintOptions.PreviewPage := 1;
   PreviewPage.Position := 1;
   ckborders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
@@ -715,18 +694,10 @@ end;
 procedure TJvGridPreviewForm.PreviewPageClick(Sender: TObject;
   Button: TUDBtnType);
 begin
-  {$IFDEF VCL}
   if PreviewPage.Position < PreviewPage.Min then
     PreviewPage.Position := PreviewPage.Min;
   if PreviewPage.Position > PreviewPage.Max then
     PreviewPage.Position := PreviewPage.Max;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if PreviewPage.Position < PreviewPage.Min then
-    PreviewPage.Position := PreviewPage.Min;
-  if PreviewPage.Position > PreviewPage.Max then
-    PreviewPage.Position := PreviewPage.Max;
-  {$ENDIF VisualCLX}
   GridPrinter.PrintOptions.PreviewPage := PreviewPage.Position;
   if cklive.Checked then
     btnshow.Click;

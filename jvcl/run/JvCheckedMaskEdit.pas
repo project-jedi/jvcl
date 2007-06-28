@@ -55,9 +55,7 @@ type
     function GetShowCheckBox: Boolean;
   protected
     procedure DoCheckClick; dynamic;
-    {$IFDEF VCL}
     procedure DoKillFocus(const ANextControl: TWinControl); override;
-    {$ENDIF VCL}
     procedure EnabledChanged; override;
 
     function GetChecked: Boolean; virtual;
@@ -66,13 +64,8 @@ type
 
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
 
-    {$IFDEF VCL}
     procedure UpdateControls; override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure ColorChanged; override;
-    {$ENDIF VisualCLX}
     procedure Change; override;
     procedure BeginInternalChange;
     procedure EndInternalChange;
@@ -113,7 +106,6 @@ type
     property DisabledColor;
     property DisabledTextColor;
     property GroupIndex;
-    {$IFDEF VCL}
     {property BiDiMode;}
     property Caret;
     property DragCursor;
@@ -131,7 +123,6 @@ type
     property OnSetFocus;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DirectInput;
     property DragMode;
     property EditMask;
@@ -232,14 +223,7 @@ begin
 end;
 
 { TODO -oahuser -cCLX : Isn't that also something for VCL? }
-{$IFDEF VisualCLX}
-procedure TJvCustomCheckedMaskEdit.ColorChanged;
-begin
-  inherited ColorChanged;
-  if Assigned(FCheck) then
-    FCheck.Color := Color;
-end;
-{$ENDIF VisualCLX}
+
 
 constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
 begin
@@ -278,10 +262,6 @@ begin
   if ShowCheckBox then
     FCheck.Enabled := Self.Enabled;
   inherited EnabledChanged;
-  {$IFDEF VisualCLX}
-  if Assigned(FOnEnabledChanged) then
-     FOnEnabledChanged(Self);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomCheckedMaskEdit.EndInternalChange;
@@ -314,7 +294,6 @@ begin
   if ShowCheckBox then
   begin
     ALeft := FCheck.Left + FCheck.Width;
-    {$IFDEF VCL}
     // ensure the text starts 2 points from the checkbox edge
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
@@ -325,7 +304,6 @@ begin
     else
     if not Ctl3D then
       ALeft := ALeft - 1;
-    {$ENDIF VCL}
   end;
 end;
 
@@ -362,20 +340,12 @@ begin
       FCheck := TCheckBox.Create(Self);
       with FCheck do
       begin
-        {$IFDEF VCL}
         Parent := Self;
         // Align := alLeft;
         if HotTrack then
           Left := 1;
         Top := 1;
         Height := Self.ClientHeight - 2;
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        Parent := Self.ClientArea;
-        Height := Self.ClientArea.Height;
-        Color := Self.Color;
-        Left := 3;
-        {$ENDIF VisualCLX}
         Width := 15;
         Anchors := [akLeft, akTop, akBottom];
         Alignment := taLeftJustify;
@@ -394,7 +364,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvCustomCheckedMaskEdit.UpdateControls;
 begin
@@ -438,7 +408,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

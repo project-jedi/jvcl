@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvMM" Design="0">
   <Description>JVCL Multimedia and Image Components Runtime Package</Description>
-  <ClxDescription>JVCLX Multimedia and Image Components Runtime Package</ClxDescription>
   <GUID>{934525BD-4F63-48DA-AA9E-027E6E6BC560}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
@@ -50,7 +49,6 @@
     <File Name="..\..\run\JvSplashWindow.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStarfield.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVirtualKeySelectionFrame.pas" Targets="VCL" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
-    <File Name="..\..\qrun\JvQQtKeySelectionFrame.pas" Targets="CLX" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
     <File Name="..\..\run\JvWaitingGradient.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWaitingProgress.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWavePlayer.pas" Targets="windows" Formname="" Condition=""/>

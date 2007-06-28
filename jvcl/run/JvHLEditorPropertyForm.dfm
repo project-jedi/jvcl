@@ -2,7 +2,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
   Left = 333
   Top = 152
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
+  BorderStyle = fbsDialog
   Caption = 'Editor Properties'
   ClientHeight = 369
   ClientWidth = 435

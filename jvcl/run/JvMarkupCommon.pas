@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
   * Classes extracted from JvMarkupLabel and JvMarkupViewer (duplicates)
-  
+
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Controls, Graphics, SysUtils, Classes;
-  
+
 type
   TJvHTMLElement = class(TObject)
   private

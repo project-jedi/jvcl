@@ -67,9 +67,6 @@ uses
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
-  {$IFDEF VisualCLX}
-  Qt, QWindows, QStdCtrls,
-  {$ENDIF VisualCLX}
   TypInfo,
   JvVCL5Utils, JvTypes;
 
@@ -84,12 +81,8 @@ const
   PathDelim = '/';
   AllFilesMask = '*';
   {$ENDIF UNIX}
-
-  {$IFDEF VisualCLX}
-  NullHandle = nil;
-  {$ELSE}   // Note: the else is on purpose, VCL is not defined for a console application
+    // Note: the else is on purpose, VCL is not defined for a console application
   NullHandle = 0;
-  {$ENDIF VisualCLX}
 
 {$IFDEF UNIX}
 type
@@ -347,25 +340,14 @@ function MakeValidFileName(const FileName: TFileName; ReplaceBadChar: Char): TFi
 
 {**** Graphic routines }
 
-{$IFDEF VCL}
+
 { IsTTFontSelected returns True, if True Type font
   is selected in specified device context }
 function IsTTFontSelected(const DC: HDC): Boolean;
 function KeyPressed(VK: Integer): Boolean;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-{ VisualCLX/crossplatform versions of the same functions in JclQGraphics }
-type
-  TGradientDirection = (gdVertical, gdHorizontal);
-  TRegionBitmapMode = (rmInclude, rmExclude);
 
-procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QWidgetH); {overload;}
-function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
-  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
-function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
-  RegionBitmapMode: TRegionBitmapMode): QRegionH;
-{$ENDIF VisualCLX}
+
 
 { TrueInflateRect inflates rect in other method, than InflateRect API function }
 function TrueInflateRect(const R: TRect; const I: Integer): TRect;
@@ -511,7 +493,7 @@ function PointL(const X, Y: Longint): TPointL; {$IFDEF SUPPORTS_INLINE} inline; 
 // (rom) from JvBandUtils to make it obsolete
 function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
-{$IFDEF VCL}
+
 {$IFNDEF CLR}
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 function CreateIconFromClipboard: TIcon;
@@ -530,7 +512,7 @@ procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 
 function CreateScreenCompatibleDC: HDC;
 {$ENDIF !CLR}
-{$ENDIF VCL}
+
 
 { begin JvRLE }
 
@@ -841,7 +823,7 @@ procedure Exec(const FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
 function ExecuteAndWait(const CommandLine, WorkingDirectory: string; Visibility: Integer = SW_SHOW): Integer;
 
-{$IFDEF VCL}
+
 // returns True if this is the first instance of the program that is running
 function FirstInstance(const ATitle: string): Boolean;
 // restores a window based on it's classname and Caption. Either can be left empty
@@ -864,7 +846,7 @@ procedure LowPower;
 
 // send a key to the window named AppName
 function SendKey(const AppName: string; Key: Char): Boolean;
-{$ENDIF VCL}
+
 {$IFDEF MSWINDOWS}
 
 {$IFNDEF CLR}
@@ -1040,12 +1022,12 @@ procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
 {$IFNDEF CLR}
 function WindowClassName(Wnd: THandle): string;
 {$ENDIF !CLR}
-{$IFDEF VCL}
+
 procedure SwitchToWindow(Wnd: THandle; Restore: Boolean);
 procedure ActivateWindow(Wnd: THandle);
 procedure ShowWinNoAnimate(Handle: THandle; CmdShow: Integer);
 procedure KillMessage(Wnd: THandle; Msg: Cardinal);
-{$ENDIF VCL}
+
 { SetWindowTop put window to top without recreating window }
 procedure SetWindowTop(const Handle: THandle; const Top: Boolean);
 procedure CenterWindow(Wnd: THandle);
@@ -1063,7 +1045,7 @@ function PixelsToDialogUnitsY(PixUnits: Word): Word;
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
 {$IFNDEF CLR}
-{$IFDEF VCL}
+
 {$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): THandle;
@@ -1073,33 +1055,33 @@ function ActivatePrevInstance(const MainFormClass: ShortString;
 function FindPrevInstance(const MainFormClass, ATitle: string): THandle;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
-{$ENDIF VCL}
+
 
 {$IFDEF MSWINDOWS}
 { BrowseForFolderNative displays Browse For Folder dialog }
 function BrowseForFolderNative(const Handle: THandle; const Title: string; var Folder: string): Boolean;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF VCL}
+
 procedure AntiAlias(Clip: TBitmap);
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
-{$ENDIF VCL}
+
 {$ENDIF !CLR}
 
-{$IFDEF VCL}
+
 {$IFNDEF CLR}
 procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect;
   ABitmap: TBitmap; const SourceRect: TRect);
 {$ENDIF !CLR}
 function IsTrueType(const FontName: string): Boolean;
-{$ENDIF VCL}
+
 
 // Removes all non-numeric characters from AValue and returns
 // the resulting string
 function TextToValText(const AValue: string): string;
 
-{$IFDEF VCL}
+
 // VisualCLX compatibility functions
 function DrawText(DC: HDC; const Text: TCaption; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
@@ -1145,7 +1127,7 @@ type
   {$ELSE}
   // Delphi 5 and below doesn't support values in enums
   RasterOp = Integer;
-const  
+const
   RasterOp_CopyROP = 0;
   RasterOp_OrROP = 1;
   RasterOp_XorROP = 2;
@@ -1176,7 +1158,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
 
-{$ENDIF VCL}
+
 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 {$EXTERNALSYM IsEqualGUID}
@@ -1230,7 +1212,7 @@ type
   private
     FOnChange: TIntegerListChange;
     FLoading: Boolean;
-    
+
     function GetItem(Index: Integer): Integer;
     procedure SetItem(Index: Integer; const Value: Integer);
   protected
@@ -1240,7 +1222,7 @@ type
     {$IFDEF COMPILER5}
     procedure Assign(Source: TList);
     {$ENDIF COMPILER5}
-    
+
     // To be used with DefineProperties in client classes.
     procedure ReadData(Reader: TReader);
     procedure WriteData(Writer: TWriter);
@@ -2880,12 +2862,12 @@ begin
 end;
 {$ENDIF !CLR}
 
-{$IFDEF VCL}
+
 function KeyPressed(VK: Integer): Boolean;
 begin
   Result := Windows.GetKeyState(VK) and $8000 = $8000;
 end;
-{$ENDIF VCL}
+
 
 function Var2Type(V: Variant; const DestVarType: Integer): Variant;
 var
@@ -3010,7 +2992,7 @@ var
 begin
   {$IFDEF CLR}
   FileTimeToDosDateTime(FT, wHi, wLo);
-  Dft := (wHi shl 16) or wLo; 
+  Dft := (wHi shl 16) or wLo;
   {$ELSE}
   FileTimeToDosDateTime(FT, LongRec(Dft).Hi, LongRec(Dft).Lo);
   {$ENDIF CLR}
@@ -3992,17 +3974,13 @@ end;
 
 {$IFNDEF CLR}
 procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
-{$IFDEF VCL}
+
 var
   Data: THandle;
   DataPtr: Pointer;
-{$ENDIF}
-{$IFDEF VisualCLX}
-var
-  Position: Integer;
-{$ENDIF VisualCLX}
+
+
 begin
-  {$IFDEF VCL}
   Clipboard.Open;
   try
     Data := GlobalAlloc(GMEM_MOVEABLE, MemStream.Size);
@@ -4022,26 +4000,15 @@ begin
   finally
     Clipboard.Close;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Position := MemStream.Position;
-  try
-    MemStream.Position := 0;
-    Clipboard.SetFormat(SysUtils.Format('Stream#%d', [Format]), MemStream);
-  finally
-    MemStream.Position := Position;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure ClipBoardToMemStream(MemStream: TMemoryStream; const Format: Word);
-{$IFDEF VCL}
+
 var
   Data: THandle;
   DataPtr: Pointer;
-{$ENDIF VCL}
+
 begin
-  {$IFDEF VCL}
   Clipboard.Open;
   try
     Data := GetClipboardData(Format);
@@ -4059,14 +4026,6 @@ begin
   finally
     Clipboard.Close;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Clipboard.Provides(SysUtils.Format('Stream#%d', [Format])) then
-  begin
-    Clipboard.GetFormat(SysUtils.Format('Stream#%d', [Format]), MemStream);
-    MemStream.Position := 0;
-  end;
-  {$ENDIF VisualCLX}
 end;
 {$ENDIF !CLR}
 
@@ -4217,7 +4176,7 @@ begin
     Result := AFalse;
 end;
 
-{$IFDEF VCL}
+
 { begin JvIconClipboardUtils}
 { Icon clipboard routines }
 
@@ -4363,50 +4322,9 @@ begin
 end;
 {$ENDIF !CLR}
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-type
-  TIconAccessProtected = class(TIcon);
 
-function Bmp2Icon(Bmp: TBitmap): TIcon;
-begin
-  Result := TIcon.Create;
-  Result.Assign(Bmp);
-end;
-
-function Icon2Bmp(Ico: TIcon): TBitmap;
-begin
-  Result := TBitmap.Create;
-  TIconAccessProtected(Ico).AssignTo(Result);
-end;
-
-procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
-var
-  Bmp: TBitmap;
-begin
-  Bmp := Icon2Bmp(Icon);
-  Clipboard.Assign(Bmp);
-end;
-
-function CreateIconFromClipboard: TIcon;
-var
-  Bmp: TBitmap;
-begin
-  Result := nil;
-  if not Clipboard.Provides('image/delphi.bitmap') then
-    Exit;
-  Bmp := TBitmap.Create;
-  try
-    Bmp.Assign(Clipboard);
-    Result := Bmp2Icon(Bmp);
-  except
-    Bmp.Free;
-  end;
-end;
-
-{$ENDIF VisualCLX}
 
 { Real-size icons support routines }
 const
@@ -4662,7 +4580,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF VCL}
+
 
 procedure GetIconSize(Icon: HICON; var W, H: Integer);
 var
@@ -4749,7 +4667,7 @@ begin
   Result := CreateCompatibleDC(HDC_DESKTOP);
 end;
 
-{$ENDIF VCL}
+
 {$ENDIF !CLR}
 
 { end JvIconClipboardUtils }
@@ -7553,7 +7471,7 @@ end;
 {$ENDIF UNIX}
 {$ENDIF CLR}
 
-{$IFDEF VCL}
+
 
 function FirstInstance(const ATitle: string): Boolean;
 {$IFDEF CLR}
@@ -7732,7 +7650,7 @@ begin
     Result := False;
 end;
 
-{$ENDIF VCL}
+
 
 {$IFDEF MSWINDOWS}
 
@@ -7782,15 +7700,14 @@ end;
 {$ENDIF !CLR}
 
 function GetRecentDocs: TStringList;
-{$IFDEF VCL}
+
 var
   Path: string;
   T: TSearchRec;
   Res: Integer;
-{$ENDIF VCL}
+
 begin
   Result := TStringList.Create;
-  {$IFDEF VCL}
   Path := IncludeTrailingPathDelimiter(GetRecentFolder);
   //search for all files
   Res := FindFirst(Path + '*.*', faAnyFile, T);
@@ -7804,7 +7721,6 @@ begin
   finally
     FindClose(T);
   end;
-  {$ENDIF VCL}
 end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
@@ -8874,7 +8790,7 @@ begin
 end;
 {$ENDIF !CLR}
 
-{$IFDEF VCL}
+
 
 function GetAnimation: Boolean;
 var
@@ -9024,7 +8940,7 @@ begin
   end;
 end;
 {$ENDIF !CLR}
-{$ENDIF VCL}
+
 
 {$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
@@ -9036,12 +8952,7 @@ var
 begin
   with BrowseInfo do
   begin
-    {$IFDEF VCL}
     hwndOwner := Handle;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    hwndOwner := QWidget_winId(Handle);
-    {$ENDIF VisualCLX}
     pidlRoot := nil;
     pszDisplayName := FN;
     lpszTitle := PChar(Title);
@@ -9107,7 +9018,7 @@ begin
     SWP_NOSIZE or SWP_NOZORDER);
 end;
 
-{$IFDEF VCL}
+
 { Delete the requested message from the queue, but throw back }
 { any WM_QUIT msgs that PeekMessage may also return.          }
 { Copied from DbGrid.pas                                      }
@@ -9119,7 +9030,7 @@ begin
   if PeekMessage(M, Wnd, Msg, Msg, PM_REMOVE) and (M.Message = WM_QUIT) then
     PostQuitMessage(M.WParam);
 end;
-{$ENDIF VCL}
+
 
 procedure SetWindowTop(const Handle: THandle; const Top: Boolean);
 const
@@ -9183,34 +9094,26 @@ begin
 end;
 
 {$IFNDEF CLR}
-{$IFDEF VCL}
+
 procedure AntiAlias(Clip: TBitmap);
 begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
-{$ENDIF VCL}
+
 
   // (p3) duplicated from JvTypes to avoid JVCL dependencies
-  {$IFDEF VCL}
 type
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-type
-  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-  {$ENDIF VisualCLX}
 
-  {$IFDEF VCL}
 type
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..32766] of TJvRGBTriple;
-  {$ENDIF VCL}
 
-{$IFDEF VCL}
+
 procedure AntiAliasRect(Clip: TBitmap;
   XOrigin, YOrigin, XFinal, YFinal: Integer);
 var
@@ -9252,10 +9155,10 @@ begin
   end;
   Clip.PixelFormat := OPF;
 end;
-{$ENDIF VCL}
+
 {$ENDIF !CLR}
 
-{$IFDEF VCL}
+
 {$IFNDEF CLR}
 
 procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect; ABitmap: TBitmap;
@@ -9326,7 +9229,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 function TextToValText(const AValue: string): string;
 var
@@ -9358,7 +9261,7 @@ begin
     Result := '-0';
 end;
 
-{$IFDEF VCL}
+
 
 
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
@@ -9514,154 +9417,9 @@ begin
   Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, WinRop);
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-{ JclQGraphics: Crossplatform versions  }
 
-procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QWidgetH); {overload;}
-begin
-  if not Assigned(Bmp.Handle) then
-    Bmp.Handle := QPixmap_create;
-  QPixmap_grabWindow(Bmp.Handle, QWidget_winId(Window), Left, Top, Width, Height);
-end;
-
-function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
-  RegionBitmapMode: TRegionBitmapMode): QRegionH;
-var
-  FBitmap: TBitmap;
-  X, Y: Integer;
-  StartX: Integer;
-  Region: QRegionH;
-begin
-  Result := NullHandle;
-  (*
-  if Bitmap = nil then
-    EJclGraphicsError.CreateRes(@RsNoBitmapForRegion);
-  *)
-  if (Bitmap.Width = 0) or (Bitmap.Height = 0) then
-    Exit;
-
-  FBitmap := TBitmap.Create;
-  try
-    FBitmap.Assign(Bitmap);
-
-    for Y := 0 to FBitmap.Height - 1 do
-    begin
-      X := 0;
-      while X < FBitmap.Width do
-      begin
-
-        if RegionBitmapMode = rmExclude then
-        begin
-          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
-          begin
-            Inc(X);
-            if X = FBitmap.Width then
-              Break;
-          end;
-        end
-        else
-        begin
-          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
-          begin
-            Inc(X);
-            if X = FBitmap.Width then
-              Break;
-          end;
-        end;
-
-        if X = FBitmap.Width then
-          Break;
-
-        StartX := X;
-        if RegionBitmapMode = rmExclude then
-        begin
-          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
-          begin
-            if X = FBitmap.Width then
-              Break;
-            Inc(X);
-          end;
-        end
-        else
-        begin
-          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
-          begin
-            if X = FBitmap.Width then
-              Break;
-            Inc(X);
-          end;
-        end;
-        if Result = NullHandle then
-          Result := CreateRectRgn(StartX, Y, X, Y + 1)
-        else
-        begin
-          Region := CreateRectRgn(StartX, Y, X, Y + 1);
-          if Region <> NullHandle then
-          begin
-            CombineRgn(Result, Result, Region, RGN_OR);
-            DeleteObject(Region);
-          end;
-        end;
-      end;
-    end;
-  finally
-    FBitmap.Free;
-  end;
-end;
-
-function FillGradient(DC: QPainterH; ARect: TRect; ColorCount: Integer;
-  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
-var
-  StartRGB: array [0..2] of Byte;
-  RGBKoef: array [0..2] of Double;
-  Brush: HBRUSH;
-  AreaWidth, AreaHeight, I: Integer;
-  ColorRect: TRect;
-  RectOffset: Double;
-begin
-  RectOffset := 0;
-  Result := False;
-  if ColorCount < 1 then
-    Exit;
-  StartColor := ColorToRGB(StartColor);
-  EndColor := ColorToRGB(EndColor);
-  StartRGB[0] := GetRValue(StartColor);
-  StartRGB[1] := GetGValue(StartColor);
-  StartRGB[2] := GetBValue(StartColor);
-  RGBKoef[0] := (GetRValue(EndColor) - StartRGB[0]) / ColorCount;
-  RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
-  RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
-  AreaWidth := ARect.Right - ARect.Left;
-  AreaHeight :=  ARect.Bottom - ARect.Top;
-  case ADirection of
-    gdHorizontal:
-      RectOffset := AreaWidth / ColorCount;
-    gdVertical:
-      RectOffset := AreaHeight / ColorCount;
-  end;
-  for I := 0 to ColorCount - 1 do
-  begin
-    Brush := CreateSolidBrush(RGB(
-      StartRGB[0] + Round((I + 1) * RGBKoef[0]),
-      StartRGB[1] + Round((I + 1) * RGBKoef[1]),
-      StartRGB[2] + Round((I + 1) * RGBKoef[2])));
-    case ADirection of
-      gdHorizontal:
-        SetRect(ColorRect, Round(RectOffset * I), 0, Round(RectOffset * (I + 1)), AreaHeight);
-      gdVertical:
-        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth, Round(RectOffset * (I + 1)));
-    end;
-    OffsetRect(ColorRect, ARect.Left, ARect.Top);
-    FillRect(DC, ColorRect, Brush);
-    DeleteObject(Brush);
-  end;
-  Result := True;
-end;
-
-{$ENDIF VisualCLX}
 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 begin
@@ -9674,7 +9432,7 @@ end;
 
 {Color functions}
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
-{$IFDEF VCL}
+
 var
   Delta: Integer;
   Min, Max: Integer;
@@ -9696,13 +9454,9 @@ var
       I := K;
     Result := I;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  QC: QColorH;
-{$ENDIF VisualCLX}
+
+
 begin
-  {$IFDEF VCL}
   Min := GetMin(R, G, B);
   Max := GetMax(R, G, B);
   V := Max;
@@ -9725,12 +9479,6 @@ begin
     if H < 0 then
       H := H + 360;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QC := QColor_create(R, G, B);
-  QColor_getHsv(QC, @H, @S, @V);
-  QColor_destroy(QC);
-  {$ENDIF VisualCLX}
 end;
 
 function RGBToBGR(Value: Cardinal): Cardinal;
@@ -9757,14 +9505,12 @@ begin
       Result := StandardColorValues[Index].Description;
       Exit;
     end;
-  {$IFDEF VCL}
   for Index := Low(SysColorValues) to High(SysColorValues) do
     if Value = SysColorValues[Index].Value then
     begin
       Result := SysColorValues[Index].Description;
       Exit;
     end;
-  {$ENDIF VCL}
   Result := ColorToString(Value);
 end;
 
@@ -9789,7 +9535,6 @@ begin
       Exit;
     end;
   end;
-  {$IFDEF VCL}
   for Index := Low(SysColorValues) to High(SysColorValues) do
   begin
     if CompareText(Value, SysColorValues[Index].Description) = 0 then
@@ -9798,7 +9543,6 @@ begin
       Exit;
     end;
   end;
-  {$ENDIF VCL}
   if IdentToColor(Value, ColorResult) then
     Result := ColorResult
   else

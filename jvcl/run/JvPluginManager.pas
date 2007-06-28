@@ -83,9 +83,6 @@ uses
   Windows, // (ahuser) do not move to VCL
   {$ENDIF MSWINDOWS}
   Graphics, Forms,
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponentBase, JvPlugin; // reduced to the min
 
@@ -163,7 +160,7 @@ type
     property Plugins[Index: Integer]: TJvPlugIn read GetPlugin;
     property PluginCount: Integer read GetPluginCount;
     procedure SendMessage(PluginMessage: Longint; PluginParams: string);
-    function AddCustomPlugin(PlugIn: TJvPlugIn; const FileName: string = ''): Boolean; 
+    function AddCustomPlugin(PlugIn: TJvPlugIn; const FileName: string = ''): Boolean;
   published
     property PluginFolder: string read FPluginFolder write FPluginFolder;
     property Extension: string read FExtension write SetExtension;

@@ -33,12 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
   Windows, ImgList, Graphics,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QWindows, QImgList, QGraphics,
-  {$ENDIF UNIX}
   Forms, Controls, Classes, DB,
   DBGrids, JvPanel, JvDynControlEngineDB, JvDynControlEngineDBTools;
 
@@ -105,7 +100,7 @@ type
     property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions
       write SetFieldCreateOptions;
   end;
-                           
+
   TJvDatabaseActionBaseControlEngine = class(TJvDatabaseActionBaseEngine)
   private
     FDataset: TDataset;
@@ -714,7 +709,7 @@ end;
 
 procedure TJvDatabaseActionBaseDatasetEngine.SetSQL(const Value: string);
 begin
-  
+
 end;
 
 function TJvDatabaseActionBaseDatasetEngine.Supports(ADataComponent: TComponent): Boolean;

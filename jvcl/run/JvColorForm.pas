@@ -36,9 +36,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
   JvConsts, // missing color constants for D5
@@ -74,18 +71,10 @@ type
   protected
     procedure ShowCD(Sender: TObject);
     procedure HideCD(Sender: TObject);
-    {$IFDEF VCL}
     procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
-    {$ENDIF VCL}
     procedure SetButtonSize(const Value: Integer);
   protected
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function WidgetFlags: Integer; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    {$ENDIF VisualCLX}
     procedure UpdateSize; virtual;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -181,7 +170,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvColorForm.WMActivate(var Msg: TWMActivate);
 begin
@@ -196,41 +185,9 @@ begin
   Params.Style := Params.Style and not WS_CAPTION;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-function TJvColorForm.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags and
-    not Integer(WidgetFlags_WStyle_Title) or Integer(WidgetFlags_WType_Popup);
-end;
 
-type
-  TWidgetControlAccessProtected = class(TWidgetControl);
-
-function TJvColorForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  case QEvent_type(Event) of
-    QEventType_Show:
-      FormActivate(Self);   // prevent visual moving
-    QEventType_FocusOut:
-      FormDeactivate(Self);
-    QEventType_Hide:
-      if FOwner is TJvColorButton then
-        TWidgetControlAccessProtected(FOwner).MouseUp(mbLeft, [ssLeft], 0, 0);
-    QEventType_Close:
-      begin
-        QCloseEvent_ignore(QCloseEventH(Event)); // do not close
-        Result := True;
-        Hide;
-        Exit;
-      end;
-  end;
-  Result := inherited EventFilter(Sender, Event);
-end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvColorForm.DoColorClick(Sender: TObject);
 begin
@@ -301,18 +258,8 @@ begin
     if (Controls[I] is TJvColorSquare) or (Controls[I] is TBevel) then
       Controls[I].Free;
 
-  {$IFDEF VCL}
   ParentControl := Self;
   Offset := 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ParentControl := TPanel.Create(Self);
-  ParentControl.Align := alClient;
-  ParentControl.Parent := Self;
-  TPanel(ParentControl).BevelInner := bvRaised;
-  TPanel(ParentControl).BevelOuter := bvRaised;
-  Offset := 2;
-  {$ENDIF VisualCLX}
 
   X := Offset;
   Y := Offset;
@@ -360,18 +307,7 @@ end;
 procedure TJvColorForm.UpdateSize;
 begin
   Height := OtherBtn.Top + OtherBtn.Height + 8;
-  {$IFDEF VCL}
   ClientWidth := FCS.Left + FCS.Width;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  // workaround a VisualCLX bug: ClientWidth does not allow values smaller than 100
-  Width := FCS.Left + FCS.Width + 2;
-
-  Constraints.MaxWidth := Width;
-  Constraints.MaxHeight := Height;
-  Constraints.MinWidth := Constraints.MaxWidth;
-  Constraints.MinHeight := Constraints.MaxHeight;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvColorForm.SetButtonSize(const Value: Integer);

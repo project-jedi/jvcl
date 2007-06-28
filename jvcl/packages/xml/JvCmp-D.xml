@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCmp" Design="-1">
   <Description>JVCL Non-Visual Components</Description>
-  <ClxDescription>JVCLX Non-Visual Components</ClxDescription>
   <GUID>{B2603E49-5F7D-4817-8484-71DD7B1EA69C}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>

@@ -42,9 +42,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows,
-  {$IFDEF VCL}
   ShellAPI,
-  {$ENDIF VCL}
   JvTypes;
 
 type

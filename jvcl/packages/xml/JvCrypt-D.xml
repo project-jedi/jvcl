@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCrypt" Design="-1">
   <Description>JVCL Encryption and Compression</Description>
-  <ClxDescription>JVCLX Encryption and Compression Components</ClxDescription>
   <GUID>{4EED06C1-B111-4EA3-815B-8530F67D8659}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>

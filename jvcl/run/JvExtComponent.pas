@@ -49,28 +49,24 @@ type
   private
     FOnPaintContent: TJvPaintPanelContentEvent;
   protected
-    {$IFDEF VCL}
     function GetFlat: Boolean;
     procedure ReadCtl3D(Reader: TReader);
     procedure ReadParentCtl3D(Reader: TReader);
     procedure SetFlat(const Value: Boolean);
     function GetParentFlat: Boolean;
     procedure SetParentFlat(const Value: Boolean);
-    {$ENDIF VCL}
 
     procedure Paint; override;
     procedure PaintContent(const R: TRect); virtual;
 
     procedure DefineProperties(Filer: TFiler); override;
 
-    {$IFDEF VCL}
     property Flat: Boolean read GetFlat write SetFlat default False;
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
-    {$ENDIF VCL}
 
     property OnPaintContent: TJvPaintPanelContentEvent read FOnPaintContent write FOnPaintContent;
   end;
-  
+
   TJvPubCustomPanel = TJvExPubCustomPanel;
   TJvCustomTreeView = TJvExCustomTreeView;
 
@@ -88,7 +84,7 @@ implementation
 
 { TJvCustomPanel }
 
-{$IFDEF VCL}
+
 function TJvCustomPanel.GetFlat: Boolean;
 begin
   Result := not Ctl3D;
@@ -118,7 +114,7 @@ procedure TJvCustomPanel.ReadParentCtl3D(Reader: TReader);
 begin
   ParentFlat := Reader.ReadBoolean;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomPanel.Paint;
 begin
@@ -136,10 +132,8 @@ procedure TJvCustomPanel.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
 
-  {$IFDEF VCL}
   Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
   Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
-  {$ENDIF VCL}
 end;
 
 initialization

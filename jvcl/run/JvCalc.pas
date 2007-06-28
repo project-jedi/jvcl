@@ -39,9 +39,6 @@ uses
   WinUtils,
   {$ENDIF CLR}
   Windows, Messages, Classes, Controls, Forms, StdCtrls, Menus, ExtCtrls,
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
   JvBaseDlg, JvComponent;
 
 const
@@ -56,9 +53,7 @@ type
     FValue: Double;
     FMemory: Double;
     FTitle: string;
-    {$IFDEF VCL}
     FFlat: Boolean;
-    {$ENDIF VCL}
     FPrecision: Byte;
     FBeepOnError: Boolean;
     FHelpContext: THelpContext;
@@ -80,7 +75,7 @@ type
     destructor Destroy; override;
     function Execute: Boolean; override;
     procedure DefineProperties(Filer: TFiler);override;
-    
+
     property CalcDisplay: Double read GetDisplay;
     property Memory: Double read FMemory;
   published
@@ -92,9 +87,7 @@ type
     property OnCalcKey: TKeyPressEvent read FOnCalcKey write FOnCalcKey;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDisplayChange: TNotifyEvent read FOnDisplayChange write FOnDisplayChange;
-    {$IFDEF VCL}
     property Flat: Boolean read FFlat write FFlat default False;
-    {$ENDIF VCL}
   end;
 
   TJvCalculatorForm = class(TJvForm)
@@ -108,9 +101,7 @@ type
     procedure PopupMenuPopup(Sender: TObject);
     procedure CopyItemClick(Sender: TObject);
     procedure PasteItemClick(Sender: TObject);
-    {$IFDEF VCL}
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    {$ENDIF VCL}
   protected
     procedure OkClick(Sender: TObject);
     procedure CancelClick(Sender: TObject);
@@ -121,8 +112,7 @@ type
   end;
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
-function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+function CreatePopupCalculator(AOwner: TComponent ; ABiDiMode: TBiDiMode = bdLeftToRight ): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -189,7 +179,7 @@ type
     FOnCalcKey: TKeyPressEvent;
     FOnDisplayChange: TNotifyEvent;
     FControl: TControl;
-    procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}{$IFDEF CLR} reintroduce; {$ENDIF}
+    procedure SetText(const Value: string); {$IFDEF CLR} reintroduce; {$ENDIF}
     procedure CheckFirst;
     procedure CalcKey(Key: Char);
     procedure Clear;
@@ -198,9 +188,7 @@ type
     function GetDisplay: Double;
     procedure UpdateMemoryLabel;
     function FindButton(Key: Char): TJvSpeedButton;
-    {$IFDEF VCL}
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    {$ENDIF VCL}
     procedure BtnClick(Sender: TObject);
   protected
     procedure TextChange; virtual;
@@ -223,9 +211,7 @@ type
   TJvLocCalculator = class(TJvCalculatorPanel)
   protected
     procedure EnabledChanged; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -288,12 +274,11 @@ const
 //=== Local procedures =======================================================
 
 procedure SetDefaultFont(AFont: TFont; Layout: TCalcPanelLayout);
-{$IFDEF VCL}
+
 var
   NonClientMetrics: TNonClientMetrics;
-{$ENDIF VCL}
+
 begin
-  {$IFDEF VCL}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   {$IFDEF CLR}
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, NonClientMetrics, 0) then
@@ -308,15 +293,6 @@ begin
       Name := 'MS Sans Serif';
       Size := 8;
     end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  with AFont do
-  begin
-    Color := clText;
-    Name := 'Helvetica';
-    Height := 11;
-  end;
-  {$ENDIF VisualCLX}
   AFont.Style := [fsBold];
   {
   if Layout = clDialog then
@@ -358,9 +334,7 @@ begin
       Width := 21;
       Height := 21;
     end;
-    {$IFDEF VCL}
     Style := bsNew;
-    {$ENDIF VCL}
     OnClick := AOnClick;
     ParentFont := True;
     Parent := AParent;
@@ -380,7 +354,6 @@ begin
     HelpContext := AHelpContext;
     if HelpContext <> 0 then
       BorderIcons := BorderIcons + [biHelp];
-    {$IFDEF VCL}
     if Screen.PixelsPerInch <> 96 then
     begin { scale to screen res }
       ScaleBy(Screen.PixelsPerInch, 96);
@@ -388,18 +361,15 @@ begin
       Left := (Screen.Width div 2) - (Width div 2);
       Top := (Screen.Height div 2) - (Height div 2);
     end;
-    {$ENDIF VCL}
   except
     Free;
     raise;
   end;
 end;
 
-function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+function CreatePopupCalculator(AOwner: TComponent ; ABiDiMode: TBiDiMode = bdLeftToRight ): TWinControl;
 begin
   Result := TJvPopupCalculator.Create(AOwner);
-  {$IFDEF VCL}
   // ahuser: reported as a bug (Mantis #2048)
   (*
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
@@ -413,7 +383,6 @@ begin
   end;
   *)
   Result.BiDiMode := ABiDiMode;
-  {$ENDIF VCL}
 end;
 
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
@@ -479,9 +448,7 @@ constructor TJvCalculator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTitle := RsCalculatorCaption;
-  {$IFDEF VCL}
   FFlat := False;
-  {$ENDIF VCL}
   FPrecision := DefCalcPrecision;
   FBeepOnError := True;
 end;
@@ -526,9 +493,7 @@ begin
     FCalc := CreateCalculatorForm(Self, HelpContext);
   with FCalc do
   try
-    {$IFDEF VCL}
     Ctl3D := not FFlat;
-    {$ENDIF VCL}
     Caption := Self.Title;
     TJvCalculatorPanel(FCalcPanel).FMemory := Self.FMemory;
     TJvCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
@@ -595,12 +560,7 @@ begin
   inherited CreateNew(AOwner, 0); // for BCB
   BorderIcons := [biSystemMenu];
   BorderStyle := fbsDialog;
-  {$IFDEF VCL}
   PixelsPerInch := 96;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Scaled := False;
-  {$ENDIF VisualCLX}
   Caption := RsCalculatorCaption;
   ClientHeight := 159;
   ClientWidth := 242;
@@ -631,9 +591,7 @@ begin
     Parent := FMainPanel;
     BevelOuter := bvLowered;
     Color := clWindow;
-    {$IFDEF VCL}
     Ctl3D := False;
-    {$ENDIF VCL}
   end;
   Control := TPanel.Create(Self);
   with TPanel(Control) do
@@ -643,10 +601,8 @@ begin
     Parent := FDisplayPanel;
     BevelOuter := bvNone;
     BorderStyle := bsSingle;
-    {$IFDEF VCL}
     Ctl3D := False;
     ParentCtl3D := False;
-    {$ENDIF VCL}
     ParentColor := True;
   end;
   FDisplayLabel := TLabel.Create(Self);
@@ -683,7 +639,7 @@ begin
   ModalResult := mrCancel;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCalculatorForm.CMCtl3DChanged(var Msg: TMessage);
 const
   Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
@@ -694,7 +650,7 @@ begin
   if FMainPanel <> nil then
     FMainPanel.BevelOuter := Ctl3DBevel[Ctl3D];
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCalculatorForm.CopyItemClick(Sender: TObject);
 begin
@@ -724,12 +680,7 @@ end;
 
 procedure TJvCalculatorForm.PopupMenuPopup(Sender: TObject);
 begin
-  {$IFDEF VCL}
   FPasteItem.Enabled := Clipboard.HasFormat(CF_TEXT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FPasteItem.Enabled := Clipboard.AsText <> '';
-  {$ENDIF VisualCLX}
 end;
 
 //=== { TJvCalculatorPanel } =================================================
@@ -740,9 +691,6 @@ const
   BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
     4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 var
-  {$IFDEF VisualCLX}
-  GlyphList: TImageList;
-  {$ENDIF VisualCLX}
   Bmp: TBitmap;
   I: TCalcBtnKind;
 begin
@@ -759,46 +707,23 @@ begin
   else
   begin
     Height := 124;
-    {$IFDEF VCL}
     //    Width := 98;
     Width := 131; // Polaris
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Width := 135;
-    {$ENDIF VisualCLX}
   end;
   SetDefaultFont(Font, ALayout);
   ParentFont := False;
   BevelOuter := bvNone;
   BevelInner := bvNone;
   ParentColor := True;
-  {$IFDEF VCL}
   ParentCtl3D := True;
   if ALayout = clDialog then
     Bmp := TBitmap.Create
   else
     Bmp := nil;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  with Constraints do
-  begin
-    MaxHeight := Height ;
-    MaxWidth := Width ;
-    MinHeight := Height ;
-    MinWidth := Width ;
-  end;
-  GlyphList := nil;
-  Bmp := TBitmap.Create;
-  {$ENDIF VisualCLX}
   try
     if Bmp <> nil then
 //      Bmp.Handle := LoadBitmap(HInstance, 'JvCalculatorPanelBUTTONS');
       Bmp.LoadFromResourceName(HInstance, 'JvCalculatorPanelBUTTONS');
-    {$IFDEF VisualCLX}
-    GlyphList := TImageList.CreateSize(Bmp.Width, Bmp.Height);
-    GlyphList.Width := Bmp.Width div 6 ;  // 6 glyphs in bmp
-    GlyphList.Add(Bmp, nil);
-    {$ENDIF VisualCLX}
     for I := cbNum0 to cbCancel do
     begin
       if BtnPos[ALayout, I].X > 0 then
@@ -812,12 +737,7 @@ begin
               if BtnGlyphs[Kind] >= 0 then
               begin
                 Caption := '';
-                {$IFDEF VCL}
                 AssignBitmapCell(Bmp, Glyph, 6, 1, BtnGlyphs[Kind]);
-                {$ENDIF VCL}
-                {$IFDEF VisualCLX}
-                GlyphList.GetBitmap(BtnGlyphs[Kind], Glyph);
-                {$ENDIF VisualCLX}
               end;
           end
           else
@@ -863,9 +783,6 @@ begin
     end;
   finally
     Bmp.Free;
-    {$IFDEF VisualCLX}
-    GlyphList.Free;
-    {$ENDIF VisualCLX}
   end;
   FText := '0';
   FMemory := 0.0;
@@ -1048,12 +965,7 @@ var
 begin
   Btn := FindButton(Key);
   if Btn <> nil then
-    {$IFDEF VCL}
     Btn.ButtonClick
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Btn.Click
-    {$ENDIF VisualCLX}
   else
     CalcKey(Key);
 end;
@@ -1074,7 +986,7 @@ begin
   FOperator := '=';
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCalculatorPanel.CMCtl3DChanged(var Msg: TMessage);
 const
   Ctl3DStyle: array [Boolean] of TButtonStyle = (bsWin31, bsNew);
@@ -1096,7 +1008,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCalculatorPanel.Copy;
 begin
@@ -1152,12 +1064,7 @@ end;
 
 procedure TJvCalculatorPanel.Paste;
 begin
-  {$IFDEF VCL}
   if Clipboard.HasFormat(CF_TEXT) then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Clipboard.AsText <> '' then
-  {$ENDIF VisualCLX}
   try
     SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
       CurrencyString, ''))));
@@ -1223,7 +1130,7 @@ begin
   TabStop := False;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvLocCalculator.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -1233,7 +1140,7 @@ begin
     AddBiDiModeExStyle(ExStyle);
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvLocCalculator.EnabledChanged;
 begin
@@ -1259,13 +1166,7 @@ begin
   begin
     Parent := Self;
     Align := alClient;
-    {$IFDEF VCL}
     BevelOuter := bvRaised;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    BevelOuter := bvLowered;
-    BevelInner := bvRaised;
-    {$ENDIF VisualCLX}
     FPrecision := DefCalcPrecision;
     { (rb) Fix to update the text of a TJvCalcEdit }
     if AOwner is TControl then

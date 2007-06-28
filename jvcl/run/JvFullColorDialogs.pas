@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Florent Ouchet [ouchet dott floren
 Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
 All Rights Reserved.
 
-Contributor(s): -                                               
+Contributor(s): -
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -313,7 +313,7 @@ begin
   inherited Create(AOwner);
   FOptions := JvDefaultColorCircleDialogOptions;
   FDelta := TJvColorDelta.Create;
-  
+
   InitAxe(FDelta.AxisRed);
   InitAxe(FDelta.AxisGreen);
   InitAxe(FDelta.AxisBlue);
@@ -323,7 +323,7 @@ end;
 destructor TJvFullColorCircleDialog.Destroy;
 begin
   FDelta.Free;
-  
+
   inherited;
 end;
 

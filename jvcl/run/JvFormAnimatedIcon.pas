@@ -98,23 +98,12 @@ begin
 end;
 
 procedure TJvFormAnimatedIcon.Animate(Sender: TObject);
-{$IFDEF VisualCLX}
-var
-  Bmp: TBitmap;
-{$ENDIF VisualCLX}
+
 begin
   if (FIcons <> nil) and (FIcons.Count <> 0) then
   begin
     FNumber := (FNumber + 1) mod FIcons.Count;
-    {$IFDEF VCL}
     FIcons.GetIcon(FNumber, TForm(FForm).Icon);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Bmp := TBitmap.Create;
-    FIcons.GetBitmap(FNumber, Bmp);
-    TForm(FForm).Icon.Assign(Bmp);
-    Bmp.Free;
-    {$ENDIF VisualCLX}
   end;
 end;
 

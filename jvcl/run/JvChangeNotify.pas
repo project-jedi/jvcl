@@ -71,7 +71,7 @@ type
     FErrorDirectory : string;
   public
     constructor Create(const ErrorMsg: string; const ErrorDirectory: string);
-    
+
     property ErrorDirectory : string read FErrorDirectory;
   end;
 

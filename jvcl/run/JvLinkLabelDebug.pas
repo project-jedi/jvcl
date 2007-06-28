@@ -40,9 +40,6 @@ uses
   {$ENDIF UNITVERSIONING}
   TypInfo, SysUtils,
   ComCtrls, Graphics,
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
   JvLinkLabelTree, JvLinkLabelTools, JvLinkLabel;
 
 type

@@ -86,7 +86,7 @@ type
     FOnShowEditor: TEditShowEvent;
 
     {$IFDEF COMPILER6_UP}
-    FCustomInplaceEditStyle: TEditStyle; // NEW 
+    FCustomInplaceEditStyle: TEditStyle; // NEW
     FOnGetEditStyle: TJvOnGetEditStyleEvent;
     FPickListStrings: TStringList;
     FOnEditButtonClick: TNotifyEvent;
@@ -96,9 +96,7 @@ type
     FFixedFont: TFont;
     procedure SetAlignment(const Value: TAlignment);
     procedure GMActivateCell(var Msg: TGMActivateCell); message GM_ACTIVATECELL;
-    {$IFDEF VCL}
     procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
-    {$ENDIF VCL}
     procedure SetFixedFont(const Value: TFont);
     procedure DoFixedFontChange(Sender: TObject);
 
@@ -127,15 +125,8 @@ type
     {$ENDIF COMPILER6_UP}
 
     procedure CaptionClick(AColumn, ARow: Longint); dynamic;
-    {$IFDEF VCL}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure ModifyScrollBar(ScrollBar: TScrollBarKind; ScrollCode: TScrollCode;
-      Pos: Cardinal; UseRightToLeft: Boolean); override;
-    function SelectCell(ACol, ARow: Longint): Boolean; override;
-    {$ENDIF VisualCLX}
     procedure DoLoadProgress(Position, Count: Integer);
     procedure DoSaveProgress(Position, Count: Integer);
   public
@@ -305,9 +296,7 @@ type
   public
     constructor Create(Owner: TComponent); override;//WP-New!
     //property ActiveList: TWinControl read FActiveList write FActiveList;//WP-New!
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
   end;
 
 constructor TExInplaceEditList.Create(Owner: TComponent);
@@ -334,7 +323,7 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-{$IFDEF VCL}
+
 procedure TExInplaceEditList.CreateParams(var Params: TCreateParams);
 const
   Flags: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -342,7 +331,7 @@ begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
 end;
-{$ENDIF VCL}
+
 
 procedure TExInplaceEditList.FocusKilled(NextWnd: THandle);
 begin
@@ -854,7 +843,7 @@ begin
   DoLoadProgress(Stream.Size, Stream.Size);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvStringGrid.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
@@ -868,21 +857,8 @@ begin
   if Assigned(FOnVerticalScroll) then
     FOnVerticalScroll(Self);
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvStringGrid.ModifyScrollBar(ScrollBar: TScrollBarKind; ScrollCode: TScrollCode;
-  Pos: Cardinal; UseRightToLeft: Boolean);
-begin
-  case ScrollBar of
-    sbHorizontal:
-      if Assigned(FOnHorizontalScroll) then
-        FOnHorizontalScroll(Self);
-    sbVertical:
-      if Assigned(FOnVerticalScroll) then
-        FOnVerticalScroll(Self);
-  end;
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvStringGrid.SaveToFile(FileName: string);
 var
@@ -1038,19 +1014,7 @@ begin
     FGetCellAlignment(Self, AColumn, ARow, State, Result);
 end;
 
-{$IFDEF VisualCLX}
-function TJvStringGrid.SelectCell(ACol, ARow: Longint): Boolean;
-begin
-  Result := inherited SelectCell(ACol, ARow);
-  if Result then
-  begin
-    Col := ACol;
-    Row := ARow;
-    EditorMode := True;
-    InplaceEditor.SelectAll;
-  end;
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
 begin
@@ -1106,12 +1070,7 @@ begin
     FAlignment := Value;
     Invalidate;
     if Assigned(InplaceEditor) then
-      {$IFDEF VCL}
       TExInplaceEditList(InplaceEditor).RecreateWnd;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      TExInplaceEditList(InplaceEditor).RecreateWidget;
-      {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1122,7 +1081,7 @@ begin
     FSetCanvasProperties(Self, AColumn, ARow, Rect, State);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvStringGrid.WMCommand(var Msg: TWMCommand);
 begin
   if EditorMode and (Msg.Ctl = InplaceEditor.Handle) then
@@ -1131,7 +1090,7 @@ begin
   if Msg.Ctl <> 0 then
     Msg.Result := SendMessage(Msg.Ctl, CN_COMMAND, TMessage(Msg).wParam, TMessage(Msg).lParam);
 end;
-{$ENDIF VCL}
+
 
 function TJvStringGrid.InsertCol(Index: Integer): TStrings;
 var
@@ -1285,12 +1244,7 @@ begin
       AColWidth := MinWidth;
     for J := 0 to RowCount - 1 do
     begin
-      {$IFDEF VCL}
       if GetTextExtentPoint32(Canvas.Handle, PChar(Cells[Index, J]), Length(Cells[Index, J]), ASize) then
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      if GetTextExtentPoint32W(Canvas.Handle, PWideChar(Cells[Index, J]), Length(Cells[Index, J]), ASize) then
-      {$ENDIF VisualCLX}
         AColWidth := Max(AColWidth, ASize.cx + 8);
     end;
     ColWidths[Index] := AColWidth;
@@ -1305,12 +1259,7 @@ begin
         AColWidth := MinWidth;
       for J := 0 to RowCount - 1 do
       begin
-        {$IFDEF VCL}
         if GetTextExtentPoint32(Canvas.Handle, PChar(Cells[I, J]), Length(Cells[I, J]), ASize) then
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        if GetTextExtentPoint32W(Canvas.Handle, PWideChar(Cells[I, J]), Length(Cells[I, J]), ASize) then
-        {$ENDIF VisualCLX}
           AColWidth := Max(AColWidth, ASize.cx + 8);
       end;
       ColWidths[I] := AColWidth;
@@ -1422,7 +1371,7 @@ begin
   //      No, it isn't... Removed by Dom
   //if SizeOf(ColOrder) div SizeOf(I) <> ColCount then
   //  Exit;
-    
+
   for I := 0 to High(ColOrder) do
     if (ColOrder[I] < 0) or (ColOrder[I] >= ColCount) then
       Exit;

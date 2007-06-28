@@ -44,7 +44,7 @@ type
     FIsNull: Boolean;
     FAllowNull: Boolean;
     FDataChanging: Boolean;
-    
+
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -211,7 +211,7 @@ end;
 
 procedure TJvDBSpinEdit.DownClick(Sender: TObject);
 begin
-  FDataLink.Edit;        
+  FDataLink.Edit;
   if IsNull then
   begin
     FIsNull := False;

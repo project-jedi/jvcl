@@ -445,12 +445,12 @@ begin
     if FCaptions <> fecNone then
       for I := 0 to DataSet.FieldCount - 1 do
       begin
-        if not DataSet.Fields[I].Visible and not (jeoOutputInvisibleColumns in Options) then 
-        begin 
-          Dec(ColNo); 
-          Continue; 
+        if not DataSet.Fields[I].Visible and not (jeoOutputInvisibleColumns in Options) then
+        begin
+          Dec(ColNo);
+          Continue;
         end;
-        
+
         case FCaptions of
           fecDisplayLabels:
             if DataSet.Fields[I].DisplayLabel <> '' then
@@ -473,18 +473,18 @@ begin
       AllowExportRecord := True;
       if Assigned(FOnExportRecord) then
         FOnExportRecord(Self, DataSet, AllowExportRecord);
-        
+
       if AllowExportRecord then
       begin
         // DATA
-        for I := 0 to DataSet.FieldCount - 1 do 
+        for I := 0 to DataSet.FieldCount - 1 do
         begin
-          if not DataSet.Fields[I].Visible and not (jeoOutputInvisibleColumns in Options) then 
-          begin 
-            Dec(ColNo); 
-            Continue; 
+          if not DataSet.Fields[I].Visible and not (jeoOutputInvisibleColumns in Options) then
+          begin
+            Dec(ColNo);
+            Continue;
           end;
-          
+
           if not (DataSet.Fields[I].DataType in [ftBlob, ftGraphic,
             ftParadoxOle, ftDBaseOle, ftTypedBinary,
               ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
@@ -505,7 +505,7 @@ begin
       for I := 0 to DataSet.FieldCount - 1 + ColNo - 1 do
         Sheet.Columns[I + 1].EntireColumn.AutoFit;
 
-    ColNo := 1;	
+    ColNo := 1;
     OldRecNo := RecNo;
     RecNo := 1;
     InsertStrings(Header, HeaderFont, FOnGetHeaderLineFont);
@@ -523,10 +523,10 @@ begin
         XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);
     end;
   finally
-    try  
-      if CloseExcel then 
-        XL.Quit; 
-    except; 
+    try
+      if CloseExcel then
+        XL.Quit;
+    except;
     end;
     CellFont.Free;
   end;

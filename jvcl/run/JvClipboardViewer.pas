@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, 
+  Windows, Messages, Classes, Graphics,
   JvExForms;
 
 type

@@ -38,7 +38,7 @@ uses
 // Classes
 type
   TInterfacedPersistent = class(TPersistent);
-  
+
   TCollectionNotification = (cnAdded, cnExtracting, cnDeleting);
 
   TCollection = class(Classes.TCollection)
@@ -208,7 +208,7 @@ type
 
 // Controls
 // obones 2005/10/30: Commented out as it clashes in C++ Builder 5 at least.
-// Symptoms are a message saying "Cannot load JvStdCtrlsC5D, a class named 
+// Symptoms are a message saying "Cannot load JvStdCtrlsC5D, a class named
 // 'TCustomImageList' is already registered.".
 // As it seems no one is using the new Draw method, there is no harm done.
 {type
@@ -769,7 +769,7 @@ begin
         Inc(I, 2);
       $89:
         Inc(I, 2);
-    end;                                         
+    end;
     Inc(I);
     Result := I;
   end;

@@ -271,13 +271,11 @@ const
 
 procedure StretchDrawBitmap(Canvas: TCanvas; const ARect: TRect; Bitmap: TBitmap);
 begin
-  {$IFDEF VCL}
   if (Canvas = Printer.Canvas) or
     (Printer.Printing and (Canvas.Handle = Printer.Canvas.Handle)) then
     CopyRectDIBits(Canvas, ARect,
       Bitmap, Rect(0, 0, Bitmap.Width, Bitmap.Height))
   else
-    {$ENDIF VCL}
     Canvas.StretchDraw(ARect, Bitmap);
 end;
 

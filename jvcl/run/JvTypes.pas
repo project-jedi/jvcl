@@ -42,9 +42,6 @@ uses
   {$ENDIF CLR}
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics,
-  {$IFDEF VisualCLX}
-  Qt, JclWideStrings,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER5}
   JvWin32,
   {$ENDIF COMPILER5}
@@ -54,19 +51,11 @@ const
   MaxPixelCount = 32767;
 
 {$HPPEMIT '#ifndef TDate'}
-{$IFDEF VCL}
+
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$HPPEMIT '#define TDate TDateTime'}
-{$HPPEMIT '#define TTime TDateTime'}
-type
-  TDate = type TDateTime;
-  {$EXTERNALSYM TDate}
-  TTime = type TDateTime;
-  {$EXTERNALSYM TTime}
-{$ENDIF VisualCLX}
+
+
 {$HPPEMIT '#endif'}
 
 {$IFDEF CLR}
@@ -78,7 +67,7 @@ type
   IntPtr = Pointer;
 {$ENDIF CLR}
 
-{$IFDEF VCL}
+
 type
   PCaptionChar = PChar;
 
@@ -110,31 +99,12 @@ type
 const
   NullHandle = 0;
   // (rom) deleted fbs constants. They are already in JvConsts.pas.
-{$ENDIF VCL}
+
 
 type
   TTimerProc = procedure(hwnd: THandle; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
 
-{$IFDEF VisualCLX}
-type
-  // used in JvSpeedButton, JvArrowButton, JvButton CM_BUTTONPRESSED
-  // can be used with (VisualCLX) CM_BUTTONPRESSED
-  TCMButtonPressed = packed record
-    Msg: Cardinal;
-    Control: TControl;  { with VCL Control & Indez are switched }
-    Index: Integer;
-    Result: Longint;    { QButtons.TCMButtonPressed has no Result }
-  end;
 
-  PCaptionChar = PWideChar;
-  THintString = WideString;
-  THintStringList = TWideStringList;
-  TJvRGBTriple = TRGBQuad; { VisualCLX does not support pf24bit }
-
-const
-  NullHandle = nil; { clx uses typed pointers ! }
-  ikButton = ikReturns;
-{$ENDIF VisualCLX}
 
 type
   {$IFDEF COMPILER5}
@@ -225,14 +195,12 @@ type
     Result: Longint;
   end;
 
-  {$IFDEF VCL}
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..MaxPixelCount] of TJvRGBTriple;
   PRGBQuadArray = ^TRGBQuadArray;
   TRGBQuadArray = array [0..MaxPixelCount] of TRGBQuad;
   PRGBPalette = ^TRGBPalette;
   TRGBPalette = array [Byte] of TRGBQuad;
-  {$ENDIF VCL}
 
   { (rom) unused
   TJvPoint = class(TPersistent)
@@ -320,7 +288,6 @@ type
   //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
 
-  {$IFDEF VCL}
   TJvFileInfoRec = record
     Attributes: DWORD;
     DisplayName: string;
@@ -330,7 +297,6 @@ type
     TypeName: string;
     SysIconIndex: Integer;
   end;
-  {$ENDIF VCL}
 
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
@@ -446,7 +412,6 @@ type
 const
   ColCount = 20;
   StandardColCount = 40;
-  {$IFDEF VCL}
   SysColCount = 30;
   {$IFDEF COMPILER5}
   clSystemColor = TColor($80000000);
@@ -456,10 +421,6 @@ const
   clMenuHighlight = TColor(clSystemColor or COLOR_MENUHILIGHT);
   clMenuBar = TColor(clSystemColor or COLOR_MENUBAR);
   {$ENDIF COMPILER5}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SysColCount = 42;
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6}
    {$IF not declared(clHotLight)}
     {$MESSAGE ERROR 'You do not have installed Delphi 6 Update 2. Please install this before installing the JVCL. http://www.borland.com/downloads/registered/del6_reg_updates_prompt.html'}
@@ -537,7 +498,6 @@ const
     (Value: $00FFFFFF;    Constant: 'clWhite';          Description: RsClWhite)
   );
 
-  {$IFDEF VCL}
   SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
     (Value: clScrollBar;           Constant: 'clScrollBar';           Description: RsClScrollBar),
     (Value: clBackground;          Constant: 'clBackground';          Description: RsClBackground),
@@ -572,55 +532,6 @@ const
     (Value: clMenuHighlight;           Constant: 'clMenuHighlight';          Description: RsMenuHighlight)
   );
 
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
-    (Value: clNormalForeground;        Constant: 'clNormalForeground';        Description: RsClNormalForeground),
-    (Value: clNormalButton;            Constant: 'clNormalButton';            Description: RsClNormalButton),
-    (Value: clNormalLight;             Constant: 'clNormalLight';             Description: RsClNormalLight),
-    (Value: clNormalMidlight;          Constant: 'clNormalMidlight';          Description: RsClNormalMidlight),
-    (Value: clNormalDark;              Constant: 'clNormalDark';              Description: RsClNormalDark),
-    (Value: clNormalMid;               Constant: 'clNormalMid';               Description: RsClNormalMid),
-    (Value: clNormalText;              Constant: 'clNormalText';              Description: RsClNormalText),
-    (Value: clNormalBrightText;        Constant: 'clNormalBrightText';        Description: RsClNormalBrightText),
-    (Value: clNormalButtonText;        Constant: 'clNormalButtonText';        Description: RsClNormalButtonText),
-    (Value: clNormalBase;              Constant: 'clNormalBase';              Description: RsClNormalBase),
-    (Value: clNormalBackground;        Constant: 'clNormalBackground';        Description: RsClNormalBackground),
-    (Value: clNormalShadow;            Constant: 'clNormalShadow';            Description: RsClNormalShadow),
-    (Value: clNormalHighlight;         Constant: 'clNormalHighlight';         Description: RsClNormalHighlight),
-    (Value: clNormalHighlightedText;   Constant: 'clNormalHighlightedText';   Description: RsClNormalHighlightedText),
-
-    (Value: clActiveForeground;        Constant: 'clActiveForeground';        Description: RsClActiveForeground),
-    (Value: clActiveButton;            Constant: 'clActiveButton';            Description: RsClActiveButton),
-    (Value: clActiveLight;             Constant: 'clActiveLight';             Description: RsClActiveLight),
-    (Value: clActiveMidlight;          Constant: 'clActiveMidlight';          Description: RsClActiveMidlight),
-    (Value: clActiveDark;              Constant: 'clActiveDark';              Description: RsClActiveDark),
-    (Value: clActiveMid;               Constant: 'clActiveMid';               Description: RsClActiveMid),
-    (Value: clActiveText;              Constant: 'clActiveText';              Description: RsClActiveText),
-    (Value: clActiveBrightText;        Constant: 'clActiveBrightText';        Description: RsClActiveBrightText),
-    (Value: clActiveButtonText;        Constant: 'clActiveButtonText';        Description: RsClActiveButtonText),
-    (Value: clActiveBase;              Constant: 'clActiveBase';              Description: RsClActiveBase),
-    (Value: clActiveBackground;        Constant: 'clActiveBackground';        Description: RsClActiveBackground),
-    (Value: clActiveShadow;            Constant: 'clActiveShadow';            Description: RsClActiveShadow),
-    (Value: clActiveHighlight;         Constant: 'clActiveHighlight';         Description: RsClActiveHighlight),
-    (Value: clActiveHighlightedText;   Constant: 'clActiveHighlightedText';   Description: RsClActiveHighlightedText),
-
-    (Value: clDisabledForeground;      Constant: 'clDisabledForeground';      Description: RsClDisabledForeground),
-    (Value: clDisabledButton;          Constant: 'clDisabledButton';          Description: RsClDisabledButton),
-    (Value: clDisabledLight;           Constant: 'clDisabledLight';           Description: RsClDisabledLight),
-    (Value: clDisabledMidlight;        Constant: 'clDisabledMidlight';        Description: RsClDisabledMidlight),
-    (Value: clDisabledDark;            Constant: 'clDisabledDark';            Description: RsClDisabledDark),
-    (Value: clDisabledMid;             Constant: 'clDisabledMid';             Description: RsClDisabledMid),
-    (Value: clDisabledText;            Constant: 'clDisabledText';            Description: RsClDisabledText),
-    (Value: clDisabledBrightText;      Constant: 'clDisabledBrightText';      Description: RsClDisabledBrightText),
-    (Value: clDisabledButtonText;      Constant: 'clDisabledButtonText';      Description: RsClDisabledButtonText),
-    (Value: clDisabledBase;            Constant: 'clDisabledBase';            Description: RsClDisabledBase),
-    (Value: clDisabledBackground;      Constant: 'clDisabledBackground';      Description: RsClDisabledBackground),
-    (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
-    (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
-    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText)
-  );
-  {$ENDIF VisualCLX}
 
 type
   TJvSizeRect = packed record
@@ -768,13 +679,11 @@ type
      (
       NewSize: TSmallPoint; //CM_FORCESIZE wParam
      );
-    {$IFDEF VCL}
     18:
      ( { alternative naming for VCL CM_BUTTONPRESSED }
       GroupIndex: Integer;
       Button: TControl;
      );
-    {$ENDIF VCL}
   end;
 {$ENDIF !CLR}
 

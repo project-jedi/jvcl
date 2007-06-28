@@ -41,9 +41,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Classes, Controls, StdCtrls, Forms,
   JvTypes, JvExForms;
 
@@ -63,12 +60,7 @@ type
     procedure DoFocusKilled(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
     procedure DoShow; override;
-    {$IFDEF VCL}
     procedure CreateParams(var AParams: TCreateParams); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function WidgetFlags: Integer; override;
-    {$ENDIF VisualCLX}
     property Edit: TCustomEdit read GetEdit;
   public
     constructor Create(AOwner: TComponent); override;
@@ -125,12 +117,7 @@ begin
   inherited CreateNew(AOwner);
 
   BorderIcons := [];
-  {$IFDEF VCL}
   BorderStyle := bsNone;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  BorderStyle := fbsNone;
-  {$ENDIF VisualCLX}
   Font := TCustomEditAccessProtected(AOwner).Font;
 
   Position := poDesigned; // required for D2005
@@ -139,7 +126,7 @@ begin
   FCloseOnLeave := True;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomDropDownForm.CreateParams(var AParams: TCreateParams);
 begin
   inherited CreateParams(AParams);
@@ -157,15 +144,9 @@ begin
   else
     AParams.WndParent := Application.Handle;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-function TJvCustomDropDownForm.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WStyle_DialogBorder) or
-    Integer(WidgetFlags_WType_Popup);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvCustomDropDownForm.DoClose(var Action: TCloseAction);
 begin
@@ -187,7 +168,6 @@ begin
     Self.Top := ClientOrigin.Y + Height;
   end;
 
-  {$IFDEF VCL}
   if Screen.MonitorCount > 0 then
   begin
     {$IFDEF COMPILER6_UP}
@@ -201,11 +181,8 @@ begin
       Top := Self.Edit.ClientOrigin.Y - Height;
   end
   else
-  {$ENDIF VCL}
   begin
-    {$IFDEF VCL}
     if not SystemParametersInfo(SPI_GETWORKAREA, 0, @LScreenRect, 0) then
-    {$ENDIF VCL}
       LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
     if (Left + Width > LScreenRect.Right) then
       Left := LScreenRect.Right - Width;

@@ -904,7 +904,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   cxTextEdit, cxControls,
-  JvDynControlEngineVCL, 
+  JvDynControlEngineVCL,
   JvJclUtils, JvBrowseFolder, JvDynControlEngineTools, JvVCL5Utils;
 
 var

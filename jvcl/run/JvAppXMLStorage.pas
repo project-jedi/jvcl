@@ -791,7 +791,7 @@ begin
         // standard doesn't allow spaces in node names
         NodeName := CheckNodeNameCharacters(NodeList[I]);
 
-        // If the name is the same as the root AND the first in 
+        // If the name is the same as the root AND the first in
         if not ((I = 0) and (NodeName = Xml.Root.Name)) then
           if Assigned(Node.Items.ItemNamed[NodeName]) then
             Node := Node.Items.ItemNamed[NodeName]

@@ -59,10 +59,8 @@ type
     Shape3: TShape;
     procedure QBListClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    {$IFDEF VCL}
     procedure qbpresetsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
-    {$ENDIF VCL}
     procedure qbpresetsClick(Sender: TObject);
     procedure SetLabels;
     procedure AddBackdrop1Click(Sender: TObject);
@@ -77,10 +75,6 @@ type
     procedure greenradioClick(Sender: TObject);
     procedure blueradioClick(Sender: TObject);
     procedure QuickBack;
-    {$IFDEF VisualCLX}
-    procedure qbpresetsDrawItem(Sender: TObject; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
-    {$ENDIF VisualCLX}
   private
     FPainterForm: TJvDrawImage;
   public
@@ -424,14 +418,11 @@ begin
   SetLabels;
 end;
 
-{$IFDEF VCL}
+
 procedure TPainterQBForm.qbpresetsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TPainterQBForm.qbpresetsDrawItem(Sender: TObject; Index: Integer;
-  Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
-{$ENDIF VisualCLX}
+
+
 var
   S: string;
   P: Integer;
@@ -440,9 +431,6 @@ begin
   P := Pos('=', S);
   S := Copy(S, 1, P - 1);
   qbpresets.Canvas.TextRect(Rect, Rect.Left, Rect.Top, S);
-  {$IFDEF VisualCLX}
-  Handled := True;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TPainterQBForm.qbpresetsClick(Sender: TObject);

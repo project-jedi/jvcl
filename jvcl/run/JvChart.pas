@@ -698,13 +698,11 @@ type
     // particular value highlighted.  The highlight is painted
     // over top of the TImage, so that we can just restore the TImage
     // without replotting the whole chart.
-    {$IFDEF VCL}
     // Y Axis Vertical Font
     FYFontHandle: HFONT; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
     FYLogFont: TLogFont; // Y AXIS VERTICAL TEXT: Logical Font Options Record
     procedure MakeVerticalFont; // Call GDI calls to get the Y Axis Vertical Font handle
     procedure MyGraphVertFont(ACanvas: TCanvas); // vertical font handle
-    {$ENDIF VCL}
     procedure PaintCursor; // called from Paint iif a Cursor is visible. does NOT modify FPicture!
   protected
     procedure DrawFloatingMarkers;
@@ -873,12 +871,10 @@ type
     property Anchors;
     property Constraints;
     property OnDblClick; { TNotifyEvent from TControl }
-    {$IFDEF VCL}
     property AutoSize;
     property DragCursor;
     property DragKind;
     //property OnKeyDown; // Tried to add this, but it was too hard. -WP APril 2004.
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property ParentShowHint;
@@ -2198,10 +2194,8 @@ destructor TJvChart.Destroy;
 begin
   {Add code for destroying my own data...here}
   FBitmap.Free;
-  {$IFDEF VCL}
   if Ord(FYFontHandle) <> 0 then
     DeleteObject(FYFontHandle); // vertical font object
-  {$ENDIF VCL}
   FreeAndNil(FYFont);
 
   FreeAndNil(FPicture);
@@ -4060,13 +4054,8 @@ begin
   if Length(StrText) = 0 then
     Exit;
   ACanvas.Brush.Color := Color;
-  {$IFDEF VCL}
   { !!warning: uses Win32 only font-handle stuff!!}
   MyGraphVertFont(ACanvas); // Select Vertical Font Output.
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  MyAxisFont;
-  {$ENDIF VisualCLX}
   if Options.XStartOffset > 10 then
   begin
     {ht := MyTextHeight(StrText); }// not used (ahuser)
@@ -4076,15 +4065,9 @@ begin
     if Vert < 0 then
       Vert := 0;
     Horiz := 2;
-    {$IFDEF VCL}
     // NOTE: Because of the logical font selected, this time TextOut goes vertical.
     // If this doesn't go vertical, it may be because the font selection above failed.
     MyLeftTextOut(ACanvas, Horiz, Vert, StrText);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    WD := ACanvas.TextHeight(StrText);
-    TextOutAngle(ACanvas, 90, Horiz + WD, Vert, StrText);
-    {$ENDIF VisualCLX}
   end;
   MyAxisFont(ACanvas);
   //   Self.MyLeftTextOut(Horiz, Vert+50, '*');
@@ -4839,7 +4822,7 @@ end;
 { or check for metafile output!                                              }
 {****************************************************************************}
 
-{$IFDEF VCL}
+
 { !!warning: uses Win32 only font-handle stuff!!}
 procedure TJvChart.MakeVerticalFont;
 begin
@@ -4888,7 +4871,7 @@ begin
   FYFont.Color := Options.AxisFont.Color;
   FYFont.Handle := FYFontHandle;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvChart.MyHeader(ACanvas: TCanvas; StrText: string);
 begin
@@ -4918,7 +4901,7 @@ begin
   ACanvas.Font.Assign(Options.AxisFont);
 end;
 
-{$IFDEF VCL}
+
 { !!warning: uses Win32 only font-handle stuff!!}
 procedure TJvChart.MyGraphVertFont(ACanvas: TCanvas);
 begin
@@ -4931,7 +4914,7 @@ begin
   if not PrintInSession then
     Assert(ACanvas.Font.Handle = FYFontHandle);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvChart.MyHeaderFont(ACanvas: TCanvas);
 begin

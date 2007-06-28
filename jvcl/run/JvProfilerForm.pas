@@ -130,9 +130,7 @@ implementation
 
 uses
   SysUtils,
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
   JvConsts, JvTypes, JvResources;
 
 {$R *.dfm}
@@ -427,9 +425,7 @@ end;
 procedure TProfReport.lvReportColumnClick(Sender: TObject; Column: TListColumn);
 begin
   //  lvReport.Items.BeginUpdate;
-  {$IFDEF VCL}
   lvReport.CustomSort(TLVCompare(@DefSort), Column.Index);
-  {$ENDIF VCL}
   OddClick := not OddClick;
   //  lvReport.Items.EndUpdate;
 end;

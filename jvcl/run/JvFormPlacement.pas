@@ -43,9 +43,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils, Classes, Windows, Messages, Controls, Forms,
-  {$IFDEF VCL}
   JvWndProcHook,
-  {$ENDIF VCL}
   JvAppStorage, JvComponentBase, JvJVCLUtils, JvTypes, JvConsts;
 
 type
@@ -90,15 +88,10 @@ type
     FPreventResize: Boolean;
     FWinMinMaxInfo: TJvWinMinMaxInfo;
     FDefMaximize: Boolean;
-    {$IFDEF VCL}
     FWinHook: TJvWindowHook;
-    {$ENDIF VCL}
     FSaveFormShow: TNotifyEvent;
     FSaveFormDestroy: TNotifyEvent;
     FSaveFormCloseQuery: TCloseQueryEvent;
-    {$IFDEF VisualCLX}
-    FSaveFormConstrainedResize: TConstrainedResizeEvent;
-    {$ENDIF VisualCLX}
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
     FBeforeSavePlacement: TNotifyEvent;
@@ -108,12 +101,10 @@ type
     procedure SetAppStoragePath(const AValue: string);
     procedure SetEvents;
     procedure RestoreEvents;
-    {$IFDEF VCL}
     procedure SetHook;
     procedure ReleaseHook;
     procedure CheckToggleHook;
     procedure WndMessage(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
-    {$ENDIF VCL}
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
     procedure SetWinMinMaxInfo(AValue: TJvWinMinMaxInfo);
@@ -126,10 +117,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
-    {$IFDEF VisualCLX}
-    procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
-      MaxWidth, MaxHeight: Integer);
-    {$ENDIF VisualCLX}
     function GetForm: TForm;
   protected
     procedure ResolveAppStoragePath;
@@ -185,7 +172,7 @@ type
 
   TJvFormStorage = class(TJvFormPlacement)
   private
-    FStoredProps: TJvFormStorageStringList; 
+    FStoredProps: TJvFormStorageStringList;
     FStoredValues: TJvStoredValues;
     FStoredPropsPath: string;
     function GetStoredProps: TStrings;
@@ -327,10 +314,8 @@ begin
     FOptions := [fpState, fpSize, fpLocation]
   else
     FOptions := [];
-  {$IFDEF VCL}
   FWinHook := TJvWindowHook.Create(Self);
   FWinHook.AfterMessage := WndMessage;
-  {$ENDIF VCL}
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
@@ -349,9 +334,7 @@ begin
   FLinks.Free;
   if not (csDesigning in ComponentState) then
   begin
-    {$IFDEF VCL}
     ReleaseHook;
-    {$ENDIF VCL}
     RestoreEvents;
   end;
   FWinMinMaxInfo.Free;
@@ -371,9 +354,7 @@ begin
   begin
     if Loading then
       SetEvents;
-    {$IFDEF VCL}
     CheckToggleHook;
-    {$ENDIF VCL}
   end;
 end;
 
@@ -438,10 +419,6 @@ begin
       OnCloseQuery := FormCloseQuery;
       FSaveFormDestroy := OnDestroy;
       OnDestroy := FormDestroy;
-      {$IFDEF VisualCLX}
-      FSaveFormConstrainedResize := OnConstrainedResize;
-      OnConstrainedResize := FormConstrainedResize;
-      {$ENDIF VisualCLX}
       FDefMaximize := (biMaximize in BorderIcons);
     end;
     if FPreventResize then
@@ -457,13 +434,10 @@ begin
       OnShow := FSaveFormShow;
       OnCloseQuery := FSaveFormCloseQuery;
       OnDestroy := FSaveFormDestroy;
-      {$IFDEF VisualCLX}
-      OnConstrainedResize := FSaveFormConstrainedResize;
-      {$ENDIF VisualCLX}
     end;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvFormPlacement.SetHook;
 begin
@@ -485,7 +459,7 @@ begin
     ReleaseHook;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvFormPlacement.CheckMinMaxInfo: Boolean;
 begin
@@ -495,10 +469,8 @@ end;
 procedure TJvFormPlacement.MinMaxInfoModified;
 begin
   UpdatePlacement;
-  {$IFDEF VCL}
   if not (csLoading in ComponentState) then
     CheckToggleHook;
-  {$ENDIF VCL}
 end;
 
 procedure TJvFormPlacement.SetWinMinMaxInfo(AValue: TJvWinMinMaxInfo);
@@ -506,7 +478,7 @@ begin
   FWinMinMaxInfo.Assign(AValue);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvFormPlacement.WndMessage(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 {$IFDEF CLR}
@@ -605,7 +577,7 @@ begin
     Msg.Result := 1;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvFormPlacement.FormShow(Sender: TObject);
 begin
@@ -647,48 +619,11 @@ begin
     FSaveFormDestroy(Sender);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvFormPlacement.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
-  MaxWidth, MaxHeight: Integer);
-begin
-  if FPreventResize and (Owner is TCustomForm) then
-  begin
-    if FWinMinMaxInfo.MinTrackWidth <> 0 then
-      MinWidth := FWinMinMaxInfo.MinTrackWidth;
-    if FWinMinMaxInfo.MinTrackHeight <> 0 then
-      MinHeight := FWinMinMaxInfo.MinTrackHeight;
-    {
-    if FWinMinMaxInfo.MaxTrackWidth <> 0 then
-      ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
-    if FWinMinMaxInfo.MaxTrackHeight <> 0 then
-      ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
-    }
 
-    if FWinMinMaxInfo.MaxSizeWidth <> 0 then
-      MaxWidth := FWinMinMaxInfo.MaxSizeWidth;
-    if FWinMinMaxInfo.MaxSizeHeight <> 0 then
-      MaxHeight := FWinMinMaxInfo.MaxSizeHeight;
-
-    if FWinMinMaxInfo.MaxPosLeft <> 0 then
-      if TCustomForm(Owner).Left > FWinMinMaxInfo.MaxPosLeft then
-        TCustomForm(Owner).Left := FWinMinMaxInfo.MaxPosLeft;
-    if FWinMinMaxInfo.MaxPosTop <> 0 then
-      if TCustomForm(Owner).Top > FWinMinMaxInfo.MaxPosTop then
-        TCustomForm(Owner).Top := FWinMinMaxInfo.MaxPosTop;
-  end;
-  if Assigned(FSaveFormConstrainedResize) then
-    FSaveFormConstrainedResize(Sender, MinWidth, MinHeight, MaxWidth, MaxHeight);
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvFormPlacement.UpdatePlacement;
 const
-  {$IFDEF VCL}
   Metrics: array [bsSingle..bsSizeToolWin] of Word =
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Metrics: array [fbsSingle..fbsSizeToolWin] of TSysMetrics =
-  {$ENDIF VisualCLX}
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
 var
   Placement: TWindowPlacement;
@@ -731,10 +666,8 @@ begin
     finally
       Active := IsActive;
     end;
-    {$IFDEF VCL}
     if not (csLoading in ComponentState) then
       CheckToggleHook;
-    {$ENDIF VCL}
   end;
 end;
 
@@ -1032,7 +965,7 @@ end;
 constructor TJvFormStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FStoredProps := TJvFormStorageStringList.Create(Self); 
+  FStoredProps := TJvFormStorageStringList.Create(Self);
   FStoredValues := TJvStoredValues.Create(Self);
   FStoredValues.Storage := Self;
 end;

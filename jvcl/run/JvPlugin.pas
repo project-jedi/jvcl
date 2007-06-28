@@ -41,12 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils,
-  {$IFDEF VCL}
   Forms, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QGraphics,
-  {$ENDIF VisualCLX}
   Classes;
 
 type

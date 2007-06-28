@@ -34,9 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
   JvExComCtrls, JvComponent;
 
@@ -93,11 +91,10 @@ type
 
   { For Windows >= Vista }
   TJvProgressBarState = (pbsNormal, pbsError, pbsPaused);
-  
+
 
   TJvProgressBar = class(TJvExProgressBar)
   private
-  {$IFDEF VCL}
     FFillColor: TColor;
     FMarquee: Boolean;
     FMarqueePaused: Boolean;
@@ -113,11 +110,9 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-  {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
-    {$IFDEF VCL}
     property FillColor: TColor read FFillColor write SetFillColor default clHighlight;
 
     { For Windows >= XP }
@@ -128,10 +123,6 @@ type
     property SmoothReverse: Boolean read FSmoothReverse write SetSmoothReverse default False;
     property State: TJvProgressBarState read FState write SetState default pbsNormal;
 
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property FillColor default clHighlight;
-    {$ENDIF VisualCLX}
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -174,13 +165,11 @@ type
     property Anchors;
     property Color default clWindow;
     property Constraints;
-    {$IFDEF VCL}
     property DragKind;
     property DragCursor;
     property OnEndDock;
     property OnStartDock;
     property OnCanResize;
-    {$ENDIF VCL}
     property DragMode;
     property Hint;
     property ParentColor default False;
@@ -474,12 +463,10 @@ constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FillColor := clHighlight;
-  {$IFDEF VCL}
   FMarqueeDelay := 25;
-  {$ENDIF VCL}
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvProgressBar.CreateParams(var Params: TCreateParams);
 begin
@@ -566,7 +553,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 //=== { TJvBaseGradientProgressBar } =========================================
 

@@ -46,12 +46,7 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   published
-    {$IFDEF VCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF VisualCLX}
   end;
 
 {$IFDEF UNITVERSIONING}

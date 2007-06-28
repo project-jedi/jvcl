@@ -1,7 +1,7 @@
 object PainterEffectsForm: TPainterEffectsForm
   Left = 480
   Top = 153
-  BorderStyle = bsToolWindow
+  BorderStyle = fbsToolWindow
   Caption = 'Painter Effects'
   ClientHeight = 303
   ClientWidth = 180
@@ -49,7 +49,7 @@ object PainterEffectsForm: TPainterEffectsForm
       Width = 16
       Height = 176
       Kind = sbVertical
-      PageSize = 0
+      
       TabOrder = 0
       OnChange = EBarChange
     end
@@ -60,7 +60,7 @@ object PainterEffectsForm: TPainterEffectsForm
       Height = 12
       Max = 300
       Min = 1
-      PageSize = 0
+      
       Position = 1
       TabOrder = 1
       OnChange = EBarChange
@@ -160,7 +160,7 @@ object PainterEffectsForm: TPainterEffectsForm
       Top = 267
       Width = 118
       Height = 12
-      PageSize = 0
+      
       TabOrder = 3
       OnChange = EBarChange
     end
@@ -169,7 +169,7 @@ object PainterEffectsForm: TPainterEffectsForm
       Top = 284
       Width = 118
       Height = 13
-      PageSize = 0
+      
       TabOrder = 4
       OnChange = EBarChange
     end

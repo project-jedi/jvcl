@@ -82,12 +82,10 @@ implementation
 uses
   JvConsts, Sysutils;
 
-{$IFDEF VCL}
+
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
+
+
 
 procedure TfrmSelectColumn.FormCreate(Sender: TObject);
 begin

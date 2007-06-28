@@ -79,9 +79,7 @@ implementation
 constructor TJvAnimate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
 end;
 
 {$IFDEF UNITVERSIONING}

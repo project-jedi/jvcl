@@ -44,9 +44,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   Windows, Graphics, Controls, Forms, StdCtrls,
   JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree,
   JvTypes, JvComponent;
@@ -77,9 +75,7 @@ type
     FParser: IParser;
     FLayout: TTextLayout;  // Bianconi
     FCaption: TCaption;
-    {$IFDEF VCL}
     procedure SetText(const Value: TCaption);
-    {$ENDIF VCL}
     procedure SetTransparent(const Value: Boolean);
     function GetLinkColor: TColor;
     function GetLinkStyle: TFontStyles;
@@ -105,9 +101,6 @@ type
     procedure SetLayout(AValue: TTextLayout);     // Bianconi
   protected
     FNodeTree: TNodeTree;
-    {$IFDEF VisualCLX}
-    procedure SetText(const Value: TCaption); override;
-    {$ENDIF VisualCLX}
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure Paint; override;
@@ -175,9 +168,7 @@ type
     property Align;
     property Color;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property DragMode;
     property Font;
     property Height default 17;
@@ -226,9 +217,7 @@ begin
   FLinkCursor := crHandPoint;
   FText := TStringList.Create;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   Width := 160;
   Height := 17;
   FNodeTree := TNodeTree.Create;
@@ -556,7 +545,7 @@ begin
         end;
         // Adjust Root start point relative to control's canvas.
         FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);  // Bianconi #2
-        // VisualCLX: most be done after the bitmap is drawn.  
+        // VisualCLX: most be done after the bitmap is drawn.
         TmpBmp.Transparent := True;
         TmpBmp.TransparentMode := tmFixed;
         TmpBmp.TransparentColor := Color;
@@ -593,9 +582,6 @@ begin
   if Value <> Caption then
   begin
     Text.Clear;
-    {$IFDEF VisualCLX}
-    inherited SetText(Value);
-    {$ENDIF VisualCLX}
     FCaption := Value;
     Text.Add(Caption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
@@ -676,8 +662,7 @@ end;
 
 procedure TJvCustomLinkLabel.SetStrings(const Value: TStrings);
 begin
-  FText.Assign(Value);
-  {$IFDEF VisualCLX} inherited {$ENDIF} SetText(FText.Text);
+  FText.Assign(Value);  SetText(FText.Text);
 end;
 
 // Bianconi
@@ -698,16 +683,12 @@ begin
     if Value then
     begin
       ControlStyle := ControlStyle - [csOpaque];
-      {$IFDEF VCL}
       ExcludeThemeStyle(Self, [csParentBackground]);
-      {$ENDIF VCL}
     end
     else
     begin
       ControlStyle := ControlStyle + [csOpaque];
-      {$IFDEF VCL}
       IncludeThemeStyle(Self, [csParentBackground]);
-      {$ENDIF VCL}
     end;
     Invalidate;
   end;

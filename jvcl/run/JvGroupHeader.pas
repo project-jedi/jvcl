@@ -97,14 +97,12 @@ type
     property Align;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Anchors;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property Caption;
     property Color;
     property Constraints;
@@ -121,7 +119,7 @@ type
     property BevelOptions: TJvGroupHeaderOptions read FBevelOptions write SetBevelOptions;
     property BevelSpace: Integer read FBevelSpace write SetBevelSpace default 12;
     // (p3) is this used anywhere?
-//    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions stored false; 
+//    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions stored false;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TJvLayout read FLayout write SetLayout default lTop;
     property OnClick;
@@ -249,12 +247,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   IncludeThemeStyle(Self, [csParentBackground]);
   {$ENDIF JVCLThemesEnabled}
-  {$IFDEF VCL}
   Font.Name := 'Tahoma';
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Font.Name := 'Helvetica';
-  {$ENDIF VisualCLX}
   Width := 200;
   Height := 17;
 

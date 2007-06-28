@@ -110,7 +110,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ComCtrls, CommCtrl, 
+  SysUtils, ComCtrls, CommCtrl,
   JvConsts;
 
 //=== { TJvDBDateTimePicker } ================================================
@@ -470,7 +470,7 @@ procedure TJvDBDateTimePicker.UpdateData(Sender: TObject);
 begin
   // update value in datalink with date value in control, not from system
   // DataLink field might be empty
-  if not Assigned(FDataLink.Field) or 
+  if not Assigned(FDataLink.Field) or
      not FDataLink.Editing then
     Exit;
   if Kind = dtkDate then

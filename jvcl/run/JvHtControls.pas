@@ -112,9 +112,6 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   JvVCL5Utils,
   Windows, Messages, Graphics, Contnrs, Controls, StdCtrls, Dialogs,
   JvJVCLUtils, JvExStdCtrls, JvDataSourceIntf;
@@ -157,13 +154,8 @@ type
       X, Y: Integer); override;
     procedure FontChanged; override;
     procedure Loaded; override;
-    {$IFDEF VCL}
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -196,7 +188,6 @@ type
     property ColorDisabledText;
     // Kaczkowski - end
     property Columns;
-    {$IFDEF VCL}
     property DragCursor;
     property TabWidth;
     property ImeMode;
@@ -207,7 +198,6 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-   {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property ExtendedSelect;
@@ -260,19 +250,12 @@ type
     procedure SetDropWidth(ADropWidth: Integer);
   protected
     procedure CreateWnd; override;
-    {$IFDEF VCL}
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
-    {$IFDEF VCL}
     procedure SetHeight(Value: Integer); // Kaczkowski
     function GetHeight: Integer; // Kaczkowski
-    {$ENDIF VCL}
   protected
     property HideSel: Boolean read FHideSel write SetHideSel;
     property DropWidth: Integer read FDropWidth write SetDropWidth;
@@ -294,7 +277,6 @@ type
     property ColorDisabledText;
     property Color;
     // property Style;
-    {$IFDEF VCL}
     property AutoSize;
     property DragCursor;
     property ImeMode;
@@ -304,7 +286,6 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property DropDownCount;
     property Enabled;
@@ -349,13 +330,10 @@ type
       X, Y: Integer); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
-    procedure AdjustBounds; {$IFDEF VCL} override; {$ENDIF}
+    procedure AdjustBounds;  override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
     procedure Loaded; override;
-    {$IFDEF VisualCLX}
-    procedure TextChanged; override;  // handles autosize
-    {$ENDIF VisualCLX}
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   end;
 
@@ -367,14 +345,12 @@ type
     property AutoSize;
     property Caption;
     property Color;
-    {$IFDEF VCL}
     property DragCursor;
     property BiDiMode;
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -576,9 +552,7 @@ begin
   inherited Create(AOwner);
   FDataConnector := CreateDataConnector;
   // Kaczkowski
-  {$IFDEF VCL}
   Style := lbOwnerDrawVariable;
-  {$ENDIF VCL}
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
   FColorDisabledText := clGrayText;
@@ -594,9 +568,6 @@ end;
 procedure TJvCustomHTListBox.Loaded;
 begin
   inherited Loaded;
-  {$IFDEF VisualCLX}
-  Style := lbOwnerDrawVariable;
-  {$ENDIF VisualCLX}
   DataConnector.Reset;
 end;
 
@@ -606,14 +577,11 @@ begin
   DataConnector.GotoCurrent;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
-  State: TOwnerDrawState): Boolean;
-{$ENDIF VisualCLX}
+
+
 begin
   if odSelected in State then
   begin
@@ -626,17 +594,14 @@ begin
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
-  {$IFDEF VisualCLX}
-  Result := True;
-  {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomHTListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := ItemHTHeight(Canvas, Items[Index]);
 end;
-{$ENDIF VCL}
+
 
 function TJvCustomHTListBox.CreateDataConnector: TJvCustomListBoxDataConnector;
 begin
@@ -746,14 +711,11 @@ begin
   // Kaczkowski
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
-  State: TOwnerDrawState): Boolean;
-{$ENDIF VisualCLX}
+
+
 begin
   if odSelected in State then
   begin
@@ -766,15 +728,10 @@ begin
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
-  {$IFDEF VCL}
 //  SendMessage(Self.Handle, CB_SETITEMHEIGHT, Index, ItemHTHeight(Canvas, Items[Index])); // Kaczkowski
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := True;
-  {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VCL}
+
 
 // Kaczkowski - begin
 function TJvCustomHTComboBox.GetHeight: Integer;
@@ -788,7 +745,7 @@ begin
 end;
 // Kaczkowski - end
 
-{$ENDIF VCL}
+
 
 procedure TJvCustomHTComboBox.SetHideSel(Value: Boolean);
 begin
@@ -821,42 +778,13 @@ begin
   if FDropWidth <> ADropWidth then
   begin
     FDropWidth := ADropWidth;
-    {$IFDEF VCL}
     Perform(CB_SETDROPPEDWIDTH, FDropWidth, 0);
-    {$ENDIF VCL}
   end;
 end;
 
 //=== { TJvCustomHTLabel } ===================================================
 
-{$IFDEF VisualCLX}
 
-procedure TJvCustomHTLabel.TextChanged;
-begin
-  if AutoSize then
-  begin
-    Height := ItemHTHeight(Canvas, Caption);
-    Width := ItemHTWidth(Canvas, ClientRect, [], Caption) + 2;
-  end;
-  Invalidate;
-end;
-
-(*
-procedure TJvCustomHTLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-//  TControlCanvas(FCanvas).StartPaint;
-  FCanvas.Start;
-  try
-    QPainter_setClipRegion(FCanvas.Handle, EventRegion);
-    Paint;
-  finally
-  FCanvas.Stop;
-//    TControlCanvas(FCanvas).StopPaint;
-  end;
-end;
-*)
-
-{$ENDIF VisualCLX}
 
 procedure TJvCustomHTLabel.FontChanged;
 begin
@@ -872,20 +800,14 @@ end;
 
 procedure TJvCustomHTLabel.AdjustBounds;
 var
-  {$IFDEF VCL}
   DC: HDC;
-  {$ENDIF VCL}
   X: Integer;
   Rect: TRect;
   MaxWidth: Integer;
 begin
   if not (csReading in ComponentState) and AutoSize then
   begin
-    {$IFDEF VisualCLX}
-    AdjustSize;
-    {$ENDIF VisualCLX}
     Rect := ClientRect;
-    {$IFDEF VCL}
     DC := GetDC(HWND_DESKTOP);
     try
       Canvas.Handle := DC;
@@ -896,12 +818,6 @@ begin
       Canvas.Handle := 0;
       ReleaseDC(HWND_DESKTOP, DC);
     end;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Canvas.Font.Assign(Font);
-    Rect.Bottom := ItemHTHeight(Canvas, Caption);
-    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption) + 2;
-    {$ENDIF VisualCLX}
     Rect.Right := Rect.Left + MaxWidth;
     X := Left;
     if Alignment = taRightJustify then

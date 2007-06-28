@@ -571,7 +571,7 @@ begin
 
     if Assigned(FControl) then
       FControl.FreeNotification(Self);
-      
+
     RegisterControl;
   end;
 end;

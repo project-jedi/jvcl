@@ -133,7 +133,7 @@ implementation
 
 uses
   SysUtils, Graphics, Controls, Forms, DB, BDE,
-  JvBDELists, 
+  JvBDELists,
   JvConsts, JvResources;
 
 constructor TJvDBLoginDialog.Create(DialogMode: TDialogMode; DatabaseSelect: Boolean);

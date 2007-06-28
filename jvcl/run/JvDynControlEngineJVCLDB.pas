@@ -173,9 +173,7 @@ type
     FEditControl: TJvDBMaskEdit;
     FButton: TBitBtn;
     FInitialDir: string;
-    {$IFDEF VCL}
     FDialogOptions: TSelectDirOpts;
-    {$ENDIF VCL}
     FDialogTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -200,9 +198,7 @@ type
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(const Value: string);
     procedure ControlSetDialogTitle(const Value: string);
-    {$IFDEF VCL}
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
-    {$ENDIF VCL}
 
     //IJvDynControlDatabase
     procedure ControlSetDataSource(Value: TDataSource);
@@ -441,9 +437,7 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
-    {$IFDEF VCL}
     procedure ControlSetProportional(Value: Boolean);
-    {$ENDIF VCL}
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
@@ -600,15 +594,7 @@ end;
 
 procedure TJvDynControlJVCLDBEdit.ControlSetPasswordChar(Value: Char);
 begin
-  {$IFDEF VCL}
   PasswordChar := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = #0 then
-    EchoMode := emNormal
-  else
-    EchoMode := emPassword;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlJVCLDBEdit.ControlSetEditMask(const Value: string);
@@ -721,22 +707,11 @@ begin
   Result := FEditControl.Text;
 end;
 
-{$IFDEF VisualCLX}
-type
-  TJvDBMaskEditAccessProtected = class(TJvDBMaskEdit);
-{$ENDIF VisualCLX}
+
 
 procedure TJvDynControlJVCLDBButtonEdit.ControlSetPasswordChar(Value: Char);
 begin
-  {$IFDEF VCL}
   FEditControl.PasswordChar := Value;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = #0 then
-    TJvDBMaskEditAccessProtected(FEditControl).EchoMode := emNormal
-  else
-    TJvDBMaskEditAccessProtected(FEditControl).EchoMode := emPassword;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlJVCLDBButtonEdit.ControlSetEditMask(const Value: string);
@@ -1043,13 +1018,8 @@ end;
 
 procedure TJvDynControlJVCLDBDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
-  {$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Dir: WideString;
-  {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   if Dir = '' then
@@ -1059,17 +1029,7 @@ begin
       Dir := PathDelim;
   if not DirectoryExists(Dir) then
     Dir := PathDelim;
-  {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  {$IFDEF MSWINDOWS}
-  if SelectDirectory('', '', Dir) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  if SelectDirectory('', '/', Dir, False) then
-  {$ENDIF UNIX}
-  {$ENDIF VisualCLX}
     ControlSetValue(Dir);
   if FEditControl.CanFocus then
     FEditControl.SetFocus;
@@ -1139,12 +1099,12 @@ begin
   FDialogTitle := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlJVCLDBDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
 begin
   FDialogOptions := Value;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlJVCLDBDirectoryEdit.ControlSetDataSource(Value: TDataSource);
 begin
@@ -1301,7 +1261,7 @@ end;
 procedure TJvDynControlJVCLDBMemo.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;               
+end;
 
 procedure TJvDynControlJVCLDBMemo.ControlSetValue(Value: Variant);
 begin
@@ -1899,14 +1859,14 @@ begin
   Center := Value;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvDynControlJVCLDBImage.ControlSetProportional(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
 //  Proportional := Value;
   {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDynControlJVCLDBImage.ControlSetStretch(Value: Boolean);
 begin

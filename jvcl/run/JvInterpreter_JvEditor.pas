@@ -269,7 +269,7 @@ end;
 { procedure EndCompound; }
 
 procedure TRACustomEditor_EndCompound(var Value: Variant; Args: TJvInterpreterArgs);
-begin                                               
+begin
   TJvCustomEditor(Args.Obj).EndCompound;
 end;
 

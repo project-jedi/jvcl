@@ -172,7 +172,6 @@ type
     procedure SetVersion(const Value: string);
     {$ENDIF !USEJVCL}
     procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
-    {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMBorderChanged(var Msg: TMessage); message CM_BORDERCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
@@ -184,7 +183,6 @@ type
     procedure WMMouseMove(var Msg: TWMMouse); message WM_MOUSEMOVE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
-    {$ENDIF VCL}
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -204,19 +202,6 @@ type
     procedure BeginUpdate; dynamic;
     procedure EndUpdate; dynamic;
     procedure LockedInvalidate; dynamic;
-    {$IFDEF VisualCLX}
-    procedure AdjustSize; override;
-    procedure BorderChanged; dynamic;
-    procedure EnabledChanged; override;
-    procedure TextChanged; override;
-    procedure ParentColorChanged; override;
-    procedure ParentFontChanged; override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    procedure Loaded; override;
-    {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
@@ -252,11 +237,9 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnCanResize;
-    {$ENDIF VCL}
     property DragMode;
     //property Enabled;
     property Font;
@@ -470,7 +453,7 @@ begin
     Invalidate;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvXPCustomControl.CMDialogChar(var Msg: TCMDialogChar);
 begin
@@ -498,7 +481,7 @@ begin
   inherited;
   HookEnabledChanged;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvXPCustomControl.CMFocusChanged(var Msg: TMessage);
 begin
@@ -507,7 +490,7 @@ begin
   HookFocusedChanged;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvXPCustomControl.CMMouseEnter(var Msg: TMessage);
 begin
   // delegate message "MouseEnter" to hook.
@@ -564,99 +547,9 @@ begin
   HookPosChanged;
 end;
 
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 
-function TJvXPCustomControl.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := IsAccel(Key, Caption) and Enabled and not (ssCtrl in Shift);
-  if Result then
-    Click
-  else
-    Result := inherited WantKey(Key, Shift, KeyText);
-end;
 
-procedure TJvXPCustomControl.Loaded;
-begin
-  inherited Loaded;
-  AdjustSize;
-end;
-
-procedure TJvXPCustomControl.BorderChanged;
-begin
-  // delegate message "BorderChanged" to hook.
-//  inherited BorderChanged;
-  HookBorderChanged;
-end;
-
-procedure TJvXPCustomControl.EnabledChanged;
-begin
-  // delegate message "EnabledChanged" to hook.
-  inherited EnabledChanged;
-  HookEnabledChanged;
-end;
-
-procedure TJvXPCustomControl.MouseEnter(AControl: TControl);
-begin
-  // delegate message "MouseEnter" to hook.
-  inherited MouseEnter(AControl);
-  HookMouseEnter;
-end;
-
-procedure TJvXPCustomControl.MouseLeave(AControl: TControl);
-begin
-  // delegate message "MouseLeave" to hook.
-  inherited MouseLeave(AControl);
-  HookMouseLeave;
-end;
-
-procedure TJvXPCustomControl.ParentColorChanged;
-begin
-  // delegate message "ParentColorChanged" to hook.
-  inherited ParentColorChanged;
-  HookParentColorChanged;
-end;
-
-procedure TJvXPCustomControl.ParentFontChanged;
-begin
-  // delegate message "ParentFontChanged" to hook.
-  inherited ParentFontChanged;
-  HookParentFontChanged;
-end;
-
-procedure TJvXPCustomControl.TextChanged;
-begin
-  // delegate message "TextChanged" to hook.
-  inherited TextChanged;
-  HookTextChanged;
-end;
-
-procedure TJvXPCustomControl.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  // delegate message "MouseMove" to hook.
-  inherited MouseMove(Shift, X, Y);
-  HookMouseMove(X, Y);
-end;
-
-procedure TJvXPCustomControl.AdjustSize;
-begin
-  // delegate message "Size" to hook.
-  inherited AdjustSize;
-  HookResized;
-end;
-
-(*
-procedure TJvXPCustomControl.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
-begin
-  // delegate message "WindowPosChanged" to hook.
-  inherited;
-  HookPosChanged;
-end;
-*)
-
-{$ENDIF VisualCLX}
 
 procedure TJvXPCustomControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);

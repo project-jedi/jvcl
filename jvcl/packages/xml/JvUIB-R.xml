@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvUIB" Design="0">
   <Description>JVCL Unified Interbase Components Runtime Package</Description>
-  <ClxDescription>JVCLX Unified Interbase Components Runtime</ClxDescription>
   <GUID>{A8B6FFD1-E0CC-408F-A520-32B90D3AF6D6}</GUID>
   <C5PFlags>-LUvcl50 -LUJclC50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUJcl(USEJVCL)</C6PFlags>
@@ -13,8 +12,7 @@
   <ReleaseNumber>0</ReleaseNumber>
   <BuildNumber>0</BuildNumber>
   <Requires>
-    <Package Name="JvCore-R" Targets="VCL" Condition="USEJVCL"/>
-    <Package Name="JvCore-R" Targets="CLX" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="Jcl" Targets="allv6up" Condition="USEJVCL"/>
     <Package Name="JclD50" Targets="Dv5" Condition="USEJVCL"/>
     <Package Name="JclC50" Targets="Cv5" Condition="USEJVCL"/>
@@ -23,7 +21,6 @@
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
-    <Package Name="dataclx" Targets="K3" Condition="!DelphiPersonalEdition"/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="vcljpg" Targets="allv6up" Condition=""/>

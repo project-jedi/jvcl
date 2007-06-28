@@ -1312,9 +1312,7 @@ begin
   with TForm(ParameterDialog) do
   begin
     BorderIcons := [];
-    {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
-    {$ENDIF VCL}
     BorderStyle := fbsDialog;
     FormStyle := fsNormal;
     Position := poScreenCenter;
@@ -1699,12 +1697,10 @@ begin
   begin
     AutoScroll := False;
     BorderStyle := bsNone;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     BevelInner := bvNone;
     BevelOuter := bvNone;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     Align := alClient;
     Width := ParameterParent.Width;
   end;

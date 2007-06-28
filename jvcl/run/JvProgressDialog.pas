@@ -169,7 +169,7 @@ type
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnProgress: TJvProgressDialogEvent read FOnProgress write FOnProgress;
-    property OnShow: TNotifyEvent read FOnShow write FOnShow;  
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
 {$IFDEF UNITVERSIONING}

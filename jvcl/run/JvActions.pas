@@ -37,12 +37,7 @@ uses
   JclMapi,
   Windows, ShellAPI,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   ActnList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QActnList,
-  {$ENDIF VisualCLX}
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}

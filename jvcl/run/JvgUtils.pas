@@ -2104,7 +2104,7 @@ asm
         SUB     ECX,ESI         // ECX := Length(Str1) - Length(Str2)
         JBE     @@2             // Length(substring) > Length(containing string) ? get out!
         MOV     EDI,EBX         // EDI points to the beginning od Str1
-        LEA     EBX,[ESI-1]     // EBX - length of comparision of strings 
+        LEA     EBX,[ESI-1]     // EBX - length of comparision of strings
 @@1:    MOV     ESI,EDX         // ESI - offset of Str2 string
         LODSB                   // Loading 1st byte of substring into AL
         REPNE   SCASB           // Searching that very char in EDI string
@@ -2150,14 +2150,7 @@ var
   tt: TTextMetric;
 begin
   // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
-  {$IFDEF VisualCLX}
-  Canvas.Start;  // if it is called outside a paint event
-  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
-  {$ENDIF VisualCLX}
   GetTextMetrics(Canvas.Handle, tt);
-  {$IFDEF VisualCLX}
-  Canvas.Stop;
-  {$ENDIF VisualCLX}
   Result := tt.tmHeight;
 end;
 

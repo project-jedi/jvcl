@@ -37,9 +37,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls,
   ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
-  {$IFDEF VCL}
   CommCtrl, JvJCLUtils,
-  {$ENDIF VCL}
   JvComponent, JvButton;
 
 type
@@ -54,12 +52,10 @@ type
     FClient: TJvCustomGraphicButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     procedure SetChecked(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
   end;
@@ -416,7 +412,7 @@ begin
     Result := False;
 end;
 
-{$IFDEF VCL}
+
 {$IFDEF COMPILER6_UP}
 
 function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
@@ -429,7 +425,7 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin
@@ -952,10 +948,6 @@ begin
     Canvas.Font := HotTrackFont
   else
     Canvas.Font := Self.Font;
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-  {$ENDIF VisualCLX}
   DC := Canvas.Handle; { reduce calls to GetHandle }
 
   if FWordWrap then
@@ -1016,11 +1008,6 @@ begin
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
     DrawText(DC, Caption, -1, TmpRect, Flags);
   end;
-  {$IFDEF VisualCLX}
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvTransparentButton.SetImages(Value: TJvTransparentButtonImages);
@@ -1053,7 +1040,7 @@ var
 begin
   if UseImages then
     Exit;
-    
+
   FImList.Clear;
   Bmp := TBitmap.Create;
   try
@@ -1125,13 +1112,13 @@ begin
   Index := 0;
 
   // Important: Draw parent image to keep transparency chain working
-  
+
   // This line should be added, but currently it introduces some mess in this component.
   // Mainly, the frame around the button is not displayed.
   // That needs to be fixed before being added again.
-  
+
   //CopyParentImage(Self, Canvas);
-  
+
 
   if UseImages then
   begin
@@ -1252,7 +1239,7 @@ begin
         // action uses ActiveImage
         Glyph.Width := 0;
         Glyph.Height := 0;
-        
+
         if not CheckDefaults or (Images.ActiveIndex = -1) then
         begin
           Images.ActiveImage := ActionList.Images;
@@ -1275,30 +1262,22 @@ var
   Bmp: TBitmap; // creating a Bitmap is time consuming in Qt, so use one for all
 
   function AddGlyph(Images: TCustomImageList; Index: TImageIndex): Boolean;
-  {$IFDEF VCL}
   var
     Icon: HICON;
-  {$ENDIF VCL}
   begin
     Result := Assigned(Images) and (Index >= 0);
     if Result then
     begin
-      {$IFDEF VCL}
       Icon := ImageList_GetIcon(Images.Handle, Index, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
       DestroyIcon(Icon);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Images.GetBitmap(FActiveIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      {$ENDIF VisualCLX}
     end;
   end;
 
 begin
   if not UseImages then
     Exit;
-    
+
   Bmp := TBitmap.Create;
   try
     { get imagelist properties (width, height, ...) }
@@ -1318,7 +1297,7 @@ begin
         FImList.ImageType := FActiveList.ImageType;
         FImList.DrawingStyle := FActiveList.DrawingStyle;
         FImList.BlendColor := FActiveList.BlendColor;
-        
+
         AddGlyph(FActiveList, FActiveIndex);
       end
       else

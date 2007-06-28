@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvNet" Design="-1">
   <Description>JVCL Network Components</Description>
-  <ClxDescription>JVCLX Network Components</ClxDescription>
   <GUID>{7F81A0A6-736F-4165-90E2-381F365CDDE9}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>

@@ -499,7 +499,7 @@ type
     FDestroying: Boolean;
     FSchedBatch: TStringList;
     FApptBeingDestroyed: TJvTFAppt;
-    
+
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ConnectControl(ApptCtrl: TJvTFControl);
     procedure DisconnectControl(ApptCtrl: TJvTFControl);
@@ -706,9 +706,7 @@ type
     procedure SetHintText(StartDate, EndDate: TDate; StartTime, EndTime: TTime;
       const Desc: string; ShowDatesTimes, ShowDesc: Boolean);
     procedure DoHint(Sustained: Boolean);
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     procedure PropertyCheck; dynamic;
   public
     constructor Create(anApptCtrl: TJvTFControl); reintroduce;
@@ -893,9 +891,7 @@ type
     FOnMarginError: TNotifyEvent;
     FTitle: string;
     FDirectPrint: Boolean;
-    {$IFDEF VCL}
     function GetPage(Index: Integer): TMetafile;
-    {$ENDIF VCL}
     function GetBodyHeight: Integer; // always in pixels
     function GetBodyWidth: Integer; // always in pixels
     function GetBodyLeft: Integer; // always in pixels
@@ -943,9 +939,7 @@ type
     destructor Destroy; override;
 
     property PageCount: Integer read GetPageCount;
-    {$IFDEF VCL}
     property Pages[Index: Integer]: TMetafile read GetPage;
-    {$ENDIF VCL}
     function ConvertMeasure(Value: Integer; FromMeasure,
       ToMeasure: TJvTFPrinterMeasure; Horizontal: Boolean): Integer;
     function ScreenToPrinter(Value: Integer; Horizontal: Boolean): Integer;
@@ -3769,12 +3763,7 @@ begin
 
     FOnShowHint(Self, HintType, Ref, FHintRect, FHintText);
   end;
-  {$IFDEF VCL}
   if not Windows.IsRectEmpty(FHintRect) and (FHintText <> '') then
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if not IsRectEmpty(FHintRect) and (FHintText <> '') then
-      {$ENDIF VisualCLX}
       if Sustained then
       begin
         inherited ActivateHint(FHintRect, FHintText);
@@ -3783,7 +3772,7 @@ begin
         ActivateHint(FHintRect, FHintText);
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvTFHint.CreateParams(var Params: TCreateParams);
 begin
@@ -3793,7 +3782,7 @@ begin
     WindowClass.Style := WindowClass.Style and not CS_SAVEBITS;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: THintString);
 begin
@@ -4559,12 +4548,7 @@ function TJvTFPrinter.GetBodyHeight: Integer; // always in pixels
 var
   PhysHeight, TopMarginPels, BottomMarginPels, HeaderPels, FooterPels: Integer;
 begin
-  {$IFDEF VCL}
   PhysHeight := Windows.GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  PhysHeight := GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
-  {$ENDIF VisualCLX}
   TopMarginPels := ConvertMeasure(PageLayout.MarginTop, Measure, pmPixels,
     False);
   BottomMarginPels := ConvertMeasure(PageLayout.MarginBottom, Measure, pmPixels,
@@ -4637,7 +4621,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 function TJvTFPrinter.GetPage(Index: Integer): TMetafile;
 begin
@@ -4648,7 +4632,7 @@ begin
     raise EJvTFPrinterError.CreateRes(@RsEDocumentPagesAreInaccessibleUntil);
   Result := TMetafile(FPages.Objects[Index]);
 end;
-{$ENDIF VCL}
+
 
 function TJvTFPrinter.GetPageCount: Integer;
 begin

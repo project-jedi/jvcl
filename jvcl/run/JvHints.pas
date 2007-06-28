@@ -49,10 +49,8 @@ type
     FTextRect: TRect;
     FTileSize: TPoint;
     FRoundFactor: Integer;
-    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF VCL}
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
@@ -135,7 +133,7 @@ begin
     Result := nil;
 end;
 
-{$IFDEF VCL}
+
 procedure StandardHintFont(AFont: TFont);
 var
   NonClientMetrics: TNonClientMetrics;
@@ -150,16 +148,9 @@ begin
   end;
   AFont.Color := clInfoText;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure StandardHintFont(AFont: TFont);
-begin
-  AFont.Name := 'Helvetica';
-  AFont.Height := 11;
-  AFont.Color := clInfoText;
-end;
-{$ENDIF VisualCLX}
+
+
 
 constructor TJvHintWindow.Create(AOwner: TComponent);
 begin
@@ -176,7 +167,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvHintWindow.CreateParams(var Params: TCreateParams);
 begin
@@ -193,7 +184,7 @@ begin
   Msg.Result := 1;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvHintWindow.CreateRegion(Shade: Boolean): HRGN;
 var
@@ -447,7 +438,7 @@ var
 begin
   Result := Rect(0, 0, MaxWidth, 0);
   DrawText(Canvas, AHint, -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or {$IFDEF VCL} DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or  DrawTextBiDiModeFlagsReadingOnly );
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;

@@ -118,7 +118,7 @@ type
 
     procedure BeginUpdate;
     procedure EndUpdate;
-    
+
     property RecNo: Integer read GetRecNo write SetRecNo;
 
     { Fields }
@@ -691,7 +691,7 @@ end;
 procedure TJvDataSource.CheckBrowseMode;
 begin
   if not (FDataLink.DataSet.State in [dsEdit, dsInsert]) then
-    FDataUpdated := False; 
+    FDataUpdated := False;
   FNeedScroll := True;
   if (FDataLink.DataSet.State = dsInsert) and FDataUpdated then
     FNeedScroll := False;

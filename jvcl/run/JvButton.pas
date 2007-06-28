@@ -33,9 +33,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Windows, Messages, Classes, Graphics, Controls, Menus, Buttons,
   JvComponent, JvConsts, JvTypes, JvExStdCtrls;
 
@@ -65,9 +62,7 @@ type
 
     procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
-    {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    {$ENDIF VCL}
     procedure SetForceSameSize(const Value: Boolean);
     procedure SetAllowAllUp(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
@@ -148,9 +143,7 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
@@ -241,7 +234,7 @@ constructor TJvCustomGraphicButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle -
-    [csOpaque, csDoubleClicks {$IFDEF VisualCLX}, csCaptureMouse {$ENDIF}];
+    [csOpaque, csDoubleClicks ];
   FStates := [];
   SetBounds(0, 0, 40, 40);
   FBuffer := TBitmap.Create;
@@ -376,9 +369,7 @@ begin
     FStates := [bsMouseDown, bsMouseInside];
     RepaintBackground;
   end;
-  {$IFDEF VCL}
   SetCaptureControl(Self);
-  {$ENDIF VCL}
   Tmp := ClientToScreen(Point(0, Height));
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
 end;
@@ -411,10 +402,8 @@ end;
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  {$IFDEF VCL}
   if GetCaptureControl = Self then
     ReleaseCapture;
-  {$ENDIF VCL}
   if not Enabled then
     Exit;
   inherited MouseUp(Button, Shift, X, Y);
@@ -424,9 +413,7 @@ end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
 var
-  {$IFDEF VCL}
   Msg: TMsg;
-  {$ENDIF VCL}
   Handled: Boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
@@ -446,16 +433,9 @@ begin
       DropDownMenu.Popup(X, Y)
     else
       Exit;
-    {$IFDEF VCL}
     { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    repeat
-      Application.ProcessMessages;
-    until not QWidget_isVisible(DropDownMenu.Handle);
-    {$ENDIF VisualCLX}
     { release button }
     MouseUp(Button, Shift, X, Y);
     DropDownClose;
@@ -511,9 +491,6 @@ procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -526,11 +503,6 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
-      {$IFDEF VisualCLX}
-      for I := 0 to Form.ControlCount - 1 do
-        if Form.Controls[I] is TJvCustomGraphicButton then
-          TJvCustomGraphicButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight);
-      {$ENDIF VisualCLX}
     end;
   end;
 end;
@@ -567,9 +539,6 @@ end;
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
   Msg: TCMButtonPressed;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -578,11 +547,6 @@ begin
     Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
-    {$IFDEF VisualCLX}
-    for I := 0 to Parent.ControlCount - 1 do
-      if Parent.Controls[I] is TJvCustomGraphicButton then
-        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -624,13 +588,13 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomGraphicButton.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   RepaintBackground;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomGraphicButton.FontChanged;
 begin
@@ -718,7 +682,7 @@ begin
   Tmp := ClientToScreen(Point(0, Height));
 
   inherited Click;
-  
+
   DoDropDownMenu(Tmp.X, Tmp.Y);
 end;
 
@@ -741,13 +705,13 @@ begin
 end;
 
 
-{$IFDEF VCL}
+
 procedure TJvCustomButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_MULTILINE;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
@@ -842,9 +806,6 @@ procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -857,11 +818,6 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
-      {$IFDEF VisualCLX}
-      for I := 0 to Form.ControlCount - 1 do
-        if Form.Controls[I] is TJvCustomButton then
-          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight);
-      {$ENDIF VisualCLX}
     end;
   end;
 end;
@@ -900,9 +856,7 @@ end;
 
 function TJvCustomButton.DoDropDownMenu(X, Y: Integer): Boolean;
 var
-  {$IFDEF VCL}
   Msg: TMsg;
-  {$ENDIF VCL}
   Handled: Boolean;
 begin
   Result := (DropDownMenu <> nil);
@@ -922,16 +876,9 @@ begin
       DropDownMenu.Popup(X, Y)
     else
       Exit;
-    {$IFDEF VCL}
     { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    repeat
-      Application.ProcessMessages;
-    until not QWidget_isVisible(DropDownMenu.Handle);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -978,15 +925,8 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
   begin
-    {$IFDEF VisualCLX}
-    Canvas.Start;
-    RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
-    {$ENDIF VisualCLX}
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
 
-    {$IFDEF VisualCLX}
-    Canvas.Stop;
-    {$ENDIF VisualCLX}
   end;
 end;
 

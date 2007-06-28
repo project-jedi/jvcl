@@ -282,7 +282,7 @@ TJvUIBComponent = class(TComponent)
     qsExecImme,    // Query executed immediately without the need of statement handle
     qsStatement,   // have a statement handle
     qsPrepare,     // Query prepared
-    qsExecute      // Query executed 
+    qsExecute      // Query executed
   );
 
   {Oo.......................................................................oO
@@ -306,7 +306,7 @@ TJvUIBComponent = class(TComponent)
     tpWait,
     { Specifies that the transaction is not to wait for the resource to be
       released, but instead, should return an update conflict error immediately. }
-    tpNowait,          
+    tpNowait,
     { Read-only access mode that allows a transaction only to select data from tables. }
     tpRead,
     { Read-write access mode of that allows a transaction to select, insert,
@@ -330,7 +330,7 @@ TJvUIBComponent = class(TComponent)
     tpRecVersion,
     tpNoRecVersion,
     tpRestartRequests,
-    tpNoAutoUndo       
+    tpNoAutoUndo
   );
 
   { Set of transaction parameters. }
@@ -795,7 +795,7 @@ end;
 procedure TJvUIBDataBase.ClearTransactions;
 begin
   while (FTransactions <> nil) do
-    TJvUIBTransaction(FTransactions.Last).RemoveDatabase(Self); 
+    TJvUIBTransaction(FTransactions.Last).RemoveDatabase(Self);
 end;
 
 procedure TJvUIBDataBase.CloseTransactions;
@@ -1409,7 +1409,7 @@ begin
     EndTransaction(ETM, Auto);
 
   if Assigned(FOnClose) then
-    FOnClose(Self);    
+    FOnClose(Self);
 end;
 
 procedure TJvUIBStatement.BeginPrepare;
@@ -1598,7 +1598,7 @@ begin
     result := FDataBase else
      if FTransaction <> nil then
        result := FTransaction.FDataBase else
-       raise Exception.Create(EUIB_DATABASENOTDEF);  
+       raise Exception.Create(EUIB_DATABASENOTDEF);
 end;
 
 procedure TJvUIBStatement.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1607,7 +1607,7 @@ begin
   if ((AComponent = FTransaction) and (Operation = opRemove)) then
     SetTransaction(nil);
   if ((AComponent = FDataBase) and (Operation = opRemove)) then
-    SetDataBase(nil);    
+    SetDataBase(nil);
 end;
 
 constructor TJvUIBStatement.Create(AOwner: TComponent);
@@ -2122,7 +2122,7 @@ begin
   FAutoRetain  := False;
   FAutoStart   := True;
   FAutoStop    := True;
-  FDefaultAction := etmCommit; 
+  FDefaultAction := etmCommit;
 end;
 
 destructor TJvUIBTransaction.Destroy;

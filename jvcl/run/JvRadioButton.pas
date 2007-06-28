@@ -65,9 +65,7 @@ type
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
-    {$IFDEF VCL}
     procedure BMSetCheck(var Msg: TMessage); message BM_SETCHECK;
-    {$ENDIF VCL}
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -75,14 +73,8 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
-    {$IFDEF VCL}
+    procedure SetAutoSize(Value: Boolean);  override;
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure RecreateWnd;
-    procedure StateChanged(State: TToggleState); override;
-    {$ENDIF VisualCLX}
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
 
@@ -165,7 +157,7 @@ begin
   CalcAutoSize;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
@@ -178,7 +170,7 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
-{$ENDIF VCL}
+
 
 procedure TJvRadioButton.MouseEnter(AControl: TControl);
 begin
@@ -237,14 +229,8 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    {$IFDEF VCL}
     DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    DrawText(FCanvas, Caption, Length(Caption), R,
-      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    {$ENDIF VisualCLX}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -386,21 +372,15 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvRadioButton.StateChanged(State: TToggleState);
-begin
-  inherited StateChanged(State);
-  CheckLinkedControls;
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
 begin
   inherited;
   CheckLinkedControls;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvRadioButton.EnabledChanged;
 begin
@@ -416,12 +396,7 @@ begin
     LinkedControls.Notification(AComponent, Operation);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvRadioButton.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-{$ENDIF VisualCLX}
+
 
 
 {$IFDEF UNITVERSIONING}

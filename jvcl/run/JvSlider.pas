@@ -39,9 +39,6 @@ uses
 type
   TJvSlider = class(TJvCustomControl)
   private
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    {$ENDIF VisualCLX}
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
     FThumb1: TBitmap;
@@ -68,9 +65,7 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -79,32 +74,25 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; {$IFDEF VCL} override; {$ENDIF}
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;  override;
   published
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
     property Align;
     property Anchors;
     property Constraints;
-    
+
     property Visible;
     property Enabled;
     property Cursor;
     property DragMode;
-    {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF VCL}
     property ParentShowHint;
     property ShowHint;
     property TabOrder;
     property Width default 191;
     property Height default 11;
-    {$IFDEF VCL}
     property AutoSize default True;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write FAutoSize default True;
-    {$ENDIF VisualCLX}
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -310,9 +298,7 @@ begin
   R := ClientRect;
   P := ClientToScreen(Point(0,0));
   OffsetRect(R, P.X, P.Y);
-  {$IFDEF VCL}
   ClipCursor(@R);
-  {$ENDIF VCL}
   if Assigned(FOnBeginChange) then
     FOnBeginChange(Self);
   if not FChanged then
@@ -333,9 +319,7 @@ var
 begin
   FTracking := False;
   FChanging := False;
-  {$IFDEF VCL}
   ClipCursor(nil);
-  {$ENDIF VCL}
   if FChanged then
   begin
     Tmp := TBitmap.Create;
@@ -403,12 +387,12 @@ begin
   FTimer.Free;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvSlider.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF VCL}
+
 
 function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin

@@ -34,12 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms,
-  {$ENDIF VisualCLX}
   Classes, Graphics, Controls, ExtCtrls,
   JvAirBrush, JvPaintFX;
 
@@ -3290,7 +3285,7 @@ begin
     CopyClip;
     myrect := Rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);
     With Canvas do
-      BrushCopy({$IFDEF VisualCLX} Canvas, {$ENDIF} myrect, Clip,
+      BrushCopy( myrect, Clip,
       Rect(0, 0, Clip.Width, Clip.Height), RangeTransColor);
     myDraw := False;
   end;
@@ -3845,7 +3840,6 @@ begin
     Shape := 'bezier1';
   if Shape = 'bezier3' then
     Shape := 'bezier';
-  {$IFDEF VCL}
   if Shape = 'floodfill' then
   begin
     if ssAlt in Shift then
@@ -3853,7 +3847,6 @@ begin
     else
       Canvas.FloodFill(X, Y, Canvas.Pixels[X, Y], fssurface);
   end;
-  {$ENDIF VCL}
   if Shape = 'snapshot' then
   begin
     with Canvas do
@@ -4934,14 +4927,8 @@ begin
   am := painterEffectsF.Ebar.Position;
   w := Clip.Width;
   h := Clip.Height;
-  {$IFDEF VCL}
   if not Clipboard.HasFormat(CF_BITMAP) then
     Exit;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if not Clipboard.Provides('image/delphi.bitmap') then
-    Exit;
-  {$ENDIF VisualCLX}
   src2 := TBitmap.Create;
   src2.Assign(Clipboard);
   src2.PixelFormat := pf24bit;

@@ -118,7 +118,7 @@ implementation
 constructor TJvSimIndicator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+
   Width := 25;
   Height := 100;
   FMinimum := 0;
@@ -137,7 +137,7 @@ begin
   {$IFNDEF COMPILER10_UP}
   FMargins.Free;
   {$ENDIF !COMPILER10_UP}
-  
+
   inherited Destroy;
 end;
 
@@ -159,7 +159,7 @@ begin
   Dec(R.Bottom, Margins.Bottom);
   Dec(R.Right, Margins.Right);
   Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1);
-  
+
   Canvas.Brush.Color := FBackColor;
   InflateRect(R, -1, -1);
   Canvas.FillRect(R);

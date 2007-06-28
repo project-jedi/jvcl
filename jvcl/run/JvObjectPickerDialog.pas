@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, ActiveX, ComObj, SysUtils, Classes, 
+  Windows, ActiveX, ComObj, SysUtils, Classes,
   ObjSel,
   JvBaseDlg, JvTypes;
 

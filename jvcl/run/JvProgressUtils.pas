@@ -34,10 +34,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Controls, ComCtrls, SysUtils, Classes;
 
-{$IFDEF VisualCLX}
-type
-  TControlClass = class of TControl;
-{$ENDIF VisualCLX}
+
 
 procedure RegisterProgressControl(AClass: TControlClass;
   const MaxPropName, MinPropName, ProgressPropName: string);

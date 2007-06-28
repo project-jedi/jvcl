@@ -36,9 +36,6 @@ uses
   System.Reflection,
   {$ENDIF CLR}
   Controls, Forms, StdCtrls, ExtCtrls, ActnList,
-  {$IFDEF VisualCLX}
-  QNotebook,
-  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type
@@ -307,9 +304,6 @@ begin
   FUseHistory := False;
   if not Registered then
   begin
-    {$IFDEF VisualCLX}
-    GroupDescendentsWith(TJvPageProxy, TControl);
-    {$ENDIF VisualCLX}
     RegisterClasses([TJvPageProxy]);
     Registered := True;
   end;
@@ -477,7 +471,7 @@ end;
 
 procedure TJvPageManager.SetPageProxies(Value: TList);
 begin
-  // without this method the ObjectInspector will not show the property  
+  // without this method the ObjectInspector will not show the property
 end;
 
 function TJvPageManager.GetProxyIndex(const PageName: string): Integer;

@@ -103,9 +103,7 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   {$IFDEF COMPILER5}
   Forms, // Application.HandleException
   {$ENDIF COMPILER5}

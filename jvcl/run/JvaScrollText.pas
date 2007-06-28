@@ -112,9 +112,7 @@ const
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FForeImage := TImage.Create(nil);
   FBackImage := TImage.Create(nil);
   FFontMaskImage := TImage.Create(nil);

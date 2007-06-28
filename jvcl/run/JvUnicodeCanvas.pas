@@ -33,9 +33,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Windows, Graphics,
   JvJCLUtils;
 
@@ -58,11 +55,6 @@ type
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
       Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
 
-    {$IFDEF VisualCLX}
-    procedure TextOutVCL(X, Y: Integer; const Text: WideString);
-    procedure TextRectVCL(Rect: TRect; X, Y: Integer;
-      const Text: WideString; TextFlags: Integer = 0);
-    {$ENDIF VisualCLX}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -87,7 +79,7 @@ begin
     Result := Result or ETO_OPAQUE;
 end;
 
-{$IFDEF VCL}
+
 
 function TJvUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
@@ -133,85 +125,23 @@ begin
   Result := TextExtentW(Text).cy;
 end;
 
-{$ENDIF VCL}
 
 
-{$IFDEF VisualCLX}
 
-function TJvUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
-begin
-  Result := TextExtent(Text);
-end;
 
-function TJvUnicodeCanvas.TextHeightW(const Text: WideString): Integer;
-begin
-  Result := TextHeight(Text);
-end;
-
-procedure TJvUnicodeCanvas.TextOutW(X, Y: Integer; const Text: WideString);
-begin
-  TextOutVCL(X, Y, Text);
-end;
-
-procedure TJvUnicodeCanvas.TextRectW(Rect: TRect; X, Y: Integer;
-  const Text: WideString);
-begin
-  TextRectVCL(Rect, X, Y, Text);
-end;
-
-function TJvUnicodeCanvas.TextWidthW(const Text: WideString): Integer;
-begin
-  Result := TextWidth(Text);
-end;
-
-procedure TJvUnicodeCanvas.TextOutVCL(X, Y: Integer; const Text: WideString);
-var
-  R: TRect;
-begin
-  if Brush.Style = bsSolid then
-  begin
-    R := Rect(0, 0, MaxLongint, MaxLongint);
-    TextExtent(Text, R);
-    OffsetRect(R, X, Y);
-    FillRect(R);
-  end;
-  TextOut(X, Y, Text);
-end;
-
-procedure TJvUnicodeCanvas.TextRectVCL(Rect: TRect; X, Y: Integer;
-  const Text: WideString; TextFlags: Integer = 0);
-begin
-  if Brush.Style = bsSolid then
-    FillRect(Rect);
-  TextRect(Rect, X, Y, Text, TextFlags);
-end;
-
-{$ENDIF VisualCLX}
 
 function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
 begin
-  {$IFDEF VisualCLX}
-  Start;
-  {$ENDIF VisualCLX}
   Result := Windows.ExtTextOut(Handle, X, Y, ExtTextOutOptionsToInt(Options),
     Rect, PChar(Text), Length(Text), lpDx);
-  {$IFDEF VisualCLX}
-  Stop;
-  {$ENDIF VisualCLX}
 end;
 
 function TJvUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
 begin
-  {$IFDEF VisualCLX}
-  Start;
-  {$ENDIF VisualCLX}
   Result := Windows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
     Rect, PWideChar(Text), Length(Text), lpDx);
-  {$IFDEF VisualCLX}
-  Stop;
-  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF UNITVERSIONING}

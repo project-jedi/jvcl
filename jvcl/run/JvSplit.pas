@@ -102,10 +102,8 @@ type
     property BorderStyle;
     property Enabled;
     property Color;
-    {$IFDEF VCL}
     property Flat default True;
     property ParentFlat default False;
-    {$ENDIF VCL}
     property Cursor read GetCursor stored False;
     property TopLeftLimit: Integer read FTopLeftLimit write FTopLeftLimit default 20;
     property BottomRightLimit: Integer read FBottomRightLimit write FBottomRightLimit default 20;
@@ -162,10 +160,8 @@ begin
   FBottomRightLimit := 20;
   FControlFirst := nil;
   FControlSecond := nil;
-  {$IFDEF VCL}
   ParentFlat := False;
   Flat := True;
-  {$ENDIF VCL}
 end;
 
 procedure TJvxSplitter.Loaded;
@@ -255,10 +251,8 @@ begin
     FBottomRightLimit, R.Bottom - R.Top - FBottomRightLimit));
   FNoDropCursor := False;
   FForm := ValidParentForm(Self);
-  {$IFDEF VCL}
   FForm.Canvas.Handle := GetDCEx(FForm.Handle, 0,
     DCX_CACHE or DCX_CLIPSIBLINGS or DCX_LOCKWINDOWUPDATE);
-  {$ENDIF VCL}
   with FForm.Canvas do
   begin
     Pen.Color := clWhite;
@@ -283,22 +277,18 @@ var
   NewSize: Integer;
   Rect: TRect;
   W, H: Integer;
-  {$IFDEF VCL}
   DC: HDC;
-  {$ENDIF VCL}
   P: TPoint;
 begin
   if FForm <> nil then
   begin
     ShowInverseRect(0, 0, imClear);
-    {$IFDEF VCL}
     with FForm do
     begin
       DC := Canvas.Handle;
       Canvas.Handle := 0;
       ReleaseDC(Handle, DC);
     end;
-    {$ENDIF VCL}
     FForm := nil;
   end;
   FNoDropCursor := False;

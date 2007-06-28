@@ -193,7 +193,7 @@ type
   published
   {$ELSE}
   public
-  {$ENDIF COMPILER6_UP} 
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvSelectDirectory read GetDialog;
   end;
 

@@ -124,9 +124,9 @@ type
     property StartColor: TColor read FStartColor write SetStartColor
       default clWindowText;
     property EndColor: TColor read FEndColor write SetEndColor
-      default clActiveCaption; 
+      default clActiveCaption;
     property  FillDirection : TFillDirection read FFillDirection write SetFillDirection
-      default fdLeftToRight; 
+      default fdLeftToRight;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;

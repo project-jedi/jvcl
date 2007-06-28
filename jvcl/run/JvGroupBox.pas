@@ -145,22 +145,18 @@ begin
       Font := Self.Font;
       H := TextHeight('0');
       R := Rect(0, H div 2 - 1, Width, Height);
-      {$IFDEF VCL}
       if Ctl3D then
       begin
-      {$ENDIF VCL}
         Inc(R.Left);
         Inc(R.Top);
         Brush.Color := clBtnHighlight;
-        FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} R);
+        FrameRect( R);
         OffsetRect(R, -1, -1);
         Brush.Color := clBtnShadow;
-      {$IFDEF VCL}
       end
       else
         Brush.Color := clWindowFrame;
-      {$ENDIF VCL}
-      FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} R);
+      FrameRect( R);
       if Text <> '' then
       begin
         if not UseRightToLeftAlignment then
@@ -187,9 +183,6 @@ begin
       end;
     finally
       SetBkMode(Handle, LastBkMode);
-      {$IFDEF VisualCLX}
-      Stop;
-      {$ENDIF VisualCLX}
     end;
   end;
 end;

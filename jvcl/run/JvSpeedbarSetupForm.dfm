@@ -3,7 +3,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   Top = 121
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
+  BorderStyle = fbsSingle
   ClientHeight = 262
   ClientWidth = 421
   Color = clBtnFace
@@ -74,7 +74,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Width = 413
     Height = 29
     AutoSize = False
-    Caption = 
+    Caption =
       'To add command buttons, drag and drop buttons onto the JvSpeedba' +
       'r. To remove command buttons, drag them off of the JvSpeedbar.'
     WordWrap = True

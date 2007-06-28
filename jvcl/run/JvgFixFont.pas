@@ -40,12 +40,7 @@ uses
   {$IFDEF USEJVCL}
   JvComponentBase,
   {$ENDIF USEJVCL}
-  {$IFDEF VCL}
   Windows, Graphics, Controls;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls;
-  {$ENDIF VisualCLX}
 
 type
   {$IFDEF USEJVCL}

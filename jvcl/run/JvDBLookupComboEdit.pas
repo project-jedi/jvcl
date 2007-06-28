@@ -49,9 +49,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   Messages,
-  {$ENDIF VCL}
   Classes, Controls, Graphics, DB, DBCtrls,
   JvDBLookup;
 

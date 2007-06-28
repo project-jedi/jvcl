@@ -1842,7 +1842,7 @@ begin
     AddClass(cSysUtils, EPropWriteOnly, 'EPropWriteOnly');
     { EExternalException }
     AddClass(cSysUtils, EExternalException, 'EExternalException');
-    
+
     { EAssertionFailed }
     AddClass(cSysUtils, EAssertionFailed, 'EAssertionFailed');
     {$IFNDEF PC_MAPPED_EXCEPTIONS} // Linux define symbol
@@ -1867,7 +1867,7 @@ begin
     AddClass(cSysUtils, EWin32Error, 'EWin32Error');
     {$ENDIF MSWINDOWS}
     {$ENDIF COMPILER6_UP}
-    
+
     AddFunction(cSysUtils, 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
     {$IFDEF COMPILER5}
     AddFunction(cSysUtils, 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);
@@ -1878,15 +1878,15 @@ begin
     AddFunction(cSysUtils, 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'CompareMem', JvInterpreter_CompareMem, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'CompareText', JvInterpreter_CompareText, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiUpperCase', JvInterpreter_AnsiUpperCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiLowerCase', JvInterpreter_AnsiLowerCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiCompareStr', JvInterpreter_AnsiCompareStr, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiCompareText', JvInterpreter_AnsiCompareText, 2, [varEmpty, varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'AnsiStrComp', JvInterpreter_AnsiStrComp, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiStrIComp', JvInterpreter_AnsiStrIComp, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiStrLComp', JvInterpreter_AnsiStrLComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
@@ -1895,16 +1895,16 @@ begin
     AddFunction(cSysUtils, 'AnsiStrUpper', JvInterpreter_AnsiStrUpper, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiLastChar', JvInterpreter_AnsiLastChar, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiStrLastChar', JvInterpreter_AnsiStrLastChar, 1, [varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'Trim', JvInterpreter_Trim, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'TrimLeft', JvInterpreter_TrimLeft, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'TrimRight', JvInterpreter_TrimRight, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'QuotedStr', JvInterpreter_QuotedStr, 1, [varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'AnsiQuotedStr', JvInterpreter_AnsiQuotedStr, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AnsiExtractQuotedStr', JvInterpreter_AnsiExtractQuotedStr, 2, [varByRef, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'ExtractQuotedString', JvInterpreter_ExtractQuotedString, 2, [varEmpty, varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'AdjustLineBreaks', JvInterpreter_AdjustLineBreaks, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'IsValidIdent', JvInterpreter_IsValidIdent, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'IntToStr', JvInterpreter_IntToStr, 1, [varEmpty], varEmpty);
@@ -1940,9 +1940,9 @@ begin
     AddFunction(cSysUtils, 'ExtractFileExt', JvInterpreter_ExtractFileExt, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'ExpandFileName', JvInterpreter_ExpandFileName, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'ExpandUNCFileName', JvInterpreter_ExpandUNCFileName, 1, [varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'ExtractRelativePath', JvInterpreter_ExtractRelativePath, 2, [varEmpty, varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'FileSearch', JvInterpreter_FileSearch, 2, [varEmpty, varEmpty], varEmpty);
     {$IFDEF MSWINDOWS}
     AddFunction(cSysUtils, 'DiskFree', JvInterpreter_DiskFree, 1, [varEmpty], varEmpty);
@@ -2011,10 +2011,10 @@ begin
     AddFunction(cSysUtils, 'Date', JvInterpreter_Date, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'Time', JvInterpreter_Time, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'Now', JvInterpreter_Now, 0, [varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'IncMonth', JvInterpreter_IncMonth, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'IsLeapYear', JvInterpreter_IsLeapYear, 1, [varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'DateToStr', JvInterpreter_DateToStr, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'TimeToStr', JvInterpreter_TimeToStr, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'DateTimeToStr', JvInterpreter_DateTimeToStr, 1, [varEmpty], varEmpty);
@@ -2029,10 +2029,10 @@ begin
     AddFunction(cSysUtils, 'GetFormatSettings', JvInterpreter_GetFormatSettings, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'ExceptObject', JvInterpreter_ExceptObject, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'ExceptAddr', JvInterpreter_ExceptAddr, 0, [varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'ExceptionErrorMessage', JvInterpreter_ExceptionErrorMessage, 4, [varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
-    
+
     AddFunction(cSysUtils, 'ShowException', JvInterpreter_ShowException, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'Abort', JvInterpreter_Abort, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'OutOfMemoryError', JvInterpreter_OutOfMemoryError, 0, [varEmpty], varEmpty);
@@ -2060,7 +2060,7 @@ begin
     AddFunction(cSysUtils, 'RaiseLastWin32Error', JvInterpreter_RaiseLastWin32Error, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'Win32Check', JvInterpreter_Win32Check, 1, [varEmpty], varEmpty);
     {$ENDIF MSWINDOWS}
-    
+
     { File open modes }
     AddConst(cSysUtils, 'fmOpenRead', Ord(fmOpenRead));
     AddConst(cSysUtils, 'fmOpenWrite', Ord(fmOpenWrite));

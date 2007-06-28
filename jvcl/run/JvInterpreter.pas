@@ -286,7 +286,7 @@ type
                                 TClassIdentifier.Identifier}
     FParamCount: Integer; { - 1..cJvInterpreterMaxArgs }
     FParamTypes: TTypeArray;
-    FParamTypeNames: TNameArray; 
+    FParamTypeNames: TNameArray;
     FParamNames: TNameArray;
     FResTyp: Word;
     FResTypName: string;
@@ -305,7 +305,7 @@ type
     property ParamCount: Integer read FParamCount;
     property ParamTypes[Index: Integer]: Word read GetParamType;
     property ParamNames[Index: Integer]: string read GetParamName;
-    property ParamTypeNames[Index: Integer]: string read GetParamTypeNames; 
+    property ParamTypeNames[Index: Integer]: string read GetParamTypeNames;
     property ResTyp: Word read FResTyp;
     property ResTypName: string read FResTypName;
     property ResDataType: IJvInterpreterDataType read FResDataType;
@@ -444,7 +444,7 @@ type
 
   TJvInterpreterClass = class(TJvInterpreterIdentifier)
   private
-    FClassFields:TJvInterpreterVarList;   
+    FClassFields:TJvInterpreterVarList;
   protected
     FClassType: TClass;
   public
@@ -742,7 +742,7 @@ type
       const ADllName, AFunctionName: string; AFunIndex: Integer; AParamCount: Integer;
       AParamTypes: array of Word; AResTyp: Word; AData: Pointer); dynamic;
     procedure AddSrcFun(const UnitName, Identifier: string;
-      ClassIdentifier: string; 
+      ClassIdentifier: string;
       PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
       ParamTypeNames: array of string;
       ParamNames: array of string; ResTyp: Word; const AResTypName: string;
@@ -750,7 +750,7 @@ type
     procedure AddSrcFunEx(const AUnitName, AIdentifier: string;
       AClassIdentifier: string;
       APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
-      AParamTypeNames: array of string; 
+      AParamTypeNames: array of string;
       AParamNames: array of string; AResTyp: Word; const AResTypName: string;
       AResDataType: IJvInterpreterDataType; AData: Pointer); dynamic;
     procedure AddHandler(const UnitName, Identifier: string;
@@ -1287,11 +1287,7 @@ end;
 
 { internal structures }
 
-{$IFDEF VisualCLX}
-type
-  DWORD = Longint;
-  PBool = PBoolean;
-{$ENDIF VisualCLX}
+
 
 {$IFDEF JvInterpreter_DEBUG}
 var
@@ -1749,15 +1745,10 @@ end;
 
 function Cmp(const S1, S2: string): Boolean;
 begin
-  {$IFDEF VCL}
   // Direct call to CompareString is faster than AnsiCompareText.
   Result := (Length(S1) = Length(S2)) and
     (CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, PChar(S1),
     -1, PChar(S2), -1) = 2);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := AnsiCompareText(S1, S2) = 0;
-  {$ENDIF VisualCLX}
 end;
 
 {************* Some code from RAStream unit **************}
@@ -2475,7 +2466,7 @@ begin
     end
     else
     if (VarType = varEmpty) and not VarIsEmpty(V) then
-      Result := V  // because any cast to unassigned = unassigned 
+      Result := V  // because any cast to unassigned = unassigned
     else
       Result := VarAsType(V, VarType);
   end;
@@ -3109,7 +3100,7 @@ begin
     with TJvInterpreterClass(Source.FClassList[I]) do
       AddClassEx(UnitName, FClassType, Identifier, Data);
     TJvInterpreterClass(FClassList[FClassList.Count-1]).ClassFields.Assign(
-      TJvInterpreterClass(Source.FClassList[I]).ClassFields); 
+      TJvInterpreterClass(Source.FClassList[I]).ClassFields);
   end;
 
   for I := 0 to Source.FSrcFunctionList.Count - 1 do
@@ -3233,7 +3224,7 @@ begin
   JvInterpreterClass.FClassType := AClassType;
   JvInterpreterClass.Identifier := Identifier;
   JvInterpreterClass.Data := Data;
-  JvInterpreterClass.UnitName := UnitName;  
+  JvInterpreterClass.UnitName := UnitName;
   FClassList.Add(JvInterpreterClass);
   FSorted := False;
 end;
@@ -3260,7 +3251,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FGetList.Add(JvInterpreterMethod);
-  FSorted := False; 
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddIGet(AClassType: TClass; const Identifier: string;
@@ -3333,7 +3324,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FIntfGetList.Add(JvInterpreterMethod);
-  FSorted := False; 
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; const Identifier: string;
@@ -3382,7 +3373,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FSetList.Add(JvInterpreterMethod);
-  FSorted := False; 
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddISet(AClassType: TClass; const Identifier: string;
@@ -3405,7 +3396,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FISetList.Add(JvInterpreterMethod);
-  FSorted := False; 
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddIDSet(AClassType: TClass;
@@ -3449,9 +3440,9 @@ begin
   JvInterpreterMethod.ResTyp := ResTyp;
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
-  JvInterpreterMethod.UnitName := UnitName; 
+  JvInterpreterMethod.UnitName := UnitName;
   FFunctionList.Add(JvInterpreterMethod);
-  FSorted := False; 
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddRec(const UnitName, Identifier: string;
@@ -3486,7 +3477,7 @@ begin
     JvInterpreterRecord.Fields[I].DataType := nil;
   end;
   JvInterpreterRecord.FieldCount := High(Fields) - Low(Fields) + 1;
-  JvInterpreterRecord.UnitName := UnitName;  
+  JvInterpreterRecord.UnitName := UnitName;
   FRecordList.Add(JvInterpreterRecord);
 end;
 
@@ -3512,7 +3503,7 @@ begin
   RecMethod.ResTyp := ResTyp;
   RecMethod.Data := Data;
   ConvertParamTypes(ParamTypes, RecMethod.ParamTypes);
-  RecMethod.UnitName := UnitName;  
+  RecMethod.UnitName := UnitName;
   FRecordGetList.Add(RecMethod);
 end;
 
@@ -3536,7 +3527,7 @@ begin
   RecMethod.ParamCount := ParamCount;
   RecMethod.Data := Data;
   ConvertParamTypes(ParamTypes, RecMethod.ParamTypes);
-  RecMethod.UnitName := UnitName;  
+  RecMethod.UnitName := UnitName;
   FRecordSetList.Add(RecMethod);
 end;
 
@@ -3557,7 +3548,7 @@ begin
   JvInterpreterConst.Data := AData;
   JvInterpreterConst.UnitName := AUnitName;
   FConstList.Add(JvInterpreterConst);
-  FSorted := False; 
+  FSorted := False;
 end;
 
 procedure TJvInterpreterAdapter.AddExtFun(const UnitName, Identifier: string;
@@ -3601,14 +3592,14 @@ procedure TJvInterpreterAdapter.AddSrcFun(const UnitName, Identifier: string;
   Data: Pointer);
 begin
   AddSrcFunEx(UnitName, Identifier, ClassIdentifier, PosBeg, PosEnd, ParamCount, ParamTypes,
-    ParamTypeNames, 
+    ParamTypeNames,
     ParamNames, ResTyp, AResTypName, AResDataType, nil);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFunEx(const AUnitName, AIdentifier: string;
   AClassIdentifier: string;
   APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
-  AParamTypeNames: array of string; 
+  AParamTypeNames: array of string;
   AParamNames: array of string; AResTyp: Word; const AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   AData: Pointer);
@@ -3631,7 +3622,7 @@ begin
     Data := AData;
     ConvertParamTypes(AParamTypes, FunctionDesc.FParamTypes);
     ConvertParamNames(AParamNames, FunctionDesc.FParamNames);
-    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames); 
+    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames);
     FunctionDesc.FResTyp := AResTyp;
   end;
   JvInterpreterSrcFun.UnitName := AUnitName;  // Code Insight
@@ -7524,7 +7515,7 @@ begin
   try
     ReadFunctionHeader(FunctionDesc);
     FunctionDesc.FPosBeg := CurPos;
-    LastTTyp := TTyp; 
+    LastTTyp := TTyp;
     NextToken;
     if TTyp = ttExternal then
     begin
@@ -8383,6 +8374,6 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  
+
 end.
 

@@ -66,13 +66,11 @@ type
     property Anchors;
     property Color default clWindow;
     property Constraints;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnCanResize;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Hint;
@@ -301,10 +299,10 @@ begin
           Dec(BarSize, LBlockSize + 1);
         end;
       end;
-    end;     
+    end;
     ACanvas.Brush.Color := AColor;
     with ACanvas do
-      BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} ClientRect, Bmp, ClientRect, clFuchsia);
+      BrushCopy( ClientRect, Bmp, ClientRect, clFuchsia);
   finally
     Bmp.Free;
   end;

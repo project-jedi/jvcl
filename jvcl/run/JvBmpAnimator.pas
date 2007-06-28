@@ -76,7 +76,7 @@ type
     procedure DoChange(Sender: TObject);
   protected
     procedure Paint; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean);  override;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     property Centered: Boolean read FCenter write SetCenter;
@@ -407,7 +407,7 @@ begin
     with Canvas do
     begin
       Brush.Color := clBlack;
-      FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} GetClientRect);
+      FrameRect( GetClientRect);
     end;
 end;
 

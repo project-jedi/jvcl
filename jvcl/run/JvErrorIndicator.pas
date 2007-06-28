@@ -216,10 +216,8 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF VCL}
-  SysUtils, 
+  SysUtils,
   JvTypes, JvResources;
 
 {$R JvErrorIndicator.res}
@@ -246,23 +244,12 @@ type
 //=== { TJvErrorIndicator } ==================================================
 
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
-{$IFDEF VisualCLX}
-var
-  Bmp: TBitmap;
-{$ENDIF VisualCLX}
+
 begin
   inherited Create(AComponent);
   FDefaultImage := TImageList.CreateSize(16, 16);
-  {$IFDEF VCL}
   ImageList_AddIcon(FDefaultImage.Handle,
     LoadImage(HInstance, PChar('XJVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Bmp := TBitmap.Create;
-  Bmp.LoadFromResourceName(HInstance, 'JVERRORINDICATOR');
-  FDefaultImage.AddMasked(Bmp, clBlack);
-  Bmp.Free;
-  {$ENDIF VisualCLX}
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;
@@ -714,16 +701,11 @@ procedure TJvErrorControl.Paint;
 begin
   //  inherited Paint;
   if (Images <> nil) and Visible then
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     Images.Draw(Canvas, 0, 0, ImageIndex, dsTransparent, itImage);
     {$ELSE}
     Images.Draw(Canvas, 0, 0, ImageIndex);
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Images.Draw(Canvas, 0, 0, ImageIndex);
-    {$ENDIF VisualCLX}
 end;
 
 procedure TJvErrorControl.SetError(const Value: string);

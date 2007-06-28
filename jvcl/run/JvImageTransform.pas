@@ -53,9 +53,6 @@ type
     FType: TJvTransformationKind;
     StepNum: Integer;
     FOnFinished: TNotifyEvent;
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    {$ENDIF VisualCLX}
     procedure PictureChanged(Sender: TObject);
     procedure SetPicture1(Value: TPicture);
     procedure SetPicture2(Value: TPicture);
@@ -63,23 +60,16 @@ type
     procedure SetInterval(Value: Integer);
     procedure SetType(Value: TJvTransformationKind);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
-    {$IFDEF VCL}
+    procedure SetAutoSize(Value: Boolean);  override;
     function GetPalette: HPALETTE; override;
-    {$ENDIF VCL}
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    {$IFDEF VCL}
     property AutoSize;
     property DragCursor;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    {$ENDIF VisualCLX}
     property DragMode;
     property Enabled;
     property ImageShown: Byte read FImageShown write SetImageShown default 1;
@@ -143,7 +133,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+
 function TJvImageTransform.GetPalette: HPALETTE;
 begin
   if FPicture1.Graphic is TBitmap then
@@ -151,16 +141,11 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF VCL}
   inherited SetAutoSize(Value);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FAutoSize := Value;
-  {$ENDIF VisualCLX}
   PictureChanged(Self);
 end;
 

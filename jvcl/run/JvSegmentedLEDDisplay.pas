@@ -40,10 +40,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, Graphics, 
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
+  Classes, Graphics,
   JclBase,
   JvComponent, JvTypes;
 
@@ -52,13 +49,8 @@ uses
 const
   clDefaultBackground = TColor($20100001);
   clDefaultLitColor = TColor($20100002);
-  {$IFDEF VCL}
   NullHandle = 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  NullHandle = nil;
-  {$ENDIF VisualCLX}
-  
+
 type
   TJvCustomSegmentedLEDDisplay = class;
   TJvSegmentedLEDDigits = class;
@@ -105,10 +97,6 @@ type
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
     FText: string;
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF VisualCLX}
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
@@ -139,12 +127,7 @@ type
     procedure InvalidateView;
     procedure UpdateText;
     procedure UpdateBounds;
-    {$IFDEF VCL}
     property AutoSize default True;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    {$ENDIF VisualCLX}
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -502,12 +485,7 @@ constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$IFDEF VCL}
   AutoSize := True;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FAutoSize := True; // asn: prevents redraws
-  {$ENDIF VisualCLX}
   FDigitClass := TJv7SegmentedLEDDigit;
   FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);
   FDigits := TJvSegmentedLEDDigits.Create(Self);
@@ -633,7 +611,7 @@ begin
       Dec(I);
     end;
     if CharacterMapper <> nil then
-      CharacterMapper.LoadDefaultMapping;  
+      CharacterMapper.LoadDefaultMapping;
     if not (csLoading in ComponentState) then
       RemapText;
   end;
@@ -697,14 +675,7 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: Boolean);
-begin
-  FAutoSize := Value;
-  if Value then
-    UpdateBounds;
-end;
-{$ENDIF VisualCLX}
+
 
 function TJvCustomSegmentedLEDDisplay.GetDigitClassName: TJvSegmentedLEDDigitClassName;
 begin
@@ -915,7 +886,7 @@ begin
     end;
     if Result <> shiNowhere then
       Digit := Digits[I]
-    else // Result = shiNowhere, but we are in fact in the client area of the control (see outer if) 
+    else // Result = shiNowhere, but we are in fact in the client area of the control (see outer if)
       Result := shiClientArea;
   end;
 end;
@@ -1123,7 +1094,7 @@ begin
   Spacing := Display.SegmentSpacing;
   SegmentWidth := Display.SegmentThickness;
   DotSize := Display.DotSize;
-  
+
   MaxSlantDif := Trunc(Abs(ArcTan(SlantAngle * Pi / 180.0) * Display.DigitHeight));
   FRecalcNeeded := True;
 
@@ -1965,9 +1936,6 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl);
-  {$ENDIF VisualCLX}
   AddModuleUnloadProc(ModuleUnload);
   RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);

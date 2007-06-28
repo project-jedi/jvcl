@@ -1028,7 +1028,7 @@ begin
         if FRecordColumns[I].Visible then
           if lString = '' then
             lString := FRecordColumns[I].ColumnName
-          else  
+          else
             lString := lString + Separator + FRecordColumns[I].ColumnName;
       FDocument.Add(lString);
     end;
@@ -1050,7 +1050,7 @@ begin
             try
               if not FRecordColumns[I].Field.IsNull then
               begin
-                lField := GetFieldValue(FRecordColumns[I].Field);  
+                lField := GetFieldValue(FRecordColumns[I].Field);
                 if (Pos(Separator, lField) <> 0) or (FQuoteEveryTime) then
                   lString := lString + AnsiQuotedStr(lField, '"')
                 else

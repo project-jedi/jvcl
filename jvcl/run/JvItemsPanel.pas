@@ -66,14 +66,9 @@ type
     procedure SetHotTrackColor(const Value: TColor);
     procedure SetClickable(const Value: Boolean);
     procedure SetOrientation(const Value: TJvPanelOrientation);
-    {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF VCL}
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
-    {$IFDEF VisualCLX}
-    procedure AdjustSize; override;
-    {$ENDIF VisualCLX}
+    procedure SetAutoSize(Value: Boolean);  override;
     procedure Grow;
     procedure PaintDown;
     procedure PaintUp;
@@ -109,14 +104,12 @@ type
     property Align;
     property Alignment;
     property Anchors;
-    {$IFDEF VCL}
     property BiDiMode;
     property UseDockManager default True;
     property DockSite;
     property DragCursor;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF VCL}
     property BorderWidth;
     property Color;
     property Constraints;
@@ -136,7 +129,6 @@ type
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
-    {$IFDEF VCL}
     property OnCanResize;
     property OnDockDrop;
     property OnDockOver;
@@ -144,7 +136,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -178,9 +169,7 @@ constructor TJvItemsPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
-  {$ENDIF VCL}
   BevelInner := bvNone;
   BevelOuter := bvNone;
   FItemHeight := 16;
@@ -321,21 +310,15 @@ begin
   Grow;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvItemsPanel.WMSize(var Msg: TWMSize);
 begin
   inherited;
   Grow;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvItemsPanel.AdjustSize;
-begin
-  inherited AdjustSize;
-  Grow;
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure TJvItemsPanel.Grow;
 begin

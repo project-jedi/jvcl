@@ -51,11 +51,9 @@ type
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
-    {$IFDEF VCL}
     FText: TCaption;
     function GetText: TCaption;
     procedure SetText(const Value: TCaption);
-    {$ENDIF VCL}
     procedure ParseHTML(s: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
@@ -67,9 +65,6 @@ type
     procedure ScrollViewer(Sender: TObject);
   protected
     procedure CreateWnd; override;
-    {$IFDEF VisualCLX}
-    procedure SetText(const Value: TCaption); override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,9 +98,7 @@ uses
 constructor TJvMarkupViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
   Width := 300;
@@ -585,37 +578,26 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 function TJvMarkupViewer.GetText: TCaption;
 begin
   Result := FText;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvMarkupViewer.SetText(const Value: TCaption);
 var
   S: string;
 begin
-  {$IFDEF VCL}
   if Value = FText then
     Exit;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Value = GetText then
-    Exit;
-  {$ENDIF VisualCLX}
   S := Value;
   S := StringReplace(S, sLineBreak, ' ', [rfReplaceAll]);
   S := TrimRight(S);
   ParseHTML(S);
   HTMLElementDimensions;
-  {$IFDEF VCL}
   FText := S;
   Invalidate;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  inherited SetText(S);
-  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF UNITVERSIONING}

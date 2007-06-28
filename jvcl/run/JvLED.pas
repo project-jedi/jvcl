@@ -52,10 +52,6 @@ type
     FActive: Boolean;
     FStatus: Boolean;
     FOnChange: TNotifyEvent;
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF VisualCLX}
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
@@ -74,9 +70,6 @@ type
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
     property Interval: Cardinal read GetInterval write SetInterval default 1000;
     property Status: Boolean read GetStatus write SetStatus default True;
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -89,12 +82,10 @@ type
     property Align;
     property Anchors;
     property AutoSize;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property ColorOn;
     property ColorOff;
     property Constraints;
@@ -159,9 +150,6 @@ begin
   ColorOff := clRed;
   Active := False;
   Status := True;
-  {$IFDEF VisualCLX}
-  FAutoSize := True;
-  {$ENDIF VisualCLX}
 end;
 
 destructor TJvCustomLED.Destroy;
@@ -184,19 +172,14 @@ begin
     Canvas.Rectangle(ClientRect);
   end;
   SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);
-  {$IFDEF VCL}
   DestRect := SrcRect;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DestRect := Bounds(Left, Top, Width, Height);
-  {$ENDIF VisualCLX}
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
   with Canvas do
   begin
-    CopyRect({$IFDEF VisualCLX} Canvas, {$ENDIF} DestRect, FImgMask.Canvas, SrcRect);
+    CopyRect( DestRect, FImgMask.Canvas, SrcRect);
     CopyMode := cmSrcPaint;
-    CopyRect({$IFDEF VisualCLX} Canvas, {$ENDIF} DestRect, FImgPict.Canvas, SrcRect);
+    CopyRect( DestRect, FImgPict.Canvas, SrcRect);
   end;
 end;
 
@@ -246,9 +229,6 @@ begin
     Color := ColorOff;
   if Assigned(FOnChange) then
     FOnChange(Self);
-  {$IFDEF VisualCLX}
-  WakeUpGUIThread;
-  {$ENDIF VisualCLX}
 end;
 
 function TJvCustomLED.GetStatus: Boolean;
@@ -258,9 +238,7 @@ end;
 
 procedure TJvCustomLED.DoBlink(Sender: TObject);
 begin
-  {$IFDEF VCL}
   if not IsIconic(Application.Handle) then
-  {$ENDIF VCL}
     Status := not Status;
 end;
 
@@ -276,17 +254,7 @@ begin
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomLED.SetAutoSize(Value: Boolean);
-begin
-  if Value <> FAutoSize then
-  begin
-    FAutoSize := Value;
-    if FAutoSize then
-      SetBounds(Left, Top, Width, Height);
-  end;
-end;
-{$ENDIF VisualCLX}
+
 
 procedure TJvCustomLED.ColorChanged;
 var

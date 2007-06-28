@@ -46,9 +46,6 @@ uses
   JvTypes, JvComponent;
 
 type
-  {$IFDEF VisualCLX}
-  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
-  {$ENDIF VisualCLX}
   TJvTextMargins = class(TPersistent)
   private
     FX: Word;
@@ -84,9 +81,7 @@ type
     procedure SetShowAccelChar(Value: Boolean);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
-    {$IFDEF VCL}
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    {$ENDIF VCL}
     procedure SetTextMargins(const Value: TJvTextMargins);
     procedure SetWordWrap(const Value: Boolean);
     procedure DoMarginsChange(Sender: TObject);
@@ -104,12 +99,7 @@ type
     procedure SetAutoSize(Value: Boolean); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
     function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure Paint; override;
-    {$ENDIF VisualCLX}
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property BorderStyle: TStaticBorderStyle read FBorderStyle write SetBorderStyle default sbsNone;
@@ -136,14 +126,12 @@ type
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
     property ParentBiDiMode;
-    {$ENDIF VCL}
     property BorderStyle;
     property Caption;
     property Color;
@@ -258,7 +246,7 @@ begin
   FHotTrackFont.Assign(Value);
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomStaticText.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -266,7 +254,7 @@ begin
   with Params do
     Style := Style or SS_NOTIFY or SS_OWNERDRAW;
 end;
-{$ENDIF VCL}
+
 
 
 procedure TJvCustomStaticText.SetLayout(const Value: TTextLayout);
@@ -278,12 +266,12 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomStaticText.CNDrawItem(var Msg: TWMDrawItem);
 begin
   DrawItem(Msg.DrawItemStruct^);
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomStaticText.DrawItem(const DrawItemStruct: TDrawItemStruct);
 const
@@ -298,9 +286,7 @@ begin
     with DrawItemStruct do
     begin
       R := rcItem;
-      {$IFDEF VCL}
       DrawThemedBackground(Self, hDC, R, B);
-      {$ENDIF VCL}
       if BorderStyle <> sbsNone then
         DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
       DrawStyle := GetTextDisplayInfo(hDC, R);
@@ -352,12 +338,7 @@ begin
     if not WordWrap then
     begin
       SaveFont := SelectObject(DC, Font.Handle);
-      {$IFDEF VCL}
       GetTextExtentPoint32(DC, PChar(Caption), Length(Caption), TextSize);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      GetTextExtentPoint32(DC, PWideChar(Caption), Length(Caption), TextSize);
-      {$ENDIF VisualCLX}
       SelectObject(DC, SaveFont);
       SetBounds(Left, Top,
         TextSize.cx + (GetSystemMetrics(SM_CXBORDER) * 4),
@@ -501,20 +482,7 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomStaticText.Paint;
-var
-  FDrawItemStruct: TDrawItemStruct;
-begin
-  with FDrawItemStruct do
-  begin
-    rcItem := Bounds(0, 0, Width, Height);
-    hDC := Canvas.Handle;
-    hWndItem := Handle;
-  end;
-  DrawItem(FDrawItemStruct)
-end;
-{$ENDIF VisualCLX}
+
 
 
 //=== { TJvTextMargins } =====================================================

@@ -49,20 +49,14 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   SysUtils,
-  {$IFDEF VisualCLX}
-  Qt, QWinCursors, QWindows,
-  {$ENDIF VisualCLX}
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, IniFiles, MultiMon,
   Classes, // must be after "Forms"
   JvVCL5Utils, JvJCLUtils, JvAppStorage, JvTypes;
 
-{$IFDEF VisualCLX}
-function Icon2Bitmap(Ico: TIcon): TBitmap;
-function Bitmap2Icon(Bmp: TBitmap): TIcon;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;
 // Transform an icon to a bitmap using an image list
@@ -70,7 +64,7 @@ function IconToBitmap2(Ico: HICON; Size: Integer = 32;
   TransparentColor: TColor = clNone): TBitmap;
 function IconToBitmap3(Ico: HICON; Size: Integer = 32;
   TransparentColor: TColor = clNone): TBitmap;
-{$ENDIF VCL}
+
 
 // bitmap manipulation functions
 // NOTE: Dest bitmap must be freed by caller!
@@ -89,10 +83,10 @@ procedure GetSaturationBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get value bitmap (V part of HSV)
 procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 
-{$IFDEF VCL}
+
 // hides / shows the a forms caption area
 procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
-{$ENDIF VCL}
+
 
 {$IFDEF MSWINDOWS}
 
@@ -154,16 +148,16 @@ function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 {$ENDIF !CLR}
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
-{$IFDEF VCL}
+
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
-{$ENDIF VCL}
+
 
 {$IFNDEF CLR}
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
 // where @n = zero-based index of the applet to start (if there is more than one
 // m is the zero-based index of the tab to display
-{$IFDEF VCL}
+
 procedure LaunchCpl(const FileName: string);
 
 // for Win 2000 and XP
@@ -195,16 +189,16 @@ function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings;
 }
 function GetControlPanelApplet(const AFileName: string; Strings: TStrings;
   Images: TCustomImageList = nil): Boolean;
-{$ENDIF VCL}
+
 {$ENDIF !CLR}
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 function PaletteColor(Color: TColor): Longint;
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
-{$IFDEF VCL}
+
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
-{$ENDIF VCL}
+
 function GetTickCount64: Int64;
 procedure Delay(MSecs: Int64);
 procedure CenterControl(Control: TControl);
@@ -237,7 +231,7 @@ function LoadOLEDragCursors: Boolean;
 {$ENDIF MSWINDOWS}
 procedure SetDefaultJVCLCursors;
 
-{$IFDEF VCL}
+
 {$IFNDEF CLR}
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 {$ENDIF !CLR}
@@ -251,7 +245,7 @@ procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 function PaletteEntries(Palette: HPALETTE): Integer;
 procedure ShadeRect(DC: HDC; const Rect: TRect);
-{$ENDIF VCL}
+
 function ScreenWorkArea: TRect;
 
 { Grid drawing }
@@ -278,7 +272,7 @@ overload;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
-{$IFDEF VCL}
+
 type
   TJvDesktopCanvas = class(TCanvas)
   private
@@ -290,16 +284,8 @@ type
     procedure SetOrigin(X, Y: Integer);
     procedure FreeHandle;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-type
-  TJvDesktopCanvas = class(TQtCanvas)
-  protected
-    procedure CreateHandle; override;
-  public
-    procedure SetOrigin(X, Y: Integer);
-  end;
-{$ENDIF VisualCLX}
+
+
 
   { end from JvVCLUtils }
 
@@ -323,7 +309,7 @@ function FindFormByClassName(const FormClassName: string): TForm;
 { AppMinimized returns True, if Application is minimized }
 function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
-{$IFDEF VCL}
+
 { MessageBox is Application.MessageBox with string (not PChar) parameters.
   if Caption parameter = '', it replaced with Application.Title }
 function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
@@ -374,7 +360,7 @@ function DualInputQuery(const ACaption, Prompt1, Prompt2: string;
 
 { Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
 function InputQueryPassword(const ACaption, APrompt: string; PasswordChar: Char; var Value: string): Boolean;
-{$ENDIF VCL}
+
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
@@ -447,10 +433,10 @@ function IniStrToStr(const Str: string): string;
 
 function FontStylesToString(Styles: TFontStyles): string;
 function StringToFontStyles(const Styles: string): TFontStyles;
-{$IFDEF VCL}
+
 function FontToString(Font: TFont): string;
 function StringToFont(const Str: string): TFont;
-{$ENDIF VCL}
+
 function RectToStr(Rect: TRect): string;
 function StrToRect(const Str: string; const Def: TRect): TRect;
 function PointToStr(P: TPoint): string;
@@ -474,11 +460,11 @@ procedure IniEraseSection(IniFile: TObject; const Section: string);
 procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 }
 
-{$IFDEF VCL}
+
 procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 
 procedure AppTaskbarIcons(AppOnly: Boolean);
-{$ENDIF VCL}
+
 
 { Internal using utilities }
 
@@ -498,7 +484,7 @@ type
     mmTripel, mmGrayscale);
 
 function GetBitmapPixelFormat(Bitmap: TBitmap): TPixelFormat;
-{$IFDEF VCL}
+
 function GetPaletteBitmapFormat(Bitmap: TBitmap): TPixelFormat;
 {$IFNDEF CLR}
 procedure SetBitmapPixelFormat(Bitmap: TBitmap; PixelFormat: TPixelFormat;
@@ -517,7 +503,7 @@ function ScreenColorCount: Integer;
 
 var
   DefaultMappingMethod: TMappingMethod = mmHistogram;
-{$ENDIF VCL}
+
 
 function GetWorkareaRect(Monitor: TMonitor): TRect;
 function FindMonitor(Handle: HMONITOR): TMonitor;
@@ -556,7 +542,7 @@ type
 { end JvGraph }
 
 type
-  // equivalent of TPoint, but that can be a published property 
+  // equivalent of TPoint, but that can be a published property
   TJvPoint = class(TPersistent)
   private
     FY: Longint;
@@ -627,7 +613,7 @@ type
   protected
     procedure DoChange;
   public
-    procedure Assign(Source: TPersistent); overload; override; 
+    procedure Assign(Source: TPersistent); overload; override;
     procedure Assign(Source: TSize); reintroduce; overload;
     procedure CopyToSize(var Size: TSize);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -697,10 +683,10 @@ function JvListViewSaveState(ListView: TListView): TJvLVItemStateData;
 function JvListViewRestoreState(ListView: TListView; Data: TJvLVItemStateData;
   MakeVisible: Boolean = True; FocusFirst: Boolean = False): Boolean;
 
-{$IFDEF VCL}
+
 function JvListViewGetOrderedColumnIndex(Column: TListColumn): Integer;
 procedure JvListViewSetSystemImageList(ListView: TListView);
-{$ENDIF VCL}
+
 
 //------------------------------------------------------------------------------
 // MessageBox
@@ -748,7 +734,7 @@ function StripAllFromResult(const Value: TModalResult): TModalResult;
 // calculate the desktop icon text color based on the desktop background color
 function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
 
-// (peter3) implementation moved from JvHTControls. 
+// (peter3) implementation moved from JvHTControls.
 type
   TJvHTMLCalcType = (htmlShow, htmlCalcWidth, htmlCalcHeight);
 
@@ -868,16 +854,11 @@ implementation
 
 uses
   SysConst,
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
   {$IFDEF MSWINDOWS}
   CommCtrl, MMSystem, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  Math, jpeg, Contnrs, 
+  Math, jpeg, Contnrs,
   JclSysInfo,
   JvConsts, JvProgressUtils, JvResources;
 
@@ -894,12 +875,7 @@ const
 
 function GetAppHandle: THandle;
 begin
-  {$IFDEF VCL}
   Result := Application.Handle;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := Application.AppWidget;
-  {$ENDIF VisualCLX}
 end;
 
 type
@@ -924,24 +900,9 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VisualCLX}
-type
-  TIconAccessProtected = class(TIcon);
 
-function Icon2Bitmap(Ico: TIcon): TBitmap;
-begin
-  Result := TBitmap.Create;
-  TIconAccessProtected(Ico).AssignTo(Result);
-end;
 
-function Bitmap2Icon(Bmp: TBitmap): TIcon;
-begin
-  Result := TIcon.Create;
-  Result.Assign(Bmp);
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
 
 function IconToBitmap(Ico: HICON): TBitmap;
 var
@@ -1008,10 +969,10 @@ begin
     Tmp.Free;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
-{$IFDEF VCL}
+
 var
   Delta: Integer;
   Min, Max: Integer;
@@ -1058,16 +1019,8 @@ begin
       H := H + 360;
   end;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  QC: QColorH;
-begin
-  QC := QColor_create(R, G, B);
-  QColor_getHsv(QC, @H, @S, @V);
-  QColor_destroy(QC);
-end;
-{$ENDIF VisualCLX}
+
+
 
 (* (rom) to be deleted. Use ScreenShot from JCL
 {$IFDEF VCL}
@@ -1291,7 +1244,7 @@ begin
   GetXBitmap(Dest, Source, gxValue);
 end;
 
-{$IFDEF VCL}
+
 { (rb) Duplicate of JvAppUtils.AppTaskbarIcons }
 
 procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
@@ -1303,10 +1256,10 @@ begin
     SetWindowLong(FormHandle, GWL_STYLE,
       GetWindowLong(FormHandle, GWL_STYLE) or WS_CAPTION);
 end;
-{$ENDIF VCL}
+
 
 {$IFNDEF CLR}
-{$IFDEF VCL}
+
 
 procedure LaunchCpl(const FileName: string);
 begin
@@ -1486,7 +1439,7 @@ begin
     Strings.EndUpdate;
   end;
 end;
-{$ENDIF VCL}
+
 {$ENDIF !CLR}
 
 { imported from VCLFunctions }
@@ -1515,7 +1468,6 @@ end;
 function ConvertStates(const State: Integer): TItemStates;
 begin
   Result := [];
-  {$IFDEF VCL}
   if HasFlag(State, LVIS_ACTIVATING) then
     Include(Result, isActivating);
   if HasFlag(State, LVIS_CUT) then
@@ -1526,7 +1478,6 @@ begin
     Include(Result, IsFocused);
   if HasFlag(State, LVIS_SELECTED) then
     Include(Result, isSelected);
-  {$ENDIF VCL}
 end;
 
 function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
@@ -1573,58 +1524,9 @@ end;
 
 { Bitmaps }
 
-{$IFDEF VisualCLX}
 
-type
-  TPrivateControl = class(TComponent)
-  protected
-    FVisible: Boolean;
-  end;
 
-procedure CopyParentImage(Control: TControl; Dest: TCanvas);
-var
-  Pixmap: QPixmapH;
-  DestDev: QPaintDeviceH;
-  pdm: QPaintDeviceMetricsH;
-  OrigVisible: Boolean;
-begin
-  if (Control = nil) or (Control.Parent = nil) then
-    Exit;
-  Dest.Start;
-  try
-    DestDev := QPainter_device(Dest.Handle);
-    with Control.Parent do
-      ControlState := ControlState + [csPaintCopy];
-    try
-      pdm := QPaintDeviceMetrics_create(DestDev);
-      try
-        Pixmap := QPixmap_create(Control.Width, Control.Height,
-          QPaintDeviceMetrics_depth(pdm), QPixmapOptimization_DefaultOptim);
-      finally
-        QPaintDeviceMetrics_destroy(pdm);
-      end;
-      OrigVisible := TPrivateControl(Control).FVisible;
-      TPrivateControl(Control).FVisible := False; // do not draw the Control itself
-      try
-        QPixmap_grabWidget(Pixmap, Control.Parent.Handle, Control.Left,
-          Control.Top, Control.Width, Control.Height);
-        Qt.bitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
-          Control.Height, Qt.RasterOp_CopyROP, True);
-      finally
-        TPrivateControl(Control).FVisible := OrigVisible;
-        QPixmap_destroy(Pixmap);
-      end;
-    finally
-      with Control.Parent do
-        ControlState := ControlState - [csPaintCopy];
-    end;
-  finally
-    Dest.Stop;
-  end;
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
 // see above for VisualCLX version of CopyParentImage
 type
   TJvParentControl = class(TWinControl);
@@ -1649,7 +1551,7 @@ begin
     // both with Transparent set to True (discovered while working on
     // Mantis 3624)
     GetViewPortOrgEx(DC, ViewPortOrg);
-    
+
     with Control do
     begin
       SelfR := Bounds(Left, Top, Width, Height);
@@ -1657,13 +1559,13 @@ begin
       ViewPortOrg.X := ViewPortOrg.X-Left;
       ViewPortOrg.Y := ViewPortOrg.Y-Top;
     end;
-    
+
     // Copy parent control image
     SaveIndex := SaveDC(DC);
     try
       SetViewPortOrgEx(DC, ViewPortOrg.X, ViewPortOrg.Y, nil);
       IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
-        Control.Parent.ClientHeight);  
+        Control.Parent.ClientHeight);
       {$IFDEF CLR}
         Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
         Control.Parent.GetType.InvokeMember('PaintWindow',
@@ -1679,8 +1581,8 @@ begin
     finally
       RestoreDC(DC, SaveIndex);
     end;
-    
-    // Copy images of control's siblings 
+
+    // Copy images of control's siblings
     // Note: while working on Mantis 3624 it was decided that there was no
     // real reason to limit this to controls derived from TGraphicControl.
     for I := 0 to Count - 1 do
@@ -1715,7 +1617,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 {$IFNDEF CLR}
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
@@ -1731,10 +1633,8 @@ begin
     end
     else
     begin
-      {$IFDEF VCL}
       Result.Handle := LoadBitmap(Module, ResID);
       if Result.Handle = 0 then
-      {$ENDIF VCL}
         ResourceNotFound(ResID);
     end;
   except
@@ -1794,7 +1694,7 @@ end;
 
 { Transparent bitmap }
 
-{$IFDEF VCL}
+
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
   SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Palette: HPALETTE;
@@ -1881,67 +1781,8 @@ begin
   DeleteDC(ObjectDC);
   DeleteDC(SaveDC);
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
 
-procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
-  SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Dummy: Integer;
-  TransparentColor: TColorRef);
-var
-  Color: TColorRef;
-  bmAndBack, bmAndObject, bmAndMem, bmSave: QPixmapH;
-  bmBackOld, bmObjectOld, bmMemOld, bmSaveOld: QPixmapH;
-  MemDC, BackDC, ObjectDC, SaveDC: QPainterH;
-begin
-  { Create some DCs to hold temporary data }
-  BackDC := CreateCompatibleDC(DstDC);
-  ObjectDC := CreateCompatibleDC(DstDC);
-  MemDC := CreateCompatibleDC(DstDC);
-  SaveDC := CreateCompatibleDC(DstDC);
-  { Create a bitmap for each DC }
-  bmAndObject := CreateBitmap(SrcW, Srch, 1, 1, nil);
-  bmAndBack := CreateBitmap(SrcW, Srch, 1, 1, nil);
-  bmAndMem := CreateCompatibleBitmap(DstDC, DstW, DstH);
-  bmSave := CreateCompatibleBitmap(DstDC, SrcW, Srch);
-  { Each DC must select a bitmap object to store pixel data }
-  bmBackOld := SelectObject(BackDC, bmAndBack);
-  bmObjectOld := SelectObject(ObjectDC, bmAndObject);
-  bmMemOld := SelectObject(MemDC, bmAndMem);
-  bmSaveOld := SelectObject(SaveDC, bmSave);
-  { Save the bitmap sent here }
-  BitBlt(SaveDC, 0, 0, SrcW, Srch, SrcDC, SrcX, SrcY, SRCCOPY);
-  { Set the background color of the source DC to the color,         }
-  { contained in the parts of the bitmap that should be transparent }
-  Color := SetBkColor(SaveDC, PaletteColor(TransparentColor));
-  { Create the object mask for the bitmap by performing a BitBlt()  }
-  { from the source bitmap to a monochrome bitmap                   }
-  BitBlt(ObjectDC, 0, 0, SrcW, Srch, SaveDC, 0, 0, SRCCOPY);
-  { Set the background color of the source DC back to the original  }
-  SetBkColor(SaveDC, Color);
-  { Create the inverse of the object mask }
-  BitBlt(BackDC, 0, 0, SrcW, Srch, ObjectDC, 0, 0, NOTSRCCOPY);
-  { Copy the background of the main DC to the destination }
-  BitBlt(MemDC, 0, 0, DstW, DstH, DstDC, DstX, DstY, SRCCOPY);
-  { Mask out the places where the bitmap will be placed }
-  StretchBlt(MemDC, 0, 0, DstW, DstH, ObjectDC, 0, 0, SrcW, Srch, SRCAND);
-  { Mask out the transparent colored pixels on the bitmap }
-  BitBlt(SaveDC, 0, 0, SrcW, Srch, BackDC, 0, 0, SRCAND);
-  { XOR the bitmap with the background on the destination DC }
-  StretchBlt(MemDC, 0, 0, DstW, DstH, SaveDC, 0, 0, SrcW, Srch, SRCPAINT);
-  { Copy the destination to the screen }
-  BitBlt(DstDC, DstX, DstY, DstW, DstH, MemDC, 0, 0, SRCCOPY);
-  { Delete the memory bitmaps }
-  DeleteObject(SelectObject(BackDC, bmBackOld));
-  DeleteObject(SelectObject(ObjectDC, bmObjectOld));
-  DeleteObject(SelectObject(MemDC, bmMemOld));
-  DeleteObject(SelectObject(SaveDC, bmSaveOld));
-  { Delete the memory DCs }
-  DeleteDC(MemDC);
-  DeleteDC(BackDC);
-  DeleteDC(ObjectDC);
-  DeleteDC(SaveDC);
-end;
-{$ENDIF VisualCLX}
+
 
 procedure DrawTransparentBitmapRect(DC: HDC; Bitmap: HBITMAP; DstX, DstY,
   DstW, DstH: Integer; SrcRect: TRect; TransparentColor: TColorRef);
@@ -1990,18 +1831,12 @@ begin
     SrcW := Bitmap.Width;
     Srch := Bitmap.Height;
   end;
-  {$IFDEF VisualCLX}
-  Dest.Start;
-  {$ENDIF VisualCLX}
   if not Bitmap.Monochrome then
     SetStretchBltMode(Dest.Handle, STRETCH_DELETESCANS);
   CanvasChanging := Bitmap.Canvas.OnChanging;
   Bitmap.Canvas.Lock;
   try
     Bitmap.Canvas.OnChanging := nil;
-    {$IFDEF VisualCLX}
-    Bitmap.Canvas.Start;
-    {$ENDIF VisualCLX}
     if TransparentColor = clNone then
     begin
       StretchBlt(Dest.Handle, DstX, DstY, DstW, DstH, Bitmap.Canvas.Handle,
@@ -2015,26 +1850,13 @@ begin
         TransparentColor := clWhite
       else
         TransparentColor := ColorToRGB(TransparentColor);
-      {$IFDEF VCL}
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
         Bitmap.Palette, TransparentColor);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
-        Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
-        0, TransparentColor);
-      {$ENDIF VisualCLX}
     end;
-    {$IFDEF VisualCLX}
-    Bitmap.Canvas.Stop;
-    {$ENDIF VisualCLX}
   finally
     Bitmap.Canvas.OnChanging := CanvasChanging;
     Bitmap.Canvas.Unlock;
-    {$IFDEF VisualCLX}
-    Dest.Stop;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2132,9 +1954,7 @@ begin
         Width := FOriginal.Width;
         Height := FOriginal.Height;
         Canvas.CopyRect(IRect, FOriginal.Canvas, IRect);
-        {$IFDEF VCL}
         HandleType := bmDDB;
-        {$ENDIF VCL}
         Canvas.Brush.Color := OutlineColor;
         if Monochrome then
         begin
@@ -2148,11 +1968,6 @@ begin
       begin
         Brush.Color := BackColor;
         FillRect(IRect);
-        {$IFDEF VisualCLX}
-        MonoBmp.Canvas.Start;
-        Start;
-        try
-          {$ENDIF VisualCLX}
           if DrawHighlight then
           begin
             Brush.Color := HighLightColor;
@@ -2166,12 +1981,6 @@ begin
           SetBkColor(Handle, clWhite);
           BitBlt(Handle, 0, 0, RectWidth(IRect), RectHeight(IRect),
             MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-          {$IFDEF VisualCLX}
-        finally
-          Stop;
-          MonoBmp.Canvas.Stop;
-        end;
-        {$ENDIF VisualCLX}
       end;
     finally
       MonoBmp.Free;
@@ -2207,7 +2016,7 @@ begin
       begin
         Brush.Color := NewColor;
         FillRect(R);
-        BrushCopy({$IFDEF VisualCLX} Canvas, {$ENDIF} R, Bitmap, R, Color);
+        BrushCopy( R, Bitmap, R, Color);
       end;
     end;
   except
@@ -2232,12 +2041,7 @@ begin
     begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Images.Width, Images.Height));
-      {$IFDEF VCL}
       ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
-      {$ENDIF VisualCLX}
     end;
     Bmp.Monochrome := True;
     if DrawHighlight then
@@ -2296,22 +2100,12 @@ end;
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 begin
   Result := TIcon.Create;
-  {$IFDEF VCL}
   Result.Handle := LoadIcon(Module, ResID);
   if Result.Handle = 0 then
   begin
     Result.Free;
     Result := nil;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  try
-    Result.LoadFromResourceName(HInstance, ResID);
-  except
-    Result.Free;
-    Result := nil;
-  end;
-  {$ENDIF VisualCLX}
 end;
 {$ENDIF !CLR}
 
@@ -2342,33 +2136,17 @@ begin
 end;
 
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
-{$IFDEF VisualCLX}
-var
-  Bmp: TBitmap;
-{$ENDIF VisualCLX}
+
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
-    {$IFDEF VCL}
     AllocBy := 1;
-    {$ENDIF VCL}
     AddMasked(Bitmap, TransparentColor);
     Result := TIcon.Create;
     try
-      {$IFDEF VCL}
       GetIcon(0, Result);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Bmp := TBitmap.Create;
-      try
-        GetBitmap(0, Bmp);
-        Result.Assign(Bmp);
-      finally
-        Bmp.Free;
-      end;
-      {$ENDIF VisualCLX}
     except
       Result.Free;
       raise;
@@ -2381,7 +2159,7 @@ end;
 type
   TCustomControlAccessProtected = class(TCustomControl);
 
-{$IFDEF VCL}
+
 
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
@@ -2413,52 +2191,9 @@ begin
     Windows.ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
-var
-  Canvas: TJvDeskTopCanvas;
-  I: Integer;
-begin
-  Canvas := TJvDeskTopCanvas.Create;
-  with Canvas do
-    try
-      StartPaint;
-      try
-        for I := 1 to Width do
-        begin
-          DrawFocusRect(ScreenRect);
-          InflateRect(ScreenRect, -1, -1);
-        end;
-      finally
-        StopPaint;
-      end;
-    finally
-      Free;
-    end;
-end;
 
-procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
-var
-  Canvas: TJvDeskTopCanvas;
-  R: TRect;
-begin
-  Canvas := TJvDeskTopCanvas.Create;
-  with Canvas do
-    try
-      StartPaint;
-      try
-        R := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
-        QWindows.InvertRect(Handle, R);
-      finally
-        StopPaint;
-      end;
-    finally
-      Free;
-    end;
-end;
-{$ENDIF VisualCLX}
+
 
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
@@ -2488,7 +2223,7 @@ begin
   Result := ColorToRGB(Color) or PaletteMask;
 end;
 
-{$IFDEF VCL}
+
 
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 var
@@ -2545,7 +2280,7 @@ begin
   GetObject(Palette, SizeOf(Integer), @Result);
   {$ENDIF CLR}
 end;
-{$ENDIF VCL}
+
 
 procedure Delay(MSecs: Int64);
 var
@@ -2651,7 +2386,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 { ShowMDIClientEdge function has been copied from Inprise's FORMS.PAS unit,
   Delphi 4 version }
 
@@ -2715,7 +2450,7 @@ begin
     DeleteObject(Bitmap);
   end;
 end;
-{$ENDIF VCL}
+
 
 function ScreenWorkArea: TRect;
 begin
@@ -2729,7 +2464,7 @@ end;
 { Standard Windows MessageBox function }
 
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
-{$IFDEF VCL}
+
 begin
   {$IFDEF CLR}
   Result := Application.MessageBox(Text, Caption, Flags);
@@ -2737,106 +2472,15 @@ begin
   Result := Application.MessageBox(PChar(Text), PChar(Caption), Flags);
   {$ENDIF CLR}
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  Mbs: TMessageButtons;
-  Def: TMessageButton;
-  Style: TMessageStyle;
-  DefFlags: Integer;
-begin
-  Mbs := [];
-  DefFlags := Flags and $00000F00;
-  case Flags and $0000000F of
-    MB_OK:
-      begin
-        Mbs := [smbOk];
-        Def := smbOk;
-      end;
-    MB_OKCANCEL:
-      begin
-        Mbs := [smbOk, smbCancel];
-        Def := smbOk;
-        if DefFlags <> MB_DEFBUTTON1 then
-          Def := smbCancel;
-      end;
-    MB_ABORTRETRYIGNORE:
-      begin
-        Mbs := [smbAbort, smbRetry, smbIgnore];
-        Def := smbAbort;
-        case DefFlags of
-          MB_DEFBUTTON2:
-            Def := smbRetry;
-          MB_DEFBUTTON3:
-            Def := smbIgnore;
-        end;
-      end;
-    MB_YESNOCANCEL:
-      begin
-        Mbs := [smbYes, smbNo, smbCancel];
-        Def := smbYes;
-        case DefFlags of
-          MB_DEFBUTTON2:
-            Def := smbNo;
-          MB_DEFBUTTON3:
-            Def := smbCancel;
-        end;
-      end;
-    MB_YESNO:
-      begin
-        Mbs := [smbYes, smbNo];
-        Def := smbYes;
-        if DefFlags <> MB_DEFBUTTON1 then
-          Def := smbNo;
-      end;
-    MB_RETRYCANCEL:
-      begin
-        Mbs := [smbRetry, smbCancel];
-        Def := smbRetry;
-        if DefFlags <> MB_DEFBUTTON1 then
-          Def := smbCancel;
-      end;
-  else
-    Mbs := [smbOk];
-    Def := smbOk;
-  end;
 
-  case Flags and $000000F0 of
-    MB_ICONWARNING:
-      Style := smsWarning;
-    MB_ICONERROR:
-      Style := smsCritical;
-  else
-    Style := smsInformation;
-  end;
 
-  case Application.MessageBox(Text, Caption, Mbs, Style, Def) of
-    smbOk:
-      Result := IDOK;
-    smbCancel:
-      Result := IDCANCEL;
-    smbAbort:
-      Result := IDABORT;
-    smbRetry:
-      Result := IDRETRY;
-    smbIgnore:
-      Result := IDIGNORE;
-    smbYes:
-      Result := IDYES;
-    smbNo:
-      Result := IDNO;
-  else
-    Result := IDOK;
-  end;
-end;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
   HelpCtx: Longint): Word;
 begin
   Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
 end;
-{$ENDIF VCL}
+
 
 function MsgBox(Handle: THandle; const Caption, Text: string; Flags: Integer): Integer;
 begin
@@ -2868,25 +2512,14 @@ var
   Brush: HBRUSH;
   TmpColor: TColor;
 begin
-  {$IFDEF VCL}
   Canvas.Lock;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  {$ENDIF VisualCLX}
   try
     if (StartColor = clNone) and (EndColor = clNone) then
       Exit;
     if not (IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT)) then
     begin
-      {$IFDEF VCL}
       StartColor := ColorToRGB(StartColor);
       EndColor := ColorToRGB(EndColor);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      StartColor := ColorFromColormap(StartColor);
-      EndColor := ColorFromColormap(EndColor);
-      {$ENDIF VisualCLX}
       if Direction in [fdBottomToTop, fdRightToLeft] then
       begin
         // just swap the colors
@@ -2980,12 +2613,7 @@ begin
       end;
     end; //  if Not (IsRectEmpty(ARect) and ...
   finally
-    {$IFDEF VCL}
     Canvas.Unlock;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Canvas.Stop;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -3001,9 +2629,6 @@ begin
     Buffer[I] := Chr(I + Ord('A'));
   for I := 0 to 25 do
     Buffer[I + 26] := Chr(I + Ord('a'));
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  {$ENDIF VisualCLX}
   {$IFDEF CLR}
   GetTextExtentPoint32(Canvas.Handle, Buffer, 52, Size);
   Result.X := Size.cx;
@@ -3011,9 +2636,6 @@ begin
   {$ELSE}
   GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result));
   {$ENDIF CLR}
-  {$IFDEF VisualCLX}
-  Canvas.Stop;
-  {$ENDIF VisualCLX}
   Result.X := Result.X div 52;
 end;
 
@@ -3098,19 +2720,15 @@ var
   Handle: HCURSOR;
 begin
   Handle := LoadCursor(Instance, ResID);
-  {$IFDEF VCL}
   if Handle = 0 then
     Handle := LoadAniCursor(Instance, ResID);
-  {$ENDIF VCL}
   if Integer(Handle) = 0 then
     ResourceNotFound(ResID);
   try
     Result := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[Result] := Handle;
   except
-    {$IFDEF VCL}
     DestroyCursor(Handle);
-    {$ENDIF VCL}
     raise;
   end;
 end;
@@ -3240,7 +2858,7 @@ const
     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
   WrapFlags: array [Boolean] of Integer = (0, DT_WORDBREAK);
-{$IFDEF VCL}
+
   RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
 var
   B, R: TRect;
@@ -3297,13 +2915,8 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-begin
-  ACanvas.TextRect(ARect, ARect.Left + DX, ARect.Top + DY,
-    Text, AlignFlags[Alignment] or WrapFlags[WordWrap]);
-end;
-{$ENDIF VisualCLX}
+
+
 
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
@@ -3377,15 +2990,9 @@ end;
 
 //=== { TJvDesktopCanvas } ===================================================
 
-{$IFDEF VisualCLX}
-procedure TJvDesktopCanvas.CreateHandle;
-begin
-  inherited CreateHandle;
-  QtHandle := GetDesktopWindow;
-end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+
+
 destructor TJvDesktopCanvas.Destroy;
 begin
   FreeHandle;
@@ -3408,19 +3015,13 @@ begin
     FDC := 0;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvDesktopCanvas.SetOrigin(X, Y: Integer);
 var
   FOrigin: TPoint;
 begin
-  {$IFDEF VisualCLX}
-  StartPaint;
-  {$ENDIF VisualCLX}
   SetWindowOrgEx(Handle, -X, -Y, {$IFNDEF CLR}@{$ENDIF}FOrigin);
-  {$IFDEF VisualCLX}
-  StopPaint;
-  {$ENDIF VisualCLX}
 end;
 
 // (rom) moved to file end to minimize W- switch impact at end of function
@@ -3578,7 +3179,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF VCL}
+
 
 function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 {$IFDEF CLR}
@@ -3980,7 +3581,7 @@ begin
     AForm.Free;
   end;
 end;
-{$ENDIF VCL}
+
 
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of TControl);
 var
@@ -4100,12 +3701,7 @@ var
   ppf: IPersistFile;
   wnd: Windows.HWND;
 begin
-  {$IFDEF VCL}
   wnd := HWND;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  wnd := QWidget_winId(HWND);
-  {$ENDIF VisualCLX}
   Pointer(psl) := nil;
   Pointer(ppf) := nil;
   Result := CoInitialize(nil);
@@ -4663,10 +4259,8 @@ begin
   begin
     if (Form = Application.MainForm) and AppMinimized then
       ShowCmd := SW_SHOWMINIMIZED;
-    {$IFDEF VCL}
     if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
       Flags := Flags or WPF_SETMINPOSITION;
-    {$ENDIF VCL}
     if fpState in Options then
       AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
     if [fpSize, fpLocation] * Options <> [] then
@@ -4826,7 +4420,6 @@ begin
         SW_MAXIMIZE:
           WinState := wsMaximized;
       end;
-      {$IFDEF VCL}
       if (WinState = wsMinimized) and ((Form = Application.MainForm) or
         (Application.MainForm = nil)) then
       begin
@@ -4845,7 +4438,6 @@ begin
         TJvHackForm(Form).FWindowState := WinState
         {$ENDIF CLR}
       else
-      {$ENDIF VCL}
         WindowState := WinState;
     end;
     Update;
@@ -4893,7 +4485,7 @@ begin
   InternalRestoreFormPlacement(Form, AppStorage, GetDefaultSection(Form), Options);
 end;
 
-{$IFDEF VCL}
+
 
 procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 var
@@ -4917,7 +4509,7 @@ begin
     SwitchToWindow(Application.Handle, False);
 end;
 
-{$ENDIF VCL}
+
 
 { end JvAppUtils }
 { begin JvGraph }
@@ -4952,10 +4544,8 @@ begin
   case PixelFormat of
     pf1bit:
       Result := 2;
-    {$IFDEF VCL}
     pf4bit:
       Result := 16;
-    {$ENDIF VCL}
     pf8bit:
       Result := 256;
   else
@@ -4963,7 +4553,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
+
 
 function ScreenPixelFormat: TPixelFormat;
 var
@@ -4998,7 +4588,7 @@ function ScreenColorCount: Integer;
 begin
   Result := PixelFormatToColors(ScreenPixelFormat);
 end;
-{$ENDIF VCL}
+
 
 function GetWorkareaRect(Monitor: TMonitor): TRect;
 var
@@ -6054,7 +5644,7 @@ end;
 *)
 {$ENDIF !CLR}
 
-{$IFDEF VCL}
+
 { DIB utility routines }
 
 function GetPaletteBitmapFormat(Bitmap: TBitmap): TPixelFormat;
@@ -6078,7 +5668,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
+
 
 function GetBitmapPixelFormat(Bitmap: TBitmap): TPixelFormat;
 begin
@@ -6094,7 +5684,7 @@ begin
 end;
 
 {$IFNDEF CLR}
-{$IFDEF VCL}
+
 
 procedure InitializeBitmapInfoHeader(Bitmap: HBITMAP; var BI: TBitmapInfoHeader;
   PixelFormat: TPixelFormat);
@@ -6413,7 +6003,7 @@ begin
   SetBitmapPixelFormat(Bitmap, pf8bit, mmGrayscale);
 end;
 
-{$ENDIF VCL}
+
 {$ENDIF CLR}
 
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
@@ -6575,15 +6165,8 @@ begin
   with AToolBar do
   begin
     TotalWidth := BorderWidth;
-    {$IFDEF VCL}
     for I := ButtonCount - 1 downto 0 do
       Buttons[I].Free;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    for I := ControlCount - 1 downto 0 do
-      if Controls[I] is TToolButton then
-        Controls[I].Free;
-    {$ENDIF VisualCLX}
     ShowCaptions := True;
   end;
   with AMenu do
@@ -6594,20 +6177,7 @@ begin
       Button.AutoSize := True;
       Button.Caption := Items[I].Caption;
       Button.Grouped := True;
-      {$IFDEF VCL}
       Button.MenuItem := Items[I];
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      if Items[I].Action <> nil then
-        Button.Action := Items[I].Action
-      else
-      begin
-        Button.Caption := Items[I].Caption;
-        Button.Enabled := Items[I].Enabled;
-        Button.ImageIndex := Items[I].ImageIndex;
-        Button.OnClick := Items[I].OnClick;
-      end;
-      {$ENDIF VisualCLX}
       Inc(TotalWidth, Button.Width + AToolBar.BorderWidth);
     end;
   AToolBar.Width := TotalWidth;
@@ -6708,28 +6278,22 @@ procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
 var
   ListView: TListView;
-  {$IFDEF VCL}
   I: Integer;
-  {$ENDIF VCL}
 begin
   ListView := TListColumns(Column.Collection).Owner as TListView;
   ListView.Columns.BeginUpdate;
   try
     with ListView.Columns do
-      {$IFDEF VCL}
       for I := 0 to Count - 1 do
         Items[I].ImageIndex := -1;
-    {$ENDIF VCL}
     if ListView.Tag and $FF = Column.Index then
       ListView.Tag := ListView.Tag xor $100
     else
       ListView.Tag := Column.Index;
-    {$IFDEF VCL}
     if ListView.Tag and $100 = 0 then
       Column.ImageIndex := AscendingSortImage
     else
       Column.ImageIndex := DescendingSortImage;
-    {$ENDIF VCL}
   finally
     ListView.Columns.EndUpdate;
   end;
@@ -6786,10 +6350,8 @@ end;
 procedure JvListViewSelectAll(ListView: TListView; Deselect: Boolean);
 var
   I: Integer;
-  {$IFDEF VCL}
   H: THandle;
   Data: Integer;
-  {$ENDIF VCL}
   SaveOnSelectItem: TLVSelectItemEvent;
 begin
   with ListView do
@@ -6799,7 +6361,6 @@ begin
       SaveOnSelectItem := OnSelectItem;
       WaitCursor;
       try
-        {$IFDEF VCL}
         H := Handle;
         OnSelectItem := nil;
         if Deselect then
@@ -6808,11 +6369,6 @@ begin
           Data := LVIS_SELECTED;
         for I := 0 to Items.Count - 1 do
           ListView_SetItemState(H, I, Data, LVIS_SELECTED);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        for I := 0 to Items.Count - 1 do
-          Items[I].Selected := not Deselect;
-        {$ENDIF VisualCLX}
       finally
         OnSelectItem := SaveOnSelectItem;
         Items.EndUpdate;
@@ -6870,16 +6426,11 @@ begin
       TempItem.Selected := True;
     end;
     if MakeVisible and (TempItem <> nil) then
-      {$IFDEF VCL}
       TempItem.MakeVisible(True);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      TempItem.MakeVisible;
-      {$ENDIF VisualCLX}
   end;
 end;
 
-{$IFDEF VCL}
+
 
 function JvListViewGetOrderedColumnIndex(Column: TListColumn): Integer;
 var
@@ -6925,7 +6476,7 @@ begin
     SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
   SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_NORMAL, ImageListHandle);
 end;
-{$ENDIF VCL}
+
 
 //== MessageBox ==============================================================
 
@@ -6962,7 +6513,6 @@ end;
 
 function GetDefaultCheckBoxSize: TSize;
 begin
-  {$IFDEF VCL}
   with TBitmap.Create do
   try
     {$IFDEF CLR}
@@ -6975,11 +6525,6 @@ begin
   finally
     Free;
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result.cx := 12;
-  Result.cy := 12;
-  {$ENDIF VisualCLX}
 end;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
@@ -6987,14 +6532,7 @@ var
   tt: TTextMetric;
 begin
   // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
-  {$IFDEF VisualCLX}
-  Canvas.Start;  // if it is called outside a paint event
-  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
-  {$ENDIF VisualCLX}
   GetTextMetrics(Canvas.Handle, tt);
-  {$IFDEF VisualCLX}
-  Canvas.Stop;
-  {$ENDIF VisualCLX}
   Result := tt.tmHeight;
 end;
 
@@ -7099,7 +6637,6 @@ end;
 
 procedure InitScreenCursors;
 begin
-  {$IFDEF VCL}
   try
     if Screen <> nil then
     begin
@@ -7112,7 +6649,6 @@ begin
     end;
   except
   end;
-  {$ENDIF VCL}
 end;
 
 const
@@ -7147,7 +6683,7 @@ begin
     Include(Result, fsStrikeOut);
 end;
 
-{$IFDEF VCL}
+
 
 function FontToString(Font: TFont): string;
 begin
@@ -7191,7 +6727,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 function RectToStr(Rect: TRect): string;
 begin
@@ -7527,7 +7063,7 @@ procedure TJvSize.Assign(Source: TSize);
 begin
   FWidth := Source.cx;
   FHeight := Source.cy;
-  DoChange; 
+  DoChange;
 end;
 
 procedure TJvSize.CopyToSize(var Size: TSize);
@@ -7754,14 +7290,8 @@ var
         end;
       if CalcType = htmlShow then
       begin
-        {$IFDEF VCL}
         if Trans then
           Canvas.Brush.Style := bsClear; // for transparent
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        if not Trans then
-          Canvas.FillRect(R);  // for opaque ( transparent = False )
-        {$ENDIF VisualCLX}
         Canvas.TextOut(R.Left, R.Top, M);
       end;
       CurLeft := CurLeft + Width;
@@ -8051,7 +7581,7 @@ end;
 type
   TAccessReader = class(TReader)
   end;
-   
+
 procedure TJvPicture.DefineProperties(Filer: TFiler);
 var
   SavedPosition: Integer;

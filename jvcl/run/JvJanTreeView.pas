@@ -34,9 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows,
-  {$IFDEF VCL}
   ShellAPI, Messages,
-  {$ENDIF VCL}
   SysUtils, Classes,
   Graphics, Controls, Forms, Dialogs, ComCtrls, Menus;
 
@@ -170,14 +168,7 @@ type
     procedure SetupKeyMappings;
     procedure ParserGetVar(Sender: TObject; VarName: string; var Value: Extended; var Found: Boolean);
     procedure ParserParseError(Sender: TObject; ParseError: Integer);
-    {$IFDEF VCL}
     procedure DoCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
-       Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState;
-       Stage: TCustomDrawStage; var DefaultDraw: Boolean);
-    {$ENDIF VisualCLX}
     procedure SetColorFormulas(const Value: Boolean);
     procedure SetFormuleColor(const Value: TColor);
     procedure SetDefaultExt(const Value: string);
@@ -343,22 +334,14 @@ end;
 
 procedure TJvJanTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
-  {$IFDEF VCL}
   HitTest: THitTests;
-  {$ENDIF VCL}
   N: TTreeNode;
 begin
   inherited DragDrop(Source, X, Y);
-  {$IFDEF VCL}
   HitTest := Self.GetHitTestInfoAt(X, Y);
   if htOnLabel in HitTest then
   begin
-  {$ENDIF VCL}
     N := Self.GetNodeAt(X, Y);
-  {$IFDEF VisualCLX}
-  if N <> nil then
-  begin
- {$ENDIF VisualCLX}
     if Source = Self then
     begin
       if Selected = nil then
@@ -515,22 +498,18 @@ end;
 
 procedure TJvJanTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-{$IFDEF VCL}
+
   HitTest: THitTests;
-{$ENDIF VCL}
+
   N: TTreeNode;
   S: string;
 begin
-{$IFDEF VCL}
+
   HitTest := GetHitTestInfoAt(X, Y);
   if htOnLabel in HitTest then
   begin
-{$ENDIF VCL}
+
     N := GetNodeAt(X, Y);
- {$IFDEF VisualCLX}
-  if N <> nil then
-  begin
- {$ENDIF VisualCLX}
      S := N.Text;
     if (Copy(S, 1, 7) = 'http://') or (Copy(S, 1, 7) = 'mailto:') then
       Cursor := crHandPoint
@@ -647,28 +626,16 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-type
-  TCustomViewItemAccessProtected = class(TCustomViewItem);
 
-procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
-  Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState;
-  Stage: TCustomDrawStage; var DefaultDraw: Boolean);
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
+
 procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-{$ENDIF VCL}
+
 var
   S: string;
   R: TRect;
 begin
-  {$IFDEF VCL}
   S := Node.Text;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  S := TCustomViewItemAccessProtected(Node).Caption;
-  {$ENDIF VisualCLX}
   if (cdsSelected in State) or (cdsFocused in State) then
   begin
     DefaultDraw := True;
@@ -677,7 +644,7 @@ begin
   if (Copy(S, 1, 7) = 'http://') or (Copy(S, 1, 7) = 'mailto:') then
     with Canvas do
     begin
-      R := Node.DisplayRect{$IFDEF VCL}(True){$ENDIF};
+      R := Node.DisplayRect(True);
       Font := Self.Font;
       Font.Style := Font.Style + [fsUnderline];
       Font.Color := clBlue;
@@ -688,7 +655,7 @@ begin
   if FColorFormulas and (Pos('=', S) > 0) then
     with Canvas do
     begin
-      R := Node.DisplayRect{$IFDEF VCL}(True){$ENDIF};
+      R := Node.DisplayRect(True);
       Font := Self.Font;
       Font.Color := FFormuleColor;
       TextRect(R, R.Left, R.Top, S);

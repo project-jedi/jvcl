@@ -47,7 +47,7 @@ uses
   Classes, SysUtils;
 
 const
-  nl          = #10;  
+  nl          = #10;
   max_chars   = 2048;
   max_matches = 1024;
   max_rules   = 500;
@@ -1105,7 +1105,7 @@ begin
   4:
      repeat until (get_char in [#13, #10, #0]);
   5:
-    
+
  repeat
    c := get_char;
    case c of
@@ -2091,15 +2091,15 @@ begin
   (* actions: *)
   case yyruleno of
    1 : begin
-         RootNode := yyv[yysp-0]; 
+         RootNode := yyv[yysp-0];
        end;
    2 : begin
        end;
    3 : begin
-         yyval := MakeNode(NodeList, [yyv[yysp-0]]); 
+         yyval := MakeNode(NodeList, [yyv[yysp-0]]);
        end;
    4 : begin
-         yyval := MakeNode(NodeList, [yyv[yysp-1], yyv[yysp-0]]); 
+         yyval := MakeNode(NodeList, [yyv[yysp-1], yyv[yysp-0]]);
        end;
    5 : begin
          yyval := yyv[yysp-1];
@@ -2159,34 +2159,34 @@ begin
          yyval := yyv[yysp-1];
        end;
   24 : begin
-         yyval := MakeNode(NodeDebug, []); 
+         yyval := MakeNode(NodeDebug, []);
        end;
   25 : begin
-         yyval := MakeNode(NodeConnect, [yyv[yysp-4], yyv[yysp-2], yyv[yysp-0]]); 
+         yyval := MakeNode(NodeConnect, [yyv[yysp-4], yyv[yysp-2], yyv[yysp-0]]);
        end;
   26 : begin
-         yyval := MakeNode(NodeName, [], Lexer.yytext); 
+         yyval := MakeNode(NodeName, [], Lexer.yytext);
        end;
   27 : begin
-         yyval := MakeNode(NodeUsername, [], Lexer.yytext); 
+         yyval := MakeNode(NodeUsername, [], Lexer.yytext);
        end;
   28 : begin
-         yyval := MakeNode(NodePassWord, [], Lexer.yytext); 
+         yyval := MakeNode(NodePassWord, [], Lexer.yytext);
        end;
   29 : begin
-         yyval := MakeNode(NodeGrant, []); 
+         yyval := MakeNode(NodeGrant, []);
        end;
   30 : begin
-         yyval := MakeNode(NodeGrant, []); 
+         yyval := MakeNode(NodeGrant, []);
        end;
   31 : begin
-         yyval := MakeNode(NodeGrant, []); 
+         yyval := MakeNode(NodeGrant, []);
        end;
   32 : begin
-         yyval := MakeNode(NodeGrant, []); 
+         yyval := MakeNode(NodeGrant, []);
        end;
   33 : begin
-         yyval := MakeNode(NodeGrant, []); 
+         yyval := MakeNode(NodeGrant, []);
        end;
   34 : begin
          yyval := yyv[yysp-0];
@@ -2241,25 +2241,25 @@ begin
          yyval := yyv[yysp-0];
        end;
   52 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   53 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   54 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   55 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   56 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   57 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   58 : begin
-         yyval := MakeNode(NodeRevoke, []); 
+         yyval := MakeNode(NodeRevoke, []);
        end;
   59 : begin
          yyval := yyv[yysp-2];
@@ -2328,10 +2328,10 @@ begin
          yyval := yyv[yysp-0]
        end;
   81 : begin
-         yyval := MakeNode(NodeDeclareFilter, []); 
+         yyval := MakeNode(NodeDeclareFilter, []);
        end;
   82 : begin
-         yyval := MakeNode(NodeDeclareFunction, []); 
+         yyval := MakeNode(NodeDeclareFunction, []);
        end;
   83 : begin
          yyval := yyv[yysp-7];
@@ -2390,55 +2390,55 @@ begin
          yyval := yyv[yysp-8];
        end;
  102 : begin
-         yyval := yyv[yysp-0]; 
+         yyval := yyv[yysp-0];
        end;
  103 : begin
-         yyval := MakeNode(NodeCreateException, []); 
+         yyval := MakeNode(NodeCreateException, []);
        end;
  104 : begin
-         yyval := MakeNode(NodeCreateIndex, []); 
+         yyval := MakeNode(NodeCreateIndex, []);
        end;
  105 : begin
-         yyval := MakeNode(NodeCreateProcedure, []); 
+         yyval := MakeNode(NodeCreateProcedure, []);
        end;
  106 : begin
-         yyval := MakeNode(NodeCreateTable, []); 
+         yyval := MakeNode(NodeCreateTable, []);
        end;
  107 : begin
-         yyval := MakeNode(NodeCreateTrigger, []); 
+         yyval := MakeNode(NodeCreateTrigger, []);
        end;
  108 : begin
-         yyval := MakeNode(NodeCreateView, []); 
+         yyval := MakeNode(NodeCreateView, []);
        end;
  109 : begin
-         yyval := MakeNode(NodeCreateGenerator, []); 
+         yyval := MakeNode(NodeCreateGenerator, []);
        end;
  110 : begin
-         yyval := MakeNode(NodeCreateDataBase, [yyv[yysp-1]]); 
+         yyval := MakeNode(NodeCreateDataBase, [yyv[yysp-1]]);
        end;
  111 : begin
-         yyval := MakeNode(NodeCreateDomain, []); 
+         yyval := MakeNode(NodeCreateDomain, []);
        end;
  112 : begin
-         yyval := MakeNode(NodeCreateShadow, []); 
+         yyval := MakeNode(NodeCreateShadow, []);
        end;
  113 : begin
-         yyval := MakeNode(NodeCreateRole, []); 
+         yyval := MakeNode(NodeCreateRole, []);
        end;
  114 : begin
-         yyval := yyv[yysp-0]; 
+         yyval := yyv[yysp-0];
        end;
  115 : begin
-         yyval := MakeNode(NodeRecreateProcedure, []); 
+         yyval := MakeNode(NodeRecreateProcedure, []);
        end;
  116 : begin
-         yyval := MakeNode(NodeRecreateTable, []); 
+         yyval := MakeNode(NodeRecreateTable, []);
        end;
  117 : begin
-         yyval := MakeNode(NodeRecreateView, []); 
+         yyval := MakeNode(NodeRecreateView, []);
        end;
  118 : begin
-         yyval := MakeNode(NodeReplace, []); 
+         yyval := MakeNode(NodeReplace, []);
        end;
  119 : begin
          yyval := yyv[yysp-1];
@@ -2538,7 +2538,7 @@ begin
          yyval := yyv[yysp-0];
        end;
  154 : begin
-         yyval := MakeNode(NodeList, [yyv[yysp-2], yyv[yysp-1]]); 
+         yyval := MakeNode(NodeList, [yyv[yysp-2], yyv[yysp-1]]);
        end;
  155 : begin
        end;
@@ -2546,34 +2546,34 @@ begin
          yyval := yyv[yysp-0];
        end;
  157 : begin
-         yyval := MakeNode(NodeName, [], Lexer.yytext); 
+         yyval := MakeNode(NodeName, [], Lexer.yytext);
        end;
  158 : begin
-         yyval := nil 
+         yyval := nil
        end;
  159 : begin
-         yyval := yyv[yysp-0] 
+         yyval := yyv[yysp-0]
        end;
  160 : begin
-         yyval := yyv[yysp-0]; 
+         yyval := yyv[yysp-0];
        end;
  161 : begin
-         yyval := MakeNode(NodeList, [yyv[yysp-1], yyv[yysp-0]]); 
+         yyval := MakeNode(NodeList, [yyv[yysp-1], yyv[yysp-0]]);
        end;
  162 : begin
-         yyval := MakeNode(NodePageSize, [], Lexer.yytext); 
+         yyval := MakeNode(NodePageSize, [], Lexer.yytext);
        end;
  163 : begin
-         yyval := MakeNode(NodeLength, [], Lexer.yytext); 
+         yyval := MakeNode(NodeLength, [], Lexer.yytext);
        end;
  164 : begin
-         yyval := MakeNode(NodeUsername, [], Lexer.yytext); 
+         yyval := MakeNode(NodeUsername, [], Lexer.yytext);
        end;
  165 : begin
-         yyval := MakeNode(NodePassWord, [], Lexer.yytext); 
+         yyval := MakeNode(NodePassWord, [], Lexer.yytext);
        end;
  166 : begin
-         yyval := MakeNode(NodeCreateDatabase, [], Lexer.yytext); 
+         yyval := MakeNode(NodeCreateDatabase, [], Lexer.yytext);
        end;
  167 : begin
        end;
@@ -3132,7 +3132,7 @@ begin
          yyval := yyv[yysp-0];
        end;
  360 : begin
-         yyval := MakeNode(NodeInvokeProcedure, []); 
+         yyval := MakeNode(NodeInvokeProcedure, []);
        end;
  361 : begin
          yyval := yyv[yysp-6];
@@ -3266,28 +3266,28 @@ begin
          yyval := yyv[yysp-3];
        end;
  407 : begin
-         yyval := yyv[yysp-0] 
+         yyval := yyv[yysp-0]
        end;
  408 : begin
-         yyval := MakeNode(NOdeAlterException, []); 
+         yyval := MakeNode(NOdeAlterException, []);
        end;
  409 : begin
-         yyval := MakeNode(NodeAlterTable, []); 
+         yyval := MakeNode(NodeAlterTable, []);
        end;
  410 : begin
-         yyval := MakeNode(NodeAlterTrigger, []); 
+         yyval := MakeNode(NodeAlterTrigger, []);
        end;
  411 : begin
-         yyval := MakeNode(NodeAlterProcedure, []); 
+         yyval := MakeNode(NodeAlterProcedure, []);
        end;
  412 : begin
-         yyval := MakeNode(NodeAlterDatabase, []); 
+         yyval := MakeNode(NodeAlterDatabase, []);
        end;
  413 : begin
-         yyval := MakeNode(NodeAlterDomain, []); 
+         yyval := MakeNode(NodeAlterDomain, []);
        end;
  414 : begin
-         yyval := MakeNode(NodeAlterIndex, []); 
+         yyval := MakeNode(NodeAlterIndex, []);
        end;
  415 : begin
          yyval := yyv[yysp-2];
@@ -3502,43 +3502,43 @@ begin
  486 : begin
        end;
  487 : begin
-         yyval := yyv[yysp-0]; 
+         yyval := yyv[yysp-0];
        end;
  488 : begin
-         yyval := MakeNode(NodeDropException, []); 
+         yyval := MakeNode(NodeDropException, []);
        end;
  489 : begin
-         yyval := MakeNode(NodeDropIndex, []); 
+         yyval := MakeNode(NodeDropIndex, []);
        end;
  490 : begin
-         yyval := MakeNode(NodeDropProcedure, []); 
+         yyval := MakeNode(NodeDropProcedure, []);
        end;
  491 : begin
-         yyval := MakeNode(NodeDropTable, []); 
+         yyval := MakeNode(NodeDropTable, []);
        end;
  492 : begin
-         yyval := MakeNode(NodeDropTrigger, []); 
+         yyval := MakeNode(NodeDropTrigger, []);
        end;
  493 : begin
-         yyval := MakeNode(NodeDropView, []); 
+         yyval := MakeNode(NodeDropView, []);
        end;
  494 : begin
-         yyval := MakeNode(NodeDropFilter, []); 
+         yyval := MakeNode(NodeDropFilter, []);
        end;
  495 : begin
-         yyval := MakeNode(NodeDropDomain, []); 
+         yyval := MakeNode(NodeDropDomain, []);
        end;
  496 : begin
-         yyval := MakeNode(NodeDropExternal, []); 
+         yyval := MakeNode(NodeDropExternal, []);
        end;
  497 : begin
-         yyval := MakeNode(NodeDropShadow, []); 
+         yyval := MakeNode(NodeDropShadow, []);
        end;
  498 : begin
-         yyval := MakeNode(NodeDropRole, []); 
+         yyval := MakeNode(NodeDropRole, []);
        end;
  499 : begin
-         yyval := MakeNode(NodeDropGenerator, []); 
+         yyval := MakeNode(NodeDropGenerator, []);
        end;
  500 : begin
          yyval := yyv[yysp-0];
@@ -3737,25 +3737,25 @@ begin
          yyval := yyv[yysp-0];
        end;
  567 : begin
-         yyval := MakeNode(NodeSetNames, [], Lexer.yytext); 
+         yyval := MakeNode(NodeSetNames, [], Lexer.yytext);
        end;
  568 : begin
-         yyval := MakeNode(NodeSetAutoDDL, [], Lexer.yytext); 
+         yyval := MakeNode(NodeSetAutoDDL, [], Lexer.yytext);
        end;
  569 : begin
-         yyval := MakeNode(NodeSetAutoDDL, [], Lexer.yytext); 
+         yyval := MakeNode(NodeSetAutoDDL, [], Lexer.yytext);
        end;
  570 : begin
-         yyval := MakeNode(NodeSetSqlDialect, [], Lexer.yytext); 
+         yyval := MakeNode(NodeSetSqlDialect, [], Lexer.yytext);
        end;
  571 : begin
-         yyval := MakeNode(NodeSetGenerator, []); 
+         yyval := MakeNode(NodeSetGenerator, []);
        end;
  572 : begin
-         yyval := MakeNode(NodeSetGenerator, []); 
+         yyval := MakeNode(NodeSetGenerator, []);
        end;
  573 : begin
-         yyval := MakeNode(NodeSetGenerator, []); 
+         yyval := MakeNode(NodeSetGenerator, []);
        end;
  574 : begin
          yyval := yyv[yysp-0];
@@ -3767,10 +3767,10 @@ begin
          yyval := yyv[yysp-0];
        end;
  577 : begin
-         yyval := MakeNode(NodeSavepointSet, [yyv[yysp-0]]); 
+         yyval := MakeNode(NodeSavepointSet, [yyv[yysp-0]]);
        end;
  578 : begin
-         yyval := MakeNode(NodeSavepointRelease, [yyv[yysp-1]]); 
+         yyval := MakeNode(NodeSavepointRelease, [yyv[yysp-1]]);
        end;
  579 : begin
          yyval := yyv[yysp-0];
@@ -3778,7 +3778,7 @@ begin
  580 : begin
        end;
  581 : begin
-         yyval := MakeNode(NodeSavepointUndo, [yyv[yysp-0]]); 
+         yyval := MakeNode(NodeSavepointUndo, [yyv[yysp-0]]);
        end;
  582 : begin
          yyval := yyv[yysp-0];
@@ -3786,10 +3786,10 @@ begin
  583 : begin
        end;
  584 : begin
-         yyval := MakeNode(NodeCommit, []); 
+         yyval := MakeNode(NodeCommit, []);
        end;
  585 : begin
-         yyval := MakeNode(NodeRollback, []); 
+         yyval := MakeNode(NodeRollback, []);
        end;
  586 : begin
          yyval := yyv[yysp-0];
@@ -3807,7 +3807,7 @@ begin
  591 : begin
        end;
  592 : begin
-         yyval := MakeNode(NodeSetTransaction, []); 
+         yyval := MakeNode(NodeSetTransaction, []);
        end;
  593 : begin
          yyval := yyv[yysp-0];
@@ -3914,10 +3914,10 @@ begin
          yyval := yyv[yysp-2];
        end;
  629 : begin
-         yyval := MakeNode(NodeSetStatistics, []); 
+         yyval := MakeNode(NodeSetStatistics, []);
        end;
  630 : begin
-         yyval := MakeNode(NodeSelect, []); 
+         yyval := MakeNode(NodeSelect, []);
        end;
  631 : begin
          yyval := yyv[yysp-0];
@@ -4231,10 +4231,10 @@ begin
  741 : begin
        end;
  742 : begin
-         yyval := MakeNode(NodeInsert, []); 
+         yyval := MakeNode(NodeInsert, []);
        end;
  743 : begin
-         yyval := MakeNode(NodeInsert, []); 
+         yyval := MakeNode(NodeInsert, []);
        end;
  744 : begin
          yyval := yyv[yysp-0];
@@ -4249,10 +4249,10 @@ begin
          yyval := yyv[yysp-0];
        end;
  748 : begin
-         yyval := MakeNode(NodeDeleteSearched, []); 
+         yyval := MakeNode(NodeDeleteSearched, []);
        end;
  749 : begin
-         yyval := MakeNode(NodeDeletePositioned, []); 
+         yyval := MakeNode(NodeDeletePositioned, []);
        end;
  750 : begin
          yyval := yyv[yysp-3];
@@ -4264,10 +4264,10 @@ begin
          yyval := yyv[yysp-0];
        end;
  753 : begin
-         yyval := MakeNode(NodeUpdateSearched, []); 
+         yyval := MakeNode(NodeUpdateSearched, []);
        end;
  754 : begin
-         yyval := MakeNode(NodeUpdatePositioned, []); 
+         yyval := MakeNode(NodeUpdatePositioned, []);
        end;
  755 : begin
          yyval := yyv[yysp-0];
@@ -4285,10 +4285,10 @@ begin
          yyval := yyv[yysp-0];
        end;
  760 : begin
-         yyval := MakeNode(NodeReadBlob, []); 
+         yyval := MakeNode(NodeReadBlob, []);
        end;
  761 : begin
-         yyval := MakeNode(NodeInsertBlob, []); 
+         yyval := MakeNode(NodeInsertBlob, []);
        end;
  762 : begin
          yyval := yyv[yysp-4];
@@ -5023,7 +5023,7 @@ begin
          yyval := yyv[yysp-0];
        end;
 1008 : begin
-         yyval := makenode(NodeName, [], Lexer.yytext); 
+         yyval := makenode(NodeName, [], Lexer.yytext);
        end;
 1009 : begin
          yyval := yyv[yysp-0];

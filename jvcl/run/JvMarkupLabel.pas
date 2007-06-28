@@ -49,9 +49,6 @@ type
     FMarginTop: Integer;
     FAlignment: TAlignment;
     FText: TCaption;
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    {$ENDIF VisualCLX}
     procedure Refresh;
     procedure ParseHTML(S: string);
     procedure RenderHTML;
@@ -64,8 +61,8 @@ type
     procedure DoReadBackColor(Reader: TReader);
   protected
     procedure FontChanged; override;
-    procedure SetText(const Value: TCaption); {$IFDEF VisualCLX} override; {$ENDIF}
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
+    procedure SetText(const Value: TCaption);
+    procedure SetAutoSize(Value: Boolean);  override;
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -79,12 +76,7 @@ type
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Text: TCaption read FText write SetText;
-    {$IFDEF VCL}
     property AutoSize;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
-    {$ENDIF VisualCLX}
     property Align;
     property Font;
     property Anchors;
@@ -129,9 +121,7 @@ uses
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
   FAlignment := taLeftJustify;
@@ -235,7 +225,7 @@ var
       Exit;
     if not (V[1] in ['#', '$']) then
     begin
-      // allow the use of both "clBlack" and "Black" 
+      // allow the use of both "clBlack" and "Black"
       if Pos('cl', AnsiLowerCase(V)) = 1 then
         VV := V
       else
@@ -595,12 +585,7 @@ end;
 
 procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF VCL}
   inherited SetAutoSize(Value);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FAutoSize := Value;
-  {$ENDIF VisualCLX}
   Invalidate;
 end;
 
@@ -632,9 +617,6 @@ begin
   S := StringReplace(S, SLineBreak, ' ', [rfReplaceAll]);
   S := TrimRight(S);
   FText := S;
-  {$IFDEF VisualCLX}
-  inherited SetText(FText);
-  {$ENDIF VisualCLX}
   Refresh;
 end;
 

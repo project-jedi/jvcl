@@ -129,9 +129,7 @@ type
     FArrowWidth: Integer;
     procedure SetArrowWidth(Value: Integer);
     procedure SetDropDown(Value: TPopupMenu);
-    {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    {$ENDIF VCL}
   protected
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -364,9 +362,7 @@ constructor TJvCustomDropButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csSetCaption];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   FArrowWidth := 13;
   Width := 42;
   Height := 21;
@@ -467,13 +463,13 @@ begin
   Invalidate;
 end;
 
-{$IFDEF VCL}
+
 procedure TJvCustomDropButton.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
-{$ENDIF VCL}
+
 
 procedure TJvCustomDropButton.Resize;
 begin

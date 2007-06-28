@@ -61,9 +61,7 @@ type
     FShowSeconds: Boolean;
     FAlarm: TDateTime;
     FAlarmEnabled: Boolean;
-    {$IFDEF VCL}
     FHooked: Boolean;
-    {$ENDIF VCL}
     FDotsColor: TColor;
     FAlarmWait: Boolean;
     FDisplayTime: TJvClockTime;
@@ -101,13 +99,11 @@ type
     procedure ResetAlarm;
     procedure CheckAlarm;
     procedure SetFixedTime(const Value: TDateTime);
-    {$IFDEF VCL}
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMTimeChange(var Msg: TMessage); message WM_TIMECHANGE;
     procedure SetShowDate(const Value: Boolean);
     procedure SetDateFormat(const Value: string);
-    {$ENDIF VCL}
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure SetHoursHandColor(const Value: TColor);
     procedure SetMinutesHandColor(const Value: TColor);
@@ -115,13 +111,11 @@ type
   protected
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean);  override;
     procedure Alarm; dynamic;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
     procedure DestroyWindowHandle; override;
-    {$ENDIF VCL}
     procedure Loaded; override;
     procedure Paint; override;
     function GetSystemTime: TDateTime; virtual;
@@ -156,13 +150,11 @@ type
     property BorderStyle;
     property Anchors;
     property Constraints;
-    {$IFDEF VCL}
     property UseDockManager default True;
     property DockSite;
     property DragKind;
     property DragCursor;
     property FullRepaint;
-    {$ENDIF VCL}
     property Color;
     property Cursor;
     property DragMode;
@@ -189,7 +181,6 @@ type
     property OnContextPopup;
     property OnStartDrag;
     property OnConstrainedResize;
-    {$IFDEF VCL}
     property OnCanResize;
     property OnDockDrop;
     property OnDockOver;
@@ -197,7 +188,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -413,9 +403,7 @@ begin
   end;
   Caption := TimeToStr(Time);
   ControlStyle := ControlStyle - [csSetCaption]  - [csReplicatable];
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
-  {$ENDIF VCL}
   BevelInner := bvLowered;
   BevelOuter := bvRaised;
   FFixedTimeStored := False;
@@ -429,7 +417,7 @@ begin
   FShowSeconds := True;
   FLeadingZero := True;
   FShowDate := False;
-  FDateFormat := ShortDateFormat; 
+  FDateFormat := ShortDateFormat;
   GetTime(FDisplayTime);
   if FDisplayTime.Hour >= 12 then
     Dec(FDisplayTime.Hour, 12);
@@ -439,13 +427,11 @@ end;
 
 destructor TJvClock.Destroy;
 begin
-  {$IFDEF VCL}
   if FHooked then
   begin
     Application.UnhookMainWindow(FormatSettingsChange);
     FHooked := False;
   end;
-  {$ENDIF VCL}
   FTimer.Enabled := True;
   FTimer.Free;
 
@@ -458,7 +444,7 @@ begin
   ResetAlarm;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvClock.CreateWnd;
 begin
@@ -487,7 +473,7 @@ begin
     Invalidate;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvClock.TextChanged;
 begin
@@ -502,7 +488,7 @@ begin
     Realign;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvClock.WMTimeChange(var Msg: TMessage);
 begin
@@ -524,7 +510,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
+
 
 function TJvClock.GetSystemTime: TDateTime;
 begin
@@ -602,12 +588,7 @@ begin
     SetNewFontSize(Canvas, TimeStr, H, W);
     Font := Canvas.Font;
   finally
-    {$IFDEF VCL}
     Canvas.Handle := 0;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Canvas.Handle := nil;
-    {$ENDIF VisualCLX}
     ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
@@ -638,11 +619,9 @@ end;
 
 procedure TJvClock.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF VCL}
   {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
   {$ENDIF COMPILER6_UP}
-  {$ENDIF VCL}
   FAutoSize := Value;
   if FAutoSize then
   begin
@@ -899,7 +878,6 @@ begin
       begin
         if MinDots then
         begin
-          {$IFDEF VCL}
           if Ctl3D then
           begin
             Canvas.Brush.Color := clBtnShadow;
@@ -912,7 +890,6 @@ begin
             Canvas.FillRect(R);
             Canvas.Brush.Color := Self.Color;
           end;
-          {$ENDIF VCL}
           R.Right := R.Left + 1;
           R.Bottom := R.Top + 1;
           DrawThemedBackground(Self, Canvas, R);
@@ -923,7 +900,6 @@ begin
         R.Right := R.Left + DotWidth;
         R.Bottom := R.Top + DotHeight;
         OffsetRect(R, -DotCenter.X, -DotCenter.Y);
-        {$IFDEF VCL}
         if Ctl3D and MinDots then
           with Canvas do
           begin
@@ -932,11 +908,8 @@ begin
             DrawThemedBackground(Self, Canvas, R);
             Frame3D(Canvas, R, LightColor(FDotsColor), clWindowFrame, 1);
           end;
-        {$ENDIF VCL}
         Canvas.Brush.Color := Canvas.Pen.Color;
-        {$IFDEF VCL}
         if not (Ctl3D and MinDots) then
-        {$ENDIF VCL}
           DrawThemedBackground(Self, Canvas, R);
       end;
     end;
@@ -974,7 +947,7 @@ begin
       FFixedTime := Now;
 
     // Ensure the display time is accurate and force redraw
-    GetTime(FDisplayTime);    
+    GetTime(FDisplayTime);
     Invalidate;
   end;
 

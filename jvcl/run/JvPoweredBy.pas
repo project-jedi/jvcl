@@ -44,18 +44,11 @@ type
     FImage: TBitmap;
     FURLActive: Boolean;
     FURL: string;
-    {$IFDEF VisualCLX}
-    FAutoSize: Boolean;
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF VisualCLX}
     procedure SetURL(const Value: string);
     procedure SetURLActive(const Value: Boolean);
   protected
     procedure Paint; override;
     procedure Click; override;
-    {$IFDEF VisualCLX}
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -75,12 +68,10 @@ type
     property Align;
     property Anchors;
     property AutoSize;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property Constraints;
     property Cursor default crHandPoint;
     property DragMode;
@@ -111,12 +102,10 @@ type
     property Align;
     property Anchors;
     property AutoSize;
-    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
     property Constraints;
     property Cursor default crHandPoint;
     property DragMode;
@@ -169,9 +158,6 @@ const
 constructor TJvPoweredBy.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FAutoSize := True;
-  {$ENDIF VisualCLX}
   Cursor := crHandPoint;
   FImage := TBitmap.Create;
   FImage.LoadFromResourceName(HInstance, FResourceName);
@@ -231,17 +217,12 @@ begin
     Canvas.Rectangle(ClientRect);
   end;
   SrcRect := Rect(0, 0, FImage.Width, FImage.Height);
-  {$IFDEF VCL}
   DestRect := SrcRect;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DestRect := Bounds(Left, Top, Width, Height);
-  {$ENDIF VisualCLX}
   OffsetRect(DestRect, (ClientWidth - FImage.Width) div 2, (ClientHeight - FImage.Height) div 2);
   with Canvas do
   begin
     CopyMode := cmSrcCopy;
-    CopyRect({$IFDEF VisualCLX} Canvas, {$ENDIF} DestRect, FImage.Canvas, SrcRect);
+    CopyRect( DestRect, FImage.Canvas, SrcRect);
   end;
 end;
 
@@ -265,17 +246,7 @@ begin
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvPoweredBy.SetAutoSize(Value: Boolean);
-begin
-  if Value <> FAutoSize then
-  begin
-    FAutoSize := Value;
-    if FAutoSize then
-      SetBounds(Left, Top, Width, Height);
-  end;
-end;
-{$ENDIF VisualCLX}
+
 
 //=== { TJvPoweredByJCL } ====================================================
 

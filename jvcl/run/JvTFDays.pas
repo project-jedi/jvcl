@@ -63,14 +63,8 @@ uses
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QImgList, QWindows, Types,
-  {$ENDIF VisualCLX}
   JvTFManager, JvTFSparseMatrix, JvTFUtils;
 
 // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
@@ -889,11 +883,9 @@ type
     FOnFocusedColChanged: TNotifyEvent;
     FShowFocus: Boolean;
 
-    {$IFDEF VCL}
     // internal stuff
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
-    {$ENDIF VCL}
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
     procedure AlignScrollBars;
@@ -2314,10 +2306,8 @@ begin
 
   BorderStyle := bsNone;
   FQuickCreate := False;
-  {$IFDEF VCL}
   ParentCtl3D := False;
   Ctl3D := False;
-  {$ENDIF VCL}
 end;
 
 procedure TJvTFInPlaceApptEditor.DoExit;
@@ -2765,10 +2755,8 @@ begin
   // if we set the csNoDesignVisible flag then visibility at design time
   //  is controled by the Visible property, which is exactly what we want.
   ControlStyle := ControlStyle + [csNoDesignVisible];
-  {$IFDEF VCL}
   ParentCtl3D := False;
   Ctl3D := False;
-  {$ENDIF VCL}
 end;
 
 procedure TJvTFDaysScrollBar.CMDesignHitTest(var Msg: TCMDesignHitTest);
@@ -4320,7 +4308,7 @@ begin
   FCols.Free;
 end;
 
-{$IFDEF VCL}
+
 
 procedure TJvTFDays.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -4334,7 +4322,7 @@ begin
   Msg.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
 end;
 
-{$ENDIF VCL}
+
 
 procedure TJvTFDays.SetBorderStyle(Value: TBorderStyle);
 begin
@@ -6707,7 +6695,7 @@ begin
               Lbl := Lbl + 'a'
             else
               Lbl := Lbl + 'p';
-}            
+}
         end;
 
         if PrevHrSel then

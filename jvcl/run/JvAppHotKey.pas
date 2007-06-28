@@ -24,7 +24,7 @@ Description:
   Set the HotKey property to a *unique* combination of Ctrl,Alt,Shift and a character.
   Set active to True to receive notifications when the hotkey is pressed. The OnHotKey
   event is called when the user presses the hotkey combination.
-  
+
 30/03/2006 Added property WinModifier. Windows key will now be recognized.
 
 Known Issues:
@@ -58,7 +58,7 @@ type
     FHasRegistered: Boolean;
     FOnHotKeyRegisterFailed: TJvHotKeyRegisterFailed;
     FWindowsKey : Boolean;
-    
+
     procedure SetActive(Value: Boolean);
     procedure SetHotKey(Value: TShortCut);
     function WndProc(var Msg: TMessage): Boolean;

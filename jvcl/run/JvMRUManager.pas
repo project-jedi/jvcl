@@ -37,9 +37,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
   Windows, Menus, Graphics, Controls, Forms,
   JvFormPlacement, JvAppStorage, JvComponentBase;
 
@@ -482,7 +479,7 @@ begin
       begin
         Item.Caption := DoMinimizeName(S);
       end;
-      Item.Tag := I;      
+      Item.Tag := I;
       AddMenuItem(Item);
       GetItemInfoEx(Item, I);
     end;
@@ -501,7 +498,7 @@ begin
     Item := TMenuItem(FItems[0]);
     FItems.Remove(Item);
     // (p3) it doesn't matter if the item is in FRecentMenu or not - it still needs to be freed
-    // this also avoids duplicates when MenuLocation = mruSibling 
+    // this also avoids duplicates when MenuLocation = mruSibling
 //    if Assigned(FRecentMenu) and (FRecentMenu.IndexOf(Item) >= 0) then
     Item.Free;
   end;
@@ -841,12 +838,7 @@ begin
   begin
     if not StartEllipsis then
       Result := PathCompactPath(
-        {$IFDEF VCL}
         GetCanvas.Handle,
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        QPainter_handle(GetCanvas.Handle),
-        {$ENDIF VisualCLX}
         S, GetCanvas.TextWidth('n') * MaxLength, cpCenter)
     else
     if Length(S) > MaxLength then

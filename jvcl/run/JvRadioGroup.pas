@@ -175,7 +175,7 @@ begin
     H := TextHeight('0');
     R := Rect(0, H div 2 - 1, Width, Height);
     Windows.DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
-      Byte(FEdgeBorders) {$IFDEF VCL} or Ctl3DStyles[Ctl3D] {$ENDIF} or BF_ADJUST);
+      Byte(FEdgeBorders)  or Ctl3DStyles[Ctl3D]  or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin
       if not UseRightToLeftAlignment then

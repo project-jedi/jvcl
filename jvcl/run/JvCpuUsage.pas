@@ -45,7 +45,7 @@ type
     FRegistry: TRegistry;
     FPrevIdleTime: LARGE_INTEGER;
     FPrevSystemTime: LARGE_INTEGER;
-    
+
     function GetUsage: Double;
   public
     constructor Create(AOwner: TComponent); override;

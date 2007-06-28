@@ -37,9 +37,6 @@ uses
   JVCLVer, JvComponentBase;
 
 type
-  {$IFDEF VisualCLX}
-  TCommonDialog = TCustomDialog;
-  {$ENDIF VisualCLX}
 
   TJvCommonDialog = class(TCommonDialog)
   private

@@ -178,11 +178,11 @@ begin
   I := FConditions.Count-1;
   while (I <> -1) and (TMTCondition(FConditions[I]).ID <> ID) do
     Dec(I);
-  
+
   // if not found, add the condition
   if I = -1 then
     I := FConditions.Add(TMTCondition.Create(Self, ID));
-  
+
   // return the condition
   Result := TMTCondition(FConditions[I])
 end;
@@ -291,7 +291,7 @@ begin
         raise;
       end;
     end;
-  
+
   FMonitor.CriticalEnter;
   try
     FMonitor.DecNextCount;

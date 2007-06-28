@@ -122,9 +122,7 @@ uses
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF VCL}
   Width := 200;
   Height := 150;
   FActive := False;
@@ -140,9 +138,7 @@ begin
   // FText.SetBounds(2, 2, Width-4, Height-4);
   FText.Width := Width;
   FText.Height := Height;
-  {$IFDEF VCL}
   FText.BorderStyle := sbsNone;
-  {$ENDIF VCL}
   FText.TabStop := False;
   FText.Enabled := FSelectable;
   FText.AutoSize := False;
@@ -503,7 +499,7 @@ begin
     FText.Width := Width;
     if FText.Height < Height then
       FText.Height := Height;
-  end;    
+  end;
   inherited BoundsChanged;
 end;
 
