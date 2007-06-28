@@ -1418,6 +1418,7 @@ begin
         BoundsChanged;
       end;
     WM_ERASEBKGND:
+      if Msg.WParam <> 0 then
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
         Canvas := TCanvas.Create;
@@ -1430,6 +1431,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
+    {$IFNDEF DELPHI2007_UP}
     WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
@@ -1439,6 +1441,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
+    {$ENDIF ~DELPHI2007_UP}
     WM_GETDLGCODE:
       begin
         inherited WndProc(Msg);
@@ -1961,6 +1964,7 @@ begin
         BoundsChanged;
       end;
     WM_ERASEBKGND:
+      if Msg.WParam <> 0 then
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
         Canvas := TCanvas.Create;
@@ -1973,6 +1977,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
+    {$IFNDEF DELPHI2007_UP}
     WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
@@ -1982,6 +1987,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
+    {$ENDIF ~DELPHI2007_UP}
     WM_GETDLGCODE:
       begin
         inherited WndProc(Msg);
@@ -2301,6 +2307,7 @@ begin
         BoundsChanged;
       end;
     WM_ERASEBKGND:
+      if Msg.WParam <> 0 then
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
         Canvas := TCanvas.Create;
@@ -2313,6 +2320,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
+    {$IFNDEF DELPHI2007_UP}
     WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
@@ -2322,6 +2330,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
+    {$ENDIF ~DELPHI2007_UP}
     WM_GETDLGCODE:
       begin
         inherited WndProc(Msg);
