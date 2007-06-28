@@ -344,12 +344,9 @@ const
   // WIN32_IE >= = $0501
   NIIF_NOSOUND    = $00000010;
 
-  Kernel32DLLName = 'kernel32.dll';
   RegisterServiceProcessName = 'RegisterServiceProcess';
 
 var
-  GKernel32Handle: THandle = 0;
-  GTriedLoadKernel32Dll: Boolean = False;
   RegisterServiceProcess: TRegisterServiceProcess = nil;
 
 { We get the following messages while clicking:
@@ -409,26 +406,6 @@ var
 function IsApplicationMinimized: Boolean;
 begin
   Result := IsIconic(Application.Handle);
-end;
-
-procedure UnloadKernel32Dll;
-begin
-  RegisterServiceProcess := nil;
-  if GKernel32Handle > 0 then
-    FreeLibrary(GKernel32Handle);
-  GKernel32Handle := 0;
-end;
-
-procedure LoadKernel32Dll;
-begin
-  if not GTriedLoadKernel32Dll then
-  begin
-    GTriedLoadKernel32Dll := True;
-
-    GKernel32Handle := Windows.LoadLibrary(Kernel32DLLName);
-    if GKernel32Handle > 0 then
-      RegisterServiceProcess := GetProcAddress(GKernel32Handle, RegisterServiceProcessName);
-  end;
 end;
 
 function GetTrayHandle: THandle;
@@ -1220,7 +1197,8 @@ begin
     FTask := Value;
     if not (csDesigning in ComponentState) then
     begin
-      LoadKernel32Dll;
+      if not Assigned(RegisterServiceProcess) then
+        RegisterServiceProcess := GetProcAddress(GetModuleHandle(kernel32), RegisterServiceProcessName);
 
       if Assigned(RegisterServiceProcess) then
         if FTask then
@@ -1605,7 +1583,7 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  UnloadKernel32Dll;
+  RegisterServiceProcess := nil;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

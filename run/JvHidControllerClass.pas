@@ -45,7 +45,7 @@ uses
   {$IFDEF USEJVCL}
   JvComponentBase,
   {$ENDIF USEJVCL}
-  DBT, SetupApi, HID, ModuleLoader;
+  DBT, SetupApi, HID;
 
 const
   // a version string for the component
@@ -512,18 +512,15 @@ resourcestring
 
 {$ENDIF USEJVCL}
 
-const
-  Kernel32DllName = 'kernel32.dll';
-
 //=== these are declared inconsistent in Windows.pas =========================
 
 function ReadFileEx(hFile: THandle; var Buffer; nNumberOfBytesToRead: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
-  external Kernel32DllName name 'ReadFileEx';
+  external kernel32 name 'ReadFileEx';
 
 function WriteFileEx(hFile: THandle; var Buffer; nNumberOfBytesToWrite: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
-  external Kernel32DllName name 'WriteFileEx';
+  external kernel32 name 'WriteFileEx';
 
 //=== { TJvHidDeviceReadThread } =============================================
 
@@ -1240,19 +1237,18 @@ function TJvHidDevice.CancelIO(const Mode: TJvHidOpenExMode): Boolean;
   type
     TCancelIOFunc = function(hFile: THandle): BOOL; stdcall;
   var
-    hKernel: TModuleHandle;
+    hKernel: HMODULE;
     CancelIOFunc: TCancelIOFunc;
   begin
-    hKernel := INVALID_HANDLE_VALUE;
-    Result := LoadModule(hKernel, Kernel32DllName);
+    hKernel := GetModuleHandle(kernel32);
+    Result := hKernel <> INVALID_HANDLE_VALUE;
     if Result then
     begin
-      @CancelIOFunc := GetModuleSymbol(hKernel, 'CancelIO');
+      @CancelIOFunc := GetProcAddress(hKernel, 'CancelIO');
       if Assigned(CancelIOFunc) then
         Result := CancelIOFunc(Handle)
       else
         Result := False;
-      UnloadModule(hKernel);
     end;
   end;
 

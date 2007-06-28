@@ -640,8 +640,8 @@ end;
 
 procedure LoadJvDialogs;
 begin
-  ShellHandle := LoadLibrary(PChar(Shell32));
-  if ShellHandle > 0 then
+  ShellHandle := SafeLoadLibrary(Shell32);
+  if ShellHandle <> 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
       @SHChangeIconW := GetProcAddress(ShellHandle, PChar(62))
@@ -661,18 +661,18 @@ begin
     @SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
   end;
 
-  CommHandle := LoadLibrary('comdlg32.dll');
-  if CommHandle > 0 then
+  CommHandle := SafeLoadLibrary('comdlg32.dll');
+  if CommHandle <> 0 then
   begin
     @GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
     @GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
   end;
 
-  AppWizHandle := LoadLibrary('appwiz.cpl');
-  if AppWizHandle > 0 then
+  AppWizHandle := SafeLoadLibrary('appwiz.cpl');
+  if AppWizHandle <> 0 then
     @NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
-  URLHandle := LoadLibrary('url.dll');
-  if URLHandle > 0 then
+  URLHandle := SafeLoadLibrary('url.dll');
+  if URLHandle <> 0 then
   begin
     @URLAssociationDialogA := GetProcAddress(URLHandle, 'URLAssociationDialogA');
     @MIMEAssociationDialogA := GetProcAddress(URLHandle, 'MIMEAssociationDialogA');
@@ -680,8 +680,8 @@ begin
 //    @URLAssociationDialogW  := GetProcAddress(URLHandle,'URLAssociationDialogW');
 //    @MIMEAssociationDialogW := GetProcAddress(URLHandle,'MIMEAssociationDialogW');
   end;
-  SHDocvwHandle := LoadLibrary('shdocvw.dll');
-  if SHDocvwHandle > 0 then
+  SHDocvwHandle := SafeLoadLibrary('shdocvw.dll');
+  if SHDocvwHandle <> 0 then
     @SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
 end;
 
@@ -794,25 +794,20 @@ end;
 
 function TJvOrganizeFavoritesDialog.Execute: Boolean;
 var
-  SHModule: THandle;
   Path: string;
   lpfnDoOrganizeFavDlg: LPFNORGFAV;
 begin
   Result := False;
   //  lpfnDoOrganizeFavDlg := nil;
-  SHModule := SafeLoadLibrary('shdocvw.dll');
-  try
-    if SHModule <= HINSTANCE_ERROR then
-      Exit;
+  if SHDocvwHandle > HINSTANCE_ERROR then
+  begin
     Path := GetSpecialFolderPath('Favorites', True) + #0#0;
-    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule, 'DoOrganizeFavDlg'));
+    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHDocvwHandle, 'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.CreateRes(@RsEFunctionNotSupported);
     lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
-  finally
-    FreeLibrary(SHModule);
+    Result := True;
   end;
-  Result := True;
 end;
 
 //=== { TJvAppletDialog } ====================================================
@@ -885,32 +880,33 @@ begin
   Unload;
   if AppletName <> '' then
   begin
-    FModule := LoadLibrary(PChar(AppletName));
-    if FModule <= HINSTANCE_ERROR then
-      Exit;
-    FAppletFunc := TCplApplet(GetProcAddress(FModule, 'CPlApplet'));
-    if Assigned(FAppletFunc) and (FAppletFunc(GetForegroundWindow, CPL_INIT, 0, 0) <> 0) then
+    FModule := SafeLoadLibrary(AppletName);
+    if FModule <> 0 then
     begin
-      FCount := FAppletFunc(GetForegroundWindow, CPL_GETCOUNT, 0, 0);
-      SetLength(FAppletInfo, FCount);
-      for I := 0 to Count - 1 do
+      FAppletFunc := TCplApplet(GetProcAddress(FModule, 'CPlApplet'));
+      if Assigned(FAppletFunc) and (FAppletFunc(GetForegroundWindow, CPL_INIT, 0, 0) <> 0) then
       begin
-        FAppletFunc(GetForegroundWindow, CPL_INQUIRE, I, Longint(@AplInfo));
-        with FAppletInfo[I] do
+        FCount := FAppletFunc(GetForegroundWindow, CPL_GETCOUNT, 0, 0);
+        SetLength(FAppletInfo, FCount);
+        for I := 0 to Count - 1 do
         begin
-          Icon := TIcon.Create;
-          Icon.Handle := LoadIcon(FModule, MakeIntResource(AplInfo.idIcon));
-          LoadString(FModule, AplInfo.idName, Buffer, SizeOf(Buffer));
-          Name := Buffer;
-          LoadString(FModule, AplInfo.idInfo, Buffer, SizeOf(Buffer));
-          Info := Buffer;
+          FAppletFunc(GetForegroundWindow, CPL_INQUIRE, I, Longint(@AplInfo));
+          with FAppletInfo[I] do
+          begin
+            Icon := TIcon.Create;
+            Icon.Handle := LoadIcon(FModule, MakeIntResource(AplInfo.idIcon));
+            LoadString(FModule, AplInfo.idName, Buffer, SizeOf(Buffer));
+            Name := Buffer;
+            LoadString(FModule, AplInfo.idInfo, Buffer, SizeOf(Buffer));
+            Info := Buffer;
+          end;
         end;
+      end
+      else
+      begin
+        FreeLibrary(FModule);
+        FModule := HINSTANCE_ERROR;
       end;
-    end
-    else
-    begin
-      FreeLibrary(FModule);
-      FModule := HINSTANCE_ERROR;
     end;
   end;
   if AppletIndex >= Count then
@@ -1203,17 +1199,13 @@ var
   MethodPtr: Pointer;
   ShellDLL: HMODULE;
 begin
-  ShellDLL := LoadLibrary(PChar(Shell32));
+  ShellDLL := SafeLoadLibrary(Shell32);
   MethodPtr := GetProcAddress(ShellDLL, PChar(183));
-  if MethodPtr <> nil then
-  begin
+  if Assigned(MethodPtr) then
     Result := ExecuteShellMessageBox(MethodPtr, Instance, Owner, Text, Caption,
-      Style, Parameters);
-  end
+      Style, Parameters)
   else
-  begin
     Result := ID_CANCEL;
-  end;
 end;
 
 //=== { TJvOutOfMemoryDialog } ===============================================
@@ -1437,7 +1429,7 @@ var
   Applet: TCplApplet;
 begin
   Result := False;
-  APModule := LoadLibrary('hdwwiz.cpl');
+  APModule := SafeLoadLibrary('hdwwiz.cpl');
   if APModule <= HINSTANCE_ERROR then
     Exit;
   Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));

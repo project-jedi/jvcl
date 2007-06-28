@@ -4929,7 +4929,7 @@ begin
   if FConverter <> 0 then
     Exit;
 
-  FConverter := LoadLibrary(PChar(FConverterFileName));
+  FConverter := SafeLoadLibrary(FConverterFileName);
   if FConverter <> 0 then
   begin
     @FInitConverter32 := GetProcAddress(FConverter, InitConverter32Name);
@@ -7512,7 +7512,6 @@ end;
 
 procedure InitRichEditDll;
 var
-  OldError: Longint;
   FileName: string;
   InfoSize, Wnd: DWORD;
   VerBuf: Pointer;
@@ -7520,46 +7519,41 @@ var
   VerSize: DWORD;
 begin
   RichEditVersion := 1;
-  OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-  try
-    GLibHandle := LoadLibrary(RichEdit20ModuleName);
+  GLibHandle := SafeLoadLibrary(RichEdit20ModuleName);
+  if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
+    GLibHandle := 0;
+  if GLibHandle = 0 then
+  begin
+    GLibHandle := SafeLoadLibrary(RichEdit10ModuleName);
     if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
       GLibHandle := 0;
-    if GLibHandle = 0 then
-    begin
-      GLibHandle := LoadLibrary(RichEdit10ModuleName);
-      if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
-        GLibHandle := 0;
-    end
-    else
-    begin
-      RichEditVersion := 2;
+  end
+  else
+  begin
+    RichEditVersion := 2;
 
-      {$IFDEF COMPILER5}
-      FileName := GetModulePath(GLibHandle);
-      {$ELSE}
-      FileName := GetModuleName(GLibHandle);
-      {$ENDIF COMPILER5}
-      InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
-      if InfoSize <> 0 then
-      begin
-        GetMem(VerBuf, InfoSize);
-        try
-          if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
-            if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
-            begin
-              if FI.dwFileVersionMS and $FFFF0000 = $00050000 then
-                RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10;
-              if RichEditVersion = 0 then
-                RichEditVersion := 2;
-            end;
-        finally
-          FreeMem(VerBuf);
-        end;
+    {$IFDEF COMPILER5}
+    FileName := GetModulePath(GLibHandle);
+    {$ELSE}
+    FileName := GetModuleName(GLibHandle);
+    {$ENDIF COMPILER5}
+    InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
+    if InfoSize <> 0 then
+    begin
+      GetMem(VerBuf, InfoSize);
+      try
+        if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
+          if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
+          begin
+            if FI.dwFileVersionMS and $FFFF0000 = $00050000 then
+              RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10;
+            if RichEditVersion = 0 then
+              RichEditVersion := 2;
+          end;
+      finally
+        FreeMem(VerBuf);
       end;
     end;
-  finally
-    SetErrorMode(OldError);
   end;
 end;
 

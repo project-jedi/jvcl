@@ -744,8 +744,8 @@ procedure InitializeDLL;
 begin
   if hComCtlDll = 0 then
   begin
-    hComCtlDll := LoadLibrary(DllComCtlName);
-    if hComCtlDll > 0 then
+    hComCtlDll := SafeLoadLibrary(DllComCtlName);
+    if hComCtlDll <> 0 then
     begin
       // (rom) can we get them by name?
       CreateMruList := GetProcAddress(hComCtlDll, PChar(151));
