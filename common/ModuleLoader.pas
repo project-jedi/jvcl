@@ -121,6 +121,9 @@ implementation
 
 {$IFDEF MSWINDOWS}
 
+uses
+  SysUtils;
+
 // load the DLL file FileName
 // the rules for FileName are those of LoadLibrary
 // Returns: True = success, False = failure to load
@@ -131,7 +134,7 @@ implementation
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := LoadLibrary(PChar(FileName));
+    Module := SafeLoadLibrary(PChar(FileName));
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 
