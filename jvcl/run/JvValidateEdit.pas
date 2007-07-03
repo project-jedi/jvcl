@@ -46,7 +46,7 @@ uses
 type
   TJvValidateEditDisplayFormat = (dfAlphabetic, dfAlphaNumeric, dfBinary,
     dfCheckChars, dfCurrency, dfCustom, dfFloat, dfFloatGeneral, dfHex, dfInteger,
-    dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear);
+    dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear, dfDecimal);
 
   TJvValidateEditCriticalPointsCheck = (cpNone, cpMinValue, cpMaxValue, cpBoth);
 
