@@ -39,28 +39,30 @@ end;
 { SMExport Components }
 function Opt_SMExportComponents(Target: TCompileTarget): Boolean;
 begin
-  if Target.Version = 9 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2005.dcp')
-  else if Target.Version = 10 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2006.dcp')
-  else if Target.Version = 11 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2007.dcp')
-  else
-    Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMExport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
+//  if Target.Version = 9 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2005.dcp')
+//  else if Target.Version = 10 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2006.dcp')
+//  else if Target.Version = 11 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2007.dcp')
+//  else
+//    Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMExport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
 { SMImport Components }
 function Opt_SMImportComponents(Target: TCompileTarget): Boolean;
 begin
-  if Target.Version = 9 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2005.dcp')
-  else if Target.Version = 10 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2006.dcp')
-  else if Target.Version = 11 then
-    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2007.dcp')
-  else
-    Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMImport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
+//  if Target.Version = 9 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2005.dcp')
+//  else if Target.Version = 10 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2006.dcp')
+//  else if Target.Version = 11 then
+//    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2007.dcp')
+//  else
+//    Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMImport%s%d.dcp', [LowerCase(Target.TargetType), Target.Version]));
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
