@@ -1365,7 +1365,9 @@ begin
           Canvas.Free;
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
-      end;
+      end
+      else
+        inherited WndProc(Msg);
     {$IFNDEF DELPHI2007_UP}
     WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
@@ -1903,7 +1905,9 @@ begin
           Canvas.Free;
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
-      end;
+      end
+      else
+        inherited WndProc(Msg);
     {$IFNDEF DELPHI2007_UP}
     WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
@@ -2242,7 +2246,9 @@ begin
           Canvas.Free;
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
-      end;
+      end
+      else
+        inherited WndProc(Msg);
     {$IFNDEF DELPHI2007_UP}
     WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
