@@ -1,5 +1,6 @@
 ##Package: ManagedThreads
 ##Status: Generated
+##Skip: TThreadNameInfo
 ----------------------------------------------------------------------------------------------------
 @@JvMTConsts.pas
 Summary
@@ -11,81 +12,59 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@EMTTerminateError
 Summary
-  Write here a summary (1 line)
+  The exception class for thread terminate errors.
 Description
-  Write here a description
+  EMTThreadError is the exception class for terminate errors in the Managed Thread components.
+See Also
+  EMTThreadError
 
 ----------------------------------------------------------------------------------------------------
 @@EMTThreadError
 Summary
-  Write here a summary (1 line)
+  The exception class for thread synchronization errors.
 Description
-  Write here a description
+  EMTThreadError is the exception class for errors in the Managed Thread components.
+See Also
+  EMTTerminateError
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus
 <TITLE TMTThreadStatus type>
 Summary
-  Write here a summary (1 line)
+  Indicates the status of a thread.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMTThread.Status
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus.tsInitializing
-  Description for tsInitializing
+  The thread is not yet created.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus.tsWaiting
-  Description for tsWaiting
+  The thread is suspended.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus.tsRunning
-  Description for tsRunning
+  The thread is running.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus.tsTerminating
-  Description for tsTerminating
+  The thread has been asked to terminate.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus.tsFinished
-  Description for tsFinished
+  The thread has finished executing.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTTicket
 <TITLE TMTTicket type>
 Summary
-  Write here a summary (1 line)
+  Represents a thread ticket.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  Integer; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TThreadNameInfo
-<TITLE TThreadNameInfo type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  TMTTicket is an integer that identifies a thread. It is used by the Ticket property of the
+  TJvMTThread component.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TThreadNameInfo.FType
-  Description for FType
-
-----------------------------------------------------------------------------------------------------
-@@TThreadNameInfo.FName
-  Description for FName
-
-----------------------------------------------------------------------------------------------------
-@@TThreadNameInfo.FThreadID
-  Description for FThreadID
-
-----------------------------------------------------------------------------------------------------
-@@TThreadNameInfo.FFlags
-  Description for FFlags
+  TJvMTThread.Ticket
 

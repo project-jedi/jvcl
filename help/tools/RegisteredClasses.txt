@@ -89,6 +89,7 @@ TJvDateEdit
 TJvDatePickerEdit
 TJvDateTimePicker
 TJvDBCalcEdit
+TJvDBCheckBox
 TJvDBCombobox
 TJvDBComboEdit
 TJvDBDateEdit
@@ -371,6 +372,8 @@ TJvNewLinkDialog
 TJvNTEventLog
 TJvObjectPickerDialog
 TJvObjectPropertiesDialog
+TjvOdacOraQuery
+TjvOdacOraTable
 TjvOdacSmartQuery
 TJvOfficeColorButton
 TJvOfficeColorPanel

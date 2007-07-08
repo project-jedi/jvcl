@@ -121,6 +121,7 @@ JvDatePickerEdit=StdCtrls
 JvDateTimePicker=StdCtrls
 JvDBActions=DB
 JvDBActionsEngine=DB
+JvDBCheckBox=DB
 JvDBCombobox=DB
 JvDBControls=DB
 JvDBDatePickerEdit=DB

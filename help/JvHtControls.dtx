@@ -404,6 +404,9 @@ Description
 
   Use the OnHyperLinkClick event handler to respond to mouse clicks on Anchor tags found in the content
   for the control.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
+  applied to the control when selected or disabled.
 See Also
   TJvCustomHTLabel.OnHyperLinkClick, TJvHTLabel
 
@@ -415,7 +418,8 @@ Description
   OnHyperLinkClick is a THyperLinkClick property that represents the event handler signaled when the
   user clicks on an HTML \<A\> tag found in the caption for the control.
 
-  OnHyperLinkClick is used during execution of the MouseUp. The event handler is fired immediately
+  OnHyperLinkClick is used during execution of the MouseUp event when the Item has been rendered using
+  the colors specified in ColorHighlight and ColorHighlightText. The event handler is fired immediately
   after calling ShellExecute with the URL specified in the HREF attribute for the tag.
 
   Applications must assign a procedure to the OnHyperLinkClick event handler to allow responding to the
@@ -675,6 +679,9 @@ Description
     \&nbsp\;         (Non-breaking space character)
   </TABLE>
 
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on Anchor tags found in the content
+  for the control.
+
   Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
   applied to the control when selected or disabled.
 See Also
@@ -742,6 +749,9 @@ Description
 
   Use the OnHyperLinkClick event handler to respond to mouse clicks on Anchor tags found in the content
   for the control.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText properties to set the TColor values
+  applied to the control when selected or disabled.
 See Also
   TJvCustomHTLabel.OnHyperLinkClick, TJvCustomHTLabel
 

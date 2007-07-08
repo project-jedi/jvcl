@@ -82,6 +82,16 @@ See Also
   TJvBaseValidator.OnValidateFailed, TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
 
 ----------------------------------------------------------------------------------------------------
+@@TJvBaseValidator.GroupName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.OnValidateFailed
 Summary
   Occurs when the validation fails.
@@ -584,8 +594,14 @@ Description
   Iterates over all the validators and call their protected Validate method and updates their <LINK
   TJvBaseValidator.Valid, Valid> property. If any of the validation fails, the OnValidateFailed event
   is triggered and any associated ValidationSummary and ErrorIndicator objects are notified.
+Parameters
+  GroupName - Description for this parameter
 Return value
   Returns false if any of the validations failed, true otherwise.
+
+----------------------------------------------------------------------------------------------------
+@@TJvValidators.Validate@string
+<COMBINE TJvValidators.Validate>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.ValidationSummary

@@ -12,12 +12,13 @@ Author
 @@CurrentMTThread
 <TITLE CurrentMTThread function>
 Summary
-  Write here a summary (1 line)
+  The current active MT thread.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This global function returns the MT thread, which is currently active. The caller is running in the
+  context of this thread. The return value will be nil if the caller is running in the context of the
+  main VCL thread (or any other non MT thread).
+Note
+  The TJvMTThread type is equal to the TJvMtSingleThread type defined in JvMtComponents.pas.
 
 ----------------------------------------------------------------------------------------------------
 @@TIntThread
