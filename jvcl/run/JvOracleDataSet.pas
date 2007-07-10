@@ -113,6 +113,7 @@ type
     destructor Destroy; override;
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
+    function ErrorException: Exception;
     function ErrorMessage: string;
     function ThreadIsActive: Boolean;
   published
@@ -250,6 +251,14 @@ end;
 procedure TJvOracleDataset.DoInternalOpen;
 begin
   InternalOpen;
+end;
+
+function TJvOracleDataset.ErrorException: Exception;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ErrorException
+  else
+    Result := Nil;
 end;
 
 function TJvOracleDataset.ErrorMessage: string;
