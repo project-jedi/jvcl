@@ -119,7 +119,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ConnectSession;
     function Execute: Boolean; override;
+    function ExecuteOnSession(Session: TCustomDAConnection): Boolean; 
   published
     procedure InternalFillDatabaseList(List: TStringList);
     //1 This events gives you the possibility to modify the connection data after receiving the data from the current session
@@ -188,11 +190,23 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvDBOdacConnectDialog.ConnectSession;
+begin
+  if Assigned(FLogonDialogInternal) then
+    FLogonDialogInternal.ConnectSession;
+end;
+
 function TJvDBOdacConnectDialog.Execute: Boolean;
+begin
+  Result := ExecuteOnSession(Connection);
+end;
+
+function TJvDBOdacConnectDialog.ExecuteOnSession(Session: TCustomDAConnection):
+    Boolean;
 begin
   if Assigned(FLogonDialogInternal) then
   begin
-    LogonDialogInternal.Session := Connection;
+    LogonDialogInternal.Session := Session;
     Result := LogonDialogInternal.Execute;
   end
   else
