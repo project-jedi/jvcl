@@ -111,6 +111,7 @@ type
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
     function ErrorMessage: string;
+    function ErrorException: Exception;
     function ThreadIsActive: Boolean;
   published
     property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
@@ -165,6 +166,7 @@ type
     destructor Destroy; override;
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
+    function ErrorException: Exception;
     function ErrorMessage: string;
     function ThreadIsActive: Boolean;
   published
@@ -221,6 +223,7 @@ type
     destructor Destroy; override;
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
+    function ErrorException: Exception;
     function ErrorMessage: string;
     function ThreadIsActive: Boolean;
   published
@@ -348,6 +351,14 @@ begin
     Result := ThreadHandler.ErrorMessage
   else
     Result := '';
+end;
+
+function TJvOdacSmartQuery.ErrorException: Exception;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ErrorException
+  else
+    Result := Nil;
 end;
 
 function TJvOdacSmartQuery.GetAfterThreadExecution:
@@ -608,6 +619,14 @@ begin
   InternalOpen;
 end;
 
+function TJvOdacOraQuery.ErrorException: Exception;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ErrorException
+  else
+    Result := Nil;
+end;
+
 function TJvOdacOraQuery.ErrorMessage: string;
 begin
   if Assigned(ThreadHandler) then
@@ -841,6 +860,14 @@ end;
 procedure TJvOdacOraTable.DoInternalOpen;
 begin
   InternalOpen;
+end;
+
+function TJvOdacOraTable.ErrorException: Exception;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.ErrorException
+  else
+    Result := Nil;
 end;
 
 function TJvOdacOraTable.ErrorMessage: string;
