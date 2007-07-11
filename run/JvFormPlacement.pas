@@ -636,7 +636,7 @@ begin
       GetWindowPlacement(Form.Handle, {$IFNDEF CLR}@{$ENDIF} Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
-      if Form.BorderStyle <> fbsNone then
+      if Form.BorderStyle <> bsNone then
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
         Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
@@ -659,7 +659,7 @@ begin
     Active := False;
     try
       if (not FPreventResize) and FDefMaximize and
-        (Form.BorderStyle <> fbsDialog) then
+        (Form.BorderStyle <> bsDialog) then
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];

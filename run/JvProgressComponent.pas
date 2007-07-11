@@ -158,7 +158,7 @@ begin
     begin
       ClientWidth := 307;
       ClientHeight := 98;
-      BorderStyle := fbsDialog;
+      BorderStyle := bsDialog;
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
       Scaled := False;

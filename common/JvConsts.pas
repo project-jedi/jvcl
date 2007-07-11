@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+  {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -35,32 +35,11 @@ uses
   SysUtils, Classes, Forms, Controls, Graphics, Windows,
   JvWin32;
 
-{$IFDEF VisualCLX}
-const
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
-  clSystemColor = TColor($FF000000);
-{$ENDIF VisualCLX}
-
-{$IFDEF VCL}
-  { (asn) added to simplify VCL code sharing = less IFDEF's }
-const
-  { clx destinguishes between TFormBorderStyle & TBorderStyle }
-  fbsDialog = bsDialog;
-  fbsSingle = bsSingle;
-  fbsNone = bsNone;
-  fbsSizeable = bsSizeable;
-  fbsToolWindow = bsToolWindow;
-  fbsSizeToolWin = bsSizeToolWin;
-{$ENDIF VCL}
-
 const
   { JvEditor }
-  JvEditorCompletionChars = #8 + '0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
+  JvEditorCompletionChars = #8'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
-  { various units }
+  { Various units }
   DigitSymbols = ['0'..'9'];
   SignSymbols = ['+', '-'];
   IdentifierUppercaseLetters = ['A'..'Z'];
@@ -72,26 +51,6 @@ const
   IdentifierSymbols = IdentifierFirstSymbols + DigitSymbols;
   HexadecimalSymbols = DigitSymbols + HexadecimalUppercaseLetters + HexadecimalLowercaseLetters;
 
-  { RALib 1.55 }
-  {$IFDEF MSWINDOWS}
-  {$IFDEF DELPHI2}
-  SDelphiKey = 'Software\Borland\Delphi\2.0';
-  {$ENDIF DELPHI2}
-  {$IFDEF BCB1}
-  SDelphiKey = 'Software\Borland\C++Builder\1.0';
-  {$ENDIF BCB1}
-  {$IFDEF DELPHI3}
-  SDelphiKey = 'Software\Borland\Delphi\3.0';
-  {$ENDIF DELPHI3}
-  {$IFDEF BCB3}
-  SDelphiKey = 'Software\Borland\C++Builder\3.0';
-  {$ENDIF BCB3}
-  {$IFDEF DELPHI4}
-  SDelphiKey = 'Software\Borland\Delphi\4.0';
-  {$ENDIF DELPHI4}
-  {$IFDEF BCB4}
-  SDelphiKey = 'Software\Borland\C++Builder\4.0';
-  {$ENDIF BCB4}
   {$IFDEF DELPHI5}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
   {$ENDIF DELPHI5}
@@ -119,10 +78,6 @@ const
   {$IFDEF DELPHI11}
   SDelphiKey = 'Software\Borland\BDS\5.0';
   {$ENDIF DELPHI11}
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  SDelphiKey = '.borland/.jvclx1';
-  {$ENDIF UNIX}
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;

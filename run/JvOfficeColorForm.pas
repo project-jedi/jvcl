@@ -146,7 +146,7 @@ begin
 //  Scaled := False;
   AutoScroll := False;
   BorderIcons := [];
-  BorderStyle := fbsDialog;
+  BorderStyle := bsDialog;
   BorderWidth := 0;
   AutoSize := True;
   FormStyle := fsStayOnTop;
@@ -300,7 +300,7 @@ begin
     if Value then
     begin
       BorderIcons := [biSystemMenu];
-      BorderStyle := fbsToolWindow;
+      BorderStyle := bsToolWindow;
       {$IFDEF COMPILER10_UP}
       if HandleAllocated then // BDS 2006 bug
         RecreateWnd;
@@ -310,7 +310,7 @@ begin
     else
     begin
       BorderIcons := [];
-      BorderStyle := fbsDialog;
+      BorderStyle := bsDialog;
       {$IFDEF COMPILER10_UP}
       if HandleAllocated then // BDS 2006 bug
         RecreateWnd;
@@ -326,7 +326,7 @@ begin
   begin
     FToolWindowStyle := False;
     BorderIcons := [];
-    BorderStyle := fbsDialog;
+    BorderStyle := bsDialog;
     {$IFDEF COMPILER10_UP}
     if HandleAllocated then // BDS 2006 bug
       RecreateWnd;

@@ -1313,7 +1313,7 @@ begin
   begin
     BorderIcons := [];
     DefaultMonitor := dmActiveForm;
-    BorderStyle := fbsDialog;
+    BorderStyle := bsDialog;
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnShow := DialogShow;

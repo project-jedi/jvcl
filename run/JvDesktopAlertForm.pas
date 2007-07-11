@@ -265,7 +265,7 @@ begin
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
 
-  BorderStyle := fbsNone;
+  BorderStyle := bsNone;
   BorderIcons := [];
   Scaled := False;
   Height := cDefaultAlertFormHeight;
@@ -614,7 +614,7 @@ begin
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
 
-  BorderStyle := fbsNone;
+  BorderStyle := bsNone;
   BorderIcons := [];
   Scaled := False;
   OnPaint := FormPaint;

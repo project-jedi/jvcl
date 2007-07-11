@@ -153,7 +153,7 @@ begin
   { Form definitions }
   {Left := 354;
   Top := 338;}
-  BorderStyle := fbsDialog;
+  BorderStyle := bsDialog;
   Caption := RsItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
