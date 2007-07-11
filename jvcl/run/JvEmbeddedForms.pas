@@ -199,7 +199,7 @@ begin
   begin
     Parent := Self;
     Align := alClient;
-    BorderStyle := fbsNone;
+    BorderStyle := bsNone;
     Show;
   end;
 end;
@@ -315,7 +315,7 @@ begin
     with FLinkedForm do
     begin
       Hide;
-      BorderStyle := fbsNone;
+      BorderStyle := bsNone;
       Parent := Self;
       Align := alClient;
       Show;

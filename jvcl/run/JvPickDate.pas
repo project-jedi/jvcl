@@ -1290,7 +1290,7 @@ var
 begin
   inherited CreateNew(AOwner, 0); // BCB compatible
   Caption := RsDateDlgCaption;
-  BorderStyle := fbsToolWindow;
+  BorderStyle := bsToolWindow;
   Color := clBtnFace;
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris

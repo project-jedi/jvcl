@@ -92,7 +92,7 @@ begin
   begin
     Form := TJvForm.CreateNew(Self);
     try
-      Form.BorderStyle := fbsDialog;
+      Form.BorderStyle := bsDialog;
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);

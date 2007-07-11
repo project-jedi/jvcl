@@ -559,7 +559,7 @@ var
 begin
   inherited CreateNew(AOwner, 0); // for BCB
   BorderIcons := [biSystemMenu];
-  BorderStyle := fbsDialog;
+  BorderStyle := bsDialog;
   PixelsPerInch := 96;
   Caption := RsCalculatorCaption;
   ClientHeight := 159;

@@ -383,7 +383,7 @@ procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
   with AForm do
   begin
-    BorderStyle := fbsDialog;
+    BorderStyle := bsDialog;
     { Title }
     Caption := Self.Title;
     ClientHeight := 267;
@@ -493,7 +493,7 @@ procedure TJvTipOfDay.InitVC(AForm: TForm);
 begin
   with AForm do
   begin
-    BorderStyle := fbsDialog;
+    BorderStyle := bsDialog;
     { Title }
     Caption := Self.Title;
     ClientHeight := 258;

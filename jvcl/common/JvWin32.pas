@@ -32,10 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
-  CommCtrl,
-  {$ENDIF VCL}
-  Windows;
+  CommCtrl, Windows;
 
 const
   SC_DRAGMOVE = $F012;

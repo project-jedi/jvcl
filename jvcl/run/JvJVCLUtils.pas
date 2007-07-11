@@ -2365,7 +2365,7 @@ begin
   {$ENDIF CLR}
   with AForm do
   begin
-    BorderStyle := fbsNone;
+    BorderStyle := bsNone;
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -4372,7 +4372,7 @@ begin
         StorePath + '\' + siPixels, Screen.PixelsPerInch));
       if DataFound then
       begin
-        if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
+        if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
             rcNormalPosition := Rect(rcNormalPosition.Left,
               rcNormalPosition.Top, rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then
