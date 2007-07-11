@@ -1372,7 +1372,6 @@ begin
 end;
 
 procedure TJvFormPlacement.ResolveAppStoragePath;
-var Form : TCustomForm;
 begin
   if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
     Assigned(Owner) then
