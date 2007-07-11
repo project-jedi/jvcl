@@ -1372,10 +1372,15 @@ begin
 end;
 
 procedure TJvFormPlacement.ResolveAppStoragePath;
+var Form : TCustomForm;
 begin
   if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
-    Assigned(Owner) and (Owner is TCustomForm) then
-    StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase]);
+    Assigned(Owner) then
+    if (Owner is TCustomForm) then
+      StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase])
+    else if (Owner is TCustomFrame) then
+      if Assigned(TCustomFrame(Owner).Owner) and (TCustomFrame(Owner).Owner is TCustomForm) then
+        StrReplace(FAppStoragePath, cFormNameMask, TCustomFrame(Owner).Owner.Name, [rfIgnoreCase])
 end;
 
 { TJvFormStorageStringList }
