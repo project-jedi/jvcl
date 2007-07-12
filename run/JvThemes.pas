@@ -59,11 +59,6 @@ const
 type
   TCMDenySubClassing = TMessage;
 
-  TWinControlThemeInfo = class(TWinControl)
-  public
-    property Color;
-  end;
-
 {$IFDEF JVCLThemesEnabled}
 
 // type name redirection
@@ -732,9 +727,9 @@ procedure DrawThemedBorder(Control: TControl);
 
 type
   {$IFDEF COMPILER7_UP}
-  TThemeStyle = TControlStyle;
+  TJvThemeStyle = TControlStyle;
   {$ELSE}
-  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
+  TJvThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
   {$ENDIF COMPILER7_UP}
 
 {
@@ -745,9 +740,9 @@ type
     if csXxx in ControlStyle then           -> if csXxx in GetThemeStyle(Self) then
 
 }
-procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
-procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
-function GetThemeStyle(Control: TControl): TThemeStyle;
+procedure IncludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
+procedure ExcludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
+function GetThemeStyle(Control: TControl): TJvThemeStyle;
 
 { DrawThemedBackground fills R with Canvas.Brush.Color/Color. If the control uses
   csParentBackground and the color is that of it's parent the Rect is not filled
@@ -771,8 +766,6 @@ procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint); ov
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; const R: TRect); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; const R: TRect); overload;
-
-
 
 
 { DrawThemedButtonFace draws a themed button when theming is enabled. }
@@ -802,14 +795,21 @@ const
 
 implementation
 
+{$IFNDEF COMPILER10_UP}
 uses
   JclSysUtils;
+{$ENDIF ~COMPILER10_UP}
+
+type
+  TWinControlThemeInfo = class(TWinControl)
+  public
+    property Color;
+  end;
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
 begin
-  DrawThemedBackground(Control, Canvas, R, Canvas.Brush.Color,
-    NeedsParentBackground);
+  DrawThemedBackground(Control, Canvas, R, Canvas.Brush.Color, NeedsParentBackground);
 end;
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
@@ -821,10 +821,9 @@ begin
   if (not (csDesigning in Control.ComponentState)) and
     (Control.Parent <> nil) and
     ((Color = TWinControlThemeInfo(Control.Parent).Color) or
-    (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+     (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
     (ThemeServices.ThemesEnabled) and
-    ((not NeedsParentBackground) or
-    (csParentBackground in GetThemeStyle(Control))) then
+    ((not NeedsParentBackground) or (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin
@@ -1068,8 +1067,6 @@ begin
     Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
-
-
 function IsInvalidRect(const R: TRect): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := (R.Left = MaxInt) and (R.Top = MaxInt) and (R.Right = MaxInt) and (R.Bottom = MaxInt);
@@ -1135,8 +1132,6 @@ begin
   PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;
 
-
-
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas;
   const Client: TRect; BevelWidth: Integer; Style: TButtonStyle;
   IsRounded, IsDown, IsFocused, IsHot: Boolean): TRect;
@@ -1147,8 +1142,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if (Style <> bsWin31) and
-    (not (csDesigning in Control.ComponentState)) and
+  if (Style <> bsWin31) and not (csDesigning in Control.ComponentState) and
     ThemeServices.ThemesEnabled then
   begin
     Result := Client;
@@ -1186,8 +1180,6 @@ begin
   Result := PtInRect(Control.ClientRect, Pt);
 end;
 
-
-
 function GetParentBackground(Control: TWinControl): Boolean;
 begin
   Result := csParentBackground in GetThemeStyle(Control);
@@ -1204,8 +1196,6 @@ begin
     Control.Invalidate;
   end;
 end;
-
-
 
 {$IFDEF JVCLThemesEnabled}
 
@@ -1263,24 +1253,24 @@ end;
 
 {$IFDEF COMPILER7_UP}
 
-{ Delphi 7 handles these styles itself. }
+{ Delphi 7 and newer handle these styles itself. }
 
 type
   TControlAccessProtected = class(TControl);
 
-procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
+procedure IncludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
 begin
   with TControlAccessProtected(Control) do
     ControlStyle := ControlStyle + (Style * [csNeedsBorderPaint, csParentBackground]);
 end;
 
-procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
+procedure ExcludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
 begin
   with TControlAccessProtected(Control) do
     ControlStyle := ControlStyle - (Style * [csNeedsBorderPaint, csParentBackground]);
 end;
 
-function GetThemeStyle(Control: TControl): TThemeStyle;
+function GetThemeStyle(Control: TControl): TJvThemeStyle;
 begin
   with TControlAccessProtected(Control) do
     Result := ControlStyle * [csNeedsBorderPaint, csParentBackground];
@@ -1299,7 +1289,7 @@ type
     FStatus: THookStatus;
     FWndProcCount: Integer;
     FDead: Boolean;
-    FThemeStyle: TThemeStyle;
+    FThemeStyle: TJvThemeStyle;
     FOrgWndProc: TWndMethod;
 
     procedure WndProc(var Msg: TMessage);
@@ -1313,11 +1303,11 @@ type
     destructor Destroy; override;
     procedure DeleteHook;
 
-    procedure IncludeThemeStyle(Style: TThemeStyle);
-    procedure ExcludeThemeStyle(Style: TThemeStyle);
+    procedure IncludeThemeStyle(Style: TJvThemeStyle);
+    procedure ExcludeThemeStyle(Style: TJvThemeStyle);
 
     property Control: TControl read FControl;
-    property ThemeStyle: TThemeStyle read FThemeStyle;
+    property ThemeStyle: TJvThemeStyle read FThemeStyle;
   end;
 
   { TThemeHookList contains all ThemeHooks. }
@@ -1493,12 +1483,12 @@ begin
   end;
 end;
 
-procedure TThemeHook.IncludeThemeStyle(Style: TThemeStyle);
+procedure TThemeHook.IncludeThemeStyle(Style: TJvThemeStyle);
 begin
   FThemeStyle := FThemeStyle + Style;
 end;
 
-procedure TThemeHook.ExcludeThemeStyle(Style: TThemeStyle);
+procedure TThemeHook.ExcludeThemeStyle(Style: TJvThemeStyle);
 begin
   FThemeStyle := FThemeStyle - Style;
   if FThemeStyle = [] then
@@ -1633,7 +1623,7 @@ end;
 
 //=== functions ==============================================================
 
-procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
+procedure IncludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
 begin
   if Style <> [] then
   begin
@@ -1646,7 +1636,7 @@ begin
   end;
 end;
 
-procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
+procedure ExcludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
 begin
   if Style <> [] then
   begin
@@ -1659,7 +1649,7 @@ begin
   end;
 end;
 
-function GetThemeStyle(Control: TControl): TThemeStyle;
+function GetThemeStyle(Control: TControl): TJvThemeStyle;
 var
   ThemeHook: TThemeHook;
 begin
@@ -1692,11 +1682,6 @@ begin
   Msg.Result := 1;
 end;
 
-function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
-asm
-        CALL System.@FindDynaClass
-end;
-
 type
   TJumpCode = packed record
     Pop: Byte; // pop xxx
@@ -1721,20 +1706,20 @@ begin
   if Assigned(P) then
   begin
     if PByte(@P)^ = $53 then // push ebx
-      Code.Pop := $5B // pop ebx
+      Code.Pop := $5B // pop ebx                           
     else
     if PByte(@P)^ = $55 then // push ebp
       Code.Pop := $5D // pop ebp
     else
       Exit;
+
     Code.Jmp := $E9;
-    Code.Offset := Integer(@WMEraseBkgndHook) -
-      (Integer(@P) + 1) - SizeOf(Code);
+    Code.Offset := Integer(@WMEraseBkgndHook) - (Integer(@P) + 1) - SizeOf(Code);
 
     { The strange thing is that the $e9 cannot be overriden with a "PUSH xxx" }
     if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-      @SavedWinControlCode, SizeOf(SavedWinControlCode), N)
-      and WriteProtectedMemory(Pointer(Cardinal(@P) + 1), @Code, SizeOf(Code), N) then
+                         @SavedWinControlCode, SizeOf(SavedWinControlCode), N) and
+      WriteProtectedMemory(Pointer(Cardinal(@P) + 1), @Code, SizeOf(Code), N) then
     begin
       WinControlHookInstalled := True;
       ThemeHooks.FEraseBkgndHooked := True;
@@ -1753,7 +1738,8 @@ begin
   P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
   if Assigned(P) then
   begin
-    if VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), PAGE_EXECUTE_READWRITE, OldProtect) then
+    if VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), PAGE_EXECUTE_READWRITE,
+                      OldProtect) then
     try
       PJumpCode(Cardinal(@P) + 1)^ := SavedWinControlCode;
       WinControlHookInstalled := False;
@@ -1768,53 +1754,24 @@ end;
 
 {$ELSE} // JVCLThemesEnabled
 
-procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
+procedure IncludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
 begin
 end;
 
-procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
+procedure ExcludeThemeStyle(Control: TControl; Style: TJvThemeStyle);
 begin
 end;
 
-function GetThemeStyle(Control: TControl): TThemeStyle;
+function GetThemeStyle(Control: TControl): TJvThemeStyle;
 begin
+  Result := [];
 end;
 
 {$ENDIF JVCLThemesEnabled}
 
 {$IFDEF JVCLThemesEnabled}
 
-// copied from JclSysUtils.pas - keep them here
-type
-  TDynamicIndexList = array [0..MaxInt div 16] of Word;
-  PDynamicIndexList = ^TDynamicIndexList;
-  TDynamicAddressList = array [0..MaxInt div 16] of Pointer;
-  PDynamicAddressList = ^TDynamicAddressList;
-
-function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
-asm
-        MOV     EAX, [EAX].vmtDynamicTable
-        TEST    EAX, EAX
-        JE      @@Exit
-        MOVZX   EAX, WORD PTR [EAX]
-@@Exit:
-end;
-
-function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
-asm
-        MOV     EAX, [EAX].vmtDynamicTable
-        ADD     EAX, 2
-end;
-
-function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
-asm
-        MOV     EAX, [EAX].vmtDynamicTable
-        MOVZX   EDX, WORD PTR [EAX]
-        ADD     EAX, EDX
-        ADD     EAX, EDX
-        ADD     EAX, 2
-end;
-
+{$IFNDEF COMPILER10_UP}
 type
   PPointer = ^Pointer;
 
@@ -1893,6 +1850,7 @@ begin
     end;
   end;
 end;
+{$ENDIF ~COMPILER10_UP}
 
 {$ENDIF JVCLThemesEnabled}
 
@@ -1900,18 +1858,26 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+
   {$IFDEF JVCLThemesEnabled}
+  {$IFNDEF COMPILER10_UP}
   InitializeWMPrintClientFix;
+  {$ENDIF ~COMPILER10_UP}
   {$ENDIF JVCLThemesEnabled}
 
 finalization
   {$IFDEF JVCLThemesEnabled}
+
+  {$IFNDEF COMPILER10_UP}
   FinalizeWMPrintClientFix;
+  {$ENDIF ~COMPILER10_UP}
+
   {$IFNDEF COMPILER7_UP}
   FreeAndNil(GlobalThemeHooks);
   UninstallWinControlHook;
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
