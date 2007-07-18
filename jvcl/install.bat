@@ -1,12 +1,14 @@
 @echo off
 
+SET JCLVERSION=1.101
+
 SET DELPHIVERSION=%1
 
 :: compile installer
 echo [Compiling installer...]
 cd install\JVCLInstall
 if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
-..\..\packages\bin\dcc32ex.exe --requires-jcl -Q -B -DJVCLINSTALLER -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\common;..\..\run -n..\..\dcu JVCLInstall.dpr
+..\..\packages\bin\dcc32ex.exe --requires-jcl=%JCLVERSION% -Q -B -DJVCLINSTALLER -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\common;..\..\run -n..\..\dcu JVCLInstall.dpr
 if ERRORLEVEL 1 goto Failed
 cd ..\..
 
@@ -48,3 +50,4 @@ pause
 
 :Leave
 SET DELPHIVERSION=
+SET JCLVERSION=
