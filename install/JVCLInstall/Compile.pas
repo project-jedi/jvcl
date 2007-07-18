@@ -97,9 +97,9 @@ type
     function Make(TargetConfig: ITargetConfig; Args: string;
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
     function CompileCppPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
-      const DccOpt, BccOpt, IlinkOpt: string; DebugUnits: Boolean): Integer;
+      const DccOpt, BccOpt, IlinkOpt: string; DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
     function CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
-      const DccOpt: string; DebugUnits: Boolean): Integer;
+      const DccOpt: string; DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
 
     function WriteDcc32Cfg(const Directory: string; TargetConfig: ITargetConfig;
       const DccOpt: string; DebugUnits: Boolean): string; // returns the dcc32.cfg filename
@@ -136,6 +136,8 @@ type
     function GeneratePackages(const Group, Targets, PackagesPath: string): Boolean; overload;
     function GenerateAllPackages: Boolean; overload;
     function CompileTarget(TargetConfig: TTargetConfig; PackageGroupKind: TPackageGroupKind): Boolean;
+
+    //procedure AlterHppFiles(TargetConfig: ITargetConfig; Project: TPackageTarget);
   public
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
@@ -795,15 +797,16 @@ end;
 /// </summary>
 function TCompiler.CompileCppPackage(TargetConfig: ITargetConfig;
   Project: TPackageTarget; const DccOpt, BccOpt, IlinkOpt: string;
-  DebugUnits: Boolean): Integer;
+  DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
 var
   PrjFilename, PkgFilename, ResFilename: string;
   PasFiles, CppFiles, ObjFiles, LibFiles, ResFiles: TStrings;
   i, ObjAge, NewestObjAge, AgeIndex: Integer;
   BplFilename, DcpFilename, BpiFilename, ObjFilename: string;
-  BplAge, DcpAge, LibAge, BpiAge: Integer;
+  {BplAge, }DcpAge, {LibAge,} BpiAge: Integer;
   Changed: Boolean;
   OutDirs: TOutputDirs;
+  FilesPackedTogether: Boolean;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
 
@@ -811,9 +814,9 @@ begin
   BplFilename := OutDirs.BplDir + PathDelim + Project.TargetName;
   DcpFilename := OutDirs.DcpDir + PathDelim + Project.DcpName;
   BpiFilename := ChangeFileExt(DcpFilename, '.bpi');
-  BplAge := FileAgeEx(BplFilename);
+  {BplAge := FileAgeEx(BplFilename);}
   DcpAge := FileAgeEx(DcpFilename);
-  LibAge := FileAgeEx(ChangeFileExt(DcpFilename, '.lib'));
+  {LibAge := FileAgeEx(ChangeFileExt(DcpFilename, '.lib'));}
   BpiAge := FileAgeEx(BpiFilename);
 
   PasFiles := nil;
@@ -888,10 +891,11 @@ begin
     end;
 
     // compile Delphi files (creates only .dcu, .obj and .hpp files)
-    Result := CompileDelphiPackage(TargetConfig, Project, DccOpt + ' -JPHNE --BCB', DebugUnits);
+    Result := CompileDelphiPackage(TargetConfig, Project, DccOpt + ' -JPHNE --BCB', DebugUnits, FilesCompiled);
     if Result <> 0 then
       Exit;
 
+    FilesPackedTogether := False;
     Changed := not TargetConfig.AutoDependencies or
                HaveFilesChanged(ObjFiles, AgeIndex) or
                (DcpAge < NewestObjAge) or
@@ -908,7 +912,7 @@ begin
       // the final dcp file.
       Result := CompileDelphiPackage(TargetConfig, Project,
                      StringReplace(' ' + DccOpt + ' ', ' -B ', '', [rfReplaceAll]),
-                     DebugUnits);
+                     DebugUnits, FilesPackedTogether);
       if Result <> 0 then
         Exit;
     end;
@@ -925,7 +929,9 @@ begin
 
     Changed := not TargetConfig.AutoDependencies or
                HaveFilesChanged(ObjFiles, AgeIndex) or
-               (BplAge < NewestObjAge) or (LibAge < BpiAge) or (BpiAge < NewestObjAge);
+               FilesCompiled or
+               FilesPackedTogether;
+               {(BplAge < NewestObjAge) or (LibAge < BpiAge) or (BpiAge < NewestObjAge)};
     if Changed then
     begin
       // link files (create .lib, .bpi and .bpl)
@@ -949,7 +955,7 @@ end;
 /// line of the failed command. Returns the ExitCode of the last/failed command.
 /// </summary>
 function TCompiler.CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
-  const DccOpt: string; DebugUnits: Boolean): Integer;
+  const DccOpt: string; DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
 var
   Files: TStrings;
   i: Integer;
@@ -1086,12 +1092,15 @@ begin
     end;
   end;
 
+  FilesCompiled := False;
   if Changed then
   begin
     Files := TStringList.Create;
     try
       Files.Add(ExtractFileName(ChangeFileExt(Project.SourceName, '.dpk'))); // force .dpk
       Result := Dcc32(TargetConfig, Project, DccOpt, DebugUnits, Files, nil);
+      if Result = 0 then
+        FilesCompiled := True;
     finally
       Files.Free;
     end;
@@ -1530,6 +1539,7 @@ var
   ProjectOrder: TList;
   Project: TPackageTarget;
   DebugProgress: string;
+  FilesCompiled: Boolean;
   
   function GetProjectIndex: Integer;
   begin
@@ -1646,9 +1656,10 @@ begin
         Project := ProjectOrder[i];
         CaptureLinePackageCompilation('[Compiling: ' + Project.TargetName + ']', FAborted);
 
+        FilesCompiled := False;
         if TargetConfig.Target.IsBCB and not TargetConfig.Target.IsBDS then
         begin
-          if CompileCppPackage(TargetConfig, Project, DccOpt, '', '', DebugUnits) <> 0 then
+          if CompileCppPackage(TargetConfig, Project, DccOpt, '', '', DebugUnits, FilesCompiled) <> 0 then
           begin
             if FAborted then
               Exit;
@@ -1659,7 +1670,7 @@ begin
         else
         begin
           { Create .dcp and .bpl }
-          if CompileDelphiPackage(TargetConfig, Project, DccOpt, DebugUnits) <> 0 then
+          if CompileDelphiPackage(TargetConfig, Project, DccOpt, DebugUnits, FilesCompiled) <> 0 then
           begin
             if FAborted then
               Exit;
@@ -1667,6 +1678,9 @@ begin
             Exit;
           end;
         end;
+        {if FilesCompiled and (TargetConfig.Target.SupportedPersonalities * [persBCB] <> []) then
+          AlterHppFiles(TargetConfig, Project);}
+
         if FAborted then
           Exit;
       end;
@@ -1771,6 +1785,117 @@ begin
     end;
   end;
 end;
+
+/// <summary>
+/// AlterHppFiles corrects the *.hpp files that the dcc32.exe compiler generated.
+///  - Converts every '#define constant "string"' to "static const char
+/// </summary>
+(*procedure TCompiler.AlterHppFiles(TargetConfig: ITargetConfig; Project: TPackageTarget);
+
+  function IsValidTypeName(const Name: string): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for I := 1 to Length(Name) do
+      if not (Name[I] in ['A'..'Z', 'a'..'z', '0'..'9', ':', '_']) then
+        Exit;
+    Result := True;
+  end;
+
+  function AlterDefine(var f: TextFile; Lines: TStrings): Boolean;
+  var
+    S, Name, TypeName: string;
+    ps: Integer;
+    Value: Integer;
+  begin
+    Result := False;
+    S := Trim(Copy(Lines[Lines.Count - 1], 9, MaxInt));
+    ps := Pos(' ', S);
+    if (ps > 2) and (ps < Length(S)) then
+    begin
+      { #define name "string"   =>   static const char* name = "string"; }
+      if S[ps + 1] = '"' then
+      begin
+        Name := Copy(S, 1, ps - 1);
+        Lines[Lines.Count - 1] := Format('static const char* %s = %s', [Name, Copy(S, ps + 1, MaxInt)]);
+        while not Eof(f) and (S[Length(S)] = '\') do // line continuation
+        begin
+          ReadLn(f, S);
+          Lines.Add(S);
+        end;
+        Lines[Lines.Count - 1] := Lines[Lines.Count - 1] + ';';
+        Result := True;
+      end
+      else
+      { #define name (type)(value)   =>   static const type name = (type)(value); }
+      if S[ps + 1] = '(' then
+      begin
+        Name := Copy(S, 1, ps - 1);
+        Delete(S, 1, ps + 1);
+        ps := Pos(')', S);
+        if ps > 2 then
+        begin
+          TypeName := Copy(S, 1, ps - 1);
+          if IsValidTypeName(TypeName) then
+          begin
+            Delete(S, 1, ps);
+            if (S <> '') and (S[1] = '(') and (S[Length(S)] = ')') and TryStrToInt(Copy(S, 2, Length(S) - 2), Value) then
+            begin
+              Lines[Lines.Count - 1] := Format('static const %s %s = (%s)(%d);', [TypeName, Name, TypeName, Value]);
+              Result := True;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  procedure AlterHppFile(const Filename: string);
+  var
+    Lines: TStrings;
+    Modified: Boolean;
+    S: string;
+    f: TextFile;
+  begin
+    Lines := TStringList.Create;
+    try
+      AssignFile(f, Filename);
+      Reset(f);
+      try
+        Modified := False;
+        while not Eof(f) do
+        begin
+          ReadLn(f, S);
+          Lines.Add(S);
+          if StartsWith(S, '#define ', False) then
+          begin
+            if AlterDefine(f, Lines) then
+              Modified := True;
+          end;
+        end;
+      finally
+        CloseFile(f);
+      end;
+      if Modified then
+        Lines.SaveToFile(Filename);
+    finally
+      Lines.Free;
+    end;
+  end;
+
+var
+  I: Integer;
+  HppDir, Filename: string;
+begin
+  HppDir := TargetConfig.HppDir;
+  for I := 0 to Project.ContainCount - 1 do
+  begin
+    Filename := HppDir + PathDelim + ChangeFileExt(ExtractFileName(Project.Contains[I].Name), '.hpp');
+    if FileExists(Filename) then
+      AlterHppFile(Filename);
+  end;
+end;*)
 
 type
   { TListConditionParser searches for the idents in the List. If an ident is in
