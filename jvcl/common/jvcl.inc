@@ -24,7 +24,7 @@ Known Issues:
  {$D+}
 {$ENDIF JVCL_NO_DEBUGINFO}
 
-{$IFDEF JVCLINSTALLER} 
+{$IFDEF JVCLINSTALLER}
 {$I ..\install\JVCLInstall\jvcl.inc}
 {$ELSE}
 
@@ -176,7 +176,6 @@ ALERT_jedi_inc_incompatible
  {$UNDEF JVCLThemesEnabled}
  {$UNDEF JVCLThemesEnabledD56}
 {$ENDIF !VCL}
-
 
 {$IFDEF CLR}
  {$WARN UNSAFE_TYPE ON}
