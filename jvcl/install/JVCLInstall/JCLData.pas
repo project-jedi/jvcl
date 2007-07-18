@@ -35,8 +35,8 @@ const
     requires the user to install or compile the JCL. Changing this constant
     will only change the displayed string but not the JCL version testing
     code. }
-  JCLMinVersion = '1.97.1.2172';
-  JCLVersion = '1.98';
+  JCLMinVersion = '1.101.0.2647';
+  JCLVersion = '1.101';
 
   { JCLDcpFiles specifies the .dcp files that must exist in the JCLDcpDir in
     order to mark the JCL installation as valid. }
