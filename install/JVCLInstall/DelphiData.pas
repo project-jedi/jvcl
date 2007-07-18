@@ -41,14 +41,13 @@ const
                                 Version: Integer;
                                 CIV: string; // coreide version
                                 ProjectDirResId1: Integer;
-                                ProjectDirResId2: Integer;
                                 Supported: Boolean;
                               end = (
-    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId1: 64507; ProjectDirResId2: 0; Supported: False),
-    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; ProjectDirResId2: 0; Supported: False),
-    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; ProjectDirResId2: 0; Supported: True),
-    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId1: 64719; ProjectDirResId2: 0; Supported: True),
-    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; ProjectDirResId1: 64396; ProjectDirResId2: 64398; Supported: True)
+    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId1: 64507; Supported: False),
+    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; Supported: False),
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; Supported: True),
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; Supported: True),
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True)
   );
 
 type
@@ -279,7 +278,7 @@ uses
   {$ENDIF COMPILER6_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclSysInfo, JclSimpleXml;
+  JclSysInfo, JclSimpleXml, JclBorlandTools;
 
 function DequoteStr(const S: string): string;
 begin
@@ -353,8 +352,7 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function LoadResStrings(const BaseBinName: string;
-  const ResId: array of Integer): string;
+function LoadResStrings(const BaseBinName: string; const ResId: array of Integer): string;
 var
   H: HMODULE;
   LocaleName: array [0..4] of Char;
@@ -1270,18 +1268,17 @@ function TCompileTarget.ReadBDSProjectsDir: string;
 begin
   if IsBDS and (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
   begin
-    Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
-      [BDSVersions[IDEVersion].ProjectDirResId1, BDSVersions[IDEVersion].ProjectDirResId2]);
-
-    if Result = '' then
+    if IDEVersion < 4 then
     begin
-      if IDEVersion < 5 then
-        Result := 'Borland Studio Projects' // do not localize
-      else
-        Result := 'RAD Studio\Projects';    // do not localize
-    end;
+      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
+        [BDSVersions[IDEVersion].ProjectDirResId1]);
 
-    Result := ExcludeTrailingPathDelimiter(FixBackslashBackslash(ExcludeTrailingPathDelimiter(GetPersonalFolder) + '\' + Result));
+      if Result = '' then
+        Result := 'Borland Studio Projects'; // do not localize
+      Result := ExcludeTrailingPathDelimiter(FixBackslashBackslash(ExcludeTrailingPathDelimiter(GetPersonalFolder) + '\' + Result));
+    end
+    else
+      Result := TJclBDSInstallation.GetDefaultProjectsDirectory(RootDir, IDEVersion);
   end
   else
     Result := '';
@@ -1295,15 +1292,7 @@ end;
 function TCompileTarget.ReadCommonProjectsDir: string;
 begin
   if IsBDS and (IDEVersion >= 5) then
-  begin
-    Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
-      [BDSVersions[IDEVersion].ProjectDirResId1]);
-
-    if Result = '' then
-      Result := 'RAD Studio';    // do not localize
-
-    Result := Format('%s\%s\%d.0', [ExcludeTrailingPathDelimiter(GetCommonDocumentsFolder), Result, IDEVersion]);
-  end
+    Result := TJclBDSInstallation.GetCommonProjectsDirectory(RootDir, IDEVersion)
   else
     Result := '';
 end;
