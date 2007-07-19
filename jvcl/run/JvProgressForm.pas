@@ -208,10 +208,6 @@ begin
   end;
 end;
 
-
-
-
-
 function TfrmProgress.ShowModal: Integer;
 begin
   // (p3) put topmost but only if not debugging

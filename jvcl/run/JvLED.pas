@@ -37,8 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Controls, Forms, Graphics, ExtCtrls,
-  Classes,
+  Windows, Messages, Controls, Forms, Graphics, ExtCtrls, Classes,
   JvComponent;
 
 type
@@ -177,9 +176,9 @@ begin
   Canvas.CopyMode := cmSrcAnd;
   with Canvas do
   begin
-    CopyRect( DestRect, FImgMask.Canvas, SrcRect);
+    CopyRect(DestRect, FImgMask.Canvas, SrcRect);
     CopyMode := cmSrcPaint;
-    CopyRect( DestRect, FImgPict.Canvas, SrcRect);
+    CopyRect(DestRect, FImgPict.Canvas, SrcRect);
   end;
 end;
 

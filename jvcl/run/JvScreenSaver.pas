@@ -65,45 +65,46 @@ const
 
 implementation
 
-
 procedure TJvScreenSaver.Loaded;
+type
+  TScreenSaverStyle = (ssConfigure, ssPassword, ssPreview, ssStart);
 var
   S: string;
-  Style: Integer;
+  Style: TScreenSaverStyle;
   H: THandle;
 begin
   inherited Loaded;
-  Style := 0;
+  Style := ssConfigure;
   if ParamCount <> 0 then
   begin
     S := UpperCase(ParamStr(1));
     if S = 'C' then
-      Style := 0
+      Style := ssConfigure
     else
     if S = 'A' then
-      Style := 1
+      Style := ssPassword
     else
     if S = 'P' then
-      Style := 2
+      Style := ssPreview
     else
-      Style := 3;
+      Style := ssStart;
   end;
 
-  if Style in [1, 2] then
+  if Style in [ssPassword, ssPreview] then
     H := StrToInt(ParamStr(2))
   else
     H := 0;
   case Style of
-    0:
+    ssConfigure:
       if Assigned(FOnConfigure) then
         FOnConfigure(Self);
-    1:
+    ssPassword:
       if Assigned(FOnPasswordChange) then
         FOnPasswordChange(Self, H);
-    2:
+    ssPreview:
       if Assigned(FOnPreview) then
         FOnPreview(Self, H);
-    3:
+    ssStart:
       if Assigned(FOnStart) then
         FOnStart(Self);
   end;
