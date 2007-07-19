@@ -72,7 +72,7 @@ type
     FRepeat: Boolean;
     FFlat: Boolean;
     FAutoRepeat: Boolean;
-    FScrollAmount: Word;
+    FIncrement: Word;
     FTimer: TTimer;
     FKind: TJvScrollKind;
     procedure SetKind(Value: TJvScrollKind);
@@ -83,18 +83,17 @@ type
     procedure Paint; override;
     procedure Click; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure EnabledChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AutoRepeat: Boolean read FAutoRepeat write FAutoRepeat;
-    property Flat: Boolean read FFlat write SetFlat;
-    property Kind: TJvScrollKind read FKind write SetKind;
-    property Increment: Word read FScrollAmount write FScrollAmount;
+    property AutoRepeat: Boolean read FAutoRepeat write FAutoRepeat default False;
+    property Flat: Boolean read FFlat write SetFlat default False;
+    property Kind: TJvScrollKind read FKind write SetKind default sbUp;
+    property Increment: Word read FIncrement write FIncrement default 16;
     property Width default 16;
     property Height default 16;
   end;
@@ -310,8 +309,10 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csDoubleClicks, csSetCaption];
   FDown := False;
-  FScrollAmount := 16;
+  FIncrement := 16;
   FAutoRepeat := False;
+  FFlat := False;
+  FKind := sbUp;
   Width := 16;
   Height := 16;
 end;
@@ -427,8 +428,7 @@ begin
   Repaint;
 end;
 
-procedure TJvScrollButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvScrollButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if not FRepeat then
     SetPosition;
@@ -455,13 +455,13 @@ begin
 
   case FKind of
     sbUp:
-      Sp.ScrollBy(0, FScrollAmount);
+      Sp.ScrollBy(0, FIncrement);
     sbDown:
-      Sp.ScrollBy(0, -FScrollAmount);
+      Sp.ScrollBy(0, -FIncrement);
     sbLeft:
-      Sp.ScrollBy(FScrollAmount, 0);
+      Sp.ScrollBy(FIncrement, 0);
     sbRight:
-      Sp.ScrollBy(-FScrollAmount, 0);
+      Sp.ScrollBy(-FIncrement, 0);
   end;
   if Assigned(Sp.OnScrolled) then
     Sp.OnScrolled(Self, FKind);
@@ -597,18 +597,15 @@ end;
 
 procedure TJvCustomScrollPanel.ArrangeChildren;
 var
-  i: Integer;
+  I: Integer;
 begin
   if FUpLeft = nil then
     Exit;
   DisableAlign;
   try
-    for i := 0 to ControlCount - 1 do
-    begin
-      if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) then
-        Continue;
-      Controls[i].SetBounds(Controls[i].Top, Controls[i].Left, Controls[i].Height, Controls[i].Width);
-    end;
+    for I := 0 to ControlCount - 1 do
+      if (Controls[I] <> FUpLeft) and (Controls[I] <> FDownRight) then
+        Controls[I].SetBounds(Controls[I].Top, Controls[I].Left, Controls[I].Height, Controls[I].Width);
     if not (csLoading in ComponentState) and (Align = alNone) then
       SetBounds(0, 0, Height, Width);
   finally
@@ -618,7 +615,7 @@ end;
 
 procedure TJvCustomScrollPanel.UpdateVisible;
 var
-  Less, More, i: Integer;
+  Less, More, I: Integer;
 begin
   if FUpLeft = nil then
     Exit;
@@ -630,13 +627,12 @@ begin
       begin
         Less := ClientWidth;
         More := 0;
-        for i := 0 to ControlCount - 1 do
-        begin
-          if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) or (Not Controls[i].Visible) then
-            Continue;
-          Less := Min(Controls[i].Top, Less);
-          More := Max(Controls[i].Top + Controls[i].Height, More);
-        end;
+        for I := 0 to ControlCount - 1 do
+          if (Controls[I] <> FUpLeft) and (Controls[I] <> FDownRight) and Controls[I].Visible then
+          begin
+            Less := Min(Controls[I].Top, Less);
+            More := Max(Controls[I].Top + Controls[I].Height, More);
+          end;
         FUpLeft.Visible := Less < 0;
         FDownRight.Visible := More > ClientHeight;
       end
@@ -645,13 +641,12 @@ begin
       begin
         Less := ClientHeight;
         More := 0;
-        for i := 0 to ControlCount - 1 do
-        begin
-          if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) or (Not Controls[i].Visible) then
-            Continue;
-          Less := Min(Controls[i].Left, Less);
-          More := Max(Controls[i].Left + Controls[i].Width, More);
-        end;
+        for I := 0 to ControlCount - 1 do
+          if (Controls[I] <> FUpLeft) and (Controls[I] <> FDownRight) and Controls[I].Visible then
+          begin
+            Less := Min(Controls[I].Left, Less);
+            More := Max(Controls[I].Left + Controls[I].Width, More);
+          end;
         FUpLeft.Visible := Less < 0;
         FDownRight.Visible := More > ClientWidth;
       end
@@ -711,8 +706,7 @@ begin
   FDownRight.Visible := True;
 end;
 
-procedure TJvCustomScrollPanel.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvCustomScrollPanel.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -759,6 +753,8 @@ constructor TJvScrollingWindow.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
   AutoHide := True;
+  AutoRepeat := False;
+  ScrollDirection := sdHorizontal;
 end;
 
 {$IFDEF UNITVERSIONING}

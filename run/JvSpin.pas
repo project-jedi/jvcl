@@ -40,9 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows,
-  Messages, CommCtrl,
-  ComCtrls, Controls, ExtCtrls, Graphics, Forms,
+  Windows, Messages, CommCtrl, ComCtrls, Controls, ExtCtrls, Graphics, Forms,
   JvEdit, JvExMask, JvMaskEdit, JvComponent;
 
 const
@@ -89,13 +87,10 @@ type
     procedure CheckButtonBitmaps;
     procedure RemoveButtonBitmaps;
     procedure Paint; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     function MouseInBottomBtn(const P: TPoint): Boolean;
     {$IFDEF JVCLThemesEnabled}
@@ -115,6 +110,8 @@ type
     property DragMode;
     property Enabled;
     property Visible;
+    property Height default 20;
+    property Width default 20;
     property DownGlyph: TBitmap read GetDownGlyph write SetDownGlyph;
     property UpGlyph: TBitmap read GetUpGlyph write SetUpGlyph;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
@@ -254,7 +251,8 @@ type
     property Increment: Extended read FIncrement write FIncrement stored IsIncrementStored;
     property MaxValue: Extended read FMaxValue write SetMaxValue stored IsMaxStored;
     property MinValue: Extended read FMinValue write SetMinValue stored IsMinStored;
-    property CheckOptions: TJvCheckOptions read FCheckOptions write FCheckOptions default [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
+    property CheckOptions: TJvCheckOptions read FCheckOptions write FCheckOptions default
+      [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
     property CheckMinValue: Boolean read FCheckMinValue write SetCheckMinValue stored StoreCheckMinValue;
     property CheckMaxValue: Boolean read FCheckMaxValue write SetCheckMaxValue stored StoreCheckMaxValue;
     property ValueType: TValueType read FValueType write SetValueType
@@ -503,7 +501,7 @@ type
     The face bitmaps of a spin button are stored in a TSpinButtonBitmaps
     object. Multiple spin buttons can use the same TSpinButtonBitmaps object.
     (That is, identical spin buttons (same height, width, button kind etc.) use the
-    same TSpinButtonbitmaps objects) The TSpinButtonBitmaps objects are managed
+    same TSpinButtonBitmaps objects) The TSpinButtonBitmaps objects are managed
     by a single TSpinButtonBitmapsManager object.
   }
 
@@ -613,6 +611,40 @@ end;
 
 //=== { TJvCustomSpinEdit } ==================================================
 
+constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FThousands := False; //new
+
+  //Polaris
+  FFocused := False;
+  FCheckOptions := [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
+  FLCheckMinValue := True;
+  FLCheckMaxValue := True;
+  FCheckMinValue := False;
+  FCheckMaxValue := False;
+  //Polaris
+  ControlStyle := ControlStyle - [csSetCaption];
+  FIncrement := 1.0;
+  FDecimal := 2;
+  FEditorEnabled := True;
+  FButtonKind := bkDiagonal;
+  FArrowKeys := True;
+  FShowButton := True;
+  RecreateButton;
+end;
+
+destructor TJvCustomSpinEdit.Destroy;
+begin
+  Destroying;
+  FChanging := True;
+  FreeAndNil(FButton);
+  FreeAndNil(FBtnWindow);
+  FreeAndNil(FUpDown);
+  inherited Destroy;
+end;
+
 procedure TJvCustomSpinEdit.Change;
 var
   OldText: string;
@@ -649,8 +681,8 @@ begin
     // (outchy) only shift SelStart by the difference in number of ThousandSeparator BEFORE SelStart
     // do not shift if SelStart was clamped (new text length is shorter than OldSelText)
     if Thousands and (SelStart = OldSelStart) then
-      SelStart := SelStart + StrCharCount(Copy(Text, 1, SelStart), ThousandSeparator)
-        - StrCharCount(Copy(OldText, 1, SelStart),ThousandSeparator);
+      SelStart := SelStart + StrCharCount(Copy(Text, 1, SelStart), ThousandSeparator) -
+        StrCharCount(Copy(OldText, 1, SelStart), ThousandSeparator);
 
     inherited Change;
     FOldValue := Value;
@@ -692,8 +724,6 @@ begin
     raise ERangeError.CreateResFmt(@RsEOutOfRangeFloat, [FMinValue, FMaxValue]);
 end;
 
-
-
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
@@ -708,33 +738,6 @@ begin
   SetEditRect;
 end;
 
-
-
-constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  FThousands := False; //new
-
-  //Polaris
-  FFocused := False;
-  FCheckOptions := [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
-  FLCheckMinValue := True;
-  FLCheckMaxValue := True;
-  FCheckMinValue := False;
-  FCheckMaxValue := False;
-  //Polaris
-  ControlStyle := ControlStyle - [csSetCaption];
-  FIncrement := 1.0;
-  FDecimal := 2;
-  FEditorEnabled := True;
-  FButtonKind := bkDiagonal;
-  FArrowKeys := True;
-  FShowButton := True;
-  RecreateButton;
-end;
-
-
 procedure TJvCustomSpinEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array [Boolean, TAlignment] of DWORD =
@@ -743,8 +746,7 @@ begin
   inherited CreateParams(Params);
   // Polaris:
   //    or ES_MULTILINE
-  Params.Style := Params.Style or WS_CLIPCHILDREN or
-    Alignments[UseRightToLeftAlignment, FAlignment];
+  Params.Style := Params.Style or WS_CLIPCHILDREN or Alignments[UseRightToLeftAlignment, FAlignment];
 end;
 
 procedure TJvCustomSpinEdit.CreateWnd;
@@ -752,7 +754,6 @@ begin
   inherited CreateWnd;
   SetEditRect;
 end;
-
 
 procedure TJvCustomSpinEdit.DataChanged;
 var
@@ -777,25 +778,6 @@ end;
 function TJvCustomSpinEdit.DefaultDisplayFormat: string;
 begin
   Result := ',0.##';
-end;
-
-destructor TJvCustomSpinEdit.Destroy;
-begin
-  Destroying;
-  FChanging := True;
-  if FButton <> nil then
-  begin
-    FButton.Free;
-    FButton := nil;
-    FBtnWindow.Free;
-    FBtnWindow := nil;
-  end;
-  if FUpDown <> nil then
-  begin
-    FUpDown.Free;
-    FUpDown := nil;
-  end;
-  inherited Destroy;
 end;
 
 procedure TJvCustomSpinEdit.BoundsChanged;
@@ -868,13 +850,12 @@ end;
 
 procedure TJvCustomSpinEdit.FocusKilled(NextWnd: THandle);
 begin
-  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
-    not (csDesigning in ComponentState) then
+  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and not (csDesigning in ComponentState) then
     SetValue(CheckValue(Value));
   inherited FocusKilled(NextWnd);
 end;
 
-function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  MousePos: TPoint): Boolean;
+function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
 begin
   if WheelDelta > 0 then
     UpClick(nil)
@@ -1089,7 +1070,7 @@ var
   I: Integer;
 begin
   //Polaris
-  // (outchy) moved at the begining, hittinh '.' now behaves like hitting the decimal separator
+  // (outchy) moved at the beginning, hitting '.' now behaves like hitting the decimal separator
   if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
     Key := DecimalSeparator;
 
@@ -1118,7 +1099,7 @@ begin
     inherited KeyPress(Key);
     if (Key = Cr) or (Key = Esc) then
     begin
-      { must catch and remove this, since is actually multi-line }
+      { must catch and remove this, since it is actually multi-line }
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
       if Key = Cr then
         Key := #0;
@@ -1342,17 +1323,17 @@ end;
 procedure TJvCustomSpinEdit.SetMaxValue(NewValue: Extended);
 var
   Z: Boolean;
-  b: Boolean;
+  B: Boolean;
 begin
   if NewValue <> FMaxValue then
   begin
-    b := not StoreCheckMaxValue;
+    B := not StoreCheckMaxValue;
     Z := (FMaxValue = 0) <> (NewValue = 0);
     FMaxValue := NewValue;
     if Z and FLCheckMaxValue then
     begin
       SetCheckMaxValue(CheckDefaultRange(True));
-      if b and FLCheckMinValue then
+      if B and FLCheckMinValue then
         SetCheckMinValue(CheckDefaultRange(False));
     end;
     SetValue(Value);
@@ -1362,17 +1343,17 @@ end;
 procedure TJvCustomSpinEdit.SetMinValue(NewValue: Extended);
 var
   Z: Boolean;
-  b: Boolean;
+  B: Boolean;
 begin
   if NewValue <> FMinValue then
   begin
-    b := not StoreCheckMinValue;
+    B := not StoreCheckMinValue;
     Z := (FMinValue = 0) <> (NewValue = 0);
     FMinValue := NewValue;
     if Z and FLCheckMinValue then
     begin
       SetCheckMinValue(CheckDefaultRange(False));
-      if b and FLCheckMaxValue then
+      if B and FLCheckMaxValue then
         SetCheckMaxValue(CheckDefaultRange(True));
     end;
     SetValue(Value);
@@ -1451,40 +1432,6 @@ end;
 
 //=== { TJvSpinButton } ======================================================
 
-procedure TJvSpinButton.BottomClick;
-begin
-  if Assigned(FOnBottomClick) then
-  begin
-    FOnBottomClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
-  end;
-end;
-
-procedure TJvSpinButton.CheckButtonBitmaps;
-begin
-  if Assigned(FButtonBitmaps) and
-    ((TSpinButtonBitmaps(FButtonBitmaps).Height <> Height) or
-     (TSpinButtonBitmaps(FButtonBitmaps).Width <> Width)) then
-    RemoveButtonBitmaps;
-
-  if FButtonBitmaps = nil then
-  begin
-    FButtonBitmaps := SpinButtonBitmapsManager.WantButtons(Width, Height, ButtonStyle,
-      not FUpBitmap.Empty or not FDownBitmap.Empty);
-    TSpinButtonBitmaps(FButtonBitmaps).AddClient;
-  end;
-end;
-
-
-procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
-begin
-  // The buttons we draw are buffered, thus we need to repaint them to theme changes etc.
-  if FButtonBitmaps <> nil then
-    TSpinButtonBitmaps(FButtonBitmaps).Reset;
-end;
-
-
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1514,6 +1461,38 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvSpinButton.BottomClick;
+begin
+  if Assigned(FOnBottomClick) then
+  begin
+    FOnBottomClick(Self);
+    if not (csLButtonDown in ControlState) then
+      FDown := sbNotDown;
+  end;
+end;
+
+procedure TJvSpinButton.CheckButtonBitmaps;
+begin
+  if Assigned(FButtonBitmaps) and
+    ((TSpinButtonBitmaps(FButtonBitmaps).Height <> Height) or
+     (TSpinButtonBitmaps(FButtonBitmaps).Width <> Width)) then
+    RemoveButtonBitmaps;
+
+  if FButtonBitmaps = nil then
+  begin
+    FButtonBitmaps := SpinButtonBitmapsManager.WantButtons(Width, Height, ButtonStyle,
+      not FUpBitmap.Empty or not FDownBitmap.Empty);
+    TSpinButtonBitmaps(FButtonBitmaps).AddClient;
+  end;
+end;
+
+procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
+begin
+  // The buttons we draw are buffered, thus we need to repaint them to theme changes etc.
+  if FButtonBitmaps <> nil then
+    TSpinButtonBitmaps(FButtonBitmaps).Reset;
+end;
+
 function TJvSpinButton.GetDownGlyph: TBitmap;
 begin
   Result := FDownBitmap;
@@ -1527,13 +1506,12 @@ end;
 procedure TJvSpinButton.GlyphChanged(Sender: TObject);
 begin
   if Sender is TBitmap then
-  (Sender as TBitmap).Transparent := True;
+    TBitmap(Sender).Transparent := True;
   RemoveButtonBitmaps;
   Invalidate;
 end;
 
-procedure TJvSpinButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvSpinButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and Enabled then
@@ -1576,7 +1554,7 @@ procedure TJvSpinButton.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  { (rb) only themed spin buttons have hot states, so it's not necessairy
+  { (rb) only themed spin buttons have hot states, so it's not necessary
          to calc FMouseInBottomBtn and FMouseInTopBtn for non-themed apps }
   if not FMouseInTopBtn and not FMouseInBottomBtn then
   begin
@@ -1684,8 +1662,7 @@ begin
   {$ENDIF JVCLThemesEnabled}
 end;
 
-procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if FDragging then
@@ -1700,8 +1677,7 @@ begin
   end;
 end;
 
-procedure TJvSpinButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvSpinButton.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FFocusControl) then
@@ -1819,11 +1795,11 @@ begin
       vtFloat:
         begin
           if FDisplayFormat <> '' then
-          try
-            Result := StrToFloat(TextToValText(Text));
-          except
-            Result := FMinValue;
-          end
+            try
+              Result := StrToFloat(TextToValText(Text));
+            except
+              Result := FMinValue;
+            end
           else
           if not TextToFloat(PChar(RemoveThousands(Text)), Result, fvExtended) then
             Result := FMinValue;
@@ -1898,8 +1874,6 @@ begin
     inherited Resize;
 end;
 
-
-
 procedure TJvUpDown.ScrollMessage(var Msg: TWMVScroll);
 begin
   if Msg.ScrollCode = SB_THUMBPOSITION then
@@ -1932,33 +1906,7 @@ begin
   ScrollMessage(Msg);
 end;
 
-
-
-
-
 //=== { TSpinButtonBitmaps } =================================================
-
-procedure TSpinButtonBitmaps.AddClient;
-begin
-  Inc(FClientCount);
-end;
-
-function TSpinButtonBitmaps.CompareWith(const AWidth, AHeight: Integer;
-  const AStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean): Integer;
-begin
-  // used by the binary search
-  Result := Self.Width - AWidth;
-  if Result = 0 then
-  begin
-    Result := Self.Height - AHeight;
-    if Result = 0 then
-    begin
-      Result := Ord(Self.Style) - Ord(AStyle);
-      if Result = 0 then
-        Result := Ord(Self.CustomGlyphs) - Ord(ACustomGlyphs);
-    end;
-  end;
-end;
 
 constructor TSpinButtonBitmaps.Create(AManager: TSpinButtonBitmapsManager;
   const AWidth, AHeight: Integer; const AStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean);
@@ -1996,6 +1944,28 @@ begin
   {$ENDIF JVCLThemesEnabled}
 
   inherited Destroy;
+end;
+
+procedure TSpinButtonBitmaps.AddClient;
+begin
+  Inc(FClientCount);
+end;
+
+function TSpinButtonBitmaps.CompareWith(const AWidth, AHeight: Integer;
+  const AStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean): Integer;
+begin
+  // used by the binary search
+  Result := Self.Width - AWidth;
+  if Result = 0 then
+  begin
+    Result := Self.Height - AHeight;
+    if Result = 0 then
+    begin
+      Result := Ord(Self.Style) - Ord(AStyle);
+      if Result = 0 then
+        Result := Ord(Self.CustomGlyphs) - Ord(ACustomGlyphs);
+    end;
+  end;
 end;
 
 procedure TSpinButtonBitmaps.Draw(ACanvas: TCanvas;
@@ -2144,12 +2114,16 @@ const
   CDetails: array [TButtonPartState] of TThemedButton =
     (tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed, tbPushButtonDisabled);
 var
+  I: TButtonPartState;
   TemplateButtons: array [TButtonPartState] of TBitmap;
   ThemeColors: array [0..2] of Cardinal;
   ButtonRect: TRect;
   PaintRect: TRect;
   TopRegion, BottomRegion: HRGN;
   UpBitmap, DownBitmap: TBitmap;
+  ptButton: array [0..2] of TPoint;
+  State: TButtonPartState;
+  Details: TThemedElementDetails;
 
   procedure ConstructThemedButton(ABitmap: TBitmap; const AUpState, ADownState: TButtonPartState);
   begin
@@ -2192,15 +2166,9 @@ var
     end;
   end;
 
-var
-  ptButton: array [0..2] of TPoint;
-  State: TButtonPartState;
-  Details: TThemedElementDetails;
 begin
-  TemplateButtons[bpsNormal] := TBitmap.Create;
-  TemplateButtons[bpsHot] := TBitmap.Create;
-  TemplateButtons[bpsPressed] := TBitmap.Create;
-  TemplateButtons[bpsDisabled] := TBitmap.Create;
+  for I := Low(TemplateButtons) to High(TemplateButtons) do
+    TemplateButtons[I] := TBitmap.Create;
   try
     ButtonRect := Bounds(0, 0, Width, Height);
     PaintRect := ButtonRect;
@@ -2264,17 +2232,14 @@ begin
       DownBitmap.Free;
     end;
   finally
-    TemplateButtons[bpsNormal].Free;
-    TemplateButtons[bpsHot].Free;
-    TemplateButtons[bpsPressed].Free;
-    TemplateButtons[bpsDisabled].Free;
+    for I := Low(TemplateButtons) to High(TemplateButtons) do
+      TemplateButtons[I].Free;
   end;
 end;
 
 {$ENDIF JVCLThemesEnabled}
 
-procedure TSpinButtonBitmaps.DrawBitmap(ABitmap: TBitmap;
-  ADownState: TSpinButtonState; const Enabled: Boolean);
+procedure TSpinButtonBitmaps.DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState; const Enabled: Boolean);
 const
   CColors: TColorArray = (clBtnShadow, clBtnHighlight, cl3DDkShadow);
 var
@@ -2549,8 +2514,7 @@ begin
   begin
     H := Height div 2;
     R := Bounds(0, 0, Width, H);
-    if AState = sbTopDown then
-    else
+    if AState <> sbTopDown then
       R.Bottom := R.Bottom + 1;
     R1 := Bounds(0, H, Width, Height);
     R1.Bottom := Height;

@@ -81,7 +81,6 @@ const
 
 implementation
 
-
 constructor TJvSpacer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
