@@ -79,6 +79,7 @@ type
     FConnectedDataObject: TObject;
     FConnectedThread: TJvThread;
     FDialogOptions: TJvCustomThreadDialogOptions;
+    FFormIsShown: Boolean;
     FInternalShowDelay: Integer;
     FInternalTimer: TTimer;
     FInternalTimerInterval: Integer;
@@ -98,6 +99,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
+    property FormIsShown: Boolean read FFormIsShown default False;
     property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -194,6 +196,7 @@ type
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
     FPriority: TThreadPriority;
     FThreadDialog: TJvCustomThreadDialog;
+    FThreadDialogAllowed: Boolean;
     FThreadDialogForm: TJvCustomThreadDialogForm;
     procedure DoBegin;
     procedure DoTerminate(Sender: TObject);
@@ -230,6 +233,9 @@ type
     property Terminated: Boolean read GetTerminated; // in context of thread in list - for itself; in others - for all threads in list
     property ReturnValue: Integer read GetReturnValue write SetReturnValue; // in context of thread in list - set return value (slower)
     property OneThreadIsRunning: Boolean read GetOneThreadIsRunning;
+    //1 Property to allow/disallow the thread dialog form
+    property ThreadDialogAllowed: Boolean read FThreadDialogAllowed write
+        FThreadDialogAllowed default True;
     property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
 (*
     function GetPriority(Thread: THandle): TThreadPriority;
@@ -345,7 +351,8 @@ end;
 
 //=== { TJvCustomThreadDialogForm } ==========================================
 
-constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
+constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent; Dummy:
+    Integer = 0);
 begin
   inherited CreateNew(AOwner, Dummy);
   FInternalTimerInterval := 250;
@@ -360,6 +367,7 @@ begin
   FInternalTimer.OnTimer := InternalTimer;
   FInternalTimer.Interval := FInternalTimerInterval;
   FInternalShowDelay := 0;
+  FFormIsShown := False;
 end;
 
 constructor TJvCustomThreadDialogForm.CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
@@ -419,30 +427,37 @@ begin
     else  // connected component present
       if ConnectedThread.Terminated then
       begin
-        Hide;
-        Close;
+        if FormIsShown then
+        begin
+          Hide;
+          Close;
+        end;
       end
       else // not terminated
       begin
         if FInternalShowDelay > 0 then // Dialog is not shown until yet
-        begin
-          FInternalShowDelay := FInternalShowDelay  - FInternalTimerInterval;
-          if FInternalShowDelay <= 0 then
-          begin
-            if DialogOptions.ShowModal then
-              ShowModal
-            else
-              Show;
-          end;
-        end
+          FInternalShowDelay := FInternalShowDelay  - FInternalTimerInterval
         else
-          UpdateFormContents;
+          if not FormIsShown then
+          begin
+            if ConnectedThread.ThreadDialogAllowed then
+            begin
+              if DialogOptions.ShowModal then
+                ShowModal
+              else
+                Show;
+            end;
+          end
+          else
+            if ConnectedThread.ThreadDialogAllowed then
+              UpdateFormContents;
       end;   // not terminated
   end;   // if not (csDestroying in ComponentState) then
 end;
 
 procedure TJvCustomThreadDialogForm.ReplaceFormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FFormIsShown := False;
   FInternalTimer.OnTimer := nil;
   FInternalTimer.Enabled := False;
   Action := caFree;
@@ -463,8 +478,9 @@ end;
 
 procedure TJvCustomThreadDialogForm.ReplaceFormShow(Sender: TObject);
 begin
+  FFormIsShown := True;
   InitializeFormContents;
-  InternalTimer(nil);
+  UpdateFormContents;
   FInternalTimer.Enabled := True;
 end;
 
