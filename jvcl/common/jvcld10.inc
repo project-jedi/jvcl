@@ -56,7 +56,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
 be compiled as "never-build package". }
-{.$DEFINE JVCLThemesEnabled}
+{$DEFINE JVCLThemesEnabled}
 
 { Activates MIDAS components (DBRemoteLogin).
 NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
@@ -90,7 +90,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{.$DEFINE UNITVERSIONING}
+{$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
@@ -112,11 +112,23 @@ SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 
 { Activates the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 { Activates the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+
+{ Activates Support for the DevExpress cxVerticalGrid-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+
+{ Activates Support for the DevExpress cxPivotGrid-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+
+{ Activates Support for the DevExpress cxTreeList-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
@@ -125,7 +137,7 @@ For further informations have a look at http://www.indyproject.org }
 { Activates the Internet Direct (Indy)-Components version 10.
 You MUST also activate $DEFINE USE_3RDPARTY_INDY for the compilation to work
 For further informations have a look at http://www.indyproject.org }
-{.$DEFINE USE_3RDPARTY_INDY10}
+{$DEFINE USE_3RDPARTY_INDY10}
 
 { Activates the ICS-Components (Internet component suite
 For further informations have a look at http://www.overbyte.be/ 
@@ -136,7 +148,7 @@ ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 
 { Activates Direct Oracle Access Components
 For further informations have a look at http://www.allroundautomations.com }
-{.$DEFINE USE_3RDPARTY_DOA}
+{$DEFINE USE_3RDPARTY_DOA}
 
 { Activates the CoreLabs VCL Oracle Data Access Components 
 For further informations have a look at http://www.crlab.com }

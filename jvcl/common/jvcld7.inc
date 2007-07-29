@@ -90,7 +90,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{.$DEFINE UNITVERSIONING}
+{$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
@@ -118,6 +118,18 @@ For further informations have a look at http://www.devexpress.com }
 For further informations have a look at http://www.devexpress.com }
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
+{ Activates Support for the DevExpress cxVerticalGrid-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+
+{ Activates Support for the DevExpress cxPivotGrid-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+
+{ Activates Support for the DevExpress cxTreeList-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
 {.$DEFINE USE_3RDPARTY_INDY}
@@ -136,7 +148,7 @@ ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 
 { Activates Direct Oracle Access Components
 For further informations have a look at http://www.allroundautomations.com }
-{.$DEFINE USE_3RDPARTY_DOA}
+{$DEFINE USE_3RDPARTY_DOA}
 
 { Activates the CoreLabs VCL Oracle Data Access Components 
 For further informations have a look at http://www.crlab.com }
