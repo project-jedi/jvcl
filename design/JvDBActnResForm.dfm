@@ -1,7 +1,5 @@
-object JvDialogActions: TJvDialogActions
+object JvDBActions: TJvDBActions
   OldCreateOrder = False
-  Left = 523
-  Top = 359
   Height = 150
   Width = 215
   object ActionList1: TActionList
@@ -34,6 +32,16 @@ object JvDialogActions: TJvDialogActions
     object JvDatabaseSingleRecordWindowAction1: TJvDatabaseSingleRecordWindowAction
       Category = 'JVCL-DB'
       Caption = 'Single Record Window'
+      Options.PostButtonCaption = '&Post'
+      Options.CancelButtonCaption = '&Cancel'
+      Options.CloseButtonCaption = 'C&lose'
+      Options.ArrangeConstraints.MaxHeight = 480
+      Options.ArrangeConstraints.MaxWidth = 640
+      Options.ArrangeSettings.BorderLeft = 3
+      Options.ArrangeSettings.BorderTop = 3
+      Options.ArrangeSettings.DistanceVertical = 3
+      Options.ArrangeSettings.DistanceHorizontal = 3
+      Options.ArrangeSettings.AutoSize = asBoth
     end
     object JvDatabaseFirstAction1: TJvDatabaseFirstAction
       Category = 'JVCL-DB'
@@ -89,6 +97,10 @@ object JvDialogActions: TJvDialogActions
     object JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction
       Category = 'JVCL-DB'
       Caption = 'Modify All'
+    end
+    object JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction
+      Category = 'JVCL-DB'
+      Caption = 'Show SQL Statement'
     end
   end
 end

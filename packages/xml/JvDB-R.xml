@@ -47,14 +47,6 @@
     <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2006" Targets="d10" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2007" Targets="d11" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="cxGridVCLC5" Targets="c5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="DOA41C5" Targets="c5" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D5" Targets="d5" Condition="USE_3RDPARTY_DOA"/>
@@ -76,8 +68,9 @@
     <File Name="..\..\run\JvCsvParse.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActions.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBActionsEngineControlcxGrid.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_ODAC"/>
     <File Name="..\..\run\JvDBCombobox.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBControls.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB" Formname="" Condition=""/>

@@ -40,9 +40,9 @@ uses
 type
   TJvDatabaseActionDoaDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
-    function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    function SupportsGetSQL: Boolean; override;
+    function GetSQL(AActionComponent : TComponent): string; override;
+    function SupportsComponent(AActionComponent : TComponent): Boolean; override;
+    function SupportsGetSQL(AActionComponent : TComponent): Boolean; override;
   end;
 {$ENDIF USE_3RDPARTY_DOA}
 
@@ -65,19 +65,22 @@ uses
 
 {$IFDEF USE_3RDPARTY_DOA}
 
-function TJvDatabaseActionDoaDatasetEngine.GetSQL: string;
+function TJvDatabaseActionDoaDatasetEngine.GetSQL(AActionComponent :
+    TComponent): string;
 begin
-  Result := TOracleDataset(Dataset).SQL.Text;
+  Result := TOracleDataset(AActionComponent).SQL.Text;
 end;
 
-function TJvDatabaseActionDoaDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
+function TJvDatabaseActionDoaDatasetEngine.SupportsComponent(AActionComponent :
+    TComponent): Boolean;
 begin
-  Result := (ADataComponent is TOracleDataset);
+  Result := (AActionComponent is TOracleDataset);
 end;
 
-function TJvDatabaseActionDoaDatasetEngine.SupportsGetSQL: Boolean;
+function TJvDatabaseActionDoaDatasetEngine.SupportsGetSQL(AActionComponent :
+    TComponent): Boolean;
 begin
-  Result := Assigned(Dataset);
+  Result := True;
 end;
 
 {$ENDIF USE_3RDPARTY_DOA}
@@ -85,7 +88,7 @@ end;
 procedure InitActionEngineList;
 begin
   {$IFDEF USE_3RDPARTY_DOA}
-  RegisterActionEngine(TJvDatabaseActionDoaDatasetEngine);
+  RegisterDatabaseActionEngine(TJvDatabaseActionDoaDatasetEngine);
   {$ENDIF USE_3RDPARTY_DOA}
 end;
 

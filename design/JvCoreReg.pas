@@ -65,7 +65,8 @@ uses
   JvAppRegistryStorage,
   {$ENDIF USEWINDOWS}
   JvAppIniStorage, JvAppStorage, JvAppStorageSelectList,
-  JvAutoComplete, JvTranslateString;
+  JvAutoComplete, 
+  JvTranslateString;
 
 {$R JvCoreReg.dcr}
 

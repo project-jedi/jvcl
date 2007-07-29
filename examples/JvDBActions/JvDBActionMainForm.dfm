@@ -12,6 +12,9 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    862
+    606)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
@@ -186,6 +189,15 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Action = JvDatabaseModifyAllAction1
     Caption = 'Modify All'
     TabOrder = 11
+  end
+  object BitBtn10: TBitBtn
+    Left = 503
+    Top = 570
+    Width = 121
+    Height = 25
+    Action = JvDatabaseShowSQLStatementAction1
+    Caption = 'Show SQL'
+    TabOrder = 12
   end
   object JvCsvDataSet2: TJvCsvDataSet
     FieldDefs = <
@@ -364,6 +376,10 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     object JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction
       Category = 'JVCL-DB'
       Caption = 'Modify All'
+    end
+    object JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction
+      Category = 'JVCL-DB'
+      Caption = 'JvDatabaseShowSQLStatementAction1'
     end
   end
 end

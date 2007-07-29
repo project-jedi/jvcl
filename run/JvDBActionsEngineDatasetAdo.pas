@@ -39,9 +39,9 @@ uses
 type
   TJvDatabaseActionAdoDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
-    function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    function SupportsGetSQL: Boolean; override;
+    function GetSQL(AActionComponent : TComponent): string; override;
+    function SupportsComponent(AActionComponent : TComponent): Boolean; override;
+    function SupportsGetSQL(AActionComponent : TComponent): Boolean; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -59,28 +59,31 @@ implementation
 uses
   AdoDb;
 
-function TJvDatabaseActionAdoDatasetEngine.GetSQL: string;
+function TJvDatabaseActionAdoDatasetEngine.GetSQL(AActionComponent :
+    TComponent): string;
 begin
-  if Dataset is TADOQuery then
-    Result := TADOQuery(Dataset).SQL.Text
+  if AActionComponent is TADOQuery then
+    Result := TADOQuery(AActionComponent).SQL.Text
   else
-  if Dataset is TAdoTable then
-    Result := 'SELECT * FROM ' + TADOTable(Dataset).TableName;
+  if AActionComponent is TAdoTable then
+    Result := 'SELECT * FROM ' + TADOTable(AActionComponent).TableName;
 end;
 
-function TJvDatabaseActionAdoDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
+function TJvDatabaseActionAdoDatasetEngine.SupportsComponent(AActionComponent :
+    TComponent): Boolean;
 begin
-  Result := (ADataComponent is TADOQuery) or (ADataComponent is TADOTable);
+  Result := (AActionComponent is TADOQuery) or (AActionComponent is TADOTable);
 end;
 
-function TJvDatabaseActionAdoDatasetEngine.SupportsGetSQL: Boolean;
+function TJvDatabaseActionAdoDatasetEngine.SupportsGetSQL(AActionComponent :
+    TComponent): Boolean;
 begin
-  Result := Assigned(Dataset);
+  Result := True;
 end;
 
 procedure InitActionEngineList;
 begin
-  RegisterActionEngine(TJvDatabaseActionAdoDatasetEngine);
+  RegisterDatabaseActionEngine(TJvDatabaseActionAdoDatasetEngine);
 end;
 
 initialization

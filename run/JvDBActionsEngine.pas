@@ -35,30 +35,25 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, ImgList, Graphics,
   Forms, Controls, Classes, DB,
+  JvActionsEngine,
   DBGrids, JvPanel, JvDynControlEngineDB, JvDynControlEngineDBTools;
 
 type
-  TJvDatabaseActionBaseEngine = class(TComponent)
+  TJvDatabaseActionBaseEngine = class(TJvActionBaseEngine)
   private
-    FDatacomponent: TComponent;
-    procedure SetDatacomponent(const Value: TComponent); virtual;
   public
-    function Supports(ADataComponent: TComponent): Boolean; virtual;
-    property Datacomponent: TComponent read FDatacomponent write SetDatacomponent;
   end;
 
   TJvDatabaseActionBaseDatasetEngine = class(TJvDatabaseActionBaseEngine)
   private
-    FDataset: TDataset;
-    procedure SetDatacomponent(const Value: TComponent); override;
+  protected
   public
-    function GetSQL: string; virtual;
-    procedure SetSQL(const Value: string); virtual;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    function SupportsGetSQL: Boolean; virtual;
-    function SupportsSetSQL: Boolean; virtual;
-    property Dataset: TDataset read FDataset;
-    property SQL: string read GetSQL write SetSQL;
+    function GetDataset(aActionComponent: TComponent): TDataset; virtual;
+    function GetSQL(aActionComponent: TComponent): string; virtual;
+    procedure SetSQL(aActionComponent: TComponent); virtual;
+    function SupportsComponent(aActionComponent: TComponent): Boolean; override;
+    function SupportsGetSQL(aActionComponent: TComponent): Boolean; virtual;
+    function SupportsSetSQL(aActionComponent: TComponent): Boolean; virtual;
   end;
 
   TJvShowSingleRecordWindowOptions = class(TPersistent)
@@ -102,82 +97,82 @@ type
   end;
 
   TJvDatabaseActionBaseControlEngine = class(TJvDatabaseActionBaseEngine)
-  private
-    FDataset: TDataset;
-    FDataSource: TDataSource;
-    function GetSelectedField: TField; virtual;
   protected
-    function GetDataSource(ADataComponent: TComponent): TDataSource; virtual;
-    function GetDataSet(ADataComponent: TComponent): TDataSet; virtual;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetDatacomponent(const Value: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    function IsActive: Boolean; virtual;
-    function HasData: Boolean; virtual;
-    function FieldCount: Integer; virtual;
-    function RecordCount: Integer; virtual;
-    function RecNo: Integer; virtual;
-    function CanInsert: Boolean; virtual;
-    function CanUpdate: Boolean; virtual;
-    function CanDelete: Boolean; virtual;
-    function EOF: Boolean; virtual;
-    function Bof: Boolean; virtual;
-    function CanRefresh: Boolean; virtual;
-    function CanNavigate: Boolean; virtual;
-    procedure DisableControls; virtual;
-    procedure EnableControls; virtual;
-    function ControlsDisabled: Boolean; virtual;
-    function EditModeActive: Boolean; virtual;
-    function FieldById(const FieldId: Integer): TField; virtual;
-    function FieldByName(const FieldName: string): TField; virtual;
-    procedure FillFieldList(var AFieldList: TStrings; const AOnlyVisible: Boolean); virtual;
-    procedure First; virtual;
-    function GotoSelectedRow(const ASelectedRow: Integer): Boolean; virtual;
-    function IsFieldVisible(const AFieldName: string): Boolean; virtual;
-    function IsFieldReadOnly(const AFieldName: string): Boolean; virtual;
-    procedure Last; virtual;
-    procedure MoveBy(Distance: Integer); virtual;
-    function SelectedRowsCount: Integer; virtual;
-    procedure ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions); virtual;
-    property Dataset: TDataset read FDataset;
-    property DataSource: TDataSource read FDataSource;
-    property SelectedField: TField read GetSelectedField;
+    function Bof(aActionComponent: TComponent): Boolean; virtual;
+    function CanDelete(aActionComponent: TComponent): Boolean; virtual;
+    function CanInsert(aActionComponent: TComponent): Boolean; virtual;
+    function CanNavigate(aActionComponent: TComponent): Boolean; virtual;
+    function CanRefresh(aActionComponent: TComponent): Boolean; virtual;
+    function CanUpdate(aActionComponent: TComponent): Boolean; virtual;
+    function ControlsDisabled(aActionComponent: TComponent): Boolean; virtual;
+    procedure DisableControls(aActionComponent: TComponent); virtual;
+    function EditModeActive(aActionComponent: TComponent): Boolean; virtual;
+    procedure EnableControls(aActionComponent: TComponent); virtual;
+    function EOF(aActionComponent: TComponent): Boolean; virtual;
+    function FieldById(aActionComponent: TComponent; const FieldId: Integer):
+        TField; virtual;
+    function FieldByName(aActionComponent: TComponent; const FieldName: string):
+        TField; virtual;
+    function FieldCount(aActionComponent: TComponent): Integer; virtual;
+    procedure FillFieldList(aActionComponent: TComponent; var AFieldList: TStrings;
+        const AOnlyVisible: Boolean); virtual;
+    procedure First(aActionComponent: TComponent); virtual;
+    function DataSet(aActionComponent: TComponent): TDataSet; virtual;
+    function DataSource(aActionComponent: TComponent): TDataSource; virtual;
+    function GotoSelectedRow(aActionComponent: TComponent;const ASelectedRow:
+        Integer): Boolean; virtual;
+    function HasData(aActionComponent: TComponent): Boolean; virtual;
+    function IsActive(aActionComponent: TComponent): Boolean; virtual;
+    function IsFieldReadOnly(aActionComponent: TComponent;const AFieldName:
+        string): Boolean; virtual;
+    function IsFieldVisible(aActionComponent: TComponent; const AFieldName:
+        string): Boolean; virtual;
+    procedure Last(aActionComponent: TComponent); virtual;
+    procedure MoveBy(aActionComponent: TComponent; Distance: Integer); virtual;
+    function RecNo(aActionComponent: TComponent): Integer; virtual;
+    function RecordCount(aActionComponent: TComponent): Integer; virtual;
+    function SelectedField(aActionComponent: TComponent): TField; virtual;
+    function SelectedRowsCount(aActionComponent: TComponent): Integer; virtual;
+    procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
+        TJvShowSingleRecordWindowOptions); virtual;
+    function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
+    function SupportsComponent(aActionComponent: TComponent): Boolean; override;
   end;
 
   TJvDatabaseActionBaseEngineClass = class of TJvDatabaseActionBaseEngine;
 
   TJvDatabaseActionDBGridControlEngine = class(TJvDatabaseActionBaseControlEngine)
   private
-    FCustomDBGrid: TCustomDBGrid;
   protected
-    function GetCustomDBGrid(ADataComponent: TComponent): TCustomDBGrid; virtual;
-    function GetDataSource(ADataComponent: TComponent): TDataSource; override;
-    procedure OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
-      AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
-    procedure SetDatacomponent(const Value: TComponent); override;
+    function CustomDBGrid(aActionComponent: TComponent): TCustomDBGrid; virtual;
+    procedure OnCreateDataControls(ADatacomponent: TComponent; ADynControlEngineDB:
+        TJvDynControlEngineDB; AParentControl: TWinControl; AFieldCreateOptions:
+        TJvCreateDBFieldsOnControlOptions);
   public
     constructor Create(AOwner: TComponent); override;
-    function GotoSelectedRow(const ASelectedRow: Integer): Boolean; override;
-    function GetSelectedField: TField; override;
-    function SelectedRowsCount: Integer; override;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    procedure ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions); override;
-    property CustomDBGrid: TCustomDBGrid read FCustomDBGrid;
+    function DataSource(aActionComponent: TComponent): TDataSource; override;
+    function GotoSelectedRow(aActionComponent: TComponent; const ASelectedRow:
+        Integer): Boolean; override;
+    function SelectedField(aActionComponent: TComponent): TField; override;
+    function SelectedRowsCount(aActionComponent: TComponent): Integer; override;
+    function SupportsComponent(aActionComponent: TComponent): Boolean; override;
+    procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
+        TJvShowSingleRecordWindowOptions); override;
   end;
 
-  TJvDatabaseActionEngineList = class(TList)
+  TJvDatabaseActionEngineList = class(TJvActionEngineList)
   public
-    destructor Destroy; override;
     procedure RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
-    function GetControlEngine(AComponent: TComponent): TJvDatabaseActionBaseControlEngine;
     function GetDatasetEngine(AComponent: TComponent): TJvDatabaseActionBaseDatasetEngine;
-    function Supports(AComponent: TComponent): Boolean;
+    function GetDatabaseControlEngine(AComponent: TComponent):
+        TJvDatabaseActionBaseControlEngine;
     function SupportsDataset(AComponent: TComponent): Boolean;
   end;
 
-procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
+procedure RegisterDatabaseActionEngine(AEngineClass:
+    TJvDatabaseActionBaseEngineClass);
 
 function RegisteredDatabaseActionEngineList: TJvDatabaseActionEngineList;
 
@@ -202,283 +197,303 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
+  JvDBActions,
   Dialogs;
 
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
 
-//=== { TJvDatabaseActionBaseControlEngine } =================================
-
 constructor TJvDatabaseActionBaseControlEngine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDataset := nil;
-  FDataSource := nil;
-  FDatacomponent := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.GetDataSource(ADataComponent: TComponent): TDataSource;
+function TJvDatabaseActionBaseControlEngine.Bof(aActionComponent: TComponent):
+    Boolean;
 begin
-  if Assigned(ADataComponent) and (ADataComponent is TDataSource) then
-    Result := TDataSource(ADataComponent)
-  else
-    Result := nil;
-end;
-
-function TJvDatabaseActionBaseControlEngine.GetDataSet(ADataComponent: TComponent): TDataSet;
-begin
-  if Assigned(GetDataSource(ADataComponent)) then
-    Result := GetDataSource(ADataComponent).DataSet
-  else
-    Result := nil;
-end;
-
-function TJvDatabaseActionBaseControlEngine.Supports(ADataComponent: TComponent): Boolean;
-begin
-  Result := Assigned(ADataComponent) and (ADataComponent is TDataSource);
-end;
-
-function TJvDatabaseActionBaseControlEngine.IsActive: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.Active
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).Bof
   else
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.HasData: Boolean;
+function TJvDatabaseActionBaseControlEngine.CanDelete(aActionComponent:
+    TComponent): Boolean;
 begin
-  if Assigned(DataSet) then
-    Result := DataSet.RecordCount > 0
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).CanModify
   else
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.FieldCount: Integer;
+function TJvDatabaseActionBaseControlEngine.CanInsert(aActionComponent:
+    TComponent): Boolean;
 begin
-  if Assigned(DataSet) then
-    Result := DataSet.FieldCount
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).CanModify
+  else
+    Result := False;
+end;
+
+function TJvDatabaseActionBaseControlEngine.CanNavigate(aActionComponent:
+    TComponent): Boolean;
+begin
+  Result := Assigned(DataSet(aActionComponent));
+end;
+
+function TJvDatabaseActionBaseControlEngine.CanRefresh(aActionComponent:
+    TComponent): Boolean;
+begin
+  Result := Assigned(DataSet(aActionComponent));
+end;
+
+function TJvDatabaseActionBaseControlEngine.CanUpdate(aActionComponent:
+    TComponent): Boolean;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).CanModify
+  else
+    Result := False;
+end;
+
+function TJvDatabaseActionBaseControlEngine.ControlsDisabled(aActionComponent:
+    TComponent): Boolean;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).ControlsDisabled
+  else
+    Result := False;
+end;
+
+procedure TJvDatabaseActionBaseControlEngine.DisableControls(aActionComponent:
+    TComponent);
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    DataSet(aActionComponent).DisableControls;
+end;
+
+function TJvDatabaseActionBaseControlEngine.EditModeActive(aActionComponent:
+    TComponent): Boolean;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).State in [dsInsert, dsEdit]
+  else
+    Result := False;
+end;
+
+procedure TJvDatabaseActionBaseControlEngine.EnableControls(aActionComponent:
+    TComponent);
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    DataSet(aActionComponent).EnableControls;
+end;
+
+function TJvDatabaseActionBaseControlEngine.EOF(aActionComponent: TComponent):
+    Boolean;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).EOF
+  else
+    Result := False;
+end;
+
+function TJvDatabaseActionBaseControlEngine.FieldById(aActionComponent:
+    TComponent; const FieldId: Integer): TField;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).Fields[FieldId]
+  else
+    Result := nil;
+end;
+
+function TJvDatabaseActionBaseControlEngine.FieldByName(aActionComponent:
+    TComponent; const FieldName: string): TField;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).FieldByName(FieldName)
+  else
+    Result := nil;
+end;
+
+function TJvDatabaseActionBaseControlEngine.FieldCount(aActionComponent:
+    TComponent): Integer;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).FieldCount
   else
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseControlEngine.RecordCount: Integer;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.RecordCount
-  else
-    Result := -1;
-end;
-
-function TJvDatabaseActionBaseControlEngine.RecNo: Integer;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.RecNo
-  else
-    Result := -1;
-end;
-
-function TJvDatabaseActionBaseControlEngine.CanInsert: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.CanModify
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.CanUpdate: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.CanModify
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.CanDelete: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.CanModify
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.EOF: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.EOF
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.Bof: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.Bof
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.CanRefresh: Boolean;
-begin
-  Result := Assigned(DataSet);
-end;
-
-function TJvDatabaseActionBaseControlEngine.CanNavigate: Boolean;
-begin
-  Result := Assigned(DataSet);
-end;
-
-procedure TJvDatabaseActionBaseControlEngine.DisableControls;
-begin
-  if Assigned(DataSet) then
-    DataSet.DisableControls;
-end;
-
-procedure TJvDatabaseActionBaseControlEngine.EnableControls;
-begin
-  if Assigned(DataSet) then
-    DataSet.EnableControls;
-end;
-
-function TJvDatabaseActionBaseControlEngine.ControlsDisabled: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.ControlsDisabled
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.EditModeActive: Boolean;
-begin
-  if Assigned(DataSet) then
-    Result := DataSet.State in [dsInsert, dsEdit]
-  else
-    Result := False;
-end;
-
-function TJvDatabaseActionBaseControlEngine.FieldById(const FieldId: Integer): TField;
-begin
-  if Assigned(Dataset) then
-    Result := Dataset.Fields[FieldId]
-  else
-    Result := nil;
-end;
-
-function TJvDatabaseActionBaseControlEngine.FieldByName(const FieldName: string): TField;
-begin
-  if Assigned(Dataset) then
-    Result := Dataset.FieldByName(FieldName)
-  else
-    Result := nil;
-end;
-
-procedure TJvDatabaseActionBaseControlEngine.FillFieldList(var AFieldList: TStrings;
-  const AOnlyVisible: Boolean);
+procedure TJvDatabaseActionBaseControlEngine.FillFieldList(aActionComponent:
+    TComponent; var AFieldList: TStrings; const AOnlyVisible: Boolean);
 var
   I: Integer;
+  ds : TDataset;
 begin
   AFieldList.Clear;
-  if Assigned(Dataset) then
+  ds := DataSet(aActionComponent);
+  if Assigned(ds) then
   begin
-    for I := 0 to DataSet.Fields.Count - 1 do
-      if not AOnlyVisible or IsFieldVisible(DataSet.Fields[I].FieldName) then
-        AFieldList.Add(DataSet.Fields[I].FieldName);
+    for I := 0 to ds.Fields.Count - 1 do
+      if not AOnlyVisible or IsFieldVisible(aActionComponent,ds.Fields[I].FieldName) then
+        AFieldList.Add(ds.Fields[I].FieldName);
   end;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.First;
+procedure TJvDatabaseActionBaseControlEngine.First(aActionComponent:
+    TComponent);
 begin
-  if Assigned(DataSet) then
-    DataSet.First;
+  if Assigned(DataSet(aActionComponent)) then
+    DataSet(aActionComponent).First;
 end;
 
-function TJvDatabaseActionBaseControlEngine.GotoSelectedRow(const ASelectedRow: Integer): Boolean;
+function TJvDatabaseActionBaseControlEngine.DataSet(aActionComponent:
+    TComponent): TDataSet;
+begin
+  if Assigned(DataSource(aActionComponent)) then
+    Result := DataSource(aActionComponent).DataSet
+  else if Assigned(aActionComponent) and (aActionComponent is TDataSet) then
+    Result := TDataSet(aActionComponent)
+  else
+    Result := nil;
+end;
+
+function TJvDatabaseActionBaseControlEngine.DataSource(aActionComponent:
+    TComponent): TDataSource;
+begin
+  if Assigned(aActionComponent) and (aActionComponent is TDataSource) then
+    Result := TDataSource(aActionComponent)
+  else
+    Result := nil;
+end;
+
+function TJvDatabaseActionBaseControlEngine.GotoSelectedRow(aActionComponent:
+    TComponent;const ASelectedRow: Integer): Boolean;
 begin
   Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.IsFieldVisible(const AFieldName: string): Boolean;
-var
-  Field: TField;
+function TJvDatabaseActionBaseControlEngine.HasData(aActionComponent:
+    TComponent): Boolean;
 begin
-  Field := FieldByName(AFieldName);
-  if Assigned(Field) then
-    Result := Field.Visible
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).RecordCount > 0
   else
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.IsFieldReadOnly(const AFieldName: string): Boolean;
+function TJvDatabaseActionBaseControlEngine.IsActive(aActionComponent:
+    TComponent): Boolean;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).Active
+  else
+    Result := False;
+end;
+
+function TJvDatabaseActionBaseControlEngine.IsFieldReadOnly(aActionComponent:
+    TComponent;const AFieldName: string): Boolean;
 var
   Field: TField;
 begin
-  Field := FieldByName(AFieldName);
+  Field := FieldByName(aActionComponent, aFieldName);
   if Assigned(Field) then
     Result := Field.ReadOnly
   else
     Result := False;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.Last;
+function TJvDatabaseActionBaseControlEngine.IsFieldVisible(aActionComponent:
+    TComponent; const AFieldName: string): Boolean;
+var
+  Field: TField;
 begin
-  if Assigned(DataSet) then
-    DataSet.Last;
+  Field := FieldByName(aActionComponent, AFieldName);
+  if Assigned(Field) then
+    Result := Field.Visible
+  else
+    Result := False;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.MoveBy(Distance: Integer);
+procedure TJvDatabaseActionBaseControlEngine.Last(aActionComponent: TComponent);
 begin
-  if Assigned(DataSet) then
-    DataSet.MoveBy(Distance);
+  if Assigned(DataSet(aActionComponent)) then
+    DataSet(aActionComponent).Last;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvDatabaseActionBaseControlEngine.MoveBy(aActionComponent:
+    TComponent; Distance: Integer);
 begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FDataComponent) then
-    DataComponent := nil;
+  if Assigned(DataSet(aActionComponent)) then
+    DataSet(aActionComponent).MoveBy(Distance);
 end;
 
-function TJvDatabaseActionBaseControlEngine.GetSelectedField: TField;
+function TJvDatabaseActionBaseControlEngine.RecNo(aActionComponent:
+    TComponent): Integer;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).RecNo
+  else
+    Result := -1;
+end;
+
+function TJvDatabaseActionBaseControlEngine.RecordCount(aActionComponent:
+    TComponent): Integer;
+begin
+  if Assigned(DataSet(aActionComponent)) then
+    Result := DataSet(aActionComponent).RecordCount
+  else
+    Result := -1;
+end;
+
+function TJvDatabaseActionBaseControlEngine.SelectedField(aActionComponent:
+    TComponent): TField;
 begin
   Result := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.SelectedRowsCount: Integer;
+function TJvDatabaseActionBaseControlEngine.SelectedRowsCount(aActionComponent:
+    TComponent): Integer;
 begin
   Result := 0;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.SetDatacomponent(const Value: TComponent);
-begin
-  inherited SetDatacomponent (Value);
-  FDatasource := GetDataSource(Value);
-  FDataset := GetDataSet(Value);
-end;
-
-procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions);
+procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(
+    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
   Dialog := TJvDynControlDataSourceEditDialog.Create;
   try
     AOptions.SetOptionsToDialog(Dialog);
-    if Dialog.DynControlEngineDB.SupportsDataComponent(DataComponent) then
-      Dialog.DataComponent := DataComponent
+    if Dialog.DynControlEngineDB.SupportsDataComponent(aActionComponent) then
+      Dialog.DataComponent := aActionComponent
     else
-      Dialog.DataComponent := DataSource;
-    Dialog.ShowDialog;
+      Dialog.DataComponent := DataSource(aActionComponent);
+    if Assigned(Dialog.DataComponent) then
+      Dialog.ShowDialog;
   finally
     Dialog.Free;
   end;
 end;
 
-//=== { TJvDatabaseActionDBGridControlEngine } ===============================
-
-function TJvDatabaseActionDBGridControlEngine.GetDataSource(ADataComponent: TComponent): TDataSource;
+function TJvDatabaseActionBaseControlEngine.SupportsAction(AAction:
+    TJvActionEngineBaseAction): Boolean;
 begin
-  if Assigned(ADataComponent) and (ADataComponent is TCustomDBGrid) then
-    Result := TCustomDBGrid(ADataComponent).DataSource
+  Result := (AAction is TJvDatabaseBaseAction) ;
+end;
+
+function TJvDatabaseActionBaseControlEngine.SupportsComponent(aActionComponent:
+    TComponent): Boolean;
+begin
+  Result := Assigned(aActionComponent) and (aActionComponent is TDataSource);
+end;
+
+function TJvDatabaseActionDBGridControlEngine.DataSource(aActionComponent:
+    TComponent): TDataSource;
+begin
+  if Assigned(aActionComponent) and (aActionComponent is TCustomDBGrid) then
+    Result := TCustomDBGrid(aActionComponent).DataSource
   else
     Result := nil;
 end;
@@ -490,31 +505,37 @@ type
 constructor TJvDatabaseActionDBGridControlEngine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCustomDBGrid := nil;
 end;
 
-function TJvDatabaseActionDBGridControlEngine.GetCustomDBGrid(ADataComponent: TComponent): TCustomDBGrid;
+function TJvDatabaseActionDBGridControlEngine.CustomDBGrid(aActionComponent:
+    TComponent): TCustomDBGrid;
 begin
-  if Assigned(ADataComponent) and (ADataComponent is TCustomDBGrid) then
-    Result := TCustomDBGrid(ADataComponent)
+  if Assigned(aActionComponent) and (aActionComponent is TCustomDBGrid) then
+    Result := TCustomDBGrid(aActionComponent)
   else
     Result := nil;
 end;
 
-function TJvDatabaseActionDBGridControlEngine.GotoSelectedRow(const ASelectedRow: Integer): Boolean;
+function TJvDatabaseActionDBGridControlEngine.GotoSelectedRow(aActionComponent:
+    TComponent; const ASelectedRow: Integer): Boolean;
+var
+  ds : TDataSet;
 begin
-  if (ASelectedRow >= 0) and (ASelectedRow < SelectedRowsCount) and
-    Assigned(Dataset) and Dataset.Active then
+  ds := Dataset(aActionComponent);
+  if (ASelectedRow >= 0) and (ASelectedRow < SelectedRowsCount(aActionComponent)) and
+    Assigned(ds) and ds.Active then
   begin
-    Dataset.GotoBookmark(Pointer(TAccessCustomDBGrid(CustomDBGrid).SelectedRows[ASelectedRow]));
+    ds.GotoBookmark(Pointer(TAccessCustomDBGrid(CustomDBGrid(aActionComponent)).SelectedRows[ASelectedRow]));
     Result := True;
   end
   else
     Result := False;
 end;
 
-procedure TJvDatabaseActionDBGridControlEngine.OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
-  AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
+procedure TJvDatabaseActionDBGridControlEngine.OnCreateDataControls(
+    ADatacomponent: TComponent; ADynControlEngineDB: TJvDynControlEngineDB;
+    AParentControl: TWinControl; AFieldCreateOptions:
+    TJvCreateDBFieldsOnControlOptions);
 var
   I: Integer;
   ds: TDataSource;
@@ -522,19 +543,21 @@ var
   LabelControl: TControl;
   Control: TWinControl;
   Column: TColumn;
+  grid : TCustomDBGrid;
 begin
-  if Assigned(CustomDBGrid) then
+  grid := CustomDBGrid(ADatacomponent);
+  if Assigned(grid) then
   begin
-    ds := DataSource;
+    ds := grid.DataSource;
     with AFieldCreateOptions do
-      for I := 0 to TAccessCustomDBGrid(CustomDBGrid).ColCount - 2 do
+      for I := 0 to TAccessCustomDBGrid(grid).ColCount - 2 do
       begin
-        Column := TAccessCustomDBGrid(CustomDBGrid).Columns[I];
+        Column := TAccessCustomDBGrid(grid).Columns[I];
         if Column.Visible or ShowInvisibleFields then
         begin
           Field := Column.Field;
           Control := ADynControlEngineDB.CreateDBFieldControl(Field, AParentControl, AParentControl, '', ds);
-          Control.Enabled := not IsFieldReadOnly(Field.FieldName);
+          Control.Enabled := not Field.CanModify;
           if FieldDefaultWidth > 0 then
             Control.Width := FieldDefaultWidth
           else
@@ -573,83 +596,55 @@ begin
   end;
 end;
 
-function TJvDatabaseActionDBGridControlEngine.GetSelectedField: TField;
+function TJvDatabaseActionDBGridControlEngine.SelectedField(aActionComponent:
+    TComponent): TField;
 begin
-  if Assigned(CustomDBGrid) then
-    Result := CustomDBGrid.SelectedField
+  if Assigned(CustomDBGrid(aActionComponent)) then
+    Result := CustomDBGrid(aActionComponent).SelectedField
   else
     Result := nil;
 end;
 
-function TJvDatabaseActionDBGridControlEngine.SelectedRowsCount: Integer;
+function TJvDatabaseActionDBGridControlEngine.SelectedRowsCount(
+    aActionComponent: TComponent): Integer;
 begin
-  if Assigned(CustomDBGrid) then
-    Result := TAccessCustomDBGrid(CustomDBGrid).SelectedRows.Count
+  if Assigned(CustomDBGrid(aActionComponent)) then
+    Result := TAccessCustomDBGrid(CustomDBGrid(aActionComponent)).SelectedRows.Count
   else
     Result := 0;
 end;
 
-procedure TJvDatabaseActionDBGridControlEngine.SetDatacomponent(const Value: TComponent);
+function TJvDatabaseActionDBGridControlEngine.SupportsComponent(
+    aActionComponent: TComponent): Boolean;
 begin
-  inherited SetDatacomponent(Value);
-  FCustomDbGrid := GetCustomDBGrid(Value);
+  Result := Assigned(aActionComponent) and (aActionComponent is TCustomDBGrid);
 end;
 
-function TJvDatabaseActionDBGridControlEngine.Supports(ADataComponent: TComponent): Boolean;
-begin
-  Result := Assigned(ADataComponent) and (ADataComponent is TCustomDBGrid);
-end;
-
-procedure TJvDatabaseActionDBGridControlEngine.ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions);
+procedure TJvDatabaseActionDBGridControlEngine.ShowSingleRecordWindow(
+    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
   Dialog := TJvDynControlDataSourceEditDialog.Create;
   try
     AOptions.SetOptionsToDialog(Dialog);
-    if Dialog.DynControlEngineDB.SupportsDataComponent(DataComponent) then
-      Dialog.DataComponent := DataComponent
+    if Dialog.DynControlEngineDB.SupportsDataComponent(aActionComponent) then
+      Dialog.DataComponent := aActionComponent
     else
-      Dialog.DataComponent := DataSource;
-    Dialog.OnCreateDataControlsEvent := OnCreateDataControls;
-    Dialog.ShowDialog;
+      Dialog.DataComponent := DataSource(aActionComponent);
+    if Assigned(Dialog.DataComponent) then
+    begin
+      Dialog.OnCreateDataControlsEvent := OnCreateDataControls;
+      Dialog.ShowDialog;
+    end;
   finally
     Dialog.Free;
   end;
 end;
 
-//=== { TJvDatabaseActionEngineList } ========================================
-
-destructor TJvDatabaseActionEngineList.Destroy;
-var
-  I: Integer;
-begin
-  for I := Count - 1 downto 0 do
-  begin
-    TJvDatabaseActionBaseControlEngine(Items[I]).Free;
-    Items[I] := nil;
-    Delete(I);
-  end;
-  inherited Destroy;
-end;
-
 procedure TJvDatabaseActionEngineList.RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
 begin
   Add(AEngineClass.Create(nil));
-end;
-
-function TJvDatabaseActionEngineList.GetControlEngine(AComponent: TComponent): TJvDatabaseActionBaseControlEngine;
-var
-  Ind: Integer;
-begin
-  Result := nil;
-  for Ind := 0 to Count - 1 do
-    if TObject(Items[Ind]) is TJvDatabaseActionBaseControlEngine then
-      if TJvDatabaseActionBaseControlEngine(Items[Ind]).Supports(AComponent) then
-      begin
-        Result := TJvDatabaseActionBaseControlEngine(Items[Ind]);
-        Break;
-      end;
 end;
 
 function TJvDatabaseActionEngineList.GetDatasetEngine(AComponent: TComponent): TJvDatabaseActionBaseDatasetEngine;
@@ -658,17 +653,27 @@ var
 begin
   Result := nil;
   for Ind := 0 to Count - 1 do
-    if TObject(Items[Ind]) is TJvDatabaseActionBaseDatasetEngine then
-      if TJvDatabaseActionBaseDatasetEngine(Items[Ind]).Supports(AComponent) then
+    if Engine[Ind] is TJvDatabaseActionBaseDatasetEngine then
+      if TJvDatabaseActionBaseDatasetEngine(Engine[Ind]).SupportsComponent(AComponent) then
       begin
-        Result := TJvDatabaseActionBaseDatasetEngine(Items[Ind]);
+        Result := TJvDatabaseActionBaseDatasetEngine(Engine[Ind]);
         Break;
       end;
 end;
 
-function TJvDatabaseActionEngineList.Supports(AComponent: TComponent): Boolean;
+function TJvDatabaseActionEngineList.GetDatabaseControlEngine(AComponent:
+    TComponent): TJvDatabaseActionBaseControlEngine;
+var
+  Ind: Integer;
 begin
-  Result := Assigned(GetControlEngine(AComponent));
+  Result := nil;
+  for Ind := 0 to Count - 1 do
+    if Engine[Ind] is TJvDatabaseActionBaseControlEngine then
+      if TJvDatabaseActionBaseControlEngine(Engine[Ind]).SupportsComponent(AComponent) then
+      begin
+        Result := TJvDatabaseActionBaseControlEngine(Engine[Ind]);
+        Break;
+      end;
 end;
 
 function TJvDatabaseActionEngineList.SupportsDataset(AComponent: TComponent): Boolean;
@@ -676,58 +681,44 @@ begin
   Result := Assigned(GetDatasetEngine(AComponent));
 end;
 
-//=== { TJvDatabaseActionBaseEngine } ========================================
-
-procedure TJvDatabaseActionBaseEngine.SetDatacomponent(const Value: TComponent);
+function TJvDatabaseActionBaseDatasetEngine.GetDataset(aActionComponent:
+    TComponent): TDataset;
 begin
-  FDatacomponent := Value;
-  if FDataComponent <> nil then
-    FDataComponent.FreeNotification(Self);
+  if aActionComponent is TDataset then
+    Result := TDataset(aActionComponent)
+  else
+    Result := NIL;
 end;
 
-function TJvDatabaseActionBaseEngine.Supports(ADataComponent: TComponent):
-    Boolean;
-begin
-  Result := False;
-end;
-
-//=== { TJvDatabaseActionBaseDatasetEngine } =================================
-
-function TJvDatabaseActionBaseDatasetEngine.GetSQL: string;
+function TJvDatabaseActionBaseDatasetEngine.GetSQL(aActionComponent:
+    TComponent): string;
 begin
   Result := '';
 end;
 
-procedure TJvDatabaseActionBaseDatasetEngine.SetDatacomponent(const Value: TComponent);
-begin
-  inherited Setdatacomponent (Value);
-  if Supports(Value) then
-    FDataset := TDataset(Value)
-  else
-    FDataset := nil;
-end;
-
-procedure TJvDatabaseActionBaseDatasetEngine.SetSQL(const Value: string);
+procedure TJvDatabaseActionBaseDatasetEngine.SetSQL(aActionComponent:
+    TComponent);
 begin
 
 end;
 
-function TJvDatabaseActionBaseDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
+function TJvDatabaseActionBaseDatasetEngine.SupportsComponent(aActionComponent:
+    TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TJvDatabaseActionBaseDatasetEngine.SupportsGetSQL: Boolean;
+function TJvDatabaseActionBaseDatasetEngine.SupportsGetSQL(aActionComponent:
+    TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TJvDatabaseActionBaseDatasetEngine.SupportsSetSQL: Boolean;
+function TJvDatabaseActionBaseDatasetEngine.SupportsSetSQL(aActionComponent:
+    TComponent): Boolean;
 begin
   Result := False;
 end;
-
-//=== { TJvShowSingleRecordWindowOptions } ===================================
 
 constructor TJvShowSingleRecordWindowOptions.Create;
 begin
@@ -801,14 +792,13 @@ begin
   end;
 end;
 
-//=== Global =================================================================
-
 function RegisteredDatabaseActionEngineList: TJvDatabaseActionEngineList;
 begin
   Result := IntRegisteredActionEngineList;
 end;
 
-procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
+procedure RegisterDatabaseActionEngine(AEngineClass:
+    TJvDatabaseActionBaseEngineClass);
 begin
   if Assigned(IntRegisteredActionEngineList) then
     IntRegisteredActionEngineList.RegisterEngine(AEngineClass);
@@ -828,8 +818,8 @@ end;
 procedure InitActionEngineList;
 begin
   CreateActionEngineList;
-  RegisterActionEngine(TJvDatabaseActionBaseControlEngine);
-  RegisterActionEngine(TJvDatabaseActionDBGridControlEngine);
+  RegisterDatabaseActionEngine(TJvDatabaseActionBaseControlEngine);
+  RegisterDatabaseActionEngine(TJvDatabaseActionDBGridControlEngine);
 end;
 
 initialization

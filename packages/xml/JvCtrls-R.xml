@@ -29,6 +29,11 @@
     <Package Name="vclx" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\run\JvActionsEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActions.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActionsEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActionsEngineStringGrid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActionsEngineTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCharMap.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvClock.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorBox.pas" Targets="all" Formname="" Condition=""/>

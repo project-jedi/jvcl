@@ -153,7 +153,7 @@ begin
     TJvDatabaseSMImportAction,
     {$ENDIF USE_3RDPARTY_SMIMPORT}
     TJvDatabaseOpenAction, TJvDatabaseCloseAction, TJvDatabaseModifyAllAction,
-    TJvDatabaseShowSQLStatementAction], TJvDialogActions);
+    TJvDatabaseShowSQLStatementAction], TJvDBActions);
 end;
 
 end.

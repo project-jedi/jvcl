@@ -31,10 +31,10 @@ interface
 
 uses
   SysUtils, Classes, StdActns, ActnList, ImgList, Controls, Forms,
-  JvDialogActns, JvActions, JvDBActions;
+  JvActions, JvDBActions, JvActionsEngine;
 
 type
-  TJvDialogActions = class(TDataModule)
+  TJvDBActions = class(TDataModule)
     ActionList1: TActionList;
     JvDatabaseInsertAction1: TJvDatabaseInsertAction;
     JvDatabaseCopyAction1: TJvDatabaseCopyAction;
@@ -55,6 +55,7 @@ type
     JvDatabaseOpenAction1: TJvDatabaseOpenAction;
     JvDatabaseCloseAction1: TJvDatabaseCloseAction;
     JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction;
+    JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction;
   public
   end;
 
