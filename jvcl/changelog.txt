@@ -5,7 +5,7 @@ Changelog for JVCL 3.X
   The engine based actions give you the possibility to connect different controls to one action. For example the collapse
   action. For each control which supports collapse there is an engine which implements the collapse. So you no longer need 
   different actions for each control type.
-  There are a lot of control engines samples JvControlActionEngine*.pas
+  There are a lot of control engines samples "JvControlActionEngine*.pas"
   The TJvDatabaseActionEngine now based also on the TJvControlActionEngine. For all developers there are only minor changes to the
   TJvDatabaseActionEngine, for the users there are no changes.
 2007-06-01
