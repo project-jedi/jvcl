@@ -62,6 +62,7 @@
     <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D2005" Targets="d9" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D2006" Targets="d10" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2006" Targets="d11" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="ODAC50" Targets="d5" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC60" Targets="d6" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
