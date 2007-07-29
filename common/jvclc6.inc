@@ -118,6 +118,18 @@ For further informations have a look at http://www.devexpress.com }
 For further informations have a look at http://www.devexpress.com }
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
+{ Activates Support for the DevExpress cxVerticalGrid-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+
+{ Activates Support for the DevExpress cxPivotGrid-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+
+{ Activates Support for the DevExpress cxTreeList-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
 {.$DEFINE USE_3RDPARTY_INDY}
