@@ -1400,6 +1400,7 @@ end;
 procedure TJvBaseDatasetThreadHandler.ThreadExecute(Sender: TObject; Params: Pointer);
 begin
   OperationWasHandledInThread := True;
+  ExecuteThread.ThreadDialogAllowed := True;
   try
     SetError('', nil);
     ExecuteThreadSynchronize(SynchBeforeThreadExecution);
@@ -1416,6 +1417,7 @@ begin
       on E: Exception do
       begin
         SetError(E.Message, E);
+        ExecuteThread.ThreadDialogAllowed := False;
         if ThreadOptions.ShowExceptionMessage then
         begin
           FSynchMessageDlgMsg := E.Message;
@@ -1426,6 +1428,7 @@ begin
     ExecuteThreadSynchronize(SynchAfterThreadExecution);
   finally
     IntCurrentOperation := tdoNothing;
+    ExecuteThread.ThreadDialogAllowed := False;
   end;
 end;
 
