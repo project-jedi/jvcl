@@ -32,7 +32,7 @@ uses
   Dialogs, ExtCtrls, DBCtrls, Grids, DBGrids, DB, JvCsvData,
   JvExExtCtrls, JvComponent, JvPanel, ComCtrls, JvExComCtrls, JvDBActions,
   JvDateTimePicker, JvDBDateTimePicker, StdCtrls, ActnList, Buttons, DBActns,
-  JvExDBGrids, JvDBGrid, ImgList;
+  JvExDBGrids, JvDBGrid, ImgList, JvActionsEngine;
 
 type
   TJvDBActionMainFrm = class(TForm)
@@ -77,6 +77,8 @@ type
     JvDatabaseCloseAction1: TJvDatabaseCloseAction;
     JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction;
     BitBtn9: TBitBtn;
+    BitBtn10: TBitBtn;
+    JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction;
     procedure FormCreate(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
     procedure JvDBGrid1Enter(Sender: TObject);
@@ -90,7 +92,13 @@ implementation
 {$R *.dfm}
 
 uses JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineVCLDB, JvDynControlEngineJVCLDB,
-  JvDynControlEngineTools, JvDynControlEngineDBTools;
+  JvDynControlEngineTools, JvDynControlEngineDBTools,
+  JvDBActionsEngineControlCxGrid,
+  JvDBActionsEngineDatasetAdo,
+  JvDBActionsEngineDatasetOdac,
+  JvDBActionsEngineDatasetdoa,
+  JvDBActionsEngineDatasetDBExpress,
+  JvDBActionsEngineDatasetCSVDataset;
 
 procedure TJvDBActionMainFrm.FormCreate(Sender: TObject);
 begin

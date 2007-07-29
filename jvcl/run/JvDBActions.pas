@@ -44,11 +44,11 @@ uses
   {$IFDEF USE_3RDPARTY_SMIMPORT}
   SMIWiz, SMIBase,
   {$ENDIF USE_3RDPARTY_SMIMPORT}
-  DBGrids, JvDBActionsEngine;
+  DBGrids, JvActionsEngine, JvDBActionsEngine;
 
 type
-  TJvChangeDataComponent = procedure(DataComponent: TComponent) of object;
 
+  TJvChangeDataComponent = procedure(DataComponent: TComponent) of object;
   TJvDatabaseActionList = class(TActionList)
   private
     FDataComponent: TComponent;
@@ -69,15 +69,17 @@ type
     DataComponent: TComponent) of object;
   TJvDatabaseExecuteDataSourceEvent = procedure(Sender: TObject; DataSource: TDataSource) of object;
 
-  TJvDatabaseBaseAction = class(TAction)
+  TJvDatabaseBaseAction = class(TJvActionEngineBaseAction)
   private
+    FDatabaseControlEngine: TJvDatabaseActionBaseControlEngine;
     FOnExecute: TJvDatabaseExecuteEvent;
     FOnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent;
-    FControlEngine: TJvDatabaseActionBaseControlEngine;
     FDatasetEngine: TJvDatabaseActionBaseDatasetEngine;
-    FDataComponent: TComponent;
     FOnChangeDataComponent: TJvChangeDataComponent;
   protected
+    //1 This Procedure is called when the ActionComponent is changed
+    procedure ChangeActionComponent(const AActionComponent: TComponent); override;
+    function GetDataComponent: TComponent;
     procedure SetDataComponent(Value: TComponent);
     procedure SetEnabled(Value: Boolean);
     function GetDataSet: TDataSet;
@@ -97,23 +99,24 @@ type
     function EngineControlsDisabled: Boolean;
     function EngineEditModeActive: Boolean;
     function EngineSelectedRowsCount: Integer;
-    property ControlEngine: TJvDatabaseActionBaseControlEngine read FControlEngine;
+    function GetEngineList: TJvActionEngineList; override;
+    property DatabaseControlEngine: TJvDatabaseActionBaseControlEngine read
+        FDatabaseControlEngine;
     property DatasetEngine: TJvDatabaseActionBaseDatasetEngine read FDatasetEngine;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property DataSource: TDataSource read GetDataSource;
     property DataSet: TDataSet read GetDataSet;
   published
     property OnChangeDataComponent: TJvChangeDataComponent read
-      FOnChangeDataComponent write FOnChangeDataComponent;
+        FOnChangeDataComponent write FOnChangeDataComponent;
     property OnExecute: TJvDatabaseExecuteEvent read FOnExecute write FOnExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
       read FOnExecuteDataSource write FOnExecuteDataSource;
-    property DataComponent: TComponent read FDataComponent write SetDataComponent;
+    property DataComponent: TComponent read GetDataComponent write SetDataComponent;
   end;
 
   TJvDatabaseSimpleAction = class(TJvDatabaseBaseAction)
@@ -487,54 +490,49 @@ begin
   inherited Create(AOwner);
   if Assigned(AOwner) and (AOwner is TJvDatabaseActionList) then
     DataComponent := TJvDatabaseActionList(AOwner).DataComponent;
+  FDatabaseControlEngine := Nil;
+end;
+
+//=== { TJvActionEngineBaseAction } ========================================
+
+procedure TJvDatabaseBaseAction.ChangeActionComponent(const AActionComponent:
+    TComponent);
+begin
+  inherited ChangeActionComponent(AActionComponent);
+  if Assigned(ControlEngine) and (ControlEngine is TJvDatabaseActionBaseControlEngine) then
+    FDatabaseControlEngine := TJvDatabaseActionBaseControlEngine(ControlEngine)
+  else
+    FDatabaseControlEngine := Nil;
+  if Assigned(Dataset) then
+  begin
+    if Assigned(EngineList) and (EngineList is TJvDatabaseActionEngineList) then
+      FDatasetEngine := TJvDatabaseActionEngineList(EngineList).GetDatasetEngine(Dataset)
+    else
+      FDatasetEngine := Nil;
+  end
+  else
+    FDatasetEngine := nil;
 end;
 
 function TJvDatabaseBaseAction.GetDataSet: TDataSet;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.DataSet
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.DataSet(ActionComponent)
   else
     Result := nil;
 end;
 
 function TJvDatabaseBaseAction.GetDataSource: TDataSource;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.DataSource
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.DataSource(ActionComponent)
   else
     Result := nil;
 end;
 
 procedure TJvDatabaseBaseAction.SetDataComponent(Value: TComponent);
-var EngineList : TJvDatabaseActionEngineList;
 begin
-  FDataComponent := Value;
-  if FDataComponent <> nil then
-    FDataComponent.FreeNotification(Self);
-  EngineList := RegisteredDatabaseActionEngineList;
-  if Assigned(EngineList) then
-  begin
-    FControlEngine := EngineList.GetControlEngine(FDataComponent);
-    if Assigned(FControlEngine) then
-    begin
-      FControlEngine.Datacomponent := FDatacomponent;
-      if Assigned(Dataset) then
-      begin
-        FDatasetEngine := EngineList.GetDatasetEngine(Dataset);
-        if Assigned(FDatasetEngine) then
-          FDatasetEngine.Datacomponent := Dataset;
-      end;
-    end
-    else
-      FDatasetEngine := nil;
-  end
-  else
-  begin
-    FControlEngine := nil;
-    FDatasetEngine := nil;
-  end;
-  if Assigned(OnChangeDataComponent) then
-    OnChangeDataComponent(Value);
+  ActionComponent := Value;
 end;
 
 procedure TJvDatabaseBaseAction.SetEnabled(Value: Boolean);
@@ -545,120 +543,120 @@ end;
 
 function TJvDatabaseBaseAction.EngineIsActive: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.IsActive
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.IsActive (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineHasData: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.HasData
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.HasData (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineFieldCount: Integer;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.FieldCount
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.FieldCount (DataComponent)
   else
     Result := -1;
 end;
 
 function TJvDatabaseBaseAction.EngineRecordCount: Integer;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.RecordCount
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.RecordCount (DataComponent)
   else
     Result := -1;
 end;
 
 function TJvDatabaseBaseAction.EngineRecNo: Integer;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.RecNo
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.RecNo (DataComponent)
   else
     Result := -1;
 end;
 
 function TJvDatabaseBaseAction.EngineCanInsert: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.CanInsert
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.CanInsert (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineCanUpdate: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.CanUpdate
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.CanUpdate (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineCanDelete: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.CanDelete
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.CanDelete (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineEof: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.EOF
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.EOF (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineBof: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.Bof
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.Bof (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineCanNavigate: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.CanNavigate
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.CanNavigate (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineCanRefresh: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.CanRefresh
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.CanRefresh (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineControlsDisabled: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.ControlsDisabled
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.ControlsDisabled (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineEditModeActive: Boolean;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.EditModeActive
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.EditModeActive (DataComponent)
   else
     Result := False;
 end;
 
 function TJvDatabaseBaseAction.EngineSelectedRowsCount: Integer;
 begin
-  if Assigned(ControlEngine) then
-    Result := ControlEngine.SelectedRowsCount
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.SelectedRowsCount (DataComponent)
   else
     Result := -1;
 end;
@@ -679,8 +677,8 @@ end;
 
 procedure TJvDatabaseBaseAction.ExecuteTarget(Target: TObject);
 begin
-  if Assigned(FOnExecute) then
-    FOnExecute(Self, ControlEngine, DataComponent)
+  if Assigned(FOnExecute) and Assigned(DatabaseControlEngine) then
+    FOnExecute(Self, DatabaseControlEngine, DataComponent)
   else
     if Assigned(FOnExecuteDataSource) then
       FOnExecuteDataSource(Self, DataSource)
@@ -688,11 +686,14 @@ begin
       inherited ExecuteTarget(Target);
 end;
 
-procedure TJvDatabaseBaseAction.Notification(AComponent: TComponent; Operation: TOperation);
+function TJvDatabaseBaseAction.GetDataComponent: TComponent;
 begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FDataComponent) then
-    DataComponent := nil;
+  Result := ActionComponent;
+end;
+
+function TJvDatabaseBaseAction.GetEngineList: TJvActionEngineList;
+begin
+  Result := RegisteredDatabaseActionEngineList;
 end;
 
 //=== { TJvDatabaseSimpleAction } ============================================
@@ -759,56 +760,56 @@ end;
 
 procedure TJvDatabaseFirstAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and
+  SetEnabled(Assigned(DatabaseControlEngine) and not EngineControlsDisabled and EngineIsActive and
     not EngineBof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseFirstAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  ControlEngine.First;
+  DatabaseControlEngine.First (DataComponent);
 end;
 
 //=== { TJvDatabaseLastAction } ==============================================
 
 procedure TJvDatabaseLastAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and
+  SetEnabled(Assigned(DatabaseControlEngine) and not EngineControlsDisabled and EngineIsActive and
     not EngineEof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseLastAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  ControlEngine.Last;
+  DatabaseControlEngine.Last (DataComponent);
 end;
 
 //=== { TJvDatabasePriorAction } =============================================
 
 procedure TJvDatabasePriorAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and
+  SetEnabled(Assigned(DatabaseControlEngine) and not EngineControlsDisabled and EngineIsActive and
     not EngineBof and EngineCanNavigate);
 end;
 
 procedure TJvDatabasePriorAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  ControlEngine.MoveBy(-1);
+  DatabaseControlEngine.MoveBy(DataComponent,-1);
 end;
 
 //=== { TJvDatabaseNextAction } ==============================================
 
 procedure TJvDatabaseNextAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and
+  SetEnabled(Assigned(DatabaseControlEngine) and not EngineControlsDisabled and EngineIsActive and
     not EngineEof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseNextAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  ControlEngine.MoveBy(1);
+  DatabaseControlEngine.MoveBy(DataComponent,1);
 end;
 
 //=== { TJvDatabasePriorBlockAction } ========================================
@@ -821,19 +822,19 @@ end;
 
 procedure TJvDatabasePriorBlockAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and
+  SetEnabled(Assigned(DatabaseControlEngine) and not EngineControlsDisabled and EngineIsActive and
     not EngineBof and EngineCanNavigate);
 end;
 
 procedure TJvDatabasePriorBlockAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  with ControlEngine do
+  with DatabaseControlEngine do
   try
-    DisableControls;
-    MoveBy(-BlockSize);
+    DisableControls(DataComponent);
+    MoveBy(DataComponent, -BlockSize);
   finally
-    EnableControls;
+    EnableControls(DataComponent);
   end;
 end;
 
@@ -847,19 +848,19 @@ end;
 
 procedure TJvDatabaseNextBlockAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(ControlEngine) and not EngineControlsDisabled and EngineIsActive and
+  SetEnabled(Assigned(DatabaseControlEngine) and not EngineControlsDisabled and EngineIsActive and
     not EngineEof and EngineCanNavigate);
 end;
 
 procedure TJvDatabaseNextBlockAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  with ControlEngine do
+  with DatabaseControlEngine do
   try
-    DisableControls;
-    MoveBy(BlockSize);
+    DisableControls(DataComponent);
+    MoveBy(DataComponent, BlockSize);
   finally
-    EnableControls;
+    EnableControls(DataComponent);
   end;
 end;
 
@@ -882,7 +883,7 @@ procedure TJvDatabaseRefreshAction.Refresh;
 var
   MyBookmark: TBookmark;
 begin
-  with ControlEngine.DataSet do
+  with DatabaseControlEngine.DataSet(DataComponent) do
   begin
     MyBookmark := nil;
     if RefreshLastPosition then
@@ -1197,7 +1198,7 @@ end;
 
 procedure TJvDatabaseSingleRecordWindowAction.ShowSingleRecordWindow;
 begin
-  ControlEngine.ShowSingleRecordWindow(Options);
+  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options);
 end;
 
 //=== { TJvDatabaseOpenAction } ==============================================
@@ -1506,7 +1507,7 @@ var
   ClearField: Boolean;
   OnlyIfNull: Boolean;
 begin
-  if not Assigned(ControlEngine) then
+  if not Assigned(DatabaseControlEngine) then
     Exit;
   JvParameterList := TJvParameterList.Create(Self);
   try
@@ -1521,13 +1522,13 @@ begin
       Width := 330;
       for I := 0 to EngineFieldCount - 1 do
       begin
-        Field := ControlEngine.FieldById(I);
+        Field := DatabaseControlEngine.FieldById(DataComponent, I);
         if Assigned(Field) then
-          if not ControlEngine.IsFieldReadOnly(Field.FieldName) and
-            ControlEngine.IsFieldVisible(Field.FieldName) then
+          if not DatabaseControlEngine.IsFieldReadOnly(DataComponent,Field.FieldName) and
+            DatabaseControlEngine.IsFieldVisible(DataComponent,Field.FieldName) then
             ItemList.Add(Field.FieldName);
-        if Assigned(ControlEngine.SelectedField) then
-          ItemIndex := ItemList.IndexOf(ControlEngine.SelectedField.FieldName);
+        if Assigned(DatabaseControlEngine.SelectedField(DataComponent)) then
+          ItemIndex := ItemList.IndexOf(DatabaseControlEngine.SelectedField(DataComponent).FieldName);
         if (ItemIndex < 0) or (ItemIndex >= ItemList.Count) then
           ItemIndex := 0;
       end;
@@ -1567,35 +1568,36 @@ begin
       ClearField := JvParameterList.ParameterByName('ClearFieldValues').AsBoolean;
       OnlyIfNull := JvParameterList.ParameterByName('OnlyIfNull').AsBoolean;
       ChangeTo := JvParameterList.ParameterByName('ChangeTo').AsString;
-      Field := ControlEngine.FieldByName(FieldName);
+      Field := DatabaseControlEngine.FieldByName(DataComponent, FieldName);
       if Assigned(Field) then
       try
-        ControlEngine.DisableControls;
-        for I := 0 to ControlEngine.SelectedRowsCount - 1 do
-          if ControlEngine.GotoSelectedRow(I) then
+        DatabaseControlEngine.DisableControls(DataComponent);
+        for I := 0 to DatabaseControlEngine.SelectedRowsCount(DataComponent) - 1 do
+          if DatabaseControlEngine.GotoSelectedRow(DataComponent,I) then
           begin
             try
               if (ClearField and not Field.IsNull) or
                 not (OnlyIfNull and not Field.IsNull) then
               begin
-                ControlEngine.Dataset.Edit;
+                DatabaseControlEngine.Dataset(DataComponent).Edit;
                 if ClearField then
                   Field.Clear
                 else
                   Field.AsString := ChangeTo;
-                if Assigned(ControlEngine.Dataset) then
-                  ControlEngine.Dataset.Post;
+                if Assigned(DatabaseControlEngine.Dataset(DataComponent)) then
+                  DatabaseControlEngine.Dataset(DataComponent).Post;
               end;
             except
               on E: Exception do
               begin
-                ControlEngine.Dataset.Cancel;
+                if Assigned(DatabaseControlEngine.Dataset(DataComponent)) then
+                  DatabaseControlEngine.Dataset(DataComponent).Cancel;
                 JvDSADialogs.MessageDlg(E.Message, mtError, [mbOK], 0);
               end;
             end;
           end;
       finally
-        ControlEngine.EnableControls;
+        DatabaseControlEngine.EnableControls(DataComponent);
       end;
     end;
   finally
@@ -1640,7 +1642,7 @@ begin
       TJvMemoParameter(Parameter).WordWrap := Self.WordWrap;
       ReadOnly := True;
       //Caption := '&SQL Statement';
-      AsString := DatasetEngine.SQL;
+      AsString := DatasetEngine.GetSQL(DataSet);
       Width := 500;
       Height := 350;
     end;
@@ -1650,7 +1652,7 @@ begin
     ParameterList.Messages.Caption := SShowSQLStatementCaption;
     ParameterList.Messages.OkButton := SSQLStatementClipboardButton;
     if ParameterList.ShowParameterDialog then
-      ClipBoard.AsText := DatasetEngine.SQL;
+      ClipBoard.AsText := Parameter.AsString;
   finally
     FreeAndNil(ParameterList);
   end;
@@ -1658,7 +1660,7 @@ end;
 
 procedure TJvDatabaseShowSQLStatementAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(DataSet) and Assigned(DatasetEngine) and DatasetEngine.SupportsGetSQL);
+  SetEnabled(Assigned(DataSet) and Assigned(DatasetEngine) and DatasetEngine.SupportsGetSQL(DataComponent));
 end;
 
 initialization

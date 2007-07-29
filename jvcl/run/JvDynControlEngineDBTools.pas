@@ -36,7 +36,7 @@ uses
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
-  TJvCreateDataControlsEvent = procedure(ADynControlEngineDB: TJvDynControlEngineDB;
+  TJvCreateDataControlsEvent = procedure(ADatacomponent : TComponent; ADynControlEngineDB: TJvDynControlEngineDB;
     AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of object;
 
   {$M+}
@@ -411,7 +411,7 @@ begin
     else
       FNavigatorPanel := nil;
     if Assigned(OnCreateDataControlsEvent) then
-      OnCreateDataControlsEvent(DynControlEngineDB, ArrangePanel, FieldCreateOptions)
+      OnCreateDataControlsEvent(DataComponent, DynControlEngineDB, ArrangePanel, FieldCreateOptions)
     else
       DynControlEngineDB.CreateControlsFromDataComponentOnControl(DataComponent, ArrangePanel, FieldCreateOptions);
     if Assigned (FCancelAction) then

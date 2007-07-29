@@ -40,9 +40,9 @@ uses
 type
   TJvDatabaseActionOdacDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
-    function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    function SupportsGetSQL: Boolean; override;
+    function GetSQL(AActionComponent : TComponent): string; override;
+    function SupportsComponent(AActionComponent : TComponent): Boolean; override;
+    function SupportsGetSQL(AActionComponent : TComponent): Boolean; override;
   end;
 {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
@@ -63,19 +63,23 @@ implementation
 uses
   DBAccess;
 
-function TJvDatabaseActionOdacDatasetEngine.GetSQL: string;
+function TJvDatabaseActionOdacDatasetEngine.GetSQL(AActionComponent :
+    TComponent): string;
 begin
-  Result := TCustomDADataSet(Dataset).SQL.Text;
+  if GetDataset(AActionComponent) is TCustomDADataSet then
+    Result := TCustomDADataSet(GetDataset(AActionComponent)).SQL.Text;
 end;
 
-function TJvDatabaseActionOdacDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
+function TJvDatabaseActionOdacDatasetEngine.SupportsComponent(AActionComponent
+    : TComponent): Boolean;
 begin
-  Result := (ADataComponent is TCustomDADataSet);
+  Result := (GetDataset(AActionComponent) is TCustomDADataSet);
 end;
 
-function TJvDatabaseActionOdacDatasetEngine.SupportsGetSQL: Boolean;
+function TJvDatabaseActionOdacDatasetEngine.SupportsGetSQL(AActionComponent :
+    TComponent): Boolean;
 begin
-  Result := Assigned(Dataset);
+  Result := True;
 end;
 
 {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
@@ -83,7 +87,7 @@ end;
 procedure InitActionEngineList;
 begin
   {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
-  RegisterActionEngine(TJvDatabaseActionOdacDatasetEngine);
+  RegisterDatabaseActionEngine(TJvDatabaseActionOdacDatasetEngine);
   {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 end;
 

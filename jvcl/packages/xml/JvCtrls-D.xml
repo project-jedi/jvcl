@@ -29,6 +29,7 @@
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\design\JvControlActnResForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>
     <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvSpeedbarForm.pas" Targets="VCL" Formname="JvSpeedbarEditor" Condition=""/>

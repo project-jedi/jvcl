@@ -67,6 +67,7 @@ uses
   JvComboListBox, JvOfficeColorButton, JvOfficeColorPanel,
   JvNetscapeSplitter, JvListComb, JvRuler,
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
+  JvControlActions, JvControlActnResForm,
   JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor;
 
 {$R JvCtrlsReg.dcr}
@@ -135,6 +136,11 @@ begin
   RegisterClass(TJvScrollMaxBand);
   RegisterClass(TJvFooterBtn);
   RegisterActions(RsJVCLActionsCategory, [TJvRollOutAction], nil);
+  RegisterActions(RsJVCLControlActionsCategory, [TJvControlCollapseAction, TJvControlExpandAction, TJvControlExportAction,
+      TJvControlOptimizeColumnsAction, TJvControlCustomizeColumnsAction, TJvControlPrintAction, TJvControlCustomizeAction], 
+    TJvControlActionsDM);
+
+
 end;
 
 end.

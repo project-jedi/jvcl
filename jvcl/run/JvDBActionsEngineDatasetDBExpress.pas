@@ -39,9 +39,9 @@ uses
 type
   TJvDatabaseActionDBExpressDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
-    function GetSQL: string; override;
-    function Supports(ADataComponent: TComponent): Boolean; override;
-    function SupportsGetSQL: Boolean; override;
+    function GetSQL(AActionComponent: TComponent): string; override;
+    function SupportsComponent(AActionComponent: TComponent): Boolean; override;
+    function SupportsGetSQL(AActionComponent: TComponent): Boolean; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -59,24 +59,27 @@ implementation
 uses
   SqlExpr;
 
-function TJvDatabaseActionDBExpressDatasetEngine.GetSQL: string;
+function TJvDatabaseActionDBExpressDatasetEngine.GetSQL(AActionComponent:
+    TComponent): string;
 begin
-  Result := TSQLQuery(Dataset).SQL.Text;
+  Result := TSQLQuery(AActionComponent).SQL.Text;
 end;
 
-function TJvDatabaseActionDBExpressDatasetEngine.Supports(ADataComponent: TComponent): Boolean;
+function TJvDatabaseActionDBExpressDatasetEngine.SupportsComponent(
+    AActionComponent: TComponent): Boolean;
 begin
-  Result := (ADataComponent is TSQLQuery);
+  Result := (AActionComponent is TSQLQuery);
 end;
 
-function TJvDatabaseActionDBExpressDatasetEngine.SupportsGetSQL: Boolean;
+function TJvDatabaseActionDBExpressDatasetEngine.SupportsGetSQL(
+    AActionComponent: TComponent): Boolean;
 begin
-  Result := Assigned(Dataset);
+  Result := True;
 end;
 
 procedure InitActionEngineList;
 begin
-  RegisterActionEngine(TJvDatabaseActionDBExpressDatasetEngine);
+  RegisterDatabaseActionEngine(TJvDatabaseActionDBExpressDatasetEngine);
 end;
 
 initialization
