@@ -543,8 +543,9 @@ begin
   FExclusive := True;
   FFreeOnTerminate := True;
   FThreads := TThreadList.Create;
-  FListLocker:=TCriticalSection.Create;
+  FListLocker := TCriticalSection.Create;
   FPriority := tpNormal;
+  FThreadDialogAllowed := True;
 end;
 
 destructor TJvThread.Destroy;
