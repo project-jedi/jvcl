@@ -379,7 +379,6 @@ initialization
   {$ENDIF USEJVCL}
 
 finalization
-  FreeAndNil(GlobalDataThreadsMan);
   {$IFDEF MSWINDOWS}
   // (rom) no OutputDebugString in production code
   {$IFDEF DEBUGINFO_ON}
@@ -388,6 +387,7 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
+  FreeAndNil(GlobalDataThreadsMan);
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
