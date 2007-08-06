@@ -259,6 +259,8 @@ procedure TJvCustomUpDown.SetMax(const Value: Integer);
 begin
   if Value <> FMax then
   begin
+    inherited Max := Value;
+    
     FMax := Value;
     if HandleAllocated then
       SendMessage(Handle, UDM_SETRANGE32, FMin, FMax);
@@ -269,6 +271,8 @@ procedure TJvCustomUpDown.SetMin(const Value: Integer);
 begin
   if Value <> FMin then
   begin
+    inherited Min := Value;
+    
     FMin := Value;
     if HandleAllocated then
       SendMessage(Handle, UDM_SETRANGE32, FMin, FMax);
