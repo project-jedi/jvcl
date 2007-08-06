@@ -112,11 +112,11 @@ SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 
 { Activates the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 { Activates the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
 { Activates Support for the DevExpress cxVerticalGrid-Controls
 For further informations have a look at http://www.devexpress.com }
@@ -137,7 +137,7 @@ For further informations have a look at http://www.indyproject.org }
 { Activates the Internet Direct (Indy)-Components version 10.
 You MUST also activate $DEFINE USE_3RDPARTY_INDY for the compilation to work
 For further informations have a look at http://www.indyproject.org }
-{$DEFINE USE_3RDPARTY_INDY10}
+{.$DEFINE USE_3RDPARTY_INDY10}
 
 { Activates the ICS-Components (Internet component suite
 For further informations have a look at http://www.overbyte.be/ 
@@ -148,7 +148,7 @@ ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 
 { Activates Direct Oracle Access Components
 For further informations have a look at http://www.allroundautomations.com }
-{$DEFINE USE_3RDPARTY_DOA}
+{.$DEFINE USE_3RDPARTY_DOA}
 
 { Activates the CoreLabs VCL Oracle Data Access Components 
 For further informations have a look at http://www.crlab.com }
