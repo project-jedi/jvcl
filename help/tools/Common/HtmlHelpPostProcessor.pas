@@ -637,30 +637,6 @@ begin
   end;
 end;
 
-procedure THtmlHelpPostProcessor.RemoveLines(SS: TStrings;
-  const StartLineIndex, StartIndex, EndLineIndex, EndIndex: Integer);
-var
-  I: Integer;
-  S: string;
-begin
-  try
-    S := SS[StartLineIndex];
-    if StartLineIndex = EndLineIndex then
-      SS[StartLineIndex] := Copy(S, 1, StartIndex - 1) + Copy(S, EndIndex + 1, MaxInt)
-    else
-    begin
-      SS[StartLineIndex] := Copy(S, 1, StartIndex - 1);
-      SS[EndLineIndex] := Copy(S, EndIndex + 1, MaxInt);
-    end;
-
-    for I := EndLineIndex - 1 downto StartLineIndex + 1 do
-      SS.delete(i);
-  except
-    ErrorMsgFmt('Index=%d', [StartLineIndex]);
-    raise;
-  end;
-end;
-
 { TTaskProgress }
 
 //procedure TTaskProgress.Change(const DeltaPosition, DeltaMax: Integer);
