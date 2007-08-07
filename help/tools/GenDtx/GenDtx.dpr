@@ -18,7 +18,6 @@ uses
   EditPasCleanOptionsDlg in 'EditPasCleanOptionsDlg.pas' {frmEditPasCleanOptions},
   ItemFilter in 'ItemFilter.pas',
   DtxRenameU in 'DtxRenameU.pas' {frmDtxRename},
-  Utils in 'Utils.pas',
   AskDtxCheckU in 'AskDtxCheckU.pas' {frmAskDtxCheck};
 
 {$R *.res}
