@@ -353,6 +353,7 @@ type
     FIsFileInfo: Boolean;
     FLinks: TStrings;
     FPasObj: TAbstractItem;
+    FHasPasFileEntry: Boolean;
   protected
     procedure AddLink(const ALink: string);
     procedure AddParam(const AParam: string);
@@ -370,6 +371,7 @@ type
     property Combine: string read FCombine write FCombine;
     property CombineWith: string read FCombineWith write FCombineWith;
     property HasTocEntry: Boolean read FHasTocEntry write FHasTocEntry;
+    property HasPasFileEntry: Boolean read FHasPasFileEntry write FHasPasFileEntry;
     property TitleImg: string read FTitleImg write FTitleImg;
     property HasJVCLInfo: Boolean read FHasJVCLInfo write FHasJVCLInfo;
     property IsRegisteredComponent: Boolean read FIsRegisteredComponent write FIsRegisteredComponent;
@@ -537,7 +539,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, Windows, Math, Utils;
+  SysUtils, Dialogs, Windows, Math, DelphiParserUtils;
 
 resourcestring
   SCharExpected = '''''%s'''' expected';
@@ -3039,7 +3041,12 @@ const
   procedure EndParamTypeRecording;
   begin
     if not Recording then
+    begin
+      if Assigned(ATypes) and Assigned(AParams) then
+        while ATypes.Count < AParams.Count do
+          ATypes.Add('');
       Exit;
+    end;
 
     if Assigned(ATypes) and Assigned(AParams) then
       while ATypes.Count < AParams.Count do
@@ -3090,6 +3097,7 @@ begin
             if Haakjes = 0 then
             begin
               EndParamTypeRecording;
+
               DoNextToken;
               Exit;
             end;
@@ -5340,7 +5348,7 @@ begin
     if SameText(S, 'on') then
       Item.HasTocEntry := True
     else
-      if SameText(S, 'off') then
+    if SameText(S, 'off') then
       Item.HasTocEntry := False
     else
       Include(FErrors, defHasTocEntryError);

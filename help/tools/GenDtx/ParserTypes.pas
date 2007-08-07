@@ -45,7 +45,7 @@ type
   TDirective = (diAbstract, diCdecl, diDynamic, diObject, diOf, diOverload,
     diOverride, diPascal, diRegister, diReintroduce, diSafecall, diStdcall,
     diVirtual, diAssembler, diDeprecated, diPlatform, diForward, diExport, diFar,
-    diVarArgs, diMessage, diExternal, diNear);
+    diVarArgs, diMessage, diExternal, diNear, diInline);
   TDirectives = set of TDirective;
 
   TCompilerDirective = (cdIFDEF, cdIFNDEF, cdELSE, cdENDIF, cdELSEIF, cdIF, cdIFEND, cdIFOPT,
@@ -100,7 +100,7 @@ const
     {.5}'overload', 'override', 'pascal', 'register', 'reintroduce',
     {10}'safecall', 'stdcall', 'virtual', 'assembler', 'deprecated',
     {15}'platform', 'forward', 'export', 'far', 'varargs',
-    {20}'message', 'external', 'near');
+    {20}'message', 'external', 'near', 'inline');
 
   CPropertySpecifiers: array[TPropertySpecifier] of string =
   ('index', 'read', 'write', 'stored', 'default', 'nodefault', 'implements');
@@ -177,6 +177,7 @@ type
     FBeginDEFList: TStrings;
     FEndDEFList: TStrings;
     FSwitchDEFList: TList;
+    FExpandName: Boolean;
     function GetAddDescriptionString: string; virtual;
     function GetAddSummaryString: string; virtual;
     function GetCanCombine: Boolean;
@@ -288,6 +289,7 @@ type
     property Next: TAbstractItem read GetNext;
     { Previous item in the list, returns nil if this is the first item }
     property Previous: TAbstractItem read GetPrevious;
+    property ExpandName: Boolean read FExpandName write FExpandName;
   end;
 
   TAttacheType = (atBefore, atAfter, atParamDirective, atUses, atFinalization);
@@ -677,7 +679,7 @@ function StripLeading(const S: string): string;
 implementation
 
 uses
-  SysUtils, Settings, Dialogs, Utils,
+  SysUtils, Settings, Dialogs, DelphiParserUtils,
   Math;
 
 type
@@ -1027,10 +1029,12 @@ end;
 
 constructor TAbstractItem.Create(const AName: string);
 begin
+  inherited Create;
   FSimpleName := AName;
   FBeginDEFList := nil;
   FEndDEFList := nil;
   FSwitchDEFList := nil;
+  FExpandName := False;
 end;
 
 destructor TAbstractItem.Destroy;
@@ -1469,11 +1473,11 @@ var
 begin
   Result := inherited GetReferenceName;
 
-  if not (diOverload in Directives) then
-    Exit;
-
-  for I := 0 to FParamTypes.Count - 1 do
-    Result := Result + '@' + FParamTypes[I];
+  if (diOverload in Directives) or ExpandName then
+  begin
+    for I := 0 to FParamTypes.Count - 1 do
+      Result := Result + '@' + FParamTypes[I];
+  end;
 end;
 
 function TBaseFuncItem.GetSection: TDelphiSection;
@@ -2342,11 +2346,11 @@ var
 begin
   Result := inherited GetReferenceName;
 
-  if not (diOverload in Directives) then
-    Exit;
-
-  for I := 0 to FParamTypes.Count - 1 do
-    Result := Result + '@' + FParamTypes[I];
+  if (diOverload in Directives) or ExpandName then
+  begin
+    for I := 0 to FParamTypes.Count - 1 do
+      Result := Result + '@' + FParamTypes[I];
+  end;
 end;
 
 function TParamClassMethodItem.GetSection: TDelphiSection;
@@ -2470,7 +2474,7 @@ begin
       end;
     end
     else
-      if (Items[I] is TFunctionTypeItem) or (Items[I] is TProcedureTypeItem) then
+    if (Items[I] is TFunctionTypeItem) or (Items[I] is TProcedureTypeItem) then
     begin
       S := Items[I].SimpleName;
       ExamineEvent(S);

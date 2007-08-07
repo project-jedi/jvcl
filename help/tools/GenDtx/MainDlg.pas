@@ -8,7 +8,7 @@ uses
 
   ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent,
   ComCtrls, ToolWin, ExtCtrls, Menus, Buttons, JvFormPlacement,
-  JvAppStorage, JvAppRegistryStorage;
+  JvAppStorage, JvAppRegistryStorage, JvComponentBase;
 
 const
   CM_CheckDirectories = WM_APP + 1;

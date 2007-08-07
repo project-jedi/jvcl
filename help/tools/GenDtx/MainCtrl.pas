@@ -135,7 +135,7 @@ implementation
 uses
   Windows, SysUtils, AskDtxCheckU,
   JclFileUtils, JvSearchFiles, VisibilityDlg, ClassStructureDlg,
-  DtxRenameU, Utils;
+  DtxRenameU, DelphiParserUtils;
 
 const
   CConvert: array[TDelphiType] of TOutputType =
