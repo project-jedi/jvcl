@@ -13,9 +13,6 @@ object frmClassStructure: TfrmClassStructure
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    224
-    155)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton

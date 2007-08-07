@@ -20,7 +20,7 @@ uses
   RegisteredClassesProducer in '..\Common\RegisteredClassesProducer.pas',
   PackageListProducer in '..\Common\PackageListProducer.pas',
   PasFilesStripper in '..\Common\PasFilesStripper.pas',
-  VclClxCvt in '..\..\..\JVCL\devtools\JvclVclClx\VclClxCvt.pas',
+  AdjVclClxCvt in '..\Common\AdjVclClxCvt.pas',
   VclClxCvtUtils in '..\..\..\JVCL\devtools\JvclVclClx\VclClxCvtUtils.pas',
   dpp_PascalParser in '..\..\..\JVCL\devtools\dpp32\dpp_PascalParser.pas',
   DelphiParser in '..\GenDtx\DelphiParser.pas',

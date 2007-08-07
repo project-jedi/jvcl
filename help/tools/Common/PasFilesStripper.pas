@@ -32,7 +32,7 @@ type
 implementation
 
 uses
-  VclClxCvt, SysUtils;
+  AdjVclClxCvt, SysUtils;
 
 type
   THelpConverter = class(TVCLConverter)

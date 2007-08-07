@@ -61,7 +61,7 @@ type
     function DetermineEnd(SS: TStrings; const EndStr: string;
       const StartLineIndex, StartIndex: Integer; out EndLineIndex, EndIndex: Integer): Boolean;
     procedure RemoveLinks(SS: TStrings; const StartLineIndex, StartIndex, EndLineIndex, EndIndex: Integer);
-    procedure RemoveLines(SS: TStrings; const StartLineIndex, StartIndex, EndLineIndex, EndIndex: Integer);
+//    procedure RemoveLines(SS: TStrings; const StartLineIndex, StartIndex, EndLineIndex, EndIndex: Integer);
 
     procedure HandleProgressChanged(Sender: TObject);
   protected

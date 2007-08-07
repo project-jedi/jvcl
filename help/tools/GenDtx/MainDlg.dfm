@@ -181,9 +181,6 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     Caption = 'Panel2'
     TabOrder = 1
-    DesignSize = (
-      509
-      167)
     object Label3: TLabel
       Left = 8
       Top = 8

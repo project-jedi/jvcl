@@ -4,9 +4,6 @@ object FrameUnzipOptions: TFrameUnzipOptions
   Width = 518
   Height = 335
   TabOrder = 0
-  DesignSize = (
-    518
-    335)
   object Label2: TLabel
     Left = 8
     Top = 16

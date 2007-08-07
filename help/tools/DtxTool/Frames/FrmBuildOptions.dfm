@@ -4,9 +4,6 @@ object FrameBuildOptions: TFrameBuildOptions
   Width = 517
   Height = 359
   TabOrder = 0
-  DesignSize = (
-    517
-    359)
   object Label2: TLabel
     Left = 48
     Top = 120
@@ -42,7 +39,7 @@ object FrameBuildOptions: TFrameBuildOptions
     Top = 136
     Width = 121
     Height = 21
-    MaxValue = 100.000000000000000000
+    MaxValue = 100
     TabOrder = 1
     OnChange = spnMinPercChange
     OnClick = spnMinPercClick

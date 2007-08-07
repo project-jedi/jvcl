@@ -21,9 +21,6 @@ object frmDtxRename: TfrmDtxRename
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    DesignSize = (
-      581
-      41)
     object Button6: TButton
       Left = 412
       Top = 8
@@ -235,9 +232,6 @@ object frmDtxRename: TfrmDtxRename
         object tshRename: TTabSheet
           Caption = 'Rename'
           ImageIndex = 1
-          DesignSize = (
-            370
-            322)
           object lsbRename: TListBox
             Left = 0
             Top = 216
@@ -414,9 +408,6 @@ object frmDtxRename: TfrmDtxRename
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        DesignSize = (
-          378
-          52)
         object Label1: TLabel
           Left = 8
           Top = 8

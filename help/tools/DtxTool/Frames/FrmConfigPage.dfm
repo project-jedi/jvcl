@@ -4,9 +4,6 @@ object FrameConfigPage: TFrameConfigPage
   Width = 518
   Height = 320
   TabOrder = 0
-  DesignSize = (
-    518
-    320)
   object Label1: TLabel
     Left = 8
     Top = 16

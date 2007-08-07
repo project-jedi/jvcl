@@ -4,9 +4,6 @@ object FrameDiagnoseOptions: TFrameDiagnoseOptions
   Width = 514
   Height = 335
   TabOrder = 0
-  DesignSize = (
-    514
-    335)
   object Label1: TLabel
     Left = 8
     Top = 112

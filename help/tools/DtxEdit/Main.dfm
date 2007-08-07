@@ -34,9 +34,6 @@ object frmMain: TfrmMain
     BevelOuter = bvNone
     Constraints.MinWidth = 150
     TabOrder = 0
-    DesignSize = (
-      177
-      500)
     object jlbItems: TJvListBox
       Left = 8
       Top = 12
@@ -59,9 +56,6 @@ object frmMain: TfrmMain
     BevelOuter = bvNone
     Constraints.MinWidth = 200
     TabOrder = 1
-    DesignSize = (
-      613
-      500)
     object jpcEdit: TJvPageControl
       Left = 12
       Top = 12
@@ -75,9 +69,6 @@ object frmMain: TfrmMain
       object tshElements: TTabSheet
         Caption = 'Elements'
         Enabled = False
-        DesignSize = (
-          581
-          450)
         object lblSummary: TLabel
           Left = 8
           Top = 20
@@ -243,9 +234,6 @@ object frmMain: TfrmMain
         Enabled = False
         ImageIndex = 1
         OnShow = tshRawShow
-        DesignSize = (
-          581
-          450)
         object memRaw: TMemo
           Left = 12
           Top = 12

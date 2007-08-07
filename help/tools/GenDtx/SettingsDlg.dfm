@@ -12,9 +12,6 @@ object frmSettings: TfrmSettings
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    550
-    336)
   PixelsPerInch = 96
   TextHeight = 13
   object pgcSettings: TPageControl
@@ -56,9 +53,6 @@ object frmSettings: TfrmSettings
           'Var')
         TabIndex = 0
         OnChange = tbcOutputTypesChange
-        DesignSize = (
-          526
-          249)
         object lblOutput: TLabel
           Left = 8
           Top = 64
@@ -128,9 +122,6 @@ object frmSettings: TfrmSettings
     object tshNiceNames: TTabSheet
       Caption = 'Nice Names'
       ImageIndex = 2
-      DesignSize = (
-        526
-        249)
       object lblDefaultNiceName: TLabel
         Left = 8
         Top = 16
@@ -188,9 +179,6 @@ object frmSettings: TfrmSettings
     object tshDirectives: TTabSheet
       Caption = 'Directives'
       ImageIndex = 3
-      DesignSize = (
-        526
-        249)
       object lsbDirectives: TListBox
         Left = 0
         Top = 0
@@ -231,9 +219,6 @@ object frmSettings: TfrmSettings
     object tshIgnoredUnits: TTabSheet
       Caption = 'Ignored Units'
       ImageIndex = 4
-      DesignSize = (
-        526
-        249)
       object lsbIgnoredUnits: TListBox
         Left = 0
         Top = 0
@@ -283,9 +268,6 @@ object frmSettings: TfrmSettings
     object tshRegisteredClasses: TTabSheet
       Caption = 'Registered Classes'
       ImageIndex = 5
-      DesignSize = (
-        526
-        249)
       object lsbRegisteredClasses: TListBox
         Left = 0
         Top = 0

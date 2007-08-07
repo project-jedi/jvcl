@@ -4,9 +4,6 @@ object FrameZipOptions: TFrameZipOptions
   Width = 518
   Height = 335
   TabOrder = 0
-  DesignSize = (
-    518
-    335)
   object Label1: TLabel
     Left = 8
     Top = 64
@@ -64,8 +61,8 @@ object FrameZipOptions: TFrameZipOptions
     Top = 136
     Width = 113
     Height = 21
-    Date = 38364.960798171300000000
-    Time = 38364.960798171300000000
+    Date = 38364.9607981713
+    Time = 38364.9607981713
     Kind = dtkTime
     TabOrder = 4
     OnClick = ChangeEvent

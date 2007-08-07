@@ -15,9 +15,6 @@ object frmDirectories: TfrmDirectories
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    508
-    370)
   PixelsPerInch = 96
   TextHeight = 13
   object lblRunTimePasDirDesc: TLabel
