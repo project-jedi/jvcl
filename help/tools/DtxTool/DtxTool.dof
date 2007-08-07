@@ -1,0 +1,8 @@
+[Compiler]
+ShowHints=1
+ShowWarnings=1
+[Directories]
+OutputDir=..\
+UnitOutputDir=..\lib
+PackageDLLOutputDir=..\lib
+PackageDCPOutputDir=..\lib
