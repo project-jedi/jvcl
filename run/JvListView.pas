@@ -664,7 +664,7 @@ begin
 
   FTileColumns.OnChange := TileColumnsChange;
   if AOwner.Owner is TJvListView then
-    FFont.Assign((AOwner.Owner as TJvListView).Font);
+    FFont.Assign((AOwner.Owner as TJvListView).Canvas.Font);
 end;
 
 procedure TJvListItem.DefineProperties(Filer: TFiler);
