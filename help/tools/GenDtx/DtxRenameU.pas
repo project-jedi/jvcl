@@ -355,7 +355,7 @@ type
 implementation
 
 uses
-  Utils, Settings;
+  DelphiParserUtils, Settings;
 
 {$R *.dfm}
 
