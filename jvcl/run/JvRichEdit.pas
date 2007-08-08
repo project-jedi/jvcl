@@ -7546,7 +7546,10 @@ begin
           if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
           begin
             if FI.dwFileVersionMS and $FFFF0000 = $00050000 then
-              RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10;
+              RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10
+            else
+            if FI.dwFileVersionMS and $FFFF0000 = $000C0000 then
+              RichEditVersion := 6;
             if RichEditVersion = 0 then
               RichEditVersion := 2;
           end;
