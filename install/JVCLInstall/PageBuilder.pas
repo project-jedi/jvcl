@@ -84,7 +84,6 @@ end;
 
 function GetDefaultCheckBoxSize: TSize;
 begin
-{$IFDEF VCL}
   with TBitmap.Create do
   try
     Handle := LoadBitmap(0, PChar(OBM_CHECKBOXES));
@@ -93,11 +92,6 @@ begin
   finally
     Free;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  Result.cx := 12;
-  Result.cy := 12;
-{$ENDIF VisualCLX}
 end;
 
 // -----------------------------------------------------------------------------
