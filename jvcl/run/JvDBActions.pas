@@ -1351,8 +1351,6 @@ procedure TJvDatabaseSMExportAction.ExportData;
 const
   cLastExport = '\Last Export.SME';
 var
-  OptionsDirectory : String;
-var
   SMEWizardDlg: TSMEWizardDlg;
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   SMEEngineCx: TSMEcxCustomGridTableViewDataEngine;
@@ -1371,9 +1369,10 @@ begin
     SMEWizardDlg.Title := Options.Title;
     SMEWizardDlg.KeyGenerator := Options.Title;
     SMEWizardDlg.WizardStyle := smewiz.wsWindows2000;
-    if DirectoryExists(Options.DefaultOptionsDirectory) then
-      OptionsDirectory := ExcludeTrailingPathDelimiter(Options.DefaultOptionsDirectory);
-    SMEWizardDlg.SpecificationDir := OptionsDirectory;
+    if (Options.DefaultOptionsDirectory <> '') and DirectoryExists(Options.DefaultOptionsDirectory) then
+      SMEWizardDlg.SpecificationDir := ExcludeTrailingPathDelimiter(Options.DefaultOptionsDirectory)
+    else
+      SMEWizardDlg.SpecificationDir := GetCurrentDir;
     if DataComponent is TCustomDBGrid then
     begin
       SMEWizardDlg.DBGrid := TCustomControl(DataComponent);
@@ -1406,10 +1405,10 @@ begin
     SMEWizardDlg.Formats := Options.Formats;
     SMEWizardDlg.Options := Options.Options;
     SMEWizardDlg.HelpContext := Options.HelpContext;
-    if FileExists(OptionsDirectory + cLastExport) then
-      SMEWizardDlg.LoadSpecification(OptionsDirectory + cLastExport);
+    if FileExists(SMEWizardDlg.SpecificationDir + cLastExport) then
+      SMEWizardDlg.LoadSpecification(SMEWizardDlg.SpecificationDir + cLastExport);
     SMEWizardDlg.Execute;
-    SMEWizardDlg.SaveSpecification('Last Export', OptionsDirectory + cLastExport, False);
+    SMEWizardDlg.SaveSpecification('Last Export', SMEWizardDlg.SpecificationDir + cLastExport, False);
   finally
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
     FreeAndNil(SMEEngineCx);
@@ -1465,7 +1464,10 @@ begin
   SMIWizardDlg := TSMIWizardDlg.Create(Self);
   try
     //    SMIWizardDlg.OnGetSpecifications := Options.SMIWizardDlgGetSpecifications;
-    SMIWizardDlg.SpecificationDir := Options.DefaultOptionsDirectory + '\';
+    if (Options.DefaultOptionsDirectory <> '') and DirectoryExists(Options.DefaultOptionsDirectory) then
+      SMIWizardDlg.SpecificationDir := ExcludeTrailingPathDelimiter(Options.DefaultOptionsDirectory)
+    else
+      SMIWizardDlg.SpecificationDir := GetCurrentDir;
     SMIWizardDlg.DataSet := DataSource.DataSet;
     SMIWizardDlg.Title := Options.Title;
     SMIWizardDlg.Formats := Options.Formats;
@@ -1475,7 +1477,7 @@ begin
     //    IF FileExists (Options.DefaultOptionsDirectory+'\Last Import.SMI') THEN
     //      SMIWizardDlg.LoadSpecification(Options.DefaultOptionsDirectory+'\Last Import.SMI');
     SMIWizardDlg.Execute;
-    SMIWizardDlg.SaveSpecification('Last Import', Options.DefaultOptionsDirectory + '\Last Import.SMI', False);
+    SMIWizardDlg.SaveSpecification('Last Import', SMIWizardDlg.SpecificationDir + '\Last Import.SMI', False);
   finally
     FreeAndNil(SMIWizardDlg);
   end;
