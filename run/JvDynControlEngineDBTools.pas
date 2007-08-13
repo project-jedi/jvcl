@@ -36,8 +36,10 @@ uses
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
-  TJvCreateDataControlsEvent = procedure(ADatacomponent : TComponent; ADynControlEngineDB: TJvDynControlEngineDB;
-    AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of object;
+  TJvDataSourceEditDialogCreateDataControlsEvent = procedure(ADatacomponent :
+      TComponent; ADynControlEngineDB: TJvDynControlEngineDB; AParentControl:
+      TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of
+      object;
 
   {$M+}
   TJvDynControlDataSourceEditDialog = class(TObject)
@@ -60,7 +62,7 @@ type
     FLeft: Integer;
     FWidth: Integer;
     FHeight: Integer;
-    FOnCreateDataControlsEvent: TJvCreateDataControlsEvent;
+    FOnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent;
     FArrangeConstraints: TSizeConstraints;
     FArrangeSettings: TJvArrangeSettings;
     FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
@@ -81,6 +83,9 @@ type
     procedure SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
     procedure ArrangePanelChangedWidth(Sender: TObject; ChangedSize: Integer);
     procedure ArrangePanelChangedHeight(Sender: TObject; ChangedSize: Integer);
+    procedure CreateDataControls(ADatacomponent : TComponent; ADynControlEngineDB:
+        TJvDynControlEngineDB; AParentControl: TWinControl; AFieldCreateOptions:
+        TJvCreateDBFieldsOnControlOptions); virtual;
     property DataSource: TDataSource read FDataSource;
   public
     constructor Create;
@@ -103,21 +108,25 @@ type
     property Left: Integer read FLeft write FLeft default 0;
     property Width: Integer read FWidth write FWidth default 0;
     property Height: Integer read FHeight write FHeight default 0;
-    property OnCreateDataControlsEvent: TJvCreateDataControlsEvent read FOnCreateDataControlsEvent write
+    property OnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent read FOnCreateDataControlsEvent write
       FOnCreateDataControlsEvent;
     property ArrangeConstraints: TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
-    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
-    property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
+    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write
+        SetArrangeSettings;
+    property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read
+        FFieldCreateOptions write SetFieldCreateOptions;
   end;
+
   {$M-}
 
-function ShowDataSourceEditDialog(ADataComponent: TComponent;
-  const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
-  AIncludeNavigator: Boolean;
-  AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
-  AArrangeConstraints: TSizeConstraints = nil;
-  AArrangeSettings: TJvArrangeSettings = nil;
-  ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
+function ShowDataSourceEditDialog(ADataComponent: TComponent; const
+    ADialogCaption, APostButtonCaption, ACancelButtonCaption,
+    ACloseButtonCaption: string; AIncludeNavigator: Boolean;
+    AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
+    AArrangeConstraints: TSizeConstraints = nil; AArrangeSettings:
+    TJvArrangeSettings = nil; ADynControlEngineDB: TJvDynControlEngineDB = nil;
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil): TModalResult;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -248,6 +257,13 @@ end;
 type
   TAccessControl = class(TControl);
 
+procedure TJvDynControlDataSourceEditDialog.CreateDataControls(ADatacomponent :
+    TComponent; ADynControlEngineDB: TJvDynControlEngineDB; AParentControl:
+    TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
+begin
+  ADynControlEngineDB.CreateControlsFromDataComponentOnControl(ADataComponent, AParentControl, AFieldCreateOptions);
+end;
+
 function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
 var
   DynControlEngine: TJvDynControlEngine;
@@ -275,10 +291,6 @@ begin
   Form := DynControlEngine.CreateForm(DialogCaption, '');
   TForm(Form).Position := Position;
   TForm(Form).BorderStyle := BorderStyle;
-  TForm(Form).Top := Top;
-  TForm(Form).Left := Left;
-  TForm(Form).Height := Height;
-  TForm(Form).Width := Width;
   with TForm(Form) do
   begin
     FormStyle := fsNormal;
@@ -361,6 +373,10 @@ begin
         DynCtrlButton.ControlSetGlyph(PostButtonGlyph);
     end;
   end;
+  TForm(Form).Top := Top;
+  TForm(Form).Left := Left;
+  TForm(Form).Height := Height;
+  TForm(Form).Width := Width;
   Result := Form;
 end;
 
@@ -393,33 +409,31 @@ begin
       ArrangePanel.ArrangeSettings.MaxWidth := ArrangeConstraints.MaxWidth;
     if ArrangeSettings.MaxWidth = 0 then
       ArrangeSettings.MaxWidth := Screen.Width;
-    if IncludeNavigator then
+    FNavigatorPanel := TJvPanel.Create(FForm);
+    Navigator := DynControlEngineDB.CreateDBNavigatorControl(FForm, FNavigatorPanel, '', DataSource);
+    Navigator.Left := 3;
+    Navigator.Top := 3;
+    with FNavigatorPanel do
     begin
-      FNavigatorPanel := TJvPanel.Create(FForm);
-      Navigator := DynControlEngineDB.CreateDBNavigatorControl(FForm, FNavigatorPanel, '', DataSource);
-      Navigator.Left := 3;
-      Navigator.Top := 3;
-      with FNavigatorPanel do
-      begin
-        Align := alBottom;
-        BevelInner := bvNone;
-        BevelOuter := bvNone;
-        Parent := MainPanel;
-        Height := Navigator.Height + 6;
-      end;
-    end
-    else
-      FNavigatorPanel := nil;
+      Align := alBottom;
+      BevelInner := bvNone;
+      BevelOuter := bvNone;
+      Parent := MainPanel;
+      Height := Navigator.Height + 6;
+    end;
+    FNavigatorPanel.Visible := IncludeNavigator;
     if Assigned(OnCreateDataControlsEvent) then
       OnCreateDataControlsEvent(DataComponent, DynControlEngineDB, ArrangePanel, FieldCreateOptions)
     else
-      DynControlEngineDB.CreateControlsFromDataComponentOnControl(DataComponent, ArrangePanel, FieldCreateOptions);
+      CreateDataControls(DataComponent, DynControlEngineDB, ArrangePanel, FieldCreateOptions);
     if Assigned (FCancelAction) then
       TJvDatabaseCancelAction(FCancelAction).DataComponent := DataComponent;
     if Assigned (FPostAction) then
       TJvDatabaseCancelAction(FPostAction).DataComponent := DataComponent;
-
-//    ArrangePanel.ArrangeControls;
+    TForm(FForm).Top := Top;
+    TForm(FForm).Left := Left;
+    TForm(FForm).Height := Height;
+    TForm(FForm).Width := Width;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
     MainPanel.TabOrder := 0;
     Result := FForm.ShowModal;
@@ -428,13 +442,13 @@ begin
   end;
 end;
 
-function ShowDataSourceEditDialog(ADataComponent: TComponent;
-  const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
-  AIncludeNavigator: Boolean;
-  AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
-  AArrangeConstraints: TSizeConstraints = nil;
-  AArrangeSettings: TJvArrangeSettings = nil;
-  ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
+function ShowDataSourceEditDialog(ADataComponent: TComponent; const
+    ADialogCaption, APostButtonCaption, ACancelButtonCaption,
+    ACloseButtonCaption: string; AIncludeNavigator: Boolean;
+    AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
+    AArrangeConstraints: TSizeConstraints = nil; AArrangeSettings:
+    TJvArrangeSettings = nil; ADynControlEngineDB: TJvDynControlEngineDB = nil;
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil): TModalResult;
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
@@ -453,17 +467,21 @@ begin
       Dialog.ArrangeSettings := AArrangeSettings;
     if Assigned(AArrangeConstraints) then
       Dialog.ArrangeConstraints := AArrangeConstraints;
+    Dialog.OnCreateDataControlsEvent := ACreateDataControlsEvent;
     Result := Dialog.ShowDialog;
   finally
     Dialog.Free;
   end;
 end;
 
+
+
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
+
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
 

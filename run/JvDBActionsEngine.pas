@@ -71,6 +71,7 @@ type
     FArrangeConstraints: TSizeConstraints;
     FArrangeSettings: TJvArrangeSettings;
     FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
+    FIncludeNavigator: Boolean;
   protected
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetArrangeConstraints(Value: TSizeConstraints);
@@ -94,6 +95,8 @@ type
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions
       write SetFieldCreateOptions;
+    property IncludeNavigator: Boolean read FIncludeNavigator write
+        FIncludeNavigator default false;
   end;
 
   TJvDatabaseActionBaseControlEngine = class(TJvDatabaseActionBaseEngine)
@@ -136,7 +139,8 @@ type
     function SelectedField(aActionComponent: TComponent): TField; virtual;
     function SelectedRowsCount(aActionComponent: TComponent): Integer; virtual;
     procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
-        TJvShowSingleRecordWindowOptions); virtual;
+        TJvShowSingleRecordWindowOptions; ACreateDataControlsEvent:
+        TJvDataSourceEditDialogCreateDataControlsEvent = nil); virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
   end;
@@ -159,7 +163,8 @@ type
     function SelectedRowsCount(aActionComponent: TComponent): Integer; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
     procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
-        TJvShowSingleRecordWindowOptions); override;
+        TJvShowSingleRecordWindowOptions; ACreateDataControlsEvent:
+        TJvDataSourceEditDialogCreateDataControlsEvent = nil); override;
   end;
 
   TJvDatabaseActionEngineList = class(TJvActionEngineList)
@@ -459,17 +464,19 @@ begin
 end;
 
 procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(
-    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions);
+    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions;
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
   Dialog := TJvDynControlDataSourceEditDialog.Create;
   try
-    AOptions.SetOptionsToDialog(Dialog);
     if Dialog.DynControlEngineDB.SupportsDataComponent(aActionComponent) then
       Dialog.DataComponent := aActionComponent
     else
       Dialog.DataComponent := DataSource(aActionComponent);
+    Dialog.OnCreateDataControlsEvent := ACreateDataControlsEvent;
+    AOptions.SetOptionsToDialog(Dialog);
     if Assigned(Dialog.DataComponent) then
       Dialog.ShowDialog;
   finally
@@ -621,7 +628,8 @@ begin
 end;
 
 procedure TJvDatabaseActionDBGridControlEngine.ShowSingleRecordWindow(
-    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions);
+    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions;
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
@@ -634,7 +642,10 @@ begin
       Dialog.DataComponent := DataSource(aActionComponent);
     if Assigned(Dialog.DataComponent) then
     begin
-      Dialog.OnCreateDataControlsEvent := OnCreateDataControls;
+      if not Assigned(ACreateDataControlsEvent) then
+        Dialog.OnCreateDataControlsEvent := OnCreateDataControls
+      else
+        Dialog.OnCreateDataControlsEvent := ACreateDataControlsEvent;
       Dialog.ShowDialog;
     end;
   finally
@@ -747,6 +758,7 @@ begin
   FArrangeConstraints.MaxHeight := 480;
   FArrangeConstraints.MaxWidth := 640;
   FFieldCreateOptions := TJvCreateDBFieldsOnControlOptions.Create;
+  FIncludeNavigator := false;
 end;
 
 destructor TJvShowSingleRecordWindowOptions.Destroy;
@@ -789,6 +801,7 @@ begin
     ADialog.ArrangeConstraints := ArrangeConstraints;
     ADialog.ArrangeSettings := ArrangeSettings;
     ADialog.FieldCreateOptions := FieldCreateOptions;
+    ADialog.IncludeNavigator := IncludeNavigator;
   end;
 end;
 
