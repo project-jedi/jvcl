@@ -1002,13 +1002,19 @@ begin
       SelectedTab := Tab;
 
     if Assigned(Tab) and (Tab = SelectedTab) then
-      if CloseButton and (not SelectBeforeClose or (SelectedTab = LastSelected)) and
-        PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
-        if TabClosing(Tab) then
+      if CloseButton and (not SelectBeforeClose or (SelectedTab = LastSelected)) then
+      begin
+        if PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
         begin
-          FMouseDownClosingTab := Tab;
-          SetClosingTab(Tab);
+          if TabClosing(Tab) then
+          begin
+            FMouseDownClosingTab := Tab;
+            SetClosingTab(Tab);
+          end;
+          inherited MouseDown(Button, Shift, X, Y);
+          Exit;
         end;
+      end;
     if (FClosingTab = nil) and AllowTabMoving and
        ([ssLeft, ssMiddle, ssRight] * Shift = [ssLeft]) then
       BeginDrag(False);
