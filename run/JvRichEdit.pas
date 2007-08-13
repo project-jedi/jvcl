@@ -6121,36 +6121,35 @@ var
   Converter: TJvConversion;
 begin
   FRichEdit.HandleNeeded;
-  if FRichEdit.HandleAllocated then
-  begin
-    Converter := FRichEdit.GetConverter(Stream, ckImport);
+  // HandleNeeded raises an error if unsuccessful, so no if HandleAllocated
+  // check needed..
+  Converter := FRichEdit.GetConverter(Stream, ckImport);
+  try
+    Converter.OnProgress := ProgressCallback;
+    SaveFormat := Format;
     try
-      Converter.OnProgress := ProgressCallback;
-      SaveFormat := Format;
-      try
-        if FRichEdit.PlainText then
-          { When PlainText is set, the control does not accept RTF }
-          FFormat := sfPlainText
-        else
-        if FFormat = sfDefault then
-          case Converter.TextKind of
-            ctkText, ctkBothPreferText:
-              FFormat := sfPlainText;
-            ctkRTF, ctkBothPreferRTF:
-              FFormat := sfRichText;
-          end;
+      if FRichEdit.PlainText then
+        { When PlainText is set, the control does not accept RTF }
+        FFormat := sfPlainText
+      else
+      if FFormat = sfDefault then
+        case Converter.TextKind of
+          ctkText, ctkBothPreferText:
+            FFormat := sfPlainText;
+          ctkRTF, ctkBothPreferRTF:
+            FFormat := sfRichText;
+        end;
 
-        if not Converter.Open(Stream, ckImport) then
-          raise EOutOfResources.CreateRes(@sRichEditLoadFail);
+      if not Converter.Open(Stream, ckImport) then
+        raise EOutOfResources.CreateRes(@sRichEditLoadFail);
 
-        DoImport(Converter)
-      finally
-        FFormat := SaveFormat;
-      end;
+      DoImport(Converter)
     finally
-      Converter.Done;
-      Converter.OnProgress := nil;
+      FFormat := SaveFormat;
     end;
+  finally
+    Converter.Done;
+    Converter.OnProgress := nil;
   end;
 end;
 
@@ -6187,6 +6186,7 @@ var
   SaveFormat: TRichStreamFormat;
   Converter: TJvConversion;
 begin
+  FRichEdit.HandleNeeded;
   Converter := FRichEdit.GetConverter(FileName, ckExport);
   try
     Converter.OnProgress := ProgressCallback;
@@ -6223,36 +6223,33 @@ var
   Converter: TJvConversion;
 begin
   FRichEdit.HandleNeeded;
-  if FRichEdit.HandleAllocated then
-  begin
-    Converter := FRichEdit.GetConverter(Stream, ckExport);
+  Converter := FRichEdit.GetConverter(Stream, ckExport);
+  try
+    Converter.OnProgress := ProgressCallback;
+    SaveFormat := Format;
     try
-      Converter.OnProgress := ProgressCallback;
-      SaveFormat := Format;
-      try
-        if FRichEdit.PlainText then
-          { When PlainText is set, the control does not accept RTF }
-          FFormat := sfPlainText
-        else
-        if FFormat = sfDefault then
-          case Converter.TextKind of
-            ctkText, ctkBothPreferText:
-              FFormat := sfPlainText;
-            ctkRTF, ctkBothPreferRTF:
-              FFormat := sfRichText;
-          end;
+      if FRichEdit.PlainText then
+        { When PlainText is set, the control does not accept RTF }
+        FFormat := sfPlainText
+      else
+      if FFormat = sfDefault then
+        case Converter.TextKind of
+          ctkText, ctkBothPreferText:
+            FFormat := sfPlainText;
+          ctkRTF, ctkBothPreferRTF:
+            FFormat := sfRichText;
+        end;
 
-        if not Converter.Open(Stream, ckExport) then
-          raise EOutOfResources.CreateRes(@sRichEditSaveFail);
+      if not Converter.Open(Stream, ckExport) then
+        raise EOutOfResources.CreateRes(@sRichEditSaveFail);
 
-        DoExport(Converter)
-      finally
-        FFormat := SaveFormat;
-      end;
+      DoExport(Converter)
     finally
-      Converter.Done;
-      Converter.OnProgress := nil;
+      FFormat := SaveFormat;
     end;
+  finally
+    Converter.Done;
+    Converter.OnProgress := nil;
   end;
 end;
 
