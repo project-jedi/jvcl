@@ -135,7 +135,7 @@ type
     procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer; const ItemName: string);
     function CreateItemList: TStringList; virtual;
-    function CreateObject: TObject; virtual;
+    function CreateObject: TObject; virtual; abstract;
     function GetSorted: Boolean;
     procedure SetSorted(Value: Boolean);
     function GetDuplicates: TDuplicates;
@@ -765,11 +765,6 @@ end;
 function TJvCustomPropertyListStore.CreateItemList: TStringList;
 begin
   Result := TStringList.Create;
-end;
-
-function TJvCustomPropertyListStore.CreateObject: TObject;
-begin
-  Result := nil;
 end;
 
 function TJvCustomPropertyListStore.GetString(Index: Integer): string;
