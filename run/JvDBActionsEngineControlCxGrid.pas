@@ -180,7 +180,7 @@ begin
     if GridView(aActionComponent).DataController.IsGridMode then
       Result := inherited RecordCount(aActionComponent)
     else
-      Result := GridView(aActionComponent).DataController.RecordCount
+      Result := GridView(aActionComponent).DataController.FilteredRecordCount 
   else
     Result := inherited RecordCount(aActionComponent);
 end;
