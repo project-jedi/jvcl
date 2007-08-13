@@ -44,7 +44,7 @@ uses
   {$IFDEF USE_3RDPARTY_SMIMPORT}
   SMIWiz, SMIBase,
   {$ENDIF USE_3RDPARTY_SMIMPORT}
-  DBGrids, JvActionsEngine, JvDBActionsEngine;
+  DBGrids, JvActionsEngine, JvDBActionsEngine, JvDynControlEngineDBTools;
 
 type
 
@@ -294,6 +294,7 @@ type
 
   TJvDatabaseSingleRecordWindowAction = class(TJvDatabaseBaseActiveAction)
   private
+    FOnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent;
     FOptions: TJvShowSingleRecordWindowOptions;
   public
     constructor Create(AOwner: TComponent); override;
@@ -301,6 +302,9 @@ type
     procedure ExecuteTarget(Target: TObject); override;
     procedure ShowSingleRecordWindow;
   published
+    property OnCreateDataControlsEvent:
+        TJvDataSourceEditDialogCreateDataControlsEvent read
+        FOnCreateDataControlsEvent write FOnCreateDataControlsEvent;
     property Options: TJvShowSingleRecordWindowOptions read FOptions write FOptions;
   end;
 
@@ -1198,7 +1202,7 @@ end;
 
 procedure TJvDatabaseSingleRecordWindowAction.ShowSingleRecordWindow;
 begin
-  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options);
+  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options, onCreateDataControlsEvent);
 end;
 
 //=== { TJvDatabaseOpenAction } ==============================================
