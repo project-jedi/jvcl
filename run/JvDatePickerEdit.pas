@@ -906,7 +906,7 @@ end;
 procedure TJvCustomDatePickerEdit.RestoreMaskForKeyPress;
 begin
   try
-    if ((EditMask = '') or (EditMask <> FMask)) and (Text = NoDateText) and EditCanModify then
+    if ((EditMask = '') or (EditMask <> FMask)) and (Text = NoDateText) {and EditCanModify} then
     begin
       Text := '';
       RestoreMask;
