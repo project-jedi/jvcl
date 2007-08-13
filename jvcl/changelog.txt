@@ -1,5 +1,9 @@
 Changelog for JVCL 3.X
 ======================
+2007-08-14
+- Added JvDynControlEngineDBToolscxVGrid
+  The unit contains a class which can be assigned to a TJvDatabaseSingleRecordWindowAction to create the SingleRecord with a
+  DevExpress cxDBVerticalGrid.
 2007-07-29
 - Added new TJvControlActionEngine
   The engine based actions give you the possibility to connect different controls to one action. For example the collapse
