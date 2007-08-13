@@ -491,6 +491,8 @@ type
   TRichStreamFormat = (sfDefault, sfRichText, sfPlainText);
   TRichStreamMode = (smSelection, smPlainRtf, smNoObjects, smUnicode);
   TRichStreamModes = set of TRichStreamMode;
+  TRichDropEffect = (rdeCopy, rdeMove, rdeLink, rdeScroll);
+  TRichDropEffects = set of TRichDropEffect;
   TRichEditURLClickEvent = procedure(Sender: TObject; const URLText: string;
     Button: TMouseButton) of object;
   TRichEditProtectChangeEx = procedure(Sender: TObject; const Msg: TMessage;
@@ -498,6 +500,13 @@ type
   TRichEditFindErrorEvent = procedure(Sender: TObject; const FindText: string) of object;
   TRichEditFindCloseEvent = procedure(Sender: TObject; Dialog: TFindDialog) of object;
   TRichEditProgressEvent = procedure(Sender: TObject; PercentDone: Integer) of object;
+  TRichEditDragAllowedEvent = procedure(Sender: TObject; ShiftState: TShiftState;
+    var AllowedEffects: TRichDropEffects; var Handled: Boolean) of object;
+  TRichEditGetDragDropEffectEvent = procedure(Sender: TObject; ShiftState: TShiftState;
+    var AllowedEffects: TRichDropEffects; var Handled: Boolean) of object;
+  TRichEditQueryAcceptData = procedure(Sender: TObject; const ADataObject: IDataObject;
+    var AFormat: TClipFormat; ClipboardOperationKind: Cardinal; Really: Boolean;
+    IconMetaPict: HGLOBAL; var Handled: Boolean) of object;
 
   TJvCustomRichEdit = class(TJvExCustomMemo)
   private
@@ -553,6 +562,9 @@ type
     // From CCR
     FOnInPlaceActivate: TNotifyEvent;
     FOnInPlaceDeactivate: TNotifyEvent;
+    FOnDragAllowed: TRichEditDragAllowedEvent;
+    FOnGetDragDropEffect: TRichEditGetDragDropEffectEvent;
+    FOnQueryAcceptData: TRichEditQueryAcceptData;
 
     function GetAdvancedTypography: Boolean;
     function GetAutoURLDetect: Boolean;
@@ -639,6 +651,10 @@ type
       EndPos: Integer): Boolean; dynamic;
     function SaveClipboard(NumObj, NumChars: Integer): Boolean; dynamic;
     procedure URLClick(const URLText: string; Button: TMouseButton); dynamic;
+    function DoDragAllowed(const ShiftState: TShiftState; var AllowedEffects: TRichDropEffects): Boolean; dynamic;
+    function DoGetDragDropEffect(const ShiftState: TShiftState; var Effects: TRichDropEffects): Boolean; dynamic;
+    function DoQueryAcceptData(const ADataObject: IDataObject;
+      var AFormat: TClipFormat; ClipboardOperationKind: Cardinal; Really: Boolean; IconMetaPict: HGLOBAL): Boolean; dynamic;
     procedure SetPlainText(Value: Boolean); virtual;
     procedure CloseFindDialog(Dialog: TFindDialog); virtual;
     procedure DoSetMaxLength(Value: Integer); override;
@@ -690,6 +706,9 @@ type
     // From JvRichEdit.pas by Sébastien Buysse
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
+    property OnDragAllowed: TRichEditDragAllowedEvent read FOnDragAllowed write FOnDragAllowed;
+    property OnGetDragDropEffect: TRichEditGetDragDropEffectEvent read FOnGetDragDropEffect write FOnGetDragDropEffect;
+    property OnQueryAcceptData: TRichEditQueryAcceptData read FOnQueryAcceptData write FOnQueryAcceptData;
     property ForceUndo: Boolean read FForceUndo write FForceUndo default True;
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
     // from CCR
@@ -858,6 +877,9 @@ type
     property OnStartDrag;
     property OnTextNotFound;
     property OnCloseFindDialog;
+    property OnDragAllowed;
+    property OnGetDragDropEffect;
+    property OnQueryAcceptData;
     property OnURLClick;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -915,7 +937,7 @@ implementation
 
 uses
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
-  JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
+  JvThemes, JvConsts, JvResources, JvFixedEditPopUp, JvTypes;
 
 type
   PENLink = ^TENLink;
@@ -1376,10 +1398,10 @@ const
   { IRichEditOleCallback.QueryAcceptData       }
 
   RECO_PASTE = $00000000; { paste from clipboard  }
-  RECO_DROP = $00000001; { drop                  }
-  RECO_COPY = $00000002; { copy to the clipboard }
-  RECO_CUT = $00000003; { cut to the clipboard  }
-  RECO_DRAG = $00000004; { drag                  }
+  RECO_DROP  = $00000001; { drop                  }
+  RECO_COPY  = $00000002; { copy to the clipboard }
+  RECO_CUT   = $00000003; { cut to the clipboard  }
+  RECO_DRAG  = $00000004; { drag                  }
 
   ReadError = $0001;
   WriteError = $0002;
@@ -2841,6 +2863,42 @@ begin
   if Value = 0 then
     Value := $FFFFFF;
   SendMessage(Handle, EM_EXLIMITTEXT, 0, Value);
+end;
+
+function TJvCustomRichEdit.DoQueryAcceptData(const ADataObject: IDataObject;
+  var AFormat: TClipFormat; ClipboardOperationKind: Cardinal; Really: Boolean; IconMetaPict: HGLOBAL): Boolean;
+begin
+  Result := False;
+  // ClipboardOperationKind is either RECO_DROP or RECO_PASTE
+  case ClipboardOperationKind of
+    RECO_PASTE: if not (caPaste in ClipboardCommands) then Result := True;
+    RECO_DROP: ;
+  end;
+
+  if Assigned(FOnQueryAcceptData) then
+    FOnQueryAcceptData(Self, ADataObject, AFormat, ClipboardOperationKind, Really, IconMetaPict, Result);
+end;
+
+function TJvCustomRichEdit.DoDragAllowed(const ShiftState: TShiftState;
+  var AllowedEffects: TRichDropEffects): Boolean;
+begin
+  Result := False;
+  //  if ReadOnly then
+  //  begin
+  //    Result := True;
+  //    AllowedEffects := [];
+  //  end
+  //  else
+  if Assigned(FOnDragAllowed) then
+    FOnDragAllowed(Self, ShiftState, AllowedEffects, Result);
+end;
+
+function TJvCustomRichEdit.DoGetDragDropEffect(
+  const ShiftState: TShiftState; var Effects: TRichDropEffects): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnGetDragDropEffect) then
+    FOnGetDragDropEffect(Self, ShiftState, Effects, Result);
 end;
 
 procedure TJvCustomRichEdit.EMReplaceSel(var Msg: TMessage);
@@ -7381,7 +7439,21 @@ end;
 function TRichEditOleCallback.GetClipboardData(const chrg: TCharRange; reco: DWORD;
   out dataObj: IDataObject): HRESULT;
 begin
+  // MSDN documentation: "If the SCODE of the return value is a failure other than
+  // E_NOTIMPL, the operation fails." This seems to be incorrect: returning S_OK
+  // otoh works, ie fails the operation.
+
+  // cut commands are done as 'copy; delete'
+
+  dataObj := nil;
   Result := E_NOTIMPL;
+  case reco of
+    RECO_COPY: if not (caCopy in FRichEdit.ClipboardCommands) then Result := S_OK;
+    RECO_CUT: if not (caCut in FRichEdit.ClipboardCommands) then Result := S_OK;
+    RECO_DRAG: ;
+    RECO_DROP: ;
+    RECO_PASTE: if not (caPaste in FRichEdit.ClipboardCommands) then Result := S_OK;
+  end;
 end;
 
 function TRichEditOleCallback.GetContextMenu(seltype: Word;
@@ -7390,10 +7462,53 @@ begin
   Result := E_NOTIMPL;
 end;
 
+function EffectsToDropEffects(const dwEffect: Longint): TRichDropEffects;
+begin
+  Result := [];
+  if dwEffect and DROPEFFECT_COPY > 0 then Include(Result, rdeCopy);
+  if dwEffect and DROPEFFECT_MOVE > 0 then Include(Result, rdeMove);
+  if dwEffect and DROPEFFECT_LINK > 0 then Include(Result, rdeLink);
+  if dwEffect and DROPEFFECT_SCROLL > 0 then Include(Result, rdeScroll);
+end;
+
+function DropEffectsToEffects(const Effects: TRichDropEffects): Longint;
+begin
+  Result := 0;
+  if rdeCopy in Effects then Inc(Result, DROPEFFECT_COPY);
+  if rdeMove in Effects then Inc(Result, DROPEFFECT_MOVE);
+  if rdeLink in Effects then Inc(Result, DROPEFFECT_LINK);
+  if rdeScroll in Effects then Inc(Result, DROPEFFECT_SCROLL);
+end;
+
 function TRichEditOleCallback.GetDragDropEffect(fDrag: BOOL; grfKeyState: DWORD;
   var dwEffect: DWORD): HRESULT;
+var
+  ShiftState: TShiftState;
+  DropEffects: TRichDropEffects;
+  Handled: Boolean;
 begin
-  Result := E_NOTIMPL;
+  try
+    ShiftState := KeysToShiftState(grfKeyState);
+    DropEffects := EffectsToDropEffects(dwEffect);
+
+    if fDrag then
+      // dwEffect: its content is set to the effect allowable by the rich edit control.
+      Handled := FRichEdit.DoDragAllowed(ShiftState, DropEffects)
+    else
+      // dwEffect: the variable is set to the effect to use.
+      Handled := FRichEdit.DoGetDragDropEffect(ShiftState, DropEffects);
+
+    if Handled then
+    begin
+      Result := S_OK;
+      dwEffect := DropEffectsToEffects(DropEffects);
+    end
+    else
+      // let the rich edit control specify the effects of a drop operation.
+      Result := E_NOTIMPL;
+  except
+    Result := E_UNEXPECTED;
+  end;
 end;
 
 function TRichEditOleCallback.GetInPlaceContext(out Frame: IOleInPlaceFrame; out Doc: IOleInPlaceUIWindow;
@@ -7431,8 +7546,21 @@ end;
 function TRichEditOleCallback.QueryAcceptData(const dataObj: IDataObject;
   var cfFormat: TClipFormat; reco: DWORD; fReally: BOOL;
   hMetaPict: HGLOBAL): HRESULT;
+var
+  Handled: Boolean;
 begin
-  Result := S_OK;
+  try
+    Handled := FRichEdit.DoQueryAcceptData(dataObj, cfFormat, reco, fReally, hMetaPict);
+
+    if Handled then
+      // Callback imported the data itself
+      Result := S_FALSE
+    else
+      // Let the rich edit control check the data itself for acceptable formats.
+      Result := S_OK;
+  except
+    Result := E_UNEXPECTED;
+  end;
 end;
 
 function TRichEditOleCallback.QueryInsertObject(const clsid: TCLSID; const stg: IStorage;
