@@ -2322,7 +2322,6 @@ type
   TJvDynControlEngineDevExpCxDB = class(TJvDynControlEngineDB)
   private
     FCxProperties: TCxDynControlWrapper;
-    FField: Integer;
   protected
     procedure SetcxProperties(Value: TCxDynControlWrapper);
     procedure RegisterControls; override;
