@@ -1904,8 +1904,8 @@ begin
       Result := cbUnchecked;
     cbsChecked:
       Result := cbChecked;
-    cbsGrayed:
-      Result := cbGrayed;
+  else
+    Result := cbGrayed;
   end;
 end;
 
