@@ -124,11 +124,12 @@ object EditorMainForm: TEditorMainForm
     PopupMenu = EditPopupMenu
     TabOrder = 3
     WantTabs = True
-    Zoom = 100
     OnChange = RichEditChange
     OnProtectChange = EditorProtectChange
     OnSelectionChange = SelectionChange
     OnTextNotFound = EditorTextNotFound
+    OnGetDragDropEffect = EditorGetDragDropEffect
+    OnQueryAcceptData = EditorQueryAcceptData
     OnURLClick = EditorURLClick
   end
   object StatusBar: TStatusBar
@@ -494,7 +495,6 @@ object EditorMainForm: TEditorMainForm
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-
     OnGetImageIndex = MainMenuGetImageIndex
     Left = 8
     Top = 128
@@ -751,9 +751,6 @@ object EditorMainForm: TEditorMainForm
     ImageMargin.Bottom = 0
     ImageSize.Height = 16
     ImageSize.Width = 16
-
-
-
     Left = 92
     Top = 128
   end
@@ -766,7 +763,6 @@ object EditorMainForm: TEditorMainForm
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-
     OnGetImageIndex = EditPopupMenuGetImageIndex
     Left = 36
     Top = 128
@@ -801,9 +797,6 @@ object EditorMainForm: TEditorMainForm
     ImageMargin.Bottom = 0
     ImageSize.Height = 16
     ImageSize.Width = 16
-
-
-
     Left = 64
     Top = 128
   end

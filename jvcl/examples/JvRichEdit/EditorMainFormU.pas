@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, Forms, StdCtrls, Dialogs, Mask,
-  ImgList, Controls, Menus, JvMenus, ComCtrls, ExtCtrls, Classes,
+  ImgList, Controls, Menus, JvMenus, ComCtrls, ExtCtrls, Classes, ActiveX,
   JvComponent, JvAppEvent, JvMaskEdit, JvSpin, JvCombobox, JvColorCombo,
   JvSpeedBar, JvRichEdit, JvClipboardMonitor, JvExMask, JvExStdCtrls,
   JvExExtCtrls, XPColorMenuItemPainter;
@@ -185,6 +185,13 @@ type
     procedure EditSelectAll(Sender: TObject);
     procedure FileSaveSelected(Sender: TObject);
     procedure FormatParaTabs(Sender: TObject);
+    procedure EditorQueryAcceptData(Sender: TObject;
+      const ADataObject: IDataObject; var AFormat: Word;
+      ClipboardOperationKind: Cardinal; Really: Boolean;
+      IconMetaPict: Cardinal; var Handled: Boolean);
+    procedure EditorGetDragDropEffect(Sender: TObject;
+      ShiftState: TShiftState; var AllowedEffects: TRichDropEffects;
+      var Handled: Boolean);
   private
     FFileName: string;
     FUpdating: Boolean;
@@ -197,6 +204,7 @@ type
     FProtectChanging: Boolean;
     FClipboardMonitor: TJvClipboardMonitor;
     FOpenPictureDialog: TOpenDialog;
+    FDragStartedHere: Boolean;
     function IndentToRuler(Indent: Integer; IsRight: Boolean): Integer;
     function RulerToIndent(RulerPos: Integer; IsRight: Boolean): Integer;
     procedure DrawLine;
@@ -212,9 +220,9 @@ type
     procedure UpdateCursorPos;
     procedure FocusEditor;
     procedure ClipboardChanged(Sender: TObject);
-    procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure PerformFileOpen(const AFileName: string);
     procedure SetModified(Value: Boolean);
+    procedure DropFiles(DropHandle: Integer);
   end;
 
 var
@@ -223,7 +231,7 @@ var
 implementation
 
 uses
-  Graphics, SysUtils, Math, ShellAPI, ClipBrd, ExtDlgs, Jpeg,
+  Graphics, SysUtils, Math, ShellAPI, ClipBrd, ExtDlgs, Jpeg, RichEdit,
   JvGIF, JvWinDialogs, JvJVCLUtils,
   ParagraphFormatFormU, TabsFormU;
 
@@ -727,7 +735,6 @@ var
   Res: TResourceStream;
 begin
   UpdateCursorPos;
-  DragAcceptFiles(Handle, True);
   RichEditChange(nil);
   FocusEditor;
   ClipboardChanged(nil);
@@ -1067,7 +1074,7 @@ begin
   if SuperscriptBtn.Down then
     CurrText.SubscriptStyle := ssSuperscript
   else
-    if SubscriptBtn.Down then
+  if SubscriptBtn.Down then
     CurrText.SubscriptStyle := ssSubscript
   else
     CurrText.SubscriptStyle := ssNone;
@@ -1101,21 +1108,134 @@ begin
   EditObjPropsItem.Enabled := Editor.SelectionType = [stObject];
 end;
 
-procedure TEditorMainForm.WMDropFiles(var Msg: TWMDropFiles);
+procedure TEditorMainForm.DropFiles(DropHandle: Integer);
 var
-  cFileName: array[0..MAX_PATH] of Char;
+  I: Cardinal;
+  FileName: array[0..MAX_PATH + 1] of Char;
+  CharRange: TCharRange;
+  FileCount: LongWord;
+  Code: Integer;
 begin
-  try
-    if DragQueryFile(Msg.Drop, 0, cFileName, MAX_PATH) > 0 then
+  FileCount := DragQueryFile(DropHandle, $FFFFFFFF, nil, 0);
+
+  if FileCount = 0 then
+    Exit
+  else if FileCount = 1 then
+  begin
+    // load complete file
+    DragQueryFile(DropHandle, 0, FileName, MAX_PATH);
+    Application.BringToFront;
+    CheckFileSave;
+    PerformFileOpen(FileName);
+  end
+  else
+  begin
+    CharRange := Editor.GetSelection;
+
+    for I := 0 to FileCount - 1 do
     begin
-      Application.BringToFront;
-      CheckFileSave;
-      PerformFileOpen(cFileName);
-      Msg.Result := 0;
+      DragQueryFile(DropHandle, I, FileName, MAX_PATH);
+
+      Code := GetFileAttributes(FileName);
+      if (Code <> -1) and (FILE_ATTRIBUTE_DIRECTORY and Code <> 0) then
+        Continue;
+
+      Editor.SetSelection(CharRange.cpMax, CharRange.cpMax, False);
+
+      Editor.InsertObjectFromFile(FileName, False);
+      Inc(CharRange.cpMax);
     end;
-  finally
-    DragFinish(Msg.Drop);
+
+    Editor.SetSelection(CharRange.cpMin, CharRange.cpMax, False);
   end;
+end;
+
+const
+  IID_IMarshal: TGUID = (
+    D1:$00000003;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+
+procedure TEditorMainForm.EditorQueryAcceptData(Sender: TObject;
+  const ADataObject: IDataObject; var AFormat: Word;
+  ClipboardOperationKind: Cardinal; Really: Boolean;
+  IconMetaPict: Cardinal; var Handled: Boolean);
+var
+  FormatEtc: TFormatEtc;
+  Medium: TStgMedium;
+begin
+  // It is difficult to determine whether the drag started in our rich edit
+  // control or somewhere else. Mainly because we don't get a finish event if the
+  // drag is cancelled. If the ADataObject supports the IMarshall interface then
+  // it probably comes from another process.
+  FDragStartedHere := not Really and not Supports(ADataObject, IID_IMarshal);
+
+  if Really then
+  begin
+    // Is the data the locations of a group of existing files?
+    FormatEtc.cfFormat := CF_HDROP;
+    FormatEtc.ptd := nil;
+    FormatEtc.dwAspect := DVASPECT_CONTENT;
+    FormatEtc.lindex := -1;
+    FormatEtc.tymed := TYMED_HGLOBAL;
+
+    if Succeeded(ADataObject.QueryGetData(FormatEtc)) then
+    begin
+      Medium.tymed := TYMED_NULL;
+      Medium.hGlobal := 0;
+      Medium.unkForRelease := nil;
+
+      if Succeeded(ADataObject.GetData(FormatEtc, Medium)) then
+      begin
+        // Yes, group of files; we handle it ourself.
+        Handled := True;
+
+        DropFiles(HDROP(Medium.hGlobal));
+        ReleaseStgMedium(Medium);
+      end;
+    end;
+  end;
+end;
+
+procedure TEditorMainForm.EditorGetDragDropEffect(Sender: TObject;
+  ShiftState: TShiftState; var AllowedEffects: TRichDropEffects;
+  var Handled: Boolean);
+var
+  Effect: TRichDropEffect;
+begin
+  // wordpad
+  //
+  //   ctrl         = copy
+  //   alt          = move
+  //   ctrl + shift = link
+  //
+  // http://msdn2.microsoft.com/en-us/library/system.windows.forms.control.dragover.aspx
+  //
+  //   ctrl + alt   = link
+  //   alt          = link
+  //   shift        = move
+  //   ctrl         = copy
+
+  if ShiftState * [ssCtrl, ssShift] = [ssCtrl, ssShift] then
+    Effect := rdeLink
+  else if ShiftState * [ssCtrl] = [ssCtrl] then
+    Effect := rdeCopy
+  else if ShiftState * [ssAlt] = [ssAlt] then
+    Effect := rdeMove
+  else
+  begin
+    // drag-drop from external application to this richedit should default be copy
+    // drag-drop starting&ending in this richedit should default be move
+    if FDragStartedHere then
+      Effect := rdeMove
+    else
+      Effect := rdeCopy;
+  end;
+
+  if Effect in AllowedEffects then
+    AllowedEffects := [Effect]
+  else
+    AllowedEffects := [];
+
+  Handled := True;
 end;
 
 end.
