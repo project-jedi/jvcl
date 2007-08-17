@@ -370,18 +370,18 @@ procedure UserUnregisterComponents(Components: TStrings);
 // during the installation. The user could have started the JVCLInstaller
 // or have added additional designtime packages by hand.
 var
-  {IdeList: TStrings;
+  IdeList: TStrings;
   IdeIndex: Integer;
-  IdeKind: TIdeKind;}
+  IdeKind: TIdeKind;
   Version: Integer;
 begin
-  // Uninstall from all IDEs ?
+{  // Uninstall from all IDEs ?
   for Version := 5 to 11 do
     UninstallDesignPackagesPrefixed(ikDelphi, Version, 'Jv');
   for Version := 5 to 6 do
-    UninstallDesignPackagesPrefixed(ikBCB, Version, 'Jv');
+    UninstallDesignPackagesPrefixed(ikBCB, Version, 'Jv');}
 
-{  IdeList := TStringList.Create;
+  IdeList := TStringList.Create;
   try
     GetSelectedList(IdeList, 'IDE', Components);
     // unregister per IDE
@@ -392,7 +392,7 @@ begin
     end;
   finally
     IdeList.Free;
-  end;}
+  end;
 end;
 
 function MapExpert(IdeKind: TIdeKind; Version: Integer; const ExpertName: string): string;
