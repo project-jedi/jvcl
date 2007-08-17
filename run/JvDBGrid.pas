@@ -198,6 +198,14 @@ type
 
   TCharList = set of Char;
 
+  TJvGridPaintInfo = record
+    MouseInCol: Integer; // the column that the mouse is in
+    ColPressed: Boolean; // a column has been pressed
+    ColPressedIdx: Integer; // idx of the pressed column
+    ColSizing: Boolean; // currently sizing a column
+    ColMoving: Boolean; // currently moving a column
+  end;
+
   TJvDBGrid = class(TJvExDBGrid)
   private
     FAutoSort: Boolean;
@@ -276,13 +284,21 @@ type
     FRowsHeight: Integer;
     FTitleRowHeight: Integer;
     FCanDelete: Boolean;
+
+    // XP Theming
+    FUseXPThemes: Boolean;
+    FPaintInfo: TJvGridPaintInfo;
+    FCell: TGridCoord; // currently selected cell
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
     procedure SetTitleRowHeight(Value: Integer);
 
     procedure WriteCellText(ARect: TRect; DX, DY: Integer; const Text: string;
-      Alignment: TAlignment; ARightToLeft: Boolean; Options: Integer = 0);
+      Alignment: TAlignment; ARightToLeft: Boolean; FixCell: Boolean; Options: Integer = 0);
     function GetImageIndex(Field: TField): Integer;
     procedure SetShowGlyphs(Value: Boolean);
     function GetStorage: TJvFormPlacement;
@@ -337,6 +353,13 @@ type
     function DoKeyPress(var Msg: TWMChar): Boolean;
     procedure SetWordWrap(Value: Boolean);
     procedure NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
+
+    // XP Theming
+    procedure SetUseXPThemes(Value: Boolean);
+    {$IFDEF JVCLThemesEnabled}
+    function ColumnOffset: Integer; // col offset used for calculations. Is 1 if indicator is being displayed
+    function ValidCell(ACell: TGridCoord): Boolean;
+    {$ENDIF JVCLThemesEnabled}
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -355,6 +378,11 @@ type
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField;
       State: TGridDrawState); override; { obsolete from Delphi 2.0 }
+
+    function BeginColumnDrag(var Origin: Integer; var Destination: Integer; const MousePt: TPoint): Boolean; override;
+    procedure ColumnMoved(FromIndex: Integer; ToIndex: Integer); override;
+    function AllowTitleClick: Boolean; virtual;
+
     {$IFDEF COMPILER6_UP}
     procedure EditChanged(Sender: TObject); dynamic;
     {$ENDIF COMPILER6_UP}
@@ -384,6 +412,7 @@ type
       var ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
       var DefaultDrawText, DefaultDrawSortMarker: Boolean); virtual;
     procedure ColEnter; override;
+    procedure ColExit; override;
 
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
@@ -408,12 +437,10 @@ type
 
     procedure PlaceControl(Control: TWinControl; ACol, ARow: Integer); virtual;
     procedure RowHeightsChanged; override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DefaultDataCellDraw(const Rect: TRect; Field: TField;
-      State: TGridDrawState);
+    procedure DefaultDataCellDraw(const Rect: TRect; Field: TField; State: TGridDrawState);
     procedure DisableScroll;
     procedure EnableScroll;
     function ScrollDisabled: Boolean;
@@ -431,6 +458,7 @@ type
     procedure CloseControl; // Hide the current edit control and give the focus to the grid
     procedure InitializeColumnsWidth(const MinWidth, MaxWidth: Integer;
       const DisplayWholeTitle: Boolean; const FixedWidths: array of Integer);
+    procedure MouseWheelHandler(var Message: TMessage); override;
 
     procedure RegisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
     procedure UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
@@ -525,6 +553,8 @@ type
     property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
     { BooleanEditor: if true, a checkbox is used to edit boolean fields }
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
+    { UseXPThemes: if true, the grid is painted in the active XP theme style }
+    property UseXPThemes: Boolean read FUseXPThemes write SetUseXPThemes default True;
     { OnCheckIfBooleanField: event used to treat integer fields and string fields as boolean fields }
     property OnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent read FOnCheckIfBooleanField write FOnCheckIfBooleanField;
     { OnColumnResized: event triggered each time a column is resized with the mouse }
@@ -553,7 +583,10 @@ uses
   JvDBLookup,
   {$ENDIF COMPILER6_UP}
   JvVCL5Utils,
-  JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
+  JvConsts, JvResources, JvThemes, JvDBUtils, JvJCLUtils, JvJVCLUtils,
+  {$IFDEF COMPILER7_UP}
+  GraphUtil, // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
+  {$ENDIF COMPILER7_UP}
   JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm;
 
 {$R JvDBGrid.res}
@@ -562,6 +595,9 @@ type
   TBookmarks = class(TBookmarkList);
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
+  {$IFNDEF COMPILER7_UP}
+  TScrollDirection = (sdLeft, sdRight, sdUp, sdDown);
+  {$ENDIF ~COMPILER7_UP}
 
 const
   GridBmpNames: array [TGridPicture] of PChar =
@@ -609,6 +645,40 @@ begin
   for I := 0 to Grid.ColCount - 1 do
     Grid.InvalidateCell(I, Row);
 end;
+
+{$IFNDEF COMPILER7_UP}
+ {$IFDEF JVCLThemesEnabled}
+procedure DrawArrow(ACanvas: TCanvas; Direction: TScrollDirection;
+  Location: TPoint; Size: Integer);
+const
+  ArrowPts: array[TScrollDirection, 0..2] of TPoint =
+    (((X:1; Y:0), (X:0; Y:1), (X:1; Y:2)),
+     ((X:0; Y:0), (X:1; Y:1), (X:0; Y:2)),
+     ((X:0; Y:1), (X:1; Y:0), (X:2; Y:1)),
+     ((X:0; Y:0), (X:1; Y:1), (X:2; Y:0)));
+var
+  I: Integer;
+  Pts: array[0..2] of TPoint;
+  OldWidth: Integer;
+  OldColor: TColor;
+begin
+  if ACanvas = nil then exit;
+  OldColor := ACanvas.Brush.Color;
+  ACanvas.Brush.Color := ACanvas.Pen.Color;
+  Move(ArrowPts[Direction], Pts, SizeOf(Pts));
+  for I := 0 to 2 do
+    Pts[I] := Point(Pts[I].x * Size + Location.X, Pts[I].y * Size + Location.Y);
+  with ACanvas do
+  begin
+    OldWidth := Pen.Width;
+    Pen.Width := 1;
+    Polygon(Pts);
+    Pen.Width := OldWidth;
+    Brush.Color := OldColor;
+  end;
+end;
+ {$ENDIF JVCLThemesEnabled}
+{$ENDIF ~COMPILER7_UP}
 
 //=== { TInternalInplaceEdit } ===============================================
 
@@ -959,6 +1029,16 @@ begin
   FTitleRowHeight := RowHeights[0];
   FShowMemos := True;
   FCanDelete := True;
+
+  // XP Theming
+  FUseXPThemes := True;
+  FPaintInfo.ColPressed := False;
+  FPaintInfo.MouseInCol := -1;
+  FPaintInfo.ColPressedIdx := -1;
+  FPaintInfo.ColMoving := False;
+  FPaintInfo.ColSizing := False;
+  FCell.X := -1;
+  FCell.Y := -1;
 end;
 
 destructor TJvDBGrid.Destroy;
@@ -1174,11 +1254,57 @@ begin
 end;
 
 procedure TJvDBGrid.ColWidthsChanged;
+
+  { VCL BUGFIX:
+    The TCustomDBGrid.ColWidthsChanged method invokes DataLink.LayoutChanged/DataSource.OnDataChange
+    for every column, regardless if it was resized or not.
+
+    This causes a db-aware component or an DataSource.OnDataChange event handler to
+    be triggered very often even if there was no actual change. This becomes worse
+    when the assigned DataSet contains many visible fields (=>columns) and the DataChange
+    event is used to update details data. }
+    
+  procedure FixedInheritedColWidthsChanged;
+  var
+    I, ChangeCount: Integer;
+  begin
+    //inherited TCustomGrid.ColWidthsChanged;
+    inherited RowHeightsChanged; // does the same that TCustomGrid.ColWidthsChanged does.
+
+    if (Datalink.Active or (Columns.State = csCustomized)) and
+      AcquireLayoutLock then
+    try
+      ChangeCount := 0;
+      for I := IndicatorOffset to ColCount - 1 do
+        if Columns[I - IndicatorOffset].Width <> ColWidths[I] then
+        begin
+          Inc(ChangeCount);
+          if ChangeCount > 1 then // we have what we need
+            Break;
+        end;
+      if ChangeCount > 0 then
+      begin
+        if ChangeCount > 1 then
+          DataLink.DataSet.DisableControls;
+        try
+          for I := IndicatorOffset to ColCount - 1 do
+            if Columns[I - IndicatorOffset].Width <> ColWidths[I] then
+              Columns[I - IndicatorOffset].Width := ColWidths[I];
+        finally
+          if ChangeCount > 1 then
+            DataLink.DataSet.EnableControls;
+        end;
+      end;
+    finally
+      EndLayout;
+    end;
+  end;
+
 var
   ACol: Longint;
 begin
   ACol := Col;
-  inherited ColWidthsChanged;
+  FixedInheritedColWidthsChanged;
   if DataLink.Active and (FixedCols > 0) then
     Col := Min(Max(CalcLeftColumn, ACol), ColCount - 1);
   DoMinColWidth;
@@ -1580,6 +1706,15 @@ end;
 
 procedure TJvDBGrid.Paint;
 begin
+  {$IFDEF JVCLThemesEnabled}
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+  begin
+    // reset the inherited options but remove the goFixedVertLine and goFixedHorzLine values
+    // as that causes the titles and indicator panels to have a black border
+    TStringGrid(Self).Options := TStringGrid(Self).Options - [goFixedVertLine];
+    TStringGrid(Self).Options := TStringGrid(Self).Options - [goFixedHorzLine];
+  end;
+  {$ENDIF JVCLThemesEnabled}
   inherited Paint;
   if not (csDesigning in ComponentState) and
     (dgRowSelect in Options) and DefaultDrawing and Focused then
@@ -2033,6 +2168,31 @@ begin
   end;
   FAcquireFocus := False;
   try
+    { XP Theming }
+    {$IFDEF JVCLThemesEnabled}
+    if not (csDesigning in ComponentState) and UseXPThemes and ThemeServices.ThemesEnabled then
+    begin
+      FPaintInfo.ColSizing := Sizing(X, Y);
+      if not FPaintInfo.ColSizing then
+      begin
+        FPaintInfo.ColPressedIdx := -1;
+        FPaintInfo.ColPressed := False;
+        if AllowTitleClick then
+          FPaintInfo.MouseInCol := -1;
+        Cell := MouseCoord(X, Y);
+        if (Button = mbLeft) and (Cell.X >= IndicatorOffset) and (Cell.Y >= 0) and AllowTitleClick then
+        begin
+          FPaintInfo.ColPressed := Cell.Y < TitleOffset;
+          if FPaintInfo.ColPressed then
+            FPaintInfo.ColPressedIdx := Columns[RawToDataColumn(Cell.X)].Index + ColumnOffset;
+          if ValidCell(FCell) then
+            InvalidateCell(FCell.X, FCell.Y);
+          FCell := Cell;
+        end;
+      end;
+    end;
+    {$ENDIF JVCLThemesEnabled}
+
     if Sizing(X, Y) then
       inherited MouseDown(Button, Shift, X, Y)
     else
@@ -2188,7 +2348,39 @@ begin
 end;
 
 procedure TJvDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
+{$IFDEF JVCLThemesEnabled}
+var
+  Cell: TGridCoord;
+  MouseInCol: Integer;
+{$ENDIF JVCLThemesEnabled}
 begin
+  { XP Theming }
+  {$IFDEF JVCLThemesEnabled}
+  if not (csDesigning in ComponentState) and UseXPThemes and ThemeServices.ThemesEnabled then
+  begin
+    if not FPaintInfo.ColSizing and not FPaintInfo.ColMoving then
+    begin
+      FPaintInfo.MouseInCol := -1;
+      Cell := MouseCoord(X, Y);
+      if (Cell.X >= IndicatorOffset) and (Cell.Y >= 0) then
+      begin
+        if (Cell.Y < TitleOffset) then
+        begin
+          MouseInCol := Columns[RawToDataColumn(Cell.X)].Index + ColumnOffset;
+          if MouseInCol <> FPaintInfo.MouseInCol then
+          begin
+            InvalidateCell(Cell.X, Cell.Y);
+            FPaintInfo.MouseInCol := MouseInCol;
+          end;
+        end
+      end;
+      if ValidCell(FCell) then
+        InvalidateCell(FCell.X, FCell.Y);
+      FCell := Cell;
+    end;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+
   if FTracking then
     TrackButton(X, Y);
   inherited MouseMove(Shift, X, Y);
@@ -2252,6 +2444,17 @@ begin
   else
     inherited MouseUp(Button, Shift, X, Y);
   DoAutoSizeColumns;
+
+  { XP Theming }
+  {$IFDEF JVCLThemesEnabled}
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+  begin
+    FPaintInfo.ColSizing := False;
+    FPaintInfo.ColMoving := False;
+    FPaintInfo.ColPressedIdx := -1;
+    Invalidate;
+  end;
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvDBGrid.WMRButtonUp(var Msg: TWMMouse);
@@ -2490,7 +2693,7 @@ begin
 end;
 
 procedure TJvDBGrid.WriteCellText(ARect: TRect; DX, DY: Integer; const Text: string;
-  Alignment: TAlignment; ARightToLeft: Boolean; Options: Integer = 0);
+  Alignment: TAlignment; ARightToLeft: Boolean; FixCell: Boolean; Options: Integer = 0);
 const
   AlignFlags: array [TAlignment] of Integer =
     (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
@@ -2513,16 +2716,21 @@ var
         DrawOptions := DrawOptions or Options;
       if WordWrap then
         DrawOptions := DrawOptions or DT_WORDBREAK;
-      if Brush.Style <> bsSolid then
-        Brush.Style := bsSolid;
-      FillRect(B);
+      {$IFDEF JVCLThemesEnabled}
+      if not FixCell or not (UseXPThemes and ThemeServices.ThemesEnabled) then
+      {$ENDIF JVCLThemesEnabled}
+      begin
+        if Brush.Style <> bsSolid then
+          Brush.Style := bsSolid;
+        FillRect(B);
+      end;
       SetBkMode(Handle, TRANSPARENT);
       Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
     end;
   end;
 
 begin
-  if ReduceFlicker then
+  if ReduceFlicker {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and ThemeServices.ThemesEnabled) {$ENDIF} then
   begin
     // Use offscreen bitmap to eliminate flicker and
     // brush origin tics in painting / scrolling.
@@ -2574,8 +2782,76 @@ begin
 end;
 
 procedure TJvDBGrid.DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
+{$IFDEF JVCLThemesEnabled}
+const
+  ArrowDirection: array [TCanvasOrientation] of TScrollDirection = (sdRight, sdLeft);
+var
+  Details: TThemedElementDetails;
+  lCaptionRect: TRect;
+  lCellRect: TRect;
+  PenRecall: TPenRecall;
+{$ENDIF JVCLThemesEnabled}
 begin
-  CallDrawCellEvent(ACol, ARow, ARect, AState);
+  {$IFDEF JVCLThemesEnabled}
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+  begin
+    lCellRect := ARect;
+    if ThemeServices.ThemesEnabled and (ARow = 0) and (ACol - ColumnOffset >= 0) and (dgTitles in Options) then
+    begin
+      lCaptionRect := ARect;
+      if not FPaintInfo.ColPressed or (FPaintInfo.ColPressedIdx <> ACol) then
+      begin
+        if (FPaintInfo.MouseInCol = -1) or (FPaintInfo.MouseInCol <> ACol) or (csDesigning in ComponentState) then
+          Details := ThemeServices.GetElementDetails(thHeaderItemNormal)
+        else
+          Details := ThemeServices.GetElementDetails(thHeaderItemHot);
+        lCellRect.Right := lCellRect.Right + 1;
+        lCellRect.Bottom := lCellRect.Bottom + 1;
+      end
+      else if AllowTitleClick then
+      begin
+        Details := ThemeServices.GetElementDetails(thHeaderItemPressed);
+        InflateRect(lCaptionRect, -1, 1);
+      end
+      else
+      begin
+        if FPaintInfo.MouseInCol = ACol then
+          Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+        else
+          Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
+      end;
+      ThemeServices.DrawElement(Canvas.Handle, Details, lCellRect);
+    end
+    else if (ACol = 0) and (dgIndicator in Options) and ThemeServices.ThemesEnabled then
+    begin
+      // indicator column
+      if ARow < TitleOffset then
+        Details := ThemeServices.GetElementDetails(thHeaderItemNormal)
+      else
+        Details := ThemeServices.GetElementDetails(thHeaderRoot);
+      lCellRect.Right := lCellRect.Right + 1;
+      lCellRect.Bottom := lCellRect.Bottom + 1;
+      ThemeServices.DrawElement(Canvas.Handle, Details, lCellRect);
+      // draw the indicator
+      if (Datalink.Active) and (ARow - TitleOffset = Datalink.ActiveRecord) then
+      begin
+        PenRecall := TPenRecall.Create(Canvas.Pen);
+        try
+          Canvas.Pen.Color := clWhite;
+          DrawArrow(Canvas, ArrowDirection[Canvas.CanvasOrientation], Point(lCellRect.Left + 4, lCellRect.Top + 3), 5);
+          Canvas.Pen.Color := clBlack;
+          DrawArrow(Canvas, ArrowDirection[Canvas.CanvasOrientation], Point(lCellRect.Left + 3, lCellRect.Top + 3), 5);
+        finally
+          PenRecall.Free;
+        end;
+      end;
+    end
+    else
+      CallDrawCellEvent(ACol, ARow, ARect, AState);
+  end
+  else
+  {$ENDIF JVCLThemesEnabled}
+    CallDrawCellEvent(ACol, ARow, ARect, AState);
 end;
 
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
@@ -2723,7 +2999,7 @@ var
       else
         TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
       WriteCellText(TextRect, MinOffs, Max(MinOffs, TitleSpace div 2), Caption, Alignment,
-        IsRightToLeft, TitleOptions);
+        IsRightToLeft, True, TitleOptions);
     end;
   end;
 
@@ -2828,9 +3104,14 @@ begin
       Down := FPressed and FTitleButtons and (FPressedCol = DrawColumn);
       if FTitleButtons or ([dgRowLines, dgColLines] * Options = [dgRowLines, dgColLines]) then
       begin
-        DrawEdge(Canvas.Handle, TitleRect, EdgeFlag[Down], BF_BOTTOMRIGHT);
-        DrawEdge(Canvas.Handle, TitleRect, EdgeFlag[Down], BF_TOPLEFT);
-        InflateRect(TitleRect, -1, -1);
+        {$IFDEF JVCLThemesEnabled}
+        if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+        {$ENDIF JVCLThemesEnabled}
+        begin
+          DrawEdge(Canvas.Handle, TitleRect, EdgeFlag[Down], BF_BOTTOMRIGHT);
+          DrawEdge(Canvas.Handle, TitleRect, EdgeFlag[Down], BF_TOPLEFT);
+          InflateRect(TitleRect, -1, -1);
+        end;
       end;
       Canvas.Font := TitleFont;
       Canvas.Brush.Color := FixedColor;
@@ -2860,7 +3141,12 @@ begin
         OffsetRect(TitleRect, 1, 1);
       ARect := TitleRect;
       if (DataLink = nil) or not DataLink.Active then
-        Canvas.FillRect(TitleRect)
+      begin
+        {$IFDEF JVCLThemesEnabled}
+        if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+        {$ENDIF JVCLThemesEnabled}
+          Canvas.FillRect(TitleRect);
+      end
       else
       if DrawColumn <> nil then
       begin
@@ -2904,7 +3190,7 @@ begin
         end;
       end
       else
-        WriteCellText(ARect, MinOffs, MinOffs, '', taLeftJustify, IsRightToLeft);
+        WriteCellText(ARect, MinOffs, MinOffs, '', taLeftJustify, False, IsRightToLeft);
     finally
       Canvas.Pen.Color := SavePen;
     end;
@@ -2960,7 +3246,7 @@ begin
         else
           MemoText := Field.AsString;
         WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
-          UseRightToLeftAlignmentForField(Field, Column.Alignment));
+          UseRightToLeftAlignmentForField(Field, Column.Alignment), False);
       end
       else
         DefaultDrawColumnCell(Rect, DataCol, Column, State);
@@ -3651,6 +3937,16 @@ procedure TJvDBGrid.TitleClick(Column: TColumn);
 begin
   FTitleColumn := Column;
   inherited TitleClick(Column);
+  if AllowTitleClick then
+  begin
+    FPaintInfo.ColPressed := False;
+    FPaintInfo.ColPressedIdx := -1;
+    {$IFDEF JVCLThemesEnabled}
+    if UseXPThemes and ThemeServices.ThemesEnabled then
+      if ValidCell(FCell) then
+        InvalidateCell(FCell.X, FCell.Y);
+    {$ENDIF JVCLThemesEnabled}
+  end;
 end;
 
 procedure TJvDBGrid.SetSortedField(const Value: string);
@@ -4127,6 +4423,106 @@ begin
     Invalidate;
   end;
 end;
+
+procedure TJvDBGrid.SetUseXPThemes(Value: Boolean);
+begin
+  if Value <> FUseXPThemes then
+  begin
+    FUseXPThemes := Value;
+    Invalidate;
+  end;
+end;
+
+{$IFDEF JVCLThemesEnabled}
+function TJvDBGrid.ColumnOffset: Integer;
+begin
+  if dgIndicator in Options then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+function TJvDBGrid.ValidCell(ACell: TGridCoord): Boolean;
+begin
+  Result := (ACell.X <> -1) and (ACell.Y <> -1);
+end;
+{$ENDIF JVCLThemesEnabled}
+
+function TJvDBGrid.BeginColumnDrag(var Origin: Integer; var Destination: Integer; const MousePt: TPoint): Boolean;
+begin
+  Result := inherited BeginColumnDrag(Origin, Destination, MousePt);
+  FPaintInfo.ColMoving := Result;
+end;
+
+procedure TJvDBGrid.CMMouseEnter(var Message: TMessage);
+{$IFDEF JVCLThemesEnabled}
+var
+  Cell: TGridCoord;
+  lPt: TPoint;
+{$ENDIF JVCLThemesEnabled}
+begin
+  {$IFDEF JVCLThemesEnabled}
+  lPt := Point(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+  Cell := MouseCoord(lPt.X, lPt.Y);
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+    if (dgTitles in Options) and (Cell.Y = 0) then
+      InvalidateCell(Cell.X, Cell.Y);
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvDBGrid.CMMouseLeave(var Message: TMessage);
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+    if ValidCell(FCell) then
+      InvalidateCell(FCell.X, FCell.Y);
+  {$ENDIF JVCLThemesEnabled}
+  FCell.X := -1;
+  FCell.Y := -1;
+  FPaintInfo.MouseInCol := -1;
+  FPaintInfo.ColPressedIdx := -1;
+end;
+
+procedure TJvDBGrid.ColExit;
+begin
+  inherited ColExit;
+  FPaintInfo.MouseInCol := -1;
+  {$IFDEF JVCLThemesEnabled}
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+    if ValidCell(FCell) then
+      InvalidateCell(FCell.X, FCell.Y);
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+function TJvDBGrid.AllowTitleClick: Boolean;
+begin
+  Result := Assigned(FOnTitleBtnClick) or AutoSort;
+end;
+
+procedure TJvDBGrid.ColumnMoved(FromIndex, ToIndex: Integer);
+begin
+  inherited ColumnMoved(FromIndex, ToIndex);
+  FPaintInfo.ColMoving := False;
+  {$IFDEF JVCLThemesEnabled}
+  if UseXPThemes and ThemeServices.ThemesEnabled then
+    Invalidate;
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvDBGrid.MouseWheelHandler(var Message: TMessage);
+var
+  LastRow: Integer;
+begin
+  { Fix MouseWheel indicator bug }
+  LastRow := Row;
+  inherited MouseWheelHandler(Message);
+  if (Row <> LastRow) and (DataLink <> nil) and DataLink.Active then
+  begin
+    DataLink.DataSet.MoveBy(Row - LastRow);
+    InvalidateCell(IndicatorOffset - 1, LastRow);
+  end;
+end;
+
 
 initialization
   {$IFDEF UNITVERSIONING}
