@@ -3,7 +3,7 @@ object JvHTMLParserForm: TJvHTMLParserForm
   Left = 437
   Top = 279
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsSingle
+  BorderStyle = bsSingle
   Caption = 'Parser - Edit '
   ClientHeight = 242
   ClientWidth = 423

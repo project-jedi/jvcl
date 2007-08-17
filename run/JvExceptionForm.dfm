@@ -3,7 +3,7 @@ object JvErrorDialog: TJvErrorDialog
   Top = 100
   ActiveControl = OKBtn
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   ClientHeight = 252
   ClientWidth = 380
   Color = clBtnFace

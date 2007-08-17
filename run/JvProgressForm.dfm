@@ -2,7 +2,7 @@ object frmProgress: TfrmProgress
   Left = 411
   Top = 226
   BorderIcons = []
-  BorderStyle = fbsToolWindow
+  BorderStyle = bsToolWindow
   Caption = 'Caption'
   ClientHeight = 165
   ClientWidth = 316

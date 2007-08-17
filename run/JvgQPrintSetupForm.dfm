@@ -2,7 +2,7 @@ object JvgPrintSetup: TJvgPrintSetup
   Left = 520
   Top = 121
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsSingle
+  BorderStyle = bsSingle
   Caption = 'Print Setup'
   ClientHeight = 59
   ClientWidth = 424

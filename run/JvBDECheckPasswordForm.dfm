@@ -3,7 +3,7 @@ object JvChPswdForm: TJvChPswdForm
   Top = 149
   ActiveControl = OldPswd
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   ClientHeight = 115
   ClientWidth = 347
   Color = clBtnFace

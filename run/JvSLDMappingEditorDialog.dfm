@@ -1,7 +1,7 @@
 object frmSLDMappingEditorDialog: TfrmSLDMappingEditorDialog
   Left = 296
   Top = 191
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   Caption = 'Mapping Editor...'
   ClientHeight = 175
   ClientWidth = 410

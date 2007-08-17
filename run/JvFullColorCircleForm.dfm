@@ -1,7 +1,7 @@
 object JvFullColorCircleFrm: TJvFullColorCircleFrm
   Left = 108
   Top = 135
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   Caption = 'Color circle configurations'
   ClientHeight = 660
   ClientWidth = 1019

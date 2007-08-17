@@ -3,7 +3,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   Top = 121
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsSingle
+  BorderStyle = bsSingle
   ClientHeight = 262
   ClientWidth = 421
   Color = clBtnFace
