@@ -1,7 +1,7 @@
 object YearGridEditForm: TYearGridEditForm
   Left = 303
   Top = 154
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   Caption = 'YearGrid Edit'
   ClientHeight = 364
   ClientWidth = 313

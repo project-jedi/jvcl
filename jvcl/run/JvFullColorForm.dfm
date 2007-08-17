@@ -3,7 +3,7 @@ object JvFullColorFrm: TJvFullColorFrm
   Top = 319
   ActiveControl = ColorBox
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   Caption = 'Color Spaces Editor, Choose your color'
   ClientHeight = 380
   ClientWidth = 712

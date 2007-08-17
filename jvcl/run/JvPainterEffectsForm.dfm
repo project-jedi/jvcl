@@ -1,7 +1,7 @@
 object PainterEffectsForm: TPainterEffectsForm
   Left = 480
   Top = 153
-  BorderStyle = fbsToolWindow
+  BorderStyle = bsToolWindow
   Caption = 'Painter Effects'
   ClientHeight = 303
   ClientWidth = 180

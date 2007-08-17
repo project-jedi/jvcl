@@ -1,7 +1,7 @@
 object JvSpellerForm: TJvSpellerForm
   Left = 306
   Top = 251
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   Caption = 'Spelling checker'
   ClientHeight = 153
   ClientWidth = 371

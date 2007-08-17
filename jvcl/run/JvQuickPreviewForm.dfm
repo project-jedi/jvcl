@@ -3,7 +3,7 @@ object QuickPreviewForm: TQuickPreviewForm
   Top = 127
   ClientWidth = 304
   ClientHeight = 320
-  BorderStyle = fbsSizeToolWin
+  BorderStyle = bsSizeToolWin
   Caption = 'Painter Preview'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

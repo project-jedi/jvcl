@@ -3,7 +3,7 @@ object JvLoginForm: TJvLoginForm
   Top = 102
   Cursor = crArrow
   BorderIcons = []
-  BorderStyle = fbsDialog
+  BorderStyle = bsDialog
   ClientHeight = 159
   ClientWidth = 442
   Color = clBtnFace

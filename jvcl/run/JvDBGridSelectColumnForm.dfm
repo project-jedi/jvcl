@@ -4,7 +4,7 @@ object frmSelectColumn: TfrmSelectColumn
   ClientWidth = 189
   ClientHeight = 217
   BorderIcons = []
-  BorderStyle = fbsSizeToolWin
+  BorderStyle = bsSizeToolWin
   BorderWidth = 2
   Caption = 'Select columns'
   Color = clBtnFace

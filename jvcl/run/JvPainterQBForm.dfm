@@ -1,7 +1,7 @@
 object PainterQBForm: TPainterQBForm
   Left = 443
   Top = 124
-  BorderStyle = fbsToolWindow
+  BorderStyle = bsToolWindow
   Caption = 'QuickBack'
   ClientHeight = 292
   ClientWidth = 176
