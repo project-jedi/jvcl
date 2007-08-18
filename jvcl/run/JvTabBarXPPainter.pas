@@ -158,8 +158,6 @@ begin
 end;
 
 function TJvTabBarXPPainter.GetTabSize(Canvas: TCanvas; Tab: TJvTabBarItem): TSize;
-var
-  R: TRect;
 begin
   if FixedTabSize > 0 then
   begin
