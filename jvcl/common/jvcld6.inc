@@ -132,7 +132,7 @@ For further informations have a look at http://www.devexpress.com }
 
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
-{$DEFINE USE_3RDPARTY_INDY}
+{.$DEFINE USE_3RDPARTY_INDY}
 
 { Activates the Internet Direct (Indy)-Components version 10.
 You MUST also activate $DEFINE USE_3RDPARTY_INDY for the compilation to work
