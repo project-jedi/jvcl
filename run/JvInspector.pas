@@ -6854,7 +6854,7 @@ begin
         else
         if Pressed then
           BFlags := DFCS_FLAT or DFCS_PUSHED;
-        DrawThemedFrameControl(Inspector, ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
+        DrawThemedFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
       end
       else
       if iifEditButton in Flags then

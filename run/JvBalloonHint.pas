@@ -2271,7 +2271,7 @@ begin
       if FCloseState and DFCS_PUSHED > 0 then
         Button := tttClosePressed
       else
-      if FCloseState and DFCS_HOT > 0 then
+      if (FCloseState and DFCS_HOT > 0) and not (csDesigning in ComponentState) then
         Button := tttCloseHot
       else
         Button := tttCloseNormal;
@@ -2355,7 +2355,8 @@ begin
   begin
     State := DFCS_FLAT;
 
-    if PtInRect(FCloseBtnRect, SmallPointToPoint(Msg.Pos)) then
+    if PtInRect(FCloseBtnRect, SmallPointToPoint(Msg.Pos)) and
+       not (csDesigning in ComponentState) then
     begin
       { Note: DFCS_HOT is not supported in windows 95 systems }
       State := State or DFCS_HOT;

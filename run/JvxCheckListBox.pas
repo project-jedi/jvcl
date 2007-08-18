@@ -1793,11 +1793,11 @@ begin
     if AState = cbGrayed then
       Flags := Flags or DFCS_MONO;
     if CheckKind = ckCheckBoxes then
-      DrawThemedFrameControl(Self, Canvas.Handle, DrawRect, DFC_BUTTON,
+      DrawThemedFrameControl(Canvas.Handle, DrawRect, DFC_BUTTON,
         DFCS_BUTTONCHECK or Flags)
     else
     if CheckKind = ckRadioButtons then
-      DrawThemedFrameControl(Self, Canvas.Handle, DrawRect, DFC_BUTTON,
+      DrawThemedFrameControl(Canvas.Handle, DrawRect, DFC_BUTTON,
         DFCS_BUTTONRADIO or Flags);
   end
   else

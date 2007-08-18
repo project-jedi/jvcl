@@ -919,15 +919,7 @@ begin
   if FState in [bsDown, bsExclusive] then
     DrawFlags := DrawFlags or DFCS_PUSHED;
 
-  {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
-    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags)
-  else
-  {$ENDIF JVCLThemesEnabled}
-  begin
-    DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
-
-  end;
+  DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags)
 end;
 
 procedure TJvCustomGraphicButton.DropDownClose;

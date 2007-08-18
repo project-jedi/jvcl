@@ -2018,7 +2018,7 @@ const
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
-    DrawThemedFrameControl(TabBar, Canvas.Handle, R, DFC_SCROLL, ScrollTypes[Button] or States[State])
+    DrawThemedFrameControl(Canvas.Handle, R, DFC_SCROLL, ScrollTypes[Button] or States[State])
   else
   {$ELSE}
   begin

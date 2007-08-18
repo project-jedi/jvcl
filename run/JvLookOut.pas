@@ -723,7 +723,7 @@ begin
     Flags := Flags or DFCS_HOT;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Color;
-  DrawThemedFrameControl(Self, Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLUP or Flags);
+  DrawThemedFrameControl(Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLUP or Flags);
 
   if FFlat and MouseOver then
   begin
@@ -833,7 +833,7 @@ begin
     Flags := Flags or DFCS_HOT;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Color;
-  DrawThemedFrameControl(Self, Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLDOWN or Flags);
+  DrawThemedFrameControl(Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLDOWN or Flags);
 
   if FFlat and MouseOver then
   begin
