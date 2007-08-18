@@ -55,8 +55,6 @@ uses
   Classes, Graphics, Controls, Menus,
   JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls, JvDataSourceIntf;
 
-
-
 type
   TJvCustomEdit = class;
 
@@ -202,15 +200,15 @@ type
     property BiDiMode;
     property DragCursor;
     property DragKind;
-    property EmptyValue; // p3: clx not implemented yet
-    property EmptyFontColor; // p3: clx not implemented yet
+    property EmptyValue;
+    property EmptyFontColor;
     property Flat;
     property ImeMode;
     property ImeName;
     property OEMConvert;
     property ParentBiDiMode;
     property ParentFlat;
-    property UseFixedPopup; // asn: clx not implemented yet
+    property UseFixedPopup;
     property Caret;
     property DisabledTextColor;
     property DisabledColor;
@@ -357,7 +355,6 @@ begin
   FDataConnector := CreateDataConnector;
 
   FAlignment := taLeftJustify;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
@@ -366,7 +363,7 @@ begin
   FCaret.OnChanged := CaretChanged;
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
-  FUseFixedPopup := True; // asn: clx not implemented yet
+  FUseFixedPopup := True;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
@@ -442,10 +439,6 @@ begin
     inherited;
 end;
 
-
-
-
-
 procedure TJvCustomEdit.CreateHandle;
 begin
   inherited CreateHandle;
@@ -454,11 +447,6 @@ begin
   else
     DoEmptyValueExit;
 end;
-
-
-
-
-
 
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
@@ -505,8 +493,6 @@ begin
     ProtectPassword := Tmp;
   end;
 end;
-
-
 
 procedure TJvCustomEdit.WMClear(var Msg: TMessage);
 begin
@@ -633,8 +619,6 @@ begin
   Result := not Ctl3D;
 end;
 
-
-
 function TJvCustomEdit.GetParentFlat: Boolean;
 begin
   Result := ParentCtl3D;
@@ -696,13 +680,11 @@ begin
   Result := (Length(Text) = 0);
 end;
 
-
 function TJvCustomEdit.IsFlatStored: Boolean;
 begin
   { Same as IsCtl3DStored }
   Result := not ParentCtl3D;
 end;
-
 
 function TJvCustomEdit.IsPasswordCharStored: Boolean;
 begin
@@ -743,8 +725,6 @@ begin
   DataConnector.Reset;
 end;
 
-
-
 procedure TJvCustomEdit.ReadCtl3D(Reader: TReader);
 begin
   Flat := not Reader.ReadBoolean;
@@ -754,8 +734,6 @@ procedure TJvCustomEdit.ReadParentCtl3D(Reader: TReader);
 begin
   ParentFlat := Reader.ReadBoolean;
 end;
-
-
 
 procedure TJvCustomEdit.DefineProperties(Filer: TFiler);
 begin
@@ -816,8 +794,6 @@ begin
     inherited MouseLeave(AControl);
   end;
 end;
-
-
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
@@ -923,8 +899,6 @@ begin
     inherited SetSelStart(Value);
 end;
 
-
-// (ahuser) ProtectPassword has no function under CLX
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
   if (csLoading in ComponentState) or not FIsLoaded then
@@ -944,7 +918,6 @@ begin
     inherited Text := EmptyValue;
   end;
 end;
-
 
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomEdit.SetThemedPassword(const Value: Boolean);
@@ -970,7 +943,6 @@ begin
         (TJvCustomEdit(Owner.Components[I]).GroupIndex = Self.GroupIndex) then
         TJvCustomEdit(Owner.Components[I]).Clear;
 end;
-
 
 procedure TJvCustomEdit.WMPaint(var Msg: TWMPaint);
 var
@@ -1004,7 +976,6 @@ begin
     end;
   end;
 end;
-
 
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomEdit.WMSetFont(var Msg: TWMSetFont);

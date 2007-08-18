@@ -266,7 +266,7 @@ type
     property AsWideString: WideString read GetAsWideString write SetAsWideString;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
-    property AsDataTime: TDateTime read GetAsDateTime write SetAsDateTime;
+    property AsDateTime: TDateTime read GetAsDateTime write SetAsDateTime;
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
     property AsInt64: Int64 read GetAsInt64 write SetAsInt64;
   end;

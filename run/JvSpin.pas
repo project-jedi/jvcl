@@ -20,6 +20,7 @@ Contributor(s):
   boerema1
   roko
   remkobonte
+  Niels
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -41,7 +42,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, CommCtrl, ComCtrls, Controls, ExtCtrls, Graphics, Forms,
-  JvEdit, JvExMask, JvMaskEdit, JvComponent;
+  JvEdit, JvExMask, JvMaskEdit, JvComponent, JvDataSourceIntf, JvVCL5Utils;
 
 const
   DefaultInitRepeatPause = 400; { pause before repeat timer (ms) }
@@ -50,7 +51,7 @@ const
 type
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
 
-  TJvSpinButtonStyle = (sbsDefault, sbsClassic); // Polaris
+  TJvSpinButtonStyle = (sbsDefault, sbsClassic);
 
   TJvSpinButton = class(TJvGraphicControl)
   private
@@ -271,8 +272,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    //Polaris
-    //property CheckOnExit;
     property CheckOptions;
     property CheckMinValue;
     property CheckMaxValue;
@@ -351,6 +350,124 @@ type
     property ClipboardCommands;
   end;
 
+  TJvCustomTimeEdit = class;
+
+  TJvCustomTimeEditDataConnector = class(TJvFieldDataConnector)
+  private
+    FEdit: TJvCustomTimeEdit;
+  protected
+    procedure RecordChanged; override;
+    procedure UpdateData; override;
+    property Control: TJvCustomTimeEdit read FEdit;
+  public
+    constructor Create(AEdit: TJvCustomTimeEdit);
+  end;
+
+  TJvCustomTimeEdit = class(TJvCustomSpinEdit)
+  private
+    Position: Integer;
+    FHour24: Boolean;
+    FShowSeconds: Boolean;
+    FTime: TDateTime;
+    FDataConnector: TJvCustomTimeEditDataConnector;
+    procedure SetShowSeconds(Value: Boolean);
+    procedure SetHour24(Value: Boolean);
+    procedure SetDataConnector(const Value: TJvCustomTimeEditDataConnector);
+  protected
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure UpdateTimeDigits(Increment: Boolean);
+    function IsTimeValid(const Value: string): Boolean;
+    procedure SetValue(NewValue: Extended); override;
+    function GetValue: Extended; override;
+    function GetTime: TDateTime; virtual;
+    procedure SetTime(Value: TDateTime); virtual;
+
+    procedure UpClick(Sender: TObject); Override;
+    procedure DownClick(Sender: TObject); Override;
+    procedure KeyPress(var Key: Char); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+
+    function CreateDataConnector: TJvCustomTimeEditDataConnector; virtual;
+    procedure Change; override;
+    procedure DoExit; override;
+
+    property ButtonKind default bkDiagonal;
+    property ShowSeconds: Boolean read FShowSeconds write SetShowSeconds default False;
+    property Hour24: Boolean read FHour24 write SetHour24 default True;
+    property DataConnector: TJvCustomTimeEditDataConnector read FDataConnector write SetDataConnector;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property Time: TDateTime read GetTime write SetTime;
+  end;
+
+  TJvTimeEdit = class(TJvCustomTimeEdit)
+  published
+    property ButtonKind default bkDiagonal;
+    property ShowSeconds default False;
+    property Hour24 default True;
+    property DataConnector;
+
+    property Align;
+    property Alignment;
+    property AutoSelect;
+    property AutoSize;
+    property BorderStyle;
+    property Color;
+    property DragCursor;
+    property BiDiMode;
+    property DragKind;
+    property ParentBiDiMode;
+    property ImeMode;
+    property ImeName;
+    property OnEndDock;
+    property OnStartDock;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property Anchors;
+    property Constraints;
+    property MaxLength;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+    property OnContextPopup;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property HideSelection;
+    {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    {$ENDIF COMPILER6_UP}
+    property ClipboardCommands;
+  end;
+
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -382,99 +499,10 @@ const
   sSpinUpBtnPole = 'JvSpinUPPOLE';
   sSpinDownBtnPole = 'JvSpinDOWNPOLE';
 
-  (*Polaris
-procedure TJvSpinButton.DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState);
-var
-  R, RSrc: TRect;
-  dRect: Integer;
-  {Temp: TBitmap;}
-begin
-  ABitmap.Height := Height;
-  ABitmap.Width := Width;
-  with ABitmap.Canvas do
-  begin
-    R := Bounds(0, 0, Width, Height);
-    Pen.Width := 1;
-    Brush.Color := clBtnFace;
-    Brush.Style := bsSolid;
-    FillRect(R);
-    { buttons frame }
-    Pen.Color := clWindowFrame;
-    Rectangle(0, 0, Width, Height);
-    MoveTo(-1, Height);
-    LineTo(Width, -1);
-    { top button }
-    if ADownState = sbTopDown then Pen.Color := clBtnShadow
-    else Pen.Color := clBtnHighlight;
-    MoveTo(1, Height - 4);
-    LineTo(1, 1);
-    LineTo(Width - 3, 1);
-    if ADownState = sbTopDown then Pen.Color := clBtnHighlight
-      else Pen.Color := clBtnShadow;
-    if ADownState <> sbTopDown then
-    begin
-      MoveTo(1, Height - 3);
-      LineTo(Width - 2, 0);
-    end;
-    { bottom button }
-    if ADownState = sbBottomDown then Pen.Color := clBtnHighlight
-      else Pen.Color := clBtnShadow;
-    MoveTo(2, Height - 2);
-    LineTo(Width - 2, Height - 2);
-    LineTo(Width - 2, 1);
-    if ADownState = sbBottomDown then Pen.Color := clBtnShadow
-      else Pen.Color := clBtnHighlight;
-    MoveTo(2, Height - 2);
-    LineTo(Width - 1, 1);
-    { top glyph }
-    dRect := 1;
-    if ADownState = sbTopDown then Inc(dRect);
-    R := Bounds(Round((Width / 4) - (FUpBitmap.Width / 2)) + dRect,
-      Round((Height / 4) - (FUpBitmap.Height / 2)) + dRect, FUpBitmap.Width,
-      FUpBitmap.Height);
-    RSrc := Bounds(0, 0, FUpBitmap.Width, FUpBitmap.Height);
-    {
-    if Self.Enabled or (csDesigning in ComponentState) then
-      BrushCopy(R, FUpBitmap, RSrc, FUpBitmap.TransparentColor)
-    else
-    begin
-      Temp := CreateDisabledBitmap(FUpBitmap, clBlack);
-      try
-        BrushCopy(R, Temp, RSrc, Temp.TransparentColor);
-      finally
-        Temp.Free;
-      end;
-    end;
-    }
-    BrushCopy(R, FUpBitmap, RSrc, FUpBitmap.TransparentColor);
-    { bottom glyph }
-    R := Bounds(Round((3 * Width / 4) - (FDownBitmap.Width / 2)) - 1,
-      Round((3 * Height / 4) - (FDownBitmap.Height / 2)) - 1,
-      FDownBitmap.Width, FDownBitmap.Height);
-    RSrc := Bounds(0, 0, FDownBitmap.Width, FDownBitmap.Height);
-    {
-    if Self.Enabled or (csDesigning in ComponentState) then
-      BrushCopy(R, FDownBitmap, RSrc, FDownBitmap.TransparentColor)
-    else
-    begin
-      Temp := CreateDisabledBitmap(FDownBitmap, clBlack);
-      try
-        BrushCopy(R, Temp, RSrc, Temp.TransparentColor);
-      finally
-        Temp.Free;
-      end;
-    end;
-    }
-    BrushCopy(R, FDownBitmap, RSrc, FDownBitmap.TransparentColor);
-    if ADownState = sbBottomDown then
-    begin
-      Pen.Color := clBtnShadow;
-      MoveTo(3, Height - 2);
-      LineTo(Width - 1, 2);
-    end;
-  end;
-end;
-*)
+  sTimeFormats: array [{Hour24}Boolean, {ShowSeconds}Boolean] of string = (
+    ('HH:mm AM/PM', 'HH:mm:ss AM/PM'),
+    ('HH:mm', 'HH:mm:ss')
+  );
 
 type
   TColorArray = array [0..2] of TColor;
@@ -614,17 +642,14 @@ end;
 constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   FThousands := False; //new
 
-  //Polaris
   FFocused := False;
   FCheckOptions := [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
   FLCheckMinValue := True;
   FLCheckMaxValue := True;
   FCheckMinValue := False;
   FCheckMaxValue := False;
-  //Polaris
   ControlStyle := ControlStyle - [csSetCaption];
   FIncrement := 1.0;
   FDecimal := 2;
@@ -744,8 +769,6 @@ const
     ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
 begin
   inherited CreateParams(Params);
-  // Polaris:
-  //    or ES_MULTILINE
   Params.Style := Params.Style or WS_CLIPCHILDREN or Alignments[UseRightToLeftAlignment, FAlignment];
 end;
 
@@ -807,18 +830,6 @@ procedure TJvCustomSpinEdit.WMPaste(var Msg: TMessage);
 begin
   if FEditorEnabled and not ReadOnly then
     inherited;
-
-  { Polaris code:
-  if not FEditorEnabled or ReadOnly then
-    Exit;
-  V := Value;
-  inherited;
-  try
-    StrToFloat(Text);
-  except
-    SetValue(V);
-  end;
-  }
 end;
 
 procedure TJvCustomSpinEdit.DoEnter;
@@ -940,14 +951,12 @@ function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
 begin
   if NewStyleControls then
     Result := FButtonKind
-      //>Polaris
   else
   begin
     Result := bkDiagonal;
     if Assigned(FButton) and (FButton.ButtonStyle = sbsClassic) then
       Result := bkClassic;
   end;
-  //<Polaris
 end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
@@ -1022,7 +1031,7 @@ begin
     if Pos(DecimalSeparator, Text) = 0 then
     begin
       if not Thousands or (ThousandSeparator <> '.') then
-        ValidChars := ValidChars + [DecimalSeparator, '.'] // Polaris
+        ValidChars := ValidChars + [DecimalSeparator, '.']
       else
         ValidChars := ValidChars + [DecimalSeparator];
     end;
@@ -1069,12 +1078,10 @@ procedure TJvCustomSpinEdit.KeyPress(var Key: Char);
 var
   I: Integer;
 begin
-  //Polaris
   // (outchy) moved at the beginning, hitting '.' now behaves like hitting the decimal separator
   if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
     Key := DecimalSeparator;
 
-  // andreas
   if (Key = DecimalSeparator) and (ValueType = vtFloat) then
   begin
     { If the key is the decimal separator move the caret behind it. }
@@ -1132,7 +1139,6 @@ begin
       with TJvUpDown(FUpDown) do
       begin
         Visible := True;
-        //Polaris
         SetBounds(0, 1, DefBtnWidth, Self.Height);
         if BiDiMode = bdRightToLeft then
           Align := alLeft
@@ -1159,7 +1165,6 @@ begin
       FButton.FocusControl := Self;
       FButton.OnTopClick := UpClick;
       FButton.OnBottomClick := DownClick;
-      //Polaris
       FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
     end;
 end;
@@ -1204,7 +1209,6 @@ begin
     end;
     with R do
       FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
-    //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
 end;
@@ -1296,7 +1300,6 @@ procedure TJvCustomSpinEdit.SetEditRect;
 var
   Loc: TRect;
 begin
-  //Polaris
   if BiDiMode = bdRightToLeft then
   begin
     SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1, ClientHeight + 1);
@@ -1522,7 +1525,6 @@ begin
     if FDown = sbNotDown then
     begin
       FLastDown := FDown;
-      //>Polaris
       if ((FButtonStyle = sbsDefault) and (Y > (-(Height / Width) * X + Height))) or
         ((FButtonStyle = sbsClassic) and (Y > (Height div 2))) then
       begin
@@ -1603,7 +1605,6 @@ begin
     if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
     begin
       NewState := FDown;
-      //>Polaris
       if MouseInBottomBtn(Point(X, Y)) then
       begin
         if FDown <> sbBottomDown then
@@ -2655,6 +2656,379 @@ begin
   if not Find(Width, Height, AButtonStyle, ACustomGlyphs, Index) then
     FList.Insert(Index, TSpinButtonBitmaps.Create(Self, Width, Height, AButtonStyle, ACustomGlyphs));
   Result := TSpinButtonBitmaps(FList[Index]);
+end;
+
+//=== { TCustomTimeEdit } ==========================================
+
+procedure TJvCustomTimeEdit.Change;
+begin
+  DataConnector.Modify;
+  inherited Change;
+end;
+
+constructor TJvCustomTimeEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csSetCaption];
+  FDataConnector := CreateDataConnector;
+  FHour24 := True;
+  Time := Now; // updates Text
+end;
+
+function TJvCustomTimeEdit.CreateDataConnector: TJvCustomTimeEditDataConnector;
+begin
+  Result := TJvCustomTimeEditDataConnector.Create(Self);
+end;
+
+procedure TJvCustomTimeEdit.SetDataConnector(const Value: TJvCustomTimeEditDataConnector);
+begin
+  if Value <> FDataConnector then
+    FDataConnector.Assign(Value);
+end;
+
+function TJvCustomTimeEdit.GetTime: TDateTime;
+begin
+  Result := 0.0;
+  if (Text <> '') and IsTimeValid(Text) then
+    Result := Int(fTime) + StrToTime(Text);
+end;
+
+procedure TJvCustomTimeEdit.SetTime(Value: TDateTime);
+begin
+  if FTime <> Value then
+  begin
+    FTime := Value;
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds], FTime);
+  end;
+end;
+
+function TJvCustomTimeEdit.IsTimeValid(const Value: string): Boolean;
+var
+  dt: TDateTime;
+begin
+  Result := TryStrToTime(Value, dt);
+end;
+
+procedure TJvCustomTimeEdit.SetHour24(Value: Boolean);
+begin
+  if Value <> FHour24 then
+  begin
+    FHour24 := Value;
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds], Time);
+  end;
+end;
+
+procedure TJvCustomTimeEdit.SetShowSeconds(Value: Boolean);
+begin
+  if Value <> FShowSeconds then
+  begin
+    FShowSeconds := Value;
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds], Time);
+  end;
+end;
+
+procedure TJvCustomTimeEdit.UpdateTimeDigits(Increment: Boolean);
+
+  function SetNumberChar(const S: string; APos: Integer; AValue: Char): string;
+  begin
+    Result := S;
+    Result[APos] := AValue;
+  end;
+
+  function IncNumberChar(const S: string; APos: Integer): string;
+  var
+    Ch: Char;
+  begin
+    Result := S;
+    Ch := Result[APos];
+    Inc(Ch);
+    Result[APos] := Ch;
+  end;
+
+  function DecNumberChar(const S: string; APos: Integer): string;
+  var
+    Ch: Char;
+  begin
+    Result := S;
+    Ch := Result[APos];
+    Dec(Ch);
+    Result[APos] := Ch;
+  end;
+
+var
+  Offset: Integer;
+begin
+  if ReadOnly then
+  begin
+    MessageBeep(0);
+    Exit;
+  end;
+  if Text = '' then
+    Exit;
+
+  Position := SelStart;
+  if (SelStart = 0) or (SelStart = 1) or (SelStart = 2) then
+  begin
+    if Hour24 then
+    begin
+      if Increment then
+      begin
+        if (Text[1] = '2') and (Text[2] = '3') then
+        begin
+          Text := SetNumberChar(Text, 1, '0');
+          Text := SetNumberChar(Text, 2, '0');
+        end
+        else
+        if Text[2] = '9' then
+        begin
+          Text := SetNumberChar(Text, 2, '0');
+          Text := IncNumberChar(Text, 1);
+        end
+        else
+          Text := IncNumberChar(Text, 2);
+      end
+      else // decrement
+      begin
+        if (Text[1] = '0') and (Text[2] = '0') then
+        begin
+          Text := SetNumberChar(Text, 1, '2');
+          Text := SetNumberChar(Text, 2, '3');
+        end
+        else
+        if Text[2] = '0' then
+        begin
+          Text := DecNumberChar(Text, 1);
+          Text := SetNumberChar(Text, 2, '9');
+        end
+        else
+          Text := DecNumberChar(Text, 2);
+      end
+    end
+
+    else // Hour 12 AM/PM
+    begin
+      if Increment then
+      begin
+        if (Text[1] = '1') and (Text[2] = '2') then
+        begin
+          if Text[10] = 'A' then
+            Text := SetNumberChar(Text, 10, 'P')
+          else
+            Text := SetNumberChar(Text, 10, 'A');
+          Text := SetNumberChar(Text, 1, '0');
+          Text := SetNumberChar(Text, 2, '1');
+        end
+        else
+        if Text[2] = '9' then
+        begin
+          Text := SetNumberChar(Text, 2, '0');
+          Text := IncNumberChar(Text, 1);
+        end
+        else
+          Text := IncNumberChar(Text, 2);
+      end
+      else // decrement
+      begin
+        if (Text[1] = '0') and (Text[2] = '1') then
+        begin
+          if Text[10] = 'A' then
+            Text := SetNumberChar(Text, 10, 'P')
+          else
+            Text := SetNumberChar(Text, 10, 'A');
+          Text := SetNumberChar(Text, 1, '1');
+          Text := SetNumberChar(Text, 2, '2');
+        end
+        else
+        if Text[2] = '0' then
+        begin
+          Text := SetNumberChar(Text, 1, '0');
+          Text := SetNumberChar(Text, 2, '9');
+        end
+        else
+          Text := DecNumberChar(Text, 2);
+      end;
+    end;
+
+    SelStart := Position;
+  end
+
+  else
+  if SelStart >= 3 then
+  begin
+    if (SelStart <= 5) then
+      Offset := 4
+    else
+      Offset := 7;
+
+    if Increment then
+    begin
+      if (Text[Offset] = '5') and (Text[Offset + 1] = '9') then
+      begin
+        Text := SetNumberChar(Text, Offset, '0');
+        Text := SetNumberChar(Text, Offset + 1, '0');
+      end
+      else
+      if Text[Offset + 1] = '9' then
+      begin
+        Text := SetNumberChar(Text, Offset + 1, '0');
+        Text := IncNumberChar(Text, Offset);
+      end
+      else
+        Text := IncNumberChar(Text, Offset + 1);
+    end
+    else // decrement
+    begin
+      if (Text[Offset] = '0') and (Text[Offset + 1] = '0') then
+      begin
+        Text := SetNumberChar(Text, Offset, '5');
+        Text := SetNumberChar(Text, Offset + 1, '9');
+      end
+      else
+      if Text[Offset + 1] = '0' then
+      begin
+        Text := SetNumberChar(Text, Offset + 1, '9');
+        Text := DecNumberChar(Text, Offset);
+      end
+      else
+        Text := DecNumberChar(Text, Offset + 1);
+    end;
+    SelStart := Position;
+  end;
+end;
+
+procedure TJvCustomTimeEdit.WMCut(var Msg: TMessage);
+begin
+  if EditorEnabled and not ReadOnly then
+    DataConnector.Edit;
+  inherited;
+end;
+
+procedure TJvCustomTimeEdit.WMPaste(var Msg: TMessage);
+begin
+  if EditorEnabled and not ReadOnly then
+    DataConnector.Edit;
+  inherited;
+end;
+
+procedure TJvCustomTimeEdit.UpClick(Sender: TObject);
+begin
+  UpdateTimeDigits(True);
+end;
+
+destructor TJvCustomTimeEdit.Destroy;
+begin
+  FreeAndNil(FDataConnector);
+  inherited Destroy;
+end;
+
+procedure TJvCustomTimeEdit.DoExit;
+begin
+  try
+    DataConnector.UpdateRecord;
+  except
+    SelectAll;
+    SetFocus;
+    raise;
+  end;
+  inherited DoExit;
+end;
+
+procedure TJvCustomTimeEdit.DownClick(Sender: TObject);
+begin
+  UpdateTimeDigits(False);
+end;
+
+procedure TJvCustomTimeEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) or ((Key = VK_INSERT) and (ssShift in Shift)) then
+    DataConnector.Edit;
+
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TJvCustomTimeEdit.KeyPress(var Key: Char);
+
+  function SetNumberChar(const S: string; APos: Integer; AValue: Char): string;
+  begin
+    Result := S;
+    Result[APos] := AValue;
+  end;
+
+begin
+  case SelStart of
+    0:  if not (Key in ['0'..'2']) then Key := #0;
+    1:  if not (Key in ['0'..'9']) then Key := #0;
+    2:  Key := ':';
+    3:  if not (Key in ['0'..'5']) then Key := #0;
+    4:  if not (Key in ['0'..'9']) then Key := #0;
+    5:  Key := ':';
+    6:  if not (Key in ['0'..'5']) then Key := #0;
+    7:  if not (Key in ['0'..'9']) then Key := #0;
+    8:  Key := ' ';
+    9:  if (Key = 'a') or (Key = 'A') then Key := 'A'
+        else if (Key = 'p') or (Key = 'P') then Key := 'P'
+        else Key := #0;
+   10:  if (Key = 'm') or (Key = 'M') then Key := 'M'
+        else Key := #0;
+  end;
+
+  if (SelStart <> Length(Text)) and (Key <> #0) then
+  begin
+    Position := SelStart;
+    Text := SetNumberChar(Text, SelStart + 1, Key);
+    SelStart := Position + 1;
+    Key := #0;
+  end;
+
+  if Length(Text) > 10 then
+    Key := #0;
+end;
+
+function TJvCustomTimeEdit.GetValue: Extended;
+begin
+  Result := 0.0;
+end;
+
+procedure TJvCustomTimeEdit.SetValue(NewValue: Extended);
+begin
+end;
+
+//=== { TJvCustomTimeEditDataConnector } ====================================
+
+constructor TJvCustomTimeEditDataConnector.Create(AEdit: TJvCustomTimeEdit);
+begin
+  inherited Create;
+  FEdit := AEdit;
+end;
+
+procedure TJvCustomTimeEditDataConnector.RecordChanged;
+begin
+  if Field.IsValid then
+  begin
+    FEdit.ReadOnly := not Field.CanModify;
+    if Field.IsNull then
+    begin
+      FEdit.Time := 0.0;
+      FEdit.Text := ''
+    end
+    else
+      FEdit.Time := Field.AsDateTime;
+  end
+  else
+  begin
+    FEdit.Time := 0.0;
+    FEdit.Text := '';
+    FEdit.ReadOnly := True;
+  end;
+end;
+
+procedure TJvCustomTimeEditDataConnector.UpdateData;
+begin
+  if FEdit.Text = '' then
+    Field.Clear
+  else
+    Field.AsDateTime := FEdit.Time;
+  RecordChanged; // update to stored value
 end;
 
 {$IFDEF UNITVERSIONING}
