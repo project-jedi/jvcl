@@ -1057,6 +1057,42 @@ begin
                 ThemeServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
+            DFCS_SCROLLLEFT:
+              if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  ScrollBar := tsArrowBtnLeftDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  ScrollBar := tsArrowBtnLeftPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  ScrollBar := tsArrowBtnLeftHot
+                else
+                  ScrollBar := tsArrowBtnLeftNormal;
+
+                Details := ThemeServices.GetElementDetails(ScrollBar);
+                ThemeServices.DrawElement(DC, Details, R);
+                Result := True;
+              end;
+            DFCS_SCROLLRIGHT:
+              if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  ScrollBar := tsArrowBtnRightDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  ScrollBar := tsArrowBtnRightPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  ScrollBar := tsArrowBtnRightHot
+                else
+                  ScrollBar := tsArrowBtnRightNormal;
+
+                Details := ThemeServices.GetElementDetails(ScrollBar);
+                ThemeServices.DrawElement(DC, Details, R);
+                Result := True;
+              end;
           end;
         end;
     end;
