@@ -67,9 +67,19 @@ end;
 
 {------------------------------------------------------------------------------}
 { Indy Components }
-function Opt_IndyComponents(Target: TCompileTarget): Boolean;
+function Opt_Indy9Components(Target: TCompileTarget): Boolean;
 begin
-  Result := FileExists(Target.RootDir + Target.VersionedDCP('\lib\indy.dcp'));
+  Result := FileExists(Target.RootDir + Target.VersionedDCP('\lib\indy.dcp')) or
+            FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy9\indy.dcp')) or
+            FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy10\IndyCore.dcp')) or
+            FileExists(Target.RootDir + Target.VersionedDCP('\lib\IndyCore.dcp'))
+end;
+
+function Opt_Indy10Components(Target: TCompileTarget): Boolean;
+begin
+  Result := (FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy10\IndyCore.dcp')) or
+             FileExists(Target.RootDir + Target.VersionedDCP('\lib\IndyCore.dcp'))) and
+            (Target.FindPackageEx('dclIndyCore') <> nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -150,7 +160,13 @@ begin
   EnableOption('INTERNET_COMPONENTS', Opt_InternetComponents(Target));
 
   // Third Party Components
-  EnableOption('USE_3RDPARTY_INDY', Opt_IndyComponents(Target));
+  { Indy is shipped with Delphi 6 and newer. But the Indy9 version that comes
+    with Delphi 6 is not interface compatible with the Indy9 that Delphi 7 uses.
+    The JVCL's Indy 9 support is based on Delphi7. }
+  EnableOption('USE_3RDPARTY_INDY', Opt_Indy9Components(Target), Target.Version >= 7);
+  { Indy 10 is shipped with Delphi 2005 and newer }
+  EnableOption('USE_3RDPARTY_INDY10', Opt_Indy10Components(Target), Target.Version >= 9);
+
   EnableOption('USE_3RDPARTY_ICS', Opt_ICSComponents(Target));
 
   EnableOption('USE_3RDPARTY_DOA', Opt_DOAComponents(Target));
