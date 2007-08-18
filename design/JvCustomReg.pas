@@ -47,15 +47,17 @@ uses
   ToolsAPI,
   JclSchedule,
   JvDsgnConsts,
-  {$IFDEF VCL}
   JvTrayIcon, JvThumbImage, JvThumbnails, JvThumbViews, JvBalloonHint,
   JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser, JvEditorCommon,
   JvUnicodeEditor, JvUnicodeHLEditor, JvImagesViewer, JvImageListViewer,
   JvOwnerDrawViewer, JvHLEditEditor, JvScheduleEditors,
-  {$ENDIF VCL}
   JvGammaPanel, JvLinkLabel, JvLookOut, JvOutlookBar, JvScheduledEvents,
   JvTimeLine, JvTMTimeLine, JvValidateEdit, JvChart, JvTimeLineEditor,
-  JvOutlookBarEditors, JvLookoutEditor, JvTabBar;
+  JvOutlookBarEditors, JvLookoutEditor, 
+  {$IFDEF JVCLThemesEnabled}
+  JvTabBarXPPainter,
+  {$ENDIF JVCLThemesEnabled}
+  JvTabBar;
 
 {$R JvCustomReg.dcr}
 
@@ -70,11 +72,16 @@ begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookOut, {TJvLookOutPage, } TJvExpress, TJvTabBar, TJvModernTabBarPainter]);
+    TJvLookOut, {TJvLookOutPage, } TJvExpress]);
+
+  RegisterComponents(RsPaletteBarPanel, [TJvTabBar, TJvModernTabBarPainter]);
+  {$IFDEF JVCLThemesEnabled}
+  RegisterComponents(RsPaletteBarPanel, [TJvTabBarXPPainter]);
+  {$ENDIF JVCLThemesEnabled}
+
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
   RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart]);
   RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
-  {$IFDEF VCL}
   RegisterComponents(RsPaletteEdit, [TJvEditor, TJvHLEditor,
     TJvWideEditor, TJvWideHLEditor, TJvHLEdPropDlg]);
   RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
@@ -82,7 +89,6 @@ begin
   RegisterComponents(RsPaletteVisual, [TJvImagesViewer, TJvImageListViewer,
     TJvOwnerDrawViewer]);
   RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvBalloonHint]);
-  {$ENDIF VCL}
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
     cActivePageIndex, TJvOutlookBarActivePageProperty);
@@ -99,7 +105,6 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
     cImageIndex, TJvLookOutImageIndexProperty);
 
-  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor,
     cColors, TJvHLEditorColorProperty);
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvWideHLEditor,
@@ -110,7 +115,6 @@ begin
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
     cSchedule, TJvScheduleProperty); // depends on TDateTimePicker
   RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventEditor);
-  {$ENDIF VCL}
 
   RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarEditor);
   RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
