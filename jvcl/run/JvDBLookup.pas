@@ -369,6 +369,7 @@ type
     FSelMargin: Integer;
     FDisplayValues: TStringList;
     FDisplayAllFields: Boolean;
+    FTabSelects: Boolean;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
@@ -443,6 +444,7 @@ type
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
     property EscapeClear: Boolean read FEscapeClear write FEscapeClear default True;
     property DisplayAllFields: Boolean read GetDisplayAllFields write SetDisplayAllFields default False;
+    property TabSelects : Boolean read FTabSelects write FTabSelects default False;
     property Color;
     property DataField;
     property DataSource;
@@ -2752,6 +2754,9 @@ procedure TJvDBLookupCombo.KeyPress(var Key: Char);
 begin
   if FListVisible then
   begin
+    if TabSelects and IsDropDown and (Key = Tab) then
+      Key := Cr;
+
     if Key in [Cr, Esc] then
     begin
       CloseUp(Key = Cr);
@@ -3313,6 +3318,10 @@ end;
 procedure TJvDBLookupCombo.CNKeyDown(var Msg: TWMKeyDown);
 begin
   if not (csDesigning in ComponentState) then
+  begin
+    if TabSelects and IsDropDown and (Msg.Charcode = VK_TAB) then
+      Msg.Charcode := VK_RETURN;
+
     if (Msg.CharCode in [VK_RETURN, VK_ESCAPE]) and FListVisible and
       FLookupMode and FDataLink.DataSourceFixed then
     begin
@@ -3320,6 +3329,7 @@ begin
       Msg.Result := 1;
       Exit;
     end;
+  end;
   inherited;
 end;
 
