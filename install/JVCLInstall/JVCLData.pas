@@ -132,7 +132,7 @@ type
     function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
 
     procedure UpdateOptions;
-    procedure EnableOption(const Name: string; Enable: Boolean);
+    procedure EnableOption(const Name: string; Enable: Boolean; ForceEnable: Boolean = False);
   public
     property Target: TCompileTarget read GetTarget;
     property Owner: TJVCLData read FOwner;
@@ -1345,10 +1345,15 @@ begin
   end;
 end;
 
-procedure TTargetConfig.EnableOption(const Name: string; Enable: Boolean);
+procedure TTargetConfig.EnableOption(const Name: string; Enable: Boolean; ForceEnable: Boolean);
 begin
   if Name <> '' then
-    JVCLConfig.Enabled[Name] := Enable and JVCLConfig.Enabled[Name];
+  begin
+    if not ForceEnable then
+      JVCLConfig.Enabled[Name] := Enable and JVCLConfig.Enabled[Name]
+    else
+      JVCLConfig.Enabled[Name] := Enable;
+  end;
 end;
 
 procedure TTargetConfig.ClearPackageCache(const Key: string; const AStartsWith: string);
