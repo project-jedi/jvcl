@@ -746,9 +746,8 @@ constructor TJvArrowButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   SetBounds(0, 0, 42, 25);
-  ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
+  ControlStyle := [csCaptureMouse, {csOpaque, }csDoubleClicks];
   IncludeThemeStyle(Self, [csParentBackground]);
-  ControlStyle := ControlStyle - [csOpaque];
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
@@ -811,9 +810,9 @@ begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if (FState in [bsDown, bsExclusive]) then
       DrawFlags := DrawFlags or DFCS_PUSHED;
-    if IsMouseOver(Self) then
+    if IsMouseOver(Self) and not (csDesigning in ComponentState) then
       DrawFlags := DrawFlags or DFCS_HOT;
-    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+    DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
   begin
@@ -869,9 +868,9 @@ begin
     DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
     if Push then
       DrawFlags := DrawFlags or DFCS_PUSHED;
-    if IsMouseOver(Self) then
+    if IsMouseOver(Self) and not (csDesigning in ComponentState) then
       DrawFlags := DrawFlags or DFCS_HOT;
-    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+    DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then
@@ -956,6 +955,7 @@ begin
 
   if Assigned(FDropDown) and FArrowClick then
   begin
+    DropDown.PopupComponent := Self;
     Pnt := ClientToScreen(Point(0, Height));
     DropDown.Popup(Pnt.X, Pnt.Y);
     while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
@@ -1229,8 +1229,6 @@ begin
   Invalidate;
 end;
 
-
-
 procedure TJvArrowButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
 begin
   inherited;
@@ -1246,8 +1244,6 @@ begin
     CreateButtonGlyph(FState);
   end;
 end;
-
-
 
 procedure TJvArrowButton.MouseEnter(Control: TControl);
 {$IFDEF JVCLThemesEnabled}

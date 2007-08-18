@@ -1099,9 +1099,9 @@ begin
     Inc(R.Top, 2);
     Dec(R.Bottom, 2);
     if FPress then
-      DrawThemedFrameControl(WHook.Control, DC, R, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_PUSHED)
+      DrawThemedFrameControl(DC, R, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_PUSHED)
     else
-      DrawThemedFrameControl(WHook.Control, DC, R, DFC_BUTTON, DFCS_BUTTONPUSH);
+      DrawThemedFrameControl(DC, R, DFC_BUTTON, DFCS_BUTTONPUSH);
 
     R := Rect(R.Left + 1, R.Top + 1, R.Right - 2, R.Bottom - 2);
     if FPress then
@@ -1553,9 +1553,9 @@ begin
   begin
     if IsFocused or IsDefault then
       Flags := Flags or DFCS_MONO; // mis-used
-    if MouseOver then
+    if MouseOver and not (csDesigning in ComponentState) then
       Flags := Flags or DFCS_HOT;
-    DrawThemedFrameControl(Self, FCanvas.Handle, R, DFC_BUTTON, Flags);
+    DrawThemedFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
   end
   else
   {$ENDIF JVCLThemesEnabled}

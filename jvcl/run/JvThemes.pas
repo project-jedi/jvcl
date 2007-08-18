@@ -754,11 +754,8 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True); overload;
 
-{ DrawThemesFrameControl draws a themed frame control when theming is enabled.
-  Control = nil: the frame control will be painted themed only if the control
-                 is not in csDesigning mode. }
-function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
-  uType, uState: UINT): BOOL;
+{ DrawThemesFrameControl draws a themed frame control when theming is enabled. }
+function DrawThemedFrameControl(DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 
 
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
@@ -818,12 +815,11 @@ var
   Cl: TColor;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if (not (csDesigning in Control.ComponentState)) and
-    (Control.Parent <> nil) and
-    ((Color = TWinControlThemeInfo(Control.Parent).Color) or
-     (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
-    (ThemeServices.ThemesEnabled) and
-    ((not NeedsParentBackground) or (csParentBackground in GetThemeStyle(Control))) then
+  if ThemeServices.ThemesEnabled and
+     (Control.Parent <> nil) and
+     ((Color = TWinControlThemeInfo(Control.Parent).Color) or
+      (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+     ((not NeedsParentBackground) or (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin
@@ -856,12 +852,11 @@ var
 begin
   {$IFDEF JVCLThemesEnabled}
   GetObject(Brush, SizeOf(LogBrush), @LogBrush);
-  if (not (csDesigning in Control.ComponentState)) and
-    (Control.Parent <> nil) and
-    (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
-    (ThemeServices.ThemesEnabled) and
-    ((not NeedsParentBackground) or
-    (csParentBackground in GetThemeStyle(Control))) then
+  if ThemeServices.ThemesEnabled and
+     (Control.Parent <> nil) and
+     (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+     ((not NeedsParentBackground) or
+     (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin
@@ -878,7 +873,7 @@ begin
     FillRect(DC, R, Brush);
 end;
 
-function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
+function DrawThemedFrameControl(DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 {$IFDEF JVCLThemesEnabled}
 const
   Mask = $00FF;
@@ -892,8 +887,7 @@ var
 begin
   Result := False;
   {$IFDEF JVCLThemesEnabled}
-  if ((Control = nil) or (not (csDesigning in Control.ComponentState))) and
-    ThemeServices.ThemesEnabled then
+  if ThemeServices.ThemesEnabled then
   begin
     R := Rect;
     case uType of
@@ -1178,8 +1172,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if (Style <> bsWin31) and not (csDesigning in Control.ComponentState) and
-    ThemeServices.ThemesEnabled then
+  if (Style <> bsWin31) and ThemeServices.ThemesEnabled then
   begin
     Result := Client;
 
