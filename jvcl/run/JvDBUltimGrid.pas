@@ -14,6 +14,9 @@ The Initial Developers of the Original Code are: Frédéric Leneuf-Magaud
 Copyright (c) 2004 Frédéric Leneuf-Magaud
 All Rights Reserved.
 
+Contributors:
+  Niels v/d Spek
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -144,8 +147,9 @@ type
     SavedRowPos: Integer) of object;
   TCheckIfValidSortFieldEvent = function(Sender: TJvDBUltimGrid;
     FieldToSort: TField): Boolean of object;
+  TGetSortFieldNameEvent = procedure(Sender: TJvDBUltimGrid; var FieldName: string) of object;
 
-  TSortWith = (swIndex, swFields, swUserFunc);
+  TSortWith = (swIndex, swFields, swUserFunc, swWhere);
 
   TJvDBUltimGrid = class(TJvDBGrid)
   private
@@ -161,12 +165,14 @@ type
     FOnRestoreGridPosition: TRestoreGridPosEvent;
     FValueToSearch: Variant;
     FSearchFields: TStringList;
+    FOnGetSortFieldName: TGetSortFieldNameEvent;
     procedure SetMultiColSort(const Value: Boolean);
     function PrivateSearch(var ResultCol: Integer; var ResultField: TField;
       const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
   protected
     function SortMarkerAssigned(const AFieldName: string): Boolean; override;
     procedure DoTitleClick(ACol: Longint; AField: TField); override;
+    procedure GetSortFieldName(var FieldName: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -200,12 +206,15 @@ type
     property OnUserSort: TUserSortEvent read FOnUserSort write FOnUserSort;
 
     { OnCheckIfValidSortField allows to define your own checking routine for sorting fields }
-    property OnCheckIfValidSortField: TCheckIfValidSortFieldEvent read FOnCheckIfValidSortField
-      write FOnCheckIfValidSortField;
+    property OnCheckIfValidSortField: TCheckIfValidSortFieldEvent
+      read FOnCheckIfValidSortField write FOnCheckIfValidSortField;
 
     { OnRestoreGridPosition: fired when RestoreGridPosition is called }
     property OnRestoreGridPosition: TRestoreGridPosEvent
       read FOnRestoreGridPosition write FOnRestoreGridPosition;
+
+    { OnGetSortFieldName: allows to override the sort marker field }
+    property OnGetSortFieldName: TGetSortFieldNameEvent read FOnGetSortFieldName Write FOnGetSortFieldName;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -250,11 +259,17 @@ end;
 function TJvDBUltimGrid.SortMarkerAssigned(const AFieldName: string): Boolean;
 var
   SF: Integer;
+  SortFieldName: string;
 begin
   Result := False;
   if Assigned(FSortedFields) then
+  begin
+    SortFieldName := AFieldName;
+    { Let the user override the sort marker field }
+    GetSortFieldName(SortFieldName);
+
     for SF := 0 to Length(FSortedFields) - 1 do
-      if AnsiSameText(AFieldName, FSortedFields[SF].Name) then
+      if AnsiSameText(SortFieldName, FSortedFields[SF].Name) then
       begin
         if FSortedFields[SF].Order = JvGridSort_UP then
           inherited ChangeSortMarker(smUp)
@@ -263,6 +278,7 @@ begin
         Result := True;
         Break;
       end;
+  end;
 end;
 
 procedure TJvDBUltimGrid.Sort(FieldsToSort: TSortFields);
@@ -366,24 +382,27 @@ begin
       for FTS := 0 to MaxFTS do
       begin
         FieldsToSort[FTS].Name := Trim(FieldsToSort[FTS].Name);
-        SortField := DSet.FieldByName(FieldsToSort[FTS].Name);
-        if Assigned(OnCheckIfValidSortField) then
-          FieldIsValid := OnCheckIfValidSortField(Self, SortField)
-        else
-          FieldIsValid := not (SortField is TBlobField) and not (SortField is TBytesField)
-            and ((SortField.FieldKind = fkData) or (SortField.FieldKind = fkInternalCalc));
-        if not FieldIsValid then
+        if SortWith <> swWhere then
         begin
-          // No sorting of binary or special fields
-          if BeepOnError then
-          begin
-            SysUtils.Beep;
-            continue;
-          end
+          SortField := DSet.FieldByName(FieldsToSort[FTS].Name);
+          if Assigned(OnCheckIfValidSortField) then
+            FieldIsValid := OnCheckIfValidSortField(Self, SortField)
           else
-            raise EJVCLDbGridException.CreateRes(@RsEJvDBGridBadFieldKind);
-        end
-        else
+            FieldIsValid := not (SortField is TBlobField) and not (SortField is TBytesField)
+              and ((SortField.FieldKind = fkData) or (SortField.FieldKind = fkInternalCalc));
+          if not FieldIsValid then
+          begin
+            // No sorting of binary or special fields
+            if BeepOnError then
+            begin
+              SysUtils.Beep;
+              Continue;
+            end
+            else
+              raise EJVCLDbGridException.CreateRes(@RsEJvDBGridBadFieldKind);
+          end;
+        end;
+
         if SortWith = swIndex then
         begin
           // Sort with index
@@ -418,12 +437,16 @@ begin
           end;
         end
         else
-        if (SortWith = swFields) or (SortWith = swUserFunc) then
+        if SortWith in [swFields, swUserFunc, swWhere] then
         begin
-          // Sort with fields (temporary index) or user function
+          // Sort with fields (temporary index), user function or where clausel
           if SortString <> '' then
             SortString := SortString + ',';
-          SortString := SortString + '[' + FieldsToSort[FTS].Name + ']';
+          if SortWith = swWhere then
+            SortString := SortString + FieldsToSort[FTS].Name
+          else
+            SortString := SortString + '[' + FieldsToSort[FTS].Name + ']';
+
           if FieldsToSort[FTS].Order = JvGridSort_ASC then
             SortString := SortString + ' ASC'
           else
@@ -468,6 +491,7 @@ var
   SortArraySize: Integer;
   FieldsToSort: TSortFields;
   I: Integer;
+  SortFieldName: string;
 begin
   FSortOK := False;
   try
@@ -475,6 +499,11 @@ begin
     begin
       Found := False;
       SortArraySize := 1;
+
+      SortFieldName := AField.FieldName;
+      { Let the user override the sort marker field }
+      GetSortFieldName(SortFieldName);
+
       if Assigned(FSortedFields) then
       begin
         ShiftOrCtrlKeyPressed := MultiColSort and GetKeyboardState(Keys);
@@ -485,13 +514,13 @@ begin
         for I := 0 to Length(FSortedFields) - 1 do
         begin
           FieldsToSort[I].Name := FSortedFields[I].Name;
-          if AnsiSameText(AField.FieldName, FSortedFields[I].Name) then
+          if AnsiSameText(SortFieldName, FSortedFields[I].Name) then
           begin
             Found := True;
             if not ShiftOrCtrlKeyPressed then
             begin
               SetLength(FieldsToSort, 1);
-              FieldsToSort[0].Name := AField.FieldName;
+              FieldsToSort[0].Name := SortFieldName;
               FieldsToSort[0].Order := not FSortedFields[I].Order;
               Break;
             end
@@ -507,7 +536,7 @@ begin
       if not Found then
       begin
         SetLength(FieldsToSort, SortArraySize);
-        FieldsToSort[SortArraySize - 1].Name := AField.FieldName;
+        FieldsToSort[SortArraySize - 1].Name := SortFieldName;
         FieldsToSort[SortArraySize - 1].Order := JvGridSort_ASC;
       end;
       Sort(FieldsToSort);
@@ -516,6 +545,12 @@ begin
     if Assigned(OnTitleBtnClick) then
       OnTitleBtnClick(Self, ACol, AField);
   end;
+end;
+
+procedure TJvDBUltimGrid.GetSortFieldName(var FieldName: string);
+begin
+  if Assigned(FOnGetSortFieldName) then
+    FOnGetSortFieldName(Self, FieldName);
 end;
 
 procedure TJvDBUltimGrid.SaveGridPosition;
