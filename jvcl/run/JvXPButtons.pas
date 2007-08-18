@@ -390,7 +390,7 @@ procedure TJvXPCustomButton.CMDialogKey(var Msg: TCMDialogKey);
 begin
   inherited;
   with Msg do
-    if (((CharCode = VK_RETURN) and (Focused or (FDefault and not (IsSibling)))) or
+    if (((CharCode = VK_RETURN) and (Focused or (FDefault and not IsSibling))) or
       ((CharCode = VK_ESCAPE) and FCancel) and (KeyDataToShiftState(KeyData) = [])) and
       CanFocus then
     begin
@@ -400,9 +400,6 @@ begin
     else
       inherited;
 end;
-
-
-
 
 procedure TJvXPCustomButton.SetAutoGray(Value: Boolean);
 begin

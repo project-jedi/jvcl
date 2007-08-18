@@ -453,8 +453,6 @@ begin
     Invalidate;
 end;
 
-
-
 procedure TJvXPCustomControl.CMDialogChar(var Msg: TCMDialogChar);
 begin
   with Msg do
@@ -547,10 +545,6 @@ begin
   HookPosChanged;
 end;
 
-
-
-
-
 procedure TJvXPCustomControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -579,6 +573,11 @@ procedure TJvXPCustomControl.Click;
 var
   Form: TCustomForm;
 begin
+  { Prevent the Click event to be triggered twice, when the user keeps the mouse
+    pressed and then uses the ENTER or SPACE key to execute the "click".
+    Mantis #4181 is fixed by this. } 
+  ControlState := ControlState - [csClicked];
+
   Form := GetParentForm(Self);
   if Form <> nil then
     Form.ModalResult := ModalResult;
