@@ -1,5 +1,15 @@
 Changelog for JVCL 3.X
 ======================
+2007-08-18
+- Added donation TJvTimeEdit (by Niels v/d Spek)
+- Added OnGetSortFieldName event and wsWhere SortWith style (by Niels v/d Spek)
+- Added donation JvTabBarXPPainter by Valdir Stiebe Junior
+- Removed "Control: TWinControl" parameter from JvThemes.DrawThemedFrameControl
+- Added XP Theming to TJvTabBar's scroll buttons.
+- Fixed Mantis #4203, #4194, #4190 and #4181
+2007-08-17
+- Added UseXPThemes property to JvDBGrid/JvDBUltimGrid (theming support)
+- Fixed VCL TDBGrid.ColWidthsChanged bug in JvDBGrid
 2007-08-14
 - Added JvDynControlEngineDBToolscxVGrid.pas
   The unit contains a class which can be assigned to a TJvDatabaseSingleRecordWindowAction to create the SingleRecord with a
@@ -12,6 +22,12 @@ Changelog for JVCL 3.X
   There are a lot of control engines samples "JvControlActionEngine*.pas"
   The TJvDatabaseActionEngine now based also on the TJvControlActionEngine. For all developers there are only minor changes to the
   TJvDatabaseActionEngine, for the users there are no changes.
+
+
+2007-06-28
+- REMOVED VISUAL CLX support (QWindows.pas moved to jvcl3\archive)
+
+
 2007-06-01
 - Added additional events to TJvDataSource (OnDataSetScrolled, OnFieldChanged, OnActiveChanged, OnDataSetChanged, ...)
 2007-05-27
