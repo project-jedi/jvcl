@@ -163,9 +163,9 @@ begin
   { Indy is shipped with Delphi 6 and newer. But the Indy9 version that comes
     with Delphi 6 is not interface compatible with the Indy9 that Delphi 7 uses.
     The JVCL's Indy 9 support is based on Delphi7. }
-  EnableOption('USE_3RDPARTY_INDY', Opt_Indy9Components(Target), Target.Version >= 7);
+  EnableOption('USE_3RDPARTY_INDY', Opt_Indy9Components(Target){, Target.Version >= 7});
   { Indy 10 is shipped with Delphi 2005 and newer }
-  EnableOption('USE_3RDPARTY_INDY10', Opt_Indy10Components(Target), Target.Version >= 9);
+  EnableOption('USE_3RDPARTY_INDY10', Opt_Indy10Components(Target){, Target.Version >= 9});
 
   EnableOption('USE_3RDPARTY_ICS', Opt_ICSComponents(Target));
 
