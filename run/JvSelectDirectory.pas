@@ -85,13 +85,17 @@ begin
 end;
 
 function TJvSelectDirectory.Execute: Boolean;
-
 begin
   FDirectory := InitialDir;
-  if ClassicDialog then
-    Result := SelectDirectory(FDirectory, Options, HelpContext)
-  else
-    Result := SelectDirectory(Title, InitialDir, FDirectory);
+  DoShow;
+  try
+    if ClassicDialog then
+      Result := SelectDirectory(FDirectory, Options, HelpContext)
+    else
+      Result := SelectDirectory(Title, InitialDir, FDirectory);
+  finally
+    DoClose;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
