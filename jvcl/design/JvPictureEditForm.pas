@@ -32,10 +32,8 @@ uses
   Classes, Windows, Messages, Graphics, Forms, Controls, Dialogs, Menus,
   StdCtrls, ExtCtrls, ExtDlgs, Buttons,
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent, JvAppStorage,
-  {$IFDEF MSWINDOWS}
   JvAppRegistryStorage,
-  {$ENDIF MSWINDOWS}
-  JvMRUList;
+  JvMRUList, JvComponentBase;
 
 type
   TPictureEditDialog = class(TJvForm)
@@ -104,9 +102,7 @@ implementation
 uses
   TypInfo, SysUtils,
   Clipbrd, Consts,
-  {$IFDEF MSWINDOWS}
   ShellAPI, LibHelp,
-  {$ENDIF MSWINDOWS}
   {$IFDEF BCB5}
   JvVCL5Utils,
   {$ENDIF BCB5}

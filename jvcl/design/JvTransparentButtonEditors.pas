@@ -36,12 +36,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
   ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
   JvDsgnEditors, JvTransparentButton;
 
 type

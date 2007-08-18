@@ -27,10 +27,6 @@ unit JvStdCtrlsReg;
 
 {$I jvcl.inc}
 
-{$IFDEF MSWINDOWS}
-{$DEFINE USEWINDOWS}
-{$ENDIF MSWINDOWS}
-
 interface
 
 procedure Register;
@@ -39,12 +35,7 @@ implementation
 
 uses
   Classes, Controls,
-  {$IFDEF VCL}
   FiltEdit,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QTypes, // type TCaption
-  {$ENDIF VisualCLX}
   ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
@@ -52,7 +43,6 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts, JvTypes,
-  {$IFDEF VCL}
   JvRichEdit,
   JvDateTimePicker, JvDatePickerEdit, JvCalendar, JvxSlider, JvTextListBox,
   JvxCheckListBox, JvCoolBar,
@@ -60,13 +50,7 @@ uses
   JvMonthCalendar, JvListBox, JvScrollBox,
   JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton,
   JvFavoritesButton, JvCheckTreeView,  JvListView,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx,
-  {$ENDIF VisualCLX}
-  {$IFDEF USEWINDOWS}
   JvBrowseFolder,
-  {$ENDIF USEWINDOWS}
   JvCombobox, JvColorCombo, JvComCtrls,
   JvSpin, JvEdit, JvProgressBar, JvMaskEdit, JvBaseEdits, JvCalc,
   JvToolEdit, JvBevel, JvCheckBox, JvSpeedButton, JvSecretPanel,
@@ -85,90 +69,46 @@ const
 begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [
-    {$IFDEF VCL}
     TJvMainMenu, TJvPopupMenu, TJvOfficeMenuItemPainter,TJvBtnMenuItemPainter,
     TJvStandardMenuItemPainter, TJvOwnerDrawMenuItemPainter, TJvXPMenuItemPainter,
-    TJvSystemPopup,
-    {$ENDIF VCL}
-    TJvCalculator]);
+    TJvSystemPopup, TJvCalculator]);
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup,
-    {$IFDEF VCL}
     TJvUpDown, TJvDomainUpDown, TJvControlPanelButton, TJvStartMenuButton,
-    TJvRecentMenuButton, TJvFavoritesButton,
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    TUpDown,
-    {$ENDIF VisualCLX}
-    TJvSpinButton]);
+    TJvRecentMenuButton, TJvFavoritesButton, TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
-    {$IFDEF VCL}
-    TJvMemo, TJvRichEdit,
-    {$ENDIF VCL}
-    TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
-    {$IFDEF VCL}
-    TJvHotKey, TJvIPAddress, TJvDatePickerEdit,
-    {$ENDIF VCL}
-    TJvDateEdit]);
+    TJvMemo, TJvRichEdit, TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
+    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit, TJvDatePickerEdit, TJvDateEdit, TJvTimeEdit,
+    TJvHotKey, TJvIPAddress]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvPageControl,
     TJvTabControl, TJvTabDefaultPainter,
-    {$IFDEF VisualCLX}
-    TGauge,
-    {$ENDIF VisualCLX}
-    TJvProgressBar, TJvGradientProgressBar, TJvStatusBar,
-    {$IFDEF VCL}
-    TJvToolBar, TJvCoolBar,
-    {$ENDIF VCL}
+    TJvProgressBar, TJvGradientProgressBar, TJvStatusBar, TJvToolBar, TJvCoolBar,
     TJvControlBar, TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel]);
-  RegisterComponents(RsPaletteLabel, [
-    {$IFDEF VCL}
-    TJvStaticText,
-    {$ENDIF VCL}
-    TJvLabel]);
+  RegisterComponents(RsPaletteLabel, [TJvStaticText, TJvLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox,
-    {$IFDEF VCL}
-    TJvListBox,
-    {$ENDIF VCL}
-    TJvCheckListBox,
-    {$IFDEF VCL}
-    TJvTreeView, TJvListView, TJvCheckTreeView,
-    {$ENDIF VCL}
-    TJvColorComboBox,
-    {$IFDEF VCL}
-    TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
+    TJvListBox, TJvCheckListBox, TJvTreeView, TJvListView, TJvCheckTreeView,
+    TJvColorComboBox, TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
     TJvDateTimePicker, TJvMonthCalendar, TJvMonthCalendar2,
-    {$ENDIF VCL}
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [
-    {$IFDEF VCL}
-    TJvScrollBox,
-    {$ENDIF VCL}
-    TJvScrollBar]);
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBox, TJvScrollBar]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]);
-  {$IFDEF VCL}
   RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);
-  {$ENDIF VCL}
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
   RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, cText, TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty);
-  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
-  {$ENDIF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
-  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
-  {$ENDIF VCL}
   RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);

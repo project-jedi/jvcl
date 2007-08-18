@@ -35,46 +35,17 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$IFDEF MSWINDOWS}
-  Registry,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  JvQRegistryIniFile,
-  {$ENDIF UNIX}
-  {$ENDIF VisualCLX}
   JvConsts, JvJVCLUtils;
-
-{$IFDEF VisualCLX}
-const
-  // registry/ini keys
-  {$IFDEF MSWINDOWS}
-  SCustomColors = '\JVCLX\Custom Colors';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  SCustomColors = '/.JVCLX/Custom Colors';
-  {$ENDIF UNIX}
-{$ENDIF VisualCLX}
 
 type
   TJvColorProperty = class(TColorProperty)
-  {$IFDEF VisualCLX}
-  protected
-    function GetRegKey: string; dynamic;
-  {$ENDIF VisualCLX}
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
-    {$IFDEF VCL}
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean);
       {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure Edit; override;
-    {$ENDIF VisualCLX}
   end;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
@@ -195,7 +166,6 @@ begin
   SetOrdValue(JvStringToColor(Value));
 end;
 
-{$IFDEF VCL}
 procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 var
@@ -219,130 +189,6 @@ begin
       Rght + 1, ARect.Top + 1, Value);
   end;
 end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-//
-// Edit uses TColorDialog, but that does not store the
-// custom colors. For design time non-volatile custom colors are
-// implemented stored in the Registry under windows and in
-// Linux in an IniFile.
-//
-function TJvColorProperty.GetRegKey: string;
-begin
-  Result := SDelphiKey + SCustomColors;
-end;
-
-const
-  DefaultColors: array ['A'..'P'] of string = (
-    'F0FBFF',  // clCream
-    'C0DCC0',  // clMoneyGreen
-
-    '733800',  // border line
-    'C6CFD6',  // clicked from
-    'FFE7CE',  // focused from
-    'CEF3FF',  // highlight from
-
-    'AD9E7B',  // border edges
-    'E7EBEF',  // background to
-
-    'F0CAA6',  // clSkyBlue
-               // XP Colors:
-    '21A621',  // symbol normal
-
-    'BDC7CE',  // border line (disabled)
-    'EBF3F7',  // clicked to
-    'EF846D',  // focused to
-    '0096E7',  // highlight to
-
-    '845118',  // border line
-    'FFFFFFFF');
-
-procedure TJvColorProperty.Edit;
-var
-  ColorDialog: TColorDialog;
-
-  procedure GetCustomColors;
-  var
-    KeyName: string;
-    KeyValue: string;
-    Suffix: Char;
-  begin
-    with TRegistry.Create do
-    try
-      LazyWrite := False;
-      with ColorDialog.CustomColors do
-      begin
-        Clear;
-        if OpenKey(GetRegKey, False) then
-        try
-          for Suffix := 'A' to 'P' do
-          begin
-            KeyName := 'Color' + Suffix;  // do not localize !!
-            KeyValue := ReadString(KeyName);
-            Add(KeyName + '=' + KeyValue);
-          end;
-        finally
-          CloseKey;
-        end
-        else // set default customcolors
-          for Suffix := 'A' to 'P' do
-          begin
-            KeyName := 'Color' + Suffix;  // do not localize !!
-            KeyValue := DefaultColors[Suffix] ;
-            Add(KeyName + '=' + KeyValue);
-          end;
-      end;
-    finally
-      Free;
-    end;
-  end;
-
-  procedure SaveCustomColors;
-  var
-    I: Integer;
-    KeyName: string;
-    KeyValue: string;
-    Suffix: Char;
-  begin
-    with TRegistry.Create do
-    try
-      LazyWrite := False;
-      if OpenKey(GetRegKey, True) then
-      try
-        I := 0;
-        with ColorDialog.CustomColors do
-          for Suffix := 'A' to 'P' do
-          begin
-            KeyName := 'Color' + Suffix;
-            KeyValue := StringReplace(Strings[I], KeyName + '=', '', []);
-            WriteString(KeyName, KeyValue);
-            Inc(I);
-          end;
-      finally
-        CloseKey;
-      end;
-    finally
-      Free;
-    end;
-  end;
-
-begin
-  ColorDialog := TColorDialog.Create(nil);
-  try
-    ColorDialog.Color := ColorFromColormap(GetOrdValue);
-    GetCustomColors;
-    if ColorDialog.Execute then
-    begin
-      SetOrdValue(ColorDialog.Color);
-      SaveCustomColors;
-    end;
-  finally
-    ColorDialog.Free;
-  end;
-end;
-
-{$ENDIF VisualCLX}
 
 end.
 

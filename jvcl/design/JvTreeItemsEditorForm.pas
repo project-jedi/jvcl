@@ -133,7 +133,6 @@ type
     class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
 
-  {$IFDEF VCL}
   TGroupBox = class(StdCtrls.TGroupBox)
   private
     FPropagateEnabled: Boolean;
@@ -143,20 +142,6 @@ type
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
-  {$ENDIF VCL}
-
-  {$IFDEF VisualCLX}
-  TGroupBox = class(QStdCtrls.TGroupBox)
-  private
-    FPropagateEnabled: Boolean;
-  protected
-    procedure EnabledChanged; override;
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
-  end;
-  {$ENDIF VisualCLX}
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
@@ -184,23 +169,12 @@ begin
   PropagateEnabled := True;
 end;
 
-{$IFDEF VCL}
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   if PropagateEnabled then
     Broadcast(Msg);
 end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TGroupBox.EnabledChanged;
-begin
-  if PropagateEnabled then
-    inherited EnabledChanged;
-end;
-{$ENDIF VisualCLX}
-
 
 //=== { TfrmTreeViewItems } ==================================================
 
@@ -213,10 +187,8 @@ begin
       StrToIntDef(cbImage.Text, tvItems.Selected.ImageIndex);
     tvItems.Selected.SelectedIndex :=
       StrToIntDef(cbSelected.Text, tvItems.Selected.SelectedIndex);
-    {$IFDEF VCL}
     tvItems.Selected.StateIndex :=
       StrToIntDef(cbState.Text, tvItems.Selected.StateIndex);
-    {$ENDIF VCL}
   end;
 end;
 
@@ -277,9 +249,7 @@ begin
     edNodeText.Text := Node.Text;
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
-    {$IFDEF VCL}
     cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
-    {$ENDIF VCL}
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -365,7 +335,6 @@ begin
       F.cbImage.Tag := Integer(IL);
       F.cbSelected.Tag := Integer(IL);
     end;
-    {$IFDEF VCL}
     IL := THackTreeView(TreeView).StateImages;
     if IL <> nil then
     begin
@@ -376,7 +345,6 @@ begin
         F.cbState.Items.Add(IntToStr(I));
       F.cbState.Tag := Integer(IL);
     end;
-    {$ENDIF VCL}
     F.cbSelected.ItemIndex := 0;
     F.cbSelected.ItemIndex := 0;
     F.cbState.ItemIndex := 0;

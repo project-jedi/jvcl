@@ -68,12 +68,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 class function TFrmSelectDateTimeDlg.SelectDateTime(var ADate: TDateTime;
   AType: TDateSelectType): Boolean;

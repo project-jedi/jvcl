@@ -30,23 +30,6 @@ unit JvPageListTreeViewReg;
 
 interface
 
-uses
-  Classes,
-  {$IFDEF VCL}
-  ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6_UP}
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
-  DesignEditors, DesignIntf, DesignMenus;
-  {$ELSE}
-  DsgnIntf, Menus;
-  {$ENDIF COMPILER6_UP}
-
 procedure Register;
 
 {$R JvPageListTreeViewReg.dcr}
@@ -54,12 +37,12 @@ procedure Register;
 implementation
 
 uses
-  {$IFDEF VCL}
-  ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QComCtrls,
-  {$ENDIF VisualCLX}
+  Classes, ImgList, ComCtrls,
+  {$IFDEF COMPILER6_UP}
+  VCLEditors, DesignEditors, DesignIntf, DesignMenus,
+  {$ELSE}
+  DsgnIntf, Menus,
+  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvNavigationPane, JvPageList, JvPageListTreeView, JvPageListEditors,
   JvNavPaneEditors, JvTreeItemsEditorForm, JvPageLinkEditorForm, JvPageListEditorForm;

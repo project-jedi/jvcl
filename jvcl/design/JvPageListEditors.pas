@@ -30,18 +30,9 @@ unit JvPageListEditors;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Windows, ImgList, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList, QGraphics,
-  {$ENDIF VisualCLX}
+  Windows, Classes, SysUtils, ImgList, Graphics,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignMenus,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
+  DesignEditors, DesignIntf, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf, Menus,
   {$ENDIF COMPILER6_UP}

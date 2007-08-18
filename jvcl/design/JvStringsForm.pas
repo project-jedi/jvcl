@@ -69,10 +69,7 @@ type
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF VCL}
-  LibHelp,
-  {$ENDIF VCL}
+  SysUtils, LibHelp,
   JvDsgnConsts;
 
 {$R *.dfm}
@@ -99,7 +96,6 @@ begin
   begin
     Filter := RsTextFilter;
     if Execute then
-      // FFileName := FileName;
       Memo.Lines.SaveToFile(FileName);
   end;
 end;
@@ -117,11 +113,9 @@ end;
 
 procedure TJvStrEditDlg.FormCreate(Sender: TObject);
 begin
-  {$IFDEF VCL}
   HelpContext := hcDStringListEditor;
   OpenDialog.HelpContext := hcDStringListLoad;
   SaveDialog.HelpContext := hcDStringListSave;
-  {$ENDIF VCL}
   SingleLine := RsSingleLine;
   MultipleLines := RsMultipleLines;
   // set anchors
@@ -137,19 +131,13 @@ end;
 procedure TJvStrEditDlg.MemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //if Key = VK_ESCAPE then
-  if Ord(Key) = 27 then   //asn: With VisualCLX VK_ESCAPE <> 27
+  if Key = VK_ESCAPE then
     CancelBtn.Click;
 end;
 
 procedure TJvStrEditDlg.HelpBtnClick(Sender: TObject);
 begin
-  {$IFDEF VCL}
   Application.HelpContext(HelpContext);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Application.ContextHelp(HelpContext);
-  {$ENDIF VisualCLX}
 end;
 
 end.

@@ -38,11 +38,9 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF MSWINDOWS}
   JvAppRegistryStorage,
-  {$ENDIF MSWINDOWS}
   JvSpeedButton, JvSpeedBar, JvFormPlacement,
-  JvConsts, JvComponent, JvAppStorage;
+  JvConsts, JvComponent, JvAppStorage, JvComponentBase;
 
 type
   TSelectData = record

@@ -85,9 +85,7 @@ function DoCsvDefDialog(OldValue: string; ASeparator: Char): string;
 var
   WindowList: Pointer;
 begin
-  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
-  {$ENDIF MSWINDOWS}
   with TJvCsvDefStrDialog.Create(nil) do // no owner!
     try
       Separator := ASeparator;
@@ -98,9 +96,7 @@ begin
         Result := OldValue;
     finally
       Free;
-      {$IFDEF MSWINDOWS}
       EnableTaskWindows(WindowList);
-      {$ENDIF MSWINDOWS}
     end;
 end;
 

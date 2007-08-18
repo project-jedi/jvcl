@@ -33,13 +33,7 @@ unit JvLookoutEditor;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Forms, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QImgList,
-  {$ENDIF VisualCLX}
+  Classes, SysUtils, Forms, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}

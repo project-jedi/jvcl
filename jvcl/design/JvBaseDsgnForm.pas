@@ -31,24 +31,15 @@ unit JvBaseDsgnForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, 
-  {$ENDIF VCL}
-  Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent;
 
 type
   TJvBaseDesign = class(TJvForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-  {$IFDEF VCL}
   private
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
-  {$ENDIF VCL}
   protected
-    {$IFDEF VisualCLX}
-    procedure ShowingChanged; override;
-    {$ENDIF VisualCLX}
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
       Default will return (DELPHIRootKey)\Property Editors\(DesignerFormName)\(ClassName), where
@@ -83,12 +74,7 @@ function GetDesignerForm(CompareFunc: TCompareDsgFunc; const Args: array of cons
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
   Registry,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  JvQRegistryIniFile,
-  {$ENDIF UNIX}
   JvBaseDsgnFrame, JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
@@ -117,12 +103,7 @@ begin
   end
 end;
 
-{$IFDEF VCL}
 procedure TJvBaseDesign.CMShowingChanged(var Msg: TMessage);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvBaseDesign.ShowingChanged;
-{$ENDIF VisualCLX}
 begin
   if not (csDesigning in ComponentState) and AutoStoreSettings and Showing then
   try
@@ -130,12 +111,7 @@ begin
   except
     Application.HandleException(Self);
   end;
-  {$IFDEF VisualCLX}
-  inherited ShowingChanged;
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
   inherited;
-  {$ENDIF VCL}
   if not (csDesigning in ComponentState) and AutoStoreSettings and not Showing then
   try
     StoreSettings;
@@ -146,7 +122,7 @@ end;
 
 function TJvBaseDesign.GetRegKey: string;
 begin
-  Result := {$IFDEF VCL} SDelphiKey + {$ENDIF} RsPropertyEditors +
+  Result := SDelphiKey + RsPropertyEditors +
     RegPathDelim + Trim(DesignerFormName) + RegPathDelim + ClassName;
 end;
 
@@ -164,12 +140,7 @@ procedure TJvBaseDesign.StoreSettings;
 var
   I: Integer;
 begin
-  {$IFDEF UNIX}
-  with TJvRegistryIniFile.Create do
-  {$ENDIF UNIX}
-  {$IFDEF MSWINDOWS}
   with TRegistry.Create do
-  {$ENDIF MSWINDOWS}
     try
       LazyWrite := False;
       if OpenKey(GetRegKey, True) then
@@ -193,12 +164,7 @@ procedure TJvBaseDesign.RestoreSettings;
 var
   I: Integer;
 begin
-  {$IFDEF UNIX}
-  with TJvRegistryIniFile.Create do
-  {$ENDIF UNIX}
-  {$IFDEF MSWINDOWS}
   with TRegistry.Create do
-  {$ENDIF MSWINDOWS}
     try
       if OpenKey(GetRegKey, False) then
         try
