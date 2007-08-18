@@ -26,7 +26,6 @@ Known Issues:
 unit JvTabBar;
 
 {$I jvcl.inc}
-{.$DEFINE WINFORMS}
 
 interface
 
@@ -34,22 +33,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF WINFORMS}
-  System.Windows.Forms, System.Drawing,
-  Borland.Vcl.Windows, Borland.Vcl.Messages, Borland.Vcl.SysUtils,
-  Borland.Vcl.Classes, Borland.Vcl.Types, Borland.Vcl.Contnrs,
-  Jedi.WinForms.Vcl.Graphics, Jedi.WinForms.Vcl.Controls,
-  Jedi.WinForms.Vcl.Forms, Jedi.WinForms.Vcl.ImgList, Jedi.WinForms.Vcl.Menus,
-  Jedi.WinForms.Vcl.Buttons, Jedi.WinForms.Vcl.ExtCtrls;
-  {$ELSE}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   ExtCtrls,
   {$IFDEF CLR}
   Types,
   {$ENDIF CLR}
   SysUtils, Classes, Contnrs,
-  JvVCL5Utils;
-  {$ENDIF WINFORMS}
+  JvVCL5Utils, JvThemes;
 
 type
   TJvCustomTabBar = class;
@@ -263,6 +253,7 @@ type
     property DisabledFont: TFont read FDisabledFont write SetDisabledFont;
     property SelectedFont: TFont read FSelectedFont write SetSelectedFont;
   end;
+  TJvTabBarModernPainter = TJvModernTabBarPainter; // TJvModernTabBarPainter should have been named TJvTabBarModernPainter
 
   TJvTabBarItemEvent = procedure(Sender: TObject; Item: TJvTabBarItem) of object;
   TJvTabBarSelectingEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var AllowSelect: Boolean) of object;
@@ -476,10 +467,8 @@ type
     property OnStartDrag;
     property OnEndDrag;
 
-    {$IFNDEF WINFORMS}
     property OnStartDock;
     property OnEndDock;
-    {$ENDIF !WINFORMS}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -658,6 +647,8 @@ begin
       FreeAndNil(FDefaultPainter);
       FPainter.FreeNotification(Self);
       FPainter.FOnChangeList.Add(Self);
+      if Parent <> nil then
+        UpdateScrollButtons;
     end;
 
     if not (csDestroying in ComponentState) then
@@ -1390,12 +1381,16 @@ end;
 
 function TJvCustomTabBar.GetTabHeight(Tab: TJvTabBarItem): Integer;
 begin
-  Result := CurrentPainter.GetTabSize(Canvas, Tab).cy;
+  Result := Abs(CurrentPainter.GetTabSize(Canvas, Tab).cy);
+  if Result > High(Word) then
+    Result := High(Word);
 end;
 
 function TJvCustomTabBar.GetTabWidth(Tab: TJvTabBarItem): Integer;
 begin
-  Result := CurrentPainter.GetTabSize(Canvas, Tab).cx;
+  Result := Abs(CurrentPainter.GetTabSize(Canvas, Tab).cx);
+  if Result > High(Word) then
+    Result := High(Word);
 end;
 
 function TJvCustomTabBar.TabAt(X, Y: Integer): TJvTabBarItem;
@@ -2015,17 +2010,30 @@ end;
 
 procedure TJvTabBarPainter.DrawScrollButton(Canvas: TCanvas; TabBar: TJvCustomTabBar; Button: TJvTabBarScrollButtonKind;
   State: TJvTabBarScrollButtonState; R: TRect);
+{$IFDEF JVCLThemesEnabled}
+const
+  States: array[TJvTabBarScrollButtonState] of Integer = (0, 0, DFCS_HOT, DFCS_PUSHED, DFCS_INACTIVE);
+  ScrollTypes: array[TJvTabBarScrollButtonKind] of Integer = (DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
+{$ENDIF JVCLThemesEnabled}
 begin
-  if TabBar.FlatScrollButtons then
-    DrawButtonFace(Canvas, R, 1, bsNew, False, State = sbsPressed, False)
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    DrawThemedFrameControl(TabBar, Canvas.Handle, R, DFC_SCROLL, ScrollTypes[Button] or States[State])
   else
-    DrawButtonFace(Canvas, R, 1, bsWin31, False, State = sbsPressed, False);
-  if State = sbsPressed then
-    OffsetRect(R, 1, 1);
-  TabBar.DrawScrollBarGlyph(Canvas,
-    R.Left + (R.Right - R.Left - 4) div 2,
-    R.Top + (R.Bottom - R.Top - 7) div 2,
-    Button = sbScrollLeft, State = sbsDisabled);
+  {$ELSE}
+  begin
+    if TabBar.FlatScrollButtons then
+      DrawButtonFace(Canvas, R, 1, bsNew, False, State = sbsPressed, False)
+    else
+      DrawButtonFace(Canvas, R, 1, bsWin31, False, State = sbsPressed, False);
+    if State = sbsPressed then
+      OffsetRect(R, 1, 1);
+    TabBar.DrawScrollBarGlyph(Canvas,
+      R.Left + (R.Right - R.Left - 4) div 2,
+      R.Top + (R.Bottom - R.Top - 7) div 2,
+      Button = sbScrollLeft, State = sbsDisabled);
+  end;
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 //=== { TJvModernTabBarPainter } =============================================
@@ -2246,7 +2254,7 @@ begin
     if (Tab.ImageIndex <> -1) and (Tab.GetImages <> nil) then
     begin
       Tab.GetImages.Draw(Canvas, R.Left, R.Top + (R.Bottom - R.Top - Tab.GetImages.Height) div 2,
-        Tab.ImageIndex,  Tab.Enabled);
+        Tab.ImageIndex, Tab.Enabled);
       Inc(R.Left, Tab.GetImages.Width + 2);
     end;
 
