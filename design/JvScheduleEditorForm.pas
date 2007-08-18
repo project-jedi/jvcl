@@ -31,10 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, 
-  {$IFDEF VCL}
-  AppEvnts,
-  {$ENDIF VCL}
+  Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, AppEvnts,
   JclSchedule;
 
 type

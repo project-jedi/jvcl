@@ -36,9 +36,6 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VisualCLX}
-  JvQDsgnEditors,
-  {$ENDIF VisualCLX}
   JvColorEditor, JvSegmentedLEDDisplay;
 
 type
@@ -70,7 +67,6 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
-  {$IFDEF VCL}
   TJvUnlitColorProperty = class(TColorProperty {$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing {$ENDIF})
     {$IFDEF COMPILER6_UP}
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
@@ -86,16 +82,6 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
     {$ENDIF COMPILER6_UP}
   end;
-  {$ENDIF VCL}
-
-  {$IFDEF VisualCLX}
-  TJvUnlitColorProperty = class(TJvColorProperty)
-  public
-    function GetValue: string; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-  end;
-  {$ENDIF VisualCLX}
 
 implementation
 
@@ -238,8 +224,6 @@ begin
     inherited SetValue(Value);
 end;
 
-{$IFDEF VCL}
-
 procedure TJvUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 var
@@ -277,7 +261,5 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 {$ENDIF COMPILER6_UP}
-
-{$ENDIF VCL}
 
 end.

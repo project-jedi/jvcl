@@ -32,21 +32,12 @@ unit JvIDEZoom;
 
 interface
 
-uses
-  {$IFDEF VCL}
-  Forms, Menus,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QMenus,
-  {$ENDIF VisualCLX}
-  Classes, SysUtils;
-
 procedure RegisterZoom;
 
 implementation
 
 uses
-  Dialogs,
+  Classes, SysUtils, Forms, Menus, Dialogs,
   JvDsgnConsts;
 
 const

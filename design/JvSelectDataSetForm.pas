@@ -63,16 +63,10 @@ implementation
 {$IFNDEF DelphiPersonalEdition}
 
 uses
-  TypInfo,
-  DsnDbCst, DSDesign,
+  TypInfo, DsnDbCst, DSDesign,
   JvJVCLUtils, JvConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 begin

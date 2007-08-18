@@ -27,10 +27,6 @@ unit JvNetReg;
 
 {$I jvcl.inc}
 
-{$IFDEF MSWINDOWS}
-{$DEFINE USEWINDOWS}
-{$ENDIF MSWINDOWS}
-
 interface
 
 procedure Register;
@@ -44,12 +40,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
   JvRichEditToHTML, JvMail, JvMailEditor,
-  {$ENDIF VCL}
-  {$IFDEF USEWINDOWS}
   JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,JvProgramVersionCheck,
-  {$ENDIF USEWINDOWS}
   JvHtmlParser, JvHtmlParserEditor,
   JvTypes, JvDsgnConsts,
   JvStringListToHtml, JvFormToHtml, JvRgbToHtml, JvStrToHtml;
@@ -59,24 +51,19 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteInterNetWork, [TJvHTMLParser,
-    {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
     TJvLocalFileURLGrabber, TJvUrlListGrabber,
     TJvProgramVersionCheck, TJvProgramVersionNetworkLocation,
     TJvProgramVersionHTTPLocation, TJvProgramVersionFTPLocation,
     TJvProgramVersionDatabaseLocation,
-    {$ENDIF MSWINDOWS}
     {$IFDEF USE_3RDPARTY_INDY}
     TJvProgramVersionHTTPLocationIndy, //TJvProgramVersionFTPLocationIndy,
     {$ENDIF USE_3RDPARTY_INDY}
     {$IFDEF USE_3RDPARTY_ICS}
     TJvProgramVersionHTTPLocationIcs, //TJvProgramVersionFTPLocationIcs,
     {$ENDIF USE_3RDPARTY_ICS}
-    {$IFDEF VCL}
     TJvMail, TJvRichEditToHTML,
-    {$ENDIF VCL}
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
-  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TStrings),
     TJvHTMLParser, 'Parser', TJvHTMLParserProperty);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
@@ -85,10 +72,7 @@ begin
     TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListProperty);
   RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
     TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesProperty);
-  {$IFDEF VCL}
   RegisterComponentEditor(TJvMail, TJvMailEditor);
-  {$ENDIF VCL}
-  {$ENDIF MSWINDOWS}
 end;
 
 end.

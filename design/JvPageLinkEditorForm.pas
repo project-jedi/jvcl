@@ -95,12 +95,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);

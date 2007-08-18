@@ -47,17 +47,8 @@ type
   public
   end;
 
-// (rom) unused
-// var
-//   JvStandardActions: TJvStandardActions;
-
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 end.

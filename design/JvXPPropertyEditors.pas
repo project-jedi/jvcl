@@ -37,9 +37,6 @@ uses
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VisualCLX}
-  JvQDsgnEditors,
-  {$ENDIF VisualCLX}
   Windows, Forms, ImgList, ActnList, Graphics,
   TypInfo;
 
@@ -50,7 +47,6 @@ type
   //TDesignerSelectionList = TComponentList;
   {$ENDIF COMPILER6_UP}
 
-  {$IFDEF VCL}
   TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty
     {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing {$ENDIF})
   public
@@ -65,14 +61,6 @@ type
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER5} override; {$ENDIF}
   end;
-  {$ENDIF VCL} 
-
-  {$IFDEF VisualCLX}
-  TJvXPCustomImageIndexPropertyEditor = class(TJvDefaultImageIndexProperty)
-  public
-    function GetImageListAt(Index: Integer): TCustomImageList; virtual;
-  end;
-  {$ENDIF VisualCLX}
 
   TJvXPItemImageIndexProperty = class(TJvXPCustomImageIndexPropertyEditor)
   public
@@ -121,8 +109,6 @@ begin
   Result := nil;
 end;
 
-{$IFDEF VCL}
-
 function TJvXPCustomImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
@@ -138,7 +124,6 @@ begin
     for I := 0 to ImgList.Count -1 do
       Proc(IntToStr(I));
 end;
-
 
 procedure TJvXPCustomImageIndexPropertyEditor.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
@@ -179,8 +164,6 @@ begin
     Inc(AWidth, ImgList.Width);
 end;
 
-{$ENDIF VCL}
-
 //=== { TJvXPItemImageIndexProperty } ========================================
 
 function TJvXPItemImageIndexProperty.GetImageListAt(Index: Integer): TCustomImageList;
@@ -210,8 +193,8 @@ end;
 
 procedure TJvXPBarItemEditor.ExecuteVerb(Index: Integer);
 const
- cFontColor = $00840000;
- cHotTrackColor = $00FF7C35;
+  cFontColor = $00840000;
+  cHotTrackColor = $00FF7C35;
 begin
   case Index of
     0: // 'Item Editor...'
@@ -223,24 +206,14 @@ begin
         HeaderFont.Color := cFontColor;
         HotTrackColor := cHotTrackColor;
         if csDesigning in ComponentState then
-          {$IFDEF VCL}
           TCustomForm(Owner).Designer.Modified;
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          TCustomForm(Owner).DesignerHook.Modified;
-          {$ENDIF VisualCLX}
       end;
     2: // 'Restore Default Fonts'
       with TCustomWinXPBar(Component) do
       begin
         ParentFont := True;
         if csDesigning in ComponentState then
-          {$IFDEF VCL}
           TCustomForm(Owner).Designer.Modified;
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          TCustomForm(Owner).DesignerHook.Modified;
-          {$ENDIF VisualCLX}
       end;
   end;
 end;

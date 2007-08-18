@@ -466,16 +466,11 @@ begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
   if Proxy <> nil then
   begin
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
     {$ELSE}
     Designer.ValidateRename(Proxy, Proxy.Name, '');
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, '');
-    {$ENDIF VisualCLX}
     FDeleting := True;
     try
       Proxy.Free;

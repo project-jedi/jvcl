@@ -34,22 +34,14 @@ interface
 
 uses
   Windows, Forms, Controls, Graphics, ExtCtrls, Dialogs,
-  ExtDlgs, Menus, StdCtrls, ImgList,
-  {$IFDEF VCL}
-  Tabs,
-  {$ENDIF VCL}
+  ExtDlgs, Menus, StdCtrls, ImgList, Tabs,
   ImgEdit, DsnConst,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  {$IFDEF VCL}
   FiltEdit,
-  {$ENDIF VCL}
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VisualCLX}
-  JvQImageIndexEdit,
-  {$ENDIF VisualCLX}
   Classes, SysUtils;
 
 type
@@ -123,8 +115,6 @@ type
     function GetEditPropertyName: string; override;
   end;
 
-  {$IFDEF VCL}
-
   TJvDateTimeExProperty = class(TDateTimeProperty)
   public
     procedure Edit; override;
@@ -143,8 +133,6 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-  {$ENDIF VCL}
-
   TJvShortCutProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -155,7 +143,6 @@ type
 
   {$IFDEF COMPILER6_UP}
 
-  {$IFDEF VCL}
   TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
   protected
     function ImageList: TCustomImageList; virtual;
@@ -175,17 +162,6 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-  {$ENDIF VCL}
-
-  {$IFDEF VisualCLX}
-  TJvDefaultImageIndexProperty = class(TIntegerProperty)
-  protected
-    function ImageList: TCustomImageList; virtual;
-  public
-    function GetAttributes: TPropertyAttributes; override;
-    procedure Edit; override;
-  end;
-  {$ENDIF VisualCLX}
 
   {$ENDIF COMPILER6_UP}
 
@@ -249,15 +225,8 @@ implementation
 
 uses
   TypInfo, Math, FileCtrl, Consts,
-  {$IFDEF MSWINDOWS}
   Registry,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Dlgs, JvDateTimeForm,
-  {$ENDIF VCL}
-  {$IFDEF UNIX}
-  JvQRegistryIniFile,
-  {$ENDIF UNIX}
   JvTypes, JvStringsForm, JvDsgnConsts, JvConsts;
 
 function ValueName(E: Extended): string;
@@ -500,8 +469,6 @@ begin
   Result := 1;
 end;
 
-{$IFDEF VCL}
-
 //=== { TJvDateTimeExProperty } ==============================================
 
 procedure TJvDateTimeExProperty.Edit;
@@ -567,8 +534,6 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-{$ENDIF VCL}
-
 //=== { TJvDefaultImageIndexProperty } =======================================
 
 {$IFDEF COMPILER6_UP}
@@ -589,15 +554,8 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  {$IFDEF VCL}
   Result := [paValueList, paMultiSelect, paRevertable];
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := [paRevertable, paDialog];
-  {$ENDIF VisualCLX}
 end;
-
-{$IFDEF VCL}
 
 function TJvDefaultImageIndexProperty.GetValue: string;
 begin
@@ -680,8 +638,6 @@ begin
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
-
-{$ENDIF VCL}
 
 {$ENDIF COMPILER6_UP}
 
@@ -783,27 +739,6 @@ end;
 
 {$ENDIF COMPILER5}
 
-{$IFDEF VisualCLX}
-procedure TJvDefaultImageIndexProperty.Edit;
-var
-  SelectedIndex: Integer;
-  Tmp: TImageList;
-begin
-  if ImageList <> nil then
-  begin
-    Tmp := TImageList.Create(Application);
-    Tmp.Assign(ImageList);
-    SelectedIndex := StrToInt(GetValue);
-    if EditImageIndex(Tmp, SelectedIndex) then
-    begin
-      SetValue(IntToStr(SelectedIndex));
-      ImageList.Assign(Tmp);
-    end;
-    Tmp.Free;
-  end;
-end;
-{$ENDIF VisualCLX}
-
 //=== { TJvShortCutProperty } ================================================
 
 function TJvShortCutProperty.GetAttributes: TPropertyAttributes;
@@ -887,9 +822,7 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  {$IFDEF VCL}
   SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
-  {$ENDIF VCL}
 end;
 
 //=== { TJvExeNameProperty } =================================================
@@ -970,13 +903,8 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-            {$IFDEF VCL}
             HandleType := bmDIB;
             if PixelFormat in [pf15bit, pf16bit] then
-            {$ENDIF VCL}
-            {$IFDEF VisualCLX}
-            if PixelFormat = pf16bit then
-            {$ENDIF VisualCLX}
             try
               PixelFormat := pf24bit;
             except

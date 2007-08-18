@@ -32,20 +32,11 @@ interface
 
 uses
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ClxEditors, QConsts,
-  {$ENDIF VisualCLX}
+  DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   Classes,
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
   JvColorProvider, JvDataProviderEditors;
 
 type
@@ -64,7 +55,7 @@ type
     procedure SetValue(const Value: string); override;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
-  
+
   TJvColorProviderEditor = class(TDefaultEditor)
   public
     procedure Edit; override;
@@ -76,7 +67,7 @@ type
 implementation
 
 uses
-  SysUtils, TypInfo,
+  Consts, SysUtils, TypInfo,
   JvDataProviderIntf, JvColorProviderDesignerForm, JvDsgnConsts;
 
 //=== { TJvColorProviderMappingProperty } ====================================

@@ -119,13 +119,11 @@ begin
   lblCopyRight.Caption := 'Copyright © yuwei, 2001 - ' + FormatDateTime('yyyy', Now);
 end;
 
-{$IFDEF VCL}
 procedure TJvWizardAboutDialog.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := (Params.Style or WS_POPUP) and (not WS_DLGFRAME);
 end;
-{$ENDIF VCL}
 
 procedure TJvWizardAboutDialog.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

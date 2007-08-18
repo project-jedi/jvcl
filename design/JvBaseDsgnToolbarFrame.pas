@@ -31,12 +31,8 @@ unit JvBaseDsgnToolbarFrame;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
-  Graphics, Controls, Forms, Dialogs, ActnList, Menus, ImgList, ToolWin,
-  ComCtrls, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ActnList, Menus, ImgList, ToolWin, ComCtrls, ExtCtrls,
   JvBaseDsgnFrame;
 
 type
@@ -67,12 +63,7 @@ type
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
   Registry;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  JvQRegistryIniFile;
-  {$ENDIF UNIX}
 
 {$R *.dfm}
 
@@ -94,12 +85,7 @@ end;
 procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
-    {$IFDEF UNIX}
-    with TJvRegistryIniFile.Create do
-    {$ENDIF UNIX}
-    {$IFDEF MSWINDOWS}
     with TRegistry.Create do
-    {$ENDIF MSWINDOWS}
     try
       LazyWrite := False;
       if OpenKey(RegKey, True) then
@@ -117,12 +103,7 @@ end;
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
-    {$IFDEF UNIX}
-    with TJvRegistryIniFile.Create do
-    {$ENDIF UNIX}
-    {$IFDEF MSWINDOWS}
     with TRegistry.Create do
-    {$ENDIF MSWINDOWS}
     try
       if OpenKey(RegKey, False) then
         try
@@ -145,16 +126,9 @@ var
 begin
   LastVisibleSep := -1;
   ButtonSinceLastSep := False;
-  {$IFDEF VCL}
   for I := 0 to tbrToolbar.ButtonCount - 1 do
   begin
     CurItem := TControl(tbrToolbar.Buttons[I]);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  for I := 0 to tbrToolbar.ControlCount - 1 do
-  begin
-    CurItem := TControl(tbrToolbar.Controls[I]);
-  {$ENDIF VisualCLX}
     if (CurItem is TToolButton) and (TToolButton(CurItem).Style = tbsSeparator) then
     begin
       CurItem.Visible := ButtonSinceLastSep;
@@ -169,14 +143,8 @@ begin
     if not (CurItem is TToolButton) then
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
   end;
-  {$IFDEF VCL}
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
     tbrToolbar.Buttons[LastVisibleSep].Visible := False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
-    tbrToolbar.Controls[LastVisibleSep].Visible := False;
-  {$ENDIF VisualCLX}
   { For some reason a divider may be drawn while it's invisible. Calling Invalidate didn't help but
     changing the ButtonWidth seems to work. Look into this issue; may have a different cause,
     possibly in this method. }
@@ -217,37 +185,10 @@ begin
   ShowToolbar(not aiShowToolbar.Checked);
 end;
 
-{$IFDEF VisualCLX}
-function GetToolBarRowCount(tb: TToolBar): Integer;
-var
-  I, Width: Integer;
-begin
-  Result := 1;
-  if tb.Wrapable then
-  begin
-    Width := 0;
-    for I := 0 to tb.ControlCount - 1 do
-    begin
-      Inc(Width, tb.Controls[I].Width);
-      if Width >= tb.ClientWidth then
-      begin
-        Inc(Result);
-        Width := tb.Controls[I].Width;
-      end;
-    end;
-  end;
-end;
-{$ENDIF VisualCLX}
-
 procedure TfmeJvBaseToolbarDesign.spToolbarCanResize(Sender: TObject;
   var NewSize: Integer; var Accept: Boolean);
 begin
-  {$IFDEF VCL}
   Accept := tbrToolbar.RowCount = 1;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Accept := GetToolBarRowCount(tbrToolbar) = 1;
-  {$ENDIF VisualCLX}
   if Accept then
   begin
     if NewSize > 36 then

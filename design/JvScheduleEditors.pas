@@ -52,13 +52,7 @@ type
 implementation
 
 uses
-  ColnEdit,
-  {$IFDEF VCL}
-  Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls,
-  {$ENDIF VisualCLX}
+  ColnEdit, Controls,
   JclSchedule,
   JvConsts, JvDsgnConsts;
 

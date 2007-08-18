@@ -30,15 +30,8 @@ unit JvPageListEditorForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Graphics, Controls, Forms, Dialogs, ActnList, ImgList,
-  ComCtrls, StdCtrls, ToolWin, Menus,
-  {$IFDEF VisualCLX}
-  QExtCtrls, QTypes,
-  {$ENDIF VisualCLX}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignWindows,
   {$ELSE}

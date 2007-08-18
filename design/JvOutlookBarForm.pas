@@ -30,11 +30,8 @@ unit JvOutlookBarForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  Controls, Forms, ToolWin, Menus, ActnList, ComCtrls, ImgList,
+  Windows, SysUtils, Classes, Controls, Forms, ToolWin, Menus, ActnList,
+  ComCtrls, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
@@ -125,13 +122,7 @@ type
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
-  Registry,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  JvQRegistryIniFile,
-  {$ENDIF UNIX}
-  Dialogs,
+  Registry, Dialogs,
   JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
@@ -565,7 +556,6 @@ begin
 end;
 
 procedure TFrmOLBEditor.StoreSettings;
-{$IFDEF MSWINDOWS}
 begin
   with TRegIniFile.Create do
     try
@@ -580,29 +570,8 @@ begin
       Free;
     end;
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-begin
-  with TJvRegistryIniFile.Create do
-    try
-      if OpenKey(GetRegPath, True) then
-        try
-          // Width, Height, TextLabels
-          WriteInteger(cWidth, Width);
-          WriteInteger(cHeight, Height);
-          WriteBool(cTextLabels, acShowTextLabels.Checked);
-          WriteBool(cToolBar, acToolBar.Checked);
-        finally
-          CloseKey;
-        end;
-    finally
-      Free;
-    end;
-end;
-{$ENDIF UNIX}
 
 procedure TFrmOLBEditor.LoadSettings;
-{$IFDEF MSWINDOWS}
 begin
   with TRegIniFile.Create do
     try
@@ -619,29 +588,8 @@ begin
       Free;
     end;
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-begin
-  with TJvRegistryIniFile.Create do
-    try
-      if OpenKey(GetRegPath, True) then
-        try
-        // Width, Height, TextLabels
-          WriteInteger(cWidth, Width);
-          WriteInteger(cHeight, Height);
-          WriteBool(cTextLabels, acShowTextLabels.Checked);
-          WriteBool(cToolBar, acToolBar.Checked);
-        finally
-          CloseKey;
-        end;
-    finally
-      Free;
-    end;
-end;
-{$ENDIF UNIX}
 
 function TFrmOLBEditor.GetRegPath: string;
-{$IFDEF MSWINDOWS}
 const
   cRegKey = '\JVCL\OutlookBar Editor';
 begin
@@ -652,14 +600,6 @@ begin
   Result := SDelphiKey + RsPropertyEditors + cRegKey;
   {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-const
-  cRegKey = 'OutlookBar Editor';
-begin
-  Result := SDelphiKey + RsPropertyEditors + cRegKey + PathDelim + cJvOutlookBar;
-end;
-{$ENDIF UNIX}
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
 var

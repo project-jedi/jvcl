@@ -50,12 +50,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvTypes, JvFooter, JvDsgnConsts;
 
 //=== { TJvFooterEditor } ====================================================

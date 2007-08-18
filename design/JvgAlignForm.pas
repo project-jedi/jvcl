@@ -36,17 +36,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-  Classes,
-  {$IFDEF VCL}
-  Controls, Forms, StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Forms,
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
-  JvgTypes;
+  JvgTypes, StdCtrls, Controls, ExtCtrls;
 
 type
   {$IFDEF USEJVCL}

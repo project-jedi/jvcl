@@ -31,13 +31,7 @@ unit JvPerfStatEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Dlgs, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$ENDIF VisualCLX}
+  Windows, Dlgs, SysUtils, Classes, Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

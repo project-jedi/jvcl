@@ -38,12 +38,9 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-  {$IFDEF VCL}
-  JvShapedButton, JvSticker,
-  {$ENDIF VCL}
-  JvJanTreeView, JvMarkupLabel, JvMarkupViewer, JvSAL, JvSALCore, JvSALMath,
-  JvYearGrid, JvTracker, JvAirBrush, JvGridFilter, JvGridPrinter,
-  JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
+  JvShapedButton, JvSticker, JvJanTreeView, JvMarkupLabel, JvMarkupViewer,
+  JvSAL, JvSALCore, JvSALMath, JvYearGrid, JvTracker, JvAirBrush, JvGridFilter,
+  JvGridPrinter, JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
   JvBitmapButton, JvSimScope, JvSimIndicator, JvSimPID, JvSIMPIDLinker,
   JvSimLogic, JvSpellerForm, JvCSVBaseControls, JvCsvBaseEditor;
 
@@ -72,13 +69,11 @@ begin
 
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents(RsPaletteJans, [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
-    {$IFDEF VCL} TJvSticker, {$ENDIF}
+    TJvSticker,
     TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
     TJvGridFilter, TJvGridPrinter,
-    TJvJanTreeview,
-    TJvPaintFX, TJvDrawImage,
-    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
-    {$IFDEF VCL}, TJvShapedButton {$ENDIF}]);
+    TJvJanTreeview, TJvPaintFX, TJvDrawImage, TJvArrayButton, TJvForthScript, TJvTurtle,
+    TJvBitmapButton, TJvSpeller, TJvShapedButton]);
   // Simulator Components
   RegisterComponents(RsPaletteJansSim, [TJvSimScope, TJvSimIndicator, TJvSimPID,
     TJvSimPIDLinker, TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight,

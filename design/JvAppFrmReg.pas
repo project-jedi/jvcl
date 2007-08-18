@@ -40,12 +40,9 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
-  JvFormMagnet, JvFormTransparent, JvAppHotKey, JvGradientCaptionForm,
-  JvGradientCaption,
-  {$ENDIF VCL}
   JvDsgnConsts,
-  JvAppAnimatedIcon, JvAppEvent,
+  JvFormMagnet, JvFormTransparent, JvAppHotKey, JvGradientCaptionForm,
+  JvGradientCaption, JvAppAnimatedIcon, JvAppEvent,
   JvFormAnimatedIcon, JvFormAnimation, JvFormWallpaper,
   JvAnimTitle, JvFormAutoSize, JvEmbeddedForms,
   JvFormWallpaperEditor;
@@ -56,9 +53,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
     [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvAnimTitle,
-     {$IFDEF VCL}
      TJvApplicationHotKey, TJvTransparentForm, TJvFormMagnet, TJvGradientCaption,
-     {$ENDIF VCL}
      TJvFormAnimation, TJvFormWallpaper, TJvFormAutoSize,
      TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink]);
 

@@ -31,22 +31,16 @@ unit JvDesignerUtils;
 
 interface
 
+implementation
+
 uses
-  {$IFDEF VCL}
-  Windows, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Windows, SysUtils, Classes, Graphics,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnIntf, JvDsgnTypes;
-
-implementation
 
 procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);
 begin

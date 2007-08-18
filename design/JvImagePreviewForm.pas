@@ -30,13 +30,10 @@ unit JvImagePreviewForm;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  FileCtrl, Buttons, JvPicClip, JvFormPlacement, JvAppStorage,
-  {$IFDEF MSWINDOWS}
-  JvAppRegistryStorage,
-  {$ENDIF MSWINDOWS}
-  JvComponent;
+  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  ExtCtrls, FileCtrl, Buttons,
+  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage,
+  JvComponent, JvComponentBase;
 
 type
   TImageForm = class(TJvForm)
@@ -109,17 +106,13 @@ begin
     finally
       Filters.Free;
     end;
-    {$IFDEF MSWINDOWS}
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
-    {$ENDIF MSWINDOWS}
     try
       if AFileName <> '' then
         FileName := AFileName;
       Result := ShowModal = mrOk;
     finally
-      {$IFDEF MSWINDOWS}
       SetErrorMode(ErrMode);
-      {$ENDIF MSWINDOWS}
     end;
     if Result then
       AFileName := FileName;
@@ -176,27 +169,15 @@ begin
     finally
       StopWait;
     end;
-    {$IFDEF MSWINDOWS}
     ImageName.Caption := Format('%s (%d x %d)',
       [AnsiLowerCase(ExtractFileName(FileListBox.FileName)),
        Image.Picture.Width, Image.Picture.Height]);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    ImageName.Caption := Format('%s (%d x %d)',
-      [ExtractFileName(FileListBox.FileName),
-       Image.Picture.Width, Image.Picture.Height]);
-    {$ENDIF UNIX}
   except
     Image.Picture.Assign(nil);
     ImageName.Caption := '';
   end;
   ZoomImage;
-  {$IFDEF MSWINDOWS}
   FileExt := AnsiLowerCase(FileName);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  FileExt := FileName;
-  {$ENDIF UNIX}
   if FileExt <> '' then
     Caption := FFormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
       PathLabel.Width)
@@ -280,8 +261,7 @@ end;
 
 procedure TImageForm.PreviewKeyPress(Sender: TObject; var Key: Char);
 begin
-//  if Ord(Key) = VK_ESCAPE then
-  if Ord(Key) = 27 then   //asn: With VisualCLX VK_ESCAPE <> 27
+  if Ord(Key) = VK_ESCAPE then
     TForm(Sender).Close;
 end;
 
@@ -336,4 +316,5 @@ begin
 end;
 
 end.
+
 
