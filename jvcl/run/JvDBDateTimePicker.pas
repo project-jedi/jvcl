@@ -411,6 +411,7 @@ begin
       begin
         FDataLink.Reset;
         SetFocus;
+        Key := #0;
       end;
   end;
 end;
