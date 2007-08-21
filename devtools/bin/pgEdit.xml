@@ -93,6 +93,7 @@
 
         <alias name="allv5" value="c5,c5s,d5,d5s"/>
         <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11"/>
+        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11"/>
 
         <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11"/>
       </aliases>
