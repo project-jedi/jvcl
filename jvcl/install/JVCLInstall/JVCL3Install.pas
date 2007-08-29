@@ -148,6 +148,9 @@ begin
     InstallType := itUpdate
   else
     CmdOptions.AutoUpdate := False; // auto update not possible
+
+  if CmdOptions.AutoInstall then
+    CmdOptions.AutoUpdate := True;
 end;
 
 constructor TInstaller.Create;
