@@ -1545,6 +1545,7 @@ begin
         Reg.WriteString(Name, S)
     end
     else
+    if StartsWith(Name, 'Jv', True) or StartsWith(Name, 'JEDI', True) then
       Reg.DeleteValue(Name);
 
   finally

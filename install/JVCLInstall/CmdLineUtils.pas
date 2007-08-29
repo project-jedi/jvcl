@@ -44,6 +44,7 @@ type
     FHelp: Boolean;
     FLang: string;
     FAutoUpdate: Boolean;
+    FAutoInstall: Boolean;
     FRebuildPackages: Boolean;
     FRegistryKeyDelphi: string;
     FRegistryKeyBCB: string;
@@ -67,6 +68,7 @@ type
 //    property JclPath: string read FJclPath write FJclPath;
     property KeepFiles: Boolean read FKeepFiles write FKeepFiles;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
+    property AutoInstall: Boolean read FAutoInstall write FAutoInstall;
     property RebuildPackages: Boolean read FRebuildPackages write FRebuildPackages;
     property RegistryKeyDelphi: string read FRegistryKeyDelphi write FRegistryKeyDelphi;
     property RegistryKeyBCB: string read FRegistryKeyBCB write FRegistryKeyBCB;
@@ -90,6 +92,7 @@ begin
 //  AddDir('--jcl-path=', 'Set the JCL root directory to X.', FJclPath);
   AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
+  AddBool('--autoinstall', 'Installs JVCL 3 for all installed IDEs.', FAutoInstall);
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
   AddSpace;
   AddString('-rDelphi=', 'Sets the Registry path for the Delphi IDEs.', FRegistryKeyDelphi);
