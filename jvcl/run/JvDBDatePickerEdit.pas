@@ -54,6 +54,7 @@ type
     FDataLink: TFieldDataLink;
     FEnforceRequired: Boolean;
     FAllowPopupBrowsing: Boolean;
+    FLockEditing: Integer;
     procedure ValidateShowCheckBox; overload;
     function ValidateShowCheckBox(const AValue: Boolean): Boolean; overload;
     function GetDataField: string;
@@ -62,6 +63,8 @@ type
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetEnforceRequired(const AValue: Boolean);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    function GetInternalDate: TDateTime;
+    procedure SetInternalDate(const Value: TDateTime);
   protected
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
@@ -84,6 +87,8 @@ type
     property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default False;
     property AllowPopupBrowsing: Boolean read FAllowPopupBrowsing write FAllowPopupBrowsing default True;
     procedure Loaded; override;
+
+    property InternalDate: TDateTime read GetInternalDate write SetInternalDate;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -247,13 +252,13 @@ procedure TJvCustomDBDatePickerEdit.Loaded;
 begin
   inherited Loaded;
   if AllowNoDate and not IsLinked then
-    Date := 0.0;
+    InternalDate := 0.0;
 end;
 
 procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
 begin
   if IsLinked and FDataLink.Active then
-    Self.Date := FDataLink.Field.AsDateTime;
+    InternalDate := FDataLink.Field.AsDateTime;
 end;
 
 destructor TJvCustomDBDatePickerEdit.Destroy;
@@ -296,7 +301,7 @@ end;
 
 function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
 begin
-  Result := not ReadOnly and (not IsLinked or FDataLink.Edit);
+  Result := (FLockEditing = 0) and not ReadOnly and (not IsLinked or FDataLink.Edit);
 end;
 
 function TJvCustomDBDatePickerEdit.GetDataField: string;
@@ -454,6 +459,21 @@ begin
   begin
     FDataLink.Reset;
     Key := #0;
+  end;
+end;
+
+function TJvCustomDBDatePickerEdit.GetInternalDate: TDateTime;
+begin
+  Result := Self.Date;
+end;
+
+procedure TJvCustomDBDatePickerEdit.SetInternalDate(const Value: TDateTime);
+begin
+  Inc(FLockEditing);
+  try
+    Self.Date := Value;
+  finally
+    Dec(FLockEditing);
   end;
 end;
 
