@@ -690,13 +690,16 @@ end;
 
 procedure TJvDataSource.CheckBrowseMode;
 begin
-  if not (FDataLink.DataSet.State in [dsEdit, dsInsert]) then
-    FDataUpdated := False;
-  FNeedScroll := True;
-  if (FDataLink.DataSet.State = dsInsert) and FDataUpdated then
-    FNeedScroll := False;
-  if AreEventsEnabled and Assigned(FOnCheckBrowseMode) then
-    FOnCheckBrowseMode(Self);
+  if FDataLink.DataSet <> nil then
+  begin
+    if not (FDataLink.DataSet.State in [dsEdit, dsInsert]) then
+      FDataUpdated := False;
+    FNeedScroll := True;
+    if (FDataLink.DataSet.State = dsInsert) and FDataUpdated then
+      FNeedScroll := False;
+    if AreEventsEnabled and Assigned(FOnCheckBrowseMode) then
+      FOnCheckBrowseMode(Self);
+  end;
 end;
 
 procedure TJvDataSource.DataSetChanged;
@@ -709,7 +712,8 @@ begin
     if AreEventsEnabled and Assigned(FOnDataSetChanged) then
       FOnDataSetChanged(Self);
   finally
-    if (FDataLink.DataSet.State = dsInsert) or ScrollEventEnabled then
+    if ScrollEventEnabled or 
+       ((FDataLink.DataSet <> nil) and (FDataLink.DataSet.State = dsInsert)) then
       DataSetScrolled;
   end;
 end;
@@ -723,10 +727,13 @@ end;
 
 procedure TJvDataSource.EditingChanged;
 begin
-  if FDataUpdated or (FDataLink.DataSet.RecNo <> -1) then // DataSet.State is already updated
-    FNeedScroll := False;
-  if AreEventsEnabled and Assigned(FOnEditingChanged) then
-    FOnEditingChanged(Self);
+  if FDataLink.DataSet <> nil then
+  begin
+    if FDataUpdated or (FDataLink.DataSet.RecNo <> -1) then // DataSet.State is already updated
+      FNeedScroll := False;
+    if AreEventsEnabled and Assigned(FOnEditingChanged) then
+      FOnEditingChanged(Self);
+  end;
 end;
 
 procedure TJvDataSource.LayoutChanged;
