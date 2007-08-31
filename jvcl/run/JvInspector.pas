@@ -5949,6 +5949,13 @@ begin
         if Inspector.WantTabs then
           Msg.Result := Msg.Result or DLGC_WANTTAB;
       end;
+    WM_SETFOCUS:
+      begin
+        { Changing the focus to another Control in the same form via Mouse-Click, if a
+          property-editor is active has no effect until you clicked twice on the control.
+          Telling the VCL that this control has the focus, fixes the problem. } 
+        SetFocus;
+      end;
   end;
 end;
 
