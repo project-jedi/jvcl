@@ -49,7 +49,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.34';
+  cHidControllerClassVersion = '1.0.35';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -1690,7 +1690,8 @@ end;
 procedure TJvHidDeviceController.EventPipe(var Msg: TMessage);
 begin
   // sort out WM_DEVICECHANGE : DBT_DEVNODES_CHANGED
-  if (Msg.Msg = WM_DEVICECHANGE) and (TWMDeviceChange(Msg).Event = DBT_DEVNODES_CHANGED) then
+  if not (csDestroying in ComponentState) and
+   (Msg.Msg = WM_DEVICECHANGE) and (TWMDeviceChange(Msg).Event = DBT_DEVNODES_CHANGED) then
     if not FInDeviceChange then
     begin
       FLParam := Msg.LParam;
