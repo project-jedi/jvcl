@@ -264,8 +264,9 @@ begin
 //  Key := #0;
   end
   else
-  if not EditCanModify then
-    Key := #0;
+  if Key in [#8, #9, #24{Ctrl+X}, #32..#255] then
+    if not EditCanModify then
+      Key := #0;
 end;
 
 function TJvDBLookupComboEdit.EditCanModify: Boolean;
