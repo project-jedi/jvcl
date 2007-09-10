@@ -347,11 +347,11 @@ var
 begin
   // Mantis 3190: Only resolve when we are loaded so that we get the correct
   // form name if it's a form inheriting from another one.
-  ResolveAppStoragePath;
   Loading := csLoading in ComponentState;
   inherited Loaded;
   if not (csDesigning in ComponentState) then
   begin
+    ResolveAppStoragePath;
     if Loading then
       SetEvents;
     CheckToggleHook;
