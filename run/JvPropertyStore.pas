@@ -87,6 +87,8 @@ type
     procedure LoadProperties; virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
+    //1 // This function defines, if the properties should be stored in this moment
+    function StorePropertiesNow: Boolean; virtual;
     function TranslatePropertyName(AName: string): string; virtual;
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property CombinedIgnoreProperties: TStringList read GetCombinedIgnoreProperties;
@@ -655,17 +657,23 @@ var
       UpdateChildPaths;
       DisableAutoLoadDown;
       SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
-      if DeleteBeforeStore then
-        AppStorage.DeleteSubTree(AppStoragePath);
-      if not IgnoreLastLoadTime then
-        AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
-      if Assigned(FOnBeforeStoreProperties) then
-        FOnBeforeStoreProperties(Self);
       if SaveProperties then
-        StoreData;
-      AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
-      if Assigned(FOnAfterStoreProperties) then
-        FOnAfterStoreProperties(Self);
+      begin
+        if DeleteBeforeStore then
+          AppStorage.DeleteSubTree(AppStoragePath);
+        if StorePropertiesNow then
+        begin
+          if not IgnoreLastLoadTime then
+            AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
+          if Assigned(FOnBeforeStoreProperties) then
+            FOnBeforeStoreProperties(Self);
+          if SaveProperties then
+            StoreData;
+          AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
+          if Assigned(FOnAfterStoreProperties) then
+            FOnAfterStoreProperties(Self);
+        end;
+      end;
     finally
       AppStorage.EndUpdate;
     end;
@@ -708,6 +716,11 @@ procedure TJvCustomPropertyStore.StoreData;
 begin
 end;
 
+function TJvCustomPropertyStore.StorePropertiesNow: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJvCustomPropertyListStore } =========================================
 
 constructor TJvCustomPropertyListStore.Create(AOwner: TComponent);
@@ -719,7 +732,7 @@ begin
   FItemName := cItem;
   FIntIgnoreProperties.Add('ItemName');
   FIntIgnoreProperties.Add('FreeObjects');
-  FIntIgnoreProperties.Add('CreateListEntries');
+  FIntIgnoreProperties.Add('CreateListEntries')
 end;
 
 destructor TJvCustomPropertyListStore.Destroy;
