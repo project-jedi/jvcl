@@ -405,6 +405,8 @@ type
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
     procedure DoError(const msg: string);
+    property CurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent
+        read FCurrentInstanceCreateEvent;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1365,11 +1367,14 @@ procedure TJvCustomAppStorage.ReadObjectListItem(Sender: TJvCustomAppStorage;
 var
   NewItem: TPersistent;
   NewPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
   if List is TList then
   try
     NewPath := ConcatPaths([Path, ItemName + IntToStr(Index)]);
-    NewItem := FCurrentInstanceCreateEvent(Sender, NewPath, Index);
+    ResolvePath(NewPath, TargetStore, TargetPath); // Only needed for assigning the event
+    NewItem := TargetStore.CurrentInstanceCreateEvent(Sender, NewPath, Index);
     TList(List).Add(NewItem);
     Sender.ReadPersistent(NewPath, NewItem);
   except
@@ -1400,11 +1405,14 @@ var
   NewItem: TPersistent;
   NewPath: string;
   NewName: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
   if List is TStrings then
   try
     NewPath := ConcatPaths([Path, ItemName + IntToStr(Index)]);
-    NewItem := FCurrentInstanceCreateEvent(Sender, ConcatPaths([NewPath, cObject]), Index);
+    ResolvePath(NewPath, TargetStore, TargetPath); // Only needed for assigning the event
+    NewItem := TargetStore.CurrentInstanceCreateEvent(Sender, ConcatPaths([NewPath, cObject]), Index);
     NewName := Sender.ReadString(ConcatPaths([NewPath, cItemName]));
     TStrings(List).AddObject(NewName, NewItem);
     if NewItem is TJvCustomPropertyStore then
@@ -2476,6 +2484,8 @@ begin
         ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue, TmpValue);
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
+    tkVariant:
+      SetStrProp(PersObj, PropName, ReadString(Path, GetVariantProp (PersObj, PropName)));
     tkSet:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
@@ -2598,6 +2608,9 @@ begin
         {$ELSE}
         WriteString(Path, GetStrProp(PersObj, PropName));
         {$ENDIF COMPILER6_UP}
+    tkVariant:
+      if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
+        WriteString(Path, GetVariantProp(PersObj, PropName));
     tkEnumeration:
       begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
