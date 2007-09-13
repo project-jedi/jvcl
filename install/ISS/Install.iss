@@ -76,7 +76,7 @@ DefaultDirName=C:\DelphiComponents\JVCL
 DefaultGroupName=DelphiComponents\JEDI Visual Component Library
 DisableProgramGroupPage=no
 ;LicenseFile={#JvclRoot}\help\MPL-1.1.html
-OutputBaseFilename=setup
+OutputBaseFilename=JVCLSetup
 #ifdef DEBUGGING
 Compression=zip/1
 #else
@@ -85,6 +85,7 @@ Compression=lzma/ultra64
 SolidCompression=yes
 ShowLanguageDialog=auto
 OptimizedChecks=yes
+WebSetupUpdateURL={#downloadurl}
 
 // for skin
 #define MyWizardBottomImageFile "Skin\images\wizardbottom.bmp"
