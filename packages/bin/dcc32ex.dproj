@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{2e8565f3-8356-4296-a82f-2d1372d604a9}</ProjectGuid>
+    <MainSource>dcc32ex.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>dcc32ex.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="RunParams">--use-jcl-source --requires-jcl=1.101 -Q -B -DJVCLINSTALLER -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\common;..\..\run -n..\..\dcu JVCLInstall.dpr</Parameters><Parameters Name="DebugCWD">Z:\Jedi\JVCL3\install\JVCLInstall</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\bcboffice2k100.bpl">CodeGear C++Builder Office 2000 Servers Package</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\bcbofficexp100.bpl">CodeGear C++Builder Office XP Servers Package</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">dcc32ex.dpr</Source></Source>  
+    
+    
+    
+    <DebugEnvironmentVariables>
+      <DebugEnvironmentVariables Name="DELPHIVERSION">'d5'</DebugEnvironmentVariables>
+    </DebugEnvironmentVariables>
+    <DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="_NT_SYMBOL_PATH">'SRV*C:\Windows\Symbols*http://msdl.microsoft.com/download/symbols'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ALLUSERSPROFILE">'C:\Dokumente und Einstellungen\All Users'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="APPDATA">'C:\Dokumente und Einstellungen\Andreas\Anwendungsdaten'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="APR_ICONV_PATH">'C:\Tools\svn\iconv'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDS">'c:\codegear\rad studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDSCOMMONDIR">'C:\Dokumente und Einstellungen\All Users\Dokumente\RAD Studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDSPROJECTSDIR">'C:\Dokumente und Einstellungen\Andreas\Eigene Dateien\RAD Studio\Projekte'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDSUSERDIR">'C:\Dokumente und Einstellungen\Andreas\Eigene Dateien\RAD Studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CLASSPATH">'.;C:\Programme\Java\jre1.5.0_10\lib\ext\QTJava.zip'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CLIENTNAME">'Console'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CommonProgramFiles">'C:\Programme\Gemeinsame Dateien'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="COMPUTERNAME">'ANDYPC'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ComSpec">'C:\WINDOWS\system32\cmd.exe'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CVS_RSH">'ssh'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="DELPHI">'c:\codegear\rad studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="FP_NO_HOST_CHECK">'NO'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="HOMEDRIVE">'C:'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="HOMEPATH">'\Dokumente und Einstellungen\Andreas'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="J2D_D3D">'false'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="LOGONSERVER">'\\ANDYPC'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="NUMBER_OF_PROCESSORS">'2'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="OS">'Windows_NT'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="Path">'C:\CodeGear\RAD Studio\5.0\bin;C:\Dokumente und Einstellungen\All Users\Dokumente\RAD Studio\5.0\Bpl;C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\;C:\Borland\BDS\4.0\Bin;C:\Programme\Gemeinsame Dateien\Borland Shared\BDE\;C:\Borland\BDS\3.0\Bin;C:\Borland\Delphi7\Bin;C:\Borland\Delphi7\Projects\Bpl;C:\Borland\Delphi7\Bin;C:\Borland\Delphi6\Bin;C:\Borland\Delphi6\Projects\Bpl;C:\PROGRA~1\GEMEIN~1\BORLAN~1\Debugger\Bin;C:\Borland\dxgettext;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Borland\CBuilder6\Bin;C:\Borland\CBuilder6\Projects\Bpl;C:\Borland\Delphi5\Bin;C:\Borland\Delphi5\Projects\Bpl;C:\Borland\JBuilder2005\jdk1.4\bin;C:\Programme\doxygen141\bin;C:\Programme\QuickTime\QTSystem\;C:\VXIPNP\WinNT\Bin;C:\Tools\svn\bin;C:\Dokumente und Einstellungen\Andreas\Eigene Dateien\Borland Studio Projects\Bpl;C:\Dokumente und Einstellungen\Andreas\Eigene Dateien\Borland Studio-Projekte\Bpl;C:\Tools\diffpatch;D:\FPC\2.0.0\bin\i386-Win32;C:\Tools\SVN\Bin;z:\qt4bor\lib;Z:\DelphiFPC\FPC\bin\i386-Win32;C:\Programme\CVSNT\'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PATHEXT">'.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_ARCHITECTURE">'x86'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_IDENTIFIER">'x86 Family 15 Model 2 Stepping 9, GenuineIntel'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_LEVEL">'15'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_REVISION">'0209'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ProgramFiles">'C:\Programme'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="QTJAVA">'C:\Programme\Java\jre1.5.0_10\lib\ext\QTJava.zip'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="SESSIONNAME">'Console'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="StarTeamApp">'C:\Borland\StarTeam 2005'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="SystemDrive">'C:'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="SystemRoot">'C:\WINDOWS'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="TEMP">'C:\DOKUME~1\Andreas\LOKALE~1\Temp'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="TMP">'C:\DOKUME~1\Andreas\LOKALE~1\Temp'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="USERDOMAIN">'ANDYPC'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="USERNAME">'Andreas'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="USERPROFILE">'C:\Dokumente und Einstellungen\Andreas'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="VCToolkitInstallDir">'C:\Programme\Microsoft Visual C++ Toolkit 2003\'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="VXIPNPPATH">'C:\VXIPNP\'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="windir">'C:\WINDOWS'</DebugSysEnvironmentVariables>
+    </DebugSysEnvironmentVariables>
+  </Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="dcc32ex.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+  </ItemGroup>
+</Project>
