@@ -2137,7 +2137,7 @@ begin
   if not ListStored(Path) then
   begin
     if ValueStored(Path) then
-      Sl.Text;
+      Sl.Text := ReadString(Path);
     Result := SL.Count
   end
   else
