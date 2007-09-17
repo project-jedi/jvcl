@@ -1,4 +1,3 @@
-TGauge
 TJvAddHardwareDialog
 TJvAddPrinterDialog
 TJvAirBrush
@@ -497,6 +496,7 @@ TJvSyncSplitter
 TJvSysRequirements
 TJvSystemPopup
 TJvTabBar
+TJvTabBarXPPainter
 TJvTabControl
 TJvTabDefaultPainter
 TJvTableItems
@@ -516,6 +516,7 @@ TJvThreadTimer
 TJvThumbImage
 TJvThumbnail
 TJvThumbView
+TJvTimeEdit
 TJvTimeLimit
 TJvTimeLine
 TJvTimer
@@ -576,7 +577,3 @@ TJvxSplitter
 TJvYearGrid
 TJvZlibMultiple
 TJvZoom
-TOpenPictureDialog
-TPrinterSetupDialog
-TSavePictureDialog
-TUpDown

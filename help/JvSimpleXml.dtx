@@ -38,8 +38,8 @@ Description
 Summary
   Decodes XML entities
 Description
-  Decodes XML entities (&amp;apos; &amp;aquot; &amp;lt; &amp;gt; and &amp;amp;) into their
-  corresponding characters (', ", <, > and &)
+  Decodes XML entities (\&apos;, \&quot;, \&lt;, \&gt; and \&amp;) into their corresponding characters
+  (', ", <, > and &)
 Parameters
   S - The string with entities to decode
 Return value
@@ -51,8 +51,8 @@ Return value
 Summary
   Encodes special characters into XML entities
 Description
-  Encodes special characters (', ", <, > and &) into XML entities (&apos;, &quot;, &lt;, &gt; and
-  &amp;)
+  Encodes special characters (', ", <, > and &) into XML entities (\&apos;, \&quot;, \&lt;, \&gt; and
+  \&amp;)
 Parameters
   S - string to encode
 Return value
@@ -81,7 +81,7 @@ Summary
 Description
   Special characters are those:
 
-  &amp; &lt; &gt; &apos; &quot; &#???
+  \&amp;, \&lt;, \&gt;, \&apos;, \&quot;, \&#???.
 Parameters
   S          - The string to decode
   TrimBlanks - If true, the blanks will also be removed from the string

@@ -1032,15 +1032,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertLinkToFile
 Summary
-  Write here a summary (1 line)
+  Inserts a linked OLE object from a file.
 Description
-  Write here a description
+  Call InsertLinkToFile to insert a linked OLE object from the file specified by the FileName
+  parameter.
 Parameters
-  FileName - Description for this parameter
-  Iconic   - Description for this parameter
+  FileName - Specifies the file.
+  Iconic   - Specifies whether the object is shown as an icon (true) or displayed as it would be in
+              the server application (false).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomRichEdit.InsertLinkToFile, TJvCustomRichEdit.InsertObject,
+  TJvCustomRichEdit.InsertObjectDialog, TJvCustomRichEdit.InsertObjectFromFile,
+  TJvCustomRichEdit.InsertObjectFromInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObject
@@ -1052,8 +1055,9 @@ Parameters
   OleClassName - Description for this parameter
   Iconic       - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomRichEdit.InsertLinkToFile, TJvCustomRichEdit.InsertObject,
+  TJvCustomRichEdit.InsertObjectDialog, TJvCustomRichEdit.InsertObjectFromFile,
+  TJvCustomRichEdit.InsertObjectFromInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObjectDialog
@@ -1075,15 +1079,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObjectFromFile
 Summary
-  Write here a summary (1 line)
+  Inserts an embedded OLE object from the contents of a file.
 Description
-  Write here a description
+  Call InsertObjectFromFile to insert an OLE object from the file specified by the FileName parameter.
 Parameters
-  FileName - Description for this parameter
-  Iconic   - Description for this parameter
+  FileName - Specifies the file.
+  Iconic   - Indicates whether the object is shown as an icon (true) or displayed as it would be in
+              the server application (false)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomRichEdit.InsertLinkToFile, TJvCustomRichEdit.InsertObject,
+  TJvCustomRichEdit.InsertObjectDialog, TJvCustomRichEdit.InsertObjectFromFile,
+  TJvCustomRichEdit.InsertObjectFromInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObjectFromInfo
@@ -1094,8 +1100,9 @@ Description
 Parameters
   Info - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomRichEdit.InsertLinkToFile, TJvCustomRichEdit.InsertObject,
+  TJvCustomRichEdit.InsertObjectDialog, TJvCustomRichEdit.InsertObjectFromFile,
+  TJvCustomRichEdit.InsertObjectFromInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.LangOptions
@@ -1208,6 +1215,48 @@ Parameters
                  PercentDone to update the position of a progress bar or other indicator.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.OnDragAllowed
+Summary
+  Occurs when the user begins to drag an OLE object on the control.
+Description
+  If you set AllowedEffects to the empty set then the drag operation is cancelled.
+Parameters
+  Sender         - Rich Edit control that has fired this event.
+  ShiftState     - Indicates the state of the shift keys and mouse buttons.
+  AllowedEffects - Returns the allowed effect to use.
+  Handled        - Returns true if the event handler performs the operation, false if the rich edit
+                    control should continue with its default processing.
+See Also
+  TJvCustomRichEdit.OnDragAllowed, TJvCustomRichEdit.OnGetDragDropEffect,
+  TJvCustomRichEdit.OnQueryAcceptData
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.OnGetDragDropEffect
+Summary
+  Occurs when the user drags an OLE object over the control.
+Description
+  Use an OnGetDragDropEffect event to provide feedback to the user about what would happen if a drop
+  occurred at this point. Typically, pressing certain combination of the Shift, Alt, or Ctrl keys while
+  dragging an object changes the effect. For example:
+
+  <TABLE>
+    Keys            Effect
+    --------------  -------
+    Ctrl and Shift  rdeLink
+    Ctrl            rdeCopy
+    Alt             rdeMove
+  </TABLE>
+Parameters
+  Sender         - Rich Edit control that has fired this event.
+  ShiftState     - Indicates the state of the shift keys and mouse buttons.
+  AllowedEffects - Returns the effect to use.
+  Handled        - Returns true if the event handler performs the operation, false if the rich edit
+                    control should continue with its default processing.
+See Also
+  TJvCustomRichEdit.OnDragAllowed, TJvCustomRichEdit.OnGetDragDropEffect,
+  TJvCustomRichEdit.OnQueryAcceptData
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnHorizontalScroll
 Summary
   Occurs when the user scrolls the horizontal scroll bar with the mouse or keyboard.
@@ -1279,6 +1328,27 @@ Parameters
   AllowChange - Specifies whether to allow modification of protected text.
 See Also
   TJvTextAttributes.Protected
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.OnQueryAcceptData
+Summary
+  Occurs when the user performs an paste operation or drags an object to the rich edit control.
+Description
+  Write here a description
+Parameters
+  Sender                 - Rich Edit control that has fired this event.
+  ADataObject            - The data object being pasted or dragged.
+  AFormat                - Specifies the format to use.
+  ClipboardOperationKind - Description for this parameter
+  Really                 - Indicates whether the drag-drop is actually happening or if it is just a
+                            query.
+  IconMetaPict           - Specifies a global memory handle to a metafile picture (TMetaFilePict) to
+                            display in place of the OLE object's default icon.
+  Handled                - Returns true if the event handler performs the operation, false if the rich
+                            edit control should continue with its default processing.
+See Also
+  TJvCustomRichEdit.OnDragAllowed, TJvCustomRichEdit.OnGetDragDropEffect,
+  TJvCustomRichEdit.OnQueryAcceptData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnResizeRequest
@@ -2841,6 +2911,42 @@ Description
   the left margin.
 
 ----------------------------------------------------------------------------------------------------
+@@TRichDropEffect
+<TITLE TRichDropEffect type>
+Summary
+  Enumerates effects of a drag-drop operation.
+Description
+  Use the TRichDropEffect type to specify an effect of a drag-drop operation.
+See Also
+  TJvCustomRichEdit.OnDragAllowed, TJvCustomRichEdit.OnGetDragDropEffect
+
+----------------------------------------------------------------------------------------------------
+@@TRichDropEffect.rdeCopy
+  A copy operation
+
+----------------------------------------------------------------------------------------------------
+@@TRichDropEffect.rdeMove
+  A move operation
+
+----------------------------------------------------------------------------------------------------
+@@TRichDropEffect.rdeLink
+  A link from the dropped data to the original data would be established.
+
+----------------------------------------------------------------------------------------------------
+@@TRichDropEffect.rdeScroll
+  A drag scroll operation is about to occur or is occurring in the target.
+
+----------------------------------------------------------------------------------------------------
+@@TRichDropEffects
+<TITLE TRichDropEffects type>
+<COMBINE TRichDropEffect>
+
+----------------------------------------------------------------------------------------------------
+@@TRichEditDragAllowedEvent
+<TITLE TRichEditDragAllowedEvent type>
+<COMBINE TJvCustomRichEdit.OnDragAllowed>
+
+----------------------------------------------------------------------------------------------------
 @@TRichEditFindCloseEvent
 <TITLE TRichEditFindCloseEvent type>
 <COMBINE TJvCustomRichEdit.OnCloseFindDialog>
@@ -2851,6 +2957,11 @@ Description
 <COMBINE TJvCustomRichEdit.OnTextNotFound>
 
 ----------------------------------------------------------------------------------------------------
+@@TRichEditGetDragDropEffectEvent
+<TITLE TRichEditGetDragDropEffectEvent type>
+<COMBINE TJvCustomRichEdit.OnGetDragDropEffect>
+
+----------------------------------------------------------------------------------------------------
 @@TRichEditProgressEvent
 <TITLE TRichEditProgressEvent type>
 <COMBINE TJvCustomRichEdit.OnConversionProgress>
@@ -2859,6 +2970,11 @@ Description
 @@TRichEditProtectChangeEx
 <TITLE TRichEditProtectChangeEx type>
 <COMBINE TJvCustomRichEdit.OnProtectChangeEx>
+
+----------------------------------------------------------------------------------------------------
+@@TRichEditQueryAcceptData
+<TITLE TRichEditQueryAcceptData type>
+<COMBINE TJvCustomRichEdit.OnQueryAcceptData>
 
 ----------------------------------------------------------------------------------------------------
 @@TRichEditURLClickEvent
