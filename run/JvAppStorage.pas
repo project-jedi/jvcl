@@ -701,6 +701,7 @@ type
     FDefaultIfReadConvertError: Boolean;
     FDefaultIfValueNotExists: Boolean;
     FStoreDefaultValues: Boolean;
+    FStoreStringListAsSingleString: Boolean;
     procedure SetStoreDefaultValues(const Value: Boolean);
   protected
     procedure SetBooleanAsString(Value: Boolean); virtual;
@@ -714,6 +715,11 @@ type
     procedure SetDefaultIfReadConvertError(Value: Boolean); virtual;
     procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
     function IsValueListString(const AValue, AList: string): Boolean; virtual;
+    procedure SetStoreStringListAsSingleString(const Value: Boolean); virtual;
+    //Flag to determine if a stringlist should be stored as single string and not as list of string items
+    property StoreStringListAsSingleString: Boolean read
+        FStoreStringListAsSingleString write SetStoreStringListAsSingleString
+        default False;
   public
     constructor Create; virtual;
     function DefaultTrueString: string;
@@ -1072,6 +1078,7 @@ begin
   DefaultIfReadConvertError := False;
   DefaultIfValueNotExists := True;
   StoreDefaultValues := True;
+  FStoreStringListAsSingleString := False;
 end;
 
 function TJvCustomAppStorageOptions.IsValueListString(const AValue, AList: string): Boolean;
@@ -1171,6 +1178,12 @@ end;
 procedure TJvCustomAppStorageOptions.SetDefaultIfValueNotExists(Value: Boolean);
 begin
   FDefaultIfValueNotExists := Value;
+end;
+
+procedure TJvCustomAppStorageOptions.SetStoreStringListAsSingleString(const
+    Value: Boolean);
+begin
+  FStoreStringListAsSingleString := Value;
 end;
 
 //=== { TJvCustomAppStorage } ================================================
@@ -2119,14 +2132,18 @@ end;
 function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrings;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
 begin
-  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
+  if ClearFirst then
+    SL.Clear;
+  if not ListStored(Path) then
+  begin
+    if ValueStored(Path) then
+      Sl.Text;
     Result := SL.Count
+  end
   else
   begin
     SL.BeginUpdate;
     try
-      if ClearFirst then
-        SL.Clear;
       ReadPersistent(Path,SL,True,False);
       Result := ReadList(Path, SL, ReadStringListItem, ItemName);
     finally
@@ -2138,8 +2155,17 @@ end;
 procedure TJvCustomAppStorage.WriteStringList(const Path: string;
   const SL: TStrings; const ItemName: string = cItem);
 begin
-  WriteList(Path, SL, SL.Count, WriteStringListItem, DeleteStringListItem, ItemName);
-  WritePersistent(Path,SL);
+  if StorageOptions.StoreStringListAsSingleString then
+  begin
+    if ListStored(path) then
+      DeleteSubTree(Path);
+    WriteString(Path, SL.Text);
+  end
+  else
+  begin
+    WriteList(Path, SL, SL.Count, WriteStringListItem, DeleteStringListItem, ItemName);
+    WritePersistent(Path,SL);
+  end;
 end;
 
 function TJvCustomAppStorage.ReadStringObjectList(const Path: string; const SL: TStrings;

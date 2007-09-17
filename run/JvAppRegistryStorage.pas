@@ -71,12 +71,22 @@ uses
   JvAppStorage, JvTypes, JvJVCLUtils;
 
 type
+  TJvAppRegistryStorageOptions = class(TJvAppStorageOptions)
+  private
+  public
+  published
+    //Flag to determine if a stringlist should be stored as single string and not as list of string items
+    property StoreStringListAsSingleString;
+  end;
+
   TJvAppRegistryStorage = class(TJvCustomAppStorage)
   private
     FRegHKEY: HKEY;
     FUseOldDefaultRoot: Boolean;
     FAppNameErrorHandled: Boolean;
     FCompanyNameErrorHandled: Boolean;
+    function GetStorageOptions: TJvAppRegistryStorageOptions;
+    procedure SetStorageOptions(const Value: TJvAppRegistryStorageOptions);
   protected
     procedure Loaded; override;
 
@@ -110,6 +120,7 @@ type
     procedure DoWriteString(const Path: string; const Value: string); override;
     function DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer); override;
+    class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -120,6 +131,8 @@ type
     property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
 
     property ReadOnly;
+    property StorageOptions: TJvAppRegistryStorageOptions read GetStorageOptions
+        write SetStorageOptions;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -514,6 +527,23 @@ begin
   SplitKeyPath(Path, SubKey, ValueName);
   CreateKey(SubKey);
   RegWriteBinary(FRegHKEY, SubKey, ValueName, Buf^, BufSize);
+end;
+
+function TJvAppRegistryStorage.GetStorageOptions: TJvAppRegistryStorageOptions;
+begin
+  Result := TJvAppRegistryStorageOptions(inherited StorageOptions);
+end;
+
+class function TJvAppRegistryStorage.GetStorageOptionsClass:
+    TJvAppStorageOptionsClass;
+begin
+  Result := TJvAppRegistryStorageOptions;
+end;
+
+procedure TJvAppRegistryStorage.SetStorageOptions(const Value:
+    TJvAppRegistryStorageOptions);
+begin
+  (Inherited StorageOptions).Assign(Value);
 end;
 
 {$IFDEF UNITVERSIONING}
