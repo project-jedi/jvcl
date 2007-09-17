@@ -65,6 +65,8 @@ type
   public
     constructor Create; override;
   published
+    //Flag to determine if a stringlist should be stored as single string and not as list of string items
+    property StoreStringListAsSingleString;
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
     property AutoEncodeValue: Boolean read GetAutoEncodeValue write SetAutoEncodeValue default True;
     property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write SetAutoEncodeEntity default True;
