@@ -9,13 +9,13 @@ eLists Delphi (delphi@elists.org)
 www.devarchive.com (needs username/password)
 
 Subject: 
-ANN: JVCL 3.32 Released!
+ANN: JVCL 3.33 Released!
 Body:
-The JVCL Team is proud to announce that the stable release of JVCL 3.32 is available for download. 
+The JVCL Team is proud to announce that the stable release of JVCL 3.33 is available for download. 
 
 JVCL is a library of more than 600 visual and non-visual components for Delphi 5, 6, 7, 2005, 2006 and 2007; C++Builder 5, 6, 2006 and 2007. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
 
-This release brings official support for C++Builder 2007.
+This release brings official support for RAD Studio 2007.
 
 This release is available in four different flavors:
 - Full install + latest JCL
@@ -23,7 +23,7 @@ This release is available in four different flavors:
 - Source and examples only
 - Source only
 
-The current version is JVCL 3.32.
+The current version is JVCL 3.33.
 
 
 The JVCL Team
