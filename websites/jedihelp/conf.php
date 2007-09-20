@@ -22,5 +22,16 @@ $cookieName = "jhelp_admin_cookie";
 // The base URL for an item image
 $itemImageBaseUrl = "itemimages/";//"http://svn.sourceforge.net/viewcvs.cgi/*checkout*/jvcl/trunk/jvcl/images/";
 
+// Use SMTP for sending emails, it's more reliable.
+$SMTP_params = array("host" => '82.235.150.75',//'server.obones.com',
+                     "IDHost" => 'project-jedi.org',
+                     "port" => "25",
+                     "auth" => true,
+                     "username" => 'jedi',
+                     "password" => 'jedimail');
+
+// Setup the path to the pear library, it makes life much easier for everyone.
+$include_path = ini_get("include_path");
+ini_set("include_path", $include_path.":pear/");
 
 ?>

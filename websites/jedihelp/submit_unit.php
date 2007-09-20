@@ -4,6 +4,7 @@
   require_once "data_access.php";
   require_once "security_utils.php";
   require_once "page_blocks.php";
+  require_once "mailer.php";
 
   StartAccessToDB();
 
@@ -93,16 +94,15 @@
     // Send the email to notify admins a new item has been submitted, if asked to do so
     if ($projectInfos["SendNotifications"]==1)
     {
-      $mailResult = mail($projectInfos["ReviewersEmails"], 
-                         "An item has been submitted: ".$_POST["name"],
-                         "Item ".$_POST["name"]." has just been submitted into jedihelp. Please review it.",
-                         "From: ".$projectInfos["AdminEmail"], 
-                         "-f".$projectInfos["AdminEmail"]);
-      if (!$mailResult)
+      $mailResult = SendEMail($projectInfos["ReviewersEmails"], 
+                              $projectInfos["AdminEmail"], 
+                              "An item has been submitted: ".$_POST["name"],
+                              "Item ".$_POST["name"]." has just been submitted into jedihelp. Please review it.");
+      if ($mailResult != "")
       {
         if ($msg != "")
           $msg .= "<BR>";
-        $msg .= "Error sending mail.";
+        $msg .= "Error sending mail: ".$mailResult;
       }
     }*/
     
