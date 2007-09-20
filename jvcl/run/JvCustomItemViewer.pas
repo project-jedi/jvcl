@@ -979,7 +979,6 @@ end;
 procedure TJvCustomItemViewer.Delete(Index: Integer);
 begin
   Deleted(Items[Index]);
-  TObject(FItems[Index]).Free;
   FItems.Delete(Index);
   if SelectedIndex >= Count then
     SelectedIndex := Count - 1;
@@ -1363,6 +1362,7 @@ end;
 
 procedure TJvCustomItemViewer.PaintWindow(DC: HDC);
 begin
+  if FUpdateCount <> 0 then Exit;
   FCanvas.Lock;
   try
     FCanvas.Handle := DC;
@@ -1422,27 +1422,12 @@ begin
 end;
 
 procedure TJvCustomItemViewer.SetCount(const Value: Integer);
-var
-  I: Integer;
-  Obj: TJvViewerItem;
 begin
   if Value <> Count then
   begin
     BeginUpdate;
     try
-      if Value = 0 then
-        Clear
-      else
-      begin
-        for I := FItems.Count - 1 downto Value - 1 do
-        begin
-          Obj := TJvViewerItem(FItems[I]);
-          FItems[I] := nil; // avoid concurrent access to a destroying item
-          FreeAndNil(Obj);
-        end;
-        FItems.Count := Value;
-        // (p3) new items are nil, but that's OK because we create them as needed
-      end;
+      FItems.Count := Value;
       if FSelectedIndex >= Value then
         FSelectedIndex := -1;
     finally
