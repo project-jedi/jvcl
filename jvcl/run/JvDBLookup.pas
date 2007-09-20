@@ -910,8 +910,8 @@ begin
       CheckNotCircular;
       FDataField := TestField;
       FMasterField := FDataField;
-      DataLinkRecordChanged(nil);
     end;
+    DataLinkRecordChanged(nil);
   end;
 end;
 
