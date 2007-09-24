@@ -74,6 +74,7 @@ uses
   JediRegInfo in 'JediRegInfo.pas';
 
 {$R *.res}
+{$R CommCtrlAsInvoker.res}
 
 begin
   {$IFDEF USE_DXGETTEXT}
