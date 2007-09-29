@@ -471,6 +471,9 @@ var
 begin
   inherited UpdateFormContents;
   FCounter := FCounter + 1;
+  if Supports(FInfoText, IJvDynControl, ITmpControl) then
+    ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
+  Caption := DialogOptions.Caption;
   if Supports(FTimeText, IJvDynControl, ITmpControl) then
     ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
   if Supports(FProgressbar, IJvDynControlProgressbar, ITmpProgressbar) then
