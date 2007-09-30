@@ -40,6 +40,7 @@ uses
 type
   TJvIgnorePropertiesStringList = class(TStringList)
   public
+    constructor Create; 
     procedure AddDelete(AItem: string; ADelete: Boolean);
   end;
 
@@ -210,6 +211,7 @@ type
 constructor TCombinedStrings.Create;
 begin
   inherited Create;
+  Sorted := True;
   FList := TList.Create;
 end;
 
@@ -290,6 +292,12 @@ end;
 
 procedure TCombinedStrings.Insert(Index: Integer; const S: string);
 begin
+end;
+
+constructor TJvIgnorePropertiesStringList.Create;
+begin
+  inherited Create;
+  Sorted := True;
 end;
 
 //=== { TJvIgnorePropertiesStringList } ======================================
@@ -374,9 +382,14 @@ begin
 end;
 
 function TJvCustomPropertyStore.GetCombinedIgnoreProperties: TStringList;
+var
+  I: Integer;
 begin
-  FCombinedIgnoreProperties.Assign(FIntIgnoreProperties);
-  FCombinedIgnoreProperties.AddStrings(FIgnoreProperties);
+  FCombinedIgnoreProperties.clear;
+  for I := 0 to FIntIgnoreProperties.Count - 1 do
+    FCombinedIgnoreProperties.Add(FIntIgnoreProperties[i]);
+  for I := 0 to FIgnoreProperties.Count - 1 do
+    FCombinedIgnoreProperties.Add(FIgnoreProperties[i]);
   Result := FCombinedIgnoreProperties;
 end;
 
