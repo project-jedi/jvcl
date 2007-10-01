@@ -46,7 +46,8 @@ type
   TJvParameterListSelectList = class;
   TJvBaseParameter = class;
 
-  TJvParameterListEvent = procedure(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter) of object;
+  TJvParameterListEvent = procedure(const ParameterList: TJvParameterList; const Parameter:
+    TJvBaseParameter) of object;
 
   TJvParameterListEnableDisableReason = class(TPersistent)
   private
@@ -135,6 +136,7 @@ type
     FHint: string;
     FTag: Integer;
     FColor: TColor;
+    FAdditionalData: Pointer;
     FEnabled: Boolean;
     FHelpContext: THelpContext;
     FDisableReasons: TJvParameterListEnableDisableReasonList;
@@ -166,9 +168,9 @@ type
 
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual;
-    function  GetHeight: Integer; virtual;
+    function GetHeight: Integer; virtual;
     procedure SetHeight(Value: Integer); virtual;
-    function  GetWidth: Integer; virtual;
+    function GetWidth: Integer; virtual;
     procedure SetWidth(Value: Integer); virtual;
     procedure SetTabOrder(Value: Integer); virtual;
 
@@ -190,10 +192,11 @@ type
     property WinControlData: Variant read GetWinControlData write SetWinControlData;
     procedure GetData; virtual;
     procedure SetData; virtual;
+    property AdditionalData: Pointer read FAdditionalData write FAdditionalData;
     property ParameterList: TJvParameterList read FParameterList write FParameterList;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine;
   published
-    {the next properties implements the possibilities to read and write the data }
+    {the next properties implements the possibilities to read and write the AdditionalData }
     property AsString: string read GetAsString write SetAsString;
     property AsDouble: Double read GetAsDouble write SetAsDouble;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
@@ -204,7 +207,8 @@ type
      this value must be defined before inserting into the parameterlist }
     property SearchName: string read FSearchName write SetSearchName;
     {should this value be saved by the parameterlist }
-    property StoreValueToAppStorage: Boolean read FStoreValueToAppStorage write FStoreValueToAppStorage;
+    property StoreValueToAppStorage: Boolean read FStoreValueToAppStorage write
+      FStoreValueToAppStorage;
     {should this value be crypted before save }
     property StoreValueCrypted: Boolean read FStoreValueCrypted write FStoreValueCrypted;
     {the searchname of the parentparameter. The parameter must be a
@@ -227,7 +231,8 @@ type
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
     property EnableReasons: TJvParameterListEnableDisableReasonList read FEnableReasons;
-    property OnEnterParameter: TJvParameterListEvent read FOnEnterParameter write FOnEnterParameter;
+    property OnEnterParameter: TJvParameterListEvent read FOnEnterParameter write
+      FOnEnterParameter;
     property OnExitParameter: TJvParameterListEvent read FOnExitParameter write FOnExitParameter;
   end;
 
@@ -278,6 +283,9 @@ type
     FParameterListSelectList: TJvParameterListSelectList;
     FOkButtonDisableReasons: TJvParameterListEnableDisableReasonList;
     FOkButtonEnableReasons: TJvParameterListEnableDisableReasonList;
+    FOnChangeParameter: TNotifyEvent;
+    FOnEnterParameter: TNotifyEvent;
+    FOnExitParameter: TNotifyEvent;
     function GetIntParameterList: TStrings;
     function AddObject(const S: string; AObject: TObject): Integer;
     procedure OnOkButtonClick(Sender: TObject);
@@ -293,7 +301,7 @@ type
     BottomPanel: TWinControl;
     ButtonPanel: TWinControl;
     OrgButtonPanelWidth,
-    OrgHistoryPanelWidth: Integer;
+      OrgHistoryPanelWidth: Integer;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetAppStoragePath(const Value: string);
     function GetAppStoragePath: string;
@@ -374,18 +382,20 @@ type
     property CurrentWidth: Integer read GetCurrentWidth;
     {returns the current height of the created main-parameter-panel}
     property CurrentHeight: Integer read GetCurrentHeight;
-    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
+    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write
+      SetDynControlEngine;
     { Property to get access to the parameters }
     property Parameters[Index: Integer]: TJvBaseParameter read GetParameters write SetParameters;
     // Enable/DisableReason for the OkButton
-    property OkButtonDisableReasons: TJvParameterListEnableDisableReasonList read FOkButtonDisableReasons write
+    property OkButtonDisableReasons: TJvParameterListEnableDisableReasonList read
+      FOkButtonDisableReasons write
       FOkButtonDisableReasons;
-    property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList read FOkButtonEnableReasons write
+    property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList read
+      FOkButtonEnableReasons write
       FOkButtonEnableReasons;
     procedure OnEnterParameterControl(Sender: TObject);
     procedure OnExitParameterControl(Sender: TObject);
     procedure OnChangeParameterControl(Sender: TObject);
-    procedure OnClickParameterControl(Sender: TObject);
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
@@ -399,14 +409,23 @@ type
     property MaxWidth: Integer read FMaxWidth write FMaxWidth default 400;
     {Maximum ClientHeight of the Dialog}
     property MaxHeight: Integer read FMaxHeight write FMaxHeight default 600;
-    property DefaultParameterHeight: Integer read FDefaultParameterHeight write FDefaultParameterHeight default 0;
-    property DefaultParameterWidth: Integer read FDefaultParameterWidth write FDefaultParameterWidth default 0;
-    property DefaultParameterLabelWidth: Integer read FDefaultParameterLabelWidth write FDefaultParameterLabelWidth default 0;
+    property DefaultParameterHeight: Integer read FDefaultParameterHeight write
+      FDefaultParameterHeight default 0;
+    property DefaultParameterWidth: Integer read FDefaultParameterWidth write FDefaultParameterWidth
+      default 0;
+    property DefaultParameterLabelWidth: Integer read FDefaultParameterLabelWidth write
+      FDefaultParameterLabelWidth default 0;
     property OkButtonVisible: Boolean read FOkButtonVisible write FOkButtonVisible;
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
     property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
     property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
+    property OnChangeParameter: TNotifyEvent read FOnChangeParameter write
+      FOnChangeParameter;
+    property OnEnterParameter: TNotifyEvent read FOnEnterParameter write
+      FOnEnterParameter;
+    property OnExitParameter: TNotifyEvent read FOnExitParameter write
+      FOnExitParameter;
   end;
 
   TJvParameterListSelectList = class(TJvAppStorageSelectList)
@@ -436,15 +455,16 @@ type
     property ParameterList: TJvParameterList read FParameterList write FParameterList;
   end;
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile:
+      '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+    );
+  {$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -457,12 +477,12 @@ const
   cTrue = 'TRUE';
   cAllowedChars: TSysCharSet =
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
+    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
 
-{$IFNDEF HAS_UNIT_VARIANTS}
+  {$IFNDEF HAS_UNIT_VARIANTS}
 type
   TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
 
@@ -470,20 +490,15 @@ function VarCompareValue(const V1, V2: Variant): TVariantRelationship;
 begin
   if VarIsNull(V1) and VarIsNull(V2) then
     Result := vrEqual
-  else
-  if VarIsNull(V1) or VarIsNull(V2) then
+  else if VarIsNull(V1) or VarIsNull(V2) then
     Result := vrNotEqual
-  else
-  if VarIsEmpty(V1) and VarIsEmpty(V2) then
+  else if VarIsEmpty(V1) and VarIsEmpty(V2) then
     Result := vrEqual
-  else
-  if VarIsEmpty(V1) or VarIsEmpty(V2) then
+  else if VarIsEmpty(V1) or VarIsEmpty(V2) then
     Result := vrNotEqual
-  else
-  if V1 = V2 then
+  else if V1 = V2 then
     Result := vrEqual
-  else
-  if V1 < V2 then
+  else if V1 < V2 then
     Result := vrLessThan
   else
     Result := vrGreaterThan;
@@ -628,7 +643,8 @@ begin
   inherited Clear;
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(const RemoteParameterName: string;
+procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(const RemoteParameterName:
+  string;
   Value: Variant);
 var
   Reason: TJvParameterListEnableDisableReason;
@@ -694,7 +710,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(const RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(const RemoteParameterName:
+  string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -704,7 +721,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(const RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(const RemoteParameterName:
+  string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -1020,14 +1038,14 @@ procedure TJvBaseParameter.GetData;
 begin
   AsVariant := Null;
   if Assigned(WinControl) then
-//    FValue := WinControlData;
+    //    FValue := WinControlData;
     AsVariant := WinControlData;
 end;
 
 procedure TJvBaseParameter.SetData;
 begin
   if Assigned(WinControl) then
-//    WinControlData := FValue;
+    //    WinControlData := FValue;
     WinControlData := AsVariant;
 end;
 
@@ -1208,7 +1226,8 @@ procedure TJvParameterList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FParameterListPropertyStore.AppStorage := Value;
   if Assigned(Value) then
-    FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.AppStoragePath, RsHistorySelectPath])
+    FParameterListSelectList.SelectPath :=
+      Value.ConcatPaths([FParameterListPropertyStore.AppStoragePath, RsHistorySelectPath])
 end;
 
 procedure TJvParameterList.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1267,6 +1286,8 @@ begin
       begin
         if Assigned(Parameters[I].OnEnterParameter) then
           Parameters[I].OnEnterParameter(Self, Parameters[I]);
+        if Assigned(OnEnterParameter) then
+          OnEnterParameter(Parameters[I]);
         Break;
       end;
 end;
@@ -1281,18 +1302,26 @@ begin
       begin
         if Assigned(Parameters[I].OnExitParameter) then
           Parameters[I].OnExitParameter(Self, Parameters[I]);
+        if Assigned(OnExitParameter) then
+          OnExitParameter(Parameters[I]);
         Break;
       end;
   HandleEnableDisable;
 end;
 
 procedure TJvParameterList.OnChangeParameterControl(Sender: TObject);
+var
+  I: Integer;
 begin
+  if Assigned(Sender) then
+    for I := 0 to Count - 1 do
+      if Parameters[I].WinControl = Sender then
+      begin
+        if Assigned(OnChangeParameter) then
+          OnChangeParameter(Parameters[I]);
+        Break;
+      end;
   HandleEnableDisable;
-end;
-
-procedure TJvParameterList.OnClickParameterControl(Sender: TObject);
-begin
 end;
 
 type
@@ -1324,19 +1353,22 @@ begin
   if Width > 0 then
     ParameterDialog.Width := Width;
 
-  BottomPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'BottomPanel', '', alBottom);
+  BottomPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'BottomPanel', '',
+    alBottom);
   if not Supports(BottomPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvRaised, 1, bsNone, 0);
 
-  MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
+  MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '',
+    alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
 
-  ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '', alRight);
+  ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '',
+    alRight);
   if not Supports(ButtonPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
@@ -1344,7 +1376,8 @@ begin
 
   OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', Messages.OkButton, '',
     OnOkButtonClick, True, False);
-  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', Messages.CancelButton, '',
+  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton',
+    Messages.CancelButton, '',
     OnCancelButtonClick, False, True);
 
   BottomPanel.Height := OkButton.Height + 6 + 2;
@@ -1373,41 +1406,49 @@ begin
 
   if HistoryEnabled and (AppStoragePath <> '') then
   begin
-    HistoryPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'HistoryPanel', '', alLeft);
+    HistoryPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'HistoryPanel', '',
+      alLeft);
     if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
       raise EIntfCastError.CreateRes(@RsEIntfCastError);
     with ITmpPanel do
       ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
     with HistoryPanel do
       Height := 25;
-    LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton', Messages.HistoryLoadButton, '',
+    LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton',
+      Messages.HistoryLoadButton, '',
       HistoryLoadClick, False, False);
     with LoadButton do
     begin
       Left := 6;
       Top := 5;
       Height := 20;
-      Width := TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
+      Width :=
+        TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
-    SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton', Messages.HistorySaveButton, '',
+    SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton',
+      Messages.HistorySaveButton, '',
       HistorySaveClick, False, False);
     with SaveButton do
     begin
       Left := ButtonLeft;
       Top := 5;
       Height := 20;
-      Width := TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
+      Width :=
+        TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
-    ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton', Messages.HistoryClearButton, '',
+    ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton',
+      Messages.HistoryClearButton, '',
       HistoryClearClick, False, False);
     with ClearButton do
     begin
       Left := ButtonLeft;
       Top := 5;
       Height := 20;
-      Width := TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) + 5;
+      Width :=
+        TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) +
+        5;
       ButtonLeft := Left + Width + 5;
     end;
     HistoryPanel.Width := ButtonLeft;
@@ -1422,30 +1463,33 @@ begin
     ResizeDialogAfterArrange(nil, Left, Top, Width, Height);
 end;
 
-procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight:
+  Integer);
 begin
-  if (Width <= 0) or (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
-    if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
-      if ArrangePanel.Width > MaxWidth then
-        TForm(ParameterDialog).ClientWidth := MaxWidth
+  if Assigned(ParameterDialog) then
+  begin
+    if (Width <= 0) or (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
+      if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
+        if ArrangePanel.Width > MaxWidth then
+          TForm(ParameterDialog).ClientWidth := MaxWidth
+        else
+          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + 5
       else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5
-    else
-      TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5;
-  if Assigned(HistoryPanel) and
-     (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
-    TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
-  else
-  if TForm(ParameterDialog).ClientWidth < ButtonPanel.Width then
-    TForm(ParameterDialog).ClientWidth := ButtonPanel.Width;
-  if (Height <= 0) or (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
-    if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
-      if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
-        TForm(ParameterDialog).ClientHeight := MaxHeight + 10
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + 5;
+    if Assigned(HistoryPanel) and
+      (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
+      TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
+    else if TForm(ParameterDialog).ClientWidth < ButtonPanel.Width then
+      TForm(ParameterDialog).ClientWidth := ButtonPanel.Width;
+    if (Height <= 0) or (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
+      if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
+        if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
+          TForm(ParameterDialog).ClientHeight := MaxHeight + 10
+        else
+          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10
       else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10
-    else
-      TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10;
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10;
+  end;
 
   if Assigned(HistoryPanel) then
     if (OrgButtonPanelWidth + OrgHistoryPanelWidth) > BottomPanel.Width then
@@ -1474,16 +1518,15 @@ begin
     Exit;
   RightPanel.Visible := False;
   ScrollBox.AutoScroll := False;
-  if (ArrangePanel.Width >= (TForm(ParameterDialog).ClientWidth)) or
-    (ArrangePanel.Height > (TForm(ParameterDialog).ClientHeight-BottomPanel.Height))then
-  begin
-    RightPanel.Visible := True;
-    TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width+4;
-    ScrollBox.AutoScroll := True;
-  end;
-//  if (ArrangePanel.Height > (ScrollBox.Height+3)) {OR
-///  (ArrangePanel.Height > MaxHeight) }then
-//    ScrollBox.AutoScroll := True;
+  if Assigned(ParameterDialog) then
+    if (ArrangePanel.Width >= (TForm(ParameterDialog).ClientWidth)) or
+      (ArrangePanel.Height > (TForm(ParameterDialog).ClientHeight - BottomPanel.Height)) then
+    begin
+      RightPanel.Visible := True;
+      TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width +
+        4;
+      ScrollBox.AutoScroll := True;
+    end;
 end;
 
 function TJvParameterList.ShowParameterDialog: Boolean;
@@ -1529,7 +1572,8 @@ begin
   end;
 end;
 
-function TJvParameterList.GetParentByName(MainParent: TWinControl; const ASearchName: string): TWinControl;
+function TJvParameterList.GetParentByName(MainParent: TWinControl; const ASearchName: string):
+  TWinControl;
 var
   Parameter: TJvBaseParameter;
   I: Integer;
@@ -1548,14 +1592,14 @@ begin
           Break;
         end;
       end;
-      //      else
-      //      if Parameters[I] is TJvTabControlParameter then
-      //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
-     //          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
-     //          begin
-     //            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
-     //            break;
-     //          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
+  //      else
+  //      if Parameters[I] is TJvTabControlParameter then
+  //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
+ //          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
+ //          begin
+ //            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
+ //            break;
+ //          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
 end;
 
 procedure TJvParameterList.HistoryLoadClick(Sender: TObject);
@@ -1587,7 +1631,8 @@ begin
         end;
 end;
 
-function TJvParameterList.GetEnableDisableReasonState(ADisableReasons: TJvParameterListEnableDisableReasonList;
+function TJvParameterList.GetEnableDisableReasonState(ADisableReasons:
+  TJvParameterListEnableDisableReasonList;
   AEnableReasons: TJvParameterListEnableDisableReasonList): Integer;
 var
   J: Integer;
@@ -1712,7 +1757,7 @@ begin
     BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
-    Width := 22;       // asn: need to check this
+    Width := 22; // asn: need to check this
     Visible := False;
   end;
   FreeAndNil(ArrangePanel);
@@ -1753,7 +1798,7 @@ begin
       end;
     for I := 0 to Count - 1 do
       if Parameters[I].Visible and
-         (Parameters[I] is TJvArrangeParameter) then
+        (Parameters[I] is TJvArrangeParameter) then
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
     HandleEnableDisable;
   finally
@@ -1761,7 +1806,6 @@ begin
   end;
   ArrangePanel.ArrangeControls;
 end;
-
 
 procedure TJvParameterList.DestroyWinControls;
 begin
@@ -1852,8 +1896,7 @@ function TJvParameterList.GetCurrentWidth: Integer;
 begin
   if Width > 0 then
     Result := Width
-  else
-  if Assigned(ArrangePanel) then
+  else if Assigned(ArrangePanel) then
     if ArrangePanel.Align in [alTop, alBottom, alClient] then
       Result := ArrangePanel.ArrangeWidth
     else
@@ -1868,8 +1911,7 @@ function TJvParameterList.GetCurrentHeight: Integer;
 begin
   if Height > 0 then
     Result := Height
-  else
-  if Assigned(ArrangePanel) then
+  else if Assigned(ArrangePanel) then
   begin
     if ArrangePanel.Align in [alLeft, alRight, alClient] then
       Result := ArrangePanel.ArrangeHeight
@@ -1904,9 +1946,11 @@ begin
                 AppStorage.EnablePropertyValueCrypt;
               if Parameters[I] is TJvListParameter then
                 with TJvListParameter(Parameters[I]) do
-                  ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
+                  ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath,
+                    SearchName]), ItemIndex)
               else
-                AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
+                AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath,
+                  SearchName]), AsString);
               if StoreValueCrypted then
                 AppStorage.DisablePropertyValueCrypt;
             end;
@@ -1927,9 +1971,11 @@ begin
                 AppStorage.EnablePropertyValueCrypt;
               if Parameters[I] is TJvListParameter then
                 with TJvListParameter(Parameters[I]) do
-                  AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
+                  AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]),
+                    ItemIndex)
               else
-                AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
+                AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]),
+                  AsString);
               if StoreValueCrypted then
                 AppStorage.DisablePropertyValueCrypt;
             end;
@@ -2017,7 +2063,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
