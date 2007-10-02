@@ -136,6 +136,7 @@ const
 
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
+function TryStrToDate(const S: string; out Date: TDateTime): Boolean;
 function TryStrToTime(const S: string; out Time: TDateTime): Boolean;
 function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -846,6 +847,16 @@ begin
   Result := True;
   try
     Date := StrToDateTime(S);
+  except
+    Result := False;
+  end;
+end;
+
+function TryStrToDate(const S: string; out Date: TDateTime): Boolean;
+begin
+  Result := True;
+  try
+    Date := StrToDate(S);
   except
     Result := False;
   end;
