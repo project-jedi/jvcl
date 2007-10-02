@@ -1860,7 +1860,7 @@ begin
     else
       NameRefs[NameCount - N] := P;
     repeat
-      Ch := WideChar(Names[I]);
+      MultiByteToWideChar(0,0,@Names[I], 1, @ch, 1);
       WideNames[I] := Ch;
       Inc(I);
     until Char(Ch) = #0;
