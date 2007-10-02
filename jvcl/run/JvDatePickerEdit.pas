@@ -443,22 +443,23 @@ begin
     try
       SysUtils.DateSeparator := FDateSeparator;
       ShortDateFormat := FInternalDateFormat;
-      try
-        if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
-          ADate := 0.0
-        else
-          ADate := StrToDate(StrRemoveChars(GetValidDateString(AText), [' ']));
+      if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
+        ADate := 0.0
+      else
+      begin
         Result := True;
-      except
-        Result := False;
         if ARaise then
-          raise
+          ADate := StrToDate(StrRemoveChars(GetValidDateString(AText), [' ']))
         else
         begin
-          if AText = '' then
-            ADate := Now
-          else
-            ADate := OldDate;
+          if not TryStrToDate(StrRemoveChars(GetValidDateString(AText), [' ']), ADate) then
+          begin
+            if AText = '' then
+              ADate := Now
+            else
+              ADate := OldDate;
+            Result := False;
+          end;
         end;
       end;
     finally
