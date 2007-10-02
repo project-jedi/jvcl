@@ -437,6 +437,7 @@ begin
   - otherwise we'd be swamped by exceptions during input}
   if AForce or Validate(AText, Dummy) then
   begin
+    Result := True;
     OldDate := ADate;
     OldFormat := ShortDateFormat;
     OldSeparator := SysUtils.DateSeparator;
@@ -447,7 +448,6 @@ begin
         ADate := 0.0
       else
       begin
-        Result := True;
         if ARaise then
           ADate := StrToDate(StrRemoveChars(GetValidDateString(AText), [' ']))
         else
