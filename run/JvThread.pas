@@ -594,7 +594,8 @@ begin
       DoBegin;
     except
       // We can't terminate right now due to discrepancy between old and recent versions of TThread
-      BaseThread.FInternalTerminate := True;
+      if Assigned(BaseThread) then
+        BaseThread.FInternalTerminate := True;
     end;
 
     if FRunOnCreate and Assigned(BaseThread) then
