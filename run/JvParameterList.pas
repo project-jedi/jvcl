@@ -393,6 +393,8 @@ type
     property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList read
       FOkButtonEnableReasons write
       FOkButtonEnableReasons;
+    {creates the components of all parameters on any TWInControl}
+    procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
     procedure OnEnterParameterControl(Sender: TObject);
     procedure OnExitParameterControl(Sender: TObject);
     procedure OnChangeParameterControl(Sender: TObject);
@@ -1789,13 +1791,7 @@ begin
     ArrangePanel.ArrangeSettings.MaxWidth := MaxWidth - RightPanel.Width - 2;
   try
     ArrangePanel.DisableArrange;
-    for I := 0 to Count - 1 do
-      if Parameters[I].Visible then
-      begin
-        Parameters[I].CreateWinControlOnParent(
-          GetParentByName(ArrangePanel, Parameters[I].ParentParameterName));
-        Parameters[I].WinControlData := Parameters[I].AsVariant;
-      end;
+    CreateWinControlsOnWinControl(ArrangePanel);
     for I := 0 to Count - 1 do
       if Parameters[I].Visible and
         (Parameters[I] is TJvArrangeParameter) then
@@ -1806,6 +1802,22 @@ begin
   end;
   ArrangePanel.ArrangeControls;
 end;
+
+procedure TJvParameterList.CreateWinControlsOnWinControl(ParameterParent:
+    TWinControl);
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
+    begin
+      Parameters[I].CreateWinControlOnParent(
+        GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
+      Parameters[I].WinControlData := Parameters[I].AsVariant;
+    end;
+end;
+
+
 
 procedure TJvParameterList.DestroyWinControls;
 begin
