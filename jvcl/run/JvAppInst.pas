@@ -160,7 +160,7 @@ procedure TJvAppInstances.Check;
 begin
   if Active and not (csDesigning in ComponentState) then
     if MaxInstances > 0 then
-      if AppInstances.InstanceCount > MaxInstances then
+      if AppInstances.InstanceIndex[GetCurrentProcessId] >= MaxInstances then  // Mantis 3990
       begin
         if GetIsRemoteInstanceActive then
         begin
