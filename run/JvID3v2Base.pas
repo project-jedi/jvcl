@@ -3001,7 +3001,7 @@ class function TJvID3BinaryFrame.CanAddFrame(AController: TJvID3Controller;
 begin
   { There may only be one 'MCDI' frame in each tag. }
   Result := ((AFrameID = fiCDID) and not AController.HasFrame(fiCDID)) or
-    inherited CanAddFrame(AController, AFrameID);
+    (AFrameID <> fiCDID) or inherited CanAddFrame(AController, AFrameID);
 end;
 
 function TJvID3BinaryFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
