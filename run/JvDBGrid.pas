@@ -1521,6 +1521,12 @@ begin
                 Delete;
             end;
             Exit;
+          end
+          else
+          begin
+            // Mantis 4231: Do not pass delete to inherited grid as it would
+            // allow deleting the row while having CanDelete set to False. 
+            Exit;
           end;
       end;
     end
