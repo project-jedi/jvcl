@@ -111,6 +111,8 @@ type
   TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char;
     const AText: string; const Pos: Integer; var IsValid: Boolean) of object;
   TJvCustomIsValidEvent = procedure(Sender: TObject; var IsValid: Boolean) of object;
+  TJvCustomDecimalRoundingEvent = procedure(Sender: TObject; var DecimalRoundedValue: Double;
+    const Value: Double) of object;
 
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private
@@ -135,6 +137,7 @@ type
     FTrimDecimals: Boolean;
     FOldFontChange: TNotifyEvent;
     FOnIsValid: TJvCustomIsValidEvent;
+    FOnDecimalRounding: TJvCustomDecimalRoundingEvent;
     FAllowEmpty: Boolean;
     FEnforcingMinMaxValue: Boolean;
     procedure DisplayText;
@@ -195,6 +198,7 @@ type
     property OnCustomValidate: TJvCustomTextValidateEvent
       read FOnCustomValidate write FOnCustomValidate;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
+    property OnDecimalRounding: TJvCustomDecimalRoundingEvent read FOnDecimalRounding write FOnDecimalRounding;
     property Value: Variant read GetValue write SetValue stored False;
     property AllowEmpty: Boolean read FAllowEmpty write FAllowEmpty;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
@@ -233,6 +237,7 @@ type
 
     property AutoSelect;
     property AutoSize;
+    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -250,6 +255,7 @@ type
     property BevelKind default bkNone;
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     property BorderStyle;
     property Caret;
     property CheckChars;
@@ -307,14 +313,15 @@ type
     property OnStartDrag;
     property OnValueChanged;
     property OnIsValid;
-
+    property OnDecimalRounding;
     property DataConnector;
   end;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile:
+      '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -804,7 +811,7 @@ end;
 
 function TJvCustomValidateEdit.GetValue: Variant;
 var
-  DisplayedText : string;
+  DisplayedText: string;
   Cur: Currency;
 begin
   case FDisplayFormat of
@@ -893,7 +900,7 @@ begin
     C := ParseString[I];
     if IsValidChar(Copy(ParseString, 1, I - 1), C, I) then
     begin
-      Result[L+1] := C;
+      Result[L + 1] := C;
       Inc(L);
     end;
   end;
@@ -952,11 +959,11 @@ begin
           3, 7, 10, 11:
             ExpectedNegPos := Length(S);
           6:
-            ExpectedNegPos := Length(S)-1;
+            ExpectedNegPos := Length(S) - 1;
           12:
             ExpectedNegPos := 3;
           13:
-            ExpectedNegPos := Length(S)-2;
+            ExpectedNegPos := Length(S) - 2;
         end;
 
         if (Key = '(') and (Posn = 1) and (NegCurrFormat in [0, 4, 14, 15]) then
@@ -1111,7 +1118,8 @@ begin
       begin
         Exponent := Copy(NewValue, I, Length(NewValue));
         Dec(I);
-      end else
+      end
+      else
       begin
         Exponent := '';
         I := Length(NewValue);
@@ -1136,6 +1144,13 @@ begin
 end;
 
 procedure TJvCustomValidateEdit.DisplayText;
+  function FormatedValue(Value: Double): Double;
+  begin
+    if Assigned(FOnDecimalRounding) then
+      FOnDecimalRounding(Self, Result, Value)
+    else
+      Result := Value;
+  end;
 begin
   // The number types need to be formatted
   if FAllowEmpty and (FEditText = '') then
@@ -1152,15 +1167,13 @@ begin
       dfInteger:
         ChangeText(IntToStr(AsInteger));
       dfFloat:
-        ChangeText(Format('%.*n', [FDecimalPlaces, AsFloat]));
+        ChangeText(Format('%.*n', [FDecimalPlaces, FormatedValue(AsFloat)]));
       dfFloatGeneral:
-        ChangeText(Format('%.*g', [FDecimalPlaces, AsFloat]));
-      dfDecimal:
-        ChangeText(FloatToStr(AsFloat));
+        ChangeText(Format('%.*g', [FDecimalPlaces, FormatedValue(AsFloat)]));
       dfScientific:
-        ChangeText(Format('%.*e', [FDecimalPlaces, AsFloat]));
+        ChangeText(Format('%.*e', [FDecimalPlaces, FormatedValue(AsFloat)]));
       dfPercent:
-        ChangeText(Format('%.*n%', [FDecimalPlaces, AsFloat]));
+        ChangeText(Format('%.*n%', [FDecimalPlaces, FormatedValue(AsFloat)]));
     else
       ChangeText(FEditText);
     end;
@@ -1209,7 +1222,7 @@ begin
   Result := Numb2Dec(BaseValue, Base);
 end;
 
-function TJvCustomValidateEdit.IntToBase(NewValue:Int64; Base: Byte): string;
+function TJvCustomValidateEdit.IntToBase(NewValue: Int64; Base: Byte): string;
 begin
   Assert(Base <= 36, RsEBaseTooBig);
   Assert(Base > 1, RsEBaseTooSmall);
@@ -1291,30 +1304,32 @@ end;
 
 procedure TJvCustomValidateEdit.SetFontColor;
 begin
-  Font.OnChange := nil;
-  case FCriticalPoints.CheckPoints of
-    cpNone:
-      Font.Color := FStandardFontColor;
-    cpMinValue:
-      if IsLower(AsFloat, FCriticalPoints.MinValue, not FCriticalPoints.MinValueIncluded) then
-        Font.Color := FCriticalPoints.ColorBelow
-      else
+  if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
+  begin
+    Font.OnChange := nil;
+    case FCriticalPoints.CheckPoints of
+      cpNone:
         Font.Color := FStandardFontColor;
-    cpMaxValue:
-      if IsGreater(AsFloat, FCriticalPoints.MaxValue, not FCriticalPoints.MaxValueIncluded) then
-        Font.Color := FCriticalPoints.ColorAbove
-      else
-        Font.Color := FStandardFontColor;
-    cpBoth:
-      if IsGreater(AsFloat, FCriticalPoints.MaxValue, not FCriticalPoints.MaxValueIncluded) then
-        Font.Color := FCriticalPoints.ColorAbove
-      else
-      if IsLower(AsFloat, FCriticalPoints.MinValue, not FCriticalPoints.MinValueIncluded) then
-        Font.Color := FCriticalPoints.ColorBelow
-      else
-        Font.Color := FStandardFontColor;
+      cpMinValue:
+        if IsLower(AsFloat, FCriticalPoints.MinValue, not FCriticalPoints.MinValueIncluded) then
+          Font.Color := FCriticalPoints.ColorBelow
+        else
+          Font.Color := FStandardFontColor;
+      cpMaxValue:
+        if IsGreater(AsFloat, FCriticalPoints.MaxValue, not FCriticalPoints.MaxValueIncluded) then
+          Font.Color := FCriticalPoints.ColorAbove
+        else
+          Font.Color := FStandardFontColor;
+      cpBoth:
+        if IsGreater(AsFloat, FCriticalPoints.MaxValue, not FCriticalPoints.MaxValueIncluded) then
+          Font.Color := FCriticalPoints.ColorAbove
+        else if IsLower(AsFloat, FCriticalPoints.MinValue, not FCriticalPoints.MinValueIncluded) then
+          Font.Color := FCriticalPoints.ColorBelow
+        else
+          Font.Color := FStandardFontColor;
+    end;
+    Font.OnChange := FontChange;
   end;
-  Font.OnChange := FontChange;
   Invalidate;
 end;
 
@@ -1346,7 +1361,7 @@ begin
   { Check the Value is within this range }
   if FHasMinValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral,
     dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
-    (AsFloat < FMinValue) and not FEnforcingMinMaxValue  then
+    (AsFloat < FMinValue) and not FEnforcingMinMaxValue then
   begin
     FEnforcingMinMaxValue := True;
     try
