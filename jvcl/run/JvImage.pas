@@ -248,8 +248,6 @@ var
 begin
   // All this code is required for Transparent, Center and other inherited
   // properties to work fine.
-  if AutoSize and (Picture.Width > 0) and (Picture.Height > 0) then
-	SetBounds(Left, Top, Picture.Width, Picture.Height);
   G := Picture.Graphic;
   if G <> nil then
   begin
