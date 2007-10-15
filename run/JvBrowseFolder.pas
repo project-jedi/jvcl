@@ -40,12 +40,7 @@ interface
 
 {$IFDEF BCB5}
 // BCB5 doesn't have the shtypes.h file, so we have to cope with it
-(*$HPPEMIT 'namespace shlobj_h'*)
-(*$HPPEMIT '{'*)
-(*$HPPEMIT '#include <shlobj.h>'*)
-(*$HPPEMIT '}'*)
-(*$HPPEMIT 'using namespace shlobj_h;'*)
-(*$HPPEMIT '#define _ITEMIDLIST shlobj_h::_ITEMIDLIST'*)
+{$HPPEMIT '#define _ITEMIDLIST ::_ITEMIDLIST'}
 {$ENDIF BCB5}
 
 uses
