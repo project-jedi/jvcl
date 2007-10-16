@@ -1896,6 +1896,7 @@ begin
     Dest.CheckBrowseMode;
   Dest.UpdateCursorPos;
   DB := Dest.GetBookmark;
+  SB := nil;
   //*****************************
   try
     //*********** Source (self) ************
@@ -1908,7 +1909,9 @@ begin
       DoBeforeApply(Dest, FRowsChanged);
     end
     else
+    begin
       SB := GetBookmark;
+    end;
     //**************************************
     try
       if RecordCount > 0 then
@@ -1921,11 +1924,9 @@ begin
       try
         while not EOF do
         begin
+          Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
           if FApplymode <> amNone then
-          begin
-            Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
             DoBeforeApplyRecord(Dest, Status, True);
-          end;
           Dest.Append;
           AssignRecord(Self, Dest, True);
           Dest.Post;
