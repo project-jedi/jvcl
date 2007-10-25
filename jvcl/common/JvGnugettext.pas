@@ -2435,27 +2435,33 @@ begin
   begin
     sl.BeginUpdate;
     try
-      TempList := TStringList.Create;
-      try
-        TempList.Assign(sl);
-        for i := 0 to TempList.Count - 1 do
-        begin
-          Line := TempList.Strings[i];
-          if Line <> '' then
-            TempList.Strings[i] := dgettext(TextDomain, Line);
-        end;
-        sl.Assign(TempList);
-      finally
-        TempList.Free;
-      end;
-{
-      for i := 0 to sl.Count - 1 do
+      if (sl.ClassType = TStrings) or (sl.ClassType = TStringList) or
+         (sl.ClassName = 'TMemoStrings') or (sl.ClassName = 'TComboBoxStrings') or
+         (sl.ClassName = 'TListBoxStrings') then
       begin
-        Line := sl.Strings[i];
-        if Line <> '' then
-          sl.Strings[i] := dgettext(TextDomain, Line);
+        TempList := TStringList.Create;
+        try
+          TempList.Assign(sl);
+          for i := 0 to TempList.Count - 1 do
+          begin
+            Line := TempList.Strings[i];
+            if Line <> '' then
+              TempList.Strings[i] := dgettext(TextDomain, Line);
+          end;
+          sl.Assign(TempList);
+        finally
+          TempList.Free;
+        end;
+      end
+      else
+      begin
+        for i := 0 to sl.Count - 1 do
+        begin
+          Line := sl.Strings[i];
+          if Line <> '' then
+            sl.Strings[i] := dgettext(TextDomain, Line);
+        end;
       end;
-      }
     finally
       sl.EndUpdate;
     end;
