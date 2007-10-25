@@ -7,8 +7,8 @@
 ;    Include_DelphiX     Include the binaries for Delphi X (X in 5..11)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
-#define JvclVersionStr "3.33.0.1"
-#define JclVersionStr "1.101."
+#define JvclVersionStr "3.33.0.0"
+#define JclVersionStr "1.102."
 #define MyAppName "Jedi Visual Component Library"
 #define MyAppVerName "Jedi Visual Component Library " + JvclVersionStr
 #define MyAppPublisher "JVCL Team"
