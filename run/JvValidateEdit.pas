@@ -237,7 +237,6 @@ type
 
     property AutoSelect;
     property AutoSize;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -255,7 +254,6 @@ type
     property BevelKind default bkNone;
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     property BorderStyle;
     property Caret;
     property CheckChars;
