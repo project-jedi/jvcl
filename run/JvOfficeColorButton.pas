@@ -39,7 +39,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
-  JvOfficeColorForm, JvOfficeColorPanel;
+  JvOfficeColorForm, JvOfficeColorPanel, JvOfficeDragBarForm;
 
 const
   MinArrowWidth = 9 + 4;
@@ -401,9 +401,9 @@ begin
 
   { Draw arrow }
   if Enabled then
-    DrawArrow(Canvas,PaintRect,ArrowColor.Enabled,ArrowDirection)
+    DrawArrow(Canvas, PaintRect, ArrowColor.Enabled, ArrowDirection)
   else
-    DrawArrow(Canvas,PaintRect,ArrowColor.Disabled,ArrowDirection);
+    DrawArrow(Canvas, PaintRect, ArrowColor.Disabled, ArrowDirection);
 end;
 
 //=== { TJvColorMainButton } =================================================
@@ -1055,7 +1055,7 @@ begin
       OnChangeProperty(Properties,PropName);
     end;
 
-    TJvOfficeColorFormAccessProtected(FColorsForm).AdjustColorForm;
+    TJvOfficeColorFormAccessProtected(FColorsForm).AdjustForm;
   end;
 end;
 
@@ -1203,7 +1203,7 @@ begin
 
   // after hold custom color, realign the form
   if Properties.HoldCustomColor and (ColorPanel.ClickColorType = cctCustomColor) then
-    FColorsForm.AdjustColorForm;
+    FColorsForm.AdjustForm;
 end;
 
 //=== { TJvOfficeColorButtonProperties } =====================================
