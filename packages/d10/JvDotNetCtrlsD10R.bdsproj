@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$49620000</Linker>
+      <Linker Name="ImageBase">$4D010000</Linker>
       <Linker Name="ExeDescription">JVCL DotNet Controls Runtime Package</Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>

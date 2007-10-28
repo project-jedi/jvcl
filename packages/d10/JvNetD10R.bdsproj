@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$499A0000</Linker>
+      <Linker Name="ImageBase">$4D3F0000</Linker>
       <Linker Name="ExeDescription">JVCL Network Components Runtime Package</Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>

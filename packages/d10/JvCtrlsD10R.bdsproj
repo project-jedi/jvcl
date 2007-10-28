@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$49280000</Linker>
+      <Linker Name="ImageBase">$4B000000</Linker>
       <Linker Name="ExeDescription">JVCL Visual Controls Runtime Package</Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>

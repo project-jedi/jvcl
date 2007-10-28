@@ -6,7 +6,7 @@
   <C6PFlags>-LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
-  <ImageBase>49280000</ImageBase>
+  <ImageBase>4B000000</ImageBase>
   <VersionMajorNumber>3</VersionMajorNumber>
   <VersionMinorNumber>31</VersionMinorNumber>
   <ReleaseNumber>0</ReleaseNumber>
