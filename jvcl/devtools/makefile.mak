@@ -18,11 +18,12 @@ JCLROOT = ..\..\..\jcl
 SRC = ..\..\Run
 ARCH = ..\..\Archive
 COM = ..\Common;..\..\Common
+RES = ..\..\Resources
 BIN = ..\Bin
 DCU = ..\Dcu
 JCL = $(JCLROOT)\source;$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx
 DRC = $&.drc
-SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
+SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU);$(RES)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = "$(ROOT)\bin\make.exe" -l+ $(QUIET)
@@ -149,7 +150,7 @@ pg.exe: PackagesGenerator\pg.dpr \
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr \
-		PackagesGenerator\AdvancedBCBForm.pas \
+		PackagesGenerator\AdvancedOptionsForm.pas \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\FileUtils.pas \
