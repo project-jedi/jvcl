@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$49260000</Linker>
+      <Linker Name="ImageBase">$4B500000</Linker>
       <Linker Name="ExeDescription">JVCL Encryption and Compression Runtime Package</Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>

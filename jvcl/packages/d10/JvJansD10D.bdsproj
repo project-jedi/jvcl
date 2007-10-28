@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$4A2A0000</Linker>
+      <Linker Name="ImageBase">$4D2C0000</Linker>
       <Linker Name="ExeDescription">JVCL Jans Components</Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>
