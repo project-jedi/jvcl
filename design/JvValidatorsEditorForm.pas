@@ -557,10 +557,12 @@ var
   PropInfo: PPropInfo;
   I, J: Integer;
   C: TControl;
+  V:TJvBaseValidator;
 begin
   if not (GetComponent(0) is TJvBaseValidator) then
     Exit;
-  C := TJvBaseValidator(GetComponent(0)).ControlToValidate;
+  V := TJvBaseValidator(GetComponent(0));
+  C := V.ControlToValidate;
   if C = nil then
     Exit;
   J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, nil);
@@ -570,6 +572,8 @@ begin
     J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, PropList);
     if J > 0 then
     try
+      if V.GetDataLink(C) <> nil then
+        Proc(cValidatorsDBValue);
       for I := 0 to J - 1 do
       begin
         PropInfo := PropList^[I];
@@ -629,10 +633,12 @@ var
   PropInfo: PPropInfo;
   I, J: Integer;
   C: TControl;
+  V:TJvControlsCompareValidator;
 begin
   if not (GetComponent(0) is TJvControlsCompareValidator) then
     Exit;
-  C := TJvControlsCompareValidator(GetComponent(0)).CompareToControl;
+  V := TJvControlsCompareValidator(GetComponent(0));
+  C := V.CompareToControl;
   if C = nil then
     Exit;
   J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, nil);
@@ -642,6 +648,10 @@ begin
     J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, PropList);
     if J > 0 then
     try
+
+      if V.GetDataLink(C) <> nil then
+        Proc(cValidatorsDBValue);
+        
       for I := 0 to J - 1 do
       begin
         PropInfo := PropList^[I];

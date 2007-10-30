@@ -59,7 +59,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
     'PropertyToValidate', TJvPropertyValidateProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
-    'PropertyToCompare', TJvPropertyToCompareProperty);
+    'CompareToProperty', TJvPropertyToCompareProperty);
   {$IFDEF COMPILER5}
   RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
     'ValidationSummary', TJvValidationSummaryProperty);
