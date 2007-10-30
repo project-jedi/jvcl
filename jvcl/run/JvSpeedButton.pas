@@ -2765,6 +2765,7 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+  FreeAndNil(GlyphCache);
   FreeAndNil(TempBrushBitmap);
 
 end.
