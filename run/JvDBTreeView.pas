@@ -186,9 +186,6 @@ type
   private
     FMasterValue: Variant;
   public
-    constructor Create(AOwner: TTreeNodes);
-    destructor Destroy; override;
-
     procedure SetMasterValue(AValue: Variant);
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); override;
     property MasterValue: Variant read FMasterValue;
@@ -337,7 +334,6 @@ begin
 end;
 
 procedure MirrorControl(Control: TWinControl; RightToLeft: Boolean);
-
 var
   OldLong: Longword;
 begin
@@ -351,8 +347,6 @@ begin
     SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
   Control.Repaint;
 end;
-
-
 
 //=== { TJvDBTreeViewDataLink } ==============================================
 
@@ -384,20 +378,10 @@ end;
 
 //=== { TJvDBTreeNode } ======================================================
 
-constructor TJvDBTreeNode.Create(AOwner: TTreeNodes);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TJvDBTreeNode.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDBTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
 var
   PersistNode: Boolean;
-  TV: TJvDBTreeView;
+  TV: TJvCustomDBTreeView;
 begin
   if Destination <> nil then
   begin
@@ -406,7 +390,7 @@ begin
     // It's even dangerous as it triggers Mantis 3934
     if not ((Parent = Destination) and (Self = Destination.GetLastChild) and (Mode = naAddChild)) then
     begin
-      TV := TreeView as TJvDBTreeView;
+      TV := TreeView as TJvCustomDBTreeView;
       PersistNode := TV.FPersistentNode;
       TV.MoveTo(Self as TJvDBTreeNode, Destination as TJvDBTreeNode, Mode);
       TV.FPersistentNode := True;
@@ -1390,7 +1374,7 @@ var
 begin
   TimerDnD.Enabled := False;
   inherited DragDrop(Source, X, Y);
-  if Source is TJvDBTreeView  then
+  if Source is TJvCustomDBTreeView then
   begin
     AnItem := GetNodeAt(X, Y);
     if ValidDataSet and (DragMode = dmAutomatic) and Assigned(Selected) and Assigned(AnItem) then
