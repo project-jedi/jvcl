@@ -723,8 +723,16 @@ function GetAppHandle: THandle;
 // Rect(0,0,12,12) (odd) is the same as calling with Rect(0,0,11,11) (even)
 // Direction defines the direction of the arrow. If Direction is akLeft, the arrow point is
 // pointing to the left
-procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
+procedure DrawArrow(Canvas: TCanvas; ARect: TRect; Color: TColor = clBlack;
+  Direction: TAnchorKind = akBottom; Margin: Integer = 0); overload;
 
+// The param X and Y is the topleft.X and topleft.Y of rect to draw arrow
+procedure DrawArrow(Canvas: TCanvas; X, Y: Integer;  Size: Integer;
+  Color: TColor = clBlack; Direction: TAnchorKind = akBottom); overload;
+
+
+procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
+  
 function IsPositiveResult(Value: TModalResult): Boolean;
 function IsNegativeResult(Value: TModalResult): Boolean;
 function IsAbortResult(const Value: TModalResult): Boolean;
@@ -6803,46 +6811,73 @@ begin
   end;
 end;
 
-procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
-var
-  I, Size: Integer;
+procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
-  Size := Rect.Right - Rect.Left;
-  if Odd(Size) then
-  begin
-    Dec(Size);
-    Dec(Rect.Right);
-  end;
-  // set to center  by dejoy
-  if RectHeight(Rect) > Size then
-    Rect.Top := Rect.Top + (RectHeight(Rect) - (Size div 2)) div 2;
+  Canvas.MoveTo(X, Y);
+  Canvas.LineTo(X2, Y2);
+end;
 
-  Rect.Bottom := Rect.Top + Size;
+procedure DrawArrow(Canvas: TCanvas; X, Y: Integer; Size: Integer;
+  Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
+begin
+  if (X >= 0) and (Y >= 0) and (Size > 0) then
+    DrawArrow(Canvas, Bounds(X, Y, Size, Size), Color, Direction, 0);
+end;
+
+procedure DrawArrow(Canvas: TCanvas; ARect: TRect; Color: TColor = clBlack;
+  Direction: TAnchorKind = akBottom; Margin: Integer = 0);
+var
+  Size: Integer;
+begin
+  RectNormalize(ARect);
+
+  if Margin <> 0 then
+    InflateRect(ARect, -Margin, -Margin);
+
+  Size := RectWidth(ARect);
+  if Odd(Size) then
+    Dec(ARect.Right);
+
+  RectSquare(ARect);
+  Size := RectWidth(ARect);
+
   Canvas.Pen.Color := Color;
   case Direction of
-    akLeft:
-      for I := 0 to Size div 2 do
+    akLeft: {Draw from right to left}
       begin
-        Canvas.MoveTo(Rect.Right - I, Rect.Top + I);
-        Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
+        ARect.Right := ARect.Right - (Size div 4); {Because rect is Square, Thus origin sub  size/4 is center}
+        while ARect.Top < ARect.Bottom {+ 1} do
+        begin
+          DrawLine(Canvas, ARect.Right, ARect.Top, ARect.Right, ARect.Bottom);
+          InflateRect(ARect, -1, -1);
+        end;
       end;
-    akRight:
-      for I := 0 to Size div 2 do
+    akRight: {Draw  from left to right}
       begin
-        Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
-        Canvas.LineTo(Rect.Left + I, Rect.Bottom - I);
+        ARect.Left := ARect.Left + (Size div 4); {Because rect is Square, Thus origin add  size/4 is center}
+        while ARect.Top < ARect.Bottom + 1 do
+        begin
+          DrawLine(Canvas, ARect.Left, ARect.Top, ARect.Left, ARect.Bottom);
+          InflateRect(ARect, -1, -1);
+        end;
       end;
-    akTop:
-      for I := 0 to Size div 2 do
+    akTop: {Draw from Bottom to top}
       begin
-        Canvas.MoveTo(Rect.Left + I, Rect.Bottom - I);
-        Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
+        ARect.Bottom := ARect.Bottom - (Size div 4); {Because rect is Square, Thus origin sub  size/4 is center}
+        while ARect.Left < ARect.Right + 1 do
+        begin
+          DrawLine(Canvas, ARect.Left, ARect.Bottom, ARect.Right, ARect.Bottom);
+          InflateRect(ARect, -1, -1);
+        end;
       end;
-    akBottom:
-      for I := 0 to Size div 2 do
+    akBottom: {Draw from top to Bottom}
       begin
-        Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
-        Canvas.LineTo(Rect.Right - I, Rect.Top + I);
+        ARect.Top := ARect.Top + (Size div 4); {Because rect is Square, Thus origin add  size/4 is center}
+        while ARect.Left < ARect.Right + 1 do
+        begin
+          DrawLine(Canvas, ARect.Left, ARect.Top, ARect.Right, ARect.Top);
+          InflateRect(ARect, -1, -1);
+        end;
       end;
   end;
 end;

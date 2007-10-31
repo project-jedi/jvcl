@@ -978,6 +978,9 @@ procedure ResourceNotFound(ResID: PChar);
 function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
 function CompareRect(const R1, R2: TRect): Boolean;
+procedure RectNormalize(var R: TRect);
+function RectIsSquare(const R: TRect): Boolean;
+function RectSquare(var ARect: TRect): Boolean;
 
 {$IFDEF MSWINDOWS}
 {$IFNDEF CLR}
@@ -8404,10 +8407,69 @@ begin
   Result := Abs(R.Bottom - R.Top);
 end;
 
+procedure RectNormalize(var R: TRect);
+var
+  Temp: Integer;
+begin
+  if R.Left > R.Right then
+  begin
+    Temp := R.Left;
+    R.Left := R.Right;
+    R.Right := Temp;
+  end;
+  if R.Top > R.Bottom then
+  begin
+    Temp := R.Top;
+    R.Top := R.Bottom;
+    R.Bottom := Temp;
+  end;
+end;
+
 function CompareRect(const R1, R2: TRect): Boolean;
 begin
   Result := (R1.Left = R2.Left) and (R1.Top = R2.Top) and
             (R1.Right = R2.Right) and (R1.Bottom = R2.Bottom);
+end;
+
+function RectIsSquare(const R: TRect): Boolean;
+begin
+  Result := RectHeight(R) = RectWidth(R);
+end;
+
+function RectSquare(var ARect: TRect): Boolean;
+var
+  iMin, iW, iH :Integer;
+  pTopLeft, pRightBottom: TPoint;
+begin
+  Result := False;
+  if IsRectEmpty(ARect) or RectIsSquare(ARect) then
+    Exit;
+
+  iW := RectWidth(ARect);
+  iH := RectHeight(ARect);
+  iMin := Min(iW, iH);
+
+  if iH <= iMin then  {rect is horizontal}
+  begin
+    pTopLeft.Y := ARect.Top;
+    pTopLeft.X := (iW - iMin) div 2;
+
+    pRightBottom.Y := pTopLeft.Y + iMin;
+    pRightBottom.X := pTopLeft.X + iMin;
+    Result := True;
+  end
+  else    {rect is vertical}
+  begin
+    pTopLeft.Y :=(iH - iMin) div 2;
+    pTopLeft.X := ARect.Left;
+
+    pRightBottom.Y := pTopLeft.Y + iMin;
+    pRightBottom.X := pTopLeft.X + iMin;
+    Result := True;
+  end;
+
+  if Result then
+    ARect := Rect(pTopLeft,pRightBottom);
 end;
 
 {$IFDEF MSWINDOWS}
