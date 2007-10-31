@@ -138,6 +138,8 @@ type
     procedure DefaultDrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); virtual;
     procedure ActivateCell(AColumn, ARow: Integer);
+
+    // protected => public
     procedure InvalidateCell(AColumn, ARow: Integer);
     procedure InvalidateCol(AColumn: Integer);
     procedure InvalidateRow(ARow: Integer);
@@ -1367,11 +1369,6 @@ var
   end;
 
 begin
-  // (p3) is this really necessary? Doesn't seem so to me...
-  //      No, it isn't... Removed by Dom
-  //if SizeOf(ColOrder) div SizeOf(I) <> ColCount then
-  //  Exit;
-
   for I := 0 to High(ColOrder) do
     if (ColOrder[I] < 0) or (ColOrder[I] >= ColCount) then
       Exit;
@@ -1382,7 +1379,7 @@ begin
     FirstRow := FixedRows;
 
   J := FirstRow;
-  Sorted := False;
+  Sorted := True;
   repeat
     Inc(J);
     for I := FirstRow to RowCount - 2 do
