@@ -8469,7 +8469,7 @@ begin
   end;
 
   if Result then
-    ARect := Rect(pTopLeft,pRightBottom);
+    ARect := Rect(pTopLeft.X, pTopLeft.Y, pRightBottom.X, pRightBottom.Y);
 end;
 
 {$IFDEF MSWINDOWS}
