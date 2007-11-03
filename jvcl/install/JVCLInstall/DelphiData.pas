@@ -846,9 +846,8 @@ begin
           PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DCPOutput']; // do not localize
           if Assigned(PropertyNode) then
             FDCPOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
-          if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
-            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBPLOutputPath'] // do not localize
-          else
+          PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBPLOutputPath']; // do not localize
+          if not Assigned(PropertyNode) then
             PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
           if Assigned(PropertyNode) then
             FBPLOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
