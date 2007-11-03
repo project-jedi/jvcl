@@ -236,7 +236,6 @@ type
   end;
 
   TJvCPUType = (cpuUnknown, cpuIntel, cpuCyrix, cpuAMD, cpuCrusoe);
-  TJvSSEVersion = (vNoSSE, vSSE1, vSSE2, vSSE3, vSSSE3);
 
   TJvCPUInfo = class(TJvReadOnlyInfo)
   private
@@ -254,7 +253,7 @@ type
     function GetIsFDIVOK: Boolean;
     function GetManufacturer: string;
     function GetMMX: Boolean;
-    function GetSSE: TJvSSEVersion;
+    function GetSSE: TSSESupports;
     function GetModel: Byte;
     function GetNormFreq: Cardinal;
     function GetRawFreq: Cardinal;
@@ -285,7 +284,7 @@ type
     procedure SetIsFDIVOK(const Value: Boolean);
     procedure SetManufacturer(const Value: string);
     procedure SetMMX(const Value: Boolean);
-    procedure SetSSE(const Value: TJvSSEVersion);
+    procedure SetSSE(const Value: TSSESupports);
     procedure SetModel(const Value: Byte);
     procedure SetNormFreq(const Value: Cardinal);
     procedure SetRawFreq(const Value: Cardinal);
@@ -318,7 +317,7 @@ type
     // CPUInfo
     property HasInstruction: Boolean read GetHasInstruction write SetHasInstruction stored False;
     property MMX: Boolean read GetMMX write SetMMX stored False;
-    property SSE: TJvSSEVersion read GetSSE write SetSSE stored False;
+    property SSE: TSSESupports read GetSSE write SetSSE stored False;
     property IsFDIVOK: Boolean read GetIsFDIVOK write SetIsFDIVOK stored False;
     property HasCacheInfo: Boolean read GetHasCacheInfo write SetHasCacheInfo stored False;
     property HasExtendedInfo: Boolean read GetHasExtendedInfo write SetHasExtendedInfo stored False;
@@ -1929,24 +1928,9 @@ begin
   Result := GetCPUSpeed.RawFreq;
 end;
 
-function TJvCPUInfo.GetSSE: TJvSSEVersion;
-var
-  ACPUInfo: TCpuInfo;
+function TJvCPUInfo.GetSSE: TSSESupports;
 begin
-  ACPUInfo := GetCPUInfo;
-  case ACPUInfo.SSE of
-    1 :  Result := vSSE1;
-    2 :  Result := vSSE2;
-    3 :
-      begin
-        if (ACPUInfo.CpuType = CPU_TYPE_INTEL)
-          and ((ACPUInfo.IntelSpecific.ExFeatures and EINTEL_SSSE3) <> 0) then
-          Result := vSSSE3
-        else
-          Result := vSSE3;
-      end;
-    else Result := vNoSSE;
-  end;
+  Result := GetCPUInfo.SSE;
 end;
 
 function TJvCPUInfo.GetStepping: Byte;
@@ -2109,7 +2093,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvCPUInfo.SetSSE(const Value: TJvSSEVersion);
+procedure TJvCPUInfo.SetSSE(const Value: TSSESupports);
 begin
   RaiseReadOnly;
 end;
