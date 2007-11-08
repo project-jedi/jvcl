@@ -406,6 +406,10 @@ var
 function IsApplicationMinimized: Boolean;
 begin
   Result := IsIconic(Application.Handle);
+  {$IFDEF COMPILER11_UP}
+  if ShowMainFormOnTaskBar and Assigned(Application.MainForm) then
+    Result := IsIconic(Application.MainForm.Handle);
+  {$ENDIF COMPILER11_UP}
 end;
 
 function GetTrayHandle: THandle;
