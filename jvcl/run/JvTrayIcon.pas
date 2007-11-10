@@ -403,13 +403,19 @@ var
        be to also delay OnMouseUp.
 }
 
+function GetHandleOnTaskBar: THandle;
+begin
+  {$IFDEF COMPILER11_UP}
+  if Application.MainFormOnTaskBar and Assigned(Application.MainForm) then
+    Result := Application.MainForm.Handle
+  else
+  {$ENDIF COMPILER11_UP}
+    Result := Application.Handle;
+end;
+
 function IsApplicationMinimized: Boolean;
 begin
-  Result := IsIconic(Application.Handle);
-  {$IFDEF COMPILER11_UP}
-  if ShowMainFormOnTaskBar and Assigned(Application.MainForm) then
-    Result := IsIconic(Application.MainForm.Handle);
-  {$ENDIF COMPILER11_UP}
+  Result := IsIconic(GetHandleOnTaskBar);
 end;
 
 function GetTrayHandle: THandle;
@@ -873,7 +879,7 @@ begin
   end;
 
   // ..and hide the taskbar button of the application
-  ShowWindow(Application.Handle, SW_HIDE);
+  ShowWindow(GetHandleOnTaskBar, SW_HIDE);
   Exclude(FVisibility, tvVisibleTaskBar);
 
   if tvAutoHideIcon in Visibility then
@@ -1275,7 +1281,7 @@ begin
 
   // Show the taskbar button of the application..
   Include(FVisibility, tvVisibleTaskBar);
-  ShowWindow(Application.Handle, SW_SHOW);
+  ShowWindow(GetHandleOnTaskBar, SW_SHOW);
 
   if not ApplicationVisible then
   begin
