@@ -2145,7 +2145,7 @@ end;
 
 procedure TJvDBGrid.StopTracking;
 begin
-  if FTracking then
+  if FTracking or FSwapButtons then
   begin
     TrackButton(-1, -1);
     FTracking := False;
@@ -2241,7 +2241,7 @@ begin
       end;
 
       if (DragKind = dkDock) and (Cell.X < IndicatorOffset) and
-        (Cell.Y < TitleOffset) and (not (csDesigning in ComponentState)) then
+        (Cell.Y < TitleOffset) and not (csDesigning in ComponentState) then
       begin
         BeginDrag(False);
         Exit;
@@ -2255,6 +2255,8 @@ begin
           Button := mbLeft;
           FSwapButtons := True;
           MouseCapture := True;
+          FPressedCol := GetMasterColumn(Cell.X, Cell.Y);
+          TrackButton(X, Y);
         end
         else
         if Button = mbLeft then
@@ -2403,7 +2405,7 @@ begin
   end;
   {$ENDIF JVCLThemesEnabled}
 
-  if FTracking then
+  if FTracking and not FSwapButtons then
     TrackButton(X, Y);
   inherited MouseMove(Shift, X, Y);
 end;
@@ -2436,6 +2438,7 @@ begin
   else
   if FSwapButtons then
   begin
+    StopTracking;
     FSwapButtons := False;
     MouseCapture := False;
     if Button = mbRight then
