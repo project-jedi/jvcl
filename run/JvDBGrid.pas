@@ -404,6 +404,7 @@ type
     procedure DrawColumnCell(const Rect: TRect; DataCol: Integer;
       Column: TColumn; State: TGridDrawState); override;
     procedure ColWidthsChanged; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure Paint; override;
     procedure CalcSizingState(X, Y: Integer; var State: TGridState;
       var Index: Longint; var SizingPos, SizingOfs: Integer;
@@ -1708,6 +1709,21 @@ begin
     TDrawGrid(Self).Options := NewOptions;
   end;
   SetMultiSelect(dgMultiSelect in Value);
+end;
+
+function TJvDBGrid.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+var
+  R: TRect;
+  Size: TSize;
+begin
+  { Fill the area between the two scroll bars. }
+  Size.cx := GetSystemMetrics(SM_CXVSCROLL);
+  Size.cy := GetSystemMetrics(SM_CYHSCROLL);
+  R := Bounds(Width - Size.cx, Height - Size.cy, Size.cx, Size.cy);
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(R);
+
+  Result := True;
 end;
 
 procedure TJvDBGrid.Paint;
