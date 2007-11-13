@@ -476,10 +476,13 @@ begin
     if FControlToValidate <> nil then
     begin
       FControlToValidate.FreeNotification(Self);
-      if Supports(FControlToValidate, IJvValidationProperty, Obj) then
-        PropertyToValidate := Obj.GetValidationPropertyName
-      else
-        PropertyToValidate := '';
+      if not (csLoading in ComponentState) then
+      begin
+        if Supports(FControlToValidate, IJvValidationProperty, Obj) then
+          PropertyToValidate := Obj.GetValidationPropertyName
+        else
+          PropertyToValidate := '';
+      end;
     end;
   end;
 end;
