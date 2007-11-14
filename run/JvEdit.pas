@@ -629,12 +629,14 @@ begin
   ParentCtl3D := Value;
 end;
 
-
-
 function TJvCustomEdit.GetPasswordChar: Char;
 begin
   if HandleAllocated then
+    {$IFDEF CLR}
+    Result := Convert.ToChar(SendMessage(Handle, EM_GETPASSWORDCHAR, 0, 0))
+    {$ELSE}
     Result := Char(SendMessage(Handle, EM_GETPASSWORDCHAR, 0, 0))
+    {$ENDIF CLR}
   else
     Result := inherited PasswordChar;
 end;
@@ -876,7 +878,11 @@ begin
   try
     ProtectPassword := False;
     if HandleAllocated then
+      {$IFDEF CLR}
+      inherited PasswordChar := Convert.ToChar(SendMessage(Handle, EM_GETPASSWORDCHAR, 0, 0));
+      {$ELSE}
       inherited PasswordChar := Char(SendMessage(Handle, EM_GETPASSWORDCHAR, 0, 0));
+      {$ENDIF CLR}
     inherited PasswordChar := Value;
   finally
     ProtectPassword := Tmp;

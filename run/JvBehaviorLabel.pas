@@ -455,12 +455,12 @@ end;
 
 procedure NeedBehaviorLabel(const ClassName: string);
 begin
-  raise EJVCLException.CreateResFmt(@RsENeedBehaviorLabel, [ClassName]);
+  raise EJVCLException.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsENeedBehaviorLabel, [ClassName]);
 end;
 
 procedure NoOwnerLabelParent(const ClassName: string);
 begin
-  raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
+  raise EJVCLException.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsENoOwnerLabelParent, [ClassName]);
 end;
 
 //=== { TJvLabelBehavior } ===================================================

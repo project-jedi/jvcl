@@ -1625,10 +1625,12 @@ end;
 {$ENDIF COMPILER6_UP}
 
 function TJvCustomComboBox.GetItemText(Index: Integer): string;
+{$IFNDEF CLR}
 var
   VL: IJvDataConsumerViewList;
   Item: IJvDataItem;
   ItemText: IJvDataItemText;
+{$ENDIF !CLR}
 begin
   {$IFNDEF CLR}
   if IsProviderSelected then
@@ -2023,7 +2025,7 @@ begin
   begin
     case Msg.Msg of
       WM_KEYDOWN:
-        if Msg.WParam in [VK_DOWN, VK_UP, VK_RIGHT, VK_LEFT, VK_F4] then
+        if Integer(Msg.WParam) in [VK_DOWN, VK_UP, VK_RIGHT, VK_LEFT, VK_F4] then
         begin
           // (rom) please english comments
           // see keelab aktiivse itemi vahetamise nooleklahvidega DDL kui CB on aktiivne

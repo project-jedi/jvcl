@@ -40,22 +40,16 @@ uses
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
-  {$IFDEF CLR}
-  Types, WinUtils, System.Reflection, System.Runtime.InteropServices,
-  System.Threading,
-  {$ENDIF CLR}
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF CLR}
+  System.Reflection, System.Runtime.InteropServices, System.Threading, System.Drawing,
+  Types, WinUtils, // must be after System.Drawing
+  {$ENDIF CLR}
   SysUtils,
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, IniFiles, MultiMon,
   Classes, // must be after "Forms"
   JvVCL5Utils, JvJCLUtils, JvAppStorage, JvTypes;
-
-
-
 
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -64,7 +58,6 @@ function IconToBitmap2(Ico: HICON; Size: Integer = 32;
   TransparentColor: TColor = clNone): TBitmap;
 function IconToBitmap3(Ico: HICON; Size: Integer = 32;
   TransparentColor: TColor = clNone): TBitmap;
-
 
 // bitmap manipulation functions
 // NOTE: Dest bitmap must be freed by caller!
@@ -87,27 +80,20 @@ procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 // hides / shows the a forms caption area
 procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 
-
 {$IFDEF MSWINDOWS}
-
 type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
 // set the background wallpaper (two versions)
-{$IFNDEF CLR}
 procedure SetWallpaper(const Path: string); overload;
-{$ENDIF !CLR}
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
 
 (* (rom) to be deleted. Use ScreenShot from JCL
-{$IFDEF VCL}
 // screen capture functions
 function CaptureScreen(IncludeTaskBar: Boolean = True): TBitmap; overload;
 function CaptureScreen(Rec: TRect): TBitmap; overload;
 function CaptureScreen(WndHandle: Longword): TBitmap; overload;
-{$ENDIF VCL}
 *)
-
 {$ENDIF MSWINDOWS}
 
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
@@ -550,16 +536,24 @@ type
     FOnChange: TNotifyEvent;
     procedure SetX(Value: Longint);
     procedure SetY(Value: Longint);
+    function GetAsPoint: TPoint;
+    procedure SetAsPoint(const Value: TPoint);
   protected
     procedure DoChange;
   public
+    procedure AssignPoint(const Source: TPoint);
+    {$IFDEF CLR} // AHUser: Delphi.NET 2007 cannot handle two Assign methods
+    procedure Assign(Source: TPersistent); override;
+    {$ELSE}
     procedure Assign(Source: TPersistent); overload; override;
-    procedure Assign(Source: TPoint); reintroduce; overload;
+    procedure Assign(const Source: TPoint); reintroduce; overload;
+    {$ENDIF CLR}
     procedure CopyToPoint(var Point: TPoint);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property X: Longint read FX write SetX default 0;
     property Y: Longint read FY write SetY default 0;
+    property AsPoint: TPoint read GetAsPoint write SetAsPoint;
   end;
 
   // equivalent of TRect, but that can be a published property
@@ -588,8 +582,13 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure AssignRect(const Source: TRect);
+    {$IFDEF CLR} // AHUser: Delphi.NET 2007 cannot handle two Assign methods
+    procedure Assign(Source: TPersistent); override;
+    {$ELSE}
     procedure Assign(Source: TPersistent); overload; override;
-    procedure Assign(Source: TRect); reintroduce; overload;
+    procedure Assign(const Source: TRect); reintroduce; overload;
+    {$ENDIF CLR}
     procedure CopyToRect(var Rect: TRect);
     property TopLeft: TJvPoint read FTopLeft write SetTopLeft;
     property BottomRight: TJvPoint read FBottomRight write SetBottomRight;
@@ -610,16 +609,24 @@ type
     FOnChange: TNotifyEvent;
     procedure SetWidth(Value: Longint);
     procedure SetHeight(Value: Longint);
+    function GetSize: TSize;
+    procedure SetSizet(const Value: TSize);
   protected
     procedure DoChange;
   public
+    procedure AssignSize(const Source: TSize);
+    {$IFDEF CLR} // AHUser: Delphi.NET 2007 cannot handle two Assign methods
+    procedure Assign(Source: TPersistent); override;
+    {$ELSE}
     procedure Assign(Source: TPersistent); overload; override;
-    procedure Assign(Source: TSize); reintroduce; overload;
+    procedure Assign(const Source: TSize); reintroduce; overload;
+    {$ENDIF CLR}
     procedure CopyToSize(var Size: TSize);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Width: Longint read FWidth write SetWidth default 0;
     property Height: Longint read FHeight write SetHeight default 0;
+    property AsSize: TSize read GetSize write SetSizet;
   end;
 
 { begin JvCtrlUtils }
@@ -835,7 +842,7 @@ type
   TJvGetGraphicClassEvent = procedure(Sender: TObject; AStream: TMemoryStream;
     var GraphicClass: TGraphicClass) of object;
 
-procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
+procedure RegisterGraphicSignature(const ASignature: AnsiString; AOffset: Integer;
   AGraphicClass: TGraphicClass); overload;
 procedure RegisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer;
   AGraphicClass: TGraphicClass); overload;
@@ -866,8 +873,11 @@ uses
   {$IFDEF MSWINDOWS}
   CommCtrl, MMSystem, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
-  Math, jpeg, Contnrs,
-  JclSysInfo,
+  Math, Contnrs,
+  {$IFNDEF CLR}
+  jpeg,
+  {$ENDIF CLR}
+  JclBase, JclSysInfo,
   JvConsts, JvProgressUtils, JvResources;
 
 {$R JvConsts.res}
@@ -907,9 +917,6 @@ begin
   Screen.Cursor := FCursor;
   inherited Destroy;
 end;
-
-
-
 
 
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -978,9 +985,7 @@ begin
   end;
 end;
 
-
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
-
 var
   Delta: Integer;
   Min, Max: Integer;
@@ -1027,7 +1032,6 @@ begin
       H := H + 360;
   end;
 end;
-
 
 
 (* (rom) to be deleted. Use ScreenShot from JCL
@@ -1103,37 +1107,42 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
 procedure SetWallpaper(const Path: string);
 begin
+  {$IFDEF CLR}
+  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Path, SPIF_UPDATEINIFILE);
+  {$ELSE}
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
+  {$ENDIF CLR}
 end;
-{$ENDIF !CLR}
 
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle);
 begin
   with TRegistry.Create do
   begin
-    OpenKey(RC_ControlRegistry, False);
-    case Style of
-      wpTile:
-        begin
-          WriteString(RC_TileWallpaper, '1');
-          WriteString(RC_WallPaperStyle, '0');
-        end;
-      wpCenter:
-        begin
-          WriteString(RC_TileWallpaper, '0');
-          WriteString(RC_WallPaperStyle, '0');
-        end;
-      wpStretch:
-        begin
-          WriteString(RC_TileWallpaper, '0');
-          WriteString(RC_WallPaperStyle, '2');
-        end;
+    try
+      OpenKey(RC_ControlRegistry, False);
+      case Style of
+        wpTile:
+          begin
+            WriteString(RC_TileWallpaper, '1');
+            WriteString(RC_WallPaperStyle, '0');
+          end;
+        wpCenter:
+          begin
+            WriteString(RC_TileWallpaper, '0');
+            WriteString(RC_WallPaperStyle, '0');
+          end;
+        wpStretch:
+          begin
+            WriteString(RC_TileWallpaper, '0');
+            WriteString(RC_WallPaperStyle, '2');
+          end;
+      end;
+      WriteString(RC_WallpaperRegistry, Path);
+    finally
+      Free;
     end;
-    WriteString(RC_WallpaperRegistry, Path);
-    Free;
   end;
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDWININICHANGE);
 end;
@@ -2167,8 +2176,6 @@ end;
 type
   TCustomControlAccessProtected = class(TCustomControl);
 
-
-
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
   DC: Windows.HDC;
@@ -2200,10 +2207,6 @@ begin
   end;
 end;
 
-
-
-
-
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
 {$IFNDEF CLR}
@@ -2230,8 +2233,6 @@ function PaletteColor(Color: TColor): Longint;
 begin
   Result := ColorToRGB(Color) or PaletteMask;
 end;
-
-
 
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 var
@@ -2288,7 +2289,6 @@ begin
   GetObject(Palette, SizeOf(Integer), @Result);
   {$ENDIF CLR}
 end;
-
 
 procedure Delay(MSecs: Int64);
 var
@@ -2459,7 +2459,6 @@ begin
   end;
 end;
 
-
 function ScreenWorkArea: TRect;
 begin
   {$IFDEF MSWINDOWS}
@@ -2481,14 +2480,11 @@ begin
   {$ENDIF CLR}
 end;
 
-
-
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
   HelpCtx: Longint): Word;
 begin
   Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
 end;
-
 
 function MsgBox(Handle: THandle; const Caption, Text: string; Flags: Integer): Integer;
 begin
@@ -2503,7 +2499,6 @@ begin
   {$ENDIF UNIX}
   {$ENDIF CLR}
 end;
-
 
 { Gradient fill procedure - displays a gradient beginning with a chosen        }
 { color and ending with another chosen color. Based on TGradientFill           }
@@ -2998,9 +2993,6 @@ end;
 
 //=== { TJvDesktopCanvas } ===================================================
 
-
-
-
 destructor TJvDesktopCanvas.Destroy;
 begin
   FreeHandle;
@@ -3138,7 +3130,7 @@ var
   CheckTaskInfo: PCheckTaskInfo;
 {$ENDIF CLR}
 
-function CheckTaskWindow(Window: HWND; Data: Longint): LongBool; {$IFNDEF CLR}stdcall;{$ENDIF}
+function CheckTaskWindow(Window: HWND; Data: LPARAM): BOOL; {$IFNDEF CLR}stdcall;{$ENDIF}
 begin
   Result := True;
   {$IFDEF CLR}
@@ -4603,7 +4595,7 @@ var
   MonInfo: TMonitorInfo;
 begin
   MonInfo.cbSize := SizeOf(MonInfo);
-  GetMonitorInfo(Monitor.Handle, @MonInfo);
+  GetMonitorInfo(Monitor.Handle, {$IFNDEF CLR}@{$ENDIF}MonInfo);
   Result := MonInfo.rcWork;
 end;
 
@@ -6925,11 +6917,19 @@ begin
     inherited Assign(Source);
 end;
 
-procedure TJvPoint.Assign(Source: TPoint);
+procedure TJvPoint.AssignPoint(const Source: TPoint);
 begin
   X := Source.X;
   Y := Source.Y;
 end;
+
+{$IFNDEF CLR}
+procedure TJvPoint.Assign(const Source: TPoint);
+begin
+  X := Source.X;
+  Y := Source.Y;
+end;
+{$ENDIF ~CLR}
 
 procedure TJvPoint.CopyToPoint(var Point: TPoint);
 begin
@@ -6943,31 +6943,40 @@ begin
     FOnChange(Self);
 end;
 
+function TJvPoint.GetAsPoint: TPoint;
+begin
+  Result := Point(FX, FY);
+end;
+
+procedure TJvPoint.SetAsPoint(const Value: TPoint);
+begin
+  if (Value.X <> FX) or (Value.Y <> FY) then
+  begin
+    FX := Value.X;
+    FY := Value.Y;
+    DoChange;
+  end;
+end;
+
 procedure TJvPoint.SetX(Value: Longint);
 begin
-  FX := Value;
-  DoChange;
+  if Value <> FX then
+  begin
+    FX := Value;
+    DoChange;
+  end;
 end;
 
 procedure TJvPoint.SetY(Value: Longint);
 begin
-  FY := Value;
-  DoChange;
+  if Value <> FY then
+  begin
+    FY := Value;
+    DoChange;
+  end;
 end;
 
 //=== { TJvRect } ============================================================
-
-procedure TJvRect.Assign(Source: TRect);
-begin
-  TopLeft.Assign(Source.TopLeft);
-  BottomRight.Assign(Source.BottomRight);
-end;
-
-procedure TJvRect.CopyToRect(var Rect: TRect);
-begin
-  TopLeft.CopyToPoint(Rect.TopLeft);
-  BottomRight.CopyToPoint(Rect.BottomRight);
-end;
 
 constructor TJvRect.Create;
 begin
@@ -6995,6 +7004,31 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+procedure TJvRect.AssignRect(const Source: TRect);
+begin
+  TopLeft.AssignPoint(Source.TopLeft);
+  BottomRight.AssignPoint(Source.BottomRight);
+end;
+
+{$IFNDEF CLR}
+procedure TJvRect.Assign(const Source: TRect);
+begin
+  TopLeft.Assign(Source.TopLeft);
+  BottomRight.Assign(Source.BottomRight);
+end;
+{$ENDIF ~CLR}
+
+procedure TJvRect.CopyToRect(var Rect: TRect);
+begin
+  {$IFDEF CLR}
+  Rect.TopLeft := TopLeft.AsPoint;
+  Rect.BottomRight := BottomRight.AsPoint;
+  {$ELSE}
+  TopLeft.CopyToPoint(Rect.TopLeft);
+  BottomRight.CopyToPoint(Rect.BottomRight);
+  {$ENDIF CLR}
 end;
 
 procedure TJvRect.DoChange;
@@ -7078,7 +7112,7 @@ begin
   FBottomRight.X := FTopLeft.X + Value;
 end;
 
-  { TJvSize }
+{ TJvSize }
 
 procedure TJvSize.Assign(Source: TPersistent);
 begin
@@ -7094,12 +7128,21 @@ begin
   end;
 end;
 
-procedure TJvSize.Assign(Source: TSize);
+procedure TJvSize.AssignSize(const Source: TSize);
 begin
   FWidth := Source.cx;
   FHeight := Source.cy;
   DoChange;
 end;
+
+{$IFNDEF CLR}
+procedure TJvSize.Assign(const Source: TSize);
+begin
+  FWidth := Source.cx;
+  FHeight := Source.cy;
+  DoChange;
+end;
+{$ENDIF ~CLR}
 
 procedure TJvSize.CopyToSize(var Size: TSize);
 begin
@@ -7111,6 +7154,22 @@ procedure TJvSize.DoChange;
 begin
   if Assigned(OnChange) then
    OnChange(Self);
+end;
+
+function TJvSize.GetSize: TSize;
+begin
+  Result.cx := FWidth;
+  Result.cy := FHeight;
+end;
+
+procedure TJvSize.SetSizet(const Value: TSize);
+begin
+  if (Value.cx <> FWidth) or (Value.cy <> FHeight) then
+  begin
+    FWidth := Value.cx;
+    FHeight := Value.cy;
+    DoChange;
+  end;
 end;
 
 procedure TJvSize.SetHeight(Value: Integer);
@@ -7658,9 +7717,7 @@ begin
       inherited DefineProperties(Filer);
   end
   else
-  begin
     inherited DefineProperties(Filer);
-  end;
 end;
 
 //=== { TGraphicSignature } ==================================================
@@ -7669,14 +7726,14 @@ end;
 type
   TGraphicSignature = class(TObject)
   public
-    Signature: string;
+    Signature: AnsiString;
     Offset: Integer;
     GraphicClass: TGraphicClass;
-    constructor Create(const ASignature: string; AOffset: Integer; AGraphicClass: TGraphicClass);
+    constructor Create(const ASignature: AnsiString; AOffset: Integer; AGraphicClass: TGraphicClass);
     function CheckSignature(AStream: TStream): Boolean;
   end;
 
-constructor TGraphicSignature.Create(const ASignature: string; AOffset: Integer; AGraphicClass: TGraphicClass);
+constructor TGraphicSignature.Create(const ASignature: AnsiString; AOffset: Integer; AGraphicClass: TGraphicClass);
 begin
   inherited Create;
   Signature := ASignature;
@@ -7686,16 +7743,20 @@ end;
 
 function TGraphicSignature.CheckSignature(AStream: TStream): Boolean;
 var
-  Buffer: string;
+  Buffer: AnsiString;
   Count: Integer;
   BytesRead: Integer;
 begin
   Result := False;
   try
     Count := Length(Signature);
-    SetLength(Buffer, Count);
     AStream.Position := Offset;
+    {$IFDEF CLR}
+    BytesRead := AStream.ReadStringAnsiBuffer(Buffer, Count);
+    {$ELSE}
+    SetLength(Buffer, Count);
     BytesRead := AStream.Read(Buffer[1], Count);
+    {$ENDIF CLR}
     Result := (BytesRead = Count) and (Buffer = Signature);
   except
     // Ignore any error...
@@ -7715,8 +7776,10 @@ begin
     RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
     RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
     RegisterGraphicSignature([1, 0], 0, TMetafile); // EMF
+    {$IFNDEF CLR} // AHUser: TJPEGImage could be reimplemented by using System.Drawing.Image
     RegisterGraphicSignature('JFIF', 6, TJPEGImage);
     RegisterGraphicSignature('Exif', 6 , TJPEGImage);
+    {$ENDIF ~CLR}
     // NB! Registering these will add a requirement on having the JvMM package installed
     // Let users register these manually
     // RegisterGraphicSignature([$0A], 0, TJvPcx);
@@ -7732,7 +7795,7 @@ begin
   end;
 end;
 
-procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer; AGraphicClass: TGraphicClass);
+procedure RegisterGraphicSignature(const ASignature: AnsiString; AOffset: Integer; AGraphicClass: TGraphicClass);
 var
   GraphicSignature: TGraphicSignature;
 begin
@@ -7754,12 +7817,9 @@ begin
 end;
 
 procedure RegisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer; AGraphicClass: TGraphicClass);
-var
-  Signature: string;
 begin
-  SetLength(Signature, Length(ASignature));
-  Move(ASignature[Low(ASignature)], Signature[1], Length(ASignature));
-  RegisterGraphicSignature(Signature, AOffset, AGraphicClass);
+  if Length(ASignature) > 0 then
+    RegisterGraphicSignature(StringOf(ASignature), AOffset, AGraphicClass);
 end;
 
 procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
@@ -7784,12 +7844,8 @@ begin
 end;
 
 procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer);
-var
-  Signature: string;
 begin
-  SetLength(Signature, Length(ASignature));
-  Move(ASignature[Low(ASignature)], Signature[1], Length(ASignature));
-  UnregisterGraphicSignature(Signature, AOffset);
+  UnregisterGraphicSignature(StringOf(ASignature), AOffset);
 end;
 
 function GetGraphicClass(AStream: TStream): TGraphicClass;

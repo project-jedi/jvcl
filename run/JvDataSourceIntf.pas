@@ -34,6 +34,9 @@ uses
   {$IFNDEF DelphiPersonalEdition}
   DB,
   {$ENDIF !DelphiPersonalEdition}
+  {$IFDEF CLR}
+  Variants,
+  {$ENDIF CLR}
   SysUtils, Classes, Contnrs;
 
 const

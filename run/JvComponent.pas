@@ -42,8 +42,6 @@ uses
   JvConsts,
   JVCLVer, JvComponentBase, JvExControls, JvExForms, JvExStdCtrls;
 
-
-
 type
   TJvGraphicControl = TJvExGraphicControl;
   TJvPubGraphicControl = TJvExPubGraphicControl;
@@ -108,20 +106,18 @@ const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
 
-
-
 //=== { TJvForm } ============================================================
 
 constructor TJvForm.Create(AOwner: TComponent);
 begin
 //  inherited Create(AOwner);
+  CreateNew(AOwner, 0);
   {$IFDEF CLR}
   GlobalNameSpace.AcquireWriterLock(MaxInt);
   {$ELSE}
   GlobalNameSpace.BeginWrite;
   {$ENDIF CLR}
   try
-    CreateNew(AOwner, 0);
     if (ClassType <> TJvForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
@@ -167,8 +163,6 @@ begin
 end;
 
 {$ENDIF USE_DXGETTEXT}
-
-
 
 procedure TJvForm.CMShowingChanged(var Message: TMessage);
 var
@@ -232,11 +226,7 @@ begin
   Visible := True;
 end;
 
-
-
 //=== { TJvPopupListBox } ====================================================
-
-
 
 procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
 begin
@@ -250,16 +240,12 @@ begin
   end;
 end;
 
-
-
 procedure TJvPopupListBox.CreateWnd;
 begin
   inherited CreateWnd;
   Windows.SetParent(Handle, 0);
   CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
 end;
-
-
 
 procedure TJvPopupListBox.KeyPress(var Key: Char);
 var

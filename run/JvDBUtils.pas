@@ -38,13 +38,39 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_VARIANTS} // CLR requires it here
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF CLR}
+  DBCtrls,
+  {$ENDIF CLR}
   Classes, SysUtils, Contnrs, DB,
   JvAppStorage;
 
 type
+  {$IFDEF CLR}
+  IJvDataControl = IDataControl;
+  TJvDataLink = TDataLink;
+
+  TJvDataSetHelper = class helper for TDataSet
+  public
+    procedure GetFieldList(List: TList; const FieldNames: string); overload;
+  end;
+  {$ENDIF CLR}
+
+  {$IFNDEF CLR}
+  IJvDataControl = interface
+    ['{8B6910C8-D5FD-40BA-A427-FC54FE7B85E5}']
+    function GetDataLink: TDataLink;
+  end;
+
+  TJvDataLink = class(TDataLink)
+  protected
+    procedure FocusControl(Field: TFieldRef); overload; override;
+    procedure FocusControl(Field: TField); reintroduce; overload; virtual;
+  end;
+  {$ENDIF ~CLR}
+
   TCommit = (ctNone, ctStep, ctAll);
   TJvDBProgressEvent = procedure(UserData: Integer; var Cancel: Boolean; Line: Integer) of object;
 
@@ -185,6 +211,34 @@ implementation
 uses
   DBConsts, Math, Controls, Forms, Dialogs,
   JvJVCLUtils, JvJCLUtils, JvTypes, JvConsts, JvResources;
+
+{$IFDEF CLR}
+procedure TJvDataSetHelper.GetFieldList(List: TList; const FieldNames: string);
+var
+  ObjList: TObjectList;
+begin
+  ObjList := TObjectList.Create(False);
+  try
+    GetFieldList(ObjList, FieldNames);
+    List.Assign(ObjList);
+  finally
+    ObjList.Free;
+  end;
+end;
+{$ENDIF CLR}
+
+{$IFNDEF CLR}
+{ TJvDataLink }
+
+procedure TJvDataLink.FocusControl(Field: TFieldRef);
+begin
+  FocusControl(Field^);
+end;
+
+procedure TJvDataLink.FocusControl(Field: TField);
+begin
+end;
+{$ENDIF ~CLR}
 
 { Utility routines }
 

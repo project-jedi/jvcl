@@ -285,7 +285,7 @@ var
 begin
   sTime := IntToStr(Hour) + TimeSeparator + IntToStr(Min) +
     TimeSeparator + IntToStr(Sec);
-  raise EConvertError.CreateResFmt(@SInvalidTime, [sTime]);
+  raise EConvertError.CreateResFmt({$IFNDEF CLR}@{$ENDIF}SInvalidTime, [sTime]);
 end;
 
 function VertEquiv(L: Integer): Integer;

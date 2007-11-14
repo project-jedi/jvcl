@@ -609,7 +609,7 @@ end;
 
 procedure TJvCustomPropertyStore.LoadProperties;
 var
-  JclMutex: TJclMutex;
+  Mutex: TJclMutex;
 
   procedure ExecuteLoadProperties;
   begin
@@ -639,19 +639,19 @@ begin
 
   if SynchronizeLoadProperties then
   begin
-    JclMutex := TJclMutex.Create(nil, False,
+    Mutex := TJclMutex.Create(nil, False,
       B64Encode(RsJvPropertyStoreMutexLoadPropertiesProcedureName + AppStoragePath));
     try
-      if JclMutex.WaitForever = wrSignaled then
+      if Mutex.WaitForever = wrSignaled then
       try
         ExecuteLoadProperties;
       finally
-        JclMutex.Release;
+        Mutex.Release;
       end
       else
-        raise Exception.CreateResFmt(@RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
+        raise Exception.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
     finally
-      FreeAndNil(JclMutex);
+      FreeAndNil(Mutex);
     end;
   end
   else
@@ -661,7 +661,7 @@ end;
 procedure TJvCustomPropertyStore.StoreProperties;
 var
   SaveProperties: Boolean;
-  JclMutex: TJclMutex;
+  Mutex: TJclMutex;
 
   procedure ExecuteStoreProperties;
   begin
@@ -702,19 +702,19 @@ begin
 
   if SynchronizeStoreProperties then
   begin
-    JclMutex := TJclMutex.Create(nil, False,
+    Mutex := TJclMutex.Create(nil, False,
       B64Encode(RsJvPropertyStoreMutexStorePropertiesProcedureName + AppStoragePath));
     try
-      if JclMutex.WaitForever = wrSignaled then
+      if Mutex.WaitForever = wrSignaled then
       try
         ExecuteStoreProperties;
       finally
-        JclMutex.Release;
+        Mutex.Release;
       end
       else
-        raise Exception.CreateResFmt(@RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
+        raise Exception.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
     finally
-      FreeAndNil(JclMutex);
+      FreeAndNil(Mutex);
     end;
   end
   else

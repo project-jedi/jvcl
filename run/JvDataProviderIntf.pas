@@ -204,15 +204,15 @@ type
 
   IJvDataItemStates = interface
     ['{5BD81E0B-DAD2-4560-943A-205E0FF2A97F}']
-    function Get_Enabled: TDataItemState;
-    procedure Set_Enabled(Value: TDataItemState);
-    function Get_Checked: TDataItemState;
-    procedure Set_Checked(Value: TDataItemState);
-    function Get_Visible: TDataItemState;
-    procedure Set_Visible(Value: TDataItemState);
-    property Enabled: TDataItemState read Get_Enabled write Set_Enabled;
-    property Checked: TDataItemState read Get_Checked write Set_Checked;
-    property Visible: TDataItemState read Get_Visible write Set_Visible;
+    function get_Enabled: TDataItemState;
+    procedure set_Enabled(Value: TDataItemState);
+    function get_Checked: TDataItemState;
+    procedure set_Checked(Value: TDataItemState);
+    function get_Visible: TDataItemState;
+    procedure set_Visible(Value: TDataItemState);
+    property Enabled: TDataItemState read get_Enabled write set_Enabled;
+    property Checked: TDataItemState read get_Checked write set_Checked;
+    property Visible: TDataItemState read get_Visible write set_Visible;
   end;
 
   IJvDataItemDesigner = interface
@@ -271,12 +271,12 @@ type
 
   IJvDataConsumerViewList = interface
     ['{F3A78F68-D998-4877-8C73-1E0D2987808D}']
-    function Get_AutoExpandLevel: Integer;
-    procedure Set_AutoExpandLevel(Value: Integer);
-    function Get_ExpandOnNewItem: Boolean;
-    procedure Set_ExpandOnNewItem(Value: Boolean);
-    function Get_LevelIndent: Integer;
-    procedure Set_LevelIndent(Value: Integer);
+    function get_AutoExpandLevel: Integer;
+    procedure set_AutoExpandLevel(Value: Integer);
+    function get_ExpandOnNewItem: Boolean;
+    procedure set_ExpandOnNewItem(Value: Boolean);
+    function get_LevelIndent: Integer;
+    procedure set_LevelIndent(Value: Integer);
     procedure RebuildView;
     procedure ExpandTreeTo(Item: IJvDataItem);
     procedure ToggleItem(Index: Integer);
@@ -298,9 +298,9 @@ type
     function SubItemIndex(Parent, Index: Integer): Integer; overload;
     function ItemGroupInfo(Index: Integer): TDynIntegerArray;
     function Count: Integer;
-    property AutoExpandLevel: Integer read Get_AutoExpandLevel write Set_AutoExpandLevel;
-    property ExpandOnNewItem: Boolean read Get_ExpandOnNewItem write Set_ExpandOnNewItem;
-    property LevelIndent: Integer read Get_LevelIndent write Set_LevelIndent;
+    property AutoExpandLevel: Integer read get_AutoExpandLevel write set_AutoExpandLevel;
+    property ExpandOnNewItem: Boolean read get_ExpandOnNewItem write set_ExpandOnNewItem;
+    property LevelIndent: Integer read get_LevelIndent write set_LevelIndent;
   end;
 
   IJvDataConsumerServerNotify = interface
