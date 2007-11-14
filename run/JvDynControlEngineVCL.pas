@@ -2987,13 +2987,8 @@ begin
 end;
 
 procedure TJvDynControlVCLTabControl.ControlCreateTab(const AName: string);
-var
-  TabSheet: TTabSheet;
 begin
-  TabSheet := TTabSheet.Create(Self);
-  TabSheet.Caption := AName;
-  TabSheet.PageControl := TPageControl(Self);
-  TabSheet.Parent := Self;
+  Tabs.Add(AName);
 end;
 
 procedure TJvDynControlVCLTabControl.ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);
