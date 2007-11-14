@@ -64,6 +64,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  WinUtils,
+  {$ENDIF CLR}
   Windows, Messages,
   Classes, Graphics, Controls, Grids, Menus, DBGrids, DB, StdCtrls,
   Contnrs,

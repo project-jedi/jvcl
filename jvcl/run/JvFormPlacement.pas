@@ -529,9 +529,8 @@ begin
         end;
       WM_NCHITTEST:
         begin
-          if Msg.Result in [HTLEFT, HTRIGHT, HTBOTTOM, HTBOTTOMRIGHT,
-            HTBOTTOMLEFT, HTTOP, HTTOPRIGHT, HTTOPLEFT]
-            then
+          if Integer(Msg.Result) in [HTLEFT, HTRIGHT, HTBOTTOM, HTBOTTOMRIGHT,
+                                     HTBOTTOMLEFT, HTTOP, HTTOPRIGHT, HTTOPLEFT] then
             Msg.Result := HTNOWHERE;
         end;
     end;

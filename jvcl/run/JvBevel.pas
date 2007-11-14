@@ -30,6 +30,9 @@ unit JvBevel;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -82,11 +85,10 @@ type
     procedure DrawBold(R: TRect; Cut: TBevelCut; EffectiveEdges: TBevelEdges);
     procedure DrawLines(InnerRect: TRect; Lines: TJvBevelLines; Vertical: Boolean);
     procedure Paint; override;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    procedure DefineProperties(Filer: TFiler); override;
   published
     property Bold: Boolean read FBold write SetBold default False;
     property Edges: TBevelEdges read FEdges write SetEdges default [beLeft, beTop, beRight, beBottom];
@@ -133,9 +135,9 @@ type
     procedure SetThickness(const Value: Byte);
   protected
     procedure DoChange; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create;
-    procedure DefineProperties(Filer: TFiler); override;
     procedure Assign(Source: TPersistent); override;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
@@ -464,7 +466,7 @@ begin
   // set ourselves, replacing the fsd prefix by be before reading the value
   try
     if Reader.ReadValue <> vaSet then
-      raise EReadError.CreateRes(@SInvalidPropertyValue);
+      raise EReadError.CreateRes({$IFNDEF CLR}@{$ENDIF}SInvalidPropertyValue);
 
     EnumType := TypeInfo(TBevelEdge);
     Edges := [];
@@ -477,7 +479,7 @@ begin
       EnumName := StringReplace(EnumName, 'fsd', 'be', []);
       Value := GetEnumValue(EnumType, EnumName);
       if Value = -1 then
-        raise EReadError.CreateRes(@SInvalidPropertyValue);
+        raise EReadError.CreateRes({$IFNDEF CLR}@{$ENDIF}SInvalidPropertyValue);
 
       Include(FEdges, TBevelEdge(Value));
     end;

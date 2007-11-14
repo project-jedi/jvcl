@@ -43,6 +43,9 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   Classes, Graphics, Controls, Forms, DB, DBCtrls,
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
@@ -56,13 +59,13 @@ type
   TGetImageEvent = procedure(Sender: TObject; IsEmpty: Boolean;
     var Graphic: TGraphic; var TextMargin: Integer) of object;
 
-  TJvDataSourceLink = class(TDataLink)
+  TJvDataSourceLink = class(TJvDataLink)
   private
     FDataControl: TJvLookupControl;
   protected
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
-    procedure FocusControl(Field: TFieldRef); override;
+    procedure FocusControl({$IFDEF CLR}const{$ENDIF} Field: TFieldRef); override;
     procedure RecordChanged(Field: TField); override;
   end;
 
@@ -353,7 +356,7 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-  TJvDBLookupCombo = class(TJvLookupControl)
+  TJvDBLookupCombo = class(TJvLookupControl, IJvDataControl)
   private
     FDataList: TJvPopupDataList;
     FButtonWidth: Integer;
@@ -389,13 +392,16 @@ type
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    {$IFNDEF CLR}
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    {$ENDIF ~CLR}
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
+    function GetDataLink: TDataLink; virtual;
     procedure FocusKilled(NextWnd: THandle); override;
     procedure BoundsChanged; override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
@@ -663,21 +669,41 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   {$IFDEF COMPILER6_UP}
   VDBConsts,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
   DBConsts, SysUtils, Math, MultiMon,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources;
 
 procedure CheckLookupFormat(const AFormat: string);
+  { AFormat is passed to a Format function, but the only allowed
+    format specifiers are %s, %S and %% }
+{$IFDEF CLR}
+var
+  I, Len: Integer;
+begin
+  Len := Length(AFormat);
+  if Len > 0 then
+  begin
+    I := PosEx(AFormat, '%', 1);
+    while I <> 0 do
+    begin
+      if I = Len then
+        raise EJVCLException.CreateRes(RsEInvalidFormatNotAllowed);
+      if not (AnsiChar(AFormat[I + 1]) in ['%', 'S', 's']) then
+        raise EJVCLException.CreateResFmt(RsEInvalidFormatsNotAllowed,
+          [QuotedStr('%' + AFormat[I + 1])]);
+      I := PosEx(AFormat, '%', I + 2);
+    end;
+  end;
+end;
+{$ELSE}
 var
   P: PChar;
 begin
-  { AFormat is passed to a Format function, but the only allowed
-    format specifiers are %s, %S and %% }
   P := StrScan(PChar(AFormat), '%');
   while Assigned(P) do
   begin
@@ -688,15 +714,36 @@ begin
     if not (P^ in ['%', 's', 'S']) then
       raise EJVCLException.CreateResFmt(@RsEInvalidFormatsNotAllowed,
         [QuotedStr('%' + P^)]);
-    P := StrScan(P + 1, '%');
+    P := StrScan(P + 2, '%');
   end;
 end;
+{$ENDIF CLR}
 
 function GetSpecifierCount(const AFormat: string): Integer;
+  { GetSpecifierCount counts the nr of format specifiers in AFormat }
+{$IFDEF CLR}
+var
+  I, Len: Integer;
+begin
+  Result := 0;
+  Len := Length(AFormat);
+  if Len > 0 then
+  begin
+    I := PosEx(AFormat, '%', 1);
+    while I <> 0 do
+    begin
+      if I = Len then
+        raise EJVCLException.CreateRes(RsEInvalidFormatNotAllowed);
+      if AnsiChar(AFormat[I + 1]) in ['S', 's'] then
+        Inc(Result);
+      I := PosEx(AFormat, '%', I + 2);
+    end;
+  end;
+end;
+{$ELSE}
 var
   P: PChar;
 begin
-  { GetSpecifierCount counts the nr of format specifiers in AFormat }
   Result := 0;
   P := StrScan(PChar(AFormat), '%');
   while Assigned(P) do
@@ -707,9 +754,10 @@ begin
     else
     if P^ in ['s', 'S'] then
       Inc(Result);
-    P := StrScan(P + 1, '%');
+    P := StrScan(P + 2, '%');
   end;
 end;
+{$ENDIF CLR}
 
 //=== { TJvDataSourceLink } ==================================================
 
@@ -731,14 +779,22 @@ begin
     FDataControl.DataLinkRecordChanged(Field);
 end;
 
-procedure TJvDataSourceLink.FocusControl(Field: TFieldRef);
+procedure TJvDataSourceLink.FocusControl({$IFDEF CLR}const{$ENDIF}Field: TFieldRef);
 begin
+  {$IFDEF CLR}
+  if (Field <> nil) and (FDataControl <> nil) and
+    (Field = FDataControl.FDataField) and FDataControl.CanFocus then
+  begin
+    FDataControl.SetFocus;
+  end;
+  {$ELSE}
   if (Field^ <> nil) and (FDataControl <> nil) and
     (Field^ = FDataControl.FDataField) and FDataControl.CanFocus then
   begin
     Field^ := nil;
     FDataControl.SetFocus;
   end;
+  {$ENDIF CLR}
 end;
 
 //=== { TLookupSourceLink } ==================================================
@@ -903,7 +959,7 @@ begin
   if FDataLink.Active and (FDataFieldName <> '') then
   begin
     TestField := FDataLink.DataSet.FieldByName(FDataFieldName);
-    if Pointer(FDataField) <> Pointer(TestField) then
+    if FDataField <> TestField then
     begin
       FDataField := nil;
       FMasterField := nil;
@@ -1060,9 +1116,9 @@ begin
       if FListFields.Count = 0 then
         FListFields.Add(FKeyField);
       if (FDisplayIndex >= 0) and (FDisplayIndex < FListFields.Count) then
-        FDisplayField := FListFields[FDisplayIndex]
+        FDisplayField := TField(FListFields[FDisplayIndex])
       else
-        FDisplayField := FListFields[0];
+        FDisplayField := TField(FListFields[0]);
     end;
     { Reset LookupFormat if the number of specifiers > fields count
       else function Format will raise an error }
@@ -3371,9 +3427,16 @@ begin
   Invalidate;
 end;
 
+{$IFNDEF CLR}
 procedure TJvDBLookupCombo.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Integer(FDataLink);
+end;
+{$ENDIF ~CLR}
+
+function TJvDBLookupCombo.GetDataLink: TDataLink;
+begin
+  Result := FDataLink;
 end;
 
 procedure TJvDBLookupCombo.WMCancelMode(var Msg: TMessage);

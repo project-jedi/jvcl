@@ -70,11 +70,11 @@ type
     procedure Change; dynamic;
     procedure CalcKey(var Key: Char); dynamic;
     procedure DisplayChange; dynamic;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: Boolean; override;
-    procedure DefineProperties(Filer: TFiler);override;
 
     property CalcDisplay: Double read GetDisplay;
     property Memory: Double read FMemory;
@@ -456,7 +456,6 @@ end;
 procedure TJvCalculator.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-
   Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
 end;
 

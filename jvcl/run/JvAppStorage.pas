@@ -88,6 +88,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   System.IO,
+  Variants, // necessary for automatic string<-variant typecast
   {$ELSE}
   {$IFDEF COMPILER9_UP}
   Windows,
@@ -2511,7 +2512,7 @@ begin
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
     tkVariant:
-      SetStrProp(PersObj, PropName, ReadString(Path, GetVariantProp (PersObj, PropName)));
+      SetStrProp(PersObj, PropName, ReadString(Path, GetVariantProp(PersObj, PropName)));
     tkSet:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
@@ -2575,7 +2576,11 @@ var
     Default: LongInt;
   begin
     Value := GetOrdProp(PersObj, PropInfo);
+    {$IFDEF CLR}
+    Default := GetOrdPropDefault(PropInfo);
+    {$ELSE}
     Default := PPropInfo(PropInfo)^.Default;
+    {$ENDIF CLR}
     Result := (Default <> LongInt($80000000)) and (Value = Default);
   end;
 
@@ -2618,8 +2623,12 @@ begin
   // Note: we do not add a call to IsDefaultPropertyValue here because it would
   // return True for any sub component which is not desirable as we want to
   // always store sub classes whether they are components or not.
-  if not StorageOptions.StoreDefaultValues and
-    (not Assigned(P^.GetProc) or not Assigned(P^.SetProc) or
+  if not StorageOptions.StoreDefaultValues and (
+    {$IFDEF CLR}
+    not CanRead(P) or not CanWrite(P) or
+    {$ELSE}
+    not Assigned(P.GetProc) or not Assigned(P.SetProc) or
+    {$ENDIF CLR}
     not IsStoredProp(PersObj, P)) then
     Exit;
 
@@ -2642,7 +2651,7 @@ begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
           TmpValue := GetOrdProp(PersObj, PropName);
-          WriteEnumeration(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+          WriteEnumeration(Path, P.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
         end;
       end;
     tkSet:
@@ -2650,7 +2659,7 @@ begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
           TmpValue := GetOrdProp(PersObj, PropName);
-          WriteSet(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+          WriteSet(Path, P.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
         end;
       end;
     tkChar, tkInteger:
@@ -2660,7 +2669,7 @@ begin
           if StorageOptions.TypedIntegerAsString then
           begin
             TmpValue := GetOrdProp(PersObj, PropName);
-            WriteEnumeration(Path, P^.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
+            WriteEnumeration(Path, P.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
           end
           else
           begin
@@ -2971,7 +2980,7 @@ begin
         JclMutex.Release;
       end
       else
-        raise Exception.CreateResFmt(@RsJvAppStorageSynchronizeTimeout, [RsJvAppStorageSynchronizeProcedureName+AIdentifier]);
+        raise Exception.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsJvAppStorageSynchronizeTimeout, [RsJvAppStorageSynchronizeProcedureName+AIdentifier]);
     finally
       FreeAndNil(JclMutex);
     end;

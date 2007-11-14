@@ -436,7 +436,11 @@ begin
     begin
       if PeekMessage(Msg, GetEditHandle, 0, 0, PM_NOREMOVE) and (Msg.Message = WM_CHAR) then
       begin
+        {$IFDEF CLR}
+        if SelectItem(SaveText + Convert.ToChar(Msg.WParam)) then
+        {$ELSE}
         if SelectItem(SaveText + Char(Msg.WParam)) then
+        {$ENDIF CLR}
         begin
           PeekMessage(Msg, GetEditHandle, 0, 0, PM_REMOVE);
           Key := #0;

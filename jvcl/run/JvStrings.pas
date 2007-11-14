@@ -38,9 +38,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
   Graphics,
   SysUtils, Classes;
 
@@ -78,8 +75,8 @@ function XMLSafe(const AText: string): string;
 function Hash(const AText: string): Integer;
 
 { Base64 encode and decode a string }
-function B64Encode(const S: string): string;
-function B64Decode(const S: string): string;
+function B64Encode(const S: AnsiString): string;
+function B64Decode(const S: string): AnsiString;
 
 {Basic encryption from a Borland Example}
 function Encrypt(const InString: string; StartKey, MultKey, AddKey: Integer): string;
@@ -229,6 +226,10 @@ const
 implementation
 
 uses
+  JclBase,
+  {$IFDEF CLR}
+  WinUtils,
+  {$ENDIF CLR}
   JvConsts, JvResources, JvTypes;
 
 const
@@ -277,7 +278,11 @@ procedure SaveString(const AFile, AText: string);
 begin
   with TFileStream.Create(AFile, fmCreate) do
   try
+    {$IFDEF CLR}
+    WriteStringAnsiBuffer(AText);
+    {$ELSE}
     WriteBuffer(AText[1], Length(AText));
+    {$ENDIF CLR}
   finally
     Free;
   end;
@@ -289,8 +294,12 @@ var
 begin
   with TFileStream.Create(AFile, fmOpenRead) do
   try
+    {$IFDEF CLR}
+    ReadStringAnsiBuffer(S, Size);
+    {$ELSE}
     SetLength(S, Size);
     ReadBuffer(S[1], Size);
+    {$ENDIF CLR}
   finally
     Free;
   end;
@@ -1043,27 +1052,24 @@ end;
 
 procedure LoadResourceFile(AFile: string; MemStream: TMemoryStream);
 var
-  HResInfo: HRSRC;
-  HGlobal: THandle;
-  Buffer, GoodType: PChar;
+  ResStream: TResourceStream;
   Ext: string;
 begin
   Ext := UpperCase(ExtractFileExt(AFile));
   Ext := Copy(Ext, 2, Length(Ext));
   if Ext = 'HTM' then
     Ext := 'HTML';
-  GoodType := PChar(Ext);
   AFile := ChangeFileExt(AFile, '');
-  HResInfo := FindResource(HInstance, PChar(AFile), GoodType);
-  HGlobal := LoadResource(HInstance, HResInfo);
-  if HGlobal = 0 then
-    raise EResNotFound.CreateResFmt(@RsECannotLoadResource, [AFile]);
-  Buffer := LockResource(HGlobal);
-  MemStream.Clear;
-  MemStream.WriteBuffer(Buffer[0], SizeOfResource(HInstance, HResInfo));
-  MemStream.Seek(0, 0);
-  UnlockResource(HGlobal);
-  FreeResource(HGlobal);
+  {$IFDEF CLR}
+  ResStream := TResourceStream.Create(HInstance, AFile, Ext);
+  {$ELSE}
+  ResStream := TResourceStream.Create(HInstance, PChar(AFile), PChar(Ext));
+  {$ENDIF CLR}
+  try
+    MemStream.CopyFrom(ResStream, ResStream.Size);
+  finally
+    ResStream.Free;
+  end;
 end;
 
 procedure GetNames(AText: string; AList: TStringList);
@@ -1130,6 +1136,15 @@ begin
 end;
 
 function PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
+{$IFDEF CLR}
+begin
+  if (FindString = nil) or (FindString <> '') or
+     (SourceString = nil) or (SourceString = '') then
+    Result := 0
+  else
+    Result := SourceString.IndexOf(FindString, StartPos - 1) + 1;
+end;
+{$ELSE}
 asm
         PUSH    ESI
         PUSH    EDI
@@ -1178,8 +1193,18 @@ asm
         POP     EDI
         POP     ESI
 end;
+{$ENDIF CLR}
 
 function PosText(const FindString, SourceString: string; StartPos: Integer): Integer;
+{$IFDEF CLR}
+begin
+  if (FindString = nil) or (FindString <> '') or
+     (SourceString = nil) or (SourceString = '') then
+    Result := 0
+  else
+    Result := SourceString.IndexOf(FindString, StartPos - 1, StringComparison.OrdinalIgnoreCase) + 1;
+end;
+{$ELSE}
 asm
         PUSH    ESI
         PUSH    EDI
@@ -1239,10 +1264,11 @@ asm
         POP     EDI
         POP     ESI
 end;
+{$ENDIF CLR}
 
 function GetBoolValue(const AText, AName: string): Boolean;
 begin
-  Result := LowerCase(GetValue(AText, AName)) = 'yes';
+  Result := CompareText(GetValue(AText, AName), 'yes') = 0;
 end;
 
 procedure ListSelect(Src, Dst: TStringList; const AKey, AValue: string);
@@ -1376,7 +1402,21 @@ begin
   end;
 end;
 
-function B64Encode;
+{$IFDEF CLR}
+
+function B64Encode(const S: AnsiString): string;
+begin
+  Result := System.Convert.ToBase64String(BytesOf(S));
+end;
+
+function B64Decode(const S: string): AnsiString;
+begin
+  Result := System.Convert.FromBase64String(S);
+end;
+
+{$ELSE}
+
+function B64Encode(const S: AnsiString): string;
 var
   I: Integer;
   InBuf: array [0..2] of Byte;
@@ -1405,7 +1445,7 @@ begin
     Result[Length(Result)] := '=';
 end;
 
-function B64Decode(const S: string): string;
+function B64Decode(const S: string): AnsiString;
 var
   I: Integer;
   InBuf: array [0..3] of Byte;
@@ -1413,7 +1453,7 @@ var
   RetValue: string;
 begin
   if ((Length(S) mod 4) <> 0) or (S = '') then
-    raise EJVCLException.CreateRes(@RsEIncorrectStringFormat);
+    raise EJVCLException.CreateRes({$IFNDEF CLR}@{$ENDIF}RsEIncorrectStringFormat);
 
   SetLength(RetValue, ((Length(S) div 4) - 1) * 3);
   for I := 1 to ((Length(S) div 4) - 1) do
@@ -1618,6 +1658,8 @@ begin
   end;
   Result := RetValue;
 end;
+
+{$ENDIF CLR}
 
 {*******************************************************
  * Standard Encryption algorithm - Copied from Borland *

@@ -87,7 +87,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
-  System.Text, System.Security, System.Runtime.InteropServices,
+  System.Text, System.Security, System.Runtime.InteropServices, System.Reflection,
   {$ENDIF CLR}
   Windows, Messages, SysUtils, Classes, Controls, Menus, StdCtrls, TypInfo,
   JvTypes;
@@ -489,7 +489,13 @@ begin
   Result := Edit.Handle;
   {$IFDEF COMPILER6_UP} // Delphi 5 is not supported
   if Edit is TCustomCombo then
+  begin
+    {$IFDEF CLR}
+    Result := THandle(Edit.GetType.GetField('FEditHandle', BindingFlags.Instance or BindingFlags.NonPublic).GetValue(Edit));
+    {$ELSE}
     Result := TOpenCustomCombo(Edit).FEditHandle;
+    {$ENDIF CLR}
+  end;
   {$ENDIF COMPILER6_UP}
 end;
 

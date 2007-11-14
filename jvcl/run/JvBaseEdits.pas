@@ -87,7 +87,7 @@ type
   protected
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
-    procedure SetText(const AValue: string);  virtual;
+    procedure SetText(const AValue: string); {$IFDEF CLR} reintroduce; {$ENDIF} virtual;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;

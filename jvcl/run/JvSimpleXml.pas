@@ -92,7 +92,18 @@ type
   TJvSimpleXMLEncodeStreamEvent = TJclSimpleXMLEncodeStreamEvent;
 
   // to have access to the protected methods
-  TJclHackSimpleXML = class(TJclSimpleXML) end;
+  TJclHackSimpleXML = class(TJclSimpleXML)
+  {$IFDEF CLR} // .NET does not allow the cracker classes to access protected members over assembly boundaries
+  public
+    procedure DoLoadProgress(const APosition, ATotal: Integer);
+    procedure DoSaveProgress;
+    procedure DoTagParsed(const AName: string);
+    procedure DoValueParsed(const AName, AValue: string);
+
+    procedure DoEncodeValue(var Value: string); reintroduce;
+    procedure DoDecodeValue(var Value: string); reintroduce;
+  {$ENDIF CLR}
+  end;
 
   TJvSimpleXML = class(TComponent)
   private
@@ -472,6 +483,41 @@ procedure TJvSimpleXML.SetRoot(const Value: TJclSimpleXMLElemClassic);
 begin
   FJclSimpleXML.Root := Value;
 end;
+
+{$IFDEF CLR}
+{ TJclHackSimpleXML }
+
+procedure TJclHackSimpleXML.DoDecodeValue(var Value: string);
+begin
+  inherited DoDecodeValue(Value);
+end;
+
+procedure TJclHackSimpleXML.DoEncodeValue(var Value: string);
+begin
+  inherited DoEncodeValue(Value);
+end;
+
+procedure TJclHackSimpleXML.DoLoadProgress(const APosition, ATotal: Integer);
+begin
+  inherited DoLoadProgress(APosition, ATotal);
+end;
+
+procedure TJclHackSimpleXML.DoSaveProgress;
+begin
+  inherited DoSaveProgress;
+end;
+
+procedure TJclHackSimpleXML.DoTagParsed(const AName: string);
+begin
+  inherited DoTagParsed(AName);
+end;
+
+procedure TJclHackSimpleXML.DoValueParsed(const AName, AValue: string);
+begin
+  inherited DoValueParsed(AName, AValue);
+end;
+
+{$ENDIF CLR}
 
 initialization
   {$IFDEF UNITVERSIONING}

@@ -28,9 +28,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-// (ahuser) No dependency on JCL units. Required functions are emulated.
-{$DEFINE NO_JCL}
-
 unit JvJCLUtils;
 
 {$I jvcl.inc}
@@ -40,8 +37,6 @@ interface
 
 // (p3) note: this unit should only contain JCL compatible routines (no Forms etc)
 // and no JVCL units!
-// (ahuser) Unfortunately the QGraphics unit imports the QForms unit. Because
-//          the JCL has the same problem with CLX it should not make any difference.
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -54,12 +49,6 @@ uses
   Types, System.Text, System.Security, System.IO, System.Threading,
   System.Reflection, System.Diagnostics, System.Runtime.InteropServices,
   {$ENDIF CLR}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF UNIX}
-  Xlib,
-  {$ENDIF UNIX}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -105,7 +94,7 @@ function GetProtectedObjectEvent(Instance: TObject; const EventName: string): De
 
 [SuppressUnmanagedCodeSecurity, DllImport(user32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'SystemParametersInfo')]
 function SystemParametersInfo(uiAction, uiParam: UINT;
-  var pvParam: TNonClientMetrics; fWinIni: UINT): BOOL; overload; external;
+  pvParam: string; fWinIni: UINT): BOOL; overload; external;
 
 { These EnumFontFamilies and EnumFonts declarations are modified versions that
   allow to specify an Object as Param value. They are used for .NET exclusivly. }
@@ -131,7 +120,7 @@ function EnumFonts(DC: HDC; lpszFace: string; fntenmprc: TFNFontEnumObjProc;
 function EnumFonts(DC: HDC; lpszFace: IntPtr; fntenmprc: TFNFontEnumObjProc;
   LParam: TObject): Integer; overload; external;
 
-function AnsiLastChar(const S: string): Char;
+function AnsiLastChar(const S: AnsiString): AnsiChar;
 {$ENDIF CLR}
 
 function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer; // ANSI-Stream
@@ -501,7 +490,6 @@ function CreateIconFromClipboard: TIcon;
 { begin JvIconClipboardUtils }
 { Icon clipboard routines }
 function CF_ICON: Word;
-{$IFNDEF CLR}
 procedure AssignClipboardIcon(Icon: TIcon);
 
 { Real-size icons support routines (32-bit only) }
@@ -511,7 +499,6 @@ procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 {end JvIconClipboardUtils }
 
 function CreateScreenCompatibleDC: HDC;
-{$ENDIF !CLR}
 
 
 { begin JvRLE }
@@ -873,7 +860,7 @@ Comments:
   I have tried to group related functions together
 }
 
-function CharIsMoney(const Ch: AnsiChar): Boolean;
+function CharIsMoney(const Ch: Char): Boolean;
 
 { there is a STrToIntDef provided by Delphi, but no "safe" versions of
   StrToFloat or StrToCurr }
@@ -1219,7 +1206,7 @@ type
     function GetItem(Index: Integer): Integer;
     procedure SetItem(Index: Integer; const Value: Integer);
   protected
-    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    procedure Notify(Ptr: {$IFDEF CLR}TObject{$ELSE}Pointer{$ENDIF}; Action: TListNotification); override;
     procedure DoChange(Item: Integer; Action: TListNotification);
   public
     {$IFDEF COMPILER5}
@@ -1274,9 +1261,7 @@ uses
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   Consts,
-  {$IFNDEF NO_JCL}
   JclStrings, JclSysInfo,
-  {$ENDIF !NO_JCL}
   Math;
 
 {$IFDEF CLR}
@@ -1299,58 +1284,6 @@ resourcestring
   RsEPropertyNotExists = 'Property "%s" does not exist';
   RsEInvalidPropertyType = 'Property "%s" has invalid type';
   RsEPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
-
-{$IFDEF NO_JCL}
-
-  // These are the replacement functions for the JCL.
-
-const
-  AnsiSpace = AnsiChar(#32);
-  AnsiForwardSlash = AnsiChar('/');
-
-function StrIPos(const SubStr, S: string): Integer;
-begin
-  {$IFDEF CLR}
-  Result := S.ToLower().IndexOf(SubStr.ToLower());
-  {$ELSE}
-  Result := Pos(AnsiLowerCase(SubStr), AnsiLowerCase(S));
-  {$ENDIF CLR}
-end;
-
-function CharIsDigit(Ch: AnsiChar): Boolean;
-begin
-  Result := Ch in ['0'..'9'];
-end;
-
-function CharIsNumber(Ch: AnsiChar): Boolean;
-begin
-  Result := Ch in ['0'..'9'];
-end;
-
-function CharIsAlpha(Ch: AnsiChar): Boolean;
-begin
-  Result := Windows.IsCharAlpha(Char(Ch));
-end;
-
-{$IFDEF MSWINDOWS}
-function GetRecentFolder: string;
-{$IFDEF CLR}
-begin
-  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Recent);
-end;
-{$ELSE}
-var
-  ItemIDList: PItemIDList;
-begin
-  OleCheck(SHGetSpecialFolderLocation(0, CSIDL_RECENT, ItemIDList));
-  SetLength(Result, MAX_PATH);
-  SHGetPathFromIDList(ItemIDList, PChar(Result));
-  SetLength(Result, Length(PChar(Result)));
-end;
-{$ENDIF CLR}
-{$ENDIF MSWINDOWS}
-
-{$ENDIF NO_JCL}
 
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 {$IFDEF CLR}
@@ -1464,7 +1397,7 @@ begin
   end;
 end;
 
-function AnsiLastChar(const S: string): Char;
+function AnsiLastChar(const S: AnsiString): AnsiChar;
 begin
   if (S <> nil) and (S <> '') then
     Result := S[Length(S)]
@@ -1508,21 +1441,21 @@ begin
   if (DecimalSeparator <> '.') or (ThousandSeparator <> ',') then
   begin
     for I := 0 to Length(Result) do
-      {$IFNDEF CLR}
-      case Result[I] of
-        '.':
-          Result[I] := DecimalSeparator;
-        ',':
-          Result[I] := ThousandSeparator;
-      end;
-      {$ELSE}
+      {$IFDEF CLR}
       case Result[I] of
         '.':
           Result[I] := DecimalSeparator[1];
         ',':
           Result[I] := ThousandSeparator[1];
       end;
-      {$ENDIF !CLR}
+      {$ELSE}
+      case Result[I] of
+        '.':
+          Result[I] := DecimalSeparator;
+        ',':
+          Result[I] := ThousandSeparator;
+      end;
+      {$ENDIF CLR}
   end;
 end;
 
@@ -4369,7 +4302,6 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
 procedure OutOfResources;
 begin
   raise EOutOfResources.Create(SOutOfResources);
@@ -4383,7 +4315,7 @@ var
 begin
   Mem1 := CreateCompatibleDC(NullHandle);
   Mem2 := CreateCompatibleDC(NullHandle);
-  GetObject(Src, SizeOf(Bitmap), @Bitmap);
+  GetObject(Src, SizeOf(Bitmap), {$IFNDEF CLR}@{$ENDIF}Bitmap);
   if Mono then
     Result := CreateBitmap(Size.X, Size.Y, 1, 1, nil)
   else
@@ -4414,7 +4346,6 @@ begin
   DeleteDC(Mem2);
 end;
 
-{$IFDEF MSWINDOWS}
 procedure TwoBitsFromDIB(var BI: TBitmapInfoHeader; var XorBits, AndBits: HBITMAP);
 type
   PLongArray = ^TLongArray;
@@ -4581,9 +4512,6 @@ begin
     FreeMem(List, HeaderLen);
   end;
 end;
-{$ENDIF MSWINDOWS}
-
-
 
 procedure GetIconSize(Icon: HICON; var W, H: Integer);
 var
@@ -4595,14 +4523,14 @@ begin
     try
       if IconInfo.hbmColor <> 0 then
       begin
-        GetObject(IconInfo.hbmColor, SizeOf(BM), @BM);
+        GetObject(IconInfo.hbmColor, SizeOf(BM), {$IFNDEF CLR}@{$ENDIF}BM);
         W := BM.bmWidth;
         H := BM.bmHeight;
       end
       else
       if IconInfo.hbmMask <> 0 then
       begin { Monochrome icon }
-        GetObject(IconInfo.hbmMask, SizeOf(BM), @BM);
+        GetObject(IconInfo.hbmMask, SizeOf(BM), {$IFNDEF CLR}@{$ENDIF}BM);
         W := BM.bmWidth;
         H := BM.bmHeight shr 1; { Size in record is doubled }
       end
@@ -4635,7 +4563,13 @@ begin
   try
     Icon.SaveToStream(Mem);
     Mem.Position := 0;
+    {$IFDEF CLR}
+    Mem.Read(CI.Reserved);
+    Mem.Read(CI.wType);
+    Mem.Read(CI.Count);
+    {$ELSE}
     Mem.ReadBuffer(CI, SizeOf(CI));
+    {$ENDIF CLR}
     case CI.wType of
       RC3_STOCKICON:
         Result := LoadIcon(0, IDI_APPLICATION);
@@ -4669,9 +4603,6 @@ const
 begin
   Result := CreateCompatibleDC(HDC_DESKTOP);
 end;
-
-
-{$ENDIF !CLR}
 
 { end JvIconClipboardUtils }
 
@@ -7829,7 +7760,7 @@ end;
 { if it's not a decimal point then it must be a digit, space or Currency symbol
   also always use $ for money }
 
-function CharIsMoney(const Ch: AnsiChar): Boolean;
+function CharIsMoney(const Ch: Char): Boolean;
 begin
   Result := CharIsDigit(Ch) or (Ch = AnsiSpace) or (Ch = '$') or (Ch = '-') or
     (Pos(Ch, CurrencyString) > 0);
@@ -7999,13 +7930,13 @@ end;
 function StrIsInteger(const S: string): Boolean;
 var
   I: Integer;
-  Ch: AnsiChar;
+  Ch: Char;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
   begin
-    Ch := AnsiChar(S[I]);
-    if (not CharIsNumber(Ch)) or (Ch = DecimalSeparator) then //Az
+    Ch := Char(S[I]);
+    if not CharIsNumberChar(Ch) or (Ch = DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}) then //Az
     begin
       Result := False;
       Exit;
@@ -8016,7 +7947,7 @@ end;
 function StrIsFloatMoney(const Ps: string): Boolean;
 var
   I, liDots: Integer;
-  Ch: AnsiChar;
+  Ch: Char;
 begin
   Result := True;
   liDots := 0;
@@ -8024,7 +7955,7 @@ begin
   for I := 1 to Length(Ps) do
   begin
     { allow digits, space, Currency symbol and one decimal dot }
-    Ch := AnsiChar(Ps[I]);
+    Ch := Ps[I];
 
     if Ch = DecimalSeparator then
     begin
@@ -8050,7 +7981,7 @@ const
   MAX_DATE_TIME_LEN = 30; { 30 chars or so in '12 December 1999 12:23:23:00' }
 var
   I: Integer;
-  Ch: AnsiChar;
+  Ch: Char;
   liColons, liSlashes, liSpaces, liDigits, liAlpha: Integer;
   lbDisqualify: Boolean;
 begin
@@ -8075,7 +8006,7 @@ begin
 
   for I := 1 to Length(Ps) do
   begin
-    Ch := AnsiChar(Ps[I]);
+    Ch := Ps[I];
 
     if Ch = ':' then
       Inc(liColons)
@@ -9080,7 +9011,6 @@ begin
     SWP_NOSIZE or SWP_NOZORDER);
 end;
 
-
 { Delete the requested message from the queue, but throw back }
 { any WM_QUIT msgs that PeekMessage may also return.          }
 { Copied from DbGrid.pas                                      }
@@ -9093,10 +9023,9 @@ begin
     PostQuitMessage(M.WParam);
 end;
 
-
 procedure SetWindowTop(const Handle: THandle; const Top: Boolean);
 const
-  TopFlag: array [Boolean] of Longword = (HWND_NOTOPMOST, HWND_TOPMOST);
+  TopFlag: array [Boolean] of THandle = (HWND_NOTOPMOST, HWND_TOPMOST);
 begin
   SetWindowPos(Handle, TopFlag[Top], 0, 0, 0, 0, SWP_NOMOVE or
     SWP_NOSIZE or SWP_NOACTIVATE);
@@ -9798,7 +9727,7 @@ end;
 
 function TIntegerList.Add(Value: Integer): Integer;
 begin
-  Result := inherited Add(Pointer(Value));
+  Result := inherited Add(TObject(Value));
 end;
 
 {$IFDEF COMPILER5}
@@ -9821,7 +9750,7 @@ end;
 
 function TIntegerList.Extract(Item: Integer): Integer;
 begin
-  Result := Integer(inherited Extract(Pointer(Item)));
+  Result := Integer(inherited Extract(TObject(Item)));
 end;
 
 function TIntegerList.First: Integer;
@@ -9836,12 +9765,12 @@ end;
 
 function TIntegerList.IndexOf(Item: Integer): Integer;
 begin
-  Result := inherited IndexOf(Pointer(Item));
+  Result := inherited IndexOf(TObject(Item));
 end;
 
 procedure TIntegerList.Insert(Index, Item: Integer);
 begin
-  inherited Insert(Index, Pointer(Item));
+  inherited Insert(Index, TObject(Item));
 end;
 
 function TIntegerList.Last: Integer;
@@ -9849,7 +9778,7 @@ begin
   Result := Integer(inherited Last);
 end;
 
-procedure TIntegerList.Notify(Ptr: Pointer; Action: TListNotification);
+procedure TIntegerList.Notify(Ptr: {$IFDEF CLR}TObject{$ELSE}Pointer{$ENDIF}; Action: TListNotification);
 begin
   DoChange(Integer(Ptr), Action);
 end;
@@ -9861,9 +9790,7 @@ begin
     Clear;
     Reader.ReadListBegin;
     while not Reader.EndOfList do
-    begin
       Add(Reader.ReadInteger);
-    end;
     Reader.ReadListEnd;
   finally
     FLoading := False;
@@ -9872,12 +9799,12 @@ end;
 
 function TIntegerList.Remove(Item: Integer): Integer;
 begin
-  Result := Integer(inherited Remove(Pointer(Item)));
+  Result := Integer(inherited Remove(TObject(Item)));
 end;
 
 procedure TIntegerList.SetItem(Index: Integer; const Value: Integer);
 begin
-  inherited Items[Index] := Pointer(Value);
+  inherited Items[Index] := TObject(Value);
 end;
 
 procedure TIntegerList.WriteData(Writer: TWriter);

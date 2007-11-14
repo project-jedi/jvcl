@@ -68,11 +68,11 @@ type
   // Exception used by NotifyError
   EJVCLChangeNotifyException =  class(EJVCLException)
   private
-    FErrorDirectory : string;
+    FErrorDirectory: string;
   public
-    constructor Create(const ErrorMsg: string; const ErrorDirectory: string);
+    constructor Create(const AErrorMsg, AErrorDirectory: string);
 
-    property ErrorDirectory : string read FErrorDirectory;
+    property ErrorDirectory: string read FErrorDirectory;
   end;
 
   TJvChangeItem = class(TCollectionItem)
@@ -604,9 +604,10 @@ end;
 
 { EJVCLChangeNotifyException }
 
-constructor EJVCLChangeNotifyException.Create(const ErrorMsg: string; const ErrorDirectory: string);
+constructor EJVCLChangeNotifyException.Create(const AErrorMsg, AErrorDirectory: string);
 begin
-  inherited CreateFmt(RsENotifyErrorFmt, [ErrorMsg, ErrorDirectory]);
+  // Note: CreateFmt is a class method and not a constructor in Delphi.NET }
+  inherited Create(Format(RsENotifyErrorFmt, [AErrorMsg, AErrorDirectory]));
   FErrorDirectory := ErrorDirectory;
 end;
 

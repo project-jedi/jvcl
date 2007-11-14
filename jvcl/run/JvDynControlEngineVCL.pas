@@ -44,7 +44,7 @@ uses
 
 type
   TJvDynControlEngineVCL = class(TJvDynControlEngine)
-  public
+  protected
     procedure RegisterControls; override;
   end;
 
@@ -1400,7 +1400,12 @@ end;
 
 function TJvDynControlVCLDateTimeEdit.ControlGetValue: Variant;
 begin
+  { TODO -oAHUser : Delphi.NET workaround }
+  {$IFDEF CLR}
+  Result := Trunc(FDatePicker.Date) + (Trunc(FTimePicker.Time) - Double(FTimePicker.Time));
+  {$ELSE}
   Result := Trunc(FDatePicker.Date) + (Trunc(FTimePicker.Time) - FTimePicker.Time);
+  {$ENDIF CLR}
 end;
 
 // IJvDynControlDate
@@ -3073,8 +3078,13 @@ begin
 end;
 
 procedure TJvDynControlVCLPageControl.ControlCreateTab(const AName: string);
+var
+  TabSheet: TTabSheet;
 begin
-  Tabs.Add(AName);
+  TabSheet := TTabSheet.Create(Self);
+  TabSheet.Caption := AName;
+  TabSheet.PageControl := Self;
+  TabSheet.Parent := Self;
 end;
 
 procedure TJvDynControlVCLPageControl.ControlSetOnChangeTab(OnChangeEvent: TNotifyEvent);

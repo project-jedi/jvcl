@@ -63,12 +63,6 @@ const
 
   CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
-{$IFDEF CLR}
-type
-  [ComImport, InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-  IUnknown = IInterface;
-{$ENDIF CLR}
-
 {$IFNDEF COMPILER7_UP}
 // Autocomplete stuff for Delphi 5 and 6. (missing in ShlObj)
 type

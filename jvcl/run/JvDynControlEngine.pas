@@ -403,8 +403,9 @@ begin
     LastName := '';
   for Index := 0 to GetPropCount(APersistent) - 1 do
   begin
-    PropName := UpperCase(GetPropName(APersistent, Index));
-    if UpperCase(SearchName) = PropName then
+    PropName := GetPropName(APersistent, Index);
+    if CompareText(SearchName, PropName) = 0 then
+    begin
       case PropType(APersistent, PropName) of
         tkLString, tkWString, tkString:
           SetStrProp(APersistent, PropName, VarToStr(AValue));
@@ -424,6 +425,8 @@ begin
               SetPropertyValue(TPersistent(SubObj), LastName, AValue);
           end;
       end;
+      Break; // property was found and there can't be a second property with the same name
+    end;
   end;
 end;
 
@@ -437,6 +440,7 @@ var
   SearchName: string;
   LastName: string;
 begin
+  Result := Null;
   SearchName := Trim(APropertyName);
   P := Pos('.', SearchName);
   if P > 0 then
@@ -448,8 +452,9 @@ begin
     LastName := '';
   for Index := 0 to GetPropCount(APersistent) - 1 do
   begin
-    PropName := UpperCase(GetPropName(APersistent, Index));
-    if UpperCase(SearchName) = PropName then
+    PropName := GetPropName(APersistent, Index);
+    if CompareText(SearchName, PropName) = 0 then
+    begin
       case PropType(APersistent, PropName) of
         tkLString, tkWString, tkString:
           Result := GetStrProp(APersistent, PropName);
@@ -473,6 +478,8 @@ begin
               Result := GetPropertyValue(TPersistent(SubObj), LastName);
           end;
       end;
+      Break; // property was found and there can't be a second property with the same name
+    end;
   end;
 end;
 
@@ -512,11 +519,7 @@ begin
   else
     Result := nil;
   if Result = nil then
-    {$IFDEF CLR}
-    raise EJVCLException.CreateFmt(RsENoRegisteredControlClass, [AControlType]);
-    {$ELSE}
-    raise EJVCLException.CreateResFmt(@RsENoRegisteredControlClass, [AControlType]);
-    {$ENDIF CLR}
+    raise EJVCLException.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsENoRegisteredControlClass, [AControlType]);
   AfterCreateControl(Result);
 end;
 

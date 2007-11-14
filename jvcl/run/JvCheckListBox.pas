@@ -250,6 +250,9 @@ var
   IsChecked: TList;
   ListKeyName, KeyName: TDataFieldString;
   I, Index: Integer;
+  {$IFDEF CLR}
+  Obj: TObject;
+  {$ENDIF CLR}
 begin
   FMap.Clear;
   FRecNumMap.Clear;
@@ -298,7 +301,13 @@ begin
       finally
         ListSource.EndUpdate;
       end;
+      {$IFDEF CLR}
+      if FRecNumMap.Find(TObject(ListSource.RecNo), Obj) then
+        Index := Integer(Obj)
+      else
+      {$ELSE}
       if not FRecNumMap.Find(TObject(ListSource.RecNo), Pointer(Index)) then
+      {$ENDIF CLR}
         Index := -1;
     end;
     FCheckListBox.ItemIndex := Index;
@@ -326,6 +335,9 @@ end;
 procedure TJvCheckListBoxDataConnector.RecordChanged;
 var
   Index: Integer;
+  {$IFDEF CLR}
+  Obj: TObject;
+  {$ENDIF CLR}
 begin
   if IsValid then
   begin
@@ -334,8 +346,14 @@ begin
     else
     if ListSource.RecNo <> -1 then
     begin
+      {$IFDEF CLR}
+      if FRecNumMap.Find(TObject(ListSource.RecNo), Obj) then
+      begin
+        Index := Integer(Obj);
+      {$ELSE}
       if FRecNumMap.Find(TObject(ListSource.RecNo), Pointer(Index)) then
       begin
+      {$ENDIF CLR}
         FCheckListBox.Items[Index] := List.Field.AsString;
         FCheckListBox.Checked[Index] := AnsiCompareText(Field.AsString, ValueUnchecked) <> 0;
         if Index <> FCheckListBox.ItemIndex then
@@ -455,7 +473,7 @@ begin
   if Idx < 0 then
   begin
     if Value then
-      FHeaders.Add(Pointer(Index));
+      FHeaders.Add(TObject(Index));
   end
   else
     if not Value then
