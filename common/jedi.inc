@@ -297,17 +297,6 @@
   RTL185_UP     Defined when compiling with Delphi for Win32 2007 or later
 
 
-- CLR Versions
-
-  Directive     Description
-  ------------------------------------------------------------------------------
-  CLR           Defined when compiling for .NET
-  CLR1          Defined when compiling for .NET 1.0 and 1.1
-  CLR1_UP       Defined when compiling for .NET 1.0 or later
-  CLR2          Defined when compiling for .NET 2.0
-  CLR2_UP       Defined when compiling for .NET 2.0 or later
-
-
 - Feature Directives
 
   The features directives are used to test if the compiler supports specific
@@ -918,8 +907,6 @@
   {$DEFINE SUPPORTS_NESTED_CONSTANTS}
   {$DEFINE SUPPORTS_NESTED_TYPES}
   {$IFDEF CLR}
-    {$DEFINE CLR1}
-    {$DEFINE CLR1_UP}
     {$DEFINE SUPPORTS_ENHANCED_RECORDS}
     {$DEFINE SUPPORTS_CLASS_FIELDS}
     {$DEFINE SUPPORTS_CLASS_HELPERS}
@@ -931,10 +918,6 @@
 {$ENDIF COMPILER9_UP}
 
 {$IFDEF COMPILER10_UP}
-  {$IFDEF CLR}
-    {$DEFINE CLR1}
-    {$DEFINE CLR1_UP}
-  {$ENDIF CLR}
   {$DEFINE SUPPORTS_ENHANCED_RECORDS}
   {$DEFINE SUPPORTS_CLASS_FIELDS}
   {$DEFINE SUPPORTS_CLASS_HELPERS}
@@ -946,9 +929,6 @@
 
 {$IFDEF COMPILER11_UP}
   {$IFDEF CLR}
-    {$DEFINE CLR1_UP}
-    {$DEFINE CLR2}
-    {$DEFINE CLR2_UP}
     {$DEFINE SUPPORTS_GENERICS}
   {$ENDIF CLR}
 {$ENDIF COMPILER11_UP}
