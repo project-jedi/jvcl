@@ -67,7 +67,7 @@ type
   TJvDataLink = class(TDataLink)
   protected
     procedure FocusControl(Field: TFieldRef); overload; override;
-    procedure FocusControl(Field: TField); reintroduce; overload; virtual;
+    procedure FocusControl(const Field: TField); reintroduce; overload; virtual;
   end;
   {$ENDIF ~CLR}
 
@@ -235,7 +235,7 @@ begin
   FocusControl(Field^);
 end;
 
-procedure TJvDataLink.FocusControl(Field: TField);
+procedure TJvDataLink.FocusControl(const Field: TField);
 begin
 end;
 {$ENDIF ~CLR}

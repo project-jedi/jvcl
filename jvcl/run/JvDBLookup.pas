@@ -65,7 +65,7 @@ type
   protected
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
-    procedure FocusControl({$IFDEF CLR}const{$ENDIF} Field: TFieldRef); override;
+    procedure FocusControl(const Field: TField); override;
     procedure RecordChanged(Field: TField); override;
   end;
 
@@ -779,22 +779,11 @@ begin
     FDataControl.DataLinkRecordChanged(Field);
 end;
 
-procedure TJvDataSourceLink.FocusControl({$IFDEF CLR}const{$ENDIF}Field: TFieldRef);
+procedure TJvDataSourceLink.FocusControl(const Field: TField);
 begin
-  {$IFDEF CLR}
   if (Field <> nil) and (FDataControl <> nil) and
     (Field = FDataControl.FDataField) and FDataControl.CanFocus then
-  begin
     FDataControl.SetFocus;
-  end;
-  {$ELSE}
-  if (Field^ <> nil) and (FDataControl <> nil) and
-    (Field^ = FDataControl.FDataField) and FDataControl.CanFocus then
-  begin
-    Field^ := nil;
-    FDataControl.SetFocus;
-  end;
-  {$ENDIF CLR}
 end;
 
 //=== { TLookupSourceLink } ==================================================
