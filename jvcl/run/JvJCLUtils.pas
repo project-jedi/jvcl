@@ -1413,22 +1413,25 @@ begin
   begin
     Info := Instance.GetType.GetEvent(EventName, BindingFlags.NonPublic or BindingFlags.Instance);
     if Info <> nil then
-    { TODO : Implement }
-      //Info.RemoveEventHandler();
+      SetMethodProp(Instance, Info, Ev);
   end;
 end;
 
 function GetProtectedObjectEvent(Instance: TObject; const EventName: string): Delegate;
 var
   Info: EventInfo;
+  M: TMethod;
 begin
   Result := nil;
   if Instance <> nil then
   begin
     Info := Instance.GetType.GetEvent(EventName, BindingFlags.NonPublic or BindingFlags.Instance);
     if Info <> nil then
-    { TODO : Implement }
-      //Info.RemoveEventHandler();
+    begin
+      M := GetMethodProp(Instance, Info);
+      if not M.IsEmpty then
+        Result := System.Delegate.CreateDelegate(Info.EventHandlerType, M.Data, MethodInfo(M.Code));
+    end;
   end;
 end;
 
