@@ -2283,7 +2283,7 @@ end;
 function TJvCustomComboEdit.GetSettingCursor: Boolean;
 begin
   {$IFDEF CLR}
-  Result := Boolean(GetPrivateField(Self, 'FSettingCursor'));
+  Result := Boolean(GetNonPublicField(Self, 'FSettingCursor'));
   {$ELSE}
   Result := TCustomMaskEditAccessPrivate(Self).FSettingCursor;
   {$ENDIF CLR}
@@ -2354,8 +2354,7 @@ begin
         if (Form <> nil) {and Form.KeyPreview} then
         begin
           {$IFDEF CLR}
-          Form.GetType.InvokeMember('KeyDown',
-            BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key, Shift]);
+          InvokeNonPublicMethod(Form, 'KeyDown', [Key, Shift]);
           {$ELSE}
           TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           {$ENDIF CLR}
@@ -2365,8 +2364,7 @@ begin
         if (Form <> nil) {and Form.KeyPreview} then
         begin
           {$IFDEF CLR}
-          Form.GetType.InvokeMember('KeyDown',
-            BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key, Shift]);
+          InvokeNonPublicMethod(Form, 'KeyDown', [Key, Shift]);
           {$ELSE}
           TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           {$ENDIF CLR}
@@ -2413,8 +2411,7 @@ begin
     { (rb) Next code has no use because Key = #0? }
     if (Form <> nil) {and Form.KeyPreview} then
       {$IFDEF CLR}
-      Form.GetType.InvokeMember('KeyPress',
-        BindingFlags.Instance or BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, Form, [Key]);
+      InvokeNonPublicMethod(Form, 'KeyPress', [Key]);
       {$ELSE}
       TWinControlAccessProtected(Form).KeyPress(Key);
       {$ENDIF CLR}

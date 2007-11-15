@@ -64,14 +64,16 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF CLR}
   WinUtils,
   {$ENDIF CLR}
-  Windows, Messages,
-  Classes, Graphics, Controls, Grids, Menus, DBGrids, DB, StdCtrls,
-  Contnrs,
+  Windows, Messages, Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
+  StdCtrls, Forms, Contnrs,
   JvTypes, {JvTypes contains Exception base class}
-  JvAppStorage, JvFormPlacement, JvExDBGrids;
+  JvAppStorage, JvFormPlacement, JvExDBGrids, JvDBUtils;
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
@@ -209,7 +211,7 @@ type
     ColMoving: Boolean; // currently moving a column
   end;
 
-  TJvDBGrid = class(TJvExDBGrid)
+  TJvDBGrid = class(TJvExDBGrid, IJvDataControl)
   private
     FAutoSort: Boolean;
     FBeepOnError: Boolean;
@@ -328,7 +330,7 @@ type
     procedure WMChar(var Msg: TWMChar); message WM_CHAR;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
-    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
+    procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
     procedure SetTitleArrow(const Value: Boolean);
     procedure ShowSelectColumnClick;
     procedure SetAlternateRowColor(const Value: TColor);
@@ -404,6 +406,7 @@ type
     procedure Scroll(Distance: Integer); override;
     procedure LayoutChanged; override;
     procedure TopLeftChanged; override;
+    procedure GridInvalidateRow(Row: Longint);
     procedure DrawColumnCell(const Rect: TRect; DataCol: Integer;
       Column: TColumn; State: TGridDrawState); override;
     procedure ColWidthsChanged; override;
@@ -413,7 +416,7 @@ type
       var Index: Longint; var SizingPos, SizingOfs: Integer;
       var FixedInfo: TGridDrawInfo); override;
     procedure DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect; AColumn: TColumn;
-      var ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
+      var ASortMarker: TJvDBGridBitmap; IsDown: Boolean; var Offset: Integer;
       var DefaultDrawText, DefaultDrawSortMarker: Boolean); virtual;
     procedure ColEnter; override;
     procedure ColExit; override;
@@ -441,6 +444,7 @@ type
 
     procedure PlaceControl(Control: TWinControl; ACol, ARow: Integer); virtual;
     procedure RowHeightsChanged; override;
+    function GetDataLink: TDataLink; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -578,16 +582,19 @@ const
 implementation
 
 uses
+  {$IFDEF CLR}
+  System.Reflection,
+  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Math, TypInfo, Forms, Dialogs, DBConsts,
+  SysUtils, Math, TypInfo, Dialogs, DBConsts,
   {$IFDEF COMPILER6_UP}
   StrUtils,
   JvDBLookup,
   {$ENDIF COMPILER6_UP}
   JvVCL5Utils,
-  JvConsts, JvResources, JvThemes, JvDBUtils, JvJCLUtils, JvJVCLUtils,
+  JvConsts, JvResources, JvThemes, JvJCLUtils, JvJVCLUtils,
   {$IFDEF COMPILER7_UP}
   GraphUtil, // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
   {$ENDIF COMPILER7_UP}
@@ -596,7 +603,9 @@ uses
 {$R JvDBGrid.res}
 
 type
+  {$IFNDEF CLR}
   TBookmarks = class(TBookmarkList);
+  {$ENDIF ~CLR}
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
   {$IFNDEF COMPILER7_UP}
@@ -604,7 +613,7 @@ type
   {$ENDIF ~COMPILER7_UP}
 
 const
-  GridBmpNames: array [TGridPicture] of PChar =
+  GridBmpNames: array [TGridPicture] of {$IFDEF CLR}string{$ELSE}PChar{$ENDIF} =
   ('JvDBGridBLOB', 'JvDBGridMEMO', 'JvDBGridPICT', 'JvDBGridOLE', 'JvDBGridOBJECT',
     'JvDBGridDATA', 'JvDBGridNOTEMPTY', 'JvDBGridSMDOWN', 'JvDBGridSMUP',
     'JvDBGridCHECKED', 'JvDBGridUNCHECKED', 'JvDBGridPOPUP');
@@ -618,7 +627,7 @@ const
   JvGridBool_UNCHECK = -1;
 
 var
-  GridBitmaps: array [TGridPicture] of TBitmap =
+  GridBitmaps: array [TGridPicture] of TJvDBGridBitmap =
     (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   FirstGridBitmaps: Boolean = True;
 
@@ -630,24 +639,16 @@ begin
     FreeAndNil(GridBitmaps[I]);
 end;
 
-function GetGridBitmap(BmpType: TGridPicture): TBitmap;
+function GetGridBitmap(BmpType: TGridPicture): TJvDBGridBitmap;
 begin
   if GridBitmaps[BmpType] = nil then
   begin
     if FirstGridBitmaps then
       FirstGridBitmaps := False;
-    GridBitmaps[BmpType] := TBitmap.Create;
+    GridBitmaps[BmpType] := TJvDBGridBitmap.Create;
     GridBitmaps[BmpType].LoadFromResourceName(HInstance, GridBmpNames[BmpType]);
   end;
   Result := GridBitmaps[BmpType];
-end;
-
-procedure GridInvalidateRow(Grid: TJvDBGrid; Row: Longint);
-var
-  I: Longint;
-begin
-  for I := 0 to Grid.ColCount - 1 do
-    Grid.InvalidateCell(I, Row);
 end;
 
 {$IFNDEF COMPILER7_UP}
@@ -705,6 +706,7 @@ type
   public
     constructor Create(Owner: TComponent); override;
     property DataList: TJvDBLookupList read FDataList; //  TDBLookupListBox
+    property OnChange;
   end;
 
 constructor TInternalInplaceEdit.Create(Owner: TComponent);
@@ -726,7 +728,9 @@ begin
       ListValue := DataList.KeyValue
     else
     if PickList.ItemIndex <> -1 then
-      ListValue := PickList.Items[PickList.ItemIndex];
+      ListValue := PickList.Items[PickList.ItemIndex]
+    else
+      ListValue := Null;
     SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     ListVisible := False;
@@ -739,7 +743,7 @@ begin
         with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
         begin
           MasterField := DataSet.FieldByName(KeyFields);
-          if MasterField.CanModify and TJvDBGrid(Grid).DataLink.Edit then
+          if MasterField.CanModify and (Grid as IJvDataControl).GetDataLink.Edit then
             MasterField.Value := ListValue;
         end
       else
@@ -843,7 +847,11 @@ procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 
   function Selection: TSelection;
   begin
+    {$IFDEF CLR}
+    SendGetIntMessage(Handle, EM_GETSEL, Result.StartPos, Result.EndPos);
+    {$ELSE}
     SendMessage(Handle, EM_GETSEL, WPARAM(@Result.StartPos), LPARAM(@Result.EndPos));
+    {$ENDIF CLR}
   end;
 
   function CaretPos: Integer;
@@ -882,11 +890,13 @@ end;
 
 function TInternalInplaceEdit.DoMouseWheel(Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint): Boolean;
+var
+  DataLink: TDataLink;
 begin
   // Do not validate a record by error
-  with TJvDBGrid(Grid) do
-    if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
-      DataLink.DataSet.Cancel;
+  DataLink := (Grid as IJvDataControl).GetDataLink;
+  if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
+    DataLink.DataSet.Cancel;
 
   // Ideally we would transmit the action to the DatalList but
   // DoMouseWheel is protected
@@ -1162,7 +1172,7 @@ end;
 
 function TJvDBGrid.GetRow: Longint;
 begin
-  Result := TDrawGrid(Self).Row;
+  Result := inherited Row;
 end;
 
 procedure TJvDBGrid.SetRow(Value: Longint);
@@ -1224,7 +1234,11 @@ procedure TJvDBGrid.GotoSelection(Index: Longint);
 begin
   if MultiSelect and DataLink.Active and (Index < SelectedRows.Count) and
     (Index >= 0) then
+    {$IFDEF CLR}
+    DataLink.DataSet.Bookmark := SelectedRows[Index];
+    {$ELSE}
     DataLink.DataSet.GotoBookmark(Pointer(SelectedRows[Index]));
+    {$ENDIF}
 end;
 
 procedure TJvDBGrid.LayoutChanged;
@@ -1322,7 +1336,7 @@ begin
   Result := TInternalInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
-  TEdit(Result).OnChange := EditChanged;
+  TInternalInplaceEdit(Result).OnChange := EditChanged;
   {$ELSE}
   Result := inherited CreateEditor;
   {$ENDIF COMPILER6_UP}
@@ -1413,18 +1427,31 @@ var
         begin
           if not FSelecting then
           begin
+            {$IFDEF CLR}
+            FSelectionAnchor := GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr;
+            {$ELSE}
             FSelectionAnchor := TBookmarks(SelectedRows).CurrentRow;
+            {$ENDIF CLR}
             SelectedRows.CurrentRowSelected := True;
             FSelecting := True;
             AddAfter := True;
           end
           else
+          begin
+            {$IFDEF CLR}
+            AddAfter := DataSource.DataSet.CompareBookmarkStr(GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr,
+              FSelectionAnchor) <> -Direction;
+            if AddAfter then
+              SelectedRows.CurrentRowSelected := False;
+            {$ELSE}
             with TBookmarks(SelectedRows) do
             begin
               AddAfter := Compare(CurrentRow, FSelectionAnchor) <> -Direction;
               if not AddAfter then
                 CurrentRowSelected := False;
             end;
+            {$ENDIF CLR}
+          end;
         end
         else
           ClearSelections;
@@ -1657,6 +1684,11 @@ begin
   inherited RowHeightsChanged;
 end;
 
+function TJvDBGrid.GetDataLink: TDataLink;
+begin
+  Result := DataLink;
+end;
+
 procedure TJvDBGrid.SetRowResize(Value: Boolean);
 begin
   if FRowResize <> Value then
@@ -1686,13 +1718,23 @@ end;
 procedure TJvDBGrid.SetOptions(Value: TDBGridOptions);
 var
   NewOptions: TGridOptions;
+  {$IFDEF CLR}
+  OptionsProp: PropertyInfo;
+  {$ENDIF CLR}
 begin
   { The AlwaysShowEditor option is not compatible with the custom inplace edit
     controls. But if the EditorMode is set to True in ColEnter() it emulates the
     AlwaysShowEditor option. }
   inherited Options := Value - [dgMultiSelect, dgAlwaysShowEditor];
   FAlwaysShowEditor := dgAlwaysShowEditor in Value;
+
+  {$IFDEF CLR}
+  { TJvDBGrid - TDBGrid - TCustomGrid }
+  OptionsProp := Self.GetType.BaseType.BaseType.GetProperty('Options', BindingFlags.NonPublic or BindingFlags.Instance);
+  NewOptions := OptionsProp.GetValue(Self, []) as TGridOptions;
+  {$ELSE}
   NewOptions := TDrawGrid(Self).Options;
+  {$ENDIF CLR}
   {
   if FTitleButtons then
   begin
@@ -1709,7 +1751,11 @@ begin
       NewOptions := NewOptions - [goFixedVertLine];
     if not (dgRowLines in Value) then
       NewOptions := NewOptions - [goFixedHorzLine];
+    {$IFDEF CLR}
+    OptionsProp.SetValue(Self, TObject(NewOptions), []); 
+    {$ELSE}
     TDrawGrid(Self).Options := NewOptions;
+    {$ENDIF CLR}
   end;
   SetMultiSelect(dgMultiSelect in Value);
 end;
@@ -1860,7 +1906,7 @@ function TJvDBGrid.CanEditShow: Boolean;
       if not Assigned(EditControl) then
       begin
         Control.FieldName := '';
-        raise EJVCLDbGridException.CreateRes(@RsEJvDBGridControlPropertyNotAssigned);
+        raise EJVCLDbGridException.CreateRes({$IFNDEF CLR}@{$ENDIF}RsEJvDBGridControlPropertyNotAssigned);
       end;
       if IsPublishedProp(EditControl, 'ReadOnly') then
       begin
@@ -1989,7 +2035,7 @@ begin
 
   if AutoSort and IsPublishedProp(DataSource.DataSet, cIndexDefs) and
     IsPublishedProp(DataSource.DataSet, cIndexName) then
-    IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, cIndexDefs))
+    IndexDefs := TIndexDefs(GetObjectProp(DataSource.DataSet, cIndexDefs))
   else
     IndexDefs := nil;
   if Assigned(IndexDefs) and Assigned(AField) then
@@ -2065,7 +2111,11 @@ begin
   begin
     Dec(FDisableCount);
     if FDisableCount = 0 then
+      {$IFDEF CLR}
+      InvokeNonPublicMethod(DataLink, 'DataSetScrolled', [0]);
+      {$ELSE}
       TGridDataLinkAccessProtected(DataLink).DataSetScrolled(0);
+      {$ENDIF CLR}
   end;
 end;
 
@@ -2133,10 +2183,18 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
+procedure TJvDBGrid.GridInvalidateRow(Row: Longint);
+var
+  I: Longint;
+begin
+  for I := 0 to ColCount - 1 do
+    InvalidateCell(I, Row);
+end;
+
 procedure TJvDBGrid.TopLeftChanged;
 begin
   if (dgRowSelect in Options) and DefaultDrawing then
-    GridInvalidateRow(Self, Self.Row);
+    GridInvalidateRow(Self.Row);
   inherited TopLeftChanged;
   if FTracking then
     StopTracking;
@@ -2170,7 +2228,7 @@ begin
   begin
     FPressed := NewPressed;
     for I := 0 to Offset - 1 do
-      GridInvalidateRow(Self, I);
+      GridInvalidateRow(I);
   end;
 end;
 
@@ -2331,10 +2389,18 @@ begin
                     DisableControls;
                     try
                       lNewSelected := Bookmark;
+                      {$IFDEF CLR}
+                      lCompare := CompareBookmarkStr(lNewSelected, lLastSelected);
+                      {$ELSE}
                       lCompare := CompareBookmarks(Pointer(lNewSelected), Pointer(lLastSelected));
+                      {$ENDIF CLR}
                       if lCompare > 0 then
                       begin
+                        {$IFDEF CLR}
+                        Bookmark := lLastSelected;
+                        {$ELSE}
                         GotoBookmark(Pointer(lLastSelected));
+                        {$ENDIF CLR}
                         Next;
                         while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
                         begin
@@ -2345,7 +2411,11 @@ begin
                       else
                       if lCompare < 0 then
                       begin
+                        {$IFDEF CLR}
+                        Bookmark := lLastSelected;
+                        {$ELSE}
                         GotoBookmark(Pointer(lLastSelected));
+                        {$ENDIF CLR}
                         Prior;
                         while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
                         begin
@@ -2512,7 +2582,11 @@ begin
   Result := True;
   Form := GetParentForm(Self);
   if Form <> nil then
+    {$IFDEF CLR}
+    if Form.KeyPreview and Boolean(InvokeNonPublicMethod(Form, 'DoKeyPress', [Msg])) then
+    {$ELSE}
     if Form.KeyPreview and TWinControlAccessProtected(Form).DoKeyPress(Msg) then
+    {$ENDIF CLR}
       Exit;
 
   with Msg do
@@ -2639,7 +2713,7 @@ begin
       begin
         if DataType = ftFloat then
           if Key in ['.', ','] then
-            Key := DecimalSeparator;
+            Key := DecimalSeparator{$IFDEF CLR}[1]{$ENDIF};
 
         if (Key in CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
@@ -2753,7 +2827,11 @@ var
         FillRect(B);
       end;
       SetBkMode(Handle, TRANSPARENT);
+      {$IFDEF CLR}
+      Windows.DrawText(Handle, Text, Length(Text), R, DrawOptions);
+      {$ELSE}
       Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
+      {$ENDIF CLR}
     end;
   end;
 
@@ -2770,8 +2848,8 @@ begin
         begin
           Width := Max(Width, Right - Left);
           Height := Max(Height, Bottom - Top);
-          R := Classes.Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
-          B := Classes.Rect(0, 0, Right - Left, Bottom - Top);
+          R := Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
+          B := Rect(0, 0, Right - Left, Bottom - Top);
         end;
         with DrawBitmap.Canvas do
         begin
@@ -2798,7 +2876,7 @@ begin
   begin
     // No offscreen bitmap - The display is faster but flickers
     with ARect do
-      R := Classes.Rect(Left + DX, Top + DY, Right - 1, Bottom - 1);
+      R := Rect(Left + DX, Top + DY, Right - 1, Bottom - 1);
     B := ARect;
     DrawAText(Canvas);
   end;
@@ -2892,7 +2970,7 @@ var
   ASortMarker: TSortMarker;
   Indicator, ALeft: Integer;
   Down: Boolean;
-  Bmp: TBitmap;
+  Bmp: TJvDBGridBitmap;
   SavePen: TColor;
   OldActive: Longint;
   MultiSelected: Boolean;
@@ -3010,8 +3088,13 @@ var
       begin
         CalcRect := TextRect;
         Dec(CalcRect.Right, MinOffs + 1);
+        {$IFDEF CLR}
+        Windows.DrawText(Canvas.Handle, Caption, -1, CalcRect,
+          DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
+        {$ELSE}
         Windows.DrawText(Canvas.Handle, PChar(Caption), -1, CalcRect,
           DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
+        {$ENDIF CLR}
         if CalcRect.Bottom > TextRect.Bottom then
         begin
           TitleOptions := DT_END_ELLIPSIS or DT_SINGLELINE;
@@ -3346,31 +3429,27 @@ begin
     with Columns do
     begin
       SetLength(ColumnArray, Count);
-      try
-        for I := 0 to Count - 1 do
+      for I := 0 to Count - 1 do
+      begin
+        S := AppStorage.ReadString(AppStorage.ConcatPaths([SectionName,
+          Format('%s.%s', [Name, Items[I].FieldName])]));
+        ColumnArray[I].Column := Items[I];
+        ColumnArray[I].EndIndex := Items[I].Index;
+        if S <> '' then
         begin
-          S := AppStorage.ReadString(AppStorage.ConcatPaths([SectionName,
-            Format('%s.%s', [Name, Items[I].FieldName])]));
-          ColumnArray[I].Column := Items[I];
-          ColumnArray[I].EndIndex := Items[I].Index;
-          if S <> '' then
-          begin
-            ColumnArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims), ColumnArray[I].EndIndex);
-            S := ExtractWord(2, S, Delims);
-            Items[I].Width := StrToIntDef(S, Items[I].Width);
-            Items[I].Visible := (S <> '-1');
-          end;
+          ColumnArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims), ColumnArray[I].EndIndex);
+          S := ExtractWord(2, S, Delims);
+          Items[I].Width := StrToIntDef(S, Items[I].Width);
+          Items[I].Visible := (S <> '-1');
         end;
-        for I := 0 to Count - 1 do
-          for J := 0 to Count - 1 do
-            if ColumnArray[J].EndIndex = I then
-            begin
-              ColumnArray[J].Column.Index := ColumnArray[J].EndIndex;
-              Break;
-            end;
-      finally
-        Finalize(ColumnArray);
       end;
+      for I := 0 to Count - 1 do
+        for J := 0 to Count - 1 do
+          if ColumnArray[J].EndIndex = I then
+          begin
+            ColumnArray[J].Column.Index := ColumnArray[J].EndIndex;
+            Break;
+          end;
     end;
 end;
 
@@ -3484,12 +3563,12 @@ begin
 end;
 
 procedure TJvDBGrid.DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect;
-  AColumn: TColumn; var ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
+  AColumn: TColumn; var ASortMarker: TJvDBGridBitmap; IsDown: Boolean; var Offset: Integer;
   var DefaultDrawText, DefaultDrawSortMarker: Boolean);
 begin
   if Assigned(FOnDrawColumnTitle) then
   begin
-    FOnDrawColumnTitle(Self, ACanvas, ARect, AColumn, TJvDBGridBitmap(ASortMarker), IsDown, Offset,
+    FOnDrawColumnTitle(Self, ACanvas, ARect, AColumn, ASortMarker, IsDown, Offset,
       DefaultDrawText, DefaultDrawSortMarker);
   end;
 end;
@@ -3999,7 +4078,7 @@ begin
     Invalidate;
 end;
 
-procedure TJvDBGrid.CMHintShow(var Msg: TMessage);
+procedure TJvDBGrid.CMHintShow(var Msg: TCMHintShow);
 const
   C_TIMEOUT = 250;
 var
@@ -4007,9 +4086,17 @@ var
   AtCursorPosition: Boolean;
   CalcOptions: Integer;
   HintRect: TRect;
+  {$IFDEF CLR}
+  HintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
   AtCursorPosition := True;
-  with PHintInfo(Msg.LParam)^ do
+  {$IFDEF CLR}
+  HintInfo := Msg.HintInfo;
+  with HintInfo do
+  {$ELSE}
+  with Msg.HintInfo^ do
+  {$ENDIF CLR}
   begin
     HintStr := GetShortHint(Hint);
     ATimeOut := HideTimeOut;
@@ -4097,7 +4184,11 @@ begin
         if HintStr <> '' then
         begin
           HintRect := Rect(0, 0, Columns[ACol].Width - 4, 0);
+          {$IFDEF CLR}
+          Windows.DrawText(Canvas.Handle, HintStr, -1, HintRect, CalcOptions);
+          {$ELSE}
           Windows.DrawText(Canvas.Handle, PChar(HintStr), -1, HintRect, CalcOptions);
+          {$ENDIF CLR}
           if ((HintRect.Bottom - HintRect.Top + 2) < RowHeights[ARow + 1]) and
             ((HintRect.Right - HintRect.Left) < Columns[ACol].Width - 2) then
             HintStr := '';
@@ -4118,6 +4209,9 @@ begin
       HintPos := ClientToScreen(CursorRect.TopLeft);
     end;
   end;
+  {$IFDEF CLR}
+  Msg.HintInfo := HintInfo;
+  {$ENDIF CLR}
   inherited;
 end;
 
@@ -4297,11 +4391,20 @@ procedure TJvDBGrid.ControlWndProc(var Message: TMessage);
 var
   EscapeKey: Boolean;
   CurrentEditor: TJvDBGridControl;
+  {$IFDEF CLR}
+  MsgKey: TWMKey;
+  {$ENDIF CLR}
 begin
   if Message.Msg = WM_CHAR then
   begin
+    {$IFDEF CLR}
+    MsgKey := TWMKey.Create(Message);
+    if not DoKeyPress(MsgKey) then
+      with MsgKey do
+    {$ELSE}
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
+    {$ENDIF CLR}
       begin
         CurrentEditor := FControls.ControlByName(FCurrentControl.Name);
         if (CharCode = VK_RETURN) and (PostOnEnterKey or CurrentEditor.LeaveOnEnterKey) then
@@ -4387,25 +4490,26 @@ procedure TJvDBGrid.ShowSelectColumnClick;
 var
   R, WorkArea: TRect;
   Frm: TfrmSelectColumn;
+  Pt: TPoint;
 begin
   R := CellRect(0, 0);
   Frm := TfrmSelectColumn.Create(Application);
   try
     if not IsRectEmpty(R) then
-      with ClientToScreen(Point(R.Left, R.Bottom + 1)) do
-      begin
-        {$IFDEF COMPILER5}
-        SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
-        {$ELSE}
-        WorkArea := Screen.MonitorFromWindow(Handle).WorkareaRect;
-        {$ENDIF COMPILER5}
-        { force the form the be in the working area }
-        if X + Frm.Width > WorkArea.Right then
-          X := WorkArea.Right - Frm.Width;
-        if Y + Frm.Height > WorkArea.Bottom then
-          Y := WorkArea.Bottom - Frm.Height;
-        Frm.SetBounds(X, Y, Frm.Width, Frm.Height);
-      end;
+    begin
+      Pt := ClientToScreen(Point(R.Left, R.Bottom + 1));
+      {$IFDEF COMPILER5}
+      SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
+      {$ELSE}
+      WorkArea := Screen.MonitorFromWindow(Handle).WorkareaRect;
+      {$ENDIF COMPILER5}
+      { force the form the be in the working area }
+      if Pt.X + Frm.Width > WorkArea.Right then
+        Pt.X := WorkArea.Right - Frm.Width;
+      if Pt.Y + Frm.Height > WorkArea.Bottom then
+        Pt.Y := WorkArea.Bottom - Frm.Height;
+      Frm.SetBounds(Pt.X, Pt.Y, Frm.Width, Frm.Height);
+    end;
     Frm.Grid := TJvDBGrid(Self);
     Frm.DataSource := DataLink.DataSource;
     Frm.SelectColumn := FSelectColumn;

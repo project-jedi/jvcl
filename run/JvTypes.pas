@@ -51,11 +51,8 @@ const
   MaxPixelCount = 32767;
 
 {$HPPEMIT '#ifndef TDate'}
-
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
-
-
 {$HPPEMIT '#endif'}
 
 {$IFDEF CLR}
@@ -66,7 +63,6 @@ type
   TJvBytes = Pointer;
   IntPtr = Pointer;
 {$ENDIF CLR}
-
 
 type
   PCaptionChar = PChar;
@@ -100,11 +96,8 @@ const
   NullHandle = 0;
   // (rom) deleted fbs constants. They are already in JvConsts.pas.
 
-
 type
   TTimerProc = procedure(hwnd: THandle; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
-
-
 
 type
   {$IFDEF COMPILER5}
@@ -423,7 +416,7 @@ const
   {$ENDIF COMPILER5}
   {$IFDEF COMPILER6}
    {$IF not declared(clHotLight)}
-    {$MESSAGE ERROR 'You do not have installed Delphi 6 Update 2. Please install this before installing the JVCL. http://www.borland.com/downloads/registered/del6_reg_updates_prompt.html'}
+    {$MESSAGE ERROR 'You do not have installed Delphi 6 Runtime Library Update 2. Please install this before installing the JVCL. http://downloads.codegear.com/default.aspx?productid=300'}
    {$IFEND}
   {$ENDIF COMPILER6}
 
@@ -531,7 +524,6 @@ const
     (Value: clMenuBar;                 Constant: 'clMenuBar';                Description: RsMenuBar),
     (Value: clMenuHighlight;           Constant: 'clMenuHighlight';          Description: RsMenuHighlight)
   );
-
 
 type
   TJvSizeRect = packed record

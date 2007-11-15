@@ -436,7 +436,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   JclBase,
-  JvJVCLUtils, JvConsts, JvCtrls, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvCtrls, JvResources;
 
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -827,7 +827,7 @@ begin
   PStringsAddr^ := GetItemsClass.Create;      // create our own implementation and put it in place.
   {$ELSE} // CLR=True
   Items.Free;                                 // remove original item list (TListBoxStrings instance)
-  GetType.GetField('FItems', BindingFlags.NonPublic).SetValue(Self, GetItemsClass.Create); // create our own implementation and put it in place.
+  SetNonPublicField(Self, 'FItems', GetItemsClass.Create); // create our own implementation and put it in place.
   {$ENDIF !CLR}
   TJvListBoxStrings(Items).ListBox := Self;   // link it to the list box.
 
@@ -1361,7 +1361,7 @@ begin
   ClipComplexity := GetClipBox(ADC, ClipBox);
   if ClipComplexity = NULLREGION then
     Exit; // nothing to paint
-  if ClipComplexity = ERROR then
+  if ClipComplexity = Windows.ERROR then
     ClipBox := ClientRect;
 
   if DoOffSet then

@@ -17,7 +17,6 @@ object frmSelectColumn: TfrmSelectColumn
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -26,13 +25,16 @@ object frmSelectColumn: TfrmSelectColumn
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
-    Left = 0
-    Top = 163
-    Width = 185
-    Height = 50
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    Left = 0
+    Top = 167
+    Width = 189
+    Height = 50
+    DesignSize = (
+      189
+      50)
     object cbWithFieldName: TCheckBox
       Left = 18
       Top = -2
@@ -58,11 +60,11 @@ object frmSelectColumn: TfrmSelectColumn
   object clbList: TCheckListBox
     Left = 0
     Top = 0
-    Width = 185
-    Height = 163
-    OnClickCheck = clbListClickCheck
+    Width = 189
+    Height = 167
     Align = alClient
     ItemHeight = 13
     TabOrder = 1
+    OnClickCheck = clbListClickCheck
   end
 end
