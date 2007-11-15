@@ -177,7 +177,6 @@ ALERT_jedi_inc_incompatible
  {$WARN UNIT_PLATFORM OFF}
 
  {$UNDEF JvInterpreter_OLEAUTO}
- {$UNDEF JVCLThemesEnabled}
  {$UNDEF JVCLThemesEnabledD56}
  {$UNDEF UNITVERSIONING}
  {$UNDEF USE_DXGETTEXT}
