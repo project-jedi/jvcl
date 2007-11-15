@@ -80,12 +80,10 @@ const
 implementation
 
 uses
-  JvConsts, Sysutils;
-
+  SysUtils,
+  JvJclUtils, JvConsts;
 
 {$R *.dfm}
-
-
 
 procedure TfrmSelectColumn.FormCreate(Sender: TObject);
 begin
@@ -106,7 +104,11 @@ var
 begin
   if (ModalResult = mrOk) and FColumnUpdate and FCanHide and Assigned(FJvDBGrid) then
   begin
+    {$IFDEF CLR}
+    InvokeNonPublicMethod(FJvDBGrid, 'BeginLayout', []);
+    {$ELSE}
     TJvDBGridAccessProtected(FJvDBGrid).BeginLayout;
+    {$ENDIF CLR}
     try
       for I := 0 to clbList.Items.Count - 1 do
       begin
@@ -115,7 +117,11 @@ begin
           FJvDBGrid.Columns[J].Visible := clbList.Checked[I];
       end;
     finally
+      {$IFDEF CLR}
+      InvokeNonPublicMethod(FJvDBGrid, 'EndLayout', []);
+      {$ELSE}
       TJvDBGridAccessProtected(FJvDBGrid).EndLayout;
+      {$ENDIF CLR}
     end;
   end;
 end;
@@ -225,7 +231,6 @@ begin
       FCanHide := True;
     end;
   end;
-
 end;
 
 procedure TfrmSelectColumn.FormKeyPress(Sender: TObject; var Key: Char);

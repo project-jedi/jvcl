@@ -1477,8 +1477,10 @@ procedure TJvLookupControl.DrawPicture(Canvas: TCanvas; Rect: TRect;
   Image: TGraphic);
 var
   X, Y, SaveIndex: Integer;
+  {$IFNDEF CLR}
   Ico: HICON;
   W, H: Integer;
+  {$ENDIF ~CLR}
 begin
   if Image <> nil then
   begin
@@ -1491,6 +1493,7 @@ begin
       if Image is TBitmap then
         DrawBitmapTransparent(Canvas, X, Y, TBitmap(Image),
           TBitmap(Image).TransparentColor)
+      {$IFNDEF CLR}
       else
       if Image is TIcon then
       begin
@@ -1503,6 +1506,7 @@ begin
           DestroyIcon(Ico);
         end;
       end
+      {$ENDIF ~CLR}
       else
         Canvas.Draw(X, Y, Image);
     finally
@@ -1606,7 +1610,11 @@ var
   J, LastFieldIndex: Integer;
   Field: TField;
   LStringList: array of string;
+  {$IFDEF CLR}
+  LVarList: array of TObject;
+  {$ELSE}
   LVarList: array of TVarRec;
+  {$ENDIF CLR}
 begin
   Result := '';
   LastFieldIndex := FListFields.Count - 1;
@@ -1618,15 +1626,19 @@ begin
     for J := 0 to LastFieldIndex do
     begin
       LStringList[J] := TField(FListFields[J]).DisplayText;
+      {$IFDEF CLR}
+      LVarList[J] := TObject(LStringList[J]);
+      {$ELSE}
       LVarList[J].VPChar := PChar(LStringList[J]);
       LVarList[J].VType := vtPChar;
+      {$ENDIF CLR}
     end;
     Result := Format(LookupFormat, LVarList);
   end
   else
     for J := 0 to LastFieldIndex do
     begin
-      Field := FListFields[J];
+      Field := TField(FListFields[J]);
       Result := Result + Field.DisplayText;
       if J < LastFieldIndex then
         Result := Result + FFieldsDelimiter + ' ';
@@ -1883,7 +1895,7 @@ begin
   if FListStyle = lsFixed then
     for J := 0 to LastFieldIndex do
     begin
-      Field := FListFields[J];
+      Field := TField(FListFields[J]);
       if J < LastFieldIndex then
         W := Field.DisplayWidth * TextWidth + 4
       else
@@ -2676,7 +2688,7 @@ begin
     { Use slide-open effect for combo boxes if wanted. This is also possible
       for D5<, but D5< does not define AnimateWindowProc in Controls.pas. See
       TJvBalloonHint.pas to solve this }
-    SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, @Animate, 0);
+    SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, {$IFNDEF CLR}@{$ENDIF}Animate, 0);
     if Assigned(AnimateWindowProc) and Animate then
     begin
       { Can't use SWP_SHOWWINDOW here, because the window is then immediately shown }
@@ -2757,7 +2769,7 @@ var
   R: TRect;
 begin
   SetRect(R, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
-  InvalidateRect(Self.Handle, @R, False);
+  InvalidateRect(Self.Handle, R, False);
   UpdateWindow(Self.Handle);
 end;
 
@@ -3005,7 +3017,11 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
+        {$IFDEF CLR}
+        SendStructMessage(FDataList.Handle, WM_LBUTTONDOWN, 0, MousePos);
+        {$ELSE}
         SendMessage(FDataList.Handle, WM_LBUTTONDOWN, 0, Longint(MousePos));
+        {$ENDIF CLR}
         Exit;
       end;
     end;
@@ -3098,7 +3114,12 @@ var
 begin
   IsClipped := False;
   SaveRgn := 0;
-  if not DoubleBuffered and (TMessage(Message).wParam <> TMessage(Message).lParam) and
+  if not DoubleBuffered and
+    {$IFDEF CLR}
+    (Message.OriginalMessage.WParam <> Message.OriginalMessage.LParam) and
+    {$ELSE}
+    (TMessage(Message).WParam <> TMessage(Message).LParam) and
+    {$ENDIF CLR}
     { Do not exclude parts if we are painting into a memory device context or
       into a child's device context through DrawParentBackground(). }
     (WindowFromDC(Message.DC) = Handle) then
@@ -3496,7 +3517,7 @@ begin
       SetRect(R, 0, 0, ClientWidth - Button.Width - 2, ClientHeight + 1)
   else
     R := FEditor.ClientRect;
-  InvalidateRect(FEditor.Handle, @R, False);
+  InvalidateRect(FEditor.Handle, R, False);
   UpdateWindow(FEditor.Handle);
 end;
 

@@ -45,7 +45,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
-  System.Runtime.InteropServices, System.Reflection, Borland.Vcl.WinUtils,
+  WinUtils, System.Runtime.InteropServices,
   {$ENDIF CLR}
   Windows, Messages, Contnrs, Graphics, Controls, Forms,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
@@ -626,7 +626,6 @@ type
   end;
 
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -644,8 +643,6 @@ uses
   JclStrings,
   JvThemes,
   JvConsts, JvJCLUtils;
-
-
 
 const
   TVIS_CHECKED = $2000;
@@ -943,9 +940,9 @@ begin
     // Must use GetParentForm to fix Mantis 2812, where it wasn't possible
     // to tab outside the control
     {$IFDEF CLR}
-    Control := TWinControl(ParentForm.GetType.GetMethod('FindNextControl').Invoke(ParentForm, [Self, not Previous, True, False]));
+    Control := TWinControl(InvokeNonPublicMethod(ParentForm, 'FindNextControl', [Self, not Previous, True, False]));
     {$ELSE}
-    Control := TWinControlAccess(ParentForm).FindNextControl(Self, not Previous, True, False); //True);
+    Control := TWinControlAccess(ParentForm).FindNextControl(Self, not Previous, True, False);
     {$ENDIF CLR}
     if Control <> nil then
       Control.SetFocus;
@@ -2020,16 +2017,16 @@ begin
 end;
 
 type
-  TTabSheetAccessProtected = class(TTabSheet);
+  TAccessTabSheet = class(TTabSheet);
 
 function TJvPageControl.CanChange: Boolean;
 begin
   Result := inherited CanChange;
   if Result and (ActivePage <> nil) and ReduceMemoryUse then
     {$IFDEF CLR}
-    ActivePage.GetType.InvokeMember('DestroyHandle', BindingFlags.NonPublic or BindingFlags.InvokeMethod, nil, ActivePage, []);
+    InvokeNonPublicMethod(ActivePage, 'DestroyHandle', []);
     {$ELSE}
-    TTabSheetAccessProtected(ActivePage).DestroyHandle;
+    TAccessTabSheet(ActivePage).DestroyHandle;
     {$ENDIF}
 end;
 
@@ -2062,8 +2059,6 @@ begin
     TabPainter := nil;
 end;
 
-
-
 //=== { TJvTrackBar } ========================================================
 
 constructor TJvTrackBar.Create(AOwner: TComponent);
@@ -2073,8 +2068,6 @@ begin
   FToolTipSide := tsLeft;
   FShowRange := True;
 end;
-
-
 
 procedure TJvTrackBar.CNHScroll(var Msg: TWMHScroll);
 begin
@@ -2116,8 +2109,6 @@ begin
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
 
-
-
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
@@ -2134,7 +2125,6 @@ begin
     RecreateWnd;
   end;
 end;
-
 
 procedure TJvTrackBar.SetToolTips(const Value: Boolean);
 begin
@@ -2193,8 +2183,6 @@ begin
   else
     inherited;
 end;
-
-
 
 //=== { TJvTreeNode } ========================================================
 
@@ -2756,11 +2744,8 @@ begin
 end;
 
 procedure TJvTreeView.SetCheckBoxes(const Value: Boolean);
-
-
 var
   CurStyle: Integer;
-
 begin
   if FCheckBoxes <> Value then
   begin
@@ -3306,9 +3291,6 @@ begin
     Change;
   end;
 end;
-
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization

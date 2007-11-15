@@ -1541,12 +1541,9 @@ end;
 
 { Bitmaps }
 
-
-
-
 // see above for VisualCLX version of CopyParentImage
 type
-  TJvParentControl = class(TWinControl);
+  TAccessWinControl = class(TWinControl);
 
 procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 var
@@ -1584,12 +1581,10 @@ begin
       IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
         Control.Parent.ClientHeight);
       {$IFDEF CLR}
-        Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
-        Control.Parent.GetType.InvokeMember('PaintWindow',
-          BindingFlags.Instance or BindingFlags.InvokeMethod or BindingFlags.NonPublic,
-          nil, Control.Parent, [DC]);
+      Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
+      InvokeNonPublicMethod(Control.Parent, 'PaintWindow', [DC]);
       {$ELSE}
-      with TJvParentControl(Control.Parent) do
+      with TAccessWinControl(Control.Parent) do
       begin
         Perform(WM_ERASEBKGND, DC, 0);
         PaintWindow(DC);
@@ -1633,8 +1628,6 @@ begin
       ControlState := ControlState - [csPaintCopy];
   end;
 end;
-
-
 
 {$IFNDEF CLR}
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
@@ -2365,9 +2358,7 @@ begin
   AutoScroll := AForm.AutoScroll;
   AForm.Hide;
   {$IFDEF CLR}
-  AForm.GetType.InvokeMember('DestroyHandle',
-    BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
-    nil, AForm, []);
+  InvokeNonPublicMethod(AForm, 'DestroyHandle', []);
   {$ELSE}
   TCustomControlAccessProtected(AForm).DestroyHandle;
   {$ENDIF CLR}
@@ -4289,15 +4280,11 @@ var
   procedure ChangePosition(APosition: TPosition);
   begin
     {$IFDEF CLR}
-    Form.GetType.InvokeMember('SetDesigning',
-      BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
-      nil, Form, [True]);
+    InvokeNonPublicMethod(Form, 'SetDesigning', [True]);
     try
       Form.Position := APosition;
     finally
-      Form.GetType.InvokeMember('SetDesigning',
-        BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
-        nil, Form, [False]);
+      InvokeNonPublicMethod(Form, 'SetDesigning', [False]);
     end;
     {$ELSE}
     TComponentAccessProtected(Form).SetDesigning(True);
@@ -4424,7 +4411,7 @@ begin
         (Application.MainForm = nil)) then
       begin
         {$IFDEF CLR}
-        SetPrivateField(Form, 'FWindowState', wsNormal);
+        SetNonPublicField(Form, 'FWindowState', wsNormal);
         {$ELSE}
         TJvHackForm(Form).FWindowState := wsNormal;
         {$ENDIF CLR}
@@ -4433,7 +4420,7 @@ begin
       end;
       if FormStyle in [fsMDIChild, fsMDIForm] then
         {$IFDEF CLR}
-        SetPrivateField(Form, 'FWindowState', WinState)
+        SetNonPublicField(Form, 'FWindowState', WinState)
         {$ELSE}
         TJvHackForm(Form).FWindowState := WinState
         {$ENDIF CLR}

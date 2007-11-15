@@ -87,10 +87,13 @@ function VarToDateTime(const Value: Variant): TDateTime;
 
 function SucceededCom(out Intf; Value: TObject): Boolean;
 
-function GetPrivateField(Instance: TObject; const FieldName: string): TObject;
-procedure SetPrivateField(Instance: TObject; const FieldName: string; Value: TObject);
+function GetNonPublicField(Instance: TObject; const FieldName: string): TObject;
+procedure SetNonPublicField(Instance: TObject; const FieldName: string; Value: TObject);
+function GetNonPublicProperty(Instance: TObject; const PropName: string): TObject;
+procedure SetNonPublicProperty(Instance: TObject; const PropName: string; Value: TObject);
 procedure SetProtectedObjectEvent(Instance: TObject; const EventName: string; Ev: Delegate);
 function GetProtectedObjectEvent(Instance: TObject; const EventName: string): Delegate;
+function InvokeNonPublicMethod(Instance: TObject; const MethodName: string; const Args: array of const): TObject;
 
 [SuppressUnmanagedCodeSecurity, DllImport(user32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'SystemParametersInfo')]
 function SystemParametersInfo(uiAction, uiParam: UINT;
@@ -490,6 +493,8 @@ function CreateIconFromClipboard: TIcon;
 { begin JvIconClipboardUtils }
 { Icon clipboard routines }
 function CF_ICON: Word;
+
+{$IFNDEF CLR}
 procedure AssignClipboardIcon(Icon: TIcon);
 
 { Real-size icons support routines (32-bit only) }
@@ -497,9 +502,14 @@ procedure GetIconSize(Icon: HICON; var W, H: Integer);
 function CreateRealSizeIcon(Icon: TIcon): HICON;
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 {end JvIconClipboardUtils }
+{$ENDIF ~CLR}
 
 function CreateScreenCompatibleDC: HDC;
 
+{$IFNDEF CLR}
+function InvalidateRect(hWnd: HWND; const lpRect: TRect; bErase: BOOL): BOOL; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function InvalidateRect(hWnd: HWND; lpRect: PRect; bErase: BOOL): BOOL; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+{$ENDIF ~CLR}
 
 { begin JvRLE }
 
@@ -1345,7 +1355,7 @@ begin
   Result := Value <> nil;
 end;
 
-function GetPrivateField(Instance: TObject; const FieldName: string): TObject;
+function GetNonPublicField(Instance: TObject; const FieldName: string): TObject;
 var
   Info: FieldInfo;
 begin
@@ -1358,7 +1368,7 @@ begin
   end;
 end;
 
-procedure SetPrivateField(Instance: TObject; const FieldName: string; Value: TObject);
+procedure SetNonPublicField(Instance: TObject; const FieldName: string; Value: TObject);
 var
   Info: FieldInfo;
 begin
@@ -1367,6 +1377,31 @@ begin
     Info := Instance.GetType.GetField(FieldName, BindingFlags.NonPublic or BindingFlags.Instance);
     if Info <> nil then
       Info.SetValue(Instance, Value);
+  end;
+end;
+
+function GetNonPublicProperty(Instance: TObject; const PropName: string): TObject;
+var
+  Info: PropertyInfo;
+begin
+  Result := nil;
+  if Instance <> nil then
+  begin
+    Info := Instance.GetType.GetProperty(PropName, BindingFlags.NonPublic or BindingFlags.Instance);
+    if Info <> nil then
+      Result := Info.GetValue(Instance, []);
+  end;
+end;
+
+procedure SetNonPublicProperty(Instance: TObject; const PropName: string; Value: TObject);
+var
+  Info: PropertyInfo;
+begin
+  if Instance <> nil then
+  begin
+    Info := Instance.GetType.GetProperty(PropName, BindingFlags.NonPublic or BindingFlags.Instance);
+    if Info <> nil then
+      Info.SetValue(Instance, Value, []);
   end;
 end;
 
@@ -1395,6 +1430,12 @@ begin
     { TODO : Implement }
       //Info.RemoveEventHandler();
   end;
+end;
+
+function InvokeNonPublicMethod(Instance: TObject; const MethodName: string; const Args: array of const): TObject;
+begin
+  Result := Instance.GetType.InvokeMember(MethodName, BindingFlags.NonPublic or BindingFlags.Instance or BindingFlags.InvokeMethod,
+    nil, Instance, Args);
 end;
 
 function AnsiLastChar(const S: AnsiString): AnsiChar;
@@ -4256,11 +4297,6 @@ begin
     raise;
   end;
 end;
-{$ENDIF !CLR}
-
-
-
-
 
 { Real-size icons support routines }
 const
@@ -4596,15 +4632,28 @@ begin
     DestroyIcon(Ico);
   end;
 end;
+{$ENDIF ~CLR}
+
+{ end JvIconClipboardUtils }
 
 function CreateScreenCompatibleDC: HDC;
 const
-  HDC_DESKTOP = HDC(0);
+  HDC_DESKTOP = {$IFDEF CLR}nil{$ELSE}HDC(0){$ENDIF};
 begin
   Result := CreateCompatibleDC(HDC_DESKTOP);
 end;
 
-{ end JvIconClipboardUtils }
+{$IFNDEF CLR}
+function InvalidateRect(hWnd: HWND; const lpRect: TRect; bErase: BOOL): BOOL;
+begin
+  Result := Windows.InvalidateRect(hWnd, @lpRect, bErase);
+end;
+
+function InvalidateRect(hWnd: HWND; lpRect: PRect; bErase: BOOL): BOOL;
+begin
+  Result := Windows.InvalidateRect(hWnd, lpRect, bErase);
+end;
+{$ENDIF ~CLR}
 
 { begin JvRLE }
 

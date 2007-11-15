@@ -142,7 +142,7 @@ uses
   {$IFDEF CLR}
   JclBase,
   {$ENDIF CLR}
-  JvVCL5Utils, JvResources;
+  JvVCL5Utils, JvJclUtils, JvResources;
 
 type
   THiddenPopupObject = class(TComponent)
@@ -491,7 +491,7 @@ begin
   if Edit is TCustomCombo then
   begin
     {$IFDEF CLR}
-    Result := THandle(Edit.GetType.GetField('FEditHandle', BindingFlags.Instance or BindingFlags.NonPublic).GetValue(Edit));
+    Result := THandle(GetNonPublicField(Edit, 'FEditHandle'));
     {$ELSE}
     Result := TOpenCustomCombo(Edit).FEditHandle;
     {$ENDIF CLR}
