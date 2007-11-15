@@ -1776,14 +1776,28 @@ begin
 end;
 
 procedure TJvDBGrid.Paint;
+{$IFDEF CLR}
+ {$IFDEF JVCLThemesEnabled}
+var
+  OptionsProp: PropertyInfo;
+  NewOptions: TGridOptions;
+ {$ENDIF JVCLThemesEnabled}
+{$ENDIF CLR}
 begin
   {$IFDEF JVCLThemesEnabled}
   if UseXPThemes and ThemeServices.ThemesEnabled then
   begin
     // reset the inherited options but remove the goFixedVertLine and goFixedHorzLine values
     // as that causes the titles and indicator panels to have a black border
-    TStringGrid(Self).Options := TStringGrid(Self).Options - [goFixedVertLine];
-    TStringGrid(Self).Options := TStringGrid(Self).Options - [goFixedHorzLine];
+    {$IFDEF CLR}
+    { TJvDBGrid - TDBGrid - TCustomGrid }
+    OptionsProp := Self.GetType.BaseType.BaseType.GetProperty('Options', BindingFlags.NonPublic or BindingFlags.Instance);
+    NewOptions := OptionsProp.GetValue(Self, []) as TGridOptions;
+    NewOptions := NewOptions - [goFixedVertLine, goFixedHorzLine];
+    OptionsProp.SetValue(Self, TObject(NewOptions), []);
+    {$ELSE}
+    TStringGrid(Self).Options := TStringGrid(Self).Options - [goFixedVertLine, goFixedHorzLine];
+    {$ENDIF CLR}
   end;
   {$ENDIF JVCLThemesEnabled}
   inherited Paint;

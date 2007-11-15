@@ -671,7 +671,7 @@ function TJvCustomEdit.GetThemedFontHandle: HFONT;
 var
   AFont: TLogFont;
 begin
-  GetObject(GetStockObject(DEFAULT_GUI_FONT), SizeOf(AFont), @AFont);
+  GetObject(GetStockObject(DEFAULT_GUI_FONT), SizeOf(AFont), {$IFNDEF CLR}@{$ENDIF}AFont);
   AFont.lfHeight := Self.Font.Height;
   Result := CreateFontIndirect(AFont);
 end;

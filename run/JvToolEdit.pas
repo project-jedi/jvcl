@@ -3133,10 +3133,22 @@ end;
 
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
+{$IFDEF CLR}
+var
+  CalcSizeParams: TNCCalcSizeParams;
+{$ENDIF CLR}
 begin
   if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
+  begin
+    {$IFDEF CLR}
+    CalcSizeParams := Msg.CalcSize_Params;
+    InflateRect(CalcSizeParams.rgrc0, 1, 1);
+    Msg.CalcSize_Params := CalcSizeParams;
+    {$ELSE}
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
+    {$ENDIF CLR}
+  end;
   inherited;
 end;
 {$ENDIF JVCLThemesEnabled}
