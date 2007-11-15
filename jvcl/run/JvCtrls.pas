@@ -544,7 +544,7 @@ begin
 
     Details := ThemeServices.GetElementDetails(Button);
     // Parent background.
-    ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, @Details, True);
+    ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, {$IFNDEF CLR}@{$ENDIF}Details, True);
     // Button shape.
     ThemeServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
     // Return content rect

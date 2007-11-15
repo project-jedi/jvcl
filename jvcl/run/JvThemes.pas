@@ -90,7 +90,9 @@ type
   TThemedWindow = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemedWindow; {$EXTERNALSYM TThemedWindow}
   TThemeData = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemeData; {$EXTERNALSYM TThemeData}
 
+  {$IFNDEF CLR}
   PThemedElementDetails = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.PThemedElementDetails; {$EXTERNALSYM PThemedElementDetails}
+  {$ENDIF ~CLR}
   TThemedElementDetails = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemedElementDetails; {$EXTERNALSYM TThemedElementDetails}
   TThemeServices = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemeServices; {$EXTERNALSYM TThemeServices}
 
@@ -826,7 +828,8 @@ begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, Canvas.Handle, R)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R);
+        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil,
+          False, {$IFNDEF CLR}@{$ENDIF}R);
     end
     else
       PerformEraseBackground(Control, Canvas.Handle, R)
@@ -851,7 +854,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  GetObject(Brush, SizeOf(LogBrush), @LogBrush);
+  GetObject(Brush, SizeOf(LogBrush), {$IFNDEF CLR}@{$ENDIF}LogBrush);
   if ThemeServices.ThemesEnabled and
      (Control.Parent <> nil) and
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
@@ -863,7 +866,8 @@ begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, DC, R)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R);
+        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False,
+          {$IFNDEF CLR}@{$ENDIF}R);
     end
     else
       PerformEraseBackground(Control, DC, R)

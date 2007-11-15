@@ -1196,7 +1196,7 @@ begin
         if ThemeServices.ThemesEnabled and Enabled and not Flat then
         begin
           R := BoundsRect;
-          InvalidateRect(Parent.Handle, @R, True);
+          InvalidateRect(Parent.Handle, R, True);
         end
         else
         {$ENDIF JVCLThemesEnabled}
@@ -1261,7 +1261,7 @@ begin
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle, @R, True);
+    InvalidateRect(Parent.Handle, R, True);
   end;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -1282,7 +1282,7 @@ begin
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle, @R, True);
+    InvalidateRect(Parent.Handle, R, True);
   end;
   {$ENDIF JVCLThemesEnabled}
 end;
