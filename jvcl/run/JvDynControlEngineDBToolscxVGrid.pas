@@ -19,7 +19,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvDynControlEngineDBTools.pas 11427 2007-07-29 19:16:10Z jfudickar $
+// $Id$
 
 unit JvDynControlEngineDBToolscxVGrid;
 
@@ -88,9 +88,9 @@ Var
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDynControlEngineDBTools.pas $';
-    Revision: '$Revision: 11427 $';
-    Date: '$Date: 2007-07-29 21:16:10 +0200 (So, 29 Jul 2007) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
