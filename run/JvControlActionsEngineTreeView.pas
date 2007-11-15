@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvControlBaseAction.pas 11112 2007-01-01 20:44:42Z jfudickar $
+// $Id$
 
 unit JvControlActionsEngineTreeView;
 
@@ -57,9 +57,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDBActions.pas $';
-    Revision: '$Revision: 11112 $';
-    Date: '$Date: 2007-01-01 21:44:42 +0100 (Mo, 01 Jan 2007) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}

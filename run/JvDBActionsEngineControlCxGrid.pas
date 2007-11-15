@@ -47,44 +47,46 @@ type
   protected
     function GridView(AActionComponent: TComponent): TcxCustomGridView;
     function GridTableView(AActionComponent: TComponent): TcxCustomGridTableView;
-    function IsGridMode(AActionComponent : TComponent): Boolean;
+    function IsGridMode(AActionComponent: TComponent): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
-    function Bof(aActionComponent: TComponent): Boolean; override;
-    function RecNo(aActionComponent: TComponent): Integer; override;
-    function RecordCount(aActionComponent: TComponent): Integer; override;
-    function CanInsert(aActionComponent: TComponent): Boolean; override;
-    function CanUpdate(aActionComponent: TComponent): Boolean; override;
-    function CanDelete(aActionComponent: TComponent): Boolean; override;
-    function CanNavigate(aActionComponent: TComponent): Boolean; override;
+    function Bof(AActionComponent: TComponent): Boolean; override;
+    function RecNo(AActionComponent: TComponent): Integer; override;
+    function RecordCount(AActionComponent: TComponent): Integer; override;
+    function CanInsert(AActionComponent: TComponent): Boolean; override;
+    function CanUpdate(AActionComponent: TComponent): Boolean; override;
+    function CanDelete(AActionComponent: TComponent): Boolean; override;
+    function CanNavigate(AActionComponent: TComponent): Boolean; override;
     function DataSource(AActionComponent: TComponent): TDataSource; override;
-    procedure First(aActionComponent: TComponent); override;
-    function GotoSelectedRow(aActionComponent: TComponent;const ASelectedRow:
-        Integer): Boolean; override;
-    procedure Last(aActionComponent: TComponent); override;
-    procedure MoveBy(aActionComponent: TComponent;Distance: Integer); override;
-    function SelectedRowsCount(aActionComponent: TComponent): Integer; override;
+    procedure First(AActionComponent: TComponent); override;
+    function GotoSelectedRow(AActionComponent: TComponent; const ASelectedRow:
+      Integer): Boolean; override;
+    procedure Last(AActionComponent: TComponent); override;
+    procedure MoveBy(AActionComponent: TComponent; Distance: Integer); override;
+    function SelectedField(AActionComponent: TComponent): TField; override;
+    function SelectedRowsCount(AActionComponent: TComponent): Integer; override;
     function SupportsComponent(AActionComponent: TComponent): Boolean; override;
   end;
 
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile:
+    '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGrid, cxGridDBDataDefinitions, cxGridDBChartView,
-  cxCustomData,
+  cxCustomData, cxGridTableView,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
@@ -102,7 +104,7 @@ begin
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.GridView(AActionComponent:
-    TComponent): TcxCustomGridView;
+  TComponent): TcxCustomGridView;
 begin
   if Assigned(AActionComponent) then
     if AActionComponent is TcxGrid then
@@ -110,17 +112,16 @@ begin
         Result := TcxCustomGridView(TcxGrid(AActionComponent).FocusedView)
       else
         Result := nil
+    else if AActionComponent is TcxCustomGridView then
+      Result := TcxCustomGridView(AActionComponent)
     else
-      if AActionComponent is TcxCustomGridView then
-        Result := TcxCustomGridView(AActionComponent)
-      else
-        Result := nil
-    else
-      Result := nil;
+      Result := nil
+  else
+    Result := nil;
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.GridTableView(
-    AActionComponent: TComponent): TcxCustomGridTableView;
+  AActionComponent: TComponent): TcxCustomGridTableView;
 begin
   if Assigned(AActionComponent) then
     if AActionComponent is TcxGrid then
@@ -128,17 +129,16 @@ begin
         Result := TcxCustomGridTableView(TcxGrid(AActionComponent).FocusedView)
       else
         Result := nil
+    else if AActionComponent is TcxCustomGridTableView then
+      Result := TcxCustomGridTableView(AActionComponent)
     else
-      if AActionComponent is TcxCustomGridTableView then
-        Result := TcxCustomGridTableView(AActionComponent)
-      else
-        Result := nil
-    else
-      Result := nil;
+      Result := nil
+  else
+    Result := nil;
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.DataSource(
-    AActionComponent: TComponent): TDataSource;
+  AActionComponent: TComponent): TDataSource;
 begin
   if Assigned(DBDataController(AActionComponent)) then
     Result := DBDataController(AActionComponent).DataSource
@@ -147,111 +147,116 @@ begin
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.SupportsComponent(
-    AActionComponent: TComponent): Boolean;
+  AActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(GridView(AActionComponent));
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.Bof(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.Bof(AActionComponent:
+  TComponent): Boolean;
 begin
-  if Assigned(GridView(aActionComponent)) then
-    Result := GridView(aActionComponent).DataController.FocusedRowIndex = 0
+  if Assigned(GridView(AActionComponent)) then
+    Result := GridView(AActionComponent).DataController.FocusedRowIndex = 0
   else
-    Result := inherited Bof(aActionComponent);
+    Result := inherited Bof(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.RecNo(aActionComponent:
-    TComponent): Integer;
+function TJvDatabaseActionDevExpCxGridControlEngine.RecNo(AActionComponent:
+  TComponent): Integer;
 begin
-  if Assigned(GridView(aActionComponent)) then
-    if GridView(aActionComponent).DataController.IsGridMode then
-      Result := inherited RecNo(aActionComponent)
+  if Assigned(GridView(AActionComponent)) then
+    if GridView(AActionComponent).DataController.IsGridMode then
+      Result := inherited RecNo(AActionComponent)
     else
-      Result := GridView(aActionComponent).DataController.FocusedRowIndex + 1
+      Result := GridView(AActionComponent).DataController.FocusedRowIndex + 1
   else
-    Result := inherited RecNo(aActionComponent);
+    Result := inherited RecNo(AActionComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.RecordCount(
-    aActionComponent: TComponent): Integer;
+  AActionComponent: TComponent): Integer;
 begin
-  if Assigned(GridView(aActionComponent)) then
-    if GridView(aActionComponent).DataController.IsGridMode then
-      Result := inherited RecordCount(aActionComponent)
+  if Assigned(GridView(AActionComponent)) then
+    if GridView(AActionComponent).DataController.IsGridMode then
+      Result := inherited RecordCount(AActionComponent)
     else
-      Result := GridView(aActionComponent).DataController.FilteredRecordCount 
+      Result := GridView(AActionComponent).DataController.FilteredRecordCount
   else
-    Result := inherited RecordCount(aActionComponent);
+    Result := inherited RecordCount(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanInsert(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanInsert(AActionComponent:
+  TComponent): Boolean;
 begin
-  if Assigned(GridTableView(aActionComponent)) then
-    Result := GridTableView(aActionComponent).OptionsData.Inserting and inherited CanInsert(aActionComponent)
+  if Assigned(GridTableView(AActionComponent)) then
+    Result := GridTableView(AActionComponent).OptionsData.Inserting and inherited
+      CanInsert(AActionComponent)
   else
-    Result := inherited CanInsert(aActionComponent);
+    Result := inherited CanInsert(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanUpdate(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanUpdate(AActionComponent:
+  TComponent): Boolean;
 begin
-  if Assigned(GridTableView(aActionComponent)) then
-    Result := GridTableView(aActionComponent).OptionsData.Editing and inherited CanUpdate(aActionComponent)
+  if Assigned(GridTableView(AActionComponent)) then
+    Result := GridTableView(AActionComponent).OptionsData.Editing and inherited
+      CanUpdate(AActionComponent)
   else
-    Result := inherited CanUpdate(aActionComponent);
+    Result := inherited CanUpdate(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxGridControlEngine.CanDelete(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionDevExpCxGridControlEngine.CanDelete(AActionComponent:
+  TComponent): Boolean;
 begin
-  if Assigned(GridTableView(aActionComponent)) then
-    Result := GridTableView(aActionComponent).OptionsData.Deleting and inherited CanDelete(aActionComponent)
+  if Assigned(GridTableView(AActionComponent)) then
+    Result := GridTableView(AActionComponent).OptionsData.Deleting and inherited
+      CanDelete(AActionComponent)
   else
-    Result := inherited CanDelete(aActionComponent);
+    Result := inherited CanDelete(AActionComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.CanNavigate(
-    aActionComponent: TComponent): Boolean;
+  AActionComponent: TComponent): Boolean;
 begin
-  Result := Assigned(GridTableView(aActionComponent));
+  Result := Assigned(GridTableView(AActionComponent));
 end;
 
-procedure TJvDatabaseActionDevExpCxGridControlEngine.First(aActionComponent:
-    TComponent);
+procedure TJvDatabaseActionDevExpCxGridControlEngine.First(AActionComponent:
+  TComponent);
 begin
-  if Assigned(GridTableView(aActionComponent)) then
-    GridTableView(aActionComponent).DataController.GotoFirst
+  if Assigned(GridTableView(AActionComponent)) then
+    GridTableView(AActionComponent).DataController.GotoFirst
   else
-    inherited First(aActionComponent);
+    inherited First(AActionComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.DBDataController(
-    AActionComponent: TComponent): TcxDBDataController;
+  AActionComponent: TComponent): TcxDBDataController;
 
 begin
-  if Assigned(GridView(aActionComponent)) and (GridView(aActionComponent).DataController is TcxDBDataController) then
-    Result := TcxDBDataController(GridView(aActionComponent).DataController)
+  if Assigned(GridView(AActionComponent)) and (GridView(AActionComponent).DataController is
+    TcxDBDataController) then
+    Result := TcxDBDataController(GridView(AActionComponent).DataController)
   else
     Result := nil;
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.GotoSelectedRow(
-    aActionComponent: TComponent;const ASelectedRow: Integer): Boolean;
+  AActionComponent: TComponent; const ASelectedRow: Integer): Boolean;
 var
   Bkm: TBookmarkStr;
   RecIdx: Integer;
   RecID: Variant;
 begin
-  if Assigned(DBDataController(aActionComponent)) and Assigned(Dataset(aActionComponent)) and Assigned(GridTableView(aActionComponent)) then
+  if Assigned(DBDataController(AActionComponent)) and Assigned(Dataset(AActionComponent)) and
+    Assigned(GridTableView(AActionComponent)) then
     try
-      if IsGridMode(aActionComponent) then
+      if IsGridMode(AActionComponent) then
       begin
-        Bkm := DBDataController(aActionComponent).GetSelectedBookmark(ASelectedRow);
-        if DataSet(aActionComponent).BookmarkValid(TBookmark(Bkm)) then
+        Bkm := DBDataController(AActionComponent).GetSelectedBookmark(ASelectedRow);
+        if Dataset(AActionComponent).BookmarkValid(TBookmark(Bkm)) then
         begin
-          Dataset(aActionComponent).Bookmark := Bkm;
+          Dataset(AActionComponent).Bookmark := Bkm;
           Result := True;
         end
         else
@@ -259,9 +264,12 @@ begin
       end
       else
       begin
-        RecIdx := GridTableView(aActionComponent).Controller.SelectedRecords[ASelectedRow].RecordIndex;
-        RecID := GridTableView(aActionComponent).DataController.GetRecordId(RecIdx);
-        Result := DataSet(aActionComponent).Locate(DBDataController(aActionComponent).KeyFieldNames, RecID, [loPartialKey]);
+        RecIdx :=
+          GridTableView(AActionComponent).Controller.SelectedRecords[ASelectedRow].RecordIndex;
+        RecID := GridTableView(AActionComponent).DataController.GetRecordId(RecIdx);
+        Result :=
+          Dataset(AActionComponent).Locate(DBDataController(AActionComponent).KeyFieldNames, RecID,
+          [loPartialKey]);
       end;
     except
       Result := False;
@@ -271,39 +279,54 @@ begin
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.IsGridMode(AActionComponent
-    : TComponent): Boolean;
+  : TComponent): Boolean;
 begin
-  if Assigned(DBDataController(aActionComponent)) then
-    Result := DBDataController(aActionComponent).DataModeController.GridMode
+  if Assigned(DBDataController(AActionComponent)) then
+    Result := DBDataController(AActionComponent).DataModeController.GridMode
   else
     Result := True;
 end;
 
-procedure TJvDatabaseActionDevExpCxGridControlEngine.Last(aActionComponent:
-    TComponent);
+procedure TJvDatabaseActionDevExpCxGridControlEngine.Last(AActionComponent:
+  TComponent);
 begin
-  if Assigned(GridView(aActionComponent)) then
-    GridView(aActionComponent).DataController.GotoLast
+  if Assigned(GridView(AActionComponent)) then
+    GridView(AActionComponent).DataController.GotoLast
   else
-    inherited Last(aActionComponent);
+    inherited Last(AActionComponent);
 end;
 
-procedure TJvDatabaseActionDevExpCxGridControlEngine.MoveBy(aActionComponent:
-    TComponent;Distance: Integer);
+procedure TJvDatabaseActionDevExpCxGridControlEngine.MoveBy(AActionComponent:
+  TComponent; Distance: Integer);
 begin
-  if Assigned(GridView(aActionComponent)) then
-    GridView(aActionComponent).DataController.MoveBy(Distance)
+  if Assigned(GridView(AActionComponent)) then
+    GridView(AActionComponent).DataController.MoveBy(Distance)
   else
-    inherited MoveBy(aActionComponent, Distance);
+    inherited MoveBy(AActionComponent, Distance);
+end;
+
+function TJvDatabaseActionDevExpCxGridControlEngine.SelectedField(
+  AActionComponent: TComponent): TField;
+var Item : TcxCustomGridTableItem;
+begin
+  Result := nil;
+  if GridView(AActionComponent).Controller is TcxCustomGridTableController then
+  begin
+    Item := TcxCustomGridTableController(GridView(AActionComponent).Controller).FocusedItem;
+    if Assigned(Item) and
+      (Item is TcxGridColumn) and
+      (Item.DataBinding is TcxGridItemDBDataBinding) then
+      Result := TcxGridItemDBDataBinding(Item.DataBinding).Field;
+  end;
 end;
 
 function TJvDatabaseActionDevExpCxGridControlEngine.SelectedRowsCount(
-    aActionComponent: TComponent): Integer;
+  AActionComponent: TComponent): Integer;
 begin
-  if Assigned(GridView(aActionComponent)) then
-    Result := GridView(aActionComponent).DataController.GetSelectedCount
+  if Assigned(GridView(AActionComponent)) then
+    Result := GridView(AActionComponent).DataController.GetSelectedCount
   else
-    Result := inherited SelectedRowsCount(aActionComponent);
+    Result := inherited SelectedRowsCount(AActionComponent);
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
