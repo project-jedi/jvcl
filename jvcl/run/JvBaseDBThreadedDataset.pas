@@ -898,6 +898,7 @@ begin
 end;
 
 function TJvBaseDatasetThreadHandler.CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
+var CheckCount : Integer;
 begin
   Result := tdccrContinue;
   FCurrentRow := Dataset.RecordCount;
@@ -914,8 +915,14 @@ begin
         Exit;
       end;
   end;
-  if (EnhancedOptions.FetchRowsCheck > 0) and IntRowCheckEnabled then
-    if CurrentRow >= FLastRowChecked + EnhancedOptions.FetchRowsCheck then
+  if (fLastRowChecked = 0) and
+     (EnhancedOptions.FetchRowsFirst > 0) then
+    CheckCount := EnhancedOptions.FetchRowsFirst
+  else
+    CheckCount := EnhancedOptions.FetchRowsCheck;
+
+  if (CheckCount > 0) and IntRowCheckEnabled and
+    (CurrentRow >= FLastRowChecked + CheckCount) then
     begin
       IntCurrentFetchDuration := IntCurrentFetchDuration + Now - IntCurrentOperationStart;
       IntCurrentAction := tdaNothing;
