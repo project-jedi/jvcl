@@ -260,6 +260,8 @@ type
     procedure WaitFor;          // wait for all threads
     procedure RemoveZombie(BaseThread: TJvBaseThread); overload; // remove finished thread (where FreeOnTerminate was false)
     procedure RemoveZombie; overload; // remove all finished threads (where FreeOnTerminate was false)
+    //1 //Combination of Terminate and WaitFor, optional RemoveZombie
+    procedure TerminateWaitFor(iRemoveZombies: Boolean = true);
   published
     property Exclusive: Boolean read FExclusive write FExclusive;
     property MaxCount: Integer read FMaxCount write FMaxCount;
@@ -296,7 +298,7 @@ const
 implementation
 
 uses
-  JvResources;
+  JvResources, JvDSADialogs;
 
 var
   SyncMtx: THandle = 0;
@@ -1038,6 +1040,14 @@ begin
     FAfterCreateDialogForm(DialogForm);
 end;
 
+procedure TJvThread.TerminateWaitFor(iRemoveZombies: Boolean = true);
+begin
+  Terminate;
+  WaitFor;
+  if iRemoveZombies then
+    RemoveZombie;
+end;
+
 //=== { TJvBaseThread } ======================================================
 
 constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
@@ -1105,7 +1115,7 @@ begin
     OnShowMessageDlgEvent(FSynchMsg, FSynchAType,
      FSynchAButtons, FSynchHelpCtx, FSynchMessageDlgResult)
   else
-    FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
+    FSynchMessageDlgResult := JvDSADialogs.MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
