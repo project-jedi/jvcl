@@ -298,7 +298,7 @@ const
 implementation
 
 uses
-  JvResources, JvDSADialogs;
+  JvResources;
 
 var
   SyncMtx: THandle = 0;
@@ -1115,7 +1115,7 @@ begin
     OnShowMessageDlgEvent(FSynchMsg, FSynchAType,
      FSynchAButtons, FSynchHelpCtx, FSynchMessageDlgResult)
   else
-    FSynchMessageDlgResult := JvDSADialogs.MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
+    FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
