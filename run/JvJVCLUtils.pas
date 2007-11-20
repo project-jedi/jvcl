@@ -7804,20 +7804,10 @@ begin
 end;
 
 procedure RegisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer; AGraphicClass: TGraphicClass);
-{$IFDEF COMPILER11_UP}
 begin
   if Length(ASignature) > 0 then
     RegisterGraphicSignature(StringOf(ASignature), AOffset, AGraphicClass);
 end;
-{$ELSE}
-var
-  Signature: string;
-begin
-  SetLength(Signature, Length(ASignature));
-  Move(ASignature[Low(ASignature)], Signature[1], Length(ASignature));
-  RegisterGraphicSignature(Signature, AOffset, AGraphicClass);
-end;
-{$ENDIF COMPILER11_UP}
 
 procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
 var
@@ -7841,19 +7831,9 @@ begin
 end;
 
 procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer);
-{$IFDEF COMPILER11_UP}
 begin
   UnregisterGraphicSignature(StringOf(ASignature), AOffset);
 end;
-{$ELSE}
-var
-  Signature: string;
-begin
-  SetLength(Signature, Length(ASignature));
-  Move(ASignature[Low(ASignature)], Signature[1], Length(ASignature));
-  UnregisterGraphicSignature(Signature, AOffset);
-end;
-{$ENDIF COMPILER11_UP}
 
 function GetGraphicClass(AStream: TStream): TGraphicClass;
 var
