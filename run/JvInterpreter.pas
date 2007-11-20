@@ -7225,6 +7225,7 @@ begin
         InternalGetValue(nil, 0, V);
         if VarType(V) <> varObject then
           JvInterpreterError(ieClassRequired, PosBeg {?});
+        UpdateExceptionPos(Exception(V2O(V)), '');
         raise V2O(V);
       end;
   else
