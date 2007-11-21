@@ -301,8 +301,10 @@ const
 implementation
 
 uses
-  SysUtils, ComCtrls, 
+  SysUtils, ComCtrls,
+  {$IFDEF HAS_UNIT_TYPES} 
   Types,  // for inlining in D2007 and upper
+  {$ENDIF HAS_UNIT_TYPES} 
   JvResources;
 
 const
