@@ -301,7 +301,8 @@ const
 implementation
 
 uses
-  SysUtils, ComCtrls,
+  SysUtils, ComCtrls, 
+  Types,  // for inlining in D2007 and upper
   JvResources;
 
 const
