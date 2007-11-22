@@ -1032,7 +1032,7 @@ begin
     tdaFetch:
       Result := FIntCurrentFetchDuration + (Now - IntCurrentOperationStart);
   else
-    Result := 0;
+    Result := FIntCurrentFetchDuration;
   end;
 end;
 
@@ -1114,7 +1114,7 @@ begin
     IntCurrentOpenDuration := Now - IntCurrentOperationStart;
     IntCurrentOperationStart := Now;
     DatasetFetchAllRecords := FIntDatasetFetchAllRecords;
-    IntCurrentFetchDuration := 0;
+//    IntCurrentFetchDuration := 0;
     if IntCurrentAction <> tdaCancel then
     begin
       IntCurrentAction := tdaFetch;
