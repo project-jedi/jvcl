@@ -243,17 +243,26 @@ type
       FShowSelectedRows default True;
   end;
 
+  TJvDatabaseInsertType = ( itInsert, itAppend);
+
   TJvDatabaseInsertAction = class(TJvDatabaseBaseEditAction)
+  private
+    FInsertType: TJvDatabaseInsertType;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
+  published
+    //1 The property defines that the new record is created via the insert or the append method
+    property InsertType: TJvDatabaseInsertType read FInsertType write FInsertType
+        default itInsert;
   end;
 
   TJvDatabaseOnCopyRecord = procedure(Field: TField; OldValue: Variant) of object;
   TJvDatabaseBeforeCopyRecord = procedure(DataSet: TDataSet; var RefreshAllowed: Boolean) of object;
   TJvDatabaseAfterCopyRecord = procedure(DataSet: TDataSet) of object;
 
-  TJvDatabaseCopyAction = class(TJvDatabaseBaseEditAction)
+  TJvDatabaseCopyAction = class(TJvDatabaseInsertAction)
   private
     FBeforeCopyRecord: TJvDatabaseBeforeCopyRecord;
     FAfterCopyRecord: TJvDatabaseAfterCopyRecord;
@@ -1056,6 +1065,12 @@ begin
   end;
 end;
 
+constructor TJvDatabaseInsertAction.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FInsertType := itInsert;
+end;
+
 //=== { TJvDatabaseInsertAction } ============================================
 
 procedure TJvDatabaseInsertAction.UpdateTarget(Target: TObject);
@@ -1067,7 +1082,10 @@ end;
 procedure TJvDatabaseInsertAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  DataSet.Insert;
+  if InsertType = itAppend then
+    DataSet.Append
+  else
+    DataSet.Insert;
 end;
 
 //=== { TJvDatabaseCopyAction } ==============================================
@@ -1091,37 +1109,33 @@ var
   Value: Variant;
   Allowed: Boolean;
 begin
-  with DataSet do
-  begin
-    if not Active then
-      Exit;
-    if State in [dsInsert, dsEdit] then
-      Post;
-    if State <> dsBrowse then
-      Exit;
-    Allowed := True;
-  end;
+  if not DataSet.Active then
+    Exit;
+  if DataSet.State in [dsInsert, dsEdit] then
+    DataSet.Post;
+  if DataSet.State <> dsBrowse then
+    Exit;
+  Allowed := True;
   if Assigned(FBeforeCopyRecord) then
     FBeforeCopyRecord(DataSet, Allowed);
-  with DataSet do
-  begin
-    // (rom) this suppresses AfterCopyRecord. Is that desired?
-    if not Allowed then
-      Exit;
-    SetLength(Values, FieldCount);
-    for I := 0 to FieldCount - 1 do
-      Values[I] := Fields[I].AsVariant;
-    Insert;
-    if Assigned(FOnCopyRecord) then
-      for I := 0 to FieldCount - 1 do
-      begin
-        Value := Values[I];
-        FOnCopyRecord(Fields[I], Value);
-      end
-    else
-      for I := 0 to FieldCount - 1 do
-        Fields[I].AsVariant := Values[I];
-  end;
+  if not Allowed then
+    Exit;
+  SetLength(Values, DataSet.FieldCount);
+  for I := 0 to DataSet.FieldCount - 1 do
+    Values[I] := DataSet.Fields[I].AsVariant;
+  if InsertType = itAppend then
+    DataSet.Append
+  else
+    DataSet.Insert;
+  if Assigned(FOnCopyRecord) then
+    for I := 0 to DataSet.FieldCount - 1 do
+    begin
+      Value := Values[I];
+      FOnCopyRecord(DataSet.Fields[I], Value);
+    end
+  else
+    for I := 0 to DataSet.FieldCount - 1 do
+      DataSet.Fields[I].AsVariant := Values[I];
   if Assigned(FAfterCopyRecord) then
     FAfterCopyRecord(DataSet);
 end;
