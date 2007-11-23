@@ -262,16 +262,21 @@ type
   TJvDatabaseBeforeCopyRecord = procedure(DataSet: TDataSet; var RefreshAllowed: Boolean) of object;
   TJvDatabaseAfterCopyRecord = procedure(DataSet: TDataSet) of object;
 
-  TJvDatabaseCopyAction = class(TJvDatabaseInsertAction)
+  TJvDatabaseCopyAction = class(TJvDatabaseBaseEditAction)
   private
     FBeforeCopyRecord: TJvDatabaseBeforeCopyRecord;
     FAfterCopyRecord: TJvDatabaseAfterCopyRecord;
+    FInsertType: TJvDatabaseInsertType;
     FOnCopyRecord: TJvDatabaseOnCopyRecord;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure CopyRecord;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
   published
+    //1 The property defines that the new record is created via the insert or the append method
+    property InsertType: TJvDatabaseInsertType read FInsertType write FInsertType
+        default itInsert;
     property BeforeCopyRecord: TJvDatabaseBeforeCopyRecord read FBeforeCopyRecord write FBeforeCopyRecord;
     property AfterCopyRecord: TJvDatabaseAfterCopyRecord read FAfterCopyRecord write FAfterCopyRecord;
     property OnCopyRecord: TJvDatabaseOnCopyRecord read FOnCopyRecord write FOnCopyRecord;
@@ -1065,13 +1070,13 @@ begin
   end;
 end;
 
+//=== { TJvDatabaseInsertAction } ============================================
+
 constructor TJvDatabaseInsertAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInsertType := itInsert;
 end;
-
-//=== { TJvDatabaseInsertAction } ============================================
 
 procedure TJvDatabaseInsertAction.UpdateTarget(Target: TObject);
 begin
@@ -1089,6 +1094,12 @@ begin
 end;
 
 //=== { TJvDatabaseCopyAction } ==============================================
+
+constructor TJvDatabaseCopyAction.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FInsertType := itInsert;
+end;
 
 procedure TJvDatabaseCopyAction.UpdateTarget(Target: TObject);
 begin
