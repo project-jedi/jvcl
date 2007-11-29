@@ -625,6 +625,7 @@ begin
     Inc(Rect.Right, Delta);
   end;
   CheckPosition(Rect);
+  UpdateRegion;
 
   Inc(Rect.Bottom, 4);
   UpdateBoundsRect(Rect);
@@ -1253,7 +1254,7 @@ var
   Region: HRGN;
   IsVisible: Boolean;
 begin
-  if not HandleAllocated or not FUseRegion then
+  if not HandleAllocated or not FUseRegion or (FCurrentPosition = bpAuto) then
     Exit;
 
   {$IFDEF JVCLThemesEnabled}
