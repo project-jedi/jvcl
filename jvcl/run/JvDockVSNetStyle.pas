@@ -560,6 +560,7 @@ type
 
   TCustomFormAccess = class(TCustomForm);
   TWinControlAccessProtected = class(TWinControl);
+  TCustomControlAccessProtected = class(TCustomControl);
 
   { Enumerates the channels of a dock server; Ensure MoveNext returns true
     before reading Current }
@@ -1052,20 +1053,33 @@ procedure TJvDockVSBlock.ResetActiveBlockWidth;
 var
   I: Integer;
   TextWidth: Integer;
+  Canvas: TCanvas;
 begin
   FActiveBlockWidth := 0;
 
-  for I := 0 to VSPaneCount - 1 do
+  if VSPaneCount > 0 then
   begin
-    { Dirty cast }
-    TextWidth := TCustomForm(VSChannel.Parent).Canvas.TextWidth(VSPane[I].FDockForm.Caption) + InactiveBlockWidth + 10;
-    if TextWidth >= VSChannel.ActivePaneSize then
-    begin
-      FActiveBlockWidth := VSChannel.ActivePaneSize;
-      Exit;
-    end;
+    if VSChannel.Parent is TCustomControl then
+      Canvas := TCustomControlAccessProtected(VSChannel.Parent).Canvas
+    else if VSChannel.Parent is TCustomForm then
+      Canvas := TForm(VSChannel.Parent).Canvas
+    else
+      Canvas := nil;
 
-    FActiveBlockWidth := Max(FActiveBlockWidth, TextWidth);
+    if Canvas <> nil then
+    begin
+      for I := 0 to VSPaneCount - 1 do
+      begin
+        TextWidth := Canvas.TextWidth(VSPane[I].FDockForm.Caption) + InactiveBlockWidth + 10;
+        if TextWidth >= VSChannel.ActivePaneSize then
+        begin
+          FActiveBlockWidth := VSChannel.ActivePaneSize;
+          Exit;
+        end;
+
+        FActiveBlockWidth := Max(FActiveBlockWidth, TextWidth);
+      end;
+    end;
   end;
 
   if FActiveBlockWidth = 0 then
