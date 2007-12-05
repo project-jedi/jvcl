@@ -133,6 +133,8 @@ type
   TJvDBColumnResizeEvent = procedure(Grid: TJvDBGrid; ACol: Longint; NewWidth: Integer) of object;
   TJvDBCheckIfBooleanFieldEvent = function(Grid: TJvDBGrid; Field: TField;
     var StringForTrue: string; var StringForFalse: string): Boolean of object;
+  TJvDBCanEditCellEvent = procedure(Grid: TJvDBGrid; Field: TField; var AllowEdit: Boolean) of object;
+  TJvDBSelectColumnsEvent = procedure(Grid: TJvDBGrid; var DefaultDialog: Boolean) of object;
 
   TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
   TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
@@ -294,6 +296,12 @@ type
     FUseXPThemes: Boolean;
     FPaintInfo: TJvGridPaintInfo;
     FCell: TGridCoord; // currently selected cell
+
+    FTitleButtonAllowMove: Boolean;
+    FReadOnlyCellColor: TColor;
+    FOnCanEditCell: TJvDBCanEditCellEvent;
+    FOnSelectColumns: TJvDBSelectColumnsEvent;
+
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
 
@@ -370,6 +378,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
+    function CanEditCell(AField: TField): Boolean; virtual;
     function CreateEditor: TInplaceEdit; override;
     procedure DblClick; override;
     function DoTitleBtnDblClick: Boolean; dynamic;
@@ -471,6 +480,10 @@ type
     procedure RegisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
     procedure UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
 
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function CellRect(ACol, ARow: Longint): TRect;
+
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -497,6 +510,7 @@ type
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     property ShowGlyphs: Boolean read FShowGlyphs write SetShowGlyphs default True;
     property TitleButtons: Boolean read FTitleButtons write SetTitleButtons default False;
+    property TitleButtonAllowMove: Boolean read FTitleButtonAllowMove write FTitleButtonAllowMove default False; 
     property OnCheckButton: TCheckTitleBtnEvent read FOnCheckButton write FOnCheckButton;
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps write FOnGetCellProps; { obsolete }
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
@@ -567,6 +581,13 @@ type
     property OnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent read FOnCheckIfBooleanField write FOnCheckIfBooleanField;
     { OnColumnResized: event triggered each time a column is resized with the mouse }
     property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
+
+    { ReadOnlyCellColor: The color of the cells that are read only => OnCanEditCell, not Field.CanModify }  
+    property ReadOnlyCellColor: TColor read FReadOnlyCellColor write FReadOnlyCellColor default clDefault;
+    { OnCanEditCell: event used to control the appearance of editor and cell background }
+    property OnCanEditCell: TJvDBCanEditCellEvent read FOnCanEditCell write FOnCanEditCell;
+    { OnSelectColumns: event is triggered when the user clicks on the TitleArrow button. }
+    property OnSelectColumns: TJvDBSelectColumnsEvent read FOnSelectColumns write FOnSelectColumns;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1043,6 +1064,8 @@ begin
   FTitleRowHeight := RowHeights[0];
   FShowMemos := True;
   FCanDelete := True;
+
+  FReadOnlyCellColor := clDefault;
 
   // XP Theming
   FUseXPThemes := True;
@@ -1895,6 +1918,13 @@ function TJvDBGrid.CanEditShow: Boolean;
       end;
     end;
 
+    if not CanEditCell(F) then
+    begin
+      HideCurrentControl;
+      HideEditor;
+      Exit;
+    end;
+
     // There is an editor, so we trigger the OnShowEditor event
     Result := True;
     if Assigned(OnShowEditor) and
@@ -1961,6 +1991,13 @@ begin
     if not (Assigned(InplaceEditor) and InplaceEditor.Visible) then
       HideEditor;
   end;
+end;
+
+function TJvDBGrid.CanEditCell(AField: TField): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnCanEditCell) then
+    FOnCanEditCell(Self, AField, Result);
 end;
 
 procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
@@ -2348,7 +2385,8 @@ begin
           else
           if FBeepOnError then
             SysUtils.Beep;
-          Exit;
+          if not TitleButtonAllowMove then
+            Exit;
         end;
       end;
       if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
@@ -3307,7 +3345,10 @@ begin
             ALeft := TitleRect.Right - Indicator + 3;
             if IsRightToLeft then
               ALeft := TitleRect.Left + 3;
-            Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
+            {$IFDEF JVCLThemesEnabled}
+            if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+            {$ENDIF JVCLThemesEnabled}
+              Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
             if (ALeft > TitleRect.Left) and (ALeft + Bmp.Width < TitleRect.Right) then
               DrawBitmapTransparent(Canvas, ALeft, (TitleRect.Bottom +
                 TitleRect.Top - Bmp.Height) div 2, Bmp, clFuchsia);
@@ -3350,7 +3391,15 @@ begin
   NewBackgrnd := Canvas.Brush.Color;
   Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or Focused);
   GetCellProps(Field, Canvas.Font, NewBackgrnd, Highlight or ActiveRowSelected);
-  Canvas.Brush.Color := NewBackgrnd;
+  if not Highlight and (ReadOnlyCellColor <> clDefault) and (not Field.CanModify or not CanEditCell(Field)) then
+  begin
+    if (gdSelected in State) and (Focused xor MultiSelect) then
+      Canvas.Brush.Color := NewBackgrnd
+    else
+      Canvas.Brush.Color := ReadOnlyCellColor;
+  end
+  else
+    Canvas.Brush.Color := NewBackgrnd;
   if DefaultDrawing then
   begin
     I := GetImageIndex(Field);
@@ -4490,9 +4539,9 @@ begin
   NoSelectionWarning := RsJvDBGridSelectWarning;
 end;
 
-procedure TJvDBGrid.ShowColumnsDialog;
+procedure TJvDBGrid.ShowSelectColumnClick;
 begin
-  ShowSelectColumnClick;
+  ShowColumnsDialog;
 end;
 
 procedure TJvDBGrid.SetSelectColumnsDialogStrings(const Value: TJvSelectDialogColumnStrings);
@@ -4500,40 +4549,47 @@ begin
   // do nothing
 end;
 
-procedure TJvDBGrid.ShowSelectColumnClick;
+procedure TJvDBGrid.ShowColumnsDialog;
 var
   R, WorkArea: TRect;
   Frm: TfrmSelectColumn;
   Pt: TPoint;
+  DefaultDialog: Boolean;
 begin
-  R := CellRect(0, 0);
-  Frm := TfrmSelectColumn.Create(Application);
-  try
-    if not IsRectEmpty(R) then
-    begin
-      Pt := ClientToScreen(Point(R.Left, R.Bottom + 1));
-      {$IFDEF COMPILER5}
-      SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
-      {$ELSE}
-      WorkArea := Screen.MonitorFromWindow(Handle).WorkareaRect;
-      {$ENDIF COMPILER5}
-      { force the form the be in the working area }
-      if Pt.X + Frm.Width > WorkArea.Right then
-        Pt.X := WorkArea.Right - Frm.Width;
-      if Pt.Y + Frm.Height > WorkArea.Bottom then
-        Pt.Y := WorkArea.Bottom - Frm.Height;
-      Frm.SetBounds(Pt.X, Pt.Y, Frm.Width, Frm.Height);
+  DefaultDialog := True;
+  if Assigned(FOnSelectColumns) then
+    FOnSelectColumns(Self, DefaultDialog);
+  if DefaultDialog then
+  begin
+    R := CellRect(0, 0);
+    Frm := TfrmSelectColumn.Create(Application);
+    try
+      if not IsRectEmpty(R) then
+      begin
+        Pt := ClientToScreen(Point(R.Left, R.Bottom + 1));
+        {$IFDEF COMPILER5}
+        SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
+        {$ELSE}
+        WorkArea := Screen.MonitorFromWindow(Handle).WorkareaRect;
+        {$ENDIF COMPILER5}
+        { force the form the be in the working area }
+        if Pt.X + Frm.Width > WorkArea.Right then
+          Pt.X := WorkArea.Right - Frm.Width;
+        if Pt.Y + Frm.Height > WorkArea.Bottom then
+          Pt.Y := WorkArea.Bottom - Frm.Height;
+        Frm.SetBounds(Pt.X, Pt.Y, Frm.Width, Frm.Height);
+      end;
+      Frm.Grid := Self;
+      Frm.DataSource := DataLink.DataSource;
+      Frm.SelectColumn := SelectColumn;
+      Frm.Caption := SelectColumnsDialogStrings.Caption;
+      Frm.cbWithFieldName.Caption := SelectColumnsDialogStrings.RealNamesOption;
+      Frm.ButtonOK.Caption := SelectColumnsDialogStrings.OK;
+      Frm.NoSelectionWarning := SelectColumnsDialogStrings.NoSelectionWarning;
+      Frm.ShowModal;
+    finally
+      Frm.Free;
     end;
-    Frm.Grid := TJvDBGrid(Self);
-    Frm.DataSource := DataLink.DataSource;
-    Frm.SelectColumn := FSelectColumn;
-    Frm.Caption := SelectColumnsDialogStrings.Caption;
-    Frm.cbWithFieldName.Caption := SelectColumnsDialogStrings.RealNamesOption;
-    Frm.ButtonOK.Caption := SelectColumnsDialogStrings.OK;
-    Frm.NoSelectionWarning := SelectColumnsDialogStrings.NoSelectionWarning;
-    Frm.ShowModal;
-  finally
-    Frm.Free;
   end;
   Invalidate;
 end;
@@ -4669,6 +4725,20 @@ begin
   end;
 end;
 
+procedure TJvDBGrid.BeginUpdate;
+begin
+  BeginLayout;
+end;
+
+procedure TJvDBGrid.EndUpdate;
+begin
+  EndLayout;
+end;
+
+function TJvDBGrid.CellRect(ACol, ARow: Longint): TRect;
+begin
+  Result := inherited CellRect(ACol, ARow);
+end;
 
 initialization
   {$IFDEF UNITVERSIONING}
