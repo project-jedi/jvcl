@@ -301,6 +301,8 @@ type
     FReadOnlyCellColor: TColor;
     FOnCanEditCell: TJvDBCanEditCellEvent;
     FOnSelectColumns: TJvDBSelectColumnsEvent;
+    FOnBeforePaint: TNotifyEvent;
+    FOnAfterPaint: TNotifyEvent;
 
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
@@ -588,6 +590,11 @@ type
     property OnCanEditCell: TJvDBCanEditCellEvent read FOnCanEditCell write FOnCanEditCell;
     { OnSelectColumns: event is triggered when the user clicks on the TitleArrow button. }
     property OnSelectColumns: TJvDBSelectColumnsEvent read FOnSelectColumns write FOnSelectColumns;
+
+    { OnBeforePaint: event triggered before the grid is painted. }
+    property OnBeforePaint: TNotifyEvent read FOnBeforePaint write FOnBeforePaint;
+    { OnBeforePaint: event triggered after the grid was painted. }
+    property OnAfterPaint: TNotifyEvent read FOnAfterPaint write FOnAfterPaint;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1807,6 +1814,8 @@ var
  {$ENDIF JVCLThemesEnabled}
 {$ENDIF CLR}
 begin
+  if Assigned(FOnBeforePaint) then
+    FOnBeforePaint(Self);
   {$IFDEF JVCLThemesEnabled}
   if UseXPThemes and ThemeServices.ThemesEnabled then
   begin
@@ -1831,6 +1840,8 @@ begin
     with Selection do
       DrawFocusRect(Canvas.Handle, BoxRect(Left, Top, Right, Bottom));
   end;
+  if Assigned(FOnAfterPaint) then
+    FOnAfterPaint(Self);
 end;
 
 procedure TJvDBGrid.SetTitleButtons(Value: Boolean);

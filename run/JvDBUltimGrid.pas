@@ -166,6 +166,7 @@ type
     FValueToSearch: Variant;
     FSearchFields: TStringList;
     FOnGetSortFieldName: TGetSortFieldNameEvent;
+    FOnAfterSort: TNotifyEvent;
     procedure SetMultiColSort(const Value: Boolean);
     function PrivateSearch(var ResultCol: Integer; var ResultField: TField;
       const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
@@ -215,6 +216,9 @@ type
 
     { OnGetSortFieldName: allows to override the sort marker field }
     property OnGetSortFieldName: TGetSortFieldNameEvent read FOnGetSortFieldName Write FOnGetSortFieldName;
+    
+    { OnAfterSort: fired after the table was sorted. }
+    property OnAfterSort: TNotifyEvent read FOnAfterSort write FOnAfterSort;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -464,6 +468,8 @@ begin
           end;
         end;
       end;
+      if FSortOK and Assigned(FOnAfterSort) then
+        FOnAfterSort(Self);
     finally
       DSet.EnableControls;
       Screen.Cursor := crDefault;
