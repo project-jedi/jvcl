@@ -905,7 +905,8 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   cxTextEdit, cxControls,
   JvDynControlEngineVCL,
-  JvJclUtils, JvBrowseFolder, JvDynControlEngineTools, JvVCL5Utils;
+  JvJclUtils, JvBrowseFolder, JvDynControlEngineTools, JvVCL5Utils,
+  cxLookAndFeelPainters;
 
 var
   IntDynControlEngineDevExpCx: TJvDynControlEngineDevExpCx = nil;
