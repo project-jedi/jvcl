@@ -161,7 +161,8 @@ type
   protected
     procedure InternalMessageDlg;
   public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params:
+        Pointer); virtual;
     destructor Destroy; override;
     procedure Resume;
     procedure Execute; override;
@@ -182,6 +183,7 @@ type
   private
     FAfterCreateDialogForm: TJvCustomThreadDialogFormEvent;
     FBeforeResume: TNotifyEvent;
+    FDisalbeDialogShowDelayCounter: Integer;
     FThreads: TThreadList;
     FListLocker: TCriticalSection;
     FLockedList: TList;
@@ -252,6 +254,12 @@ type
     {$IFDEF UNIX}
     procedure SetPolicy(Policy: Integer); // [not tested] in context of thread in list - for itself; in other contexts - for all threads in list
     {$ENDIF UNIX}
+    //1 Disables the delayed showing of the thread dialog
+    procedure DisableDialogShowDelay;
+    //1 Enables the delayed showing of the thread dialog
+    procedure EnableDialogShowDelay;
+    //1 Is the delayed showing of the thread dialog disabled
+    function IsDialogShowDelayDisabled: Boolean;
     procedure SetPriority(NewPriority: TThreadPriority); // in context of thread in list - for itself; in other contexts - for all threads in list
     procedure Resume(BaseThread: TJvBaseThread); overload;
     procedure Resume; overload; // resumes all threads including deferred (RunOnCreate=false)
@@ -442,7 +450,7 @@ begin
         else
           if not FormIsShown then
           begin
-            if ConnectedThread.ThreadDialogAllowed then
+            if ConnectedThread.ThreadDialogAllowed and not ConnectedThread.IsDialogShowDelayDisabled then
             begin
               if DialogOptions.ShowModal then
                 ShowModal
@@ -548,6 +556,7 @@ begin
   FListLocker := TCriticalSection.Create;
   FPriority := tpNormal;
   FThreadDialogAllowed := True;
+  FDisalbeDialogShowDelayCounter := 0;
 end;
 
 destructor TJvThread.Destroy;
@@ -951,11 +960,16 @@ function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
 var
  Thread: TJvBaseThread;
 begin
-  Thread := GetCurrentThread;
-  if Assigned(Thread) then
-    Result := Thread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
-  else
-    Result := 0;
+  DisableDialogShowDelay;
+  try
+    Thread := GetCurrentThread;
+    if Assigned(Thread) then
+      Result := Thread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
+    else
+      Result := 0;
+  finally
+    EnableDialogShowDelay;
+  end;
 end;
 
 // new
@@ -1025,6 +1039,16 @@ begin
   end;
 end;
 
+procedure TJvThread.DisableDialogShowDelay;
+begin
+  Inc(FDisalbeDialogShowDelayCounter);
+end;
+
+procedure TJvThread.EnableDialogShowDelay;
+begin
+  Dec(FDisalbeDialogShowDelayCounter);
+end;
+
 procedure TJvThread.ExecuteWithDialog(P: Pointer);
 begin
   if Assigned(ThreadDialog) and ThreadDialog.DialogOptions.ShowDialog and
@@ -1040,6 +1064,11 @@ begin
     FAfterCreateDialogForm(DialogForm);
 end;
 
+function TJvThread.IsDialogShowDelayDisabled: Boolean;
+begin
+  Result := FDisalbeDialogShowDelayCounter > 0;
+end;
+
 procedure TJvThread.TerminateWaitFor(iRemoveZombies: Boolean = true);
 begin
   Terminate;
@@ -1050,7 +1079,8 @@ end;
 
 //=== { TJvBaseThread } ======================================================
 
-constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
+constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+    Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
@@ -1121,12 +1151,12 @@ end;
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
   AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
-  FSynchMsg := Msg;
-  FSynchAType := AType;
-  FSynchAButtons := AButtons;
-  FSynchHelpCtx := HelpCtx;
-  Self.Synchronize(InternalMessageDlg);
-  Result := FSynchMessageDlgResult;
+    FSynchMsg := Msg;
+    FSynchAType := AType;
+    FSynchAButtons := AButtons;
+    FSynchHelpCtx := HelpCtx;
+    Self.Synchronize(InternalMessageDlg);
+    Result := FSynchMessageDlgResult;
 end;
 
 initialization

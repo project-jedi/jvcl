@@ -999,8 +999,16 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.ExecuteThreadSynchronize(Method: TThreadMethod);
 begin
+
   if ExecuteThreadIsActive then
-    ExecuteThread.Synchronize(Method)
+  begin
+    ExecuteThread.DisableDialogShowDelay;
+    try
+      ExecuteThread.Synchronize(Method);
+    finally
+      ExecuteThread.EnableDialogShowDelay;
+    end;
+  end
   else
     Method;
 end;
