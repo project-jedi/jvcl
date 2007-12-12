@@ -852,14 +852,18 @@ end;
 procedure TJvBaseDatasetThreadHandler.BreakExecution;
 begin
   IntCurrentAction := tdaCancel;
-  if (FetchMode = tdfmFetch) and (EnhancedOptions.AllowedContinueRecordFetchOptions.Pause or
+  if (FetchMode = tdfmFetch) and
+   (EnhancedOptions.AllowedContinueRecordFetchOptions.Pause or
     EnhancedOptions.AllowedContinueRecordFetchOptions.Cancel) then
     if EnhancedOptions.AllowedContinueRecordFetchOptions.Pause then
       FetchMode := tdfmBreak
     else
       FetchMode := tdfmStop
   else
+  begin
     IThreadedDatasetInterface.BreakExecution;
+    FetchMode := tdfmStop;
+  end;
   IntRowCheckEnabled := False;
 end;
 
