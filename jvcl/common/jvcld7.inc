@@ -26,10 +26,6 @@ Known Issues:
 { Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
 {.$DEFINE DelphiPersonalEdition}
 
-{ Enable this define if you want to register property and component editors included in
-JVCL for non-JVCL components as well. }
-{.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
 installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
 USEJVCL define to determine whether they are installed in JVCL mode or not.
@@ -56,7 +52,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
 be compiled as "never-build package". }
-{.$DEFINE JVCLThemesEnabled}
+{$DEFINE JVCLThemesEnabled}
 
 { Activates MIDAS components (DBRemoteLogin).
 NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
@@ -90,7 +86,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{$DEFINE UNITVERSIONING}
+{.$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
