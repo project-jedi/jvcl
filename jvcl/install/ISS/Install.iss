@@ -116,7 +116,6 @@ Name: "Examples"; Description: "Example projects"; Types: full;
 #endif
 
 #ifdef Include_Binaries
-
 [Packages]
 Name: examples; Description: "JVCL Examples"; Source: "{#downloadurl}/jvclexamples.isz"; Flags: localcopy;
 
@@ -170,6 +169,11 @@ Name: "Packages\Obsolete"; Description: "Obsolete Components"
 Name: "Packages\Obsolete\JvGlobus"; Description: "Globus Components"
 Name: "Packages\Obsolete\JvJans"; Description: "Jans Components"
 Name: "Packages\Obsolete\jVDotNetCtrls"; Description: "DotNet Controls"
+
+; Options
+Name: "Options"; Description: "Options"; Types: full prefered custom compact; Flags: fixed
+Name: "Options\RegisterGlobalDesignEditors"; Description: "Register global design editors"; Types: full prefered; Flags: dontinheritcheck
+
 #endif
 
 [Dirs]
@@ -282,6 +286,15 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|5}\Jedi\JVCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d5; Components: "IDE\Delphi5"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi5"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi5"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|5}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
+#endif
+#ifdef Include_BCB5
+; BCB 5
+Root: HKCU; Subkey: "{code:GetBCBRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetBCBBplDir|5}; Components: "IDE\BCB5"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\c5; Components: "IDE\BCB5"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\BCB5"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|5}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\BCB5"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|5}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
 #endif
 #ifdef Include_Delphi6
 ; Delphi 6
@@ -289,6 +302,15 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|6}\Jedi\JVCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d6; Components: "IDE\Delphi6"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi6"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi6"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|6}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
+#endif
+#ifdef Include_BCB6
+; BCB 6
+Root: HKCU; Subkey: "{code:GetBCBRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetBCBBplDir|6}; Components: "IDE\BCB6"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\c6; Components: "IDE\BCB6"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\BCB6"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|6}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\BCB6"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetBCBRegKey|6}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
 #endif
 #ifdef Include_Delphi7
 ; Delphi 7
@@ -296,6 +318,7 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|7}\Jedi\JVCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|7}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d7; Components: "IDE\Delphi7"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|7}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi7"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|7}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi7"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|7}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
 #endif
 #ifdef Include_Delphi9
 ; Delphi 2005
@@ -303,6 +326,7 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|9}\Jedi\JVCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|9}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d9; Components: "IDE\Delphi9"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|9}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi9"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|9}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi9"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|9}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
 #endif
 #ifdef Include_Delphi10
 ; Delphi 2006
@@ -310,6 +334,7 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|10}\Jedi\JVCL"; ValueType: string; Va
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|10}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d10; Components: "IDE\Delphi10"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|10}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi10"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|10}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi10"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|10}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
 #endif
 #ifdef Include_Delphi11
 ; Delphi 2007
@@ -317,6 +342,7 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JVCL"; ValueType: string; Va
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d11; Components: "IDE\Delphi11"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi11"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi11"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue
 #endif
 #endif
 

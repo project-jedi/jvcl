@@ -39,6 +39,7 @@
     <File Name="..\..\design\JvColorEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="all" Formname="frmJvColorProviderDesigner" Condition=""/>
     <File Name="..\..\design\JvColorProviderEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnConfig.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCoreReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" Targets="all" Formname="frmDataConsumerContextSelect" Condition=""/>
     <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" Targets="all" Formname="frmJvDataConsumerItemSelect" Condition=""/>

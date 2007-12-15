@@ -26,10 +26,6 @@ Known Issues:
 { Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
 {.$DEFINE DelphiPersonalEdition}
 
-{ Enable this define if you want to register property and component editors included in
-JVCL for non-JVCL components as well. }
-{.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
 installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
 USEJVCL define to determine whether they are installed in JVCL mode or not.

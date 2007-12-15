@@ -44,6 +44,7 @@ uses
   {$ENDIF}
   TypInfo, Controls, Graphics, ExtCtrls, Tabs, Dialogs, Forms,
   DsnConst, ExtDlgs,
+  JvDsgnConfig,
   JvRichEd,
   Menus, FiltEdit, StdCtrls,
   JvxDConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
@@ -104,9 +105,11 @@ begin
 
 //  RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, cCaption, THintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, cCaption, TJvHintProperty);
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(string), TMenuItem, cHint, TJvStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, cHint, TJvHintProperty);
+  if JvOptionRegisterGlobalDesignEditors then
+  begin
+    RegisterPropertyEditor(TypeInfo(string), TMenuItem, cHint, TJvStringProperty);
+    RegisterPropertyEditor(TypeInfo(string), BaseClass, cHint, TJvHintProperty);
+  end;
 
   RegisterPropertyEditor(TypeInfo(TCaption), TLabel, cCaption, TJvHintProperty);
 

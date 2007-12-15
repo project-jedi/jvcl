@@ -44,6 +44,7 @@ uses
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
   {$ENDIF !BCB5}
+  JvDsgnConfig,
   JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
   JvAppletEditor,
   JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvConnectNetwork, JvCopyError,
@@ -82,9 +83,9 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
 
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
-  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  if JvOptionRegisterGlobalDesignEditors then
+    RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvProgressComponent, TJvProgressComponentEditor);
   RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);

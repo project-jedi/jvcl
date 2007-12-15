@@ -40,6 +40,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  JvDsgnConfig,
   JvId3v1, JvId3v2, JvID3v2EditorForm, JvID3v2Base, JvWavePlayer,
   JvAVICaptureEditors, JvAVICapture,
   JvDsgnConsts,
@@ -76,13 +77,14 @@ begin
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);
-  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
-  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
-  RegisterComponentEditor(TImage, TJvGraphicsEditor);
-  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
-  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  if JvOptionRegisterGlobalDesignEditors then
+  begin
+    RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);
+    RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
+    RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
+    RegisterComponentEditor(TImage, TJvGraphicsEditor);
+    RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
+  end;
 
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
