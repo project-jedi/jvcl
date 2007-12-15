@@ -46,7 +46,7 @@ uses
   DesignEditors, DesignIntf,
   {$ENDIF}
   FiltEdit,
-  JvDSADialogs, JvComponent,
+  JvDSADialogs, JvComponent, JvDsgnConfig,
 
   // About JVCL
   JvJVCLAbout, JvJVCLAboutProperty, JVCLVer,
@@ -214,11 +214,12 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton, 'ImageIndex', TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton, 'ImageIndex', TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem, 'Directory', TJvDirectoryProperty);
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
-  RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
-  {$ENDIF}
+  if JvOptionRegisterGlobalDesignEditors then
+  begin
+    RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
+    RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
+    RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
+  end;
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo,'Date',TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAnalogClock,'Time',TJvTimeExProperty);
 

@@ -45,7 +45,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponentBase, JvActions,
+  JvTypes, JvDsgnConsts, JvDsgnConfig, JvJCLUtils, JVCLVer, JvComponentBase, JvActions,
   JvActnResForm, JvJVCLAboutForm, JvPoweredBy, JvIDEZoom, JvBaseDlg,
   JvDataProvider, JvDataProviderIntf, JvColorProvider, JvContextProvider,
   JvDsgnEditors, JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor,
@@ -89,39 +89,38 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvPersistent), nil, '', TJvPersistentProperty);
   {$ENDIF COMPILER6_UP}
 
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  if JvOptionRegisterGlobalDesignEditors then
+  begin
+    RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
+    RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
+    RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
+    RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 
-  RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
-  RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+    RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
+    RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
+    RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
+    RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
+    RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
 
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
+    RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Shortint), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Smallint), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Longint), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Word), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Byte), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Cardinal), BaseClass, '', TJvIntegerProperty);
 
-  RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Shortint), BaseClass, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Smallint), BaseClass, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Longint), BaseClass, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Word), BaseClass, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Byte), BaseClass, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Cardinal), BaseClass, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Single), BaseClass, '', TJvFloatProperty);
+    RegisterPropertyEditor(TypeInfo(Double), BaseClass, '', TJvFloatProperty);
+    RegisterPropertyEditor(TypeInfo(Extended), BaseClass, '', TJvFloatProperty);
+    RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
-  RegisterPropertyEditor(TypeInfo(Single), BaseClass, '', TJvFloatProperty);
-  RegisterPropertyEditor(TypeInfo(Double), BaseClass, '', TJvFloatProperty);
-  RegisterPropertyEditor(TypeInfo(Extended), BaseClass, '', TJvFloatProperty);
-  RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
+    RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
+    RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
-  RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
-
-  RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
-  RegisterComponentEditor(TImageList, TJvImageListEditor);
-
-  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+    RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
+    RegisterComponentEditor(TImageList, TJvImageListEditor);
+  end;
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);

@@ -51,6 +51,7 @@ uses
   {$IFDEF VCL}
   JvInterpreterFm,
   {$ENDIF VCL}
+  JvDsgnConfig,
   JvInterpreter, JvxDConst;
 
 {$R ..\resources\rai.dcr}
@@ -180,17 +181,18 @@ begin
   {$IFDEF VCL}
   RegisterComponents(srJvInterpreterPalette, [TJvInterpreterFm]);
   {$ENDIF VCL}
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   {$IFDEF JvInterpreter_INTEGERPROPERTY}
-  RegisterPropertyEditor(TypeInfo(Integer), TObject, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Cardinal), TObject, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Longint), TObject, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Smallint), TObject, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Shortint), TObject, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Word), TObject, '', TJvIntegerProperty);
-  RegisterPropertyEditor(TypeInfo(Byte), TObject, '', TJvIntegerProperty);
+  if JvOptionRegisterGlobalDesignEditors then
+  begin
+    RegisterPropertyEditor(TypeInfo(Integer), TObject, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Cardinal), TObject, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Longint), TObject, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Smallint), TObject, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Shortint), TObject, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Word), TObject, '', TJvIntegerProperty);
+    RegisterPropertyEditor(TypeInfo(Byte), TObject, '', TJvIntegerProperty);
+  end;
   {$ENDIF JvInterpreter_INTEGERPROPERTY}
-  {$ENDIF}
 end;
 
 end.

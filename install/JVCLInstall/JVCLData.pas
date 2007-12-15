@@ -33,7 +33,7 @@ interface
 uses
   Windows, Registry, SysUtils, Classes, Contnrs,
   JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils,
-  IniFiles, JCLData, JVCLVer,
+  IniFiles, JCLData, JVCLVer, RegConfig,
   JclDebug;
 
 const
@@ -86,6 +86,7 @@ type
     FCreateJdbgFiles: Boolean;
     FDeleteMapFiles: Boolean;
     FJVCLConfig: TJVCLConfig;
+    FJVCLRegistryConfig: TJVCLRegistryConfig;
 
     procedure SetInstallMode(Value: TInstallMode);
     function GetFrameworkCount: Integer;
@@ -97,6 +98,7 @@ type
     function GetDeleteMapFiles: Boolean;
     function GetCleanPalettes: Boolean;
     function GetJVCLConfig: TJVCLConfig;
+    function GetJVCLRegistryConfig: TJVCLRegistryConfig;
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -250,6 +252,9 @@ type
 
     property JVCLConfig: TJVCLConfig read GetJVCLConfig;
       // JVCLConfig returns the confiuration
+
+    property JVCLRegistryConfig: TJVCLRegistryConfig read GetJVCLRegistryConfig;
+      // JVCLRegistryConfig returns the configuration that does not affect the JVCL.inc
   public
     property InstallJVCL: Boolean read FInstallJVCL write FInstallJVCL;
       // InstallJVCL specifies if the JVCL should be installed on this target.
@@ -458,11 +463,6 @@ begin
       Exit;
   end;
   Result := nil;
-end;
-
-function TTargetConfig.GetJVCLConfig: TJVCLConfig;
-begin
-  Result := FJVCLConfig;
 end;
 
 function TJVCLData.GetJVCLDir: string;
@@ -682,11 +682,13 @@ begin
 
   FFrameworks := TFrameworks.Create(Self);
   FJVCLConfig := TJVCLConfig.Create;
+  FJVCLRegistryConfig := TJVCLRegistryConfig.Create;
   Load;
 end;
 
 destructor TTargetConfig.Destroy;
 begin
+  FJVCLRegistryConfig.Free;
   FJVCLConfig.Free;
   FFrameworks.Free;
   inherited Destroy;
@@ -771,6 +773,16 @@ begin
       FMissingJCL := FindCount > 0;
     end;
   end;
+end;
+
+function TTargetConfig.GetJVCLConfig: TJVCLConfig;
+begin
+  Result := FJVCLConfig;
+end;
+
+function TTargetConfig.GetJVCLRegistryConfig: TJVCLRegistryConfig;
+begin
+  Result := FJVCLRegistryConfig;
 end;
 
 function TTargetConfig.CanInstallJVCL: Boolean;
@@ -1237,6 +1249,8 @@ begin
     FileSetReadOnly(JVCLConfig.Filename, False);
     JVCLConfig.SaveToFile(JVCLConfig.Filename);
   end;
+  if JVCLRegistryConfig.Modified then
+    JVCLRegistryConfig.SaveToRegistry(Target.RegistryKey + '\Jedi\JVCL');
 
   for Kind := pkFirst to pkLast do
   begin
@@ -1338,6 +1352,8 @@ begin
 
     // set (hidden) personal edition configuration
     JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal; // do not localize
+
+    JVCLRegistryConfig.LoadFromRegistry(Target.RegistryKey + '\Jedi\JVCL');
 
     UpdateOptions;
   finally

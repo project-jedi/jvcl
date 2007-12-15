@@ -1,4 +1,4 @@
-#define JvclRoot "..\..\"
+#define JvclRoot "..\.."
 #define BorlandRoot = "C:\Borland"
 #define CodeGearRoot = "C:\CodeGear"
 #define BorlandSudioProjects "C:\Dokumente und Einstellungen\Andreas\Eigene Dateien\Borland Studio-Projekte"

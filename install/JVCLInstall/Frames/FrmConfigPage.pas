@@ -91,6 +91,8 @@ type
     procedure HppDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure SetJVCLConfig(const Id: string; CheckBox: TCheckBox);
     procedure GetJVCLConfig(const Id: string; CheckBox: TCheckBox);
+    procedure SetJVCLDesigntimeConfig(const Id: string; CheckBox: TCheckBox);
+    procedure GetJvclDesigntimeConfig(const Id: string; CheckBox: TCheckBox);
   protected
     property Installer: TInstaller read FInstaller;
 
@@ -335,6 +337,59 @@ begin
     SelTargetConfig.JVCLConfig.Enabled[Id] := CheckBox.Checked;
 end;
 
+procedure TFrameConfigPage.GetJvclDesigntimeConfig(const Id: string; CheckBox: TCheckBox);
+var
+  i, e, Count: Integer;
+begin
+  CheckBox.AllowGrayed := False;
+
+  if SelTargetConfig = nil then
+  begin
+    // for all
+    e := 0;
+    Count := 0;
+    for i := 0 to Installer.SelTargetCount - 1 do
+      if Installer.SelTargets[i].InstallJVCL then
+      begin
+        Inc(Count);
+        if Installer.SelTargets[i].JVCLRegistryConfig.Enabled[Id] then
+          Inc(e);
+      end;
+
+    if e = 0 then
+      CheckBox.Checked := False
+    else if e = Count then
+      CheckBox.Checked := True
+    else
+    begin
+      CheckBox.AllowGrayed := True;
+      CheckBox.State := cbGrayed;
+    end;
+  end
+  else
+    CheckBox.Checked := SelTargetConfig.JVCLRegistryConfig.Enabled[Id];
+end;
+
+procedure TFrameConfigPage.SetJvclDesigntimeConfig(const Id: string; CheckBox: TCheckBox);
+var
+  i: Integer;
+begin
+  if SelTargetConfig = nil then
+  begin
+    // for all
+    for i := 0 to Installer.SelTargetCount - 1 do
+    begin
+      if Installer.SelTargets[i].InstallJVCL and (CheckBox.State <> cbGrayed) then
+      begin
+        Installer.SelTargets[i].JVCLRegistryConfig.Enabled[Id] := CheckBox.Checked;
+        CheckBox.AllowGrayed := False;
+      end;
+    end;
+  end
+  else
+    SelTargetConfig.JVCLRegistryConfig.Enabled[Id] := CheckBox.Checked;
+end;
+
 procedure TFrameConfigPage.UpdateJvclIncSettings;
 begin
   if (SelTargetConfig <> nil) and (SelTargetConfig.Target.Version >= 7) then
@@ -348,7 +403,7 @@ begin
     GetJVCLConfig('JVCLThemesEnabled', CheckBoxXPTheming);
   end;
 
-  GetJVCLConfig('JVCL_REGISTER_GLOBAL_DESIGNEDITORS', CheckBoxRegisterGlobalDesignEditors);
+  GetJvclDesigntimeConfig('RegisterGlobalDesignEditors', CheckBoxRegisterGlobalDesignEditors);
   GetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
   GetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
   GetJVCLConfig('USEJVCL', CheckBoxUseJVCL);
@@ -388,7 +443,7 @@ begin
 
   try
     SetJVCLConfig('JVCLThemesEnabled', CheckBoxXPTheming);
-    SetJVCLConfig('JVCL_REGISTER_GLOBAL_DESIGNEDITORS', CheckBoxRegisterGlobalDesignEditors);
+    SetJvclDesigntimeConfig('RegisterGlobalDesignEditors', CheckBoxRegisterGlobalDesignEditors);
     SetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
     SetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
     SetJVCLConfig('USEJVCL', CheckBoxUseJVCL);

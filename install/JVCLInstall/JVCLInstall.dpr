@@ -71,7 +71,8 @@ uses
   InstallerConsts in 'InstallerConsts.pas',
   FrmCompile in 'FrmCompile.pas' {FormCompile},
   FrmCompileMessages in 'FrmCompileMessages.pas' {FormCompileMessages},
-  JediRegInfo in 'JediRegInfo.pas';
+  JediRegInfo in 'JediRegInfo.pas',
+  RegConfig in 'RegConfig.pas';
 
 {$R *.res}
 {$R CommCtrlAsInvoker.res}

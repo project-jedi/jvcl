@@ -42,12 +42,11 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   Graphics, ExtCtrls,
-  {$ENDIF}
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF}
+  JvDsgnConfig,
   JvxCtrls,
   JvMenus, JvMRUList,
   JvGrdCpt, JvGradEdit,
@@ -100,11 +99,12 @@ begin
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
   {$ENDIF}
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
-  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
-  RegisterComponentEditor(TImage, TJvGraphicsEditor);
-  {$ENDIF}
+  if JvOptionRegisterGlobalDesignEditors then
+  begin
+    RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
+    RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
+    RegisterComponentEditor(TImage, TJvGraphicsEditor);
+  end;
 
   RegisterComponentEditor(TJvxGradientCaption, TGradientCaptionEditor);
 

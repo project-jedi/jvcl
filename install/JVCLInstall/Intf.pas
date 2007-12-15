@@ -31,7 +31,7 @@ unit Intf;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, DelphiData, JVCLConfiguration;
+  SysUtils, Classes, Contnrs, DelphiData, JVCLConfiguration, RegConfig;
 
 type
   TPackageGroupKind = (pkVcl, pkClx);
@@ -95,6 +95,7 @@ type
 
 
     function GetJVCLConfig: TJVCLConfig;
+    function GetJVCLRegistryConfig: TJVCLRegistryConfig;
 
     function GetTarget: TCompileTarget;
     function GetPathEnvVar: string;
@@ -134,6 +135,7 @@ type
     property AddBplDirToPath: Boolean read GetAddBplDirToPath;
 
     property JVCLConfig: TJVCLConfig read GetJVCLConfig;
+    property JVCLRegistryConfig: TJVCLRegistryConfig read GetJVCLRegistryConfig;
 
     property UnitOutDir: string read GetUnitOutDir;
     property DebugUnitOutDir: string read GetDebugUnitOutDir;

@@ -60,18 +60,23 @@
     <DCCReference Include="DelphiData.pas" />
     <DCCReference Include="Frames\FrmConfigPage.pas">
       <Form>FrameConfigPage</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="Frames\FrmDirEditBrowse.pas">
       <Form>FrameDirEditBrowse</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="Frames\FrmInstall.pas">
       <Form>FrameInstall</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="Frames\FrmPackageSelection.pas">
       <Form>FramePackageSelection</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="Frames\FrmUninstall.pas">
       <Form>FrameUninstall</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="FrmCompile.pas">
       <Form>FormCompile</Form>
@@ -105,6 +110,7 @@
     <DCCReference Include="Pages\PgPackageSelection.pas" />
     <DCCReference Include="Pages\PgSummary.pas" />
     <DCCReference Include="Pages\PgUninstall.pas" />
+    <DCCReference Include="RegConfig.pas" />
     <DCCReference Include="Utils.pas" />
   </ItemGroup>
 </Project>
