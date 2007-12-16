@@ -37,15 +37,16 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   Classes, Graphics, Controls, StdCtrls, DB, DBCtrls,
-  JvExStdCtrls;
+  JvExStdCtrls, JvDBUtils;
 
 type
-  TJvCustomDBComboBox = class(TJvExCustomComboBox)
+  TJvCustomDBComboBox = class(TJvExCustomComboBox, IJvDataControl)
   private
     FDataLink: TFieldDataLink;
     FPaintControl: TPaintControl;
     FBeepOnError: Boolean;
     FResetValue: Boolean;
+    FUpdateFieldImmediatelly: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetDataField: string;
@@ -65,6 +66,8 @@ type
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
+    function GetDataLink: TDataLink;
+
     procedure DoExit; override;
     procedure Change; override;
     procedure Click; override;
@@ -101,6 +104,7 @@ type
     property Field: TField read GetField;
     property Items write SetItems;
     property Text;
+    property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
   end;
 
   TJvDBComboBox = class(TJvCustomDBComboBox)
@@ -158,6 +162,7 @@ type
     property Sorted;
     property TabOrder;
     property TabStop;
+    property UpdateFieldImmediatelly; 
     property Values: TStrings read GetValues write SetValues;
     property Visible;
     property OnChange;
@@ -199,7 +204,7 @@ uses
   DBConsts,
   {$ENDIF COMPILER6_UP}
   SysUtils,
-  JvConsts, JvDBUtils;
+  JvConsts;
 
 //=== { TJvCustomDBComboBox } ================================================
 
@@ -324,6 +329,8 @@ begin
   FDataLink.Edit;
   inherited Change;
   FDataLink.Modified;
+  if UpdateFieldImmediatelly then
+    FDataLink.UpdateRecord;
 end;
 
 procedure TJvCustomDBComboBox.Click;
@@ -400,6 +407,8 @@ begin
     Esc:
       begin
         FDataLink.Reset;
+        if UpdateFieldImmediatelly and (FDataLink.Field <> nil) then
+          FDataLink.Field.Value := FDataLink.Field.OldValue;
         SelectAll;
       end;
   end;
@@ -490,10 +499,14 @@ begin
   inherited DoExit;
 end;
 
-
 procedure TJvCustomDBComboBox.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Longint(FDataLink);
+end;
+
+function TJvCustomDBComboBox.GetDataLink: TDataLink;
+begin
+  Result := FDataLink;
 end;
 
 procedure TJvCustomDBComboBox.WMPaint(var Msg: TWMPaint);
