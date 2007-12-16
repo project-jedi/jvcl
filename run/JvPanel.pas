@@ -123,6 +123,7 @@ type
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions: TJvHotTrackOptions;
+    FLastScreenCursor: TCursor;
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -908,6 +909,7 @@ begin
     FDragging := True;
     FLastPos := Point(X, Y);
     MouseCapture := True;
+    FLastScreenCursor := Screen.Cursor;
     Screen.Cursor := crSizeNWSE;
   end
   else
@@ -936,10 +938,14 @@ begin
   end
   else
     inherited MouseMove(Shift, X, Y);
-  if Sizeable and ((Width - X) < 12) and ((Height - Y) < 12) then
-    Cursor := crSizeNWSE
-  else
-    Cursor := crDefault;
+  if Sizeable then
+  begin
+    if ((Width - X) < 12) and ((Height - Y) < 12) then
+      Screen.Cursor := crSizeNWSE
+    else
+      if Screen.Cursor = crSizeNWSE then
+        Screen.Cursor := FLastScreenCursor;
+  end;
 end;
 
 procedure TJvCustomArrangePanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -949,7 +955,8 @@ begin
   begin
     FDragging := False;
     MouseCapture := False;
-    Screen.Cursor := crDefault;
+    if Screen.Cursor = crSizeNWSE then
+      Screen.Cursor := FLastScreenCursor;
     Refresh;
   end
   else
