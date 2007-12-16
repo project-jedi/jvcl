@@ -729,7 +729,7 @@ procedure TJvDataSource.EditingChanged;
 begin
   if FDataLink.DataSet <> nil then
   begin
-    if FDataUpdated or (FDataLink.DataSet.RecNo <> -1) then // DataSet.State is already updated
+    if FDataUpdated or (FDataLink.DataSet.Active and (FDataLink.DataSet.RecNo <> -1)) then // DataSet.State is already updated
       FNeedScroll := False;
     if AreEventsEnabled and Assigned(FOnEditingChanged) then
       FOnEditingChanged(Self);
