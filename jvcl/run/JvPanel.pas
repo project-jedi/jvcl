@@ -501,8 +501,6 @@ begin
   inherited Destroy;
 end;
 
-
-
 procedure TJvCustomArrangePanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -526,7 +524,7 @@ var
   P: TPoint;
 begin
   inherited;
-  if Movable then
+  if not (csDesigning in ComponentState) and Movable then
   begin
     P := ScreenToClient(SmallPointToPoint(Msg.Pos));
     with P do
@@ -541,12 +539,13 @@ end;
 procedure TJvCustomArrangePanel.WMExitSizeMove(var Msg: TMessage);
 begin
   inherited;
-  if FWasMoved then
-    DoAfterMove;
-  FWasMoved := False;
+  if not (csDesigning in ComponentState) then
+  begin
+    if FWasMoved then
+      DoAfterMove;
+    FWasMoved := False;
+  end;
 end;
-
-
 
 function TJvCustomArrangePanel.DoBeforeMove(X,Y: Integer): Boolean;
 begin
@@ -560,8 +559,6 @@ begin
   if Assigned(FOnAfterMove) then
     FOnAfterMove(Self);
 end;
-
-
 
 procedure TJvCustomArrangePanel.Paint;
 var
@@ -679,8 +676,6 @@ begin
   end;
 end;
 
-
-// (asn) with VisualCLX Width := Width + 1 will call AdjustSize
 procedure TJvCustomArrangePanel.AdjustSize;
 begin
   inherited AdjustSize;
@@ -691,7 +686,6 @@ begin
     Width := Width - 1;
   end;
 end;
-
 
 procedure TJvCustomArrangePanel.DrawBorders;
 var
@@ -946,8 +940,6 @@ begin
     Cursor := crSizeNWSE
   else
     Cursor := crDefault;
-  begin
-  end;
 end;
 
 procedure TJvCustomArrangePanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1243,13 +1235,13 @@ end;
 procedure TJvCustomArrangePanel.DoArrangeSettingsPropertyChanged(Sender: TObject;
   const PropName: string);
 begin
-  if SameText(PropName,'AutoArrange') then
+  if SameText(PropName, 'AutoArrange') then
   begin
     if ArrangeSettings.AutoArrange then
       Rearrange;
   end
   else
-  if SameText(PropName,'AutoSize') then
+  if SameText(PropName, 'AutoSize') then
   begin
     if ArrangeSettings.AutoSize <> asNone then
       Rearrange;
@@ -1257,8 +1249,6 @@ begin
   else //otherwise call Rearrange
     Rearrange;
 end;
-
-
 
 { TJvPanel }
 
