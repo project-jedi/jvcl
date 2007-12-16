@@ -919,9 +919,16 @@ begin
     Reg.Free;
   end;
 
-  FIsPersonal := not FileExists(RootDir + '\Lib\db.dcu');
+{  FIsPersonal := not FileExists(RootDir + '\Lib\db.dcu');
   if FIsPersonal and IsBCB and FileExists(RootDir + '\Lib\Obj\db.dcu') then
-    FIsPersonal := False;
+    FIsPersonal := False;}
+  FIsPersonal := not FileExists(VersionedBPL(RootDir + '\bin\dcldb.bpl'));
+  if FIsPersonal then
+    if Version = 5 then
+      FEdition := 'Standard'
+    else
+      FEdition := 'Personal';
+
 
   if FProductVersion = '' then
     FProductVersion := Format('%d.%d', [Version, LatestUpdate]);
