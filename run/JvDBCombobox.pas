@@ -45,6 +45,7 @@ type
     FDataLink: TFieldDataLink;
     FPaintControl: TPaintControl;
     FBeepOnError: Boolean;
+    FResetValue: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetDataField: string;
@@ -250,7 +251,7 @@ end;
 
 procedure TJvCustomDBComboBox.DataChange(Sender: TObject);
 begin
-  if not HandleAllocated or DroppedDown then
+  if not HandleAllocated or (DroppedDown and not FResetValue) then
     Exit;
   if FDataLink.Field <> nil then
     SetComboText(FDataLink.Field.AsString)
@@ -417,7 +418,12 @@ end;
 
 procedure TJvCustomDBComboBox.Reset;
 begin
-  DataChange(Self); {Restore text}
+  FResetValue := True;
+  try
+    DataChange(Self); {Restore text}
+  finally
+    FResetValue := False;
+  end;
 end;
 
 procedure TJvCustomDBComboBox.WndProc(var Msg: TMessage);
