@@ -149,25 +149,21 @@ uses
 
 constructor TJvPlugIn.Create(AOwner: TComponent);
 begin
-  try
-    // Create datamodule
-    CreateNew(AOwner);
-    DesignSize := Point(100, 100);
+  // Create datamodule
+  CreateNew(AOwner);
+  DesignSize := Point(100, 100);
 
-    // Create commands-collection
-    FCommands := TJvPluginCommands.Create(Self);
+  // Create commands-collection
+  FCommands := TJvPluginCommands.Create(Self);
 
-    FInstanceCount := 1;
-    if (ClassType <> TJvPlugIn) and not (csDesigning in ComponentState) then
-    begin
-      if not InitInheritedComponent(Self, TJvPlugIn) then
-        raise EResNotFound.CreateResFmt(@RsEFmtResNotFound, [ClassName]);
+  FInstanceCount := 1;
+  if (ClassType <> TJvPlugIn) and not (csDesigning in ComponentState) then
+  begin
+    if not InitInheritedComponent(Self, TJvPlugIn) then
+      raise EResNotFound.CreateResFmt(@RsEFmtResNotFound, [ClassName]);
 
-      // (rom) why this ?
-      if Assigned(OnCreate) then
-        OnCreate(Self);
-    end;
-  finally
+    if OldCreateOrder then
+      DoCreate;
   end;
 end;
 
