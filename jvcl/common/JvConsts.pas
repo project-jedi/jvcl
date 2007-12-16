@@ -173,14 +173,14 @@ const
 
 var
   crJVCLFirst: TCursor = 100;
-  crMultiDragLink: TCursor = crJVCLFirst;
-  crDragAlt: TCursor = crJVCLFirst + 1;
-  crMultiDragAlt: TCursor = crJVCLFirst + 2;
-  crMultiDragLinkAlt: TCursor = crJVCLFirst + 3;
-  crHand: TCursor = crJVCLFirst + 4;
-  crDragHand: TCursor = crJVCLFirst + 5;
+  crMultiDragLink: TCursor = 100;
+  crDragAlt: TCursor = 101;
+  crMultiDragAlt: TCursor = 102;
+  crMultiDragLinkAlt: TCursor = 103;
+  crHand: TCursor = 104;
+  crDragHand: TCursor = 105;
   // this should be incremented to always contain the last default JVCL cursor index
-  crJVCLLast: TCursor = crJVCLFirst + 5;
+  crJVCLLast: TCursor = 105;
 
 const
   ROP_DSPDxax = $00E20746;
