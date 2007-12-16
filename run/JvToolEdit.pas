@@ -208,9 +208,7 @@ type
     constructor Create(AEdit: TJvCustomComboEdit);
   end;
 
-  TJvCustomComboEditBase = TJvExCustomMaskEdit;
-
-  TJvCustomComboEdit = class(TJvCustomComboEditBase)
+  TJvCustomComboEdit = class(TJvExCustomMaskEdit)
   private
     FOnButtonClick: TNotifyEvent;
     FOnPopupShown: TNotifyEvent;
