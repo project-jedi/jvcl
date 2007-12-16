@@ -466,6 +466,8 @@ var
     end;
   end;
 
+var
+  FormName: string;
 begin
   FormList := TStringList.Create;
   FJvDockInfoStyle := isJVCLReadInfo; // set mode for Scan.
@@ -480,17 +482,26 @@ begin
       if FAppStorage.ValueStored('FormNames') then
       begin
         S := FAppStorage.ReadString('FormNames');
-        { UniqueString is used because we modify the contents of S after
-          casting S to a PChar. S might point to an actual string in a storage,
-          as is the case with TJvAppXMLFileStorage. Not using UniqueString would
-          change the value in the storage too. }
-        UniqueString(S);
         CP := PChar(S);
         CP1 := StrPos(CP, ';');
         while CP1 <> nil do
         begin
-          CP1^ := #0;
-          FormList.Add(string(CP));
+          SetString(FormName, CP, CP1 - CP);
+          // (Mantis #4293) Avoid restoration of not instantiated forms => DockFormStyle == dsNormal
+          if TJvDockFormStyle(FAppStorage.ReadInteger(
+                              FAppStorage.ConcatPaths([FormName, 'DockFormStyle']))) = dsNormal then
+          begin
+            for I := 0 to Screen.FormCount - 1 do
+            begin
+              if Screen.Forms[I].Name = FormName then
+              begin
+                FormList.Add(FormName);
+                Break;
+              end;
+            end;
+          end
+          else
+            FormList.Add(FormName);
           CP := CP1 + 1;
           CP1 := StrPos(CP, ';');
         end;
