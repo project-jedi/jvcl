@@ -912,7 +912,7 @@ begin
     inherited Text := Value;
     Exit;
   end;
-  FIsEmptyValue := (Value = '') and (EmptyValue <> '');
+  FIsEmptyValue := (Value = '') and (EmptyValue <> '') and not Focused;
   if not FIsEmptyValue then
   begin
     Font.Color := FOldFontColor;
