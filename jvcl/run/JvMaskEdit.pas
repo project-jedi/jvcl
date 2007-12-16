@@ -80,7 +80,6 @@ type
     procedure SetCaret(const Value: TJvCaret);
     procedure NotifyIfChanged;
     procedure Change; override;
-    // (rom) not CLX compatible
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   public
     procedure DefaultHandler(var Msg); override;
@@ -102,8 +101,8 @@ type
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
 
     // From Globus
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnAfterPaint: TNotifyEvent read FOnAfterPaint write FOnAfterPaint;
@@ -119,13 +118,18 @@ type
     property BevelKind default bkNone;
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
+    property Alignment;
     property Caret;
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     property HintColor;
     property HotTrack;
+    {property MultiLine;  ahuser: not working properly, Height is always reset
+    property ScrollBars;
+    property WordWrap;}
     property ProtectPassword;
+    property OnAfterPaint;
     property OnEnabledChanged;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -192,19 +196,6 @@ const
 
 implementation
 
-
-procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
-begin
-  FCaret.CreateCaret;
-end;
-
-procedure TJvCustomMaskEdit.Change;
-begin
-  FLastNotifiedText := Text;
-  FHasLastNotifiedText := True;
-  inherited Change;
-end;
-
 constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -231,6 +222,13 @@ begin
   end;
 end;
 
+destructor TJvCustomMaskEdit.Destroy;
+begin
+  FCaret.OnChanged := nil;
+  FreeAndNil(FCaret);
+  FCanvas.Free;
+  inherited Destroy;
+end;
 
 procedure TJvCustomMaskEdit.DefaultHandler(var Msg);
 begin
@@ -243,13 +241,16 @@ begin
   end;
 end;
 
-
-destructor TJvCustomMaskEdit.Destroy;
+procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
 begin
-  FCaret.OnChanged := nil;
-  FreeAndNil(FCaret);
-  FCanvas.Free;
-  inherited Destroy;
+  FCaret.CreateCaret;
+end;
+
+procedure TJvCustomMaskEdit.Change;
+begin
+  FLastNotifiedText := Text;
+  FHasLastNotifiedText := True;
+  inherited Change;
 end;
 
 procedure TJvCustomMaskEdit.FocusKilled(NextWnd: THandle);
@@ -289,12 +290,10 @@ begin
     FOnSetFocus(Self, APreviousControl);
 end;
 
-
 function TJvCustomMaskEdit.GetPasswordChar: Char;
 begin
   Result := inherited PasswordChar;
 end;
-
 
 function TJvCustomMaskEdit.GetText: TCaption;
 var
@@ -355,7 +354,6 @@ begin
   end;
 end;
 
-
 procedure TJvCustomMaskEdit.SetPasswordChar(const Value: Char);
 var
   Tmp: Boolean;
@@ -368,7 +366,6 @@ begin
     ProtectPassword := Tmp;
   end;
 end;
-
 
 procedure TJvCustomMaskEdit.SetText(const Value: TCaption);
 begin
