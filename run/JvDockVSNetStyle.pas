@@ -2622,22 +2622,75 @@ begin
 end;
 
 procedure TJvDockVSNetStyle.Timer(Sender: TObject);
+
+  function IsPopupWindow(Handle: HWND): Boolean;
+  var
+    OwningProcess: DWORD;
+    LStyle: Cardinal;
+  begin
+    Result := False;
+    if (Handle <> 0) and (GetWindowThreadProcessID(Handle, @OwningProcess) <> 0) and
+       (OwningProcess = GetCurrentProcessId) then
+    begin
+      LStyle := GetWindowLong(Handle, GWL_STYLE);
+      Result := WS_POPUP and LSTYLE <> 0;
+    end;
+  end;
+
+  function PointIsOnPopup(P: TPoint; GlobalCheck: Boolean): Boolean;
+  const
+    GW_ENABLEDPOPUP = 6;
+  var
+    Control: TWinControl;
+    Handle: HWND;
+    Rect: TRect;
+    ActivePopupWindow: Boolean;
+  begin
+    Control := FindVCLWindow(P);
+    Result := ControlIsOnPopup(Control);
+    if not Result then
+    begin
+      // Check whether a popup window is currently displayed (hint, popup menu)
+      Handle := WindowFromPoint(P);
+      ActivePopupWindow := IsPopupWindow(Handle);
+      if not ActivePopupWindow and GlobalCheck then
+      begin
+        Handle := GetWindow(Application.Handle, GW_ENABLEDPOPUP);
+        ActivePopupWindow := IsPopupWindow(Handle);
+        if not ActivePopupWindow then
+        begin
+          Handle := GetTopWindow(GetDesktopWindow);
+          ActivePopupWindow := IsPopupWindow(Handle);
+        end;
+      end;
+
+      if ActivePopupWindow then
+      begin
+        GetWindowRect(Handle, Rect);
+        // Search for a control one pixel to the left;
+        Dec(Rect.Left);
+        Result := PointIsOnPopup(Rect.TopLeft, False);
+        if not Result then
+        begin
+          // Search for a control one pixel to the Right;
+          Inc(Rect.Right);
+          Result := PointIsOnPopup(Point(Rect.Right, Rect.Top), False);
+        end;
+      end;
+    end;
+  end;
+
 var
   P: TPoint;
-  Control: TWinControl;
   I: Integer;
   ADockServer: TJvDockServer;
 begin
-  if not ChannelOption.MouseleaveHide then
-    Exit;
-  if csDesigning in ComponentState then
+  if (csDesigning in ComponentState) or not ChannelOption.MouseleaveHide or
+     ((GetAsyncKeyState(VK_LBUTTON) and $8000) <> 0) then
     Exit;
 
-  if (GetAsyncKeyState(VK_LBUTTON) and $8000) <> 0 then
-    Exit;
   GetCursorPos(P);
-  Control := FindVCLWindow(P);
-  if ControlIsOnPopup(Control) then
+  if PointIsOnPopup(P, True) then
   begin
     { Reset timer }
     FCurrentTimer := ChannelOption.HideHoldTime;
