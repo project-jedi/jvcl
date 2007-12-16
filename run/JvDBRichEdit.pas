@@ -46,6 +46,7 @@ type
     FFocused: Boolean;
     FDataSave: string;
     FBeepOnError: Boolean;
+    FCreatingHandle: Boolean;
     function GetField: TField;
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -74,6 +75,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure SetPlainText(Value: Boolean); override;
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -199,6 +201,16 @@ begin
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
+end;
+
+procedure TJvDBRichEdit.CreateWnd;
+begin
+  FCreatingHandle := True;
+  try
+    inherited CreateWnd;
+  finally
+    FCreatingHandle := False;
+  end;
 end;
 
 destructor TJvDBRichEdit.Destroy;
@@ -515,7 +527,7 @@ end;
 
 procedure TJvDBRichEdit.EMSetCharFormat(var Msg: TMessage);
 begin
-  if FMemoLoaded then
+  if not FCreatingHandle and FMemoLoaded then
     if not FUpdating then
       if EditCanModify then
         Change;
@@ -524,7 +536,7 @@ end;
 
 procedure TJvDBRichEdit.EMSetParaFormat(var Msg: TMessage);
 begin
-  if FMemoLoaded then
+  if not FCreatingHandle and FMemoLoaded then
     if not FUpdating then
       if EditCanModify then
         Change;
