@@ -71,9 +71,6 @@ type
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   end;
 
-{TODO : IsChildWindow should probably better be moved somewhere into the JCL}
-function IsChildWindow(const AChild, AParent: THandle): Boolean;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -88,23 +85,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts, JvResources, JvVCL5Utils;
-
-function IsChildWindow(const AChild, AParent: THandle): Boolean;
-var
-  LParent: HWND;
-begin
-  {determines whether a window is the child (or grand^x-child) of another}
-  LParent := AChild;
-  if LParent = AParent then
-    Result := False // (ahuser) a parent is no child of itself
-  else
-  begin
-    while (LParent <> AParent) and (LParent <> NullHandle) do
-      LParent := GetParent(LParent);
-    Result := (LParent = AParent) and (LParent <> NullHandle);
-  end;
-end;
+  JvConsts, JvResources, JvVCL5Utils, JvJVCLUtils;
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);
