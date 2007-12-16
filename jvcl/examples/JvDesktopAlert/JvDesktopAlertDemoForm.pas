@@ -28,11 +28,10 @@ unit JvDesktopAlertDemoForm;
 interface
 
 uses
-  JvNavigationPane,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtDlgs, ImgList, Menus, StdCtrls, ComCtrls,
   ExtCtrls, JvDesktopAlert, JvAppStorage, JvAppIniStorage, JvComponent,
-  JvFormPlacement, JvBaseDlg, JvExControls, JvLabel;
+  JvFormPlacement, JvBaseDlg, JvExControls, JvLabel, JvComponentBase;
 
 type
   TJvDesktopAlertDemoFrm = class(TForm)
@@ -48,61 +47,68 @@ type
     edMessage: TEdit;
     Label3: TLabel;
     btnBrowse: TButton;
-    Panel1: TPanel;
+    pnlImage: TPanel;
     Image1: TImage;
     Label4: TLabel;
-    Edit1: TEdit;
+    edButtons: TEdit;
     udButtons: TUpDown;
     chkClickable: TCheckBox;
     chkMovable: TCheckBox;
     chkClose: TCheckBox;
     Label5: TLabel;
-    Edit2: TEdit;
+    edWindowCount: TEdit;
     udWindowCount: TUpDown;
     OpenPictureDialog1: TOpenPictureDialog;
     chkShowDropDown: TCheckBox;
     Label6: TLabel;
-    Edit3: TEdit;
+    edStartInterval: TEdit;
     udFadeIn: TUpDown;
     Label7: TLabel;
-    Edit4: TEdit;
+    edDisplayTime: TEdit;
     udWait: TUpDown;
     Label8: TLabel;
-    Edit5: TEdit;
+    edEndInterval: TEdit;
     udFadeOut: TUpDown;
     cbLocation: TComboBox;
     Label9: TLabel;
     JvFormStorage1: TJvFormStorage;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
-    GroupBox1: TGroupBox;
+    gbFormSize: TGroupBox;
     edWidth: TEdit;
     edHeight: TEdit;
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
-    Edit6: TEdit;
+    edEndSteps: TEdit;
     udEndSteps: TUpDown;
     Label13: TLabel;
-    Edit7: TEdit;
+    edStartSteps: TEdit;
     udStartSteps: TUpDown;
     cmbStyle: TComboBox;
     Label14: TLabel;
+    chkUseDLL: TCheckBox;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FCount:integer;
+    FLibHandle:Cardinal;
     procedure DoButtonClick(Sender: TObject);
     procedure DoMessageClick(Sender: TObject);
     procedure DoAlertClose(Sender: TObject);
     procedure DoAlertShow(Sender: TObject);
+    procedure LoadDLL;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
+
+  TCallDesktopAlert = procedure (const Title, Message:WideString);stdcall;
 
 var
   JvDesktopAlertDemoFrm: TJvDesktopAlertDemoFrm;
+  CallDesktopAlert:TCallDesktopAlert = nil;
 
 implementation
 
@@ -138,9 +144,16 @@ var
   DA:TJvDesktopAlert;
   FOptions:TJvDesktopAlertOptions;
 begin
+  if chkUseDLL.Enabled and chkUseDLL.Checked then
+  begin
+    CallDesktopAlert(edHeader.Text, edMessage.Text);
+    Exit;
+  end;
+
   for i := 0 to udWindowCount.Position - 1 do
   begin
     DA := TJvDesktopAlert.Create(Self);
+    DA.AutoFree := true;
     DA.Images := ImageList1;
     DA.HeaderText := Format('%s (%d)', [edHeader.Text, FCount]);
     DA.MessageText := edMessage.Text;
@@ -201,12 +214,29 @@ end;
 procedure TJvDesktopAlertDemoFrm.FormCreate(Sender: TObject);
 begin
   cbLocation.ItemIndex := 3;
+  LoadDLL;
 end;
 
 constructor TJvDesktopAlertDemoFrm.Create(AOwner: TComponent);
 begin
   inherited;
   cmbStyle.ItemIndex := 0;
+end;
+
+procedure TJvDesktopAlertDemoFrm.LoadDLL;
+begin
+  FLibHandle := SafeLoadLibrary('JvDesktopAlertDLL');
+  if FLibHandle <> 0 then
+    @CallDesktopAlert := GetProcAddress(FLibHandle, 'CallDesktopAlert');
+  chkUseDLL.Enabled := Assigned(CallDesktopAlert);
+end;
+
+destructor TJvDesktopAlertDemoFrm.Destroy;
+begin
+  if FLibHandle <> 0 then
+    FreeLibrary(FLibHandle);
+  FLibHandle := 0;
+  inherited;
 end;
 
 end.
