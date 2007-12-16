@@ -162,8 +162,9 @@ type
     function FindFieldData(Buffer: Pointer; Field: TField): Pointer;
     function CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
       CaseInsensitive: Boolean): Integer; virtual;
-    procedure DataConvert(Field: TField; Source, Dest: Pointer;
-      ToNative: Boolean); override;
+    {$IFNDEF COMPILER10_UP} // Delphi 2006+ has support for WideString
+    procedure DataConvert(Field: TField; Source, Dest: Pointer; ToNative: Boolean); override;
+    {$ENDIF ~COMPILER10_UP}
     procedure AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
     function GetActiveRecBuf(var RecBuf: PChar): Boolean; virtual;
     procedure InitFieldDefsFromFields;
@@ -1233,8 +1234,8 @@ begin
   FRecordPos := FRecords.Count;
 end;
 
-procedure TJvMemoryData.DataConvert(Field: TField; Source, Dest: Pointer;
-  ToNative: Boolean);
+{$IFNDEF COMPILER10_UP} // Delphi 2006+ has support for WideString
+procedure TJvMemoryData.DataConvert(Field: TField; Source, Dest: Pointer; ToNative: Boolean);
 begin
   if Field.DataType = ftWideString then
   begin
@@ -1249,6 +1250,7 @@ begin
   else
     inherited DataConvert(Field, Source, Dest, ToNative);
 end;
+{$ENDIF ~COMPILER10_UP}
 
 procedure TJvMemoryData.AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
 var
