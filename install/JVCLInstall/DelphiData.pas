@@ -171,6 +171,8 @@ type
         else it returns the Filename. }
     function VersionedBPL(const Filename: string): string;
       { returns the filename + version + extension. }
+    function VersionedIDEBPL(const Filename: string): string;
+      { returns the filename + version + extension. }
 
     function TargetType: string;
       { return 'D' for Delphi, 'C' for C++ and ?? for BDS }
@@ -922,7 +924,7 @@ begin
 {  FIsPersonal := not FileExists(RootDir + '\Lib\db.dcu');
   if FIsPersonal and IsBCB and FileExists(RootDir + '\Lib\Obj\db.dcu') then
     FIsPersonal := False;}
-  FIsPersonal := not FileExists(VersionedBPL(RootDir + '\bin\dcldb.bpl'));
+  FIsPersonal := not FileExists(VersionedIDEBPL(RootDir + '\bin\dcldb.bpl'));
   if FIsPersonal then
     if Version = 5 then
       FEdition := 'Standard'
@@ -1314,6 +1316,14 @@ end;
 function TCompileTarget.VersionedBPL(const Filename: string): string;
 begin
   Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
+end;
+
+function TCompileTarget.VersionedIDEBPL(const Filename: string): string;
+begin
+  if IsBDS and (IDEVersion = 5) then // Delphi 2007 is identified as version 11 for JVCL packages, but the IDE packages have version 10
+    Result := ChangeFileExt(Filename, '') + '100' + ExtractFileExt(Filename)
+  else
+    Result := VersionedBPL(Filename);
 end;
 
 function TCompileTarget.GetProjectDir: string;
