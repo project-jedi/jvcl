@@ -55,7 +55,7 @@ uses
   {$ENDIF HAS_UNIT_TYPES}
   CommCtrl,
   JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32,
-  JvToolEdit;
+  JvToolEdit, JvDataSourceIntf;
 
 const
   JvDefPageControlBorder = 4;
@@ -140,6 +140,17 @@ type
     property Value4: Byte index 3 read GetValues write SetValues;
   end;
 
+  TJvIPAddressDataConnector = class(TJvFieldDataConnector)
+  private
+    FEditControl: TJvIPAddress;
+  protected
+    procedure RecordChanged; override;
+    procedure UpdateData; override;
+    property EditControl: TJvIPAddress read FEditControl;
+  public
+    constructor Create(AEditControl: TJvIPAddress);
+  end;
+
   TJvIPAddress = class(TJvCustomControl)
   private
     FEditControls: array [0..3] of TJvIPEditControlHelper;
@@ -154,6 +165,8 @@ type
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
     FOnChange: TNotifyEvent;
     FFocusFromField: Boolean;
+    FDataConnector: TJvIPAddressDataConnector;
+    procedure SetDataConnector(const Value: TJvIPAddressDataConnector);
     procedure ClearEditControls;
     procedure DestroyLocalFont;
     procedure SetAddress(const Value: LongWord);
@@ -190,6 +203,10 @@ type
     procedure DoFieldChange(FieldIndex: Integer; var FieldValue: Integer); dynamic;
 
     procedure UpdateValuesFromString(S: string);
+
+    procedure KeyPress(var Key: Char); override;
+    procedure DoExit; override;
+    function CreateDataConnector: TJvIPAddressDataConnector; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -208,6 +225,7 @@ type
     property BevelKind default bkNone;
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
+    property DataConnector: TJvIPAddressDataConnector read FDataConnector write SetDataConnector;
     property DragCursor;
     property DragKind;
     property OnStartDock;
@@ -808,6 +826,34 @@ begin
   Dispatch(Msg);
 end;
 
+//=== { TJvIPAddressDataConnector } ==========================================
+
+constructor TJvIPAddressDataConnector.Create(AEditControl: TJvIPAddress);
+begin
+  inherited Create;
+  FEditControl := AEditControl;
+end;
+
+procedure TJvIPAddressDataConnector.RecordChanged;
+begin
+  if Field.IsValid then
+  begin
+    FEditControl.Enabled := Field.CanModify;
+    FEditControl.Text := Field.AsString;
+  end
+  else
+  begin
+    FEditControl.Text := '';
+    FEditControl.Enabled := False;
+  end;
+end;
+
+procedure TJvIPAddressDataConnector.UpdateData;
+begin
+  Field.AsString := FEditControl.Text;
+  FEditControl.Text := Field.AsString; // update to stored value
+end;
+
 //=== { TJvIPAddress } =======================================================
 
 constructor TJvIPAddress.Create(AOwner: TComponent);
@@ -817,6 +863,7 @@ begin
   CheckCommonControl(ICC_INTERNET_CLASSES);
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csFixedHeight, csReflector];
+  FDataConnector := TJvIPAddressDataConnector.Create(Self);
 
   FRange := TJvIPAddressRange.Create(Self);
   FAddressValues := TJvIPAddressValues.Create;
@@ -840,6 +887,7 @@ var
 begin
   FreeAndNil(FRange);
   FreeAndNil(FAddressValues);
+  FDataConnector.Free;
   inherited Destroy;
   // (ahuser) I don't know why but TWinControl.DestroyWindowHandle raises an AV
   //          when FEditControls are released before inherited Destroy.
@@ -1193,6 +1241,7 @@ end;
 
 procedure TJvIPAddress.DoChange;
 begin
+  DataConnector.Modify;
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
@@ -1208,6 +1257,33 @@ begin
   Result := False;
   if HandleAllocated then
     Result := SendMessage(Handle, IPM_ISBLANK, 0, 0) <> 0;
+end;
+
+function TJvIPAddress.CreateDataConnector: TJvIPAddressDataConnector;
+begin
+  Result := TJvIPAddressDataConnector.Create(Self);
+end;
+
+procedure TJvIPAddress.SetDataConnector(const Value: TJvIPAddressDataConnector);
+begin
+ if Value <> FDataConnector then
+    FDataConnector.Assign(Value);
+end;
+
+procedure TJvIPAddress.DoExit;
+begin
+  DataConnector.UpdateRecord;
+  inherited DoExit;
+end;
+
+procedure TJvIPAddress.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if (Key = #27) and DataConnector.Active then
+  begin
+    DataConnector.Reset;
+    Key := #0;
+  end;
 end;
 
 procedure TJvIPAddress.SetAddress(const Value: LongWord);
