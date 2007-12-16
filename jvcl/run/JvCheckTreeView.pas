@@ -355,7 +355,10 @@ begin
   inherited KeyDown(Key, Shift);
   if (CheckBoxOptions.Style = cbsJVCL) and Assigned(Selected) and
     (Key = VK_SPACE) and (Shift * KeyboardShiftStates = []) then
+  begin
     InternalSetChecked(Selected, not Checked[Selected], CheckBoxOptions.CascadeLevels);
+    Key := 0; // Otherwise the checkmark will be toggled back
+  end;
 end;
 
 procedure TJvCheckTreeView.SetCheckBox(Node: TTreeNode; const Value: Boolean);
