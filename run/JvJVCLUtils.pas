@@ -206,8 +206,7 @@ procedure StopWait;
 {$IFNDEF CLR}
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
 {$ENDIF !CLR}
-function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean):
-  Integer;
+function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean): Integer;
 function WaitCursor: IInterface;
 function ScreenCursor(ACursor: TCursor): IInterface;
 {$IFDEF MSWINDOWS}
@@ -2695,8 +2694,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$ENDIF !CLR}
 
-function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean):
-  Integer;
+function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean): Integer;
 begin
   Result := StartHint;
   if PreDefined then
