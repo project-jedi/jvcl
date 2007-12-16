@@ -855,6 +855,20 @@ function GetGraphicClass(AStream: TStream): TGraphicClass;
 function GetGraphicObject(AStream: TStream): TGraphic; overload;
 function GetGraphicObject(AStream: TStream; ASender: TObject; AOnProc: TJvGetGraphicClassEvent): TGraphic; overload;
 
+// Rect functions  added by dejoy
+
+function RectChildToParent(APoint: TPoint; AControl: TControl): TPoint; // not equal to TControl.ClientToParent
+function RectClientToScreen(AClientRect: TRect; AControl: TControl): TRect;
+function RectScreenToClient(AScreenRect: TRect; AControl: TControl): TRect;
+function MapControlRect(ACtlFrom, ACtlTo: TControl; AClientRect: TRect):  TRect;
+function MapControlPoint(ACtlFrom, ACtlTo: TControl; APoint: TPoint):  TPoint;
+function GetControlRect(AControl: TControl): TRect; // not equal to TControl.ClientRect
+function GetControlScreenRect(AControl: TControl): TRect;
+
+function GetTopOwner(aCmp: TComponent): TComponent;
+function GetTopForm(aCmp: TComponent): TCustomForm;
+function IsChildWindow(const AChild, AParent: THandle): Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -7887,6 +7901,89 @@ begin
   end
   else // nope.
     Result := nil;
+end;
+
+function RectChildToParent(APoint: TPoint; AControl: TControl): TPoint;
+begin
+  Result := APoint;
+  Inc(Result.X, AControl.Left);
+  Inc(Result.Y, AControl.Top);
+end;
+
+function RectClientToScreen(AClientRect: TRect; AControl: TControl): TRect;
+begin
+  Result.TopLeft := AControl.ClientToScreen(AClientRect.TopLeft);
+  Result.BottomRight := AControl.ClientToScreen(AClientRect.BottomRight);
+end;
+
+function RectScreenToClient(AScreenRect: TRect; AControl: TControl): TRect;
+begin
+  Result.TopLeft := AControl.ScreenToClient(AScreenRect.TopLeft);
+  Result.BottomRight := AControl.ScreenToClient(AScreenRect.BottomRight);
+end;
+
+function MapControlRect(ACtlFrom, ACtlTo: TControl; AClientRect: TRect):
+  TRect;
+begin
+  Result := RectClientToScreen(AClientRect, ACtlFrom);
+  Result := RectScreenToClient(Result, ACtlTo);
+end;
+
+function MapControlPoint(ACtlFrom, ACtlTo: TControl; APoint: TPoint):  TPoint;
+begin
+  Result := ACtlFrom.ClientToScreen(APoint);
+  Result := ACtlTo.ScreenToClient(Result);
+end;
+
+function GetControlRect(AControl: TControl): TRect;
+begin
+  Result := Rect(0, 0, AControl.Width, AControl.Height);
+end;
+
+function GetControlScreenRect(AControl: TControl): TRect;
+begin
+  Result := RectClientToScreen(GetControlRect(AControl), AControl);
+end;
+
+function GetTopOwner(aCmp: TComponent): TComponent;
+begin
+  if aCmp = nil then
+    Result := nil
+  else
+  if aCmp.Owner <> nil then
+    Result := GetTopOwner(aCmp.Owner)
+  else
+    Result := aCmp;
+end;
+
+function GetTopForm(aCmp: TComponent): TCustomForm;
+begin
+  if aCmp is TControl then
+  begin
+    while (aCmp <> nil) and not (aCmp is TCustomForm) do
+      aCmp := TControl(aCmp).Parent;
+  end
+  else // aCmp is TComponent
+    while (aCmp <> nil) and not (aCmp is TCustomForm) do
+      aCmp := aCmp.Owner;
+
+  Result := TCustomForm(aCmp);
+end;
+
+function IsChildWindow(const AChild, AParent: THandle): Boolean;
+var
+  LParent: HWND;
+begin
+  { Determines whether a window is the child (or grand^x-child) of another window }
+  LParent := AChild;
+  if LParent = AParent then
+    Result := False // (ahuser) a parent is no a child of itself
+  else
+  begin
+    while (LParent <> AParent) and (LParent <> NullHandle) do
+      LParent := GetParent(LParent);
+    Result := (LParent = AParent) and (LParent <> NullHandle);
+  end;
 end;
 
 initialization

@@ -972,12 +972,14 @@ function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): 
 {$IFNDEF CLR}
 procedure ResourceNotFound(ResID: PChar);
 {$ENDIF !CLR}
+function EmptyRect: TRect;
 function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
 function CompareRect(const R1, R2: TRect): Boolean;
 procedure RectNormalize(var R: TRect);
 function RectIsSquare(const R: TRect): Boolean;
-function RectSquare(var ARect: TRect): Boolean;
+function RectSquare(var ARect: TRect; AMaxSize: Integer = -1): Boolean;
+//If AMaxSize = -1 ,then auto calc Square's max size
 
 {$IFDEF MSWINDOWS}
 {$IFNDEF CLR}
@@ -8380,6 +8382,11 @@ begin
 end;
 {$ENDIF !CLR}
 
+function EmptyRect: TRect;
+begin
+  Result := Rect(0, 0, 0, 0);
+end;
+
 function RectWidth(R: TRect): Integer;
 begin
   Result := Abs(R.Right - R.Left);
@@ -8419,40 +8426,42 @@ begin
   Result := RectHeight(R) = RectWidth(R);
 end;
 
-function RectSquare(var ARect: TRect): Boolean;
+function RectSquare(var ARect: TRect; AMaxSize: Integer): Boolean;
+const
+  cSquareMinSize = 4; // Min size is 4 pixel
 var
-  iMin, iW, iH :Integer;
+  iMinSize, iW, iH :Integer;
   pTopLeft, pRightBottom: TPoint;
 begin
   Result := False;
-  if IsRectEmpty(ARect) or RectIsSquare(ARect) then
+  if IsRectEmpty(ARect) or ((AMaxSize <> -1) and (AMaxSize < cSquareMinSize)) then
+    Exit
+  else if  RectIsSquare(ARect) then
+  begin
+    Result := True;
     Exit;
+  end;
 
   iW := RectWidth(ARect);
   iH := RectHeight(ARect);
-  iMin := Min(iW, iH);
+  iMinSize := Min(iW, iH);
+  if AMaxSize = -1 then
+    AMaxSize := iMinSize
+  else
+    AMaxSize := Min(iMinSize, AMaxSize);
 
-  if iH <= iMin then  {rect is horizontal}
-  begin
-    pTopLeft.Y := ARect.Top;
-    pTopLeft.X := (iW - iMin) div 2;
+  pTopLeft.Y :=ARect.Top + (iH - AMaxSize) div 2;
+  pTopLeft.X :=ARect.Left + (iW - AMaxSize) div 2;
 
-    pRightBottom.Y := pTopLeft.Y + iMin;
-    pRightBottom.X := pTopLeft.X + iMin;
-    Result := True;
-  end
-  else    {rect is vertical}
-  begin
-    pTopLeft.Y :=(iH - iMin) div 2;
-    pTopLeft.X := ARect.Left;
+  pRightBottom.Y := pTopLeft.Y + AMaxSize;
+  pRightBottom.X := pTopLeft.X + AMaxSize;
 
-    pRightBottom.Y := pTopLeft.Y + iMin;
-    pRightBottom.X := pTopLeft.X + iMin;
-    Result := True;
-  end;
-
-  if Result then
-    ARect := Rect(pTopLeft.X, pTopLeft.Y, pRightBottom.X, pRightBottom.Y);
+  {$IFDEF COMPILER5}
+  ARect := Rect(pTopLeft.X, pTopLeft.Y, pRightBottom.X, pRightBottom.Y);
+  {$ELSE}
+  ARect := Rect(pTopLeft, pRightBottom);
+  {$ENDIF COMPILER5}
+  Result := True;
 end;
 
 {$IFDEF MSWINDOWS}
