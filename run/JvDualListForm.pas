@@ -67,15 +67,14 @@ type
     procedure HelpBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ListClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     function GetShowHelp: Boolean;
     procedure SetShowHelp(Value: Boolean);
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
   public
     procedure SetButtons;
     property ShowHelp: Boolean read GetShowHelp write SetShowHelp default True;
-end;
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -94,13 +93,6 @@ uses
   JvBoxProcs;
 
 {$R *.dfm}
-
-
-procedure TJvDualListForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-end;
-
 
 procedure TJvDualListForm.SetButtons;
 var
@@ -257,6 +249,20 @@ begin
   HelpBtn.Caption := SHelpButton;
   if NewStyleControls then
     Font.Style := [];
+end;
+
+procedure TJvDualListForm.FormResize(Sender: TObject);
+begin
+  { Delphi 5, 6, 7 and 2005 compatible code }
+  IncBtn.Left := 4 + (Bevel1.Width - IncBtn.Width) div 2;
+  IncAllBtn.Left := IncBtn.Left;
+  ExclBtn.Left := IncBtn.Left;
+  ExclAllBtn.Left := IncBtn.Left;
+  SrcList.Width := (Bevel1.Width - (8 + 7 + IncBtn.Width + 7 + 8)) div 2;
+  SrcLabel.Left := SrcList.Left;
+  DstList.Width := SrcList.Width;
+  DstList.Left := IncBtn.Left + IncBtn.Width + 7;
+  DstLabel.Left := DstList.Left;
 end;
 
 procedure TJvDualListForm.ListClick(Sender: TObject);
