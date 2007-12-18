@@ -119,7 +119,7 @@ type
     procedure MouseLeave(AControl: TControl); override;
     //override this one if you'd like to exes sth before form is shown
     procedure InternalDoShow; virtual;
-    procedure CreateHandle; override;
+    procedure CreateParams(var Params: TCreateParams); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -628,11 +628,11 @@ begin
   acClose.OnExecute := acCloseExecute;
 end;
 
-procedure TJvCustomFormDesktopAlert.CreateHandle;
+procedure TJvCustomFormDesktopAlert.CreateParams(var Params: TCreateParams);
 begin
-  inherited CreateHandle;
+  inherited CreateParams(Params);
   if IsLibrary then
-    SetWindowLong(Handle,GWL_EXSTYLE,WS_EX_TOOLWINDOW);
+    Params.ExStyle := Params.ExStyle or WS_EX_TOOLWINDOW;
 end;
 
 procedure TJvCustomFormDesktopAlert.DoClose(var Action: TCloseAction);
