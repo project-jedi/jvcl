@@ -4,9 +4,11 @@ object JvDualListForm: TJvDualListForm
   ActiveControl = SrcList
   BorderIcons = []
   BorderStyle = bsSingle
-  ClientHeight = 269
-  ClientWidth = 394
+  ClientHeight = 297
+  ClientWidth = 398
   Color = clBtnFace
+  Constraints.MinHeight = 320
+  Constraints.MinWidth = 400
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -27,6 +29,7 @@ object JvDualListForm: TJvDualListForm
   Position = poScreenCenter
   OnActivate = ListClick
   OnCreate = FormCreate
+  OnResize = FormResize
   OnShow = ListClick
   PixelsPerInch = 96
   TextHeight = 13
@@ -34,7 +37,8 @@ object JvDualListForm: TJvDualListForm
     Left = 4
     Top = 7
     Width = 384
-    Height = 224
+    Height = 248
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ParentShowHint = False
     ShowHint = True
   end
@@ -54,7 +58,8 @@ object JvDualListForm: TJvDualListForm
     Left = 12
     Top = 30
     Width = 164
-    Height = 194
+    Height = 218
+    Anchors = [akLeft, akTop, akBottom]
     DragMode = dmAutomatic
     ItemHeight = 13
     Background.FillMode = bfmTile
@@ -74,7 +79,8 @@ object JvDualListForm: TJvDualListForm
     Left = 216
     Top = 30
     Width = 164
-    Height = 194
+    Height = 218
+    Anchors = [akLeft, akTop, akBottom]
     DragMode = dmAutomatic
     ItemHeight = 13
     Background.FillMode = bfmTile
@@ -152,9 +158,10 @@ object JvDualListForm: TJvDualListForm
   end
   object OkBtn: TButton
     Left = 130
-    Top = 239
+    Top = 263
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -162,9 +169,10 @@ object JvDualListForm: TJvDualListForm
   end
   object CancelBtn: TButton
     Left = 213
-    Top = 239
+    Top = 263
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -172,9 +180,10 @@ object JvDualListForm: TJvDualListForm
   end
   object HelpBtn: TButton
     Left = 310
-    Top = 239
+    Top = 263
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Help'
     TabOrder = 8
     OnClick = HelpBtnClick

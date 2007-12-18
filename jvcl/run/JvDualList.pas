@@ -32,10 +32,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  Windows, // inline
   Classes, Controls, StdCtrls,
-  JvComponentBase;
+  JvComponentBase, Forms;
 
 type
+  TJvDualListCustomizeEvent = procedure(Sender: TObject; Form: TCustomForm) of object;
+
   TJvDualListDialog = class(TJvComponent)
   private
     FSorted: Boolean;
@@ -46,14 +49,15 @@ type
     FCancelBtnCaption: TCaption;
     FHelpBtnCaption: TCaption;
     FHelpContext: THelpContext;
-    FList1: TStringList;
-    FList2: TStringList;
+    FList1: TStrings;
+    FList2: TStrings;
     FShowHelp: Boolean;
     FScrollBars: TScrollStyle;
-    function GetTitle: string;
-    function GetList1: TStrings;
-    function GetList2: TStrings;
-    procedure SetTitle(const ATitle: string);
+    FWidth: Integer;
+    FOnCustomize: TJvDualListCustomizeEvent;
+    FHeight: Integer;
+    FCenterOnControl: TControl;
+    FResizable: Boolean;
     procedure SetList1(Value: TStrings);
     procedure SetList2(Value: TStrings);
     function IsLabel1Custom: Boolean;
@@ -61,23 +65,32 @@ type
     function IsOkBtnCustom: Boolean;
     function IsCancelBtnCustom: Boolean;
     function IsHelpBtnCustom: Boolean;
+    procedure SetCenterOnControl(const Value: TControl);
+  protected
+    procedure CustomizeForm(AForm: TCustomForm); virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: Boolean;
   published
     property Sorted: Boolean read FSorted write FSorted;
-    property Title: string read GetTitle write SetTitle;
+    property Title: string read FTitle write FTitle;
     property Label1Caption: TCaption read FLabel1Caption write FLabel1Caption stored IsLabel1Custom;
     property Label2Caption: TCaption read FLabel2Caption write FLabel2Caption stored IsLabel2Custom;
     property OkBtnCaption: TCaption read FOkBtnCaption write FOkBtnCaption stored IsOkBtnCustom;
     property CancelBtnCaption: TCaption read FCancelBtnCaption write FCancelBtnCaption stored IsCancelBtnCustom;
     property HelpBtnCaption: TCaption read FHelpBtnCaption write FHelpBtnCaption stored IsHelpBtnCustom;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
-    property List1: TStrings read GetList1 write SetList1;
-    property List2: TStrings read GetList2 write SetList2;
+    property List1: TStrings read FList1 write SetList1;
+    property List2: TStrings read FList2 write SetList2;
+    property CenterOnControl: TControl read FCenterOnControl write SetCenterOnControl;
+    property Width: Integer read FWidth write FWidth default 0;
+    property Height: Integer read FHeight write FHeight default 0;
     property ShowHelp: Boolean read FShowHelp write FShowHelp default True;
     property ScrollBars: TScrollStyle read FScrollBars write FScrollBars default ssBoth;
+    property Resizable: Boolean read FResizable write FResizable default True;
+    property OnCustomize: TJvDualListCustomizeEvent read FOnCustomize write FOnCustomize;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -93,14 +106,14 @@ const
 implementation
 
 uses
-  Consts, SysUtils, Forms,
+  Consts, SysUtils,
   JvDualListForm, JvResources;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FShowHelp := True;
-  FTitle := '';
+  FResizable := True;
   FScrollBars := ssBoth;
   FList1 := TStringList.Create;
   FList2 := TStringList.Create;
@@ -113,29 +126,28 @@ end;
 
 destructor TJvDualListDialog.Destroy;
 begin
+  CenterOnControl := nil; // remove free notification
   List1.Free;
   List2.Free;
   inherited Destroy;
 end;
 
-function TJvDualListDialog.GetTitle: string;
+procedure TJvDualListDialog.CustomizeForm(AForm: TCustomForm);
 begin
-  Result := FTitle;
+  if Assigned(FOnCustomize) then
+    FOnCustomize(Self, AForm);
 end;
 
-procedure TJvDualListDialog.SetTitle(const ATitle: string);
+procedure TJvDualListDialog.SetCenterOnControl(const Value: TControl);
 begin
-  FTitle := ATitle;
-end;
-
-function TJvDualListDialog.GetList1: TStrings;
-begin
-  Result := FList1;
-end;
-
-function TJvDualListDialog.GetList2: TStrings;
-begin
-  Result := FList2;
+  if Value <> FCenterOnControl then
+  begin
+    if FCenterOnControl <> nil then
+      FCenterOnControl.RemoveFreeNotification(Self);
+    FCenterOnControl := Value;
+    if FCenterOnControl <> nil then
+      FCenterOnControl.FreeNotification(Self);
+  end;
 end;
 
 procedure TJvDualListDialog.SetList1(Value: TStrings);
@@ -163,6 +175,13 @@ begin
   Result := AnsiCompareStr(OkBtnCaption, SOKButton) <> 0;
 end;
 
+procedure TJvDualListDialog.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = CenterOnControl) then
+    CenterOnControl := nil;
+end;
+
 function TJvDualListDialog.IsCancelBtnCustom: Boolean;
 begin
   Result := AnsiCompareStr(CancelBtnCaption, SCancelButton) <> 0;
@@ -176,32 +195,60 @@ end;
 function TJvDualListDialog.Execute: Boolean;
 var
   Form: TJvDualListForm;
+  Pt: TPoint;
 begin
   Form := TJvDualListForm.Create(Application);
   try
-    with Form do
+    if Resizable then
     begin
-      SrcList.ScrollBars := FScrollBars;
-      DstList.ScrollBars := FScrollBars;
-      if NewStyleControls then
-        Font.Style := [];
-      ShowHelp := Self.ShowHelp;
-      SrcList.Sorted := Sorted;
-      DstList.Sorted := Sorted;
-      SrcList.Items := List1;
-      DstList.Items := List2;
-      if Self.Title <> '' then
-        Form.Caption := Self.Title;
-      if Label1Caption <> '' then
-        SrcLabel.Caption := Label1Caption;
-      if Label2Caption <> '' then
-        DstLabel.Caption := Label2Caption;
-      OkBtn.Caption := OkBtnCaption;
-      CancelBtn.Caption := CancelBtnCaption;
-      HelpBtn.Caption := HelpBtnCaption;
-      HelpContext := Self.HelpContext;
-      HelpBtn.HelpContext := HelpContext;
+      Form.BorderStyle := bsSizeable;
+      Form.BorderIcons := Form.BorderIcons - [biMinimize, biMaximize] + [biSystemMenu];
+      Form.Icon := nil;
     end;
+
+    Form.SrcList.ScrollBars := FScrollBars;
+    Form.DstList.ScrollBars := FScrollBars;
+    if NewStyleControls then
+      Form.Font.Style := [];
+    Form.ShowHelp := Self.ShowHelp;
+    Form.SrcList.Sorted := Sorted;
+    Form.DstList.Sorted := Sorted;
+    Form.SrcList.Items := List1;
+    Form.DstList.Items := List2;
+    if Title <> '' then
+      Form.Caption := Self.Title;
+    if Label1Caption <> '' then
+      Form.SrcLabel.Caption := Label1Caption;
+    if Label2Caption <> '' then
+      Form.DstLabel.Caption := Label2Caption;
+    Form.OkBtn.Caption := OkBtnCaption;
+    Form.CancelBtn.Caption := CancelBtnCaption;
+    Form.HelpBtn.Caption := HelpBtnCaption;
+    Form.HelpContext := Self.HelpContext;
+    Form.HelpBtn.HelpContext := HelpContext;
+
+    if Width <> 0 then
+      Form.Width := Width;
+    if Height <> 0 then
+      Form.Height := Height;
+
+    if CenterOnControl <> nil then
+    begin
+      Form.Position := poDesigned;
+      Pt := CenterOnControl.ClientToScreen(Point(0, 0));
+      Form.Left := Pt.X + (CenterOnControl.Width - Form.Width) div 2;
+      Form.Top := Pt.Y + (CenterOnControl.Height - Form.Height) div 2;
+      if Form.Left < 0 then
+        Form.Left := 0;
+      if Form.Top < 0 then
+        Form.Top := 0;
+      if Form.Left >= Screen.Width - Form.Width then
+        Form.Left := Screen.Width - Form.Width;
+      if Form.Top >= Screen.Height - Form.Height then
+        Form.Top := Screen.Height - Form.Height;
+    end;
+
+    CustomizeForm(Form);
     Result := (Form.ShowModal = mrOk);
     if Result then
     begin
