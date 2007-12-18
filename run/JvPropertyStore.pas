@@ -149,6 +149,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
+    function IndexOf(const s: String): Integer;
+    function IndexOfObject(AObject: TObject): Integer;
     property Strings[Index: Integer]: string read GetString write SetString;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
     property Items: TStringList read GetItems;
@@ -932,6 +934,16 @@ var
 begin
   for I := First to Last do
     Sender.DeleteValue(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
+end;
+
+function TJvCustomPropertyListStore.IndexOf(const s: String): Integer;
+begin
+  Result := FItems.IndexOf(s);
+end;
+
+function TJvCustomPropertyListStore.IndexOfObject(AObject: TObject): Integer;
+begin
+  Result := FItems.IndexOfObject(AObject);
 end;
 
 {$IFDEF UNITVERSIONING}
