@@ -1292,9 +1292,12 @@ begin
       IntCurrentOperation := tdoOpen;
     if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
     begin
-      IThreadedDatasetInterface.DoInheritedSetActive(Value);
-      if IntCurrentOperation <> tdoRefresh then
-        IntCurrentOperation := tdoNothing;
+      try
+        IThreadedDatasetInterface.DoInheritedSetActive(Value);
+      finally
+        if IntCurrentOperation <> tdoRefresh then
+          IntCurrentOperation := tdoNothing;
+      end;
     end
     else
       ExecuteThread.ExecuteWithDialog(nil);
