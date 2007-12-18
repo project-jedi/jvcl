@@ -1323,8 +1323,7 @@ var
   Status: TRecordStatus;
   PFValues: TPVariant;
 begin
-  // Disable warnings
-  Status := rsOriginal;
+  Status := rsOriginal; // Disable warnings
   PFValues := nil;
   if FApplyMode <> amNone then
   begin
@@ -1923,24 +1922,27 @@ begin
         First;
         MovedCount := MaxInt;
       end;
+      Status := rsOriginal; // Disable warnings
       try
         while not EOF do
         begin
-          Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
-          if FApplymode <> amNone then
+          if FApplyMode <> amNone then
+          begin
+            Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
             DoBeforeApplyRecord(Dest, Status, True);
+          end;
           Dest.Append;
           AssignRecord(Self, Dest, True);
           Dest.Post;
           Inc(Result);
-          if FApplymode <> amNone then
+          if FApplyMode <> amNone then
             DoAfterApplyRecord(Dest, Status, True);
           if Result >= MovedCount then
             Break;
           Next;
         end;
       finally
-        if FApplymode <> amNone then
+        if FApplyMode <> amNone then
         begin
           FRowsAffected := Result;
           DoAfterApply(Dest, FRowsAffected);
