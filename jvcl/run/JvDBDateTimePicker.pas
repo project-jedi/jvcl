@@ -61,13 +61,14 @@ type
     function GetDataSource: TDataSource;
     function GetReadOnly: Boolean;
     procedure SetReadOnly(Value: Boolean);
-    procedure SetDataField(Value: string);
+    procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure EditingChange(Sender: TObject);
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    function GetField: TField;
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -86,6 +87,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Field: TField read GetField;
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
@@ -225,21 +227,21 @@ end;
 
 procedure TJvDBDateTimePicker.DataChange(Sender: TObject);
 begin
-  if FDataLink.Field <> nil then
+  if Field <> nil then
   begin
     if Kind = dtkDate then
     begin
       if IsDateAndTimeField then
-        DateTime := FDataLink.Field.AsDateTime
+        DateTime := Field.AsDateTime
       else
-        DateTime := Trunc(FDataLink.Field.AsDateTime);
+        DateTime := Trunc(Field.AsDateTime);
     end
     else
     begin
       if IsDateAndTimeField then
-        DateTime := FDataLink.Field.AsDateTime
+        DateTime := Field.AsDateTime
       else
-        DateTime := Frac(FDataLink.Field.AsDateTime);
+        DateTime := Frac(Field.AsDateTime);
     end;
   end
   else
@@ -301,6 +303,11 @@ end;
 function TJvDBDateTimePicker.GetDataSource: TDataSource;
 begin
   Result := FDataLink.DataSource;
+end;
+
+function TJvDBDateTimePicker.GetField: TField;
+begin
+  Result := FDataLink.Field;
 end;
 
 function TJvDBDateTimePicker.GetReadOnly: Boolean;
@@ -397,8 +404,8 @@ begin
   end;
 
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and ((FDataLink.Field <> nil) and
-    not (FDataLink.Field.IsValidChar(Key))) then
+  if (Key in [#32..#255]) and ((Field <> nil) and
+    not (Field.IsValidChar(Key))) then
   begin
     if BeepOnError then
       Beep;
@@ -433,7 +440,7 @@ end;
 //Author       : -ekosbg-
 ///////////////////////////////////////////////////////////////////////////
 
-procedure TJvDBDateTimePicker.SetDataField(Value: string);
+procedure TJvDBDateTimePicker.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;
@@ -471,28 +478,27 @@ procedure TJvDBDateTimePicker.UpdateData(Sender: TObject);
 begin
   // update value in datalink with date value in control, not from system
   // DataLink field might be empty
-  if not Assigned(FDataLink.Field) or
-     not FDataLink.Editing then
+  if not (Field <> nil) or not FDataLink.Editing then
     Exit;
   if Kind = dtkDate then
   begin
     if Trunc(NullDate) = Trunc(DateTime) then
-      FDataLink.Field.Value := Null
+      Field.Value := Null
     else
     if IsDateAndTimeField then
-      FDataLink.Field.AsDateTime := DateTime
+      Field.AsDateTime := DateTime
     else
-      FDataLink.Field.AsDateTime := Trunc(DateTime);
+      Field.AsDateTime := Trunc(DateTime);
   end
   else
   begin
     if Frac(NullDate) = Frac(DateTime) then
-      FDataLink.Field.Value := Null
+      Field.Value := Null
     else
     if IsDateAndTimeField then
-      FDataLink.Field.AsDateTime := DateTime
+      Field.AsDateTime := DateTime
     else
-      FDataLink.Field.AsDateTime := Frac(DateTime);
+      Field.AsDateTime := Frac(DateTime);
   end;
 end;
 
@@ -506,21 +512,21 @@ begin
   else
   begin
     // DataLink field might be empty
-    if Assigned(FDataLink.Field) then
+    if Field <> nil then
     begin
       if Kind = dtkDate then
       begin
         if IsDateAndTimeField then
-          D := FDataLink.Field.AsDateTime
+          D := Field.AsDateTime
         else
-          D := Trunc(FDataLink.Field.AsDateTime);
+          D := Trunc(Field.AsDateTime);
       end
       else
       begin
         if IsDateAndTimeField then
-          D := FDataLink.Field.AsDateTime
+          D := Field.AsDateTime
         else
-          D := Frac(FDataLink.Field.AsDateTime);
+          D := Frac(Field.AsDateTime);
       end;
     end
     else
