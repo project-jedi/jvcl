@@ -67,6 +67,7 @@ type
     procedure LayoutChanged; override;
     procedure FocusControl(const Field: TField); override;
     procedure RecordChanged(Field: TField); override;
+    procedure UpdateData; override;
   end;
 
   TLookupSourceLink = class(TDataLink)
@@ -121,7 +122,6 @@ type
     procedure CheckNotCircular;
     procedure DataLinkActiveChanged;
     procedure CheckDataLinkActiveChanged;
-    procedure DataLinkRecordChanged(Field: TField);
     function GetBorderSize: Integer;
     function GetField: TField;
     function GetDataSource: TDataSource;
@@ -162,12 +162,14 @@ type
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    function GetReadOnly: Boolean;virtual;
-    procedure SetReadOnly(Value: Boolean);virtual;
+    function GetReadOnly: Boolean; virtual;
+    procedure SetReadOnly(Value: Boolean); virtual;
     procedure Change; dynamic;
     procedure KeyValueChanged; virtual;
     procedure DisplayValueChanged; virtual;
     function DoFormatLine: string;
+    procedure DataLinkRecordChanged(Field: TField); virtual;
+    procedure DataLinkUpdateData; virtual;
     procedure ListLinkActiveChanged; virtual;
     procedure ListLinkDataChanged; virtual;
     procedure Notification(AComponent: TComponent;
@@ -363,7 +365,8 @@ type
     FDropDownCount: Integer;
     FDropDownWidth: Integer;
     FDropDownAlign: TDropDownAlign;
-    FEscapeClear: Boolean;
+    FEscapeKeyReset: Boolean;
+    FDeleteKeyClear: Boolean;
     FListVisible: Boolean;
     FPressed: Boolean;
     FTracking: Boolean;
@@ -375,6 +378,7 @@ type
     FTabSelects: Boolean;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
+    FLastValue: Variant;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure StopTracking;
@@ -400,6 +404,7 @@ type
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure ReadEscapeClear(Reader: TReader);
   protected
     function GetDataLink: TDataLink; virtual;
     procedure FocusKilled(NextWnd: THandle); override;
@@ -411,6 +416,7 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     {$ENDIF JVCLThemesEnabled}
+    procedure DoEnter; override;
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -421,6 +427,8 @@ type
     procedure DisplayValueChanged; override;
     procedure ListLinkActiveChanged; override;
     procedure ListLinkDataChanged; override;
+    procedure DataLinkRecordChanged(AField: TField); override;
+    procedure DataLinkUpdateData; override;
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -430,6 +438,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure UpdateDisplayEmpty(const Value: string); override;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -448,7 +457,8 @@ type
     property DropDownAlign: TDropDownAlign read FDropDownAlign write FDropDownAlign default daLeft;
     property DropDownCount: Integer read FDropDownCount write FDropDownCount default 8;
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
-    property EscapeClear: Boolean read FEscapeClear write FEscapeClear default True;
+    property EscapeKeyReset: Boolean read FEscapeKeyReset write FEscapeKeyReset default True;
+    property DeleteKeyClear: Boolean read FDeleteKeyClear write FDeleteKeyClear default True;
     property DisplayAllFields: Boolean read GetDisplayAllFields write SetDisplayAllFields default False;
     property TabSelects : Boolean read FTabSelects write FTabSelects default False;
     property Color;
@@ -779,6 +789,12 @@ begin
     FDataControl.DataLinkRecordChanged(Field);
 end;
 
+procedure TJvDataSourceLink.UpdateData;
+begin
+  if FDataControl <> nil then
+    FDataControl.DataLinkUpdateData;
+end;
+
 procedure TJvDataSourceLink.FocusControl(const Field: TField);
 begin
   if (Field <> nil) and (FDataControl <> nil) and
@@ -979,12 +995,14 @@ begin
   if (Field = nil) or (Field = FMasterField) then
   begin
     if (FMasterField <> nil) and FMasterField.DataSet.Active then
-    begin
-      SetValueKey(FMasterField.AsString);
-    end
+      SetValueKey(FMasterField.AsString)
     else
       SetValueKey(FEmptyValue);
   end;
+end;
+
+procedure TJvLookupControl.DataLinkUpdateData;
+begin
 end;
 
 function TJvLookupControl.ExecuteAction(Action: TBasicAction): Boolean;
@@ -2457,7 +2475,9 @@ begin
   FDisplayValues := TStringList.Create;
   FSelImage := TPicture.Create;
   Height := {GetMinHeight} 21;
-  FEscapeClear := True;
+  FEscapeKeyReset := True;
+  FDeleteKeyClear := True;
+  FLastValue := Unassigned;
 end;
 
 destructor TJvDBLookupCombo.Destroy;
@@ -2476,6 +2496,32 @@ begin
       ExStyle := ExStyle or WS_EX_CLIENTEDGE
     else
       Style := Style or WS_BORDER;
+end;
+
+procedure TJvDBLookupCombo.ReadEscapeClear(Reader: TReader);
+begin
+  DeleteKeyClear := Reader.ReadBoolean;
+end;
+
+procedure TJvDBLookupCombo.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  // backward compatiblity
+  Filer.DefineProperty('EscapeClear', ReadEscapeClear, nil, False);
+end;
+
+procedure TJvDBLookupCombo.DataLinkUpdateData;
+begin
+  inherited DataLinkUpdateData;
+  if (Field <> nil) and FDataLink.Active then
+    FLastValue := Field.Value;
+end;
+
+procedure TJvDBLookupCombo.DataLinkRecordChanged(AField: TField);
+begin
+  if (AField = nil) and (Field <> nil) and (FDataLink.Active) then
+    FLastValue := Field.Value;
+  inherited DataLinkRecordChanged(AField);
 end;
 
 { (ahuser) not used since the line where it was used is now a comment
@@ -2523,6 +2569,13 @@ procedure TJvDBLookupCombo.CMHintShow(var Msg: TMessage);
 begin
   // don't show if list is visible
   Msg.Result := Integer(FListVisible);
+end;
+
+procedure TJvDBLookupCombo.DoEnter;
+begin
+  if (Field <> nil) and FDataLink.Active and VarIsEmpty(FLastValue) then
+    FLastValue := Field.Value;
+  inherited DoEnter;
 end;
 
 function TJvDBLookupCombo.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
@@ -2778,6 +2831,7 @@ var
   Delta: Integer;
 begin
   if FListActive and ((Key = VK_UP) or (Key = VK_DOWN)) then
+  begin
     if ssAlt in Shift then
     begin
       if FListVisible then
@@ -2802,6 +2856,17 @@ begin
       SelectKeyValue(FKeyField.AsString);
       Key := 0;
     end;
+  end
+  else if not FListVisible and (Key = VK_DELETE) and ([ssShift, ssAlt, ssCtrl] * Shift = []) then
+  begin
+    if DeleteKeyClear and not ValueIsEmpty(FValue) and CanModify then
+    begin
+      ResetField;
+      if FValue = FEmptyValue then
+        Key := 0;
+    end;
+  end;
+
   if (Key <> 0) and FListVisible then
     FDataList.KeyDown(Key, Shift);
   inherited KeyDown(Key, Shift);
@@ -2831,11 +2896,14 @@ begin
         FDataList.KeyPress(Key);
     end
     else
-    if (Key = Esc) and FEscapeClear and (not ValueIsEmpty(FValue)) and CanModify then
+    if (Key = Esc) and FEscapeKeyReset then
     begin
-      ResetField;
-      if FValue = FEmptyValue then
+      if (Field <> nil) and FDataLink.Active and CanModify and
+         not VarIsEmpty(FLastValue) and (Field.Value <> FLastValue) and FDataLink.Edit then
+      begin
+        Field.Value := FLastValue;
         Key := #0;
+      end;
     end;
   end;
   inherited KeyPress(Key);
