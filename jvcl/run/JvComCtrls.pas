@@ -693,8 +693,6 @@ begin
 end;
 
 procedure TJvIPAddressRange.Change(Index: Integer);
-var
-  I: Integer;
 
   procedure ChangeRange(FieldIndex: Integer);
   begin
@@ -702,6 +700,8 @@ var
       FControl.Perform(IPM_SETRANGE, FieldIndex, MAKEIPRANGE(Min, Max));
   end;
 
+var
+  I: Integer;
 begin
   if not FControl.HandleAllocated then
     Exit;
@@ -1423,8 +1423,6 @@ begin
   end;
 end;
 
-
-
 //=== { TJvTabControlPainter } ===============================================
 
 destructor TJvTabControlPainter.Destroy;
@@ -1761,8 +1759,6 @@ begin
   inherited Create(AOwner);
 end;
 
-
-
 procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
   if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
@@ -1810,11 +1806,6 @@ begin
   inherited;
 end;
 
-
-
-
-
-
 procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
   if Assigned(TabPainter) then
@@ -1823,14 +1814,12 @@ begin
     inherited DrawTab(TabIndex, Rect, Active);
 end;
 
-
 procedure TJvTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = TabPainter) then
     TabPainter := nil;
-
 end;
 
 procedure TJvTabControl.SetTabPainter(const Value: TJvTabControlPainter);
@@ -1899,11 +1888,7 @@ begin
   Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-
-procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
-  Active: Boolean);
-
-
+procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
 var
   I, RealIndex: Integer;
 begin
@@ -1958,7 +1943,6 @@ begin
   end;
 end;
 
-
 procedure TJvPageControl.TCMAdjustRect(var Msg: TMessage);
 var
   Offset: Integer;
@@ -1982,12 +1966,10 @@ begin
   end;
 end;
 
-
 procedure TJvPageControl.UpdateTabImages;
 begin
   inherited UpdateTabImages;
 end;
-
 
 procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
@@ -2051,8 +2033,6 @@ begin
   end;
   inherited;
 end;
-
-
 
 function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 var
@@ -2323,7 +2303,6 @@ begin
     if Assigned(Owner) and (TreeView is TJvExTreeView) then
       FFont.Assign(TJvExTreeView(TreeView).Font);
   end;
-
   Result := FFont;
 end;
 
@@ -2335,7 +2314,6 @@ begin
     if Assigned(Owner) and (TreeView is TJvExTreeView) then
       FBrush.Assign(TJvExTreeView(TreeView).Brush);
   end;
-
   Result := FBrush;
 end;
 
