@@ -549,10 +549,10 @@ type
     {$ENDIF CLR}
     procedure CopyToPoint(var Point: TPoint);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property AsPoint: TPoint read GetAsPoint write SetAsPoint;  
   published
     property X: Longint read FX write SetX default 0;
     property Y: Longint read FY write SetY default 0;
-    property AsPoint: TPoint read GetAsPoint write SetAsPoint;
   end;
 
   // equivalent of TRect, but that can be a published property
@@ -609,7 +609,7 @@ type
     procedure SetWidth(Value: Longint);
     procedure SetHeight(Value: Longint);
     function GetSize: TSize;
-    procedure SetSizet(const Value: TSize);
+    procedure SetSize(const Value: TSize);
   protected
     procedure DoChange;
   public
@@ -622,10 +622,10 @@ type
     {$ENDIF CLR}
     procedure CopyToSize(var Size: TSize);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property AsSize: TSize read GetSize write SetSize;
   published
     property Width: Longint read FWidth write SetWidth default 0;
     property Height: Longint read FHeight write SetHeight default 0;
-    property AsSize: TSize read GetSize write SetSizet;
   end;
 
 { begin JvCtrlUtils }
@@ -7161,7 +7161,7 @@ begin
   Result.cy := FHeight;
 end;
 
-procedure TJvSize.SetSizet(const Value: TSize);
+procedure TJvSize.SetSize(const Value: TSize);
 begin
   if (Value.cx <> FWidth) or (Value.cy <> FHeight) then
   begin
