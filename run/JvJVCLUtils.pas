@@ -7225,13 +7225,13 @@ type
 const
   Conversions: array [0..6] of THtmlCode =
    (
-    (Html: '&amp;';   Text: '&'),
-    (Html: '&quot;';  Text: '"'),
-    (Html: '&reg;';   Text: '®'),
-    (Html: '&copy;';  Text: '©'),
-    (Html: '&trade;'; Text: '™'),
-    (Html: '&euro;';  Text: '€'),
-    (Html: '&nbsp;';  Text: ' ')
+     (Html: '&amp;'; Text: '&'),
+     (Html: '&quot;'; Text: '"'),
+     (Html: '&reg;'; Text: '®'),
+     (Html: '&copy;'; Text: '©'),
+     (Html: '&trade;'; Text: '™'),
+     (Html: '&euro;'; Text: '€'),
+     (Html: '&nbsp;'; Text: ' ')
    );
 var
   I: Integer;
