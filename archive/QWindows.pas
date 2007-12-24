@@ -43,7 +43,7 @@ Known Issues:
   - Covers only a small part of the Windows APIs
   - Not all functionality is supported
 {-----------------------------------------------------------------------------}
-// $Id: QWindows.pas 10936 2006-09-13 17:32:43Z outchy $
+// $Id$
 
 unit QWindows;
 
@@ -1669,7 +1669,7 @@ uses
 {$ENDIF LINUX}
 
 const
-  VersionInfo = '$URL: https://svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/qcommon/QWindows.pas $' + #13 + '$Revision: 10936 $' + #13 + '$Date: 2006-09-13 19:32:43 +0200 (Mi, 13 Sep 2006) $' + #13;
+  VersionInfo = '$URL$' + #13 + '$Revision$' + #13 + '$Date$' + #13;
 
 type
   THackCanvas = class(TCanvas);

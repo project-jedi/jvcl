@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvActionsEngine.pas 11205 2007-03-11 18:15:58Z jfudickar $
+// $Id$
 
 unit JvActionsEngine;
 
@@ -101,9 +101,9 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile:
-      '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvActionsEngine.pas $';
-    Revision: '$Revision: 11205 $';
-    Date: '$Date: 2007-03-11 19:15:58 +0100 (So, 11 Mrz 2007) $';
+      '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
   {$ENDIF UNITVERSIONING}

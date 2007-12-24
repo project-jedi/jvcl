@@ -19,7 +19,7 @@ Contributor(s):
 
 Known Issues:
 ----------------------------------------------------------------------------}
-// $Id: QNotebook.pas 10610 2006-05-19 13:35:08Z elahn $
+// $Id$
 
 unit QNotebook;
 
