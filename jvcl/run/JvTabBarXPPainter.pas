@@ -20,7 +20,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvTabBarXPPainter.pas 11448 2007-08-13 16:55:06Z ahuser $
+// $Id$
 
 unit JvTabBarXPPainter;
 

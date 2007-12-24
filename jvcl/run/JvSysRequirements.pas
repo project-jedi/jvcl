@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvgSysRequirements.pas 10612 2006-05-19 19:04:09Z jfudickar $
+// $Id$
 
 unit JvSysRequirements;
 
@@ -104,9 +104,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvgSysRequirements.pas $';
-    Revision: '$Revision: 10612 $';
-    Date: '$Date: 2006-05-19 21:04:09 +0200 (Fr, 19 Mai 2006) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}

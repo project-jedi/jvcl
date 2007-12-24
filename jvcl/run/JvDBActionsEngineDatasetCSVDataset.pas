@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvDBActionsEngineDatasetCSVDataset.pas 11047 2006-11-27 07:25:28Z marquardt $
+// $Id$
 
 unit JvDBActionsEngineDatasetCSVDataset;
 
@@ -47,9 +47,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDBActionsEngineDatasetCSVDataset.pas $';
-    Revision: '$Revision: 11047 $';
-    Date: '$Date: 2006-11-27 08:25:28 +0100 (Mo, 27 Nov 2006) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}

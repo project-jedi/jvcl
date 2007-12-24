@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvDBActionsEngineControlCxPivotGrid.pas 11059 2006-11-29 17:12:58Z marquardt $
+// $Id$
 
 unit JvDBActionsEngineControlCxPivotGrid;
 
@@ -61,9 +61,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDBActionsEngineControlCxPivotGrid.pas $';
-    Revision: '$Revision: 11059 $';
-    Date: '$Date: 2006-11-29 18:12:58 +0100 (Mi, 29 Nov 2006) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
