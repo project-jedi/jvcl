@@ -3429,7 +3429,9 @@ var
   TransFileName: string;
 begin
   if (FileName = '') and (Location <> flCustom) then
-    FFullFileName := ''
+  begin
+    FFullFileName := '';
+  end
   else
   begin
     TransFileName := ActiveTranslateStringEngine.TranslateString(FileName);
