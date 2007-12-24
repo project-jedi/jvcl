@@ -3058,6 +3058,7 @@ var
   ADockClient: TJvDockClient;
   AForm: TCustomForm;
   IsActive: Boolean;
+  OrgPenWidth: Integer;
 begin
   if Zone <> nil then
   begin
@@ -3115,10 +3116,18 @@ begin
       Canvas.Pen.Color := clWhite
     else
       Canvas.Pen.Color := clBlack;
-    Canvas.MoveTo(DrawRect.Left, DrawRect.Top);
-    Canvas.LineTo(DrawRect.Right, DrawRect.Bottom);
-    Canvas.MoveTo(DrawRect.Right - 1, DrawRect.Top);
-    Canvas.LineTo(DrawRect.Left - 1, DrawRect.Bottom);
+    OrgPenWidth := Canvas.Pen.Width;
+    try
+      Canvas.Pen.Width := 2;
+      Dec(DrawRect.Left);
+      Dec(DrawRect.Right);
+      Canvas.MoveTo(DrawRect.Left, DrawRect.Top);
+      Canvas.LineTo(DrawRect.Right, DrawRect.Bottom);
+      Canvas.MoveTo(DrawRect.Right, DrawRect.Top);
+      Canvas.LineTo(DrawRect.Left, DrawRect.Bottom);
+    finally
+      Canvas.Pen.Width := OrgPenWidth;
+    end;
   end;
 end;
 
