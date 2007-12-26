@@ -367,6 +367,48 @@ type
     property Text;
   end;
 
+  // 14-segmented digit
+  TJv14SegmentedLEDDigit = class(TJvBaseSegmentedLEDDigit)
+  protected
+    procedure RecalcSegments; override;
+    class function MapperFileID: string; override;
+    procedure CalcG1Seg(Index: Integer); virtual;
+    procedure CalcG2Seg(Index: Integer); virtual;
+    procedure CalcHSeg(Index: Integer); virtual;
+    procedure CalcISeg(Index: Integer); virtual;
+    procedure CalcJSeg(Index: Integer); virtual;
+    procedure CalcKSeg(Index: Integer); virtual;
+    procedure CalcLSeg(Index: Integer); virtual;
+    procedure CalcMSeg(Index: Integer); virtual;
+  public
+    class function SegmentCount: Integer; override;
+    class function GetSegmentName(Index: Integer): string; override;
+    class function GetSegmentIndex(Name: string): Integer; override;
+  published
+    property UseDP;
+    property Text;
+  end;
+
+  // 16-segmented digit
+  TJv16SegmentedLEDDigit = class(TJv14SegmentedLEDDigit)
+  protected
+    procedure RecalcSegments; override;
+    class function MapperFileID: string; override;
+    procedure CalcA1Seg(Index: Integer); virtual;
+    procedure CalcA2Seg(Index: Integer); virtual;
+    procedure CalcD1Seg(Index: Integer); virtual;
+    procedure CalcD2Seg(Index: Integer); virtual;
+    procedure CalcISeg(Index: Integer); override;
+    procedure CalcLSeg(Index: Integer); override;
+  public
+    class function SegmentCount: Integer; override;
+    class function GetSegmentName(Index: Integer): string; override;
+    class function GetSegmentIndex(Name: string): Integer; override;
+  published
+    property UseDP;
+    property Text;
+  end;
+
 // TUnlitColor support routines
 function IdentToUnlitColor(const Ident: string; var Int: Longint): Boolean;
 function UnlitColorToIdent(Int: Longint; var Ident: string): Boolean;
@@ -477,6 +519,15 @@ function AngleAdjustPoint(X, Y, Angle: Integer): TPoint;
 begin
   Result.X := X - Trunc(ArcTan(Angle * Pi / 180.0) * Y);
   Result.Y := Y;
+end;
+
+//=== Helper routine: TextIndex ==============================================
+
+function TextIndex(S: string; const Strings: array of string): Integer;
+begin
+  Result := High(Strings);
+  while (Result > -1) and not AnsiSameText(S, Strings[Result]) do
+    Dec(Result);
 end;
 
 //=== { TJvCustomSegmentedLEDDisplay } =======================================
@@ -1701,15 +1752,22 @@ end;
 
 procedure TJvSegmentedLEDCharacterMapper.LoadDefaultMapping;
 var
+  resName: string;
   Stream: TStream;
 begin
-  Stream := TResourceStream.Create(HInstance, Display.DigitClass.MapperFileID + '_DEFAULT', RT_RCDATA);
-  try
-    LoadFromStream(Stream);
-    FMappingChanged := False;
-  finally
-    FreeAndNil(Stream);
-  end;
+  resName := Display.DigitClass.MapperFileID + '_DEFAULT';
+  if FindResource(HInstance, PChar(resName), RT_RCDATA) <> 0 then
+  begin
+    Stream := TResourceStream.Create(HInstance, Display.DigitClass.MapperFileID + '_DEFAULT', RT_RCDATA);
+    try
+      LoadFromStream(Stream);
+      FMappingChanged := False;
+    finally
+      FreeAndNil(Stream);
+    end;
+  end
+  else
+    Clear;
 end;
 
 procedure TJvSegmentedLEDCharacterMapper.LoadFromFile(const FileName: string);
@@ -1885,16 +1943,274 @@ begin
     [UpperLeftPoint, Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)]);
 end;
 
+//=== { TJv14SegmentedLEDDigit } ==============================================
+
+procedure TJv14SegmentedLEDDigit.CalcG1Seg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefLeft + Spacing div 2, FRefCenterY, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing div 2 + SegmentWidth div 2, FRefCenterY - SegmentWidth div 2, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2 - SegmentWidth div 4, FRefCenterY - SegmentWidth div 2, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2, FRefCenterY, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2 - SegmentWidth div 4, FRefCenterY + SegmentWidth div 2, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing div 2 + SegmentWidth div 2, FRefCenterY + SegmentWidth div 2, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcG2Seg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX + Spacing div 2, FRefCenterY, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing div 2 + SegmentWidth div 4, FRefCenterY - SegmentWidth div 2, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2 - SegmentWidth div 2, FRefCenterY - SegmentWidth div 2, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2, FRefCenterY, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2 - SegmentWidth div 2, FRefCenterY + SegmentWidth div 2, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing div 2 + SegmentWidth div 4, FRefCenterY + SegmentWidth div 2, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcHSeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefLeft + Spacing + SegmentWidth, FRefTop + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing + SegmentWidth + SegmentWidth div 2, FRefTop + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing - SegmentWidth div 2, FRefCenterY - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing - SegmentWidth div 2, FRefCenterY - SegmentWidth div 2 - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing - SegmentWidth, FRefCenterY - SegmentWidth div 2 - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing + SegmentWidth, FRefTop + SegmentWidth + SegmentWidth div 4 + Spacing, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcISeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefTop + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefCenterY - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX, FRefCenterY - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefCenterY - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefTop + SegmentWidth + Spacing, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcJSeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefRight - Spacing - SegmentWidth, FRefTop + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing - SegmentWidth - SegmentWidth div 2, FRefTop + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing + SegmentWidth div 2, FRefCenterY - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing + SegmentWidth div 2, FRefCenterY - SegmentWidth div 2 - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing + SegmentWidth, FRefCenterY - SegmentWidth div 2 - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing - SegmentWidth, FRefTop + SegmentWidth + SegmentWidth div 4 + Spacing, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcKSeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefLeft + Spacing + SegmentWidth, FRefBottom - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing + SegmentWidth + SegmentWidth div 2, FRefBottom - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing - SegmentWidth div 2, FRefCenterY + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing - SegmentWidth div 2, FRefCenterY + SegmentWidth div 2 + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing - SegmentWidth, FRefCenterY + SegmentWidth div 2 + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing + SegmentWidth, FRefBottom - SegmentWidth - SegmentWidth div 4 - Spacing, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcLSeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefBottom - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefCenterY + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX, FRefCenterY + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefCenterY + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefBottom - SegmentWidth - Spacing, SlantAngle)
+  ]);
+end;
+
+procedure TJv14SegmentedLEDDigit.CalcMSeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefRight - Spacing - SegmentWidth, FRefBottom - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing - SegmentWidth - SegmentWidth div 2, FRefBottom - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing + SegmentWidth div 2, FRefCenterY + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing + SegmentWidth div 2, FRefCenterY + SegmentWidth div 2 + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing + SegmentWidth, FRefCenterY + SegmentWidth div 2 + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing - SegmentWidth, FRefBottom - SegmentWidth - SegmentWidth div 4 - Spacing, SlantAngle)
+  ]);
+end;
+
+class function TJv14SegmentedLEDDigit.GetSegmentIndex(Name: string): Integer;
+begin
+  Result := TextIndex(Name, ['A', 'B', 'C', 'D', 'E', 'F', 'G1', 'G2', 'H', 'I', 'J', 'K', 'L', 'M', 'DP']);
+end;
+
+class function TJv14SegmentedLEDDigit.GetSegmentName(Index: Integer): string;
+begin
+  if Index = 6 then
+    Result := 'G1'
+  else
+  if Index = 7 then
+    Result := 'G2'
+  else
+  if Index < 6 then
+    Result := Chr(Ord('A') + Index)
+  else
+  if (Index > 7) and (Index < 14) then
+    Result := Chr(Ord('A') + Index - 1)
+  else
+  if Index = 14 then
+    Result := 'DP'
+  else
+    Result := '';
+end;
+
+class function TJv14SegmentedLEDDigit.MapperFileID: string;
+begin
+  Result := 'SLDCM_14SEG';
+end;
+
+procedure TJv14SegmentedLEDDigit.RecalcSegments;
+begin
+  CalcASeg(0);
+  CalcBSeg(1);
+  CalcCSeg(2);
+  CalcDSeg(3);
+  CalcESeg(4);
+  CalcFSeg(5);
+  CalcG1Seg(6);
+  CalcG2Seg(7);
+  CalcHSeg(8);
+  CalcISeg(9);
+  CalcJSeg(10);
+  CalcKSeg(11);
+  CalcLSeg(12);
+  CalcMSeg(13);
+  if UseDP then
+    CalcDPSeg(14);
+end;
+
+class function TJv14SegmentedLEDDigit.SegmentCount: Integer;
+begin
+  Result := 15;
+end;
+
+//=== { TJv16SegmentedLEDDigit } ===============================================
+
+const
+  seg16Names: array[0..16] of string = (
+    'A1', 'A2', 'B', 'C', 'D1', 'D2', 'E', 'F', 'G1', 'G2', 'H', 'I', 'J', 'K', 'L', 'M', 'DP');
+
+procedure TJv16SegmentedLEDDigit.CalcA1Seg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefLeft + Spacing div 2, FRefTop, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2, FRefTop, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2 - SegmentWidth, FRefTop + SegmentWidth, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing div 2 + SegmentWidth, FRefTop + SegmentWidth, SlantAngle)
+  ]);
+end;
+
+procedure TJv16SegmentedLEDDigit.CalcA2Seg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX + Spacing div 2, FRefTop, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2, FRefTop, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2 - SegmentWidth, FRefTop + SegmentWidth, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing div 2 + SegmentWidth, FRefTop + SegmentWidth, SlantAngle)
+  ]);
+end;
+
+procedure TJv16SegmentedLEDDigit.CalcD1Seg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefLeft + Spacing div 2, FRefBottom, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2, FRefBottom, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - Spacing div 2 - SegmentWidth, FRefBottom - SegmentWidth, SlantAngle),
+    AngleAdjustPoint(FRefLeft + Spacing div 2 + SegmentWidth, FRefBottom - SegmentWidth, SlantAngle)
+  ]);
+end;
+
+procedure TJv16SegmentedLEDDigit.CalcD2Seg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX + Spacing div 2, FRefBottom, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2, FRefBottom, SlantAngle),
+    AngleAdjustPoint(FRefRight - Spacing div 2 - SegmentWidth, FRefBottom - SegmentWidth, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + Spacing div 2 + SegmentWidth, FRefBottom - SegmentWidth, SlantAngle)
+  ]);
+end;
+
+procedure TJv16SegmentedLEDDigit.CalcISeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX, FRefTop + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefTop + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefCenterY - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX, FRefCenterY - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefCenterY - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefTop + SegmentWidth + Spacing, SlantAngle)
+  ]);
+end;
+
+procedure TJv16SegmentedLEDDigit.CalcLSeg(Index: Integer);
+begin
+  SetSegmentRenderInfo(Index, srtPolygon, [
+    AngleAdjustPoint(FRefCenterX, FRefBottom - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefBottom - SegmentWidth - Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX + SegmentWidth div 2, FRefCenterY + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX, FRefCenterY + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefCenterY + SegmentWidth + Spacing, SlantAngle),
+    AngleAdjustPoint(FRefCenterX - SegmentWidth div 2, FRefBottom - SegmentWidth - Spacing, SlantAngle)
+  ]);
+end;
+
+class function TJv16SegmentedLEDDigit.GetSegmentIndex(Name: string): Integer;
+begin
+  Result := TextIndex(Name, seg16Names);
+end;
+
+class function TJv16SegmentedLEDDigit.GetSegmentName(Index: Integer): string;
+begin
+  Result := seg16Names[Index];
+end;
+
+class function TJv16SegmentedLEDDigit.MapperFileID: string;
+begin
+  Result := 'SLDCM_16SEG';
+end;
+
+procedure TJv16SegmentedLEDDigit.RecalcSegments;
+begin
+  CalcA1Seg(0);
+  CalcA2Seg(1);
+  CalcBSeg(2);
+  CalcCSeg(3);
+  CalcD1Seg(4);
+  CalcD2Seg(5);
+  CalcESeg(6);
+  CalcFSeg(7);
+  CalcG1Seg(8);
+  CalcG2Seg(9);
+  CalcHSeg(10);
+  CalcISeg(11);
+  CalcJSeg(12);
+  CalcKSeg(13);
+  CalcLSeg(14);
+  CalcMSeg(15);
+  if UseDP then
+    CalcDPSeg(16);
+end;
+
+class function TJv16SegmentedLEDDigit.SegmentCount: Integer;
+begin
+  Result := 17;
+end;
+
+//=== { initialization and support routines } =================================
+
 procedure ModuleUnload(Instance: Longint);
 begin
   UnregisterModuleSegmentedLEDDigitClasses(HMODULE(Instance));
-end;
-
-function TextIndex(S: string; const Strings: array of string): Integer;
-begin
-  Result := High(Strings);
-  while (Result > -1) and not AnsiSameText(S, Strings[Result]) do
-    Dec(Result);
 end;
 
 function IdentToUnlitColor(const Ident: string; var Int: Longint): Boolean;
@@ -1937,7 +2253,7 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   AddModuleUnloadProc(ModuleUnload);
-  RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
+  RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit, TJv14SegmentedLEDDigit, TJv16SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 
 finalization
