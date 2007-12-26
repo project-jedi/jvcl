@@ -141,6 +141,60 @@ See Also
   TSegCharMapHeader
 
 ----------------------------------------------------------------------------------------------------
+@@TJv14SegmentedLEDDigit
+Summary
+  Modern 14-segmented LED digit.
+Description
+  TJv14SegmentedLEDDigit is a modern 14-segmented LED digit as frequently used with audio equipment
+  (though they more frequently use matrix displays these days).
+
+  As a derivative of TJvBaseSegmentedLEDDigit, this class provides in a DP segment commonly used as
+  a decimal point by calculators. In addition, it splits the center horizontal in two separate
+  segments and adds four diagonal and two center vertical segments. This layout makes it possible to
+  represent all alphabet characters and a number of common symbols. The layout and naming is as
+  follows (naming placed next to image to improve clarity):
+  <PRE>
+
+              -------       A  = top horizontal            G2 = right center horizontal
+             |\  |  /|      B  = right top vertical        H  = top left diagonal
+             | \ | / |      C  = right bottom vertical     I  = center top vertical
+             |  \|/  |      D  = bottom horizontal         J  = top right diagonal
+              --- ---       E  = left bottom vertical      K  = bottom right diagonal
+             |  /|\  |      F  = left top vertical         L  = center bottom vertical
+             | / | \ |      G1 = left center horizontal    M  = left bottom diagonal
+             |/  |  \|                                     DP = Decimal point
+              -------  .DP
+
+  </PRE>
+
+----------------------------------------------------------------------------------------------------
+@@TJv16SegmentedLEDDigit
+Summary
+  Modern 16-segmented LED digit.
+Description
+  TJv16SegmentedLEDDigit is a modern 16-segmented LED digit as frequently used with audio equipment
+  (though they more frequently use matrix displays these days).
+
+  As a derivative of TJv14SegmentedLEDDigit, this class provides in a DP segment (commonly used as
+  a decimal point by calculators), diagonals, center verticals and split center horizontal. In
+  addition, it splits both the top and bottom horizontals in two separate segments each. This layout
+  makes it possible to represent all alphabet characters and most common symbols. The layout and
+  naming is as follows (naming placed next to image to improve clarity):
+  <PRE>
+
+              --- ---       A1 = left top horizontal       G1 = left center horizontal
+             |\  |  /|      A2 = right top horizontal      G2 = right center horizontal
+             | \ | / |      B  = right top vertical        H  = top left diagonal
+             |  \|/  |      C  = right bottom vertical     I  = center top vertical
+              --- ---       D1 = right bottom horizontal   J  = top right diagonal
+             |  /|\  |      D2 = left bottom horizontal    K  = bottom right diagonal
+             | / | \ |      E  = left bottom vertical      L  = center bottom vertical
+             |/  |  \|      F  = left top vertical         M  = left bottom diagonal
+              --- ---  .DP                                 DP = Decimal point
+
+  </PRE>
+
+----------------------------------------------------------------------------------------------------
 @@TJv7SegmentedLEDDigit
 Summary
   Classic 7-segmented LED digit.
@@ -268,21 +322,12 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer
+## combined with the topic below (overloaded method)
 Summary
-  Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
 Parameters
-  X - Description for this parameter
-  Y - Description for this parameter
 Return value
-  Describe here what the function returns
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer@Integer
