@@ -621,6 +621,9 @@ type
     function GetCount: Integer; override;
     function GetItem(I: Integer): IJvDataItem; override;
     procedure InitImplementers; override;
+    procedure InternalAdd(Item: IJvDataItem); override;
+    procedure InternalDelete(Index: Integer); override;
+    procedure InternalMove(OldIndex, NewIndex: Integer); override;
 
     property ColorProvider: IJvColorProvider read FColorProvider write FColorProvider;
   public
@@ -1509,6 +1512,21 @@ begin
     TJvColorItemsRenderer.Create(Self);
 end;
 
+procedure TJvColorItems.InternalAdd(Item: IJvDataItem);
+begin
+  // do nothing; this method is never called anyway
+end;
+
+procedure TJvColorItems.InternalDelete(Index: Integer);
+begin
+  // do nothing; this method is never called anyway
+end;
+
+procedure TJvColorItems.InternalMove(OldIndex, NewIndex: Integer);
+begin
+  // do nothing; this method is never called anyway
+end;
+
 procedure TJvColorItems.AfterConstruction;
 begin
   inherited AfterConstruction;
@@ -1698,10 +1716,6 @@ var
   Settings: IJvColorProviderSettings;
 begin
   inherited InitImplementers;
-  // (rom) suppress warnings about abstract methods
-  // (rom) TJvBaseDataItems.InternalAdd, InternalDelete and InternalMove
-  // (rom) can this be fixed by empty methods?
-  {$WARNINGS OFF}
   if GetItems.GetProvider.SelectedConsumer = MasterColorConsumer then
     TJvColorItemsList.Create(Self)
   else
@@ -1713,7 +1727,6 @@ begin
         (Settings.CustomColorSettings.AddColorSettings.Location = ailUseHeader) then
       TJvColorItemAddExecute.Create(Self);
   end;
-  {$WARNINGS ON}
 end;
 
 function TJvColorHeaderItem.IsDeletable: Boolean;
