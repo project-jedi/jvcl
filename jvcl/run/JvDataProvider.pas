@@ -474,6 +474,8 @@ type
     FList: TObjectList;
   protected
     procedure InternalAdd(Item: IJvDataItem); override;
+    procedure InternalDelete(Index: Integer); override;
+    procedure InternalMove(OldIndex, NewIndex: Integer); override;
     function IsDynamic: Boolean; override;
     function GetCount: Integer; override;
     function GetItem(I: Integer): IJvDataItem; override;
@@ -2731,6 +2733,16 @@ end;
 procedure TJvDataItemsList.InternalAdd(Item: IJvDataItem);
 begin
   List.Add(Item.GetImplementer);
+end;
+
+procedure TJvDataItemsList.InternalDelete(Index: Integer);
+begin
+  List.Delete(Index);
+end;
+
+procedure TJvDataItemsList.InternalMove(OldIndex, NewIndex: Integer);
+begin
+  List.Move(OldIndex, NewIndex);
 end;
 
 function TJvDataItemsList.IsDynamic: Boolean;
