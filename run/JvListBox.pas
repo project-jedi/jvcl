@@ -432,6 +432,9 @@ implementation
 
 uses
   Consts, TypInfo,
+  {$IFDEF COMPILER10_UP}
+  Types,
+  {$ENDIF COMPILER10_UP}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
