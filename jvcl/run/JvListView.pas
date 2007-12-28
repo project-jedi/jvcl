@@ -493,6 +493,9 @@ const
 implementation
 
 uses
+  {$IFDEF COMPILER10_UP}
+  Types,
+  {$ENDIF COMPILER10_UP}
   Math, Contnrs,
   {$IFDEF HAS_UNIT_VARIANTS}
   VarUtils, Variants,
