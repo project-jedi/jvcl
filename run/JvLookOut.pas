@@ -487,6 +487,9 @@ const
 implementation
 
 uses
+  {$IFDEF COMPILER10_UP}
+  Types,
+  {$ENDIF COMPILER10_UP}
   ActnList;
 
 const
