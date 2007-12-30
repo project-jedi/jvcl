@@ -143,6 +143,7 @@ type
     FOwner: TExtensibleInterfacedPersistent;
   protected
     property Owner: TExtensibleInterfacedPersistent read FOwner;
+    function IsHidden: Boolean; virtual;
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); virtual;
     procedure AfterConstruction; override;
@@ -2133,7 +2134,7 @@ begin
   if not Result then
   begin
     I := FAdditionalIntfImpl.Count - 1;
-    while (I >= 0) and ((FAdditionalIntfImpl[I] = nil) or
+    while (I >= 0) and ((FAdditionalIntfImpl[I] = nil) or TAggregatedPersistentEx(FAdditionalIntfImpl[I]).IsHidden or
         not TAggregatedPersistentEx(FAdditionalIntfImpl[I]).GetInterface(IID, Obj)) do
       Dec(I);
     Result := I >= 0;
@@ -2186,6 +2187,11 @@ constructor TAggregatedPersistentEx.Create(AOwner: TExtensibleInterfacedPersiste
 begin
   inherited Create(AOwner);
   FOwner := AOwner;
+end;
+
+function TAggregatedPersistentEx.IsHidden: Boolean;
+begin
+  Result := False;
 end;
 
 procedure TAggregatedPersistentEx.AfterConstruction;

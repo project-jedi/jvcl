@@ -409,6 +409,16 @@ See Also
   TAggregatedPersistent, TExtensibleInterfacedPersistent
 
 ----------------------------------------------------------------------------------------------------
+@@TAggregatedPersistentEx.IsHidden
+Summary
+  Allows an implementation to hide itself.
+Description
+  IsHidden makes it possible to hide the implementation from a QueryInterface call on the
+  controller. An implementation could, for example, hide itself when certain conditions are met (or
+  not met); this might be required to ensure proper working of the provider/consumer relationship.
+See Also
+  TExtensibleInterfacedPersistent
+----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistentEx.Owner
 Summary
   Reference to the \TExtensibleInterfacedPersistent object implementing the controller.
