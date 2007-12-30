@@ -102,6 +102,7 @@ type
     procedure AddIntfImpl(const Obj: TAggregatedPersistentEx);
     procedure RemoveIntfImpl(const Obj: TAggregatedPersistentEx);
     function IndexOfImplClass(const AClass: TAggregatedPersistentExClass): Integer;
+    function GetImplOfClass(AClass: TAggregatedPersistentExClass): TAggregatedPersistentEx;
     procedure ClearIntfImpl;
     procedure InitImplementers; virtual;
     procedure SuspendRefCount;
@@ -2124,6 +2125,17 @@ begin
   Writer.WriteString(Instance.ClassName);
   THackWriter(Writer).WriteProperties(Instance);
   Writer.WriteListEnd;
+end;
+
+function TExtensibleInterfacedPersistent.GetImplOfClass(AClass: TAggregatedPersistentExClass): TAggregatedPersistentEx;
+var
+  idx: Integer;
+begin
+  idx := IndexOfImplClass(AClass);
+  if idx >= 0 then
+    Result := TAggregatedPersistentEx(FAdditionalIntfImpl[idx])
+  else
+    Result := nil;
 end;
 
 function TExtensibleInterfacedPersistent.GetInterface(const IID: TGUID; out Obj): Boolean;
