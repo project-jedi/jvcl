@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Completed, Locked by marcelb
+##Status: Incomplete, Locked by marcelb
 ##Skip: TAggregatedPersistent._AddRef
 ##Skip: TAggregatedPersistent._Release
 ##Skip: TAggregatedPersistent.GetInterface
@@ -778,9 +778,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.IsStreamable
 Summary
-  Write here a summary (1 line)
+  Specifies whether the context is streamable.
 Description
-  This is a protected member, you don't have to describe these
+  IsStreamable specifies whether the context should be written to the form file. If
+  <c><b>True</b></c> is returned, the context will be written to the form file, otherwise it won't.
+
+  The default implementation is to return the inverse of IsDeletable; in other words: fixed contexts
+  are not written to the form file.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.Name
@@ -1037,12 +1041,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ID
 Summary
-  Write here a summary (1 line)
+  Gets or sets the ID value of the Data Item.
 Description
-  Write here a description
+  ID will get or set the item's (usually unique) ID value. The ID value can be used to search for a
+  specific item if it's not known where in the tree that item resided.
+
+  Normally the ID will be unique throughout the tree. There can be situations where this is not the
+  case. Never assume the ID is unique and always usable to retrieve a specific item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataItem.GetID
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.Implementer
@@ -1051,9 +1058,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.InitID
 Summary
-  Write here a summary (1 line)
+  Initializes the item's ID property.
 Description
-  This is a protected member, you don't have to describe these
+  InitID initializes the item's ID property to a unique value. Uniqueness is accomplished by using
+  a GUID and representing the 16 bytes as a hexadecimal string of 32 characters.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsDeletable
@@ -1103,11 +1111,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.SetID
 Summary
-  Write here a summary (1 line)
+  Sets the ID value of the Data Item.
 Description
-  This is a protected member, you don't have to describe these
+  SetID will set the item's (usually unique) ID value. The ID value can be used to search for a
+  specific item if it's not known where in the tree that item resided.
+
+  Normally the ID will be unique throughout the tree. There can be situations where this is not the
+  case. Never assume the ID is unique and always usable to retrieve a specific item.
 Parameters
-  Value - Description for this parameter
+  Value - The new ID for the Data Item
+See Also
+  IJvDataItem.GetID
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.WriteSubItems
@@ -1364,30 +1378,50 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ItemAdd
 Summary
-  Write here a summary (1 line)
+  Adds an item to the list.
 Description
-  This is a protected member, you don't have to describe these
+  ItemAdd adds an item to the list, properly preceded and succeeded with change notifications.
+
+  ItemAdd is called by the base implementations for the IJvDataItemsManagement and
+  IJvDataItemsDesigner interfaces. It will perform the notifications but defers the actual operation
+  to InternalAdd.
 Parameters
-  Item - Description for this parameter
+  Item - The Data Item to add.
+See Also
+  IJvDataItemsDesigner, IJvDataItemsManagement,
+  TJvBaseDataItems.ItemDelete, TJvBaseDataItems.ItemMove, TJvBaseDataItems.InternalAdd
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ItemDelete
 Summary
-  Write here a summary (1 line)
+  Removes an item from the list.
 Description
-  This is a protected member, you don't have to describe these
+  ItemDelete removes an item from the list, properly preceded and succeeded with change
+  notifications.
+
+  ItemDelete is called by the base implementations for the IJvDataItemsManagement interface. It will
+  perform the notifications but defers the actual operation to InternalDelete.
 Parameters
-  Index - Description for this parameter
+  Index - The 0-based index of the item to delete.
+See Also
+  IJvDataItemsManagement,
+  TJvBaseDataItems.ItemAdd, TJvBaseDataItems.ItemMove, TJvBaseDataItems.InternalDelete
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ItemMove
 Summary
-  Write here a summary (1 line)
+  Moves an item in the list.
 Description
-  This is a protected member, you don't have to describe these
+  ItemMove moves an item in the list, properly preceded and succeeded with change notifications.
+
+  ItemMove is called by the base implementations for the IJvDataItem interface. It will perform the
+  notifications but defers the actual operation to InternalMove.
 Parameters
-  OldIndex - Description for this parameter
-  NewIndex - Description for this parameter
+  OldIndex - The original index of the item.
+  NewIndex - The new index of the item.
+See Also
+  IJvDataItem,
+  TJvBaseDataItems.ItemAdd, TJvBaseDataItems.ItemDelete, TJvBaseDataItems.InternalMove
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ReadItem
@@ -1440,150 +1474,111 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl
 Summary
-  Write here a summary (1 line)
+  Abstract implementation for the \IJvDataItemsImages interface.
 Description
-  Write here a description
+  The TJvBaseDataItemsImages class is the abstract base implementation of the IJvDataItemsImages
+  interface. The class itself provides no implementation for interface's methods but rather declares
+  them as abstract virtual methods.
+
+  As a descendant of TJvDataItemsAggregatedObject it also provides access to the item list object
+  this extension belongs to (both as interface as well as the implementing object), along with the
+  ContextDestroying notification method, which will be called when a context is destroyed.
+
+  You should not instantiate an object of this class but rather one of it's descendants that override
+  the methods for IJvDataItemsImages.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl.GetDisabledImages
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemsImages.GetDisabledImages>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl.GetHotImages
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemsImages.GetHotImages>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl.GetImages
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemsImages.GetImages>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl.SetDisabledImages
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS IJvDataItemsImages.SetDisabledImages>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl.SetHotImages
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS IJvDataItemsImages.SetHotImages>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsImagesImpl.SetImages
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS IJvDataItemsImages.SetImages>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsListManagement
 Summary
-  Write here a summary (1 line)
+  Abstract implementation for the \IJvDataItemsManagement interface.
 Description
-  Write here a description
+  The TJvBaseDataItemsListManagement class is the base implementation of the
+  IJvDataItemsManagement interface, specifically geared toward the TJvBaseDataItemsList
+  implementation. The class itself provides an implementation for all the
+  interface's methods with the exception of New, which remains a virtual abstract method.
+
+  As a descendant of TJvBaseDataItemsManagement, it also provides access to the item list object
+  this extension belongs to (both as interface as well as the implementing object), along with the
+  ContextDestroying notification method, which will be called when a context is destroyed.
+
+  You should not instantiate an object of this class but rather one of its descendants that
+  overrides the New method for IJvDataItemsManagement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsListManagement.Add
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Item - Description for this parameter
+<ALIAS IJvDataItemsManagement.Add>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsListManagement.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemsManagement.Clear>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsListManagement.Delete
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Index - Description for this parameter
+<ALIAS IJvDataItemsManagement.Delete>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsListManagement.Remove
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Item - Description for this parameter
+<ALIAS IJvDataItemsManagement.Remove>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsManagement
 Summary
-  Write here a summary (1 line)
+  Abstract implementation for the \IJvDataItemsManagement interface.
 Description
-  Write here a description
+  The TJvBaseDataItemsManagement class is the abstract base implementation of the
+  IJvDataItemsManagement interface. The class itself provides no implementation for interface's
+  methods but rather declares them as abstract virtual methods.
+
+  As a descendant of TJvDataItemsAggregatedObject it also provides access to the item list object
+  this extension belongs to (both as interface as well as the implementing object), along with the
+  ContextDestroying notification method, which will be called when a context is destroyed.
+
+  You should not instantiate an object of this class but rather one of it's descendants that override
+  the methods for IJvDataItemsManagement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsManagement.Add
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Item - Description for this parameter
+<ALIAS IJvDataItemsManagement.Add>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsManagement.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemsManagement.Clear>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsManagement.Delete
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Index - Description for this parameter
+<ALIAS IJvDataItemsManagement.Delete>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsManagement.New
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemsManagement.New>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsManagement.Remove
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Item - Description for this parameter
+<ALIAS IJvDataItemsManagement.Remove>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsRenderer
@@ -1769,64 +1764,60 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemTextImpl
 Summary
-  Write here a summary (1 line)
+  Abstract implementation class for the IJvDataItemText interface.
 Description
-  Write here a description
+  TJvBaseDataItemTextImpl represents an abstract base class for IJvDataItemText implementations. The
+  class itself provides no implementation for interface's methods but rather declares them as abstract
+  virtual methods.
+
+  As a descendant of TJvDataItemAggregatedObject it also provides access to the item object this
+  extension belongs to (both as interface as well as the implementing object).
+
+  You should not instantiate an object of this class but rather one of its descendants that override
+  the methods for IJvDataItemText.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemTextImpl.Caption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS @IJvDataItemText.Caption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemTextImpl.Editable
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS @IJvDataItemText.Editable>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemTextImpl.GetCaption
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
+<ALIAS @IJvDataItemText.GetCaption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemTextImpl.SetCaption
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS @IJvDataItemText.SetCaption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseFixedDataContext
 Summary
-  Write here a summary (1 line)
+  The base class for fixed contexts.
 Description
-  Write here a description
+  The TJvBaseFixedDataContext class is the base implementer for the IJvDataContext interface. The class
+  inherits from TJvBaseDataContext and as such only provides an implementation for the IJvDataContext
+  methods with an exception of the <LINK IJvDataContext.Name, Name> method.
+
+  TJvBaseFixedDataContext differs only in the implementation of IsDeletable, which will return
+  <c>True</c>.
+
+  You should never instantiate a TJvBaseFixedDataContext object to provide an implementation for the
+  IJvDataContext interface. Instead you should use a derivative that implements the Name method.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseFixedDataContext.IsDeletable
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+<ALIAS @IJvDataContext.IsDeletable>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseManagedDataContext
 Summary
-  Write here a summary (1 line)
+  A managable Data Context class.
 Description
-  Write here a description
+  The TJvBaseManagedDataContext class is the standard implementer for the IJvDataContext interface.
+  It inherits all functionality from TJvDataContext and supports the IJvDataContextManager interface.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConsumerStrings
@@ -4967,93 +4958,50 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl
 Summary
-  Write here a summary (1 line)
+  Basic IJvDataItemImage implementation class.
 Description
-  Write here a description
+  TJvDataItemImageImpl represents a basic implementation class of the IJvDataItemImage interface.
+
+  All abstract methods from its ancestor TJvBaseDataItemImageImpl are implemented, with data stored
+  in instance fields. Each change is properly notified through the provider, ie. a Changing
+  notification is issued first, then the change is made and finally a Changed notification is
+  issued.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.Alignment
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.Alignment>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.GetAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemImage.GetAlignment>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.GetImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemImage.GetImageIndex>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.GetSelectedIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+<ALIAS IJvDataItemImage.GetSelectedIndex>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.ImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.ImageIndex>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.SelectedIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.SelectedIndex>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.SetAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS IJvDataItemImage.SetAlignment>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.SetImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Index - Description for this parameter
+<ALIAS IJvDataItemImage.SetImageIndex>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.SetSelectedIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS IJvDataItemImage.SetSelectedIndex>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemsAggregatedObject
@@ -5149,46 +5097,43 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl
-Summary
-  Write here a summary (1 line)
+  Basic IJvDataItemText implementation class.
 Description
-  Write here a description
+  TJvDataItemTextImpl represents a basic implementation class for the IJvDataItemText interface.
+
+  All abstract methods from its ancestor TJvBaseDataItemTextImpl are implemented, with data stored
+  in instance fields. Each change is properly notified through the provider, ie. a Changing
+  notification is issued first, then the change is made and finally a Changed notification is
+  issued.
+
+  This implementation will allow consumers to edit the caption, ie. Editable will return
+  <c><b>True</b></c>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl.Caption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS @IJvDataItemText.Caption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl.Editable
 Summary
-  Write here a summary (1 line)
+  Specifies if the caption of the item is editable.
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+  Editable specifies if the caption of the item is editable in the user interface (e.g. an edit
+  control). If the caption should be editable from the user interface the method returns
+  <c><b>True</b></c>, otherwise <c><b>False</b></c> is returned. This implementation returns
+  <c><b>True</b></c> at all times.
+
+  Note that the return value of Editable does not necessarily mean the caption can or can't be changed.
+  It only enables/disables the editing from the user interface, but consumers may ignore this method if
+  they wish.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl.GetCaption
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
+<ALIAS @IJvDataItemText.GetCaption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl.SetCaption
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
+<ALIAS @IJvDataItemText.SetCaption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImplClass
