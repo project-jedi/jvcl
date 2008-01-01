@@ -4901,6 +4901,46 @@ Parameters
   Obj - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDataItemBlockableTextImpl
+Summary
+  Basic IJvDataItemText implementation class that can be marked read-only.
+Description
+  TJvDataItemBlockableTextImpl represents a basic implementation class for the IJvDataItemText
+  interface.
+
+  As a descendant from TJvDataItemTextImpl all IJvDataItemText methods are implemented. In addition
+  it adds a published ReadOnly property. The Editable method will return a value based on this
+  setting (ie, Editable returns the inverse of the ReadOnly property).
+
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemBlockableTextImpl.Editable
+<ALIAS IJvDataItem.Editable>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemBlockableTextImpl.ReadOnly
+Summary
+  Gets or sets the read-only flag for the IJvDataItemText implementation.
+Description
+  The ReadOnly property manages the ability to edit the text from the user interface. It
+  accomplishes this by having the Editable method return the inverse of this property.
+
+  Any change in the read-only state is properly notified through the standard provider notification
+  system.
+See Also
+  TJvDataItemBlockableTextImpl.SetReadOnly
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemBlockableTextImpl.SetReadOnly
+Summary
+  Sets the read-only flag for the IJvDataItemText implementation.
+Description
+  SetReadOnly is the setter method for the read-only flag and sets the state of the read-only flag.
+
+  Any change in the read-only state is properly notified through the standard provider notification
+  system.
+See Also
+  TJvDataItemBlockableTextImpl.ReadOnly
+
+----------------------------------------------------------------------------------------------------
 @@TJvDataItemContextTextImpl
 Summary
   Write here a summary (1 line)
@@ -5097,6 +5137,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl
+Summary
   Basic IJvDataItemText implementation class.
 Description
   TJvDataItemTextImpl represents a basic implementation class for the IJvDataItemText interface.
