@@ -2871,6 +2871,7 @@ end;
 procedure TJvDynControlCxLabel.ControlSetDefaultProperties;
 begin
   AutoSize := False;
+  Transparent := True;
 end;
 
 procedure TJvDynControlCxLabel.ControlSetCaption(const Value: string);
