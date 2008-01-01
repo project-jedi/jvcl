@@ -394,6 +394,19 @@ type
     function IsEqualToAncestor: Boolean; dynamic;
   end;
 
+  { Blockable text implementation: allows to set the text portion to read-only, blocking any
+    consumer-side editing (assuming the consumer respects the value returned by the
+    IJvDataItemText.Editable function) }
+  TJvDataItemBlockableTextImpl = class (TJvDataItemTextImpl)
+  private
+    FReadOnly: Boolean;
+  protected
+    procedure SetReadOnly(Value: Boolean);
+    function Editable: Boolean; override;
+  published
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
+  end;
+
   TJvDataItemImageImpl = class(TJvBaseDataItemImageImpl)
   private
     FAlignment: TAlignment;
@@ -1884,6 +1897,23 @@ var
 begin
   CurCtx := Item.GetItems.Provider.SelectedContext;
   Result := FContextStrings.IndexOfObject(TObject(CurCtx)) = -1;
+end;
+
+//=== { TJvDataItemBlockableTextImpl } ========================================
+
+function TJvDataItemBlockableTextImpl.Editable: Boolean;
+begin
+  Result := not FReadOnly;
+end;
+
+procedure TJvDataItemBlockableTextImpl.SetReadOnly(Value: Boolean);
+begin
+  if ReadOnly <> Value then
+  begin
+    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    FReadOnly := Value;
+    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+  end;
 end;
 
 //=== { TJvDataItemImageImpl } ===============================================
@@ -5537,6 +5567,7 @@ begin
     TJvBaseDataItemsListManagement,
     // Item related
     TJvBaseDataItem, TJvDataItemTextImpl, TJvDataItemImageImpl,
+    TJvDataItemContextTextImpl, TJvDataItemBlockableTextImpl,
     // Consumer related
     TJvDataConsumer, TJvDataConsumerItemSelect,
     // Context list related
