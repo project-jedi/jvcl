@@ -807,6 +807,8 @@ end;
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;
   AParentControl: TWinControl; const AButtonName, ACaption, AHint: string;
   AOnClick: TNotifyEvent; ADefault: Boolean = False; ACancel: Boolean = False): TButton;
+var
+  Canvas: TControlCanvas;
 begin
   Result := TButton(CreateControl(jctButton, AOwner, AParentControl, AButtonName));
   Result.Hint := AHint;
@@ -814,6 +816,14 @@ begin
   Result.Default := ADefault;
   Result.Cancel := ACancel;
   Result.OnClick := AOnClick;
+  Canvas := TControlCanvas.Create;
+  try
+    Canvas.Control := Result;
+    Canvas.Font := Result.Font;
+    Result.Width := Canvas.TextWidth(ACaption+'XXXX');
+  finally
+    Canvas.free;
+  end;
 end;
 
 function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
