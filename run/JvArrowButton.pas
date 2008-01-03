@@ -64,9 +64,7 @@ type
     FDropDown: TPopupMenu;
     FDropOnButtonClick: Boolean;
     FOnDrop: TNotifyEvent;
-    {$IFDEF DELPHI7_UP}
     FVerticalAlignment: TVerticalAlignment;
-    {$ENDIF}
     FAlignment: TAlignment;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
@@ -88,9 +86,7 @@ type
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure SetAlignment(const Value: TAlignment);
-    {$IFDEF DELPHI7_UP}
     procedure SetVerticalAlignment(const Value: TVerticalAlignment);
-    {$ENDIF}
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -137,9 +133,7 @@ type
     property PressBoth: Boolean read FPressBoth write FPressBoth default True;
     property ShowHint;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
-    {$IFDEF DELPHI7_UP}
     property VerticalAlignment: TVerticalAlignment read FVerticalAlignment write SetVerticalAlignment default taVerticalCenter;
-    {$ENDIF}
     property Visible;
     property OnDrop: TNotifyEvent read FOnDrop write FOnDrop;
     property OnClick;
@@ -206,19 +200,19 @@ type
     procedure DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
       State: TButtonState; Transparent: Boolean);
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
-      TextBounds: TRect; State: TButtonState; Alignment: TAlignment{$IFDEF DELPHI7_UP};
-      VerticalAlignment: TVerticalAlignment{$ENDIF});
+      TextBounds: TRect; State: TButtonState; Alignment: TAlignment;
+      VerticalAlignment: TVerticalAlignment);
     procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
       const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
       Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect;
-      Alignment: TAlignment{$IFDEF DELPHI7_UP}; VerticalAlignment: TVerticalAlignment{$ENDIF});
+      Alignment: TAlignment; VerticalAlignment: TVerticalAlignment);
   public
     constructor Create;
     destructor Destroy; override;
     { return the text rectangle }
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
       const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-      State: TButtonState; Transparent: Boolean; TextAlignment: TAlignment{$IFDEF DELPHI7_UP}; TextVerticalAlignment: TVerticalAlignment{$ENDIF}): TRect;
+      State: TButtonState; Transparent: Boolean; TextAlignment: TAlignment; TextVerticalAlignment: TVerticalAlignment): TRect;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -602,12 +596,10 @@ begin
 end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
-  TextBounds: TRect; State: TButtonState; Alignment: TAlignment{$IFDEF DELPHI7_UP}; VerticalAlignment: TVerticalAlignment{$ENDIF});
+  TextBounds: TRect; State: TButtonState; Alignment: TAlignment; VerticalAlignment: TVerticalAlignment);
 const
   AlignFlags: array[TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  {$IFDEF DELPHI7_UP}
   VerticalAlignFlags: array[TVerticalAlignment] of Integer = (DT_TOP, DT_BOTTOM, DT_VCENTER);
-  {$ENDIF}
 var
   S: string;
 begin
@@ -619,21 +611,22 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] {$IFDEF DELPHI7_UP} or VerticalAlignFlags[VerticalAlignment] {$ENDIF} or DT_SINGLELINE);
+      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] or VerticalAlignFlags[VerticalAlignment] or DT_SINGLELINE);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] {$IFDEF DELPHI7_UP} or VerticalAlignFlags[VerticalAlignment] {$ENDIF} or DT_SINGLELINE);
+      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] or VerticalAlignFlags[VerticalAlignment] or DT_SINGLELINE);
     end
     else
     begin
-      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] {$IFDEF DELPHI7_UP} or VerticalAlignFlags[VerticalAlignment] {$ENDIF} or DT_SINGLELINE);
+      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] or VerticalAlignFlags[VerticalAlignment] or DT_SINGLELINE);
     end;
   end;
 end;
 
 procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint; const Caption: string; Layout: TButtonLayout; Margin,
-  Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect; Alignment: TAlignment{$IFDEF DELPHI7_UP} ; VerticalAlignment: TVerticalAlignment{$ENDIF});
+  Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect; Alignment: TAlignment;
+  VerticalAlignment: TVerticalAlignment);
 var
   TextPos: TPoint;
   ClientSize, GlyphSize, TextSize: TPoint;
@@ -732,7 +725,6 @@ begin
       end;
   end;
 
-  {$IFDEF DELPHI7_UP} 
   // And finish with the vertical text alignment
   case VerticalAlignment of
     taAlignTop:
@@ -755,7 +747,6 @@ begin
         Inc(GlyphPos.Y, TextPos.Y);
       end;
   end;
-  {$ENDIF}
 
   // ensure no glyph goes out of the allowed area
   if GlyphPos.X < 0 then
@@ -776,14 +767,15 @@ end;
 
 function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
-  Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean; TextAlignment: TAlignment{$IFDEF DELPHI7_UP} ; TextVerticalAlignment: TVerticalAlignment{$ENDIF}): TRect;
+  Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean; TextAlignment: TAlignment;
+  TextVerticalAlignment: TVerticalAlignment): TRect;
 var
   GlyphPos: TPoint;
 begin
   CalcButtonLayout(Canvas, Client, Offset, Caption, Layout, Margin, Spacing,
-    GlyphPos, Result, TextAlignment{$IFDEF DELPHI7_UP} , TextVerticalAlignment{$ENDIF});
+    GlyphPos, Result, TextAlignment, TextVerticalAlignment);
   DrawButtonGlyph(Canvas, GlyphPos, State, Transparent);
-  DrawButtonText(Canvas, Caption, Result, State, TextAlignment{$IFDEF DELPHI7_UP} , TextVerticalAlignment{$ENDIF});
+  DrawButtonText(Canvas, Caption, Result, State, TextAlignment, TextVerticalAlignment);
 end;
 
 //=== { TJvArrowButton } =====================================================
@@ -806,9 +798,7 @@ begin
   FFlat := False;
   FLayout := blGlyphLeft;
   FAlignment := taCenter;
-  {$IFDEF DELPHI7_UP} 
   FVerticalAlignment := taVerticalCenter;
-  {$ENDIF}
   FMargin := -1;
   FSpacing := 4;
   FPressBoth := True;
@@ -893,7 +883,8 @@ begin
   end;
   { draw image: }
   TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, Layout, Margin,
-    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF}, Alignment{$IFDEF DELPHI7_UP} , VerticalAlignment{$ENDIF});
+    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF},
+    Alignment, VerticalAlignment);
 
   { calculate were to put arrow part }
   PaintRect := Rect(Width - ArrowWidth, 0, Width, Height);
@@ -1216,7 +1207,6 @@ begin
   end;
 end;
 
-{$IFDEF DELPHI7_UP} 
 procedure TJvArrowButton.SetVerticalAlignment(const Value: TVerticalAlignment);
 begin
   if FVerticalAlignment <> Value then
@@ -1225,7 +1215,6 @@ begin
     Invalidate;
   end;
 end;
-{$ENDIF} 
 
 procedure TJvArrowButton.SetAllowAllUp(Value: Boolean);
 begin
