@@ -65,6 +65,11 @@ type
 {$ENDIF CLR}
 
 type
+  {$IFNDEF COMPILER9_UP}
+  TVerticalAlignment = (taAlignTop, taAlignBottom, taVerticalCenter);
+  TTopBottom = taAlignTop..taAlignBottom;
+  {$ENDIF ~COMPILER9_UP}
+
   PCaptionChar = PChar;
 
   // used in JvSpeedButton, JvArrowButton, JvButton CM_JVBUTTONPRESSED
