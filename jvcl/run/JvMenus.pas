@@ -687,6 +687,7 @@ type
     // other usage fields
     FSelRect: TRect;
     FCheckedPoint: TPoint;
+    FBorderCanvas: TCanvas;
     procedure SetSelectionFrameBrush(const Value: TBrush);
     procedure SetSelectionFramePen(const Value: TPen);
   protected
@@ -3180,6 +3181,7 @@ end;
 
 destructor TJvXPMenuItemPainter.Destroy;
 begin
+  FBorderCanvas.Free;
   FSelectionFrameBrush.Free;
   FSelectionFramePen.Free;
   inherited Destroy;
@@ -3611,8 +3613,7 @@ var
   WRect: TRect;
   DefProc: Pointer;
   DC: HDC;
-  ACanvas: TCanvas;
-  SaveIndex: Integer;
+  LastError: Cardinal;
 begin
   FItem := Item;
 
@@ -3648,25 +3649,22 @@ begin
 
         // Note: we draw the border here. But using the "Canvas" property is
         // not good enough as it does not take into account the borders of the
-        // menu. So we try to get the full canvas with GetDCEx. 
+        // menu. So we try to get the full canvas with GetDCEx.
         DC := GetDCEx(CanvasWindow, 0, (*DCX_CACHE or *)DCX_WINDOW);
         try
-          if (DC = 0) and (GetLastError = ERROR_SUCCESS) then
-            ACanvas := TJvDesktopCanvas.Create
-          else
-            ACanvas := TControlCanvas.Create;
-          try
-            SaveIndex := SaveDC(DC);
-            try
-              ACanvas.Handle := DC;
-              DrawBorder(ACanvas, WRect);
-            finally
-              ACanvas.Handle := 0;
-              RestoreDC(DC, SaveIndex);
-            end;
-          finally
-            ACanvas.Free;
+          if not Assigned(FBorderCanvas) then
+          begin
+            LastError := GetLastError;
+            if (DC = 0) and (LastError = ERROR_SUCCESS) then
+              FBorderCanvas := TJvDesktopCanvas.Create
+            else
+              FBorderCanvas := TControlCanvas.Create;
+            FBorderCanvas.Handle := DC;
           end;
+
+          if FBorderCanvas.Handle <> DC then
+            FBorderCanvas.Handle := DC;
+          DrawBorder(FBorderCanvas, WRect);
         finally
           ReleaseDC(CanvasWindow, DC);
         end;
