@@ -64,6 +64,8 @@ type
     FDropDown: TPopupMenu;
     FDropOnButtonClick: Boolean;
     FOnDrop: TNotifyEvent;
+    FVerticalAlignment: TVerticalAlignment;
+    FAlignment: TAlignment;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
     function GetGlyph: TBitmap;
@@ -83,6 +85,8 @@ type
     procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    procedure SetAlignment(const Value: TAlignment);
+    procedure SetVerticalAlignment(const Value: TVerticalAlignment);
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -105,6 +109,7 @@ type
     destructor Destroy; override;
   published
     property Align;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Action;
     property Anchors;
     property Constraints;
@@ -128,6 +133,7 @@ type
     property PressBoth: Boolean read FPressBoth write FPressBoth default True;
     property ShowHint;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
+    property VerticalAlignment: TVerticalAlignment read FVerticalAlignment write SetVerticalAlignment default taVerticalCenter;
     property Visible;
     property OnDrop: TNotifyEvent read FOnDrop write FOnDrop;
     property OnClick;
@@ -194,17 +200,19 @@ type
     procedure DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
       State: TButtonState; Transparent: Boolean);
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
-      TextBounds: TRect; State: TButtonState);
+      TextBounds: TRect; State: TButtonState; Alignment: TAlignment;
+      VerticalAlignment: TVerticalAlignment);
     procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
       const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
-      Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
+      Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect;
+      Alignment: TAlignment; VerticalAlignment: TVerticalAlignment);
   public
     constructor Create;
     destructor Destroy; override;
     { return the text rectangle }
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
       const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-      State: TButtonState; Transparent: Boolean): TRect;
+      State: TButtonState; Transparent: Boolean; TextAlignment: TAlignment; TextVerticalAlignment: TVerticalAlignment): TRect;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -588,7 +596,10 @@ begin
 end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
-  TextBounds: TRect; State: TButtonState);
+  TextBounds: TRect; State: TButtonState; Alignment: TAlignment; VerticalAlignment: TVerticalAlignment);
+const
+  AlignFlags: array[TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  VerticalAlignFlags: array[TVerticalAlignment] of Integer = (DT_TOP, DT_BOTTOM, DT_VCENTER);
 var
   S: string;
 begin
@@ -600,19 +611,21 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Canvas, S, -1, TextBounds, 0);
+      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] or VerticalAlignFlags[VerticalAlignment] or DT_SINGLELINE);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, S, -1, TextBounds, 0);
+      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] or VerticalAlignFlags[VerticalAlignment] or DT_SINGLELINE);
     end
     else
-      DrawText(Canvas, S, -1, TextBounds, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    begin
+      DrawText(Canvas, S, -1, TextBounds, AlignFlags[Alignment] or VerticalAlignFlags[VerticalAlignment] or DT_SINGLELINE);
+    end;
   end;
 end;
 
 procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint; const Caption: string; Layout: TButtonLayout; Margin,
-  Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
+  Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect; Alignment: TAlignment; VerticalAlignment: TVerticalAlignment);
 var
   TextPos: TPoint;
   ClientSize, GlyphSize, TextSize: TPoint;
@@ -642,102 +655,125 @@ begin
     TextSize := Point(0, 0);
   end;
 
-  { If the layout has the glyph on the right or the left, then both the
-    text and the glyph are centered vertically.  If the glyph is on the top
-    or the bottom, then both the text and the glyph are centered horizontally.}
-  if Layout in [blGlyphLeft, blGlyphRight] then
-  begin
-    GlyphPos.Y := (ClientSize.Y - GlyphSize.Y + 1) div 2;
-    TextPos.Y := (ClientSize.Y - TextSize.Y + 1) div 2;
-  end
-  else
-  begin
-    GlyphPos.X := (ClientSize.X - GlyphSize.X + 1) div 2;
-    TextPos.X := (ClientSize.X - TextSize.X + 1) div 2;
-  end;
-
   { if there is no text or no bitmap, then Spacing is irrelevant }
   if (TextSize.X = 0) or (GlyphSize.X = 0) then
     Spacing := 0;
 
   { adjust Margin and Spacing }
+  if Spacing = -1 then
+    Spacing := 0;
   if Margin = -1 then
-  begin
-    if Spacing = -1 then
-    begin
-      TotalSize := Point(GlyphSize.X + TextSize.X, GlyphSize.Y + TextSize.Y);
-      if Layout in [blGlyphLeft, blGlyphRight] then
-        Margin := (ClientSize.X - TotalSize.X) div 3
-      else
-        Margin := (ClientSize.Y - TotalSize.Y) div 3;
-      Spacing := Margin;
-    end
-    else
-    begin
-      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y +
-        Spacing + TextSize.Y);
-      if Layout in [blGlyphLeft, blGlyphRight] then
-        Margin := (ClientSize.X - TotalSize.X + 1) div 2
-      else
-        Margin := (ClientSize.Y - TotalSize.Y + 1) div 2;
-    end;
-  end
-  else
-  begin
-    if Spacing = -1 then
-    begin
-      TotalSize := Point(ClientSize.X - (Margin + GlyphSize.X), ClientSize.Y -
-        (Margin + GlyphSize.Y));
-      if Layout in [blGlyphLeft, blGlyphRight] then
-        Spacing := (TotalSize.X - TextSize.X) div 2
-      else
-        Spacing := (TotalSize.Y - TextSize.Y) div 2;
-    end;
-  end;
+    Margin := 0;
 
+  TotalSize := Point(ClientSize.X - Margin, ClientSize.Y - Margin);
+
+  // Calculate glyph and text position. Start with the glyph layout that has
+  // an impact on the area available to the text. The glyph is always centered
+  // over the text it is attached to.
+  TextPos.X := 0;
+  TextPos.Y := 0;
+  GlyphPos.X := 0;
+  GlyphPos.Y := 0;
   case Layout of
     blGlyphLeft:
       begin
-        GlyphPos.X := Margin;
-        TextPos.X := GlyphPos.X + GlyphSize.X + Spacing;
+        TextPos.X := GlyphSize.X + Spacing;
+        GlyphPos.X := - GlyphSize.X - Spacing;
+        GlyphPos.Y := (TextSize.Y - GlyphSize.Y) div 2;
       end;
     blGlyphRight:
       begin
-        GlyphPos.X := ClientSize.X - Margin - GlyphSize.X;
-        TextPos.X := GlyphPos.X - Spacing - TextSize.X;
+        TextPos.X := - GlyphSize.X - Spacing;
+        GlyphPos.X := TextSize.X + Spacing;
+        GlyphPos.Y := (TextSize.Y - GlyphSize.Y) div 2;
       end;
     blGlyphTop:
       begin
-        GlyphPos.Y := Margin;
-        TextPos.Y := GlyphPos.Y + GlyphSize.Y + Spacing;
+        TextPos.Y := GlyphSize.Y + Spacing;
+        GlyphPos.Y := - GlyphSize.Y - Spacing;
+        GlyphPos.X := (TextSize.X - GlyphSize.X) div 2;
       end;
     blGlyphBottom:
       begin
-        GlyphPos.Y := ClientSize.Y - Margin - GlyphSize.Y;
-        TextPos.Y := GlyphPos.Y - Spacing - TextSize.Y;
+        TextPos.Y := - GlyphSize.Y - Spacing;
+        GlyphPos.Y := TextSize.Y + Spacing;
+        GlyphPos.X := (TextSize.X - GlyphSize.X) div 2;
       end;
   end;
 
-  { fixup the result variables }
-  with GlyphPos do
-  begin
-    Inc(X, Client.Left + Offset.X);
-    Inc(Y, Client.Top + Offset.Y);
+  // Then continue with the horizontal text alignment
+  case Alignment of
+    taLeftJustify:
+      begin
+        if TextPos.X < 0 then
+          TextPos.X := 0;
+        Inc(TextPos.X, Margin);
+        Inc(GlyphPos.X, TextPos.X);
+      end;
+    taCenter:
+      begin
+        TextPos.X := (TextPos.X + TotalSize.X - TextSize.X) div 2;
+        Inc(GlyphPos.X, TextPos.X);
+      end;
+    taRightJustify:
+      begin
+        if TextPos.X > 0 then
+          TextPos.X := 0;
+        TextPos.X := TextPos.X + TotalSize.X - TextSize.X;
+        Inc(GlyphPos.X, TextPos.X);
+      end;
   end;
+
+  // And finish with the vertical text alignment
+  case VerticalAlignment of
+    taAlignTop:
+      begin
+        if TextPos.Y < 0 then
+          TextPos.Y := 0;
+        Inc(TextPos.Y, Margin);
+        Inc(GlyphPos.Y, TextPos.Y);
+      end;
+    taVerticalCenter:
+      begin
+        TextPos.Y := (TextPos.Y + TotalSize.Y - TextSize.Y) div 2;
+        Inc(GlyphPos.Y, TextPos.Y);
+      end;
+    taAlignBottom:
+      begin
+        if TextPos.Y > 0 then
+          TextPos.Y := 0;
+        TextPos.Y := TextPos.Y + TotalSize.Y - TextSize.Y;
+        Inc(GlyphPos.Y, TextPos.Y);
+      end;
+  end;
+
+  // ensure no glyph goes out of the allowed area
+  if GlyphPos.X < 0 then
+    GlyphPos.X := 0;
+  if GlyphPos.X + GlyphSize.X > TotalSize.X then
+    GlyphPos.X := TotalSize.X - GlyphSize.X;
+  if GlyphPos.Y < 0 then
+    GlyphPos.Y := 0;
+  if GlyphPos.Y + GlyphSize.Y > TotalSize.Y then
+    GlyphPos.Y := TotalSize.Y - GlyphSize.Y;
+
+  { fixup the result variables }
+  Inc(GlyphPos.X, Client.Left + Offset.X);
+  Inc(GlyphPos.Y, Client.Top + Offset.Y);
   OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X,
     TextPos.Y + Client.Top + Offset.X);
 end;
 
 function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
-  Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
+  Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean; TextAlignment: TAlignment; TextVerticalAlignment: TVerticalAlignment): TRect;
 var
   GlyphPos: TPoint;
 begin
   CalcButtonLayout(Canvas, Client, Offset, Caption, Layout, Margin, Spacing,
-    GlyphPos, Result);
+    GlyphPos, Result, TextAlignment, TextVerticalAlignment);
   DrawButtonGlyph(Canvas, GlyphPos, State, Transparent);
-  DrawButtonText(Canvas, Caption, Result, State);
+  DrawButtonText(Canvas, Caption, Result, State, TextAlignment, TextVerticalAlignment);
 end;
 
 //=== { TJvArrowButton } =====================================================
@@ -759,6 +795,8 @@ begin
   FDown := False;
   FFlat := False;
   FLayout := blGlyphLeft;
+  FAlignment := taCenter;
+  FVerticalAlignment := taVerticalCenter;
   FMargin := -1;
   FSpacing := 4;
   FPressBoth := True;
@@ -843,7 +881,7 @@ begin
   end;
   { draw image: }
   TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, Layout, Margin,
-    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF});
+    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF}, Alignment, VerticalAlignment);
 
   { calculate were to put arrow part }
   PaintRect := Rect(Width - ArrowWidth, 0, Width, Height);
@@ -1153,6 +1191,24 @@ begin
   if Value <> FSpacing then
   begin
     FSpacing := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvArrowButton.SetAlignment(const Value: TAlignment);
+begin
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvArrowButton.SetVerticalAlignment(const Value: TVerticalAlignment);
+begin
+  if FVerticalAlignment <> Value then
+  begin
+    FVerticalAlignment := Value;
     Invalidate;
   end;
 end;
