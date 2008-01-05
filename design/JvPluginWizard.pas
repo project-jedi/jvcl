@@ -17,6 +17,8 @@ All Rights Reserved.
 Contributor(s):
 Ralf Steinhaeusser [ralfiii att gmx dott net].
 Steefan Lesage - converted to use new OTA
+RH - fix for RAD Studio 2007
+Florent Ouchet - updated OTA
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -51,6 +53,9 @@ uses
 
 type
   TJvPluginWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
+    {$IFDEF COMPILER6_UP} IOTARepositoryWizard60, {$ENDIF COMPILER6_UP}
+    {$IFDEF COMPILER8_UP} IOTARepositoryWizard80, {$ENDIF COMPILER8_UP}
+    {$IFDEF COMPILER10_UP} IOTAProjectWizard100, {$ENDIF COMPILER10_UP}
     IOTAMenuWizard, IOTAProjectWizard)
   public
     PluginMainMenu: IOTAComponent;
@@ -69,13 +74,33 @@ type
 
     { IOTAMenuWizard methods }
     function GetMenuText: string; virtual;
+
+    {$IFDEF COMPILER6_UP}
+    { IOTARepositoryWizard60 }
+    function GetDesigner: string;
+    {$ENDIF COMPILER6_UP}
+
+    {$IFDEF COMPILER8_UP}
+    { IOTARepositoryWizard80 }
+    function GetGalleryCategory: IOTAGalleryCategory;
+    function GetPersonality: string;
+    {$ENDIF COMPILER8_UP}
+
+    {$IFDEF COMPILER10_UP}
+    { IOTAProjectWizard100 }
+    function IsVisible(Project: IOTAProject): Boolean;
+    {$ENDIF COMPILER10_UP}
   end;
 
-  TJvPluginProjectCreator = class(TInterfacedObject, IOTACreator, IOTAProjectCreator) // both interfaces needed !!!!
+  TJvPlugType = ( ptPackage, ptDLL );
+
+  TJvPluginProjectCreator = class(TInterfacedObject, IOTACreator,
+    {$IFDEF COMPILER5_UP} IOTAProjectCreator50, {$ENDIF COMPILER5_UP}
+    {$IFDEF COMPILER8_UP} IOTAProjectCreator80, {$ENDIF COMPILER8_UP}
+    IOTAProjectCreator)
   public
     Wizard: TJvPluginWizard;
-    { 0 = dll; 1 = dpk }
-    PlugType: Integer;
+    PlugType: TJvPlugType;
     { Private variables which will be used to store some properties for
       the TJvPlugin }
     PlugName: string;
@@ -83,7 +108,6 @@ type
     PlugAuth: string;
     PlugCopy: string;
     PlugUID: string;
-    Project: IOTAModule;
     function GetFileName: string;
     function GetOptionFileName: string;
     function GetShowSource: Boolean;
@@ -96,13 +120,18 @@ type
     function GetFileSystem: string;
     function GetOwner: IOTAModule;
     function GetUnnamed: Boolean;
+    
+    {--- IOTAProjectCreator50 ---}
+    procedure NewDefaultProjectModule(const Project: IOTAProject);
+
+    {--- IOTAProjectCreator80 ---}
+    function GetProjectPersonality: string;
   end;
 
   TJvPluginModuleCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
   public
     Wizard: TJvPluginWizard;
-    { 0 = dll; 1 = dpk }
-    PlugType: Integer;
+    PlugType: TJvPlugType;
     Project: IOTAModule;
     { Private variables which will be used to store some properties for
       the TJvPlugin }
@@ -130,14 +159,16 @@ type
     procedure FormCreated(const FormEditor: IOTAFormEditor);
   end;
 
-  // from http://www.gexperts.org/opentools/GXModuleCreator.pas
-  TJvOTAFile = class(TInterfacedObject, IOTAFile)
+  TJvOTAFile = class(TNotifierObject, IOTAFile)
   private
-    FSource: string;
-  public
-    constructor Create(const Source: string);
+    FSource : string;
+    FAge    : TDateTime;
+  protected
+    {--- IOTAFile ---}
     function GetSource: string;
     function GetAge: TDateTime;
+  public
+    constructor Create(aSource: string; aAge: TDateTime);
   end;
 
 implementation
@@ -178,6 +209,26 @@ begin
   end;
 end;
 *)
+
+function GetCurrentProjectGroup: IOTAProjectGroup;
+var
+  IModuleServices: IOTAModuleServices;
+  IModule: IOTAModule;
+  IProjectGroup: IOTAProjectGroup;
+  I: Integer;
+begin
+  Result := nil;
+  IModuleServices := BorlandIDEServices as IOTAModuleServices;
+  for I := 0 to IModuleServices.ModuleCount - 1 do
+  begin
+    IModule := IModuleServices.Modules[I];
+    if IModule.QueryInterface(IOTAProjectGroup, IProjectGroup) = S_OK then
+    begin
+      Result := IProjectGroup;
+      Break;
+    end;
+  end;
+end;
 
 //=== { TJvPluginWizard } ====================================================
 
@@ -251,35 +302,58 @@ procedure TJvPluginWizard.Execute;
 var
   ModuleServices: IOTAModuleServices;
   ProjectCreator: TJvPluginProjectCreator;
+  frmPluginParams: TfrmPluginParams;
 begin
-  with TfrmPluginParams.Create(nil) do
-    try
-      if ShowModal = mrOk then
-      begin
-        if Assigned(BorlandIDEServices) and
-          (BorlandIDEServices.QueryInterface(IOTAModuleServices, ModuleServices) = S_OK) then
-        begin
-          ProjectCreator := TJvPluginProjectCreator.Create;
-          ProjectCreator.Wizard := Self;
+  frmPluginParams := TfrmPluginParams.Create(nil);
+  try
+    if (frmPluginParams.ShowModal = mrOk) and Assigned(BorlandIDEServices) and
+      (BorlandIDEServices.QueryInterface(IOTAModuleServices, ModuleServices) = S_OK) then
+    begin
+      ProjectCreator := TJvPluginProjectCreator.Create;
+      ProjectCreator.Wizard := Self;
 
-          { rbDll checked     => dll     => PlugType = 0 = Ord(False)
-            rbPackage checked => package => PlugType = 1 = Ord(True)
-          }
-          ProjectCreator.PlugType := Ord(rbPackage.Checked); //  radPluginType.ItemIndex;
-          ProjectCreator.PlugName := Trim(edtPluginName.Text);
+      if frmPluginParams.rbPackage.Checked then
+        ProjectCreator.PlugType := ptPackage
+      else
+        ProjectCreator.PlugType := ptDLL;
+      ProjectCreator.PlugName := Trim(frmPluginParams.edtPluginName.Text);
+      ProjectCreator.PlugAuth := Trim(frmPluginParams.edtPluginAuthor.Text);
+      ProjectCreator.PlugCopy := Trim(frmPluginParams.edtPluginCopyright.Text);
+      ProjectCreator.PlugDesc := Trim(frmPluginParams.mmoDescripton.Text);
+      ProjectCreator.PlugUID := Trim(frmPluginParams.edtPluginUID.Text);
 
-          ProjectCreator.PlugAuth := Trim(edtPluginAuthor.Text);
-          ProjectCreator.PlugCopy := Trim(edtPluginCopyright.Text);
-          ProjectCreator.PlugDesc := Trim(mmoDescripton.Text);
-          ProjectCreator.PlugUID := Trim(edtPluginUID.Text);
-
-          ModuleServices.CreateModule(ProjectCreator);
-        end;
-      end;
-    finally
-      Free;
+      ModuleServices.CreateModule(ProjectCreator);
     end;
+  finally
+    frmPluginParams.Free;
+  end;
 end;
+
+{$IFDEF COMPILER6_UP}
+function TJvPluginWizard.GetDesigner: string;
+begin
+  Result := dVCL;
+end;
+{$ENDIF COMPILER6_UP}
+
+{$IFDEF COMPILER8_UP}
+function TJvPluginWizard.GetGalleryCategory: IOTAGalleryCategory;
+begin
+  Result := (BorlandIDEServices as IOTAGalleryCategoryManager).FindCategory('Borland.Delphi.New.Expert');
+end;
+
+function TJvPluginWizard.GetPersonality: string;
+begin
+  Result := sDelphiPersonality;
+end;
+{$ENDIF COMPILER8_UP}
+
+{$IFDEF COMPILER10_UP}
+function TJvPluginWizard.IsVisible(Project: IOTAProject): Boolean;
+begin
+  Result := True;
+end;
+{$ENDIF COMPILER10_UP}
 
 //=== { TJvPluginProjectCreator } ============================================
 
@@ -287,10 +361,9 @@ end;
 
 function TJvPluginProjectCreator.GetFileName: string;
 begin
-  { 0 = dll; 1 = dpk }
-  if PlugType = 0 then
+  if PlugType = ptDLL then
     Result := GetCurrentDir + DirDelimiter + cPlgPrefix + PlugName + '.dpr'
-  else
+  else // PlugType = ptPackage
     Result := GetCurrentDir + DirDelimiter + cPlgPrefix + PlugName + '.dpk';
 end;
 
@@ -305,20 +378,8 @@ begin
 end;
 
 procedure TJvPluginProjectCreator.NewDefaultModule;
-var
-  Module: IOTAModule;
-  ModuleCreator: TJvPluginModuleCreator;
 begin
-  ModuleCreator := TJvPluginModuleCreator.Create;
-  ModuleCreator.Wizard := Wizard;
-  ModuleCreator.PlugType := PlugType;
-  ModuleCreator.PlugName := PlugName;
-  ModuleCreator.PlugAuth := PlugAuth;
-  ModuleCreator.PlugDesc := PlugDesc;
-  ModuleCreator.PlugCopy := PlugCopy;
-  ModuleCreator.PlugUID := PlugUID;
-  ModuleCreator.Project := Project;
-  Module := (BorlandIDEServices as IOTAModuleServices).CreateModule(ModuleCreator);
+  // deprecated
 end;
 
 function TJvPluginProjectCreator.NewOptionSource(const ProjectName: string): IOTAFile;
@@ -328,57 +389,53 @@ end;
 
 procedure TJvPluginProjectCreator.NewProjectResource(const Project: IOTAProject);
 begin
+  // nothing
 end;
 
 function TJvPluginProjectCreator.NewProjectSource(const ProjectName: string): IOTAFile;
 var
-  S: string;
+  Lines: TStringList;
 begin
-  { 0 = dll; 1 = dpk }
-  if PlugType = 0 then
-    S := 'library ' + ProjectName + ';' + CrLf +
-      CrLf +
-      'uses' + CrLf +
-      '  ShareMem,' + cPluginPrefix + PlugName + ';' + CrLf +
-      CrLf +
-      '{$R *.res}' + CrLf +
-      CrLf +
-      'exports' + CrLf +
-      '  RegisterPlugin;' + CrLf +
-      CrLf +
-      'begin' + CrLf +
-      'end.'
-  else // Package-Library
-    S := 'package ' + ProjectName + ';' + CrLf2 +
+  Lines := TStringList.Create;
+  try
+    if PlugType = ptDLL then
+    begin
+      Lines.Add('library ' + ProjectName + ';');
+      Lines.Add('');    
+      Lines.Add('uses');    
+      Lines.Add('  ShareMem;');
+      //, ' + cPluginPrefix + PlugName + ';'); // will be added by nested CreateModule
+      Lines.Add('');    
+      Lines.Add('{$R *.res}');    
+      Lines.Add('');    
+      Lines.Add('exports');    
+      Lines.Add('  RegisterPlugin;');    
+      Lines.Add('');    
+      Lines.Add('begin');    
+      Lines.Add('end.');
+    end    
+    else // PlugType = ptPackage
+    begin
+      Lines.Add('package ' + ProjectName + ';');
+      Lines.Add('');
+      Lines.Add('{$DESCRIPTION ''JEDI Plugin Package''}');
+      Lines.Add('{$RUNONLY}');
+      Lines.Add('{$IMPLICITBUILD ON}');
+      Lines.Add('');
+      Lines.Add('end.');
+    end;
 
-      '{$DESCRIPTION ''JEDI Plugin Package''}' + CrLf +
-      '{$RUNONLY}' + CrLf +
-      '{$IMPLICITBUILD ON}' + CrLf2 +
-
-      'requires' + CrLf +
-      {$IFDEF COMPILER5}
-      '  vcl50,' + CrLf + '  JvCoreD5R;' + CrLf2 +
-      {$ENDIF COMPILER5}
-      {$IFDEF COMPILER6}
-      '  vcl,' + CrLf + '  JvCoreD6R;' + CrLf2 +
-      {$ENDIF COMPILER6}
-      {$IFDEF COMPILER7}
-      '  vcl,' + CrLf + '  JvCoreD7R;' + CrLf2 +
-      {$ENDIF COMPILER7}
-      {$IFDEF COMPILER9}
-      '  vcl,' + CrLf + '  JvCoreD9R;' + CrLf2 +
-      {$ENDIF COMPILER9}
-      'end.';
-
-  Result := TJvOTAFile.Create(S);
+    Result := TJvOTAFile.Create(Lines.Text, -1);
+  finally
+    Lines.Free;
+  end;
 end;
 
 function TJvPluginProjectCreator.GetCreatorType: string;
 begin
-  { 0 = dll; 1 = dpk }
-  if PlugType = 0 then
+  if PlugType = ptDLL then
     Result := sLibrary
-  else
+  else // PlugType = ptPackage
     Result := sPackage;
 end;
 
@@ -392,26 +449,6 @@ begin
   Result := '';
 end;
 
-function GetCurrentProjectGroup: IOTAProjectGroup;
-var
-  IModuleServices: IOTAModuleServices;
-  IModule: IOTAModule;
-  IProjectGroup: IOTAProjectGroup;
-  I: Integer;
-begin
-  Result := nil;
-  IModuleServices := BorlandIDEServices as IOTAModuleServices;
-  for I := 0 to IModuleServices.ModuleCount - 1 do
-  begin
-    IModule := IModuleServices.Modules[I];
-    if IModule.QueryInterface(IOTAProjectGroup, IProjectGroup) = S_OK then
-    begin
-      Result := IProjectGroup;
-      Break;
-    end;
-  end;
-end;
-
 function TJvPluginProjectCreator.GetOwner: IOTAModule;
 begin
   Result := GetCurrentProjectGroup; // nil
@@ -422,20 +459,73 @@ begin
   Result := True;
 end;
 
+procedure TJvPluginProjectCreator.NewDefaultProjectModule(const Project: IOTAProject);
+var
+  Module: IOTAModule;
+  ModuleCreator: TJvPluginModuleCreator;
+begin
+  // add requires
+  if PlugType = ptPackage then
+  begin
+    {$IFDEF COMPILER5}
+    // added by default
+    //Project.AddFile('vcl50.dcp', False);
+    Project.AddFile('JvCoreD5R.dcp', False);
+    //{$ELSE ~COMPILER5}
+    // added by default
+    //Project.AddFile('vcl.dcp', False);
+    {$ENDIF COMPILER5}
+    {$IFDEF COMPILER6}
+    Project.AddFile('JvCoreD6R.dcp', False);
+    {$ENDIF COMPILER6}
+    {$IFDEF COMPILER7}
+    Project.AddFile('JvCoreD7R.dcp', False);
+    {$ENDIF COMPILER7}
+    {$IFDEF COMPILER9}
+    Project.AddFile('JvCoreD9R.dcp', False);
+    {$ENDIF COMPILER9}
+    {$IFDEF COMPILER10}
+    Project.AddFile('JvCoreD10R.dcp', False);
+    {$ENDIF COMPILER10}
+    {$IFDEF COMPILER11}
+    Project.AddFile('JvCoreD11R.dcp', False);
+    {$ENDIF COMPILER11}
+  end;
+
+  // create a new unit
+  ModuleCreator := TJvPluginModuleCreator.Create;
+  ModuleCreator.Wizard := Wizard;
+  ModuleCreator.PlugType := PlugType;
+  ModuleCreator.PlugName := PlugName;
+  ModuleCreator.PlugAuth := PlugAuth;
+  ModuleCreator.PlugDesc := PlugDesc;
+  ModuleCreator.PlugCopy := PlugCopy;
+  ModuleCreator.PlugUID := PlugUID;
+  ModuleCreator.Project := Project;
+  Module := (BorlandIDEServices as IOTAModuleServices).CreateModule(ModuleCreator);
+end;
+
+function TJvPluginProjectCreator.GetProjectPersonality: string;
+begin
+  {$IFDEF COMPILER8_UP}
+  Result := sDelphiPersonality;
+  {$ELSE}
+  Result := '';
+  {$ENDIF COMPILER8_UP}
+end;
+
 //=== { TJvOTAFile } =========================================================
 
-// TJvOTAFile - from Stefaan Lesage
-
-constructor TJvOTAFile.Create(const Source: string);
+constructor TJvOTAFile.Create(aSource: string; aAge: TDateTime);
 begin
-  // (rom) added inherited Create;
   inherited Create;
-  FSource := Source;
+  FSource := aSource;
+  FAge := aAge;
 end;
 
 function TJvOTAFile.GetAge: TDateTime;
 begin
-  Result := -1; // new
+  Result := FAge;
 end;
 
 function TJvOTAFile.GetSource: string;
@@ -468,14 +558,14 @@ end;
  *****************************************************************************}
 
 procedure TJvPluginModuleCreator.FormCreated(const FormEditor: IOTAFormEditor);
+var
+  Plugin: TJvPlugIn;
 begin
-  with TJvPlugIn(INTAComponent(FormEditor.GetRootComponent).GetComponent) do
-  begin
-    Author := PlugAuth;
-    Description := PlugDesc;
-    Copyright := PlugCopy;
-    PluginID := PlugUID;
-  end;
+  Plugin := INTAComponent(FormEditor.GetRootComponent).GetComponent as TJvPlugin;
+  Plugin.Author := PlugAuth;
+  Plugin.Description := PlugDesc;
+  Plugin.Copyright := PlugCopy;
+  Plugin.PluginID := PlugUID;
 end;
 
 {*****************************************************************************
@@ -577,7 +667,7 @@ end;
 
 function TJvPluginModuleCreator.GetFormName: string;
 begin
-  Result := cPluginPrefix + PlugName;
+  Result := PlugName;
 end;
 
 {*****************************************************************************
@@ -664,42 +754,8 @@ end;
  *****************************************************************************}
 
 function TJvPluginModuleCreator.GetOwner: IOTAModule;
-var
-  ModuleServices: IOTAModuleServices;
-  Module: IOTAModule;
-  NewModule: IOTAModule;
 begin
-  // You may prefer to return the project group's ActiveProject instead
-  Result := nil;
-  ModuleServices := (BorlandIDEServices as IOTAModuleServices);
-  Module := ModuleServices.CurrentModule;
-
-  if Module <> nil then
-  begin
-    if Module.QueryInterface(IOTAProject, NewModule) = S_OK then
-      Result := NewModule
-    else
-    // (rom) not sure if DELPHI or COMPILER
-    {$IFDEF COMPILER5}
-    if Module.GetOwnerCount > 0 then
-    begin
-      NewModule := Module.GetOwner(0);
-    {$ENDIF COMPILER5}
-      {$IFDEF COMPILER6_UP}
-      if Module.OwnerModuleCount > 0 then
-      begin
-        NewModule := Module.OwnerModules[0];
-      {$ENDIF COMPILER6_UP}
-        if NewModule <> nil then
-          if NewModule.QueryInterface(IOTAProject, Result) <> S_OK then
-            Result := nil;
-      {$IFDEF COMPILER6_UP}
-      end;
-      {$ENDIF COMPILER6_UP}
-    {$IFDEF COMPILER5}
-    end;
-    {$ENDIF COMPILER5}
-  end;
+  Result := Project;
 end;
 
 {*****************************************************************************
@@ -824,57 +880,62 @@ function TJvPluginModuleCreator.NewImplSource(const ModuleIdent, FormIdent, Ance
 var
   TypeName: string;
   Ancestor: string;
-  Source: string;
   ClassNameOfPlugin: string;
+  Lines: TStringList;
 begin
-  ClassNameOfPlugin := 'T' + FormIdent;
+  Lines := TStringList.Create;
+  try
+    ClassNameOfPlugin := 'T' + FormIdent;
 
-  TypeName := FormIdent;
-  Ancestor := AncestorIdent;
+    TypeName := FormIdent;
+    Ancestor := AncestorIdent;
 
-  TypeName := PlugName;
+    TypeName := PlugName;
 
-  Source :=
-    'unit ' + ModuleIdent + ';' + CrLf2 +
+    Lines.Add('unit ' + ModuleIdent + ';');
+    Lines.Add('');
+    Lines.Add('interface');
+    Lines.Add('');
+    Lines.Add('uses');
+    Lines.Add('  Windows, Messages, SysUtils, Classes, Dialogs, Forms, Controls,');
+    Lines.Add('  JvPlugin;');
+    Lines.Add('');
+    Lines.Add('type');
+    Lines.Add('  ' + ClassNameOfPlugin + ' = class(T' + Ancestor + ')');
+    //Lines.Add('  T' + TypeName + ' = class(T' + Ancestor + ')');
+    Lines.Add('  private');
+    Lines.Add('    ' + RsPrivateDeclarations);
+    Lines.Add('  public');
+    Lines.Add('    ' + RsPublicDeclarations);
+    Lines.Add('end;');
+    Lines.Add('');
+    //Lines.Add('function RegisterPlugin: T' + TypeName + '; stdcall;');
+    Lines.Add('function RegisterPlugin: TJvPlugin; stdcall;');
+    Lines.Add('');
 
-    'interface' + CrLf2 +
-
-    // (rom) fixed missing "," after "Controls"
-    'uses' + CrLf +
-    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms, Controls,' + CrLf +
-    '  JvPlugin;' + CrLf2 +
-
-    'type' + CrLf +
-    '  ' + ClassNameOfPlugin + ' = class(T' + Ancestor + ')' + CrLf +
-    //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CrLf +
-    '  private' + CrLf +
-    '    ' + RsPrivateDeclarations + CrLf +
-    '  public' + CrLf +
-    '    ' + RsPublicDeclarations + CrLf +
-    '  end;' + CrLf2 +
-
-    //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CrLf2;
-    'function RegisterPlugin: TJvPlugin; stdcall;' + CrLf2;
-
-  { 0 = dll; 1 = dpk }
-  if PlugType <> 0 then
-    Source := Source + 'exports RegisterPlugin;' + CrLf2;
-
-  Source := Source +
-    'implementation' + CrLf2 +
-
-    '{$R *.dfm}' + CrLf2 +
-
-  RsIMPORTANTNOTEIfYouChangeTheNameOfTh + CrLf +
-    'function RegisterPlugin: TJvPlugin;' + CrLf +
-    'begin' + CrLf +
-    '  Result := ' + ClassNameOfPlugin + '.Create(nil);' + CrLf +
+    if PlugType = ptPackage then
+    begin
+      Lines.Add('exports RegisterPlugin;');
+      Lines.Add('');
+    end;
+    
+    Lines.Add('implementation');
+    Lines.Add('');
+    Lines.Add('{$R *.dfm}');
+    Lines.Add('');
+    Lines.Add(RsIMPORTANTNOTEIfYouChangeTheNameOfTh);
+    Lines.Add('function RegisterPlugin: TJvPlugin;');
+    Lines.Add('begin');
+    Lines.Add('  Result := ' + ClassNameOfPlugin + '.Create(nil);');
     //    '  Result := T' + TypeName + '.Create(nil);' + CrLf +
-    'end;' + CrLf2 +
-
-    'end.';
-
-  Result := TJvOTAFile.Create(Source);
+    Lines.Add('end;');
+    Lines.Add('');
+    Lines.Add('end.');
+  
+    Result := TJvOTAFile.Create(Lines.Text, -1);
+  finally
+    Lines.Free;
+  end;
 end;
 
 {*****************************************************************************
