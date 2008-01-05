@@ -1267,9 +1267,8 @@ begin
     end
     else
       Exit;
-  end
-  else
-    SetValueKey(Value);
+  end;
+  SetValueKey(Value);
   UpdateDisplayValue;
   Repaint;
   Click;
