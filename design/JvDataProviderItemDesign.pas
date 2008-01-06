@@ -74,7 +74,7 @@ type
   TBaseItemDsgn = class (TExtensibleInterfacedPersistent)
   private
     function GetIsStoredProp(Index: Integer): Boolean;
-    {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER7_UP}
     function GetDynArrayProp(Index: Integer): Pointer;
     procedure SetDynArrayProp(Index: Integer; Value: Pointer);
     {$ENDIF}
@@ -569,7 +569,7 @@ end;
 
 //=== { TBaseItemDsgn } ======================================================
 
-{$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER7_UP}
 function TBaseItemDsgn.GetDynArrayProp(Index: Integer): Pointer;
 var
   instance: TObject;
@@ -877,7 +877,7 @@ begin
   ClearTypeInfo(ClassType);
 end;
 
-{$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER7_UP}
 procedure TBaseItemDsgn.SetDynArrayProp(Index: Integer; Value: Pointer);
 var
   instance: TObject;
