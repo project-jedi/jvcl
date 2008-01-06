@@ -1,5 +1,17 @@
 Changelog for JVCL 3.X
 ======================
+2008-01-08
+- Added TJvAppStorage.StorageOptionUseOldItemNameFormat Property
+  This changes the format of list item names. The old format is <Item><Nr>. The new format is <Item>[<Nr>]
+  The main advantage is that the xml appstorage removes the [<Nr>] part and makes the xml much more xsd conform
+  The default value is true to be backward compatible
+- Enhancement of the TjvProgramVersionCheck component. The configuration file could now be defined as xml file also
+- Added new unit JvPropertyStoreEditor.pas
+  This unit gives you the option to edit the contents of a TJvCustomPropertyStore Component at runtime.
+  It supports cascading support of components, and also supports the TJvCustomPropertyListStore components. 
+  For Liststore components the editor has the abbility to create additional list entries at runtime.
+  This editor can for example be used to give the user an editor for program options based on TJvCustomPropertyStore
+  
 2007-08-18
 - Added donation TJvTimeEdit (by Niels v/d Spek)
 - Added OnGetSortFieldName event and wsWhere SortWith style (by Niels v/d Spek)
