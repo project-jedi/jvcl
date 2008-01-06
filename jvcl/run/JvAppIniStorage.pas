@@ -52,6 +52,7 @@ type
     procedure SetPreserveLeadingTrailingBlanks(Value: Boolean); virtual;
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property ReplaceCRLF: Boolean read FReplaceCRLF write SetReplaceCRLF default False;
     property PreserveLeadingTrailingBlanks: Boolean read FPreserveLeadingTrailingBlanks
@@ -144,9 +145,13 @@ type
   end;
 
 procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
-  const AFileName: string; const AAppStoragePath: string = '');
+    const AFileName: string; const AAppStoragePath: string = ''; const
+    ADefaultSection: string = ''; AStorageOptions: TJvCustomAppStorageOptions =
+    nil);
 procedure LoadPropertyStoreFromIniFile(APropertyStore: TJvCustomPropertyStore;
-  const AFileName: string; const AAppStoragePath: string = '');
+    const AFileName: string; const AAppStoragePath: string = ''; const
+    ADefaultSection: string = ''; AStorageOptions: TJvCustomAppStorageOptions =
+    nil);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -181,6 +186,18 @@ begin
   FReplaceCRLF := False;
   FPreserveLeadingTrailingBlanks := False;
   FloatAsString := False;
+end;
+
+procedure TJvAppIniStorageOptions.Assign(Source: TPersistent);
+begin
+  if (Source = Self) then
+    Exit;
+  if Source is TJvAppIniStorageOptions then
+  begin
+    ReplaceCRLF := TJvAppIniStorageOptions(Source).ReplaceCRLF;
+    PreserveLeadingTrailingBlanks := TJvAppIniStorageOptions(Source).PreserveLeadingTrailingBlanks;
+  end;
+  inherited assign(Source);
 end;
 
 procedure TJvAppIniStorageOptions.SetReplaceCRLF(Value: Boolean);
@@ -777,7 +794,9 @@ end;
 //=== { Common procedures } ==================================================
 
 procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
-  const AFileName: string; const AAppStoragePath: string = '');
+    const AFileName: string; const AAppStoragePath: string = ''; const
+    ADefaultSection: string = ''; AStorageOptions: TJvCustomAppStorageOptions =
+    nil);
 var
   AppStorage: TJvAppIniFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
@@ -787,8 +806,11 @@ begin
     Exit;
   AppStorage := TJvAppIniFileStorage.Create(nil);
   try
+    if Assigned(AStorageOptions) then
+      AppStorage.StorageOptions.Assign(AStorageOptions);
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;
+    AppStorage.DefaultSection := ADefaultSection;
     SaveAppStorage := APropertyStore.AppStorage;
     SaveAppStoragePath := APropertyStore.AppStoragePath;
     try
@@ -805,7 +827,9 @@ begin
 end;
 
 procedure LoadPropertyStoreFromIniFile(APropertyStore: TJvCustomPropertyStore;
-  const AFileName: string; const AAppStoragePath: string = '');
+    const AFileName: string; const AAppStoragePath: string = ''; const
+    ADefaultSection: string = ''; AStorageOptions: TJvCustomAppStorageOptions =
+    nil);
 var
   AppStorage: TJvAppIniFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
@@ -815,8 +839,11 @@ begin
     Exit;
   AppStorage := TJvAppIniFileStorage.Create(nil);
   try
+    if Assigned(AStorageOptions) then
+      AppStorage.StorageOptions.Assign(AStorageOptions);
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;
+    AppStorage.DefaultSection := ADefaultSection;
     SaveAppStorage := APropertyStore.AppStorage;
     SaveAppStoragePath := APropertyStore.AppStoragePath;
     try

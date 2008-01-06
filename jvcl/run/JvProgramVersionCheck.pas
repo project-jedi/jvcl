@@ -38,7 +38,7 @@ uses
   {$IFDEF USE_3RDPARTY_ICS}
   HttpProt, FtpCli,
   {$ENDIF USE_3RDPARTY_ICS}
-  JvPropertyStore, JvAppStorage, JvAppIniStorage, JvComponent,
+  JvPropertyStore, JvAppStorage, JvAppIniStorage, JvAppXMLStorage, JvComponent,
   JvParameterList, JvThread, JvUrlListGrabber, JvUrlGrabbers, JvThreadDialog;
 
 type
@@ -71,7 +71,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
+    //IJvPropertyEditorHandler = interface
+    function EditIntf_GetVisibleObjectName: string; override;
     { Combination of ProgramVersion and ReleaseType }
     function ProgramVersionReleaseType: string;
     function ProgramSizeString: string;
@@ -116,7 +119,7 @@ type
     FCurrentAlphaVersion: string;
     FCurrentProgramVersion: TJvProgramVersionInfoReleaseArray;
   protected
-    function CreateObject: TObject; override;
+    function CreateObject: TPersistent; override;
     function CreateItemList: TStringList; override;
     function GetProgramVersion(Index: Integer): TJvProgramVersionInfo;
     function GetCurrentProgramVersion(Index: TJvProgramReleaseType): TJvProgramVersionInfo;
@@ -130,6 +133,9 @@ type
     procedure LoadData; override;
     procedure RecalculateCurrentProgramVersions;
     function AllowedCurrentProgramVersion(AAllowedReleaseType: TJvProgramReleaseType): TJvProgramVersionInfo;
+    procedure Assign(Source: TPersistent); override;
+    //IJvPropertyEditorHandler = interface
+    function EditIntf_GetVisibleObjectName: string; override;
     function GetVersionsDescription(const AFromVersion, AToVersion: string): string;
     property CurrentProgramVersion[Index: TJvProgramReleaseType]: TJvProgramVersionInfo read GetCurrentProgramVersion;
   published
@@ -414,6 +420,27 @@ type
   { set of TJvProgramVersionUserOption }
   TJvProgramVersionUserOptions = set of TJvProgramVersionUserOption;
 
+  TjvProgramVersionHistoryFileFormat = (hffIni, hffXML);
+
+  TJvProgramVersionHistoryAppStorageOptions = class(TPersistent)
+  private
+    FFileFormat: TjvProgramVersionHistoryFileFormat;
+    FINIOptions: TJvAppIniStorageOptions;
+    FXMLOptions: TJvAppXMLStorageOptions;
+    procedure SetINIOptions(const Value: TJvAppIniStorageOptions);
+    procedure SetXMLOptions(const Value: TJvAppXMLStorageOptions);
+  public
+    constructor Create;
+    destructor Destroy; override;
+  published
+    property FileFormat: TjvProgramVersionHistoryFileFormat read FFileFormat write
+        FFileFormat default hffIni;
+    property INIOptions: TJvAppIniStorageOptions read FINIOptions write
+        SetINIOptions;
+    property XMLOptions: TJvAppXMLStorageOptions read FXMLOptions write
+        SetXMLOptions;
+  end;
+
   TJvProgramVersionCheck = class(TJvCustomPropertyStore)
   private
     FAllowedReleaseType: TJvProgramReleaseType;
@@ -430,13 +457,17 @@ type
     FLocationHTTP: TJvProgramVersionHTTPLocation;
     FLocationNetwork: TJvProgramVersionNetworkLocation;
     FLocationType: TJvProgramVersionLocationType;
-    FRemoteAppStorage: TJvAppIniFileStorage;
     FRemoteProgramVersionHistory: TJvProgramVersionHistory;
     FThread: TJvThread;
     FThreadDialog: TJvThreadAnimateDialog;
     FUserOptions: TJvProgramVersionUserOptions;
+    FVersionHistoryFileOptions: TJvProgramVersionHistoryAppStorageOptions;
+    function CreateVersionHistoryAppstorage(aFileFormat:
+        TjvProgramVersionHistoryFileFormat): TJvCustomAppMemoryFileStorage;
     function GetDownloadError: string;
     function GetSelectedLocation: TJvCustomProgramVersionLocation;
+    procedure SetVersionHistoryFileOptions(const Value:
+        TJvProgramVersionHistoryAppStorageOptions);
   protected
     procedure CheckLocalDirectory;
     function CurrentApplicationName: string;
@@ -455,10 +486,8 @@ type
     procedure SetThreadInfo(const Info: string);
     procedure SetUserOptions(Value: TJvProgramVersionUserOptions);
     procedure StoreData; override;
-    procedure StoreRemoteVersionInfoToFile;
     procedure VersionInfoButtonClick(const ParameterList: TJvParameterList;
       const Parameter: TJvBaseParameter);
-    property RemoteAppStorage: TJvAppIniFileStorage read FRemoteAppStorage;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -466,7 +495,11 @@ type
     procedure Execute;
     function GetRemoteVersionOperation(var ReleaseType: TJvProgramReleaseType): TJvRemoteVersionOperation;
     function IsRemoteProgramVersionNewer: Boolean;
+    function LoadRemoteVersionHistoryFromFile(aFileFormat:
+        TjvProgramVersionHistoryFileFormat; const aFileName: string): Boolean;
     procedure ShowProgramVersionsDescription(const AFromVersion, AToVersion: string);
+    function StoreRemoteVersionHistoryToFile(aFileFormat:
+        TjvProgramVersionHistoryFileFormat; const aFilename: string): Boolean;
     property DownloadError: string read GetDownloadError;
     property LastCheck: TDateTime read FLastCheck write FLastCheck;
     property LocationTypesSupported: TJvProgramVersionLocationTypes read GetLocationTypesSupported;
@@ -510,6 +543,8 @@ type
     property UserOptions: TJvProgramVersionUserOptions read FUserOptions write SetUserOptions
       default [uoCheckFrequency, uoLocalDirectory, uoAllowedReleaseType,
       uoLocationType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase];
+    property VersionHistoryFileOptions: TJvProgramVersionHistoryAppStorageOptions
+        read FVersionHistoryFileOptions write SetVersionHistoryFileOptions;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -529,14 +564,17 @@ uses
   JclBase, JclFileUtils, JclShell,
   JvDSADialogs, JvParameterListParameter, JvResources, Windows, Messages;
 
+resourcestring
+  SProgramVersionHistory = 'Program Version History';
+
 const
   SParamNameVersionButtonInfo = 'VersionButtonInfo';
   SParamNameMemo = 'Memo';
-  SAppStorageDefaultSection = 'Version';
   SParamNameNewVersionLabel = 'New Version Label';
   SParamNameGroupBox = 'GroupBox';
   SParamNameOperation = 'Operation';
   SParamNameRadioButton = 'RadioButton';
+  SAppStorageDefaultSection = 'Version';
   SProgramVersion = 'Program Version ';
   SLastCheck = 'LastCheck';
 
@@ -608,6 +646,25 @@ begin
   CustomSort(@VersionNumberSortCompare);
 end;
 
+function TJvProgramVersionCheck.CreateVersionHistoryAppstorage(aFileFormat:
+    TjvProgramVersionHistoryFileFormat): TJvCustomAppMemoryFileStorage;
+begin
+  if aFileFormat = hffIni then
+  begin
+    Result := TJvCustomAppMemoryFileStorage(TJvAppIniFileStorage.Create(Self));
+    TJvAppIniFileStorage(Result).DefaultSection := SAppStorageDefaultSection;
+    Result.StorageOptions.Assign(VersionHistoryFileOptions.INIOptions);
+  end
+  else
+  begin
+    Result := TJvCustomAppMemoryFileStorage(TJvAppXMLFileStorage.Create(Self));
+    Result.StorageOptions.Assign(VersionHistoryFileOptions.XMLOptions);
+  end;
+  Result.Location := flCustom;
+  Result.ReadOnly := True;
+  Result.AutoReload := True;
+end;
+
 //=== { TJvProgramVersionInfo } ==============================================
 
 constructor TJvProgramVersionInfo.Create(AOwner: TComponent);
@@ -622,6 +679,26 @@ destructor TJvProgramVersionInfo.Destroy;
 begin
   FreeAndNil(FVersionDescription);
   inherited Destroy;
+end;
+
+procedure TJvProgramVersionInfo.Assign(Source: TPersistent);
+begin
+  if (Source = Self) then
+    Exit;
+  if Source is TJvProgramVersionInfo then
+  begin
+    DownloadPasswordRequired := TJvProgramVersionInfo (Source).DownloadPasswordRequired;
+    LocalInstallerParams := TJvProgramVersionInfo (Source).LocalInstallerParams;
+    VersionDescription := TJvProgramVersionInfo (Source).VersionDescription;
+    ProgramSize := TJvProgramVersionInfo (Source).ProgramSize;
+    ProgramVersion := TJvProgramVersionInfo (Source).ProgramVersion;
+    ProgramLocationPath := TJvProgramVersionInfo (Source).ProgramLocationPath;
+    ProgramLocationFileName := TJvProgramVersionInfo (Source).ProgramLocationFileName;
+    ProgramReleaseType := TJvProgramVersionInfo (Source).ProgramReleaseType;
+    ProgramReleaseDate := TJvProgramVersionInfo (Source).ProgramReleaseDate;
+  end
+  else
+    inherited assign(Source);
 end;
 
 function TJvProgramVersionInfo.GetVersionDescription: TStrings;
@@ -640,6 +717,11 @@ begin
     FVersionDescription.Clear;
   FProgramVersion := '';
   FProgramReleaseType := prtProduction;
+end;
+
+function TJvProgramVersionInfo.EditIntf_GetVisibleObjectName: string;
+begin
+  Result := ProgramVersionInfo;
 end;
 
 function TJvProgramVersionInfo.ProgramVersionReleaseType: string;
@@ -694,6 +776,7 @@ procedure TJvProgramVersionHistory.RecalculateCurrentProgramVersions;
 var
   I: TJvProgramReleaseType;
 begin
+  Items.Sort;
   for I := Low(TJvProgramReleaseType) to High(TJvProgramReleaseType) do
     FCurrentProgramVersion[I] := SearchCurrentProgramVersion(I);
 end;
@@ -701,7 +784,6 @@ end;
 procedure TJvProgramVersionHistory.LoadData;
 begin
   inherited LoadData;
-  Items.Sort;
   RecalculateCurrentProgramVersions;
 end;
 
@@ -722,6 +804,29 @@ begin
       Result := CurrentProgramVersion[I];
     Inc(I);
   end;
+end;
+
+procedure TJvProgramVersionHistory.Assign(Source: TPersistent);
+var
+  i: Integer;
+  VersionInfo: TJvProgramVersionInfo;
+begin
+  if (Source = Self) then
+    Exit;
+  if Source is TJvProgramVersionHistory then
+  begin
+    clear;
+    CurrentBetaProgramVersion := TJvProgramVersionHistory(Source).CurrentBetaProgramVersion;
+    CurrentAlphaProgramVersion := TJvProgramVersionHistory(Source).CurrentAlphaProgramVersion;
+    for i := 0 to TJvProgramVersionHistory(Source).count - 1 do
+    begin
+      VersionInfo := TJvProgramVersionInfo(TJvProgramVersionInfo(TJvProgramVersionHistory(Source).Items.Objects[i]).Clone(Owner));
+      Items.AddObject(VersionInfo.ProgramVersion, VersionInfo);
+    end;
+    Items.Sort;
+  end
+  else
+    inherited assign(Source);
 end;
 
 function TJvProgramVersionHistory.GetProgramVersion(Index: Integer): TJvProgramVersionInfo;
@@ -753,7 +858,7 @@ begin
   Result := FCurrentProgramVersion[Index];
 end;
 
-function TJvProgramVersionHistory.CreateObject: TObject;
+function TJvProgramVersionHistory.CreateObject: TPersistent;
 begin
   Result := TJvProgramVersionInfo.Create(Self);
 end;
@@ -761,6 +866,11 @@ end;
 function TJvProgramVersionHistory.CreateItemList: TStringList;
 begin
   Result := TJvProgramVersionsStringList.Create;
+end;
+
+function TJvProgramVersionHistory.EditIntf_GetVisibleObjectName: string;
+begin
+  Result := SProgramVersionHistory;
 end;
 
 function TJvProgramVersionHistory.GetCurrentProductionProgramVersion: string;
@@ -866,7 +976,8 @@ begin
           begin
             // if rename <local>.temp to <local> successful set <local> as return
             Result := PathAppend(ALocalPath, LocalFileName);
-            // delete <local>.temp.bak  if possible - we don't care if fails - leaving a backup of live exe is a "feature" anyway <g>
+            // delete <local>.temp.bak  if possible - we don't care if fails -
+            // leaving a backup of live exe is a "feature" anyway <g>
             if FileExists(PathAppend(ALocalPath, TemporaryLocalFileName2)) then
               Sysutils.DeleteFile(PathAppend(ALocalPath, TemporaryLocalFileName2));
           end // rename <local>.temp to <local>
@@ -1066,19 +1177,7 @@ begin
   inherited Create(AOwner);
   FRemoteProgramVersionHistory := TJvProgramVersionHistory.Create(Self);
   FRemoteProgramVersionHistory.IgnoreLastLoadTime := True;
-  FRemoteAppStorage := TJvAppIniFileStorage.Create(Self);
-  FRemoteAppStorage.Location := flCustom;
-  FRemoteAppStorage.ReadOnly := True;
-  FRemoteAppStorage.AutoReload := True;
-  FRemoteAppStorage.DefaultSection := SAppStorageDefaultSection;
-  with FRemoteAppStorage.StorageOptions do
-  begin
-    SetAsString := True;
-    FloatAsString := True;
-    DefaultIfReadConvertError := True;
-    DateTimeAsString := True;
-  end;
-  FRemoteProgramVersionHistory.AppStorage := FRemoteAppStorage;
+  FVersionHistoryFileOptions := TJvProgramVersionHistoryAppStorageOptions.Create;
   FThread := TJvThread.Create(Self);
   FThread.Exclusive := True;
   FThread.RunOnCreate := True;
@@ -1094,8 +1193,9 @@ begin
   IgnoreLastLoadTime := True;
   IgnoreProperties.Add('LocalInstallerFileName');
   IgnoreProperties.Add('LocalVersionInfoFileName');
-  IgnoreProperties.Add('RemoteAppStorage');
+  IgnoreProperties.Add('VersionHistoryAppStorage');
   IgnoreProperties.Add('UserOptions');
+  IgnoreProperties.Add('VersionHistoryFileOptions');
 
   FUserOptions := [uoCheckFrequency, uoLocalDirectory,
     uoAllowedReleaseType, uoLocationType, uoLocationNetwork,
@@ -1109,10 +1209,10 @@ end;
 
 destructor TJvProgramVersionCheck.Destroy;
 begin
+  FreeAndNil(FVersionHistoryFileOptions);
   FreeAndNil(FRemoteProgramVersionHistory);
   FreeAndNil(FThreadDialog);
   FreeAndNil(FThread);
-  FreeAndNil(FRemoteAppStorage);
   inherited Destroy;
 end;
 
@@ -1207,6 +1307,8 @@ var
   ReleaseType: TJvProgramReleaseType;
 begin
   FExecuteVersionInfo := nil;
+  if not Appstorage.PathExists(AppStoragePath) then
+    StoreProperties;
   LoadProperties;
   if (LastCheck < Now - CheckFrequency) and (LocationTypesSupported <> []) then
   begin
@@ -1214,13 +1316,12 @@ begin
     if not DirectoryExists(LocalDirectory) then
       if (LocalDirectory <> '') and not ForceDirectories(LocalDirectory) then
         LocalDirectory := '';
-    RemoteAppStorage.FileName :=
-      LoadRemoteVersionInfoFile(LocalDirectory, LocalVersionInfoFileName);
-    if RemoteAppStorage.FileName <> '' then
+    if LoadRemoteVersionHistoryFromFile(VersionHistoryFileOptions.FileFormat,
+             LoadRemoteVersionInfoFile(LocalDirectory, LocalVersionInfoFileName)) then
     begin
-      RemoteProgramVersionHistory.LoadProperties;
       StoreProperties;
-      StoreRemoteVersionInfoToFile;
+      StoreRemoteVersionHistoryToFile (VersionHistoryFileOptions.FileFormat,
+          LoadRemoteVersionInfoFile(LocalDirectory, LocalVersionInfoFileName));
       if IsRemoteProgramVersionNewer then
       begin
         FExecuteOperation := GetRemoteVersionOperation(ReleaseType);
@@ -1285,25 +1386,22 @@ begin
     ParameterList.Messages.Caption :=
       Format(RsPVCDialogCaption, [CurrentApplicationName]);
     ParameterList.Messages.OkButton := RsPVCDialogExecuteButton;
+
     Parameter := TJvBaseParameter(TJvLabelParameter.Create(ParameterList));
-    with Parameter do
-    begin
-      SearchName := SParamNameNewVersionLabel;
-      Caption := Format(RsPVCNewVersionAvailable,
-        [GetAllowedRemoteProgramVersionReleaseType, CurrentApplicationName]);
-      Width := 350;
-      Height := 45;
-    end;
+    Parameter.SearchName := SParamNameNewVersionLabel;
+    Parameter.Caption := Format(RsPVCNewVersionAvailable,
+      [GetAllowedRemoteProgramVersionReleaseType, CurrentApplicationName]);
+    Parameter.Width := 350;
+    Parameter.Height := 45;
     ParameterList.AddParameter(Parameter);
+
     GroupParameter := TJvGroupBoxParameter.Create(ParameterList);
-    with GroupParameter do
-    begin
-      SearchName := SParamNameGroupBox;
-      Caption := RsPVCChooseWhichVersion;
-      Width := 350;
-      Height := 10;
-    end;
+    GroupParameter.SearchName := SParamNameGroupBox;
+    GroupParameter.Caption := RsPVCChooseWhichVersion;
+    GroupParameter.Width := 350;
+    GroupParameter.Height := 10;
     ParameterList.AddParameter(GroupParameter);
+
     for I := High(I) downto Low(I) do
       if (I <= AllowedReleaseType) and
         Assigned(RemoteProgramVersionHistory.CurrentProgramVersion[I]) then
@@ -1311,41 +1409,35 @@ begin
           RemoteProgramVersionHistory.CurrentProgramVersion[I].ProgramVersion) > 0 then
         begin
           Parameter := TJvBaseParameter(TJvRadioButtonParameter.Create(ParameterList));
-          with Parameter do
-          begin
-            ParentParameterName := SParamNameGroupBox;
-            SearchName := SParamNameRadioButton + IntToStr(Ord(I));
-            Caption := RemoteProgramVersionHistory.CurrentProgramVersion[I].ProgramVersionInfo;
-            Width := 250;
-            AsBoolean := GroupParameter.Height <= 10;
-          end;
+          Parameter.ParentParameterName := SParamNameGroupBox;
+          Parameter.SearchName := SParamNameRadioButton + IntToStr(Ord(I));
+          Parameter.Caption := RemoteProgramVersionHistory.CurrentProgramVersion[I].ProgramVersionInfo;
+          Parameter.Width := 250;
+          Parameter.AsBoolean := GroupParameter.Height <= 10;
           ParameterList.AddParameter(Parameter);
+
           Parameter := TJvBaseParameter(TJvButtonParameter.Create(ParameterList));
-          with TJvButtonParameter(Parameter) do
-          begin
-            ParentParameterName := SParamNameGroupBox;
-            SearchName := SParamNameVersionButtonInfo + IntToStr(Ord(I));
-            Caption := RsPVInfoButtonCaption;
-            Width := 80;
-            Tag := Ord(I);
-            OnClick := VersionInfoButtonClick;
-          end;
+          Parameter.ParentParameterName := SParamNameGroupBox;
+          Parameter.SearchName := SParamNameVersionButtonInfo + IntToStr(Ord(I));
+          Parameter.Caption := RsPVInfoButtonCaption;
+          Parameter.Width := 80;
+          Parameter.Tag := Ord(I);
+          TJvButtonParameter(Parameter).OnClick := VersionInfoButtonClick;
           ParameterList.AddParameter(Parameter);
+
           GroupParameter.Height := GroupParameter.Height + 25;
         end;
     Parameter := TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
-    with TJvRadioGroupParameter(Parameter) do
-    begin
-      SearchName := SParamNameOperation;
-      Caption := RsPVCChooseOperation;
-      ItemList.Add(RsPVCOperationIgnore);
-      ItemList.Add(RsPVCOperationDownloadOnly);
-      ItemList.Add(RsPVCOperationDownloadInstall);
-      ItemIndex := 2;
-      Width := 350;
-      Height := 79;
-    end;
+    Parameter.SearchName := SParamNameOperation;
+    Parameter.Caption := RsPVCChooseOperation;
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsPVCOperationIgnore);
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsPVCOperationDownloadOnly);
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsPVCOperationDownloadInstall);
+    TJvRadioGroupParameter(Parameter).ItemIndex := 2;
+    Parameter.Width := 350;
+    Parameter.Height := 79;
     ParameterList.AddParameter(Parameter);
+
     if ParameterList.ShowParameterDialog then
     begin
       case TJvRadioGroupParameter(ParameterList.ParameterByName(SParamNameOperation)).ItemIndex of
@@ -1469,6 +1561,12 @@ begin
   IgnoreProperties.AddDelete('LocationDatabase', (uoLocationDatabase in Value));
 end;
 
+procedure TJvProgramVersionCheck.SetVersionHistoryFileOptions(const Value:
+    TJvProgramVersionHistoryAppStorageOptions);
+begin
+  FVersionHistoryFileOptions.Assign(Value);
+end;
+
 procedure TJvProgramVersionCheck.ShowProgramVersionsDescription(const AFromVersion, AToVersion: string);
 var
   ParameterList: TJvParameterList;
@@ -1479,16 +1577,13 @@ begin
     ParameterList.Messages.Caption := Format(RsPVCWhatNewInS, [CurrentApplicationName]);
     ParameterList.CancelButtonVisible := False;
     Parameter := TJvMemoParameter.Create(ParameterList);
-    with Parameter do
-    begin
-      SearchName := SParamNameMemo;
-      Caption := Format(RsPVCChangesBetween, [AFromVersion, AToVersion]);
-      Width := 340;
-      Height := 200;
-      AsString := RemoteProgramVersionHistory.GetVersionsDescription(AFromVersion, AToVersion);
-      Scrollbars := ssBoth;
-      ReadOnly := True;
-    end;
+    Parameter.SearchName := SParamNameMemo;
+    Parameter.Caption := Format(RsPVCChangesBetween, [AFromVersion, AToVersion]);
+    Parameter.Width := 340;
+    Parameter.Height := 200;
+    Parameter.AsString := RemoteProgramVersionHistory.GetVersionsDescription(AFromVersion, AToVersion);
+    Parameter.Scrollbars := ssBoth;
+    Parameter.ReadOnly := True;
     ParameterList.AddParameter(Parameter);
     ParameterList.ShowParameterDialog
   finally
@@ -1502,13 +1597,50 @@ begin
   AppStorage.WriteDateTime(AppStorage.ConcatPaths([AppStoragePath, SLastCheck]), LastCheck);
 end;
 
-procedure TJvProgramVersionCheck.StoreRemoteVersionInfoToFile;
+function TJvProgramVersionCheck.StoreRemoteVersionHistoryToFile(aFileFormat:
+    TjvProgramVersionHistoryFileFormat; const aFilename: string): Boolean;
+var
+  VersionHistoryAppStorage: TJvCustomAppMemoryFileStorage;
 begin
-  FRemoteAppStorage.ReadOnly := False;
-  RemoteProgramVersionHistory.StoreProperties;
-  FRemoteAppStorage.Flush;
-  FRemoteAppStorage.ReadOnly := True;
+  Result := false;
+  VersionHistoryAppStorage := CreateVersionHistoryAppstorage (aFileFormat);
+  try
+    RemoteProgramVersionHistory.AppStorage := VersionHistoryAppStorage;
+    VersionHistoryAppStorage.FileName := aFileName;
+    if VersionHistoryAppStorage.FileName <> '' then
+    begin
+      VersionHistoryAppStorage.ReadOnly := False;
+      RemoteProgramVersionHistory.StoreProperties;
+      VersionHistoryAppStorage.Flush;
+    end;
+  finally
+    RemoteProgramVersionHistory.AppStorage := nil;
+    VersionHistoryAppStorage.Free;
+  end;
 end;
+
+function TJvProgramVersionCheck.LoadRemoteVersionHistoryFromFile(aFileFormat:
+    TjvProgramVersionHistoryFileFormat; const aFileName: string): Boolean;
+var
+  VersionHistoryAppStorage: TJvCustomAppMemoryFileStorage;
+begin
+  VersionHistoryAppStorage := CreateVersionHistoryAppstorage (aFileFormat);
+  try
+    RemoteProgramVersionHistory.AppStorage := VersionHistoryAppStorage;
+    VersionHistoryAppStorage.FileName := aFileName;
+    if VersionHistoryAppStorage.FileName <> '' then
+    begin
+      RemoteProgramVersionHistory.LoadProperties;
+      Result := true;
+    end
+    else
+      Result := false;
+  finally
+    RemoteProgramVersionHistory.AppStorage := nil;
+    VersionHistoryAppStorage.Free;
+  end;
+end;
+
 
 procedure TJvProgramVersionCheck.VersionInfoButtonClick(const ParameterList: TJvParameterList;
   const Parameter: TJvBaseParameter);
@@ -1517,9 +1649,8 @@ var
 begin
   I := Low(I);
   Inc(I, Parameter.Tag);
-  with RemoteProgramVersionHistory do
-    if Assigned(CurrentProgramVersion[I]) then
-      ShowProgramVersionsDescription(CurrentFileVersion, CurrentProgramVersion[I].ProgramVersion);
+  if Assigned(RemoteProgramVersionHistory.CurrentProgramVersion[I]) then
+    ShowProgramVersionsDescription(CurrentFileVersion, RemoteProgramVersionHistory.CurrentProgramVersion[I].ProgramVersion);
 end;
 
 {$IFDEF USE_3RDPARTY_INDY}
@@ -1574,26 +1705,23 @@ begin
     {$ELSE}
     FIdHTTP.Port := Port;
     {$ENDIF USE_3RDPARTY_INDY10}
-    with FIdHTTP do
-    begin
-      ProxyParams.ProxyPort := ProxySettings.Port;
-      ProxyParams.ProxyServer := ProxySettings.Server;
-      ProxyParams.ProxyUsername := ProxySettings.UserName;
-      ProxyParams.ProxyPassword := ProxySettings.Password;
-      if UserName <> '' then
-        Request.UserName := UserName;
-      if Password <> '' then
-        Request.Password := Password;
-      Request.BasicAuthentication := PasswordRequired;
-      try
-        if Copy(ARemotePath, Length(ARemotePath), 1) <> '/' then
-          Get(ARemotePath + '/' + ARemoteFileName, ResultStream)
-        else
-          Get(ARemotePath + ARemoteFileName, ResultStream);
-      except
-        on E: Exception do
-          DownloadError := E.Message;
-      end;
+    FIdHTTP.ProxyParams.ProxyPort := ProxySettings.Port;
+    FIdHTTP.ProxyParams.ProxyServer := ProxySettings.Server;
+    FIdHTTP.ProxyParams.ProxyUsername := ProxySettings.UserName;
+    FIdHTTP.ProxyParams.ProxyPassword := ProxySettings.Password;
+    if UserName <> '' then
+      FIdHTTP.Request.UserName := UserName;
+    if Password <> '' then
+      FIdHTTP.Request.Password := Password;
+    FIdHTTP.Request.BasicAuthentication := PasswordRequired;
+    try
+      if Copy(ARemotePath, Length(ARemotePath), 1) <> '/' then
+        FIdHTTP.Get(ARemotePath + '/' + ARemoteFileName, ResultStream)
+      else
+        FIdHTTP.Get(ARemotePath + ARemoteFileName, ResultStream);
+    except
+      on E: Exception do
+        DownloadError := E.Message;
     end;
   finally
     ResultStream.Free;
@@ -1652,18 +1780,15 @@ begin
     FIdFTP.ProxySettings.Host := ProxySettings.Server;
     FIdFTP.ProxySettings.UserName := ProxySettings.UserName;
     FIdFTP.ProxySettings.Password := ProxySettings.Password;
-    with FIdFTP do
-    begin
       try
         if Copy(ARemotePath, Length(ARemotePath), 1) <> '/' then
-          Get(ARemotePath + '/' + ARemoteFileName, ResultStream)
+          FIdFTP.Get(ARemotePath + '/' + ARemoteFileName, ResultStream)
         else
-          Get(ARemotePath + ARemoteFileName, ResultStream);
+          FIdFTP.Get(ARemotePath + ARemoteFileName, ResultStream);
       except
         on E: Exception do
           DownloadError := E.Message;
       end;
-    end;
   finally
     ResultStream.Free;
   end;
@@ -1882,6 +2007,43 @@ constructor TJvProgramVersionProxySettings.Create;
 begin
   inherited Create;
   FPort := 80;
+end;
+
+constructor TJvProgramVersionHistoryAppStorageOptions.Create;
+begin
+  inherited Create;
+  FXMLOptions := TJvAppXMLStorageOptions.Create;
+  FXMLOptions.WhiteSpaceReplacement := '_';
+  FXMLOptions.UseOldItemNameFormat := False;
+  FXMLOptions.SetAsString := True;
+  FXMLOptions.FloatAsString := True;
+  FXMLOptions.DefaultIfReadConvertError := True;
+  FXMLOptions.DateTimeAsString := True;
+  FINIOptions := TJvAppIniStorageOptions.Create;
+  FINIOptions.SetAsString := True;
+  FINIOptions.FloatAsString := True;
+  FINIOptions.DefaultIfReadConvertError := True;
+  FINIOptions.DateTimeAsString := True;
+  FFileFormat := hffIni;
+end;
+
+destructor TJvProgramVersionHistoryAppStorageOptions.Destroy;
+begin
+  FreeAndNil(FINIOptions);
+  FreeAndNil(FXMLOptions);
+  inherited Destroy;
+end;
+
+procedure TJvProgramVersionHistoryAppStorageOptions.SetINIOptions(const Value:
+    TJvAppIniStorageOptions);
+begin
+  INIOptions.Assign(Value);
+end;
+
+procedure TJvProgramVersionHistoryAppStorageOptions.SetXMLOptions(const Value:
+    TJvAppXMLStorageOptions);
+begin
+  FXMLOptions.Assign(Value);
 end;
 
 {$IFDEF UNITVERSIONING}

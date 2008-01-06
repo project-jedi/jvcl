@@ -197,7 +197,8 @@ type
     destructor Destroy; override;
     procedure SetNotification;
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
-    property DefaultValue[const Name: string; DefValue: Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
+    property DefaultValue[const Name: string; DefValue: Variant]: Variant
+        read GetDefaultStoredValue write SetDefaultStoredValue;
   published
     property StoredProps: TStrings read GetStoredProps write SetStoredProps;
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
@@ -369,13 +370,12 @@ var
   I: Integer;
 begin
   for I := 0 to FLinks.Count - 1 do
-    with TJvIniLink(FLinks[I]) do
-      case Operation of
-        poSave:
-          SaveToIni;
-        poRestore:
-          LoadFromIni;
-      end;
+    case Operation of
+      poSave:
+        TJvIniLink(FLinks[I]).SaveToIni;
+      poRestore:
+        TJvIniLink(FLinks[I]).LoadFromIni;
+    end;
 end;
 
 procedure TJvFormPlacement.RemoveLink(ALink: TJvIniLink);
@@ -411,16 +411,13 @@ procedure TJvFormPlacement.SetEvents;
 begin
   if Owner is TCustomForm then
   begin
-    with TForm(Form) do
-    begin
-      FSaveFormShow := OnShow;
-      OnShow := FormShow;
-      FSaveFormCloseQuery := OnCloseQuery;
-      OnCloseQuery := FormCloseQuery;
-      FSaveFormDestroy := OnDestroy;
-      OnDestroy := FormDestroy;
-      FDefMaximize := (biMaximize in BorderIcons);
-    end;
+    FSaveFormShow := TForm(Form).OnShow;
+    TForm(Form).OnShow := FormShow;
+    FSaveFormCloseQuery := TForm(Form).OnCloseQuery;
+    TForm(Form).OnCloseQuery := FormCloseQuery;
+    FSaveFormDestroy := TForm(Form).OnDestroy;
+    TForm(Form).OnDestroy := FormDestroy;
+    FDefMaximize := (biMaximize in TForm(Form).BorderIcons);
     if FPreventResize then
       UpdatePreventResize;
   end;
@@ -429,12 +426,11 @@ end;
 procedure TJvFormPlacement.RestoreEvents;
 begin
   if (Owner <> nil) and (Owner is TCustomForm) then
-    with TForm(Form) do
-    begin
-      OnShow := FSaveFormShow;
-      OnCloseQuery := FSaveFormCloseQuery;
-      OnDestroy := FSaveFormDestroy;
-    end;
+  begin
+    TForm(Form).OnShow := FSaveFormShow;
+    TForm(Form).OnCloseQuery := FSaveFormCloseQuery;
+    TForm(Form).OnDestroy := FSaveFormDestroy;
+  end;
 end;
 
 
@@ -724,8 +720,7 @@ end;
 function TJvFormPlacement.ReadString(const Ident: string; const Default: string = ''): string;
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      Result := ReadString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
+    Result := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -733,15 +728,13 @@ end;
 procedure TJvFormPlacement.WriteString(const Ident, AValue: string);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
+    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadBoolean(const Ident: string; Default: Boolean): Boolean;
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      Result := ReadBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
+    Result := AppStorage.ReadBoolean(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -749,15 +742,13 @@ end;
 procedure TJvFormPlacement.WriteBoolean(const Ident: string; AValue: Boolean);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      WriteBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
+    AppStorage.WriteBoolean(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadFloat(const Ident: string; Default: Double = 0): Double;
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      Result := ReadFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
+    Result := AppStorage.ReadFloat(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -765,15 +756,13 @@ end;
 procedure TJvFormPlacement.WriteFloat(const Ident: string; AValue: Double);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      WriteFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
+    AppStorage.WriteFloat(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint = 0): Longint;
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      Result := ReadInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
+    Result := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -781,15 +770,13 @@ end;
 procedure TJvFormPlacement.WriteInteger(const Ident: string; AValue: Longint);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadDateTime(const Ident: string; Default: TDateTime = 0): TDateTime;
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      Result := ReadDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
+    Result := AppStorage.ReadDateTime(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -797,8 +784,7 @@ end;
 procedure TJvFormPlacement.WriteDateTime(const Ident: string; AValue: TDateTime);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
-    with AppStorage do
-      WriteDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
+    AppStorage.WriteDateTime(AppStorage.ConcatPaths([AppStoragePath, AppStorage.TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 procedure TJvFormPlacement.EraseSections;
@@ -893,28 +879,25 @@ end;
 
 function TJvWinMinMaxInfo.GetMinMaxInfo(Index: Integer): Integer;
 begin
-  with FMinMaxInfo do
-  begin
-    case Index of
-      0:
-        Result := ptMaxPosition.X;
-      1:
-        Result := ptMaxPosition.Y;
-      2:
-        Result := ptMaxSize.Y;
-      3:
-        Result := ptMaxSize.X;
-      4:
-        Result := ptMaxTrackSize.Y;
-      5:
-        Result := ptMaxTrackSize.X;
-      6:
-        Result := ptMinTrackSize.Y;
-      7:
-        Result := ptMinTrackSize.X;
-    else
-      Result := 0;
-    end;
+  case Index of
+    0:
+      Result := FMinMaxInfo.ptMaxPosition.X;
+    1:
+      Result := FMinMaxInfo.ptMaxPosition.Y;
+    2:
+      Result := FMinMaxInfo.ptMaxSize.Y;
+    3:
+      Result := FMinMaxInfo.ptMaxSize.X;
+    4:
+      Result := FMinMaxInfo.ptMaxTrackSize.Y;
+    5:
+      Result := FMinMaxInfo.ptMaxTrackSize.X;
+    6:
+      Result := FMinMaxInfo.ptMinTrackSize.Y;
+    7:
+      Result := FMinMaxInfo.ptMinTrackSize.X;
+  else
+    Result := 0;
   end;
 end;
 
@@ -922,26 +905,23 @@ procedure TJvWinMinMaxInfo.SetMinMaxInfo(Index: Integer; AValue: Integer);
 begin
   if GetMinMaxInfo(Index) <> AValue then
   begin
-    with FMinMaxInfo do
-    begin
-      case Index of
-        0:
-          ptMaxPosition.X := AValue;
-        1:
-          ptMaxPosition.Y := AValue;
-        2:
-          ptMaxSize.Y := AValue;
-        3:
-          ptMaxSize.X := AValue;
-        4:
-          ptMaxTrackSize.Y := AValue;
-        5:
-          ptMaxTrackSize.X := AValue;
-        6:
-          ptMinTrackSize.Y := AValue;
-        7:
-          ptMinTrackSize.X := AValue;
-      end;
+    case Index of
+      0:
+        FMinMaxInfo.ptMaxPosition.X := AValue;
+      1:
+        FMinMaxInfo.ptMaxPosition.Y := AValue;
+      2:
+        FMinMaxInfo.ptMaxSize.Y := AValue;
+      3:
+        FMinMaxInfo.ptMaxSize.X := AValue;
+      4:
+        FMinMaxInfo.ptMaxTrackSize.Y := AValue;
+      5:
+        FMinMaxInfo.ptMaxTrackSize.X := AValue;
+      6:
+        FMinMaxInfo.ptMinTrackSize.Y := AValue;
+      7:
+        FMinMaxInfo.ptMinTrackSize.X := AValue;
     end;
     if FOwner <> nil then
       FOwner.MinMaxInfoModified;
@@ -950,13 +930,14 @@ end;
 
 function TJvWinMinMaxInfo.DefaultMinMaxInfo: Boolean;
 begin
-  with FMinMaxInfo do
-  begin
-    Result := not ((ptMinTrackSize.X <> 0) or (ptMinTrackSize.Y <> 0) or
-      (ptMaxTrackSize.X <> 0) or (ptMaxTrackSize.Y <> 0) or
-      (ptMaxSize.X <> 0) or (ptMaxSize.Y <> 0) or
-      (ptMaxPosition.X <> 0) or (ptMaxPosition.Y <> 0));
-  end;
+  Result := not ((FMinMaxInfo.ptMinTrackSize.X <> 0) or
+      (FMinMaxInfo.ptMinTrackSize.Y <> 0) or
+      (FMinMaxInfo.ptMaxTrackSize.X <> 0) or
+      (FMinMaxInfo.ptMaxTrackSize.Y <> 0) or
+      (FMinMaxInfo.ptMaxSize.X <> 0) or
+      (FMinMaxInfo.ptMaxSize.Y <> 0) or
+      (FMinMaxInfo.ptMaxPosition.X <> 0) or
+      (FMinMaxInfo.ptMaxPosition.Y <> 0));
 end;
 
 //=== { TJvFormStorage } =====================================================
@@ -1046,30 +1027,34 @@ begin
 end;
 
 procedure TJvFormStorage.SaveProperties;
+var
+  PropertyStorage: TJvPropertyStorage;
 begin
-  with TJvPropertyStorage.Create do
+  PropertyStorage := TJvPropertyStorage.Create;
   try
-    AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
-    AppStorage := Self.AppStorage;
-    StoreObjectsProps(Owner, FStoredProps);
+    PropertyStorage.AppStoragePath := ConcatPaths ([AppStoragePath, StoredPropsPath]);
+    PropertyStorage.AppStorage := AppStorage;
+    PropertyStorage.StoreObjectsProps(Owner, FStoredProps);
   finally
-    Free;
+    PropertyStorage.Free;
   end;
 end;
 
 procedure TJvFormStorage.RestoreProperties;
+var
+  PropertyStorage: TJvPropertyStorage;
 begin
-  with TJvPropertyStorage.Create do
+  PropertyStorage := TJvPropertyStorage.Create;
   try
-    AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
-    AppStorage := Self.AppStorage;
+    PropertyStorage.AppStoragePath := ConcatPaths ([AppStoragePath, StoredPropsPath]);
+    PropertyStorage.AppStorage := AppStorage;
     try
-      LoadObjectsProps(Owner, FStoredProps);
+      PropertyStorage.LoadObjectsProps(Owner, FStoredProps);
     except
       { ignore any exceptions }
     end;
   finally
-    Free;
+    PropertyStorage.Free;
   end;
 end;
 

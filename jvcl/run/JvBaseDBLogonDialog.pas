@@ -160,7 +160,7 @@ type
     procedure SetSavePasswords(const Value: Boolean);
   protected
     procedure CopyContents(iConnectionList: TJvBaseConnectionList; iClearBefore: Boolean);
-    function CreateObject: TObject; override;
+    function CreateObject: TPersistent; override;
     function GetConnection(I: Longint): TJvBaseConnectionInfo;
   public
     constructor Create(AOwner: TComponent); override;
@@ -180,7 +180,7 @@ type
 
   TJvBaseOracleConnectionList = class(TJvBaseConnectionList)
   protected
-    function CreateObject: TObject; override;
+    function CreateObject: TPersistent; override;
   end;
 
   TJvBaseDBLogonDialog = class(TJvBaseDBDialog)
@@ -2196,7 +2196,7 @@ begin
   Result := TJvBaseConnectionInfo(CreateObject);
 end;
 
-function TJvBaseConnectionList.CreateObject: TObject;
+function TJvBaseConnectionList.CreateObject: TPersistent;
 begin
   Result := TJvBaseConnectionInfo.Create(Self);
 end;
@@ -2237,7 +2237,7 @@ begin
     Connection[i].SavePassword := Value;
 end;
 
-function TJvBaseOracleConnectionList.CreateObject: TObject;
+function TJvBaseOracleConnectionList.CreateObject: TPersistent;
 begin
   Result := TJvBaseOracleConnectionInfo.Create(Self);
   TJvBaseOracleConnectionInfo(Result).SavePassword := SavePasswords;
