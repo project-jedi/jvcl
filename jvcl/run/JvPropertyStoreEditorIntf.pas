@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvPropertyStore.pas 11632 2007-12-18 22:34:35Z jfudickar $
+// $Id$
 unit JvPropertyStoreEditorIntf;
 
 {$I jvcl.inc}
@@ -61,9 +61,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvPropertyStore.pas $';
-    Revision: '$Revision: 11632 $';
-    Date: '$Date: 2007-12-18 23:34:35 +0100 (Di, 18 Dez 2007) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
