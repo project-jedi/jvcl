@@ -99,15 +99,19 @@ type
     function _AddRef: Integer; virtual; stdcall;
     function _Release: Integer; virtual; stdcall;
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
+    // implementer list
     procedure AddIntfImpl(const Obj: TAggregatedPersistentEx);
     procedure RemoveIntfImpl(const Obj: TAggregatedPersistentEx);
     function IndexOfImplClass(const AClass: TAggregatedPersistentExClass): Integer;
     function GetImplOfClass(AClass: TAggregatedPersistentExClass): TAggregatedPersistentEx;
     procedure ClearIntfImpl;
     procedure InitImplementers; virtual;
+    function ImplCount: Integer;
+    function GetImplementer(Index: Integer): TAggregatedPersistentEx;
+    // refercence counting
     procedure SuspendRefCount;
     procedure ResumeRefCount;
-
+    // streaming
     function IsStreamableExtension(AnExtension: TAggregatedPersistentEx): Boolean; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadImplementers(Reader: TReader);
@@ -204,7 +208,8 @@ type
     { Reference counting: substract 1 if this item is part of a dynamic list (Items.IsDynamic returns
       True). Otherwise reference counting is not used. }
     function _Release: Integer; override; stdcall;
-
+    // design support
+    function GetOwner: TPersistent; override;
     { Streaming of an item. }
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadSubItems(Reader: TReader);
@@ -225,6 +230,7 @@ type
   public
     constructor Create(AOwner: IJvDataItems);
     procedure AfterConstruction; override;
+    function GetNamePath: string; override;
   published
     property ID: string read GetID write SetID;
   end;
@@ -2035,6 +2041,11 @@ begin
   end;
 end;
 
+function TExtensibleInterfacedPersistent.ImplCount: Integer;
+begin
+  Result := FAdditionalIntfImpl.Count;
+end;
+
 function TExtensibleInterfacedPersistent.IndexOfImplClass(const AClass: TAggregatedPersistentExClass): Integer;
 begin
   Result := FAdditionalIntfImpl.Count - 1;
@@ -2155,6 +2166,11 @@ begin
   Writer.WriteString(Instance.ClassName);
   THackWriter(Writer).WriteProperties(Instance);
   Writer.WriteListEnd;
+end;
+
+function TExtensibleInterfacedPersistent.GetImplementer(Index: Integer): TAggregatedPersistentEx;
+begin
+  Result := TAggregatedPersistentEx(FAdditionalIntfImpl[Index]);
 end;
 
 function TExtensibleInterfacedPersistent.GetImplOfClass(AClass: TAggregatedPersistentExClass): TAggregatedPersistentEx;
@@ -3054,6 +3070,26 @@ end;
 function TJvBaseDataItem.GetItems: IJvDataItems;
 begin
   Result := IJvDataItems(FItems);
+end;
+
+function TJvBaseDataItem.GetNamePath: string;
+var
+  Comp: TPersistent;
+begin
+  Comp := GetOwner;
+  if (Comp <> nil) and (Comp is TComponent) then
+    Result := (Comp as TComponent).Name
+  else
+    Result := RsUnknown;
+  Result := Result + ': Item[' + GetID + ']';
+end;
+
+function TJvBaseDataItem.GetOwner: TPersistent;
+begin
+  if Items <> nil then
+    Result := (Items.Provider as IInterfaceComponentReference).GetComponent
+  else
+    Result := inherited GetOwner;
 end;
 
 function TJvBaseDataItem.GetIndex: Integer;
