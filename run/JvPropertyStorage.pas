@@ -461,19 +461,17 @@ var
   NPath: string;
 begin
   if Assigned(AppStorage) then
-    with AppStorage do
-    begin
-      NPath := ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]);
-      if ValueStored(NPath) or IsFolder(NPath, False) then
-        ReadProperty(NPath, PersObj, PropName, True, True);
-    end;
+  begin
+    NPath := AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, True)]);
+    if AppStorage.ValueStored(NPath) or AppStorage.IsFolder(NPath, False) then
+      AppStorage.ReadProperty(NPath, PersObj, PropName, True, True);
+  end;
 end;
 
 procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
 begin
   if Assigned(AppStorage) then
-    with AppStorage do
-      WriteProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, True);
+    AppStorage.WriteProperty(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, True);
 end;
 
 {$IFDEF UNITVERSIONING}

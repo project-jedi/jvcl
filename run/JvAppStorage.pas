@@ -306,7 +306,8 @@ type
     { Determines if the specified value is stored (ignores sub stores) }
     function ValueStoredInt(const Path: string): Boolean; virtual; abstract;
     { Determines if the specified list is stored (ignores sub stores) }
-    function ListStoredInt(const Path: string): Boolean;
+    function ListStoredInt(const Path: string; const ItemName: string = cItem):
+        Boolean; virtual;
     { Deletes the specified value. If the value wasn't stored, nothing will happen (ignores sub
       stores). }
     procedure DeleteValueInt(const Path: string); virtual; abstract;
@@ -406,6 +407,10 @@ type
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
     procedure DoError(const msg: string);
+    function ReadListItemCount(const Path: string; const ItemName: string = cItem):
+        Integer; virtual;
+    procedure WriteListItemCount(const Path: string; const ItemCount: Integer;
+        const ItemName: string = cItem); virtual;
     property CurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent
         read FCurrentInstanceCreateEvent;
   public
@@ -451,7 +456,8 @@ type
     { Determines if the specified value is stored }
     function ValueStored(const Path: string): Boolean;
     { Determines if the specified list is stored }
-    function ListStored(const Path: string): Boolean;
+    function ListStored(const Path: string; const ItemName: string = cItem):
+        Boolean;
     { Deletes the specified value. If the value wasn't stored, nothing will happen. }
     procedure DeleteValue(const Path: string);
     { Deletes all values and sub folders of the specified folder including the folder itself. }
@@ -606,6 +612,8 @@ type
     procedure DisablePropertyValueCrypt;
     { Returns the current state if Property-Value Cryption is enabled }
     function IsPropertyValueCryptEnabled: Boolean;
+    function ItemNameIndexPath(const ItemName: string; const Index: Integer):
+        string; virtual;
     {$IFDEF COMPILER6_UP}
     function ReadWideString(const Path: string; const Default: WideString = ''):
         WideString;
@@ -703,7 +711,7 @@ type
     FDefaultIfValueNotExists: Boolean;
     FStoreDefaultValues: Boolean;
     FStoreStringListAsSingleString: Boolean;
-    procedure SetStoreDefaultValues(const Value: Boolean);
+    FUseOldItemNameFormat: Boolean;
   protected
     procedure SetBooleanAsString(Value: Boolean); virtual;
     procedure SetBooleanStringTrueValues(Value: string); virtual;
@@ -717,12 +725,15 @@ type
     procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
     function IsValueListString(const AValue, AList: string): Boolean; virtual;
     procedure SetStoreStringListAsSingleString(const Value: Boolean); virtual;
+    procedure SetUseOldItemNameFormat(const Value: Boolean); virtual;
+    procedure SetStoreDefaultValues(const Value: Boolean); virtual;
     //Flag to determine if a stringlist should be stored as single string and not as list of string items
     property StoreStringListAsSingleString: Boolean read
         FStoreStringListAsSingleString write SetStoreStringListAsSingleString
         default False;
   public
     constructor Create; virtual;
+    procedure Assign(Source: TPersistent); override;
     function DefaultTrueString: string;
     function DefaultFalseString: string;
     function IsValueTrueString(Value: string): Boolean;
@@ -744,6 +755,13 @@ type
       write SetDefaultIfValueNotExists default True;
     property StoreDefaultValues: Boolean read FStoreDefaultValues
       write SetStoreDefaultValues default True;
+    //1 Property to define the format of list entries, the new format is <item>[<nr>], the old format is <item><nr>.
+    /// Property to define the format of list entries, the new format is <item>[<nr>],
+    /// the old format is <item><nr>.
+    /// The advantage of the new format for xml-appstorage is that the brackets will be
+    /// removed.
+    property UseOldItemNameFormat: Boolean read FUseOldItemNameFormat write
+        SetUseOldItemNameFormat default True;
   end;
 
   TJvAppStorageOptions = class(TJvCustomAppStorageOptions)
@@ -759,6 +777,7 @@ type
     property DefaultIfReadConvertError;
     property DefaultIfValueNotExists;
     property StoreDefaultValues;
+    property UseOldItemNameFormat;
   end;
 
   TJvAppSubStorages = class(TOwnedCollection)
@@ -1079,17 +1098,43 @@ begin
   DefaultIfReadConvertError := False;
   DefaultIfValueNotExists := True;
   StoreDefaultValues := True;
-  FStoreStringListAsSingleString := False;
+  StoreStringListAsSingleString := False;
+  UseOldItemNameFormat := True;
+end;
+
+procedure TJvCustomAppStorageOptions.Assign(Source: TPersistent);
+begin
+  if (Source = Self) then
+    Exit;
+  if Source is TJvCustomAppStorageOptions then
+  begin
+    BooleanStringTrueValues := TJvCustomAppStorageOptions(Source).BooleanStringTrueValues;
+    BooleanStringFalseValues := TJvCustomAppStorageOptions(Source).BooleanStringFalseValues;
+    BooleanAsString := TJvCustomAppStorageOptions(Source).BooleanAsString;
+    EnumerationAsString := TJvCustomAppStorageOptions(Source).EnumerationAsString;
+    TypedIntegerAsString := TJvCustomAppStorageOptions(Source).TypedIntegerAsString;
+    SetAsString := TJvCustomAppStorageOptions(Source).SetAsString;
+    DateTimeAsString := TJvCustomAppStorageOptions(Source).DateTimeAsString;
+    DefaultIfReadConvertError := TJvCustomAppStorageOptions(Source).DefaultIfReadConvertError;
+    DefaultIfValueNotExists := TJvCustomAppStorageOptions(Source).DefaultIfValueNotExists;
+    StoreDefaultValues := TJvCustomAppStorageOptions(Source).StoreDefaultValues;
+    StoreStringListAsSingleString := TJvCustomAppStorageOptions(Source).StoreStringListAsSingleString;
+    UseOldItemNameFormat := TJvCustomAppStorageOptions(Source).UseOldItemNameFormat;
+  end
+  else
+    inherited assign(Source);
 end;
 
 function TJvCustomAppStorageOptions.IsValueListString(const AValue, AList: string): Boolean;
+var
+  st: TStringList;
 begin
-  with TStringList.Create do
+  st := TStringList.Create;
   try
-    CommaText := UpperCase(AList);
-    Result := IndexOf(UpperCase(AValue)) >= 0;
+    st.CommaText := UpperCase(AList);
+    Result := st.IndexOf(UpperCase(AValue)) >= 0;
   finally
-    Free;
+    st.Free;
   end;
 end;
 
@@ -1187,6 +1232,12 @@ begin
   FStoreStringListAsSingleString := Value;
 end;
 
+procedure TJvCustomAppStorageOptions.SetUseOldItemNameFormat(const Value:
+    Boolean);
+begin
+  FUseOldItemNameFormat := Value;
+end;
+
 //=== { TJvCustomAppStorage } ================================================
 
 constructor TJvCustomAppStorage.Create(AOwner: TComponent);
@@ -1205,9 +1256,9 @@ end;
 
 destructor TJvCustomAppStorage.Destroy;
 begin
-  FreeAndNil(FInternalTranslateStringEngine);
   if FlushOnDestroy then
     Flush;
+  FreeAndNil(FInternalTranslateStringEngine);
   FreeAndNil(FSubStorages);
   FreeAndNil(FStorageOptions);
   inherited Destroy;
@@ -1341,14 +1392,14 @@ procedure TJvCustomAppStorage.ReadStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
   if List is TStrings then
-    TStrings(List).Add(Sender.ReadString(ConcatPaths([Path, ItemName + IntToStr(Index)])));
+    TStrings(List).Add(Sender.ReadString(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)])));
 end;
 
 procedure TJvCustomAppStorage.WriteStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
   if List is TStrings then
-    Sender.WriteString(ConcatPaths([Path, ItemName + IntToStr(Index)]), TStrings(List)[Index]);
+    Sender.WriteString(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]), TStrings(List)[Index]);
 end;
 
 procedure TJvCustomAppStorage.DeleteStringListItem(Sender: TJvCustomAppStorage;
@@ -1386,7 +1437,7 @@ var
 begin
   if List is TList then
   try
-    NewPath := ConcatPaths([Path, ItemName + IntToStr(Index)]);
+    NewPath := ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]);
     ResolvePath(NewPath, TargetStore, TargetPath); // Only needed for assigning the event
     NewItem := TargetStore.CurrentInstanceCreateEvent(Sender, NewPath, Index);
     TList(List).Add(NewItem);
@@ -1400,7 +1451,7 @@ procedure TJvCustomAppStorage.WriteObjectListItem(Sender: TJvCustomAppStorage;
 begin
   if List is TList then
     if Assigned(TList(List)[Index]) then
-      Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(TList(List)[Index]));
+      Sender.WritePersistent(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]), TPersistent(TList(List)[Index]));
 end;
 
 procedure TJvCustomAppStorage.DeleteObjectListItem(Sender: TJvCustomAppStorage;
@@ -1424,7 +1475,7 @@ var
 begin
   if List is TStrings then
   try
-    NewPath := ConcatPaths([Path, ItemName + IntToStr(Index)]);
+    NewPath := ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]);
     ResolvePath(NewPath, TargetStore, TargetPath); // Only needed for assigning the event
     NewItem := TargetStore.CurrentInstanceCreateEvent(Sender, ConcatPaths([NewPath, cObject]), Index);
     NewName := Sender.ReadString(ConcatPaths([NewPath, cItemName]));
@@ -1445,16 +1496,16 @@ var
 begin
   if List is TStrings then
   begin
-    Sender.WriteString(ConcatPaths([Path, ItemName + IntToStr(Index), cItemName]), TStrings(List)[Index]);
+    Sender.WriteString(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index), cItemName]), TStrings(List)[Index]);
     Obj := TStrings(List).Objects[Index];
     if Assigned(Obj) then
       if (Obj is TJvCustomPropertyStore) then
         if not TJvCustomPropertyStore(Obj).ReadOnly then
-          Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index), cObject]), TPersistent(Obj),
+          Sender.WritePersistent(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index), cObject]), TPersistent(Obj),
             True, TJvCustomPropertyStore(Obj).CombinedIgnoreProperties)
         else
       else
-        Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index), cObject]), TPersistent(Obj));
+        Sender.WritePersistent(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index), cObject]), TPersistent(Obj));
   end;
 end;
 
@@ -1476,7 +1527,7 @@ var
 begin
   if List is TCollection then
   try
-    NewPath := ConcatPaths([Path, ItemName + IntToStr(Index)]);
+    NewPath := ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]);
     NewItem := TCollection(List).Add;
     if NewItem is TJvCustomPropertyStore then
       Sender.ReadPersistent(NewPath, NewItem, True, True,
@@ -1498,11 +1549,11 @@ begin
     if Assigned(Item) then
       if Item is TJvCustomPropertyStore then
         if not TJvCustomPropertyStore(Item).ReadOnly then
-          Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(Item),
+          Sender.WritePersistent(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]), TPersistent(Item),
             True, TJvCustomPropertyStore(Item).CombinedIgnoreProperties)
         else
       else
-        Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(Item));
+        Sender.WritePersistent(ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]), TPersistent(Item));
   end;
 end;
 
@@ -1610,7 +1661,8 @@ begin
   end;
 end;
 
-function TJvCustomAppStorage.ListStoredInt(const Path: string): Boolean;
+function TJvCustomAppStorage.ListStoredInt(const Path: string; const ItemName:
+    string = cItem): Boolean;
 begin
   Result := ValueStoredInt(StrEnsureSuffix(PathDelim, Path) + cCount);
 end;
@@ -1892,13 +1944,14 @@ begin
   Result := TargetStore.ValueStoredInt(TargetPath);
 end;
 
-function TJvCustomAppStorage.ListStored(const Path: string): Boolean;
+function TJvCustomAppStorage.ListStored(const Path: string; const ItemName:
+    string = cItem): Boolean;
 var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  Result := TargetStore.ListStoredInt(TargetPath);
+  Result := TargetStore.ListStoredInt(TargetPath, ItemName);
 end;
 
 procedure TJvCustomAppStorage.DeleteValue(const Path: string);
@@ -2042,7 +2095,7 @@ var
   I: Integer;
   ItemCount: Integer;
 begin
-  ItemCount := ReadInteger(ConcatPaths([Path, cCount]), 0);
+  ItemCount := ReadListItemCount (Path, ItemName);
   for I := 0 to ItemCount - 1 do
     OnReadItem(Self, Path, List, I, ItemName);
   Result := ItemCount;
@@ -2060,8 +2113,8 @@ begin
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath); // Only Needed for ReadOnly
   if not TargetStore.ReadOnly then
   begin
-    PrevListCount := ReadInteger(ConcatPaths([Path, cCount]), 0);
-    WriteInteger(ConcatPaths([Path, cCount]), ItemCount);
+    PrevListCount := ReadListItemCount (Path, ItemName);
+    WriteListItemCount (Path, ItemCount, ItemName);
     for I := 0 to ItemCount - 1 do
       OnWriteItem(Self, Path, List, I, ItemName);
     if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
@@ -2083,7 +2136,7 @@ var
   TargetPath: string;
   FOldInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent;
 begin
-  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStored(Path, ItemName) and StorageOptions.DefaultIfValueNotExists then
     Result := List.Count
   else
   begin
@@ -2109,7 +2162,7 @@ end;
 function TJvCustomAppStorage.ReadCollection(const Path: string; List: TCollection;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
 begin
-  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStored(Path, ItemName) and StorageOptions.DefaultIfValueNotExists then
     Result := List.Count
   else
   try
@@ -2135,7 +2188,7 @@ function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrin
 begin
   if ClearFirst then
     SL.Clear;
-  if not ListStored(Path) then
+  if not ListStored(Path, ItemName) then
   begin
     if ValueStored(Path) then
       Sl.Text := ReadString(Path);
@@ -2158,7 +2211,7 @@ procedure TJvCustomAppStorage.WriteStringList(const Path: string;
 begin
   if StorageOptions.StoreStringListAsSingleString then
   begin
-    if ListStored(path) then
+    if ListStored(Path, ItemName) then
       DeleteSubTree(Path);
     WriteString(Path, SL.Text);
   end
@@ -2182,7 +2235,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  if not ListStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStoredInt(Path, ItemName) and StorageOptions.DefaultIfValueNotExists then
     Result := SL.Count
   else
   begin
@@ -2367,47 +2420,47 @@ procedure TJvCustomAppStorage.ReadSetInt(const Path: string;
 var
   Lst: TStrings;
   I: Integer;
+  JclOrdinalRangeTypeInfo : IJclOrdinalRangeTypeInfo;
+  JclEnumerationTypeInfo : IJclEnumerationTypeInfo;
 begin
   if IsFolder(Path) then
   begin
     Lst := TStringList.Create;
     try
-      with (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
-      begin
-        case GetTypeKind of
-          tkEnumeration:
-            begin
-              with ((JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclEnumerationTypeInfo) do
-                for I := GetMinValue to GetMaxValue do
-                  if ReadBooleanInt(ConcatPaths([Path, GetNames(I)]), False) then
-                    Lst.Add(GetNames(I));
-              (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
-            end;
-          tkChar:
-            begin
-              JclStrToSet(ATypeInfo, Value, ''); // empty out value
-              for I := GetMinValue to GetMaxValue do
-                if ReadBooleanInt(ConcatPaths([Path, GetCharName(Chr(I))]), False) then
-                  {$IFDEF CLR}
-                  Value := TIntegerSet(Value) + [I];
-                  {$ELSE}
-                  Include(TIntegerSet(Value), I);
-                  {$ENDIF CLR}
-            end;
-          tkInteger:
-            begin
-              for I := GetMinValue to GetMaxValue do
-                if ReadBooleanInt(ConcatPaths([Path, GetIntName(I)]), False) then
-                  Lst.Add(IntToStr(I));
-              (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
-            end;
-        else
-          {$IFDEF CLR}
-          raise EJVCLAppStorageError.Create(RsEUnknownBaseType);
-          {$ELSE}
-          raise EJVCLAppStorageError.CreateRes(@RsEUnknownBaseType);
-          {$ENDIF CLR}
-        end;
+      JclOrdinalRangeTypeInfo := (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo;
+      case JclOrdinalRangeTypeInfo.GetTypeKind of
+        tkEnumeration:
+          begin
+            JclEnumerationTypeInfo := ((JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclEnumerationTypeInfo);
+              for I := JclEnumerationTypeInfo.GetMinValue to JclEnumerationTypeInfo.GetMaxValue do
+                if ReadBooleanInt(ConcatPaths([Path, JclEnumerationTypeInfo.GetNames(I)]), False) then
+                  Lst.Add(JclEnumerationTypeInfo.GetNames(I));
+            (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
+          end;
+        tkChar:
+          begin
+            JclStrToSet(ATypeInfo, Value, ''); // empty out value
+            for I := JclOrdinalRangeTypeInfo.GetMinValue to JclOrdinalRangeTypeInfo.GetMaxValue do
+              if ReadBooleanInt(ConcatPaths([Path, GetCharName(Chr(I))]), False) then
+                {$IFDEF CLR}
+                Value := TIntegerSet(Value) + [I];
+                {$ELSE}
+                Include(TIntegerSet(Value), I);
+                {$ENDIF CLR}
+          end;
+        tkInteger:
+          begin
+            for I := JclOrdinalRangeTypeInfo.GetMinValue to JclOrdinalRangeTypeInfo.GetMaxValue do
+              if ReadBooleanInt(ConcatPaths([Path, GetIntName(I)]), False) then
+                Lst.Add(IntToStr(I));
+            (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
+          end;
+      else
+        {$IFDEF CLR}
+        raise EJVCLAppStorageError.Create(RsEUnknownBaseType);
+        {$ELSE}
+        raise EJVCLAppStorageError.CreateRes(@RsEUnknownBaseType);
+        {$ENDIF CLR}
       end;
     finally
       FreeAndNil(Lst);
@@ -2422,6 +2475,8 @@ procedure TJvCustomAppStorage.WriteSetInt(const Path: string; ATypeInfo: PTypeIn
 var
   Lst: TStrings;
   I: Integer;
+  JclOrdinalRangeTypeInfo : IJclOrdinalRangeTypeInfo;
+  JclEnumerationTypeInfo : IJclEnumerationTypeInfo;
 begin
   if StorageOptions.SetAsString then
     WriteStringInt(Path, JclSetToStr(ATypeInfo, Value, True))
@@ -2429,27 +2484,26 @@ begin
   begin
     Lst := TStringList.Create;
     try
-      with (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
+      JclOrdinalRangeTypeInfo := (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo;
       begin
-        case GetTypeKind of
+        case JclOrdinalRangeTypeInfo.GetTypeKind of
           tkEnumeration:
             begin
               (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
-              with ((JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as
-                IJclEnumerationTypeInfo) do
-                for I := GetMinValue to GetMaxValue do
-                  WriteBooleanInt(ConcatPaths([Path, GetNames(I)]),
-                    Lst.IndexOf(GetNames(I)) > -1);
+              JclEnumerationTypeInfo :=((JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclEnumerationTypeInfo);
+              for I := JclEnumerationTypeInfo.GetMinValue to JclEnumerationTypeInfo.GetMaxValue do
+                WriteBooleanInt(ConcatPaths([Path, JclEnumerationTypeInfo.GetNames(I)]),
+                  Lst.IndexOf(JclEnumerationTypeInfo.GetNames(I)) > -1);
             end;
           tkChar:
             begin
-              for I := GetMinValue to GetMaxValue do
+              for I := JclOrdinalRangeTypeInfo.GetMinValue to JclOrdinalRangeTypeInfo.GetMaxValue do
                 WriteBooleanInt(ConcatPaths([Path, GetCharName(Chr(I))]), I in TIntegerSet(Value));
             end;
           tkInteger:
             begin
               (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
-              for I := GetMinValue to GetMaxValue do
+              for I := JclOrdinalRangeTypeInfo.GetMinValue to JclOrdinalRangeTypeInfo.GetMaxValue do
                 WriteBooleanInt(ConcatPaths([Path, GetIntName(I)]),
                   Lst.IndexOf(IntToStr(I)) > -1);
             end;
@@ -2894,6 +2948,15 @@ begin
   Result := (FCryptEnabledStatus > 0);
 end;
 
+function TJvCustomAppStorage.ItemNameIndexPath(const ItemName: string; const
+    Index: Integer): string;
+begin
+  if StorageOptions.UseOldItemNameFormat then
+    Result := ItemName + IntToStr(Index)
+  else
+    Result := ItemName + '['+IntToStr(Index)+']';
+end;
+
 procedure TJvCustomAppStorage.Loaded;
 begin
   inherited Loaded;
@@ -2963,6 +3026,12 @@ begin
   Result := FUpdateCount <> 0;
 end;
 
+function TJvCustomAppStorage.ReadListItemCount(const Path: string; const
+    ItemName: string = cItem): Integer;
+begin
+  Result := ReadInteger(ConcatPaths([Path, cCount]), 0);
+end;
+
 procedure TJvCustomAppStorage.Synchronize(AMethod: TSynchronizeMethod;
     AIdentifier: String);
 var
@@ -2985,6 +3054,12 @@ begin
       FreeAndNil(JclMutex);
     end;
   end;
+end;
+
+procedure TJvCustomAppStorage.WriteListItemCount(const Path: string; const
+    ItemCount: Integer; const ItemName: string = cItem);
+begin
+  WriteInteger(ConcatPaths([Path, cCount]), ItemCount);
 end;
 
 
