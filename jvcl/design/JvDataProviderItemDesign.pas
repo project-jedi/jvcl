@@ -679,9 +679,9 @@ begin
   GetPropDataFromIndex(Index, instance, info);
   {$IFDEF COMPILER6_UP}
   Result := TypInfo.GetWideStrProp(instance, info);
-  {$ELSE}
+  {$ELSE ~COMPILER6_UP}
   Result := TypInfo.GetStrProp(instance, info);
-  {$ENDIF}
+  {$ENDIF ~COMPILER6_UP}
 end;
 
 procedure TBaseItemDsgn.InjectImplementers;
@@ -959,7 +959,11 @@ var
   info: PPropInfo;
 begin
   GetPropDataFromIndex(Index, instance, info);
+  {$IFDEF COMPILER6_UP}
   TypInfo.SetWideStrProp(instance, info, Value);
+  {$ELSE ~COMPILER6_UP}
+  TypInfo.SetStrProp(instance, info, Value);
+  {$ENDIF ~COMPILER6_UP}
 end;
 
 //=== Registration of default interface property views =======================
