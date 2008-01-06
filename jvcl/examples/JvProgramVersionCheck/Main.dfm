@@ -49,12 +49,22 @@ object Form1: TForm1
     TabOrder = 0
     OnClick = Button1Click
   end
+  object Button2: TButton
+    Left = 205
+    Top = 235
+    Width = 75
+    Height = 25
+    Caption = 'Edit History'
+    TabOrder = 1
+    OnClick = Button2Click
+  end
   object JvAppIniFileStorageVersionCheck: TJvAppIniFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     StorageOptions.SetAsString = True
     StorageOptions.FloatAsString = True
     StorageOptions.DefaultIfReadConvertError = True
+    StorageOptions.UseOldItemNameFormat = False
     StorageOptions.ReplaceCRLF = True
     AutoFlush = True
     AutoReload = True
@@ -69,33 +79,51 @@ object Form1: TForm1
     AppStoragePath = 'Local'
     CheckFrequency = 0
     LocalDirectory = 'Version Check\a\b\c'
-    LocalVersionInfoFileName = 'ProgramVersionCheckLocal.Ini'
-    LocationDatabase = JvProgramVersionDatabaseLocation1
-    LocationFTP = JvProgramVersionFTPLocation1
-    LocationHTTP = JvProgramVersionHTTPLocation1
-    LocationNetwork = JvProgramVersionNetworkLocation1
+    LocalVersionInfoFileName = 'ProgramVersionCheckLocal.xml'
+    LocationDatabase = JvProgramVersionDatabaseLocation
+    LocationFTP = JvProgramVersionFTPLocation
+    LocationHTTP = JvProgramVersionHTTPLocation
+    LocationNetwork = JvProgramVersionNetworkLocation
     LocationType = pvltNetwork
     UserOptions = [uoCheckFrequency, uoAllowedReleaseType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase]
+    VersionHistoryFileOptions.FileFormat = hffXML
+    VersionHistoryFileOptions.INIOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    VersionHistoryFileOptions.INIOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    VersionHistoryFileOptions.INIOptions.SetAsString = True
+    VersionHistoryFileOptions.INIOptions.FloatAsString = True
+    VersionHistoryFileOptions.INIOptions.DefaultIfReadConvertError = True
+    VersionHistoryFileOptions.INIOptions.UseOldItemNameFormat = False
+    VersionHistoryFileOptions.XMLOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    VersionHistoryFileOptions.XMLOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    VersionHistoryFileOptions.XMLOptions.SetAsString = True
+    VersionHistoryFileOptions.XMLOptions.FloatAsString = True
+    VersionHistoryFileOptions.XMLOptions.DefaultIfReadConvertError = True
+    VersionHistoryFileOptions.XMLOptions.UseOldItemNameFormat = False
+    VersionHistoryFileOptions.XMLOptions.WhiteSpaceReplacement = '_'
+    VersionHistoryFileOptions.XMLOptions.AutoEncodeValue = False
+    VersionHistoryFileOptions.XMLOptions.AutoEncodeEntity = False
+    VersionHistoryFileOptions.XMLOptions.AutoIndent = False
+    VersionHistoryFileOptions.XMLOptions.InvalidCharReplacement = '_'
     Left = 355
     Top = 205
   end
-  object JvProgramVersionNetworkLocation1: TJvProgramVersionNetworkLocation
+  object JvProgramVersionNetworkLocation: TJvProgramVersionNetworkLocation
     VersionInfoLocationPathList.Strings = (
       'Version Check\Remote')
-    VersionInfoFileName = 'ProjektVersions.ini'
+    VersionInfoFileName = 'ProjektVersions.xml'
     Left = 105
     Top = 200
   end
-  object JvProgramVersionHTTPLocation1: TJvProgramVersionHTTPLocation
+  object JvProgramVersionHTTPLocation: TJvProgramVersionHTTPLocation
     VersionInfoFileName = 'ProjektVersions_http.ini'
     Left = 105
     Top = 240
   end
-  object JvProgramVersionFTPLocation1: TJvProgramVersionFTPLocation
+  object JvProgramVersionFTPLocation: TJvProgramVersionFTPLocation
     Left = 105
     Top = 280
   end
-  object JvProgramVersionDatabaseLocation1: TJvProgramVersionDatabaseLocation
+  object JvProgramVersionDatabaseLocation: TJvProgramVersionDatabaseLocation
     Left = 105
     Top = 320
   end
