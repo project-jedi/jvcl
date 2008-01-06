@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Ralf Steinhaeusser [ralfiii att gmx dott net].
 Steefan Lesage - converted to use new OTA
-RH - fix for RAD Studio 2007
+Ramzi Haidar - fix for RAD Studio 2007
 Florent Ouchet - updated OTA
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
