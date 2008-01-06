@@ -30,7 +30,7 @@ unit JvDataProviderItemDesign;
 interface
 
 uses
-  Classes, TypInfo, 
+  Classes, SysUtils, TypInfo, 
   JvDataProvider, JvDataProviderIntf;
 
 type
@@ -112,7 +112,7 @@ procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataPro
 implementation
 
 uses
-  Windows, SysUtils, ImgList,
+  Windows, ImgList,
   JclSysUtils,
   JvDsgnConsts, JvJCLUtils, JvVCL5Utils;
 
@@ -632,7 +632,7 @@ begin
   // instance is the implementer at index specified in the high-word of the Index parameter
   Instance := GetImplementer(HiWord(Index));
   // Retrieve the property list
-  GetPropList(Instance, props);
+  GetPropList(PTypeInfo(Instance.ClassInfo), tkAny, props{$IFDEF COMPILER6_UP}, False{$ENDIF});
   try
     // Get the property at the index specified in the low-word of the Index parameter
     Info := props[LoWord(Index)];
@@ -665,7 +665,11 @@ var
   info: PPropInfo;
 begin
   GetPropDataFromIndex(Index, instance, info);
+  {$IFDEF COMPILER6_UP}
   Result := TypInfo.GetWideStrProp(instance, info);
+  {$ELSE}
+  Result := TypInfo.GetStrProp(instance, info);
+  {$ENDIF}
 end;
 
 procedure TBaseItemDsgn.InjectImplementers;
@@ -691,7 +695,7 @@ var
       // get the implementation
       implInst := GetImplementer(implIndex);
       // get the property info list, including inherited properties
-      thisCount := GetPropList(implInst, implProps);
+      thisCount := GetPropList(PTypeInfo(implInst.ClassInfo), tkAny, implProps{$IFDEF COMPILER6_UP}, False{$ENDIF});
       try
         // update the count
         Inc(numNewProps, thisCount);
@@ -825,7 +829,7 @@ var
       // get the implementation
       implInst := GetImplementer(implIndex);
       // get the properties to add
-      numProps := GetPropList(implInst, implProps);
+      numProps := GetPropList(PTypeInfo(implInst.ClassInfo), tkAny, implProps{$IFDEF COMPILER6_UP}, False{$ENDIF});
       try
         // iterate to copy the property
         for propIndex := 0 to numProps - 1 do
