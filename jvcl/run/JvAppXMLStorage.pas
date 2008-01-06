@@ -1054,7 +1054,10 @@ begin
   sh := trim(sNodeName);
   p := Pos(']', sh);
   if  p <> Length(sh) then
+  begin
+    sNodeName := CheckNodeNameCharacters(sNodeName);
     Exit;
+  end;
   p := CharLastPos(sh, '[');
   if p > 0 then
   begin
