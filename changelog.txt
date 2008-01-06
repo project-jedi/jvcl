@@ -10,7 +10,8 @@ Changelog for JVCL 3.X
   This unit gives you the option to edit the contents of a TJvCustomPropertyStore Component at runtime.
   It supports cascading support of components, and also supports the TJvCustomPropertyListStore components. 
   For Liststore components the editor has the abbility to create additional list entries at runtime.
-  This editor can for example be used to give the user an editor for program options based on TJvCustomPropertyStore
+  This editor can for example be used to give the user an editor for program options based on TJvCustomPropertyStore.
+  You find an example how it could be used in examples\JvProgramVersionCheck
   
 2007-08-18
 - Added donation TJvTimeEdit (by Niels v/d Spek)
