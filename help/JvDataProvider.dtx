@@ -533,14 +533,34 @@ See Also
   TExtensibleInterfacedPersistent.RefCount
 
 ----------------------------------------------------------------------------------------------------
+@@TExtensibleInterfacedPersistent.GetImplementer
+Summary
+  Returns the extension instance at the specified index.
+Description
+  GetImplementer returns the extension instance at the specified index. The index is zero-based and
+  acceptable values must be between zero and one less than the number of extensions as returned by
+  ImplCount.
+Parameters
+  Index - The zero-based index of the extension to retrieve.
+See Also
+  TExtensibleInterfacedPersistent.ImplCount
+
+----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.GetImplOfClass
 Summary
   Returns the extension instance of the specified class.
 Description
-  GetImplOfClass returns the extension instance of the specified class.  If there's no extension of the specified class,
-  GetImplOfClass returns <c><b>nil</b></c>.
+  GetImplOfClass returns the extension instance of the specified class.  If there's no extension of
+  the specified class, GetImplOfClass returns <c><b>nil</b></c>.
 Parameters
   AClass - Extension class to locate.
+
+----------------------------------------------------------------------------------------------------
+@@TExtensibleInterfacedPersistent.ImplCount
+Summary
+  Returns the number of extension implementations registered.
+Description
+  ImplCount returns the number of extension implementations currently registered with this instance.
 
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.IndexOfImplClass

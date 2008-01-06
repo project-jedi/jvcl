@@ -64,7 +64,7 @@ type
     FDesigner: IJvFormDesigner;
   protected
     FOrgSelect: IDesignerSelections;
-    FPropView: TJvDataProviderItem;
+    FPropView: TPersistent;
     FRootItem: IJvDataItem;
     procedure ResetSelection;
     procedure SetNewSelection(AnItem: IJvDataItem);
@@ -85,8 +85,7 @@ type
     property Designer: IJvFormDesigner read FDesigner write SetDesigner;
   end;
 
-procedure DesignProvider(AProvider: IJvDataProvider;
-  ADesigner: IJvFormDesigner; PropName: string);
+procedure DesignProvider(AProvider: IJvDataProvider; ADesigner: IJvFormDesigner; PropName: string);
 
 implementation
 
@@ -105,8 +104,7 @@ begin
         (Pointer(Designer) = Args[1].VInterface);
 end;
 
-procedure DesignProvider(AProvider: IJvDataProvider;
-  ADesigner: IJvFormDesigner; PropName: string);
+procedure DesignProvider(AProvider: IJvDataProvider; ADesigner: IJvFormDesigner; PropName: string);
 var
   Form: TfrmDataProviderDesigner;
 begin
@@ -156,15 +154,14 @@ procedure TfrmDataProviderDesigner.ResetSelection;
 begin
   if (Designer <> nil) and (FOrgSelect <> nil) then
     Designer.SetSelections(FOrgSelect);
-  if FPropView <> nil then
-    FreeAndNil(FPropView);
+  FreeItemDesigner(FPropView);
 end;
 
 procedure TfrmDataProviderDesigner.SetNewSelection(AnItem: IJvDataItem);
 begin
-  FreeAndNil(FPropView);
-  FPropView := TJvDataProviderItem.Create(AnItem);
-  if Designer <> nil then
+  FreeItemDesigner(FPropView);
+  FPropView := GetItemDesigner(AnItem);
+  if (Designer <> nil) and (FPropView <> nil) then
     Designer.SelectComponent(FPropView);
 end;
 

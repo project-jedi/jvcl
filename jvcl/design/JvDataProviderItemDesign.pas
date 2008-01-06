@@ -30,13 +30,21 @@ unit JvDataProviderItemDesign;
 interface
 
 uses
-  Classes,
-  JvDataProviderIntf;
+  Classes, TypInfo, 
+  JvDataProvider, JvDataProviderIntf;
 
 type
-  { An instance of this class is created when an item is selected in the ProviderEditor. The class
-    provides a reference to the item selected. Based on the interfaces supported by the item,
-    published properties are "injected" into this class. }
+  { Default item designer for IJvDataItem and its supporting interfaces. This designer is able to handle any IJvDataItem
+    implementation and injects properties based on the interfaces it supports. This is accomplished by descendants of
+    this class (called Views in this context), which can not contain instance fields and who's published properties are
+    read and injected into the main designer class. Each descendant should be linked to its accompanying interface using
+    the RegisterDataItemIntfProp routine. Note that for the standard interfaces views have already been registered.
+
+    The downside is that you can only edit properties for registered interfaces. In some situations an interface could
+    be setup in multiple ways, ie. using a reference to a TAction or using a simple event, and the system is not able
+    to distinguish these two options (unless you provide a separate interface for each possibility and register a view
+    for it. See TBaseItemDsgn for the class that is used when the implementer of IJvDataItem is based on the
+    TExtensibleInterfacedPersistent class, providing a more flexible approach. }
   TJvDataProviderItem = class(TPersistent)
   private
     FItem: IJvDataItem;
@@ -50,12 +58,61 @@ type
 
   TJvDataProviderItemClass = class of TJvDataProviderItem;
 
+  { Item designer based on implementations with TExtenisbleInterfacedPersistent as their base. Since these
+    implementations have access to the various implementers more directly, the property injection is handled slightly
+    different.
+
+    Instead of creating a single instance and linking it to the IJvDataItem implementation, we simply inject the
+    published properties from the implementers, and revert it when the item is deselected. The required amount of memory
+    is pre-calculated, too, to avoid possible access violations in case there are a lot of implementers and/or
+    properties to inject.
+
+    The downside is a decrease in performance, though the difference isn't much of an issue when in designing mode (who
+    really notices or cares about the difference between waiting 10ms or 100ms after selecting an item and seeing its
+    properties appear in the Object Inspector?).
+  }
+  TBaseItemDsgn = class (TExtensibleInterfacedPersistent)
+  private
+    function GetIsStoredProp(Index: Integer): Boolean;
+    {$IFDEF COMPILER6_UP}
+    function GetDynArrayProp(Index: Integer): Pointer;
+    procedure SetDynArrayProp(Index: Integer; Value: Pointer);
+    {$ENDIF}
+    function GetFloatProp(Index: Integer): Extended;
+    procedure SetFloatProp(Index: Integer; Value: Extended);
+    function GetInt64Prop(Index: Integer): Int64;
+    procedure SetInt64Prop(Index: Integer; Value: Int64);
+    {$IFDEF COMPILER6_UP}
+    function GetInterfaceProp(Index: Integer): IInterface;
+    procedure SetInterfaceProp(Index: Integer; Value: IInterface);
+    {$ENDIF}
+    function GetMethodProp(Index: Integer): TMethod;
+    procedure SetMethodProp(Index: Integer; Value: TMethod);
+    function GetOrdProp(Index: Integer): Longint;
+    procedure SetOrdProp(Index: Integer; Value: Longint);
+    function GetStrProp(Index: Integer): string;
+    procedure SetStrProp(Index: Integer; Value: string);
+    function GetVariantProp(Index: Integer): Variant;
+    procedure SetVariantProp(Index: Integer; Value: Variant);
+    function GetWideStrProp(Index: Integer): WideString;
+    procedure SetWideStrProp(Index: Integer; Value: WideString);
+  protected
+    procedure GetPropDataFromIndex(Index: Integer; out Instance: TObject; out Info: PPropInfo);
+    procedure InjectImplementers;
+    procedure RevertRTTI;
+  end;
+
+// Free the item designer
+procedure FreeItemDesigner(var designer: TPersistent);
+// Retrieve an instance of the designer for the given item
+function GetItemDesigner(AnItem: IJvDataItem): TPersistent;
+// Register a property view for an IJvDataItem support interface
 procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataProviderItemClass);
 
 implementation
 
 uses
-  Windows, SysUtils, TypInfo, ImgList,
+  Windows, SysUtils, ImgList,
   JclSysUtils,
   JvDsgnConsts, JvJCLUtils, JvVCL5Utils;
 
@@ -70,6 +127,40 @@ type
 
 var
   GIntfPropReg: TIntfItems;
+
+procedure FreeItemDesigner(var designer: TPersistent);
+var
+  obj: TPersistent;
+begin
+  obj := designer;
+  designer := nil;
+  if (obj <> nil) then
+  begin
+    if obj is TJvDataProviderItem then
+      // free the instance of TJvDataProviderItem we created in GetItemDesigner
+      obj.Free
+    else
+      // revert our changes to the RTTI
+      TBaseItemDsgn(obj).RevertRTTI;
+  end;
+end;
+
+function GetItemDesigner(AnItem: IJvDataItem): TPersistent;
+var
+  impl: TObject;
+begin
+  impl := AnItem.Implementer;
+  if (impl is TExtensibleInterfacedPersistent) then
+  begin
+    // the implementing instance will be edited directly
+    Result := TPersistent(impl);
+    // inject published properties from each of the extension implementers
+    TBaseItemDsgn(Result).InjectImplementers;
+  end
+  else
+    // create an instance of the designer; will automatically inject properties based on the interfaces it supports
+    Result := TJvDataProviderItem.Create(AnItem);
+end;
 
 function LocateReg(IID: TGUID): Integer;
 begin
@@ -205,7 +296,7 @@ var
 begin
   P := Pointer(AClass);
   Dec(P, 60); // Now pointing to TypeInfo of the VMT table.
-  Result := PPtypeInfo(P);
+  Result := PPTypeInfo(P);
 end;
 
 procedure CreateTypeInfo(const AClass: TClass);
@@ -462,6 +553,397 @@ end;
 procedure TJvDataItemsImagesPropView.SetImages(Value: TCustomImageList);
 begin
   (Item as IJvDataItemsImages).Images := Value;
+end;
+
+//=== { TBaseItemDsgn } ======================================================
+
+{$IFDEF COMPILER6_UP}
+function TBaseItemDsgn.GetDynArrayProp(Index: Integer): Pointer;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetDynArrayProp(instance, info);
+end;
+
+{$ENDIF}
+function TBaseItemDsgn.GetFloatProp(Index: Integer): Extended;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetFloatProp(instance, info);
+end;
+
+function TBaseItemDsgn.GetInt64Prop(Index: Integer): Int64;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetInt64Prop(instance, info);
+end;
+
+function TBaseItemDsgn.GetIsStoredProp(Index: Integer): Boolean;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.IsStoredProp(instance, info);
+end;
+
+{$IFDEF COMPILER6_UP}
+function TBaseItemDsgn.GetInterfaceProp(Index: Integer): IInterface;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetInterfaceProp(instance, info);
+end;
+
+{$ENDIF}
+
+function TBaseItemDsgn.GetMethodProp(Index: Integer): TMethod;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetMethodProp(instance, info);
+end;
+
+function TBaseItemDsgn.GetOrdProp(Index: Integer): Longint;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetOrdProp(instance, info);
+end;
+
+procedure TBaseItemDsgn.GetPropDataFromIndex(Index: Integer; out Instance: TObject; out Info: PPropInfo);
+var
+  props: PPropList;
+begin
+  // instance is the implementer at index specified in the high-word of the Index parameter
+  Instance := GetImplementer(HiWord(Index));
+  // Retrieve the property list
+  GetPropList(Instance, props);
+  try
+    // Get the property at the index specified in the low-word of the Index parameter
+    Info := props[LoWord(Index)];
+  finally
+    FreeMem(props);
+  end;
+end;
+
+function TBaseItemDsgn.GetStrProp(Index: Integer): string;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetStrProp(instance, info);
+end;
+
+function TBaseItemDsgn.GetVariantProp(Index: Integer): Variant;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetVariantProp(instance, info);
+end;
+
+function TBaseItemDsgn.GetWideStrProp(Index: Integer): WideString;
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  Result := TypInfo.GetWideStrProp(instance, info);
+end;
+
+procedure TBaseItemDsgn.InjectImplementers;
+var
+  lstSize: Integer;
+  numNewProps: Integer;
+  implInst: TAggregatedPersistentEx;
+  implProps: PPropList;
+  destProp: PPropInfo;
+  destIdx: Integer;
+
+  procedure CalcAdditionalSize;
+  var
+    implIndex: Integer;
+    thisCount: Integer;
+    propIndex: Integer;
+  begin
+    lstSize := 0;
+    numNewProps := 0;
+    // iterate over the extension list
+    for implIndex := 0 to ImplCount - 1 do
+    begin
+      // get the implementation
+      implInst := GetImplementer(implIndex);
+      // get the property info list, including inherited properties
+      thisCount := GetPropList(implInst, implProps);
+      try
+        // update the count
+        Inc(numNewProps, thisCount);
+        // iterate to determine size
+        for propIndex := 0 to thisCount - 1 do
+          Inc(lstSize, SizeOf(TPropInfo) - SizeOf(ShortString) + 1 + Length(implProps[propIndex].Name));
+      finally
+        FreeMem(implProps);
+      end;
+    end;
+  end;
+
+  function CreateClonedTypeInfo: Boolean;
+  var
+    VMTTypeInfo: PPTypeInfo;
+    NewTypeInfo: PTypeInfo;
+    WrittenBytes: Cardinal;
+  begin
+    VMTTypeInfo := VMTTypeInfoFromClass(ClassType);
+    // make a copy and reserve additional space to include the extension properties
+    NewTypeInfo := CloneTypeInfo(VMTTypeInfo^, lstSize);
+    // update the RTTI
+    Result := WriteProtectedMemory(VMTTypeInfo, @NewTypeInfo, SizeOf(NewTypeInfo), WrittenBytes);
+    // if this failed, free the cloned type info
+    if not Result then
+      FreeTypeInfo(NewTypeInfo);
+  end;
+
+  procedure InitDestinationPointer;
+  var
+    TypeData: PTypeData;
+    ExistingCount: Integer;
+    BaseInfoSize: Integer;
+  begin
+    TypeData := GetTypeData(PTypeInfo(ClassInfo));
+    destProp := PPropInfo(GetPropData(TypeData));
+    destIdx := TypeData.PropCount;
+    ExistingCount := PPropData(destProp).PropCount;
+    Inc(Integer(destProp), SizeOf(Word));
+    BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
+    while ExistingCount > 0 do
+    begin
+      Inc(Integer(destProp), BaseInfoSize + Length(destProp.Name));
+      Dec(ExistingCount);
+    end;
+  end;
+
+  procedure MakeNewProperty(implementationIndex, propertyIndex: Integer);
+  var
+    size: Integer;
+  begin;
+    // get the size...
+    size := SizeOf(TPropInfo) - SizeOf(ShortString) + 1 + Length(implProps[propertyIndex].Name);
+    // copy all info...
+    Move(implProps[propertyIndex]^, destProp^, size);
+    // setup name index
+    destProp.NameIndex := destIdx;
+    // advance name index
+    Inc(destIdx);
+    // setup the property index info
+    destProp.Index := Word(implementationIndex) shl 16 + Word(propertyIndex);
+    // update stored proc
+    destProp.StoredProc := @TBaseItemDsgn.GetIsStoredProp;
+    // update GetProc/SetProc
+    case implProps[propertyIndex].PropType^.Kind of
+      tkInteger, tkChar, tkEnumeration, tkSet, tkClass, tkWChar:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetOrdProp;
+          destProp.SetProc := @TBaseItemDsgn.SetOrdProp;
+        end;
+      tkFloat:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetFloatProp;
+          destProp.SetProc := @TBaseItemDsgn.SetFloatProp;
+        end;
+      tkString, tkLString:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetStrProp;
+          destProp.SetProc := @TBaseItemDsgn.SetStrProp;
+        end;
+      tkMethod:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetMethodProp;
+          destProp.SetProc := @TBaseItemDsgn.SetMethodProp;
+        end;
+      tkWString:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetWideStrProp;
+          destProp.SetProc := @TBaseItemDsgn.SetWideStrProp;
+        end;
+      tkVariant:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetVariantProp;
+          destProp.SetProc := @TBaseItemDsgn.SetVariantProp;
+        end;
+      {$IFDEF COMPILER6_UP}
+      tkInterface:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetInterfaceProp;
+          destProp.SetProc := @TBaseItemDsgn.SetInterfaceProp;
+        end;
+      {$ENDIF}
+      tkInt64:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetInt64Prop;
+          destProp.SetProc := @TBaseItemDsgn.SetInt64Prop;
+        end;
+      {$IFDEF COMPILER6_UP}
+      tkDynArray:
+        begin
+          destProp.GetProc := @TBaseItemDsgn.GetDynArrayProp;
+          destProp.SetProc := @TBaseItemDsgn.SetDynArrayProp;
+        end;
+      {$ENDIF}
+    end;
+    // advance destination pointer
+    Inc(Integer(destProp), size);
+  end;
+
+  procedure CopyExtensionProperties;
+  var
+    implIndex: Integer;
+    numProps: Integer;
+    propIndex: Integer;
+    TypeData: PTypeData;
+
+  begin
+    // iterate over the extension list
+    for implIndex := 0 to ImplCount - 1 do
+    begin
+      // get the implementation
+      implInst := GetImplementer(implIndex);
+      // get the properties to add
+      numProps := GetPropList(implInst, implProps);
+      try
+        // iterate to copy the property
+        for propIndex := 0 to numProps - 1 do
+        begin
+          // create a new property to reference the original one
+          MakeNewProperty(implIndex, propIndex);
+        end;
+      finally
+        FreeMem(implProps);
+      end;
+    end;
+    // Update the count
+    TypeData := GetTypeData(PTypeInfo(ClassInfo));
+    TypeData.PropCount := TypeData.PropCount + numNewProps;
+    GetPropData(TypeData).PropCount := GetPropData(TypeData).PropCount + numNewProps;
+  end;
+
+begin
+  // Determine how much more memory we need...
+  CalcAdditionalSize;
+  // Create a clone, reserving enough additional memory for the properties of all extensions
+  if CreateClonedTypeInfo then
+  begin
+    // init destination pointer
+    InitDestinationPointer;
+    // Copy extension properties
+    CopyExtensionProperties;
+  end;
+end;
+
+procedure TBaseItemDsgn.RevertRTTI;
+begin
+  ClearTypeInfo(ClassType);
+end;
+
+{$IFDEF COMPILER6_UP}
+procedure TBaseItemDsgn.SetDynArrayProp(Index: Integer; Value: Pointer);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetDynArrayProp(instance, info, Value);
+end;
+
+{$ENDIF}
+procedure TBaseItemDsgn.SetFloatProp(Index: Integer; Value: Extended);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetFloatProp(instance, info, Value);
+end;
+
+procedure TBaseItemDsgn.SetInt64Prop(Index: Integer; Value: Int64);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetInt64Prop(instance, info, Value);
+end;
+
+{$IFDEF COMPILER6_UP}
+procedure TBaseItemDsgn.SetInterfaceProp(Index: Integer; Value: IInterface);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetInterfaceProp(instance, info, Value);
+end;
+
+{$ENDIF}
+procedure TBaseItemDsgn.SetMethodProp(Index: Integer; Value: TMethod);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetMethodProp(instance, info, Value);
+end;
+
+procedure TBaseItemDsgn.SetOrdProp(Index, Value: Integer);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetOrdProp(instance, info, Value);
+end;
+
+procedure TBaseItemDsgn.SetStrProp(Index: Integer; Value: string);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetStrProp(instance, info, Value);
+end;
+
+procedure TBaseItemDsgn.SetVariantProp(Index: Integer; Value: Variant);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetVariantProp(instance, info, Value);
+end;
+
+procedure TBaseItemDsgn.SetWideStrProp(Index: Integer; Value: WideString);
+var
+  instance: TObject;
+  info: PPropInfo;
+begin
+  GetPropDataFromIndex(Index, instance, info);
+  TypInfo.SetWideStrProp(instance, info, Value);
 end;
 
 //=== Registration of default interface property views =======================
