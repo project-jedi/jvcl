@@ -393,6 +393,18 @@ begin
   end;
 end;
 
+{$IFNDEF COMPILER6_UP}
+function GetPropList(TypeInfo: PTypeInfo; out PropList: PPropList): Integer;
+begin
+  Result := GetTypeData(TypeInfo)^.PropCount;
+  if Result > 0 then
+  begin
+    GetMem(PropList, Result * SizeOf(Pointer));
+    TypInfo.GetPropList(TypeInfo, tkAny, PropList);
+  end;
+end;
+{$ENDIF}
+
 //=== { TJvDataProviderItem } ================================================
 
 constructor TJvDataProviderItem.Create(AnItem: IJvDataItem);
@@ -632,7 +644,7 @@ begin
   // instance is the implementer at index specified in the high-word of the Index parameter
   Instance := GetImplementer(HiWord(Index));
   // Retrieve the property list
-  GetPropList(PTypeInfo(Instance.ClassInfo), tkAny, props{$IFDEF COMPILER6_UP}, False{$ENDIF});
+  GetPropList(PTypeInfo(Instance.ClassInfo), props);
   try
     // Get the property at the index specified in the low-word of the Index parameter
     Info := props[LoWord(Index)];
@@ -695,7 +707,7 @@ var
       // get the implementation
       implInst := GetImplementer(implIndex);
       // get the property info list, including inherited properties
-      thisCount := GetPropList(PTypeInfo(implInst.ClassInfo), tkAny, implProps{$IFDEF COMPILER6_UP}, False{$ENDIF});
+      thisCount := GetPropList(PTypeInfo(implInst.ClassInfo), implProps);
       try
         // update the count
         Inc(numNewProps, thisCount);
@@ -829,7 +841,7 @@ var
       // get the implementation
       implInst := GetImplementer(implIndex);
       // get the properties to add
-      numProps := GetPropList(PTypeInfo(implInst.ClassInfo), tkAny, implProps{$IFDEF COMPILER6_UP}, False{$ENDIF});
+      numProps := GetPropList(PTypeInfo(implInst.ClassInfo), implProps);
       try
         // iterate to copy the property
         for propIndex := 0 to numProps - 1 do
