@@ -33,12 +33,11 @@ uses
   Dialogs, JvAppXMLStorage, JvFormPlacementSelectList, JvFormPlacement,
   JvAppDBStorage, JvAppStorageSelectList, JvAppStorage, JvAppIniStorage,
   JvComponent, JvAppRegistryStorage, ExtCtrls, ComCtrls, ToolWin, StdCtrls,
-  ShellAPI, Menus, jvDynControlEngine, jvDynControlEngineJVCL;
+  ShellAPI, Menus, jvDynControlEngine, jvDynControlEngineJVCL, JvComponentBase;
 
 type
   TJvAppStorageSelListMainFrm = class(TForm)
     StatusBar1: TStatusBar;
-    JvAppIniFileStorage1: TJvAppIniFileStorage;
     JvFormStorage1: TJvFormStorage;
     PopupMenu1: TPopupMenu;
     AnotherOptiopn1: TMenuItem;
@@ -66,6 +65,8 @@ type
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
+    JvAppFileStorage: TJvAppIniFileStorage;
+    procedure FormCreate(Sender: TObject);
     procedure YetAnotherOption1Click(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure ToolButton2Click(Sender: TObject);
@@ -79,6 +80,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TJvAppStorageSelListMainFrm.FormCreate(Sender: TObject);
+begin
+  //JvAppFileStorage.StorageOptions.UseOldItemNameFormat := False;
+end;
 
 procedure TJvAppStorageSelListMainFrm.YetAnotherOption1Click(Sender: TObject);
 begin
@@ -103,7 +109,7 @@ begin
   FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage1;
-    FormStorageSelectList.AppStorage := JvAppINIFileStorage1;
+    FormStorageSelectList.AppStorage := JvAppFileStorage;
     FormStorageSelectList.SelectPath  := 'SelectTest';
     FormStorageSelectList.RestoreFormStorage;
   finally
@@ -118,7 +124,7 @@ begin
   FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage1;
-    FormStorageSelectList.AppStorage := JvAppINIFileStorage1;
+    FormStorageSelectList.AppStorage := JvAppFileStorage;
     FormStorageSelectList.SelectPath  := 'SelectTest';
 //    if CheckBox1.Checked
     SetDefaultDynControlEngine(DynControlEngineJVCL);

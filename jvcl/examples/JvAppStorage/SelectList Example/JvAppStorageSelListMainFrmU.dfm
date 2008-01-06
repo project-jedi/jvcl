@@ -12,6 +12,7 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object StatusBar1: TStatusBar
@@ -23,9 +24,9 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
   end
   object Panel1: TPanel
     Left = 0
-    Top = 52
+    Top = 50
     Width = 382
-    Height = 253
+    Height = 255
     Align = alClient
     TabOrder = 1
     object Panel2: TPanel
@@ -126,7 +127,7 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
       Left = 1
       Top = 138
       Width = 380
-      Height = 114
+      Height = 116
       Align = alClient
       BevelOuter = bvSpace
       Caption = 'Panel3'
@@ -138,12 +139,13 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
         Height = 13
         Align = alTop
         Caption = 'Stored Memo:'
+        ExplicitWidth = 66
       end
       object Memo2: TMemo
         Left = 1
         Top = 14
         Width = 378
-        Height = 99
+        Height = 101
         Align = alClient
         Color = clInfoBk
         Lines.Strings = (
@@ -157,27 +159,26 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
     Left = 0
     Top = 0
     Width = 382
-    Height = 52
+    Height = 50
     AutoSize = True
     BorderWidth = 2
     ButtonHeight = 21
     ButtonWidth = 148
     Caption = 'ToolBar1'
-    EdgeBorders = []
     EdgeInner = esNone
     EdgeOuter = esNone
     ShowCaptions = True
     TabOrder = 2
     object ToolButton1: TToolButton
       Left = 0
-      Top = 2
+      Top = 0
       Caption = 'Save Form Values'
       ImageIndex = 0
       OnClick = ToolButton1Click
     end
     object ToolButton2: TToolButton
       Left = 148
-      Top = 2
+      Top = 0
       Caption = 'Load Form Values'
       ImageIndex = 1
       Wrap = True
@@ -185,34 +186,21 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
     end
     object ToolButton3: TToolButton
       Left = 0
-      Top = 23
+      Top = 21
       Caption = 'Select Values From List'
       ImageIndex = 2
       OnClick = Button1Click
     end
     object ToolButton4: TToolButton
       Left = 148
-      Top = 23
+      Top = 21
       Caption = 'Save Values By Name To List'
       ImageIndex = 3
       OnClick = Button2Click
     end
   end
-  object JvAppIniFileStorage1: TJvAppIniFileStorage
-    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    FileName = 'FilenameRequired.ini'
-    DefaultSection = 'General'
-    SubStorages = <
-      item
-      end
-      item
-      end>
-    Left = 48
-    Top = 120
-  end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppIniFileStorage1
+    AppStorage = JvAppFileStorage
     AppStoragePath = '%FORM_NAME%\'
     StoredProps.Strings = (
       'Option1.Checked'
@@ -255,10 +243,18 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
     Top = 56
   end
   object JvFormStorageSelectList1: TJvFormStorageSelectList
-    AppStorage = JvAppIniFileStorage1
+    AppStorage = JvAppFileStorage
     SelectPath = 'something'
     FormStorage = JvFormStorage1
     Left = 49
     Top = 74
+  end
+  object JvAppFileStorage: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    FileName = 'FilenameRequired.ini'
+    SubStorages = <>
+    Left = 48
+    Top = 120
   end
 end
