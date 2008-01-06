@@ -65,6 +65,7 @@
     <File Name="..\..\run\JvPoweredBy.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStoreEditorIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStrings.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThemes.pas" Targets="all" Formname="" Condition=""/>
