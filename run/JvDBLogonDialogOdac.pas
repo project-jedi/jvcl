@@ -38,6 +38,24 @@ uses
   JvDynControlEngine, JvBaseDBPasswordDialog, JvDynControlEngineIntf;
 
 type
+
+  TJvOdacOracleConnectionInfo = class(TJvBaseOracleConnectionInfo)
+  private
+    FNet: Boolean;
+    FOracleHome: string;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
+        override;
+    property Net: Boolean read FNet write FNet default false;
+    property OracleHome: string read FOracleHome write FOracleHome;
+  end;
+
+  TJvOdacOracleConnectionList = class(TJvBaseOracleConnectionList)
+  protected
+    function CreateObject: TPersistent; override;
+  end;
+
   TJvDBOdacLogonDialogOptions = class(TJvBaseDBOracleLogonDialogOptions)
   private
     FShowNetOption: Boolean;
@@ -70,6 +88,9 @@ type
     procedure CreateFormControls(AForm: TForm); override;
     function CreatePasswordChangeDialog: TJvBaseDBPasswordDialog; override;
     procedure FillDatabaseComboBoxDefaultValues(Items: TStrings); override;
+    { Retrieve the class that holds the storage options and format settings. }
+    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
+        override;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass; override;
     procedure HandleExpiredPassword(const ErrorMessage: string);
@@ -162,7 +183,7 @@ implementation
 
 uses
   SysUtils, StdCtrls, Dialogs,
-  OraClasses, OraError,
+  OraClasses, OraError, OraCall,
   JvDSADialogs, JvDBPasswordDialogOdac, JvResources;
 
 //=== { TJvDBOdacLogonDialogOptions } ========================================
@@ -360,21 +381,31 @@ procedure TJvDBOdacLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TCo
 var
   LabelControl: TControl;
   IDynControlLabel: IJvDynControlLabel;
+  Items : TStringList;
+  i: Integer;
 begin
   inherited CreateAdditionalConnectDialogControls (AOwner, AParentControl);
   OracleHomePanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'OracleHomePanel', '', alTop);
-  OracleHomePanel.Align := alTop;
+  AlignControlTop(OracleHomePanel);
   LabelControl := DynControlEngine.CreateLabelControl(AOwner, OracleHomePanel, 'OracleHomeLabel', RsOracleHome, nil);
-  LabelControl.Align := alTop;
-  OracleHomeEdit := DynControlEngine.CreateEditControl(AOwner, OracleHomePanel, 'OracleHomeEdit');
+  AlignControlTop(LabelControl);
+  Items := TStringList.Create;
+  try
+    for i := 0 to OracleHomeCount - 1 do
+      Items.Add(OracleHomeNames[i]);
+    OracleHomeEdit := DynControlEngine.CreateComboBoxControl(AOwner, OracleHomePanel, 'OracleHomeEdit', Items);
+  finally
+    Items.Free;
+  end;
   Supports(OracleHomeEdit, IJvDynControlData, IOracleHomeEditData);
-  OracleHomeEdit.Align := alTop;
+  IOracleHomeEditData.ControlValue := '';
+  AlignControlTop(OracleHomeEdit);
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(OracleHomeEdit);
   OracleHomePanel.Visible := Options.ShowOracleHome;
   NetOptionCheckBox := DynControlEngine.CreateCheckboxControl(AOwner,AParentControl, 'NetOptionCheckBox',
     RsUseNetOptionForDirectConnect);
-  NetOptionCheckBox.Align := alTop;
+  AlignControlTop(NetOptionCheckBox);
   NetOptionCheckBox.Visible := Options.ShowNetOption;
   Supports(NetOptionCheckBox, IJvDynControlCheckBox, INetOptionCheckBox);
   NetOptionCheckBox.Hint := RsNetOptionCheckBoxHint;
@@ -393,6 +424,12 @@ end;
 
 procedure TJvDBOdacLogonDialog.FillDatabaseComboBoxDefaultValues(Items: TStrings);
 begin
+end;
+
+class function TJvDBOdacLogonDialog.GetDBLogonConnectionListClass:
+    TJvBaseConnectionListClass;
+begin
+  Result := TJvOdacOracleConnectionList;
 end;
 
 class function TJvDBOdacLogonDialog.GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass;
@@ -453,11 +490,32 @@ end;
 procedure TJvDBOdacLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   inherited TransferConnectionInfoFromDialog(ConnectionInfo);
+  if (ConnectionInfo is TJvOdacOracleConnectionInfo) then
+  begin
+    if Assigned (INetOptionCheckBox)  then
+      TJvOdacOracleConnectionInfo(ConnectionInfo).Net := INetOptionCheckBox.ControlState = cbChecked
+    else
+      TJvOdacOracleConnectionInfo(ConnectionInfo).Net := False;
+    if Assigned (IOracleHomeEditData) then
+      TJvOdacOracleConnectionInfo(ConnectionInfo).OracleHome := IOracleHomeEditData.ControlValue
+    else
+      TJvOdacOracleConnectionInfo(ConnectionInfo).OracleHome := '';
+  end;
 end;
 
 procedure TJvDBOdacLogonDialog.TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo);
 begin
   inherited TransferConnectionInfoToDialog(ConnectionInfo);
+  if (ConnectionInfo is TJvOdacOracleConnectionInfo) then
+  begin
+    if Assigned (INetOptionCheckBox)  then
+      if TJvOdacOracleConnectionInfo(ConnectionInfo).Net then
+        INetOptionCheckBox.ControlState := cbChecked
+      else
+        INetOptionCheckBox.ControlState := cbunChecked;
+    if Assigned (IOracleHomeEditData) then
+      IOracleHomeEditData.ControlValue := TJvOdacOracleConnectionInfo(ConnectionInfo).OracleHome;
+  end;
 end;
 
 procedure TJvDBOdacLogonDialog.TransferSessionDataFromConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo);
@@ -476,10 +534,13 @@ begin
           OraSession.ConnectMode := cmSYSOper
         else
           OraSession.ConnectMode := cmNormal;
-      if Options.ShowNetOption and Assigned(INetOptionCheckBox) then
-        OraSession.Options.Net := INetOptionCheckBox.ControlState = cbChecked;
-      if Options.ShowNetOption and Assigned(IOracleHomeEditData) then
-        OraSession.HomeName := IOracleHomeEditData.ControlValue;
+      if (ConnectionInfo is TJvOdacOracleConnectionInfo) then
+      begin
+        if Options.ShowNetOption then
+          OraSession.Options.Net := TJvOdacOracleConnectionInfo(ConnectionInfo).Net;
+        if Options.ShowOracleHome then
+          OraSession.HomeName := TJvOdacOracleConnectionInfo(ConnectionInfo).OracleHome;
+      end;
     end;
   end;
 end;
@@ -501,15 +562,36 @@ begin
       else
         TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'NORMAL';
       end;
-      if Options.ShowNetOption and Assigned (INetOptionCheckBox) then
-        if OraSession.Options.Net then
-          INetOptionCheckBox.ControlState := cbChecked
-        else
-          INetOptionCheckBox.ControlState := cbUnChecked;
-      if Options.ShowNetOption and Assigned (IOracleHomeEditData) then
-        IOracleHomeEditData.ControlValue := OraSession.HomeName;
+      if (ConnectionInfo is TJvOdacOracleConnectionInfo) then
+      begin
+        if Options.ShowNetOption then
+          TJvOdacOracleConnectionInfo(ConnectionInfo).net := OraSession.Options.net;
+        if Options.ShowOracleHome and Assigned (IOracleHomeEditData) then
+          TJvOdacOracleConnectionInfo(ConnectionInfo).OracleHome := OraSession.HomeName;
+      end;
     end;
   end;
+end;
+
+function TJvOdacOracleConnectionList.CreateObject: TPersistent;
+begin
+  Result := TJvOdacOracleConnectionInfo.Create(Self);
+end;
+
+constructor TJvOdacOracleConnectionInfo.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FNet := false;
+end;
+
+function TJvOdacOracleConnectionInfo.ConnectString(ShowShortCut,
+    ShowConnectGroup: Boolean): string;
+begin
+  Result := inherited ConnectString(ShowShortCut, ShowConnectGroup);
+  if OracleHome <> '' then
+    Result:= Result + ' - '+OracleHome;
+  if Net then
+    Result := Result + ' - '+RsNetOptionConnectionList;
 end;
 
 {$IFDEF UNITVERSIONING}

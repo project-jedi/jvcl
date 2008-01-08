@@ -266,6 +266,7 @@ resourcestring
       '    Host is the address of server;'#13#10+
       '    Port is the number of port that server listens to;'#13#10+
       '    SID is system identifier that specifies Global Database Name.';
+  RsNetOptionConnectionList = 'NET Option';
 
 
 //=== JvBDEExceptionForm.pas =================================================

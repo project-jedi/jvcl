@@ -60,6 +60,7 @@ type
     FShowConnectionsExport: Boolean;
     FShowSavePasswords: Boolean;
     FShowShortcuts: Boolean;
+  protected
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -278,6 +279,7 @@ type
   protected
     procedure ActivateDatabaseControl;
     procedure ActivatePasswordControl;
+    procedure AlignControlTop(aControl: TControl);
     function CalculatePanelHeight(LastControl: TWinControl): Integer;
     function ChangePassword: Boolean;
     procedure ClearControlInterfaceObjects; virtual;
@@ -638,17 +640,12 @@ begin
 
   ConnectListLabel := DynControlEngine.CreateStaticTextControl(AForm, ListPanel, 'ConnectListLabel',
     'Connection List');
-  with ConnectListLabel do
-  begin
-    Align := alTop;
-    Height := 18;
-  end;
+
+  AlignControlTop(ConnectListLabel);
+  ConnectListLabel.Height := 18;
 
   ListBtnPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'ListBtnPanel', '', alLeft);
-  with ListBtnPanel do
-  begin
-    Width := 32;
-  end;
+  ListBtnPanel.Width := 32;
 
   AddToListBtn := DynControlEngine.CreateButton(AForm, ListBtnPanel, 'AddToListBtn',
     '>', RsBtnHintAddDefinitionToList, AddToListBtnClick, False, False);
@@ -808,105 +805,71 @@ begin
 
   SavePasswordsCheckBox := DynControlEngine.CreateCheckboxControl(AForm, ListPanel, 'SavePasswordsCheckBox',
     RsCheckboxSavePasswords);
-  with SavePasswordsCheckBox do
-  begin
-    //    Checked := True;
-    //    State := cbChecked;
-    //    OnClick := SavePasswordsCheckBoxClick;
-    Align := alBottom;
-  end;
+  //    SavePasswordsCheckBoxChecked := True;
+  //    SavePasswordsCheckBoxState := cbChecked;
+  //    SavePasswordsCheckBoxOnClick := SavePasswordsCheckBoxClick;
+  SavePasswordsCheckBox.Align := alBottom;
   Supports(SavePasswordsCheckBox, IJvDynControlCheckBox, ISavePasswordsCheckBox);
   SavePasswordsCheckBox.Visible := Options.ShowSavePasswords;
 
   LeftPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'LeftPanel', '', alLeft);
-  with LeftPanel do
-  begin
-    Width := 216;
-    if Supports(LeftPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-      IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
-    TabOrder := 0;
-  end;
+  LeftPanel.Width := 216;
+  if Supports(LeftPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+    IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
+  LeftPanel.TabOrder := 0;
 
   ConnectPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ConnectPanel', '', alTop);
-  with ConnectPanel do
-  begin
-    Height := 126;
-  end;
-  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'UserNameLabel', RsUsername, nil);
-  with LabelControl do
-  begin
-    Align := alTop;
-  end;
+  ConnectPanel.Height := 126;
+
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'UserNameLabel', RsUsername);
+  AlignControlTop(LabelControl);
   UsernameEdit := DynControlEngine.CreateEditControl(AForm, ConnectPanel, 'UserNameEdit');
-  with UsernameEdit do
-  begin
-    Align := alTop;
-    TabOrder := 0;
-    Supports(UsernameEdit, IJvDynControlData, IUsernameEditData);
-    IUsernameEditData.ControlSetOnChange(PasswordEditChange);
-    IUsernameEditData.ControlValue := '';
-  end;
+  AlignControlTop(UsernameEdit);
+  UsernameEdit.TabOrder := 0;
+  Supports(UsernameEdit, IJvDynControlData, IUsernameEditData);
+  IUsernameEditData.ControlSetOnChange(PasswordEditChange);
+  IUsernameEditData.ControlValue := '';
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(UserNameEdit);
-  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'PasswordEditLabel', RsPassword,
-    PasswordEdit);
-  with LabelControl do
-  begin
-    Align := alTop;
-  end;
+
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'PasswordEditLabel', RsPassword);
+  AlignControlTop(LabelControl);
+
   PasswordEdit := DynControlEngine.CreateEditControl(AForm, ConnectPanel, 'PasswordEdit');
-  with PasswordEdit do
-  begin
-    Align := alTop;
-    TabOrder := 1;
-    if Supports(PasswordEdit, IJvDynControlEdit, IDynControlEdit) then
-      IDynControlEdit.ControlSetPasswordChar('*');
-    Supports(PasswordEdit, IJvDynControlData, IPasswordEditData);
-    IPasswordEditData.ControlSetOnChange(PasswordEditChange);
-    IPasswordEditData.ControlValue := '';
-  end;
+  AlignControlTop(PasswordEdit);
+  PasswordEdit.TabOrder := 1;
+  if Supports(PasswordEdit, IJvDynControlEdit, IDynControlEdit) then
+    IDynControlEdit.ControlSetPasswordChar('*');
+  Supports(PasswordEdit, IJvDynControlData, IPasswordEditData);
+  IPasswordEditData.ControlSetOnChange(PasswordEditChange);
+  IPasswordEditData.ControlValue := '';
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(PasswordEdit);
-  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'DatabaseLabel', RsDatabase, nil);
-  with LabelControl do
-  begin
-    Align := alTop;
-  end;
+
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'DatabaseLabel', RsDatabase);
+  AlignControlTop(LabelControl);
   DatabaseComboBox := DynControlEngine.CreateComboBoxControl(AForm, ConnectPanel, 'DatabaseComboBox', nil);
-  with DatabaseComboBox do
-  begin
-    Align := alTop;
-    Top := LabelControl.Top + 1;
-    TabOrder := 2;
-    Supports(DatabaseComboBox, IJvDynControlData, IDatabaseComboBoxData);
-    IDatabaseComboBoxData.ControlSetOnChange(DatabaseComboBoxChange);
-    if Supports(DatabaseComboBox, IJvDynControl, IDynControl) then
-      IDynControl.ControlSetOnClick(DatabaseComboBoxChange);
-    IDatabaseComboBoxData.ControlValue := '';
-  end;
+  AlignControlTop(DatabaseComboBox);
+  DatabaseComboBox.TabOrder := 2;
+  Supports(DatabaseComboBox, IJvDynControlData, IDatabaseComboBoxData);
+  IDatabaseComboBoxData.ControlSetOnChange(DatabaseComboBoxChange);
+  if Supports(DatabaseComboBox, IJvDynControl, IDynControl) then
+    IDynControl.ControlSetOnClick(DatabaseComboBoxChange);
+  IDatabaseComboBoxData.ControlValue := '';
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(DatabaseComboBox);
 
   ShortCutPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ShortCutPanel', '', alTop);
-  with ShortCutPanel do
-  begin
-    Align := alTop;
-  end;
-  LabelControl := DynControlEngine.CreateLabelControl(AForm, ShortCutPanel, 'ShortCutLabel', RsShortcut, nil);
-  with LabelControl do
-  begin
-    Align := alTop;
-  end;
+  AlignControlTop(ShortCutPanel);
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ShortCutPanel, 'ShortCutLabel', RsShortcut);
+  AlignControlTop(LabelControl);
   Items := tStringList.Create;
   try
     FillShortCutList(Items);
 
     ShortCutComboBox := DynControlEngine.CreateComboBoxControl(AForm, ShortCutPanel, 'ShortCutComboBox', Items);
     Supports(ShortCutComboBox, IJvDynControlData, IShortCutComboBoxData);
-    with ShortCutComboBox do
-    begin
-      Align := alTop;
-    end;
+    AlignControlTop(ShortCutComboBox);
   finally
     Items.Free;
   end;
@@ -915,25 +878,16 @@ begin
   ShortCutPanel.Visible := Options.ShowShortcuts;
 
   ConnectGroupPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ConnectGroupPanel', '', alTop);
-  with ConnectGroupPanel do
-  begin
-    Align := alTop;
-  end;
-  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectGroupPanel, 'ConnectGroupLabel', 'Connect &Group',
-    nil);
-  with LabelControl do
-  begin
-    Align := alTop;
-  end;
+  AlignControlTop(ConnectGroupPanel);
+
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectGroupPanel, 'ConnectGroupLabel', 'Connect &Group');
+  AlignControlTop(LabelControl);
   Items := tStringList.Create;
   try
     ConnectGroupComboBox := DynControlEngine.CreateComboBoxControl(AForm, ConnectGroupPanel, 'ConnectGroupComboBox',
       Items);
     Supports(ConnectGroupComboBox, IJvDynControlData, IConnectGroupComboBoxData);
-    with ConnectGroupComboBox do
-    begin
-      Align := alTop;
-    end;
+    AlignControlTop(ConnectGroupComboBox);
   finally
     Items.Free;
   end;
@@ -1920,6 +1874,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvBaseDBLogonDialog.AlignControlTop(aControl: TControl);
+begin
+  aControl.Align := alTop;
+  aControl.Top := aControl.Parent.Height;
+end;
+
 //=== { TJvBaseDBOracleLogonDialogOptions } ==================================
 
 constructor TJvBaseDBOracleLogonDialogOptions.Create;
@@ -1948,15 +1908,9 @@ var
   IDynControlLabel: IJvDynControlLabel;
 begin
   ConnectAsPanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'ConnectAsPanel', '', alTop);
-  with ConnectAsPanel do
-  begin
-    Align := alTop;
-  end;
+  AlignControlTop(ConnectAsPanel);
   LabelControl := DynControlEngine.CreateLabelControl(AOwner, ConnectAsPanel, 'ConnectAsLabel', RsConnectAs, nil);
-  with LabelControl do
-  begin
-    Align := alTop;
-  end;
+  AlignControlTop(LabelControl);
   Items := tStringList.Create;
   try
     Items.Add('NORMAL');
@@ -1964,10 +1918,7 @@ begin
     Items.Add('SYSOPER');
     ConnectAsComboBox := DynControlEngine.CreateComboBoxControl(AOwner, ConnectAsPanel, 'ConnectAsComboBox', Items);
     Supports(ConnectAsComboBox, IJvDynControlData, IConnectAsComboBoxData);
-    with ConnectAsComboBox do
-    begin
-      Align := alTop;
-    end;
+    AlignControlTop(ConnectAsComboBox);
   finally
     Items.Free;
   end;
