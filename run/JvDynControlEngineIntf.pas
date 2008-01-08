@@ -69,6 +69,13 @@ type
     property ControlValue: Variant read ControlGetValue write ControlSetValue;
   end;
 
+  IJvDynControlFont = interface
+    ['{7D628739-6C27-4641-A116-5898B630AEF6}']
+    procedure ControlSetFont (Value: TFont);
+    function ControlGetFont: TFont;
+    property ControlFont: TFont read ControlGetFont write ControlSetFont;
+  end;
+
   IJvDynControlReadOnly = interface
     ['{24E45D23-AC66-4644-8403-81FF81E28B89}']
     procedure ControlSetReadOnly(Value: Boolean);

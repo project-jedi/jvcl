@@ -129,10 +129,14 @@ type
   private
     FDistanceBetweenLabelAndControlHorz: Integer;
     FDistanceBetweenLabelAndControlVert: Integer;
+  protected
+    function GetControlTextWidth(aControl: TControl; aFont: TFont; const aText:
+        string): Integer;
   public
     constructor Create; override;
     function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string; AFocusControl: TWinControl): TControl; virtual;
+        const AControlName, ACaption: string; AFocusControl: TWinControl = nil):
+        TControl; virtual;
     function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string): TWinControl; virtual;
     function CreatePanelControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -581,27 +585,34 @@ begin
 end;
 
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName, ACaption: string;
-  AFocusControl: TWinControl): TControl;
+    AParentControl: TWinControl; const AControlName, ACaption: string;
+    AFocusControl: TWinControl = nil): TControl;
 var
   DynCtrl: IJvDynControl;
   DynCtrlLabel: IJvDynControlLabel;
+  DynCtrlFont: IJvDynControlFont;
 begin
   Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
   IntfCast(Result, IJvDynControl, DynCtrl);
   DynCtrl.ControlSetCaption(ACaption);
   IntfCast(Result, IJvDynControlLabel, DynCtrlLabel);
-  DynCtrlLabel.ControlSetFocusControl(AFocusControl);
+  if Assigned(AFocusControl) then
+    DynCtrlLabel.ControlSetFocusControl(AFocusControl);
+  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
+    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'X');
 end;
 
 function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
+  DynCtrlFont: IJvDynControlFont;
 begin
   Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
   IntfCast(Result, IJvDynControl, DynCtrl);
   DynCtrl.ControlSetCaption(ACaption);
+  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
+    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'X');
 end;
 
 function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
@@ -635,10 +646,13 @@ function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
+  DynCtrlFont: IJvDynControlFont;
 begin
   Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
   IntfCast(Result, IJvDynControl, DynCtrl);
   DynCtrl.ControlSetCaption(ACaption);
+  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
+    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'XXXXXX');
 end;
 
 function TJvDynControlEngine.CreateComboBoxControl(AOwner: TComponent;
@@ -807,8 +821,6 @@ end;
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;
   AParentControl: TWinControl; const AButtonName, ACaption, AHint: string;
   AOnClick: TNotifyEvent; ADefault: Boolean = False; ACancel: Boolean = False): TButton;
-var
-  Canvas: TControlCanvas;
 begin
   Result := TButton(CreateControl(jctButton, AOwner, AParentControl, AButtonName));
   Result.Hint := AHint;
@@ -816,14 +828,7 @@ begin
   Result.Default := ADefault;
   Result.Cancel := ACancel;
   Result.OnClick := AOnClick;
-  Canvas := TControlCanvas.Create;
-  try
-    Canvas.Control := Result;
-    Canvas.Font := Result.Font;
-    Result.Width := Canvas.TextWidth(ACaption+'XXXX');
-  finally
-    Canvas.free;
-  end;
+  Result.Width := GetControlTextWidth(Result, Result.Font, ACaption+'XXXX');
 end;
 
 function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
@@ -909,6 +914,22 @@ begin
   JvDynCtrlProgresBar.ControlSetMin(AMin);
   JvDynCtrlProgresBar.ControlSetMax(AMax);
   JvDynCtrlProgresBar.ControlSetStep(AStep);
+end;
+
+
+function TJvDynControlEngine.GetControlTextWidth(aControl: TControl; aFont:
+    TFont; const aText: string): Integer;
+var
+  Canvas: TControlCanvas;
+begin
+  Canvas := TControlCanvas.Create;
+  try
+    Canvas.Control := aControl;
+    Canvas.Font.Assign(aFont);
+    Result := Canvas.TextWidth(aText);
+  finally
+    Canvas.free;
+  end;
 end;
 
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
