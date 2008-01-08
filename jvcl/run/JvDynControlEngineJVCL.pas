@@ -283,7 +283,7 @@ type
 
   TJvDynControlJVCLCheckBox = class(TJvCheckBox, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlReadOnly,
-    IJvDynControlCheckBox)
+    IJvDynControlCheckBox, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -304,6 +304,10 @@ type
     procedure ControlSetState(Value: TCheckBoxState);
     function ControlGetState: TCheckBoxState;
     procedure ControlSetAnchors(Value: TAnchors);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlJVCLMemo = class(TJvMemo, IUnknown,
@@ -570,7 +574,7 @@ type
   TJvDynControlJVCLLabel = class(TJvLabel, IUnknown,
     IJvDynControl, IJvDynControlLabel, IJvDynControlAlign,
     IJvDynControlAutoSize,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
@@ -594,11 +598,15 @@ type
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlJVCLStaticText = class(TJvStaticText, IUnknown,
     IJvDynControl, IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
@@ -619,6 +627,10 @@ type
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlJVCLButton = class(TJvBitBtn, IUnknown,
@@ -1669,6 +1681,17 @@ begin
   Anchors := Value;
 end;
 
+procedure TJvDynControlJVCLCheckBox.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlJVCLCheckBox.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
+
 //=== { TJvDynControlJVCLMemo } ==============================================
 
 procedure TJvDynControlJVCLMemo.ControlSetDefaultProperties;
@@ -2506,11 +2529,6 @@ procedure TJvDynControlJVCLScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLScrollBox.ControlSetHint(const Value: string);
-begin
-  Hint := Value;
-end;
-
 //=== { TJvDynControlJVCLLabel } =============================================
 
 procedure TJvDynControlJVCLLabel.ControlSetAnchors(Value: TAnchors);
@@ -2583,6 +2601,21 @@ begin
   Alignment := Value;
 end;
 
+procedure TJvDynControlJVCLScrollBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLLabel.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlJVCLLabel.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 //=== { TJvDynControlJVCLStaticText } ========================================
 
 procedure TJvDynControlJVCLStaticText.ControlSetAnchors(Value: TAnchors);
@@ -2643,6 +2676,16 @@ end;
 procedure TJvDynControlJVCLStaticText.ControlSetAlignment(Value: TAlignment);
 begin
   Alignment := Value;
+end;
+
+procedure TJvDynControlJVCLStaticText.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlJVCLStaticText.ControlGetFont: TFont;
+begin
+  Result := Font;
 end;
 
 //=== { TJvDynControlJVCLButton } ============================================

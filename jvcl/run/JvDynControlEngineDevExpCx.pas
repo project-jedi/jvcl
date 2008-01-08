@@ -31,7 +31,7 @@ interface
 
 {$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning, JvDynControlEngineIntf;
+  JclUnitVersioning, JvDynControlEngineIntf, Graphics;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}
@@ -332,7 +332,7 @@ type
 
   TJvDynControlCxCheckBox = class(TcxCheckBox, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlReadOnly,
-    IJvDynControlCheckBox)
+    IJvDynControlCheckBox, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -355,6 +355,10 @@ type
     function ControlGetState: TCheckBoxState;
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlCxMemo = class(TcxMemo, IUnknown, IJvDynControl, IJvDynControlData,
@@ -636,7 +640,7 @@ type
   TJvDynControlCxLabel = class(TcxLabel, IUnknown, IJvDynControl, IJvDynControlLabel,
     IJvDynControlDevExpCx, IJvDynControlAlign,
     IJvDynControlAutoSize, IJvDynControlColor,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
@@ -664,12 +668,16 @@ type
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   // (rom) Warning! TStaticText and TLabel are very different.
   TJvDynControlCxStaticText = class(TcxLabel, IUnknown, IJvDynControl, IJvDynControlDevExpCx,
     IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
@@ -693,6 +701,9 @@ type
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlCxButton = class(TcxButton, IUnknown, IJvDynControl, IJvDynControlButton,
@@ -1917,6 +1928,16 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
+procedure TJvDynControlCxCheckBox.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlCxCheckBox.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 //=== { TJvDynControlCxMemo } ================================================
 
 procedure TJvDynControlCxMemo.ControlSetDefaultProperties;
@@ -2941,6 +2962,15 @@ begin
   Properties.Alignment.Horz := Value;
 end;
 
+procedure TJvDynControlCxLabel.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlCxLabel.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
 
 //=== { TJvDynControlCxStaticText } ==========================================
 
@@ -3009,6 +3039,16 @@ end;
 procedure TJvDynControlCxStaticText.ControlSetAlignment(Value: TAlignment);
 begin
   Properties.Alignment.Horz := Value;
+end;
+
+procedure TJvDynControlCxStaticText.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlCxStaticText.ControlGetFont: TFont;
+begin
+  Result := Font;
 end;
 
 

@@ -267,7 +267,7 @@ type
   end;
 
   TJvDynControlVCLCheckBox = class(TCheckBox, IUnknown,
-    IJvDynControl, IJvDynControlData, IJvDynControlCheckBox)
+    IJvDynControl, IJvDynControlData, IJvDynControlCheckBox, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -287,6 +287,10 @@ type
     procedure ControlSetAllowGrayed(Value: Boolean);
     procedure ControlSetState(Value: TCheckBoxState);
     function ControlGetState: TCheckBoxState;
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlVCLMemo = class(TMemo, IUnknown,
@@ -550,7 +554,7 @@ type
   TJvDynControlVCLLabel = class(TLabel, IUnknown,
     IJvDynControl, IJvDynControlLabel, IJvDynControlAlign,
     IJvDynControlAutoSize, IJvDynControlColor,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -577,12 +581,16 @@ type
 
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlVCLStaticText = class(TStaticText, IUnknown,
     IJvDynControl, IJvDynControlAlign,
     IJvDynControlAutoSize, IJvDynControlColor,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -604,6 +612,9 @@ type
     procedure ControlSetParentColor(Value: Boolean);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
   end;
 
   TJvDynControlVCLButton = class(TBitBtn, IUnknown,
@@ -1643,6 +1654,16 @@ begin
   Result := Checked;
 end;
 
+procedure TJvDynControlVCLCheckBox.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlVCLCheckBox.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 //IJvDynControlCheckBox
 
 procedure TJvDynControlVCLCheckBox.ControlSetAllowGrayed(Value: Boolean);
@@ -2566,8 +2587,17 @@ begin
   Alignment := Value;
 end;
 
-//=== { TJvDynControlVCLStaticText } =========================================
+procedure TJvDynControlVCLLabel.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
 
+function TJvDynControlVCLLabel.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
+//=== { TJvDynControlVCLStaticText } =========================================
 
 
 procedure TJvDynControlVCLStaticText.ControlSetDefaultProperties;
@@ -2630,7 +2660,15 @@ begin
   Alignment := Value;
 end;
 
+procedure TJvDynControlVCLStaticText.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
 
+function TJvDynControlVCLStaticText.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
 
 //=== { TJvDynControlVCLButton } =============================================
 
