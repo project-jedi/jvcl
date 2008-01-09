@@ -779,6 +779,7 @@ type
 procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
 var
   TmpLabelArrangeMode: TJvParameterLabelArrangeMode;
+  DynCtrlFont : IJvDynControlFont;
 begin
   if not Assigned(FramePanel) or not Assigned(WinControl) or FArrangeLabelAndWinControlDisabled then
     Exit;
@@ -867,7 +868,11 @@ begin
   else
   begin
     if LabelWidth > 0 then
-      LabelControl.Width := LabelWidth;
+      LabelControl.Width := LabelWidth
+    else
+      if Supports(LabelControl, IJvDynControlFont,DynCtrlFont) then
+        LabelControl.Width := DynControlEngine.GetControlTextWidth(LabelControl, DynCtrlFont.ControlFont, Caption+'X');
+
     WinControl.Top := LabelControl.Top;
     WinControl.Left := LabelControl.Left + LabelControl.Width + 4;
     if FramePanel.Height > 0 then
