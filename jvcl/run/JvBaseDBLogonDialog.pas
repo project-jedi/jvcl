@@ -2097,6 +2097,7 @@ constructor TJvBaseConnectionList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLastConnect := TJvBaseConnectionInfo(CreateObject);
+  FLastConnect.SavePassword := False;
   ItemName := RsConnectionListItemName;
 end;
 
