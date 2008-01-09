@@ -1,8 +1,9 @@
 object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
   Left = 0
   Top = 0
-  ClientHeight = 559
-  ClientWidth = 833
+  BorderIcons = []
+  ClientHeight = 394
+  ClientWidth = 586
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -10,26 +11,27 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 185
     Top = 0
-    Height = 525
+    Height = 360
     ExplicitLeft = 225
     ExplicitTop = 100
     ExplicitHeight = 100
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 525
-    Width = 833
+    Top = 360
+    Width = 586
     Height = 34
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     object BottomButtonPanel: TPanel
-      Left = 667
+      Left = 420
       Top = 0
       Width = 166
       Height = 34
@@ -61,8 +63,8 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
   object EditPanel: TPanel
     Left = 188
     Top = 0
-    Width = 645
-    Height = 525
+    Width = 398
+    Height = 360
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 3
@@ -92,7 +94,6 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 185
         object ListInsertButton: TButton
           Left = 0
           Top = 0
@@ -157,7 +158,6 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
         BevelOuter = bvNone
         Caption = 'ListInspectorPanel'
         TabOrder = 1
-        ExplicitWidth = 185
       end
       object ListBox: TJvListBox
         Left = 0
@@ -170,6 +170,7 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
         Background.Visible = False
         ParentFlat = False
         TabOrder = 2
+        OnDblClick = ListEditButtonClick
       end
     end
     object InspectorPanel: TPanel
@@ -191,8 +192,7 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
         WantTabs = True
         AfterItemCreate = JvInspectorAfterItemCreate
         BeforeItemCreate = JvInspectorBeforeItemCreate
-        ExplicitLeft = 60
-        ExplicitTop = 35
+        ExplicitLeft = -49
       end
     end
   end
@@ -200,7 +200,7 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
     Left = 0
     Top = 0
     Width = 185
-    Height = 525
+    Height = 360
     Align = alLeft
     BevelOuter = bvNone
     BorderWidth = 3
@@ -209,14 +209,16 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
       Left = 3
       Top = 3
       Width = 179
-      Height = 519
+      Height = 354
       Align = alClient
       HideSelection = False
       HotTrack = True
       Indent = 19
       RowSelect = True
+      SortType = stText
       TabOrder = 0
       OnChange = PropertyStoreTreeViewChange
+      OnChanging = PropertyStoreTreeViewChanging
       LineColor = clScrollBar
     end
   end
