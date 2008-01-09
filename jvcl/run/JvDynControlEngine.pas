@@ -107,6 +107,8 @@ type
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
+    function GetControlTextWidth(aControl: TControl; aFont: TFont; const aText:
+        string): Integer;
 
     function IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
 
@@ -130,8 +132,6 @@ type
     FDistanceBetweenLabelAndControlHorz: Integer;
     FDistanceBetweenLabelAndControlVert: Integer;
   protected
-    function GetControlTextWidth(aControl: TControl; aFont: TFont; const aText:
-        string): Integer;
   public
     constructor Create; override;
     function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -541,6 +541,21 @@ begin
     Result.Name := AControlName;
 end;
 
+function TJvCustomDynControlEngine.GetControlTextWidth(aControl: TControl;
+    aFont: TFont; const aText: string): Integer;
+var
+  Canvas: TControlCanvas;
+begin
+  Canvas := TControlCanvas.Create;
+  try
+    Canvas.Control := aControl;
+    Canvas.Font.Assign(aFont);
+    Result := Canvas.TextWidth(aText);
+  finally
+    Canvas.free;
+  end;
+end;
+
 procedure TJvCustomDynControlEngine.SetControlCaption(AControl: IJvDynControl; const Value: string);
 begin
 end;
@@ -590,7 +605,6 @@ function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
 var
   DynCtrl: IJvDynControl;
   DynCtrlLabel: IJvDynControlLabel;
-  DynCtrlFont: IJvDynControlFont;
 begin
   Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
   IntfCast(Result, IJvDynControl, DynCtrl);
@@ -598,21 +612,16 @@ begin
   IntfCast(Result, IJvDynControlLabel, DynCtrlLabel);
   if Assigned(AFocusControl) then
     DynCtrlLabel.ControlSetFocusControl(AFocusControl);
-  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
-    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'X');
 end;
 
 function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
-  DynCtrlFont: IJvDynControlFont;
 begin
   Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
   IntfCast(Result, IJvDynControl, DynCtrl);
   DynCtrl.ControlSetCaption(ACaption);
-  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
-    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'X');
 end;
 
 function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
@@ -916,21 +925,6 @@ begin
   JvDynCtrlProgresBar.ControlSetStep(AStep);
 end;
 
-
-function TJvDynControlEngine.GetControlTextWidth(aControl: TControl; aFont:
-    TFont; const aText: string): Integer;
-var
-  Canvas: TControlCanvas;
-begin
-  Canvas := TControlCanvas.Create;
-  try
-    Canvas.Control := aControl;
-    Canvas.Font.Assign(aFont);
-    Result := Canvas.TextWidth(aText);
-  finally
-    Canvas.free;
-  end;
-end;
 
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
 begin
