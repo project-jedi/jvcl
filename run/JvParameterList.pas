@@ -1937,7 +1937,11 @@ begin
 end;
 
 procedure TJvParameterList.Clear;
+var
+  I: Integer;
 begin
+  for I := 0 to IntParameterList.Count - 1 do
+    IntParameterList.Objects[I].Free;
   IntParameterList.Clear;
 end;
 
