@@ -72,6 +72,8 @@ type
     procedure ListUpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PropertyStoreTreeViewChange(Sender: TObject; Node: TTreeNode);
+    procedure PropertyStoreTreeViewChanging(Sender: TObject; Node: TTreeNode; var
+        AllowChange: Boolean);
   private
     FInspectedObject: TPersistent;
     FInspectedObjectEditorHandler: IJvPropertyEditorHandler;
@@ -354,12 +356,15 @@ end;
 procedure TJvPropertyStoreEditorForm.ListDownButtonClick(Sender: TObject);
 var
   EditObject: TPersistent;
+  Ind : Integer;
 begin
-  if Assigned(InspectedObjectListEditorHandler) then
+  if Assigned(InspectedObjectListEditorHandler) and (ListBox.ItemIndex < ListBox.Items.Count) then
   begin
     EditObject := TPersistent(PropertyStoreTreeView.Selected.Data);
+    Ind := ListBox.ItemIndex;
     InspectedObjectListEditorHandler.ListEditIntf_MoveObjectPosition(ListBox.ItemIndex, ListBox.ItemIndex+1);
     FillTreeView (EditObject);
+    ListBox.ItemIndex := Ind +1;
   end;
 end;
 
@@ -389,12 +394,15 @@ end;
 procedure TJvPropertyStoreEditorForm.ListUpButtonClick(Sender: TObject);
 var
   EditObject: TPersistent;
+  Ind : Integer;
 begin
-  if Assigned(InspectedObjectListEditorHandler) then
+  if Assigned(InspectedObjectListEditorHandler) and (ListBox.ItemIndex > 0) then
   begin
     EditObject := TPersistent(PropertyStoreTreeView.Selected.Data);
+    Ind := ListBox.ItemIndex;
     InspectedObjectListEditorHandler.ListEditIntf_MoveObjectPosition(ListBox.ItemIndex, ListBox.ItemIndex-1);
     FillTreeView (EditObject);
+    ListBox.ItemIndex := Ind -1;
   end;
 end;
 
@@ -416,12 +424,26 @@ begin
       TPersistent(Node.Data);
 end;
 
+procedure TJvPropertyStoreEditorForm.PropertyStoreTreeViewChanging(Sender:
+    TObject; Node: TTreeNode; var AllowChange: Boolean);
+var JvPropertyEditorHandler : IJvPropertyEditorHandler;
+begin
+  if Assigned(Node) and
+    Assigned(Node.Data) and
+    (TObject(Node.Data) is TPersistent) and
+    Supports(TObject(Node.Data), IJvPropertyEditorHandler, JvPropertyEditorHandler) and
+    (JvPropertyEditorHandler.EditIntf_GetVisibleObjectName  <> '') then
+      Node.Text := JvPropertyEditorHandler.EditIntf_GetVisibleObjectName;
+
+end;
+
 procedure TJvPropertyStoreEditorForm.SetInspectedObject(const Value:
     TPersistent);
 begin
   FInspectedObject := Value;
   Supports(InspectedObject, IJvPropertyEditorHandler, FInspectedObjectEditorHandler);
   Supports(InspectedObject, IJvPropertyListEditorHandler, FInspectedObjectListEditorHandler);
+  JvInspector.SaveValues;
   JvInspector.InspectObject := Value;
   if not Assigned(InspectedObject) then
   begin
