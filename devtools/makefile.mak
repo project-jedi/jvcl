@@ -30,6 +30,7 @@ MAKE = "$(ROOT)\bin\make.exe" -l+ $(QUIET)
 #-$(MAKEFLAGS)
 DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
 DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M 
+DCCex  = "..\..\packages\bin\dcc32ex.exe" --requires-jcl -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
 #-I$(COM) -U$(SRC) -U$(COM)
 DCCH = "$(ROOT)\bin\dcc32.exe" -e"..\$(BIN)" -i"$(SRCH)" -n"..\$(DCU)" -r"$(SRCH)" -u"$(SRCH)" -q -w -h -m
 BRCC = "$(ROOT)\bin\brcc32.exe" $**
@@ -145,7 +146,7 @@ pg.exe: PackagesGenerator\pg.dpr \
 		PackagesGenerator\GenerateUtils.pas
   @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile >NUL
   @cd PackagesGenerator
-  $(DCCx) -DNO_JCL pg.dpr
+  $(DCCex) pg.dpr
   -@IF EXIST pg.cfg  del /q pg.cfg >NUL
   @cd ..
 
