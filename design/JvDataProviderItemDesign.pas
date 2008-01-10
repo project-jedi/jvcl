@@ -77,7 +77,7 @@ type
     {$IFDEF COMPILER10_UP}
     function GetDynArrayProp(Index: Integer): Pointer;
     procedure SetDynArrayProp(Index: Integer; Value: Pointer);
-    {$ENDIF}
+    {$ENDIF COMPILER10_UP}
     function GetFloatProp(Index: Integer): Extended;
     procedure SetFloatProp(Index: Integer; Value: Extended);
     function GetInt64Prop(Index: Integer): Int64;
@@ -85,7 +85,7 @@ type
     {$IFDEF COMPILER6_UP}
     function GetInterfaceProp(Index: Integer): IInterface;
     procedure SetInterfaceProp(Index: Integer; Value: IInterface);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     function GetMethodProp(Index: Integer): TMethod;
     procedure SetMethodProp(Index: Integer; Value: TMethod);
     function GetOrdProp(Index: Integer): Longint;
@@ -579,7 +579,7 @@ begin
   Result := TypInfo.GetDynArrayProp(instance, info);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER10_UP}
 function TBaseItemDsgn.GetFloatProp(Index: Integer): Extended;
 var
   instance: TObject;
@@ -617,7 +617,7 @@ begin
   Result := TypInfo.GetInterfaceProp(instance, info);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 function TBaseItemDsgn.GetMethodProp(Index: Integer): TMethod;
 var
@@ -809,19 +809,19 @@ var
           destProp.GetProc := @TBaseItemDsgn.GetInterfaceProp;
           destProp.SetProc := @TBaseItemDsgn.SetInterfaceProp;
         end;
-      {$ENDIF}
+      {$ENDIF COMPILER6_UP}
       tkInt64:
         begin
           destProp.GetProc := @TBaseItemDsgn.GetInt64Prop;
           destProp.SetProc := @TBaseItemDsgn.SetInt64Prop;
         end;
-      {$IFDEF COMPILER6_UP}
+      {$IFDEF COMPILER10_UP}
       tkDynArray:
         begin
           destProp.GetProc := @TBaseItemDsgn.GetDynArrayProp;
           destProp.SetProc := @TBaseItemDsgn.SetDynArrayProp;
         end;
-      {$ENDIF}
+      {$ENDIF COMPILER10_UP}
     end;
     // advance destination pointer
     Inc(Integer(destProp), size);
@@ -887,7 +887,7 @@ begin
   TypInfo.SetDynArrayProp(instance, info, Value);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER10_UP}
 procedure TBaseItemDsgn.SetFloatProp(Index: Integer; Value: Extended);
 var
   instance: TObject;
@@ -916,7 +916,7 @@ begin
   TypInfo.SetInterfaceProp(instance, info, Value);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 procedure TBaseItemDsgn.SetMethodProp(Index: Integer; Value: TMethod);
 var
   instance: TObject;
