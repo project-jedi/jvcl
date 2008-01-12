@@ -96,6 +96,7 @@ type
     function EngineBof: Boolean;
     function EngineCanNavigate: Boolean;
     function EngineCanRefresh: Boolean;
+    function EngineCanRefreshRecord: Boolean;
     function EngineControlsDisabled: Boolean;
     function EngineEditModeActive: Boolean;
     function EngineSelectedRowsCount: Integer;
@@ -438,6 +439,16 @@ type
     property WordWrap: Boolean read FWordWrap write FWordWrap default True;
   end;
 
+type
+  TJvDatabaseRefreshRecordAction = class(TJvDatabaseBaseActiveAction)
+  private
+  protected
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+  published
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -651,6 +662,14 @@ function TJvDatabaseBaseAction.EngineCanRefresh: Boolean;
 begin
   if Assigned(DatabaseControlEngine) then
     Result := DatabaseControlEngine.CanRefresh (DataComponent)
+  else
+    Result := False;
+end;
+
+function TJvDatabaseBaseAction.EngineCanRefreshRecord: Boolean;
+begin
+  if Assigned(DatabaseControlEngine) then
+    Result := DatabaseControlEngine.CanRefreshRecord (DataComponent)
   else
     Result := False;
 end;
@@ -1693,6 +1712,20 @@ end;
 procedure TJvDatabaseShowSQLStatementAction.UpdateTarget(Target: TObject);
 begin
   SetEnabled(Assigned(DataSet) and Assigned(DatasetEngine) and DatasetEngine.SupportsGetSQL(DataComponent));
+end;
+
+procedure TJvDatabaseRefreshRecordAction.ExecuteTarget(Target: TObject);
+begin
+  inherited ExecuteTarget(Target);
+  if Assigned(DatasetEngine) then
+    DatasetEngine.RefreshRecord (DataSet);
+end;
+
+//=== { TJvDatabaseBaseActiveAction } ========================================
+
+procedure TJvDatabaseRefreshRecordAction.UpdateTarget(Target: TObject);
+begin
+  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineCanRefreshRecord);
 end;
 
 initialization

@@ -50,9 +50,11 @@ type
   public
     function GetDataset(aActionComponent: TComponent): TDataset; virtual;
     function GetSQL(aActionComponent: TComponent): string; virtual;
+    procedure RefreshRecord(AActionComponent : TComponent); virtual;
     procedure SetSQL(aActionComponent: TComponent); virtual;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
     function SupportsGetSQL(aActionComponent: TComponent): Boolean; virtual;
+    function SupportsRefreshRecord(aActionComponent: TComponent): Boolean; virtual;
     function SupportsSetSQL(aActionComponent: TComponent): Boolean; virtual;
   end;
 
@@ -108,6 +110,7 @@ type
     function CanInsert(aActionComponent: TComponent): Boolean; virtual;
     function CanNavigate(aActionComponent: TComponent): Boolean; virtual;
     function CanRefresh(aActionComponent: TComponent): Boolean; virtual;
+    function CanRefreshRecord(aActionComponent: TComponent): Boolean; virtual;
     function CanUpdate(aActionComponent: TComponent): Boolean; virtual;
     function ControlsDisabled(aActionComponent: TComponent): Boolean; virtual;
     procedure DisableControls(aActionComponent: TComponent); virtual;
@@ -247,6 +250,12 @@ begin
 end;
 
 function TJvDatabaseActionBaseControlEngine.CanRefresh(aActionComponent:
+    TComponent): Boolean;
+begin
+  Result := Assigned(DataSet(aActionComponent));
+end;
+
+function TJvDatabaseActionBaseControlEngine.CanRefreshRecord(aActionComponent:
     TComponent): Boolean;
 begin
   Result := Assigned(DataSet(aActionComponent));
@@ -707,6 +716,12 @@ begin
   Result := '';
 end;
 
+procedure TJvDatabaseActionBaseDatasetEngine.RefreshRecord(AActionComponent :
+    TComponent);
+begin
+  
+end;
+
 procedure TJvDatabaseActionBaseDatasetEngine.SetSQL(aActionComponent:
     TComponent);
 begin
@@ -721,6 +736,12 @@ end;
 
 function TJvDatabaseActionBaseDatasetEngine.SupportsGetSQL(aActionComponent:
     TComponent): Boolean;
+begin
+  Result := False;
+end;
+
+function TJvDatabaseActionBaseDatasetEngine.SupportsRefreshRecord(
+    aActionComponent: TComponent): Boolean;
 begin
   Result := False;
 end;
