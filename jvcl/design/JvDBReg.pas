@@ -142,7 +142,7 @@ begin
   RegisterActions(RsJVCLDBActionsCategory, [TJvDatabaseFirstAction,
     TJvDatabaseLastAction, TJvDatabaseNextAction, TJvDatabasePriorAction,
     TJvDatabaseNextBlockAction, TJvDatabasePriorBlockAction,
-    TJvDatabasePositionAction, TJvDatabaseRefreshAction,
+    TJvDatabasePositionAction, TJvDatabaseRefreshAction, TJvDatabaseRefreshRecordAction,
     TJvDatabaseInsertAction, TJvDatabaseCopyAction, TJvDatabaseEditAction,
     TJvDatabaseDeleteAction, TJvDatabasePostAction, TJvDatabaseCancelAction,
     TJvDatabaseSingleRecordWindowAction, TJvDatabaseSimpleAction,
