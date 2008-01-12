@@ -477,7 +477,7 @@ begin
     if DataItem <> nil then
     begin
       if Supports(DataItem, IJvDataItemText, ItemText) then
-        Item.Caption := ItemText.Caption
+        Item.Caption := ItemText.Text
       else
       begin
         if DataItem = FVirtualRoot then

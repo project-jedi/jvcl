@@ -1384,7 +1384,7 @@ Description
 
   The interface provides properties to manage:
 
-  * The position of the image in relation to the caption
+  * The position of the image in relation to the text
   * Which image to use in normal cases
   * which image to use when the item is selected/has focus.
 See Also
@@ -2289,59 +2289,60 @@ See Also
 Summary
   Data Item support interface for retrieving the item's textual representation.
 Description
-  IJvDataItemText is a supporting interface for IJvDataItem that adds the capability of linking a
-  caption for an item.
+  IJvDataItemText is a supporting interface for IJvDataItem and IJvDataItemColumn that adds the
+  capability of linking a text with an item or a column.
 
-  Almost every provider support the IJvDataItemText interface for its items. Besides access to the
-  caption, the interface also keeps track of the editability of the caption from the user interface.
+  Almost every provider supports the IJvDataItemText interface for its items and columns. Besides
+  access to the text, the interface also keeps track of the editability of the text from the user
+  interface.
 See Also
-  IJvDataItem
+  IJvDataItem, IJvDataItemColumn
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemText.Caption
+@@IJvDataItemText.Text
 Summary
-  Specifies the caption of the data item.
+  Specifies the text for the data item or column.
 Description
-  Caption specifies the caption for the data item. The caption might be fixed by the object (i.e. it
-  can't be changed by assigning a new value to Caption) and might be depending on the current context,
-  consumer setting and/or consumer attributes.
+  Text specifies the text for the data item or column. The text value might be fixed by the object
+  (i.e. it can't be changed by assigning a new value to Text) and might be depending on the current
+  context, consumer settings and/or consumer attributes.
 See Also
-  IJvDataItemText.Editable, IJvDataItemText.GetCaption, IJvDataItemText.SetCaption
+  IJvDataItemText.Editable, IJvDataItemText.GetText, IJvDataItemText.SetText
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.Editable
 Summary
-  Specifies if the caption of the item is editable.
+  Specifies if the text of the item or column is editable.
 Description
-  Editable specifies if the caption of the item is editable in the user interface (e.g. an edit
-  control). If the caption should be editable from the user interface the method returns True,
+  Editable specifies if the text of the item or column is editable in the user interface (e.g. an
+  edit control). If the text should be editable from the user interface the method returns True,
   otherwise False is returned.
 
-  Note that the return value of Editable does not necessarily mean the caption can or can't be changed.
-  It only enables/disables the editing from the user interface, but consumers may ignore this method if
-  they wish.
+  Note that the return value of Editable does not necessarily mean the text can or can't be changed.
+  It only enables/disables the editing from the user interface, but consumers may ignore this method
+  if they wish.
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemText.GetCaption
+@@IJvDataItemText.GetText
 Summary
-  Retrieves the caption of the data item.
+  Retrieves the text of the data item or column.
 Description
-  GetCaption retrieves the caption of the data item. It's the read access method for the Caption
+  GetText retrieves the text of the data item or column. It's the read access method for the Text
   property.
 See Also
-  IJvDataItemText.Caption, IJvDataItemText.SetCaption
+  IJvDataItemText.Text, IJvDataItemText.SetText
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemText.SetCaption
+@@IJvDataItemText.SetText
 Summary
-  Sets a new caption for the data item.
+  Sets a new text for the data item or column.
 Description
-  SetCaption sets a new caption for the data item. It's the write access method for the Caption
+  SetText sets a new text for the data item or column. It's the write access method for the Text
   property.
 Parameters
-  Value - New caption for the data item.
+  Value - New text for the data item.
 See Also
-  IJvDataItemText.Caption, IJvDataItemText.GetCaption
+  IJvDataItemText.Text, IJvDataItemText.GetText
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider
@@ -2657,12 +2658,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataTextSearch
 Summary
-  Find an item using its associated caption.
+  Find an item using its associated text.
 Description
   IJvDataTextSearch is a <LINK IJvDataItems, data item list> support interface to locate an item using
-  its associated caption (from an item's IJvDataItemText support interface).
+  its associated text (from an item's IJvDataItemText support interface).
 
-  The interface provides in a single Find method to locate an item in the data tree by comparing the
+  The interface provides a single Find method to locate an item in the data tree by comparing the
   requested text value with each item in the list, optionally scanning sub trees.
 
   This search interface is normally implemented for a data item list if any item in the list or sub
@@ -2681,7 +2682,7 @@ Parameters
   Recursive - Flag to specify if sub trees should be scanned as well. When set to True sub trees will
                be scanned as well, otherwise the current list only will be scanned.
 See Also
-  IJvDataItemText.Caption
+  IJvDataItemText.Text
 
 ----------------------------------------------------------------------------------------------------
 @@TClassArray

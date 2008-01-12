@@ -53,8 +53,10 @@ type
 
   // forwards
   IJvDataProvider = interface;
+  IJvDataProviderColumn = interface;
   IJvDataItems = interface;
   IJvDataItem = interface;
+  IJvDataItemColumn = interface;
   IJvDataConsumer = interface;
   IJvDataProviderNotify = interface;
   IJvDataContexts = interface;
@@ -83,6 +85,33 @@ type
     function GetNotifierCount: Integer;
     function GetNotifier(Index: Integer): IJvDataProviderNotify;
     function GetImplementer: TObject;
+  end;
+
+  IJvDataProviderColumns = interface
+    ['{ABB37FDF-F4D2-464F-BFE9-8A1D299AD0D5}']
+    function GetCount: Integer;
+    function GetColumn(Index: Integer): IJvDataProviderColumn;
+    function GetColumnByID(ID: string): IJvDataProviderColumn;
+    property Count: Integer read GetCount;
+    property Columns[Index: Integer]: IJvDataProviderColumn read GetColumn;
+  end;
+
+  IJvDataProviderColumnsManager = interface
+    ['{CCEA2462-EA95-43DB-AE29-4E7839CDAB71}']
+    function Add: IJvDataProviderColumn;
+    function AddID(ID: string): IJvDataProviderColumn;
+    procedure Clear;
+    procedure Remove(Column: IJvDataProviderColumn);
+    procedure RemoveAt(Index: Integer);
+  end;
+
+  IJvDataProviderColumn = interface
+    ['{4AD52B08-B1D1-43BA-8B84-171980DECD92}']
+    function GetCaption: string;
+    function GetID: string;
+    procedure SetCaption(Value: string);
+
+    property Caption: string read GetCaption write SetCaption;
   end;
 
   IJvDataProviderNotify = interface
@@ -170,6 +199,17 @@ type
     property Implementer: TObject read GetImplementer;
   end;
 
+  IJvDataItemColumns = interface
+    ['{4DAC0051-E132-4701-9B9B-B3F1BC295D30}']
+    function GetColumnByID(ID: string; CreateIfNotExists: Boolean = False): IJvDataItemColumn;
+    function GetColumnFor(Header: IJvDataProviderColumn; CreateIfNotExists: Boolean = False): IJvDataItemColumn;
+  end;
+
+  IJvDataItemColumn = interface
+    ['{33B508B9-AD9B-4B24-A19C-1A97714A754A}']
+    function Header: IJvDataProviderColumn;
+  end;
+
   IJvDataItemRenderer = interface
     ['{9E877A0D-01C2-4204-AA74-84D6516BBEB9}']
     procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
@@ -178,10 +218,10 @@ type
 
   IJvDataItemText = interface
     ['{94FA56D9-281B-4252-B46D-15E7BADA70DA}']
-    function GetCaption: string;
-    procedure SetCaption(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
     function Editable: Boolean;
-    property Caption: string read GetCaption write SetCaption;
+    property Text: string read GetText write SetText;
   end;
 
   IJvDataItemImage = interface

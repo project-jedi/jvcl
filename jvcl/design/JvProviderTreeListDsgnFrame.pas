@@ -324,7 +324,7 @@ begin
   try
     DataItem := GetDataItem(Item.Index);
     if Supports(DataItem, IJvDataItemText, ItemText) then
-      ItemText.Caption := S;
+      ItemText.Text := S;
   finally
     Provider.Leave;
   end;

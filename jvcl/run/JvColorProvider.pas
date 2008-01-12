@@ -647,8 +647,8 @@ type
     FListNumber: Integer; // 0 = StdColors, 1 = SysColors, 2 = CstColors
     FListIndex: Integer;  // Index in color list
   protected
-    function GetCaption: string;
-    procedure SetCaption(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
     function Editable: Boolean;
     function Get_Color: TColor;
     procedure InitID; override;
@@ -662,8 +662,8 @@ type
   private
     FListNumber: Integer; // 0 = StdColors, 1 = SysColors, 2 = CstColors
   protected
-    function GetCaption: string;
-    procedure SetCaption(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
     function Editable: Boolean;
     procedure InitID; override;
     procedure InitImplementers; override;
@@ -675,8 +675,8 @@ type
 
   TJvColorAddItem = class(TJvBaseDataItem, IJvDataItemText)
   protected
-    function GetCaption: string;
-    procedure SetCaption(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
     function Editable: Boolean;
     procedure InitID; override;
     procedure InitImplementers; override;
@@ -832,8 +832,8 @@ type
   private
     FIndex: Integer;
   protected
-    function GetCaption: string;
-    procedure SetCaption(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
     function Editable: Boolean;
     function Get_NameMapping: TJvColorProviderNameMapping;
     procedure InitID; override;
@@ -1595,7 +1595,7 @@ begin
   FListIndex := AListIndex;
 end;
 
-function TJvColorItem.GetCaption: string;
+function TJvColorItem.GetText: string;
 var
   ColorFound: Boolean;
   ColorValue: TColor;
@@ -1617,7 +1617,7 @@ begin
     ColorToIdent(ColorValue, Result);
 end;
 
-procedure TJvColorItem.SetCaption(const Value: string);
+procedure TJvColorItem.SetText(const Value: string);
 begin
   case ListNumber of
     0:
@@ -1679,7 +1679,7 @@ begin
   FListNumber := AListNumber;
 end;
 
-function TJvColorHeaderItem.GetCaption: string;
+function TJvColorHeaderItem.GetText: string;
 var
   Settings: IJvColorProviderSettings;
 begin
@@ -1702,7 +1702,7 @@ begin
   Result := False;
 end;
 
-procedure TJvColorHeaderItem.SetCaption(const Value: string);
+procedure TJvColorHeaderItem.SetText(const Value: string);
 begin
 end;
 
@@ -1736,7 +1736,7 @@ end;
 
 //=== { TJvColorAddItem } ====================================================
 
-function TJvColorAddItem.GetCaption: string;
+function TJvColorAddItem.GetText: string;
 var
   Settings: IJvColorProviderSettings;
 begin
@@ -1747,7 +1747,7 @@ begin
     Result := Settings.CustomColorSettings.AddColorSettings.Caption;
 end;
 
-procedure TJvColorAddItem.SetCaption(const Value: string);
+procedure TJvColorAddItem.SetText(const Value: string);
 begin
 end;
 
@@ -2895,7 +2895,7 @@ begin
     if Active or (CurrentItemIsColorItem and (CurrentColorValue >= clNone)) then
     begin
       if ShowName and Supports(CurrentItem, IJvDataItemText, ItemText) then
-        Result := ItemText.Caption
+        Result := ItemText.Text
       else
         Result := '';
       if CurrentItemIsColorItem then
@@ -2926,7 +2926,7 @@ begin
     if not CurrentItemIsColorItem then
     begin
       if Supports(CurrentItem, IJvDataItemText, ItemText) then
-        Result := ItemText.Caption
+        Result := ItemText.Text
       else
         Result := RsDataItemRenderHasNoText;
     end
@@ -3693,12 +3693,12 @@ begin
   inherited Destroy;
 end;
 
-function TJvColorMapItem.GetCaption: string;
+function TJvColorMapItem.GetText: string;
 begin
   Result := Get_NameMapping.Name;
 end;
 
-procedure TJvColorMapItem.SetCaption(const Value: string);
+procedure TJvColorMapItem.SetText(const Value: string);
 begin
   Get_NameMapping.Name := Value;
 end;

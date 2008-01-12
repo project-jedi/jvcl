@@ -536,7 +536,7 @@ begin
     Provider.Enter;
     try
       if Supports((Provider as IJvDataConsumerItemSelect).GetItem, IJvDataItemText, ItemText) then
-        Result := ItemText.Caption
+        Result := ItemText.Text
       else
         Result := Caption;
     finally

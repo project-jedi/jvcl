@@ -1306,7 +1306,7 @@ begin
               begin
                 Item := VL.Item(ItemIndex);
                 if Supports(Item, IJvDataItemText, ItemText) then
-                  Text := ItemText.Caption
+                  Text := ItemText.Text
                 else
                   Text := '';
               end
@@ -1564,7 +1564,7 @@ begin
               ItemsRenderer.DrawItem(Canvas, Rect, Item, DrawState)
             else
             if Supports(Item, IJvDataItemText, ItemText) then
-              Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
+              Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Text)
             else
               Canvas.TextRect(Rect, Rect.Left, Rect.Top, RsDataItemRenderHasNoText);
           end
@@ -1643,7 +1643,7 @@ begin
         begin
           Item := VL.Item(Index);
           if Supports(Item, IJvDataItemText, ItemText) then
-            Result := ItemText.Caption
+            Result := ItemText.Text
           else
             Result := RsDataItemRenderHasNoText;
         end
@@ -1700,11 +1700,11 @@ begin
         begin
           if ExactMatch then
           begin
-            if AnsiSameText(Value, ItemText.Caption) then
+            if AnsiSameText(Value, ItemText.Text) then
               Break;
           end
           else
-          if AnsiStrLIComp(PChar(Value), PChar(ItemText.Caption), Length(Value)) = 0 then
+          if AnsiStrLIComp(PChar(Value), PChar(ItemText.Text), Length(Value)) = 0 then
             Break;
         end;
         Inc(Result);

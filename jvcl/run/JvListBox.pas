@@ -1763,7 +1763,7 @@ begin
         else
         if Supports(Item, IJvDataItemText, ItemText) then
         begin
-          AText := ItemText.Caption;
+          AText := ItemText.Text;
           DoGetText(Index,AText);
           Canvas.TextRect(Rect, Rect.Left, Rect.Top, AText);
         end
@@ -1842,7 +1842,7 @@ begin
           ASize := ItemsRenderer.MeasureItem(Canvas, Item)
         else
         if Supports(Item, IJvDataItemText, ItemText) then
-          ASize := Canvas.TextExtent(ItemText.Caption)
+          ASize := Canvas.TextExtent(ItemText.Text)
         else
           ASize := Canvas.TextExtent(RsDataItemRenderHasNoText);
         Inc(ASize.cx, VL.ItemLevel(Index) * VL.LevelIndent);
