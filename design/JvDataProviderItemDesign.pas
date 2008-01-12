@@ -457,20 +457,20 @@ end;
 type
   TJvDataItemTextPropView = class(TJvDataProviderItem)
   protected
-    function GetCaption: string;
-    procedure SetCaption(Value: string);
+    function GetText: string;
+    procedure SetText(Value: string);
   published
-    property Caption: string read GetCaption write SetCaption;
+    property Text: string read GetText write SetText;
   end;
 
-function TJvDataItemTextPropView.GetCaption: string;
+function TJvDataItemTextPropView.GetText: string;
 begin
-  Result := (Item as IJvDataItemText).Caption;
+  Result := (Item as IJvDataItemText).Text;
 end;
 
-procedure TJvDataItemTextPropView.SetCaption(Value: string);
+procedure TJvDataItemTextPropView.SetText(Value: string);
 begin
-  (Item as IJvDataItemText).Caption := Value;
+  (Item as IJvDataItemText).Text := Value;
 end;
 
 //=== { TJvDataItemImagePropView } ===========================================

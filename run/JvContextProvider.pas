@@ -145,8 +145,8 @@ type
     { IContextItem methods }
     function GetContext: IJvDataContext;
     { IJvDataItemText methods }
-    function GetCaption: string;
-    procedure SetCaption(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
     function Editable: Boolean;
   protected
     procedure InitID; override;
@@ -423,7 +423,7 @@ begin
   Result := FContext;
 end;
 
-function TContextItem.GetCaption: string;
+function TContextItem.GetText: string;
 begin
   if Context <> nil then
     Result := Context.Name
@@ -431,7 +431,7 @@ begin
     Result := RsContextItemEmptyCaption;
 end;
 
-procedure TContextItem.SetCaption(const Value: string);
+procedure TContextItem.SetText(const Value: string);
 var
   CtxMan: IJvDataContextManager;
 begin

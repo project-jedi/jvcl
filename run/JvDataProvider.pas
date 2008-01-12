@@ -237,11 +237,11 @@ type
 
   TJvBaseDataItemTextImpl = class(TJvDataItemAggregatedObject, IJvDataItemText)
   protected
-    function GetCaption: string; virtual; abstract;
-    procedure SetCaption(const Value: string); virtual; abstract;
+    function GetText: string; virtual; abstract;
+    procedure SetText(const Value: string); virtual; abstract;
     function Editable: Boolean; virtual; abstract;
   public
-    property Caption: string read GetCaption write SetCaption;
+    property Text: string read GetText write SetText;
   end;
 
   TJvBaseDataItemImageImpl = class(TJvDataItemAggregatedObject, IJvDataItemImage)
@@ -372,26 +372,26 @@ type
   // Standard item implementers
   TJvDataItemTextImpl = class(TJvBaseDataItemTextImpl)
   private
-    FCaption: string;
+    FText: string;
   protected
-    function GetCaption: string; override;
-    procedure SetCaption(const Value: string); override;
+    function GetText: string; override;
+    procedure SetText(const Value: string); override;
     function Editable: Boolean; override;
   published
-    property Caption: string read GetCaption write SetCaption;
+    property Text: string read GetText write SetText;
   end;
 
-  { Context sensitive text implementation: Retrieves/Sets the caption linked to the currently
-    selected context. The implementation provides in a default caption that is not linked to any
-    context. If there's no active context set at the provider; this caption will be retrieved/set.
-    If the active context set at the provider has no caption linked to it, the standard caption
-    is retrieved, but a new link is added when the caption is changed. }
+  { Context sensitive text implementation: Retrieves/Sets the captiontext linked to the currently
+    selected context. The implementation provides in a default text that is not linked to any
+    context. If there's no active context set at the provider; this text will be retrieved/set.
+    If the active context set at the provider has no text linked to it, the standard text
+    is retrieved, but a new link is added when the text is changed. }
   TJvDataItemContextTextImpl = class(TJvDataItemTextImpl, IJvDataContextSensitive)
   private
     FContextStrings: TStringList;
   protected
-    function GetCaption: string; override;
-    procedure SetCaption(const Value: string); override;
+    function GetText: string; override;
+    procedure SetText(const Value: string); override;
     function Editable: Boolean; override;
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
@@ -1559,7 +1559,7 @@ begin
   if HasNoText then
     FText := RsDataItemRenderHasNoText
   else
-    FText := TextIntf.Caption;
+    FText := TextIntf.Text;
 end;
 
 procedure TJvDP_ProviderTextOnlyRender.DoDraw;
@@ -1804,9 +1804,9 @@ end;
 
 //=== { TJvDataItemTextImpl } ================================================
 
-function TJvDataItemTextImpl.GetCaption: string;
+function TJvDataItemTextImpl.GetText: string;
 begin
-  Result := FCaption;
+  Result := FText;
 end;
 
 function TJvDataItemTextImpl.Editable: Boolean;
@@ -1814,12 +1814,12 @@ begin
   Result := True;
 end;
 
-procedure TJvDataItemTextImpl.SetCaption(const Value: string);
+procedure TJvDataItemTextImpl.SetText(const Value: string);
 begin
-  if Caption <> Value then
+  if Text <> Value then
   begin
     Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
-    FCaption := Value;
+    FText := Value;
     Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
@@ -1838,7 +1838,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvDataItemContextTextImpl.GetCaption: string;
+function TJvDataItemContextTextImpl.GetText: string;
 var
   CurCtx: IJvDataContext;
 begin
@@ -1848,7 +1848,7 @@ begin
   if (CurCtx <> nil) and (FContextStrings.IndexOfObject(TObject(CurCtx)) > -1) then
     Result := FContextStrings[FContextStrings.IndexOfObject(TObject(CurCtx))]
   else
-    Result := inherited GetCaption;
+    Result := inherited GetText;
 end;
 
 function TJvDataItemContextTextImpl.Editable: Boolean;
@@ -1856,7 +1856,7 @@ begin
   Result := True;
 end;
 
-procedure TJvDataItemContextTextImpl.SetCaption(const Value: string);
+procedure TJvDataItemContextTextImpl.SetText(const Value: string);
 var
   CurCtx: IJvDataContext;
   I: Integer;
@@ -1864,7 +1864,7 @@ begin
   CurCtx := Item.GetItems.Provider.SelectedContext;
   if CurCtx <> nil then
   begin
-    if Caption <> Value then
+    if Text <> Value then
     begin
       Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
       I := FContextStrings.IndexOfObject(TObject(CurCtx));
@@ -1876,7 +1876,7 @@ begin
     end;
   end
   else
-    inherited SetCaption(Value);
+    inherited SetText(Value);
 end;
 
 procedure TJvDataItemContextTextImpl.RevertToAncestor;
@@ -5549,7 +5549,7 @@ begin
       if Index >= VL.Count then
         Error(SListIndexError, Index);
       if Supports(VL.Item(Index), IJvDataItemText, ItemText) then
-        Result := ItemText.Caption;
+        Result := ItemText.Text;
     end;
   finally
     Consumer.Leave;

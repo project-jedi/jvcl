@@ -374,7 +374,7 @@ begin
     if Item <> nil then
     begin
       if Supports(Item, IJvDataItemText, Text) then
-        Result := Text.Caption
+        Result := Text.Text
       else
         Result := '[ID:' + Item.GetID + ']';
     end
