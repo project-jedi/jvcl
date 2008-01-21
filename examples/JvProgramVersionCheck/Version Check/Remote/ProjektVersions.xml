@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Configuration>
+  <Program_Version>
+    <DownloadPasswordRequired>FALSE</DownloadPasswordRequired>
+    <LocalInstallerParams>TestParameter</LocalInstallerParams>
+    <ProgramLocationPath>Version Check\Remote\files</ProgramLocationPath>
+    <ProgramLocationFileName>test.cmd</ProgramLocationFileName>
+    <ProgramVersion>0.9</ProgramVersion>
+    <ProgramReleaseType>prtAlpha</ProgramReleaseType>
+    <ProgramSize>20000</ProgramSize>
+    <ProgramReleaseDate>12.12.2004</ProgramReleaseDate>
+  </Program_Version>
+  <Program_Version>
+    <DownloadPasswordRequired>FALSE</DownloadPasswordRequired>
+    <LocalInstallerParams/>
+    <ProgramLocationPath>Version Check\Remote\files</ProgramLocationPath>
+    <ProgramLocationFileName>Balls.exe</ProgramLocationFileName>
+    <ProgramVersion>0.8.1</ProgramVersion>
+    <ProgramReleaseType>prtBeta</ProgramReleaseType>
+    <ProgramSize>12000000</ProgramSize>
+    <ProgramReleaseDate>12.10.2004</ProgramReleaseDate>
+  </Program_Version>
+  <Program_Version>
+    <DownloadPasswordRequired>FALSE</DownloadPasswordRequired>
+    <LocalInstallerParams/>
+    <ProgramLocationPath>Version Check\Remote\files</ProgramLocationPath>
+    <ProgramLocationFileName/>
+    <ProgramVersion>0.7</ProgramVersion>
+    <ProgramReleaseType>prtBeta</ProgramReleaseType>
+    <ProgramSize>12000000</ProgramSize>
+    <ProgramReleaseDate>10.10.2004</ProgramReleaseDate>
+  </Program_Version>
+  <Program_Version>
+    <DownloadPasswordRequired>FALSE</DownloadPasswordRequired>
+    <LocalInstallerParams/>
+    <ProgramLocationPath>Version Check\Remote\files</ProgramLocationPath>
+    <ProgramLocationFileName>JvParameterListDemo.exe</ProgramLocationFileName>
+    <ProgramVersion>0.6.1.1</ProgramVersion>
+    <VersionDescription>
+      <Item>Das ist ein test</Item>
+    </VersionDescription>
+    <ProgramReleaseType>prtProduction</ProgramReleaseType>
+    <ProgramSize>1000000</ProgramSize>
+    <ProgramReleaseDate>12.08.2004</ProgramReleaseDate>
+  </Program_Version>
+  <CurrentProductionProgramVersion>0.9</CurrentProductionProgramVersion>
+  <CurrentBetaProgramVersion>0.7</CurrentBetaProgramVersion>
+  <CurrentAlphaProgramVersion>0.6.1.1</CurrentAlphaProgramVersion>
+</Configuration>
