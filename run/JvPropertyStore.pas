@@ -142,7 +142,7 @@ type
     function EditIntf_GetVisibleObjectName: string; virtual;
     function EditIntf_TranslatePropertyName(const PropertyName: string): string;
       virtual;
-    function EditIntf_DisplayProperty(const PropertyName: string): Boolean;
+    function EditIntf_DisplayProperty(const PropertyName: string): Boolean; virtual;
     function EditIntf_GetPropertyHint(const PropertyName: string): string;
       virtual;
     function EditIntf_IsPropertySimple(const PropertyName: string): Boolean;
@@ -600,13 +600,14 @@ begin
   begin
     Result := true;
     for I := 0 to GetPropCount(Self) - 1 do
-    begin
-      Result := EditIntf_IsPropertySimple(GetPropName(Self, I));
-      if not Result then
-        Exit;
-    end;
+      if EditIntf_DisplayProperty(GetPropName(Self, I)) then
+      begin
+        Result := EditIntf_IsPropertySimple(GetPropName(Self, I));
+        if not Result then
+          Exit;
+      end;
   end
-  else if PropType(Self, PropertyName) = tkClass then
+  else if IsPublishedProp(Self, PropertyName) and (PropType(Self, PropertyName) = tkClass) then
     if (TPersistent(GetObjectProp(Self, PropertyName)) is
       TJvCustomPropertyListStore) then
       Result := False
