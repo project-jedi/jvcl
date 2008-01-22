@@ -54,6 +54,12 @@ type
 
   TJvThreadedDatasetThreadEvent = procedure(DataSet: TDataSet;
     Operation: TJvThreadedDatasetOperation) of object;
+  TJvThreadedDatasetThreadExceptionEvent = procedure(DataSet: TDataSet;
+      Operation: TJvThreadedDatasetOperation; E: Exception) of object;
+
+
+  TJvThreadedDatasetDialogOptions = class;
+  TJvThreadedDatasetThreadOptions = class;
 
   IJvThreadedDatasetInterface = interface
     ['{220CC94D-AA41-4195-B90C-ECA24BAD3CDB}']
@@ -71,9 +77,30 @@ type
     procedure DoInheritedBeforeRefresh;
     procedure DoInheritedAfterRefresh;
     function ErrorMessage: string;
+    function GetAfterThreadExecution: TJvThreadedDatasetThreadEvent;
+    function GetBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
     function GetDatasetFetchAllRecords: Boolean;
+    function GetDialogOptions: TJvThreadedDatasetDialogOptions;
+    function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
+    function GetThreadOptions: TJvThreadedDatasetThreadOptions;
+    procedure SetAfterThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
+    procedure SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
+    procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
+    procedure SetOnThreadException(const Value:
+        TJvThreadedDatasetThreadExceptionEvent); 
+    procedure SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
+    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
+        GetAfterThreadExecution write SetAfterThreadExecution;
+    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
+        GetBeforeThreadExecution write SetBeforeThreadExecution;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
+        GetOnThreadException write SetOnThreadException;
     property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
+    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions
+        write SetDialogOptions;
+    property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions
+        write SetThreadOptions;
   end;
 
   TJvThreadedDatasetDialogOptions = class(TJvCustomThreadDialogOptions)
@@ -265,11 +292,13 @@ type
     FIThreadedDatasetInterface: IJvThreadedDatasetInterface;
     FLastRowChecked: Integer;
     FMoveToRecordAfterOpen: Longint;
+    FOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     FOperationWasHandledInThread: Boolean;
     FSynchMessageDlgBtn: Word;
     FSynchMessageDlgMsg: string;
     FThreadDialog: TJvDatasetThreadDialog;
     FThreadOptions: TJvThreadedDatasetThreadOptions;
+    IntThreadException: Exception;
     function GetCurrentAction: TJvThreadedDatasetAction;
     function GetCurrentFetchDuration: tDateTime;
     function GetCurrentOpenDuration: tDateTime;
@@ -297,6 +326,7 @@ type
     procedure SynchBeforeThreadExecution;
     procedure SynchContinueFetchMessageDlg;
     procedure SynchErrorMessageDlg;
+    procedure SynchOnThreadException;
     property IntCurrentOperationStart: TDateTime read FIntCurrentOperationStart
         write SetIntCurrentOperationStart;
     property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
@@ -323,6 +353,8 @@ type
     procedure InitOperation;
     procedure IntAfterThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
     procedure IntBeforeThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
+    procedure IntOnThreadException(DataSet: TDataSet; Operation:
+        TJvThreadedDatasetOperation; E: Exception);
     procedure IntSynchAfterOpen;
     procedure IntSynchAfterRefresh;
     procedure IntSynchBeforeOpen;
@@ -368,6 +400,8 @@ type
       FAfterThreadExecution write FAfterThreadExecution;
     property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
       FBeforeThreadExecution write FBeforeThreadExecution;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
+        FOnThreadException write FOnThreadException;
   end;
 
 
@@ -1203,6 +1237,13 @@ begin
     FBeforeThreadExecution(DataSet, Operation);
 end;
 
+procedure TJvBaseDatasetThreadHandler.IntOnThreadException(DataSet: TDataSet;
+    Operation: TJvThreadedDatasetOperation; E: Exception);
+begin
+  if Assigned(FOnThreadException) then
+    FOnThreadException(DataSet, Operation, E);
+end;
+
 procedure TJvBaseDatasetThreadHandler.InternalLast;
 var
   ShowModal: Boolean;
@@ -1419,6 +1460,11 @@ begin
     mbDefault, mbDefault, mbHelp, DialogOptions.DynControlEngine);
 end;
 
+procedure TJvBaseDatasetThreadHandler.SynchOnThreadException;
+begin
+  IntOnThreadException(Dataset, IntCurrentOperation, IntThreadException);
+end;
+
 procedure TJvBaseDatasetThreadHandler.ThreadExecute(Sender: TObject; Params: Pointer);
 begin
   OperationWasHandledInThread := True;
@@ -1440,6 +1486,11 @@ begin
       begin
         SetError(E.Message, E);
         ExecuteThread.ThreadDialogAllowed := False;
+        if Assigned(FOnThreadException) then
+        begin
+          IntThreadException := e;
+          ExecuteThreadSynchronize(SynchOnThreadException);
+        end;
         if ThreadOptions.ShowExceptionMessage then
         begin
           FSynchMessageDlgMsg := E.Message;

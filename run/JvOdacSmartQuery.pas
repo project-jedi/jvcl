@@ -101,10 +101,13 @@ type
     procedure DoAfterRefresh; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
     procedure ReplaceBeforeFetch(Dataset: TCustomDADataSet; var Cancel: Boolean);
     procedure SetActive(Value: Boolean); override;
+    procedure SetOnThreadException(const Value:
+        TJvThreadedDatasetThreadExceptionEvent);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,6 +125,8 @@ type
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
     property EnhancedOptions: TJvOdacThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
     property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
+        GetOnThreadException write SetOnThreadException;
   end;
 
   TJvOdacOraQuery = class(TOraQuery, IJvThreadedDatasetInterface)
@@ -157,10 +162,13 @@ type
     procedure DoAfterRefresh; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
     procedure ReplaceBeforeFetch(Dataset: TCustomDADataSet; var Cancel: Boolean);
     procedure SetActive(Value: Boolean); override;
+    procedure SetOnThreadException(const Value:
+        TJvThreadedDatasetThreadExceptionEvent);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -178,6 +186,8 @@ type
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
     property EnhancedOptions: TJvOdacThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
     property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
+        GetOnThreadException write SetOnThreadException;
   end;
 
 type
@@ -214,10 +224,13 @@ type
     procedure DoAfterRefresh; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
     procedure ReplaceBeforeFetch(Dataset: TCustomDADataSet; var Cancel: Boolean);
     procedure SetActive(Value: Boolean); override;
+    procedure SetOnThreadException(const Value:
+        TJvThreadedDatasetThreadExceptionEvent);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -235,6 +248,8 @@ type
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
     property EnhancedOptions: TJvOdacThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
     property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
+        GetOnThreadException write SetOnThreadException;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -400,6 +415,15 @@ begin
     Result := nil;
 end;
 
+function TJvOdacSmartQuery.GetOnThreadException:
+    TJvThreadedDatasetThreadExceptionEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.OnThreadException
+  else
+    Result := nil;
+end;
+
 function TJvOdacSmartQuery.GetThreadOptions: TJvThreadedDatasetThreadOptions;
 begin
   if Assigned(ThreadHandler) then
@@ -471,6 +495,13 @@ procedure TJvOdacSmartQuery.SetEnhancedOptions(const Value: TJvOdacThreadedDatas
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.EnhancedOptions.Assign(Value);
+end;
+
+procedure TJvOdacSmartQuery.SetOnThreadException(const Value:
+    TJvThreadedDatasetThreadExceptionEvent);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.OnThreadException := Value;
 end;
 
 procedure TJvOdacSmartQuery.SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
@@ -675,6 +706,15 @@ begin
     Result := nil;
 end;
 
+function TJvOdacOraQuery.GetOnThreadException:
+    TJvThreadedDatasetThreadExceptionEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.OnThreadException
+  else
+    Result := nil;
+end;
+
 function TJvOdacOraQuery.GetThreadOptions: TJvThreadedDatasetThreadOptions;
 begin
   if Assigned(ThreadHandler) then
@@ -749,6 +789,13 @@ procedure TJvOdacOraQuery.SetEnhancedOptions(const Value:
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.EnhancedOptions.Assign(Value);
+end;
+
+procedure TJvOdacOraQuery.SetOnThreadException(const Value:
+    TJvThreadedDatasetThreadExceptionEvent);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.OnThreadException := Value;
 end;
 
 procedure TJvOdacOraQuery.SetThreadOptions(const Value:
@@ -918,6 +965,15 @@ begin
     Result := nil;
 end;
 
+function TJvOdacOraTable.GetOnThreadException:
+    TJvThreadedDatasetThreadExceptionEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.OnThreadException
+  else
+    Result := nil;
+end;
+
 function TJvOdacOraTable.GetThreadOptions: TJvThreadedDatasetThreadOptions;
 begin
   if Assigned(ThreadHandler) then
@@ -992,6 +1048,13 @@ procedure TJvOdacOraTable.SetEnhancedOptions(const Value:
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.EnhancedOptions.Assign(Value);
+end;
+
+procedure TJvOdacOraTable.SetOnThreadException(const Value:
+    TJvThreadedDatasetThreadExceptionEvent);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.OnThreadException := Value;
 end;
 
 procedure TJvOdacOraTable.SetThreadOptions(const Value:

@@ -103,11 +103,14 @@ type
     procedure DoAfterRefresh; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
     procedure ReplaceAfterFetchRecord(Sender: TOracleDataSet; FilterAccept: Boolean;
       var Action: TAfterFetchRecordAction);
     procedure SetActive(Value: Boolean); override;
+    procedure SetOnThreadException(const Value:
+        TJvThreadedDatasetThreadExceptionEvent);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -125,6 +128,8 @@ type
     property AfterFetchRecord: TAfterFetchRecordEvent read FAfterFetchRecord write FAfterFetchRecord;
     property AfterThreadExecution: TJvThreadedDatasetThreadEvent read GetAfterThreadExecution write
       SetAfterThreadExecution;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
+        GetOnThreadException write SetOnThreadException;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -306,6 +311,15 @@ begin
     Result := nil;
 end;
 
+function TJvOracleDataset.GetOnThreadException:
+    TJvThreadedDatasetThreadExceptionEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.OnThreadException
+  else
+    Result := nil;
+end;
+
 function TJvOracleDataset.GetThreadOptions: TJvThreadedDatasetThreadOptions;
 begin
   if Assigned(ThreadHandler) then
@@ -371,6 +385,13 @@ procedure TJvOracleDataset.SetEnhancedOptions(const Value: TJvDoaThreadedDataset
 begin
   if Assigned(ThreadHandler) then
     ThreadHandler.EnhancedOptions.Assign(Value);
+end;
+
+procedure TJvOracleDataset.SetOnThreadException(const Value:
+    TJvThreadedDatasetThreadExceptionEvent);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.OnThreadException := Value;
 end;
 
 procedure TJvOracleDataset.SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
