@@ -119,6 +119,14 @@ type
     property ControlItems: TStrings read ControlGetItems write ControlSetItems;
   end;
 
+  IJvDynControlItemIndex = interface
+    ['{C4C80378-EC64-4DE0-B4D0-6BE1E09B06A1}']
+    function ControlGetItemIndex: Integer;
+    procedure ControlSetItemIndex(const Value: Integer);
+    property ControlItemIndex: Integer read ControlGetItemIndex write
+        ControlSetItemIndex;
+  end;
+
   IJvDynControlEdit = interface
     ['{8E70DDD2-2D22-4EA9-B8E2-A25DE3162942}']
     procedure ControlSetPasswordChar(Value: char);
@@ -260,13 +268,17 @@ type
     procedure ControlSetToolTips(Value: Boolean);
     procedure ControlSetItems(Value: TTreeNodes);
     function ControlGetItems: TTreeNodes;
-    property ControlItems: TTreeNodes read ControlGetItems write ControlSetItems;
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetSelected(const Value: TTreeNode);
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
-    function ControlGetSelected: TTreeNode;
     procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetOnChanging(Value: TTVChangingEvent);
     procedure ControlSetSortType(Value: TSortType);
     procedure ControlSortItems;
+    property ControlItems: TTreeNodes read ControlGetItems write ControlSetItems;
+    property ControlSelected: TTreeNode read ControlGetSelected write
+        ControlSetSelected;
   end;
 
   IJvDynControlProgressbar = interface
@@ -297,6 +309,37 @@ type
     ['{6FCC9619-EA8D-43E6-BB66-D754A01B0720}']
     function ControlGetPage(const PageName: string): TWinControl;
   end;
+
+  TJvDynControlInspectorControlOnTranslatePropertyNameEvent = function(const aPropertyName : String) : string of object;
+  TJvDynControlInspectorControlOnDisplayPropertyEvent = function(const
+      aPropertyName : String): boolean of object;
+
+  IJvDynControlRTTIInspectorControl = interface
+    ['{D7C445BF-1ED9-467B-BD01-7D40513016B4}']
+    function ControlGetInspectedObject: TObject;
+    function ControlGetOnDisplayProperty:
+        TJvDynControlInspectorControlOnDisplayPropertyEvent;
+    function ControlGetOnTranslatePropertyName:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent;
+    function ControlGetVisibleItemsCount: Integer;
+    function ControlIsPropertySupported(const aPropertyName : string): Boolean;
+    procedure ControlSaveEditorValues;
+    procedure ControlSetInspectedObject(const Value: TObject);
+    procedure ControlSetOnDisplayProperty(const Value:
+        TJvDynControlInspectorControlOnDisplayPropertyEvent);
+    procedure ControlSetOnTranslatePropertyName(const Value:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent); 
+    property ControlInspectedObject: TObject read ControlGetInspectedObject write
+        ControlSetInspectedObject;
+    property ControlOnDisplayProperty:
+        TJvDynControlInspectorControlOnDisplayPropertyEvent read
+        ControlGetOnDisplayProperty write ControlSetOnDisplayProperty;
+    property ControlOnTranslatePropertyName:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent read
+        ControlGetOnTranslatePropertyName write ControlSetOnTranslatePropertyName;
+  end;
+
+
 
 {$IFDEF UNITVERSIONING}
 const
