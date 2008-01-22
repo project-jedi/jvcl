@@ -379,8 +379,9 @@ type
   end;
 
   TJvDynControlVCLListBox = class(TListBox, IUnknown,
-    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
+    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlItemIndex, IJvDynControlDblClick)
   public
+    function ControlGetItemIndex: Integer;
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -398,6 +399,7 @@ type
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
+    procedure ControlSetItemIndex(const Value: Integer);
 
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
@@ -687,7 +689,9 @@ type
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
     function ControlGetSelected: TTreeNode;
+    procedure ControlSetSelected(const Value: TTreeNode);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetOnChanging(Value: TTVChangingEvent);
     procedure ControlSetSortType(Value: TSortType);
     procedure ControlSortItems;
 
@@ -1952,6 +1956,11 @@ begin
   Columns := Value;
 end;
 
+function TJvDynControlVCLListBox.ControlGetItemIndex: Integer;
+begin
+  Result := ItemIndex;
+end;
+
 //=== { TJvDynControlVCLListBox } ============================================
 
 procedure TJvDynControlVCLListBox.ControlSetDefaultProperties;
@@ -2023,6 +2032,11 @@ end;
 function TJvDynControlVCLListBox.ControlGetItems: TStrings;
 begin
   Result := Items;
+end;
+
+procedure TJvDynControlVCLListBox.ControlSetItemIndex(const Value: Integer);
+begin
+  ItemIndex := Value;
 end;
 
 procedure TJvDynControlVCLListBox.ControlSetOnDblClick(Value: TNotifyEvent);
@@ -2902,6 +2916,12 @@ begin
   OnChange := Value;
 end;
 
+procedure TJvDynControlVCLTreeView.ControlSetOnChanging(Value:
+    TTVChangingEvent);
+begin
+  OnChanging := Value;
+end;
+
 procedure TJvDynControlVCLTreeView.ControlSetSortType(Value: TSortType);
 begin
   SortType := Value;
@@ -2915,6 +2935,11 @@ end;
 procedure TJvDynControlVCLTreeView.ControlSortItems;
 begin
   AlphaSort;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetSelected(const Value: TTreeNode);
+begin
+  Selected := Value;
 end;
 
 //=== { TJvDynControlVCLProgressbar } ========================================

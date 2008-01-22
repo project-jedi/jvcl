@@ -70,6 +70,7 @@ const
   jctProgressBar = TJvDynControlType('Progressbar');
   jctPageControl = TJvDynControlType('Pagecontrol');
   jctTabControl = TJvDynControlType('Tabcontrol');
+  jctRTTIInspector = TJvDynControlType('RTTIInspector');
 
 type
   TControlClass = class of TControl;
@@ -200,6 +201,12 @@ type
     function CreateProgressbarControl(AOwner: TComponent; AParentControl:
         TWinControl; const AControlName: string; AMin: Integer = 0; AMax: Integer =
         100; AStep: Integer = 1): TWinControl; virtual;
+    function CreateRTTIInspectorControl(AOwner: TComponent; AParentControl:
+        TWinControl; const AControlName: string; AOnDisplayProperty:
+        TJvDynControlInspectorControlOnDisplayPropertyEvent;
+        AOnTranslatePropertyName:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent): TWinControl;
+        virtual;
   published
     property DistanceBetweenLabelAndControlHorz: Integer read FDistanceBetweenLabelAndControlHorz write FDistanceBetweenLabelAndControlHorz default 4;
     property DistanceBetweenLabelAndControlVert: Integer read FDistanceBetweenLabelAndControlVert write FDistanceBetweenLabelAndControlVert default 1;
@@ -923,6 +930,21 @@ begin
   JvDynCtrlProgresBar.ControlSetMin(AMin);
   JvDynCtrlProgresBar.ControlSetMax(AMax);
   JvDynCtrlProgresBar.ControlSetStep(AStep);
+end;
+
+function TJvDynControlEngine.CreateRTTIInspectorControl(AOwner: TComponent;
+    AParentControl: TWinControl; const AControlName: string;
+    AOnDisplayProperty:
+    TJvDynControlInspectorControlOnDisplayPropertyEvent;
+    AOnTranslatePropertyName:
+    TJvDynControlInspectorControlOnTranslatePropertyNameEvent): TWinControl;
+var
+  RTTIInspectorControl : IJvDynControlRTTIInspectorControl;
+begin
+  Result := TWinControl(CreateControl(jctRTTIInspector, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlRTTIInspectorControl, RTTIInspectorControl);
+  RTTIInspectorControl.ControlOnDisplayProperty := AOnDisplayProperty;
+  RTTIInspectorControl.ControlOnTranslatePropertyName := AOnTranslatePropertyName;
 end;
 
 

@@ -31,7 +31,8 @@ interface
 
 {$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning, JvDynControlEngineIntf, Graphics;
+  JclUnitVersioning, JvDynControlEngineIntf, Graphics, ComCtrls, Classes,
+  JvInspector;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}
@@ -45,6 +46,9 @@ uses
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
   cxProgressBar, cxPC,
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+  cxOi,
+  {$ENDIF}
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -453,8 +457,9 @@ type
   end;
 
   TJvDynControlCxListBox = class(TcxListBox, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlDblClick, IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlItems, IJvDynControlItemIndex, IJvDynControlDblClick, IJvDynControlDevExpCx, IJvDynControlReadOnly)
   public
+    function ControlGetItemIndex: Integer;
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
@@ -477,6 +482,7 @@ type
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+    procedure ControlSetItemIndex(const Value: Integer);
   end;
 
   TJvDynControlCxCheckListBox = class(TcxCheckListBox, IUnknown, IJvDynControl, IJvDynControlData,
@@ -780,11 +786,13 @@ type
     function ControlGetItems: TTreeNodes;
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
-    function ControlGetSelected: TTreeNode;
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
     procedure ControlSortItems;
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetSelected(const Value: TTreeNode);
+    procedure ControlSetOnChanging(Value: TTVChangingEvent);
 
     //IJvDynControlDblClick
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
@@ -875,6 +883,49 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+  TJvDynControlCxRTTIInspectorControl = class(TcxRTTIInspector, IUnknown,
+      IJvDynControl, IJvDynControlRTTIInspectorControl, IJvDynControlDevExpCx)
+  private
+    fOnDisplayProperty: TJvDynControlInspectorControlOnDisplayPropertyEvent;
+    fOnTranslatePropertyName:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent;
+    procedure InspectorOnFilterProperty(Sender: TObject; const PropertyName:
+        string; var Accept: Boolean);
+  protected
+    //IJvDynControlRTTIInspectorControl
+    function ControlGetOnDisplayProperty:
+        TJvDynControlInspectorControlOnDisplayPropertyEvent;
+    function ControlGetOnTranslatePropertyName:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent;
+    procedure ControlSetOnDisplayProperty(const Value:
+        TJvDynControlInspectorControlOnDisplayPropertyEvent); overload;
+    procedure ControlSetOnTranslatePropertyName(const Value:
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value: TAnchors);
+
+    //IJvDynControlRTTIInspectorControl
+    function ControlGetInspectedObject: TObject;
+    function ControlGetVisibleItemsCount: Integer;
+    function ControlIsPropertySupported(const aPropertyName : string): Boolean;
+    procedure ControlSaveEditorValues;
+    procedure ControlSetInspectedObject(const Value: TObject);
+
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  {$ENDIF}
+
   TJvDynControlEngineDevExpCx = class(TJvDynControlEngine)
   private
     FCxProperties: TCxDynControlWrapper;
@@ -914,10 +965,13 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFNDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+  JvDynControlEngineJVCL,
+  {$ENDIF}
   cxTextEdit, cxControls,
   JvDynControlEngineVCL,
   JvJclUtils, JvBrowseFolder, JvDynControlEngineTools, JvVCL5Utils,
-  cxLookAndFeelPainters;
+  cxLookAndFeelPainters, TypInfo;
 
 var
   IntDynControlEngineDevExpCx: TJvDynControlEngineDevExpCx = nil;
@@ -2251,6 +2305,11 @@ begin
   Properties.Columns := Value;
 end;
 
+function TJvDynControlCxListBox.ControlGetItemIndex: Integer;
+begin
+  Result := ItemIndex;
+end;
+
 //=== { TJvDynControlCxListBox } =============================================
 
 procedure TJvDynControlCxListBox.ControlSetDefaultProperties;
@@ -2337,6 +2396,11 @@ procedure TJvDynControlCxListBox.ControlSetCxProperties(Value: TCxDynControlWrap
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
   Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetItemIndex(const Value: Integer);
+begin
+  ItemIndex := Value;
 end;
 
 //=== { TJvDynControlCxCheckListBox } ========================================
@@ -3218,11 +3282,6 @@ begin
   StateImages.Assign(Value);
 end;
 
-function TJvDynControlCxTreeView.ControlGetSelected: TTreeNode;
-begin
-  Result := Selected;
-end;
-
 procedure TJvDynControlCxTreeView.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
@@ -3248,9 +3307,24 @@ begin
   LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
+procedure TJvDynControlCxTreeView.ControlSetOnChanging(Value: TTVChangingEvent);
+begin
+  OnChanging := Value;
+end;
+
 procedure TJvDynControlCxTreeView.ControlSortItems;
 begin
   AlphaSort;
+end;
+
+function TJvDynControlCxTreeView.ControlGetSelected: TTreeNode;
+begin
+  Result := Selected;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetSelected(const Value: TTreeNode);
+begin
+  Selected := Value;
 end;
 
 //=== { TJvDynControlCxProgressbar } =========================================
@@ -3655,6 +3729,11 @@ begin
   RegisterControlType(jctProgressbar, TJvDynControlCxProgressbar);
   RegisterControlType(jctTabControl, TJvDynControlCxTabControl);
   RegisterControlType(jctPageControl, TJvDynControlCxPageControl);
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+  RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
+  {$ELSE}
+  RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
+  {$ENDIF}
 end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
@@ -3679,6 +3758,126 @@ function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 begin
   Result := IntDynControlEngineDevExpCx;
 end;
+
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+
+//=== { TJvDynControlCxRTTIInspectorControl } ========================================
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetDefaultProperties;
+begin
+  OnFilterProperty := InspectorOnFilterProperty;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+function TJvDynControlCxRTTIInspectorControl.ControlGetInspectedObject: TObject;
+begin
+  Result := InspectedObject;
+end;
+
+function TJvDynControlCxRTTIInspectorControl.ControlGetOnDisplayProperty:
+    TJvDynControlInspectorControlOnDisplayPropertyEvent;
+begin
+  Result := fOnDisplayProperty;
+end;
+
+function TJvDynControlCxRTTIInspectorControl.ControlGetOnTranslatePropertyName:
+    TJvDynControlInspectorControlOnTranslatePropertyNameEvent;
+begin
+  Result := fOnTranslatePropertyName;
+end;
+
+function TJvDynControlCxRTTIInspectorControl.ControlGetVisibleItemsCount: Integer;
+begin
+  Result := Rows.Count;
+end;
+
+function TJvDynControlCxRTTIInspectorControl.ControlIsPropertySupported(const
+    aPropertyName : string): Boolean;
+begin
+  if Assigned(InspectedObject) then
+    if IsPublishedProp(InspectedObject, aPropertyName) then
+      if PropIsType(InspectedObject, aPropertyName, tkClass) then
+        Result := GetObjectProp(InspectedObject, aPropertyName) is TStringList
+      else
+        Result := True
+    else
+      Result := False
+  else
+    Result := True;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSaveEditorValues;
+begin
+  HideEdit;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetCxProperties(Value:
+    TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetInspectedObject(const
+    Value: TObject);
+begin
+  if Value is TPersistent then
+    InspectedObject := TPersistent(Value);
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetOnDisplayProperty(const
+    Value: TJvDynControlInspectorControlOnDisplayPropertyEvent);
+begin
+  fOnDisplayProperty := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ControlSetOnTranslatePropertyName(
+    const Value: TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
+begin
+  fOnTranslatePropertyName := Value;
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.InspectorOnFilterProperty(Sender:
+    TObject; const PropertyName: string; var Accept: Boolean);
+begin
+  if Assigned(fonDisplayProperty) And IsPublishedProp(InspectedObject, PropertyName) then
+    Accept := fOnDisplayProperty(PropertyName) and ControlIsPropertySupported(PropertyName);
+end;
+
+{$ENDIF}
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 

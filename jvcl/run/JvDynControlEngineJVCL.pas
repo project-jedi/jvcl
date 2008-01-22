@@ -398,8 +398,9 @@ type
   end;
 
   TJvDynControlJVCLListBox = class(TJvListBox, IUnknown,
-    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
+    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlItemIndex, IJvDynControlDblClick)
   public
+    function ControlGetItemIndex: Integer;
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -417,6 +418,7 @@ type
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
     procedure ControlSetAnchors(Value: TAnchors);
+    procedure ControlSetItemIndex(const Value: Integer);
 
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
@@ -675,8 +677,8 @@ type
     procedure ControlSetAnchors(Value: TAnchors);
   end;
 
-  TJvDynControlJVCLTreeView = class(TJvTreeView, IUnknown,
-    IJvDynControl, IJvDynControlTreeView, IJvDynControlReadOnly, IJvDynControlDblClick)
+  TJvDynControlJVCLTreeView = class(TJvTreeView, IUnknown, IJvDynControl,
+      IJvDynControlTreeView, IJvDynControlReadOnly, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -702,8 +704,10 @@ type
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
     function ControlGetSelected: TTreeNode;
+    procedure ControlSetSelected(const Value: TTreeNode);
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetOnChanging(Value: TTVChangingEvent);
     procedure ControlSetSortType(Value: TSortType);
     procedure ControlSortItems;
 
@@ -785,6 +789,7 @@ type
     //IJvDynControlPageControl
     function ControlGetPage(const PageName: string): TWinControl;
   end;
+
 
 function DynControlEngineJVCL: TJvDynControlEngine;
 procedure SetDynControlEngineJVCLDefault;
@@ -1968,6 +1973,11 @@ begin
   Columns := Value;
 end;
 
+function TJvDynControlJVCLListBox.ControlGetItemIndex: Integer;
+begin
+  Result := ItemIndex;
+end;
+
 //=== { TJvDynControlJVCLListBox } ===========================================
 
 procedure TJvDynControlJVCLListBox.ControlSetDefaultProperties;
@@ -2039,6 +2049,11 @@ end;
 procedure TJvDynControlJVCLListBox.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLListBox.ControlSetItemIndex(const Value: Integer);
+begin
+  ItemIndex := Value;
 end;
 
 procedure TJvDynControlJVCLListBox.ControlSetOnDblClick(Value: TNotifyEvent);
@@ -2919,6 +2934,12 @@ begin
   OnChange := Value;
 end;
 
+procedure TJvDynControlJVCLTreeView.ControlSetOnChanging(Value:
+    TTVChangingEvent);
+begin
+  OnChanging := Value;
+end;
+
 procedure TJvDynControlJVCLTreeView.ControlSetSortType(Value: TSortType);
 begin
   SortType := Value;
@@ -2927,6 +2948,11 @@ end;
 procedure TJvDynControlJVCLTreeView.ControlSetOnDblClick(Value: TNotifyEvent);
 begin
   OnDblClick := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetSelected(const Value: TTreeNode);
+begin
+  Selected := Value;
 end;
 
 procedure TJvDynControlJVCLTreeView.ControlSortItems;
@@ -3242,6 +3268,8 @@ procedure TJvDynControlJVCLTabControl.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
+
+
 
 initialization
   {$IFDEF UNITVERSIONING}
