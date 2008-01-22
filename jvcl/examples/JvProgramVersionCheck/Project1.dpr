@@ -1,8 +1,5 @@
 program Project1;
 
-{%File 'ModelSupport\Main\Main.txvpck'}
-{%File 'ModelSupport\Vorgabe.txvpck'}
-
 uses
   Forms,
   Main in 'Main.pas' {Form1};
