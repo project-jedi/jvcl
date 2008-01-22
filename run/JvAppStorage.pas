@@ -2320,7 +2320,11 @@ begin
               // Usage of an invalid identifier to signal the value does not exist
               OrdValue := GetEnumValue(TypeInfo, ReadStringInt(Path, cInvalidIdentifier));
               if OrdValue = -1 then
+              begin
                 OrdValue := ReadIntegerInt(Path, OrdValue);
+                if OrdValue = -1 then
+                  CopyEnumValue(Default, OrdValue, GetTypeData(TypeInfo).OrdType)
+              end;
             end
             else
               {$IFDEF CLR}
