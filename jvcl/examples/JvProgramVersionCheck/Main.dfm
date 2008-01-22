@@ -110,12 +110,12 @@ object Form1: TForm1
   object JvProgramVersionNetworkLocation: TJvProgramVersionNetworkLocation
     VersionInfoLocationPathList.Strings = (
       'Version Check\Remote')
-    VersionInfoFileName = 'ProjektVersions.xml'
+    VersionInfoFileName = 'ProjectVersions.xml'
     Left = 105
     Top = 200
   end
   object JvProgramVersionHTTPLocation: TJvProgramVersionHTTPLocation
-    VersionInfoFileName = 'ProjektVersions_http.ini'
+    VersionInfoFileName = 'ProjectVersions_http.ini'
     Left = 105
     Top = 240
   end
