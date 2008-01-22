@@ -34,7 +34,8 @@ implementation
 
 {$R *.dfm}
 
-Uses JclFileUtils, JvTypes, JvPropertyStoreEditor;
+Uses JclFileUtils, JvTypes, JvPropertyStoreEditor,
+  JvDynControlEngineJVCLInspector, JvDynControlEngineJVCL;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -62,4 +63,6 @@ begin
   end;
 end;
 
+begin
+  RgisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
 end.
