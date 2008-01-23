@@ -613,8 +613,7 @@ end;
 function TJvPropertyStoreEditorForm.OnTranslatePropertyName(const aPropertyName :
     String): string;
 begin
-//  Result := ;
-  // TODO -cMM: TJvPropertyStoreEditorForm.TranslatePropertyName default body inserted
+  Result := aPropertyName;
 end;
 
 {$IFDEF UNITVERSIONING}
