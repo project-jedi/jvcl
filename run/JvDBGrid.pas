@@ -456,6 +456,7 @@ type
     procedure PlaceControl(Control: TWinControl; ACol, ARow: Integer); virtual;
     procedure RowHeightsChanged; override;
     function GetDataLink: TDataLink; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -4317,6 +4318,7 @@ var
   R: TRect;
   GridControl: TJvDBGridControl;
   ClientTopLeft: TPoint;
+  ParentForm: TCustomForm;
 begin
   // Do not test for Assigned(Control) here or you will end
   // up with an infinite loop of error messages. This check must
@@ -4332,6 +4334,8 @@ begin
   begin
     HideCurrentControl;
     FCurrentControl := Control;
+    if FCurrentControl <> nil then
+      FCurrentControl.FreeNotification(Self);
     FOldControlWndProc := FCurrentControl.WindowProc;
     FCurrentControl.WindowProc := ControlWndProc;
   end;
@@ -4410,7 +4414,9 @@ begin
   Control.BringToFront;
   Control.Show;
 
-  if Self.Visible and Control.Visible and Self.Parent.Visible and GetParentForm(Self).Visible then
+  ParentForm := GetParentForm(Self);
+  if Self.Visible and Control.Visible and (Self.Parent <> nil) and
+     Self.Parent.Visible and (ParentForm <> nil) and ParentForm.Visible then
   begin
     if dgCancelOnExit in Options then
     begin // Don't cancel the empty record while moving focus
@@ -4435,9 +4441,12 @@ begin
     FCurrentControl.WindowProc := FOldControlWndProc;
     if FCurrentControl.HandleAllocated then
     begin
-      SendMessage(FCurrentControl.Handle, WM_KILLFOCUS, 0, 0);
-      FCurrentControl.Hide;
+      SendMessage(FCurrentControl.Handle, WM_KILLFOCUS, 0, 0); // can free the FCurrentControl
+      if FCurrentControl <> nil then
+        FCurrentControl.Hide;
     end;
+    if FCurrentControl <> nil then
+      FCurrentControl.RemoveFreeNotification(Self);
     FCurrentControl := nil;
   end;
   FOldControlWndProc := nil;
@@ -4749,6 +4758,16 @@ end;
 function TJvDBGrid.CellRect(ACol, ARow: Longint): TRect;
 begin
   Result := inherited CellRect(ACol, ARow);
+end;
+
+procedure TJvDBGrid.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FCurrentControl) then
+  begin
+    FCurrentControl.RemoveFreeNotification(Self);
+    FCurrentControl := nil;
+  end;
 end;
 
 initialization
