@@ -889,10 +889,14 @@ begin
       for BDS <= 4.0 this it the normal way }
     if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
     begin
-      if FDCPOutputDir = '' then
-        FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
       if FBPLOutputDir = '' then
         FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
+      if (FBPLOutputDir = '') and not IsBDS then
+        FBPLOutputDir := RootDir + PathDelim + 'Projects\BPL';
+      if FDCPOutputDir = '' then
+        FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
+      if (FDCPOutputDir = '') and not IsBDS then
+        FDCPOutputDir := FBPLOutputDir;
       if FBrowsingPaths.Count = 0 then
         ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
       if FPackageSearchPaths.Count = 0 then

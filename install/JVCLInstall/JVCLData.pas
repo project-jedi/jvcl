@@ -673,10 +673,14 @@ begin
   FDeleteMapFiles := True;
 
   FBplDir := Target.BplDir;
-  if Target.IsBDS then
+  {if Target.IsBDS then
     FDcpDir := GetUnitOutDir
   else
-    FDcpDir := Target.DcpDir;
+    FDcpDir := Target.DcpDir;}
+  // The DCU output path will be added to the SearchPath and the IDE can then
+  // access the DCP files.
+  FDcpDir := GetUnitOutDir;
+  
   Init;
   FInstallJVCL := CanInstallJVCL;
 
