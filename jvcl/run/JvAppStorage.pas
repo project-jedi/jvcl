@@ -1436,13 +1436,12 @@ var
   TargetPath: string;
 begin
   if List is TList then
-  try
+  begin
     NewPath := ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]);
     ResolvePath(NewPath, TargetStore, TargetPath); // Only needed for assigning the event
     NewItem := TargetStore.CurrentInstanceCreateEvent(Sender, NewPath, Index);
     TList(List).Add(NewItem);
     Sender.ReadPersistent(NewPath, NewItem);
-  except
   end;
 end;
 
@@ -1474,7 +1473,7 @@ var
   TargetPath: string;
 begin
   if List is TStrings then
-  try
+  begin
     NewPath := ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]);
     ResolvePath(NewPath, TargetStore, TargetPath); // Only needed for assigning the event
     NewItem := TargetStore.CurrentInstanceCreateEvent(Sender, ConcatPaths([NewPath, cObject]), Index);
@@ -1485,7 +1484,6 @@ begin
         True, True, TJvCustomPropertyStore(NewItem).CombinedIgnoreProperties)
     else
       Sender.ReadPersistent(ConcatPaths([NewPath, cObject]), NewItem);
-  except
   end;
 end;
 
@@ -1526,7 +1524,7 @@ var
   NewPath: string;
 begin
   if List is TCollection then
-  try
+  begin
     NewPath := ConcatPaths([Path, ItemNameIndexPath (ItemName, Index)]);
     NewItem := TCollection(List).Add;
     if NewItem is TJvCustomPropertyStore then
@@ -1534,7 +1532,6 @@ begin
         TJvCustomPropertyStore(NewItem).CombinedIgnoreProperties)
     else
       Sender.ReadPersistent(NewPath, NewItem);
-  except
   end;
 end;
 
