@@ -45,6 +45,7 @@ type
     FLang: string;
     FAutoUpdate: Boolean;
     FAutoInstall: Boolean;
+    FAutoCloseAfterSuccess: Boolean;
     FRebuildPackages: Boolean;
     FRegistryKeyDelphi: string;
     FRegistryKeyBCB: string;
@@ -69,6 +70,7 @@ type
     property KeepFiles: Boolean read FKeepFiles write FKeepFiles;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
     property AutoInstall: Boolean read FAutoInstall write FAutoInstall;
+    property AutoCloseAfterSuccess: Boolean read FAutoCloseAfterSuccess write FAutoCloseAfterSuccess;
     property RebuildPackages: Boolean read FRebuildPackages write FRebuildPackages;
     property RegistryKeyDelphi: string read FRegistryKeyDelphi write FRegistryKeyDelphi;
     property RegistryKeyBCB: string read FRegistryKeyBCB write FRegistryKeyBCB;
@@ -94,6 +96,7 @@ begin
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddBool('--autoinstall', 'Installs JVCL 3 for all installed IDEs.', FAutoInstall);
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
+  AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
   AddSpace;
   AddString('-rDelphi=', 'Sets the Registry path for the Delphi IDEs.', FRegistryKeyDelphi);
   AddString('-rBCB=', 'Sets the Registry path for the BCB IDEs.', FRegistryKeyBCB);
