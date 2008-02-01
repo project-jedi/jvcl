@@ -102,7 +102,7 @@ implementation
 
 uses
   Math,
-  InstallerConsts, PageBuilder, JvConsts, JvResources, Utils;
+  InstallerConsts, PageBuilder, JvConsts, JvResources, Utils, CmdLineUtils;
 
 (* // Main.pas  - see InstallerConsts.pas
 resourcestring
@@ -215,6 +215,8 @@ procedure TFormMain.DoFinished(Sender: TObject);
 begin
   Finished := True;
   JvWizardRouteMapList.Invalidate;
+  if CmdOptions.AutoCloseAfterSuccess then
+    JvWizardFinishButtonClick(Sender);
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -392,6 +394,9 @@ begin
   begin
     while True do
     begin
+      if not PackageInstaller.Page.CanNext then
+        Break; // prevent the installer from a endless loop
+
       Page := PackageInstaller.Page.NextPage;
       if (Page = nil) then
         Break;
