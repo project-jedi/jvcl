@@ -36,18 +36,16 @@ uses
 
 type
   TCaptureLine = procedure(const Line: string; var Aborted: Boolean) of object;
+  TInjectionProc = procedure(const ProcessInfo: TProcessInformation);
 
 var
   CaptureStatusLine: TCaptureLine = nil;
 
 function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
   OnIdle: TNotifyEvent = nil; CtrlCAbort: Boolean = False; const EnvPath: string = '';
-  InjectDll: Boolean = False): Integer;
+  InjectionProc: TInjectionProc = nil): Integer;
 
 implementation
-
-{uses
-  InjectDll, SharedMMFMem;}
 
 function GetEnvironmentVariable(const Name: string): string;
 begin
@@ -62,7 +60,8 @@ begin
 end;
 
 function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
-  OnIdle: TNotifyEvent; CtrlCAbort: Boolean; const EnvPath: string; InjectDll: Boolean): Integer;
+  OnIdle: TNotifyEvent; CtrlCAbort: Boolean; const EnvPath: string;
+  InjectionProc: TInjectionProc): Integer;
 var
   Aborted: Boolean;
 
@@ -115,7 +114,6 @@ var
   Line: string;
   StatusLine: string;
   OrgEnvPath: string;
-//  PipeP: ^THandle;
 begin
   Result := -2;
   if not Assigned(CaptureLine) then
@@ -158,19 +156,8 @@ begin
         if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
           CREATE_SUSPENDED, nil, PChar(Dir), StartupInfo, ProcessInfo) then
         begin
-          {if InjectDll then
-          begin
-            SharedGetMem(PipeP, 'Local\dcc32Hook_StatusPipe' + IntToStr(ProcessInfo.dwProcessId), SizeOf(THandle));
-            if Assigned(PipeP) then
-            begin
-              try
-                PipeP^ := WriteStatusPipe;
-                InjectHookDll(ProcessInfo.dwProcessId, ExtractFilePath(ParamStr(0)) + 'dcc32Hook.dll', False);
-              finally
-                SharedFreeMem(PipeP);
-              end;
-            end;
-          end;}
+          if Assigned(InjectionProc) then
+            InjectionProc(ProcessInfo);
           ResumeThread(ProcessInfo.hThread);
 
           CloseHandle(ProcessInfo.hThread);

@@ -72,7 +72,8 @@ uses
   FrmCompile in 'FrmCompile.pas' {FormCompile},
   FrmCompileMessages in 'FrmCompileMessages.pas' {FormCompileMessages},
   JediRegInfo in 'JediRegInfo.pas',
-  RegConfig in 'RegConfig.pas';
+  RegConfig in 'RegConfig.pas',
+  Dcc32FileAgePatch in 'Dcc32FileAgePatch.pas';
 
 {$R *.res}
 {$R CommCtrlAsInvoker.res}

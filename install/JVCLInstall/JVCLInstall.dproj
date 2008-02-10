@@ -57,6 +57,7 @@
     <DCCReference Include="CmdLineUtils.pas" />
     <DCCReference Include="Compile.pas" />
     <DCCReference Include="Core.pas" />
+    <DCCReference Include="Dcc32FileAgePatch.pas" />
     <DCCReference Include="DelphiData.pas" />
     <DCCReference Include="Frames\FrmConfigPage.pas">
       <Form>FrameConfigPage</Form>
