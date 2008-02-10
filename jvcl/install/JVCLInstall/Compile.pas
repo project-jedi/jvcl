@@ -173,7 +173,7 @@ resourcestring
 implementation
 
 uses
-  CmdLineUtils, JvConsts, Utils, Core;
+  CmdLineUtils, JvConsts, Utils, Core, Dcc32FileAgePatch;
 
 resourcestring
   RsGeneratingTemplates = 'Generating templates...';
@@ -559,9 +559,14 @@ begin
         CaptureLinePackageCompilation(#1 + CmdLine, FAborted);
       end;
 
-      Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
-                               ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
-                               False, TargetConfig.GetPathEnvVar);
+      if TargetConfig.Target.Version <= 9 then
+        Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+                                 ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
+                                 False, TargetConfig.GetPathEnvVar, Dcc32SpeedInjection)
+      else
+        Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+                                 ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
+                                 False, TargetConfig.GetPathEnvVar, nil);
       if Result <> 0 then
         Break;
     end;
