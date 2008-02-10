@@ -223,7 +223,8 @@ end;
 
 procedure Dcc32SpeedInjection(const ProcessInfo: TProcessInformation);
 begin
-  PatchDcc32FileAge(ProcessInfo.hProcess);
+  if GetProcAddress(GetModuleHandle(kernel32), 'GetFileAttributesExA') <> nil then
+    PatchDcc32FileAge(ProcessInfo.hProcess);
 end;
 
 end.
