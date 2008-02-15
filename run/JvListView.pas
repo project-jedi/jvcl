@@ -2153,7 +2153,11 @@ begin
   begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
+    begin
+      if Win32MajorVersion >= 6 then
+        SetBkMode(Canvas.Handle, TRANSPARENT);
       Canvas.Brush := TJvListItem(Item).Brush;
+    end;
     Canvas.Handle;
   end;
 
@@ -2198,7 +2202,7 @@ begin
   if SubItem = -1 then      // See above
     SubItem := 0;
 
-  if (*(Stage = cdPrePaint) and*) Assigned(Item) then
+  if {(Stage = cdPrePaint) and} Assigned(Item) then
   begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
