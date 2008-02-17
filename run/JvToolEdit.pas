@@ -535,6 +535,7 @@ type
     function GetAutoCompleteSource: IEnumString; override;
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
+    function GetLocalizedName: string; virtual; abstract;
     procedure DoAfterDialog(var FileName: string; var Action: Boolean); dynamic;
     procedure DoBeforeDialog(var FileName: string; var Action: Boolean); dynamic;
     procedure ReceptFileDir(const AFileName: string); virtual; abstract;
@@ -551,6 +552,7 @@ type
     constructor Create(AOwner: TComponent); override;
     property LongName: string read GetLongName;
     property ShortName: string read GetShortName;
+    property LocalizedName: string read GetLocalizedName;
   published
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog write FOnBeforeDialog;
@@ -599,6 +601,7 @@ type
     procedure ClearFileList; override;
     function GetLongName: string; override;
     function GetShortName: string; override;
+    function GetLocalizedName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     class function DefaultImageIndex: TImageIndex; override;
@@ -701,15 +704,19 @@ type
     FInitialDir: string;
     FDialogText: string;
     FDialogKind: TDirDialogKind;
+    procedure SetDirectory(const Value: string);
+    function GetDirectory: string;
   protected
     FMultipleDirs: Boolean;
     procedure PopupDropDown(DisableEdit: Boolean); override;
     procedure ReceptFileDir(const AFileName: string); override;
     function GetLongName: string; override;
     function GetShortName: string; override;
+    function GetLocalizedName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     class function DefaultImageIndex: TImageIndex; override;
+    property Directory: string read GetDirectory write SetDirectory;
   published
     property Action;
     property Align;
@@ -1084,6 +1091,7 @@ uses
   {$IFNDEF CLR}
   JvBrowseFolder,
   {$ENDIF !CLR}
+  JclFileUtils,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts;
 
@@ -4138,12 +4146,59 @@ begin
   end;
 end;
 
+function TJvDirectoryEdit.GetLocalizedName: string;
+var
+  Temp: string;
+  Pos: Integer;
+begin
+  if not MultipleDirs then
+    Result := PathGetLocalizedPath(Text)
+  else
+  begin
+    Result := '';
+    Pos := 1;
+    while Pos <= Length(Text) do
+    begin
+      Temp := PathGetLocalizedPath(ExtractSubstr(Text, Pos, [PathSep]));
+      if (Result <> '') and (Temp <> '') then
+        Result := Result + PathSep;
+      Result := Result + Temp;
+    end;
+  end;
+end;
+
+procedure TJvDirectoryEdit.SetDirectory(const Value: string);
+begin
+  Text := Value;
+end;
+
+function TJvDirectoryEdit.GetDirectory: string;
+var
+  Temp: string;
+  Pos: Integer;
+begin
+  if not MultipleDirs then
+    Result := PathGetPhysicalPath(Text)
+  else
+  begin
+    Result := '';
+    Pos := 1;
+    while Pos <= Length(Text) do
+    begin
+      Temp := PathGetPhysicalPath(ExtractSubstr(Text, Pos, [PathSep]));
+      if (Result <> '') and (Temp <> '') then
+        Result := Result + PathSep;
+      Result := Result + Temp;
+    end;
+  end;
+end;
+
 procedure TJvDirectoryEdit.PopupDropDown(DisableEdit: Boolean);
 var
   Temp: string;
   Action: Boolean;
 begin
-  Temp := Text;
+  Temp := PathGetPhysicalPath(Text);
   Action := True;
   DoBeforeDialog(Temp, Action);
   if not Action then
@@ -4151,10 +4206,12 @@ begin
   if Temp = '' then
   begin
     if InitialDir <> '' then
-      Temp := InitialDir
+      Temp := PathGetPhysicalPath(InitialDir)
     else
       Temp := PathDelim;
-  end;
+  end
+  else
+    Temp := PathGetPhysicalPath(Temp);
   if not DirectoryExists(Temp) then
     Temp := PathDelim;
   DisableSysErrors;
@@ -4704,7 +4761,7 @@ end;
 
 function TJvFilenameEdit.GetFileName: TFileName;
 begin
-  Result := ClipFilename(inherited Text, AddQuotes);
+  Result := PathGetPhysicalPath(ClipFilename(inherited Text, AddQuotes));
 end;
 
 function TJvFilenameEdit.GetFilter: string;
@@ -4742,6 +4799,11 @@ begin
   Result := LongToShortFileName(FileName);
 end;
 
+function TJvFilenameEdit.GetLocalizedName: string;
+begin
+  Result := PathGetLocalizedPath(FileName);
+end;
+
 function TJvFilenameEdit.IsCustomFilter: Boolean;
 begin
   {$IFDEF CLR}
@@ -4772,6 +4834,7 @@ begin
     Exit;
   if ValidFileName(Temp) then
   try
+    Temp := PathGetPhysicalPath(Temp);
     if DirectoryExists(ExtractFilePath(Temp)) then
       SetInitialDir(ExtractFilePath(Temp));
     if (ExtractFileName(Temp) = '') or
