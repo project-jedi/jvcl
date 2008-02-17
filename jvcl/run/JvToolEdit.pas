@@ -4106,18 +4106,19 @@ end;
 
 function TJvDirectoryEdit.GetLongName: string;
 var
-  Temp: string;
+  Txt, Temp: string;
   Pos: Integer;
 begin
+  Txt := Directory;
   if not MultipleDirs then
-    Result := ShortToLongPath(Text)
+    Result := ShortToLongPath(Txt)
   else
   begin
     Result := '';
     Pos := 1;
-    while Pos <= Length(Text) do
+    while Pos <= Length(Txt) do
     begin
-      Temp := ShortToLongPath(ExtractSubstr(Text, Pos, [PathSep]));
+      Temp := ShortToLongPath(ExtractSubstr(Txt, Pos, [PathSep]));
       if (Result <> '') and (Temp <> '') then
         Result := Result + PathSep;
       Result := Result + Temp;
@@ -4127,18 +4128,19 @@ end;
 
 function TJvDirectoryEdit.GetShortName: string;
 var
-  Temp: string;
+  Txt, Temp: string;
   Pos: Integer;
 begin
+  Txt := Directory;
   if not MultipleDirs then
-    Result := LongToShortPath(Text)
+    Result := LongToShortPath(Txt)
   else
   begin
     Result := '';
     Pos := 1;
-    while Pos <= Length(Text) do
+    while Pos <= Length(Txt) do
     begin
-      Temp := LongToShortPath(ExtractSubstr(Text, Pos, [PathSep]));
+      Temp := LongToShortPath(ExtractSubstr(Txt, Pos, [PathSep]));
       if (Result <> '') and (Temp <> '') then
         Result := Result + PathSep;
       Result := Result + Temp;
@@ -4148,18 +4150,19 @@ end;
 
 function TJvDirectoryEdit.GetLocalizedName: string;
 var
-  Temp: string;
+  Txt, Temp: string;
   Pos: Integer;
 begin
+  Txt := Directory;
   if not MultipleDirs then
-    Result := PathGetLocalizedPath(Text)
+    Result := PathGetLocalizedPath(Txt)
   else
   begin
     Result := '';
     Pos := 1;
-    while Pos <= Length(Text) do
+    while Pos <= Length(Txt) do
     begin
-      Temp := PathGetLocalizedPath(ExtractSubstr(Text, Pos, [PathSep]));
+      Temp := PathGetLocalizedPath(ExtractSubstr(Txt, Pos, [PathSep]));
       if (Result <> '') and (Temp <> '') then
         Result := Result + PathSep;
       Result := Result + Temp;
@@ -4174,18 +4177,19 @@ end;
 
 function TJvDirectoryEdit.GetDirectory: string;
 var
-  Temp: string;
+  Txt, Temp: string;
   Pos: Integer;
 begin
+  Txt := Text;
   if not MultipleDirs then
-    Result := PathGetPhysicalPath(Text)
+    Result := PathGetPhysicalPath(Txt)
   else
   begin
     Result := '';
     Pos := 1;
-    while Pos <= Length(Text) do
+    while Pos <= Length(Txt) do
     begin
-      Temp := PathGetPhysicalPath(ExtractSubstr(Text, Pos, [PathSep]));
+      Temp := PathGetPhysicalPath(ExtractSubstr(Txt, Pos, [PathSep]));
       if (Result <> '') and (Temp <> '') then
         Result := Result + PathSep;
       Result := Result + Temp;
