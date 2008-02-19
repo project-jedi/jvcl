@@ -119,6 +119,7 @@ type
     function GetAppStoragePath: string;
     function GetBeforeTransferConnectionInfoToSessionData:
       TJvLogonDialogConnectionInfoEvent;
+    function GetConnectedDialogConnectionInfo: TJvBaseConnectionInfo;
     function GetDynControlEngine: TJvDynControlEngine;
     function GetOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
     function GetOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
@@ -142,7 +143,9 @@ type
     destructor Destroy; override;
     procedure ConnectSession;
     function Execute: Boolean; override;
-    function ExecuteOnSession(Session: TCustomDAConnection): Boolean; 
+    function ExecuteOnSession(Session: TCustomDAConnection): Boolean;
+    property ConnectedDialogConnectionInfo: TJvBaseConnectionInfo read
+        GetConnectedDialogConnectionInfo;
   published
     procedure InternalFillDatabaseList(List: TStringList);
     //1 This events gives you the possibility to modify the connection data after receiving the data from the current session
@@ -252,6 +255,12 @@ end;
 function TJvDBOdacConnectDialog.GetBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
 begin
   Result := LogonDialogInternal.BeforeTransferConnectionInfoToSessionData;
+end;
+
+function TJvDBOdacConnectDialog.GetConnectedDialogConnectionInfo:
+    TJvBaseConnectionInfo;
+begin
+  Result := LogonDialogInternal.ConnectedDialogConnectionInfo;
 end;
 
 function TJvDBOdacConnectDialog.GetDynControlEngine: TJvDynControlEngine;

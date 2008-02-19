@@ -34,7 +34,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, Forms, Controls, Menus,
   JvBaseDlg, JvAppStorage, JvDynControlEngine, JvDynControlEngineIntf,
-  JvPropertyStore, JvBaseDBDialog, JvBaseDBPasswordDialog;
+  JvPropertyStore, JvBaseDBDialog, JvBaseDBPasswordDialog, Graphics;
 
 type
   TJvLogonDialogFillListEvent = procedure(List: TStringList) of object;
@@ -69,8 +69,8 @@ type
   published
     //1 Add each database from the connection list to the database combobox
     property AddConnectionsToDatabaseComboBox: Boolean read
-      FAddConnectionsToDatabaseComboBox write FAddConnectionsToDatabaseComboBox
-      default True;
+        FAddConnectionsToDatabaseComboBox write FAddConnectionsToDatabaseComboBox
+        default true;
     property AllowNullPasswords: Boolean read FAllowNullPasswords write
       FAllowNullPasswords default False;
     //1 Group the Databasename casesensitive in the Databasename tree list
@@ -84,7 +84,7 @@ type
     property SavePasswords: Boolean read FSavePasswords write FSavePasswords default True;
     property SetLastConnectToTop: Boolean read FSetLastConnectToTop write
       FSetLastConnectToTop default True;
-//    property ShowColors: Boolean read FShowColors write FShowColors default False;
+    property ShowColors: Boolean read FShowColors write FShowColors default false;
     property ShowConnectGroup: Boolean read FShowConnectGroup write
       FShowConnectGroup default True;
     property ShowConnectionsExport: Boolean read FShowConnectionsExport write
@@ -108,6 +108,7 @@ type
 
   TJvBaseConnectionInfo = class(TJvCustomPropertyStore)
   private
+    FColor: TColor;
     FDatabase: string;
     FGroup: string;
     FPassword: string;
@@ -122,12 +123,14 @@ type
     procedure SetDatabase(Value: string);
     procedure SetUsername(Value: string);
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string; virtual;
     function UserDatabaseString: string;
     property SavePassword: Boolean read FSavePassword write SetSavePassword;
     property ShortCut: Integer read FShortCut write FShortCut;
   published
+    property Color: TColor read FColor write FColor;
     property Database: string read FDatabase write SetDatabase;
     property Group: string read FGroup write SetGroup;
     property Password: string read FPassword write FPassword;
@@ -191,7 +194,9 @@ type
     ConnectBtn: TWinControl;
     AdditionalBtn: TWinControl;
     AdditionalPopupMenu: TPopupMenu;
+    ButtonPanel: TWinControl;
     ConnectGroupComboBox: TWinControl;
+    ColorComboBox: TWinControl;
     ConnectListListBox: TWinControl;
     DatabaseComboBox: TWinControl;
     DatabaseTreeView: TWinControl;
@@ -231,8 +236,12 @@ type
     UserNameEdit: TWinControl;
     UserTreeView: TWinControl;
     ConnectGroupPanel: TWinControl;
+    ColorBoxPanel: TWinControl;
     FBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
     FAfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent;
+    FConnectedDialogConnectionInfo: TJvBaseConnectionInfo;
+    IColorComboBox: IJvDynControlColorComboBoxControl;
+    LeftPanel: TWinControl;
     procedure AddToListBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
     procedure AdditionalBtnClick(Sender: TObject);
@@ -276,6 +285,7 @@ type
     procedure SetDialogUserName(const Value: string);
     procedure SetOptions(const Value: TJvBaseDBLogonDialogOptions);
     procedure StoreSettings;
+    procedure ResizeAllControls;
   protected
     procedure ActivateDatabaseControl;
     procedure ActivatePasswordControl;
@@ -302,6 +312,7 @@ type
     procedure OnExportConnectionList(Sender: TObject);
     procedure OnImportConnectionList(Sender: TObject);
     procedure ResizeFormControls; virtual;
+    procedure ResizeLeftPanel;
     function SavePasswords: Boolean;
     procedure SetAppStorage(Value: TJvCustomAppStorage); override;
     procedure SetAppStoragePath(Value: string); override;
@@ -325,6 +336,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property ConnectedDialogConnectionInfo: TJvBaseConnectionInfo read
+        FConnectedDialogConnectionInfo;
   published
     property AppStorage;
     property AppStoragePath;
@@ -384,6 +397,9 @@ const
     );
 {$ENDIF UNITVERSIONING}
 
+const
+  cDefaultColorComboBoxColor = clWindow;
+
 implementation
 
 uses
@@ -394,6 +410,7 @@ uses
   ExtCtrls, ComCtrls, StdCtrls, Dialogs,
   JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources;
 
+
 //=== { TJvBaseDBLogonDialog } ===============================================
 
 constructor TJvBaseDBLogonDialog.Create(AOwner: TComponent);
@@ -401,13 +418,21 @@ begin
   inherited Create(AOwner);
   FOptions := GetDBLogonDialogOptionsClass.Create;
   FConnectionList := GetDBLogonConnectionListClass.Create(Self);
+  FConnectedDialogConnectionInfo := FConnectionList.CreateConnection;
 end;
 
 destructor TJvBaseDBLogonDialog.Destroy;
 begin
+  FreeAndNil(FConnectedDialogConnectionInfo);
   FreeAndNil(FConnectionList);
   FreeAndNil(FOptions);
   inherited Destroy;
+end;
+
+procedure TJvBaseDBLogonDialog.ResizeAllControls;
+begin
+  ResizeFormControls;
+  ResizeLeftPanel;
 end;
 
 procedure TJvBaseDBLogonDialog.ActivateDatabaseControl;
@@ -480,8 +505,11 @@ begin
   IUserNameEditData.ControlValue := '';
   IPasswordEditData.ControlValue := '';
   IDatabaseComboBoxData.ControlValue := '';
-  IConnectGroupComboBoxData.ControlValue := '';
+  if Assigned(IConnectGroupComboBoxData)  then
+    IConnectGroupComboBoxData.ControlValue := '';
   IShortCutComboBoxData.ControlValue := '';
+  if Assigned(IColorComboBox)  then
+    IColorComboBox.ControlSelectedColor  := cDefaultColorComboBoxColor;
 end;
 
 procedure TJvBaseDBLogonDialog.ClearControlInterfaceObjects;
@@ -490,6 +518,7 @@ begin
   IConnectionListPageControlTab := nil;
   IConnectListListBoxData := nil;
   IConnectListListBoxItems := nil;
+  IColorComboBox := nil;
   IDatabaseComboBoxData := nil;
   IDatabaseTreeView := nil;
   IGroupByDatabaseCheckBox := nil;
@@ -549,7 +578,7 @@ end;
 
 procedure TJvBaseDBLogonDialog.CreateFormControls(AForm: TForm);
 var
-  ButtonPanel, MainPanel, LeftPanel, ListPanel, ListBtnPanel, GroupListPanel: TWinControl;
+  MainPanel, ListPanel, ListBtnPanel, GroupListPanel: TWinControl;
   ConnectionListPageControl: TWinControl;
   Items: TStringList;
   ITabControl: IJvDynControlTabControl;
@@ -572,7 +601,7 @@ begin
     BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
     BorderStyle := bsDialog;
     Caption := RsLogonToDatabase;
-    ClientHeight := 387;
+    ClientHeight := 440;
     ClientWidth := 590;
     Position := poScreenCenter;
     KeyPreview := True;
@@ -895,6 +924,24 @@ begin
     IDynControlLabel.ControlSetFocusControl(ConnectGroupComboBox);
   ConnectGroupPanel.Visible := Options.ShowConnectGroup;
 
+  ColorBoxPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ColorBoxPanel', '', alTop);
+  AlignControlTop(ColorBoxPanel);
+
+  LabelControl := DynControlEngine.CreateLabelControl(AForm, ColorBoxPanel, 'ColorBoxLabel', 'Co&lor');
+  AlignControlTop(LabelControl);
+  Items := tStringList.Create;
+  try
+    ColorComboBox := DynControlEngine.CreateColorComboBoxControl(AForm, ColorBoxPanel, 'ColorComboBox',
+      cDefaultColorComboBoxColor);
+    Supports(ColorComboBox, IJvDynControlColorComboBoxControl, IColorComboBox);
+    AlignControlTop(ColorComboBox);
+  finally
+    Items.Free;
+  end;
+  if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
+    IDynControlLabel.ControlSetFocusControl(ColorComboBox);
+  ColorBoxPanel.Visible := Options.ShowColors;
+
   CreateAdditionalConnectDialogControls(AForm, LeftPanel);
 end;
 
@@ -1070,6 +1117,7 @@ end;
 
 procedure TJvBaseDBLogonDialog.DoSessionConnect;
 begin
+  ConnectedDialogConnectionInfo.Clear;
   if Options.SetLastConnectToTop then
     SetConnectionToTop(DialogUserName, DialogDatabase);
   TransferSessionDataFromDialog;
@@ -1078,7 +1126,9 @@ begin
   else
     ConnectSession;
   if SessionIsConnected then
-    DBDialog.ModalResult := mrok;
+    DBDialog.ModalResult := mrok
+  else
+    ConnectedDialogConnectionInfo.Clear;
 end;
 
 function TJvBaseDBLogonDialog.EncryptPassword(const Value: string): string;
@@ -1127,7 +1177,8 @@ var
   Items: TStringList;
   IDynControlItems: IJvDynControlItems;
 begin
-  if Supports(ConnectGroupComboBox, IJvDynControlItems, IDynControlItems) then
+  if Assigned(ConnectGroupComboBox) and
+     Supports(ConnectGroupComboBox, IJvDynControlItems, IDynControlItems) then
   begin
     Items := TStringList.Create;
     try
@@ -1289,7 +1340,7 @@ end;
 procedure TJvBaseDBLogonDialog.FormShow(Sender: TObject);
 begin
   LoadSettings;
-  ResizeFormControls;
+  ResizeAllControls;
   ClearFormControls;
   FillAllConnectionLists;
   TransferSessionDataToDialog;
@@ -1605,7 +1656,10 @@ end;
 procedure TJvBaseDBLogonDialog.ResizeFormControls;
 begin
   ConnectPanel.Height := CalculatePanelHeight(DatabaseComboBox);
-  ConnectGroupPanel.Height := CalculatePanelHeight(ConnectGroupComboBox);
+  if Assigned(ConnectGroupComboBox) then
+    ConnectGroupPanel.Height := CalculatePanelHeight(ConnectGroupComboBox);
+  if Assigned(ColorBoxPanel) then
+    ColorBoxPanel.Height := CalculatePanelHeight(ColorComboBox);
   ShortCutPanel.Height := CalculatePanelHeight(ShortCutComboBox);
   CancelBtn.Left := DBDialog.ClientWidth - CancelBtn.Width - 5;
   ConnectBtn.Left := CancelBtn.Left - ConnectBtn.Width - 5;
@@ -1772,8 +1826,10 @@ begin
       ConnectionInfo.Database := IDatabaseComboBoxData.ControlValue
     else
       ConnectionInfo.Database := UpperCase(IDatabaseComboBoxData.ControlValue);
-    if Options.ShowConnectGroup then
+    if Options.ShowConnectGroup and Assigned(IConnectGroupComboBoxData) then
       ConnectionInfo.Group := IConnectGroupComboBoxData.ControlValue;
+    if Options.ShowColors and Assigned(IColorComboBox) then
+      ConnectionInfo.Color := IColorComboBox.ControlSelectedColor;
     if Options.ShowShortcuts then
       ConnectionInfo.ShortCutText := IShortCutComboBoxData.ControlValue;
   end;
@@ -1791,6 +1847,8 @@ begin
       IConnectGroupComboBoxData.ControlValue := ConnectionInfo.Group;
     if Options.ShowShortcuts and Assigned(IShortCutComboBoxData) then
       IShortCutComboBoxData.ControlValue := ConnectionInfo.ShortCutText;
+    if Options.ShowColors and Assigned(IColorComboBox) then
+      IColorComboBox.ControlSelectedColor := ConnectionInfo.Color;
     if ConnectionInfo.Username = '' then
       UserNameEdit.SetFocus
     else
@@ -1812,6 +1870,7 @@ begin
   try
     TransferConnectionInfoFromDialog(tmpConnectionInfo);
     tmpConnectionInfo.Password := DecryptPassword(tmpConnectionInfo.Password);
+    ConnectedDialogConnectionInfo.Assign(tmpConnectionInfo);
     if Assigned(BeforeTransferConnectionInfoToSessionData) then
       BeforeTransferConnectionInfoToSessionData(tmpConnectionInfo);
     TransferSessionDataFromConnectionInfo(tmpConnectionInfo);
@@ -1878,6 +1937,27 @@ procedure TJvBaseDBLogonDialog.AlignControlTop(aControl: TControl);
 begin
   aControl.Align := alTop;
   aControl.Top := aControl.Parent.Height;
+end;
+
+procedure TJvBaseDBLogonDialog.ResizeLeftPanel;
+var
+  I: Integer;
+  m : Integer;
+  h: Integer;
+begin
+  m := 0;
+  for I := 0 to LeftPanel.ControlCount - 1 do
+  begin
+    h := LeftPanel.Controls[i].Top+LeftPanel.Controls[i].Height;
+    if h > m then
+      m := h;
+  end;
+  if m > LeftPanel.Height then
+    if m + ButtonPanel.Height > DBDialog.ClientHeight then
+    begin
+      DBDialog.ClientHeight := m + ButtonPanel.Height;
+      DBDialog.Refresh;
+    end;
 end;
 
 //=== { TJvBaseDBOracleLogonDialogOptions } ==================================
@@ -1990,6 +2070,12 @@ begin
     if Options.ShowConnectAs then
       IConnectAsComboBoxData.ControlValue := TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs;
   end;
+end;
+
+constructor TJvBaseConnectionInfo.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FColor := cDefaultColorComboBoxColor;
 end;
 
 //=== { TJvBaseConnectionInfo } ==============================================
