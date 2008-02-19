@@ -49,6 +49,7 @@ type
   protected
     function CreateForm: TForm; virtual;
     procedure CreateFormControls(aForm: TForm); virtual;
+    procedure AfterCreateFormControls(aForm: TForm); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); virtual;
     procedure SetAppStoragePath(Value: string); virtual;
@@ -94,12 +95,17 @@ procedure TJvBaseDBDialog.CreateFormControls(aForm: TForm);
 begin
 end;
 
+procedure TJvBaseDBDialog.AfterCreateFormControls(aForm: TForm);
+begin
+end;
+
 function TJvBaseDBDialog.Execute: Boolean;
 begin
   if not Assigned(Session) then
     Abort;
   FDBDialog := CreateForm;
   try
+    AfterCreateFormControls(FDBDialog);
     FDBDialog.ShowModal;
     Result := FDBDialog.ModalResult = mrOk;
   finally
@@ -123,6 +129,8 @@ begin
     AppStorage := nil;
   if (Operation = opRemove) and (AComponent = FSession) then
     Session := nil;
+  if (Operation = opRemove) and (AComponent = FDBDialog) then
+    FDBDialog := nil;
 end;
 
 function TJvBaseDBDialog.SessionIsConnected: Boolean;
