@@ -339,6 +339,19 @@ type
         ControlGetOnTranslatePropertyName write ControlSetOnTranslatePropertyName;
   end;
 
+  IJvDynControlColorComboBoxControl = interface
+    ['{B95DDBED-DFB0-47D7-AA0C-1AB879EAD392}']
+    function ControlGetColorName(AColor: TColor): string;
+    function ControlGetSelectedColor: TColor;
+    procedure ControlSetSelectedColor(const Value: TColor);
+    function GetControlDefaultColor: TColor; stdcall;
+    procedure SetControlDefaultColor(const Value: TColor); stdcall;
+    property ControlSelectedColor: TColor read ControlGetSelectedColor write
+        ControlSetSelectedColor;
+    property ControlDefaultColor: TColor read GetControlDefaultColor write
+        SetControlDefaultColor;
+
+  end;
 
 
 {$IFDEF UNITVERSIONING}

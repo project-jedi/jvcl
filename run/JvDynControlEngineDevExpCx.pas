@@ -32,7 +32,7 @@ interface
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning, JvDynControlEngineIntf, Graphics, ComCtrls, Classes,
-  JvInspector;
+  JvInspector, ExtCtrls;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}
@@ -45,7 +45,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
-  cxProgressBar, cxPC,
+  cxProgressBar, cxPC, cxColorComboBox,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
   cxOi,
   {$ENDIF}
@@ -924,6 +924,34 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
+  TJvDynControlCxColorComboBox = class(TcxColorComboBox, IUnknown, IJvDynControl,
+      IJvDynControlColorComboBoxControl, IJvDynControlDevExpCx)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value: TAnchors);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlColorComboBoxControl
+    function ControlGetColorName(AColor: TColor): string;
+    function ControlGetSelectedColor: TColor;
+    procedure ControlSetSelectedColor(const Value: TColor);
+    function GetControlDefaultColor: TColor; stdcall;
+    procedure SetControlDefaultColor(const Value: TColor); stdcall;
+  end;
+
   {$ENDIF}
 
   TJvDynControlEngineDevExpCx = class(TJvDynControlEngine)
@@ -939,6 +967,7 @@ type
   published
     property CxProperties: TCxDynControlWrapper read FCxProperties write FCxProperties;
   end;
+
 
 
 procedure SetDynControlEngineDevExpCxDefault;
@@ -3732,8 +3761,9 @@ begin
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
   RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
   {$ELSE}
-  RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
+  //RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
   {$ENDIF}
+  RegisterControlType(jctColorComboBox, TJvDynControlCxColorComboBox);
 end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
@@ -3875,6 +3905,94 @@ procedure TJvDynControlCxRTTIInspectorControl.InspectorOnFilterProperty(Sender:
 begin
   if Assigned(fonDisplayProperty) And IsPublishedProp(InspectedObject, PropertyName) then
     Accept := fOnDisplayProperty(PropertyName) and ControlIsPropertySupported(PropertyName);
+end;
+
+function TJvDynControlCxColorComboBox.ControlGetColorName(AColor: TColor):
+    string;
+var
+  i: Integer;
+begin
+  Result := '';
+end;
+
+function TJvDynControlCxColorComboBox.ControlGetSelectedColor: TColor;
+begin
+  Result := ColorValue;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxColorComboBox.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetCxProperties(Value:
+    TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+procedure TJvDynControlCxColorComboBox.ControlSetSelectedColor(const Value:
+    TColor);
+begin
+  ColorValue := Value;
+end;
+
+function TJvDynControlCxColorComboBox.GetControlDefaultColor: TColor;
+begin
+  Result := Properties.DefaultColor;
+end;
+
+procedure TJvDynControlCxColorComboBox.SetControlDefaultColor(const Value:
+    TColor);
+begin
+  Properties.DefaultColor := Value;
 end;
 
 {$ENDIF}
