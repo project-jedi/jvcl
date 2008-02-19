@@ -71,6 +71,7 @@ const
   jctPageControl = TJvDynControlType('Pagecontrol');
   jctTabControl = TJvDynControlType('Tabcontrol');
   jctRTTIInspector = TJvDynControlType('RTTIInspector');
+  jctColorComboBox = TJvDynControlType('ColorComboBox');
 
 type
   TControlClass = class of TControl;
@@ -163,8 +164,9 @@ type
       const AControlName: string): TWinControl; virtual;
     function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AItems: TStrings): TWinControl; virtual;
-    function CreateCheckListBoxControl(AOwner: TComponent;
-      AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
+    function CreateCheckListBoxControl(AOwner: TComponent; AParentControl:
+        TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
+        virtual;
     function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
     function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -193,6 +195,9 @@ type
       const ARadioButtonName, ACaption: string): TWinControl; virtual;
     function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
+    function CreateColorComboboxControl(AOwner: TComponent; AParentControl:
+        TWinControl; const AControlName: string; ADefaultColor: TColor):
+        TWinControl; virtual;
     function CreateForm(const ACaption, AHint: string): TCustomForm; virtual;
 
     function CreateLabelControlPanel(AOwner: TComponent; AParentControl: TWinControl;
@@ -743,7 +748,8 @@ begin
 end;
 
 function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
+    AParentControl: TWinControl; const AControlName: string; AItems: TStrings):
+    TWinControl;
 var
   DynCtrlItems: IJvDynControlItems;
 begin
@@ -865,6 +871,18 @@ begin
   Result := TWinControl(CreateControl(jctButtonEdit, AOwner, AParentControl, AControlName));
   IntfCast(Result, IJvDynControlButtonEdit, DynCtrlButtonEdit);
   DynCtrlButtonEdit.ControlSetOnButtonClick(AOnButtonClick);
+end;
+
+function TJvDynControlEngine.CreateColorComboboxControl(AOwner: TComponent;
+    AParentControl: TWinControl; const AControlName: string; ADefaultColor:
+    TColor): TWinControl;
+var
+  DynControlColorComboBoxControl : IJvDynControlColorComboBoxControl;
+begin
+  Result := TWinControl(CreateControl(jctColorComboBox, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlColorComboBoxControl, DynControlColorComboBoxControl);
+  DynControlColorComboBoxControl.ControlDefaultColor := ADefaultColor;
+  DynControlColorComboBoxControl.ControlSelectedColor := ADefaultColor;
 end;
 
 function TJvDynControlEngine.CreateForm(const ACaption, AHint: string): TCustomForm;

@@ -773,6 +773,33 @@ type
     function ControlGetPage(const PageName: string): TWinControl;
   end;
 
+  {$IFDEF DELPHI6_UP}
+  TJvDynControlVCLColorComboBox = class(TColorBox, IUnknown, IJvDynControl,
+      IJvDynControlColorComboBoxControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value: TAnchors);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    //IJvDynControlColorComboBoxControl
+    function ControlGetColorName(AColor: TColor): string;
+    function ControlGetSelectedColor: TColor;
+    procedure ControlSetSelectedColor(const Value: TColor);
+    function GetControlDefaultColor: TColor; stdcall;
+    procedure SetControlDefaultColor(const Value: TColor); stdcall;
+  end;
+  {$ENDIF DELPHI6_UP}
+
 function DynControlEngineVCL: TJvDynControlEngine;
 procedure SetDynControlEngineVCLDefault;
 
@@ -3201,6 +3228,97 @@ begin
     Result := nil;
 end;
 
+{$IFDEF DELPHI6_UP}
+//=== { TJvDynControlVCLColorComboBox } ===========================================
+
+Type TAccessCustomColorBox = class(TCustomColorBox);
+
+function TJvDynControlVCLColorComboBox.ControlGetColorName(AColor: TColor):
+    string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := 0 to TAccessCustomColorBox(Self).ItemCount - 1 do
+    if Colors[i] = AColor then
+      Result := ColorNames[i];
+end;
+
+function TJvDynControlVCLColorComboBox.ControlGetSelectedColor: TColor;
+begin
+  Result := Selected;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlVCLColorComboBox.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlVCLColorComboBox.ControlSetSelectedColor(const Value:
+    TColor);
+begin
+  Selected := Value;
+end;
+
+function TJvDynControlVCLColorComboBox.GetControlDefaultColor: TColor;
+begin
+  Result := DefaultColorColor;
+end;
+
+procedure TJvDynControlVCLColorComboBox.SetControlDefaultColor(const Value:
+    TColor);
+begin
+  DefaultColorColor := Value;
+end;
+{$ENDIF DELPHI6_UP}
+
 //=== { TJvDynControlEngineVCL } =============================================
 
 procedure SetDynControlEngineVCLDefault;
@@ -3243,7 +3361,11 @@ begin
   RegisterControlType(jctProgressbar, TJvDynControlVCLProgressbar);
   RegisterControlType(jctTabControl, TJvDynControlVCLTabControl);
   RegisterControlType(jctPageControl, TJvDynControlVCLPageControl);
+  {$IFDEF DELPHI7_UP}
+  RegisterControlType(jctColorComboBox, TJvDynControlVCLColorComboBox);
+  {$ENDIF}
 end;
+
 
 initialization
   {$IFDEF UNITVERSIONING}
