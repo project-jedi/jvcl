@@ -952,7 +952,9 @@ var
 begin
  Thread := GetCurrentThread;
  if Assigned(Thread) then
-   Thread.Synchronize(Method);
+   Thread.Synchronize(Method)
+ else
+   Method;
 end;
 
 function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
@@ -966,7 +968,11 @@ begin
     if Assigned(Thread) then
       Result := Thread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
     else
-      Result := 0;
+      if Assigned(OnShowMessageDlgEvent) then
+        OnShowMessageDlgEvent(Msg, AType,
+         AButtons, HelpCtx, Result)
+      else
+        Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
   finally
     EnableDialogShowDelay;
   end;
