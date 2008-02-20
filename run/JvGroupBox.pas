@@ -45,6 +45,7 @@ type
     FOnHotKey: TNotifyEvent;
     FPropagateEnable: Boolean;
     FCheckable: Boolean;
+    FOnCheckBoxClick: TNotifyEvent;
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetCheckable(const Value: Boolean);
     function GetCaption: TCaption;
@@ -75,6 +76,7 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
+    property OnCheckBoxClick: TNotifyEvent read FOnCheckBoxClick write FOnCheckBoxClick; 
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -282,6 +284,9 @@ begin
   for I := 0 to ControlCount - 1 do
     if Controls[I] <> FCheckBox then
       Controls[I].Enabled := FCheckBox.Checked;
+      
+  if Assigned(FOnCheckBoxClick) then
+    FOnCheckBoxClick(Self);
 end;
 
 procedure TJvGroupBox.SetPropagateEnable(const Value: Boolean);
