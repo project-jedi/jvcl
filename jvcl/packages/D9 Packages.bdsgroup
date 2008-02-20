@@ -54,8 +54,6 @@
       <Projects Name="JvPageCompsD9D.bpl" Type="String">d9\JvPageCompsD9D.bdsproj</Projects>
       <Projects Name="JvValidatorsD9R.bpl" Type="String">d9\JvValidatorsD9R.bdsproj</Projects>
       <Projects Name="JvValidatorsD9D.bpl" Type="String">d9\JvValidatorsD9D.bdsproj</Projects>
-      <Projects Name="JvUIBD9R.bpl" Type="String">d9\JvUIBD9R.bdsproj</Projects>
-      <Projects Name="JvUIBD9D.bpl" Type="String">d9\JvUIBD9D.bdsproj</Projects>
       <Projects Name="JvWizardD9R.bpl" Type="String">d9\JvWizardD9R.bdsproj</Projects>
       <Projects Name="JvWizardD9D.bpl" Type="String">d9\JvWizardD9D.bdsproj</Projects>
       <Projects Name="JvTimeFrameworkD9R.bpl" Type="String">d9\JvTimeFrameworkD9R.bdsproj</Projects>

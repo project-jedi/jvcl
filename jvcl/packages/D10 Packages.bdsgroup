@@ -54,8 +54,6 @@
       <Projects Name="JvPageCompsD10D.bpl">d10\JvPageCompsD10D.bdsproj</Projects>
       <Projects Name="JvValidatorsD10R.bpl">d10\JvValidatorsD10R.bdsproj</Projects>
       <Projects Name="JvValidatorsD10D.bpl">d10\JvValidatorsD10D.bdsproj</Projects>
-      <Projects Name="JvUIBD10R.bpl">d10\JvUIBD10R.bdsproj</Projects>
-      <Projects Name="JvUIBD10D.bpl">d10\JvUIBD10D.bdsproj</Projects>
       <Projects Name="JvWizardD10R.bpl">d10\JvWizardD10R.bdsproj</Projects>
       <Projects Name="JvWizardD10D.bpl">d10\JvWizardD10D.bdsproj</Projects>
       <Projects Name="JvTimeFrameworkD10R.bpl">d10\JvTimeFrameworkD10R.bdsproj</Projects>
@@ -74,7 +72,7 @@
       <Projects Name="JvEDID10D.bpl">d10\JvEDID10D.bdsproj</Projects>
       <Projects Name="JvRuntimeDesignD10R.bpl">d10\JvRuntimeDesignD10R.bdsproj</Projects>
       <Projects Name="JvRuntimeDesignD10D.bpl">d10\JvRuntimeDesignD10D.bdsproj</Projects>
-      <Projects Name="Targets">Jv3rdD10R.bpl JvCoreD10R.bpl JvCoreD10D.bpl JvSystemD10R.bpl JvSystemD10D.bpl JvStdCtrlsD10R.bpl JvStdCtrlsD10D.bpl JvCtrlsD10R.bpl JvCtrlsD10D.bpl JvCmpD10R.bpl JvCmpD10D.bpl JvCustomD10R.bpl JvCustomD10D.bpl JvDlgsD10R.bpl JvDlgsD10D.bpl JvCryptD10R.bpl JvCryptD10D.bpl JvMMD10R.bpl JvMMD10D.bpl JvNetD10R.bpl JvNetD10D.bpl JvAppFrmD10R.bpl JvAppFrmD10D.bpl JvDBD10R.bpl JvDBD10D.bpl JvBDED10R.bpl JvBDED10D.bpl JvInterpreterD10R.bpl JvInterpreterD10D.bpl JvBandsD10R.bpl JvBandsD10D.bpl JvPluginD10R.bpl JvPluginD10D.bpl JvJansD10R.bpl JvJansD10D.bpl JvGlobusD10R.bpl JvGlobusD10D.bpl JvPrintPreviewD10R.bpl JvPrintPreviewD10D.bpl JvPageCompsD10R.bpl JvPageCompsD10D.bpl JvValidatorsD10R.bpl JvValidatorsD10D.bpl JvUIBD10R.bpl JvUIBD10D.bpl JvWizardD10R.bpl JvWizardD10D.bpl JvTimeFrameworkD10R.bpl JvTimeFrameworkD10D.bpl JvHMID10R.bpl JvHMID10D.bpl JvManagedThreadsD10R.bpl JvManagedThreadsD10D.bpl JvXPCtrlsD10R.bpl JvXPCtrlsD10D.bpl JvDockingD10R.bpl JvDockingD10D.bpl JvDotNetCtrlsD10R.bpl JvDotNetCtrlsD10D.bpl JvEDID10R.bpl JvEDID10D.bpl JvRuntimeDesignD10R.bpl JvRuntimeDesignD10D.bpl</Projects>
+      <Projects Name="Targets">Jv3rdD10R.bpl JvCoreD10R.bpl JvCoreD10D.bpl JvSystemD10R.bpl JvSystemD10D.bpl JvStdCtrlsD10R.bpl JvStdCtrlsD10D.bpl JvCtrlsD10R.bpl JvCtrlsD10D.bpl JvCmpD10R.bpl JvCmpD10D.bpl JvCustomD10R.bpl JvCustomD10D.bpl JvDlgsD10R.bpl JvDlgsD10D.bpl JvCryptD10R.bpl JvCryptD10D.bpl JvMMD10R.bpl JvMMD10D.bpl JvNetD10R.bpl JvNetD10D.bpl JvAppFrmD10R.bpl JvAppFrmD10D.bpl JvDBD10R.bpl JvDBD10D.bpl JvBDED10R.bpl JvBDED10D.bpl JvInterpreterD10R.bpl JvInterpreterD10D.bpl JvBandsD10R.bpl JvBandsD10D.bpl JvPluginD10R.bpl JvPluginD10D.bpl JvJansD10R.bpl JvJansD10D.bpl JvGlobusD10R.bpl JvGlobusD10D.bpl JvPrintPreviewD10R.bpl JvPrintPreviewD10D.bpl JvPageCompsD10R.bpl JvPageCompsD10D.bpl JvValidatorsD10R.bpl JvValidatorsD10D.bpl JvWizardD10R.bpl JvWizardD10D.bpl JvTimeFrameworkD10R.bpl JvTimeFrameworkD10D.bpl JvHMID10R.bpl JvHMID10D.bpl JvManagedThreadsD10R.bpl JvManagedThreadsD10D.bpl JvXPCtrlsD10R.bpl JvXPCtrlsD10D.bpl JvDockingD10R.bpl JvDockingD10D.bpl JvDotNetCtrlsD10R.bpl JvDotNetCtrlsD10D.bpl JvEDID10R.bpl JvEDID10D.bpl JvRuntimeDesignD10R.bpl JvRuntimeDesignD10D.bpl</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>

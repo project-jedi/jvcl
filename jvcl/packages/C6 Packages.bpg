@@ -31,7 +31,6 @@ PROJECTS = Jv3rdC6R.bpl                                    \
            JvPrintPreviewC6R.bpl JvPrintPreviewC6D.bpl     \
            JvPageCompsC6R.bpl JvPageCompsC6D.bpl           \
            JvValidatorsC6R.bpl JvValidatorsC6D.bpl         \
-           JvUIBC6R.bpl JvUIBC6D.bpl                       \
            JvWizardC6R.bpl JvWizardC6D.bpl                 \
            JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl   \
            JvHMIC6R.bpl JvHMIC6D.bpl                       \
@@ -214,14 +213,6 @@ JvValidatorsC6R.bpl: c6\JvValidatorsC6R.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvValidatorsC6D.bpl: c6\JvValidatorsC6D.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvUIBC6R.bpl: c6\JvUIBC6R.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvUIBC6D.bpl: c6\JvUIBC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
