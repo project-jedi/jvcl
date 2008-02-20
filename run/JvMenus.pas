@@ -614,6 +614,9 @@ type
 
   // This painter draws an item using the office style
   TJvOfficeMenuItemPainter = class(TJvCustomMenuItemPainter)
+  private
+    FCurrentItem: TMenuItem;
+    FCurrentState: TMenuOwnerDrawState;
   protected
     procedure CleanupGlyph(BtnRect: TRect);
     procedure DrawFrame(BtnRect: TRect);
@@ -626,6 +629,7 @@ type
     procedure DrawCheckImage(ARect: TRect); override;
     procedure DrawItemText(ARect: TRect; const Text: string; Flags: Longint); override;
     procedure DrawItemBackground(ARect: TRect); override;
+    procedure PreparePaint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState; Measure: Boolean); override;
   public
     procedure Paint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState); override;
   published
@@ -3075,6 +3079,15 @@ begin
   inherited Paint(Item, ItemRect, State);
 end;
 
+procedure TJvOfficeMenuItemPainter.PreparePaint(Item: TMenuItem;
+  ItemRect: TRect; State: TMenuOwnerDrawState; Measure: Boolean);
+begin
+  inherited PreparePaint(Item, ItemRect, State, Measure);
+
+  FCurrentItem := Item;
+  FCurrentState := State;
+end;
+
 procedure TJvOfficeMenuItemPainter.CleanupGlyph(BtnRect: TRect);
 var
   SaveBrush: TBrush; // to save brush
@@ -3143,9 +3156,23 @@ end;
 
 procedure TJvOfficeMenuItemPainter.DrawItemText(ARect: TRect;
   const Text: string; Flags: Integer);
+var
+  FlatMenus: Boolean;
 begin
   if not IsPopup(FItem) then
+  begin
     Canvas.Font.Color := clMenuText;
+    
+    if (FCurrentState * [mdSelected, mdFocused, mdHotlight] = []) then
+    begin
+      if SystemParametersInfo(SPI_GETFLATMENU, 0, @FlatMenus, 0) and FlatMenus then
+        Canvas.Brush.Color := clMenuBar
+      else
+        Canvas.Brush.Color := clBtnFace;
+      Canvas.FillRect(ARect);
+    end;
+  end;
+
   inherited DrawItemText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
 
