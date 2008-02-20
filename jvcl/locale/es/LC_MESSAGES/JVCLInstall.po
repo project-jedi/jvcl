@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2008-02-20 09:44\n"
+"POT-Creation-Date: 2008-02-20 09:55\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -1337,11 +1337,6 @@ msgstr ""
 #, fuzzy
 msgid "(no version info)"
 msgstr "Versionamiento de Unidad"
-
-#. Programmer's name: 1 24
-#: CommCtrlAsInvoker.rc:7 
-msgid "CommCtrlAsInvoker.manifest"
-msgstr ""
 
 #, fuzzy
 #~ msgid "JVCL %d.%d  Installation"

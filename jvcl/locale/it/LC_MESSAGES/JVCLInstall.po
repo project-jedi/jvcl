@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2008-02-20 09:44\n"
+"POT-Creation-Date: 2008-02-20 09:55\n"
 "PO-Revision-Date: 2005-12-12 20:20+0100\n"
 "Last-Translator: Carmelo Viavattene <carmelo_viavattene@tin.it>\n"
 "Language-Team: \n"
@@ -1430,11 +1430,6 @@ msgstr "Filetto (Thread): %s"
 #: Debug/ExceptionDlg.pas:134 
 msgid "(no version info)"
 msgstr "(Informazioni di versione mancanti)"
-
-#. Programmer's name: 1 24
-#: CommCtrlAsInvoker.rc:7 
-msgid "CommCtrlAsInvoker.manifest"
-msgstr ""
 
 #, fuzzy
 #~ msgid ""
