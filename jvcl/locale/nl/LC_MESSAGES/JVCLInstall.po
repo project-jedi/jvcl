@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2006-10-28 19:16\n"
+"POT-Creation-Date: 2008-02-20 09:44\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -75,7 +75,7 @@ msgstr "OK"
 msgid "Compiler Messages"
 msgstr "Compileer packages"
 
-#. FormCompileMessages..PanelTop..LabelHelp....Height
+#. FormCompileMessages..PanelTop..LabelHelp....Caption
 #: FrmCompileMessages.dfm:52 
 msgid "Many error messages appear because the JCL version and the JVCL version are not compatible. Please keep in mind that you need the correct JCL version."
 msgstr ""
@@ -159,7 +159,7 @@ msgstr "&Details >>"
 msgid "Use Ctrl+C to copy the report to the clipboard"
 msgstr ""
 
-#. FrameConfigPage..LblBCBGuide....Cursor
+#. FrameConfigPage..LblBCBGuide....Hint
 #: Frames/FrmConfigPage.dfm:16 
 msgid "Open the default web browser to show the C++Builder Installation Guide."
 msgstr "Open de default web browser om de C++Builder Installation Gids te laten zien."
@@ -169,7 +169,7 @@ msgstr "Open de default web browser om de C++Builder Installation Gids te laten 
 msgid "BCB installation guide"
 msgstr "BCB installatie gids"
 
-#. FrameConfigPage..LblEnvPathWarning....AutoSize
+#. FrameConfigPage..LblEnvPathWarning....Caption
 #: Frames/FrmConfigPage.dfm:40 
 msgid "The BPL directory is not in the PATH environment variable. If you do not add the directory to the PATH environment variable, Delphi/BCB will not be able to find the runtime packages and shows you lots of error messages like: \"Cannot load package JvCoreD10R.bpl\""
 msgstr ""
@@ -179,7 +179,7 @@ msgstr ""
 msgid " JVCL Options  "
 msgstr ""
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Hint
 #: Frames/FrmConfigPage.dfm:71 
 msgid ""
 "Activate this if you have Mike Lischke's Theme Manager\n"
@@ -215,7 +215,7 @@ msgstr ""
 msgid "&XP Theming (not for Delphi 7)"
 msgstr "&XP Theming (niet voor Delphi 7)"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Hint
 #: Frames/FrmConfigPage.dfm:85 
 msgid ""
 "Enable this option if you want to register property and component\n"
@@ -230,7 +230,7 @@ msgstr ""
 msgid "&Register global design editors"
 msgstr "&Registreer algemeen geldende design editors"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport....Hint
 #: Frames/FrmConfigPage.dfm:102 
 msgid ""
 "Enable this option if you want to use the dxgettext\n"
@@ -253,7 +253,7 @@ msgstr ""
 msgid "dxgettext &support"
 msgstr "dxgettext &ondersteuning"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif....Hint
 #: Frames/FrmConfigPage.dfm:116 
 msgid ""
 "Enable this option if you want to register the GIF image\n"
@@ -268,7 +268,7 @@ msgstr ""
 msgid "Register Jv&Gif for .gif"
 msgstr "Registreer Jv&Gif voor .gif"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUseJVCL....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUseJVCL....Hint
 #: Frames/FrmConfigPage.dfm:130 
 msgid ""
 "Disable this if you want some packages that are not yet\n"
@@ -282,7 +282,7 @@ msgstr ""
 msgid "&Use JVCL for all packages"
 msgstr "&Gebruik JVCL voor alle packages"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Hint
 #: Frames/FrmConfigPage.dfm:145 
 msgid ""
 "Enable this option if you want that every JVCL unit should support\n"
@@ -305,7 +305,7 @@ msgstr "Unit Versioning"
 msgid " Installation options "
 msgstr " Installatie opties "
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Hint
 #: Frames/FrmConfigPage.dfm:168 
 msgid ""
 "Activate this option if you are a JVCL developer.\n"
@@ -323,7 +323,7 @@ msgstr ""
 msgid "&JVCL Developer installation"
 msgstr "&JVCL Developer installatie"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Hint
 #: Frames/FrmConfigPage.dfm:183 
 msgid ""
 "Remove all JVCL components from the component palettes in\n"
@@ -337,7 +337,7 @@ msgstr ""
 msgid "Clean JVCL component &palettes"
 msgstr "Schoon JVCL component &paletten op"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Hint
 #: Frames/FrmConfigPage.dfm:199 
 msgid ""
 "Check this option if you want to build the packages instead\n"
@@ -357,7 +357,7 @@ msgstr ""
 msgid "B&uild packages"
 msgstr "B&uild packages"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxIDERegister....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxIDERegister....Hint
 #: Frames/FrmConfigPage.dfm:214 
 #, fuzzy
 msgid ""
@@ -388,7 +388,7 @@ msgstr "&DCP map:"
 msgid "&HPP Directory:"
 msgstr "&HPP map:"
 
-#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
+#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Hint
 #: Frames/FrmConfigPage.dfm:297 
 msgid ""
 "The HPP directory specifies where the generated .hpp files\n"
@@ -399,7 +399,7 @@ msgstr ""
 "weggeschreven worden. Als dit veld leeg is, worden de gegenereerde .hpp bestanden \n"
 "weggeschreven naar de map met de pascal source bestanden."
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:313 
 msgid ""
 "Activate this option if the installer should generate\n"
@@ -421,7 +421,7 @@ msgstr ""
 msgid "Genera&te Map files"
 msgstr "Genere&er map bestanden"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Hint
 #: Frames/FrmConfigPage.dfm:329 
 msgid ""
 "Activate this option if you also want to compile debug units.\n"
@@ -435,7 +435,7 @@ msgstr ""
 msgid "Compile debug units"
 msgstr "Compileer packages"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:347 
 msgid ""
 "Activate this option if the installer should link detailled\n"
@@ -452,7 +452,7 @@ msgstr ""
 msgid "&Link Map files in binaries"
 msgstr ""
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:362 
 #, fuzzy
 msgid ""
@@ -472,7 +472,7 @@ msgstr ""
 msgid "&Delete after linking/compression"
 msgstr ""
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Hint
 #: Frames/FrmConfigPage.dfm:377 
 #, fuzzy
 msgid ""
@@ -493,8 +493,8 @@ msgstr ""
 msgid "Compress Map files to .jdbg"
 msgstr ""
 
-#. FrameConfigPage..CheckBoxVerbose....Height
-#: Frames/FrmConfigPage.dfm:391 
+#. FrameConfigPage..CheckBoxVerbose....Hint
+#: Frames/FrmConfigPage.dfm:392 
 msgid ""
 "Activate this option if you want to see a more detailed compiler log on\n"
 "the installation progress page."
@@ -503,41 +503,41 @@ msgstr ""
 "op de installatie voortgang pagina."
 
 #. FrameConfigPage..CheckBoxVerbose..Caption
-#: Frames/FrmConfigPage.dfm:392 
+#: Frames/FrmConfigPage.dfm:393 
 msgid "&Verbose compiler output"
 msgstr "&Uitgebreide compiler uitvoer"
 
-#. FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
-#: Frames/FrmConfigPage.dfm:405 
+#. FrameConfigPage..CheckBoxIgnoreMakeErrors....Hint
+#: Frames/FrmConfigPage.dfm:406 
 msgid ""
 "Activate this option if the installer should not stop when an error occured while\n"
 "compiling the packages."
 msgstr ""
 
 #. FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
-#: Frames/FrmConfigPage.dfm:406 
+#: Frames/FrmConfigPage.dfm:407 
 msgid "D&o not stop on errors"
 msgstr ""
 
 #. FrameConfigPage..BtnEditJvclInc..Hint
-#: Frames/FrmConfigPage.dfm:428 
+#: Frames/FrmConfigPage.dfm:429 
 msgid "Edit all compile time conditions that are in the jvcl.inc file."
 msgstr "Bewerk alle compile-time condities uit het jvcl.inc bestand."
 
 #. FrameConfigPage..BtnEditJvclInc..Caption
 #. Programmer's name for it: RsEditJvclInc
-#: Frames/FrmConfigPage.dfm:429 InstallerConsts.pas:163 
+#: Frames/FrmConfigPage.dfm:430 InstallerConsts.pas:163 
 #, fuzzy
 msgid "Edit jvcl%s%d.inc"
 msgstr "Bewerk jvcl.inc"
 
 #. FrameConfigPage..PanelBk..LblOptionsFor..Caption
-#: Frames/FrmConfigPage.dfm:447 
+#: Frames/FrmConfigPage.dfm:448 
 msgid "&Options for:"
 msgstr "&Opties voor:"
 
 #. FrameConfigPage..CheckBoxAddBplDirToPath..Caption
-#: Frames/FrmConfigPage.dfm:456 
+#: Frames/FrmConfigPage.dfm:457 
 #, fuzzy
 msgid "Add BPL directory to PATH"
 msgstr "BP&L map:"
@@ -572,7 +572,7 @@ msgstr "&Frameworks:"
 msgid "&Show packages:"
 msgstr "&Laat packages zien:"
 
-#. FramePackageSelection..ComboBoxDisplayMode....Height
+#. FramePackageSelection..ComboBoxDisplayMode....Hint
 #: Frames/FrmPackageSelection.dfm:77 
 msgid ""
 "<b>Designtime:</b>\n"
@@ -654,101 +654,101 @@ msgid "&Cancel"
 msgstr "Annuleren"
 
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:167 
+#: Compile.pas:171 
 msgid "Packages are up to date"
 msgstr "Packages zijn up-to-date."
 
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:175 
+#: Compile.pas:179 
 msgid "Generating templates..."
 msgstr "Bezig met het genereren van templates..."
 
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:176 
+#: Compile.pas:180 
 msgid "Generating packages..."
 msgstr "Bezig met het genereren van packages..."
 
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:177 
+#: Compile.pas:181 
 msgid "Generating resources..."
 msgstr "Bezig met het genereren van resources..."
 
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:178 
+#: Compile.pas:182 
 msgid "Compiling packages..."
 msgstr "Bezig met compileren van de packages..."
 
 #. Programmer's name for it: RsPostCompilationOperations
-#: Compile.pas:179 
+#: Compile.pas:183 
 #, fuzzy
 msgid "Post-compilation operations..."
 msgstr " Installatie opties "
 
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:180 
+#: Compile.pas:184 
 msgid "Copying files..."
 msgstr "Bezig met kopiëren van bestanden..."
 
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:181 
+#: Compile.pas:185 
 msgid "Copying %s"
 msgstr "Kopiëren van %s"
 
 #. Programmer's name for it: RsFinished
-#: Compile.pas:182 
+#: Compile.pas:186 
 msgid "Finished."
 msgstr "Voltooid."
 
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:184 
+#: Compile.pas:188 
 msgid "Aborted by User"
 msgstr "Afgebroken door de gebruiker"
 
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:185 
+#: Compile.pas:189 
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Fout tijdens laden van devtools\\bin\\pgEdit.xml."
 
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:186 
+#: Compile.pas:190 
 msgid "Error while generating packages for %s"
 msgstr "Fout tijdens genereren van packages voor %s."
 
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:187 
+#: Compile.pas:191 
 msgid "Error while generating templates."
 msgstr "Fout tijdens genereren van de templates."
 
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:188 
+#: Compile.pas:192 
 msgid "Error while compiling resources."
 msgstr "Fout tijdens compileren van de resources."
 
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:189 
+#: Compile.pas:193 
 msgid "Error generating templates for the %s directory."
 msgstr "Fout tijdens genereren van templates voor map %s."
 
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:190 
+#: Compile.pas:194 
 msgid "An error occured while compiling the packages."
 msgstr "Fout tijdens het compileren van de packages."
 
 #. Programmer's name for it: RsErrorLinkingMapFiles
-#: Compile.pas:191 
+#: Compile.pas:195 
 #, fuzzy
 msgid "An error occured while linking the map files into binaries."
 msgstr "Fout tijdens het compileren van de packages."
 
 #. Programmer's name for it: RsErrorDeletingMapFiles
-#: Compile.pas:192 
+#: Compile.pas:196 
 #, fuzzy
 msgid "An error occured while deleting the map files after the linking."
 msgstr "Fout tijdens het compileren van de packages."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:194 
+#: Compile.pas:198 
 msgid ""
 "Command could not be executed.\n"
 "\n"
@@ -898,7 +898,7 @@ msgstr "Er is een fout opgetreden."
 
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:91 JVCLData.pas:390 
+#: InstallerConsts.pas:91 JVCLData.pas:395 
 msgid "Complete."
 msgstr "Voltooid."
 
@@ -1249,32 +1249,32 @@ msgid "Do you really want to cancel the installation?"
 msgstr "Wilt u de installatie afbreken?"
 
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:383 
+#: JVCLData.pas:388 
 msgid "No JVCL directory found. Application terminated."
 msgstr "Geen JVCL map gevonden. Applicatie wordt afgesloten."
 
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:384 
+#: JVCLData.pas:389 
 msgid "JVCL Installer"
 msgstr "JVCL Installatieprogramma"
 
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:386 
+#: JVCLData.pas:391 
 msgid "Cleaning Palette..."
 msgstr "Opschonen van palet..."
 
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:387 
+#: JVCLData.pas:392 
 msgid "Cleaning Path lists..."
 msgstr "Opschonen van de Path lijst..."
 
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:388 
+#: JVCLData.pas:393 
 msgid "Unregistering packages..."
 msgstr "Niet geregistreerde packages..."
 
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:389 
+#: JVCLData.pas:394 
 msgid "Deleting files..."
 msgstr "Bezig met verwijderen van bestanden..."
 
@@ -1333,6 +1333,11 @@ msgstr ""
 #, fuzzy
 msgid "(no version info)"
 msgstr "Unit Versioning"
+
+#. Programmer's name: 1 24
+#: CommCtrlAsInvoker.rc:7 
+msgid "CommCtrlAsInvoker.manifest"
+msgstr ""
 
 #, fuzzy
 #~ msgid "JVCL %d.%d  Installation"

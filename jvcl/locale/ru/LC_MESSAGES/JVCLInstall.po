@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2006-10-28 19:16\n"
+"POT-Creation-Date: 2008-02-20 09:44\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -79,7 +79,7 @@ msgstr "OK"
 msgid "Compiler Messages"
 msgstr "Сборка пакетов"
 
-#. FormCompileMessages..PanelTop..LabelHelp....Height
+#. FormCompileMessages..PanelTop..LabelHelp....Caption
 #: FrmCompileMessages.dfm:52 
 msgid "Many error messages appear because the JCL version and the JVCL version are not compatible. Please keep in mind that you need the correct JCL version."
 msgstr ""
@@ -173,7 +173,7 @@ msgstr ""
 
 #  Programmer's name for it: RsCommandNotFound
 #  FrameConfigPage..LblBCBGuide....Cursor
-#. FrameConfigPage..LblBCBGuide....Cursor
+#. FrameConfigPage..LblBCBGuide....Hint
 #: Frames/FrmConfigPage.dfm:16 
 msgid "Open the default web browser to show the C++Builder Installation Guide."
 msgstr "Откройте Вэб-браузер для просмотра инструкций по установке C++Builder."
@@ -184,7 +184,7 @@ msgstr "Откройте Вэб-браузер для просмотра инс�
 msgid "BCB installation guide"
 msgstr "Руководство по установке BCB"
 
-#. FrameConfigPage..LblEnvPathWarning....AutoSize
+#. FrameConfigPage..LblEnvPathWarning....Caption
 #: Frames/FrmConfigPage.dfm:40 
 msgid "The BPL directory is not in the PATH environment variable. If you do not add the directory to the PATH environment variable, Delphi/BCB will not be able to find the runtime packages and shows you lots of error messages like: \"Cannot load package JvCoreD10R.bpl\""
 msgstr ""
@@ -195,7 +195,7 @@ msgid " JVCL Options  "
 msgstr ""
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Height
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Hint
 #: Frames/FrmConfigPage.dfm:71 
 msgid ""
 "Activate this if you have Mike Lischke's Theme Manager\n"
@@ -231,7 +231,7 @@ msgid "&XP Theming (not for Delphi 7)"
 msgstr "Темы &XP (не для Delphi 7)"
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Height
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Hint
 #: Frames/FrmConfigPage.dfm:85 
 msgid ""
 "Enable this option if you want to register property and component\n"
@@ -247,7 +247,7 @@ msgid "&Register global design editors"
 msgstr "Регистрировать редакторы дизайнера"
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport....Height
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport....Hint
 #: Frames/FrmConfigPage.dfm:102 
 msgid ""
 "Enable this option if you want to use the dxgettext\n"
@@ -271,7 +271,7 @@ msgid "dxgettext &support"
 msgstr "Поддержка dxgettext"
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif....Height
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif....Hint
 #: Frames/FrmConfigPage.dfm:116 
 msgid ""
 "Enable this option if you want to register the GIF image\n"
@@ -287,7 +287,7 @@ msgid "Register Jv&Gif for .gif"
 msgstr "Регистрация Jv&Gif для .gif"
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxUseJVCL....Height
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUseJVCL....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUseJVCL....Hint
 #: Frames/FrmConfigPage.dfm:130 
 msgid ""
 "Disable this if you want some packages that are not yet\n"
@@ -302,7 +302,7 @@ msgstr ""
 msgid "&Use JVCL for all packages"
 msgstr "Использовать JVCL для всех пакетов"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Height
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Hint
 #: Frames/FrmConfigPage.dfm:145 
 msgid ""
 "Enable this option if you want that every JVCL unit should support\n"
@@ -323,7 +323,7 @@ msgid " Installation options "
 msgstr " Опции установки "
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Hint
 #: Frames/FrmConfigPage.dfm:168 
 msgid ""
 "Activate this option if you are a JVCL developer.\n"
@@ -342,7 +342,7 @@ msgid "&JVCL Developer installation"
 msgstr "Установка &JVCL для разработчиков"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Hint
 #: Frames/FrmConfigPage.dfm:183 
 msgid ""
 "Remove all JVCL components from the component palettes in\n"
@@ -358,7 +358,7 @@ msgid "Clean JVCL component &palettes"
 msgstr "Очистка палитры компонент JVCL"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Hint
 #: Frames/FrmConfigPage.dfm:199 
 msgid ""
 "Check this option if you want to build the packages instead\n"
@@ -380,7 +380,7 @@ msgid "B&uild packages"
 msgstr "Создать пакеты"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly....Height
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxIDERegister....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxIDERegister....Hint
 #: Frames/FrmConfigPage.dfm:214 
 #, fuzzy
 msgid ""
@@ -416,7 +416,7 @@ msgid "&HPP Directory:"
 msgstr "Каталог &HPP:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
-#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
+#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Hint
 #: Frames/FrmConfigPage.dfm:297 
 msgid ""
 "The HPP directory specifies where the generated .hpp files\n"
@@ -425,7 +425,7 @@ msgid ""
 msgstr ""
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:313 
 msgid ""
 "Activate this option if the installer should generate\n"
@@ -442,7 +442,7 @@ msgstr ""
 msgid "Genera&te Map files"
 msgstr "Создать Map-файлы"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Hint
 #: Frames/FrmConfigPage.dfm:329 
 msgid ""
 "Activate this option if you also want to compile debug units.\n"
@@ -457,7 +457,7 @@ msgstr ""
 msgid "Compile debug units"
 msgstr "Сборка пакетов"
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:347 
 msgid ""
 "Activate this option if the installer should link detailled\n"
@@ -474,7 +474,7 @@ msgstr ""
 msgid "&Link Map files in binaries"
 msgstr ""
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:362 
 msgid ""
 "Activate this option if the installer should delete\n"
@@ -487,7 +487,7 @@ msgstr ""
 msgid "&Delete after linking/compression"
 msgstr ""
 
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Height
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Hint
 #: Frames/FrmConfigPage.dfm:377 
 msgid ""
 "Activate this option if the installer should compress detailled\n"
@@ -502,8 +502,8 @@ msgid "Compress Map files to .jdbg"
 msgstr ""
 
 #  FrameConfigPage..CheckBoxVerbose....Height
-#. FrameConfigPage..CheckBoxVerbose....Height
-#: Frames/FrmConfigPage.dfm:391 
+#. FrameConfigPage..CheckBoxVerbose....Hint
+#: Frames/FrmConfigPage.dfm:392 
 msgid ""
 "Activate this option if you want to see a more detailed compiler log on\n"
 "the installation progress page."
@@ -513,46 +513,46 @@ msgstr ""
 
 #  FrameConfigPage..CheckBoxVerbose..Caption
 #. FrameConfigPage..CheckBoxVerbose..Caption
-#: Frames/FrmConfigPage.dfm:392 
+#: Frames/FrmConfigPage.dfm:393 
 msgid "&Verbose compiler output"
 msgstr "Показывать сообщения компилятора"
 
-#. FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
-#: Frames/FrmConfigPage.dfm:405 
+#. FrameConfigPage..CheckBoxIgnoreMakeErrors....Hint
+#: Frames/FrmConfigPage.dfm:406 
 msgid ""
 "Activate this option if the installer should not stop when an error occured while\n"
 "compiling the packages."
 msgstr ""
 
 #. FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
-#: Frames/FrmConfigPage.dfm:406 
+#: Frames/FrmConfigPage.dfm:407 
 msgid "D&o not stop on errors"
 msgstr ""
 
 #  FrameConfigPage..GroupBoxJvclInc..BtnEditJvclInc..Hint
 #. FrameConfigPage..BtnEditJvclInc..Hint
-#: Frames/FrmConfigPage.dfm:428 
+#: Frames/FrmConfigPage.dfm:429 
 msgid "Edit all compile time conditions that are in the jvcl.inc file."
 msgstr "Редактировать опции файла jvcl.inc."
 
 #  FrameConfigPage..GroupBoxJvclInc..BtnEditJvclInc..Caption
 #. FrameConfigPage..BtnEditJvclInc..Caption
 #. Programmer's name for it: RsEditJvclInc
-#: Frames/FrmConfigPage.dfm:429 InstallerConsts.pas:163 
+#: Frames/FrmConfigPage.dfm:430 InstallerConsts.pas:163 
 #, fuzzy
 msgid "Edit jvcl%s%d.inc"
 msgstr "Редактировать jvcl.inc"
 
 #  FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
 #. FrameConfigPage..PanelBk..LblOptionsFor..Caption
-#: Frames/FrmConfigPage.dfm:447 
+#: Frames/FrmConfigPage.dfm:448 
 #, fuzzy
 msgid "&Options for:"
 msgstr "Опции для:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #. FrameConfigPage..CheckBoxAddBplDirToPath..Caption
-#: Frames/FrmConfigPage.dfm:456 
+#: Frames/FrmConfigPage.dfm:457 
 #, fuzzy
 msgid "Add BPL directory to PATH"
 msgstr "Каталог BP&L:"
@@ -593,7 +593,7 @@ msgid "&Show packages:"
 msgstr "Просмотр пакетов:"
 
 #  FramePackageSelection..ComboBoxDisplayMode....Height
-#. FramePackageSelection..ComboBoxDisplayMode....Height
+#. FramePackageSelection..ComboBoxDisplayMode....Hint
 #: Frames/FrmPackageSelection.dfm:77 
 msgid ""
 "<b>Designtime:</b>\n"
@@ -673,92 +673,92 @@ msgstr "&Отмена"
 
 #  Programmer's name for it: RsPackagesAreUpToDate
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:167 
+#: Compile.pas:171 
 msgid "Packages are up to date"
 msgstr "Пакеты обновлены"
 
 #  Programmer's name for it: RsGeneratingTemplates
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:175 
+#: Compile.pas:179 
 msgid "Generating templates..."
 msgstr "Создаются шаблоны..."
 
 #  Programmer's name for it: RsGeneratingPackages
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:176 
+#: Compile.pas:180 
 msgid "Generating packages..."
 msgstr "Создаются пакеты..."
 
 #  Programmer's name for it: RsGeneratingResources
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:177 
+#: Compile.pas:181 
 msgid "Generating resources..."
 msgstr "Создаются ресурсы..."
 
 #  Programmer's name for it: RsCompilingPackages
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:178 
+#: Compile.pas:182 
 msgid "Compiling packages..."
 msgstr "Сборка пакетов..."
 
 #  FrameConfigPage..GroupBoxInstallOptions..Caption
 #. Programmer's name for it: RsPostCompilationOperations
-#: Compile.pas:179 
+#: Compile.pas:183 
 #, fuzzy
 msgid "Post-compilation operations..."
 msgstr " Опции установки "
 
 #  Programmer's name for it: RsCopyingFiles
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:180 
+#: Compile.pas:184 
 msgid "Copying files..."
 msgstr "Копируются файлы..."
 
 #  Programmer's name for it: RsCopyingFile
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:181 
+#: Compile.pas:185 
 msgid "Copying %s"
 msgstr "Копирование %s"
 
 #  Programmer's name for it: RsFinished
 #. Programmer's name for it: RsFinished
-#: Compile.pas:182 
+#: Compile.pas:186 
 msgid "Finished."
 msgstr "Закончено."
 
 #  Programmer's name for it: RsAbortedByUser
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:184 
+#: Compile.pas:188 
 msgid "Aborted by User"
 msgstr "Прервано пользователем"
 
 #  Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:185 
+#: Compile.pas:189 
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Ошибка загрузки devtools\\bin\\pgEdit.xml"
 
 #  Programmer's name for it: RsErrorGeneratingPackages
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:186 
+#: Compile.pas:190 
 msgid "Error while generating packages for %s"
 msgstr "Ошибка при создании пакета для %s"
 
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:187 
+#: Compile.pas:191 
 msgid "Error while generating templates."
 msgstr "Ошибка при создании шаблонов."
 
 #  Programmer's name for it: RsErrorCompilingResources
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:188 
+#: Compile.pas:192 
 msgid "Error while compiling resources."
 msgstr "Ошибка компиляции ресурсов."
 
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:189 
+#: Compile.pas:193 
 msgid "Error generating templates for the %s directory."
 msgstr "Ошибка создания шаблонов для каталога для %s."
 
@@ -766,14 +766,14 @@ msgstr "Ошибка создания шаблонов для каталога �
 #  Programmer's name for it: RsErrorCompilingPackages
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:190 
+#: Compile.pas:194 
 msgid "An error occured while compiling the packages."
 msgstr "Произошла ошибка при сборке пакетов."
 
 #  this must not be the doubt of the installer
 #  Programmer's name for it: RsErrorCompilingPackages
 #. Programmer's name for it: RsErrorLinkingMapFiles
-#: Compile.pas:191 
+#: Compile.pas:195 
 #, fuzzy
 msgid "An error occured while linking the map files into binaries."
 msgstr "Произошла ошибка при сборке пакетов."
@@ -781,13 +781,13 @@ msgstr "Произошла ошибка при сборке пакетов."
 #  this must not be the doubt of the installer
 #  Programmer's name for it: RsErrorCompilingPackages
 #. Programmer's name for it: RsErrorDeletingMapFiles
-#: Compile.pas:192 
+#: Compile.pas:196 
 #, fuzzy
 msgid "An error occured while deleting the map files after the linking."
 msgstr "Произошла ошибка при сборке пакетов."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:194 
+#: Compile.pas:198 
 msgid ""
 "Command could not be executed.\n"
 "\n"
@@ -969,7 +969,7 @@ msgstr "Произошла ошибка."
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:91 JVCLData.pas:390 
+#: InstallerConsts.pas:91 JVCLData.pas:395 
 msgid "Complete."
 msgstr "Завершено."
 
@@ -1389,37 +1389,37 @@ msgstr "Вы действительно хотите прервать устан
 
 #  Programmer's name for it: RsNoJVCLFound
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:383 
+#: JVCLData.pas:388 
 msgid "No JVCL directory found. Application terminated."
 msgstr "Каталог JVCL не найден. Выполнение прервано."
 
 #  Programmer's name for it: RsJVCLInstaller
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:384 
+#: JVCLData.pas:389 
 msgid "JVCL Installer"
 msgstr "Установка JVCL"
 
 #  Programmer's name for it: RsCleaningPalette
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:386 
+#: JVCLData.pas:391 
 msgid "Cleaning Palette..."
 msgstr "Очистка палитры компонент..."
 
 #  Programmer's name for it: RsCleaningPathLists
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:387 
+#: JVCLData.pas:392 
 msgid "Cleaning Path lists..."
 msgstr "Очистка списков путей..."
 
 #  Programmer's name for it: RsUnregisteringPackages
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:388 
+#: JVCLData.pas:393 
 msgid "Unregistering packages..."
 msgstr "Удаляются пакеты..."
 
 #  Programmer's name for it: RsDeletingFiles
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:389 
+#: JVCLData.pas:394 
 msgid "Deleting files..."
 msgstr "Удаление файлов..."
 
@@ -1476,6 +1476,11 @@ msgstr ""
 #. Programmer's name for it: RsMissingVersionInfo
 #: Debug/ExceptionDlg.pas:134 
 msgid "(no version info)"
+msgstr ""
+
+#. Programmer's name: 1 24
+#: CommCtrlAsInvoker.rc:7 
+msgid "CommCtrlAsInvoker.manifest"
 msgstr ""
 
 #  FormMain..Caption
