@@ -2,12 +2,12 @@
 # Copyright (C) 2008 The JEDI Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2008-02-20 09:44\n"
-"PO-Revision-Date: 2006-05-03 08:59+0100\n"
+"POT-Creation-Date: 2008-02-20 09:55\n"
+"PO-Revision-Date: 2008-02-20 09:54+0100\n"
 "Last-Translator: Olivier Sannier <obones att altern dot org>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -457,7 +457,6 @@ msgstr "Compiler les unités Debug"
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:347 
-#, fuzzy
 msgid ""
 "Activate this option if the installer should link detailled\n"
 "map information as a resource of the binary it is describing.\n"
@@ -483,38 +482,38 @@ msgstr "&Lier les fichiers map dans les binaires"
 #  FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Hint
 #: Frames/FrmConfigPage.dfm:362 
-#, fuzzy
 msgid ""
 "Activate this option if the installer should delete\n"
 "detailed map-files after they are linked in the binary\n"
 "or the jdbg files were created."
 msgstr ""
 "Activez cette option si l'installateur doit supprimer les fichiers\n"
-"map détaillés une fois qu'ils ont été liés dans le binaire."
+"map détaillés une fois qu'ils ont été liés dans le binaire ou\n"
+"que les fichiers jdbg ont été créés."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
 #: Frames/FrmConfigPage.dfm:363 
-#, fuzzy
 msgid "&Delete after linking/compression"
-msgstr "&Supprimer après liaison"
+msgstr "&Supprimer après liaison/compression"
 
 #  FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Hint
 #: Frames/FrmConfigPage.dfm:377 
-#, fuzzy
 msgid ""
 "Activate this option if the installer should compress detailled\n"
 "map information to jdbg files.\n"
 "\n"
 "JclDebug can use these information."
 msgstr ""
-"Activez cette option si l'installateur doit supprimer les fichiers\n"
-"map détaillés une fois qu'ils ont été liés dans le binaire."
+"Activez cette option si l'installateur doit compresser les fichiers\n"
+"map détaillés en fichiers jdbg.\n"
+"\n"
+"JclDebug peut utiliser ces informations."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles..Caption
 #: Frames/FrmConfigPage.dfm:378 
 msgid "Compress Map files to .jdbg"
-msgstr ""
+msgstr "Compresser les fichiers Map en .jdbg"
 
 #. FrameConfigPage..CheckBoxVerbose....Hint
 #: Frames/FrmConfigPage.dfm:392 
@@ -566,7 +565,6 @@ msgstr "&Options pour:"
 
 #. FrameConfigPage..CheckBoxAddBplDirToPath..Caption
 #: Frames/FrmConfigPage.dfm:457 
-#, fuzzy
 msgid "Add BPL directory to PATH"
 msgstr "Ajouter le répertoire BPL dans PATH"
 
@@ -1373,11 +1371,6 @@ msgstr "Thread : %s"
 #: Debug/ExceptionDlg.pas:134 
 msgid "(no version info)"
 msgstr "(pas d'info de version)"
-
-#. Programmer's name: 1 24
-#: CommCtrlAsInvoker.rc:7 
-msgid "CommCtrlAsInvoker.manifest"
-msgstr ""
 
 #~ msgid ""
 #~ "JCL is not installed for %s. Please install the JCL before installing the JVCL.\n"
