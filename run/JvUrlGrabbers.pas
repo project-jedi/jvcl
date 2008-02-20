@@ -234,6 +234,20 @@ type
     property Grabber: TJvHttpUrlGrabber read GetGrabber;
   end;
 
+  // A grabber for Secure HTTP URLs
+  TJvHttpsUrlGrabber = class(TJvHttpUrlGrabber)
+  public
+    class function CanGrab(const Url: string): Boolean; override;
+    class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedProtocolMarker: string; override;
+    class function GetSupportedURLName: string; override;
+  end;
+
+  TJvHttpsUrlGrabberDefaultProperties = class(TJvHttpUrlGrabberDefaultProperties)
+  protected
+    function GetSupportedURLName: string; override;
+  end;
+
   // A grabber for local and UNC files
   TJvLocalFileUrlGrabber = class(TJvCustomUrlGrabber)
   private
@@ -317,18 +331,19 @@ uses
 const
   cFilePrefix = 'file://';
   cHTTPPrefix = 'http://';
+  cHTTPsPrefix = 'https://';
   cFTPPrefix = 'ftp://';
-
-// global download callback
 
 procedure RegisterUrlGrabberClasses;
 begin
   // register the classes
   JvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
   JvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
+  JvUrlGrabberClassList.Add(TJvHttpsUrlGrabber);
   JvUrlGrabberClassList.Add(TJvLocalFileUrlGrabber);
 end;
 
+// global download callback
 procedure DownloadCallBack(Handle: HINTERNET; Context: DWORD;
   AStatus: DWORD; Info: Pointer; StatLen: DWORD); stdcall;
 begin
@@ -916,6 +931,35 @@ end;
 function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
 begin
   Result := TJvHttpUrlGrabber.GetSupportedURLName;
+end;
+
+//=== { TJvHttpsUrlGrabber } =============================================
+
+class function TJvHttpsUrlGrabber.CanGrab(const Url: string): Boolean;
+begin
+  Result := LowerCase(Copy(Url, 1, 7)) = cHTTPsPrefix;
+end;
+
+class function TJvHttpsUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
+begin
+  Result := TJvHttpsUrlGrabberDefaultProperties;
+end;
+
+class function TJvHttpsUrlGrabber.GetSupportedProtocolMarker: string;
+begin
+  Result := cHTTPsPrefix;
+end;
+
+class function TJvHttpsUrlGrabber.GetSupportedURLName: string;
+begin
+  Result := 'Secure HTTP';
+end;
+
+//=== { TJvHttpsUrlGrabberDefaultProperties } =============================================
+
+function TJvHttpsUrlGrabberDefaultProperties.GetSupportedURLName: string;
+begin
+  Result := TJvHttpsUrlGrabber.GetSupportedURLName;
 end;
 
 //=== { TJvLocalFileUrlGrabber } =============================================
