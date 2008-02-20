@@ -29,7 +29,6 @@ PROJECTS = Jv3rdD7R.bpl                           \
   JvPrintPreviewD7R.bpl JvPrintPreviewD7D.bpl     \
   JvPageCompsD7R.bpl JvPageCompsD7D.bpl           \
   JvValidatorsD7R.bpl JvValidatorsD7D.bpl         \
-  JvUIBD7R.bpl JvUIBD7D.bpl                       \
   JvWizardD7R.bpl JvWizardD7D.bpl                 \
   JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl   \
   JvHMID7R.bpl JvHMID7D.bpl                       \
@@ -157,12 +156,6 @@ JvValidatorsD7D.bpl: d7\JvValidatorsD7D.dpk
   $(DCC)
 
 JvValidatorsD7R.bpl: d7\JvValidatorsD7R.dpk
-  $(DCC)
-
-JvUIBD7D.bpl: d7\JvUIBD7D.dpk
-  $(DCC)
-
-JvUIBD7R.bpl: d7per\JvUIBD7R.dpk
   $(DCC)
 
 JvWizardD7R.bpl: d7\JvWizardD7R.dpk

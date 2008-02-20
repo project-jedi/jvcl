@@ -29,7 +29,6 @@ PROJECTS = Jv3rdD6R.bpl                           \
   JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl     \
   JvPageCompsD6R.bpl JvPageCompsD6D.bpl           \
   JvValidatorsD6R.bpl JvValidatorsD6D.bpl         \
-  JvUIBD6R.bpl JvUIBD6D.bpl                       \
   JvWizardD6R.bpl JvWizardD6D.bpl                 \
   JvTimeFrameworkD6R.bpl JvTimeFrameworkD6D.bpl   \
   JvHMID6R.bpl JvHMID6D.bpl                       \
@@ -157,12 +156,6 @@ JvValidatorsD6D.bpl: d6\JvValidatorsD6D.dpk
   $(DCC)
 
 JvValidatorsD6R.bpl: d6\JvValidatorsD6R.dpk
-  $(DCC)
-
-JvUIBD6D.bpl: d6\JvUIBD6D.dpk
-  $(DCC)
-
-JvUIBD6R.bpl: d6per\JvUIBD6R.dpk
   $(DCC)
 
 JvWizardD6R.bpl: d6\JvWizardD6R.dpk
