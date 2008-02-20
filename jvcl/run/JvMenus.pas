@@ -1,4 +1,4 @@
-﻿{-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -756,6 +756,9 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
+  {$IFNDEF COMPILER7_UP}
+  JvWin32,
+  {$ENDIF ~COMPILER7_UP}
   JclGraphUtils, JclSysInfo, JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
@@ -825,8 +828,6 @@ begin
 end;
 
 function UseFlatMenubars: Boolean;
-const
-  SPI_GETFLATMENU = $1022;
 var
   B: BOOL;
 begin
