@@ -34,7 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, ComCtrls,
+  Windows, Messages, Classes, Controls, ComCtrls,
   JvComCtrls, JvExComCtrls;
 
 type
@@ -110,6 +110,8 @@ type
     FCheckBoxOptions: TJvTreeViewCheckBoxOptions;
     FOnToggled: TTVChangedEvent;
     FOnToggling: TTVChangingEvent;
+    FNextItemRect: TRect;
+
     function GetCheckBox(Node: TTreeNode): Boolean;
     function GetChecked(Node: TTreeNode): Boolean;
     function GetRadioItem(Node: TTreeNode): Boolean;
@@ -127,6 +129,8 @@ type
     function DoToggling(Node: TTreeNode): Boolean; dynamic;
     function CreateNode: TTreeNode; override;
     procedure SetCheckBoxes(const Value: Boolean); override;
+
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,7 +165,7 @@ const
 implementation
 
 uses
-  JvConsts;
+  CommCtrl, SysUtils, JvConsts, Types;
 
 procedure ToggleTreeViewCheckBoxes(Node: TTreeNode;
   AUnChecked, AChecked, ARadioUnchecked, ARadioChecked: Integer);
@@ -282,6 +286,27 @@ end;
 
 //=== { TJvCheckTreeView } ===================================================
 
+procedure TJvCheckTreeView.CNNotify(var Msg: TWMNotify);
+var
+  pnmtvA: PNMTREEVIEWA;
+  pnmtvW: PNMTREEVIEWW;
+begin
+  inherited;
+
+  case Msg.NMHdr.code of
+    TVN_SELCHANGINGA:
+    begin
+      pnmtvA := PNMTREEVIEWA(Msg.NMHdr);
+      TreeView_GetItemRect(Handle, pnmtvA.itemNew.hItem, FNextItemRect, False);
+    end;
+    TVN_SELCHANGINGW:
+    begin
+      pnmtvW := PNMTREEVIEWW(Msg.NMHdr);
+      TreeView_GetItemRect(Handle, pnmtvW.itemNew.hItem, FNextItemRect, False);
+    end;
+  end;
+end;
+
 constructor TJvCheckTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -305,11 +330,27 @@ end;
 procedure TJvCheckTreeView.Click;
 var
   P: TPoint;
+  ItemHandle: HTREEITEM;
+  ItemRect: TRect;
 begin
   if CheckBoxOptions.Style = cbsJVCL then
   begin
     GetCursorPos(P);
     P := ScreenToClient(P);
+
+    // Mantis 4316: An almost out of view item might have been moved when its
+    // checkbox has been clicked. When this code executes, the item has already
+    // been moved and as such the cursor is outside of it. But when the
+    // selection was about to be changed, we stored the position of the item
+    // at that time, and with this we can adjust the cursor position. This way
+    // the adjusted position lies within the cursor mark and GetHitTestInfoAt
+    // returns the expected value to trigger InternalSetChecked
+    ItemHandle := TreeView_GetSelection(Handle);
+    TreeView_GetItemRect(Handle, ItemHandle, ItemRect, False);
+
+    P.X := P.X - (FNextItemRect.Left - ItemRect.Left);
+    P.Y := P.Y - (FNextItemRect.Top - ItemRect.Top);
+
     if htOnStateIcon in GetHitTestInfoAt(P.X, P.Y) then
       InternalSetChecked(Selected, not Checked[Selected], CheckBoxOptions.CascadeLevels);
   end;
