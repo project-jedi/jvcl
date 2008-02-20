@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -752,7 +752,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JclGraphUtils, JvConsts, JvJCLUtils, JvJVCLUtils;
+  JclGraphUtils, JclSysInfo, JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
   Separator = '-';
@@ -3651,7 +3651,7 @@ begin
         // versions prior to Vista is not good enough as it does not take into
         // account the borders of the menu. So we try to get the full canvas
         // with GetDCEx.
-        if GetWindowsVersion = wvWinVista then
+        if JclSysInfo.GetWindowsVersion = wvWinVista then
         begin
           DrawBorder(Canvas, WRect);
         end
