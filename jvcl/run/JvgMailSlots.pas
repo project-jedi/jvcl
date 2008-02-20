@@ -22,6 +22,11 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+Delivery network messages longer then 424 bytes requires installation of
+NetBEUI protocol. There is no direct support of this old protocol in XP
+but driver is available for manual installation (search for 'NetBEUI' on
+www.microsoft.com). Delivery network messages longer then 1365 bytes can be 
+problem too (if it's possible at all).
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -57,21 +62,34 @@ type
     FMailSlotName: string;
     FLastMessage: string;
     FOnNewMessage: TOnNewMessage;
+    FOnError: TNotifyEvent;
     FTimer: TTimer;
+    FDeliveryCheckInterval: integer;
     FHandle: THandle;
-    FEnabled: Boolean;
+    // FEnabled: Boolean; // use Open/Close instead
+    FData: TMemoryStream;
+    procedure SetMailSlotName(const SlotName: string);
+    procedure SetDeliveryCheckInterval(T: integer);
+    procedure OnTimer(Sender: TObject);
+    function GetMessageDataPointer: Pointer;
+    function GetMessageLength: integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Open;
     procedure Close;
-  protected
-    procedure Loaded; override;
-    procedure OnTimer(Sender: TObject);
+    // Message as binary data:
+    property MessageData: Pointer read GetMessageDataPointer;
+    property MessageLength: integer read GetMessageLength;
+  // protected
+    // procedure Loaded; override;
   published
-    property MailSlotName: string read FMailSlotName write FMailSlotName;
+    property MailSlotName: string read FMailSlotName write SetMailSlotName;
+    property DeliveryCheckInterval: integer read FDeliveryCheckInterval write
+      SetDeliveryCheckInterval default 1000;
     property OnNewMessage: TOnNewMessage read FOnNewMessage write
       FOnNewMessage;
+    property OnError: TNotifyEvent read FOnError write FOnError;
   end;
 
   {$IFDEF USEJVCL}
@@ -82,17 +100,17 @@ type
   private
     FMailSlotName: string;
     FServerName: string;
-    FOnNewMessage: TOnNewMessage;
   public
     constructor Create(AOwner: TComponent); override;
-    function Send(const Str: string): Boolean;
-  protected
-    procedure Loaded; override;
-    procedure ErrorCatch(Sender: TObject; Exc: Exception);
+    function Send(const Message: string): Boolean; overload;
+    // For sending binary data
+    function Send(const MessageData; MessageLength: integer): Boolean; overload;
+  // protected
+    // procedure Loaded; override;
+    // procedure ErrorCatch(Sender: TObject; Exc: Exception);
   published
     property ServerName: string read FServerName write FServerName;
     property MailSlotName: string read FMailSlotName write FMailSlotName;
-    property OnNewMessage: TOnNewMessage read FOnNewMessage write FOnNewMessage;
   end;
 
 {$IFDEF USEJVCL}
@@ -125,39 +143,39 @@ resourcestring
 constructor TJvgMailSlotServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FEnabled := True;
   FMailSlotName := 'MailSlot';
+  FHandle := INVALID_HANDLE_VALUE;
+  FData := TMemoryStream.Create;
+  FDeliveryCheckInterval := 1000;
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
   FTimer.OnTimer := OnTimer;
+  FTimer.Interval := FDeliveryCheckInterval;
 end;
 
 destructor TJvgMailSlotServer.Destroy;
 begin
-  FTimer.Free;
-  // закрытие канала
-  { Closing channel [translated] }
   Close;
+  FTimer.Free;
+  FData.Free;
   inherited Destroy;
 end;
 
+{
+// Opening of connection is the prerogative of the user.
 procedure TJvgMailSlotServer.Loaded;
 begin
   inherited Loaded;
   Open;
 end;
+}
 
 procedure TJvgMailSlotServer.Open;
 begin
-  //  if not FEnabled then exit;
-  // создание канала с именем MailSlotName - по этому имени к нему
-  // будут обращаться клиенты
-  { Creating channel named MailSlotName - that is the name clients will use to
-    access the channel [translated] }
-  FHandle := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), 0,
-    MAILSLOT_WAIT_FOREVER, nil);
-  //FHandle:=CreateMailSlot('\\.\mailslot\MailSlot',0,MAILSLOT_WAIT_FOREVER,nil);
-
+  Close;
+  // FHandle := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), 0, MAILSLOT_WAIT_FOREVER, nil);
+  // IMO Immediate return is better (no chance of hang up)
+  FHandle := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), 65535, 0 , nil);
   if FHandle = INVALID_HANDLE_VALUE then
     raise Exception.CreateRes(@RsETJvgMailSlotServerErrorCreatingChan);
   FTimer.Enabled := True;
@@ -165,9 +183,28 @@ end;
 
 procedure TJvgMailSlotServer.Close;
 begin
-  if FHandle <> 0 then
+  if FHandle <> INVALID_HANDLE_VALUE then
+  begin
     CloseHandle(FHandle);
-  FHandle := 0;
+    FHandle := INVALID_HANDLE_VALUE;
+  end;  
+  FTimer.Enabled := False;
+end;
+
+procedure TJvgMailSlotServer.SetMailSlotName(const SlotName: string);
+begin
+  if FMailSlotName<>SlotName then
+  begin
+    Close;
+    FMailSlotName := SlotName;
+  end;
+end;
+
+procedure TJvgMailSlotServer.SetDeliveryCheckInterval(T: integer);
+begin
+  if T<1 then T := 1;
+  FTimer.Interval := T;
+  FDeliveryCheckInterval := T;
 end;
 
 procedure TJvgMailSlotServer.OnTimer(Sender: TObject);
@@ -175,39 +212,47 @@ var
   MsgSize: DWORD;
   MsgNumber: DWORD;
   Read: DWORD;
-  MessageText: string;
-  Buffer: PChar;
+  Buffer: Pointer;
 begin
-  //  if not FEnabled then exit;
-
-  MessageText := '';
-  // определение наличия сообщения в канале
-  { Determining if there's message in channel [translated] }
+  // Determining if there's message
   if not GetMailSlotInfo(FHandle, nil, MsgSize, @MsgNumber, nil) then
-    raise Exception.CreateRes(@RsETJvgMailSlotServerErrorGatheringInf);
-  if MsgSize <> MAILSLOT_NO_MESSAGE then
-  begin
-    // (rom) deactivated  annoying
-    // Beep;
-
-    // Allocate memory for the message
-    GetMem(Buffer, MsgSize);
-    try
-      // чтение сообщения из канала и добавление в текст протокола
-      { Reading message from channel and adding it to text of log }
-      if ReadFile(FHandle, Buffer, MsgSize, Read, nil) then
-        MessageText := Buffer
+    if Assigned(FOnError) then
+      FOnError(Self) // user-defined handling
+    else
+      // default error notification; not recommended:
+      // if error is permanent it will produce endless exceptions in timer
+      raise Exception.CreateRes(@RsETJvgMailSlotServerErrorGatheringInf)
+  else
+    if MsgSize <> MAILSLOT_NO_MESSAGE then
+    begin
+      // Allocate memory for the message
+      FData.Size := MsgSize;
+      Buffer := FData.Memory;
+      // Reading message
+      if ReadFile(FHandle, Buffer^, MsgSize, Read, nil) then
+      begin
+        FLastMessage := PChar(Buffer);
+        if Assigned(FOnNewMessage) then
+          FOnNewMessage(Self, FLastMessage);
+      end
       else
-        raise Exception.CreateRes(@RsETJvgMailSlotServerErrorReadingMessa);
-    finally
-      FreeMem(Buffer);
-    end;
-  end;
+        if Assigned(FOnError) then
+          FOnError(Self) // user-defined handling
+        else
+          // default error notification; not recommended:
+          // if error is permanent it will produce endless exceptions in timer
+          raise Exception.CreateRes(@RsETJvgMailSlotServerErrorReadingMessa);
+    end;        
+end;
 
-  if (MessageText <> '') and Assigned(FOnNewMessage) then
-    FOnNewMessage(Self, MessageText);
+function TJvgMailSlotServer.GetMessageDataPointer: Pointer;
+begin
+ Result := FData.Memory;
+end;
 
-  FLastMessage := MessageText;
+function TJvgMailSlotServer.GetMessageLength: integer;
+begin
+ Result := FData.Size;
 end;
 //------------------------------------------------------------------------------
 
@@ -218,6 +263,8 @@ begin
   FServerName := '';
 end;
 
+{
+// Use of slot is the prerogative of the user.
 procedure TJvgMailSlotClient.Loaded;
 begin
   inherited Loaded;
@@ -230,8 +277,7 @@ var
   UserName: PChar;
   Size: DWORD;
 begin
-  // получение имени пользователя
-  { Querying user name [translated] }
+  // Querying user name
   // First query with a buffer too small, to get the required size
   Size := 0;
   UserName := nil;
@@ -241,49 +287,40 @@ begin
   GetMem(UserName, Size);
   try
     GetUserName(UserName, Size);
-
     Send('/' + UserName + '/' + FormatDateTime('hh:mm', Time) + '/' +
       Exc.Message);
   finally
     FreeMem(UserName);
   end;
 
-  // вывод сообщения об ошибке пользователю
-  { Showing message about error to user [translated] }
+  // Showing message about error to user
   Application.ShowException(Exc);
 end;
+}
 
-function TJvgMailSlotClient.Send(const Str: string): Boolean;
+function TJvgMailSlotClient.Send(const Message: string): Boolean;
 var
   Buffer: PChar;
+begin
+  Buffer := PChar(Message);
+  Result := Send(Pointer(Buffer)^, Length(Message)+1);
+end;
+
+function TJvgMailSlotClient.Send(const MessageData; MessageLength: integer): Boolean;
+var
   FHandle: THandle;
   Written: DWORD;
 begin
-  // открытие канала : MyServer - имя сервера
-  // (\\.\\mailslot\xxx - монитор работает на этом же ПК)
-  // xxx - имя канала
-  { Opening channel: MyServer - name of server
-    (\\.\\mailslot\xxx - monitor is working on the same PC
-    xxx is the name of channel [translated]
-  }
   if FServerName = '' then
-    FServerName := '.\';
+    FServerName := '.\'; // the same computer
   FHandle := CreateFile(PChar('\\' + FServerName + '\mailslot\' + FMailSlotName),
-    GENERIC_WRITE, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
-  if FHandle <> INVALID_HANDLE_VALUE then
-  begin
-    GetMem(Buffer, Length(Str)+1);
-    try
-      StrCopy(Buffer, PChar(Str));
-      // передача текста ошибки (запись в канал и закрытие канала)
-      { Transmitting text of error (putting into channel and closing channel) [translated] }
-      WriteFile(FHandle, Buffer, Length(Str) + 1, Written, nil);
-    finally
-      CloseHandle(FHandle);
-      FreeMem(Buffer);
-    end;
-  end;
+    GENERIC_WRITE, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   Result := FHandle <> INVALID_HANDLE_VALUE;
+  if Result then
+  begin
+    Result := WriteFile(FHandle, MessageData, MessageLength, Written, nil);
+    CloseHandle(FHandle);
+  end;
 end;
 
 {$IFDEF USEJVCL}
@@ -297,4 +334,3 @@ finalization
 {$ENDIF USEJVCL}
 
 end.
-
