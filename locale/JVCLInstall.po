@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2008-02-20 09:44\n"
-"PO-Revision-Date: 2008-02-20 09:44\n"
+"POT-Creation-Date: 2008-02-20 09:55\n"
+"PO-Revision-Date: 2008-02-20 09:55\n"
 "Last-Translator: none <none@none.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1255,9 +1255,4 @@ msgstr ""
 #. Programmer's name for it: RsMissingVersionInfo
 #: Debug/ExceptionDlg.pas:134 
 msgid "(no version info)"
-msgstr ""
-
-#. Programmer's name: 1 24
-#: CommCtrlAsInvoker.rc:7 
-msgid "CommCtrlAsInvoker.manifest"
 msgstr ""

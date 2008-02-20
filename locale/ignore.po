@@ -1009,3 +1009,6 @@ msgstr ""
 
 msgid "<c:blue>http://jvcl.sourceforge.net"
 msgstr ""
+
+msgid "CommCtrlAsInvoker.manifest"
+msgstr ""
