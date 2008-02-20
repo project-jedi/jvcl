@@ -3647,26 +3647,34 @@ begin
 
         GetWindowRect(CanvasWindow, WRect);
 
-        // Note: we draw the border here. But using the "Canvas" property is
-        // not good enough as it does not take into account the borders of the
-        // menu. So we try to get the full canvas with GetDCEx.
-        DC := GetDCEx(CanvasWindow, 0, (*DCX_CACHE or *)DCX_WINDOW);
-        try
-          if not Assigned(FBorderCanvas) then
-          begin
-            LastError := GetLastError;
-            if (DC = 0) and (LastError = ERROR_SUCCESS) then
-              FBorderCanvas := TJvDesktopCanvas.Create
-            else
-              FBorderCanvas := TControlCanvas.Create;
-            FBorderCanvas.Handle := DC;
-          end;
+        // Note: we draw the border here. But using the "Canvas" property under
+        // versions prior to Vista is not good enough as it does not take into
+        // account the borders of the menu. So we try to get the full canvas
+        // with GetDCEx.
+        if GetWindowsVersion = wvWinVista then
+        begin
+          DrawBorder(Canvas, WRect);
+        end
+        else
+        begin
+          DC := GetDCEx(CanvasWindow, 0, (*DCX_CACHE or *)DCX_WINDOW);
+          try
+            if not Assigned(FBorderCanvas) then
+            begin
+              LastError := GetLastError;
+              if (DC = 0) and (LastError = ERROR_SUCCESS) then
+                FBorderCanvas := TJvDesktopCanvas.Create
+              else
+                FBorderCanvas := TControlCanvas.Create;
+              FBorderCanvas.Handle := DC;
+            end;
 
-          if FBorderCanvas.Handle <> DC then
-            FBorderCanvas.Handle := DC;
-          DrawBorder(FBorderCanvas, WRect);
-        finally
-          ReleaseDC(CanvasWindow, DC);
+            if FBorderCanvas.Handle <> DC then
+              FBorderCanvas.Handle := DC;
+            DrawBorder(FBorderCanvas, WRect);
+          finally
+            ReleaseDC(CanvasWindow, DC);
+          end;
         end;
       end;
     end;
