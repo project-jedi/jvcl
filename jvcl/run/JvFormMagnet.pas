@@ -344,17 +344,69 @@ var
   I: Integer;
 begin
   if Assigned(FForm) then
-    for I := 0 to Application.ComponentCount - 1 do
-      if Application.Components[I] is TForm then
-        with Application.Components[I] as TForm do
-          if (Left = FForm.Left + FForm.Width) or
-            (Top = FForm.Top + FForm.Height) or
-            (Left + Width = FForm.Left) or
-            (Top + Height = FForm.Top) then
+  begin
+    for I := 0 to Application.ComponentCount - 1 do 
+    begin
+      if Application.Components[I] is TForm then 
+      begin
+        with Application.Components[I] as TForm do 
+        begin
+          if (Left = FForm.Left + FForm.Width) then 
           begin
-            Left := Left + (FormRect.Left - FForm.Left);
-            Top := Top + (FormRect.Top - FForm.Top);
+            //   <--main--><--form-->
+
+            if ((FForm.Top >= Top) and (FForm.Top <= (Top + Height))) or
+               ((Top >= FForm.Top) and (Top <= (FForm.Top + FForm.Height))) then 
+            begin
+              Left := Left + (FormRect.Left - FForm.Left);
+              Top := Top + (FormRect.Top - FForm.Top);
+            end;
+          end
+          else 
+          begin
+            if (Left + Width = FForm.Left) then 
+            begin
+              //   <--form--><--main-->
+              if ((FForm.Top >= Top) and (FForm.Top <= (Top + Height))) or
+                 ((Top >= FForm.Top) and (Top <= (FForm.Top + FForm.Height))) then 
+              begin
+                Left := Left + (FormRect.Left - FForm.Left);
+                Top := Top + (FormRect.Top - FForm.Top);
+              end;
+            end
+            else 
+            begin
+              if (Top = FForm.Top + FForm.Height) then 
+              begin
+                //   <--main-->
+                //   <--form-->
+
+                if ((Left >= FForm.Left) and (Left <= (FForm.Left + FForm.Width))) or
+                   ((FForm.Left >= Left) and (FForm.Left <= (Left + Width))) then 
+                begin
+                  Left := Left + (FormRect.Left - FForm.Left);
+                  Top := Top + (FormRect.Top - FForm.Top);
+                end;
+              end
+              else begin
+                if (Top + Height = FForm.Top) then 
+                begin
+                  //   <--form-->
+                  //   <--main-->
+                  if ((Left >= FForm.Left) and (Left <= (FForm.Left + FForm.Width))) or
+                     ((FForm.Left >= Left) and (FForm.Left <= (Left + Width))) then 
+                  begin
+                    Left := Left + (FormRect.Left - FForm.Left);
+                    Top := Top + (FormRect.Top - FForm.Top);
+                  end;
+                end;
+              end;
+            end;
           end;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TJvFormMagnet.MagnetToMain(OldRect: TRect; var FormRect: TRect; MainRect: TRect);
