@@ -569,7 +569,11 @@ end;
 
 procedure TJvCustomPageListTreeView.DestroyWnd;
 begin
-  if CreateWndRestores and (Items.Count > 0) and (csRecreating in ControlState) then
+  if CreateWndRestores and
+     {$IFDEF COMPILER10_UP}
+     (csRecreating in ControlState) and
+     {$ENDIF COMPILER10_UP}
+     (Items.Count > 0) then
   begin
     FMemStream := TMemoryStream.Create;
     Items.WriteData(FMemStream);
