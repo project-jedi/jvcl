@@ -243,7 +243,7 @@ begin
 
     Tree.Root.OwnsChildren := False;
     for I := 0 to Tree.Root.Children.Count - 1 do
-      Node.AddChild(Tree.Root.Children[I], Tree.Root);
+      Node.AddChild(Tree.Root.Children[I], Node.Root);
   finally
     Tree.Free;
   end;
@@ -357,8 +357,6 @@ begin
   else
     Result := TUnknownNode.Create(Tag);
 
-  if CurrentTag = ttDynamic then
-    HandleDynamicTag(Result as TDynamicNode);
 end;
 
 procedure TDefaultParser.HandleDynamicTag(const Node: TDynamicNode);
@@ -431,6 +429,9 @@ begin
       Node.AddChild(NewNode, TRootNode(Node))
     else
       Node.AddChild(NewNode, Node.Root);
+
+    if NewNode is TDynamicNode then
+      HandleDynamicTag(NewNode as TDynamicNode);
 
     if IsNodeContainer(NewNode, Element) then
       ParseNode(NewNode as TParentNode);
