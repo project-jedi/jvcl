@@ -43,6 +43,7 @@ type
     ['{7DD4CC1F-335E-44F7-AE90-9DB630BF5B31}']
     function EditIntf_GetVisibleObjectName : string;
     function EditIntf_TranslatePropertyName (const PropertyName : string) : string;
+    function EditIntf_GetObjectHint : string;
     function EditIntf_GetPropertyHint(const PropertyName : string) : string;
     function EditIntf_DisplayProperty (const PropertyName : string) : Boolean;
     function EditIntf_IsPropertySimple (const PropertyName : string) : Boolean;

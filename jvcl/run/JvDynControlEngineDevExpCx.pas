@@ -47,7 +47,7 @@ uses
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
   cxProgressBar, cxPC, cxColorComboBox,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
-  cxOi,
+  cxOi, cxVGrid,
   {$ENDIF}
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -887,11 +887,15 @@ type
   TJvDynControlCxRTTIInspectorControl = class(TcxRTTIInspector, IUnknown,
       IJvDynControl, IJvDynControlRTTIInspectorControl, IJvDynControlDevExpCx)
   private
+    fControlOnPropertyChange: TJvDynControlInspectorControlOnPropertyChangeEvent;
     fOnDisplayProperty: TJvDynControlInspectorControlOnDisplayPropertyEvent;
     fOnTranslatePropertyName:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent;
+    OldPropertyName: string;
     procedure InspectorOnFilterProperty(Sender: TObject; const PropertyName:
         string; var Accept: Boolean);
+    procedure InspectorOnItemChanged(Sender: TObject; AOldRow: TcxCustomRow;
+        AOldCellIndex: Integer);
   protected
     //IJvDynControlRTTIInspectorControl
     function ControlGetOnDisplayProperty:
@@ -922,6 +926,10 @@ type
 
     // IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+    function GetControlOnPropertyChange:
+        TJvDynControlInspectorControlOnPropertyChangeEvent;
+    procedure SetControlOnPropertyChange(const Value:
+        TJvDynControlInspectorControlOnPropertyChangeEvent);
   end;
 
   TJvDynControlCxColorComboBox = class(TcxColorComboBox, IUnknown, IJvDynControl,
@@ -3796,6 +3804,7 @@ end;
 procedure TJvDynControlCxRTTIInspectorControl.ControlSetDefaultProperties;
 begin
   OnFilterProperty := InspectorOnFilterProperty;
+  OnItemChanged := InspectorOnItemChanged;
 end;
 
 procedure TJvDynControlCxRTTIInspectorControl.ControlSetCaption(const Value: string);
@@ -3900,6 +3909,26 @@ begin
   fOnTranslatePropertyName := Value;
 end;
 
+procedure TJvDynControlCxRTTIInspectorControl.InspectorOnItemChanged(Sender:
+    TObject; AOldRow: TcxCustomRow; AOldCellIndex: Integer);
+var
+  NewPropertyName: string;
+begin
+  if Assigned (FocusedRow) then
+    NewPropertyName := TcxPropertyRow(FocusedRow).PropertyEditor.GetName
+  else
+    NewPropertyName := '';
+  if Assigned(fControlOnPropertyChange) then
+    fControlOnPropertyChange(OldPropertyName, NewPropertyName);
+  OldPropertyName := NewPropertyName;
+end;
+
+function TJvDynControlCxRTTIInspectorControl.GetControlOnPropertyChange:
+    TJvDynControlInspectorControlOnPropertyChangeEvent;
+begin
+  Result := fControlOnPropertyChange;
+end;
+
 procedure TJvDynControlCxRTTIInspectorControl.InspectorOnFilterProperty(Sender:
     TObject; const PropertyName: string; var Accept: Boolean);
 begin
@@ -3907,10 +3936,14 @@ begin
     Accept := fOnDisplayProperty(PropertyName) and ControlIsPropertySupported(PropertyName);
 end;
 
+procedure TJvDynControlCxRTTIInspectorControl.SetControlOnPropertyChange(const
+    Value: TJvDynControlInspectorControlOnPropertyChangeEvent);
+begin
+  fControlOnPropertyChange := Value;
+end;
+
 function TJvDynControlCxColorComboBox.ControlGetColorName(AColor: TColor):
     string;
-var
-  i: Integer;
 begin
   Result := '';
 end;

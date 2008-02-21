@@ -313,6 +313,7 @@ type
   TJvDynControlInspectorControlOnTranslatePropertyNameEvent = function(const aPropertyName : String) : string of object;
   TJvDynControlInspectorControlOnDisplayPropertyEvent = function(const
       aPropertyName : String): boolean of object;
+  TJvDynControlInspectorControlOnPropertyChangeEvent = procedure(var OldPropertyName, NewPropertyName : string) of object;
 
   IJvDynControlRTTIInspectorControl = interface
     ['{D7C445BF-1ED9-467B-BD01-7D40513016B4}']
@@ -328,12 +329,19 @@ type
     procedure ControlSetOnDisplayProperty(const Value:
         TJvDynControlInspectorControlOnDisplayPropertyEvent);
     procedure ControlSetOnTranslatePropertyName(const Value:
-        TJvDynControlInspectorControlOnTranslatePropertyNameEvent); 
+        TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
+    function GetControlOnPropertyChange:
+        TJvDynControlInspectorControlOnPropertyChangeEvent;
+    procedure SetControlOnPropertyChange(const Value:
+        TJvDynControlInspectorControlOnPropertyChangeEvent);
     property ControlInspectedObject: TObject read ControlGetInspectedObject write
         ControlSetInspectedObject;
     property ControlOnDisplayProperty:
         TJvDynControlInspectorControlOnDisplayPropertyEvent read
         ControlGetOnDisplayProperty write ControlSetOnDisplayProperty;
+    property ControlOnPropertyChange:
+        TJvDynControlInspectorControlOnPropertyChangeEvent read
+        GetControlOnPropertyChange write SetControlOnPropertyChange;
     property ControlOnTranslatePropertyName:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent read
         ControlGetOnTranslatePropertyName write ControlSetOnTranslatePropertyName;

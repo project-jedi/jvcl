@@ -60,6 +60,9 @@ type
     FInspectedObjectEditorHandler: IJvPropertyEditorHandler;
     FInspectedObjectListEditorHandler: IJvPropertyListEditorHandler;
     FPropertyStore: TComponent;
+    InfoGroupBoxDynControl: IJvDynControl;
+    InfoMemoDynControlData: IJvDynControlData;
+    InfoPanel: TWinControl;
     Inspector: TWinControl;
     InspectorPanel: TWinControl;
     ListBoxControlItems: IJvDynControlItems;
@@ -86,7 +89,9 @@ type
     procedure FillTreeViewByComponent(TreeNodes: TTreeNodes; Parent: TTreeNode;
         aPropertyStore: TPersistent);
     function OnDisplayProperty(const aPropertyName : String): Boolean;
+    procedure OnPropertyChange(var OldPropertyName, NewPropertyName : string);
     function OnTranslatePropertyName(const aPropertyName : String): string;
+    procedure SetInformation(const iCaption, iInfo: string);
   public
     procedure GotoEditObject(EditObject: TPersistent);
     property InspectedObjectListEditorHandler: IJvPropertyListEditorHandler read
@@ -112,18 +117,8 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  JvResources,
   TypInfo, JvDynControlEngine;
-
-resourcestring
-  RSDialogButtonOk = '&Ok';
-  RSDialogButtonCancel = '&Cancel';
-  RSListButtonInsert = '&Insert';
-  RSListButtonCopy = '&Copy';
-  RSListButtonEdit = '&Edit';
-  RSListButtonDelete = '&Delete';
-  RSListButtonUp = '&Up';
-  RSListButtonDown = 'Do&wn';
-  RSDialogCaptionEditProperties = 'Edit Properties';
 
 {$R *.dfm}
 
@@ -160,6 +155,8 @@ begin
   //
 end;
 
+type tAccessCustomPanel = class(tCustomPanel);
+
 procedure TJvPropertyStoreEditorForm.CreateFormControls;
 var BottomPanel, BottomButtonPanel : TWinControl;
   Button: TButton;
@@ -170,6 +167,11 @@ var BottomPanel, BottomButtonPanel : TWinControl;
   DynControlDblClick : IJvDynControlDblClick;
   ListButtonPanel: TWinControl;
   ListBox: TWinControl;
+  InfoGroupBox: TWinControl;
+  InfoMemoPanel: TWinControl;
+  InfoMemo: TWinControl;
+  DynControlMemo: IJvDynControlMemo;
+  DynControlReadOnly: IJvDynControlReadOnly;
 begin
   BottomPanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'BottomPanel', '', alBottom);
   BottomPanel.Height := 34;
@@ -180,13 +182,13 @@ begin
   BottomButtonPanel.Width := 166;
   if BottomButtonPanel is TPanel then
     TPanel(BottomButtonPanel).BevelOuter := bvNone;
-  Button := DefaultDynControlEngine.CreateButton(Self, BottomButtonPanel, 'OKButton', RSDialogButtonOk, '', OkButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, BottomButtonPanel, 'OKButton', RSPropertyStoreEditorDialogButtonOk, '', OkButtonClick);
   Button.Left := 4;
   Button.Top := 6;
   Button.Width := 75;
   Button.Height := 25;
   Button.ModalResult := mrOk;
-  Button := DefaultDynControlEngine.CreateButton(Self, BottomButtonPanel, 'CancelButton', RSDialogButtonCancel, '', CancelButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, BottomButtonPanel, 'CancelButton', RSPropertyStoreEditorDialogButtonCancel, '', CancelButtonClick);
   Button.Left := 85;
   Button.Top := 6;
   Button.Width := 75;
@@ -194,10 +196,10 @@ begin
   Button.ModalResult := mrCancel;
   TreePanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'TreePanel', '', alLeft);
   TreePanel.Width := 200;
-  if TreePanel is TPanel then
+  if TreePanel is TCustomPanel then
   begin
-    TPanel(TreePanel).BevelOuter := bvNone;
-    TPanel(TreePanel).BorderWidth := 3;
+    tAccessCustomPanel(TreePanel).BevelOuter := bvNone;
+    tAccessCustomPanel(TreePanel).BorderWidth := 3;
   end;
   TreeView := DefaultDynControlEngine.CreateTreeViewControl(Self, TreePanel, 'PropertyStoreTreeView');
   Supports(TreeView, IJvDynControlTreeView, PropertyStoreTreeView);
@@ -215,6 +217,29 @@ begin
     TPanel(EditPanel).BevelOuter := bvNone;
     TPanel(EditPanel).BorderWidth := 3;
   end;
+  InfoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'InfoPanel', '', alBottom);
+  if InfoPanel is TCustomPanel then
+  begin
+    tAccessCustomPanel(InfoPanel).BevelOuter := bvNone;
+//    tAccessCustomPanel(InfoPanel).BorderWidth := 3;
+  end;
+  InfoPanel.Height := 100;
+  InfoGroupBox := DefaultDynControlEngine.CreateGroupBoxControl(Self, InfoPanel, 'InfoGroupBox', 'Info');
+  InfoGroupBox.Align := alClient;
+  Supports(InfoGroupBox, IJvDynControl, InfoGroupBoxDynControl);
+  InfoMemoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, InfoGroupBox, 'InfoMemoPanel', '', alClient);
+  if InfoMemoPanel is TCustomPanel then
+  begin
+    tAccessCustomPanel(InfoMemoPanel).BevelOuter := bvNone;
+    tAccessCustomPanel(InfoMemoPanel).BorderWidth := 3;
+  end;
+  InfoMemo := DefaultDynControlEngine.CreateMemoControl(Self, InfoMemoPanel, 'InfoMemo');
+  InfoMemo.Align := alClient;
+  if Supports(InfoMemo, IJvDynControlMemo, DynControlMemo) then
+    DynControlMemo.ControlSetWordWrap(True);
+  if Supports(InfoMemo, IJvDynControlReadOnly, DynControlReadOnly) then
+    DynControlReadOnly.ControlSetReadOnly(True);
+  Supports(InfoMemo, IJvDynControlData, InfomemoDynControlData);
   ListPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'ListPanel', '', alClient);
   if ListPanel is TPanel then
     TPanel(ListPanel).BevelOuter := bvNone;
@@ -230,22 +255,22 @@ begin
   ListButtonPanel.Height := 25;
   if ListButtonPanel is TPanel then
     TPanel(ListButtonPanel).BevelOuter := bvNone;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListInsertButton', RSListButtonInsert, '', ListInsertButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListInsertButton', RSPropertyStoreEditorListButtonInsert, '', ListInsertButtonClick);
   Button.Left := 0;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListCopyButton', RSListButtonCopy, '', ListCopyButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListCopyButton', RSPropertyStoreEditorListButtonCopy, '', ListCopyButtonClick);
   Button.Left := 40;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListEditButton', RSListButtonEdit, '', ListEditButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListEditButton', RSPropertyStoreEditorListButtonEdit, '', ListEditButtonClick);
   Button.Left := 80;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDeleteButton', RSListButtonDelete, '', ListDeleteButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDeleteButton', RSPropertyStoreEditorListButtonDelete, '', ListDeleteButtonClick);
   Button.Left := 120;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListUpButton', RSListButtonUp, '', ListUpButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListUpButton', RSPropertyStoreEditorListButtonUp, '', ListUpButtonClick);
   Button.Left := 165;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDownButton', RSListButtonDown, '', ListDownButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDownButton', RSPropertyStoreEditorListButtonDown, '', ListDownButtonClick);
   Button.Left := 205;
   Button.Width := 40;
   ListBox := DefaultDynControlEngine.CreateListBoxControl(Self, ListPanel, 'ListBox', Nil);
@@ -255,16 +280,18 @@ begin
   if Supports(ListBox, IJvDynControlDblClick, DynControlDblClick) then
     DynControlDblClick.ControlSetOnDblClick(ListEditButtonClick);
   InspectorPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'InspectorPanel', '', alClient);
-  if InspectorPanel is TPanel then
-    TPanel(InspectorPanel).BevelOuter := bvNone;
+  if InspectorPanel is TCustomPanel then
+    tAccessCustomPanel(InspectorPanel).BevelOuter := bvNone;
 
   Inspector := DefaultDynControlEngine.CreateRTTIInspectorControl(self, InspectorPanel,
       'Inspector', OnDisplayProperty, OnTranslatePropertyName);
   Supports (Inspector, IJvDynControlRTTIInspectorControl, RTTIInspectorControl);
+  RTTIInspectorControl.ControlOnPropertyChange := OnPropertyChange;
   Inspector.Align := alClient;
 
-  Caption := RSDialogCaptionEditProperties;
+  Caption := RSPropertyStoreEditorDialogCaptionEditProperties;
 
+  SetInformation('', '');
 end;
 
 procedure TJvPropertyStoreEditorForm.FillTreeView(GotoNodeObject: TPersistent =
@@ -534,6 +561,14 @@ begin
        and InspectedObjectEditorHandler.EditIntf_IsPropertySimple(aPropertyName) ;
 end;
 
+procedure TJvPropertyStoreEditorForm.OnPropertyChange(var OldPropertyName,
+    NewPropertyName : string);
+begin
+  if Assigned(InspectedObjectEditorHandler) then
+    SetInformation (InspectedObjectEditorHandler.EditIntf_TranslatePropertyName(NewPropertyName),
+                    InspectedObjectEditorHandler.EditIntf_GetPropertyHint(NewPropertyName));
+end;
+
 procedure TJvPropertyStoreEditorForm.PropertyStoreTreeViewChange(Sender:
     TObject; Node: TTreeNode);
 begin
@@ -582,6 +617,8 @@ begin
     ListPanel.visible := False;
     Inspector.Parent := InspectorPanel;
   end;
+  if Assigned(InspectedObjectEditorHandler) then
+    SetInformation (InspectedObjectEditorHandler.EditIntf_GetVisibleObjectName, InspectedObjectEditorHandler.EditIntf_GetObjectHint);
 end;
 
 procedure TJvPropertyStoreEditorForm.SetPropertyStore(const Value: TComponent);
@@ -614,6 +651,14 @@ function TJvPropertyStoreEditorForm.OnTranslatePropertyName(const aPropertyName 
     String): string;
 begin
   Result := aPropertyName;
+end;
+
+procedure TJvPropertyStoreEditorForm.SetInformation(const iCaption, iInfo:
+    string);
+begin
+  InfoMemoDynControlData.ControlValue := iInfo;
+  InfoGroupBoxDynControl.ControlSetCaption(iCaption);
+  InfoPanel.Visible := iInfo <> '';
 end;
 
 {$IFDEF UNITVERSIONING}

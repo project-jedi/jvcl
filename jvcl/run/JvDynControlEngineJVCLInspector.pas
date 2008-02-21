@@ -41,13 +41,16 @@ type
   TJvDynControlRTTIInspectorControl = class(TJvInspector, IUnknown,
       IJvDynControl, IJvDynControlRTTIInspectorControl)
   private
+    fControlOnPropertyChange: TJvDynControlInspectorControlOnPropertyChangeEvent;
     fOnDisplayProperty: TJvDynControlInspectorControlOnDisplayPropertyEvent;
     fOnTranslatePropertyName:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent;
+    OldPropertyName: string;
     procedure JvInspectorAfterItemCreate(Sender: TObject; Item:
         TJvCustomInspectorItem);
     procedure JvInspectorBeforeItemCreate(Sender: TObject; Data:
         TJvCustomInspectorData; var ItemClass: TJvInspectorItemClass);
+    procedure JvInspectorControlOnItemSelected(Sender: TObject);
   protected
     //IJvDynControlRTTIInspectorControl
     function ControlGetOnDisplayProperty:
@@ -59,6 +62,7 @@ type
     procedure ControlSetOnTranslatePropertyName(const Value:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
   public
+    constructor Create(AOwner: TComponent); override;
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -75,9 +79,14 @@ type
     procedure ControlSaveEditorValues;
     procedure ControlSetInspectedObject(const Value: TObject);
     function ControlIsPropertySupported(const aPropertyName : string): Boolean;
+    function GetControlOnPropertyChange:
+        TJvDynControlInspectorControlOnPropertyChangeEvent;
+    procedure SetControlOnPropertyChange(const Value:
+        TJvDynControlInspectorControlOnPropertyChangeEvent);
   end;
 
-procedure RgisterJvDynControlRTTIInspectorControl (iEngine : TJvCustomDynControlEngine);
+procedure RegisterJvDynControlRTTIInspectorControl(iEngine :
+    TJvCustomDynControlEngine);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -101,10 +110,17 @@ uses
 
 //=== { TJvDynControlRTTIInspectorControl } ========================================
 
+constructor TJvDynControlRTTIInspectorControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  OldPropertyName := '';
+end;
+
 procedure TJvDynControlRTTIInspectorControl.ControlSetDefaultProperties;
 begin
   AfterItemCreate := JvInspectorAfterItemCreate;
   BeforeItemCreate := JvInspectorBeforeItemCreate;
+  OnItemSelected := JvInspectorControlOnItemSelected;
 end;
 
 procedure TJvDynControlRTTIInspectorControl.ControlSetCaption(const Value: string);
@@ -214,7 +230,34 @@ begin
   fOnTranslatePropertyName := Value;
 end;
 
-procedure RgisterJvDynControlRTTIInspectorControl (iEngine : TJvCustomDynControlEngine);
+function TJvDynControlRTTIInspectorControl.GetControlOnPropertyChange:
+    TJvDynControlInspectorControlOnPropertyChangeEvent;
+begin
+  Result := fControlOnPropertyChange;
+end;
+
+procedure TJvDynControlRTTIInspectorControl.JvInspectorControlOnItemSelected(
+    Sender: TObject);
+var
+  NewPropertyName: string;
+begin
+  if Assigned (Selected) then
+    NewPropertyName := Selected.Name
+  else
+    NewPropertyName := '';
+  if Assigned(fControlOnPropertyChange) then
+    fControlOnPropertyChange(OldPropertyName, NewPropertyName);
+  OldPropertyName := NewPropertyName;
+end;
+
+procedure TJvDynControlRTTIInspectorControl.SetControlOnPropertyChange(const
+    Value: TJvDynControlInspectorControlOnPropertyChangeEvent);
+begin
+  fControlOnPropertyChange := Value;
+end;
+
+procedure RegisterJvDynControlRTTIInspectorControl(iEngine :
+    TJvCustomDynControlEngine);
 begin
   iEngine.RegisterControlType(jctRTTIInspector, TJvDynControlRTTIInspectorControl);
 end;
