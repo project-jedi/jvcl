@@ -1752,12 +1752,44 @@ resourcestring
     'The file download was successful.' + sLineBreak +
     'Do you want to close and install?';
   RsPVInfoButtonCaption = 'Info';
+  RSProgramVersionInfo_PropertyHint_ProgramReleaseDate = 'Date of Release ';
+  RSProgramVersionInfo_PropertyHint_ProgramSize = 'Size of the installer in bytes ';
+  RSProgramVersionInfo_PropertyHint_ProgramReleaseType = 'Release type of the version.'#13#10+
+    'In the update dialog there are only the highest version numbers for each type visible.'#13#10+
+    'The type must be higher then AllowedReleaseType property of the TJvProgramVersionCheck component';
+  RSProgramVersionInfo_PropertyHint_VersionDescription = 'This is a description field which could be shown in the update dialog via the version info button.';
+  RSProgramVersionInfo_PropertyHint_ProgramVersion = 'Program version in the format <main>.<sub>.<release>.<build> This property is compared with the fileversion properties of the current application.';
+  RSProgramVersionInfo_PropertyHint_ProgramLocationFileName = 'File name of the installer file ';
+  RSProgramVersionInfo_PropertyHint_ProgramLocationPath = 'Path where the installer of the version could be found. This could be a absolute path or a relative path to the location of the version list';
+  RSProgramVersionInfo_PropertyHint_LocalInstallerParams = 'List of parameters for the execution of the installer file';
+  RSProgramVersionInfo_PropertyHint_DownloadPassword = 'Flag to define whether a password is required for the download or not';
+  RSProgramVersionInfo_ObjectHint = 'Class to collect all informations about a program version'#13#10+
+    'These informations will be stored in a file on the remote site';
+  RSProgramVersionHistory_PropertyHint_alpha = 'Auto calculated version number of the highest alpha version';
+  RSProgramVersionHistory_PropertyHint_beta = 'Auto calculated version number of the highest beta version';
+  RSProgramVersionHistory_PropertyHint_Production = 'Auto calculated version number of the highest production version';
+  RSProgramVersionHistory_ObjectHint = 'Class to define a list of program version informations. This class is used '+
+            'to detect which versions are available. Allso the informations will be used '+
+            'in the version info dialog';
+  RSProgramVersionHistory = 'Program Version History';
 
 //=== JvPropertyStore.pas ====================================================
 resourcestring
   RsJvPropertyStoreMutexStorePropertiesProcedureName = 'TJvCustomPropertyStore.StoreProperties:';
   RsJvPropertyStoreMutexLoadPropertiesProcedureName = 'TJvCustomPropertyStore.LoadProperties:';
   RsJvPropertyStoreEnterMutexTimeout = '%s: Mutex Timeout';
+
+//=== JvPropertyStoreEditor.pas ====================================================
+resourcestring
+  RSPropertyStoreEditorDialogButtonOk = '&Ok';
+  RSPropertyStoreEditorDialogButtonCancel = '&Cancel';
+  RSPropertyStoreEditorListButtonInsert = '&Insert';
+  RSPropertyStoreEditorListButtonCopy = '&Copy';
+  RSPropertyStoreEditorListButtonEdit = '&Edit';
+  RSPropertyStoreEditorListButtonDelete = '&Delete';
+  RSPropertyStoreEditorListButtonUp = '&Up';
+  RSPropertyStoreEditorListButtonDown = 'Do&wn';
+  RSPropertyStoreEditorDialogCaptionEditProperties = 'Edit Properties';
 
 //=== JvPrvwRender.pas =======================================================
 resourcestring

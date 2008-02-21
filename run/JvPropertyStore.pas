@@ -143,6 +143,7 @@ type
     function EditIntf_TranslatePropertyName(const PropertyName: string): string;
       virtual;
     function EditIntf_DisplayProperty(const PropertyName: string): Boolean; virtual;
+    function EditIntf_GetObjectHint: string; virtual;
     function EditIntf_GetPropertyHint(const PropertyName: string): string;
       virtual;
     function EditIntf_IsPropertySimple(const PropertyName: string): Boolean;
@@ -578,6 +579,11 @@ function TJvCustomPropertyStore.EditIntf_DisplayProperty(const PropertyName:
   string): Boolean;
 begin
   Result := not (IgnoreProperty(PropertyName));
+end;
+
+function TJvCustomPropertyStore.EditIntf_GetObjectHint: string;
+begin
+  Result := '';
 end;
 
 function TJvCustomPropertyStore.EditIntf_GetPropertyHint(const PropertyName:

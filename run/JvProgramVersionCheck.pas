@@ -73,6 +73,8 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
+    function EditIntf_GetObjectHint: string; override;
+    function EditIntf_GetPropertyHint(const PropertyName: string): string; override;
     //IJvPropertyEditorHandler = interface
     function EditIntf_GetVisibleObjectName: string; override;
     { Combination of ProgramVersion and ReleaseType }
@@ -80,8 +82,9 @@ type
     function ProgramSizeString: string;
     function ProgramVersionInfo: string;
   published
+    //1 Flag to define whether a password is required for the download or not
     property DownloadPasswordRequired: Boolean read FDownloadPasswordRequired write
-      FDownloadPasswordRequired default False;
+        FDownloadPasswordRequired default False;
     { List of parameters for the execution of the installer file }
     property LocalInstallerParams: string read FLocalInstallerParams write
         FLocalInstallerParams;
@@ -134,15 +137,21 @@ type
     procedure RecalculateCurrentProgramVersions;
     function AllowedCurrentProgramVersion(AAllowedReleaseType: TJvProgramReleaseType): TJvProgramVersionInfo;
     procedure Assign(Source: TPersistent); override;
-    //IJvPropertyEditorHandler = interface
+    function EditIntf_GetObjectHint: string; override;
+    function EditIntf_GetPropertyHint(const PropertyName: string): string; override;
     function EditIntf_GetVisibleObjectName: string; override;
     function GetVersionsDescription(const AFromVersion, AToVersion: string): string;
     property CurrentProgramVersion[Index: TJvProgramReleaseType]: TJvProgramVersionInfo read GetCurrentProgramVersion;
   published
-    property CurrentProductionProgramVersion: string
-      read GetCurrentProductionProgramVersion write FCurrentProductionVersion;
-    property CurrentBetaProgramVersion: string read GetCurrentBetaProgramVersion write FCurrentBetaVersion;
-    property CurrentAlphaProgramVersion: string read GetCurrentAlphaProgramVersion write FCurrentAlphaVersion;
+    //1 Auto calculated version number of the highest production version
+    property CurrentProductionProgramVersion: string read
+        GetCurrentProductionProgramVersion write FCurrentProductionVersion;
+    //1 Auto calculated version number of the highest beta version
+    property CurrentBetaProgramVersion: string read GetCurrentBetaProgramVersion
+        write FCurrentBetaVersion;
+    //1 Auto calculated version number of the highest alpha version
+    property CurrentAlphaProgramVersion: string read GetCurrentAlphaProgramVersion
+        write FCurrentAlphaVersion;
   end;
 
   { Base class for all location
@@ -564,9 +573,6 @@ uses
   JclBase, JclFileUtils, JclShell,
   JvDSADialogs, JvParameterListParameter, JvResources, Windows, Messages;
 
-resourcestring
-  SProgramVersionHistory = 'Program Version History';
-
 const
   SParamNameVersionButtonInfo = 'VersionButtonInfo';
   SParamNameMemo = 'Memo';
@@ -719,6 +725,37 @@ begin
   FProgramReleaseType := prtProduction;
 end;
 
+function TJvProgramVersionInfo.EditIntf_GetObjectHint: string;
+begin
+  Result := RSProgramVersionInfo_ObjectHint;
+end;
+
+function TJvProgramVersionInfo.EditIntf_GetPropertyHint(const PropertyName:
+    string): string;
+begin
+  Result := '';
+  if PropertyName = 'DownloadPasswordRequired' then
+    Result := RSProgramVersionInfo_PropertyHint_DownloadPassword
+  else if PropertyName = 'LocalInstallerParams' then
+    Result := RSProgramVersionInfo_PropertyHint_LocalInstallerParams
+  else if PropertyName = 'ProgramLocationPath' then
+    Result := RSProgramVersionInfo_PropertyHint_ProgramLocationPath
+  else if PropertyName = 'ProgramLocationFileName' then
+    Result := RSProgramVersionInfo_PropertyHint_ProgramLocationFileName
+  else if PropertyName = 'ProgramVersion' then
+    Result := RSProgramVersionInfo_PropertyHint_ProgramVersion
+  else if PropertyName = 'VersionDescription' then
+    Result := RSProgramVersionInfo_PropertyHint_VersionDescription
+  else if PropertyName = 'ProgramReleaseType' then
+    Result := RSProgramVersionInfo_PropertyHint_ProgramReleaseType
+  else if PropertyName = 'ProgramSize' then
+    Result := RSProgramVersionInfo_PropertyHint_ProgramSize
+  else if PropertyName = 'ProgramReleaseDate' then
+    Result := RSProgramVersionInfo_PropertyHint_ProgramReleaseDate
+  else
+    Result := '';
+end;
+
 function TJvProgramVersionInfo.EditIntf_GetVisibleObjectName: string;
 begin
   Result := ProgramVersionInfo;
@@ -868,9 +905,28 @@ begin
   Result := TJvProgramVersionsStringList.Create;
 end;
 
+function TJvProgramVersionHistory.EditIntf_GetObjectHint: string;
+begin
+  Result := RSProgramVersionHistory_ObjectHint;
+end;
+
+function TJvProgramVersionHistory.EditIntf_GetPropertyHint(const PropertyName:
+    string): string;
+begin
+  Result := '';
+  if PropertyName = 'CurrentProductionProgramVersion' then
+    Result := RSProgramVersionHistory_PropertyHint_Production
+  else if PropertyName = 'CurrentBetaProgramVersion' then
+    Result := RSProgramVersionHistory_PropertyHint_beta
+  else if PropertyName = 'CurrentAlphaProgramVersion' then
+    Result := RSProgramVersionHistory_PropertyHint_alpha
+  else
+    Result := Inherited EditIntf_GetPropertyHint(PropertyName);
+end;
+
 function TJvProgramVersionHistory.EditIntf_GetVisibleObjectName: string;
 begin
-  Result := SProgramVersionHistory;
+  Result := RSProgramVersionHistory;
 end;
 
 function TJvProgramVersionHistory.GetCurrentProductionProgramVersion: string;
