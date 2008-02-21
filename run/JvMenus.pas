@@ -3158,7 +3158,7 @@ end;
 procedure TJvOfficeMenuItemPainter.DrawItemText(ARect: TRect;
   const Text: string; Flags: Integer);
 var
-  FlatMenus: Boolean;
+  FlatMenus: LongBool;
 begin
   if not IsPopup(FItem) then
   begin
