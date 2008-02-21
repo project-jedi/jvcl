@@ -89,6 +89,7 @@ type
     FPageList: IPageList;
     FPageDefault: Integer;
     FLinks: TJvPageLinks;
+    FMemStream: TMemoryStream;
     {$IFDEF COMPILER5}
     FPageListComponent: TComponent;
     procedure SetPageListComponent(const Value: TComponent);
@@ -99,6 +100,8 @@ type
     function GetItems: TJvPageIndexNodes;
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CreateNode: TTreeNode;  override;
     function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -502,6 +505,7 @@ end;
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
+  FMemStream.Free;
   {$IFDEF COMPILER5}
   // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
   FreeAndNil(FItems);
@@ -547,6 +551,34 @@ begin
   Result := FItems;
 end;
 
+procedure TJvCustomPageListTreeView.CreateWnd;
+begin
+  inherited CreateWnd;
+
+  if FMemStream <> nil then
+  begin
+    Items.BeginUpdate;
+    try
+      Items.ReadData(FMemStream);
+      FreeAndNil(FMemStream);
+    finally
+      Items.EndUpdate;
+    end;
+  end;
+end;
+
+procedure TJvCustomPageListTreeView.DestroyWnd;
+begin
+  if CreateWndRestores and (Items.Count > 0) and (csRecreating in ControlState) then
+  begin
+    FMemStream := TMemoryStream.Create;
+    Items.WriteData(FMemStream);
+    FMemStream.Position := 0;
+  end;
+
+  inherited DestroyWnd;
+end;
+
 procedure TJvCustomPageListTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
@@ -582,7 +614,7 @@ end;
 
 procedure TJvCustomPageListTreeView.SetLinks(const Value: TJvPageLinks);
 begin
-  //  FLinks.Assign(Value);
+  FLinks.Assign(Value);
 end;
 
 procedure TJvCustomPageListTreeView.SetPageList(const Value: IPageList);
