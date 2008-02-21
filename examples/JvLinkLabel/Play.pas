@@ -65,7 +65,7 @@ type
     procedure edMarginWChange(Sender: TObject);
     procedure edMarginHChange(Sender: TObject);
     procedure LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
-      LinkText: String);
+      LinkText, LinkParam: String);
     procedure LinkLabelMouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
   end;
@@ -129,7 +129,7 @@ begin
 end;
 
 procedure TfrmPlay.LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
-  LinkText: String);
+  LinkText, LinkParam: String);
 begin
   Application.MessageBox(PChar(LinkText + ' clicked !'),
     PChar('Link Clicked'),
