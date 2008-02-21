@@ -3914,7 +3914,7 @@ procedure TJvDynControlCxRTTIInspectorControl.InspectorOnItemChanged(Sender:
 var
   NewPropertyName: string;
 begin
-  if Assigned (FocusedRow) then
+  if Assigned (FocusedRow) and Assigned(TcxPropertyRow(FocusedRow).PropertyEditor) then
     NewPropertyName := TcxPropertyRow(FocusedRow).PropertyEditor.GetName
   else
     NewPropertyName := '';
