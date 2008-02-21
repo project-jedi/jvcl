@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -172,15 +172,15 @@ const
   DigitChars = ['0'..'9'];
 
 var
-  crJVCLFirst: TCursor = 100;
-  crMultiDragLink: TCursor = 100;
-  crDragAlt: TCursor = 101;
-  crMultiDragAlt: TCursor = 102;
-  crMultiDragLinkAlt: TCursor = 103;
-  crHand: TCursor = 104;
-  crDragHand: TCursor = 105;
+  crJVCLFirst: TCursor = 368;
+  crMultiDragLink: TCursor = 368;
+  crDragAlt: TCursor = 369;
+  crMultiDragAlt: TCursor = 370;
+  crMultiDragLinkAlt: TCursor = 371;
+  crHand: TCursor = 372;
+  crDragHand: TCursor = 373;
   // this should be incremented to always contain the last default JVCL cursor index
-  crJVCLLast: TCursor = 105;
+  crJVCLLast: TCursor = 373;
 
 const
   ROP_DSPDxax = $00E20746;
