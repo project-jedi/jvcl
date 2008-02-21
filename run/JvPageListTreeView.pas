@@ -569,7 +569,9 @@ end;
 
 procedure TJvCustomPageListTreeView.DestroyWnd;
 begin
-  if CreateWndRestores and
+  if {$IFDEF COMPILER6_UP}
+     CreateWndRestores and
+     {$ENDIF COMPILER6_UP}
      {$IFDEF COMPILER10_UP}
      (csRecreating in ControlState) and
      {$ENDIF COMPILER10_UP}
