@@ -51,10 +51,12 @@ type
     procedure ListEditButtonClick(Sender: TObject);
     procedure ListInsertButtonClick(Sender: TObject);
     procedure ListUpButtonClick(Sender: TObject);
+    procedure PropertyStoreTreeViewEnter(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PropertyStoreTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure PropertyStoreTreeViewChanging(Sender: TObject; Node: TTreeNode; var
         AllowChange: Boolean);
+    procedure RTTIInspectorEnter(Sender: TObject);
   private
     FInspectedObject: TPersistent;
     FInspectedObjectEditorHandler: IJvPropertyEditorHandler;
@@ -172,6 +174,7 @@ var BottomPanel, BottomButtonPanel : TWinControl;
   InfoMemo: TWinControl;
   DynControlMemo: IJvDynControlMemo;
   DynControlReadOnly: IJvDynControlReadOnly;
+  DynControl: IJvDynControl;
 begin
   BottomPanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'BottomPanel', '', alBottom);
   BottomPanel.Height := 34;
@@ -206,6 +209,8 @@ begin
   TreeView.Align := alClient;
   PropertyStoreTreeView.ControlSetHotTrack (True);
   PropertyStoreTreeView.ControlSetOnChange (PropertyStoreTreeViewChange);
+  Supports(TreeView, IJvDynControl, DynControl);
+  DynControl.ControlSetOnEnter(PropertyStoreTreeViewEnter);
   PropertyStoreTreeView.ControlSetOnChanging (PropertyStoreTreeViewChanging);
   PropertyStoreTreeView.ControlSetSortType(stNone);
   TreeSplitter := TSplitter.Create(Self);
@@ -236,7 +241,10 @@ begin
   InfoMemo := DefaultDynControlEngine.CreateMemoControl(Self, InfoMemoPanel, 'InfoMemo');
   InfoMemo.Align := alClient;
   if Supports(InfoMemo, IJvDynControlMemo, DynControlMemo) then
+  begin
     DynControlMemo.ControlSetWordWrap(True);
+    DynControlMemo.ControlSetScrollbars(ssVertical);
+  end;
   if Supports(InfoMemo, IJvDynControlReadOnly, DynControlReadOnly) then
     DynControlReadOnly.ControlSetReadOnly(True);
   Supports(InfoMemo, IJvDynControlData, InfomemoDynControlData);
@@ -288,6 +296,8 @@ begin
   Supports (Inspector, IJvDynControlRTTIInspectorControl, RTTIInspectorControl);
   RTTIInspectorControl.ControlOnPropertyChange := OnPropertyChange;
   Inspector.Align := alClient;
+  Supports(RTTIInspectorControl, IJvDynControl, DynControl);
+  DynControl.ControlSetOnEnter(RTTIInspectorEnter);
 
   Caption := RSPropertyStoreEditorDialogCaptionEditProperties;
 
@@ -548,6 +558,12 @@ begin
   end;
 end;
 
+procedure TJvPropertyStoreEditorForm.PropertyStoreTreeViewEnter(Sender: TObject);
+begin
+  if Assigned(InspectedObjectEditorHandler) then
+    SetInformation (InspectedObjectEditorHandler.EditIntf_GetVisibleObjectName, InspectedObjectEditorHandler.EditIntf_GetObjectHint);
+end;
+
 procedure TJvPropertyStoreEditorForm.OkButtonClick(Sender: TObject);
 begin
   //
@@ -651,6 +667,14 @@ function TJvPropertyStoreEditorForm.OnTranslatePropertyName(const aPropertyName 
     String): string;
 begin
   Result := aPropertyName;
+end;
+
+procedure TJvPropertyStoreEditorForm.RTTIInspectorEnter(Sender:
+    TObject);
+begin
+  if Assigned(InspectedObjectEditorHandler) and Assigned(RTTIInspectorControl) then
+    SetInformation (InspectedObjectEditorHandler.EditIntf_TranslatePropertyName(RTTIInspectorControl.ControlGetCurrentPropertyName),
+                    InspectedObjectEditorHandler.EditIntf_GetPropertyHint(RTTIInspectorControl.ControlGetCurrentPropertyName));
 end;
 
 procedure TJvPropertyStoreEditorForm.SetInformation(const iCaption, iInfo:

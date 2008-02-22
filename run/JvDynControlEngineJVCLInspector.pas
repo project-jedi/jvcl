@@ -74,6 +74,7 @@ type
     procedure ControlSetAnchors(Value: TAnchors);
 
     //IJvDynControlRTTIInspectorControl
+    function ControlGetCurrentPropertyName: string;
     function ControlGetInspectedObject: TObject;
     function ControlGetVisibleItemsCount: Integer;
     procedure ControlSaveEditorValues;
@@ -114,6 +115,15 @@ constructor TJvDynControlRTTIInspectorControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   OldPropertyName := '';
+end;
+
+function TJvDynControlRTTIInspectorControl.ControlGetCurrentPropertyName:
+    string;
+begin
+  if Assigned (Selected) then
+    Result := Selected.Name
+  else
+    Result := '';
 end;
 
 procedure TJvDynControlRTTIInspectorControl.ControlSetDefaultProperties;
@@ -241,10 +251,7 @@ procedure TJvDynControlRTTIInspectorControl.JvInspectorControlOnItemSelected(
 var
   NewPropertyName: string;
 begin
-  if Assigned (Selected) then
-    NewPropertyName := Selected.Name
-  else
-    NewPropertyName := '';
+  NewPropertyName := ControlGetCurrentPropertyName;
   if Assigned(fControlOnPropertyChange) then
     fControlOnPropertyChange(OldPropertyName, NewPropertyName);
   OldPropertyName := NewPropertyName;

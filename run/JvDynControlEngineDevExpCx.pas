@@ -907,6 +907,7 @@ type
     procedure ControlSetOnTranslatePropertyName(const Value:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
   public
+    function ControlGetCurrentPropertyName: string;
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -3807,6 +3808,15 @@ begin
   OnItemChanged := InspectorOnItemChanged;
 end;
 
+function TJvDynControlCxRTTIInspectorControl.ControlGetCurrentPropertyName:
+    string;
+begin
+  if Assigned (FocusedRow) and Assigned(TcxPropertyRow(FocusedRow).PropertyEditor) then
+    Result := TcxPropertyRow(FocusedRow).PropertyEditor.GetName
+  else
+    Result := '';
+end;
+
 procedure TJvDynControlCxRTTIInspectorControl.ControlSetCaption(const Value: string);
 begin
   Caption := Value;
@@ -3894,7 +3904,11 @@ procedure TJvDynControlCxRTTIInspectorControl.ControlSetInspectedObject(const
     Value: TObject);
 begin
   if Value is TPersistent then
-    InspectedObject := TPersistent(Value);
+    InspectedObject := TPersistent(Value)
+  else
+    InspectedObject := nil;
+  OldPropertyName := '';
+
 end;
 
 procedure TJvDynControlCxRTTIInspectorControl.ControlSetOnDisplayProperty(const
@@ -3914,10 +3928,7 @@ procedure TJvDynControlCxRTTIInspectorControl.InspectorOnItemChanged(Sender:
 var
   NewPropertyName: string;
 begin
-  if Assigned (FocusedRow) and Assigned(TcxPropertyRow(FocusedRow).PropertyEditor) then
-    NewPropertyName := TcxPropertyRow(FocusedRow).PropertyEditor.GetName
-  else
-    NewPropertyName := '';
+  NewPropertyName := ControlGetCurrentPropertyName;
   if Assigned(fControlOnPropertyChange) then
     fControlOnPropertyChange(OldPropertyName, NewPropertyName);
   OldPropertyName := NewPropertyName;
