@@ -317,6 +317,7 @@ type
 
   IJvDynControlRTTIInspectorControl = interface
     ['{D7C445BF-1ED9-467B-BD01-7D40513016B4}']
+    function ControlGetCurrentPropertyName: string;
     function ControlGetInspectedObject: TObject;
     function ControlGetOnDisplayProperty:
         TJvDynControlInspectorControlOnDisplayPropertyEvent;
