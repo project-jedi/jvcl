@@ -684,7 +684,7 @@ begin
     if Result and Focus then
     begin
       Self.Col := ResultCol;
-      if Self.Visible then
+      if Self.Visible and Self.CanFocus then
         Self.SetFocus;
     end
     else
