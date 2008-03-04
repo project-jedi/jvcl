@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -553,10 +553,20 @@ begin
 end;
 
 procedure TJvDBDateTimePicker.CNNotify(var Msg: TWMNotify);
+var
+  st: TSystemTime;
 begin
   case Msg.NMHdr^.code of
-    MCN_LAST:
+    DTN_DATETIMECHANGE:
+    begin
       FDataLink.Edit;
+      if FIsReadOnly and not FDataLink.CanModify then
+      begin
+        DateTimeToSystemTime(DateTime, st);
+        MsgSetDateTime(st);
+        Exit;
+      end;
+    end;
   end;
   inherited;
 end;
