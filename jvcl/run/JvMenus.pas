@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -3253,6 +3253,7 @@ begin
 
   with ACanvas do
   begin
+    Brush.Color := RGB(0, 0, 0);  // must set the color or the style might not be taken into account
     Brush.Style := bsClear;
     Pen.Color := RGB(102, 102, 102);
     Pen.Style := psSolid;
@@ -3641,7 +3642,6 @@ var
   WRect: TRect;
   DefProc: Pointer;
   DC: HDC;
-  LastError: Cardinal;
 begin
   FItem := Item;
 
@@ -3664,6 +3664,8 @@ begin
       // use TWindowList
       if CanvasWindow <> 0 then
       begin
+        GetWindowRect(CanvasWindow, WRect);
+
         DefProc := Pointer(GetWindowLong(CanvasWindow, GWL_WNDPROC));
         if (DefProc <> nil) and
            (DefProc <> @XPMenuItemPainterWndProc) and
@@ -3673,36 +3675,32 @@ begin
           WindowList.AddHook(CanvasWindow, DefProc, @XPMenuItemPainterWndProc);
         end;
 
-        GetWindowRect(CanvasWindow, WRect);
-
-        // Note: we draw the border here. But using the "Canvas" property under
-        // versions prior to Vista is not good enough as it does not take into
-        // account the borders of the menu. So we try to get the full canvas
-        // with GetDCEx.
+        // Note: we draw the border here. But using the "Canvas" property is
+        // not good enough as it does not take into account the borders of the
+        // menu. So for version prior to Vista, be draw directly on the desktop
+        // window canvas. However, with desktop composition under Vista, this
+        // is awfully slow so we try to use the DISPLAY device context. Note
+        // that the behaviour on Vista has not been tested as no JVCL developper
+        // has access to a Vista system with the Aero them turned on.
         if JclSysInfo.GetWindowsVersion = wvWinVista then
         begin
-          DrawBorder(Canvas, WRect);
+          DC := CreateDC('DISPLAY', nil, nil, nil);
+          try
+            if not Assigned(FBorderCanvas) then
+              FBorderCanvas := TCanvas.Create;
+
+            FBorderCanvas.Handle := DC;
+            DrawBorder(FBorderCanvas, WRect);
+          finally
+            DeleteDC(DC);
+          end;
         end
         else
         begin
-          DC := GetDCEx(CanvasWindow, 0, (*DCX_CACHE or *)DCX_WINDOW);
-          try
-            if not Assigned(FBorderCanvas) then
-            begin
-              LastError := GetLastError;
-              if (DC = 0) and (LastError = ERROR_SUCCESS) then
-                FBorderCanvas := TJvDesktopCanvas.Create
-              else
-                FBorderCanvas := TControlCanvas.Create;
-              FBorderCanvas.Handle := DC;
-            end;
+          if not Assigned(FBorderCanvas) then
+            FBorderCanvas := TJvDesktopCanvas.Create;
 
-            if FBorderCanvas.Handle <> DC then
-              FBorderCanvas.Handle := DC;
-            DrawBorder(FBorderCanvas, WRect);
-          finally
-            ReleaseDC(CanvasWindow, DC);
-          end;
+          DrawBorder(FBorderCanvas, WRect);
         end;
       end;
     end;
