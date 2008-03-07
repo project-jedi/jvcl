@@ -343,6 +343,8 @@ type
     FOnSetFieldData: TJvCsvOnSetFieldData;
       // Helps to keep some other thing in sync with the contents of a changing CSV file.
 
+    FAlwaysEnquoteStrings:Boolean; // Always put double quotes around strings (for some CSV file reading software this is required.)
+
     //  Internal Use Only Protected Methods
     // function GetDataFileSize: Integer; virtual;
     function GetActiveRecordBuffer: PChar; virtual;
@@ -623,6 +625,9 @@ type
     property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
     property HeaderRow: string read FHeaderRow; // first row of CSV file.
     property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
+
+    property AlwaysEnquoteStrings:Boolean read FAlwaysEnquoteStrings write FAlwaysEnquoteStrings; // Always put double quotes around strings (for some CSV file reading software this is required.)
+
   end;
 
   // TJvCsvDataSet is just a TJvCustomCsvDataSet with all properties and events exposed:
@@ -678,6 +683,7 @@ type
     property TimeZoneCorrection;
     property EnquoteBackslash;
     property HeaderRow;
+    property AlwaysEnquoteStrings;
   end;
 
 { CSV String Processing Functions }
@@ -1961,14 +1967,18 @@ begin
             CP := Field.Size - 1;
           NewVal := Copy(PChar(Buffer), 1, CP + 1);
           //----------------------------------------------------------------------------------------------------
-          // NEW RULE: If user displayed value contains a comma, a backslash, or a double quote character
+          // STRING ENQUOTING IN CSV: If user displayed value contains a comma, a backslash, or a double quote character
           // then we MUST encode the whole string as a string literal in quotes with the embeddded quotes
           // and backslashes preceded by a backslash character.
           //----------------------------------------------------------------------------------------------------
-          if (Pos(Separator, NewVal) > 0) or  (Pos(Cr, NewVal) > 0) or
-            (Pos(Lf, NewVal) > 0) or (Pos('"', NewVal) > 0) or
-            ((Pos('\', NewVal) > 0) and FEnquoteBackslash) then
-            NewVal := _Enquote(NewVal); // puts whole string in quotes, escapes embedded commas and quote characters!
+          if AlwaysEnquoteStrings
+            or  (Pos(Separator, NewVal) > 0)
+            or  (Pos(Cr, NewVal) > 0)
+            or  (Pos(Lf, NewVal) > 0)
+            or  (Pos('"', NewVal) > 0)
+            or  ((Pos('\', NewVal) > 0) and FEnquoteBackslash)
+             then
+               NewVal := _Enquote(NewVal); // puts whole string in quotes, escapes embedded commas and quote characters!
         end;
       ftInteger:
         NewVal := IntToStr(PInteger(Buffer)^);
