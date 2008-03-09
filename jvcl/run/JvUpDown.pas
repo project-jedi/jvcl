@@ -537,7 +537,7 @@ begin
   if FAssociate is TCustomEdit then
     TCustomEdit(FAssociate).Text := Text;
 //  if (Associate <> nil) and Associate.HandleAllocated then
-//    SendMessage(Associate.Handle, WM_SETTEXT, 0, Longint(PChar(Text)));
+//    SendMessage(Associate.Handle, WM_SETTEXT, 0, LPARAM(PChar(Text)));
 end;
 
 procedure TJvCustomDomainUpDown.SetText(const Value: string);

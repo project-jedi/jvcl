@@ -121,7 +121,7 @@ type
     { Checks whether ACount bytes can be read }
     function CanRead(const ACount: Cardinal): Boolean;
     { Checks whether we are still in the frame }
-    function InFrame(P: PChar): Boolean;
+    function InFrame(P: Pointer): Boolean;
 
     { Read }
     function ReadDate(var ADate: TDateTime): Longint;
@@ -260,8 +260,8 @@ type
     FFlags: TJvID3FrameHeaderFlags;
     FGroupID: Byte;
 
-    function GetFrameName: string;
-    function GetFrameIDStrForVersion(const Version: TJvID3Version): string;
+    function GetFrameName: AnsiString;
+    function GetFrameIDStrForVersion(const Version: TJvID3Version): AnsiString;
     function GetIndex: Integer;
     function GetStream: TJvID3Stream;
     procedure SetController(const AController: TJvID3Controller);
@@ -380,7 +380,7 @@ type
 
   TJvID3BinaryFrame = class(TJvID3Frame)
   private
-    FData: PChar;
+    FData: PAnsiChar;
     FDataSize: Cardinal;
   protected
     procedure ReadData(ASize: Cardinal); virtual;
@@ -1027,8 +1027,8 @@ type
     function GetIsValid: Boolean;
   protected
     procedure Calc;
-    procedure ParseMPEGTag(AMPEGTag: PChar);
-    procedure ParseVbrTag(AMPEGTag: PChar);
+    procedure ParseMPEGTag(AMPEGTag: PAnsiChar);
+    procedure ParseVbrTag(AMPEGTag: PAnsiChar);
     procedure Reset;
   public
     procedure Read(AStream: TStream; const Offset: Int64);
@@ -2080,10 +2080,10 @@ begin
   end;
 end;
 
-procedure ExtractFixedStringsA(Content: PChar; const ALength: Integer; Strings: TStrings);
+procedure ExtractFixedStringsA(Content: PAnsiChar; const ALength: Integer; Strings: TStrings);
 var
-  P: PChar;
-  S: string;
+  P: PAnsiChar;
+  S: AnsiString;
 begin
   if (Content = nil) or (Content^ = #0) or (Strings = nil) or (ALength < 1) then
     Exit;
@@ -2136,7 +2136,7 @@ begin
 
       if P - Content = ALength then
       begin
-        Move(Content[0], S[1], 2 * ALength);
+        Move(Content[0], S[1], ALength * SizeOf(WideChar));
         Strings.Add(S);
       end;
 
@@ -2150,9 +2150,9 @@ begin
   end;
 end;
 
-procedure ExtractStringsA(Separator: Char; Content: PChar; Strings: TStrings);
+procedure ExtractStringsA(Separator: AnsiChar; Content: PAnsiChar; Strings: TStrings);
 var
-  Tail: PChar;
+  Tail: PAnsiChar;
   S: string;
   EOS: Boolean;
 begin
@@ -2199,7 +2199,7 @@ begin
       EOS := Tail^ = WideNull;
 
       SetLength(S, Tail - Content);
-      Move(Content[0], S[1], 2 * (Tail - Content));
+      Move(Content[0], S[1], (Tail - Content) * SizeOf(WideChar));
       Strings.Add(S);
 
       Inc(Tail);
@@ -2273,7 +2273,7 @@ function SearchSync(AStream: TStream;
 const
   CBufferSize = $0F00;
 var
-  LBuffer: PChar;
+  LBuffer: PAnsiChar;
   I: Integer;
   LastWasFF: Boolean;
   BytesRead: Longint;
@@ -2356,7 +2356,7 @@ var
   LastWasFF: Boolean;
   BytesRead: Integer;
   SourcePtr, DestPtr: Integer;
-  SourceBuf, DestBuf: PChar;
+  SourceBuf, DestBuf: PAnsiChar;
 begin
   { Replace $FF 00 with $FF }
 
@@ -2404,7 +2404,7 @@ var
   LastWasFF: Boolean;
   BytesRead: Integer;
   SourcePtr, DestPtr: Integer;
-  SourceBuf, DestBuf: PChar;
+  SourceBuf, DestBuf: PAnsiChar;
 begin
   { Replace $FF 00         with  $FF 00 00
     Replace $FF %111xxxxx  with  $FF 00 %111xxxxx (%11100000 = $E0 = 224 }
@@ -2633,7 +2633,8 @@ begin
   begin
     { Workaround for a bug in some taggers }
     P := PChar(AGenre) + Start - 1;
-    while P^ = ' ' do Inc(P);
+    while P^ = ' ' do
+      Inc(P);
     if StrIComp(P, PChar(Result)) <> 0 then
       AddString(Copy(AGenre, Start, MaxInt));
   end;
@@ -2993,7 +2994,7 @@ end;
 procedure TJvID3BinaryFrame.BeforeDestruction;
 begin
   inherited BeforeDestruction;
-  ReallocMem(FData, 0);
+  FreeMem(FData);
 end;
 
 class function TJvID3BinaryFrame.CanAddFrame(AController: TJvID3Controller;
@@ -4673,7 +4674,7 @@ begin
         if P > 0 then
         begin
           SetLength(Item.SW, P - 1);
-          Move(SW[1], Item.SW[1], 2 * (P - 1));
+          Move(SW[1], Item.SW[1], (P - 1) * SizeOf(WideChar));
         end
         else
           Item.SW := SW;
@@ -4684,7 +4685,7 @@ begin
         if (P > 0) and (P < Length(SW)) then
         begin
           SetLength(Item.SW, Length(SW) - P);
-          Move(SW[P + 1], Item.SW[1], 2 * (Length(SW) - P));
+          Move(SW[P + 1], Item.SW[1], (Length(SW) - P) * SizeOf(WideChar));
         end
         else
           Item.SW := '';
@@ -4850,7 +4851,7 @@ begin
           if P > 0 then
           begin
             SetLength(Item.SW, P - 1);
-            Move(SW[1], Item.SW[1], 2 * (P - 1));
+            Move(SW[1], Item.SW[1], (P - 1) * SizeOf(WideChar));
           end
           else
             Item.SW := SW;
@@ -4861,7 +4862,7 @@ begin
           if (P > 0) and (P < Length(SW)) then
           begin
             SetLength(Item.SW, Length(SW) - P);
-            Move(SW[P + 1], Item.SW[1], 2 * (Length(SW) - P));
+            Move(SW[P + 1], Item.SW[1], (Length(SW) - P) * SizeOf(WideChar));
           end
           else
             Item.SW := '';
@@ -5239,7 +5240,7 @@ begin
   Result := (FHeaderFoundAt >= 0) and (FLayer <> mlNotDefined) and (FVersion <> mvReserved);
 end;
 
-procedure TJvID3FileInfo.ParseMPEGTag(AMPEGTag: PChar);
+procedure TJvID3FileInfo.ParseMPEGTag(AMPEGTag: PAnsiChar);
 var
   LHasPadding: Boolean;
   B: Byte;
@@ -5388,7 +5389,7 @@ begin
     FPaddingLength := 0;
 end;
 
-procedure TJvID3FileInfo.ParseVbrTag(AMPEGTag: PChar);
+procedure TJvID3FileInfo.ParseVbrTag(AMPEGTag: PAnsiChar);
 const
   VBRTag_Xing: PChar = 'Xing'; { Do not change case }
   VBRTag_Info: PChar = 'Info'; { Do not change case }
@@ -5507,11 +5508,8 @@ end;
 
 destructor TJvID3Frame.Destroy;
 begin
-  if FController <> nil then
-  begin
-    if FFrames <> nil then
-      FFrames.Remove(Self);
-  end;
+  if (FController <> nil) and (FFrames <> nil) then
+    FFrames.Remove(Self);
   inherited Destroy;
 end;
 
@@ -5607,7 +5605,7 @@ begin
 end;
 
 function TJvID3Frame.GetFrameIDStrForVersion(
-  const Version: TJvID3Version): string;
+  const Version: TJvID3Version): AnsiString;
 begin
   if FFrameIDStr = '' then
     case Version of
@@ -5622,7 +5620,7 @@ begin
     Result := FFrameIDStr;
 end;
 
-function TJvID3Frame.GetFrameName: string;
+function TJvID3Frame.GetFrameName: AnsiString;
 begin
   Result := GetFrameIDStrForVersion(ive2_3);
 end;
@@ -6112,7 +6110,7 @@ end;
 
 procedure TJvID3Frame.WriteID;
 var
-  LFrameIDStr: string;
+  LFrameIDStr: AnsiString;
   FrameIDLength: Byte;
 begin
   LFrameIDStr := GetFrameIDStrForVersion(Controller.WriteVersion);
@@ -6125,7 +6123,7 @@ begin
   end;
 
   with Stream do
-    Write(PChar(LFrameIDStr)^, FrameIDLength);
+    Write(PAnsiChar(LFrameIDStr)^, FrameIDLength);
 end;
 
 //=== { TJvID3Frames } =======================================================
@@ -6347,7 +6345,7 @@ const
   CMinimalHeaderSize: array [Boolean] of Byte = (6, 10);
 var
   Frame: TJvID3Frame;
-  FrameIDStr: string;
+  FrameIDStr: AnsiString;
   FrameID: TJvID3FrameID;
 
   LFrameIDLength: Byte;
@@ -6360,7 +6358,7 @@ begin
   with Stream do
     while BytesTillEndOfTag >= LMinimalHeaderSize do
     begin
-      if Read(PChar(FrameIDStr)^, LFrameIDLength) <> LFrameIDLength then
+      if Read(PAnsiChar(FrameIDStr)^, LFrameIDLength) <> LFrameIDLength then
         Exit;
 
       FrameID := ID3_StringToFrameID(FrameIDStr);
@@ -7965,9 +7963,9 @@ begin
   case Encoding of
     ienISO_8859_1:
       if FixedStringLength >= 0 then
-        ExtractFixedStringsA(PChar(ANewText.SA), FixedStringLength, List)
+        ExtractFixedStringsA(PAnsiChar(ANewText.SA), FixedStringLength, List)
       else
-        ExtractStringsA(Separator, PChar(ANewText.SA), List);
+        ExtractStringsA(Separator, PAnsiChar(ANewText.SA), List);
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       if FixedStringLength >= 0 then
         ExtractFixedStringsW(PWideChar(ANewText.SW), FixedStringLength, ListW)
@@ -8150,12 +8148,12 @@ begin
   Result := Size - Position;
 end;
 
-function TJvID3Stream.InFrame(P: PChar): Boolean;
+function TJvID3Stream.InFrame(P: Pointer): Boolean;
 begin
   { This function is used to check _when_ we're reading a frame, that we don't
     read beyond the end marker }
 
-  Result := not FReadingFrame or (P < PChar(Memory) + FStartPosition + FCurrentFrameSize);
+  Result := not FReadingFrame or (PAnsiChar(P) < PAnsiChar(Memory) + FStartPosition + FCurrentFrameSize);
 end;
 
 procedure TJvID3Stream.InitAllowedEncodings(const AVersion: TJvID3Version;
@@ -8192,9 +8190,9 @@ end;
 function TJvID3Stream.ReadDate(var ADate: TDateTime): Longint;
 var
   Year, Month, Day: Word;
-  P: PChar;
+  P: PAnsiChar;
 begin
-  P := PChar(Memory) + Position;
+  P := PAnsiChar(Memory) + Position;
 
   Year := 0;
   Month := 0;
@@ -8320,9 +8318,9 @@ end;
 
 function TJvID3Stream.ReadStringA(var SA: string): Longint;
 var
-  P, StartPos: PChar;
+  P, StartPos: PAnsiChar;
 begin
-  StartPos := PChar(Memory) + Position;
+  StartPos := PAnsiChar(Memory) + Position;
   P := StartPos;
 
   while (P^ <> #0) and InFrame(P) do
@@ -8368,7 +8366,7 @@ function TJvID3Stream.ReadStringW(var SW: WideString): Longint;
 var
   Order: WideChar;
   P: PWideChar;
-  StartPos: PChar;
+  StartPos: PAnsiChar;
   TerminatorFound: Boolean;
   WideCharCount: Integer;
 begin
@@ -8391,20 +8389,20 @@ begin
     end;
   end;
 
-  StartPos := PChar(Memory) + Position;
+  StartPos := PAnsiChar(Memory) + Position;
   P := PWideChar(StartPos);
 
   { Read until #0#0 found or until FEndMarker }
-  while InFrame(PChar(P)) and not (P^ = WideNull) do
+  while InFrame(P) and not (P^ = WideNull) do
     Inc(P);
 
-  TerminatorFound := InFrame(PChar(P));
-  WideCharCount := (PChar(P) - StartPos) div 2;
+  TerminatorFound := InFrame(P);
+  WideCharCount := (PAnsiChar(Pointer(P)) - StartPos) div 2;
   Result := Result + WideCharCount * 2;
 
   SetLength(SW, WideCharCount);
   if WideCharCount > 0 then
-    Move(StartPos[0], SW[1], 2 * WideCharCount);
+    Move(StartPos[0], SW[1], WideCharCount * SizeOf(WideChar));
   if (SourceEncoding = ienUTF_16) and (Order = BOM_MSB_FIRST) then
     StrSwapByteOrder(PWideChar(SW));
 
@@ -8421,7 +8419,7 @@ end;
 function TJvID3Stream.ReadSyncSafeInteger(var AInt: Cardinal;
   const ASize: Byte): Longint;
 var
-  Value: PChar;
+  Value: PAnsiChar;
 begin
   GetMem(Value, ASize);
   try
@@ -8435,7 +8433,7 @@ end;
 function TJvID3Stream.ReadSyncSafeInteger(var AInt: Int64;
   const ASize: Byte): Longint;
 var
-  Value: PChar;
+  Value: PAnsiChar;
 begin
   GetMem(Value, ASize);
   try
@@ -8606,7 +8604,7 @@ begin
         Capacity := Pos;
       Size := Pos;
     end;
-    FillChar(Pointer(Longint(Memory) + Position)^, Count, #0);
+    FillChar(Pointer(Longint(Memory) + Position)^, Count, 0);
     //System.Move(Buffer, Pointer(Longint(FMemory) + FPosition)^, Count);
     Position := Pos;
     Result := Count;
@@ -8617,7 +8615,7 @@ end;
 
 function TJvID3Stream.WriteStringA(const SA: string): Longint;
 begin
-  Result := Write(PChar(SA)^, Length(SA));
+  Result := Write(PAnsiChar(SA)^, Length(SA));
 end;
 
 function TJvID3Stream.WriteStringEnc(const S: TJvID3StringPair): Longint;
@@ -8661,7 +8659,7 @@ end;
 function TJvID3Stream.WriteSyncSafeInteger(const AInt: Int64;
   const ASize: Byte): Longint;
 var
-  Value: PChar;
+  Value: PAnsiChar;
 begin
   GetMem(Value, ASize);
   try
@@ -8675,7 +8673,7 @@ end;
 function TJvID3Stream.WriteSyncSafeInteger(const AInt: Cardinal;
   const ASize: Byte): Longint;
 var
-  Value: PChar;
+  Value: PAnsiChar;
 begin
   GetMem(Value, ASize);
   try
@@ -8790,7 +8788,7 @@ begin
       if L <> 0 then
       begin
         // add current string
-        System.Move(Pointer(S)^, P^, L);
+        System.Move(Pointer(S)^, P^, L * SizeOf(Char));
         Inc(P, L);
       end;
       Inc(I);
@@ -8800,7 +8798,7 @@ begin
       // add separators
       if SepLen <> 0 then
       begin
-        System.Move(Pointer(Separator)^, P^, SepLen);
+        System.Move(Pointer(Separator)^, P^, SepLen * SizeOf(Char));
         Inc(P, SepLen);
       end;
     end;

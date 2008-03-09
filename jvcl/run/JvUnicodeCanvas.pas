@@ -54,7 +54,6 @@ type
 
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
       Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
-
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -78,8 +77,6 @@ begin
   if etoOpaque in Options then
     Result := Result or ETO_OPAQUE;
 end;
-
-
 
 function TJvUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
@@ -124,11 +121,6 @@ function TJvUnicodeCanvas.TextHeightW(const Text: WideString): Integer;
 begin
   Result := TextExtentW(Text).cy;
 end;
-
-
-
-
-
 
 function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: string; lpDx: Pointer): Boolean;

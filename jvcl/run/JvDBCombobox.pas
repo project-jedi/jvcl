@@ -521,7 +521,7 @@ begin
     S := GetPaintText;
     if Style = csDropDown then
     begin
-      SendMessage(FPaintControl.Handle, WM_SETTEXT, 0, Longint(PChar(S)));
+      SendMessage(FPaintControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(S)));
       SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
       Child := GetWindow(FPaintControl.Handle, GW_CHILD);
       if Child <> 0 then
@@ -539,7 +539,7 @@ begin
       SendMessage(FPaintControl.Handle, CB_RESETCONTENT, 0, 0);
       if Items.IndexOf(S) <> -1 then
       begin
-        SendMessage(FPaintControl.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
+        SendMessage(FPaintControl.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
         SendMessage(FPaintControl.Handle, CB_SETCURSEL, 0, 0);
       end;
       SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);

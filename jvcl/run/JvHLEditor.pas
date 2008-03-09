@@ -211,6 +211,31 @@ begin
     Result := #0;
 end;
 
+function StrScanNil(P: PChar; Ch: Char): PChar;
+begin
+  Result := P;
+  while True do
+  begin
+    {$IFNDEF SUPPORTS_UNICODE}
+    while Result[0] in LeadBytes do
+      Inc(Result); // mbcs
+    {$ENDIF ~SUPPORTS_UNICODE}
+    if Result[0] = Ch then
+      Exit
+    else
+    if Result[0] = #0 then
+    begin
+      Result := nil;
+      Exit;
+    end;
+    {$IFDEF SUPPORTS_UNICODE}
+    Result := StrNextChar(Result);
+    {$ELSE}
+    Inc(Result);
+    {$ENDIF SUPPORTS_UNICODE}
+  end;
+end;
+
 function HasStringOpenEnd(Lines: TStrings; iLine: Integer): Boolean;
 { find C/C++ "line breaker" '\' }
 var
@@ -230,7 +255,7 @@ begin
   F := PChar(S);
   P := F;
   repeat
-    P := StrScan(P, Char('"'));
+    P := StrScanNil(P, Char('"'));
     if P <> nil then
     begin
       if (P = F) or (P[-1] <> '\') then
@@ -248,25 +273,6 @@ begin
     end;
   until P = nil;
   Result := IsOpen;
-end;
-
-function StrScan(P: PChar; Ch: Char): PChar;
-begin
-  Result := P;
-  while True do
-  begin
-    while Result[0] in LeadBytes do
-      Inc(Result); // mbcs
-    if Result[0] = Ch then
-      Exit
-    else
-    if Result[0] = #0 then
-    begin
-      Result := nil;
-      Exit;
-    end;
-    Inc(Result);
-  end;
 end;
 
 //=== { TJvHLEditor } ========================================================
@@ -1252,7 +1258,7 @@ begin
                     end;
                   '{':
                     begin
-                      P := StrScan(F + I, Char('}'));
+                      P := StrScanNil(F + I, Char('}'));
                       if P = nil then
                       begin
                         if S[I + 1] = '$' then
@@ -1271,7 +1277,7 @@ begin
                         FLong := lgPreproc2
                       else
                         FLong := lgComment2;
-                      P := StrScan(F + I + 2, Char(')'));
+                      P := StrScanNil(F + I + 2, Char(')'));
                       if P = nil then
                         Break
                       else
@@ -1283,7 +1289,7 @@ begin
                     end;
                   '''':
                     begin
-                      P := StrScan(F + I + 1, Char(''''));
+                      P := StrScanNil(F + I + 1, Char(''''));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1298,7 +1304,7 @@ begin
                 end;
               lgPreproc1, lgComment1:
                 begin //  {
-                  P := StrScan(F + I - 1, Char('}'));
+                  P := StrScanNil(F + I - 1, Char('}'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
@@ -1309,7 +1315,7 @@ begin
                 end;
               lgPreproc2, lgComment2:
                 begin //  (*
-                  P := StrScan(F + I, Char(')'));
+                  P := StrScanNil(F + I, Char(')'));
                   if P = nil then
                     Break
                   else
@@ -1328,7 +1334,7 @@ begin
                     if {S[I + 1]} F[I] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScan(F + I + 2, Char('/'));
+                      P := StrScanNil(F + I + 2, Char('/'));
                       if P = nil then
                         Break
                       else
@@ -1340,7 +1346,7 @@ begin
                     end;
                   '"':
                     begin
-                      P := StrScan(F + I + 1, Char('"'));
+                      P := StrScanNil(F + I + 1, Char('"'));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1370,7 +1376,7 @@ begin
                 end;
               lgComment2:
                 begin //  /*
-                  P := StrScan(F + I, Char('/'));
+                  P := StrScanNil(F + I, Char('/'));
                   if P = nil then
                     Break
                   else
@@ -1382,7 +1388,7 @@ begin
                 end;
               lgString:
                 begin
-                  P := StrScan(F + I + 1, Char('"'));
+                  P := StrScanNil(F + I + 1, Char('"'));
                   if P <> nil then
                   begin
                     i1 := P - F;
@@ -1415,7 +1421,7 @@ begin
                     I := L1;
                   '"':
                     begin
-                      P := StrScan(F + I, Char('"'));
+                      P := StrScanNil(F + I, Char('"'));
                       if P = nil then
                       begin
                         FLong := lgString;
@@ -1427,7 +1433,7 @@ begin
                 end;
               lgString: // python and perl long string
                 begin
-                  P := StrScan(F + I - 1, Char('"'));
+                  P := StrScanNil(F + I - 1, Char('"'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
@@ -1443,7 +1449,7 @@ begin
                 case S[I] of
                   '<':
                     begin
-                      P := StrScan(F + I, Char('>'));
+                      P := StrScanNil(F + I, Char('>'));
                       if P = nil then
                       begin
                         // Multiline comments in HTML
@@ -1460,7 +1466,7 @@ begin
               // Multiline comments in HTML
               lgComment1:
                 begin
-                  P := StrScan(F + I - 1, Char('>'));
+                  P := StrScanNil(F + I - 1, Char('>'));
                   if P = nil then
                     Break
                   else
@@ -1470,7 +1476,7 @@ begin
                 end;
               lgTag: // html tag
                 begin
-                  P := StrScan(F + I - 1, Char('>'));
+                  P := StrScanNil(F + I - 1, Char('>'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
@@ -1488,7 +1494,7 @@ begin
                     if {S[I + 1]} F[I] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScan(F + I + 2, Char(')'));
+                      P := StrScanNil(F + I + 2, Char(')'));
                       if P = nil then
                         Break
                       else
@@ -1500,7 +1506,7 @@ begin
                     end;
                   '"':
                     begin
-                      P := StrScan(F + I + 1, Char('"'));
+                      P := StrScanNil(F + I + 1, Char('"'));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1514,7 +1520,7 @@ begin
                     end;
                   '''':
                     begin
-                      P := StrScan(F + I + 1, Char(''''));
+                      P := StrScanNil(F + I + 1, Char(''''));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1530,7 +1536,7 @@ begin
                     if {S[I + 1]} F[I] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScan(F + I + 2, Char('/'));
+                      P := StrScanNil(F + I + 2, Char('/'));
                       if P = nil then
                         Break
                       else
@@ -1543,7 +1549,7 @@ begin
                 end;
               lgComment2:
                 begin //  (*
-                  P := StrScan(F + I, Char(')'));
+                  P := StrScanNil(F + I, Char(')'));
                   if P = nil then
                     Break
                   else
@@ -1589,7 +1595,7 @@ begin
       case FLong of
         lgPreproc1, lgComment1:
           begin
-            P := StrScan(P, Char('}'));
+            P := StrScanNil(P, Char('}'));
             if P <> nil then
               Result := P - PChar(FLine);
           end;
@@ -1598,7 +1604,7 @@ begin
             F := P;
             while True do
             begin
-              F := StrScan(F, Char('*'));
+              F := StrScanNil(F, Char('*'));
               if F = nil then
                 Exit;
               if F[1] = ')' then
@@ -1617,7 +1623,7 @@ begin
               F := P;
               while True do
               begin
-                F := StrScan(F, Char('*'));
+                F := StrScanNil(F, Char('*'));
                 if F = nil then
                   Exit;
                 if F[1] = '/' then
@@ -1631,7 +1637,7 @@ begin
             begin
               F := P;
               repeat
-                P := StrScan(P, Char('"'));
+                P := StrScanNil(P, Char('"'));
                 if P <> nil then
                 begin
                   if (P = F) or (P[-1] <> '\') then
@@ -1661,7 +1667,7 @@ begin
       case FLong of
         lgString:
           begin
-            P := StrScan(P, Char('"'));
+            P := StrScanNil(P, Char('"'));
             if P <> nil then
               Result := P - PChar(FLine);
           end;
@@ -1671,7 +1677,7 @@ begin
         // HTML multiline comments
         lgComment1:
           begin
-            P := StrScan(P, Char('>'));
+            P := StrScanNil(P, Char('>'));
             if P <> nil then
               // check if the previous characters are
               // --
@@ -1680,7 +1686,7 @@ begin
           end;
         lgTag:
           begin
-            P := StrScan(P, Char('>'));
+            P := StrScanNil(P, Char('>'));
             if P <> nil then
               Result := P - PChar(FLine);
           end;

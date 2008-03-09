@@ -452,9 +452,9 @@ end;
 procedure TJvOpenDialog.UpdateCaptions;
 begin
   if Length(FDefBtnCaption) > 0 then
-    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, btnOk, Longint(PChar(DefBtnCaption)));
+    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, btnOk, LPARAM(PChar(DefBtnCaption)));
   if Length(FFilterLabelCaption) > 0 then
-    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, stc2, Longint(PChar(FilterLabelCaption)));
+    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, stc2, LPARAM(PChar(FilterLabelCaption)));
 end;
 
 procedure TJvOpenDialog.UpdateControlPos;

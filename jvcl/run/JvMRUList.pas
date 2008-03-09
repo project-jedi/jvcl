@@ -75,7 +75,7 @@ type
   TJvMruReturnData = record
     case Byte of
       0: (P: Pointer; );
-      1: (S: PChar; );
+      1: (S: PAnsiChar; );
       2: (Ws: PWideChar; );
   end;
   PJvMruReturnData = ^TJvMruReturnData;
@@ -109,6 +109,7 @@ type
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
     function GetItemDataAsPChar: PChar;
+    function GetItemDataAsPAnsiChar: PAnsiChar;
     function GetItemDataAsPWideChar: PWideChar;
   protected
     function InternalGetItem(Index: Integer; FireEvent: Boolean = True): Boolean;
@@ -123,7 +124,8 @@ type
     procedure Open;
     function ItemDataSize: Integer;
     property ItemDataAsPointer: Pointer read FItemData.P;
-    property ItemDataAsPChar: PChar read GetItemDataAsPChar;
+    property ItemDataAsPChar: PAnsiChar read GetItemDataAsPChar;
+    property ItemDataAsPAnsiChar: PAnsiChar read GetItemDataAsPAnsiChar;
     property ItemDataAsPWideChar: PWideChar read GetItemDataAsPWideChar;
     property ItemIndex: Integer read FItemIndex;
 
@@ -135,23 +137,26 @@ type
     property UseUnicode: Boolean read FUseUnicode write SetUseUnicode;
 
     // Arioch: the methods below are not public but published in original code
-    function AddString(Value: string): Boolean;
-    function AddPChar(Value: string): Boolean;
+    function AddString(const Value: string): Boolean;
+    function AddPChar(Value: PChar): Boolean;
+    function AddAnsiString(const Value: AnsiString): Boolean;
+    function AddAnsiPChar(Value: PAnsiChar): Boolean;
     function AddData(Value: Pointer; Size: Integer): Boolean;
     function GetItemsCount: Integer;
     function EnumItems: Boolean;
     function GetMostRecentItem: Boolean;
     function GetItem(Index: Integer = 0): Boolean;
-    function FindString(Value: string): Integer;
+    function FindString(const Value: string): Integer;
+    function FindAnsiString(const Value: AnsiString): Integer;
     function FindData(Value: Pointer; Size: Integer): Integer;
 
     function DeleteItem(Index: Integer = 0): Boolean;
     function DeleteKey: Boolean;
 
     // Arioch: the following are function for Unicode Enabling
-    function AddUnicodeString(Value: WideString): Boolean;
+    function AddUnicodeString(const Value: WideString): Boolean;
     function AddUnicodePChar(Value: PWideChar): Boolean;
-    function FindUnicodeString(Value: WideString): Integer;
+    function FindUnicodeString(const Value: WideString): Integer;
   published
     property DelayedWrite: Boolean read FDelayedWrite write FDelayedWrite default False;
     property WantUnicode: Boolean read FWantUnicode write SetWantUnicode default False;
@@ -194,7 +199,7 @@ const
   DllComCtlName = 'COMCTL32.DLL';
 
 type
-  MruCompareString = function(lpszString1, lpszString2: PChar): Integer;
+  MruCompareString = function(lpszString1, lpszString2: PAnsiChar): Integer;
   MruCompareData = function(lpData1, lpData2: Pointer; cbData: DWORD): Integer;
   MruCompareStringW = function(lpszString1, lpszString2: PWideChar): Integer;
 
@@ -206,7 +211,7 @@ type
     hKey: HKEY;
     case Boolean of
       False: (
-        lpszSubKey: PChar;
+        lpszSubKey: PAnsiChar;
         case Boolean of
           False:
             (lpfnCompareString: MruCompareString; );
@@ -227,7 +232,7 @@ type
   TCreateMruList = function(lpCreateInfo: PMruRec): THandle; stdcall;
   TFreeMruList = procedure(hList: THandle); stdcall;
 
-  TAddMruString = function(hList: THandle; lpszString: PChar): Integer; stdcall;
+  TAddMruString = function(hList: THandle; lpszString: PAnsiChar): Integer; stdcall;
   TAddMruStringW = function(hList: THandle; lpszString: PWideChar): Integer; stdcall;
   TAddMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD): Integer; stdcall;
 
@@ -235,7 +240,7 @@ type
 
   TEnumMruList = function(hList: THandle; nItemPos: Integer; lpBuffer: Pointer; nBufferSize: DWORD): Integer; stdcall;
 
-  TFindMruString = function(hList: THandle; lpszString: PChar; lpRegNum: PInteger): Integer; stdcall;
+  TFindMruString = function(hList: THandle; lpszString: PAnsiChar; lpRegNum: PInteger): Integer; stdcall;
   TFindMruStringW = function(hList: THandle; lpszString: PWideChar; lpRegNum: PInteger): Integer; stdcall;
   TFindMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD; lpRegNum: PInteger): Integer; stdcall;
 
@@ -290,12 +295,21 @@ begin
     Result := AddMruData(FList, Value, Size) <> -1;
 end;
 
-function TJvMruList.AddPChar(Value: string): Boolean;
+function TJvMruList.AddPChar(Value: PChar): Boolean;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := AddUnicodePChar(Value);
+  {$ELSE}
+  Result := AddAnsiPChar(Value);
+  {$ENDIF SUPPORTS_UNICODE}
+end;
+
+function TJvMruList.AddAnsiPChar(Value: PAnsiChar): Boolean;
 begin
   Result := False;
   if FList <> 0 then
   begin
-    Result := AddMruString(FList, PChar(Value)) <> -1;
+    Result := AddMruString(FList, Value) <> -1;
     // (p3) call EnumText here ?
     //  Arioch: Why? What for?
     //  Whether You want them - make a special separate set of events
@@ -316,12 +330,21 @@ begin
   end;
 end;
 
-function TJvMruList.AddString(Value: string): Boolean;
+function TJvMruList.AddString(const Value: string): Boolean;
 begin
-  Result := AddPChar(PChar(Value));
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := AddUnicodeString(Value);
+  {$ELSE}
+  Result := AddAnsiString(Value);
+  {$ENDIF SUPPORTS_UNICODE}
 end;
 
-function TJvMruList.AddUnicodeString(Value: WideString): Boolean;
+function TJvMruList.AddAnsiString(const Value: AnsiString): Boolean;
+begin
+  Result := AddAnsiPChar(PAnsiChar(Value));
+end;
+
+function TJvMruList.AddUnicodeString(const Value: WideString): Boolean;
 begin
   Result := AddUnicodePChar(PWideChar(Value));
 end;
@@ -358,14 +381,23 @@ begin
     Result := FindMruData(FList, Value, Size, nil);
 end;
 
-function TJvMruList.FindString(Value: string): Integer;
+function TJvMruList.FindString(const Value: string): Integer;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := FindUnicodeString(Value);
+  {$ELSE}
+  Result := FindAnsiString(Value);
+  {$ENDIF SUPPORTS_UNICODE}
+end;
+
+function TJvMruList.FindAnsiString(const Value: AnsiString): Integer;
 begin
   Result := -1;
   if FList <> 0 then
-    Result := FindMruString(FList, PChar(Value), nil);
+    Result := FindMruString(FList, PAnsiChar(Value), nil);
 end;
 
-function TJvMruList.FindUnicodeString(Value: WideString): Integer;
+function TJvMruList.FindUnicodeString(const Value: WideString): Integer;
 begin
   NeedUnicode;
   Result := -1;
@@ -502,7 +534,7 @@ begin
       if UseUnicode then
         B := AddUnicodePChar(ItemDataAsPWideChar)
       else
-        B := AddPChar(ItemDataAsPChar);
+        B := AddAnsiPChar(ItemDataAsPAnsiChar);
     end
     else
       B := AddData(ItemDataAsPointer, ItemDataSize);
@@ -645,7 +677,7 @@ begin
     // Arioch changed this
       FLst.lpszSubKeyW := PWideChar(FSubKey)
     else
-      FLst.lpszSubKey := PChar(GetSubKey);
+      FLst.lpszSubKey := PAnsiChar(GetSubKey);
 
     if UseUnicode then
     // Arioch changed this
@@ -722,6 +754,15 @@ begin
 end;
 
 function TJvMruList.GetItemDataAsPChar: PChar;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := FItemData.Ws;
+  {$ELSE}
+  Result := FItemData.S;
+  {$ENDIF SUPPORTS_UNICODE}
+end;
+
+function TJvMruList.GetItemDataAsPAnsiChar: PAnsiChar;
 begin
   Result := FItemData.S;
 end;

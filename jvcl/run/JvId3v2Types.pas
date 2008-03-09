@@ -89,12 +89,12 @@ const
 
 type
   TJvID3StringPair = record
-    SA: string;
+    SA: AnsiString;
     SW: WideString;
   end;
 
   TID3v2HeaderRec = packed record
-    Identifier: array [0..2] of Char;
+    Identifier: array [0..2] of AnsiChar;
     MajorVersion: Byte;
     RevisionNumber: Byte;
     Flags: Byte;
@@ -102,7 +102,7 @@ type
   end;
 
   TID3v2FrameRec = packed record
-    ID: array [0..3] of Char;
+    ID: array [0..3] of AnsiChar;
     // (rom) changed to Cardinal sizes are usually unsigned
     Size: Cardinal;
     Flag0: Byte;
@@ -237,7 +237,7 @@ type
 
 { Frame ID procedures }
 function ID3_StringToFrameID(const S: string): TJvID3FrameID;
-function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer = 4): string;
+function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer = 4): AnsiString;
 
 { Genre procedures }
 function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean = True): Integer;
@@ -275,16 +275,16 @@ type
     (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name, ltID3Genres);
 
   TJvID3FrameDef = packed record
-    ShortTextID: array [0..2] of Char;
-    LongTextID: array [0..3] of Char;
+    ShortTextID: array [0..2] of AnsiChar;
+    LongTextID: array [0..3] of AnsiChar;
   end;
 
   { Note: When you change type of S or L to 'string' it will increase the exe size
           with minimal 475x8 bytes }
 
   TShortToLongName = record
-    S: array [0..2] of Char;
-    L: PChar;
+    S: array [0..2] of AnsiChar;
+    L: PAnsiChar;
   end;
 
   TJvID3TermFinder = class
@@ -1207,7 +1207,7 @@ end;
 
 //=== Global procedures ======================================================
 
-function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer): string;
+function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer): AnsiString;
 begin
   case Size of
     3:

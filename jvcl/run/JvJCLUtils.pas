@@ -576,12 +576,12 @@ function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
   { ** Common string handling routines ** }
 
 {$IFDEF UNIX}
-function iconversion(InP: PChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
-  const ToCode, FromCode: string): Boolean;
-function iconvString(const S, ToCode, FromCode: string): string;
-function iconvWideString(const S: WideString; const ToCode, FromCode: string): WideString;
-function OemStrToAnsi(const S: string): string;
-function AnsiStrToOem(const S: string): string;
+function iconversion(InP: PAnsiChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
+  const ToCode, FromCode: AnsiString): Boolean;
+function iconvString(const S, ToCode, FromCode: AnsiString): string;
+function iconvWideString(const S: WideString; const ToCode, FromCode: AnsiString): WideString;
+function OemStrToAnsi(const S: AnsiString): AnsiString;
+function AnsiStrToOem(const S: AnsiString): AnsiString;
 {$ENDIF UNIX}
 
 function StrToOem(const AnsiStr: string): string;
@@ -734,7 +734,7 @@ function AnsiDequotedStr(const S: AnsiString; AQuote: AnsiChar): AnsiString;
 {end JvStrUtils}
 
 {$IFDEF UNIX}
-function GetTempFileName(const Prefix: string): string;
+function GetTempFileName(const Prefix: AnsiString): AnsiString;
 {$ENDIF UNIX}
 
 { begin JvFileUtil }
@@ -2250,7 +2250,11 @@ begin
     if Inst = 0 then
       RaiseLastOSError;
     LZCopy := GetProcAddress(Inst, 'LZCopy');
+    {$IFDEF SUPPORTS_UNICODE}
+    LZOpenFile := GetProcAddress(Inst, 'LZOpenFileW');
+    {$ELSE}
     LZOpenFile := GetProcAddress(Inst, 'LZOpenFileA');
+    {$ENDIF SUPPORTS_UNICODE}
     LZClose := GetProcAddress(Inst, 'LZClose');
     if not Assigned(LZCopy) or not Assigned(LZOpenFile) or not Assigned(LZClose) then
     begin
@@ -2343,14 +2347,14 @@ end;
 {$IFNDEF CLR}
 procedure FillString(var Buffer: string; Count: Integer; const Value: Char);
 begin
-  FillChar(Buffer[1], Count, Value);
+  FillChar(Buffer[1], Count * SizeOf(Char), Value);
 end;
 
 procedure FillString(var Buffer: string; StartIndex, Count: Integer; const Value: Char);
 begin
   if StartIndex <= 0 then
     StartIndex := 1;
-  FillChar(Buffer[StartIndex], Count, Value);
+  FillChar(Buffer[StartIndex], Count * SizeOf(Char), Value);
 end;
 
 procedure MoveString(const Source: string; var Dest: string; Count: Integer);
@@ -2441,6 +2445,7 @@ function IsSubString(const S: string; StartIndex: Integer; const SubStr: string)
 begin
   {$IFDEF CLR}
   Result := Copy(S, StartIndex, Length(SubStr)) = SubStr;
+  { TODO -oahuser : Use System.String.IndexOf for this }
   {$ELSE}
   if StartIndex < 1 then
     StartIndex := 1;
@@ -5512,15 +5517,15 @@ end;
 { begin JvStrUtils }
 {$IFDEF UNIX}
 
-function iconversion(InP: PChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
-  const ToCode, FromCode: string): Boolean;
+function iconversion(InP: PAnsiChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
+  const ToCode, FromCode: AnsiString): Boolean;
 var
   conv: iconv_t;
 begin
   Result := False;
   if (InBytes > 0) and (OutBytes > 0) and (InP <> nil) and (OutP <> nil) then
   begin
-    conv := iconv_open(PChar(ToCode), PChar(FromCode));
+    conv := iconv_open(PAnsiChar(ToCode), PAnsiChar(FromCode));
     if Integer(conv) <> -1 then
     begin
       if Integer(iconv(conv, InP, InBytes, OutP, OutBytes)) <> -1 then
@@ -5530,16 +5535,16 @@ begin
   end;
 end;
 
-function iconvString(const S, ToCode, FromCode: string): string;
+function iconvString(const S, ToCode, FromCode: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(S));
-  if not iconversion(PChar(S), Pointer(Result),
+  if not iconversion(PAnsiChar(S), Pointer(Result),
     Length(S), Length(Result),
     ToCode, FromCode) then
     Result := S;
 end;
 
-function iconvWideString(const S: WideString; const ToCode, FromCode: string): WideString;
+function iconvWideString(const S: WideString; const ToCode, FromCode: AnsiString): WideString;
 begin
   SetLength(Result, Length(S));
   if not iconversion(Pointer(S), Pointer(Result),
@@ -5548,12 +5553,12 @@ begin
     Result := S;
 end;
 
-function OemStrToAnsi(const S: string): string;
+function OemStrToAnsi(const S: AnsiString): AnsiString;
 begin
   Result := iconvString(S, 'WINDOWS-1252', 'CP850');
 end;
 
-function AnsiStrToOem(const S: string): string;
+function AnsiStrToOem(const S: AnsiString): AnsiString;
 begin
   Result := iconvString(S, 'CP850', 'WINDOWS-1250');
 end;
@@ -6681,9 +6686,9 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
-function GetTempFileName(const Prefix: string): string;
+function GetTempFileName(const Prefix: AnsiString): AnsiString;
 var
-  P: PChar;
+  P: PAnsiChar;
 begin
   P := tempnam(nil, Pointer(Prefix));
   Result := P;
@@ -7458,7 +7463,6 @@ begin
 end;
 {$ENDIF UNIX}
 {$ENDIF CLR}
-
 
 
 function FirstInstance(const ATitle: string): Boolean;
@@ -8345,7 +8349,7 @@ begin
     @pDllGetVersion := GetProcAddress(hDLL, PChar('DllGetVersion'));
     if Assigned(pDllGetVersion) then
     begin
-      FillChar(Dvi, SizeOf(Dvi), #0);
+      FillChar(Dvi, SizeOf(Dvi), 0);
       Dvi.cbSize := SizeOf(Dvi);
       hr := pDllGetVersion(Dvi);
       if hr = 0 then
@@ -8632,17 +8636,17 @@ end;
 {$IFNDEF CLR}
 procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
 begin
-  HugePtr := PChar(HugePtr) + Amount;
+  HugePtr := PAnsiChar(HugePtr) + Amount;
 end;
 
 procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
 begin
-  HugePtr := PChar(HugePtr) - Amount;
+  HugePtr := PAnsiChar(HugePtr) - Amount;
 end;
 
 function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
 begin
-  Result := PChar(HugePtr) + Amount;
+  Result := PAnsiChar(HugePtr) + Amount;
 end;
 
 procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
@@ -8652,10 +8656,10 @@ end;
 
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
 var
-  SrcPtr, DstPtr: PChar;
+  SrcPtr, DstPtr: PAnsiChar;
 begin
-  SrcPtr := PChar(Base) + Src * SizeOf(Pointer);
-  DstPtr := PChar(Base) + Dst * SizeOf(Pointer);
+  SrcPtr := PAnsiChar(Base) + Src * SizeOf(Pointer);
+  DstPtr := PAnsiChar(Base) + Dst * SizeOf(Pointer);
   Move(SrcPtr^, DstPtr^, Size * SizeOf(Pointer));
 end;
 {$ENDIF !CLR}

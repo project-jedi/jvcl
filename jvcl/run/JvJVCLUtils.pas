@@ -2475,7 +2475,6 @@ end;
 { Standard Windows MessageBox function }
 
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
-
 begin
   {$IFDEF CLR}
   Result := Application.MessageBox(Text, Caption, Flags);

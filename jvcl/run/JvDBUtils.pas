@@ -581,7 +581,7 @@ begin
           end;
         end;
       finally
-        if not Result {$IFNDEF CLR} and DataSet.BookmarkValid(PChar(Bookmark)) {$ENDIF} then
+        if not Result {$IFNDEF CLR} and DataSet.BookmarkValid(TBookmark(Bookmark)) {$ENDIF} then
           DataSet.Bookmark := Bookmark;
       end;
     finally

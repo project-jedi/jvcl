@@ -134,7 +134,7 @@ function IsSmallFonts: Boolean;
 function SystemColorDepth: Integer;
 function GetFileType(const FileName: string): TglFileType;
 function FindControlAtPt(Control: TWinControl; Pt: TPoint; MinClass: TClass): TControl;
-function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
+function StrPosExt(const Str1, Str2: PAnsiChar; Str2Len: DWORD): PAnsiChar; assembler;
 
 {$IFDEF glDEBUG}
 function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
@@ -2076,7 +2076,7 @@ end;
 { StrPosExt - Looks for position of one string inside another with given length
   Outperforms StrPos on long strings in 10-100 times (1-2 orders) }
 
-function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
+function StrPosExt(const Str1, Str2: PAnsiChar; Str2Len: DWORD): PAnsiChar; assembler;
 asm
         PUSH    EDI
         PUSH    ESI

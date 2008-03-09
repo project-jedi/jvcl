@@ -1843,7 +1843,7 @@ class function TJvHidDeviceController.HidVersion: string;
 var
   Dummy: DWORD;
   Size: UINT;
-  Buf: string;
+  Buf: array of Byte;
   Value: PChar;
 begin
   Result := '';
@@ -1851,8 +1851,8 @@ begin
   if Size > 0 then
   begin
     SetLength(Buf, Size);
-    GetFileVersionInfo(HidModuleName, INVALID_HANDLE_VALUE, Size, PChar(Buf));
-    if VerQueryValue(PChar(Buf), 'StringFileInfo\040904E4\FileVersion', Pointer(Value), Size) then
+    GetFileVersionInfo(HidModuleName, INVALID_HANDLE_VALUE, Size, @Buf[0]);
+    if VerQueryValue(@Buf[0], 'StringFileInfo\040904E4\FileVersion', Pointer(Value), Size) then
       Result := Value;
   end;
 end;
