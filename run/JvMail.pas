@@ -203,15 +203,8 @@ var
 begin
   I := Pos(#0, AFileName);
   if I = 0 then
-  begin
     I := LastDelimiter(PathDelim + DriveDelim, AFileName);
-    if I > 0 then
-      Result := @AFileName[I + 1]
-    else
-      Result := PChar(AFileName);
-  end
-  else
-    Result := @AFileName[I + 1];
+  Result := PChar(AFileName) + I;
 end;
 
 //=== { TJvMailRecipient } ===================================================
@@ -415,7 +408,7 @@ procedure TJvMail.CreateMapiMessage;
       SetLength(FAttachArray, Attachment.Count);
       for I := 0 to Attachment.Count - 1 do
       begin
-        if not FileExists(PChar(Attachment[I])) then
+        if not FileExists(Attachment[I]) then
           raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;

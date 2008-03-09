@@ -1025,7 +1025,6 @@ begin
         else
         begin
           // copy [Tail..Head) to Result..
-          //Move(Paths[PathIndex][Tail], Result[ResultIndex], Head - Tail);
           MoveChar(Paths[PathIndex], Tail - 1, Result, ResultIndex - 1, Head - Tail); // from JclBase.pas
           Inc(ResultIndex, Head - Tail);
           // ..and add a path delimiter to Result

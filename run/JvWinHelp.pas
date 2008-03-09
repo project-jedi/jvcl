@@ -99,7 +99,7 @@ end;
 
 function TJvWinHelp.ExecuteCommand(MacroCommand: string): Boolean;
 begin
-  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_COMMAND, Longint(PChar(MacroCommand)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_COMMAND, LPARAM(PChar(MacroCommand)));
 end;
 
 function TJvWinHelp.GetHelpFile: PChar;
@@ -169,12 +169,12 @@ end;
 
 function TJvWinHelp.ShowKeyword(Keyword: string): Boolean;
 begin
-  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_KEY, Longint(PChar(Keyword)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_KEY, LPARAM(PChar(Keyword)));
 end;
 
 function TJvWinHelp.ShowPartialKeyWord(Keyword: string): Boolean;
 begin
-  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_PARTIALKEY, Longint(PChar(Keyword)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_PARTIALKEY, LPARAM(PChar(Keyword)));
 end;
 
 {$IFDEF UNITVERSIONING}

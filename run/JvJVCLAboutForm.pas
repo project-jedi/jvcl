@@ -137,7 +137,7 @@ var
 begin
   lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
   {$IFDEF MSWINDOWS}
-  FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
+  FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), 0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
   JclWin32.GetVersionEx(VersionInfo);
   if VersionInfo.wServicePackMajor = 0 then
