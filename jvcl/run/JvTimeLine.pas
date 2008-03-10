@@ -2228,11 +2228,10 @@ end;
 procedure TJvCustomTimeLine.LoadFromStream(Stream: TStream);
 var
   I: Integer;
-  Ch: Char;
-  S: string;
+  Ch: AnsiChar;
+  S: AnsiString;
   Item: TJvTimeItem;
 begin
-
   I := 0;
   Item := Items.Add;
   while Stream.Position < Stream.Size do
@@ -2277,7 +2276,7 @@ end;
 procedure TJvCustomTimeLine.SaveToStream(Stream: TStream);
 var
   I: Integer;
-  S: string;
+  S: AnsiString;
 begin
   for I := 0 to Items.Count - 1 do
   begin

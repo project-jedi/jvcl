@@ -425,8 +425,8 @@ type
     procedure SplitterMouseDown(OnZone: TJvDockZone; MousePos: TPoint); virtual;
     procedure SplitterMouseUp; virtual;
     procedure ResetBounds(Force: Boolean); virtual;
-    procedure WriteControlName(Stream: TStream; const ControlName: string);
-    procedure ReadControlName(Stream: TStream; var ControlName: string);
+    procedure WriteControlName(Stream: TStream; const ControlName: AnsiString);
+    procedure ReadControlName(Stream: TStream; var ControlName: AnsiString);
     procedure ShowControl(Control: TControl);
     procedure HideControl(Control: TControl);
     procedure ShowAllControl;
@@ -3513,14 +3513,14 @@ begin
     DoSaveZone(Stream, Zone.NextSibling, Level);
 end;
 
-procedure TJvDockTree.WriteControlName(Stream: TStream; const ControlName: string);
+procedure TJvDockTree.WriteControlName(Stream: TStream; const ControlName: AnsiString);
 var
-  NameLen: Integer;
+  NameLen: Longint;
 begin
   NameLen := Length(ControlName);
   Stream.Write(NameLen, SizeOf(NameLen));
   if NameLen > 0 then
-    Stream.Write(Pointer(ControlName)^, NameLen);
+    Stream.Write(PAnsiChar(ControlName)^, NameLen);
 end;
 
 procedure TJvDockTree.DoLoadZone(Stream: TStream);
@@ -3578,10 +3578,9 @@ begin
   end;
 end;
 
-procedure TJvDockTree.ReadControlName(Stream: TStream;
-  var ControlName: string);
+procedure TJvDockTree.ReadControlName(Stream: TStream; var ControlName: AnsiString);
 var
-  Size: Integer;
+  Size: Longint;
 begin
   ControlName := '';
   Size := 0;
@@ -3589,7 +3588,7 @@ begin
   if Size > 0 then
   begin
     SetLength(ControlName, Size);
-    Stream.Read(Pointer(ControlName)^, Size);
+    Stream.Read(PAnsiChar(ControlName)^, Size);
   end;
 end;
 

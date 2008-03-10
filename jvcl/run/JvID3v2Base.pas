@@ -5445,8 +5445,8 @@ const
   CTagIDSize = 3;
   CMPEGTagSize = 52;
 var
-  TagID: array [0..CTagIDSize - 1] of Char;
-  MPEGTag: array [0..CMPEGTagSize - 1] of Char;
+  TagID: array [0..CTagIDSize - 1] of AnsiChar;
+  MPEGTag: array [0..CMPEGTagSize - 1] of AnsiChar;
 begin
   Reset;
 
@@ -8694,7 +8694,7 @@ end;
 
 function TJvID3Stream.WriteTerminatorA: Longint;
 var
-  Ch: Char;
+  Ch: AnsiChar;
 begin
   Ch := #0;
   Result := Write(Ch, 1);

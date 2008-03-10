@@ -85,7 +85,7 @@ begin
     MS.WriteComponent(InComponent);
     MS.Position := 0;
     SZ := MS.Size;
-    InStream.Write(SZ, 8);
+    InStream.Write(SZ, SizeOf(SZ));
     InStream.CopyFrom(MS, SZ);
   finally
     MS.Free;
@@ -98,7 +98,7 @@ var
   MS: TMemoryStream;
   SZ: Int64;
 begin
-  InStream.Read(SZ, 8);
+  InStream.Read(SZ, SizeOf(SZ));
   MS := TMemoryStream.Create;
   try
     MS.CopyFrom(InStream, SZ);
