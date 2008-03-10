@@ -2111,7 +2111,7 @@ begin
     FillChar(PP^.Memory^, ArraySize * PP^.ElementSize, 0);
     if ItemType = varEmpty then
       for I := 0 to ArraySize - 1 do
-        PP^.DT.Init(Variant(PVarData(PChar(PP^.Memory) + I * PP^.ElementSize)^));
+        PP^.DT.Init(Variant(PVarData(PAnsiChar(PP^.Memory) + I * PP^.ElementSize)^));
   end;
   Result := PP;
 end;
@@ -2131,7 +2131,7 @@ begin
   begin
     if JvInterpreterArrayRec^.ItemType = varEmpty then
       for I := 0 to ArraySize - 1 do
-        JvInterpreterVarFree(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) + I *
+        JvInterpreterVarFree(Variant(PVarData(PAnsiChar(JvInterpreterArrayRec^.Memory) + I *
           JvInterpreterArrayRec^.ElementSize)^));
     FreeMem(JvInterpreterArrayRec^.Memory, (JvInterpreterArrayRec^.Size) *
       JvInterpreterArrayRec^.ElementSize);
@@ -2179,7 +2179,7 @@ begin
         TStringList(JvInterpreterArrayRec^.Memory).Strings[Offset] := Value;
       end;
     varEmpty:
-      JvInterpreterVarAssignment(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) +
+      JvInterpreterVarAssignment(Variant(PVarData(PAnsiChar(JvInterpreterArrayRec^.Memory) +
         Offset * JvInterpreterArrayRec^.ElementSize)^), Value)
   else
     if JvInterpreterArrayRec^.ItemType = varObject then
@@ -2219,7 +2219,7 @@ begin
     varString:
       Result := TStringList(JvInterpreterArrayRec^.Memory).Strings[Offset];
     varEmpty:
-      JvInterpreterVarCopy(Result, Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) + Offset *
+      JvInterpreterVarCopy(Result, Variant(PVarData(PAnsiChar(JvInterpreterArrayRec^.Memory) + Offset *
         JvInterpreterArrayRec^.ElementSize)^))
   else
     if JvInterpreterArrayRec^.ItemType = varObject then
@@ -2247,7 +2247,7 @@ begin
   begin
     for I := ASize to OldSize - 1 do
       if ArrayRec^.ItemType = varEmpty then
-        JvInterpreterVarFree(Variant((PVarData(PChar(ArrayRec^.Memory) + I * ArrayRec^.ElementSize))^));
+        JvInterpreterVarFree(Variant((PVarData(PAnsiChar(ArrayRec^.Memory) + I * ArrayRec^.ElementSize))^));
     ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - (OldSize - ASize);
     ArrayRec^.Size := GetArraySize(1, ArrayRec^.BeginPos, ArrayRec^.EndPos);
     ReallocMem(ArrayRec^.Memory, ASize * ArrayRec^.ElementSize);
@@ -2256,11 +2256,11 @@ begin
   if OldSize < ASize then
   begin
     ReallocMem(ArrayRec^.Memory, ASize * ArrayRec^.ElementSize);
-    FillChar((PChar(ArrayRec^.Memory) + OldSize * ArrayRec^.ElementSize)^,
+    FillChar((PAnsiChar(ArrayRec^.Memory) + OldSize * ArrayRec^.ElementSize)^,
       (ASize - OldSize) * ArrayRec^.ElementSize, 0);
     for I := OldSize to ASize - 1 do
       if ArrayRec^.ItemType = varEmpty then
-        ArrayRec^.DT.Init(Variant(Pointer(PChar(ArrayRec^.Memory) + I * ArrayRec^.ElementSize)^));
+        ArrayRec^.DT.Init(Variant(Pointer(PAnsiChar(ArrayRec^.Memory) + I * ArrayRec^.ElementSize)^));
     ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + (ASize - OldSize);
     ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
   end;
@@ -2308,10 +2308,10 @@ begin
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - 1;
   ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
   if ArrayRec^.ItemType = varEmpty then
-    JvInterpreterVarFree(Variant(PVarData(PChar(ArrayRec^.Memory) +
+    JvInterpreterVarFree(Variant(PVarData(PAnsiChar(ArrayRec^.Memory) +
       (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^));
-  Move((PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) * ArrayRec^.ElementSize)^,
-    (PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^,
+  Move((PAnsiChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) * ArrayRec^.ElementSize)^,
+    (PAnsiChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^,
     (ArrayRec^.EndPos[0] - AElement + 1) * ArrayRec^.ElementSize);
   ReallocMem(ArrayRec^.Memory, ArrayRec^.Size * ArrayRec^.ElementSize);
 
@@ -2329,13 +2329,13 @@ begin
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + 1;
   ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
   ReallocMem(ArrayRec^.Memory, ArrayRec^.Size * ArrayRec^.ElementSize);
-  Move((PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^,
-    (PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) * ArrayRec^.ElementSize)^,
+  Move((PAnsiChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^,
+    (PAnsiChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) * ArrayRec^.ElementSize)^,
     (ArrayRec^.EndPos[0] - AElement) * ArrayRec^.ElementSize);
   if ArrayRec^.ItemType = varEmpty then
-    ArrayRec^.DT.Init(Variant(PVarData(PChar(ArrayRec^.Memory) +
+    ArrayRec^.DT.Init(Variant(PVarData(PAnsiChar(ArrayRec^.Memory) +
       (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^));
-  JvInterpreterVarAssignment(Variant(PVarData(PChar(ArrayRec^.Memory) +
+  JvInterpreterVarAssignment(Variant(PVarData(PAnsiChar(ArrayRec^.Memory) +
     (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^), Value);
 end;
 
@@ -2490,14 +2490,14 @@ begin
     SourceRecHolder := TJvInterpreterRecHolder(TVarData(Source).VPointer);
     for I := 0 to SourceRecHolder.JvInterpreterRecord.FieldCount - 1 do
       if SourceRecHolder.JvInterpreterRecord.Fields[I].Typ = varEmpty then
-        JvInterpreterVarAssignment(Variant(PVarData(PChar(DestRecHolder.Rec) +
+        JvInterpreterVarAssignment(Variant(PVarData(PAnsiChar(DestRecHolder.Rec) +
           DestRecHolder.JvInterpreterRecord.Fields[I].Offset)^),
-          Variant(PVarData(PChar(SourceRecHolder.Rec) +
+          Variant(PVarData(PAnsiChar(SourceRecHolder.Rec) +
           SourceRecHolder.JvInterpreterRecord.Fields[I].Offset)^))
       else
-        Move((PChar(SourceRecHolder.Rec) +
+        Move((PAnsiChar(SourceRecHolder.Rec) +
           SourceRecHolder.JvInterpreterRecord.Fields[I].Offset)^,
-          (PChar(DestRecHolder.Rec) +
+          (PAnsiChar(DestRecHolder.Rec) +
           DestRecHolder.JvInterpreterRecord.Fields[I].Offset)^,
           Typ2Size(SourceRecHolder.JvInterpreterRecord.Fields[I].Typ));
   end
@@ -2793,7 +2793,7 @@ begin
       for I := 0 to JvInterpreterRecord.FieldCount - 1 do
       begin
         if JvInterpreterRecord.Fields[I].Typ = varEmpty then
-          JvInterpreterVarFree(Variant(PVarData(PChar(Rec) + JvInterpreterRecord.Fields[I].Offset)^));
+          JvInterpreterVarFree(Variant(PVarData(PAnsiChar(Rec) + JvInterpreterRecord.Fields[I].Offset)^));
       end;
       FreeMem(Rec, JvInterpreterRecord.RecordSize);
     end;
@@ -3992,7 +3992,7 @@ var
   var
     I: Integer;
     JvInterpreterRecord: TJvInterpreterRecord;
-    Rec: PChar;
+    Rec: PAnsiChar;
     JvInterpreterRecMethod: TJvInterpreterRecMethod;
   begin
     Result := False;
@@ -4397,7 +4397,7 @@ var
     I: Integer;
     JvInterpreterRecord: TJvInterpreterRecord;
     JvInterpreterRecMethod: TJvInterpreterRecMethod;
-    Rec: PChar;
+    Rec: PAnsiChar;
   begin
     Result := False;
     JvInterpreterRecord := (Args.Obj as TJvInterpreterRecHolder).JvInterpreterRecord;
@@ -8223,7 +8223,7 @@ const
   EmptyStr: string = '';
 var
   I: Integer;
-  Rec: PChar;
+  Rec: PAnsiChar;
   // Res: Boolean;
   RecHolder: TJvInterpreterRecHolder;
 begin

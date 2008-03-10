@@ -78,7 +78,6 @@ type
   TFileTime = Integer;
 {$ENDIF UNIX}
 
-
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
 {$IFDEF CLR}
@@ -126,8 +125,8 @@ function EnumFonts(DC: HDC; lpszFace: IntPtr; fntenmprc: TFNFontEnumObjProc;
 function AnsiLastChar(const S: AnsiString): AnsiChar;
 {$ENDIF CLR}
 
-function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer; // ANSI-Stream
-function WriteStringToStream(Stream: TStream; const Buf: string; BufSize: Integer): Integer; // ANSI-Stream
+function ReadCharsFromStream(Stream: TStream; var Buf: array of AnsiChar; BufSize: Integer): Integer; // ANSI-Stream
+function WriteStringToStream(Stream: TStream; const Buf: AnsiString; BufSize: Integer): Integer; // ANSI-Stream
 
 const
   DefaultDateOrder = doDMY;
@@ -208,11 +207,11 @@ function ConcatLeftSep(const S1, S2, Separator: string): string; {$IFDEF SUPPORT
 { Next 4 function for russian chars transliterating.
   This functions are needed because Oem2Ansi and Ansi2Oem functions
   sometimes suck }
-procedure Dos2Win(var S: string);
-procedure Win2Dos(var S: string);
-function Dos2WinRes(const S: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
-function Win2DosRes(const S: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
-function Win2Koi(const S: string): string;
+procedure Dos2Win(var S: AnsiString);
+procedure Win2Dos(var S: AnsiString);
+function Dos2WinRes(const S: AnsiString): AnsiString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function Win2DosRes(const S: AnsiString): AnsiString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function Win2Koi(const S: AnsiString): AnsiString;
 
 { FillString fills the string Buffer with Count Chars }
 procedure FillString(var Buffer: string; Count: Integer; const Value: Char); overload;
@@ -247,7 +246,7 @@ function CurrencyToStr(const Cur: Currency): string;
 function HasChar(const Ch: Char; const S: string): Boolean;
 function HasCharW(const Ch: WideChar; const S: WideString): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function HasAnyChar(const Chars: string; const S: string): Boolean;
-function CharInSet(const Ch: Char; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function CharInSet(const Ch: AnsiChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function CountOfChar(const Ch: Char; const S: string): Integer;
 function DefStr(const S: string; Default: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -686,7 +685,7 @@ function IsWild(InputStr, Wilds: string; IgnoreCase: Boolean): Boolean;
   if corresponds. }
 function XorString(const Key, Src: ShortString): ShortString;
 function XorEncode(const Key, Source: string): string;
-function XorDecode(const Key, Source: string): string;
+function XorDecode(const Key, Source: AnsiString): AnsiString;
 
 { ** Command line routines ** }
 
@@ -1452,22 +1451,24 @@ begin
 end;
 {$ENDIF CLR}
 
-function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer;
+function ReadCharsFromStream(Stream: TStream; var Buf: array of AnsiChar; BufSize: Integer): Integer;
 {$IFDEF CLR}
+type
+  TDynAnsiCharArray = array of AnsiChar;
 var
   Bytes: TBytes;
+  I: Integer;
 {$ENDIF CLR}
 begin
   {$IFDEF CLR}
-  SetLength(Bytes, BufSize);
   Result := Stream.Read(Bytes, 0, BufSize);
-  System.Array.Copy(AnsiEncoding.GetChars(Bytes), 0, Buf, 0, BufSize);
+  Buf := TDynAnsiCharArray(Bytes);
   {$ELSE}
-  Result := Stream.Read(Buf, BufSize);
+  Result := Stream.Read(Buf[0], BufSize);
   {$ENDIF CLR}
 end;
 
-function WriteStringToStream(Stream: TStream; const Buf: string; BufSize: Integer): Integer;
+function WriteStringToStream(Stream: TStream; const Buf: AnsiString; BufSize: Integer): Integer;
 begin
   {$IFDEF CLR}
   Result := Stream.Write(BytesOf(Buf), BufSize);
@@ -2290,45 +2291,45 @@ end;
 {$ENDIF MSWINDOWS}
 {$ENDIF !CLR}
 
-procedure Dos2Win(var S: string);
+procedure Dos2Win(var S: AnsiString);
 var
   I: Integer;
 begin
   for I := 1 to Length(S) do
     case S[I] of
       #$80..#$AF:
-        S[I] := Char(Byte(S[I]) + (192 - $80));
+        S[I] := AnsiChar(Byte(S[I]) + (192 - $80));
       #$E0..#$EF:
-        S[I] := Char(Byte(S[I]) + (240 - $E0));
+        S[I] := AnsiChar(Byte(S[I]) + (240 - $E0));
     end;
 end;
 
-procedure Win2Dos(var S: string);
+procedure Win2Dos(var S: AnsiString);
 var
   I: Integer;
 begin
   for I := 1 to Length(S) do
     case S[I] of
       #$C0..#$EF:
-        S[I] := Char(Byte(S[I]) - (192 - $80));
+        S[I] := AnsiChar(Byte(S[I]) - (192 - $80));
       #$F0..#$FF:
-        S[I] := Char(Byte(S[I]) - (240 - $E0));
+        S[I] := AnsiChar(Byte(S[I]) - (240 - $E0));
     end;
 end;
 
-function Dos2WinRes(const S: string): string;
+function Dos2WinRes(const S: AnsiString): AnsiString;
 begin
   Result := S;
   Dos2Win(Result);
 end;
 
-function Win2DosRes(const S: string): string;
+function Win2DosRes(const S: AnsiString): AnsiString;
 begin
   Result := S;
   Win2Dos(Result);
 end;
 
-function Win2Koi(const S: string): string;
+function Win2Koi(const S: AnsiString): AnsiString;
 const
   W = 'àáâãäå¸æçèéêëìíîïðñ=óôõ÷öøùüûúýÝÿ+--+-+¨ÆÇ++--Ý-+ÏÐÑÒÓÔi×ÖØ+_Ý+ÝÞî';
   K = '--×Ç-+£Ö++--Ý-+ÏÐÒÓÔiÆ+Þ+ÝÝØ+î_+Ñáâ÷çäåÝöúéêëìíîïð=óôõæèÝãûýøùÿüàñ';
@@ -2779,7 +2780,7 @@ begin
   Result := Copy(FileName, 1, Length(FileName) - Length(ExtractFileExt(FileName))) + NewExt;
 end;
 
-function CharInSet(const Ch: Char; const SetOfChar: TSysCharSet): Boolean;
+function CharInSet(const Ch: AnsiChar; const SetOfChar: TSysCharSet): Boolean;
 begin
   Result := Ch in SetOfChar;
 end;
@@ -2789,7 +2790,7 @@ begin
   if Word(Ch) > 255 then
     Result := False
   else
-    Result := Char(Ch) in SetOfChar;
+    Result := AnsiChar(Ch) in SetOfChar;
 end;
 
 function IntPower(Base, Exponent: Integer): Integer;
@@ -6481,17 +6482,17 @@ begin
   end;
 end;
 
-function XorDecode(const Key, Source: string): string;
+function XorDecode(const Key, Source: AnsiString): AnsiString;
 var
   I: Integer;
-  C: Char;
+  C: AnsiChar;
 begin
   Result := '';
   for I := 0 to Length(Source) div 2 - 1 do
   begin
-    C := Chr(StrToIntDef('$' + Copy(Source, (I * 2) + 1, 2), Ord(' ')));
+    C := AnsiChar(StrToIntDef('$' + Copy(Source, (I * 2) + 1, 2), Ord(' ')));
     if Length(Key) > 0 then
-      C := Chr(Byte(Key[1 + (I mod Length(Key))]) xor Byte(C));
+      C := AnsiChar(Byte(Key[1 + (I mod Length(Key))]) xor Byte(C));
     Result := Result + C;
   end;
 end;

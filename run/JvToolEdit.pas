@@ -4635,7 +4635,7 @@ begin
         DragQueryFile(Msg.Drop, I, AFileName, 255);
         ReceptFileDir(AFileName.ToString());
         {$ELSE}
-        DragQueryFile(Msg.Drop, I, PChar(@AFileName), Pred(SizeOf(AFileName)));
+        DragQueryFile(Msg.Drop, I, PChar(@AFileName[0]), Pred(SizeOf(AFileName)));
         ReceptFileDir(StrPas(AFileName));
         {$ENDIF CLR}
         if not FMultipleDirs then
