@@ -2976,7 +2976,7 @@ begin
         else
           Details := ThemeServices.GetElementDetails(thHeaderItemHot);
         lCellRect.Right := lCellRect.Right + 1;
-        lCellRect.Bottom := lCellRect.Bottom + 1;
+        lCellRect.Bottom := lCellRect.Bottom + 2;
       end
       else if AllowTitleClick then
       begin
@@ -3000,7 +3000,7 @@ begin
       else
         Details := ThemeServices.GetElementDetails(thHeaderRoot);
       lCellRect.Right := lCellRect.Right + 1;
-      lCellRect.Bottom := lCellRect.Bottom + 1;
+      lCellRect.Bottom := lCellRect.Bottom + 2;
       ThemeServices.DrawElement(Canvas.Handle, Details, lCellRect);
       // draw the indicator
       if (Datalink.Active) and (ARow - TitleOffset = Datalink.ActiveRecord) then
