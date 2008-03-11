@@ -947,16 +947,20 @@ end;
 procedure TJvCustomPropertyListStore.Clear;
 var
   I: Integer;
+  obj : TObject;
 begin
-  if FreeObjects then
-    for I := 0 to Count - 1 do
-      if Assigned(Objects[I]) then
-      begin
-        Objects[I].Free;
-        Objects[I] := nil;
-      end;
   if Assigned(Items) then
+  begin
+    if FreeObjects then
+      for I := Count - 1 downto 0 do
+        if Assigned(Objects[I]) then
+        begin
+          obj := Objects[I];
+          Objects[I] := nil;
+          obj.Free;
+        end;
     Items.Clear;
+  end;
   inherited Clear;
 end;
 
