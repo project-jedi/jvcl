@@ -1115,8 +1115,9 @@ begin
   if FBooleanEditor then
   begin
     Result := (Field.DataType = ftBoolean);
-    if (not Result) and Assigned(FOnCheckIfBooleanField) and
-      (Field.DataType in [ftSmallint, ftInteger, ftLargeint, ftWord, ftString, ftWideString]) then
+    if not Result and Assigned(FOnCheckIfBooleanField) and
+      (Field.DataType in [ftSmallint, ftInteger, ftLargeint, ftWord, ftString, ftWideString,
+                          ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}]) then
     begin
       FStringForTrue := '1';
       FStringForFalse := '0';
@@ -1158,7 +1159,7 @@ begin
             Result := Ord(gpUnChecked)
           else
             Result := Ord(gpChecked);
-      ftSmallint, ftInteger, ftLargeint, ftWord:
+      ftSmallint, ftInteger, ftLargeint, ftWord, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
         if EditWithBoolBox(Field) and not Field.IsNull then
           if Field.AsInteger = 0 then
             Result := Ord(gpUnChecked)
@@ -3670,7 +3671,7 @@ begin
         case FBooleanFieldToEdit.DataType of
           ftBoolean:
             FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK);
-          ftString, ftWideString:
+          ftString, ftWideString, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
             begin
               if FieldValueChange = JvGridBool_CHECK then
                 FBooleanFieldToEdit.Value := FStringForTrue
@@ -3685,7 +3686,7 @@ begin
         case FBooleanFieldToEdit.DataType of
           ftBoolean:
             FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean;
-          ftString, ftWideString:
+          ftString, ftWideString, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
             begin
               if AnsiSameText(FBooleanFieldToEdit.AsString, FStringForTrue) then
                 FBooleanFieldToEdit.Value := FStringForFalse
