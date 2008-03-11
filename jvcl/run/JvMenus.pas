@@ -3246,11 +3246,14 @@ var
   RightToLeft: Boolean;
   I: Integer;
   ShowingItemsParent: TMenuItem;
+  LocalWRect: TRect;
 begin
   // Local value, just in case FItem is nil, which could theoretically happen
   // as DrawBorder is called from the replacement window procedure.
   RightToLeft := Menu.BiDiMode <> bdLeftToRight;
 
+  LocalWRect := WRect;
+  OffsetRect(LocalWRect, -LocalWRect.Left, -LocalWRect.Top);
   with ACanvas do
   begin
     Brush.Color := RGB(0, 0, 0);  // must set the color or the style might not be taken into account
@@ -3259,40 +3262,40 @@ begin
     Pen.Style := psSolid;
 
       // dark contour
-    Rectangle(WRect);
+    Rectangle(LocalWRect);
 
       // two white lines above bottom
     Pen.Color := clWhite;
-    MoveTo(WRect.Left + 1, WRect.Bottom - 2);
-    LineTo(WRect.Right - 1, WRect.Bottom - 2);
-    MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-    LineTo(WRect.Right - 1, WRect.Bottom - 3);
+    MoveTo(LocalWRect.Left + 1, LocalWRect.Bottom - 2);
+    LineTo(LocalWRect.Right - 1, LocalWRect.Bottom - 2);
+    MoveTo(LocalWRect.Left + 1, LocalWRect.Bottom - 3);
+    LineTo(LocalWRect.Right - 1, LocalWRect.Bottom - 3);
 
       // two white lines below top
-    MoveTo(WRect.Left + 1, WRect.Top + 1);
-    LineTo(WRect.Right - 1, WRect.Top + 1);
-    MoveTo(WRect.Left + 1, WRect.Top + 2);
-    LineTo(WRect.Right - 1, WRect.Top + 2);
+    MoveTo(LocalWRect.Left + 1, LocalWRect.Top + 1);
+    LineTo(LocalWRect.Right - 1, LocalWRect.Top + 1);
+    MoveTo(LocalWRect.Left + 1, LocalWRect.Top + 2);
+    LineTo(LocalWRect.Right - 1, LocalWRect.Top + 2);
 
       // three lines before right
     if RightToLeft then
       Pen.Color := ImageBackgroundColor
     else
       Pen.Color := clWhite;
-    MoveTo(WRect.Right - 2, WRect.Top + 3);
-    LineTo(WRect.Right - 2, WRect.Bottom - 3);
-    MoveTo(WRect.Right - 3, WRect.Top + 3);
-    LineTo(WRect.Right - 3, WRect.Bottom - 3);
+    MoveTo(LocalWRect.Right - 2, LocalWRect.Top + 3);
+    LineTo(LocalWRect.Right - 2, LocalWRect.Bottom - 3);
+    MoveTo(LocalWRect.Right - 3, LocalWRect.Top + 3);
+    LineTo(LocalWRect.Right - 3, LocalWRect.Bottom - 3);
 
       // two lines after left
     if RightToLeft then
       Pen.Color := clWhite
     else
       Pen.Color := ImageBackgroundColor;
-    MoveTo(WRect.Left + 1, WRect.Top + 3);
-    LineTo(WRect.Left + 1, WRect.Bottom - 3);
-    MoveTo(WRect.Left + 2, WRect.Top + 3);
-    LineTo(WRect.Left + 2, WRect.Bottom - 3);
+    MoveTo(LocalWRect.Left + 1, LocalWRect.Top + 3);
+    LineTo(LocalWRect.Left + 1, LocalWRect.Bottom - 3);
+    MoveTo(LocalWRect.Left + 2, LocalWRect.Top + 3);
+    LineTo(LocalWRect.Left + 2, LocalWRect.Bottom - 3);
 
 
       // Try to find which (sub)items are showing in order to paint the
@@ -3423,12 +3426,16 @@ procedure TJvXPMenuItemPainter.DrawItemBorderParts(Item: TMenuItem;
 var
   ItemInfo: MENUITEMINFO;
   ItemRect: TRect;
+  LocalWRect: TRect;
 begin
   ItemInfo.cbSize := sizeof(ItemInfo);
   ItemInfo.fMask := MIIM_STATE;
   if GetMenuItemInfo(Item.Parent.Handle, Item.MenuIndex, True, ItemInfo) then
   begin
     ItemRect := GetItemScreenRect(Item.Parent, Item.MenuIndex);
+    OffsetRect(ItemRect, -ItemRect.Left, -WRect.Top);
+    LocalWRect := WRect;
+    OffsetRect(LocalWRect, -LocalWRect.Left, -LocalWRect.Top);
     with Canvas do
     begin
       // If the item is selected (Highlighted), then the closing borders
@@ -3438,10 +3445,10 @@ begin
       begin
         Brush.Style := bsClear;
         Pen.Assign(SelectionFramePen);
-        MoveTo(WRect.Left + 2, ItemRect.Top + 0);
-        LineTo(WRect.Left + 2, ItemRect.Bottom - 1);
-        MoveTo(WRect.Right - 3, ItemRect.Top + 0);
-        LineTo(WRect.Right - 3, ItemRect.Bottom - 1);
+        MoveTo(LocalWRect.Left + 2, ItemRect.Top + 0);
+        LineTo(LocalWRect.Left + 2, ItemRect.Bottom - 1);
+        MoveTo(LocalWRect.Right - 3, ItemRect.Top + 0);
+        LineTo(LocalWRect.Right - 3, ItemRect.Bottom - 1);
 
         // change the pen for the next instructions to draw in
         // the correct color for a selected item.
@@ -3450,17 +3457,17 @@ begin
 
         if IsRightToLeft then
         begin
-          MoveTo(WRect.Right - 4, ItemRect.Top);
-          LineTo(WRect.Right - 4, ItemRect.Bottom - 1);
-          Pixels[WRect.Right - 4, ItemRect.Top] := SelectionFramePen.Color;
-          Pixels[WRect.Right - 4, ItemRect.Bottom - 2] := SelectionFramePen.Color;
+          MoveTo(LocalWRect.Right - 4, ItemRect.Top);
+          LineTo(LocalWRect.Right - 4, ItemRect.Bottom - 1);
+          Pixels[LocalWRect.Right - 4, ItemRect.Top] := SelectionFramePen.Color;
+          Pixels[LocalWRect.Right - 4, ItemRect.Bottom - 2] := SelectionFramePen.Color;
         end
         else
         begin
-          MoveTo(WRect.Left + 3, ItemRect.Top);
-          LineTo(WRect.Left + 3, ItemRect.Bottom - 1);
-          Pixels[WRect.Left + 3, ItemRect.Top] := SelectionFramePen.Color;
-          Pixels[WRect.Left + 3, ItemRect.Bottom - 2] := SelectionFramePen.Color;
+          MoveTo(LocalWRect.Left + 3, ItemRect.Top);
+          LineTo(LocalWRect.Left + 3, ItemRect.Bottom - 1);
+          Pixels[LocalWRect.Left + 3, ItemRect.Top] := SelectionFramePen.Color;
+          Pixels[LocalWRect.Left + 3, ItemRect.Bottom - 2] := SelectionFramePen.Color;
         end;
       end;
 
@@ -3475,13 +3482,13 @@ begin
 
         if IsRightToLeft then
         begin
-          MoveTo(WRect.Right - 4, ItemRect.Top);
-          LineTo(WRect.Right - 4, ItemRect.Bottom - 1);
+          MoveTo(LocalWRect.Right - 4, ItemRect.Top);
+          LineTo(LocalWRect.Right - 4, ItemRect.Bottom - 1);
         end
         else
         begin
-          MoveTo(WRect.Left + 3, ItemRect.Top+1);
-          LineTo(WRect.Left + 3, ItemRect.Bottom - 2);
+          MoveTo(LocalWRect.Left + 3, ItemRect.Top+1);
+          LineTo(LocalWRect.Left + 3, ItemRect.Bottom - 2);
         end;
       end;
     end;
@@ -3641,7 +3648,7 @@ var
   CanvasWindow: HWND;
   WRect: TRect;
   DefProc: Pointer;
-  DC: HDC;
+  TmpDC: HDC;
 begin
   FItem := Item;
 
@@ -3675,7 +3682,7 @@ begin
           WindowList.AddHook(CanvasWindow, DefProc, @XPMenuItemPainterWndProc);
         end;
 
-        // Note: we draw the border here. But using the "Canvas" property is
+(*        // Note: we draw the border here. But using the "Canvas" property is
         // not good enough as it does not take into account the borders of the
         // menu. So for version prior to Vista, be draw directly on the desktop
         // window canvas. However, with desktop composition under Vista, this
@@ -3684,23 +3691,30 @@ begin
         // has access to a Vista system with the Aero them turned on.
         if JclSysInfo.GetWindowsVersion = wvWinVista then
         begin
-          DC := CreateDC('DISPLAY', nil, nil, nil);
+          TmpDC := CreateDC('DISPLAY', nil, nil, nil);
           try
             if not Assigned(FBorderCanvas) then
               FBorderCanvas := TCanvas.Create;
 
-            FBorderCanvas.Handle := DC;
+            FBorderCanvas.Handle := TmpDC;
             DrawBorder(FBorderCanvas, WRect);
           finally
-            DeleteDC(DC);
+            DeleteDC(TmpDC);
           end;
         end
-        else
+        else           *)
         begin
           if not Assigned(FBorderCanvas) then
-            FBorderCanvas := TJvDesktopCanvas.Create;
+            FBorderCanvas := TCanvas.Create;
 
-          DrawBorder(FBorderCanvas, WRect);
+          TmpDC := GetWindowDC(CanvasWindow);
+          try
+            FBorderCanvas.Handle := TmpDC;
+            DrawBorder(FBorderCanvas, WRect);
+          finally
+            FBorderCanvas.Handle := 0;
+            ReleaseDC(CanvasWindow, TmpDC);
+          end;
         end;
       end;
     end;
