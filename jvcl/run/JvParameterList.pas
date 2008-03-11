@@ -1081,7 +1081,7 @@ begin
   if not Required or not Enabled then
     Result := True
   else
-    Result := not VarIsNull(AData);
+    Result := VarToStr(AData) <> '';
   if not Result then
     DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
 end;
