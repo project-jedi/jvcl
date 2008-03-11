@@ -588,6 +588,7 @@ var
   IDynControlReadOnly: IJvDynControlReadOnly;
   IDynControlPageControl: IJvDynControlPageControl;
   IDynControlBevelBorder: IJvDynControlBevelBorder;
+  IDynControlComboBox: IJvDynControlComboBox;
   IDynControlEdit: IJvDynControlEdit;
   LabelControl: TControl;
   IDynControlLabel: IJvDynControlLabel;
@@ -898,6 +899,9 @@ begin
 
     ShortCutComboBox := DynControlEngine.CreateComboBoxControl(AForm, ShortCutPanel, 'ShortCutComboBox', Items);
     Supports(ShortCutComboBox, IJvDynControlData, IShortCutComboBoxData);
+    if Supports(ShortCutComboBox, IJvDynControlComboBox, IDynControlComboBox) then
+      IDynControlComboBox.ControlSetNewEntriesAllowed(False);
+
     AlignControlTop(ShortCutComboBox);
   finally
     Items.Free;
@@ -1986,6 +1990,7 @@ var
   Items: TStringList;
   LabelControl: TControl;
   IDynControlLabel: IJvDynControlLabel;
+  IDynControlComboBox: IJvDynControlComboBox;
 begin
   ConnectAsPanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'ConnectAsPanel', '', alTop);
   AlignControlTop(ConnectAsPanel);
@@ -1998,6 +2003,8 @@ begin
     Items.Add('SYSOPER');
     ConnectAsComboBox := DynControlEngine.CreateComboBoxControl(AOwner, ConnectAsPanel, 'ConnectAsComboBox', Items);
     Supports(ConnectAsComboBox, IJvDynControlData, IConnectAsComboBoxData);
+    if Supports(ConnectAsComboBox, IJvDynControlComboBox, IDynControlComboBox) then
+      IDynControlComboBox.ControlSetNewEntriesAllowed(False);
     AlignControlTop(ConnectAsComboBox);
   finally
     Items.Free;

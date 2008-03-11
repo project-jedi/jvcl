@@ -392,6 +392,7 @@ var
   IDynControlLabel: IJvDynControlLabel;
   Items : TStringList;
   i: Integer;
+  IDynControlComboBox: IJvDynControlComboBox;
 begin
   inherited CreateAdditionalConnectDialogControls (AOwner, AParentControl);
   OracleHomePanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'OracleHomePanel', '', alTop);
@@ -403,6 +404,8 @@ begin
     for i := 0 to OracleHomeCount - 1 do
       Items.Add(OracleHomeNames[i]);
     OracleHomeEdit := DynControlEngine.CreateComboBoxControl(AOwner, OracleHomePanel, 'OracleHomeEdit', Items);
+    if Supports(OracleHomeEdit, IJvDynControlComboBox, IDynControlComboBox) then
+      IDynControlComboBox.ControlSetNewEntriesAllowed(False);
   finally
     Items.Free;
   end;
