@@ -92,8 +92,12 @@ begin
       caoCollapse : GetGridTableView(aActionControl).Datacontroller.Groups.FullCollapse;
       caoExpand : GetGridTableView(aActionControl).Datacontroller.Groups.FullExpand;
       caoOptimizeColumns : GetGridTableView(aActionControl).ApplyBestFit;
+    End
+  else
+    if Assigned(GetGridView(aActionControl)) then
+    Case aOperation of
       caoExport : ExportGrid(GetGrid(aActionControl));
-    End;
+    End
 end;
 
 procedure TJvControlActioncxGridEngine.ExportGrid(aGrid: TcxGrid);
