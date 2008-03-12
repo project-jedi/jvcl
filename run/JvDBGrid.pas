@@ -3394,7 +3394,7 @@ var
   NewBackgrnd: TColor;
   Highlight: Boolean;
   Bmp: TBitmap;
-  Field: TField;
+  Field, ReadOnlyTestField: TField;
   MemoText: string;
 begin
   Field := Column.Field;
@@ -3404,12 +3404,25 @@ begin
   NewBackgrnd := Canvas.Brush.Color;
   Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or Focused);
   GetCellProps(Field, Canvas.Font, NewBackgrnd, Highlight or ActiveRowSelected);
-  if not Highlight and (ReadOnlyCellColor <> clDefault) and (not Field.CanModify or not CanEditCell(Field)) then
+  if not Highlight and (ReadOnlyCellColor <> clDefault) and
+     (not Field.CanModify or not CanEditCell(Field)) then
   begin
     if (gdSelected in State) and (Focused xor MultiSelect) then
       Canvas.Brush.Color := NewBackgrnd
     else
+    begin
       Canvas.Brush.Color := ReadOnlyCellColor;
+
+      { Lookup fields do not have a FieldNo. In this case CanModify returns False } 
+      if Field.Lookup and (Field.LookupDataSet <> nil) and (Field.LookupResultField <> '')
+         and (Field.LookupKeyFields <> '') and (Field.KeyFields <> '') then
+      begin
+        I := 1;
+        ReadOnlyTestField := Field.DataSet.FieldByName(ExtractFieldName(Field.KeyFields, I));
+        if ReadOnlyTestField.CanModify and CanEditCell(ReadOnlyTestField) then
+          Canvas.Brush.Color := NewBackgrnd
+      end;
+    end;
   end
   else
     Canvas.Brush.Color := NewBackgrnd;
