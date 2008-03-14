@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -166,6 +166,7 @@ type
     FOnChange: TNotifyEvent;
     FFocusFromField: Boolean;
     FDataConnector: TJvIPAddressDataConnector;
+    
     procedure SetDataConnector(const Value: TJvIPAddressDataConnector);
     procedure ClearEditControls;
     procedure DestroyLocalFont;
@@ -190,7 +191,7 @@ type
     procedure FontChanged; override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure AdjustHeight;
-    procedure AdjustSize; override;
+    function GetControlExtents: TRect; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -1097,12 +1098,6 @@ begin
     end;}
 end;
 
-procedure TJvIPAddress.AdjustSize;
-begin
-  inherited AdjustSize;
-  RecreateWnd;
-end;
-
 procedure TJvIPAddress.ClearAddress;
 begin
   if HandleAllocated then
@@ -1339,6 +1334,25 @@ procedure TJvIPAddress.WMDestroy(var Msg: TWMNCDestroy);
 begin
   DestroyLocalFont;
   inherited;
+end;
+
+function TJvIPAddress.GetControlExtents: TRect;
+var
+  ClientRect: TRect;
+  Extents: TRect;
+begin
+  if ControlCount = 0 then
+  begin
+    // to avoid resizing to zero size when setting AutoSize to True
+    Result := GetClientRect;
+  end
+  else
+  begin
+    // If the control has children, then resize to the union of both possible rectangles
+    Extents := inherited GetControlExtents;
+    ClientRect := GetClientRect;
+    UnionRect(Result, Extents, ClientRect);
+  end;
 end;
 
 procedure TJvIPAddress.GetDlgCode(var Code: TDlgCodes);
