@@ -390,7 +390,10 @@ begin
         FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], Str2, Str);
       if Assigned(FOnKeyFoundEx) then
       begin
-        ParseAttributes(AttributesList, Str3);
+        if Str3 <> '' then
+          ParseAttributes(AttributesList, Str3)
+        else
+          ParseAttributes(AttributesList, Str2);
         FOnKeyFoundEx(Self, FKeys[PTagInfo(Items[Index]).Key], Str2, Str,
           PTagInfo(Items[Index])^, AttributesList);
       end;
