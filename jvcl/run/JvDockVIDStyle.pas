@@ -1045,6 +1045,11 @@ begin
                 else
                   Source.Control.ManualDock(TJvDockTabHostForm(Host).PageControl, nil, alClient);
               end;
+              if not JvGlobalDockIsLoading and
+                (TJvDockTabHostForm(Host).GetActiveDockForm <> nil) and
+                GetParentForm(Host).Visible and
+                TJvDockTabHostForm(Host).GetActiveDockForm.CanFocus then
+                   TJvDockTabHostForm(Host).GetActiveDockForm.SetFocus;
               Host.Visible := True;
             end;
           end;
@@ -1137,6 +1142,12 @@ begin
     {$ENDIF !COMPILER9_UP}
     if (Source.Control is TWinControl) and TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
+    if (ControlCount > 0) and Assigned(Controls[0]) and (Controls[0] is TJvDockTabHostForm) then 
+    begin
+      with TJvDockTabHostForm(Controls[0]) do
+        if (GetActiveDockForm <> nil) and GetActiveDockForm.CanFocus then
+          GetActiveDockForm.SetFocus;
+    end;
   end;
 end;
 
@@ -2595,6 +2606,12 @@ begin
     end;
   end;
   FPanel.SelectSheet := nil;
+  with ActivePage do
+    if not JvGlobalDockIsLoading and (ControlCount > 0) and Assigned(Controls[0]) then 
+    begin
+      if Visible and (Controls[0] <> nil) and (Controls[0] as TWinControl).CanFocus then
+          (Controls[0] as TWinControl).SetFocus;
+    end;
   ParentForm.Caption := ActivePage.Caption;
 end;
 
@@ -3270,18 +3287,21 @@ begin
   begin
     if Index <> Page.ActivePageIndex then
     begin
-      if Assigned(Page.ActivePage) and Page.ActivePage.CanFocus then
-      begin
-        AParentForm := GetParentForm(Page);
-        if Assigned(AParentForm) then
-          AParentForm.ActiveControl := Page.ActivePage;
-      end;
       Sheet := Page.ActiveVIDPage;
       Page.ActivePageIndex := Index;
       Sheet.SetSheetSort(Sheet.Caption);
       Page.ActiveVIDPage.SetSheetSort(Page.ActiveVIDPage.Caption);
       Page.Change;
       Invalidate;
+    end;
+    if Assigned(Page.ActivePage) and Page.ActivePage.CanFocus then
+    begin
+      AParentForm := GetParentForm(Page);
+      if Assigned(AParentForm) then 
+      begin
+        Page.SelectFirst;
+        AParentForm.SetFocus;
+      end;
     end;
 
     if Button = mbLeft then
