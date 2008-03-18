@@ -868,6 +868,16 @@ function GetTopOwner(aCmp: TComponent): TComponent;
 function GetTopForm(aCmp: TComponent): TCustomForm;
 function IsChildWindow(const AChild, AParent: THandle): Boolean;
 
+// This function generates a unique name for a component inside the list of all
+// owner components.
+// The name is generated in the login <OwnerName>_<AComponentName><Nr> or
+// <OwnerName>_<ACOmponent.ClassName><Nr> when the AComponentName parameter
+// is not defined. The number will be increased until the name is unique.
+function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
+    AComponentName: string = ''): string;
+
+
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -7982,6 +7992,79 @@ begin
     Result := (LParent = AParent) and (LParent <> NullHandle);
   end;
 end;
+
+function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
+    AComponentName: string = ''): string;
+
+var
+  I: Integer;
+
+  function ValidateName(const AName: String): String;
+  var
+    I: Integer;
+    Ignore : Boolean;
+    c : Char;
+  begin
+    Ignore := true;
+    Result := '';
+    for i := 1 to Length(AName)  do
+    begin
+      c:= AName[i];
+      if c IN ['A'..'Z', 'a'..'z', '_', '0'..'9'] then
+      begin
+        ignore := False;
+        Result := Result+c;
+      end
+      else
+      begin
+        if not ignore then
+          Result := Result+'_';
+        ignore := true;
+      end;
+    end;
+  end;
+
+  function GenerateName(const AName: string; ANumber: Integer): string;
+  begin
+    Result := ValidateName (AName);
+    Result := AOwner.Name + '_' + Result;
+    if ANumber > 0 then
+      Result := Result + IntToStr(ANumber);
+  end;
+
+  function IsUnique(const AName: string): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := True;
+    for I := 0 to AOwner.ComponentCount - 1 do
+      if (AOwner.Components[I] <> AComponent) and
+        (CompareText(AOwner.Components[I].Name, AName) = 0) then
+      begin
+        Result := False;
+        Break;
+      end;
+
+  end;
+
+begin
+  if not Assigned(AOwner) then
+    Result := ''
+  else
+    for I := 0 to MaxInt do
+    begin
+      if (AComponentName <> '') then
+        Result := GenerateName(AComponentName, I)
+      else
+        if Assigned(AComponent) then
+          Result := GenerateName(AComponent.ClassName, I)
+        else
+          Result := GenerateName('', I);
+      if IsUnique(Result) then
+        Break;
+    end;
+end;
+
 
 initialization
   {$IFDEF UNITVERSIONING}
