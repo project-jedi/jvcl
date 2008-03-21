@@ -1790,6 +1790,7 @@ resourcestring
   RSPropertyStoreEditorListButtonUp = '&Up';
   RSPropertyStoreEditorListButtonDown = 'Do&wn';
   RSPropertyStoreEditorDialogCaptionEditProperties = 'Edit Properties';
+  RSPropertyStoreEditorDeleteEntry = 'Delete Entry?';
 
 //=== JvPrvwRender.pas =======================================================
 resourcestring

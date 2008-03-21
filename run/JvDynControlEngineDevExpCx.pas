@@ -3929,6 +3929,8 @@ var
   NewPropertyName: string;
 begin
   NewPropertyName := ControlGetCurrentPropertyName;
+  if NewPropertyName = ''  then
+    Exit;
   if Assigned(fControlOnPropertyChange) then
     fControlOnPropertyChange(OldPropertyName, NewPropertyName);
   OldPropertyName := NewPropertyName;

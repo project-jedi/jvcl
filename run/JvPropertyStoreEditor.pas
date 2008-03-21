@@ -498,11 +498,12 @@ var
   EditObject: TPersistent;
 begin
   if Assigned(InspectedObjectListEditorHandler) then
-  begin
-    EditObject := TPersistent(PropertyStoreTreeView.ControlSelected.Data);
-    InspectedObjectListEditorHandler.ListEditIntf_DeleteObject(ListBoxControlItemIndex.ControlItemIndex);
-    FillTreeView (EditObject);
-  end;
+    if (MessageDlg(RSPropertyStoreEditorDeleteEntry, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
+    begin
+      EditObject := TPersistent(PropertyStoreTreeView.ControlSelected.Data);
+      InspectedObjectListEditorHandler.ListEditIntf_DeleteObject(ListBoxControlItemIndex.ControlItemIndex);
+      FillTreeView (EditObject);
+    end;
 end;
 
 procedure TJvPropertyStoreEditorForm.ListDownButtonClick(Sender: TObject);
