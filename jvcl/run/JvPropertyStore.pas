@@ -1171,8 +1171,9 @@ begin
   if (Index >= 0) and (Index < Count) then
   begin
     if Assigned(Objects[Index]) then
-      Objects[Index].Free;
-    Items.Delete(Index);
+      Objects[Index].Free // The item will be deleted automaticly
+    else
+      Items.Delete(Index);
   end;
 
 end;
