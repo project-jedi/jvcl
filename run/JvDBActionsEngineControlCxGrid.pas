@@ -191,6 +191,8 @@ begin
   if Assigned(GridTableView(AActionComponent)) then
     Result := GridTableView(AActionComponent).OptionsData.Inserting and inherited
       CanInsert(AActionComponent)
+  else if Assigned(GridView(AActionComponent)) then
+    Result := False // GridView must be a ChartView,  and then Insert makes no sense
   else
     Result := inherited CanInsert(AActionComponent);
 end;
@@ -201,6 +203,8 @@ begin
   if Assigned(GridTableView(AActionComponent)) then
     Result := GridTableView(AActionComponent).OptionsData.Editing and inherited
       CanUpdate(AActionComponent)
+  else if Assigned(GridView(AActionComponent)) then
+    Result := False // GridView must be a ChartView,  and then Update makes no sense
   else
     Result := inherited CanUpdate(AActionComponent);
 end;
@@ -211,6 +215,8 @@ begin
   if Assigned(GridTableView(AActionComponent)) then
     Result := GridTableView(AActionComponent).OptionsData.Deleting and inherited
       CanDelete(AActionComponent)
+  else if Assigned(GridView(AActionComponent)) then
+    Result := False // GridView must be a ChartView,  and then Delete makes no sense
   else
     Result := inherited CanDelete(AActionComponent);
 end;

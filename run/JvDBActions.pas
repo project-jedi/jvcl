@@ -1165,7 +1165,8 @@ begin
     end
   else
     for I := 0 to DataSet.FieldCount - 1 do
-      if Dataset.Fields[i].FieldName <> 'ROWID' then
+      if (Dataset.Fields[i].FieldName <> 'ROWID') and
+         not Dataset.Fields[i].ReadOnly then
         DataSet.Fields[I].AsVariant := Values[I];
   if Assigned(FAfterCopyRecord) then
     FAfterCopyRecord(DataSet);
