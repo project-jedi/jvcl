@@ -110,6 +110,7 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -466,8 +467,6 @@ begin
   FMarqueeDelay := 25;
 end;
 
-
-
 procedure TJvProgressBar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -485,6 +484,12 @@ begin
     SendMessage(Handle, PBM_SETMARQUEE, Ord(not MarqueePaused), LPARAM(MarqueeDelay));
   if State <> pbsNormal then
     SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
+end;
+
+procedure TJvProgressBar.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  // Reduce flicker
+  DefaultHandler(Message);
 end;
 
 procedure TJvProgressBar.SetFillColor(const Value: TColor);
@@ -552,8 +557,6 @@ begin
       SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
   end;
 end;
-
-
 
 //=== { TJvBaseGradientProgressBar } =========================================
 
