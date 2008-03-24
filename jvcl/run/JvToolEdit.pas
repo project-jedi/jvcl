@@ -572,6 +572,8 @@ type
     FDialog: TOpenDialog;
     FDialogKind: TFileDialogKind;
     FAddQuotes: Boolean;
+    FPhysicalFileName: string;
+    FDisplayLocalizedName: Boolean;
     procedure CreateEditDialog;
     function GetFileName: TFileName;
     function GetDefaultExt: TFileExt;
@@ -595,6 +597,7 @@ type
     procedure SetDialogTitle(const Value: string);
     function IsCustomTitle: Boolean;
     function IsCustomFilter: Boolean;
+    procedure SetDisplayLocalizedName(const Value: Boolean);
   protected
     procedure PopupDropDown(DisableEdit: Boolean); override;
     procedure ReceptFileDir(const AFileName: string); override;
@@ -602,6 +605,10 @@ type
     function GetLongName: string; override;
     function GetShortName: string; override;
     function GetLocalizedName: string; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure WndProc(var Msg: TMessage); override;
+    procedure Change; override;
   public
     constructor Create(AOwner: TComponent); override;
     class function DefaultImageIndex: TImageIndex; override;
@@ -612,8 +619,8 @@ type
     property Align;
     property AutoSize;
     property AddQuotes: Boolean read FAddQuotes write FAddQuotes default True;
-    property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind
-      default dkOpen;
+    property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind default dkOpen;
+    property DisplayLocalizedName: Boolean read FDisplayLocalizedName write SetDisplayLocalizedName default False;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem];
@@ -704,8 +711,11 @@ type
     FInitialDir: string;
     FDialogText: string;
     FDialogKind: TDirDialogKind;
+    FPhysicalDirectory: string;
+    FDisplayLocalizedName: Boolean;
     procedure SetDirectory(const Value: string);
     function GetDirectory: string;
+    procedure SetDisplayLocalizedName(const Value: Boolean);
   protected
     FMultipleDirs: Boolean;
     procedure PopupDropDown(DisableEdit: Boolean); override;
@@ -713,6 +723,10 @@ type
     function GetLongName: string; override;
     function GetShortName: string; override;
     function GetLocalizedName: string; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure WndProc(var Msg: TMessage); override;
+    procedure Change; override;
   public
     constructor Create(AOwner: TComponent); override;
     class function DefaultImageIndex: TImageIndex; override;
@@ -723,6 +737,7 @@ type
     property AutoSize;
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
+    property DisplayLocalizedName: Boolean read FDisplayLocalizedName write SetDisplayLocalizedName default False;
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
     {$IFDEF COMPILER6_UP}
@@ -4170,39 +4185,84 @@ begin
   end;
 end;
 
+procedure TJvDirectoryEdit.DoEnter;
+begin
+  Text := FPhysicalDirectory;
+  inherited DoEnter;
+end;
+
+procedure TJvDirectoryEdit.DoExit;
+var
+  Txt: string;
+begin
+  inherited DoExit;
+  if DisplayLocalizedName then
+  begin
+    Txt := Text;
+    Text := LocalizedName;
+    FPhysicalDirectory := Txt; // by using "Text:=" the WM_SETTEXT handler changes the PhysicalDirectory
+  end;
+end;
+
+procedure TJvDirectoryEdit.WndProc(var Msg: TMessage);
+begin
+  inherited WndProc(Msg);
+  if Msg.Msg = WM_SETTEXT then
+    FPhysicalDirectory := Text;
+end;
+
+procedure TJvDirectoryEdit.Change;
+begin
+  inherited Change;
+  FPhysicalDirectory := Text;
+end;
+
 procedure TJvDirectoryEdit.SetDirectory(const Value: string);
 begin
-  Text := Value;
+  if not FDisplayLocalizedName or Focused then
+    Text := Value
+  else
+  begin
+    FPhysicalDirectory := Value; // is used in GetLocalizedName
+    Text := LocalizedName;
+  end;
+  FPhysicalDirectory := Value; // must be set after "Text:="
 end;
 
 function TJvDirectoryEdit.GetDirectory: string;
-var
-  Txt, Temp: string;
-  Pos: Integer;
 begin
-  Txt := Text;
-  if not MultipleDirs then
-    Result := PathGetPhysicalPath(Txt)
+  if not FDisplayLocalizedName or Focused then
+    Result := Text
   else
+    Result := FPhysicalDirectory;
+end;
+
+procedure TJvDirectoryEdit.SetDisplayLocalizedName(const Value: Boolean);
+var
+  Txt: string;
+begin
+  if Value <> FDisplayLocalizedName then
   begin
-    Result := '';
-    Pos := 1;
-    while Pos <= Length(Txt) do
+    if FDisplayLocalizedName and not Focused then
+      Text := FPhysicalDirectory;
+
+    FDisplayLocalizedName := Value;
+
+    if FDisplayLocalizedName and not Focused then
     begin
-      Temp := PathGetPhysicalPath(ExtractSubstr(Txt, Pos, [PathSep]));
-      if (Result <> '') and (Temp <> '') then
-        Result := Result + PathSep;
-      Result := Result + Temp;
+      Txt := Text;
+      Text := LocalizedName;
+      FPhysicalDirectory := Txt; // must be set after "Text:="
     end;
   end;
 end;
 
 procedure TJvDirectoryEdit.PopupDropDown(DisableEdit: Boolean);
 var
-  Temp: string;
+  Temp, Txt: string;
   Action: Boolean;
 begin
-  Temp := PathGetPhysicalPath(Text);
+  Temp := Directory;
   Action := True;
   DoBeforeDialog(Temp, Action);
   if not Action then
@@ -4210,12 +4270,11 @@ begin
   if Temp = '' then
   begin
     if InitialDir <> '' then
-      Temp := PathGetPhysicalPath(InitialDir)
+      Temp := InitialDir
     else
       Temp := PathDelim;
-  end
-  else
-    Temp := PathGetPhysicalPath(Temp);
+  end;
+
   if not DirectoryExists(Temp) then
     Temp := PathDelim;
   DisableSysErrors;
@@ -4236,9 +4295,11 @@ begin
   begin
     SelText := '';
     if (Text = '') or not MultipleDirs then
-      Text := Temp
+      Txt := Temp
     else
-      Text := Text + PathSep + Temp;
+      Txt := Directory + PathSep + Temp;
+    Text := Txt;
+    FPhysicalDirectory := Txt; // Must be set after "Text:="
     if (Temp <> '') and DirectoryExists(Temp) then
       InitialDir := Temp;
   end;
@@ -4757,15 +4818,9 @@ begin
   Result := FDialog.Title;
 end;
 
-
 function TJvFilenameEdit.GetFileEditStyle: TFileEditStyle;
 begin
   Result := FDialog.FileEditStyle;
-end;
-
-function TJvFilenameEdit.GetFileName: TFileName;
-begin
-  Result := PathGetPhysicalPath(ClipFilename(inherited Text, AddQuotes));
 end;
 
 function TJvFilenameEdit.GetFilter: string;
@@ -4826,6 +4881,89 @@ begin
   {$ENDIF CLR}
 end;
 
+procedure TJvFilenameEdit.DoEnter;
+begin
+  Text := FPhysicalFileName;
+  inherited DoEnter;
+end;
+
+procedure TJvFilenameEdit.DoExit;
+var
+  Txt: string;
+begin
+  inherited DoExit;
+  if DisplayLocalizedName then
+  begin
+    Txt := Text;
+    Text := LocalizedName;
+    FPhysicalFileName := Txt; // by using "Text:=" the WM_SETTEXT handler changes the PhysicalFileName
+  end;
+end;
+
+procedure TJvFilenameEdit.WndProc(var Msg: TMessage);
+begin
+  inherited WndProc(Msg);
+  if Msg.Msg = WM_SETTEXT then
+    FPhysicalFileName := Text;
+end;
+
+procedure TJvFilenameEdit.Change;
+begin
+  inherited Change;
+  FPhysicalFileName := Text;
+end;
+
+procedure TJvFilenameEdit.SetDisplayLocalizedName(const Value: Boolean);
+var
+  Txt: string;
+begin
+  if Value <> FDisplayLocalizedName then
+  begin
+    if FDisplayLocalizedName and not Focused then
+      Text := FPhysicalFileName;
+
+    FDisplayLocalizedName := Value;
+
+    if FDisplayLocalizedName and not Focused then
+    begin
+      Txt := Text;
+      Text := LocalizedName;
+      FPhysicalFileName := Txt; // must be set after "Text:="
+    end;
+  end;
+end;
+
+procedure TJvFilenameEdit.SetFileName(const Value: TFileName);
+var
+  Txt: string;
+begin
+  if (Value = '') or ValidFileName(ClipFilename(Value, AddQuotes)) then
+  begin
+    if AddQuotes then
+      Txt := ExtFilename(Value)
+    else
+      Txt := Value;
+
+    if not FDisplayLocalizedName or Focused then
+      Text := Txt
+    else
+      Text := PathGetLocalizedPath(Txt);
+    FPhysicalFileName := Txt; // must be set after "Text:="
+
+    ClearFileList;
+  end
+  else
+    raise EComboEditError.CreateResFmt({$IFNDEF CLR}@{$ENDIF}SInvalidFilename, [Value]);
+end;
+
+function TJvFilenameEdit.GetFileName: TFileName;
+begin
+  if not FDisplayLocalizedName or Focused then
+    Result := ClipFilename(Text, AddQuotes)
+  else
+    Result := ClipFilename(FPhysicalFileName, AddQuotes);
+end;
+
 procedure TJvFilenameEdit.PopupDropDown(DisableEdit: Boolean);
 var
   Temp: string;
@@ -4838,7 +4976,6 @@ begin
     Exit;
   if ValidFileName(Temp) then
   try
-    Temp := PathGetPhysicalPath(Temp);
     if DirectoryExists(ExtractFilePath(Temp)) then
       SetInitialDir(ExtractFilePath(Temp));
     if (ExtractFileName(Temp) = '') or
@@ -4901,28 +5038,9 @@ begin
   FDialog.Title := Value;
 end;
 
-
 procedure TJvFilenameEdit.SetFileEditStyle(Value: TFileEditStyle);
 begin
   FDialog.FileEditStyle := Value;
-end;
-
-procedure TJvFilenameEdit.SetFileName(const Value: TFileName);
-begin
-  if (Value = '') or ValidFileName(ClipFilename(Value, AddQuotes)) then
-  begin
-    if AddQuotes then
-      inherited Text := ExtFilename(Value)
-    else
-      inherited Text := Value;
-    ClearFileList;
-  end
-  else
-    {$IFDEF CLR}
-    raise EComboEditError.CreateFmt(SInvalidFilename, [Value]);
-    {$ELSE}
-    raise EComboEditError.CreateResFmt(@SInvalidFilename, [Value]);
-    {$ENDIF CLR}
 end;
 
 procedure TJvFilenameEdit.SetFilter(const Value: string);
