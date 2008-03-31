@@ -950,11 +950,16 @@ procedure TJvThread.Synchronize(Method: TThreadMethod);
 var
   Thread: TJvBaseThread;
 begin
- Thread := GetCurrentThread;
- if Assigned(Thread) then
-   Thread.Synchronize(Method)
- else
-   Method;
+  DisableDialogShowDelay;
+  try
+     Thread := GetCurrentThread;
+     if Assigned(Thread) then
+       Thread.Synchronize(Method)
+     else
+       Method;
+  finally
+    EnableDialogShowDelay;
+  end;
 end;
 
 function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
