@@ -1033,18 +1033,7 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.ExecuteThreadSynchronize(Method: TThreadMethod);
 begin
-
-  if ExecuteThreadIsActive then
-  begin
-    ExecuteThread.DisableDialogShowDelay;
-    try
-      ExecuteThread.Synchronize(Method);
-    finally
-      ExecuteThread.EnableDialogShowDelay;
-    end;
-  end
-  else
-    Method;
+  ExecuteThread.Synchronize(Method);
 end;
 
 function TJvBaseDatasetThreadHandler.GetCurrentAction: TJvThreadedDatasetAction;
