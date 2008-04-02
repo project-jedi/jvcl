@@ -488,6 +488,8 @@ begin
     3:
       Caption := DialogOptions.Caption + ' \ ';
   end;
+  SetFormData;
+  SetFormHeightWidth;
 end;
 
 function TJvThreadSimpleDialogForm.GetDialogOptions: TJvThreadSimpleDialogOptions;
@@ -674,6 +676,8 @@ begin
   inherited UpdateFormContents;
   if Supports(FTimeText, IJvDynControl, ITmpControl) then
     ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
+  SetFormData;
+  SetFormHeightWidth;
 end;
 
 function TJvThreadAnimateDialogForm.GetDialogOptions: TJvThreadAnimateDialogOptions;
