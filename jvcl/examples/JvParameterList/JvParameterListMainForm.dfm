@@ -2150,7 +2150,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
     StorageOptions.WhiteSpaceReplacement = '_'
     StorageOptions.AutoEncodeValue = False
     StorageOptions.AutoEncodeEntity = False
-    StorageOptions.AutoIndent = True
     StorageOptions.InvalidCharReplacement = '_'
     FileName = 'JvParameterListDemo.xml'
     RootNodeName = 'Configuration'
