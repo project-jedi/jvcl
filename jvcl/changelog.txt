@@ -1,5 +1,9 @@
 Changelog for JVCL 3.X
 ======================
+2008-04-03
+- Changed the TJvCustomThreadDialog.OnPressCancel Event to procedure(CurrentThread : TJvThread) of object;
+  The new event gives more option to change the behaviour of the cancel button.
+  THE RESULT IS A SMALL INCOMPATIBILITY.
 2008-01-08
 - Added TJvAppStorage.StorageOptionUseOldItemNameFormat Property
   This changes the format of list item names. The old format is <Item><Nr>. The new format is <Item>[<Nr>]

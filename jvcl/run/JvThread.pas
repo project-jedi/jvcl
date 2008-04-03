@@ -49,6 +49,7 @@ type
   TJvThread = class;
 
   TJvCustomThreadDialogFormEvent = procedure(DialogForm: TJvCustomThreadDialogForm) of object;
+  TJvCustomThreadDialogCancelEvent = procedure(CurrentThread : TJvThread) of object;
 
   TJvCustomThreadDialogOptions = class(TPersistent)
   private
@@ -85,7 +86,7 @@ type
     FInternalTimerInterval: Integer;
     FOnClose: TCloseEvent;
     FOnCloseQuery: TCloseQueryEvent;
-    FOnPressCancel: TNotifyEvent;
+    FOnPressCancel: TJvCustomThreadDialogCancelEvent;
     FOnShow: TNotifyEvent;
     FParentHandle: HWND;
     procedure SetConnectedDataComponent(Value: TComponent);
@@ -100,7 +101,8 @@ type
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
     property FormIsShown: Boolean read FFormIsShown default False;
-    property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
+    property OnPressCancel: TJvCustomThreadDialogCancelEvent read FOnPressCancel
+        write FOnPressCancel;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     constructor CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
@@ -125,7 +127,7 @@ type
   TJvCustomThreadDialog = class(TJvComponent)
   private
     FDialogOptions: TJvCustomThreadDialogOptions;
-    FOnPressCancel: TNotifyEvent;
+    FOnPressCancel: TJvCustomThreadDialogCancelEvent;
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; virtual; abstract;
   public
@@ -134,7 +136,8 @@ type
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; virtual; abstract;
   published
     property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write FDialogOptions;
-    property OnPressCancel: TNotifyEvent read FOnPressCancel write FOnPressCancel;
+    property OnPressCancel: TJvCustomThreadDialogCancelEvent read FOnPressCancel
+        write FOnPressCancel;
   end;
 
   TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
@@ -407,9 +410,10 @@ end;
 procedure TJvCustomThreadDialogForm.DefaultCancelBtnClick(Sender: TObject);
 begin
   if Assigned(FOnPressCancel) then
-    FOnPressCancel(Sender);
-  if Assigned(FConnectedThread) then
-    FConnectedThread.CancelExecute;
+    FOnPressCancel(FConnectedThread)
+  else
+    if Assigned(FConnectedThread) then
+      FConnectedThread.CancelExecute;
   ModalResult := mrNone;
 end;
 
