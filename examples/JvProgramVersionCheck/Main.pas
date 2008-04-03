@@ -64,5 +64,5 @@ begin
 end;
 
 begin
-  RgisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
+  RegisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
 end.

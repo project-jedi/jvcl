@@ -1,6 +1,11 @@
 program Project1;
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   Forms,
   Main in 'Main.pas' {Form1};
 

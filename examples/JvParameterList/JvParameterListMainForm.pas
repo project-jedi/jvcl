@@ -46,7 +46,7 @@ uses
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
-  JvExExtCtrls, JvAppXMLStorage, JvCipher, JvComponentBase;
+  JvExExtCtrls, JvAppXMLStorage, JvCipher, JvComponentBase, JvExtComponent;
 
 type
   TJvParameterListDemoMainFrm = class(TForm)
