@@ -371,10 +371,10 @@ type
     constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce;
         virtual;
     destructor Destroy; override;
-    procedure AfterOpen;
-    procedure AfterRefresh;
-    procedure BeforeOpen;
-    procedure BeforeRefresh;
+    procedure AfterOpen; virtual;
+    procedure AfterRefresh; virtual;
+    procedure BeforeOpen; virtual;
+    procedure BeforeRefresh; virtual;
     procedure CapitalizeDatasetLabels;
     function CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
     procedure InternalLast; virtual;
