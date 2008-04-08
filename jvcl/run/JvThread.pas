@@ -1078,13 +1078,13 @@ end;
 
 procedure TJvThread.CloseThreadDialogForm;
 begin
-  if Assigned(FThreadDialogForm) then
+  if Assigned(ThreadDialogForm) then
   begin
     if ThreadDialog.DialogOptions.ShowModal then
       ThreadDialogForm.ModalResult := mrOk
     else
       ThreadDialogForm.Close;
-    while ThreadDialogForm.Visible do
+    while Assigned(ThreadDialogForm) AND ThreadDialogForm.Visible do
       Application.HandleMessage;
   end;
 end;
