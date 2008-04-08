@@ -130,7 +130,6 @@ type
     FEditModeActive: Boolean;
     FManualEnabled: Boolean;
     procedure SetManualEnabled(const Value: Boolean);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
@@ -441,12 +440,9 @@ type
 
 type
   TJvDatabaseRefreshRecordAction = class(TJvDatabaseBaseActiveAction)
-  private
-  protected
   public
     procedure ExecuteTarget(Target: TObject); override;
     procedure UpdateTarget(Target: TObject); override;
-  published
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -866,12 +862,11 @@ end;
 procedure TJvDatabasePriorBlockAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  with DatabaseControlEngine do
   try
-    DisableControls(DataComponent);
-    MoveBy(DataComponent, -BlockSize);
+    DatabaseControlEngine.DisableControls(DataComponent);
+    DatabaseControlEngine.MoveBy(DataComponent, -BlockSize);
   finally
-    EnableControls(DataComponent);
+    DatabaseControlEngine.EnableControls(DataComponent);
   end;
 end;
 
@@ -892,12 +887,11 @@ end;
 procedure TJvDatabaseNextBlockAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  with DatabaseControlEngine do
   try
-    DisableControls(DataComponent);
-    MoveBy(DataComponent, BlockSize);
+    DatabaseControlEngine.DisableControls(DataComponent);
+    DatabaseControlEngine.MoveBy(DataComponent, BlockSize);
   finally
-    EnableControls(DataComponent);
+    DatabaseControlEngine.EnableControls(DataComponent);
   end;
 end;
 
@@ -920,32 +914,32 @@ procedure TJvDatabaseRefreshAction.Refresh;
 var
   MyBookmark: TBookmark;
 begin
-  with DatabaseControlEngine.DataSet(DataComponent) do
+  if Assigned(Dataset) then
   begin
     MyBookmark := nil;
     if RefreshLastPosition then
-      MyBookmark := GetBookmark;
+      MyBookmark := Dataset.GetBookmark;
 
     try
       if RefreshAsOpenClose then
       begin
-        Close;
-        Open;
+        Dataset.Close;
+        Dataset.Open;
       end
       else
-        Refresh;
+        Dataset.Refresh;
 
       if RefreshLastPosition then
-        if Active then
+        if Dataset.Active then
           if Assigned(MyBookmark) then
-            if BookmarkValid(MyBookmark) then
+            if Dataset.BookmarkValid(MyBookmark) then
             try
-              GotoBookmark(MyBookmark);
+              Dataset.GotoBookmark(MyBookmark);
             except
             end;
     finally
       if RefreshLastPosition then
-        FreeBookmark(MyBookmark);
+        Dataset.FreeBookmark(MyBookmark);
     end;
   end;
 end;
@@ -1017,41 +1011,31 @@ begin
   ParameterList := TJvParameterList.Create(Self);
   try
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
-    with TJvEditParameter(Parameter) do
-    begin
-      SearchName := cCurrentPosition;
-      ReadOnly := True;
-      Caption := RsDBPosCurrentPosition;
-      AsString := IntToStr(EngineRecNo + 1) + ' / ' + IntToStr(EngineRecordCount);
-      Width := 150;
-      LabelWidth := 80;
-      Enabled := False;
-    end;
+    Parameter.SearchName := cCurrentPosition;
+    Parameter.ReadOnly := True;
+    Parameter.Caption := RsDBPosCurrentPosition;
+    Parameter.AsString := IntToStr(EngineRecNo + 1) + ' / ' + IntToStr(EngineRecordCount);
+    Parameter.Width := 150;
+    TJvEditParameter(Parameter).LabelWidth := 80;
+    Parameter.Enabled := False;
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
-    with TJvEditParameter(Parameter) do
-    begin
-      Caption := RsDBPosNewPosition;
-      SearchName := cNewPosition;
-      // EditMask := '999999999;0;_';
-      Width := 150;
-      LabelWidth := 80;
-    end;
+    Parameter.Caption := RsDBPosNewPosition;
+    Parameter.SearchName := cNewPosition;
+    Parameter.Width := 150;
+    TJvEditParameter(Parameter).LabelWidth := 80;
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
-    with TJvRadioGroupParameter(Parameter) do
-    begin
-      Caption := RsDBPosMovementType;
-      SearchName := cKind;
-      Width := 305;
-      Height := 54;
-      Columns := 2;
-      ItemList.Add(RsDBPosAbsolute);
-      ItemList.Add(RsDBPosForward);
-      ItemList.Add(RsDBPosBackward);
-      ItemList.Add(RsDBPosPercental);
-      ItemIndex := 0;
-    end;
+    Parameter.Caption := RsDBPosMovementType;
+    Parameter.SearchName := cKind;
+    Parameter.Width := 305;
+    Parameter.Height := 54;
+    TJvRadioGroupParameter(Parameter).Columns := 2;
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsDBPosAbsolute);
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsDBPosForward);
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsDBPosBackward);
+    TJvRadioGroupParameter(Parameter).ItemList.Add(RsDBPosPercental);
+    TJvRadioGroupParameter(Parameter).ItemIndex := 0;
     ParameterList.AddParameter(Parameter);
     ParameterList.ArrangeSettings.WrapControls := True;
     ParameterList.ArrangeSettings.MaxWidth := 350;
@@ -1566,52 +1550,42 @@ begin
     JvParameterList.Messages.Caption := SModifyAllCaption;
     JvParameterList.Messages.OkButton := SModifyAllOkButton;
     Parameter := TJvBaseParameter(TJvComboBoxParameter.Create(JvParameterList));
-    with TJvComboBoxParameter(Parameter) do
+    TJvComboBoxParameter(Parameter).LabelArrangeMode := lamAbove;
+    Parameter.SearchName := 'ModifyField';
+    Parameter.Caption := SModifyAllModifyField;
+    Parameter.Width := 330;
+    for I := 0 to EngineFieldCount - 1 do
     begin
-      LabelArrangeMode := lamAbove;
-      SearchName := 'ModifyField';
-      Caption := SModifyAllModifyField;
-      Width := 330;
-      for I := 0 to EngineFieldCount - 1 do
-      begin
-        Field := DatabaseControlEngine.FieldById(DataComponent, I);
-        if Assigned(Field) then
-          if not DatabaseControlEngine.IsFieldReadOnly(DataComponent,Field.FieldName) and
-            DatabaseControlEngine.IsFieldVisible(DataComponent,Field.FieldName) then
-            ItemList.Add(Field.FieldName);
-        if Assigned(DatabaseControlEngine.SelectedField(DataComponent)) then
-          ItemIndex := ItemList.IndexOf(DatabaseControlEngine.SelectedField(DataComponent).FieldName);
-        if (ItemIndex < 0) or (ItemIndex >= ItemList.Count) then
-          ItemIndex := 0;
-      end;
+      Field := DatabaseControlEngine.FieldById(DataComponent, I);
+      if Assigned(Field) then
+        if not DatabaseControlEngine.IsFieldReadOnly(DataComponent,Field.FieldName) and
+          DatabaseControlEngine.IsFieldVisible(DataComponent,Field.FieldName) then
+          TJvComboBoxParameter(Parameter).ItemList.Add(Field.FieldName);
+      if Assigned(DatabaseControlEngine.SelectedField(DataComponent)) then
+        TJvComboBoxParameter(Parameter).ItemIndex :=
+           TJvComboBoxParameter(Parameter).ItemList.IndexOf(DatabaseControlEngine.SelectedField(DataComponent).FieldName);
+      if (TJvComboBoxParameter(Parameter).ItemIndex < 0) or
+         (TJvComboBoxParameter(Parameter).ItemIndex >= TJvComboBoxParameter(Parameter).ItemList.Count) then
+        TJvComboBoxParameter(Parameter).ItemIndex := 0;
     end;
     JvParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(JvParameterList);
-    with TJvCheckBoxParameter(Parameter) do
-    begin
-      SearchName := 'ClearFieldValues';
-      Caption := SModifyAllClearFieldValues;
-      Width := 150;
-    end;
+    Parameter.SearchName := 'ClearFieldValues';
+    Parameter.Caption := SModifyAllClearFieldValues;
+    Parameter.Width := 150;
     JvParameterList.AddParameter(Parameter);
     Parameter := TJvEditParameter.Create(JvParameterList);
-    with TJvEditParameter(Parameter) do
-    begin
-      SearchName := 'ChangeTo';
-      Caption := SModifyAllChangeTo;
-      Width := 330;
-      LabelArrangeMode := lamAbove;
-      DisableReasons.AddReason('ClearFieldValues', True);
-    end;
+    Parameter.SearchName := 'ChangeTo';
+    Parameter.Caption := SModifyAllChangeTo;
+    Parameter.Width := 330;
+    TJvEditParameter(Parameter).LabelArrangeMode := lamAbove;
+    Parameter.DisableReasons.AddReason('ClearFieldValues', True);
     JvParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(JvParameterList);
-    with TJvCheckBoxParameter(Parameter) do
-    begin
-      SearchName := 'OnlyIfNull';
-      Caption := SModifyAllOnlyIfNull;
-      Width := 150;
-      DisableReasons.AddReason('ClearFieldValues', True);
-    end;
+    Parameter.SearchName := 'OnlyIfNull';
+    Parameter.Caption := SModifyAllOnlyIfNull;
+    Parameter.Width := 150;
+    Parameter.DisableReasons.AddReason('ClearFieldValues', True);
     JvParameterList.AddParameter(Parameter);
     JvParameterList.MaxWidth := 360;
     if JvParameterList.ShowParameterDialog then
@@ -1687,17 +1661,13 @@ begin
   ParameterList := TJvParameterList.Create(Self);
   try
     Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
-    with TJvMemoParameter(Parameter) do
-    begin
-      SearchName := 'SQLStatement';
-      ScrollBars := ssBoth;
-      TJvMemoParameter(Parameter).WordWrap := Self.WordWrap;
-      ReadOnly := True;
-      //Caption := '&SQL Statement';
-      AsString := DatasetEngine.GetSQL(DataSet);
-      Width := 500;
-      Height := 350;
-    end;
+    Parameter.SearchName := 'SQLStatement';
+    TJvMemoParameter(Parameter).ScrollBars := ssBoth;
+    TJvMemoParameter(Parameter).WordWrap := Self.WordWrap;
+    Parameter.ReadOnly := True;
+    Parameter.AsString := DatasetEngine.GetSQL(DataSet);
+    Parameter.Width := 500;
+    Parameter.Height := 350;
     ParameterList.AddParameter(Parameter);
     ParameterList.ArrangeSettings.WrapControls := True;
     ParameterList.ArrangeSettings.MaxWidth := 650;
