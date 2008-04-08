@@ -64,8 +64,22 @@ type
   end;
 
   TJvOdacDatasetThreadHandler = class(TJvBaseDatasetThreadHandler)
+  private
+    FRefreshKeyFields: string;
+    FRefreshKeyValues: Variant;
   protected
     function CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions; override;
+    property RefreshKeyFields: string read FRefreshKeyFields write
+        FRefreshKeyFields;
+    property RefreshKeyValues: Variant read FRefreshKeyValues write
+        FRefreshKeyValues;
+  public
+    constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce;
+        override;
+    procedure AfterRefresh; override;
+    procedure BeforeRefresh; override;
+    procedure RestoreRefreshKeyFields;
+    procedure SaveRefreshKeyFields;
   End;
 
   TJvOdacSmartQuery = class(TSmartQuery, IJvThreadedDatasetInterface)
@@ -263,6 +277,8 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+uses Variants, MemData;
 
 //=== { TJvOdacSmartQuery } ==================================================
 
@@ -518,11 +534,86 @@ begin
     Result := False;
 end;
 
+constructor TJvOdacDatasetThreadHandler.Create(AOwner: TComponent; ADataset:
+    TDataSet);
+begin
+  inherited Create(AOwner, ADataset);
+end;
+
+procedure TJvOdacDatasetThreadHandler.AfterRefresh;
+begin
+  inherited AfterRefresh;
+  if EnhancedOptions.RefreshLastPosition then
+    RestoreRefreshKeyFields;
+end;
+
+procedure TJvOdacDatasetThreadHandler.BeforeRefresh;
+begin
+  if EnhancedOptions.RefreshLastPosition then
+    SaveRefreshKeyFields;
+  inherited BeforeRefresh;
+end;
+
 //=== { TJvOdacDatasetThreadHandler } ========================================
 
 function TJvOdacDatasetThreadHandler.CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions;
 begin
   Result := TJvOdacThreadedDatasetEnhancedOptions.Create;
+end;
+
+procedure TJvOdacDatasetThreadHandler.RestoreRefreshKeyFields;
+begin
+  if Not (Dataset.Active and (Dataset is TOraDataset) and
+    (TOraDataset(Dataset).KeyFields <> '') and (RefreshKeyFields <> '')) then
+    Exit;
+  TOraDataset(Dataset).LocateEx(RefreshKeyFields, RefreshKeyValues, [lxNearest])
+end;
+
+procedure TJvOdacDatasetThreadHandler.SaveRefreshKeyFields;
+var KeyFields : String;
+  Fields:TStringList;
+  Key : string;
+  p: Integer;
+  Field: TField;
+  Count : Integer;
+  i: Integer;
+begin
+  RefreshKeyFields := '';
+  Count := 0;
+  if Not (Dataset.Active and (Dataset is TOraDataset) and (TOraDataset(Dataset).KeyFields <> '')) then
+    Exit;
+  Fields := tStringList.create;
+  try
+    KeyFields := trim(TOraDataset(Dataset).KeyFields);
+    while KeyFields <> '' do
+    begin
+      p := Pos(';', KeyFields);
+      if p > 0 then
+      begin
+        key := trim(Copy (KeyFields, 1, p-1));
+        KeyFields := trim(Copy(KeyFields, p+1, Length(KeyFields)-p));
+      end
+      else
+      begin
+        key := KeyFields;
+        KeyFields := '';
+      end;
+      if (Key <> '') and Assigned(Dataset.FindField(Key)) then
+        Fields.Add(Key);
+    end;
+    FRefreshKeyValues := VarArrayCreate([0,Fields.Count-1], varVariant  );
+    for i := 0 to Fields.Count - 1 do
+    begin
+      Field := Dataset.FindField(Fields[i]);
+      if Assigned (Field) then
+      begin
+        RefreshKeyFields := RefreshKeyFields+Key+';';
+        FRefreshKeyValues[i] := Field.AsVariant;
+      end;
+    end;
+  finally
+    Fields.Free;
+  end;
 end;
 
 //=== { TJvOdacThreadedDatasetAllowedContinueRecordFetchOptions } ============
