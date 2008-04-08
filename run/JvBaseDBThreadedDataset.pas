@@ -1149,7 +1149,6 @@ begin
     IntCurrentOpenDuration := Now - IntCurrentOperationStart;
     IntCurrentOperationStart := Now;
     DatasetFetchAllRecords := FIntDatasetFetchAllRecords;
-//    IntCurrentFetchDuration := 0;
     if IntCurrentAction <> tdaCancel then
     begin
       IntCurrentAction := tdaFetch;
@@ -1176,10 +1175,6 @@ begin
         Dataset.First;
   finally
     ExecuteThreadSynchronize(Dataset.EnableControls);
-//    if IntCurrentOperation = tdoOpen then
-//      ExecuteThreadSynchronize(IntSynchAfterOpen)
-//    else if IntCurrentOperation = tdoRefresh then
-//      ExecuteThreadSynchronize(IntSynchAfterRefresh);
     IntCurrentAction := tdaNothing;
   end;
 end;
@@ -1280,9 +1275,12 @@ begin
   if EnhancedOptions.CapitalizeLabelOptions.AutoExecuteAfterOpen then
     CapitalizeDatasetLabels;
   IThreadedDatasetInterface.DoInheritedAfterOpen;
-  // Added because in the afteropen event the filtered could be activated, and it should be deactivated for the dialog
-  FIntDatasetWasFiltered := Dataset.Filtered or FIntDatasetWasFiltered;
-  Dataset.Filtered := False;
+  if ExecuteThreadIsActive then
+  begin
+    // Added because in the afteropen event the filtered could be activated, and it should be deactivated for the dialog
+    FIntDatasetWasFiltered := Dataset.Filtered or FIntDatasetWasFiltered;
+    Dataset.Filtered := False;
+  end;
 end;
 
 procedure TJvBaseDatasetThreadHandler.IntSynchAfterRefresh;

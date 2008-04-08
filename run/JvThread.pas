@@ -49,7 +49,7 @@ type
   TJvThread = class;
 
   TJvCustomThreadDialogFormEvent = procedure(DialogForm: TJvCustomThreadDialogForm) of object;
-  TJvCustomThreadDialogCancelEvent = procedure(CurrentThread : TJvThread) of object;
+  TJvThreadCancelEvent = procedure(CurrentThread : TJvThread) of object;
 
   TJvCustomThreadDialogOptions = class(TPersistent)
   private
@@ -86,7 +86,7 @@ type
     FInternalTimerInterval: Integer;
     FOnClose: TCloseEvent;
     FOnCloseQuery: TCloseQueryEvent;
-    FOnPressCancel: TJvCustomThreadDialogCancelEvent;
+    FOnPressCancel: TJvThreadCancelEvent;
     FOnShow: TNotifyEvent;
     FParentHandle: HWND;
     procedure SetConnectedDataComponent(Value: TComponent);
@@ -101,7 +101,7 @@ type
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
     property FormIsShown: Boolean read FFormIsShown default False;
-    property OnPressCancel: TJvCustomThreadDialogCancelEvent read FOnPressCancel
+    property OnPressCancel: TJvThreadCancelEvent read FOnPressCancel
         write FOnPressCancel;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -127,7 +127,7 @@ type
   TJvCustomThreadDialog = class(TJvComponent)
   private
     FDialogOptions: TJvCustomThreadDialogOptions;
-    FOnPressCancel: TJvCustomThreadDialogCancelEvent;
+    FOnPressCancel: TJvThreadCancelEvent;
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; virtual; abstract;
   public
@@ -136,7 +136,7 @@ type
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; virtual; abstract;
   published
     property DialogOptions: TJvCustomThreadDialogOptions read FDialogOptions write FDialogOptions;
-    property OnPressCancel: TJvCustomThreadDialogCancelEvent read FOnPressCancel
+    property OnPressCancel: TJvThreadCancelEvent read FOnPressCancel
         write FOnPressCancel;
   end;
 
@@ -198,6 +198,7 @@ type
     FOnFinish: TNotifyEvent;
     FOnFinishAll: TNotifyEvent;
     FFreeOnTerminate: Boolean;
+    FOnCancelExecute: TJvThreadCancelEvent;
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
     FPriority: TThreadPriority;
     FThreadDialog: TJvCustomThreadDialog;
@@ -211,7 +212,9 @@ type
     procedure SetReturnValue(RetVal: Integer); // in context of thread in list - set return value (slower)
     function GetReturnValue: Integer;  // in context of thread in list - get return value (slower)
     procedure CreateThreadDialogForm;
+    procedure CloseThreadDialogForm;
     function GetCurrentThread: TJvBaseThread;
+    procedure ShowThreadDialogForm;
   protected
     procedure InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
     function GetOneThreadIsRunning: Boolean;
@@ -284,6 +287,8 @@ type
       read FAfterCreateDialogForm write FAfterCreateDialogForm;
     property BeforeResume: TNotifyEvent read FBeforeResume write FBeforeResume;
     property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
+    property OnCancelExecute: TJvThreadCancelEvent read FOnCancelExecute write
+        FOnCancelExecute;
     property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
@@ -669,7 +674,10 @@ begin
     BaseThread.Resume;
     if (not B) and (not BaseThread.FInternalTerminate) and
        (not BaseThread.Finished) then
-     CreateThreadDialogForm;
+    begin
+      CreateThreadDialogForm;
+      ShowThreadDialogForm;
+    end;
   end
   else
     Resume; // no target, resume all
@@ -737,7 +745,10 @@ end;
 
 procedure TJvThread.CancelExecute;
 begin
-  Terminate;
+  if Assigned(fOnCancelExecute) then
+    fOnCancelExecute (Self)
+  else
+    Terminate;
 end;
 
 procedure TJvThread.DoTerminate(Sender: TObject);
@@ -756,8 +767,7 @@ begin
 
   if Count = 0 then
   begin
-    if Assigned(ThreadDialogForm) then
-      ThreadDialogForm.Close;
+    CloseThreadDialogForm;
     if Assigned(FOnFinishAll) then
       try
         FOnFinishAll(Self);
@@ -1043,13 +1053,6 @@ begin
       FreeNotification(FThreadDialogForm);
       FThreadDialogForm.TransferDialogOptions;
       InternalAfterCreateDialogForm(FThreadDialogForm);
-      if ThreadDialog.DialogOptions.ShowDelay <= 0 then
-      begin
-        if ThreadDialog.DialogOptions.ShowModal then
-          FThreadDialogForm.ShowModal
-        else
-          FThreadDialogForm.Show;
-      end;
     end;
   end;
 end;
@@ -1073,6 +1076,19 @@ begin
     Execute(P);
 end;
 
+procedure TJvThread.CloseThreadDialogForm;
+begin
+  if Assigned(FThreadDialogForm) then
+  begin
+    if ThreadDialog.DialogOptions.ShowModal then
+      ThreadDialogForm.ModalResult := mrOk
+    else
+      ThreadDialogForm.Close;
+    while ThreadDialogForm.Visible do
+      Application.HandleMessage;
+  end;
+end;
+
 procedure TJvThread.InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm);
 begin
   if Assigned(FAfterCreateDialogForm) then
@@ -1082,6 +1098,18 @@ end;
 function TJvThread.IsDialogShowDelayDisabled: Boolean;
 begin
   Result := FDisalbeDialogShowDelayCounter > 0;
+end;
+
+procedure TJvThread.ShowThreadDialogForm;
+begin
+  if Assigned (ThreadDialog) and Assigned(FThreadDialogForm) then
+    if ThreadDialog.DialogOptions.ShowDelay <= 0 then
+    begin
+      if ThreadDialog.DialogOptions.ShowModal then
+        FThreadDialogForm.ShowModal
+      else
+        FThreadDialogForm.Show;
+    end;
 end;
 
 procedure TJvThread.TerminateWaitFor(iRemoveZombies: Boolean = true);
