@@ -62,6 +62,7 @@ const
   DefEditBtnWidth = 21;
 
   CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
+  CM_FIXCARETPOSITION = CM_BASE + $0301;
 
 {$IFNDEF COMPILER7_UP}
 // Autocomplete stuff for Delphi 5 and 6. (missing in ShlObj)
@@ -294,6 +295,7 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure CMFixCaretPosition(var Msg: TMessage); message CM_FIXCARETPOSITION;
   protected
     FButton: TJvEditButton;
     FBtnControl: TWinControl;
@@ -2110,10 +2112,27 @@ begin
   UpdateControls;
 end;
 
+procedure TJvCustomComboEdit.CMFixCaretPosition(var Msg: TMessage);
+begin
+  SelStart := SendMessage(Handle, EM_CHARFROMPOS, 0, Msg.LParam);
+  inherited;
+end;
+
 procedure TJvCustomComboEdit.DoEnter;
+var
+  Pt: TPoint;
+  EditRect: TRect;
 begin
   if AutoSelect and not (csLButtonDown in ControlState) then
-    SelectAll;
+    SelectAll
+  else
+  if IsMasked and (csLButtonDown in ControlState) and
+     (GetWindowLong(Handle, GWL_STYLE) and ES_MULTILINE <> 0) then
+  begin
+    { ES_MULTILINE causes the edit to place the caret at the wrong location. }
+    if GetCursorPos(Pt) then
+      PostMessage(Handle, CM_FIXCARETPOSITION, 0, PointToLParam(ScreenToClient(Pt)));
+  end;
   inherited DoEnter;
 end;
 
