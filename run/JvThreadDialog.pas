@@ -338,8 +338,7 @@ begin
     BaseName + 'Panel', '', alTop);
   if not Supports(Panel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
   Text := DynControlEngine.CreateLabelControl(AOwner, Panel, BaseName + 'StaticText', '', nil);
   Text.Top := FDefaultBorderWidth;
   Text.Left := FDefaultBorderWidth;
@@ -357,8 +356,7 @@ begin
     'MainPanel', '', alClient);
   if not Supports(FMainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
 
   CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
     DialogOptions.InfoTextAlignment, 'Info');
@@ -368,8 +366,7 @@ begin
     FMainPanel, 'ProgressbarPanel', '', alTop);
   if not Supports(FProgressbarPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
   FProgressbar := DynControlEngine.CreateProgressbarControl(Self, FProgressbarPanel,
     'Progressbar');
   if Supports(FProgressbar, IJvDynControlAlign, ITmpAlign) then
@@ -381,12 +378,9 @@ begin
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
     'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick,
     True, True);
-  with FCancelBtn do
-  begin
-    Anchors := [akTop];
-    Top := FDefaultBorderWidth;
-    FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
-  end;
+  FCancelBtn.Anchors := [akTop];
+  FCancelBtn.Top := FDefaultBorderWidth;
+  FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
 
   BorderIcons := [];
   BorderStyle := bsDialog;
@@ -512,8 +506,7 @@ begin
     'MainPanel', '', alClient);
   if not Supports(FMainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
 
   CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
     DialogOptions.InfoTextAlignment,  'Info');
@@ -522,21 +515,17 @@ begin
     'AnimatePanel', '', alTop);
   if not Supports(FAnimatePanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
 
   FAnimate := TAnimate.Create(Self);
-  with FAnimate do
-  begin
-    Parent := FAnimatePanel;
-    Top := FDefaultBorderWidth;
-    Left := FDefaultBorderWidth;
-    AutoSize := True;
-    CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
-    FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
-    ResName := TJvThreadAnimateDialogOptions(DialogOptions).ResName;
-    FAnimatePanel.Height := Height + FDefaultBorderWidth*2;
-  end;
+  FAnimate.Parent := FAnimatePanel;
+  FAnimate.Top := FDefaultBorderWidth;
+  FAnimate.Left := FDefaultBorderWidth;
+  FAnimate.AutoSize := True;
+  FAnimate.CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
+  FAnimate.FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
+  FAnimate.ResName := TJvThreadAnimateDialogOptions(DialogOptions).ResName;
+  FAnimatePanel.Height := FAnimate.Height + FDefaultBorderWidth*2;
 
   CreateTextPanel(Self, FMainPanel, FTimeTextPanel, FTimeText, taCenter,  'Time');
 
@@ -545,12 +534,9 @@ begin
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
     'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick,
     True, True);
-  with FCancelBtn do
-  begin
-    Anchors := [akTop];
-    Top := FDefaultBorderWidth;
-    FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
-  end;
+  FCancelBtn.Anchors := [akTop];
+  FCancelBtn.Top := FDefaultBorderWidth;
+  FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
 
   BorderIcons := [];
   BorderStyle := bsDialog;
@@ -575,8 +561,7 @@ begin
     BaseName + 'Panel', '', alTop);
   if not Supports(Panel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 3);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 3);
   Text := DynControlEngine.CreateLabelControl(AOwner,
     Panel, BaseName + 'StaticText', '', nil);
   Text.Top := FDefaultBorderWidth;
