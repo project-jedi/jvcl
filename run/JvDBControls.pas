@@ -956,8 +956,24 @@ begin
 end;
 
 procedure TJvDBMaskEdit.UpdateData(Sender: TObject);
+var
+  OrgMask: string;
 begin
   ValidateEdit;
+  if IsMasked then
+  begin
+    OrgMask := EditMask;
+    try
+      EditMask := '';
+      if Text = '' then
+      begin
+        FDataLink.Field.Clear;
+        Exit;
+      end;
+    finally
+      EditMask := OrgMask;
+    end;
+  end;
   FDataLink.Field.Text := Text;
 end;
 
