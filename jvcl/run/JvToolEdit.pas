@@ -2121,7 +2121,6 @@ end;
 procedure TJvCustomComboEdit.DoEnter;
 var
   Pt: TPoint;
-  EditRect: TRect;
 begin
   if AutoSelect and not (csLButtonDown in ControlState) then
     SelectAll
@@ -2131,7 +2130,10 @@ begin
   begin
     { ES_MULTILINE causes the edit to place the caret at the wrong location. }
     if GetCursorPos(Pt) then
-      PostMessage(Handle, CM_FIXCARETPOSITION, 0, PointToLParam(ScreenToClient(Pt)));
+    begin
+      Pt := ScreenToClient(Pt);
+      PostMessage(Handle, CM_FIXCARETPOSITION, 0, LPARAM((Pt.Y shl 16) or (Pt.X and $FFFF)));
+    end;
   end;
   inherited DoEnter;
 end;
