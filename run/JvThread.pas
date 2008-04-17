@@ -61,7 +61,6 @@ type
     procedure SetShowDelay(const Value: Integer);
     procedure SetShowDialog(Value: Boolean);
     procedure SetShowModal(Value: Boolean);
-  protected
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
@@ -89,11 +88,12 @@ type
     FOnPressCancel: TJvThreadCancelEvent;
     FOnShow: TNotifyEvent;
     FParentHandle: HWND;
+    procedure CloseThreadForm;
     procedure SetConnectedDataComponent(Value: TComponent);
     procedure SetConnectedDataObject(Value: TObject);
     procedure SetInternalTimerInterval(Value: Integer);
     procedure SetOnClose(Value: TCloseEvent);
-    procedure InternalTimer(Sender: TObject); virtual;
+    procedure OnInternalTimer(Sender: TObject); virtual;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeFormContents; virtual;
@@ -373,7 +373,7 @@ constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent; Dummy:
     Integer = 0);
 begin
   inherited CreateNew(AOwner, Dummy);
-  FInternalTimerInterval := 250;
+  FInternalTimerInterval := 500;
   if AOwner is TJvThread then
     FConnectedThread := TJvThread(AOwner)
   else
@@ -382,7 +382,7 @@ begin
   inherited OnClose := ReplaceFormClose;
   inherited OnCloseQuery := ReplaceFormCloseQuery;
   FInternalTimer := TTimer.Create(Self);
-  FInternalTimer.OnTimer := InternalTimer;
+  FInternalTimer.OnTimer := OnInternalTimer;
   FInternalTimer.Interval := FInternalTimerInterval;
   FInternalShowDelay := 0;
   FFormIsShown := False;
@@ -403,6 +403,14 @@ destructor TJvCustomThreadDialogForm.Destroy;
 begin
   FreeAndNil(FInternalTimer);
   inherited Destroy;
+end;
+
+procedure TJvCustomThreadDialogForm.CloseThreadForm;
+begin
+  if fsModal in FormState then
+    ModalResult := mrCancel
+  else
+    Close;
 end;
 
 procedure TJvCustomThreadDialogForm.CreateParams(var Params: TCreateParams);
@@ -434,22 +442,22 @@ begin
       FConnectedDataComponent := nil;
 end;
 
-procedure TJvCustomThreadDialogForm.InternalTimer(Sender: TObject);
+procedure TJvCustomThreadDialogForm.OnInternalTimer(Sender: TObject);
 begin
   if not (csDestroying in ComponentState) then
   begin
     if not Assigned(ConnectedThread) then
     begin
       Hide; // no connected component
-      Close;
+      CloseThreadForm;
     end
     else  // connected component present
-      if ConnectedThread.Terminated then
+      if ConnectedThread.Terminated or not ConnectedThread.OneThreadIsRunning then
       begin
         if FormIsShown then
         begin
           Hide;
-          Close;
+          CloseThreadForm;
         end;
       end
       else // not terminated
@@ -477,8 +485,8 @@ end;
 procedure TJvCustomThreadDialogForm.ReplaceFormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FFormIsShown := False;
-  FInternalTimer.OnTimer := nil;
-  FInternalTimer.Enabled := False;
+  if Assigned(FInternalTimer) then
+    FInternalTimer.Enabled := False;
   Action := caFree;
   if Assigned(FOnClose) then
     FOnClose(Sender, Action);
@@ -516,7 +524,6 @@ end;
 procedure TJvCustomThreadDialogForm.SetConnectedDataComponent(Value: TComponent);
 begin
   FConnectedDataComponent := Value;
-  // (rom) Huh? Does this make sense?
   if Assigned(Value) then
     FreeNotification(Value);
 end;
@@ -656,9 +663,8 @@ begin
   FRunOnCreate := True;
   try
     Thread := Execute(P);
-    if Assigned(Thread) then
-      while(not Thread.Finished) do  // wait for this thread
-        Application.HandleMessage;
+    while Assigned(Thread) and (not Thread.Finished) do  // wait for this thread
+      Application.HandleMessage;
   finally
     FRunOnCreate := B;
   end;
@@ -672,7 +678,8 @@ begin
   begin
     B := BaseThread.FOnResumeDone;
     BaseThread.Resume;
-    if (not B) and (not BaseThread.FInternalTerminate) and
+    if (not B) and Assigned(BaseThread) and
+       (not BaseThread.FInternalTerminate) and
        (not BaseThread.Finished) then
     begin
       CreateThreadDialogForm;
@@ -1080,12 +1087,11 @@ procedure TJvThread.CloseThreadDialogForm;
 begin
   if Assigned(ThreadDialogForm) then
   begin
-    if ThreadDialog.DialogOptions.ShowModal then
-      ThreadDialogForm.ModalResult := mrOk
-    else
-      ThreadDialogForm.Close;
     while Assigned(ThreadDialogForm) AND ThreadDialogForm.Visible do
+    begin
+      ThreadDialogForm.CloseThreadForm;
       Application.HandleMessage;
+    end;
   end;
 end;
 

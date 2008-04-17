@@ -42,6 +42,9 @@ uses
   JvTypes, JvComponentBase, JvThread, JvDynControlEngine;
 
 type
+  TJvThreadBaseDialogOptions = class;
+  TJvChangeThreadDialogOptionsEvent = procedure(DialogOptions: TJvThreadBaseDialogOptions) of object;
+
   TJvThreadBaseDialogOptions = class(TJvCustomThreadDialogOptions)
   private
     FCancelButtonCaption: string;
@@ -83,6 +86,8 @@ type
   end;
 
   TJvThreadAnimateDialog = class(TJvCustomThreadDialog)
+  private
+    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
@@ -90,6 +95,8 @@ type
   public
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
   published
+    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
+        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
     property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions write SetDialogOptions;
     property OnPressCancel;
   end;
@@ -106,13 +113,18 @@ type
 
   TJvThreadSimpleDialog = class(TJvCustomThreadDialog)
   private
+    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
     function GetDialogOptions: TJvThreadSimpleDialogOptions;
+    procedure SetChangeThreadDialogOptions(const Value:
+        TJvChangeThreadDialogOptionsEvent);
     procedure SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
   public
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
   published
+    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
+        FChangeThreadDialogOptions write SetChangeThreadDialogOptions;
     property DialogOptions: TJvThreadSimpleDialogOptions read GetDialogOptions write SetDialogOptions;
     property OnPressCancel;
   end;
@@ -128,6 +140,7 @@ type
   private
     FCancelBtn: TButton;
     FCancelButtonPanel: TWinControl;
+    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
     FCounter: Integer;
     FDefaultBorderWidth: Integer;
     FInfoText: TControl;
@@ -150,6 +163,8 @@ type
     procedure UpdateFormContents; override;
   public
     property DialogOptions: TJvThreadSimpleDialogOptions read GetDialogOptions write SetDialogOptions;
+    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
+        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
   end;
 
   TJvThreadAnimateDialogForm = class(TJvDynControlEngineThreadDialogForm)
@@ -158,6 +173,7 @@ type
     FAnimatePanel: TWinControl;
     FCancelBtn: TButton;
     FCancelButtonPanel: TWinControl;
+    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
     FDefaultBorderWidth: Integer;
     FInfoText: TControl;
     FInfoTextPanel: TWinControl;
@@ -177,6 +193,8 @@ type
     procedure UpdateFormContents; override;
   public
     property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions write SetDialogOptions;
+    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
+        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -262,6 +280,7 @@ begin
       DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
     ThreadDialogForm.OnPressCancel := OnPressCancel;
+    ThreadDialogForm.ChangeThreadDialogOptions := ChangeThreadDialogOptions;
     ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
   end
@@ -272,6 +291,12 @@ end;
 function TJvThreadSimpleDialog.GetDialogOptions: TJvThreadSimpleDialogOptions;
 begin
   Result := TJvThreadSimpleDialogOptions(inherited DialogOptions);
+end;
+
+procedure TJvThreadSimpleDialog.SetChangeThreadDialogOptions(const Value:
+    TJvChangeThreadDialogOptionsEvent);
+begin
+  FChangeThreadDialogOptions := Value;
 end;
 
 procedure TJvThreadSimpleDialog.SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
@@ -296,6 +321,7 @@ begin
     ThreadDialogForm := TJvThreadAnimateDialogForm.CreateNewFormStyle(ConnectedThread,
       DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
+    ThreadDialogForm.ChangeThreadDialogOptions := ChangeThreadDialogOptions;
     ThreadDialogForm.OnPressCancel := OnPressCancel;
     ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
@@ -411,6 +437,8 @@ var
 begin
   if Assigned(DialogOptions) then
   begin
+    if Assigned(ChangeThreadDialogOptions) then
+      ChangeThreadDialogOptions(DialogOptions);
     if Supports(FInfoText, IJvDynControl, ITmpControl) then
       ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
     Caption := DialogOptions.Caption;
@@ -584,6 +612,8 @@ var
 begin
   if Assigned(DialogOptions) then
   begin
+    if Assigned(ChangeThreadDialogOptions) then
+      ChangeThreadDialogOptions(DialogOptions);
     if Supports(FInfoText, IJvDynControl, ITmpControl) then
       ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
     if Supports(FTimeText, IJvDynControl, ITmpControl) then
