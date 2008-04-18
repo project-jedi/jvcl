@@ -165,6 +165,7 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure CMExit(var Msg: TMessage); message CM_EXIT;
   protected
+    function ValidateEditText: string;
     procedure CalChanged; virtual;
     procedure RestoreMaskForKeyPress;
     function GetValidDateString(const Text: string): string; virtual;
@@ -729,11 +730,11 @@ begin
   Button.Flat := not Self.Ctl3D;
 end;
 
-procedure TJvCustomDatePickerEdit.CMExit(var Msg: TMessage);
+function TJvCustomDatePickerEdit.ValidateEditText: string;
 var
   lDate: TDateTime;
-  OrgEditText: string;
 begin
+  Result := '';
   if EnableValidation then
   try
     lDate := Self.Date;
@@ -752,9 +753,16 @@ begin
   end;
   if AllowNoDate and (lDate = 0.0) then
   begin
-    OrgEditText := EditText;
+    Result := EditText;
     EditText := '';
   end;
+end;
+
+procedure TJvCustomDatePickerEdit.CMExit(var Msg: TMessage);
+var
+  OrgEditText: string;
+begin
+  OrgEditText := ValidateEditText;
   inherited;
   if OrgEditText <> '' then
     EditText := OrgEditText;
@@ -923,6 +931,7 @@ procedure TJvCustomDatePickerEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   // Indicates whether FDeleting is set here from False to True.
   DeleteSetHere: Boolean;
+  OrgEditText: string;
 begin
   DeleteSetHere := False;
   RestoreMaskForKeyPress;
@@ -944,6 +953,12 @@ begin
         begin
           DeleteSetHere := not FDeleting;
           FDeleting := True;
+        end;
+      VK_RETURN:
+        begin
+          OrgEditText := ValidateEditText;
+          if OrgEditText <> '' then
+            EditText := OrgEditText;
         end;
     end;
   inherited KeyDown(Key, Shift);
