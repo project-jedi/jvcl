@@ -1012,13 +1012,13 @@ end;
 function TCompileTarget.GetHomepage: string;
 begin
   if IsBCB and not IsBDS then
-    Result := 'http://www.borland.com/products/downloads/download_cbuilder.html' // do not localize
+    Result := 'http://www.codegear.com/downloads/regusers/cppbuilder' // do not localize
   else
   begin
     if Version = 5 then
-      Result := 'http://info.borland.com/devsupport/delphi/downloads/index.html' // do not localize
+      Result := 'http://www.codegear.com/downloads/regusers/' // do not localize
     else
-      Result := 'http://www.borland.com/products/downloads/download_delphi.html' // do not localize
+      Result := 'http://www.codegear.com/downloads/regusers/delphi' // do not localize
   end;
 end;
 
