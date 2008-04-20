@@ -1,5 +1,5 @@
-@@$JVCL.Info.Plugins
-<GROUP $JVCL.Info>
+@@JVCL.Info.Plugins
+<GROUP JVCL.Info>
 <TITLE Writing plugins and plugin enabled applications>
   In order to allow developers to extend applications a mechanism is needed to be able to
   communicate between the main application and the extensions. These extensions are commonly
@@ -25,12 +25,12 @@
     Topic                                                                     Description
     -----                                                                     -----------
     <LINK JVCL.Info.Plugins.Package_vs_DLL, Package vs. DLL plugins>          Discusses the differences between package based plugins and DLL based plugins.
-    <LINK $JVCL.Info.Plugins.PluginWriting, Writing plugins>                  Discusses the basic steps involved in writing a plugin for an application.
-    <LINK $JVCL.Info.Plugins.HostWriting, Writing hosts>                      Discusses the basic steps involved in writing a host application.
+    <LINK JVCL.Info.Plugins.PluginWriting, Writing plugins>                  Discusses the basic steps involved in writing a plugin for an application.
+    <LINK JVCL.Info.Plugins.HostWriting, Writing hosts>                      Discusses the basic steps involved in writing a host application.
   </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@JVCL.Info.Plugins.Package_vs_DLL
-<GROUP $JVCL.Info.Plugins>
+<GROUP JVCL.Info.Plugins>
 <TITLE Package vs. DLL plugins>
   There are two types of plugins you can write: DLL plugins or package plugins. Both have their pros
   and cons. Note that the host application usually determines if plugin should be written as a
@@ -71,8 +71,8 @@
   package). The only pressing reason to do so would be to save the plugin writers from getting a
   warning each time they compile their plugin and save on resources.
 ----------------------------------------------------------------------------------------------------
-@@$JVCL.Info.Plugins.PluginWriting
-<GROUP $JVCL.Info.Plugins>
+@@JVCL.Info.Plugins.PluginWriting
+<GROUP JVCL.Info.Plugins>
 <TITLE Writing plugins>
   Writing plugins requires some knowledge about the host application. More precisely, you need to
   know if an application allows commands to be added to it's menu and/or toolbar if and which
@@ -115,8 +115,8 @@
   handler or a least one command to be assigned. You should check the host applications (technical)
   documentation to find out what the host application expects from the plugin.
 ----------------------------------------------------------------------------------------------------
-@@$JVCL.Info.Plugins.HostWriting
-<GROUP $JVCL.Info.Plugins>
+@@JVCL.Info.Plugins.HostWriting
+<GROUP JVCL.Info.Plugins>
 <TITLE Writing host applications>
   Writing plugin enabled applications, or hosts, requires some thinking ahead. You should determine
   upfront which types of plugins you want to support.
