@@ -355,7 +355,7 @@ Summary
   Determines whether the object has been refreshed.
 Description
   This property specifies whether or not the appt object has been refreshed. Please see <LINK
-  JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
+  __JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
 Note
   This property is ignored if TJvTFScheduleManager.RefreshAutoReconcile is set to False.
 
@@ -1551,9 +1551,9 @@ Summary
   Determines printing mode.
 Description
   Use this property to control the printing model that the Printer uses. See <LINK
-  JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more info.
+  __JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more info.
 See Also
-  <LINK JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter">
+  <LINK __JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter">
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.DocDateTime
@@ -2306,7 +2306,7 @@ Summary
   Type describing load modes.
 Description
   Specifies the different methods that TJvTFScheduleManager can use to load schedules. Please see
-  TJvTFScheduleManager.SchedLoadMode and <LINK JVCL.Info.TimeFramework.BatchLoading, "Batch Loading">
+  TJvTFScheduleManager.SchedLoadMode and <LINK __JVCL.Info.TimeFramework.BatchLoading, "Batch Loading">
   for more information.
 
 ----------------------------------------------------------------------------------------------------
@@ -2700,7 +2700,7 @@ Summary
   Occurs after batches have been processed.
 Description
   This event will fire after OnLoadBatch has been called for each batch that must be loaded. Please see
-  <LINK JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
+  <LINK __JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
 Note
   This event will not fire unless SchedLoadMode is set to slmBatch.
 See Also
@@ -2825,7 +2825,7 @@ Description
     Mike - 1/2/2000
     Mike - 1/3/2000
   </PRE>
-  Please see <LINK JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
+  Please see <LINK __JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
 Note
   This event will not fire unless SchedLoadMode is set to slmBatch.
 Parameters
@@ -2939,7 +2939,7 @@ Summary
 Description
   Call this event to trigger the loading of all of the schedules that have been batched since the last
   call to ProcessBatches. Under normal circumstances you will not have to call this method. Please see
-  <LINK JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
+  <LINK __JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
 Note
   This method will ALWAYS trigger the batch loading process regarding of the setting of SchedLoadMode,
   as long as there are schedules that have been previously batched to be loaded. (Schedules will not be
@@ -2960,7 +2960,7 @@ Description
   then all appointments that reside in the server are reconciled.
 
   Under normal circumstances you will not have to call this method. Please see <LINK
-  JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
+  __JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
 Parameters
   Scope - Specifies the scope for the reconcile. Warning This method ignores the value of the
            RefreshAutoReconcile property. Use extreme caution in calling this method, especially if
@@ -2987,7 +2987,7 @@ Summary
 Description
   If True, TJvTFScheduleManager will automatically reconcile deleted/refreshed appointments after a
   Refresh has taken place. You must set the Refreshed property to True for each appointment refreshed
-  in one of the Refresh events. Please see <LINK JVCL.Info.TimeFramework.RefreshReconciliation,
+  in one of the Refresh events. Please see <LINK __JVCL.Info.TimeFramework.RefreshReconciliation,
   "Refresh Reconciliation"> for more information.
 
 ----------------------------------------------------------------------------------------------------
@@ -3120,9 +3120,9 @@ Note
   unless a direct call is made to ProcessBatches. If SchedLoadMode is set to slmBatch, the OnNeedAppts
   event will NOT fire.
 
-  Please see <LINK JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
+  Please see <LINK __JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
 See Also
-  <LINK JVCL.Info.TimeFramework.BatchLoading, Batch Loading>
+  <LINK __JVCL.Info.TimeFramework.BatchLoading, Batch Loading>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ScheduleCount
@@ -3476,7 +3476,7 @@ Description
   This component is NOT a supported part of JTF. It is included only because it is a natural extension
   of TJvTFPrinter. This component will NOT be improved or enhanced.
 
-  See <LINK JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more information.
+  See <LINK __JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more information.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFVarApptEvent

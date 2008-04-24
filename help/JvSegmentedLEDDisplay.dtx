@@ -148,13 +148,12 @@ Description
   TJv14SegmentedLEDDigit is a modern 14-segmented LED digit as frequently used with audio equipment
   (though they more frequently use matrix displays these days).
 
-  As a derivative of TJvBaseSegmentedLEDDigit, this class provides in a DP segment commonly used as
-  a decimal point by calculators. In addition, it splits the center horizontal in two separate
-  segments and adds four diagonal and two center vertical segments. This layout makes it possible to
-  represent all alphabet characters and a number of common symbols. The layout and naming is as
-  follows (naming placed next to image to improve clarity):
+  As a derivative of TJvBaseSegmentedLEDDigit, this class provides in a DP segment commonly used as a
+  decimal point by calculators. In addition, it splits the center horizontal in two separate segments
+  and adds four diagonal and two center vertical segments. This layout makes it possible to represent
+  all alphabet characters and a number of common symbols. The layout and naming is as follows (naming
+  placed next to image to improve clarity):
   <PRE>
-
               -------       A  = top horizontal            G2 = right center horizontal
              |\  |  /|      B  = right top vertical        H  = top left diagonal
              | \ | / |      C  = right bottom vertical     I  = center top vertical
@@ -164,7 +163,6 @@ Description
              | / | \ |      G1 = left center horizontal    M  = left bottom diagonal
              |/  |  \|                                     DP = Decimal point
               -------  .DP
-
   </PRE>
 
 ----------------------------------------------------------------------------------------------------
@@ -175,13 +173,12 @@ Description
   TJv16SegmentedLEDDigit is a modern 16-segmented LED digit as frequently used with audio equipment
   (though they more frequently use matrix displays these days).
 
-  As a derivative of TJv14SegmentedLEDDigit, this class provides in a DP segment (commonly used as
-  a decimal point by calculators), diagonals, center verticals and split center horizontal. In
-  addition, it splits both the top and bottom horizontals in two separate segments each. This layout
-  makes it possible to represent all alphabet characters and most common symbols. The layout and
-  naming is as follows (naming placed next to image to improve clarity):
+  As a derivative of TJv14SegmentedLEDDigit, this class provides in a DP segment (commonly used as a
+  decimal point by calculators), diagonals, center verticals and split center horizontal. In addition,
+  it splits both the top and bottom horizontals in two separate segments each. This layout makes it
+  possible to represent all alphabet characters and most common symbols. The layout and naming is as
+  follows (naming placed next to image to improve clarity):
   <PRE>
-
               --- ---       A1 = left top horizontal       G1 = left center horizontal
              |\  |  /|      A2 = right top horizontal      G2 = right center horizontal
              | \ | / |      B  = right top vertical        H  = top left diagonal
@@ -191,7 +188,6 @@ Description
              | / | \ |      E  = left bottom vertical      L  = center bottom vertical
              |/  |  \|      F  = left top vertical         M  = left bottom diagonal
               --- ---  .DP                                 DP = Decimal point
-
   </PRE>
 
 ----------------------------------------------------------------------------------------------------
@@ -322,12 +318,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer
-## combined with the topic below (overloaded method)
-Summary
-Description
-Parameters
-Return value
-See Also
+<COMBINE TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer@Integer>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer@Integer
@@ -962,7 +953,7 @@ Description
   List of control items:
   <TABLE>
     Control item            Description
-    ======================  ----------------------------------------------------------------------------------------------------==
+    ======================  ------------------------------------------------------------------
     &<I>Character</I>       Maps a single character and adds/removes the segments to/from the
                               digit. Note that you are allowed to specify multiple & and #
                               items for a single digit to "merge" two or more characters.

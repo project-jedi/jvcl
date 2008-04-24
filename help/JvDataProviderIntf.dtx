@@ -525,7 +525,7 @@ See Also
   IJvDataConsumerViewList.ToggleItem
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataConsumerViewList.Get_AutoExpandLevel
+@@IJvDataConsumerViewList.get_AutoExpandLevel
 Summary
   Retrieves the level to which the tree will be expanded automatically.
 Description
@@ -536,7 +536,7 @@ See Also
   IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.Set_AutoExpandLevel
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataConsumerViewList.Get_ExpandOnNewItem
+@@IJvDataConsumerViewList.get_ExpandOnNewItem
 Summary
   Returns the flag to indicate if the view should expand the tree when a new item is added.
 Description
@@ -546,7 +546,7 @@ See Also
   IJvDataConsumerViewList.ExpandOnNewItem, IJvDataConsumerViewList.Set_ExpandOnNewItem
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataConsumerViewList.Get_LevelIndent
+@@IJvDataConsumerViewList.get_LevelIndent
 Summary
   Returns the indentation to use for each level.
 Description
@@ -741,7 +741,7 @@ See Also
   IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.ExpandOnNewItem
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataConsumerViewList.Set_AutoExpandLevel
+@@IJvDataConsumerViewList.set_AutoExpandLevel
 Summary
   Sets the level to which the tree will be expanded automatically.
 Description
@@ -754,7 +754,7 @@ See Also
   IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.Get_AutoExpandLevel
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataConsumerViewList.Set_ExpandOnNewItem
+@@IJvDataConsumerViewList.set_ExpandOnNewItem
 Summary
   Sets the flag to indicate if the view should expand the tree when a new item is added.
 Description
@@ -766,7 +766,7 @@ See Also
   IJvDataConsumerViewList.ExpandOnNewItem, IJvDataConsumerViewList.Get_ExpandOnNewItem
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataConsumerViewList.Set_LevelIndent
+@@IJvDataConsumerViewList.set_LevelIndent
 Summary
   Sets the indentation to use for each level.
 Description
@@ -1318,6 +1318,68 @@ Parameters
             cases.
 
 ----------------------------------------------------------------------------------------------------
+@@IJvDataItemColumn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemColumn.Header
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemColumns.GetColumnByID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ID                - Description for this parameter
+  CreateIfNotExists - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemColumns.GetColumnFor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Header            - Description for this parameter
+  CreateIfNotExists - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@IJvDataItemDesigner
 Summary
   Data Item support interface to allow editing of an item in the design time provider editor.
@@ -1404,7 +1466,7 @@ Description
   the item. Those that do usually follow these 'rules':
   <TABLE>
     Value           Rendering result
-    ==============  ----------------------------------------------------------------------------------------------------==========
+    ==============  --------------------------------------------------------------------------
     taLeftJustify   The image is placed to the left of the text, the item is aligned to the
                       left of the control.
     taCenter        The image is placed above the text, the item is centered horizontally in
@@ -2209,7 +2271,7 @@ See Also
   IJvDataItemBasicAction
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Get_Checked
+@@IJvDataItemStates.get_Checked
 Summary
   Retrieves the checked state.
 Description
@@ -2219,7 +2281,7 @@ See Also
   IJvDataItemStates.Checked, IJvDataItemStates.Set_Checked
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Get_Enabled
+@@IJvDataItemStates.get_Enabled
 Summary
   Retrieves the enabled state.
 Description
@@ -2229,7 +2291,7 @@ See Also
   IJvDataItemStates.Enabled, IJvDataItemStates.Set_Enabled
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Get_Visible
+@@IJvDataItemStates.get_Visible
 Summary
   Retrieves the visible state.
 Description
@@ -2239,7 +2301,7 @@ See Also
   IJvDataItemStates.Set_Visible, IJvDataItemStates.Visible
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Set_Checked
+@@IJvDataItemStates.set_Checked
 Summary
   Sets the checked state.
 Description
@@ -2250,7 +2312,7 @@ See Also
   IJvDataItemStates.Checked, IJvDataItemStates.Get_Checked
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Set_Enabled
+@@IJvDataItemStates.set_Enabled
 Summary
   Sets the enabled state.
 Description
@@ -2261,7 +2323,7 @@ See Also
   IJvDataItemStates.Enabled, IJvDataItemStates.Get_Enabled
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Set_Visible
+@@IJvDataItemStates.set_Visible
 Summary
   Sets the visible state.
 Description
@@ -2301,28 +2363,17 @@ See Also
   IJvDataItem, IJvDataItemColumn
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemText.Text
-Summary
-  Specifies the text for the data item or column.
-Description
-  Text specifies the text for the data item or column. The text value might be fixed by the object
-  (i.e. it can't be changed by assigning a new value to Text) and might be depending on the current
-  context, consumer settings and/or consumer attributes.
-See Also
-  IJvDataItemText.Editable, IJvDataItemText.GetText, IJvDataItemText.SetText
-
-----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.Editable
 Summary
   Specifies if the text of the item or column is editable.
 Description
-  Editable specifies if the text of the item or column is editable in the user interface (e.g. an
-  edit control). If the text should be editable from the user interface the method returns True,
-  otherwise False is returned.
+  Editable specifies if the text of the item or column is editable in the user interface (e.g. an edit
+  control). If the text should be editable from the user interface the method returns True, otherwise
+  False is returned.
 
-  Note that the return value of Editable does not necessarily mean the text can or can't be changed.
-  It only enables/disables the editing from the user interface, but consumers may ignore this method
-  if they wish.
+  Note that the return value of Editable does not necessarily mean the text can or can't be changed. It
+  only enables/disables the editing from the user interface, but consumers may ignore this method if
+  they wish.
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.GetText
@@ -2345,6 +2396,17 @@ Parameters
   Value - New text for the data item.
 See Also
   IJvDataItemText.Text, IJvDataItemText.GetText
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemText.Text
+Summary
+  Specifies the caption of the data item.
+Description
+  Caption specifies the caption for the data item. The caption might be fixed by the object (i.e. it
+  can't be changed by assigning a new value to Caption) and might be depending on the current context,
+  consumer setting and/or consumer attributes.
+See Also
+  IJvDataItemText.Editable, IJvDataItemText.GetText, IJvDataItemText.SetText
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider
@@ -2593,6 +2655,202 @@ Parameters
              nothing will happen.
 See Also
   IJvDataProvider.RegisterChangeNotify, IJvDataProviderNotify
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumn.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumn.GetCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumn.GetID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumn.SetCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumns.Columns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumns.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumns.GetColumn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumns.GetColumnByID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ID - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumns.GetCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumnsManager
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumnsManager.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumnsManager.AddID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ID - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumnsManager.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumnsManager.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Column - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDataProviderColumnsManager.RemoveAt
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProviderNotify

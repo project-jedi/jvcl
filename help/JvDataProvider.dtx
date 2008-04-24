@@ -413,11 +413,12 @@ See Also
 Summary
   Allows an implementation to hide itself.
 Description
-  IsHidden makes it possible to hide the implementation from a QueryInterface call on the
-  controller. An implementation could, for example, hide itself when certain conditions are met (or
-  not met); this might be required to ensure proper working of the provider/consumer relationship.
+  IsHidden makes it possible to hide the implementation from a QueryInterface call on the controller.
+  An implementation could, for example, hide itself when certain conditions are met (or not met); this
+  might be required to ensure proper working of the provider/consumer relationship.
 See Also
   TExtensibleInterfacedPersistent
+
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistentEx.Owner
 Summary
@@ -550,8 +551,8 @@ See Also
 Summary
   Returns the extension instance of the specified class.
 Description
-  GetImplOfClass returns the extension instance of the specified class.  If there's no extension of
-  the specified class, GetImplOfClass returns <c><b>nil</b></c>.
+  GetImplOfClass returns the extension instance of the specified class. If there's no extension of the
+  specified class, GetImplOfClass returns <c><B>nil</B></c> .
 Parameters
   AClass - Extension class to locate.
 
@@ -800,8 +801,8 @@ See Also
 Summary
   Specifies whether the context is streamable.
 Description
-  IsStreamable specifies whether the context should be written to the form file. If
-  <c><b>True</b></c> is returned, the context will be written to the form file, otherwise it won't.
+  IsStreamable specifies whether the context should be written to the form file. If <c><B>True</B></c>
+  is returned, the context will be written to the form file, otherwise it won't.
 
   The default implementation is to return the inverse of IsDeletable; in other words: fixed contexts
   are not written to the form file.
@@ -1080,8 +1081,8 @@ See Also
 Summary
   Initializes the item's ID property.
 Description
-  InitID initializes the item's ID property to a unique value. Uniqueness is accomplished by using
-  a GUID and representing the 16 bytes as a hexadecimal string of 32 characters.
+  InitID initializes the item's ID property to a unique value. Uniqueness is accomplished by using a
+  GUID and representing the 16 bytes as a hexadecimal string of 32 characters.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsDeletable
@@ -1402,30 +1403,28 @@ Summary
 Description
   ItemAdd adds an item to the list, properly preceded and succeeded with change notifications.
 
-  ItemAdd is called by the base implementations for the IJvDataItemsManagement and
-  IJvDataItemsDesigner interfaces. It will perform the notifications but defers the actual operation
-  to InternalAdd.
+  ItemAdd is called by the base implementations for the IJvDataItemsManagement and IJvDataItemsDesigner
+  interfaces. It will perform the notifications but defers the actual operation to InternalAdd.
 Parameters
   Item - The Data Item to add.
 See Also
-  IJvDataItemsDesigner, IJvDataItemsManagement,
-  TJvBaseDataItems.ItemDelete, TJvBaseDataItems.ItemMove, TJvBaseDataItems.InternalAdd
+  IJvDataItemsDesigner, IJvDataItemsManagement, TJvBaseDataItems.ItemDelete, TJvBaseDataItems.ItemMove,
+  TJvBaseDataItems.InternalAdd
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ItemDelete
 Summary
   Removes an item from the list.
 Description
-  ItemDelete removes an item from the list, properly preceded and succeeded with change
-  notifications.
+  ItemDelete removes an item from the list, properly preceded and succeeded with change notifications.
 
   ItemDelete is called by the base implementations for the IJvDataItemsManagement interface. It will
   perform the notifications but defers the actual operation to InternalDelete.
 Parameters
   Index - The 0-based index of the item to delete.
 See Also
-  IJvDataItemsManagement,
-  TJvBaseDataItems.ItemAdd, TJvBaseDataItems.ItemMove, TJvBaseDataItems.InternalDelete
+  IJvDataItemsManagement, TJvBaseDataItems.ItemAdd, TJvBaseDataItems.ItemMove,
+  TJvBaseDataItems.InternalDelete
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ItemMove
@@ -1440,8 +1439,7 @@ Parameters
   OldIndex - The original index of the item.
   NewIndex - The new index of the item.
 See Also
-  IJvDataItem,
-  TJvBaseDataItems.ItemAdd, TJvBaseDataItems.ItemDelete, TJvBaseDataItems.InternalMove
+  IJvDataItem, TJvBaseDataItems.ItemAdd, TJvBaseDataItems.ItemDelete, TJvBaseDataItems.InternalMove
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ReadItem
@@ -1500,8 +1498,8 @@ Description
   interface. The class itself provides no implementation for interface's methods but rather declares
   them as abstract virtual methods.
 
-  As a descendant of TJvDataItemsAggregatedObject it also provides access to the item list object
-  this extension belongs to (both as interface as well as the implementing object), along with the
+  As a descendant of TJvDataItemsAggregatedObject it also provides access to the item list object this
+  extension belongs to (both as interface as well as the implementing object), along with the
   ContextDestroying notification method, which will be called when a context is destroyed.
 
   You should not instantiate an object of this class but rather one of it's descendants that override
@@ -1536,17 +1534,17 @@ Description
 Summary
   Abstract implementation for the \IJvDataItemsManagement interface.
 Description
-  The TJvBaseDataItemsListManagement class is the base implementation of the
-  IJvDataItemsManagement interface, specifically geared toward the TJvBaseDataItemsList
-  implementation. The class itself provides an implementation for all the
-  interface's methods with the exception of New, which remains a virtual abstract method.
+  The TJvBaseDataItemsListManagement class is the base implementation of the IJvDataItemsManagement
+  interface, specifically geared toward the TJvBaseDataItemsList implementation. The class itself
+  provides an implementation for all the interface's methods with the exception of New, which remains a
+  virtual abstract method.
 
-  As a descendant of TJvBaseDataItemsManagement, it also provides access to the item list object
-  this extension belongs to (both as interface as well as the implementing object), along with the
+  As a descendant of TJvBaseDataItemsManagement, it also provides access to the item list object this
+  extension belongs to (both as interface as well as the implementing object), along with the
   ContextDestroying notification method, which will be called when a context is destroyed.
 
-  You should not instantiate an object of this class but rather one of its descendants that
-  overrides the New method for IJvDataItemsManagement.
+  You should not instantiate an object of this class but rather one of its descendants that overrides
+  the New method for IJvDataItemsManagement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemsListManagement.Add
@@ -1570,11 +1568,11 @@ Summary
   Abstract implementation for the \IJvDataItemsManagement interface.
 Description
   The TJvBaseDataItemsManagement class is the abstract base implementation of the
-  IJvDataItemsManagement interface. The class itself provides no implementation for interface's
-  methods but rather declares them as abstract virtual methods.
+  IJvDataItemsManagement interface. The class itself provides no implementation for interface's methods
+  but rather declares them as abstract virtual methods.
 
-  As a descendant of TJvDataItemsAggregatedObject it also provides access to the item list object
-  this extension belongs to (both as interface as well as the implementing object), along with the
+  As a descendant of TJvDataItemsAggregatedObject it also provides access to the item list object this
+  extension belongs to (both as interface as well as the implementing object), along with the
   ContextDestroying notification method, which will be called when a context is destroyed.
 
   You should not instantiate an object of this class but rather one of it's descendants that override
@@ -1797,20 +1795,12 @@ Description
   the methods for IJvDataItemText.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItemTextImpl.Caption
-<ALIAS @IJvDataItemText.Caption>
-
-----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemTextImpl.Editable
 <ALIAS @IJvDataItemText.Editable>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItemTextImpl.GetCaption
-<ALIAS @IJvDataItemText.GetCaption>
-
-----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItemTextImpl.SetCaption
-<ALIAS @IJvDataItemText.SetCaption>
+@@TJvBaseDataItemTextImpl.Text
+<ALIAS @IJvDataItemText.Caption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseFixedDataContext
@@ -1836,8 +1826,8 @@ Description
 Summary
   A managable Data Context class.
 Description
-  The TJvBaseManagedDataContext class is the standard implementer for the IJvDataContext interface.
-  It inherits all functionality from TJvDataContext and supports the IJvDataContextManager interface.
+  The TJvBaseManagedDataContext class is the standard implementer for the IJvDataContext interface. It
+  inherits all functionality from TJvDataContext and supports the IJvDataContextManager interface.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvConsumerStrings
@@ -4928,9 +4918,9 @@ Description
   TJvDataItemBlockableTextImpl represents a basic implementation class for the IJvDataItemText
   interface.
 
-  As a descendant from TJvDataItemTextImpl all IJvDataItemText methods are implemented. In addition
-  it adds a published ReadOnly property. The Editable method will return a value based on this
-  setting (ie, Editable returns the inverse of the ReadOnly property).
+  As a descendant from TJvDataItemTextImpl all IJvDataItemText methods are implemented. In addition it
+  adds a published ReadOnly property. The Editable method will return a value based on this setting
+  (ie, Editable returns the inverse of the ReadOnly property).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemBlockableTextImpl.Editable
@@ -4941,13 +4931,14 @@ Description
 Summary
   Gets or sets the read-only flag for the IJvDataItemText implementation.
 Description
-  The ReadOnly property manages the ability to edit the text from the user interface. It
-  accomplishes this by having the Editable method return the inverse of this property.
+  The ReadOnly property manages the ability to edit the text from the user interface. It accomplishes
+  this by having the Editable method return the inverse of this property.
 
   Any change in the read-only state is properly notified through the standard provider notification
   system.
 See Also
   TJvDataItemBlockableTextImpl.SetReadOnly
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemBlockableTextImpl.SetReadOnly
 Summary
@@ -4969,14 +4960,6 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemContextTextImpl.Editable
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-
-----------------------------------------------------------------------------------------------------
-@@TJvDataItemContextTextImpl.GetCaption
 Summary
   Write here a summary (1 line)
 Description
@@ -5006,26 +4989,15 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDataItemContextTextImpl.SetCaption
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl
 Summary
   Basic IJvDataItemImage implementation class.
 Description
   TJvDataItemImageImpl represents a basic implementation class of the IJvDataItemImage interface.
 
-  All abstract methods from its ancestor TJvBaseDataItemImageImpl are implemented, with data stored
-  in instance fields. Each change is properly notified through the provider, ie. a Changing
-  notification is issued first, then the change is made and finally a Changed notification is
-  issued.
+  All abstract methods from its ancestor TJvBaseDataItemImageImpl are implemented, with data stored in
+  instance fields. Each change is properly notified through the provider, ie. a Changing notification
+  is issued first, then the change is made and finally a Changed notification is issued.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemImageImpl.Alignment
@@ -5162,17 +5134,12 @@ Summary
 Description
   TJvDataItemTextImpl represents a basic implementation class for the IJvDataItemText interface.
 
-  All abstract methods from its ancestor TJvBaseDataItemTextImpl are implemented, with data stored
-  in instance fields. Each change is properly notified through the provider, ie. a Changing
-  notification is issued first, then the change is made and finally a Changed notification is
-  issued.
+  All abstract methods from its ancestor TJvBaseDataItemTextImpl are implemented, with data stored in
+  instance fields. Each change is properly notified through the provider, ie. a Changing notification
+  is issued first, then the change is made and finally a Changed notification is issued.
 
   This implementation will allow consumers to edit the caption, ie. Editable will return
-  <c><b>True</b></c>.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDataItemTextImpl.Caption
-<ALIAS @IJvDataItemText.Caption>
+  <c><B>True</B></c> .
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImpl.Editable
@@ -5181,20 +5148,22 @@ Summary
 Description
   Editable specifies if the caption of the item is editable in the user interface (e.g. an edit
   control). If the caption should be editable from the user interface the method returns
-  <c><b>True</b></c>, otherwise <c><b>False</b></c> is returned. This implementation returns
-  <c><b>True</b></c> at all times.
+  <c><B>True</B></c> , otherwise <c><B>False</B></c> is returned. This implementation returns
+  <c><B>True</B></c> at all times.
 
   Note that the return value of Editable does not necessarily mean the caption can or can't be changed.
   It only enables/disables the editing from the user interface, but consumers may ignore this method if
   they wish.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDataItemTextImpl.GetCaption
-<ALIAS @IJvDataItemText.GetCaption>
-
-----------------------------------------------------------------------------------------------------
-@@TJvDataItemTextImpl.SetCaption
-<ALIAS @IJvDataItemText.SetCaption>
+@@TJvDataItemTextImpl.Text
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemTextImplClass
