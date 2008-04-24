@@ -534,13 +534,6 @@ TJvTransparentForm
 TJvTrayIcon
 TJvTreeView
 TJvTurtle
-TJvUIBBackup
-TJvUIBDatabase
-TJvUIBDataSet
-TJvUIBQuery
-TJvUIBRestore
-TJvUIBScript
-TJvUIBTransaction
 TJvUninstallComboBox
 TJvUninstallListBox
 TJvUpDown
