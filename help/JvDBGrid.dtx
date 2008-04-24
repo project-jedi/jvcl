@@ -66,6 +66,11 @@ Description
 <COMBINE TJvDBGrid.OnShowCellHint>
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBCanEditCellEvent
+<TITLE TJvDBCanEditCellEvent type>
+<COMBINE TJvDBGrid.OnCanEditCell>
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBCheckIfBooleanFieldEvent
 <TITLE TJvDBCheckIfBooleanFieldEvent type>
 <COMBINE TJvDBGrid.OnCheckIfBooleanField>
@@ -190,6 +195,16 @@ Description
   always beeps on errors. Set BeepOnError to false to suppress this behavior.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.BeginUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.BooleanEditor
 Summary
   Shows Tick Box. The type of the corresponding field should be Boolean.
@@ -202,6 +217,21 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.CellRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACol - Description for this parameter
+  ARow - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -258,6 +288,16 @@ Description
   would be used stand alone. In run time, those controls will be invisible until the associated field
   in the grid get focus, then the control will appear into the grid. (Note: will not work if Option:
   dgAlwaysShowEditor is true)
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.EndUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.FixedCols
@@ -359,6 +399,40 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnAfterPaint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnBeforePaint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnCanEditCell
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid      - Description for this parameter
+  Field     - Description for this parameter
+  AllowEdit - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -474,6 +548,19 @@ See Also
   TJvDBGrid.OnGetCellParams
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnSelectColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid          - Description for this parameter
+  DefaultDialog - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnShowCellHint
 Summary
   Occurs when a cell in the grid wants to display its hint.
@@ -558,6 +645,16 @@ Description
   Use PostOnEnterKey to specify whether pressing the Enter key automatically posts data to the
   underlying dataset. If PostOnEnterKey is false, the user must move to another cell before the
   modified data is committed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ReadOnlyCellColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ReduceFlicker
@@ -773,6 +870,16 @@ See Also
   TJvDBGrid.ShowColumnsDialog
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.TitleButtonAllowMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitleButtons
 Summary
   Indicates whether column headers can be clicked or not.
@@ -845,6 +952,9 @@ Summary
   If set to True, the Grid's header is painted in the current theme style.
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.WordWrap
@@ -1066,6 +1176,11 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBSelectColumnsEvent
+<TITLE TJvDBSelectColumnsEvent type>
+<COMBINE TJvDBGrid.OnSelectColumns>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvGridPaintInfo

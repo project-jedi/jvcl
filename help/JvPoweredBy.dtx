@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPoweredBy.pas
 Summary
-  Contains the TJvPoweredBy component.
+  Contains the TJvPoweredByJCL and the TJvPoweredByJVCL components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Robert Marquardt
@@ -11,75 +11,71 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredBy
 Summary
-  Write here a summary (1 line)
+  Base class for controls that show a 'Powered by' banner.
 Description
-  Write here a description
+  TJvPoweredBy is a base class for the banner classes TJvPoweredByJCL and TJvPoweredByJVCL. Do not
+  create instances of TJvPoweredBy. If you would like to create a custom banner, use the class
+  TJvPoweredBy as a parent class for your replacement class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredBy.Image
 Summary
-  Write here a summary (1 line)
+  The image that appears on the control.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPoweredBy.SetBounds
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ALeft   - Description for this parameter
-  ATop    - Description for this parameter
-  AWidth  - Description for this parameter
-  AHeight - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvPoweredBy.URL
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredBy.URL
 Summary
-  Write here a summary (1 line)
+  Specifies a URL associated with the control.
 Description
-  Write here a description
+  Use URL to associate a URL, an executable file, a document file, or a folder with the label. If
+  URLActive is set to true and the user clicks on the label, then the object specified by URL is
+  opened.
+Note
+  If URLActive is set to false, then URL is ignored.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvPoweredBy.Image, TJvPoweredBy.URLActive
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredBy.URLActive
 Summary
-  Write here a summary (1 line)
+  Specifies whether to automatically open the associated URL when the user clicks the control.
 Description
-  Write here a description
+  Set URLActive to true to automatically open the URL or object specified by property URL when the user
+  clicks the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvPoweredBy.URL
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredByJCL
 <TITLEIMG TJvPoweredByJCL>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Static
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Shows a 'Powered by JCL' banner.
 Description
-  Write here a description
+  Use the TJvPoweredByJVCL control to display a 'Powered by JCL' banner.
+
+  When the user clicks the banner, the JCL web-site is opened.
+See Also
+  TJvPoweredByJVCL
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredByJVCL
 <TITLEIMG TJvPoweredByJVCL>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Static
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Shows a 'Powered by JVCL' banner.
 Description
-  Write here a description
+  Use the TJvPoweredByJVCL control to display a 'Powered by JVCL' banner.
+
+  When the user clicks the banner, the JVCL web-site is opened.
+See Also
+  TJvPoweredByJCL
 

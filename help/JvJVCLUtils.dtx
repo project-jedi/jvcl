@@ -442,17 +442,42 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DrawArrow
+@@DrawArrow@TCanvas@Integer@Integer@Integer@TColor@TAnchorKind
 <TITLE DrawArrow procedure>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   Canvas    - Description for this parameter
-  Rect      - Description for this parameter
+  X         - Description for this parameter
+  Y         - Description for this parameter
+  Size      - Description for this parameter
   Color     - Description for this parameter
   Direction - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawArrow@TCanvas@TRect@TColor@TAnchorKind@Integer
+<TITLE DrawArrow procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Canvas    - Description for this parameter
+  ARect     - Description for this parameter
+  Color     - Description for this parameter
+  Direction - Description for this parameter
+  Margin    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -599,6 +624,23 @@ Description
 Parameters
   ScreenRect - Description for this parameter
   Width      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawLine
+<TITLE DrawLine procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  X2     - Description for this parameter
+  Y2     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -804,6 +846,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@GenerateUniqueComponentName
+<TITLE GenerateUniqueComponentName function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner         - Description for this parameter
+  AComponent     - Description for this parameter
+  AComponentName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@GetAppHandle
 <TITLE GetAppHandle function>
 Summary
@@ -881,6 +938,32 @@ Parameters
   AMask   - Description for this parameter
   Strings - Description for this parameter
   Images  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetControlRect
+<TITLE GetControlRect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetControlScreenRect
+<TITLE GetControlScreenRect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -983,9 +1066,6 @@ Description
   name.
 Parameters
   AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@GetGraphicObject@TStream@TObject@TJvGetGraphicClassEvent
@@ -1001,9 +1081,6 @@ Parameters
   AStream - Description for this parameter
   ASender - Description for this parameter
   AOnProc - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@GetHueBitmap
@@ -1109,6 +1186,32 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetTopForm
+<TITLE GetTopForm function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aCmp - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetTopOwner
+<TITLE GetTopOwner function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aCmp - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1495,6 +1598,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@IsChildWindow
+<TITLE IsChildWindow function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AChild  - Description for this parameter
+  AParent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@IsForegroundTask
 <TITLE IsForegroundTask function>
 Summary
@@ -1860,6 +1977,36 @@ Description
 Parameters
   Module - Description for this parameter
   ResID  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MapControlPoint
+<TITLE MapControlPoint function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACtlFrom - Description for this parameter
+  ACtlTo   - Description for this parameter
+  APoint   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MapControlRect
+<TITLE MapControlRect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACtlFrom    - Description for this parameter
+  ACtlTo      - Description for this parameter
+  AClientRect - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2269,6 +2416,48 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@RectChildToParent
+<TITLE RectChildToParent function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APoint   - Description for this parameter
+  AControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RectClientToScreen
+<TITLE RectClientToScreen function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClientRect - Description for this parameter
+  AControl    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RectScreenToClient
+<TITLE RectScreenToClient function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AScreenRect - Description for this parameter
+  AControl    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@RectToStr
 <TITLE RectToStr function>
 Summary
@@ -2280,6 +2469,10 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RegisterGraphicSignature@AnsiString@Integer@TGraphicClass
+<COMBINE RegisterGraphicSignature@array of Byte@Integer@TGraphicClass>
 
 ----------------------------------------------------------------------------------------------------
 @@RegisterGraphicSignature@array of Byte@Integer@TGraphicClass
@@ -2295,27 +2488,6 @@ Parameters
   ASignature    - Description for this parameter
   AOffset       - Description for this parameter
   AGraphicClass - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@RegisterGraphicSignature@string@Integer@TGraphicClass
-<TITLE RegisterGraphicSignature procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  ASignature    - Description for this parameter
-  AOffset       - Description for this parameter
-  AGraphicClass - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@RegUseAppTitle
@@ -3046,6 +3218,16 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TJvPoint.AsPoint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvPoint.Assign@TPoint
 Summary
   Write here a summary (1 line)
@@ -3054,6 +3236,18 @@ Description
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
   leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
   name.
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPoint.AssignPoint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
   Source - Description for this parameter
 See Also
@@ -3118,6 +3312,18 @@ Description
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
   leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
   name.
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvRect.AssignRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
   Source - Description for this parameter
 See Also
@@ -3244,6 +3450,28 @@ Description
   name.
 Parameters
   Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSize.AssignSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSize.AsSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -3492,9 +3720,6 @@ Description
 Parameters
   ASignature - Description for this parameter
   AOffset    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@UnregisterGraphicSignature@string@Integer
@@ -3509,9 +3734,6 @@ Description
 Parameters
   ASignature - Description for this parameter
   AOffset    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@UnregisterGraphicSignature@TGraphicClass
@@ -3525,9 +3747,6 @@ Description
   name.
 Parameters
   AGraphicClass - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@UpdateTrackFont
