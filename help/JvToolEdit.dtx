@@ -1143,12 +1143,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryEdit.DisplayLocalizedName
 Summary
-  Write here a summary (1 line)
+  Indicates whether the localized name should be shown when the control has no focus.
 Description
-  Write here a description
+  Set DisplayLocalizedName to true to show the localized name of the directory in then edit control
+  when it has no focus. You can always read LocalizedName to retrieve that localized name.
+
+  The localized name of a directory can be different than the actual name of the directory depending on
+  the user interface language on windows Vista systems. For example, LocalizedName will return
+  <I>C:\\Programme</I> for the directory <I>C:\\Program Files</I> when the language is German.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFileDirEdit.LocalizedName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryEdit.InitialDir
@@ -1203,22 +1207,22 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.AutoCompleteFileOptions
 Summary
-  Write here a summary (1 line)
+  Specifies options that control file autocompletion.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoCompleteFileOptions specifies options that control file autocompletion.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.LocalizedName
 Summary
-  Write here a summary (1 line)
+  Returns the localized name of the file or directory.
 Description
-  Write here a description
+  Read LocalizedName to retrieve the localized name of the file or directory displayed in the combo
+  edit control. The localized name of the file or directory can be different than the name of the file
+  or directory, depending on the user interface language on windows Vista systems. For example,
+  LocalizedName will return <I>C:\\Programme</I> for the directory <I>C:\\Program Files</I> when the
+  language is German.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDirectoryEdit.DisplayLocalizedName, TJvFilenameEdit.DisplayLocalizedName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.LongName
@@ -1392,12 +1396,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFilenameEdit.DisplayLocalizedName
 Summary
-  Write here a summary (1 line)
+  Indicates whether the localized name should be shown when the control has no focus.
 Description
-  Write here a description
+  Set DisplayLocalizedName to true to show the localized name of the file in the edit control when it
+  has no focus. You can always read LocalizedName to retrieve that localized name.
+
+  The localized name of a file can be different than the actual name of the file depending on the user
+  interface language on windows Vista systems. For example, LocalizedName will return
+  <I>C:\\Programme\\c.txt</I> for the file <I>C:\\Program Files\\c.txt</I> when the language is
+  German.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFileDirEdit.LocalizedName
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFilenameEdit.FileEditStyle
