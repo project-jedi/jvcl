@@ -982,6 +982,8 @@ begin
     Key := #0;
     Exit;
   end;
+  { EditCanModify could have triggered a ClearMask. }
+  RestoreMaskForKeyPress;
 
   OldSep := SysUtils.DateSeparator;
   SysUtils.DateSeparator := Self.DateSeparator;
