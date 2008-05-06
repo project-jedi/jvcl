@@ -2213,7 +2213,10 @@ begin
     if ssCtrl in Shift then
       Distance := VisibleRowCount - 1
     else
-      Distance := 1;
+    if ssShift in Shift then
+      Distance := 1
+    else
+      Distance := 2;
     if DataLink.Active then
       Result := DataLink.DataSet.MoveBy(Distance) <> 0;
   end;
@@ -2233,7 +2236,10 @@ begin
     if Shift * KeyboardShiftStates = [ssCtrl] then
       Distance := VisibleRowCount - 1
     else
-      Distance := 1;
+    if ssShift in Shift then
+      Distance := 1
+    else
+      Distance := 2;
     if DataLink.Active then
       Result := DataLink.DataSet.MoveBy(-Distance) <> 0;
   end;
@@ -4749,13 +4755,14 @@ procedure TJvDBGrid.MouseWheelHandler(var Message: TMessage);
 var
   LastRow: Integer;
 begin
-  { Fix MouseWheel indicator bug }
-  LastRow := Row;
-  inherited MouseWheelHandler(Message);
-  if (Row <> LastRow) and (DataLink <> nil) and DataLink.Active then
-  begin
-    DataLink.DataSet.MoveBy(Row - LastRow);
-    InvalidateCell(IndicatorOffset - 1, LastRow);
+  DisableScroll;
+  try
+    LastRow := Row;
+    inherited MouseWheelHandler(Message);
+    if (Row <> LastRow) and (DataLink <> nil) and DataLink.Active then
+      InvalidateCell(IndicatorOffset - 1, LastRow);
+  finally
+    EnableScroll;
   end;
 end;
 
