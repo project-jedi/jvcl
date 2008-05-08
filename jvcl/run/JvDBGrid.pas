@@ -2311,6 +2311,7 @@ var
   CursorPos: TPoint;
   lLastSelected, lNewSelected: TBookmarkStr;
   lCompare: Integer;
+  WasAlwaysShowEditor: Boolean;
 begin
   if not AcquireFocus then
     Exit;
@@ -2419,20 +2420,30 @@ begin
       end
       else
       begin
-        //-------------------------------------------------------------------------------
-        // Prevents the grid from going back to the first column when dgRowSelect is True
-        // Does not work if there's no indicator column
-        //-------------------------------------------------------------------------------
-        if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
-          inherited MouseDown(Button, Shift, 1, Y)
-        else
-          inherited MouseDown(Button, Shift, X, Y);
-        if (Col = LastCell.X) and (Row <> LastCell.Y) then
-        begin
-          { ColEnter is not invoked when switching between rows staying in the
-            same column. }
-          if FAlwaysShowEditor and not EditorMode then
-            ShowEditor;
+        { Do not show the editor if the user right clicks on the cell. Otherwise
+          the grid's popup menu will never show. }
+        WasAlwaysShowEditor := dgAlwaysShowEditor in Options;
+        if WasAlwaysShowEditor and (Button = mbRight) {and (PopupMenu <> nil)} then
+          Options := Options - [dgAlwaysShowEditor];
+        try
+          //-------------------------------------------------------------------------------
+          // Prevents the grid from going back to the first column when dgRowSelect is True
+          // Does not work if there's no indicator column
+          //-------------------------------------------------------------------------------
+          if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
+            inherited MouseDown(Button, Shift, 1, Y)
+          else
+            inherited MouseDown(Button, Shift, X, Y);
+          if (Col = LastCell.X) and (Row <> LastCell.Y) then
+          begin
+            { ColEnter is not invoked when switching between rows staying in the
+              same column. }
+            if FAlwaysShowEditor and not EditorMode then
+              ShowEditor;
+          end;
+        finally
+          if WasAlwaysShowEditor and (Button = mbRight) {and (PopupMenu <> nil)} then
+            Options := Options + [dgAlwaysShowEditor];
         end;
       end;
       MouseDownEvent := OnMouseDown;
