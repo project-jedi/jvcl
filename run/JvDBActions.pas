@@ -50,6 +50,27 @@ type
 
   TJvChangeDataComponent = procedure(DataComponent: TComponent) of object;
   TJvDatabaseActionList = class(TActionList)
+  //The idea of the Action Classes is to work with any databased enabled control.
+  //But not all of this controls already have a dataset or datasource control.
+  //
+  //So the connection is made by the "DataComponent".
+  //Datacomponent can be any type of TComponent. TDatasource, TDataset, TDBGrid,
+  //TDBEdit, also for examle the DevExpress Controls.
+  //
+  //Then we have a list of DatabaseControlEngines which have the availability to
+  //find for a Component the based Dataset and Datasource Controls (if they exist).
+  //For each new type of controls with specific need of handles a new Engine
+  //must be created and registered. An example for these engines can be found
+  //in "JvDBActionsEngineControlCxGrid.pas".
+  //
+  //When a datacomponent is assigned the action tries to find the correct
+  //engine based on the component and uses the engine for all further operations.
+  //
+  //There are two ways to assign a datacomponent:
+  //1. Assigning the component to the action list, then all actions in
+  //   this list (which are based on TJvDatabaseBaseAction class)
+  //   gets the datacomponent assigned also.
+  //2. Using the active control, like the normal action handling.
   private
     FDataComponent: TComponent;
     FOnChangeDataComponent: TJvChangeDataComponent;
