@@ -100,10 +100,6 @@ implementation
 uses
   JvConsts, JvResources, JvJCLUtils, JvComponent;
 
-const
-  CM_SHOWEVENT = CM_JVBASE + 1;
-  CM_CLOSEEVENT = CM_JVBASE + 2;
-
 type
   TCMShowEvent = packed record
     Msg: Integer;

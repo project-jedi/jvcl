@@ -281,9 +281,6 @@ const
   ScrollLineSize = 3;
   ScrollUnit = 8;
 
-  CM_RECREATEWINDOW = CM_BASE + 82;
-  CM_RELEASECLIENTLINK = CM_BASE + 83;
-
 type
   TColorGradation = array [Byte] of TColor;
   PColorGradation = ^TColorGradation;

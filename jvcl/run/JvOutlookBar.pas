@@ -50,12 +50,7 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
-
-const
-  CM_CAPTION_EDITING = CM_BASE + 756;
-  CM_CAPTION_EDIT_ACCEPT = CM_CAPTION_EDITING + 1;
-  CM_CAPTION_EDIT_CANCEL = CM_CAPTION_EDITING + 2;
+  JvConsts, JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
 
 type
   TJvBarButtonSize = (olbsLarge, olbsSmall);
@@ -420,8 +415,7 @@ const
 implementation
 
 uses
-  Math,
-  JvConsts;
+  Math;
 
 {$R JvOutlookBar.res}
 
