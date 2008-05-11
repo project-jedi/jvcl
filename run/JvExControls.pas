@@ -48,7 +48,7 @@ uses
   {$ENDIF CLR}
   SysUtils, Classes, Graphics, Controls, Forms,
   {$IFDEF COMPILER5}
-  JvVCL5Utils,
+  JvConsts, JvVCL5Utils,
   {$ENDIF COMPILER5}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -63,11 +63,6 @@ type
 
 const
   dcWantMessage = dcWantAllKeys;
-
-const
-  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
-  CM_PERFORM = CM_BASE + $500 + 0; // LParam: "Msg: ^TMessage"
-  CM_SETAUTOSIZE = CM_BASE + $500 + 1; // WParam: "Value: Boolean"
 
 type
   TJvHotTrackOptions = class;

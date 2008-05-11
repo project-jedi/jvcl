@@ -50,11 +50,8 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
-  JvVCL5Utils,
+  JvConsts, JvVCL5Utils,
   JvComponent;
-
-const
-  CM_MOVEDRAGLINE = CM_BASE + 1;
 
 type
   TJvTimeItems = class;
@@ -512,7 +509,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}
-  JvJVCLUtils, JvConsts, JvThemes;
+  JvJVCLUtils, JvThemes;
 
 {$R JvTimeLine.res}
 

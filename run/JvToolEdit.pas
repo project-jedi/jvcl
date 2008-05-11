@@ -53,16 +53,13 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
-  JvVCL5Utils,
+  JvVCL5Utils, JvConsts,
   JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton,
   JvDataSourceIntf;
 
 const
   scAltDown = scAlt + VK_DOWN;
   DefEditBtnWidth = 21;
-
-  CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
-  CM_FIXCARETPOSITION = CM_BASE + $0301;
 
 {$IFNDEF COMPILER7_UP}
 // Autocomplete stuff for Delphi 5 and 6. (missing in ShlObj)
@@ -1110,7 +1107,7 @@ uses
   {$ENDIF !CLR}
   JclFileUtils,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
-  JvThemes, JvResources, JvConsts;
+  JvThemes, JvResources;
 
 {$R JvToolEdit.res}
 

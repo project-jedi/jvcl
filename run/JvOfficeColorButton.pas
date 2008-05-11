@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
+  JvConsts, JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
   JvOfficeColorForm, JvOfficeColorPanel, JvOfficeDragBarForm;
 
 const
@@ -46,9 +46,6 @@ const
   MinButtonHeight = 22;
   MinButtonWidth = 22;
   Tag_ArrowWidth = 11;
-
-const
-  CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
 type
   TJvOfficeColorButtonProperties = class(TJvOfficeColorPanelProperties)

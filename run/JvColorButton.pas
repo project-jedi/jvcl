@@ -39,10 +39,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  JvColorBox, JvComponent;
-
-const
-  CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
+  JvConsts, JvColorBox, JvComponent;
 
 type
   TJvColorButtonPaletteShowing = procedure(var CanShowPalette: Boolean) of object;
@@ -146,7 +143,7 @@ implementation
 
 uses
   SysUtils, ExtCtrls,
-  JvConsts, JvColorForm, JvResources;
+  JvColorForm, JvResources;
 
 constructor TJvColorButton.Create(AOwner: TComponent);
 begin

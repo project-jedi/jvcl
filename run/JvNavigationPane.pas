@@ -35,11 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
-  JvTypes, JvVCL5Utils, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
-
-const
-  CM_PARENTSTYLEMANAGERCHANGE = CM_BASE + 1;
-  CM_PARENTSTYLEMANAGERCHANGED = CM_BASE + 2;
+  JvConsts, JvTypes, JvVCL5Utils, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
 
 type
   TJvCustomNavigationPane = class;

@@ -38,10 +38,6 @@ uses
   Graphics, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
   JvJCLUtils, JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
-const
-  CM_IMAGESIZECHANGED = CM_BASE + 100;
-  CM_LEAVEBUTTON = CM_BASE + 101;
-
 type
   TJvButtonBorder = (bbDark, bbLight, bbMono);
 

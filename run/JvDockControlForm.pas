@@ -53,7 +53,7 @@ uses
   Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, ComCtrls,
   {$IFDEF USEJVCL}
-  JvComponentBase, JvAppStorage,
+  JvComponentBase, JvAppStorage, JvConsts,
   {$ENDIF USEJVCL}
   JvDockTree, JvDockSupportClass, JvDockSupportControl, JvDockAdvTree;
 
@@ -63,10 +63,6 @@ const
   JvDockState_Unknown = 0;
   JvDockState_Docking = 1;
   JvDockState_Floating = 2;
-
-  {$IFNDEF COMPILER9_UP}
-  CM_INVALIDATEDOCKHOST = CM_BASE + 70;
-  {$ENDIF !COMPILER9_UP}
 
 type
   TJvDockSplitterSize = 0..32767;

@@ -84,18 +84,48 @@ const
   DPA_RendersSingleItem = 2;
   DPA_ConsumerDisplaysList = 3;
 
-  CM_JVBASE = CM_BASE + 80; // warning VCL improves and comes nearer
+  { Command message constants. Define the JVCL base at 512 from the command message base. This gives the VCL room to
+    grow another 430 or so messages before interfering with us. It will give us room for 512 constants before we'd
+    interfere with the action manager constants. }
+  CM_JVBASE = CM_BASE + $0200;
+
+  { Define command message that did not exist in earlier VCL versions }
+  {$IFNDEF COMPILER9_UP}
+  CM_INVALIDATEDOCKHOST = CM_BASE + 70;
+  {$ENDIF !COMPILER9_UP}
+
   { Command message for JvSpeedbar editor }
-  CM_SPEEDBARCHANGED = CM_JVBASE + 0;
+  CM_SPEEDBARCHANGED = CM_JVBASE + $000;
   { Command message for TJvSpeedButton }
-  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
-  // (rom) disabled unused
-  { Command messages for TJvWindowHook }
-  //CM_RECREATEWINDOW  = CM_JVBASE + 2;
-  //CM_DESTROYHOOK     = CM_JVBASE + 3;
-  { Notify message for TJvxTrayIcon }
-  //CM_TRAYICON        = CM_JVBASE + 4;
-  CM_FORCESIZE = CM_JVBASE + 5;  // used in JvButton
+  CM_JVBUTTONPRESSED = CM_JVBASE + $001;
+  { Command messages for TJvBackground }
+  CM_RECREATEWINDOW  = CM_JVBASE + $002;
+  CM_RELEASECLIENTLINK = CM_JVBASE + $003;
+  { Command message used in JvProgressComponent }
+  CM_SHOWEVENT = CM_JVBASE + $004;
+  CM_CLOSEEVENT = CM_JVBASE + $005;
+  { Command messages used in TJvColorButton, TJvOfficeColorButton and TJvCustomComboEdit }
+  CM_POPUPCLOSEUP = CM_JVBASE + $006;
+  CM_FIXCARETPOSITION = CM_JVBASE + $007;
+  { Command messages used in JvButton }
+  CM_FORCESIZE = CM_JVBASE + $008;
+  { Command message used in JvEditorCommon }
+  CM_RESETCAPTURECONTROL = CM_JVBASE + $009;
+  { Command messages used in JvExControls }
+  CM_PERFORM = CM_JVBASE + $00A; // LParam: "Msg: ^TMessage"
+  CM_SETAUTOSIZE = CM_JVBASE + $00B; // WParam: "Value: Boolean"
+  { Command messages used in JvLookOut }
+  CM_IMAGESIZECHANGED = CM_JVBASE + $00C;
+  CM_LEAVEBUTTON = CM_JVBASE + $00D;
+  { Command messages used in JvNavigationPane }
+  CM_PARENTSTYLEMANAGERCHANGE = CM_JVBASE + $00E;
+  CM_PARENTSTYLEMANAGERCHANGED = CM_JVBASE + $00F;
+  { Command messages used in JvOutlookBar }
+  CM_CAPTION_EDITING = CM_JVBASE + $010;
+  CM_CAPTION_EDIT_ACCEPT = CM_JVBASE + $011;
+  CM_CAPTION_EDIT_CANCEL = CM_JVBASE + $012;
+  { Command message used in JvTimeLine }
+  CM_MOVEDRAGLINE = CM_JVBASE + $013;
 
   { Values for WParam for CM_SPEEDBARCHANGED message }
   SBR_CHANGED        = 0; { change buttons properties  }

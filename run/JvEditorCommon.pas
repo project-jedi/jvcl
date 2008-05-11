@@ -207,7 +207,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls,
   Forms, StdCtrls, ExtCtrls, Menus,
-  JvFixedEditPopup, JvUnicodeCanvas, JvComponent, JvExControls;
+  JvConsts, JvFixedEditPopup, JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -217,7 +217,6 @@ const
 
   WM_EDITCOMMAND = WM_USER + $101;
   WM_COMPOUND = WM_USER + $102;
-  CM_RESETCAPTURECONTROL = CM_BASE + $103;
 
 type
   EJvEditorError = class(Exception);
@@ -1366,7 +1365,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Math, Clipbrd,
-  JvJCLUtils, JvThemes, JvConsts, JvResources;
+  JvJCLUtils, JvThemes, JvResources;
 
 type
   TJvEditorCompletionList = class(TListBox)
