@@ -36,8 +36,8 @@ uses
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, ComCtrls, ImgList,
-  JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockAdvTree,
-  JvDockGlobals;
+  JvConsts, JvDockControlForm, JvDockSupportControl, JvDockTree,
+  JvDockAdvTree, JvDockGlobals;
 
 type
   TJvDockVIDConjoinServerOption = class(TJvDockBasicConjoinServerOption)

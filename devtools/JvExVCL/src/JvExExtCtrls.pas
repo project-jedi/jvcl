@@ -41,7 +41,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvTypes, JvThemes, JVCLVer, JvExControls;
+  JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
   CONTROL_DECL_DEFAULT(Shape)
