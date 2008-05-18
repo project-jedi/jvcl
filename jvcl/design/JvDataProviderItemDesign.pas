@@ -295,7 +295,7 @@ var
   P: PChar;
 begin
   P := Pointer(AClass);
-  Dec(P, 60); // Now pointing to TypeInfo of the VMT table.
+  Inc(P, vmtTypeInfo); // Now pointing to TypeInfo of the VMT table.
   Result := PPTypeInfo(P);
 end;
 
