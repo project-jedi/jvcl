@@ -47,18 +47,23 @@ type
   TJvControlActionExecuteEvent = procedure(Sender: TObject; const aOperation: TJvControlActionOperation; const
         aActionControl: TControl) of object;
 
+  TJvControlActionCheckEnabledEvent = procedure(aActionControl : TControl;
+      aControlOperation: TJvControlActionOperation; var aEnabled : Boolean)
+      of object;
+
   TJvControlBaseAction = class(TJvActionEngineBaseAction)
   private
     FControlOperation: TJvControlActionOperation;
+    FOnCheckEnabled: TJvControlActionCheckEnabledEvent;
     FOnExecute: TJvControlActionExecuteEvent;
     function GetActionControl: TControl;
     function GetControlEngine: TJvControlActionEngine;
     procedure SetActionControl(const Value: TControl); virtual;
     procedure SetControlOperation(const Value: TJvControlActionOperation);
   protected
+    procedure CheckEnabled(var AEnabled: Boolean); override;
     function GetEngineList: TJvActionEngineList; override;
     procedure SetActionComponent(const Value: TComponent); override;
-    procedure SetEnabled(Value: Boolean);
     property ControlEngine: TJvControlActionEngine read GetControlEngine;
   public
     constructor Create(AOwner: TComponent); override;
@@ -70,6 +75,8 @@ type
     property ControlOperation: TJvControlActionOperation read FControlOperation
         write SetControlOperation;
   published
+    property OnCheckEnabled: TJvControlActionCheckEnabledEvent read FOnCheckEnabled
+        write FOnCheckEnabled;                          
     property OnExecute: TJvControlActionExecuteEvent read FOnExecute write
         FOnExecute;
   end;
@@ -159,6 +166,12 @@ begin
 //    DataComponent := TJvDatabaseActionList(AOwner).DataComponent;
 end;
 
+procedure TJvControlBaseAction.CheckEnabled(var AEnabled: Boolean);
+begin
+  if Assigned(fOnCheckEnabled) then
+    fOnCheckEnabled (ActionControl, ControlOperation, aEnabled);
+end;
+
 procedure TJvControlBaseAction.ExecuteTarget(Target: TObject);
 begin
   if Assigned(FOnExecute) then
@@ -226,12 +239,6 @@ begin
     FControlOperation := Value;
     DetectControlEngine(ActionComponent);
   end;
-end;
-
-procedure TJvControlBaseAction.SetEnabled(Value: Boolean);
-begin
-  if Enabled <> Value then
-    Enabled := Value;
 end;
 
 procedure TJvControlBaseAction.UpdateTarget(Target: TObject);

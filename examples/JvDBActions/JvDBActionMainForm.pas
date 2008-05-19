@@ -32,7 +32,8 @@ uses
   Dialogs, ExtCtrls, DBCtrls, Grids, DBGrids, DB, JvCsvData,
   JvExExtCtrls, JvComponent, JvPanel, ComCtrls, JvExComCtrls, JvDBActions,
   JvDateTimePicker, JvDBDateTimePicker, StdCtrls, ActnList, Buttons, DBActns,
-  JvExDBGrids, JvDBGrid, ImgList, JvActionsEngine;
+  JvExDBGrids, JvDBGrid, ImgList, JvActionsEngine, JvControlActions,
+  JvDBActionsEngine;
 
 type
   TJvDBActionMainFrm = class(TForm)
@@ -79,8 +80,13 @@ type
     BitBtn9: TBitBtn;
     BitBtn10: TBitBtn;
     JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction;
+    JvDatabaseSimpleAction2: TJvDatabaseSimpleAction;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
+    procedure JvDatabaseSimpleAction2CheckEnabled(aDataset: TDataSet;
+        aDataComponent: TComponent; aDatabaseControlEngine:
+        TJvDatabaseActionBaseControlEngine; var aEnabled: Boolean);
     procedure JvDBGrid1Enter(Sender: TObject);
   end;
 
@@ -108,6 +114,16 @@ end;
 procedure TJvDBActionMainFrm.DBGrid1Enter(Sender: TObject);
 begin
   JvDatabaseActionList1.DataComponent := DBgrid1;
+end;
+
+procedure TJvDBActionMainFrm.JvDatabaseSimpleAction2CheckEnabled(aDataset:
+    TDataSet; aDataComponent: TComponent; aDatabaseControlEngine:
+    TJvDatabaseActionBaseControlEngine; var aEnabled: Boolean);
+begin
+  if Enabled and Assigned(aDataset) and Assigned(aDataset.FindField('AGE')) then
+    aEnabled := aDataset.FieldByName('AGE').AsFloat >= 50
+  else
+    aEnabled := False;
 end;
 
 procedure TJvDBActionMainFrm.JvDBGrid1Enter(Sender: TObject);

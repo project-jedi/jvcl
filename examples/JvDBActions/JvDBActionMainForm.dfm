@@ -199,6 +199,14 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Caption = 'Show SQL'
     TabOrder = 12
   end
+  object Button1: TButton
+    Left = 630
+    Top = 545
+    Width = 75
+    Height = 25
+    Action = JvDatabaseSimpleAction2
+    TabOrder = 13
+  end
   object JvCsvDataSet2: TJvCsvDataSet
     FieldDefs = <
       item
@@ -244,6 +252,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     CaseInsensitive = False
     AutoBackupCount = 0
     StoreDefs = True
+    AlwaysEnquoteStrings = False
     Left = 123
     Top = 86
     object JvCsvDataSet1NAME: TStringField
@@ -280,8 +289,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Top = 86
   end
   object JvDatabaseActionList1: TJvDatabaseActionList
-    Left = 315
-    Top = 525
+    Left = 325
+    Top = 420
     object JvDatabaseSingleRecordWindowAction1: TJvDatabaseSingleRecordWindowAction
       Category = 'JVCL-DB'
       Caption = 'Single Record Window'
@@ -380,6 +389,12 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     object JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction
       Category = 'JVCL-DB'
       Caption = 'JvDatabaseShowSQLStatementAction1'
+    end
+    object JvDatabaseSimpleAction2: TJvDatabaseSimpleAction
+      Category = 'JVCL-DB'
+      Caption = 'Age > 40'
+      Enabled = False
+      OnCheckEnabled = JvDatabaseSimpleAction2CheckEnabled
     end
   end
 end
