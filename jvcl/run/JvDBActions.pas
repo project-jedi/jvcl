@@ -90,6 +90,10 @@ type
     DataComponent: TComponent) of object;
   TJvDatabaseExecuteDataSourceEvent = procedure(Sender: TObject; DataSource: TDataSource) of object;
 
+  TJvDatabaseActionCheckEnabledEvent = procedure(aDataset : TDataset;aDataComponent : TComponent;
+      aDatabaseControlEngine: TJvDatabaseActionBaseControlEngine; var aEnabled : Boolean)
+      of object;
+
   TJvDatabaseBaseAction = class(TJvActionEngineBaseAction)
   private
     FDatabaseControlEngine: TJvDatabaseActionBaseControlEngine;
@@ -97,12 +101,13 @@ type
     FOnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent;
     FDatasetEngine: TJvDatabaseActionBaseDatasetEngine;
     FOnChangeDataComponent: TJvChangeDataComponent;
+    FOnCheckEnabled: TJvDatabaseActionCheckEnabledEvent;
   protected
     //1 This Procedure is called when the ActionComponent is changed
     procedure ChangeActionComponent(const AActionComponent: TComponent); override;
+    procedure CheckEnabled(var AEnabled: Boolean); override;
     function GetDataComponent: TComponent;
     procedure SetDataComponent(Value: TComponent);
-    procedure SetEnabled(Value: Boolean);
     function GetDataSet: TDataSet;
     function GetDataSource: TDataSource;
     function EngineIsActive: Boolean;
@@ -135,6 +140,8 @@ type
   published
     property OnChangeDataComponent: TJvChangeDataComponent read
         FOnChangeDataComponent write FOnChangeDataComponent;
+    property OnCheckEnabled: TJvDatabaseActionCheckEnabledEvent read
+        FOnCheckEnabled write FOnCheckEnabled;
     property OnExecute: TJvDatabaseExecuteEvent read FOnExecute write FOnExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
       read FOnExecuteDataSource write FOnExecuteDataSource;
@@ -560,6 +567,12 @@ begin
     FDatasetEngine := nil;
 end;
 
+procedure TJvDatabaseBaseAction.CheckEnabled(var AEnabled: Boolean);
+begin
+  if Assigned(fOnCheckEnabled) then
+    fOnCheckEnabled (DataSet, DataComponent, DatabaseControlEngine, aEnabled);
+end;
+
 function TJvDatabaseBaseAction.GetDataSet: TDataSet;
 begin
   if Assigned(DatabaseControlEngine) then
@@ -579,12 +592,6 @@ end;
 procedure TJvDatabaseBaseAction.SetDataComponent(Value: TComponent);
 begin
   ActionComponent := Value;
-end;
-
-procedure TJvDatabaseBaseAction.SetEnabled(Value: Boolean);
-begin
-  if Enabled <> Value then
-    Enabled := Value;
 end;
 
 function TJvDatabaseBaseAction.EngineIsActive: Boolean;

@@ -85,11 +85,14 @@ type
     procedure SetActionComponent(const Value: TComponent); virtual;
     //1 This Procedure is called when the ActionComponent is changed
     procedure ChangeActionComponent(const AActionComponent: TComponent); virtual;
+    procedure CheckEnabled(var AEnabled: Boolean); virtual;
+    procedure SetEnabled(Value: Boolean);
     property ControlEngine: TJvActionBaseEngine read GetControlEngine;
     property EngineList: TJvActionEngineList read GetEngineList;
     property ActionComponent: TComponent read FActionComponent write
         SetActionComponent;
     property LastTarget: TObject read FLastTarget;
+    //1 Use this event to check the Enabled Flag depending on properties of the ActionComponent
     property OnChangeActionComponent: TJvChangeActionComponent read
         FOnChangeActionComponent write FOnChangeActionComponent;
   public
@@ -245,8 +248,6 @@ begin
   end;
 end;
 
-//=== { TJvActionEngineBaseAction } ========================================
-
 procedure TJvActionEngineBaseAction.ChangeActionComponent(const
     AActionComponent: TComponent);
 begin
@@ -254,6 +255,17 @@ begin
     AActionComponent.FreeNotification(Self);
   if Assigned(OnChangeActionComponent) then
     OnChangeActionComponent(AActionComponent);
+end;
+
+procedure TJvActionEngineBaseAction.CheckEnabled(var AEnabled: Boolean);
+begin
+end;
+
+procedure TJvActionEngineBaseAction.SetEnabled(Value: Boolean);
+begin
+  CheckEnabled (Value);
+  if Enabled <> Value then
+    Enabled := Value;
 end;
 
 initialization
