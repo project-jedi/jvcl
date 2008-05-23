@@ -111,7 +111,8 @@ type
     property Bookmark: TBookmark read FBookmark write FBookmark;
   public
     function Locate(const KeyField, KeyValue: string; Exact,
-      CaseSensitive: Boolean; DisableControls: Boolean = True): Boolean;
+      CaseSensitive: Boolean; DisableControls: Boolean = True;
+      RightTrimmedLookup: Boolean = False): Boolean;
     property DataSet: TDataSet read FDataSet write SetDataSet;
     property IndexSwitch: Boolean read FIndexSwitch write FIndexSwitch;
   end;
@@ -397,7 +398,7 @@ begin
 end;
 
 function TJvLocateObject.Locate(const KeyField, KeyValue: string;
-  Exact, CaseSensitive: Boolean; DisableControls: Boolean): Boolean;
+  Exact, CaseSensitive: Boolean; DisableControls: Boolean; RightTrimmedLookup: Boolean): Boolean;
 var
   LookupKey: TField;
 
@@ -418,7 +419,10 @@ begin
   LookupKey := DataSet.FieldByName(KeyField);
   DataSet.CursorPosChanged;
   FLookupField := LookupKey;
-  FLookupValue := KeyValue;
+  if RightTrimmedLookup then
+    FLookupValue := TrimRight(KeyValue)
+  else
+    FLookupValue := KeyValue;
   FLookupExact := Exact;
   FCaseSensitive := CaseSensitive;
   if not IsStringType(FLookupField.DataType) then
