@@ -114,6 +114,7 @@ type
     FOnGetImage: TGetImageEvent;
     FLookupMode: Boolean;
     FUseRecordCount: Boolean;
+    FRightTrimmedLookup: Boolean;
     procedure CheckNotFixed;
     procedure SetLookupMode(Value: Boolean);
     function GetKeyValue: Variant;
@@ -202,6 +203,7 @@ type
     property Value: string read FValue write SetValue stored False;
     property DisplayValue: string read FDisplayValue write SetDisplayValue stored False;
     property KeyValue: Variant read GetKeyValue write SetKeyValue stored False;
+    property RightTrimmedLookup: Boolean read FRightTrimmedLookup write FRightTrimmedLookup default False;
     procedure SetFieldValue(Field: TField; const Value: string);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnGetImage: TGetImageEvent read FOnGetImage write FOnGetImage;
@@ -494,6 +496,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property RightTrimmedLookup;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -1568,7 +1571,7 @@ begin
   try
     if not ValueIsEmpty(AValue) and (SearchField <> nil) then
     begin
-      Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase);
+      Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase, True, RightTrimmedLookup);
       if Result then
       begin
         if SearchField = FDisplayField then
