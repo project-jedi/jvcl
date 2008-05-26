@@ -2249,6 +2249,7 @@ end;
 
 procedure TJvDynControlCxRadioGroup.ControlSetCaption(const Value: string);
 begin
+  Caption := Value;
 end;
 
 procedure TJvDynControlCxRadioGroup.ControlSetTabOrder(Value: Integer);
