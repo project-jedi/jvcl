@@ -56,6 +56,7 @@ type
     FControlOperation: TJvControlActionOperation;
     FOnCheckEnabled: TJvControlActionCheckEnabledEvent;
     FOnExecute: TJvControlActionExecuteEvent;
+    FAfterExecute: TJvControlActionExecuteEvent;
     function GetActionControl: TControl;
     function GetControlEngine: TJvControlActionEngine;
     procedure SetActionControl(const Value: TControl); virtual;
@@ -79,6 +80,8 @@ type
         write FOnCheckEnabled;                          
     property OnExecute: TJvControlActionExecuteEvent read FOnExecute write
         FOnExecute;
+    property AfterExecute: TJvControlActionExecuteEvent read FAfterExecute write
+        FAfterExecute;
   end;
 
   TJvControlCommonAction = class(TJvControlBaseAction)
@@ -162,8 +165,6 @@ uses
 constructor TJvControlBaseAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-//  if Assigned(AOwner) and (AOwner is TJvDatabaseActionList) then
-//    DataComponent := TJvDatabaseActionList(AOwner).DataComponent;
 end;
 
 procedure TJvControlBaseAction.CheckEnabled(var AEnabled: Boolean);
@@ -181,6 +182,8 @@ begin
       ControlEngine.ExecuteOperation(ControlOperation, ActionControl)
     else
       inherited ExecuteTarget(Target);
+  if Assigned(FAfterExecute) then
+    FAfterExecute(Self, ControlOperation, ActionControl)
 end;
 
 function TJvControlBaseAction.GetActionControl: TControl;
@@ -190,7 +193,6 @@ end;
 
 function TJvControlBaseAction.GetControlEngine: TJvControlActionEngine;
 begin
-  // TODO -cMM: TJvControlBaseAction.GetControlEngine default body inserted
   Result := TJvControlActionEngine(inherited ControlEngine);
 end;
 
@@ -208,8 +210,6 @@ begin
       Result := False
   else
     Result := False;
-//  if Result then
-//    Result := Assigned(ControlEngine);
 end;
 
 procedure TJvControlBaseAction.Notification(AComponent: TComponent; Operation: TOperation);
@@ -217,14 +217,10 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-//=== { TJvActionEngineBaseAction } ========================================
-
 procedure TJvControlBaseAction.SetActionComponent(const Value: TComponent);
 begin
   inherited SetActionComponent(Value);
 end;
-
-//=== { TJvDatabaseActionBaseEngine } ========================================
 
 procedure TJvControlBaseAction.SetActionControl(const Value: TControl);
 begin

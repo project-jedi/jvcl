@@ -99,6 +99,7 @@ type
     FDatabaseControlEngine: TJvDatabaseActionBaseControlEngine;
     FOnExecute: TJvDatabaseExecuteEvent;
     FOnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent;
+    fAfterExecute: TJvDatabaseExecuteEvent;
     FDatasetEngine: TJvDatabaseActionBaseDatasetEngine;
     FOnChangeDataComponent: TJvChangeDataComponent;
     FOnCheckEnabled: TJvDatabaseActionCheckEnabledEvent;
@@ -143,6 +144,7 @@ type
     property OnCheckEnabled: TJvDatabaseActionCheckEnabledEvent read
         FOnCheckEnabled write FOnCheckEnabled;
     property OnExecute: TJvDatabaseExecuteEvent read FOnExecute write FOnExecute;
+    property AfterExecute: TJvDatabaseExecuteEvent read FAfterExecute write FAfterExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
       read FOnExecuteDataSource write FOnExecuteDataSource;
     property DataComponent: TComponent read GetDataComponent write SetDataComponent;
@@ -738,13 +740,15 @@ end;
 
 procedure TJvDatabaseBaseAction.ExecuteTarget(Target: TObject);
 begin
-  if Assigned(FOnExecute) and Assigned(DatabaseControlEngine) then
+  if Assigned(FOnExecute) then
     FOnExecute(Self, DatabaseControlEngine, DataComponent)
   else
     if Assigned(FOnExecuteDataSource) then
       FOnExecuteDataSource(Self, DataSource)
     else
       inherited ExecuteTarget(Target);
+  if Assigned(FAfterExecute) then
+    FAfterExecute(Self, DatabaseControlEngine, DataComponent)
 end;
 
 function TJvDatabaseBaseAction.GetDataComponent: TComponent;

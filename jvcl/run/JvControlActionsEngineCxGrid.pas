@@ -30,13 +30,13 @@ unit JvControlActionsEngineCxGrid;
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Forms, Controls, Classes, DB,
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGridCustomTableView, cxDBData, cxGridCustomView, cxGrid,
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvControlActionsEngine;
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
@@ -45,13 +45,14 @@ type
   private
   protected
     procedure ExportGrid(aGrid: TcxGrid);
-    function GetGridTableView(AActionComponent: TComponent): TcxCustomGridTableView;
+    function GetGridTableView(AActionComponent: TComponent):
+      TcxCustomGridTableView;
     function GetGridView(AActionComponent: TComponent): TcxCustomGridView;
     function GetGrid(AActionComponent: TComponent): TcxGrid;
     function GetSupportedOperations: TJvControlActionOperations; override;
   public
     function ExecuteOperation(const aOperation: TJvControlActionOperation; const
-        aActionControl: TControl): Boolean; override;
+      aActionControl: TControl): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
   end;
 
@@ -60,7 +61,8 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
+    RCSfile:
+      '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
@@ -70,13 +72,13 @@ const
 implementation
 
 uses
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGridDBDataDefinitions, cxGridDBChartView,
   cxCustomData, cxGridExportLink,
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  {$IFDEF HAS_UNIT_VARIANTS}
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+{$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Dialogs;
 
 //=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
@@ -84,20 +86,29 @@ uses
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
 function TJvControlActioncxGridEngine.ExecuteOperation(const aOperation:
-    TJvControlActionOperation; const aActionControl: TControl): Boolean;
+  TJvControlActionOperation; const aActionControl: TControl): Boolean;
 begin
-  Result := false;
-  if Assigned(GetGridTableView(aActionControl)) then
-    Case aOperation of
-      caoCollapse : GetGridTableView(aActionControl).Datacontroller.Groups.FullCollapse;
-      caoExpand : GetGridTableView(aActionControl).Datacontroller.Groups.FullExpand;
-      caoOptimizeColumns : GetGridTableView(aActionControl).ApplyBestFit;
-    End
+  Result := true;
+  case aOperation of
+    caoCollapse: if Assigned(GetGridTableView(aActionControl)) then
+        GetGridTableView(aActionControl).Datacontroller.Groups.FullCollapse
+      else
+        Result := false;
+    caoExpand: if Assigned(GetGridTableView(aActionControl)) then
+        GetGridTableView(aActionControl).Datacontroller.Groups.FullExpand
+      else
+        Result := false;
+    caoOptimizeColumns: if Assigned(GetGridTableView(aActionControl)) then
+        GetGridTableView(aActionControl).ApplyBestFit
+      else
+        Result := false;
+    caoExport: if Assigned(GetGridView(aActionControl)) then
+        ExportGrid(GetGrid(aActionControl))
+      else
+        Result := false;
   else
-    if Assigned(GetGridView(aActionControl)) then
-    Case aOperation of
-      caoExport : ExportGrid(GetGrid(aActionControl));
-    End
+    Result := False
+  end;
 end;
 
 procedure TJvControlActioncxGridEngine.ExportGrid(aGrid: TcxGrid);
@@ -110,20 +121,25 @@ begin
   try
     with SaveDialog do
     begin
-      Name    := 'SaveDialog';
+      Name := 'SaveDialog';
       DefaultExt := 'XLS';
-      Filter  := 'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
+      Filter :=
+        'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
       Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
     end;
     if SaveDialog.Execute then
       if SaveDialog.FileName <> '' then
       begin
-        if (Pos('.XLS', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) then
+        if (Pos('.XLS', UpperCase(SaveDialog.FileName)) =
+          Length(SaveDialog.FileName) - 3) then
           ExportGridToExcel(SaveDialog.FileName, aGrid)
-        else if (Pos('.XML', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) then
+        else if (Pos('.XML', UpperCase(SaveDialog.FileName)) =
+          Length(SaveDialog.FileName) - 3) then
           ExportGridToXML(SaveDialog.FileName, aGrid)
-        else if ((Pos('.HTM', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) or
-          (Pos('.HTML', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 4)) then
+        else if ((Pos('.HTM', UpperCase(SaveDialog.FileName)) =
+          Length(SaveDialog.FileName) - 3) or
+          (Pos('.HTML', UpperCase(SaveDialog.FileName)) =
+            Length(SaveDialog.FileName) - 4)) then
           ExportGridToHTML(SaveDialog.FileName, aGrid)
         else
           ExportGridToText(SaveDialog.FileName, aGrid);
@@ -134,7 +150,7 @@ begin
 end;
 
 function TJvControlActioncxGridEngine.GetGridTableView(AActionComponent:
-    TComponent): TcxCustomGridTableView;
+  TComponent): TcxCustomGridTableView;
 begin
   if Assigned(AActionComponent) then
     if AActionComponent is TcxGridSite then
@@ -150,7 +166,7 @@ begin
 end;
 
 function TJvControlActioncxGridEngine.GetGridView(AActionComponent:
-    TComponent): TcxCustomGridView;
+  TComponent): TcxCustomGridView;
 begin
   if Assigned(AActionComponent) then
     if AActionComponent is TcxGridSite then
@@ -162,7 +178,7 @@ begin
 end;
 
 function TJvControlActioncxGridEngine.GetGrid(AActionComponent: TComponent):
-    TcxGrid;
+  TcxGrid;
 begin
   if Assigned(AActionComponent) then
     if AActionComponent is TcxGridSite then
@@ -174,13 +190,13 @@ begin
 end;
 
 function TJvControlActioncxGridEngine.GetSupportedOperations:
-    TJvControlActionOperations;
+  TJvControlActionOperations;
 begin
   Result := [caoCollapse, caoExpand, caoOptimizeColumns, caoExport];
 end;
 
 function TJvControlActioncxGridEngine.SupportsComponent(aActionComponent:
-    TComponent): Boolean;
+  TComponent): Boolean;
 begin
   Result := Assigned(GetGridView(AActionComponent));
 end;
@@ -189,22 +205,21 @@ end;
 
 procedure InitActionEngineList;
 begin
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   RegisterControlActionEngine(TJvControlActioncxGridEngine);
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 end;
 
-
 initialization
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   InitActionEngineList;
 
 finalization
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 
