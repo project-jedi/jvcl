@@ -409,7 +409,6 @@ type
 
   TJvListBoxParameter = class(TJvListParameter)
   private
-    FSorted: Boolean;
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
@@ -417,7 +416,6 @@ type
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property Sorted: Boolean read FSorted write FSorted;
   end;
 
   TJvCheckListItemDataWrapper = class(TObject)
@@ -436,7 +434,6 @@ type
 
   TJvCheckListBoxParameter = class(TJvListParameter)
   private
-    FSorted: Boolean;
     FAllowGrayed: Boolean;
   protected
     function GetParameterNameExt: string; override;
@@ -455,7 +452,6 @@ type
       AItemEnabled: Boolean = True; AHeader: Boolean = False);
     property ItemData[Index: Integer]: TJvCheckListItemDataWrapper read GetItemData write SetItemData;
   published
-    property Sorted: Boolean read FSorted write FSorted;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
   end;
 
