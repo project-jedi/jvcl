@@ -4035,11 +4035,6 @@ begin
     to1   := CsvRowGetColumnMarker(RowItem, count);
     result := Copy(RowItem^.Text,from1,to1);
   end;
-
-
-
-
-
 end;
 
 // convert String into a CSV Row buffer
@@ -4090,7 +4085,7 @@ begin
     begin
       if PermitEscapeSequences then
       begin
-        QuoteFlag := not QuoteFlag;
+        QuoteFlag := (CharsInColumn = 1);
         if QuoteFlag and (CharsInColumn > 1) then
         begin
           // (rom) no OutputDebugString in production code
