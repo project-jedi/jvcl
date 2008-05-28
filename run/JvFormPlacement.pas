@@ -24,7 +24,7 @@ Known Issues:
 // $Id$
 
 unit JvFormPlacement;
-
+                                              
 {$I jvcl.inc}
 
 interface
@@ -799,6 +799,9 @@ end;
 
 procedure TJvFormPlacement.SaveFormPlacement;
 begin
+  
+  ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
+  
   if Assigned(AppStorage) then
   begin
     if Assigned(FBeforeSavePlacement) then
@@ -819,6 +822,9 @@ var
   ReadVersion: Integer;
   ContinueRestore: Boolean;
 begin
+  
+  ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
+
   if Assigned(AppStorage) then
   begin
     FSaved := False;
@@ -1356,14 +1362,30 @@ begin
 end;
 
 procedure TJvFormPlacement.ResolveAppStoragePath;
+  
+  function GetFullFrameName(AOwner: TComponent): String;
+  var
+    Own: String;
+  begin
+    if AOwner = nil then
+      Result := ''
+    else
+      begin
+        Own := GetFullFrameName(AOwner.Owner);
+        if Own <> '' then
+          Own := Own + '.';
+        Result := Own + AOwner.Name;
+      end;
+  end;
+
 begin
   if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
     Assigned(Owner) then
     if (Owner is TCustomForm) then
       StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase])
     else if (Owner is TCustomFrame) then
-      if Assigned(TCustomFrame(Owner).Owner) and (TCustomFrame(Owner).Owner is TCustomForm) then
-        StrReplace(FAppStoragePath, cFormNameMask, TCustomFrame(Owner).Owner.Name, [rfIgnoreCase])
+      StrReplace(FAppStoragePath, cFormNameMask,
+        GetFullFrameName(Owner), [rfIgnoreCase])
 end;
 
 { TJvFormStorageStringList }
