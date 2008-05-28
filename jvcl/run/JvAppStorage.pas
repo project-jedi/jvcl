@@ -94,6 +94,9 @@ uses
   Windows,
   {$ENDIF COMPILER9_UP}
   {$ENDIF CLR}
+  {$IFDEF COMPILER10_UP}
+  WideStrings,
+  {$ENDIF COMPILER10_UP}
   SysUtils, Classes, TypInfo,
   JclBase,
   JvVCL5Utils, JvComponentBase, JvTypes, JvTranslateString;
@@ -250,6 +253,17 @@ type
     { ObjectList item deleter used by WriteObjectList in the call to WriteList. }
     procedure DeleteObjectListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer; const ItemName: string);
+    {$IFDEF COMPILER10_UP}
+    { StringList item reader used by ReadWideStringList in the call to ReadList. }
+    procedure ReadWideStringListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer; const ItemName: string);
+    { StringList item writer used by WriteStringList in the call to WriteList. }
+    procedure WriteWideStringListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer; const ItemName: string);
+    { StringList item deleter used by WriteStringList in the call to WriteList. }
+    procedure DeleteWideStringListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer; const ItemName: string);
+    {$ENDIF}
 
     { StringList item reader used by ReadStringObjectList in the call to ReadList. }
     procedure ReadStringObjectListItem(Sender: TJvCustomAppStorage; const Path: string;
@@ -561,6 +575,16 @@ type
     { Stores a string list. Uses WriteList with internally provided methods to do the actual
       storing. }
     procedure WriteStringList(const Path: string; const SL: TStrings; const ItemName: string = cItem);
+    {$IFDEF COMPILER10_UP}
+    { Retrieves a wide string list. The string list is optionally cleared before reading starts. The
+      result value is the number of items read. Uses ReadList with internally provided methods to
+      do the actual reading. }
+    function ReadWideStringList(const Path: string; const SL: TWideStrings;
+      const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
+    { Stores a WideString list. Uses WriteList with internally provided methods to do the actual
+      storing. }
+    procedure WriteWideStringList(const Path: string; const SL: TWideStrings; const ItemName: string = cItem);
+    {$ENDIF}
     { Retrieves an enumeration. If the value is not found, the Default will be returned. }
     procedure ReadEnumeration(const Path: string; TypeInfo: PTypeInfo;
       const Default; out Value);
@@ -1411,6 +1435,32 @@ begin
       Sender.DeleteValue(ConcatPaths([Path, ItemName + IntToStr(I)]));
 end;
 
+{$IFDEF COMPILER10_UP}
+procedure TJvCustomAppStorage.ReadWideStringListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
+begin
+  if List is TWideStrings then
+    TWideStrings(List).Add(Sender.ReadWideString(ConcatPaths([Path, ItemName + IntToStr(Index)])));
+end;
+
+procedure TJvCustomAppStorage.WriteWideStringListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
+begin
+  if List is TWideStrings then
+    Sender.WriteWideString(ConcatPaths([Path, ItemName + IntToStr(Index)]), TWideStrings(List)[Index]);
+end;
+
+procedure TJvCustomAppStorage.DeleteWideStringListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const First, Last: Integer; const ItemName: string);
+var
+  I: Integer;
+begin
+  if List is TWideStrings then
+    for I := First to Last do
+      Sender.DeleteValue(ConcatPaths([Path, ItemName + IntToStr(I)]));
+end;
+{$ENDIF}
+
 function TJvCustomAppStorage.DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage;
   const Path: string; Index: Integer): TPersistent;
 var
@@ -2217,6 +2267,34 @@ begin
     WritePersistent(Path,SL);
   end;
 end;
+
+{$IFDEF COMPILER10_UP}
+function TJvCustomAppStorage.ReadWideStringList(const Path: string; const SL: TWideStrings;
+  const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
+begin
+  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
+    Result := SL.Count
+  else
+  begin
+    SL.BeginUpdate;
+    try
+      if ClearFirst then
+        SL.Clear;
+      ReadPersistent(Path,SL,True,False);
+      Result := ReadList(Path, SL, ReadWideStringListItem, ItemName);
+    finally
+      SL.EndUpdate;
+    end;
+  end;
+end;
+
+procedure TJvCustomAppStorage.WriteWideStringList(const Path: string;
+  const SL: TWideStrings; const ItemName: string = cItem);
+begin
+  WriteList(Path, SL, SL.Count, WriteWideStringListItem, DeleteWideStringListItem, ItemName);
+  WritePersistent(Path,SL);
+end;
+{$ENDIF}
 
 function TJvCustomAppStorage.ReadStringObjectList(const Path: string; const SL: TStrings;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
