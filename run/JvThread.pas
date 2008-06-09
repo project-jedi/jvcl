@@ -663,11 +663,12 @@ begin
   FRunOnCreate := True;
   try
     Thread := Execute(P);
-    while Assigned(Thread) and (not Thread.Finished) do  // wait for this thread
-      Application.HandleMessage;
   finally
     FRunOnCreate := B;
   end;
+  if Assigned(Thread) then
+    while (not Thread.Finished) do  // wait for this thread
+      Application.HandleMessage;
 end;
 
 procedure TJvThread.Resume(BaseThread: TJvBaseThread);
@@ -676,13 +677,13 @@ var
 begin
   if Assigned(BaseThread) then
   begin
+    CreateThreadDialogForm;
     B := BaseThread.FOnResumeDone;
     BaseThread.Resume;
-    if (not B) and Assigned(BaseThread) and
+    if (not B) and
        (not BaseThread.FInternalTerminate) and
        (not BaseThread.Finished) then
     begin
-      CreateThreadDialogForm;
       ShowThreadDialogForm;
     end;
   end
