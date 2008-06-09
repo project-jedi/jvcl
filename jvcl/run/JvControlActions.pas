@@ -68,9 +68,9 @@ type
     property ControlEngine: TJvControlActionEngine read GetControlEngine;
   public
     constructor Create(AOwner: TComponent); override;
+    function Execute: Boolean; override;
     procedure UpdateTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): Boolean; override;
-    function ExecuteAction(Action: TBasicAction): Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property ActionControl: TControl read GetActionControl write SetActionControl;
@@ -174,9 +174,9 @@ begin
     fOnCheckEnabled (ActionControl, ControlOperation, aEnabled);
 end;
 
-function TJvControlBaseAction.ExecuteAction(Action: TBasicAction): Boolean;
+function TJvControlBaseAction.Execute: Boolean;
 begin
-  Result := inherited ExecuteAction(Action);
+  Result := inherited Execute;
   if Result and Assigned(FAfterExecute) then
     FAfterExecute(Self, ControlOperation, ActionControl)
 end;
@@ -188,7 +188,7 @@ begin
   else
     if Assigned(ControlEngine) then
       ControlEngine.ExecuteOperation(ControlOperation, ActionControl)
-    else
+    else                                                  
       inherited ExecuteTarget(Target);
 end;
 
