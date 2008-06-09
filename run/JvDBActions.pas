@@ -133,7 +133,7 @@ type
     property DatasetEngine: TJvDatabaseActionBaseDatasetEngine read FDatasetEngine;
   public
     constructor Create(AOwner: TComponent); override;
-    function ExecuteAction(Action: TBasicAction): Boolean; override;
+    function Execute: Boolean; override;
     procedure UpdateTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
@@ -725,9 +725,9 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseBaseAction.ExecuteAction(Action: TBasicAction): Boolean;
+function TJvDatabaseBaseAction.Execute: Boolean;
 begin
-  Result := inherited ExecuteAction(Action);
+  Result := inherited Execute;
   if Result and Assigned(FAfterExecute) then
     FAfterExecute(Self, DatabaseControlEngine, DataComponent)
 end;
