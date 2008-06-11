@@ -2,7 +2,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   Left = 349
   Top = 48
   Caption = 'JvDBActionMainFrm'
-  ClientHeight = 606
+  ClientHeight = 625
   ClientWidth = 862
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,14 +14,14 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   OnCreate = FormCreate
   DesignSize = (
     862
-    606)
+    625)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
     Left = 3
     Top = 30
     Width = 785
-    Height = 223
+    Height = 242
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
@@ -118,17 +118,17 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     TabOrder = 5
   end
   object BitBtn5: TBitBtn
-    Left = 503
-    Top = 545
-    Width = 121
+    Left = 720
+    Top = 570
+    Width = 91
     Height = 25
     Action = JvDatabasePositionAction1
     Caption = '0/0'
     TabOrder = 6
   end
   object BitBtn6: TBitBtn
-    Left = 15
-    Top = 570
+    Left = 593
+    Top = 545
     Width = 121
     Height = 25
     Action = JvDatabaseSingleRecordWindowAction1
@@ -164,7 +164,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     TitleRowHeight = 17
   end
   object BitBtn7: TBitBtn
-    Left = 135
+    Left = 15
     Top = 570
     Width = 121
     Height = 25
@@ -182,7 +182,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     TabOrder = 10
   end
   object BitBtn9: TBitBtn
-    Left = 376
+    Left = 375
     Top = 570
     Width = 121
     Height = 25
@@ -191,7 +191,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     TabOrder = 11
   end
   object BitBtn10: TBitBtn
-    Left = 503
+    Left = 593
     Top = 570
     Width = 121
     Height = 25
@@ -200,12 +200,21 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     TabOrder = 12
   end
   object Button1: TButton
-    Left = 630
+    Left = 720
     Top = 545
-    Width = 75
+    Width = 91
     Height = 25
     Action = JvDatabaseSimpleAction2
     TabOrder = 13
+  end
+  object BitBtn11: TBitBtn
+    Left = 135
+    Top = 570
+    Width = 121
+    Height = 25
+    Action = JvDatabaseEditAction1
+    Caption = 'Edit Record'
+    TabOrder = 14
   end
   object JvCsvDataSet2: TJvCsvDataSet
     FieldDefs = <
@@ -311,90 +320,136 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
       Category = 'JVCL-DB'
       Caption = 'First Record'
       ImageIndex = 8
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseLastAction1: TJvDatabaseLastAction
       Category = 'JVCL-DB'
       Caption = 'Last Record'
       ImageIndex = 12
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseNextAction1: TJvDatabaseNextAction
       Category = 'JVCL-DB'
       Caption = 'Next Record'
       ImageIndex = 13
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabasePriorAction1: TJvDatabasePriorAction
       Category = 'JVCL-DB'
       Caption = 'Prior Record'
       ImageIndex = 16
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseNextBlockAction1: TJvDatabaseNextBlockAction
       Category = 'JVCL-DB'
       Caption = 'Next Record Block'
       ImageIndex = 14
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabasePriorBlockAction1: TJvDatabasePriorBlockAction
       Category = 'JVCL-DB'
       Caption = 'Prior Record Block'
       ImageIndex = 17
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabasePositionAction1: TJvDatabasePositionAction
       Category = 'JVCL-DB'
       Caption = '0/0'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseRefreshAction1: TJvDatabaseRefreshAction
       Category = 'JVCL-DB'
       Caption = 'Refresh'
       ImageIndex = 18
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseInsertAction1: TJvDatabaseInsertAction
       Category = 'JVCL-DB'
       Caption = 'Insert Record'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseCopyAction1: TJvDatabaseCopyAction
       Category = 'JVCL-DB'
       Caption = 'Copy Record'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseEditAction1: TJvDatabaseEditAction
       Category = 'JVCL-DB'
       Caption = 'Edit Record'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseDeleteAction1: TJvDatabaseDeleteAction
       Category = 'JVCL-DB'
       Caption = 'Delete Record'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabasePostAction1: TJvDatabasePostAction
       Category = 'JVCL-DB'
       Caption = 'Post Changes'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseCancelAction1: TJvDatabaseCancelAction
       Category = 'JVCL-DB'
       Caption = 'Cancel Changes'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseSimpleAction1: TJvDatabaseSimpleAction
       Category = 'JVCL-DB'
       Caption = 'JvDatabaseSimpleAction1'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseOpenAction1: TJvDatabaseOpenAction
       Category = 'JVCL-DB'
       Caption = 'Open'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseCloseAction1: TJvDatabaseCloseAction
       Category = 'JVCL-DB'
       Caption = 'Close'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction
       Category = 'JVCL-DB'
       Caption = 'Modify All'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction
       Category = 'JVCL-DB'
       Caption = 'JvDatabaseShowSQLStatementAction1'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
     object JvDatabaseSimpleAction2: TJvDatabaseSimpleAction
       Category = 'JVCL-DB'
       Caption = 'Age > 40'
       Enabled = False
+      OnExecute = JvDatabaseFirstAction1Execute
       OnCheckEnabled = JvDatabaseSimpleAction2CheckEnabled
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
+    end
+    object JvDatabaseEditAction2: TJvDatabaseEditAction
+      Category = 'JVCL-DB'
+      Caption = 'Edit Record'
+      OnExecute = JvDatabaseFirstAction1Execute
+      AfterExecute = JvDatabaseFirstAction1AfterExecute
     end
   end
 end
