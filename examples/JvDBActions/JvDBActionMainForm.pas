@@ -82,8 +82,14 @@ type
     JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction;
     JvDatabaseSimpleAction2: TJvDatabaseSimpleAction;
     Button1: TButton;
+    BitBtn11: TBitBtn;
+    JvDatabaseEditAction2: TJvDatabaseEditAction;
     procedure FormCreate(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
+    procedure JvDatabaseFirstAction1AfterExecute(Sender: TObject; ControlEngine:
+        TJvDatabaseActionBaseControlEngine; DataComponent: TComponent);
+    procedure JvDatabaseFirstAction1Execute(Sender: TObject; ControlEngine:
+        TJvDatabaseActionBaseControlEngine; DataComponent: TComponent);
     procedure JvDatabaseSimpleAction2CheckEnabled(aDataset: TDataSet;
         aDataComponent: TComponent; aDatabaseControlEngine:
         TJvDatabaseActionBaseControlEngine; var aEnabled: Boolean);
@@ -114,6 +120,40 @@ end;
 procedure TJvDBActionMainFrm.DBGrid1Enter(Sender: TObject);
 begin
   JvDatabaseActionList1.DataComponent := DBgrid1;
+end;
+
+
+function StateName( MyState: TDataSetState):string;
+begin
+   case MyState of
+      dsInactive     : Result := 'sInactive';
+      dsBrowse       : Result := 'dsBrowse';
+      dsEdit         : Result := 'dsEdit';
+      dsInsert       : Result := 'dsInsert';
+      dsSetKey       : Result := 'dsSetKey';
+      dsCalcFields   : Result := 'dsCalcFields';
+      dsFilter       : Result := 'dsFilter';
+      dsNewValue     : Result := 'dsNewValue';
+      dsOldValue     : Result := 'dsOldValue';
+      dsCurValue     : Result := 'dsCurValue';
+      dsBlockRead    : Result := 'dsBlockRead';
+      dsInternalCalc : Result := 'dsInternalCalc';
+      dsOpening      : Result := 'dsOpening';
+   end;
+end;
+
+procedure TJvDBActionMainFrm.JvDatabaseFirstAction1AfterExecute(Sender:
+    TObject; ControlEngine: TJvDatabaseActionBaseControlEngine; DataComponent:
+    TComponent);
+begin
+   showmessage(TComponent(Sender).Name+' AfterExecute: '+StateName(JvCsvDataSet2.State));
+end;
+
+procedure TJvDBActionMainFrm.JvDatabaseFirstAction1Execute(Sender: TObject;
+    ControlEngine: TJvDatabaseActionBaseControlEngine; DataComponent:
+    TComponent);
+begin
+   showmessage(TComponent(Sender).Name+' OnExecute: '+StateName(JvCsvDataSet2.State));
 end;
 
 procedure TJvDBActionMainFrm.JvDatabaseSimpleAction2CheckEnabled(aDataset:
