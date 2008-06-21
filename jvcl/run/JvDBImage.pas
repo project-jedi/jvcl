@@ -167,6 +167,10 @@ begin
 end;
 
 procedure TJvDBImage.AssignGraphicTo(Picture: TPicture);
+{$IFDEF COMPILER5}
+type
+  TBitmapClass = class of TBitmap;
+{$ENDIF COMPILER5}
 var
   Graphic: TGraphic;
   GraphicClass: TGraphicClass;
@@ -191,6 +195,13 @@ begin
     // If we got one, load it..
     if GraphicClass <> nil then
     begin
+      {$IFDEF COMPILER5}
+      // D5 workaround: somehow the overridden constructor is not called if
+      // GraphicClass is TGraphicClass
+      if GraphicClass.InheritsFrom(TBitmap) then
+        Graphic := TBitmapClass(GraphicClass).Create
+      else
+      {$ENDIF COMPILER5}
       Graphic := GraphicClass.Create;
       try
         Stream.Position := 0;
