@@ -125,19 +125,15 @@ type
     FOutline: TJvFrameStyle;
     FWordWrap: Boolean;
 
-    { former TJvTransparentButton }
     FGlyph: TBitmap;
     FGrayGlyph: TBitmap;
     FDisabledGlyph: TBitmap;
     FNumGlyphs: TNumGlyphs;
-    { former TJvTransparentButton2 }
     FKeepMouseLeavePressed: Boolean;
     FImages: TJvTransparentButtonImages;
-    { former TJvTransparentButton }
     procedure SetGlyph(Bmp: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
     procedure CalcGlyphCount;
-    { former TJvTransparentButton2 }
     procedure SetImages(Value: TJvTransparentButtonImages);
 
     procedure SetWordWrap(Value: Boolean);
@@ -156,11 +152,9 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure GlyphChanged(Sender: TObject);
 
-    { former TJvTransparentButton }
     procedure AddGlyphGlyphs(AGlyph: TBitmap; AColor: TColor; Value: Integer);
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
 
-    { former TJvTransparentButton2 }
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AddImageGlyphs;
   public
@@ -217,10 +211,8 @@ type
     property OnParentColorChange;
     property OnStartDrag;
 
-    { former TJvTransparentButton }
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs default 1;
-    { former TJvTransparentButton2 }
     property KeepMouseLeavePressed: Boolean read FKeepMouseLeavePressed write FKeepMouseLeavePressed default False;
     property Images: TJvTransparentButtonImages read FImages write SetImages;
   end;
@@ -296,7 +288,7 @@ begin
 end;
 
 { create a disabled bitmap from a regular one, works best when bitmap has been
-reduced to a few colors. Used by BWBitmap }
+  reduced to a few colors. Used by BWBitmap }
 
 procedure DisabledBitmap(Bmp: TBitmap);
 var
@@ -412,9 +404,7 @@ begin
     Result := False;
 end;
 
-
 {$IFDEF COMPILER6_UP}
-
 function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := False;
@@ -423,9 +413,7 @@ end;
 procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
 begin
 end;
-
 {$ENDIF COMPILER6_UP}
-
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin
@@ -455,14 +443,19 @@ begin
 
   FGrayLink := TChangeLink.Create;
   FGrayLink.OnChange := AButton.GlyphChanged;
+
   FActiveLink := TChangeLink.Create;
   FActiveLink.OnChange := AButton.GlyphChanged;
+
   FDisabledLink := TChangeLink.Create;
   FDisabledLink.OnChange := AButton.GlyphChanged;
+
   FDownLink := TChangeLink.Create;
   FDownLink.OnChange := AButton.GlyphChanged;
+
   FHotLink := TChangeLink.Create;
   FHotLink.OnChange := AButton.GlyphChanged;
+
   FActiveIndex := -1;
   FDisabledIndex := -1;
   FDownIndex := -1;
@@ -610,10 +603,8 @@ begin
   FWordWrap := False;
   FOutline := fsExplorer;
 
-  { former TJvTransparentButton2 }
   FImages := TJvTransparentButtonImages.Create(Self);
 
-  { former TJvTransparentButton }
   FNumGlyphs := 1;
   FGlyph := TBitmap.Create;
   FGrayGlyph := TBitmap.Create;
@@ -629,21 +620,18 @@ end;
 
 destructor TJvTransparentButton.Destroy;
 begin
-  { former TJvTransparentButton }
   FGlyph.Free;
   FGrayGlyph.Free;
   FDisabledGlyph.Free;
-  { former TJvTransparentButton2 }
-  FImages.Free;
-
-  FImList.Free;
+  // FImages.Free; // owner-destroyed
+  // FImList.Free; // owner-destroyed
   inherited Destroy;
 end;
 
 procedure TJvTransparentButton.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
+  if (Operation = opRemove) and (FImages <> nil) then
   begin
     if AComponent = FImages.FGrayList then
       FImages.GrayImage := nil;
@@ -1185,7 +1173,6 @@ begin
     Canvas.Brush.Bitmap := Pattern;
     Self.Canvas.FillRect(HelpRect);
   end;
-
 
   // Use a TIcon instead of FImList.Draw to avoid triggering Mantis 3851
   Icon := TIcon.Create;
