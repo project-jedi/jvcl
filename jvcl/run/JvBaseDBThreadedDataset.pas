@@ -291,7 +291,7 @@ type
     FIntRowCheckEnabled: Boolean;
     FIThreadedDatasetInterface: IJvThreadedDatasetInterface;
     FLastRowChecked: Integer;
-    FMoveToRecordAfterOpen: Longint;
+    FAfterOpenRecordPosition: Longint;
     FOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     FOperationWasHandledInThread: Boolean;
     FSynchMessageDlgBtn: Word;
@@ -359,6 +359,7 @@ type
     procedure IntSynchAfterRefresh;
     procedure IntSynchBeforeOpen;
     procedure IntSynchBeforeRefresh;
+    procedure MoveToRecordPositionAfterOpen;
     procedure SetError(const Msg: string = ''; Excep: Exception = nil);
     function SupportsBreakExecution: Boolean; virtual;
     procedure ThreadExecute(Sender: TObject; Params: Pointer);
@@ -867,7 +868,7 @@ procedure TJvBaseDatasetThreadHandler.BeforeOpen;
 begin
   if (IntCurrentOperation <> tdoRefresh) then
   begin
-    FMoveToRecordAfterOpen := -1;
+    FAfterOpenRecordPosition := -1;
     HandleBeforeOpenRefresh;
   end;
   ExecuteThreadSynchronize(IntSynchBeforeOpen);
@@ -876,9 +877,9 @@ end;
 procedure TJvBaseDatasetThreadHandler.BeforeRefresh;
 begin
   if EnhancedOptions.RefreshLastPosition then
-    FMoveToRecordAfterOpen := Dataset.RecNo
+    FAfterOpenRecordPosition := Dataset.RecNo
   else
-    FMoveToRecordAfterOpen := -1;
+    FAfterOpenRecordPosition := -1;
   HandleBeforeOpenRefresh;
   ExecuteThreadSynchronize(IntSynchBeforeRefresh);
 end;
@@ -1018,8 +1019,9 @@ begin
     end
     else
     begin
-      Dataset.Close;
-      IThreadedDatasetInterface.DoInternalOpen;
+      if Dataset.Active then
+        ExecuteThreadSynchronize(Dataset.Close);
+      IThreadedDatasetInterface.DoInheritedSetActive(True);
     end;
   finally
     HandleAfterOpenRefreshThread;
@@ -1160,23 +1162,20 @@ begin
           IThreadedDatasetInterface.DoInheritedInternalLast
         else
           if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or
-            (FMoveToRecordAfterOpen > Dataset.RecordCount) then
-            if FMoveToRecordAfterOpen > EnhancedOptions.FetchRowsFirst then
-              Dataset.MoveBy(FMoveToRecordAfterOpen - 1)
+            (FAfterOpenRecordPosition > Dataset.RecordCount) then
+            if FAfterOpenRecordPosition > EnhancedOptions.FetchRowsFirst then
+              Dataset.MoveBy(FAfterOpenRecordPosition - 1)
             else
               Dataset.MoveBy(EnhancedOptions.FetchRowsFirst - 1);
       end;
     end;
     Dataset.Filtered := FIntDatasetWasFiltered;
-    if Dataset.Active and (IntCurrentAction <> tdaCancel) then
-      if FMoveToRecordAfterOpen > 0 then
-        MoveTo(FMoveToRecordAfterOpen)
-      else
-        Dataset.First;
   finally
     ExecuteThreadSynchronize(Dataset.EnableControls);
     IntCurrentAction := tdaNothing;
   end;
+  if Dataset.Active and (IntCurrentAction <> tdaCancel) then
+    ExecuteThreadSynchronize(MoveToRecordPositionAfterOpen);
 end;
 
 procedure TJvBaseDatasetThreadHandler.HandleAfterOpenRefreshThread;
@@ -1263,7 +1262,14 @@ begin
   if not ThreadOptions.RefreshInThread or not IThreadedDatasetInterface.IsThreadAllowed or
     ThreadIsActive or (csDesigning in ComponentState) then
   begin
-    IThreadedDatasetInterface.DoInheritedInternalRefresh;
+    if not EnhancedOptions.RefreshAsOpenClose then
+      IThreadedDatasetInterface.DoInheritedInternalRefresh
+    else
+    begin
+      if Dataset.Active then
+        SetActive(False);
+      SetActive(True);
+    end;
     IntCurrentOperation := tdoNothing;
   end
   else
@@ -1318,7 +1324,10 @@ begin
       Exit;
     if IntCurrentOperation <> tdoRefresh then
       IntCurrentOperation := tdoOpen;
-    if not ThreadOptions.OpenInThread or ThreadIsActive or (csDesigning in ComponentState) then
+    if not (   (ThreadOptions.OpenInThread and (IntCurrentOperation = tdoOpen))
+            or (ThreadOptions.RefreshInThread and (IntCurrentOperation = tdoRefresh))
+           )
+      or ThreadIsActive or (csDesigning in ComponentState) then
     begin
       try
         IThreadedDatasetInterface.DoInheritedSetActive(Value);
@@ -1495,6 +1504,14 @@ end;
 function TJvBaseDatasetThreadHandler.ThreadIsActive: Boolean;
 begin
   Result := not ExecuteThread.Terminated;
+end;
+
+procedure TJvBaseDatasetThreadHandler.MoveToRecordPositionAfterOpen;
+begin
+  if FAfterOpenRecordPosition > 0 then
+    MoveTo(FAfterOpenRecordPosition)
+  else
+    Dataset.First;
 end;
 
 //=== { TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions } ============
