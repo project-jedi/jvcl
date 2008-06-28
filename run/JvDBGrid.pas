@@ -4766,15 +4766,10 @@ procedure TJvDBGrid.MouseWheelHandler(var Message: TMessage);
 var
   LastRow: Integer;
 begin
-  DisableScroll;
-  try
-    LastRow := Row;
-    inherited MouseWheelHandler(Message);
-    if (Row <> LastRow) and (DataLink <> nil) and DataLink.Active then
-      InvalidateCell(IndicatorOffset - 1, LastRow);
-  finally
-    EnableScroll;
-  end;
+  LastRow := Row;
+  inherited MouseWheelHandler(Message);
+  if (Row <> LastRow) and (DataLink <> nil) and DataLink.Active then
+    InvalidateCell(IndicatorOffset - 1, LastRow);
 end;
 
 procedure TJvDBGrid.BeginUpdate;
