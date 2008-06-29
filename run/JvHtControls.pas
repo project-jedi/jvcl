@@ -338,6 +338,10 @@ type
   end;
 
   TJvHTLabel = class(TJvCustomHTLabel)
+  private
+    procedure IgnoreWordWrap(Reader: TReader);
+  protected
+    procedure DefineProperties(Filer: TFiler); override; // ignore former published WordWrap
   published
     property Align;
     // property Alignment;  // Kaczkowski
@@ -359,11 +363,11 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    // property ShowAccelChar;
+    // property ShowAccelChar;   not supported
     property ShowHint;
     property Transparent;
     property Visible;
-    // property WordWrap;
+    // property WordWrap;   not supported
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -376,7 +380,6 @@ type
     property Layout;
     property Constraints;
     property OnHyperLinkClick;
-    property WordWrap;
   end;
 
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
@@ -922,6 +925,19 @@ procedure TJvCustomHTLabel.MouseLeave(AControl: TControl);
 begin
   inherited MouseLeave(AControl);
   Invalidate;
+end;
+
+{ TJvHTLabel }
+
+procedure TJvHTLabel.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('WordWrap', IgnoreWordWrap, nil, False);
+end;
+
+procedure TJvHTLabel.IgnoreWordWrap(Reader: TReader);
+begin
+  Reader.ReadBoolean;
 end;
 
 
