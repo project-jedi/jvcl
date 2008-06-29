@@ -12,12 +12,10 @@ The Original Code is: JvCtrls.PAS, released May 13, 2000.
 
 The Initial Developer of the Original Code is Petr Vones (petr dott v att mujmail dott cz)
 Portions created by Petr Vones are Copyright (C) 2000 Petr Vones.
-Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
-
-Current Version: 0.50
+Contributor(s):
+  tetardd
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -87,6 +85,9 @@ type
     FOnGetAnimateIndex: TJvImgBtnAnimIndexEvent;
     FImageVisible: Boolean;
     FFlat: Boolean;
+    FMustDrawFocusRect: Boolean;
+    FMustDrawButtonFrame: Boolean;
+    FDisableDrawDown: Boolean;
     procedure ImageListChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetAnimate(const Value: Boolean);
@@ -101,6 +102,8 @@ type
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
     procedure SetFlat(const Value: Boolean);
+    procedure SetMustDrawButtonFrame(const Value: Boolean);
+    procedure SetMustDrawFocusRect(const Value: Boolean);
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
@@ -118,7 +121,7 @@ type
     function GetImageIndex: Integer;
     function GetImageList: TCustomImageList;
     function GetKindImageIndex: Integer;
-    function GetRealCaption: string;override;
+    function GetRealCaption: string; override;
     procedure InvalidateImage;
     function IsImageVisible: Boolean;
     procedure Loaded; override;
@@ -137,6 +140,7 @@ type
     property AnimateFrames: Integer read FAnimateFrames write SetAnimateFrames default 0;
     property AnimateInterval: Cardinal read FAnimateInterval write SetAnimateInterval default 200;
     property Color default clBtnFace;
+    property DisableDrawDown: Boolean read FDisableDrawDown write FDisableDrawDown default False;
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property ImageVisible: Boolean read FImageVisible write SetImageVisible default True;
@@ -144,8 +148,11 @@ type
     property Flat: Boolean read FFlat write SetFlat default False;
     property Layout: TJvImgBtnLayout read FLayout write SetLayout default blImageLeft;
     property Margin: Integer read FMargin write SetMargin default -1;
+    property MustDrawFocusRect: Boolean read FMustDrawFocusRect write SetMustDrawFocusRect default True;
+    property MustDrawButtonFrame: Boolean read FMustDrawButtonFrame write SetMustDrawButtonFrame default True;
     property OwnerDraw: Boolean read FOwnerDraw write SetOwnerDraw default False;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
+
     property OnButtonDraw: TJvImgBtnDrawEvent read FOnButtonDraw write FOnButtonDraw;
     property OnGetAnimateIndex: TJvImgBtnAnimIndexEvent read FOnGetAnimateIndex write FOnGetAnimateIndex;
   public
@@ -168,13 +175,13 @@ type
     property AnimateFrames;
     property AnimateInterval;
     property Color;
+    property DisableDrawDown;
     property DropDownMenu;
     property DropArrow;
     property Flat;
     property HotTrack;
     property HotTrackFont;
     property HotTrackFontOptions;
-
     property HintColor;
     property Images;
     property ImageIndex;
@@ -182,12 +189,15 @@ type
     property Kind;
     property Layout;
     property Margin;
+    property MustDrawFocusRect;
+    property MustDrawButtonFrame;
+    property OwnerDraw;
     property Spacing;
     property WordWrap;
+
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-    property OwnerDraw;
     property OnButtonDraw;
     property OnDropDownMenu;
     property OnGetAnimateIndex;
@@ -258,6 +268,8 @@ begin
   FLayout := blImageLeft;
   FMargin := -1;
   FSpacing := 4;
+  FMustDrawFocusRect := True;
+  FMustDrawButtonFrame := True;
   Color := clBtnFace;
   InitializeDefaultImageList;
 end;
@@ -278,8 +290,6 @@ begin
     Images := nil;
 end;
 
-
-
 procedure TJvCustomImageButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -293,8 +303,6 @@ begin
   if FAnimate then
     StartAnimate;
 end;
-
-
 
 procedure TJvCustomImageButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
@@ -498,7 +506,7 @@ end;
 
 procedure TJvCustomImageButton.DrawButtonFocusRect(const RectContent: TRect);
 begin
-  if FIsFocused and not (csDestroying in ComponentState) then
+  if FMustDrawFocusRect and FIsFocused and not (csDestroying in ComponentState) then
   begin
     FCanvas.Pen.Color := clWindowFrame;
     FCanvas.Brush.Color := clBtnFace;
@@ -546,7 +554,8 @@ begin
     // Parent background.
     ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, {$IFNDEF CLR}@{$ENDIF}Details, True);
     // Button shape.
-    ThemeServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
+    if FMustDrawButtonFrame then
+      ThemeServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
     // Return content rect
     RectContent := ThemeServices.ContentRect(FCanvas.Handle, Details, DrawItemStruct.rcItem);
   end
@@ -559,7 +568,8 @@ begin
     begin
       FCanvas.Brush.Color := Color;
       FCanvas.FillRect(R); // (p3) TWinControls don't support Transparent anyway
-      if FMouseInControl or FIsFocused or (csDesigning in ComponentState) then
+      if FMustDrawButtonFrame and
+         (FMouseInControl or FIsFocused or (csDesigning in ComponentState)) then
       begin
         if IsDown then
           Frame3D(FCanvas, R, clBtnShadow, clBtnHighlight, 1)
@@ -577,10 +587,15 @@ begin
 
       if FIsFocused or IsDefault then
       begin
-        if not IsEnabled then
-          FCanvas.Pen.Color := clInactiveCaption
+        if FMustDrawButtonFrame then
+        begin
+          if not IsEnabled then
+            FCanvas.Pen.Color := clInactiveCaption
+          else
+            FCanvas.Pen.Color := clWindowFrame;
+        end
         else
-          FCanvas.Pen.Color := clWindowFrame;
+          FCanvas.Pen.Color := Color;
         FCanvas.Pen.Width := 1;
         FCanvas.Brush.Style := bsClear;
         FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
@@ -589,7 +604,10 @@ begin
 
       if IsDown then
       begin
-        FCanvas.Pen.Color := clBtnShadow;
+        if FMustDrawButtonFrame then
+          FCanvas.Pen.Color := clBtnShadow
+        else
+          FCanvas.Pen.Color := Color;
         FCanvas.Pen.Width := 1;
         FCanvas.Brush.Color := clBtnFace;
         FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
@@ -597,6 +615,7 @@ begin
       end
       else
       begin
+        if FMustDrawButtonFrame Then
           DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
       end;
       FCanvas.Brush.Color := Color;
@@ -610,16 +629,16 @@ begin
 end;
 
 procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
-
 begin
-  if csDestroying in ComponentState then
-    Exit;
-  with ImageBounds do
-    if IsImageVisible then
-      if Assigned(FImages) then
-        FImages.Draw(FCanvas, Left, Top, GetImageIndex, Enabled)
-      else
-        DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, Enabled);
+  if not (csDestroying in ComponentState) then
+  begin
+    with ImageBounds do
+      if IsImageVisible then
+        if Assigned(FImages) then
+          FImages.Draw(FCanvas, Left, Top, GetImageIndex, Enabled)
+        else
+          DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, Enabled);
+  end;
 end;
 
 procedure TJvCustomImageButton.DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
@@ -658,7 +677,7 @@ begin
   //R := ClientRect;
   //InflateRect(R, -4, -4);
   R := RectContent;
-  if (DrawItemStruct.itemState and ODS_SELECTED <> 0) and Enabled then
+  if not FDisableDrawDown and (DrawItemStruct.itemState and ODS_SELECTED <> 0) and Enabled then
   begin
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
@@ -739,7 +758,6 @@ begin
 end;
 
 class procedure TJvCustomImageButton.InitializeDefaultImageList;
-
 begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
@@ -941,6 +959,24 @@ begin
   end;
 end;
 
+procedure TJvCustomImageButton.SetMustDrawButtonFrame(const Value: Boolean);
+begin
+  if FMustDrawButtonFrame <> Value Then
+  begin
+    FMustDrawButtonFrame := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomImageButton.SetMustDrawFocusRect(const Value: Boolean);
+begin
+  if FMustDrawFocusRect <> Value Then
+  begin
+    FMustDrawFocusRect := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCustomImageButton.ShowNextFrame;
 begin
   Inc(FCurrentAnimateFrame);
@@ -972,8 +1008,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvCustomImageButton.WMDestroy(var Msg: TWMDestroy);
 begin
   StopAnimate;
@@ -988,10 +1022,6 @@ begin
   Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
   {$ENDIF CLR}
 end;
-
-
-
-
 
 procedure TJvCustomImageButton.WMTimer(var Msg: TWMTimer);
 begin
