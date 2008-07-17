@@ -3037,7 +3037,7 @@ end;
 procedure TJvDBLookupCombo.ListLinkDataChanged;
 begin
   if FDataLink.Active {and FDataLink.DataSet.IsLinkedTo(LookupSource)} then
-    if FListActive then
+    if FListActive and (FLookupLink.DataSet <> nil) and (FLookupLink.DataSet.State = dsBrowse) then
       DataLinkRecordChanged(nil);
 end;
 

@@ -917,11 +917,11 @@ begin
   try
     if ((EditMask = '') or (EditMask <> FMask)) and (Text = NoDateText) {and EditCanModify} then
     begin
-      Text := '';
+      inherited Text := '';
       RestoreMask;
     end;
   except
-    Text := '';
+    inherited Text := '';
     RestoreMask;
     raise;
   end;
@@ -1213,6 +1213,8 @@ begin
   OldSep := SysUtils.DateSeparator;
   SysUtils.DateSeparator := Self.DateSeparator;
   try
+    if [csDesigning, csLoading] * ComponentState = [] then
+      RestoreMaskForKeyPress;
     inherited Text := AValue;
   finally
     SysUtils.DateSeparator := OldSep;
