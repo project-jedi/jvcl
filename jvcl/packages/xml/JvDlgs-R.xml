@@ -28,7 +28,7 @@
     <Package Name="vcljpg" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\common\ObjSel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\ObjSel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDualListForm.pas" Targets="all" Formname="JvDualListForm" Condition=""/>
     <File Name="..\..\run\JvExceptionForm.pas" Targets="all" Formname="JvErrorDialog" Condition=""/>
     <File Name="..\..\run\JvFindFiles.pas" Targets="VCL" Formname="" Condition=""/>

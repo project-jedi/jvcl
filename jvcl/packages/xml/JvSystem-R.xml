@@ -25,6 +25,12 @@
     <Package Name="vcljpg" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\run\Ras32.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\Hid.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\ModuleLoader.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\WinConvTypes.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\DBT.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\SetupApi.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvXmlDatabase.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppInst.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvChangeNotify.pas" Targets="windows" Formname="" Condition=""/>
@@ -56,12 +62,6 @@
     <File Name="..\..\run\JvTimerList.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvWndProcHook.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvDebugHandler.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\common\Ras32.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\common\Hid.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\common\ModuleLoader.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\common\WinConvTypes.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\common\DBT.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\common\SetupApi.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComputerInfoEx.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppCommand.pas" Targets="VCL" Formname="" Condition=""/>
