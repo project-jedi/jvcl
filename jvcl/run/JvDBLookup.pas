@@ -73,7 +73,6 @@ type
   TLookupSourceLink = class(TDataLink)
   private
     FDataControl: TJvLookupControl;
-    FLockCount: Integer;
   protected
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
@@ -822,15 +821,8 @@ end;
 
 procedure TLookupSourceLink.DataSetChanged;
 begin
-  if (FDataControl <> nil) and (FLockCount = 0) then
-  begin
-    Inc(FLockCount);
-    try
-      FDataControl.ListLinkDataChanged;
-    finally
-      Dec(FLockCount);
-    end;
-  end;
+  if FDataControl <> nil then
+    FDataControl.ListLinkDataChanged;
 end;
 
 //=== { TJvLookupControl } ===================================================
@@ -3036,8 +3028,8 @@ end;
 
 procedure TJvDBLookupCombo.ListLinkDataChanged;
 begin
-  if FDataLink.Active {and FDataLink.DataSet.IsLinkedTo(LookupSource)} then
-    if FListActive and (FLookupLink.DataSet <> nil) and (FLookupLink.DataSet.State = dsBrowse) then
+  if FDataLink.Active and FDataLink.DataSet.IsLinkedTo(LookupSource) then
+    if FListActive then
       DataLinkRecordChanged(nil);
 end;
 
