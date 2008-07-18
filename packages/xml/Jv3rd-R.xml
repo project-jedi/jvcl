@@ -16,7 +16,7 @@
     <Package Name="vcl50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\common\JvGnugettext.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\common\JvGnugettextD5.pas" Targets="allv5" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGnugettext.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGnugettextD5.pas" Targets="allv5" Formname="" Condition=""/>
   </Contains>
 </Package>

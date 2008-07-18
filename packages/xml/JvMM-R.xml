@@ -63,6 +63,6 @@
     <File Name="..\..\run\JvFullColorRotate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFullColorForm.pas" Targets="all" Formname="JvFullColorFrm" Condition=""/>
     <File Name="..\..\run\JvFullColorCircleForm.pas" Targets="all" Formname="JvFullColorCircleFrm" Condition=""/>
-    <File Name="..\..\common\VFW.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\VFW.pas" Targets="VCL" Formname="" Condition=""/>
   </Contains>
 </Package>
