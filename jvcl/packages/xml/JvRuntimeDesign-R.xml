@@ -28,6 +28,7 @@
   <Contains>
     <File Name="..\..\run\JvInspDB.pas" Targets="DB" Formname="" Condition="!DelphiPersonalEdition"/>
     <File Name="..\..\run\JvInspector.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineJVCLInspector.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInspExtraEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignClip.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignSurface.pas" Targets="all" Formname="" Condition=""/>
