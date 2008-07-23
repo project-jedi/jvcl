@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, ShellAPI, ActiveX, Classes, Controls,
-  JvComponentBase;
+  JvComponentBase, JclWideStrings;
 
 type
   TJvDropTarget = class;
@@ -84,15 +84,18 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetFilenames(List: TStrings): Integer;
     // GetFilenames returns the HDROP Filenames. (same as TJvDragDrop).
     // Return value: number of filenames
-    function GetFileDescrNames(List: TStrings): Integer;
+    function GetFilenames(List: TStrings): Integer;
+    // GetFilenamesW returns the HDROP Filenames, in unicode.
+    // Return value: number of filenames
+    function GetFilenamesW(List: TWideStrings): Integer;
     // GetFileDescrNames returns the File Descriptor file names (not available for Explorer drag/drop)
-    function GetFileDescrCount: Integer;
+    function GetFileDescrNames(List: TStrings): Integer;
     // GetFileDescrCount returns the number of File Descroptor file names.
-    function GetFileContent(Index: Integer; Stream: TStream): Boolean;
+    function GetFileDescrCount: Integer;
     // GetFileContent returns the file content of the File Descriptor
+    function GetFileContent(Index: Integer; Stream: TStream): Boolean;
     property DataObject: IDataObject read FDataObject;
   published
     property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
@@ -699,6 +702,44 @@ begin
                 DragQueryFile(DragH, I, PChar(Name), Len + 1);
                 SetLength(Name, Len);
                 List.Add(Name);
+              end;
+            end;
+          Result := Count;
+        finally
+          GlobalUnlock(Medium.hGlobal);
+        end;
+      finally
+        ReleaseStgMedium(Medium);
+      end;
+    except
+      Result := 0;
+    end;
+end;
+
+function TJvDropTarget.GetFilenamesW(List: TWideStrings): Integer;
+var
+  DragH: Integer;
+  Medium: TStgMedium;
+  Name: widestring;
+  I, Count, Len: Integer;
+begin
+  Result := 0;
+  if FDataObject.GetData(FileDropFormatEtc, Medium) = S_OK then
+    try
+      try
+        DragH := Integer(GlobalLock(Medium.hGlobal));
+        try
+          Count := DragQueryFileW(DragH, Cardinal(-1), nil, 0);
+          if List <> nil then
+            for I := 0 to Count - 1 do
+            begin
+              Len := DragQueryFileW(DragH, I, nil, 0);
+              if Len > 0 then
+              begin
+                SetLength(Name, Len + 1);
+                DragQueryFileW(DragH, I, PwideChar(Name), Len + 1);
+                SetLength(Name, Len);
+                List.Append(Name);
               end;
             end;
           Result := Count;
