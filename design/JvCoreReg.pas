@@ -85,9 +85,8 @@ begin
   {$IFDEF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
-  {$ELSE}
-  RegisterPropertyEditor(TypeInfo(TJvPersistent), nil, '', TJvPersistentProperty);
   {$ENDIF COMPILER6_UP}
+  RegisterPropertyEditor(TypeInfo(TJvPersistent),nil, '', TJvPersistentPropertyEditor);
 
   if JvOptionRegisterGlobalDesignEditors then
   begin

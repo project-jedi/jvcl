@@ -478,7 +478,7 @@ procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
-  Dialog := TJvDynControlDataSourceEditDialog.Create;
+  Dialog := TJvDynControlDataSourceEditDialog.Create(Self);
   try
     if Dialog.DynControlEngineDB.SupportsDataComponent(aActionComponent) then
       Dialog.DataComponent := aActionComponent
@@ -642,7 +642,7 @@ procedure TJvDatabaseActionDBGridControlEngine.ShowSingleRecordWindow(
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
-  Dialog := TJvDynControlDataSourceEditDialog.Create;
+  Dialog := TJvDynControlDataSourceEditDialog.Create(self);
   try
     AOptions.SetOptionsToDialog(Dialog);
     if Dialog.DynControlEngineDB.SupportsDataComponent(aActionComponent) then
@@ -765,7 +765,7 @@ begin
   FWidth := 640;
   FHeight := 480;
   FPosition := poScreenCenter;
-  FArrangeSettings := TJvArrangeSettings.Create();
+  FArrangeSettings := TJvArrangeSettings.Create(Self);
   with FArrangeSettings do
   begin
     AutoSize := asBoth;
@@ -869,4 +869,5 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
+
 

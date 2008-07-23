@@ -68,7 +68,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
-  JvTypes, JvComponent, JvDataProvider, JvExControls, JvVCL5Utils;
+  {$IFNDEF COMPILER6_UP}
+  JvVCL5Utils,
+  {$ENDIF COMPILER6_UP}
+  JvTypes, JvComponent, JvDataProvider, JvExControls, JvHotTrackPersistent;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -85,6 +88,8 @@ type
     PosX: Integer;
     PosY: Integer;
   end;
+
+  TJvLabelHotTrackOptions = TJvHotTrackOptions;
 
   TJvCustomLabel = class(TJvGraphicControl, IJvHotTrack)
   private
@@ -106,7 +111,7 @@ type
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
-    FHotTrackOptions: TJvHotTrackOptions;
+    FHotTrackOptions: TJvLabelHotTrackOptions;
 
     FAutoOpenURL: Boolean;
     FURL: string;
@@ -151,11 +156,13 @@ type
     function GetHotTrack: Boolean;
     function GetHotTrackFont: TFont;
     function GetHotTrackFontOptions: TJvTrackFontOptions;
-    function GetHotTrackOptions: TJvHotTrackOptions;
+    function GetHotTrackOptions: TJvLabelHotTrackOptions;
     procedure SetHotTrack(Value: Boolean);
     procedure SetHotTrackFont(Value: TFont);
     procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
-    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
+    procedure SetHotTrackOptions(Value: TJvLabelHotTrackOptions);
+    procedure IJvHotTrack_Assign(Source: IJvHotTrack);
+    procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer); virtual;
@@ -202,7 +209,7 @@ type
     property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
+    property HotTrackOptions: TJvLabelHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
 
     property NeedsResize: Boolean read FNeedsResize write FNeedsResize;
 
@@ -503,7 +510,7 @@ begin
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  FHotTrackOptions := TJvHotTrackOptions.Create;
+  FHotTrackOptions := TJvLabelHotTrackOptions.Create(Self);
   // (rom) needs better font handling
   FHotTrackFont.OnChange := HotFontChanged;
 
@@ -1412,7 +1419,7 @@ begin
   Result := FHotTrackFontOptions;
 end;
 
-function TJvCustomLabel.GetHotTrackOptions: TJvHotTrackOptions;
+function TJvCustomLabel.GetHotTrackOptions: TJvLabelHotTrackOptions;
 begin
   Result := FHotTrackOptions;
 end;
@@ -1422,10 +1429,22 @@ begin
   FHotTrack := Value;
 end;
 
-procedure TJvCustomLabel.SetHotTrackOptions(Value: TJvHotTrackOptions);
+procedure TJvCustomLabel.SetHotTrackOptions(Value: TJvLabelHotTrackOptions);
 begin
   if (FHotTrackOptions <> Value) and (Value <> nil) then
     FHotTrackOptions.Assign(Value);
+end;
+
+procedure TJvCustomLabel.IJvHotTrack_Assign(
+  Source: IJvHotTrack);
+begin
+  if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
+  begin
+    HotTrack := Source.HotTrack;
+    HotTrackFont :=Source.HotTrackFont;
+    HotTrackFontOptions := Source.HotTrackFontOptions;
+    HotTrackOptions := Source.HotTrackOptions;
+  end;
 end;
 
 procedure TJvCustomLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -1499,4 +1518,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

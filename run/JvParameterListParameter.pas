@@ -1034,7 +1034,7 @@ end;
 constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  FArrangeSettings := TJvArrangeSettings.Create;
+  FArrangeSettings := TJvArrangeSettings.Create(Self);
   FArrangeSettings.BorderLeft := 2;
   FArrangeSettings.BorderTop := 2;
   FArrangeSettings.DistanceVertical := 2;
@@ -2319,5 +2319,6 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 
 

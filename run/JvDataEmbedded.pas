@@ -50,7 +50,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JVCLVer, JvVCL5Utils;
+  JVCLVer, JvTypes;
 
 type
   TJvPersistentEmbedded = class(TInterfacedPersistent)
@@ -446,5 +446,6 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 
 

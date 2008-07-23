@@ -52,7 +52,7 @@ uses
   SysUtils, Classes, Windows, Messages,
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
   JvVCL5Utils,
-  JvExControls, JvComponent, JvButton, JvConsts, JvTypes,
+  JvExControls, JvComponent, JvButton, JvConsts, JvTypes, JvHotTrackPersistent,
   JvThemes;
 
 type
@@ -125,6 +125,8 @@ type
     procedure SetHotTrackFont(Value: TFont);
     procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
     procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
+    procedure IJvHotTrack_Assign(Source: IJvHotTrack);
+    procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
 
     function CheckMenuDropDown(const Pos: TSmallPoint; Manual: Boolean): Boolean;
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -976,7 +978,7 @@ begin
   FHotTrackFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
   {Inserted by (ag) 2004-09-04}
-  FHotTrackOptions := TJvSpeedButtonHotTrackOptions.Create;
+  FHotTrackOptions := TJvSpeedButtonHotTrackOptions.Create(Self);
   {Insert End}
   FFontSave := TFont.Create;
   SetBounds(0, 0, 25, 25);
@@ -1518,6 +1520,18 @@ procedure TJvCustomSpeedButton.SetHotTrackOptions(Value: TJvHotTrackOptions);
 begin
   if (FHotTrackOptions <> Value) and (Value <> nil) then
     FHotTrackOptions.Assign(Value);
+end;
+
+procedure TJvCustomSpeedButton.IJvHotTrack_Assign(
+  Source: IJvHotTrack);
+begin
+  if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
+  begin
+    HotTrack := Source.HotTrack;
+    HotTrackFont :=Source.HotTrackFont;
+    HotTrackFontOptions := Source.HotTrackFontOptions;
+    HotTrackOptions := Source.HotTrackOptions;
+  end;
 end;
 
 procedure TJvCustomSpeedButton.SetInactiveGrayed(Value: Boolean);
@@ -2769,4 +2783,5 @@ finalization
   FreeAndNil(TempBrushBitmap);
 
 end.
+
 

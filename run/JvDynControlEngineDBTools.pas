@@ -32,7 +32,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Controls, DB, Classes,
-  ActnList, Forms, Graphics,
+  ActnList, Forms, Graphics, JvTypes,
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
@@ -41,8 +41,7 @@ type
       TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of
       object;
 
-  {$M+}
-  TJvDynControlDataSourceEditDialog = class(TObject)
+  TJvDynControlDataSourceEditDialog = class(TJvPersistentProperty)
   private
     FForm: TCustomForm;
     FDynControlEngineDB: TJvDynControlEngineDB;
@@ -88,7 +87,7 @@ type
         TJvCreateDBFieldsOnControlOptions); virtual;
     property DataSource: TDataSource read FDataSource;
   public
-    constructor Create;
+    constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
     function ShowDialog: TModalResult;
   published
@@ -117,7 +116,6 @@ type
         FFieldCreateOptions write SetFieldCreateOptions;
   end;
 
-  {$M-}
 
 function ShowDataSourceEditDialog(ADataComponent: TComponent; const
     ADialogCaption, APostButtonCaption, ACancelButtonCaption,
@@ -181,9 +179,10 @@ begin
   FForm.ModalResult := mrAbort;
 end;
 
-constructor TJvDynControlDataSourceEditDialog.Create;
+constructor TJvDynControlDataSourceEditDialog.Create(AOwner: TPersistent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
+  
   FDialogCaption := '';
   FPostButtonCaption := RSSRWPostButtonCaption;
   FCancelButtonCaption := RSSRWCancelButtonCaption;
@@ -199,7 +198,7 @@ begin
   FPosition := poScreenCenter;
   FDynControlEngineDB := nil;
   FDataSource := nil;
-  FArrangeSettings := TJvArrangeSettings.Create;
+  FArrangeSettings := TJvArrangeSettings.Create(Self);
   with FArrangeSettings do
   begin
     AutoSize := asBoth;
@@ -452,7 +451,7 @@ function ShowDataSourceEditDialog(ADataComponent: TComponent; const
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
-  Dialog := TJvDynControlDataSourceEditDialog.Create;
+  Dialog := TJvDynControlDataSourceEditDialog.Create(ADataComponent);
   try
     Dialog.DataComponent := ADataComponent;
     Dialog.DialogCaption := ADialogCaption;
@@ -486,4 +485,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

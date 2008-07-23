@@ -65,7 +65,6 @@ const
   dcWantMessage = dcWantAllKeys;
 
 type
-  TJvHotTrackOptions = class;
 
   { IJvExControl is used for the identification of an JvExXxx control. }
   IJvExControl = interface
@@ -77,47 +76,6 @@ type
     This only works with JvExVCL derived classes. }
   IJvDenySubClassing = interface
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
-  end;
-
-
-  { IJvHotTrack is Specifies whether Control are highlighted when the mouse passes over them}
-  IJvHotTrack = interface
-    ['{8F1B40FB-D8E3-46FE-A7A3-21CE4B199A8F}']
-
-    function GetHotTrack:Boolean;
-    function GetHotTrackFont:TFont;
-    function GetHotTrackFontOptions:TJvTrackFontOptions;
-    function GetHotTrackOptions:TJvHotTrackOptions;
-
-    procedure SetHotTrack(Value: Boolean);
-    procedure SetHotTrackFont(Value: TFont);
-    procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
-    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
-
-    property HotTrack: Boolean read GetHotTrack write SetHotTrack;
-    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions;
-    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
-  end;
-
-  TJvHotTrackOptions = class(TJvPersistentProperty)
-  private
-    FEnabled: Boolean;
-    FFrameVisible: Boolean;
-    FColor: TColor;
-    FFrameColor: TColor;
-    procedure SetColor(Value: TColor);
-    procedure SetEnabled(Value: Boolean);
-    procedure SetFrameColor(Value: TColor);
-    procedure SetFrameVisible(Value: Boolean);
-  public
-    constructor Create; virtual;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Enabled: Boolean read FEnabled write SetEnabled default False;
-    property Color: TColor read FColor write SetColor default $00D2BDB6;
-    property FrameVisible: Boolean read FFrameVisible write SetFrameVisible default False;
-    property FrameColor: TColor read FFrameColor write SetFrameColor default $006A240A;
   end;
 
   TStructPtrMessage = class(TObject)
@@ -775,83 +733,6 @@ begin
 end;
 
 {$ENDIF COMPILER5}
-
-//=== { TJvHotTrackOptions } ======================================
-
-constructor TJvHotTrackOptions.Create;
-begin
-  inherited Create;
-  FEnabled := False;
-  FFrameVisible := False;
-  FColor := $00D2BDB6;
-  FFrameColor := $006A240A;
-end;
-
-procedure TJvHotTrackOptions.Assign(Source: TPersistent);
-begin
-  if Source is TJvHotTrackOptions then
-  begin
-    BeginUpdate;
-    try
-      Enabled := TJvHotTrackOptions(Source).Enabled;
-      Color := TJvHotTrackOptions(Source).Color;
-      FrameVisible := TJvHotTrackOptions(Source).FrameVisible;
-      FrameColor := TJvHotTrackOptions(Source).FrameColor;
-    finally
-      EndUpdate;
-    end;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-procedure TJvHotTrackOptions.SetColor(Value: TColor);
-begin
-  if FColor <> Value then
-  begin
-    Changing;
-    ChangingProperty('Color');
-    FColor := Value;
-    ChangedProperty('Color');
-    Changed;
-  end;
-end;
-
-procedure TJvHotTrackOptions.SetEnabled(Value: Boolean);
-begin
-  if FEnabled <> Value then
-  begin
-    Changing;
-    ChangingProperty('Enabled');
-    FEnabled := Value;
-    ChangedProperty('Enabled');
-    Changed;
-  end;
-end;
-
-procedure TJvHotTrackOptions.SetFrameVisible(Value: Boolean);
-begin
-  if FFrameVisible <> Value then
-  begin
-    Changing;
-    ChangingProperty('FrameVisible');
-    FFrameVisible := Value;
-    ChangedProperty('FrameVisible');
-    Changed;
-  end;
-end;
-
-procedure TJvHotTrackOptions.SetFrameColor(Value: TColor);
-begin
-  if FFrameColor <> Value then
-  begin
-    Changing;
-    ChangingProperty('FrameColor');
-    FFrameColor := Value;
-    ChangedProperty('FrameColor');
-    Changed;
-  end;
-end;
 
 //============================================================================
 
@@ -2294,4 +2175,5 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
+
 

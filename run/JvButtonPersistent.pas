@@ -14,7 +14,8 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buyp
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com]
+                Dejoy
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,47 +36,78 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   Classes, Graphics, Controls,
-  JvTypes;
+  JvTypes, JvHotTrackPersistent;
 
 type
-  TJvButtonPersistent = class(TPersistent)
+
+  IJvControlProperty = interface(IInterface)
+  ['{33316D29-0F86-41C4-8DB4-3FE9756158B5}']
+    function GetCaption: string;
+    function GetEnabled: Boolean;
+    function GetFlat: Boolean;
+    function GetHint: string;
+    function GetShowHint: Boolean;
+    function GetVisible: Boolean;
+    procedure SetCaption(const Value: string);
+    procedure SetEnabled(const Value: Boolean);
+    procedure SetFlat(const Value: Boolean);
+    procedure SetHint(const Value: string);
+    procedure SetShowHint(const Value: Boolean);
+    procedure SetVisible(const Value: Boolean);
+    procedure Assign(Source: IJvControlProperty);
+
+    property Caption: string read GetCaption write SetCaption;
+    property Enabled: Boolean read GetEnabled write SetEnabled;
+    property Flat: Boolean read GetFlat write SetFlat;
+    property Hint: string read GetHint write SetHint;
+    property ShowHint: Boolean read GetShowHint write SetShowHint;
+    property Visible: Boolean read GetVisible write SetVisible;
+  end;
+
+  TJvButtonPersistent = class(TJvCustomHotTrackPersistent
+                              ,IJvControlProperty
+                              )
   private
     FVisible: Boolean;
     FFlat: Boolean;
     FEnabled: Boolean;
     FCaption: string;
-    FOnChanged: TNotifyEvent;
-    FFontEffect: Boolean;
     FHint: string;
     FShowHint: Boolean;
-    FFont: TFont;
-    FHotTrackFontOptions: TJvTrackFontOptions;
+    {IJvControlProperty}
+    function GetCaption: string;
+    function GetEnabled: Boolean;
+    function GetFlat: Boolean;
+    function GetHint: string;
+    function GetShowHint: Boolean;
+    function GetVisible: Boolean;
     procedure SetCaption(const Value: string);
     procedure SetEnabled(const Value: Boolean);
     procedure SetFlat(const Value: Boolean);
     procedure SetVisible(const Value: Boolean);
-    procedure SetFontEffect(const Value: Boolean);
     procedure SetHint(const Value: string);
     procedure SetShowHint(const Value: Boolean);
-    procedure SetFont(const Value: TFont);
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-  protected
-    procedure Changed;
-    procedure AssignTo(Sender: TPersistent); override;
+
+    procedure IJvControlProperty_Assign(Source: IJvControlProperty);
+    procedure IJvControlProperty.Assign = IJvControlProperty_Assign;
   public
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
-    constructor Create;
+    procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Sender: TPersistent); override;
+
+    constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
   published
-    property Caption: string read FCaption write SetCaption;
-    property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property Flat: Boolean read FFlat write SetFlat default True;
-    property Hint: string read FHint write SetHint;
-    property HotTrack: Boolean read FFontEffect write SetFontEffect default True;
-    property HotTrackFont: TFont read FFont write SetFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions;
-    property ShowHint: Boolean read FShowHint write SetShowHint;
-    property Visible: Boolean read FVisible write SetVisible default True;
+    property Caption: string read GetCaption write SetCaption;
+    property Enabled: Boolean read GetEnabled write SetEnabled default True;
+    property Flat: Boolean read GetFlat write SetFlat default True;
+    property Hint: string read GetHint write SetHint;
+    property ShowHint: Boolean read GetShowHint write SetShowHint;
+    property Visible: Boolean read GetVisible write SetVisible default True;
+
+    property HotTrack default True;
+    property HotTrackFont;
+    property HotTrackFontOptions;
+    property HotTrackOptions;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -91,75 +123,114 @@ const
 implementation
 
 uses
-  StdCtrls, Buttons,
-  JvSpeedButton, JvButton;
+  SysUtils, StdCtrls, Buttons;
 
-constructor TJvButtonPersistent.Create;
+constructor TJvButtonPersistent.Create(AOwner: TPersistent);
 begin
-  inherited Create;
-  FFont := TFont.Create;
+  inherited Create(AOwner);
+  HotTrack := True;
   FEnabled := True;
   FFlat := True;
   FVisible := True;
-  FFontEffect := True;
 end;
 
 destructor TJvButtonPersistent.Destroy;
 begin
-  FFont.Free;
   inherited Destroy;
 end;
 
-type
-  TJvCustomButtonAccessProtected = class(TJvCustomButton);
+procedure TJvButtonPersistent.Assign(Source: TPersistent);
+var
+  intf: IJvControlProperty;
+begin
+  if Supports(Source, IJvControlProperty, intf) then
+    IJvControlProperty(Self).Assign(intf);
+  inherited Assign(Source);
+end;
 
 procedure TJvButtonPersistent.AssignTo(Sender: TPersistent);
+var
+  intf : IJvHotTrack;
+  intf2: IJvControlProperty;
 begin
   if Sender is TButton then
   begin
-    TButton(Sender).Enabled := Enabled;
-    TButton(Sender).Visible := Visible;
-    TButton(Sender).Caption := Caption;
-    TButton(Sender).Hint := Hint;
-    TButton(Sender).ShowHint := ShowHint;
-    if Sender is TJvCustomButton then
+    if Supports(Sender, IJvControlProperty, intf2) then
+      intf2.Assign(Self)
+    else
     begin
-      TJvCustomButtonAccessProtected(Sender).HotTrack := HotTrack;
-      TJvCustomButtonAccessProtected(Sender).HotTrackFont.Assign(FFont);
-      TJvCustomButtonAccessProtected(Sender).HotTrackFontOptions := HotTrackFontOptions;
+      TButton(Sender).Enabled := Enabled;
+      TButton(Sender).Visible := Visible;
+      TButton(Sender).Caption := Caption;
+      TButton(Sender).Hint := Hint;
+      TButton(Sender).ShowHint := ShowHint;
+    end;
+    if Supports(Sender, IJvHotTrack, intf) then
+    begin
+      intf.Assign(Self);
     end;
   end
   else
   if Sender is TSpeedButton then
   begin
-    TSpeedButton(Sender).Enabled := Enabled;
-    TSpeedButton(Sender).Visible := Visible;
-    TSpeedButton(Sender).Caption := Caption;
-    TSpeedButton(Sender).Hint := Hint;
-    TSpeedButton(Sender).ShowHint := ShowHint;
-    TSpeedButton(Sender).Flat := Flat;
-    if Sender is TJvSpeedButton then
+    if Supports(Sender, IJvControlProperty, intf2) then
+      intf2.Assign(Self)
+    else  
     begin
-      TJvSpeedButton(Sender).HotTrack := HotTrack;
-      TJvSpeedButton(Sender).HotTrackFont.Assign(FFont);
-      TJvSpeedButton(Sender).HotTrackFontOptions := HotTrackFontOptions;
+      TSpeedButton(Sender).Enabled := Enabled;
+      TSpeedButton(Sender).Visible := Visible;
+      TSpeedButton(Sender).Caption := Caption;
+      TSpeedButton(Sender).Hint := Hint;
+      TSpeedButton(Sender).ShowHint := ShowHint;
+      TSpeedButton(Sender).Flat := Flat;
+    end;
+    if Supports(Sender, IJvHotTrack, intf) then
+    begin
+      intf.Assign(Self);
     end;
   end
   else
     inherited AssignTo(Sender);
 end;
 
-procedure TJvButtonPersistent.Changed;
+function TJvButtonPersistent.GetCaption: string;
 begin
-  if Assigned(FOnChanged) then
-    FOnChanged(Self);
+  Result := FCaption;
+end;
+
+function TJvButtonPersistent.GetEnabled: Boolean;
+begin
+  Result := FEnabled;
+end;
+
+function TJvButtonPersistent.GetFlat: Boolean;
+begin
+  Result := FFlat;
+end;
+
+function TJvButtonPersistent.GetHint: string;
+begin
+  Result := FHint;
+end;
+
+function TJvButtonPersistent.GetShowHint: Boolean;
+begin
+  Result := FShowHint;
+end;
+
+function TJvButtonPersistent.GetVisible: Boolean;
+begin
+  Result := FVisible;
 end;
 
 procedure TJvButtonPersistent.SetCaption(const Value: string);
 begin
   if FCaption <> Value then
   begin
+    Changing;
+    ChangingProperty('Caption');
     FCaption := Value;
+    ChangedProperty('Caption');
     Changed;
   end;
 end;
@@ -168,7 +239,10 @@ procedure TJvButtonPersistent.SetEnabled(const Value: Boolean);
 begin
   if FEnabled <> Value then
   begin
+    Changing;
+    ChangingProperty('Enabled');
     FEnabled := Value;
+    ChangedProperty('Enabled');
     Changed;
   end;
 end;
@@ -177,25 +251,10 @@ procedure TJvButtonPersistent.SetFlat(const Value: Boolean);
 begin
   if FFlat <> Value then
   begin
+    Changing;
+    ChangingProperty('Flat');
     FFlat := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvButtonPersistent.SetFont(const Value: TFont);
-begin
-  if FFont <> Value then
-  begin
-    FFont.Assign(Value);
-    Changed;
-  end;
-end;
-
-procedure TJvButtonPersistent.SetFontEffect(const Value: Boolean);
-begin
-  if FFontEffect <> Value then
-  begin
-    FFontEffect := Value;
+    ChangedProperty('Flat');
     Changed;
   end;
 end;
@@ -204,7 +263,10 @@ procedure TJvButtonPersistent.SetHint(const Value: string);
 begin
   if FHint <> Value then
   begin
+    Changing;
+    ChangingProperty('Hint');
     FHint := Value;
+    ChangedProperty('Hint');
     Changed;
   end;
 end;
@@ -213,7 +275,10 @@ procedure TJvButtonPersistent.SetShowHint(const Value: Boolean);
 begin
   if FShowHint <> Value then
   begin
+    Changing;
+    ChangingProperty('ShowHint');
     FShowHint := Value;
+    ChangedProperty('ShowHint');
     Changed;
   end;
 end;
@@ -222,17 +287,30 @@ procedure TJvButtonPersistent.SetVisible(const Value: Boolean);
 begin
   if FVisible <> Value then
   begin
+    Changing;
+    ChangingProperty('Visible');
     FVisible := Value;
+    ChangedProperty('Visible');
     Changed;
   end;
 end;
 
-procedure TJvButtonPersistent.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+procedure TJvButtonPersistent.IJvControlProperty_Assign(
+  Source: IJvControlProperty);
 begin
-  if FHotTrackFontOptions <> Value then
+  if (Source <> nil) and (IJvControlProperty(Self) <> Source) then
   begin
-    FHotTrackFontOptions := Value;
-    Changed;
+    BeginUpdate;
+    try
+      Caption := Source.Caption;
+      Enabled := Source.Enabled;
+      Flat := Source.Flat;
+      Hint := Source.Hint;
+      ShowHint := Source.ShowHint;
+      Visible := Source.Visible;
+    finally
+       EndUpdate;
+    end;   
   end;
 end;
 
@@ -245,4 +323,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

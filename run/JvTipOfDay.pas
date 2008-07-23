@@ -46,6 +46,8 @@ type
 
   TJvTipOfDayStyle = (tsVC, tsStandard);
 
+  TJvTipOfDayButtonPersistent = TJvButtonPersistent;
+  
   TJvTipOfDay = class(TJvCommonDialogP)
   private
     FAppStorage: TJvCustomAppStorage;
@@ -57,8 +59,8 @@ type
     FDefaultFonts: Boolean;
     FTipFont: TFont;
     FHeaderFont: TFont;
-    FButtonNext: TJvButtonPersistent;
-    FButtonClose: TJvButtonPersistent;
+    FButtonNext: TJvTipOfDayButtonPersistent;
+    FButtonClose: TJvTipOfDayButtonPersistent;
     FOptions: TJvTipOfDayOptions;
     FTips: TStringList;
     FStyle: TJvTipOfDayStyle;
@@ -83,8 +85,8 @@ type
     // function GetRegKey: string;
     function GetTips: TStrings;
     function IsFontStored: Boolean;
-    procedure SetButtonClose(const Value: TJvButtonPersistent);
-    procedure SetButtonNext(const Value: TJvButtonPersistent);
+    procedure SetButtonClose(const Value: TJvTipOfDayButtonPersistent);
+    procedure SetButtonNext(const Value: TJvTipOfDayButtonPersistent);
     procedure SetDefaultFonts(const Value: Boolean);
     procedure SetHeaderFont(const Value: TFont);
     procedure SetTipFont(const Value: TFont);
@@ -137,8 +139,8 @@ type
   published
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
-    property ButtonNext: TJvButtonPersistent read FButtonNext write SetButtonNext;
-    property ButtonClose: TJvButtonPersistent read FButtonClose write SetButtonClose;
+    property ButtonNext: TJvTipOfDayButtonPersistent read FButtonNext write SetButtonNext;
+    property ButtonClose: TJvTipOfDayButtonPersistent read FButtonClose write SetButtonClose;
     property CheckBoxText: string read FCheckBoxText write FCheckBoxText;
     property Color: TColor read FColor write FColor default clWhite;
     property DefaultFonts: Boolean read FDefaultFonts write SetDefaultFonts default True;
@@ -190,12 +192,12 @@ begin
   FHeaderFont := TFont.Create;
   FHeaderFont.OnChange := FontChanged;
 
-  FButtonNext := TJvButtonPersistent.Create;
+  FButtonNext := TJvTipOfDayButtonPersistent.Create(Self);
   FButtonNext.Caption := RsNextCaption;
   FButtonNext.Flat := False;
   FButtonNext.HotTrack := False;
 
-  FButtonClose := TJvButtonPersistent.Create;
+  FButtonClose := TJvTipOfDayButtonPersistent.Create(Self);
   FButtonClose.Caption := RsCloseCaption;
   FButtonClose.Flat := False;
   FButtonClose.HotTrack := False;
@@ -663,12 +665,12 @@ begin
     Tips.SaveToFile(AFileName);
 end;
 
-procedure TJvTipOfDay.SetButtonClose(const Value: TJvButtonPersistent);
+procedure TJvTipOfDay.SetButtonClose(const Value: TJvTipOfDayButtonPersistent);
 begin
   FButtonClose.Assign(Value);
 end;
 
-procedure TJvTipOfDay.SetButtonNext(const Value: TJvButtonPersistent);
+procedure TJvTipOfDay.SetButtonNext(const Value: TJvTipOfDayButtonPersistent);
 begin
   FButtonNext.Assign(Value);
 end;
@@ -779,4 +781,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

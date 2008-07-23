@@ -39,6 +39,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   JvConsts, JvTypes, JvExControls, JvExtComponent, JvSpeedButton,
+  JvHotTrackPersistent,
   JvOfficeColorForm, JvOfficeColorPanel, JvOfficeDragBarForm;
 
 const
@@ -70,7 +71,7 @@ type
     procedure CreateDefaultText; override;
     procedure DefineProperties(Filer: TFiler); override;
   public
-    constructor Create; override;
+    constructor Create(AOwner: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
   published
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
@@ -82,6 +83,7 @@ type
     property DragBarSpace: Integer read FDragBarSpace write SetDragBarSpace default MinDragBarSpace;
   end;
 
+  TJvOfficeColorButtonHotTrackOptions = TJvHotTrackOptions;
   TJvCustomOfficeColorButton = class(TJvCustomPanel, IJvHotTrack)
   private
     FMainButton: TJvColorSpeedButton;
@@ -101,7 +103,7 @@ type
     FOnShowOwnerColorDialog: TNotifyEvent;
     FOnArrowClick: TNotifyEvent;
     FHotTrack: Boolean;
-    FHotTrackOptions: TJvHotTrackOptions;
+    FHotTrackOptions: TJvOfficeColorButtonHotTrackOptions;
     procedure SetFlat(const Value: Boolean);
     // Set Control Color
     procedure SetControlBgColor(const Value: TColor);
@@ -124,14 +126,16 @@ type
 
     {IJvHotTrack}
     function GetHotTrack: Boolean;
-    function GetHotTrackOptions: TJvHotTrackOptions;
+    function GetHotTrackOptions: TJvOfficeColorButtonHotTrackOptions;
     function GetHotTrackFont: TFont;
     function GetHotTrackFontOptions: TJvTrackFontOptions;
 
     procedure SetHotTrack(Value: Boolean);
     procedure SetHotTrackFont( Value: TFont);
     procedure SetHotTrackFontOptions( Value: TJvTrackFontOptions);
-    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
+    procedure SetHotTrackOptions(Value: TJvOfficeColorButtonHotTrackOptions);
+    procedure IJvHotTrack_Assign(Source: IJvHotTrack);
+    procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
 
     function GetStandardColors: TStringList;
     function GetSystemColors: TStringList;
@@ -147,7 +151,7 @@ type
     function GetButtonOfNoneColor: TJvColorSpeedButton;
     function GetButtonOfCustomColor: TJvColorSpeedButton;
     function GetClickColorType: TJvClickColorType;
-    procedure DoHotTrackOptionsChange(Sender: TObject);
+    procedure DoHotTrackOptionsChanged(Sender: TObject);
     procedure DoFormShowingChanged(Sender: TObject);
 //    procedure DoFormKillFocus(Sender: TObject);
     procedure DoFormClose(Sender: TObject; var Action: TCloseAction);
@@ -222,7 +226,7 @@ type
     property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
+    property HotTrackOptions: TJvOfficeColorButtonHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnArrowClick: TNotifyEvent read FOnArrowClick write FOnArrowClick;
@@ -437,8 +441,8 @@ begin
   Width := MinButtonWidth + MinArrowWidth;
   Height := MinButtonHeight;
 
-  FHotTrackOptions := TJvHotTrackOptions.Create;
-  FHotTrackOptions.OnChange := DoHotTrackOptionsChange;
+  FHotTrackOptions := TJvOfficeColorButtonHotTrackOptions.Create(Self);
+  FHotTrackOptions.OnChanged := DoHotTrackOptionsChanged;
 
   FMainButton := TJvColorMainButton.Create(Self);
   with FMainButton do
@@ -480,9 +484,9 @@ begin
     ColorPanel.OnHoldCustomColor := DoHoldedCustomColor;
   end;
 
-  FProperties := TJvOfficeColorButtonProperties.Create;
+  FProperties := TJvOfficeColorButtonProperties.Create(Self);
   FProperties.Assign(ColorPanel.Properties);
-  FProperties.OnChangeProperty := DoPropertiesChanged;
+  FProperties.OnChangedProperty := DoPropertiesChanged;
 
   FColorsListChanged:= False;
   StandardColors.BeginUpdate;
@@ -733,7 +737,7 @@ begin
   Result := ColorPanel.SelectedColor;
 end;
 
-procedure TJvCustomOfficeColorButton.DoHotTrackOptionsChange(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoHotTrackOptionsChanged(Sender: TObject);
 begin
   FMainButton.HotTrackOptions := FHotTrackOptions;
   FArrowButton.HotTrackOptions := FHotTrackOptions;
@@ -1049,7 +1053,7 @@ begin
     with ColorsForm.ColorPanel,Properties do
     begin
       Assign(Self.Properties);
-      OnChangeProperty(Properties,PropName);
+      OnChangedProperty(Properties,PropName);
     end;
 
     TJvOfficeColorFormAccessProtected(FColorsForm).AdjustForm;
@@ -1082,7 +1086,7 @@ begin
   ColorPanel.HotTrackFontOptions := Value;
 end;
 
-procedure TJvCustomOfficeColorButton.SetHotTrackOptions(Value: TJvHotTrackOptions);
+procedure TJvCustomOfficeColorButton.SetHotTrackOptions(Value: TJvOfficeColorButtonHotTrackOptions);
 begin
   if FHotTrackOptions <> Value then
   begin
@@ -1092,12 +1096,24 @@ begin
   end;
 end;
 
+procedure TJvCustomOfficeColorButton.IJvHotTrack_Assign(
+  Source: IJvHotTrack);
+begin
+  if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
+  begin
+    HotTrack := Source.HotTrack;
+    HotTrackFont :=Source.HotTrackFont;
+    HotTrackFontOptions := Source.HotTrackFontOptions;
+    HotTrackOptions := Source.HotTrackOptions;
+  end;
+end;
+
 function TJvCustomOfficeColorButton.GetHotTrack: Boolean;
 begin
   Result := FHotTrack;
 end;
 
-function TJvCustomOfficeColorButton.GetHotTrackOptions: TJvHotTrackOptions;
+function TJvCustomOfficeColorButton.GetHotTrackOptions: TJvOfficeColorButtonHotTrackOptions;
 begin
   Result := FHotTrackOptions;
 end;
@@ -1205,9 +1221,9 @@ end;
 
 //=== { TJvOfficeColorButtonProperties } =====================================
 
-constructor TJvOfficeColorButtonProperties.Create;
+constructor TJvOfficeColorButtonProperties.Create(AOwner: TPersistent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   FShowDragBar := True;
   FEdgeWidth := 4;
   FArrowWidth := MinArrowWidth;
@@ -1390,4 +1406,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 
