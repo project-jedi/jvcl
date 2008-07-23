@@ -1111,7 +1111,7 @@ begin
   FParameterListPropertyStore.ParameterList := Self;
   FIntParameterList := TStringList.Create;
   FDynControlEngine := DefaultDynControlEngine;
-  FArrangeSettings := TJvArrangeSettings.Create;
+  FArrangeSettings := TJvArrangeSettings.Create(Self);
   with FArrangeSettings do
   begin
     AutoArrange := True;
@@ -2082,4 +2082,5 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
+
 

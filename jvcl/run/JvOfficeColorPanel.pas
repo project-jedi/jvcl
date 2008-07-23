@@ -37,7 +37,8 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Graphics, Controls, Forms, Buttons, Dialogs,ExtCtrls,
-  JvTypes, JvExControls, JvSpeedButton,  JvPanel;
+  JvTypes, JvHotTrackPersistent, JvExControls, JvSpeedButton,
+  JvPanel;
 
 const
   Tag_DefaultColorCaption = 0;
@@ -177,7 +178,7 @@ type
     procedure CreateDefaultText; virtual;
     procedure DefineProperties(Filer: TFiler); override;
   public
-    constructor Create; virtual;
+    constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property ShowStandardColors: Boolean index Tag_ShowStandardColors read FShowStandardColors write SetBooleanValue default True;
@@ -270,6 +271,8 @@ type
     procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
     procedure SetHotTrackFont(Value: TFont);
     procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
+    procedure IJvHotTrack_Assign(Source: IJvHotTrack);
+    procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
 
     procedure SetStandardColors(const Value: TStringList);
     procedure SetSystemColors(const Value: TStringList);
@@ -278,7 +281,7 @@ type
       Shift: TShiftState; X, Y: Integer);
 
     procedure DoColorDrawersEnabledChange(Sender: TObject);
-    procedure DoHotTrackOptionsChange(Sender: TObject);
+    procedure DoHotTrackOptionsChanged(Sender: TObject);
     procedure DoLoadedUserColors(Sender: TObject);
     procedure DoHoldedCustomColor(Sender: TObject;AColor: TColor);
   protected
@@ -511,9 +514,9 @@ end;
 
 //=== { TJvOfficeColorPanelProperties } ======================================
 
-constructor TJvOfficeColorPanelProperties.Create;
+constructor TJvOfficeColorPanelProperties.Create(AOwner: TPersistent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   FShowNoneColor := False;
   FShowDefaultColor := True;
   FShowCustomColor := True;
@@ -1256,8 +1259,8 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  FHotTrackOptions := TJvHotTrackOptions.Create;
-  FHotTrackOptions.OnChange := DoHotTrackOptionsChange;
+  FHotTrackOptions := TJvHotTrackOptions.Create(Self);
+  FHotTrackOptions.OnChanged := DoHotTrackOptionsChanged;
 
   FStandardColors := TStringList.Create;
   FSystemColors := TStringList.Create;
@@ -1270,8 +1273,8 @@ begin
   FColorDialogOptions := [];
   FClickColorType := cctNone;
 
-  FProperties := TJvOfficeColorPanelProperties.Create;
-  FProperties.OnChangeProperty := DoPropertiesChanged;
+  FProperties := TJvOfficeColorPanelProperties.Create(Self);
+  FProperties.OnChangedProperty := DoPropertiesChanged;
   FSelectedColor := FProperties.DefaultColorColor;
 
   FButtonNoneColor := TJvColorSpeedButton.Create(Self);
@@ -2178,7 +2181,19 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorPanel.DoHotTrackOptionsChange(Sender: TObject);
+procedure TJvCustomOfficeColorPanel.IJvHotTrack_Assign(
+  Source: IJvHotTrack);
+begin
+  if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
+  begin
+    HotTrack := Source.HotTrack;
+    HotTrackFont :=Source.HotTrackFont;
+    HotTrackFontOptions := Source.HotTrackFontOptions;
+    HotTrackOptions := Source.HotTrackOptions;
+  end;
+end;
+
+procedure TJvCustomOfficeColorPanel.DoHotTrackOptionsChanged(Sender: TObject);
 var
   I: Integer;
   HotTrackIntf: IJvHotTrack;
@@ -2463,4 +2478,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

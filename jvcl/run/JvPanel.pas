@@ -47,7 +47,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JvTypes, JvThemes, JvComponent, JvExtComponent, JvExControls;
+  JvTypes, JvThemes, JvComponent, JvExtComponent, JvExControls,
+  JvHotTrackPersistent;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
@@ -74,7 +75,7 @@ type
     procedure SetDistanceHorizontal(Value: Integer);
     procedure SetMaxWidth(Value: Integer);
   public
-    constructor Create; virtual;
+    constructor Create(AOwner: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
   published
     property WrapControls: Boolean read FWrapControls write SetWrapControls default True;
@@ -90,7 +91,7 @@ type
 
   TJvPanelHotTrackOptions = class(TJvHotTrackOptions)
   public
-    constructor Create; override;
+    constructor Create(AOwner: TPersistent); override;
   published
     property Color default clBtnFace;
   end;
@@ -144,6 +145,8 @@ type
     procedure SetHotTrackFont(Value: TFont);
     procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
     procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
+    procedure IJvHotTrack_Assign(Source: IJvHotTrack);
+    procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
   protected
     procedure DrawCaption; dynamic;
     procedure DrawCaptionTo(ACanvas: TCanvas ); dynamic;
@@ -331,9 +334,9 @@ end;*)
 
 //=== { TJvArrangeSettings } =================================================
 
-constructor TJvArrangeSettings.Create();
+constructor TJvArrangeSettings.Create(AOwner: TPersistent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   FMaxWidth := 0;
   FBorderLeft := 0;
   FBorderTop := 0;
@@ -469,7 +472,7 @@ end;
 
 //=== { TJvPanelHotTrackOptions } ============================================
 
-constructor TJvPanelHotTrackOptions.Create;
+constructor TJvPanelHotTrackOptions.Create(AOwner: TPersistent);
 begin
   inherited;
   Color := clBtnFace;
@@ -488,10 +491,10 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  FHotTrackOptions := TJvPanelHotTrackOptions.Create;
+  FHotTrackOptions := TJvPanelHotTrackOptions.Create(Self);
 
-  FArrangeSettings := TJvArrangeSettings.Create;
-  FArrangeSettings.OnChangeProperty := DoArrangeSettingsPropertyChanged;
+  FArrangeSettings := TJvArrangeSettings.Create(Self);
+  FArrangeSettings.OnChangedProperty := DoArrangeSettingsPropertyChanged;
 end;
 
 destructor TJvCustomArrangePanel.Destroy;
@@ -1233,6 +1236,18 @@ begin
     FHotTrackOptions.Assign(Value);
 end;
 
+procedure TJvCustomArrangePanel.IJvHotTrack_Assign(
+  Source: IJvHotTrack);
+begin
+  if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
+  begin
+    HotTrack := Source.HotTrack;
+    HotTrackFont :=Source.HotTrackFont;
+    HotTrackFontOptions := Source.HotTrackFontOptions;
+    HotTrackOptions := Source.HotTrackOptions;
+  end;
+end;
+
 procedure TJvCustomArrangePanel.Rearrange;
 begin
   if FArrangeSettings.AutoArrange and not (csLoading in ComponentState) then
@@ -1292,4 +1307,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

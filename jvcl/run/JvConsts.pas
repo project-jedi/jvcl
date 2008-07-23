@@ -32,8 +32,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Forms, Controls, Graphics, Windows,
-  JvWin32;
+  {$IFDEF COMPILER5}
+  JvWin32,
+  {$ENDIF COMPILER5}
+  SysUtils, Classes, Forms, Controls, Graphics, Windows;
 
 const
   { JvEditor }
@@ -256,4 +258,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

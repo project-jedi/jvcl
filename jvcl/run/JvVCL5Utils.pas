@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Andreas Hausladen <Andreas dott Ha
 Portions created by Andreas Hausladen are Copyright (C) 2005 Andreas Hausladen.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): dejoy
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,8 +37,6 @@ uses
 
 // Classes
 type
-  TInterfacedPersistent = class(TPersistent);
-
   TCollectionNotification = (cnAdded, cnExtracting, cnDeleting);
 
   TCollection = class(Classes.TCollection)
