@@ -4,8 +4,8 @@ To create the release zips for JVCL, proceed as follows:
 * Copy all the files from this folder to this new folder (your "root" folder).
 * Run pg2want.bat from devtools\bin. This creates a new file, separate.xml in \devtools\bin.
 * Move separate.xml into the "Release" folder.
-* In Release, do an EXPORT (not checkout!) from CVS of dev/JVCL3. Use a custom name for the subfolder: jvcl. You can also use the jvcl_export target in want.xml (see NOTES).
-* In Release, do an EXPORT (not checkout!) from CVS of jcl. Use the default jcl name for the subfolder. You can also use the jcl_export target in want.xml (see NOTES).
+* In Release, do an EXPORT (not checkout!) from SVN of /trunk/jvcl. Use the default jvcl name for the subfolder. You can also use the jvcl_export target in want.xml (see NOTES).
+* In Release, do an EXPORT (not checkout!) from SVN of jcl. Use the default jcl name for the subfolder. You can also use the jcl_export target in want.xml (see NOTES).
 * You should now have a folder structure that looks like this:
   \Release
   ---\jcl
@@ -24,5 +24,5 @@ To create the release zips for JVCL, proceed as follows:
 
 
 NOTES:
-* To use the cvs targets (jvcl_export and jcl_export), make sure cvs.exe is in the system PATH and that the pserver protocol is installed
+* To use the svn targets (jvcl_export and jcl_export), make sure svn.exe is in the system PATH
 * You cannot use the default want.exe for this build. You have to use the included one since it contains modifications that are not part of the standard want.exe 

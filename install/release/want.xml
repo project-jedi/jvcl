@@ -27,11 +27,11 @@
     <echo message="" />
     <echo message="Available targets:" />
     <echo message="" />
-    <echo message="  jvcl_export - gets latest JVCL from CVS." />
-    <echo message="    NOTE: cvs and pserver protocol must be in PATH!" />
+    <echo message="  jvcl_export - gets latest JVCL from SVN." />
+    <echo message="    NOTE: svn must be in PATH!" />
     <echo message="" />
-    <echo message="  jcl_export - gets latest JCL from CVS." />
-    <echo message="    NOTE: cvs and pserver protocol must be in PATH!" />
+    <echo message="  jcl_export - gets latest JCL from SVN." />
+    <echo message="    NOTE: svn must be in PATH!" />
     <echo message="" />
     <echo message="  dist - builds JVCL zip files" />
     <echo message="" />
@@ -51,26 +51,18 @@
     <echo message="    NOTE: Converter program must be in PATH!" />
   </target>
 
-  <target name="jcl_export" description="Get latest jcl from CVS">
+  <target name="jcl_export" description="Get latest jcl from SVN">
 <!--  <delete dir="jcl" /> -->
-  <cvs
-    command="export -d jcl"
-    cvsroot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jcl"
-    dest="."
-    package="jcl"
-    tag="HEAD"
-    />
+    <exec executable="svn.exe" basedir=".">
+      <arg value="export http://jcl.svn.sourceforge.net/svnroot/jcl/trunk/jcl" />
+    </exec>
   </target>
 
-  <target name="jvcl_export" description="Get latest jvcl from CVS">
+  <target name="jvcl_export" description="Get latest jvcl from SVN">
 <!--  <delete dir="jvcl" /> -->
-  <cvs
-    command="export -d jvcl"
-    cvsroot=":pserver:anonymous@cvs.jvcl.sourceforge.net:/cvsroot/jvcl"
-    dest="."
-    package="dev/JVCL3"
-    tag="HEAD"
-    />
+    <exec executable="svn.exe" basedir=".">
+      <arg value="export http://jvcl.svn.sourceforge.net/svnroot/jvcl/trunk/jvcl" />
+    </exec>
   </target>
   <target name="JVCLConvert" description="Builds and packs the JVCLConvert application">
     <exec executable="make.exe" basedir="./jvcl/devtools">
