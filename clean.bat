@@ -1,6 +1,6 @@
 @echo off
 echo erasing...
-del /S *.dcu *.ddp *.dsk *.~* *.cfg *.drc *.dsm %1 %2 %3 %4 %5 %6 %7 %8 %9 >NUL
+del /S *.dcu *.ddp *.dsk *.~* *.cfg *.drc *.dsm *.local *.identcache %1 %2 %3 %4 %5 %6 %7 %8 %9 >NUL
 del dcu\*.obj >NUL
 if NOT "%1" == "all" goto LEAVE
 
