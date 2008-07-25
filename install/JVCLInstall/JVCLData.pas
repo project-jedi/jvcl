@@ -987,7 +987,12 @@ begin
     for i := 0 to ProjectGroup.Count - 1 do
       if not ProjectTypeIsDesign(ProjectGroup.Packages[i].Info.ProjectType) then
         // Ini read defaults to True, to compile and install newly created packages
-        ProjectGroup.Packages[i].Compile := Ini.ReadBool(ProjectGroup.BpgName, ProjectGroup.Packages[i].Info.Name, True);
+        ProjectGroup.Packages[i].Compile := Ini.ReadBool(ProjectGroup.BpgName, ProjectGroup.Packages[i].Info.Name, True)
+      else
+      begin
+        if Ini.ReadBool(ProjectGroup.BpgName + ' Designtime', ProjectGroup.Packages[i].Info.Name, False) then
+          ProjectGroup.Packages[i].Install := True;
+      end;
   finally
     Ini.Free;
   end;
