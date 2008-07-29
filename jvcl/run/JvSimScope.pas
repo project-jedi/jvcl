@@ -288,7 +288,10 @@ end;
 
 function TJvScopeLineValues.GetItem(Index: Integer): Integer;
 begin
-  Result := FValues[(Index + FZeroIndex) mod FCount];
+  if FCount = 0 then
+    Result := FValues[0]
+  else
+    Result := FValues[(Index + FZeroIndex) mod FCount];
 end;
 
 procedure TJvScopeLineValues.SetCapacity(const Value: Integer);
