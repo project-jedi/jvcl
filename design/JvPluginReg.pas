@@ -46,6 +46,19 @@ uses
 
 {$R JvPluginReg.dcr}
 
+type
+  TJvDelphiPluginWizardForm = class(TJvPluginWizardDelphi)
+  public
+    procedure InitializeWizard; override;
+  end;
+
+  // Only used in BDS 4.0 and up
+  TJvBuilderPluginWizardForm = class(TJvPluginWizardBuilder)
+  public
+    procedure InitializeWizard; override;
+  end;
+
+
 procedure Register;
 begin
   RegisterComponents(RsPalettePlugin, [TJvPluginManager]);
@@ -55,11 +68,41 @@ begin
     'ShortCut', TShortCutProperty);
   // End of Bianconi
 
-  RegisterPackageWizard(TJvPluginWizard.Create);
+  //RegisterPackageWizard(TJvPluginWizard.Create);
   //  RegisterLibraryExpert(TJvPluginWizard.Create);
+  
+  {$IFDEF DELPHI}
+    RegisterPackageWizard(TJvDelphiPluginWizardForm.Create);
+  {$ENDIF DELPHI}
+  
+  {$IFDEF COMPILER10_UP}
+    RegisterPackageWizard(TJvBuilderPluginWizardForm.Create);
+  {$ELSE ~COMPILER10_UP}
+    {$IFDEF BCB}
+      {$IFDEF COMPILER5_UP}
+        RegisterPackageWizard(TJvBuilderPluginWizardForm.Create);
+      {$ENDIF COMPILER5_UP}
+    {$ENDIF BCB}
+  {$ENDIF COMPILER10_UP}
+  
+end;
+
+{ TJvDelphiPluginWizardForm }
+
+procedure TJvDelphiPluginWizardForm.InitializeWizard;
+begin
+  inherited;
+  Caption := RsJvPluginWizard + ' for Delphi';
+  UniqueID := RsPluginWizardIDString + '.delphi';
+end;
+
+{ TJvBuilderPluginWizardForm }
+
+procedure TJvBuilderPluginWizardForm.InitializeWizard;
+begin
+  inherited;
+  Caption := RsJvPluginWizard + ' for C++ Builder';
+  UniqueID := RsPluginWizardIDString + '.builder';
 end;
   
-
-
-
 end.
