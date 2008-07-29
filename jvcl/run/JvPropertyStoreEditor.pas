@@ -39,6 +39,7 @@ uses
 
 type
   TJvPropertyStoreEditorForm = class(TForm)
+    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure JvInspectorAfterItemCreate(Sender: TObject; Item:
@@ -134,9 +135,8 @@ begin
   if not Assigned(PropertyStore) then
     Exit;
   JvPropertyStoreEditorForm := TJvPropertyStoreEditorForm.Create(Application);
-  SavePropertyStore := TJvCustomPropertyStoreClass(PropertyStore.ClassType).Create(nil);
+  SavePropertyStore := PropertyStore.Clone(nil);
   try
-    SavePropertyStore.Assign(PropertyStore);
     JvPropertyStoreEditorForm.PropertyStore := SavePropertyStore;
     Result := JvPropertyStoreEditorForm.ShowModal = mrOk;
     if Result then
@@ -158,6 +158,11 @@ begin
 end;
 
 type tAccessCustomPanel = class(tCustomPanel);
+
+procedure TJvPropertyStoreEditorForm.FormDestroy(Sender: TObject);
+begin
+  PropertyStore := NIL;
+end;
 
 procedure TJvPropertyStoreEditorForm.CreateFormControls;
 var BottomPanel, BottomButtonPanel : TWinControl;
@@ -640,7 +645,7 @@ end;
 
 procedure TJvPropertyStoreEditorForm.SetPropertyStore(const Value: TComponent);
 begin
-  if not Supports(Value, IJvPropertyEditorHandler) then
+  if Assigned(Value) and not Supports(Value, IJvPropertyEditorHandler) then
     Raise Exception.Create ('TJvPropertyStoreEditorForm.SetPropertyStore : PropertyStore must support IJvPropertyEditorHandler');
   FPropertyStore := Value;
   FillTreeView(Value);
