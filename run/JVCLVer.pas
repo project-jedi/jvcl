@@ -46,9 +46,9 @@ uses
 {$ENDIF UNITVERSIONING}
 
 const
-  sJVCLVersion = '3.33';
+  sJVCLVersion = '3.35';
   JVCLVersionMajor   = 3;    // 0=pre-release|beta/1, 2, ...=final
-  JVCLVersionMinor   = 33;   // minor release
+  JVCLVersionMinor   = 35;   // minor release
   JVCLVersionRelease = 0;    // 0: pre-release|beta/>=1: release
   JVCLVersionBuild   = 0;    // build number, days since march 1, 2006
 
