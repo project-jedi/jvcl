@@ -27,8 +27,8 @@ Version 1.00 (Draft 6) May 15, 2002</p>
 <a href="#introduction">1 -</a> INTRODUCTION
 <p><a href="#history">1.1</a> History<br>
 <a href="#trademarks">1.2</a> Trademarks<br>
-<a href="#borland3p">1.3</a> Relationship to Borland and third party<br>
-<a href="#delphiversions">1.4</a> Borland Delphi versions supported<br>
+<a href="#borland3p">1.3</a> Relationship to CodeGear and third party<br>
+<a href="#delphiversions">1.4</a> CodeGear Delphi versions supported<br>
 <a href="#newusers">1.5</a> Queries from new users</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -97,7 +97,7 @@ Conditional Compiler<br>
 and .DPKs<br>
 &nbsp;&nbsp;&nbsp;<a href="#pkgversion">6.2.3</a> Package Versioning<br>
 <a href="#compiling">6.3</a> Procedures for compiling components<br>
-&nbsp;&nbsp;&nbsp;<a href="#borlanddelphi">6.3.1</a> Borland Delphi<br>
+&nbsp;&nbsp;&nbsp;<a href="#borlanddelphi">6.3.1</a> CodeGear Delphi<br>
 <a href="#otherlibs">6.4</a> Functions requiring other libraries<br>
 <a href="#demo">6.5</a> Demo Project<br>
 <a href="#helpfile">6.6</a> Help File<br>
@@ -133,7 +133,7 @@ and .DPKs<br>
 &nbsp;
 <p>This is a standard for establishing and maintaining JEDI-VCL, an
 open source, user-supported library of components designed to interface
-with Borland Delphi. You are encouraged to read it over and forward
+with CodeGear Delphi. You are encouraged to read it over and forward
 comments to our newsgroups. You can subscribe at:</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="news://forums.talkto.net">news://forums.talkto.net</a>
 </p>
@@ -151,25 +151,27 @@ project activity.&nbsp; </p>
 <p>&nbsp; </p>
 <p> In our recent reassertion of the project's goals we confirmed that
 intention and expanded it to encompass the general world of free
-components. Project JEDI intends to work with Borland R &amp; D and its
+components. Project JEDI intends to work with CodeGear R &amp; D and
+its
 Code Central repository project, as well as other developers and
 collectors of freeware components, to bring this work into easy reach
 of all Delphi developers. </p>
 <h5><a name="trademarks">1.2 Trademarks</a> </h5>
 <p>Delphi is a registered trademark of Inprise Corporation. Inprise
-Corporation will be referred to as Borland throughout this document. </p>
-<h5><a name="borland3p">1.3 Relationship to Borland and third party</a>
+Corporation will be referred to as CodeGear throughout this document. </p>
+<h5><a name="borland3p">1.3 Relationship to CodeGear and third party</a>
 </h5>
 <p>JEDI-VCL is a project independent of any third party developer or
-Borland. There is no official "sanction" or "seal of approval" from
-Borland. Any decision to accept and include a component into the
+CodeGear. There is no official "sanction" or "seal of approval" from
+CodeGear. Any decision to accept and include a component into the
 JEDI-VCL components will be made without regard to the existence of
 components performing similar functions in any commercial or
-non-commercial third party or Borland product, provided no copyright or
+non-commercial third party or CodeGear product, provided no copyright
+or
 patent restrictions are violated. </p>
 <p>&nbsp; </p>
 <p>The intention is not that JEDI-VCL should compete with third party
-products but, rather, that it fill in the holes in Borland Delphi's
+products but, rather, that it fill in the holes in CodeGear Delphi's
 standard VCL library. Since overlaps of functionality already occur
 between other third-party libraries, it is considered impracticable to
 try to avoid them in our own considerations. </p>
@@ -177,26 +179,28 @@ try to avoid them in our own considerations. </p>
 <p>Developers submitting JEDI-VCL components may be corporate
 developers, third party developers, independent consultant/programmers,
 hobbyists or any other people developing in Delphi. Perhaps even
-Borland employees will contribute. No individual is precluded from
+CodeGear employees will contribute. No individual is precluded from
 contributing on the basis of a particular affiliation. </p>
 <p>&nbsp; </p>
-<p>If Borland employees submit components, they would do so as
-individuals, with no implication made nor inference drawn that Borland
+<p>If CodeGear employees submit components, they would do so as
+individuals, with no implication made nor inference drawn that CodeGear
 was either involved in the project or is committed to supporting the
 public domain library. </p>
-<p>Borland is permitted and encouraged to include free of charge any of
+<p>CodeGear is permitted and encouraged to include free of charge any
+of
 the JEDI-VCL components in future releases of Delphi. </p>
-<h5><a name="delphiversions">1.4 Borland Delphi versions supported</a> </h5>
+<h5><a name="delphiversions">1.4 CodeGear Delphi versions supported</a>
+</h5>
 <p>JEDI-VCL components will be designed to work with the version of
-Borland Delphi and C++ Builder which are current at the time of
+CodeGear Delphi and C++ Builder which are current at the time of
 release, as well as the previous one if that is technically possible.
 For example, at the time of this writing (March 2005) Delphi 2005
 (current), Delphi 7 (previous), C++ Builder 6 (current) and C++ Builder
 5 (previous) would be supported. Many of the components will be
-compatible with earlier versions of Borland Delphi, especially with
+compatible with earlier versions of CodeGear Delphi, especially with
 versions 5 and 6 as they share the same VCL with C++ Builder. However,
 ensuring compatibility will be the responsibility of the user. A user
-wanting a component to work with other versions of Borland Delphi will
+wanting a component to work with other versions of CodeGear Delphi will
 have to make the necessary modifications to the source code.
 Nevertheless, a component's developer may choose to include compiler
 switches to provide compatibility with earlier versions, at his/her
@@ -536,7 +540,8 @@ the source. </p>
 <h5><a name="cbuilder">4.7 C++ Builder Compatibility</a> </h5>
 <p><b><font color="#800000">[TODO: change this to reflect current
 status]</font></b> </p>
-<p>In order to assist users of Borland C++Builder, JEDI-VCL may need to
+<p>In order to assist users of CodeGear C++Builder, JEDI-VCL may need
+to
 be tested with the current release of C++Builder, and modified as
 needed. This should be done by a dedicated team with C++Builder
 knowledge before any release of JEDI-VCL.</p>
@@ -555,7 +560,7 @@ knowledge before any release of JEDI-VCL.</p>
 &nbsp;
 <p>The purpose of this standard is to create consistency among the
 components so that they may more easily maintained and understood by
-all Borland Delphi developers, whether novice and advanced. The
+all CodeGear Delphi developers, whether novice and advanced. The
 referees may exercise some latitude with respect to well-presented,
 pre-existing components that do not exactly conform.</p>
 <p>&nbsp;</p>
@@ -573,7 +578,7 @@ Techvoyage</a> site.</p>
 info)</a> </h5>
 <p>Figure 1 shows a header that must be included at the top of every
 piece of source code submitted to the library. This header will work
-with both Borland Delphi and C++Builder code.</p>
+with both CodeGear Delphi and C++Builder code.</p>
 <p>&nbsp;</p>
 <table>
   <tbody>
@@ -703,12 +708,13 @@ name should be frozen. To allow renaming would probably raise problems
 for users who had used the previous name and were not tracking the
 changes to the library. </p>
 <h5><a name="formatting">5.4 Source code formatting</a> </h5>
-<p>Borland Delphi code shall be formatted in accordance with standard
-currently defined by Borland for the Delphi VCL. As stated above, at
+<p>CodeGear Delphi code shall be formatted in accordance with standard
+currently defined by CodeGear for the Delphi VCL. As stated above, at
 present we will follow the <a
  href="http://community.borland.com/soapbox/techvoyage/article/1,1795,10280,00.html">Delphi
 Style Guide</a>, as published by Charlie Calvert. The general goal is
-to provide a consistent format that is recognized by all Borland Delphi
+to provide a consistent format that is recognized by all CodeGear
+Delphi
 developers. Deviations should be avoided. </p>
 <p>&nbsp; </p>
 <p>You can use following tools to assist you with code formatting: </p>
@@ -913,11 +919,11 @@ JVCL components and simplify maintenance. We will just add your
 Registration/Resource units, and your RunTime package to the JVCL
 Design package, and we are in business :) </p>
 <h5><a name="compiling">6.3 Procedures for compiling components</a> </h5>
-<h5><a name="borlanddelphi">6.3.1 Borland Delphi</a> </h5>
+<h5><a name="borlanddelphi">6.3.1 CodeGear Delphi</a> </h5>
 <p><b><font color="#800000">[TODO: change this to reflect current
 status]</font></b> </p>
-<p>Borland Delphi components will be compiled under the current and
-previous release of Borland Delphi, with the Delphi default compiler
+<p>CodeGear Delphi components will be compiled under the current and
+previous release of CodeGear Delphi, with the Delphi default compiler
 options:<br>
 </p>
 <pre>  {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}<br>  </pre>
@@ -1103,9 +1109,9 @@ status]</font></b> </p>
   <li>&nbsp; </li>
 </ul>
 You can create the Bitmaps for IDE via ImageEditor, or you can directly
-compile with the Borland Resource Compiler:
+compile with the CodeGear Resource Compiler:
 <p>Peter Mugaas recommended to use the Borland resource-compiler
-(BRCC32) which is included in Borland Delphi. The .RC file is a
+(BRCC32) which is included in CodeGear Delphi. The .RC file is a
 resource script containing information about the bitmaps (see example
 below): </p>
 <p>&nbsp; </p>
@@ -1140,8 +1146,9 @@ code or edit source code to repair formatting errors. </p>
 <h5><a name="documentor">7.2 Documentor (Help Team)</a> </h5>
 <p>The documentor is responsible for maintaining the Help files and
 keeping them in sync with each new release. Documentation should be
-written in the same style and flavor as the Borland material, if
-possible. Refer to the Borland Delphi documentation for more detail and
+written in the same style and flavor as the CodeGear material, if
+possible. Refer to the CodeGear Delphi documentation for more detail
+and
 numerous examples. </p>
 <h5><a name="referees">7.3 Referees</a> </h5>
 <p>Referees are volunteers who read source code, clean it up, compile

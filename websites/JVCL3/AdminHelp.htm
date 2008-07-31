@@ -41,8 +41,7 @@ wanted), trying to keep the team happy and content.</li>
   <li>Tries to help solve issues between developers within the team as
 well as issues with people outside the team.</li>
   <li dir="ltr">
-    <p dir="ltr">Promotes the project whenever and however he can.
-    </p>
+    <p dir="ltr">Promotes the project whenever and however he can. </p>
   </li>
 </ul>
 <p dir="ltr">&nbsp;</p>
@@ -62,7 +61,7 @@ settings:</p>
   <tbody>
     <tr>
       <th>Hostname</th>
-      <td>jvcl.sourceforge.net </td>
+      <td>shell.sourceforge.net </td>
     </tr>
     <tr>
       <th>Port</th>
@@ -101,13 +100,13 @@ be removed <i>immediately</i>. A discussion with the developer can
 then be initiated and, if a resolution is found, the developer can
 maybe be added again.</p>
 <h4 dir="ltr">&nbsp;</h4>
-<h4 dir="ltr">The CVS repository</h4>
-<p dir="ltr">The CVS repository can be access by anyone having
-developer access. An admins main responsibility in CVS is to add and
-remove folder structures when needed and generally keep CVS
-clean.&nbsp; Problems with CVS that cannot be resolved by the admin,
+<h4 dir="ltr">The SVN repository</h4>
+<p dir="ltr">The SVN repository can be access by anyone having
+developer access. An admins main responsibility in SVN is to add and
+remove folder structures when needed and generally keep SVN
+clean.&nbsp; Problems with SVN that cannot be resolved by the admin,
 should be reported to SF for resolution (stale locks, file recasing,
-folder deletion etc).</p>
+etc).</p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">Preparing releases</h4>
 <p>One of the most important tasks for an admin is making sure the
@@ -120,7 +119,7 @@ following tasks:</p>
   <li>Check out a clean copy of JCL and JVCL and test the installation
 on all available Delphi/BCB/Kylix versions.</li>
   <li>Check that all examples compiles.</li>
-  <li>Once the installation is verified to work, branch the CVS
+  <li>Once the installation is verified to work, branch the SVN
 repository. The branch should be on the form
 JVCL&lt;ALPHA|BETA|GAMMA|RELEASE|FINAL&gt;&lt;version&gt;. Should any
 last minute update come in, add them to the HEAD and the Branch.
@@ -129,14 +128,14 @@ impacting on the admin preparation work.<br>
   </li>
   <li>Obtain a fresh copy of the help file from the Help Coordinator.</li>
   <li dir="ltr">
-    <p dir="ltr">Run the want script in dev/JVCL3/install/release from
+    <p dir="ltr">Run the want script in jvcl/install/release from
 a command
 prompt to create the releases. To see available options, use "want
 help" and follow indications in readme.txt.</p>
   </li>
   <li dir="ltr">
     <p dir="ltr">Once the zip files have been created, upload them to
-sourceforge's ftp folder (/ incoming).</p>
+sourceforge's sftp folder (/ incoming).</p>
   </li>
   <li dir="ltr">
     <p dir="ltr">Go to the sf project page, log in as an admin and
@@ -147,8 +146,8 @@ create a new release in the release system.</p>
   </li>
   <li dir="ltr">
     <p dir="ltr">Post update announcements to all mailing lists,
-newsgroups and magazines as listed in
-dev/JVCL3/install/release/announce.txt (and any others you can come up
+newsgroups and magazines as listed in jvcl/install/release/announce.txt
+(and any others you can come up
 with). </p>
   </li>
 </ul>
