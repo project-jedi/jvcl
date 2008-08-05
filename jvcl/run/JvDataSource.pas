@@ -39,7 +39,7 @@ type
     FDataLink: TDataLink;
     FDataConnectors: TList;
     FUpdateLock: Integer;
-    FUpdateLookBookmark: TObject;
+    FUpdateLookBookmark: TBookmark;
     FOnFieldChanged: TDataChangeEvent;
     FOnEditingChanged: TNotifyEvent;
     FOnActiveChanged: TNotifyEvent;
