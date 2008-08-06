@@ -2174,7 +2174,7 @@ begin
   if FDisableCount <> 0 then
   begin
     Dec(FDisableCount);
-    if FDisableCount = 0 then
+    if (FDisableCount = 0) and DataLink.Active then
       {$IFDEF CLR}
       InvokeNonPublicMethod(DataLink, 'DataSetScrolled', [0]);
       {$ELSE}
