@@ -7821,7 +7821,7 @@ end;
 
 function CharIsMoney(const Ch: Char): Boolean;
 begin
-  Result := CharIsDigit(Ch) or (Ch = AnsiSpace) or (Ch = '$') or (Ch = '-') or
+  Result := CharIsDigit(Ch) or (Ch = NativeSpace) or (Ch = '$') or (Ch = '-') or
     (Pos(Ch, CurrencyString) > 0);
 end;
 
@@ -8070,10 +8070,10 @@ begin
     if Ch = ':' then
       Inc(liColons)
     else
-    if Ch = AnsiForwardSlash then
+    if Ch = NativeForwardSlash then
       Inc(liSlashes)
     else
-    if Ch = AnsiSpace then
+    if CharIsSpace(Ch) then
       Inc(liSpaces)
     else
     if CharIsDigit(Ch) then
@@ -8122,7 +8122,7 @@ begin
     Ps := LStrReplace(Ps, ShortMonthNames[I], IntToStr(I), False);
 
   { remove redundant spaces }
-  Ps := LStrReplace(Ps, AnsiSpace + AnsiSpace, AnsiSpace, False);
+  Ps := LStrReplace(Ps, NativeSpace + NativeSpace, NativeSpace, False);
 
   Result := Ps;
 end;
