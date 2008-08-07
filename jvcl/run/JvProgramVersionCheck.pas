@@ -966,8 +966,8 @@ begin
       if ProgramVersion[I].ProgramReleaseDate > 0 then
         Result := Result + ' - ' + DateTimeToStr(ProgramVersion[I].ProgramReleaseDate);
       if ProgramVersion[I].VersionDescription.Count > 0 then
-        Result := Result + AnsiLineBreak + ProgramVersion[I].VersionDescription.Text;
-      Result := Result + AnsiLineBreak + AnsiLineBreak;
+        Result := Result + NativeLineBreak + ProgramVersion[I].VersionDescription.Text;
+      Result := Result + NativeLineBreak + NativeLineBreak;
     end;
 end;
 

@@ -320,7 +320,7 @@ begin
         Key := #0;
 
       { no text at the end except for delete & backspace }
-      if (CurrentLine >= MaxLines) and not (Key = AnsiBackSpace) then
+      if (CurrentLine >= MaxLines) and not (Key = NativeBackSpace) then
         Key := #0;
     end;
 

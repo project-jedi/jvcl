@@ -323,7 +323,7 @@ var
   I: Integer;
 begin
   if Value <> FWhiteSpaceReplacement then
-    if StrContainsChars(Value, AnsiWhiteSpace, True) then
+    if StrContainsChars(Value, CharIsWhiteSpace, True) then
       {$IFDEF CLR}
       raise EJVCLException.Create(RsEWhiteSpaceReplacementCannotContainSpaces)
       {$ELSE}
@@ -408,7 +408,7 @@ begin
   for J := 1 to Length(NodeName) do
   begin
     Inc(InsertIndex);
-    if NodeName[J] in AnsiWhiteSpace then
+    if CharIsWhiteSpace(NodeName[J]) then
       case WSRLength of
         0:
           {$IFDEF CLR}

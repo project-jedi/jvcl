@@ -1454,7 +1454,7 @@ begin
     if AnsiSameStr(Prefix, Copy(Contexts.GetContext(CtxIdx).Name, 1, PrefixLen)) then
       with Contexts.GetContext(CtxIdx) do
       begin
-        if StrIsSubset(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen), DigitSymbols) then
+        if StrIsSubset(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen), CharIsDigit) then
         begin
           TmpNum := StrToInt64(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen));
           if TmpNum >= SuffixNum then
