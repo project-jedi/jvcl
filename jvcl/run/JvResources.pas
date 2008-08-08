@@ -1728,7 +1728,6 @@ resourcestring
   RsPVSiceKB = '%6.2f KB';
   RsPVSiceMB = '%6.2f MB';
   RsPVSiceGB = '%6.2f GB';
-  RsPVExceptionAppstorageNotAssigned = 'TJvProgramVersionCheck.Execute : Appstorage must be assigned';
   RsPVCReleaseTypeAlpha = 'Alpha';
   RsPVCReleaseTypeBeta = 'Beta';
   RsPVCReleaseTypeProduction = 'Production';
