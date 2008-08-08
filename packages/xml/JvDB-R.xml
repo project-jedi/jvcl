@@ -60,6 +60,13 @@
     <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="cxEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxLibraryD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxPageControlD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxExtEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB" Formname="" Condition=""/>
