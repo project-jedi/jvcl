@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvDBActions.Pas, released on 2007-03-11.
+The Original Code is: JvControlActionsEngine.Pas, released on 2007-03-11.
 
 The Initial Developer of the Original Code is Jens Fudickar [jens dott fudicker  att oratool dott de]
 Portions created by Jens Fudickar are Copyright (C) 2002 Jens Fudickar.

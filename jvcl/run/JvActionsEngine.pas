@@ -77,7 +77,6 @@ type
     FControlEngine: TJvActionBaseEngine;
     FLastTarget: TObject;
     FOnChangeActionComponent: TJvChangeActionComponent;
-    function GetControlEngine: TJvActionBaseEngine;
   protected
     function DetectControlEngine(aActionComponent: TComponent): Boolean; virtual;
     function GetEngineList: TJvActionEngineList; virtual; abstract;
@@ -86,8 +85,11 @@ type
     //1 This Procedure is called when the ActionComponent is changed
     procedure ChangeActionComponent(const AActionComponent: TComponent); virtual;
     procedure CheckEnabled(var AEnabled: Boolean); virtual;
+    procedure CheckVisible(var AVisible: Boolean); virtual;
     procedure SetEnabled(Value: Boolean);
-    property ControlEngine: TJvActionBaseEngine read GetControlEngine;
+    procedure SetVisible(Value: Boolean);
+    procedure SetImageIndex(Value: Integer);
+    property ControlEngine: TJvActionBaseEngine read FControlEngine;
     property EngineList: TJvActionEngineList read GetEngineList;
     property ActionComponent: TComponent read FActionComponent write
         SetActionComponent;
@@ -203,11 +205,6 @@ begin
   Result := Assigned(FControlEngine);
 end;
 
-function TJvActionEngineBaseAction.GetControlEngine: TJvActionBaseEngine;
-begin
-  Result := FControlEngine;
-end;
-
 function TJvActionEngineBaseAction.HandlesTarget(Target: TObject): Boolean;
 begin
   if Target is TComponent then
@@ -261,11 +258,28 @@ procedure TJvActionEngineBaseAction.CheckEnabled(var AEnabled: Boolean);
 begin
 end;
 
+procedure TJvActionEngineBaseAction.CheckVisible(var AVisible: Boolean);
+begin
+end;
+
 procedure TJvActionEngineBaseAction.SetEnabled(Value: Boolean);
 begin
   CheckEnabled (Value);
   if Enabled <> Value then
     Enabled := Value;
+end;
+
+procedure TJvActionEngineBaseAction.SetVisible(Value: Boolean);
+begin
+  CheckVisible(Value);
+  if Visible <> Value then
+    Visible := Value;
+end;
+
+procedure TJvActionEngineBaseAction.SetImageIndex(Value: Integer);
+begin
+  if ImageIndex <> Value then
+    ImageIndex := Value;
 end;
 
 initialization
