@@ -1363,9 +1363,7 @@ var
   ReleaseType: TJvProgramReleaseType;
 begin
   FExecuteVersionInfo := nil;
-  if not Assigned(Appstorage) then
-    Raise Exception.Create (RsPVExceptionAppstorageNotAssigned);
-  if not Appstorage.PathExists(AppStoragePath) then
+  if Assigned(Appstorage) and not Appstorage.PathExists(AppStoragePath) then
     StoreProperties;
   LoadProperties;
   if (LastCheck < Now - CheckFrequency) and (LocationTypesSupported <> []) then
