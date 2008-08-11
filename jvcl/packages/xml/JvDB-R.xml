@@ -60,6 +60,7 @@
     <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+
     <Package Name="cxEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
     <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
     <Package Name="cxLibraryD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
@@ -67,6 +68,58 @@
     <Package Name="cxExtEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
     <Package Name="cxDataD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
     <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="SMExportD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxVerticalGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxPivotGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+
+    <Package Name="cxEditorsVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxLibraryVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxPageControlVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxExtEditorsVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="SMExportVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxVerticalGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxPivotGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+
+    <Package Name="cxEditorsVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxLibraryVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxPageControlVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxExtEditorsVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="SMExportVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxVerticalGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxPivotGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+
+    <Package Name="cxEditorsD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxLibraryD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxPageControlD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxExtEditorsD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="SMExportD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxVerticalGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxPivotGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+
+    <Package Name="cxEditorsD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxLibraryD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxPageControlD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxExtEditorsD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="SMExportD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxVerticalGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
+    <Package Name="cxPivotGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB" Formname="" Condition=""/>
