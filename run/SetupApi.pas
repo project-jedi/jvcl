@@ -38,6 +38,7 @@
 
 unit SetupApi;
 
+{$I jedi.inc}
 {$I windowsversion.inc}
 
 interface
