@@ -1452,48 +1452,43 @@ var
     AddAfter: Boolean;
   begin
     AddAfter := False;
-    BeginUpdate;
-    try
-      if MultiSelect and DataLink.Active then
-        if Select and (Shift * KeyboardShiftStates = [ssShift]) then
+    if MultiSelect and DataLink.Active then
+      if Select and (Shift * KeyboardShiftStates = [ssShift]) then
+      begin
+        if not FSelecting then
         begin
-          if not FSelecting then
-          begin
-            {$IFDEF CLR}
-            FSelectionAnchor := GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr;
-            {$ELSE}
-            FSelectionAnchor := TBookmarks(SelectedRows).CurrentRow;
-            {$ENDIF CLR}
-            SelectedRows.CurrentRowSelected := True;
-            FSelecting := True;
-            AddAfter := True;
-          end
-          else
-          begin
-            {$IFDEF CLR}
-            AddAfter := DataSource.DataSet.CompareBookmarkStr(GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr,
-              FSelectionAnchor) <> -Direction;
-            if AddAfter then
-              SelectedRows.CurrentRowSelected := False;
-            {$ELSE}
-            with TBookmarks(SelectedRows) do
-            begin
-              AddAfter := Compare(CurrentRow, FSelectionAnchor) <> -Direction;
-              if not AddAfter then
-                CurrentRowSelected := False;
-            end;
-            {$ENDIF CLR}
-          end;
+          {$IFDEF CLR}
+          FSelectionAnchor := GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr;
+          {$ELSE}
+          FSelectionAnchor := TBookmarks(SelectedRows).CurrentRow;
+          {$ENDIF CLR}
+          SelectedRows.CurrentRowSelected := True;
+          FSelecting := True;
+          AddAfter := True;
         end
         else
-          ClearSelections;
-      if Direction <> 0 then
-        DataLink.DataSet.MoveBy(Direction);
-      if AddAfter then
-        SelectedRows.CurrentRowSelected := True;
-    finally
-      EndUpdate;
-    end;
+        begin
+          {$IFDEF CLR}
+          AddAfter := DataSource.DataSet.CompareBookmarkStr(GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr,
+            FSelectionAnchor) <> -Direction;
+          if AddAfter then
+            SelectedRows.CurrentRowSelected := False;
+          {$ELSE}
+          with TBookmarks(SelectedRows) do
+          begin
+            AddAfter := Compare(CurrentRow, FSelectionAnchor) <> -Direction;
+            if not AddAfter then
+              CurrentRowSelected := False;
+          end;
+          {$ENDIF CLR}
+        end;
+      end
+      else
+        ClearSelections;
+    if Direction <> 0 then
+      DataLink.DataSet.MoveBy(Direction);
+    if AddAfter then
+      SelectedRows.CurrentRowSelected := True;
   end;
 
   procedure NextRow(Select: Boolean);
