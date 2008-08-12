@@ -478,27 +478,35 @@ procedure TJvDBDateTimePicker.UpdateData(Sender: TObject);
 begin
   // update value in datalink with date value in control, not from system
   // DataLink field might be empty
-  if not (Field <> nil) or not FDataLink.Editing then
+  if (Field = nil) or not FDataLink.Editing then
     Exit;
+    
   if Kind = dtkDate then
   begin
     if Trunc(NullDate) = Trunc(DateTime) then
-      Field.Value := Null
+      if TrimValue or not IsDateAndTimeField then
+        Field.Value := Null
+      else
+        Field.AsDateTime := Frac(DateTime)
     else
-    if IsDateAndTimeField then
-      Field.AsDateTime := DateTime
-    else
-      Field.AsDateTime := Trunc(DateTime);
+      if TrimValue or not IsDateAndTimeField then
+        Field.AsDateTime := Trunc(DateTime)
+      else
+        Field.AsDateTime := DateTime;
   end
   else
+  if IsDateAndTimeField then
   begin
     if Frac(NullDate) = Frac(DateTime) then
-      Field.Value := Null
+      if TrimValue then
+        Field.Value := Null
+      else
+        Field.AsDateTime := Trunc(DateTime)
     else
-    if IsDateAndTimeField then
-      Field.AsDateTime := DateTime
-    else
-      Field.AsDateTime := Frac(DateTime);
+      if TrimValue then
+        Field.AsDateTime := Frac(DateTime)
+      else
+        Field.AsDateTime := DateTime;
   end;
 end;
 
