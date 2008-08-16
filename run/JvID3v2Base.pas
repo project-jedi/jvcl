@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
-  JclUnicode,
+  JclStringConversions, JclUnicode,
   JvComponentBase, JvID3v2Types, JvID3v1;
 
 const
