@@ -309,7 +309,7 @@ uses
   {$ENDIF JVCLThemesEnabled}
   ComCtrls, // needed for GetComCtlVersion
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
-  JclUnicode, JvVCL5Utils;
+  JclStringConversions, JclUnicode, JvVCL5Utils;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
