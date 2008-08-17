@@ -1040,14 +1040,12 @@ procedure TJvBaseParameter.GetData;
 begin
   AsVariant := Null;
   if Assigned(WinControl) then
-    //    FValue := WinControlData;
     AsVariant := WinControlData;
 end;
 
 procedure TJvBaseParameter.SetData;
 begin
   if Assigned(WinControl) then
-    //    WinControlData := FValue;
     WinControlData := AsVariant;
 end;
 
@@ -1112,16 +1110,13 @@ begin
   FIntParameterList := TStringList.Create;
   FDynControlEngine := DefaultDynControlEngine;
   FArrangeSettings := TJvArrangeSettings.Create(Self);
-  with FArrangeSettings do
-  begin
-    AutoArrange := True;
-    WrapControls := True;
-    AutoSize := asBoth;
-    DistanceVertical := 3;
-    DistanceHorizontal := 3;
-    BorderLeft := 5;
-    BorderTop := 5;
-  end;
+  FArrangeSettings.AutoArrange := True;
+  FArrangeSettings.WrapControls := True;
+  FArrangeSettings.AutoSize := asBoth;
+  FArrangeSettings.DistanceVertical := 3;
+  FArrangeSettings.DistanceHorizontal := 3;
+  FArrangeSettings.BorderLeft := 5;
+  FArrangeSettings.BorderTop := 5;
   ScrollBox := nil;
   RightPanel := nil;
   ArrangePanel := nil;
@@ -1340,15 +1335,12 @@ begin
 
   FParameterDialog := DynControlEngine.CreateForm(Messages.Caption, '');
 
-  with TForm(ParameterDialog) do
-  begin
-    BorderIcons := [];
-    DefaultMonitor := dmActiveForm;
-    BorderStyle := bsDialog;
-    FormStyle := fsNormal;
-    Position := poScreenCenter;
-    OnShow := DialogShow;
-  end;
+  TForm(ParameterDialog).BorderIcons := [];
+  TForm(ParameterDialog).DefaultMonitor := dmActiveForm;
+  TForm(ParameterDialog).BorderStyle := bsDialog;
+  TForm(ParameterDialog).FormStyle := fsNormal;
+  TForm(ParameterDialog).Position := poScreenCenter;
+  TForm(ParameterDialog).OnShow := DialogShow;
 
   if Height > 0 then
     ParameterDialog.Height := Height;
@@ -1359,22 +1351,19 @@ begin
     alBottom);
   if not Supports(BottomPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvRaised, 1, bsNone, 0);
+  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 1, bsNone, 0);
 
   MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '',
     alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
+  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
 
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '',
     alRight);
   if not Supports(ButtonPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
 
   OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', Messages.OkButton, '',
     OnOkButtonClick, True, False);
@@ -1412,47 +1401,36 @@ begin
       alLeft);
     if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
       raise EIntfCastError.CreateRes(@RsEIntfCastError);
-    with ITmpPanel do
-      ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
-    with HistoryPanel do
-      Height := 25;
+    ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
+    HistoryPanel.Height := 25;
     LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton',
       Messages.HistoryLoadButton, '',
       HistoryLoadClick, False, False);
-    with LoadButton do
-    begin
-      Left := 6;
-      Top := 5;
-      Height := 20;
-      Width :=
+    LoadButton.Left := 6;
+    LoadButton.Top := 5;
+    LoadButton.Height := 20;
+    LoadButton.Width :=
         TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
-      ButtonLeft := Left + Width + 5;
-    end;
+    ButtonLeft := LoadButton.Left + LoadButton.Width + 5;
     SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton',
-      Messages.HistorySaveButton, '',
-      HistorySaveClick, False, False);
-    with SaveButton do
-    begin
-      Left := ButtonLeft;
-      Top := 5;
-      Height := 20;
-      Width :=
-        TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
-      ButtonLeft := Left + Width + 5;
-    end;
+    Messages.HistorySaveButton, '',
+    HistorySaveClick, False, False);
+    SaveButton.Left := ButtonLeft;
+    SaveButton.Top := 5;
+    SaveButton.Height := 20;
+    SaveButton.Width :=
+      TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
+    ButtonLeft := SaveButton.Left + SaveButton.Width + 5;
     ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton',
       Messages.HistoryClearButton, '',
       HistoryClearClick, False, False);
-    with ClearButton do
-    begin
-      Left := ButtonLeft;
-      Top := 5;
-      Height := 20;
-      Width :=
-        TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) +
-        5;
-      ButtonLeft := Left + Width + 5;
-    end;
+    ClearButton.Left := ButtonLeft;
+    ClearButton.Top := 5;
+    ClearButton.Height := 20;
+    ClearButton.Width :=
+      TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) +
+      5;
+    ButtonLeft := ClearButton.Left + ClearButton.Width + 5;
     HistoryPanel.Width := ButtonLeft;
     OrgHistoryPanelWidth := ButtonLeft;
   end
@@ -1461,8 +1439,7 @@ begin
 
   CreateWinControlsOnParent(MainPanel);
 
-  with MainPanel do
-    ResizeDialogAfterArrange(nil, Left, Top, Width, Height);
+  ResizeDialogAfterArrange(nil, MainPanel.Left, MainPanel.Top, MainPanel.Width, MainPanel.Height);
 end;
 
 procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight:
@@ -1734,50 +1711,39 @@ begin
 end;
 
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent: TWinControl);
-var
-  I: Integer;
 begin
   FreeAndNil(ScrollBox);
   ScrollBox := TScrollBox.Create(Self);
   ScrollBox.Parent := ParameterParent;
-  with ScrollBox do
-  begin
-    AutoScroll := False;
-    BorderStyle := bsNone;
-    {$IFDEF COMPILER6_UP}
-    BevelInner := bvNone;
-    BevelOuter := bvNone;
-    {$ENDIF COMPILER6_UP}
-    Align := alClient;
-    Width := ParameterParent.Width;
-  end;
+  ScrollBox.AutoScroll := False;
+  ScrollBox.BorderStyle := bsNone;
+  {$IFDEF COMPILER6_UP}
+  ScrollBox.BevelInner := bvNone;
+  ScrollBox.BevelOuter := bvNone;
+  {$ENDIF COMPILER6_UP}
+  ScrollBox.Align := alClient;
+  ScrollBox.Width := ParameterParent.Width;
   RightPanel := TJvPanel.Create(Self);
   RightPanel.Parent := ScrollBox;
-  with RightPanel do
-  begin
-    Align := alRight;
-    BorderStyle := bsNone;
-    BevelInner := bvNone;
-    BevelOuter := bvNone;
-    Width := 22; // asn: need to check this
-    Visible := False;
-  end;
+  RightPanel.Align := alRight;
+  RightPanel.BorderStyle := bsNone;
+  RightPanel.BevelInner := bvNone;
+  RightPanel.BevelOuter := bvNone;
+  RightPanel.Width := 22; // asn: need to check this
+  RightPanel.Visible := False;
   FreeAndNil(ArrangePanel);
   ArrangePanel := TJvPanel.Create(Self);
   ArrangePanel.Parent := ScrollBox;
   ArrangePanel.Name := 'MainArrangePanel';
-  with ArrangePanel do
-  begin
-    Transparent := False;
-    Align := alNone;
-    BorderStyle := bsNone;
-    BevelInner := bvNone;
-    BevelOuter := bvNone;
-    Caption := '';
-    Left := 0;
-    Top := 0;
-    OnResizeParent := ResizeDialogAfterArrange;
-  end;
+  ArrangePanel.Transparent := False;
+  ArrangePanel.Align := alNone;
+  ArrangePanel.BorderStyle := bsNone;
+  ArrangePanel.BevelInner := bvNone;
+  ArrangePanel.BevelOuter := bvNone;
+  ArrangePanel.Caption := '';
+  ArrangePanel.Left := 0;
+  ArrangePanel.Top := 0;
+  ArrangePanel.OnResizeParent := ResizeDialogAfterArrange;
   ArrangePanel.ArrangeSettings := ArrangeSettings;
   case ArrangePanel.ArrangeSettings.AutoSize of
     asNone:
@@ -1789,18 +1755,7 @@ begin
     ArrangePanel.Width := ScrollBox.Width - RightPanel.Width;
   if MaxWidth > 0 then
     ArrangePanel.ArrangeSettings.MaxWidth := MaxWidth - RightPanel.Width - 2;
-  try
-    ArrangePanel.DisableArrange;
-    CreateWinControlsOnWinControl(ArrangePanel);
-    for I := 0 to Count - 1 do
-      if Parameters[I].Visible and
-        (Parameters[I] is TJvArrangeParameter) then
-        TJvArrangeParameter(Parameters[I]).ArrangeControls;
-    HandleEnableDisable;
-  finally
-    ArrangePanel.EnableArrange;
-  end;
-  ArrangePanel.ArrangeControls;
+  CreateWinControlsOnWinControl(ArrangePanel);
 end;
 
 procedure TJvParameterList.CreateWinControlsOnWinControl(ParameterParent:
@@ -1808,13 +1763,25 @@ procedure TJvParameterList.CreateWinControlsOnWinControl(ParameterParent:
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
-    if Parameters[I].Visible then
-    begin
-      Parameters[I].CreateWinControlOnParent(
-        GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
-      Parameters[I].WinControlData := Parameters[I].AsVariant;
-    end;
+  try
+    if ParameterParent is TJvCustomArrangePanel then
+      TJvCustomArrangePanel(ParameterParent).DisableArrange;
+    for I := 0 to Count - 1 do
+      if Parameters[I].Visible then
+      begin
+        Parameters[I].CreateWinControlOnParent(
+          GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
+        Parameters[I].WinControlData := Parameters[I].AsVariant;
+        if (Parameters[I] is TJvArrangeParameter) then
+          TJvArrangeParameter(Parameters[I]).ArrangeControls;
+      end;
+    HandleEnableDisable;
+  finally
+    if ParameterParent is TJvCustomArrangePanel then
+      TJvCustomArrangePanel(ParameterParent).EnableArrange;
+  end;
+  if ParameterParent is TJvCustomArrangePanel then
+    TJvCustomArrangePanel(ParameterParent).ArrangeControls;
 end;
 
 
@@ -1952,24 +1919,24 @@ var
   I: Integer;
 begin
   if Assigned(AppStorage) then
-    with ParameterList do
-      for I := 0 to ParameterList.Count - 1 do
-        if not (Parameters[I] is TJvNoDataParameter) then
-          with Parameters[I] do
-            if StoreValueToAppStorage then
-            begin
-              if StoreValueCrypted then
-                AppStorage.EnablePropertyValueCrypt;
-              if Parameters[I] is TJvListParameter then
-                with TJvListParameter(Parameters[I]) do
-                  ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath,
-                    SearchName]), ItemIndex)
-              else
-                AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath,
-                  SearchName]), AsString);
-              if StoreValueCrypted then
-                AppStorage.DisablePropertyValueCrypt;
-            end;
+    for I := 0 to ParameterList.Count - 1 do
+      if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
+        if ParameterList.Parameters[I].StoreValueToAppStorage then
+        begin
+          if ParameterList.Parameters[I].StoreValueCrypted then
+            AppStorage.EnablePropertyValueCrypt;
+          if ParameterList.Parameters[I] is TJvListParameter then
+            TJvListParameter(ParameterList.Parameters[I]).ItemIndex :=
+              AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath,
+                  ParameterList.Parameters[I].SearchName]),
+                  TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
+          else
+            ParameterList.Parameters[I].AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath,
+              ParameterList.Parameters[I].SearchName]),
+              ParameterList.Parameters[I].AsString);
+          if ParameterList.Parameters[I].StoreValueCrypted then
+            AppStorage.DisablePropertyValueCrypt;
+        end;
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -1977,24 +1944,21 @@ var
   I: Integer;
 begin
   if Assigned(AppStorage) then
-    with ParameterList do
-      for I := 0 to ParameterList.Count - 1 do
-        if not (Parameters[I] is TJvNoDataParameter) then
-          with Parameters[I] do
-            if StoreValueToAppStorage then
-            begin
-              if StoreValueCrypted then
-                AppStorage.EnablePropertyValueCrypt;
-              if Parameters[I] is TJvListParameter then
-                with TJvListParameter(Parameters[I]) do
-                  AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]),
-                    ItemIndex)
-              else
-                AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]),
-                  AsString);
-              if StoreValueCrypted then
-                AppStorage.DisablePropertyValueCrypt;
-            end;
+    for I := 0 to ParameterList.Count - 1 do
+      if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
+        if ParameterList.Parameters[I].StoreValueToAppStorage then
+        begin
+          if ParameterList.Parameters[I].StoreValueCrypted then
+            AppStorage.EnablePropertyValueCrypt;
+          if ParameterList.Parameters[I] is TJvListParameter then
+            AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
+              TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
+          else
+            AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
+              ParameterList.Parameters[I].AsString);
+          if ParameterList.Parameters[I].StoreValueCrypted then
+            AppStorage.DisablePropertyValueCrypt;
+        end;
 end;
 
 //=== { TJvParameterListSelectList } =========================================
