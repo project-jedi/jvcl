@@ -648,12 +648,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlButton, IJvButton) then
-    with IJvButton do
-    begin
-      ControlSetGlyph(Glyph);
-      ControlSetNumGlyphs(NumGlyphs);
-      ControlSetLayout(Layout);
-    end;
+  begin
+    IJvButton.ControlSetGlyph(Glyph);
+    IJvButton.ControlSetNumGlyphs(NumGlyphs);
+    IJvButton.ControlSetLayout(Layout);
+  end;
 end;
 
 //=== { TJvRadioButtonParameter } ============================================
@@ -736,10 +735,9 @@ begin
   FramePanel.Height := Height;
   FramePanel.Width := Width;
   if FramePanel is TPanel then
-    with TPanel(FramePanel) do
     begin
-      BevelInner := bvNone;
-      BevelOuter := bvNone;
+      TPanel(FramePanel).BevelInner := bvNone;
+      TPanel(FramePanel).BevelOuter := bvNone;
     end;
 end;
 
@@ -1018,14 +1016,13 @@ var
 begin
   WinControl := DynControlEngine.CreateImageControl(Self, AParameterParent, GetParameterName);
   if Supports(WinControl, IJvDynControlImage, ITmpImage) then
-    with ITmpImage do
     begin
-      ControlSetPicture(Picture);
-      //      ControlSetAutoSize(AutoSize);
-      ControlSetIncrementalDisplay(IncrementalDisplay);
-      ControlSetCenter(Center);
-      ControlSetStretch(Stretch);
-      ControlSetTransparent(Transparent);
+      ITmpImage.ControlSetPicture(Picture);
+      //      ITmpImage.ControlSetAutoSize(AutoSize);
+      ITmpImage.ControlSetIncrementalDisplay(IncrementalDisplay);
+      ITmpImage.ControlSetCenter(Center);
+      ITmpImage.ControlSetStretch(Stretch);
+      ITmpImage.ControlSetTransparent(Transparent);
     end;
 end;
 
@@ -1599,11 +1596,10 @@ begin
   inherited GetData;
   if Supports(WinControl, IJvDynControlCheckListBox, ITmpCheckListBox) then
     for I := 0 to ItemList.Count - 1 do
-      with ITmpCheckListBox, ItemData[I] do
       begin
-        ItemEnabled := ITmpCheckListBox.ControlGetItemEnabled(I);
-        State := ITmpCheckListBox.ControlGetState(I);
-        Header := ITmpCheckListBox.ControlGetHeader(I);
+        ItemData[I].ItemEnabled := ITmpCheckListBox.ControlGetItemEnabled(I);
+        ItemData[I].State := ITmpCheckListBox.ControlGetState(I);
+        ItemData[I].Header := ITmpCheckListBox.ControlGetHeader(I);
       end;
 end;
 
@@ -1615,11 +1611,10 @@ begin
   inherited SetData;
   if Supports(WinControl, IJvDynControlCheckListBox, ITmpCheckListBox) then
     for I := 0 to ItemList.Count - 1 do
-      with ITmpCheckListBox, ItemData[I] do
       begin
-        ITmpCheckListBox.ControlSetItemEnabled(I, ItemEnabled);
-        ITmpCheckListBox.ControlSetState(I, State);
-        ITmpCheckListBox.ControlSetHeader(I, Header);
+        ITmpCheckListBox.ControlSetItemEnabled(I, ItemData[I].ItemEnabled);
+        ITmpCheckListBox.ControlSetState(I, ItemData[I].State);
+        ITmpCheckListBox.ControlSetHeader(I, ItemData[I].Header);
       end;
 end;
 
@@ -1628,12 +1623,9 @@ procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const AText: string;
   AHeader: Boolean = False);
 begin
   ItemList.Add(AText);
-  with ItemData[ItemList.Count - 1] do
-  begin
-    Header := AHeader;
-    State := AState;
-    ItemEnabled := AItemEnabled;
-  end;
+  ItemData[ItemList.Count - 1].Header := AHeader;
+  ItemData[ItemList.Count - 1].State := AState;
+  ItemData[ItemList.Count - 1].ItemEnabled := AItemEnabled;
 end;
 
 function TJvCheckListBoxParameter.GetParameterNameExt: string;
@@ -1674,12 +1666,9 @@ begin
     if not Assigned(ItemList.Objects[Index]) then
     begin
       ItemList.Objects[Index] := TJvCheckListItemDataWrapper.Create;
-      with TJvCheckListItemDataWrapper(ItemList.Objects[Index]) do
-      begin
-        State := cbChecked;
-        Header := False;
-        ItemEnabled := True;
-      end;
+      TJvCheckListItemDataWrapper(ItemList.Objects[Index]).State := cbChecked;
+      TJvCheckListItemDataWrapper(ItemList.Objects[Index]).Header := False;
+      TJvCheckListItemDataWrapper(ItemList.Objects[Index]).ItemEnabled := True;
     end;
     Result := TJvCheckListItemDataWrapper(ItemList.Objects[Index]);
   end
@@ -1779,11 +1768,10 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlDate, DynControlDate) then
-    with DynControlDate do
     begin
-      ControlSetFormat(Format);
-      ControlSetMinDate(MinDate);
-      ControlSetMaxDate(MaxDate);
+      DynControlDate.ControlSetFormat(Format);
+      DynControlDate.ControlSetMinDate(MinDate);
+      DynControlDate.ControlSetMaxDate(MaxDate);
     end;
 end;
 
@@ -1822,11 +1810,10 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlDate, DynControlDate) then
-    with DynControlDate do
     begin
-      ControlSetFormat(Format);
-      ControlSetMinDate(MinDate);
-      ControlSetMaxDate(MaxDate);
+      DynControlDate.ControlSetFormat(Format);
+      DynControlDate.ControlSetMinDate(MinDate);
+      DynControlDate.ControlSetMaxDate(MaxDate);
     end;
 end;
 
@@ -1943,12 +1930,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlSpin, ITmpSpin) then
-    with ITmpSpin do
     begin
-      ControlSetIncrement(Increment);
-      ControlSetMinValue(MinValue);
-      ControlSetMaxValue(MaxValue);
-      ControlSetUseForInteger(True);
+      ITmpSpin.ControlSetIncrement(Increment);
+      ITmpSpin.ControlSetMinValue(MinValue);
+      ITmpSpin.ControlSetMaxValue(MaxValue);
+      ITmpSpin.ControlSetUseForInteger(True);
     end;
 end;
 
@@ -2029,12 +2015,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlSpin, ITmpSpin) then
-    with ITmpSpin do
     begin
-      ControlSetIncrement(Increment);
-      ControlSetMinValue(MinValue);
-      ControlSetMaxValue(MaxValue);
-      ControlSetUseForInteger(True);
+      ITmpSpin.ControlSetIncrement(Increment);
+      ITmpSpin.ControlSetMinValue(MinValue);
+      ITmpSpin.ControlSetMaxValue(MaxValue);
+      ITmpSpin.ControlSetUseForInteger(True);
     end;
 end;
 
@@ -2119,15 +2104,14 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlFileName, ITmpControlFileName) then
-    with ITmpControlFileName do
     begin
-      ControlSetDialogKind(DialogKind);
-      ControlSetDefaultExt(DefaultExt);
-      ControlSetFilter(Filter);
-      ControlSetFilterIndex(FilterIndex);
-      ControlSetInitialDir(InitialDir);
-      ControlSetDialogOptions(DialogOptions);
-      ControlSetDialogTitle(DialogTitle);
+      ITmpControlFileName.ControlSetDialogKind(DialogKind);
+      ITmpControlFileName.ControlSetDefaultExt(DefaultExt);
+      ITmpControlFileName.ControlSetFilter(Filter);
+      ITmpControlFileName.ControlSetFilterIndex(FilterIndex);
+      ITmpControlFileName.ControlSetInitialDir(InitialDir);
+      ITmpControlFileName.ControlSetDialogOptions(DialogOptions);
+      ITmpControlFileName.ControlSetDialogTitle(DialogTitle);
     end;
 end;
 
@@ -2209,11 +2193,10 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlDirectory, ITmpControlDirectory) then
-    with ITmpControlDirectory do
     begin
-      ControlSetDialogTitle(DialogTitle);
-      ControlSetDialogOptions(DialogOptions);
-      ControlSetInitialDir(InitialDir);
+      ITmpControlDirectory.ControlSetDialogTitle(DialogTitle);
+      ITmpControlDirectory.ControlSetDialogOptions(DialogOptions);
+      ITmpControlDirectory.ControlSetInitialDir(InitialDir);
     end;
 end;
 
@@ -2265,12 +2248,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
-    with ITmpMemo do
     begin
-      ControlSetWantTabs(WantTabs);
-      ControlSetWantReturns(WantReturns);
-      ControlSetWordWrap(WordWrap);
-      ControlSetScrollbars(ScrollBars);
+      ITmpMemo.ControlSetWantTabs(WantTabs);
+      ITmpMemo.ControlSetWantReturns(WantReturns);
+      ITmpMemo.ControlSetWordWrap(WordWrap);
+      ITmpMemo.ControlSetScrollbars(ScrollBars);
     end;
 end;
 
@@ -2301,12 +2283,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
-    with ITmpMemo do
     begin
-      ControlSetWantTabs(WantTabs);
-      ControlSetWantReturns(WantReturns);
-      ControlSetWordWrap(WordWrap);
-      ControlSetScrollbars(ScrollBars);
+      ITmpMemo.ControlSetWantTabs(WantTabs);
+      ITmpMemo.ControlSetWantReturns(WantReturns);
+      ITmpMemo.ControlSetWordWrap(WordWrap);
+      ITmpMemo.ControlSetScrollbars(ScrollBars);
     end;
 end;
 
