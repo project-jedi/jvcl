@@ -85,14 +85,11 @@ begin
       Exit;
     end;
     Parameter := TJvRadioGroupParameter.Create(ParameterList);
-    with Parameter do
-    begin
-      SearchName := cSelectionType;
-      Caption := Caption;
-      ItemIndex := 0;
-      Width := 200;
-      Height := 30;
-    end;
+    Parameter.SearchName := cSelectionType;
+    Parameter.Caption := Caption;
+    Parameter.ItemIndex := 0;
+    Parameter.Width := 200;
+    Parameter.Height := 30;
     for I := 0 to S.Count - 1 do
       InsertParameter(S[I]);
     Parameter.ItemIndex := Default;
