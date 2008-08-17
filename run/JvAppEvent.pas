@@ -968,8 +968,8 @@ begin
     Application.BiDiMode := FBiDiMode;
     Application.BiDiKeyboard := FBiDiKeyboard;
     Application.NonBiDiKeyboard := FNonBiDiKeyboard;
-    Application.Mouse.DragImmediate := FMouseDragImmediate;
-    Application.Mouse.DragThreshold := FMouseDragThreshold;
+    Mouse.DragImmediate := FMouseDragImmediate;
+    Mouse.DragThreshold := FMouseDragThreshold;
   end;
 end;
 
