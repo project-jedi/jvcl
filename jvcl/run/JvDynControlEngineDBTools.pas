@@ -199,21 +199,15 @@ begin
   FDynControlEngineDB := nil;
   FDataSource := nil;
   FArrangeSettings := TJvArrangeSettings.Create(Self);
-  with FArrangeSettings do
-  begin
-    AutoSize := asBoth;
-    DistanceHorizontal := 3;
-    DistanceVertical := 3;
-    BorderLeft := 3;
-    BorderTop := 3;
-    WrapControls := True;
-  end;
+  FArrangeSettings.AutoSize := asBoth;
+  FArrangeSettings.DistanceHorizontal := 3;
+  FArrangeSettings.DistanceVertical := 3;
+  FArrangeSettings.BorderLeft := 3;
+  FArrangeSettings.BorderTop := 3;
+  FArrangeSettings.WrapControls := True;
   FArrangeConstraints := TSizeConstraints.Create(nil);
-  with FArrangeConstraints do
-  begin
-    MaxHeight := 480;
-    MaxWidth := 640;
-  end;
+  FArrangeConstraints.MaxHeight := 480;
+  FArrangeConstraints.MaxWidth := 640;
   FFieldCreateOptions := TJvCreateDBFieldsOnControlOptions.Create;
 end;
 
@@ -290,11 +284,8 @@ begin
   Form := DynControlEngine.CreateForm(DialogCaption, '');
   TForm(Form).Position := Position;
   TForm(Form).BorderStyle := BorderStyle;
-  with TForm(Form) do
-  begin
-    FormStyle := fsNormal;
-    BorderIcons := [];
-  end;
+  TForm(Form).FormStyle := fsNormal;
+  TForm(Form).BorderIcons := [];
 
   FButtonPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alBottom);
   FButtonPanel.Width := Form.ClientWidth;
@@ -394,15 +385,12 @@ begin
     FScrollBox.AutoScroll := True;
     FForm.Constraints := ArrangeConstraints;
     ArrangePanel := TJvPanel.Create(FForm);
-    with ArrangePanel do
-    begin
-      Align := alTop;
-      BevelInner := bvNone;
-      BevelOuter := bvNone;
-      Parent := FScrollBox;
-      OnChangedWidth := ArrangePanelChangedWidth;
-      OnChangedHeight := ArrangePanelChangedHeight;
-    end;
+    ArrangePanel.Align := alTop;
+    ArrangePanel.BevelInner := bvNone;
+    ArrangePanel.BevelOuter := bvNone;
+    ArrangePanel.Parent := FScrollBox;
+    ArrangePanel.OnChangedWidth := ArrangePanelChangedWidth;
+    ArrangePanel.OnChangedHeight := ArrangePanelChangedHeight;
     ArrangePanel.ArrangeSettings := ArrangeSettings;
     if ArrangeSettings.MaxWidth = 0 then
       ArrangePanel.ArrangeSettings.MaxWidth := ArrangeConstraints.MaxWidth;
@@ -412,14 +400,11 @@ begin
     Navigator := DynControlEngineDB.CreateDBNavigatorControl(FForm, FNavigatorPanel, '', DataSource);
     Navigator.Left := 3;
     Navigator.Top := 3;
-    with FNavigatorPanel do
-    begin
-      Align := alBottom;
-      BevelInner := bvNone;
-      BevelOuter := bvNone;
-      Parent := MainPanel;
-      Height := Navigator.Height + 6;
-    end;
+    FNavigatorPanel.Align := alBottom;
+    FNavigatorPanel.BevelInner := bvNone;
+    FNavigatorPanel.BevelOuter := bvNone;
+    FNavigatorPanel.Parent := MainPanel;
+    FNavigatorPanel.Height := Navigator.Height + 6;
     FNavigatorPanel.Visible := IncludeNavigator;
     if Assigned(OnCreateDataControlsEvent) then
       OnCreateDataControlsEvent(DataComponent, DynControlEngineDB, ArrangePanel, FieldCreateOptions)

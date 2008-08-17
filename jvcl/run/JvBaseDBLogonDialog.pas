@@ -475,8 +475,7 @@ procedure TJvBaseDBLogonDialog.AdditionalBtnClick(Sender: TObject);
 var
   P: TPoint;
 begin
-  with AdditionalBtn do
-    P := Parent.ClientToScreen(Point(Left + Width, Top));
+  P := AdditionalBtn.Parent.ClientToScreen(Point(AdditionalBtn.Left + AdditionalBtn.Width, AdditionalBtn.Top));
   AdditionalPopupMenu.Popup(P.X, P.Y);
 end;
 

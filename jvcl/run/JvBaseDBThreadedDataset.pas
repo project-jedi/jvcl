@@ -482,8 +482,7 @@ begin
   MainPanel := DynControlEngine.CreatePanelControl(Self, Self, 'MainPanel', '', alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
   CreateTextPanel(Self, MainPanel, FTimePanel, FTimeLabel, FTimeStaticText, 'Time');
   if Supports(FTimeLabel, IJvDynControl, ITmpControl) then
@@ -494,12 +493,9 @@ begin
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
     'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick, True, True);
-  with FCancelBtn do
-  begin
-    Anchors := [akTop];
-    Top := 2;
-    FCancelButtonPanel.Height := FCancelBtn.Height + 3;
-  end;
+  FCancelBtn.Anchors := [akTop];
+  FCancelBtn.Top := 2;
+  FCancelButtonPanel.Height := FCancelBtn.Height + 3;
 
   BorderIcons := [];
   BorderStyle := bsDialog;
@@ -528,27 +524,20 @@ begin
   Panel := DynControlEngine.CreatePanelControl(AOwner, AParent, BaseName + 'Panel', '', alTop);
   if not Supports(Panel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 3);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 3);
   LabelCtrl := DynControlEngine.CreateLabelControl(AOwner, Panel, BaseName + 'Label', '', nil);
-  with LabelCtrl do
-  begin
-    Top := 1;
-    Left := 1;
-    Width := 90;
-  end;
+  LabelCtrl.Top := 1;
+  LabelCtrl.Left := 1;
+  LabelCtrl.Width := 90;
   StaticText := DynControlEngine.CreateStaticTextControl(AOwner, Panel, BaseName + 'StaticText', '');
   if Supports(StaticText, IJvDynControlAutoSize, ITmpAutoSize) then
     ITmpAutoSize.ControlSetAutoSize(False);
   if Supports(StaticText, IJvDynControlAlignment, ITmpAlignment) then
     ITmpAlignment.ControlSetAlignment(taCenter);
-  with StaticText do
-  begin
-    Top := 1;
-    Left := 95;
-    Height := 18;
-    Panel.Height := Height + 6;
-  end;
+  StaticText.Top := 1;
+  StaticText.Left := 95;
+  StaticText.Height := 18;
+  Panel.Height := StaticText.Height + 6;
 end;
 
 procedure TJvDatasetThreadDialogForm.FillDialogData;
@@ -557,19 +546,18 @@ var
 begin
   if Assigned(ConnectedDatasetHandler)
      and (ConnectedDatasetHandler.CurrentOpenDuration > 0) then
-  with ConnectedDatasetHandler do
-    begin
-      if DialogOptions.Caption <> '' then
-        Caption := DialogOptions.Caption +' - '+CurrentOperationAction
-      else
-        Caption := CurrentOperationAction ;
-      if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
-        ITmpControl.ControlSetCaption(IntToStr(CurrentRow));
-      if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
-        ITmpControl.ControlSetCaption(
-          FormatDateTime('hh:nn:ss', CurrentOpenDuration) + ' / ' +
-            FormatDateTime('hh:nn:ss', CurrentFetchDuration));
-    end
+  begin
+    if DialogOptions.Caption <> '' then
+      Caption := DialogOptions.Caption +' - '+ConnectedDatasetHandler.CurrentOperationAction
+    else
+      Caption := ConnectedDatasetHandler.CurrentOperationAction ;
+    if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
+      ITmpControl.ControlSetCaption(IntToStr(ConnectedDatasetHandler.CurrentRow));
+    if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
+      ITmpControl.ControlSetCaption(
+        FormatDateTime('hh:nn:ss', ConnectedDatasetHandler.CurrentOpenDuration) + ' / ' +
+          FormatDateTime('hh:nn:ss', ConnectedDatasetHandler.CurrentFetchDuration));
+  end
   else
   begin
     if DialogOptions.Caption <> '' then
@@ -908,32 +896,31 @@ var
   S: string;
   Upper: Boolean;
 begin
-  With Dataset do
-    if Active then
-      for I := 0 to FieldCount - 1 do
-      begin
-        S := LowerCase(Fields[I].DisplayLabel);
-        Upper := True;
-        for J := 1 to Length(S) do
-          if S[J] in ['_', '$', ' '] then
-          begin
-            Upper := True;
-            S[J] := ' ';
-          end
-          else
-          if Upper then
-          begin
-            S[J] := UpCase(S[J]);
-            Upper := False;
-          end;
-        if EnhancedOptions.CapitalizeLabelOptions.TrimToFirstBlank then
+  if Dataset.Active then
+    for I := 0 to Dataset.FieldCount - 1 do
+    begin
+      S := LowerCase(Dataset.Fields[I].DisplayLabel);
+      Upper := True;
+      for J := 1 to Length(S) do
+        if S[J] in ['_', '$', ' '] then
         begin
-          J := Pos(' ', S);
-          if J > 0 then
-            S := Copy(S, J + 1, Length(S) - J);
+          Upper := True;
+          S[J] := ' ';
+        end
+        else
+        if Upper then
+        begin
+          S[J] := UpCase(S[J]);
+          Upper := False;
         end;
-        Fields[I].DisplayLabel := S;
+      if EnhancedOptions.CapitalizeLabelOptions.TrimToFirstBlank then
+      begin
+        J := Pos(' ', S);
+        if J > 0 then
+          S := Copy(S, J + 1, Length(S) - J);
       end;
+      Dataset.Fields[I].DisplayLabel := S;
+    end;
 end;
 
 function TJvBaseDatasetThreadHandler.CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;

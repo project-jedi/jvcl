@@ -349,12 +349,9 @@ begin
   inherited Create(AOwner);
   (StorageOptions as TJvAppXMLStorageOptions).FStorage := Self;
   FXml := TJvSimpleXml.Create(nil);
-  with TJvAppXMLStorageOptions(StorageOptions) do
-  begin
-    AutoEncodeValue := True;
-    AutoEncodeEntity := True;
-    AutoIndent := True;
-  end;
+  TJvAppXMLStorageOptions(StorageOptions).AutoEncodeValue := True;
+  TJvAppXMLStorageOptions(StorageOptions).AutoEncodeEntity := True;
+  TJvAppXMLStorageOptions(StorageOptions).AutoIndent := True;
   // (rom) should probably be a resourcestring
   RootNodeName := 'Configuration';
 end;

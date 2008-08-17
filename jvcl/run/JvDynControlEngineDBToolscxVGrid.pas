@@ -329,11 +329,8 @@ begin
   if aCreateColumn then
   begin
     EditorRow := TcxDBEditorRow(aVGrid.Add(TcxDBEditorRow));
-    with EditorRow.Properties do
-    begin
-      DataBinding.FieldName := GridDataBinding.FieldName;
-      Caption := DataBinding.DefaultCaption;
-    end;
+    EditorRow.Properties.DataBinding.FieldName := GridDataBinding.FieldName;
+    EditorRow.Properties.Caption := EditorRow.Properties.DataBinding.DefaultCaption;
   end
   else
     for j := 0 to aVGrid.Rows.Count - 1 do

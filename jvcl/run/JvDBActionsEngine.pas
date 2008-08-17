@@ -565,48 +565,48 @@ begin
   if Assigned(grid) then
   begin
     ds := grid.DataSource;
-    with AFieldCreateOptions do
+//    with AFieldCreateOptions do
       for I := 0 to TAccessCustomDBGrid(grid).ColCount - 2 do
       begin
         Column := TAccessCustomDBGrid(grid).Columns[I];
-        if Column.Visible or ShowInvisibleFields then
+        if Column.Visible or AFieldCreateOptions.ShowInvisibleFields then
         begin
           Field := Column.Field;
           Control := ADynControlEngineDB.CreateDBFieldControl(Field, AParentControl, AParentControl, '', ds);
           Control.Enabled := not Field.CanModify;
-          if FieldDefaultWidth > 0 then
-            Control.Width := FieldDefaultWidth
+          if AFieldCreateOptions.FieldDefaultWidth > 0 then
+            Control.Width := AFieldCreateOptions.FieldDefaultWidth
           else
           begin
-            if UseFieldSizeForWidth then
+            if AFieldCreateOptions.UseFieldSizeForWidth then
               if Field.Size > 0 then
                 Control.Width :=
                   TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.Size
               else
               begin
                 if (ADynControlEngineDB.GetFieldControlType(Field)= jctDBMemo) and
-                 (FieldMaxWidth > 0) then
-                  Control.Width := FieldMaxWidth;
+                 (AFieldCreateOptions.FieldMaxWidth > 0) then
+                  Control.Width := AFieldCreateOptions.FieldMaxWidth;
               end
             else
               if Field.DisplayWidth > 0 then
                 Control.Width :=
                   TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.DisplayWidth;
-            if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
-              Control.Width := FieldMaxWidth
+            if (AFieldCreateOptions.FieldMaxWidth > 0) and (Control.Width > AFieldCreateOptions.FieldMaxWidth) then
+              Control.Width := AFieldCreateOptions.FieldMaxWidth
             else
-              if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
-                Control.Width := FieldMinWidth;
+              if (AFieldCreateOptions.FieldMinWidth > 0) and (Control.Width < AFieldCreateOptions.FieldMinWidth) then
+                Control.Width := AFieldCreateOptions.FieldMinWidth;
           end;
-          if UseParentColorForReadOnly then
+          if AFieldCreateOptions.UseParentColorForReadOnly then
             if (Assigned(ds.DataSet) and not ds.DataSet.CanModify) or Field.ReadOnly then
               if isPublishedProp(Control, 'ParentColor') then
                 SetOrdProp(Control, 'ParentColor', Ord(True));
           LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl,
             AParentControl, '', '&' + Column.Title.Caption, Control, True, 0);
-          if FieldWidthStep > 0 then
-            if (LabelControl.Width mod FieldWidthStep) <> 0 then
-              LabelControl.Width := ((LabelControl.Width div FieldWidthStep) + 1) * FieldWidthStep;
+          if AFieldCreateOptions.FieldWidthStep > 0 then
+            if (LabelControl.Width mod AFieldCreateOptions.FieldWidthStep) <> 0 then
+              LabelControl.Width := ((LabelControl.Width div AFieldCreateOptions.FieldWidthStep) + 1) * AFieldCreateOptions.FieldWidthStep;
         end;
       end;
   end;
