@@ -956,26 +956,20 @@ procedure TJvAppEvents.UpdateAppProps;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    with Application do
-    begin
-      HintColor := FHintColor;
-      HintPause := FHintPause;
-      ShowHint := FShowHint;
-      HintShortPause := FHintShortPause;
-      HintHidePause := FHintHidePause;
-      ShowMainForm := FShowMainForm;
-      HintShortCuts := FHintShortCuts;
-      UpdateFormatSettings := FUpdateFormatSettings;
-      UpdateMetricSettings := FUpdateMetricSettings;
-      BiDiMode := FBiDiMode;
-      BiDiKeyboard := FBiDiKeyboard;
-      NonBiDiKeyboard := FNonBiDiKeyboard;
-      with Mouse do
-      begin
-        DragImmediate := FMouseDragImmediate;
-        DragThreshold := FMouseDragThreshold;
-      end;
-    end;
+    Application.HintColor := FHintColor;
+    Application.HintPause := FHintPause;
+    Application.ShowHint := FShowHint;
+    Application.HintShortPause := FHintShortPause;
+    Application.HintHidePause := FHintHidePause;
+    Application.ShowMainForm := FShowMainForm;
+    Application.HintShortCuts := FHintShortCuts;
+    Application.UpdateFormatSettings := FUpdateFormatSettings;
+    Application.UpdateMetricSettings := FUpdateMetricSettings;
+    Application.BiDiMode := FBiDiMode;
+    Application.BiDiKeyboard := FBiDiKeyboard;
+    Application.NonBiDiKeyboard := FNonBiDiKeyboard;
+    Application.Mouse.DragImmediate := FMouseDragImmediate;
+    Application.Mouse.DragThreshold := FMouseDragThreshold;
   end;
 end;
 

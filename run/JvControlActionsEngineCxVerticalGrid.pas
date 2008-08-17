@@ -101,13 +101,10 @@ begin
     Exit;
   SaveDialog := TSaveDialog.Create(Self);
   try
-    with SaveDialog do
-    begin
-      Name    := 'SaveDialog';
-      DefaultExt := 'XLS';
-      Filter  := 'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
-      Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
-    end;
+    SaveDialog.Name    := 'SaveDialog';
+    SaveDialog.DefaultExt := 'XLS';
+    SaveDialog.Filter  := 'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
+    SaveDialog.Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
     if SaveDialog.Execute then
       if SaveDialog.FileName <> '' then
       begin

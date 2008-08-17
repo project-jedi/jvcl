@@ -241,100 +241,76 @@ var
   IDynControlEdit: IJvDynControlEdit;
 begin
 
-  with aForm do
-  begin
-    Name := 'DBChangePasswordDialog';
-    Left := 472;
-    Top := 229;
-    BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
-    BorderStyle := bsDialog;
-    Caption := RsChangePassword;
-    ClientHeight := 415;
-    ClientWidth := 317;
-    Position := poScreenCenter;
-    OnClose := FormClose;
-    OnShow := FormShow;
-  end;
+  aForm.Name := 'DBChangePasswordDialog';
+  aForm.Left := 472;
+  aForm.Top := 229;
+  aForm.BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
+  aForm.BorderStyle := bsDialog;
+  aForm.Caption := RsChangePassword;
+  aForm.ClientHeight := 415;
+  aForm.ClientWidth := 317;
+  aForm.Position := poScreenCenter;
+  aForm.OnClose := FormClose;
+  aForm.OnShow := FormShow;
 
   ButtonPanel := DynControlEngine.CreatePanelControl(aForm, aForm, 'ButtonPanel', '', alBottom);
   ChangeBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'ChangeBtn',
     RsChangeButtonCaption, '', ChangeBtnClick, True, False);
-  with ChangeBtn do
-  begin
-    Left := 60;
-    Top := 4;
-    Width := 90;
-    Height := 25;
-  end;
+  ChangeBtn.Left := 60;
+  ChangeBtn.Top := 4;
+  ChangeBtn.Width := 90;
+  ChangeBtn.Height := 25;
   CancelBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'CancelBtn',
     RsButtonCancelCaption, '', CancelBtnClick, False, True);
-  with CancelBtn do
-  begin
-    Left := 460;
-    Top := 4;
-    Width := 90;
-    Height := 25;
-  end;
+  CancelBtn.Left := 460;
+  CancelBtn.Top := 4;
+  CancelBtn.Width := 90;
+  CancelBtn.Height := 25;
 
   ButtonPanel.Height := CancelBtn.Height + 8;
 
   MainPanel := DynControlEngine.CreatePanelControl(aForm, aForm, 'MainPanel', '', alClient);
-  with MainPanel do
-  begin
-    TabOrder := 0;
-    if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-      IDynControlBevelBorder.ControlSetBorderWidth(5);
-    if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-      IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
-  end;
+  MainPanel.TabOrder := 0;
+  if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+    IDynControlBevelBorder.ControlSetBorderWidth(5);
+  if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+    IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
 
   if Options.CheckOldPassword then
   begin
     LabelControl := DynControlEngine.CreateLabelControl(aForm, MainPanel, 'OldPasswortLabel', RsOldPasswordLabel, nil);
-    with LabelControl do
-      Align := alTop;
+    LabelControl.Align := alTop;
     OldPasswordEdit := DynControlEngine.CreateEditControl(aForm, MainPanel, 'OldPasswortEdit');
-    with OldPasswordEdit do
-    begin
-      Align := alTop;
-      TabOrder := 0;
-      Supports(OldPasswordEdit, IJvDynControlData, IOldPasswordEditData);
-      IOldPasswordEditData.ControlValue := '';
-      if Supports(OldPasswordEdit, IJvDynControlEdit, IDynControlEdit) then
-        IDynControlEdit.ControlSetPasswordChar('*');
-    end;
+    OldPasswordEdit.Align := alTop;
+    OldPasswordEdit.TabOrder := 0;
+    Supports(OldPasswordEdit, IJvDynControlData, IOldPasswordEditData);
+    IOldPasswordEditData.ControlValue := '';
+    if Supports(OldPasswordEdit, IJvDynControlEdit, IDynControlEdit) then
+      IDynControlEdit.ControlSetPasswordChar('*');
     if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
       IDynControlLabel.ControlSetFocusControl(OldPasswordEdit);
   end;
   LabelControl := DynControlEngine.CreateLabelControl(aForm, MainPanel, 'NewPasswortLabel', RsNewPasswordLabel, nil);
-  with LabelControl do
-    Align := alTop;
+  LabelControl.Align := alTop;
   NewPasswordEdit := DynControlEngine.CreateEditControl(aForm, MainPanel, 'NewPasswortEdit');
-  with NewPasswordEdit do
-  begin
-    Align := alTop;
-    TabOrder := 1;
-    Supports(NewPasswordEdit, IJvDynControlData, INewPasswordEditData);
-    INewPasswordEditData.ControlValue := '';
-    if Supports(NewPasswordEdit, IJvDynControlEdit, IDynControlEdit) then
-      IDynControlEdit.ControlSetPasswordChar('*');
-  end;
+  NewPasswordEdit.Align := alTop;
+  NewPasswordEdit.TabOrder := 1;
+  Supports(NewPasswordEdit, IJvDynControlData, INewPasswordEditData);
+  INewPasswordEditData.ControlValue := '';
+  if Supports(NewPasswordEdit, IJvDynControlEdit, IDynControlEdit) then
+    IDynControlEdit.ControlSetPasswordChar('*');
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(NewPasswordEdit);
   LabelControl := DynControlEngine.CreateLabelControl(aForm, MainPanel, 'NewPasswortLabelRetype',
     RsConfirmPasswordLabel, nil);
-  with LabelControl do
-    Align := alTop;
+  LabelControl.Align := alTop;
   NewPasswordRetypeEdit := DynControlEngine.CreateEditControl(aForm, MainPanel, 'NewPasswortRetypeEdit');
-  with NewPasswordRetypeEdit do
-  begin
-    Align := alTop;
-    TabOrder := 2;
-    Supports(NewPasswordRetypeEdit, IJvDynControlData, INewPasswordRetypeEditData);
-    INewPasswordRetypeEditData.ControlValue := '';
-    if Supports(INewPasswordRetypeEditData, IJvDynControlEdit, IDynControlEdit) then
-      IDynControlEdit.ControlSetPasswordChar('*');
-  end;
+  NewPasswordRetypeEdit.Align := alTop;
+  NewPasswordRetypeEdit.TabOrder := 2;
+  Supports(NewPasswordRetypeEdit, IJvDynControlData, INewPasswordRetypeEditData);
+  INewPasswordRetypeEditData.ControlValue := '';
+  if Supports(INewPasswordRetypeEditData, IJvDynControlEdit, IDynControlEdit) then
+    IDynControlEdit.ControlSetPasswordChar('*');
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(NewPasswordRetypeEdit);
 end;

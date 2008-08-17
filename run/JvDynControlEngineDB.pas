@@ -511,45 +511,44 @@ begin
   else
     CreateOptions := AOptions;
   try
-    with CreateOptions do
-      for I := 0 to ADataSource.DataSet.FieldCount - 1 do
-        if ADataSource.DataSet.Fields[I].Visible or ShowInvisibleFields then
+    for I := 0 to ADataSource.DataSet.FieldCount - 1 do
+      if ADataSource.DataSet.Fields[I].Visible or CreateOptions.ShowInvisibleFields then
+      begin
+        Control := CreateDBFieldControl(ADataSource.DataSet.Fields[I], AControl, AControl, '', ADataSource);
+        if CreateOptions.FieldDefaultWidth > 0 then
+          Control.Width := CreateOptions.FieldDefaultWidth
+        else
         begin
-          Control := CreateDBFieldControl(ADataSource.DataSet.Fields[I], AControl, AControl, '', ADataSource);
-          if FieldDefaultWidth > 0 then
-            Control.Width := FieldDefaultWidth
-          else
-          begin
-            if UseFieldSizeForWidth then
-              if ADataSource.DataSet.Fields[I].Size > 0 then
-                Control.Width :=
-                  TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size
+          if CreateOptions.UseFieldSizeForWidth then
+            if ADataSource.DataSet.Fields[I].Size > 0 then
+              Control.Width :=
+                TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size
+            else
+              if (GetFieldControlType(ADataSource.DataSet.Fields[I])= jctDBMemo) and (CreateOptions.FieldMaxWidth > 0) then
+                Control.Width := CreateOptions.FieldMaxWidth
               else
-                if (GetFieldControlType(ADataSource.DataSet.Fields[I])= jctDBMemo) and (FieldMaxWidth > 0) then
-                  Control.Width := FieldMaxWidth
-                else
-            else
-              if ADataSource.DataSet.Fields[I].DisplayWidth > 0 then
-                Control.Width :=
-                  TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].DisplayWidth;
-            if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
-              Control.Width := FieldMaxWidth
-            else
-            if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
-              Control.Width := FieldMinWidth
-          end;
-
-          if UseParentColorForReadOnly then
-            // Use ParentColor when the field is ReadOnly
-            if not ADataSource.DataSet.CanModify or ADataSource.DataSet.Fields[I].ReadOnly then
-              if isPublishedProp(Control, 'ParentColor') then
-                SetOrdProp(Control, 'ParentColor', Ord(True));
-          LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
-            '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, LabelOnTop, LabelDefaultWidth);
-          if FieldWidthStep > 0 then
-            if (LabelControl.Width mod FieldWidthStep) <> 0 then
-              LabelControl.Width := ((LabelControl.Width div FieldWidthStep) + 1) * FieldWidthStep;
+          else
+            if ADataSource.DataSet.Fields[I].DisplayWidth > 0 then
+              Control.Width :=
+                TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].DisplayWidth;
+          if (CreateOptions.FieldMaxWidth > 0) and (Control.Width > CreateOptions.FieldMaxWidth) then
+            Control.Width := CreateOptions.FieldMaxWidth
+          else
+          if (CreateOptions.FieldMinWidth > 0) and (Control.Width < CreateOptions.FieldMinWidth) then
+            Control.Width := CreateOptions.FieldMinWidth
         end;
+
+        if CreateOptions.UseParentColorForReadOnly then
+          // Use ParentColor when the field is ReadOnly
+          if not ADataSource.DataSet.CanModify or ADataSource.DataSet.Fields[I].ReadOnly then
+            if isPublishedProp(Control, 'ParentColor') then
+              SetOrdProp(Control, 'ParentColor', Ord(True));
+        LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
+          '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, CreateOptions.LabelOnTop, CreateOptions.LabelDefaultWidth);
+        if CreateOptions.FieldWidthStep > 0 then
+          if (LabelControl.Width mod CreateOptions.FieldWidthStep) <> 0 then
+            LabelControl.Width := ((LabelControl.Width div CreateOptions.FieldWidthStep) + 1) * CreateOptions.FieldWidthStep;
+      end;
   finally
     if not Assigned(AOptions) then
       CreateOptions.Free;
