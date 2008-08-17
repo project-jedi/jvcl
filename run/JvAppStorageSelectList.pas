@@ -216,6 +216,7 @@ var
   ITmpPanel: IJvDynControlPanel;
   ITmpControl: IJvDynControl;
   ITmpComboBox: IJvDynControlComboBox;
+  ITmpDblClick: IJvDynControlDblClick;
 begin
   if not Assigned(DynControlEngine) then
     {$IFDEF CLR}
@@ -229,15 +230,12 @@ begin
 
   FSelectDialog := TForm(DynControlEngine.CreateForm('', ''));
 
-  with SelectDialog do
-  begin
-    BorderIcons := [];
-    DefaultMonitor := dmActiveForm;
-    BorderStyle := bsDialog;
-    FormStyle := fsNormal;
-    Position := poScreenCenter;
-    OnDestroy := SelectFormDestroying;
-  end;
+  SelectDialog.BorderIcons := [];
+  SelectDialog.DefaultMonitor := dmActiveForm;
+  SelectDialog.BorderStyle := bsDialog;
+  SelectDialog.FormStyle := fsNormal;
+  SelectDialog.Position := poScreenCenter;
+  SelectDialog.OnDestroy := SelectFormDestroying;
 
   if ACaption <> '' then
     SelectDialog.Caption := ACaption
@@ -270,12 +268,10 @@ begin
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
   IntfCast(ComboBoxPanel, IJvDynControlPanel, ITmpPanel);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
   ListBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ListPanel', '', alClient);
   IntfCast(ListBoxPanel, IJvDynControlPanel, ITmpPanel);
-  with ITmpPanel do
-    ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
   ComboBox := DynControlEngine.CreateComboBoxControl(Self, ComboBoxPanel, 'ComboBox', SelectList);
   IntfCast(ComboBox, IJvDynControlItems, FIComboBoxItems);
@@ -296,29 +292,26 @@ begin
 
   ListBox := DynControlEngine.CreateListBoxControl(Self, ListBoxPanel, 'ListBox', SelectList);
   Supports(ListBox, IJvDynControlItems, FIListBoxItems);
+  Supports(ListBox, IJvDynControl, ITmpControl);
   Supports(ListBox, IJvDynControlData, FIListBoxData);
-  with IListBoxItems as IJvDynControl do
-    ControlSetOnClick(DialogOnListBoxChange);
-  with IListBoxItems as IJvDynControlData do
-    ControlSetOnChange(DialogOnListBoxChange);
-  if Supports(ListBox, IJvDynControlDblClick, ITmpControl) then  // ListBox instead of ListBox.ClassType and ITmpControl are needed here for D5/C5 support (obones)
-    with IListBoxItems as IJvDynControlDblClick do
-      ControlSetOnDblClick(DialogOnOkButtonClick);
+  ITmpControl.ControlSetOnClick(DialogOnListBoxChange);
+  FIListBoxData.ControlSetOnChange(DialogOnListBoxChange);
+  if Supports(ListBox, IJvDynControlDblClick, ITmpDblClick) then  // ListBox instead of ListBox.ClassType and ITmpControl are needed here for D5/C5 support (obones)
+    ITmpDblClick.ControlSetOnDblClick(DialogOnOkButtonClick);
 
   ComboBoxPanel.Height := ComboBox.Height + 10;
   ListBox.Align := alClient;
   ComboBox.Align := alClient;
 
   IntfCast(OkButton, IJvDynControl, ITmpControl);
-  with ITmpControl do
-    case AOperation of
-      sloLoad:
-        ControlSetCaption(RsLoadCaption);
-      sloStore:
-        ControlSetCaption(RsSaveCaption);
-      sloManage:
-        ControlSetCaption(RsDeleteCaption);
-    end;
+  case AOperation of
+    sloLoad:
+      ITmpControl.ControlSetCaption(RsLoadCaption);
+    sloStore:
+      ITmpControl.ControlSetCaption(RsSaveCaption);
+    sloManage:
+      ITmpControl.ControlSetCaption(RsDeleteCaption);
+  end;
 end;
 
 function TJvAppStorageSelectList.GetSelectListPath(AOperation: TJvAppStorageSelectListOperation;
