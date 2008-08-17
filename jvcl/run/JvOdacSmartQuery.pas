@@ -575,11 +575,9 @@ var KeyFields : String;
   Key : string;
   p: Integer;
   Field: TField;
-  Count : Integer;
   i: Integer;
 begin
   RefreshKeyFields := '';
-  Count := 0;
   if Not (Dataset.Active and (Dataset is TOraDataset) and (TOraDataset(Dataset).KeyFields <> '')) then
     Exit;
   Fields := tStringList.create;
