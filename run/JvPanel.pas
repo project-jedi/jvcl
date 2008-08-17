@@ -491,17 +491,18 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  FHotTrackOptions := TJvPanelHotTrackOptions.Create(Self);
+  FHotTrackOptions := TJvPanelHotTrackOptions.Create(self);
 
-  FArrangeSettings := TJvArrangeSettings.Create(Self);
+  FArrangeSettings := TJvArrangeSettings.Create(nil);   // Do Not Assign Self, In some circumstances the autoarrange does not work
+                                                        // TODO: Check why this happens
   FArrangeSettings.OnChangedProperty := DoArrangeSettingsPropertyChanged;
 end;
 
 destructor TJvCustomArrangePanel.Destroy;
 begin
-  FreeAndNil(FHotTrackFont);
-  FreeAndNil(FHotTrackOptions);
   FreeAndNil(FArrangeSettings);
+//  FreeAndNil(FHotTrackOptions); // No longer necessary, autofree because of the self parent
+  FreeAndNil(FHotTrackFont);
   inherited Destroy;
 end;
 
@@ -531,12 +532,11 @@ begin
   if not (csDesigning in ComponentState) and Movable then
   begin
     P := ScreenToClient(SmallPointToPoint(Msg.Pos));
-    with P do
-      if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) and DoBeforeMove(P.X,P.Y) then
-      begin
-         Msg.Result := HTCAPTION;
-         FWasMoved := True;
-      end;
+    if (P.X > 5) and (P.Y > 5) and (P.X < Width - 5) and (P.Y < Height - 5) and DoBeforeMove(P.X,P.Y) then
+    begin
+      Msg.Result := HTCAPTION;
+      FWasMoved := True;
+    end;
   end;
 end;
 
@@ -660,22 +660,21 @@ begin
           ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2))
     else
     {$ENDIF JVCLThemesEnabled}
-      with Canvas do
       begin
-        Font.Name := 'Marlett';
-        Font.Charset := DEFAULT_CHARSET;
-        Font.Size := 12;
+        Canvas.Font.Name := 'Marlett';
+        Canvas.Font.Charset := DEFAULT_CHARSET;
+        Canvas.Font.Size := 12;
         Canvas.Font.Style := [];
-        Brush.Style := bsClear;
+        Canvas.Brush.Style := bsClear;
         X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
         Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
         // (rom) bsClear takes care of that already
         //if Transparent {and not IsThemed} then
         //  SetBkMode(Handle, BkModeTransparent);
         Canvas.Font.Color := clBtnHighlight;
-        TextOut(X, Y, 'o');
+        Canvas.TextOut(X, Y, 'o');
         Canvas.Font.Color := clBtnShadow;
-        TextOut(X, Y, 'p');
+        Canvas.TextOut(X, Y, 'p');
       end;
   end;
 end;
