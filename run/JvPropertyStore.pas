@@ -197,6 +197,7 @@ type
       FCreateListEntries default True;
     property ItemName: string read FItemName write FItemName;
     property Sorted: Boolean read GetSorted write SetSorted;
+    function CreateAddObject(const aObjectName: String): TPersistent;
     //IJvPropertyListEditorHandler = interface
     function ListEditIntf_ObjectCount: integer;
     function ListEditIntf_GetObject(Index: integer): TPersistent;
@@ -926,6 +927,13 @@ begin
   inherited Destroy;
 end;
 
+function TJvCustomPropertyListStore.CreateAddObject(const aObjectName: String):
+    TPersistent;
+begin
+  Result := CreateObject;
+  Items.AddObject(aObjectName, Result);
+end;
+
 function TJvCustomPropertyListStore.GetItems: TStringList;
 begin
   Result := FItems;
@@ -1117,7 +1125,7 @@ procedure TJvCustomPropertyListStore.DeleteSLOItems(Sender: TJvCustomAppStorage;
 var
   I: Integer;
 begin
-  for I := First to Last do
+  for I := Last downto first do
     Sender.DeleteValue(Sender.ConcatPaths([Path,
       Sender.ItemNameIndexPath(ItemName, i)]));
 end;

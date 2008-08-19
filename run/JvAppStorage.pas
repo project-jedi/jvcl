@@ -2160,11 +2160,11 @@ begin
   if not TargetStore.ReadOnly then
   begin
     PrevListCount := ReadListItemCount (Path, ItemName);
-    WriteListItemCount (Path, ItemCount, ItemName);
     for I := 0 to ItemCount - 1 do
       OnWriteItem(Self, Path, List, I, ItemName);
     if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
       OnDeleteItems(Self, Path, List, ItemCount, PrevListCount - 1, ItemName);
+    WriteListItemCount (Path, ItemCount, ItemName);
   end;
 end;
 
