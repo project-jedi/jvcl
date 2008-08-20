@@ -82,5 +82,6 @@
     <File Name="..\..\run\JvOfficeColorForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRuler.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStoreEditor.pas" Targets="allv6up" Formname="" Condition=""/>
   </Contains>
 </Package>
