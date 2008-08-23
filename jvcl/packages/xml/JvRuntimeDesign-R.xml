@@ -13,6 +13,7 @@
   <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="allv6up" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
@@ -34,5 +35,6 @@
     <File Name="..\..\run\JvDesignSurface.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignImp.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStoreEditor.pas" Targets="allv6up" Formname="" Condition=""/>
   </Contains>
 </Package>
