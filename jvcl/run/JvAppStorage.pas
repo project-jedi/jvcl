@@ -2269,7 +2269,7 @@ begin
 end;
 
 {$IFDEF COMPILER10_UP}
-function TJvCustomAppStorage.ReadWideStringList(const Path: string; const SL: TWideStrings;
+function TJvCustomAppStorage.ReadWideStringList(const Path: string; const SL: WideStrings.TWideStrings;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
 begin
   if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
@@ -2289,7 +2289,7 @@ begin
 end;
 
 procedure TJvCustomAppStorage.WriteWideStringList(const Path: string;
-  const SL: TWideStrings; const ItemName: string = cItem);
+  const SL: WideStrings.TWideStrings; const ItemName: string = cItem);
 begin
   WriteList(Path, SL, SL.Count, WriteWideStringListItem, DeleteWideStringListItem, ItemName);
   WritePersistent(Path,SL);
