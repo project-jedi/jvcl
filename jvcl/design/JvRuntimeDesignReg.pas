@@ -35,7 +35,7 @@ implementation
 
 uses
   Classes,
-  JvDsgnConsts, JvInspector, JvDesignSurface;
+  JvDsgnConsts, JvInspector, JvDesignSurface, JvPropertyStoreEditor;
 
 {$R JvRuntimeDesignReg.dcr}
 
@@ -43,7 +43,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteRuntimeDesign,
     [TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter,
-     TJvDesignSurface, TJvDesignScrollBox, TJvDesignPanel]);
+     TJvDesignSurface, TJvDesignScrollBox, TJvDesignPanel, TJvPropertyStoreEditorControl]);
 end;
 
 end.
