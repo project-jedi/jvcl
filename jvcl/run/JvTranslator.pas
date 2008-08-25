@@ -492,7 +492,9 @@ begin
   if AName <> '' then
   begin
     InnerComponentToXML(AComponent, AElem, Recurse);
-
+    Result := FXML.Root.SaveToString;
+    
+    (*
     StringStream := TStringStream.Create('');
     try
       JclStream := TJclStringStream.Create(StringStream);
@@ -505,6 +507,7 @@ begin
     finally
       StringStream.Free;
     end;
+    *)
   end;
 end;
 
