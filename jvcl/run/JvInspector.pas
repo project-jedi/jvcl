@@ -571,6 +571,8 @@ type
     property AfterItemCreate;
     property BeforeItemCreate;
     property BeforeSelection;
+    property TabStop;
+    property TabOrder;
     property OnDataValueChanged;
     property OnItemSelected;
     property OnItemValueChanged;
