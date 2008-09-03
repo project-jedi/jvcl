@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS =
+PROJECTS = \
 jsb.exe \
 jsr.exe \
 sc.exe \
@@ -31,7 +31,7 @@ JvChartDemo.exe \
 JvCheckBoxDemo.exe \
 CheckTVDemo.exe \
 JvClipboardViewerProj.exe \
-JVCLDemo.exe \
+JVCLMegaDemo.exe \
 ColorButtonDemo.exe \
 ColorComboDemo.exe \
 JvComboListBoxDemo.exe \
@@ -63,7 +63,6 @@ JvErrorIndicatorDemo.exe \
 FileDirDemo.exe \
 FindReplaceDemo.exe \
 prjControls.exe \
-Demo.exe \
 RxGIFAnm.exe \
 BasicDemo.exe \
 CollectionDemo.exe \
@@ -87,7 +86,6 @@ JvMarkupLabelDemo.exe \
 JvMenusExample.exe \
 JvMouseGestureDemo.exe \
 JvMruListDemo.exe \
-JvMultiHTTPGrabberDemo.exe \
 EventViewer.exe \
 JvObjPickerDemo.exe \
 JvOLEDragCursorsDemo.exe \
@@ -139,33 +137,6 @@ SimpleTLTest1.exe \
 TransparentButtonDemo.exe \
 JvTrayIconDemo.exe \
 JvTreeViewAsMenu.exe \
-api1.exe \
-api10.exe \
-api2.exe \
-api3.exe \
-api4.exe \
-api5.exe \
-api6.exe \
-api7.exe \
-api8.exe \
-StartBackup.exe \
-StartRestore.exe \
-UIB.dll \
-Client.exe \
-Server.exe \
-Backup.exe \
-BlobStream.exe \
-BlobSample.exe \
-cursor.exe \
-DataPump.exe \
-MetaData.exe \
-Query.exe \
-QuickScript.exe \
-Restore.exe \
-Script.exe \
-StoredProc.exe \
-QueryStream.exe \
-Query.exe \
 JvUninstallCtrlsDemo.exe \
 JvUrlListGrabberDemo.exe \
 JvFormatEditDemo.exe \
@@ -262,7 +233,7 @@ $(DCC)
 JvClipboardViewerProj.exe: JvClipboardViewer\JvClipboardViewerProj.dpr
 $(DCC)
 
-JVCLDemo.exe: JVCLMegaDemo\JVCLDemo.dpr
+JVCLMegaDemo.exe: JVCLMegaDemo\JVCLMegaDemo.dpr
 $(DCC)
 
 ColorButtonDemo.exe: JvColorButton\ColorButtonDemo.dpr
@@ -358,9 +329,6 @@ $(DCC)
 prjControls.exe: JvFooterAndGroupHeader\prjControls.dpr
 $(DCC)
 
-Demo.exe: JvGanttChart\Demo.dpr
-$(DCC)
-
 RxGIFAnm.exe: JvGIFAnimator\RxGIFAnm.dpr
 $(DCC)
 
@@ -428,9 +396,6 @@ JvMouseGestureDemo.exe: JvMouseGesture\JvMouseGestureDemo.dpr
 $(DCC)
 
 JvMruListDemo.exe: JvMRUList\JvMruListDemo.dpr
-$(DCC)
-
-JvMultiHTTPGrabberDemo.exe: JvMultiHTTPGrabber\JvMultiHTTPGrabberDemo.dpr
 $(DCC)
 
 EventViewer.exe: JvNTEventLog\EventViewer.dpr
@@ -584,87 +549,6 @@ JvTrayIconDemo.exe: JvTrayIcon\JvTrayIconDemo.dpr
 $(DCC)
 
 JvTreeViewAsMenu.exe: JvTreeViewAsMenu\JvTreeViewAsMenu.dpr
-$(DCC)
-
-api1.exe: JvUIB\API\api1.dpr
-$(DCC)
-
-api10.exe: JvUIB\API\api10.dpr
-$(DCC)
-
-api2.exe: JvUIB\API\api2.dpr
-$(DCC)
-
-api3.exe: JvUIB\API\api3.dpr
-$(DCC)
-
-api4.exe: JvUIB\API\api4.dpr
-$(DCC)
-
-api5.exe: JvUIB\API\api5.dpr
-$(DCC)
-
-api6.exe: JvUIB\API\api6.dpr
-$(DCC)
-
-api7.exe: JvUIB\API\api7.dpr
-$(DCC)
-
-api8.exe: JvUIB\API\api8.dpr
-$(DCC)
-
-StartBackup.exe: JvUIB\API\StartBackup.dpr
-$(DCC)
-
-StartRestore.exe: JvUIB\API\StartRestore.dpr
-$(DCC)
-
-UIB.dll: JvUIB\Automation\UIB.dpr
-$(DCC)
-
-Client.exe: JvUIB\ClientServer\Client\Client.dpr
-$(DCC)
-
-Server.exe: JvUIB\ClientServer\Server\Server.dpr
-$(DCC)
-
-Backup.exe: JvUIB\Component\Backup\Backup.dpr
-$(DCC)
-
-BlobStream.exe: JvUIB\Component\Blob\AsStream\BlobStream.dpr
-$(DCC)
-
-BlobSample.exe: JvUIB\Component\Blob\AsString\BlobSample.dpr
-$(DCC)
-
-cursor.exe: JvUIB\Component\Cursor\cursor.dpr
-$(DCC)
-
-DataPump.exe: JvUIB\Component\DataPump\DataPump.dpr
-$(DCC)
-
-MetaData.exe: JvUIB\Component\Metadata\MetaData.dpr
-$(DCC)
-
-Query.exe: JvUIB\Component\Query\Query.dpr
-$(DCC)
-
-QuickScript.exe: JvUIB\Component\QuickScript\QuickScript.dpr
-$(DCC)
-
-Restore.exe: JvUIB\Component\Restore\Restore.dpr
-$(DCC)
-
-Script.exe: JvUIB\Component\Script\Script.dpr
-$(DCC)
-
-StoredProc.exe: JvUIB\Component\StoredProc\StoredProc.dpr
-$(DCC)
-
-QueryStream.exe: JvUIB\Component\Stream\QueryStream.dpr
-$(DCC)
-
-Query.exe: JvUIB\Component\ThreadedQueries\Query.dpr
 $(DCC)
 
 JvUninstallCtrlsDemo.exe: JvUninstallControls\JvUninstallCtrlsDemo.dpr
