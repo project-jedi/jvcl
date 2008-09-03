@@ -500,17 +500,15 @@ begin
 
   if not (frDown in FOptions) then
   begin
-    Offset := GetEditSelStart;
-    if Offset = 0 then
+    Offset := GetEditSelStart - 1;
+    if Offset <= 0 then
       Offset := 1;
     FoundPos := FindInTextRev(GetEditText, FFindText,
       Length(GetEditText) - Offset, Length(GetEditText), FFast,
       WholeWord, MatchCase)
   end else
   begin
-    Offset := GetEditSelStart + GetEditSelLength;
-    if Offset = 0 then
-      Offset := 1;
+    Offset := GetEditSelStart + GetEditSelLength + 1;
     FoundPos := FindInText(GetEditText, FFindText, Offset,
       Length(GetEditText), FFast, WholeWord, MatchCase);
   end;
