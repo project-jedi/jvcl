@@ -163,6 +163,7 @@ type
   TJvHttpUrlGrabber = class(TJvProxyingUrlGrabber)
   private
     FReferer: string;
+    FHTTPStatus: string;
   protected
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
     procedure DoStatus; override;
@@ -172,6 +173,9 @@ type
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedProtocolMarker: string; override;
     class function GetSupportedURLName: string; override;
+
+    // The status (200, 404, 301) as returned by the HTTP server.
+    property HTTPStatus: string read FHTTPStatus;
   published
     property Referer: string read FReferer write FReferer;
     property UserName;
@@ -838,6 +842,12 @@ begin
       dwIndex := 0;
       dwBufLen := 1024;
       GetMem(Buffer, dwBufLen);
+
+      HttpQueryInfo(hDownload, HTTP_QUERY_STATUS_CODE , Buffer, dwBufLen, dwIndex);
+      Grabber.FHTTPStatus := Buffer;
+
+      dwIndex := 0;
+      dwBufLen := 1024;
       HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, Buffer, dwBufLen, dwIndex);
       if Terminated then
         Exit;
