@@ -35,7 +35,12 @@ implementation
 
 uses
   Classes,
-  JvDsgnConsts, JvInspector, JvDesignSurface;
+  JvDsgnConsts, JvInspector, 
+  {$IFDEF DELPHI6_UP}
+  JvPropertyStoreEditor, 
+  {$ENDIF}
+  JvDesignSurface
+  ;
 
 {$R JvRuntimeDesignReg.dcr}
 
@@ -43,7 +48,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteRuntimeDesign,
     [TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter,
-     TJvDesignSurface, TJvDesignScrollBox, TJvDesignPanel]);
+     TJvDesignSurface, TJvDesignScrollBox, TJvDesignPanel{$IFDEF DELPHI6_UP}, TJvPropertyStoreEditorControl{$ENDIF}]);
 end;
 
 end.

@@ -25,7 +25,7 @@ DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u
 DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-all: uib docking inspector standard threads ralib rxlib plugin xml mega surveyor diagram
+all: docking inspector standard threads ralib rxlib plugin xml mega surveyor diagram
 #---------------------------------------------------------------------------------------------------
 surveyor: jsb.exe jsr.exe sc.exe js.exe
 #---------------------------------------------------------------------------------------------------
@@ -52,13 +52,6 @@ JvPlgMainApp.exe
 ralib: Pas2Rai2.exe RAControls.exe DBMove.exe DBTree.exe LineNumbers.exe RAEditorTest.exe \
 RAHLEdPropDlgTest.exe ColorHintsTest.exe JvInterpreterTest.exe SampleProject1.exe DynamicLoad.exe \
 JvInterpreterEndUser.exe MDIapp.exe RANotepad.exe
-#---------------------------------------------------------------------------------------------------
-uib: \
-api1.exe api2.exe api3.exe api4.exe api5.exe api6.exe api7.exe api8.exe api10.exe \
-StartBackup.exe StartRestore.exe \
-#Client.exe #Server.exe \
-UIB.dll Backup.exe Restore.exe BlobStream.exe BlobSample.exe cursor.exe DataPump.exe MetaData.exe \
-Query.exe QuickScript.exe Script.exe StoredProc.exe QueryStream.exe
 #---------------------------------------------------------------------------------------------------
 standard: AppDdeCmdExample.exe JvAniProj.exe JvAppHotKeyDemo.exe JvAppInstDemo.exe \
 ArrowButtonDemo.exe JvAviCapDemo.exe BalloonPrj.exe JvBehaviorLabelDemo.exe BmpAnimDemo.exe \
@@ -745,141 +738,6 @@ JvTreeViewAsMenu.exe: "JvTreeViewAsMenu\JvTreeViewAsMenu.dpr"
   @cd JvTreeViewAsMenu
   $(DCC) $&.dpr
   @cd ..
-
-api1.exe: "JvUIB\API\api1.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api10.exe: "JvUIB\API\api10.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api2.exe: "JvUIB\API\api2.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api3.exe: "JvUIB\API\api3.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api4.exe: "JvUIB\API\api4.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api5.exe: "JvUIB\API\api5.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api6.exe: "JvUIB\API\api6.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api7.exe: "JvUIB\API\api7.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-api8.exe: "JvUIB\API\api8.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-StartBackup.exe: "JvUIB\API\StartBackup.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-StartRestore.exe: "JvUIB\API\StartRestore.dpr"
-  @cd JvUIB\API
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-UIB.dll: "JvUIB\Automation\UIB.dpr"
-  @cd JvUIB\Automation
-  $(DCCH) $&.dpr
-  @cd ..\..
-
-Client.exe: "JvUIB\ClientServer\Client\Client.dpr"
-  @cd JvUIB\ClientServer\Client
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-Server.exe: "JvUIB\ClientServer\Server\Server.dpr"
-  @cd JvUIB\ClientServer\Server
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-Backup.exe: "JvUIB\Component\Backup\Backup.dpr"
-  @cd JvUIB\Component\Backup
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-BlobStream.exe: "JvUIB\Component\Blob\AsStream\BlobStream.dpr"
-  @cd JvUIB\Component\Blob\AsStream
-  $(DCCHHH) $&.dpr
-  @cd ..\..\..\..
-
-BlobSample.exe: "JvUIB\Component\Blob\AsString\BlobSample.dpr"
-  @cd JvUIB\Component\Blob\AsString
-  $(DCCHHH) $&.dpr
-  @cd ..\..\..\..
-
-cursor.exe: "JvUIB\Component\Cursor\cursor.dpr"
-  @cd JvUIB\Component\Cursor
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-DataPump.exe: "JvUIB\Component\DataPump\DataPump.dpr"
-  @cd JvUIB\Component\DataPump
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-MetaData.exe: "JvUIB\Component\Metadata\MetaData.dpr"
-  @cd JvUIB\Component\Metadata
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-Query.exe: "JvUIB\Component\Query\Query.dpr"
-  @cd JvUIB\Component\Query
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-QuickScript.exe: "JvUIB\Component\QuickScript\QuickScript.dpr"
-  @cd JvUIB\Component\QuickScript
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-Restore.exe: "JvUIB\Component\Restore\Restore.dpr"
-  @cd JvUIB\Component\Restore
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-Script.exe: "JvUIB\Component\Script\Script.dpr"
-  @cd JvUIB\Component\Script
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-StoredProc.exe: "JvUIB\Component\StoredProc\StoredProc.dpr"
-  @cd JvUIB\Component\StoredProc
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-QueryStream.exe: "JvUIB\Component\Stream\QueryStream.dpr"
-  @cd JvUIB\Component\Stream
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-#Query.exe: "JvUIB\Component\ThreadedQueries\Query.dpr"
-#  @cd JvUIB\Component\ThreadedQueries
-#  $(DCCHH) $&.dpr
-#  @cd ..\..\..
 
 JvUninstallCtrlsDemo.exe: "JvUninstallControls\JvUninstallCtrlsDemo.dpr"
   @cd JvUninstallControls

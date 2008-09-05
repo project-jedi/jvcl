@@ -236,8 +236,6 @@ function TJvTranslator.ComponentToXML(const AComponent: TComponent; Recurse: Boo
 var
   AName: string;
   AElem: TJvSimpleXMLElem;
-  JclStream: TJclStringStream;
-  StringStream: TStringStream;
 
   procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem; Recurse:Boolean); forward;
 
@@ -492,19 +490,7 @@ begin
   if AName <> '' then
   begin
     InnerComponentToXML(AComponent, AElem, Recurse);
-
-    StringStream := TStringStream.Create('');
-    try
-      JclStream := TJclStringStream.Create(StringStream);
-      try
-        FXML.Root.SaveToStringStream(JclStream);
-        Result := StringStream.DataString;
-      finally
-        JclStream.Free;
-      end;
-    finally
-      StringStream.Free;
-    end;
+    Result := FXML.Root.SaveToString;
   end;
 end;
 
