@@ -275,6 +275,7 @@ const
 implementation
 
 uses
+  Forms,
   JvResources;
 
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;
@@ -722,7 +723,7 @@ begin
     Exit;
   PropogateInitResults;
 //  OleCheck(HRes);
-  HRes := FObjectPicker.InvokeDialog(0, DataObj);
+  HRes := FObjectPicker.InvokeDialog(Application.Handle, DataObj);
   case HRes of
     S_OK:
       begin
