@@ -45,7 +45,7 @@ uses
   {$IFDEF COMPILER4_UP}
   ImgList,
   {$ENDIF COMPILER4_UP}
-  JvRegAuto, JvComponent;
+  JvRegAuto, JvComponent, ImgList;
 
 type
   TJvRegAutoEditor = class(TComponentEditor)
@@ -342,6 +342,7 @@ var
               + ATypeInfo^.Name + #0 + 'Y');
             MyNode.ImageIndex := imEnumeration; // Picture - Possible to select [translated]
           end;
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkString, tkLString {, tkWString}:
           begin
             MyNode :=
