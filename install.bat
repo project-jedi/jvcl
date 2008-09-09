@@ -12,6 +12,8 @@ if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
 if ERRORLEVEL 1 goto Failed
 cd ..\..
 
+echo.
+
 :: create mo files, if possible (msgfmt must be in the PATH environment variable)
 cd locale
 msgfmt --help 1> tmp1.txt 2> tmp2.txt

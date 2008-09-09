@@ -65,7 +65,7 @@ type
     FAlignment: TAlignment;
     procedure SetGlyph(const Value: TBitmap);
     procedure NewHint(Sender: TObject);
-    procedure NewShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
+    procedure NewShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo);
   protected
     procedure Notification(Component: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
@@ -208,7 +208,7 @@ begin
 end;
 
 procedure TJvgHint.NewShowHint(var HintStr: string;
-  var CanShow: Boolean; var HintInfo: THintInfo);
+  var CanShow: Boolean; var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo);
 begin
   FHintControl := HintInfo.HintControl;
   if Assigned(FOnShowHint) then

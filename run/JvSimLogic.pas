@@ -135,6 +135,8 @@ type
     property ToPoint: TJvPointX read FToPoint write SetToPoint;
   end;
 
+  TJvLogicGates = array [0..5] of TJvGate;
+
   TJvLogic = class(TGraphicControl)
   private
     FDoMove: Boolean;
@@ -142,7 +144,7 @@ type
     FStyleDown: Boolean;
     FMdp: TPoint;
     FOldp: TPoint;
-    FGates: array [0..5] of TJvGate;
+    FGates: TJvLogicGates;
     FConnectors: TList;
     FNewLeft: Integer;
     FNewTop: Integer;
@@ -185,12 +187,14 @@ type
     property LogicFunc: TJvLogicFunc read FLogicFunc write SetLogicFunc;
   end;
 
+  TJvSimReverseGates = array [0..3] of TJvGate;
+
   TJvSimReverse = class(TGraphicControl)
   private
     FDoMove: Boolean;
     FMdp: TPoint;
     FOldp: TPoint;
-    FGates: array [0..3] of TJvGate;
+    FGates: TJvSimReverseGates;
     FConnectors: TList;
     FNewLeft: Integer;
     FNewTop: Integer;

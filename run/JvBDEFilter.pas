@@ -517,7 +517,7 @@ begin
       DsSetRecordCount(DS, 1); { FActiveRecord + 1 }
       DsSetCanModify(DS, False);
       SetLength(BufPtr, 1);
-      BufPtr[0] := PChar(RecBuf);
+      BufPtr[0] := {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(RecBuf);
       DsSetBuffers(DS, BufPtr);
       { call user defined function }
       Result := Ord(FOnFiltering(Self, DS));

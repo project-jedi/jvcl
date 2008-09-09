@@ -220,6 +220,9 @@ const
 implementation
 
 uses
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JvVCL5Utils, JvJCLUtils, JvResources;
 
 //=== { TJvXMLDatabase } =====================================================
@@ -700,7 +703,7 @@ var
     Result := Trim(AValue);
 
     //Escape quotes
-    if (Result <> '') and (Result[1] in ['''','"']) then
+    if (Result <> '') and ((Result[1] = '''') or (Result[1] = '"')) then   // do not use 'in' because of D2009
       Result := Copy(Result, 2, Length(Result) - 2);
 
     if SameText(Result, 'now') then
@@ -1113,7 +1116,7 @@ begin
 
   FQuery := TrimLeft(FQuery);
   I := 1;
-  while (I < Length(FQuery)) and not (FQuery[I] in [' ']) do  {,'(',')'}
+  while (I < Length(FQuery)) and (FQuery[I] <> ' ') do  {,'(',')'}
     Inc(I);
   if I >= Length(FQuery) then
   begin
@@ -1306,7 +1309,7 @@ begin
       end;
 
       SecondValue := Trim(Copy(AValue, 2, MaxInt));
-      if (SecondValue <> '') and (SecondValue[1] in ['''','"']) then
+      if (SecondValue <> '') and ((SecondValue[1] = '''') or (SecondValue[1] = '"')) then   // do not use 'in' to make D2009 happy
       begin
         SecondValue := Copy(SecondValue, 2, Length(SecondValue) - 2);
         SecondKind := skConstant;

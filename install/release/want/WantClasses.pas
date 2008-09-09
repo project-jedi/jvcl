@@ -60,13 +60,9 @@ uses
 const
   AntBuildFileName = 'build.xml';
 
-  SupportedPropertyTypes = [
-    tkInteger,
-    tkEnumeration,
-    tkString,
-    tkLString,
-    tkWString,
-    tkClass];
+  tkStrings = [tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString];
+
+  SupportedPropertyTypes = [tkInteger, tkEnumeration, tkClass] + tkStrings;
 
   LabeledMsgFormat = '%14s %s';
 
@@ -1045,7 +1041,7 @@ begin
         and (Kind in SupportedPropertyTypes)
         then
       begin
-        if Kind in [tkString, tkLString, tkWString] then
+        if Kind in tkStrings then
           Result := GetStrProp(Self, PropInfo)
         else if Kind in [tkInteger] then
           Result := IntToStr(GetOrdProp(Self, PropInfo))
@@ -1095,7 +1091,7 @@ begin
   begin
     with PropInfo^, PropType^^ do
     begin
-      if Kind in [tkString, tkLString, tkWString] then
+      if Kind in tkStrings then
       begin
         if (Name = 'TPath') then
           Value := ToRelativePath(Value);
@@ -1503,7 +1499,7 @@ begin
             aName := Copy(aName,2,MaxInt);
           aValue := PropInfo^.PropType^.Name;
           case PropInfo^.PropType^.Kind of
-            tkString, tkLString,tkWString:; // do nothing
+            tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString: ; // do nothing
             tkInteger:
               begin
                 TypeData := GetTypeData(PropInfo^.PropType^);

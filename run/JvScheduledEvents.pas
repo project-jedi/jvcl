@@ -479,7 +479,7 @@ begin
   WriteValue(vaSet);
   for I := 0 to SizeOf(TIntegerSet) * 8 - 1 do
     if I in TIntegerSet(Value) then
-      WriteStr(GetEnumName(BaseType, I));
+      {$IFDEF RTL200_UP}WriteUTF8Str{$ELSE}WriteStr{$ENDIF RTL200_UP}(GetEnumName(BaseType, I));
   WriteStr('');
 end;
 

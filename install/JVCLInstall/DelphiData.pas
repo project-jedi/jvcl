@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry;
 
 const
-  BDSVersions: array[1..5] of record
+  BDSVersions: array[1..6] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -47,7 +47,8 @@ const
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; Supported: True),
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; Supported: True),
-    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True)
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True),
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True)
   );
 
 type
@@ -72,7 +73,7 @@ type
   TCompileTargetList = class(TObjectList)
   private
     function GetItems(Index: Integer): TCompileTarget;
-    procedure LoadTargets(const SubKey, HKCUSubKey: string);
+    procedure LoadTargets(const RootKey, SubKey, HKCUSubKey: string);
     function IsBDSSupported(const IDEVersionStr: string): Boolean;
   public
     constructor Create;
@@ -270,7 +271,7 @@ const
 function AnsiStartsText(const SubStr, Text: string): Boolean;
 function ExcludeTrailingPathDelimiter(const Path: string): string;
 function GetEnvironmentVariable(const Name: string): string;
-{$ENDIF COMPIELR5}
+{$ENDIF COMPILER5}
 
 implementation
 
@@ -278,9 +279,12 @@ uses
   {$IFDEF COMPILER6_UP}
   StrUtils,
   {$ENDIF COMPILER6_UP}
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclSysInfo, JclSimpleXml, JclBorlandTools;
+  JclBase, JclSysInfo, JclSimpleXml, JclBorlandTools;
 
 function DequoteStr(const S: string): string;
 begin
@@ -308,10 +312,11 @@ begin
   SetLength(Result, 8 * 1024);
   SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
 end;
-{$ENDIF COMPIELR5}
+{$ENDIF COMPILER5}
 
 const
   KeyBorland = '\SOFTWARE\Borland\'; // do not localize
+  KeyCodeGear = '\SOFTWARE\CodeGear\'; // do not localize
 
 function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 begin
@@ -334,7 +339,7 @@ begin
       Break;
 
     F := P;
-    while not (P[0] in [#0, ';']) do
+    while (P[0] <> #0) and (P[0] <> ';') do
       Inc(P);
     SetString(S, F, P - F);
     List.Add(ExcludeTrailingPathDelimiter(Trim(DequoteStr(Trim(S)))));
@@ -416,11 +421,14 @@ begin
     CmdOptions.RegistryKeyBDS := 'BDS'; // do not localize
 
   if not CmdOptions.IgnoreDelphi then
-    LoadTargets('Delphi', CmdOptions.RegistryKeyDelphi); // do not localize
+    LoadTargets(KeyBorland, 'Delphi', CmdOptions.RegistryKeyDelphi); // do not localize
   if not CmdOptions.IgnoreBCB then
-    LoadTargets('C++Builder', CmdOptions.RegistryKeyBCB); // do not localize
+    LoadTargets(KeyBorland, 'C++Builder', CmdOptions.RegistryKeyBCB); // do not localize
   if not CmdOptions.IgnoreDelphi then
-    LoadTargets('BDS', CmdOptions.RegistryKeyBDS); // do not localize
+  begin
+    LoadTargets(KeyBorland, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize
+    LoadTargets(KeyCodeGear, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize    
+  end;
 end;
 
 function TCompileTargetList.GetItems(Index: Integer): TCompileTarget;
@@ -428,36 +436,40 @@ begin
   Result := TCompileTarget(inherited Items[Index]);
 end;
 
-procedure TCompileTargetList.LoadTargets(const SubKey, HKCUSubKey: string);
+procedure TCompileTargetList.LoadTargets(const RootKey, SubKey, HKCUSubKey: string);
 var
   Reg, HKCUReg: TRegistry;
   List: TStrings;
-  i: Integer;
+  I: Integer;
   Target: TCompileTarget;
+  KeyName: string;
 begin
   Reg := TRegistry.Create;
   HKCUReg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
     HKCUReg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKeyReadOnly(KeyBorland + SubKey) then
+    if Reg.OpenKeyReadOnly(RootKey + SubKey) then
     begin
       List := TStringList.Create;
       try
         Reg.GetKeyNames(List);
-        for i := 0 to List.Count - 1 do
-          if List[i][1] in ['1'..'9'] then // only version numbers (not "BDS\DBExpress")
-            if (SubKey <> 'BDS') or IsBDSSupported(List[i]) then // do not localize
+        for I := 0 to List.Count - 1 do
+        begin
+          KeyName := List[I];
+          if (KeyName <> '') and CharInSet(KeyName[1], ['1'..'9']) then // only version numbers (not "BDS\DBExpress")
+            if (SubKey <> 'BDS') or IsBDSSupported(KeyName) then // do not localize
             begin
-              if HKCUReg.KeyExists(KeyBorland + HKCUSubKey + '\' + List[i]) then
+              if HKCUReg.KeyExists(RootKey + HKCUSubKey + '\' + KeyName) then
               begin
-                Target := TCompileTarget.Create(SubKey, List[i], HKCUSubKey);
+                Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey);
                 if Target.IsValid then // only valid targets are allowed
                   Add(Target)
                 else
                   Target.Free;
               end;
             end;
+        end;
       finally
         List.Free;
       end;
@@ -496,8 +508,16 @@ begin
   else
     GetBDSVersion(FName, FVersion, FVersionStr);
 
-  FHKLMRegistryKey := KeyBorland + IDEName + '\' + IDEVersionStr;
-  FRegistryKey := KeyBorland + ARegSubKey + '\' + IDEVersionStr;
+  if IsBDS and (IDEVersion >= 6) then
+  begin
+    FHKLMRegistryKey := KeyCodeGear + IDEName + '\' + IDEVersionStr;
+    FRegistryKey := KeyCodeGear + ARegSubKey + '\' + IDEVersionStr;
+  end
+  else
+  begin
+    FHKLMRegistryKey := KeyBorland + IDEName + '\' + IDEVersionStr;
+    FRegistryKey := KeyBorland + ARegSubKey + '\' + IDEVersionStr;
+  end;
 
   FOrgEnvVars := TStringList.Create;
   FEnvVars := TStringList.Create;
@@ -1298,7 +1318,13 @@ end;
 
 function TCompileTarget.GetEnvOptionsFileName: string; // Delphi 2007
 begin
-  Result := Format('%s\Borland\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion]);
+  if IsBDS and (IDEVersion >= 6) then
+    Result := Format('%s\CodeGear\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion])
+  else
+  if IsBDS and (IDEVersion = 5) then
+    Result := Format('%s\Borland\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion])
+  else
+    Result := '';
 end;
 
 function TCompileTarget.ReadCommonProjectsDir: string;

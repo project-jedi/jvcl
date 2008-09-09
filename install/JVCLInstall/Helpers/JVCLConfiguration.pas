@@ -37,6 +37,7 @@ uses
   {$ELSE}
   JvVCL5Utils,
   {$ENDIF COMPILER6_UP}
+  JclBase,
   Utils;
 
 type
@@ -85,7 +86,7 @@ type
 
     procedure Parse;
     procedure LoadFromFile(const AFilename: string); override;
-    procedure LoadFromStream(Stream: TStream); override;
+    procedure LoadFromStream(Stream: TStream{$IFDEF COMPILER12_UP}; Encoding: TEncoding{$ENDIF COMPILER12_UP}); override;
     procedure SaveToFile(const FileName: String); override;
 
     property ItemCount: Integer read GetItemCount;
@@ -96,6 +97,11 @@ type
   end;
 
 implementation
+
+{$IFNDEF COMPILER12_UP}
+uses
+  JvJCLUtils;
+{$ENDIF ~COMPILER12_UP}
 
 function RemoveCommentBrackets(const Comment: string): string;
 var
@@ -120,7 +126,7 @@ begin
   if AnsiStartsText(Directive, S) then
   begin
     Result := (Length(S) >= Length(Directive)) or
-      (S[Length(Directive) + 1] in [#1..#32, '}', '*']);
+      CharInSet(S[Length(Directive) + 1], [#1..#32, '}', '*']);
   end;
 //  if StrLIComp(PChar(S), PChar(Directive), Length(Directive)) = 0 then
 //    Result := S[Length(Directive) + 1] in [#0..#32, '}', '*'];}
@@ -230,10 +236,10 @@ begin
   Result := TJVCLConfigItem(FItems[Index]);
 end;
 
-procedure TJVCLConfig.LoadFromStream(Stream: TStream);
+procedure TJVCLConfig.LoadFromStream(Stream: TStream{$IFDEF COMPILER12_UP}; Encoding: TEncoding{$ENDIF COMPILER12_UP});
 begin
   FFilename := '';
-  inherited LoadFromStream(Stream);
+  inherited LoadFromStream(Stream{$IFDEF COMPILER12_UP}, Encoding{$ENDIF COMPILER12_UP});
   Parse;
 end;
 

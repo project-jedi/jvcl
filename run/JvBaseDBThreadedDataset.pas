@@ -420,6 +420,9 @@ implementation
 
 uses
   Dialogs,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvDynControlEngineIntf, JvDSADialogs, JvResources;
 
 //=== { TJvDatasetThreadDialog } =============================================
@@ -902,7 +905,7 @@ begin
       S := LowerCase(Dataset.Fields[I].DisplayLabel);
       Upper := True;
       for J := 1 to Length(S) do
-        if S[J] in ['_', '$', ' '] then
+        if CharInSet(S[J], ['_', '$', ' ']) then
         begin
           Upper := True;
           S[J] := ' ';

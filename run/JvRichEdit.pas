@@ -283,8 +283,8 @@ type
     procedure Done; virtual;
     function Retry: Boolean; virtual;
 
-    function ConvertRead(Buffer: PChar; BufSize: Integer): Integer; virtual;
-    function ConvertWrite(Buffer: PChar; BufSize: Integer): Integer; virtual;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; virtual;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; virtual;
 
     function UserCancel: Boolean; virtual;
     function Error: Boolean; virtual;
@@ -307,8 +307,8 @@ type
     function Open(Stream: TStream; const AKind: TJvConversionKind): Boolean; override;
     procedure Done; override;
     function Retry: Boolean; override;
-    function ConvertRead(Buffer: PChar; BufSize: Integer): Integer; override;
-    function ConvertWrite(Buffer: PChar; BufSize: Integer): Integer; override;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
     property Stream: TStream read FStream;
   end;
 
@@ -330,8 +330,8 @@ type
 
   TJvOEMConversion = class(TJvStreamConversion)
   public
-    function ConvertRead(Buffer: PChar; BufSize: Integer): Integer; override;
-    function ConvertWrite(Buffer: PChar; BufSize: Integer): Integer; override;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
     function TextKind: TJvConversionTextKind; override;
   end;
 
@@ -472,8 +472,8 @@ type
     function IsFormatCorrect(const AFileName: string): Boolean; override;
     function TranslateError(ErrorCode: FCE): string;
 
-    function ConvertRead(Buffer: PChar; BufSize: Integer): Integer; override;
-    function ConvertWrite(Buffer: PChar; BufSize: Integer): Integer; override;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
 
     function UserCancel: Boolean; override;
     function Error: Boolean; override;
@@ -937,12 +937,19 @@ implementation
 
 uses
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
+  {$IFDEF RTL200_UP}
+  CommDlg,
+  {$ENDIF RTL200_UP}
   JvThemes, JvConsts, JvResources, JvFixedEditPopUp, JvTypes;
 
 type
   PENLink = ^TENLink;
   PENOleOpFailed = ^TENOleOpFailed;
+  {$IFDEF SUPPORTS_UNICODE}
+  TFindTextEx = TFindTextExW;
+  {$ELSE}
   TFindTextEx = TFindTextExA;
+  {$ENDIF SUPPORTS_UNICODE}
   TTextRangeA = record
     chrg: TCharRange;
     lpstrText: PAnsiChar;
@@ -953,7 +960,11 @@ type
     lpstrText: PWideChar;
   end;
 
+  {$IFDEF SUPPORTS_UNICODE}
+  TTextRange = TTextRangeW;
+  {$ELSE}
   TTextRange = TTextRangeA;
+  {$ENDIF SUPPORTS_UNICODE}
 
   { OLE Extensions to the Rich Text Editor }
   { Converted from RICHOLE.H               }
@@ -1744,7 +1755,7 @@ begin
   try
     pcb := 0;
     if Converter <> nil then
-      pcb := Converter.ConvertWrite(PChar(pbBuff), cb);
+      pcb := Converter.ConvertWrite({$IFNDEF COMPILER12_UP}PChar{$ENDIF !COMPILER12_UP}(pbBuff), cb);
   except
     Result := WriteError;
   end;
@@ -1756,7 +1767,7 @@ type
     FConverter: TJvConversion;
     FSkipLf, FSkipCr: Boolean;
     // SourceLength is number of characters
-    function AdjustLineBreaks(Dest, Source: PChar; SourceLength: Integer): Integer;
+    function AdjustLineBreaks(Dest, Source: PAnsiChar; SourceLength: Integer): Integer;
     function AdjustLineBreaksW(Dest, Source: PWideChar; SourceLength: Integer): Integer;
   public
     constructor Create(AConverter: TJvConversion);
@@ -1773,10 +1784,10 @@ type
   files. (SysUtils)
 }
 
-function TCookie.AdjustLineBreaks(Dest, Source: PChar; SourceLength: Integer): Integer;
+function TCookie.AdjustLineBreaks(Dest, Source: PAnsiChar; SourceLength: Integer): Integer;
 var
-  SourceEnd: PChar;
-  DestStart: PChar;
+  SourceEnd: PAnsiChar;
+  DestStart: PAnsiChar;
 begin
   SourceEnd := Source + SourceLength;
   DestStart := Dest;
@@ -1868,15 +1879,15 @@ end;
 
 function TCookie.Load(Buffer: PByte; BufferSize: Longint): Longint;
 var
-  pBuff: PChar;
+  pBuff: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
 begin
   BufferSize := BufferSize div 2;
   Result := 0;
-  pBuff := PChar(Buffer) + BufferSize;
+  pBuff := {$IFNDEF COMPILER12_UP}PChar{$ENDIF !COMPILER12_UP}(Buffer) + BufferSize;
   if Converter <> nil then
     Result := Converter.ConvertRead(pBuff, BufferSize);
   if Result > 0 then
-    Result := AdjustLineBreaks(PChar(Buffer), pBuff, Result);
+    Result := AdjustLineBreaks(PAnsiChar(Buffer), PAnsiChar(pBuff), Result);
 end;
 
 function TCookie.LoadW(Buffer: PByte; BufferSize: Integer): Longint;
@@ -1889,7 +1900,7 @@ begin
   Result := 0;
   pBuff := PWideChar(Buffer) + BufferSize div 2;
   if Converter <> nil then
-    Result := Converter.ConvertRead(PChar(pBuff), BufferSize);
+    Result := Converter.ConvertRead({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(pBuff), BufferSize);
   if Result > 0 then
     Result := 2 * AdjustLineBreaksW(PWideChar(Buffer), PWideChar(pBuff), Result div 2);
 end;
@@ -1916,10 +1927,10 @@ begin
   end;
 end;
 
-function FileNameToHGLOBAL(const AFileName: string): HGLOBAL;
+function FileNameToHGLOBAL(const AFileName: AnsiString): HGLOBAL;
 var
   DataPtr: Pointer;
-  Buffer: array[0..MAX_PATH] of Char;
+  Buffer: array[0..MAX_PATH] of AnsiChar;
 begin
   // DOC : Each entry point that accepts file names should expect all file name
   //       arguments from Word to be in the OEM character set (unless the character
@@ -1928,8 +1939,8 @@ begin
   //  For example: CharToOem will translate the copyright (c) symbol (=1 char)
   //  to C¸ (or something). Not doing so will result in errors.
 
-  StrCopy(Buffer, PChar(AFileName));
-  CharToOem(Buffer, Buffer);
+  StrCopy(Buffer, PAnsiChar(AFileName));
+  CharToOemA(Buffer, Buffer);
 
   Result := GlobalAlloc(GHND, StrLen(Buffer) + 1); // with last #0, thus + 1
   try
@@ -2377,13 +2388,13 @@ begin
   Result := True;
 end;
 
-function TJvConversion.ConvertRead(Buffer: PChar;
+function TJvConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := -1;
 end;
 
-function TJvConversion.ConvertWrite(Buffer: PChar;
+function TJvConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := -1;
@@ -3015,9 +3026,9 @@ begin
     Flags := 0;
   end;
   if stWholeWord in Options then
-    Flags := Flags or FT_WHOLEWORD;
+    Flags := Flags or {$IFDEF RTL200_UP}FR_WHOLEWORD{$ELSE}FT_WHOLEWORD{$ENDIF RTL200_UP};
   if stMatchCase in Options then
-    Flags := Flags or FT_MATCHCASE;
+    Flags := Flags or {$IFDEF RTL200_UP}FR_MATCHCASE{$ELSE}FT_MATCHCASE{$ENDIF RTL200_UP};
   Find.lpstrText := PChar(SearchStr);
   Result := SendMessage(Handle, EM_FINDTEXTEX, Flags, Longint(@Find));
   if (Result >= 0) and (stSetSelection in Options) then
@@ -3318,7 +3329,7 @@ begin
   SetLength(Result, EndPos - StartPos + 1);
   TextRange.chrg.cpMin := StartPos;
   TextRange.chrg.cpMax := EndPos;
-  TextRange.lpstrText := PAnsiChar(Result);
+  TextRange.lpstrText := PChar(Result);
   SetLength(Result, SendMessage(Handle, EM_GETTEXTRANGE, 0, Longint(@TextRange)));
 end;
 
@@ -4426,9 +4437,11 @@ begin
     if Trim(AppName) = '' then
       AppName := ExtractFileName(Application.ExeName);
     if Trim(Title) = '' then
-      IRichEditOle(FRichEditOle).SetHostNames(PChar(AppName), PChar(AppName))
+      IRichEditOle(FRichEditOle).SetHostNames(PAnsiChar({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(AppName)),
+                                              PAnsiChar({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(AppName)))
     else
-      IRichEditOle(FRichEditOle).SetHostNames(PChar(AppName), PChar(Title));
+      IRichEditOle(FRichEditOle).SetHostNames(PAnsiChar({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(AppName)),
+                                              PAnsiChar({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(Title)));
   end;
 end;
 
@@ -4643,11 +4656,11 @@ begin
     DoError(Result);
 end;
 
-function TJvMSTextConversion.ConvertRead(Buffer: PChar;
+function TJvMSTextConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   AvailableBufferSize: Integer;
-  DestBufferPtr: PChar;
+  DestBufferPtr: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   ByteCount: Integer;
 begin
   { Fill Buffer with BufSize bytes data from FBuffer }
@@ -4693,7 +4706,7 @@ begin
   Result := BufSize;
 end;
 
-function TJvMSTextConversion.ConvertWrite(Buffer: PChar;
+function TJvMSTextConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   DestBufferPtr: PChar;
@@ -4972,7 +4985,7 @@ begin
   if not Result then
     Exit;
 
-  hFile := FileNameToHGLOBAL(AFileName);
+  hFile := FileNameToHGLOBAL({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(AFileName));
   hClass := StringToHGLOBAL('');
   try
     Result := FIsFormatCorrect32(hFile, hClass) = fceTrue;
@@ -5026,7 +5039,7 @@ begin
 
   InitConverter;
 
-  FFileName := FileNameToHGLOBAL(AFileName);
+  FFileName := FileNameToHGLOBAL({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(AFileName));
   if FFileName = 0 then
     DoError(fceNoMemory);
 
@@ -5135,7 +5148,7 @@ end;
 
 //=== { TJvOEMConversion } ===================================================
 
-function TJvOEMConversion.ConvertRead(Buffer: PChar;
+function TJvOEMConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   Mem: TMemoryStream;
@@ -5143,14 +5156,14 @@ begin
   Mem := TMemoryStream.Create;
   try
     Mem.SetSize(BufSize);
-    Result := inherited ConvertRead(PChar(Mem.Memory), BufSize);
-    OemToCharBuff(PChar(Mem.Memory), Buffer, Result);
+    Result := inherited ConvertRead({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Mem.Memory), BufSize);
+    OemToCharBuffA(PAnsiChar(Mem.Memory), PAnsiChar(Buffer), Result);
   finally
     Mem.Free;
   end;
 end;
 
-function TJvOEMConversion.ConvertWrite(Buffer: PChar;
+function TJvOEMConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   Mem: TMemoryStream;
@@ -5158,8 +5171,8 @@ begin
   Mem := TMemoryStream.Create;
   try
     Mem.SetSize(BufSize);
-    CharToOemBuff(Buffer, PChar(Mem.Memory), BufSize);
-    Result := inherited ConvertWrite(PChar(Mem.Memory), BufSize);
+    CharToOemBuffA(PAnsiChar(Buffer), PAnsiChar(Mem.Memory), BufSize);
+    Result := inherited ConvertWrite({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Mem.Memory), BufSize);
   finally
     Mem.Free;
   end;
@@ -6389,7 +6402,7 @@ end;
 
 //=== { TJvStreamConversion } ================================================
 
-function TJvStreamConversion.ConvertRead(Buffer: PChar;
+function TJvStreamConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := FStream.Read(Buffer^, BufSize);
@@ -6400,7 +6413,7 @@ begin
   end;
 end;
 
-function TJvStreamConversion.ConvertWrite(Buffer: PChar;
+function TJvStreamConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := FStream.Write(Buffer^, BufSize);

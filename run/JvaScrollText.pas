@@ -219,7 +219,7 @@ var
 
   function ChangeFont(S: string): Boolean;
   var
-    msec: string[10];
+    msec: string;
   begin
     Result := True;
     if AnsiStartsStr('$Font:', S) then

@@ -100,13 +100,15 @@ begin
 
   FIndex := Idx; // save start index
 
-  if Text[Idx] in SymbolOne then
+  if {$IFDEF UNICODE}(Text[Idx] < #256) and {$ENDIF}
+     (AnsiChar(Text[Idx]) in SymbolOne) then
   begin
     // one char
     Inc(Idx);
   end
   else
-  if Text[Idx] in SymbolTwo then
+  if {$IFDEF UNICODE}(Text[Idx] < #256) and {$ENDIF}
+     (AnsiChar(Text[Idx]) in SymbolTwo) then
   begin
     // one or two chars
     Inc(Idx);
@@ -122,7 +124,8 @@ begin
     Inc(Idx);
     while (Idx <= Len) and (Text[Idx] > #32) do
     begin
-      if Text[Idx] in (SymbolOne + SymbolTwo) then
+      if {$IFDEF UNICODE}(Text[Idx] < #256) and {$ENDIF}
+         (AnsiChar(Text[Idx]) in (SymbolOne + SymbolTwo)) then
         Break;
       Inc(Idx);
     end;

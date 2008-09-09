@@ -143,9 +143,9 @@ uses
 
 const
   // (p3) fixed as suggested by Remko Bonte
-  Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@ ';
-  Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
-  Row3: string[31] = 'бжд?* ';
+  Row1: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@ ';
+  Row2: string = '0123456789._:()-''!_+\/[]^&%.=$#';
+  Row3: string = 'бжд?* ';
 
 //=== { TJvWinampThread } ====================================================
 

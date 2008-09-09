@@ -1,9 +1,9 @@
 object CsvDataSourceForm: TCsvDataSourceForm
   Left = 179
   Top = 121
-  Width = 810
-  Height = 638
   Caption = 'Comma Separated Variable File (TJvCsvDataSet) Demo'
+  ClientHeight = 604
+  ClientWidth = 802
   Color = clBtnFace
   Constraints.MinHeight = 480
   Constraints.MinWidth = 800
@@ -15,6 +15,10 @@ object CsvDataSourceForm: TCsvDataSourceForm
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
+  DesignSize = (
+    802
+    604)
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel
@@ -158,7 +162,7 @@ object CsvDataSourceForm: TCsvDataSourceForm
     Align = alTop
     BorderStyle = bsNone
     Color = clBtnFace
-    Font.Charset = DEFAULT_CHARSET
+    Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
@@ -202,39 +206,6 @@ object CsvDataSourceForm: TCsvDataSourceForm
     Top = 216
   end
   object JvCsvDataSet1: TJvCsvDataSet
-    FieldDefs = <
-      item
-        Name = 'NAME'
-        DataType = ftString
-        Size = 80
-      end
-      item
-        Name = 'ADDRESS'
-        DataType = ftString
-        Size = 80
-      end
-      item
-        Name = 'ADDRESS2'
-        DataType = ftString
-        Size = 80
-      end
-      item
-        Name = 'TELEPHONE'
-        DataType = ftString
-        Size = 80
-      end
-      item
-        Name = 'AGE'
-        DataType = ftInteger
-      end
-      item
-        Name = 'LASTPHONECALL'
-        DataType = ftDateTime
-      end
-      item
-        Name = 'PRIVATENUMBER'
-        DataType = ftBoolean
-      end>
     FileName = 'PhoneList.csv'
     Changed = False
     CsvFieldDef = 
@@ -245,6 +216,8 @@ object CsvDataSourceForm: TCsvDataSourceForm
     CaseInsensitive = False
     AutoBackupCount = 0
     StoreDefs = True
+    AlwaysEnquoteStrings = False
+    AppendOnly = False
     Left = 128
     Top = 216
     object JvCsvDataSet1NAME: TStringField

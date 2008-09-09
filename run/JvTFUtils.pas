@@ -112,7 +112,7 @@ procedure DrawAngleText(ACanvas: TCanvas; HostRect: TRect;
 function RectWidth(ARect: TRect): Integer;
 function RectHeight(ARect: TRect): Integer;
 function EmptyRect: TRect;
-function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
+function IsClassByName(Obj: TObject; ClassName: string): Boolean;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
@@ -632,7 +632,7 @@ begin
   Result := Rect(0, 0, 0, 0);
 end;
 
-function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
+function IsClassByName(Obj: TObject; ClassName: string): Boolean;
 var
   ClassRef: TClass;
 begin

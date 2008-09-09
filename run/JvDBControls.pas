@@ -803,7 +803,7 @@ end;
 procedure TJvDBMaskEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
+  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
     DoBeepOnError;
@@ -1274,7 +1274,7 @@ end;
 procedure TJvDBComboEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
+  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
     DoBeepOnError;
@@ -1551,8 +1551,8 @@ end;
 procedure TJvDBDateEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
-    not (Key in DigitChars) and (Key <> DateSeparator) then
+  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
+    not CharInSet(Key, DigitChars) and (Key <> DateSeparator) then
   begin
     DoBeepOnError;
     Key := #0;

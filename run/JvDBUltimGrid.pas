@@ -160,7 +160,7 @@ type
     FOnIndexNotFound: TIndexNotFoundEvent;
     FOnUserSort: TUserSortEvent;
     FOnCheckIfValidSortField: TCheckIfValidSortFieldEvent;
-    FSavedBookmark: TBookmarkStr;
+    FSavedBookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
     FSavedRowPos: Integer;
     FOnRestoreGridPosition: TRestoreGridPosEvent;
     FValueToSearch: Variant;
@@ -247,7 +247,7 @@ begin
   FMultiColSort := True;
   FOnIndexNotFound := nil;
   FOnUserSort := nil;
-  FSavedBookmark := '';
+  FSavedBookmark := {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP};
   FSavedRowPos := 0;
   FOnRestoreGridPosition := nil;
   FValueToSearch := Null;

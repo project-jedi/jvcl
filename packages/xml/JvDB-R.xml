@@ -15,7 +15,7 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JvSystem-R" Targets="all" Condition=""/>    
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
@@ -30,7 +30,7 @@
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
-    <Package Name="vcljpg" Targets="allv6up" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="SMExportC5" Targets="c5" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD5" Targets="d5" Condition="USE_3RDPARTY_SMEXPORT"/>
@@ -60,6 +60,7 @@
     <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
 
     <Package Name="cxEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
     <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
@@ -170,5 +171,5 @@
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
     <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB" Formname="" Condition=""/>
-</Contains>
+  </Contains>
 </Package>

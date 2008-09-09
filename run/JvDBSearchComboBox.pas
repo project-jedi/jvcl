@@ -329,7 +329,7 @@ end;
 
 procedure TJvDBCustomSearchComboBox.ReadList;
 var
-  Bmrk: TBookmarkStr;
+  Bmrk: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
   N, CurIndex: Integer;
 begin
   if (FDataLink.DataField = nil) or (FDataLink.DataSet = nil) or

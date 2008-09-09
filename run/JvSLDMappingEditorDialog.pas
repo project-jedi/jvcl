@@ -76,6 +76,10 @@ const
 
 implementation
 
+{$IFNDEF COMPILER12_UP}
+uses
+  JvJCLUtils;
+{$ENDIF ~COMPILER12_UP}
 
 {$R *.dfm}
 
@@ -124,7 +128,7 @@ begin
   begin
     if CharSelected then
     begin
-      if CurChar in ['!' .. 'z'] then
+      if CharInSet(CurChar, ['!' .. 'z']) then
         lblChar.Caption := CurChar + ' (#' + IntToStr(Ord(CurChar)) + ')'
       else
         lblChar.Caption := '#' + IntToStr(Ord(CurChar));

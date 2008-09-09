@@ -29,8 +29,6 @@ program JVCLInstall;
 {$I jvcl.inc}
 
 uses
-  //FastMM4,
-  //ExceptionDlg in 'Debug\ExceptionDlg.pas',
   JvGnugettext,
   Forms,
   Main in 'Main.pas' {FormMain},
@@ -53,7 +51,6 @@ uses
   FileUtils in '..\..\devtools\PackagesGenerator\FileUtils.pas',
   GenerateUtils in '..\..\devtools\PackagesGenerator\GenerateUtils.pas',
   ConditionParser in '..\..\devtools\PackagesGenerator\ConditionParser.pas',
-  UtilsJcl in '..\..\devtools\PackagesGenerator\UtilsJcl.pas',
   PackageInformation in '..\..\devtools\common\PackageInformation.pas',
   Utils in 'Utils.pas',
   Compile in 'Compile.pas',

@@ -209,6 +209,15 @@ begin
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 
+{$IFDEF COMPILER11_UP}
+function FileAgeEx(const FileName: string): Integer;
+begin
+  {$WARNINGS OFF} // FileAge; deprecated
+  Result := SysUtils.FileAge(Filename);
+  {$WARNINGS ON}
+end;
+
+{$ELSE}
 function GetFileAttributesExPreload(lpFileName: PChar; fInfoLevelId: TGetFileExInfoLevels;
   lpFileInformation: Pointer): BOOL; stdcall;
   forward;
@@ -240,7 +249,11 @@ end;
 function GetFileAttributesExPreload(lpFileName: PChar; fInfoLevelId: TGetFileExInfoLevels;
   lpFileInformation: Pointer): BOOL; stdcall;
 begin
+  {$IFDEF UNICODE}
+  GetFileAttributesExFunc := GetProcAddress(GetModuleHandle(kernel32), 'GetFileAttributesExW');
+  {$ELSE}
   GetFileAttributesExFunc := GetProcAddress(GetModuleHandle(kernel32), 'GetFileAttributesExA');
+  {$ENDIF UNICODE}
   if not Assigned(GetFileAttributesExFunc) then
     GetFileAttributesExFunc := GetFileAttributesExEmulated;
   Result := GetFileAttributesExFunc(lpFileName, fInfoLevelId, lpFileInformation);
@@ -263,6 +276,7 @@ begin
   end;
   Result := -1;
 end;
+{$ENDIF COMPILER11_UP}
 
 function Path(const APath: string): string;
 var

@@ -128,7 +128,7 @@ begin
 
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
+  AName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(TypeInf^.Name);
   TypeData := GetTypeData(TypeInf);
   FNumProps := TypeData^.PropCount;
 
@@ -142,7 +142,7 @@ begin
     begin
       PropInfos.AddPropInfo(FPropList^[I], Component);
 
-      PropName := FPropList^[I]^.Name;
+      PropName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(FPropList^[I]^.Name);
       //      PropTypeInf := FPropList^[I]^.PropType^;
       //      PropInfo := FPropList^[I];
     end;
@@ -161,8 +161,8 @@ var
 begin
   with TJvgPropInform(Add) do
   begin
-    Name := PropInfo^.Name;
-    TypeName := PropInfo^.PropType^.Name;
+    Name := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name);
+    TypeName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.PropType^.Name);
     TypeKind := PropInfo^.PropType^.Kind;
     Info := PropInfo;
     NoteStr := '';

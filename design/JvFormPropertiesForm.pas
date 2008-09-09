@@ -382,7 +382,7 @@ begin
         try
           StrList.Sorted := True;
           for J := 0 to List.Count - 1 do
-            StrList.Add(List.Items[J]^.Name);
+            StrList.Add({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(List.Items[J]^.Name));
           ComponentsList.Items.AddObject(C.Name, StrList);
         except
           StrList.Free;

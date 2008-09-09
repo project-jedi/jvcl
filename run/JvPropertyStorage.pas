@@ -50,7 +50,7 @@ type
     destructor Destroy; override;
     {$ENDIF !CLR}
     function Contains(P: PPropInfo): Boolean;
-    function Find(const AName: string): PPropInfo;
+    function Find(const AName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP}): PPropInfo;
     procedure Delete(Index: Integer);
     procedure Intersect(List: TJvPropInfoList);
     property Count: Integer read FCount;
@@ -70,11 +70,11 @@ type
     function ReadString(const APath, Item, Default: string): string; virtual;
     procedure WriteString(const APath, Item, Value: string); virtual;
 
-    procedure ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
-    procedure WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
+    procedure ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP});
+    procedure WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP});
 
     procedure EraseSection(const APath: string); virtual;
-    function GetItemName(const APropName: string): string; virtual;
+    function GetItemName(const APropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP}): string; virtual;
     function CreateStorage: TJvPropertyStorage; virtual;
   public
     procedure StoreAnyProperty(PropInfo: PPropInfo);
@@ -111,6 +111,9 @@ const
 implementation
 
 uses
+  {$IFDEF RTL200_UP}
+  AnsiStrings,
+  {$ENDIF RTL200_UP}
   JvJCLUtils;
 
 //=== { TJvPropInfoList } ====================================================
@@ -153,7 +156,7 @@ var
 begin
   for I := 0 to FCount - 1 do
     with FList[I]{$IFNDEF CLR}^{$ENDIF} do
-      if (PropType = P.PropType) and (CompareText(Name, P.Name) = 0) then
+      if (PropType = P.PropType) and ({$IFDEF RTL200_UP}AnsiStrings.{$ENDIF RTL200_UP}CompareText(Name, P.Name) = 0) then
       begin
         Result := True;
         Exit;
@@ -161,13 +164,13 @@ begin
   Result := False;
 end;
 
-function TJvPropInfoList.Find(const AName: string): PPropInfo;
+function TJvPropInfoList.Find(const AName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP}): PPropInfo;
 var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
     with FList[I]{$IFNDEF CLR}^{$ENDIF} do
-      if CompareText(Name, AName) = 0 then
+      if {$IFDEF RTL200_UP}AnsiStrings.{$ENDIF RTL200_UP}CompareText(Name, AName) = 0 then
       begin
         Result := FList[I];
         Exit;
@@ -275,9 +278,9 @@ end;
 
 //=== { TJvPropertyStorage } =================================================
 
-function TJvPropertyStorage.GetItemName(const APropName: string): string;
+function TJvPropertyStorage.GetItemName(const APropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP}): string;
 begin
-  Result := Prefix + APropName;
+  Result := Prefix + string(APropName);
 end;
 
 procedure TJvPropertyStorage.LoadAnyProperty(PropInfo: PPropInfo);
@@ -305,7 +308,7 @@ begin
   Props := TJvPropInfoList.Create(AObject, tkProperties);
   try
     for I := 0 to PropList.Count - 1 do
-      StoreAnyProperty(Props.Find(PropList[I]));
+      StoreAnyProperty(Props.Find({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(PropList[I])));
   finally
     Props.Free;
   end;
@@ -319,7 +322,7 @@ begin
   Props := TJvPropInfoList.Create(AObject, tkProperties);
   try
     for I := 0 to PropList.Count - 1 do
-      LoadAnyProperty(Props.Find(PropList[I]));
+      LoadAnyProperty(Props.Find({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(PropList[I])));
   finally
     Props.Free;
   end;
@@ -387,7 +390,7 @@ begin
           Prefix := Prefix + sPropNameDelimiter;
           Props := TJvPropInfoList(Info.Objects[Idx]);
           if Props <> nil then
-            LoadAnyProperty(Props.Find(PropName));
+            LoadAnyProperty(Props.Find({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(PropName)));
         end;
       end;
     end;
@@ -420,7 +423,7 @@ begin
           Prefix := Prefix + sPropNameDelimiter;
           Props := TJvPropInfoList(Info.Objects[Idx]);
           if Props <> nil then
-            StoreAnyProperty(Props.Find(PropName));
+            StoreAnyProperty(Props.Find({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(PropName)));
         end;
       end;
     end;
@@ -456,7 +459,7 @@ begin
     AppStorage.DeleteSubTree(APath);
 end;
 
-procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
+procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP});
 var
   NPath: string;
 begin
@@ -464,14 +467,14 @@ begin
   begin
     NPath := AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, True)]);
     if AppStorage.ValueStored(NPath) or AppStorage.IsFolder(NPath, False) then
-      AppStorage.ReadProperty(NPath, PersObj, PropName, True, True);
+      AppStorage.ReadProperty(NPath, PersObj, string(PropName), True, True);
   end;
 end;
 
-procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
+procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP});
 begin
   if Assigned(AppStorage) then
-    AppStorage.WriteProperty(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, True);
+    AppStorage.WriteProperty(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, string(PropName), True);
 end;
 
 {$IFDEF UNITVERSIONING}

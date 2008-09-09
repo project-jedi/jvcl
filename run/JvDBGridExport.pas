@@ -747,7 +747,7 @@ begin
   Header.Add('</style>');
   Header.Add('</head><body>');
 
-  Footer.Add('</body></html>');
+  Footer.Add('</body></html>');   
 end;
 
 function TJvDBGridHTMLExport.GetFooter: TStrings;
@@ -1181,7 +1181,7 @@ begin
             for I := 0 to FColumnCount - 1 do
               if FRecordColumns[I].Exportable then
               try
-                Properties.Add(FRecordColumns[I].ColumnName, GetFieldValue(FRecordColumns[I].Field));
+                Properties.Add(FRecordColumns[I].ColumnName, VarToStr(GetFieldValue(FRecordColumns[I].Field)));
               except
                 Result := False;
                 HandleException;

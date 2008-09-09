@@ -53,10 +53,11 @@ begin
   SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
 end;
 
-function Oem2Ansi(const Text: string): string;
+function Oem2Ansi(const Text: AnsiString): AnsiString;
 begin
-  Result := Text;
-  OemToCharBuff(PChar(Result), PChar(Result), Length(Result));
+  SetLength(Result, Length(Text));
+  if not OemToCharBuffA(PAnsiChar(Text), PAnsiChar(Result), Length(Text)) then
+    Result := Text;
 end;
 
 function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
@@ -65,11 +66,11 @@ function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
 var
   Aborted: Boolean;
 
-  procedure ProcessInput(hRead: THandle; var Line: string; CaptureLine: TCaptureLine);
+  procedure ProcessInput(hRead: THandle; var Line: AnsiString; CaptureLine: TCaptureLine);
   var
     BytesInPipe, n: Cardinal;
-    S: string;
-    i: Integer;
+    S: AnsiString;
+    I: Integer;
     Found: Boolean;
   begin
     BytesInPipe := 0;
@@ -83,20 +84,20 @@ var
       Line := Line + S;
       repeat
         Found := False;
-        for i := 1 to Length(Line) do
-          if Line[i] in [#10, #13] then
+        for I := 1 to Length(Line) do
+          if (Line[I] = #10) or (Line[I] = #13) then
           begin
             if Assigned(CaptureLine) then
-              CaptureLine(Oem2Ansi(Copy(Line, 1, i - 1)), Aborted);
-            if (Line[i] = #13) and (Line[i + 1] = #10) then
+              CaptureLine(string(Oem2Ansi(Copy(Line, 1, I - 1))), Aborted);
+            if (Line[I] = #13) and (Line[I + 1] = #10) then
             begin
-              if (i + 2 <= Length(Line)) and (Line[i + 2] = #13) then
-                Delete(Line, 1, i + 2)
+              if (I + 2 <= Length(Line)) and (Line[I + 2] = #13) then
+                Delete(Line, 1, I + 2)
               else
-                Delete(Line, 1, i + 1);
+                Delete(Line, 1, I + 1);
             end
             else
-              Delete(Line, 1, i);
+              Delete(Line, 1, I);
             Found := True;
             Break;
           end;
@@ -111,8 +112,8 @@ var
   hRead, hWrite: THandle;
   hAbortRead, hAbortWrite: THandle;
   ReadStatusPipe, WriteStatusPipe: THandle;
-  Line: string;
-  StatusLine: string;
+  Line: AnsiString;
+  StatusLine: AnsiString;
   OrgEnvPath: string;
 begin
   Result := -2;
@@ -172,11 +173,11 @@ begin
             end;
             ProcessInput(hRead, Line, CaptureLine);
             if (Line <> '') and Assigned(CaptureLine) then
-              CaptureLine(Line, Aborted);
+              CaptureLine(string(Line), Aborted);
             if ReadStatusPipe <> 0 then
               ProcessInput(ReadStatusPipe, StatusLine, CaptureStatusLine);
             if (StatusLine <> '') and Assigned(CaptureStatusLine) then
-              CaptureStatusLine(StatusLine, Aborted);
+              CaptureStatusLine(string(StatusLine), Aborted);
             if Aborted then
             begin
               if CtrlCAbort then

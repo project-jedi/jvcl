@@ -60,9 +60,11 @@ type
 
   TJvScopeLineUnit = (jluPercent, jluAbsolute);
 
+  TValues = array of Integer;
+  
   TJvScopeLineValues = class
   private
-    FValues: array of Integer;
+    FValues: TValues;
     FCount: Integer;
     FZeroIndex: Integer;
 

@@ -44,8 +44,8 @@ type
 
   TJvDateTimeFormat = class(TPersistent)
   private
-    FAMString: string[7];
-    FPMString: string[7];
+    FAMString: string;
+    FPMString: string;
     FDateOrder: TDateOrder;
     FTimeFormat: TTimeFormat;
     FTimeSeparator: Char;
@@ -157,6 +157,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvResources;
 
 //=== { TJvDateTimeFormat } ==================================================
@@ -231,8 +234,8 @@ end;
 
 function TJvDateTimeFormat.GetDateMask: string;
 var
-  S: array [1..3] of string[7];
-  Separator: string[3];
+  S: array [1..3] of string;
+  Separator: string;
 begin
   Result := '';
   if LeadingZero then
@@ -268,9 +271,9 @@ end;
 
 function TJvDateTimeFormat.GetTimeMask: string;
 var
-  S: array [1..3] of string[7];
-  Separator: string[3];
-  AMPM: string[16];
+  S: array [1..3] of string;
+  Separator: string;
+  AMPM: string;
 begin
   Separator := '"' + TimeSeparator + '"';
   AMPM := ' ' + AMString + '/' + PMString;
@@ -413,12 +416,12 @@ begin
     dtString:
       Result := True;
     dtInteger:
-      Result := Ch in DigitSymbols + SignSymbols;
+      Result := CharInSet(Ch, DigitSymbols + SignSymbols);
     dtFloat:
       {$IFDEF CLR}
       Result := Ch in DigitSymbols + SignSymbols + [AnsiChar(DecimalSeparator[1]), 'E', 'e'];
       {$ELSE}
-      Result := Ch in DigitSymbols + SignSymbols + [DecimalSeparator, 'E', 'e'];
+      Result := CharInSet(Ch, DigitSymbols + SignSymbols + [DecimalSeparator, 'E', 'e']);
       {$ENDIF CLR}
     dtDateTime, dtDate, dtTime:
       Result := True;
@@ -444,7 +447,7 @@ var
   S: string;
 begin
   S := GetString;
-  Result := (Length(S) > 0) and ((S[1] in ['T', 't', 'Y', 'y']) or
+  Result := (Length(S) > 0) and (CharInSet(S[1], ['T', 't', 'Y', 'y']) or
     (S = FTextValues[True]));
 end;
 
@@ -452,7 +455,7 @@ function TJvConverter.GetDateTime: TDateTime;
 var
   S: string;
   I: Integer;
-  DateS, TimeS: set of Char;
+  DateS, TimeS: TCharSet;
 begin
   S := GetString;
   DateS := ['/', '.'] + [AnsiChar(DateTimeFormat.DateSeparator)] -
@@ -461,10 +464,10 @@ begin
     [AnsiChar(DateTimeFormat.TimeSeparator)];
   for I := 1 to Length(S) do
   begin
-    if S[I] in DateS then
+    if CharInSet(S[I], DateS) then
       S[I] := DateSeparator{$IFDEF CLR}[1]{$ENDIF}
     else
-    if S[I] in TimeS then
+    if CharInSet(S[I], TimeS) then
       S[I] := TimeSeparator{$IFDEF CLR}[1]{$ENDIF};
   end;
   Result := StrToDateTime(S);

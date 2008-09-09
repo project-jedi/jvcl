@@ -171,7 +171,7 @@ end;
 
 function CExtract(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
 var
-  CAB: PFileInCabinetInfoA;
+  CAB: PFileInCabinetInfo;
   Sender: TJvCABFile;
   CABInfo: TCABInfo;
   Cont: Boolean;
@@ -268,7 +268,7 @@ end;
 procedure TJvCABFile.RefreshFiles;
 begin
   Files.Clear;
-  if SetupIterateCabinetA(PChar(FFileName), 0, CBack, @Self) then
+  if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
       FOnFiles(Self);
 end;
@@ -278,7 +278,7 @@ begin
   if DestPath[Length(DestPath)] <> PathDelim then
     DestPath := DestPath + PathDelim;
   FDestPath := DestPath;
-  Result := SetupIterateCabinetA(PChar(FFileName), 0, CExtract, @Self);
+  Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;
 
 function TJvCABFile.ExtractFile(FileName, DestPath: string): Boolean;
@@ -286,7 +286,7 @@ begin
   if DestPath[Length(DestPath)] <> PathDelim then
     DestPath := DestPath + PathDelim;
   FDestPath := DestPath + FileName;
-  Result := SetupIterateCabinetA(PChar(FFileName), 0, CExtract, @Self);
+  Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;
 
 {$IFDEF UNITVERSIONING}

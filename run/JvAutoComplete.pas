@@ -253,6 +253,10 @@ uses
   {$ENDIF HAS_UNIT_STRUTILS}
   {$IFDEF CLR}
   JvJCLUtils,
+  {$ELSE}
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   {$ENDIF CLR}
   JvConsts;
 
@@ -432,7 +436,7 @@ begin
     else
       SaveText := FFilter + Key;
 
-    if Key in LeadBytes then
+    if CharInSet(Key, LeadBytes) then
     begin
       if PeekMessage(Msg, GetEditHandle, 0, 0, PM_NOREMOVE) and (Msg.Message = WM_CHAR) then
       begin

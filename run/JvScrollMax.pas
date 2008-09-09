@@ -233,13 +233,14 @@ type
     procedure SetParentBackground(Value: Boolean); override;
     {$ENDIF JVCLThemesEnabled}
     procedure Loaded; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function GetChildParent: TComponent; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;  // public in D2009
     procedure ScrollInView(AControl: TControl);
     procedure MouseControls(AControls: array of TControl);
     procedure MouseClasses(AControlClasses: array of TControlClass);

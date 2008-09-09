@@ -83,7 +83,7 @@ implementation
 uses
   Consts,
   SysUtils, TypInfo,
-  JvTypes, JvResources;
+  JvConsts, JvTypes, JvResources;
 
 function TJvInspectorxNodeData.GetAsFloat: Extended;
 begin
@@ -124,7 +124,7 @@ end;
 function TJvInspectorxNodeData.GetAsString: string;
 begin
   CheckReadAccess;
-  if JvxNode.TypeInfo^.Kind in [tkString, tkLString, tkWString] then
+  if JvxNode.TypeInfo^.Kind in tkStrings then
     Result := JvxNode.AsString
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -240,7 +240,7 @@ end;
 procedure TJvInspectorxNodeData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
-  if JvxNode.TypeInfo.Kind in [tkString, tkLString, tkWString] then
+  if JvxNode.TypeInfo.Kind in tkStrings then
     JvxNode.AsString := Value
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);

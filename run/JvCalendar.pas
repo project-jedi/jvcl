@@ -1060,7 +1060,7 @@ end;
 procedure TJvCustomMonthCalendar.ColorChanged;
 begin
   inherited ColorChanged;
-  InvalidateRect(Handle, nil, True);
+  Windows.InvalidateRect(Handle, nil, True);
 end;
 
 procedure TJvCustomMonthCalendar.FontChanged;
@@ -1068,7 +1068,7 @@ begin
   inherited FontChanged;
 //  if HandleAllocated then
 //    Perform(WM_SIZE,0,0);
-  InvalidateRect(Handle, nil, True);
+  Windows.InvalidateRect(Handle, nil, True);
 end;
 
 procedure TJvCustomMonthCalendar.SetMultiSelect(Value: Boolean);

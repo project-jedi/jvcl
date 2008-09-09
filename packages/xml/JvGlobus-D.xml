@@ -32,7 +32,8 @@
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 & JVCL_UseQuickReport"/>
-    <Package Name="vcljpg" Targets="allv6up" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvgCompDescription.pas" Targets="VCL" Formname="" Condition=""/>

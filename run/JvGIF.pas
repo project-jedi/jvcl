@@ -2710,7 +2710,7 @@ begin
         ReadScreenDescriptor(Data);
         ReadGlobalColorMap(Data);
         SeparatorChar := ReadSeparator(Data);
-        while not (SeparatorChar in [CHR_TRAILER, #0]) and not
+        while not CharInSet(SeparatorChar, [CHR_TRAILER, #0]) and not
           (Data.Position >= Data.Size) do
         begin
           Extensions := ReadExtensionBlock(Data, SeparatorChar);
@@ -2734,7 +2734,7 @@ begin
             end
             else
               SeparatorChar := CHR_TRAILER;
-            if not (SeparatorChar in [CHR_EXT_INTRODUCER, CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
+            if not CharInSet(SeparatorChar, [CHR_EXT_INTRODUCER, CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
             begin
               SeparatorChar := #0;
                 {GifError(RsEGIFDecodeError);}
@@ -2763,7 +2763,7 @@ begin
             end;
           end
           else
-          if not (SeparatorChar in [CHR_TRAILER, #0]) then
+          if not CharInSet(SeparatorChar, [CHR_TRAILER, #0]) then
             GifError(SReadError);
         end;
       finally

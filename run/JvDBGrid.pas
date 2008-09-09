@@ -203,7 +203,7 @@ type
     property Items[Index: Integer]: TJvDBGridControl read GetItem write SetItem; default;
   end;
 
-  TCharList = set of Char;
+  TCharList = TCharSet;
 
   TJvGridPaintInfo = record
     MouseInCol: Integer; // the column that the mouse is in
@@ -245,7 +245,7 @@ type
     FOnTitleBtnClick: TTitleClickEvent;
     FOnTitleBtnDblClick: TTitleClickEvent;
     FOnTopLeftChanged: TNotifyEvent;
-    FSelectionAnchor: TBookmarkStr;
+    FSelectionAnchor: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
     FOnDrawColumnTitle: TDrawColumnTitleEvent;
     FWord: string;
     FShowTitleHint: Boolean;
@@ -2304,7 +2304,7 @@ var
   MouseDownEvent: TMouseEvent;
   EnableClick: Boolean;
   CursorPos: TPoint;
-  lLastSelected, lNewSelected: TBookmarkStr;
+  lLastSelected, lNewSelected: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
   lCompare: Integer;
   WasAlwaysShowEditor: Boolean;
 begin
@@ -2683,7 +2683,7 @@ end;
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 begin
   if Assigned(SelectedField) and EditWithBoolBox(SelectedField) and
-    (Char(Msg.CharCode) in [Backspace, #32..#255]) then
+    CharInSet(Char(Msg.CharCode), [Backspace, #32..#255]) then
   begin
     if not DoKeyPress(Msg) then
       case Char(Msg.CharCode) of
@@ -2759,7 +2759,7 @@ begin
     if DataSource.DataSet.CanModify and not (ReadOnly or
       Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly) then
     with Columns[SelectedIndex].Field do
-      if (FieldKind = fkLookup) and (Key in CharList) then
+      if (FieldKind = fkLookup) and CharInSet(Key, CharList) then
       begin
         CharsToFind;
         LookupDataSet.DisableControls;
@@ -2789,10 +2789,10 @@ begin
       if FieldKind = fkData then
       begin
         if DataType = ftFloat then
-          if Key in ['.', ','] then
+          if CharInSet(Key, ['.', ',']) then
             Key := DecimalSeparator{$IFDEF CLR}[1]{$ENDIF};
 
-        if (Key in CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
+        if CharInSet(Key, CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
           FWord := InplaceEditor.EditText;
           deb := InplaceEditor.SelStart + InplaceEditor.SelLength;

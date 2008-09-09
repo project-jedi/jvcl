@@ -171,6 +171,9 @@ implementation
 
 uses
   SysUtils, Forms, StdCtrls,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts;
 
 constructor TJvDBLookupComboEdit.Create(AOwner: TComponent);
@@ -250,7 +253,7 @@ end;
 procedure TJvDBLookupComboEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
+  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
     if BeepOnError then
@@ -264,7 +267,7 @@ begin
 //  Key := #0;
   end
   else
-  if Key in [#8, #9, #24{Ctrl+X}, #32..#255] then
+  if CharInSet(Key, [#8, #9, #24{Ctrl+X}, #32..#255]) then
     if not EditCanModify then
       Key := #0;
 end;

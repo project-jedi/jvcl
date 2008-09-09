@@ -35,7 +35,7 @@ uses
   {$IFDEF COMPILER5}
   JvWin32,
   {$ENDIF COMPILER5}
-  SysUtils, Classes, Forms, Controls, Graphics, Windows;
+  SysUtils, Classes, Forms, Controls, Graphics, Windows, TypInfo;
 
 const
   { JvEditor }
@@ -80,6 +80,9 @@ const
   {$IFDEF DELPHI11}
   SDelphiKey = 'Software\Borland\BDS\5.0';
   {$ENDIF DELPHI11}
+  {$IFDEF DELPHI12}
+  SDelphiKey = 'Software\CodeGear\BDS\6.0';
+  {$ENDIF DELPHI12}
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
@@ -236,6 +239,7 @@ const
 const
   KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];
   MouseShiftStates = [ssLeft, ssRight, ssMiddle, ssDouble];
+  tkStrings: set of TTypeKind = [tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString];
 
 {$IFDEF UNITVERSIONING}
 const

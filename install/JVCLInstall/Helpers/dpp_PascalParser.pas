@@ -129,7 +129,7 @@ begin
   PText := Pointer(FText);
   P := PText + FIndex - 1;
  // go to next token and skip white chars
-  while P[0] in WhiteChars do
+  while (P[0] >= #1) and (P[0] <= #32) {in WhiteChars} do
   begin
     if P[0] = #10 then
       Inc(FLineNum);
@@ -230,7 +230,8 @@ begin
   begin
     // comment "// ..." -> find comment end
     Inc(P, 2);
-    while not (P[0] in [#0, #10, #13]) do
+    while not ({$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+               (AnsiChar(P[0]) in [#0, #10, #13])) do
       Inc(P);
     Result.Kind := tkComment;
     if P[0] <> #0 then
@@ -241,15 +242,18 @@ begin
       Inc(IndexAdd); {do not parse the #10 again}
     end;
   end
-  else if P[0] in IdentFirstChars then
+  else if {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+          (AnsiChar(P[0]) in IdentFirstChars) then
   begin
     // identifier
     Inc(P);
-    while P[0] in IdentChars do
+    while {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+          (AnsiChar(P[0]) in IdentChars) do
       Inc(P);
     Result.Kind := tkIdent;
   end
-  else if P[0] in NumberChars then
+  else if {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+          (AnsiChar(P[0]) in NumberChars) then
   begin
     // number
     Inc(P);
@@ -289,39 +293,46 @@ begin
     else
       Result.ExKind := tekInt;
   end
-  else if (P[0] = '$') and (P[1] in HexNumberChars) then
+  else if (P[0] = '$') and
+          ({$IFDEF UNICODE}(P[1] < #256) and {$ENDIF} (AnsiChar(P[1]) in HexNumberChars)) then
   begin
     // hex number
     Inc(P, 2);
-    while P[0] in HexNumberChars do
+    while {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+          (AnsiChar(P[0]) in HexNumberChars) do
       Inc(P);
     Result.Kind := tkNumber;
     Result.ExKind := tekHex;
   end
-  else if (P[0] = '#') and ((P[1] = '$') or (P[1] in NumberChars)) then
+  else if (P[0] = '#') and
+          ((P[1] = '$') or ({$IFDEF UNICODE}(P[1] < #256) and {$ENDIF} (AnsiChar(P[1]) in NumberChars))) then
   begin
     // char
     Inc(P, 2);
     if P[-1] = '$' then
     begin
-      while P[0] in HexNumberChars do
+      while {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+            (AnsiChar(P[0]) in HexNumberChars) do
         Inc(P);
     end
     else
     begin
-      while P[0] in NumberChars do
+      while {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+            (AnsiChar(P[0]) in NumberChars) do
         Inc(P);
     end;
     Result.Kind := tkString;
   end
-  else if P[0] in OneSymbolChars then
+  else if {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+          (AnsiChar(P[0]) in OneSymbolChars) then
   begin
     Inc(P);
     Result.Kind := tkSymbol;
   end
   else
   begin
-    while P[0] in SymbolChars do
+    while {$IFDEF UNICODE}(P[0] < #256) and {$ENDIF}
+          (AnsiChar(P[0]) in SymbolChars) do
       Inc(P);
     Result.Kind := tkSymbol;
   end;

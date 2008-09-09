@@ -2,7 +2,9 @@ unit VFW;
 
 interface
 
+{$IFNDEF VER200}
 {$UNDEF UNICODE}
+{$ENDIF !VER200}
 
 (****************************************************************************
  *
@@ -2462,8 +2464,13 @@ const
     WM_CAP_SET_CALLBACK_STATUSW     = WM_CAP_UNICODE_START + 3;
     WM_CAP_SET_CALLBACK_ERRORA      = WM_CAP_START + 2;
     WM_CAP_SET_CALLBACK_STATUSA     = WM_CAP_START + 3;
+    {$IFDEF UNICODE}
+    WM_CAP_SET_CALLBACK_ERROR       = WM_CAP_SET_CALLBACK_ERRORW;
+    WM_CAP_SET_CALLBACK_STATUS      = WM_CAP_SET_CALLBACK_STATUSW;
+    {$ELSE}
     WM_CAP_SET_CALLBACK_ERROR       = WM_CAP_SET_CALLBACK_ERRORA;
     WM_CAP_SET_CALLBACK_STATUS      = WM_CAP_SET_CALLBACK_STATUSA;
+    {$ENDIF UNICODE}
 
     WM_CAP_SET_CALLBACK_YIELD       = WM_CAP_START + 4;
     WM_CAP_SET_CALLBACK_FRAME       = WM_CAP_START + 5;
@@ -2479,8 +2486,13 @@ const
     WM_CAP_DRIVER_GET_VERSIONA      = WM_CAP_START + 13;
     WM_CAP_DRIVER_GET_NAMEW         = WM_CAP_UNICODE_START + 12;
     WM_CAP_DRIVER_GET_VERSIONW      = WM_CAP_UNICODE_START + 13;
+    {$IFDEF UNICODE}
+    WM_CAP_DRIVER_GET_NAME          = WM_CAP_DRIVER_GET_NAMEW;
+    WM_CAP_DRIVER_GET_VERSION       = WM_CAP_DRIVER_GET_VERSIONW;
+    {$ELSE}
     WM_CAP_DRIVER_GET_NAME          = WM_CAP_DRIVER_GET_NAMEA;
     WM_CAP_DRIVER_GET_VERSION       = WM_CAP_DRIVER_GET_VERSIONA;
+    {$ENDIF UNICODE}
 
     WM_CAP_DRIVER_GET_CAPS          = WM_CAP_START + 14;
 
@@ -2492,10 +2504,17 @@ const
     WM_CAP_FILE_GET_CAPTURE_FILEW   = WM_CAP_UNICODE_START + 21;
     WM_CAP_FILE_SAVEASW             = WM_CAP_UNICODE_START + 23;
     WM_CAP_FILE_SAVEDIBW            = WM_CAP_UNICODE_START + 25;
+    {$IFDEF UNICODE}
+    WM_CAP_FILE_SET_CAPTURE_FILE    = WM_CAP_FILE_SET_CAPTURE_FILEW;
+    WM_CAP_FILE_GET_CAPTURE_FILE    = WM_CAP_FILE_GET_CAPTURE_FILEW;
+    WM_CAP_FILE_SAVEAS              = WM_CAP_FILE_SAVEASW;
+    WM_CAP_FILE_SAVEDIB             = WM_CAP_FILE_SAVEDIBW;
+    {$ELSE}
     WM_CAP_FILE_SET_CAPTURE_FILE    = WM_CAP_FILE_SET_CAPTURE_FILEA;
     WM_CAP_FILE_GET_CAPTURE_FILE    = WM_CAP_FILE_GET_CAPTURE_FILEA;
     WM_CAP_FILE_SAVEAS              = WM_CAP_FILE_SAVEASA;
     WM_CAP_FILE_SAVEDIB             = WM_CAP_FILE_SAVEDIBA;
+    {$ENDIF UNICODE}
 
     // out of order to save on ifdefs
 
@@ -2533,8 +2552,13 @@ const
     WM_CAP_GET_MCI_DEVICEA          = WM_CAP_START + 67;
     WM_CAP_SET_MCI_DEVICEW          = WM_CAP_UNICODE_START + 66;
     WM_CAP_GET_MCI_DEVICEW          = WM_CAP_UNICODE_START + 67;
+    {$IFDEF UNICODE}
+    WM_CAP_SET_MCI_DEVICE           = WM_CAP_SET_MCI_DEVICEW;
+    WM_CAP_GET_MCI_DEVICE           = WM_CAP_GET_MCI_DEVICEW;
+    {$ELSE}
     WM_CAP_SET_MCI_DEVICE           = WM_CAP_SET_MCI_DEVICEA;
     WM_CAP_GET_MCI_DEVICE           = WM_CAP_GET_MCI_DEVICEA;
+    {$ENDIF UNICODE}
 
     WM_CAP_STOP                     = WM_CAP_START + 68;
     WM_CAP_ABORT                    = WM_CAP_START + 69;
@@ -2547,8 +2571,13 @@ const
     WM_CAP_PAL_SAVEA                = WM_CAP_START + 81;
     WM_CAP_PAL_OPENW                = WM_CAP_UNICODE_START + 80;
     WM_CAP_PAL_SAVEW                = WM_CAP_UNICODE_START + 81;
+    {$IFDEF UNICODE}
+    WM_CAP_PAL_OPEN                 = WM_CAP_PAL_OPENW;
+    WM_CAP_PAL_SAVE                 = WM_CAP_PAL_SAVEW;
+    {$ELSE}
     WM_CAP_PAL_OPEN                 = WM_CAP_PAL_OPENA;
     WM_CAP_PAL_SAVE                 = WM_CAP_PAL_SAVEA;
+    {$ENDIF UNICODE}
 
     WM_CAP_PAL_PASTE                = WM_CAP_START + 82;
     WM_CAP_PAL_AUTOCREATE           = WM_CAP_START + 83;
@@ -2573,8 +2602,13 @@ type
     TCAPSTATUSCALLBACKA             = function(hWnd: HWND; nID: int; lpsz: LPCSTR): DWORD; stdcall;
     TCAPERRORCALLBACKA              = function(hWnd: HWND; nID: int; lpsz: LPCSTR): DWORD; stdcall;
 
+    {$IFDEF UNICODE}
+    TCAPSTATUSCALLBACK              = TCAPSTATUSCALLBACKW;
+    TCAPERRORCALLBACK               = TCAPERRORCALLBACKW;
+    {$ELSE}
     TCAPSTATUSCALLBACK              = TCAPSTATUSCALLBACKA;
     TCAPERRORCALLBACK               = TCAPERRORCALLBACKA;
+    {$ENDIF UNICODE}
 
     TCAPVIDEOCALLBACK               = function(hWnd: HWND; lpVHdr: PVIDEOHDR): DWORD; stdcall;
     TCAPWAVECALLBACK                = function(hWnd: HWND; lpWHdr: PWAVEHDR): DWORD; stdcall;
@@ -2700,16 +2734,16 @@ function    capGetUserData(hwnd: HWND): DWORD;
 
 function    capDriverConnect(hwnd: HWND; i: INT): BOOL;
 function    capDriverDisconnect(hwnd: HWND): BOOL;
-function    capDriverGetName(hwnd: HWND; szName: LPSTR; wSize: WORD): BOOL;
-function    capDriverGetVersion(hwnd: HWND; szVer: LPSTR; wSize: WORD): BOOL;
+function    capDriverGetName(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
+function    capDriverGetVersion(hwnd: HWND; szVer: LPTSTR; wSize: WORD): BOOL;
 function    capDriverGetCaps(hwnd: HWND; s: PCAPDRIVERCAPS; wSize: WORD): BOOL;
 
-function    capFileSetCaptureFile(hwnd: HWND; szName: LPCSTR): BOOL;
-function    capFileGetCaptureFile(hwnd: HWND; szName: LPSTR; wSize: WORD): BOOL;
+function    capFileSetCaptureFile(hwnd: HWND; szName: LPCTSTR): BOOL;
+function    capFileGetCaptureFile(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 function    capFileAlloc(hwnd: HWND; dwSize: DWORD): BOOL;
-function    capFileSaveAs(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capFileSaveAs(hwnd: HWND; szName: LPCTSTR): BOOL;
 function    capFileSetInfoChunk(hwnd: HWND; lpInfoChunk: PCAPINFOCHUNK): BOOL;
-function    capFileSaveDIB(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capFileSaveDIB(hwnd: HWND; szName: LPCTSTR): BOOL;
 
 function    capEditCopy(hwnd: HWND): BOOL;
 
@@ -2748,11 +2782,11 @@ function    capCaptureSingleFrame(hwnd: HWND): BOOL;
 function    capCaptureGetSetup(hwnd: HWND; s: PCAPTUREPARMS; wSize: WORD): BOOL;
 function    capCaptureSetSetup(hwnd: HWND; s: PCAPTUREPARMS; wSize: WORD): BOOL;
 
-function    capSetMCIDeviceName(hwnd: HWND; szName: LPCSTR): BOOL;
-function    capGetMCIDeviceName(hwnd: HWND; szName: LPSTR; wSize: WORD): BOOL;
+function    capSetMCIDeviceName(hwnd: HWND; szName: LPCTSTR): BOOL;
+function    capGetMCIDeviceName(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 
-function    capPaletteOpen(hwnd: HWND; szName: LPCSTR): BOOL;
-function    capPaletteSave(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capPaletteOpen(hwnd: HWND; szName: LPCTSTR): BOOL;
+function    capPaletteSave(hwnd: HWND; szName: LPCTSTR): BOOL;
 function    capPalettePaste(hwnd: HWND): BOOL;
 function    capPaletteAuto(hwnd: HWND; iFrames, iColors: INT): BOOL;
 function    capPaletteManual(hwnd: HWND; fGrab: BOOL; iColors: INT): BOOL;
@@ -2794,21 +2828,21 @@ function    capGetDriverDescriptionW(
     ): BOOL; stdcall;
 
 function    capCreateCaptureWindow(
-    lpszWindowName      : LPCSTR;
+    lpszWindowName      : LPCTSTR;
     dwStyle             : DWORD;
     x, y                : int;
     nWidth, nHeight     : int;
     hwndParent          : HWND;
     nID                 : int
-    ): HWND; stdcall; // capCreateCaptureWindowA
+    ): HWND; stdcall; // capCreateCaptureWindowA or capCreateCaptureWindowW if UNICODE is defined 
 
 function    capGetDriverDescription(
     wDriverIndex        : UINT;
-    lpszName            : LPSTR;
+    lpszName            : LPTSTR;
     cbName              : int;
-    lpszVer             : LPSTR;
+    lpszVer             : LPTSTR;
     cbVer               : int
-    ): BOOL; stdcall; // capGetDriverDescriptionA
+    ): BOOL; stdcall; // capGetDriverDescriptionA ir capGetDriverDescriptionW if UNICODE is defined
 
 {-- New information chunk IDs ------------------------------------------------}
 
@@ -3893,12 +3927,12 @@ begin
     Result  := AVICapSM(hwnd, WM_CAP_DRIVER_DISCONNECT, 0, 0) <> 0;
 end;
 
-function    capDriverGetName(hwnd: HWND; szName: LPSTR; wSize: WORD): BOOL;
+function    capDriverGetName(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_DRIVER_GET_NAME, wSize, LPARAM(szName)) <> 0;
 end;
 
-function    capDriverGetVersion(hwnd: HWND; szVer: LPSTR; wSize: WORD): BOOL;
+function    capDriverGetVersion(hwnd: HWND; szVer: LPTSTR; wSize: WORD): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_DRIVER_GET_VERSION, wSize, LPARAM(szVer)) <> 0;
 end;
@@ -3908,12 +3942,12 @@ begin
     Result  := AVICapSM(hwnd, WM_CAP_DRIVER_GET_CAPS, wSize, LPARAM(s)) <> 0;
 end;
 
-function    capFileSetCaptureFile(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capFileSetCaptureFile(hwnd: HWND; szName: LPCTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_SET_CAPTURE_FILE, 0, LPARAM(szName)) <> 0;
 end;
 
-function    capFileGetCaptureFile(hwnd: HWND; szName: LPSTR; wSize: WORD): BOOL;
+function    capFileGetCaptureFile(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_GET_CAPTURE_FILE, wSize, LPARAM(szName)) <> 0;
 end;
@@ -3923,7 +3957,7 @@ begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_ALLOCATE, 0, dwSize) <> 0;
 end;
 
-function    capFileSaveAs(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capFileSaveAs(hwnd: HWND; szName: LPCTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_SAVEAS, 0, LPARAM(szName)) <> 0;
 end;
@@ -3933,7 +3967,7 @@ begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_SET_INFOCHUNK, 0, LPARAM(lpInfoChunk)) <> 0;
 end;
 
-function    capFileSaveDIB(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capFileSaveDIB(hwnd: HWND; szName: LPCTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_SAVEDIB, 0, LPARAM(szName)) <> 0;
 end;
@@ -4078,22 +4112,22 @@ begin
     Result  := AVICapSM(hwnd, WM_CAP_SET_SEQUENCE_SETUP, wSize, LPARAM(s)) <> 0;
 end;
 
-function    capSetMCIDeviceName(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capSetMCIDeviceName(hwnd: HWND; szName: LPCTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_SET_MCI_DEVICE, 0, LPARAM(szName)) <> 0;
 end;
 
-function    capGetMCIDeviceName(hwnd: HWND; szName: LPSTR; wSize: WORD): BOOL;
+function    capGetMCIDeviceName(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_GET_MCI_DEVICE, wSize, LPARAM(szName)) <> 0;
 end;
 
-function    capPaletteOpen(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capPaletteOpen(hwnd: HWND; szName: LPCTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_PAL_OPEN, 0, LPARAM(szName)) <> 0;
 end;
 
-function    capPaletteSave(hwnd: HWND; szName: LPCSTR): BOOL;
+function    capPaletteSave(hwnd: HWND; szName: LPCTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_PAL_SAVE, 0, LPARAM(szName)) <> 0;
 end;
@@ -4632,21 +4666,21 @@ function    capGetDriverDescriptionW(
     ): BOOL; stdcall; external AVICAPDLL;
 
 function    capCreateCaptureWindow(
-    lpszWindowName      : LPCSTR;
+    lpszWindowName      : LPCTSTR;
     dwStyle             : DWORD;
     x, y                : int;
     nWidth, nHeight     : int;
     hwndParent          : HWND;
     nID                 : int
-    ): HWND; stdcall; external AVICAPDLL name 'capCreateCaptureWindowA';
+    ): HWND; stdcall; external AVICAPDLL name {$IFDEF UNICODE}'capCreateCaptureWindowW'{$ELSE}'capCreateCaptureWindowA'{$ENDIF UNICODE};
 
 function    capGetDriverDescription(
     wDriverIndex        : UINT;
-    lpszName            : LPSTR;
+    lpszName            : LPTSTR;
     cbName              : int;
-    lpszVer             : LPSTR;
+    lpszVer             : LPTSTR;
     cbVer               : int
-    ): BOOL; stdcall; external AVICAPDLL name 'capGetDriverDescriptionA';
+    ): BOOL; stdcall; external AVICAPDLL name {$IFDEF UNICODE}'capGetDriverDescriptionW'{$ELSE}'capGetDriverDescriptionA'{$ENDIF UNICODE};
 
 {== FilePreview dialog =======================================================}
 

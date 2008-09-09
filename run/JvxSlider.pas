@@ -982,7 +982,7 @@ end;
 procedure TJvCustomSlider.InvalidateThumb;
 begin
   if HandleAllocated then
-    InvalidateRect(Handle, @FThumbRect, not (csOpaque in ControlStyle));
+    Windows.InvalidateRect(Handle, @FThumbRect, not (csOpaque in ControlStyle));
 end;
 
 procedure TJvCustomSlider.SetThumbOffset(Value: Integer);

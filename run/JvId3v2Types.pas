@@ -236,22 +236,22 @@ type
   TJvID3FrameIDs = set of TJvID3FrameID;
 
 { Frame ID procedures }
-function ID3_StringToFrameID(const S: string): TJvID3FrameID;
+function ID3_StringToFrameID(const S: AnsiString): TJvID3FrameID;
 function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer = 4): AnsiString;
 
 { Genre procedures }
-function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean = True): Integer;
+function ID3_GenreToID(const AGenre: AnsiString; const InclWinampGenres: Boolean = True): Integer;
 { searches for a genre that is a prefix for AGenreLong }
-function ID3_LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean = True): Integer;
-function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean = True): string;
+function ID3_LongGenreToID(const ALongGenre: AnsiString; const InclWinampGenres: Boolean = True): Integer;
+function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean = True): AnsiString;
 procedure ID3_Genres(Strings: TStrings; const InclWinampGenres: Boolean = True);
 
 { Language ISO 639-2 procedures }
-function ISO_639_2IsCode(const Code: string): Boolean;
-function ISO_639_2CodeToName(const Code: string): string;
+function ISO_639_2IsCode(const Code: AnsiString): Boolean;
+function ISO_639_2CodeToName(const Code: AnsiString): AnsiString;
 { Known problem: some codes such as 'dut' and 'nld', have the same name value,
   thus ISO_639_2NameToCode('Dutch') = 'dut' not 'nld' }
-function ISO_639_2NameToCode(const Name: string): string;
+function ISO_639_2NameToCode(const Name: AnsiString): AnsiString;
 procedure ISO_639_2Names(Strings: TStrings);
 
 {$IFDEF UNITVERSIONING}
@@ -268,6 +268,13 @@ implementation
 
 uses
   Math, SysUtils,
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  JvJCLUtils,
   JvConsts, JvResources, JvTypes;
 
 type
@@ -296,21 +303,21 @@ type
     procedure BuildList_ID3LongText;
     procedure BuildList_ID3ShortText;
     procedure BuildList_ID3Genres;
-    function IsFrameOk(const S: string): Boolean;
+    function IsFrameOk(const S: AnsiString): Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
     class function Instance: TJvID3TermFinder;
 
-    function ID3LongTextToFrameID(const S: string): TJvID3FrameID;
-    function ID3ShortTextToFrameID(const S: string): TJvID3FrameID;
+    function ID3LongTextToFrameID(const S: AnsiString): TJvID3FrameID;
+    function ID3ShortTextToFrameID(const S: AnsiString): TJvID3FrameID;
 
-    function ID3GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
+    function ID3GenreToID(const AGenre: AnsiString; const InclWinampGenres: Boolean): Integer;
     procedure ID3Genres(AStrings: TStrings; const InclWinampGenres: Boolean);
-    function ID3LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean): Integer;
+    function ID3LongGenreToID(const ALongGenre: AnsiString; const InclWinampGenres: Boolean): Integer;
 
-    function ISO_639_2CodeToIndex(const ACode: string): Integer;
-    function ISO_639_2NameToIndex(const AName: string): Integer;
+    function ISO_639_2CodeToIndex(const ACode: AnsiString): Integer;
+    function ISO_639_2NameToIndex(const AName: AnsiString): Integer;
     procedure ISO_639_2Names(AStrings: TStrings);
   end;
 
@@ -896,7 +903,7 @@ const
     (S: 'zun'; L: 'Zuni')
     );
 
-  CID3Genres: array[0..147] of PChar = (
+  CID3Genres: array[0..147] of PAnsiChar = (
 
     { The following genres are defined in ID3v1 }
 
@@ -1224,12 +1231,12 @@ begin
   TJvID3TermFinder.Instance.ID3Genres(Strings, InclWinampGenres);
 end;
 
-function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
+function ID3_GenreToID(const AGenre: AnsiString; const InclWinampGenres: Boolean): Integer;
 begin
   Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, True);
 end;
 
-function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean): string;
+function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean): AnsiString;
 const
   HighValue: array [Boolean] of Byte = (CGenre_HighV1, High(CID3Genres));
 begin
@@ -1240,12 +1247,12 @@ begin
     Result := '';
 end;
 
-function ID3_LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean = True): Integer;
+function ID3_LongGenreToID(const ALongGenre: AnsiString; const InclWinampGenres: Boolean = True): Integer;
 begin
   Result := TJvID3TermFinder.Instance.ID3LongGenreToID(ALongGenre, InclWinampGenres);
 end;
 
-function ID3_StringToFrameID(const S: string): TJvID3FrameID;
+function ID3_StringToFrameID(const S: AnsiString): TJvID3FrameID;
 var
   L: Integer;
 begin
@@ -1269,7 +1276,7 @@ begin
     end;
 end;
 
-function ISO_639_2CodeToName(const Code: string): string;
+function ISO_639_2CodeToName(const Code: AnsiString): AnsiString;
 var
   Index: Integer;
 begin
@@ -1286,7 +1293,7 @@ begin
     Result := '';
 end;
 
-function ISO_639_2IsCode(const Code: string): Boolean;
+function ISO_639_2IsCode(const Code: AnsiString): Boolean;
 begin
   Result := (Length(Code) = 3) and
     (TJvID3TermFinder.Instance.ISO_639_2CodeToIndex(Code) >= Low(CISO_639_2Data));
@@ -1297,7 +1304,7 @@ begin
   TJvID3TermFinder.Instance.ISO_639_2Names(Strings);
 end;
 
-function ISO_639_2NameToCode(const Name: string): string;
+function ISO_639_2NameToCode(const Name: AnsiString): AnsiString;
 var
   Index: Integer;
 begin
@@ -1343,7 +1350,7 @@ begin
     Sorted := True;
 
     for I := Low(CID3Genres) to High(CID3Genres) do
-      AddObject(CID3Genres[I], TObject(I));
+      AddObject(string(CID3Genres[I]), TObject(I));
   end;
 end;
 
@@ -1363,7 +1370,7 @@ begin
     for FrameID := Low(TJvID3FrameID) to High(TJvID3FrameID) do
       with CID3FrameDefs[FrameID] do
         if LongTextID[0] <> #0 then
-          AddObject(LongTextID, TObject(FrameID));
+          AddObject(string(LongTextID), TObject(FrameID));
   end;
 end;
 
@@ -1383,7 +1390,7 @@ begin
     for FrameID := Low(TJvID3FrameID) to High(TJvID3FrameID) do
       with CID3FrameDefs[FrameID] do
         if ShortTextID[0] <> #0 then
-          AddObject(ShortTextID, TObject(FrameID));
+          AddObject(string(ShortTextID), TObject(FrameID));
   end;
 end;
 
@@ -1402,7 +1409,7 @@ begin
     Sorted := True;
 
     for I := Low(CISO_639_2Data) to High(CISO_639_2Data) do
-      AddObject(CISO_639_2Data[I].S, TObject(I));
+      AddObject(string(CISO_639_2Data[I].S), TObject(I));
   end;
 end;
 
@@ -1421,7 +1428,7 @@ begin
     Sorted := True;
 
     for I := Low(CISO_639_2Data) to High(CISO_639_2Data) do
-      AddObject(CISO_639_2Data[I].L, TObject(I));
+      AddObject(string(CISO_639_2Data[I].L), TObject(I));
   end;
 end;
 
@@ -1451,7 +1458,7 @@ begin
   end;
 end;
 
-function TJvID3TermFinder.ID3GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
+function TJvID3TermFinder.ID3GenreToID(const AGenre: AnsiString; const InclWinampGenres: Boolean): Integer;
 const
   { In Winamp, ID = 255 then Genre = '' }
   CDefaultGenre: array [Boolean] of Byte = (CGenre_DefaultID, 255);
@@ -1462,10 +1469,10 @@ begin
     Result := CDefaultGenre[InclWinampGenres]
   else
   begin
-    Result := FLists[ltID3Genres].IndexOf(AGenre);
+    Result := FLists[ltID3Genres].IndexOf(string(AGenre));
 
     { Special case: 'Psychadelic' }
-    if (Result < 0) and (AnsiCompareText(AGenre, 'psychadelic') = 0) then
+    if (Result < 0) and ({$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}AnsiCompareText(AGenre, 'psychadelic') = 0) then
       Result := FLists[ltID3Genres].IndexOf('Psychedelic');
 
     if not InclWinampGenres and (Result > CGenre_HighV1) then
@@ -1478,7 +1485,7 @@ begin
   end;
 end;
 
-function TJvID3TermFinder.ID3LongGenreToID(const ALongGenre: string;
+function TJvID3TermFinder.ID3LongGenreToID(const ALongGenre: AnsiString;
   const InclWinampGenres: Boolean): Integer;
 const
   { In Winamp, ID = 255 then Genre = '' }
@@ -1492,10 +1499,10 @@ begin
     Exit;
   end;
 
-  Result := IndexOfLongString(FLists[ltID3Genres], ALongGenre);
+  Result := IndexOfLongString(FLists[ltID3Genres], string(ALongGenre));
 
   { Special case: 'Psychadelic' }
-  if (Result < 0) and (AnsiStrLIComp(PChar(ALongGenre), 'psychadelic', Length(ALongGenre)) = 0) then
+  if (Result < 0) and (AnsiStrLIComp(PChar(string(ALongGenre)), 'psychadelic', Length(ALongGenre)) = 0) then
     Result := FLists[ltID3Genres].IndexOf('Psychedelic');
 
   if not InclWinampGenres and (Result > CGenre_HighV1) then
@@ -1508,7 +1515,7 @@ begin
 end;
 
 function TJvID3TermFinder.ID3LongTextToFrameID(
-  const S: string): TJvID3FrameID;
+  const S: AnsiString): TJvID3FrameID;
 var
   I: Integer;
 begin
@@ -1520,7 +1527,7 @@ begin
 
   BuildList_ID3LongText;
 
-  I := FLists[ltID3LongText].IndexOf(S);
+  I := FLists[ltID3LongText].IndexOf(string(S));
   if I < 0 then
     Result := fiUnknownFrame
   else
@@ -1528,7 +1535,7 @@ begin
 end;
 
 function TJvID3TermFinder.ID3ShortTextToFrameID(
-  const S: string): TJvID3FrameID;
+  const S: AnsiString): TJvID3FrameID;
 var
   I: Integer;
 begin
@@ -1540,7 +1547,7 @@ begin
 
   BuildList_ID3ShortText;
 
-  I := FLists[ltID3ShortText].IndexOf(S);
+  I := FLists[ltID3ShortText].IndexOf(string(S));
   if I < 0 then
     Result := fiUnknownFrame
   else
@@ -1554,7 +1561,7 @@ begin
   Result := GInstance;
 end;
 
-function TJvID3TermFinder.IsFrameOk(const S: string): Boolean;
+function TJvID3TermFinder.IsFrameOk(const S: AnsiString): Boolean;
 var
   I: Integer;
 begin
@@ -1562,18 +1569,18 @@ begin
   Result := False;
 
   for I := 1 to Length(S) do
-    if not (S[I] in (['A'..'Z'] + DigitChars)) then
+    if not CharInSet(S[I], (['A'..'Z'] + DigitChars)) then
       Exit;
 
   Result := True;
 end;
 
 function TJvID3TermFinder.ISO_639_2CodeToIndex(
-  const ACode: string): Integer;
+  const ACode: AnsiString): Integer;
 begin
   BuildList_ISO_639_2Code;
 
-  Result := FLists[ltISO_639_2Code].IndexOf(AnsiLowerCase(ACode));
+  Result := FLists[ltISO_639_2Code].IndexOf(AnsiLowerCase(string(ACode)));
   if Result >= 0 then
     Result := Integer(FLists[ltISO_639_2Code].Objects[Result]);
 end;
@@ -1586,11 +1593,11 @@ begin
 end;
 
 function TJvID3TermFinder.ISO_639_2NameToIndex(
-  const AName: string): Integer;
+  const AName: AnsiString): Integer;
 begin
   BuildList_ISO_639_2Name;
 
-  Result := FLists[ltISO_639_2Name].IndexOf(AName);
+  Result := FLists[ltISO_639_2Name].IndexOf(string(AName));
   if Result >= 0 then
     Result := Integer(FLists[ltISO_639_2Name].Objects[Result]);
 end;

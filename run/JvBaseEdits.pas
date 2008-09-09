@@ -354,7 +354,7 @@ var
 begin
   Result := False;
   for I := 1 to Length(Value) do
-    if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
+    if not CharInSet(Value[I], [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
   {$IFDEF CLR}
   Result := TryStrToFloat(Value, d);
@@ -371,7 +371,7 @@ var
 begin
   Result := '';
   MaxSym := Length(S);
-  IsSign := (MaxSym > 0) and (S[1] in SignSymbols);
+  IsSign := (MaxSym > 0) and CharInSet(S[1], SignSymbols);
   if IsSign then
     MinSym := 2
   else
@@ -471,7 +471,7 @@ end;
 function xTextToValText(const AValue: string): string;
 begin
   Result := DelRSpace(AValue);
-  if DecimalSeparator <> AnsiChar(ThousandSeparator) then
+  if AnsiChar(DecimalSeparator) <> AnsiChar(ThousandSeparator) then
     Result := DelChars(Result, ThousandSeparator);
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
     Result := ReplaceStr(Result, '.', DecimalSeparator);
@@ -514,18 +514,18 @@ end;
 
 procedure TJvCustomNumEdit.KeyPress(var Key: Char);
 begin
-  if PopupVisible and (UpCase(Key) in
+  if PopupVisible and CharInSet(UpCase(Key),
     DigitSymbols +
     [DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
-    [AnsiChar(ThousandSeparator)]) then
+    [ThousandSeparator]) then
   begin
     TJvPopupWindowAccessProtected(FPopup).KeyPress(Key);
     Key := #0;
   end;
-  if Key in ['.', ','] - [AnsiChar(ThousandSeparator)] then
-    Key := Char(DecimalSeparator);
+  if CharInSet(Key, ['.', ','] - [ThousandSeparator]) then
+    Key := DecimalSeparator;
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and not IsValidChar(Key) then
+  if CharInSet(Key, [#32..#255]) and not IsValidChar(Key) then
   begin
     DoBeepOnError;
     Key := #0;
@@ -1007,7 +1007,7 @@ begin
   for I := 1 to Length(CurrencyString) do
   begin
     C := CurrencyString[I];
-    if C in [',', '.'] then
+    if CharInSet(C, [',', '.']) then
       CurrStr := CurrStr + '''' + C + ''''
     else
       CurrStr := CurrStr + C;

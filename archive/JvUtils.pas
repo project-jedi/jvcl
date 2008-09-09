@@ -3000,7 +3000,7 @@ begin
   if PropInf = nil then
     raise Exception.CreateFmt(SPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
-    [tkString, tkLString {$IFDEF COMPILER3_UP}, tkWString {$ENDIF COMPILER3_UP}]) then
+    [tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString]) then
     raise Exception.CreateFmt(SInvalidPropertyType, [PropName]);
   Result := GetStrProp(Obj, PropInf);
 end;

@@ -118,7 +118,7 @@ implementation
 
 uses
   Consts,
-  JvResources;
+  JvConsts, JvResources;
 
 var
   GlobalDBReg: TJvInspectorRegister = nil;
@@ -234,7 +234,7 @@ end;
 function TJvInspectorDBData.GetAsString: string;
 begin
   CheckReadAccess;
-  if TypeInfo.Kind in [tkString, tkLString, tkWString] then
+  if TypeInfo.Kind in tkStrings then
     Result := Field.AsString
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -412,7 +412,7 @@ end;
 procedure TJvInspectorDBData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
-  if TypeInfo.Kind in [tkString, tkLString, tkWString] then
+  if TypeInfo.Kind in tkStrings then
   begin
     DataLink.Edit;
     Field.AsString := Value;

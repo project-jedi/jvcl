@@ -44,11 +44,11 @@ implementation
 
 uses
   Windows, SysUtils, ShellApi, Contnrs, FileUtils,
-  {$IFDEF NO_JCL}
-  UtilsJcl,
-  {$ELSE}
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
+  JclBase,
   JclDateTime, JclStrings, JclFileUtils, JclSysUtils, JclLogic,
-  {$ENDIF NO_JCL}
   JvSimpleXml, PackageInformation, ConditionParser;
 
 
@@ -274,7 +274,7 @@ begin
   end;
 end;
 
-procedure StrReplaceLines(Lines: TStrings; const Search, Replace: AnsiString);
+procedure StrReplaceLines(Lines: TStrings; const Search, Replace: string);
 var
   i: Integer;
   S: string;
@@ -324,7 +324,7 @@ begin
     begin
       if SLen + Count > Length(S) then
         SetLength(S, SLen + Count + Delta);
-      Move(Text[i - Count], S[SLen + 1], Count);
+      Move(Text[i - Count], S[SLen + 1], Count * SizeOf(Char));
       Inc(SLen, Count);
     end;
 
@@ -343,7 +343,7 @@ begin
           begin
             if SLen + Count > Length(S) then
               SetLength(S, SLen + Count + Delta);
-            Move(Macros[Index * 2 + 1][1], S[SLen + 1], Count);
+            Move(Macros[Index * 2 + 1][1], S[SLen + 1], Count * SizeOf(Char));
             Inc(SLen, Count);
           end;
           Result := True;
@@ -362,7 +362,7 @@ begin
           Inc(Count);
           if SLen + Count > Length(S) then
             SetLength(S, SLen + Count + Delta);
-          Move(Text[i], S[SLen + 1], Count);
+          Move(Text[i], S[SLen + 1], Count * SizeOf(Char));
           Inc(SLen, Count);
           Inc(i, Count - 1);
         end;
@@ -863,15 +863,21 @@ begin
 end;
 
 procedure EnsureProperSeparator(var Name : string; const target : string);
+var
+  TmpName: string;
 begin
   // ensure that the path separator stored in the xml file is
   // replaced by the one for the system we are targeting
 
+  TmpName := Name;
+  
   // first ensure we only have backslashes
-  StrReplace(Name, '/', '\', [rfReplaceAll]);
+  StrReplace(TmpName, '/', '\', [rfReplaceAll]);
 
   // and replace all them by the path separator for the target
-  StrReplace(Name, '\', TargetList[GetNonPersoTarget(target)].PathSep, [rfReplaceAll]);
+  StrReplace(TmpName, '\', TargetList[GetNonPersoTarget(target)].PathSep, [rfReplaceAll]);
+
+  Name := TmpName;
 end;
 
 procedure ApplyFormName(ContainedFile: TContainedFile; Lines : TStrings;
@@ -1611,7 +1617,7 @@ const
   BinaryPercent = 10;
 var
   F : TFileStream;
-  Buffer : array[0..BufferSize] of Char;
+  Buffer : array[0..BufferSize] of AnsiChar;
   I, Index : Integer;
   BinaryCount : Integer;
 begin
@@ -1630,7 +1636,7 @@ begin
   begin
     F := TFileStream.Create(FileName, fmOpenRead);
     try
-      F.Read(Buffer, BufferSize+1);
+      F.Read(Buffer, (BufferSize+1) * SizeOf(AnsiChar));
       BinaryCount := 0;
       for I := 0 to BufferSize do
         if not (Buffer[I] in [#9, #13, #10, #32..#127]) then
@@ -1926,9 +1932,9 @@ begin
   else if Length(Name) > 1 then
   begin
     I := 1;
-    while (I < Length(Name)) and not (Name[I] in ['0'..'9']) do
+    while (I < Length(Name)) and not CharInSet(Name[I], ['0'..'9']) do
       Inc(I);
-    if Name[I] in ['0'..'9'] then
+    if CharInSet(Name[I], ['0'..'9']) then
       Dec(I);
     Result := AnsiUpperCase(Copy(Name,1,I));
   end
@@ -1953,10 +1959,10 @@ begin
   else if Length(Name)>1 then
   begin
     Start := 2;
-    while (Start < Length(Name)) and not (Name[Start] in ['0'..'9']) do
+    while (Start < Length(Name)) and not CharInSet(Name[Start], ['0'..'9']) do
       Inc(Start);
     I := Start;
-    while (I < Length(Name)) and (Name[I] in ['0'..'9']) do
+    while (I < Length(Name)) and CharInSet(Name[I], ['0'..'9']) do
       Inc(I);
     if I < Length(name) then
       Dec(I);
@@ -1975,9 +1981,7 @@ begin
   inherited Create(True);
   if Assigned(Node) then
     for i := 0 to Node.Items.Count - 1 do
-    begin
       Add(TTarget.Create(Node.Items[i]));
-    end;
 end;
 
 function TTargetList.GetItems(index: integer): TTarget;
@@ -2184,9 +2188,12 @@ begin
 end;
 
 function TClxReplacement.DoReplacement(const Filename: string): string;
+var
+  TmpResult: string;
 begin
-  Result := Filename;
-  StrReplace(Result, Original, Replacement, [rfIgnoreCase]);
+  TmpResult := Filename;
+  StrReplace(TmpResult, Original, Replacement, [rfIgnoreCase]);
+  Result := TmpResult;
 end;
 
 { TClxReplacementList }

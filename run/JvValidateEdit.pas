@@ -978,7 +978,7 @@ begin
       Result := True;
     dfScientific:
       begin
-        Result := (Pos(Key, FCheckChars) > 0) or (Key in ['+', '-']);
+        Result := (Pos(Key, FCheckChars) > 0) or CharInSet(Key, ['+', '-']);
         if Result then
         begin
           iPosE := Pos('e', LowerCase(S));
@@ -992,7 +992,7 @@ begin
                // (outchy) XXXeY,YY are not valid scientific numbers, Y must be an integer value
           end
           else
-          if Key in ['E', 'e'] then
+          if CharInSet(Key, ['E', 'e']) then
             Result := (iPosE = 0) and (Posn > 1)
           else
           if Key = '+' then

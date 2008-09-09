@@ -592,8 +592,8 @@ end;
 
 //=== { TJvRegularExpressionValidator } ======================================
 
-function MatchesMask(const Filename, Mask: string;
-  const SearchFlags: TSearchFlags = [sfCaseSensitive]): Boolean;
+function MatchesMask(const Filename, Mask: string{;
+  const SearchFlags: TSearchFlags = [sfCaseSensitive]}): Boolean;
 {var
   URE: TURESearch;
   SL: TWideStringList;}

@@ -1,4 +1,6 @@
 {-----------------------------------------------------------------------------
+  JVCSVDATASET - TIBURON VERSION 3.5
+
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -38,7 +40,7 @@ uses
   JvTypes, JvComponent;
 
 const
-  JvCsvAsciiTypeArrayLimit=8; // Array Size constant for TJvCsvColumnFlag to Ascii Character mapping.
+  JvCsvAsciiTypeArrayLimit=9; // Array Size constant for TJvCsvColumnFlag to Ascii Character mapping.
 
 type
   TJvCsvDefStrDialog = class(TJvForm)
@@ -75,10 +77,10 @@ type
       Shift: TShiftState);
   private
     FUpdating: Boolean;
-    FOriginalCsvStr: string;
-    FSeparator: Char;
-    FTypeChars: array [0..JvCsvAsciiTypeArrayLimit] of Char;
-    FFieldTypeCh: Char;
+    FOriginalCsvStr: String;
+    FSeparator: AnsiChar;
+    FTypeChars: array [0..JvCsvAsciiTypeArrayLimit] of AnsiChar;
+    FFieldTypeCh: AnsiChar;
     procedure ItemChange;
     function MakeString: string; // take changes, put back into string format
     procedure UpdateCsvStr;
@@ -87,7 +89,7 @@ type
     procedure SetCsvStr(ACsvStr: string);
     function GetCsvStr: string;
   public
-    property Separator: Char read FSeparator write FSeparator;
+    property Separator: AnsiChar read FSeparator write FSeparator;
     property CsvStr: string read GetCsvStr write SetCsvStr;
   end;
 
@@ -111,7 +113,7 @@ begin
     if S = '' then
       S := ListBoxFields.Items[I]
     else
-      S := S + FSeparator + ListBoxFields.Items[I];
+      S := S + Char(FSeparator) + ListBoxFields.Items[I];
   EditCsvStr.Text := S;
 end;
 
@@ -131,12 +133,12 @@ begin
   LabelFieldLen.Enabled := False;
 end;
 
-type
-  TStringArray = array of string;
+//type
+//  TStringArray = array of string;
 
 procedure TJvCsvDefStrDialog.ItemChange;
 var
-  SubFields: TStringArray;
+  SubFields: Array of string;
   I, Count: Integer;
   SelectedText: string;
   FieldLength: Integer;
@@ -146,7 +148,7 @@ begin
   if ListBoxFields.ItemIndex >= 0 then
   begin
     SelectedText := ListBoxFields.Items[ListBoxFields.ItemIndex];
-    Count := StrSplit(SelectedText, ':', Chr(0), SubFields, 2); // Look for Colon
+    Count := JvStrSplit(SelectedText, ':', Chr(0), SubFields, 2); // Look for Colon
   end
   else
   begin
@@ -157,22 +159,22 @@ begin
   try
     if Count < 2 then
     begin { no colon! }
-      { defaults to string, length DEFAULT_CSV_STR_FIELD}
+      { defaults to string, length JvCsv_DEFAULT_CSV_STR_FIELD}
       EditFieldName.Text := SelectedText;
       FFieldTypeCh := '$';
-      FieldLength := DEFAULT_CSV_STR_FIELD;
+      FieldLength := JvCsv_DEFAULT_CSV_STR_FIELD;
     end
     else
     begin
-      EditFieldName.Text := SubFields[0];
-      FFieldTypeCh := SubFields[1][1];
-      FieldLength := StrToIntDef(Copy(SubFields[1], 2, Length(SubFields[1])), DEFAULT_CSV_STR_FIELD);
+      EditFieldName.Text := string(SubFields[0]);
+      FFieldTypeCh := AnsiChar(SubFields[1][1]);
+      FieldLength := StrToIntDef(Copy(string(SubFields[1]), 2, Length(SubFields[1])), JvCsv_DEFAULT_CSV_STR_FIELD);
     end;
   except
     { clear it if we have a problem }
     EditFieldName.Text := '';
     FFieldTypeCh := '$';
-    FieldLength := DEFAULT_CSV_STR_FIELD;
+    FieldLength := JvCsv_DEFAULT_CSV_STR_FIELD;
   end;
   if FFieldTypeCh = '$' then
     LengthEnabled(FieldLength)
@@ -211,12 +213,12 @@ var
 
 begin
   FOriginalCsvStr := ACsvStr;
-  FieldDefStr := UpperCase(StrStrip(ACsvStr));
+  FieldDefStr := UpperCase(JvStrStrip(ACsvStr));
 
-  SetLength(Fields, MAXCOLUMNS); { MAXCOLUMNS is a constant from CsvDataSource.pas }
+  SetLength(Fields, JvCsv_MAXCOLUMNS); { MAXCOLUMNS is a constant from CsvDataSource.pas }
   EditCsvStr.Text := ACsvStr;
   if Length(FieldDefStr) > 0 then
-    Count := StrSplit(FieldDefStr, FSeparator, Chr(0), Fields, MAXCOLUMNS)
+    Count := JvStrSplit(FieldDefStr, Char(FSeparator), Char(0), Fields, JvCsv_MAXCOLUMNS)
   else
     Count := 0;
 
@@ -225,7 +227,7 @@ begin
     ListBoxFields.Items.Clear;
     if Count > 0 then
       for I := 0 to Count - 1 do
-        ListBoxFields.Items.Add(StripQuotes(Fields[I]));
+        ListBoxFields.Items.Add(StripQuotes(string(Fields[I])));
   finally
     ListBoxFields.ItemIndex := 0;
     ItemChange;
@@ -271,6 +273,7 @@ begin
   FTypeChars[6] := '^'; // Hex LocalTime
   FTypeChars[7] := '/'; // Ascii Date
   FTypeChars[8] := '*';
+  FTypeChars[9] := '~'; // New September 2008 (WideString field to UTF8)
   {
    $ = string (ftString) - also used if no character is given.
    % = whole Integer value (ftInteger)
@@ -279,7 +282,7 @@ begin
    # = Hex-Ascii Timestamp (A93F38C9) seconds since Jan 1, 1970 GMT (Component Specific)
    ^ = Hex-Ascii Timestamp (A93F38CP) corrected to local timezone (Component Specific)
    ! = Boolean Field (0 in csv file=False, not 0 = True, blank = NULL)
-
+   ~ = UTF8 encoded WideString field.
   }
 end;
 
@@ -302,22 +305,22 @@ begin
   if ListBoxFieldTypes.ItemIndex < 0 then
     Exit;
 
-  S := StrStrip(UpperCase(EditFieldName.Text));
+  S := JvStrStrip(UpperCase(EditFieldName.Text));
   if S <> EditFieldName.Text then
     EditFieldName.Text := S;
 
-  if not ValidIdentifier(PChar(S)) then
+  if not JvValidIdentifier(S) then  // in JvCsvParse.pas
     Exit;
 
   FFieldTypeCh := FTypeChars[ListBoxFieldTypes.ItemIndex];
   if FFieldTypeCh = '$' then
   begin
-    FieldLength := StrToIntDef(EditFieldLength.Text, DEFAULT_CSV_STR_FIELD);
-    if FieldLength <> DEFAULT_CSV_STR_FIELD then
+    FieldLength := StrToIntDef(EditFieldLength.Text, JvCsv_DEFAULT_CSV_STR_FIELD);
+    if FieldLength <> JvCsv_DEFAULT_CSV_STR_FIELD then
       S := S + ':$' + IntToStr(FieldLength);
   end
   else
-    S := S + ':' + FFieldTypeCh;
+    S := S + ':' + Char(FFieldTypeCh);
   Result := S;
 end;
 
@@ -350,7 +353,7 @@ begin
   end;
    // XXX Check Validity and Uniqueness before adding.
   F := FieldNameOnly(S);
-  if not ValidIdentifier(PChar(F)) then
+  if not JvValidIdentifier(F) then // in JvCsvParse.pas
   begin
     MessageBox(Self.Handle, PChar(Format(RsFieldNameIsNotAValidIdentifier, [S])),
       PChar(RsAddFailed), MB_OK or MB_ICONERROR);
@@ -395,7 +398,7 @@ begin
   end;
    // XXX Check Validity and Uniqueness before adding.
   F := FieldNameOnly(S);
-  if not ValidIdentifier(PChar(F)) then
+  if not JvValidIdentifier(F) then // in JvCsvParse.pas
   begin
     MessageBox(Self.Handle, PChar(Format(RsFieldNameIsNotAValidIdentifier, [S])),
       PChar(RsUpdateFailed), MB_OK or MB_ICONERROR);
@@ -433,7 +436,7 @@ begin
     try
       FUpdating := True;
       if ListBoxFieldTypes.ItemIndex = 1 then
-        LengthEnabled(DEFAULT_CSV_STR_FIELD)
+        LengthEnabled(JvCsv_DEFAULT_CSV_STR_FIELD)
       else
         LengthDisabled;
       ActiveControl := EditFieldName;

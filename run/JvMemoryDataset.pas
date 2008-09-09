@@ -72,6 +72,7 @@ unit JvMemoryDataset;
 interface
 
 uses
+  Windows,  // to avoid warning under BDS2006, and in the interface section to allow compilation in RS2008
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -165,36 +166,36 @@ type
     {$IFNDEF COMPILER10_UP} // Delphi 2006+ has support for WideString
     procedure DataConvert(Field: TField; Source, Dest: Pointer; ToNative: Boolean); override;
     {$ENDIF ~COMPILER10_UP}
-    procedure AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
-    function GetActiveRecBuf(var RecBuf: PChar): Boolean; virtual;
+    procedure AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
+    function GetActiveRecBuf(var RecBuf: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): Boolean; virtual;
     procedure InitFieldDefsFromFields;
-    procedure RecordToBuffer(Rec: TJvMemoryRecord; Buffer: PChar);
-    procedure SetMemoryRecordData(Buffer: PChar; Pos: Integer); virtual;
-    procedure SetAutoIncFields(Buffer: PChar); virtual;
+    procedure RecordToBuffer(Rec: TJvMemoryRecord; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
+    procedure SetMemoryRecordData(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Pos: Integer); virtual;
+    procedure SetAutoIncFields(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}); virtual;
     function CompareRecords(Item1, Item2: TJvMemoryRecord): Integer; virtual;
-    function GetBlobData(Field: TField; Buffer: PChar): TMemBlobData;
-    procedure SetBlobData(Field: TField; Buffer: PChar; Value: TMemBlobData);
-    function AllocRecordBuffer: PChar; override;
-    procedure FreeRecordBuffer(var Buffer: PChar); override;
-    procedure InternalInitRecord(Buffer: PChar); override;
-    procedure ClearCalcFields(Buffer: PChar); override;
-    function GetRecord(Buffer: PChar; GetMode: TGetMode;
+    function GetBlobData(Field: TField; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): TMemBlobData;
+    procedure SetBlobData(Field: TField; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Value: TMemBlobData);
+    function AllocRecordBuffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; override;
+    procedure FreeRecordBuffer(var Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}); override;
+    procedure InternalInitRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}); override;
+    procedure ClearCalcFields(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}); override;
+    function GetRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; GetMode: TGetMode;
       DoCheck: Boolean): TGetResult; override;
     function GetRecordSize: Word; override;
     procedure SetFiltered(Value: Boolean); override;
     procedure SetOnFilterRecord(const Value: TFilterRecordEvent); override;
     procedure SetFieldData(Field: TField; Buffer: Pointer); override;
     procedure CloseBlob(Field: TField); override;
-    procedure GetBookmarkData(Buffer: PChar; Data: Pointer); override;
-    function GetBookmarkFlag(Buffer: PChar): TBookmarkFlag; override;
-    procedure InternalGotoBookmark(Bookmark: TBookmark); override;
-    procedure InternalSetToRecord(Buffer: PChar); override;
-    procedure SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag); override;
-    procedure SetBookmarkData(Buffer: PChar; Data: Pointer); override;
+    procedure GetBookmarkData(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Data: Pointer); override;
+    function GetBookmarkFlag(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): TBookmarkFlag; override;
+    procedure InternalGotoBookmark(Bookmark: Pointer); override;
+    procedure InternalSetToRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}); override;
+    procedure SetBookmarkFlag(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Value: TBookmarkFlag); override;
+    procedure SetBookmarkData(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Data: Pointer); override;
     function GetIsIndexField(Field: TField): Boolean; override;
     procedure InternalFirst; override;
     procedure InternalLast; override;
-    procedure InitRecord(Buffer: PChar); override;
+    procedure InitRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}); override;
     procedure InternalAddRecord(Buffer: Pointer; Append: Boolean); override;
     procedure InternalDelete; override;
     procedure InternalPost; override;
@@ -216,7 +217,7 @@ type
     function CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer; override;
     function CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream; override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
-    function GetCurrentRecord(Buffer: PChar): Boolean; override;
+    function GetCurrentRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): Boolean; override;
     function IsSequenced: Boolean; override;
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
@@ -291,7 +292,7 @@ type
   private
     FField: TBlobField;
     FDataSet: TJvMemoryData;
-    FBuffer: PChar;
+    FBuffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
     FMode: TBlobStreamMode;
     FOpened: Boolean;
     FModified: Boolean;
@@ -341,7 +342,6 @@ const
 implementation
 
 uses
-  Windows,  // to avoid warning under BDS2006
   Forms, Dialogs, DBConsts, Math,
   {$IFDEF COMPILER6_UP}
   FMTBcd,
@@ -788,7 +788,7 @@ begin
       if DataType in ftBlobTypes then
         Result := Pointer(GetBlobData(Field, Buffer))
       else
-        Result := (PChar(Buffer) + FOffsets[Index]);
+        Result := ({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Buffer) + FOffsets[Index]);
   end;
 end;
 
@@ -818,27 +818,35 @@ begin
   FRecordPos := -1;
 end;
 
-function TJvMemoryData.AllocRecordBuffer: PChar;
+function TJvMemoryData.AllocRecordBuffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
 begin
+  {$IFDEF COMPILER12_UP}
+  GetMem(Result, FRecBufSize);
+  {$ELSE}
   Result := StrAlloc(FRecBufSize);
+  {$ENDIF COMPILER12_UP}
   if BlobFieldCount > 0 then
     Initialize(PMemBlobArray(Result + FBlobOfs)[0], BlobFieldCount);
 end;
 
-procedure TJvMemoryData.FreeRecordBuffer(var Buffer: PChar);
+procedure TJvMemoryData.FreeRecordBuffer(var Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 begin
   if BlobFieldCount > 0 then
     Finalize(PMemBlobArray(Buffer + FBlobOfs)[0], BlobFieldCount);
+  {$IFDEF COMPILER12_UP}
+  FreeMem(Buffer);
+  {$ELSE}
   StrDispose(Buffer);
+  {$ENDIF COMPILER12_UP}
   Buffer := nil;
 end;
 
-procedure TJvMemoryData.ClearCalcFields(Buffer: PChar);
+procedure TJvMemoryData.ClearCalcFields(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 begin
   FillChar(Buffer[FRecordSize], CalcFieldsSize, 0);
 end;
 
-procedure TJvMemoryData.InternalInitRecord(Buffer: PChar);
+procedure TJvMemoryData.InternalInitRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 var
   I: Integer;
 begin
@@ -847,7 +855,7 @@ begin
     PMemBlobArray(Buffer + FBlobOfs)[I] := '';
 end;
 
-procedure TJvMemoryData.InitRecord(Buffer: PChar);
+procedure TJvMemoryData.InitRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 begin
   inherited InitRecord(Buffer);
   with PMemBookmarkInfo(Buffer + FBookmarkOfs)^ do
@@ -857,7 +865,7 @@ begin
   end;
 end;
 
-function TJvMemoryData.GetCurrentRecord(Buffer: PChar): Boolean;
+function TJvMemoryData.GetCurrentRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): Boolean;
 begin
   Result := False;
   if not IsEmpty and (GetBookmarkFlag(ActiveBuffer) = bfCurrent) then
@@ -871,7 +879,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryData.RecordToBuffer(Rec: TJvMemoryRecord; Buffer: PChar);
+procedure TJvMemoryData.RecordToBuffer(Rec: TJvMemoryRecord; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 var
   I: Integer;
 begin
@@ -886,7 +894,7 @@ begin
   GetCalcFields(Buffer);
 end;
 
-function TJvMemoryData.GetRecord(Buffer: PChar; GetMode: TGetMode;
+function TJvMemoryData.GetRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 var
   Accept: Boolean;
@@ -949,7 +957,7 @@ begin
   Result := FRecordSize;
 end;
 
-function TJvMemoryData.GetActiveRecBuf(var RecBuf: PChar): Boolean;
+function TJvMemoryData.GetActiveRecBuf(var RecBuf: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): Boolean;
 begin
   case State of
     dsBrowse:
@@ -971,8 +979,22 @@ end;
 
 function TJvMemoryData.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
-  RecBuf, Data: PChar;
+  RecBuf, Data: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   VarData: Variant;
+
+  function BufferLen(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): Integer;
+  begin
+    {$IFDEF COMPILER12_UP}
+    Result := 0;
+    if Buffer <> nil then
+    begin
+      while Buffer[Result] <> 0 do
+        Inc(Buffer);
+    end;
+    {$ELSE}
+    Result := StrLen(Buffer);
+    {$ENDIF COMPILER12_UP}
+  end;
 begin
   Result := False;
   if not GetActiveRecBuf(RecBuf) then
@@ -985,10 +1007,10 @@ begin
       if Field is TBlobField then
         Result := Data <> nil
       else
-        Result := Data[0] <> #0;
+        Result := Data[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP};
       Inc(Data);
       if Field.DataType in [ftString, ftFixedChar, ftWideString, ftGuid] then
-        Result := Result and (StrLen(Data) > 0);
+        Result := Result and (BufferLen(Data) > 0);
       if Result and (Buffer <> nil) then
         if Field.DataType = ftVariant then
         begin
@@ -1003,7 +1025,7 @@ begin
   if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
   begin
     Inc(RecBuf, FRecordSize + Field.Offset);
-    Result := RecBuf[0] <> #0;
+    Result := RecBuf[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP};
     if Result and (Buffer <> nil) then
       Move(RecBuf[1], Buffer^, Field.DataSize);
   end;
@@ -1011,7 +1033,7 @@ end;
 
 procedure TJvMemoryData.SetFieldData(Field: TField; Buffer: Pointer);
 var
-  RecBuf, Data: PChar;
+  RecBuf, Data: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   VarData: Variant;
 begin
   if not (State in dsWriteModes) then
@@ -1037,9 +1059,9 @@ begin
               VarData := PVariant(Buffer)^
             else
               VarData := EmptyParam;
-            Data[0] := Char(Ord((Buffer <> nil) and not
+            Data[0] := {$IFDEF COMPILER12_UP}Byte{$ELSE}AnsiChar{$ENDIF COMPILER12_UP}(Ord((Buffer <> nil) and not
               (VarIsNull(VarData) or VarIsEmpty(VarData))));
-            if Data[0] <> #0 then
+            if Data[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
             begin
               Inc(Data);
               PVariant(Data)^ := VarData;
@@ -1049,7 +1071,7 @@ begin
           end
           else
           begin
-            Data[0] := Char(Ord(Buffer <> nil));
+            Data[0] := {$IFDEF COMPILER12_UP}Byte{$ELSE}AnsiChar{$ENDIF COMPILER12_UP}(Ord(Buffer <> nil));
             Inc(Data);
             if Buffer <> nil then
               Move(Buffer^, Data^, CalcFieldLen(DataType, Size))
@@ -1062,8 +1084,8 @@ begin
     else {fkCalculated, fkLookup}
     begin
       Inc(RecBuf, FRecordSize + Offset);
-      RecBuf[0] := Char(Ord(Buffer <> nil));
-      if RecBuf[0] <> #0 then
+      RecBuf[0] := {$IFDEF COMPILER12_UP}Byte{$ELSE}AnsiChar{$ENDIF COMPILER12_UP}(Ord(Buffer <> nil));
+      if RecBuf[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
         Move(Buffer^, RecBuf[1], DataSize);
     end;
     if not (State in [dsCalcFields, dsFilter, dsNewValue]) then
@@ -1120,12 +1142,12 @@ begin
   end;
 end;
 
-function TJvMemoryData.GetBlobData(Field: TField; Buffer: PChar): TMemBlobData;
+function TJvMemoryData.GetBlobData(Field: TField; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): TMemBlobData;
 begin
   Result := PMemBlobArray(Buffer + FBlobOfs)[Field.Offset];
 end;
 
-procedure TJvMemoryData.SetBlobData(Field: TField; Buffer: PChar; Value: TMemBlobData);
+procedure TJvMemoryData.SetBlobData(Field: TField; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Value: TMemBlobData);
 begin
   if Buffer = ActiveBuffer then
   begin
@@ -1151,8 +1173,9 @@ end;
 
 function TJvMemoryData.BookmarkValid(Bookmark: TBookmark): Boolean;
 begin
-  Result := (Bookmark <> nil) and FActive and (TBookmarkData(Bookmark^) >
-    Low(Integer)) and (TBookmarkData(Bookmark^) <= FLastID);
+  Result := (Bookmark <> nil) and FActive and
+   (TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) > Low(Integer)) and
+   (TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) <= FLastID);
 end;
 
 function TJvMemoryData.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer;
@@ -1166,38 +1189,38 @@ begin
   if (Bookmark1 = nil) and (Bookmark2 <> nil) then
     Result := -1
   else
-  if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
+  if TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) > TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
     Result := 1
   else
-  if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
+  if TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) < TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
     Result := -1
   else
     Result := 0;
 end;
 
-procedure TJvMemoryData.GetBookmarkData(Buffer: PChar; Data: Pointer);
+procedure TJvMemoryData.GetBookmarkData(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Data: Pointer);
 begin
   Move(PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData, Data^,
     SizeOf(TBookmarkData));
 end;
 
-procedure TJvMemoryData.SetBookmarkData(Buffer: PChar; Data: Pointer);
+procedure TJvMemoryData.SetBookmarkData(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Data: Pointer);
 begin
   Move(Data^, PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData,
     SizeOf(TBookmarkData));
 end;
 
-function TJvMemoryData.GetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
+function TJvMemoryData.GetBookmarkFlag(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}): TBookmarkFlag;
 begin
   Result := PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkFlag;
 end;
 
-procedure TJvMemoryData.SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag);
+procedure TJvMemoryData.SetBookmarkFlag(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Value: TBookmarkFlag);
 begin
   PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkFlag := Value;
 end;
 
-procedure TJvMemoryData.InternalGotoBookmark(Bookmark: TBookmark);
+procedure TJvMemoryData.InternalGotoBookmark(Bookmark: Pointer);
 var
   Rec: TJvMemoryRecord;
   SavePos: Integer;
@@ -1219,7 +1242,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryData.InternalSetToRecord(Buffer: PChar);
+procedure TJvMemoryData.InternalSetToRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 begin
   InternalGotoBookmark(@PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData);
 end;
@@ -1245,14 +1268,14 @@ begin
       Move(PWideChar(Source^)^, (PWideChar(Dest) + 1)^, Word(Dest^));
     end
     else
-      SetString(WideString(Dest^), PWideChar(PChar(Source) + 2), Word(Source^) div 2);
+      SetString(WideString(Dest^), PWideChar({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Source) + 2), Word(Source^) div 2);
   end
   else
     inherited DataConvert(Field, Source, Dest, ToNative);
 end;
 {$ENDIF ~COMPILER10_UP}
 
-procedure TJvMemoryData.AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
+procedure TJvMemoryData.AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 var
   I: Integer;
 begin
@@ -1261,7 +1284,7 @@ begin
     PMemBlobArray(Rec.FBlobs)[I] := PMemBlobArray(Buffer + FBlobOfs)[I];
 end;
 
-procedure TJvMemoryData.SetMemoryRecordData(Buffer: PChar; Pos: Integer);
+procedure TJvMemoryData.SetMemoryRecordData(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; Pos: Integer);
 var
   Rec: TJvMemoryRecord;
 begin
@@ -1271,10 +1294,10 @@ begin
   AssignMemoryRecord(Rec, Buffer);
 end;
 
-procedure TJvMemoryData.SetAutoIncFields(Buffer: PChar);
+procedure TJvMemoryData.SetAutoIncFields(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP});
 var
   I, Count: Integer;
-  Data: PChar;
+  Data: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
 begin
   Count := 0;
   for I := 0 to FieldCount - 1 do
@@ -1284,7 +1307,7 @@ begin
       Data := FindFieldData(Buffer, Fields[I]);
       if Data <> nil then
       begin
-        Data[0] := Char(Ord(True));
+        Data[0] := {$IFDEF COMPILER12_UP}Byte{$ELSE}AnsiChar{$ENDIF COMPILER12_UP}(Ord(True));
         Inc(Data);
         Move(FAutoInc, Data^, SizeOf(Longint));
         Inc(Count);
@@ -2002,7 +2025,7 @@ end;
 
 procedure TJvMemoryData.Sort;
 var
-  Pos: TBookmarkStr;
+  Pos: {$IFDEF COMPILER12_UP}DB.TBookmark{$ELSE}TBookmarkStr{$ENDIF COMPILER12_UP};
 begin
   if Active and (FRecords <> nil) and (FRecords.Count > 0) then
   begin
@@ -2054,7 +2077,7 @@ end;
 
 function TJvMemoryData.CompareRecords(Item1, Item2: TJvMemoryRecord): Integer;
 var
-  Data1, Data2: PChar;
+  Data1, Data2: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   F: TField;
   I: Integer;
 begin
@@ -2070,7 +2093,7 @@ begin
         Data2 := FindFieldData(Item2.Data, F);
         if Data2 <> nil then
         begin
-          if (Data1[0] <> #0) and (Data2[0] <> #0) then
+          if (Data1[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP}) and (Data2[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP}) then
           begin
             Inc(Data1);
             Inc(Data2);
@@ -2078,10 +2101,10 @@ begin
               FCaseInsensitiveSort);
           end
           else
-          if Data1[0] <> #0 then
+          if Data1[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
             Result := 1
           else
-          if Data2[0] <> #0 then
+          if Data2[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
             Result := -1;
           if FDescendingSort then
             Result := -Result;
@@ -2738,13 +2761,13 @@ begin
     begin
       if FCached then
       begin
-        Move(PChar(FDataSet.GetBlobData(FField, FBuffer))[FPosition], Buffer,
+        Move({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(FDataSet.GetBlobData(FField, FBuffer))[FPosition], Buffer,
           Result);
         Inc(FPosition, Result);
       end
       else
       begin
-        Move(PChar(GetBlobFromRecord(FField))[FPosition], Buffer, Result);
+        Move({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(GetBlobFromRecord(FField))[FPosition], Buffer, Result);
         Inc(FPosition, Result);
       end;
     end;
@@ -2761,7 +2784,7 @@ begin
     Temp := FDataSet.GetBlobData(FField, FBuffer);
     if Length(Temp) < FPosition + Count then
       SetLength(Temp, FPosition + Count);
-    Move(Buffer, PChar(Temp)[FPosition], Count);
+    Move(Buffer, {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Temp)[FPosition], Count);
     FDataSet.SetBlobData(FField, FBuffer, Temp);
     Inc(FPosition, Count);
     Result := Count;

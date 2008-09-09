@@ -622,33 +622,33 @@ begin
   if ShellHandle <> 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
-      @SHChangeIconW := GetProcAddress(ShellHandle, PChar(62))
+      @SHChangeIconW := GetProcAddress(ShellHandle, PAnsiChar(62))
     else
-      @SHChangeIcon := GetProcAddress(ShellHandle, PChar(62));
-    @SHFormatDrive := GetProcAddress(ShellHandle, PChar('SHFormatDrive'));
-    @FreePIDL := GetProcAddress(ShellHandle, PChar(155));
-    @SHShutDownDialog := GetProcAddress(ShellHandle, PChar(60));
-    @SHRunDialog := GetProcAddress(ShellHandle, PChar(61));
-    @SHFindFiles := GetProcAddress(ShellHandle, PChar(90));
-    @SHFindComputer := GetProcAddress(ShellHandle, PChar(91));
-    @SHObjectProperties := GetProcAddress(ShellHandle, PChar(178));
-    @SHNetConnectionDialog := GetProcAddress(ShellHandle, PChar(160));
-    @SHOutOfMemoryMessageBox := GetProcAddress(ShellHandle, PChar(126));
-    @SHHandleDiskFull := GetProcAddress(ShellHandle, PChar(185));
-    @SHStartNetConnectionDialog := GetProcAddress(ShellHandle, PChar(215));
-    @SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
+      @SHChangeIcon := GetProcAddress(ShellHandle, PAnsiChar(62));
+    @SHFormatDrive := GetProcAddress(ShellHandle, PAnsiChar('SHFormatDrive'));
+    @FreePIDL := GetProcAddress(ShellHandle, PAnsiChar(155));
+    @SHShutDownDialog := GetProcAddress(ShellHandle, PAnsiChar(60));
+    @SHRunDialog := GetProcAddress(ShellHandle, PAnsiChar(61));
+    @SHFindFiles := GetProcAddress(ShellHandle, PAnsiChar(90));
+    @SHFindComputer := GetProcAddress(ShellHandle, PAnsiChar(91));
+    @SHObjectProperties := GetProcAddress(ShellHandle, PAnsiChar(178));
+    @SHNetConnectionDialog := GetProcAddress(ShellHandle, PAnsiChar(160));
+    @SHOutOfMemoryMessageBox := GetProcAddress(ShellHandle, PAnsiChar(126));
+    @SHHandleDiskFull := GetProcAddress(ShellHandle, PAnsiChar(185));
+    @SHStartNetConnectionDialog := GetProcAddress(ShellHandle, PAnsiChar(215));
+    @SHOpenWith := GetProcAddress(ShellHandle, PAnsiChar('OpenAs_RunDLLA'));
   end;
 
   CommHandle := SafeLoadLibrary('comdlg32.dll');
   if CommHandle <> 0 then
   begin
-    @GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
-    @GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
+    @GetOpenFileNameEx := GetProcAddress(CommHandle, PAnsiChar('GetOpenFileNameA'));
+    @GetSaveFileNameEx := GetProcAddress(CommHandle, PAnsiChar('GetSaveFileNameA'));
   end;
 
   AppWizHandle := SafeLoadLibrary('appwiz.cpl');
   if AppWizHandle <> 0 then
-    @NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
+    @NewLinkHere := GetProcAddress(AppWizHandle, PAnsiChar('NewLinkHereA'));
   URLHandle := SafeLoadLibrary('url.dll');
   if URLHandle <> 0 then
   begin
@@ -1074,7 +1074,7 @@ procedure TJvFormatDriveDialog.SetDrive(Value: Char);
 begin
   // (rom) secured
   Value := UpCase(Value);
-  if Value in ['A'..'Z'] then
+  if CharInSet(Value, ['A'..'Z']) then
     FDrive := Value;
 end;
 
@@ -1565,7 +1565,7 @@ end;
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
 begin
   Value := UpCase(Value);
-  if not (Value in ['A'..'Z']) then
+  if not CharInSet(Value, ['A'..'Z']) then
     raise EWinDialogError.CreateResFmt(@RsEInvalidDriveChar, [Value]);
   FDriveChar := Value;
 end;

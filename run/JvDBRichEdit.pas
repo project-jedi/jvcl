@@ -188,6 +188,9 @@ implementation
 
 uses
   SysUtils,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts;
 
 constructor TJvDBRichEdit.Create(AOwner: TComponent);
@@ -276,7 +279,7 @@ begin
   inherited KeyPress(Key);
   if FMemoLoaded then
   begin
-    if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
+    if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
       not FDataLink.Field.IsValidChar(Key) then
     begin
       if BeepOnError then

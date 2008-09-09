@@ -1,10 +1,10 @@
 object JvRegEditor: TJvRegEditor
   Left = 211
   Top = 120
-  Width = 460
-  Height = 359
   BorderIcons = [biSystemMenu]
   Caption = 'RegAuto Editor'
+  ClientHeight = 325
+  ClientWidth = 452
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,7 +32,7 @@ object JvRegEditor: TJvRegEditor
   TextHeight = 13
   object panelBottom: TPanel
     Left = 0
-    Top = 302
+    Top = 295
     Width = 452
     Height = 30
     Align = alBottom
@@ -46,6 +46,9 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        158
+        30)
       object btnOk: TButton
         Left = 1
         Top = 4
@@ -93,6 +96,9 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        28
+        32)
       object btnAddProp: TSpeedButton
         Left = 2
         Top = 3
@@ -171,7 +177,7 @@ object JvRegEditor: TJvRegEditor
     Left = 0
     Top = 36
     Width = 201
-    Height = 266
+    Height = 259
     Hint = 'Accessible properties'
     Align = alLeft
     Ctl3D = True
@@ -184,18 +190,20 @@ object JvRegEditor: TJvRegEditor
     OnDragDrop = TreeDragDrop
     OnDragOver = TreeDragOver
     OnEnter = TreeEnter
-    Items.Data = {
-      030000001C00000001000000FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000
-      033132321F000000FFFFFFFF00000000FFFFFFFFFFFFFFFF0000000000000000
-      063333353435341D0000000300000000000000FFFFFFFFFFFFFFFF0000000001
-      00000004313132321C0000000000000000000000FFFFFFFFFFFFFFFF00000000
-      0000000003323334}
+    Items.NodeData = {
+      03030000002400000001000000FFFFFFFFFFFFFFFFFFFFFFFF00000000000000
+      000000000001033100320032002A000000FFFFFFFF00000000FFFFFFFFFFFFFF
+      FF00000000000000000000000001063300330035003400350034002600000003
+      00000000000000FFFFFFFFFFFFFFFF0000000000000000010000000104310031
+      0032003200240000000000000000000000FFFFFFFFFFFFFFFF00000000000000
+      00000000000103320033003400}
+    ExplicitHeight = 266
   end
   object List: TListBox
     Left = 201
     Top = 36
     Width = 251
-    Height = 266
+    Height = 259
     Hint = 'List of saved properties'
     Align = alClient
     Ctl3D = True

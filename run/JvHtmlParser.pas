@@ -119,6 +119,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts;
 
 {Comparison function. Used internally for observance of the sequences tags}
@@ -239,15 +242,15 @@ var
     Tail := Content;
     QuoteChar := #0;
     repeat
-      while Tail^ in [Cr, Lf, ' '] do
+      while CharInSet(Tail^, [Cr, Lf, ' ']) do
         Inc(Tail);
       Head := Tail;
       InQuote := False;
       LeadQuote := False;
       while True do
       begin
-        while (InQuote and not (Tail^ in [#0, '"'])) or
-          not (Tail^ in [#0, Cr, Lf, ' ', '"']) do
+        while (InQuote and not CharInSet(Tail^, [#0, '"'])) or
+          not CharInSet(Tail^, [#0, Cr, Lf, ' ', '"']) do
           Inc(Tail);
         if Tail^ = '"' then
         begin
@@ -289,7 +292,7 @@ var
     UniqueString(Tmp);
     P := PChar(Tmp);
 //    if P^ in [#0, '<', '>'] then
-    if P^ in [#0, '>'] then
+    if CharInSet(P^, [#0, '>']) then
       Exit;
     // skip first word (the tag) and any whitespace
     while (P^ <> #0) and (P <> nil) do

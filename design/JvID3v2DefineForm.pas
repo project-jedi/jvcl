@@ -53,13 +53,13 @@ type
     procedure SetController(const Value: TJvID3Controller);
     function GetFrameClass: TJvID3FrameClass;
     function GetFrameID: TJvID3FrameID;
-    function GetFrameIDStr: string;
+    function GetFrameIDStr: AnsiString;
   protected
     procedure FillFrames(const Strings: TStrings);
   public
     property FrameClass: TJvID3FrameClass read GetFrameClass;
     property FrameID: TJvID3FrameID read GetFrameID;
-    property FrameIDStr: string read GetFrameIDStr;
+    property FrameIDStr: AnsiString read GetFrameIDStr;
     property Frame: TJvID3Frame read FFrame;
     property Controller: TJvID3Controller read FController write SetController;
     property Designer: IDesigner read FDesigner write FDesigner;
@@ -128,7 +128,7 @@ begin
       Result := fiUnknownFrame;
 end;
 
-function TJvID3DefineDlg.GetFrameIDStr: string;
+function TJvID3DefineDlg.GetFrameIDStr: AnsiString;
 begin
   Result := ID3_FrameIDToString(FrameID);
 end;

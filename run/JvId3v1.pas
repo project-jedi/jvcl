@@ -38,22 +38,22 @@ uses
 
 type
   TID3v1Tag = packed record
-    Identifier: array [0..2] of Char;
-    SongName: array [0..29] of Char;
-    Artist: array [0..29] of Char;
-    Album: array [0..29] of Char;
-    Year: array [0..3] of Char;
-    Comment: array [0..29] of Char;
+    Identifier: array [0..2] of AnsiChar;
+    SongName: array [0..29] of AnsiChar;
+    Artist: array [0..29] of AnsiChar;
+    Album: array [0..29] of AnsiChar;
+    Year: array [0..3] of AnsiChar;
+    Comment: array [0..29] of AnsiChar;
     Genre: Byte;
   end;
 
   TJvID3v1 = class(TJvComponent)
   private
-    FSongName: string;
-    FArtist: string;
-    FAlbum: string;
-    FComment: string;
-    FYear: string;
+    FSongName: AnsiString;
+    FArtist: AnsiString;
+    FAlbum: AnsiString;
+    FComment: AnsiString;
+    FYear: AnsiString;
     FGenre: Byte;
     FFileName: TFileName;
     FActive: Boolean;
@@ -61,12 +61,12 @@ type
     FStreamedActive: Boolean;
     FHasTag: Boolean;
     FHasTagDirty: Boolean;
-    function GetGenreAsString: string;
+    function GetGenreAsString: AnsiString;
     function GetHasTag: Boolean;
     procedure Reset;
     procedure SetActive(const Value: Boolean);
     procedure SetFileName(const Value: TFileName);
-    procedure SetGenreAsString(const Value: string);
+    procedure SetGenreAsString(const Value: AnsiString);
   protected
     procedure CheckActive;
     procedure DoOpen; virtual;
@@ -84,13 +84,13 @@ type
     property Active: Boolean read FActive write SetActive;
     property FileName: TFileName read FFileName write SetFileName;
     { Do not store dummies }
-    property SongName: string read FSongName write FSongName stored False;
-    property Artist: string read FArtist write FArtist stored False;
-    property Album: string read FAlbum write FAlbum stored False;
-    property Year: string read FYear write FYear stored False;
-    property Comment: string read FComment write FComment stored False;
+    property SongName: AnsiString read FSongName write FSongName stored False;
+    property Artist: AnsiString read FArtist write FArtist stored False;
+    property Album: AnsiString read FAlbum write FAlbum stored False;
+    property Year: AnsiString read FYear write FYear stored False;
+    property Comment: AnsiString read FComment write FComment stored False;
     property Genre: Byte read FGenre write FGenre stored False;
-    property GenreAsString: string read GetGenreAsString write SetGenreAsString stored False;
+    property GenreAsString: AnsiString read GetGenreAsString write SetGenreAsString stored False;
     property AlbumTrack: Byte read FAlbumTrack write FAlbumTrack stored False;
   end;
 
@@ -209,9 +209,9 @@ end;
 
 //=== Local procedures =======================================================
 
-function TagToStr(P: PChar; MaxLength: Integer): string;
+function TagToStr(P: PAnsiChar; MaxLength: Integer): AnsiString;
 var
-  Q: PChar;
+  Q: PAnsiChar;
 begin
   Q := P;
   while (P - Q < MaxLength) and (P^ <> #0) do
@@ -255,14 +255,14 @@ begin
 
   // Set new Tag
   Tag.Identifier := CID3v1Tag;
-  Move(PChar(SongName)^, Tag.SongName[0], Min(30, Length(SongName)));
-  Move(PChar(Artist)^, Tag.Artist[0], Min(30, Length(Artist)));
-  Move(PChar(Album)^, Tag.Album[0], Min(30, Length(Album)));
-  Move(PChar(Year)^, Tag.Year[0], Min(4, Length(Year)));
-  Move(PChar(Comment)^, Tag.Comment[0], Min(30, Length(Comment)));
+  Move(PAnsiChar(SongName)^, Tag.SongName[0], Min(30, Length(SongName)));
+  Move(PAnsiChar(Artist)^, Tag.Artist[0], Min(30, Length(Artist)));
+  Move(PAnsiChar(Album)^, Tag.Album[0], Min(30, Length(Album)));
+  Move(PAnsiChar(Year)^, Tag.Year[0], Min(4, Length(Year)));
+  Move(PAnsiChar(Comment)^, Tag.Comment[0], Min(30, Length(Comment)));
   Tag.Genre := FGenre;
   if Tag.Comment[28] = #0 then
-    Tag.Comment[29] := Char(FAlbumTrack);
+    Tag.Comment[29] := AnsiChar(FAlbumTrack);
 
   Result := WriteID3v1Tag(FileName, Tag);
 end;
@@ -294,7 +294,7 @@ begin
   end;
 end;
 
-function TJvID3v1.GetGenreAsString: string;
+function TJvID3v1.GetGenreAsString: AnsiString;
 begin
   Result := ID3_IDToGenre(Genre);
 end;
@@ -328,11 +328,11 @@ begin
 
   if Result then
   begin
-    FSongName := TagToStr(PChar(@Tag.SongName), 30);
-    FArtist := TagToStr(PChar(@Tag.Artist), 30);
-    FAlbum := TagToStr(PChar(@Tag.Album), 30);
-    FYear := TagToStr(PChar(@Tag.Year), 4);
-    FComment := TagToStr(PChar(@Tag.Comment), 30);
+    FSongName := TagToStr(PAnsiChar(@Tag.SongName), 30);
+    FArtist := TagToStr(PAnsiChar(@Tag.Artist), 30);
+    FAlbum := TagToStr(PAnsiChar(@Tag.Album), 30);
+    FYear := TagToStr(PAnsiChar(@Tag.Year), 4);
+    FComment := TagToStr(PAnsiChar(@Tag.Comment), 30);
     // (p3) missing genre added
     FGenre := Tag.Genre;
     if Tag.Comment[28] = #0 then
@@ -395,7 +395,7 @@ begin
   end;
 end;
 
-procedure TJvID3v1.SetGenreAsString(const Value: string);
+procedure TJvID3v1.SetGenreAsString(const Value: AnsiString);
 begin
   Genre := ID3_GenreToID(Value);
 end;

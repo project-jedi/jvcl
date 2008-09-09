@@ -1255,7 +1255,7 @@ begin
         if ThemeServices.ThemesEnabled and Enabled and not Flat then
         begin
           R := BoundsRect;
-          InvalidateRect(Parent.Handle, R, True);
+          Windows.InvalidateRect(Parent.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, True);
         end
         else
         {$ENDIF JVCLThemesEnabled}
@@ -1320,7 +1320,7 @@ begin
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle, R, True);
+    Windows.InvalidateRect(Parent.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, True);
   end;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -1341,7 +1341,7 @@ begin
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle, R, True);
+    Windows.InvalidateRect(Parent.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, True);
   end;
   {$ENDIF JVCLThemesEnabled}
 end;

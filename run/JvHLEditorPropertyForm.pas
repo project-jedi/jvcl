@@ -365,7 +365,7 @@ begin
       FJvHLEditor.GroupUndo := DefaultValue['GroupUndo', FJvHLEditor.GroupUndo];
       FJvHLEditor.CursorBeyondEOF := DefaultValue['CursorBeyondEOF', FJvHLEditor.CursorBeyondEOF];
       HLed.SyntaxHighlighting := DefaultValue['SyntaxHighlighting', HLed.SyntaxHighlighting];
-      FJvHLEditor.TabStops := DefaultValue['TabStops', FJvHLEditor.TabStops];
+      FJvHLEditor.TabStops := AnsiString(DefaultValue['TabStops', FJvHLEditor.TabStops]);
       FJvHLEditor.RightMargin := DefaultValue['RightMargin', FJvHLEditor.RightMargin];
     end;
   end;
@@ -643,7 +643,7 @@ begin
   cbGroupUndo.Checked := Params.FJvHLEditor.GroupUndo;
   cbCursorBeyondEOF.Checked := Params.FJvHLEditor.CursorBeyondEOF;
   cbSytaxHighlighting.Checked := HLed.SyntaxHighlighting;
-  eTabStops.Text := Params.FJvHLEditor.TabStops;
+  eTabStops.Text := string(Params.FJvHLEditor.TabStops);
   cbColorSettings.ItemIndex := Integer(FHighlighter);
   cbColorSettingsChange(nil);
   JvHLEditorPreview.RightMargin := Params.FJvHLEditor.RightMargin;
@@ -672,7 +672,7 @@ begin
   Params.FJvHLEditor.GroupUndo := cbGroupUndo.Checked;
   Params.FJvHLEditor.CursorBeyondEOF := cbCursorBeyondEOF.Checked;
   HLed.SyntaxHighlighting := cbSytaxHighlighting.Checked;
-  Params.FJvHLEditor.TabStops := eTabStops.Text;
+  Params.FJvHLEditor.TabStops := AnsiString(eTabStops.Text);
   if Params.Storage <> nil then
     Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.Highlighter);
 end;
