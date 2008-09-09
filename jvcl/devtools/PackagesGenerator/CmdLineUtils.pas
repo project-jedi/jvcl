@@ -9,11 +9,7 @@ implementation
 
 uses
   Windows, Classes, SysUtils, GenerateUtils,
-  {$IFDEF NO_JCL}
-  UtilsJcl,
-  {$ELSE}
   JclStrings, JclFileUtils,
-  {$ENDIF NO_JCL}
   FileUtils;
 
 procedure Help;

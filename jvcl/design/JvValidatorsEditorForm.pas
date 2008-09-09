@@ -140,6 +140,11 @@ uses
 
 {$R *.dfm}
 
+const
+  ValidKinds: TTypeKinds =
+    [tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
+     tkWChar, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString, tkVariant, tkInt64];
+
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var
   I: Integer;
@@ -548,10 +553,6 @@ begin
 end;
 
 procedure TJvPropertyValidateProperty.GetValues(Proc: TGetStrProc);
-const
-  ValidKinds: TTypeKinds =
-    [tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
-     tkWChar, tkLString, tkWString, tkVariant, tkInt64];
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
@@ -578,7 +579,7 @@ begin
       begin
         PropInfo := PropList^[I];
         if (PropInfo <> nil) and (PropInfo.PropType^.Kind in ValidKinds) then
-          Proc(PropInfo.Name);
+          Proc({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo.Name));
       end;
     finally
       FreeMem(PropList);
@@ -624,10 +625,6 @@ begin
 end;
 
 procedure TJvPropertyToCompareProperty.GetValues(Proc: TGetStrProc);
-const
-  ValidKinds: TTypeKinds =
-    [tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
-     tkWChar, tkLString, tkWString, tkVariant, tkInt64];
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
@@ -656,7 +653,7 @@ begin
       begin
         PropInfo := PropList^[I];
         if (PropInfo <> nil) and (PropInfo.PropType^.Kind in ValidKinds) then
-          Proc(PropInfo.Name);
+          Proc({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo.Name));
       end;
     finally
       FreeMem(PropList);

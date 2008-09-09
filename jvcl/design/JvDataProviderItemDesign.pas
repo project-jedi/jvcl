@@ -292,7 +292,7 @@ end;
 
 function VMTTypeInfoFromClass(const AClass: TClass): PPTypeInfo;
 var
-  P: PChar;
+  P: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
 begin
   P := Pointer(AClass);
   Inc(P, vmtTypeInfo); // Now pointing to TypeInfo of the VMT table.
@@ -783,6 +783,7 @@ var
           destProp.GetProc := @TBaseItemDsgn.GetFloatProp;
           destProp.SetProc := @TBaseItemDsgn.SetFloatProp;
         end;
+      {$IFDEF UNICODE} tkUString, {$ENDIF}
       tkString, tkLString:
         begin
           destProp.GetProc := @TBaseItemDsgn.GetStrProp;

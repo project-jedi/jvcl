@@ -139,6 +139,9 @@ implementation
 uses
   Dialogs,
   Math, SysUtils,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   JvID3v2DefineForm, JvTypes, JvDsgnConsts;
 
 
@@ -629,14 +632,13 @@ end;
 
 function TJvID3FramesEditor.UniqueName(Component: TComponent): string;
 var
-  FrameName: string;
+  FrameName: AnsiString;
 begin
   if Component is TJvID3Frame then
     FrameName := TJvID3Frame(Component).FrameName
   else
     FrameName := '';
-  Result := CreateUniqueName(Controller, FrameName,
-    TJvID3FrameClass(Component.ClassType), Component)
+  Result := string(CreateUniqueName(Controller, FrameName, TJvID3FrameClass(Component.ClassType), Component))
 end;
 
 procedure TJvID3FramesEditor.UpdateCaption;
@@ -666,7 +668,7 @@ var
   EnableList: Boolean;
   I: Integer;
   Frame: TJvID3Frame;
-  FrameName: string;
+  FrameName: AnsiString;
 begin
   SaveSelection(Selection, ItemIndex, TopIndex, True);
   try
@@ -682,9 +684,9 @@ begin
         begin
           FrameName := Frame.FrameName;
           if FrameName = '' then
-            FrameName := Format('<%s>', [Controller.Frames[I].Name]);
-          FrameName := FrameName + ' - ' + cFrameDescriptions[Frame.FrameID];
-          FrameListBox.Items.AddObject(FrameName, Frame);
+            FrameName := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('<%s>', [Controller.Frames[I].Name]);
+          FrameName := FrameName + ' - ' + AnsiString(cFrameDescriptions[Frame.FrameID]);
+          FrameListBox.Items.AddObject(string(FrameName), Frame);
         end;
       end;
 

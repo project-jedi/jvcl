@@ -1,11 +1,11 @@
 object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Left = 382
   Top = 246
-  ClientWidth = 434
-  ClientHeight = 297
   Caption = 'JvCsvDataSet.CSVFieldDef Editor'
+  ClientHeight = 381
+  ClientWidth = 434
   Color = clBtnFace
-  Constraints.MinHeight = 333
+  Constraints.MinHeight = 331
   Constraints.MinWidth = 442
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,11 +26,14 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  DesignSize = (
+    434
+    381)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 24
-    Top = 228
+    Left = 8
+    Top = 313
     Width = 66
     Height = 13
     Anchors = [akLeft, akBottom]
@@ -52,7 +55,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object SpeedButtonAdd: TSpeedButton
     Left = 8
-    Top = 196
+    Top = 262
     Width = 101
     Height = 22
     Anchors = [akLeft, akBottom]
@@ -75,7 +78,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object SpeedButtonDel: TSpeedButton
     Left = 336
-    Top = 196
+    Top = 280
     Width = 85
     Height = 22
     Anchors = [akLeft, akBottom]
@@ -84,7 +87,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object SpeedButtonMod: TSpeedButton
     Left = 128
-    Top = 196
+    Top = 262
     Width = 89
     Height = 22
     Anchors = [akLeft, akBottom]
@@ -123,12 +126,12 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Left = 228
     Top = 4
     Width = 2
-    Height = 213
+    Height = 297
     Anchors = [akLeft, akTop, akBottom]
   end
   object SpeedButtonMoveFieldUp: TSpeedButton
-    Left = 240
-    Top = 196
+    Left = 244
+    Top = 260
     Width = 23
     Height = 22
     Anchors = [akLeft, akBottom]
@@ -149,8 +152,8 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     OnClick = SpeedButtonMoveFieldUpClick
   end
   object SpeedButtonMoveFieldDown: TSpeedButton
-    Left = 264
-    Top = 196
+    Left = 273
+    Top = 260
     Width = 23
     Height = 22
     Anchors = [akLeft, akBottom]
@@ -172,7 +175,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object LabelKey: TLabel
     Left = 296
-    Top = 204
+    Top = 288
     Width = 40
     Height = 21
     Anchors = [akLeft, akBottom]
@@ -180,7 +183,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object EditCsvStr: TEdit
     Left = 96
-    Top = 226
+    Top = 310
     Width = 321
     Height = 31
     TabStop = False
@@ -192,7 +195,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object ButtonOk: TButton
     Left = 268
-    Top = 264
+    Top = 348
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -202,7 +205,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   end
   object ButtonCancel: TButton
     Left = 352
-    Top = 264
+    Top = 348
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -215,7 +218,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Left = 8
     Top = 64
     Width = 209
-    Height = 129
+    Height = 184
     Anchors = [akLeft, akTop, akBottom]
     ItemHeight = 13
     Items.Strings = (
@@ -227,7 +230,8 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
       'Hex Timestamp (GMTTIME Hex)'
       'Hex LocalTime (LOCALTIME Hex)'
       'Date (YYYY/MM/DD)'
-      'Time (HH:MM:SS)')
+      'Time (HH:MM:SS)'
+      'WideString (Encoded as UTF8 in CSV)')
     TabOrder = 4
     OnClick = ListBoxFieldTypesClick
   end
@@ -249,7 +253,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Left = 240
     Top = 24
     Width = 181
-    Height = 169
+    Height = 224
     Anchors = [akLeft, akTop, akBottom]
     ItemHeight = 13
     TabOrder = 2
