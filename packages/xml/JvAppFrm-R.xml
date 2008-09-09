@@ -14,7 +14,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="all" Condition=""/> 
+    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
@@ -23,7 +23,8 @@
     <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcljpg" Targets="allv6up" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvGradientCaption.pas" Targets="VCL" Formname="" Condition=""/>
