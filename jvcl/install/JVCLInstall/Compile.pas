@@ -34,7 +34,7 @@ interface
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
   GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser,
-  JvVCL5Utils, JVCLVer;
+  JclBase, JvVCL5Utils, JVCLVer;
 
 type
   TProgressKind = (
@@ -173,6 +173,9 @@ resourcestring
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, JvConsts, Utils, Core, Dcc32FileAgePatch;
 
 resourcestring
@@ -212,7 +215,7 @@ var
 begin
   Result := Edition;
   for i := 2 to Length(Result) do
-    if not (Result[i] in ['0'..'9']) then
+    if not CharInSet(Result[i], ['0'..'9']) then
     begin
       Result := Copy(Result, 1, i - 1);
       Exit;
