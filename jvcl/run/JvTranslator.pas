@@ -137,6 +137,9 @@ implementation
 
 uses
   TypInfo,
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JclStreams,
   JvConsts;
 
@@ -236,6 +239,8 @@ function TJvTranslator.ComponentToXML(const AComponent: TComponent; Recurse: Boo
 var
   AName: string;
   AElem: TJvSimpleXMLElem;
+  JclStream: TJclStringStream;
+  StringStream: TStringStream;
 
   procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem; Recurse:Boolean); forward;
 
@@ -358,6 +363,7 @@ var
               Elem.Properties.Add(PropName, GetEnumProp(AnObject, PropName));
             tkSet:
               Elem.Properties.Add(PropName, GetSetProp(AnObject, PropName));
+            {$IFDEF UNICODE} tkUString, {$ENDIF}
             tkString, tkLString:
               Elem.Properties.Add(PropName, GetStrProp(AnObject, PropName));
             tkClass:
@@ -411,7 +417,7 @@ var
       for I := 0 to Count - 1 do
       begin
         PropInfo := PropList[I];
-        PropName := PropInfo^.Name;
+        PropName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name);
 
         if InSkipList(AComponent, PropName) or (PropInfo^.SetProc = nil) then
           Continue;
@@ -422,6 +428,7 @@ var
             Elem.Properties.Add(PropName, GetEnumProp(AComponent, PropName));
           tkSet:
             Elem.Properties.Add(PropName, GetSetProp(AComponent, PropName));
+          {$IFDEF UNICODE} tkUString, {$ENDIF}
           tkString, tkLString, tkWString:
             Elem.Properties.Add(PropName, XMLEncode(InternalGetWideStrProp(AComponent, PropName)));
           tkClass:
@@ -490,7 +497,22 @@ begin
   if AName <> '' then
   begin
     InnerComponentToXML(AComponent, AElem, Recurse);
-    Result := FXML.Root.SaveToString;
+{$ifdef COMPILER12_UP}
+    StringStream := TStringStream.Create;
+{$else}
+    StringStream := TStringStream.Create('');
+{$endif}
+    try
+      JclStream := TJclStringStream.Create(StringStream);
+      try
+        FXML.Root.SaveToStringStream(JclStream);
+        Result := StringStream.DataString;
+      finally
+        JclStream.Free;
+      end;
+    finally
+      StringStream.Free;
+    end;
   end;
 end;
 
@@ -634,10 +656,10 @@ var
       Exit;
     for I := 0 to Elem.Properties.Count - 1 do
     try
-      PropInfo := GetPropInfo(Obj, Elem.Properties[I].Name, [tkInteger,
-        tkEnumeration, tkSet, tkString, tkLString, tkWString]);
+      PropInfo := GetPropInfo(Obj, Elem.Properties[I].Name, [tkInteger, tkEnumeration, tkSet] + tkStrings);
       if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Properties[I].Name) then
         case PropInfo^.PropType^.Kind of
+          {$IFDEF UNICODE} tkUString, {$ENDIF}
           tkString, tkLString, tkWString:
             SetStrProp(Obj, PropInfo, StringReplace(Elem.Properties[I].Value, cNewline, sLineBreak, []));
           tkSet:
@@ -700,11 +722,11 @@ var
     else
       for I := 0 to Elem.Items.Count - 1 do
       try
-        PropInfo := GetPropInfo(Obj, Elem.Items[I].Name, [tkInteger,
-          tkEnumeration, tkSet, tkString, tkLString, tkClass]);
+        PropInfo := GetPropInfo(Obj, Elem.Items[I].Name, [tkInteger, tkEnumeration, tkSet] + tkStrings);
         if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Items[I].Name) then
           case PropInfo^.PropType^.Kind of
-            tkString, tkLString:
+            {$IFDEF UNICODE} tkUString, {$ENDIF}
+            tkString, tkLString, tkWString:
               SetStrProp(Obj, PropInfo, StringReplace(Elem.Items[I].Value, cNewline, sLineBreak, []));
             tkSet:
               SetSetProp(Obj, PropInfo, Elem.Items[I].Value);
@@ -766,8 +788,8 @@ begin
         if not Ok then
         begin
           PropInfo := GetPropInfo(Component, Elem.Items[I].Name, [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
-            tkString, tkSet, tkClass, tkMethod, tkWChar, tkLString, tkWString,
-              tkVariant, tkArray, tkRecord, tkInterface, tkInt64, tkDynArray]);
+            tkSet, tkClass, tkMethod, tkWChar, tkVariant, tkArray, tkRecord,
+            tkInterface, tkInt64, tkDynArray] + tkStrings);
           if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Component, Elem.Items[I].Name) then
           begin
             Obj := GetObjectProp(Component, Elem.Items[I].Name);
@@ -997,7 +1019,7 @@ begin
     P^.AProps.Add(PropName); // skip this property only
   FSkipList.Add(P);
   if AClass.InheritsFrom(TPersistent) then
-    RegisterClass(TPersistentClass(AClass));
+    Classes.RegisterClass(TPersistentClass(AClass));
 end;
 
 procedure TJvTranslator.UnskipProperty(AClass: TClass; const PropName: string);

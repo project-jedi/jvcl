@@ -105,7 +105,7 @@ function AsyncQrySupported(Database: TDatabase): Boolean;
 function GetQuoteChar(Database: TDatabase): string;
 procedure ExecuteQuery(const DbName, QueryText: string);
 procedure ExecuteQueryEx(const SessName, DbName, QueryText: string);
-procedure BdeTranslate(Locale: TLocale; Source, Dest: PChar; ToOem: Boolean);
+procedure BdeTranslate(Locale: TLocale; Source, Dest: PAnsiChar; ToOem: Boolean);
 function FieldLogicMap(FldType: TFieldType): Integer;
 function FieldSubtypeMap(FldType: TFieldType): Integer;
 procedure ConvertStringToLogicType(Locale: TLocale; FldLogicType: Integer;
@@ -363,7 +363,7 @@ begin
   try
     case FldLogicType of
       fldZSTRING:
-        AnsiToNative(Locale, Value, PChar(Buffer), FldSize);
+        AnsiToNative(Locale, AnsiString(Value), PAnsiChar(Buffer), FldSize);  // potential data loss under D2009 because of AnsiString cast
       fldBYTES, fldVARBYTES:
         Move(Value[1], Buffer^, Min(Length(Value), FldSize));
       fldINT16, fldINT32, fldUINT16, fldINT64:
@@ -384,7 +384,7 @@ begin
           if L = 0 then
             B := False
           else
-            B := Value[1] in ['Y', 'y', 'T', 't', '1'];
+            B := CharInSet(Value[1], ['Y', 'y', 'T', 't', '1']);
           Move(B, Buffer^, SizeOf(WordBool));
         end;
       fldFLOAT, fldBCD:
@@ -516,10 +516,10 @@ const
   idSQLUserID = 'USERID';
 var
   ParamList: TStringList;
-  DBPath: string[127];
-  TempStr, AppConName: string[127];
-  UserName: string[30];
-  ExeName: string[12];
+  DBPath: string;
+  TempStr, AppConName: string;
+  UserName: string;
+  ExeName: string;
   IniFile: TIniFile;
 begin
   ParamList := TStringList.Create;
@@ -574,10 +574,10 @@ begin
   I := 1;
   while I <= Length(DatabaseName) do
   begin
-    if DatabaseName[I] in LeadBytes then
+    if CharInSet(DatabaseName[I], LeadBytes) then
       Inc(I)
     else
-      if DatabaseName[I] in [':', '\'] then
+      if CharInSet(DatabaseName[I], [':', '\']) then
       Exit;
     Inc(I);
   end;
@@ -591,13 +591,13 @@ var
   Params: TStrings;
 begin
   Result := '';
-  StrPLCopy(SAlias, AliasName, SizeOf(SAlias) - 1);
+  StrPLCopy(SAlias, AnsiString(AliasName), SizeOf(SAlias) - 1);
   AnsiToOem(SAlias, SAlias);
   Check(DbiGetDatabaseDesc(SAlias, @Desc));
   if StrIComp(Desc.szDbType, szCFGDBSTANDARD) = 0 then
   begin
     OemToAnsi(Desc.szPhyName, Desc.szPhyName);
-    Result := StrPas(Desc.szPhyName);
+    Result := string(StrPas(Desc.szPhyName));
   end
   else
   begin
@@ -995,7 +995,7 @@ begin
   NewIndex := '';
   for I := Low(IndexFields) to High(IndexFields) do
   begin
-    NewIndex := NewIndex + TVarRec(IndexFields[I]).VString^;
+    NewIndex := NewIndex + string(TVarRec(IndexFields[I]).VString^);
     if I <> High(IndexFields) then
       NewIndex := NewIndex + ';';
   end;
@@ -1055,7 +1055,7 @@ var
   { Uses as a handle to the database }
   hDb: hDBIDb;
   { Path to the currently opened table }
-  TablePath: array [0..dbiMaxPathLen] of Char;
+  TablePath: array [0..dbiMaxPathLen] of AnsiChar;
   Exclusive: Boolean;
 begin
   if not Table.Active then
@@ -1070,7 +1070,7 @@ begin
     with TblDesc do
     begin
       { Place the table name in descriptor }
-      StrPCopy(szTblName, Table.TableName);
+      StrPCopy(szTblName, AnsiString(Table.TableName));
       { Place the table type in descriptor }
       StrCopy(szTblType, CurProp.szTableType);
       bPack := True;
@@ -1293,7 +1293,7 @@ var
   I: Integer;
   S, Path: string;
   BatchMove: TBatchMove;
-  TablePath: array[0..dbiMaxPathLen] of Char;
+  TablePath: array[0..dbiMaxPathLen] of AnsiChar;
 begin
   if Source = nil then
     _DBError(SDataSetEmpty);
@@ -1350,7 +1350,7 @@ begin
           DestTable.Open;
           try
             Check(DbiGetDirectory(DestTable.DBHandle, False, TablePath));
-            Path := NormalDir(OemToAnsiStr(StrPas(TablePath)));
+            Path := NormalDir(string(OemToAnsiStr(StrPas(TablePath))));
           finally
             DestTable.Close;
           end;
@@ -1445,7 +1445,7 @@ begin
     _DBError(SDatabaseClosed);
 end;
 
-procedure BdeTranslate(Locale: TLocale; Source, Dest: PChar; ToOem: Boolean);
+procedure BdeTranslate(Locale: TLocale; Source, Dest: PAnsiChar; ToOem: Boolean);
 var
   Len: Cardinal;
 begin
@@ -1458,10 +1458,10 @@ begin
     Dest[Len] := #0;
 end;
 
-function TrimMessage(Msg: PChar): PChar;
+function TrimMessage(Msg: PAnsiChar): PAnsiChar;
 var
   Blank: Boolean;
-  Source, Dest: PChar;
+  Source, Dest: PAnsiChar;
 begin
   Source := Msg;
   Dest := Msg;
@@ -1501,7 +1501,7 @@ begin
   if Msg[0] = #0 then
     Result := Format(SBDEError, [ErrorCode])
   else
-    Result := StrPas(Msg);
+    Result := string(StrPas(Msg));
   while True do
   begin
     StrCopy(LastMsg, Msg);
@@ -1568,7 +1568,7 @@ var
   FileName: DBIPATH;
 begin
   Check(DbiDebugLayerOptions(Options[Active], StrPLCopy(FileName,
-    DebugFile, SizeOf(DBIPATH) - 1)));
+    AnsiString(DebugFile), SizeOf(DBIPATH) - 1)));
 end;
 { begin JvDBUtil }
 
@@ -1606,7 +1606,7 @@ var
     Rem := False;
     while (Length(S) > 0) do
     begin
-      if (S[1] in [' ', Cr, Lf]) then
+      if CharInSet(S[1], [' ', Cr, Lf]) then
         Delete(S, 1, 1)
       else
       if Rem then
@@ -1674,7 +1674,7 @@ begin
           begin
             S1 := Q;
             N2 := 0;
-            while (Length(S1) > 0) and (S1[1] in [' ', Cr, Lf]) do
+            while (Length(S1) > 0) and CharInSet(S1[1], [' ', Cr, Lf]) do
             begin
               Delete(S1, 1, 1);
               Inc(N2);
@@ -1950,7 +1950,7 @@ var
   OpType: CROpType;
 begin
   SetLength(Dir, dbiMaxNameLen + 1);
-  Check(DbiGetDirectory(Tbl.DBHandle, False, PChar(Dir)));
+  Check(DbiGetDirectory(Tbl.DBHandle, False, PAnsiChar(AnsiString(Dir))));
   SetLength(Dir, StrLen(PChar(Dir)));
   RInt := AllocMem(SizeOf(RINTDesc));
   try
@@ -1958,11 +1958,11 @@ begin
     Tbl.DisableControls;
     Tbl.Close;
     Check(DbiOpenDatabase(nil, nil, dbiReadWrite, dbiOpenExcl, nil, 0, nil, nil, hDb));
-    Check(DbiSetDirectory(hDb, PChar(Dir)));
+    Check(DbiSetDirectory(hDb, PAnsiChar(AnsiString(Dir))));
     with RInt^ do
     begin
-      StrPCopy(szRintName, RefName);
-      StrPCopy(szTblName, MasterTable);
+      StrPCopy(szRintName, AnsiString(RefName));
+      StrPCopy(szTblName, AnsiString(MasterTable));
       eType := rintDEPENDENT;
       eModOp := ModOp;
       eDelOp := DelOp;
@@ -1974,7 +1974,7 @@ begin
     TblDesc.pRINTDesc := RInt;
     OpType := crADD;
     TblDesc.pecrRintOp := @OpType;
-    StrPCopy(TblDesc.szTblName, Tbl.TableName);
+    StrPCopy(TblDesc.szTblName, AnsiString(Tbl.TableName));
     StrCopy(TblDesc.szTblType, szPARADOX);
     Check(DbiDoRestructure(hDb, 1, @TblDesc, nil, nil, nil, False));
   finally
@@ -2049,11 +2049,11 @@ begin
   with TblDesc do
   begin
     { Place the table name in descriptor }
-    StrPCopy(szTblName, Table.TableName);
+    StrPCopy(szTblName, AnsiString(Table.TableName));
     { Place the table type in descriptor }
     StrCopy(szTblType, szPARADOX);
     { Master Password, Password }
-    StrPCopy(szPassword, pswd);
+    StrPCopy(szPassword, AnsiString(pswd));
     { Set bProtected to True }
     bProtected := RESTRUCTURE_TRUE;
   end;
@@ -2098,13 +2098,13 @@ begin
     // Get the database handle from the table's cursor handle...
     Check(DbiGetObjFromObj(hDBIObj(Table.Handle), objDATABASE, hDBIObj(hDb)));
     // Put the table name in the table descriptor...
-    StrPCopy(TableDesc.szTblName, Table.TableName);
+    StrPCopy(TableDesc.szTblName, AnsiString(Table.TableName));
     // Put the table type in the table descriptor...
     StrPCopy(TableDesc.szTblType, Props.szTableType);
     // Set the Pack option in the table descriptor to True...
     TableDesc.bPack := True;
     { Master Password, Password }
-    StrPCopy(TableDesc.szPassword, pswd);
+    StrPCopy(TableDesc.szPassword, AnsiString(pswd));
     { Set bProtected to True }
     TableDesc.bProtected := RESTRUCTURE_TRUE;
     // Close the table so the restructure can complete...

@@ -464,7 +464,7 @@ type
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean;
+    function HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean;
       {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
     {$IFNDEF USEJVCL}
     procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
@@ -2327,7 +2327,7 @@ begin
   end;
 end;
 
-function TJvXPCustomWinXPBar.HintShow(var HintInfo: THintInfo): Boolean;
+function TJvXPCustomWinXPBar.HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean;
 begin
   // draw the item hint (if available)
   if (FHoverIndex > -1) and (FVisibleItems[FHoverIndex] <> nil) then

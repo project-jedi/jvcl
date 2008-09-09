@@ -211,6 +211,9 @@ implementation
 
 uses
   Consts,
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JvJCLUtils, JvResources, JvConsts, JvTypes;
 
 const
@@ -231,12 +234,12 @@ end;
 
 function NameDelimiter(C: Char; Delims: TCharSet): Boolean;
 begin
-  Result := (C in [' ', ',', ';', ')', Cr, Lf]) or (C in Delims);
+  Result := CharInSet(C, [' ', ',', ';', ')', Cr, Lf]) or CharInSet(C, Delims);
 end;
 
 function IsLiteral(C: Char): Boolean;
 begin
-  Result := C in ['''', '"'];
+  Result := CharInSet(C, ['''', '"']);
 end;
 
 procedure CreateMacros(List: TJvMacros; const Value: PChar; SpecialChar: Char; Delims: TCharSet);
@@ -763,6 +766,8 @@ begin
 end;
 
 procedure TJvStrHolder.ReadStrings(Reader: TReader);
+var
+  Tmp: string;
 begin
   Reader.ReadListBegin;
   if not Reader.EndOfList then
@@ -770,9 +775,14 @@ begin
   Strings.Clear;
   while not Reader.EndOfList do
     if FReserved >= XorVersion then
-      Strings.Add(XorDecode(KeyString, Reader.ReadString))
+    begin
+      Strings.Add(XorDecode(KeyString, Reader.ReadString));
+    end
     else
-      Strings.Add(XorString(KeyString, Reader.ReadString));
+    begin
+      Tmp := Reader.ReadString;
+      Strings.Add(string(XorString(ShortString(KeyString), ShortString(Tmp))));
+    end;
   Reader.ReadListEnd;
 end;
 

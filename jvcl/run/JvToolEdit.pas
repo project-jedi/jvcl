@@ -53,6 +53,7 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
+  JclBase,
   JvVCL5Utils, JvConsts,
   JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton,
   JvDataSourceIntf;
@@ -862,8 +863,8 @@ type
     FCustomDateFormat: string;
     FYearDigits: TYearDigits;
     FDateFormatPreferred: TPreferredDateFormat;
-    FDateFormat: string[10];
-    FDateFormat2: string[10];
+    FDateFormat: string;
+    FDateFormat2: string;
     FFormatting: Boolean;
     procedure SetMinDate(Value: TDateTime);
     procedure SetMaxDate(Value: TDateTime);
@@ -2444,7 +2445,7 @@ begin
       end;
     end;
   end;
-  if Key in [Tab, Lf] then
+  if (Key = Tab) or (Key = Lf) then
   begin
     Key := #0;
     { (rb) Next code has no use because Key = #0? }
@@ -2626,7 +2627,7 @@ end;
 
 procedure TJvCustomComboEdit.ReadGlyphKind(Reader: TReader);
 const
-  sEnumValues: array [TGlyphKind] of string[12] =
+  sEnumValues: array [TGlyphKind] of string =
     ('gkCustom', 'gkDefault', 'gkDropDown', 'gkEllipsis');
 var
   S: string;
@@ -3690,7 +3691,7 @@ procedure TJvCustomDateEdit.KeyPress(var Key: Char);
 begin
   if not ReadOnly then
   begin
-    if (Key in ['T', 't', '+', '-']) and PopupVisible then
+    if CharInSet(Key, ['T', 't', '+', '-']) and PopupVisible then
     begin
       if FPopup is TJvPopupWindow then
         TJvPopupWindow(FPopup).KeyPress(Key);
@@ -4015,7 +4016,7 @@ end;
 procedure TJvCustomDateEdit.UpdateMask;
 var
   DateValue: TDateTime;
-  OldFormat: string[10];
+  OldFormat: string;
 begin
   DateValue := GetDate;
   OldFormat := FDateFormat;
@@ -5173,7 +5174,7 @@ begin
   {$IFDEF CLR}
   InvalidateRect(FEditor.Handle, R, False);
   {$ELSE}
-  InvalidateRect(FEditor.Handle, @R, False);
+  Windows.InvalidateRect(FEditor.Handle, @R, False);
   {$ENDIF CLR}
   UpdateWindow(FEditor.Handle);
 end;

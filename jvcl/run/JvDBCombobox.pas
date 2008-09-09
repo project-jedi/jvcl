@@ -203,6 +203,9 @@ uses
   {$ELSE}
   DBConsts,
   {$ENDIF COMPILER6_UP}
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   SysUtils,
   JvConsts;
 
@@ -394,7 +397,7 @@ end;
 procedure TJvCustomDBComboBox.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
+  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
     if BeepOnError then

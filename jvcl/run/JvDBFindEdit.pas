@@ -143,6 +143,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   SysUtils;
 
 constructor TJvDBFindEdit.Create(AOwner: TComponent);
@@ -210,7 +213,7 @@ var
 begin
   S1 := DateTimeToStr(Now);
   for I := 1 to Length(S1) do
-    if not (S1[I] in ['0'..'9']) then
+    if not CharInSet(S1[I], ['0'..'9']) then
     begin
       Result := S1[I];
       Break;

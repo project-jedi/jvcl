@@ -628,7 +628,7 @@ begin
   Start := Current;
   while (Current <> nil) and (Current^ <> #0) do
   begin
-    if Current^ in [',', ';'] then
+    if CharInSet(Current^, [',', ';']) then
     begin
       TmpChar := Current^;
       Current^ := #0;

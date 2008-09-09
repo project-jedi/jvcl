@@ -74,6 +74,10 @@ type
     destructor Destroy; override;
   end;
 
+  TStack = array [0..StackLimit] of Variant;
+  TBStack = array [0..StackLimit] of Boolean;
+  TRStack = array [0..StackLimit] of Integer;
+
   TJvSAL = class(TJvComponent)
   private
     FStop: Boolean;
@@ -81,9 +85,9 @@ type
     FSP: Integer;
     FRSP: Integer;
     FBSP: Integer;
-    FStack: array [0..StackLimit] of Variant;
-    FBStack: array [0..StackLimit] of Boolean;
-    FRStack: array [0..StackLimit] of Integer;
+    FStack: TStack;
+    FBStack: TBStack;
+    FRStack: TRStack;
     FProcs: TJvSALHashList;
     FScript: string;
     FUnits: TStringList;

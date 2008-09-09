@@ -570,7 +570,7 @@ begin
   if FPressed <> NewState then
   begin
     FPressed := NewState;
-    InvalidateRect(Handle, @R, False);
+    Windows.InvalidateRect(Handle, @R, False);
   end;
 end;
 

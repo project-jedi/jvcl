@@ -191,7 +191,7 @@ type
   TJvViewerItemChangingEvent = procedure(Sender: TObject; Item: TJvViewerItem; var Allow: Boolean) of object;
   TJvViewerItemChangedEvent = procedure(Sender: TObject; Item: TJvViewerItem) of object;
   TJvViewerItemHintEvent = procedure(Sender: TObject; Index: Integer;
-    var HintInfo: THintInfo; var Handled: Boolean) of object;
+    var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo; var Handled: Boolean) of object;
 
   TJvCustomItemViewer = class(TJvExScrollingWinControl)
   private
@@ -287,8 +287,8 @@ type
     procedure Deleted(Item: TJvViewerItem); virtual;
     procedure ItemChanging(Item: TJvViewerItem; var AllowChange: Boolean); virtual;
     procedure ItemChanged(Item: TJvViewerItem); virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; override;
-    function DoItemHint(Index: Integer; var HintInfo: THintInfo): Boolean; virtual;
+    function HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean; override;
+    function DoItemHint(Index: Integer; var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean; virtual;
     procedure CustomSort(Compare:TListSortCompare);virtual;
 
     property TopLeftIndex: Integer read FTopLeftIndex;
@@ -1203,7 +1203,7 @@ procedure TJvCustomItemViewer.InvalidateClipRect(R: TRect);
 begin
   if IsRectEmpty(R) then
     R := Canvas.ClipRect;
-  InvalidateRect(Handle, @R, True);
+  Windows.InvalidateRect(Handle, @R, True);
 end;
 
 function TJvCustomItemViewer.ItemAtPos(X, Y: Integer; Existing: Boolean): Integer;
@@ -1922,7 +1922,7 @@ begin
   {$ENDIF JVCLThemesEnabled}
 end;
 
-function TJvCustomItemViewer.HintShow(var HintInfo: THintInfo): Boolean;
+function TJvCustomItemViewer.HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean;
 var
   I: Integer;
 begin
@@ -1952,7 +1952,7 @@ begin
 end;
 
 function TJvCustomItemViewer.DoItemHint(Index: Integer;
-  var HintInfo: THintInfo): Boolean;
+  var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean;
 begin
   Result := False;
   if Assigned(FOnItemHint) then

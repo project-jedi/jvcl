@@ -1222,7 +1222,7 @@ begin
     ARect.Top := Y - 1 - CrossSize - CrossStyle.Width;
     ARect.Bottom := Y + 1 + CrossSize + CrossStyle.Width;
   end;
-  InvalidateRect(Handle, @ARect, False);
+  Windows.InvalidateRect(Handle, @ARect, False);
 end;
 
 procedure TJvFullColorPanel.Paint;
@@ -1908,7 +1908,7 @@ begin
     ARect.Right := ARect.Right + CrossStyle.Width + CrossSize;
     ARect.Bottom := ARect.Bottom + CrossStyle.Width + CrossSize;
 
-    InvalidateRect(Handle, @ARect, False);
+    Windows.InvalidateRect(Handle, @ARect, False);
   end;
 end;
 
@@ -2481,7 +2481,7 @@ begin
   ARect.Top := Min(CursorPoints[0].Y, Min(CursorPoints[1].Y, CursorPoints[2].Y));
   ARect.Right := Max(CursorPoints[0].X, Max(CursorPoints[1].X, CursorPoints[2].X)) + 1;
   ARect.Bottom := Max(CursorPoints[0].Y, Max(CursorPoints[1].Y, CursorPoints[2].Y)) + 1;
-  InvalidateRect(Handle, @ARect, False);
+  Windows.InvalidateRect(Handle, @ARect, False);
 end;
 
 procedure TJvFullColorTrackBar.Paint;
@@ -3485,7 +3485,7 @@ begin
     ARect.Top := YPos + RowIndex * (YInc + FSquareSize);
     ARect.Right := ARect.Left + FSquareSize + 1;
     ARect.Bottom := ARect.Top + FSquareSize + 1;
-    InvalidateRect(Handle, @ARect, False);
+    Windows.InvalidateRect(Handle, @ARect, False);
   end;
 end;
 
@@ -3495,6 +3495,12 @@ begin
   Msg.Result := 1;
   Refresh;
 end;
+
+{$IFDEF RTL200_UP}
+// for D2009 "Use Controls.PHintInfo" warning
+type
+  PHintInfo = Controls.PHintInfo;
+{$ENDIF RTL200_UP}
 
 procedure TJvFullColorGroup.CMHintShow(var Msg: TMessage);
 var

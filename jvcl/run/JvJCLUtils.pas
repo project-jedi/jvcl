@@ -57,6 +57,7 @@ uses
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
   TypInfo,
+  JclBase,
   JvVCL5Utils, JvTypes;
 
 const
@@ -246,7 +247,9 @@ function CurrencyToStr(const Cur: Currency): string;
 function HasChar(const Ch: Char; const S: string): Boolean;
 function HasCharW(const Ch: WideChar; const S: WideString): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function HasAnyChar(const Chars: string; const S: string): Boolean;
+{$IFNDEF COMPILER12_UP}
 function CharInSet(const Ch: AnsiChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+{$ENDIF ~COMPILER12_UP}
 function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function CountOfChar(const Ch: Char; const S: string): Integer;
 function DefStr(const S: string; Default: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -583,10 +586,10 @@ function OemStrToAnsi(const S: AnsiString): AnsiString;
 function AnsiStrToOem(const S: AnsiString): AnsiString;
 {$ENDIF UNIX}
 
-function StrToOem(const AnsiStr: string): string;
+function StrToOem(const AnsiStr: AnsiString): AnsiString;
 { StrToOem translates a string from the Windows character set into the
   OEM character set. }
-function OemToAnsiStr(const OemStr: string): string;
+function OemToAnsiStr(const OemStr: AnsiString): AnsiString;
 { OemToAnsiStr translates a string from the OEM character set into the
   Windows character set. }
 function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
@@ -614,7 +617,9 @@ function NPos(const C: string; S: string; N: Integer): Integer;
 { NPos searches for a N-th position of substring C in a given string. }
 function MakeStr(C: Char; N: Integer): string; overload;
 {$IFNDEF CLR}
+{$IFNDEF COMPILER12_UP}
 function MakeStr(C: WideChar; N: Integer): WideString; overload;
+{$ENDIF !COMPILER12_UP}
 {$ENDIF !CLR}
 function MS(C: Char; N: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { MakeStr return a string of length N filled with character C. }
@@ -685,7 +690,7 @@ function IsWild(InputStr, Wilds: string; IgnoreCase: Boolean): Boolean;
   if corresponds. }
 function XorString(const Key, Src: ShortString): ShortString;
 function XorEncode(const Key, Source: string): string;
-function XorDecode(const Key, Source: AnsiString): AnsiString;
+function XorDecode(const Key, Source: string): string;
 
 { ** Command line routines ** }
 
@@ -727,7 +732,7 @@ function StartsText(const SubStr, S: string): Boolean;
 function EndsText(const SubStr, S: string): Boolean;
 
 function DequotedStr(const S: string; QuoteChar: Char = ''''): string;
-function AnsiDequotedStr(const S: AnsiString; AQuote: AnsiChar): AnsiString;
+function AnsiDequotedStr(const S: string; AQuote: Char): string; // follow Delphi 2009's "Ansi" prefix
 {$ENDIF !CLR}
 
 {end JvStrUtils}
@@ -992,7 +997,7 @@ function UnregisterServer(const ModuleName: string): Boolean;
 
 { String routines }
 function GetEnvVar(const VarName: string): string;
-function AnsiUpperFirstChar(const S: AnsiString): AnsiString;
+function AnsiUpperFirstChar(const S: string): string; // follow Delphi 2009's example with the "Ansi" prefix
 {$IFNDEF CLR}
 function StringToPChar(var S: string): PChar;
 function StrPAlloc(const S: string): PChar;
@@ -1295,6 +1300,8 @@ resourcestring
   RsEPropertyNotExists = 'Property "%s" does not exist';
   RsEInvalidPropertyType = 'Property "%s" has invalid type';
   RsEPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
+const
+  tkStrings: set of TTypeKind = [tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString];
 
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 {$IFDEF CLR}
@@ -1732,11 +1739,11 @@ begin
   if (P > Length(S)) or (P < 1) then
     Exit;
   for I := P downto 1 do
-    if S[I] in Separators then
+    if CharInSet(S[I], Separators) then
       Break;
   Beg := I + 1;
   for I := P to Length(S) do
-    if S[I] in Separators then
+    if CharInSet(S[I], Separators) then
       Break;
   if I > Beg then
     Result := Copy(S, Beg, I - Beg)
@@ -1769,18 +1776,18 @@ begin
   Result := '';
   if P < 1 then
     Exit;
-  if (S[P] in Separators) and ((P < 1) or (S[P - 1] in Separators)) then
+  if CharInSet(S[P], Separators) and ((P < 1) or CharInSet(S[P - 1], Separators)) then
     Inc(P);
   iBeg := P;
   while iBeg >= 1 do
-    if S[iBeg] in Separators then
+    if CharInSet(S[iBeg], Separators) then
       Break
     else
       Dec(iBeg);
   Inc(iBeg);
   iEnd := P;
   while iEnd <= Length(S) do
-    if S[iEnd] in Separators then
+    if CharInSet(S[iEnd], Separators) then
       Break
     else
       Inc(iEnd);
@@ -1795,7 +1802,7 @@ begin
   Result := '';
   if P < 1 then
     Exit;
-  if (CharInSetW(S[P], Separators)) and
+  if CharInSetW(S[P], Separators) and
     ((P < 1) or (CharInSetW(S[P - 1], Separators))) then
     Inc(P);
   iBeg := P;
@@ -1824,21 +1831,21 @@ begin
     Exit;
   iBeg := P;
   if P > 1 then
-    if S[P] in Separators then
-      if (P < 1) or ((P - 1 > 0) and (S[P - 1] in Separators)) then
+    if CharInSet(S[P], Separators) then
+      if (P < 1) or ((P - 1 > 0) and CharInSet(S[P - 1], Separators)) then
         Inc(iBeg)
       else
-      if not ((P - 1 > 0) and (S[P - 1] in Separators)) then
+      if not ((P - 1 > 0) and CharInSet(S[P - 1], Separators)) then
         Dec(iBeg);
   while iBeg >= 1 do
-    if S[iBeg] in Separators then
+    if CharInSet(S[iBeg], Separators) then
       Break
     else
       Dec(iBeg);
   Inc(iBeg);
   iEnd := P;
   while iEnd <= Length(S) do
-    if S[iEnd] in Separators then
+    if CharInSet(S[iEnd], Separators) then
       Break
     else
       Inc(iEnd);
@@ -1888,19 +1895,19 @@ begin
   Result := '';
   if (StartIndex < 1) or (StartIndex > Len) then
     Exit;
-  if (Text[StartIndex] in Separators) and
-    ((StartIndex < 1) or (Text[StartIndex - 1] in Separators)) then
+  if CharInSet(Text[StartIndex], Separators) and
+     ((StartIndex < 1) or CharInSet(Text[StartIndex - 1], Separators)) then
     Inc(StartIndex);
   iBeg := StartIndex;
   while iBeg >= 1 do
-    if Text[iBeg] in Separators then
+    if CharInSet(Text[iBeg], Separators) then
       Break
     else
       Dec(iBeg);
   Inc(iBeg);
   iEnd := StartIndex;
   while iEnd <= Len do
-    if Text[iEnd] in Separators then
+    if CharInSet(Text[iEnd], Separators) then
       Break
     else
       Inc(iEnd);
@@ -1912,7 +1919,7 @@ begin
 
   // go right
   iEnd := iBeg;
-  while (iEnd <= Len) and (not (Text[iEnd] in Separators)) do
+  while (iEnd <= Len) and not CharInSet(Text[iEnd], Separators) do
     Inc(iEnd);
   if iEnd > Len then
     iEnd := Len
@@ -1954,7 +1961,7 @@ begin
 
   // go right
   iEnd := iBeg;
-  while (iEnd <= Len) and (not CharInSetW(Text[iEnd], Separators)) do
+  while (iEnd <= Len) and not CharInSetW(Text[iEnd], Separators) do
     Inc(iEnd);
   if iEnd > Len then
     iEnd := Len
@@ -2070,7 +2077,7 @@ var
   I: Integer;
 begin
   I := 0;
-  while not (P[I] in Separators) do
+  while not CharInSet(P[I], Separators) do
     Inc(I);
   SetString(Result, P, I);
   P2 := P + I;
@@ -2331,8 +2338,8 @@ end;
 
 function Win2Koi(const S: AnsiString): AnsiString;
 const
-  W = 'àáâãäå¸æçèéêëìíîïðñ=óôõ÷öøùüûúýÝÿ+--+-+¨ÆÇ++--Ý-+ÏÐÑÒÓÔi×ÖØ+_Ý+ÝÞî';
-  K = '--×Ç-+£Ö++--Ý-+ÏÐÒÓÔiÆ+Þ+ÝÝØ+î_+Ñáâ÷çäåÝöúéêëìíîïð=óôõæèÝãûýøùÿüàñ';
+  W: AnsiString = 'àáâãäå¸æçèéêëìíîïðñ=óôõ÷öøùüûúýÝÿ+--+-+¨ÆÇ++--Ý-+ÏÐÑÒÓÔi×ÖØ+_Ý+ÝÞî';
+  K: AnsiString = '--×Ç-+£Ö++--Ý-+ÏÐÒÓÔiÆ+Þ+ÝÝØ+î_+Ñáâ÷çäåÝöúéêëìíîïð=óôõæèÝãûýøùÿüàñ';
 var
   I, J: Integer;
 begin
@@ -2780,10 +2787,12 @@ begin
   Result := Copy(FileName, 1, Length(FileName) - Length(ExtractFileExt(FileName))) + NewExt;
 end;
 
+{$IFNDEF COMPILER12_UP}
 function CharInSet(const Ch: AnsiChar; const SetOfChar: TSysCharSet): Boolean;
 begin
   Result := Ch in SetOfChar;
 end;
+{$ENDIF ~COMPILER12_UP}
 
 function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean;
 begin
@@ -3419,11 +3428,11 @@ begin
     if PosBeg = 1 then
       PosBeg := 2;
     for I := PosBeg - 1 downto 1 do
-      if S[I] in Separators then
+      if CharInSet(S[I], Separators) then
         Break;
     Beg := I + 1;
     for Ent := PosBeg to LS do
-      if S[Ent] in Separators then
+      if CharInSet(S[Ent], Separators) then
         Break;
     if Ent > Beg then
       Word := Copy(S, Beg, Ent - Beg)
@@ -4048,7 +4057,7 @@ begin
     {$ELSE}
     raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
     {$ENDIF CLR}
-  if not (GetPropTypeKind(PropInf) in [tkString, tkLString, tkWString]) then
+  if not (GetPropTypeKind(PropInf) in tkStrings) then
     {$IFDEF CLR}
     raise Exception.CreateFmt(RsEInvalidPropertyType, [PropName]);
     {$ELSE}
@@ -4107,7 +4116,7 @@ begin
     for I := Ss.Count - 1 downto 0 do
     begin
       S := Trim(Ss[I]);
-      if (S = '') or (S[1] in [';', '#']) then
+      if (S = '') or (S[1] = ';') or (S[1] = '#') then
         Ss.Delete(I);
     end;
   finally
@@ -5076,7 +5085,7 @@ begin
   I := Pos;
   N := 0;
   while (I <= Length(S)) and (Longint(I - Pos) < MaxLength) and
-    (S[I] in ['0'..'9']) and (N < 1000) do
+    CharInSet(S[I], ['0'..'9']) and (N < 1000) do
   begin
     N := N * 10 + (Ord(S[I]) - Ord('0'));
     Inc(I);
@@ -5102,10 +5111,12 @@ end;
 
 procedure ScanToNumber(const S: string; var Pos: Integer);
 begin
-  while (Pos <= Length(S)) and not (S[Pos] in ['0'..'9']) do
+  while (Pos <= Length(S)) and not CharInSet(S[Pos], ['0'..'9']) do
   begin
+    {$IFNDEF UNICODE} // Utf16: '0'..'9' are in the BMP => no lead byte handling necessary
     if S[Pos] in LeadBytes then
       Inc(Pos);
+    {$ENDIF ~UNICODE}
     Inc(Pos);
   end;
 end;
@@ -5222,7 +5233,7 @@ begin
   ScanBlanks(S, Position);
   if SysLocale.FarEast and (Pos('ddd', ShortDateFormat) <> 0) then
   begin { ignore trailing text }
-    if ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
+    if CharInSet(ShortTimeFormat[1], ['0'..'9']) then { stop at time digit }
       ScanToNumber(S, Position)
     else { stop at time prefix }
       repeat
@@ -5260,7 +5271,7 @@ end;
 procedure ExtractMask(const Format, S: string; Ch: Char; Cnt: Integer;
   var I: Integer; Blank, Default: Integer);
 var
-  Tmp: string[20];
+  Tmp: string;
   J, L: Integer;
 begin
   I := Default;
@@ -5566,7 +5577,7 @@ end;
 
 {$ENDIF UNIX}
 
-function StrToOem(const AnsiStr: string): string;
+function StrToOem(const AnsiStr: AnsiString): AnsiString;
 {$IFDEF CLR}
 var
   sb: StringBuilder;
@@ -5585,7 +5596,7 @@ begin
   {$IFDEF MSWINDOWS}
   SetLength(Result, Length(AnsiStr));
   if Result <> '' then
-    CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
+    CharToOemBuffA(PAnsiChar(AnsiStr), PAnsiChar(Result), Length(Result));
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   Result := AnsiStrToOem(AnsiStr);
@@ -5593,7 +5604,7 @@ begin
 end;
 {$ENDIF CLR}
 
-function OemToAnsiStr(const OemStr: string): string;
+function OemToAnsiStr(const OemStr: AnsiString): AnsiString;
 {$IFDEF CLR}
 var
   sb: StringBuilder;
@@ -5612,7 +5623,7 @@ begin
   {$IFDEF MSWINDOWS}
   SetLength(Result, Length(OemStr));
   if Length(Result) > 0 then
-    OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
+    OemToCharBuffA(PAnsiChar(OemStr), PAnsiChar(Result), Length(Result));
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   Result := OemStrToAnsi(OemStr);
@@ -5628,7 +5639,7 @@ begin
   I := 1;
   while I <= SLen do
   begin
-    if not (S[I] in EmptyChars) then
+    if not CharInSet(S[I], EmptyChars) then
     begin
       Result := False;
       Exit;
@@ -5744,6 +5755,7 @@ begin
 end;
 
 {$IFNDEF CLR}
+{$IFNDEF COMPILER12_UP}
 function MakeStr(C: WideChar; N: Integer): WideString; overload;
 begin
   if N < 1 then
@@ -5754,6 +5766,7 @@ begin
     FillWideChar(Result[1], Length(Result), C);
   end;
 end;
+{$ENDIF !COMPILER12_UP}
 {$ENDIF !CLR}
 
 function MS(C: Char; N: Integer): string;
@@ -5886,7 +5899,7 @@ begin
   SLen := Length(Result);
   while I <= SLen do
   begin
-    while (I <= SLen) and (Result[I] in WordDelims) do
+    while (I <= SLen) and CharInSet(Result[I], WordDelims) do
       Inc(I);
     if I <= SLen then
       {$IFDEF CLR}
@@ -5894,7 +5907,7 @@ begin
       {$ELSE}
       Result[I] := AnsiUpperCase(Result[I])[1];
       {$ENDIF CLR}
-    while (I <= SLen) and not (Result[I] in WordDelims) do
+    while (I <= SLen) and not CharInSet(Result[I], WordDelims) do
       Inc(I);
   end;
 end;
@@ -5908,11 +5921,11 @@ begin
   SLen := Length(S);
   while I <= SLen do
   begin
-    while (I <= SLen) and (S[I] in WordDelims) do
+    while (I <= SLen) and CharInSet(S[I], WordDelims) do
       Inc(I);
     if I <= SLen then
       Inc(Result);
-    while (I <= SLen) and not (S[I] in WordDelims) do
+    while (I <= SLen) and not CharInSet(S[I], WordDelims) do
       Inc(I);
   end;
 end;
@@ -5928,14 +5941,14 @@ begin
   while (I <= Length(S)) and (Count <> N) do
   begin
     { skip over delimiters }
-    while (I <= Length(S)) and (S[I] in WordDelims) do
+    while (I <= Length(S)) and CharInSet(S[I], WordDelims) do
       Inc(I);
     { if we're not beyond end of S, we're at the start of a word }
     if I <= Length(S) then
       Inc(Count);
     { if not finished, find the end of the current word }
     if Count <> N then
-      while (I <= Length(S)) and not (S[I] in WordDelims) do
+      while (I <= Length(S)) and not CharInSet(S[I], WordDelims) do
         Inc(I)
     else
       Result := I;
@@ -5952,7 +5965,7 @@ begin
   I := WordPosition(N, S, WordDelims);
   if I <> 0 then
     { find the end of the current word }
-    while (I <= Length(S)) and not (S[I] in WordDelims) do
+    while (I <= Length(S)) and not CharInSet(S[I], WordDelims) do
     begin
       { add the I'th character to result }
       Inc(Len);
@@ -5973,7 +5986,7 @@ begin
   Pos := I;
   if I <> 0 then
     { find the end of the current word }
-    while (I <= Length(S)) and not (S[I] in WordDelims) do
+    while (I <= Length(S)) and not CharInSet(S[I], WordDelims) do
     begin
       { add the I'th character to result }
       Inc(Len);
@@ -5997,7 +6010,7 @@ begin
   SetLength(Result, 0);
   while (I <= SLen) and (CurWord <> N) do
   begin
-    if S[I] in Delims then
+    if CharInSet(S[I], Delims) then
       Inc(CurWord)
     else
     begin
@@ -6018,10 +6031,10 @@ var
   I: Integer;
 begin
   I := Pos;
-  while (I <= Length(S)) and not (S[I] in Delims) do
+  while (I <= Length(S)) and not CharInSet(S[I], Delims) do
     Inc(I);
   Result := Copy(S, Pos, I - Pos);
-  if (I <= Length(S)) and (S[I] in Delims) then
+  if (I <= Length(S)) and CharInSet(S[I], Delims) then
     Inc(I);
   Pos := I;
 end;
@@ -6163,13 +6176,13 @@ begin
   begin
     Inc(I);
     Index := UpCase(S[I]);
-    if Index in RomanChars then
+    if CharInSet(Index, RomanChars) then
     begin
       if Succ(I) <= Length(S) then
         Next := UpCase(S[I + 1])
       else
         Next := #0;
-      if (Next in RomanChars) and (RomanValues[Index] < RomanValues[Next]) then
+      if CharInSet(Next, RomanChars) and (RomanValues[Index] < RomanValues[Next]) then
       begin
         Inc(Result, RomanValues[Next]);
         Dec(Result, RomanValues[Index]);
@@ -6482,17 +6495,17 @@ begin
   end;
 end;
 
-function XorDecode(const Key, Source: AnsiString): AnsiString;
+function XorDecode(const Key, Source: string): string;
 var
   I: Integer;
-  C: AnsiChar;
+  C: Char;
 begin
   Result := '';
   for I := 0 to Length(Source) div 2 - 1 do
   begin
-    C := AnsiChar(StrToIntDef('$' + Copy(Source, (I * 2) + 1, 2), Ord(' ')));
+    C := Char(StrToIntDef('$' + string(Source[I * 2 + 1] + Source[I * 2 + 2]), Ord(' ')));
     if Length(Key) > 0 then
-      C := AnsiChar(Byte(Key[1 + (I mod Length(Key))]) xor Byte(C));
+      C := Char(Byte(Key[1 + (I mod Length(Key))]) xor Byte(C));
     Result := Result + C;
   end;
 end;
@@ -6506,7 +6519,7 @@ begin
   while I <= ParamCount do
   begin
     S := ParamStr(I);
-    if (ASwitchChars = []) or ((S[1] in ASwitchChars) and (Length(S) > 1)) then
+    if (ASwitchChars = []) or ((Length(S) > 1) and CharInSet(S[1], ASwitchChars)) then
     begin
       {$IFDEF CLR}
       if SameText(Copy(S, 2, MaxInt), Switch) then
@@ -6597,10 +6610,10 @@ begin
     {$IFDEF CLR}
     not (Result[Length(Result)] in [':', '\'])
     {$ELSE}
-    not (AnsiLastChar(Result)^ in [':', '\'])
+    not CharInSet(AnsiLastChar(Result)^, [':', '\'])
     {$ENDIF CLR}
   then
-    if (Length(Result) = 1) and (UpCase(Result[1]) in ['A'..'Z']) then
+    if (Length(Result) = 1) and CharInSet(Result[1], ['A'..'Z', 'a'..'z']) then
       Result := Result + ':\'
     else
       Result := Result + '\';
@@ -6617,7 +6630,7 @@ begin
     (AnsiLastChar(Result)^ = '\')
     {$ENDIF CLR}
   then
-    if not ((Length(Result) = 3) and (UpCase(Result[1]) in ['A'..'Z']) and
+    if not ((Length(Result) = 3) and CharInSet(Result[1], ['A'..'Z', 'a'..'z']) and
       (Result[2] = ':')) then
       Delete(Result, Length(Result), 1);
 end;
@@ -7167,7 +7180,9 @@ var
   PersistFile: IPersistFile;
   ItemIDList: PItemIDList;
   FileDestPath: array [0..MAX_PATH] of Char;
+  {$IFNDEF UNICODE}
   FileNameW: array [0..MAX_PATH] of WideChar;
+  {$ENDIF ~UNICODE}
 begin
   CoInitialize(nil);
   try
@@ -7181,8 +7196,12 @@ begin
         StrCat(FileDestPath, PChar('\' + DisplayName + LinkExt));
         ShellLink.SetPath(PChar(FileName));
         ShellLink.SetIconLocation(PChar(FileName), 0);
+        {$IFDEF UNICODE}
+        OleCheck(PersistFile.Save(FileDestPath, True));
+        {$ELSE}
         MultiByteToWideChar(CP_ACP, 0, FileDestPath, -1, FileNameW, MAX_PATH);
         OleCheck(PersistFile.Save(FileNameW, True));
+        {$ENDIF UNICODE}
       finally
         PersistFile := nil;
       end;
@@ -7827,34 +7846,33 @@ end;
 
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
 var
-  {$IFDEF CLR}
-  LStr: StringBuilder;
-  {$ELSE}
-  LStr: string;
-  {$ENDIF CLR}
+  LStr: TJclStringBuilder;
   I: Integer;
+  CharSet: TSysCharSet;
 begin
-  {$IFDEF CLR}
-  LStr := StringBuilder.Create(Length(Str));
-  {$ELSE}
-  LStr := '';
-  {$ENDIF CLR}
-  for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9', '-', '+', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})] then
-      {$IFDEF CLR}
-      LStr.Append(Str[I]);
-      {$ELSE}
-      LStr := LStr + Str[I];
-      {$ENDIF CLR}
-  try
-    {$IFDEF CLR}
-    if not TryStrToCurr(LStr.ToString(), Result) then
-    {$ELSE}
-    if not TextToFloat(PChar(LStr), Result, fvCurrency) then
-    {$ENDIF CLR}
-      Result := Def;
-  except
-    Result := Def;
+  if Str = '' then
+    Result := Def
+  else
+  begin
+    LStr := TJclStringBuilder.Create(Length(Str));
+    try
+      CharSet := ['0'..'9', '-', '+', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})];
+      for I := 1 to Length(Str) do
+        if CharInSet(Str[I], CharSet) then
+          LStr.Append(Str[I]);
+      try
+        {$IFDEF CLR}
+        if not TryStrToCurr(LStr.ToString(), Result) then
+        {$ELSE}
+        if not TextToFloat(PChar(LStr.ToString), Result, fvCurrency) then
+        {$ENDIF CLR}
+          Result := Def;
+      except
+        Result := Def;
+      end;
+    finally
+      LStr.Free;
+    end;
   end;
 end;
 
@@ -7864,57 +7882,51 @@ end;
 // issue# 2935: http://homepages.borland.com/jedi/issuetracker/view.php?id=2935
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 var
+  LStr: TJclStringBuilder;
   {$IFDEF CLR}
-  LStr: StringBuilder;
   d: Double;
   b: Boolean;
-  {$ELSE}
-  LStr: string;
   {$ENDIF CLR}
   I: Integer;
+  CharSet: TSysCharSet;
 begin
-  {$IFDEF CLR}
-  LStr := StringBuilder.Create;
-  {$ENDIF CLR}
-  for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9', '-', '+', 'e', 'E', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})] then
-      {$IFDEF CLR}
-      LStr.Append(Str[I]);
-      {$ELSE}
-      LStr := LStr + Str[I];
-      {$ENDIF CLR}
-  Result := Def;
-  {$IFDEF CLR}
-  if LStr.Length > 0 then
-  try
-    { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-    if LStr[LStr.Length] = '-' then
-      LStr.Append('0');
-
-    { a string that ends in a '.' such as '12.' fails StrToFloat,
-     but as far as I am concerned, it may as well be interpreted as 12.0 }
-    if LStr[LStr.Length] = DecimalSeparator then
-      LStr.Append('0');
-
-    b := TryStrToFloat(LStr.ToString(), d);
-    Result := d;
-    if not b then
-  {$ELSE}
-  if LStr <> '' then
-  try
-    { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-    if LStr[Length(LStr)] = '-' then
-      LStr := LStr + '0';
-
-    { a string that ends in a '.' such as '12.' fails StrToFloat,
-     but as far as I am concerned, it may as well be interpreted as 12.0 }
-    if LStr[Length(LStr)] = DecimalSeparator then
-      LStr := LStr + '0';
-    if not TextToFloat(PChar(LStr), Result, fvExtended) then
-  {$ENDIF CLR}
+  if Str = '' then
+    Result := Def
+  else
+  begin
+    LStr := TJclStringBuilder.Create(Length(Str));
+    try
+      CharSet := ['0'..'9', '-', '+', 'e', 'E', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})];
+      for I := 1 to Length(Str) do
+        if CharInSet(Str[I], CharSet) then
+          LStr.Append(Str[I]);
       Result := Def;
-  except
-    Result := Def;
+
+      if LStr.Length > 0 then
+      try
+        { the string '-' fails StrToFloat, but it can be interpreted as 0  }
+        if LStr[LStr.Length] = '-' then
+          LStr.Append('0');
+
+        { a string that ends in a '.' such as '12.' fails StrToFloat,
+         but as far as I am concerned, it may as well be interpreted as 12.0 }
+        if LStr[LStr.Length] = DecimalSeparator{$IFDEF CLR}[1]{$ENDIF} then
+          LStr.Append('0');
+
+        {$IFDEF CLR}
+        b := TryStrToFloat(LStr.ToString(), d);
+        Result := d;
+        if not b then
+        {$ELSE}
+        if not TextToFloat(PChar(LStr.ToString), Result, fvExtended) then
+        {$ENDIF CLR}
+          Result := Def;
+      except
+        Result := Def;
+      end;
+    finally
+      LStr.Free;
+    end;
   end;
 end;
 
@@ -8807,9 +8819,9 @@ begin
 end;
 {$ENDIF CLR}
 
-function AnsiUpperFirstChar(const S: AnsiString): AnsiString;
+function AnsiUpperFirstChar(const S: string): string;
 var
-  Temp: string[1];
+  Temp: string;
 begin
   Result := AnsiLowerCase(S);
   if S <> '' then
@@ -9213,11 +9225,6 @@ begin
   Clip.PixelFormat := OPF;
 end;
 
-{$ENDIF !CLR}
-
-
-{$IFNDEF CLR}
-
 procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect; ABitmap: TBitmap;
   const SourceRect: TRect);
 var
@@ -9286,11 +9293,10 @@ begin
   end;
 end;
 
-
-
 function TextToValText(const AValue: string): string;
 var
   I, J: Integer;
+  CharSet: TSysCharSet;
 begin
   Result := DelRSpace(AValue);
   if DecimalSeparator <> ThousandSeparator then
@@ -9302,9 +9308,11 @@ begin
     Result := ReplaceStr(Result, ',', DecimalSeparator);
 
   J := 1;
+  CharSet := ['0'..'9', '-', '+',
+        AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}),
+        AnsiChar(ThousandSeparator{$IFDEF CLR}[1]{$ENDIF})];
   for I := 1 to Length(Result) do
-    if Result[I] in ['0'..'9', '-', '+',
-        AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}), AnsiChar(ThousandSeparator{$IFDEF CLR}[1]{$ENDIF})] then
+    if CharInSet(Result[I], CharSet) then
     begin
       Result[J] := Result[I];
       Inc(J);
@@ -9318,15 +9326,16 @@ begin
     Result := '-0';
 end;
 
-
-
-
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   {$IFDEF CLR}
   Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
   {$ELSE}
-  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified  {$ENDIF CLR}
+  {$IFDEF UNICODE}
+  Result := Windows.DrawText(Canvas.Handle, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+  {$ELSE}
+  Result := DrawText(Canvas, PAnsiChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+  {$ENDIF UNICODE}
   {$ENDIF CLR}
 end;
 
@@ -9347,7 +9356,7 @@ end;
 
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
 begin
-  Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags);
+  Result := Windows.DrawTextA(Canvas.Handle, Text, Len, R, WinFlags);
 end;
 
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
@@ -9619,10 +9628,10 @@ end;
 
 function DequotedStr(const S: string; QuoteChar: Char = ''''): string;
 begin
-  Result := AnsiDequotedStr(S, QuoteChar);
+  Result := AnsiDequotedStr(S, Char(QuoteChar));
 end;
 
-function AnsiDequotedStr(const S: AnsiString; AQuote: AnsiChar): AnsiString;
+function AnsiDequotedStr(const S: string; AQuote: Char): string;
 var
   P: PChar;
 begin

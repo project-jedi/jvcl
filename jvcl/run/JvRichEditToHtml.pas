@@ -113,6 +113,11 @@ const
 
 implementation
 
+{$IFNDEF COMPILER12_UP}
+uses
+  JvJCLUtils;
+{$ENDIF ~COMPILER12_UP}
+
 const
   // (rom) needs renaming?
 //  cHTMLHeadBegin = '<HTML>';
@@ -159,7 +164,7 @@ procedure TFontInfo.Assign(Source: TPersistent);
 begin
   if Source is TTextAttributes then
   begin
-    FFontData.Name := TTextAttributes(Source).Name;
+    FFontData.Name := TFontDataName(TTextAttributes(Source).Name);
     FFontData.Height := TTextAttributes(Source).Height;
     FFontData.Pitch := TTextAttributes(Source).Pitch;
     FFontData.Style := TTextAttributes(Source).Style;
@@ -170,7 +175,7 @@ begin
   else
   if Source is TJvTextAttributes then
   begin
-    FFontData.Name := TJvTextAttributes(Source).Name;
+    FFontData.Name := TFontDataName(TJvTextAttributes(Source).Name);
     FFontData.Height := TJvTextAttributes(Source).Height;
     FFontData.Pitch := TJvTextAttributes(Source).Pitch;
     FFontData.Style := TJvTextAttributes(Source).Style;
@@ -374,7 +379,7 @@ begin
         end;
 
         J := I;
-        while (J <= Len) and not (Text[J] in [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
+        while (J <= Len) and not CharInSet(Text[J], [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
         begin
           Att.Assign(Value.SelAttributes);
           if Diff(Att, CurrAt) then
@@ -384,7 +389,7 @@ begin
             St.Append(AttToHtml(Att));
           end;
 
-          if Text[J] in ['A'..'Z', 'a'..'z', '0'..'9'] then
+          if CharInSet(Text[J], ['A'..'Z', 'a'..'z', '0'..'9']) then
             St.Append(Text[J])
           else
             St.Append(CharToHtml(Text[J]));
@@ -481,7 +486,7 @@ begin
         end;
 
         J := I;
-        while (J <= Len) and not (Text[J] in [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
+        while (J <= Len) and not CharInSet(Text[J], [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
         begin
           Att.Assign(Value.SelAttributes);
           if Diff(Att, CurrAt) then
@@ -491,7 +496,7 @@ begin
             St.Append(AttToHtml(Att));
           end;
 
-          if Text[J] in ['A'..'Z', 'a'..'z', '0'..'9'] then
+          if CharInSet(Text[J], ['A'..'Z', 'a'..'z', '0'..'9']) then
             St.Append(Text[J])
           else
             St.Append(CharToHtml(Text[J]));

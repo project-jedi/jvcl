@@ -37,10 +37,12 @@ uses
   JvComponent;
 
 type
+  TRectList = array [1..8] of TRect;
+  
   TJvStickSizer = class(TJvCustomControl)
   private
     FControl: TControl;
-    FRectList: array [1..8] of TRect;
+    FRectList: TRectList;
     procedure WMNCHitTest(var Msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;

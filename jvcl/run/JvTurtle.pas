@@ -42,6 +42,9 @@ type
   TRequestImageSizeEvent = procedure(Sender: TObject; var ARect: TRect) of object;
 
 type
+  TStack = array of Integer;
+  TNStack = array of Integer;
+  
   TJvTurtle = class(TComponent)
   private
     FPosition: TPoint;
@@ -57,8 +60,8 @@ type
     FIPMax: Integer;
     FSP: Integer;
     FNSP: Integer;
-    FStack: array of Integer;
-    FNStack: array of Integer;
+    FStack: TStack;
+    FNStack: TNStack;
     FVariables: TStringList;
     FAngleMark: Integer;
     FImageRect: TRect;
@@ -239,6 +242,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvTypes, JvResources;
 
 constructor TJvTurtle.Create(AOwner: TComponent);
@@ -688,9 +694,9 @@ const
   Delimiters = [' ', Tab, Cr, Lf];
 begin
   Token := '';
-  while (FIP <= FIPMax) and (FScript[FIP] in Delimiters) do
+  while (FIP <= FIPMax) and CharInSet(FScript[FIP], Delimiters) do
     Inc(FIP);
-  while (FIP <= FIPMax) and not (FScript[FIP] in Delimiters) do
+  while (FIP <= FIPMax) and not CharInSet(FScript[FIP], Delimiters) do
   begin
     Token := Token + FScript[FIP];
     Inc(FIP);

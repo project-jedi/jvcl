@@ -116,6 +116,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvThemes;
 
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
@@ -223,7 +226,7 @@ var
     Result := False;
     if Length(V) < 2 then
       Exit;
-    if not (V[1] in ['#', '$']) then
+    if not CharInSet(V[1], ['#', '$']) then
     begin
       // allow the use of both "clBlack" and "Black"
       if Pos('cl', AnsiLowerCase(V)) = 1 then

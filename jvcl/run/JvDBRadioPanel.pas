@@ -93,11 +93,13 @@ type
     procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;
     function CanModify: Boolean; virtual;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     property DataLink: TFieldDataLink read FDataLink;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;  // public in D2009
+
     procedure FlipChildren(AllLevels: Boolean); override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
@@ -162,6 +164,10 @@ implementation
 
 uses
   Forms,
+  SysUtils,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts;
 
 //=== { TGroupButton } =======================================================
@@ -217,7 +223,7 @@ procedure TGroupButton.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   TJvDBRadioPanel(Parent).KeyPress(Key);
-  if Key in [Backspace, ' '] then
+  if CharInSet(Key, [Backspace, ' ']) then
   begin
     if not TJvDBRadioPanel(Parent).CanModify then
       Key := #0;

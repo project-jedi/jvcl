@@ -1134,14 +1134,14 @@ begin
           MenuItem := BandContextMenu.FindItem(idCmd, fkCommand);
           if MenuItem = nil then
             Exit;
-          StrCopy(pszName, PChar(MenuItem.Hint));
+          StrCopy(pszName, PAnsiChar(AnsiString(MenuItem.Hint)));  // text lost here, unicode version should be considered
         end;
       GCS_VERB:
         begin
           MenuItem := BandContextMenu.FindItem(idCmd, fkCommand);
           if MenuItem = nil then
             Exit;
-          StrCopy(pszName, PChar(GetContextMenuCaption(MenuItem)));
+          StrCopy(pszName, PAnsiChar(AnsiString(GetContextMenuCaption(MenuItem))));    // text lost here, unicode version should be considered
         end;
       GCS_VALIDATE:
         Result := NOERROR;

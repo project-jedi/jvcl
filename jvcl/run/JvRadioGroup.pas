@@ -57,7 +57,7 @@ type
     procedure Paint; override;
     function CanModify: Boolean; override;
     procedure GetItemHint(Index: Integer; var AHint: TCaption); virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; override;
+    function HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -243,7 +243,7 @@ begin
     FOnItemHint(Self, Index, AHint);
 end;
 
-function TJvRadioGroup.HintShow(var HintInfo: THintInfo): Boolean;
+function TJvRadioGroup.HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean;
 var
   AItemX, AItemY,
   AHeight, AWidth, VertCount: Integer;

@@ -67,7 +67,7 @@ type
     function GetRealSQL: TStrings;
   protected
     procedure InternalFirst; override;
-    function GetRecord(Buffer: PChar; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
+    function GetRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
     procedure Loaded; override;
     function CreateHandle: HDBICur; override;
     procedure OpenCursor(InfoQuery: Boolean); override;
@@ -197,13 +197,16 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Forms, Consts, BDEConst,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvDBUtils, JvBdeUtils;
 
 { Parse SQL utility routines }
 
 function NameDelimiters(C: Char; Delims: TSysCharSet): Boolean;
 begin
-  Result := NameDelimiter(C) or (C in Delims);
+  Result := NameDelimiter(C) or CharInSet(C, Delims);
 end;
 
 procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
@@ -333,7 +336,7 @@ begin
     inherited InternalFirst;
 end;
 
-function TJvQuery.GetRecord(Buffer: PChar; GetMode: TGetMode;
+function TJvQuery.GetRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 begin
   //!!!!!!
@@ -428,7 +431,7 @@ begin
     if SQL.Count > 0 then
     begin
       FOpenStatus := qsFailed;
-      Check(DbiQExecDirect(DBHandle, qryLangSQL, PChar(inherited SQL.Text),
+      Check(DbiQExecDirect(DBHandle, qryLangSQL, PAnsiChar(AnsiString(inherited SQL.Text)),
         nil));
       FOpenStatus := qsExecuted;
     end
@@ -828,8 +831,7 @@ begin
         Action := saFail;
         S := Format(SParseError, [SMsgdlgError, LineNo]);
         if E is EDBEngineError then
-          TDBError.Create(EDBEngineError(E), 0, LineNo,
-            PChar(S))
+          TDBError.Create(EDBEngineError(E), 0, LineNo, {$IFNDEF COMPILER12_UP}PChar{$ENDIF ~COMPILER12_UP}(S))
         else
         begin
           if E.Message <> '' then

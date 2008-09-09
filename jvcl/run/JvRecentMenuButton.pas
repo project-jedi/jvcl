@@ -188,7 +188,11 @@ begin
     PersistFile := ShellLink as IPersistFile;
     // PersistFile.Load fails if the filename is not fully qualified
     FullPath := ExpandFileName(FileName);
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1, LinkName, MAX_PATH);
+    {$IFDEF SUPPORTS_UNICODE}
+    StrPCopy(LinkName, FullPath);
+    {$ELSE}
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PAnsiChar(FullPath), -1, LinkName, MAX_PATH);
+    {$ENDIF SUPPORTS_UNICODE}
     if Succeeded(PersistFile.Load(LinkName, STGM_READ)) then
     begin
       //      Result := ShellLink.Resolve(0, SLR_ANY_MATCH or SLR_NO_UI);

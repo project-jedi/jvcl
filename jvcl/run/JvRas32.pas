@@ -287,8 +287,8 @@ begin
       StrLCopy(szUserName, PChar(FUsername), RAS_MAXENTRYNAME);
       StrLCopy(szPassword, PChar(FPassword), RAS_MAXENTRYNAME);
       Self.EntryIndex := X;
-      szDomain := '*';
-      szCallbackNumber := '*';
+      szDomain := AnsiString('*');
+      szCallbackNumber := AnsiString('*');
       szPhoneNumber := '';
     end;
     if Assigned(FRasDial) then

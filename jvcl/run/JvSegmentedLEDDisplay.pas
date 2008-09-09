@@ -63,7 +63,9 @@ type
   TUnlitColor = type TColor;
   TSlantAngle = 0 .. 44;
   TSLDHitInfo = (shiNowhere, shiDigit, shiDigitSegment, shiClientArea);
+  {$IFNDEF RTL200_UP}
   TCharSet = set of Char;
+  {$ENDIF ~RTL200_UP}
   TSegCharMapHeader = record
     ID: array[0..11] of Char;
     MappedChars: TCharSet;
@@ -437,6 +439,9 @@ implementation
 uses
   Controls, SysUtils,
   JclGraphUtils,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvThemes, JvConsts, JvResources;
 
 {$R JvSegmentedLEDDisplay.res}
@@ -1552,7 +1557,7 @@ begin
   Clear; // clear the mapping table
   MapSize := HdrInfo.Flags and 7;
   for Chr := #0 to #255 do
-    if Chr in HdrInfo.MappedChars then
+    if CharInSet(Chr, HdrInfo.MappedChars) then
       Stream.ReadBuffer(FActiveMapping[Chr], MapSize);
   if HdrInfo.Flags and 16 <> 0 then
   begin
@@ -1627,7 +1632,7 @@ begin
       begin
         Inc(ControlItem);
         OrdValue := 0;
-        while ControlItem[0] in DigitSymbols do
+        while CharInSet(ControlItem[0], DigitSymbols) do
         begin
           if OrdValue >= 100 then
             OrdValue := OrdValue mod 100;
@@ -1655,7 +1660,7 @@ procedure TJvSegmentedLEDCharacterMapper.MapControlItems(var Text: PChar; var Se
 begin
   Inc(Text);
   TextForDigit := TextForDigit + '[';
-  while not (Text^ in [#0, ']']) do
+  while not CharInSet(Text^, [#0, ']']) do
     ControlItemToSegments(Text, Segments);
   if Text^ = ']' then
   begin
@@ -1687,7 +1692,7 @@ begin
       SortedSegNames.Add(CurDigit.GetSegmentName(I));
     SortedSegNames.Sort;
 
-    while not (Text[0] in [#0, ']', ';']) do
+    while not CharInSet(Text[0], [#0, ']', ';']) do
     begin
       I := SortedSegNames.Count - 1;
       while I >= 0 do
@@ -1817,7 +1822,7 @@ var
   Hdr: TSegCharMapHeader;
   TmpID: string;
   MapSize: Byte;
-  Chr: Char;
+  Chr: AnsiChar;
   TmpDot: Int64;
   TmpComma: Int64;
 begin

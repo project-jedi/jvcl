@@ -206,7 +206,7 @@ begin
       Mesg := Mesg + sLineBreak + 'ExeModule= ' + ParamStr(0);
       Mesg := Mesg + sLineBreak + 'OSPlatform= ' + GetWindowsVersionString;
       Mesg := Mesg + sLineBreak + 'CPUKind= ' + IntToStr(CpuInfo.Family);
-      Mesg := Mesg + sLineBreak + 'CPUName= ' + CpuInfo.CpuName;
+      Mesg := Mesg + sLineBreak + 'CPUName= ' + string(CpuInfo.CpuName);
       Mesg := Mesg + sLineBreak + 'TotalPhys= ' + IntToStr(GetTotalPhysicalMemory);
       Mesg := Mesg + sLineBreak + 'AvailPhys= ' + IntToStr(GetFreePhysicalMemory);
       Mesg := Mesg + sLineBreak + 'TotalPageFile= ' + IntToStr(GetTotalPageFileMemory);

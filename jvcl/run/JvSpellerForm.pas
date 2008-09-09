@@ -104,6 +104,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvResources, JvTypes;
 
 {$R *.dfm}
@@ -442,7 +445,7 @@ var
 begin
   L := Length(FSourceText);
   FWordBegin := FWordEnd;
-  while (FWordBegin <= L) and (not (FSourceText[FWordBegin] in ['a'..'z', 'A'..'Z'])) do
+  while (FWordBegin <= L) and (not CharInSet(FSourceText[FWordBegin], ['a'..'z', 'A'..'Z'])) do
     Inc(FWordBegin);
   Result := (FWordBegin <= L);
 end;
@@ -453,7 +456,7 @@ var
 begin
   FWordEnd := FWordBegin;
   L := Length(FSourceText);
-  while (FWordEnd <= L) and (FSourceText[FWordEnd] in ['a'..'z', 'A'..'Z']) do
+  while (FWordEnd <= L) and CharInSet(FSourceText[FWordEnd], ['a'..'z', 'A'..'Z']) do
     Inc(FWordEnd);
   Result := (FWordEnd <= L);
 end;

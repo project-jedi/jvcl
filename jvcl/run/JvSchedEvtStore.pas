@@ -166,7 +166,13 @@ implementation
 
 uses
   SysUtils, TypInfo,
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JclRTTI, JclSchedule,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvTypes, JvResources;
 
 //=== { TJvSchedEvtStore } ===================================================
@@ -1502,7 +1508,7 @@ begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
     raise EJVCLException.CreateRes(@RsEIncorrectIdentifierFound);
-  if (Length(Value) < 3) or (Value[3] in DigitChars) then
+  if (Length(Value) < 3) or CharInSet(Value[3], DigitChars) then
     Result := StrToInt(Value)
   else
   begin

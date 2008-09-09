@@ -276,7 +276,7 @@ var
   procedure CorrParams;
   var
     I, ErrCode, Value: Integer;
-    C: ShortString;
+    C: string;
   begin
     with Params do
       for I := 0 to Count - 1 do

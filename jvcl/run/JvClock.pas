@@ -281,7 +281,7 @@ var
 
 procedure InvalidTime(Hour, Min, Sec: Word);
 var
-  sTime: string[50];
+  sTime: string;
 begin
   sTime := IntToStr(Hour) + TimeSeparator + IntToStr(Min) +
     TimeSeparator + IntToStr(Sec);

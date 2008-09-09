@@ -37,9 +37,10 @@ uses
   JvSimPID;
 
 type
+  TPIDS = array of TJvSimPID;
   TJvSimPIDLinker = class(TComponent)
   private
-    FPIDS: array of TJvSimPID;
+    FPIDS: TPIDS;
     function GetPID(const Index: Integer): TJvSimPID;
     procedure SetPID(const Index: Integer; const Value: TJvSimPID);
   protected

@@ -83,7 +83,7 @@ type
     property Updating: Boolean read FUpdating;
     property DestroyCount: Integer read FDestroyCnt;
   public
-    constructor Create; {$IFDEF CLR} override; {$ENDIF CLR}
+    constructor Create; {$IFDEF CLR}override;{$ENDIF CLR}{$IFDEF RTL200_UP}override;{$ENDIF RTL200_UP}
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
     procedure Clear; override;

@@ -322,7 +322,7 @@ begin
 
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
+  AName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(TypeInf^.Name);
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
@@ -334,7 +334,7 @@ begin
 
     for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[I]^.Name;
+      PropName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.Name);
 
       PropTypeInf := PropList^[I]^.PropType^;
       PropInfo := PropList^[I];
@@ -346,6 +346,7 @@ begin
 
       case PropTypeInf^.Kind of
         tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkWChar, tkLString, tkWString, tkVariant:
           begin
             //{ Получение значения свойства }
@@ -522,7 +523,7 @@ var
   begin
     Result := -1;
     for I := 0 to NumProps - 1 do
-      if CompareStr(PropList^[I]^.Name, TagName) = 0 then
+      if CompareStr({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.Name), TagName) = 0 then
       begin
         Result := I;
         Break;
@@ -589,7 +590,7 @@ var
 begin
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
+  AName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(TypeInf^.Name);
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
@@ -679,7 +680,7 @@ begin
         PropIndex := FindProperty(TagName);
 
         if not WrapCollections and (PropIndex = -1) then
-          PropIndex := FindProperty(PChar(TagName + 's'))
+          PropIndex := FindProperty(PChar(string(TagName) + 's'))
         else
           TokenPtr := TagStart;
 
@@ -736,6 +737,7 @@ begin
 
   case PropTypeInf^.Kind of
     tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
     tkWChar, tkLString, tkWString, tkVariant:
       begin
         //{ имитируем zero terminated string }
@@ -767,7 +769,7 @@ begin
         { tkSet parser needs "<" and ">" for correct transformation  [translated] }
         if PropTypeInf^.Kind = tkSet then
           SValue := '[' + SValue + ']';
-        SetPropValue(Component, PropInfo^.Name, SValue);
+        SetPropValue(Component, {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name), SValue);
       end;
     tkClass:
       begin
@@ -815,7 +817,7 @@ begin
           else
             //{ Для остальных классов - рекурсивная обработка }
             { Other classes are just processed recursevly  [translated] }
-            DeSerializeInternal(PropObject, PropInfo^.Name,
+            DeSerializeInternal(PropObject, {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name),
               ParentBlockEnd);
         end;
       end;
@@ -898,7 +900,7 @@ const
 begin
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
+  AName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(TypeInf^.Name);
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
@@ -911,7 +913,7 @@ begin
 
     for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[I]^.Name;
+      PropName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.Name);
 
       PropTypeInf := PropList^[I]^.PropType^;
       PropInfo := PropList^[I];
@@ -928,6 +930,7 @@ begin
 
       case PropTypeInf^.Kind of
         tkInteger, tkChar, tkFloat, tkString,
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkWChar, tkLString, tkWString, tkVariant, tkEnumeration, tkSet:
           //{ Перевод в DTD. Для данных типов модель содержания - #PCDATA }
           { conversion to DTD. Theese types will have #PCDATA model of content [translated] }

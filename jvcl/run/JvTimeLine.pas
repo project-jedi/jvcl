@@ -2226,20 +2226,24 @@ procedure TJvCustomTimeLine.LoadFromStream(Stream: TStream);
 var
   I: Integer;
   Ch: AnsiChar;
-  S: AnsiString;
+  S: string;
+  UTF8Str: AnsiString;
   Item: TJvTimeItem;
 begin
   I := 0;
   Item := Items.Add;
   while Stream.Position < Stream.Size do
   begin
-    S := '';
+    UTF8Str := '';
     Stream.Read(Ch, 1);
     while Ch <> Cr do
     begin
-      S := S + Ch;
+      UTF8Str := UTF8Str + Ch;
       Stream.Read(Ch, 1);
     end;
+
+    S := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ELSE}{$IFDEF COMPILER6_UP}UTF8Decode{$ENDIF COMPILER6_UP}{$ENDIF SUPPORTS_UNICODE}(UTF8Str);
+
     case I of
       0: // Caption
         Item.Caption := S;
@@ -2273,38 +2277,49 @@ end;
 procedure TJvCustomTimeLine.SaveToStream(Stream: TStream);
 var
   I: Integer;
-  S: AnsiString;
+  S: string;
+  UTF8Str: AnsiString;
 begin
   for I := 0 to Items.Count - 1 do
   begin
     with Items[I] do
     begin
       S := Caption + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(ColorToRGB(Color)) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := DateTimeToStr(Date) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := Hint + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(ImageIndex) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(Level) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(Ord(Selected)) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(ColorToRGB(TextColor)) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(Width) + Cr;
-      Stream.Write(S[1], Length(S));
+      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      Stream.Write(UTF8Str[1], Length(UTF8Str));
+
       { let the user save his data stuff }
       SaveItem(Items[I], Stream);
     end;

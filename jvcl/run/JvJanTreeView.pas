@@ -75,6 +75,9 @@ type
   end;
 
 type
+  TStack = array [1..ParserStackSize] of TokenRec;
+  TStackTop = 0..ParserStackSize;
+
   TJvMathParser = class(TComponent)
   private
     FInput: string;
@@ -86,8 +89,8 @@ type
   protected
     CurrToken: TokenRec;
     MathError: Boolean;
-    Stack: array [1..ParserStackSize] of TokenRec;
-    StackTop: 0..ParserStackSize;
+    Stack: TStack;
+    StackTop: TStackTop;
     TokenError: ErrorRange;
     TokenLen: Word;
     TokenType: TokenTypes;
@@ -217,6 +220,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvResources, JvTypes;
 
 //=== { TJvJanTreeView } =====================================================
@@ -884,7 +890,7 @@ var
 begin
   P := Position;
   FuncName := '';
-  while (P <= Length(FInput)) and (FInput[P] in IdentifierSymbols) do
+  while (P <= Length(FInput)) and CharInSet(FInput[P], IdentifierSymbols) do
   begin
     FuncName := FuncName + FInput[P];
     Inc(P);
@@ -892,7 +898,7 @@ begin
   if UpperCase(FuncName) = S then
   begin
     SLen := Length(S);
-    CurrToken.FuncName := UpperCase(Copy(FInput, Position, SLen));
+    CurrToken.FuncName := {$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(UpperCase(Copy(FInput, Position, SLen)));
     Position := Position + SLen;
     IsFunc := True;
   end
@@ -907,7 +913,7 @@ var
 begin
   VarFound := False;
   VarName := '';
-  while (Position <= Length(FInput)) and (FInput[Position] in IdentifierSymbols) do
+  while (Position <= Length(FInput)) and CharInSet(FInput[Position], IdentifierSymbols) do
   begin
     VarName := VarName + FInput[Position];
     Position := Position + 1;
@@ -921,7 +927,7 @@ end;
 
 function TJvMathParser.NextToken: TokenTypes;
 var
-  NumString: string[80];
+  NumString: string;
   TLen, NumLen: Word;
   Check: Integer;
   Ch: Char;
@@ -938,19 +944,19 @@ begin
     Exit;
   end;
   Ch := UpCase(FInput[Position]);
-  if Ch in ['!'] then
+  if Ch = '!' then
   begin
     NextToken := ttErr;
     TokenLen := 0;
     Exit;
   end;
-  if Ch in ['0'..'9', '.'] then
+  if CharInSet(Ch, ['0'..'9', '.']) then
   begin
     NumString := '';
     TLen := Position;
     Decimal := False;
     while (TLen <= Length(FInput)) and
-      ((FInput[TLen] in DigitSymbols) or
+      (CharInSet(FInput[TLen], DigitSymbols) or
       ((FInput[TLen] = '.') and (not Decimal))) do
     begin
       NumString := NumString + FInput[TLen];
@@ -968,13 +974,13 @@ begin
     begin
       NumString := NumString + 'E';
       Inc(TLen);
-      if FInput[TLen] in ['+', '-'] then
+      if CharInSet(FInput[TLen], ['+', '-']) then
       begin
         NumString := NumString + FInput[TLen];
         Inc(TLen);
       end;
       NumLen := 1;
-      while (TLen <= Length(FInput)) and (FInput[TLen] in DigitSymbols) and
+      while (TLen <= Length(FInput)) and CharInSet(FInput[TLen], DigitSymbols) and
         (NumLen <= MaxExpLen) do
       begin
         NumString := NumString + FInput[TLen];
@@ -1000,7 +1006,7 @@ begin
     Exit;
   end
   else
-  if Ch in IdentifierLetters then
+  if CharInSet(Ch, IdentifierLetters) then
   begin
     if IsFunc('ABS') or IsFunc('ATAN') or IsFunc('COS') or
       IsFunc('EXP') or IsFunc('LN') or IsFunc('ROUND') or

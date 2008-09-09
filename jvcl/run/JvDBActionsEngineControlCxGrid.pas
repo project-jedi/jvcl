@@ -250,7 +250,7 @@ end;
 function TJvDatabaseActionDevExpCxGridControlEngine.GotoSelectedRow(
   AActionComponent: TComponent; const ASelectedRow: Integer): Boolean;
 var
-  Bkm: TBookmarkStr;
+  Bkm: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
   RecIdx: Integer;
   RecID: Variant;
 begin

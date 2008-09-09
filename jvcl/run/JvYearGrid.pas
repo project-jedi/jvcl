@@ -83,6 +83,9 @@ type
   TOnSelectDate = procedure(Sender: TObject; ADate: TDate; InfoText: string; InfoColor: TColor) of object;
   TOnInfoChanging = procedure(Sender: TObject; var InfoText: string; var CanChange: Boolean) of object;
 
+  TDays = array [1..12] of Integer;
+  TYearDatas = array [0..37, 0..12] of TYearData;
+
   {$IFDEF USECUSTOMGRID}
   TJvYearGrid = class(TCustomDrawGrid)
   {$ELSE}
@@ -102,10 +105,10 @@ type
     FBookMarkColor: TColor;
     FAutoSize: Boolean;
 
-    DaysInMonth: array [1..12] of Integer;
-    StartDays: array [1..12] of Integer;
+    DaysInMonth: TDays;
+    StartDays: TDays;
 
-    FYearData: array [0..37, 0..12] of TYearData;
+    FYearData: TYearDatas;
     FYearFile: string;
 
     FOrientation: TJvYearGridOrientation;

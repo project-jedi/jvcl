@@ -57,7 +57,7 @@ type
     procedure ReLine;
     procedure SetLockText(const Text: WideString);
   protected
-    procedure Put(Index: Integer; const S: WideString); override;
+    procedure Put(Index: Integer; const S: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE}); override;
     procedure InternalPut(Index: Integer; const Value: WideString);
 
     property Internal[Index: Integer]: WideString write SetInternal;
@@ -67,9 +67,9 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure AddStrings(Strings: TWStrings); override;
-    procedure SetTextStr(const Value: WideString); override;
-    function Add(const S: WideString): Integer; override;
-    procedure Insert(Index: Integer; const S: WideString); override;
+    procedure SetTextStr(const Value: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE}); override;
+    function Add(const S: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE}): Integer; override;
+    procedure Insert(Index: Integer; const S: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE}); override;
     procedure Delete(Index: Integer); override;
     procedure DeleteText(BegX, BegY, EndX, EndY: Integer);
     procedure InsertText(X, Y: Integer; const Text: WideString);
@@ -104,8 +104,13 @@ type
     function GetLineLength(Index: Integer): Integer; override;
     function FindNotBlankCharPosInLine(Line: Integer): Integer; override;
 
+    {$IFDEF SUPPORTS_UNICODE}
+    function GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean; override;
+    function GetUnicodeWordOnCaret: UnicodeString; override;
+    {$ELSE}
     function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; override;
     function GetAnsiWordOnCaret: AnsiString; override;
+    {$ENDIF SUPPORTS_UNICODE}
 
     procedure ReLine; override;
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; override;
@@ -252,7 +257,11 @@ type
     procedure ReplaceWordItemIndex(SubStrStart: Integer); override;
     function GetTemplateCount: Integer; override;
     function GetIdentifierCount: Integer; override;
+    {$IFDEF SUPPORTS_UNICODE}
+    function GetUnicodeSeparator: UnicodeString; override;
+    {$ELSE}
     function GetAnsiSeparator: AnsiString; override;
+    {$ENDIF SUPPORTS_UNICODE}
   public
     constructor Create(AJvEditor: TJvCustomWideEditor);
     destructor Destroy; override;
@@ -424,7 +433,7 @@ begin
   end;
 end;
 
-procedure TJvEditorWideStrings.SetTextStr(const Value: WideString);
+procedure TJvEditorWideStrings.SetTextStr(const Value: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE});
 begin
   inherited SetTextStr(JvEditor.ExpandTabs(Value));
   if JvEditor.UpdateLock = 0 then
@@ -458,12 +467,12 @@ begin
   end;
 end;
 
-function TJvEditorWideStrings.Add(const S: WideString): Integer;
+function TJvEditorWideStrings.Add(const S: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE}): Integer;
 begin
   Result := inherited Add(JvEditor.ExpandTabs(S));
 end;
 
-procedure TJvEditorWideStrings.Insert(Index: Integer; const S: WideString);
+procedure TJvEditorWideStrings.Insert(Index: Integer; const S: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE});
 begin
   inherited Insert(Index, JvEditor.ExpandTabs(S));
   JvEditor.LineInserted(Index);
@@ -475,7 +484,7 @@ begin
   JvEditor.LineDeleted(Index);
 end;
 
-procedure TJvEditorWideStrings.Put(Index: Integer; const S: WideString);
+procedure TJvEditorWideStrings.Put(Index: Integer; const S: {$IFDEF SUPPORTS_UNICODE}string{$ELSE}WideString{$ENDIF SUPPORTS_UNICODE});
 var
   L: Integer;
 begin
@@ -868,6 +877,28 @@ begin
   ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
+{$IFDEF SUPPORTS_UNICODE}
+function TJvCustomWideEditor.GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean;
+begin
+  if (Y >= 0) and (Y < Lines.Count) then
+  begin
+    Text := Lines[Y];
+    Result := True;
+  end
+  else
+  begin
+    Text := '';
+    Result := False;
+  end;
+end;
+
+function TJvCustomWideEditor.GetUnicodeWordOnCaret: UnicodeString;
+begin
+  Result := GetWordOnCaret;
+end;
+
+{$ELSE}
+
 function TJvCustomWideEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean;
 begin
   if (Y >= 0) and (Y < Lines.Count) then
@@ -886,6 +917,7 @@ function TJvCustomWideEditor.GetAnsiWordOnCaret: AnsiString;
 begin
   Result := GetWordOnCaret;
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
 procedure TJvCustomWideEditor.ReLine;
 begin
@@ -1547,10 +1579,10 @@ end;
 
 procedure TJvCustomWideEditor.ClipboardCopy;
 var
-  S: AnsiString;
+  S: string;
 begin
   S := GetSelText; // convert to ANSI
-  Clipboard.SetTextBuf(PAnsiChar(S));
+  Clipboard.SetTextBuf(PChar(S));
   SetClipboardBlockFormat(SelBlockFormat);
 end;
 
@@ -1765,7 +1797,7 @@ end;
 
 procedure TJvCustomWideEditor.ClipboardPaste;
 var
-  ClipS: AnsiString;
+  ClipS: string;
   Len: Integer;
   H: THandle;
   X, Y, EndX, EndY: Integer;
@@ -1781,8 +1813,8 @@ begin
   BeginUpdate;
   try
     SetLength(ClipS, Len);
-    SetLength(ClipS, Clipboard.GetTextBuf(PAnsiChar(ClipS), Len));
-    ClipS := ExpandTabsAnsi(AdjustLineBreaks(ClipS));
+    SetLength(ClipS, Clipboard.GetTextBuf(PChar(ClipS), Len));
+    ClipS := {$IFDEF SUPPORTS_UNICODE}ExpandTabsUnicode{$ELSE}ExpandTabsAnsi{$ENDIF SUPPORTS_UNICODE}(AdjustLineBreaks(ClipS));
     PaintCaret(False);
 
     ReLine;
@@ -2154,7 +2186,7 @@ end;
 
 procedure TJvCustomWideEditor.WMGetText(var Msg: TWMGetText);
 var
-  S: AnsiString;
+  S: string;
 begin
   if Msg.Text = nil then
     Msg.Result := 0
@@ -2163,7 +2195,13 @@ begin
     S := FLines.Text;
     Msg.Result := Min(Length(S) + 1, Msg.TextMax);
     if Msg.Result > 0 then
+      {$IFDEF COMPILER12}
+      // Call to MoveWideChar gives F2084 internal error I12178 because of [1].
+      // Remove it from the first argument and it compiles fine
+      Move(S[1], Msg.Text^, Msg.Result * SizeOf(WideChar));
+      {$ELSE}
       MoveWideChar(S[1], Msg.Text^, Msg.Result);
+      {$ENDIF COMPILER12}
   end;
 end;
 
@@ -2641,12 +2679,12 @@ procedure TJvWideCompletion.FindSelItem(var Eq: Boolean);
 var
   S: WideString;
 
-  function FindFirst(SS: TStrings; S: AnsiString): Integer;
+  function FindFirst(SS: TStrings; S: string): Integer;
   var
     I: Integer;
   begin
     for I := 0 to SS.Count - 1 do
-      if StrLIComp(PAnsiChar(SS[I]), PAnsiChar(S), Length(S)) = 0 then
+      if StrLIComp(PChar(SS[I]), PChar(S), Length(S)) = 0 then
       begin
         Result := I;
         Exit;
@@ -2714,10 +2752,19 @@ begin
   inherited Completion := Value;
 end;
 
+{$IFDEF SUPPORTS_UNICODE}
+function TJvWideCompletion.GetUnicodeSeparator: UnicodeString;
+begin
+  Result := FSeparator;
+end;
+
+{$ELSE}
+
 function TJvWideCompletion.GetAnsiSeparator: AnsiString;
 begin
   Result := FSeparator;
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
 {$IFDEF UNITVERSIONING}
 initialization

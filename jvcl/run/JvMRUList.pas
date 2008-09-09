@@ -124,7 +124,7 @@ type
     procedure Open;
     function ItemDataSize: Integer;
     property ItemDataAsPointer: Pointer read FItemData.P;
-    property ItemDataAsPChar: PAnsiChar read GetItemDataAsPChar;
+    property ItemDataAsPChar: PChar read GetItemDataAsPChar;
     property ItemDataAsPAnsiChar: PAnsiChar read GetItemDataAsPAnsiChar;
     property ItemDataAsPWideChar: PWideChar read GetItemDataAsPWideChar;
     property ItemIndex: Integer read FItemIndex;
@@ -677,7 +677,7 @@ begin
     // Arioch changed this
       FLst.lpszSubKeyW := PWideChar(FSubKey)
     else
-      FLst.lpszSubKey := PAnsiChar(GetSubKey);
+      FLst.lpszSubKey := PAnsiChar(AnsiString(GetSubKey));  // might lose values here, but easy to avoid by setting "UseUnicode" to True
 
     if UseUnicode then
     // Arioch changed this

@@ -832,9 +832,6 @@ type
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
-    {$IFNDEF CLR}
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    {$ENDIF !CLR}
     procedure ShowControl(AControl: TControl); override;
     procedure Paint; override;
     procedure Resize; override;
@@ -844,6 +841,12 @@ type
     function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
     procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic;
     procedure DoActivePageChanged; dynamic;
+  {$IFDEF COMPILER12_UP}
+  public
+  {$ENDIF COMPILER12_UP}
+    {$IFNDEF CLR}
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    {$ENDIF !CLR}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

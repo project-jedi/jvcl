@@ -147,7 +147,6 @@ type
 
     procedure Change; dynamic;
     procedure Loaded; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure ShowControl(AControl: TControl); override;
     function InternalGetPageClass: TJvCustomPageClass; virtual;
 
@@ -164,6 +163,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;  // public in D2009
     function FindNextPage(CurPage: TJvCustomPage; GoForward: Boolean; IncludeDisabled: Boolean): TJvCustomPage;
     procedure PrevPage;
     procedure NextPage;

@@ -61,7 +61,7 @@ type
     FValueLink: TFieldDataLink;
     FOnRead: TJvDBStorageReadEvent;
     FOnWrite: TJvDBStorageWriteEvent;
-    FBookmark: TBookmarkStr;
+    FBookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
     procedure SetDataSource(const Value: TDataSource);
     function GetDataSource: TDataSource;
     function GetKeyField: string;
@@ -138,8 +138,11 @@ const
 implementation
 
 uses
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JclMime,
-  JvJCLUtils, JvResources, JclAnsiStrings;
+  JvJCLUtils, JvResources, JclStrings;
 
 constructor TJvCustomAppDBStorage.Create(AOwner: TComponent);
 begin
@@ -194,11 +197,11 @@ end;
 function TJvCustomAppDBStorage.DoReadBinary(const Path: string; Buf: TJvBytes;
   BufSize: Integer): Integer;
 var
-  Value: string;
+  Value: AnsiString;
 begin
   raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
   // TODO -cTESTING -oJVCL: NOT TESTED!!!
-  Value := JclMime.MimeDecodeString(DoReadString(Path, ''));
+  Value := JclMime.MimeDecodeString(AnsiString(DoReadString(Path, '')));   // the cast to AnsiString converts with loss under D2009
   Result := Length(Value);
   if Result > BufSize then
     raise EJvAppDBStorageError.CreateResFmt(@RsEBufTooSmallFmt, [Result]);
@@ -348,11 +351,11 @@ end;
 
 procedure TJvCustomAppDBStorage.RestoreDataset;
 begin
-  if FBookmark = '' then
+  if FBookmark = {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP} then
     Exit;
   if FieldsAssigned then
     DataSource.DataSet.Bookmark := FBookmark;
-  FBookmark := '';
+  FBookmark := {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP};
 end;
 
 function TJvCustomAppDBStorage.GetPhysicalReadOnly: Boolean;
@@ -408,7 +411,7 @@ end;
 
 procedure TJvCustomAppDBStorage.StoreDataset;
 begin
-  if FBookmark <> '' then
+  if FBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP} then
     RestoreDataset;
   if FieldsAssigned and DataSource.DataSet.Active then
   begin

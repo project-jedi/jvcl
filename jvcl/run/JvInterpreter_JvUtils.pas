@@ -57,6 +57,12 @@ uses
   {$IFDEF COMPILER5}
   FileCtrl,
   {$ENDIF COMPILER5}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JvJVCLUtils, JvJCLUtils, JvInterpreter_Windows;
 
 { function ReplaceAllStrings(S: string; Words, Frases: TStrings): string; }
@@ -210,7 +216,7 @@ end;
 
 procedure JvInterpreter_BitmapFromBitmap(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := O2V(BitmapFromBitmap(V2O(Args.Values[0]) as TBitmap, Args.Values[1], Args.Values[2], Args.Values[3]));
+  Value := O2V(BitmapFromBitmap(V2O(Args.Values[0]) as Graphics.TBitmap, Args.Values[1], Args.Values[2], Args.Values[3]));
 end;
 
 { function TextWidth(AStr: string): Integer; }
@@ -511,35 +517,35 @@ end;
 
 procedure JvInterpreter_Dos2Win(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Dos2Win(string(TVarData(Args.Values[0]).vString));
+  Dos2Win(AnsiString(TVarData(Args.Values[0]).vString));
 end;
 
 { procedure Win2Dos(var S: string); }
 
 procedure JvInterpreter_Win2Dos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Win2Dos(string(TVarData(Args.Values[0]).vString));
+  Win2Dos(AnsiString(TVarData(Args.Values[0]).vString));
 end;
 
 { function Dos2WinRes(const S: string): string; }
 
 procedure JvInterpreter_Dos2WinRes(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Dos2WinRes(Args.Values[0]);
+  Value := Dos2WinRes(AnsiString(VarToStr(Args.Values[0])));
 end;
 
 { function Win2DosRes(const S: string): string; }
 
 procedure JvInterpreter_Win2DosRes(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Win2DosRes(Args.Values[0]);
+  Value := Win2DosRes(AnsiString(VarToStr(Args.Values[0])));
 end;
 
 { function Win2Koi(const S: string): string; }
 
 procedure JvInterpreter_Win2Koi(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Win2Koi(Args.Values[0]);
+  Value := Win2Koi(AnsiString(VarToStr(Args.Values[0])));
 end;
 
 { function Spaces(const N: Integer): string; }

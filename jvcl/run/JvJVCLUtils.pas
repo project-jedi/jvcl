@@ -49,6 +49,7 @@ uses
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, IniFiles, MultiMon,
   Classes, // must be after "Forms"
+  JclBase,
   JvVCL5Utils, JvJCLUtils, JvAppStorage, JvTypes;
 
 // Transform an icon to a bitmap
@@ -847,7 +848,7 @@ procedure RegisterGraphicSignature(const ASignature: array of Byte; AOffset: Int
   AGraphicClass: TGraphicClass); overload;
 
 procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
-procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer); overload;
+procedure UnregisterGraphicSignature(const ASignature: AnsiString; AOffset: Integer); overload;
 procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer); overload;
 
 function GetGraphicClass(AStream: TStream): TGraphicClass;
@@ -900,7 +901,7 @@ uses
   {$IFNDEF CLR}
   jpeg,
   {$ENDIF CLR}
-  JclBase, JclSysInfo,
+  JclSysInfo,
   JvConsts, JvProgressUtils, JvResources;
 
 {$R JvConsts.res}
@@ -2278,7 +2279,7 @@ begin
       lfFaceName := Font.Name;
     {$ELSE}
     if SameText(Font.Name, 'Default') then
-      StrPCopy(lfFaceName, DefFontData.Name)
+      StrPCopy(lfFaceName, string(DefFontData.Name))
     else
       StrPCopy(lfFaceName, Font.Name);
     {$ENDIF CLR}
@@ -3220,7 +3221,7 @@ function MsgDlgDef1(const Msg, ACaption: string; DlgType: TMsgDlgType;
 const
   ButtonNames: array [TMsgDlgBtn] of string =
   ('Yes', 'No', 'OK', 'Cancel', 'Abort', 'Retry', 'Ignore', 'All', 'NoToAll',
-    'YesToAll', 'Help');
+    'YesToAll', 'Help'{$IFDEF RTL200_UP}, 'Close'{$ENDIF RTL200_UP});
 var
   P: TPoint;
   I: Integer;
@@ -3367,8 +3368,8 @@ begin
       (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_ICON)) <> 0)
   else
     Result := (IconName <> '') and
-      (FindResourceA(hInstance, PChar(IconName), RT_GROUP_ICON) <> 0) or
-      (FindResourceA(hInstance, PChar(IconName), RT_ICON) <> 0);
+      (FindResourceA(hInstance, PAnsiChar(AnsiString(IconName)), PAnsiChar(RT_GROUP_ICON)) <> 0) or
+      (FindResourceA(hInstance, PAnsiChar(AnsiString(IconName)), PAnsiChar(RT_ICON)) <> 0);
   {$ENDIF CLR}
 end;
 
@@ -3441,13 +3442,13 @@ begin
     begin
       cbSize := SizeOf(TMsgBoxParamsA);
       hwndOwner := Handle;
-      lpszText := PChar(Msg);
-      lpszCaption := PChar(Caption);
+      lpszText := PAnsiChar(AnsiString(Msg));
+      lpszCaption := PAnsiChar(AnsiString(Caption));
       dwStyle := Flags;
       if FindIcon(hInstance, IcoName) then
       begin
         dwStyle := dwStyle or MB_USERICON;
-        lpszIcon := PChar(IcoName);
+        lpszIcon := PAnsiChar(AnsiString(IcoName));
       end
       else
         dwStyle := dwStyle or MB_ICONINFORMATION;
@@ -6318,7 +6319,7 @@ var
   begin
     I := 1;
     while I <= Length(S) do
-      if not (S[I] in (DigitChars + ['-'])) then
+      if not CharInSet(S[I], DigitChars + ['-']) then
         Delete(S, I, 1)
       else
         Inc(I);
@@ -6746,12 +6747,12 @@ end;
 function StrToRect(const Str: string; const Def: TRect): TRect;
 var
   S: string;
-  Temp: string[10];
+  Temp: string{$IFNDEF RTL200_UP}[10]{$ENDIF ~RTL200_UP};
   I: Integer;
 begin
   Result := Def;
   S := Str;
-  if (S[1] in Lefts) and (S[Length(S)] in Rights) then
+  if (S <> '') and CharInSet(S[1], Lefts) and CharInSet(S[Length(S)], Rights) then
   begin
     Delete(S, 1, 1);
     SetLength(S, Length(S) - 1);
@@ -6790,12 +6791,12 @@ end;
 function StrToPoint(const Str: string; const Def: TPoint): TPoint;
 var
   S: string;
-  Temp: string[10];
+  Temp: string{$IFNDEF RTL200_UP}[10]{$ENDIF ~RTL200_UP};
   I: Integer;
 begin
   Result := Def;
   S := Str;
-  if (S[1] in Lefts) and (S[Length(Str)] in Rights) then
+  if (S <> '') and CharInSet(S[1], Lefts) and CharInSet(S[Length(Str)], Rights) then
   begin
     Delete(S, 1, 1);
     SetLength(S, Length(S) - 1);
@@ -7227,8 +7228,8 @@ const
 // moved from JvHTControls and renamed
 function HTMLPrepareText(const Text: string): string;
 type
-  THtmlCode = packed record
-    Html: string[10];
+  THtmlCode = {packed }record
+    Html: string{$IFNDEF RTL200_UP}[10]{$ENDIF ~RTL200_UP};
     Text: Char;
   end;
 const
@@ -7840,7 +7841,7 @@ begin
         GraphicSignatures.Delete(I);
 end;
 
-procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer);
+procedure UnregisterGraphicSignature(const ASignature: AnsiString; AOffset: Integer);
 var
   I: Integer;
 begin
@@ -7995,31 +7996,30 @@ end;
 
 function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
     AComponentName: string = ''): string;
-
 var
   I: Integer;
 
-  function ValidateName(const AName: String): String;
+  function ValidateName(const AName: string): String;
   var
     I: Integer;
     Ignore : Boolean;
-    c : Char;
+    C : Char;
   begin
-    Ignore := true;
+    Ignore := True;
     Result := '';
-    for i := 1 to Length(AName)  do
+    for I := 1 to Length(AName)  do
     begin
-      c:= AName[i];
-      if c IN ['A'..'Z', 'a'..'z', '_', '0'..'9'] then
+      C := AName[I];
+      if CharInSet(C, ['A'..'Z', 'a'..'z', '_', '0'..'9']) then
       begin
-        ignore := False;
-        Result := Result+c;
+        Ignore := False;
+        Result := Result+C;
       end
       else
       begin
-        if not ignore then
+        if not Ignore then
           Result := Result+'_';
-        ignore := true;
+        Ignore := True;
       end;
     end;
   end;
@@ -8044,7 +8044,6 @@ var
         Result := False;
         Break;
       end;
-
   end;
 
 begin

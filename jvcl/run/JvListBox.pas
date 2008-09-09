@@ -1421,7 +1421,7 @@ var
 begin
   SendMessage(Handle, WM_SETREDRAW, Ord(True), 0);
   R := Rect(0, 0, Width, Height);
-  InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R, True);
+  Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R, True);
 end;
 
 {$IFNDEF CLR}

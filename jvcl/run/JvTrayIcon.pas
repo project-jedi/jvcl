@@ -65,12 +65,12 @@ type
     uFlags: UINT;
     uCallbackMessage: UINT;
     hIcon: HICON;
-    szTip: array [0..127] of AnsiChar; // 0..64 for pre 5.0 shell versions
+    szTip: array [0..127] of Char; // 0..64 for pre 5.0 shell versions
     dwState: DWORD;
     dwStateMask: DWORD;
-    szInfo: array [0..255] of AnsiChar;
+    szInfo: array [0..255] of Char;
     uTimeOut: DWORD;
-    szInfoTitle: array [0..63] of AnsiChar;
+    szInfoTitle: array [0..63] of Char;
     dwInfoFlags: DWORD;
   end;
 

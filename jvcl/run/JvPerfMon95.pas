@@ -174,14 +174,25 @@ var
   WrongOSWarningShown: Boolean = False;
 
 function MultiByteStringToString(const S: string): string;
+{$IFDEF SUPPORTS_UNICODE}
+begin
+  Result := S;
+end;
+{$ELSE}
 var
   W: array [0..MAX_PATH] of WideChar;
 begin
-  OSCheck(MultiByteToWideChar(CP_OEMCP, 0, PChar(S), -1, W, MAX_PATH) <> 0);
+  OSCheck(MultiByteToWideChar(CP_OEMCP, 0, PAnsiChar(S), -1, W, MAX_PATH) <> 0);
   Result := W;
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
 function StringToMultiByteString(const S: string): string;
+{$IFDEF SUPPORTS_UNICODE}
+begin
+  Result := S;
+end;
+{$ELSE}
 var
   W: WideString;
   C: array [0..MAX_PATH] of AnsiChar;
@@ -190,6 +201,7 @@ begin
   OSCheck(WideCharToMultiByte(CP_OEMCP, 0, PWideChar(W), -1, C, MAX_PATH, nil, nil) <> 0);
   Result := C;
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
 function JvGetPerfStatItems(List: TStrings): Boolean;
 var

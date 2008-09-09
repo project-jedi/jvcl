@@ -170,7 +170,7 @@ end;
 
 function TJvSendMailOptions.GetBody: string;
 begin
-  Result := Mailer.Body;
+  Result := string(Mailer.Body);
 end;
 
 function TJvSendMailOptions.GetFindOptions: TJclEmailFindOptions;
@@ -198,12 +198,12 @@ begin
   if Mailer.Recipients.Count = 0 then
     Result := ''
   else
-    Result := Mailer.Recipients.Items[0].Address;
+    Result := string(Mailer.Recipients.Items[0].Address);
 end;
 
 function TJvSendMailOptions.GetSubject: string;
 begin
-  Result := Mailer.Subject;
+  Result := string(Mailer.Subject);
 end;
 
 function TJvSendMailOptions.GetUserLogged: Boolean;
@@ -218,7 +218,7 @@ end;
 
 procedure TJvSendMailOptions.SetBody(const Value: string);
 begin
-  Mailer.Body := Value;
+  Mailer.Body := AnsiString(Value);  // we know we might lose values here, but MAPI has always been ANSI anyway
 end;
 
 procedure TJvSendMailOptions.SetFindOptions(const Value: TJclEmailFindOptions);
@@ -239,12 +239,12 @@ end;
 procedure TJvSendMailOptions.SetRecipients(const Value: string);
 begin
   Mailer.Recipients.Clear;
-  Mailer.Recipients.Add(Value);
+  Mailer.Recipients.Add(AnsiString(Value));    // we know we might lose values here, but MAPI has always been ANSI anyway
 end;
 
 procedure TJvSendMailOptions.SetSubject(const Value: string);
 begin
-  Mailer.Subject := Value;
+  Mailer.Subject := AnsiString(Value);     // we know we might lose values here, but MAPI has always been ANSI anyway
 end;
 
 {$ENDIF MSWINDOWS}

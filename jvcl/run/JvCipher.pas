@@ -262,7 +262,7 @@ var
 begin
   if Size > 0 then
   begin
-    N := StrToIntDef(Key, 13);
+    N := StrToIntDef(string(Key), 13);
     if (N <= 0) or (N >= 256) then
       N := 13;
     for I := 0 to Size - 1 do
@@ -277,7 +277,7 @@ var
 begin
   if Size > 0 then
   begin
-    N := StrToIntDef(Key, 13);
+    N := StrToIntDef(string(Key), 13);
     if (N <= 0) or (N >= 256) then
       N := 13;
     for I := 0 to Size - 1 do

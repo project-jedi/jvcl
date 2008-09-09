@@ -424,12 +424,12 @@ end;
 
 function TJvCustomDatabaseItems.CreateHandle: HDBICur;
 var
-  WildCard: PChar;
-  Pattern: array [0..DBIMAXTBLNAMELEN] of Char;
+  WildCard: PAnsiChar;
+  Pattern: array [0..DBIMAXTBLNAMELEN] of AnsiChar;
 begin
   WildCard := nil;
   if FileMask <> '' then
-    WildCard := AnsiToNative(DBLocale, FileMask, Pattern, SizeOf(Pattern) - 1);
+    WildCard := AnsiToNative(DBLocale, AnsiString(FileMask), Pattern, SizeOf(Pattern) - 1);  // cast to AnsiString might lead to loss in D2009
   case FItemType of
     dtTables:
       Check(DbiOpenTableList(DBHandle, FExtended, FSystemItems, WildCard, Result));
@@ -537,13 +537,13 @@ end;
 
 function TJvCustomTableItems.CreateHandle: HDBICur;
 var
-  STableName: PChar;
+  STableName: PAnsiChar;
 begin
   if FTableName = '' then
     _DBError(SNoTableName);
-  STableName := StrAlloc(Length(FTableName) + 1);
+  STableName := {$IFDEF SUPPORTS_UNICODE}AnsiStrAlloc{$ELSE}StrAlloc{$ENDIF SUPPORTS_UNICODE}(Length(FTableName) + 1);
   try
-    AnsiToNative(DBLocale, FTableName, STableName, Length(FTableName));
+    AnsiToNative(DBLocale, AnsiString(FTableName), STableName, Length(FTableName));   // Cast to AnsiString may lead to data loss in D2009
     case FItemType of
       dtFields:
         while not CheckOpen(DbiOpenFieldList(DBHandle, STableName, nil,
@@ -579,10 +579,10 @@ end;
 
 constructor TJvDatabaseDesc.Create(const DatabaseName: string);
 var
-  Buffer: PChar;
+  Buffer: PAnsiChar;
 begin
   inherited Create;
-  Buffer := StrPCopy(StrAlloc(Length(DatabaseName) + 1), DatabaseName);
+  Buffer := StrPCopy({$IFDEF SUPPORTS_UNICODE}AnsiStrAlloc{$ELSE}StrAlloc{$ENDIF SUPPORTS_UNICODE}(Length(DatabaseName) + 1), AnsiString(DatabaseName));
   try
     Check(DbiGetDatabaseDesc(Buffer, @FDescription));
   finally
@@ -592,10 +592,10 @@ end;
 
 constructor TJvDriverDesc.Create(const DriverType: string);
 var
-  Buffer: PChar;
+  Buffer: PAnsiChar;
 begin
   inherited Create;
-  Buffer := StrPCopy(StrAlloc(Length(DriverType) + 1), DriverType);
+  Buffer := StrPCopy({$IFDEF SUPPORTS_UNICODE}AnsiStrAlloc{$ELSE}StrAlloc{$ENDIF SUPPORTS_UNICODE}(Length(DriverType) + 1), AnsiString(DriverType));
   try
     Check(DbiGetDriverDesc(Buffer, FDescription));
   finally

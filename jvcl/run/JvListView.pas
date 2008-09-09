@@ -1852,7 +1852,7 @@ begin
     // the problem with resizing the header is that there doesn't seem to be an easy way of telling the listview about it...
 //    SetWindowPlacement(HeaderHandle, @WP);
     UpdateColumns;
-    InvalidateRect(HeaderHandle, nil, True)
+    Windows.InvalidateRect(HeaderHandle, nil, True)
   end;
 end;
 
@@ -2287,7 +2287,7 @@ end;
 procedure TJvListView.LVMSetColumn(var Msg: TMessage);
 var
   i: Integer;
-  Column: tagLVCOLUMNA;
+  Column: tagLVCOLUMN;
 begin
   inherited;
 

@@ -264,6 +264,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvInterpreter, JvInterpreterConst, JvConsts, windows;
 
 const
@@ -444,7 +447,7 @@ begin
   begin
     { Result := pa_tokenize_1tag(Token[1]);
     if Result = -1 then goto Any; }
-    if T1 in ['('..'>'] then { #40..#62 }
+    if CharInSet(T1, ['('..'>']) then { #40..#62 }
       Result := Asso1Values[T1]
     else
     if T1 = '[' then
@@ -472,7 +475,7 @@ begin
         { may be hex constant }
         begin
           for I := 2 to L1 do
-            if not (Token[I] in StConstSymbols) then
+            if not CharInSet(Token[I], StConstSymbols) then
               goto Any;
           Result := ttInteger;
         end;
@@ -505,7 +508,7 @@ begin
             else
               Point := True
           else
-          if not (Ci in StConstSymbols10) then
+          if not CharInSet(Ci, StConstSymbols10) then
             goto NotNumber { not number }
         end;
         if Point then
@@ -528,12 +531,12 @@ begin
           end
           else
             { may be Identifier }               // National symbols for OLE automation
-            if not ((T1 in StIdFirstSymbols) or IsCharAlpha(T1)) then
+            if not (CharInSet(T1, StIdFirstSymbols) or IsCharAlpha(T1)) then
               Result := ttUnknown
             else
             begin
               for I := 2 to L1 do
-                if not ((Token[I] in StIdSymbols) or IsCharAlpha(Token[I])) then
+                if not (CharInSet(Token[I], StIdSymbols) or IsCharAlpha(Token[I])) then
                 begin
                   Result := ttUnknown;
                   Exit;
@@ -621,10 +624,10 @@ var
           JvInterpreterError(ieBadRemark, P - PChar(FSource));
       '/':
         if (P[1] = '/') then
-          while not (P[0] in [Lf, Cr, #0]) do
+          while not CharInSet(P[0], [Lf, Cr, #0]) do
             Inc(P);
     end;
-    while (P[0] in [' ', Lf, Cr, Tab]) do
+    while CharInSet(P[0], [' ', Lf, Cr, Tab]) do
       Inc(P);
   end;
 
@@ -644,18 +647,18 @@ begin
     Skip;
   until F1 = P;
   F := P;                          // National symbols for OLE automation
-  if (P[0] in StIdFirstSymbols) or PrevPoint and IsCharAlpha(P[0]) then
+  if CharInSet(P[0], StIdFirstSymbols) or PrevPoint and IsCharAlpha(P[0]) then
   { token }
   begin
-    while (P[0] in StIdSymbols) or PrevPoint and IsCharAlpha(P[0]) do
+    while CharInSet(P[0], StIdSymbols) or PrevPoint and IsCharAlpha(P[0]) do
       Inc(P);
     SetString(Result, F, P - F);
   end
   else
-  if P[0] in StConstSymbols10 then
+  if CharInSet(P[0], StConstSymbols10) then
   { number }
   begin
-    while (P[0] in StConstSymbols10) or (P[0] = '.') do
+    while CharInSet(P[0], StConstSymbols10) or (P[0] = '.') do
     begin
       if (P[0] = '.') and (P[1] = '.') then
         Break;
@@ -665,11 +668,11 @@ begin
   end
   else
   if ((P[0] = '$') and
-    (P[1] in StConstSymbols)) then
+    CharInSet(P[1], StConstSymbols)) then
   { hex number }
   begin
     Inc(P);
-    while P[0] in StConstSymbols do
+    while CharInSet(P[0], StConstSymbols) do
       Inc(P);
     SetString(Result, F, P - F);
   end
@@ -678,7 +681,7 @@ begin
   { string constant }
   begin
     Inc(P);
-    while not (P[0] in [Lf, Cr, #0]) do
+    while not CharInSet(P[0], [Lf, Cr, #0]) do
     begin
       if P[0] = '''' then
         if P[1] = '''' then
@@ -699,17 +702,17 @@ begin
   end
   else
   if ((P[0] = '#') and
-    (P[1] in StConstSymbols10)) then
+    CharInSet(P[1], StConstSymbols10)) then
   { Char constant }
   begin
     Inc(P);
-    while P[0] in StConstSymbols10 do
+    while CharInSet(P[0], StConstSymbols10) do
       Inc(P);
     SetString(Result, F + 1, P - F - 1);
     Result := '''' + Chr(StrToInt(Result)) + '''';
   end
   else
-  if P[0] in ['>', '=', '<', '.'] then
+  if CharInSet(P[0], ['>', '=', '<', '.']) then
   begin
     if (P[0] = '.') and (P[1] = '.') then
     begin
