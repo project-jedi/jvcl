@@ -130,6 +130,7 @@ begin
               SetOrdProp(Self, PropList[I], StrToInt(Value));
             tkFloat:
               SetFloatProp(Self, PropList[I], StrToFloat(Value));
+            {$IFDEF UNICODE} tkUString, {$ENDIF}
             tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
@@ -162,6 +163,7 @@ begin
             Value := IntToStr(GetOrdProp(Self, PropList[I]));
           tkFloat:
             Value := FloatToStr(GetFloatProp(Self, PropList[I]));
+          {$IFDEF UNICODE} tkUString, {$ENDIF}
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
         else
@@ -203,6 +205,7 @@ begin
               SetOrdProp(Self, PropList[I], StrToInt(Value));
             tkFloat:
               SetFloatProp(Self, PropList[I], StrToFloat(Value));
+            {$IFDEF UNICODE} tkUString, {$ENDIF}
             tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
@@ -236,6 +239,7 @@ begin
             Value := IntToStr(GetOrdProp(Self, PropList[I]));
           tkFloat:
             Value := FloatToStr(GetFloatProp(Self, PropList[I]));
+          {$IFDEF UNICODE} tkUString, {$ENDIF}
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
         else

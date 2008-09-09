@@ -432,7 +432,8 @@ function TJvRegAuto.GetStrPrp: string;
 begin
   Result := '';
   case PropTyp of
-    tkString, tkLString , tkWString :
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
+    tkString, tkLString, tkWString :
       if FLoaded then
         Result := GetStrProp(Obj, PropInf);
   end;
@@ -441,7 +442,8 @@ end;
 procedure TJvRegAuto.SetStrPrp(Value: string);
 begin
   case PropTyp of
-    tkString, tkLString , tkWString :
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
+    tkString, tkLString, tkWString :
       if FLoaded then
         SetStrProp(Obj, PropInf, Value);
   end;
@@ -511,6 +513,7 @@ begin
           SaveOrdPrp;
         tkFloat:
           SaveFloatPrp;
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkString, tkLString , tkWString :
           SaveStrPrp;
       end;
@@ -580,6 +583,7 @@ begin
           LoadOrdPrp;
         tkFloat:
           LoadFloatPrp;
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkString, tkLString , tkWString :
           LoadStrPrp;
       end;
