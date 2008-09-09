@@ -32,6 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Contnrs,
+  JclBase,
   JvSimpleXml,
   Utils, DelphiData, Intf, GenerateUtils, PackageInformation;
 
@@ -134,6 +135,12 @@ type
 
 implementation
 
+{$IFNDEF COMPILER12_UP}
+uses
+  JvJCLUtils;
+{$ENDIF ~COMPILER12_UP}
+
+
 function BplNameToGenericName(const BplName: string): string;
 var
   I, Len : Integer;
@@ -144,7 +151,7 @@ begin
   // Remove numbers from the end of the package name
   Len := Length(Result);
   I := Len-1;
-  while (I > 0) and (Result[I] in ['0'..'9']) do
+  while (I > 0) and CharInSet(Result[I], ['0'..'9']) do
     Dec(I);
   Delete(Result, I+1, Len-I-1);
 
