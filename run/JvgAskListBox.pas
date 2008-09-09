@@ -878,7 +878,7 @@ begin
     FPushedButton[Index] := Value;
     SendMessage(Handle, LB_GETITEMRECT, Index, Longint(@R));
     R.Left := FSegment1Width;
-    InvalidateRect(Handle, @R, True);
+    Windows.InvalidateRect(Handle, @R, True);
     //ButtonClicked;
     if (aloAutoScroll in Options) and (Value <> 0) then
       SendMessage(Handle, LB_SETCURSEL, Index, Longint(0));
@@ -902,7 +902,7 @@ begin
     ItemN := ItemAtPos(SmallPointToPoint(Msg.Pos), True);
     SendMessage(Handle, LB_GETITEMRECT, ItemN, LPARAM(@R));
     Inc(R.Left, FSegment1Width);
-    InvalidateRect(Handle, @R, False);
+    Windows.InvalidateRect(Handle, @R, False);
     //if (aloAutoScroll in Options)then SendMessage( Handle, LB_SETCURSEL, FSelectedItem+1, Longint(0));
   end;
 end;

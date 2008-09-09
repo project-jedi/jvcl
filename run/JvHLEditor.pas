@@ -747,7 +747,7 @@ const
     I: Integer;
   begin
     I := 0;
-    while (Parser.pcPos[I] <> #0) and (Parser.pcPos[I] in [' ', Tab, Cr, Lf]) do
+    while (Parser.pcPos[I] <> #0) and CharInSet(Parser.pcPos[I], [' ', Tab, Cr, Lf]) do
       Inc(I);
     Result := Parser.pcPos[I];
   end;
@@ -1074,7 +1074,7 @@ begin
             if IsPerlStatement(Token) then
               SetColor(Colors.Statement)
             else
-            if (Token[1] in ['$', '@', '%', '&']) then
+            if CharInSet(Token[1], ['$', '@', '%', '&']) then
               SetColor(Colors.FunctionCall)
             else
               F := False;
@@ -1116,7 +1116,7 @@ begin
       if IsStringConstant(Token) then
         SetColor(Colors.Strings)
       else
-      if (Length(Token) = 1) and (Token[1] in Symbols) then
+      if (Length(Token) = 1) and CharInSet(Token[1], Symbols) then
         SetColor(Colors.Symbol)
       else
       if IsIntConstant(Token) or IsRealConstant(Token) then

@@ -307,7 +307,7 @@ end;
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
-  BtnCaptions: array [cbSgn..cbMC] of string[4] =
+  BtnCaptions: array [cbSgn..cbMC] of string =
     ('', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
      'MP', 'MS', 'MR', 'MC');
 begin
@@ -871,7 +871,7 @@ begin
     Key := #0;
   if Assigned(FOnCalcKey) then
     FOnCalcKey(Self, Key);
-  if Key in [AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}), '.', ','] then
+  if CharInSet(Key, [DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}, '.', ',']) then
   begin
     CheckFirst;
     if Pos(DecimalSeparator, Text) = 0 then
@@ -945,7 +945,7 @@ begin
         end;
         FOperator := Key;
         FOperand := GetDisplay;
-        if Key in ResultKeys then
+        if CharInSet(Key, ResultKeys) then
           if Assigned(FOnResult) then
             FOnResult(Self);
       end;
@@ -1031,7 +1031,7 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if Key in [AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}), '.', ','] then
+  if CharInSet(Key, [DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}, '.', ',']) then
     Key := '.'
   else
   if Key = Cr then

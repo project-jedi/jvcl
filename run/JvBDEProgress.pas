@@ -512,7 +512,7 @@ begin
       Exit;
     end;
     if CurFlag in TraceFlags then
-      FOnTrace(Self, CurFlag, StrPas(PTraceDesc(CBInfo)^.pszTrace));
+      FOnTrace(Self, CurFlag, string(StrPas(PTraceDesc(CBInfo)^.pszTrace)));
   end;
 end;
 
@@ -561,7 +561,7 @@ begin
   if CallInfo^.iPercentDone >= 0 then
     SetPercent(CallInfo^.iPercentDone)
   else
-    SetMessage(StrPas(CallInfo^.szMsg));
+    SetMessage(string(StrPas(CallInfo^.szMsg)));
 end;
 
 function TJvDBProgress.QryProgressCallback(CBInfo: Pointer): CBRType;

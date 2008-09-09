@@ -466,7 +466,7 @@ begin
   try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
-    Result := PropInfo^.Name;
+    Result := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name);
   finally
     FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   end;

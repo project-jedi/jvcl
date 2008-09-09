@@ -37,6 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
+  JclBase,
   JvTypes, JvWndProcHook, JVCLVer, JvVCL5Utils;
 
 const
@@ -782,10 +783,12 @@ begin
     I := 1;
     while I <= Length(Result) do
     begin
+      {$IFNDEF UNICODE} // Utf16: cHotkeyPrefix=#38 is in the BMP => no LeadByte check necessary 
       if Result[I] in LeadBytes then
         Inc(I)
       else
-	  if Result[I] = cHotkeyPrefix then
+      {$ENDIF ~UNICODE}
+      if Result[I] = cHotkeyPrefix then
         Delete(Result, I, 1);
       Inc(I);
     end;

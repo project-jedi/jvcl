@@ -93,7 +93,7 @@ var
   Required: DWORD;
   Res: array [0..255] of Char;
 begin
-  case SetupCopyErrorA(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
+  case SetupCopyError(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
       PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
       FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, SizeOf(Res), @Required) of
     DPROMPT_SUCCESS:

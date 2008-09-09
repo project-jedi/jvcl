@@ -724,7 +724,7 @@ begin
     if P^ = #0 then
       raise EJVCLException.CreateRes(@RsEInvalidFormatNotAllowed)
     else
-    if not (P^ in ['%', 's', 'S']) then
+    if not CharInSet(P^, ['%', 's', 'S']) then
       raise EJVCLException.CreateResFmt(@RsEInvalidFormatsNotAllowed,
         [QuotedStr('%' + P^)]);
     P := StrScan(P + 2, '%');
@@ -765,7 +765,7 @@ begin
     if P^ = #0 then
       Exit
     else
-    if P^ in ['s', 'S'] then
+    if CharInSet(P^, ['s', 'S']) then
       Inc(Result);
     P := StrScan(P + 2, '%');
   end;
@@ -1649,8 +1649,13 @@ begin
       {$IFDEF CLR}
       LVarList[J] := TObject(LStringList[J]);
       {$ELSE}
-      LVarList[J].VPChar := PChar(LStringList[J]);
+      {$IFDEF SUPPORTS_UNICODE}
+      LVarList[J].VPWideChar := PWideChar(LStringList[J]);
+      LVarList[J].VType := vtPWideChar;
+      {$ELSE}
+      LVarList[J].VPChar := PAnsiChar(LStringList[J]);
       LVarList[J].VType := vtPChar;
+      {$ENDIF SUPPORTS_UNICODE}
       {$ENDIF CLR}
     end;
     Result := Format(LookupFormat, LVarList);
@@ -2824,7 +2829,7 @@ var
   R: TRect;
 begin
   SetRect(R, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
-  InvalidateRect(Self.Handle, R, False);
+  Windows.InvalidateRect(Self.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, False);
   UpdateWindow(Self.Handle);
 end;
 
@@ -2881,7 +2886,7 @@ begin
     if TabSelects and IsDropDown and (Key = Tab) then
       Key := Cr;
 
-    if Key in [Cr, Esc] then
+    if CharInSet(Key, [Cr, Esc]) then
     begin
       CloseUp(Key = Cr);
       Key := #0;
@@ -2891,7 +2896,7 @@ begin
   end
   else
   begin
-    if Key in [#32..#255] then
+    if CharInSet(Key, [#32..#255]) then
     begin
       DropDown;
       if FListVisible then
@@ -2909,7 +2914,7 @@ begin
     end;
   end;
   inherited KeyPress(Key);
-  if Key in [Cr, Esc] then
+  if CharInSet(Key, [Cr, Esc]) then
     GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
 end;
 
@@ -3587,7 +3592,7 @@ begin
       SetRect(R, 0, 0, ClientWidth - Button.Width - 2, ClientHeight + 1)
   else
     R := FEditor.ClientRect;
-  InvalidateRect(FEditor.Handle, R, False);
+  Windows.InvalidateRect(FEditor.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, False);
   UpdateWindow(FEditor.Handle);
 end;
 

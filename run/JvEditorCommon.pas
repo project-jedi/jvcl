@@ -377,7 +377,7 @@ type
   public
     constructor Create(AJvEditor: TJvCustomEditorBase);
     destructor Destroy; override;
-    procedure Undo; dynamic; abstract;
+    procedure Undo; {$IFDEF COMPILER12_UP}virtual; {$ELSE}dynamic;{$ENDIF COMPILER12_UP} abstract;
     procedure Redo; dynamic; {abstract;}
     procedure SaveSelection;
     procedure RestoreSelection;
@@ -789,13 +789,19 @@ type
     procedure UpdateEditorView; virtual;
     procedure ScrollTimer(Sender: TObject);
 
-    function ExpandTabsAnsi(const S: AnsiString): AnsiString; // ClipboardPaste
     function GetDefTabStop(X: Integer; Next: Boolean): Integer; virtual;
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; virtual; abstract;
     function GetBackStop(X, Y: Integer): Integer; virtual; abstract;
     function GetAutoIndentStop(Y: Integer): Integer; virtual; abstract;
+    {$IFDEF SUPPORTS_UNICODE}
+    function ExpandTabsUnicode(const S: UnicodeString): UnicodeString; // ClipboardPaste
+    function GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean; virtual; abstract;
+    function GetUnicodeWordOnCaret: UnicodeString; virtual; abstract;
+    {$ELSE}
+    function ExpandTabsAnsi(const S: AnsiString): AnsiString; // ClipboardPaste
     function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; virtual; abstract;
     function GetAnsiWordOnCaret: AnsiString; virtual; abstract;
+    {$ENDIF SUPPORTS_UNICODE}
 
     { triggers when Lines changes }
     procedure DoLinesChange(Sender: TObject); virtual;
@@ -907,7 +913,7 @@ type
     procedure GetBracketHighlightAttr(Line: Integer; var Attrs: TLineAttrs); virtual;
     procedure HighlightBrackets(X, Y: Integer; BetweenSearch: Boolean = False); virtual;
     procedure GetBracketHighlightingWords(var Direction: Integer;
-      const Start: AnsiString; var Stop: AnsiString; var CaseSensitive: Boolean); virtual;
+      const Start: string; var Stop: string; var CaseSensitive: Boolean); virtual;
     function FontCacheFind(LA: TLineAttr): TFont;
     procedure FontCacheClear;
     procedure InsertChar(const Key: Word); virtual; abstract;
@@ -1105,7 +1111,11 @@ type
     procedure ReplaceWordItemIndex(SubStrStart: Integer); virtual; abstract;
     function GetTemplateCount: Integer; virtual; abstract;
     function GetIdentifierCount: Integer; virtual; abstract;
+    {$IFDEF SUPPORTS_UNICODE}
+    function GetUnicodeSeparator: UnicodeString; virtual; abstract;
+    {$ELSE}
     function GetAnsiSeparator: AnsiString; virtual; abstract;
+    {$ENDIF SUPPORTS_UNICODE}
 
     function GetItemCount: Integer;
     property JvEditor: TJvCustomEditorBase read FJvEditor;
@@ -2828,12 +2838,21 @@ begin
   end;
 end;
 
+{$IFDEF SUPPORTS_UNICODE}
+function TJvCustomEditorBase.ExpandTabsUnicode(const S: UnicodeString): UnicodeString;
+var
+  Ps, I: Integer;
+  Sp: UnicodeString;
+  Tabs, LenSp: Integer;
+  P: PChar;
+{$ELSE}
 function TJvCustomEditorBase.ExpandTabsAnsi(const S: AnsiString): AnsiString;
 var
   Ps, I: Integer;
   Sp: AnsiString;
   Tabs, LenSp: Integer;
-  P: PChar;
+  P: PAnsiChar;
+{$ENDIF SUPPORTS_UNICODE}
 begin
   Ps := Pos(Tab, S);
   if Ps > 0 then
@@ -2849,7 +2868,7 @@ begin
 
    // needed memory
     SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
-    P := PChar(Result);
+    P := {$IFDEF SUPPORTS_UNICODE}PChar{$ELSE}PAnsiChar{$ENDIF SUPPORTS_UNICODE}(Result);
 
    // copy the chars before the Tab
     if Ps > 1 then
@@ -2878,13 +2897,13 @@ end;
 function TJvCustomEditorBase.GetDefTabStop(X: Integer; Next: Boolean): Integer;
 var
   I: Integer;
-  S: AnsiString;
+  S: string;
   A, B: Integer;
 begin
   if Next then
   begin
     I := 0;
-    S := Trim(SubStrBySeparator(FTabStops, I, ' '));
+    S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
     A := 0;
     B := 1;
     while S <> '' do
@@ -2897,7 +2916,7 @@ begin
         Exit;
       end;
       Inc(I);
-      S := Trim(SubStrBySeparator(FTabStops, I, ' '));
+      S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
     end;
     { after last tab pos }
     Result := X + ((B - A) - ((X - B) mod (B - A)));
@@ -2905,7 +2924,7 @@ begin
   else
   begin
     I := 0;
-    S := Trim(SubStrBySeparator(FTabStops, I, ' '));
+    S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
     A := 0;
     B := 0;
     while S <> '' do
@@ -2918,7 +2937,7 @@ begin
         Exit;
       end;
       Inc(I);
-      S := Trim(SubStrBySeparator(FTabStops, I, ' '));
+      S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
     end;
     { after last tab pos }
     Result := X - ((B - A) - ((X - B) mod (B - A)));
@@ -3230,7 +3249,7 @@ begin
         if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then
           Dec(RUpdate.Top, CellRect.Height);
         Inc(RUpdate.Bottom, CellRect.Height);
-        InvalidateRect(Handle, @RUpdate, False);
+        Windows.InvalidateRect(Handle, @RUpdate, False);
       end
       else
         Invalidate;
@@ -3259,7 +3278,7 @@ begin
           @RUpdate // address of structure for update rectangle
           );
         Inc(RUpdate.Right, CellRect.Width); // draw italic chars correctly
-        InvalidateRect(Handle, @RUpdate, False);
+        Windows.InvalidateRect(Handle, @RUpdate, False);
       end
       else
         Invalidate;
@@ -4398,7 +4417,7 @@ end;
   HighlightBrackets(). They are too special in their parameters and should not
   be moved to JvJCLUtils.pas. }
 
-function CompareInStrInternal(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
+function CompareInStrInternal(const S: string; Index: Integer; const SubStr: string; LenSubStr: Integer): Boolean;
  { Index is zero based for speed optimization }
 var
   J, I, EndIndex: Integer;
@@ -4418,12 +4437,12 @@ begin
   end;
 end;
 
-function CompareInTextInternal(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
+function CompareInTextInternal(const S: string; Index: Integer; const SubStr: string; LenSubStr: Integer): Boolean;
  { Index is zero based for speed optimization }
  { SubStr is always in lowercase }
 var
   I, J, EndIndex: Integer;
-  Ch: AnsiChar;
+  Ch: Char;
 begin
   Result := False;
   EndIndex := Index + LenSubStr - 1;
@@ -4433,7 +4452,7 @@ begin
     for I := Index to EndIndex do
     begin
       Ch := S[I + 1];
-      if not (Ch in ['A'..'Z']) then
+      if not CharInSet(Ch, ['A'..'Z']) then
       begin
         if Ch <> SubStr[J + 1] then
           Exit
@@ -4454,15 +4473,15 @@ const
   Separators: TSysCharSet = [#0, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
     ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 var
-  Text: AnsiString;
+  Text: string;
   SearchDir: Integer;
-  SearchStart: AnsiString;
-  SearchEnd: AnsiString;
+  SearchStart: string;
+  SearchEnd: string;
   SearchOpen: Integer;
   CaseSensitive: Boolean;
   IsBracketCompare: Boolean;
   LenSearchEnd, LenSearchStart, LenText: Integer;
-  CmpProc: function(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
+  CmpProc: function(const S: string; Index: Integer; const SubStr: string; LenSubStr: Integer): Boolean;
   StringMap: TDynBoolArray;
   R: TRect;
 begin
@@ -4482,7 +4501,7 @@ begin
   if not BracketHighlighting.Active or not Visible or not Enabled then
     Exit;
 
-  if (Y >= 0) and GetAnsiTextLine(Y, Text) and (X >= 0) and (X < Length(Text)) then
+  if (Y >= 0) and {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) and (X >= 0) and (X < Length(Text)) then
   begin
     LenText := Length(Text);
 
@@ -4496,7 +4515,7 @@ begin
     IsBracketCompare := True;
 
     // obtain search direction and end-char
-    if Text[X + 1] in ['(', '{', '['] then
+    if CharInSet(Text[X + 1], ['(', '{', '[']) then
     begin
       SearchDir := +1;
       SearchStart := Text[X + 1];
@@ -4507,7 +4526,7 @@ begin
       end;
     end
     else
-    if Text[X + 1] in [')', '}', ']'] then
+    if CharInSet(Text[X + 1], [')', '}', ']']) then
     begin
       SearchDir := -1;
       SearchStart := Text[X + 1];
@@ -4521,8 +4540,8 @@ begin
     begin
       IsBracketCompare := False;
       // Text search
-      SearchStart := GetAnsiWordOnCaret;
-      while (X >= 0) and not (Text[X + 1] in Separators) do
+      SearchStart := {$IFDEF SUPPORTS_UNICODE}GetUnicodeWordOnCaret{$ELSE}GetAnsiWordOnCaret{$ENDIF SUPPORTS_UNICODE};
+      while (X >= 0) and not CharInSet(Text[X + 1], Separators) do
         Dec(X);
       Inc(X);
 
@@ -4559,7 +4578,7 @@ begin
         if X < 0 then
         begin
           Dec(Y);
-          if (Y < 0) or not GetAnsiTextLine(Y, Text) then
+          if (Y < 0) or not {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
             Break;
           StringMap := BracketHighlighting.CreateStringMap(Text);
           X := Length(Text) - 1;
@@ -4572,7 +4591,7 @@ begin
         if X >= Length(Text) then
         begin
           Inc(Y);
-          if not GetAnsiTextLine(Y, Text) then
+          if not {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
             Break;
           StringMap := BracketHighlighting.CreateStringMap(Text);
           X := 0;
@@ -4605,8 +4624,8 @@ begin
             // word pairs
             if CmpProc(Text, X, SearchEnd, LenSearchEnd) then // case sensitive
             begin
-              if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
-                 ((X + 1 + LenSearchEnd < LenText) or (Text[X + 1 + LenSearchEnd] in Separators)) then
+              if ((X = 0) or CharInSet(Text[X + 1 - 1], Separators)) and
+                 ((X + 1 + LenSearchEnd < LenText) or CharInSet(Text[X + 1 + LenSearchEnd], Separators)) then
               begin
                 Dec(SearchOpen);
                 if SearchOpen = 0 then
@@ -4621,8 +4640,8 @@ begin
             else
             if CmpProc(Text, X, SearchStart, LenSearchStart) then // case sensitive
             begin
-              if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
-                 ((X + 1 + LenSearchStart < LenText) or (Text[X + 1 + LenSearchStart] in Separators)) then
+              if ((X = 0) or CharInSet(Text[X + 1 - 1], Separators)) and
+                 ((X + 1 + LenSearchStart < LenText) or CharInSet(Text[X + 1 + LenSearchStart], Separators)) then
                 Inc(SearchOpen);
             end;
           end;
@@ -4673,7 +4692,7 @@ begin
 
   if not BetweenSearch and BracketHighlighting.ShowBetweenHighlighting and
      (BracketHighlighting.FStop.Left = -1) and
-     (Y >= 0) and (X >= 0) and GetAnsiTextLine(Y, Text) then
+     (Y >= 0) and (X >= 0) and {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
   begin
     // find ending bracket
     StringMap := BracketHighlighting.CreateStringMap(Text);
@@ -4682,7 +4701,7 @@ begin
       if X >= Length(Text) then
       begin
         Inc(Y);
-        if not GetAnsiTextLine(Y, Text) then
+        if not {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
           Break;
         StringMap := BracketHighlighting.CreateStringMap(Text);
         X := 0;
@@ -4714,11 +4733,11 @@ begin
 end;
 
 procedure TJvCustomEditorBase.GetBracketHighlightingWords(var Direction: Integer;
-  const Start: AnsiString; var Stop: AnsiString; var CaseSensitive: Boolean);
+  const Start: string; var Stop: string; var CaseSensitive: Boolean);
 var
   I, Ps: Integer;
   S: string;
-  CmpProc: function(const S1, S2: AnsiString): Integer;
+  CmpProc: function(const S1, S2: string): Integer;
 begin
   CaseSensitive := BracketHighlighting.CaseSensitiveWordPairs;
   if CaseSensitive then
@@ -5300,7 +5319,7 @@ begin
   // LockUpdate;
   { macro recording }
   if Recording and not Com([ecRecordMacro, ecBeginCompound]) and (Compound = 0) then
-    FMacro := FMacro + Char(Lo(ACommand)) + Char(Hi(ACommand));
+    FMacro := FMacro + AnsiChar(Lo(ACommand)) + AnsiChar(Hi(ACommand));
 
   PaintCaret(False);
   try
@@ -6100,13 +6119,13 @@ begin
       case Mode of
         cmIdentifiers:
           TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStrBySeparator(Items[Index], 1,
-            GetAnsiSeparator));
+            {$IFDEF SUPPORTS_UNICODE}GetUnicodeSeparator{$ELSE}GetAnsiSeparator{$ENDIF SUPPORTS_UNICODE}));
         cmTemplates:
           begin
             TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStrBySeparator(Items[Index], 1,
-              GetAnsiSeparator));
+              {$IFDEF SUPPORTS_UNICODE}GetUnicodeSeparator{$ELSE}GetAnsiSeparator{$ENDIF SUPPORTS_UNICODE}));
             Canvas.Font.Style := [fsBold];
-            S := SubStrBySeparator(Items[Index], 0, GetAnsiSeparator);
+            S := SubStrBySeparator(Items[Index], 0, {$IFDEF SUPPORTS_UNICODE}GetUnicodeSeparator{$ELSE}GetAnsiSeparator{$ENDIF SUPPORTS_UNICODE});
             W := Canvas.TextWidth(S);
             TJvUnicodeCanvas(Canvas).TextOut(Rect.Right - 2 * Offset - W, Rect.Top, S);
           end;

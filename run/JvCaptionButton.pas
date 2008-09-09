@@ -2076,12 +2076,26 @@ begin
 
     // if the mouse is in the area of the button
     if PtInRect(LButtonRect, CurPos) then
+      {$IFDEF SUPPORTS_UNICODE}
+      if Msg.NMHdr.code = TTN_NEEDTEXTW then
+      begin
+        with PNMTTDispInfoW(Msg.NMHdr)^ do
+        begin
+          // then we return the hint
+          lpszText := PChar(FHint);  // we do loose text here, but unicode should have kicked in anyway
+          hinst := 0;
+          uFlags := TTF_IDISHWND;
+          hdr.idFrom := ParentFormHandle;
+        end;
+      end
+      else
+      {$ENDIF SUPPORTS_UNICODE}
       if Msg.NMHdr.code = TTN_NEEDTEXTA then
       begin
         with PNMTTDispInfoA(Msg.NMHdr)^ do
         begin
           // then we return the hint
-          lpszText := PChar(FHint);
+          lpszText := PAnsiChar(AnsiString(FHint));  // we do loose text here, but unicode should have kicked in anyway
           hinst := 0;
           uFlags := TTF_IDISHWND;
           hdr.idFrom := ParentFormHandle;

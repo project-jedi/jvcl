@@ -391,7 +391,7 @@ type
     procedure SetReduceMemoryUse(const Value: Boolean);
     procedure SetTabPainter(const Value: TJvTabControlPainter);
   protected
-    function HintShow(var HintInfo: THintInfo): Boolean; override;
+    function HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
 
@@ -484,7 +484,7 @@ type
   public
     class function CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 
-    constructor Create(AOwner: TTreeNodes); {$IFDEF CLR}reintroduce;{$ENDIF} virtual;
+    constructor Create(AOwner: TTreeNodes); {$IFDEF CLR}reintroduce;{$ENDIF} {$IFDEF RTL200_UP}override{$ELSE}virtual{$ENDIF RTL200_UP};
     destructor Destroy; override;
 
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); override;
@@ -2048,7 +2048,7 @@ begin
   inherited;
 end;
 
-function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
+function TJvPageControl.HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean;
 var
   TabNo: Integer;
   Tab: TTabSheet;
@@ -2703,7 +2703,7 @@ begin
   if Assigned(Node) and Node.IsVisible then
   begin
     R := Node.DisplayRect(True);
-    InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF} R, False);
+    Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF} R, False);
   end;
 end;
 
@@ -2716,7 +2716,7 @@ begin
     R := Node.DisplayRect(True);
     R.Right := R.Left;
     R.Left := R.Left - Images.Width * 3;
-    InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF} R, True);
+    Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF} R, True);
   end;
 end;
 

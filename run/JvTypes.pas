@@ -50,10 +50,12 @@ uses
 const
   MaxPixelCount = 32767;
 
+{$IFNDEF COMPILER12_UP}
 {$HPPEMIT '#ifndef TDate'}
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
 {$HPPEMIT '#endif'}
+{$ENDIF !COMPILER12_UP}
 
 {$IFDEF CLR}
 type
@@ -71,6 +73,13 @@ type
   {$ENDIF ~COMPILER9_UP}
 
   PCaptionChar = PChar;
+
+  {$IFDEF COMPILER12_UP}
+  THintInfo = Controls.THintInfo;
+  {$EXTERNALSYM THintInfo}
+  PHintInfo = Controls.PHintInfo;
+  {$EXTERNALSYM PHintInfo}
+  {$ENDIF}
 
   // used in JvSpeedButton, JvArrowButton, JvButton CM_JVBUTTONPRESSED
   // asn: can also be used with CM_BUTTONPRESSED

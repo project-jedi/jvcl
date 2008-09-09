@@ -81,7 +81,7 @@ type
     property SmallIconIndex: Integer index SHGFI_SMALLICON read GetSystemIconIndex;
   end;
 
-  TJvCPSBuffer = array [0..CCPS_BufferSize - 1] of Char;
+  TJvCPSBuffer = array [0..CCPS_BufferSize - 1] of AnsiChar;
   TJvCPSState = (psReady, psRunning, psWaiting);
   TJvCPSFlag = (cfDefaultErrorMode, cfNewConsole, cfNewProcGroup, cfSeparateWdm,
     cfSharedWdm, cfSuspended, cfUnicode, cfDetached);
@@ -1445,7 +1445,7 @@ begin
   begin
     // Do copy because of possible #0's etc.
     SetString(S, Data, ASize);
-    FOnRawRead(FCreateProcess, S);
+    FOnRawRead(FCreateProcess, string(S));
   end;
 end;
 
@@ -1455,12 +1455,12 @@ begin
   if not (coOwnerData in FCreateProcess.ConsoleOptions) then
   begin
     if FStartsOnNewLine or (ConsoleOutput.Count = 0) then
-      ConsoleOutput.Add(FCurrentLine)
+      ConsoleOutput.Add(string(FCurrentLine))
     else
-      ConsoleOutput[ConsoleOutput.Count - 1] := FCurrentLine;
+      ConsoleOutput[ConsoleOutput.Count - 1] := string(FCurrentLine);
   end;
   if Assigned(FOnRead) then
-    FOnRead(FCreateProcess, FCurrentLine, FStartsOnNewLine);
+    FOnRead(FCreateProcess, string(FCurrentLine), FStartsOnNewLine);
   if EndsWithNewLine then
   begin
     FCurrentLine := '';

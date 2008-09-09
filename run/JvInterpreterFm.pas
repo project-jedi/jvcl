@@ -84,7 +84,9 @@ type
     procedure ReadState(Reader: TReader); override;
     property MethodList: TList read  FMethodList;
     property ClassIdentifier: string read FClassIdentifier;
+    {$WARNINGS OFF} // Delphi 2009+ has a class function UnitName
     property UnitName: string read FUnitName;
+    {$WARNINGS ON}
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     destructor Destroy; override;
@@ -235,7 +237,10 @@ procedure TJvInterpreterForm.FixupMethods;
             begin
               SetMethodProp(Com, PropList^[I],
                 TMethod(FJvInterpreterFm.NewEvent(FUnitName,
-                PChar(FMethodList[F]), PropList^[I]^.PropType^.Name, Self, PropList^[I]^.Name)));
+                PChar(FMethodList[F]),
+                   {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.PropType^.Name),
+                   Self,
+                   {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.Name))));
             end;
           end;
         end;

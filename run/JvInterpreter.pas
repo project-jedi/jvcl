@@ -298,7 +298,9 @@ type
     function GetParamTypeNames(Index: Integer): string;
     function GetDefine: string;
   public
+    {$WARNINGS OFF} // Delphi 2009+ has a class function UnitName
     property UnitName: string read FUnitName;
+    {$WARNINGS ON}
     property Identifier: string read FIdentifier;
     property ClassIdentifier: string read FClassIdentifier;
     property Define: string read GetDefine;
@@ -333,7 +335,9 @@ type
     property Args: TJvInterpreterArgs read GetArgs;
     property Owner: TJvInterpreterExpression read FOwner;
     property Instance: TObject read FInstance;
+    {$WARNINGS OFF} // Delphi 2009+ has a class function UnitName
     property UnitName: string read FUnitName;
+    {$WARNINGS ON}
     property FunctionName: string read FFunctionName;
     property PropName: string read FPropName;
   public
@@ -4745,6 +4749,7 @@ begin
       Value := Char(GetOrdProp(Args.Obj, PropInf));
     tkFloat:
       Value := GetFloatProp(Args.Obj, PropInf);
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
     tkString, tkLString, tkWString:
       Value := GetStrProp(Args.Obj, PropInf);
     tkClass:
@@ -4789,6 +4794,7 @@ begin
       SetOrdProp(Args.Obj, PropInf, Integer(string(Value)[1]));
     tkFloat:
       SetFloatProp(Args.Obj, PropInf, Value);
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
     tkString, tkLString, tkWString:
       SetStrProp(Args.Obj, PropInf, VarToStr(Value));
     tkClass:
@@ -6480,14 +6486,16 @@ begin
             { method assignment }
             if not Cmp(Token, kwNIL) then
             begin
-              Event := FindEvent(FCurUnitName, FCurrArgs.Obj, PropInf^.Name);
+              Event := FindEvent(FCurUnitName, FCurrArgs.Obj, {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInf^.Name));
               if Event <> nil then
               begin
                 FEventList.Remove(Event);
                 Event.Free;
               end;
               Method := TMethod(NewEvent(FCurUnitName, FunctionName,
-                PropInf^.PropType^.Name, FCurrArgs.Obj {FCurInstance}, PropInf^.Name));
+                {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInf^.PropType^.Name),
+                FCurrArgs.Obj {FCurInstance},
+                {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInf^.Name)));
               SetMethodProp(FCurrArgs.Obj, PropInf, Method);
               FEventList.Add(Method.Data);
             end

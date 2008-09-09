@@ -197,14 +197,14 @@ uses
 // attempt to find separators (#0) between physical and virtual file name
 // if not separator is found, same as ExtractFileName, except it returns a pointer to a position in AFileName.
 
-function PExtractFileName(const AFileName: string): PChar;
+function ExtractFileNamePtr(const AFileName: AnsiString): PAnsiChar;
 var
   I: Integer;
 begin
-  I := Pos(#0, AFileName);
+  I := Pos(#0, string(AFileName));
   if I = 0 then
-    I := LastDelimiter(PathDelim + DriveDelim, AFileName);
-  Result := PChar(AFileName) + I;
+    I := LastDelimiter(PathDelim + DriveDelim, string(AFileName));
+  Result := PAnsiChar(AFileName) + I;
 end;
 
 //=== { TJvMailRecipient } ===================================================
@@ -349,7 +349,7 @@ begin
   SaveTaskWindowsState;
   try
     Result := (ErrorCheck(FSimpleMapi.MapiAddress(FSessionHandle, Application.Handle,
-      PChar(Caption), EditFields, nil, Length(FRecipArray), FRecipArray[0],
+      PAnsiChar(AnsiString(Caption)), EditFields, nil, Length(FRecipArray), FRecipArray[0],
       LogonFlags, 0, @NewRecipCount, NewRecips)) = SUCCESS_SUCCESS);
   finally
     RestoreTaskWindowsState;
@@ -412,8 +412,8 @@ procedure TJvMail.CreateMapiMessage;
           raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := PExtractFileName(Attachment[I]);
-        FAttachArray[I].lpszPathName := PChar(Attachment[I]);
+        FAttachArray[I].lpszFileName := ExtractFileNamePtr(AnsiString(Attachment[I]));
+        FAttachArray[I].lpszPathName := PAnsiChar(AnsiString(Attachment[I]));
       end;
     end
     else
@@ -426,8 +426,8 @@ begin
     MakeAttachments;
     FBodyText := Body.Text;
     FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
-    FMapiMessage.lpszSubject := PChar(FSubject);
-    FMapiMessage.lpszNoteText := PChar(FBodyText);
+    FMapiMessage.lpszSubject := PAnsiChar(AnsiString(FSubject));
+    FMapiMessage.lpszNoteText := PAnsiChar(AnsiString(FBodyText));
     FMapiMessage.lpRecips := PMapiRecipDesc(FRecipArray);
     FMapiMessage.nRecipCount := Length(FRecipArray);
     FMapiMessage.lpFiles := PMapiFileDesc(FAttachArray);
@@ -455,10 +455,10 @@ var
       begin
         ulRecipClass := RecipList.RecipientClass;
         if Name = '' then // some clients requires Name item always filled
-          lpszName := PChar(Address)
+          lpszName := PAnsiChar(AnsiString(Address))
         else
-          lpszName := PChar(Name);
-        lpszAddress := PChar(Address);
+          lpszName := PAnsiChar(AnsiString(Name));
+        lpszAddress := PAnsiChar(AnsiString(Address));
       end;
       Inc(RecipIndex);
     end;
@@ -481,7 +481,7 @@ begin
     Exit;
   for I := 0 to AttachCount - 1 do
   begin
-    Attachment.Add(Attachments^.lpszPathName);
+    Attachment.Add(string(Attachments^.lpszPathName));
     Inc(Attachments);
   end;
 end;
@@ -500,11 +500,11 @@ begin
     with Recips^ do
       case ulRecipClass of
         MAPI_BCC:
-          BlindCopy.AddRecipient(lpszAddress, lpszName);
+          BlindCopy.AddRecipient(string(lpszAddress), string(lpszName));
         MAPI_CC:
-          CarbonCopy.AddRecipient(lpszAddress, lpszName);
+          CarbonCopy.AddRecipient(string(lpszAddress), string(lpszName));
         MAPI_TO:
-          Recipient.AddRecipient(lpszAddress, lpszName);
+          Recipient.AddRecipient(string(lpszAddress), string(lpszName));
       end;
     Inc(Recips);
   end;
@@ -542,11 +542,11 @@ begin
   if roUnreadOnly in FReadOptions then
     Inc(Flags, MAPI_UNREAD_ONLY);
   Res := FSimpleMapi.MapiFindNext(SessionHandle, Application.Handle, nil,
-    PChar(FSeedMessageID), Flags, 0, MsgID);
+    PAnsiChar(AnsiString(FSeedMessageID)), Flags, 0, @MsgID[0]);
   Result := (Res = SUCCESS_SUCCESS);
   if Result then
   begin
-    FSeedMessageID := MsgID;
+    FSeedMessageID := string(MsgID);
   end
   else
   begin
@@ -601,8 +601,8 @@ begin
     Exit;
   SaveTaskWindowsState;
   try
-    ErrorCheck(FSimpleMapi.MapiLogOn(Application.Handle, PChar(FProfileName),
-      PChar(FPassword), LogonFlags, 0, @FSessionHandle));
+    ErrorCheck(FSimpleMapi.MapiLogOn(Application.Handle, PAnsiChar(AnsiString(FProfileName)),
+      PAnsiChar(AnsiString(FPassword)), LogonFlags, 0, @FSessionHandle));
   finally
     RestoreTaskWindowsState;
   end;
@@ -639,29 +639,29 @@ begin
   if not (roAttachments in FReadOptions) then
     Inc(Flags, MAPI_SUPPRESS_ATTACH);
   ErrorCheck(FSimpleMapi.MapiReadMail(SessionHandle, Application.Handle,
-    PChar(FSeedMessageID), Flags, 0, Msg));
+    PAnsiChar(AnsiString(FSeedMessageID)), Flags, 0, Msg));
   with Msg^ do
   begin
     if lpOriginator <> nil then
     begin
-      FReadedMail.RecipientAddress := lpOriginator^.lpszAddress;
-      FReadedMail.RecipientName := lpOriginator^.lpszName;
+      FReadedMail.RecipientAddress := string(lpOriginator^.lpszAddress);
+      FReadedMail.RecipientName := string(lpOriginator^.lpszName);
     end;
     DecodeRecipients(lpRecips, nRecipCount);
-    FSubject := lpszSubject;
-    Body.Text := lpszNoteText;
+    FSubject := string(lpszSubject);
+    Body.Text := string(lpszNoteText);
     //    FDateReceived := StrToDateTime(lpszDateReceived);
     SOldDateFormat := ShortDateFormat;
     OldDateSeparator := DateSeparator;
     try
       ShortDateFormat := 'yyyy/M/d';
       DateSeparator := '/';
-      FReadedMail.DateReceived := StrToDateTime(lpszDateReceived);
+      FReadedMail.DateReceived := StrToDateTime(string(lpszDateReceived));
     finally
       ShortDateFormat := SOldDateFormat;
       DateSeparator := OldDateSeparator;
     end;
-    FReadedMail.ConversationID := lpszConversationID;
+    FReadedMail.ConversationID := string(lpszConversationID);
     DecodeAttachments(lpFiles, nFileCount);
   end;
   FSimpleMapi.MapiFreeBuffer(Msg);
@@ -676,11 +676,11 @@ begin
   CheckLoadLib;
   SaveTaskWindowsState;
   Res := FSimpleMapi.MapiResolveName(SessionHandle, Application.Handle,
-    PChar(Name), LogonFlags or MAPI_AB_NOMODIFY or MAPI_DIALOG, 0, RecipDesc);
+    PAnsiChar(AnsiString(Name)), LogonFlags or MAPI_AB_NOMODIFY or MAPI_DIALOG, 0, RecipDesc);
   RestoreTaskWindowsState;
   if (Res <> MAPI_E_AMBIGUOUS_RECIPIENT) and (Res <> MAPI_E_UNKNOWN_RECIPIENT) then
   begin
-    Result := RecipDesc^.lpszName;
+    Result := string(RecipDesc^.lpszName);
     FSimpleMapi.MapiFreeBuffer(RecipDesc);
     ErrorCheck(Res);
   end;
@@ -700,7 +700,7 @@ end;
 
 function TJvMail.SaveMail(const MessageID: string): string;
 var
-  MsgID: array [0..512] of AnsiChar;
+  MsgID: array [0..512] of Char;
   Flags: ULONG;
 begin
   Result := '';
@@ -714,7 +714,7 @@ begin
       Flags := Flags or MAPI_LONG_MSGID;
     try
       ErrorCheck(FSimpleMapi.MapiSaveMail(FSessionHandle, Application.Handle,
-        FMapiMessage, Flags, 0, MsgID));
+        FMapiMessage, Flags, 0, PAnsiChar(@AnsiString(MsgID)[1])));
     finally
       RestoreTaskWindowsState;
     end;

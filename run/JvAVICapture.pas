@@ -617,7 +617,7 @@ end;
 // This is the callback called in case of an error
 // will only be called if the user chose so with ueError
 
-function ErrorCallback(hWnd: HWND; ErrId: Integer; Str: LPSTR): LRESULT; stdcall;
+function ErrorCallback(hWnd: HWND; ErrId: Integer; Str: LPTSTR): LRESULT; stdcall;
 var
   SelfObj: TJvAVICapture;
 begin
@@ -639,7 +639,7 @@ end;
 // This is the callback called in case of a status change
 // will only be called if the user chose so with ueStatus
 
-function StatusCallback(hWnd: HWND; nId: Integer; Str: LPSTR): LRESULT; stdcall;
+function StatusCallback(hWnd: HWND; nId: Integer; Str: LPTSTR): LRESULT; stdcall;
 var
   SelfObj: TJvAVICapture;
 begin

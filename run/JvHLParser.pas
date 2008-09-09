@@ -346,7 +346,7 @@ begin
   P := FpcPos;
   { Firstly skip spaces and remarks }
   repeat
-    while P[0] in StSkip do
+    while CharInSet(P[0], StSkip) do
       Inc(P);
     F1 := P;
     try
@@ -365,44 +365,44 @@ begin
       Return;
       Exit;
     end;
-    while P[0] in StSkip do
+    while CharInSet(P[0], StSkip) do
       Inc(P);
   until F1 = P;
 
   F := P;
   if FStyle <> psHtml then
   begin
-    if P[0] in IdentifierFirstSymbols then
+    if CharInSet(P[0], IdentifierFirstSymbols) then
     { token }
     begin
-      while P[0] in IdentifierSymbols do
+      while CharInSet(P[0], IdentifierSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
-    if P[0] in DigitSymbols then
+    if CharInSet(P[0], DigitSymbols) then
     { number }
     begin
-      while (P[0] in DigitSymbols) or (P[0] = '.') do
+      while CharInSet(P[0], DigitSymbols) or (P[0] = '.') do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
     if (Style = psPascal) and (P[0] = '$') and
-      (P[1] in HexadecimalSymbols) then
+      CharInSet(P[1], HexadecimalSymbols) then
     { pascal hex number }
     begin
       Inc(P);
-      while (P[0] in HexadecimalSymbols) do
+      while CharInSet(P[0], HexadecimalSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
-    if (Style = psPerl) and (P[0] in ['$', '@', '%', '&']) then
+    if (Style = psPerl) and CharInSet(P[0], ['$', '@', '%', '&']) then
     { perl identifier }
     begin
       Inc(P);
-      while (P[0] in IdentifierSymbols) do
+      while CharInSet(P[0], IdentifierSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -482,7 +482,7 @@ begin
   end
   else { html }
   begin
-    if (P[0] in ['=', '<', '>']) or
+    if CharInSet(P[0], ['=', '<', '>']) or
       ((P <> pcProgram) and (P[0] = '/') and (P[-1] = '<')) then
     begin
       Result := P[0];
@@ -505,7 +505,7 @@ begin
     end
     else
     begin
-      while not (P[0] in [#0, ' ', '=', '<', '>']) do
+      while not CharInSet(P[0], [#0, ' ', '=', '<', '>']) do
         Inc(P);
       SetString(Result, F, P - F);
     end;
@@ -730,7 +730,11 @@ var
   procedure Return;
   begin
     FpcPos := P;
+    {$IFDEF SUPPORTS_UNICODE}
+    FHistory.Strings[FHistoryPtr] := Result;
+    {$ELSE}
     FHistory.PStrings[FHistoryPtr]^ := Result;
+    {$ENDIF SUPPORTS_UNICODE}
     FHistory.Objects[FHistoryPtr] := TObject(Pos - 1);
     Inc(FHistoryPtr);
     if FHistoryPtr > FHistorySize - 1 then
@@ -1061,7 +1065,7 @@ begin
       else
         Point := True
     else
-    if not (St[I] in DigitSymbols) then
+    if not CharInSet(St[I], DigitSymbols) then
       Exit;
   Result := True;
 end;
@@ -1115,7 +1119,7 @@ begin
   else
     J := 1;
   for I := J to Length(St) do
-    if not (St[I] in Sym) then
+    if not CharInSet(St[I], Sym) then
       Exit;
   Result := True;
 end;
@@ -1154,11 +1158,11 @@ begin
   L := Length(ID);
   if L = 0 then
     Exit;
-  if not (ID[1] in IdentifierFirstSymbols) then
+  if not CharInSet(ID[1], IdentifierFirstSymbols) then
     Exit;
   for I := 1 to L do
   begin
-    if not (ID[1] in IdentifierSymbols) then
+    if not CharInSet(ID[1], IdentifierSymbols) then
       Exit;
   end;
   Result := True;

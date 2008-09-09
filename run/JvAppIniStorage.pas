@@ -169,7 +169,7 @@ uses
   SysUtils,
   JvJCLUtils, // BinStrToBuf & BufToBinStr
   JvVCL5Utils, JvConsts, JvResources,
-  JclAnsiStrings; // JvConsts or PathDelim under D5 and BCB5
+  JclStrings; // JvConsts or PathDelim under D5 and BCB5
 
 const
   cNullDigit = '0';

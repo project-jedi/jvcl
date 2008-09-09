@@ -38,6 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Messages, CommCtrl, SysUtils, Classes, Graphics, Controls,
   Forms, ComCtrls, Menus,
+  JclBase,
   JvTypes, JvMenus, JvExComCtrls;
 
 type
@@ -61,6 +62,9 @@ type
     {$ENDIF COMPILER5}
   protected
     procedure AdjustSize; override;
+  {$IFDEF COMPILER12_UP}
+  public
+  {$ENDIF COMPILER12_UP}
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;

@@ -1325,7 +1325,7 @@ end;
 procedure TJvBackgroundClientLink.ClientInvalidate;
 begin
   if not (csReading in FBackground.ComponentState) and not (csDestroying in FClient.ComponentState) then
-    InvalidateRect(ClientHandle, nil, True);
+    Windows.InvalidateRect(ClientHandle, nil, True);
 end;
 
 function GetMDIClientScrollDelta(ClientHandle: HWND; ScrollBar: Integer;
@@ -1385,7 +1385,7 @@ procedure TJvBackgroundClientLink.ClientWndProc(var Message: TMessage);
 
   procedure InvalidateBackground;
   begin
-    InvalidateRect(ClientHandle, nil, True);
+    Windows.InvalidateRect(ClientHandle, nil, True);
   end;
 
 begin

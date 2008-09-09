@@ -85,7 +85,7 @@ begin
   if idNoForeground in Style then
     Sty := Sty or IDF_NOFOREGROUND;
 
-  case SetupDeleteErrorA(OwnerWindow, Pointer(Title), PChar(FileName), FWin32ErrorCode, Sty) of
+  case SetupDeleteError(OwnerWindow, Pointer(Title), PChar(FileName), FWin32ErrorCode, Sty) of
     DPROMPT_SUCCESS:
       Result := dsSuccess;
     DPROMPT_CANCEL:

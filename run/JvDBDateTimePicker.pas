@@ -113,6 +113,9 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, ComCtrls, CommCtrl,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts;
 
 //=== { TJvDBDateTimePicker } ================================================
@@ -404,7 +407,7 @@ begin
   end;
 
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and ((Field <> nil) and
+  if CharInSet(Key, [#32..#255]) and ((Field <> nil) and
     not (Field.IsValidChar(Key))) then
   begin
     if BeepOnError then

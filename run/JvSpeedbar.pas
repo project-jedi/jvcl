@@ -167,7 +167,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure SetChildOrder(Component: TComponent; Order: Integer); override;
     procedure ForEachItem(Proc: TForEachItem; Data: Longint); virtual;
     procedure PosChanged; dynamic;
@@ -176,6 +175,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;  // public in D2009
     procedure SetFontDefault; virtual;
     procedure RemoveItem(Item: TJvSpeedItem);
     procedure RemoveSection(Section: Integer); { delete and free section and items }
@@ -794,7 +795,7 @@ begin
       if csDesigning in ComponentState then
       begin
         R := BoundsRect;
-        InvalidateRect(FItem.SpeedBar.Handle, @R, True);
+        Windows.InvalidateRect(FItem.SpeedBar.Handle, @R, True);
       end;
       P := FItem.SpeedBar.ScreenToClient(P);
       if PtInRect(FItem.SpeedBar.ClientRect, P) then

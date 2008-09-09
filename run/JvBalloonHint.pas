@@ -69,8 +69,8 @@ type
       (Used the check on resize of the anchor window whether the stem point is
       still inside the balloon window): }
     RStemPointPosition: TPoint;
-    RUTF8Header: string;
-    RUTF8Hint: string;
+    RUTF8Header: {$IFDEF RTL200_UP}UTF8String{$ELSE}string{$ENDIF RTL200_UP};
+    RUTF8Hint: {$IFDEF RTL200_UP}UTF8String{$ELSE}string{$ENDIF RTL200_UP};
     RIconKind: TJvIconKind;
     RImageIndex: TImageIndex;
     RVisibleTime: Integer;
@@ -141,7 +141,7 @@ type
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string;
       AData: Pointer): TRect; override;
-    function CalcHintRectUTF8(MaxWidth: Integer; const AUTF8Hint: string;
+    function CalcHintRectUTF8(MaxWidth: Integer; const AUTF8Hint: {$IFDEF RTL200_UP}UTF8String{$ELSE}string{$ENDIF RTL200_UP};
       AData: Pointer): TRect; virtual;
     function CalcHintRectW(MaxWidth: Integer; const AHint: WideString;
       AData: Pointer): TRect; virtual;
@@ -307,7 +307,13 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
+  {$IFDEF SUPPORTS_INLINE}
+  Types,
+  {$ENDIF SUPPORTS_INLINE}
   ComCtrls, // needed for GetComCtlVersion
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
   JclStringConversions, JclUnicode, JvVCL5Utils;
 
@@ -380,7 +386,7 @@ begin
     { The Microsoft Layer for Unicode dll UNICOWS.DLL does probably the same as
       the following: }
     S := WideCharLenToString(PWideChar(WS), Length(WS));
-    Result := DrawTextA(hDC, PChar(S), Length(S), lpRect, uFormat);
+    Result := DrawTextA(hDC, PAnsiChar(AnsiString(S)), Length(S), lpRect, uFormat);
   end;
 end;
 
@@ -491,7 +497,7 @@ begin
     begin
       // GetThemeFont is defined wrong; so cast it
       Result := GetThemeFont(ThemeServices.Theme[teToolTip], 0, TTP_BALLOONTITLE, 0,
-        TMT_FONT, PLogFontA(@LogFontW)^) = S_OK;
+        TMT_FONT, {$IFDEF COMPILER12_UP}PLogFontW{$ELSE}PLogFontA{$ENDIF COMPILER12_UP}(@LogFontW)^) = S_OK;
 
       if Result then
       begin
@@ -517,7 +523,11 @@ begin
   while (Head^ <> WideNull) and (LineCount < 2) do
   begin
     Tail := Head;
+    {$IFDEF COMPILER12_UP}
+    while not CharInSet(Tail^, [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
+    {$ELSE}
     while not (Tail^ in [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
+    {$ENDIF COMPILER12_UP}
       (Tail^ <> WideLineSeparator) and (Tail^ <> WideParagraphSeparator) do
       Inc(Tail);
     Inc(LineCount);
@@ -725,9 +735,9 @@ begin
 end;
 
 function TJvBalloonWindow.CalcHintRectUTF8(MaxWidth: Integer;
-  const AUTF8Hint: string; AData: Pointer): TRect;
+  const AUTF8Hint: {$IFDEF RTL200_UP}UTF8String{$ELSE}string{$ENDIF RTL200_UP}; AData: Pointer): TRect;
 begin
-  Result := CalcHintRectW(MaxWidth, UTF8ToWideString(AUTF8Hint), AData);
+  Result := CalcHintRectW(MaxWidth, {$IFDEF RTL200_UP}System.{$ENDIF RTL200_UP}UTF8ToWideString(AUTF8Hint), AData);
 end;
 
 function TJvBalloonWindow.CalcHintRectW(MaxWidth: Integer;
@@ -1205,7 +1215,7 @@ begin
     while P^ <> #0 do
     begin
       Start := P;
-      while not (P^ in [#0, #10, #13]) do
+      while not CharInSet(P^, [#0, #10, #13]) do
         P := StrNextChar(P);
       SetString(S, Start, P - Start);
       W := Self.Canvas.TextWidth(S);
@@ -1302,7 +1312,7 @@ begin
       try
         Region := CreateRectRgn(0, 0, 0, 0);
         RegionType := GetWindowRgn(Handle, Region);
-        if RegionType <> ERROR then
+        if RegionType <> Windows.ERROR then
           FrameRgn(Msg.DC, Region, BrushBlack, 1, 1);
         DeleteObject(Region);
       finally
@@ -1319,7 +1329,7 @@ begin
   try
     Region := CreateRectRgn(0, 0, 0, 0);
     RegionType := GetWindowRgn(Handle, Region);
-    if RegionType <> ERROR then
+    if RegionType <> Windows.ERROR then
     begin
       FillRgn(Msg.DC, Region, Brush);
       // draw black border
@@ -1383,10 +1393,10 @@ begin
 
   with FData do
   begin
-    RUTF8Hint := WideStringToUTF8(AHint);
+    RUTF8Hint := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHint);
     RIconKind := ikCustom;
     RImageIndex := AImageIndex;
-    RUTF8Header := WideStringToUTF8(AHeader);
+    RUTF8Header := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHeader);
     RVisibleTime := VisibleTime;
   end;
 
@@ -1403,8 +1413,8 @@ begin
 
   with FData do
   begin
-    RUTF8Hint := WideStringToUTF8(AHint);
-    RUTF8Header := WideStringToUTF8(AHeader);
+    RUTF8Hint := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHint);
+    RUTF8Header := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHeader);
     RVisibleTime := VisibleTime;
     RIconKind := ikNone;
   end;
@@ -1422,10 +1432,10 @@ begin
 
   with FData do
   begin
-    RUTF8Hint := WideStringToUTF8(AHint);
+    RUTF8Hint := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHint);
     RIconKind := AIconKind;
     RImageIndex := -1;
-    RUTF8Header := WideStringToUTF8(AHeader);
+    RUTF8Header := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHeader);
     RVisibleTime := VisibleTime;
   end;
 
@@ -1443,8 +1453,8 @@ begin
   begin
     RAnchorWindow := AAnchorWindow;
     RAnchorPosition := AAnchorPosition;
-    RUTF8Header := WideStringToUTF8(AHeader);
-    RUTF8Hint := WideStringToUTF8(AHint);
+    RUTF8Header := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHeader);
+    RUTF8Hint := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHint);
     RVisibleTime := VisibleTime;
     RIconKind := AIconKind;
     RImageIndex := AImageIndex;
@@ -1464,8 +1474,8 @@ begin
   begin
     RAnchorWindow := nil;
     RAnchorPosition := Point((ARect.Left + ARect.Right) div 2, ARect.Bottom);
-    RUTF8Header := WideStringToUTF8(AHeader);
-    RUTF8Hint := WideStringToUTF8(AHint);
+    RUTF8Header := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHeader);
+    RUTF8Hint := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(AHint);
     RVisibleTime := VisibleTime;
     RIconKind := AIconKind;
     RImageIndex := AImageIndex;
@@ -1629,7 +1639,7 @@ begin
   begin
     { Use defaults if necessairy: }
     if boUseDefaultHeader in Options then
-      RUTF8Header := WideStringToUTF8(DefaultHeader);
+      RUTF8Header := {$IFDEF RTL200_UP}UTF8Encode{$ELSE}WideStringToUTF8{$ENDIF RTL200_UP}(DefaultHeader);
     if boUseDefaultIcon in Options then
       RIconKind := DefaultIcon;
     if boUseDefaultImageIndex in Options then
@@ -1684,7 +1694,7 @@ begin
     if boPlaySound in Options then
       GlobalCtrl.PlaySound(RIconKind);
 
-    FHint.InternalActivateHint(Rect, RUTF8Hint);
+    FHint.InternalActivateHint(Rect, {$IFDEF RTL200_UP}System.UTF8ToString{$ENDIF RTL200_UP}(RUTF8Hint));
 
     { Now we can determine the actual anchor & stempoint position: }
     if Assigned(RAnchorWindow) then
@@ -2104,9 +2114,9 @@ begin
   begin
     FImageIndex := RImageIndex;
     FIconKind := RIconKind;
-    FHeader := UTF8ToWideString(RUTF8Header);
+    FHeader := {$IFDEF RTL200_UP}System.{$ENDIF RTL200_UP}UTF8ToWideString(RUTF8Header);
     if FHeader = '' then
-      FHeader := RUTF8Header;
+      FHeader := WideString(RUTF8Header);
 
     FShowHeader := FHeader > '';
     FShowIcon := (FIconKind <> ikNone) and

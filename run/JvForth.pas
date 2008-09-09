@@ -172,6 +172,10 @@ type
     procedure ClearObjects;
   end;
 
+  TRStack = array [0..StackMax] of Integer;
+  TVStack = array [0..StackMax] of Variant;
+  TPStack = array [0..StackMax] of TToken;
+
   TJvForthScript = class(TJvComponent)
   private
     FScript: string;
@@ -187,13 +191,13 @@ type
     FDSOBase: string; // root directory for DSO tables
     FAtoms: TAtomList;
     // FRStack if the return stack for loop, sub etc.
-    FRStack: array [0..StackMax] of Integer;
+    FRStack: TRStack;
     FRSP: Integer;
-    FVStack: array [0..StackMax] of Variant;
+    FVStack: TVStack;
     FVSP: Integer;
     // ostack: array[0..StackMax] of TToken;
     // osp: Integer;
-    FPStack: array [0..StackMax] of TToken;
+    FPStack: TPStack;
     FPSP: Integer;
     FPC: Integer;
     FCurrentSymbol: string;

@@ -439,7 +439,7 @@ var
   I: Integer;
   L: Cardinal;
   S: string;
-  C: string[2];
+  C: string{$IFNDEF RTL200_UP}[2]{$ENDIF ~RTL200_UP};
   ShortCut: TShortCut;
   Item: TMenuItem;
 begin

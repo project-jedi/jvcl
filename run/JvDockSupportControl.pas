@@ -369,7 +369,6 @@ type
       State: TDragState; var Accept: Boolean); override;
     function DoMouseEvent(var Msg: TWMMouse; Control: TControl): TWMNCHitMessage; virtual;
     procedure DoRemoveDockClient(Client: TControl); override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function GetDockClientFromMousePos(MousePos: TPoint): TControl; virtual;
     function GetImageIndex(TabIndex: Integer): Integer; override;
     function GetPageFromDockClient(Client: TControl): TJvDockTabSheet;
@@ -382,6 +381,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;  // public in D2009
     function FindNextPage(CurPage: TJvDockTabSheet;
       GoForward, CheckTabVisible: Boolean): TJvDockTabSheet;
     procedure SelectNextPage(GoForward: Boolean; CheckTabVisible: Boolean = True);
@@ -556,6 +557,9 @@ implementation
 
 uses
   ComStrs, Consts, SysUtils,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvDockGlobals, JvDockControlForm, JvDockSupportProc;
 
 type
@@ -3021,7 +3025,7 @@ begin
         begin
           S := PChar(Msg.NotifyRec.MsgLParam);
           for I := 1 to Length(S) do
-            if S[I] in [#13, #10] then
+            if CharInSet(S[I], [#13, #10]) then
             begin
               SetLength(S, I - 1);
               Break;

@@ -730,7 +730,7 @@ const
       SetBlockColor(0, LS, Colors.Declaration)
     else
     begin
-      EquPos := Pos('=', S);
+      EquPos := Pos(WideString('='), S);
       if EquPos > 0 then
       begin
         SetBlockColor(0, EquPos, Colors.Identifier);
@@ -746,7 +746,7 @@ const
   var
     P: Integer;
   begin
-    P := Pos('-->Grammar<--', S);
+    P := Pos(WideString('-->Grammar<--'), S);
     if P > 0 then
       SetBlockColor(P, P + Length('-->Grammar<--') - 1, Colors.Preproc);
   end;

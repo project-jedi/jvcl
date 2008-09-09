@@ -197,7 +197,7 @@ begin
   if Key = '' then
     Result := '\'
   else
-  if AnsiLastChar(Key) <> '\' then
+  if {$IFDEF COMPILER12_UP}Key[Length(Key)]{$ELSE}AnsiLastChar(Key){$ENDIF COMPILER12_UP} <> '\' then
     Result := Key + '\'
   else
     Result := Key;
@@ -219,7 +219,7 @@ begin
     Result := TmpNode.Text + '\' + Result;
     TmpNode := TmpNode.Parent;
   end;
-  if (Result <> '') and (AnsiLastChar(Result) = '\') then
+  if (Result <> '') and ({$IFDEF COMPILER12_UP}Result[Length(Result)]{$ELSE}AnsiLastChar(Result){$ENDIF COMPILER12_UP} = '\') then
     SetLength(Result, Length(Result) - 1);
 end;
 

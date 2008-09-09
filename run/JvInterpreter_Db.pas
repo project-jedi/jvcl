@@ -52,7 +52,11 @@ const
 implementation
 
 uses
-  Classes, Db;
+  Classes,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  Db;
 
 { EDatabaseError }
 
@@ -910,7 +914,7 @@ end;
 
 procedure TStringField_Write_Value(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TStringField(Args.Obj).Value := Value;
+  TStringField(Args.Obj).Value := AnsiString(VarToStr(Value));  // Potential data loss in D2009 because of cast to AnsiString
 end;
 
 { property Read Transliterate: Boolean }
@@ -2075,7 +2079,7 @@ end;
 
 procedure TDataSet_GetCurrentRecord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TDataSet(Args.Obj).GetCurrentRecord(PChar(string(Args.Values[0])));
+  Value := TDataSet(Args.Obj).GetCurrentRecord({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(AnsiString(Args.Values[0])));
 end;
 
 { procedure GetFieldList(List: TList; const FieldNames: string); }
@@ -2223,7 +2227,9 @@ end;
 
 procedure TDataSet_Translate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TDataSet(Args.Obj).Translate(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Args.Values[2]);
+  TDataSet(Args.Obj).Translate(PAnsiChar(AnsiString(Args.Values[0])),
+                               PAnsiChar(AnsiString(Args.Values[1])),
+                               Args.Values[2]);
 end;
 
 { procedure UpdateCursorPos; }

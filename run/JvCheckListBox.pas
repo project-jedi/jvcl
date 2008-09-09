@@ -841,7 +841,7 @@ begin
     begin
       R := ClientRect;
       R.Right := R.Left + 20;
-      InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R, False);
+      Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R, False);
     end;
   end;
   if Assigned(FOnHScroll) then

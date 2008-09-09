@@ -64,8 +64,8 @@ type
     procedure FreeStatement;
     function GetQBE: TStrings;
     function GetQueryCursor(GenHandle: Boolean): HDBICur;
-    procedure GetStatementHandle(QBEText: PChar);
-    procedure PrepareQBE(Value: PChar);
+    procedure GetStatementHandle(QBEText: PAnsiChar);
+    procedure PrepareQBE(Value: PAnsiChar);
     procedure QueryChanged(Sender: TObject);
     procedure SetQBE(Value: TStrings);
     procedure SetParams(Value: TParams);
@@ -344,7 +344,7 @@ end;
 procedure TJvQBEQuery.SetPrepared(Value: Boolean);
 var
   TempQBE: TStrings;
-  AText: PChar;
+  AText: PAnsiChar;
 begin
   if Handle <> nil then
     _DBError(SDataSetOpen);
@@ -359,7 +359,7 @@ begin
         try
           TempQBE.Assign(QBE);
           ReplaceParams(TempQBE);
-          AText := PChar(TempQBE.Text);
+          AText := PAnsiChar(AnsiString(TempQBE.Text));
           try
             FreeStatement;
             if StrLen(AText) > 1 then
@@ -375,7 +375,7 @@ begin
       else
       begin
         if StrLen(PChar(Text)) > 1 then
-          PrepareQBE(PChar(Text))
+          PrepareQBE(PAnsiChar(AnsiString(Text)))
         else
           _DBError(SEmptySQLStatement);
       end;
@@ -544,12 +544,12 @@ begin
   end;
 end;
 
-procedure TJvQBEQuery.PrepareQBE(Value: PChar);
+procedure TJvQBEQuery.PrepareQBE(Value: PAnsiChar);
 begin
   GetStatementHandle(Value);
 end;
 
-procedure TJvQBEQuery.GetStatementHandle(QBEText: PChar);
+procedure TJvQBEQuery.GetStatementHandle(QBEText: PAnsiChar);
 const
   DataType: array [Boolean] of Longint = (Ord(wantCanned), Ord(wantLive));
 begin

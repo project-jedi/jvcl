@@ -1023,7 +1023,7 @@ end;
 
 function TJvCustomSpinEdit.IsValidChar(Key: Char): Boolean;
 var
-  ValidChars: set of Char;
+  ValidChars: TSysCharSet;
 begin
   ValidChars := DigitChars + ['+', '-'];
   if ValueType = vtFloat then
@@ -1043,7 +1043,7 @@ begin
   begin
     ValidChars := ValidChars + ['A'..'F', 'a'..'f'];
   end;
-  Result := (Key in ValidChars) or (Key < #32);
+  Result := CharInSet(Key, ValidChars) or (Key < #32);
   if not FEditorEnabled and Result and ((Key >= #32) or
     (Key = BackSpace) or (Key = Del)) then
     Result := False;
@@ -2956,14 +2956,14 @@ procedure TJvCustomTimeEdit.KeyPress(var Key: Char);
 
 begin
   case SelStart of
-    0:  if not (Key in ['0'..'2']) then Key := #0;
-    1:  if not (Key in ['0'..'9']) then Key := #0;
+    0:  if not CharInSet(Key, ['0'..'2']) then Key := #0;
+    1:  if not CharInSet(Key, ['0'..'9']) then Key := #0;
     2:  Key := ':';
-    3:  if not (Key in ['0'..'5']) then Key := #0;
-    4:  if not (Key in ['0'..'9']) then Key := #0;
+    3:  if not CharInSet(Key, ['0'..'5']) then Key := #0;
+    4:  if not CharInSet(Key, ['0'..'9']) then Key := #0;
     5:  Key := ':';
-    6:  if not (Key in ['0'..'5']) then Key := #0;
-    7:  if not (Key in ['0'..'9']) then Key := #0;
+    6:  if not CharInSet(Key, ['0'..'5']) then Key := #0;
+    7:  if not CharInSet(Key, ['0'..'9']) then Key := #0;
     8:  Key := ' ';
     9:  if (Key = 'a') or (Key = 'A') then Key := 'A'
         else if (Key = 'p') or (Key = 'P') then Key := 'P'

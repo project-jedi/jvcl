@@ -153,13 +153,16 @@ implementation
 
 uses
   Math,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvResources, JvTypes;
 
 { utility }
 
 function IsValidWholeWord(const S: string): Boolean;
 begin
-  Result := (Length(S) > 0) and not ((S[1] in IdentifierSymbols) or (S[Length(S)] in IdentifierSymbols));
+  Result := (Length(S) > 0) and not (CharInSet(S[1], IdentifierSymbols) or CharInSet(S[Length(S)], IdentifierSymbols));
 end;
 
 { invert string }

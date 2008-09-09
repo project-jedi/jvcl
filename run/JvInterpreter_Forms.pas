@@ -1206,7 +1206,7 @@ type
     procedure CloseQueryEvent(Sender: TObject; var CanClose: Boolean);
     procedure ExceptionEvent(Sender: TObject; E: Exception);
     procedure IdleEvent(Sender: TObject; var Done: Boolean);
-    procedure ShowHintEvent(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
+    procedure ShowHintEvent(var HintStr: string; var CanShow: Boolean; var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo);
   end;
 
 procedure TJvInterpreterFormsEvent.CloseEvent(Sender: TObject; var Action: TCloseAction);
@@ -1232,7 +1232,7 @@ begin
   Done := Args.Values[1];
 end;
 
-procedure TJvInterpreterFormsEvent.ShowHintEvent(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
+procedure TJvInterpreterFormsEvent.ShowHintEvent(var HintStr: string; var CanShow: Boolean; var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo);
 begin
 { CallFunction(nil, [HintStr, CanShow, HintInfo]);
   HintStr := Args.Values[0];

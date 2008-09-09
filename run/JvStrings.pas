@@ -51,8 +51,8 @@ function RemoveMasterBlocks(const SourceStr: string): string;
 function RemoveFields(const SourceStr: string): string;
 
 {http functions}
-function URLEncode(const Value: string): string; // Converts string To A URLEncoded string
-function URLDecode(const Value: string): string; // Converts string From A URLEncoded string
+function URLEncode(const Value: AnsiString): AnsiString; // Converts string To A URLEncoded string
+function URLDecode(const Value: AnsiString): AnsiString; // Converts string From A URLEncoded string
 
 {set functions}
 procedure SplitSet(AText: string; AList: TStringList);
@@ -75,16 +75,16 @@ function XMLSafe(const AText: string): string;
 function Hash(const AText: string): Integer;
 
 { Base64 encode and decode a string }
-function B64Encode(const S: AnsiString): string;
-function B64Decode(const S: string): AnsiString;
+function B64Encode(const S: AnsiString): AnsiString;
+function B64Decode(const S: AnsiString): AnsiString;
 
 {Basic encryption from a Borland Example}
-function Encrypt(const InString: string; StartKey, MultKey, AddKey: Integer): string;
-function Decrypt(const InString: string; StartKey, MultKey, AddKey: Integer): string;
+function Encrypt(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
+function Decrypt(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
 
 {Using Encrypt and Decrypt in combination with B64Encode and B64Decode}
-function EncryptB64(const InString: string; StartKey, MultKey, AddKey: Integer): string;
-function DecryptB64(const InString: string; StartKey, MultKey, AddKey: Integer): string;
+function EncryptB64(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
+function DecryptB64(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
 
 procedure CSVToTags(Src, Dst: TStringList);
 // converts a csv list to a tagged string list
@@ -230,13 +230,19 @@ uses
   {$IFDEF CLR}
   WinUtils,
   {$ENDIF CLR}
+  {$IFDEF RTL200_UP}
+  AnsiStrings,
+  {$ENDIF RTL200_UP}
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvResources, JvTypes;
 
 const
-  B64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-  ValidURLChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+-!*"''(),;/#?:';
+  B64Table: AnsiString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  ValidURLChars: AnsiString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+-!*"''(),;/#?:';
 
-  ToUpperChars: array [0..255] of Char =
+  ToUpperChars: array [0..255] of AnsiChar =
   (#$00, #$01, #$02, #$03, #$04, #$05, #$06, #$07, #$08, #$09, #$0A, #$0B, #$0C, #$0D, #$0E, #$0F,
     #$10, #$11, #$12, #$13, #$14, #$15, #$16, #$17, #$18, #$19, #$1A, #$1B, #$1C, #$1D, #$1E, #$1F,
     #$20, #$21, #$22, #$23, #$24, #$25, #$26, #$27, #$28, #$29, #$2A, #$2B, #$2C, #$2D, #$2E, #$2F,
@@ -255,7 +261,7 @@ const
     #$D0, #$D1, #$D2, #$D3, #$D4, #$D5, #$D6, #$D7, #$D8, #$D9, #$DA, #$DB, #$DC, #$DD, #$DE, #$DF);
 
 (* make Delphi 5 compiler happy // andreas
-  ToLowerChars: array[0..255] of Char =
+  ToLowerChars: array[0..255] of AnsiChar =
   (#$00, #$01, #$02, #$03, #$04, #$05, #$06, #$07, #$08, #$09, #$0A, #$0B, #$0C, #$0D, #$0E, #$0F,
     #$10, #$11, #$12, #$13, #$14, #$15, #$16, #$17, #$18, #$19, #$1A, #$1B, #$1C, #$1D, #$1E, #$1F,
     #$20, #$21, #$22, #$23, #$24, #$25, #$26, #$27, #$28, #$29, #$2A, #$2B, #$2C, #$2D, #$2E, #$2F,
@@ -335,7 +341,7 @@ begin
   if P2 = 0 then
     Exit;
   Result := Copy(AText, P + L, P2 - (P + L));
-  Result := StringReplace(Result, '~~', Cr, [rfReplaceAll]);
+  Result := SysUtils.StringReplace(Result, '~~', Cr, [rfReplaceAll]);
 end;
 
 function HasStrValue(const AText, AName: string; var AValue: string): Boolean;
@@ -352,7 +358,7 @@ begin
   if P2 = 0 then
     Exit;
   S := Copy(AText, P + L, P2 - (P + L));
-  AValue := StringReplace(S, '~~', Cr, [rfReplaceAll]);
+  AValue := SysUtils.StringReplace(S, '~~', Cr, [rfReplaceAll]);
   Result := False;
 end;
 
@@ -616,7 +622,7 @@ begin
   P := PosNonSpace(P, SourceText);
   if P = 0 then
     Exit;
-  if SourceText[P] in ['a'..'z', 'A'..'Z'] then
+  if CharInSet(SourceText[P], ['a'..'z', 'A'..'Z']) then
     Result := P;
 end;
 
@@ -831,7 +837,7 @@ begin
       Rel := '../' + Rel;
     end;
   until (PDoc = 0) and (PImg = 0);
-  Rel := Rel + ExtractFileName(Img);
+  Rel := Rel + SysUtils.ExtractFileName(Img);
   if Pos(':', Rel) > 0 then
     Rel := '';
   Result := Rel;
@@ -1031,7 +1037,7 @@ begin
       {$IFDEF MSWINDOWS}
       else
       begin
-        E := LowerCase(ExtractFileExt(SR.Name));
+        E := SysUtils.LowerCase(SysUtils.ExtractFileExt(SR.Name));
         if E = '.exe' then
           AFileList.Add(ADir + PathDelim + SR.Name);
       end;
@@ -1055,11 +1061,11 @@ var
   ResStream: TResourceStream;
   Ext: string;
 begin
-  Ext := UpperCase(ExtractFileExt(AFile));
+  Ext := SysUtils.UpperCase(SysUtils.ExtractFileExt(AFile));
   Ext := Copy(Ext, 2, Length(Ext));
   if Ext = 'HTM' then
     Ext := 'HTML';
-  AFile := ChangeFileExt(AFile, '');
+  AFile := SysUtils.ChangeFileExt(AFile, '');
   {$IFDEF CLR}
   ResStream := TResourceStream.Create(HInstance, AFile, Ext);
   {$ELSE}
@@ -1115,7 +1121,7 @@ begin
   begin
     IName := AList[I];
     IValue := GetValue(AText, IName);
-    IValue := StringReplace(IValue, '~~', Cr, [rfReplaceAll]);
+    IValue := SysUtils.StringReplace(IValue, '~~', Cr, [rfReplaceAll]);
     Xml := Xml + '<' + IName + '>' + Cr;
     Xml := Xml + '  ' + IValue + Cr;
     Xml := Xml + '</' + IName + '>' + Cr;
@@ -1404,23 +1410,23 @@ end;
 
 {$IFDEF CLR}
 
-function B64Encode(const S: AnsiString): string;
+function B64Encode(const S: AnsiString): AnsiString;
 begin
   Result := System.Convert.ToBase64String(BytesOf(S));
 end;
 
-function B64Decode(const S: string): AnsiString;
+function B64Decode(const S: AnsiString): AnsiString;
 begin
   Result := System.Convert.FromBase64String(S);
 end;
 
 {$ELSE}
 
-function B64Encode(const S: AnsiString): string;
+function B64Encode(const S: AnsiString): AnsiString;
 var
   I: Integer;
   InBuf: array [0..2] of Byte;
-  OutBuf: array [0..3] of Char;
+  OutBuf: array [0..3] of AnsiChar;
 begin
   SetLength(Result, ((Length(S) + 2) div 3) * 4);
   for I := 1 to ((Length(S) + 2) div 3) do
@@ -1445,12 +1451,12 @@ begin
     Result[Length(Result)] := '=';
 end;
 
-function B64Decode(const S: string): AnsiString;
+function B64Decode(const S: AnsiString): AnsiString;
 var
   I: Integer;
   InBuf: array [0..3] of Byte;
   OutBuf: array [0..2] of Byte;
-  RetValue: string;
+  RetValue: AnsiString;
 begin
   if ((Length(S) mod 4) <> 0) or (S = '') then
     raise EJVCLException.CreateRes({$IFNDEF CLR}@{$ENDIF}RsEIncorrectStringFormat);
@@ -1548,7 +1554,7 @@ begin
       else
         InBuf[1] := 63;
       OutBuf[0] := (InBuf[0] shl 2) or ((InBuf[1] shr 4) and $03);
-      RetValue := RetValue + Char(OutBuf[0]);
+      RetValue := RetValue + AnsiChar(OutBuf[0]);
     end
     else
     if InBuf[3] = 61 then
@@ -1594,7 +1600,7 @@ begin
         InBuf[2] := 63;
       OutBuf[0] := (InBuf[0] shl 2) or ((InBuf[1] shr 4) and $03);
       OutBuf[1] := (InBuf[1] shl 4) or ((InBuf[2] shr 2) and $0F);
-      RetValue := RetValue + Char(OutBuf[0]) + Char(OutBuf[1]);
+      RetValue := RetValue + AnsiChar(OutBuf[0]) + AnsiChar(OutBuf[1]);
     end
     else
     begin
@@ -1653,7 +1659,7 @@ begin
       OutBuf[0] := (InBuf[0] shl 2) or ((InBuf[1] shr 4) and $03);
       OutBuf[1] := (InBuf[1] shl 4) or ((InBuf[2] shr 2) and $0F);
       OutBuf[2] := (InBuf[2] shl 6) or (InBuf[3] and $3F);
-      RetValue := RetValue + Char(OutBuf[0]) + Char(OutBuf[1]) + Char(OutBuf[2]);
+      RetValue := RetValue + AnsiChar(OutBuf[0]) + AnsiChar(OutBuf[1]) + AnsiChar(OutBuf[2]);
     end;
   end;
   Result := RetValue;
@@ -1665,14 +1671,14 @@ end;
  * Standard Encryption algorithm - Copied from Borland *
  *******************************************************}
 
-function Encrypt(const InString: string; StartKey, MultKey, AddKey: Integer): string;
+function Encrypt(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
 var
   I: Integer;
 begin
   Result := '';
   for I := 1 to Length(InString) do
   begin
-    Result := Result + Char(Byte(InString[I]) xor (StartKey shr 8));
+    Result := Result + AnsiChar(Byte(InString[I]) xor (StartKey shr 8));
     StartKey := (Byte(Result[I]) + StartKey) * MultKey + AddKey;
   end;
 end;
@@ -1680,24 +1686,24 @@ end;
  * Standard Decryption algorithm - Copied from Borland *
  *******************************************************}
 
-function Decrypt(const InString: string; StartKey, MultKey, AddKey: Integer): string;
+function Decrypt(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
 var
   I: Integer;
 begin
   Result := '';
   for I := 1 to Length(InString) do
   begin
-    Result := Result + Char(Byte(InString[I]) xor (StartKey shr 8));
+    Result := Result + AnsiChar(Byte(InString[I]) xor (StartKey shr 8));
     StartKey := (Byte(InString[I]) + StartKey) * MultKey + AddKey;
   end;
 end;
 
-function EncryptB64(const InString: string; StartKey, MultKey, AddKey: Integer): string;
+function EncryptB64(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
 begin
   Result := B64Encode(Encrypt(InString, StartKey, MultKey, AddKey));
 end;
 
-function DecryptB64(const InString: string; StartKey, MultKey, AddKey: Integer): string;
+function DecryptB64(const InString: AnsiString; StartKey, MultKey, AddKey: Integer): AnsiString;
 begin
   Result := Decrypt(B64Decode(InString), StartKey, MultKey, AddKey);
 end;
@@ -1985,7 +1991,7 @@ end;
 
 // This function converts a string into a RFC 1630 compliant URL
 
-function URLEncode(const Value: string): string;
+function URLEncode(const Value: AnsiString): AnsiString;
 var
   I: Integer;
 begin
@@ -2000,17 +2006,17 @@ begin
       else
       begin
         Result := Result + '%';
-        Result := Result + IntToHex(Byte(Value[I]), 2);
+        Result := Result + AnsiString(IntToHex(Byte(Value[I]), 2));
       end;
     end;
 end;
 
-function URLDecode(const Value: string): string;
+function URLDecode(const Value: AnsiString): AnsiString;
 const
-  HexChars = '0123456789ABCDEF';
+  HexChars: AnsiString = '0123456789ABCDEF';
 var
   I: Integer;
-  Ch, H1, H2: Char;
+  Ch, H1, H2: AnsiChar;
   Len: Integer;
 begin
   Result := '';
@@ -2025,7 +2031,8 @@ begin
           H1 := Value[I + 1];
           H2 := Value[I + 2];
           Inc(I, 2);
-          Result := Result + Chr(((Pos(H1, HexChars) - 1) * 16) + (Pos(H2, HexChars) - 1));
+          Result := Result + AnsiChar(Chr((({$IFDEF SUPPORTS_UNICODE}AnsiPos{$ELSE}Pos{$ENDIF SUPPORTS_UNICODE}(H1, HexChars) - 1) * 16) +
+                                           ({$IFDEF SUPPORTS_UNICODE}AnsiPos{$ELSE}Pos{$ENDIF SUPPORTS_UNICODE}(H2, HexChars) - 1)));
         end;
       '+':
         Result := Result + ' ';
@@ -2222,16 +2229,16 @@ begin
   C := Length(S);
   if C = 0 then
     Exit;
-  while (I + 1 <= C) and (S[I + 1] in (DigitChars + [',', '.'])) do
+  while (I + 1 <= C) and CharInSet(S[I + 1], DigitChars + [',', '.']) do
     Inc(I);
-  if (I + 1 <= C) and (S[I + 1] in ['e', 'E']) then
+  if (I + 1 <= C) and CharInSet(S[I + 1], ['e', 'E']) then
   begin
     E := I;
     Inc(I);
-    if (I + 1 <= C) and (S[I + 1] in ['+', '-']) then
+    if (I + 1 <= C) and CharInSet(S[I + 1], ['+', '-']) then
       Inc(I);
     E2 := I;
-    while (I + 1 <= C) and (S[I + 1] in DigitChars) do
+    while (I + 1 <= C) and CharInSet(S[I + 1], DigitChars) do
       Inc(I);
     if I = E2 then
       I := E;

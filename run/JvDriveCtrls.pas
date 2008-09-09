@@ -1050,7 +1050,7 @@ end;
 function AddPathBackslash(const Path: string): string;
 begin
   Result := Path;
-  if (Length(Path) > 1) and (AnsiLastChar(Path) <> '\') then
+  if (Length(Path) > 1) and ({$IFDEF COMPILER12_UP}Path[Length(Path)]{$ELSE}AnsiLastChar(Path){$ENDIF COMPILER12_UP} <> '\') then
     Result := Path + '\';
 end;
 

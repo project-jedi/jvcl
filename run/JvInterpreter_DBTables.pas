@@ -871,7 +871,7 @@ end;
 
 procedure TBDEDataSet_GetCurrentRecord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TBDEDataSet(Args.Obj).GetCurrentRecord(PChar(string(Args.Values[0])));
+  Value := TBDEDataSet(Args.Obj).GetCurrentRecord({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(AnsiString(Args.Values[0])));
 end;
 
 { procedure GetIndexInfo; }
@@ -927,7 +927,7 @@ end;
 
 procedure TBDEDataSet_Translate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TBDEDataSet(Args.Obj).Translate(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Args.Values[2]);
+  TBDEDataSet(Args.Obj).Translate(PAnsiChar(AnsiString(Args.Values[0])), PAnsiChar(AnsiString(Args.Values[1])), Args.Values[2]);
 end;
 
 { property Read ExpIndex: Boolean }
@@ -2370,7 +2370,7 @@ end;
 
 procedure TQuery_Write_SQLBinary(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TQuery(Args.Obj).SQLBinary := PChar(string(Value));
+  TQuery(Args.Obj).SQLBinary := PAnsiChar(AnsiString(Value));
 end;
 
 { property Read Constrained: Boolean }

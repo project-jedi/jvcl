@@ -171,7 +171,7 @@ uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   JvExControls, JvExExtCtrls, JvAutoComplete, JvJVCLUtils,
-  JvComponentBase, JvComponent, JvTypes;
+  JvComponentBase, JvComponent, JvTypes, JvConsts;
 
 const
   { Inspector Row Size constants }
@@ -6706,7 +6706,7 @@ begin
   if Pressed <> NewState then
   begin
     Pressed := NewState;
-    InvalidateRect(Inspector.Handle, @R, False);
+    Windows.InvalidateRect(Inspector.Handle, @R, False);
   end;
 end;
 
@@ -10425,15 +10425,19 @@ end;
 function TJvInspectorVarData.GetAsString: string;
 begin
   CheckReadAccess;
-  if TypeInfo.Kind in [tkLString, tkWString, tkString] then
+  if TypeInfo.Kind in tkStrings then
   begin
     case TypeInfo.Kind of
+      {$IFDEF UNICODE}
+      tkUString:
+        Result := PUnicodeString(Address)^;
+      {$ENDIF UNICODE}
       tkLString:
-        Result := PString(Address)^;
+        Result := string(PAnsiString(Address)^);
       tkWString:
         Result := PWideString(Address)^;
       tkString:
-        Result := PShortString(Address)^;
+        Result := string(PShortString(Address)^);
     else
       Result := '';
     end;
@@ -10591,16 +10595,20 @@ end;
 procedure TJvInspectorVarData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
-  if TypeInfo.Kind in [tkLString, tkWString, tkString] then
+  if TypeInfo.Kind in tkStrings then
   begin
     case TypeInfo.Kind of
+      {$IFDEF UNICODE}
+      tkUString:
+        PUnicodeString(Address)^ := Value;
+      {$ENDIF UNICODE}
       tkLString:
-        PString(Address)^ := Value;
+        PAnsiString(Address)^ := AnsiString(Value);
       tkWString:
         PWideString(Address)^ := Value;
       tkString:
         if Length(Value) < GetTypeData(TypeInfo).MaxLength then
-          PShortString(Address)^ := Value
+          PShortString(Address)^ := AnsiString(Value)
         else
           raise EJvInspectorData.CreateRes(@RsEJVInspDataStrTooLong);
     end;
@@ -10768,7 +10776,7 @@ end;
 function TJvInspectorPropData.GetAsString: string;
 begin
   CheckReadAccess;
-  if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
+  if Prop.PropType^.Kind in tkStrings then
     Result := GetStrProp(Instance, Prop)
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -10861,7 +10869,7 @@ begin
   CheckWriteAccess;
   if IsReadOnlyProperty then
     Abort;
-  if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
+  if Prop.PropType^.Kind in tkStrings then
     SetStrProp(Instance, Prop, Value)
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -10962,7 +10970,7 @@ var
 begin
   if PropInfo = nil then
     raise EJvInspectorData.CreateRes(@RsEJvAssertPropInfo);
-  Data := CreatePrim(PropInfo.Name, PropInfo.PropType^);
+  Data := CreatePrim({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo.Name), PropInfo.PropType^);
   Data.Instance := AInstance;
   Data.Prop := PropInfo;
   Data := TJvInspectorPropData(DataRegister.Add(Data));
@@ -11033,7 +11041,7 @@ begin
     begin
       PropInfo := PropList[I];
       NameIdx := High(NameList);
-      while (NameIdx >= 0) and not AnsiSameText(NameList[NameIdx], PropInfo.Name) do
+      while (NameIdx >= 0) and not AnsiSameText(NameList[NameIdx], {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo.Name)) do
         Dec(NameIdx);
       if ((NameIdx < 0) and ExcludeList) or ((NameIdx > -1) and not ExcludeList) then
       begin
@@ -11229,7 +11237,7 @@ end;
 function TJvInspectorEventData.GetAsString: string;
 begin
   CheckReadAccess;
-  if TypeInfo.Kind in [tkString, tkLString, tkWString] then
+  if TypeInfo.Kind in tkStrings then
     Result := DoGetAsString
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -11327,9 +11335,13 @@ end;
 procedure TJvInspectorEventData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
-  if TypeInfo.Kind in [tkLString, tkWString, tkString] then
+  if TypeInfo.Kind in tkStrings then
   begin
     case TypeInfo.Kind of
+      {$IFDEF UNICODE}
+      tkUString:
+        DoSetAsString(Value);
+      {$ENDIF UNICODE}
       tkLString:
         DoSetAsString(Value);
       tkWString:
@@ -11629,7 +11641,7 @@ end;
 function TJvInspectorCustomConfData.GetAsString: string;
 begin
   CheckReadAccess;
-  if TypeInfo.Kind in [tkString, tkWString, tkLString] then
+  if TypeInfo.Kind in tkStrings then
     Result := ReadValue
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -11701,7 +11713,7 @@ begin
         WriteValue(Value)
       else
         raise EJvInspectorData.CreateRes(@RsEJVInspDataStrTooLong);
-    tkLString, tkWString:
+    tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString:
       WriteValue(Value)
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
@@ -12405,6 +12417,9 @@ begin
     raise EJvInspectorReg.CreateRes(@RsEJvInspNoGenReg);
   with TJvCustomInspectorData.ItemRegister do
   begin
+    {$IFDEF UNICODE}
+    Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorStringItem, tkUString));
+    {$ENDIF UNICODE}
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorStringItem, tkLString));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorStringItem, tkWString));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorStringItem, tkString));

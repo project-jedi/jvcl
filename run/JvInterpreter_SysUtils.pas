@@ -60,6 +60,9 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   JvJCLUtils;
 
 { TSearchRec }
@@ -575,7 +578,7 @@ end;
 
 procedure JvInterpreter_FindClose(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  FindClose(TSearchRec(V2R(Args.Values[0])^));
+  SysUtils.FindClose(SysUtils.TSearchRec(V2R(Args.Values[0])^));
 end;
 
 { function FileGetDate(Handle: Integer): Integer; }
@@ -589,12 +592,7 @@ end;
 
 procedure JvInterpreter_FileSetDate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF MSWINDOWS}
-  Value := FileSetDate(Args.Values[0], Args.Values[1]);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  Value := FileSetDate(VarToStr(Args.Values[0]), Args.Values[1]);
-  {$ENDIF UNIX}
+  Value := FileSetDate({$IFDEF RTL200_UP}VarToStr{$ENDIF RTL200_UP}(Args.Values[0]), Args.Values[1]);
 end;
 
 {$IFDEF MSWINDOWS}
@@ -619,7 +617,7 @@ end;
 
 procedure JvInterpreter_DeleteFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := DeleteFile(Args.Values[0]);
+  Value := SysUtils.DeleteFile(Args.Values[0]);
 end;
 
 { function RenameFile(const OldName, NewName: string): Boolean; }
@@ -1342,7 +1340,7 @@ end;
 
 procedure JvInterpreter_Beep(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Beep;
+  SysUtils.Beep;
 end;
 
 { function ByteType(const S: string; Index: Integer): TMbcsByteType; }
@@ -1363,28 +1361,28 @@ end;
 
 procedure JvInterpreter_ByteToCharLen(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := ByteToCharLen(Args.Values[0], Args.Values[1]);
+  Value := {$IFDEF RTL200_UP}ElementToCharLen{$ELSE}ByteToCharLen{$ENDIF RTL200_UP}(Args.Values[0], Args.Values[1]);
 end;
 
 { function CharToByteLen(const S: string; MaxLen: Integer): Integer; }
 
 procedure JvInterpreter_CharToByteLen(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := CharToByteLen(Args.Values[0], Args.Values[1]);
+  Value := {$IFDEF RTL200_UP}CharToElementLen{$ELSE}CharToByteLen{$ENDIF RTL200_UP}(Args.Values[0], Args.Values[1]);
 end;
 
 { function ByteToCharIndex(const S: string; Index: Integer): Integer; }
 
 procedure JvInterpreter_ByteToCharIndex(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := ByteToCharIndex(Args.Values[0], Args.Values[1]);
+  Value := {$IFDEF RTL200_UP}ElementToCharIndex{$ELSE}ByteToCharIndex{$ENDIF RTL200_UP}(Args.Values[0], Args.Values[1]);
 end;
 
 { function CharToByteIndex(const S: string; Index: Integer): Integer; }
 
 procedure JvInterpreter_CharToByteIndex(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := CharToByteIndex(Args.Values[0], Args.Values[1]);
+  Value := {$IFDEF RTL200_UP}CharToElementIndex{$ELSE}CharToByteIndex{$ENDIF RTL200_UP}(Args.Values[0], Args.Values[1]);
 end;
 
 { function IsPathDelimiter(const S: string; Index: Integer): Boolean; }

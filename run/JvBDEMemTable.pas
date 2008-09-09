@@ -257,7 +257,7 @@ end;
 function TJvBDEMemoryTable.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
   IsBlank: LongBool;
-  RecBuf: PChar;
+  RecBuf: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
 begin
   Result := inherited GetFieldData(Field, Buffer);
   if not Result then
@@ -383,7 +383,7 @@ begin
     if TableName = '' then
       AnsiToNative(Locale, InternalMemTableName1, szTblName, SizeOf(szTblName) - 1)
     else
-      AnsiToNative(Locale, TableName, szTblName, SizeOf(szTblName) - 1);
+      AnsiToNative(Locale, AnsiString(TableName), szTblName, SizeOf(szTblName) - 1);
     SetLength(FldDescList, iFldCount);
     FieldDescs := BDE.PFLDDesc(FldDescList);
     for I := 0 to FieldDefs.Count - 1 do
@@ -433,7 +433,7 @@ begin
   with FieldDesc do
   begin
     FillChar(szName, SizeOf(szName), 0);
-    AnsiToNative(Locale, Name, szName, SizeOf(szName) - 1);
+    AnsiToNative(Locale, AnsiString(Name), szName, SizeOf(szName) - 1);
     iFldType := FieldLogicMap(DataType);
     iSubType := FieldSubtypeMap(DataType);
     if iSubType = fldstAUTOINC then

@@ -101,8 +101,13 @@ type
     function GetLineLength(Index: Integer): Integer; override;
     function FindNotBlankCharPosInLine(Line: Integer): Integer; override;
 
+    {$IFDEF SUPPORTS_UNICODE}
+    function GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean; override;
+    function GetUnicodeWordOnCaret: UnicodeString; override;
+    {$ELSE}
     function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; override;
     function GetAnsiWordOnCaret: AnsiString; override;
+    {$ENDIF SUPPORTS_UNICODE}
 
     procedure ReLine; override;
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; override;
@@ -261,7 +266,11 @@ type
     procedure ReplaceWordItemIndex(SubStrStart: Integer); override;
     function GetTemplateCount: Integer; override;
     function GetIdentifierCount: Integer; override;
+    {$IFDEF SUPPORTS_UNICODE}
+    function GetUnicodeSeparator: UnicodeString; override;
+    {$ELSE}
     function GetAnsiSeparator: AnsiString; override;
+    {$ENDIF SUPPORTS_UNICODE}
   public
     constructor Create(AJvEditor: TJvCustomEditor);
     destructor Destroy; override;
@@ -888,6 +897,26 @@ begin
   ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
+{$IFDEF SUPPORTS_UNICODE}
+function TJvCustomEditor.GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean;
+begin
+  if (Y >= 0) and (Y < Lines.Count) then
+  begin
+    Text := Lines[Y];
+    Result := True;
+  end
+  else
+  begin
+    Text := '';
+    Result := False;
+  end;
+end;
+
+function TJvCustomEditor.GetUnicodeWordOnCaret: UnicodeString;
+begin
+  Result := GetWordOnCaret;
+end;
+{$ELSE}
 function TJvCustomEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean;
 begin
   if (Y >= 0) and (Y < Lines.Count) then
@@ -906,6 +935,7 @@ function TJvCustomEditor.GetAnsiWordOnCaret: AnsiString;
 begin
   Result := GetWordOnCaret;
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
 procedure TJvCustomEditor.ReLine;
 begin
@@ -921,7 +951,7 @@ var
 begin
   Key := Char(Value);
   WasSelected := (FSelection.IsSelected) and (not PersistentBlocks);
-  if Key in [#32..#255] then
+  if CharInSet(Key, [#32..#255]) then
   begin
     if not HasChar(Key, JvEditorCompletionChars) then
       Completion.DoKeyPress(Key);
@@ -1145,14 +1175,14 @@ begin
           begin
             if B then
             begin
-              if CharInSet(S[F + 1], Separators) then
+              if CharInSet(AnsiChar(S[F + 1]), Separators) then
               begin
                 X := F + 1;
                 Break;
               end;
             end
             else
-            if not CharInSet(S[F + 1], Separators) then
+            if not CharInSet(AnsiChar(S[F + 1]), Separators) then
               B := True;
           end;
 
@@ -1165,7 +1195,7 @@ begin
             if (X = 0) and (Y > 0) then
             begin
               if (Y > FLines.Count) or (CaretX = 0) or (FLines[Y] = '') or
-                 CharInSet(FLines[Y][1], Separators) then
+                 CharInSet(AnsiChar(FLines[Y][1]), Separators) then
               begin
                 Y := Y - 1;
                 X := Length(FLines[Y]);
@@ -1214,7 +1244,7 @@ begin
             Y := CaretY + 1;
             X := 0;
             if Y < FLines.Count then
-              while (X < Length(FLines[Y])) and (CharInSet(FLines[Y][X + 1], Separators)) do
+              while (X < Length(FLines[Y])) and (CharInSet(AnsiChar(FLines[Y][X + 1]), Separators)) do
                 Inc(X);
 
             if ACommand = ecSelNextWord then // this code is copied from [ecPrevWord, ecSelPrevWord]
@@ -1228,14 +1258,14 @@ begin
           for F := X to Length(S) - 1 do
             if B then
             begin
-              if not CharInSet(S[F + 1], Separators) then
+              if not CharInSet(AnsiChar(S[F + 1]), Separators) then
               begin
                 X := F;
                 Break;
               end
             end
             else
-            if CharInSet(S[F + 1], Separators) then
+            if CharInSet(AnsiChar(S[F + 1]), Separators) then
               B := True;
           if X = CaretX then
             X := Length(S);
@@ -1568,10 +1598,10 @@ end;
 
 procedure TJvCustomEditor.ClipboardCopy;
 var
-  S: AnsiString;
+  S: string;
 begin
   S := GetSelText; // convert to ANSI
-  Clipboard.SetTextBuf(PAnsiChar(S));
+  Clipboard.SetTextBuf(PChar(S));
   SetClipboardBlockFormat(SelBlockFormat);
 end;
 
@@ -1786,7 +1816,7 @@ end;
 
 procedure TJvCustomEditor.ClipboardPaste;
 var
-  ClipS: AnsiString;
+  ClipS: string;
   Len: Integer;
   H: THandle;
   X, Y, EndX, EndY: Integer;
@@ -1802,8 +1832,8 @@ begin
   BeginUpdate;
   try
     SetLength(ClipS, Len);
-    SetLength(ClipS, Clipboard.GetTextBuf(PAnsiChar(ClipS), Len));
-    ClipS := ExpandTabsAnsi(AdjustLineBreaks(ClipS));
+    SetLength(ClipS, Clipboard.GetTextBuf(PChar(ClipS), Len));
+    ClipS := {$IFDEF SUPPORTS_UNICODE}ExpandTabsUnicode{$ELSE}ExpandTabsAnsi{$ENDIF SUPPORTS_UNICODE}(AdjustLineBreaks(ClipS));
     PaintCaret(False);
 
     ReLine;
@@ -2087,10 +2117,10 @@ var
           FTabPos[Length(S)] := True;
         while I <= Length(S) do
         begin
-          if S[I] in IdentifierSymbols then
+          if CharInSet(S[I], IdentifierSymbols) then
           begin
             FTabPos[I - 1] := True;
-            while (I <= Length(S)) and (S[I] in IdentifierSymbols) do
+            while (I <= Length(S)) and CharInSet(S[I], IdentifierSymbols) do
               Inc(I);
           end;
           Inc(I);
@@ -2182,7 +2212,7 @@ begin
     Msg.Result := 0
   else
   begin
-    S := FLines.Text;
+    S := AnsiString(FLines.Text);   // losing data here, but with an ansi editor, what can we do?
     Msg.Result := Min(Length(S) + 1, Msg.TextMax);
     if Msg.Result > 0 then
       Move(S[1], Msg.Text^, Msg.Result);
@@ -2662,12 +2692,12 @@ procedure TJvCompletion.FindSelItem(var Eq: Boolean);
 var
   S: string;
 
-  function FindFirst(Strs: TStrings; S: AnsiString): Integer;
+  function FindFirst(Strs: TStrings; S: string): Integer;
   var
     I: Integer;
   begin
     for I := 0 to Strs.Count - 1 do
-      if StrLIComp(PAnsiChar(Strs[I]), PAnsiChar(S), Length(S)) = 0 then
+      if StrLIComp(PChar(Strs[I]), PChar(S), Length(S)) = 0 then
       begin
         Result := I;
         Exit;
@@ -2735,10 +2765,17 @@ begin
   inherited Completion := Value;
 end;
 
+{$IFDEF SUPPORTS_UNICODE}
+function TJvCompletion.GetUnicodeSeparator: UnicodeString;
+begin
+  Result := FSeparator;
+end;
+{$ELSE}
 function TJvCompletion.GetAnsiSeparator: AnsiString;
 begin
   Result := FSeparator;
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
 {$IFDEF UNITVERSIONING}
 initialization

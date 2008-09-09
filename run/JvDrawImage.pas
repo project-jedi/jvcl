@@ -43,11 +43,13 @@ type
   TMorphBrush = (mbVerBox, mbHorBox, mbVerOval, mbHorOval);
   TDigitalFilter = array [0..4, 0..4] of Smallint;
   TColorPicked = procedure(Sender: TObject; AColor: TColor) of object;
+  TGonio = array [0..180, 0..1] of Extended;
+  TSinPix = array [0..255] of Byte;
 
   TJvDrawImage = class(TImage)
   private
-    FGonio: array [0..180, 0..1] of Extended;
-    FSinPixs: array [0..255] of Byte;
+    FGonio: TGonio;
+    FSinPixs: TSinPix;
     FShape: string;
     FShapes: TStringList;
     FZoomClip: TBitmap;
@@ -271,6 +273,12 @@ type
     R: Byte;
   end;
 
+  Tmybezier = array [0..3] of TPoint;
+  Tmyskew = array [0..4] of TPoint;
+  Tmychord = array [1..8] of Integer;
+  Tpointarray = array [0..12] of TPoint;
+  Tfreepoly = array [0..100] of TPoint;
+
 var
   PainterEffectsF: TPainterEffectsForm;
   QuickPreviewF: TQuickPreviewForm;
@@ -284,10 +292,10 @@ var
   NSpiro: Integer;
   Wavepen, Wavebrush: TColor;
   decoX, decoY: Integer;
-
-  mybezier: array [0..3] of TPoint;
-  myskew: array [0..4] of TPoint;
-  mychord: array [1..8] of Integer;
+                           
+  mybezier: Tmybezier;
+  myskew: Tmyskew;
+  mychord: Tmychord;
   myorigin, myprevpoint: TPoint;
   myslinedir: string;
   myslinetol: Integer;
@@ -300,12 +308,12 @@ var
 
   clipcm: TCopyMode;
 
-  pointarray: array [0..12] of TPoint;
+  pointarray: Tpointarray;
   spiralfactor: Real;
   spiraldir: Integer;
   TargetPoint: TPoint;
   zoomrect: TRect;
-  freepoly: array [0..100] of TPoint;
+  freepoly: Tfreepoly;
   freepolycount: Integer;
   bezierfix1, bezierfix2: Boolean;
 

@@ -1463,7 +1463,7 @@ var
       NextChar;
     if CurrChar = #0 then
       Exit;
-    if not (CurrChar in ['0'..'9', ',', '.', '-', '+', '/', '*', '(', ')']) then
+    if not CharInSet(CurrChar, ['0'..'9', ',', '.', '-', '+', '/', '*', '(', ')']) then
       NextChar;
   end;
 
@@ -1573,14 +1573,14 @@ var
         '+':
           begin
             NextChar;
-            if CurrChar in ['+', '-', '/', '*'] then
+            if CharInSet(CurrChar, ['+', '-', '/', '*']) then
               raise Exception.CreateResFmt(@RsEDuplicateSignsAtPos , [ExpressionPtr - 1]);
             Result := Result + TestForMulDiv;
           end;
         '-':
           begin
             NextChar;
-            if CurrChar in ['+', '-', '/', '*'] then
+            if CharInSet(CurrChar, ['+', '-', '/', '*']) then
               raise Exception.CreateResFmt(@RsEDuplicateSignsAtPos, [ExpressionPtr - 1]);
             Result := Result - TestForMulDiv;
           end;
@@ -2003,12 +2003,12 @@ begin
   if RusToLat then
   begin
     for I := 1 to Length(Result) do
-      if Result[I] in ['À'..'ÿ'] then
+      if CharInSet(Result[I], ['À'..'ÿ']) then
         Result[I] := LAT[Ord(Result[I]) - Ord('À') + 1];
   end
   else
     for I := 1 to Length(Result) do
-      if Result[I] in ['A'..'z'] then
+      if CharInSet(Result[I], ['A'..'z']) then
         for J := 1 to 52 do
           if Result[I] = LATRUS[J, 1] then
           begin

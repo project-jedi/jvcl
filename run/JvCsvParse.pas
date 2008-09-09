@@ -1,4 +1,5 @@
 {-----------------------------------------------------------------------------
+        **** TIBURON AnsiChar/AnsiString VERSION 3.5 ****
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -32,7 +33,7 @@ Description:
 
   These functions are used to implement the
   CsvDataSource component but are generally reuseable in
-  any string parsing code.
+  any AnsiString parsing code.
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -55,48 +56,52 @@ const
 
 { String Class Functions - uses Delphi String objects instead of Pascal PChars }
 
-{new 2003}
-function StrSplit(const InString: string; const SplitChar, QuoteChar: Char;
+function JvAnsiStrSplit(const InString: AnsiString; const SplitChar, QuoteChar: AnsiChar;
+  var OutStrings: array of AnsiString; MaxSplit: Integer): Integer;
+function JvStrSplit(const InString: string; const SplitChar, QuoteChar: Char;
   var OutStrings: array of string; MaxSplit: Integer): Integer;
-{new 2004}
-function StrSplitStrings(const InString: string; const SplitChar, QuoteChar: Char; OutStrings: TStrings): Integer;
+
+function JvAnsiStrSplitStrings(const InString: AnsiString; const SplitChar, QuoteChar: AnsiChar; OutStrings: TStrings): Integer;
 
 { circa 1998-2001 classic functions }
-function StrStrip(S: string): string; // Strip whitespace, carriage returns, linefeeds.
-function GetString(var Source: string; const Separator: string): string;
-// Iteratively split off a piece of a string. Modifies original string.
-function PadString(const S: string; Len: Integer; PadChar: Char): string;
-//procedure Gibble(var S: string); // Deprecated. With a name like Gibble, are you surprised?
-function BuildPathName(const PathName, FileName: string): string;
-function StrEatWhiteSpace(const S: string): string;
-function HexToAscii(const S: string): string;
-function AsciiToHex(const S: string): string;
-function StripQuotes(const S1: string): string;
+function JvAnsiStrStrip(S: AnsiString): AnsiString; // Strip whitespace, carriage returns, linefeeds.
+function JvStrStrip(S: string): string; // Strip whitespace, carriage returns, linefeeds.
+function GetString(var Source: AnsiString; const Separator: AnsiString): AnsiString;
+// Iteratively split off a piece of a AnsiString. Modifies original AnsiString.
+function PadString(const S: AnsiString; Len: Integer; PadChar: AnsiChar): AnsiString;
+//procedure Gibble(var S: AnsiString); // Deprecated. With a name like Gibble, are you surprised?
+function BuildPathName(const PathName, FileName: AnsiString): AnsiString;
+function StrEatWhiteSpace(const S: AnsiString): AnsiString;
+function HexToAscii(const S: AnsiString): AnsiString;
+function AsciiToHex(const S: AnsiString): AnsiString;
+function StripQuotes(const S1: AnsiString): AnsiString;
 
 { TStrings helper functions }
-function GetIntValueFromResultString(const VarName: string; ResultStrings: TStrings;
+(*function GetIntValueFromResultString(const VarName: AnsiString; ResultStrings: TStrings;
   DefVal: Integer): Integer;
-function GetValueFromResultString(const VarName: string; ResultStrings: TStrings): string;
+function GetValueFromResultString(const VarName: AnsiString; ResultStrings: TStrings): AnsiString;
+*)
 
-{ Pascal Low Level PChar Functions }
-function ValidNumericLiteral(S1: PChar): Boolean;
-function ValidIntLiteral(S1: PChar): Boolean;
-function ValidHexLiteral(S1: PChar): Boolean;
-function HexPCharToInt(S1: PChar): Integer;
-function ValidStringLiteral(S1: PChar): Boolean;
-function StripPCharQuotes(S1: PChar): string;
+{ Pascal Low Level PAnsiChar Functions }
+function ValidNumericLiteral(S1: PAnsiChar): Boolean;
+function ValidIntLiteral(S1: PAnsiChar): Boolean;
+function ValidHexLiteral(S1: PAnsiChar): Boolean;
+function HexPCharToInt(S1: PAnsiChar): Integer;
+function ValidStringLiteral(S1: PAnsiChar): Boolean;
+function StripPCharQuotes(S1: PAnsiChar): AnsiString;
 
-function ValidIdentifier(S1: PChar): Boolean;
-function EndChar(X: Char): Boolean;
-procedure GetToken(S1, S2: PChar);
-function IsExpressionKeyword(S1: PChar): Boolean;
-function IsKeyword(S1: PChar): Boolean;
-function ValidVarReference(S1: PChar): Boolean;
-function GetParenthesis(S1, S2: PChar): Boolean;
-procedure GetVarReference(S1, S2, SIdx: PChar);
-procedure PCharEatWhiteChars(S1: PChar);
+function JvValidIdentifierAnsi(S1: PAnsiChar): Boolean;
+function JvValidIdentifier(S1:String):Boolean;
+function JvEndChar(X: AnsiChar): Boolean;
+procedure JvGetToken(S1, S2: PAnsiChar);
+function IsExpressionKeyword(S1: PAnsiChar): Boolean;
+function IsKeyword(S1: PAnsiChar): Boolean;
+function JvValidVarReference(S1: PAnsiChar): Boolean;
+function GetParenthesis(S1, S2: PAnsiChar): Boolean;
+procedure JvGetVarReference(S1, S2, SIdx: PAnsiChar);
+procedure JvEatWhitespaceChars(S1: PAnsiChar);
 
-{ Debugging functions related to GetToken function. }
+{ Debugging functions related to JvGetToken function. }
 function GetTokenCount: Integer;
 procedure ResetTokenCount;
 
@@ -114,6 +119,9 @@ implementation
 
 uses
   SysUtils,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,       // CharInSet() and other future friendly bits
+  {$ENDIF ~COMPILER12_UP}
   JvTypes, JvConsts, JvResources;
 
 var
@@ -121,7 +129,7 @@ var
 
 { Returns true for literals like '123.456', '78', or '-35.1231231' }
 
-function ValidNumericLiteral(S1: PChar): Boolean;
+function ValidNumericLiteral(S1: PAnsiChar): Boolean;
 var
   L, X, X1: Integer;
   DecimalFlag: Boolean;
@@ -152,7 +160,7 @@ begin
       DecimalFlag := True;
     end
     else
-    if not (S1[X] in DigitSymbols) then
+    if not CharInSet(S1[X], DigitSymbols) then // native in Delphi2009, otherwise Jcl Util unit.
     begin
       Result := False;
       Exit;
@@ -163,7 +171,7 @@ end;
 { Returns true for integer literals only, like -35 or 199, but not
   for values like '123.45' }
 
-function ValidIntLiteral(S1: PChar): Boolean;
+function ValidIntLiteral(S1: PAnsiChar): Boolean;
 var
   L, X, X1: Integer;
 begin
@@ -180,7 +188,7 @@ begin
 
   { Detect a decimal number or integer number }
   for X := X1 to L - 1 do
-    if not (S1[X] in DigitSymbols) then
+    if not CharInSet(S1[X], DigitSymbols) then
     begin
       Result := False;
       Exit;
@@ -191,7 +199,7 @@ end;
 { Returns true for integer literals only, like -35 or 199, but not
   for values like '123.45' }
 
-function ValidHexLiteral(S1: PChar): Boolean;
+function ValidHexLiteral(S1: PAnsiChar): Boolean;
 var
   L, X: Integer;
 begin
@@ -207,7 +215,7 @@ begin
 
   { Detect hex digits }
   for X := 1 to L - 2 do
-    if not (S1[X] in HexadecimalSymbols) then
+    if not CharInSet(S1[X], HexadecimalSymbols) then
     begin
       Result := False;
       Exit;
@@ -215,7 +223,7 @@ begin
   Result := True;
 end;
 
-function HexPCharToInt(S1: PChar): Integer;
+function HexPCharToInt(S1: PAnsiChar): Integer;
 var
   X, L: Integer;
   Digit, Val: Integer;
@@ -229,13 +237,13 @@ begin
   for X := 1 to L - 2 do
   begin
     Val := Val * 16; { shift right four bits at a time }
-    if S1[X] in DigitSymbols then
+    if CharInSet(S1[X], DigitSymbols) then
       Digit := Ord(S1[X]) - Ord('0')
     else
-    if S1[X] in HexadecimalLowercaseLetters then
+    if CharInSet(S1[X], HexadecimalLowercaseLetters) then
       Digit := Ord(S1[X]) - Ord('a') + 10
     else
-    if S1[X] in HexadecimalUppercaseLetters then
+    if CharInSet(S1[X], HexadecimalUppercaseLetters) then
       Digit := Ord(S1[X]) - Ord('A') + 10
     else
       raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
@@ -244,16 +252,16 @@ begin
   Result := Val;
 end;
 
-function ValidStringLiteral(S1: PChar): Boolean;
+function ValidStringLiteral(S1: PAnsiChar): Boolean;
 begin
   Result := (S1[0] = '"') and (S1[StrLen(S1) - 1] = '"');
 end;
 
 { Strip quotes and return as a real Delphi String }
 
-function StripQuotes(const S1: string): string;
+function StripQuotes(const S1: AnsiString): AnsiString;
 begin
-  if ValidStringLiteral(PChar(S1)) then
+  if ValidStringLiteral(PAnsiChar(S1)) then
     Result := Copy(S1, 2, Length(S1) - 2)
   else
     Result := S1;
@@ -261,9 +269,9 @@ end;
 
 // This function is limited to 1 to 254 characters:
 
-function StripPCharQuotes(S1: PChar): string;
+function StripPCharQuotes(S1: PAnsiChar): AnsiString;
 var
-  TempBuf: array [0..256] of Char;
+  TempBuf: array [0..256] of AnsiChar;
   L: Integer;
 begin
   L := StrLen(S1);
@@ -271,12 +279,12 @@ begin
     L := 255;
   if ValidStringLiteral(S1) then
     StrLCopy(TempBuf, S1 + 1, L - 2);
-  Result := string(TempBuf);
+  Result := AnsiString(TempBuf);
 end;
 
 { Prevent confusion between expression-keywords and variable identifiers }
 
-function IsExpressionKeyword(S1: PChar): Boolean;
+function IsExpressionKeyword(S1: PAnsiChar): Boolean;
 begin
   if StrIComp(S1, 'AND') = 0 then
     Result := True
@@ -302,7 +310,7 @@ begin
     Result := False;
 end;
 
-function IsKeyword(S1: PChar): Boolean;
+function IsKeyword(S1: PAnsiChar): Boolean;
 begin
   Result := (StrIComp(S1, 'SET') = 0) or (StrIComp(S1, 'LET') = 0) or
     (StrIComp(S1, 'DIM') = 0) or (StrIComp(S1, 'ARRAYCOPY') = 0) or
@@ -315,7 +323,7 @@ begin
     (StrIComp(S1, 'STOP') = 0) or (StrIComp(S1, 'CONST') = 0);
 end;
 
-{ ValidIdentifier:
+{ JvValidIdentifier:
 
   Valid identifier must start with a-z or A-Z or _, and can have alphanumeric or underscore(_)
   as subsequent characters, no spaces, punctuation, or other characters allowed.  Same rules as
@@ -324,7 +332,16 @@ end;
     --Warren.
 }
 
-function ValidIdentifier(S1: PChar): Boolean;
+
+function JvValidIdentifier(S1:String):Boolean;
+var
+  convertedString:AnsiString;
+begin
+  convertedString := AnsiString(S1);
+  result := JvValidIdentifierAnsi(PAnsiChar(convertedString));
+end;
+
+function JvValidIdentifierAnsi(S1: PAnsiChar): Boolean;
 var
   X, Y: Integer;
   Pass: Boolean;
@@ -344,12 +361,12 @@ begin
     Exit;
   end;
 
-  if not (S1[0] in IdentifierFirstSymbols) then
+  if not CharInSet(S1[0], IdentifierFirstSymbols) then
     Pass := False;
 
   if Pass and (X > 1) then
     for Y := 1 to X - 1 do
-      if not (S1[Y] in IdentifierSymbols) then
+      if not CharInSet(S1[Y], IdentifierSymbols) then
       begin
         Pass := False;
         Result := Pass;
@@ -359,14 +376,14 @@ begin
   Result := Pass;
 end;
 
-function EndChar(X: Char): Boolean;
+function JvEndChar(X: AnsiChar): Boolean;
 begin
   Result := (X = ',') or (X = ';') or (X = ':') or (X = '[') or (X = ']') or
     (X = '(') or (X = ')') or (X = '#') or (X = '<') or (X = '>') or (X = '=') or
     (X = '*') or (X = '/') or (X = '+') or (X = Chr(0));
 end;
 
-procedure GetToken(S1, S2: PChar);
+procedure JvGetToken(S1, S2: PAnsiChar);
 var
   W, X, Y: Integer;
   InQuotes: Boolean;
@@ -386,7 +403,7 @@ begin
 
   while True do
   begin
-    if EndChar(S1[X]) and not InQuotes then
+    if JvEndChar(S1[X]) and not InQuotes then
     begin
       { return punctuation one symbol at a time }
       if W < 1 then
@@ -442,29 +459,29 @@ begin
   if Y > 0 then
     StrLCopy(S1, S1 + X, Y) { copy remaining characters }
   else
-    S1[0] := Chr(0); { just erase all of old string }
+    S1[0] := Chr(0); { just erase all of old AnsiString }
 
-  S2[W] := Chr(0); { Terminate new string }
+  S2[W] := Chr(0); { Terminate new AnsiString }
   Inc(TokenCount);
 end;
 
-function StrEatWhiteSpace(const S: string): string;
+function StrEatWhiteSpace(const S: AnsiString): AnsiString;
 var
-  Buf: array [0..1024] of Char;
+  Buf: array [0..1024] of AnsiChar;
 begin
   if Length(S) > 1024 then
   begin
     Result := S;
     Exit;
   end;
-  StrCopy(Buf, PChar(S));
-  PCharEatWhiteChars(Buf);
-  Result := string(Buf);
+  StrCopy(Buf, PAnsiChar(S));
+  JvEatWhitespaceChars(Buf);
+  Result := AnsiString(Buf);
 end;
 
 { strip whitespace from pchar - space or tab }
 
-procedure PCharEatWhiteChars(S1: PChar);
+procedure JvEatWhitespaceChars(S1: PAnsiChar);
 var
   T, U, L: Integer;
 begin
@@ -487,20 +504,20 @@ begin
       StrLCopy(S1, S1 + T, (U - T) + 1);
 end;
 
-function GetParenthesis(S1, S2: PChar): Boolean;
+function GetParenthesis(S1, S2: PAnsiChar): Boolean;
 var
-  Token, TempBuf: array [0..128] of Char;
+  Token, TempBuf: array [0..128] of AnsiChar;
   Brackets: Integer;
 begin
   { make temporary copy of S1, check for parenthesis }
   StrCopy(TempBuf, S1);
-  GetToken(TempBuf, S2);
+  JvGetToken(TempBuf, S2);
   if StrComp(S2, '(') = 0 then
   begin
     Brackets := 1;
     S2[0] := Chr(0);
     repeat
-      GetToken(TempBuf, Token);
+      JvGetToken(TempBuf, Token);
       if StrComp(Token, ')') = 0 then
         Dec(Brackets);
       if Brackets > 0 then
@@ -530,19 +547,19 @@ end;
 
 { Gets a single token like ABC, or gets ABC[X] type reference if present }
 
-procedure GetVarReference(S1, S2, SIdx: PChar);
+procedure JvGetVarReference(S1, S2, SIdx: PAnsiChar);
 var
-  TempBuf: array [0..128] of Char;
+  TempBuf: array [0..128] of AnsiChar;
   Brackets: Integer;
 begin
-  GetToken(S1, S2);
+  JvGetToken(S1, S2);
   SIdx[0] := Chr(0);
-  PCharEatWhiteChars(S1);
+  JvEatWhitespaceChars(S1);
   if S1[0] = '[' then
   begin
     Brackets := 0;
     repeat
-      GetToken(S1, TempBuf);
+      JvGetToken(S1, TempBuf);
       StrCat(SIdx, TempBuf);
       if StrComp(TempBuf, ']') = 0 then
         Dec(Brackets);
@@ -560,20 +577,20 @@ end;
 
 { Expects ABC or ABC[X] type of reference }
 
-function ValidVarReference(S1: PChar): Boolean;
+function JvValidVarReference(S1: PAnsiChar): Boolean;
 var
   Len1: Integer;
-  TempBuf1, TempBuf2: array [0..128] of Char;
+  TempBuf1, TempBuf2: array [0..128] of AnsiChar;
 begin
   StrCopy(S1, TempBuf1);
-  GetToken(TempBuf1, TempBuf2);
+  JvGetToken(TempBuf1, TempBuf2);
   if StrLen(TempBuf1) = 0 then
-    Result := ValidIdentifier(S1)
+    Result := JvValidIdentifierAnsi(S1)
   else
   begin
     Len1 := StrLen(TempBuf1);
     if (TempBuf1[0] = '[') and (TempBuf1[Len1 - 1] = ']') then
-      Result := ValidIdentifier(S1)
+      Result := JvValidIdentifierAnsi(S1)
     else
       Result := False;
   end;
@@ -591,7 +608,7 @@ begin
   TokenCount := 0;
 end;
 
-function PadString(const S: string; Len: Integer; PadChar: Char): string;
+function PadString(const S: AnsiString; Len: Integer; PadChar: AnsiChar): AnsiString;
 begin
   Result := S;
   while Length(Result) < Len do
@@ -599,11 +616,11 @@ begin
 end;
 
 { Encoding function named in honor of Dennis Forbes' favourite word }
-{procedure Gibble(var S: string);
+{procedure Gibble(var S: AnsiString);
 var
  I, L, c1: Integer;
  lo, hi: Byte;
- X: array [0..255] of Char;
+ X: array [0..255] of AnsiChar;
 begin
  L := Length(S);
  for I:= 0 to L-1 do
@@ -626,7 +643,7 @@ begin
 end;
  }
 
-function BuildPathName(const PathName, FileName: string): string;
+function BuildPathName(const PathName, FileName: AnsiString): AnsiString;
 var
   L: Integer;
 begin
@@ -640,49 +657,49 @@ begin
     Result := PathName + PathDelim + FileName;
 end;
 
-function HexDigitVal(C: Char): Integer;
+function HexDigitVal(C: AnsiChar): Integer;
 begin
-  if C in DigitSymbols then
+  if CharInSet(C, DigitSymbols) then
     Result := Ord(C) - Ord('0')
   else
-  if C in HexadecimalLowercaseLetters then
+  if CharInSet(C, HexadecimalLowercaseLetters) then
     Result := Ord(C) - Ord('a') + 10
   else
-  if C in HexadecimalUppercaseLetters then
+  if CharInSet(C, HexadecimalUppercaseLetters) then
     Result := Ord(C) - Ord('A') + 10
   else
     Result := 0;
 end;
 
-function HexToAscii(const S: string): string;
+function HexToAscii(const S: AnsiString): AnsiString;
 var
   I, Y, L: Integer;
-  C: array [0..256] of Char;
+  C: array [0..256] of AnsiChar;
 begin
   L := Length(S) div 2;
   for I := 0 to L - 1 do
   begin
     Y := (I * 2) + 1;
-    C[I] := Char(HexDigitVal(S[Y]) * 16 + HexDigitVal(S[Y + 1]));
+    C[I] := AnsiChar(HexDigitVal(S[Y]) * 16 + HexDigitVal(S[Y + 1]));
   end;
   C[L] := Chr(0);
   Result := C;
 end;
 
-function AsciiToHex(const S: string): string;
+function AsciiToHex(const S: AnsiString): AnsiString;
 var
   I: Integer;
-  S2: string;
+  S2: AnsiString;
 begin
   for I := 1 to Length(S) do
-    S2 := S2 + IntToHex(Ord(S[I]), 2);
+    S2 := S2 + AnsiString( IntToHex(Ord(S[I]), 2) );
   Result := S2;
 end;
 
 //-----------------------------------------------------------------------------
 // GetIntValueFromResultString
 //
-// Retrieve an integer value from a result string, Formats that are valid
+// Retrieve an integer value from a result AnsiString, Formats that are valid
 // include:
 //
 // VariableName: Value  - usual format for status results
@@ -690,27 +707,29 @@ end;
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
 
-function GetIntValueFromResultString(const VarName: string;
+(*
+function GetIntValueFromResultString(const VarName: AnsiString;
   ResultStrings: TStrings; DefVal: Integer): Integer;
 var
-  S: string;
+  S: AnsiString;
 begin
   S := GetValueFromResultString(VarName, ResultStrings);
-  Result := StrToIntDef(S, DefVal);
-end;
+  Result := AnsiString( StrToIntDef(S, DefVal));
+end;*)
 
 //-----------------------------------------------------------------------------
 // GetValueFromResultString
 //
-// Retrieve a value from a result string, Formats that are valid include:
+// Retrieve a value from a result AnsiString, Formats that are valid include:
 // VariableName: Value  - usual format for status results
 // VariableName = Value  - usual format in ini files
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
 
-function GetValueFromResultString(const VarName: string; ResultStrings: TStrings): string;
+(*
+function GetValueFromResultString(const VarName: AnsiString; ResultStrings: TStrings): AnsiString;
 var
-  Label1, Value1: string;
+  Label1, Value1: AnsiString;
   Len1, Pos1, I, Count: Integer;
 begin
   if not Assigned(ResultStrings) then
@@ -740,8 +759,14 @@ begin
     end;
   end;
 end;
+*)
 
-function StrStrip(S: string): string;
+function JvAnsiStrStrip(S: AnsiString): AnsiString;
+begin
+  Result := AnsiString(JvStrStrip(string(S)));
+end;
+
+function JvStrStrip(S: string): string;
 var
   Len, I: Integer;
 begin
@@ -762,11 +787,11 @@ begin
   Result := Copy(S, 1, I);
 end;
 
-function GetString(var Source: string; const Separator: string): string;
+function GetString(var Source: AnsiString; const Separator: AnsiString): AnsiString;
 var
   I, J, Len: Integer;
 begin
-  //Source := StrStrip(Source);
+  //Source := JvAnsiStrStrip(Source);
   Len := Length(Source);
   I := 0;
   for J := 1 to Len do
@@ -777,23 +802,23 @@ begin
     end;
   if I > 0 then
   begin
-    Result := StrStrip(Copy(Source, 1, I - 1));
+    Result := JvAnsiStrStrip(Copy(Source, 1, I - 1));
     Source := Copy(Source, I + 1, Length(Source) - I);
-    //Source:=StrStrip(source); //???
+    //Source:=JvAnsiStrStrip(source); //???
   end
   else
   begin
-    Result := StrStrip(Source);
+    Result := JvAnsiStrStrip(Source);
     Source := '';
   end;
 end;
 
 //------------------------------------------------------------------------------------------
-// StrSplit
+// JvAnsiStrSplit [ was 'StrSplit' ]
 //   Given aString='Blah,Blah,Blah', SplitChar=',', writes to OutStrings an Array
 //   ie ('blah','blah','blah ) and returns the integer count of how many items are in
 //   the resulting array, or -1 if more than MaxSplit items were found in the input
-//   string.
+//   AnsiString.
 //
 // XXX READ THESE NOTES! XXX
 //
@@ -803,7 +828,21 @@ end;
 //     if it starts at element 1, then you'll get exceptions XXX
 //------------------------------------------------------------------------------------------
 
-function StrSplit(const InString: string; const SplitChar, QuoteChar: Char;
+function JvAnsiStrSplit(const InString: AnsiString; const SplitChar, QuoteChar: AnsiChar;
+  var OutStrings: array of AnsiString; MaxSplit: Integer): Integer;
+var
+  Tmp: array of string;
+  I: Integer;
+begin
+  SetLength(Tmp, Length(OutStrings));
+
+  Result := JvStrSplit(string(InString), Char(SplitChar), Char(QuoteChar), Tmp, MaxSplit);
+
+  for I := Low(OutStrings) to High(OutStrings) do
+    OutStrings[I] := AnsiString(Tmp[I]);
+end;
+
+function JvStrSplit(const InString: string; const SplitChar, QuoteChar: Char;
   var OutStrings: array of string; MaxSplit: Integer): Integer;
 var
   I, Len, SplitCounter: Integer;
@@ -841,13 +880,13 @@ begin
 end;
 
 // NEW 2004 WP
-
-function StrSplitStrings(const InString: string; const SplitChar, QuoteChar: Char; OutStrings: TStrings): Integer;
+// JvAnsiStrSplitStrings: was StrSplitStrings.
+function JvAnsiStrSplitStrings(const InString: AnsiString; const SplitChar, QuoteChar: AnsiChar; OutStrings: TStrings): Integer;
 var
   I, Len, SplitCounter: Integer;
-  Ch: Char;
+  Ch: AnsiChar;
   InQuotes: Boolean;
-  OutString: string;
+  OutString: AnsiString;
 begin
   InQuotes := False;
   Len := Length(InString);
@@ -859,7 +898,7 @@ begin
     Ch := InString[I];
     if (Ch = SplitChar) and not InQuotes then
     begin
-      OutStrings.Add(OutString);
+      OutStrings.Add(String(OutString));
       OutString := '';
       Inc(SplitCounter);
     end
@@ -870,7 +909,7 @@ begin
         InQuotes := not InQuotes;
     end;
   end;
-  OutStrings.Add(OutString);
+  OutStrings.Add(String(OutString));
   Inc(SplitCounter);
   Result := SplitCounter;
 end;

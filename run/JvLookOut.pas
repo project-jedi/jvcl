@@ -787,7 +787,7 @@ begin
     (Parent as TJvLookOutPage).UpArrowClick(Self);
     R := Parent.ClientRect;
     R := Rect(R.Left, R.Top + cHeight, R.Right, R.Bottom);
-    InvalidateRect(Parent.Handle, @R, False);
+    Windows.InvalidateRect(Parent.Handle, @R, False);
     Parent.Update;
   end;
 end;
@@ -894,7 +894,7 @@ begin
     //    Parent.ScrollBy(0,-50);
     R := Parent.ClientRect;
     R := Rect(R.Left, R.Top + cHeight, R.Right, R.Bottom);
-    InvalidateRect(Parent.Handle, @R, False);
+    Windows.InvalidateRect(Parent.Handle, @R, False);
     Parent.Update;
     if not Visible then
       FDown := False;

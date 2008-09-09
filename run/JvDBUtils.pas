@@ -179,7 +179,7 @@ const
   sdfMSSQL = '"CONVERT(datetime, ''"mm"/"dd"/"yyyy"'', 103)"';
 
 const
-  ServerDateFmt: string[50] = sdfStandard16;
+  ServerDateFmt: string = sdfStandard16;
 
 {.$NODEFINE ftNonTextTypes}
 (*$HPPEMIT 'namespace JvDBUtils'*)
@@ -245,12 +245,12 @@ end;
 
 function NameDelimiter(C: Char): Boolean;
 begin
-  Result := C in [' ', ',', ';', ')', '.', Cr, Lf];
+  Result := CharInSet(C, [' ', ',', ';', ')', '.', Cr, Lf]);
 end;
 
 function IsLiteral(C: Char): Boolean;
 begin
-  Result := C in ['''', '"'];
+  Result := CharInSet(C, ['''', '"']);
 end;
 
 procedure _DBError(const Msg: string);
@@ -509,7 +509,7 @@ var
   FieldCount: Integer;
   Fields: TObjectList;
   Fld: TField;                    {BG}   //else BAD mem leak on 'Field.asString'
-  Bookmark: TBookmarkStr;
+  Bookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
 
   function CompareField(var Field: TField; Value: Variant): Boolean; {BG}
   var

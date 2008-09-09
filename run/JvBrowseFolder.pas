@@ -327,7 +327,7 @@ function SHGetFolderPathProc(hWnd: HWND; CSIDL: Integer; hToken: THandle;
 {$ELSE}
 type
   TSHGetFolderPathProc = function(hWnd: HWND; CSIDL: Integer; hToken: THandle;
-    dwFlags: DWORD; pszPath: PAnsiChar): HResult; stdcall;
+    dwFlags: DWORD; pszPath: PChar): HResult; stdcall;
 
 var
   SHGetFolderPathProc: TSHGetFolderPathProc = nil;
@@ -484,7 +484,7 @@ var
 begin
   case StrRet.uType of
     STRRET_CSTR:
-      SetString(Result, StrRet.cStr, lStrLen(StrRet.cStr));
+      SetString(Result, StrRet.cStr, lStrLenA(StrRet.cStr));
     STRRET_OFFSET:
       begin
         P := @PIDL.mkid.abID[StrRet.uOffset - SizeOf(PIDL.mkid.cb)];
@@ -685,7 +685,11 @@ begin
   { You never know, maybe someone does not have SHFolder.dll, thus load on request }
   SHFolderHandle := GetModuleHandle(SHFolderDll);
   if SHFolderHandle <> 0 then
+    {$IFDEF UNICODE}
+    SHGetFolderPathProc := GetProcAddress(SHFolderHandle, 'SHGetFolderPathW');
+    {$ELSE}
     SHGetFolderPathProc := GetProcAddress(SHFolderHandle, 'SHGetFolderPathA');
+    {$ENDIF UNICODE}
 end;
 {$ENDIF CLR}
 
@@ -729,7 +733,7 @@ begin
     APath := '';
 
   {$ELSE}
-  GetMem(Buffer, MAX_PATH);
+  GetMem(Buffer, MAX_PATH * SizeOf(Char));
   try
     if not Assigned(SHGetFolderPathProc) then
       InitSHFolder;

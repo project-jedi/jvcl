@@ -308,7 +308,7 @@ begin
   if Value <> FInvalidCharReplacement then
   begin
     for I := 1 to Length(Value) do
-      if not (Value[I] in AllowedNodeNameChars) then
+      if not CharInSet(Value[I], AllowedNodeNameChars) then
         {$IFDEF CLR}
         raise EJVCLException.CreateFmt(RsENotAllowedCharacterForProperty, [Value[I], 'InvalidCharReplacement']);
         {$ELSE}
@@ -332,7 +332,7 @@ begin
     else
     begin
       for I := 1 to Length(Value) do
-        if not (Value[I] in AllowedNodeNameChars) then
+        if not CharInSet(Value[I], AllowedNodeNameChars) then
           {$IFDEF CLR}
           raise EJVCLException.CreateFmt(RsENotAllowedCharacterForProperty, [Value[I], 'WhiteSpaceReplacement']);
           {$ELSE}
@@ -425,7 +425,7 @@ begin
           end;
       end   // case WSRLength of
     else
-    if not (NodeName[J] in AllowedNodeNameChars) then
+    if not CharInSet(NodeName[J], AllowedNodeNameChars) then
       case ICRLength of
         0:
           {$IFDEF CLR}

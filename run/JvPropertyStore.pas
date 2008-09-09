@@ -466,7 +466,7 @@ begin
   try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
-    Result := PropInfo^.Name;
+    Result := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name);
   finally
     FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   end;
@@ -497,6 +497,7 @@ begin
       if (DestPropInfo <> nil) and (GetPropKind(DestPropInfo) =
         GetPropKind(SrcPropInfo)) then
         case GetPropKind(DestPropInfo) of
+          {$IFDEF UNICODE} tkUString, {$ENDIF}
           tkLString, tkString:
             SetStrProp(Dest, DestPropInfo, GetStrProp(Src, SrcPropInfo));
           tkInteger, tkChar, tkEnumeration, tkSet:
@@ -806,8 +807,8 @@ begin
   if SynchronizeLoadProperties then
   begin
     Mutex := TJclMutex.Create(nil, False,
-      B64Encode(RsJvPropertyStoreMutexLoadPropertiesProcedureName +
-        AppStoragePath));
+      string(B64Encode(AnsiString(RsJvPropertyStoreMutexLoadPropertiesProcedureName +
+        AppStoragePath))));
     try
       if Mutex.WaitForever = wrSignaled then
         try
@@ -873,8 +874,8 @@ begin
   if SynchronizeStoreProperties then
   begin
     Mutex := TJclMutex.Create(nil, False,
-      B64Encode(RsJvPropertyStoreMutexStorePropertiesProcedureName +
-        AppStoragePath));
+      string(B64Encode(AnsiString(RsJvPropertyStoreMutexStorePropertiesProcedureName +
+        AppStoragePath))));
     try
       if Mutex.WaitForever = wrSignaled then
         try

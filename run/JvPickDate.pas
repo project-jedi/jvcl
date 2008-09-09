@@ -44,6 +44,7 @@ uses
   Windows, Messages,
   Controls, Graphics, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
   SysUtils, Classes,
+  JclBase,
   JvTypes, JvExGrids;
 
 type
@@ -492,7 +493,7 @@ end;
 
 procedure TJvCalendar.KeyPress(var Key: Char);
 begin
-  if Key in ['T', 't'] then
+  if (Key = 'T') or (Key = 't') then
   begin
     CalendarDate := Trunc(Now);
     Key := #0;

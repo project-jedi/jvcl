@@ -90,6 +90,10 @@ interface
 {$ifdef VER160}
   // Delphi 8
 {$endif}
+{$ifdef VER200}
+  // Delphi 2009
+  {$DEFINE DELPHI2009OROLDER}
+{$endif}
 {$IFDEF CONDITIONALEXPRESSION}
   {$DEFINE DELPHI6OROLDER}
   {$DEFINE DELPHI7OROLDER}
@@ -107,6 +111,12 @@ uses
 {$endif}
   Classes, SysUtils, Contnrs, TypInfo;
 
+{$IFNDEF UNICODE}
+type
+  UnicodeString = WideString;
+  UTF8String = AnsiString;
+{$ENDIF ~UNICODE}
+
 (*****************************************************************************)
 (*                                                                           *)
 (*  MAIN API                                                                 *)
@@ -115,23 +125,23 @@ uses
 
 // Main GNU gettext functions. See documentation for instructions on how to use them.
 {$ifdef DELPHI5OROLDER}
-function _(const szMsgId: WideString): WideString;
-function gettext(const szMsgId: WideString): WideString;
-function dgettext(const szDomain: string; const szMsgId: WideString): WideString;
-function dngettext(const szDomain: string; const singular, plural: WideString; Number: Longint): WideString;
-function ngettext(const singular, plural: WideString; Number: Longint): WideString;
+function _(const szMsgId: UnicodeString): UnicodeString;
+function gettext(const szMsgId: UnicodeString): UnicodeString;
+function dgettext(const szDomain: string; const szMsgId: UnicodeString): UnicodeString;
+function dngettext(const szDomain: string; const singular, plural: UnicodeString; Number: Longint): UnicodeString;
+function ngettext(const singular, plural: UnicodeString; Number: Longint): UnicodeString;
 {$endif}
 {$ifndef DELPHI5OROLDER}
-function _(const szMsgId: AnsiString): WideString; overload;
-function _(const szMsgId: WideString): WideString; overload;
-function gettext(const szMsgId: AnsiString): WideString; overload;
-function gettext(const szMsgId: WideString): WideString; overload;
-function dgettext(const szDomain: string; const szMsgId: AnsiString): WideString; overload;
-function dgettext(const szDomain: string; const szMsgId: WideString): WideString; overload;
-function dngettext(const szDomain: string; const singular, plural: AnsiString; Number: Longint): WideString; overload;
-function dngettext(const szDomain: string; const singular, plural: WideString; Number: Longint): WideString; overload;
-function ngettext(const singular, plural: AnsiString; Number: Longint): WideString; overload;
-function ngettext(const singular, plural: WideString; Number: Longint): WideString; overload;
+function _(const szMsgId: AnsiString): UnicodeString; overload;
+function _(const szMsgId: UnicodeString): UnicodeString; overload;
+function gettext(const szMsgId: AnsiString): UnicodeString; overload;
+function gettext(const szMsgId: UnicodeString): UnicodeString; overload;
+function dgettext(const szDomain: string; const szMsgId: AnsiString): UnicodeString; overload;
+function dgettext(const szDomain: string; const szMsgId: UnicodeString): UnicodeString; overload;
+function dngettext(const szDomain: string; const singular, plural: AnsiString; Number: Longint): UnicodeString; overload;
+function dngettext(const szDomain: string; const singular, plural: UnicodeString; Number: Longint): UnicodeString; overload;
+function ngettext(const singular, plural: AnsiString; Number: Longint): UnicodeString; overload;
+function ngettext(const singular, plural: UnicodeString; Number: Longint): UnicodeString; overload;
 {$endif}
 procedure textdomain(const szDomain: string);
 function getcurrenttextdomain: string;
@@ -147,11 +157,11 @@ function GetCurrentLanguage: string;
 type
   TTranslator = procedure(obj: TObject) of object;
 
-procedure TP_Ignore(AnObject: TObject; const Name: AnsiString);
+procedure TP_Ignore(AnObject: TObject; const Name: string);
 procedure TP_IgnoreClass(IgnClass: TClass);
-procedure TP_IgnoreClassProperty(IgnClass: TClass; const PropertyName: AnsiString);
+procedure TP_IgnoreClassProperty(IgnClass: TClass; const PropertyName: string);
 procedure TP_GlobalIgnoreClass(IgnClass: TClass);
-procedure TP_GlobalIgnoreClassProperty(IgnClass: TClass; const PropertyName: AnsiString);
+procedure TP_GlobalIgnoreClassProperty(IgnClass: TClass; const PropertyName: string);
 procedure TP_GlobalHandleClass(HClass: TClass; Handler: TTranslator);
 procedure TranslateComponent(AnObject: TComponent; const TextDomain: string = '');
 procedure RetranslateComponent(AnObject: TComponent; const TextDomain: string = '');
@@ -166,13 +176,16 @@ procedure RemoveDomainForResourceString(const domain: string);
 {$ifndef CLR}
   // Unicode-enabled way to get resourcestrings, automatically translated
   // Use like this: ws := LoadResStringW(@NameOfResourceString);
-function LoadResString(ResStringRec: PResStringRec): WideString;
+function LoadResString(ResStringRec: PResStringRec): UnicodeString;
 function LoadResStringA(ResStringRec: PResStringRec): AnsiString;
-function LoadResStringW(ResStringRec: PResStringRec): WideString;
+function LoadResStringW(ResStringRec: PResStringRec): UnicodeString;
+{$IFDEF DELPHI2009OROLDER}
+function LoadResStringU(ResStringRec: PResStringRec): UnicodeString;
+{$ENDIF DELPHI2009OROLDER}
 {$endif}
 
   // This returns an empty string if not translated or translator name is not specified.
-function GetTranslatorNameAndEmail: WideString; 
+function GetTranslatorNameAndEmail: UnicodeString;
 
 
 (*****************************************************************************)
@@ -241,7 +254,7 @@ type
     Users: Integer;
     // Reference count. If it reaches zero, this object should be destroyed.
     constructor Create(const Filename: string; Offset, Size: Int64);
-    function gettext(const msgid: AnsiString; var Found: Boolean): AnsiString;
+    function gettext(const msgid: UTF8String; var Found: Boolean): UTF8String;
     // uses mo file
     property isSwappedArchitecture: Boolean read doswap;
   private
@@ -267,8 +280,8 @@ type
     procedure SetFilename(const Filename: string); // Bind this domain to a specific file
     // Get information
     procedure GetListOfLanguages(List: TStrings);
-    function GetTranslationProperty(PropertyName: string): WideString;
-    function gettext(const msgid: AnsiString): AnsiString; // uses mo file
+    function GetTranslationProperty(PropertyName: string): UnicodeString;
+    function gettext(const msgid: UTF8String): UTF8String; // uses mo file
   private
     moFile: TMoFile;
     SpecificFilename: string;
@@ -297,25 +310,25 @@ type
     procedure UseLanguage(LanguageCode: string);
     procedure GetListOfLanguages(const domain: string; List: TStrings); // Puts List of language codes, for which there are translations in the specified domain, into List
     {$ifdef DELPHI5OROLDER}
-    function gettext(const szMsgId: WideString): WideString;
-    function ngettext(const singular, plural: WideString; Number: Longint): WideString;
+    function gettext(const szMsgId: UnicodeString): UnicodeString;
+    function ngettext(const singular, plural: UnicodeString; Number: Longint): UnicodeString;
     {$endif}
     {$ifndef DELPHI5OROLDER}
-    function gettext(const szMsgId: AnsiString): WideString; overload;
-    function gettext(const szMsgId: WideString): WideString; overload;
-    function ngettext(const singular, plural: AnsiString; Number: Longint): WideString; overload;
-    function ngettext(const singular, plural: WideString; Number: Longint): WideString; overload;
+    function gettext(const szMsgId: AnsiString): UnicodeString; overload;
+    function gettext(const szMsgId: UnicodeString): UnicodeString; overload;
+    function ngettext(const singular, plural: AnsiString; Number: Longint): UnicodeString; overload;
+    function ngettext(const singular, plural: UnicodeString; Number: Longint): UnicodeString; overload;
     {$endif}
     function GetCurrentLanguage: string;
-    function GetTranslationProperty(const PropertyName: AnsiString): WideString;
-    function GetTranslatorNameAndEmail: WideString;
+    function GetTranslationProperty(const PropertyName: string): UnicodeString;
+    function GetTranslatorNameAndEmail: UnicodeString;
 
     // Form translation tools, these are not threadsafe. All TP_ procs must be called just before TranslateProperites()
-    procedure TP_Ignore(AnObject: TObject; const Name: AnsiString);
+    procedure TP_Ignore(AnObject: TObject; const Name: string);
     procedure TP_IgnoreClass(IgnClass: TClass);
-    procedure TP_IgnoreClassProperty(IgnClass: TClass; const PropertyName: AnsiString);
+    procedure TP_IgnoreClassProperty(IgnClass: TClass; const PropertyName: string);
     procedure TP_GlobalIgnoreClass(IgnClass: TClass);
-    procedure TP_GlobalIgnoreClassProperty(IgnClass: TClass; const PropertyName: AnsiString);
+    procedure TP_GlobalIgnoreClassProperty(IgnClass: TClass; const PropertyName: string);
     procedure TP_GlobalHandleClass(HClass: TClass; Handler: TTranslator);
     procedure TranslateProperties(AnObject: TObject; TextDomain: string = '');
     procedure TranslateComponent(AnObject: TComponent; const TextDomain: string = '');
@@ -323,14 +336,14 @@ type
 
     // Multi-domain functions
     {$ifdef DELPHI5OROLDER}
-    function dgettext(const szDomain: string; const szMsgId: WideString): WideString;
-    function dngettext(const szDomain: string; singular, plural: WideString; Number: Longint): WideString;
+    function dgettext(const szDomain: string; const szMsgId: UnicodeString): UnicodeString;
+    function dngettext(const szDomain: string; singular, plural: UnicodeString; Number: Longint): UnicodeString;
     {$endif}
     {$ifndef DELPHI5OROLDER}
-    function dgettext(const szDomain: string; const szMsgId: AnsiString): WideString; overload;
-    function dgettext(const szDomain: string; const szMsgId: WideString): WideString; overload;
-    function dngettext(const szDomain: string; singular, plural: AnsiString; Number: Longint): WideString; overload;
-    function dngettext(const szDomain: string; singular, plural: WideString; Number: Longint): WideString; overload;
+    function dgettext(const szDomain: string; const szMsgId: AnsiString): UnicodeString; overload;
+    function dgettext(const szDomain: string; const szMsgId: UnicodeString): UnicodeString; overload;
+    function dngettext(const szDomain: string; singular, plural: AnsiString; Number: Longint): UnicodeString; overload;
+    function dngettext(const szDomain: string; singular, plural: UnicodeString; Number: Longint): UnicodeString; overload;
     {$endif}
     procedure textdomain(const szDomain: string);
     function getcurrenttextdomain: string;
@@ -340,7 +353,7 @@ type
 
     {$ifndef CLR}
     // Windows API functions
-    function LoadResString(ResStringRec: PResStringRec): WideString;
+    function LoadResString(ResStringRec: PResStringRec): UnicodeString;
     {$endif}
 
     // Output all log info to this file. This may only be called once.
@@ -350,14 +363,14 @@ type
     // If set, all debug output goes here
 
     // Conversion according to design-time character set
-    function ansi2wide(const s: AnsiString): WideString; 
+    function ansi2wide(const s: AnsiString): UnicodeString;
   protected
     procedure TranslateStrings(sl: TStrings; const TextDomain: string);
 
     // Override these three, if you want to inherited from this class
     // to create a new class that handles other domain and language dependent
     // issues
-    procedure WhenNewLanguage(const LanguageID: AnsiString); virtual;
+    procedure WhenNewLanguage(const LanguageID: string); virtual;
       // Override to know when language changes
     procedure WhenNewDomain(const TextDomain: string); virtual;
       // Override to know when text domain changes. Directory is purely informational
@@ -414,8 +427,8 @@ uses
 type
   TTP_RetranslatorItem = class
     obj: TObject;
-    Propname: AnsiString;
-    OldValue: WideString;
+    Propname: string;
+    OldValue: UnicodeString;
   end;
 
   TTP_Retranslator = class(TExecutable)
@@ -423,7 +436,7 @@ type
     Instance: TGnuGettextInstance;
     constructor Create;
     destructor Destroy; override;
-    procedure Remember(obj: TObject; const PropName: AnsiString; OldValue: WideString);
+    procedure Remember(obj: TObject; const PropName: string; OldValue: UnicodeString);
     procedure Execute; override;
   private
     List: TList;
@@ -451,7 +464,7 @@ type
 
   TGnuGettextComponentMarker = class(TComponent)
   public
-    LastLanguage: AnsiString;
+    LastLanguage: string;
     Retranslator: TExecutable;
     destructor Destroy; override;
   end;
@@ -486,7 +499,7 @@ type
     OldProc, NewProc: Pointer;
     Patch: TCharArray5;
     Original: TCharArray5;
-    PatchPosition: PChar;
+    PatchPosition: PAnsiChar;
     procedure Shutdown; // Same as destroy, except that object is not destroyed
   end;
   {$endif}
@@ -507,7 +520,7 @@ var
   HookFmtLoadStr: THook;
   {$endif}
 
-function Utf8EncodeChar(wc: WideChar): AnsiString;
+function Utf8EncodeChar(wc: WideChar): UTF8String;
 var
   w: Word;
 begin
@@ -527,7 +540,7 @@ begin
   end;
 end;
 
-function Utf8Encode(ws: WideString): AnsiString;
+function Utf8Encode(ws: UnicodeString): UTF8String;
 var
   i: Integer;
 begin
@@ -537,7 +550,7 @@ begin
 end;
 
 // If dummychar is #0, it will raise Exception when an error occurs
-function Utf8Decode(s: AnsiString; dummychar: WideChar = #0): WideString;
+function Utf8Decode(s: UTF8String; dummychar: WideChar = #0): UnicodeString;
 var
   i: Integer;
   b: Byte;
@@ -628,7 +641,7 @@ begin
   end;
 end;
 
-function StripCR(s: AnsiString): AnsiString;
+function StripCR(s: UTF8String): UTF8String;
 var
   i: Integer;
 begin
@@ -641,6 +654,15 @@ begin
       Inc(i);
   end;
   Result := s;
+end;
+
+function DecodePropName(const PropName: ShortString): string;
+begin
+  {$IFDEF UNICODE}
+  Result := System.UTF8Decode(PropName);
+  {$ELSE}
+  Result := PropName;
+  {$ENDIF UNICODE}
 end;
 
 function GGGetEnvironmentVariable(const Name: string): string;
@@ -762,7 +784,7 @@ begin
 end;
 {$endif}
 
-function TrimCopy(const S: AnsiString; Index, Count: Integer): AnsiString; overload;
+function TrimCopy(const S: UTF8String; Index, Count: Integer): UTF8String; overload;
 var
   Len, StartIndex, EndIndex: Integer;
 begin
@@ -798,12 +820,12 @@ begin
       {$ifdef CLR}
       Result := Copy(S, StartIndex, Count);
       {$else}
-      SetString(Result, PChar(Pointer(S)) + StartIndex - 1, Count);
+      SetString(Result, PAnsiChar(Pointer(S)) + StartIndex - 1, Count);
       {$endif CLR}
   end;
 end;
 
-function LF2LineBreakA(s: AnsiString): AnsiString;
+function LF2LineBreakA(s: UTF8String): UTF8String;
 {$ifdef MSWINDOWS}
 var
   i: Integer;
@@ -880,7 +902,7 @@ begin
 end;
 {$endif}
 
-function ResourceStringGettext(const MsgId: WideString): WideString;
+function ResourceStringGettext(const MsgId: UnicodeString): UnicodeString;
 var
   i: Integer;
 begin
@@ -905,63 +927,63 @@ begin
 end; 
 
 {$ifndef DELPHI5OROLDER}
-function gettext(const szMsgId: AnsiString): WideString;
+function gettext(const szMsgId: AnsiString): UnicodeString;
 begin
   Result := DefaultInstance.gettext(szMsgId);
 end;
 {$endif}
 
-function gettext(const szMsgId: WideString): WideString; 
+function gettext(const szMsgId: UnicodeString): UnicodeString;
 begin
   Result := DefaultInstance.gettext(szMsgId); 
 end; 
 
 {$ifndef DELPHI5OROLDER}
-function _(const szMsgId: AnsiString): WideString;
+function _(const szMsgId: AnsiString): UnicodeString;
 begin
   Result := DefaultInstance.gettext(szMsgId);
 end;
 {$endif}
 
-function _(const szMsgId: WideString): WideString; 
+function _(const szMsgId: UnicodeString): UnicodeString;
 begin
   Result := DefaultInstance.gettext(szMsgId); 
 end;
 
 {$ifndef DELPHI5OROLDER}
-function dgettext(const szDomain: string; const szMsgId: AnsiString): WideString;
+function dgettext(const szDomain: string; const szMsgId: AnsiString): UnicodeString;
 begin
   Result := DefaultInstance.dgettext(szDomain, szMsgId);
 end;
 {$endif}
 
-function dgettext(const szDomain: string; const szMsgId: WideString): WideString;
+function dgettext(const szDomain: string; const szMsgId: UnicodeString): UnicodeString;
 begin
   Result := DefaultInstance.dgettext(szDomain, szMsgId);
 end;
 
 {$ifndef DELPHI5OROLDER}
 function dngettext(const szDomain: string; const singular, plural: AnsiString;
-  Number: Longint): WideString;
+  Number: Longint): UnicodeString;
 begin
   Result := DefaultInstance.dngettext(szDomain, singular, plural, Number);
 end;
 {$endif}
 
-function dngettext(const szDomain: string; const singular, plural: WideString;
-  Number: Longint): WideString;
+function dngettext(const szDomain: string; const singular, plural: UnicodeString;
+  Number: Longint): UnicodeString;
 begin
   Result := DefaultInstance.dngettext(szDomain, singular, plural, Number);
 end;
 
 {$ifndef DELPHI5OROLDER}
-function ngettext(const singular, plural: AnsiString; Number: Longint): WideString;
+function ngettext(const singular, plural: AnsiString; Number: Longint): UnicodeString;
 begin
   Result := DefaultInstance.ngettext(singular, plural, Number);
 end;
 {$endif}
 
-function ngettext(const singular, plural: WideString; Number: Longint): WideString;
+function ngettext(const singular, plural: UnicodeString; Number: Longint): UnicodeString;
 begin
   Result := DefaultInstance.ngettext(singular, plural, Number);
 end; 
@@ -989,7 +1011,7 @@ begin
   DefaultInstance.bindtextdomain(szDomain, szDirectory);
 end;
 
-procedure TP_Ignore(AnObject: TObject; const Name: AnsiString);
+procedure TP_Ignore(AnObject: TObject; const Name: string);
 begin
   DefaultInstance.TP_Ignore(AnObject, Name); 
 end; 
@@ -1004,12 +1026,12 @@ begin
   DefaultInstance.TP_IgnoreClass(IgnClass); 
 end; 
 
-procedure TP_IgnoreClassProperty(IgnClass: TClass; const PropertyName: AnsiString); 
+procedure TP_IgnoreClassProperty(IgnClass: TClass; const PropertyName: string);
 begin
   DefaultInstance.TP_IgnoreClassProperty(IgnClass, PropertyName);
 end; 
 
-procedure TP_GlobalIgnoreClassProperty(IgnClass: TClass; const PropertyName: AnsiString);
+procedure TP_GlobalIgnoreClassProperty(IgnClass: TClass; const PropertyName: string);
 begin
   DefaultInstance.TP_GlobalIgnoreClassProperty(IgnClass, PropertyName);
 end; 
@@ -1214,24 +1236,24 @@ const
   IDXhosa = $0434; 
   IDZulu = $0435; 
 
-function GetOSLanguage: AnsiString; 
+function GetOSLanguage: string;
 var
-  langid: Cardinal; 
-  LangCode: AnsiString;
-  CountryName: array[0..4] of AnsiChar;
-  LanguageName: array[0..4] of AnsiChar; 
+  langid: Cardinal;
+  LangCode: string;
+  CountryName: array[0..4] of Char;
+  LanguageName: array[0..4] of Char;
   works: Boolean;
 begin
   // The return value of GetLocaleInfo is compared with 3 = 2 characters and a zero
   works := 3 = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME,
-    LanguageName, SizeOf(LanguageName));
+    LanguageName, Length(LanguageName));
   works := works and (3 = GetLocaleInfo(LOCALE_USER_DEFAULT,
     LOCALE_SISO3166CTRYNAME, CountryName,
-    SizeOf(CountryName)));
+    Length(CountryName)));
   if works then
   begin
     // Windows 98, Me, NT4, 2000, XP and newer
-    LangCode := PChar(@LanguageName[0]) + '_' + PChar(@CountryName[0]);
+    LangCode := string(PChar(@LanguageName[0])) + '_' + string(PChar(@CountryName[0]));
   end
   else
   begin
@@ -1283,23 +1305,30 @@ end;
 {$endif}
 
 {$ifdef LINUX}
-function GetOSLanguage: AnsiString;
+function GetOSLanguage: string;
 begin
   Result := '';
 end;
 {$endif}
 
 {$ifndef CLR}
-function LoadResStringA(ResStringRec: PResStringRec): string;
+function LoadResStringA(ResStringRec: PResStringRec): AnsiString;
 begin
   if DefaultInstance <> nil then
-    Result := DefaultInstance.LoadResString(ResStringRec)
+    Result := AnsiString(DefaultInstance.LoadResString(ResStringRec))
   else
-    Result := PChar(ResStringRec.Identifier);
+    Result := AnsiString(PChar(ResStringRec.Identifier));
 end;
+
+{$IFDEF DELPHI2009OROLDER}
+function LoadResStringU(ResStringRec: PResStringRec): UnicodeString;
+begin
+  Result := LoadResStringW(ResStringRec);
+end;
+{$ENDIF DELPHI2009OROLDER}
 {$endif}
 
-function GetTranslatorNameAndEmail: WideString;
+function GetTranslatorNameAndEmail: UnicodeString;
 begin
   Result := DefaultInstance.GetTranslatorNameAndEmail;
 end;
@@ -1314,18 +1343,18 @@ type
   PStrData = ^TStrData;
   TStrData = record
     Ident: Integer;
-    Str: AnsiString;
+    Str: string;
   end;
 
 function SysUtilsEnumStringModules(Instance: Longint; Data: Pointer): Boolean;
 {$ifdef MSWINDOWS}
 var
-  Buffer: array[0..1023] of AnsiChar;
+  Buffer: array[0..1023] of Char;
 begin
   with PStrData(Data)^ do
   begin
     SetString(Str, Buffer,
-      LoadString(Instance, Ident, Buffer, SizeOf(Buffer)));
+      LoadString(Instance, Ident, Buffer, Length(Buffer)));
     Result := Str = '';
   end;
 end;
@@ -1346,17 +1375,17 @@ begin
 end;
 {$endif}
 
-function SysUtilsFindStringResource(Ident: Integer): AnsiString; 
+function SysUtilsFindStringResource(Ident: Integer): string;
 var
   StrData: TStrData;
 begin
-  StrData.Ident := Ident; 
-  StrData.Str := ''; 
-  EnumResourceModules(SysUtilsEnumStringModules, @StrData); 
-  Result := StrData.Str; 
+  StrData.Ident := Ident;
+  StrData.Str := '';
+  EnumResourceModules(SysUtilsEnumStringModules, @StrData);
+  Result := StrData.Str;
 end; 
 
-function SysUtilsLoadStr(Ident: Integer): AnsiString; 
+function SysUtilsLoadStr(Ident: Integer): string;
 begin
   {$ifdef DXGETTEXTDEBUG}
   DefaultInstance.DebugWriteln('SysUtils.LoadRes(' + IntToStr(ident) + ') called');
@@ -1364,21 +1393,24 @@ begin
   Result := ResourceStringGettext(SysUtilsFindStringResource(Ident)); 
 end; 
 
-function SysUtilsFmtLoadStr(Ident: Integer; const Args: array of const): AnsiString; 
+function SysUtilsFmtLoadStr(Ident: Integer; const Args: array of const): string; 
+var
+  TmpResult: string; 
 begin
   {$ifdef DXGETTEXTDEBUG}
   DefaultInstance.DebugWriteln('SysUtils.FmtLoadRes(' + IntToStr(ident) + ', Args) called'); 
   {$endif}
-  FmtStr(Result, SysUtilsFindStringResource(Ident), Args); 
-  Result := ResourceStringGettext(Result); 
+  TmpResult := '';
+  FmtStr(TmpResult, SysUtilsFindStringResource(Ident), Args);
+  Result := ResourceStringGettext(TmpResult); 
 end; 
 
-function LoadResString(ResStringRec: PResStringRec): WideString;
+function LoadResString(ResStringRec: PResStringRec): UnicodeString;
 begin
   Result := DefaultInstance.LoadResString(ResStringRec);
 end;
 
-function LoadResStringW(ResStringRec: PResStringRec): WideString;
+function LoadResStringW(ResStringRec: PResStringRec): UnicodeString;
 begin
   Result := DefaultInstance.LoadResString(ResStringRec);
 end;
@@ -1478,7 +1510,7 @@ begin
   end;
 end;
 
-function TDomain.GetTranslationProperty(PropertyName: string): WideString;
+function TDomain.GetTranslationProperty(PropertyName: string): UnicodeString;
 var
   sl: TStringList;
   i, PropLen: Integer;
@@ -1496,7 +1528,7 @@ begin
       sl.LineBreak := sLineBreak;
     sl.Text := s;
     {$else}
-    sl.Text := Utf8Encode(gettext(''));
+    sl.Text := string(gettext(''));
     {$endif}
     for i := 0 to sl.Count - 1 do
     begin
@@ -1506,7 +1538,7 @@ begin
         {$ifdef CLR}
         Result := TrimCopy(s, PropLen, MaxInt);
         {$else}
-        Result := Utf8Decode(TrimCopy(s, PropLen, MaxInt));
+        Result := Utf8Decode(TrimCopy(UTF8String(s), PropLen, MaxInt));
         {$endif}
         {$ifdef DXGETTEXTDEBUG}
         DebugLogger('GetTranslationProperty(' + PropertyName + ') returns ''' + Result + '''.');
@@ -1666,7 +1698,7 @@ procedure TDomain.GetListOfLanguages(List: TStrings);
 var
   sr: TSearchRec;
   more: Boolean;
-  Filename, Path, LangCode: AnsiString;
+  Filename, Path, LangCode: string;
   i, j: Integer;
 begin
   List.Clear;
@@ -1718,7 +1750,7 @@ begin
   SpecificFilename := Filename;
 end;
 
-function TDomain.gettext(const msgid: AnsiString): AnsiString;
+function TDomain.gettext(const msgid: UTF8String): UTF8String;
 var
   found: Boolean;
 begin
@@ -1840,14 +1872,14 @@ end;
 
 {$ifndef DELPHI5OROLDER}
 function TGnuGettextInstance.dgettext(const szDomain: string;
-  const szMsgId: AnsiString): WideString;
+  const szMsgId: AnsiString): UnicodeString;
 begin
   Result := dgettext(szDomain, ansi2wide(szMsgId));
 end;
 {$endif}
 
 function TGnuGettextInstance.dgettext(const szDomain: string;
-  const szMsgId: WideString): WideString;
+  const szMsgId: UnicodeString): UnicodeString;
 begin
   if not Enabled then 
   begin
@@ -1879,13 +1911,13 @@ begin
 end; 
 
 {$ifndef DELPHI5OROLDER}
-function TGnuGettextInstance.gettext(const szMsgId: AnsiString): WideString;
+function TGnuGettextInstance.gettext(const szMsgId: AnsiString): UnicodeString;
 begin
   Result := dgettext(curmsgdomain, szMsgId);
 end;
 {$endif} 
 
-function TGnuGettextInstance.gettext(const szMsgId: WideString): WideString; 
+function TGnuGettextInstance.gettext(const szMsgId: UnicodeString): UnicodeString;
 begin
   Result := dgettext(curmsgdomain, szMsgId); 
 end; 
@@ -1978,7 +2010,7 @@ begin
 end; 
 
 procedure TGnuGettextInstance.TP_GlobalIgnoreClassProperty(IgnClass: TClass;
-  const PropertyName: AnsiString);
+  const PropertyName: string);
 var
   cm: TClassMode;
   i, idx: Integer;
@@ -2024,7 +2056,7 @@ begin
 end;
 
 procedure TGnuGettextInstance.TP_Ignore(AnObject: TObject; 
-  const Name: AnsiString); 
+  const Name: string);
 begin
   TP_IgnoreList.Add(Name); 
   {$ifdef DXGETTEXTDEBUG}
@@ -2097,7 +2129,7 @@ end;
 
 {$ifndef CLR}
 procedure TGnuGettextInstance.TranslateProperty(AnObject: TObject;
-  PropInfo: PPropInfo; TodoList: TStrings; const TextDomain: AnsiString); 
+  PropInfo: PPropInfo; TodoList: TStrings; const TextDomain: string);
 var
   {$ifdef DELPHI5OROLDER}
   ws: AnsiString;
@@ -2105,29 +2137,39 @@ var
   {$endif}
   {$ifndef DELPHI5OROLDER}
   ppi: PPropInfo;
-  ws: WideString; 
-  old: WideString;
-  {$endif} 
-  obj: TObject; 
-  Propname: AnsiString; 
+  ws: UnicodeString;
+  old: UnicodeString;
+  {$endif}
+  obj: TObject;
+  Propname: string;
 begin
-  PropName := PropInfo^.Name; 
+  PropName := DecodePropName(PropInfo^.Name);
   try
     // Translate certain types of properties
     case PropInfo^.PropType^.Kind of
+      {$IFDEF UNICODE} tkUString, {$ENDIF}
       tkString, tkLString, tkWString:
         begin
           {$ifdef DXGETTEXTDEBUG}
-          DebugWriteln('Translating ' + AnObject.ClassName + '.' + PropName); 
+          DebugWriteln('Translating ' + AnObject.ClassName + '.' + PropName);
           {$endif}
           {$ifdef DELPHI5OROLDER}
-          old := GetStrProp(AnObject, PropName);
+          old := GetStrProp(AnObject, PropInfo);
           {$endif}
           {$ifndef DELPHI5OROLDER}
           if PropInfo^.PropType^.Kind <> tkWString then
-            old := ansi2wide(GetStrProp(AnObject, PropName))
+          begin
+            {$IFDEF UNICODE}
+            if PropInfo^.PropType^.Kind = tkLString then
+              old := ansi2wide(GetAnsiStrProp(AnObject, PropInfo))
+            else
+              old := GetStrProp(AnObject, PropInfo);
+            {$ELSE}
+            old := ansi2wide(GetStrProp(AnObject, PropInfo));
+            {$ENDIF UNICODE}
+          end
           else
-            old := GetWideStrProp(AnObject, PropName);
+            old := GetWideStrProp(AnObject, PropInfo);
           {$endif}
           {$ifdef DXGETTEXTDEBUG}
           if old = '' then
@@ -2143,10 +2185,10 @@ begin
             if ws <> old then
             begin
               {$ifdef DELPHI5OROLDER}
-              SetStrProp(AnObject, PropName, ws);
+              SetStrProp(AnObject, PropInfo, ws);
               {$endif}
               {$ifndef DELPHI5OROLDER}
-              ppi := GetPropInfo(AnObject, Propname);
+              ppi := GetPropInfo(AnObject, PropName);
               if ppi <> nil then
               begin
                 SetWideStrProp(AnObject, ppi, ws);
@@ -2164,9 +2206,9 @@ begin
         end { case item };
       tkClass:
         begin
-          obj := GetObjectProp(AnObject, PropName); 
+          obj := GetObjectProp(AnObject, PropInfo);
           if obj <> nil then
-            TodoList.AddObject('', obj); 
+            TodoList.AddObject('', obj);
         end { case item }; 
     end { case }; 
   except
@@ -2189,12 +2231,12 @@ var
   // List of hex codes representing pointers to objects that have been done
   i, j, Count: Integer;
   PropList: PPropList;
-  UPropName: AnsiString;
+  UPropName: string;
   PropInfo: PPropInfo;
   Comp: TComponent;
   cm, currentcm: TClassMode;
   ObjectPropertyIgnoreList: TStringList;
-  objid, Name: AnsiString;
+  objid, Name: string;
 {$endif}
 begin
   {$ifndef CLR}
@@ -2305,7 +2347,7 @@ begin
           for j := 0 to Count - 1 do
           begin
             PropInfo := PropList[j];
-            UPropName := PropInfo^.Name;
+            UPropName := DecodePropName(PropInfo^.Name);
             // Ignore properties that are meant to be ignored
             if ((currentcm = nil) or (not currentcm.PropertiesToIgnore.Find(UPropName, i)))
               and
@@ -2363,7 +2405,7 @@ procedure TGnuGettextInstance.UseLanguage(LanguageCode: string);
 var
   i, p: Integer;
   dom: TDomain;
-  l2: string[2];
+  l2: string;
 begin
   {$ifdef DXGETTEXTDEBUG}
   DebugWriteln('UseLanguage(''' + LanguageCode + '''); called');
@@ -2427,7 +2469,7 @@ end;
 
 procedure TGnuGettextInstance.TranslateStrings(sl: TStrings; const TextDomain: string);
 var
-  Line: AnsiString;
+  Line: string;
   i: Integer;
   TempList: TStringList;
 begin
@@ -2468,22 +2510,22 @@ begin
   end;
 end;
 
-function TGnuGettextInstance.GetTranslatorNameAndEmail: WideString;
+function TGnuGettextInstance.GetTranslatorNameAndEmail: UnicodeString;
 begin
   Result := GetTranslationProperty('LAST-TRANSLATOR'); 
 end; 
 
-function TGnuGettextInstance.GetTranslationProperty(const PropertyName: AnsiString): WideString;
+function TGnuGettextInstance.GetTranslationProperty(const PropertyName: string): UnicodeString;
 begin
   Result := getdomain(curmsgdomain, DefaultDomainDirectory,
     CurLang).GetTranslationProperty(PropertyName);
 end;
 
 function TGnuGettextInstance.dngettext(const szDomain: string;
-  singular, plural: WideString;
-  Number: Integer): WideString;
+  singular, plural: UnicodeString;
+  Number: Integer): UnicodeString;
 var
-  org, trans: WideString; 
+  org, trans: UnicodeString;
   idx: Integer; 
   p: Integer; 
 begin
@@ -2531,14 +2573,14 @@ end;
 
 {$ifndef DELPHI5OROLDER}
 function TGnuGettextInstance.ngettext(const singular, plural: AnsiString;
-  Number: Integer): WideString;
+  Number: Integer): UnicodeString;
 begin
   Result := dngettext(curmsgdomain, singular, plural, Number);
 end;
 {$endif}
 
-function TGnuGettextInstance.ngettext(const singular, plural: WideString; 
-  Number: Integer): WideString; 
+function TGnuGettextInstance.ngettext(const singular, plural: UnicodeString;
+  Number: Integer): UnicodeString;
 begin
   Result := dngettext(curmsgdomain, singular, plural, Number); 
 end; 
@@ -2548,7 +2590,7 @@ begin
   // This is meant to be empty.
 end;
 
-procedure TGnuGettextInstance.WhenNewLanguage(const LanguageID: AnsiString);
+procedure TGnuGettextInstance.WhenNewLanguage(const LanguageID: string);
 begin
   // This is meant to be empty.
 end; 
@@ -2672,11 +2714,11 @@ begin
 end;
 
 {$ifndef CLR}
-function TGnuGettextInstance.LoadResString(ResStringRec: PResStringRec): WideString;
+function TGnuGettextInstance.LoadResString(ResStringRec: PResStringRec): UnicodeString;
 {$ifdef MSWINDOWS}
 var
   Len: Integer;
-  Buffer: array[0..1023] of AnsiChar;
+  Buffer: array[0..1023] of Char;
 {$endif}
 {$ifdef LINUX}
 const
@@ -2718,7 +2760,7 @@ begin
     begin
       SetString(Result, Buffer,
         LoadString(FindResourceHInstance(ResStringRec.Module^),
-        ResStringRec.Identifier, Buffer, SizeOf(Buffer)))
+        ResStringRec.Identifier, Buffer, Length(Buffer)))
     end
     else
     begin
@@ -2825,7 +2867,7 @@ begin
 end; 
 
 procedure TGnuGettextInstance.TP_IgnoreClassProperty(IgnClass: TClass;
-  const PropertyName: AnsiString);
+  const PropertyName: string);
 var
   cm: TClassMode; 
   i: Integer; 
@@ -2869,7 +2911,7 @@ begin
   {$endif}
 end; 
 
-function TGnuGettextInstance.ansi2wide(const s: AnsiString): WideString;
+function TGnuGettextInstance.ansi2wide(const s: AnsiString): UnicodeString;
   {$ifdef MSWINDOWS}
 var
   len: Integer;
@@ -2880,7 +2922,7 @@ begin
   begin
     // No design-time codepage specified. Using runtime codepage instead.
     {$endif}
-    Result := s;
+    Result := UnicodeString(s);
     {$ifdef MSWINDOWS}
   end 
   else 
@@ -2891,11 +2933,11 @@ begin
     else 
     begin
       SetLength(Result, len); 
-      len := MultiByteToWideChar(DesignTimeCodePage, 0, PChar(s), len,
+      len := MultiByteToWideChar(DesignTimeCodePage, 0, PAnsiChar(s), len,
         PWideChar(Result), len); 
       if len = 0 then
-        raise EGGAnsi2WideConvError.Create('Cannot convert AnsiString to WideString:' +
-          sLineBreak + s); 
+        raise EGGAnsi2WideConvError.Create('Cannot convert AnsiString to UnicodeString:' +
+          sLineBreak + string(s));
       SetLength(Result, len); 
     end; 
   end; 
@@ -2904,7 +2946,7 @@ end;
 
 {$ifndef DELPHI5OROLDER}
 function TGnuGettextInstance.dngettext(const szDomain: string; singular, 
-  plural: AnsiString; Number: Integer): WideString;
+  plural: AnsiString; Number: Integer): UnicodeString;
 begin
   Result := dngettext(szDomain, ansi2wide(singular), ansi2wide(plural), Number); 
 end; 
@@ -2964,7 +3006,7 @@ begin
           fi.Size := ReadInt64(fs);
           SetLength(AnsiFilename, Offset - fs.Position);
           fs.ReadBuffer(AnsiFilename[1], Offset - fs.Position);
-          FileList.AddObject(Trim(AnsiFilename), fi);
+          FileList.AddObject(Trim(string(AnsiFilename)), fi);
         except
           fi.Free;
           raise;
@@ -3138,7 +3180,7 @@ var
   i: Integer;
   sl: TStrings;
   Item: TTP_RetranslatorItem;
-  newvalue: WideString;
+  newvalue: UnicodeString;
   {$ifndef DELPHI5OROLDER}
   ppi: PPropInfo;
   {$endif}
@@ -3191,14 +3233,14 @@ begin
   end; 
 end; 
 
-procedure TTP_Retranslator.Remember(obj: TObject; const PropName: AnsiString;
-  OldValue: WideString);
+procedure TTP_Retranslator.Remember(obj: TObject; const PropName: string;
+  OldValue: UnicodeString);
 var
   Item: TTP_RetranslatorItem;
 begin
   Item := TTP_RetranslatorItem.Create;
   Item.obj := obj; 
-  Item.Propname := Propname; 
+  Item.Propname := Propname;
   Item.OldValue := OldValue; 
   List.Add(Item); 
 end; 
@@ -3275,7 +3317,7 @@ begin
     // This finds the correct procedure if a virtual jump has been inserted
     // at the procedure address
     Inc(Integer(PatchPosition), 2); // skip the jump
-    PatchPosition := PChar(Pointer(Pointer(PatchPosition)^)^);
+    PatchPosition := PAnsiChar(Pointer(Pointer(PatchPosition)^)^);
   end;
   Offset := Integer(NewProc) - Integer(Pointer(PatchPosition)) - 5;
 
@@ -3403,7 +3445,7 @@ begin
 end;
 
 
-function TMoFile.gettext(const msgid: AnsiString; var Found: Boolean): AnsiString;
+function TMoFile.gettext(const msgid: UTF8String; var Found: Boolean): UTF8String;
 var
   {$ifdef CLR}
   j: Cardinal;
@@ -3456,7 +3498,7 @@ begin
       for j := 0 to Size - 1 do
         Result[j + 1] := AnsiChar(moMemory[Offset + j]);
       {$else}
-      SetString(Result, PChar(@moMemory[0]) + Offset, Size);
+      SetString(Result, PAnsiChar(@moMemory[0]) + Offset, Size);
       {$endif}
       Found := True;
       Break;
@@ -3535,7 +3577,11 @@ initialization
 
   {$ifndef CLR}
   // replace Borlands LoadResString with gettext enabled version:
+  {$IFDEF DELPHI2009OROLDER}
+  HookLoadResString := THook.Create(@System.LoadResString, @LoadResStringU);
+  {$ELSE}
   HookLoadResString := THook.Create(@System.LoadResString, @LoadResStringA);
+  {$ENDIF DELPHI2009OROLDER}
   HookLoadStr := THook.Create(@SysUtils.LoadStr, @SysUtilsLoadStr);
   HookFmtLoadStr := THook.Create(@SysUtils.FmtLoadStr, @SysUtilsFmtLoadStr);
   HookIntoResourceStrings(AutoCreateHooks, False);

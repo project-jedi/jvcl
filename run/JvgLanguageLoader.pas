@@ -465,7 +465,7 @@ begin
 
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
+  AName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(TypeInf^.Name);
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
@@ -476,12 +476,13 @@ begin
 
     for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[I]^.Name;
+      PropName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.Name);
 
       PropTypeInf := PropList^[I]^.PropType^;
       PropInfo := PropList^[I];
 
       case PropTypeInf^.Kind of
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkString, tkLString:
           //{ Переводить свойство Name не следует }
           { .Name is not to be translated [translated] }
@@ -584,7 +585,7 @@ begin
 
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
+  AName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(TypeInf^.Name);
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
@@ -595,12 +596,13 @@ begin
 
     for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[I]^.Name;
+      PropName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropList^[I]^.Name);
 
       PropTypeInf := PropList^[I]^.PropType^;
       PropInfo := PropList^[I];
 
       case PropTypeInf^.Kind of
+        {$IFDEF UNICODE} tkUString, {$ENDIF}
         tkString, tkLString:
           { .Name is not to be translated [translated] }
           if PropName <> 'Name' then

@@ -94,6 +94,7 @@ uses
   Windows,
   {$ENDIF COMPILER9_UP}
   {$ENDIF CLR}
+  JclStrings, // must be included before WideStrings
   {$IFDEF COMPILER10_UP}
   WideStrings,
   {$ENDIF COMPILER10_UP}
@@ -944,7 +945,10 @@ uses
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
-  JclFileUtils, JclStrings, JclSysInfo, JclRTTI, JclMime,
+  JclFileUtils, JclSysInfo, JclRTTI, JclMime,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvPropertyStore, JvConsts, JvResources, JvStrings, JclSynch;
 
 type
@@ -1362,9 +1366,9 @@ begin
   try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
-    Result := PropInfo^.Name;
+    Result := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name);
   finally
-    FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
+    FreeMem(PropList);
   end;
   {$ENDIF CLR}
 end;
@@ -1439,15 +1443,15 @@ end;
 procedure TJvCustomAppStorage.ReadWideStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
-  if List is TWideStrings then
-    TWideStrings(List).Add(Sender.ReadWideString(ConcatPaths([Path, ItemName + IntToStr(Index)])));
+  if List is WideStrings.TWideStrings then
+    WideStrings.TWideStrings(List).Add(Sender.ReadWideString(ConcatPaths([Path, ItemName + IntToStr(Index)])));
 end;
 
 procedure TJvCustomAppStorage.WriteWideStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
-  if List is TWideStrings then
-    Sender.WriteWideString(ConcatPaths([Path, ItemName + IntToStr(Index)]), TWideStrings(List)[Index]);
+  if List is WideStrings.TWideStrings then
+    Sender.WriteWideString(ConcatPaths([Path, ItemName + IntToStr(Index)]), WideStrings.TWideStrings(List)[Index]);
 end;
 
 procedure TJvCustomAppStorage.DeleteWideStringListItem(Sender: TJvCustomAppStorage;
@@ -1455,7 +1459,7 @@ procedure TJvCustomAppStorage.DeleteWideStringListItem(Sender: TJvCustomAppStora
 var
   I: Integer;
 begin
-  if List is TWideStrings then
+  if List is WideStrings.TWideStrings then
     for I := First to Last do
       Sender.DeleteValue(ConcatPaths([Path, ItemName + IntToStr(I)]));
 end;
@@ -1932,7 +1936,7 @@ begin
   NameStart := AnsiStrRScan(PChar(Name), PathDelim);
   if NameStart = nil then
     NameStart := PChar(Name);
-  Result := (AnsiStrLIComp(NameStart, cItem, 4) = 0) and (NameStart[4] in DigitSymbols);
+  Result := (AnsiStrLIComp(NameStart, cItem, 4) = 0) and CharInSet(NameStart[4], DigitSymbols);
 end;
 {$ENDIF CLR}
 
@@ -2629,6 +2633,7 @@ begin
   if not Assigned(PersObj) then
     Exit;
   case PropType(PersObj, PropName) of
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
     tkLString, tkString:
       SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
     tkWString:
@@ -2765,6 +2770,7 @@ begin
     Exit;
 
   case PropType(PersObj, PropName) of
+    {$IFDEF UNICODE} tkUString, {$ENDIF}
     tkLString, tkString:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
         WriteString(Path, GetStrProp(PersObj, PropName));
@@ -2912,7 +2918,7 @@ end;
 
 function TJvCustomAppStorage.GetCharName(Ch: Char): string;
 begin
-  if Ch in ['!'..'z'] then
+  if CharInSet(Ch, ['!'..'z']) then
     Result := 'Char_' + Ch
   else
     Result := 'Char#' + IntToStr(Ord(Ch));
@@ -2928,7 +2934,7 @@ begin
   if Assigned(FOnEncryptPropertyValue) and IsPropertyValueCryptEnabled then
   begin
     FOnEncryptPropertyValue(Value);
-    Value := MimeEncodeString(Value);
+    Value := string(MimeEncodeString(AnsiString(Value)));
   end;
   Result := Value;
 end;
@@ -2937,7 +2943,7 @@ function TJvCustomAppStorage.DecryptPropertyValue(Value: string): string;
 begin
   if Assigned(FOnDecryptPropertyValue) and IsPropertyValueCryptEnabled then
   begin
-    Value := MimeDecodeString(Value);
+    Value := string(MimeDecodeString(AnsiString(Value)));
     FOnDecryptPropertyValue(Value);
   end;
   Result := Value;
@@ -3118,7 +3124,7 @@ begin
   if Assigned(AMethod) then
   begin
     JclMutex := TJclMutex.Create(nil, False,
-      B64Encode(RsJvAppStorageSynchronizeProcedureName + AIdentifier));
+      string(B64Encode(AnsiString(RsJvAppStorageSynchronizeProcedureName + AIdentifier))));
     try
       if JclMutex.WaitForever = wrSignaled then
       try
@@ -3145,13 +3151,17 @@ end;
 function TJvCustomAppStorage.ReadWideString(const Path: string;
   const Default: WideString = ''): WideString;
 begin
+  {$IFDEF COMPILER12_UP}
+  Result := UTF8ToWideString(RawByteString(ReadString(Path, string(UTF8Encode(Default)))));
+  {$ELSE}
   Result := UTF8Decode(ReadString(Path, UTF8Encode(Default)));
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure TJvCustomAppStorage.WriteWideString(const Path: string;
   const Value: WideString);
 begin
-  WriteString(Path, UTF8Encode(Value));
+  WriteString(Path, string(UTF8Encode(Value)));
 end;
 {$ENDIF COMPILER6_UP}
 

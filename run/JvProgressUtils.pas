@@ -68,9 +68,9 @@ type
   {$ENDIF !CLR}
   TProgressData = record
     ControlClass: TControlClass;
-    MaxProperty: string[63];
-    MinProperty: string[63];
-    ProgressProperty: string[63];
+    MaxProperty: string{$IFNDEF RTL200_UP}[63]{$ENDIF ~RTL200_UP};
+    MinProperty: string{$IFNDEF RTL200_UP}[63]{$ENDIF ~RTL200_UP};
+    ProgressProperty: string{$IFNDEF RTL200_UP}[63]{$ENDIF ~RTL200_UP};
   end;
   {$IFDEF CLR}
   PProgressData = TProgressData;

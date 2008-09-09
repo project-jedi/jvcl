@@ -425,8 +425,8 @@ type
     procedure SplitterMouseDown(OnZone: TJvDockZone; MousePos: TPoint); virtual;
     procedure SplitterMouseUp; virtual;
     procedure ResetBounds(Force: Boolean); virtual;
-    procedure WriteControlName(Stream: TStream; const ControlName: AnsiString);
-    procedure ReadControlName(Stream: TStream; var ControlName: AnsiString);
+    procedure WriteControlName(Stream: TStream; const ControlName: string);
+    procedure ReadControlName(Stream: TStream; var ControlName: string);
     procedure ShowControl(Control: TControl);
     procedure HideControl(Control: TControl);
     procedure ShowAllControl;
@@ -3513,14 +3513,17 @@ begin
     DoSaveZone(Stream, Zone.NextSibling, Level);
 end;
 
-procedure TJvDockTree.WriteControlName(Stream: TStream; const ControlName: AnsiString);
+procedure TJvDockTree.WriteControlName(Stream: TStream; const ControlName: string);
 var
   NameLen: Longint;
+  UTF8ControlName: {$IFDEF SUPPORTS_UNICODE}UTF8String{$ELSE}string{$ENDIF SUPPORTS_UNICODE};
 begin
-  NameLen := Length(ControlName);
+  UTF8ControlName := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(ControlName);
+
+  NameLen := Length(UTF8ControlName);
   Stream.Write(NameLen, SizeOf(NameLen));
   if NameLen > 0 then
-    Stream.Write(PAnsiChar(ControlName)^, NameLen);
+    Stream.Write(PAnsiChar(UTF8ControlName)^, NameLen);
 end;
 
 procedure TJvDockTree.DoLoadZone(Stream: TStream);
@@ -3578,17 +3581,20 @@ begin
   end;
 end;
 
-procedure TJvDockTree.ReadControlName(Stream: TStream; var ControlName: AnsiString);
+procedure TJvDockTree.ReadControlName(Stream: TStream; var ControlName: string);
 var
   Size: Longint;
+  UTF8ControlName: {$IFDEF SUPPORTS_UNICODE}UTF8String{$ELSE}string{$ENDIF SUPPORTS_UNICODE};
 begin
   ControlName := '';
   Size := 0;
   Stream.Read(Size, SizeOf(Size));
   if Size > 0 then
   begin
-    SetLength(ControlName, Size);
-    Stream.Read(PAnsiChar(ControlName)^, Size);
+    SetLength(UTF8ControlName, Size);
+    Stream.Read(PAnsiChar(UTF8ControlName)^, Size);
+
+    ControlName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ELSE}{$IFDEF COMPILER6_UP}UTF8Decode{$ENDIF COMPILER6_UP}{$ENDIF SUPPORTS_UNICODE}(UTF8ControlName);
   end;
 end;
 

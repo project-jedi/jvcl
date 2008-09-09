@@ -394,7 +394,7 @@ end;
 
 procedure TJvFormPlacement.SetAppStoragePath(const AValue: string);
 begin
-  if (AValue <> '') and (AnsiLastChar(AValue) <> '\') then
+  if (AValue <> '') and ({$IFDEF COMPILER12_UP}AValue[Length(AValue)]{$ELSE}AnsiLastChar(AValue){$ENDIF COMPILER12_UP} <> '\') then
     FAppStoragePath := AValue + '\'
   else
     FAppStoragePath := AValue;

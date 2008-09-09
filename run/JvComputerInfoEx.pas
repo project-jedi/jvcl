@@ -1790,7 +1790,7 @@ end;
 
 function TJvCPUInfo.GetCPUName: string;
 begin
-  Result := GetCPUInfo.CpuName;
+  Result := string(GetCPUInfo.CpuName);
 end;
 
 function TJvCPUInfo.GetCPUSpeed: TFreqInfo;
@@ -1895,7 +1895,7 @@ end;
 
 function TJvCPUInfo.GetManufacturer: string;
 begin
-  Result := GetCPUInfo.Manufacturer;
+  Result := string(GetCPUInfo.Manufacturer);
 end;
 
 function TJvCPUInfo.GetMMX: Boolean;
@@ -1940,7 +1940,7 @@ end;
 
 function TJvCPUInfo.GetVendorIDString: string;
 begin
-  Result := GetCPUInfo.VendorIDString;
+  Result := string(GetCPUInfo.VendorIDString);
 end;
 
 function TJvCPUInfo.IntelSpecific: TIntelSpecific;
@@ -2924,10 +2924,13 @@ end;
 
 function TJvAppVersions.GetOpenGLVersion: string;
 var
-  AVendor: string;
+  AVendor: AnsiString;
+  ASResult: AnsiString;
 begin
-  if not JclSysInfo.GetOpenGLVersion(GetActiveWindow, Result, AVendor) then
-    Result := '';
+  if not JclSysInfo.GetOpenGLVersion(GetActiveWindow, ASResult, AVendor) then
+    Result := ''
+  else
+    Result := string(ASResult);
 end;
 
 function TJvAppVersions.GetDirectXVersion: string;
@@ -5640,7 +5643,7 @@ var
   I: Integer;
 begin
   for I := 1 to Length(S) do
-    if not (S[I] in Chars) then
+    if not CharInSet(S[I], Chars) then
       Result := Result + S[I];
 end;
 
@@ -5704,7 +5707,7 @@ begin
       end;
       Tmp := '';
       for I := 1 to Length(sPath) do
-        if not (sPath[I] in ['-', '0'..'9']) then
+        if not CharInSet(sPath[I], ['-', '0'..'9']) then
           Continue
         else
           Tmp := Tmp + sPath[I];
