@@ -892,7 +892,7 @@ begin
     for I := Candidates.Count - 1 downto 0 do
     begin
       PropInfo := Candidates[I];
-      if CompareText(PropInfo^.Name, cOnClick) = 0 then
+      if CompareText({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(PropInfo^.Name), cOnClick) = 0 then
       begin
         Method := GetMethodProp(Btn, PropInfo);
         MethodName := IJvFormDesigner(Designer).GetMethodName(Method);

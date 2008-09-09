@@ -79,6 +79,9 @@ implementation
 
 uses
   Registry,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvDsgnConsts;
 
 {$R *.dfm}
@@ -202,7 +205,7 @@ begin
   begin
     if CharSelected then
     begin
-      if CurChar in ['!' .. 'z'] then
+      if CharInSet(CurChar, ['!' .. 'z']) then
         lblChar.Caption := CurChar + ' (#' + IntToStr(Ord(CurChar)) + ')'
       else
         lblChar.Caption := '#' + IntToStr(Ord(CurChar));

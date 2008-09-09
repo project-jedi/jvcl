@@ -296,9 +296,9 @@ begin
 
   with ColorSpaceManager do
     if IsColorProperty then
-      Result := GetPropType^.Name
+      Result := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(GetPropType^.Name)
     else
-      Result := Format('%s [%s]', [GetPropType^.Name, ColorSpace[GetColorSpaceID(Value)].ShortName]);
+      Result := Format('%s [%s]', [{$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(GetPropType^.Name), ColorSpace[GetColorSpaceID(Value)].ShortName]);
 end;
 
 procedure TJvFullColorProperty.GetValues(Proc: TGetStrProc);
@@ -634,7 +634,7 @@ var
 begin
   LTypInfo := AClass.ClassInfo;
   if LTypInfo <> nil then
-    Proc(GetTypeData(LTypInfo).UnitName);
+    Proc({$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ENDIF SUPPORTS_UNICODE}(GetTypeData(LTypInfo).UnitName));
 end;
 
 procedure TJvFullColorSelection.RequiresUnits(Proc: TGetStrProc);

@@ -165,6 +165,7 @@ begin
   case FInfo.PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkWChar:
       Result := GetOrdProp(Instance, FInfo);
+    {$IFDEF UNICODE} tkUString, {$ENDIF UNICODE}
     tkString, tkLString:
       Result := StrToInt(GetStrProp(Instance, FInfo));
     tkFloat:
@@ -182,6 +183,7 @@ begin
   case FInfo.PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkWChar:
       SetOrdProp(Instance, FInfo, Value);
+    {$IFDEF UNICODE} tkUString, {$ENDIF UNICODE}
     tkString, tkLString:
       SetStrProp(Instance, FInfo, IntToStr(Value));
     tkFloat:
@@ -198,6 +200,7 @@ begin
   case FInfo.PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkWChar:
       Result := GetOrdProp(Instance, FInfo);
+    {$IFDEF UNICODE} tkUString, {$ENDIF UNICODE}
     tkString, tkLString:
       Result := StrToFloat(GetStrProp(Instance, FInfo));
     tkFloat:
@@ -215,6 +218,7 @@ begin
   case FInfo.PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkWChar:
       SetOrdProp(Instance, FInfo, Trunc(Value));
+    {$IFDEF UNICODE} tkUString, {$ENDIF UNICODE}
     tkString, tkLString:
       SetStrProp(Instance, FInfo, FloatToStr(Value));
     tkFloat:
@@ -231,6 +235,7 @@ begin
   case FInfo.PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkWChar:
       Result := IntToStr(GetOrdProp(Instance, FInfo));
+    {$IFDEF UNICODE} tkUString, {$ENDIF UNICODE}
     tkString, tkLString:
       Result := GetStrProp(Instance, FInfo);
     tkFloat:
@@ -248,6 +253,7 @@ begin
   case FInfo.PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkWChar:
       SetOrdProp(Instance, FInfo, StrToInt(Value));
+    {$IFDEF UNICODE} tkUString, {$ENDIF UNICODE}
     tkString, tkLString:
       SetStrProp(Instance, FInfo, Value);
     tkFloat:

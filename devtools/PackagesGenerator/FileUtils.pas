@@ -19,7 +19,7 @@ uses
 // is not verified by the function.
 // If Origin and Destination are on different partitions,
 // the function returns Destination
-function GetRelativePath(const Origin, Destination : string) : string;
+function GetRelativePath(const Origin, Destination: string): string;
 
 // returns the given path without any relative instructions inside
 // for instance, if you pass c:\a\b\..\c\.\d, it returns c:\a\c\d
@@ -27,7 +27,7 @@ function GetRelativePath(const Origin, Destination : string) : string;
 // relative paths instructions.
 // If there are more ..\ than paths in front of it, the result
 // is undefined (most likely an exception will be triggered)
-function PathNoInsideRelative(const Path : string) : string;
+function PathNoInsideRelative(const Path: string): string;
 
 {$IFDEF COMPILER5}
 // Sets the date and time of the indicated file
@@ -43,11 +43,7 @@ uses
   {$IFDEF COMPILER6_UP}
   StrUtils,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF NO_JCL}
-  UtilsJcl,
-  {$ELSE}
   JclStrings, JclFileUtils,
-  {$ENDIF NO_JCL}
   SysUtils;
 
 {$IFDEF COMPILER5}
@@ -62,7 +58,7 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-function StrEnsureNoPrefix(const prefix, str : string) : string;
+function StrEnsureNoPrefix(const prefix, str: string): string;
 begin
   if AnsiStartsStr(prefix, str) then
     Result := Copy(str, Length(prefix)+1, MaxInt)
@@ -70,7 +66,7 @@ begin
     Result := str;
 end;
 
-function StrEnsureNoSuffix(const suffix, str : string) : string;
+function StrEnsureNoSuffix(const suffix, str: string): string;
 begin
   if AnsiEndsStr(suffix, str) then
     Result := Copy(str, 1, Length(str)-Length(suffix))
@@ -78,12 +74,12 @@ begin
     Result := str;
 end;
 
-function GetRelativePath(const Origin, Destination : string) : string;
+function GetRelativePath(const Origin, Destination: string): string;
 var
-  OrigList : TStringList;
-  DestList : TStringList;
-  DiffIndex : Integer;
-  i : Integer;
+  OrigList: TStringList;
+  DestList: TStringList;
+  DiffIndex: Integer;
+  i: Integer;
 begin
   // create a list of paths as separate strings
   OrigList := TStringList.Create;
@@ -140,10 +136,10 @@ begin
   end;
 end;
 
-function PathNoInsideRelative(const Path : string) : string;
+function PathNoInsideRelative(const Path: string): string;
 var
-  PathList : TStringList;
-  i : Integer;
+  PathList: TStringList;
+  i: Integer;
 begin
   PathList := TStringList.Create;
   try

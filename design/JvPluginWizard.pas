@@ -589,6 +589,7 @@ begin
     {$ENDIF BCB}
     {$IFDEF DELPHI}
     Repository := Installations.DelphiInstallationFromVersion[
+      {$IFDEF DELPHI12} 12 {$ENDIF}
       {$IFDEF DELPHI11} 11 {$ENDIF}
       {$IFDEF DELPHI10} 10 {$ENDIF}
       {$IFDEF DELPHI9}   9 {$ENDIF}

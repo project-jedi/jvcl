@@ -15,14 +15,11 @@ inherited frmDataProviderDesigner: TfrmDataProviderDesigner
     Align = alTop
     AutoSize = True
     TabOrder = 0
-    ExplicitWidth = 621
     inherited spToolbar: TSplitter
       Width = 621
-      ExplicitWidth = 621
     end
     inherited tbrToolbar: TToolBar
       Width = 621
-      ExplicitWidth = 621
     end
     inherited aiToolbar: TActionList
       inherited aiAddItem: TAction
@@ -49,15 +46,10 @@ inherited frmDataProviderDesigner: TfrmDataProviderDesigner
     Height = 222
     Align = alClient
     TabOrder = 1
-    ExplicitTop = 48
-    ExplicitWidth = 621
-    ExplicitHeight = 222
     inherited lvProvider: TListView
       Width = 621
       Height = 222
       PopupMenu = pmProviderEditor
-      ExplicitWidth = 621
-      ExplicitHeight = 222
     end
   end
   object pmProviderEditor: TPopupMenu

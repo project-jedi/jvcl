@@ -94,7 +94,7 @@ end;
 
 function TJvDBGridControlsProperty.GetValue: string;
 begin
-  Result := '(' + GetPropType^.Name + ')';
+  Result := '(' + {$IFDEF RTL200_UP}UTF8ToString{$ENDIF RTL200_UP}(GetPropType^.Name) + ')';
 end;
 
 end.

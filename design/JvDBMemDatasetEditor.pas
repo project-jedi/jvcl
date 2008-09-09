@@ -59,6 +59,9 @@ implementation
 
 uses
   DsnDBCst, DSDesign, Dialogs,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvJVCLUtils, JvMemoryDataSet, JvSelectDataSetForm, JvConsts, JvDsgnConsts;
 
 //=== { TJvAbstractMemDataSetEditor } ========================================
@@ -109,7 +112,7 @@ begin
   begin
     Temp := Field.FieldName;
     for I := Length(Temp) downto 1 do
-      if not (Temp[I] in IdentifierSymbols) then
+      if not CharInSet(Temp[I], IdentifierSymbols) then
         System.Delete(Temp, I, 1);
     if (Temp = '') or not IsValidIdent(Temp) then
     begin

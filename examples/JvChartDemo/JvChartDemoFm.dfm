@@ -32,10 +32,10 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.XOrigin = 0
     Options.YOrigin = 0
     Options.YStartOffset = 42
-    Options.PrimaryYAxis.YMax = 20.000000000000000000
+    Options.PrimaryYAxis.YMax = 20
     Options.PrimaryYAxis.YDivisions = 20
     Options.PrimaryYAxis.YLegendDecimalPlaces = 1
-    Options.SecondaryYAxis.YMax = 140.000000000000000000
+    Options.SecondaryYAxis.YMax = 140
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
     Options.SecondaryYAxis.DefaultYLegends = 60
     Options.MouseDragObjects = False
@@ -66,14 +66,11 @@ object JvChartDemoForm: TJvChartDemoForm
     OnChartPaint = ChartChartPaint
     OnBeginFloatingMarkerDrag = ChartBeginFloatingMarkerDrag
     OnEndFloatingMarkerDrag = ChartEndFloatingMarkerDrag
-    ExplicitWidth = 597
-    ExplicitHeight = 400
   end
   object Splitter1: TSplitter
     Left = 121
     Top = 35
     Height = 418
-    ExplicitHeight = 400
   end
   object PanelTop: TPanel
     Left = 0
@@ -377,7 +374,6 @@ object JvChartDemoForm: TJvChartDemoForm
     Visible = False
     OnClick = ListBox1Click
     OnDblClick = ListBox1DblClick
-    ExplicitHeight = 398
   end
   object ColorDialog1: TColorDialog
     Options = [cdFullOpen]

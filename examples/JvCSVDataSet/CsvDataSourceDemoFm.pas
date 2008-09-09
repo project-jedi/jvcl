@@ -65,6 +65,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ComboBox1Change(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   public
   end;
 
@@ -99,11 +100,16 @@ end;
 
 procedure TCsvDataSourceForm.FormCreate(Sender: TObject);
 begin
-   JvCsvDataSet1.Active := True; // ensure it's opened when the app is started.
 
    // second component tests what happens if you don't set up the CsvDef field
 
 //  JvCsvDataSet2.Active := True; // ensure it's opened when the app is started.
+end;
+
+procedure TCsvDataSourceForm.FormShow(Sender: TObject);
+begin
+   JvCsvDataSet1.Active := True; // ensure it's opened when the app is started.
+
 end;
 
 procedure TCsvDataSourceForm.FormClose(Sender: TObject;
@@ -115,7 +121,8 @@ end;
 
 procedure TCsvDataSourceForm.ComboBox1Change(Sender: TObject);
 begin
-   JvCsvDataSet1LASTPHONECALL.DisplayFormat := StrStrip(ComboBox1.Text);
+  // kind of stupid hack, but hey:
+   JvCsvDataSet1LASTPHONECALL.DisplayFormat := String(JvAnsiStrStrip(AnsiString(ComboBox1.Text)));
 end;
 
 procedure TCsvDataSourceForm.Button4Click(Sender: TObject);

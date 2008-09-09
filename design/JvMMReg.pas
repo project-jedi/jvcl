@@ -41,7 +41,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConfig,
-  JvId3v1, JvId3v2, JvID3v2EditorForm, JvID3v2Base, JvWavePlayer,
+  {$IFNDEF COMPILER12_UP}JvId3v1, JvId3v2, JvID3v2EditorForm, JvID3v2Base,{$ENDIF !COMPILER12_UP} JvWavePlayer,
   JvAVICaptureEditors, JvAVICapture,
   JvDsgnConsts,
   JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
@@ -68,9 +68,11 @@ begin
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress, TJvColorTrackBar]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
-  RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
+  RegisterComponents(RsPaletteNonVisual, [{$IFNDEF COMPILER12_UP}TJvID3v1, TJvID3v2, {$ENDIF !COMPILER12_UP}TJvWavePlayer]);
+  {$IFNDEF COMPILER12_UP}
   RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
+  {$ENDIF !COMPILER12_UP}
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
   RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
   RegisterPropertyEditor(TypeInfo(TJvVirtualKey), nil, '', TJvVirtualKeyEditor);
