@@ -31,12 +31,80 @@ unit MissingPropertyFix;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, StdCtrls, Buttons;
+  Windows, Messages, SysUtils, Classes, Controls, StdCtrls, Buttons, Graphics, Forms;
+
+procedure RedirectFunction(OldP, DestP: Pointer);
 
 implementation
 
 uses
   JclSysUtils;
+
+type
+  PWin9xDebugThunk = ^TWin9xDebugThunk;
+  TWin9xDebugThunk = packed record
+    PUSH: Byte;    // PUSH instruction opcode ($68)
+    Addr: Pointer; // The actual address of the DLL routine
+    JMP: Byte;     // JMP instruction opcode ($E9)
+    Rel: Integer;  // Relative displacement (a Kernel32 address)
+  end;
+
+  PAbsoluteIndirectJmp = ^TAbsoluteIndirectJmp;
+  TAbsoluteIndirectJmp = packed record
+    OpCode: Word;   //$FF25(Jmp, FF /4)
+    Addr: ^Pointer;
+  end;
+
+function IsWin9xDebugThunk(AnAddr: Pointer): Boolean;
+{ -> EAX: AnAddr }
+asm
+  TEST EAX, EAX
+  JZ  @@NoThunk
+  CMP BYTE PTR [EAX].TWin9xDebugThunk.PUSH, $68
+  JNE @@NoThunk
+  CMP BYTE PTR [EAX].TWin9xDebugThunk.JMP, $E9
+  JNE @@NoThunk
+  XOR EAX, EAX
+  MOV AL, 1
+  JMP @@exit
+@@NoThunk:
+  XOR EAX, EAX
+@@exit:
+end;
+
+function GetActualAddr(Proc: Pointer): Pointer;
+begin
+  if Proc <> nil then
+  begin
+    if (SysUtils.Win32Platform <> VER_PLATFORM_WIN32_NT) and IsWin9xDebugThunk(Proc) then
+      Proc := PWin9xDebugThunk(Proc).Addr;
+    if (PAbsoluteIndirectJmp(Proc).OpCode = $25FF) then
+      Result := PAbsoluteIndirectJmp(Proc).Addr^
+    else
+      Result := Proc;
+  end
+  else
+    Result := nil;
+end;
+
+procedure RedirectFunction(OldP, DestP: Pointer);
+type
+  TJump = packed record
+    Jmp: Byte; // $E9;
+    Offset: Integer;
+  end;
+var
+  Jump: TJump;
+  WrittenBytes: Cardinal;
+begin
+  if IsLibrary then
+    raise Exception.Create('Not allowed in a DLL');
+  OldP := GetActualAddr(OldP);
+  DestP := GetActualAddr(DestP);
+  Jump.Jmp := $E9;
+  Jump.Offset := Integer(DestP) - Integer(OldP) - SizeOf(TJump);
+  WriteProtectedMemory(OldP, @Jump, SizeOf(TJump), WrittenBytes);
+end;
 
 {$IFNDEF COMPILER7_UP}
 
@@ -59,27 +127,97 @@ begin
 end;
 
 procedure HookBitBtn;
-type
-  TJump = packed record
-    Jmp: Byte; // $E9;
-    Offset: Integer;
-  end;
-var
-  Jump: TJump;
-  DestP, OldP: Pointer;
-  WrittenBytes: Cardinal;
 begin
-  if IsLibrary then
-    raise Exception.Create('Not allowed in a DLL');
-  Jump.Jmp := $E9;
-
-  DestP := @TNativeBitBtn.CreateParams;
-  OldP := @TOpenBitBtn.CreateParams;
-  Jump.Offset := Integer(DestP) - Integer(OldP) - SizeOf(TJump);
-  WriteProtectedMemory(OldP, @Jump, SizeOf(TJump), WrittenBytes);
+  RedirectFunction(@TOpenBitBtn.CreateParams, @TNativeBitBtn.CreateParams);
 end;
 
-{$ENDIF !COMPILER7_UP}
+{$ENDIF ~COMPILER7_UP}
+
+{$IFNDEF COMPILER10_UP}
+type                          
+  TOpenWinControl = class(TWinControl);
+
+  {$IFNDEF COMPILER7_UP}
+  TWMPrint = packed record
+    Msg: Cardinal;
+    DC: HDC;
+    Flags: Cardinal;
+    Result: Integer;
+  end;
+  TWMPrintClient = TWMPrint;
+  {$ENDIF ~COMPILER7_UP}
+
+  TWinControlFix = class(TWinControl)
+  private
+    procedure WMPrintClient(var Message: TWMPrintClient);
+  protected
+    procedure PaintWindow(DC: HDC); override;
+    procedure MainWndProc(var Message: TMessage);
+  end;
+
+procedure TWinControlFix.WMPrintClient(var Message: TWMPrintClient);
+var
+  SaveIndex: Integer;
+begin
+  with Message do
+    if Result <> 1 then
+      if ((Flags and PRF_CHECKVISIBLE) = 0) or Visible then
+      begin
+        SaveIndex := SaveDC(DC);
+        try
+          PaintHandler(TWMPaint(Message));
+        finally
+          RestoreDC(DC, SaveIndex);
+        end;
+      end
+      else
+        DefaultHandler(Message)
+    else
+      DefaultHandler(Message);
+end;
+
+procedure TWinControlFix.PaintWindow(DC: HDC);
+var
+  Message: TMessage;
+begin
+  if not (TWinControl(Self) is TCustomFrame) then
+  begin
+    Message.Msg := WM_PAINT;
+    Message.WParam := DC;
+    Message.LParam := 0;
+    Message.Result := 0;
+    DefaultHandler(Message);
+  end;
+end;
+
+procedure TWinControlFix.MainWndProc(var Message: TMessage);
+begin
+  try
+    try
+      WindowProc(Message);
+      if Message.Msg = WM_UPDATEUISTATE then
+        Invalidate; // Ensure control is repainted
+    finally
+      //FreeDeviceContexts;  The installer doesn't use that many controls
+      FreeMemoryContexts;
+    end;
+  except
+    Application.HandleException(Self);
+  end;
+end;
+
+procedure HookWinControl;
+begin
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6) then
+  begin
+    { Vista Workaround }
+    RedirectFunction(@TOpenWinControl.MainWndProc, @TWinControlFix.MainWndProc);
+  end;
+  RedirectFunction(GetDynamicMethod(TWinControl, WM_PRINTCLIENT), @TWinControlFix.WMPrintClient);
+  RedirectFunction(@TOpenWinControl.PaintWindow, @TWinControlFix.PaintWindow);
+end;
+
+{$ENDIF ~COMPILER10_UP}
 
 {$IFNDEF COMPILER10_UP}
 
@@ -192,6 +330,10 @@ end;
 initialization
   {$IFNDEF COMPILER10_UP}
   ReplaceDefineProperty;
+  {$ENDIF ~COMPILER10_UP}
+
+  {$IFNDEF COMPILER10_UP}
+  HookWinControl;
   {$ENDIF ~COMPILER10_UP}
 
   {$IFNDEF COMPILER7_UP}
