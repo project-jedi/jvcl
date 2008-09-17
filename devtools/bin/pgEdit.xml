@@ -94,47 +94,5 @@
         <alias name="windows" value="c5,c5s,d5,d5s,c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
       </aliases>
     </model>
-    <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
-      <targets>
-        <target name="c5"/>
-        <target name="c6"/>
-        <target name="d5"/>
-        <target name="d6"/>
-        <target name="d7"/>
-        <target name="d8" IsBds="1"/>
-        <target name="cs1" IsBds="1"/>
-        <target name="d9" IsBds="1"/>
-        <target name="d10" IsBds="1"/>
-        <target name="k3" PathSep="/"/>
-        <target name="d9.net" IsDotNet="1"/>
-        <target name="d10.net" IsDotNet="1"/>
-        <target name="d11" IsBds="1"/>
-        <target name="d11.net" IsDotNet="1"/>
-        <target name="d12" IsBds="1"/>
-        <target name="d12.net" IsDotNet="1"/>
-      </targets>
-      <aliases>
-        <alias name="Delphi" value="d5,d6,d7,d9,d10,d11,d12"/>
-        <alias name="Bcb" value="c5,c6,d10,d11,d12"/>
-        <alias name="Kylix" value="k3"/>
-        <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
-        <alias name="Linux" value="k3"/>
-        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,cs1,d11,d12"/>
-        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d11,d12"/>
-        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1,d11,d12"/>
-        <alias name="Clx" value="c6,d6,d7,k3"/>
-        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="Bds" value="cs1,d8,d9,d10,d11,d12"/>
-        <alias name="JclDotNet" value="d9.net,d10.net,d11.net,d12.net"/>
-      </aliases>
-      <ProjectProperties>
-        <ProjectProperty name="VersionMajorNumber" value="1"/>
-        <ProjectProperty name="VersionMinorNumber" value="102"/>
-        <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="2726"/>
-      </ProjectProperties>
-    </Model>
   </models>
 </Configuration>
