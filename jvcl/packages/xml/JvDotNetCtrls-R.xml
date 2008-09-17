@@ -18,7 +18,7 @@
     <Package Name="JclD50" Targets="Dv5" Condition="USEJVCL"/>
     <Package Name="JclC50" Targets="Cv5" Condition="USEJVCL"/>
     <Package Name="Jcl" Targets="allv6up" Condition="USEJVCL"/>
-    <Package Name="JclVCL" Targets="VCLv6up" Condition="USEJVCL"/>
+    <Package Name="JclVcl" Targets="all" Condition="USEJVCL"/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
