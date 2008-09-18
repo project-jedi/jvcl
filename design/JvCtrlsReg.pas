@@ -55,7 +55,8 @@ uses
   JvNetscapeSplitter, JvListComb, JvRuler,
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
   JvControlActions, JvControlActnResForm,
-  JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor;
+  JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor,
+  JvVersionControlActions;
 
 {$R JvCtrlsReg.dcr}
 
@@ -111,6 +112,21 @@ begin
   RegisterActions(RsJVCLControlActionsCategory, [TJvControlCollapseAction, TJvControlExpandAction, TJvControlExportAction,
     TJvControlOptimizeColumnsAction, TJvControlCustomizeColumnsAction, TJvControlPrintAction, TJvControlCustomizeAction],
     TJvControlActionsDM);
+    
+  RegisterComponents(RsPaletteNonVisual, [TJvVersionControlActionList]);
+  RegisterActions(RsJVCLActionsCategory, [TJvVersionControlCommonAction,
+    TJvVersionControlAddAction, TJvVersionControlAddSandboxAction, TJvVersionControlExploreAction, 
+    TJvVersionControlDiffAction, TJvVersionControlContextMenuAction, TJvVersionControlCommitSandboxAction,
+    TJvVersionControlCommitAction, TJvVersionControlCheckoutSandboxAction, TJvVersionControlBranchSandboxAction,
+    TJvVersionControlBranchAction, TJvVersionControlBlameAction, TJvVersionControlGraphAction,
+    TJvVersionControlLogAction, TJvVersionControlLogSandboxAction, TJvVersionControlExploreSandboxAction,
+    TJvVersionControlLockAction, TJvVersionControlRenameAction, TJvVersionControlRepoBrowserAction, 
+    TJvVersionControlRevertAction, TJvVersionControlStatusAction,   TJvVersionControlTagAction, 
+    TJvVersionControlUnlockAction, TJvVersionControlUpdateToAction, TJvVersionControlUpdateAction, 
+    TJvVersionControlMergeAction, TJvVersionControlPropertiesAction, TJvVersionControlLockSandboxAction,
+    TJvVersionControlMergeSandboxAction, TJvVersionControlPropertiesSandboxAction, TJvVersionControlRenameSandboxAction,
+    TJvVersionControlRevertSandboxAction, TJvVersionControlStatusSandboxAction, TJvVersionControlTagSandboxAction, 
+    TJvVersionControlUpdateSandboxAction, TJvVersionControlUpdateSandboxToAction, TJvVersionControlUnlockSandboxAction], nil);
 end;
 
 end.
