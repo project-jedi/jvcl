@@ -1068,7 +1068,7 @@ function GetFileSizeEx(h:hFile; FileSize:PULargeInteger):Bool; stdcall; external
 
 procedure TJvCsvStream.Append; 
 begin
-  Stream.Seek(0,soEnd);
+  Stream.Seek(0, soFromEnd);
 end;
 
 constructor TJvCsvStream.Create(const FileName: string; Mode: DWord;
@@ -1084,7 +1084,7 @@ begin
    is_rewrite := (Mode and fmJVCSV_REWRITE_FLAG)=fmJVCSV_REWRITE_FLAG;
 
 
-   FStream := TFileStream.Create(Filename, {16 lower bits only}Word(Mode),Rights);
+   FStream := TFileStream.Create(Filename, {16 lower bits only}Word(Mode){$IFDEF COMPILER6_UP}, Rights{$ENDIF COMPILER6_UP});
 
    //Stream := FStream; { this makes everything in the base class actually work if we inherited from Easy Stream}
 
