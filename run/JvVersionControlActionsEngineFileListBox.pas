@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvVersionControlActionsEngineFileListBox.pas 11641 2007-12-24 16:34:00Z outchy $
+// $Id$
 
 unit JvVersionControlActionsEngineFileListBox;
 
@@ -53,9 +53,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvVersionControlActionsEngineFileListBox.pas $';
-    Revision: '$Revision: 11641 $';
-    Date: '$Date: 2007-12-24 17:34:00 +0100 (Mo, 24 Dez 2007) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
