@@ -7905,12 +7905,12 @@ begin
       if LStr.Length > 0 then
       try
         { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-        if LStr[LStr.Length] = '-' then
+        if LStr[LStr.Length - 1] = '-' then
           LStr.Append('0');
 
         { a string that ends in a '.' such as '12.' fails StrToFloat,
          but as far as I am concerned, it may as well be interpreted as 12.0 }
-        if LStr[LStr.Length] = DecimalSeparator{$IFDEF CLR}[1]{$ENDIF} then
+        if LStr[LStr.Length - 1] = DecimalSeparator{$IFDEF CLR}[1]{$ENDIF} then
           LStr.Append('0');
 
         {$IFDEF CLR}
