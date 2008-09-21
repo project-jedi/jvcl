@@ -7,7 +7,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvOutlookBar, ComCtrls, CheckLst, JvComponent,
   JvNavigationPane, ImgList, Menus, JvPageList, JclWin32, JvExControls, ExtCtrls,
-  JvExExtCtrls, ExtDlgs;
+  JvExExtCtrls, ExtDlgs, Types, JvComponentBase;
 
 type
   TJvNavPaneDemoMainFrm = class(TForm)
@@ -60,6 +60,7 @@ var
   JvNavPaneDemoMainFrm: TJvNavPaneDemoMainFrm;
 
 implementation
+
 uses
   CommCtrl;
 
