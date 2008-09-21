@@ -284,7 +284,7 @@ uses
   {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclBase, JclSysInfo, JclSimpleXml, JclBorlandTools;
+  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclBorlandTools;
 
 function DequoteStr(const S: string): string;
 begin
@@ -1264,13 +1264,24 @@ begin
 end;
 
 function TCompileTarget.GetCommonProjectsDir: string;
+var
+  RsVarsOutput, ComSpec: string;
+  Lines: TStrings;
 begin
   if IsBDS and (IDEVersion >= 5) then
   begin
-    if FEnvVars.IndexOfName('BDSCOMMONDIR') >= 0 then // do not localize
-      Result := ExpandDirMacros(EnvVars.Values['BDSCOMMONDIR']) // do not localize
-    else
-      Result := ExpandDirMacros(GetEnvironmentVariable('BDSCOMMONDIR')); // do not localize
+    // Inspired by the JCL installer. Maybe all this should be centralized...
+    if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C "%s%sbin%srsvars.bat && set BDS"',
+      [ComSpec, ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter]), RsVarsOutput) = 0) then
+    begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := RsVarsOutput;
+        Result := Lines.Values['BDSCOMMONDIR'];
+      finally
+        Lines.Free;
+      end;
+    end;
 
     if Result = '' then // ignore BDSCOMMONDIR env-var because Delphi and BCB do not know them
       Result := FCommonProjectsDir;
