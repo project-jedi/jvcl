@@ -33,7 +33,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Messages,
-  JvPageSetup, Types;
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  JvPageSetup;
 
 type
   TJvPageSetupTitledDialog = class(TJvPageSetupDialog)
