@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Messages,
-  JvPageSetup;
+  JvPageSetup, Types;
 
 type
   TJvPageSetupTitledDialog = class(TJvPageSetupDialog)

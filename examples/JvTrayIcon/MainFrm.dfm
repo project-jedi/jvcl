@@ -17,7 +17,10 @@ object frmMain: TfrmMain
   Position = poDesktopCenter
   Scaled = False
   OnShow = FormShow
-  PixelsPerInch = 96
+  DesignSize = (
+    402
+    420)
+  PixelsPerInch = 120
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 8
@@ -27,6 +30,9 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Tray Icon Options '
     TabOrder = 0
+    DesignSize = (
+      385
+      361)
     object Label1: TLabel
       Left = 16
       Top = 56
@@ -284,7 +290,7 @@ object frmMain: TfrmMain
     Top = 32
   end
   object popTrayIcon: TPopupMenu
-    Left = 320
+    Left = 312
     Top = 32
     object mnuShowHide: TMenuItem
       Caption = 'Show / Hide'
@@ -294,8 +300,8 @@ object frmMain: TfrmMain
   object RestoreTimer: TTimer
     Interval = 15000
     OnTimer = RestoreTimerTimer
-    Left = 174
-    Top = 156
+    Left = 350
+    Top = 28
   end
   object ImageList1: TImageList
     Left = 224

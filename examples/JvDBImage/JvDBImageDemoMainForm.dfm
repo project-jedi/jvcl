@@ -1,31 +1,34 @@
 object JvDBImageDemoMainFrm: TJvDBImageDemoMainFrm
   Left = 192
   Top = 107
-  Width = 716
-  Height = 388
   Caption = 'JvDBImage Demo'
+  ClientHeight = 345
+  ClientWidth = 698
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  PixelsPerInch = 96
-  TextHeight = 13
+  DesignSize = (
+    698
+    345)
+  PixelsPerInch = 120
+  TextHeight = 17
   object DBGrid1: TJvDBGrid
-    Left = 8
-    Top = 8
-    Width = 478
-    Height = 315
+    Left = 10
+    Top = 10
+    Width = 626
+    Height = 412
     Anchors = [akLeft, akTop, akBottom]
     DataSource = DataSource1
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgCancelOnExit, dgMultiSelect]
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
-    TitleFont.Height = -11
+    TitleFont.Height = -14
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
     MultiSelect = True
@@ -35,109 +38,110 @@ object JvDBImageDemoMainFrm: TJvDBImageDemoMainFrm
     SelectColumnsDialogStrings.OK = '&OK'
     SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
     EditControls = <>
-    RowsHeight = 17
-    TitleRowHeight = 17
+    RowsHeight = 21
+    TitleRowHeight = 21
     Columns = <
       item
         Expanded = False
         FieldName = 'Filename'
-        Width = 381
+        Width = 502
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'FileType'
-        Width = 80
+        Width = 106
         Visible = True
       end>
   end
   object btnAdd: TButton
-    Left = 616
-    Top = 328
-    Width = 75
-    Height = 25
+    Left = 806
+    Top = 429
+    Width = 98
+    Height = 33
     Anchors = [akRight, akBottom]
     Caption = 'Add...'
     TabOrder = 1
     OnClick = btnAddClick
   end
   object btnClear: TButton
-    Left = 488
-    Top = 328
-    Width = 115
-    Height = 25
+    Left = 638
+    Top = 429
+    Width = 151
+    Height = 33
     Anchors = [akRight, akBottom]
     Caption = 'Clear DB'
     TabOrder = 2
     OnClick = btnClearClick
   end
   object chkTransparent: TCheckBox
-    Left = 16
-    Top = 336
-    Width = 80
-    Height = 17
+    Left = 21
+    Top = 439
+    Width = 105
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = '&Transparent'
     TabOrder = 3
     OnClick = chkTransparentClick
   end
   object chkStretch: TCheckBox
-    Left = 99
-    Top = 336
-    Width = 56
-    Height = 17
+    Left = 129
+    Top = 439
+    Width = 74
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = '&Stretch'
     TabOrder = 4
     OnClick = chkStretchClick
   end
   object chkProportional: TCheckBox
-    Left = 160
-    Top = 336
-    Width = 80
-    Height = 17
+    Left = 209
+    Top = 439
+    Width = 105
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = '&Proportional'
     TabOrder = 5
     OnClick = chkProportionalClick
   end
   object chkAutoDisplay: TCheckBox
-    Left = 247
-    Top = 336
-    Width = 87
-    Height = 17
+    Left = 323
+    Top = 439
+    Width = 114
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = '&AutoDisplay'
     TabOrder = 6
     OnClick = chkAutoDisplayClick
   end
   object chkAutoSize: TCheckBox
-    Left = 345
-    Top = 336
-    Width = 87
-    Height = 17
+    Left = 451
+    Top = 439
+    Width = 114
+    Height = 23
     Anchors = [akLeft, akBottom]
     Caption = 'AutoSi&ze'
     TabOrder = 7
     OnClick = chkAutoSizeClick
   end
   object ScrollBox1: TScrollBox
-    Left = 496
-    Top = 8
-    Width = 203
-    Height = 313
+    Left = 649
+    Top = 10
+    Width = 265
+    Height = 410
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     TabOrder = 8
     object JvDBImage1: TJvDBImage
       Left = 0
       Top = 0
-      Width = 203
-      Height = 313
+      Width = 265
+      Height = 410
       Align = alClient
       DataField = 'Image'
       DataSource = DataSource1
       TabOrder = 0
+      ExplicitHeight = 409
     end
   end
   object DataSource1: TDataSource

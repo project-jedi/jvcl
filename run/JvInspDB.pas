@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, DB, TypInfo, DBCtrls,
-  JvInspector;
+  JvInspector, Windows;
 
 type
   TJvInspectorDBData = class(TJvCustomInspectorData)

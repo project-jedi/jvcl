@@ -31,7 +31,7 @@ unit JclParseUses;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Windows;
 
 type
   EUsesListError = class(Exception);

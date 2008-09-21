@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, JvDBImage, ExtCtrls, DBCtrls, Grids, DBGrids, DB, DBClient,
-  jpeg, JvGIF, JvPCX, JvAni, ExtDlgs, StdCtrls, JvExDBGrids, JvDBGrid;
+  jpeg, JvGIF, JvPCX, JvAni, ExtDlgs, StdCtrls, JvExDBGrids, JvDBGrid, JvJVCLUtils;
 
 type
   TJvDBImageDemoMainFrm = class(TForm)
