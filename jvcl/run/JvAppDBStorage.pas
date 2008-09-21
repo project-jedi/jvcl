@@ -212,7 +212,7 @@ end;
 function TJvCustomAppDBStorage.DoReadFloat(const Path: string;
   Default: Extended): Extended;
 begin
-  Result := StrToFloatDef(DoReadString(Path, ''), Default);
+  Result := StrToFloatDefIgnoreInvalidCharacters(DoReadString(Path, ''), Default);
 end;
 
 function TJvCustomAppDBStorage.DoReadInteger(const Path: string;
