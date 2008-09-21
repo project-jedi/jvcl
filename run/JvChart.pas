@@ -4012,7 +4012,7 @@ var
 begin
   StrString := FloatToStr(Options.PrimaryYAxis.YMax);
   if InputQuery(RsGraphScale, Format(RsYAxisScales, [FloatToStr(Options.PrimaryYAxis.YMax)]), StrString) then
-    Options.PrimaryYAxis.YMax := StrToFloatDef(StrString, Options.PrimaryYAxis.YMax)
+    Options.PrimaryYAxis.YMax := StrToFloatDefIgnoreInvalidCharacters(StrString, Options.PrimaryYAxis.YMax)
   else
     Exit;
 

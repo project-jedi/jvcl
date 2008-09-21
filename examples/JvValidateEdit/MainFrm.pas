@@ -160,13 +160,13 @@ end;
 
 procedure TfrmValidateEditDemo.chkHasMaxValueClick(Sender: TObject);
 begin
-  JvValidateEdit.MaxValue := StrToFloatDef(edMaxValue.Text, 0);
+  JvValidateEdit.MaxValue := StrToFloatDefIgnoreInvalidCharacters(edMaxValue.Text, 0);
   JvValidateEdit.HasMaxValue := chkHasMaxValue.Checked;
 end;
 
 procedure TfrmValidateEditDemo.chkHasMinValueClick(Sender: TObject);
 begin
-  JvValidateEdit.MinValue := StrToFloatDef(edMinValue.Text, 0);
+  JvValidateEdit.MinValue := StrToFloatDefIgnoreInvalidCharacters(edMinValue.Text, 0);
   JvValidateEdit.HasMinValue := chkHasMinValue.Checked;
 end;
 
@@ -180,9 +180,9 @@ begin
         JvValidateEdit.AsCurrency := StrToCurrDef(edSetTo.Text, 0);
     1:
       if chkAsVariant.Checked then
-        JvValidateEdit.Value := StrToFloatDef(edSetTo.Text, 0)
+        JvValidateEdit.Value := StrToFloatDefIgnoreInvalidCharacters(edSetTo.Text, 0)
       else
-        JvValidateEdit.AsFloat := StrToFloatDef(edSetTo.Text, 0);
+        JvValidateEdit.AsFloat := StrToFloatDefIgnoreInvalidCharacters(edSetTo.Text, 0);
     2:
       if chkAsVariant.Checked then
         JvValidateEdit.Value := StrToIntDef(edSetTo.Text, 0)
@@ -219,13 +219,13 @@ end;
 
 procedure TfrmValidateEditDemo.edCPMaxValueExit(Sender: TObject);
 begin
-  JvValidateEdit.CriticalPoints.MaxValue := StrToFloatDef(edCPMaxValue.Text, 0);
+  JvValidateEdit.CriticalPoints.MaxValue := StrToFloatDefIgnoreInvalidCharacters(edCPMaxValue.Text, 0);
   edCPMaxValue.Text := FloatToStr(JvValidateEdit.CriticalPoints.MaxValue);
 end;
 
 procedure TfrmValidateEditDemo.edCPMinValueExit(Sender: TObject);
 begin
-  JvValidateEdit.CriticalPoints.MinValue := StrToFloatDef(edCPMinValue.Text, 0);
+  JvValidateEdit.CriticalPoints.MinValue := StrToFloatDefIgnoreInvalidCharacters(edCPMinValue.Text, 0);
   edCPMinValue.Text := FloatToStr(JvValidateEdit.CriticalPoints.MinValue);
 end;
 
@@ -248,12 +248,12 @@ end;
 
 procedure TfrmValidateEditDemo.edMaxValueExit(Sender: TObject);
 begin
-  JvValidateEdit.MaxValue := StrToFloatDef(edMaxValue.Text, 0);
+  JvValidateEdit.MaxValue := StrToFloatDefIgnoreInvalidCharacters(edMaxValue.Text, 0);
 end;
 
 procedure TfrmValidateEditDemo.edMinValueExit(Sender: TObject);
 begin
-  JvValidateEdit.MinValue := StrToFloatDef(edMinValue.Text, 0);
+  JvValidateEdit.MinValue := StrToFloatDefIgnoreInvalidCharacters(edMinValue.Text, 0);
 end;
 
 procedure TfrmValidateEditDemo.JvValidateEditCustomValidate(

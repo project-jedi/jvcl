@@ -574,10 +574,10 @@ var
             end;
           stNumeric:
             begin
-              TmpF := StrToFloatDef(St, 0);
-              while StrToFloatDef(Cells[Column, I], 0) < TmpF do
+              TmpF := StrToFloatDefIgnoreInvalidCharacters(St, 0);
+              while StrToFloatDefIgnoreInvalidCharacters(Cells[Column, I], 0) < TmpF do
                 Inc(I);
-              while StrToFloatDef(Cells[Column, J], 0) > TmpF do
+              while StrToFloatDefIgnoreInvalidCharacters(Cells[Column, J], 0) > TmpF do
                 Dec(J);
             end;
           stDate:
