@@ -786,8 +786,16 @@ begin
       begin
         Name := Node.Items[I].Name;
         if (not PathIsList or (not AnsiSameText(cCount, Name) and
-          not NameIsListItem(Name))) then
+          not NameIsListItem(Name)))  //and not IsFolder(FullName)
+          then
           Strings.Add(Name);
+      end;
+      i := Strings.Count-1;
+      while i >= 0 do
+      begin
+        if ListStored(ConcatPaths([Path, Strings[i]])) or IsFolder(ConcatPaths([Path, Strings[i]])) then
+          Strings.Delete(i);
+        Dec(i);
       end;
     finally
       Strings.EndUpdate;

@@ -508,7 +508,7 @@ begin
         Strings.Delete(I)
       else
       if RefPath <> '' then
-        Strings[I] := Copy(Strings[I], 1 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
+        Strings[I] := Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
       Dec(I);
     end;
   finally
