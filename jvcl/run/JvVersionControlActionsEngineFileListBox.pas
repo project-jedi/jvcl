@@ -26,6 +26,7 @@ Known Issues:
 unit JvVersionControlActionsEngineFileListBox;
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 interface
 
