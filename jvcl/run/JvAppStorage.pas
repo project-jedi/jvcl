@@ -1664,8 +1664,8 @@ begin
             Strings.AddObject(PrefixPath + TempList[I], TObject(aptFolder));
         end;
         if aeoRecursive in Options then
-          InternalGetStoredValues(PrefixPath + TempList[I] + PathDelim,
-            SearchPath + PathDelim + TempList[I],
+          InternalGetStoredValues(ConcatPaths([PrefixPath, TempList[I]]) + PathDelim,
+            ConcatPaths([SearchPath, TempList[I]]),
             Strings, Options);
       end;
     end;

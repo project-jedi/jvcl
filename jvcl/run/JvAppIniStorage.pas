@@ -489,30 +489,38 @@ procedure TJvCustomAppIniStorage.EnumFolders(const Path: string; const Strings: 
 var
   RefPath: string;
   I: Integer;
+  TempStrings : tStrings;
+  s : String;
+  p : Integer;
+  lr : Integer;
 begin
+  TempStrings := TStringlist.Create;
   Strings.BeginUpdate;
   try
     RefPath := GetAbsPath(Path);
-    if RefPath = '' then
-      RefPath := DefaultSection;
     ReloadIfNeeded;
-    IniFile.ReadSections(Strings);
-    I := Strings.Count - 1;
-    while I >= 0 do
+    IniFile.ReadSections(TempStrings);
+    lr := Length(RefPath);
+    for i := 0 to TempStrings.Count - 1 do
     begin
-      if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + PathDelim) or
-        (Pos(PathDelim, Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0)) then
-        Strings.Delete(I)
-      else
-      if ReportListAsValue and ValueExists(Strings[I], cCount) then
-        Strings.Delete(I)
-      else
+      s := TempStrings[i];
+      if (RefPath <> '') and (Copy(s, 1, lr + 1) <> RefPath + PathDelim) then
+        Continue;
+      if ReportListAsValue and ValueExists(s, cCount) then
+        Continue;
       if RefPath <> '' then
-        Strings[I] := Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
-      Dec(I);
+        s := Copy(s, 2 + lr, Length(s) - lr);
+      p := Pos(PathDelim, s);
+      if p > 0 then
+        s := Copy(s, 1, p-1);
+      if (RefPath = '') and (s = DefaultSection) then
+        Continue;
+      if Strings.IndexOf(s) < 0 then
+        Strings.Add(s);
     end;
   finally
     Strings.EndUpdate;
+    TempStrings.Free;
   end;
 end;
 
