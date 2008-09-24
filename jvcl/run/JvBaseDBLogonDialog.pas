@@ -60,7 +60,6 @@ type
     FShowConnectionsExport: Boolean;
     FShowSavePasswords: Boolean;
     FShowShortcuts: Boolean;
-  protected
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -583,7 +582,6 @@ var
   ITabControl: IJvDynControlTabControl;
   IDynControl: IJvDynControl;
   IDynControlDblClick: IJvDynControlDblClick;
-  IDynControlTreeView: IJvDynControlTreeView;
   IDynControlReadOnly: IJvDynControlReadOnly;
   IDynControlPageControl: IJvDynControlPageControl;
   IDynControlBevelBorder: IJvDynControlBevelBorder;
@@ -593,56 +591,40 @@ var
   IDynControlLabel: IJvDynControlLabel;
   ConnectListLabel: TWinControl;
 begin
-  with AForm do
-  begin
-    Name := 'DBDialog';
-    Left := 472;
-    Top := 229;
-    BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
-    BorderStyle := bsDialog;
-    Caption := RsLogonToDatabase;
-    ClientHeight := 440;
-    ClientWidth := 590;
-    Position := poScreenCenter;
-    KeyPreview := True;
-    OnClose := FormClose;
-    OnKeyDown := FormKeyDown;
-    OnShow := FormShow;
-  end;
+  AForm.Name := 'DBDialog';
+  AForm.Left := 472;
+  AForm.Top := 229;
+  AForm.BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
+  AForm.BorderStyle := bsDialog;
+  AForm.Caption := RsLogonToDatabase;
+  AForm.ClientHeight := 440;
+  AForm.ClientWidth := 590;
+  AForm.Position := poScreenCenter;
+  AForm.KeyPreview := True;
+  AForm.OnClose := FormClose;
+  AForm.OnKeyDown := FormKeyDown;
+  AForm.OnShow := FormShow;
 
   ButtonPanel := DynControlEngine.CreatePanelControl(AForm, AForm, 'ButtonPanel', '', alBottom);
   ConnectBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'ConnectBtn',
     RsBtnConnect, '', ConnectBtnClick, True, False);
-  with ConnectBtn do
-  begin
-    Left := 60;
-    Top := 11;
-    Width := 90;
-    Height := 25;
-  end;
+  ConnectBtn.Left := 60;
+  ConnectBtn.Top := 11;
+  ConnectBtn.Width := 90;
+  ConnectBtn.Height := 25;
   CancelBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'CancelBtn',
     RsButtonCancelCaption, '', CancelBtnClick, False, True);
-  with CancelBtn do
-  begin
-    Left := 460;
-    Top := 11;
-    Width := 90;
-    Height := 25;
-    //    Anchors := [akTop, akRight];
-    //    Kind := bkCancel;
-  end;
+  CancelBtn.Left := 460;
+  CancelBtn.Top := 11;
+  CancelBtn.Width := 90;
+  CancelBtn.Height := 25;
 
   AdditionalBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'AdditionalBtn',
     RsBtnAdditional, '', AdditionalBtnClick, False, False);
-  with AdditionalBtn do
-  begin
-    Left := 460;
-    Top := 11;
-    Width := 100;
-    Height := 25;
-    //    Anchors := [akTop, akRight];
-    //    Kind := bkCancel;
-  end;
+  AdditionalBtn.Left := 460;
+  AdditionalBtn.Top := 11;
+  AdditionalBtn.Width := 100;
+  AdditionalBtn.Height := 25;
 
   AdditionalPopupMenu := TPopupMenu.Create(AForm);
   FillAdditionalPopupMenuEntries(AdditionalPopupMenu);
@@ -650,22 +632,16 @@ begin
   AdditionalBtn.Visible := AdditionalPopupMenu.Items.Count > 0;
 
   MainPanel := DynControlEngine.CreatePanelControl(AForm, AForm, 'MainPanel', '', alClient);
-  with MainPanel do
-  begin
-    TabOrder := 0;
-    if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-      IDynControlBevelBorder.ControlSetBorderWidth(5);
-    if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-      IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
-  end;
+  MainPanel.TabOrder := 0;
+  if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+    IDynControlBevelBorder.ControlSetBorderWidth(5);
+  if Supports(MainPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+    IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
   ListPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'ListPanel', '', alClient);
-  with ListPanel do
-  begin
-    Anchors := [akTop, akRight, akBottom];
-    if Supports(ListPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-      IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
-    TabOrder := 1;
-  end;
+  ListPanel.Anchors := [akTop, akRight, akBottom];
+  if Supports(ListPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+    IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
+  ListPanel.TabOrder := 1;
 
   ConnectListLabel := DynControlEngine.CreateStaticTextControl(AForm, ListPanel, 'ConnectListLabel',
     'Connection List');
@@ -678,36 +654,22 @@ begin
 
   AddToListBtn := DynControlEngine.CreateButton(AForm, ListBtnPanel, 'AddToListBtn',
     '>', RsBtnHintAddDefinitionToList, AddToListBtnClick, False, False);
-  with AddToListBtn do
-  begin
-    Left := 4;
-    Top := 45;
-    Width := 23;
-    Height := 22;
-    //  Glyph := // please assign
-    //    NumGlyphs := 2;
-  end;
+  AddToListBtn.Left := 4;
+  AddToListBtn.Top := 45;
+  AddToListBtn.Width := 23;
+  AddToListBtn.Height := 22;
   GetFromListBtn := DynControlEngine.CreateButton(AForm, ListBtnPanel, 'GetFromListBtn',
     '<', RsBtnHintSelectDefinitionFromList, GetFromListBtnClick, False, False);
-  with GetFromListBtn do
-  begin
-    Left := 4;
-    Top := 85;
-    Width := 23;
-    Height := 22;
-    //  Glyph := // please assign
-    //    NumGlyphs := 2;
-  end;
+  GetFromListBtn.Left := 4;
+  GetFromListBtn.Top := 85;
+  GetFromListBtn.Width := 23;
+  GetFromListBtn.Height := 22;
   RemoveFromListBtn := DynControlEngine.CreateButton(AForm, ListBtnPanel, 'RemoveFromListBtn',
     'X', RsBtnHintDeleteDefinitionFromList, RemoveFromListBtnClick, False, False);
-  with RemoveFromListBtn do
-  begin
-    Left := 4;
-    Top := 125;
-    Width := 23;
-    Height := 22;
-    //  Glyph := // please assign
-  end;
+  RemoveFromListBtn.Left := 4;
+  RemoveFromListBtn.Top := 125;
+  RemoveFromListBtn.Width := 23;
+  RemoveFromListBtn.Height := 22;
 
   Items := tStringList.Create;
   try
@@ -720,116 +682,96 @@ begin
   finally
     Items.Free;
   end;
-  with ConnectionListPageControl do
+
+  ConnectionListPageControl.Align := alClient;
+  Supports(ConnectionListPageControl, IJvDynControlTabControl, IConnectionListPageControlTab);
+  if Supports(ConnectionListPageControl, IJvDynControlTabControl, ITabControl) then
   begin
-    Align := alClient;
-    Supports(ConnectionListPageControl, IJvDynControlTabControl, IConnectionListPageControlTab);
-    if Supports(ConnectionListPageControl, IJvDynControlTabControl, ITabControl) then
-    begin
-      ITabControl.ControlSetOnChangeTab(ConnectionListPageControlChange);
-      ITabControl.ControlSetMultiLine(True);
-      ITabControl.ControlTabIndex := 2;
-    end;
+    ITabControl.ControlSetOnChangeTab(ConnectionListPageControlChange);
+    ITabControl.ControlSetMultiLine(True);
+    ITabControl.ControlTabIndex := 2;
   end;
 
   ConnectListListBox := DynControlEngine.CreateListBoxControl(AForm, AForm, 'ConnectListListBox', nil);
-  with ConnectListListBox do
-  begin
-    Align := alClient;
-    if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
-      Parent := IDynControlPageControl.ControlGetPage(RsPageDefaultList);
+  ConnectListListBox.Align := alClient;
+  if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
+    ConnectListListBox.Parent := IDynControlPageControl.ControlGetPage(RsPageDefaultList);
 
-    Supports(ConnectListListBox, IJvDynControlItems, IConnectListListBoxItems);
-    Supports(ConnectListListBox, IJvDynControlData, IConnectListListBoxData);
-    if Supports(ConnectListListBox, IJvDynControl, IDynControl) then
-      IDynControl.ControlSetOnClick(ConnectListListBoxClick);
-    if Supports(ConnectListListBox, IJvDynControlDblClick, IDynControlDblClick) then
-      IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
-  end;
+  Supports(ConnectListListBox, IJvDynControlItems, IConnectListListBoxItems);
+  Supports(ConnectListListBox, IJvDynControlData, IConnectListListBoxData);
+  if Supports(ConnectListListBox, IJvDynControl, IDynControl) then
+    IDynControl.ControlSetOnClick(ConnectListListBoxClick);
+  if Supports(ConnectListListBox, IJvDynControlDblClick, IDynControlDblClick) then
+    IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
 
   UserTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'UserTreeView');
-  with UserTreeView do
-  begin
-    Align := alClient;
-    if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
-      Parent := IDynControlPageControl.ControlGetPage(RsPageByUser);
-    if Supports(UserTreeView, IJvDynControl, IDynControl) then
-      IDynControl.ControlSetOnClick(ConnectListListBoxClick);
-    if Supports(UserTreeView, IJvDynControlDblClick, IDynControlDblClick) then
-      IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
-    if Supports(UserTreeView, IJvDynControlTreeView, IUserTreeView) then
-      IUserTreeView.ControlSetSortType(stText);
-    if Supports(UserTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
-      IDynControlReadOnly.ControlSetReadOnly(True);
-  end;
+  UserTreeView.Align := alClient;
+  if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
+    UserTreeView.Parent := IDynControlPageControl.ControlGetPage(RsPageByUser);
+  if Supports(UserTreeView, IJvDynControl, IDynControl) then
+    IDynControl.ControlSetOnClick(ConnectListListBoxClick);
+  if Supports(UserTreeView, IJvDynControlDblClick, IDynControlDblClick) then
+    IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
+  if Supports(UserTreeView, IJvDynControlTreeView, IUserTreeView) then
+    IUserTreeView.ControlSetSortType(stText);
+  if Supports(UserTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
+    IDynControlReadOnly.ControlSetReadOnly(True);
   DatabaseTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'DatabaseTreeView');
-  with DatabaseTreeView do
-  begin
-    Align := alClient;
-    if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
-      Parent := IDynControlPageControl.ControlGetPage(RsPageByDatabase);
-    if Supports(DatabaseTreeView, IJvDynControl, IDynControl) then
-      IDynControl.ControlSetOnClick(ConnectListListBoxClick);
-    if Supports(DatabaseTreeView, IJvDynControlDblClick, IDynControlDblClick) then
-      IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
-    if Supports(DatabaseTreeView, IJvDynControlTreeView, IDatabaseTreeView) then
-      IDatabaseTreeView.ControlSetSortType(stText);
-    if Supports(DatabaseTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
-      IDynControlReadOnly.ControlSetReadOnly(True);
-  end;
+  DatabaseTreeView.Align := alClient;
+  if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
+    DatabaseTreeView.Parent := IDynControlPageControl.ControlGetPage(RsPageByDatabase);
+  if Supports(DatabaseTreeView, IJvDynControl, IDynControl) then
+    IDynControl.ControlSetOnClick(ConnectListListBoxClick);
+  if Supports(DatabaseTreeView, IJvDynControlDblClick, IDynControlDblClick) then
+    IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
+  if Supports(DatabaseTreeView, IJvDynControlTreeView, IDatabaseTreeView) then
+    IDatabaseTreeView.ControlSetSortType(stText);
+  if Supports(DatabaseTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
+    IDynControlReadOnly.ControlSetReadOnly(True);
 
   if Options.ShowConnectGroup then
   begin
     GroupTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'GroupTreeView');
-    with GroupTreeView do
-    begin
-      Align := alClient;
-      if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
-        Parent := IDynControlPageControl.ControlGetPage(RsPageByGroup);
-      if Supports(GroupTreeView, IJvDynControl, IDynControl) then
-        IDynControl.ControlSetOnClick(ConnectListListBoxClick);
-      if Supports(GroupTreeView, IJvDynControlDblClick, IDynControlDblClick) then
-        IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
-      if Supports(GroupTreeView, IJvDynControlTreeView, IGroupTreeView) then
-        IGroupTreeView.ControlSetSortType(stText);
-      if Supports(GroupTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
-        IDynControlReadOnly.ControlSetReadOnly(True);
-    end;
+    GroupTreeView.Align := alClient;
+    if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
+      GroupTreeView.Parent := IDynControlPageControl.ControlGetPage(RsPageByGroup);
+    if Supports(GroupTreeView, IJvDynControl, IDynControl) then
+      IDynControl.ControlSetOnClick(ConnectListListBoxClick);
+    if Supports(GroupTreeView, IJvDynControlDblClick, IDynControlDblClick) then
+      IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
+    if Supports(GroupTreeView, IJvDynControlTreeView, IGroupTreeView) then
+      IGroupTreeView.ControlSetSortType(stText);
+    if Supports(GroupTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
+      IDynControlReadOnly.ControlSetReadOnly(True);
+
     GroupListPanel := DynControlEngine.CreatePanelControl(AForm, AForm, 'GroupListPanel', '', alBottom);
-    with GroupListPanel do
-    begin
-      if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
-        Parent := IDynControlPageControl.ControlGetPage(RsPageByGroup);
-      Height := 25;
-      Align := alBottom;
-      if Supports(GroupListPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
-        IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
-    end;
+    if Supports(ConnectionListPageControl, IJvDynControlPageControl, IDynControlPageControl) then
+      GroupListPanel.Parent := IDynControlPageControl.ControlGetPage(RsPageByGroup);
+    GroupListPanel.Height := 25;
+    GroupListPanel.Align := alBottom;
+    if Supports(GroupListPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
+      IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
+
     GroupByDatabaseCheckBox := DynControlEngine.CreateCheckboxControl(AForm, GroupListPanel, 'GroupByDatabaseCheckBox',
       RsCheckBoxGroupByDatabase);
-    with GroupByDatabaseCheckBox do
-    begin
-      Left := 0;
-      Top := 5;
-      Width := 116;
-      Height := 17;
-      TabOrder := 0;
-      if Supports(GroupByDatabaseCheckBox, IJvDynControl, IDynControl) then
-        IDynControl.ControlSetOnClick(GroupByDatabaseCheckBoxClick);
-      Supports(GroupByDatabaseCheckBox, IJvDynControlCheckBox, IGroupByDatabaseCheckBox);
-    end;
+    GroupByDatabaseCheckBox.Left := 0;
+    GroupByDatabaseCheckBox.Top := 5;
+    GroupByDatabaseCheckBox.Width := 116;
+    GroupByDatabaseCheckBox.Height := 17;
+    GroupByDatabaseCheckBox.TabOrder := 0;
+    if Supports(GroupByDatabaseCheckBox, IJvDynControl, IDynControl) then
+      IDynControl.ControlSetOnClick(GroupByDatabaseCheckBoxClick);
+    Supports(GroupByDatabaseCheckBox, IJvDynControlCheckBox, IGroupByDatabaseCheckBox);
+
     GroupByUserCheckBox := DynControlEngine.CreateCheckboxControl(AForm, GroupListPanel, 'GroupByUserCheckBox',
       RsCheckBoxGroupByUser);
-    with GroupByUserCheckBox do
-    begin
-      Left := 125;
-      Top := 5;
-      Width := 97;
-      Height := 17;
-      if Supports(GroupByUserCheckBox, IJvDynControl, IDynControl) then
-        IDynControl.ControlSetOnClick(GroupByUserCheckBoxClick);
-      Supports(GroupByUserCheckBox, IJvDynControlCheckBox, IGroupByUserCheckBox);
-    end;
+    GroupByUserCheckBox.Left := 125;
+    GroupByUserCheckBox.Top := 5;
+    GroupByUserCheckBox.Width := 97;
+    GroupByUserCheckBox.Height := 17;
+    if Supports(GroupByUserCheckBox, IJvDynControl, IDynControl) then
+      IDynControl.ControlSetOnClick(GroupByUserCheckBoxClick);
+    Supports(GroupByUserCheckBox, IJvDynControlCheckBox, IGroupByUserCheckBox);
   end;
 
   SavePasswordsCheckBox := DynControlEngine.CreateCheckboxControl(AForm, ListPanel, 'SavePasswordsCheckBox',
@@ -1489,13 +1431,10 @@ begin
   TmpConnectionList := GetDBLogonConnectionListClass.Create(Self);
   try
     TmpConnectionList.CopyContents(ConnectionList, True);
-    with SaveDialog do
-    begin
-      Filter := RsConnectionListExportImportFilter;
-      Name := 'SaveDialog';
-      DefaultExt := 'xml';
-      Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing];
-    end;
+    SaveDialog.Filter := RsConnectionListExportImportFilter;
+    SaveDialog.Name := 'SaveDialog';
+    SaveDialog.DefaultExt := 'xml';
+    SaveDialog.Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing];
     if Savedialog.Execute then
     begin
       FileName := SaveDialog.FileName;
@@ -1541,13 +1480,10 @@ begin
   OpenDialog := TOpenDialog.Create(Self);
   TmpConnectionList := GetDBLogonConnectionListClass.Create(Self);
   try
-    with OpenDialog do
-    begin
-      Filter := RsConnectionListExportImportFilter;
-      Name := 'OpenDialog';
-      DefaultExt := 'xml';
-      Options := [ofHideReadOnly, ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    end;
+    OpenDialog.Filter := RsConnectionListExportImportFilter;
+    OpenDialog.Name := 'OpenDialog';
+    OpenDialog.DefaultExt := 'xml';
+    OpenDialog.Options := [ofHideReadOnly, ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofEnableSizing];
     if OpenDialog.Execute then
     begin
       FileName := OpenDialog.FileName;
