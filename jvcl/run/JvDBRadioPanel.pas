@@ -605,7 +605,7 @@ begin
   for I := 0 to FButtons.Count - 1 do
     TGroupButton(FButtons[I]).Caption := FItems[I];
 
-  if FItemIndex >= 0 then
+  if (FItemIndex >= 0) and (FItemIndex<FButtons.Count) then
   begin
     FUpdating := True;
     TGroupButton(FButtons[FItemIndex]).Checked := True;
