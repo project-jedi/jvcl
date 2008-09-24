@@ -747,17 +747,18 @@ begin
     try
       Strings.Clear;
       for I := 0 to Node.Items.Count - 1 do
-        Strings.Add(Node.Items[I].Name);
+        if Node.Items[i].Items.Count > 0 then
+          Strings.Add(Node.Items[I].Name);
     finally
       Strings.EndUpdate;
     end;
   end
-  else
-    {$IFDEF CLR}
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
-    {$ELSE}
-    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
-    {$ENDIF CLR}
+//  else
+//    {$IFDEF CLR}
+//    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
+//    {$ELSE}
+//    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
+//    {$ENDIF CLR}
 end;
 
 procedure TJvCustomAppXMLStorage.EnumValues(const Path: string;
@@ -801,12 +802,12 @@ begin
       Strings.EndUpdate;
     end;
   end
-  else
-    {$IFDEF CLR}
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
-    {$ELSE}
-    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
-    {$ENDIF CLR}
+//  else
+//    {$IFDEF CLR}
+//    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
+//    {$ELSE}
+//    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
+//    {$ENDIF CLR}
 end;
 
 function TJvCustomAppXMLStorage.IsFolderInt(const Path: string;
