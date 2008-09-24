@@ -2869,7 +2869,7 @@ procedure TJvTFCustomGlance.CheckApptHint(Info: TJvTFGlanceCoord);
 var
   ExtraDesc : string;
 begin
-  if FViewer.ShowSchedNamesInHint then
+  if Assigned(FViewer) and FViewer.ShowSchedNamesInHint then
 {$IFDEF USEJVCL}
     ExtraDesc := StringsToStr(SchedNames, ', ', False);
 {$ELSE}

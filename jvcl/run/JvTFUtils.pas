@@ -261,10 +261,12 @@ procedure IncMonths(var ADate: TDateTime; N: Integer);
                                       // N defaults to 1
 var
   Y, M, D, EOMD: Word;
+  X : Cardinal;
 begin
   DecodeDate(ADate, Y, M, D);
-  Inc(Y, N div 12);
-  Inc(M, N mod 12);
+  X := ((Y * 12) + M - 1 + N);
+  Y := X div 12;
+  M := (X mod 12) + 1;
 
   // Be careful not to get invalid date in Feb.
   if M = 2 then
