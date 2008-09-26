@@ -140,6 +140,8 @@ begin
     Result := FileExists(Target.RootDir + '\Bin\OdacVcl100.bpl')
   else if Target.Version = 11 then
     Result := FileExists(Target.RootDir + '\Bin\OdacVcl105.bpl')
+  else if Target.Version = 12 then
+    Result := FileExists(Target.RootDir + '\Bin\OdacVcl120.bpl')
   else
     Result := FileExists(Target.RootDir + Format('\Odac\Bin\OdacVcl%d.bpl', [Target.Version]));
 end;
