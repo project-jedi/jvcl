@@ -51,12 +51,22 @@ type
   public
     procedure InitializeWizard; override;
   end;
+  
+  {$IFDEF COMPILER10_UP}
+    {$DEFINE CPPBUILDER}
+  {$ENDIF COMPILER10_UP}
+  {$IFDEF BCB}
+    {$DEFINE CPPBUILDER}
+  {$ENDIF BCB}
 
+
+  {$IFDEF CPPBUILDER}
   // Only used in BDS 4.0 and up
   TJvBuilderPluginWizardForm = class(TJvPluginWizardBuilder)
   public
     procedure InitializeWizard; override;
   end;
+  {$ENDIF CPPBUILDER}
 
 
 procedure Register;
@@ -72,19 +82,12 @@ begin
   //  RegisterLibraryExpert(TJvPluginWizard.Create);
   
   {$IFDEF DELPHI}
-    RegisterPackageWizard(TJvDelphiPluginWizardForm.Create);
+  RegisterPackageWizard(TJvDelphiPluginWizardForm.Create);
   {$ENDIF DELPHI}
   
-  {$IFDEF COMPILER10_UP}
-    RegisterPackageWizard(TJvBuilderPluginWizardForm.Create);
-  {$ELSE ~COMPILER10_UP}
-    {$IFDEF BCB}
-      {$IFDEF COMPILER5_UP}
-        RegisterPackageWizard(TJvBuilderPluginWizardForm.Create);
-      {$ENDIF COMPILER5_UP}
-    {$ENDIF BCB}
-  {$ENDIF COMPILER10_UP}
-  
+  {$IFDEF CPPBUILDER}
+  RegisterPackageWizard(TJvBuilderPluginWizardForm.Create);
+  {$ENDIF CPPBUILDER}
 end;
 
 { TJvDelphiPluginWizardForm }
@@ -96,6 +99,7 @@ begin
   UniqueID := RsPluginWizardIDString + '.delphi';
 end;
 
+{$IFDEF CPPBUILDER}
 { TJvBuilderPluginWizardForm }
 
 procedure TJvBuilderPluginWizardForm.InitializeWizard;
@@ -104,5 +108,6 @@ begin
   Caption := RsJvPluginWizard + ' for C++ Builder';
   UniqueID := RsPluginWizardIDString + '.builder';
 end;
+{$ENDIF CPPBUILDER}
   
 end.
