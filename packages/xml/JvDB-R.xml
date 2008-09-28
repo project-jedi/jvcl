@@ -41,6 +41,7 @@
     <Package Name="SMExportD2005" Targets="d9" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2006" Targets="d10" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2007" Targets="d11" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2009" Targets="d12" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC5" Targets="c5" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD5" Targets="d5" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -49,6 +50,7 @@
     <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2006" Targets="d10" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2007" Targets="d11" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2009" Targets="d12" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="DOA41C5" Targets="c5" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D5" Targets="d5" Condition="USE_3RDPARTY_DOA"/>
