@@ -989,7 +989,7 @@ var
     if Buffer <> nil then
     begin
       while Buffer[Result] <> 0 do
-        Inc(Buffer);
+        Inc(Result);
     end;
     {$ELSE}
     Result := StrLen(Buffer);
