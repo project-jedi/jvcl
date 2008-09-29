@@ -348,7 +348,7 @@ begin
       begin
         FBookmarks.Add(GetBookmark);
         Items.AddObject(FieldByName(FDataLink.FDataFieldName).DisplayText, FBookmarks.Last);
-        if Bookmark = Bmrk then
+        if CompareBookmarks(Bookmark, Bmrk) = 0 then
           CurIndex := N;
         Inc(N);
         Next;
