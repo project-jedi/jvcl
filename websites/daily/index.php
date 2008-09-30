@@ -66,6 +66,28 @@ function GetDisplayFileSize($filename)
     return $size;
 }
 
+function GetLatestFileName($name_start)
+{
+  $dir = opendir(".");
+  $result = "";
+  $max_time = 0;
+  while (($file = readdir($dir)) !== false) 
+  {
+      if (substr($file, 0, $name_start) == $name_start)
+      {
+          $file_time = filemtime($file);
+          if ($file_time > $max_time)
+          {
+              $max_time = $file_time;
+              $result = $file;
+          }
+      }      
+  }
+  closedir($dir);
+  
+  return $result; 
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -111,24 +133,22 @@ The latest version is available for download below<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; white-space: nowrap;">Latest full: <a href="JVCL3-Latest.zip">zip</a>, <a href="JVCL3-Latest.7z">7z</a>
-      (Mirror: <a href=<?php print '"'.$mirror_url_root.'JVCL3-'.GetShortFileDate("JVCL3-Latest.zip").'.zip"'?>>zip</a>,
-       <a href=<?php print '"'.$mirror_url_root.'JVCL3-'.GetShortFileDate("JVCL3-Latest.zip").'.7z"'?>>7z</a>)</td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate("JVCL3-Latest.zip"); ?> 
+      <td style="vertical-align: top; white-space: nowrap;">Latest full: <a href="<?php echo GetLatestFileName("JVCL3-2"); ?>">7z</a>
+      (Mirror: <a href="<?php print $mirror_url_root.GetLatestFileName("JVCL3-2"); ?>" >7z</a>)</td>
+      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate(GetLatestFileName("JVCL3-2")); ?> 
       </td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize("JVCL3-Latest.zip");?>, <?php print GetDisplayFileSize("JVCL3-Latest.7z");?> 
+      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize(GetLatestFileName("JVCL3-2"));?> 
       </td>
       <td style="vertical-align: top;">The complete set of files,
 including examples and installer.<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; white-space: nowrap;">Latest sources: <a href="JVCL3-Source-Latest.zip">zip</a>, <a href="JVCL3-Source-Latest.7z">7z</a>
-      (Mirror: <a href=<?php print '"'.$mirror_url_root.'JVCL3-Source-'.GetShortFileDate("JVCL3-Source-Latest.zip").'.zip"'?>>zip</a>,
-       <a href=<?php print '"'.$mirror_url_root.'JVCL3-Source-'.GetShortFileDate("JVCL3-Source-Latest.zip").'.7z"'?>>7z</a>)</td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate("JVCL3-Source-Latest.zip"); ?> 
+      <td style="vertical-align: top; white-space: nowrap;">Latest sources: <a href="<?php echo GetLatestFileName("JVCL3-Source"); ?>">7z</a>
+      (Mirror: <a href="<?php print $mirror_url_root.GetLatestFileName("JVCL3-Source"); ?>" >7z</a>)</td>
+      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate(GetLatestFileName("JVCL3-Source")); ?> 
       </td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize("JVCL3-Source-Latest.zip");?>, <?php print GetDisplayFileSize("JVCL3-Source-Latest.7z");?> 
+      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize(GetLatestFileName("JVCL3-Source"));?> 
       </td>
       <td style="vertical-align: top;">Only the source files, no
 examples and no installer<br>
@@ -162,7 +182,7 @@ or you can also grab one of the previous complete or source packages.<br>
       {
         if (!is_dir($filename) && 
             (substr($filename, 0, 14) == "JVCL3-Source-2") &&
-            (substr($filename, -3) == "zip"))
+            (substr($filename, -2) == "7z"))
         {
           $filenames[] = $filename;
         }
@@ -172,31 +192,27 @@ or you can also grab one of the previous complete or source packages.<br>
       
       foreach($filenames as $filename)
       {
-        $filename_7z = str_replace(".zip", ".7z", $filename);
         $filename_full = str_replace("JVCL3-Source-2", "JVCL3-2", $filename);
-        $filename_full_7z = str_replace(".zip", ".7z", $filename_full);
         $file_date = substr($filename_full, 6, 10);
         
         echo '<tr>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.$file_date.' full: <a href="'.$filename_full.'">zip</a>, <a href="'.$filename_full_7z.'">7z</a>'."\n";
-        echo '  (Mirror: <a href="'.$mirror_url_root.$filename_full.'">zip</a>,'."\n";
-        echo '   <a href="'.$mirror_url_root.$filename_full_7z.'">7z</a>)'."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.$file_date.' full: <a href="'.$filename_full.'">7z</a>'."\n";
+        echo '  (Mirror: <a href="'.$mirror_url_root.$filename_full.'">7z</a>)'."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename_full)."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename_full).', '.GetDisplayFileSize($filename_full_7z)."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename_full)."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top;">The complete set of files, including examples and installer.<br>'."\n";
         echo '  </td>'."\n";
         echo '</tr>'."\n";
         echo '<tr>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.$file_date.' sources: <a href="'.$filename.'">zip</a>, <a href="'.$filename_7z.'">7z</a>'."\n";
-        echo '  (Mirror: <a href="'.$mirror_url_root.$filename.'">zip</a>,'."\n";
-        echo '   <a href="'.$mirror_url_root.$filename_full_7z.'">7z</a>)'."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.$file_date.' sources: <a href="'.$filename.'">7z</a>'."\n";
+        echo '  (Mirror: <a href="'.$mirror_url_root.$filename.'">7z</a>)'."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename)."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename).', '.GetDisplayFileSize($filename_7z)."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename)."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top;">Only the source files, no examples and no installer<br>'."\n";
         echo '  </td>'."\n";
