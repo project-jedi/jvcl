@@ -149,12 +149,15 @@ type
 
   TWinControlFix = class(TWinControl)
   private
+    {$IFDEF COMPILER7_UP}
     procedure WMPrintClient(var Message: TWMPrintClient);
+    {$ENDIF COMPILER7_UP}
   protected
     procedure PaintWindow(DC: HDC); override;
     procedure MainWndProc(var Message: TMessage);
   end;
 
+{$IFDEF COMPILER7_UP}
 procedure TWinControlFix.WMPrintClient(var Message: TWMPrintClient);
 var
   SaveIndex: Integer;
@@ -175,6 +178,7 @@ begin
     else
       DefaultHandler(Message);
 end;
+{$ENDIF COMPILER7_UP}
 
 procedure TWinControlFix.PaintWindow(DC: HDC);
 var
@@ -213,7 +217,9 @@ begin
     { Vista Workaround }
     RedirectFunction(@TOpenWinControl.MainWndProc, @TWinControlFix.MainWndProc);
   end;
+  {$IFDEF COMPILER7_UP}
   RedirectFunction(GetDynamicMethod(TWinControl, WM_PRINTCLIENT), @TWinControlFix.WMPrintClient);
+  {$ENDIF COMPILER7_UP}
   RedirectFunction(@TOpenWinControl.PaintWindow, @TWinControlFix.PaintWindow);
 end;
 
