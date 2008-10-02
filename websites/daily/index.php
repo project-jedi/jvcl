@@ -14,7 +14,7 @@ for the specific language governing rights and limitations under the License.
 The Original Code is: index.php, released on 2005-05-26.
 
 The Initial Developer of the Original Code is Olivier Sannier
-Portions created by Peter Thörnqvist are Copyright (C) 2005 Olivier Sannier.
+Portions created by Olivier Sannier are Copyright (C) 2005 Olivier Sannier.
 All Rights Reserved.
 
 Contributor(s): none
@@ -66,14 +66,14 @@ function GetDisplayFileSize($filename)
     return $size;
 }
 
-function GetLatestFileName($name_start)
+function GetLatestFileName($name_exp)
 {
   $dir = opendir(".");
   $result = "";
   $max_time = 0;
   while (($file = readdir($dir)) !== false) 
   {
-      if (substr($file, 0, $name_start) == $name_start)
+      if (preg_match($name_exp, $file) == 1)
       {
           $file_time = filemtime($file);
           if ($file_time > $max_time)
@@ -87,6 +87,11 @@ function GetLatestFileName($name_start)
   
   return $result; 
 }
+
+$LatestFullFileName7z = GetLatestFileName("/JVCL3-2.+\.7z/");
+$LatestFullFileNameZip = GetLatestFileName("/JVCL3-2.+\.zip/");
+$LatestSourceFileName7z = GetLatestFileName("/JVCL3-Source.+\.7z/");
+$LatestSourceFileNameZip = GetLatestFileName("/JVCL3-Source.+\.zip/");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -133,25 +138,42 @@ The latest version is available for download below<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; white-space: nowrap;">Latest full: <a href="<?php echo GetLatestFileName("JVCL3-2"); ?>">7z</a>
-      (Mirror: <a href="<?php print $mirror_url_root.GetLatestFileName("JVCL3-2"); ?>" >7z</a>)</td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate(GetLatestFileName("JVCL3-2")); ?> 
+      <td style="vertical-align: top; white-space: nowrap;">
+        Latest full: 
+        <a href="<?php echo $LatestFullFileNameZip; ?>">zip</a>,
+        <a href="<?php echo $LatestFullFileName7z; ?>">7z</a>
+        (Mirror: 
+         <a href="<?php print $mirror_url_root.$LatestFullFileNameZip; ?>" >zip</a>,
+         <a href="<?php print $mirror_url_root.$LatestFullFileName7z; ?>" >7z</a>
+        )
       </td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize(GetLatestFileName("JVCL3-2"));?> 
+      <td style="vertical-align: top; white-space: nowrap;">
+        <?php print GetDisplayFileDate($LatestFullFileName7z); ?> 
       </td>
-      <td style="vertical-align: top;">The complete set of files,
-including examples and installer.<br>
+      <td style="vertical-align: top; white-space: nowrap;">
+        <?php print GetDisplayFileSize($LatestFullFileName7z);?> 
+      </td>
+      <td style="vertical-align: top;">
+        The complete set of files, including examples and installer.
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; white-space: nowrap;">Latest sources: <a href="<?php echo GetLatestFileName("JVCL3-Source"); ?>">7z</a>
-      (Mirror: <a href="<?php print $mirror_url_root.GetLatestFileName("JVCL3-Source"); ?>" >7z</a>)</td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate(GetLatestFileName("JVCL3-Source")); ?> 
+      <td style="vertical-align: top; white-space: nowrap;">
+        Latest sources: 
+        <a href="<?php echo $LatestSourceFileNameZip; ?>">zip</a>,
+        <a href="<?php echo $LatestSourceFileName7z; ?>">7z</a>
+        (Mirror: 
+         <a href="<?php print $mirror_url_root.$LatestSourceFileNameZip; ?>" >zip</a>,
+         <a href="<?php print $mirror_url_root.$LatestSourceFileName7z; ?>" >7z</a>
+        )
       </td>
-      <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize(GetLatestFileName("JVCL3-Source"));?> 
+      <td style="vertical-align: top; white-space: nowrap;">
+        <?php print GetDisplayFileDate($LatestSourceFileName7z); ?> 
       </td>
-      <td style="vertical-align: top;">Only the source files, no
-examples and no installer<br>
+      <td style="vertical-align: top; white-space: nowrap;">
+        <?php print GetDisplayFileSize($LatestSourceFileName7z);?> 
+      </td>
+      <td style="vertical-align: top;">Only the source files, no examples and no installer<br>
       </td>
     </tr>
   </tbody>
@@ -190,29 +212,44 @@ or you can also grab one of the previous complete or source packages.<br>
         
       rsort($filenames);
       
-      foreach($filenames as $filename)
+      foreach($filenames as $filename7z)
       {
-        $filename_full = str_replace("JVCL3-Source-2", "JVCL3-2", $filename);
-        $file_date = substr($filename_full, 6, 10);
+        $filename7z_full = str_replace("JVCL3-Source-2", "JVCL3-2", $filename7z);
+        $file_date = substr($filename7z_full, 6, 10);
+
+        $filenamezip = str_replace(".7z", ".zip", $filename7z);
+        $filenamezip_full = str_replace(".7z", ".zip", $filename7z_full);
         
         echo '<tr>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.$file_date.' full: <a href="'.$filename_full.'">7z</a>'."\n";
-        echo '  (Mirror: <a href="'.$mirror_url_root.$filename_full.'">7z</a>)'."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'."\n";
+        echo '    '.$file_date.' full: '."\n";
+        echo '    <a href="'.$filenamezip_full.'">zip</a>,'."\n";
+        echo '    <a href="'.$filename7z_full.'">7z</a>'."\n";
+        echo '    (Mirror:'."\n";
+        echo '     <a href="'.$mirror_url_root.$filenamezip_full.'">zip</a>,'."\n";
+        echo '     <a href="'.$mirror_url_root.$filename7z_full.'">7z</a>'."\n";
+        echo '    )'."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename_full)."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename7z_full)."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename_full)."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename7z_full)."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top;">The complete set of files, including examples and installer.<br>'."\n";
         echo '  </td>'."\n";
         echo '</tr>'."\n";
         echo '<tr>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.$file_date.' sources: <a href="'.$filename.'">7z</a>'."\n";
-        echo '  (Mirror: <a href="'.$mirror_url_root.$filename.'">7z</a>)'."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'."\n";
+        echo '    '.$file_date.' sources:'."\n";
+        echo '    <a href="'.$filenamezip.'">zip</a>,'."\n";
+        echo '    <a href="'.$filename7z.'">7z</a>'."\n";
+        echo '    (Mirror:'."\n";
+        echo '     <a href="'.$mirror_url_root.$filenamezip.'">zip</a>,'."\n";
+        echo '     <a href="'.$mirror_url_root.$filename7z.'">7z</a>'."\n";
+        echo '    )'."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename)."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename7z)."\n";
         echo '  </td>'."\n";
-        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename)."\n";
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename7z)."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top;">Only the source files, no examples and no installer<br>'."\n";
         echo '  </td>'."\n";
@@ -225,11 +262,9 @@ or you can also grab one of the previous complete or source packages.<br>
 The dates are presented according to the ISO standard (YYYY-MM-DD) and the hours are those of the web server (US Pacific time).<br>
 Notes:<br>
 <ul>
-  <li>The generation is started at 01:30 Us Pacific Time.</li> 
-  <li>The mirror generation is started at 10:30 Paris Time.</li> 
+  <li>The generation is started at 10:30 Paris Time.</li> 
   <li>The mirror is located in France.</li>
-  <li>It takes up to two hours for the <a href="http://www.7-zip.org/">7zip</a> files to be generated.</li> 
-  <li>The "Latest" link is created once every file is available.</li>
+  <li>It takes up to two hours for the process to complete</li> 
 </ul> 
 <br>
 Should you have any problems with those files, please do not hesitate
