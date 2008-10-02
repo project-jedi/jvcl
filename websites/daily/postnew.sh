@@ -23,36 +23,43 @@
 # 
 # Description:
 #   This is a shell script which will checkout a working copy of the JVCL 
-#   repository, compress it and upload it to the jvcl's group location.
-#   It is designed to be called from a daily cron job.
+#   repository, compress it into zip and 7zip files.
+#   It is designed to be called from a global script that will upload the
+#   results to various locations.
 #
 # ----------------------------------------------------------------------------
 # $Id$
 
 # Make our paths easy to use
-# Note: Those paths are valid on the shell server at sourceforge, please update 
+# Note: Those paths are valid on obones' server, please update 
 #       to reflect those you are using on your own machine. 
 
 # path where to put the zipped files and build status page
-export DAILYDIR=/home/groups/j/jv/jvcl/htdocs/daily
+export DAILYDIR=/home/obones/jvcl_export/daily
 
 # working path used to export the directory
-export FILEHOME=/home/groups/j/jv/jvcl/daily_export
+export FILEHOME=/home/obones/jvcl_export/files
 
 # start location (usually equal to where this script is located).
-export STARTFOLDER=/home/groups/j/jv/jvcl/bin
+export STARTFOLDER=/home/obones/jvcl_export
+
+# Base SVN URL
+export BASESVNURL=http://jvcl.svn.sourceforge.net/svnroot/jvcl/trunk
 
 # URL to checkout from. Requires that the svn binary supports SSL
-export SVNURL=https://svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl
+export SVNURL=$BASESVNURL/jvcl
+
+# URL to checkout index.php from. Requires that the svn binary supports SSL
+export SVN_INDEX_PHP_URL=$BASESVNURL/websites/daily/index.php
 
 # the SVN command used to get the files
 export SVNCOMMAND=export
 
 # Locations of various required binaries
-# Note: Those paths are valid on the shell server at sourceforge, please update 
-#       to reflect those you are using on your own machine. 
-export SVNBIN=/usr/bin/svn
-export FINDBIN=/usr/bin/find
+# Note: Those paths are valid on obones' server, please update to reflect those
+#       you are using on your own machine. 
+export SVNBIN=/usr/local/bin/svn
+export FINDBIN=/bin/find
 export ECHOBIN=/bin/echo
 export RMBIN=/bin/rm
 export UNIX2DOSBIN=/usr/bin/unix2dos
@@ -60,7 +67,7 @@ export ZIPBIN=/usr/bin/zip
 export CPBIN=/bin/cp
 export LNBIN=/bin/ln
 export CHMODBIN=/bin/chmod
-export SZIPBIN=/home/groups/j/jv/jvcl/bin/7za
+export SZIPBIN=/usr/local/bin/7za
 
 # The call used to get a timestamp for the zip files
 export DATESTRING=`date -I`
@@ -112,7 +119,6 @@ cd $FILEHOME/jvcl
 $ECHOBIN `CurrentTimeTag` "creating zip files"
 # create zip with all files and copy to daily
 $ZIPBIN -rq JVCL3.zip .
-#export DATESTRING=`date -I`
 $CPBIN JVCL3.zip $DAILYDIR/JVCL3-$DATESTRING.zip
 $RMBIN -f JVCL3.zip
 
@@ -120,22 +126,18 @@ $RMBIN -f JVCL3.zip
 $ZIPBIN -rq JVCL3-Source.zip  \*.htm \*.html \*.txt \*.bat \*.css \*.jpg common design run packages Resources install help
 # remove the release folder - not needed
 $ZIPBIN -dq JVCL3-Source.zip install/release/\*
-
-#export DATESTRING=`date -I`
 $CPBIN JVCL3-Source.zip $DAILYDIR/JVCL3-Source-$DATESTRING.zip
 $RMBIN -f JVCL3-Source.zip
 
 $ECHOBIN `CurrentTimeTag` "creating 7zip files"
 # create 7zip with all files and copy to daily
 $SZIPBIN a -r JVCL3.7z \*
-#export DATESTRING=`date -I`
 $CPBIN JVCL3.7z $DAILYDIR/JVCL3-$DATESTRING.7z
 $RMBIN -f JVCL3.7z
 
 # create 7zip with sources only and copy to daily
 $SZIPBIN a -r JVCL3-Source.7z  \*.htm \*.html \*.txt \*.bat \*.css \*.jpg common design run packages Resources install help -x!install/release/\*
 
-#export DATESTRING=`date -I`
 $CPBIN JVCL3-Source.7z $DAILYDIR/JVCL3-Source-$DATESTRING.7z
 $RMBIN -f JVCL3-Source.7z
 
@@ -144,35 +146,15 @@ cd $DAILYDIR
 # delete old zips (we only keep 3 at a time)
 $FINDBIN . \( -daystart -mtime +2 -type f -name J\* \) -exec rm -f {} \;
 
-# link to latest full
-$RMBIN -f JVCL3-Latest.zip
-$LNBIN -s JVCL3-$DATESTRING.zip JVCL3-Latest.zip
-$CHMODBIN g+w JVCL3-$DATESTRING.zip
-$CHMODBIN g+w JVCL3-Latest.zip
-$RMBIN -f JVCL3-Latest.7z
-$LNBIN -s JVCL3-$DATESTRING.7z JVCL3-Latest.7z
-$CHMODBIN g+w JVCL3-$DATESTRING.7z
-$CHMODBIN g+w JVCL3-Latest.7z
-
-# link to latest source
-$RMBIN -f JVCL3-Source-Latest.zip
-$LNBIN -s JVCL3-Source-$DATESTRING.zip JVCL3-Source-Latest.zip
-$CHMODBIN g+w JVCL3-Source-$DATESTRING.zip
-$CHMODBIN g+w JVCL3-Source-Latest.zip
-$RMBIN -f JVCL3-Source-Latest.7z
-$LNBIN -s JVCL3-Source-$DATESTRING.7z JVCL3-Source-Latest.7z
-$CHMODBIN g+w JVCL3-Source-$DATESTRING.7z
-$CHMODBIN g+w JVCL3-Source-Latest.7z
-
 # copy the status docs
 $ECHOBIN `CurrentTimeTag` "copying build status page"
 $CPBIN -p -u -f "$FILEHOME/jvcl/help/Build status.html" "$DAILYDIR/Build status.html"
-# $CPBIN -p -u -f "$FILEHOME/jvcl/default.css" "$DAILYDIR/default.css"
-# make a changelog file
-# $CPBIN -p -u -f $STARTFOLDER/cvs2cl.pl $FILEHOME/jvcl/cvs2cl.pl
-# cd $FILEHOME/jvcl
-# cvs2cl.pl /dev/JVCL3
-# cd $STARTFOLDER
+
+# Extract the index.php page
+$ECHOBIN `CurrentTimeTag` "Extracting the index.php page"
+$SVNBIN $SVNCOMMAND -q $SVN_INDEX_PHP_URL
+
+# cleanup
 $ECHOBIN `CurrentTimeTag` "deleting exported jvcl files"
 $RMBIN -rf $FILEHOME/jvcl
 
