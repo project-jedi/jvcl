@@ -289,7 +289,7 @@ end;
 //=== { TSharedImage } =======================================================
 
 type
-  TGifSignature = array [0..2] of Char;
+  TGifSignature = array [0..2] of AnsiChar;
 
 const
   GIFSignature: TGifSignature = 'GIF';
@@ -297,7 +297,7 @@ const
 
 function GIFVersionName(Version: TGIFVersion): string;
 begin
-  Result := StrPas(GIFVersionStr[Version]);
+  Result := string(GIFVersionStr[Version]);
 end;
 
 const
