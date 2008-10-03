@@ -2356,14 +2356,22 @@ end;
 {$IFNDEF CLR}
 procedure FillString(var Buffer: string; Count: Integer; const Value: Char);
 begin
+  {$IFDEF COMPILER12_UP}
+  Buffer := StringOfChar(Value, Count);
+  {$ELSE}
   FillChar(Buffer[1], Count * SizeOf(Char), Value);
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure FillString(var Buffer: string; StartIndex, Count: Integer; const Value: Char);
 begin
   if StartIndex <= 0 then
     StartIndex := 1;
+  {$IFDEF COMPILER12_UP}
+  Buffer := Copy(Buffer, 1, StartIndex - 1) + StringOfChar(Value, Count);
+  {$ELSE}
   FillChar(Buffer[StartIndex], Count * SizeOf(Char), Value);
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure MoveString(const Source: string; var Dest: string; Count: Integer);
