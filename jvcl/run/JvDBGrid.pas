@@ -2352,7 +2352,7 @@ begin
 
       if (Button = mbRight) and
         (dgTitles in Options) and (dgIndicator in Options) and
-        (Cell.X = 0) and (Cell.Y = 0) then
+        (Cell.Y = 0) then
       begin
         if (FTitleArrow and Assigned(FOnTitleArrowMenuEvent)) then
           FOnTitleArrowMenuEvent(Self);
