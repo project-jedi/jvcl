@@ -688,28 +688,47 @@ end;
 function TJvCustomAppIniStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
-  ValueNames: TStrings;
+  ValueNames: TStringList;
+  Sections : TStringList;
   I: Integer;
 begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := DefaultSection;
   ReloadIfNeeded;
-  Result := IniFile.SectionExists(RefPath);
-  if Result and ListIsValue and IniFile.ValueExists(RefPath, cCount) then
-  begin
-    Result := False;
-    ValueNames := TStringList.Create;
-    try
-      EnumValues(Path, ValueNames, True);
-      I := ValueNames.Count - 1;
-      while Result and (I >= 0) do
-      begin
-        Result := not AnsiSameText(ValueNames[I], cCount) and not NameIsListItem(ValueNames[I]);
-        Dec(I);
+  if IniFile.SectionExists(RefPath) then
+    if ListIsValue and IniFile.ValueExists(RefPath, cCount) then
+    begin
+      ValueNames := TStringList.Create;
+      try
+        EnumValues(Path, ValueNames, True);
+        I := ValueNames.Count - 1;
+        Result := i > 0;
+        while Result and (I >= 0) do
+        begin
+          Result := not AnsiSameText(ValueNames[I], cCount) and not NameIsListItem(ValueNames[I]);
+          Dec(I);
+        end;
+      finally
+        ValueNames.Free;
       end;
+    end
+    else
+      Result := True
+  else
+  begin
+    Sections := tStringList.Create;
+    try
+      IniFile.ReadSections(Sections);
+      for i := 0 to Sections.Count - 1 do
+        if Pos(RefPath+PathDelim, Sections[i]) = 1  then
+        begin
+          Result := True;
+          Exit;
+        end;
+      Result := False;
     finally
-      ValueNames.Free;
+      Sections.Free;
     end;
   end;
 end;

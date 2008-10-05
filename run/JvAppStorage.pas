@@ -1624,7 +1624,12 @@ var
   I: Integer;
   S: string;
   PrevIdx: Integer;
+  InsertPath : string;
 begin
+  if PrefixPath = PathDelim then
+    InsertPath := ''
+  else
+    InsertPath := PrefixPath;
   TempList := TStringList.Create;
   try
     if aeoValues in Options then
@@ -1635,7 +1640,7 @@ begin
         if TempList[I] = '' then
           S := Copy(PrefixPath, 1, Length(PrefixPath) - 1)
         else
-          S := PrefixPath + TempList[I];
+          S := InsertPath + TempList[I];
         if S <> '' then
         begin
           PrevIdx := Strings.IndexOf(S);
@@ -1656,12 +1661,12 @@ begin
         if (aeoFolders in Options) and IsFolder(SearchPath + PathDelim +
           TempList[I], aeoReportListAsValue in Options) then
         begin
-          PrevIdx := Strings.IndexOf(PrefixPath + TempList[I]);
+          PrevIdx := Strings.IndexOf(InsertPath + TempList[I]);
           if PrevIdx > -1 then
             Strings.Objects[PrevIdx] :=
               TObject(Integer(Strings.Objects[PrevIdx]) or aptFolder)
           else
-            Strings.AddObject(PrefixPath + TempList[I], TObject(aptFolder));
+            Strings.AddObject(InsertPath + TempList[I], TObject(aptFolder));
         end;
         if aeoRecursive in Options then
           InternalGetStoredValues(ConcatPaths([PrefixPath, TempList[I]]) + PathDelim,
