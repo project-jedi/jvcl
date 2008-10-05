@@ -1703,9 +1703,10 @@ resourcestring
 
 //=== JvPoweredBy.pas ========================================================
 resourcestring
-  //RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/PoweredByJCL.htm';
-  RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/';
-  RsURLPoweredByJVCL = 'http://homepages.borland.com/jedi/jvcl/PoweredByJVCL.htm';
+  //RsURLPoweredByJCL = 'http://homepages.codegear.com/jedi/jcl/PoweredByJCL.htm';
+  RsURLPoweredByJCL = 'http://homepages.codegear.com/jedi/jcl/';
+  //RsURLPoweredByJVCL = 'http://homepages.codegear.com/jedi/jvcl/PoweredByJVCL.htm';
+  RsURLPoweredByJVCL = 'http://homepages.codegear.com/jedi/jvcl/';
 
 //=== JvProfilerForm.pas =====================================================
 resourcestring
