@@ -137,16 +137,6 @@ end;
 type                          
   TOpenWinControl = class(TWinControl);
 
-  {$IFNDEF COMPILER7_UP}
-  TWMPrint = packed record
-    Msg: Cardinal;
-    DC: HDC;
-    Flags: Cardinal;
-    Result: Integer;
-  end;
-  TWMPrintClient = TWMPrint;
-  {$ENDIF ~COMPILER7_UP}
-
   TWinControlFix = class(TWinControl)
   private
     {$IFDEF COMPILER7_UP}
