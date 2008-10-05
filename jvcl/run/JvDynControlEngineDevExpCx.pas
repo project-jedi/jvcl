@@ -24,6 +24,7 @@ Known Issues:
 unit JvDynControlEngineDevExpCx;
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 interface
 
