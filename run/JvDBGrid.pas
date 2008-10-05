@@ -3704,7 +3704,11 @@ begin
                 FBooleanFieldToEdit.Value := FStringForFalse;
             end;
         else
-          FBooleanFieldToEdit.Value := FieldValueChange + 1;
+          //FBooleanFieldToEdit.Value := FieldValueChange + 1;
+          if FieldValueChange <> JvGridBool_INVERT then
+            FBooleanFieldToEdit.Value := FieldValueChange + 1
+          else
+            FBooleanFieldToEdit.Value := 1;
         end;
       end
       else
