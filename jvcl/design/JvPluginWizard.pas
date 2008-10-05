@@ -954,7 +954,7 @@ begin
   begin
     if PlugType = ptDLL then
     begin
-      // I have no idea why we have to do this for the newer Borland/Codegear IDEs, but it is not required
+      // I have no idea why we have to do this for the newer Borland/CodeGear IDEs, but it is not required
       // for older versions (such as BCB5/6), since they create their own project source file for DLLs
       {$IFDEF COMPILER10_UP}
       DllModuleCreator := TJvPluginDLLModuleCreator.Create;
