@@ -893,9 +893,9 @@ function CharIsMoney(const Ch: Char): Boolean;
 // issue# 2935: http://homepages.codegear.com/jedi/issuetracker/view.php?id=2935
 // and in Mantis 4466: http://homepages.codegear.com/jedi/issuetracker/view.php?id=4466
 
-function JvSafeStrToFloatDef(const Str: string; Def: Extended;aDecimalSeparator:Char = ' '): Extended; {NOTE: default value of Space is a magic wildcard}
+function JvSafeStrToFloatDef(const Str: string; Def: Extended; aDecimalSeparator: Char = ' '): Extended; {NOTE: default value of Space is a magic wildcard}
 
-function JvSafeStrToFloat(const Str: string; aDecimalSeparator:Char = ' '): Extended; {NOTE: default value of Space is a magic wildcard}
+function JvSafeStrToFloat(const Str: string; aDecimalSeparator: Char = ' '): Extended; {NOTE: default value of Space is a magic wildcard}
 
 
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
@@ -7908,49 +7908,44 @@ begin
   end;
 end;
 
-{ JvTryStrToFloat:
-  This is identical to SysUtils.TryStrToFloat, except that it actually has a real try block
-  which catches the access violations that can happen inside the assembler code of
-  TextToFloat. In .NET this routine is not needed, just call TryStrToFloat. }
-function JvTryStrToFloat(const S: string; out Value: Extended): Boolean; overload;
-begin
- try
-   Result := TextToFloat(PChar(S), Value, fvExtended);
- except
-    Result := false;
- end;
-end;
-
-{ JvTryStrToFloat: (OVERLOAD:FormatSettings)
-  This is identical to SysUtils.TryStrToFloat, except that on Win32 it actually
-  has a real try block which catches the access violations that can happen inside the assembler code of
-  TextToFloat. In .NET this routine is not needed, just call TryStrToFloat. }
-function JvTryStrToFloat(const S: string; out Value: Extended;const FormatSettings: TFormatSettings): Boolean; overload;
-begin
- try
-   Result := TextToFloat(PChar(S), Value, fvExtended);
- except
-    Result := false;
- end;
-end;
-
-
 { JvStrConvertErrorFmt used from JvSafeStrToFloat }
-procedure JvStrConvertErrorFmt(ResString: PResStringRec; const Args: array of const); local;
+procedure JvStrConvertErrorFmt(ResString: PResStringRec; const Args: array of const);
 begin
   raise EJvConvertError.CreateResFmt(ResString, Args); { will be also caught if you catch E:EConvertERror }
 end;
+
+{$IFNDEF COMPILER6_UP}
+type
+  TFormatSettings = record
+    DecimalSeparator: Char;
+  end;
+
+function TextToFloatD5(Buffer: PAnsiChar; var Value; ValueType: TFloatValue;
+  const FormatSettings: TFormatSettings): Boolean;
+var
+  DecimalSep: Char;
+begin
+  { not threadsafe }
+  DecimalSep := DecimalSeparator;
+  try
+    DecimalSeparator := FormatSettings.DecimalSeparator;
+    Result := TextToFloat(Buffer, Value, ValueType);
+  finally
+    DecimalSeparator := DecimalSep;
+  end;
+end;
+{$ENDIF ~COMPILER6_UP}
 
 
 { _JvSafeStrToFloat:  [PRIVATE INTERNAL FUNCTION]
 
      [ not to be called outside this unit, see below for public api ]
-     
+
     This is a refactored version of the internal guts of the former routine
     StrToFloatDefIgnoreInvalidCharacters with some improvements made to decimal
     separator handling.
 }
-function _JvSafeStrToFloat(const Str: string; aDecimalSeparator:Char; var outValue:Extended): Boolean;
+function _JvSafeStrToFloat(const Str: string; aDecimalSeparator: Char; var OutValue: Extended): Boolean;
 var
   LStr: TJclStringBuilder;
   {$IFDEF CLR}
@@ -7959,71 +7954,76 @@ var
   {$ENDIF CLR}
   I: Integer;
   CharSet: TSysCharSet;
-  FormatSettings:TFormatSettings;
+  FormatSettings: TFormatSettings;
 begin
   Result := false;
-  if Str = '' then exit; { hows this for a nice optimization?  WPostma. }
+  if Str = '' then
+    Exit; { hows this for a nice optimization?  WPostma. }
 
   { Locale Handling logic October 2008 supercedes former StrToFloatUS functionality. }
-  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT,FormatSettings);
-  if aDecimalSeparator=' ' then begin {magic mode}
-        aDecimalSeparator := FormatSettings.DecimalSeparator; { default case! use system defaults! }
-  end else begin
-      FormatSettings.DecimalSeparator := aDecimalSeparator; { custom format specified! }
-  end;
+  {$IFDEF COMPILER6_UP}
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, FormatSettings);
+  {$ELSE}
+  FormatSettings.DecimalSeparator := DecimalSeparator;
+  {$ENDIF COMPILER6_UP}
+  if aDecimalSeparator = ' ' then {magic mode}
+    aDecimalSeparator := FormatSettings.DecimalSeparator { default case! use system defaults! }
+  else
+    FormatSettings.DecimalSeparator := aDecimalSeparator; { custom format specified! }
 
   { Cross-codepage safety feature:  Handed '1.2', a string without a comma,
     but which is obviously a floating point number, convert it properly also.
     This functionality is important for JvCsvDataSet and may be important in other
     places. }
-  if (Pos(USDecimalSeparator,Str)>0 ) and (Pos(aDecimalSeparator,Str)=0) then begin
-       aDecimalSeparator := USDecimalSeparator; { automatically works when US decimal values are encountered }
-      FormatSettings.DecimalSeparator := aDecimalSeparator; { custom format specified! }
+  if (Pos(USDecimalSeparator, Str) > 0) and (Pos(aDecimalSeparator, Str) = 0) then
+  begin
+    aDecimalSeparator := USDecimalSeparator; { automatically works when US decimal values are encountered }
+    FormatSettings.DecimalSeparator := aDecimalSeparator; { custom format specified! }
   end;
-
-
-
 
   LStr := TJclStringBuilder.Create(Length(Str));
   try
-      CharSet := ['0'..'9', '-', '+', 'e', 'E', AnsiChar(aDecimalSeparator{$IFDEF CLR}[1]{$ENDIF})];
-      //if (aDecimalSeparator<>USDecimalSeparator) then
-      //    CharSet := CharSet + [USDecimalSeparator]; { we allow US Decimal separators, even when it's not the regional setting, we just grandfather it in as valid }
+    CharSet := ['0'..'9', '-', '+', 'e', 'E', AnsiChar(aDecimalSeparator{$IFDEF CLR}[1]{$ENDIF})];
+    //if (aDecimalSeparator<>USDecimalSeparator) then
+    //    CharSet := CharSet + [USDecimalSeparator]; { we allow US Decimal separators, even when it's not the regional setting, we just grandfather it in as valid }
 
-      for I := 1 to Length(Str) do
-        if CharInSet(Str[I], CharSet) then
-          LStr.Append(Str[I]);
+    for I := 1 to Length(Str) do
+      if CharInSet(Str[I], CharSet) then
+        LStr.Append(Str[I]);
 
 
-      if LStr.Length > 0 then
-      try
-        { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-        if LStr[LStr.Length - 1] = '-' then
-          LStr.Append('0');
+    if LStr.Length > 0 then
+    try
+      { the string '-' fails StrToFloat, but it can be interpreted as 0  }
+      if LStr[LStr.Length - 1] = '-' then
+        LStr.Append('0');
 
-        { a string that ends in a '.' such as '12.' fails StrToFloat,
-         but as far as I am concerned, it may as well be interpreted as 12.0 }
-        if LStr[LStr.Length - 1] = aDecimalSeparator{$IFDEF CLR}[1]{$ENDIF} then
-          LStr.Append('0');
+      { a string that ends in a '.' such as '12.' fails StrToFloat,
+       but as far as I am concerned, it may as well be interpreted as 12.0 }
+      if LStr[LStr.Length - 1] = aDecimalSeparator{$IFDEF CLR}[1]{$ENDIF} then
+        LStr.Append('0');
 
-        {$IFDEF CLR}
-        b := TryStrToFloat(LStr.ToString(), d,);
-        outValue := d;
-        if not b then
-        {$ELSE}
-        if not TextToFloat( PChar(LStr.ToString), outValue, fvExtended, FormatSettings) then
-        {$ENDIF CLR}
-          result := false
-        else
-          result := true; { success! }
+      {$IFDEF CLR}
+      b := TryStrToFloat(LStr.ToString(), d, FormatSettings);
+      OutValue := d;
+      if not b then
+      {$ELSE}
+      {$IFDEF COMPILER6_UP}
+      if not TextToFloat(PChar(LStr.ToString), OutValue, fvExtended, FormatSettings) then
+      {$ELSE}
+      if not TextToFloatD5(PChar(LStr.ToString), OutValue, fvExtended, FormatSettings) then
+      {$ENDIF COMPILER6_UP}
+      {$ENDIF CLR}
+        Result := False
+      else
+        Result := True; { success! }
 
-      except
-        result := false;
-        exit;
-      end;
-   finally
-      LStr.Free;
-   end;
+    except
+      Result := False;
+    end;
+  finally
+    LStr.Free;
+  end;
 end;
 
 // JvSafeStrToFloatDef:
@@ -8039,24 +8039,22 @@ end;
 // encoding must be supported.  We renamed this from StrToFloatDefIgnoreInvalidCharacters
 // to JvSafeStrToFloatDef because it has multiple "floating point runtime exception safety"
 // enhancements.
-function JvSafeStrToFloatDef(const Str: string; Def: Extended;aDecimalSeparator:Char): Extended;
+function JvSafeStrToFloatDef(const Str: string; Def: Extended; aDecimalSeparator: Char): Extended;
 begin
-   { one handy dandy api expects a Default value returned instead }
-   if (not _JvSafeStrToFloat(Str,aDecimalSeparator,result)) then
-      result := Def; { failed, use default }
+  { one handy dandy api expects a Default value returned instead }
+  if not _JvSafeStrToFloat(Str, aDecimalSeparator, Result) then
+    Result := Def; { failed, use default }
 end;
-
 
 // New routine, same as JvSafeStrToFloatDef but it will raise a conversion exception,
 // for cases when you actually want to handle an EConvertError yourself and where
-// there is no convenient or possible float value for your case. 
-function JvSafeStrToFloat(const Str: string; aDecimalSeparator:Char): Extended;
+// there is no convenient or possible float value for your case.
+function JvSafeStrToFloat(const Str: string; aDecimalSeparator: Char): Extended;
 begin
- { the other handy dandy api style expects us to raise an EConvertError. }
-   if (not _JvSafeStrToFloat(Str,aDecimalSeparator,result)) then
-        JvStrConvertErrorFmt(@SInvalidFloat, [Str]); {failed, raise exception }
+  { the other handy dandy api style expects us to raise an EConvertError. }
+  if not _JvSafeStrToFloat(Str, aDecimalSeparator, Result) then
+    JvStrConvertErrorFmt(@SInvalidFloat, [Str]); {failed, raise exception }
 end;
-
 
 function IntToExtended(I: Integer): Extended;
 begin
