@@ -3253,7 +3253,11 @@ begin
 
   if Length(aCsvFieldDef) > 0 then
   begin
-    JvStringToCsvRow(aCsvFieldDef, Separator, CsvFieldRec, False, False);
+    if (Separator<>',') and (Pos(Separator,aCsvFieldDef)=0) then begin
+      JvStringToCsvRow(aCsvFieldDef, ',', CsvFieldRec, False, False); { workaround for serious annoyance }
+    end else begin
+      JvStringToCsvRow(aCsvFieldDef, Separator, CsvFieldRec, False, False);
+    end;
 
     ColNum := 0;
     while CsvRowGetColumnMarker(CsvFieldRec, ColNum) <> JvCsv_COLUMN_ENDMARKER do
