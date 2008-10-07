@@ -38,6 +38,9 @@ uses
   Windows, Messages, Classes, Graphics, Controls,
   JvTimer, JvComponent, JvExControls;
 
+const
+  WM_JVDICE_STOP_ROTATE = WM_APP + 1;
+
 type
   TJvDiceValue = 1..6;
 
@@ -72,6 +75,7 @@ type
     procedure Change; dynamic;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
+    procedure WmJvDidecStopRotate(var Msg: TMessage); message WM_JVDICE_STOP_ROTATE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -95,8 +99,8 @@ type
     property ParentColor;
     property ParentShowHint;
     property PopupMenu;
-    property Rotate: Boolean read FRotate write SetRotate;
-    property ShowFocus: Boolean read FShowFocus write SetShowFocus;
+    property Rotate: Boolean read FRotate write SetRotate default False;
+    property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property ShowHint;
     property Anchors;
     property Constraints;
@@ -300,20 +304,25 @@ procedure TJvDice.TimerFires(Sender: TObject);
 var
   Now: Longint;
 begin
+  // Note: This method here is done in the context of the main thread of the
+  //       application. However, the timer thread is waiting for this event
+  //       handler to finish. So if call any method that in turn waits for the
+  //       timer thread, we are bound to get into a deadlock. This is the
+  //       reason why we post a message to the component telling it to stop
+  //       rotating at the first available moment after we have returned.
   NewRandomValue;
-  if not FRotate then
-  begin
-    FTimer.Free;
-    FTimer := nil;
-    DoStop;
-  end
-  else
-  if AutoStopInterval > 0 then
+
+  if FRotate and (AutoStopInterval > 0) then
   begin
     Now := GetTickCount;
     if (Now - FTickCount >= Integer(AutoStopInterval)) or (Now < FTickCount) then
-      Rotate := False;
+      PostMessage(Handle, WM_JVDICE_STOP_ROTATE, 0, 0);
   end;
+end;
+
+procedure TJvDice.WmJvDidecStopRotate(var Msg: TMessage);
+begin
+  Rotate := False;
 end;
 
 procedure TJvDice.Change;
@@ -374,7 +383,12 @@ begin
       end;
     end
     else
+    begin
       FRotate := Value;
+      FTimer.Free;
+      FTimer := nil;
+      DoStop;
+    end;
   end;
 end;
 
