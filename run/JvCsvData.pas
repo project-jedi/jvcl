@@ -133,11 +133,11 @@ unit JvCsvData;
 
 interface
 
-{$ifdef COMPILER7_UP}
+{$IFDEF COMPILER7_UP}
 // The WideString field code will COMPILE on Delphi 7, but the WideString field only WORKS
 // on Delphi 2007 and up.
-{$define JVCSV_WIDESTRING}
-{$endif}
+{$DEFINE JVCSV_WIDESTRING}
+{$ENDIF COMPILER7_UP}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -147,7 +147,7 @@ uses
   Classes,
   {$IFNDEF NO_UNICODE}
   JclBase, // now BOM constants are in JclBase formerly in JclUnicode
-  {$endif}
+  {$ENDIF NO_UNICODE}
   JvJCLUtils,  // some constants needed.
   SysUtils,
   DB;
@@ -316,7 +316,9 @@ type
 
   { Row collection }
   TJvCsvRows = class(TList)
-
+  private
+    function GetDecimalSeparator: AnsiChar;
+    procedure SetDecimalSeparator(const Value: AnsiChar);
   protected
     FEnquoteBackslash: Boolean;
     FBackslashCrLf:Boolean; // Are CR/LFs changed to \r and \n?
@@ -341,19 +343,10 @@ type
     function GetRowAllocSize:Integer;
     function RecordSize:Word;
     procedure InternalInitRecord(Buffer:TJvRecordBuffer {was PChar});
-  private
-    function GetDecimalSeparator: AnsiChar;
-    procedure SetDecimalSeparator(const Value: AnsiChar);
-
-
-  protected
-
      { note these are not intended to be used outside this unit, so they are protected.
        access these throught the CsvDataSet class public or published properties only. }
      property DecimalSeparator : AnsiChar   read GetDecimalSeparator write SetDecimalSeparator default USDecimalSeparator;
      property Separator        : AnsiChar   read FSeparator         write FSeparator;
-  published
-
   public
     constructor Create;
 
@@ -406,7 +399,7 @@ type
       private
        FStream:TFileStream; // Tried TJclFileStream also but it was too slow! Do NOT use JCL streams here. -wpostma.
        FFilename:String;
-       FStreamBuffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF};
+       FStreamBuffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
        FStreamIndex:Integer;
        FStreamSize:Integer;
        FLastReadFlag:Boolean;
@@ -456,7 +449,7 @@ type
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
     FCreatePaths: Boolean;
-    FFormatSettings:TFormatSettings;
+    FFormatSettings: TFormatSettings;
 
     procedure SetSeparator(const Value: AnsiChar);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
@@ -749,9 +742,9 @@ type
 
     { Row Access as String }
     function GetRowAsString(const Index: Integer): string; virtual;
-  {$IFDEF COMPILER12_UP}
+    {$IFDEF COMPILER12_UP}
     function GetRowAsAnsiString(const Index: Integer): AnsiString; virtual;
-  {$endif}
+    {$ENDIF COMPILER 12_UP}
 
 
     function CurrentRowAsString: string; virtual; // Return any row by index, special: -1 means last row NEW.
@@ -981,6 +974,9 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   Controls, Forms,
   JvVCL5Utils,
   JvJVCLUtils,
@@ -1011,29 +1007,29 @@ begin
   raise EJvCsvDataSetError.CreateResFmt(@RsECsvErrFormat, [TableName, Msg]);
 end;
 
-procedure JvCsvDatabaseError2(const TableName, Msg: string;Code:Integer);
+procedure JvCsvDatabaseError2(const TableName, Msg: string; Code: Integer);
 begin
   raise EJvCsvDataSetError.CreateResFmt(@RsECsvErrFormat2, [TableName, Msg, Code]);
 end;
 
 
-function JvCsvStrToFloatDef(strvalue:String;defvalue:Double;aseparator:AnsiChar):Double;
+function JvCsvStrToFloatDef(strvalue: string; defvalue: Double; aseparator: AnsiChar): Double;
 begin
  { does not raise exceptions}
   result := JvSafeStrToFloatDef(strvalue,defvalue,
-        {$IFDEF COMPILER12_UP}Char({$endif}
+        {$IFDEF COMPILER12_UP}Char({$ENDIF COMPILER12_UP}
         aseparator
-        {$IFDEF COMPILER12_UP}){$endif}
+        {$IFDEF COMPILER12_UP}){$ENDIF COMPILER12_UP}
         ); // // JvJCLUtils
 end;
 
-function JvCsvStrToFloat(strvalue:String;aseparator:AnsiChar):Double;
+function JvCsvStrToFloat(strvalue: string; aseparator: AnsiChar): Double;
 begin
  { raises EConvertError exception }
   result := JvSafeStrToFloat(strvalue,
-        {$IFDEF COMPILER12_UP}Char({$endif}
+        {$IFDEF COMPILER12_UP}Char({$ENDIF COMPILER12_UP}
         aseparator
-        {$IFDEF COMPILER12_UP}){$endif}
+        {$IFDEF COMPILER12_UP}){$ENDIF COMPILER12_UP}
         ); // // JvJCLUtils
 end;
 
@@ -1088,32 +1084,10 @@ end;
 
 
 
-{$IFDEF COMPILER12_UP}
-// Delphi 2009 says goodbye to good old single-byte Win32
-// API calls, so we have to provide a few of our own to
-// avoid a huge number of wasteful String <-> AnsiString inline
-// conversions.
-function JvCsvUpperCase(sValue:AnsiString):AnsiString;
-var
-  svalue_length: Integer;
-begin
-  svalue_length := Length(sValue);
-  SetString(Result, PAnsiChar(sValue), svalue_length);
-  if svalue_length > 0 then
-    CharUpperBuffA(PAnsiChar(Result), svalue_length);
-end;
-{$ENDIF}
-
-
-
-  //-------------------------------------------------------------------------
-  // TJvCsvStream METHODS
-  //-------------------------------------------------------------------------
-
-
+//-------------------------------------------------------------------------
+// TJvCsvStream METHODS
+//-------------------------------------------------------------------------
 function GetFileSizeEx(h:hFile; FileSize:PULargeInteger):Bool; stdcall; external Kernel32;
-
-
 
 procedure TJvCsvStream.Append; 
 begin
@@ -1129,8 +1103,8 @@ begin
    FFilename := FileName;
 
    FLastReadFlag := false;
-   is_append := (Mode and fmJVCSV_APPEND_FLAG)=fmJVCSV_APPEND_FLAG;
-   is_rewrite := (Mode and fmJVCSV_REWRITE_FLAG)=fmJVCSV_REWRITE_FLAG;
+   is_append := (Mode and fmJVCSV_APPEND_FLAG) = fmJVCSV_APPEND_FLAG;
+   is_rewrite := (Mode and fmJVCSV_REWRITE_FLAG) = fmJVCSV_REWRITE_FLAG;
 
 
    FStream := TFileStream.Create(Filename, {16 lower bits only}Word(Mode){$IFDEF COMPILER6_UP}, Rights{$ENDIF COMPILER6_UP});
@@ -1183,10 +1157,10 @@ end;
 }
 function TJvCsvStream.ReadLine: AnsiString;
 var
-  buf : Array of {$IFDEF COMPILER12_UP}Byte{$ELSE}Char{$ENDIF COMPILER12_UP};
-  n   : Integer;
-  ok  : Boolean;
-  quote_flag,lf_flag,cr_flag : Boolean;
+  buf: array of {$IFDEF COMPILER12_UP}Byte{$ELSE}Char{$ENDIF COMPILER12_UP};
+  n: Integer;
+  ok: Boolean;
+  quote_flag, lf_flag, cr_flag: Boolean;
 begin
   { Ignore linefeeds, read until carriage return, strip carriage return, and return it }
   SetLength(buf,150);
@@ -1317,12 +1291,15 @@ end;
 
 constructor TJvCustomCsvDataSet.Create(AOwner: TComponent);
 begin
-
   inherited Create(AOwner);
+
   FData := TJvCsvRows.Create;
 
-  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT,FFormatSettings); { this is updated later, to modify to have custom DecimalSeparator }
-
+  {$IFDEF RTL150_UP}
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, FFormatSettings); { this is updated later, to modify to have custom DecimalSeparator }
+  {$ELSE}
+  FFormatSettings.DecimalSeparator := DecimalSeparator;
+  {$ENDIF RTL150_UP}
 
   Separator := ','; // set After creating FData!
 
@@ -1384,21 +1361,21 @@ end;
 function TJvCustomCsvDataSet.GetSeparator: AnsiChar;
 begin
   Assert(Assigned(FData));
-  result := FData.Separator;
+  Result := FData.Separator;
 end;
 
 function TJvCustomCsvDataSet._CsvFloatToStr(fvalue:Double):String;
 begin
- { raises exception EJvConvertError (same as EConvertError) }
-  FFormatSettings.DecimalSeparator :=   {$IFDEF COMPILER12_UP}Char({$endif}GetDecimalSeparator {$IFDEF COMPILER12_UP}){$endif};
-  result := FloatToStr( fvalue, FFormatSettings );
+  // raises exception EJvConvertError (same as EConvertError)
+  FFormatSettings.DecimalSeparator := {$IFDEF COMPILER12_UP}Char({$ENDIF COMPILER12_UP}GetDecimalSeparator {$IFDEF COMPILER12_UP}){$ENDIF COMPILER12_UP};
+  Result := FloatToStr(fvalue{$IFDEF RTL150_UP}, FFormatSettings{$ENDIF RTL150_UP});
 end;
 
 
 function TJvCustomCsvDataSet.GetTextBufferSize: Integer;
 begin
   Assert(Assigned(FData));
-  result := FData.TextBufferSize;
+  Result := FData.TextBufferSize;
 end;
 
 procedure TJvCustomCsvDataSet.SetRowUserData(UserData: Pointer);
@@ -1469,7 +1446,7 @@ begin
   inherited;
   FFileDirty := False;
   if FUseSystemDecimalSeparator then begin
-      FData.DecimalSeparator := {$IFDEF COMPILER12_UP}AnsiChar({$endif}SysUtils.DecimalSeparator{$IFDEF COMPILER12_UP}){$endif};
+      FData.DecimalSeparator := {$IFDEF COMPILER12_UP}AnsiChar({$ENDIF COMPILER12_UP}SysUtils.DecimalSeparator{$IFDEF COMPILER12_UP}){$ENDIF COMPILER12_UP};
   end;
 end;
 
@@ -1795,7 +1772,7 @@ begin
     Exit;
   FieldIndex := FieldRec^.FPhysical;
   ValueLen := Length(Pattern); // if valuelen is zero then we are searching for blank or nulls
-  Pattern := {$IFDEF COMPILER12_UP}JvCsvUpperCase{$ELSE}UpperCase{$ENDIF COMPILER12_UP}(Pattern); // make value case insensitive.
+  Pattern := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}UpperCase(Pattern); // make value case insensitive.
 
   // Now check if field value matches given pattern for this row.
   for I := 0 to FData.Count - 1 do
@@ -1813,12 +1790,7 @@ begin
       end
       else
       begin
-        FieldValue :=
-            {$IFDEF COMPILER12_UP}
-                JvCsvUpperCase(FieldValue);
-            {$ELSE}
-                UpperCase(FieldValue);
-            {$ENDIF COMPILER12_UP}
+        FieldValue := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}UpperCase(FieldValue);
 
         if JvCsvWildcardMatch(FieldValue, Pattern) then // hide row if not same prefix
         begin
@@ -2227,8 +2199,8 @@ begin
           StrValueB := AnsiString(KeyValues[I + Lo]);
           if loCaseInsensitive in Options then
           begin
-            StrValueA := {$IFDEF COMPILER12_UP}JvCsvUpperCase{$ELSE}UpperCase{$ENDIF COMPILER12_UP}(StrValueA);
-            StrValueB := {$IFDEF COMPILER12_UP}JvCsvUpperCase{$ELSE}UpperCase{$ENDIF COMPILER12_UP}(StrValueB);
+            StrValueA := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}UpperCase(StrValueA);
+            StrValueB := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}UpperCase(StrValueB);
           end;
           if StrValueA = StrValueB then
             Inc(MatchCount)
@@ -2476,8 +2448,8 @@ var
   DT: TDateTime;
   ATimeStamp: TTimeStamp;
   {$IFDEF JVCSV_WIDESTRING}
-  NewUniVal:WideString;
-  {$endif}
+  NewUniVal: WideString;
+  {$ENDIF JVCSV_WIDESTRINGS}
 begin
   //Trace( 'SetFieldData '+Field.FieldName );
   PDestination := GetActiveRecordBuffer;
@@ -2518,7 +2490,7 @@ begin
   if not Assigned(CsvColumnData) then begin
    {$IFDEF DEBUGINFO_ON}
    OutputDebugString('JvCsvData.pas: Column data corrupt or missing.');
-   {$endif}
+   {$ENDIF DEBUGINFO_ON}
     Exit;
   end;
 
@@ -2539,7 +2511,7 @@ begin
     NewVal := ''
   else
     case Field.DataType of
-  {$IFDEF JVCSV_WIDESTRING}
+      {$IFDEF JVCSV_WIDESTRING}
       ftWideString:
           { New and only working in Delphi 2009.
             Private-Convention-Warning: Wide fields ALWAYS enquoted.
@@ -2551,8 +2523,7 @@ begin
 
           NewVal := _Enquote(Utf8Encode(NewUniVal));
         end;
-  {$ENDIF}
-
+      {$ENDIF JVCSV_WIDESTRING}
       ftString:
         begin
           // ftString appears to be limited to ANSI Strings even in Delphi 2009.
@@ -2779,7 +2750,7 @@ var
   ts: TTimeStamp;
   {$IFDEF JVCSV_WIDESTRING}
   GetUniValue:WideString;
-  {$ENDIF}
+  {$ENDIF JVCSV_WIDESTRING}
 begin
   Result := False;
 
@@ -2944,14 +2915,14 @@ begin
   //------------------------------------------------------------------------
   try
     case Field.DataType of
-  {$IFDEF JVCSV_WIDESTRING}
+      {$IFDEF JVCSV_WIDESTRING}
       ftWideString:
         begin
          {$IFDEF COMPILER12_UP}
-              GetUniValue := UTF8ToWideString(_Dequote(TempString));  // UTF8Decode deprecated in D2009. Use UTF8ToWideString?
-         {$else}
+              GetUniValue := UTF8ToWideString(_Dequote(TempString)); 
+         {$ELSE}
               GetUniValue := UTF8Decode(_Dequote(TempString));
-         {$endif}
+         {$ENDIF COMPILER12_UP}
          length_n := Length(GetUniValue)*2;
          if (length_n>FData.FTextBufferSize) then
               length_n := FData.FTextBufferSize;
@@ -2960,7 +2931,7 @@ begin
          MoveMemory( {dest} Buffer, {src} PWideChar(GetUniValue), {count} length_n);
          PWideChar(Buffer)[Length(GetUniValue)] := WideChar(0);  { wide terminal }
         end;
-    {$ENDIF JVCSV_WIDESTRING}
+      {$ENDIF JVCSV_WIDESTRING}
 
       // Basic string copy, convert from String to fixed-length
       // buffer, padded with NUL i.e. Chr(0):
@@ -3239,23 +3210,28 @@ begin
   aCsvFieldDef := AnsiString(CsvFieldDef);
   if aCsvFieldDef = '' then
   begin
-    if FHasHeaderRow and ReadCsvFileStream then begin
+    if FHasHeaderRow and ReadCsvFileStream then 
+    begin
       aCsvFieldDef :=  FCsvFileTopLine; {formerly FCsvFileAsStrings[0];}
       {$IFDEF DEBUGINFO_ON}
-           if (aCsvFieldDef='') then
-              OutputDebugString('Top line of file empty. CsvFieldDef not provided either.');
-      {$endif}
+      if (aCsvFieldDef='') then
+        OutputDebugString('Top line of file empty. CsvFieldDef not provided either.');
+      {$ENDIF DEBUGINFO_ON}
        
     end;
+    
     if ExtendedHeaderInfo then
       CsvFieldDef := String(aCsvFieldDef);
   end;
 
   if Length(aCsvFieldDef) > 0 then
   begin
-    if (Separator<>',') and (Pos(Separator,aCsvFieldDef)=0) then begin
+    if (Separator<>',') and (Pos(Separator,aCsvFieldDef)=0) then 
+    begin
       JvStringToCsvRow(aCsvFieldDef, ',', CsvFieldRec, False, False); { workaround for serious annoyance }
-    end else begin
+    end 
+    else 
+    begin
       JvStringToCsvRow(aCsvFieldDef, Separator, CsvFieldRec, False, False);
     end;
 
@@ -3361,14 +3337,14 @@ begin
             FieldLen := 0; // automatic.
             CsvMaxLen := CsvMaxLen + 10;
           end;
-      {$IFDEF JVCSV_WIDESTRING}
+        {$IFDEF JVCSV_WIDESTRING}
         '~':
          begin // New UTF8 string type. [ Delphi 2009 only ]
             CsvMaxLen := CsvMaxLen + FieldLen;
             VclFieldType := ftWideString;
             FieldType := jcsvStringUTF8;
          end
-      {$ENDIF}
+        {$ENDIF JVCSV_WIDESTRING}
       else
         JvCsvDatabaseError(FTableName, Format(RsEInvalidFieldTypeCharacter, [FieldTypeChar]));
       end;
@@ -3478,18 +3454,20 @@ begin
     // creates a TStringList: old method: ExportCsvFile(FOpenFileName);
 
     if not WriteCsvFileStream then
-        raise EJvCsvDataSetError.Create('Unable to write to csv file '+FTableName);
+      raise EJvCsvDataSetError.Create('Unable to write to csv file '+FTableName);
 
-    if FHasHeaderRow then begin
+    if FHasHeaderRow then 
+    begin
          FCsvStream.WriteLine(FHeaderRow);
     end;
-    for n := 0 to RecordCount-1 do begin
-    {$ifdef COMPILER12_UP}
-        CsvLine := JvTrimAnsiStringCrLf( GetRowAsAnsiString(n));
-    {$else}
-        CsvLine := JvTrimAnsiStringCrLf( GetRowAsString(n));
-    {$endif}
-        FCsvStream.WriteLine(CsvLine);
+    for n := 0 to RecordCount-1 do 
+    begin
+      {$IFDEF COMPILER12_UP}
+      CsvLine := JvTrimAnsiStringCrLf( GetRowAsAnsiString(n));
+      {$ELSE}
+      CsvLine := JvTrimAnsiStringCrLf( GetRowAsString(n));
+      {$ENDIF COMPILER12_UP}
+      FCsvStream.WriteLine(CsvLine);
     end;
     FreeAndNil(FCsvStream);
     FFileDirty := False;
@@ -3702,46 +3680,44 @@ begin
   FCsvFileLoaded  := true;
 
 
-  if FLoadsFromFile then begin // The IF condition here is NEW!
+  if FLoadsFromFile then 
+  begin
     if not Assigned(FCsvStream) then
-        FCsvStream :=  TJvCsvStream.Create(FOpenFileName)
+      FCsvStream :=  TJvCsvStream.Create(FOpenFileName)
     else
-        FCsvStream.Stream.Position := 0; // rewind.
+      FCsvStream.Stream.Position := 0; // rewind.
 
     if FHasHeaderRow then
-        FCsvFileTopLine := JvTrimAnsiStringCrLf(FCsvStream.ReadLine);
+      FCsvFileTopLine := JvTrimAnsiStringCrLf(FCsvStream.ReadLine);
 
-{$IFNDEF NO_UNICODE}
+    {$IFNDEF NO_UNICODE}
     //-------------------------------------------------------------------------
     // This is the first unicode-friendly feature in JvCsvDataSet...
     // We can at least still open UTF8 files if they are really just ASCII
     // files plus a BOM marker like Windows notepad and some other apps add.
     //-------------------------------------------------------------------------
     //FUtf8Detected := false; {Future.}
-    if (Length(FCsvFileTopLine)>3) then begin
+    if (Length(FCsvFileTopLine)>3) then 
+    begin
       // JvCsvData can detect the standard UTF-8 mark and work anyways when it is present
       // but cannot yet decode any special characters. This is a step on the route to proper
       // UTF-8 support.  [uses JclUnicode.BOM_UTF8 to detect.]
-       if (BOM_UTF8[0]= Ord(FCsvFileTopLine[1])) and
-          (BOM_UTF8[1]= Ord(FCsvFileTopLine[2])) and
-          (BOM_UTF8[2]= Ord(FCsvFileTopLine[3])) then begin
-             // strip UTF-8 marker:
-              FCsvFileTopLine := Copy(FCsvFileTopLine,4,Length(FCsvFileTopLine));
-             //FUtf8Detected := true; {future.}
-          end;
+      if (BOM_UTF8[0]= Ord(FCsvFileTopLine[1])) and
+         (BOM_UTF8[1]= Ord(FCsvFileTopLine[2])) and
+         (BOM_UTF8[2]= Ord(FCsvFileTopLine[3])) then 
+      begin
+        // strip UTF-8 marker:
+         FCsvFileTopLine := Copy(FCsvFileTopLine,4,Length(FCsvFileTopLine));
+        //FUtf8Detected := true; {future.}
+      end;
     end;
-{$ENDIF}
-
-
+    {$ENDIF ~NO_UNICODE}
 
     Result := True; // it worked!
-
   end;
-
 end;
 
-
-function TJvCustomCsvDataSet.WriteCsvFileStream:Boolean;
+function TJvCustomCsvDataSet.WriteCsvFileStream: Boolean;
 begin
   Result := False;
   if (FTableName='') then
@@ -4057,8 +4033,8 @@ begin
 
   if FCsvCaseInsensitiveComparison then
   begin
-    StrLeft := {$IFDEF COMPILER12_UP}JvCsvUpperCase{$ELSE}UpperCase{$ENDIF COMPILER12_UP}(StrLeft);
-    StrRight := {$IFDEF COMPILER12_UP}JvCsvUpperCase{$ELSE}UpperCase{$ENDIF COMPILER12_UP}(StrRight);
+    StrLeft := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}UpperCase(StrLeft);
+    StrRight := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}UpperCase(StrRight);
   end;
 
    // everything sorts via string sort (default) or numeric sort
@@ -4066,8 +4042,8 @@ begin
   case Column^.FFlag of
     jcsvNumeric:
       begin
-        NumLeft  := JvCsvStrToFloatDef( String(StrLeft),  -99999.9, GetSeparator);
-        NumRight := JvCsvStrToFloatDef( String(StrRight), -99999.9, GetSeparator);
+        NumLeft  := JvCsvStrToFloatDef( string(StrLeft),  -99999.9, GetSeparator);
+        NumRight := JvCsvStrToFloatDef( string(StrRight), -99999.9, GetSeparator);
         Diff := NumLeft - NumRight;
         if Diff < -0.02 then
           Result := -1
@@ -4624,7 +4600,7 @@ begin
   JvCsvRowToAnsiString(FData.GetRowPtr(GetIndex), Result);
   Result := Result;
 end;
-{$endif COMPILER12_UP}
+{$ENDIF COMPILER12_UP}
 
 
 // Get names of all the columns as a comma-separated string:
@@ -5588,13 +5564,7 @@ begin
     DeleteFile(RemoveFile);
 
 
- {$IFDEF COMPILER12_UP}
-    // delphi 2009 and later use Win32 CopyFileW
-    Windows.CopyFile(PWideChar( FileName) , PWideChar( BackupFilename), False);
- {$else}
-    // delphi 2008 and previous use Win32 CopyFileA
-    Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
- {$endif}
+  Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
   Result := True;
 end;
 
@@ -5808,11 +5778,11 @@ begin
 
   {Write data rows minus column}
   for t:= 0 to RecordCount-1 do begin
-    {$ifdef COMPILER12_UP}
+    {$IFDEF COMPILER12_UP}
     DataRow := Self.GetRowAsAnsiString(t);
-    {$else}
+    {$ELSE}
     DataRow := Self.GetRowAsString(t);
-    {$endif}
+    {$ENDIF COMPILER12_UP}
     if Length(DataRow) >= JvCsv_MAXLINELENGTH - 1 then
       raise EJvCsvDataSetError.CreateResFmt(@RsECsvStringTooLong, [Copy(DataRow, 1, 40)]);
     JvStringToCsvRow(DataRow, Separator, PTempRow, True, EnquoteBackslash);
@@ -5835,7 +5805,7 @@ begin
   FData.Clear;
 
   finally
-      FreeMem(PTempRow);
+    FreeMem(PTempRow);
   end;
 end;
 
