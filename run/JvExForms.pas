@@ -949,7 +949,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -1290,7 +1290,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -1631,7 +1631,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -1972,7 +1972,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -2313,7 +2313,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -2654,7 +2654,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -3019,7 +3019,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -3384,7 +3384,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;

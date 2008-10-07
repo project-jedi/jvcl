@@ -65,7 +65,6 @@ const
   dcWantMessage = dcWantAllKeys;
 
 type
-
   { IJvExControl is used for the identification of an JvExXxx control. }
   IJvExControl = interface
     ['{8E6579C3-D683-4562-AFAB-D23C8526E386}']
@@ -734,8 +733,6 @@ end;
 
 {$ENDIF COMPILER5}
 
-//============================================================================
-
 constructor TJvExControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1223,7 +1220,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -1763,7 +1760,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
@@ -2104,7 +2101,7 @@ begin
       FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(THandle(Msg.WParam));
-    WM_SIZE:
+    WM_SIZE, WM_MOVE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
