@@ -148,6 +148,7 @@ uses
   {$IFNDEF NO_UNICODE}
   JclBase, // now BOM constants are in JclBase formerly in JclUnicode
   {$endif}
+  JvJCLUtils,  // some constants needed.
   SysUtils,
   DB;
 
@@ -206,6 +207,7 @@ const
   fmJVCSV_Rewrite         = fmCreate        or fmJVCSV_REWRITE_FLAG; // yet another friendly mode constant.
 
   JvCsvStreamReadChunkSize = 8192; // 8k chunk reads.
+
 
 type
   EJvCsvDataSetError = class(EDatabaseError);
@@ -328,17 +330,29 @@ type
     FMarginSize     : Integer; // How much margin space after the calculated fields?
 
     FSeparator:AnsiChar;
+    FDecimalSeparator:AnsiChar; { NOTE: DEFAULT value for historical backwards compatibilty reasons is the USA default of '.' }
 
     function GetUserTag(Index: Integer): Integer;
     procedure SetUserTag(Index, Value: Integer);
     function GetUserData(Index: Integer): Pointer;
     procedure SetUserData(Index: Integer; Value: Pointer);
 
-    
+
     function GetRowAllocSize:Integer;
     function RecordSize:Word;
     procedure InternalInitRecord(Buffer:TJvRecordBuffer {was PChar});
+  private
+    function GetDecimalSeparator: AnsiChar;
+    procedure SetDecimalSeparator(const Value: AnsiChar);
 
+
+  protected
+
+     { note these are not intended to be used outside this unit, so they are protected.
+       access these throught the CsvDataSet class public or published properties only. }
+     property DecimalSeparator : AnsiChar   read GetDecimalSeparator write SetDecimalSeparator default USDecimalSeparator;
+     property Separator        : AnsiChar   read FSeparator         write FSeparator;
+  published
 
   public
     constructor Create;
@@ -366,7 +380,6 @@ type
     { these properties should ONLY be set before any actual rows have been allocated. }
     property TextBufferSize : Integer   read FTextBufferSize    write FTextBufferSize; // How big is TJvCsvRow.Text effectively?
     property MarginSize     : Integer   read FMarginSize        write FMarginSize; // How much margin space after the calculated fields? (typically 2 bytes)
-    property Separator      : AnsiChar      read FSeparator         write FSeparator;
 
 
   end;
@@ -439,12 +452,12 @@ type
 
   TJvCustomCsvDataSet = class(TDataSet)
   private
-    //FSeparator: AnsiChar; !!!Now in FData!!!
     FOpenFileName: string; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
     FCreatePaths: Boolean;
-    //procedure SetHasHeaderRow(const Value: Boolean); // When saving, create subdirectories/paths if it doesn't exist?
+    FFormatSettings:TFormatSettings;
+
     procedure SetSeparator(const Value: AnsiChar);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
       SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
@@ -460,6 +473,11 @@ type
     procedure SetTextBufferSize(const Value: Integer);
     function GetBackslashCrLf: Boolean;
     procedure SetBackslashCrLf(const Value: Boolean);
+    function GetDecimalSeparator: AnsiChar;
+    procedure SetDecimalSeparator(const Value: AnsiChar);
+
+    function _CsvFloatToStr(fvalue:Double):String; 
+
   protected
     // (rom) inacceptable names. Probably most of this should be private.
     FTempBuffer: TJvRecordBuffer { was PChar}; // Allocated on first access to field variable data only!
@@ -519,6 +537,8 @@ type
       // Helps to keep some other thing in sync with the contents of a changing CSV file.
 
     FAlwaysEnquoteStrings:Boolean; // Always put double quotes around strings (for some CSV file reading software this is required.)
+    FAlwaysEnquoteFloats:Boolean; // Always put double quotes around floating point values (useful when DecimalSeparator==CsvSeparator)
+    FUseSystemDecimalSeparator:Boolean; // Default is false which always uses US mode.
     FAppendOnly:Boolean; // If true, we don't load the entire content of the CSV from disk, only the last row, and every time we append and write, we only maintain the last row in memory (saves a lot of RAM.)
 
     procedure SetActive(Value: Boolean); override;
@@ -625,6 +645,7 @@ type
     function _Dequote(const StrVal: AnsiString): AnsiString; virtual; // removes quotes
 
     property Separator: AnsiChar read GetSeparator write SetSeparator default ',';
+    property DecimalSeparator:AnsiChar read GetDecimalSeparator write SetDecimalSeparator default ' '; // space means system default.
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -820,6 +841,10 @@ type
     property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
 
     property AlwaysEnquoteStrings:Boolean read FAlwaysEnquoteStrings write FAlwaysEnquoteStrings; // Always put double quotes around strings (for some CSV file reading software this is required.)
+    property AlwaysEnquoteFloats:Boolean  read FAlwaysEnquoteFloats  write FAlwaysEnquoteFloats; // Always put double quotes around floating point values (useful when DecimalSeparator==CsvSeparator)
+    property UseSystemDecimalSeparator:Boolean read FUseSystemDecimalSeparator write FUseSystemDecimalSeparator default false; // Default is false which always uses US mode.  Must be false by default because of existing code assuming this behaviour.
+
+
     property AppendOnly:Boolean read FAppendOnly write FAppendOnly; // If true, we don't load the entire content of the CSV from disk, only the last row, and every time we append and write, we only maintain the last row in memory (saves a lot of RAM.)
 
 
@@ -834,6 +859,7 @@ type
     property TableName;
     property UserData;
     property UserTag;
+    property DecimalSeparator;
   published
     property FieldDefs;
     property Active;
@@ -880,6 +906,8 @@ type
     property EnquoteBackslash;
     property HeaderRow;
     property AlwaysEnquoteStrings;
+    property AlwaysEnquoteFloats;
+    property UseSystemDecimalSeparator; 
     property AppendOnly; 
   end;
 
@@ -956,7 +984,6 @@ uses
   Controls, Forms,
   JvVCL5Utils,
   JvJVCLUtils,
-  JvJCLUtils,
   JvCsvParse,
   JvConsts,
   JvResources,
@@ -988,6 +1015,20 @@ procedure JvCsvDatabaseError2(const TableName, Msg: string;Code:Integer);
 begin
   raise EJvCsvDataSetError.CreateResFmt(@RsECsvErrFormat2, [TableName, Msg, Code]);
 end;
+
+
+function JvCsvStrToFloatDef(strvalue:String;defvalue:Double;aseparator:Char):Double;
+begin
+ { does not raise exceptions}
+  result := JvSafeStrToFloatDef(strvalue,defvalue,aseparator); // // JvJCLUtils
+end;
+
+function JvCsvStrToFloat(strvalue:String;aseparator:Char):Double;
+begin
+ { raises EConvertError exception }
+  result := JvSafeStrToFloat(strvalue,aseparator); // // JvJCLUtils
+end;
+
 
 { Trim TRAILING CrLf but not leading, or middle, or spaces }
 function JvTrimAnsiStringCrLf(s:AnsiString):AnsiString;
@@ -1272,6 +1313,9 @@ begin
   inherited Create(AOwner);
   FData := TJvCsvRows.Create;
 
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT,FFormatSettings); { this is updated later, to modify to have custom DecimalSeparator }
+
+
   Separator := ','; // set After creating FData!
 
   FCreatePaths := True; // Creates subdirectories automatically when saving.
@@ -1334,6 +1378,14 @@ begin
   Assert(Assigned(FData));
   result := FData.Separator;
 end;
+
+function TJvCustomCsvDataSet._CsvFloatToStr(fvalue:Double):String;
+begin
+ { raises exception EJvConvertError (same as EConvertError) }
+  FFormatSettings.DecimalSeparator := GetDecimalSeparator;
+  result := FloatToStr( fvalue, FFormatSettings );
+end;
+
 
 function TJvCustomCsvDataSet.GetTextBufferSize: Integer;
 begin
@@ -1408,6 +1460,9 @@ procedure TJvCustomCsvDataSet.SetActive(Value: Boolean);
 begin
   inherited;
   FFileDirty := False;
+  if FUseSystemDecimalSeparator then begin
+      FData.DecimalSeparator := SysUtils.DecimalSeparator; 
+  end;
 end;
 
 procedure TJvCustomCsvDataSet.SetAllUserData(Data: Pointer);
@@ -1689,7 +1744,7 @@ begin
         sFieldValue := _Dequote(sFieldValue); // remove quotes.
         //sFieldValue := UpperCase(sFieldValue); // pointless on numerics
         try
-          FieldValue := StrToFloat( String(sFieldValue)); // remember, this baby throws EConvertError on exception!
+          FieldValue := JvCsvStrToFloat( String(sFieldValue), GetSeparator); // remember, this baby throws EConvertError on exception!
 
           //  if { FieldValue  [ = <> > < ] numValue } then....
           if JvCsvNumCondition(FieldValue, compareOperator, numValue) then // hide row if not same prefix
@@ -1869,6 +1924,11 @@ begin
   end;
 end;
 
+procedure TJvCustomCsvDataSet.SetDecimalSeparator(const Value: AnsiChar);
+begin
+  FData.DecimalSeparator := Value;
+end;
+
 procedure TJvCustomCsvDataSet.SetEnquoteBackslash(const Value: Boolean);
 begin
   Assert(Assigned(FData));
@@ -1984,13 +2044,13 @@ begin
 
   TempString := GetCsvRowItem(RowPtr, PhysicalLocation);
 
-  // Strip quotes first!
-  if Field.DataType = ftString then
+  // Strip quotes first (Both floating point and String fields can get enquoted on us)
+  if Field.DataType in [ftString,ftFloat] then
   begin
     L := Length(TempString);
     if L >= 2 then
       if (TempString[1] = '"') and (TempString[L] = '"') then
-        TempString := _Dequote(TempString); // quoted string!
+        TempString := _Dequote(TempString); // quoted string or floating point value.
   end;
 
   try
@@ -2000,7 +2060,11 @@ begin
       ftInteger:
         Result := StrToInt( String(TempString) );
       ftFloat:
-        Result := StrToFloatUS( String(TempString) );
+        { Default CLASSIC behaviour of this component is to encode outgoing data in US
+          format regardless of system regional settings. This has become more flexible now,
+          but we still default at designtime-defaults to using a DOT. }
+        Result := JvCsvStrToFloat( String(TempString), GetSeparator );
+
       ftBoolean:
         if StrToIntDef(String(TempString), 0) <> 0 then
           Result := True
@@ -2523,9 +2587,21 @@ begin
 
         end;
       ftInteger:
+       begin
         NewVal := AnsiString(IntToStr(PInteger(Buffer)^));
+
+       end;
+
+
       ftFloat:
-        NewVal := AnsiString(FloatToStr(PDouble(Buffer)^));
+        begin
+        NewVal := AnsiString(_CsvFloatToStr(PDouble(Buffer)^));
+
+          if (( AlwaysEnquoteFloats) or  (  Separator=GetDecimalSeparator ) ) then
+               NewVal := _Enquote(NewVal); // puts whole string in quotes, escapes embedded commas and quote characters!
+
+        end;
+
       ftBoolean:
         NewVal := AnsiString(IntToStr(Ord(PWordBool(Buffer)^))); // bugfix May 26, 2003 - WP
       // There are two ways of handling date and time:
@@ -2900,7 +2976,7 @@ begin
         PInteger(Buffer)^ := StrToInt(String(TempString));
       // Standard Double-precision Float conversion:
       ftFloat:
-        PDouble(Buffer)^ := StrToFloatUS(String(TempString));
+        PDouble(Buffer)^ := JvCsvStrToFloat(String(TempString),GetSeparator); // was StrToFloatUS
       ftBoolean:
         if TempString = '' then
           PInteger(Buffer)^ := 0
@@ -3978,8 +4054,8 @@ begin
   case Column^.FFlag of
     jcsvNumeric:
       begin
-        NumLeft  := StrToFloatUSDef( String(StrLeft),  -99999.9);
-        NumRight := StrToFloatUSDef( String(StrRight), -99999.9);
+        NumLeft  := JvCsvStrToFloatDef( String(StrLeft),  -99999.9, GetSeparator);
+        NumRight := JvCsvStrToFloatDef( String(StrRight), -99999.9, GetSeparator);
         Diff := NumLeft - NumRight;
         if Diff < -0.02 then
           Result := -1
@@ -4212,6 +4288,7 @@ begin
   FUserTag[Index] := Value;
 end;
 
+
 function TJvCsvRows.GetUserData(Index: Integer): Pointer;
 begin
   if (Index < 0) or (Index >= FUserLength) then
@@ -4338,12 +4415,23 @@ end;
 
 
 
+procedure TJvCsvRows.SetDecimalSeparator(const Value: AnsiChar);
+begin
+  FDecimalSeparator := Value;
+end;
+
 function TJvCsvRows.GetARowItem(const RowIndex, ColumnIndex: Integer): AnsiString;
 begin
   Result := GetCsvRowItem(GetRowPtr(RowIndex), ColumnIndex);
 end;
 
 
+
+
+function TJvCsvRows.GetDecimalSeparator: AnsiChar;
+begin
+    result := FDecimalSeparator
+end;
 
 procedure TJvCsvRows.Clear;
 var
@@ -4358,6 +4446,12 @@ constructor TJvCsvRows.Create;
 begin
     FTextBufferSize := JvCsvDefaultTextBufferSize;
     FMarginSize     := JvCsvDefaultMarginSize;
+
+ { DecimalSeparator:
+    This 'US' constant value is important for backwards compatibility.
+    DO NOT CHANGE this default, it would break people's code.
+ }
+    FDecimalSeparator := USDecimalSeparator;
 end;
 
 { Call this one first, then AssignFromStrings on subsequent updates only.}
@@ -4765,6 +4859,13 @@ begin
   Result := String(JvAnsiStrStrip(FirstLine)); // in JvCsvParse.pas
 end;
 
+
+function TJvCustomCsvDataSet.GetDecimalSeparator: AnsiChar;
+begin
+
+  result := FData.DecimalSeparator;
+
+end;
 
 { PROCEDURES: }
 

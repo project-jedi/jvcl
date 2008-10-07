@@ -917,8 +917,9 @@ begin
           Result := StrToIntDef(LStr1, 0) - StrToIntDef(LStr2, 0);
         ocFloat:
           begin
-            LFloat1 := StrToFloatDefIgnoreInvalidCharacters(LStr1, 0);
-            LFloat2 := StrToFloatDefIgnoreInvalidCharacters(LStr2, 0);
+           // NOTE: StrToFloatDefIgnoreInvalidCharacters now called JvSafeStrToFloatDef:
+            LFloat1 := JvSafeStrToFloatDef(LStr1, 0);
+            LFloat2 := JvSafeStrToFloatDef(LStr2, 0);
             if LFloat1 > LFloat2 then
               Result := 1
             else
@@ -1344,15 +1345,17 @@ begin
       LValue2 := SecondValue
     else
       LValue2 := AElement.Properties.Value(SecondValue, ParseValue(SecondValue));
+
+ // NOTE: StrToFloatDefIgnoreInvalidCharacters now called JvSafeStrToFloatDef:
     case SetOperator of
       soAdd:
-        LValue := FloatToStr(StrToFloatDefIgnoreInvalidCharacters(LValue,0) + StrToFloatDefIgnoreInvalidCharacters(LValue2,0));
+        LValue := FloatToStr(JvSafeStrToFloatDef(LValue,0) + JvSafeStrToFloatDef(LValue2,0));
       soMultiply:
-        LValue := FloatToStr(StrToFloatDefIgnoreInvalidCharacters(LValue,0) * StrToFloatDefIgnoreInvalidCharacters(LValue2,0));
+        LValue := FloatToStr(JvSafeStrToFloatDef(LValue,0) * JvSafeStrToFloatDef(LValue2,0));
       soDivide:
-        LValue := FloatToStr(StrToFloatDefIgnoreInvalidCharacters(LValue,0) / StrToFloatDefIgnoreInvalidCharacters(LValue2,0));
+        LValue := FloatToStr(JvSafeStrToFloatDef(LValue,0) / JvSafeStrToFloatDef(LValue2,0));
       soSubstract:
-        LValue := FloatToStr(StrToFloatDefIgnoreInvalidCharacters(LValue,0) - StrToFloatDefIgnoreInvalidCharacters(LValue2,0));
+        LValue := FloatToStr(JvSafeStrToFloatDef(LValue,0) - JvSafeStrToFloatDef(LValue2,0));
     end;
   end;
 
