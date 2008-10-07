@@ -77,9 +77,15 @@ const
 
 type
   EJvConvertError = Class(EConvertError);  { subclass EConvertError raised by some non-Def versions of floating point conversion routine }
-{$IFDEF UNIX}
+  {$IFDEF UNIX}
   TFileTime = Integer;
-{$ENDIF UNIX}
+  {$ENDIF UNIX}
+  
+  {$IFNDEF RTL150_UP}
+  TFormatSettings = record
+    DecimalSeparator: Char;
+  end;
+  {$ENDIF RTL150_UP}
 
 
 
@@ -7914,13 +7920,8 @@ begin
   raise EJvConvertError.CreateResFmt(ResString, Args); { will be also caught if you catch E:EConvertERror }
 end;
 
-{$IFNDEF COMPILER6_UP}
-type
-  TFormatSettings = record
-    DecimalSeparator: Char;
-  end;
-
-function TextToFloatD5(Buffer: PAnsiChar; var Value; ValueType: TFloatValue;
+{$IFNDEF RTL150_UP}
+function TextToFloatD5D6(Buffer: PAnsiChar; var Value; ValueType: TFloatValue;
   const FormatSettings: TFormatSettings): Boolean;
 var
   DecimalSep: Char;
@@ -7934,7 +7935,7 @@ begin
     DecimalSeparator := DecimalSep;
   end;
 end;
-{$ENDIF ~COMPILER6_UP}
+{$ENDIF ~RTL150_UP}
 
 
 { _JvSafeStrToFloat:  [PRIVATE INTERNAL FUNCTION]
@@ -7961,11 +7962,11 @@ begin
     Exit; { hows this for a nice optimization?  WPostma. }
 
   { Locale Handling logic October 2008 supercedes former StrToFloatUS functionality. }
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF RTL150_UP}
   GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, FormatSettings);
   {$ELSE}
   FormatSettings.DecimalSeparator := DecimalSeparator;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF RTL150_UP}
   if aDecimalSeparator = ' ' then {magic mode}
     aDecimalSeparator := FormatSettings.DecimalSeparator { default case! use system defaults! }
   else
@@ -8008,11 +8009,11 @@ begin
       OutValue := d;
       if not b then
       {$ELSE}
-      {$IFDEF COMPILER6_UP}
+      {$IFDEF RTL150_UP}
       if not TextToFloat(PChar(LStr.ToString), OutValue, fvExtended, FormatSettings) then
       {$ELSE}
-      if not TextToFloatD5(PChar(LStr.ToString), OutValue, fvExtended, FormatSettings) then
-      {$ENDIF COMPILER6_UP}
+      if not TextToFloatD5D6(PChar(LStr.ToString), OutValue, fvExtended, FormatSettings) then
+      {$ENDIF RTL150_UP}
       {$ENDIF CLR}
         Result := False
       else
