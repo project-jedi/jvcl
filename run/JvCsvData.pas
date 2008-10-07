@@ -1017,16 +1017,24 @@ begin
 end;
 
 
-function JvCsvStrToFloatDef(strvalue:String;defvalue:Double;aseparator:Char):Double;
+function JvCsvStrToFloatDef(strvalue:String;defvalue:Double;aseparator:AnsiChar):Double;
 begin
  { does not raise exceptions}
-  result := JvSafeStrToFloatDef(strvalue,defvalue,aseparator); // // JvJCLUtils
+  result := JvSafeStrToFloatDef(strvalue,defvalue,
+        {$IFDEF COMPILER12_UP}Char({$endif}
+        aseparator
+        {$IFDEF COMPILER12_UP}){$endif}
+        ); // // JvJCLUtils
 end;
 
-function JvCsvStrToFloat(strvalue:String;aseparator:Char):Double;
+function JvCsvStrToFloat(strvalue:String;aseparator:AnsiChar):Double;
 begin
  { raises EConvertError exception }
-  result := JvSafeStrToFloat(strvalue,aseparator); // // JvJCLUtils
+  result := JvSafeStrToFloat(strvalue,
+        {$IFDEF COMPILER12_UP}Char({$endif}
+        aseparator
+        {$IFDEF COMPILER12_UP}){$endif}
+        ); // // JvJCLUtils
 end;
 
 
@@ -1382,7 +1390,7 @@ end;
 function TJvCustomCsvDataSet._CsvFloatToStr(fvalue:Double):String;
 begin
  { raises exception EJvConvertError (same as EConvertError) }
-  FFormatSettings.DecimalSeparator := GetDecimalSeparator;
+  FFormatSettings.DecimalSeparator :=   {$IFDEF COMPILER12_UP}Char({$endif}GetDecimalSeparator {$IFDEF COMPILER12_UP}){$endif};
   result := FloatToStr( fvalue, FFormatSettings );
 end;
 
@@ -1461,7 +1469,7 @@ begin
   inherited;
   FFileDirty := False;
   if FUseSystemDecimalSeparator then begin
-      FData.DecimalSeparator := SysUtils.DecimalSeparator; 
+      FData.DecimalSeparator := {$IFDEF COMPILER12_UP}AnsiChar({$endif}SysUtils.DecimalSeparator{$IFDEF COMPILER12_UP}){$endif};
   end;
 end;
 
