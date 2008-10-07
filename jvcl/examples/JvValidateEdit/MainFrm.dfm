@@ -75,7 +75,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 193
       Height = 21
       Style = csDropDownList
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 0
       OnChange = cbDisplayFormatChange
       OnKeyPress = cbDisplayFormatKeyPress
@@ -362,7 +362,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         Width = 89
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 4
         OnChange = cbCPCheckPointsChange
       end

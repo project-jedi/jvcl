@@ -660,7 +660,7 @@ begin
     else
     if (OldFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfPercent]) and
       (NewValue in [dfBinary, dfHex, dfOctal]) then
-      SetAsFloat(StrToFloatDefIgnoreInvalidCharacters(FEditText, 0))
+      SetAsFloat(JvSafeStrToFloatDef(FEditText, 0))
     else
     if (OldFormat = dfHex) and
       (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
@@ -777,7 +777,7 @@ begin
         Result := Cur;
       end;
   else
-    Result := StrToFloatDefIgnoreInvalidCharacters(FEditText, 0);
+    Result := JvSafeStrToFloatDef(FEditText, 0);
   end;
 end;
 
@@ -823,7 +823,7 @@ begin
         Result := Cur;
       end;
     dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfScientific:
-      Result := StrToFloatDefIgnoreInvalidCharacters(FEditText, 0);
+      Result := JvSafeStrToFloatDef(FEditText, 0);
     dfInteger, dfYear:
       Result := StrToIntDef(FEditText, 0);
     dfHex:
@@ -1191,7 +1191,7 @@ var
   bInExp: Boolean;
 begin
   if Pos('E', UpperCase(SciString)) = 0 then
-    Result := StrToFloatDefIgnoreInvalidCharacters(SciString, 0)
+    Result := JvSafeStrToFloatDef(SciString, 0)
   else
   begin
     sMantissa := '';
@@ -1209,7 +1209,8 @@ begin
           sMantissa := sMantissa + SciString[I];
       end;
     end;
-    Result := StrToFloatDefIgnoreInvalidCharacters(sMantissa, 0) * Power(10, StrToFloatDefIgnoreInvalidCharacters(sExponent, 0));
+     // NOTE: StrToFloatDefIgnoreInvalidCharacters now called JvSafeStrToFloatDef:
+    Result := JvSafeStrToFloatDef(sMantissa, 0) * Power(10, JvSafeStrToFloatDef(sExponent, 0));
   end;
 end;
 

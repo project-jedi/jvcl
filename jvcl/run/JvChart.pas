@@ -4011,8 +4011,11 @@ var
   StrString: string;
 begin
   StrString := FloatToStr(Options.PrimaryYAxis.YMax);
+
+ // NOTE: StrToFloatDefIgnoreInvalidCharacters now called JvSafeStrToFloatDef:
+
   if InputQuery(RsGraphScale, Format(RsYAxisScales, [FloatToStr(Options.PrimaryYAxis.YMax)]), StrString) then
-    Options.PrimaryYAxis.YMax := StrToFloatDefIgnoreInvalidCharacters(StrString, Options.PrimaryYAxis.YMax)
+    Options.PrimaryYAxis.YMax := JvSafeStrToFloatDef(StrString, Options.PrimaryYAxis.YMax)
   else
     Exit;
 
