@@ -137,7 +137,11 @@ implementation
 
 uses
   ExtDlgs,
-  JvID3v2Types;
+  JvID3v2Types
+  {$IFNDEF COMPILER12_UP}
+  , JclUnicode
+  {$ENDIF !COMPILER12_UP}
+  ;
 
 {$R *.dfm}
 
@@ -274,7 +278,7 @@ begin
     while SubItems.Count < 3 do
       SubItems.Add('');
     SubItems[0] := CPictureTypeStr[PictureType]; //Type
-    SubItems[1] := MIMEType; //Format
+    SubItems[1] := string(MIMEType); //Format
     SubItems[2] := IntToStr(DataSize); //Size
     Data := Frame;
   end;
@@ -374,7 +378,7 @@ end;
 
 procedure TJvID3v2EditForm.CtrlsToTag;
 
-  procedure SetFirstOfList(Strings: TStrings; const S: string);
+  procedure SetFirstOfList(Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP}; const S: string);
   begin
     if Strings.Count > 0 then
       Strings[0] := S
@@ -401,7 +405,7 @@ begin
   SetFirstOfList(JvID3v21.Texts.OrigArtist, edtOrigArtist.Text);
   JvID3v21.Texts.Copyright := edtCopyright.Text;
   { Note that WinAmp doesn't care about other properties than URL of TJvID3URLUserFrame }
-  TJvID3URLUserFrame.FindOrCreate(JvID3v21, 0).URL := edtURL.Text;
+  TJvID3URLUserFrame.FindOrCreate(JvID3v21, 0).URL := AnsiString(edtURL.Text);
   JvID3v21.Texts.EncodedBy := edtEncodedBy.Text;
 
   { Lyrics }
@@ -423,7 +427,7 @@ end;
 
 procedure TJvID3v2EditForm.TagToCtrls;
 
-  function GetFirstOfList(Strings: TStrings): string;
+  function GetFirstOfList(Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP}): string;
   begin
     if Strings.Count > 0 then
       Result := Strings[0]
@@ -457,13 +461,13 @@ begin
   edtOrigArtist.Text := GetFirstOfList(JvID3v21.Texts.OrigArtist);
   edtCopyright.Text := JvID3v21.Texts.Copyright;
   { Note that WinAmp doesn't care about other properties than URL of TJvID3URLUserFrame }
-  edtURL.Text := TJvID3URLUserFrame.FindOrCreate(JvID3v21, 0).URL;
+  edtURL.Text := string(TJvID3URLUserFrame.FindOrCreate(JvID3v21, 0).URL);
   edtEncodedBy.Text := JvID3v21.Texts.EncodedBy;
 
   { Lyrics }
   with TJvID3ContentFrame.FindOrCreate(JvID3v21, fiUnsyncedLyrics) do
   begin
-    cmbLanguage.ItemIndex := cmbLanguage.Items.IndexOf(ISO_639_2CodeToName(Language));
+    cmbLanguage.ItemIndex := cmbLanguage.Items.IndexOf(string(ISO_639_2CodeToName(Language)));
     memLyrics.Lines.Text := Text;
     edtDescription.Text := Description;
   end;
@@ -505,7 +509,7 @@ begin
       with cmbPictureType do
         PictureType := TJvID3PictureType(Items.Objects[ItemIndex]);
       Description := edtPictureName.Text;
-      MIMEType := ExtToMIMEType(ExtractFileExt(FileName));
+      MIMEType := AnsiString(ExtToMIMEType(ExtractFileExt(FileName)));
       LoadFromFile(FileName);
 
       lsvPictures.Items.BeginUpdate;
@@ -604,7 +608,7 @@ begin
       with JvID3v21.Frames[I] do
       begin
         ListItem := lsvAllFrames.Items.Add;
-        ListItem.Caption := FrameName;
+        ListItem.Caption := string(FrameName);
         if ClassType <> TJvID3SkipFrame then
           ListItem.SubItems.Add('Yes')
         else

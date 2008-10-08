@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
-  JclStringConversions, JclUnicode,
+  JclUnicode,
   JvComponentBase, JvID3v2Types, JvID3v1;
 
 const
@@ -128,8 +128,8 @@ type
     function ReadLanguage(var Language: AnsiString): Longint;
     function ReadNumber(var AValue: Cardinal): Longint;
     function ReadEnc(var AEncoding: TJvID3Encoding): Longint;
-    function ReadStringEnc(var S: TJvID3StringPair): Longint;
-    function ReadUserString(var S1, S2: TJvID3StringPair): Longint;
+    function ReadStringEnc(var S: WideString): Longint;
+    function ReadUserString(var S1, S2: WideString): Longint;
     { Only for v2.2 }
     function ReadFixedNumber3(var AValue: Cardinal): Longint;
     { Only for v2.3 }
@@ -147,8 +147,8 @@ type
     function WriteNumber(AValue: Cardinal): Longint;
     function WriteEnc: Longint;
     function WritePadding(const Count: Longint): Longint;
-    function WriteStringEnc(const S: TJvID3StringPair): Longint;
-    function WriteUserString(const S1, S2: TJvID3StringPair): Longint;
+    function WriteStringEnc(const S: WideString): Longint;
+    function WriteUserString(const S1, S2: WideString): Longint;
     function WriteTerminatorEnc: Longint;
     { Only for v2.2 }
     function WriteFixedNumber3(AValue: Cardinal): Longint;
@@ -298,6 +298,8 @@ type
     { Checks whether Frame has the same unique identifier as this frame }
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; virtual;
 
+    function MustWriteAsUTF: Boolean; virtual;
+
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; virtual; abstract;
     procedure UpdateFrameSize;
 
@@ -380,7 +382,7 @@ type
 
   TJvID3BinaryFrame = class(TJvID3Frame)
   private
-    FData: PAnsiChar;
+    FData: PByte;
     FDataSize: Cardinal;
   protected
     procedure ReadData(ASize: Cardinal); virtual;
@@ -434,23 +436,18 @@ type
 
   TJvID3DoubleListFrame = class(TJvID3Frame)
   private
-    FList: TStringList;
-    FListW: TWideStringList;
-    function GetNameA(Index: Integer): string;
-    function GetNameW(Index: Integer): string;
-    function GetValueA(Index: Integer): string;
-    function GetValueW(Index: Integer): string;
-    function GetList: TStrings;
-    function GetListW: TWideStrings;
-    procedure SetList(const Value: TStrings);
-    procedure SetListW(const Value: TWideStrings);
+    FList: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
     procedure ListChanged(Sender: TObject);
+    procedure SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
+    function GetNames(const Index: Integer): WideString;
+    function GetValues(const Index: Integer): WideString;
   protected
     procedure ReadFrame; override;
     procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     procedure ChangeToVersion(const ANewVersion: TJvID3Version); override;
     function SupportsVersion(const AVersion: TJvID3Version): Boolean; override;
@@ -468,13 +465,10 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
 
-    property Names[Index: Integer]: string read GetNameA;
-    property NamesW[Index: Integer]: string read GetNameW;
-    property Values[Index: Integer]: string read GetValueA;
-    property ValuesW[Index: Integer]: string read GetValueW;
+    property Names[const Index: Integer]: WideString read GetNames;
+    property Values[const Index: Integer]: WideString read GetValues;
   published
-    property List: TStrings read GetList write SetList;
-    property ListW: TWideStrings read GetListW write SetListW;
+    property List: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} read FList write SetList;
   end;
 
   { COMM - fiComment - Comments
@@ -491,19 +485,18 @@ type
   TJvID3ContentFrame = class(TJvID3Frame)
   private
     FLanguage: AnsiString;
-    FText: TJvID3StringPair;
-    FDescription: TJvID3StringPair;
-    procedure SetText(const Value: AnsiString);
-    procedure SetTextW(const Value: WideString);
+    FText: WideString;
+    FDescription: WideString;
+    procedure SetDescription(const Value: WideString);
     procedure SetLanguage(const Value: AnsiString);
-    procedure SetDescription(const Value: AnsiString);
-    procedure SetDescriptionW(const Value: WideString);
+    procedure SetText(const Value: WideString);
   protected
     procedure ReadFrame; override;
     procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
   public
@@ -517,10 +510,8 @@ type
     class function FindOrCreate(AController: TJvID3Controller; const AFrameID: TJvID3FrameID): TJvID3ContentFrame;
   published
     property Language: AnsiString read FLanguage write SetLanguage;
-    property Description: AnsiString read FDescription.SA write SetDescription;
-    property DescriptionW: WideString read FDescription.SW write SetDescriptionW;
-    property Text: AnsiString read FText.SA write SetText;
-    property TextW: WideString read FText.SW write SetTextW;
+    property Description: WideString read FDescription write SetDescription;
+    property Text: WideString read FText write SetText;
   end;
 
   { GEOB - fiGeneralObject - General encapsulated object
@@ -531,13 +522,11 @@ type
 
   TJvID3GeneralObjFrame = class(TJvID3BinaryFrame)
   private
-    FContentDescription: TJvID3StringPair;
+    FContentDescription: WideString;
     FMIMEType: AnsiString;
-    FFileName: TJvID3StringPair;
-    procedure SetContentDescription(const Value: AnsiString);
-    procedure SetContentDescriptionW(const Value: WideString);
-    procedure SetFileName(const Value: AnsiString);
-    procedure SetFileNameW(const Value: WideString);
+    FFileName: WideString;
+    procedure SetContentDescription(const Value: WideString);
+    procedure SetFileName(const Value: WideString);
     procedure SetMIMEType(const Value: AnsiString);
   protected
     procedure ReadFrame; override;
@@ -545,6 +534,7 @@ type
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
   public
@@ -555,20 +545,13 @@ type
     procedure Clear; override;
 
     class function Find(AController: TJvID3Controller): TJvID3GeneralObjFrame; overload;
-    class function Find(AController: TJvID3Controller; const AContentDescription: AnsiString): TJvID3GeneralObjFrame;
-      overload;
-    class function FindW(AController: TJvID3Controller; const AContentDescription: WideString): TJvID3GeneralObjFrame;
+    class function Find(AController: TJvID3Controller; const AContentDescription: WideString): TJvID3GeneralObjFrame; overload;
     class function FindOrCreate(AController: TJvID3Controller): TJvID3GeneralObjFrame; overload;
-    class function FindOrCreate(AController: TJvID3Controller; const AContentDescription: AnsiString):
-      TJvID3GeneralObjFrame; overload;
-    class function FindOrCreateW(AController: TJvID3Controller; const AContentDescription: WideString):
-      TJvID3GeneralObjFrame;
+    class function FindOrCreate(AController: TJvID3Controller; const AContentDescription: WideString): TJvID3GeneralObjFrame; overload;
   published
     property MIMEType: AnsiString read FMIMEType write SetMIMEType;
-    property FileName: AnsiString read FFileName.SA write SetFileName;
-    property FileNameW: WideString read FFileName.SW write SetFileNameW;
-    property ContentDescription: AnsiString read FContentDescription.SA write SetContentDescription;
-    property ContentDescriptionW: WideString read FContentDescription.SW write SetContentDescriptionW;
+    property FileName: WideString read FFileName write SetFileName;
+    property ContentDescription: WideString read FContentDescription write SetContentDescription;
   end;
 
   { POPM - fiPopularimeter - Popularimeter
@@ -660,6 +643,7 @@ type
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
   public
     class function CanAddFrame(AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean; override;
@@ -683,17 +667,17 @@ type
 
   TJvID3TermsOfUseFrame = class(TJvID3Frame)
   private
-    FText: TJvID3StringPair;
+    FText: WideString;
     FLanguage: AnsiString;
     procedure SetLanguage(const Value: AnsiString);
-    procedure SetText(const Value: AnsiString);
-    procedure SetTextW(const Value: WideString);
+    procedure SetText(const Value: WideString);
   protected
     procedure ReadFrame; override;
     procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     function SupportsVersion(const AVersion: TJvID3Version): Boolean; override;
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
@@ -708,8 +692,7 @@ type
     class function FindOrCreate(AController: TJvID3Controller): TJvID3TermsOfUseFrame;
   published
     property Language: AnsiString read FLanguage write SetLanguage;
-    property Text: AnsiString read FText.SA write SetText;
-    property TextW: WideString read FText.SW write SetTextW;
+    property Text: WideString read FText write SetText;
   end;
 
   { OWNE - fiOwnership - Ownership frame
@@ -720,18 +703,18 @@ type
   TJvID3OwnershipFrame = class(TJvID3Frame)
   private
     FPricePayed: AnsiString;
-    FSeller: TJvID3StringPair;
+    FSeller: WideString;
     FDateOfPurch: TDateTime;
     procedure SetDateOfPurch(const Value: TDateTime);
     procedure SetPricePayed(const Value: AnsiString);
-    procedure SetSeller(const Value: AnsiString);
-    procedure SetSellerW(const Value: WideString);
+    procedure SetSeller(const Value: WideString);
   protected
     procedure ReadFrame; override;
     procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     function SupportsVersion(const AVersion: TJvID3Version): Boolean; override;
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
@@ -747,8 +730,7 @@ type
   published
     property PricePayed: AnsiString read FPricePayed write SetPricePayed;
     property DateOfPurch: TDateTime read FDateOfPurch write SetDateOfPurch;
-    property Seller: AnsiString read FSeller.SA write SetSeller;
-    property SellerW: WideString read FSeller.SW write SetSellerW;
+    property Seller: WideString read FSeller write SetSeller;
   end;
 
   { APIC - fiPicture - Attached picture
@@ -766,10 +748,9 @@ type
   private
     FMIMEType: AnsiString;
     FPictureType: TJvID3PictureType;
-    FDescription: TJvID3StringPair;
+    FDescription: WideString;
     FURL: AnsiString;
-    procedure SetDescription(const Value: AnsiString);
-    procedure SetDescriptionW(const Value: WideString);
+    procedure SetDescription(const Value: WideString);
     procedure SetMIMEType(const Value: AnsiString);
     procedure SetURL(const Value: AnsiString);
     function GetHasOnlyURL: Boolean;
@@ -779,6 +760,7 @@ type
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
 
@@ -801,22 +783,22 @@ type
   published
     property MIMEType: AnsiString read FMIMEType write SetMIMEType;
     property PictureType: TJvID3PictureType read FPictureType write FPictureType;
-    property Description: AnsiString read FDescription.SA write SetDescription;
-    property DescriptionW: WideString read FDescription.SW write SetDescriptionW;
+    property Description: WideString read FDescription write SetDescription;
     { Only used when MIMEType = '-->' }
     property URL: AnsiString read FURL write SetURL;
   end;
 
   TJvID3CustomTextFrame = class(TJvID3Frame)
   protected
-    procedure GetText(var AText: TJvID3StringPair); virtual; abstract;
-    procedure NewText(const ANewText: TJvID3StringPair); virtual; abstract;
+    function GetText: WideString; virtual; abstract;
+    procedure SetText(const ANewText: WideString); virtual; abstract;
 
     procedure ReadFrame; override;
     procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
 
     function SupportsVersion(const AVersion: TJvID3Version): Boolean; override;
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
@@ -825,24 +807,21 @@ type
 
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
+
+    property Text: WideString read GetText write SetText;
   end;
 
   TJvID3SimpleListFrame = class(TJvID3CustomTextFrame)
   private
-    FList: TStringList;
-    FListW: TWideStringList;
-    function GetList: TStrings;
-    function GetListW: TWideStrings;
-    procedure SetList(const Value: TStrings);
-    procedure SetListW(const Value: TWideStrings);
-    function GetSeparator: AnsiChar;
-    function GetSeparatorW: WideChar;
+    FList: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
+    procedure SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
+    function GetSeparator: WideChar;
     function GetFixedStringLength: Integer;
     procedure ListChanged(Sender: TObject);
     function GetIsNullSeparator: Boolean;
   protected
-    procedure GetText(var AText: TJvID3StringPair); override;
-    procedure NewText(const ANewText: TJvID3StringPair); override;
+    function GetText: WideString; override;
+    procedure SetText(const ANewText: WideString); override;
 
     procedure ReadFrame; override;
     procedure WriteFrame; override;
@@ -857,21 +836,19 @@ type
     procedure BeforeDestruction; override;
 
     property FixedStringLength: Integer read GetFixedStringLength;
-    property Separator: AnsiChar read GetSeparator;
-    property SeparatorW: WideChar read GetSeparatorW;
+    property Separator: WideChar read GetSeparator;
     property IsNullSeparator: Boolean read GetIsNullSeparator;
   published
-    property List: TStrings read GetList write SetList;
-    property ListW: TWideStrings read GetListW write SetListW;
+    property List: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} read FList write SetList;
   end;
 
   TJvID3NumberFrame = class(TJvID3CustomTextFrame)
   private
     FValue: Cardinal;
-    procedure SetValue(const Value: Cardinal);
+    procedure SetValue(const AValue: Cardinal);
   protected
-    procedure GetText(var AText: TJvID3StringPair); override;
-    procedure NewText(const ANewText: TJvID3StringPair); override;
+    function GetText: WideString; override;
+    procedure SetText(const ANewText: WideString); override;
     procedure ChangeToVersion(const ANewVersion: TJvID3Version); override;
     function GetIsEmpty: Boolean; override;
   public
@@ -885,10 +862,10 @@ type
   TJvID3TimestampFrame = class(TJvID3CustomTextFrame)
   private
     FValue: TDateTime;
-    procedure SetValue(const Value: TDateTime);
+    procedure SetValue(const AValue: TDateTime);
   protected
-    procedure GetText(var AText: TJvID3StringPair); override;
-    procedure NewText(const ANewText: TJvID3StringPair); override;
+    function GetText: WideString; override;
+    procedure SetText(const ANewText: WideString); override;
     procedure ChangeToVersion(const ANewVersion: TJvID3Version); override;
   public
     function CheckFrame(const HandleError: TJvID3HandleError): Boolean; override;
@@ -900,20 +877,17 @@ type
 
   TJvID3TextFrame = class(TJvID3CustomTextFrame)
   private
-    FText: TJvID3StringPair;
-    procedure SetText(const Value: AnsiString);
-    procedure SetTextW(const Value: WideString);
+    FText: WideString;
   protected
-    procedure GetText(var AText: TJvID3StringPair); override;
-    procedure NewText(const ANewText: TJvID3StringPair); override;
+    function GetText: WideString; override;
+    procedure SetText(const ANewText: WideString); override;
     procedure ChangeToVersion(const ANewVersion: TJvID3Version); override;
   public
     function CheckFrame(const HandleError: TJvID3HandleError): Boolean; override;
     class function Find(AController: TJvID3Controller; const AFrameID: TJvID3FrameID): TJvID3TextFrame;
     class function FindOrCreate(AController: TJvID3Controller; const AFrameID: TJvID3FrameID): TJvID3TextFrame;
   published
-    property Text: AnsiString read FText.SA write SetText;
-    property TextW: WideString read FText.SW write SetTextW;
+    property Text;
   end;
 
   TJvID3URLFrame = class(TJvID3Frame)
@@ -946,18 +920,17 @@ type
 
   TJvID3UserFrame = class(TJvID3Frame)
   private
-    FValue: TJvID3StringPair;
-    FDescription: TJvID3StringPair;
-    procedure SetDescription(const Value: AnsiString);
-    procedure SetDescriptionW(const Value: WideString);
-    procedure SetValue(const Value: AnsiString);
-    procedure SetValueW(const Value: WideString);
+    FValue: WideString;
+    FDescription: WideString;
+    procedure SetDescription(const AValue: WideString);
+    procedure SetValue(const AValue: WideString);
   protected
     procedure ReadFrame; override;
     procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
   public
     class function CanAddFrame(AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean; override;
     function CheckFrame(const HandleError: TJvID3HandleError): Boolean; override;
@@ -968,10 +941,8 @@ type
     class function Find(AController: TJvID3Controller; const Index: Integer): TJvID3UserFrame;
     class function FindOrCreate(AController: TJvID3Controller; const Index: Integer): TJvID3UserFrame;
   published
-    property Description: AnsiString read FDescription.SA write SetDescription;
-    property DescriptionW: WideString read FDescription.SW write SetDescriptionW;
-    property Value: AnsiString read FValue.SA write SetValue;
-    property ValueW: WideString read FValue.SW write SetValueW;
+    property Description: WideString read FDescription write SetDescription;
+    property Value: WideString read FValue write SetValue;
   end;
 
   { WXXX - fiWWWUser - User defined URL link
@@ -979,10 +950,9 @@ type
 
   TJvID3URLUserFrame = class(TJvID3Frame)
   private
-    FDescription: TJvID3StringPair;
+    FDescription: WideString;
     FURL: AnsiString;
-    procedure SetDescription(const Value: AnsiString);
-    procedure SetDescriptionW(const Value: WideString);
+    procedure SetDescription(const Value: WideString);
     procedure SetURL(const Value: AnsiString);
   protected
     procedure ReadFrame; override;
@@ -990,6 +960,7 @@ type
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
+    function MustWriteAsUTF: Boolean; override;
   public
     class function CanAddFrame(AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean; override;
     function CheckFrame(const HandleError: TJvID3HandleError): Boolean; override;
@@ -1000,8 +971,7 @@ type
     class function Find(AController: TJvID3Controller; const Index: Integer): TJvID3URLUserFrame;
     class function FindOrCreate(AController: TJvID3Controller; const Index: Integer): TJvID3URLUserFrame;
   published
-    property Description: AnsiString read FDescription.SA write SetDescription;
-    property DescriptionW: WideString read FDescription.SW write SetDescriptionW;
+    property Description: WideString read FDescription write SetDescription;
     property URL: AnsiString read FURL write SetURL;
   end;
 
@@ -1140,8 +1110,8 @@ type
     property Header: TJvID3Header read FHeader write SetHeader stored False;
     property ExtendedHeader: TJvID3ExtendedHeader read FExtendedHeader write SetExtendedHeader stored False;
     property FileInfo: TJvID3FileInfo read FFileInfo;
-    property ReadEncodingAs: TJvID3ForceEncoding read FReadEncodingAs write SetReadEncodingAs default ifeDontCare;
-    property WriteEncodingAs: TJvID3ForceEncoding read FWriteEncodingAs write SetWriteEncodingAs default ifeDontCare;
+    property ReadEncodingAs: TJvID3ForceEncoding read FReadEncodingAs write SetReadEncodingAs default ifeAuto;
+    property WriteEncodingAs: TJvID3ForceEncoding read FWriteEncodingAs write SetWriteEncodingAs default ifeAuto;
     property ReadVersionAs: TJvID3ForceVersion read FReadVersionAs write SetReadVersionAs default ifvDontCare;
     property WriteVersionAs: TJvID3ForceVersion read FWriteVersionAs write SetWriteVersionAs default ifvDontCare;
     property Options: TJvID3ControllerOptions read FOptions write FOptions default [coAutoCorrect,
@@ -1196,13 +1166,13 @@ procedure ID3Error(const Msg: string; Component: TComponent = nil);
 procedure ID3ErrorFmt(const Msg: string; const Args: array of const;
   Component: TComponent = nil);
 function CreateUniqueName(AController: TJvID3Controller; const FrameName: AnsiString;
-  FrameClass: TJvID3FrameClass; Component: TComponent): AnsiString;
+  FrameClass: TJvID3FrameClass; Component: TComponent): string;
 procedure GetID3v2Version(const AFileName: string; var HasTag: Boolean;
   var Version: TJvID3Version);
 function ExtToMIMEType(const Ext: string): string;
-function MIMETypeToExt(const MIMEType: AnsiString): string;
-function GenreToNiceGenre(const AGenre: AnsiString): AnsiString;
-function NiceGenreToGenre(const ANiceGenre: AnsiString): AnsiString;
+function MIMETypeToExt(const MIMEType: string): string;
+function GenreToNiceGenre(const AGenre: string): string;
+function NiceGenreToGenre(const ANiceGenre: string): string;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1230,13 +1200,16 @@ uses
   JvVCL5Utils,
   JvJclUtils, // SameFileName() for Delphi 5
   JclBase, JclFileUtils, JclLogic, JclDateTime,
+  JclStringConversions,
   JvConsts, JvResources;
 
+{$IFDEF COMPILER12_UP}
 type
   TJvID3StringList = class(TStringList)
   public
-    function GetSeparatedText(const Separator: AnsiString): AnsiString;
+    function GetSeparatedText(const Separator: string): string;
   end;
+{$ENDIF COMPILER12_UP}
 
 const
   CMapBitrate: array [Boolean, TJvMPEGLayer] of Byte =
@@ -1275,11 +1248,11 @@ const
     48000        // mlLayerI
    );
 
-  cUnknownLanguage = 'XXX';
-  cID3HeaderId = 'ID3';  // do not change case
+  cUnknownLanguage = AnsiString('XXX');
+  cID3HeaderId = AnsiString('ID3');  // do not change case
   cChangeTagSizeFileNameTemplate: string = 'ChangeTagSize';
   cPictureFrameFileNameTemplate: string = 'TJvID3PictureFrame';
-  cURLArrow = '-->';
+  cURLArrow = AnsiString('-->');
 
 var
   DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass =
@@ -1390,128 +1363,33 @@ begin
   Result := Length(WideStringToUTF8(SW));
 end;
 
-function GetStringA(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding): AnsiString;
+function CharCount(const S: WideString): Cardinal;
 begin
-  { Returns a ansi string from the string holder SP, Encoding specifies
-    whether the result string should be from the unicode or ansi part of SP }
-
-  case Encoding of
-    ienISO_8859_1:
-      Result := SP.SA;
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      Result := WideStringToStringEx(SP.SW, CP_ACP);
-  else
-    ID3Error(RsEID3UnknownEncoding);
-  end;
+  Result := Length(S);
 end;
 
-function GetStringW(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding): WideString;
+{$IFNDEF COMPILER12_UP}
+function SameStr(const S1, S2: WideString): Boolean;
 begin
-  { Returns a unicode string from the string holder SP, Encoding specifies
-    whether the result string should be from the unicode or ansi part of SP }
-
-  case Encoding of
-    ienISO_8859_1:
-      Result := StringToWideStringEx(SP.SA, CP_ACP);
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      Result := SP.SW;
-  else
-    ID3Error(RsEID3UnknownEncoding);
-  end;
+  Result := StrICompW(PWideChar(S1), PWideChar(S2)) = 0
 end;
+{$ENDIF !COMPILER12_UP}
 
-function SameStringPair(const S1, S2: TJvID3StringPair; const Enc1, Enc2: TJvID3Encoding): Boolean;
-var
-  SW1, SW2: WideString;
-begin
-  { Compares two string pairs, without case sensitivity; it's used to check if
-    2 frames have the same content descriptor; documentation is not clear whether
-    this must be done with case sensitivity or not. }
-
-  if (Enc1 = Enc2) and (Enc1 = ienISO_8859_1) then
-    Result := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}AnsiSameStr(S1.SA, S2.SA)
-  else
-  begin
-    if Enc1 = ienISO_8859_1 then
-      SW1 := StringToWideStringEx(S1.SA, CP_ACP)
-    else
-      SW1 := S1.SW;
-
-    if Enc2 = ienISO_8859_1 then
-      SW2 := StringToWideStringEx(S2.SA, CP_ACP)
-    else
-      SW2 := S2.SW;
-
-    Result := JclUnicode.StrICompW(PWideChar(SW1), PWideChar(SW2)) = 0;
-  end;
-end;
-
-procedure SetStringA(var SP: TJvID3StringPair; const Encoding: TJvID3Encoding; const S: AnsiString);
-begin
-  { Stores the ansi string S in the string holder SP, Encoding specifies
-    whether S should be stored in SP as unicode or ansi }
-
-  case Encoding of
-    ienISO_8859_1:
-      SP.SA := S;
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      SP.SW := StringToWideStringEx(S, CP_ACP);
-  else
-    ID3Error(RsEID3UnknownEncoding);
-  end;
-end;
-
-function GetCharCount(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding): Cardinal;
-begin
-  { Returns the nr. of characters of a string of a specific encoding }
-
-  case Encoding of
-    ienISO_8859_1:
-      Result := Length(SP.SA);
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      Result := Length(SP.SW);
-  else
-    Result := 0;
-    ID3Error(RsEID3UnknownEncoding);
-  end;
-end;
-
-(* make Delphi 5 compiler happy // andreas
-function GetByteCount(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding): Cardinal;
-begin
-  { Returns the nr. of bytes needed to store a string of a specific encoding }
-
-  case Encoding of
-    ienISO_8859_1:
-      Result := GetCharCount(SP, Encoding);
-    ienUTF_16:
-      Result := GetCharCount(SP, Encoding) * 2 + 2 { BOM };
-    ienUTF_16BE:
-      Result := GetCharCount(SP, Encoding) * 2;
-    ienUTF_8:
-      Result := LengthUTF8Str(GetStringW(SP, Encoding));
-  else
-    Result := 0;
-    ID3Error(RsEID3UnknownEncoding);
-  end;
-end;
-*)
-
-function LengthEnc(const S: TJvID3StringPair; const FromEnc, ToEnc: TJvID3Encoding): Cardinal;
+function LengthEnc(const S: WideString; const Encoding: TJvID3Encoding): Cardinal;
 begin
   { Calculates the length in bytes needed to store a string in a stream encoded as
     ToEnc; the string is encoded as FromEnc in the string pair S;
     Very similar to GetByteCount }
 
-  case ToEnc of
+  case Encoding of
     ienISO_8859_1:
-      Result := GetCharCount(S, FromEnc);
+      Result := CharCount(S);
     ienUTF_16:
-      Result := 2 + 2 * GetCharCount(S, FromEnc);
+      Result := 2 + 2 * CharCount(S);
     ienUTF_16BE:
-      Result := 2 * GetCharCount(S, FromEnc);
+      Result := 2 * CharCount(S);
     ienUTF_8:
-      Result := LengthUTF8Str(GetStringW(S, FromEnc));
+      Result := LengthUTF8Str(S);
   else
     Result := 0;
     ID3Error(RsEID3UnknownEncoding);
@@ -1530,77 +1408,6 @@ begin
       Result := 2;
   else
     Result := 0;
-    ID3Error(RsEID3UnknownEncoding);
-  end;
-end;
-
-procedure ClearStringPair(var SP: TJvID3StringPair);
-begin
-  with SP do
-  begin
-    SA := '';
-    SW := '';
-  end;
-end;
-
-procedure CopyStringPair(const Source: TJvID3StringPair; var Dest: TJvID3StringPair);
-begin
-  with Dest do
-  begin
-    SA := Source.SA;
-    SW := Source.SW;
-  end;
-end;
-
-procedure CopyLists(SourceA: TStrings; SourceW: TWideStrings; const SourceEnc: TJvID3Encoding;
-  DestA: TStrings; DestW: TWideStrings; const DestEnc: TJvID3Encoding);
-var
-  I: Integer;
-begin
-  { Copies the strings in the stringlist SourceA or SourceW - depending on the
-    value of SourceEnc - to the stringlist DestA or DestW - depending on the
-    value of DestEnc }
-
-  case SourceEnc of
-    ienISO_8859_1:
-      case DestEnc of
-        ienISO_8859_1:
-          for I := 0 to SourceA.Count - 1 do
-            DestA.Add(SourceA[I]);
-        ienUTF_16, ienUTF_16BE, ienUTF_8:
-          for I := 0 to SourceA.Count - 1 do
-            DestW.Add(StringToWideStringEx(AnsiString(SourceA[I]), CP_ACP));
-      else
-        ID3Error(RsEID3UnknownEncoding);
-      end;
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      case DestEnc of
-        ienISO_8859_1:
-          for I := 0 to SourceW.Count - 1 do
-            DestA.Add(string(WideStringToStringEx(SourceW[I], CP_ACP)));
-        ienUTF_16, ienUTF_16BE, ienUTF_8:
-          for I := 0 to SourceW.Count - 1 do
-            DestW.Add(SourceW[I]);
-      else
-        ID3Error(RsEID3UnknownEncoding);
-      end;
-
-  else
-    ID3Error(RsEID3UnknownEncoding);
-  end;
-end;
-
-function CheckIsEmpty(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding): Boolean;
-begin
-  { Returns True when the string pair SP contains an empty string, otherwise False }
-
-  case Encoding of
-    ienISO_8859_1:
-      Result := SP.SA = '';
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      Result := SP.SW = '';
-  else
-    Result := False;
     ID3Error(RsEID3UnknownEncoding);
   end;
 end;
@@ -1636,23 +1443,7 @@ begin
     S := AnsiLowerCase(S);
 end;
 
-function CheckIsLanguageW(Frame: TJvID3Frame; var S: WideString; const HandleError: TJvID3HandleError): Boolean;
-var
-  SA: AnsiString;
-begin
-  { The three byte language field, present in several frames, is used to
-    describe the language of the frame's content, according to ISO-639-2
-    [ISO-639-2]. The language should be represented in lower case. If the
-    language is not known the string "XXX" should be used.
-  }
-
-  SA := WideStringToStringEx(S, CP_ACP);
-  Result := CheckIsLanguageA(Frame, SA, HandleError);
-  if not Result and (HandleError = heAutoCorrect) then
-    S := StringToWideStringEx(SA, CP_ACP);
-end;
-
-function CheckIsID3TimeA(Frame: TJvID3Frame; var S: AnsiString; const HandleError: TJvID3HandleError): Boolean;
+function CheckIsID3Time(Frame: TJvID3Frame; var S: WideString; const HandleError: TJvID3HandleError): Boolean;
 var
   I1, I2: Integer;
 begin
@@ -1661,8 +1452,8 @@ begin
 
   if Result then
   begin
-    I1 := StrToIntDef(string(Copy(S, 1, 2)), -1);
-    I2 := StrToIntDef(string(Copy(S, 3, 4)), -1);
+    I1 := StrToIntDef(Copy(S, 1, 2), -1);
+    I2 := StrToIntDef(Copy(S, 3, 4), -1);
     Result := (I1 >= 0) and (I1 < 24) and (I2 >= 0) and (I2 < 60);
   end;
 
@@ -1676,18 +1467,7 @@ begin
     end;
 end;
 
-function CheckIsID3Time(Frame: TJvID3Frame; var SP: TJvID3StringPair;
-  const HandleError: TJvID3HandleError): Boolean;
-var
-  S: AnsiString;
-begin
-  S := GetStringA(SP, Frame.Encoding);
-  Result := CheckIsID3TimeA(Frame, S, HandleError);
-  if not Result and (HandleError = heAutoCorrect) then
-    SetStringA(SP, Frame.Encoding, S);
-end;
-
-function CheckIsID3DateA(Frame: TJvID3Frame; var S: AnsiString; const HandleError: TJvID3HandleError): Boolean;
+function CheckIsID3Date(Frame: TJvID3Frame; var S: WideString; const HandleError: TJvID3HandleError): Boolean;
 var
   I1, I2: Integer;
 begin
@@ -1696,8 +1476,8 @@ begin
 
   if Result then
   begin
-    I1 := StrToIntDef(string(Copy(S, 1, 2)), -1);
-    I2 := StrToIntDef(string(Copy(S, 3, 4)), -1);
+    I1 := StrToIntDef(Copy(S, 1, 2), -1);
+    I2 := StrToIntDef(Copy(S, 3, 4), -1);
     Result := (I1 >= 1) and (I1 < 32) and (I2 >= 1) and (I2 < 13);
   end;
 
@@ -1711,50 +1491,30 @@ begin
     end;
 end;
 
-function CheckIsID3Date(Frame: TJvID3Frame; var SP: TJvID3StringPair;
-  const HandleError: TJvID3HandleError): Boolean;
-var
-  S: AnsiString;
-begin
-  S := GetStringA(SP, Frame.Encoding);
-  Result := CheckIsID3DateA(Frame, S, HandleError);
-  if not Result and (HandleError = heAutoCorrect) then
-    SetStringA(SP, Frame.Encoding, S);
-end;
-
-function CheckMaxCharCount(Frame: TJvID3Frame; var SP: TJvID3StringPair;
+function CheckMaxCharCount(Frame: TJvID3Frame; var S: WideString;
   const MaxCharCount: Cardinal;
   const HandleError: TJvID3HandleError): Boolean;
 begin
-  Result := GetCharCount(SP, Frame.Encoding) <= MaxCharCount;
+  Result := CharCount(S) <= MaxCharCount;
   if not Result then
     case HandleError of
       heAutoCorrect:
-        case Frame.Encoding of
-          ienISO_8859_1:
-            SetLength(SP.SA, MaxCharCount);
-          ienUTF_16, ienUTF_16BE, ienUTF_8:
-            SetLength(SP.SW, MaxCharCount);
-        else
-          Frame.Error(RsEID3UnknownEncoding);
-        end;
+        SetLength(S, MaxCharCount);
       heRaise:
-        Frame.ErrorFmt(RsEID3StringTooLong, [GetStringA(SP, Frame.Encoding)]);
+        Frame.ErrorFmt(RsEID3StringTooLong, [S]);
     end;
 end;
 
-function GetID3Date(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding;
+function GetID3Date(const S: WideString; const Encoding: TJvID3Encoding;
   const Year: Word = 0): TDateTime;
 var
-  S: AnsiString;
   Day, Month: Word;
 begin
   { must be DDMM }
-  S := GetStringA(SP, Encoding);
   if Length(S) = 4 then
   begin
-    Day := StrToIntDef(string(Copy(S, 1, 2)), 1);
-    Month := StrToIntDef(string(Copy(S, 3, 4)), 1);
+    Day := StrToIntDef(Copy(S, 1, 2), 1);
+    Month := StrToIntDef(Copy(S, 3, 4), 1);
   end
   else
   begin
@@ -1770,7 +1530,8 @@ begin
   end;
 end;
 
-function CheckIsLanguageListA(Frame: TJvID3Frame; Strings: TStrings;
+function CheckIsLanguageList(Frame: TJvID3Frame;
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
   const HandleError: TJvID3HandleError): Boolean;
 var
   I: Integer;
@@ -1791,67 +1552,13 @@ begin
   end;
 end;
 
-function CheckIsLanguageListW(Frame: TJvID3Frame; Strings: TWideStrings;
+function CheckList(Frame: TJvID3Frame;
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
+  const ASeparator: WideChar;
   const HandleError: TJvID3HandleError): Boolean;
 var
   I: Integer;
-  S: WideString;
-  Ok: Boolean;
-begin
-  Result := True;
-  for I := 0 to Strings.Count - 1 do
-  begin
-    S := Strings[I];
-    Ok := CheckIsLanguageW(Frame, S, HandleError);
-    Result := Result and Ok;
-    if not Ok then
-      if HandleError = heAutoCorrect then
-        Strings[I] := S
-      else
-        Break;
-  end;
-end;
-
-function CheckListA(Frame: TJvID3Frame; Strings: TStrings; const ASeparator: AnsiChar;
-  const HandleError: TJvID3HandleError): Boolean;
-var
-  I: Integer;
-  S: AnsiString;
-  LPos: Integer;
-begin
-  Result := True;
-  if ASeparator = #0 then
-    Exit;
-
-  for I := 0 to Strings.Count - 1 do
-  begin
-    S := AnsiString(Strings[I]);
-    LPos := Pos(ASeparator, S);
-    Result := Result and (LPos = 0);
-    if LPos > 0 then
-      case HandleError of
-        heAutoCorrect:
-          begin
-            repeat
-              Delete(S, LPos, 1);
-              LPos := Pos(ASeparator, S);
-            until LPos = 0;
-
-            Strings[I] := string(S);
-          end;
-        heRaise:
-          Frame.ErrorFmt(RsEID3InvalidCharInList, [ASeparator, S]);
-      else
-        Break;
-      end;
-  end;
-end;
-
-function CheckListW(Frame: TJvID3Frame; Strings: TWideStrings;
-  const ASeparator: WideChar; const HandleError: TJvID3HandleError): Boolean;
-var
-  I: Integer;
-  S: WideString;
+  S: string;
   LPos: Integer;
 begin
   Result := True;
@@ -1882,18 +1589,16 @@ begin
   end;
 end;
 
-function GetID3Time(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding;
+function GetID3Time(const S: WideString; const Encoding: TJvID3Encoding;
   const Sec: Word = 0; MSec: Word = 0): TDateTime;
 var
-  S: AnsiString;
   Hour, Min: Word;
 begin
   { must be HHMM }
-  S := GetStringA(SP, Encoding);
   if Length(S) = 4 then
   begin
-    Hour := StrToIntDef(string(Copy(S, 1, 2)), 0);
-    Min := StrToIntDef(string(Copy(S, 3, 4)), 0);
+    Hour := StrToIntDef(Copy(S, 1, 2), 0);
+    Min := StrToIntDef(Copy(S, 3, 4), 0);
   end
   else
   begin
@@ -1909,7 +1614,7 @@ begin
   end;
 end;
 
-function CheckIsID3PartInSetA(Frame: TJvID3Frame; var S: AnsiString; const HandleError: TJvID3HandleError): Boolean;
+function CheckIsID3PartInSet(Frame: TJvID3Frame; var S: WideString; const HandleError: TJvID3HandleError): Boolean;
 var
   P: Integer;
   I1, I2: Integer;
@@ -1923,15 +1628,15 @@ begin
     Exit;
   end;
 
-  P := Pos('/', string(S));
+  P := Pos('/', S);
   if P > 1 then
   begin
-    I1 := StrToIntDef(string(Copy(S, 1, P - 1)), -1);
-    I2 := StrToIntDef(string(Copy(S, P + 1, MaxInt)), -1);
+    I1 := StrToIntDef(Copy(S, 1, P - 1), -1);
+    I2 := StrToIntDef(Copy(S, P + 1, MaxInt), -1);
     Result := (I1 > -1) and (I2 > -1);
   end
   else
-    Result := StrToIntDef(string(S), -1) > -1;
+    Result := StrToIntDef(S, -1) > -1;
 
   if not Result then
     case HandleError of
@@ -1943,23 +1648,12 @@ begin
     end;
 end;
 
-function CheckIsID3PartInSet(Frame: TJvID3Frame; var SP: TJvID3StringPair;
-  const HandleError: TJvID3HandleError): Boolean;
-var
-  S: AnsiString;
-begin
-  S := GetStringA(SP, Frame.Encoding);
-  Result := CheckIsID3PartInSetA(Frame, S, HandleError);
-  if not Result and (HandleError = heAutoCorrect) then
-    SetStringA(SP, Frame.Encoding, S);
-end;
-
 { Copied from DSDesign.pas }
 
 function GenerateName(Controller: TJvID3Controller; FrameName: AnsiString;
-  FrameClass: TJvID3FrameClass; Number: Integer): AnsiString;
+  FrameClass: TJvID3FrameClass; Number: Integer): string;
 var
-  Fmt: AnsiString;
+  Fmt: string;
 
   procedure CrunchFrameName;
   var
@@ -1993,7 +1687,7 @@ begin
   Fmt := '%s%s%d';
   if Number < 2 then
     Fmt := '%s%s';
-  Result := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format(Fmt, [Controller.Name, FrameName, Number]);
+  Result := Format(Fmt, [Controller.Name, FrameName, Number]);
 end;
 
 procedure SyncSafe(Source: Cardinal; var Dest; const DestSize: Integer); overload;
@@ -2028,20 +1722,6 @@ begin
   begin
     TBytes(Dest)[I] := Source and $7F; // $7F = %01111111
     Source := Source shr 7;
-  end;
-end;
-
-procedure TranslatePairString(var S: TJvID3StringPair; const SourceEnc, DestEnc: TJvID3Encoding);
-begin
-  case SourceEnc of
-    ienISO_8859_1:
-      if DestEnc <> ienISO_8859_1 then
-        S.SW := StringToWideStringEx(S.SA, CP_ACP);
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      if DestEnc = ienISO_8859_1 then
-        S.SA := WideStringToStringEx(S.SW, CP_ACP);
-  else
-    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -2083,47 +1763,15 @@ begin
   end;
 end;
 
-procedure ExtractFixedStringsA(Content: PAnsiChar; const ALength: Integer; Strings: TStrings);
+procedure ExtractFixedStrings(const Content: WideString; const ALength: Integer;
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
 var
-  P: PAnsiChar;
-  S: AnsiString;
-begin
-  if (Content = nil) or (Content^ = #0) or (Strings = nil) or (ALength < 1) then
-    Exit;
-
-  Strings.BeginUpdate;
-  try
-    SetLength(S, ALength);
-
-    while True do
-    begin
-      P := Content;
-
-      while (P^ <> #0) and (P - Content < ALength) do
-        Inc(P);
-
-      if P - Content = ALength then
-      begin
-        Move(Content[0], S[1], ALength);
-        Strings.Add(string(S));
-      end;
-
-      if P^ = #0 then
-        Break;
-
-      Inc(Content, ALength);
-    end;
-  finally
-    Strings.EndUpdate;
-  end;
-end;
-
-procedure ExtractFixedStringsW(Content: PWideChar; const ALength: Integer; Strings: TWideStrings);
-var
-  P: PWideChar;
+  P, ContentPtr: PWideChar;
   S: WideString;
 begin
-  if (Content = nil) or (Content^ = WideNull) or (Strings = nil) or (ALength < 1) then
+  ContentPtr := PWideChar(Content);
+
+  if (ContentPtr = nil) or (ContentPtr^ = WideNull) or (Strings = nil) or (ALength < 1) then
     Exit;
 
   Strings.BeginUpdate;
@@ -2132,68 +1780,42 @@ begin
 
     while True do
     begin
-      P := Content;
+      P := ContentPtr;
 
-      while (P^ <> #0) and (P - Content < ALength) do
+      while (P^ <> WideNull) and (P - ContentPtr < ALength) do
         Inc(P);
 
-      if P - Content = ALength then
+      if P - ContentPtr = ALength then
       begin
-        Move(Content[0], S[1], ALength * SizeOf(WideChar));
+        Move(ContentPtr[0], S[1], ALength * SizeOf(WideChar));
         Strings.Add(S);
       end;
 
-      if P^ = #0 then
+      if P^ = WideNull then
         Break;
 
-      Inc(Content, ALength);
+      Inc(ContentPtr, ALength);
     end;
   finally
     Strings.EndUpdate;
   end;
 end;
 
-procedure ExtractStringsA(Separator: AnsiChar; Content: PAnsiChar; Strings: TStrings);
-var
-  Tail: PAnsiChar;
-  S: string;
-  EOS: Boolean;
-begin
-  if (Content = nil) or (Content^ = #0) or (Strings = nil) then
-    Exit;
-
-  Strings.BeginUpdate;
-  try
-    Tail := Content;
-    repeat
-      while (Tail^ <> Separator) and (Tail^ <> #0) do
-        Inc(Tail);
-
-      EOS := Tail^ = #0;
-
-      SetString(S, Content, Tail - Content);
-      Strings.Add(S);
-
-      Inc(Tail);
-      Content := Tail;
-    until EOS;
-  finally
-    Strings.EndUpdate;
-  end;
-end;
-
-procedure ExtractStringsW(Separator: WideChar; Content: PWideChar; Strings: TWideStrings);
+procedure ExtractStrings(Separator: WideChar; const Content: WideString;
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
 var
   Tail: PWideChar;
   S: WideString;
   EOS: Boolean;
+  ContentPtr: PWideChar;
 begin
-  if (Content = nil) or (Content^ = WideNull) or (Strings = nil) then
+  ContentPtr := PWideChar(Content);
+  if (ContentPtr = nil) or (ContentPtr^ = WideNull) or (Strings = nil) then
     Exit;
 
   Strings.BeginUpdate;
   try
-    Tail := Content;
+    Tail := ContentPtr;
 
     repeat
       while (Tail^ <> Separator) and (Tail^ <> WideNull) do
@@ -2201,12 +1823,12 @@ begin
 
       EOS := Tail^ = WideNull;
 
-      SetLength(S, Tail - Content);
-      Move(Content[0], S[1], (Tail - Content) * SizeOf(WideChar));
+      SetLength(S, Tail - ContentPtr);
+      Move(ContentPtr[0], S[1], (Tail - ContentPtr) * SizeOf(WideChar));
       Strings.Add(S);
 
       Inc(Tail);
-      Content := Tail;
+      ContentPtr := Tail;
     until EOS;
   finally
     Strings.EndUpdate;
@@ -2458,18 +2080,18 @@ end;
 { Copied from DSDesign.pas }
 
 function CreateUniqueName(AController: TJvID3Controller; const FrameName: AnsiString;
-  FrameClass: TJvID3FrameClass; Component: TComponent): AnsiString;
+  FrameClass: TJvID3FrameClass; Component: TComponent): string;
 var
   I: Integer;
 
-  function IsUnique(const AName: AnsiString): Boolean;
+  function IsUnique(const AName: string): Boolean;
   var
     I: Integer;
   begin
     Result := False;
     with AController do
       for I := 0 to ComponentCount - 1 do
-        if (Component <> Components[I]) and AnsiSameStr(string(AName), Components[I].Name) then
+        if (Component <> Components[I]) and AnsiSameStr(AName, Components[I].Name) then
           Exit;
     Result := True;
   end;
@@ -2486,16 +2108,13 @@ end;
 function ExtToMIMEType(const Ext: string): string;
 begin
   { Not a very reliable method }
-  if SameFileName(Ext, '.jpeg') or AnsiSameText(Ext, '.jpg') then
+  if AnsiSameText(Ext, '.jpeg') or AnsiSameText(Ext, '.jpg') then
     Result := 'image/jpeg'
-  else
-  if SameFileName(Ext, '.tiff') or AnsiSameText(Ext, '.tif') then
+  else if AnsiSameText(Ext, '.tiff') or AnsiSameText(Ext, '.tif') then
     Result := 'image/tif'
-  else
-  if SameFileName(Ext, '.bmp') then
+  else if AnsiSameText(Ext, '.bmp') then
     Result := 'image/bitmap'
-  else
-  if Ext = '' then
+  else if Ext = '' then
     Result := 'image/'
   else
     { .png, .gif, .jpg etc. }
@@ -2516,7 +2135,8 @@ end;
     RX        Remix
     CR        Cover
 }
-function GenreToNiceGenre(const AGenre: AnsiString): AnsiString;
+
+function GenreToNiceGenre(const AGenre: string): string;
 var
   State: Integer;
   Start: Integer;
@@ -2528,7 +2148,7 @@ var
     Start := I + 1;
   end;
 
-  procedure AddString(const S: AnsiString);
+  procedure AddString(const S: string);
   begin
     if Result > '' then
     begin
@@ -2542,12 +2162,12 @@ var
     GoState0;
   end;
 
-  procedure AddReference(const AReference: AnsiString);
+  procedure AddReference(const AReference: string);
   var
     iReference: Integer;
-    Genre: AnsiString;
+    Genre: string;
   begin
-    iReference := StrToIntDef(string(AReference), -1);
+    iReference := StrToIntDef(AReference, -1);
     if iReference < 0 then
     begin
       State := -1;
@@ -2566,7 +2186,7 @@ var
   end;
 
 var
-  P: PAnsiChar;
+  P: PChar;
 begin
   Result := '';
   State := 0;
@@ -2635,10 +2255,10 @@ begin
   if Start <= Length(AGenre) then
   begin
     { Workaround for a bug in some taggers }
-    P := PAnsiChar(AGenre) + Start - 1;
+    P := PChar(AGenre) + Start - 1;
     while P^ = ' ' do
       Inc(P);
-    if StrIComp(P, PAnsiChar(Result)) <> 0 then
+    if StrIComp(P, PChar(Result)) <> 0 then
       AddString(Copy(AGenre, Start, MaxInt));
   end;
 end;
@@ -2675,7 +2295,7 @@ begin
   ID3Error(Format(Msg, Args), Component);
 end;
 
-function MIMETypeToExt(const MIMEType: AnsiString): string;
+function MIMETypeToExt(const MIMEType: string): string;
 begin
   { Not a very reliable method; maybe use Indy's TIdMimeTable
     in IdGlobal.pas
@@ -2689,7 +2309,7 @@ begin
     image/x-pict .pic
     image/bitmap .bmp                  supported
   }
-  Result := string(Copy(string(MIMEType), Pos('/', string(MIMEType)) + 1, MaxInt));
+  Result := Copy(MIMEType, Pos('/', MIMEType) + 1, MaxInt);
 
   Result := AnsiLowerCase(Result);
   if Result = 'jpeg' then
@@ -2710,20 +2330,20 @@ begin
     Result := '.' + Result;
 end;
 
-function NiceGenreToGenre(const ANiceGenre: AnsiString): AnsiString;
+function NiceGenreToGenre(const ANiceGenre: string): string;
 var
-  S: AnsiString;
+  S: string;
 
-  function IsPrefix(const APrefix: AnsiString): Boolean;
+  function IsPrefix(const APrefix: string): Boolean;
   var
     C: Integer;
   begin
     C := Length(APrefix);
     Result := ((C = Length(S)) or ((C < Length(S)) and (S[C + 1] = ' '))) and
-      (AnsiStrLIComp(PChar(string(S)), PChar(string(APrefix)), C) = 0);
+      (StrLIComp(PChar(S), PChar(APrefix), C) = 0);
   end;
 
-  procedure AddAndDelete(const Add: AnsiString; const DelCount: Integer);
+  procedure AddAndDelete(const Add: string; const DelCount: Integer);
   begin
     Result := Result + Add;
     Delete(S, 1, DelCount);
@@ -2740,7 +2360,7 @@ begin
   begin
     GenreID := ID3_LongGenreToID(S);
     if GenreID <> 255 then
-      AddAndDelete({$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('(%d)', [GenreID]), Length(ID3_IDToGenre(GenreID)))
+      AddAndDelete(Format('(%d)', [GenreID]), Length(ID3_IDToGenre(GenreID)))
     else
     { Specials }
     if IsPrefix('remix') then
@@ -3163,12 +2783,16 @@ end;
 //=== { TJvID3ContentFrame } =================================================
 
 procedure TJvID3ContentFrame.Assign(Source: TPersistent);
+var
+  Src: TJvID3ContentFrame;
 begin
   if Source is TJvID3ContentFrame then
   begin
-    FLanguage := TJvID3ContentFrame(Source).FLanguage;
-    CopyStringPair(TJvID3ContentFrame(Source).FText, FText);
-    CopyStringPair(TJvID3ContentFrame(Source).FDescription, FDescription);
+    Src := TJvID3ContentFrame(Source);
+
+    FLanguage := Src.Language;
+    FText := Src.Text;
+    FDescription := Src.Description;
   end;
 
   inherited Assign(Source);
@@ -3201,8 +2825,8 @@ end;
 procedure TJvID3ContentFrame.Clear;
 begin
   FLanguage := '';
-  ClearStringPair(FText);
-  ClearStringPair(FDescription);
+  FText := '';
+  FDescription := '';
 
   inherited Clear;
 end;
@@ -3243,15 +2867,33 @@ begin
     The actual text          <full text string according to encoding>
   }
   Result := 1 + 3 +
-    LengthEnc(FDescription, Encoding, ToEncoding) +
+    LengthEnc(Description, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
-    LengthEnc(FText, Encoding, ToEncoding);
+    LengthEnc(Text, ToEncoding);
 end;
 
 function TJvID3ContentFrame.GetIsEmpty: Boolean;
 begin
   Result := ((Length(FLanguage) = 0) or (FLanguage = cUnknownLanguage)) and
-    CheckIsEmpty(FText, Encoding) and CheckIsEmpty(FDescription, Encoding);
+    (Text = '') and (Description = '');
+end;
+
+function HasNonISO_8859_1Chars(const S: WideString): Boolean;
+var
+  I: Integer;
+begin
+  for I := 1 to Length(S) do
+    if Ord(S[I]) > $FF then
+    begin
+      Result := True;
+      Exit;
+    end;
+  Result := False;
+end;
+
+function TJvID3ContentFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Description) or HasNonISO_8859_1Chars(Text);
 end;
 
 procedure TJvID3ContentFrame.ReadFrame;
@@ -3283,27 +2925,17 @@ begin
 
   if Result then
     Result :=
-      AnsiSameStr(TJvID3ContentFrame(Frame).Language, Language) and
-      SameStringPair(TJvID3ContentFrame(Frame).FDescription, FDescription,
-      TJvID3ContentFrame(Frame).Encoding, Encoding)
+      AnsiSameStr(TJvID3ContentFrame(Frame).Language, Self.Language) and
+      SameStr(TJvID3ContentFrame(Frame).Description, Self.Description)
   else
     Result := inherited SameUniqueIDAs(Frame);
 end;
 
-procedure TJvID3ContentFrame.SetDescription(const Value: AnsiString);
+procedure TJvID3ContentFrame.SetDescription(const Value: WideString);
 begin
-  if FDescription.SA <> Value then
+  if Value <> FDescription then
   begin
-    FDescription.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3ContentFrame.SetDescriptionW(const Value: WideString);
-begin
-  if FDescription.SW <> Value then
-  begin
-    FDescription.SW := Value;
+    FDescription := Value;
     Changed;
   end;
 end;
@@ -3317,20 +2949,11 @@ begin
   end;
 end;
 
-procedure TJvID3ContentFrame.SetText(const Value: AnsiString);
+procedure TJvID3ContentFrame.SetText(const Value: WideString);
 begin
-  if FText.SA <> Value then
+  if Value <> FText then
   begin
-    FText.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3ContentFrame.SetTextW(const Value: WideString);
-begin
-  if FText.SW <> Value then
-  begin
-    FText.SW := Value;
+    FText := Value;
     Changed;
   end;
 end;
@@ -3347,9 +2970,9 @@ begin
   begin
     WriteEncoding;
     WriteLanguage(Language);
-    WriteStringEnc(FDescription);
+    WriteStringEnc(Description);
     WriteTerminatorEnc;
-    WriteStringEnc(FText);
+    WriteStringEnc(Text);
   end;
 end;
 
@@ -3369,8 +2992,8 @@ begin
   FState := [];
 
   { Defaults }
-  FReadEncodingAs := ifeDontCare;
-  FWriteEncodingAs := ifeDontCare;
+  FReadEncodingAs := ifeAuto;
+  FWriteEncodingAs := ifeAuto;
   FReadVersionAs := ifvDontCare;
   FWriteVersionAs := ifvDontCare;
   FOptions := [coAutoCorrect, coRemoveEmptyFrames];
@@ -3406,7 +3029,7 @@ begin
 
   Result := FrameClass.Create(Self, AFrameID);
   try
-    Result.Name := string(CreateUniqueName(Self, Result.FrameName, FrameClass, Result));
+    Result.Name := CreateUniqueName(Self, Result.FrameName, FrameClass, Result);
     Result.Controller := Self;
   except
     Result.Free;
@@ -3591,7 +3214,6 @@ procedure TJvID3Controller.CopyFromID3v1Ctrl(AID3v1: TJvID3v1;
   const DoOverwrite: Boolean);
 var
   Frame: TJvID3Frame;
-  SP: TJvID3StringPair;
   Year: Word;
 
   function GetFrame(AFrameID: TJvID3FrameID): TJvID3Frame;
@@ -3616,20 +3238,19 @@ begin
   // Songname
   Frame := GetFrame(fiTitle);
   if Assigned(Frame) then
-    SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, AID3v1.SongName);
+    TJvID3TextFrame(Frame).Text := string(AID3v1.SongName);
 
   // Artist
   Frame := GetFrame(fiLeadArtist);
   if Assigned(Frame) then
   begin
-    SetStringA(SP, Frame.Encoding, AID3v1.Artist);
-    TJvID3CustomTextFrame(Frame).NewText(SP);
+    TJvID3CustomTextFrame(Frame).Text := string(AID3v1.Artist);
   end;
 
   // Album
   Frame := GetFrame(fiAlbum);
   if Assigned(Frame) then
-    SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, AID3v1.Album);
+    TJvID3TextFrame(Frame).Text := string(AID3v1.Album);
 
   // Year
   Year := StrToIntDef(string(AID3v1.Year), 0);
@@ -3652,17 +3273,16 @@ begin
   // Comment
   Frame := GetFrame(fiComment);
   if Assigned(Frame) then
-    SetStringA(TJvID3ContentFrame(Frame).FText, Frame.Encoding, AID3v1.Comment);
+    TJvID3ContentFrame(Frame).Text := string(AID3v1.Comment);
 
   // Genre
   Frame := GetFrame(fiContentType);
   if Assigned(Frame) then
   begin
     if AID3v1.Genre = 255 then
-      SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, '')
+      TJvID3TextFrame(Frame).Text := ''
     else
-      SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding,
-        {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('(%d)', [AID3v1.Genre]));
+      TJvID3TextFrame(Frame).Text := Format('(%d)', [AID3v1.Genre]);
   end;
 
   // AlbumTrack
@@ -3670,7 +3290,7 @@ begin
   begin
     Frame := GetFrame(fiTrackNum);
     if Assigned(Frame) then
-      SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, AnsiString(IntToStr(AID3v1.AlbumTrack)));
+      TJvID3TextFrame(Frame).Text := IntToStr(AID3v1.AlbumTrack);
   end;
 end;
 
@@ -3695,8 +3315,7 @@ end;
 procedure TJvID3Controller.CopyToID3v1Ctrl(AID3v1: TJvID3v1;
   const DoOverwrite: Boolean);
 var
-  S: AnsiString;
-  SP: TJvID3StringPair;
+  S: string;
   Frame: TJvID3Frame;
   Track, P: Integer;
   I: Integer;
@@ -3719,18 +3338,16 @@ begin
       case Frame.FrameID of
         fiTitle:
           if DoOverwrite or (SongName = '') then
-            SongName := Copy(GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding), 1, 30);
+            SongName := AnsiString(Copy(TJvID3TextFrame(Frame).Text, 1, 30));
         fiLeadArtist:
           if DoOverwrite or (Artist = '') then
           begin
             { Note: fiLeadArtist has multiple lines }
-            TJvID3CustomTextFrame(Frame).GetText(SP);
-            S := GetStringA(SP, Frame.Encoding);
-            Artist := Copy(S, 1, 30);
+            Artist := AnsiString(Copy(TJvID3CustomTextFrame(Frame).Text, 1, 30));
           end;
         fiAlbum:
           if DoOverwrite or (Album = '') then
-            Album := Copy(GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding), 1, 30);
+            Album := AnsiString(Copy(TJvID3TextFrame(Frame).Text, 1, 30));
         fiYear:
           if not YearSet and (DoOverwrite or (Year = '')) then
           begin
@@ -3748,22 +3365,21 @@ begin
                    pick the first we encounter }
           if not CommentSet and (DoOverwrite or (SongName = '')) then
           begin
-            Comment := Copy(GetStringA(TJvID3ContentFrame(Frame).FText, Frame.Encoding), 1, 30);
+            Comment := AnsiString(Copy(TJvID3ContentFrame(Frame).Text, 1, 30));
             CommentSet := True;
           end;
         fiContentType:
           if DoOverwrite or (Genre = 255) then
-            Genre := ID3_LongGenreToID(
-              GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding));
+            Genre := ID3_LongGenreToID(TJvID3TextFrame(Frame).Text);
         fiTrackNum:
           if DoOverwrite or (AlbumTrack = 0) then
           begin
-            S := GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding);
-            P := Pos('/', string(S));
+            S := TJvID3TextFrame(Frame).Text;
+            P := Pos('/', S);
             if P > 0 then
-              Track := StrToIntDef(string(Copy(S, 1, P - 1)), 0)
+              Track := StrToIntDef(Copy(S, 1, P - 1), 0)
             else
-              Track := StrToIntDef(string(S), 0);
+              Track := StrToIntDef(S, 0);
             if (Track < 0) or (Track > 255) then
               Track := 0;
 
@@ -4418,13 +4034,10 @@ end;
 //=== { TJvID3CustomTextFrame } ==============================================
 
 procedure TJvID3CustomTextFrame.Assign(Source: TPersistent);
-var
-  SP: TJvID3StringPair;
 begin
   if Source is TJvID3CustomTextFrame then
   begin
-    TJvID3CustomTextFrame(Source).GetText(SP);
-    NewText(SP);
+    Text := TJvID3CustomTextFrame(Source).Text;
   end;
   inherited Assign(Source);
 end;
@@ -4438,20 +4051,14 @@ begin
 end;
 
 procedure TJvID3CustomTextFrame.Clear;
-var
-  SP: TJvID3StringPair;
 begin
-  ClearStringPair(SP);
-  NewText(SP);
+  Text := '';
   inherited Clear;
 end;
 
 function TJvID3CustomTextFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
-var
-  SP: TJvID3StringPair;
 begin
-  GetText(SP);
-  Result := 1 + LengthEnc(SP, Encoding, ToEncoding);
+  Result := 1 + LengthEnc(Text, ToEncoding);
 end;
 
 function TJvID3CustomTextFrame.GetIsEmpty: Boolean;
@@ -4460,15 +4067,20 @@ begin
   Result := GetFrameSize(Encoding) <= 1;
 end;
 
+function TJvID3CustomTextFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Text);
+end;
+
 procedure TJvID3CustomTextFrame.ReadFrame;
 var
-  SP: TJvID3StringPair;
+  S: WideString;
 begin
   with Stream do
   begin
     ReadEncoding;
-    ReadStringEnc(SP);
-    NewText(SP);
+    ReadStringEnc(S);
+    Text := S;
   end;
 end;
 
@@ -4527,14 +4139,11 @@ begin
 end;
 
 procedure TJvID3CustomTextFrame.WriteFrame;
-var
-  SP: TJvID3StringPair;
 begin
   with Stream do
   begin
     WriteEncoding;
-    GetText(SP);
-    WriteStringEnc(SP);
+    WriteStringEnc(Text);
   end;
 end;
 
@@ -4544,11 +4153,13 @@ procedure TJvID3DoubleListFrame.AfterConstruction;
 begin
   inherited AfterConstruction;
 
+  {$IFDEF COMPILER12_UP}
   FList := TStringList.Create;
-  FListW := TWideStringList.Create;
-
-  FList.OnChange := ListChanged;
-  FListW.OnChange := ListChanged;
+  TStringList(FList).OnChange := ListChanged;
+  {$ELSE}
+  FList := TWideStringList.Create;
+  TWideStringList(FList).OnChange := ListChanged;
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure TJvID3DoubleListFrame.Assign(Source: TPersistent);
@@ -4556,7 +4167,6 @@ begin
   if Source is TJvID3DoubleListFrame then
   begin
     FList.Assign(TJvID3DoubleListFrame(Source).List);
-    FListW.Assign(TJvID3DoubleListFrame(Source).ListW);
   end;
 
   inherited Assign(Source);
@@ -4567,7 +4177,6 @@ begin
   inherited BeforeDestruction;
 
   FList.Free;
-  FListW.Free;
 end;
 
 class function TJvID3DoubleListFrame.CanAddFrame(AController: TJvID3Controller;
@@ -4593,14 +4202,14 @@ begin
       begin
         { Change fiInvolvedPeople2, fiMusicianCreditList to fiInvolvedPeople }
         Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople);
-        CopyLists(List, ListW, Encoding, Frame.List, Frame.ListW, Frame.Encoding);
+        List.Assign(Frame.List);
       end;
     ive2_4:
       if FrameID = fiInvolvedPeople then
       begin
         { Change fiInvolvedPeople to fiInvolvedPeople2 }
         Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople2);
-        CopyLists(List, ListW, Encoding, Frame.List, Frame.ListW, Frame.Encoding);
+        List.Assign(Frame.List);
       end;
   end;
 end;
@@ -4613,7 +4222,6 @@ end;
 procedure TJvID3DoubleListFrame.Clear;
 begin
   List.Clear;
-  ListW.Clear;
   inherited Clear;
 end;
 
@@ -4648,105 +4256,33 @@ end;
 function TJvID3DoubleListFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
 var
   I: Integer;
-  Item: TJvID3StringPair;
-  P: Integer;
-  SW: WideString;
 begin
-  Item.SA := '';
-  Item.SW := '';
-
   { 1 byte for encoding }
   Result := 1;
 
-  case Encoding of
-    ienISO_8859_1:
-      for I := 0 to List.Count - 1 do
-      begin
-        Item.SA := AnsiString(Names[I]);
-        Inc(Result, LengthEnc(Item, Encoding, ToEncoding));
-        Inc(Result, LengthTerminatorEnc(ToEncoding));
-        Item.SA := AnsiString(Values[I]);
-        Inc(Result, LengthEnc(Item, Encoding, ToEncoding));
-        Inc(Result, LengthTerminatorEnc(ToEncoding));
-      end;
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      for I := 0 to ListW.Count - 1 do
-      begin
-        SW := ListW[I];
-        P := Pos('=', SW);
-        if P > 0 then
-        begin
-          SetLength(Item.SW, P - 1);
-          Move(SW[1], Item.SW[1], (P - 1) * SizeOf(WideChar));
-        end
-        else
-          Item.SW := SW;
-
-        Inc(Result, LengthEnc(Item, Encoding, ToEncoding));
-        Inc(Result, LengthTerminatorEnc(ToEncoding));
-
-        if (P > 0) and (P < Length(SW)) then
-        begin
-          SetLength(Item.SW, Length(SW) - P);
-          Move(SW[P + 1], Item.SW[1], (Length(SW) - P) * SizeOf(WideChar));
-        end
-        else
-          Item.SW := '';
-
-        Inc(Result, LengthEnc(Item, Encoding, ToEncoding));
-        Inc(Result, LengthTerminatorEnc(ToEncoding));
-      end;
-  else
-    Error(RsEID3UnknownEncoding);
+  for I := 0 to List.Count - 1 do
+  begin
+    Inc(Result, LengthEnc(Names[I], ToEncoding));
+    Inc(Result, LengthTerminatorEnc(ToEncoding));
+    Inc(Result, LengthEnc(Values[I], ToEncoding));
+    Inc(Result, LengthTerminatorEnc(ToEncoding));
   end;
 end;
 
 function TJvID3DoubleListFrame.GetIsEmpty: Boolean;
 begin
-  Result := False;
-
-  case Encoding of
-    ienISO_8859_1:
-      Result := (List.Count = 0) or ((List.Count = 1) and (List[0] = ''));
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      Result := (ListW.Count = 0) or ((ListW.Count = 1) and (ListW[0] = ''));
-  else
-    Error(RsEID3UnknownEncoding);
-  end;
+  Result := (List.Count = 0) or ((List.Count = 1) and (List[0] = ''))
 end;
 
-function TJvID3DoubleListFrame.GetList: TStrings;
-begin
-  Result := FList;
-end;
-
-function TJvID3DoubleListFrame.GetListW: TWideStrings;
-begin
-  Result := FListW;
-end;
-
-function TJvID3DoubleListFrame.GetNameA(Index: Integer): string;
+function TJvID3DoubleListFrame.GetNames(const Index: Integer): WideString;
 begin
   Result := List.Names[Index];
 end;
 
-function TJvID3DoubleListFrame.GetNameW(Index: Integer): string;
-begin
-  Result := ListW.Names[Index];
-end;
-
-function TJvID3DoubleListFrame.GetValueA(Index: Integer): string;
+function TJvID3DoubleListFrame.GetValues(const Index: Integer): WideString;
 begin
   if Index >= 0 then
     Result := Copy(List[Index], Length(Names[Index]) + 2, MaxInt)
-  else
-    Result := '';
-end;
-
-function TJvID3DoubleListFrame.GetValueW(Index: Integer): string;
-begin
-  if Index >= 0 then
-    Result := Copy(ListW[Index], Length(NamesW[Index]) + 2, MaxInt)
   else
     Result := '';
 end;
@@ -4756,11 +4292,24 @@ begin
   Changed;
 end;
 
+function TJvID3DoubleListFrame.MustWriteAsUTF: Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 0 to List.Count - 1 do
+    if HasNonISO_8859_1Chars(List[i]) then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
 procedure TJvID3DoubleListFrame.ReadFrame;
 const
   CMinBytes: array [TJvID3Encoding] of Byte = (2, 4, 4, 2);
 var
-  S1, S2: TJvID3StringPair;
+  S1, S2: WideString;
 begin
   with Stream do
   begin
@@ -4770,15 +4319,7 @@ begin
     begin
       ReadStringEnc(S1);
       ReadStringEnc(S2);
-
-      case Encoding of
-        ienISO_8859_1:
-          List.Add(string(S1.SA + '=' + S2.SA));
-        ienUTF_16, ienUTF_16BE, ienUTF_8:
-          ListW.Add(S1.SW + '=' + S2.SW);
-      else
-        Error(RsEID3UnknownEncoding);
-      end;
+      List.Add(S1 + '=' + S2);
     end;
   end;
 end;
@@ -4788,15 +4329,9 @@ begin
   Result := (Assigned(Frame) and (Frame.FrameID = FrameID)) or inherited SameUniqueIDAs(Frame);
 end;
 
-procedure TJvID3DoubleListFrame.SetList(const Value: TStrings);
+procedure TJvID3DoubleListFrame.SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
 begin
   FList.Assign(Value);
-  Changed;
-end;
-
-procedure TJvID3DoubleListFrame.SetListW(const Value: TWideStrings);
-begin
-  FListW.Assign(Value);
   Changed;
 end;
 
@@ -4825,56 +4360,16 @@ end;
 procedure TJvID3DoubleListFrame.WriteFrame;
 var
   I: Integer;
-  Item: TJvID3StringPair;
-  SW: WideString;
-  P: Integer;
 begin
-  Item.SA := '';
-  Item.SW := '';
-
   with Stream do
   begin
     WriteEncoding;
-    case Encoding of
-      ienISO_8859_1:
-        for I := 0 to List.Count - 1 do
-        begin
-          Item.SA := AnsiString(Names[I]);
-          WriteStringEnc(Item);
-          WriteTerminatorEnc;
-          Item.SA := AnsiString(Values[I]);
-          WriteStringEnc(Item);
-          WriteTerminatorEnc;
-        end;
-      ienUTF_16, ienUTF_16BE, ienUTF_8:
-        for I := 0 to ListW.Count - 1 do
-        begin
-          SW := ListW[I];
-          P := Pos('=', SW);
-          if P > 0 then
-          begin
-            SetLength(Item.SW, P - 1);
-            Move(SW[1], Item.SW[1], (P - 1) * SizeOf(WideChar));
-          end
-          else
-            Item.SW := SW;
-
-          WriteStringEnc(Item);
-          WriteTerminatorEnc;
-
-          if (P > 0) and (P < Length(SW)) then
-          begin
-            SetLength(Item.SW, Length(SW) - P);
-            Move(SW[P + 1], Item.SW[1], (Length(SW) - P) * SizeOf(WideChar));
-          end
-          else
-            Item.SW := '';
-
-          WriteStringEnc(Item);
-          WriteTerminatorEnc;
-        end;
-    else
-      Error(RsEID3UnknownEncoding);
+    for I := 0 to List.Count - 1 do
+    begin
+      WriteStringEnc(Names[I]);
+      WriteTerminatorEnc;
+      WriteStringEnc(Values[I]);
+      WriteTerminatorEnc;
     end;
   end;
 end;
@@ -4885,9 +4380,9 @@ procedure TJvID3ExtendedHeader.Assign(Source: TPersistent);
 begin
   if Source is TJvID3ExtendedHeader then
   begin
-    FTotalFrameCRC := TJvID3ExtendedHeader(Source).FTotalFrameCRC;
-    FSizeOfPadding := TJvID3ExtendedHeader(Source).FSizeOfPadding;
-    FFlags := TJvID3ExtendedHeader(Source).FFlags;
+    FTotalFrameCRC := TJvID3ExtendedHeader(Source).TotalFrameCRC;
+    FSizeOfPadding := TJvID3ExtendedHeader(Source).SizeOfPadding;
+    FFlags := TJvID3ExtendedHeader(Source).Flags;
   end
   else
     inherited Assign(Source);
@@ -5394,8 +4889,8 @@ end;
 
 procedure TJvID3FileInfo.ParseVbrTag(AMPEGTag: PAnsiChar);
 const
-  VBRTag_Xing: PChar = 'Xing'; { Do not change case }
-  VBRTag_Info: PChar = 'Info'; { Do not change case }
+  VBRTag_Xing: array [0..3] of AnsiChar = AnsiString('Xing'); { Do not change case }
+  VBRTag_Info: array [0..3] of AnsiChar = AnsiString('Info'); { Do not change case }
   FRAMES_FLAG = $0001;
   BYTES_FLAG = $0002;
   TOC_FLAG = $0004;
@@ -5420,8 +4915,8 @@ begin
       Inc(AMPEGTag, 9 + 4);
   end;
 
-  if (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Xing)^) and
-    (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Info)^) then
+  if (PLongint(AMPEGTag)^ <> Longint(VBRTag_Xing)) and
+    (PLongint(AMPEGTag)^ <> Longint(VBRTag_Info)) then
     Exit;
   Inc(AMPEGTag, 4);
 
@@ -5443,7 +4938,7 @@ end;
 
 procedure TJvID3FileInfo.Read(AStream: TStream; const Offset: Int64);
 const
-  CID3v1Tag = 'TAG'; { do not change case }
+  CID3v1Tag = AnsiString('TAG'); { do not change case }
   CTagSize = 128;
   CTagIDSize = 3;
   CMPEGTagSize = 52;
@@ -5457,8 +4952,8 @@ begin
   if FHeaderFoundAt < 0 then
     Exit;
 
-  ParseMPEGTag(MPEGTag);
-  ParseVbrTag(MPEGTag);
+  ParseMPEGTag(@MPEGTag);
+  ParseVbrTag(@MPEGTag);
 
   if FFileSize = 0 then
     FFileSize := AStream.Size;
@@ -5523,11 +5018,11 @@ begin
   else
   if Source is TJvID3Frame then
   begin
-    FFlags := TJvID3Frame(Source).FFlags;
-    FEncryptionID := TJvID3Frame(Source).FEncryptionID;
-    FGroupID := TJvID3Frame(Source).FGroupID;
+    FFlags := TJvID3Frame(Source).Flags;
+    FEncryptionID := TJvID3Frame(Source).EncryptionID;
+    FGroupID := TJvID3Frame(Source).GroupID;
     FDecompressedSize := TJvID3Frame(Source).FDecompressedSize;
-    FEncoding := TJvID3Frame(Source).FEncoding;
+    FEncoding := TJvID3Frame(Source).Encoding;
     { v2.4 }
     FDataLengthIndicator := TJvID3Frame(Source).FDataLengthIndicator;
 
@@ -5652,6 +5147,11 @@ begin
     Result := FController.FStream;
 end;
 
+function TJvID3Frame.MustWriteAsUTF: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TJvID3Frame.Read;
 var
   LFrameSize: Integer;
@@ -5711,8 +5211,7 @@ end;
 
 procedure TJvID3Frame.ReadEncoding;
 begin
-  with Stream do
-    ReadEnc(FEncoding);
+  Stream.ReadEnc(FEncoding);
 end;
 
 procedure TJvID3Frame.ReadFrameHeader;
@@ -5931,6 +5430,14 @@ begin
   if not SupportsVersion(Controller.WriteVersion) then
     Exit;
 
+  if Controller.WriteEncodingAs = ifeAuto then
+  begin
+    if Self.MustWriteAsUTF then
+      Self.Encoding := ienUTF_16
+    else
+      Self.Encoding := ienISO_8859_1
+  end;
+
   Stream.SourceEncoding := Self.Encoding;
 
   WriteID;
@@ -6125,8 +5632,7 @@ begin
     FillChar(LFrameIDStr, FrameIDLength, #0);
   end;
 
-  with Stream do
-    Write(PAnsiChar(LFrameIDStr)^, FrameIDLength);
+  Stream.Write(PAnsiChar(LFrameIDStr)^, FrameIDLength);
 end;
 
 //=== { TJvID3Frames } =======================================================
@@ -6439,12 +5945,16 @@ end;
 //=== { TJvID3GeneralObjFrame } ==============================================
 
 procedure TJvID3GeneralObjFrame.Assign(Source: TPersistent);
+var
+  Src: TJvID3GeneralObjFrame;
 begin
   if Source is TJvID3GeneralObjFrame then
   begin
-    CopyStringPair(TJvID3GeneralObjFrame(Source).FContentDescription, FContentDescription);
-    FMIMEType := TJvID3GeneralObjFrame(Source).FMIMEType;
-    CopyStringPair(TJvID3GeneralObjFrame(Source).FFileName, FFileName);
+    Src := TJvID3GeneralObjFrame(Source);
+
+    FContentDescription := Src.ContentDescription;
+    FMIMEType := Src.MIMEType;
+    FFileName := Src.FFileName;
   end;
   inherited Assign(Source);
 end;
@@ -6465,18 +5975,17 @@ end;
 
 procedure TJvID3GeneralObjFrame.Clear;
 begin
-  ClearStringPair(FContentDescription);
+  FContentDescription := '';
   FMIMEType := '';
-  ClearStringPair(FFileName);
+  FFileName := '';
 
   inherited Clear;
 end;
 
 class function TJvID3GeneralObjFrame.Find(AController: TJvID3Controller;
-  const AContentDescription: AnsiString): TJvID3GeneralObjFrame;
+  const AContentDescription: WideString): TJvID3GeneralObjFrame;
 var
   Frame: TJvID3Frame;
-  SP: TJvID3StringPair;
 begin
   Result := nil;
   if not Assigned(AController) or not AController.Active then
@@ -6485,11 +5994,8 @@ begin
   if not AController.FindFirstFrame(fiGeneralObject, Frame) then
     Exit;
 
-  SP.SA := AContentDescription;
-
   while (Frame is TJvID3GeneralObjFrame) and
-    not SameStringPair(SP, TJvID3GeneralObjFrame(Frame).FContentDescription,
-      ienISO_8859_1, Frame.Encoding) do
+    not SameStr(TJvID3GeneralObjFrame(Frame).ContentDescription, AContentDescription) do
 
     AController.FindNextFrame(fiGeneralObject, Frame);
 
@@ -6511,7 +6017,7 @@ begin
 end;
 
 class function TJvID3GeneralObjFrame.FindOrCreate(AController: TJvID3Controller;
-  const AContentDescription: AnsiString): TJvID3GeneralObjFrame;
+  const AContentDescription: WideString): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
     ID3Error(RsEID3NoController);
@@ -6534,45 +6040,6 @@ begin
     Result := TJvID3GeneralObjFrame(AController.AddFrame(fiGeneralObject));
 end;
 
-class function TJvID3GeneralObjFrame.FindOrCreateW(AController: TJvID3Controller;
-  const AContentDescription: WideString): TJvID3GeneralObjFrame;
-begin
-  if not Assigned(AController) then
-    ID3Error(RsEID3NoController);
-
-  Result := FindW(AController, AContentDescription);
-  if not Assigned(Result) then
-  begin
-    Result := TJvID3GeneralObjFrame(AController.AddFrame(fiGeneralObject));
-    Result.ContentDescriptionW := AContentDescription;
-  end;
-end;
-
-class function TJvID3GeneralObjFrame.FindW(AController: TJvID3Controller;
-  const AContentDescription: WideString): TJvID3GeneralObjFrame;
-var
-  Frame: TJvID3Frame;
-  SP: TJvID3StringPair;
-begin
-  Result := nil;
-  if not Assigned(AController) or not AController.Active then
-    Exit;
-
-  if not AController.FindFirstFrame(fiGeneralObject, Frame) then
-    Exit;
-
-  SP.SW := AContentDescription;
-
-  while (Frame is TJvID3GeneralObjFrame) and
-    not SameStringPair(SP, TJvID3GeneralObjFrame(Frame).FContentDescription,
-      ienUTF_16, Frame.Encoding) do
-
-    AController.FindNextFrame(fiGeneralObject, Frame);
-
-  if Frame is TJvID3GeneralObjFrame then
-    Result := TJvID3GeneralObjFrame(Frame);
-end;
-
 function TJvID3GeneralObjFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
 begin
   { Text encoding              $xx
@@ -6582,9 +6049,9 @@ begin
     Encapsulated object        <binary data>
   }
   Result := 1 + Cardinal(Length(MIMEType)) + 1 +
-    LengthEnc(FFileName, Encoding, ToEncoding) +
+    LengthEnc(FileName, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
-    LengthEnc(FContentDescription, Encoding, ToEncoding) +
+    LengthEnc(ContentDescription, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
     DataSize;
 end;
@@ -6592,8 +6059,13 @@ end;
 function TJvID3GeneralObjFrame.GetIsEmpty: Boolean;
 begin
   Result := inherited GetIsEmpty and (Length(FMIMEType) = 0) and
-    CheckIsEmpty(FContentDescription, Encoding) and
-    CheckIsEmpty(FFileName, Encoding);
+    (ContentDescription = '') and
+    (FileName = '');
+end;
+
+function TJvID3GeneralObjFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(FileName) or HasNonISO_8859_1Chars(ContentDescription);
 end;
 
 procedure TJvID3GeneralObjFrame.ReadFrame;
@@ -6622,45 +6094,25 @@ begin
     (Frame.FrameID = FrameID) and (FrameID = fiGeneralObject);
 
   if Result then
-    Result :=
-      SameStringPair(TJvID3GeneralObjFrame(Frame).FContentDescription, FContentDescription,
-        TJvID3GeneralObjFrame(Frame).Encoding, Encoding)
+    Result := SameStr(TJvID3GeneralObjFrame(Frame).ContentDescription, ContentDescription)
   else
     Result := inherited SameUniqueIDAs(Frame);
 end;
 
-procedure TJvID3GeneralObjFrame.SetContentDescription(const Value: AnsiString);
+procedure TJvID3GeneralObjFrame.SetContentDescription(const Value: WideString);
 begin
-  if FContentDescription.SA <> Value then
+  if Value <> FContentDescription then
   begin
-    FContentDescription.SA := Value;
+    FContentDescription := Value;
     Changed;
   end;
 end;
 
-procedure TJvID3GeneralObjFrame.SetContentDescriptionW(const Value: WideString);
+procedure TJvID3GeneralObjFrame.SetFileName(const Value: WideString);
 begin
-  if FContentDescription.SW <> Value then
+  if Value <> FFileName then
   begin
-    FContentDescription.SW := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3GeneralObjFrame.SetFileName(const Value: AnsiString);
-begin
-  if FFileName.SA <> Value then
-  begin
-    FFileName.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3GeneralObjFrame.SetFileNameW(const Value: WideString);
-begin
-  if FFileName.SW <> Value then
-  begin
-    FFileName.SW := Value;
+    FFileName := Value;
     Changed;
   end;
 end;
@@ -6687,9 +6139,9 @@ begin
     WriteEncoding;
     WriteStringA(MIMEType);
     WriteTerminatorA;
-    WriteStringEnc(FFileName);
+    WriteStringEnc(FileName);
     WriteTerminatorEnc;
-    WriteStringEnc(FContentDescription);
+    WriteStringEnc(ContentDescription);
     WriteTerminatorEnc;
     WriteData;
   end;
@@ -6821,8 +6273,10 @@ var
   Header: TID3v2HeaderRec;
 begin
   { Check max size }
-  if Header.Size > $0FFFFFFF then // 28 bits = 256 MB
+  if Self.FSize > $0FFFFFFF then // 28 bits = 256 MB
     ID3Error(RsETagTooBig, Controller);
+
+  FillChar(Header, SizeOf(Header), #0);
 
   with Stream do
   begin
@@ -6846,7 +6300,7 @@ begin
           Inc(Header.Flags, $20);
         { Only for v2.4 }
         if (Controller.WriteVersion = ive2_4) and (hfFooterPresent in Flags) then
-          Inc(Header.Flags, $20);
+          Inc(Header.Flags, $10);
       end;
       { The ID3v2 tag size is the size of the complete tag after unsychronisation,
         including padding, excluding the header but not excluding the extended
@@ -6984,35 +6438,25 @@ begin
     Result := inherited GetIsEmpty;
 end;
 
-procedure TJvID3NumberFrame.GetText(var AText: TJvID3StringPair);
+function TJvID3NumberFrame.GetText: WideString;
 const
-  CFormat: array [Boolean] of AnsiString = ('%d', '%.4d');
+  CFormat: array [Boolean] of string = ('%d', '%.4d');
 begin
-  AText.SA := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format(CFormat[FrameID in [fiOrigYear, fiYear]], [FValue]);
-
-  if Encoding in [ienUTF_16, ienUTF_16BE, ienUTF_8] then
-    AText.SW := StringToWideStringEx(AText.SA, CP_ACP);
+  Result := Format(CFormat[FrameID in [fiOrigYear, fiYear]], [FValue]);
 end;
 
-procedure TJvID3NumberFrame.NewText(const ANewText: TJvID3StringPair);
+procedure TJvID3NumberFrame.SetText(const ANewText: WideString);
 begin
-  case Encoding of
-    ienISO_8859_1:
-      FValue := StrToIntDef(string(ANewText.SA), 0);
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      FValue := StrToIntDef(string(WideStringToStringEx(ANewText.SW, CP_ACP)), 0);
-  else
-    Error(RsEID3UnknownEncoding);
-  end;
+  FValue := StrToIntDef(ANewText, 0);
 
   UpdateFrameSize;
 end;
 
-procedure TJvID3NumberFrame.SetValue(const Value: Cardinal);
+procedure TJvID3NumberFrame.SetValue(const AValue: Cardinal);
 begin
-  if FValue <> Value then
+  if AValue <> FValue then
   begin
-    FValue := Value;
+    FValue := AValue;
     Changed;
   end;
 end;
@@ -7020,12 +6464,16 @@ end;
 //=== { TJvID3OwnershipFrame } ===============================================
 
 procedure TJvID3OwnershipFrame.Assign(Source: TPersistent);
+var
+  Src: TJvID3OwnershipFrame;
 begin
   if Source is TJvID3OwnershipFrame then
   begin
-    FPricePayed := TJvID3OwnershipFrame(Source).PricePayed;
-    CopyStringPair(TJvID3OwnershipFrame(Source).FSeller, FSeller);
-    FDateOfPurch := TJvID3OwnershipFrame(Source).DateOfPurch;
+    Src := TJvID3OwnershipFrame(Source);
+
+    FPricePayed := Src.PricePayed;
+    FSeller := Src.Seller;
+    FDateOfPurch := Src.DateOfPurch;
   end;
 
   inherited Assign(Source);
@@ -7047,7 +6495,7 @@ end;
 procedure TJvID3OwnershipFrame.Clear;
 begin
   FPricePayed := '';
-  ClearStringPair(FSeller);
+  FSeller := '';
   FDateOfPurch := 0;
   inherited Clear;
 end;
@@ -7083,13 +6531,18 @@ begin
     Seller                  <text string according to encoding>
   }
   Result := 1 + Cardinal(Length(FPricePayed)) + 1 + 8 +
-    LengthEnc(FSeller, Encoding, ToEncoding);
+    LengthEnc(Seller, ToEncoding);
 end;
 
 function TJvID3OwnershipFrame.GetIsEmpty: Boolean;
 begin
-  Result := (Length(FPricePayed) = 0) and CheckIsEmpty(FSeller, Encoding) and
+  Result := (Length(FPricePayed) = 0) and (Seller = '') and
     (FDateOfPurch = 0);
+end;
+
+function TJvID3OwnershipFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Seller);
 end;
 
 procedure TJvID3OwnershipFrame.ReadFrame;
@@ -7133,20 +6586,11 @@ begin
   end;
 end;
 
-procedure TJvID3OwnershipFrame.SetSeller(const Value: AnsiString);
+procedure TJvID3OwnershipFrame.SetSeller(const Value: WideString);
 begin
-  if FSeller.SA <> Value then
+  if Value <> FSeller then
   begin
-    FSeller.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3OwnershipFrame.SetSellerW(const Value: WideString);
-begin
-  if FSeller.SW <> Value then
-  begin
-    FSeller.SW := Value;
+    FSeller := Value;
     Changed;
   end;
 end;
@@ -7176,7 +6620,7 @@ begin
     WriteStringA(PricePayed);
     WriteTerminatorA;
     WriteDate(DateOfPurch);
-    WriteStringEnc(FSeller);
+    WriteStringEnc(Seller);
   end;
 end;
 
@@ -7205,7 +6649,7 @@ begin
   begin
     FMIMEType := TJvID3PictureFrame(Source).MIMEType;
     FPictureType := TJvID3PictureFrame(Source).PictureType;
-    CopyStringPair(TJvID3PictureFrame(Source).FDescription, FDescription);
+    FDescription := TJvID3PictureFrame(Source).Description;
     FURL := TJvID3PictureFrame(Source).URL;
   end
   else
@@ -7222,8 +6666,8 @@ begin
     begin
       { !! We can't use FileGetTempName; it /creates/ a file with extension TMP but
            we need to have a specific extension }
-      TmpFileName := {$IFDEF HAS_UNIT_ANSISTRINGS}SysUtils.{$ENDIF HAS_UNIT_ANSISTRINGS}IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
-      TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(MIMEType), '');
+      TmpFileName := SysUtils.IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
+      TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(string(MIMEType)), '');
 
       SaveToFile(TmpFileName);
       try
@@ -7275,7 +6719,7 @@ procedure TJvID3PictureFrame.Clear;
 begin
   FMIMEType := '';
   FPictureType := ptOther;
-  ClearStringPair(FDescription);
+  FDescription := '';
   FURL := '';
 
   inherited Clear;
@@ -7325,11 +6769,11 @@ begin
   }
   if HasOnlyURL then
     Result := 1 + Length(cURLArrow) + 1 + 1 +
-      LengthEnc(FDescription, Encoding, ToEncoding) +
+      LengthEnc(Description, ToEncoding) +
       LengthTerminatorEnc(ToEncoding) + Cardinal(Length(URL))
   else
     Result := 1 + Cardinal(Length(MIMEType)) + 1 + 1 +
-      LengthEnc(FDescription, Encoding, ToEncoding) +
+      LengthEnc(Description, ToEncoding) +
       LengthTerminatorEnc(ToEncoding) + DataSize;
 end;
 
@@ -7343,7 +6787,12 @@ begin
   { Don't care about FPictureType }
   Result := inherited GetIsEmpty and
     ((Length(MIMEType) = 0) or (MIMEType = cURLArrow)) and
-    (Length(URL) = 0) and CheckIsEmpty(FDescription, Encoding);
+    (Length(URL) = 0) and (Description = '');
+end;
+
+function TJvID3PictureFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Description);
 end;
 
 procedure TJvID3PictureFrame.ReadFrame;
@@ -7395,26 +6844,16 @@ begin
     Result :=
       (TJvID3PictureFrame(Frame).PictureType = PictureType) and
       ((PictureType in [ptFileIcon, ptOtherFileIcon]) or
-       SameStringPair(FDescription, TJvID3PictureFrame(Frame).FDescription,
-         Encoding, TJvID3PictureFrame(Frame).Encoding))
+      SameStr(Description, TJvID3PictureFrame(Frame).Description))
   else
     Result := inherited SameUniqueIDAs(Frame);
 end;
 
-procedure TJvID3PictureFrame.SetDescription(const Value: AnsiString);
+procedure TJvID3PictureFrame.SetDescription(const Value: WideString);
 begin
-  if FDescription.SA <> Value then
+  if Value <> FDescription then
   begin
-    FDescription.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3PictureFrame.SetDescriptionW(const Value: WideString);
-begin
-  if FDescription.SW <> Value then
-  begin
-    FDescription.SW := Value;
+    FDescription := Value;
     Changed;
   end;
 end;
@@ -7459,7 +6898,7 @@ begin
 
     Write(PictureType, 1);
 
-    WriteStringEnc(FDescription);
+    WriteStringEnc(Description);
     WriteTerminatorEnc;
     if HasOnlyURL then
       WriteStringA(URL)
@@ -7738,19 +7177,19 @@ procedure TJvID3SimpleListFrame.AfterConstruction;
 begin
   inherited AfterConstruction;
 
+  {$IFDEF COMPILER12_UP}
   FList := TJvID3StringList.Create;
-  FListW := TWideStringList.Create;
-
   TStringList(FList).OnChange := ListChanged;
-  // (rom) changed FList to FListW
-  FListW.OnChange := ListChanged;
+  {$ELSE}
+  FList := TWideStringList.Create;
+  TWideStringList(FList).OnChange := ListChanged;
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure TJvID3SimpleListFrame.BeforeDestruction;
 begin
   inherited BeforeDestruction;
   FList.Free;
-  FListW.Free;
 end;
 
 function TJvID3SimpleListFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
@@ -7760,18 +7199,18 @@ begin
     fiLanguage:
       case Encoding of
         ienISO_8859_1:
-          Result := CheckIsLanguageListA(Self, List, HandleError);
+          Result := CheckIsLanguageList(Self, List, HandleError);
         ienUTF_16, ienUTF_16BE, ienUTF_8:
-          Result := CheckIsLanguageListW(Self, ListW, HandleError);
+          Result := CheckIsLanguageList(Self, List, HandleError);
       else
         Error(RsEID3UnknownEncoding);
       end;
   else
     case Encoding of
       ienISO_8859_1:
-        Result := CheckListA(Self, List, Separator, HandleError);
+        Result := CheckList(Self, List, Separator, HandleError);
       ienUTF_16, ienUTF_16BE, ienUTF_8:
-        Result := CheckListW(Self, ListW, SeparatorW, HandleError);
+        Result := CheckList(Self, List, Separator, HandleError);
     else
       Error(RsEID3UnknownEncoding);
     end;
@@ -7825,72 +7264,42 @@ end;
 function TJvID3SimpleListFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
 var
   I: Integer;
-  SP: TJvID3StringPair;
+  CharLength: Integer;
 begin
   if ToEncoding = ienUTF_8 then
   begin
-    GetText(SP);
-    Result := 1 + Length(WideStringToUTF8(GetStringW(SP, Encoding)));
+    Result := 1 + Length(WideStringToUTF8(Text));
     Exit;
   end;
 
   { Encoding byte = 1 }
   Result := 1;
+  CharLength := 0;
 
-  case Encoding of
+  if FixedStringLength > 0 then
+    Inc(CharLength, List.Count * FixedStringLength)
+  else
+  begin
+    for I := 0 to List.Count - 1 do
+    begin
+      Inc(CharLength, Length(List[I]));
+      Inc(CharLength); // separator
+    end;
+
+    { Set one separator less, the last line does not have a trailing
+      separator }
+    if not IsNullSeparator then
+      Dec(CharLength);
+  end;
+
+  case ToEncoding of
     ienISO_8859_1:
-      begin
-        if FixedStringLength > 0 then
-          Inc(Result, List.Count * FixedStringLength)
-        else
-        begin
-          for I := 0 to List.Count - 1 do
-            Inc(Result, Length(List[I]) + 1);
-          { Set one separator less, the last line does not have a trailing
-            separator }
-          if not IsNullSeparator then
-            Dec(Result);
-        end;
-        case ToEncoding of
-          ienISO_8859_1:
-            { Nothing };
-          ienUTF_16:
-            { x2, + BOM's }
-            Result := Result * 2 + 2 * Cardinal(List.Count);
-          ienUTF_16BE:
-            { x2 }
-            Result := Result * 2;
-        else
-          Error(RsEID3UnknownEncoding);
-        end;
-      end;
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      begin
-        if FixedStringLength > 0 then
-          Inc(Result, ListW.Count * FixedStringLength * 2)
-        else
-        begin
-          for I := 0 to ListW.Count - 1 do
-            Inc(Result, Length(ListW[I]) + 2);
-
-          { Set one separator less, the last line does not have a trailing
-            separator }
-          if not IsNullSeparator then
-            Dec(Result, 2);
-        end;
-
-        case ToEncoding of
-          ienISO_8859_1:
-            Result := Result div 2;
-          ienUTF_16:
-            { Add the BOM's }
-            Inc(Result, ListW.Count * 2);
-          ienUTF_16BE:
-            { Nothing };
-        else
-          Error(RsEID3UnknownEncoding);
-        end;
-      end;
+      Inc(Result, CharLength);
+    ienUTF_16:
+      { Add the BOM's }
+      Inc(Result, List.Count * 2 + CharLength * 2);
+    ienUTF_16BE:
+      Inc(Result, CharLength * 2);
   else
     Error(RsEID3UnknownEncoding);
   end;
@@ -7898,33 +7307,10 @@ end;
 
 function TJvID3SimpleListFrame.GetIsNullSeparator: Boolean;
 begin
-  Result := (FixedStringLength < 0) and (Separator = #0);
+  Result := (FixedStringLength < 0) and (Separator = WideNull);
 end;
 
-function TJvID3SimpleListFrame.GetList: TStrings;
-begin
-  Result := FList;
-end;
-
-function TJvID3SimpleListFrame.GetListW: TWideStrings;
-begin
-  Result := FListW;
-end;
-
-function TJvID3SimpleListFrame.GetSeparator: AnsiChar;
-begin
-  case FrameID of
-    fiLyricist, fiComposer, fiOrigLyricist, fiOrigArtist, fiLeadArtist:
-      Result := '/';
-    fiLanguage, fiContentType:
-      Result := #0;
-  else
-    { ?? Unknown }
-    Result := '/';
-  end;
-end;
-
-function TJvID3SimpleListFrame.GetSeparatorW: WideChar;
+function TJvID3SimpleListFrame.GetSeparator: WideChar;
 begin
   case FrameID of
     fiLyricist, fiComposer, fiOrigLyricist, fiOrigArtist, fiLeadArtist:
@@ -7937,22 +7323,20 @@ begin
   end;
 end;
 
-procedure TJvID3SimpleListFrame.GetText(var AText: TJvID3StringPair);
+function TJvID3SimpleListFrame.GetText: WideString;
 begin
-  case Encoding of
-    ienISO_8859_1:
-      if Separator <> #0 then
-        AText.SA := TJvID3StringList(FList).GetSeparatedText(Separator)
-      else
-        AText.SA := TJvID3StringList(FList).GetSeparatedText('');
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      if SeparatorW <> WideNull then
-        AText.SW := ListW.GetSeparatedText(SeparatorW)
-      else
-        AText.SW := ListW.GetSeparatedText('');
+  if Separator <> WideNull then
+    {$IFDEF COMPILER12_UP}
+    Result := (FList as TJvID3StringList).GetSeparatedText(Separator)
+    {$ELSE}
+    Result := (FList as TWideStringList).GetSeparatedText(Separator)
+    {$ENDIF COMPILER12_UP}
   else
-    Error(RsEID3UnknownEncoding);
-  end;
+    {$IFDEF COMPILER12_UP}
+    Result := (FList as TJvID3StringList).GetSeparatedText('');
+    {$ELSE}
+    Result := (FList as TWideStringList).GetSeparatedText('');
+    {$ENDIF COMPILER12_UP}
 end;
 
 procedure TJvID3SimpleListFrame.ListChanged(Sender: TObject);
@@ -7961,29 +7345,19 @@ begin
     Changed;
 end;
 
-procedure TJvID3SimpleListFrame.NewText(const ANewText: TJvID3StringPair);
+procedure TJvID3SimpleListFrame.SetText(const ANewText: WideString);
 begin
-  case Encoding of
-    ienISO_8859_1:
-      if FixedStringLength >= 0 then
-        ExtractFixedStringsA(PAnsiChar(ANewText.SA), FixedStringLength, List)
-      else
-        ExtractStringsA(Separator, PAnsiChar(ANewText.SA), List);
-    ienUTF_16, ienUTF_16BE, ienUTF_8:
-      if FixedStringLength >= 0 then
-        ExtractFixedStringsW(PWideChar(ANewText.SW), FixedStringLength, ListW)
-      else
-        ExtractStringsW(SeparatorW, PWideChar(ANewText.SW), ListW);
+  if FixedStringLength >= 0 then
+    ExtractFixedStrings(ANewText, FixedStringLength, List)
   else
-    Error(RsEID3UnknownEncoding);
-  end;
+    ExtractStrings(Separator, ANewText, List);
 end;
 
 procedure TJvID3SimpleListFrame.ReadFrame;
 const
   cMinBytes: array [TJvID3Encoding] of Byte = (2, 4, 4, 2);
 var
-  SP: TJvID3StringPair;
+  S: WideString;
 begin
   if IsNullSeparator then
   begin
@@ -7992,16 +7366,8 @@ begin
       ReadEncoding;
       while BytesTillEndOfFrame > cMinBytes[Encoding] do
       begin
-        ReadStringEnc(SP);
-
-        case Encoding of
-          ienISO_8859_1:
-            List.Add(string(SP.SA));
-          ienUTF_16, ienUTF_16BE, ienUTF_8:
-            List.Add(SP.SW);
-        else
-          Error(RsEID3UnknownEncoding);
-        end;
+        ReadStringEnc(S);
+        List.Add(S);
       end;
     end;
   end
@@ -8009,47 +7375,24 @@ begin
     inherited ReadFrame;
 end;
 
-procedure TJvID3SimpleListFrame.SetList(const Value: TStrings);
+procedure TJvID3SimpleListFrame.SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
 begin
   FList.Assign(Value);
-end;
-
-procedure TJvID3SimpleListFrame.SetListW(const Value: TWideStrings);
-begin
-  FListW.Assign(Value);
 end;
 
 procedure TJvID3SimpleListFrame.WriteFrame;
 var
   I: Integer;
-  Item: TJvID3StringPair;
-  SW: WideString;
 begin
   if IsNullSeparator then
   begin
-    Item.SA := '';
-    Item.SW := '';
-
     with Stream do
     begin
       WriteEncoding;
-      case Encoding of
-        ienISO_8859_1:
-          for I := 0 to List.Count - 1 do
-          begin
-            Item.SA := AnsiString(List[I]);
-            WriteStringEnc(Item);
-            WriteTerminatorEnc;
-          end;
-        ienUTF_16, ienUTF_16BE, ienUTF_8:
-          for I := 0 to ListW.Count - 1 do
-          begin
-            Item.SW := SW;
-            WriteStringEnc(Item);
-            WriteTerminatorEnc;
-          end;
-      else
-        Error(RsEID3UnknownEncoding);
+      for I := 0 to List.Count - 1 do
+      begin
+        WriteStringEnc(List[I]);
+        WriteTerminatorEnc;
       end;
     end;
   end
@@ -8162,7 +7505,7 @@ end;
 procedure TJvID3Stream.InitAllowedEncodings(const AVersion: TJvID3Version;
   const AEncoding: TJvID3ForceEncoding);
 begin
-  if AEncoding = ifeDontCare then
+  if AEncoding in [ifeDontCare, ifeAuto] then
     case AVersion of
       ive2_2, ive2_3:
         FAllowedEncodings := [ienISO_8859_1, ienUTF_16];
@@ -8339,22 +7682,24 @@ begin
   Seek(Result, soFromCurrent);
 end;
 
-function TJvID3Stream.ReadStringEnc(var S: TJvID3StringPair): Longint;
+function TJvID3Stream.ReadStringEnc(var S: WideString): Longint;
+var
+  SA: AnsiString;
 begin
   case SourceEncoding of
     ienISO_8859_1:
-      Result := ReadStringA(S.SA);
+      begin
+        Result := ReadStringA(SA);
+        S := AnsiStringToUTF16(SA)
+      end;
     ienUTF_16, ienUTF_16BE:
-      Result := ReadStringW(S.SW);
+      Result := ReadStringW(S);
     ienUTF_8:
-      Result := ReadStringUTF8(S.SW);
+      Result := ReadStringUTF8(S);
   else
     Result := 0;
     ID3Error(RsEID3UnknownEncoding);
   end;
-
-  if SourceEncoding <> DestEncoding then
-    TranslatePairString(S, SourceEncoding, DestEncoding);
 end;
 
 function TJvID3Stream.ReadStringUTF8(var SW: WideString): Longint;
@@ -8455,24 +7800,24 @@ begin
   UnSyncSafe(Value, 4, AInt);
 end;
 
-function TJvID3Stream.ReadUserString(var S1, S2: TJvID3StringPair): Longint;
+function TJvID3Stream.ReadUserString(var S1, S2: WideString): Longint;
+var
+  SA1, SA2: AnsiString;
 begin
   case SourceEncoding of
     ienISO_8859_1:
-      Result := ReadUserStringA(S1.SA, S2.SA);
+      begin
+        Result := ReadUserStringA(SA1, SA2);
+        S1 := AnsiStringToUTF16(SA1);
+        S2 := AnsiStringToUTF16(SA2);
+      end;
     ienUTF_16, ienUTF_16BE:
-      Result := ReadUserStringW(S1.SW, S2.SW);
+      Result := ReadUserStringW(S1, S2);
     ienUTF_8:
-      Result := ReadUserStringUTF8(S1.SW, S2.SW);
+      Result := ReadUserStringUTF8(S1, S2);
   else
     Result := 0;
     ID3Error(RsEID3UnknownEncoding);
-  end;
-
-  if SourceEncoding <> DestEncoding then
-  begin
-    TranslatePairString(S1, SourceEncoding, DestEncoding);
-    TranslatePairString(S2, SourceEncoding, DestEncoding);
   end;
 end;
 
@@ -8621,15 +7966,15 @@ begin
   Result := Write(PAnsiChar(SA)^, Length(SA));
 end;
 
-function TJvID3Stream.WriteStringEnc(const S: TJvID3StringPair): Longint;
+function TJvID3Stream.WriteStringEnc(const S: WideString): Longint;
 begin
   case DestEncoding of
     ienISO_8859_1:
-      Result := WriteStringA(GetStringA(S, SourceEncoding));
+      Result := WriteStringA(UTF16ToAnsiString(S));
     ienUTF_16, ienUTF_16BE:
-      Result := WriteStringW(GetStringW(S, SourceEncoding));
+      Result := WriteStringW(S);
     ienUTF_8:
-      Result := WriteStringUTF8(GetStringW(S, SourceEncoding));
+      Result := WriteStringUTF8(S);
   else
     Result := 0;
     ID3Error(RsEID3UnknownEncoding);
@@ -8724,18 +8069,15 @@ begin
   Result := Write(Ch, 2);
 end;
 
-function TJvID3Stream.WriteUserString(const S1, S2: TJvID3StringPair): Longint;
+function TJvID3Stream.WriteUserString(const S1, S2: WideString): Longint;
 begin
   case DestEncoding of
     ienISO_8859_1:
-      Result := WriteUserStringA(
-        GetStringA(S1, SourceEncoding), GetStringA(S2, SourceEncoding));
+      Result := WriteUserStringA(UTF16ToAnsiString(S1), UTF16ToAnsiString(S2));
     ienUTF_16, ienUTF_16BE:
-      Result := WriteUserStringW(
-        GetStringW(S1, SourceEncoding), GetStringW(S2, SourceEncoding));
+      Result := WriteUserStringW(S1, S2);
     ienUTF_8:
-      Result := WriteUserStringUTF8(
-        GetStringW(S1, SourceEncoding), GetStringW(S2, SourceEncoding));
+      Result := WriteUserStringUTF8(S1, S2);
   else
     Result := 0;
     ID3Error(RsEID3UnknownEncoding);
@@ -8761,16 +8103,17 @@ begin
   Result := WriteStringW(SW1) + WriteTerminatorW + WriteStringW(SW2);
 end;
 
+{$IFDEF COMPILER12_UP}
 //=== { TJvID3StringList } ===================================================
 
-function TJvID3StringList.GetSeparatedText(const Separator: AnsiString): AnsiString;
+function TJvID3StringList.GetSeparatedText(const Separator: string): string;
 var
   I, L: Integer;
   Size: Integer;
   Count: Integer;
   SepLen: Integer;
   P: PChar;
-  S: AnsiString;
+  S: string;
 begin
   Count := GetCount;
   Size := 0;
@@ -8786,7 +8129,7 @@ begin
     I := 0;
     while True do
     begin
-      S := AnsiString(Get(I));
+      S := Get(I);
       L := Length(S);
       if L <> 0 then
       begin
@@ -8807,6 +8150,7 @@ begin
     end;
   end;
 end;
+{$ENDIF COMPILER12_UP}
 
 //=== { TJvID3TermsOfUseFrame } ==============================================
 
@@ -8814,8 +8158,8 @@ procedure TJvID3TermsOfUseFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3TermsOfUseFrame then
   begin
-    CopyStringPair(TJvID3TermsOfUseFrame(Source).FText, FText);
-    FLanguage := TJvID3TermsOfUseFrame(Source).FLanguage;
+    FText := TJvID3TermsOfUseFrame(Source).Text;
+    FLanguage := TJvID3TermsOfUseFrame(Source).Language;
   end;
 
   inherited Assign(Source);
@@ -8843,7 +8187,7 @@ end;
 
 procedure TJvID3TermsOfUseFrame.Clear;
 begin
-  ClearStringPair(FText);
+  FText := '';
   FLanguage := '';
   inherited Clear;
 end;
@@ -8877,12 +8221,17 @@ begin
     Language               $xx xx xx
     The actual text        <text string according to encoding>
   }
-  Result := 1 + 3 + LengthEnc(FText, Encoding, ToEncoding);
+  Result := 1 + 3 + LengthEnc(Text, ToEncoding);
 end;
 
 function TJvID3TermsOfUseFrame.GetIsEmpty: Boolean;
 begin
-  Result := CheckIsEmpty(FText, Encoding) and (Length(FLanguage) = 0);
+  Result := (Text = '') and (Length(FLanguage) = 0);
+end;
+
+function TJvID3TermsOfUseFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Text);
 end;
 
 procedure TJvID3TermsOfUseFrame.ReadFrame;
@@ -8915,20 +8264,11 @@ begin
   end;
 end;
 
-procedure TJvID3TermsOfUseFrame.SetText(const Value: AnsiString);
+procedure TJvID3TermsOfUseFrame.SetText(const Value: WideString);
 begin
-  if FText.SA <> Value then
+  if Value <> FText then
   begin
-    FText.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3TermsOfUseFrame.SetTextW(const Value: WideString);
-begin
-  if FText.SW <> Value then
-  begin
-    FText.SW := Value;
+    FText := Value;
     Changed;
   end;
 end;
@@ -8955,7 +8295,7 @@ begin
   begin
     WriteEncoding;
     WriteLanguage(Language);
-    WriteStringEnc(FText);
+    WriteStringEnc(Text);
   end;
 end;
 
@@ -8991,7 +8331,7 @@ begin
     Frame := TJvID3TextFrame.Find(FController, fiDate);
     if Assigned(Frame) then
       with TJvID3TextFrame(Frame) do
-        LDate := GetID3Date(FText, Encoding, Year)
+        LDate := GetID3Date(Text, Encoding, Year)
     else
     try
       { hm, no date frame , just assume it's 1 jan }
@@ -9005,7 +8345,7 @@ begin
     Frame := TJvID3TextFrame.Find(FController, fiTime);
     if Assigned(Frame) then
       with TJvID3TextFrame(Frame) do
-        LDate := LDate + GetID3Time(FText, Encoding);
+        LDate := LDate + GetID3Time(Text, Encoding);
 
     { 4. Copy constructed date to a fiRecordingTime frame }
     TJvID3TimestampFrame.FindOrCreate(FController, fiRecordingTime).Value := LDate;
@@ -9063,31 +8403,16 @@ begin
   end;
 end;
 
-procedure TJvID3TextFrame.GetText(var AText: TJvID3StringPair);
+function TJvID3TextFrame.GetText: WideString;
 begin
-  AText := FText;
+  Result := FText;
 end;
 
-procedure TJvID3TextFrame.NewText(const ANewText: TJvID3StringPair);
+procedure TJvID3TextFrame.SetText(const ANewText: WideString);
 begin
-  FText.SA := ANewText.SA;
-  FText.SW := ANewText.SW;
-end;
-
-procedure TJvID3TextFrame.SetText(const Value: AnsiString);
-begin
-  if Value <> FText.SA then
+  if ANewText <> FText then
   begin
-    FText.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3TextFrame.SetTextW(const Value: WideString);
-begin
-  if Value <> FText.SW then
-  begin
-    FText.SW := Value;
+    FText := ANewText;
     Changed;
   end;
 end;
@@ -9122,11 +8447,11 @@ begin
 
       { 3. Create a new fiDate frame [format = 'DDMM'] for the Day and Month }
       TJvID3TextFrame.FindOrCreate(FController, fiDate).Text :=
-        {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('%.2d%.2d', [Day, Month]);
+        Format('%.2d%.2d', [Day, Month]);
 
       { 4. Create a new fiTime frame [format = 'HHMM'] for the Hour and Min }
       TJvID3TextFrame.FindOrCreate(FController, fiTime).Text :=
-        {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('%.2d%.2d', [Hour, Min]);
+        Format('%.2d%.2d', [Hour, Min]);
     end;
   end
   else
@@ -9177,7 +8502,7 @@ begin
   end;
 end;
 
-procedure TJvID3TimestampFrame.GetText(var AText: TJvID3StringPair);
+function TJvID3TimestampFrame.GetText: WideString;
 var
   Year, Month, Day, Hour, Min, Sec, Dummy: Word;
 begin
@@ -9199,14 +8524,12 @@ begin
   if Year > 9999 then
     Year := 9999;
   if (Hour = 0) and (Min = 0) and (Sec = 0) then
-    AText.SA := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('%.4d-%.2d-%.2d', [Year, Month, Day])
+    Result := Format('%.4d-%.2d-%.2d', [Year, Month, Day])
   else
-    AText.SA := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2d', [Year, Month, Day, Hour, Min, Sec]);
-
-  AText.SW := StringToWideStringEx(AText.SA, CP_ACP);
+    Result := Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2d', [Year, Month, Day, Hour, Min, Sec]);
 end;
 
-procedure TJvID3TimestampFrame.NewText(const ANewText: TJvID3StringPair);
+procedure TJvID3TimestampFrame.SetText(const ANewText: WideString);
 type
   TimeKind = (tkYear, tkMonth, tkDay, tkHour, tkMin, tkSec);
 const
@@ -9219,9 +8542,8 @@ var
   BusyWith: TimeKind;
   I: Byte;
 begin
-  S := GetStringA(ANewText, Encoding);
   { Max. 19 chars }
-  S := Copy(S, 1, 19);
+  S := UTF16ToAnsiString(Copy(ANewText, 1, 19));
 
   FillChar(TimeArray, SizeOf(TimeArray), #0);
   TimeArray[tkMonth] := 1;
@@ -9265,11 +8587,11 @@ begin
   end;
 end;
 
-procedure TJvID3TimestampFrame.SetValue(const Value: TDateTime);
+procedure TJvID3TimestampFrame.SetValue(const AValue: TDateTime);
 begin
-  if FValue <> Value then
+  if AValue <> FValue then
   begin
-    FValue := Value;
+    FValue := AValue;
     Changed;
   end;
 end;
@@ -9402,7 +8724,7 @@ procedure TJvID3URLUserFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3URLUserFrame then
   begin
-    CopyStringPair(TJvID3URLUserFrame(Source).FDescription, FDescription);
+    FDescription := TJvID3URLUserFrame(Source).Description;
     FURL := TJvID3URLUserFrame(Source).URL;
   end;
 
@@ -9431,7 +8753,7 @@ end;
 
 procedure TJvID3URLUserFrame.Clear;
 begin
-  ClearStringPair(FDescription);
+  FDescription := '';
   FURL := '';
   inherited Clear;
 end;
@@ -9479,14 +8801,19 @@ begin
     Value                   <text string according to encoding>
   }
   Result := 1 +
-    LengthEnc(FDescription, Encoding, ToEncoding) +
+    LengthEnc(Description, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
     Cardinal(Length(FURL));
 end;
 
 function TJvID3URLUserFrame.GetIsEmpty: Boolean;
 begin
-  Result := (FURL = '') and CheckIsEmpty(FDescription, Encoding);
+  Result := (FURL = '') and (Description = '');
+end;
+
+function TJvID3URLUserFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Description);
 end;
 
 procedure TJvID3URLUserFrame.ReadFrame;
@@ -9499,20 +8826,11 @@ begin
   end;
 end;
 
-procedure TJvID3URLUserFrame.SetDescription(const Value: AnsiString);
+procedure TJvID3URLUserFrame.SetDescription(const Value: WideString);
 begin
-  if FDescription.SA <> Value then
+  if Value <> FDescription then
   begin
-    FDescription.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3URLUserFrame.SetDescriptionW(const Value: WideString);
-begin
-  if FDescription.SW <> Value then
-  begin
-    FDescription.SW := Value;
+    FDescription := Value;
     Changed;
   end;
 end;
@@ -9531,7 +8849,7 @@ begin
   with Stream do
   begin
     WriteEncoding;
-    WriteStringEnc(FDescription);
+    WriteStringEnc(Description);
     WriteTerminatorEnc;
     WriteStringA(URL);
   end;
@@ -9543,8 +8861,8 @@ procedure TJvID3UserFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3CustomTextFrame then
   begin
-    CopyStringPair(TJvID3UserFrame(Source).FValue, FValue);
-    CopyStringPair(TJvID3UserFrame(Source).FDescription, FDescription);
+    FValue := TJvID3UserFrame(Source).Value;
+    FDescription := TJvID3UserFrame(Source).Description;
   end;
 
   inherited Assign(Source);
@@ -9566,8 +8884,8 @@ end;
 
 procedure TJvID3UserFrame.Clear;
 begin
-  ClearStringPair(FValue);
-  ClearStringPair(FDescription);
+  FValue := '';
+  FDescription := '';
   inherited Clear;
 end;
 
@@ -9615,14 +8933,19 @@ begin
     Value                   <text string according to encoding>
   }
   Result := 1 +
-    LengthEnc(FDescription, Encoding, ToEncoding) +
+    LengthEnc(Description, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
-    LengthEnc(FValue, Encoding, ToEncoding);
+    LengthEnc(Value, ToEncoding);
 end;
 
 function TJvID3UserFrame.GetIsEmpty: Boolean;
 begin
-  Result := CheckIsEmpty(FValue, Encoding) and CheckIsEmpty(FDescription, Encoding);
+  Result := (Value = '') and (Description = '');
+end;
+
+function TJvID3UserFrame.MustWriteAsUTF: Boolean;
+begin
+  Result := HasNonISO_8859_1Chars(Value) or HasNonISO_8859_1Chars(Description)
 end;
 
 procedure TJvID3UserFrame.ReadFrame;
@@ -9634,38 +8957,20 @@ begin
   end;
 end;
 
-procedure TJvID3UserFrame.SetDescription(const Value: AnsiString);
+procedure TJvID3UserFrame.SetDescription(const AValue: WideString);
 begin
-  if FDescription.SA <> Value then
+  if AValue <> FDescription then
   begin
-    FDescription.SA := Value;
+    FDescription := AValue;
     Changed;
   end;
 end;
 
-procedure TJvID3UserFrame.SetDescriptionW(const Value: WideString);
+procedure TJvID3UserFrame.SetValue(const AValue: WideString);
 begin
-  if FDescription.SW <> Value then
+  if AValue <> FValue then
   begin
-    FDescription.SW := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3UserFrame.SetValue(const Value: AnsiString);
-begin
-  if FValue.SA <> Value then
-  begin
-    FValue.SA := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvID3UserFrame.SetValueW(const Value: WideString);
-begin
-  if FValue.SW <> Value then
-  begin
-    FValue.SW := Value;
+    FValue := AValue;
     Changed;
   end;
 end;
@@ -9675,7 +8980,7 @@ begin
   with Stream do
   begin
     WriteEncoding;
-    WriteUserString(FDescription, FValue);
+    WriteUserString(Description, Value);
   end;
 end;
 

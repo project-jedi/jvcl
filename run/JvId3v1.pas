@@ -60,13 +60,13 @@ type
     FAlbumTrack: Byte;
     FStreamedActive: Boolean;
     FHasTag: Boolean;
-    FHasTagDirty: Boolean;
-    function GetGenreAsString: AnsiString;
+    FNeedUpdateHasTag: Boolean;
+    function GetGenreAsString: string;
     function GetHasTag: Boolean;
     procedure Reset;
     procedure SetActive(const Value: Boolean);
     procedure SetFileName(const Value: TFileName);
-    procedure SetGenreAsString(const Value: AnsiString);
+    procedure SetGenreAsString(const Value: string);
   protected
     procedure CheckActive;
     procedure DoOpen; virtual;
@@ -90,7 +90,7 @@ type
     property Year: AnsiString read FYear write FYear stored False;
     property Comment: AnsiString read FComment write FComment stored False;
     property Genre: Byte read FGenre write FGenre stored False;
-    property GenreAsString: AnsiString read GetGenreAsString write SetGenreAsString stored False;
+    property GenreAsString: string read GetGenreAsString write SetGenreAsString stored False;
     property AlbumTrack: Byte read FAlbumTrack write FAlbumTrack stored False;
   end;
 
@@ -116,7 +116,7 @@ uses
   JvID3v2Types, JvTypes, JvResources;
 
 const
-  CID3v1Tag = 'TAG';  { do not change case }
+  CID3v1Tag: array [0..2] of AnsiChar = AnsiString('TAG');  { do not change case }
 
   CTagSize = 128;
   CTagIDSize = 3;
@@ -125,7 +125,7 @@ const
 
 function HasID3v1Tag(const AFileName: string): Boolean;
 var
-  TagID: array [0..CTagIDSize - 1] of Char;
+  TagID: array [0..CTagIDSize - 1] of AnsiChar;
 begin
   try
     with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
@@ -161,7 +161,7 @@ end;
 
 procedure RemoveID3v1Tag(const AFileName: string);
 var
-  TagID: array [0..CTagIDSize - 1] of Char;
+  TagID: array [0..CTagIDSize - 1] of AnsiChar;
 begin
   with TFileStream.Create(AFileName, fmOpenReadWrite or fmShareDenyWrite) do
   try
@@ -176,7 +176,7 @@ end;
 
 function WriteID3v1Tag(const AFileName: string; const ATag: TID3v1Tag): Boolean;
 var
-  TagID: array [0..CTagIDSize - 1] of Char;
+  TagID: array [0..CTagIDSize - 1] of AnsiChar;
 begin
   try
     Result := FileExists(AFileName);
@@ -209,7 +209,12 @@ end;
 
 //=== Local procedures =======================================================
 
-function TagToStr(P: PAnsiChar; MaxLength: Integer): AnsiString;
+procedure AnsiStringToPAnsiChar(const Source: AnsiString; Dest: PAnsiChar; const MaxLength: Integer);
+begin
+  Move(PAnsiChar(Source)^, Dest^, Min(MaxLength, Length(Source)));
+end;
+
+function PAnsiCharToAnsiString(P: PAnsiChar; MaxLength: Integer): AnsiString;
 var
   Q: PAnsiChar;
 begin
@@ -227,7 +232,7 @@ procedure TJvID3v1.Loaded;
 begin
   inherited Loaded;
 
-  FHasTagDirty := True;
+  FNeedUpdateHasTag := True;
   if FStreamedActive then
     SetActive(True);
 end;
@@ -249,17 +254,17 @@ var
 begin
   CheckActive;
 
-  FHasTagDirty := True;
+  FNeedUpdateHasTag := True;
 
   FillChar(Tag, CTagSize, #0);
 
   // Set new Tag
-  Tag.Identifier := CID3v1Tag;
-  Move(PAnsiChar(SongName)^, Tag.SongName[0], Min(30, Length(SongName)));
-  Move(PAnsiChar(Artist)^, Tag.Artist[0], Min(30, Length(Artist)));
-  Move(PAnsiChar(Album)^, Tag.Album[0], Min(30, Length(Album)));
-  Move(PAnsiChar(Year)^, Tag.Year[0], Min(4, Length(Year)));
-  Move(PAnsiChar(Comment)^, Tag.Comment[0], Min(30, Length(Comment)));
+  Move(CID3v1Tag[0], Tag.Identifier[0], 3);
+  AnsiStringToPAnsiChar(SongName, @Tag.SongName, 30);
+  AnsiStringToPAnsiChar(Artist, @Tag.Artist, 30);
+  AnsiStringToPAnsiChar(Album, @Tag.Album, 30);
+  AnsiStringToPAnsiChar(Year, @Tag.Year, 4);
+  AnsiStringToPAnsiChar(Comment, @Tag.Comment, 30);
   Tag.Genre := FGenre;
   if Tag.Comment[28] = #0 then
     Tag.Comment[29] := AnsiChar(FAlbumTrack);
@@ -281,7 +286,7 @@ procedure TJvID3v1.Erase;
 var
   SavedActive: Boolean;
 begin
-  FHasTagDirty := True;
+  FNeedUpdateHasTag := True;
 
   SavedActive := Active;
   Close;
@@ -294,16 +299,16 @@ begin
   end;
 end;
 
-function TJvID3v1.GetGenreAsString: AnsiString;
+function TJvID3v1.GetGenreAsString: string;
 begin
   Result := ID3_IDToGenre(Genre);
 end;
 
 function TJvID3v1.GetHasTag: Boolean;
 begin
-  if FHasTagDirty then
+  if FNeedUpdateHasTag then
   begin
-    FHasTagDirty := False;
+    FNeedUpdateHasTag := False;
     FHasTag := HasID3v1Tag(FileName);
   end;
 
@@ -323,16 +328,16 @@ begin
 
   Result := ReadID3v1Tag(FileName, Tag);
 
-  FHasTagDirty := False;
+  FNeedUpdateHasTag := False;
   FHasTag := Result;
 
   if Result then
   begin
-    FSongName := TagToStr(PAnsiChar(@Tag.SongName), 30);
-    FArtist := TagToStr(PAnsiChar(@Tag.Artist), 30);
-    FAlbum := TagToStr(PAnsiChar(@Tag.Album), 30);
-    FYear := TagToStr(PAnsiChar(@Tag.Year), 4);
-    FComment := TagToStr(PAnsiChar(@Tag.Comment), 30);
+    FSongName := PAnsiCharToAnsiString(@Tag.SongName, 30);
+    FArtist := PAnsiCharToAnsiString(@Tag.Artist, 30);
+    FAlbum := PAnsiCharToAnsiString(@Tag.Album, 30);
+    FYear := PAnsiCharToAnsiString(@Tag.Year, 4);
+    FComment := PAnsiCharToAnsiString(@Tag.Comment, 30);
     // (p3) missing genre added
     FGenre := Tag.Genre;
     if Tag.Comment[28] = #0 then
@@ -387,7 +392,7 @@ begin
 
     Close;
 
-    FHasTagDirty := True;
+    FNeedUpdateHasTag := True;
     FFileName := Value;
 
     if SavedActive then
@@ -395,7 +400,7 @@ begin
   end;
 end;
 
-procedure TJvID3v1.SetGenreAsString(const Value: AnsiString);
+procedure TJvID3v1.SetGenreAsString(const Value: string);
 begin
   Genre := ID3_GenreToID(Value);
 end;

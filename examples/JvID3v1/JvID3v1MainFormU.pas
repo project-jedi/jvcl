@@ -126,12 +126,12 @@ begin
     JvBalloonHint1.ActivateHint(JvFilenameEdit1, 'First select a mp3 file', ikError, 'Error', 5000)
   else
   begin
-    JvId3v11.SongName := edtTitle.Text;
-    JvId3v11.Artist := edtArtist.Text;
-    JvId3v11.Album := edtAlbum.Text;
-    JvId3v11.Year := edtYear.Text;
+    JvId3v11.SongName := AnsiString(edtTitle.Text);
+    JvId3v11.Artist := AnsiString(edtArtist.Text);
+    JvId3v11.Album := AnsiString(edtAlbum.Text);
+    JvId3v11.Year := AnsiString(edtYear.Text);
     JvId3v11.GenreAsString := cmbGenre.Text;
-    JvId3v11.Comment := edtComment.Text;
+    JvId3v11.Comment := AnsiString(edtComment.Text);
     JvId3v11.AlbumTrack := sedTrack.AsInteger;
 
     if JvId3v11.Commit then
@@ -224,11 +224,11 @@ end;
 
 procedure TJvID3v1MainForm.UpdateCtrls;
 begin
-  edtTitle.Text := JvId3v11.SongName;
-  edtAlbum.Text := JvId3v11.Album;
-  edtArtist.Text := JvId3v11.Artist;
-  edtYear.Text := JvId3v11.Year;
-  edtComment.Text := JvId3v11.Comment;
+  edtTitle.Text := string(JvId3v11.SongName);
+  edtAlbum.Text := string(JvId3v11.Album);
+  edtArtist.Text := string(JvId3v11.Artist);
+  edtYear.Text := string(JvId3v11.Year);
+  edtComment.Text := string(JvId3v11.Comment);
   sedTrack.AsInteger := JvId3v11.AlbumTrack;
   cmbGenre.ItemIndex := cmbGenre.Items.IndexOfObject(TObject(JvId3v11.Genre));
 end;
