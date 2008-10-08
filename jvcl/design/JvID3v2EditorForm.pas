@@ -638,7 +638,7 @@ begin
     FrameName := TJvID3Frame(Component).FrameName
   else
     FrameName := '';
-  Result := string(CreateUniqueName(Controller, FrameName, TJvID3FrameClass(Component.ClassType), Component))
+  Result := CreateUniqueName(Controller, FrameName, TJvID3FrameClass(Component.ClassType), Component)
 end;
 
 procedure TJvID3FramesEditor.UpdateCaption;
@@ -668,7 +668,7 @@ var
   EnableList: Boolean;
   I: Integer;
   Frame: TJvID3Frame;
-  FrameName: AnsiString;
+  FrameName: string;
 begin
   SaveSelection(Selection, ItemIndex, TopIndex, True);
   try
@@ -682,11 +682,11 @@ begin
         Frame := Controller.Frames[I];
         if not (csDestroying in Frame.ComponentState) then
         begin
-          FrameName := Frame.FrameName;
+          FrameName := string(Frame.FrameName);
           if FrameName = '' then
-            FrameName := {$IFDEF HAS_UNIT_ANSISTRINGS}AnsiStrings.{$ENDIF HAS_UNIT_ANSISTRINGS}Format('<%s>', [Controller.Frames[I].Name]);
-          FrameName := FrameName + ' - ' + AnsiString(cFrameDescriptions[Frame.FrameID]);
-          FrameListBox.Items.AddObject(string(FrameName), Frame);
+            FrameName := Format('<%s>', [Controller.Frames[I].Name]);
+          FrameName := FrameName + ' - ' + cFrameDescriptions[Frame.FrameID];
+          FrameListBox.Items.AddObject(FrameName, Frame);
         end;
       end;
 

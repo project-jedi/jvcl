@@ -34,7 +34,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Graphics, Controls,
-  JvID3v2Types, JvID3v2Base;
+  JvID3v2Types, JvID3v2Base
+  {$IFDEF COMPILER12_UP}
+  {$ELSE}
+  ,JclUnicode
+  {$ENDIF COMPILER12_UP}
+  ;
 
 type
   TJvID3Persistent = class(TPersistent)
@@ -46,68 +51,68 @@ type
 
   TJvID3Text = class(TJvID3Persistent)
   private
-    FDummyList: TStringList;
+    FDummyList: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
     function GetDateTime(const FrameID: Integer{TJvID3FrameID}): TDateTime;
-    function GetList(const FrameID: Integer{TJvID3FrameID}): TStrings;
+    function GetList(const FrameID: Integer{TJvID3FrameID}): {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
     function GetNumber(const FrameID: Integer{TJvID3FrameID}): Cardinal;
-    function GetText(const FrameID: Integer{TJvID3FrameID}): AnsiString;
+    function GetText(const FrameID: Integer{TJvID3FrameID}): WideString;
     procedure SetDateTime(const FrameID: Integer{TJvID3FrameID}; const Value: TDateTime);
-    procedure SetList(const FrameID: Integer{TJvID3FrameID}; const Value: TStrings);
+    procedure SetList(const FrameID: Integer{TJvID3FrameID}; const Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
     procedure SetNumber(const FrameID: Integer{TJvID3FrameID}; const Value: Cardinal);
-    procedure SetText(const FrameID: Integer{TJvID3FrameID}; const Value: AnsiString);
+    procedure SetText(const FrameID: Integer{TJvID3FrameID}; const Value: WideString);
   public
     constructor Create(AController: TJvID3Controller);
     destructor Destroy; override;
   published
     { Do not store dummies }
-    property Album: AnsiString index fiAlbum read GetText write SetText stored False;
-    property AlbumSortOrder: AnsiString index fiAlbumSortOrder read GetText write SetText stored False;
-    property Band: AnsiString index fiBand read GetText write SetText stored False;
+    property Album: WideString index fiAlbum read GetText write SetText stored False;
+    property AlbumSortOrder: WideString index fiAlbumSortOrder read GetText write SetText stored False;
+    property Band: WideString index fiBand read GetText write SetText stored False;
     property BPM: Cardinal index fiBPM read GetNumber write SetNumber stored False;
-    property Composer: TStrings index fiComposer read GetList write SetList stored False;
-    property Conductor: AnsiString index fiConductor read GetText write SetText stored False;
-    property ContentType: TStrings index fiContentType read GetList write SetList stored False;
-    property ContentGroup: AnsiString index fiContentGroup read GetText write SetText stored False;
-    property Copyright: AnsiString index fiCopyright read GetText write SetText stored False;
-    property Date: AnsiString index fiDate read GetText write SetText stored False;
-    property EncodedBy: AnsiString index fiEncodedBy read GetText write SetText stored False;
-    property EncoderSettings: AnsiString index fiEncoderSettings read GetText write SetText stored False;
+    property Composer: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiComposer read GetList write SetList stored False;
+    property Conductor: WideString index fiConductor read GetText write SetText stored False;
+    property ContentType: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiContentType read GetList write SetList stored False;
+    property ContentGroup: WideString index fiContentGroup read GetText write SetText stored False;
+    property Copyright: WideString index fiCopyright read GetText write SetText stored False;
+    property Date: WideString index fiDate read GetText write SetText stored False;
+    property EncodedBy: WideString index fiEncodedBy read GetText write SetText stored False;
+    property EncoderSettings: WideString index fiEncoderSettings read GetText write SetText stored False;
     property EncodingTime: TDateTime index fiEncodingTime read GetDateTime write SetDateTime stored False;
-    property FileOwner: AnsiString index fiFileOwner read GetText write SetText stored False;
-    property FileType: AnsiString index fiFileType read GetText write SetText stored False;
-    property InitialKey: AnsiString index fiInitialKey read GetText write SetText stored False;
-    property ISRC: AnsiString index fiISRC read GetText write SetText stored False;
-    property Language: TStrings index fiLanguage read GetList write SetList stored False;
-    property LeadArtist: TStrings index fiLeadArtist read GetList write SetList stored False;
-    property Lyricist: TStrings index fiLyricist read GetList write SetList stored False;
-    property MediaType: AnsiString index fiMediaType read GetText write SetText stored False;
-    property MixArtist: AnsiString index fiMixArtist read GetText write SetText stored False;
-    property Mood: AnsiString index fiMood read GetText write SetText stored False;
-    property NetRadioOwner: AnsiString index fiNetRadioOwner read GetText write SetText stored False;
-    property NetRadioStation: AnsiString index fiNetRadioStation read GetText write SetText stored False;
-    property OrigAlbum: AnsiString index fiOrigAlbum read GetText write SetText stored False;
-    property OrigArtist: TStrings index fiOrigArtist read GetList write SetList stored False;
-    property OrigFileName: AnsiString index fiOrigFileName read GetText write SetText stored False;
-    property OrigLyricist: TStrings index fiOrigLyricist read GetList write SetList stored False;
+    property FileOwner: WideString index fiFileOwner read GetText write SetText stored False;
+    property FileType: WideString index fiFileType read GetText write SetText stored False;
+    property InitialKey: WideString index fiInitialKey read GetText write SetText stored False;
+    property ISRC: WideString index fiISRC read GetText write SetText stored False;
+    property Language: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiLanguage read GetList write SetList stored False;
+    property LeadArtist: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiLeadArtist read GetList write SetList stored False;
+    property Lyricist: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiLyricist read GetList write SetList stored False;
+    property MediaType: WideString index fiMediaType read GetText write SetText stored False;
+    property MixArtist: WideString index fiMixArtist read GetText write SetText stored False;
+    property Mood: WideString index fiMood read GetText write SetText stored False;
+    property NetRadioOwner: WideString index fiNetRadioOwner read GetText write SetText stored False;
+    property NetRadioStation: WideString index fiNetRadioStation read GetText write SetText stored False;
+    property OrigAlbum: WideString index fiOrigAlbum read GetText write SetText stored False;
+    property OrigArtist: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiOrigArtist read GetList write SetList stored False;
+    property OrigFileName: WideString index fiOrigFileName read GetText write SetText stored False;
+    property OrigLyricist: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiOrigLyricist read GetList write SetList stored False;
     property OrigReleaseTime: TDateTime index fiOrigReleaseTime read GetDateTime write SetDateTime stored False;
     property OrigYear: Cardinal index fiOrigYear read GetNumber write SetNumber stored False;
-    property PartInSet: AnsiString index fiPartInSet read GetText write SetText stored False;
-    property PerformerSortOrder: AnsiString index fiPerformerSortOrder read GetText write SetText stored False;
+    property PartInSet: WideString index fiPartInSet read GetText write SetText stored False;
+    property PerformerSortOrder: WideString index fiPerformerSortOrder read GetText write SetText stored False;
     property PlaylistDelay: Cardinal index fiPlaylistDelay read GetNumber write SetNumber stored False;
-    property ProducedNotice: AnsiString index fiProducedNotice read GetText write SetText stored False;
-    property Publisher: AnsiString index fiPublisher read GetText write SetText stored False;
-    property RecordingDates: AnsiString index fiRecordingDates read GetText write SetText stored False;
+    property ProducedNotice: WideString index fiProducedNotice read GetText write SetText stored False;
+    property Publisher: WideString index fiPublisher read GetText write SetText stored False;
+    property RecordingDates: WideString index fiRecordingDates read GetText write SetText stored False;
     property RecordingTime: TDateTime index fiRecordingTime read GetDateTime write SetDateTime stored False;
     property ReleaseTime: TDateTime index fiReleaseTime read GetDateTime write SetDateTime stored False;
-    property SetSubTitle: AnsiString index fiSetSubTitle read GetText write SetText stored False;
+    property SetSubTitle: WideString index fiSetSubTitle read GetText write SetText stored False;
     property Size: Cardinal index fiSize read GetNumber write SetNumber stored False;
     property SongLen: Cardinal index fiSongLen read GetNumber write SetNumber stored False;
-    property SubTitle: AnsiString index fiSubTitle read GetText write SetText stored False;
+    property SubTitle: WideString index fiSubTitle read GetText write SetText stored False;
     property TaggingTime: TDateTime index fiTaggingTime read GetDateTime write SetDateTime stored False;
-    property Time: AnsiString index fiTime read GetText write SetText stored False;
-    property Title: AnsiString index fiTitle read GetText write SetText stored False;
-    property TitleSortOrder: AnsiString index fiTitleSortOrder read GetText write SetText stored False;
-    property TrackNum: AnsiString index fiTrackNum read GetText write SetText stored False;
+    property Time: WideString index fiTime read GetText write SetText stored False;
+    property Title: WideString index fiTitle read GetText write SetText stored False;
+    property TitleSortOrder: WideString index fiTitleSortOrder read GetText write SetText stored False;
+    property TrackNum: WideString index fiTrackNum read GetText write SetText stored False;
     property Year: Cardinal index fiYear read GetNumber write SetNumber stored False;
   end;
 
@@ -131,20 +136,20 @@ type
   private
     FDummyI: Integer;
     FItemIndex: Integer;
-    function GetDescription: AnsiString;
+    function GetDescription: WideString;
     function GetItemCount: Integer;
     function GetItemIndex: Integer;
-    function GetValue: AnsiString;
-    procedure SetDescription(const Value: AnsiString);
+    function GetValue: WideString;
+    procedure SetDescription(const Value: WideString);
     procedure SetItemIndex(const Value: Integer);
-    procedure SetValue(const Value: AnsiString);
+    procedure SetValue(const Value: WideString);
   public
-    procedure Add(const ADescription, AValue: AnsiString);
+    procedure Add(const ADescription, AValue: WideString);
   published
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
     { Do not store dummies }
-    property Description: AnsiString read GetDescription write SetDescription stored False;
-    property Value: AnsiString read GetValue write SetValue stored False;
+    property Description: WideString read GetDescription write SetDescription stored False;
+    property Value: WideString read GetValue write SetValue stored False;
     property ItemCount: Integer read GetItemCount write FDummyI stored False;
   end;
 
@@ -152,19 +157,19 @@ type
   private
     FItemIndex: Integer;
     FDummyI: Integer;
-    function GetDescription: AnsiString;
+    function GetDescription: WideString;
     function GetItemCount: Integer;
     function GetItemIndex: Integer;
     function GetURL: AnsiString;
-    procedure SetDescription(const Value: AnsiString);
+    procedure SetDescription(const Value: WideString);
     procedure SetItemIndex(const Value: Integer);
     procedure SetURL(const Value: AnsiString);
   public
-    procedure Add(const ADescription, AURL: AnsiString);
+    procedure Add(const ADescription: WideString; const AURL: AnsiString);
   published
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
     { Do not store dummies }
-    property Description: AnsiString read GetDescription write SetDescription stored False;
+    property Description: WideString read GetDescription write SetDescription stored False;
     property URL: AnsiString read GetURL write SetURL stored False;
     property ItemCount: Integer read GetItemCount write FDummyI stored False;
   end;
@@ -209,30 +214,30 @@ type
 
   TJvID3PicturesDesc = class(TJvID3Persistent)
   private
-    function GetText(const AType: Integer{TJvID3PictureType}): AnsiString;
-    procedure SetText(const AType: Integer{TJvID3PictureType}; const Value: AnsiString);
+    function GetText(const AType: Integer{TJvID3PictureType}): WideString;
+    procedure SetText(const AType: Integer{TJvID3PictureType}; const Value: WideString);
   published
-    property Other: AnsiString index ptOther read GetText write SetText stored False;
-    property FileIcon: AnsiString index ptFileIcon read GetText write SetText stored False;
-    property OtherFileIcon: AnsiString index ptOtherFileIcon read GetText write SetText stored False;
-    property CoverFront: AnsiString index ptCoverFront read GetText write SetText stored False;
-    property CoverBack: AnsiString index ptCoverBack read GetText write SetText stored False;
-    property LeafletPage: AnsiString index ptLeafletPage read GetText write SetText stored False;
-    property Media: AnsiString index ptMedia read GetText write SetText stored False;
-    property LeadArtist: AnsiString index ptLeadArtist read GetText write SetText stored False;
-    property Artist: AnsiString index ptArtist read GetText write SetText stored False;
-    property Conductor: AnsiString index ptConductor read GetText write SetText stored False;
-    property Band: AnsiString index ptBand read GetText write SetText stored False;
-    property Composer: AnsiString index ptComposer read GetText write SetText stored False;
-    property Lyricist: AnsiString index ptLyricist read GetText write SetText stored False;
-    property RecordingLocation: AnsiString index ptRecordingLocation read GetText write SetText stored False;
-    property DuringRecording: AnsiString index ptDuringRecording read GetText write SetText stored False;
-    property DuringPerformance: AnsiString index ptDuringPerformance read GetText write SetText stored False;
-    property MovieVideoScreenCapture: AnsiString index ptMovieVideoScreenCapture read GetText write SetText stored False;
-    property BrightColouredFish: AnsiString index ptBrightColouredFish read GetText write SetText stored False;
-    property Illustration: AnsiString index ptIllustration read GetText write SetText stored False;
-    property BandLogotype: AnsiString index ptBandLogotype read GetText write SetText stored False;
-    property PublisherLogotype: AnsiString index ptPublisherLogotype read GetText write SetText stored False;
+    property Other: WideString index ptOther read GetText write SetText stored False;
+    property FileIcon: WideString index ptFileIcon read GetText write SetText stored False;
+    property OtherFileIcon: WideString index ptOtherFileIcon read GetText write SetText stored False;
+    property CoverFront: WideString index ptCoverFront read GetText write SetText stored False;
+    property CoverBack: WideString index ptCoverBack read GetText write SetText stored False;
+    property LeafletPage: WideString index ptLeafletPage read GetText write SetText stored False;
+    property Media: WideString index ptMedia read GetText write SetText stored False;
+    property LeadArtist: WideString index ptLeadArtist read GetText write SetText stored False;
+    property Artist: WideString index ptArtist read GetText write SetText stored False;
+    property Conductor: WideString index ptConductor read GetText write SetText stored False;
+    property Band: WideString index ptBand read GetText write SetText stored False;
+    property Composer: WideString index ptComposer read GetText write SetText stored False;
+    property Lyricist: WideString index ptLyricist read GetText write SetText stored False;
+    property RecordingLocation: WideString index ptRecordingLocation read GetText write SetText stored False;
+    property DuringRecording: WideString index ptDuringRecording read GetText write SetText stored False;
+    property DuringPerformance: WideString index ptDuringPerformance read GetText write SetText stored False;
+    property MovieVideoScreenCapture: WideString index ptMovieVideoScreenCapture read GetText write SetText stored False;
+    property BrightColouredFish: WideString index ptBrightColouredFish read GetText write SetText stored False;
+    property Illustration: WideString index ptIllustration read GetText write SetText stored False;
+    property BandLogotype: WideString index ptBandLogotype read GetText write SetText stored False;
+    property PublisherLogotype: WideString index ptPublisherLogotype read GetText write SetText stored False;
   end;
 
   TJvID3Images = class(TJvID3Persistent)
@@ -252,16 +257,16 @@ type
     FDummyI: Integer;
     FItemIndex: Integer;
     function GetItemCount: Integer;
-    function GetJob: string;
-    function GetPerson: string;
+    function GetJob: WideString;
+    function GetPerson: WideString;
     procedure SetItemIndex(const Value: Integer);
-    procedure SetJob(const Value: string);
-    procedure SetPerson(const Value: string);
+    procedure SetJob(const Value: WideString);
+    procedure SetPerson(const Value: WideString);
   published
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
     { Do not store dummies }
-    property Job: string read GetJob write SetJob stored False;
-    property Person: string read GetPerson write SetPerson stored False;
+    property Job: WideString read GetJob write SetJob stored False;
+    property Person: WideString read GetPerson write SetPerson stored False;
     property ItemCount: Integer read GetItemCount write FDummyI stored False;
   end;
 
@@ -269,15 +274,15 @@ type
   private
     function GetDatePurchased: TDateTime;
     function GetPrice: AnsiString;
-    function GetSeller: AnsiString;
+    function GetSeller: WideString;
     procedure SetDatePurchased(const Value: TDateTime);
     procedure SetPrice(const Value: AnsiString);
-    procedure SetSeller(const Value: AnsiString);
+    procedure SetSeller(const Value: WideString);
   published
     { Do not store dummies }
     property Price: AnsiString read GetPrice write SetPrice stored False;
     property DatePurchased: TDateTime read GetDatePurchased write SetDatePurchased stored False;
-    property Seller: AnsiString read GetSeller write SetSeller stored False;
+    property Seller: WideString read GetSeller write SetSeller stored False;
   end;
 
   TJvID3Popularimeter = class(TJvID3Persistent)
@@ -398,7 +403,7 @@ begin
   end;
 end;
 
-function TJvID3Ipl.GetJob: string;
+function TJvID3Ipl.GetJob: WideString;
 var
   Frame: TJvID3DoubleListFrame;
 begin
@@ -414,7 +419,7 @@ begin
   end;
 end;
 
-function TJvID3Ipl.GetPerson: string;
+function TJvID3Ipl.GetPerson: WideString;
 var
   Frame: TJvID3DoubleListFrame;
 begin
@@ -438,9 +443,9 @@ begin
   end;
 end;
 
-procedure TJvID3Ipl.SetJob(const Value: string);
+procedure TJvID3Ipl.SetJob(const Value: WideString);
 var
-  LPerson: string;
+  LPerson: WideString;
   Frame: TJvID3DoubleListFrame;
 begin
   if FController.Active and (ItemIndex >= 0) then
@@ -454,9 +459,9 @@ begin
   end;
 end;
 
-procedure TJvID3Ipl.SetPerson(const Value: string);
+procedure TJvID3Ipl.SetPerson(const Value: WideString);
 var
-  LJob: string;
+  LJob: WideString;
   Frame: TJvID3DoubleListFrame;
 begin
   if FController.Active and (ItemIndex >= 0) then
@@ -494,7 +499,7 @@ begin
     Result := '';
 end;
 
-function TJvID3Owner.GetSeller: AnsiString;
+function TJvID3Owner.GetSeller: WideString;
 var
   Frame: TJvID3OwnershipFrame;
 begin
@@ -517,7 +522,7 @@ begin
     TJvID3OwnershipFrame.FindOrCreate(FController).PricePayed := Value;
 end;
 
-procedure TJvID3Owner.SetSeller(const Value: AnsiString);
+procedure TJvID3Owner.SetSeller(const Value: WideString);
 begin
   if FController.Active then
     TJvID3OwnershipFrame.FindOrCreate(FController).Seller := Value;
@@ -631,7 +636,7 @@ end;
 
 //=== { TJvID3PicturesDesc } =================================================
 
-function TJvID3PicturesDesc.GetText(const AType: Integer{TJvID3PictureType}): AnsiString;
+function TJvID3PicturesDesc.GetText(const AType: Integer{TJvID3PictureType}): WideString;
 var
   Frame: TJvID3PictureFrame;
 begin
@@ -643,7 +648,7 @@ begin
 end;
 
 procedure TJvID3PicturesDesc.SetText(const AType: Integer{TJvID3PictureType};
-  const Value: AnsiString);
+  const Value: WideString);
 begin
   if FController.Active then
     TJvID3PictureFrame.FindOrCreate(FController, TJvID3PictureType(AType)).Description := Value;
@@ -707,7 +712,7 @@ end;
 constructor TJvID3Text.Create(AController: TJvID3Controller);
 begin
   inherited Create(AController);
-  FDummyList := TStringList.Create;
+  FDummyList := {$IFDEF COMPILER12_UP}TStringList{$ELSE}TWideStringList{$ENDIF COMPILER12_UP}.Create;
 end;
 
 destructor TJvID3Text.Destroy;
@@ -727,7 +732,7 @@ begin
     Result := 0;
 end;
 
-function TJvID3Text.GetList(const FrameID: Integer{TJvID3FrameID}): TStrings;
+function TJvID3Text.GetList(const FrameID: Integer{TJvID3FrameID}): {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
 begin
   if FController.Active then
     Result := TJvID3SimpleListFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).List
@@ -749,7 +754,7 @@ begin
     Result := 0;
 end;
 
-function TJvID3Text.GetText(const FrameID: Integer{TJvID3FrameID}): AnsiString;
+function TJvID3Text.GetText(const FrameID: Integer{TJvID3FrameID}): WideString;
 var
   Frame: TJvID3TextFrame;
 begin
@@ -768,7 +773,7 @@ begin
 end;
 
 procedure TJvID3Text.SetList(const FrameID: Integer{TJvID3FrameID};
-  const Value: TStrings);
+  const Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
 begin
   if FController.Active then
     TJvID3SimpleListFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).List.Assign(Value);
@@ -781,7 +786,7 @@ begin
     TJvID3NumberFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Value := Value;
 end;
 
-procedure TJvID3Text.SetText(const FrameID: Integer{TJvID3FrameID}; const Value: AnsiString);
+procedure TJvID3Text.SetText(const FrameID: Integer{TJvID3FrameID}; const Value: WideString);
 begin
   if FController.Active then
     TJvID3TextFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Text := Value;
@@ -789,7 +794,7 @@ end;
 
 //=== { TJvID3UDText } =======================================================
 
-procedure TJvID3UDText.Add(const ADescription, AValue: AnsiString);
+procedure TJvID3UDText.Add(const ADescription, AValue: WideString);
 begin
   if not Assigned(FController) then
     ID3Error(RsEID3NoController);
@@ -801,7 +806,7 @@ begin
   end;
 end;
 
-function TJvID3UDText.GetDescription: AnsiString;
+function TJvID3UDText.GetDescription: WideString;
 var
   Frame: TJvID3UserFrame;
 begin
@@ -834,7 +839,7 @@ begin
   Result := FItemIndex;
 end;
 
-function TJvID3UDText.GetValue: AnsiString;
+function TJvID3UDText.GetValue: WideString;
 var
   Frame: TJvID3UserFrame;
 begin
@@ -850,7 +855,7 @@ begin
   end;
 end;
 
-procedure TJvID3UDText.SetDescription(const Value: AnsiString);
+procedure TJvID3UDText.SetDescription(const Value: WideString);
 begin
   if FController.Active and (ItemIndex >= 0) and (ItemIndex < ItemCount) then
     TJvID3UserFrame.Find(FController, ItemIndex).Description := Value;
@@ -862,7 +867,7 @@ begin
     FItemIndex := Min(Value, ItemCount - 1);
 end;
 
-procedure TJvID3UDText.SetValue(const Value: AnsiString);
+procedure TJvID3UDText.SetValue(const Value: WideString);
 begin
   if FController.Active and (ItemIndex >= 0) and (ItemIndex < ItemCount) then
     TJvID3UserFrame.Find(FController, ItemIndex).Value := Value;
@@ -870,7 +875,7 @@ end;
 
 //=== { TJvID3UDUrl } ========================================================
 
-procedure TJvID3UDUrl.Add(const ADescription, AURL: AnsiString);
+procedure TJvID3UDUrl.Add(const ADescription: WideString; const AURL: AnsiString);
 begin
   if not Assigned(FController) then
     ID3Error(RsEID3NoController);
@@ -882,7 +887,7 @@ begin
   end;
 end;
 
-function TJvID3UDUrl.GetDescription: AnsiString;
+function TJvID3UDUrl.GetDescription: WideString;
 var
   Frame: TJvID3URLUserFrame;
 begin
@@ -931,7 +936,7 @@ begin
   end;
 end;
 
-procedure TJvID3UDUrl.SetDescription(const Value: AnsiString);
+procedure TJvID3UDUrl.SetDescription(const Value: WideString);
 begin
   if FController.Active and (ItemIndex >= 0) then
     TJvID3URLUserFrame.Find(FController, ItemIndex).Description := Value;
@@ -965,9 +970,8 @@ begin
   FOwner := TJvID3Owner.Create(Self);
   FPopularimeter := TJvID3Popularimeter.Create(Self);
 
-  { This ensures that possible unicode tags will be translated to ansi }
-  WriteEncodingAs := ifeISO_8859_1;
-  ReadEncodingAs := ifeISO_8859_1;
+  WriteEncodingAs := ifeAuto;
+  ReadEncodingAs := ifeAuto;
 
   Options := [coAutoCorrect, coRemoveEmptyFrames];
 end;
