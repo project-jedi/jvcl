@@ -766,7 +766,7 @@ begin
   FInputBuffer := nil;
   FInputBufferSize := CCPS_BufferSize;
   FInputBufferEnd := 0;
-  ReallocMem(FInputBuffer, FInputBufferSize * SizeOf(Char));
+  ReallocMem(FInputBuffer, FInputBufferSize * SizeOf(Byte));
   GetMem(FPreBuffer, CCPS_BufferSize);
 end;
 
@@ -858,13 +858,13 @@ begin
     ABufferSize := Min(FInputBufferEnd, CCPS_BufferSize);
 
     // Copy the data from FInputBuffer to ABuffer.
-    Move(FInputBuffer[0], ABuffer[0], ABufferSize * SizeOf(Char));
+    Move(FInputBuffer[0], ABuffer[0], ABufferSize * SizeOf(Byte));
 
     // If not all data in FInputBuffer is copied to ABuffer, then place
     // the data not copied at the begin of FInputBuffer.
     if FInputBufferEnd > ABufferSize then
       Move(FInputBuffer[ABufferSize], FInputBuffer[0],
-        (FInputBufferEnd - ABufferSize) * SizeOf(Char));
+        (FInputBufferEnd - ABufferSize) * SizeOf(Byte));
 
     Dec(FInputBufferEnd, ABufferSize);
   finally
