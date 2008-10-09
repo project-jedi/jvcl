@@ -184,6 +184,7 @@ type
     procedure GotoReadyState;
     procedure GotoWaitState(const AThreadCount: Integer);
     procedure GotoRunningState;
+    procedure SetCommandLine(const Value: string);
   protected
     procedure CheckReady;
     procedure CheckRunning;
@@ -212,7 +213,7 @@ type
     property ErrorReader: TJvBaseReader read FErrorReader;
   published
     property ApplicationName: string read FApplicationName write FApplicationName;
-    property CommandLine: string read FCommandLine write FCommandLine;
+    property CommandLine: string read FCommandLine write SetCommandLine;
     property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags default [];
     property CurrentDirectory: string read FCurrentDirectory write FCurrentDirectory;
     property Environment: TStrings read GetEnvironment write SetEnvironment;
@@ -1290,6 +1291,16 @@ begin
     LocalHandles.Free;
     FreeMultiSz(EnvironmentData);
   end;
+end;
+
+procedure TJvCreateProcess.SetCommandLine(const Value: string);
+begin
+  FCommandLine := Value;
+  {$IFDEF UNICODE}
+  { A constant string will cause an access violation in CreateProcessW }
+  if StringRefCount(FCommandLine) = -1 then
+    FCommandLine := Copy(FCommandLine, 1, MaxInt);
+  {$ENDIF UNICODE}
 end;
 
 procedure TJvCreateProcess.SetEnvironment(const Value: TStrings);
