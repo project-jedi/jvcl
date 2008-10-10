@@ -2531,7 +2531,6 @@ begin
   inherited DataLinkRecordChanged(AField);
 end;
 
-{ (ahuser) not used since the line where it was used is now a comment
 function ParentFormVisible(AControl: TControl): Boolean;
 var
   Form: TCustomForm;
@@ -2539,7 +2538,6 @@ begin
   Form := GetParentForm(AControl);
   Result := Assigned(Form) and Form.Visible;
 end;
-}
 
 procedure TJvDBLookupCombo.CloseUp(Accept: Boolean);
 var
@@ -2549,7 +2547,11 @@ begin
   begin
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    SetFocus;
+    { (rb) Need to check ParentFormVisible always before SetFocus? Delphi doesn't.
+           Not checking whether the parent form is visible typically gives errors
+           when closing forms with non-focusable buttons (eg speed/toolbuttons) }
+    if ParentFormVisible(Self) and CanFocus then
+      SetFocus;
     ListValue := FDataList.Value;
     SetWindowPos(FDataList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
@@ -2560,13 +2562,6 @@ begin
     FDataList.FSearchText := '';
     if Accept and CanModify and (Value <> ListValue) then
       SelectKeyValue(ListValue);
-    { (rb) Need to check ParentFormVisible always before SetFocus? Delphi doesn't.
-           Not checking whether the parent form is visible typically gives errors
-           when closing forms with non-focusable buttons (eg speed/toolbuttons)
-    }
-    // (p3) SetFocus already called, so not needed
-//    if ParentFormVisible(Self) and CanFocus then
-//      SetFocus;
     if Assigned(FOnCloseUp) then
       FOnCloseUp(Self);
   end;
