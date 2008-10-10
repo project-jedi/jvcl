@@ -963,11 +963,18 @@ begin
   FHotImageChangeLink.Free;
   FDisabledImageChangeLink.Free;
   FStyleItemPainter.Free;
-  FChangeLinks.Free;
   FImageMargin.Free;
   FImageSize.Free;
   UnregisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   inherited Destroy;
+
+  // Mantis 4518: When removing the menu, the inherited Destroy will destroy
+  // every item in turn. This will call MenuChanged which uses FChangeLinks,
+  // hence the need to free it after the inherited destroy has run.
+  // Note that testing csDestroying in ComponentState is not desirable as
+  // the menu could be destroyed at design time and still should notify the
+  // components that registered to be notified.
+  FChangeLinks.Free;
 end;
 
 procedure TJvMainMenu.Loaded;
