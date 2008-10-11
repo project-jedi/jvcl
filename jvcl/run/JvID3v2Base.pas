@@ -37,6 +37,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   JclUnicode,
   JvComponentBase, JvID3v2Types, JvID3v1;
@@ -1188,9 +1191,6 @@ implementation
 
 uses
   Graphics,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF COMPILER5}
   Forms,
   {$ENDIF COMPILER5}
@@ -6666,7 +6666,7 @@ begin
     begin
       { !! We can't use FileGetTempName; it /creates/ a file with extension TMP but
            we need to have a specific extension }
-      TmpFileName := SysUtils.IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
+      TmpFileName := {$IFDEF COMPILER6_UP}SysUtils.{$ENDIF COMPILER6_UP}IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
       TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(string(MIMEType)), '');
 
       SaveToFile(TmpFileName);
