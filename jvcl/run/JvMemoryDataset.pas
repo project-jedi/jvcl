@@ -2122,13 +2122,13 @@ begin
       begin
         FillChar(Buffer1, dsMaxStringSize, #0);
         FillChar(Buffer2, dsMaxStringSize, #0);
-        RecordToBuffer(Item1, Buffer1);
-        RecordToBuffer(Item2, Buffer2);
+        RecordToBuffer(Item1, @Buffer1[0]);
+        RecordToBuffer(Item2, @Buffer2[0]);
         Move(Buffer1[1 + FRecordSize + F.Offset], CData1, F.DataSize);
-        if CData1 <> nil then
+        if CData1[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
         begin
           Move(Buffer2[1 + FRecordSize + F.Offset], CData2, F.DataSize);
-          if CData2 <> nil then
+          if CData2[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
           begin
             if Boolean(CData1[0]) and Boolean(CData2[0]) then
               Result := CompareFields(@CData1, @CData2, F.DataType,
