@@ -137,7 +137,7 @@ type
     function AddRecord: TJvMemoryRecord;
     function InsertRecord(Index: Integer): TJvMemoryRecord;
     function FindRecordID(ID: Integer): TJvMemoryRecord;
-    procedure CreateIndexList(const FieldNames: string);
+    procedure CreateIndexList(const FieldNames: WideString);
     procedure FreeIndexList;
     procedure QuickSort(L, R: Integer; Compare: TCompareRecords);
     procedure Sort;
@@ -2006,6 +2006,10 @@ end;
 procedure TJvMemoryData.SortOnFields(const FieldNames: string = '';
   CaseInsensitive: Boolean = True; Descending: Boolean = False);
 begin
+  // Post the table before sorting
+  if State in dsEditModes then
+    Post;
+
   if FieldNames <> '' then
     CreateIndexList(FieldNames)
   else
@@ -2078,6 +2082,7 @@ end;
 function TJvMemoryData.CompareRecords(Item1, Item2: TJvMemoryRecord): Integer;
 var
   Data1, Data2: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+  CData1, CData2, Buffer1, Buffer2: array[0..dsMaxStringSize] of {$IFDEF COMPILER12_UP}Byte{$ELSE}AnsiChar{$ENDIF COMPILER12_UP};
   F: TField;
   I: Integer;
 begin
@@ -2087,31 +2092,58 @@ begin
     for I := 0 to FIndexList.Count - 1 do
     begin
       F := TField(FIndexList[I]);
-      Data1 := FindFieldData(Item1.Data, F);
-      if Data1 <> nil then
+      if F.FieldKind = fkData then
       begin
-        Data2 := FindFieldData(Item2.Data, F);
-        if Data2 <> nil then
+        Data1 := FindFieldData(Item1.Data, F);
+        if Data1 <> nil then
         begin
-          if (Data1[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP}) and (Data2[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP}) then
+          Data2 := FindFieldData(Item2.Data, F);
+          if Data2 <> nil then
           begin
-            Inc(Data1);
-            Inc(Data2);
-            Result := CompareFields(Data1, Data2, F.DataType,
-              FCaseInsensitiveSort);
-          end
-          else
-          if Data1[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
-            Result := 1
-          else
-          if Data2[0] <> {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP} then
-            Result := -1;
-          if FDescendingSort then
-            Result := -Result;
+            if Boolean(Data1[0]) and Boolean(Data2[0]) then
+            begin
+              Inc(Data1);
+              Inc(Data2);
+              Result := CompareFields(Data1, Data2, F.DataType,
+                FCaseInsensitiveSort);
+            end
+            else if Boolean(Data1[0]) then
+              Result := 1
+            else if Boolean(Data2[0]) then
+              Result := -1;
+            if FDescendingSort then
+              Result := -Result;
+          end;
         end;
+        if Result <> 0 then
+          Exit;
+      end
+      else
+      begin
+        FillChar(Buffer1, dsMaxStringSize, #0);
+        FillChar(Buffer2, dsMaxStringSize, #0);
+        RecordToBuffer(Item1, Buffer1);
+        RecordToBuffer(Item2, Buffer2);
+        Move(Buffer1[1 + FRecordSize + F.Offset], CData1, F.DataSize);
+        if CData1 <> nil then
+        begin
+          Move(Buffer2[1 + FRecordSize + F.Offset], CData2, F.DataSize);
+          if CData2 <> nil then
+          begin
+            if Boolean(CData1[0]) and Boolean(CData2[0]) then
+              Result := CompareFields(@CData1, @CData2, F.DataType,
+                FCaseInsensitiveSort)
+            else if Boolean(CData1[0]) then
+              Result := 1
+            else if Boolean(CData2[0]) then
+              Result := -1;
+            if FDescendingSort then
+              Result := -Result;
+          end;
+        end;
+        if Result <> 0 then
+          Exit;
       end;
-      if Result <> 0 then
-        Exit;
     end;
   end;
   if Result = 0 then
@@ -2134,7 +2166,7 @@ begin
     Result := False;
 end;
 
-procedure TJvMemoryData.CreateIndexList(const FieldNames: string);
+procedure TJvMemoryData.CreateIndexList(const FieldNames: WideString);
 var
   Pos: Integer;
   F: TField;
@@ -2147,7 +2179,7 @@ begin
   while Pos <= Length(FieldNames) do
   begin
     F := FieldByName(ExtractFieldNameEx(FieldNames, Pos));
-    if (F.FieldKind = fkData) and (F.DataType in ftSupported - ftBlobTypes) then
+    if {(F.FieldKind = fkData) and }(F.DataType in ftSupported - ftBlobTypes) then
       FIndexList.Add(F)
     else
       ErrorFmt(SFieldTypeMismatch, [F.DisplayName]);
