@@ -3005,7 +3005,7 @@ begin
   LibHandle := SafeLoadLibrary('advapi32.dll');
   if LibHandle <> 0 then
   try
-    @GetCurrentHwProfile := GetProcAddress(LibHandle, 'GetCurrentHwProfileA');
+    @GetCurrentHwProfile := GetProcAddress(LibHandle, {$IFDEF UNICODE}'GetCurrentHwProfileW'{$ELSE}'GetCurrentHwProfileA'{$ENDIF UNICODE});
     if Assigned(GetCurrentHwProfile) then
       GetCurrentHwProfile(Result);
   finally
