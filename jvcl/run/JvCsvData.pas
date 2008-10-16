@@ -1212,6 +1212,8 @@ begin
       end;
     end;
   until not ok;
+  Inc(n);
+  Buf[n] := {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP};
   SetLength(Buf, n);
 
   Result := PAnsiChar(@Buf[0]);  { was string(Buf) }
