@@ -51,6 +51,9 @@ var
 
 implementation
 
+uses
+  JvJCLUtils;
+
 procedure TCmdOptions.Init;
 begin
   AddBool('--ignore-ide', 'Start installer even if Delphi/BCB is running.', FIgnoreIDE);
@@ -167,8 +170,8 @@ begin
   if Len < Count then
   begin
     SetLength(Result, Count);
-    Move(S[1], Result[1], Count);
-    FillChar(Result[Len + 1], Count - Len, ' ');
+    Move(S[1], Result[1], Count * SizeOf(Char));
+    FillString(Result, Len + 1, Count - Len, ' ');
   end
   else
     Result := S;

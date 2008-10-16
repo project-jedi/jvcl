@@ -342,7 +342,7 @@ end;
 
 function CopyData(Handle: THandle): THandle;
 var
-  Src, Dest: PChar;
+  Src, Dest: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
   Size: Integer;
 begin
   if Handle <> 0 then

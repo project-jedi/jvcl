@@ -120,14 +120,14 @@ begin
     begin
       if Index > StartIndex then
       begin
-        Move(Text[StartIndex], Result[Len + 1], Index - StartIndex); 
+        Move(Text[StartIndex], Result[Len + 1], (Index - StartIndex) * SizeOf(Char)); 
         Inc(Len, Index - StartIndex); 
       end; 
       StartIndex := Index + LenSearchText; 
 
       if LenReplaceText > 0 then
       begin 
-        Move(ReplaceText[1], Result[Len + 1], LenReplaceText); 
+        Move(ReplaceText[1], Result[Len + 1], LenReplaceText * SizeOf(Char)); 
         Inc(Len, LenReplaceText); 
       end; 
 
@@ -138,7 +138,7 @@ begin
   Index := LenText + 1;
   if Index > StartIndex then
   begin
-    Move(Text[StartIndex], Result[Len + 1], Index - StartIndex);
+    Move(Text[StartIndex], Result[Len + 1], (Index - StartIndex) * SizeOf(Char));
     Inc(Len, Index - StartIndex);
   end;
 

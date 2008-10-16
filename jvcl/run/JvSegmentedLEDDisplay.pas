@@ -67,7 +67,7 @@ type
   TCharSet = set of Char;
   {$ENDIF ~RTL200_UP}
   TSegCharMapHeader = record
-    ID: array[0..11] of Char;
+    ID: array[0..11] of AnsiChar;
     MappedChars: TCharSet;
     Flags: Longint;
   end;
@@ -1795,7 +1795,7 @@ begin
   OrgPos := Stream.Position;
   try
     Stream.ReadBuffer(Hdr, SizeOf(Hdr));
-    if StrLIComp(Hdr.ID, PChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
+    if StrLIComp(Hdr.ID, PAnsiChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
       PrimReadMapping(Hdr, Stream)
     else
       raise EJVCLSegmentedLEDException.CreateRes(@RsEInvalidMappingFile);
@@ -1820,7 +1820,7 @@ end;
 procedure TJvSegmentedLEDCharacterMapper.SaveToStream(Stream: TStream);
 var
   Hdr: TSegCharMapHeader;
-  TmpID: string;
+  TmpID: AnsiString;
   MapSize: Byte;
   Chr: AnsiChar;
   TmpDot: Int64;

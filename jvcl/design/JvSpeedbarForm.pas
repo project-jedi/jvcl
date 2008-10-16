@@ -915,10 +915,10 @@ begin
               Flags := [];
               // (rom) WARNING! Needs check against buffer overflow.
               ParamNameAndType[0] := Char(Length(cSender));
-              Move(cSender[1], ParamNameAndType[1], Length(cSender));
+              Move(cSender[1], ParamNameAndType[1], Length(cSender) * SizeOf(Char));
               ParamNameAndType[Length(cSender) + 1] := Char(Length(cObject));
               Move(cObject[1], ParamNameAndType[Length(cSender) + 2],
-                Length(cObject));
+                Length(cObject) * SizeOf(Char));
             end;
             Method := IJvFormDesigner(Designer).CreateMethod(MethodName, TypeData);
             Method.Data := OwnerForm;

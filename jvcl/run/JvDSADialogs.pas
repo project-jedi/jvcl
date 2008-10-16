@@ -628,13 +628,13 @@ begin
   if OpenClipboard(0) then
   begin
     try
-      Data := GlobalAlloc(GMEM_MOVEABLE + GMEM_DDESHARE, Length(Text) + 1);
+      Data := GlobalAlloc(GMEM_MOVEABLE + GMEM_DDESHARE, (Length(Text) + 1) * SizeOf(Char));
       try
         DataPtr := GlobalLock(Data);
         try
-          Move(PChar(Text)^, DataPtr^, Length(Text) + 1);
+          Move(PChar(Text)^, DataPtr^, (Length(Text) + 1) * SizeOf(Char));
           EmptyClipboard;
-          SetClipboardData(CF_TEXT, Data);
+          SetClipboardData({$IFDEF UNICODE}CF_UNICODETEXT{$ELSE}CF_TEXT{$ENDIF UNICODE}, Data);
         finally
           GlobalUnlock(Data);
         end;

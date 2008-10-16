@@ -218,7 +218,7 @@ begin
         if Ch = Conversions[J].Ch then
         begin
           HtmlLen := StrLen(Conversions[J].Html);
-          Move(Conversions[J].Html[0], P[0], HtmlLen); // Conversions[].Html is a PChar
+          Move(Conversions[J].Html[0], P[0], HtmlLen * SizeOf(Char)); // Conversions[].Html is a PChar
           Inc(P, HtmlLen);
           Ch := #0;
           Break;

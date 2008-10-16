@@ -101,7 +101,7 @@ begin
   begin
     SetLength(FBuffer, StartCapacity);
     if FLength > 0 then
-      Move(StartValue[1], FBuffer[1], FLength);
+      Move(StartValue[1], FBuffer[1], FLength * SizeOf(Char));
   end;
 end;
 
@@ -121,7 +121,7 @@ begin
   for i := 0 to High(Args) do
   begin
     Len := System.Length(Args[i]);
-    Move(Args[i][1], FBuffer[FLength + 1], Len);
+    Move(Args[i][1], FBuffer[FLength + 1], Len * SizeOf(Char));
     Inc(FLength, Len);
   end;
 end;
@@ -174,7 +174,7 @@ begin
       7: PRec7(P)^ := PRec7(Text)^;
       8: PInt64(P)^ := PInt64(Text)^;
     else
-      Move(Text[1], P^, AddLen);
+      Move(Text[1], P^, AddLen * SizeOf(Char));
     end;
     Inc(FLength, AddLen);
   end;

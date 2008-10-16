@@ -178,7 +178,7 @@ begin
   // (rom) explicit allocation instead of deprecated NewStr
   Len := StrLen(PChar(MethodName))+1;
   GetMem(Result, Len);
-  Move(PChar(MethodName)^, Result^, Len);
+  Move(PChar(MethodName)^, Result^, Len * SizeOf(Char));
   TJvInterpreterForm(Root).FMethodList.Add(Result);
 end;
 
