@@ -243,7 +243,7 @@ type
     procedure Paint;
     procedure PaintSegment(Index: Integer);
 
-    class function MapperFileID: string; virtual;
+    class function MapperFileID: AnsiString; virtual;
 
     property BaseTop: Integer read GetBaseTop;
     property Height: Integer read GetHeight;
@@ -356,7 +356,7 @@ type
     function GetUseColon: T7SegColonUsage;
     procedure SetUseColon(Value: T7SegColonUsage);
     procedure RecalcSegments; override;
-    class function MapperFileID: string; override;
+    class function MapperFileID: AnsiString; override;
     procedure CalcCHSeg(Index: Integer); virtual;
     procedure CalcCLSeg(Index: Integer); virtual;
   public
@@ -373,7 +373,7 @@ type
   TJv14SegmentedLEDDigit = class(TJvBaseSegmentedLEDDigit)
   protected
     procedure RecalcSegments; override;
-    class function MapperFileID: string; override;
+    class function MapperFileID: AnsiString; override;
     procedure CalcG1Seg(Index: Integer); virtual;
     procedure CalcG2Seg(Index: Integer); virtual;
     procedure CalcHSeg(Index: Integer); virtual;
@@ -395,7 +395,7 @@ type
   TJv16SegmentedLEDDigit = class(TJv14SegmentedLEDDigit)
   protected
     procedure RecalcSegments; override;
-    class function MapperFileID: string; override;
+    class function MapperFileID: AnsiString; override;
     procedure CalcA1Seg(Index: Integer); virtual;
     procedure CalcA2Seg(Index: Integer); virtual;
     procedure CalcD1Seg(Index: Integer); virtual;
@@ -1273,7 +1273,7 @@ begin
   Result := FSegmentStates;
 end;
 
-class function TJvCustomSegmentedLEDDigit.MapperFileID: string;
+class function TJvCustomSegmentedLEDDigit.MapperFileID: AnsiString;
 begin
   // DO NOTHING.
   // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
@@ -1757,13 +1757,13 @@ end;
 
 procedure TJvSegmentedLEDCharacterMapper.LoadDefaultMapping;
 var
-  resName: string;
+  resName: AnsiString;
   Stream: TStream;
 begin
   resName := Display.DigitClass.MapperFileID + '_DEFAULT';
-  if FindResource(HInstance, PChar(resName), RT_RCDATA) <> 0 then
+  if FindResource(HInstance, PChar(string(resName)), RT_RCDATA) <> 0 then
   begin
-    Stream := TResourceStream.Create(HInstance, Display.DigitClass.MapperFileID + '_DEFAULT', RT_RCDATA);
+    Stream := TResourceStream.Create(HInstance, string(Display.DigitClass.MapperFileID + '_DEFAULT'), RT_RCDATA);
     try
       LoadFromStream(Stream);
       FMappingChanged := False;
@@ -1923,7 +1923,7 @@ begin
     CalcCHSeg(9);
 end;
 
-class function TJv7SegmentedLEDDigit.MapperFileID: string;
+class function TJv7SegmentedLEDDigit.MapperFileID: AnsiString;
 begin
   Result := 'SLDCM_7SEG';
 end;
@@ -2069,7 +2069,7 @@ begin
     Result := '';
 end;
 
-class function TJv14SegmentedLEDDigit.MapperFileID: string;
+class function TJv14SegmentedLEDDigit.MapperFileID: AnsiString;
 begin
   Result := 'SLDCM_14SEG';
 end;
@@ -2179,7 +2179,7 @@ begin
   Result := seg16Names[Index];
 end;
 
-class function TJv16SegmentedLEDDigit.MapperFileID: string;
+class function TJv16SegmentedLEDDigit.MapperFileID: AnsiString;
 begin
   Result := 'SLDCM_16SEG';
 end;
