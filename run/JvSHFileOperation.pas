@@ -198,12 +198,12 @@ begin
           SetLength(S, PNameMapping.cchOldPath * 2)
         else
           SetLength(S, PNameMapping.cchOldPath);
-        Move(PNameMapping.pszOldPath[0], S[1], Length(S));
+        Move(PNameMapping.pszOldPath[0], S[1], Length(S) * SizeOf(Char));
         if Win32Platform = VER_PLATFORM_WIN32_NT then
           SetLength(D, PNameMapping.cchNewPath * 2)
         else
           SetLength(D, PNameMapping.cchNewPath);
-        Move(PNameMapping.pszNewPath[0], D[1], Length(D));
+        Move(PNameMapping.pszNewPath[0], D[1], Length(D) * SizeOf(Char));
         if Win32Platform = VER_PLATFORM_WIN32_NT then
         begin
           // (p3) ShFileOp returns widechars on NT platforms

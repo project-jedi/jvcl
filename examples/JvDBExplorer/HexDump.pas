@@ -703,7 +703,7 @@ function THexDump.LineChars(Index: Longint; MaxLen: Integer): PChar;
 var
   I: Integer;
 begin
-  Move(HugeOffset(FAddress, Index * FBytesPerLine)^, FLineChars, MaxLen);
+  Move(HugeOffset(FAddress, Index * FBytesPerLine)^, FLineChars, MaxLen * SizeOf(Char));
   Result := FLineChars;
   for I := 0 to MaxLen - 1 do
     if Result[I] < #32 then Result[I] := '.';

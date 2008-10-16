@@ -10651,7 +10651,7 @@ begin
     EnumMin := GetTypeData(CompType).MinValue;
     EnumMax := GetTypeData(CompType).MaxValue;
     ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
-    Move(PChar(Address)[0], Buf, ResBytes);
+    Move(PAnsiChar(Address)[0], Buf, ResBytes);
   end
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
@@ -10721,7 +10721,7 @@ begin
     EnumMin := GetTypeData(CompType).MinValue;
     EnumMax := GetTypeData(CompType).MaxValue;
     ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
-    Move(Buf, PChar(Address)[0], ResBytes);
+    Move(Buf, PAnsiChar(Address)[0], ResBytes);
     InvalidateData;
     Invalidate;
   end

@@ -190,8 +190,8 @@ begin
   end;
   if (Length(Result) > 1) and (Result[1] = '.') then
   begin
-    Move(Result[2],Result[1],Length(Result));
-    SetLength(Result,Length(Result)-1);
+    Move(Result[2], Result[1], Length(Result) * SizeOf(Char));
+    SetLength(Result, Length(Result)-1);
   end;
 end;
 

@@ -2405,7 +2405,7 @@ end;
 
 procedure MoveString(const Source: string; var Dest: string; Count: Integer);
 begin
-  Move(Source[1], Dest[1], Count);
+  Move(Source[1], Dest[1], Count * SizeOf(Char));
 end;
 
 procedure MoveString(const Source: string; SrcStartIdx: Integer; var Dest: string;
@@ -2416,7 +2416,7 @@ begin
   if SrcStartIdx <= 0 then
     SrcStartIdx := 1;
 
-  Move(Source[SrcStartIdx], Dest[DstStartIdx], Count);
+  Move(Source[SrcStartIdx], Dest[DstStartIdx], Count * SizeOf(Char));
 end;
 
 procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);

@@ -206,7 +206,7 @@ begin
   if Result > BufSize then
     raise EJvAppDBStorageError.CreateResFmt(@RsEBufTooSmallFmt, [Result]);
   if Length(Value) > 0 then
-    Move(Value[1], Buf, Result);
+    Move(Value[1], Buf, Result * SizeOf(AnsiChar));
 end;
 
 function TJvCustomAppDBStorage.DoReadFloat(const Path: string;
@@ -237,7 +237,7 @@ end;
 procedure TJvCustomAppDBStorage.DoWriteBinary(const Path: string;
   const Buf: TJvBytes; BufSize: Integer);
 var
-  Value, Buf1: string;
+  Value, Buf1: AnsiString;
 begin
   raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
   // TODO -cTESTING -oJVCL: NOT TESTED!!!

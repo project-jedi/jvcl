@@ -365,7 +365,7 @@ begin
       fldZSTRING:
         AnsiToNative(Locale, AnsiString(Value), PAnsiChar(Buffer), FldSize);  // potential data loss under D2009 because of AnsiString cast
       fldBYTES, fldVARBYTES:
-        Move(Value[1], Buffer^, Min(Length(Value), FldSize));
+        Move(Value[1], Buffer^, Min(Length(Value) * SizeOf(Char), FldSize));
       fldINT16, fldINT32, fldUINT16, fldINT64:
         begin
           if Value = '' then

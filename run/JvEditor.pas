@@ -1506,13 +1506,13 @@ begin
             CLen := SelEndX - SelBegX + 1;
           if CLen <> 0 then
           begin
-            Move(S[SelBegX + 1], P^, CLen);
+            Move(S[SelBegX + 1], P^, CLen * SizeOf(Char));
             Inc(P, CLen);
           end;
 
           if I < SelEndY then
           begin
-            Move(sLineBreak[1], P^, sLineBreakLen);
+            Move(sLineBreak[1], P^, sLineBreakLen * SizeOf(Char));
             Inc(P, sLineBreakLen);
           end;
         end;
@@ -1521,7 +1521,7 @@ begin
     else
     begin
       if SelBegY = SelEndY then
-        Move(FLines[SelEndY][SelBegX + 1], Result[1], Len)
+        Move(FLines[SelEndY][SelBegX + 1], Result[1], Len * SizeOf(Char))
       else
       begin
         P := PChar(Result);
@@ -1531,12 +1531,12 @@ begin
         CLen := Length(S) - SelBegX;
         if CLen > 0 then
         begin
-          Move(S[SelBegX + 1], P^, CLen);
+          Move(S[SelBegX + 1], P^, CLen * SizeOf(Char));
           Inc(P, CLen);
         end;
 
         // line break
-        Move(sLineBreak[1], P^, sLineBreakLen);
+        Move(sLineBreak[1], P^, sLineBreakLen * SizeOf(Char));
         Inc(P, sLineBreakLen);
 
         // lines between
@@ -1544,11 +1544,11 @@ begin
         begin
           // line
           S := FLines[I];
-          Move(S[1], P^, Length(S));
+          Move(S[1], P^, Length(S) * SizeOf(Char));
           Inc(P, Length(S));
 
           // line break
-          Move(sLineBreak[1], P^, sLineBreakLen);
+          Move(sLineBreak[1], P^, sLineBreakLen * SizeOf(Char));
           Inc(P, sLineBreakLen);
         end;
 
@@ -1558,7 +1558,7 @@ begin
         if CLen > Length(S) then
           CLen := Length(S);
         if CLen > 0 then
-          Move(S[1], P^, CLen);
+          Move(S[1], P^, CLen * SizeOf(Char));
       end;
     end;
   end;
@@ -2014,7 +2014,7 @@ begin
     // copy the chars before the Tab
     if ps > 1 then
     begin
-      Move(S[1], P[0], ps - 1);
+      Move(S[1], P[0], ps - 1 * SizeOf(Char));
       Inc(P, ps - 1);
     end;
 
@@ -2028,7 +2028,7 @@ begin
       else
       if LenSp > 0 then
       begin
-        Move(Sp[1], P[0], LenSp);
+        Move(Sp[1], P[0], LenSp * SizeOf(Char));
         Inc(P, LenSp);
       end;
     end;
