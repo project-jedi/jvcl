@@ -247,7 +247,7 @@ begin
     SetLength(Buf1, BufSize);
     Move(Buf, Buf1[1], BufSize);
     JclMime.MimeEncode(Buf1[1], BufSize, Value[1]);
-    DoWriteString(Path, Value);
+    DoWriteString(Path, string(Value));
   end;
 end;
 
