@@ -187,6 +187,7 @@ function FindVarData(const V: Variant): PVarData;
 function VarIsStr(const V: Variant): Boolean;
 function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
 function VarCompareValue(const A, B: Variant): TVariantRelationship;
+function VarIsOrdinal(const V: Variant): Boolean;
 
 // Misc
 function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
@@ -1165,6 +1166,15 @@ begin
     Result := vrLessThan
   else
     Result := vrGreaterThan;
+end;
+
+function VarIsOrdinal(const V: Variant): Boolean;
+begin
+  Result := False;
+  case VarType(V) of
+    varSmallInt, varInteger, varBoolean, varByte:
+      Result := True;
+  end;
 end;
 
 
