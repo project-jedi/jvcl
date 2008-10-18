@@ -171,6 +171,7 @@ const
   sLineBreak = #10;
   {$ENDIF UNIX}
   {$ENDIF COMPILER5}
+  sLineBreakStr = string(sLineBreak); // "native string" line break constant
   sLineBreakLen = Length(sLineBreak);
 
   CrLf = #13#10;
