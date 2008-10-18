@@ -66,13 +66,13 @@ type
     procedure Change; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function DateVal: Boolean;
-    function IsDate(S1: string): Boolean;
+    function IsDate(const S1: string): Boolean;
     function GetDateDelimiter: string;
-    function IsNumeric(S1: string): Boolean;
+    function IsNumeric(const S1: string): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Find(AText: string);
+    procedure Find(const AText: string);
     procedure ResetFilter;
   published
     property DataField: string read GetDataField write SetDataField;
@@ -196,7 +196,7 @@ begin
   Val(S, Result, Err);
 end;
 
-function TJvDBFindEdit.IsNumeric(S1: string): Boolean;
+function TJvDBFindEdit.IsNumeric(const S1: string): Boolean;
 var
   ier: Integer;
 begin
@@ -220,7 +220,7 @@ begin
     end;
 end;
 
-function TJvDBFindEdit.IsDate(S1: string): Boolean;
+function TJvDBFindEdit.IsDate(const S1: string): Boolean;
 var
   I, k, p1, p2: Integer;
   sm, sd, sj, ss: string;
@@ -308,7 +308,7 @@ begin
   begin
     if not FDataLink.Active or (FDataLink.Field = nil) then
       Exit;
-    if DateVal and not(FDataLink.Field is TBlobField) then
+    if DateVal and not (FDataLink.Field is TBlobField) then
       if FFindStyle = fsNavigate then
       begin
         if IgnoreCase then
@@ -322,7 +322,7 @@ begin
   FTimer.Interval := 100;
 end;
 
-procedure TJvDBFindEdit.Find(AText: string);
+procedure TJvDBFindEdit.Find(const AText: string);
 begin
   FSearchText := AText;
   FTimerTimer(FTimer);
@@ -361,7 +361,7 @@ begin
     Exit;
   Func1 := FDataLink.DataSet.OnFilterRecord;
   Func2 := AFilterRecord;
-  if FDataLink.Active and (@Func1 <> @Func2) and (FSearchText > '') then
+  if FDataLink.Active and (@Func1 <> @Func2) and (FSearchText <> '') then
   begin
     FOldFilterRecord := FDataLink.DataSet.OnFilterRecord;
     FOldFiltered := FDataLink.DataSet.Filtered;
