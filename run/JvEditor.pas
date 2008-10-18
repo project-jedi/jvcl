@@ -532,7 +532,7 @@ begin
       while Y > Count - 1 do
       begin
         {--- UNDO ---}
-        TJvReLineUndo.Create(JvEditor, L, JvEditor.CaretY, sLineBreak);
+        TJvReLineUndo.Create(JvEditor, L, JvEditor.CaretY, sLineBreakStr);
         {--- /UNDO ---}
         L := 0;
         Add('');
@@ -1005,7 +1005,7 @@ begin
             X := CaretX;
             Y := CaretY;
             { --- UNDO --- }
-            TJvInsertUndo.Create(Self, CaretX, CaretY, sLineBreak);
+            TJvInsertUndo.Create(Self, CaretX, CaretY, sLineBreakStr);
             { --- /UNDO --- }
             if FLines.Count = 0 then
               FLines.Add('');
@@ -1037,7 +1037,7 @@ begin
             AdjustPersistentBlockSelection(CaretX, CaretY, amLineBreak, []);
 
             UpdateEditorSize;
-            TextModified(CaretX - 1, CaretY, maInsert, sLineBreak);
+            TextModified(CaretX - 1, CaretY, maInsert, sLineBreakStr);
           finally
             UnlockUpdate;
             if WasSelected then
@@ -1060,13 +1060,13 @@ begin
               LockUpdate;
               try
                 { --- UNDO --- }
-                TJvInsertUndo.Create(Self, CaretX, CaretY, sLineBreak);
+                TJvInsertUndo.Create(Self, CaretX, CaretY, sLineBreakStr);
                 { --- /UNDO --- }
                 FLines.Add('');
               finally
                 UnlockUpdate;
               end;
-              TextModified(0, Y - 1, maInsert, sLineBreak);
+              TextModified(0, Y - 1, maInsert, sLineBreakStr);
               UpdateEditorSize;
               Invalidate;
               Changed;
@@ -1352,7 +1352,7 @@ begin
               UnlockUpdate;
             end;
             UpdateEditorSize;
-            TextModified(X, Y, maDelete, sLineBreak);
+            TextModified(X, Y, maDelete, sLineBreakStr);
             Invalidate;
             Changed;
           end;
@@ -1393,7 +1393,7 @@ begin
         begin
           //{ at the end of line - в конце строки}
           { --- UNDO --- }
-          TJvDeleteUndo.Create(Self, CaretX, CaretY, sLineBreak);
+          TJvDeleteUndo.Create(Self, CaretX, CaretY, sLineBreakStr);
           CaretUndo := False;
           { --- /UNDO --- }
           // persistent blocks: adjust selection (before DeleteText)
@@ -1402,7 +1402,7 @@ begin
           FLines.DeleteText(X, Y, -1, Y + 1);
 
           UpdateEditorSize;
-          TextModified(CaretX, CaretY, maDelete, sLineBreak);
+          TextModified(CaretX, CaretY, maDelete, sLineBreakStr);
           Invalidate;
           Changed;
         end;
@@ -1512,7 +1512,7 @@ begin
 
           if I < SelEndY then
           begin
-            Move(sLineBreak[1], P^, sLineBreakLen * SizeOf(Char));
+            Move(sLineBreakStr[1], P^, sLineBreakLen * SizeOf(Char));
             Inc(P, sLineBreakLen);
           end;
         end;
@@ -1536,7 +1536,7 @@ begin
         end;
 
         // line break
-        Move(sLineBreak[1], P^, sLineBreakLen * SizeOf(Char));
+        Move(sLineBreakStr[1], P^, sLineBreakLen * SizeOf(Char));
         Inc(P, sLineBreakLen);
 
         // lines between
@@ -1548,7 +1548,7 @@ begin
           Inc(P, Length(S));
 
           // line break
-          Move(sLineBreak[1], P^, sLineBreakLen * SizeOf(Char));
+          Move(sLineBreakStr[1], P^, sLineBreakLen * SizeOf(Char));
           Inc(P, sLineBreakLen);
         end;
 
@@ -1744,7 +1744,7 @@ begin
 
   S := Spaces(2);
   for Y := BegY to EndY - 1 do
-    S := S + sLineBreak + Spaces(2);
+    S := S + sLineBreakStr + Spaces(2);
 
   InsertColumnText(X, BegY, S);
 
@@ -1794,7 +1794,7 @@ begin
         FLines.Internal[Y] := S;
       end;
       if Y < EndY then
-        UnindentedText := UnindentedText + sLineBreak;
+        UnindentedText := UnindentedText + sLineBreakStr;
     end;
   finally
     UnlockUpdate;
@@ -1863,7 +1863,7 @@ begin
           begin
             X := 0;
             if (ClipS = '') or (ClipS[Length(ClipS)] <> Lf) then
-              ClipS := ClipS + sLineBreak;
+              ClipS := ClipS + sLineBreakStr;
           end;
 
           { --- UNDO --- }
@@ -2560,7 +2560,7 @@ begin
       for I := SelBegY to SelEndY do
       begin
         S := GetEditor.FLines[I];
-        Insert(SubStrBySeparator(FText, I - SelBegY, sLineBreak), S, SelBegX + 1);
+        Insert(SubStrBySeparator(FText, I - SelBegY, sLineBreakStr), S, SelBegX + 1);
         GetEditor.FLines.Internal[I] := S;
       end;
       GetEditor.TextModified(SelBegX, SelBegY, maInsertColumn, FText);
@@ -2629,10 +2629,10 @@ begin
               end;
             cmTemplates:
               begin
-                S := ReplaceString(NewString, FCRLF, sLineBreak + Spaces(CaretX -
+                S := ReplaceString(NewString, FCRLF, sLineBreakStr + Spaces(CaretX -
                   Length(W)));
                 S := ReplaceString(S, FCaretChar, '');
-                NewCaret := Pos(FCaretChar, ReplaceString(NewString, FCRLF, sLineBreak)) - 1;
+                NewCaret := Pos(FCaretChar, ReplaceString(NewString, FCRLF, sLineBreakStr)) - 1;
               end;
           else
             raise EJvEditorError.CreateRes(@RsEInvalidCompletionMode);
