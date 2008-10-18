@@ -835,20 +835,22 @@ end;
 function TJvPluginProjectCreator.GetCreatorType: string;
 begin
   {$IFDEF COMPILER11_UP}
+  {$IF declared(sCppDynamicLibrary)} // a "Delphi only" installation does not declare the C++Builder constants
   if Wizard.IsCBuilder then
   begin
     // Required for C++ Builder 2007, so it creates the correct project structure.
     // NOTE: There seems to be a display bug in C++ Builder 2007 (or maybe it's just my installation?).
-    // When you create a package or DLL, the created output file extension is set to "exe" instead of 
-    // "bpl"/"dll".  If you try to compile it will also generate a BPL or DLL file, not an EXE file 
+    // When you create a package or DLL, the created output file extension is set to "exe" instead of
+    // "bpl"/"dll".  If you try to compile it will also generate a BPL or DLL file, not an EXE file
     // as is displayed.... strange :\
-    // If you save the project and re-open it, and it will display "bpl" or "dll" correctly.  
+    // If you save the project and re-open it, and it will display "bpl" or "dll" correctly.
     if PlugType = ptDLL then
-      Result := sCppDynamicLibrary  
+      Result := sCppDynamicLibrary
     else // PlugType = ptPackage
-      Result := sCppPackage 
+      Result := sCppPackage
   end
   else
+  {$IFEND}
   {$ENDIF COMPILER11_UP}
   begin
     if PlugType = ptDLL then
