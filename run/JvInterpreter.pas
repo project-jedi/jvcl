@@ -5507,7 +5507,7 @@ begin
           begin
             FCurrArgs.Clear;
             InternalGetValue(nil, 0, V1);
-            if VarType(V1) <> varInteger then
+            if not VarIsOrdinal(V1) then
               JvInterpreterError(ieIntegerRequired, PosBeg);
             Result := Result or 1 shl Integer(V1);
           end;
