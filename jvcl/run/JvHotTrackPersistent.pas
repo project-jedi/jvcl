@@ -37,6 +37,7 @@ uses
 
 type
   TJvHotTrackOptionsClass = class of TJvHotTrackOptions;
+
   TJvHotTrackOptions = class(TJvPersistentProperty)
   private
     FEnabled: Boolean;
@@ -57,14 +58,14 @@ type
     property FrameColor: TColor read FFrameColor write SetFrameColor default DefaultHotTrackFrameColor;
   end;
 
-  { IJvHotTrack is Specifies whether Control are highlighted when the mouse passes over them}
+  { IJvHotTrack specifies whether Controls are highlighted when the mouse passes over them }
   IJvHotTrack = interface
     ['{8F1B40FB-D8E3-46FE-A7A3-21CE4B199A8F}']
 
-    function GetHotTrack:Boolean;
-    function GetHotTrackFont:TFont;
-    function GetHotTrackFontOptions:TJvTrackFontOptions;
-    function GetHotTrackOptions:TJvHotTrackOptions;
+    function GetHotTrack: Boolean;
+    function GetHotTrackFont: TFont;
+    function GetHotTrackFontOptions: TJvTrackFontOptions;
+    function GetHotTrackOptions: TJvHotTrackOptions;
 
     procedure SetHotTrack(Value: Boolean);
     procedure SetHotTrackFont(Value: TFont);
@@ -78,16 +79,14 @@ type
     property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
   end;
 
-  TJvCustomHotTrackPersistent = class(TJvPersistentProperty
-                                      , IJvHotTrack
-                                      )
+  TJvCustomHotTrackPersistent = class(TJvPersistentProperty, IJvHotTrack)
   private
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions:TJvHotTrackOptions;
 
-    {IJvHotTrack}   //added by dejoy 2007-11-20
+    {IJvHotTrack}
     function GetHotTrack: Boolean;
     function GetHotTrackFont: TFont;
     function GetHotTrackFontOptions: TJvTrackFontOptions;
@@ -99,27 +98,23 @@ type
 
     procedure IJvHotTrack_Assign(Source: IJvHotTrack);
     procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
-   protected
+  protected
     class function GetHotTrackOptionsClass: TJvHotTrackOptionsClass; virtual;
-   public
+    procedure AssignTo(Dest: TPersistent); override;
+  public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
 
     procedure Assign(Source: TPersistent); override;
-    procedure AssignTo(Sender: TPersistent); override;
 
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
     property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
-      DefaultTrackFontOptions;
+    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions
+      default DefaultTrackFontOptions;
     property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
-
   end;
 
   TJvHotTrackPersistent  = class(TJvCustomHotTrackPersistent)
-  private
-  protected
-  public
   published
     property HotTrack;
     property HotTrackFont;
@@ -225,7 +220,7 @@ end;
 
 constructor TJvCustomHotTrackPersistent.Create(AOwner: TPersistent);
 begin
-  inherited ;
+  inherited Create(AOwner);
 
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
@@ -247,22 +242,22 @@ end;
 
 procedure TJvCustomHotTrackPersistent.Assign(Source: TPersistent);
 var
-  intf : IJvHotTrack;
+  Intf: IJvHotTrack;
 begin
-  if Supports(Source, IJvHotTrack, intf) then
-    IJvHotTrack(Self).Assign(intf)
+  if Supports(Source, IJvHotTrack, Intf) then
+    IJvHotTrack(Self).Assign(Intf)
   else
-    inherited ;
+    inherited Assign(Source);
 end;
 
-procedure TJvCustomHotTrackPersistent.AssignTo(Sender: TPersistent);
+procedure TJvCustomHotTrackPersistent.AssignTo(Dest: TPersistent);
 var
-  intf : IJvHotTrack;
+  Intf: IJvHotTrack;
 begin
-  if Supports(Sender, IJvHotTrack, intf) then
-    intf.Assign(Self)
+  if Supports(Dest, IJvHotTrack, Intf) then
+    Intf.Assign(Self)
   else
-    inherited;
+    inherited AssignTo(Dest);
 end;
 
 procedure TJvCustomHotTrackPersistent.SetHotTrackFont(Value: TFont);
@@ -321,8 +316,7 @@ begin
   Result := FHotTrackOptions;
 end;
 
-procedure TJvCustomHotTrackPersistent.SetHotTrackOptions(
-  Value: TJvHotTrackOptions);
+procedure TJvCustomHotTrackPersistent.SetHotTrackOptions(Value: TJvHotTrackOptions);
 begin
   if (FHotTrackOptions <> Value) and (Value <> nil) then
   begin
@@ -331,23 +325,22 @@ begin
     FHotTrackOptions.Assign(Value);
     ChangedProperty('HotTrackOptions');
     Changed;
- end;
+  end;
 end;
 
-procedure TJvCustomHotTrackPersistent.IJvHotTrack_Assign(
-  Source: IJvHotTrack);
+procedure TJvCustomHotTrackPersistent.IJvHotTrack_Assign(Source: IJvHotTrack);
 begin
   if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
   begin
     BeginUpdate;
     try
       HotTrack := Source.HotTrack;
-      HotTrackFont :=Source.HotTrackFont;
+      HotTrackFont := Source.HotTrackFont;
       HotTrackFontOptions := Source.HotTrackFontOptions;
       HotTrackOptions := Source.HotTrackOptions;
     finally
-       EndUpdate;
-    end;   
+      EndUpdate;
+    end;
   end;
 end;
 
@@ -360,9 +353,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
-
-
-
-
 
