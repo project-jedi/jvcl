@@ -54,9 +54,7 @@ uses
 
 type
   TFormMain = class(TJvForm)
-    JvWizard: TJvWizard;
     ImageList: TImageList;
-    JvWizardRouteMapList: TJvWizardRouteMapList;
     LblHomepage: TLabel;
     ImageListCheckMark: TImageList;
     PanelLogo: TPanel;
@@ -90,7 +88,11 @@ type
     procedure DoFinished(Sender: TObject);
 
     procedure RecreatePage(var Msg: TMessage); message WM_USER + 1;
+    procedure CreateWizardControl;
   public
+    JvWizard: TJvWizard;
+    JvWizardRouteMapList: TJvWizardRouteMapList;
+
     property AppStartFailed: Boolean read FAppStartFailed write FAppStartFailed;
     property Finished: Boolean read FFinished write FFinished;
   end;
@@ -219,8 +221,49 @@ begin
     JvWizardFinishButtonClick(Sender);
 end;
 
+procedure TFormMain.CreateWizardControl;
+begin
+  JvWizard := TJvWizard.Create(Self);
+  JvWizard.Parent := Self;
+
+  LblHomepage.Parent := JvWizard;
+
+  with JvWizard do
+  begin
+    ButtonBarHeight := 42;
+    ShowRouteMap := True;
+    OnFinishButtonClick := JvWizardFinishButtonClick;
+    OnCancelButtonClick := JvWizardCancelButtonClick;
+    OnActivePageChanged := JvWizardActivePageChanged;
+    OnActivePageChanging := JvWizardActivePageChanging;
+
+    JvWizardRouteMapList := TJvWizardRouteMapList.Create(Self);
+    JvWizardRouteMapList.Parent := JvWizard;
+    with JvWizardRouteMapList do
+    begin
+      Width := 161;
+      ActiveFont.Color := clWhite;
+      ActiveFont.Style := [fsBold];
+      Alignment := taLeftJustify;
+      Clickable := False;
+      Color := 9981440;
+      Font.Color := clWhite;
+      Font.Style := [];
+      HotTrackFont.Color := clWhite;
+      HotTrackFont.Style := [fsUnderline];
+      TextOnly := True;
+      BorderColor := clNone;
+      TextOffset := 16;
+      VertOffset := 50;
+      OnDrawItem := JvWizardRouteMapListDrawItem;
+    end;
+  end;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  CreateWizardControl;
+
   Application.HintHidePause := MaxInt;
   Forms.HintWindowClass := THtHintWindow;
   Application.ShowHint := False;
@@ -385,17 +428,15 @@ procedure TFormMain.FormPaint(Sender: TObject);
 var
   Page: IInstallerPage;
 begin
-  if Tag <> 0 then
-    Exit;
-  Tag := 1;
+  OnPaint := nil;
 
- // auto installation
+  // auto installation
   if PackageInstaller.Installer.AutoInstall then
   begin
     while True do
     begin
       if not PackageInstaller.Page.CanNext then
-        Break; // prevent the installer from a endless loop
+        Break; // prevent the installer from an endless loop
 
       Page := PackageInstaller.Page.NextPage;
       if (Page = nil) then
