@@ -1440,6 +1440,7 @@ resourcestring
   RsEBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
   RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
   RsEBadGraphicSignature = 'Bad Graphic Signature';
+  RsEChildControlMissing = 'Child control is nil';
 
 //=== JvLinkedControls.pas ===================================================
 resourcestring

@@ -195,6 +195,9 @@ function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
 type
   UTF8String = type string;
 
+function Utf8Decode(const S: UTF8String): WideString;
+function Utf8ToAnsi(const S: UTF8String): string;
+
 // System
 type
   TVarType = Word;
@@ -1175,6 +1178,31 @@ begin
     varSmallInt, varInteger, varBoolean, varByte:
       Result := True;
   end;
+end;
+
+{ UTF8 Support }
+
+function Utf8Decode(const S: UTF8String): WideString;
+var
+  Len: Integer;
+begin
+  Result := '';
+  if S = '' then
+    Exit;
+
+  Len := MultiByteToWideChar(CP_UTF8, 0, PAnsiChar(S), Length(S), nil, 0);
+  if Len > 0 then
+  begin
+    SetLength(Result, Len);
+    MultiByteToWideChar(CP_UTF8, 0, PAnsiChar(S), Length(S), PWideChar(Result), Len);
+  end
+  else
+    Result := '';
+end;
+
+function Utf8ToAnsi(const S: UTF8String): string;
+begin
+  Result := Utf8Decode(S);
 end;
 
 
