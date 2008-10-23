@@ -3089,7 +3089,12 @@ begin
   end;
 
   if LoadedNow then
-    NeedAppts(Result);
+  begin
+    if SchedLoadMode = slmOnDemand then
+      NeedAppts(Result)
+    else
+      AddToBatch(Result);
+  end;
 end;
 
 function TJvTFScheduleManager.RequestSchedule(Comp: TJvTFComponent;
@@ -3106,7 +3111,12 @@ begin
   end;
 
   if ApptsNeeded then
-    NeedAppts(Result);
+  begin
+    if SchedLoadMode = slmOnDemand then
+      NeedAppts(Result)
+    else
+      AddToBatch(Result);
+  end;
 end;
 
 function TJvTFScheduleManager.RequestSchedule(Comp: TJvTFComponent;
@@ -3121,7 +3131,12 @@ begin
   end;
 
   if LoadedNow then
-    NeedAppts(Result);
+  begin
+    if SchedLoadMode = slmOnDemand then
+      NeedAppts(Result)
+    else
+      AddToBatch(Result);
+  end;
 end;
 
 procedure TJvTFScheduleManager.ReleaseSchedule(ApptCtrl: TJvTFControl;
@@ -4549,14 +4564,10 @@ var
   PhysHeight, TopMarginPels, BottomMarginPels, HeaderPels, FooterPels: Integer;
 begin
   PhysHeight := Windows.GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
-  TopMarginPels := ConvertMeasure(PageLayout.MarginTop, Measure, pmPixels,
-    False);
-  BottomMarginPels := ConvertMeasure(PageLayout.MarginBottom, Measure, pmPixels,
-    False);
-  HeaderPels := ConvertMeasure(PageLayout.HeaderHeight, Measure, pmPixels,
-    False);
-  FooterPels := ConvertMeasure(PageLayout.FooterHeight, Measure, pmPixels,
-    False);
+  TopMarginPels := ConvertMeasure(PageLayout.MarginTop, Measure, pmPixels, False);
+  BottomMarginPels := ConvertMeasure(PageLayout.MarginBottom, Measure, pmPixels, False);
+  HeaderPels := ConvertMeasure(PageLayout.HeaderHeight, Measure, pmPixels, False);
+  FooterPels := ConvertMeasure(PageLayout.FooterHeight, Measure, pmPixels, False);
 
   Result := PhysHeight - TopMarginPels - BottomMarginPels -
     HeaderPels - FooterPels;

@@ -59,6 +59,10 @@ type
     RelLineNum: Integer;
   end;
 
+  TJvDrawApptEvent = procedure(Sender: TObject; ACanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo; 
+    Appt: TJvTFAppt; Rect:TRect; var Handled: Boolean) of object;
+  TJvApptHintEvent = procedure(Sender: TObject; Appt: TJvTFAppt; var Handled: Boolean) of object;
+
   TJvTFGVTxtEditor = class(TMemo)
   private
     FLinkedAppt: TJvTFAppt;
@@ -215,6 +219,8 @@ type
     FOnDblClick: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnEnter: TNotifyEvent;
+    FOnDrawAppt: TJvDrawApptEvent;
+
     procedure SetLineSpacing(Value: Integer);
     procedure SetSelApptAttr(Value: TJvTFTxtVwApptAttr);
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
@@ -232,6 +238,8 @@ type
     procedure DoDblClick(); virtual;
     procedure DoClick; virtual;
     procedure DoEnter; virtual;
+    procedure DoDrawAppt(ACanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo;
+       Appt: TJvTFAppt; Rect: TRect; var Handled: Boolean);
 
     procedure ParentReconfig; override;
     procedure SetSelAppt(Value: TJvTFAppt);
@@ -269,6 +277,8 @@ type
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    property OnDrawAppt: TJvDrawApptEvent read FOnDrawAppt write FOnDrawAppt;
+    property OnApptHint;
   end;
 
 {$IFDEF USEJVCL}
@@ -425,7 +435,7 @@ end;
 
 procedure TJvTFGVTextControl.PaintTo(ACanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo);
 var
-  I, NextLineTop, LastLine: Integer;
+  I, NextLineTop, LastLine, Line: Integer;
   aRect, LineRect, TxtRect, BtnRect: TRect;
   Flags: UINT;
   Txt: string;
@@ -433,6 +443,7 @@ var
   Appt: TJvTFAppt;
   RegFontColor,
   RegBrushColor: TColor;
+  DrawingHandled: Boolean;
 begin
   Viewer.SetTo(DrawInfo.Cell);
 
@@ -475,7 +486,12 @@ begin
         Txt := 'Appt ' + IntToStr(I)
       else
       begin
-        Appt := Viewer.Appts[AbsToRel(I)];
+        Line := AbsToRel(I);
+        if Line < 0 then
+          Line := 0;
+        if Line >= Viewer.Appts.Count then
+          Line := 0;
+        Appt := Viewer.Appts[Line];
 
         Txt := '';
         if Viewer.ShowStartEnd then
@@ -513,10 +529,18 @@ begin
       TxtRect := LineRect;
       Windows.InflateRect(TxtRect, -1, -1);
 
-      PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-      StrPCopy(PTxt, Txt);
-      Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-      StrDispose(PTxt);
+      DrawingHandled := False;
+      if Assigned(Viewer) then
+        Viewer.DoDrawAppt(ACanvas, DrawInfo, Appt, LineRect, DrawingHandled);
+
+      if not DrawingHandled then
+      begin
+        // PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
+        // StrPCopy(PTxt, Txt);
+        // Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
+        // StrDispose(PTxt);
+        Windows.DrawText(ACanvas.Handle, PChar(Txt), Length(Txt), TxtRect, Flags);
+      end;
 
       Inc(NextLineTop, CalcLineHeight);
     end;
@@ -1482,6 +1506,13 @@ end;
 function TJvTFGlanceTextViewer.GetShowLineDDButton: Boolean;
 begin
   Result := FViewControl.ShowDDButton;
+end;
+
+procedure TJvTFGlanceTextViewer.DoDrawAppt(ACanvas: TCanvas;
+  DrawInfo: TJvTFGlTxtVwDrawInfo; Appt: TJvTFAppt; Rect: TRect; var Handled: Boolean);
+begin
+  if Assigned(FOnDrawAppt) then
+    FOnDrawAppt(Self, ACanvas, DrawInfo, Appt, Rect, Handled);
 end;
 
 procedure TJvTFGlanceTextViewer.SetShowLineDDButton(const Value: Boolean);
