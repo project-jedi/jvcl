@@ -54,6 +54,8 @@ type
     FOffDayCellAttr: TJvTFGlanceCellAttr;
     FScrollSize: TJvTFMonthsScrollSize;
     FSplitSatSun: Boolean;
+    FDayFormat: string;
+    FFirstDayOfMonthFormat: string;
     function GetMonth: Word;
     procedure SetMonth(Value: Word);
     function GetYear: Word;
@@ -65,6 +67,8 @@ type
     procedure SetExtraDayCellAttr(Value: TJvTFGlanceCellAttr);
     procedure SetOffDayCellAttr(Value: TJvTFGlanceCellAttr);
     procedure SetSplitSatSun(Value: Boolean);
+    procedure SetDayFormat(const Value: string);
+    procedure SetFirstDayOfMonthFormat(const Value: string);
   protected
     procedure SetStartOfWeek(Value: TTFDayOfWeek); override;
     procedure SetColCount(Value: Integer); override;
@@ -105,6 +109,8 @@ type
     property OnUpdateTitle: TJvTFUpdateTitleEvent read FOnUpdateTitle write FOnUpdateTitle;
     property StartOfWeek;
     property ColCount;
+    property FirstDayOfMonthFormat: string read FFirstDayOfMonthFormat write SetFirstDayOfMonthFormat;
+    property DayFormat: string read FDayFormat write SetDayFormat;
 //    property Navigator;
 //    property OnNavigate;
   end;
@@ -148,6 +154,9 @@ begin
   CellAttr.TitleAttr.Color := clWhite;
   FExtraDayCellAttr.TitleAttr.Color := clWhite;
   FOffDayCellAttr.TitleAttr.Color := clWhite;
+
+  FDayFormat := 'd';
+  FFirstDayOfMonthFormat := 'mmm d';
 
   FDWTitleAttr := TJvTFGlanceTitle.Create(Self);
   with FDWTitleAttr do
@@ -392,11 +401,10 @@ end;
 
 function TJvTFMonths.GetCellTitleText(Cell: TJvTFGlanceCell): string;
 begin
-  if CellIsExtraDay(Cell) and (IsFirstOfMonth(Cell.CellDate) or
-    EqualDates(Cell.CellDate, OriginDate)) then
-    Result := FormatDateTime('mmm d', Cell.CellDate)
+  if CellIsExtraDay(Cell) and (IsFirstOfMonth(Cell.CellDate) or EqualDates(Cell.CellDate, OriginDate)) then
+    Result := FormatDateTime(FirstDayOfMonthFormat, Cell.CellDate)
   else
-    Result := FormatDateTime('d', Cell.CellDate);
+    Result := FormatDateTime(DayFormat, Cell.CellDate);
 end;
 
 function TJvTFMonths.GetDataTop: Integer;
@@ -482,6 +490,15 @@ begin
   inherited SetColCount(Value);
 end;
 
+procedure TJvTFMonths.SetDayFormat(const Value: string);
+begin
+  if Value <> FDayFormat then
+  begin
+    FDayFormat := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvTFMonths.SetDisplayDate(Value: TDate);
 begin
   FDisplayDate := Value;
@@ -505,6 +522,15 @@ end;
 procedure TJvTFMonths.SetExtraDayCellAttr(Value: TJvTFGlanceCellAttr);
 begin
   FExtraDayCellAttr.Assign(Value);
+end;
+
+procedure TJvTFMonths.SetFirstDayOfMonthFormat(const Value: string);
+begin
+  if Value <> FFirstDayOfMonthFormat then
+  begin
+    FFirstDayOfMonthFormat := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFMonths.SetMonth(Value: Word);
@@ -610,4 +636,3 @@ finalization
 {$ENDIF USEJVCL}
 
 end.
-

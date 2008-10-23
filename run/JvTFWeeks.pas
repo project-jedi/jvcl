@@ -377,7 +377,10 @@ begin
   begin
     if WeekCount = 1 then
       Result := DWNames.GetDWName(DayOfWeek(Cell.CellDate)) + ', ';
-    Result := Result + FormatDateTime('mmm d', Cell.CellDate);
+    if DateFormat = '' then
+      Result := Result + FormatDateTime('mmm d', Cell.CellDate)
+    else
+      Result := Result + FormatDateTime(DateFormat, Cell.CellDate);
   end
   else
     Result := FormatDateTime(DateFormat, Cell.CellDate);

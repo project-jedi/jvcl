@@ -52,8 +52,8 @@ type
   TJvTFGlanceViewer = class;
   TJvTFCellPics = class;
 
-  TJvTFUpdateTitleEvent = procedure(Sender: TObject; var NewTitle: string)
-    of object;
+  TJvTFUpdateTitleEvent = procedure(Sender: TObject; var NewTitle: string) of object;
+  TJvApptHintEvent = procedure(Sender: TObject; Appt: TJvTFAppt; var Handled: Boolean) of object;
 
   TJvTFCellPic = class(TCollectionItem)
   private
@@ -468,6 +468,7 @@ type
     FSchedNames: TStringList;
 
     FSelAppt: TJvTFAppt;
+    FOnApptHint: TJvApptHintEvent;
 
     function GetSchedNames: TStrings;
     procedure SetBorderStyle(Value: TBorderStyle);
@@ -640,7 +641,8 @@ type
     property OnDropAppt: TJvTFGlanceDropApptEvent read FOnDropAppt write FOnDropAppt;
     property OnUpdateCellTitleText: TJvTFUpdateCellTitleTextEvent read FOnUpdateCellTitleText
       write FOnUpdateCellTitleText;
-    //inherited properties
+    property OnApptHint: TJvApptHintEvent read FOnApptHint write FOnApptHint;
+
     property DateFormat; // from TJvTFControl
     property TimeFormat; // from TJvTFControl
 
@@ -688,6 +690,9 @@ type
     FPhysicalCell: TJvTFGlanceCell;
     FRepeatGrouped: Boolean;
     FShowSchedNamesInHint: Boolean;
+    FShowStartEndTimeInHint: Boolean;
+    FOnApptHint: TJvApptHintEvent;
+    procedure DoGlanceControlApptHint(Sender: TObject; Appt: TJvTFAppt; var Handled: Boolean);
     procedure SetShowSchedNamesInHint(const Value: Boolean);
     function GetRepeatAppt(Index: Integer): TJvTFAppt;
     function GetSchedule(Index: Integer): TJvTFSched;
@@ -695,6 +700,7 @@ type
     procedure SetRepeatGrouped(Value: Boolean);
     function GetDistinctAppt(Index: Integer): TJvTFAppt;
     function GetAppt(Index: Integer): TJvTFAppt;
+    procedure SetShowStartEndTimeInHint(const Value: Boolean);
   protected
     FInPlaceEdit: Boolean;
 
@@ -735,7 +741,9 @@ type
   published
     property RepeatGrouped: Boolean read FRepeatGrouped write SetRepeatGrouped default True;
     property ShowSchedNamesInHint: Boolean read FShowSchedNamesInHint write SetShowSchedNamesInHint default True;
+    property ShowStartEndTimeInHint: Boolean read FShowStartEndTimeInHint write SetShowStartEndTimeInHint default True;
     property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit default True;
+    property ApptHint: TJvApptHintEvent read FOnApptHint write FOnApptHint;
   end;
 
   TJvTFGlance = class(TJvTFCustomGlance)
@@ -2867,7 +2875,8 @@ end;
 
 procedure TJvTFCustomGlance.CheckApptHint(Info: TJvTFGlanceCoord);
 var
-  ExtraDesc : string;
+  ExtraDesc: string;
+  Handled: Boolean;
 begin
   if Assigned(FViewer) and FViewer.ShowSchedNamesInHint then
 {$IFDEF USEJVCL}
@@ -2880,7 +2889,12 @@ begin
 {$ENDIF USEJVCL}
   ExtraDesc := ExtraDesc + #13#10;
 
-  FHint.ApptHint(Info.Appt, Info.AbsX + 8, Info.AbsY + 8, True, True, False, ExtraDesc);
+  Handled := False;
+  if Assigned(OnApptHint) then
+    FOnApptHint(Self, Info.Appt, Handled);
+  if not Handled then
+    FHint.ApptHint(Info.Appt, Info.AbsX + 8, Info.AbsY + 8,
+                   not Assigned(FViewer) or FViewer.ShowStartEndTimeInHint, True, False, ExtraDesc);
 end;
 
 procedure TJvTFCustomGlance.CheckViewerApptHint(X, Y: Integer);
@@ -3647,6 +3661,8 @@ end;
 procedure TJvTFGlanceViewer.SetGlanceControl(Value: TJvTFCustomGlance);
 begin
   FGlanceControl := Value;
+  if Assigned(FGlanceControl) then
+    FGlanceControl.OnApptHint := DoGlanceControlApptHint;
 end;
 
 procedure TJvTFGlanceViewer.SetInplaceEdit(const Value: Boolean);
@@ -4088,6 +4104,22 @@ begin
   end;
 end;
 
+procedure TJvTFGlanceViewer.SetShowStartEndTimeInHint(const Value: Boolean);
+begin
+  if FShowStartEndTimeInHint <> Value then
+  begin
+    FShowStartEndTimeInHint := Value;
+    Refresh;
+  end;
+end;
+
+procedure TJvTFGlanceViewer.DoGlanceControlApptHint(Sender: TObject;
+  Appt: TJvTFAppt; var Handled: Boolean);
+begin
+  if Assigned(FOnApptHint) then
+    FOnApptHint(Sender, Appt, Handled);
+end;
+
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
@@ -4099,4 +4131,3 @@ finalization
 {$ENDIF USEJVCL}
 
 end.
-
