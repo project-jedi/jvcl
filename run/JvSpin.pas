@@ -374,6 +374,7 @@ type
     procedure SetHour24(Value: Boolean);
     procedure SetDataConnector(const Value: TJvCustomTimeEditDataConnector);
   protected
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure UpdateTimeDigits(Increment: Boolean);
@@ -2669,7 +2670,7 @@ end;
 constructor TJvCustomTimeEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csSetCaption];
+  ControlStyle := ControlStyle - [csSetCaption] + [csReplicatable];
   FDataConnector := CreateDataConnector;
   FHour24 := True;
   Time := Now; // updates Text
@@ -2908,6 +2909,11 @@ begin
   if EditorEnabled and not ReadOnly then
     DataConnector.Edit;
   inherited;
+end;
+
+procedure TJvCustomTimeEdit.CMGetDataLink(var Msg: TMessage);
+begin
+  Msg.Result := LResult(DataConnector.GetDataLink);
 end;
 
 procedure TJvCustomTimeEdit.UpClick(Sender: TObject);
