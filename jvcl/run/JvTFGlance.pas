@@ -743,7 +743,7 @@ type
     property ShowSchedNamesInHint: Boolean read FShowSchedNamesInHint write SetShowSchedNamesInHint default True;
     property ShowStartEndTimeInHint: Boolean read FShowStartEndTimeInHint write SetShowStartEndTimeInHint default True;
     property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit default True;
-    property ApptHint: TJvApptHintEvent read FOnApptHint write FOnApptHint;
+    property OnApptHint: TJvApptHintEvent read FOnApptHint write FOnApptHint;
   end;
 
   TJvTFGlance = class(TJvTFCustomGlance)
