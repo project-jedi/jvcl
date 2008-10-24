@@ -31,10 +31,6 @@ unit JvDataProvider;
 
 interface
 
-{$IFDEF COMPILER6_UP}
-{$HPPEMIT '#define IInterface System::IInterface'}
-{$ENDIF COMPILER6_UP}
-
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
