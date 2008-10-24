@@ -483,13 +483,16 @@ begin
       LineRect.Bottom := Lesser(NextLineTop + CalcLineHeight, aRect.Bottom);
 
       if csDesigning in ComponentState then
-        Txt := 'Appt ' + IntToStr(I)
+      begin
+        Txt := 'Appt ' + IntToStr(I);
+        Appt := nil;
+      end
       else
       begin
         Line := AbsToRel(I);
         if Line < 0 then
           Line := 0;
-        if Line >= Viewer.Appts.Count then
+        if Line >= Viewer.ApptCount then
           Line := 0;
         Appt := Viewer.Appts[Line];
 
