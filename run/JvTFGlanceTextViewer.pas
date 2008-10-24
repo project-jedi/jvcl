@@ -439,7 +439,6 @@ var
   aRect, LineRect, TxtRect, BtnRect: TRect;
   Flags: UINT;
   Txt: string;
-  PTxt: PChar;
   Appt: TJvTFAppt;
   RegFontColor,
   RegBrushColor: TColor;
