@@ -197,7 +197,10 @@ begin
   if Field.IsValid and (ValueChecked <> '') and (ValueUnchecked <> '') then
   begin
     FCheckBox.ReadOnly := not Field.CanModify;
-    FCheckBox.Checked := AnsiCompareText(Field.AsString, ValueUnchecked) <> 0;
+    if not Field.IsNull then
+      FCheckBox.Checked := AnsiCompareText(Field.AsString, ValueUnchecked) <> 0
+    else
+      FCheckBox.State := cbGrayed;
   end
   else
   begin
