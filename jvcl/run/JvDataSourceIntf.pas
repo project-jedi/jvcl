@@ -114,6 +114,7 @@ type
     property Enabled: Boolean read GetEnabled;
 
     { DataSet }
+    function GetDataLink: TObject;
     function GetDataSet: TObject;
     procedure DataSetEdit; // DataSet.Edit
     function CanModify: Boolean;
@@ -314,6 +315,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    function GetDataLink: TObject;
 
     function FieldByName(const FieldName: TDataFieldString): TJvDataConnectorField;
     function FindField(const FieldName: TDataFieldString): TJvDataConnectorField;
@@ -410,6 +412,14 @@ begin
   FDataSource := nil;
   FFields.Free;
   inherited Destroy;
+end;
+
+function TJvDataConnector.GetDataLink: TObject;
+begin
+  if DataSource <> nil then
+    Result := DataSource.GetDataLink
+  else
+    Result := nil;
 end;
 
 procedure TJvDataConnector.ActiveChanged;

@@ -90,6 +90,7 @@ type
 
     { DataSet }
   public
+    function GetDataLink: TObject;
     function GetDataSet: TObject;
     procedure DataSetEdit; // DataSet.Edit
     function CanModify: Boolean;
@@ -312,6 +313,11 @@ end;
 function TJvDataSource.GetDataConnectorCount: Integer;
 begin
   Result := FDataConnectors.Count;
+end;
+
+function TJvDataSource.GetDataLink: TObject;
+begin
+  Result := FDataLink;
 end;
 
 procedure TJvDataSource.Notify(Msg: Integer);
