@@ -1503,7 +1503,7 @@ procedure TCompiler.SortProjectGroup(Group: TProjectGroup; List: TList);
             SortProject(ReqProject, ProjectIndex);
             Inc(ProjectIndex);
           end;
-        end;  
+        end;
       end;
     end;
   end;
@@ -1632,8 +1632,7 @@ begin
 
     Files := TStringList.Create;
     try
-      { .bpl and .dcp files meight be at the wrong location. So delete them from
-        wrong locations. }
+      { .bpl and .dcp files may be in the wrong directory. So delete them. }
       TargetConfig.GetPackageBinariesForDeletion(Files);
       for i := 0 to Files.Count - 1 do
         if not StartsWith(Files[i], TargetConfig.BplDir + PathDelim, True) and

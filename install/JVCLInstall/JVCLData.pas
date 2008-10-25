@@ -433,7 +433,7 @@ begin
 
   { Don't fail during startup, because MapFile linking isn't that important that
     it should block the whole JVCL installer. }
-  FJclLibrary := Cardinal(-1);
+  FJclLibrary := HModule(-1);
 
   Init;
 end;
@@ -443,7 +443,7 @@ var
   i: Integer;
 begin
   FJclLinkMapFile := nil;
-  if (FJclLibrary <> 0) and (FJclLibrary <> Cardinal(-1)) then
+  if (FJclLibrary <> 0) and (FJclLibrary <> HModule(-1)) then
     FreeLibrary(FJclLibrary);
 
   for i := 0 to High(FConfigs) do
