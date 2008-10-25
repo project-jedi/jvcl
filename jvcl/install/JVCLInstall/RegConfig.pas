@@ -173,7 +173,7 @@ begin
   begin
     Reg := TRegistry.Create;
     try
-      if Reg.KeyExists(Key) and Reg.OpenKey(Key + '\IDE', True) then
+      if Reg.OpenKey(Key + '\IDE', True) then
       begin
         for I := 0 to FDeletedItems.Count - 1 do
           Reg.DeleteValue(FDeletedItems[I]);
