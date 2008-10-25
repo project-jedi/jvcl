@@ -2,11 +2,12 @@ object JvFormPropsDlg: TJvFormPropsDlg
   Left = 200
   Top = 111
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
   Caption = 'Form Storage Designer'
-  ClientHeight = 476
-  ClientWidth = 434
+  ClientHeight = 525
+  ClientWidth = 623
   Color = clBtnFace
+  Constraints.MinHeight = 561
+  Constraints.MinWidth = 436
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -42,94 +43,184 @@ object JvFormPropsDlg: TJvFormPropsDlg
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
+  object GroupBevel: TGroupBox
     Left = 4
-    Top = 90
-    Width = 425
-    Height = 348
+    Top = 71
+    Width = 614
+    Height = 417
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Shape = bsFrame
-  end
-  object Label30: TLabel
-    Left = 16
-    Top = 104
-    Width = 82
-    Height = 13
-    Caption = '&Components   '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    IsControl = True
-  end
-  object Label31: TLabel
-    Left = 264
-    Top = 104
-    Width = 70
-    Height = 13
-    Caption = '&Properties   '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    IsControl = True
-  end
-  object Label2: TLabel
-    Left = 16
-    Top = 256
-    Width = 111
-    Height = 13
-    Caption = '&Stored Properties   '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object UpBtn: TSpeedButton
-    Left = 353
-    Top = 305
-    Width = 25
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Glyph.Data = {
-      DE000000424DDE0000000000000076000000280000000D0000000D0000000100
-      0400000000006800000000000000000000001000000000000000000000000000
-      80000080000000808000800000008000800080800000C0C0C000808080000000
-      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
-      3000333333333333300033330000033330003333066603333000333306660333
-      3000333306660333300030000666000030003306666666033000333066666033
-      3000333306660333300033333060333330003333330333333000333333333333
-      3000}
-    OnClick = UpBtnClick
-  end
-  object DownBtn: TSpeedButton
-    Left = 386
-    Top = 305
-    Width = 25
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Glyph.Data = {
-      DE000000424DDE0000000000000076000000280000000D0000000D0000000100
-      0400000000006800000000000000000000001000000000000000000000000000
-      80000080000000808000800000008000800080800000C0C0C000808080000000
-      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
-      3000333333333333300033333303333330003333306033333000333306660333
-      3000333066666033300033066666660330003000066600003000333306660333
-      3000333306660333300033330666033330003333000003333000333333333333
-      3000}
-    OnClick = DownBtnClick
+    TabOrder = 3
+    object CompPropsSplitter: TSplitter
+      Left = 2
+      Top = 211
+      Width = 610
+      Height = 3
+      Cursor = crVSplit
+      Align = alTop
+      AutoSnap = False
+      MinSize = 140
+    end
+    object CompPropsPanel: TPanel
+      Left = 2
+      Top = 15
+      Width = 610
+      Height = 196
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 0
+      OnResize = CompPropsPanelResize
+      object ComponentsLabel: TLabel
+        Left = 12
+        Top = 0
+        Width = 68
+        Height = 13
+        Caption = '&Components   '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        IsControl = True
+      end
+      object PropertiesLabel: TLabel
+        Left = 298
+        Top = 0
+        Width = 56
+        Height = 13
+        Caption = '&Properties   '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        IsControl = True
+      end
+      object AddButton: TButton
+        Left = 215
+        Top = 86
+        Width = 77
+        Height = 25
+        Caption = '&Add'
+        TabOrder = 0
+        OnClick = AddButtonClick
+      end
+      object ComponentsList: TListBox
+        Left = 12
+        Top = 16
+        Width = 197
+        Height = 174
+        Anchors = [akLeft, akTop, akBottom]
+        ItemHeight = 13
+        Sorted = True
+        TabOrder = 1
+        OnClick = ListClick
+      end
+      object PropertiesList: TListBox
+        Left = 298
+        Top = 16
+        Width = 190
+        Height = 174
+        Anchors = [akLeft, akTop, akBottom]
+        ItemHeight = 13
+        Sorted = True
+        TabOrder = 2
+        OnDblClick = PropertiesListDblClick
+      end
+    end
+    object StoredPropertiesPanel: TPanel
+      Left = 2
+      Top = 214
+      Width = 610
+      Height = 201
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      object UpBtn: TSpeedButton
+        Left = 539
+        Top = 24
+        Width = 25
+        Height = 25
+        Anchors = [akTop, akRight]
+        Glyph.Data = {
+          DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+          0400000000006800000000000000000000001000000000000000000000000000
+          80000080000000808000800000008000800080800000C0C0C000808080000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+          3000333333333333300033330000033330003333066603333000333306660333
+          3000333306660333300030000666000030003306666666033000333066666033
+          3000333306660333300033333060333330003333330333333000333333333333
+          3000}
+        OnClick = UpBtnClick
+      end
+      object DownBtn: TSpeedButton
+        Left = 570
+        Top = 24
+        Width = 25
+        Height = 25
+        Anchors = [akTop, akRight]
+        Glyph.Data = {
+          DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+          0400000000006800000000000000000000001000000000000000000000000000
+          80000080000000808000800000008000800080800000C0C0C000808080000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+          3000333333333333300033333303333330003333306033333000333306660333
+          3000333066666033300033066666660330003000066600003000333306660333
+          3000333306660333300033330666033330003333000003333000333333333333
+          3000}
+        OnClick = DownBtnClick
+      end
+      object StoredPropertiesLabel: TLabel
+        Left = 9
+        Top = 8
+        Width = 90
+        Height = 13
+        Caption = '&Stored Properties   '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object StoredList: TListBox
+        Left = 9
+        Top = 24
+        Width = 511
+        Height = 170
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        ItemHeight = 13
+        TabOrder = 0
+        OnClick = StoredListClick
+      end
+      object DeleteButton: TButton
+        Left = 526
+        Top = 138
+        Width = 77
+        Height = 25
+        Anchors = [akRight, akBottom]
+        Caption = '&Delete'
+        TabOrder = 1
+        OnClick = DeleteButtonClick
+      end
+      object ClearButton: TButton
+        Left = 526
+        Top = 169
+        Width = 77
+        Height = 25
+        Anchors = [akRight, akBottom]
+        Caption = 'Cl&ear'
+        TabOrder = 2
+        OnClick = ClearButtonClick
+      end
+    end
   end
   object FormBox: TGroupBox
     Left = 4
     Top = 2
-    Width = 425
-    Height = 71
+    Width = 614
+    Height = 63
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Form Properties '
     Font.Charset = DEFAULT_CHARSET
@@ -141,7 +232,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     TabOrder = 0
     object ActiveCtrlBox: TCheckBox
       Left = 12
-      Top = 16
+      Top = 17
       Width = 129
       Height = 17
       Caption = ' Acti&ve Control'
@@ -156,7 +247,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     end
     object SizeBox: TCheckBox
       Left = 232
-      Top = 16
+      Top = 17
       Width = 137
       Height = 17
       Caption = 'Form &Size'
@@ -206,87 +297,26 @@ object JvFormPropsDlg: TJvFormPropsDlg
       OnClick = ListClick
     end
   end
-  object AddButton: TButton
-    Left = 176
-    Top = 168
-    Width = 77
-    Height = 25
-    Anchors = [akTop]
-    Caption = '&Add'
-    TabOrder = 2
-    OnClick = AddButtonClick
-  end
-  object DeleteButton: TButton
-    Left = 344
-    Top = 367
-    Width = 77
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Caption = '&Delete'
-    TabOrder = 5
-    OnClick = DeleteButtonClick
-  end
-  object ClearButton: TButton
-    Left = 344
-    Top = 397
-    Width = 77
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Caption = 'Cl&ear'
-    TabOrder = 6
-    OnClick = ClearButtonClick
-  end
   object OkBtn: TButton
-    Left = 257
-    Top = 445
+    Left = 458
+    Top = 494
     Width = 77
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 7
+    TabOrder = 1
   end
   object CancelBtn: TButton
-    Left = 345
-    Top = 445
+    Left = 541
+    Top = 494
     Width = 77
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 8
-  end
-  object ComponentsList: TListBox
-    Left = 16
-    Top = 120
-    Width = 150
-    Height = 120
-    ItemHeight = 13
-    Sorted = True
-    TabOrder = 1
-    OnClick = ListClick
-  end
-  object PropertiesList: TListBox
-    Left = 264
-    Top = 120
-    Width = 150
-    Height = 120
-    Anchors = [akTop, akRight]
-    ItemHeight = 13
-    Sorted = True
-    TabOrder = 3
-    OnDblClick = PropertiesListDblClick
-  end
-  object StoredList: TListBox
-    Left = 16
-    Top = 270
-    Width = 322
-    Height = 160
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    ItemHeight = 13
-    TabOrder = 4
-    OnClick = StoredListClick
+    TabOrder = 2
   end
 end
