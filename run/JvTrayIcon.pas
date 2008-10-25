@@ -95,7 +95,6 @@ type
 
   TJvTrayIcon = class(TJvComponent)
   private
-    FTaskbarRestartMsg: Cardinal;
     FCurrentIcon: TIcon;
     FState: TJvTrayIconStates;
     FStreamedActive: Boolean;
@@ -104,6 +103,7 @@ type
     procedure SetApplicationVisible(const Value: Boolean);
     function GetIconVisible: Boolean;
     procedure SetIconVisible(const Value: Boolean);
+    procedure SetSwingForthAndBack(const Value: Boolean);
   protected
     FActive: Boolean;
     FIcon: TIcon;
@@ -154,6 +154,8 @@ type
     FOnAnimate: TAnimateEvent;
     FVisibility: TTrayVisibilities;
     FSnap: Boolean;
+    FSwingDirectionState: Integer;
+    FSwingForthAndBack: Boolean;
     function GetSystemMinimumBalloonDelay: Cardinal;
     procedure DoAnimation;
     procedure DoCloseBalloon;
@@ -219,6 +221,7 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property Snap: Boolean read FSnap write FSnap default False;
+    property SwingForthAndBack: Boolean read FSwingForthAndBack write SetSwingForthAndBack default False;
     property Visibility: TTrayVisibilities read FVisibility write SetVisibility
       default [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
     property OnAnimate: TAnimateEvent read FOnAnimate write FOnAnimate;
@@ -249,6 +252,9 @@ implementation
 
 uses
   JvJCLUtils, JvJVCLUtils, CommCtrl;
+
+var
+  WM_TaskbarRestartMsg: Cardinal;
 
 type
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
@@ -553,9 +559,7 @@ begin
   FBalloonCount := 0;
   FActive := False;
   FTask := True;
-
-  { (rb) todo: make global }
-  FTaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
+  FSwingDirectionState := 1;
 end;
 
 destructor TJvTrayIcon.Destroy;
@@ -640,15 +644,28 @@ end;
 
 procedure TJvTrayIcon.DoAnimation;
 begin
-  if (tisTrayIconVisible in FState) and (FIcons <> nil) and (FIcons.Count > 0) then
+  if (tisTrayIconVisible in FState) and (FIcons <> nil) and (FIcons.Count > 1) then
   begin
     if IconIndex < 0 then
       IconIndex := 0
     else
+    if SwingForthAndBack then
+    begin
+      if IconIndex = FIcons.Count - 1 then
+        FSwingDirectionState := -1
+      else
+      if IconIndex = 0 then
+        FSwingDirectionState := 1;
+      IconIndex := (IconIndex + FSwingDirectionState) mod FIcons.Count;
+    end
+    else
       IconIndex := (IconIndex + 1) mod FIcons.Count;
+
     if Assigned(FOnAnimate) then
       FOnAnimate(Self, IconIndex);
-  end;
+  end
+  else
+    IconIndex := 0;
 end;
 
 procedure TJvTrayIcon.DoClick(Button: TMouseButton; Shift: TShiftState;
@@ -1200,6 +1217,16 @@ begin
     HideTrayIcon;
 end;
 
+procedure TJvTrayIcon.SetSwingForthAndBack(const Value: Boolean);
+begin
+  if Value <> FSwingForthAndBack then
+  begin
+    FSwingForthAndBack := Value;
+    if FSwingForthAndBack then
+      Animated := True;
+  end;
+end;
+
 procedure TJvTrayIcon.SetTask(const Value: Boolean);
 begin
   if FTask <> Value then
@@ -1463,7 +1490,7 @@ begin
               DoTimerDblClick;
           end;
       else
-        if Msg = FTaskbarRestartMsg then
+        if Msg = WM_TaskbarRestartMsg then
         begin
           { You can test this on XP:
               - Click Start, then click Turn Off Computer
@@ -1591,6 +1618,7 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  WM_TaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
 
 finalization
   RegisterServiceProcess := nil;
