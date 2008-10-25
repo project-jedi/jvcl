@@ -47,18 +47,35 @@ type
     FBuffer: TBitmap;
     FBufferWidth: Integer;
     FBufferHeight: Integer;
+    FLoadedLeft: Integer;
+    FLoadedTop: Integer;
+    FLoadedWidth: Integer;
+    FLoadedHeight: Integer;
     procedure SetSteps(Value: Word);
     procedure SetStartColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
     procedure SetStyle(Value: TJvGradientStyle);
+    function GetLeft: Integer;
+    function GetTop: Integer;
+    function GetWidth: Integer;
+    procedure SetLeft(const Value: Integer);
+    procedure SetTop(const Value: Integer);
+    procedure SetWidth(const Value: Integer);
+    function GetHeight: Integer;
+    procedure SetHeight(const Value: Integer);
   protected
     { Note: No need to respond to WM_ERASEBKGND; this is not a TWinControl }
     procedure Paint; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Align default alClient;
+    property Left: Integer read GetLeft write SetLeft;
+    property Top: Integer read GetTop write SetTop;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
     property ShowHint;
     property Visible;
     property ParentShowHint;
@@ -101,6 +118,41 @@ destructor TJvGradient.Destroy;
 begin
   FBuffer.Free;
   inherited Destroy;
+end;
+
+function TJvGradient.GetHeight: Integer;
+begin
+  Result := inherited Height;
+end;
+
+function TJvGradient.GetLeft: Integer;
+begin
+  Result := inherited Left;
+end;
+
+function TJvGradient.GetTop: Integer;
+begin
+  Result := inherited Top;
+end;
+
+function TJvGradient.GetWidth: Integer;
+begin
+  Result := inherited Width;
+end;
+
+procedure TJvGradient.Loaded;
+begin
+  inherited Loaded;
+  if not (Align in [alLeft, alTop, alRight, alBottom]) then
+  begin
+    inherited Left := FLoadedLeft;
+    inherited Top := FLoadedTop;
+  end;
+  if Align <> alClient then
+  begin
+    inherited Width := FLoadedWidth;
+    inherited Height := FLoadedHeight;
+  end;
 end;
 
 procedure TJvGradient.Paint;
@@ -296,6 +348,18 @@ begin
   end;
 end;
 
+procedure TJvGradient.SetTop(const Value: Integer);
+begin
+  FLoadedTop := Value;
+  inherited Top := Value;
+end;
+
+procedure TJvGradient.SetWidth(const Value: Integer);
+begin
+  FLoadedWidth := Value;
+  inherited Width := Value;
+end;
+
 procedure TJvGradient.SetStartColor(Value: TColor);
 begin
   if FStartColor <> Value then
@@ -324,6 +388,18 @@ begin
     FBufferWidth := 0;
     Invalidate;
   end;
+end;
+
+procedure TJvGradient.SetHeight(const Value: Integer);
+begin
+  FLoadedHeight := Value;
+  inherited Height := Value;
+end;
+
+procedure TJvGradient.SetLeft(const Value: Integer);
+begin
+  FLoadedLeft := Value;
+  inherited Left := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
