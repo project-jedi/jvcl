@@ -390,6 +390,7 @@ type
     function SortMarkerAssigned(const AFieldName: string): Boolean; dynamic;
     function ChangeSortMarker(const Value: TSortMarker): Boolean;
     procedure CallDrawCellEvent(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
+    procedure DrawTitleCaption(Canvas: TCanvas; const TextRect: TRect; DrawColumn: TColumn);
     procedure DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); virtual;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField;
@@ -3004,6 +3005,10 @@ begin
           Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
       end;
       ThemeServices.DrawElement(Canvas.Handle, Details, lCellRect);
+      { The column title isn't painted by DrawCell if the DataLink is not active. }
+      if (DataLink = nil) or not DataLink.Active then
+        if (ACol - ColumnOffset >= 0) and (ACol - ColumnOffset < Columns.Count) then
+          DrawTitleCaption(Canvas, lCaptionRect, Columns[ACol - ColumnOffset]);
     end
     else if (ACol = 0) and (dgIndicator in Options) and ThemeServices.ThemesEnabled then
     begin
@@ -3037,6 +3042,47 @@ begin
     CallDrawCellEvent(ACol, ARow, ARect, AState);
 end;
 
+procedure TJvDBGrid.DrawTitleCaption(Canvas: TCanvas; const TextRect: TRect; DrawColumn: TColumn);
+const
+  MinOffs = 1;
+var
+  CalcRect: TRect;
+  TitleSpace,
+  TitleOptions: Integer;
+begin
+  with DrawColumn.Title do
+  begin
+    TitleOptions := DT_END_ELLIPSIS;
+    if WordWrap then
+    begin
+      CalcRect := TextRect;
+      Dec(CalcRect.Right, MinOffs + 1);
+      {$IFDEF CLR}
+      Windows.DrawText(Canvas.Handle, Caption, -1, CalcRect,
+        DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
+      {$ELSE}
+      Windows.DrawText(Canvas.Handle, PChar(Caption), -1, CalcRect,
+        DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
+      {$ENDIF CLR}
+      if CalcRect.Bottom > TextRect.Bottom then
+      begin
+        TitleOptions := DT_END_ELLIPSIS or DT_SINGLELINE;
+        TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
+      end
+      else
+      begin
+        if (CalcRect.Bottom - CalcRect.Top) > Canvas.TextHeight('^g') then
+          TitleOptions := 0;
+        TitleSpace := TextRect.Bottom - CalcRect.Bottom;
+      end;
+    end
+    else
+      TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
+    WriteCellText(TextRect, MinOffs, Max(MinOffs, TitleSpace div 2), Caption, Alignment,
+      IsRightToLeft, True, TitleOptions);
+  end;
+end;
+
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
   EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
@@ -3060,7 +3106,7 @@ var
   DefaultDrawText, DefaultDrawSortMarker: Boolean;
 
   function CalcTitleRect(Col: TColumn; ARow: Integer; var MasterCol: TColumn): TRect;
-    { copied from Inprise's DbGrids.pas }
+    { copied from CodeGear's DbGrids.pas }
   var
     I, J: Integer;
     InBiDiMode: Boolean;
@@ -3118,7 +3164,7 @@ var
   end;
 
   procedure DrawExpandBtn(var TitleRect, TextRect: TRect; InBiDiMode: Boolean;
-    Expanded: Boolean); { copied from Inprise's DbGrids.pas }
+    Expanded: Boolean); { copied from CodeGear's DbGrids.pas }
   const
     ScrollArrows: array [Boolean, Boolean] of Integer =
       ((DFCS_SCROLLRIGHT, DFCS_SCROLLLEFT), (DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT));
@@ -3149,45 +3195,6 @@ var
         RestoreDC(Canvas.Handle, I);
       end;
       TitleRect.Right := ButtonRect.Left;
-    end;
-  end;
-
-  procedure DrawTitleCaption;
-  var
-    CalcRect: TRect;
-    TitleSpace,
-    TitleOptions: Integer;
-  begin
-    with DrawColumn.Title do
-    begin
-      TitleOptions := DT_END_ELLIPSIS;
-      if WordWrap then
-      begin
-        CalcRect := TextRect;
-        Dec(CalcRect.Right, MinOffs + 1);
-        {$IFDEF CLR}
-        Windows.DrawText(Canvas.Handle, Caption, -1, CalcRect,
-          DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
-        {$ELSE}
-        Windows.DrawText(Canvas.Handle, PChar(Caption), -1, CalcRect,
-          DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
-        {$ENDIF CLR}
-        if CalcRect.Bottom > TextRect.Bottom then
-        begin
-          TitleOptions := DT_END_ELLIPSIS or DT_SINGLELINE;
-          TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
-        end
-        else
-        begin
-          if (CalcRect.Bottom - CalcRect.Top) > Canvas.TextHeight('^g') then
-            TitleOptions := 0;
-          TitleSpace := TextRect.Bottom - CalcRect.Bottom;
-        end;
-      end
-      else
-        TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
-      WriteCellText(TextRect, MinOffs, Max(MinOffs, TitleSpace div 2), Caption, Alignment,
-        IsRightToLeft, True, TitleOptions);
     end;
   end;
 
@@ -3361,7 +3368,7 @@ begin
         begin
           if DrawColumn.Expandable then
             DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
-          DrawTitleCaption;
+          DrawTitleCaption(Canvas, TextRect, DrawColumn);
         end;
         if DefaultDrawSortMarker then
         begin
