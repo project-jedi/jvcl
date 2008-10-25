@@ -44,25 +44,28 @@ uses
 
 type
   TJvFormPropsDlg = class(TJvForm)
-    Bevel1: TBevel;
-    Label30: TLabel;
-    Label31: TLabel;
-    Label2: TLabel;
-    UpBtn: TSpeedButton;
-    DownBtn: TSpeedButton;
+    GroupBevel: TGroupBox;
+    ComponentsLabel: TLabel;
+    PropertiesLabel: TLabel;
     FormBox: TGroupBox;
     ActiveCtrlBox: TCheckBox;
     SizeBox: TCheckBox;
     StateBox: TCheckBox;
     AddButton: TButton;
-    DeleteButton: TButton;
-    ClearButton: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
     ComponentsList: TListBox;
     PropertiesList: TListBox;
-    StoredList: TListBox;
     LocationBox: TCheckBox;
+    CompPropsPanel: TPanel;
+    StoredPropertiesPanel: TPanel;
+    StoredList: TListBox;
+    UpBtn: TSpeedButton;
+    DownBtn: TSpeedButton;
+    DeleteButton: TButton;
+    ClearButton: TButton;
+    StoredPropertiesLabel: TLabel;
+    CompPropsSplitter: TSplitter;
     procedure AddButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ListClick(Sender: TObject);
@@ -75,6 +78,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure StoredListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure PropertiesListDblClick(Sender: TObject);
+    procedure CompPropsPanelResize(Sender: TObject);
   private
     FCompOwner: TComponent;
     FDesigner: IDesigner;
@@ -468,6 +472,19 @@ end;
 procedure TJvFormPropsDlg.FormDestroy(Sender: TObject);
 begin
   ClearLists;
+end;
+
+procedure TJvFormPropsDlg.CompPropsPanelResize(Sender: TObject);
+var
+  W: Integer;
+begin
+  W := ((CompPropsPanel.ClientWidth - (AddButton.Width + 8*2)) - (ComponentsList.Left*2)) div 2;
+  ComponentsList.Width := W;
+  AddButton.Left := ComponentsList.BoundsRect.Right + 8;
+  AddButton.Top := (CompPropsPanel.ClientHeight - AddButton.Height) div 2;
+  PropertiesList.Width := W;
+  PropertiesList.Left := AddButton.BoundsRect.Right + 8;
+  PropertiesLabel.Left := PropertiesList.Left;
 end;
 
 procedure TJvFormPropsDlg.StoredListClick(Sender: TObject);
