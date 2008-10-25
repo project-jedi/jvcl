@@ -162,8 +162,9 @@ const
 implementation
 
 uses
-  Math, Consts,
-  JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton, JvComponent;
+  Math, Consts, MultiMon,
+  JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton,
+  JvComponent, JvJVCLUtils;
 
 procedure FontSetDefault(AFont: TFont);
 
@@ -1648,28 +1649,33 @@ function SelectDate(Sender: TWinControl; var Date: TDateTime; const DlgCaption: 
 var
   D: TJvSelectDateDlg;
   I: Integer;
-  P: TPoint; // Polaris
+  P: TPoint;
+  Rect: TRect;
+  Monitor: TMonitor;
 begin
   Result := False;
   D := CreateDateDialog(DlgCaption, MinDate, MaxDate);
   try
-    // Polaris for Popup position
+    // for popup position
     if Assigned(Sender) then
-      with D do
-      begin
-        Position := poDesigned;
-        P := (Sender.ClientOrigin);
-        Top := P.Y + Sender.Height - 1;
-        if (Top + Height) > Screen.Height then
-          Top := P.Y - Height + 1;
-        if Top < 0 then
-          Top := P.Y + Sender.Height - 1;
-        Left := (P.X + Sender.Width) - Width;
-        if (Left + Width) > Screen.Width then
-          Left := Screen.Width - Width;
-        if Left < 0 then
-          Left := Max(P.X, 0);
-      end;
+    begin
+      D.Position := poDesigned;
+      P := Sender.ClientOrigin;
+      D.Top := P.Y + Sender.Height - 1;
+
+      Monitor := FindMonitor(MonitorFromWindow(Sender.Handle, MONITOR_DEFAULTTONEAREST));
+      Rect := GetWorkAreaRect(Monitor);
+
+      if (D.Top + D.Height) > Rect.Bottom then
+        D.Top := P.Y - D.Height + 1;
+      if D.Top < 0 then
+        D.Top := P.Y + Sender.Height - 1;
+      D.Left := (P.X + Sender.Width) - D.Width;
+      if (D.Left + D.Width) > Rect.Right then
+        D.Left := Rect.Right - D.Width;
+      if D.Left < 0 then
+        D.Left := Max(P.X, 0);
+    end;
 
     D.Date := Date;
     with D.Calendar do

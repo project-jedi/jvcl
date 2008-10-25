@@ -2658,7 +2658,6 @@ var
   {$ENDIF COMPILER6_UP}
   RecordCount: Integer;
   Monitor: TMonitor;
-  SR: TJvSizeRect;
   Rect: TRect;
 begin
   if not FListVisible and {FListActive} CanModify then
@@ -2721,14 +2720,10 @@ begin
 
     Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
     Rect := GetWorkAreaRect(Monitor);
-    SR.Top := Rect.Top;
-    SR.Left := Rect.Left;
-    SR.Width := Rect.Right - Rect.Left;
-    SR.Height := Rect.Bottom - Rect.Top;
 
     P := Parent.ClientToScreen(Point(Left, Top));
     Y := P.Y + Height;
-    if Y + FDataList.Height > SR.Height then
+    if Y + FDataList.Height > Rect.Bottom then
       Y := P.Y - FDataList.Height;
     case FDropDownAlign of
       daRight:
@@ -2736,8 +2731,8 @@ begin
       daCenter:
         Dec(P.X, (FDataList.Width - Width) div 2);
     end;
-    if P.X + FDataList.Width > SR.Width then
-      P.X := SR.Width - FDataList.Width;
+    if P.X + FDataList.Width > Rect.Right then
+      P.X := Rect.Right - FDataList.Width;
 
     {$IFDEF COMPILER6_UP}
     { Use slide-open effect for combo boxes if wanted. This is also possible
