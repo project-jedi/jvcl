@@ -194,6 +194,7 @@ end;
 procedure TJvNTEventLog.SetActive(Value: Boolean);
 begin
   if Value <> FActive then
+  begin
     if csDesigning in ComponentState then
       FActive := Value
     else
@@ -201,6 +202,7 @@ begin
       Open
     else
       Close;
+  end;
 end;
 
 procedure TJvNTEventLog.SetServer(const Value: string);
@@ -254,6 +256,7 @@ procedure TJvNTEventLog.Open;
 begin
   if Source <> '' then
   begin
+    Close;
     FLogHandle := OpenEventLog(PChar(Server), PChar(Source));
     if FLogHandle = 0 then
       RaiseLastOSError;
@@ -266,11 +269,14 @@ procedure TJvNTEventLog.Close;
 begin
   if FLogHandle <> 0 then
   begin
-    FNotifyThread.Terminate;
+    if FNotifyThread <> nil then
+      FNotifyThread.Terminate;
     CloseEventLog(FLogHandle);
-    FLogHandle := 0
+    FLogHandle := 0;
+    FreeAndNil(FNotifyThread);
   end;
-  ReallocMem(FEventRecord.FCurrentRecord, 0);
+  FreeMem(FEventRecord.FCurrentRecord);
+  FEventRecord.FCurrentRecord := nil;
   FActive := False;
 end;
 
@@ -364,7 +370,6 @@ end;
 constructor TNotifyChangeEventLog.Create(AOwner: TComponent);
 begin
   inherited Create(True); // Create thread suspended
-  FreeOnTerminate := True; // Thread Free Itself when terminated
 
   // initialize system events
   FEventLog := TJvNTEventLog(AOwner);
@@ -395,15 +400,8 @@ begin
         ResetEvent(FEventHandle);
       // wait for event to happen
       LResult := WaitForSingleObject(FEventHandle, 100);
-      // check event Result
-      case LResult of
-        WAIT_OBJECT_0:
-          Synchronize(DoChange);
-        WAIT_TIMEOUT:
-          ;
-        else
-          Synchronize(DoChange);
-      end;
+      if LResult = WAIT_OBJECT_0 then
+        Synchronize(DoChange);
     end;
   except
   end;
