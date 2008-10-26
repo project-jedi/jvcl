@@ -770,6 +770,8 @@ type
     procedure StopGroupTyping;
     procedure CloseActiveObject; // from CCR
 
+    procedure SetSelectionLink;
+
     property CanFindNext: Boolean read GetCanFindNext;
     property CanRedo: Boolean read GetCanRedo;
     property CanPaste: Boolean read GetCanPaste;
@@ -4277,6 +4279,17 @@ begin
     FSelectionBar := Value;
     RecreateWnd;
   end;
+end;
+
+procedure TJvCustomRichEdit.SetSelectionLink;
+var
+  CharFormat: TCharFormat;
+begin
+  FillChar(CharFormat, SizeOf(CharFormat), 0);
+  CharFormat.cbSize := SizeOf(CharFormat);
+  CharFormat.dwMask := CFM_LINK;
+  CharFormat.dwEffects := CFE_LINK;
+  SendMessage(Handle, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(@CharFormat));
 end;
 
 procedure TJvCustomRichEdit.SetSelLength(Value: Integer);
