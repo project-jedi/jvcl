@@ -545,6 +545,7 @@ end;
 constructor TJvPluginWizard.Create;
 begin
   inherited Create;
+  FCaption := RsJediPluginWizard;
   InitializeWizard;
 end;
 
@@ -565,7 +566,7 @@ end;
 
 function TJvPluginWizard.GetMenuText: string;
 begin
-  Result := RsJediPluginWizard;
+  Result := FCaption; //RsJediPluginWizard;
 end;
 
 function TJvPluginWizard.GetName: string;
