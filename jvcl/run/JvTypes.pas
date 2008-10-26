@@ -351,7 +351,7 @@ type
     (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
   // End of Bianconi
 
-  TJvFourCC = array [0..3] of Char;
+  TJvFourCC = array [0..3] of AnsiChar;
   PJvAniTag = ^TJvAniTag;
   TJvAniTag = packed record
     ckID: TJvFourCC;

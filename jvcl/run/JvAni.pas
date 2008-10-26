@@ -813,7 +813,7 @@ begin
     RiffReadError;
 end;
 
-procedure SetFOURCC(var FourCC: TJvFourCC; ID: string);
+procedure SetFOURCC(var FourCC: TJvFourCC; const ID: AnsiString);
 begin
   FourCC[0] := ID[1];
   FourCC[1] := ID[2];
@@ -821,7 +821,7 @@ begin
   FourCC[3] := ID[4];
 end;
 
-procedure StartWriteChunk(Stream: TStream; var Tag: TJvAniTag; ID: string);
+procedure StartWriteChunk(Stream: TStream; var Tag: TJvAniTag; const ID: AnsiString);
 begin
   SetFOURCC(Tag.ckID, ID);
   Tag.ckSize := Stream.Position;
