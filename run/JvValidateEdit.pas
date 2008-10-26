@@ -926,8 +926,8 @@ begin
         ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
         ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
     dfFloat, dfFloatGeneral, dfDecimal, dfPercent:
-      Result := (Pos(Key, FCheckChars) > 0) or
-        ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
+      Result := ((Pos(Key, FCheckChars) > 0) and 
+        (((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or (Key <> DecimalSeparator))) or
         ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
         ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
     dfCurrency:
@@ -967,8 +967,8 @@ begin
         if (Key = '(') and (Posn = 1) and (NegCurrFormat in [0, 4, 14, 15]) then
           Key := '-';
 
-        Result := (Pos(Key, FCheckChars) > 0) or
-          ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
+        Result := ((Pos(Key, FCheckChars) > 0) and 
+          (((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or (Key <> DecimalSeparator))) or
           ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
           ((Key = '-') and (Posn = ExpectedNegPos) and ((Pos(ExpectedNegChar, S) = 0) or (SelLength > 0)));
       end;
