@@ -32,12 +32,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  SysUtils, ExtCtrls, Classes;
+  Windows, Messages, SysUtils, ExtCtrls, Classes;
 
 type
+  TJvTimerEventTime = (tetPre, tetPost);
+
   TJvTimer = class(TComponent)
   private
     FEnabled: Boolean;
@@ -47,10 +46,9 @@ type
     FThreaded: Boolean;
     FTimerThread: TThread;
     FTimer: TTimer;
-    {$IFDEF MSWINDOWS}
+    FEventTime: TJvTimerEventTime;
     FThreadPriority: TThreadPriority;
     procedure SetThreadPriority(Value: TThreadPriority);
-    {$ENDIF MSWINDOWS}
     procedure SetThreaded(Value: Boolean);
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Cardinal);
@@ -63,13 +61,12 @@ type
     destructor Destroy; override;
     procedure Synchronize(Method: TThreadMethod);
   published
+    property EventTime: TJvTimerEventTime read FEventTime write FEventTime default tetPre;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property SyncEvent: Boolean read FSyncEvent write FSyncEvent default True;
     property Threaded: Boolean read FThreaded write SetThreaded default True;
-    {$IFDEF MSWINDOWS}
     property ThreadPriority: TThreadPriority read FThreadPriority write SetThreadPriority default tpNormal;
-    {$ENDIF MSWINDOWS}
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
   end;
 
@@ -108,7 +105,7 @@ type
     constructor Create(Timer: TJvTimer; Enabled: Boolean);
     destructor Destroy; override;
     {$IFDEF CLR}
-    procedure Synchronize(Method: TThreadMethod);
+    procedure Synchronize(Method: TThreadMethod); // makes method public
     {$ENDIF CLR}
     property Terminated;
 
@@ -163,22 +160,28 @@ const
   Step = 10;  // Time of a wait slot, in milliseconds
 var
   CurrentDuration: Cardinal;
+  EventTime: TJvTimerEventTime;
 
   function ThreadClosed: Boolean;
   begin
     Result := Terminated or Application.Terminated or (FOwner = nil);
   end;
 
-  {$IFDEF UNIX}
-  function SleepEx(Ms: Cardinal; Alertable: Boolean): Cardinal;
-  begin
-    Sleep(Ms);
-    Result := 0;
-  end;
-  {$ENDIF UNIX}
-
 begin
   repeat
+    EventTime := FOwner.EventTime;
+
+    if EventTime = tetPost then
+    begin
+      { Wait first and then trigger the event }
+      CurrentDuration := 0;
+      while not ThreadClosed and (CurrentDuration < FInterval) do
+      begin
+        SleepEx(Step, False);
+        Inc(CurrentDuration, Step);
+      end;
+    end;
+
     if not ThreadClosed and not ThreadClosed and FOwner.FEnabled then
     begin
       if FOwner.SyncEvent then
@@ -199,11 +202,15 @@ begin
       end;
     end;
 
-    CurrentDuration := 0;
-    while not ThreadClosed and (CurrentDuration < FInterval) do
+    if EventTime = tetPre then
     begin
-      SleepEx(Step, False);
-      Inc(CurrentDuration, Step);
+      { Wait after the event was triggered }
+      CurrentDuration := 0;
+      while not ThreadClosed and (CurrentDuration < FInterval) do
+      begin
+        SleepEx(Step, False);
+        Inc(CurrentDuration, Step);
+      end;
     end;
 
     // while we are paused, we do not do anything. However, we do call SleepEx
@@ -227,13 +234,12 @@ end;
 constructor TJvTimer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FEventTime := tetPre;
   FEnabled := True;
   FInterval := 1000;
   FSyncEvent := True;
   FThreaded := True;
-  {$IFDEF MSWINDOWS}
   FThreadPriority := tpNormal;
-  {$ENDIF MSWINDOWS}
   FTimerThread := TJvTimerThread.Create(Self, False);
   FTimer := nil;
 end;
@@ -264,9 +270,7 @@ begin
     TJvTimerThread(FTimerThread).FInterval := FInterval;
     if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
     begin
-      {$IFDEF MSWINDOWS}
       FTimerThread.Priority := FThreadPriority;
-      {$ENDIF MSWINDOWS}
 
       (FTimerThread as TJvTimerThread).Paused := False;
 (*      while FTimerThread.Suspended do
@@ -312,7 +316,6 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
 procedure TJvTimer.SetThreadPriority(Value: TThreadPriority);
 begin
   if Value <> FThreadPriority then
@@ -322,7 +325,6 @@ begin
       UpdateTimer;
   end;
 end;
-{$ENDIF MSWINDOWS}
 
 procedure TJvTimer.Synchronize(Method: TThreadMethod);
 begin
@@ -353,8 +355,7 @@ end;
 
 procedure TJvTimer.Timer;
 begin
-  if FEnabled and not (csDestroying in ComponentState) and
-    Assigned(FOnTimer) then
+  if FEnabled and not (csDestroying in ComponentState) and Assigned(FOnTimer) then
     FOnTimer(Self);
 end;
 
