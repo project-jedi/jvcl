@@ -141,6 +141,37 @@ type
     property CaptionColor: TColor read FCaptionColor write SetCaptionColor default clBlack;
     property CaptionBold: Boolean read FCaptionBold write SetCaptionBold default False;
     property OnChangedValue: TOnChangedValue read FOnChangedValue write SetOnChangedValue;
+
+    { inherited properties }
+    property Align;
+    property Anchors;
+    property DragCursor;
+    property DragKind;
+    //property Color;
+    property Constraints;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
   end;
 
 {$IFDEF UNITVERSIONING}
