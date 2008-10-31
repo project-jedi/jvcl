@@ -645,6 +645,10 @@ begin
     LblFrameworks.Visible := False;
     CheckListBoxFrameworks.Visible := False;
   end;
+  {$IFDEF COMPILER12_UP}
+  CheckListBoxPackages.ParentDoubleBuffered := False;
+  CheckListBoxFrameworks.ParentDoubleBuffered := False;
+  {$ENDIF COMPILER12_UP}
 end;
 
 end.
