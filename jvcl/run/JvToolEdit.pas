@@ -562,7 +562,11 @@ type
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
+    {$IFDEF UNICODE}
+    property OEMConvert default False; // Mantis 4454
+    {$ELSE}
     property OEMConvert default True; // Mantis 3621
+    {$ENDIF UNICODE}
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
@@ -4482,7 +4486,9 @@ end;
 constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFNDEF UNICODE}
   OEMConvert := True;
+  {$ENDIF ~UNICODE}
   FAcceptFiles := True;
   FAutoCompleteOptions := [acoAutoSuggest];
   ControlState := ControlState + [csCreating];
