@@ -374,7 +374,7 @@ var
         end;
         drs := Grid.Cells[ICol, IRow];
         nr := False;
-        if (IRow = 0) and (ICol > 0) then
+        if (IRow < Grid.FixedRows) or (ICol < Grid.FixedCols) then
           ACanvas.Font.Style := ACanvas.Font.Style + [fsBold]
         else
           ACanvas.Font.Style := ACanvas.Font.Style - [fsBold];
@@ -438,9 +438,7 @@ var
     if DoPaint then
     begin
       if HasLogo then
-      begin
         ACanvas.Draw(ScaleX(GridPrinter.PrintOptions.MarginLeft), Y, LogoPics);
-      end;
       ACanvas.TextOut((PageWidth div 2) - (ScaleX(Grid.Canvas.TextWidth(S) div 2)), Y, S);
     end;
     Y := Y + ScaleY(HHeader);
@@ -532,7 +530,7 @@ begin
   end;
   PageCol := 0;
   FromCol := -1;
-  ToCol := -0;
+  ToCol := -1;
   //scan cols
   repeat
     //Scan missing cols
