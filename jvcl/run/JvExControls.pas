@@ -92,7 +92,8 @@ type
   end;
 
 procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor: TColor);
-procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
+procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean); overload;
+procedure DrawDotNetControl(DC: HDC; R: TRect; AColor: TColor; UseFocusedColor: Boolean); overload;
 procedure HandleDotNetHighlighting(Control: TWinControl; const Msg: TMessage;
   MouseOver: Boolean; Color: TColor);
 
@@ -463,29 +464,40 @@ procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boo
 var
   DC: HDC;
   R: TRect;
-  Canvas: TCanvas;
 begin
+  GetWindowRect(Control.Handle, R);
+  OffsetRect(R, -R.Left, -R.Top);
+
   DC := GetWindowDC(Control.Handle);
   try
-    GetWindowRect(Control.Handle, R);
-    OffsetRect(R, -R.Left, -R.Top);
-    Canvas := TCanvas.Create;
-    with Canvas do
-    try
-      Handle := DC;
-      Brush.Color := InternalUnfocusedColor;
-      if Control.Focused or InControl then
-        Brush.Color := InternalFocusedColor;
-      FrameRect(R);
-      InflateRect(R, -1, -1);
-      if not (Control.Focused or InControl) then
-        Brush.Color := AColor;
-      FrameRect(R);
-    finally
-      Free;
-    end;
+    DrawDotNetControl(DC, R, AColor, Control.Focused or InControl);
   finally
     ReleaseDC(Control.Handle, DC);
+  end;
+end;
+
+procedure DrawDotNetControl(DC: HDC; R: TRect; AColor: TColor; UseFocusedColor: Boolean);
+var
+  Brush: HBRUSH;
+begin
+  Brush := 0;
+  try
+    if UseFocusedColor then
+      Brush := CreateSolidBrush(ColorToRGB(InternalFocusedColor))
+    else
+      Brush := CreateSolidBrush(ColorToRGB(InternalUnfocusedColor));
+
+    FrameRect(DC, R, Brush);
+    InflateRect(R, -1, -1);
+    if not UseFocusedColor then
+    begin
+      DeleteObject(Brush);
+      Brush := CreateSolidBrush(ColorToRGB(AColor));
+    end;
+    FrameRect(DC, R, Brush);
+  finally
+    if Brush <> 0 then
+      DeleteObject(Brush);
   end;
 end;
 
