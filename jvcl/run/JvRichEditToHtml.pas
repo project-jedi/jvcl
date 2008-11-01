@@ -387,14 +387,17 @@ begin
             St.Append(FEndSection);
             CurrAt.Assign(Att);
             St.Append(AttToHtml(Att));
-          end;
-
-          if CharInSet(Text[J], ['A'..'Z', 'a'..'z', '0'..'9']) then
-            St.Append(Text[J])
+            Value.SelStart := J;
+          end
           else
-            St.Append(CharToHtml(Text[J]));
-          Inc(J);
-          Value.SelStart := J - 1;
+          begin
+            if CharInSet(Text[J], ['A'..'Z', 'a'..'z', '0'..'9']) then
+              St.Append(Text[J])
+            else
+              St.Append(CharToHtml(Text[J]));
+            Inc(J);
+            Value.SelStart := J;
+          end;
         end;
         if I = 1 then
           Strings.Add(St.ToString())
