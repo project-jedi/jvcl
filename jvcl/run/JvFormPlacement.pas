@@ -799,11 +799,10 @@ end;
 
 procedure TJvFormPlacement.SaveFormPlacement;
 begin
-  
-  ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
-  
   if Assigned(AppStorage) then
   begin
+    ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
+
     if Assigned(FBeforeSavePlacement) then
       FBeforeSavePlacement(Self);
     if VersionCheck <> fpvcNocheck then
@@ -822,11 +821,10 @@ var
   ReadVersion: Integer;
   ContinueRestore: Boolean;
 begin
-  
-  ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
-
   if Assigned(AppStorage) then
   begin
+    ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
+
     FSaved := False;
     ReadVersion := ReadInteger(siVersion, 0);
     case VersionCheck of
