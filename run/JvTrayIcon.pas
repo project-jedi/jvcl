@@ -851,6 +851,11 @@ end;
 function TJvTrayIcon.GetApplicationVisible: Boolean;
 begin
   Result := not (tisAppHiddenButNotMinimized in FState) and not IsApplicationMinimized;
+  {$IFDEF COMPILER11_UP}
+  if Result and (Snap or (tvAnimateToTray in Visibility)) and
+     Application.MainFormOnTaskBar and not IsWindowVisible(Application.MainFormHandle) then
+    Result := False;
+  {$ENDIF COMPILER11_UP}
 end;
 
 function TJvTrayIcon.GetIconRect(var IconRect: TRect): Boolean;
@@ -1021,8 +1026,8 @@ begin
         // the application is minimized.
 
         Application.NormalizeTopMosts;
-        SetActiveWindow(Application.Handle);
-        ShowWinNoAnimate(Application.Handle, SW_HIDE);
+        SetActiveWindow(GetHandleOnTaskBar);
+        ShowWinNoAnimate(GetHandleOnTaskBar, SW_HIDE);
         Include(FState, tisAppHiddenButNotMinimized);
       end;
 
@@ -1299,7 +1304,7 @@ begin
   if tisAppHiddenButNotMinimized in FState then
   begin
     // Make the application not iconic; this will show the taskbar button
-    ShowWinNoAnimate(Application.Handle, SW_MINIMIZE);
+    ShowWinNoAnimate(GetHandleOnTaskBar, SW_MINIMIZE);
     // If we set ShowMainForm to true we get an animation when we call
     // Application.Restore
     if not Snap and not (tvAnimateToTray in Visibility) then
@@ -1314,8 +1319,18 @@ begin
   begin
     if (tvAnimateToTray in Visibility) and Assigned(Application.MainForm) then
       AnimateFromTray(Application.MainForm.Handle);
+    {$IFDEF COMPILER11_UP}
+    // Application.Restore checks the IsIconic state of the app window
+    if Application.MainFormOnTaskBar and not IsIconic(Application.Handle) then
+      ShowWinNoAnimate(Application.Handle, SW_SHOWMINNOACTIVE);
+    {$ENDIF COMPILER11_UP}
     // ..and restore the application
     Application.Restore;
+    {$IFDEF COMPILER11_UP}
+    // Without this Application.Restore would only work the first time
+    if Application.MainFormOnTaskBar and IsIconic(Application.Handle) then
+      ShowWinNoAnimate(Application.Handle, SW_SHOWNOACTIVATE);
+    {$ENDIF COMPILER11_UP}
     if Application.MainForm <> nil then
       Application.MainForm.Visible := True;
   end;
