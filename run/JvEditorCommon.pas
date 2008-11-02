@@ -192,7 +192,7 @@ located at http://jvcl.sourceforge.net
 
   2004-01-25: file split into JvEditor and JvEditorCommon
 
-  Further history: see CVS
+  Further history: see CVS/SVN
 }
 
 unit JvEditorCommon;
@@ -206,7 +206,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls,
-  Forms, StdCtrls, ExtCtrls, Menus,
+  Forms, StdCtrls, ExtCtrls, Menus, ActnList,
   JvConsts, JvFixedEditPopup, JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
@@ -1233,6 +1233,62 @@ type
     property SyntaxHighlighting: Boolean read GetSyntaxHighlighting write SetSyntaxHighlighting;
     property Highlighter: TJvHighlighter read GetHighlighter write SetHighlighter;
   end;
+
+  { Standard Editor actions }
+  TJvEditAction = class(TAction)
+  private
+    FControl: TWinControl;
+    procedure SetControl(Value: TWinControl);
+  protected
+    function SupportsControl(Value: TWinControl): Boolean; virtual;
+    function GetEditorControl(Target: TObject): TJvCustomEditorBase; virtual;
+    function GetEditControl(Target: TObject): TCustomEdit; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  public
+    destructor Destroy; override;
+    function HandlesTarget(Target: TObject): Boolean; override;
+    procedure UpdateTarget(Target: TObject); override;
+    property Control: TWinControl read FControl write SetControl;
+  end;
+
+  TJvEditCut = class(TJvEditAction)
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+  end;
+
+  TJvEditCopy = class(TJvEditAction)
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+  end;
+
+  TJvEditPaste = class(TJvEditAction)
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+  end;
+
+  TJvEditSelectAll = class(TJvEditAction)
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+  end;
+
+  TJvEditUndo = class(TJvEditAction)
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+  end;
+
+  TJvEditDelete = class(TJvEditAction)
+  public
+    procedure ExecuteTarget(Target: TObject); override;
+    { UpdateTarget is required because TJvEditAction.UpdateTarget specifically
+      checks to see if the action is TEditCut or TJvEditCopy }
+    procedure UpdateTarget(Target: TObject); override;
+  end;
+
 
 const
   { Editor commands }
@@ -6459,6 +6515,186 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+//=== { TJvEditAction } ==========================================================
+
+type
+  {$IFDEF COMPILER9_UP}
+  TOpenCustomEdit = TCustomEdit;
+  {$ELSE}
+  TOpenCustomEdit = class(TCustomEdit);
+  {$ENDIF COMPILER9_UP}
+
+destructor TJvEditAction.Destroy;
+begin
+  if FControl <> nil then
+    FControl.RemoveFreeNotification(Self);
+  inherited Destroy;
+end;
+
+function TJvEditAction.GetEditorControl(Target: TObject): TJvCustomEditorBase;
+begin
+  Result := Target as TJvCustomEditorBase;
+end;
+
+function TJvEditAction.GetEditControl(Target: TObject): TCustomEdit;
+begin
+  Result := Target as TCustomEdit;
+end;
+
+function TJvEditAction.HandlesTarget(Target: TObject): Boolean;
+begin
+  Result := ((Control <> nil) and (Target = Control) or
+    (Control = nil) and (Target is TWinControl) and SupportsControl(TWinControl(Target))) and
+    TWinControl(Target).Focused;
+end;
+
+procedure TJvEditAction.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = Control) then
+    Control := nil;
+end;
+
+procedure TJvEditAction.UpdateTarget(Target: TObject);
+begin
+end;
+
+procedure TJvEditAction.SetControl(Value: TWinControl);
+begin
+  if Value <> FControl then
+  begin
+    if not SupportsControl(Value) then
+      Value := nil;
+
+    if FControl <> nil then
+      FControl.RemoveFreeNotification(Self);
+    FControl := Value;
+    if Value <> nil then
+      Value.FreeNotification(Self);
+  end;
+end;
+
+function TJvEditAction.SupportsControl(Value: TWinControl): Boolean;
+begin
+  Result := (Value is TCustomEdit) or (Value is TJvCustomEditorBase);
+end;
+
+//=== { TJvEditCopy } ==========================================================
+
+procedure TJvEditCopy.ExecuteTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    GetEditorControl(Target).ClipboardCopy
+  else if Target is TCustomEdit then
+    GetEditControl(Target).CopyToClipboard;
+end;
+
+procedure TJvEditCopy.UpdateTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    Enabled := GetEditorControl(Target).CanCopy
+  else if Target is TCustomEdit then
+    Enabled := (GetEditControl(Target).SelLength > 0);
+end;
+
+//=== { TJvEditCut } ==========================================================
+
+procedure TJvEditCut.ExecuteTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    GetEditorControl(Target).ClipboardCut
+  else if Target is TCustomEdit then
+    GetEditControl(Target).CutToClipboard;
+end;
+
+procedure TJvEditCut.UpdateTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    Enabled := GetEditorControl(Target).CanCut
+  else if Target is TCustomEdit then
+    Enabled := (GetEditControl(Target).SelLength > 0) and not TOpenCustomEdit(GetEditControl(Target)).ReadOnly;
+end;
+
+//=== { TJvEditPaste } ==========================================================
+
+procedure TJvEditPaste.ExecuteTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    GetEditorControl(Target).ClipboardPaste
+  else if Target is TCustomEdit then
+    GetEditControl(Target).PasteFromClipboard;
+end;
+
+procedure TJvEditPaste.UpdateTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    Enabled :=  GetEditorControl(Target).CanPaste
+  else if Target is TCustomEdit then
+  begin
+    {$IFDEF CLR}
+    Enabled := (IsClipboardFormatAvailable(CF_TEXT) or
+               IsClipboardFormatAvailable(CF_UNICODETEXT)) and
+               not GetEditControl(Target).ReadOnly;
+    {$ELSE}
+    Enabled := Clipboard.HasFormat(CF_TEXT) and not TOpenCustomEdit(GetEditControl(Target)).ReadOnly;
+    {$ENDIF CLR}
+  end;
+end;
+
+//=== { TJvEditSelectAll } ==========================================================
+
+procedure TJvEditSelectAll.ExecuteTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    GetEditorControl(Target).SelectAll
+  else if Target is TCustomEdit then
+    GetEditControl(Target).SelectAll;
+end;
+
+procedure TJvEditSelectAll.UpdateTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    Enabled := GetEditorControl(Target).CanSelectAll
+  else if Target is TCustomEdit then
+    Enabled := Length(GetEditControl(Target).Text) > 0;
+end;
+
+//=== { TJvEditUndo } ==========================================================
+
+procedure TJvEditUndo.ExecuteTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    GetEditorControl(Target).Undo
+  else if Target is TCustomEdit then
+    GetEditControl(Target).Undo;
+end;
+
+procedure TJvEditUndo.UpdateTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    Enabled := GetEditorControl(Target).CanUndo
+  else if Target is TCustomEdit then
+    Enabled := GetEditControl(Target).CanUndo and not TOpenCustomEdit(GetEditControl(Target)).ReadOnly;
+end;
+
+//=== { TJvEditDelete } ==========================================================
+
+procedure TJvEditDelete.ExecuteTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    GetEditorControl(Target).ClearSelection
+  else if Target is TCustomEdit then
+    GetEditControl(Target).ClearSelection;
+end;
+
+procedure TJvEditDelete.UpdateTarget(Target: TObject);
+begin
+  if Target is TJvCustomEditorBase then
+    Enabled := GetEditorControl(Target).CanCut
+  else if Target is TCustomEdit then
+    Enabled := (GetEditControl(Target).SelLength > 0) and not TOpenCustomEdit(GetEditControl(Target)).ReadOnly;
 end;
 
 {$IFDEF UNITVERSIONING}

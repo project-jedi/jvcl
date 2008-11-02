@@ -24,7 +24,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 component   : TJvEditor
-description : 'Delphi IDE'-like Editor (ansi)
+description : 'Delphi IDE'-like Editor
 
 Known Issues:
   Some russian comments were translated to english; these comments are marked
@@ -1600,7 +1600,7 @@ procedure TJvCustomEditor.ClipboardCopy;
 var
   S: string;
 begin
-  S := GetSelText; // convert to ANSI
+  S := GetSelText;
   Clipboard.SetTextBuf(PChar(S));
   SetClipboardBlockFormat(SelBlockFormat);
 end;
