@@ -1304,7 +1304,6 @@ begin
   end;
 end;
 
-
 procedure TJvIconPanel.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
@@ -1314,10 +1313,6 @@ procedure TJvIconPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
 end;
-
-
-
-
 
 procedure TJvIconPanel.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -1612,9 +1607,6 @@ begin
   end;
 end;
 
-
-
-
 procedure TJvCustomNavigationPane.SetBackground(const Value: TJvNavPaneBackgroundImage);
 begin
   FBackground.Assign(Value);
@@ -1811,7 +1803,6 @@ begin
   end;
 end;
 
-
 procedure TJvCustomNavigationPane.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
@@ -1840,9 +1831,6 @@ begin
   end;
   Msg.Result := 1;
 end;
-
-
-
 
 procedure TJvCustomNavigationPane.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -2469,11 +2457,7 @@ begin
     inherited;
 end;
 
-
-
-
-procedure TJvNavPanelButton.ParentStyleManagerChanged(
-  var Msg: TMsgStyleManagerChange);
+procedure TJvNavPanelButton.ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange);
 begin
   if (Msg.Sender <> Self) and ParentStyleManager then
   begin
@@ -3132,15 +3116,10 @@ begin
   end;
 end;
 
-
 procedure TJvNavPanelPage.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
 end;
-
-
-
-
 
 procedure TJvNavPanelPage.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -3299,7 +3278,6 @@ begin
         Canvas.FillRect(Rect(R.Left, R.Top, R.Left + 1, R.Top + 1));
         OffsetRect(R, -1, 3);
       end;
-
   end;
 end;
 
@@ -3357,8 +3335,6 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
-
-
 
 function TJvOutlookSplitter.GetDragZoneRect: TRect;
 begin
@@ -3419,8 +3395,6 @@ begin
   inherited Cursor := Value;
   FOldCursor := Value;
 end;
-
-
 
 procedure TJvOutlookSplitter.RequestAlign;
 begin
@@ -3505,6 +3479,7 @@ var
 begin
   R := ClientRect;
   GradientFillRect(Canvas, R, ColorFrom, ColorTo, fdTopToBottom, 32);
+
   H := Canvas.TextHeight(Caption);
   if Caption <> '' then
   begin
@@ -3515,7 +3490,7 @@ begin
     DrawText(Canvas, Caption, Length(Caption), TempRect,
       DT_CALCRECT or cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
     if WordWrap then
-      OffsetRect(R, 0, (Height - H) div 2);
+      OffsetRect(R, 0, (Height - (TempRect.Bottom - TempRect.Top)) div 2);
     if IsValidImage and (Alignment = taCenter) then
       OffsetRect(R, 0, -Images.Height div 2);
     DrawText(Canvas, Caption, Length(Caption), R,
@@ -3623,9 +3598,6 @@ begin
   Msg.Result := 1;
 end;
 
-
-
-
 procedure TJvNavPanelHeader.SetAlignment(const Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -3669,16 +3641,11 @@ begin
   end;
 end;
 
-
 procedure TJvNavPanelHeader.CMControlChange(var Msg: TMessage);
 begin
   // a control was inserted or removed
   InternalStyleManagerChanged(Self, StyleManager);
 end;
-
-
-
-
 
 //=== { TJvNavPanelDivider } =================================================
 
@@ -4631,7 +4598,6 @@ begin
   end;
 end;
 
-
 procedure TJvCustomNavPaneToolPanel.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
@@ -4651,10 +4617,6 @@ begin
   inherited;
   Color := AColor;
 end;
-
-
-
-
 
 procedure TJvCustomNavPaneToolPanel.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -4707,13 +4669,10 @@ procedure TJvNavPaneToolButton.Assign(Source: TPersistent);
 begin
   if Source is TJvNavPaneToolButton then
   begin
-//    if Source <> Self then
-    begin
-      Action := TJvNavPaneToolButton(Source).Action;
-      Hint   := TJvNavPaneToolButton(Source).Hint;
-      ImageIndex := TJvNavPaneToolButton(Source).ImageIndex;
-      Enabled := TJvNavPaneToolButton(Source).Enabled
-    end;
+    Action := TJvNavPaneToolButton(Source).Action;
+    Hint   := TJvNavPaneToolButton(Source).Hint;
+    ImageIndex := TJvNavPaneToolButton(Source).ImageIndex;
+    Enabled := TJvNavPaneToolButton(Source).Enabled
   end
   else
     inherited Assign(Source);
@@ -4891,7 +4850,9 @@ begin
     end;
     Canvas.Rectangle(ClientRect);
   end;
+
 DrawButton:
+
   case ButtonType of
     nibDropArrow: // dropdown arrow is 7x4, right-aligned
       begin
@@ -5178,9 +5139,6 @@ begin
   InflateRect(Rect, -2, -2);
   inherited AdjustClientRect(Rect);
 end;
-
-{initialization
-  RegisterClasses([TJvNavPanelPage]);} // ahuser: moved to TJvCustomNavigationPane.Create
 
 {$IFDEF UNITVERSIONING}
 initialization
