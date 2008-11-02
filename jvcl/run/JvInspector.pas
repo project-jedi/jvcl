@@ -820,6 +820,7 @@ type
     FUserData: Pointer;
     FDropDownCount: Integer;
     FUpdateEditCtrl: Integer; // Used to prevent EditCtrl destruction while in Apply().
+    FLastEditCtrlText: string;
   protected
     function GetName: string; virtual; // NEW: Warren added.
     procedure AlphaSort;
@@ -5406,7 +5407,8 @@ begin
     if Editing and (EditCtrl <> nil) then
     begin
       NewValue := EditCtrl.Text;
-      if (not Data.IsAssigned or (DisplayValue <> NewValue)) and
+      if (not Data.IsAssigned or (DisplayValue <> NewValue) or
+         (AutoUpdate and (FLastEditCtrlText <> NewValue))) and
          Inspector.DoItemValueChanging(Self, NewValue) then
       begin
         Inc(FUpdateEditCtrl);
@@ -5430,6 +5432,7 @@ begin
               EditCtrl.Text := DisplayValue
             else
               EditCtrl.Text := '';
+            FLastEditCtrlText := EditCtrl.Text;
           finally
             TCustomEditAccessProtected(EditCtrl).OnChange := TmpOnChange;
           end;
@@ -7203,6 +7206,7 @@ begin
       EditCtrl.Text := DisplayValue
     else
       EditCtrl.Text := '';
+    FLastEditCtrlText := EditCtrl.Text;
     EditCtrl.Modified := False;
     EditCtrl.SelectAll;
     if EditCtrl.CanFocus and Inspector.Focused then
@@ -7216,7 +7220,9 @@ begin
   begin
     if DroppedDown then
       CloseUp(False);
-    if not CancelEdits and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
+    if not CancelEdits and
+       (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text) or
+       (AutoUpdate and (FLastEditCtrlText <> EditCtrl.Text))) then
     begin
       Apply;
       InvalidateItem;
