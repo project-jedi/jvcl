@@ -183,7 +183,10 @@ begin
   if Data.Targets.Count = 0 then
     MessageDlg(RsNoDelphiBcbInstalled, mtInformation, [mbOk], 0)
   else if (FindWindow('TAppBuilder', nil) <> 0) and (not CmdOptions.IgnoreIDE) then // do not localize
-    MessageDlg(RsDelphiBcbRunning, mtInformation, [mbOk], 0)
+  begin
+    if MessageDlg(RsDelphiBcbRunning, mtInformation, [mbOk, mbIgnore], 0) = mrIgnore then
+      Result := True;
+  end
   else
     Result := True;
 end;
