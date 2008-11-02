@@ -1,5 +1,12 @@
 Changelog for JVCL 3.X
 ======================
+2008-11-02
+- Renamed TJvgMailSlots to TJvMailSlots and moved it from JvGlobus to the JvSystem package (ahuser)
+- Added property TJvNavPaneButton.WordWrap (ahuser)
+- Added JVCL Standard Edit Actions that support TCustomEdit and the JvEditor (ahuser)
+- TJvTreeView.SelectedCount now returns 1 (Selected<>nil) or 0 (Selected=nil) if MultiSelect=False, the former implementaion always returned -1 (ahuser)
+
+
 2008-06-29
 - Added Mantis #4383 (Make JvImgBtn control "emulate" hyperlink commands)
 2008-04-03
