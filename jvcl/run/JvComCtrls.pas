@@ -585,8 +585,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure ResetPostOperationFlags;
     property ScrollDirection: Integer read FScrollDirection write SetScrollDirection;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -597,6 +596,8 @@ type
     procedure InvalidateSelectedItems;
     procedure SelectItem(Node: TTreeNode; Unselect: Boolean = False);
     property SelectedItems[Index: Integer]: TTreeNode read GetSelectedItem;
+    { SelectedCount now returns 1 (Selected<>nil) or 0 (Selected=nil) if MultiSelect=False.
+      The former implementation always returned -1 if MultiSelect=False }
     property SelectedCount: Integer read GetSelectedCount;
     function GetBold(Node: TTreeNode): Boolean;
     procedure SetBold(Node: TTreeNode; Value: Boolean);
@@ -2622,10 +2623,10 @@ end;
 
 function TJvTreeView.GetSelectedCount: Integer;
 begin
-  if MultiSelect then
+  if MultiSelect or (Selected <> nil) then
     Result := FSelectedList.Count
   else
-    Result := -1;
+    Result := 0;
 end;
 
 function TJvTreeView.GetSelectedItem(Index: Integer): TTreeNode;
