@@ -489,7 +489,6 @@ type
     procedure FontChanged; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     procedure PaintButton(Canvas: TCanvas); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -497,6 +496,7 @@ type
   published
     property Action;
     property Align;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AllowAllUp;
     property Anchors;
     property Caption;
