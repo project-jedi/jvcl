@@ -490,7 +490,6 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     procedure PaintButton(Canvas: TCanvas); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -521,6 +520,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Visible;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
 
     property Width default 125;
     property Height default 28;
@@ -1153,6 +1153,10 @@ const
   cToolButtonHeight = 18;
   cToolButtonOffset = 14;
   cToolButtonWidth = 18;
+
+const
+  cAlignment: array[TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cWordWrap: array[Boolean] of DWORD = (DT_SINGLELINE, DT_WORDBREAK);
 
 procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvNavPaneStyleManager);
 var
@@ -2319,11 +2323,8 @@ begin
 end;
 
 procedure TJvNavPanelButton.PaintButton(Canvas:TCanvas);
-//const
-//  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-//  cWordWrap: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
-  R: TRect;
+  R, TempRect: TRect;
   X, Y: Integer;
 
   function IsValidImage: Boolean;
@@ -2363,7 +2364,14 @@ begin
     else
       Canvas.Font := Font;
     SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER);
+
+    TempRect := R;
+    DrawText(Canvas, Caption, Length(Caption), TempRect,
+      DT_CALCRECT or cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER);
+    if WordWrap then
+      OffsetRect(R, 0, ((R.Bottom - R.Top) - (TempRect.Bottom - TempRect.Top)) div 2);
+    DrawText(Canvas, Caption, Length(Caption), R,
+      cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER);
   end;
   if Colors.ButtonSeparatorColor <> clNone then
   begin
@@ -3464,9 +3472,6 @@ begin
 end;
 
 procedure TJvNavPanelHeader.Paint;
-const
-  cAlignment: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  cWordWrap: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   R, TempRect: TRect;
   X, Y, H: Integer;
