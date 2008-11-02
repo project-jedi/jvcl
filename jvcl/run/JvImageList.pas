@@ -68,6 +68,7 @@ type
   protected
     function GetDisplayName: string; override;
     procedure SetIndex(Value: Integer); override;
+    procedure Loaded; virtual;
   public
     constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
@@ -75,8 +76,7 @@ type
     procedure UpdateImageList;
   published
     property Kind: TJvImageListItemKind read FKind write SetKind;
-    property TransparentColor: TColor read FTransparentColor write
-      SetTransparentColor;
+    property TransparentColor: TColor read FTransparentColor write SetTransparentColor;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property ResourceName: string read FResourceName write SetResourceName;
   end;
@@ -87,6 +87,7 @@ type
     procedure SetItem(AIndex: Integer; Value: TJvImageListItem);
   protected
     procedure Update(Item: TCollectionItem); override;
+    procedure Loaded; virtual;
   public
     constructor Create(AOwner: TComponent);
     function Add: TJvImageListItem;
@@ -130,6 +131,7 @@ type
     procedure UpdateImageList;
     procedure HandleNeeded; virtual;
     procedure CreateImageList; virtual;
+    procedure Loaded; override;
     property FHandle: THandle write SetInternalHandle;
   public
     destructor Destroy; override;
@@ -225,7 +227,6 @@ type
 function CreateImageListHandle(Width, Height: Integer; PixelFormat: TPixelFormat;
   Masked: Boolean; AllocBy: Integer): THandle;
 
-
 function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitmap;
   MaskColor: TColor = clFuchsia; AutoMaskColor: Boolean = False): Integer; overload;
 function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitmap;
@@ -254,13 +255,6 @@ resourcestring
   // (usc) there is no real need to move this string to JvResource.pas because
   //       hopefully ikMappedResourceBitmap will be supported soon
   RsENotSupportedItemKind = 'The item kind %s is not supported so far.';
-
-{$IFDEF UNIX}
-const
-  RT_RCDATA = PChar(10);
-{$ENDIF UNIX}
-
-
 
 {------------------------------------------------------------------------------}
 { Here we inject a jump to our HandleNeededHook into the static
@@ -372,8 +366,6 @@ begin
   Result := ImageList_Create(Width, Height, Flags, AllocBy, AllocBy);
 end;
 
-
-
 //=== { TJvImageListItem } ===================================================
 
 constructor TJvImageListItem.Create(Collection: Classes.TCollection); // TCollection redeclared in JvVCL5Utils
@@ -385,7 +377,7 @@ begin
   FKind := ikResourceBitmap;
   FResourceName := '';
   FTransparentColor := clFuchsia;
-  if GetImageList <> nil then
+  if (GetImageList <> nil) and not (csLoading in GetImageList.ComponentState) then
     AddToImageList(GetImageList);
 end;
 
@@ -453,6 +445,11 @@ begin
   Result := TImageList(TJvImageListItems(Collection).Owner);
 end;
 
+procedure TJvImageListItem.Loaded;
+begin
+  AddToImageList(GetImageList);
+end;
+
 procedure TJvImageListItem.SetBitmap(ABitmap: TBitmap);
 begin
   if FKind = ikInlineBitmap then
@@ -513,7 +510,8 @@ end;
 
 procedure TJvImageListItem.UpdateImageList;
 begin
-  UpdateImageListItem(GetImageList, Index);
+  if (GetImageList <> nil) and not (csLoading in GetImageList.ComponentState) then
+    UpdateImageListItem(GetImageList, Index);
 end;
 
 procedure TJvImageListItem.UpdateImageListItem(AImageList: TImageList; AIndex: Integer);
@@ -560,6 +558,14 @@ end;
 function TJvImageListItems.GetItem(AIndex: Integer): TJvImageListItem;
 begin
   Result := TJvImageListItem(inherited GetItem(AIndex));
+end;
+
+procedure TJvImageListItems.Loaded;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    Items[I].Loaded;
 end;
 
 procedure TJvImageListItems.SetItem(AIndex: Integer; Value: TJvImageListItem);
@@ -807,8 +813,7 @@ begin
   if (not (csDesigning in ComponentState)) and (csLoading in ComponentState) then
     Exit;
 
-  if (FFileName <> '') and FileExists(FFileName)
-    {$IFDEF UNIX} and not DirectoryExists(FFileName) {$ENDIF} then
+  if (FFileName <> '') and FileExists(FFileName) then
   try
     FPicture.LoadFromFile(FFileName);
   except
@@ -946,7 +951,6 @@ begin
   end;
 end;
 
-
 procedure TJvImageList.SetPixelFormat(const Value: TPixelFormat);
 var
   ImgList: TJvImageList;
@@ -975,7 +979,6 @@ begin
       FPixelFormat := Value;
   end;
 end;
-
 
 procedure TJvImageList.SetItems(AItems: TJvImageListItems);
 begin
@@ -1066,8 +1069,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvImageList.SetInternalHandle(Value: THandle);
 begin
   if not HandleAllocated or (Handle <> Value) then
@@ -1118,10 +1119,11 @@ begin
   end;
 end;
 
-
-
-
-
+procedure TJvImageList.Loaded;
+begin
+  inherited Loaded;
+  Items.Loaded;
+end;
 
 procedure TJvImageList.LoadFromFile(const FileName: string);
 var
@@ -1146,8 +1148,6 @@ begin
     Stream.Free;
   end;
 end;
-
-
 
 procedure TJvImageList.Initialize;
 begin
@@ -1186,10 +1186,6 @@ begin
   end;
   ImageList_Write(Handle, Adapter);
 end;
-
-
-
-
 
 procedure TJvImageList.ItemListError;
 begin
