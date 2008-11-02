@@ -39,11 +39,12 @@ uses
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, jpeg,
+  Forms, Dialogs,
   {$IFDEF USEJVCL}
   JvTypes, JvComponentBase,
+  JvMailSlots,
   {$ENDIF USEJVCL}
-  JvgMailSlots;
+  jpeg;
 
 type
   TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime,
@@ -65,7 +66,9 @@ type
     FActive: Boolean;
     FLogFileName: string;
     FEMail: string;
-    FMailSlot: TJvgMailSlotClient;
+    {$IFDEF USEJVCL}
+    FMailSlot: TJvMailSlotClient;
+    {$ENDIF USEJVCL}
     FOptions: TExceptionHandlerOptions;
     FScreenShotList: TList;
     procedure MakeScreenShot(const ID: string);
@@ -91,7 +94,9 @@ type
     property Active: Boolean read FActive write FActive default True;
     property EMail: string read FEMail write FEMail;
     property LogFileName: string read FLogFileName write FLogFileName;
-    property MailSlot: TJvgMailSlotClient read FMailSlot write FMailSlot;
+    {$IFDEF USEJVCL}
+    property MailSlot: TJvMailSlotClient read FMailSlot write FMailSlot;
+    {$ENDIF USEJVCL}
     property Options: TExceptionHandlerOptions read FOptions write FOptions
       default [fehActiveRunTime, fehFileLogging];
   end;
@@ -178,7 +183,6 @@ begin
       (not (csDesigning in ComponentState) and (fehActiveRunTime in Options)) then
     begin
       Application.OnException := OnException;
-      // Настройка ссылки на глобальный обработчик процедуры Assert
       { Setting up link to global Assert handler [translated] }
       AssertErrorProc := @AssertErrorHandler_gl;
       ExceptionHandler := Self;
@@ -198,7 +202,6 @@ begin
   Mesg := '';
   try
     if not FileExists(FileName) then
-    // { первое создание лога }
     { 1st creation of log }
     try
       GetCpuInfo(CpuInfo);
@@ -249,8 +252,10 @@ begin
       Mesg := Mesg + sLineBreak + 'Message= ' + Msg;
     Mesg := Mesg + sLineBreak;
 
+    {$IFDEF USEJVCL}
     if Assigned(MailSlot) then
       MailSlot.Send(Mesg);
+    {$ENDIF USEJVCL}
     if (fehFileLogging in Options) and (Trim(LogFileName) <> '') then
     begin
       if FileExists(FileName) then
@@ -370,7 +375,6 @@ begin
   ProcessMessage(E.Message, '', ID);
 end;
 
-//{ Отображает сообщение, если исключение не внутреннее - EJvgHandlerException }
 { Shows message, if the Exception is not internal one. - EJvgHandlerException }
 
 procedure TJvgExceptionHandler.ShowMessage(E: Exception; const Msg: string);
@@ -387,7 +391,6 @@ begin
   Application.OnException := OnException;
 end;
 
-//{ Вызывает исключение с заданным сообщением без протоколирования }
 { Fires exception with given message without logging it. }
 
 procedure TJvgExceptionHandler.RaiseMessage(const Msg: string);

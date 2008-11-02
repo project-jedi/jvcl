@@ -52,7 +52,7 @@ uses
   JvDebugHandler,
   JvThread, JvThreadDialog, JvThreadTimer, JvTimer, JvSimpleXml, JvXMLDatabase,
   JvFormPlacement, JvAppXMLStorage, JvFormPlacementSelectList,
-  JvMinMaxForm, JvFormPropertiesForm, JvDsgnEditors;
+  JvMinMaxForm, JvFormPropertiesForm, JvDsgnEditors, JvMailSlots;
 
 {$R JvSystemReg.dcr}
 
@@ -73,6 +73,7 @@ begin
     TJvScreenSaveSuppressor, TJvSysRequirements]);
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
+    TJvMailSlotServer, TJvMailSlotClient,
     TJvScreenSaver, TJvJoystick, TJvSoundControl,
     TJvPerfStat95, TJvComputerInfoEx, TJvDebugHandler]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);

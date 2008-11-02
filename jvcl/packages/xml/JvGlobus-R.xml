@@ -13,7 +13,7 @@
   <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
-    <Package Name="JvSystem-R" Targets="DB" Condition=""/>
+    <Package Name="JvSystem-R" Targets="VCL" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
@@ -86,7 +86,6 @@
     <File Name="..\..\run\JvgLanguageLoader.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgListBox.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLogics.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgMailSlots.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgPage.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProgress.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="DB" Formname="JvgfPrintPreview" Condition="JVCL_UseQuickReport"/>

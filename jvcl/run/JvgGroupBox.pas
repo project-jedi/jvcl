@@ -327,7 +327,7 @@ var
   R, NewR: TRect;
   Glyph: TBitmap;
   DrawState: TglDrawState;
-  Interspace, I: Integer;
+  Interspace: Integer;
   Color: TgbColor;
   OldDC: Integer;
 begin
