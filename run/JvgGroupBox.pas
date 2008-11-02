@@ -327,9 +327,31 @@ var
   R, NewR: TRect;
   Glyph: TBitmap;
   DrawState: TglDrawState;
-  Interspace: Integer;
+  Interspace, I: Integer;
   Color: TgbColor;
+  OldDC: Integer;
 begin
+  if Transparent then
+  begin
+    OldDC := SaveDC(Canvas.Handle);
+    try
+      MoveWindowOrg(Canvas.Handle, -Left, -Top);
+      Canvas.Lock;
+      try
+        Parent.Perform(WM_ERASEBKGND, Canvas.Handle, Canvas.Handle);
+        {$IFDEF COMPILER7_UP}
+        Parent.Perform(WM_PRINTCLIENT, Canvas.Handle, PRF_CLIENT);
+        {$ELSE}
+        Parent.Perform(WM_PAINT, Canvas.Handle, 0);
+        {$ENDIF COMPILER7_UP}
+      finally
+        Canvas.Unlock;
+      end;
+    finally
+      RestoreDC(Canvas.Handle, OldDC);
+    end;
+  end;
+
   //inherited;
   //Exit;
   Interspace := 2;
@@ -398,7 +420,8 @@ begin
         TransparentCaption or not (fgoFilledCaption in Options));
       //      Brush.Color := Color;
 
-      SetBkMode(Handle, Integer(TRANSPARENT));
+      if Transparent then
+        SetBkMode(Handle, Integer(TRANSPARENT));
 
       if Assigned(Glyph) then
       begin
@@ -424,8 +447,6 @@ begin
 
     end;
   end;
-  //  if Transparent then for I:=0 to ComponentCount-1 do
-  //    TControl(Components[I]).Repaint;
   if Assigned(AfterPaint) then
     AfterPaint(Self);
 end;
