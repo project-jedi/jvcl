@@ -1027,12 +1027,10 @@ resourcestring
 {$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
-{$IFDEF USEJVCL}
 resourcestring
-  RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
-  RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
-  RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-{$ENDIF USEJVCL}
+  RsJvMailSlotServerErrorCreatingChan = 'Mailslot-Server: Error creating channel!';
+  RsJvMailSlotServerErrorGatheringInf = 'Mailslot-Server: Error gathering information!';
+  RsJvMailSlotServerErrorReadingMessa = 'Mailslot-Server: Error reading message!';
 
 //=== JvgProgress.pas ========================================================
 {$IFDEF USEJVCL}

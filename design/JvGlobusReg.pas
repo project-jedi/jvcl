@@ -54,7 +54,7 @@ uses
   {JvgGraphicButton, }JvgSingleInstance, {JvgShape, }
   JvgSpeedButton, JvgStaticText, JvgHoleShape, {JvgSplit,}
   {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, {JvgSysInf, }
-  JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
+  JvgLogicItemEditorForm, JvgLogics, JvgStringContainer,
   JvgStringGrid, JvgTabComm, JvgTab, {JvgSysRequirements,} {JvgProcess, }
   {JvgProcessUtils, } JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
   JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
@@ -100,7 +100,7 @@ begin
 
   RegisterComponents(RsPaletteGlobusComponents2, [TJvgCheckBox,
     TJvgRuler, TJvgPageControl, TJvgTabControl,
-    TJvgMailSlotServer, TJvgMailSlotClient, TJvgLabel, TJvgFlyingText,
+    TJvgLabel, TJvgFlyingText,
     TJvgDigits, TJvgStaticText, TJvgHoleShape, TJvgHelpPanel,
     TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
     {TJvgJumpingComponent,} TJvgStringContainer, {TJvgSysRequirements,}

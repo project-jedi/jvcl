@@ -68,5 +68,6 @@
     <File Name="..\..\run\JvAppCommand.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvScreenSaveSuppress.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvSysRequirements.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMailSlots.pas" Targets="VCL" Formname="" Condition=""/>
   </Contains>
 </Package>
