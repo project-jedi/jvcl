@@ -90,5 +90,6 @@
     <File Name="..\..\run\JvDataSourceIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeDragBarForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHotTrackPersistent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStdEditActions.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
