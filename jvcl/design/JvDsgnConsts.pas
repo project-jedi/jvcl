@@ -49,6 +49,7 @@ resourcestring
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsJVCLActionsCategory = 'JVCL';
+  RsJVCLEditActionsCategory = 'JVCL Edit';
   RsJVCLControlActionsCategory = 'JVCL-Control';
   RsJVCLDBActionsCategory = 'JVCL-DB';
   RsPropertyEditors = '\Property Editors';
