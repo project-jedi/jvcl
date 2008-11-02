@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
   Florent Ouchet (outchy)
+  Andreas Hausladen (ahuser)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,10 +36,8 @@ procedure Register;
 implementation
 
 uses
-  {$IFDEF RTL170_UP}
-  Windows, SysUtils,
-  {$ENDIF RTL170_UP}
-  Classes, Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  ActnList, ImgList,
   ToolsAPI,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
@@ -52,14 +51,124 @@ uses
   JvPaintBoxEditor, JvColorProviderEditors, JvDataProviderEditors,
   JvBackgrounds, JvBackgroundEditors,
   JvAppRegistryStorage, JvAppIniStorage, JvAppStorage, JvAppStorageSelectList,
-  JvAutoComplete, JvTranslateString;
+  JvAutoComplete, JvTranslateString, JvStdEditActions;
 
 {$R JvCoreReg.dcr}
+
+type
+  TCustomActionClass = class of TCustomAction;
+
+  { TJvStdEditActionsRes is used to copy the VCL's standard edit actions
+    properties to the JVCL standard edit actions }
+  TJvStdEditActionsRes = class(TComponent)
+  private
+    FStandardActions: TComponent;
+    FActionList: TActionList;
+  public
+    constructor Create(AOwner: TComponent); override;
+
+    function CreateAction(AActionClass: TCustomActionClass;
+      const AStandardActionClassName: string): TCustomAction;
+  end;
+
+function FindComponentByClassName(AOwner: TComponent; const AClassName: string): TComponent;
+var
+  I: Integer;
+begin
+  for I := 0 to AOwner.ComponentCount - 1 do
+  begin
+    Result := AOwner.Components[I];
+    if AnsiSameText(Result.ClassName, AClassName) then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+function FindComponentByClass(AOwner: TComponent; AComponentClass: TComponentClass): TComponent;
+var
+  I: Integer;
+begin
+  for I := 0 to AOwner.ComponentCount - 1 do
+  begin
+    Result := AOwner.Components[I];
+    if Result.ClassType = AComponentClass then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+function ModuleEnumProc(HInstance: Integer; Data: Pointer): Boolean;
+var
+  StandardActionsClass: TComponentClass;
+begin
+  { Find the TStandardActions class from the dclstdXX.bpl package }
+  StandardActionsClass := TComponentClass(GetProcAddress(HMODULE(HInstance), '@Actnres@TStandardActions@'));
+  if StandardActionsClass <> nil then
+  begin
+    TJvStdEditActionsRes(Data).FStandardActions := StandardActionsClass.Create(Data);
+    Result := False;
+  end
+  else
+    Result := True;
+end;
+
+constructor TJvStdEditActionsRes.Create(AOwner: TComponent);
+var
+  StdActionList: TActionList;
+begin
+  inherited Create(AOwner);
+  EnumModules(ModuleEnumProc, Self);
+  if FStandardActions <> nil then
+  begin
+    StdActionList := TActionList(FindComponentByClass(FStandardActions, TActionList));
+    if StdActionList <> nil then
+    begin
+      FActionList := TActionList.Create(Self);
+      FActionList.Images := StdActionList.Images;
+
+      { Create the JVCL standard edit actions }
+      CreateAction(TJvEditCut, 'TEditCut');
+      CreateAction(TJvEditCopy, 'TEditCopy');
+      CreateAction(TJvEditPaste, 'TEditPaste');
+      CreateAction(TJvEditSelectAll, 'TEditSelectAll');
+      CreateAction(TJvEditUndo, 'TEditUndo');
+      CreateAction(TJvEditDelete, 'TEditDelete');
+    end;
+  end;
+end;
+
+function TJvStdEditActionsRes.CreateAction(AActionClass: TCustomActionClass;
+  const AStandardActionClassName: string): TCustomAction;
+var
+  StdAction: TCustomAction;
+begin
+  Result := AActionClass.Create(Self);
+  Result.ActionList := FActionList;
+
+  { Copy the localized properties }
+  StdAction := TCustomAction(FindComponentByClassName(FStandardActions, AStandardActionClassName));
+  if TObject(StdAction) is TCustomAction then
+  begin
+    Result.Caption := StdAction.Caption;
+    //Result.Category := StdAction.Category; is overwritten by the IDE
+    Result.Hint := StdAction.Hint;
+    Result.Visible := StdAction.Visible;
+    Result.Enabled := StdAction.Enabled;
+    Result.ShortCut := StdAction.ShortCut;
+    Result.Checked := StdAction.Checked;
+    Result.HelpContext := StdAction.HelpContext;
+    Result.ImageIndex := StdAction.ImageIndex;
+  end;
+end;
+
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
+  RegisterActions(RsJVCLEditActionsCategory, [TJvEditCut, TJvEditCopy, TJvEditPaste,
+    TJvEditSelectAll, TJvEditUndo, TJvEditDelete], TJvStdEditActionsRes);
+
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvComponent, TControl);
   GroupDescendentsWith(TJvLookupAutoComplete, TControl);
