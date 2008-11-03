@@ -36,6 +36,8 @@
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\run\JvGnugettext.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGnugettextD5.pas" Targets="allv5" Formname="" Condition=""/>
     <File Name="..\..\run\JvExButtons.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvExCheckLst.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvExComCtrls.pas" Targets="VCL" Formname="" Condition=""/>

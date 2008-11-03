@@ -149,8 +149,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TFrameInstall.EvCaptureLine(const Text: string;
-  var AAborted: Boolean);
+procedure TFrameInstall.EvCaptureLine(const Text: string; var AAborted: Boolean);
 var
   Line: string;
 
@@ -344,6 +343,7 @@ begin
     FormCompileMessages.Top := ParentForm.BoundsRect.Bottom;
     FormCompileMessages.Left := ParentForm.Left + (ParentForm.Width - FormCompileMessages.Width) div 2;
 
+    SetWindowLong(FormCompile.Handle, GWL_HWNDPARENT, ParentForm.Handle);
     FormCompile.CompileMessages := FormCompileMessages;
 
     {$IFDEF USE_DXGETTEXT}
@@ -361,7 +361,6 @@ begin
     finally
       Compiler.Free;
     end;
-    SetWindowLong(FormCompile.Handle, GWL_HWNDPARENT, 0);
 
     if Success and Installer.Data.IgnoreMakeErrors then
       Success := FormCompileMessages.Count = 0;
@@ -393,7 +392,7 @@ begin
     // register packages into IDE
     with Installer do
       for i := 0 to SelTargetCount - 1 do
-        if SelTargets[i].InstallJVCL and (not SelTargets[i].CompileOnly) then
+        if SelTargets[i].InstallJVCL and not SelTargets[i].CompileOnly then
         begin
           if SelTargets[i].CleanPalettes then
             SelTargets[i].CleanJVCLPalette(False);

@@ -133,8 +133,6 @@ begin
                 S := sJVCLMacroCommonDir;
                 if pkVCL in InstallMode then
                   S := S + ';' + sJVCLMacroRunDir;
-                if pkClx in InstallMode then
-                  S := S + ';' + sJVCLMacroClxDirs;
                 Add(RsAddToBrowsePath, S);
                 if not DeveloperInstall then
                   S := sJVCLMacroCommonDir;

@@ -42,8 +42,14 @@ const
   sJvclIncFile = '%s\common\jvcl.inc';
   sBCBIncludeDir = '%s\Include\Vcl';
 
-const
-  CLXSupport = False; { Switch this to True if the Installer should support CLX }
+  { Before any package is compiled these package files and units are deleted from the
+    output directories. }
+  sRemovedPackages: array[0..0] of string = (
+    'Jv3rd-R'
+  );
+  sRemovedUnits: array[0..0] of string = (
+    'JvgMailSlots'
+  );
 
 type
   TJVCLData = class;
@@ -718,20 +724,7 @@ begin
     Include(FInstallMode, pkVCL);
     FInstalledJVCLVersion := 3;
   end;
-  if Target.FindPackageEx('JvQCore') <> nil then // CLX // do not localize
-  begin
-    Include(FInstallMode, pkCLX);
-    FInstalledJVCLVersion := 3;
-  end;
-  if not CLXSupport then
-  begin
-    Exclude(FInstallMode, pkCLX);
-    Include(FInstallMode, pkVCL);
-  end
-  else
-  if FInstallMode = [] then // if no VCL and no CLX than it is VCL
-    Include(FInstallMode, pkVCL);
-
+  Include(FInstallMode, pkVCL);
 
   // find JCL by looking into the (new) JEDI Registry key
   FOutdatedJcl := False;
@@ -839,7 +832,7 @@ end;
 /// </summary>
 function TTargetConfig.GetBpgFilename(Personal: Boolean; Kind: TPackageGroupKind): string;
 var
-  Pers, Clx: string;
+  Pers: string;
 begin
   if Personal then
   begin
@@ -849,22 +842,19 @@ begin
       Pers := 'Per'; // do not localize
   end;
 
-  if Kind = pkClx then
-    Clx := 'Clx';
-
   if Target.IsBDS then
   begin
     if Target.Version >= 11 then  // Delphi 2007 and upper use groupproj files
-      Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.groupproj', // do not localize
-        [Target.TargetType, Target.Version, Pers, Clx])
+      Result := Owner.JVCLPackagesDir + Format('\%s%d%s Packages.groupproj', // do not localize
+        [Target.TargetType, Target.Version, Pers])
     else
-      Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bdsgroup', // do not localize
-        [Target.TargetType, Target.Version, Pers, Clx]);
+      Result := Owner.JVCLPackagesDir + Format('\%s%d%s Packages.bdsgroup', // do not localize
+        [Target.TargetType, Target.Version, Pers]);
   end
   else
   begin
-    Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
-      [Target.TargetType, Target.Version, Pers, Clx]);
+    Result := Owner.JVCLPackagesDir + Format('\%s%d%s Packages.bpg', // do not localize
+      [Target.TargetType, Target.Version, Pers]);
   end;
 end;
 
@@ -1053,8 +1043,6 @@ procedure TTargetConfig.SetInstallMode(Value: TInstallMode);
 begin
   if Value <> FInstallMode then
   begin
-    if not CLXSupport then
-      Exclude(Value, pkCLX);
     if Value = [] then
       FInstallMode := [pkVcl]
     else
@@ -1497,13 +1485,6 @@ begin
       ['run']); // do not localize
     AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
       ['run']); // do not localize
-  end;
-  if pkCLX in InstallMode then
-  begin
-    AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
-      ['qcommon', 'qrun']); // do not localize
-    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
-      ['qcommon', 'qrun']); // do not localize
   end;
 
   AllPackages := TProjectGroup.Create(Self, '');
