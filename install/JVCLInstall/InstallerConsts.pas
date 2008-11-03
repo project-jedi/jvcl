@@ -33,7 +33,6 @@ const
   sJVCLMacroCommonDir = '$(JVCL)\common';                                // do not localize
   sJVCLMacroRunDir = '$(JVCL)\run';                                      // do not localize
   sJVCLMacroResourcesDir = '$(JVCL)\Resources';                          // do not localize
-  sJVCLMacroClxDirs = '$(JVCL)\qcommon;$(JVCL)\qrun;$(JVCL)\Resources';  // do not localize
 
 resourcestring
  // JVCL3Install.pas

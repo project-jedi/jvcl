@@ -233,8 +233,6 @@ begin
       CheckListBoxFrameworks.ItemIndex := -1;
       for Kind := pkFirst to pkLast do
       begin
-        if (Kind = pkCLX) and not CLXSupport then
-          Continue;
        // find first selected item
         Group := TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, Kind];
         if Group <> nil then
@@ -640,11 +638,9 @@ begin
   inherited Create(AOwner);
   FOrgWndProc := CheckListBoxPackages.WindowProc;
   CheckListBoxPackages.WindowProc := HookWndProc;
-  if not CLXSupport then
-  begin
-    LblFrameworks.Visible := False;
-    CheckListBoxFrameworks.Visible := False;
-  end;
+
+  LblFrameworks.Visible := False;
+  CheckListBoxFrameworks.Visible := False;
   {$IFDEF COMPILER12_UP}
   CheckListBoxPackages.ParentDoubleBuffered := False;
   CheckListBoxFrameworks.ParentDoubleBuffered := False;

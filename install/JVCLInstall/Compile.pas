@@ -34,7 +34,8 @@ interface
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
   GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser,
-  JclBase, JvVCL5Utils, JVCLVer;
+  JclBase, JclSysInfo,
+  JvVCL5Utils, JVCLVer;
 
 type
   TProgressKind = (
@@ -136,6 +137,7 @@ type
     function GeneratePackages(const Group, Targets, PackagesPath: string): Boolean; overload;
     function GenerateAllPackages: Boolean; overload;
     function CompileTarget(TargetConfig: TTargetConfig; PackageGroupKind: TPackageGroupKind): Boolean;
+    procedure DeleteRemovedFiles(TargetConfig: TTargetConfig);
 
     //procedure AlterHppFiles(TargetConfig: ITargetConfig; Project: TPackageTarget);
   public
@@ -437,6 +439,7 @@ var
   SearchPaths, S: string;
   i: Integer;
   OutDirs: TOutputDirs;
+  Target: TCompileTarget;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
 
@@ -461,18 +464,18 @@ begin
 
     // search paths
     SearchPaths := '';
-    with TargetConfig do
-      for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
+    Target := TargetConfig.Target;
+    for i := 0 to Target.SearchPaths.Count - 1 do
+    begin
+      S := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(Target.SearchPaths[i]));
+      if DirectoryExists(S) then
       begin
-        S := ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(Target.SearchPaths[i]));
-        if DirectoryExists(S) then
-        begin
-          if SearchPaths <> '' then
-            SearchPaths := SearchPaths + ';' + S
-          else
-            SearchPaths := S;
-        end;
+        if SearchPaths <> '' then
+          SearchPaths := SearchPaths + ';' + S
+        else
+          SearchPaths := S;
       end;
+    end;
     Lines.Add('-U"' + SearchPaths + '"');
     Lines.Add('-I"' + SearchPaths + '"');
     Lines.Add('-R"' + SearchPaths + '"');
@@ -514,8 +517,9 @@ const
   MaxCmdLineLength = 2048 - 1;
 var
   Dcc32Cfg, PrjFilename: string;
-  Filename, Args, CmdLine, S: string;
+  BplFilename, BplBakFilename, Filename, Args, CmdLine, S: string;
   OutDirs: TOutputDirs;
+  ExistingBplRenamed: Boolean;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
@@ -562,14 +566,42 @@ begin
         CaptureLinePackageCompilation(#1 + CmdLine, FAborted);
       end;
 
-      if TargetConfig.Target.Version <= 9 then
-        Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
-                                 ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
-                                 False, TargetConfig.GetPathEnvVar, Dcc32SpeedInjection)
-      else
-        Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
-                                 ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
-                                 False, TargetConfig.GetPathEnvVar, nil);
+      { Get the target file out of the way, in case it is still used by the IDE or
+        an application. }
+      BplFilename := OutDirs.BplDir + PathDelim + Project.TargetName;
+      BplBakFilename := BplFilename + '.bak';
+      ExistingBplRenamed := False;
+      if FileExists(BplFilename) then
+      begin
+        if SetFileAttributes(PChar(BplBakFilename), FILE_ATTRIBUTE_NORMAL) then
+          DeleteFile(BplBakFilename);
+        ExistingBplRenamed := RenameFile(BplFilename, BplBakFilename);
+      end;
+      Result := -1;
+      try
+        { Compile the project }
+        if TargetConfig.Target.Version <= 9 then
+          Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+                                   ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
+                                   False, TargetConfig.GetPathEnvVar, Dcc32SpeedInjection)
+        else
+          Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+                                   ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
+                                   False, TargetConfig.GetPathEnvVar, nil);
+      finally
+        { Restore original file if there was an error or an exception }
+        if ExistingBplRenamed then
+        begin
+          if Result <> 0 then
+            RenameFile(BplBakFilename, BplFilename);
+          if FileExists(BplBakFilename) then
+          begin
+            SetFileAttributes(PChar(BplBakFilename), FILE_ATTRIBUTE_NORMAL);
+            if not DeleteFile(BplBakFilename) then
+              MoveFileEx(PChar(BplBakFilename), nil, MOVEFILE_DELAY_UNTIL_REBOOT);
+          end;
+        end;
+      end;
       if Result <> 0 then
         Break;
     end;
@@ -579,9 +611,7 @@ begin
   end;
 
   if Result < 0 then // command not found
-    MessageBox(0, PChar(Format(RsCommandNotFound,
-                      [CmdLine,
-                       ExtractFileDir(PrjFilename)])),
+    MessageBox(0, PChar(Format(RsCommandNotFound, [CmdLine, ExtractFileDir(PrjFilename)])),
                'JVCL Installer', MB_OK or MB_ICONERROR);
 end;
 
@@ -1184,7 +1214,7 @@ begin
 end;
 
 /// <summary>
-/// Compile() prepares for compiling and decides if the VCL or CLX framework
+/// Compile() prepares for compiling and decides if the VCL framework
 /// should be compiled.
 /// </summary>
 function TCompiler.Compile: Boolean;
@@ -1197,30 +1227,7 @@ begin
   Result := True;
   FAborted := False;
 
-  SysInfo := '';
-  case Win32Platform of
-    VER_PLATFORM_WIN32_WINDOWS:
-      begin
-        case Win32MinorVersion of
-          0..9: SysInfo := 'Windows 95';
-          10..89: SysInfo := 'Windows 98';
-          90: SysInfo := 'Windows ME';
-        end;
-      end;
-    VER_PLATFORM_WIN32_NT:
-      begin
-        case Win32MajorVersion of
-          4: SysInfo := 'Windows NT4';
-          5:
-            begin
-              case Win32MinorVersion of
-                0: SysInfo := 'Windows 2000';
-                1: SysInfo := 'Windows XP';
-              end;
-            end;
-        end;
-      end;
-  end;
+  SysInfo := GetWindowsProductString;
 
   if SysInfo <> '' then
   begin
@@ -1230,8 +1237,8 @@ begin
     CaptureLine(SysInfo, FAborted);
     CaptureLine('', FAborted);
   end;
-  CaptureLine(Format('JVCL %d.%d.%d.%d', 
-    [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]), 
+  CaptureLine(Format('JVCL %d.%d.%d.%d',
+    [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]),
 	FAborted);
   CaptureLine('', FAborted);
 
@@ -1247,8 +1254,6 @@ begin
       TargetConfigs[Count] := Data.TargetConfig[i];
       Inc(Count);
       if pkVCL in Data.TargetConfig[i].InstallMode then
-        Inc(Frameworks);
-      if pkCLX in Data.TargetConfig[i].InstallMode then
         Inc(Frameworks);
     end;
   end;
@@ -1267,14 +1272,97 @@ begin
       Inc(Index);
     end;
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
-    if pkClx in TargetConfigs[i].InstallMode then
+  end;
+end;
+
+/// <summary>
+/// DeleteRemovedFiles deletes the removed packages and units from the output directories.
+/// </summary>
+procedure TCompiler.DeleteRemovedFiles(TargetConfig: TTargetConfig);
+var
+  I: Integer;
+  Filename, Path: string;
+begin
+  { Delete removed package files .dcp, .lib, .bpi, .dcu, .hpp file }
+  for I := 0 to High(sRemovedPackages) do
+  begin
+    { Release }
+    Filename := TargetConfig.VersionedJVCLXmlDcp(sRemovedPackages[I]);
+    Path := IncludeTrailingPathDelimiter(TargetConfig.DcpDir);
+    if Path = '' then
+      IncludeTrailingPathDelimiter(TargetConfig.Target.DcpDir);
+    if FileExists(Path + Filename) then
     begin
-      Result := CompileTarget(TargetConfigs[i], pkCLX);
-      if not Result then
-        Break;
-      Inc(Index);
+      DeleteFile(Path + Filename);
+      DeleteFile(Path + ChangeFileExt(Filename, '.dcu'));
+      DeleteFile(Path + ChangeFileExt(Filename, '.lib'));
+      DeleteFile(Path + ChangeFileExt(Filename, '.bpi'));
+      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+      if TargetConfig.HppDir <> '' then
+        Path := IncludeTrailingPathDelimiter(TargetConfig.HppDir);
+      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
     end;
-    DoTargetProgress(TargetConfigs[i], Index, Frameworks);
+
+    { Debug }
+    Filename := TargetConfig.VersionedJVCLXmlDcp(sRemovedPackages[I]);
+    Path := IncludeTrailingPathDelimiter(TargetConfig.DebugDcpDir);
+    if Path = '' then
+      IncludeTrailingPathDelimiter(TargetConfig.Target.DcpDir);
+    if FileExists(Path + Filename) then
+    begin
+      DeleteFile(Path + Filename);
+      DeleteFile(Path + ChangeFileExt(Filename, '.dcu'));
+      DeleteFile(Path + ChangeFileExt(Filename, '.lib'));
+      DeleteFile(Path + ChangeFileExt(Filename, '.bpi'));
+      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+      if TargetConfig.DebugHppDir <> '' then
+        Path := IncludeTrailingPathDelimiter(TargetConfig.DebugHppDir);
+      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+    end;
+
+    { Delete package .bpl }
+    Filename := TargetConfig.VersionedJVCLXmlBpl(sRemovedPackages[I]);
+    Path := IncludeTrailingPathDelimiter(TargetConfig.BplDir);
+    if Path = '' then
+      Path := IncludeTrailingPathDelimiter(TargetConfig.Target.BplDir);
+    DeleteFile(Path + Filename);
+  end;
+
+
+  { Delete removed unit files .dcu, .dfm, .hpp }
+  for I := 0 to High(sRemovedUnits) do
+  begin
+    { Release }
+    Path := IncludeTrailingPathDelimiter(TargetConfig.UnitOutDir);
+    if Path <> '' then
+    begin
+      Filename := sRemovedUnits[I] + '.dcu';
+      if FileExists(Path + Filename) then
+      begin
+        DeleteFile(Path + Filename);
+        DeleteFile(Path + ChangeFileExt(Filename, '.dfm'));
+        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+        if TargetConfig.HppDir <> '' then
+          Path := IncludeTrailingPathDelimiter(TargetConfig.HppDir);
+        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+      end;
+    end;
+
+    { Debug }
+    Path := IncludeTrailingPathDelimiter(TargetConfig.DebugUnitOutDir);
+    if Path <> '' then
+    begin
+      Filename := sRemovedUnits[I] + '.dcu';
+      if FileExists(Path + Filename) then
+      begin
+        DeleteFile(Path + Filename);
+        DeleteFile(Path + ChangeFileExt(Filename, '.dfm'));
+        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+        if TargetConfig.DebugHppDir <> '' then
+          Path := IncludeTrailingPathDelimiter(TargetConfig.DebugHppDir);
+        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
+      end;
+    end;
   end;
 end;
 
@@ -1284,18 +1372,16 @@ end;
 /// </summary>
 function TCompiler.CompileTarget(TargetConfig: TTargetConfig; PackageGroupKind: TPackageGroupKind): Boolean;
 var
-  //ObjFiles: TStrings;
-  //i: Integer;
   Aborted: Boolean;
-  DoClx: Boolean;
 begin
-  DoClx := PackageGroupKind = pkClx;
   Result := True;
   Aborted := False;
   FOutput.Clear;
 
+  DeleteRemovedFiles(TargetConfig);
+
   // VCL
-  if Result and (pkVCL in TargetConfig.InstallMode) and not DoClx then
+  if Result and (pkVCL in TargetConfig.InstallMode) then
   begin
     if not TargetConfig.DeveloperInstall then
     begin
@@ -1307,40 +1393,14 @@ begin
     end;
 
     if Result then
+    begin
       // compile
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
+    end;
 
     if Result then
       CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
-  end;
-
-  // CLX
-  if Result and (pkClx in TargetConfig.InstallMode) and DoClx then
-  begin
-    if not FileExists(TargetConfig.BplDir + '\clxdesigner.dcp') then
-    begin
-      // Delphi 7 has no clxdesigner.dcp so we compile it from Delphi's property
-      // editor source.
-      CaptureExecute(Data.JVCLPackagesDir + '\bin\MakeClxDesigner.bat', '',
-        Data.JVCLPackagesDir + '\bin', CaptureLine, nil, False);
-    end;
-
-    if not TargetConfig.DeveloperInstall then
-    begin
-      // debug units
-      if TargetConfig.Target.SupportsPersonalities([persDelphi]) and TargetConfig.DebugUnits then
-        Result := CompileProjectGroup(
-          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], True);
-    end;
-
-    if Result then
-      // compile
-      Result := CompileProjectGroup(
-        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
-
-    if Result then
-      CaptureLine('[Finished JVCL for CLX installation]', Aborted); // do not localize
   end;
 end;
 
@@ -1421,16 +1481,8 @@ begin
     DestDir := ProjectGroup.TargetConfig.UnitOutDir;
     DebugDestDir := ProjectGroup.TargetConfig.DebugUnitOutDir;
 
-    if ProjectGroup.IsVCLX then
-    begin
-      Dir := ProjectGroup.TargetConfig.JVCLDir + PathDelim + 'qrun';
-      FindFiles(Dir, '*.xfm', False, Files, ['.xfm']);
-    end
-    else
-    begin
-      Dir := ProjectGroup.TargetConfig.JVCLDir + PathDelim + 'run';
-      FindFiles(Dir, '*.dfm', False, Files, ['.dfm']);
-    end;
+    Dir := ProjectGroup.TargetConfig.JVCLDir + PathDelim + 'run';
+    FindFiles(Dir, '*.dfm', False, Files, ['.dfm']);
 
     CaptureLine(RsCopyingFiles, FAborted);
     for i := 0 to Files.Count - 1 do
@@ -1452,18 +1504,6 @@ begin
   finally
     Files.Free;
   end;
-end;
-
-function GetWindowsDir: string;
-begin
-  SetLength(Result, MAX_PATH);
-  SetLength(Result, GetWindowsDirectory(PChar(Result), Length(Result)));
-end;
-
-function GetSystemDir: string;
-begin
-  SetLength(Result, MAX_PATH);
-  SetLength(Result, GetSystemDirectory(PChar(Result), Length(Result)));
 end;
 
 procedure TCompiler.SortProjectGroup(Group: TProjectGroup; List: TList);
@@ -1580,8 +1620,6 @@ begin
     FPkgIndex := 0;
 
     Edition := TargetConfig.TargetSymbol;
-    if ProjectGroup.IsVCLX then
-      Edition := Edition + 'clx';
     JVCLPackagesDir := TargetConfig.JVCLPackagesDir;
 
     DccOpt := '-M'; // make modified units, output 'never build' DCPs
@@ -1794,7 +1832,7 @@ begin
 end;
 
 /// <summary>
-/// AlterHppFiles corrects the *.hpp files that the dcc32.exe compiler generated.
+/// AlterHppFiles corrects the *.hpp files that the dcc32.exe compiler has generated.
 ///  - Converts every '#define constant "string"' to "static const char
 /// </summary>
 (*procedure TCompiler.AlterHppFiles(TargetConfig: ITargetConfig; Project: TPackageTarget);

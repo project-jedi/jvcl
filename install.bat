@@ -10,9 +10,12 @@ cd install\JVCLInstall
 if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
 ..\..\packages\bin\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl --requires-jcl=%JCLVERSION% -Q -B -DJVCLINSTALLER -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\common;..\..\run -n..\..\dcu JVCLInstall.dpr
 if ERRORLEVEL 1 goto Failed
+..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin JVCLInstallStarter.dpr >NUL
+::if ERRORLEVEL 1 goto Failed
 cd ..\..
 
 :: create mo files, if possible (msgfmt must be in the PATH environment variable)
+echo.
 cd locale
 msgfmt --help 1> tmp1.txt 2> tmp2.txt
 if errorlevel 1 goto MsgFmtNotFound
@@ -25,6 +28,7 @@ for %%l in (%LANGUAGES%) do msgfmt %%l\LC_MESSAGES\JVCLInstall.po -o %%l\LC_MESS
 goto CleanLocale
 
 :MsgFmtNotFound
+echo.
 echo Warning: msgfmt not found in PATH, no language support in the installer
 
 :CleanLocale
@@ -32,8 +36,11 @@ if exist tmp1.txt del /q tmp?.txt
 cd ..
 
 :: start installer
+echo.
 echo [Starting installer...]
-start bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
+echo bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
+if not exist bin\JVCLInstallStarter.exe goto :FailStart
+bin\JVCLInstallStarter.exe bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
 if ERRORLEVEL 1 goto FailStart
 goto Leave
 

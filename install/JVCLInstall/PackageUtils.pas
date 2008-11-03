@@ -116,7 +116,6 @@ type
     function GetPackages(Index: Integer): TPackageTarget;
     function GetTarget: TCompileTarget;
   protected
-    function GetIsVCLX: Boolean; override;
     procedure DoInstallChange; virtual;
     function GetPackageTargetClass: TBpgPackageTargetClass; override;
   public
@@ -172,10 +171,6 @@ begin
 
   for Kind := pkFirst to pkLast do
   begin
-    { Delphi 5 and the Personal Editions do not have CLX support. }
-    if (Kind = pkClx) and ((TargetConfig.Target.Version < 6) or (TargetConfig.Target.IsPersonal)) then
-      Continue;
-      
     if FileExists(TargetConfig.GetBpgFilename(False, Kind)) then
       FItems[False, Kind] := TProjectGroup.Create(TargetConfig, TargetConfig.GetBpgFilename(False, Kind));
     if FileExists(TargetConfig.GetBpgFilename(True, Kind)) then
@@ -231,11 +226,6 @@ begin
     Result := inherited GetBplNameOf(Package)
   else
     Result := Package.Name;
-end;
-
-function TProjectGroup.GetIsVCLX: Boolean;
-begin
-  Result := Pos('clx', LowerCase(BpgName)) > 0; 
 end;
 
 function TProjectGroup.GetPackages(Index: Integer): TPackageTarget;

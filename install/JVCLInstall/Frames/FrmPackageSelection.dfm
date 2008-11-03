@@ -22,7 +22,7 @@ object FramePackageSelection: TFramePackageSelection
   object LblIDEs: TLabel
     Left = 8
     Top = 8
-    Width = 69
+    Width = 68
     Height = 13
     Caption = '&Available IDEs'
     FocusControl = ListViewTargetIDEs
@@ -31,15 +31,15 @@ object FramePackageSelection: TFramePackageSelection
   object LblFrameworks: TLabel
     Left = 356
     Top = 49
-    Width = 60
+    Width = 62
     Height = 13
     Caption = '&Frameworks:'
     FocusControl = CheckListBoxFrameworks
   end
   object LblShowMode: TLabel
-    Left = 322
+    Left = 324
     Top = 101
-    Width = 80
+    Width = 78
     Height = 13
     Alignment = taRightJustify
     Caption = '&Show packages:'

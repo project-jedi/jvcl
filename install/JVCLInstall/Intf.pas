@@ -34,13 +34,13 @@ uses
   SysUtils, Classes, Contnrs, DelphiData, JVCLConfiguration, RegConfig;
 
 type
-  TPackageGroupKind = (pkVcl, pkClx);
+  TPackageGroupKind = (pkVcl);
 
 const
   pkFirst = Low(TPackageGroupKind);
   pkLast = High(TPackageGroupKind);
   PackageGroupKindToStr: array[TPackageGroupKind] of string = (
-    'VCL', 'VisualCLX'
+    'VCL'
   );
 
 type
