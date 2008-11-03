@@ -314,6 +314,10 @@ procedure TJvLogFile.SaveToFile(FileName: TFileName);
 var
   Stream: TFileStream;
 begin
+  if FileName = '' then
+    Exit;
+  if csDesigning in ComponentState then
+    Exit;
   Stream := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
   try
     SaveToStream(Stream);
