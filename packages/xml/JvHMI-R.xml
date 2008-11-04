@@ -12,7 +12,6 @@
   <ReleaseNumber>0</ReleaseNumber>
   <BuildNumber>0</BuildNumber>
   <Requires>
-    <Package Name="Jv3rd-R" Targets="all" Condition="USE_DXGETTEXT"/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JCLD50" Targets="Dv5" Condition=""/>
     <Package Name="JCLC50" Targets="Cv5" Condition=""/>
