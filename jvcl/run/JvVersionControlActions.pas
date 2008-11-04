@@ -418,7 +418,7 @@ end;
 procedure TJvVersionControlActionList.SetImages(Value: TCustomImageList);
 begin
   inherited SetImages(Value);
-  VersionControlPluginList.Images := Value;
+  //VersionControlPluginList.Images := Value;
 end;
 {$ENDIF}
 
@@ -668,8 +668,8 @@ var
 begin
   AFileCache := CurrentCache;
 
-  if Assigned(AFileCache) then
-    SetImageIndex (VersionControlPluginList.GetActionImageIndex(IconType, ActionType, AFileCache.Plugin));
+//  if Assigned(AFileCache) then
+//    SetImageIndex (VersionControlPluginList.GetActionImageIndex(IconType, ActionType, AFileCache.Plugin));
 
   if HideAction and not VersionControlActionInfo(ActionType).AllPlugins then
     SetVisible (Assigned(AFileCache) and Assigned(AFileCache.Plugin)
