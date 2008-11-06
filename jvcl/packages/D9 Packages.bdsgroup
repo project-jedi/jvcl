@@ -11,7 +11,6 @@
   <Default.Personality>
     
     <Projects ActiveProject="JvJansD9R.bpl">
-      <Projects Name="Jv3rdD9R.bpl" Type="String">d9\Jv3rdD9R.bdsproj</Projects>
       <Projects Name="JvCoreD9R.bpl" Type="String">d9\JvCoreD9R.bdsproj</Projects>
       <Projects Name="JvCoreD9D.bpl" Type="String">d9\JvCoreD9D.bdsproj</Projects>
       <Projects Name="JvSystemD9R.bpl" Type="String">d9\JvSystemD9R.bdsproj</Projects>
@@ -72,7 +71,7 @@
       <Projects Name="JvEDID9D.bpl" Type="String">d9\JvEDID9D.bdsproj</Projects>
       <Projects Name="JvRuntimeDesignD9R.bpl" Type="String">d9\JvRuntimeDesignD9R.bdsproj</Projects>
       <Projects Name="JvRuntimeDesignD9D.bpl" Type="String">d9\JvRuntimeDesignD9D.bdsproj</Projects>
-      <Projects Name="Targets" Type="String">Jv3rdD9R.bpl JvCoreD9R.bpl JvCoreD9D.bpl JvSystemD9R.bpl JvSystemD9D.bpl JvStdCtrlsD9R.bpl JvStdCtrlsD9D.bpl JvCtrlsD9R.bpl JvCtrlsD9D.bpl JvCmpD9R.bpl JvCmpD9D.bpl JvCustomD9R.bpl JvCustomD9D.bpl JvDlgsD9R.bpl JvDlgsD9D.bpl JvCryptD9R.bpl JvCryptD9D.bpl JvMMD9R.bpl JvMMD9D.bpl JvNetD9R.bpl JvNetD9D.bpl JvAppFrmD9R.bpl JvAppFrmD9D.bpl JvDBD9R.bpl JvDBD9D.bpl JvBDED9R.bpl JvBDED9D.bpl JvInterpreterD9R.bpl JvInterpreterD9D.bpl JvBandsD9R.bpl JvBandsD9D.bpl JvPluginD9R.bpl JvPluginD9D.bpl JvJansD9R.bpl JvJansD9D.bpl JvGlobusD9R.bpl JvGlobusD9D.bpl JvPrintPreviewD9R.bpl JvPrintPreviewD9D.bpl JvPageCompsD9R.bpl JvPageCompsD9D.bpl JvValidatorsD9R.bpl JvValidatorsD9D.bpl JvUIBD9R.bpl JvUIBD9D.bpl JvWizardD9R.bpl JvWizardD9D.bpl JvTimeFrameworkD9R.bpl JvTimeFrameworkD9D.bpl JvHMID9R.bpl JvHMID9D.bpl JvManagedThreadsD9R.bpl JvManagedThreadsD9D.bpl JvXPCtrlsD9R.bpl JvXPCtrlsD9D.bpl JvDockingD9R.bpl JvDockingD9D.bpl JvDotNetCtrlsD9R.bpl JvDotNetCtrlsD9D.bpl JvEDID9R.bpl JvEDID9D.bpl JvRuntimeDesignD9R.bpl JvRuntimeDesignD9D.bpl</Projects>
+      <Projects Name="Targets" Type="String">JvCoreD9R.bpl JvCoreD9D.bpl JvSystemD9R.bpl JvSystemD9D.bpl JvStdCtrlsD9R.bpl JvStdCtrlsD9D.bpl JvCtrlsD9R.bpl JvCtrlsD9D.bpl JvCmpD9R.bpl JvCmpD9D.bpl JvCustomD9R.bpl JvCustomD9D.bpl JvDlgsD9R.bpl JvDlgsD9D.bpl JvCryptD9R.bpl JvCryptD9D.bpl JvMMD9R.bpl JvMMD9D.bpl JvNetD9R.bpl JvNetD9D.bpl JvAppFrmD9R.bpl JvAppFrmD9D.bpl JvDBD9R.bpl JvDBD9D.bpl JvBDED9R.bpl JvBDED9D.bpl JvInterpreterD9R.bpl JvInterpreterD9D.bpl JvBandsD9R.bpl JvBandsD9D.bpl JvPluginD9R.bpl JvPluginD9D.bpl JvJansD9R.bpl JvJansD9D.bpl JvGlobusD9R.bpl JvGlobusD9D.bpl JvPrintPreviewD9R.bpl JvPrintPreviewD9D.bpl JvPageCompsD9R.bpl JvPageCompsD9D.bpl JvValidatorsD9R.bpl JvValidatorsD9D.bpl JvUIBD9R.bpl JvUIBD9D.bpl JvWizardD9R.bpl JvWizardD9D.bpl JvTimeFrameworkD9R.bpl JvTimeFrameworkD9D.bpl JvHMID9R.bpl JvHMID9D.bpl JvManagedThreadsD9R.bpl JvManagedThreadsD9D.bpl JvXPCtrlsD9R.bpl JvXPCtrlsD9D.bpl JvDockingD9R.bpl JvDockingD9D.bpl JvDotNetCtrlsD9R.bpl JvDotNetCtrlsD9D.bpl JvEDID9R.bpl JvEDID9D.bpl JvRuntimeDesignD9R.bpl JvRuntimeDesignD9D.bpl</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
