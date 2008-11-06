@@ -56,9 +56,6 @@ type
     procedure SetIconType(const Value: Integer);
     procedure SetVersionControlFilename(const Value: string);
   protected
-    {$IFDEF DELPHI7_UP}
-    procedure SetImages(Value: TCustomImageList); override;
-    {$ENDIF}
     procedure SetVersionControlComponent(Value: TComponent);
   public
     constructor Create(AOwner: TComponent); override;
@@ -414,14 +411,6 @@ begin
       TJvVersionControlBaseAction(Actions[I]).IconType := Value;
 end;
 
-{$IFDEF DELPHI7_UP}
-procedure TJvVersionControlActionList.SetImages(Value: TCustomImageList);
-begin
-  inherited SetImages(Value);
-  //VersionControlPluginList.Images := Value;
-end;
-{$ENDIF}
-
 //=== { TJvVersionControlActionList } ==============================================
 
 procedure TJvVersionControlActionList.SetVersionControlComponent(Value: TComponent);
@@ -667,9 +656,6 @@ var
   AFileName: string;
 begin
   AFileCache := CurrentCache;
-
-//  if Assigned(AFileCache) then
-//    SetImageIndex (VersionControlPluginList.GetActionImageIndex(IconType, ActionType, AFileCache.Plugin));
 
   if HideAction and not VersionControlActionInfo(ActionType).AllPlugins then
     SetVisible (Assigned(AFileCache) and Assigned(AFileCache.Plugin)
