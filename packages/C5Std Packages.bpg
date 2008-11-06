@@ -9,8 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdC5R.bpl                                    \
-           JvCoreC5R.bpl JvCoreC5D.bpl                     \
+PROJECTS = JvCoreC5R.bpl JvCoreC5D.bpl                     \
            JvSystemC5R.bpl JvSystemC5D.bpl                 \
            JvStdCtrlsC5R.bpl JvStdCtrlsC5D.bpl             \
            JvCtrlsC5R.bpl JvCtrlsC5D.bpl                   \
@@ -40,10 +39,6 @@ PROJECTS = Jv3rdC5R.bpl                                    \
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
-
-Jv3rdC5R.bpl: c5\Jv3rdC5R.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvCoreC5R.bpl: c5std\JvCoreC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**

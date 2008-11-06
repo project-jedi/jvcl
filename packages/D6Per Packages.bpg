@@ -9,8 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdD6R.bpl                           \
-  JvCoreD6R.bpl JvCoreD6D.bpl                     \
+PROJECTS = JvCoreD6R.bpl JvCoreD6D.bpl                     \
   JvSystemD6R.bpl JvSystemD6D.bpl                 \
   JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl             \
   JvCtrlsD6R.bpl JvCtrlsD6D.bpl                   \
@@ -40,9 +39,6 @@ PROJECTS = Jv3rdD6R.bpl                           \
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
-
-Jv3rdD6R.bpl: d6\Jv3rdD6R.dpk
-  $(DCC)
 
 JvCoreD6D.bpl: d6\JvCoreD6D.dpk
   $(DCC)
