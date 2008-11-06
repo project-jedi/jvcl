@@ -678,12 +678,12 @@ begin
     for Index := 0 to GetPropCount(Self) - 1 do
     begin
       PropName := GetPropName(Self, Index);
-      VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
-      if not IgnoreProperty(PropName) then
-        if PropType(Self, PropName) = tkClass then
-          if (TPersistent(GetObjectProp(Self, PropName)) is
-            TJvCustomPropertyStore) then
+      if PropType(Self, PropName) = tkClass then
+        if (TPersistent(GetObjectProp(Self, PropName)) is
+          TJvCustomPropertyStore) then
+          if not IgnoreProperty(PropName) then
           begin
+            VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
             PropertyStore :=
               TJvCustomPropertyStore(TPersistent(GetObjectProp(Self, PropName)));
             if (PropertyStore.AppStoragePath = AppStorage.ConcatPaths([OldPath,
