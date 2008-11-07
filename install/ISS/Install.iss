@@ -7,8 +7,8 @@
 ;    Include_DelphiX     Include the binaries for Delphi X (X in 5..12)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
-#define JvclVersionStr "3.33.0.0"
-#define JclVersionStr "1.102."
+#define JvclVersionStr "3.36.0.0"
+#define JclVersionStr "1.103."
 #define MyAppName "Jedi Visual Component Library"
 #define MyAppVerName "Jedi Visual Component Library " + JvclVersionStr
 #define MyAppPublisher "JVCL Team"
@@ -19,9 +19,12 @@
 #define Include_Examples
 ;#define DEBUGGING
 
+;#define Include_SingleIDE
+;#define Include_Delphi12
+
 #ifdef DEBUGGING
  #define Include_SingleIDE
- #define Include_Delphi11
+ #define Include_Delphi12
  #undef Include_Examples
 #endif
 
@@ -171,7 +174,7 @@ Name: "Packages\JvDlgs"; Description: "Dialog Components"; Types: full
 Name: "Packages\Obsolete"; Description: "Obsolete Components"
 Name: "Packages\Obsolete\JvGlobus"; Description: "Globus Components"
 Name: "Packages\Obsolete\JvJans"; Description: "Jans Components"
-Name: "Packages\Obsolete\jVDotNetCtrls"; Description: "DotNet Controls"
+Name: "Packages\Obsolete\JvDotNetCtrls"; Description: "DotNet Controls"
 
 ; Options
 Name: "Options"; Description: "Options"; Types: full prefered custom compact; Flags: fixed
@@ -208,7 +211,6 @@ Source: {#JvclRoot}\clean.bat; DestDir: "{app}"; Flags: ignoreversion
 Source: {#JvclRoot}\install.bat; DestDir: "{app}"; Flags: ignoreversion
 Source: {#JvclRoot}\makemodified.bat; DestDir: "{app}"; Flags: ignoreversion
 #ifndef DEBUGGING
-Source: {#JvclRoot}\common\*.pas; DestDir: "{app}\common"; Flags: ignoreversion
 Source: {#JvclRoot}\common\*.inc; DestDir: "{app}\common"; Flags: ignoreversion
 Source: {#JvclRoot}\run\*.pas; DestDir: "{app}\run"; Flags: ignoreversion
 Source: {#JvclRoot}\run\*.dfm; DestDir: "{app}\run"; Flags: ignoreversion
@@ -363,7 +365,7 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JVCL"; ValueType: string; Va
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi12"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi12"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
-Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: Components: "IDE\Delphi12"; Check: IsDelphiInstalled(12)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi12"; Check: IsDelphiInstalled(12)
 #endif
 #endif
 
