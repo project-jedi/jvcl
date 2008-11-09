@@ -402,7 +402,7 @@ begin
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self,
     FMainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
-    'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick,
+    'CancelBtn', DialogOptions.CancelButtonCaption, '', DefaultCancelBtnClick,
     True, True);
   FCancelBtn.Anchors := [akTop];
   FCancelBtn.Top := FDefaultBorderWidth;
@@ -560,7 +560,7 @@ begin
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self,
     FMainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
-    'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick,
+    'CancelBtn', DialogOptions.CancelButtonCaption, '', DefaultCancelBtnClick,
     True, True);
   FCancelBtn.Anchors := [akTop];
   FCancelBtn.Top := FDefaultBorderWidth;
