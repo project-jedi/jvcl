@@ -803,6 +803,8 @@ begin
       Reg.CloseKey;
     end;
 
+    Reg.Free;
+    Reg := TRegistry.Create;
     Reg.RootKey := HKEY_CURRENT_USER;
 
     if IsBDS then
@@ -842,7 +844,7 @@ begin
       Reg.GetValueNames(FInstalledPersonalities);
       Reg.CloseKey;
     end;
-    
+
     // BDS IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
     // - C++ Builder only  (Cogswell)
@@ -887,7 +889,7 @@ begin
             ConvertPathList(PropertyNode.Value, FDebugDcuPaths);
             
             
-          if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+          if SupportsPersonalities([persBCB]) then
           begin
             PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath']; // do not localize
             if Assigned(PropertyNode) then
@@ -941,7 +943,40 @@ begin
       ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
       Reg.CloseKey;
     end;
-  finally
+
+    if IsBDS and (IDEVersion >= 6) and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths') then // do not localize
+    begin
+      if FGlobalIncludePaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
+      if FGlobalCppSearchPaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
+      if FGlobalCppLibraryPaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
+      Reg.CloseKey;
+    end;
+
+    if IsBDS and (IDEVersion = 6) then
+    begin
+      { Repair C++ Paths that were destroyed by a previous installer version }
+      if (FGlobalIncludePaths.IndexOf('$(BDS)\ObjRepos\Cpp') = -1) and
+         (FGlobalIncludePaths.IndexOf('$(BDS)\include\Indy10') = -1) and
+         (FGlobalIncludePaths.IndexOf('$(BDS)\RaveReports\Lib') = -1) then
+      begin
+        FGlobalIncludePaths.Insert(0, '$(BDS)\ObjRepos\Cpp');
+        FGlobalIncludePaths.Insert(1, '$(BDS)\include\Indy10');
+        FGlobalIncludePaths.Insert(2, '$(BDS)\RaveReports\Lib');
+      end;
+
+      if (FGlobalCppLibraryPaths.IndexOf('$(BDS)\lib') = -1) and
+         (FGlobalCppLibraryPaths.IndexOf('$(BDS)\lib\Indy10') = -1) and
+         (FGlobalCppLibraryPaths.IndexOf('$(BDS)\RaveReports\Lib') = -1) then
+      begin
+        FGlobalCppLibraryPaths.Insert(0, '$(BDS)\lib');
+        FGlobalCppLibraryPaths.Insert(1, '$(BDS)\lib\Indy10');
+        FGlobalCppLibraryPaths.Insert(2, '$(BDS)\RaveReports\Lib');
+      end;
+    end;
+ finally
     Reg.Free;
   end;
 
