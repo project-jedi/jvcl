@@ -48,10 +48,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  Windows, Messages,
   {$IFDEF CLR}
   Types,
   {$ENDIF CLR}
-  Windows, Messages,
   Classes, Graphics, Controls, Menus,
   JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls, JvDataSourceIntf;
 
@@ -88,10 +88,8 @@ type
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
     FIsLoaded: Boolean;
-    {$IFDEF JVCLThemesEnabled}
     FThemedPassword: Boolean;
     FThemedFont: TFont;
-    {$ENDIF JVCLThemesEnabled}
     FDataConnector: TJvFieldDataConnector;
 
     function GetPasswordChar: Char;
@@ -107,16 +105,15 @@ type
     function IsFlatStored: Boolean;
     procedure ReadCtl3D(Reader: TReader);
     procedure ReadParentCtl3D(Reader: TReader);
+    procedure ReadModified(Reader: TReader);
     function GetParentFlat: Boolean;
     procedure SetParentFlat(const Value: Boolean);
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean;
-    {$IFDEF JVCLThemesEnabled}
     procedure SetThemedPassword(const Value: Boolean);
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     function GetThemedFontHandle: HFONT;
-    {$ENDIF JVCLThemesEnabled}
     procedure SetDataConnector(const Value: TJvFieldDataConnector);
   protected
     function CreateDataConnector: TJvFieldDataConnector; virtual;
@@ -170,9 +167,7 @@ type
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar stored IsPasswordCharStored;
-    {$IFDEF JVCLThemesEnabled}
     property ThemedPassword: Boolean read FThemedPassword write SetThemedPassword default False;
-    {$ENDIF JVCLThemesEnabled}
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
@@ -222,13 +217,7 @@ type
     property HintColor;
     property GroupIndex;
     property MaxPixel;
-    property Modified; { (rb) why published/stored? }
-    {$IFDEF JVCLThemesEnabled}
     property ThemedPassword;
-    {$ENDIF JVCLThemesEnabled}
-    // property SelStart; (p3) why published?
-    // property SelText;
-    // property SelLength; (p3) why published?
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -291,8 +280,7 @@ implementation
 
 uses
   SysUtils, Math, Forms,
-  JvFixedEditPopup,
-  JvToolEdit;
+  JvFixedEditPopup, JvToolEdit;
 
 //=== Local procedures =======================================================
 
@@ -312,7 +300,7 @@ begin
       {$ELSE}
       not GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) or
       {$ENDIF CLR}
-      { (rb) ClientWidth is too big, should be EM_GETRECT, don't know the Clx variant }
+      { (rb) ClientWidth is too big, should be EM_GETRECT }
       (Control.ClientWidth > Size.cx);
   finally
     C.Free;
@@ -375,9 +363,7 @@ begin
   FreeAndNil(FDataConnector);
   FMaxPixel.Free;
   FCaret.Free;
-  {$IFDEF JVCLThemesEnabled}
   FThemedFont.Free;
-  {$ENDIF JVCLThemesEnabled}
   inherited Destroy;
 end;
 
@@ -450,16 +436,12 @@ end;
 
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
-  {$IFDEF JVCLThemesEnabled}
   Passwords: array [Boolean] of DWORD = (0, ES_PASSWORD);
-  {$ENDIF JVCLThemesEnabled}
   Styles: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Styles[FAlignment];
-  {$IFDEF JVCLThemesEnabled}
   Params.Style := Params.Style or Passwords[ThemedPassword];
-  {$ENDIF JVCLThemesEnabled}
   if (FAlignment <> taLeftJustify) and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
     (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
     Params.Style := Params.Style or ES_MULTILINE; // needed for Win95
@@ -649,7 +631,6 @@ begin
     Result := FixedDefaultEditPopUp(Self);
 end;
 
-// (ahuser) ProtectPassword has no function under CLX
 function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
@@ -666,7 +647,6 @@ begin
     Result := '';
 end;
 
-{$IFDEF JVCLThemesEnabled}
 function TJvCustomEdit.GetThemedFontHandle: HFONT;
 var
   AFont: TLogFont;
@@ -675,7 +655,6 @@ begin
   AFont.lfHeight := Self.Font.Height;
   Result := CreateFontIndirect(AFont);
 end;
-{$ENDIF JVCLThemesEnabled}
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
@@ -690,7 +669,7 @@ end;
 
 function TJvCustomEdit.IsPasswordCharStored: Boolean;
 begin
-  Result := (PasswordChar <> #0) {$IFDEF JVCLThemesEnabled} and not ThemedPassword {$ENDIF};
+  Result := (PasswordChar <> #0) and not ThemedPassword;
 end;
 
 procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TShiftState);
@@ -737,12 +716,20 @@ begin
   ParentFlat := Reader.ReadBoolean;
 end;
 
+procedure TJvCustomEdit.ReadModified(Reader: TReader);
+begin
+  Reader.ReadBoolean;
+end;
+
 procedure TJvCustomEdit.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
 
   Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
   Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
+
+  { "inherited Modified" was published what it shouldn't have been }
+  Filer.DefineProperty('Modified', ReadModified, nil, False);
 end;
 
 procedure TJvCustomEdit.MaxPixelChanged(Sender: TObject);
@@ -925,7 +912,6 @@ begin
   end;
 end;
 
-{$IFDEF JVCLThemesEnabled}
 procedure TJvCustomEdit.SetThemedPassword(const Value: Boolean);
 begin
   if FThemedPassword <> Value then
@@ -937,7 +923,6 @@ begin
     RecreateWnd;
   end;
 end;
-{$ENDIF JVCLThemesEnabled}
 
 procedure TJvCustomEdit.UpdateGroup;
 var
@@ -983,7 +968,6 @@ begin
   end;
 end;
 
-{$IFDEF JVCLThemesEnabled}
 procedure TJvCustomEdit.WMSetFont(var Msg: TWMSetFont);
 begin
   if ThemedPassword then
@@ -997,7 +981,6 @@ begin
   end;
   inherited;
 end;
-{$ENDIF JVCLThemesEnabled}
 
 procedure TJvCustomEdit.SetDataConnector(const Value: TJvFieldDataConnector);
 begin
