@@ -7,10 +7,14 @@ SET DELPHIVERSION=%1
 :: compile installer
 echo [Compiling installer...]
 cd install\JVCLInstall
+
 if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
-..\..\packages\bin\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl --requires-jcl=%JCLVERSION% -Q -B -DJVCLINSTALLER -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\common;..\..\run -n..\..\dcu JVCLInstall.dpr
+..\..\packages\bin\dcc32ex.exe --requires-jcl=%JCLVERSION% -Q -B -DDEFAULT_JVCL_INC -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\run -R..\..\resources -n..\..\dcu JVCLInstall.dpr
+:: --runtime-package-rtl --runtime-package-vcl 
 if ERRORLEVEL 1 goto Failed
-..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin JVCLInstallStarter.dpr >NUL
+
+if EXIST JVCLInstallStarter.cfg  del JVCLInstallStarter.cfg
+..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin -n..\..\dcu JVCLInstallStarter.dpr >NUL
 ::if ERRORLEVEL 1 goto Failed
 cd ..\..
 
