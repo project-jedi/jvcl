@@ -32,13 +32,6 @@ Known Issues:
 unit Main;
 
 {$I jvcl.inc}
-{$IFNDEF INSTALLER}
- {$IFDEF COMPILER6_UP}
-  {$MESSAGE FATAL 'Wrong jvcl.inc was used. The jvcl3\install\JVCLInstall\jvcl.inc should have been used.'}
- {$ELSE}
-   'Wrong jvcl.inc was used. The jvcl3\install\JVCLInstall\jvcl.inc should have been used.'
- {$ENDIF COMPILER6_UP}
-{$ENDIF !INSTALLER}
 
 interface
 

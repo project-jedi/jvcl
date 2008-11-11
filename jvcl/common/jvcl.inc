@@ -10,25 +10,18 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JVCL.INC, released on 2002-07-04.
 
-Last Modified: 2004-12-22
+Last Modified: 2008-11-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$IFDEF JVCL_NO_DEBUGINFO} // set by the Installer
  {$D-}
-{$ELSE}
-  // default
- {$D+}
 {$ENDIF JVCL_NO_DEBUGINFO}
-
-{$IFDEF JVCLINSTALLER}
-{$I ..\install\JVCLInstall\jvcl.inc}
-{$ELSE}
-
-{$A+,B-,C+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 {$I jedi.inc}
 
@@ -48,29 +41,16 @@ ALERT_jedi_inc_incompatible
  {$ObjExportAll ON}
 {$ENDIF BCB}
 
-{$IFDEF QUnit}
- {$UNDEF VCL}
- {$DEFINE VisualCLX}
-{$ENDIF}
 
-// jedi.inc does not define VCL nor VisualCLX if the application is a console
-// But the JVCL code requires that VCL or VisualCLX be defined (but not both,
-// of course). So we define those symbols ourselves as it is not a matter
-// for all JEDI projects. 
-{$IFDEF CONSOLE}
-  {$IFNDEF VCL}
-    {$IFNDEF VisualCLX}
-      {$IFDEF LINUX}
-        {$DEFINE VisualCLX}
-      {$ENDIF LINUX}
-      {$IFNDEF VisualCLX}
-        {$DEFINE VCL}
-      {$ENDIF !VisualCLX}
-    {$ENDIF !VisualCLX}
-  {$ENDIF !VCL}
-{$ENDIF CONSOLE}
+{$UNDEF JVCL_CONFIGURED}
 
-{$IFNDEF DEFAULT_JVCL_INC}
+{$IFDEF DEFAULT_JVCL_INC}
+{-----------------------------------------------------------------------------}
+{ Default configuration                                                       }
+{-----------------------------------------------------------------------------}
+ {$I jvclbase.inc}
+ {$DEFINE JVCL_CONFIGURED}
+{$ELSE}
 {-----------------------------------------------------------------------------}
 { Delphi                                                                      }
 {-----------------------------------------------------------------------------}
@@ -135,17 +115,10 @@ ALERT_jedi_inc_incompatible
  {$I jvcld12.inc}   // same include file for BDS based C++
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF BCB12}
-{-----------------------------------------------------------------------------}
-{ Default configuration                                                       }
-{-----------------------------------------------------------------------------}
-{$ELSE}
- {$I jvclbase.inc}
- {$DEFINE JVCL_CONFIGURED}
+
 {$ENDIF DEFAULT_JVCL_INC}
 {-----------------------------------------------------------------------------}
 
-
-// check configuration
 
 {$IFNDEF JVCL_CONFIGURED}
  {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
@@ -155,6 +128,8 @@ ALERT_jedi_inc_incompatible
  {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF !JVCL_CONFIGURED}
 
+
+// check configuration dependencies
 
 {$IFNDEF JVCL_UseQuickReport}
  {$UNDEF QREPORT4}
@@ -194,4 +169,3 @@ ALERT_jedi_inc_incompatible
  {$DEFINE MSWINDOWS}
 {$ENDIF CLR}
 
-{$ENDIF INSTALLER}
