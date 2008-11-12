@@ -192,16 +192,16 @@ begin
   FDll := SafeLoadLibrary(RsRasDllName);
   if FDll <> 0 then
   begin
-    FRasDial := GetProcAddress(FDll, 'RasDialA');
-    FRasEnumConnections := GetProcAddress(FDll, 'RasEnumConnectionsA');
-    FRasEnumEntries := GetProcAddress(FDll, 'RasEnumEntriesA');
-    FRasGetConnectStatus := GetProcAddress(FDll, 'RasGetConnectStatusA');
-    FRasGetErrorstring := GetProcAddress(FDll, 'RasGetErrorstringA');
-    FRasHangUp := GetProcAddress(FDll, 'RasHangUpA');
-    FRasGetEntryDialParams := GetProcAddress(FDll, 'RasGetEntryDialParamsA');
-    FRasValidateEntryName := GetProcAddress(FDll, 'RasValidateEntryNameA');
-    FRasCreatePhonebookEntry := GetProcAddress(FDll, 'RasCreatePhonebookEntryA');
-    FRasEditPhonebookEntry := GetProcAddress(FDll, 'RasEditPhonebookEntryA');
+    FRasDial := GetProcAddress(FDll, {$IFDEF UNICODE}'RasDialW'{$ELSE}'RasDialA'{$ENDIF UNICODE});
+    FRasEnumConnections := GetProcAddress(FDll, {$IFDEF UNICODE}'RasEnumConnectionsW'{$ELSE}'RasEnumConnectionsA'{$ENDIF UNICODE});
+    FRasEnumEntries := GetProcAddress(FDll, {$IFDEF UNICODE}'RasEnumEntriesW'{$ELSE}'RasEnumEntriesA'{$ENDIF UNICODE});
+    FRasGetConnectStatus := GetProcAddress(FDll, {$IFDEF UNICODE}'RasGetConnectStatusW'{$ELSE}'RasGetConnectStatusA'{$ENDIF UNICODE});
+    FRasGetErrorstring := GetProcAddress(FDll, {$IFDEF UNICODE}'RasGetErrorstringW'{$ELSE}'RasGetErrorstringA'{$ENDIF UNICODE});
+    FRasHangUp := GetProcAddress(FDll, {$IFDEF UNICODE}'RasHangUpW'{$ELSE}'RasHangUpA'{$ENDIF UNICODE});
+    FRasGetEntryDialParams := GetProcAddress(FDll, {$IFDEF UNICODE}'RasGetEntryDialParamsW'{$ELSE}'RasGetEntryDialParamsA'{$ENDIF UNICODE});
+    FRasValidateEntryName := GetProcAddress(FDll, {$IFDEF UNICODE}'RasValidateEntryNameW'{$ELSE}'RasValidateEntryNameA'{$ENDIF UNICODE});
+    FRasCreatePhonebookEntry := GetProcAddress(FDll, {$IFDEF UNICODE}'RasCreatePhonebookEntryW'{$ELSE}'RasCreatePhonebookEntryA'{$ENDIF UNICODE});
+    FRasEditPhonebookEntry := GetProcAddress(FDll, {$IFDEF UNICODE}'RasEditPhonebookEntryW'{$ELSE}'RasEditPhonebookEntryA'{$ENDIF UNICODE});
     FHandle := AllocateHWndEx(WndProc);
     RASEvent := RegisterWindowMessage(RASDialEvent);
     if RASEvent = 0 then

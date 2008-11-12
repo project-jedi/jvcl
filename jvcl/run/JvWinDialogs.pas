@@ -102,7 +102,7 @@ const
   OPF_PATHNAME = $02;
 
 type
-  TOpenFileNameEx = packed record
+  TOpenFileNameExA = packed record
     lStructSize: DWORD; // Size of the structure in bytes.
     hWndOwner: HWND; // Handle that is the parent of the dialog.
     hInstance: HINST; // Application instance handle.
@@ -129,6 +129,40 @@ type
     dwReserved: DWORD; // Reserved, use 0.
     FlagsEx: DWORD; // Extended Flags.
   end;
+
+  TOpenFileNameExW = packed record
+    lStructSize: DWORD; // Size of the structure in bytes.
+    hWndOwner: HWND; // Handle that is the parent of the dialog.
+    hInstance: HINST; // Application instance handle.
+    lpstrFilter: PWideChar; // String containing filter information.
+    lpstrCustomFilter: PWideChar; // Will hold the filter chosen by the user.
+    nMaxCustFilter: DWORD; // Size of lpstrCustomFilter, in bytes.
+    nFilterIndex: DWORD; // Index of the filter to be shown.
+    lpstrFile: PWideChar; // File name to start with (and retrieve).
+    nMaxFile: DWORD; // Size of lpstrFile, in bytes.
+    lpstrFileTitle: PWideChar; // File name without path will be returned.
+    nMaxFileTitle: DWORD; // Size of lpstrFileTitle, in bytes.
+    lpstrInitialDir: PWideChar; // Starting directory.
+    lpstrTitle: PWideChar; // Title of the open dialog.
+    Flags: DWORD; // Controls user selection Options.
+    nFileOffset: Word; // Offset of file name in filepath=lpstrFile.
+    nFileExtension: Word; // Offset of extension in filepath=lpstrFile.
+    lpstrDefExt: PWideChar; // Default extension if no extension typed.
+    lCustData: LPARAM; // Custom data to be passed to hook.
+    lpfnHook: function(Wnd: THandle; Msg: UINT; wParam: WPARAM;
+      lParam: LPARAM): UINT stdcall; // Hook.
+    lpTemplateName: PWideChar; // Template dialog, if applicable.
+    // Extended structure starts here.
+    pvReserved: Pointer; // Reserved, use nil.
+    dwReserved: DWORD; // Reserved, use 0.
+    FlagsEx: DWORD; // Extended Flags.
+  end;
+
+  {$IFDEF UNICODE}
+  TOpenFileNameEx = TOpenFileNameExW;
+  {$ELSE}
+  TOpenFileNameEx = TOpenFileNameExA;
+  {$ENDIF UNICODE}
 
   TShellObjectType = (sdPathObject, sdPrinterObject);
   TShellObjectTypes = set of TShellObjectType;
@@ -549,16 +583,22 @@ type
     CmdShow: Integer); stdcall;
   GetOpenFileNameExProc = function(var OpenFile: TOpenFileNameEx): BOOL; stdcall;
   GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
-  URLAssociationDialogProcA = function(hwndParent: THandle; dwInFlags: DWORD; const pcszFile: PChar; const pcszURL: PChar;
-    pszBuff: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
+  
+  URLAssociationDialogProcA = function(hwndParent: THandle; dwInFlags: DWORD; const pcszFile: PAnsiChar; const pcszURL: PAnsiChar;
+    pszBuff: PAnsiChar; ucAppBufLen: UINT): HRESULT; stdcall;
   URLAssociationDialogProcW = function(hwndParent: THandle; dwInFlags: DWORD; const pcszFile: PWideChar; const pcszURL:
     PWideChar; pszBuff: PWideChar; ucAppBufLen: UINT): HRESULT; stdcall;
 
+  URLAssociationDialogProc = {$IFDEF UNICODE}URLAssociationDialogProcW{$ELSE}URLAssociationDialogProcA{$ENDIF UNICODE};
+
   MIMEAssociationDialogProcA = function(hwndParent: THandle; dwInFlags: DWORD;
-    const pcszFile: PChar; const pcszMIMEContentType: PChar; pszAppBuf: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
+    const pcszFile: PAnsiChar; const pcszMIMEContentType: PAnsiChar; pszAppBuf: PAnsiChar; ucAppBufLen: UINT): HRESULT; stdcall;
   MIMEAssociationDialogProcW = function(hwndParent: THandle; dwInFlags: DWORD;
     const pcszFile: PWideChar; const pcszMIMEContentType: PWideChar; pszAppBuf: PWideChar;
       ucAppBufLen: UINT): HRESULT; stdcall;
+
+  MIMEAssociationDialogProc = {$IFDEF UNICODE}MIMEAssociationDialogProcW{$ELSE}MIMEAssociationDialogProcA{$ENDIF UNICODE};
+
   SoftwareUpdateMessageBoxProc = function(hWnd: THandle; szDistUnit: LPCWSTR; dwFlags: DWORD;
     var psdi: TSoftDistInfo): DWORD; stdcall;
 
@@ -580,10 +620,8 @@ var
   SHOpenWith: SHOpenWithProc = nil;
   SHChangeIcon: SHChangeIconProc = nil;
   SHChangeIconW: SHChangeIconProcW = nil;
-  URLAssociationDialogA: URLAssociationDialogProcA = nil;
-  MIMEAssociationDialogA: MIMEAssociationDialogProcA = nil;
-//  URLAssociationDialogW: URLAssociationDialogProcW = nil;
-//  MIMEAssociationDialogW: MIMEAssociationDialogProcW = nil;
+  URLAssociationDialog: URLAssociationDialogProc = nil;
+  MIMEAssociationDialog: MIMEAssociationDialogProc = nil;
   SoftwareUpdateMessageBox: SoftwareUpdateMessageBoxProc = nil;
 
 {$IFDEF UNITVERSIONING}
@@ -642,21 +680,18 @@ begin
   CommHandle := SafeLoadLibrary('comdlg32.dll');
   if CommHandle <> 0 then
   begin
-    @GetOpenFileNameEx := GetProcAddress(CommHandle, PAnsiChar('GetOpenFileNameA'));
-    @GetSaveFileNameEx := GetProcAddress(CommHandle, PAnsiChar('GetSaveFileNameA'));
+    @GetOpenFileNameEx := GetProcAddress(CommHandle, {$IFDEF UNICODE}'GetOpenFileNameW'{$ELSE}'GetOpenFileNameA'{$ENDIF UNICODE});
+    @GetSaveFileNameEx := GetProcAddress(CommHandle, {$IFDEF UNICODE}'GetSaveFileNameW'{$ELSE}'GetSaveFileNameA'{$ENDIF UNICODE});
   end;
 
   AppWizHandle := SafeLoadLibrary('appwiz.cpl');
   if AppWizHandle <> 0 then
-    @NewLinkHere := GetProcAddress(AppWizHandle, PAnsiChar('NewLinkHereA'));
+    @NewLinkHere := GetProcAddress(AppWizHandle, {$IFDEF UNICODE}'NewLinkHereW'{$ELSE}'NewLinkHereA'{$ENDIF UNICODE});
   URLHandle := SafeLoadLibrary('url.dll');
   if URLHandle <> 0 then
   begin
-    @URLAssociationDialogA := GetProcAddress(URLHandle, 'URLAssociationDialogA');
-    @MIMEAssociationDialogA := GetProcAddress(URLHandle, 'MIMEAssociationDialogA');
-    // the ANSI versions works on NT too, so don't load Unicode alternative
-//    @URLAssociationDialogW  := GetProcAddress(URLHandle,'URLAssociationDialogW');
-//    @MIMEAssociationDialogW := GetProcAddress(URLHandle,'MIMEAssociationDialogW');
+    @URLAssociationDialog := GetProcAddress(URLHandle, {$IFDEF UNICODE}'URLAssociationDialogW'{$ELSE}'URLAssociationDialogA'{$ENDIF UNICODE});
+    @MIMEAssociationDialog := GetProcAddress(URLHandle, {$IFDEF UNICODE}'MIMEAssociationDialogW'{$ELSE}'MIMEAssociationDialogA'{$ENDIF UNICODE});
   end;
   SHDocvwHandle := SafeLoadLibrary('shdocvw.dll');
   if SHDocvwHandle <> 0 then
@@ -1667,7 +1702,7 @@ begin
   FAssociatedApp := '';
   if Pos(':', URL) < 1 then
     FURL := FDefaultProtocol + FURL;
-  if Assigned(URLAssociationDialogA) then
+  if Assigned(URLAssociationDialog) then
   begin
     dwFlags := 0;
     FillChar(Buf[0], SizeOf(Buf), 0);
@@ -1675,7 +1710,7 @@ begin
       dwFlags := dwFlags or URLASSOCDLG_FL_USE_DEFAULT_NAME;
     if uaRegisterAssoc in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_REGISTER_ASSOC;
-    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags,
+    FReturnValue := URLAssociationDialog(GetParentHandle, dwFlags,
       PChar(FileName), PChar(URL), Buf, SizeOf(Buf));
     Result := ReturnValue = S_OK;
     FAssociatedApp := Buf;
@@ -1708,7 +1743,7 @@ var
 begin
   Result := False;
   FReturnValue := S_FALSE;
-  if Assigned(MIMEAssociationDialogA) then
+  if Assigned(MIMEAssociationDialog) then
   begin
     FillChar(Buf[0], SizeOf(Buf), 0);
     FAssociatedApp := '';
@@ -1716,7 +1751,7 @@ begin
       dwFlags := MIMEASSOCDLG_FL_REGISTER_ASSOC
     else
       dwFlags := 0;
-    FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags,
+    FReturnValue := MIMEAssociationDialog(GetParentHandle, dwFlags,
       PChar(FileName), PChar(ContentType), Buf, SizeOf(Buf));
     Result := ReturnValue = 0;
     FAssociatedApp := Buf;
