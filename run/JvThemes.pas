@@ -39,16 +39,16 @@ uses
   {$IFDEF COMPILER7_UP}
   Types,
   {$ENDIF COMPILER7_UP}
-  Windows, Messages,
+  Windows, Messages, CommCtrl,
   {$IFDEF JVCLThemesEnabled}
   Contnrs,
   {$IFDEF COMPILER7_UP}
-  Themes,
+  Themes, UxTheme,
   {$ELSE}
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  Controls, StdCtrls, Graphics,
+  Controls, StdCtrls, Forms, Graphics,
   Buttons;
 
 const
@@ -781,6 +781,18 @@ function GetParentBackground(Control: TWinControl): Boolean;
 { SetParentBackground sets the Control's csParentPackground ControlStyle }
 procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 
+{ GetGlassPaintFlag returns True if csGlassPaint in ControlState }
+function GetGlassPaintFlag(AControl: TControl): Boolean;
+{ ControlInGlassPaint returns True if the Control is painted on a glass area }
+function ControlInGlassPaint(AControl: TControl): Boolean;
+{ DrawGlassableText paints text to a device context with support of PaintOnGlass }
+procedure DrawGlassableText(DC: HDC; const Text: string; var TextRect: TRect; TextFlags: Cardinal;
+  PaintOnGlass: Boolean = False);
+{ DrawGlassableImageList paint a transparent imagelist image to the canvas with
+  support of PaintOnGlass }
+procedure DrawGlassableImageList(ImageList: HIMAGELIST; Index: Integer; Dest: HDC; X, Y: Integer;
+  Style: UINT; PaintOnGlass: Boolean = False);
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1228,6 +1240,134 @@ begin
       ExcludeThemeStyle(Control, [csParentBackground]);
     Control.Invalidate;
   end;
+end;
+
+function GetGlassPaintFlag(AControl: TControl): Boolean;
+{$IFDEF COMPILER11}
+var
+  Form: TCustomForm;
+{$ENDIF COMPILER11}
+begin
+  {$IFDEF COMPILER12_UP}
+  Result := csGlassPaint in AControl.ControlState;
+  {$ELSE}
+  Result := False;
+  {$IFDEF COMPILER11}
+  Form := GetParentForm(AControl);
+  if (Form <> nil) and Form.GlassFrame.Enabled then
+    Result := Form.GlassFrame.IntersectsControl(AControl);
+  {$ENDIF COMPILER11}
+  {$ENDIF COMPILER12_UP}
+end;
+
+function ControlInGlassPaint(AControl: TControl): Boolean;
+{$IFDEF COMPILER11_UP}
+var
+  Parent: TWinControl;
+{$ENDIF COMPILER11_UP}
+begin
+  {$IFDEF COMPILER11_UP}
+  Result := GetGlassPaintFlag(AControl);
+  if Result then
+  begin
+    Parent := AControl.Parent;
+    while (Parent <> nil) and not Parent.DoubleBuffered and not (Parent is TCustomForm) do
+      Parent := Parent.Parent;
+    Result := (Parent = nil) or not Parent.DoubleBuffered or (Parent is TCustomForm);
+  end;
+  {$ELSE}
+  Result := False;
+  {$ENDIF COMPILER11_UP}
+end;
+
+procedure DrawGlassableText(DC: HDC; const Text: string; var TextRect: TRect; TextFlags: Cardinal;
+  PaintOnGlass: Boolean = False);
+{$IFDEF COMPILER11_UP}
+var
+  Options: TDTTOpts;
+  {$IFDEF COMPILER11}
+  S: WideString;
+  {$ENDIF COMPILER11}
+{$ENDIF COMPILER11_UP}
+begin
+  {$IFDEF COMPILER11_UP}
+  if ThemeServices.ThemesEnabled then
+  begin
+    FillChar(Options, SizeOf(Options), 0);
+    Options.dwSize := SizeOf(Options);
+    if TextFlags and DT_CALCRECT <> 0 then
+      Options.dwFlags := Options.dwFlags or DTT_CALCRECT;
+    if PaintOnGlass then
+      Options.dwFlags := Options.dwFlags or DTT_COMPOSITED;
+    Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR;
+    Options.crText := GetTextColor(DC);
+
+    {$IFDEF COMPILER12_UP}
+    with ThemeServices do
+      if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(Text), Length(Text),
+                         TextFlags, TextRect, Options) <> E_NOTIMPL then
+        Exit;
+    {$ELSE}
+    S := Text;
+    with ThemeServices do
+      if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(S), Length(S),
+                         TextFlags, @TextRect, Options) <> E_NOTIMPL then
+        Exit;
+    {$ENDIF COMPILER12_UP}
+  end;
+  {$ENDIF COMPILER11_UP}
+  Windows.DrawText(DC, PChar(Text), Length(Text), TextRect, TextFlags);
+end;
+
+procedure DrawGlassableImageList(ImageList: HIMAGELIST; Index: Integer; Dest: HDC; X, Y: Integer;
+  Style: UINT; PaintOnGlass: Boolean = False);
+{$IFDEF COMPILER11_UP}
+var
+  PaintBuffer: HPAINTBUFFER;
+  R: TRect;
+  MemDC, MaskDC: HDC;
+  CX, CY, XX, YY: Integer;
+  MaskBmp: TBitmap;
+{$ENDIF COMPILER11_UP}
+begin
+  {$IFDEF COMPILER11_UP}
+  if PaintOnGlass then
+  begin
+    { TODO : Not working correctly on a JvSpeedButton. But it works if used direcly on
+             a sheet of glass. Some optimizations could be done. }
+
+    ImageList_GetIconSize(ImageList, CX, CY);
+    R := Rect(X, Y, X + CX, Y + CY);
+
+    PaintBuffer := BeginBufferedPaint(Dest, R, BPBF_TOPDOWNDIB, nil, MemDC);
+    try
+      ImageList_Draw(ImageList, Index, MemDC, X, Y, Style);
+      BufferedPaintMakeOpaque(PaintBuffer, @R);
+
+      MaskBmp := TBitmap.Create;
+      try
+        MaskBmp.Width := CX;
+        MaskBmp.Height := CY;
+        MaskDC := MaskBmp.Canvas.Handle;
+        ImageList_Draw(ImageList, Index, MaskDC, 0, 0, ILD_MASK);
+        for YY := 0 to CY - 1 do
+          for XX := 0 to CX - 1 do
+            if GetPixel(MaskDC, XX, YY) <> 0 then
+            begin
+              R := Rect(X + XX, Y + YY, X + XX + 1, Y + YY + 1);
+              BufferedPaintSetAlpha(PaintBuffer, @R, 0);
+              //SetPixel(MemDC, X + XX, Y + YY, GetPixel(MemDC, X + XX, Y + YY) and $00FFFFFF);
+            end;
+      finally
+        MaskBmp.Free;
+      end;
+    finally
+      EndBufferedPaint(PaintBuffer, True);
+    end;
+  end
+  else
+  {$ENDIF COMPILER11_UP}
+    ImageList_Draw(ImageList, Index, Dest, X, Y, Style);
 end;
 
 {$IFDEF JVCLThemesEnabled}

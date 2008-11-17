@@ -159,7 +159,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-      AState: TJvButtonState; DrawMark: Boolean); override;
+      AState: TJvButtonState; DrawMark: Boolean; PaintOnGlass: Boolean); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -4444,13 +4444,13 @@ begin
 end;
 
 procedure TJvEditButton.PaintImage(Canvas: TCanvas; ARect: TRect;
-  const Offset: TPoint; AState: TJvButtonState; DrawMark: Boolean);
+  const Offset: TPoint; AState: TJvButtonState; DrawMark: Boolean; PaintOnGlass: Boolean);
 begin
   if UseGlyph then
     ButtonGlyph.Draw(Canvas, ARect, Offset, '', Layout,
-      Margin, Spacing, False, AState, 0)
+      Margin, Spacing, False, AState, 0, PaintOnGlass)
   else
-    inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark);
+    inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark, PaintOnGlass);
 end;
 
 procedure TJvEditButton.SetGlyph(const Value: TBitmap);
