@@ -19,6 +19,7 @@ Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3 at sourceforge dot net]
   Dejoy Den
+  Andreas Hausladen
 
 Changes:
 2003-10-19:
@@ -59,11 +60,7 @@ type
   TJvNumGlyphs = 1..5;
   TJvDropDownMenuPos = (dmpBottom, dmpRight);
   TJvButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
-
-
-  {Inserted by (ag) 2004-09-04}
   TJvSpeedButtonHotTrackOptions = TJvHotTrackOptions;
-  {Insert End}
 
   TJvxButtonGlyph = class;
 
@@ -156,7 +153,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-      AState: TJvButtonState; DrawMark: Boolean); virtual; abstract;
+      AState: TJvButtonState; DrawMark, PaintOnGlass: Boolean); virtual; abstract;
     property ButtonGlyph: TJvxButtonGlyph read FGlyph;
     property IsDragging: Boolean read FDragging;
   public
@@ -166,6 +163,7 @@ type
     function CheckBtnMenuDropDown: Boolean;
     procedure Click; override;
     procedure UpdateTracking;
+    procedure Repaint; override;
   protected
     property Alignment: TAlignment read GetAlignment write SetAlignment default taCenter;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
@@ -249,7 +247,7 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure InvalidateImage;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-      AState: TJvButtonState; DrawMark: Boolean); override;
+      AState: TJvButtonState; DrawMark, PaintOnGlass: Boolean); override;
     function IsImageVisible: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
@@ -336,7 +334,7 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetPalette: HPALETTE; override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-      AState: TJvButtonState; DrawMark: Boolean); override;
+      AState: TJvButtonState; DrawMark, PaintOnGlass: Boolean); override;
     procedure SyncHotGlyph;
   public
     constructor Create(AOwner: TComponent); override;
@@ -428,9 +426,9 @@ type
     procedure Invalidate;
     procedure DrawEx(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
       Layout: TButtonLayout; AFont: TFont; Images: TCustomImageList;
-      ImageIndex: Integer; Flags: Word);
+      ImageIndex: Integer; Flags: Word; PaintOnGlass: Boolean);
     procedure Draw(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
-      Layout: TButtonLayout; AFont: TFont; Flags: Word);
+      Layout: TButtonLayout; AFont: TFont; Flags: Word; PaintOnGlass: Boolean);
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property Caption: TCaption read FCaption write FCaption;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
@@ -451,6 +449,7 @@ type
     FOriginal: TBitmap;
     FTransparentColor: TColor;
     FWordWrap: Boolean;
+    FPaintOnGlass: Boolean;
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetGrayNewStyle(const Value: Boolean);
@@ -476,14 +475,14 @@ type
     function DrawEx(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
       const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
       PopupMark: Boolean; Images: TCustomImageList; ImageIndex: Integer;
-      State: TJvButtonState; Flags: Word): TRect;
+      State: TJvButtonState; Flags: Word; PaintOnGlass: Boolean): TRect;
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
       TextBounds: TRect; State: TJvButtonState; Flags: Word);
     procedure DrawPopupMark(Canvas: TCanvas; X, Y: Integer;
       State: TJvButtonState);
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
       const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-      PopupMark: Boolean; State: TJvButtonState; Flags: Word): TRect;
+      PopupMark: Boolean; State: TJvButtonState; Flags: Word; PaintOnGlass: Boolean): TRect;
     property Alignment: TAlignment read FAlignment write FAlignment;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property GrayNewStyle: Boolean read FGrayNewStyle write SetGrayNewStyle;
@@ -689,14 +688,14 @@ begin
 end;
 
 procedure TJvButtonImage.Draw(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
-  Layout: TButtonLayout; AFont: TFont; Flags: Word);
+  Layout: TButtonLayout; AFont: TFont; Flags: Word; PaintOnGlass: Boolean);
 begin
-  DrawEx(Canvas, X, Y, Margin, Spacing, Layout, AFont, nil, -1, Flags);
+  DrawEx(Canvas, X, Y, Margin, Spacing, Layout, AFont, nil, -1, Flags, PaintOnGlass);
 end;
 
 procedure TJvButtonImage.DrawEx(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
   Layout: TButtonLayout; AFont: TFont; Images: TCustomImageList; ImageIndex: Integer;
-  Flags: Word);
+  Flags: Word; PaintOnGlass: Boolean);
 var
   Target: TRect;
   SaveColor: Integer;
@@ -716,7 +715,7 @@ begin
     if AFont <> nil then
       Canvas.Font := AFont;
     FGlyph.DrawEx(Canvas, Target, Offset, Caption, Layout, Margin,
-      Spacing, False, Images, ImageIndex, rbsUp, Flags);
+      Spacing, False, Images, ImageIndex, rbsUp, Flags, PaintOnGlass);
   finally
     Canvas.Font.Assign(SaveFont);
     SaveFont.Free;
@@ -771,6 +770,48 @@ end;
 
 //=== { TJvCustomSpeedButton } ===============================================
 
+constructor TJvCustomSpeedButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ParentColor := False;
+  Color := clBtnFace;
+  FHotTrack := False;
+  FHotTrackFont := TFont.Create;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
+  FHotTrackOptions := TJvSpeedButtonHotTrackOptions.Create(Self);
+  FFontSave := TFont.Create;
+  SetBounds(0, 0, 25, 25);
+  ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
+  ControlStyle := ControlStyle + [csReplicatable];
+  FInactiveGrayed := True;
+  FGlyph := TJvxButtonGlyph.Create;
+  FGlyph.GrayNewStyle := True;
+  ParentFont := True;
+  ParentShowHint := False;
+  ShowHint := True;
+  FSpacing := 1;
+  FMargin := -1;
+  FInitRepeatPause := 500;
+  FRepeatPause := 100;
+  FStyle := bsAutoDetect;
+  FLayout := blGlyphTop;
+  FMarkDropDown := True;
+  FDoubleBuffered := True;
+  Inc(ButtonCount);
+end;
+
+destructor TJvCustomSpeedButton.Destroy;
+begin
+  FHotTrackOptions.Free;
+  FGlyph.Free;
+  Dec(ButtonCount);
+  if FRepeatTimer <> nil then
+    FRepeatTimer.Free;
+  FHotTrackFont.Free;
+  FFontSave.Free;
+  inherited Destroy;
+end;
+
 procedure TJvCustomSpeedButton.ButtonClick;
 begin
   if FMenuTracking or (not Enabled) or (Assigned(FDropDownMenu) and
@@ -804,10 +845,8 @@ end;
 
 function TJvCustomSpeedButton.CheckMenuDropDown(const Pos: TSmallPoint;
   Manual: Boolean): Boolean;
-
 var
   Form: TCustomForm;
-
 begin
   Result := False;
   if csDesigning in ComponentState then
@@ -949,13 +988,11 @@ begin
   end;
 end;
 
-
 procedure TJvCustomSpeedButton.CMSysColorChange(var Msg: TMessage);
 begin
   FGlyph.Invalidate;
   Invalidate;
 end;
-
 
 procedure TJvCustomSpeedButton.TextChanged;
 begin
@@ -967,52 +1004,6 @@ begin
   inherited VisibleChanged;
   if Visible then
     UpdateTracking;
-end;
-
-constructor TJvCustomSpeedButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ParentColor := False;
-  Color := clBtnFace;
-  FHotTrack := False;
-  FHotTrackFont := TFont.Create;
-  FHotTrackFontOptions := DefaultTrackFontOptions;
-  {Inserted by (ag) 2004-09-04}
-  FHotTrackOptions := TJvSpeedButtonHotTrackOptions.Create(Self);
-  {Insert End}
-  FFontSave := TFont.Create;
-  SetBounds(0, 0, 25, 25);
-  ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
-  ControlStyle := ControlStyle + [csReplicatable];
-  FInactiveGrayed := True;
-  FGlyph := TJvxButtonGlyph.Create;
-  FGlyph.GrayNewStyle := True;
-  ParentFont := True;
-  ParentShowHint := False;
-  ShowHint := True;
-  FSpacing := 1;
-  FMargin := -1;
-  FInitRepeatPause := 500;
-  FRepeatPause := 100;
-  FStyle := bsAutoDetect;
-  FLayout := blGlyphTop;
-  FMarkDropDown := True;
-  FDoubleBuffered := True;
-  Inc(ButtonCount);
-end;
-
-destructor TJvCustomSpeedButton.Destroy;
-begin
-  {Inserted by (ag) 2004-09-04}
-  FHotTrackOptions.Free;
-  {Insert End}
-  FGlyph.Free;
-  Dec(ButtonCount);
-  if FRepeatTimer <> nil then
-    FRepeatTimer.Free;
-  FHotTrackFont.Free;
-  FFontSave.Free;
-  inherited Destroy;
 end;
 
 procedure TJvCustomSpeedButton.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1123,8 +1114,7 @@ begin
   FGlyph.CreateButtonGlyph(LState);
 end;
 
-procedure TJvCustomSpeedButton.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
   Msg: TMsg;
@@ -1200,8 +1190,7 @@ begin
   end;
 end;
 
-procedure TJvCustomSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvCustomSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
   DoMouseUp(Button, Shift, X, Y);
@@ -1255,14 +1244,19 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
-    if FTransparent then
-      CopyParentImage(Self, Canvas)
+    if ControlInGlassPaint(Self) then
+      FillRect(Canvas.Handle, ClientRect, GetStockObject(BLACK_BRUSH))
     else
     begin
-      if not DoubleBuffered then
-        PerformEraseBackground(Self, Canvas.Handle) // uses Control.Left/Top as Offset
+      if FTransparent then
+        CopyParentImage(Self, Canvas)
       else
-        PerformEraseBackground(Self, Canvas.Handle, Point(0, 0)); // we are drawing into a bitmap
+      begin
+        if not DoubleBuffered then
+          PerformEraseBackground(Self, Canvas.Handle) // uses Control.Left/Top as Offset
+        else
+          PerformEraseBackground(Self, Canvas.Handle, Point(0, 0)); // we are drawing into a bitmap
+      end;
     end;
 
     if (MouseOver or FDragging) and HotTrack then
@@ -1323,33 +1317,30 @@ begin
       State := FState;
 
     PaintImage(Canvas, PaintRect, Offset, State,
-      FMarkDropDown and Assigned(FDropDownMenu));
+      FMarkDropDown and Assigned(FDropDownMenu), ControlInGlassPaint(Self));
   end
   else
   {$ENDIF JVCLThemesEnabled}
   begin
-    with Canvas do
+    if FTransparent then
+      CopyParentImage(Self, Canvas)
+    else
     begin
-      if FTransparent then
-      begin
-        CopyParentImage(Self, Canvas);
-      end
+      if Flat then
+        Canvas.Brush.Color := TWinControlAccess(Parent).Color
       else
-      begin
-        if Flat then
-          Brush.Color := TWinControlAccess(Parent).Color
-        else
-          Brush.Color := Self.Color;
-        Brush.Style := bsSolid;
-        FillRect(PaintRect);
-      end;
-      if (State <> rbsInactive) or (FState = rbsExclusive) then
-        PaintRect := DrawButtonFrame(Canvas, PaintRect,
-          FState in [rbsDown, rbsExclusive], FFlat, FStyle, Color)
-      else
-      if FFlat then
-        InflateRect(PaintRect, -2, -2);
+        Canvas.Brush.Color := Self.Color;
+      Canvas.Brush.Style := bsSolid;
+      Canvas.FillRect(PaintRect);
     end;
+
+    if (State <> rbsInactive) or (FState = rbsExclusive) then
+      PaintRect := DrawButtonFrame(Canvas, PaintRect,
+        FState in [rbsDown, rbsExclusive], FFlat, FStyle, Color)
+    else
+    if FFlat then
+      InflateRect(PaintRect, -2, -2);
+
     if (FState = rbsExclusive) and not Transparent and
       (not FFlat or (State = rbsInactive)) then
     begin
@@ -1406,8 +1397,16 @@ begin
     end else
       Canvas.Font := Self.Font;
     PaintImage(Canvas, PaintRect, Offset, State,
-      FMarkDropDown and Assigned(FDropDownMenu));
+      FMarkDropDown and Assigned(FDropDownMenu), ControlInGlassPaint(Self));
   end;
+end;
+
+procedure TJvCustomSpeedButton.Repaint;
+begin
+  if GetGlassPaintFlag(Self) then
+    Invalidate
+  else
+    inherited;
 end;
 
 procedure TJvCustomSpeedButton.SetAlignment(Value: TAlignment);
@@ -1674,7 +1673,6 @@ begin
       Perform(CM_MOUSELEAVE, 0, 0);
 end;
 
-
 procedure TJvCustomSpeedButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
 begin
   if not FMenuTracking then
@@ -1685,10 +1683,6 @@ begin
   end;
 end;
 
-
-
-
-
 procedure TJvCustomSpeedButton.WMPaint(var Msg: TWMPaint);
 var
   MemBitmap: HBitmap;
@@ -1697,7 +1691,7 @@ var
   Index: Integer;
   DC: HDC;
 begin
-  if not DoubleBuffered then
+  if not DoubleBuffered or ControlInGlassPaint(Self) then
     inherited
   else
   if Msg.DC <> 0 then
@@ -1735,8 +1729,6 @@ begin
   inherited;
   UpdateTracking;
 end;
-
-
 
 //=== { TJvGlyphCache } ======================================================
 
@@ -1882,7 +1874,7 @@ begin
 end;
 
 procedure TJvImageSpeedButton.PaintImage(Canvas: TCanvas; ARect: TRect;
-  const Offset: TPoint; AState: TJvButtonState; DrawMark: Boolean);
+  const Offset: TPoint; AState: TJvButtonState; DrawMark: Boolean; PaintOnGlass: Boolean);
 var
   LImageIndex: TImageIndex;
 begin
@@ -1891,7 +1883,8 @@ begin
   else
     LImageIndex := ImageIndex;
   FGlyph.DrawEx(Canvas, ARect, Offset, Caption, FLayout,
-    FMargin, FSpacing, DrawMark, Images, LImageIndex, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
+    FMargin, FSpacing, DrawMark, Images, LImageIndex, AState, DrawTextBiDiModeFlags(Alignments[Alignment]),
+    PaintOnGlass);
 end;
 
 procedure TJvImageSpeedButton.SetHotTrackImageIndex(
@@ -1961,7 +1954,6 @@ begin
   if IsGroupIndexLinked then
     FClient.GroupIndex := Value;
 end;
-
 
 {$ENDIF COMPILER6_UP}
 
@@ -2048,12 +2040,10 @@ begin
   Result := FGlyph.NumGlyphs;
 end;
 
-
 function TJvSpeedButton.GetPalette: HPALETTE;
 begin
   Result := Glyph.Palette;
 end;
-
 
 procedure TJvSpeedButton.GlyphChanged(Sender: TObject);
 begin
@@ -2066,17 +2056,19 @@ begin
 end;
 
 procedure TJvSpeedButton.PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-  AState: TJvButtonState; DrawMark: Boolean);
+  AState: TJvButtonState; DrawMark, PaintOnGlass: Boolean);
 begin
   if (MouseOver or FDragging) and HotTrack and not HotTrackGlyph.Empty then
   begin
     SyncHotGlyph;
     FHotTrackGlyph.Draw(Canvas, ARect, Offset, Caption, FLayout,
-      FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
+      FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]),
+      PaintOnGlass);
   end
   else
     FGlyph.Draw(Canvas, ARect, Offset, Caption, FLayout,
-      FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
+      FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]),
+      PaintOnGlass);
 end;
 
 procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
@@ -2137,7 +2129,6 @@ end;
 
 {$IFDEF COMPILER6_UP}
 
-
 function TJvSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := (FClient is TJvSpeedButton) and
@@ -2149,7 +2140,6 @@ begin
   if IsGroupIndexLinked then
     TJvSpeedButton(FClient).GroupIndex := Value;
 end;
-
 
 {$ENDIF COMPILER6_UP}
 
@@ -2206,7 +2196,7 @@ begin
   if Length(Caption) > 0 then
   begin
     TextBounds := Rect(0, 0, MaxSize.X, 0);
-    DrawText(Canvas, Caption, -1, TextBounds, DT_CALCRECT or DT_CENTER or
+    DrawGlassableText(Canvas.Handle, Caption, TextBounds, DT_CALCRECT or DT_CENTER or
       DT_VCENTER or WordWraps[FWordWrap] or Flags);
   end
   else
@@ -2515,10 +2505,10 @@ end;
 function TJvxButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-  PopupMark: Boolean; State: TJvButtonState; Flags: Word): TRect;
+  PopupMark: Boolean; State: TJvButtonState; Flags: Word; PaintOnGlass: Boolean): TRect;
 begin
   Result := DrawEx(Canvas, Client, Offset, Caption, Layout, Margin, Spacing,
-    PopupMark, nil, -1, State, Flags);
+    PopupMark, nil, -1, State, Flags, PaintOnGlass);
 end;
 
 function TJvxButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
@@ -2533,7 +2523,7 @@ begin
   Index := CreateButtonGlyph(State);
   if Index >= 0 then
   begin
-    ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
+    DrawGlassableImageList(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL, FPaintOnGlass);
     Result := Point(FGlyphList.Width, FGlyphList.Height);
   end;
 end;
@@ -2546,6 +2536,7 @@ begin
   Result := Point(0, 0);
   if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then
     Exit;
+
   if State = rbsDisabled then
   begin
     if GrayNewStyle then
@@ -2568,69 +2559,70 @@ end;
 
 procedure TJvxButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TJvButtonState; Flags: Word);
+var
+  DC: HDC;
 begin
   Canvas.Brush.Style := bsClear;
   Flags := DT_VCENTER or WordWraps[FWordWrap] or Flags;
+  DC := Canvas.Handle;
   if State = rbsDisabled then
   begin
-    with Canvas do
-    begin
-      OffsetRect(TextBounds, 1, 1);
-      Font.Color := clBtnHighlight;
-      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
-      OffsetRect(TextBounds, -1, -1);
-      Font.Color := clBtnShadow;
-      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
-    end;
+    OffsetRect(TextBounds, 1, 1);
+    SetTextColor(DC, ColorToRGB(clBtnHighlight));
+    DrawGlassableText(DC, Caption, TextBounds, Flags, FPaintOnGlass);
+    OffsetRect(TextBounds, -1, -1);
+    SetTextColor(DC, ColorToRGB(clBtnShadow));
+    DrawGlassableText(DC, Caption, TextBounds, Flags, FPaintOnGlass);
   end
   else
-    DrawText(Canvas, Caption, -1, TextBounds, Flags);
+    DrawGlassableText(DC, Caption, TextBounds, Flags, FPaintOnGlass);
 end;
 
 function TJvxButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; Images: TCustomImageList; ImageIndex: Integer;
-  State: TJvButtonState; Flags: Word): TRect;
+  State: TJvButtonState; Flags: Word; PaintOnGlass: Boolean): TRect;
 var
   UseImages: Boolean;
   GlyphPos, PopupPos: TPoint;
   TextBounds: TRect;
   LCaption: string;
 begin
-    { MinimizeCaption might change the caption }
-    LCaption := Caption;
-    CalcButtonLayout(Canvas, Client, Offset, LCaption, Layout, Margin, Spacing,
-      PopupMark, GlyphPos, TextBounds, Flags, Images, ImageIndex);
-    UseImages := False;
-    if Assigned(Images) and (ImageIndex >= 0) and (ImageIndex < Images.Count) and
-      (Images.Width > 0) then
+  FPaintOnGlass := PaintOnGlass;
+  { MinimizeCaption might change the caption }
+  LCaption := Caption;
+  CalcButtonLayout(Canvas, Client, Offset, LCaption, Layout, Margin, Spacing,
+    PopupMark, GlyphPos, TextBounds, Flags, Images, ImageIndex);
+  UseImages := False;
+  if Assigned(Images) and (ImageIndex >= 0) and (ImageIndex < Images.Count) and
+    (Images.Width > 0) then
+  begin
+    UseImages := True;
+    PopupPos := DrawButtonImage(Canvas, GlyphPos.X, GlyphPos.Y, Images,
+      ImageIndex, State);
+  end
+  else
+    PopupPos := DrawButtonGlyph(Canvas, GlyphPos.X, GlyphPos.Y, State);
+  DrawButtonText(Canvas, LCaption, TextBounds, State, Flags);
+  if PopupMark then
+    if (Layout <> blGlyphLeft) and (((FOriginal <> nil) and
+      (FOriginal.Width > 0)) or UseImages) then
     begin
-      UseImages := True;
-      PopupPos := DrawButtonImage(Canvas, GlyphPos.X, GlyphPos.Y, Images,
-        ImageIndex, State);
+      PopupPos.X := GlyphPos.X + PopupPos.X + 1;
+      PopupPos.Y := GlyphPos.Y + PopupPos.Y div 2;
+      DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
     end
     else
-      PopupPos := DrawButtonGlyph(Canvas, GlyphPos.X, GlyphPos.Y, State);
-    DrawButtonText(Canvas, LCaption, TextBounds, State, Flags);
-    if PopupMark then
-      if (Layout <> blGlyphLeft) and (((FOriginal <> nil) and
-        (FOriginal.Width > 0)) or UseImages) then
-      begin
-        PopupPos.X := GlyphPos.X + PopupPos.X + 1;
-        PopupPos.Y := GlyphPos.Y + PopupPos.Y div 2;
-        DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
-      end
+    begin
+      if LCaption <> '' then
+        PopupPos.X := TextBounds.Right + 3
       else
-      begin
-        if LCaption <> '' then
-          PopupPos.X := TextBounds.Right + 3
-        else
-          PopupPos.X := (Client.Left + Client.Right - 7) div 2;
-        PopupPos.Y := TextBounds.Top + RectHeight(TextBounds) div 2;
-        DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
-      end;
-    Result := TextBounds;
+        PopupPos.X := (Client.Left + Client.Right - 7) div 2;
+      PopupPos.Y := TextBounds.Top + RectHeight(TextBounds) div 2;
+      DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
+    end;
+  Result := TextBounds;
 end;
 
 procedure TJvxButtonGlyph.DrawPopupMark(Canvas: TCanvas; X, Y: Integer;

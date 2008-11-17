@@ -687,7 +687,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-      AState: TJvButtonState; DrawMark: Boolean); override;
+      AState: TJvButtonState; DrawMark, PaintOnGlass: Boolean); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -858,18 +858,19 @@ begin
 end;
 
 procedure TJvSpeedBarButton.PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
-  AState: TJvButtonState; DrawMark: Boolean);
+  AState: TJvButtonState; DrawMark, PaintOnGlass: Boolean);
 begin
   if FItem.SpeedBar <> nil then
   begin
     TJvxButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Offset, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.SpeedBar.Images, FItem.FImageIndex,
       AState,
-      DrawTextBiDiModeFlags(Alignments[Alignment])
+      DrawTextBiDiModeFlags(Alignments[Alignment]),
+      PaintOnGlass
       );
   end
   else
-    inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark);
+    inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark, PaintOnGlass);
 end;
 
 procedure TJvSpeedBarButton.Paint;
@@ -3112,7 +3113,8 @@ procedure TJvBtnControl.Paint;
 begin
   FImage.DrawEx(Canvas, 0, 0, Margin, Spacing, Layout, Font, Images,
     ImageIndex,
-    DrawTextBiDiModeFlags(Alignments[Alignment])
+    DrawTextBiDiModeFlags(Alignments[Alignment]),
+    ControlInGlassPaint(Self)
     );
 end;
 
@@ -3197,7 +3199,8 @@ begin
     end;
     Image.DrawEx(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
       Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,
-      Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment])
+      Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment]),
+      False
       );
     Inc(R.Left, Image.ButtonSize.X + 3);
     DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenterJustify, ARightToLeft);
