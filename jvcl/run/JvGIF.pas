@@ -3079,9 +3079,7 @@ initialization
   Init;
 
 finalization
-  {$IFDEF USE_JV_GIF}
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
-  {$ENDIF USE_JV_GIF}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
