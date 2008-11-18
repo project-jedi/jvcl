@@ -775,6 +775,7 @@ var
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
+  ForceEnvOptionsUpdate: Boolean;
 begin
   Reg := TRegistry.Create;
   try
@@ -855,10 +856,19 @@ begin
     if IsBDS and (IDEVersion = 5) and SupportsPersonalities([persBCB], True) then
       FName := 'CodeGear C++Builder';
 
-    // get library paths
-    if IsBDS and (IDEVersion >= 5) and FileExists(GetEnvOptionsFileName) then
+    ForceEnvOptionsUpdate := False;
+    if IsBDS and (IDEVersion >= 5) then
     begin
-      // MsBuild
+      // If "ForceEnvOptionsUpdate" is set the EnvOptions.dproj file must be considered out of date
+      if Reg.OpenKeyReadOnly(RegistryKey + '\Globals') then
+        if Reg.ValueExists('ForceEnvOptionsUpdate') and (Reg.ReadString('ForceEnvOptionsUpdate') = '1') then
+          ForceEnvOptionsUpdate := True;
+    end;
+
+    // get library paths
+    if IsBDS and (IDEVersion >= 5) and FileExists(GetEnvOptionsFileName) and not ForceEnvOptionsUpdate then
+    begin
+      // MSBuild
       EnvOptions := TJclSimpleXML.Create;
       try
         EnvOptions.LoadFromFile(GetEnvOptionsFileName);
