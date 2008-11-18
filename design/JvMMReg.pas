@@ -49,9 +49,7 @@ uses
   JvImageRotate, JvImageTransform, JvImageSquare, JvPcx, JvStarfield,
   JvWaitingGradient, JvWaitingProgress, JvSpecialProgress,
   JvColorTrackBar, JvCursor,
-  {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
-  {$ENDIF USE_JV_GIF}
   JvSlider, JvAnimatedImage, JvSpecialImage, JvPictureEditors,
   JvAnimatedEditor, JvPictureEditForm, JvIconListForm,
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorEditors,
@@ -63,7 +61,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
     TJvPicClip, TJvImageRotate, TJvImageTransform,
-    TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
+    TJvImageSquare, TJvStarfield, TJvGIFAnimator,
     TJvAnimatedImage, TJvSpecialImage, TJvAVICapture]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress, TJvColorTrackBar]);
@@ -86,9 +84,7 @@ begin
     RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
   end;
 
-  {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
-  {$ENDIF USE_JV_GIF}
 
   // JvFullColor components and editors
   RegisterComponents(RsPaletteBarPanel, [TJvFullColorPanel, TJvFullColorTrackBar, TJvFullColorGroup]);
