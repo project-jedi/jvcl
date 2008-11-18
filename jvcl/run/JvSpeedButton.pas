@@ -1303,7 +1303,7 @@ begin
       PaintRect := ThemeServices.ContentRect(Canvas.Handle, Details, PaintRect);
     end;
 
-    if Button = tbPushButtonPressed then
+    if (Button = tbPushButtonPressed) and Flat then
       // A pressed speed Button has a white text. This applies however only to flat buttons.
       //if ToolButton <> ttbToolbarDontCare then
       //  Canvas.Font.Color := clHighlightText;
@@ -2293,13 +2293,7 @@ begin
     Inc(Y, Client.Top + Offset.Y);
   end;
 
-  { Themed text is not shifted, but gets a different color. }
-  {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
-    OffsetRect(TextBounds, TextPos.X + Client.Left, TextPos.Y + Client.Top)
-  else
-  {$ENDIF JVCLThemesEnabled}
-    OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X, TextPos.Y + Client.Top + Offset.Y);
+  OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X, TextPos.Y + Client.Top + Offset.Y);
 end;
 
 constructor TJvxButtonGlyph.Create;
