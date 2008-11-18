@@ -238,7 +238,7 @@ type
   end;
 
 var
-  CF_GIF: UINT; { Clipboard format for GIF image }
+  CF_JVGIF: UINT; { Clipboard format for GIF image }
 
 { Load incomplete or corrupted images without exceptions }
 
@@ -273,13 +273,14 @@ end;
 
 procedure GifError(const Msg: string);
 
-  function ReturnAddr: Pointer;
-  asm
-          MOV     EAX,[EBP+4]
+  procedure ThrowException(const Msg: string; ReturnAddr: Pointer);
+  begin
+    raise EInvalidGraphicOperation.Create(Msg) at ReturnAddr;
   end;
 
-begin
-  raise EInvalidGraphicOperation.Create(Msg) at ReturnAddr;
+asm
+  pop edx
+  jmp ThrowException
 end;
 
 {$IFDEF RANGECHECKS_ON}
@@ -2273,7 +2274,7 @@ var
   Data: THandle;
 begin
   { !! check for gif clipboard Data, mime type image/gif }
-  Data := GetClipboardData(CF_GIF);
+  Data := GetClipboardData(CF_JVGIF);
   if Data <> 0 then
   begin
     Buffer := GlobalLock(Data);
@@ -2816,7 +2817,7 @@ begin
         Buffer := GlobalLock(Data);
         try
           Stream.Read(Buffer^, Stream.Size);
-          SetClipboardData(CF_GIF, Data);
+          SetClipboardData(CF_JVGIF, Data);
         finally
           GlobalUnlock(Data);
         end;
@@ -3057,7 +3058,7 @@ end;
 
 procedure Init;
 begin
-  CF_GIF := RegisterClipboardFormat('GIF Image');
+  CF_JVGIF := RegisterClipboardFormat('JvGIF Image');
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvGIFFrame, TControl);
   GroupDescendentsWith(TJvGIFImage, TControl);
@@ -3065,8 +3066,10 @@ begin
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
   {$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
-  TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
+  {$ELSE}
+  TPicture.RegisterFileFormat('', '', TJvGIFImage); // register for loading but do not show in FileDialog
   {$ENDIF USE_JV_GIF}
+  TPicture.RegisterClipboardFormat(CF_JVGIF, TJvGIFImage);
 end;
 
 initialization

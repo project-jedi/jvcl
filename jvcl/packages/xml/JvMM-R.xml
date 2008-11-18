@@ -28,8 +28,8 @@
   <Contains>
     <File Name="..\..\run\JvAVICapture.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvBmpAnimator.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGIF.pas" Targets="VCL" Formname="" Condition="USE_JV_GIF"/>
-    <File Name="..\..\run\JvGIFCtrl.pas" Targets="VCL" Formname="" Condition="USE_JV_GIF"/>
+    <File Name="..\..\run\JvGIF.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGIFCtrl.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvGradient.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGradientHeaderPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvIconList.pas" Targets="all" Formname="" Condition=""/>
