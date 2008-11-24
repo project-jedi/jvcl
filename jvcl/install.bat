@@ -13,8 +13,8 @@ if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
 :: --runtime-package-rtl --runtime-package-vcl 
 if ERRORLEVEL 1 goto Failed
 
-if EXIST JVCLInstallStarter.cfg  del JVCLInstallStarter.cfg
-..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin -n..\..\dcu JVCLInstallStarter.dpr >NUL
+if EXIST JVCLCmdStarter.cfg  del JVCLCmdStarter.cfg
+..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin -n..\..\dcu JVCLCmdStarter.dpr >NUL
 ::if ERRORLEVEL 1 goto Failed
 cd ..\..
 
@@ -43,8 +43,8 @@ cd ..
 echo.
 echo [Starting installer...]
 echo bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
-if not exist bin\JVCLInstallStarter.exe goto :FailStart
-bin\JVCLInstallStarter.exe bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
+if not exist bin\JVCLCmdStarter.exe goto :FailStart
+bin\JVCLCmdStarter.exe bin\JVCLInstall.exe %2 %3 %4 %5 %6 %7 %8 %9
 if ERRORLEVEL 1 goto FailStart
 goto Leave
 
