@@ -88,7 +88,7 @@ type
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
     procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
     procedure SetOnThreadException(const Value:
-        TJvThreadedDatasetThreadExceptionEvent); 
+        TJvThreadedDatasetThreadExceptionEvent);
     procedure SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
     property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
         GetAfterThreadExecution write SetAfterThreadExecution;
@@ -547,8 +547,7 @@ procedure TJvDatasetThreadDialogForm.FillDialogData;
 var
   ITmpControl: IJvDynControl;
 begin
-  if Assigned(ConnectedDatasetHandler)
-     and (ConnectedDatasetHandler.CurrentOpenDuration > 0) then
+  if Assigned(ConnectedDatasetHandler) then
   begin
     if DialogOptions.Caption <> '' then
       Caption := DialogOptions.Caption +' - '+ConnectedDatasetHandler.CurrentOperationAction
@@ -563,10 +562,7 @@ begin
   end
   else
   begin
-    if DialogOptions.Caption <> '' then
-      Caption := DialogOptions.Caption
-    else
-      Caption := '';
+    Caption := DialogOptions.Caption;
     if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
       ITmpControl.ControlSetCaption(IntToStr(0));
     if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
