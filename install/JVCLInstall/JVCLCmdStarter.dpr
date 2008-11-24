@@ -95,14 +95,15 @@ begin
 
     FillChar(SecAttr, SizeOf(SecAttr), 0);
     SecAttr.nLength := SizeOf(SecAttr);
-    SecAttr.bInheritHandle := False;
+    SecAttr.bInheritHandle := True;
 
     FillChar(StartupInfo, SizeOf(StartupInfo), 0);
-    if CreateProcess(nil, PChar(S), @SecAttr, nil, False, 0, nil, nil, StartupInfo, ProcessInfo) then
+    if CreateProcess(nil, PChar(S), @SecAttr, nil, True, 0, nil, nil, StartupInfo, ProcessInfo) then
     begin
       CloseHandle(ProcessInfo.hThread);
       WaitForInputIdle(ProcessInfo.hProcess, INFINITE);
       CloseHandle(ProcessInfo.hProcess);
+      ExitCode := 0;
     end
     else
     begin
@@ -112,9 +113,8 @@ begin
       SetLength(S, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_IGNORE_INSERTS or
                                  FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, LastError, 0, PChar(S), Length(S), nil));
       WriteLn(ErrOutput, S);
+      ExitCode := 1;
     end;
-
-    ExitCode := 0;
   end
   else
   begin
