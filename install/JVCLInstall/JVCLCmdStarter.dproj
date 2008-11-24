@@ -1,7 +1,7 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{02676ECE-0BB1-4801-8014-5E99A122F5B1}</ProjectGuid>
-			<MainSource>JVCLInstallStarter.dpr</MainSource>
+			<MainSource>JVCLCmdStarter.dpr</MainSource>
 			<Config Condition="'$(Config)'==''">Debug</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<ProjectVersion>12.0</ProjectVersion>
@@ -23,7 +23,7 @@
 			<DCC_ImageBase>00400000</DCC_ImageBase>
 			<DCC_E>false</DCC_E>
 			<DCC_Platform>x86</DCC_Platform>
-			<DCC_DependencyCheckOutputName>JVCLInstallStarter.exe</DCC_DependencyCheckOutputName>
+			<DCC_DependencyCheckOutputName>JVCLCmdStarter.exe</DCC_DependencyCheckOutputName>
 			<DCC_N>false</DCC_N>
 			<DCC_S>false</DCC_S>
 			<DCC_F>false</DCC_F>
@@ -39,7 +39,7 @@
 			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="JVCLInstallStarter.dpr">
+			<DelphiCompile Include="JVCLCmdStarter.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<BuildConfiguration Include="Basis">
@@ -61,7 +61,7 @@
 			<BorlandProject>
 				<Delphi.Personality>
 					<Source>
-						<Source Name="MainSource">JVCLInstallStarter.dpr</Source>
+						<Source Name="MainSource">JVCLCmdStarter.dpr</Source>
 					</Source>
 					<Parameters>
 						<Parameters Name="UseLauncher">False</Parameters>

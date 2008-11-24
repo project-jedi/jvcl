@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JVCLInstallStarter.dpr, released on 2008-11-03.
+The Original Code is: JVCLCmdStarter.dpr, released on 2008-11-03.
 
 The Initial Developer of the Original Code is Andreas Hausladen
 Portions created by Andreas Hausladen are Copyright (C) 2008 Andreas Hausladen
@@ -23,21 +23,21 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-program JVCLInstallStarter;
+program JVCLCmdStarter;
 
 {$APPTYPE CONSOLE}
 
-{ JVCLInstallStarter is used to get the JVCLInstaller into the forground under Windows Vista.
+{ JVCLCmdStarter is used to get the JVCLInstaller into the forground under Windows Vista.
   Under Vista a GUI application will be send to the back if it is started from a console window
   that is closing after triggering the start of the GUI application.
 
-  JVCLInstallStarter waits until the GUI application is idle and then terminates. It is also
+  JVCLCmdStarter waits until the GUI application is idle and then terminates. It is also
   a replacement for Windows's "start" command. }
 
 uses
   Windows;
 
-{$R CommCtrlAsInvoker.res}
+{.$R CommCtrlAsInvoker.res}
 
 function SysErrorMessage(ErrorCode: Cardinal): string;
 var
