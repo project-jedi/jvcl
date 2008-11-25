@@ -1925,7 +1925,8 @@ begin
         begin
           if ParameterList.Parameters[I].StoreValueCrypted then
             AppStorage.EnablePropertyValueCrypt;
-          if ParameterList.Parameters[I] is TJvListParameter then
+          if (ParameterList.Parameters[I] is TJvListParameter)
+              and (TJvListParameter(ParameterList.Parameters[I]).VariantAsItemIndex) then
             TJvListParameter(ParameterList.Parameters[I]).ItemIndex :=
               AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath,
                   ParameterList.Parameters[I].SearchName]),
@@ -1950,7 +1951,8 @@ begin
         begin
           if ParameterList.Parameters[I].StoreValueCrypted then
             AppStorage.EnablePropertyValueCrypt;
-          if ParameterList.Parameters[I] is TJvListParameter then
+          if (ParameterList.Parameters[I] is TJvListParameter)
+             and (TJvListParameter(ParameterList.Parameters[I]).VariantAsItemIndex) then
             AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
               TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
           else
