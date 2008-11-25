@@ -1921,7 +1921,8 @@ begin
     if RealIndex < PageCount then
       TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
   end
-  else  inherited DrawTab(TabIndex, Rect, Active);
+  else
+    inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvPageControl.Loaded;
