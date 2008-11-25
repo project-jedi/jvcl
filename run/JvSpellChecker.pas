@@ -83,7 +83,7 @@ const
 implementation
 
 uses
-  JclStrings, // StrAddRef, StrDecRef
+//  JclStrings, // StrAddRef, StrDecRef
   JvTypes, JvResources;
 
 // NOTE: hash table and soundex lookup code originally from Julian Bucknall's
@@ -99,7 +99,7 @@ type
   // default implementation of the IJvSpellChecker interface. To provide a new implementation,
   // assign a function to the CreateSpellChecker function variable in JvSpellIntf that returns an
   // instance of your implementation. For more info, see InternalSpellChecker in this unit.
-  TJvDefaultSpellChecker = class(TInterfacedObject, IInterface, IJvSpellChecker)
+  TJvDefaultSpellChecker = class(TInterfacedObject, IJvSpellChecker)
   private
     FText: string;
     FCurrentWord: string;
@@ -131,8 +131,8 @@ type
     procedure ClearTables; virtual;
     function GetCurrentWord: string; virtual;
     procedure GetWordSuggestions(const Value: string; AStrings: TStrings); virtual;
-    procedure AddSoundex(ASoundex: TSoundex; Value: string); virtual;
-    procedure AddWord(Value: string); virtual;
+    procedure AddSoundex(ASoundex: TSoundex; const Value: string); virtual;
+    procedure AddWord(const Value: string); virtual;
     function WordExists(const Value: string): Boolean; virtual;
     function CanIgnore(const Value: string): Boolean; virtual;
     { IJvSpellChecker }
@@ -158,33 +158,36 @@ end;
 
 function Soundex(const Value: string): TSoundex;
 const
-  Encode: array ['A'..'Z'] of Char =
+  Encode: array ['A'..'Z'] of AnsiChar =
    ('0', '1', '2', '3', '0', '1', '2', '/', '0', '2', '2',
     '4', '5', '5', '0', '1', '2', '6', '2', '3', '0', '1',
     '/', '2', '0', '2');
 var
   Ch: Char;
-  Code, OldCode: Char;
+  Code, OldCode: AnsiChar;
   SxInx: Integer;
   I: Integer;
+  UpperValue: string;
 begin
   Result := 'A000';
   if Value = '' then
     Exit;
 //    raise Exception.Create('Soundex: input string is empty');
-  Ch := UpCase(Value[1]);
-  if not ('A' <= Ch) and (Ch <= 'Z') then
+  UpperValue := AnsiUpperCase(Value);
+
+  Ch := UpperValue[1];
+  if (Ch < 'A') or (Ch > 'Z') then
     Ch := 'A';
 //    raise Exception.Create('Soundex: unknown character in input string');
-  Result[1] := Ch;
+  Result[1] := AnsiChar(Ch);
   Code := Encode[Ch];
   OldCode := Code;
   SxInx := 2;
-  for I := 2 to Length(Value) do
+  for I := 2 to Length(UpperValue) do
   begin
     if (Code <> '/') then
       OldCode := Code;
-    Ch := UpCase(Value[I]);
+    Ch := UpperValue[I];
     if not ('A' <= Ch) and (Ch <= 'Z') then
       Code := '0'
     else
@@ -220,15 +223,15 @@ begin
     ((Ord(S[1]) - Ord('A')) * 343) +
     ((Ord(S[2]) - Ord('0')) * 49) +
     ((Ord(S[3]) - Ord('0')) * 7) +
-    (Ord(S[4]) - Ord('0'));
+     (Ord(S[4]) - Ord('0'));
 end;
 
-function GetNextWord(var S: PAnsiChar; out Word: AnsiString; Delimiters: TSysCharSet): Boolean;
+function GetNextWord(var S: PChar; out Word: string; Delimiters: TSysCharSet): Boolean;
 var
-  Start: PAnsiChar;
+  Start: PChar;
 begin
   Word := '';
-  Result := (S = nil);
+  Result := S = nil;
   if Result then
     Exit;
   Start := nil;
@@ -241,7 +244,7 @@ begin
       Exit;
     end
     else
-    if S^ in Delimiters then
+    if ((S^ <= #255) and (AnsiChar(S^) in Delimiters)) then
     begin
       if Start <> nil then
       begin
@@ -249,7 +252,7 @@ begin
         Exit;
       end
       else
-        while (S^ in Delimiters) and (S^ <> #0) do
+        while ((S^ <= #255) and (AnsiChar(S^) in Delimiters)) and (S^ <> #0) do
           Inc(S);
     end
     else
@@ -290,24 +293,24 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDefaultSpellChecker.AddSoundex(ASoundex: TSoundex; Value: string);
+procedure TJvDefaultSpellChecker.AddSoundex(ASoundex: TSoundex; const Value: string);
 var
   Hash: Integer;
 begin
   Hash := SoundexHash(ASoundex) mod SoundexTableSize;
   if FSoundexTable[Hash] = nil then
-    FSoundexTable[Hash] := TList.Create;
-  TList(FSoundexTable[Hash]).Add(Pointer(Value));
+    FSoundexTable[Hash] := TStringList.Create;
+  TStringList(FSoundexTable[Hash]).Add(Value);
 end;
 
-procedure TJvDefaultSpellChecker.AddWord(Value: string);
+procedure TJvDefaultSpellChecker.AddWord(const Value: string);
 var
   Hash: Integer;
 begin
   Hash := ELFHash(Value) mod WordTableSize;
   if FWordTable[Hash] = nil then
-    FWordTable[Hash] := TList.Create;
-  TList(FWordTable[Hash]).Add(Pointer(Value));
+    FWordTable[Hash] := TStringList.Create;
+  TStringList(FWordTable[Hash]).Add(Value);
 end;
 
 procedure TJvDefaultSpellChecker.BuildTables;
@@ -326,7 +329,7 @@ begin
     System.Reset(AFile);
     try
       repeat
-        Readln(AFile, Value);
+        ReadLn(AFile, Value);
         if Value <> '' then
         begin
           // (rom) simple compession for dictionary
@@ -337,7 +340,6 @@ begin
           LastValue := Value;
 
           Value := AnsiLowerCase(Value);
-          StrAddRef(Value);
           AddWord(Value);
           SoundexVal := Soundex(Value);
           AddSoundex(SoundexVal, Value);
@@ -350,7 +352,6 @@ begin
       if UserDictionary[I] <> '' then
       begin
         Value := AnsiLowerCase(UserDictionary[I]);
-        StrAddRef(Value);
         AddWord(Value);
         SoundexVal := Soundex(Value);
         AddSoundex(SoundexVal, Value);
@@ -360,34 +361,21 @@ end;
 
 procedure TJvDefaultSpellChecker.ClearTables;
 var
-  I, J: Integer;
-  List: TList;
-  S: string;
+  I: Integer;
 begin
   if FSoundexTable <> nil then
     for I := 0 to FSoundexTable.Count - 1 do
     begin
-      TList(FSoundexTable[I]).Free;
+      TObject(FSoundexTable[I]).Free;
       FSoundexTable[I] := nil;
     end;
-//    FSoundexTable.Clear;
 
   if FWordTable <> nil then
     for I := 0 to FWordTable.Count - 1 do
     begin
-      List := TList(FWordTable[I]);
-      if List <> nil then
-      begin
-        for J := 0 to List.Count - 1 do
-        begin
-          Pointer(S) := List[J];
-          StrDecRef(S);
-        end;
-        TList(FWordTable[I]).Free;
-        FWordTable[I] := nil;
-      end;
+      TObject(FWordTable[I]).Free;
+      FWordTable[I] := nil;
     end;
-//    FWordTable.Clear;
 end;
 
 function TJvDefaultSpellChecker.GetSuggestions: TStrings;
@@ -403,24 +391,20 @@ end;
 procedure TJvDefaultSpellChecker.GetWordSuggestions(const Value: string; AStrings: TStrings);
 var
   SoundexVal: TSoundex;
-  I, Hash: Integer;
-  List: TList;
+  Hash: Integer;
 begin
-  if AStrings = nil then
-    Exit;
-  AStrings.BeginUpdate;
-  try
-    AStrings.Clear;
-    SoundexVal := Soundex(Value);
-    Hash := SoundexHash(SoundexVal) mod SoundexTableSize;
-    if FSoundexTable[Hash] <> nil then
-    begin
-      List := TList(FSoundexTable[Hash]);
-      for I := 0 to List.Count - 1 do
-        AStrings.Add(string(List[I]));
+  if AStrings <> nil then
+  begin
+    AStrings.BeginUpdate;
+    try
+      AStrings.Clear;
+      SoundexVal := Soundex(Value);
+      Hash := SoundexHash(SoundexVal) mod SoundexTableSize;
+      if FSoundexTable[Hash] <> nil then
+        AStrings.AddStrings(TStringList(FSoundexTable[Hash]));
+    finally
+      AStrings.EndUpdate;
     end;
-  finally
-    AStrings.EndUpdate;
   end;
 end;
 
@@ -436,7 +420,7 @@ begin
   if FPosition >= Length(FText) then
     Exit;
   S := PChar(Text) + FPosition - 1;
-  if (S = nil) or (S^ = #0) or (trim(S) = '') then
+  if (S = nil) or (S^ = #0) or (Trim(S) = '') then
     Exit;
   while True do
   begin
@@ -455,7 +439,7 @@ begin
         Break;
       end;
     end;
-    if (S = nil) or (S^ = #0) or (trim(S) = '') then
+    if (S = nil) or (S^ = #0) or (Trim(S) = '') then
     begin
       Result := False;
       Break;
@@ -478,14 +462,14 @@ function TJvDefaultSpellChecker.WordExists(const Value: string): Boolean;
 var
   I: Integer;
   Hash: Integer;
-  List: TList;
+  List: TStringList;
   FWord: string;
 begin
   FWord := AnsiLowerCase(Value);
   Hash := ELFHash(FWord) mod WordTableSize;
   if FWordTable[Hash] <> nil then
   begin
-    List := TList(FWordTable[Hash]);
+    List := TStringList(FWordTable[Hash]);
     for I := 0 to List.Count - 1 do
       if AnsiSameText(PChar(List[I]), FWord) then
       begin
@@ -589,9 +573,10 @@ function TJvSpellChecker.GetSpellChecker: IJvSpellChecker;
 begin
   if FSpellChecker = nil then
   begin
-    if not Assigned(CreateSpellChecker) then
-      raise EJVCLException.CreateRes(@RsENoSpellCheckerAvailable);
-    FSpellChecker := CreateSpellChecker;
+    if Assigned(CreateSpellChecker) then
+      FSpellChecker := CreateSpellChecker
+    else
+      FSpellChecker := InternalCreateSpellChecker;
   end;
   Result := FSpellChecker;
 end;
@@ -636,11 +621,10 @@ begin
   SpellChecker.UserDictionary := Value;
 end;
 
+{$IFDEF UNITVERSIONING}
 initialization
-  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-  @CreateSpellChecker := @InternalCreateSpellChecker;
+{$ENDIF UNITVERSIONING}
 
 {$IFDEF UNITVERSIONING}
 finalization
