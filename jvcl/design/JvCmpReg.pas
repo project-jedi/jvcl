@@ -47,7 +47,7 @@ uses
   JvPageManager, JvPatchFile, JvStringHolder, JvTimeLimit,
   JvTranslator, JvPrint, JvEasterEgg, JvMouseGesture, JvLogFile,
   JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm, JvPageManagerForm,
-  JvDsgnEditors;
+  JvDsgnEditors, JvSpellChecker, JvspellerForm;
 
 {$R JvCmpReg.dcr}
 
@@ -65,7 +65,8 @@ begin
     TJvDataEmbedded,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvMultiStringHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
-    TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
+    TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile,
+	TJvSpellChecker, TJvSpeller]);
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,

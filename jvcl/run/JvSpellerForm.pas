@@ -80,11 +80,11 @@ type
     procedure IndexUserDictionary;
     procedure SetDictionary(const Value: TFileName);
     procedure SetUserDictionary(const Value: TFileName);
-    procedure CreateSpellerDialog(SpellWord: string);
+    procedure CreateSpellerDialog(const SpellWord: string);
   public
     constructor Create(AOwner: TComponent); override;
-    procedure LoadDictionary(AFile: string);
-    procedure LoadUserDictionary(AFile: string);
+    procedure LoadDictionary(const AFile: string);
+    procedure LoadUserDictionary(const AFile: string);
     procedure Spell(var SourceText: string);
   published
     property Dictionary: TFileName read FDictionary write SetDictionary;
@@ -111,7 +111,7 @@ uses
 
 {$R *.dfm}
 
-function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
+function Q_PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm
         PUSH    ESI
         PUSH    EDI
@@ -133,6 +133,32 @@ asm
         MOV     EBX,EAX
         XCHG    EAX,EDX
         NOP
+{$IFDEF UNICODE}
+        ADD     EDI,ECX
+        ADD     EDI,ECX
+        MOV     ECX,EAX
+        MOV     AX,WORD PTR [ESI]
+@@lp1:  CMP     AX,WORD PTR [EDI]
+        JE      @@uu
+@@fr:   ADD     EDI,2
+        DEC     ECX
+        JNZ     @@lp1
+@@qt0:  XOR     EAX,EAX
+        JMP     @@qt
+@@ms:   MOV     AX,WORD PTR [ESI]
+        MOV     EBX,EDX
+        JMP     @@fr
+@@uu:   TEST    EDX,EDX
+        JE      @@fd
+@@lp2:  MOV     AX,WORD PTR [ESI+EBX*2]
+        XOR     AX,WORD PTR [EDI+EBX*2]
+        JNE     @@ms
+        DEC     EBX
+        JNE     @@lp2
+@@fd:   LEA     EAX,[EDI+2]
+        SUB     EAX,[ESP]
+        SHR     EAX,1
+{$ELSE}
         ADD     EDI,ECX
         MOV     ECX,EAX
         MOV     AL,BYTE PTR [ESI]
@@ -155,31 +181,39 @@ asm
         JNE     @@lp2
 @@fd:   LEA     EAX,[EDI+1]
         SUB     EAX,[ESP]
+{$ENDIF UNICODE}
 @@qt:   POP     ECX
         POP     EBX
         POP     EDI
         POP     ESI
 end;
 
-procedure SaveString(AFile, AText: string);
+procedure SaveAnsiFileFromString(const AFile, AText: string);
+var
+  AnsiText: AnsiString;
 begin
+  AnsiText := AnsiString(AText);
   with TFileStream.Create(AFile, fmCreate) do
   try
-    WriteBuffer(AText[1], Length(AText));
+    WriteBuffer(AnsiText[1], Length(AnsiText));
   finally
     Free;
   end;
 end;
 
-function LoadString(AFile: string): string;
+function LoadAnsiFileToString(const AFile: string): string;
+var
+  AnsiText: AnsiString;
 begin
   with TFileStream.Create(AFile, fmOpenRead) do
   try
-    SetLength(Result, Size);
-    ReadBuffer(Result[1], Size);
+    SetLength(AnsiText, Size);
+    if AnsiText <> '' then
+      ReadBuffer(AnsiText[1], Size);
   finally
     Free;
   end;
+  Result := string(AnsiText);
 end;
 
 //=== { TJvSpeller } =========================================================
@@ -222,12 +256,13 @@ var
   S: string;
 begin
   S := FSpellerDialog.TxtSpell.Text;
-  if S = '' then
-    Exit;
-  FSourceText := Copy(FSourceText, 1, FWordBegin - 1) + S +
-    Copy(FSourceText, FWordEnd, Length(FSourceText));
-  FWordEnd := FWordEnd + (Length(S) - (FWordEnd - FWordBegin));
-  Skip(Sender);
+  if S <> '' then
+  begin
+    FSourceText := Copy(FSourceText, 1, FWordBegin - 1) + S +
+      Copy(FSourceText, FWordEnd, Length(FSourceText));
+    FWordEnd := FWordEnd + (Length(S) - (FWordEnd - FWordBegin));
+    Skip(Sender);
+  end;
 end;
 
 procedure TJvSpeller.IndexDictionary;
@@ -241,7 +276,7 @@ begin
       StartPos := FDicIndex[I - 1]
     else
       StartPos := 1;
-    P := Q_PosStr(Cr + Chr(96 + I), FDict, StartPos);
+    P := Q_PosEx(Cr + Chr(96 + I), FDict, StartPos);
     if P <> 0 then
       FDicIndex[I] := P
     else
@@ -260,7 +295,7 @@ begin
       StartPos := FUserDicIndex[I - 1]
     else
       StartPos := 1;
-    P := Q_PosStr(Cr + Chr(96 + I), FUserDic, StartPos);
+    P := Q_PosEx(Cr + Chr(96 + I), FUserDic, StartPos);
     if P <> 0 then
       FUserDicIndex[I] := P
     else
@@ -268,21 +303,21 @@ begin
   end;
 end;
 
-procedure TJvSpeller.LoadDictionary(AFile: string);
+procedure TJvSpeller.LoadDictionary(const AFile: string);
 begin
   if FileExists(AFile) then
-    FDict := LoadString(AFile)
+    FDict := LoadAnsiFileToString(AFile)
   else
     FDict := '';
   IndexDictionary;
 end;
 
-procedure TJvSpeller.LoadUserDictionary(AFile: string);
+procedure TJvSpeller.LoadUserDictionary(const AFile: string);
 begin
   UserDictionary := AFile;
   FUserDicChanged := False;
   if FileExists(AFile) then
-    FUserDic := LoadString(AFile)
+    FUserDic := LoadAnsiFileToString(AFile)
   else
     FUserDic := '';
   IndexUserDictionary;
@@ -290,12 +325,10 @@ end;
 
 function TJvSpeller.ParseWord: string;
 begin
-  Result := '';
-  if not WordBegin then
-    Exit;
-  if not WordEnd then
-    Exit;
-  Result := Copy(FSourceText, FWordBegin, FWordEnd - FWordBegin);
+  if WordBegin and WordEnd then
+    Result := Copy(FSourceText, FWordBegin, FWordEnd - FWordBegin)
+  else
+    Result := '';
 end;
 
 procedure TJvSpeller.SetDictionary(const Value: TFileName);
@@ -322,7 +355,7 @@ begin
   SpellNext;
 end;
 
-procedure TJvSpeller.CreateSpellerDialog(SpellWord: string);
+procedure TJvSpeller.CreateSpellerDialog(const SpellWord: string);
 begin
   FSpellerDialog := TJvSpellerForm.Create(Application);
   with FSpellerDialog do
@@ -331,7 +364,7 @@ begin
     BtnSkip.OnClick := Skip;
     BtnChange.OnClick := Change;
     BtnAdd.OnClick := Add;
-    BtnAdd.Enabled := (UserDictionary <> '');
+    BtnAdd.Enabled := UserDictionary <> '';
     TxtSpell.Text := SpellWord;
     LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
   end;
@@ -347,40 +380,26 @@ begin
 
   FSourceText := SourceText;
   FWordEnd := 1;
-  repeat
-    Spw := ParseWord;
-    S := LowerCase(Spw);
-    if Spw <> '' then
+
+  Spw := ParseWord;
+  while Spw <> '' do
+  begin
+    S := AnsiLowerCase(Spw);
+    Index := Ord(S[1]) - 96;
+    if (Index > 0) and (Index < 27) then
+      StartPos := FDicIndex[Index]
+    else
+      StartPos := 1;
+
+    if Q_PosEx(S + Cr, FDict, StartPos) = 0 then
     begin
-      Index := Ord(S[1]) - 96;
-      if (Index > 0) and (Index < 27) then
-        StartPos := FDicIndex[Index]
-      else
-        StartPos := 1;
-      if Q_PosStr(S + Cr, FDict, StartPos) = 0 then
-        if FUserDic <> '' then
-        begin
-          if (Index > 0) and (Index < 27) then
-            StartPos := FUserDicIndex[Index]
-          else
-            StartPos := 1;
-          if Q_PosStr(S + Cr, FUserDic, StartPos) = 0 then
-          begin
-            CreateSpellerDialog(Spw);
-            try
-              if FSpellerDialog.ShowModal = mrOk then
-                SourceText := FSourceText;
-              // (rom) the user dictionary has to be saved always!
-              if FUserDicChanged then
-                if FUserDic <> '' then
-                  SaveString(UserDictionary, FUserDic);
-            finally
-              FSpellerDialog.Free;
-            end;
-            Exit;
-          end
-        end
+      if FUserDic <> '' then
+      begin
+        if (Index > 0) and (Index < 27) then
+          StartPos := FUserDicIndex[Index]
         else
+          StartPos := 1;
+        if Q_PosEx(S + Cr, FUserDic, StartPos) = 0 then
         begin
           CreateSpellerDialog(Spw);
           try
@@ -389,14 +408,32 @@ begin
             // (rom) the user dictionary has to be saved always!
             if FUserDicChanged then
               if FUserDic <> '' then
-                SaveString(UserDictionary, FUserDic);
+                SaveAnsiFileFromString(UserDictionary, FUserDic);
           finally
             FSpellerDialog.Free;
           end;
           Exit;
+        end
+      end
+      else
+      begin
+        CreateSpellerDialog(Spw);
+        try
+          if FSpellerDialog.ShowModal = mrOk then
+            SourceText := FSourceText;
+          // (rom) the user dictionary has to be saved always!
+          if FUserDicChanged then
+            if FUserDic <> '' then
+              SaveAnsiFileFromString(UserDictionary, FUserDic);
+        finally
+          FSpellerDialog.Free;
         end;
+        Exit;
+      end;
     end;
-  until Spw = '';
+
+    Spw := ParseWord;
+  end;
 end;
 
 procedure TJvSpeller.SpellNext;
@@ -404,38 +441,40 @@ var
   Spw, S: string;
   Index, StartPos: Integer;
 begin
-  repeat
-    Spw := ParseWord;
-    S := LowerCase(Spw);
-    if Spw <> '' then
+  Spw := ParseWord;
+  while Spw <> '' do
+  begin
+    S := AnsiLowerCase(Spw);
+    Index := Ord(S[1]) - 96;
+    if (Index > 0) and (Index < 27) then
+      StartPos := FDicIndex[Index]
+    else
+      StartPos := 1;
+
+    if Q_PosEx(S + Cr, FDict, StartPos) = 0 then
     begin
-      Index := Ord(S[1]) - 96;
-      if (Index > 0) and (Index < 27) then
-        StartPos := FDicIndex[Index]
-      else
-        StartPos := 1;
-      if Q_PosStr(S + Cr, FDict, StartPos) = 0 then
-        if FUserDic <> '' then
-        begin
-          if (Index > 0) and (Index < 27) then
-            StartPos := FUserDicIndex[Index]
-          else
-            StartPos := 1;
-          if Q_PosStr(S + Cr, FUserDic, StartPos) = 0 then
-          begin
-            FSpellerDialog.TxtSpell.Text := Spw;
-            FSpellerDialog.LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
-            Exit;
-          end;
-        end
+      if FUserDic <> '' then
+      begin
+        if (Index > 0) and (Index < 27) then
+          StartPos := FUserDicIndex[Index]
         else
+          StartPos := 1;
+        if Q_PosEx(S + Cr, FUserDic, StartPos) = 0 then
         begin
           FSpellerDialog.TxtSpell.Text := Spw;
           FSpellerDialog.LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
           Exit;
         end;
+      end
+      else
+      begin
+        FSpellerDialog.TxtSpell.Text := Spw;
+        FSpellerDialog.LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
+        Exit;
+      end;
     end;
-  until Spw = '';
+    Spw := ParseWord;
+  end;
   FSpellerDialog.ModalResult := mrOk;
 end;
 
