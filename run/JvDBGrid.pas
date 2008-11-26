@@ -1022,8 +1022,6 @@ var
   Bmp: TBitmap;
 begin
   inherited Create(AOwner);
-  inherited DefaultDrawing := False;
-  inherited Options := inherited Options - [dgAlwaysShowEditor];
 
   // (obones): issue 3026: need to create FChangeLinks at the beginning
   // so that any change can access the object. It seems that on some
@@ -1033,7 +1031,6 @@ begin
 
   FAutoSort := True;
   FBeepOnError := True;
-  Options := DefJvGridOptions;
   Bmp := TBitmap.Create;
   try
     Bmp.Handle := LoadBitmap(HInstance, bmMultiDot);
@@ -1085,6 +1082,11 @@ begin
   FPaintInfo.ColSizing := False;
   FCell.X := -1;
   FCell.Y := -1;
+
+  { properties with setters }
+  inherited DefaultDrawing := False;
+  inherited Options := inherited Options - [dgAlwaysShowEditor];
+  Options := DefJvGridOptions;
 end;
 
 destructor TJvDBGrid.Destroy;
