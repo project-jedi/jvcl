@@ -43,7 +43,6 @@
     <File Name="..\..\run\JvSimPID.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimPIDLinker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimScope.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="JvSpellerForm" Condition=""/>
     <File Name="..\..\run\JvSticker.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvTracker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTurtle.pas" Targets="all" Formname="" Condition=""/>
