@@ -2020,7 +2020,7 @@ begin
   if ThemeServices.ThemesEnabled then
     DrawThemedFrameControl(Canvas.Handle, R, DFC_SCROLL, ScrollTypes[Button] or States[State])
   else
-  {$ELSE}
+  {$ENDIF JVCLThemesEnabled}
   begin
     if TabBar.FlatScrollButtons then
       DrawButtonFace(Canvas, R, 1, bsNew, False, State = sbsPressed, False)
@@ -2033,7 +2033,6 @@ begin
       R.Top + (R.Bottom - R.Top - 7) div 2,
       Button = sbScrollLeft, State = sbsDisabled);
   end;
-  {$ENDIF JVCLThemesEnabled}
 end;
 
 //=== { TJvModernTabBarPainter } =============================================
