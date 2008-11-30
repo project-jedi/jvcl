@@ -71,8 +71,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure LoadFromFile(FileName: TFileName);
-    procedure SaveToFile(FileName: TFileName);
+    procedure LoadFromFile(const FileName: TFileName);
+    procedure SaveToFile(const FileName: TFileName);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
@@ -83,7 +83,7 @@ type
     function Count: Integer;
     property Elements[Index: Integer]: TJvLogRecord read GetElement; default;
 
-    procedure ShowLog(Title: string);
+    procedure ShowLog(const Title: string);
   published
     // (obones) some extra properties to make transparent use a bit easier
     property FileName: TFileName read FFileName write SetFileName;
@@ -233,7 +233,7 @@ begin
   Result := TJvLogRecord(FList[Index]);
 end;
 
-procedure TJvLogFile.LoadFromFile(FileName: TFileName);
+procedure TJvLogFile.LoadFromFile(const FileName: TFileName);
 var
   Stream: TFileStream;
 begin
@@ -310,7 +310,7 @@ begin
   end;
 end;
 
-procedure TJvLogFile.SaveToFile(FileName: TFileName);
+procedure TJvLogFile.SaveToFile(const FileName: TFileName);
 var
   Stream: TFileStream;
 begin
@@ -318,7 +318,7 @@ begin
     Exit;
   if csDesigning in ComponentState then
     Exit;
-  Stream := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
+  Stream := TFileStream.Create(FileName, fmCreate);
   try
     SaveToStream(Stream);
   finally
@@ -329,15 +329,15 @@ end;
 procedure TJvLogFile.SaveToStream(Stream: TStream);
 var
   I: Integer;
-  St: string;
+  St: AnsiString;
 begin
   with TStringList.Create do
   try
     for I := 0 to FList.Count - 1 do
       with FList[I] do
       begin
-        St := GetOutputString;
-        Stream.WriteBuffer(Pointer(St)^, Length(St));
+        St := AnsiString(GetOutputString);
+        Stream.WriteBuffer(PAnsiChar(St)^, Length(St) * SizeOf(AnsiChar));
       end;
   finally
     Free;
@@ -356,7 +356,7 @@ begin
     LoadFromFile(FileName);
 end;
 
-procedure TJvLogFile.ShowLog(Title: string);
+procedure TJvLogFile.ShowLog(const Title: string);
 var
   I: Integer;
 begin
