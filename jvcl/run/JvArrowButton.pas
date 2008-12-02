@@ -825,7 +825,11 @@ var
   Offset: TPoint;
   DivX, DivY: Integer;
   Push: Boolean;
+  {$IFDEF JVCLThemesEnabled}
+  Details: TThemedElementDetails;
+  {$ENDIF JVCLThemesEnabled}
 begin
+  FMouseInControl := IsMouseOver(Self);
   if not Enabled then
     FState := bsDisabled
   else
@@ -850,7 +854,7 @@ begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if (FState in [bsDown, bsExclusive]) then
       DrawFlags := DrawFlags or DFCS_PUSHED;
-    if IsMouseOver(Self) and not (csDesigning in ComponentState) then
+    if FMouseInControl and not (csDesigning in ComponentState) then
       DrawFlags := DrawFlags or DFCS_HOT;
     DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
@@ -859,8 +863,22 @@ begin
     if (FState in [bsDown, bsExclusive]) or
       (FMouseInControl and (FState <> bsDisabled)) or
       (csDesigning in ComponentState) then
-      DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
-        FillStyles[Flat] or BF_RECT);
+    begin
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+      begin
+        if FState in [bsDown, bsExclusive] then
+          Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+        else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
+          Details := ThemeServices.GetElementDetails(ttbButtonHot);
+        ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
+        PaintRect := ThemeServices.ContentRect(Canvas.Handle, Details, PaintRect);
+      end
+      else
+      {$ENDIF JVCLThemesEnabled}
+        DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
+          FillStyles[Flat] or BF_RECT);
+    end;
     InflateRect(PaintRect, -1, -1);
   end;
 
@@ -909,14 +927,28 @@ begin
     DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
     if Push then
       DrawFlags := DrawFlags or DFCS_PUSHED;
-    if IsMouseOver(Self) and not (csDesigning in ComponentState) then
+    if FMouseInControl and not (csDesigning in ComponentState) then
       DrawFlags := DrawFlags or DFCS_HOT;
     DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then
-    DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
-      FillStyles[Flat] or BF_RECT);
+  begin
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+    begin
+      if FState in [bsDown, bsExclusive] then
+        Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+      else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
+        Details := ThemeServices.GetElementDetails(ttbButtonHot);
+      ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
+      //PaintRect := ThemeServices.ContentRect(Canvas.Handle, Details, PaintRect);
+    end
+    else
+    {$ENDIF JVCLThemesEnabled}
+      DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
+        FillStyles[Flat] or BF_RECT);
+  end;
   { find middle pixel }
   with PaintRect do
   begin
