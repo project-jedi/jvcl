@@ -388,7 +388,7 @@ begin
   FontCombo := TJvFontComboBox(Param);
 {$ELSE}
 function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
-  FontType: Integer; FontCombo: TJvFontComboBox): Integer; stdcall;
+  FontType: DWORD; FontCombo: TJvFontComboBox): Integer; stdcall;
 begin
 {$ENDIF CLR}
   Result := 0;
