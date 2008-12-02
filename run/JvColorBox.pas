@@ -407,7 +407,7 @@ procedure TJvCustomDropButton.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and Enabled then
+  if ThemeServices.ThemesEnabled and Enabled and not (csDesigning in ComponentState) then
     Invalidate;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -416,7 +416,7 @@ procedure TJvCustomDropButton.MouseLeave(Control: TControl);
 begin
   inherited MouseLeave(Control);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and Enabled then
+  if ThemeServices.ThemesEnabled and Enabled and not (csDesigning in ComponentState) then
     Invalidate;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -428,7 +428,7 @@ var
 begin
   { Draw the button face }
   DrawThemedButtonFace(Self, Canvas, ClientRect, 1, bsAutoDetect, False,
-    FIsDown, Focused, IsMouseOver(Self));
+    FIsDown, Focused, IsMouseOver(Self) and not (csDesigning in ComponentState));
 
   Increment := Ord(FIsDown);
   Rec := ClientRect;
@@ -463,13 +463,11 @@ begin
   Invalidate;
 end;
 
-
 procedure TJvCustomDropButton.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
-
 
 procedure TJvCustomDropButton.Resize;
 begin
