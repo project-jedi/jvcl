@@ -2528,7 +2528,7 @@ begin
   // parameter seems to trigger a bug in ComCtrl where it will show a
   // scroll bar that has nothing to do here. Setting the GWL_STYLE window
   // long shows the checkboxes and does not trigger this bug.
-{  if FCheckBoxes then
+  {if FCheckBoxes then
     Params.Style := Params.Style or TVS_CHECKBOXES;}
 end;
 
@@ -2536,6 +2536,12 @@ procedure TJvTreeView.CreateWnd;
 begin
   FReinitializeTreeNode := True;
   inherited CreateWnd;
+  // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
+  // parameter seems to trigger a bug in ComCtrl where it will show a
+  // scroll bar that has nothing to do here. Setting the GWL_STYLE window
+  // long shows the checkboxes and does not trigger this bug.
+  if FCheckBoxes then
+    SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or TVS_CHECKBOXES);
 end;
 
 procedure TJvTreeView.DestroyWnd;
@@ -2820,18 +2826,21 @@ begin
   if FCheckBoxes <> Value then
   begin
     FCheckBoxes := Value;
-    // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
-    // parameter seems to trigger a bug in ComCtrl where it will show a
-    // scroll bar that has nothing to do here. Setting the GWL_STYLE window
-    // long shows the checkboxes and does not trigger this bug.
-    //RecreateWnd;
-
-    HandleNeeded;
-    CurStyle := GetWindowLong(Handle, GWL_STYLE);
-    if FCheckBoxes then
-      SetWindowLong(Handle, GWL_STYLE, CurStyle or TVS_CHECKBOXES)
-    else
-      SetWindowLong(Handle, GWL_STYLE, CurStyle and not TVS_CHECKBOXES)
+    if HandleAllocated then
+    begin
+      // Mantis 3351: Recreating the window for adding the TVS_CHECKBOXES
+      // parameter seems to trigger a bug in ComCtrl where it will show a
+      // scroll bar that has nothing to do here. Setting the GWL_STYLE window
+      // long shows the checkboxes and does not trigger this bug.
+      //RecreateWnd;
+      HandleNeeded;
+      CurStyle := GetWindowLong(Handle, GWL_STYLE);
+      if FCheckBoxes then
+        SetWindowLong(Handle, GWL_STYLE, CurStyle or TVS_CHECKBOXES)
+      else
+        SetWindowLong(Handle, GWL_STYLE, CurStyle and not TVS_CHECKBOXES);
+      Invalidate;
+    end;
   end;
 end;
 
