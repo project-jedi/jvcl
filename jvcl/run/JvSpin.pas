@@ -169,6 +169,7 @@ type
     // FButtonKind: TSpinButtonKind;
     FUpDown: TCustomUpDown;
     FThousands: Boolean; // New
+    FIsNegative: Boolean;
     function StoreCheckMaxValue: Boolean;
     function StoreCheckMinValue: Boolean;
     procedure SetCheckMaxValue(NewValue: Boolean);
@@ -681,9 +682,12 @@ begin
     Exit;
 
   FChanging := True;
+  FIsNegative := False;
   OldSelStart := SelStart;
   try
     OldText := inherited Text;
+    if OldText <> '' then
+      FIsNegative := Text[1] = '-';
     try
       if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
       begin
@@ -695,6 +699,7 @@ begin
     end;
   finally
     FChanging := False;
+    FIsNegative := False; // reset
   end;
 
   SelStart := OldSelStart;
@@ -1845,6 +1850,8 @@ begin
       //Text := IntToStr(Round(CheckValue(NewValue)));
       Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
     end;
+    if FIsNegative and (Text <> '') and (Text[1] <> '-') then
+      Text := '-' + Text;
     DataChanged;
   finally
     Modified := WasModified;
