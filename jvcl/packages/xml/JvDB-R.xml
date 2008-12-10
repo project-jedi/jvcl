@@ -187,5 +187,6 @@
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
     <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DBv6Up" Formname="" Condition=""/>
   </Contains>
 </Package>

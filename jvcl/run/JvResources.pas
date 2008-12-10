@@ -2377,6 +2377,13 @@ resourcestring
   RsToday = 'Today ';
 {$ENDIF USEJVCL}
 
+//=== JvDBFilterExpr =========================================================
+resourcestring
+  RsInvalidFilterNodeKind = 'Invalid filter node kind';
+  RsUnknownFilterOperation = 'Unknown filter operator';
+  RsUnknownFilterFunction = 'Unknown filter function "%s"';
+  RsMissingFilterFunctionParameters = 'Missing filter function parameters for "%s"';
+
 //=== not taken into JVCL ====================================================
 {
 resourcestring
