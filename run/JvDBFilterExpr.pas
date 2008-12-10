@@ -1,3 +1,28 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDBFilterExpr.pas, released on 2008-12-10.
+
+The Initial Developers of the Original Code is: Andreas Hausladen
+Copyright (c) 2008 Andreas Hausladen [Andreas DOTT Hausladen ATT gmx DOTT de]
+All Rights Reserved.
+
+Contributor(s):
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
 unit JvDBFilterExpr;
 
 {$I jedi.inc}
@@ -306,10 +331,6 @@ begin
       Result := EvaluateNode(N.FLeft) * EvaluateNode(N.FRight);
     coDIV:
       Result := EvaluateNode(N.FLeft) / EvaluateNode(N.FRight);
-    {coMOD:
-      Result := EvaluateNode(N.FLeft) div EvaluateNode(N.FRight);
-    coREM:
-      Result := EvaluateNode(N.FLeft) mod EvaluateNode(N.FRight);}
   else
     raise Exception.CreateRes(@RsUnknownFilterOperation);
   end;
@@ -401,9 +422,6 @@ begin
           Result := SecondOf(V);
       end
       else
-      {if CompareText(N.FData, 'GETDATE') = 0 then
-        Result := VarSQLTimeStampCreate(Now)
-      else}
       if CompareText(N.FData, 'TIME') = 0 then
       begin
         if VarIsNull(V) then Result := NULL else
