@@ -161,6 +161,7 @@ type
     FFreeObjects: Boolean;
     FCreateListEntries: Boolean;
     FItemName: string;
+    FItemsObjectName: string;
     function GetItems: TStringList;
   protected
     function GetString(Index: Integer): string;
@@ -200,6 +201,14 @@ type
     property CreateListEntries: Boolean read FCreateListEntries write
       FCreateListEntries default True;
     property ItemName: string read FItemName write FItemName;
+    //1 Name to read the value of the object from the appstorage path
+    /// Using this path addition the internal name of the object is read from
+    /// the appstorage.
+    /// This property is necessary only for the xml appstorage.
+    /// When in this case the property is not defined the internal items string
+    /// value couldn't be recovered from the appstorage (out of xml
+    /// restrictions with array elements)
+    property ItemsObjectName: string read FItemsObjectName write FItemsObjectName;
     property Sorted: Boolean read GetSorted write SetSorted;
     function CreateAddObject(const aObjectName: String): TPersistent;
     //IJvPropertyListEditorHandler = interface
@@ -1072,9 +1081,9 @@ begin
           Sender.ItemNameIndexPath(ItemName, Index)]),
           TPersistent(NewObject), True, True, CombinedIgnoreProperties);
       if Sender.ValueStored(Sender.ConcatPaths([Path,
-        Sender.ItemNameIndexPath(ItemName, Index)])) then
+        Sender.ItemNameIndexPath(ItemName, Index), ItemsObjectName])) then
         NewObjectName := Sender.ReadString(Sender.ConcatPaths([Path,
-          Sender.ItemNameIndexPath(ItemName, Index)]))
+          Sender.ItemNameIndexPath(ItemName, Index), ItemsObjectName]))
       else
         NewObjectName := '';
       Items.AddObject(NewObjectName, NewObject);
@@ -1097,9 +1106,9 @@ begin
         Sender.ItemNameIndexPath(ItemName, Index)]),
         TPersistent(Objects[Index]), True, True, CombinedIgnoreProperties);
     if Sender.ValueStored(Sender.ConcatPaths([Path,
-      Sender.ItemNameIndexPath(ItemName, Index)])) then
+      Sender.ItemNameIndexPath(ItemName, Index), ItemsObjectName])) then
       Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path,
-        Sender.ItemNameIndexPath(ItemName, Index)]))
+        Sender.ItemNameIndexPath(ItemName, Index), ItemsObjectName]))
     else
       Strings[Index] := '';
   end
@@ -1127,7 +1136,7 @@ begin
         TPersistent(Objects[Index]), True, CombinedIgnoreProperties);
     if Strings[Index] <> '' then
       Sender.WriteString(Sender.ConcatPaths([Path,
-        Sender.ItemNameIndexPath(ItemName, Index)]), Strings[Index]);
+        Sender.ItemNameIndexPath(ItemName, Index), ItemsObjectName]), Strings[Index]);
   end
   else
     Sender.WriteString(Sender.ConcatPaths([Path,
