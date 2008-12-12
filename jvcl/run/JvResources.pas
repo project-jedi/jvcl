@@ -1777,6 +1777,7 @@ resourcestring
 resourcestring
   RsJvPropertyStoreMutexStorePropertiesProcedureName = 'TJvCustomPropertyStore.StoreProperties:';
   RsJvPropertyStoreMutexLoadPropertiesProcedureName = 'TJvCustomPropertyStore.LoadProperties:';
+  RsJvPropertyStoreMutexLoadStorePropertiesProcedureName = 'TJvCustomPropertyStore.LoadStoreProperties:';
   RsJvPropertyStoreEnterMutexTimeout = '%s: Mutex Timeout';
 
 //=== JvPropertyStoreEditor.pas ====================================================

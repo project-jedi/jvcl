@@ -127,11 +127,15 @@ type
     //1 Synchronize the StoreProperties procedure
     /// Defines if the execution of the StoreProperties procedure for the current
     /// AppStoragePath should be synchronized via a global mutex
+    /// When the SynchronizeLoadProperties is also definde the load and store
+    /// procedures will be synched with the same mutex.
     property SynchronizeStoreProperties: Boolean read FSynchronizeStoreProperties
       write FSynchronizeStoreProperties default False;
     //1 Synchronize the LoadProperties procedure
     /// Defines if the execution of the LoadProperties procedure for the current
-    /// AppStoragePath should be synchronized via a global mutex
+    /// AppStoragePath should be synchronized via a global mutex.
+    /// When the SynchronizeStoreProperties is also definde the load and store
+    /// procedures will be synched with the same mutex.
     property SynchronizeLoadProperties: Boolean read FSynchronizeLoadProperties
       write FSynchronizeLoadProperties default False;
     property Tag;
@@ -806,9 +810,14 @@ begin
 
   if SynchronizeLoadProperties then
   begin
-    Mutex := TJclMutex.Create(nil, False,
-      string(B64Encode(AnsiString(RsJvPropertyStoreMutexLoadPropertiesProcedureName +
-        AppStoragePath))));
+    if SynchronizeStoreProperties then
+      Mutex := TJclMutex.Create(nil, False,
+        string(B64Encode(AnsiString(RsJvPropertyStoreMutexLoadStorePropertiesProcedureName +
+          AppStoragePath))))
+    else
+      Mutex := TJclMutex.Create(nil, False,
+        string(B64Encode(AnsiString(RsJvPropertyStoreMutexLoadPropertiesProcedureName +
+          AppStoragePath))));
     try
       if Mutex.WaitForever = wrSignaled then
         try
@@ -873,9 +882,14 @@ begin
 
   if SynchronizeStoreProperties then
   begin
-    Mutex := TJclMutex.Create(nil, False,
-      string(B64Encode(AnsiString(RsJvPropertyStoreMutexStorePropertiesProcedureName +
-        AppStoragePath))));
+    if SynchronizeLoadProperties then
+      Mutex := TJclMutex.Create(nil, False,
+        string(B64Encode(AnsiString(RsJvPropertyStoreMutexLoadStorePropertiesProcedureName +
+          AppStoragePath))))
+    else
+      Mutex := TJclMutex.Create(nil, False,
+        string(B64Encode(AnsiString(RsJvPropertyStoreMutexStorePropertiesProcedureName +
+          AppStoragePath))));
     try
       if Mutex.WaitForever = wrSignaled then
         try
