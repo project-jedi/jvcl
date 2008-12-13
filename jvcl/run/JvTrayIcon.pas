@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvTrayIcon.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
-Portions created by S?stien Buysse are Copyright (C) 2001 S?stien Buysse.
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
@@ -103,7 +103,6 @@ type
     procedure SetApplicationVisible(const Value: Boolean);
     function GetIconVisible: Boolean;
     procedure SetIconVisible(const Value: Boolean);
-    procedure SetSwingForthAndBack(const Value: Boolean);
   protected
     FActive: Boolean;
     FIcon: TIcon;
@@ -221,7 +220,7 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property Snap: Boolean read FSnap write FSnap default False;
-    property SwingForthAndBack: Boolean read FSwingForthAndBack write SetSwingForthAndBack default False;
+    property SwingForthAndBack: Boolean read FSwingForthAndBack write FSwingForthAndBack default False;
     property Visibility: TTrayVisibilities read FVisibility write SetVisibility
       default [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
     property OnAnimate: TAnimateEvent read FOnAnimate write FOnAnimate;
@@ -1220,16 +1219,6 @@ begin
     ShowTrayIcon
   else
     HideTrayIcon;
-end;
-
-procedure TJvTrayIcon.SetSwingForthAndBack(const Value: Boolean);
-begin
-  if Value <> FSwingForthAndBack then
-  begin
-    FSwingForthAndBack := Value;
-    if FSwingForthAndBack then
-      Animated := True;
-  end;
 end;
 
 procedure TJvTrayIcon.SetTask(const Value: Boolean);
