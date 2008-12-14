@@ -111,7 +111,6 @@ resourcestring
 *)
 
 {$R *.dfm}
-{$R WinXP.res}
 
 procedure TFormMain.DoPagesChanged(Sender: TObject);
 begin
