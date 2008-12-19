@@ -389,7 +389,7 @@ end;
 
 procedure TJvDBFindEdit.SetDataField(const Value: string);
 begin
-  if Value > '' then
+  if Value <> FDataLink.FieldName then
     FDataLink.FieldName := Value;
 end;
 
