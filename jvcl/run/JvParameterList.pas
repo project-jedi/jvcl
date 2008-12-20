@@ -342,8 +342,6 @@ type
     procedure Assign(Source: TPersistent); override;
     { Saves the data of all allowed parameters to the AppStorage }
     procedure StoreData;
-    { load the data of all allowed parameters from the AppStorage }
-    procedure LoadData;
     {Adds a new Parameter to the parameterlist }
     procedure AddParameter(AParameter: TJvBaseParameter);
     {returns the parameter identified by the Searchname}
@@ -395,9 +393,15 @@ type
       FOkButtonEnableReasons;
     {creates the components of all parameters on any TWInControl}
     procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
+    { load the data of all allowed parameters from the AppStorage }
+    procedure LoadData;
+    { load the data of all allowed parameters from the AppStorage }
+    procedure LoadDataFrom(const iTempAppStoragePath: string);
     procedure OnEnterParameterControl(Sender: TObject);
     procedure OnExitParameterControl(Sender: TObject);
     procedure OnChangeParameterControl(Sender: TObject);
+    { Saves the data of all allowed parameters to the AppStorage }
+    procedure StoreDataTo(const iTempAppStoragePath: string);
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
@@ -1250,16 +1254,46 @@ begin
   FDynControlEngine := Value;
 end;
 
+procedure TJvParameterList.LoadData;
+begin
+  if (AppStoragePath <> '') and Assigned(AppStorage) then
+    FParameterListPropertyStore.LoadData;
+end;
+
+procedure TJvParameterList.LoadDataFrom(const iTempAppStoragePath: string);
+var SaveAppStoragePath : string;
+begin
+  if (iTempAppStoragePath <> '') and Assigned(AppStorage) then
+  begin
+    try
+      SaveAppStoragePath := AppStoragePath;
+      AppStoragePath := iTempAppStoragePath;
+      FParameterListPropertyStore.LoadData;
+    finally
+      AppStoragePath := SaveAppStoragePath;
+    end;
+  end;
+end;
+
 procedure TJvParameterList.StoreData;
 begin
   if (AppStoragePath <> '') and Assigned(AppStorage) then
     FParameterListPropertyStore.StoreData;
 end;
 
-procedure TJvParameterList.LoadData;
+procedure TJvParameterList.StoreDataTo(const iTempAppStoragePath: string);
+var SaveAppStoragePath : string;
 begin
-  if (AppStoragePath <> '') and Assigned(AppStorage) then
-    FParameterListPropertyStore.LoadData;
+  if (iTempAppStoragePath <> '') and Assigned(AppStorage) then
+  begin
+    try
+      SaveAppStoragePath := AppStoragePath;
+      AppStoragePath := iTempAppStoragePath;
+      FParameterListPropertyStore.StoreData;
+    finally
+      AppStoragePath := SaveAppStoragePath;
+    end;
+  end;
 end;
 
 procedure TJvParameterList.OnOkButtonClick(Sender: TObject);
@@ -1912,6 +1946,8 @@ begin
   IntParameterList.Clear;
 end;
 
+
+
 //=== { TJvParameterListPropertyStore } ======================================
 
 procedure TJvParameterListPropertyStore.LoadData;
@@ -2003,39 +2039,29 @@ end;
 
 procedure TJvParameterListSelectList.RestoreParameterList(const ACaption: string = '');
 var
-  SavePath: string;
+  SelectPath: string;
 begin
   if not Assigned(ParameterList) then
     Exit;
-  SavePath := ParameterList.AppStoragePath;
-  try
-    ParameterList.AppStoragePath := GetSelectListPath(sloLoad, ACaption);
-    if ParameterList.AppStoragePath <> '' then
-    begin
-      ParameterList.LoadData;
-      ParameterList.SetDataToWinControls;
-    end;
-  finally
-    ParameterList.AppStoragePath := SavePath;
+  SelectPath := GetSelectListPath(sloStore, ACaption);
+  if SelectPath <> '' then
+  begin
+    ParameterList.LoadDataFrom(SelectPath);
+    ParameterList.SetDataToWinControls;
   end;
 end;
 
 procedure TJvParameterListSelectList.SaveParameterList(const ACaption: string = '');
 var
-  SavePath: string;
+  SelectPath: string;
 begin
   if not Assigned(ParameterList) then
     Exit;
-  SavePath := ParameterList.AppStoragePath;
-  try
-    ParameterList.AppStoragePath := GetSelectListPath(sloStore, ACaption);
-    if ParameterList.AppStoragePath <> '' then
-    begin
-      ParameterList.GetDataFromWinControls;
-      ParameterList.StoreData;
-    end;
-  finally
-    ParameterList.AppStoragePath := SavePath;
+  SelectPath := GetSelectListPath(sloStore, ACaption);
+  if SelectPath <> '' then
+  begin
+    ParameterList.GetDataFromWinControls;
+    ParameterList.StoreDataTo(SelectPath);
   end;
 end;
 
