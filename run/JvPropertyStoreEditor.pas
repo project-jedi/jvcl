@@ -65,6 +65,7 @@ type
     FPropertyStore: TComponent;
     InfoGroupBoxDynControlIntf: IJvDynControl;
     InfoMemoDynControlDataIntf: IJvDynControlData;
+    InfoMemo: TWinControl;
     InfoPanel: TWinControl;
     Inspector: TWinControl;
     InspectorPanel: TWinControl;
@@ -254,7 +255,6 @@ var
   ListBox: TWinControl;
   InfoGroupBox: TWinControl;
   InfoMemoPanel: TWinControl;
-  InfoMemo: TWinControl;
   DynControlMemo: IJvDynControlMemo;
   DynControlReadOnly: IJvDynControlReadOnly;
   DynControl: IJvDynControl;
@@ -287,7 +287,7 @@ begin
     TPanel(EditPanel).BevelOuter := bvNone;
     TPanel(EditPanel).BorderWidth := 3;
   end;
-  InfoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'InfoPanel', '', alBottom);
+  InfoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'InfoPanel', '', alBottom);
   if InfoPanel is TCustomPanel then
   begin
     tAccessCustomPanel(InfoPanel).BevelOuter := bvNone;
@@ -302,7 +302,7 @@ begin
     tAccessCustomPanel(InfoMemoPanel).BevelOuter := bvNone;
     tAccessCustomPanel(InfoMemoPanel).BorderWidth := 3;
   end;
-  InfoMemo := DefaultDynControlEngine.CreateMemoControl(Self, InfoMemoPanel, 'InfoMemo');
+  InfoMemo := DefaultDynControlEngine.CreateMemoControl(Self, InfoGroupbox, 'InfoMemo');
   InfoMemo.Align := alClient;
   if Supports(InfoMemo, IJvDynControlMemo, DynControlMemo) then
   begin
@@ -372,7 +372,9 @@ procedure TJvPropertyStoreEditorControl.DestroyControls;
 begin
   PropertyStore := NIL;
   InspectedObject := NIL;
+  InfoMemoDynControlDataIntf := NIL;
   FreeAndNil(TreePanel);
+  FreeAndNil(InfoMemo);
   FreeAndNil(InfoPanel);
   FreeAndNil(ListPanel);
   FreeAndNil(Inspector);
