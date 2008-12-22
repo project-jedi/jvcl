@@ -107,7 +107,7 @@ begin
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
     TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}
-    TJvgExportExcel, TJvgExportHTML,
+    TJvgExportExcel,
     {$IFDEF USEJVCL}
     TJvgExportXML,
     {$ENDIF USEJVCL}

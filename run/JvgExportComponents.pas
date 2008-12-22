@@ -190,36 +190,6 @@ type
     property OnSaveDest: TJvCreateDataset read FOnSaveDest write FOnSaveDest;
   end;
 
-  TJvgExportHTML = class(TJvgCommonExport)
-  private
-    FFooter: TStringList;
-    FHeader: TStringList;
-    FStyles: TStringList;
-    function GetFooter: TStrings;
-    function GetHeader: TStrings;
-    function GetStyles: TStrings;
-    procedure SetFooter(const Value: TStrings);
-    procedure SetHeader(const Value: TStrings);
-    procedure SetStyles(const Value: TStrings);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    //    procedure Execute; override;
-  published
-    property DataSet;
-    property Captions;
-    property SaveToFileName;
-    property TransliterateRusToEng;
-    property MaxFieldSize;
-    property Options;
-    property OnGetCaption;
-    property OnExportRecord;
-    property OnExportField;
-    property Header: TStrings read GetHeader write SetHeader;
-    property Footer: TStrings read GetFooter write SetFooter;
-    property Styles: TStrings read GetStyles write SetStyles;
-  end;
-
   {$IFDEF USEJVCL}
   TJvgExportXML = class(TJvgCommonExport)
   public
@@ -595,54 +565,6 @@ end;
 procedure TJvgExportExcel.SetSubHeaderFont(const Value: TFont);
 begin
   FSubHeaderFont.Assign(Value);
-end;
-
-//=== { TJvgExportHTML } =====================================================
-
-constructor TJvgExportHTML.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FFooter := TStringList.Create;
-  FHeader := TStringList.Create;
-  FStyles := TStringList.Create;
-end;
-
-destructor TJvgExportHTML.Destroy;
-begin
-  FFooter.Free;
-  FHeader.Free;
-  FStyles.Free;
-  inherited Destroy;
-end;
-
-function TJvgExportHTML.GetFooter: TStrings;
-begin
-  Result := FFooter;
-end;
-
-function TJvgExportHTML.GetHeader: TStrings;
-begin
-  Result := FHeader;
-end;
-
-function TJvgExportHTML.GetStyles: TStrings;
-begin
-  Result := FStyles;
-end;
-
-procedure TJvgExportHTML.SetFooter(const Value: TStrings);
-begin
-  FFooter.Assign(Value);
-end;
-
-procedure TJvgExportHTML.SetHeader(const Value: TStrings);
-begin
-  FHeader.Assign(Value);
-end;
-
-procedure TJvgExportHTML.SetStyles(const Value: TStrings);
-begin
-  FStyles.Assign(Value);
 end;
 
 //=== { TJvgExportDataset } ==================================================
