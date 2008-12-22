@@ -843,6 +843,16 @@ begin
         if jC > SL + 1 then
           Ch := Ch + Spaces(jC - SL - 1);
 
+        {$IFDEF COMPILER12_UP}
+        for iC := 0 to High(MyDi) - 1 do
+        begin
+          if ic < Length(ch) then
+            MyDi[ic] := EditorClient.Canvas.TextWidth(ch[ic + 1])
+          else
+            MyDi[iC] := CellRect.Width;
+        end;
+        {$ENDIF COMPILER12_UP}
+
         if Brush.Color <> LA.BC then // change GDI object only if necessary
           Brush.Color := LA.BC;
         Font.Assign(FontCacheFind(LA));
