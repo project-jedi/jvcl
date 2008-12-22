@@ -1066,11 +1066,14 @@ procedure TJvFormStorage.SavePlacement;
 Var
   JvAppStorageHandler: IJvAppStorageHandler;
 begin
-  inherited SavePlacement;
-  if Supports(Owner, IJvAppStorageHandler, JvAppStorageHandler)then
-    JvAppStorageHandler.WriteToAppStorage(AppStorage, AppStoragePath);
-  SaveProperties;
-  StoredValues.SaveValues;
+  if FRestored then
+  begin
+    inherited SavePlacement;
+    if Supports(Owner, IJvAppStorageHandler, JvAppStorageHandler)then
+      JvAppStorageHandler.WriteToAppStorage(AppStorage, AppStoragePath);
+    SaveProperties;
+    StoredValues.SaveValues;
+  end;
 end;
 
 procedure TJvFormStorage.RestorePlacement;
