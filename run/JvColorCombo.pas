@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -218,6 +218,7 @@ type
     FOnDrawPreviewEvent: TJvDrawPreviewEvent;
     FFontSizes:TStrings;
     FEnumeratorDC:HDC;
+    FSampleText: string;
     procedure SetUseImages(Value: Boolean);
     procedure SetDevice(Value: TFontDialogDevice);
     procedure SetOptions(Value: TJvFontComboOptions);
@@ -234,6 +235,8 @@ type
     procedure SetShowMRU(const Value: Boolean);
     procedure SetMaxMRUCount(const Value: Integer);
     function GetFontSizes: TStrings;
+    procedure SetSampleText(const Value: string);
+    function GetSampleTextStored: Boolean;
   protected
     procedure FontChanged; override;
     procedure Loaded; override;
@@ -314,6 +317,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnStartDrag;
+    property SampleText: string read FSampleText write SetSampleText stored GetSampleTextStored;
     property OnDrawPreviewEvent: TJvDrawPreviewEvent read FOnDrawPreviewEvent write FOnDrawPreviewEvent;
   end;
 
@@ -332,6 +336,9 @@ implementation
 uses
   SysUtils, Math, StdCtrls, Printers,
   JvConsts, JvResources, JvTypes;
+
+const
+  DefaultSampleText = 'AbCdEfGhIj';
 
 {$R JvColorCombo.res}
 
@@ -1015,6 +1022,7 @@ begin
   FTrueTypeBmp := LoadInternalBitmap('JvFontComboBoxTTF');
   FFixBmp := LoadInternalBitmap('JvFontComboBoxFIX');
   FDeviceBmp := LoadInternalBitmap('JvFontComboBoxPRN');
+  FSampleText := DefaultSampleText;
   FHiliteColor := clHighlight;
   FHiliteText := clHighlightText;
   FDevice := fdScreen;
@@ -1206,7 +1214,7 @@ begin
     begin
       Inc(AWidth, TextWidth(Items[Index]) + 36);
       Canvas.Font.Name := Items[Index];
-      S := 'AbCdEfGhIj';
+      S := FSampleText;
       Inc(AWidth, TextWidth(S));
       if DoDrawPreview(Items[Index], S, AWidth) then
       begin
@@ -1338,6 +1346,11 @@ begin
   Reset;
 end;
 
+function TJvFontComboBox.GetSampleTextStored: Boolean;
+begin
+  result := FSampleText <> DefaultSampleText;
+end;
+
 function TJvFontComboBox.GetSorted: Boolean;
 begin
   Result := inherited Sorted;
@@ -1410,6 +1423,15 @@ end;
 procedure TJvFontComboBox.SetDropDownWidth(const Value: Integer);
 begin
   SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
+end;
+
+procedure TJvFontComboBox.SetSampleText(const Value: string);
+begin
+  if value <> FSampleText then
+  begin
+    FSampleText := value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvFontComboBox.SetShowMRU(const Value: Boolean);
@@ -1714,4 +1736,5 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
+
 
