@@ -119,6 +119,7 @@ type
     property FlushOnDestroy;
     property KeyField;
     property SectionField;
+    property SubStorages;
     property ValueField;
 
     property OnRead;
