@@ -370,9 +370,16 @@ end;
 
 procedure TJvPropertyStoreEditorControl.DestroyControls;
 begin
-  PropertyStore := NIL;
-  InspectedObject := NIL;
-  InfoMemoDynControlDataIntf := NIL;
+  PropertyStore := nil;
+  InspectedObject := nil;
+  FInspectedObjectEditorHandlerIntf := nil;
+  FInspectedObjectListEditorHandlerIntf := nil;
+  InfoGroupBoxDynControlIntf := nil;
+  InfoMemoDynControlDataIntf := nil;
+  ListBoxControlItemsIntf := nil;
+  ListBoxControlItemIndexIntf := nil;
+  PropertyStoreTreeViewIntf := nil;
+  RTTIInspectorControlIntf := nil;
   FreeAndNil(TreePanel);
   FreeAndNil(InfoMemo);
   FreeAndNil(InfoPanel);
