@@ -1665,6 +1665,8 @@ type
     FOnSetAsString: TJvInspAsString;
     FOnSetAsSet: TJvInspAsSet;
     FOnSupportsMethodPointers: TJvInspSupportsMethodPointers;
+
+    FParent: TJvCustomInspectorItem;
   protected
     function DoGetAsFloat: Extended;
     function DoGetAsInt64: Int64;
@@ -11252,7 +11254,7 @@ end;
 function TJvInspectorEventData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
 begin
   Result := (Ref is TJvInspectorEventData) and (TJvInspectorEventData(Ref).Name = Name) and
-    (TJvInspectorEventData(Ref).TypeInfo = TypeInfo);
+    (TJvInspectorEventData(Ref).TypeInfo = TypeInfo) and (TJvInspectorEventData(Ref).FParent = FParent);
 end;
 
 procedure TJvInspectorEventData.SetAsFloat(const Value: Extended);
@@ -11531,9 +11533,14 @@ var
 begin
   Data := TJvInspectorEventData(DataRegister.Add(CreatePrim(AName, ATypeInfo)));
   if Data <> nil then
+  begin
+    Data.FParent := AParent;
     Result := Data.NewItem(AParent)
+  end
   else
+  begin
     Result := nil;
+  end;
 end;
 
 procedure TJvInspectorEventData.SetAsSet(const Buf);
