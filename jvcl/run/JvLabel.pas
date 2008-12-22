@@ -625,12 +625,16 @@ begin
     Flags := Flags or DT_NOPREFIX;
   Flags := Flags or EllipsisFlags[TextEllipsis];
   Flags := DrawTextBiDiModeFlags(Flags);
-  if MouseOver and HotTrack then
-    Canvas.Font := HotTrackFont
-  else
+  if not MouseOver or not HotTrack then
   begin
     Canvas.Font := Font;
     Canvas.Font.Color := GetDefaultFontColor;
+  end
+  else
+  begin
+    if HotTrack then
+      if MouseOver then
+        Canvas.Font := HotTrackFont
   end;
   PosShadow := FShadowPos;
   SizeShadow := FShadowSize;
@@ -1215,7 +1219,9 @@ begin
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack and not (FDragging or OtherDragging)));
 
-    inherited MouseEnter(Control); // set MouseOver
+    UpdateTracking; // set MouseOver
+
+    inherited MouseEnter(Control);
 
     if NeedRepaint then
       Invalidate;
@@ -1245,7 +1251,9 @@ begin
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack and (FDragging or not OtherDragging)));
 
-    inherited MouseLeave(Control); // set MouseOver
+    UpdateTracking; // set MouseOver
+
+    inherited MouseLeave(Control);
 
     if NeedRepaint then
       Invalidate;
