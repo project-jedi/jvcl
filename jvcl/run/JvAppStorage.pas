@@ -2374,7 +2374,7 @@ begin
     else
     begin
       try
-        if TypeInfo.Kind = tkChar then
+        if TypeInfo.Kind in [tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}] then
           OrdValue := ReadIntegerInt(Path, OrdValue)
         else
           if TypeInfo.Kind = tkInteger then
@@ -2449,7 +2449,7 @@ begin
       WriteBooleanInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType) <> 0)
   {$ENDIF CLR}
     else
-      if TypeInfo.Kind = tkChar then
+      if TypeInfo.Kind in [tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}] then
         WriteIntegerInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType))
       else
         if TypeInfo.Kind = tkInteger then
@@ -2661,7 +2661,7 @@ begin
         ReadSet(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue, TmpValue);
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
-    tkChar, tkInteger:
+    tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}, tkInteger:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
         ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue, TmpValue);
@@ -2805,7 +2805,7 @@ begin
           WriteSet(Path, P.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
         end;
       end;
-    tkChar, tkInteger:
+    tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}, tkInteger:
       begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
