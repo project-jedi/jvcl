@@ -791,6 +791,10 @@ var
   LA: TLineAttr;
   jCStart, Len: Integer;
   MyDi: TDynIntArray;
+  ColCount: Integer;
+  {$IFDEF COMPILER12_UP}
+  CharSize: Integer;
+  {$ENDIF COMPILER12_UP}
 begin
   with EditorClient do
   begin
@@ -849,28 +853,35 @@ begin
           Brush.Color := LA.BC;
         Font.Assign(FontCacheFind(LA));
 
+        ColCount := 0;
         {$IFDEF COMPILER12_UP}
         for iC := 0 to High(MyDi) - 1 do
         begin
           {TODO: a cache for the TextWidth() call should be used and cleared if the font name changes. }
           if (iC < Len) and (Ch[iC + 1] >= #256) then
-            MyDi[iC] := CellRect.Width * ((EditorClient.Canvas.TextWidth(Ch[iC + 1]) + (CellRect.Width - 1)) div CellRect.Width)
+          begin
+            CharSize := ((EditorClient.Canvas.TextWidth(Ch[iC + 1]) + (CellRect.Width - 1)) div CellRect.Width);
+            MyDi[iC] := CellRect.Width * CharSize;
+            Inc(ColCount, CharSize - 1);
+          end
           else
             MyDi[iC] := CellRect.Width;
         end;
         {$ENDIF COMPILER12_UP}
+        Inc(ColCount, Len);
+
 
         R := CalcCellRect(ColPainted - LeftCol, Line - TopRow);
         {bottom line}
-        FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Len, 1));
+        FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * ColCount, 1));
 
         TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
-        ErrorHighlighting.PaintError(Canvas, ColPainted, Line, R, Len, MyDi);
+        ErrorHighlighting.PaintError(Canvas, ColPainted, Line, R, ColCount, MyDi);
 
         if LA.Border <> clNone then
         begin
           Pen.Color := LA.Border;
-          R.Right := R.Left + CellRect.Width * Len;
+          R.Right := R.Left + CellRect.Width * ColCount;
           Dec(R.Left);
           Brush.Style := bsClear;
           Rectangle(R);
