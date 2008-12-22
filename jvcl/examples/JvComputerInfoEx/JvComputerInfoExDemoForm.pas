@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvComputerInfoEx, Menus, JvMenus, StdCtrls, JvExStdCtrls,
   ActnList, ComCtrls, JvDialogs, JvRichEdit, JvComponent,
-  JvInspector, JvExControls, ExtCtrls, ImgList;
+  JvInspector, JvExControls, ExtCtrls, ImgList, JvComponentBase;
 
 type
   TJvComputerInfoExDemoFrm = class(TForm)
@@ -93,8 +93,6 @@ type
     procedure JvComputerInfoEx1DisplayChange(Sender: TObject; BitsPerPixel,
       ScreenWidth, ScreenHeight: Integer);
     procedure JvComputerInfoEx1FontChange(Sender: TObject);
-    procedure JvComputerInfoEx1PaletteChanged(Sender: TObject; Wnd: HWND);
-    procedure JvComputerInfoEx1PaletteChanging(Sender: TObject; Wnd: HWND);
     procedure JvComputerInfoEx1PowerBroadcast(Sender: TObject; Event,
       Data: Integer);
     procedure JvComputerInfoEx1SettingChange(Sender: TObject;
@@ -110,6 +108,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure chkReadOnlyClick(Sender: TObject);
     procedure acTrailingPathDelimiterExecute(Sender: TObject);
+    procedure JvComputerInfoEx1PaletteChanged(Sender: TObject; Wnd: Cardinal);
+    procedure JvComputerInfoEx1PaletteChanging(Sender: TObject; Wnd: Cardinal);
   private
     { Private declarations }
     LastCategory: string;
@@ -321,13 +321,15 @@ begin
   Result := buf;
 end;
 
-procedure TJvComputerInfoExDemoFrm.JvComputerInfoEx1PaletteChanged(Sender: TObject; Wnd: HWND);
+procedure TJvComputerInfoExDemoFrm.JvComputerInfoEx1PaletteChanged(
+  Sender: TObject; Wnd: Cardinal);
 begin
   AddEvent('Palette Changed',
     Format('Window: %s, Handle: %d', [GetWndText(Wnd), Wnd]));
 end;
 
-procedure TJvComputerInfoExDemoFrm.JvComputerInfoEx1PaletteChanging(Sender: TObject; Wnd: HWND);
+procedure TJvComputerInfoExDemoFrm.JvComputerInfoEx1PaletteChanging(
+  Sender: TObject; Wnd: Cardinal);
 begin
   AddEvent('Palette Changing',
     Format('Window: %s, Handle: %d', [GetWndText(Wnd), Wnd]));

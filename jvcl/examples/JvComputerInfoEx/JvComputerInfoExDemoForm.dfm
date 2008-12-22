@@ -1,9 +1,9 @@
 object JvComputerInfoExDemoFrm: TJvComputerInfoExDemoFrm
   Left = 370
   Top = 161
-  Width = 585
-  Height = 448
   Caption = 'JvComputerInfoEx Demo'
+  ClientHeight = 402
+  ClientWidth = 577
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -42,6 +42,7 @@ object JvComputerInfoExDemoFrm: TJvComputerInfoExDemoFrm
         Width = 569
         Height = 355
         Align = alClient
+        AutoSize = False
         ReadOnly = True
         TabOrder = 0
         WantReturns = False
@@ -82,11 +83,14 @@ object JvComputerInfoExDemoFrm: TJvComputerInfoExDemoFrm
         Top = 0
         Width = 569
         Height = 314
+        Style = isItemPainter
         Align = alClient
         RelativeDivider = True
-        Divider = 42
+        Divider = 40
         ItemHeight = 16
         Painter = JvInspectorBorlandPainter1
+        TabStop = True
+        TabOrder = 0
       end
       object Panel1: TPanel
         Left = 0
@@ -256,6 +260,21 @@ object JvComputerInfoExDemoFrm: TJvComputerInfoExDemoFrm
     Top = 56
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
+    CategoryFont.Charset = DEFAULT_CHARSET
+    CategoryFont.Color = clBtnText
+    CategoryFont.Height = -11
+    CategoryFont.Name = 'Tahoma'
+    CategoryFont.Style = []
+    NameFont.Charset = DEFAULT_CHARSET
+    NameFont.Color = clWindowText
+    NameFont.Height = -11
+    NameFont.Name = 'Tahoma'
+    NameFont.Style = []
+    ValueFont.Charset = DEFAULT_CHARSET
+    ValueFont.Color = clNavy
+    ValueFont.Height = -11
+    ValueFont.Name = 'Tahoma'
+    ValueFont.Style = []
     DrawNameEndEllipsis = False
     Left = 114
     Top = 24
