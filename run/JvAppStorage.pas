@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -2374,7 +2374,7 @@ begin
     else
     begin
       try
-        if TypeInfo.Kind in [tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}] then
+        if TypeInfo.Kind in [tkChar, tkWChar] then
           OrdValue := ReadIntegerInt(Path, OrdValue)
         else
           if TypeInfo.Kind = tkInteger then
@@ -2449,7 +2449,7 @@ begin
       WriteBooleanInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType) <> 0)
   {$ENDIF CLR}
     else
-      if TypeInfo.Kind in [tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}] then
+      if TypeInfo.Kind in [tkChar, tkWChar] then
         WriteIntegerInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType))
       else
         if TypeInfo.Kind = tkInteger then
@@ -2661,7 +2661,7 @@ begin
         ReadSet(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue, TmpValue);
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
-    tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}, tkInteger:
+    tkChar, tkWChar, tkInteger:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
         ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue, TmpValue);
@@ -2805,7 +2805,7 @@ begin
           WriteSet(Path, P.PropType{$IFNDEF CLR}^{$ENDIF}, TmpValue);
         end;
       end;
-    tkChar, tkWChar{$IFDEF COMPILER12_UP}, tkUChar{$ENDIF COMPILER12_UP}, tkInteger:
+    tkChar, tkWChar, tkInteger:
       begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
         begin
