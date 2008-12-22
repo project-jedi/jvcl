@@ -1706,7 +1706,7 @@ begin
         sFieldValue := _Dequote(sFieldValue); // remove quotes.
       //sFieldValue := UpperCase(sFieldValue); // pointless on numerics
       try
-        FieldValue := JvCsvStrToFloat(string(sFieldValue), GetSeparator); // remember, this baby throws EConvertError on exception!
+        FieldValue := JvCsvStrToFloat(string(sFieldValue), GetDecimalSeparator); // remember, this baby throws EConvertError on exception!
 
         //  if { FieldValue  [ = <> > < ] numValue } then....
         if JvCsvNumCondition(FieldValue, compareOperator, numValue) then // hide row if not same prefix
@@ -2009,7 +2009,7 @@ begin
         { Default CLASSIC behaviour of this component is to encode outgoing data in US
           format regardless of system regional settings. This has become more flexible now,
           but we still default at designtime-defaults to using a DOT. }
-        Result := JvCsvStrToFloat( string(TempString), GetSeparator );
+        Result := JvCsvStrToFloat( string(TempString), GetDecimalSeparator );
 
       ftBoolean:
         if StrToIntDef(string(TempString), 0) <> 0 then
@@ -2913,7 +2913,7 @@ begin
         PInteger(Buffer)^ := StrToInt(string(TempString));
       // Standard Double-precision Float conversion:
       ftFloat:
-        PDouble(Buffer)^ := JvCsvStrToFloat(string(TempString),GetSeparator); // was StrToFloatUS
+        PDouble(Buffer)^ := JvCsvStrToFloat(string(TempString),GetDecimalSeparator); // was StrToFloatUS
       ftBoolean:
         if TempString = '' then
           PInteger(Buffer)^ := 0
@@ -3999,8 +3999,8 @@ begin
   case Column^.FFlag of
     jcsvNumeric:
       begin
-        NumLeft  := JvCsvStrToFloatDef( string(StrLeft),  -99999.9, GetSeparator);
-        NumRight := JvCsvStrToFloatDef( string(StrRight), -99999.9, GetSeparator);
+        NumLeft  := JvCsvStrToFloatDef( string(StrLeft),  -99999.9, GetDecimalSeparator);
+        NumRight := JvCsvStrToFloatDef( string(StrRight), -99999.9, GetDecimalSeparator);
         Diff := NumLeft - NumRight;
         if Diff < -0.02 then
           Result := -1
