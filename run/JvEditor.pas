@@ -815,12 +815,13 @@ begin
     SL := Length(S);
     MX := ColEnd;
 
+    {TODO: This code hasn't any effect anymore because in the inner loop MyDi[] is changed. Rethink the whole implementation.}
     if Length(FMyDi) < MX then
     begin
       SetLength(MyDi, MX);
       for iC := 0 to High(MyDi) do
         MyDi[iC] := CellRect.Width;
-     end
+    end
     else
       MyDi := FMyDi;
 
@@ -842,32 +843,34 @@ begin
         Ch := Copy(S, jCStart - 1, jC - jCStart + 1);
         if jC > SL + 1 then
           Ch := Ch + Spaces(jC - SL - 1);
-
-        {$IFDEF COMPILER12_UP}
-        for iC := 0 to High(MyDi) - 1 do
-        begin
-          if ic < Length(ch) then
-            MyDi[ic] := EditorClient.Canvas.TextWidth(ch[ic + 1])
-          else
-            MyDi[iC] := CellRect.Width;
-        end;
-        {$ENDIF COMPILER12_UP}
+        Len := Length(Ch);
 
         if Brush.Color <> LA.BC then // change GDI object only if necessary
           Brush.Color := LA.BC;
         Font.Assign(FontCacheFind(LA));
 
+        {$IFDEF COMPILER12_UP}
+        for iC := 0 to High(MyDi) - 1 do
+        begin
+          {TODO: a cache for the TextWidth() call should be used and cleared if the font name changes. }
+          if (iC < Len) and (Ch[iC + 1] >= #256) then
+            MyDi[iC] := CellRect.Width * ((EditorClient.Canvas.TextWidth(Ch[iC + 1]) + (CellRect.Width - 1)) div CellRect.Width)
+          else
+            MyDi[iC] := CellRect.Width;
+        end;
+        {$ENDIF COMPILER12_UP}
+
         R := CalcCellRect(ColPainted - LeftCol, Line - TopRow);
         {bottom line}
-        FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
+        FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Len, 1));
 
         TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
-        ErrorHighlighting.PaintError(Canvas, ColPainted, Line, R, Length(Ch), MyDi);
+        ErrorHighlighting.PaintError(Canvas, ColPainted, Line, R, Len, MyDi);
 
         if LA.Border <> clNone then
         begin
           Pen.Color := LA.Border;
-          R.Right := R.Left + CellRect.Width * Length(Ch);
+          R.Right := R.Left + CellRect.Width * Len;
           Dec(R.Left);
           Brush.Style := bsClear;
           Rectangle(R);
