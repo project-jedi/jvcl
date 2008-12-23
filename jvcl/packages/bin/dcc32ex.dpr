@@ -27,6 +27,30 @@ var
   RuntimePackageRtl: Boolean;
   RuntimePackageVcl: Boolean;
 
+type
+  TTargetType = (ttNone, ttDelphi, ttBCB, ttBDS);
+  TLibraryType = (ltJCL, ltJVCL);
+
+const
+  ttFirst = ttDelphi;
+
+type
+  TTarget = record
+    Typ: TTargetType;
+    Version: Integer;
+    IDEVersion: Integer;
+    Name: string;
+    RootDir: string;
+    LibDirs: string;
+    SearchPaths: string;
+    KeyName: string;
+    Id: string; // ["d"|"c"]<version>
+    InstalledJcl: Boolean;
+    JclVersion: string;
+    InstalledJvcl: Boolean;
+    JvclVersion: string;
+  end;
+
 { Helper functions because no SysUtils unit is used. }
 {******************************************************************************}
 function ExtractFileDir(const S: string): string;
@@ -87,8 +111,11 @@ begin
 end;
 {******************************************************************************}
 function IntToStr(Value: Integer): string;
+var
+  S: ShortString;
 begin
-  Str(Value, Result);
+  Str(Value, S);
+  Result := string(S);
 end;
 {******************************************************************************}
 function SameText(const S1, S2: string): Boolean;
@@ -177,6 +204,38 @@ var
 begin
   Attr := GetFileAttributes(PChar(Filename));
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
+end;
+{******************************************************************************}
+function FileSearch(const Name, DirList: string): string;
+var
+  I, P, L: Integer;
+  C: Char;
+begin
+  Result := Name;
+  if Result <> '' then
+  begin
+    P := 1;
+    L := Length(DirList);
+    while True do
+    begin
+      if FileExists(Result) then
+        Exit;
+      while (P <= L) and (DirList[P] = ';') do
+        Inc(P);
+      if P > L then Break;
+      I := P;
+      while (P <= L) and (DirList[P] <> ';') do
+        Inc(P);
+      Result := Copy(DirList, I, P - I);
+      C := #0;
+      if Result <> '' then
+        C := Result[Length(Result)];
+      if (C <> ':') and (C <> '\') then
+        Result := Result + '\';
+      Result := Result + Name;
+    end;
+    Result := '';
+  end;
 end;
 {******************************************************************************}
 function Execute(const Cmd, StartDir: string; HideOutput: Boolean): Integer;
@@ -276,35 +335,105 @@ begin
   end;
 end;
 {******************************************************************************}
+{ GetJediVersionFromCode returns the exact version number of the JCL or JVCL by
+  compiling a simple test application that writes the exact version number to a
+  file.
+  This makes it possible to install the JVCL if the JCL was installed by hand. }
+function GetJediVersionFromCode(const Target: TTarget; LibraryType: TLibraryType): string;
+var
+  f: TextFile;
+  TestFilename, VersionOutputFilename: string;
+  Status: Integer;
+begin
+  Result := '';
 
-type
-  TTargetType = (ttNone, ttDelphi, ttBCB, ttBDS);
-
-const
-  ttFirst = ttDelphi;
-
-type
-  TTarget = record
-    Typ: TTargetType;
-    Version: Integer;
-    IDEVersion: Integer;
-    Name: string;
-    RootDir: string;
-    LibDirs: string;
-    SearchPaths: string;
-    KeyName: string;
-    Id: string; // ["d"|"c"]<version>
-    InstalledJcl: Boolean;
-    JclVersion: string;
-    InstalledJvcl: Boolean;
-    JvclVersion: string;
+  // Get the JCL/JVCL Version number from the JCL/JVCL itself
+  TestFilename := GetTempDir + '\JediVersionCheck.dpr';
+  VersionOutputFilename := ChangeFileExt(TestFilename, '.output');
+  DeleteFile(PChar(VersionOutputFilename));
+  AssignFile(f, Testfilename);
+  {$I-}
+  Rewrite(f);
+  WriteLn(f, 'program JediVersionCheck;');
+  if LibraryType = ltJCL then
+    WriteLn(f, 'uses JclBase;')
+  else
+    WriteLn(f, 'uses JVCLVer;');
+  WriteLn(f, 'var f: TextFile;');
+  WriteLn(f, 'begin');
+  WriteLn(f, '  ExitCode := 0;');
+  WriteLn(f, '  AssignFile(f, ''' + VersionOutputFilename + ''');');
+  WriteLn(f, '  {$I-}');
+  WriteLn(f, '  Rewrite(f);');
+  if LibraryType = ltJCL then
+    WriteLn(f, '  WriteLn(f, JclVersionMajor, ''.'', JclVersionMinor, ''.'', JclVersionRelease, ''.'', JclVersionBuild);')
+  else
+    WriteLn(f, '  WriteLn(f, JvclVersionMajor, ''.'', JvclVersionMinor, ''.'', JvclVersionRelease, ''.'', JvclVersionBuild);');
+  WriteLn(f, '  CloseFile(f);');
+  WriteLn(f, '  if IOResult <> 0 then');
+  WriteLn(f, '    ExitCode := 1;');
+  WriteLn(f, '  {$I+}');
+  WriteLn(f, 'end.');
+  CloseFile(f);
+  {$I+}
+  if IOResult <> 0 then
+  begin
+    WriteLn(ErrOutput, 'Failed to write file ', TestFilename);
+    DeleteFile(PChar(TestFilename));
+  end
+  else
+  begin
+    // compile <TestFilename>.dpr
+    Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' +
+                      '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename),
+                      ExtractFileDir(TestFilename), {HideOutput:}True);
+    DeleteFile(PChar(TestFilename));
+    if LibraryType = ltJCL then
+      DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JclBase.dcu'))
+    else
+    begin
+      DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JVCLVer.dcu'));
+      DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JclUnitVersioning.dcu'));
+    end;
+    if Status <> 0 then
+    begin
+      if Status = -1 then
+        WriteLn(ErrOutput, 'Failed to start "', Target.RootDir, '\bin\dcc32.exe"')
+      else
+        ;//WriteLn(ErrOutput, 'Compilation of "', TestFilename, '" failed.');
+      Exit;
+    end;
+    // start <TextFilename>.exe
+    Status := Execute('"' + ChangeFileExt(TestFilename, '.exe') + '"',
+                      ExtractFileDir(TestFilename), False);
+    DeleteFile(PChar(ChangeFileExt(TestFilename, '.exe')));
+    if Status <> 0 then
+    begin
+      if Status = -1 then
+        WriteLn(ErrOutput, '"' + ChangeFileExt(TestFilename, '.exe') + '"');
+    end
+    else
+    begin
+      AssignFile(f, VersionOutputFilename);
+      {$I-}
+      Reset(f);
+      ReadLn(f, Result);
+      CloseFile(f);
+      {$I+}
+      if IOResult <> 0 then
+        Result := '';
+    end;
+    DeleteFile(PChar(VersionOutputFilename));
   end;
+end;
+{******************************************************************************}
 
 function ReadTargetInfo(Typ: TTargetType; IDEVersion: Integer): TTarget;
 var
   Reg: HKEY;
   IDEVersionStr: string;
-  JediLibDirs, Dir, DcpDir, RootDir: string;
+  JediLibDirs, Dir, DcpDir, RootDir, Filename: string;
+  IsSourceFile: Boolean;
 begin
   Result.Typ := ttNone;
   Result.Version := 0;
@@ -320,7 +449,7 @@ begin
   Result.SearchPaths := '';
   Result.LibDirs := '';
 
-  Str(IDEVersion, IDEVersionStr);
+  IDEVersionStr := IntToStr(IDEVersion);
   case Typ of
     ttDelphi:
       begin
@@ -427,6 +556,49 @@ begin
                        RootDir + '\source\windows' + JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJcl := True;
       end;
+    end
+    else if RequireJcl then
+    begin
+      { Registry key Jedi\JCL doesn't exist, maybe it was installed by hand.
+        Try to find the JCL in the IDE's search paths. }
+      if UseSearchPaths then
+      begin
+        IsSourceFile := True;
+        Filename := FileSearch('JclBase.pas', Result.LibDirs);
+        if Filename = '' then
+        begin
+          IsSourceFile := False;
+          Filename := FileSearch('JclBase.dcu', Result.LibDirs);
+        end;
+        if Filename <> '' then
+        begin
+          Result.JclVersion := GetJediVersionFromCode(Result, ltJCL);
+          if IsSourceFile then
+          begin
+            { Default directory is: jcl\source\common\JclBase.pas }
+            RootDir := ExtractFileDir(ExtractFileDir(ExtractFileDir(Filename)));
+            Dir := RootDir + '\lib\' + Result.Id;
+          end
+          else
+          begin
+            { Default directory is: jcl\lib\dxx\JclBase.dcu }
+            Dir := ExtractFileDir(Filename);
+            RootDir := ExtractFileDir(ExtractFileDir(Dir));
+            if not FileExists(RootDir + '\source\common\JclBase.pas') then
+              RootDir := '';
+          end;
+
+          if RootDir <> '' then
+          begin
+            JediLibDirs := JediLibDirs + ';' + Dir;
+            JediLibDirs := JediLibDirs + ';' + RootDir + '\source;' + RootDir + '\source\include';
+            Result.InstalledJcl := True;
+          end
+          else
+          if not UseJclSource then
+            Result.InstalledJcl := True;
+        end;
+      end;
     end;
 
     { Read JVCL information }
@@ -454,9 +626,55 @@ begin
                        JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJvcl := True;
       end;
+    end
+    else if RequireJvcl then
+    begin
+      { Registry key Jedi\JVCL doesn't exist, maybe it was installed by hand.
+        Try to find the JVCL in the IDE's search paths. }
+      if UseSearchPaths then
+      begin
+        IsSourceFile := True;
+        Filename := FileSearch('JVCLVer.pas', Result.LibDirs);
+        if Filename = '' then
+        begin
+          IsSourceFile := False;
+          Filename := FileSearch('JVCLVer.dcu', Result.LibDirs);
+        end;
+        if Filename <> '' then
+        begin
+          Result.JvclVersion := GetJediVersionFromCode(Result, ltJVCL);
+          if IsSourceFile then
+          begin
+            { Default directory is: jvcl3\run\JVCLVer.pas }
+            RootDir := ExtractFileDir(ExtractFileDir(Filename));
+            Dir := RootDir + '\lib\' + Result.Id;
+          end
+          else
+          begin
+            { Default directory is: jvcl3\lib\dxx\JVCLVer.dcu }
+            Dir := ExtractFileDir(Filename);
+            RootDir := ExtractFileDir(ExtractFileDir(Dir));
+            if not FileExists(RootDir + '\run\JVCLVer.pas') then
+              RootDir := '';
+          end;
+
+          if RootDir <> '' then
+          begin
+            JediLibDirs := JediLibDirs + ';' + Dir;
+            JediLibDirs := JediLibDirs + ';' + RootDir + '\common;' + RootDir + '\Resources';
+            Result.InstalledJvcl := True;
+          end
+          else
+          if not UseJclSource then
+            Result.InstalledJvcl := True;
+        end;
+      end;
     end;
+
     if JediLibDirs <> '' then
-      Result.LibDirs := Result.LibDirs + JediLibDirs; // leading ';' is already in JediLibDirs
+      //Result.LibDirs := Result.LibDirs + JediLibDirs; // leading ';' is already in JediLibDirs
+      { Prefer our own files over outdated copies in other component libraries }
+      Result.LibDirs := Copy(JediLibDirs, 2, MaxInt) + ';' + Result.LibDirs;
   end
   else
   begin
