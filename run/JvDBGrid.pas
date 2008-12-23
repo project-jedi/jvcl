@@ -2482,7 +2482,7 @@ begin
                         GotoBookmark(Pointer(lLastSelected));
                         {$ENDIF CLR}
                         Next;
-                        while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
+                        while not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
                           CurrentRowSelected := True;
                           Next;
@@ -2497,7 +2497,7 @@ begin
                         GotoBookmark(Pointer(lLastSelected));
                         {$ENDIF CLR}
                         Prior;
-                        while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
+                        while not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
                           CurrentRowSelected := True;
                           Prior;
