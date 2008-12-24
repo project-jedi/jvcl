@@ -177,10 +177,10 @@ var
     i: Integer;
   begin
     s := Uppercase(s);
-    if not (s[1] in ['A'..'Z', '_']) then
+    if not CharInSet(s[1], ['A'..'Z', '_']) then
       s[1] := '_';
     for i := 2 to Length(s) do
-      if not (s[i] in ['A'..'Z', '0'..'9', '_']) then
+      if not CharInSet(s[i], ['A'..'Z', '0'..'9', '_']) then
         s[i] := '_';
     Result := s;
   end;
