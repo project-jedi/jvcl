@@ -2170,6 +2170,7 @@ begin
     GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height)
   else
     GlyphSize := Point(0, 0);
+
   if Layout in [blGlyphLeft, blGlyphRight] then
   begin
     MaxSize.X := ClientSize.X - GlyphSize.X;
@@ -2193,39 +2194,57 @@ begin
   MaxSize.X := Max(0, MaxSize.X);
   MaxSize.Y := Max(0, MaxSize.Y);
   MinimizeCaption(Canvas, Caption, MaxSize.X);
-  if Length(Caption) > 0 then
+  if Caption <> '' then
   begin
     TextBounds := Rect(0, 0, MaxSize.X, 0);
-    DrawGlassableText(Canvas.Handle, Caption, TextBounds, DT_CALCRECT or DT_CENTER or
-      DT_VCENTER or WordWraps[FWordWrap] or Flags);
+    DrawGlassableText(Canvas.Handle, Caption, TextBounds, DT_CALCRECT or DT_VCENTER or
+      WordWraps[FWordWrap] or Flags);
   end
   else
     TextBounds := Rect(0, 0, 0, 0);
-  TextBounds.Bottom := Max(TextBounds.Top, TextBounds.Top +
-    Min(MaxSize.Y, RectHeight(TextBounds)));
-  TextBounds.Right := Max(TextBounds.Left, TextBounds.Left +
-    Min(MaxSize.X, RectWidth(TextBounds)));
-  TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
-    TextBounds.Top);
+  TextBounds.Bottom := Max(TextBounds.Top, TextBounds.Top + Min(MaxSize.Y, RectHeight(TextBounds)));
+  TextBounds.Right := Max(TextBounds.Left, TextBounds.Left + Min(MaxSize.X, RectWidth(TextBounds)));
+  TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom - TextBounds.Top);
   if PopupMark then
     if ((GlyphSize.X = 0) or (GlyphSize.Y = 0)) or (Layout = blGlyphLeft) then
       Inc(TextSize.X, 9)
     else
     if GlyphSize.X > 0 then
       Inc(GlyphSize.X, 6);
-  { If the layout has the glyph on the right or the left, then both the
+
+  { If the Layout has the glyph on the right or the left, then both the
     text and the glyph are centered vertically.  If the glyph is on the top
     or the bottom, then both the text and the glyph are centered horizontally.}
   if Layout in [blGlyphLeft, blGlyphRight] then
   begin
-    GlyphPos.Y := (ClientSize.Y div 2) - (GlyphSize.Y div 2);
-    TextPos.Y := (ClientSize.Y div 2) - (TextSize.Y div 2);
+    GlyphPos.Y := (ClientSize.Y - GlyphSize.Y) div 2;
+    TextPos.Y := (ClientSize.Y - TextSize.Y) div 2;
   end
   else
   begin
-    GlyphPos.X := (ClientSize.X div 2) - (GlyphSize.X div 2);
-    TextPos.X := (ClientSize.X div 2) - (TextSize.X div 2);
+    GlyphPos.X := (ClientSize.X - GlyphSize.X) div 2;
+    TextPos.X := (ClientSize.X - TextSize.X) div 2;
   end;
+  if Flags and DT_CENTER = 0 then
+  begin
+    if Flags and DT_RIGHT <> 0 then
+    begin
+      if Layout in [blGlyphLeft, blGlyphRight] then
+        GlyphPos.X := ClientSize.X - GlyphSize.X - TextSize.X;
+      TextPos.X := ClientSize.X - TextSize.X;
+    end
+    else
+    begin
+      if Layout in [blGlyphLeft, blGlyphRight] then
+      begin
+        GlyphPos.X := 0;
+        TextPos.X := GlyphSize.X;
+      end
+      else
+        TextPos.X := 0;
+    end;
+  end;
+
   { if there is no text or no bitmap, then Spacing is irrelevant }
   if (TextSize.X = 0) or (GlyphSize.X = 0) then
     Spacing := 0;
@@ -2243,10 +2262,23 @@ begin
     end
     else
     begin
-      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y +
-        Spacing + TextSize.Y);
-      if Layout in [blGlyphLeft, blGlyphRight] then
-        Margin := (ClientSize.X div 2) - (TotalSize.X div 2)
+      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y + Spacing + TextSize.Y);
+      if (Layout in [blGlyphLeft, blGlyphRight]) then
+      begin
+        if Flags and DT_CENTER <> 0 then
+          Margin := (ClientSize.X div 2) - (TotalSize.X div 2)
+        else
+        begin
+          if Layout = blGlyphRight then
+          begin
+            Margin := 0;
+            if Flags and DT_RIGHT = 0 then
+              Margin := ClientSize.X - TextSize.X - GlyphSize.X
+          end
+          else
+            Margin := GlyphPos.X;
+        end;
+      end
       else
         Margin := (ClientSize.Y div 2) - (TotalSize.Y div 2);
     end;
@@ -2255,8 +2287,7 @@ begin
   begin
     if Spacing = -1 then
     begin
-      TotalSize := Point(ClientSize.X - (Margin + GlyphSize.X), ClientSize.Y -
-        (Margin + GlyphSize.Y));
+      TotalSize := Point(ClientSize.X - (Margin + GlyphSize.X), ClientSize.Y - (Margin + GlyphSize.Y));
       if Layout in [blGlyphLeft, blGlyphRight] then
         Spacing := (TotalSize.X div 2) - (TextSize.X div 2)
       else
