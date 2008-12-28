@@ -107,7 +107,7 @@ uses
   cxGridBandedTableView,
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
-  JclStrings, JvPanel;
+  JclStrings, JvPanel, JvJCLUtils;
 
 type
   TAccessControl = class(TControl);
