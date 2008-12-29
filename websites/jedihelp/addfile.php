@@ -155,7 +155,7 @@
   {
     StartAccessToDB();
     
-    $lines = file($filename, "r");
+    $lines = file($filename);
     $msg = "processing ".$filename."<br>";
     
     $unitname = basename($filename);
