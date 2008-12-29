@@ -504,15 +504,7 @@ function FieldQSort(&$array, $fieldName, $firstElement = null, $lastElement = nu
 
 function MySQLTimeStampToUnixTimeStamp($mysqlTimeStamp)
 {
-  $year = substr($mysqlTimeStamp, 0, 4);
-  $month = substr($mysqlTimeStamp, 4, 2);
-  $day = substr($mysqlTimeStamp, 6, 2);
-  $hours = substr($mysqlTimeStamp, 8, 2);
-  $minutes = substr($mysqlTimeStamp, 10, 2);
-  $seconds = substr($mysqlTimeStamp, 12, 2);
-  
-  $datestr = "$year/$month/$day $hours:$minutes:$seconds";
-  return strtotime($datestr);
+  return strtotime($mysqlTimeStamp);
 }
 
 function ObfuscateEmail($email)
