@@ -76,13 +76,18 @@ type
     procedure DoInheritedAfterOpen;
     procedure DoInheritedBeforeRefresh;
     procedure DoInheritedAfterRefresh;
+    procedure DoInheritedAfterScroll;
+    function EofReached: Boolean;
+    function ErrorException: Exception;
     function ErrorMessage: string;
+    function GetAfterOpenFetch: TDataSetNotifyEvent;
     function GetAfterThreadExecution: TJvThreadedDatasetThreadEvent;
     function GetBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
     function GetDatasetFetchAllRecords: Boolean;
     function GetDialogOptions: TJvThreadedDatasetDialogOptions;
     function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     function GetThreadOptions: TJvThreadedDatasetThreadOptions;
+    procedure SetAfterOpenFetch(const Value: TDataSetNotifyEvent);
     procedure SetAfterThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
@@ -96,6 +101,8 @@ type
         GetBeforeThreadExecution write SetBeforeThreadExecution;
     property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
         GetOnThreadException write SetOnThreadException;
+    property AfterOpenFetch: TDataSetNotifyEvent read GetAfterOpenFetch write
+        SetAfterOpenFetch;
     property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions
         write SetDialogOptions;
@@ -272,6 +279,7 @@ type
 
   TJvBaseDatasetThreadHandler = class(TComponent)
   private
+    FAfterOpenFetch: TDataSetNotifyEvent;
     FAfterThreadExecution: TJvThreadedDatasetThreadEvent;
     FBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
     FIntCurrentAction: TJvThreadedDatasetAction;
@@ -292,6 +300,7 @@ type
     FIThreadedDatasetInterface: IJvThreadedDatasetInterface;
     FLastRowChecked: Integer;
     FAfterOpenRecordPosition: Longint;
+    FEofReached: Boolean;
     FOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     FOperationWasHandledInThread: Boolean;
     FSynchMessageDlgBtn: Word;
@@ -319,11 +328,13 @@ type
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
     procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
     procedure SetEnhancedOptions(Value: TJvBaseThreadedDatasetEnhancedOptions);
+    procedure SetEofReached(const Value: Boolean);
     procedure SetFetchMode(const Value: TJvThreadedDatasetFetchMode);
     procedure SetIntCurrentOperation(const Value: TJvThreadedDatasetOperation);
     procedure SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
     procedure SynchAfterThreadExecution;
     procedure SynchBeforeThreadExecution;
+    procedure SynchAfterOpenFetch;
     procedure SynchContinueFetchMessageDlg;
     procedure SynchErrorMessageDlg;
     procedure SynchOnThreadException;
@@ -352,6 +363,7 @@ type
     procedure HandleBeforeOpenRefresh;
     procedure InitOperation;
     procedure IntAfterThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
+    procedure IntAfterOpenFetch(DataSet: TDataSet);
     procedure IntBeforeThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
     procedure IntOnThreadException(DataSet: TDataSet; Operation:
         TJvThreadedDatasetOperation; E: Exception);
@@ -373,6 +385,7 @@ type
         virtual;
     destructor Destroy; override;
     procedure AfterOpen; virtual;
+    procedure AfterScroll; virtual;
     procedure AfterRefresh; virtual;
     procedure BeforeOpen; virtual;
     procedure BeforeRefresh; virtual;
@@ -390,9 +403,12 @@ type
     property CurrentOperationAction: string read GetCurrentOperationAction;
     property CurrentRow: Integer read FCurrentRow;
     property Dataset: TDataSet read FDataset;
+    property EofReached: Boolean read FEofReached write SetEofReached;
     property ErrorException: Exception read FErrorException;
     property ErrorMessage: string read FErrorMessage;
   published
+    property AfterOpenFetch: TDataSetNotifyEvent read FAfterOpenFetch write
+        FAfterOpenFetch;
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
     property EnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions read
       FEnhancedOptions write SetEnhancedOptions;
@@ -844,6 +860,12 @@ begin
   ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
+procedure TJvBaseDatasetThreadHandler.AfterScroll;
+begin
+  IThreadedDatasetInterface.DoInheritedAfterScroll;
+  EofReached := EofReached or Dataset.Eof;
+end;
+
 procedure TJvBaseDatasetThreadHandler.AfterRefresh;
 begin
   if not ExecuteThreadIsActive and not OperationWasHandledInThread then
@@ -923,7 +945,7 @@ begin
 end;
 
 function TJvBaseDatasetThreadHandler.CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
-var CheckCount : Integer;
+var cr : Integer;
 begin
   Result := tdccrContinue;
   FCurrentRow := Dataset.RecordCount;
@@ -940,41 +962,48 @@ begin
         Exit;
       end;
   end;
-  if (fLastRowChecked = 0) and
-     (EnhancedOptions.FetchRowsFirst > 0) then
-    CheckCount := EnhancedOptions.FetchRowsFirst
-  else
-    CheckCount := EnhancedOptions.FetchRowsCheck;
-
-  if (CheckCount > 0) and IntRowCheckEnabled and
-    (CurrentRow >= FLastRowChecked + CheckCount) then
-    begin
-      IntCurrentFetchDuration := IntCurrentFetchDuration + Now - IntCurrentOperationStart;
-      IntCurrentAction := tdaNothing;
-      FLastRowChecked := CurrentRow;
-      FSynchMessageDlgMsg := Format(RsODSRowsFetchedContinue, [CurrentRow]);
-      ExecuteThreadSynchronize(SynchContinueFetchMessageDlg);
-      case FSynchMessageDlgBtn of
-        mrYes:
-          Result := tdccrContinue;
-        mrAll:
-          begin
-            Result := tdccrContinue;
-            IntRowCheckEnabled := False;
-          end;
-        mrAbort:
-          Result := tdccrCancel;
-        mrCancel:
-          Result := tdccrPause;
-        mrNo:
-          Result := tdccrStop;
-      else
-        Result := tdccrStop;
+  if IntRowCheckEnabled then
+  begin
+    if (fLastRowChecked = 0) and
+       (CurrentRow >= EnhancedOptions.FetchRowsFirst) and
+       (CurrentRow < FLastRowChecked + EnhancedOptions.FetchRowsCheck)then
+      begin
+        cr := CurrentRow;
+        Result := tdccrContinue;
+        if cr > 0  then
+        
+        Exit;
       end;
-      IntCurrentAction := tdaFetch;
-      FetchMode := tdfmFetch;
-      IntCurrentOperationStart := Now;
-    end;
+    if (EnhancedOptions.FetchRowsCheck > 0) and
+      (CurrentRow >= FLastRowChecked + EnhancedOptions.FetchRowsCheck) then
+      begin
+        IntCurrentFetchDuration := IntCurrentFetchDuration + Now - IntCurrentOperationStart;
+        IntCurrentAction := tdaNothing;
+        FLastRowChecked := CurrentRow;
+        FSynchMessageDlgMsg := Format(RsODSRowsFetchedContinue, [CurrentRow]);
+        ExecuteThreadSynchronize(SynchContinueFetchMessageDlg);
+        case FSynchMessageDlgBtn of
+          mrYes:
+            Result := tdccrContinue;
+          mrAll:
+            begin
+              Result := tdccrContinue;
+              IntRowCheckEnabled := False;
+            end;
+          mrAbort:
+            Result := tdccrCancel;
+          mrCancel:
+            Result := tdccrPause;
+          mrNo:
+            Result := tdccrStop;
+        else
+          Result := tdccrStop;
+        end;
+        IntCurrentAction := tdaFetch;
+        FetchMode := tdfmFetch;
+        IntCurrentOperationStart := Now;
+      end;
+  end;
 end;
 
 function TJvBaseDatasetThreadHandler.CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions;
@@ -1149,12 +1178,17 @@ begin
         else
           if (EnhancedOptions.FetchRowsFirst > Dataset.RecordCount) or
             (FAfterOpenRecordPosition > Dataset.RecordCount) then
+          begin
             if FAfterOpenRecordPosition > EnhancedOptions.FetchRowsFirst then
               Dataset.MoveBy(FAfterOpenRecordPosition - 1)
             else
               Dataset.MoveBy(EnhancedOptions.FetchRowsFirst - 1);
+            EofReached := EofReached or Dataset.Eof;
+          end;
       end;
     end;
+    if Dataset.Active and (IntCurrentAction <> tdaCancel) then
+      ExecuteThreadSynchronize(SynchAfterOpenFetch);
     Dataset.Filtered := FIntDatasetWasFiltered;
   finally
     ExecuteThreadSynchronize(Dataset.EnableControls);
@@ -1171,6 +1205,7 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.HandleBeforeOpenRefresh;
 begin
+  FEofReached := False;
   OperationWasHandledInThread := False;
   ExecuteThreadSynchronize(Dataset.DisableControls);
   IntCurrentOpenDuration := 0;
@@ -1197,6 +1232,12 @@ procedure TJvBaseDatasetThreadHandler.IntAfterThreadExecution(DataSet: TDataSet;
 begin
   if Assigned(FAfterThreadExecution) then
     FAfterThreadExecution(DataSet, Operation);
+end;
+
+procedure TJvBaseDatasetThreadHandler.IntAfterOpenFetch(DataSet: TDataSet);
+begin
+  if Assigned(FAfterOpenFetch) then
+    FAfterOpenFetch(DataSet);
 end;
 
 procedure TJvBaseDatasetThreadHandler.IntBeforeThreadExecution(DataSet: TDataSet;
@@ -1293,6 +1334,7 @@ end;
 procedure TJvBaseDatasetThreadHandler.MoveTo(Position: Integer);
 begin
   Dataset.MoveBy(Position - Dataset.RecNo);
+  EofReached := EofReached or Dataset.Eof;
 end;
 
 procedure TJvBaseDatasetThreadHandler.SetActive(Value: Boolean);
@@ -1498,6 +1540,17 @@ begin
     MoveTo(FAfterOpenRecordPosition)
   else
     Dataset.First;
+end;
+
+procedure TJvBaseDatasetThreadHandler.SetEofReached(const Value: Boolean);
+begin
+  if FEofReached <> Value then
+    FEofReached := Value;
+end;
+
+procedure TJvBaseDatasetThreadHandler.SynchAfterOpenFetch;
+begin
+  IntAfterOpenFetch(Dataset);
 end;
 
 //=== { TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions } ============
