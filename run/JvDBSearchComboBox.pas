@@ -37,6 +37,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF SUPPORTS_GENERICS}
+  Generics.Collections,
+  {$ENDIF SUPPORTS_GENERICS}
   Windows, Classes, Controls, DB,
   JvComboBox;
 
@@ -68,7 +71,16 @@ type
     FDataLink: TJvSearchComboBoxLink;
     FChanging: Boolean;
     FDataResult: string;
-    FBookmarks: TList;
+
+    // Mantis 4622: TBookmark are TBytes in D12+ and if we store them inside a
+    // simple TList, the compiler will not see the references to the array of
+    // bytes, hence will finalize each one of them while we keep them in our
+    // list as simple pointers.
+    // To avoid this, we could have fiddled with the reference counting
+    // ourselves, but we used the new more elegant way of using the generics
+    // which makes the compiler do all the work for us.
+    FBookmarks: TList{$IFDEF SUPPORTS_GENERICS}<TBookmark>{$ENDIF SUPPORTS_GENERICS};
+
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(const Value: string);
@@ -254,7 +266,7 @@ end;
 constructor TJvDBCustomSearchComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FBookmarks := TList.Create;
+  FBookmarks := TList{$IFDEF SUPPORTS_GENERICS}<TBookmark>{$ENDIF SUPPORTS_GENERICS}.Create;
   FDataLink := TJvSearchComboBoxLink.Create(Self);
   FChanging := False;
 end;
@@ -347,8 +359,8 @@ begin
       while not EOF do
       begin
         FBookmarks.Add(GetBookmark);
-        Items.AddObject(FieldByName(FDataLink.FDataFieldName).DisplayText, FBookmarks.Last);
-        if {$IFDEF RTL200_UP}CompareBookmarks(Bookmark, Bmrk) = 0{$ELSE}Bookmark = Bmrk{$ENDIF RTL200_UP} then
+        Items.AddObject(FieldByName(FDataLink.FDataFieldName).DisplayText, TObject(FBookmarks[N]));
+        if {$IFDEF RTL200_UP}CompareBookmarks(Bookmark, Bmrk) = 0{$ELSE}Bookmark = Bmrk{$ENDIF RTL200} then
           CurIndex := N;
         Inc(N);
         Next;
