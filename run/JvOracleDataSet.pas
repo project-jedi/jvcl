@@ -75,6 +75,7 @@ type
     procedure BreakExecution;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
+    procedure DoInheritedAfterScroll;
     procedure DoInheritedBeforeOpen;
     procedure DoInheritedBeforeRefresh;
     procedure DoInheritedInternalLast;
@@ -87,11 +88,13 @@ type
   private
     FAfterFetchRecord: TAfterFetchRecordEvent;
     FThreadHandler: TJvBaseDatasetThreadHandler;
+    function GetAfterOpenFetch: TDataSetNotifyEvent;
     function GetBeforeThreadExecution: TJvThreadedDatasetThreadEvent;
     function GetAfterThreadExecution: TJvThreadedDatasetThreadEvent;
     function GetDialogOptions: TJvThreadedDatasetDialogOptions;
     function GetEnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions;
     function GetThreadOptions: TJvThreadedDatasetThreadOptions;
+    procedure SetAfterOpenFetch(const Value: TDataSetNotifyEvent);
     procedure SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetAfterThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
@@ -100,6 +103,7 @@ type
     property ThreadHandler: TJvBaseDatasetThreadHandler read FThreadHandler;
   protected
     procedure DoAfterOpen; override;
+    procedure DoAfterScroll; override;
     procedure DoAfterRefresh; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
@@ -116,6 +120,7 @@ type
     destructor Destroy; override;
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
+    function EofReached: Boolean;
     function ErrorException: Exception;
     function ErrorMessage: string;
     function ThreadIsActive: Boolean;
@@ -126,6 +131,8 @@ type
     property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
     property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
     property AfterFetchRecord: TAfterFetchRecordEvent read FAfterFetchRecord write FAfterFetchRecord;
+    property AfterOpenFetch: TDataSetNotifyEvent read GetAfterOpenFetch write
+        SetAfterOpenFetch;
     property AfterThreadExecution: TJvThreadedDatasetThreadEvent read GetAfterThreadExecution write
       SetAfterThreadExecution;
     property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
@@ -203,6 +210,11 @@ begin
   ThreadHandler.AfterOpen;
 end;
 
+procedure TJvOracleDataset.DoAfterScroll;
+begin
+  ThreadHandler.AfterScroll;
+end;
+
 procedure TJvOracleDataset.DoAfterRefresh;
 begin
   ThreadHandler.AfterRefresh;
@@ -226,6 +238,11 @@ end;
 procedure TJvOracleDataset.DoInheritedAfterRefresh;
 begin
   inherited DoAfterRefresh;
+end;
+
+procedure TJvOracleDataset.DoInheritedAfterScroll;
+begin
+  inherited DoAfterScroll;
 end;
 
 procedure TJvOracleDataset.DoInheritedBeforeOpen;
@@ -311,6 +328,22 @@ begin
     Result := nil;
 end;
 
+function TJvOracleDataset.EofReached: Boolean;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.EofReached
+  else
+    Result := False;
+end;
+
+function TJvOracleDataset.GetAfterOpenFetch: TDataSetNotifyEvent;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.AfterOpenFetch
+  else
+    Result := nil;
+end;
+
 function TJvOracleDataset.GetOnThreadException:
     TJvThreadedDatasetThreadExceptionEvent;
 begin
@@ -356,6 +389,12 @@ begin
     end;
   if Assigned(AfterFetchRecord) then
     AfterFetchRecord(Sender, FilterAccept, Action);
+end;
+
+procedure TJvOracleDataset.SetAfterOpenFetch(const Value: TDataSetNotifyEvent);
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.AfterOpenFetch := Value;
 end;
 
 procedure TJvOracleDataset.SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
