@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -2992,21 +2992,24 @@ begin
                 TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
           end;
         TVN_SELCHANGEDA, TVN_SELCHANGEDW:
-          if Assigned(FPageControl) then
-            if Selected <> nil then
-            begin
-              //Search for the correct page
-              J := -1;
-              for I := 0 to FPageControl.PageCount - 1 do
-                if DoComparePage(FPageControl.Pages[I], Selected) then
-                  J := I;
-              if J <> -1 then
+          begin
+            DoSelectionChange;  // mantis 4393
+            if Assigned(FPageControl) then
+              if Selected <> nil then
               begin
-                FPageControl.ActivePage := FPageControl.Pages[J];
-                if Assigned(FOnPage) then
-                  FOnPage(Self, Selected, FPageControl.Pages[J]);
+                //Search for the correct page
+                J := -1;
+                for I := 0 to FPageControl.PageCount - 1 do
+                  if DoComparePage(FPageControl.Pages[I], Selected) then
+                    J := I;
+                if J <> -1 then
+                begin
+                  FPageControl.ActivePage := FPageControl.Pages[J];
+                  if Assigned(FOnPage) then
+                    FOnPage(Self, Selected, FPageControl.Pages[J]);
+                end;
               end;
-            end;
+          end;
       end;
   end;
 end;
