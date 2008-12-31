@@ -241,8 +241,8 @@ begin
     Pic.LoadFromFile(FileName);
     if (GraphicClass <> nil) and not (Pic.Graphic is GraphicClass) then
     begin
-      { Ensure that the currect graphic class is returned to prevent an
-        invalid graphic format exception. }
+      { Ensure that the correct graphic class is returned to prevent an
+        "Invalid graphic format" exception. }
       Graphic := GraphicClass.Create;
       try
         Graphic.LoadFromFile(FileName);
