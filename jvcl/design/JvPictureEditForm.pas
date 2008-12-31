@@ -232,11 +232,25 @@ begin
 end;
 
 procedure TPictureEditDialog.LoadFile(const FileName: string);
+var
+  Graphic: TGraphic;
 begin
   Application.ProcessMessages;
   StartWait;
   try
     Pic.LoadFromFile(FileName);
+    if (GraphicClass <> nil) and not (Pic.Graphic is GraphicClass) then
+    begin
+      { Ensure that the currect graphic class is returned to prevent an
+        invalid graphic format exception. }
+      Graphic := GraphicClass.Create;
+      try
+        Graphic.LoadFromFile(FileName);
+        Pic.Assign(Graphic);
+      finally
+        Graphic.Free;
+      end;
+    end;
   finally
     StopWait;
   end;

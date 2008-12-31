@@ -85,6 +85,10 @@ begin
   end;
 
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
+  {$IFDEF COMPILER12_UP}
+  // prevent "Invalid graphic format" exception in the IDE's Picture-Edit.
+  RegisterPropertyEditor(TypeInfo(TJvGIFImage), nil, '', TJvGraphicPropertyEditor);
+  {$ENDIF COMPILER12_UP}
 
   // JvFullColor components and editors
   RegisterComponents(RsPaletteBarPanel, [TJvFullColorPanel, TJvFullColorTrackBar, TJvFullColorGroup]);
