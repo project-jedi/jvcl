@@ -171,15 +171,15 @@ type
 {$IFNDEF CLR}
 {$IFDEF COMPILER6_UP}
 type
-  TXMLVariant = JclSimpleXml.TXMLVariant {$IFDEF COMPILER10_UP} deprecated {$ENDIF COMPILER10_UP}; // use JclSimpleXml.TXMLVariant
+  TXMLVariant = JclSimpleXml.TXMLVariant {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.TXMLVariant' {$ENDIF} {$ENDIF COMPILER8_UP};
 
-  TXMLVarData = JclSimpleXML.TXMLVarData {$IFDEF COMPILER10_UP} deprecated {$ENDIF COMPILER10_UP}; // JclSimpleXML.TXMLVarData
+  TXMLVarData = JclSimpleXML.TXMLVarData {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXML.TXMLVarData' {$ENDIF} {$ENDIF COMPILER8_UP}; 
 
-procedure XMLCreateInto(var ADest: Variant; const AXML: TJvSimpleXMLElem); deprecated; // use JclSimpleXml.XMLCreateInto
-function XMLCreate(const AXML: TJvSimpleXMLElem): Variant; overload; deprecated; // use JclSimpleXml.XMLCreate
-function XMLCreate: Variant; overload; deprecated; // use JclSimpleXml.XMLCreate
+procedure XMLCreateInto(var ADest: Variant; const AXML: TJvSimpleXMLElem); deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreateInto' {$ENDIF};
+function XMLCreate(const AXML: TJvSimpleXMLElem): Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
+function XMLCreate: Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
 
-function VarXML: TVarType; deprecated; // use JclSimpleXml.VarXML
+function VarXML: TVarType; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.VarXML' {$ENDIF}; 
 
 {$ENDIF COMPILER6_UP}
 {$ENDIF !CLR}
@@ -188,21 +188,21 @@ function VarXML: TVarType; deprecated; // use JclSimpleXml.VarXML
 // any character <= #127 is preserved
 // all other characters are converted to hex notation except
 // for some special characters that are converted to XML entities
-function SimpleXMLEncode(const S: string): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF COMPILER6_UP} // use JclSimpleXml.SimpleXMLEncode
+function SimpleXMLEncode(const S: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.SimpleXMLEncode' {$ENDIF} ; {$ENDIF}
 // Decodes a string encoded with SimpleXMLEncode:
 // any character <= #127 is preserved
 // all other characters and substrings are converted from
 // the special XML entities to characters or from hex to characters
 // NB! Setting TrimBlanks to true will slow down the process considerably
-procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean); {$IFDEF COMPILER6_UP} deprecated; {$ENDIF COMPILER6_UP} // use JclSimpleXml.SimpleXMLDecode
+procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean); {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.SimpleXMLDecode' {$ENDIF} ; {$ENDIF}
 
-function XMLEncode(const S: string): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF COMPILER6_UP} // use JclSimpleXml.XMLEncode
-function XMLDecode(const S: string): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF COMPILER6_UP} // use JclSimpleXml.XMLDecode
+function XMLEncode(const S: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLEncode' {$ENDIF} ; {$ENDIF}
+function XMLDecode(const S: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLDecode' {$ENDIF} ; {$ENDIF}
 
 // Encodes special characters (', ", <, > and &) into XML entities (@apos;, &quot;, &lt;, &gt; and &amp;)
-function EntityEncode(const S: string): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF COMPILER6_UP} // use JclSimpleXml.EntityEncode
+function EntityEncode(const S: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.EntityEncode' {$ENDIF} ; {$ENDIF}
 // Decodes XML entities (@apos;, &quot;, &lt;, &gt; and &amp;) into special characters (', ", <, > and &)
-function EntityDecode(const S: string): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF COMPILER6_UP} // use JclSimpleXml.EntityDecode
+function EntityDecode(const S: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.EntityDecode' {$ENDIF} ; {$ENDIF}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -243,6 +243,7 @@ end;
 
 function XMLDecode(const S: string): string;
 begin
+  Result := S;
   JclSimpleXml.SimpleXMLDecode(Result, False);
 end;
 
