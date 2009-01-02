@@ -89,6 +89,17 @@ type
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 0;
   end;
 
+  IJvArrangePanel = interface
+  ['{8EE63749-CDDC-4436-9067-4EF0434B43C2}']
+    procedure ArrangeControls; 
+    procedure DisableArrange;
+    procedure EnableArrange;
+    function GetArrangeSettings: TJvArrangeSettings;
+    procedure SetArrangeSettings(const Value: TJvArrangeSettings);
+    property ArrangeSettings: TJvArrangeSettings read GetArrangeSettings write
+        SetArrangeSettings;
+  end;
+
   TJvPanelHotTrackOptions = class(TJvHotTrackOptions)
   public
     constructor Create(AOwner: TPersistent); override;
@@ -98,7 +109,7 @@ type
 
   TJvPanelMoveEvent = procedure(Sender: TObject; X, Y: Integer; var Allow: Boolean) of object;
 
-  TJvCustomArrangePanel = class(TJvCustomPanel, IJvDenySubClassing, IJvHotTrack)
+  TJvCustomArrangePanel = class(TJvCustomPanel, IJvDenySubClassing, IJvHotTrack, IJvArrangePanel)
   private
     FTransparent: Boolean;
     FFlatBorder: Boolean;
@@ -107,11 +118,11 @@ type
     FSizeable: Boolean;
     FDragging: Boolean;
     FLastPos: TPoint;
-    FArrangeSettings: TJvArrangeSettings;
     FEnableArrangeCount: Integer;
     FArrangeControlActive: Boolean;
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
+    FArrangeSettings: TJvArrangeSettings;
     FOnResizeParent: TJvPanelResizeParentEvent;
     FOnChangedWidth: TJvPanelChangedSizeEvent;
     FOnChangedHeight: TJvPanelChangedSizeEvent;
@@ -125,11 +136,12 @@ type
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions: TJvHotTrackOptions;
     FLastScreenCursor: TCursor;
+    function GetArrangeSettings: TJvArrangeSettings;
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
     procedure SetWidth(Value: Integer);
-    procedure SetArrangeSettings(Value: TJvArrangeSettings);
+    procedure SetArrangeSettings(const Value: TJvArrangeSettings);
     procedure SetTransparent(const Value: Boolean);
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
@@ -204,7 +216,8 @@ type
     property OnAfterMove: TNotifyEvent Read FOnAfterMove write FOnAfterMove;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
 
-    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property ArrangeSettings: TJvArrangeSettings read GetArrangeSettings write
+        SetArrangeSettings;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
@@ -1183,7 +1196,8 @@ begin
   Result := inherited Height;
 end;
 
-procedure TJvCustomArrangePanel.SetArrangeSettings(Value: TJvArrangeSettings);
+procedure TJvCustomArrangePanel.SetArrangeSettings(const Value:
+    TJvArrangeSettings);
 begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
@@ -1269,6 +1283,11 @@ begin
   end
   else //otherwise call Rearrange
     Rearrange;
+end;
+
+function TJvCustomArrangePanel.GetArrangeSettings: TJvArrangeSettings;
+begin
+  Result := fArrangeSettings;
 end;
 
 { TJvPanel }
