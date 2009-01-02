@@ -237,7 +237,8 @@ implementation
 
 uses
   TypInfo,
-  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineVCL, JvComponent;
+  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineVCL, JvComponent,
+  JvJVCLUtils;
 
 var
   GlobalDefaultDynControlEngine: TJvDynControlEngine = nil;
@@ -552,7 +553,7 @@ begin
   if Assigned(AParentControl) then
     Result.Parent := AParentControl;
   if AControlName <> '' then
-    Result.Name := AControlName;
+    Result.Name := GenerateUniqueComponentName(AOwner, Result, AControlName);
 end;
 
 function TJvCustomDynControlEngine.GetControlTextWidth(aControl: TControl;

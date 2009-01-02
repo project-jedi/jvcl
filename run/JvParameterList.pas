@@ -212,9 +212,9 @@ type
     {should this value be crypted before save }
     property StoreValueCrypted: Boolean read FStoreValueCrypted write FStoreValueCrypted;
     {the searchname of the parentparameter. The parameter must be a
-     descent of TJvGroupBoxParameter, TJvPanelParameter or TTabControlParamter. If the
+     descent of TJvGroupBoxParameter, TJvPanelParameter or TJvPageControlParameter. If the
      parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
-     "searchname.tabname" of the TJvTabControlParameter}
+     "searchname.tabname" of the TJvPageControlParameter}
     property ParentParameterName: string read FParentParameterName write FParentParameterName;
     {Is the value required, will be checked in the validate function}
     property Required: Boolean read FRequired write FRequired;
@@ -1590,6 +1590,7 @@ function TJvParameterList.GetParentByName(MainParent: TWinControl; const ASearch
 var
   Parameter: TJvBaseParameter;
   I: Integer;
+  J: Integer;
 begin
   Result := MainParent;
   if (Trim(ASearchName) = '') or not Assigned(MainParent) then
@@ -1604,15 +1605,15 @@ begin
           Result := TJvArrangeParameter(Parameter).ParentControl;
           Break;
         end;
-      end;
-  //      else
-  //      if Parameters[I] is TJvTabControlParameter then
-  //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
- //          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
- //          begin
- //            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
- //            break;
- //          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
+      end
+      else
+        if Parameters[I] is TJvPageControlParameter then
+          for J := 0 to TJvPageControlParameter(Parameters[I]).Pages.Count - 1 do
+             if Uppercase(Parameters[I].SearchName + '.' + TJvPageControlParameter(Parameters[I]).Pages[J]) = UpperCase(Trim(ASearchName)) then
+             begin
+               Result := TJvPageControlParameter(Parameters[I]).PageWinControl(J);
+               break;
+             end
 end;
 
 procedure TJvParameterList.HistoryLoadClick(Sender: TObject);
@@ -1769,7 +1770,6 @@ begin
   ArrangePanel := TJvPanel.Create(Self);
   ArrangePanel.Parent := ScrollBox;
   ArrangePanel.Name := 'MainArrangePanel';
-  ArrangePanel.Transparent := False;
   ArrangePanel.Align := alNone;
   ArrangePanel.BorderStyle := bsNone;
   ArrangePanel.BevelInner := bvNone;
@@ -1807,7 +1807,16 @@ begin
           GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
         Parameters[I].WinControlData := Parameters[I].AsVariant;
         if (Parameters[I] is TJvArrangeParameter) then
+          TJvArrangeParameter(Parameters[I]).DisableArrange;
+      end;
+    for I := 0 to Count - 1 do
+      if Parameters[I].Visible then
+      begin
+        if (Parameters[I] is TJvArrangeParameter) then
+        begin
+          TJvArrangeParameter(Parameters[I]).EnableArrange;
           TJvArrangeParameter(Parameters[I]).ArrangeControls;
+        end;
       end;
     HandleEnableDisable;
   finally
