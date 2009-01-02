@@ -143,7 +143,9 @@ type
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
-    procedure ArrangeControls;
+    procedure ArrangeControls; virtual;
+    procedure DisableArrange; virtual;
+    procedure EnableArrange; virtual;
     property ParentControl: TWinControl read GetParentControl write FParentControl;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
@@ -177,6 +179,7 @@ type
   protected
     function GetParameterNameExt: string; override;
     procedure ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+    procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
@@ -547,6 +550,40 @@ type
     property FontName: string read FFontName write FFontName;
   end;
 
+  TJvPageControlParameter = class(TJvArrangeParameter)
+  private
+    fHotTrack: Boolean;
+    fMultiline: Boolean;
+    fScrollOpposite: Boolean;
+    fTabIndex: Integer;
+    fTabPosition: TTabPosition;
+    FPages: TStringList;
+    FRaggedRight: Boolean;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure RearrangePageControl(Sender: TObject; nLeft, nTop, nWidth, nHeight:
+        Integer);
+    procedure SetPages(Value: TStringList);
+    procedure SetWinControlProperties; override;
+  public
+    constructor Create(AParameterList: TJvParameterList); override;
+    destructor Destroy; override;
+    procedure ArrangeControls; override;
+    procedure Assign(Source: TPersistent); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
+    procedure DisableArrange; override;
+    procedure EnableArrange; override;
+    function PageWinControl(Index: Integer): TWinControl;
+  published
+    property HotTrack: Boolean read fHotTrack write fHotTrack;
+    property Multiline: Boolean read fMultiline write fMultiline;
+    property ScrollOpposite: Boolean read fScrollOpposite write fScrollOpposite;
+    property TabIndex: Integer read fTabIndex write fTabIndex;
+    property TabPosition: TTabPosition read fTabPosition write fTabPosition;
+    property Pages: TStringList read FPages write SetPages;
+    property RaggedRight: Boolean read FRaggedRight write FRaggedRight;
+  end;
+
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -566,7 +603,7 @@ const
 implementation
 
 uses
-  JvResources;
+  JvResources, JvJVCLUtils;
 
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
@@ -1051,6 +1088,18 @@ begin
     TJvPanel(FParentControl).ArrangeControls;
 end;
 
+procedure TJvArrangeParameter.DisableArrange;
+begin
+  if FParentControl is TJvPanel then
+    TJvPanel(FParentControl).DisableArrange;
+end;
+
+procedure TJvArrangeParameter.EnableArrange;
+begin
+  if FParentControl is TJvPanel then
+    TJvPanel(FParentControl).EnableArrange;
+end;
+
 procedure TJvArrangeParameter.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
@@ -1102,6 +1151,7 @@ procedure TJvPanelParameter.CreateWinControlOnParent(ParameterParent: TWinContro
 begin
   WinControl := DynControlEngine.CreatePanelControl(Self, ParameterParent,
     GetParameterName, Caption, alNone);
+  ParentControl := WinControl;
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -1111,10 +1161,13 @@ end;
 procedure TJvPanelParameter.SetWinControlProperties;
 var
   ITmpPanel: IJvDynControlPanel;
+  ITmpArrangePanel : IJvArrangePanel;
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlPanel, ITmpPanel) then
     ITmpPanel.ControlSetBorder(BevelInner, BevelOuter, BevelWidth, BorderStyle, BorderWidth);
+  if Supports(WinControl, IJvArrangePanel, ITmpArrangePanel) then
+    ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
 end;
 
 //=== { TJvGroupBoxParameter } ===============================================
@@ -1148,6 +1201,7 @@ begin
   Panel.Caption := '';
   Panel.Color := Color;
   Panel.OnResizeParent := ReArrangeGroupbox;
+  Panel.Transparent := True;
 end;
 
 procedure TJvGroupBoxParameter.ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
@@ -1156,6 +1210,16 @@ begin
     WinControl.Width := nWidth + 5;
   if ArrangeSettings.AutoSize in [asHeight , asBoth] then
     WinControl.Height := nHeight + 18;
+end;
+
+procedure TJvGroupBoxParameter.SetWinControlProperties;
+var
+  ITmpPanel: IJvDynControlPanel;
+  ITmpArrangePanel : IJvArrangePanel;
+begin
+  inherited SetWinControlProperties;
+  if Supports(ParentControl, IJvArrangePanel, ITmpArrangePanel) then
+    ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
 end;
 
 //procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
@@ -2289,6 +2353,180 @@ begin
       ITmpMemo.ControlSetWordWrap(WordWrap);
       ITmpMemo.ControlSetScrollbars(ScrollBars);
     end;
+end;
+
+///=== { TJvPageControlParameter } ==============================================
+
+constructor TJvPageControlParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  fHotTrack:= True;
+  fMultiline:= True;
+  fScrollOpposite:= True;
+  fTabIndex:= 0;
+  FRaggedRight:= False;
+  FPages := TStringList.Create;
+end;
+
+destructor TJvPageControlParameter.Destroy;
+begin
+  FreeAndNil(FPages);
+  inherited Destroy;
+end;
+
+procedure TJvPageControlParameter.ArrangeControls;
+var
+  i: Integer;
+  ITmpArrangePanel: IJvArrangePanel;
+  w, h : Integer;
+  c : TWinControl;
+begin
+  w := 0;
+  h := 0;
+  for i := 0 to Pages.Count - 1 do
+  begin
+    c := PageWinControl(i);
+    if Supports(c, IJvArrangePanel, ITmpArrangePanel) then
+      ITmpArrangePanel.ArrangeControls;
+    if (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
+      if c.Width > w then
+        w := c.Width;
+    if (ArrangeSettings.AutoSize in [asHeight , asBoth])then
+      if c.Height > h then
+        h := c.Height;
+  end;
+  if (ArrangeSettings.AutoSize in [asWidth, asBoth])
+     and (w <> WinControl.Width) then
+    WinControl.Width := w;
+  if (ArrangeSettings.AutoSize in [asHeight , asBoth])
+     and (h <> WinControl.Height) then
+    WinControl.Height := h;
+end;
+
+procedure TJvPageControlParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvPageControlParameter then
+  begin
+    HotTrack:= TJvPageControlParameter(Source).HotTrack;
+    Multiline:= TJvPageControlParameter(Source).Multiline;
+    ScrollOpposite:= TJvPageControlParameter(Source).Scrollopposite;
+    TabIndex:= TJvPageControlParameter(Source).TabIndex;
+    RaggedRight:= TJvPageControlParameter(Source).RaggedRight;
+    Pages.Assign (TJvPageControlParameter(Source).Pages);
+  end;
+end;
+
+procedure TJvPageControlParameter.CreateWinControlOnParent(ParameterParent:
+    TWinControl);
+var
+  i: Integer;
+  ITmpPageControl: IJvDynControlPageControl;
+  Scrollbox : TScrollBox;
+  Panel: TJvPanel;
+begin
+  WinControl := DynControlEngine.CreatePageControlControl(Self, ParameterParent,
+    GetParameterName, Pages);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
+  Supports(WinControl, IJvDynControlPageControl, ITmpPageControl) ;
+  for i := 0 to Pages.Count - 1 do
+  begin
+    Scrollbox := TScrollbox.Create(ParameterParent.Owner);
+    Scrollbox.Parent := ITmpPageControl.ControlGetPage(Pages[i]);
+    Scrollbox.Align := alClient;
+    ScrollBox.AutoScroll := False;
+    ScrollBox.BorderStyle := bsNone;
+    Panel := TJvPanel.Create(ParameterParent.Owner);
+    Panel.Name := GenerateUniqueComponentName (ParameterParent.Owner, Panel, GetParameterName+'_'+Pages[i]);
+    Panel.ArrangeSettings := ArrangeSettings;
+    Panel.BevelInner := bvNone;
+    Panel.BevelOuter := bvNone;
+    Panel.Parent := Scrollbox;
+    Panel.Align := alTop;
+    Panel.Visible := True;
+    Panel.Caption := '';
+    Panel.Color := Color;
+    Panel.OnResizeParent := RearrangePageControl;
+    Panel.Transparent := True;
+    Panel.Parent := Scrollbox;
+    Pages.Objects[i] := Panel;
+  end;
+end;
+
+procedure TJvPageControlParameter.DisableArrange;
+var
+  i: Integer;
+  ITmpArrangePanel: IJvArrangePanel;
+begin
+  for i := 0 to Pages.Count - 1 do
+    if Supports(PageWinControl(i), IJvArrangePanel, ITmpArrangePanel) then
+      ITmpArrangePanel.DisableArrange;
+end;
+
+procedure TJvPageControlParameter.EnableArrange;
+var
+  i: Integer;
+  ITmpArrangePanel: IJvArrangePanel;
+begin
+  for i := 0 to Pages.Count - 1 do
+    if Supports(PageWinControl(i), IJvArrangePanel, ITmpArrangePanel) then
+      ITmpArrangePanel.EnableArrange;
+end;
+
+function TJvPageControlParameter.GetParameterNameExt: string;
+begin
+  Result := 'PageControl';
+end;
+
+function TJvPageControlParameter.PageWinControl(Index: Integer): TWinControl;
+var
+  ITmpPageControl: IJvDynControlPageControl;
+begin
+  if Assigned(Pages.Objects[Index]) and (Pages.Objects[Index] is TWinControl) then
+    Result := TWinControl(Pages.Objects[Index])
+  else
+    Result := nil;
+end;
+
+procedure TJvPageControlParameter.RearrangePageControl(Sender: TObject; nLeft,
+    nTop, nWidth, nHeight: Integer);
+begin
+  if Assigned(Sender) and (Sender is TWinControl) then
+  begin
+    if (ArrangeSettings.AutoSize in [asWidth, asBoth])
+      and (TWinControl(Sender).Width <> nWidth + 5) then
+      TWinControl(Sender).Width := nWidth + 5;
+    if (ArrangeSettings.AutoSize in [asHeight , asBoth])
+      and (TWinControl(Sender).Height <> nHeight + 28) then
+      TWinControl(Sender).Height := nHeight + 28;
+  end;
+end;
+
+procedure TJvPageControlParameter.SetPages(Value: TStringList);
+begin
+  FPages.Assign(Value);
+end;   {*** procedure TJvPageControlParameter.SetHorzScrollBar ***}
+
+procedure TJvPageControlParameter.SetWinControlProperties;
+var
+  ITmpTabControl: IJvDynControlTabControl;
+  ITmpArrangePanel: IJvArrangePanel;
+  i: Integer;
+begin
+  inherited SetWinControlProperties;
+  if Supports(WinControl, IJvDynControlTabControl, ITmpTabControl) then
+    begin
+      ITmpTabControl.ControlSetRaggedRight(RaggedRight);
+      ITmpTabControl.ControlSetMultiline(Multiline);
+      ITmpTabControl.ControlSetScrollOpposite(ScrollOpposite);
+      ITmpTabControl.ControlSetHotTrack(HotTrack);
+    end;
+  for i := 0 to Pages.Count - 1 do
+    if Supports(PageWinControl(i), IJvArrangePanel, ITmpArrangePanel) then
+      ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
 end;
 
 {$IFDEF UNITVERSIONING}
