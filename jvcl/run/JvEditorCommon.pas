@@ -708,7 +708,7 @@ type
     FMouseDown: Boolean;
 
     { internal }
-    FTabStops: AnsiString; // Tabs string is always an AnsiString
+    FTabStops: string;
 
     FCompound: Integer;
 
@@ -1047,7 +1047,7 @@ type
     property InsertMode: Boolean index 0 read FInsertMode write SetMode default True;
     property ReadOnly: Boolean index 1 read FReadOnly write SetMode default False;
     property DoubleClickLine: Boolean read FDoubleClickLine write FDoubleClickLine default False;
-    property TabStops: AnsiString read FTabStops write FTabStops;
+    property TabStops: string read FTabStops write FTabStops;
     property SmartTab: Boolean read FSmartTab write FSmartTab default True;
     property BackSpaceUnindents: Boolean read FBackSpaceUnindents write FBackSpaceUnindents default True;
     property AutoIndent: Boolean read FAutoIndent write FAutoIndent default True;
@@ -2910,7 +2910,7 @@ begin
   if Next then
   begin
     I := 0;
-    S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
+    S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     A := 0;
     B := 1;
     while S <> '' do
@@ -2923,7 +2923,7 @@ begin
         Exit;
       end;
       Inc(I);
-      S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
+      S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     end;
     { after last tab pos }
     Result := X + ((B - A) - ((X - B) mod (B - A)));
@@ -2931,7 +2931,7 @@ begin
   else
   begin
     I := 0;
-    S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
+    S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     A := 0;
     B := 0;
     while S <> '' do
@@ -2944,7 +2944,7 @@ begin
         Exit;
       end;
       Inc(I);
-      S := Trim(SubStrBySeparator(string(FTabStops), I, ' '));
+      S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     end;
     { after last tab pos }
     Result := X - ((B - A) - ((X - B) mod (B - A)));
