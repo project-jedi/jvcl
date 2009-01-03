@@ -857,7 +857,7 @@ begin
   if (TmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
   begin
     if Assigned(LabelControl) then
-      WinControl.Top := LabelControl.Height + 2
+      WinControl.Top := LabelControl.Height + 0
     else
       WinControl.Top := 0;
     WinControl.Left := 0;
@@ -887,12 +887,12 @@ begin
 
     if Height > 0 then
       if Assigned(LabelControl) then
-        WinControl.Height := Height - (LabelControl.Height + 3)
+        WinControl.Height := Height - (WinControl.Top + 1)
       else
         WinControl.Height := Height
     else
       if Assigned(LabelControl) then
-        FramePanel.Height := WinControl.Height + LabelControl.Height + 3
+        FramePanel.Height := WinControl.Height + WinControl.Top + 1
       else
         FramePanel.Height := WinControl.Height;
   end
@@ -1201,7 +1201,7 @@ begin
   Panel.Caption := '';
   Panel.Color := Color;
   Panel.OnResizeParent := ReArrangeGroupbox;
-  Panel.Transparent := True;
+//  Panel.Transparent := True;
 end;
 
 procedure TJvGroupBoxParameter.ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
@@ -1209,7 +1209,7 @@ begin
   if ArrangeSettings.AutoSize in [asWidth, asBoth] then
     WinControl.Width := nWidth + 5;
   if ArrangeSettings.AutoSize in [asHeight , asBoth] then
-    WinControl.Height := nHeight + 18;
+    WinControl.Height := nHeight + 22;
 end;
 
 procedure TJvGroupBoxParameter.SetWinControlProperties;
@@ -1222,37 +1222,6 @@ begin
     ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
 end;
 
-//procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
-//begin
-//  inherited SetEnabled(Value);
-//  if Assigned(Wincontrol) then
-//    Wincontrol.Enabled := Value;
-//end;
-//
-//procedure TJvGroupBoxParameter.SetVisible(Value: Boolean);
-//begin
-//  inherited SetVisible(Value);
-//  if Assigned(Wincontrol) then
-//    Wincontrol.Visible := Value;
-//end;
-//
-//procedure TJvGroupBoxParameter.SetHeight(Value: Integer);
-//begin
-//  if Assigned(GroupBox) then
-//    GroupBox.Height := Value;
-//end;
-//
-//procedure TJvGroupBoxParameter.SetWidth(Value: Integer);
-//begin
-//  if Assigned(GroupBox) then
-//    GroupBox.Width := Value;
-//end;
-//
-//procedure TJvGroupBoxParameter.SetTabOrder(Value: Integer);
-//begin
-//  if Assigned(GroupBox) then
-//    GroupBox.TabOrder := Value;
-//end;
 
 //=== { TJvListParameter } ===================================================
 
@@ -2450,7 +2419,6 @@ begin
     Panel.Caption := '';
     Panel.Color := Color;
     Panel.OnResizeParent := RearrangePageControl;
-    Panel.Transparent := True;
     Panel.Parent := Scrollbox;
     Pages.Objects[i] := Panel;
   end;
@@ -2500,15 +2468,15 @@ begin
       and (TWinControl(Sender).Width <> nWidth + 5) then
       TWinControl(Sender).Width := nWidth + 5;
     if (ArrangeSettings.AutoSize in [asHeight , asBoth])
-      and (TWinControl(Sender).Height <> nHeight + 28) then
-      TWinControl(Sender).Height := nHeight + 28;
+      and (TWinControl(Sender).Height <> nHeight + 45) then
+      TWinControl(Sender).Height := nHeight + 45;
   end;
 end;
 
 procedure TJvPageControlParameter.SetPages(Value: TStringList);
 begin
   FPages.Assign(Value);
-end;   {*** procedure TJvPageControlParameter.SetHorzScrollBar ***}
+end;   
 
 procedure TJvPageControlParameter.SetWinControlProperties;
 var
