@@ -507,6 +507,14 @@ function MySQLTimeStampToUnixTimeStamp($mysqlTimeStamp)
   return strtotime($mysqlTimeStamp);
 }
 
+function EncodeString($str)
+{
+  if (version_compare(PHP_VERSION, '5.2.0') < 0)
+    return htmlentities($str);
+  else
+    return htmlentities($str, ENT_COMPAT, "ISO-8859-1", false);
+}
+
 function ObfuscateEmail($email)
 {
   $email = str_replace("@", " [at] ", $email);
