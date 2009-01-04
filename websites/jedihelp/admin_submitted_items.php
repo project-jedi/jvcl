@@ -133,7 +133,7 @@
       $tpl->setCurrentBlock("items");
       $tpl->setVariable("ID", $item["Id"]);
       $tpl->setVariable("NAME", $item["Name"]);
-      $tpl->setVariable("SUMMARY", $item["Summary"]);
+      $tpl->setVariable("SUMMARY", EncodeString($item["Summary"]));
       $tpl->setVariable("SUBMITTED_ON", $item["CreatedOn"]);
       $tpl->setVariable("PROJECT_NAME", $projectInfos["Name"]);
       $tpl->parseCurrentBlock("items");

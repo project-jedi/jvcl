@@ -30,8 +30,8 @@
     $userInfos = GetUserInfosById($userId);
     
     $tpl->setVariable("ID", $userInfos["Id"]);
-    $tpl->setVariable("NAME", $userInfos["username"]);
-    $tpl->setVariable("FULL_NAME", trim($userInfos["FullName"]));
+    $tpl->setVariable("NAME", EncodeString($userInfos["username"]));
+    $tpl->setVariable("FULL_NAME", EncodeString(trim($userInfos["FullName"])));
     $tpl->setVariable("EMAIL", trim($userInfos["email"]));
     $tpl->setVariable("CAN_UPLOAD_CHECKED", 
                          ($userInfos["CanUpload"]=="Y")?"checked":"");

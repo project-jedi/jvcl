@@ -199,7 +199,7 @@
       $tpl->setCurrentBlock("delete_users");
       $tpl->setVariable("USER_ID", $user["Id"]);
       $tpl->setVariable("USER_USERNAME", $user["username"]);
-      $tpl->setVariable("USER_FULLNAME", $user["FullName"]);
+      $tpl->setVariable("USER_FULLNAME", EncodeString($user["FullName"]));
       $tpl->setVariable("USER_EMAIL", ObfuscateEmail($user["email"]));
       $tpl->setVariable("USER_CAN_UPLOAD", $user["CanUpload"]);
       $tpl->setVariable("USER_IS_POWER", $user["IsPower"]);

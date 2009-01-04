@@ -218,6 +218,8 @@
   
   function ProcessFiles($files, $projectId, &$tpl)
   {
+    echo count($files)."<br>";
+  
     $numFiles = 0;
     $result = "";
     while (count($files)>0 && $numFiles < FILES_PER_ITERATION)

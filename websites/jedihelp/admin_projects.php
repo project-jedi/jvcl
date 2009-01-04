@@ -102,7 +102,7 @@
       $tpl->setCurrentBlock("delete_projects");
       $tpl->setVariable("PROJECT_ID", $project["Id"]);
       $tpl->setVariable("PROJECT_NAME", $project["Name"]);
-      $tpl->setVariable("PROJECT_DESCRIPTION", $project["Description"]);
+      $tpl->setVariable("PROJECT_DESCRIPTION", EncodeString($project["Description"]));
       $tpl->parseCurrentBlock("delete_projects");
     }
   }

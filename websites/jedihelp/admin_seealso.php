@@ -241,7 +241,7 @@
       $tpl->setCurrentBlock("delete_external_items");
       $tpl->setVariable("EXTERNAL_ITEM_ID", $externalItem["Id"]);
       $tpl->setVariable("EXTERNAL_ITEM_NAME", $externalItem["Name"]);
-      $tpl->setVariable("EXTERNAL_ITEM_DESCRIPTION", $externalItem["Description"]);
+      $tpl->setVariable("EXTERNAL_ITEM_DESCRIPTION", EncodeString($externalItem["Description"]));
       $tpl->parseCurrentBlock("delete_external_items");
     }
     $tpl->setCurrentBlock("external_items_sections");

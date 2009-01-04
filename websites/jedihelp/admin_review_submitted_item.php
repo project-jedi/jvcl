@@ -53,10 +53,10 @@
   $baseclass = trim(substr($itemInfos["Name"], 0, strpos($itemInfos["Name"],".")));
   
   // Assign data to the various variables
-  $tpl->setVariable("SUMMARY", UnescapeCharsFromMySQL($itemInfos["Summary"]));
+  $tpl->setVariable("SUMMARY", EncodeString(UnescapeCharsFromMySQL($itemInfos["Summary"])));
   $tpl->setVariable("PARAMETERS", UnescapeCharsFromMySQL($itemInfos["Parameters"]));
   $tpl->setVariable("RETURN_VALUE", UnescapeCharsFromMySQL($itemInfos["ReturnValue"]));
-  $tpl->setVariable("DESCRIPTION", UnescapeCharsFromMySQL($itemInfos["Description"]));
+  $tpl->setVariable("DESCRIPTION", EncodeString(UnescapeCharsFromMySQL($itemInfos["Description"])));
   $tpl->setVariable("EXTRAS", UnescapeCharsFromMySQL($itemInfos["Extras"]));
   $tpl->setVariable("SEE_ALSO_LIST", UnescapeCharsFromMySQL($itemInfos["SeeAlsoList"]));
   $tpl->setVariable("JVCL_INFO", UnescapeCharsFromMySQL($itemInfos["JVCLInfo"]));
@@ -70,13 +70,13 @@
     $tpl->setVariable("ORIGINAL_ITEM_ID", $originalItemId);
     $tpl->setVariable("ORIGINAL_ITEM_NAME", $originalItemInfos["Name"]);
     $tpl->setVariable("ORIGINAL_SUMMARY", 
-                        FormatEndLines($originalItemInfos["Summary"]));
+                        EncodeString(FormatEndLines($originalItemInfos["Summary"])));
     $tpl->setVariable("ORIGINAL_PARAMETERS", 
                         FormatEndLines($originalItemInfos["Parameters"]));
     $tpl->setVariable("ORIGINAL_RETURN_VALUE", 
                         FormatEndLines($originalItemInfos["ReturnValue"]));
     $tpl->setVariable("ORIGINAL_DESCRIPTION", 
-                        FormatEndLines($originalItemInfos["Description"]));
+                        EncodeString(FormatEndLines($originalItemInfos["Description"])));
     $tpl->setVariable("ORIGINAL_EXTRAS", FormatEndLines(ProcessExtras($originalItemInfos["Extras"], $baseclass)));
      
     // build the see also information

@@ -67,7 +67,7 @@
       
       
       
-      $tpl->SetVariable("ITEM_SUMMARY", GetSummaryFromItem($item));
+      $tpl->SetVariable("ITEM_SUMMARY", EncodeString(GetSummaryFromItem($item)));
       
       $itemName = trim($item["Name"]);
       // if the item is actually a unit, then we make the link point to the unit

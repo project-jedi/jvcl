@@ -124,7 +124,7 @@
         
   $tpl->setVariable("PROJECT_ID", $projectInfos["Id"]);
   $tpl->setVariable("PROJECT_NAME", $projectInfos["Name"]);
-  $tpl->setVariable("PROJECT_DESCRIPTION", $projectInfos["Description"]);
+  $tpl->setVariable("PROJECT_DESCRIPTION", EncodeString($projectInfos["Description"]));
   
   // ---------------------------------------------------------------
   // Decide to display units or types
@@ -152,7 +152,7 @@
         $tpl->setCurrentBlock("type_list");
         $tpl->setVariable("TYPE_ID", $type["Id"]);
         $tpl->setVariable("TYPE_NAME", FormatItemName(trim($type["Name"])));
-        $tpl->setVariable("TYPE_SUMMARY", $type["Summary"]);
+        $tpl->setVariable("TYPE_SUMMARY", EncodeString($type["Summary"]));
         $tpl->setVariable("TYPE_UNIT_NAME", $unitName);
         $tpl->setVariable("TYPE_UNIT_ID", $type["UnitId"]);
         $tpl->parseCurrentBlock("type_list");
@@ -193,8 +193,8 @@
         $tpl->setCurrentBlock("unit_list");
         $tpl->setVariable("UNIT_ID", $unit["Id"]);
         $tpl->setVariable("UNIT_NAME", $unitName);
-        $tpl->setVariable("UNIT_SUMMARY", $summary);
-        $tpl->setVariable("UNIT_AUTHOR", $unit["Author"]);
+        $tpl->setVariable("UNIT_SUMMARY", EncodeString($summary));
+        $tpl->setVariable("UNIT_AUTHOR", EncodeString($unit["Author"]));
         $tpl->parseCurrentBlock("unit_list");
       }
       $tpl->parseCurrentBlock("by_units");

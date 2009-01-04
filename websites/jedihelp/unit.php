@@ -88,8 +88,8 @@
   $tpl->setVariable("UNIT_NAME", $unitName);
   $tpl->setVariable("UNIT_PACKAGE", $unitInfos["Package"]);
   $tpl->setVariable("UNIT_STATUS", $unitInfos["Status"]);
-  $tpl->setVariable("UNIT_DESCRIPTION", $unitInfos["Description"]);
-  $tpl->setVariable("UNIT_AUTHOR", $unitInfos["Author"]);
+  $tpl->setVariable("UNIT_DESCRIPTION", EncodeString($unitInfos["Description"]));
+  $tpl->setVariable("UNIT_AUTHOR", str_replace("\r\n", ", ", EncodeString($unitInfos["Author"])));
 
   if ($edit)
   {
@@ -130,7 +130,7 @@
         }
         
         $tpl->setVariable("ITEM_NAME", $name);
-        $tpl->setVariable("ITEM_SUMMARY", GetSummaryFromItem($item));
+        $tpl->setVariable("ITEM_SUMMARY", EncodeString(GetSummaryFromItem($item)));
         $tpl->parseCurrentBlock("item_list");
       }
     }

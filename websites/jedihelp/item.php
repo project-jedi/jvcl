@@ -137,7 +137,7 @@
     if ($itemInfos["Summary"] != "")
     { 
       $tpl->setCurrentBlock("summary");
-      $tpl->setVariable("SUMMARY", FormatEndLines(ProcessExtLinks($itemInfos["Summary"])));
+      $tpl->setVariable("SUMMARY", EncodeString(FormatEndLines(ProcessExtLinks($itemInfos["Summary"]))));
       $tpl->parseCurrentBlock("summary");
     }
      
@@ -161,7 +161,7 @@
     if ($itemInfos["Description"] != "")
     {
       $tpl->setCurrentBlock("description");
-      $tpl->setVariable("DESCRIPTION", FormatEndLines(trim($itemInfos["FormattedDescription"])));
+      $tpl->setVariable("DESCRIPTION", EncodeString(FormatEndLines(trim($itemInfos["FormattedDescription"]))));
       $tpl->parseCurrentBlock("description");
     }
      
@@ -293,10 +293,10 @@
     }
     
     // Assign data to the various variables
-    $tpl->setVariable("SUMMARY", FixQuotes($itemInfos["Summary"]));
+    $tpl->setVariable("SUMMARY", EncodeString(FixQuotes($itemInfos["Summary"])));
     $tpl->setVariable("PARAMETERS", $itemInfos["Parameters"]);
     $tpl->setVariable("RETURN_VALUE", FixQuotes($itemInfos["ReturnValue"]));
-    $tpl->setVariable("DESCRIPTION", $itemInfos["Description"]);
+    $tpl->setVariable("DESCRIPTION", EncodeString($itemInfos["Description"]));
     $tpl->setVariable("EXTRAS", FixQuotes($itemInfos["Extras"]));
     $tpl->setVariable("SEE_ALSO_LIST", FixQuotes($seeAlsoList));
     $tpl->setVariable("JVCL_INFO", FixQuotes($itemInfos["JVCLInfo"]));

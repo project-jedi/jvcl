@@ -36,7 +36,7 @@
     
     $tpl->setVariable("ID", $project["Id"]);
     $tpl->setVariable("NAME", $project["Name"]);
-    $tpl->setVariable("DESCRIPTION", trim($project["Description"]));
+    $tpl->setVariable("DESCRIPTION", EncodeString(trim($project["Description"])));
     $tpl->setVariable("REVIEWERS_EMAILS", $project["ReviewersEmails"]);
     $tpl->setVariable("ADMIN_EMAIL", $project["AdminEmail"]);
     $tpl->setVariable("SEND_NOTIFICATIONS_CHECKED", 
