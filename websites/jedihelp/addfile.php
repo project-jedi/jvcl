@@ -14,7 +14,7 @@
     die(GetNotAllowedPage("You are not authorized to upload files"));
     
   define("FILE_COOKIE_NAME", "jh_filecookie");
-  define("FILES_PER_ITERATION", 10);
+  define("FILES_PER_ITERATION", 5);
   
   $tpl = new HTML_Template_IT("./"); 
   $tpl->loadTemplatefile("addfile.tpl.html", true, true);
@@ -22,6 +22,14 @@
   SetCommonLoginStatus($tpl);
   SetAdminToolbar($tpl);
   SetCommonFooter($tpl);
+  
+  function GetTmpPath()
+  {
+    if ($_SERVER["HTTP_HOST"] == "test.obones.com")
+      return dirname($_SERVER["SCRIPT_FILENAME"])."/tmp";
+    else
+      return dirname($_FILES["uploadedfile"]["tmp_name"])."/jh";
+  }
    
   function ProcessItem($lines, &$index, $unitId)
   {
@@ -168,6 +176,7 @@
       $msg .= "Error while removing previous values: ".$deleteResult;
     else
     {
+      $msg .= "Success<br>";
       $unitId = -1;
       $index = 0;
       while ($index < count($lines))
@@ -218,8 +227,6 @@
   
   function ProcessFiles($files, $projectId, &$tpl)
   {
-    echo count($files)."<br>";
-  
     $numFiles = 0;
     $result = "";
     while (count($files)>0 && $numFiles < FILES_PER_ITERATION)
@@ -230,35 +237,47 @@
         $filename = $file;
       else
         $filename = $file["filename"];
+        
+      $filename = trim($filename);
       
-      $result .= ProcessDtx($filename, $projectId)."<br>";
+      if ($filename != "")
+      {
+        $result .= ProcessDtx($filename, $projectId)."<br>";
+        $numFiles++;
+      }
       array_shift($files);
-      $numFiles++;
     }
-    return $result;
     
     // if there are files left to process then save their names, set the 
     // cookie and the auto refresher
     if (count($files) > 0)
     {
-      $filename = tempnam("", "jh_");
-      $fileHandle = fopen($filename, "w");
+      $cookie_filename = GetTmpPath()."/jh_add".strftime("%Y%m%d%H%M%S");
+      $fileHandle = fopen($cookie_filename, "w");
       foreach($files as $file)
       {
         if (is_string($file))
-          fwrite($fileHandle, $file."\n");
+          $filename = $file;
         else
-          fwrite($fileHandle, $file["filename"]."\n");
+          $filename = $file["filename"];
+          
+        if ($filename != "")
+        {
+          if ($filename[strlen($filename) - 1] != "\n")
+            $filename .= "\n";
+            
+          fwrite($fileHandle, $filename);
+        }
       }
       fclose($fileHandle);
       
-      setcookie(FILE_COOKIE_NAME, $filename);
+      setcookie(FILE_COOKIE_NAME, $cookie_filename);
       setcookie(FILE_COOKIE_NAME."_project", $projectId);
-      $msg = $numFiles." files processed sucessfully, ".
+      $result = $numFiles." files processed sucessfully, ".
              count($files)." files left.<br>\n".
              "Please wait for automatic progress or click ".
              "<a href='addfile.php'>here</a> ".
-             "to continue now.<br>\n".$msg;
+             "to continue now.<br>\n<br>\n".$result;
              
       $tpl->setCurrentBlock("auto_refresher");
       $tpl->touchBlock("auto_refresher");
@@ -266,10 +285,12 @@
     }
     else
     {
-      $msg = $numFiles." files processed successfuly<br>\n".$msg;
+      $result = $numFiles." files processed successfuly<br>\n<br>\n".$result;
       setcookie(FILE_COOKIE_NAME, "", time()-3600);
       setcookie(FILE_COOKIE_NAME."_project", "", time()-3600);
     }
+    
+    return $result;
   }
   
   if (array_key_exists(FILE_COOKIE_NAME, $_COOKIE))
@@ -295,11 +316,12 @@
     unlink($_FILES["uploadedfile"]["tmp_name"]);
     $tpl->SetVariable("PROCESS_DURATION", "0");
   }
-  elseif (array_key_exists(FILE_COOKIE_NAME, $_COOKIE) && $_COOKIE[FILE_COOKIE_NAME] != "")
+  elseif (array_key_exists(FILE_COOKIE_NAME, $_COOKIE) && $_COOKIE[FILE_COOKIE_NAME] != "" && $_FILES["uploadedfile"]["name"] == "")
   {
-    $startTimeStr = microtime();  
-    $files = file($_COOKIE[FILE_COOKIE_NAME]);
-    unlink($_COOKIE[FILE_COOKIE_NAME]);
+    $startTimeStr = microtime();
+    $cookieFileName = $_COOKIE[FILE_COOKIE_NAME];
+    $files = file($cookieFileName);
+    unlink($cookieFileName);
     $msg = ProcessFiles($files, $projectId, $tpl);
     $endTimeStr = microtime();
     $duration = MicrotimeDifference($startTimeStr, $endTimeStr);
@@ -320,7 +342,7 @@
       case "zip":
         if (!CanUploadZip())
           die (GetNotAllowedPage("You are not allowed to upload zip files"));
-        $directory = dirname($_FILES["uploadedfile"]["tmp_name"]);
+        $directory = GetTmpPath(); //dirname($_FILES["uploadedfile"]["tmp_name"]);
         $zip = new pclzip($_FILES["uploadedfile"]["tmp_name"]);
         $extractResult = $zip->extract(PCLZIP_OPT_PATH, $directory);
         if ($extractResult == 0)
