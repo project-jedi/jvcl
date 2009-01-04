@@ -11,7 +11,7 @@ $db_name = "project_jedi";
 
 // Username and password to use to connect
 $db_user = "jedihelp";
-$db_pwd = "xVXvN5dLru,NrQby";
+$db_pwd = "sqljedihelp";
 
 // The maximum inactivity delay before being logged out in seconds
 $inactivityDelay = 20 *60;
