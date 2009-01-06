@@ -56,7 +56,7 @@ uses
   {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, {JvgSysInf, }
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer,
   JvgStringGrid, JvgTabComm, JvgTab, {JvgSysRequirements,} {JvgProcess, }
-  {JvgProcessUtils, } JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
+  {JvgProcessUtils, } JvgPropertyCenter, {JvgTransparentMemo,} {JvgTreeView, }JvgTypes,
   JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, {JvgBevel,}
   JvgButton, JvgCheckBox, JvgCompDescription,
@@ -64,9 +64,9 @@ uses
   JvgGroupBox, JvgHelpPanel, JvgHelpPanelEditor, JvgHint, JvgImage,
   JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
   JvgMultiResourceEditorForm, {JvgMultiResources, } JvgPage, JvgProgress,
-  JvgGridHeaderControl, 
+  {JvgGridHeaderControl,} 
   {$IFNDEF DelphiPersonalEdition}
-  JvgCrossTable, {JvgDBNav, } JvgExport, JvgDBGrid, JvgExportComponents,
+  JvgCrossTable, {JvgDBNav, } JvgExport, {JvgDBGrid, }JvgExportComponents,
   {$IFNDEF COMPILER8_UP}
    {$IFDEF INTERNET_COMPONENTS}
   JvgWebDocumentIterator, JvgHTTPVersionInfo,
@@ -75,7 +75,7 @@ uses
   {$IFDEF JVCL_UseQuickReport}
   JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel,
   {$ENDIF JVCL_UseQuickReport}
-  JvgVertDBGrid,
+  {JvgVertDBGrid, }
   {$ENDIF !DelphiPersonalEdition}
   JvgLabelEditorForm;
 
@@ -87,13 +87,13 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteGlobusComponents1, [
     {$IFNDEF DelphiPersonalEdition}
-    {TJvgExportDataset,} {TJvgDBNavigator, } TJvgPrintCrossTable, TJvgDBGrid,
-    TJvgVertDBSGrid,
+    {TJvgExportDataset,} {TJvgDBNavigator, } TJvgPrintCrossTable, {TJvgDBGrid,
+    TJvgVertDBSGrid,}
     {$ENDIF !DelphiPersonalEdition}
-    TJvgGridHeaderControl,
+    {TJvgGridHeaderControl,}
     {TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,}
-    {TJvgGraph,} TJvgTreeView, TJvgCheckTreeView, {TJvgSplitter, }TJvgShadow,
-    TJvgShade, TJvgButton, {TJvgImageGroup,} TJvgProgress, TJvgTransparentMemo,
+    {TJvgGraph, TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, }TJvgShadow,
+    TJvgShade, TJvgButton, {TJvgImageGroup,} TJvgProgress, {TJvgTransparentMemo,}
     {TJvgWinMask,} TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
     TJvgAskListBox, {TJvgScrollBox, }TJvgStringGrid, TJvgSpeedButton,
     TJvgExtSpeedButton, TJvgWizardHeader, TJvgCaption]);
